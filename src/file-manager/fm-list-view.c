@@ -1126,6 +1126,21 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 }
 
 static NautilusList *
+get_list_if_exists (FMListView *list_view)
+{
+	GtkWidget *child;
+
+	g_return_val_if_fail (FM_IS_LIST_VIEW (list_view), NULL);
+
+	child = GTK_BIN (list_view)->child;
+	if (child == NULL) {
+		return NULL;
+	}
+	
+	return NAUTILUS_LIST (child);
+}
+
+static NautilusList *
 get_list (FMListView *list_view)
 {
 	GtkWidget *child;
@@ -1218,19 +1233,24 @@ fm_list_view_get_background_widget (FMDirectoryView *view)
 static void
 fm_list_view_clear (FMDirectoryView *view)
 {
-	NautilusCList *list;
+	NautilusList *list;
+	NautilusCList *clist;
 	int row;
 
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
-	list = NAUTILUS_CLIST (get_list (FM_LIST_VIEW (view)));
+	list = get_list_if_exists (FM_LIST_VIEW (view));
+	if (list == NULL) {
+		return;
+	}
 
 	/* Clear away the existing list items. */
-	for (row = 0; row < list->rows; ++row) {
+	clist = NAUTILUS_CLIST (list);
+	for (row = 0; row < clist->rows; ++row) {
 		fm_list_view_removing_file
-			(FM_LIST_VIEW (view), NAUTILUS_FILE (nautilus_clist_get_row_data (list, row)));
+			(FM_LIST_VIEW (view), NAUTILUS_FILE (nautilus_clist_get_row_data (clist, row)));
 	}
-	nautilus_clist_clear (list);
+	nautilus_clist_clear (clist);
 }
 
 static void

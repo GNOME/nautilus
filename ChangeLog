@@ -1,3 +1,27 @@
+2001-02-16  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Gene Ragan <gzr@eazel.com>
+
+	Fix bug 4070 (Repeated clicks of BACK cause core dump):
+	
+	* src/nautilus-window-manage-views.c:
+	(viewed_file_changed_callback): Use end_location_change instead,
+	since cancel_location_change just does extra "go back to old view"
+	that we don't need.
+	(cancel_location_change): A little more sanity checking. Not sure
+	if it really helps. The other changes should fix the bug.
+	(begin_location_change): Use end_location_change to get rid of any
+	previous change in progress since cancel_location_change just does
+	extra "go back to old view" that we don't need.
+	(report_location_change_callback): Use end_location_change to get
+	rid of any previous change in progress since
+	cancel_location_change just does extra "go back to old view" that
+	we don't need.
+
+	* src/file-manager/fm-list-view.c: (get_list_if_exists),
+	(fm_list_view_clear): Don't create a list just to clear it.
+	Crashed here while I was trying to work on the other bug.
+	
 2001-02-16  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
@@ -18,7 +42,7 @@
 	(repopulate_program_list): Reinstated a one-line fix
 	that was accidentally merged away earlier.
 
-2001-02-16  Robey Pointer  <set EMAIL_ADDRESS environment variable>
+2001-02-16  Robey Pointer  <robey@eazel.com>
 
 	* nautilus.spec.in:
 

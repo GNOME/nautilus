@@ -102,6 +102,7 @@ static void begin_location_change  (NautilusWindow             *window,
                                     NautilusLocationChangeType  type,
                                     guint                       distance);
 static void free_location_change   (NautilusWindow             *window);
+static void end_location_change    (NautilusWindow             *window);
 static void cancel_location_change (NautilusWindow             *window);
 
 static void
@@ -449,11 +450,11 @@ viewed_file_changed_callback (NautilusFile *file,
 
 	/* Close window if the file it's viewing has been deleted. */
 	if (nautilus_file_is_gone (file)) {
-                /* detecting a file is gone may happen in the middle
+                /* Detecting a file is gone may happen in the middle
                  * of a pending location change, we need to cancel it
                  * before closing the window or things break.
                  */
-                cancel_location_change (window);
+                end_location_change (window);
 
                 /* FIXME bugzilla.eazel.com 5038: Is closing the window really the right thing to do
                  * for all cases?
@@ -1021,10 +1022,15 @@ static void
 cancel_location_change (NautilusWindow *window)
 {
         NautilusViewFrame *skip_view;
+
         if (window->details->pending_location != NULL
-            && window->details->location != NULL) {
-                
-                /* Tell previously-notified views to go back to the old page */
+            && window->details->location != NULL
+            && window->content_view != NULL
+            && nautilus_view_frame_get_is_view_loaded (window->content_view)) {
+
+                /* No need to talk to the content view unless it was
+                 * being reused for the new location.
+                 */
                 if (window->new_content_view == NULL
                     || window->new_content_view != window->content_view) {
                         skip_view = window->content_view;
@@ -1032,6 +1038,7 @@ cancel_location_change (NautilusWindow *window)
                         skip_view = NULL;
                 }
 
+                /* Tell previously-notified views to go back to the old page */
                 load_new_location_in_all_views (window,
                                                 window->details->location,
                                                 window->details->selection,
@@ -1040,7 +1047,7 @@ cancel_location_change (NautilusWindow *window)
 
         end_location_change (window);
 }
-        
+
 static void
 position_and_show_window_callback (NautilusFile *file,
                        		   gpointer callback_data)
@@ -1306,7 +1313,7 @@ begin_location_change (NautilusWindow *window,
                   || type == NAUTILUS_LOCATION_CHANGE_FORWARD
                   || distance == 0);
 
-        cancel_location_change (window);
+        end_location_change (window);
         
         nautilus_window_allow_stop (window, TRUE);
 
@@ -1730,7 +1737,7 @@ report_location_change_callback (NautilusViewFrame *view,
                 return;
         }
 
-        cancel_location_change (window);
+        end_location_change (window);
 
         load_new_location_in_all_views (window,
                                         location,
