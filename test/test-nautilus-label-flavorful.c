@@ -84,7 +84,7 @@ increasing_label_window_new (void)
 		gtk_box_pack_start (GTK_BOX (vbox), label, TRUE, TRUE, 0);
 
 		if (i > 0) {
-			nautilus_gtk_label_make_larger (GTK_LABEL (label), i);
+			nautilus_label_make_larger (NAUTILUS_LABEL (label), i);
 		}
 		
 		gtk_widget_show (label);
@@ -133,7 +133,7 @@ decreasing_label_window_new (void)
 		gtk_box_pack_start (GTK_BOX (vbox), label, TRUE, TRUE, 0);
 		
 		if (i > 0) {
-			nautilus_gtk_label_make_smaller (GTK_LABEL (label), i);
+			nautilus_label_make_smaller (NAUTILUS_LABEL (label), i);
 		}
 		
 		gtk_widget_show (label);
