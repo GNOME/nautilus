@@ -639,7 +639,7 @@ help_menu_nautilus_manual_callback (BonoboUIComponent *component,
 	gnome_help_display_desktop (NULL,
 				    "user-guide",
 				    "wgosnautilus.xml",
-				    "gosnautilus-1", &error);
+				    "gosnautilus-21", &error);
 	if (error) {
 		dialog = gtk_message_dialog_new (NULL,
 						 GTK_DIALOG_MODAL,
