@@ -1,3 +1,25 @@
+2001-02-23  Robey Pointer  <robey@eazel.com>
+
+        reviewed by: Mathieu Lacage <mathieu@gnome.org>
+
+	* components/rpmview/nautilus-rpm-view-private.h:
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_initialize), (file_activation_callback),
+	(fill_filename_tree_int), (fill_filename_tree):
+
+	Use NautilusCTree instead of GtkCTree.  Get rid of the "go to"
+	button and just make a double-click do that.  Get rid of the
+	leading / in directory names because it looked ugly, and add a top
+	"/" to match the tree view.
+	
+	* libnautilus-extensions/nautilus-ctree.c:
+	(nautilus_ctree_class_init), (nautilus_ctree_button_press),
+	(row_delete), (real_tree_activate_row):
+	* libnautilus-extensions/nautilus-ctree.h:
+
+	Add a signal to be thrown when an item is "activated" (gets a
+	double-click).
+
 2001-02-23  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Gene Z. Ragan <gzr@eazel.com>

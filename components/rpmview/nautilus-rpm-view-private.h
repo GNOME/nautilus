@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 8; tab-width: 8 -*- */
 /* 
  * Copyright (C) 2000 Eazel, Inc
  *
@@ -28,6 +28,7 @@
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
+#include <libnautilus-extensions/nautilus-ctree.h>
 
 #ifdef EAZEL_SERVICES
 #include "libeazelinstall.h"
@@ -63,11 +64,10 @@ struct NautilusRPMViewDetails {
 	GtkWidget *verify_window;
 	
 	GtkVBox   *package_container;
-	GtkWidget *go_to_button;
 	
 	GtkWidget *package_file_tree;
 	GNode *filename_tree;
-	GtkCTreeNode *selected_file;
+	NautilusCTreeNode *selected_file;
 	gboolean  package_installed;
 	
 	int background_connection;

@@ -140,6 +140,9 @@ struct _NautilusCTreeClass
 			     NautilusCTreeNode *new_sibling);
   void (*change_focus_row_expansion) (NautilusCTree *ctree,
 				      NautilusCTreeExpansionType action);
+  void (*tree_activate_row) (NautilusCTree     *ctree,
+			     NautilusCTreeNode *row,
+			     gint		column);
 };
 
 struct _NautilusCTreeRow

@@ -242,6 +242,9 @@ static void real_tree_move              (NautilusCTree      *ctree,
 static void real_row_move               (GtkCList      *clist,
 					 gint           source_row,
 					 gint           dest_row);
+static void real_tree_activate_row	(NautilusCTree	    *ctree,
+					 NautilusCTreeNode  *node,
+					 gint		     column);
 static void nautilus_ctree_link              (NautilusCTree      *ctree,
 					 NautilusCTreeNode  *node,
 					 NautilusCTreeNode  *parent,
@@ -321,6 +324,7 @@ enum
 	TREE_COLLAPSE,
 	TREE_MOVE,
 	CHANGE_FOCUS_ROW_EXPANSION,
+	TREE_ACTIVATE_ROW,
 	LAST_SIGNAL
 };
 
@@ -437,6 +441,14 @@ nautilus_ctree_class_init (NautilusCTreeClass *klass)
 				       change_focus_row_expansion),
 		    gtk_marshal_NONE__ENUM,
 		    GTK_TYPE_NONE, 1, GTK_TYPE_CTREE_EXPANSION_TYPE);
+  ctree_signals[TREE_ACTIVATE_ROW] =
+    gtk_signal_new ("tree_activate_row",
+		    GTK_RUN_FIRST,
+		    object_class->type,
+		    GTK_SIGNAL_OFFSET (NautilusCTreeClass, tree_activate_row),
+		    gtk_marshal_NONE__POINTER_INT,
+		    GTK_TYPE_NONE, 2, GTK_TYPE_CTREE_NODE, GTK_TYPE_INT);
+
   gtk_object_class_add_signals (object_class, ctree_signals, LAST_SIGNAL);
 
   widget_class->realize = nautilus_ctree_realize;
@@ -472,6 +484,7 @@ nautilus_ctree_class_init (NautilusCTreeClass *klass)
   klass->tree_collapse = real_tree_collapse;
   klass->tree_move = real_tree_move;
   klass->change_focus_row_expansion = change_focus_row_expansion;
+  klass->tree_activate_row = real_tree_activate_row;
 
   binding_set = gtk_binding_set_by_class (klass);
   gtk_binding_entry_add_signal (binding_set,
@@ -872,10 +885,9 @@ nautilus_ctree_button_press (GtkWidget *widget, GdkEventButton *event)
 
       		work = NAUTILUS_CTREE_NODE (g_list_nth (clist->row_list, row));
 	  
-      		if (button_actions & GTK_BUTTON_EXPANDS && 
-      		    (!NAUTILUS_CTREE_ROW (work)->is_leaf  &&
-		     (event->type == GDK_2BUTTON_PRESS ||
-		      ctree_is_hot_spot (ctree, work, row, x, y))))
+		if (button_actions & GTK_BUTTON_EXPANDS && 
+		    (!NAUTILUS_CTREE_ROW (work)->is_leaf  &&
+		     ctree_is_hot_spot (ctree, work, row, x, y)))
 		{
 	  		if (NAUTILUS_CTREE_ROW (work)->expanded) {
 	    			nautilus_ctree_collapse (ctree, work);
@@ -883,6 +895,10 @@ nautilus_ctree_button_press (GtkWidget *widget, GdkEventButton *event)
 	    			nautilus_ctree_expand (ctree, work);
 	    		}
 	  		return FALSE;
+		} else if (event->type == GDK_2BUTTON_PRESS) {
+			/* double-click on a row = "activate" */
+			gtk_signal_emit (GTK_OBJECT (ctree), ctree_signals[TREE_ACTIVATE_ROW],
+					 work, column);
 		}
     	}
     	
@@ -3402,6 +3418,17 @@ row_delete (NautilusCTree    *ctree,
 
   g_mem_chunk_free (clist->cell_mem_chunk, ctree_row->row.cell);
   g_mem_chunk_free (clist->row_mem_chunk, ctree_row);
+}
+
+static void
+real_tree_activate_row (NautilusCTree *ctree,
+			NautilusCTreeNode *node,
+			gint column)
+{
+	g_return_if_fail (ctree != NULL);
+	g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
+
+	/* don't care */
 }
 
 static void
