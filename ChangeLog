@@ -1,5 +1,13 @@
 2003-01-12  Dave Camp  <dave@ximian.com>
 
+	* src/file-manager/fm-list-view.c (button_press_callback): In
+	single click mode, don't activate if shift or control is held
+	down.  This matches the icon view behavior.
+
+	Fixes #81896.
+
+2003-01-12  Dave Camp  <dave@ximian.com>
+
 	* src/file-manager/fm-list-view.c: (button_press_callback): Handle
 	activation and the popup menu from here.
 	(create_and_set_up_tree_view): Don't connect to
@@ -14,7 +22,7 @@
 
 	* libnautilus-private/nautilus-icon-container.c:
 	Remove unneccessary include of libnautilus/nautilus-clipboard.h
-
+	
 	* src/file-manager/fm-directory-view.c:
 	Remove unnecessary include of fm-desktop-icon-view.h
 	Patch from David Bordoley <bordoley@msu.edu>

@@ -153,13 +153,14 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 	call_parent = TRUE;
 	if (gtk_tree_view_get_path_at_pos (tree_view, event->x, event->y,
 					   &path, NULL, NULL, NULL)) {
-		if (event->button == 3 
+		if ((event->button == 3 || 
+		     (event->button == 1 && click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE))
 		    && gtk_tree_selection_path_is_selected (gtk_tree_view_get_selection (tree_view), path)) {
                        /* Don't let the default code run because if
                           multiple rows are selected it will unselect
                           all but one row; but we- want the right
-                          click menu to apply to everything that's
-                          currently selected. */
+                          click menu or single click to apply to
+                          everything that's currently selected. */
 			call_parent = FALSE;
 		}
 		    
@@ -186,15 +187,17 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 		} else {
 			fm_directory_view_pop_up_background_context_menu (FM_DIRECTORY_VIEW (view), (GdkEventButton *) event);
 		}
-	} else if (event->button == 1
-		   && ((event->type == GDK_BUTTON_PRESS 
-			&& click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE)
-		       || (event->type == GDK_2BUTTON_PRESS 
-			   && click_policy_auto_value == NAUTILUS_CLICK_POLICY_DOUBLE))) {   
-		file_list = fm_list_view_get_selection (FM_DIRECTORY_VIEW (view));
-		fm_directory_view_activate_files (FM_DIRECTORY_VIEW (view),
-						  file_list);
-		nautilus_file_list_free (file_list);
+	} else if (event->button == 1) {
+		if ((event->type == GDK_BUTTON_PRESS 
+		     && click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE
+		     && !(event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)))
+		    || (event->type == GDK_2BUTTON_PRESS 
+			&& click_policy_auto_value == NAUTILUS_CLICK_POLICY_DOUBLE)) {
+			file_list = fm_list_view_get_selection (FM_DIRECTORY_VIEW (view));
+			fm_directory_view_activate_files (FM_DIRECTORY_VIEW (view),
+							  file_list);
+			nautilus_file_list_free (file_list);
+		}
 	}
 	
 	/* We chained to the default handler in this method, so never
