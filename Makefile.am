@@ -1,6 +1,7 @@
 NULL=
 
 SUBDIRS =\
+	librsvg \
 	libnautilus \
 	nautilus-widgets \
 	src \

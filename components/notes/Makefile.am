@@ -5,6 +5,7 @@ INCLUDES=-I$(top_srcdir) -I$(top_builddir) $(GNOMEUI_CFLAGS) $(BONOBO_CFLAGS) $(
 LDADD=\
 	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la \
 	$(top_builddir)/libnautilus/libnautilus.la \
+	$(top_builddir)/librsvg/librsvg.la		\
 	$(BONOBO_LIBS) \
 	$(GNOMEUI_LIBS)
 

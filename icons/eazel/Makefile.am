@@ -9,6 +9,7 @@ eazel_DATA =					\
 	i-directory-accept.png			\
 	i-directory-accept-36.png		\
 	i-directory-accept-72.png		\
+	i-directory-accept.svg			\
 	i-regular.png				\
 	i-regular.xml				\
 	i-regular-36.png			\

@@ -1,3 +1,21 @@
+2000-04-13  Andy Hertzfeld <andy@eazel.com>
+
+	added Raph's scalable icon machinery. Right now the only way to see it
+	is to use the eazel theme and drag a file over a folder; the open folder
+	is a vector icon.  Soon we'll add lots more.
+	
+	* librsvg/*
+	Raph's new library
+	* libnautilus/nautilus-icon-factory.c:
+	integrate vector icons with the icon factory.  Right now, it prefers
+	them to bitmapped ones, which is probably wrong.
+	* Makefile.am: added librsvg
+	* configure.in: added librsvg
+	* src/Makefile.am: link with librsvg
+	* components/*/Makefile.am: link with librsvg
+	* icons/eazel/Makefile.am: added i-directory-accept.svg
+	* icons/eazel/i-directory-accept.svg: our sole vector icon
+	
 2000-04-13  Darin Adler  <darin@eazel.com>
 	
 	* components/html/ntl-web-browser.c: (browser_vfs_read_callback):

@@ -12,6 +12,7 @@ INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 LDADD =\
 	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la \
 	$(top_builddir)/libnautilus/libnautilus.la \
+	$(top_builddir)/librsvg/librsvg.la \
 	$(BONOBO_LIBS) \
 	$(GNOMEUI_LIBS) \
 	$(XML_LIBS)

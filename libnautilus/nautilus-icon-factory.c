@@ -41,6 +41,8 @@
 #include <parser.h>
 #include <xmlmemory.h>
 
+#include "librsvg/rsvg.h"
+
 #include "nautilus-string.h"
 #include "nautilus-default-file-icon.h"
 #include "nautilus-metadata.h"
@@ -54,6 +56,8 @@
 static const char *icon_file_name_suffixes[] =
 {
 	"",
+	".svg",
+	".SVG",
 	".png",
 	".PNG",
 	".gif",
@@ -507,6 +511,18 @@ make_full_icon_path (const char *path, const char *suffix)
 	return full_path;
 }
 
+/* Return true if the given suffix is a scalable image. */
+static gboolean
+suffix_is_scalable (const char *path)
+{
+	const char *suffix;
+
+	suffix = (const char *)strrchr (path, '.');
+	if (suffix == NULL)
+		return FALSE;
+	return (!strcmp (suffix, ".svg") || !strcmp (suffix, ".SVG"));
+}
+
 /* Pick a particular icon to use, trying all the various suffixes.
  * Return the path of the icon or NULL if no icon is found.
  */
@@ -535,11 +551,15 @@ get_themed_icon_file_path (const char *theme_name,
 	/* Try each suffix. */
 	for (i = 0; i < NAUTILUS_N_ELEMENTS (icon_file_name_suffixes); i++) {
 
-		/* Build a path for this icon. */
-		partial_path = g_strdup_printf ("%s%s%.0u",
-						themed_icon_name,
-						include_size ? "-" : "",
-						include_size ? icon_size : 0);
+		if (include_size &&
+		    !suffix_is_scalable (icon_file_name_suffixes[i])) {
+			/* Build a path for this icon. */
+			partial_path = g_strdup_printf ("%s-%u",
+							themed_icon_name,
+							icon_size);
+		} else {
+			partial_path = g_strdup (themed_icon_name);
+		}
 						
 		path = make_full_icon_path (partial_path,
 					    icon_file_name_suffixes[i]);
@@ -1011,6 +1031,24 @@ get_next_icon_size_to_try (guint target_size, guint *current_size)
 	return FALSE;
 }
 
+/* This loads an SVG image, scaling it to the appropriate size. */
+static GdkPixbuf *
+load_specific_image_svg (const char *path, guint size_in_pixels)
+{
+	FILE *f;
+	GdkPixbuf *result;
+
+	f = fopen (path, "r");
+	if (f == NULL) {
+		return NULL;
+	}
+	result = rsvg_render_file (f, size_in_pixels *
+				   (1.0 / NAUTILUS_ICON_SIZE_STANDARD));
+	fclose (f);
+
+	return result;
+}
+
 /* This load function returns NULL if the icon is not available at this size. */
 static GdkPixbuf *
 load_specific_image (NautilusScalableIcon *scalable_icon,
@@ -1046,7 +1084,10 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 		if (path == NULL) {
 			return NULL;
 		}
-		image = gdk_pixbuf_new_from_file (path);
+		if (suffix_is_scalable (path))
+			image = load_specific_image_svg (path, size_in_pixels);
+		else
+			image = gdk_pixbuf_new_from_file (path);
 		g_free (path);
 		return image;
 	}

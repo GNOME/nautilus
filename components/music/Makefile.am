@@ -25,6 +25,7 @@ nautilus_music_view_SOURCES =		        \
 nautilus_music_view_LDFLAGS =			\
 	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la \
 	$(top_builddir)/libnautilus/libnautilus.la	\
+	$(top_builddir)/librsvg/librsvg.la		\
 	$(BONOBO_LIBS)					\
 	$(GNOMEUI_LIBS)					\
 	$(VFS_LIBS)					\

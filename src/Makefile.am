@@ -18,6 +18,7 @@ LDADD =\
 	file-manager/libntl-file-manager.la \
 	../nautilus-widgets/libnautilus-widgets.la \
 	../libnautilus/libnautilus.la \
+	../librsvg/librsvg.la \
 	$(BONOBO_LIBS) \
 	$(GNORBA_LIBS) \
 	$(GNOMEUI_LIBS) \
