@@ -694,6 +694,10 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 {
 	gtk_scrolled_window_set_hadjustment (GTK_SCROLLED_WINDOW (view), NULL);
 	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (view), NULL);
+
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view), 
+					GTK_POLICY_AUTOMATIC,
+					GTK_POLICY_AUTOMATIC);
 						
 	view->details = g_new0 (NautilusTreeViewDetails, 1);
 
