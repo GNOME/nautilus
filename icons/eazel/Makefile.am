@@ -15,7 +15,7 @@ eazel_DATA =					\
 	Stop.png				\
 	Up.png					\
 	eazel.xml				\
-	fossil.png				\
+	side_bar_image.png				\
 	i-directory-12.png			\
 	i-directory-12-aa.png			\
 	i-directory-24.png			\
