@@ -1,3 +1,30 @@
+2001-02-01  Rebecca Schulman  <rebecka@eazel.com>
+	Fixed bug 5648, bad ui in the indexing info
+	dialog.
+
+	reviewed by: <delete if not using a buddy>
+
+	* src/file-manager/nautilus-indexing-info.c:
+	(get_index_percentage_complete), (initialize_dialog),
+	(get_text_for_progress_label), (update_progress_display),
+	(show_index_progress_dialog), (show_reindex_request_dialog),
+	(recreate_and_show_reindex_request_dialog),
+	(update_file_index_callback),
+	(last_index_time_and_reindex_button_dialog_new),
+	(index_progress_dialog_new),
+	(destroy_indexing_info_dialogs_on_exit),
+	(show_indexing_info_dialog): Rework this file.  Use two separate
+	index dialogs for the case where the index is going, and not
+	going.  When "update now" is pressed, switch to the index progress
+	dialog.  Report errors reported by and unavailibility of the
+	indexing service.
+
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	(nautilus_create_info_dialog):
+	* libnautilus-extensions/nautilus-stock-dialogs.h:
+	Add this for use in creating the indexing info dialog.
+	
+
 2001-02-01  Michael K. Fleming  <mfleming@eazel.com>
 
 	reviewed by: <robey@eazel.com>

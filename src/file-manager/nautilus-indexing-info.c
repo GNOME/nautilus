@@ -20,6 +20,7 @@
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *  Authors: George Lebl <jirka@5z.com>
+ *           Rebecca Schulman <rebecka@eazel.com>
  */
 
 #include <config.h>
@@ -31,7 +32,6 @@
 #include <gtk/gtkvbox.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -52,14 +52,37 @@ typedef struct {
         GtkProgress *progress_bar;
 } ProgressChangeData;
 
-static GtkWidget *indexing_info_dialog = NULL;
+typedef struct {
+        GnomeDialog *last_index_time_dialog;
+        MedusaIndexingStatus indexing_service_status;
+        GnomeDialog *index_in_progress_dialog;
+        gboolean show_last_index_time;
+} IndexingInfoDialogs;
+
+static IndexingInfoDialogs *dialogs = NULL;
+
+static GnomeDialog *   last_index_time_and_reindex_button_dialog_new      (void);
+
+static int
+get_index_percentage_complete (void)
+{
+        return medusa_index_progress_get_percentage_complete ();
+}
+
+static void
+initialize_dialog (GnomeDialog *dialog)
+{
+        gnome_dialog_set_close (dialog, TRUE /*click_closes*/);
+        gnome_dialog_close_hides (dialog, TRUE /*just_hide*/);
+
+}
 
 static char *
 get_text_for_progress_label (void)
 {
-        return g_strdup_printf (_("Indexing is %d%% complete."),
-                                medusa_index_progress_get_percentage_complete ());
+        return g_strdup_printf (_("Indexing is %d%% complete."), get_index_percentage_complete ());
 }
+
 
 static gboolean
 update_progress_display (gpointer callback_data)
@@ -74,12 +97,37 @@ update_progress_display (gpointer callback_data)
         progress_string = get_text_for_progress_label ();
         nautilus_label_set_text (progress_label, progress_string);
         g_free (progress_string);
-        gtk_progress_set_value (progress_change_data->progress_bar,
-                                medusa_index_progress_get_percentage_complete ());
+        gtk_progress_set_value (progress_change_data->progress_bar, get_index_percentage_complete ());
+
 
         return TRUE;
 }
 
+static void
+show_index_progress_dialog (void)
+{
+        gnome_dialog_close (dialogs->last_index_time_dialog);
+        gtk_widget_show_all (GTK_WIDGET (dialogs->index_in_progress_dialog));
+}
+
+
+
+static void
+show_reindex_request_dialog (void)
+{
+        gnome_dialog_close (dialogs->index_in_progress_dialog);
+        gtk_widget_show_all (GTK_WIDGET (dialogs->last_index_time_dialog));
+}
+
+static void
+recreate_and_show_reindex_request_dialog (void)
+{
+        gnome_dialog_close (dialogs->last_index_time_dialog);
+        gtk_widget_destroy (GTK_WIDGET (dialogs->last_index_time_dialog));
+        dialogs->last_index_time_dialog = last_index_time_and_reindex_button_dialog_new ();
+        gtk_widget_show_all (GTK_WIDGET (dialogs->last_index_time_dialog));
+}
+        
 static void
 update_file_index_callback (GtkWidget *widget, gpointer data)
 {
@@ -89,35 +137,72 @@ update_file_index_callback (GtkWidget *widget, gpointer data)
 	result = medusa_index_service_request_reindex ();
         
 	switch (result) {
-	default:
 	case MEDUSA_INDEXER_REQUEST_OK:
 		error = NULL;
+                dialogs->show_last_index_time = FALSE;
+                show_index_progress_dialog ();
 		break;
 	case MEDUSA_INDEXER_ERROR_BUSY:
-		error = _("Error while trying to reindex: Busy");
+		error = _("The indexer is currently busy.");
 		break;
 	case MEDUSA_INDEXER_ERROR_NO_RESPONSE:
-		error = _("Error while trying to reindex: No response");
+                dialogs->indexing_service_status = MEDUSA_INDEXER_NOT_AVAILABLE;
+                recreate_and_show_reindex_request_dialog ();
+		error = _("An indexer is not running, or is not responding to requests to reindex your computer.");
 		break;
 	case MEDUSA_INDEXER_ERROR_INVALID_RESPONSE:
-                error = _("Error while trying to reindex: Internal Indexer Error.  Tell rebecka@eazel.com");
+                dialogs->indexing_service_status = MEDUSA_INDEXER_NOT_AVAILABLE;
+                recreate_and_show_reindex_request_dialog ();
+                error = _("An attempt to reindex, caused an Internal Indexer Error.  Tell rebecka@eazel.com");
                 break;
+        default:
+                g_assert_not_reached ();
+                error = NULL;
 	}
-
-	if (error != NULL) {
-		nautilus_show_error_dialog (error, _("Error While Reindexing"), NULL);
-	}
+        if (error) {
+                /* FIXME: Maybe we should include details here? */
+                nautilus_show_error_dialog (error,
+                                            _("Reindexing Failed"),
+                                            NULL);
+        }
+        
 }
 
-static void 
-show_reindex_request_information (GnomeDialog *gnome_dialog)
+static GnomeDialog *
+last_index_time_and_reindex_button_dialog_new (void)
 {
 	char *time_str;
 	char *label_str;
         GtkWidget *label;
         GtkWidget *button;
         GtkWidget *hbox;
+        GnomeDialog *dialog;
+
+        dialogs->indexing_service_status = medusa_index_service_is_available ();
+        switch (dialogs->indexing_service_status) {
+        case MEDUSA_INDEXER_ALREADY_INDEXING:
+                /* Fall through, we won't be showing this in the above case, anyways. */
+        case MEDUSA_INDEXER_READY_TO_INDEX:
+                
+                dialog = nautilus_create_info_dialog (_("Once a day your files and text content are indexed so "
+                                                        "your searches are fast. If you need to update your index "
+                                                        "now, click on the \"Update Now\" button."),
+                                                      _("Indexing Status"),
+                                                      NULL);
+                break;
+        case MEDUSA_INDEXER_NOT_AVAILABLE:
+                /* FIXME: Do we want to talk about the index not being available? */
+                dialog = nautilus_create_info_dialog (_("Once a day your files and text content are indexed so "
+                                                        "your searches are fast. "),
+                                                      _("Indexing Status"),
+                                                      NULL);
+                break;
+        default:
+                g_assert_not_reached ();
+                dialog = NULL;
+        }
         
+        initialize_dialog (dialog);
         time_str = nautilus_indexing_info_get_last_index_time ();
         label_str = g_strdup_printf (_("Your files were last indexed at %s"),
                                      time_str);
@@ -126,17 +211,21 @@ show_reindex_request_information (GnomeDialog *gnome_dialog)
         label = nautilus_label_new (label_str);
         nautilus_label_set_justify (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
         nautilus_label_make_bold (NAUTILUS_LABEL (label));
-        gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), label,
+        gtk_box_pack_start (GTK_BOX (dialog->vbox), label,
                             FALSE, FALSE, 0);
-        
-        hbox = gtk_hbox_new (FALSE, 0);
-        button = gtk_button_new_with_label (_("Update Now"));
-        gtk_signal_connect (GTK_OBJECT (button), "clicked",
-                            update_file_index_callback, NULL);
 
-        gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
-        gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), hbox,
+        if (dialogs->indexing_service_status == MEDUSA_INDEXER_READY_TO_INDEX) {
+                hbox = gtk_hbox_new (FALSE, 0);
+                button = gtk_button_new_with_label (_("Update Now"));
+                gtk_signal_connect (GTK_OBJECT (button), "clicked",
+                                    update_file_index_callback, NULL);
+                
+                gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+                gtk_box_pack_start (GTK_BOX (dialog->vbox), hbox,
                             FALSE, FALSE, 0);
+        }
+
+        return dialog;
 }
 
 static void
@@ -145,24 +234,23 @@ timeout_remove_callback (gpointer callback_data)
         gtk_timeout_remove (GPOINTER_TO_UINT (callback_data));
 }
 
-static void
-show_index_progress_bar (GnomeDialog *gnome_dialog)
+static GnomeDialog *
+index_progress_dialog_new (void)
 {
-        GtkWidget *indexing_notification_label, *progress_label;
+        GtkWidget *progress_label;
         GtkWidget *indexing_progress_bar;
         GtkWidget *progress_bar_hbox, *embedded_vbox;
+        GnomeDialog *dialog;
         char *progress_string;
         int percentage_complete;
         ProgressChangeData *progress_data;
         guint timeout_id;
                 
-        indexing_notification_label = nautilus_label_new (_("Your files are currently being indexed:"));
-        nautilus_label_make_bold (NAUTILUS_LABEL (indexing_notification_label));
-        nautilus_label_set_justify (NAUTILUS_LABEL (indexing_notification_label), GTK_JUSTIFY_LEFT);
-        gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), indexing_notification_label,
-                            FALSE, FALSE, 0);
-        
-        percentage_complete = medusa_index_progress_get_percentage_complete ();
+        dialog = nautilus_create_info_dialog (_("Once a day your files and text content are indexed so "
+                                                "your searches are fast.  Your files are currently being indexed."),
+                                              _("Indexing Status"), NULL);
+        initialize_dialog (dialog);        
+        percentage_complete = get_index_percentage_complete ();
         indexing_progress_bar = gtk_progress_bar_new ();
 
         embedded_vbox = gtk_vbox_new (FALSE, GNOME_PAD_SMALL);
@@ -182,7 +270,7 @@ show_index_progress_bar (GnomeDialog *gnome_dialog)
         gtk_box_pack_start (GTK_BOX (progress_bar_hbox), embedded_vbox,
                             FALSE, FALSE, GNOME_PAD_SMALL);
 
-        gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), progress_bar_hbox,
+        gtk_box_pack_start (GTK_BOX (dialog->vbox), progress_bar_hbox,
                             FALSE, FALSE, 0);
 
         /* Keep the dialog current with actual indexing progress */
@@ -198,52 +286,41 @@ show_index_progress_bar (GnomeDialog *gnome_dialog)
                             "destroy",
                             timeout_remove_callback,
                             GUINT_TO_POINTER (timeout_id));
+        
+        return dialog;
+}
+
+
+
+static void
+destroy_indexing_info_dialogs_on_exit (void)
+{
+        gtk_widget_destroy (GTK_WIDGET (dialogs->index_in_progress_dialog));
+        gtk_widget_destroy (GTK_WIDGET (dialogs->last_index_time_dialog));
+        g_free (dialogs);
 }
 
 static void
 show_indexing_info_dialog (void)
 {
-	GnomeDialog *gnome_dialog;
-        GtkWidget *label;
-
-	/* A dialog is up already */
-	if (indexing_info_dialog != NULL) {
-		nautilus_gtk_window_present (GTK_WINDOW (indexing_info_dialog));
-		return;
-	}
-
-        /* FIXME: Should set title, maybe use nautilus stock dialogs. */
-	indexing_info_dialog = gnome_dialog_new (_("Indexing Info"),
-                                                 GNOME_STOCK_BUTTON_OK,
-                                                 NULL);
-
-	gnome_dialog = GNOME_DIALOG (indexing_info_dialog);
-
-	gnome_dialog_set_close (gnome_dialog, TRUE /*click_closes*/);
-        /* FIXME: The dialog should be freed at exit */
-	gnome_dialog_close_hides (gnome_dialog, TRUE /*just_hide*/);
-
-	gtk_signal_connect (GTK_OBJECT (gnome_dialog), "destroy",
-			    GTK_SIGNAL_FUNC (gtk_widget_destroyed),
-			    &gnome_dialog);
-
-	label = nautilus_label_new (_("Once a day your files and text content are indexed so "
-                                      "your searches are fast. If you need to update your index "
-                                      "now, click on the \"Update Now\" button for the "
-                                      "appropriate index."));
-
-        nautilus_label_set_wrap (NAUTILUS_LABEL (label), TRUE);
-	nautilus_label_set_justify (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
-
-	gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), label, TRUE, TRUE, 0);
-
-        if (medusa_index_is_currently_running ()) { 
-                show_index_progress_bar (gnome_dialog);
-        } else {
-                show_reindex_request_information (gnome_dialog);
+        
+	if (dialogs == NULL) {
+                
+                dialogs = g_new0 (IndexingInfoDialogs, 1);
+                g_atexit (destroy_indexing_info_dialogs_on_exit);
+                
+                dialogs->last_index_time_dialog = last_index_time_and_reindex_button_dialog_new ();
+                dialogs->index_in_progress_dialog = index_progress_dialog_new ();
         }
-
-	gtk_widget_show_all (indexing_info_dialog);
+ 
+       dialogs->show_last_index_time = !medusa_index_is_currently_running ();
+       
+       if (dialogs->show_last_index_time) {
+               show_reindex_request_dialog ();
+       } else {
+               show_index_progress_dialog ();
+       }
+        
 }
 
 #endif /* HAVE_MEDUSA */

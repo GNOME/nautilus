@@ -56,6 +56,7 @@ int          nautilus_run_simple_dialog         (GtkWidget              *parent,
  * bother with non-parented versions, we allow setting the title,
  * and we return GnomeDialog pointers instead of GtkWidget pointers.
  */
+
 GnomeDialog *nautilus_show_info_dialog               (const char             *informative_message,
 						      const char	     *dialog_title,
 						      GtkWindow              *parent);
@@ -79,6 +80,9 @@ GnomeDialog *nautilus_create_question_dialog         (const char             *qu
 						      const char	     *dialog_title,
 						      const char             *answer_zero,
 						      const char             *answer_one,
+						      GtkWindow              *parent);
+GnomeDialog *nautilus_create_info_dialog             (const char             *informative_message,
+						      const char             *dialog_title,
 						      GtkWindow              *parent);
 
 #endif /* NAUTILUS_STOCK_DIALOGS_H */

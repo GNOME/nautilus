@@ -454,6 +454,17 @@ show_ok_box (const char *message,
 }
 
 GnomeDialog *
+nautilus_create_info_dialog (const char *info,
+			     const char *dialog_title,
+			     GtkWindow *parent)
+{
+	return create_message_box (info, dialog_title, 
+				   GNOME_MESSAGE_BOX_INFO,
+				   GNOME_STOCK_BUTTON_OK, NULL, parent);
+				     
+}
+
+GnomeDialog *
 nautilus_show_info_dialog (const char *info,
 	 	      	   const char *dialog_title,
 		      	   GtkWindow *parent)
@@ -472,6 +483,7 @@ nautilus_show_warning_dialog (const char *warning,
 			    dialog_title == NULL ? _("Warning") : dialog_title, 
 			    GNOME_MESSAGE_BOX_WARNING, parent);
 }
+
 
 GnomeDialog *
 nautilus_show_error_dialog (const char *error,
