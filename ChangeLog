@@ -1,3 +1,23 @@
+2001-03-30  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-enumeration.h:
+	* libnautilus-extensions/nautilus-enumeration.c:
+	(nautilus_enumeration_new_from_tokens),
+	(nautilus_enumeration_get_entry_position),
+	(nautilus_enumeration_get_value_position),
+	(nautilus_enumeration_get_entries),
+	(nautilus_self_check_enumeration):
+	New functions to make this data structure more useful and easier
+	to use.  Also added self checks.
+	
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(preferences_item_destroy),
+	(preferences_item_update_constrained_integer),
+	(constrained_integer_changed_callback),
+	(nautilus_preferences_item_set_constrained_integer_values):
+	Use a NautilusEnumeration instead of maintaing 2 lists of entries
+	and values ourselves.  Makes this code a little bit simpler.
+	
 2001-03-30  Michael Engber  <engber@eazel.com>
 
 	* components/notes/nautilus-notes.c: (notes_save_metainfo):

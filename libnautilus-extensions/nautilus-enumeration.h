@@ -43,6 +43,15 @@ char *               nautilus_enumeration_get_nth_description (const NautilusEnu
 int                  nautilus_enumeration_get_nth_value       (const NautilusEnumeration *enumeration,
 							       guint                      n);
 guint                nautilus_enumeration_get_num_entries     (const NautilusEnumeration *enumeration);
+NautilusEnumeration *nautilus_enumeration_new_from_tokens     (const char                *entries,
+							       const char                *descriptions,
+							       const char                *values,
+							       const char                *delimiter);
+int                  nautilus_enumeration_get_entry_position  (const NautilusEnumeration *enumeration,
+							       const char                *entry);
+int                  nautilus_enumeration_get_value_position  (const NautilusEnumeration *enumeration,
+							       int                        value);
+NautilusStringList * nautilus_enumeration_get_entries         (const NautilusEnumeration *enumeration);
 
 #endif /* NAUTILUS_ENUMERATION_H */
 
