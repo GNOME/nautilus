@@ -1223,11 +1223,10 @@ nautilus_window_zoom_level_changed_callback (NautilusViewFrame *view,
 	}
 }
 
-static Nautilus_History *
+static Nautilus_HistoryList *
 nautilus_window_get_history_list_callback (NautilusViewFrame *view,
 					   NautilusWindow *window)
 {
-	Nautilus_History *history;
 	Nautilus_HistoryList *list;
 	NautilusBookmark *bookmark;
 	int length, i;
@@ -1237,11 +1236,7 @@ nautilus_window_get_history_list_callback (NautilusViewFrame *view,
 	/* Get total number of history items */
 	length = g_list_length (history_list);
 
-	history = Nautilus_History__alloc ();
-	list = &history->list;
-
-	/* Set the the index in the list of the location of the current page */
-	history->position = nautilus_window_get_base_page_index (window); 
+	list = Nautilus_HistoryList__alloc ();
 
 	list->_length = length;
 	list->_maximum = length;
@@ -1262,7 +1257,7 @@ nautilus_window_get_history_list_callback (NautilusViewFrame *view,
 		g_free (location);
 	}
 
-	return history;
+	return list;
 }
 
 void

@@ -115,12 +115,12 @@ history_view_update_icons (GtkCList *clist)
 	}
 }
 
-static Nautilus_History *
+static Nautilus_HistoryList *
 get_history_list (HistoryView *hview)
 {
 	CORBA_Environment ev;
 	Nautilus_HistoryFrame view_frame;
-	Nautilus_History *list;
+	Nautilus_HistoryList *list;
 
 	view_frame = history_view_frame_call_begin (hview->view, &ev);
 	list = Nautilus_HistoryFrame_get_history_list (view_frame, &ev);		
@@ -131,14 +131,14 @@ get_history_list (HistoryView *hview)
 
 static void
 history_load_location (NautilusView *view,
-                                            const char *location,
-                                            HistoryView *hview)
+		       const char *location,
+		       HistoryView *hview)
 {
 	char *cols[HISTORY_VIEW_COLUMN_COUNT];
 	int new_rownum;
 	GtkCList *clist;
 	NautilusBookmark *bookmark;
-	Nautilus_History *history;
+	Nautilus_HistoryList *history_list;
 	Nautilus_HistoryItem *item;
 	int i;
 
@@ -151,10 +151,10 @@ history_load_location (NautilusView *view,
 	gtk_clist_clear (clist);
 
 	/* Populate with data from main history list */	
-	history = get_history_list (hview);
+	history_list = get_history_list (hview);
 	
-	for (i = 0; i < history->list._length; i++) {
-		item = &history->list._buffer[i];		
+	for (i = 0; i < history_list->_length; i++) {
+		item = &history_list->_buffer[i];		
 		bookmark = nautilus_bookmark_new (item->location, item->title);
 		
 		cols[HISTORY_VIEW_COLUMN_ICON] = NULL;
@@ -172,7 +172,7 @@ history_load_location (NautilusView *view,
 			gtk_clist_moveto(clist, new_rownum, -1, 0.5, 0.0);
 		}
 	}
-	CORBA_free (history);
+	CORBA_free (history_list);
 
 	gtk_clist_select_row (clist, 0, 0);
 	

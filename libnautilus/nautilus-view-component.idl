@@ -131,10 +131,6 @@ module Nautilus {
 		URI location;
 	};
 	typedef sequence<HistoryItem> HistoryList;
-	struct History {
-		HistoryList list;
-		long position; /* 0 = end of list */
-	};
 
 	/* An interface that a component can use to get at the history
 	 * list stored in Nautilus.
@@ -143,7 +139,7 @@ module Nautilus {
 		/* Called by a view component to get the Nautilus
 		 * history list.
 		 */		 
-		History get_history_list ();
+		HistoryList get_history_list ();
 	};
 
 };

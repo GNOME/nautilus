@@ -35,7 +35,7 @@ typedef struct {
 	NautilusViewFrame *view;
 } impl_POA_Nautilus_HistoryFrame;
 
-static Nautilus_History *impl_Nautilus_HistoryFrame_get_history_list (PortableServer_Servant  servant,
+static Nautilus_HistoryList *impl_Nautilus_HistoryFrame_get_history_list (PortableServer_Servant  servant,
 								      CORBA_Environment      *ev);
 
 POA_Nautilus_HistoryFrame__epv impl_Nautilus_HistoryFrame_epv =
@@ -94,10 +94,12 @@ impl_Nautilus_HistoryFrame__create (NautilusViewFrame *view,
 	return bonobo_object;
 }
 
-static Nautilus_History *
+static Nautilus_HistoryList *
 impl_Nautilus_HistoryFrame_get_history_list (PortableServer_Servant servant,
 					     CORBA_Environment *ev)
 {
 	return nautilus_view_frame_get_history_list
 		(((impl_POA_Nautilus_HistoryFrame *)servant)->view);
 }
+
+

@@ -109,7 +109,7 @@ typedef struct {
         void (* client_gone)                (NautilusViewFrame *view);
 
 	/* Get a CORBA copy of the history list */
-	Nautilus_History *
+	Nautilus_HistoryList *
              (* get_history_list)	    (NautilusViewFrame *view);
 
 } NautilusViewFrameClass;
@@ -153,6 +153,6 @@ char *             nautilus_view_frame_get_label          (NautilusViewFrame   *
 void               nautilus_view_frame_set_label          (NautilusViewFrame   *view,
                                                            const char          *label);
 void               nautilus_view_frame_activate           (NautilusViewFrame   *view);
-Nautilus_History * nautilus_view_frame_get_history_list   (NautilusViewFrame   *view);
+Nautilus_HistoryList * nautilus_view_frame_get_history_list   (NautilusViewFrame   *view);
 
 #endif /* NAUTILUS_VIEW_FRAME_H */

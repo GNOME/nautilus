@@ -836,10 +836,10 @@ nautilus_view_frame_activate (NautilusViewFrame *view)
 }
 
 
-Nautilus_History *
+Nautilus_HistoryList *
 nautilus_view_frame_get_history_list (NautilusViewFrame *view)
 {
-	Nautilus_History *history_list;
+	Nautilus_HistoryList *history_list;
 	
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), NULL);
 	

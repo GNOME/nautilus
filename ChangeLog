@@ -1,3 +1,18 @@
+2000-08-18  Mathieu Lacage  <mathieu@eazel.com>
+
+
+	Cleans up the HistoryFrame : remove the History object
+	and replaces it with HistoryList.
+	* components/history/nautilus-history-view.c: (get_history_list),
+	(history_load_location):
+	* libnautilus/nautilus-view-component.idl:
+	* src/nautilus-history-frame.c:
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_get_history_list):
+	* src/nautilus-view-frame.h:
+	* src/nautilus-window.c:
+	(nautilus_window_get_history_list_callback):
+
 2000-08-18  John Sullivan  <sullivan@eazel.com>
 
 	More menu tweaking, including switching over to use
