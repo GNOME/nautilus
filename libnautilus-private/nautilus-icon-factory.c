@@ -744,8 +744,9 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 	if (uri == NULL && nautilus_str_has_prefix (nautilus_file_get_mime_type (file), "image/")) {
 		if (nautilus_file_get_size (file) < SELF_THUMBNAIL_SIZE_THRESHOLD) {
 			uri = nautilus_file_get_uri (file);
-		} else if (strstr(file_uri, "/.thumbnails/") == NULL)
+		} else if (strstr(file_uri, "/.thumbnails/") == NULL) {
 			uri = nautilus_icon_factory_get_thumbnail_uri (file);
+		}
 	}
 	
 	/* Get the generic icon set for this file. */

@@ -1,3 +1,19 @@
+2000-04-12  Darin Adler  <darin@eazel.com>
+
+	* check-FIXME.pl: This is a new Perl script for searching for FIXME
+	in the code. It reports any FIXME that does not have a bug number
+	next to it, or any with a bug number that's not an open bug.
+	* libnautilus/nautilus-bookmark.c: Attached a bug number to a FIXME
+	for script-testing purposes.
+	* docs/architecture.txt: Removed a FIXME. So sue me!
+
+	* src/file-manager/fm-icon-text-window.c
+	(create_attributes_option_menu): Added a call to gettext since the
+	attribute_labels are now N_ strings.
+	* po/.cvsignore: Ignore the generated files.
+
+	* libnautilus/nautilus-icon-factory.c: Formatting tweak.
+
 2000-04-12  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/file-manager/fm-icon-text-window.c:

@@ -152,7 +152,7 @@ nautilus_bookmark_get_pixmap_and_mask (const NautilusBookmark *bookmark,
 
 	file = nautilus_file_get (nautilus_bookmark_get_uri (bookmark));
 
-	/* FIXME: This might be a bookmark that points to nothing, or
+	/* FIXME bug 461: This might be a bookmark that points to nothing, or
 	 * maybe its uri cannot be converted to a NautilusFile for some
 	 * other reason. It should get some sort of generic icon, but for
 	 * now it gets none.
@@ -180,7 +180,7 @@ nautilus_bookmark_get_pixbuf(const NautilusBookmark *bookmark,
 
 	file = nautilus_file_get (nautilus_bookmark_get_uri (bookmark));
 
-	/* FIXME: This might be a bookmark that points to nothing, or
+	/* FIXME bug 461: This might be a bookmark that points to nothing, or
 	 * maybe its uri cannot be converted to a NautilusFile for some
 	 * other reason. It should get some sort of generic icon, but for
 	 * now it gets none.
@@ -266,7 +266,7 @@ nautilus_bookmark_new (const char *uri)
 	
 	/* For now, the only default rule is to use the file/directory name
 	 * rather than the whole path. */
-	/* FIXME: This needs to do better (use just file names for file:// urls,
+	/* FIXME bug 1000: This needs to do better (use just file names for file:// urls,
 	 * use page names for http://, etc.)
 	 */
 
