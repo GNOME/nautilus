@@ -8,7 +8,8 @@ INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(VFS_CFLAGS) \
 	$(XML_CFLAGS) \
 	-DVERSION="\"$(VERSION)\"" \
-	$(WERROR)
+	$(WERROR)		\
+	-D_REENTRANT
 
 LDADD=	file-manager/libntl-file-manager.la \
 	../libnautilus/libnautilus.la \

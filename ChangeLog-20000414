@@ -1,4 +1,9 @@
 2000-02-07  Elliot Lee  <sopwith@redhat.com>
+	* idl/*.idl: Include the .idl files of other modules that we use.
+	* libnautilus/Makefile.am, src/Makefile.am, src/file-manager/Makefile.am:
+	Define -D_REENTRANT, just in case.
+	* src/file-manager/Makefile.am: Add cflags for .idl compilation.
+
 	* components/help/Makefile.am: Build converters. Stop installing
 	the now-unneeded .schemes file.
 

@@ -7,7 +7,8 @@ INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(GNOMECANVASPIXBUF_INCLUDEDIR) \
 	$(VFS_CFLAGS) \
 	$(XML_CFLAGS) \
-	$(WERROR)
+	$(WERROR) \
+	-D_REENTRANT
 
 libnautilus_la_LDFLAGS=\
 	$(GNOME_LIBS) \
