@@ -116,38 +116,6 @@ artheader_start_element (Context *context, const gchar *name, const xmlChar **at
 	g_print ("<HEAD>\n");
 }
 
-void
-write_characters (Context *context,
-		  const gchar *chars,
-		  int len)
-{
-	char *temp;
-	GSList *list;
-	ElementIndex index;
-
-	/* EVIL EVIL EVIL HACK UNTIL I FIGURE OUT ENTITIES */
-	if (*chars == '<') {
-		g_print ("&lt;");
-		return;
-	}
-	list = g_slist_prepend (NULL, GINT_TO_POINTER (FOOTNOTE));
-	index = find_first_parent (context, list);
-
-	if (index == UNDEFINED) {
-		temp = g_strndup (chars, len);
-		g_print ("%s", temp);
-		g_free (temp);
-	} else {
-		GString *footnote;
-
-		list = g_slist_last (context->footnotes);
-		footnote = (GString *) list->data;
-		temp = g_strndup (chars, len);
-		g_string_append (footnote, temp);
-		g_free (temp);
-	}
-}
-
 StackElement *
 find_first_element (Context *context, GSList *args)
 {

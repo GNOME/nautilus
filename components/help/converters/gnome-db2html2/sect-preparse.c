@@ -35,8 +35,6 @@ ElementInfo sect_preparse[] = {
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
-
-
 static void
 sect_preparse_sect_start_element (Context *context,
 				  const gchar *name,
@@ -73,6 +71,7 @@ sect_preparse_title_characters (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT4));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT5));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
 
 	stack_el = find_first_element (context, element_list);
 

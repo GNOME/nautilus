@@ -41,18 +41,38 @@ typedef enum ElementIndex {
 	APPLICATION,
 	FILENAME,
 	ITEMIZEDLIST,
+	ORDEREDLIST,
+	VARIABLELIST, /* 35 */
 	LISTITEM,
-	PROGRAMLISTING, /* 35 */
+	PROGRAMLISTING,
 	SGMLTAG,
 	EMPHASIS,
-	TIP,
+	TIP, /* 40 */
 	WARNING,
-	IMPORTANT, /* 40 */
+	IMPORTANT,
 	NOTE,
 	CDATA,
+	SCREEN, /* 45 */
 	SCREENSHOT,
 	SCREENINFO,
-	UNDEFINED /* 45 */
+	COMMAND,
+	REPLACEABLE,
+	FUNCTION, /* 50 */
+	GUIBUTTON,
+	GUIICON,
+	GUILABEL,
+	GUIMENU,
+	GUIMENUITEM, /* 55 */
+	HARDWARE,
+	KEYCAP,
+	KEYCODE,
+	KEYSYM,
+	LITERAL, /* 60 */
+	PARAMETER,
+	PROMPT,
+	SYMBOL,
+	USERINPUT,
+	UNDEFINED /* 65 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;
@@ -69,7 +89,7 @@ struct _StackElement {
 	ElementInfo *info;
 	gchar **atrs;
 };
-		
+
 
 typedef struct _Context Context;
 struct _Context {
@@ -99,7 +119,6 @@ typedef struct AuthorInfo {
 	gchar *orgname;
 } AuthorInfo;
 
-
 typedef struct HeaderInfo {
 	gchar *title;
 	gchar *subtitle;
@@ -107,6 +126,12 @@ typedef struct HeaderInfo {
 	gchar *copyright_holder;
 	GSList *authors;
 } HeaderInfo;
+
+typedef struct FigureInfo {
+	gchar *title;
+	gchar *alt;
+	gchar *img;
+} FigureInfo;
 
 void article_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void article_end_element (Context *context, const gchar *name);
@@ -119,7 +144,6 @@ void para_start_element (Context *context, const gchar *name, const xmlChar **at
 void para_end_element (Context *context, const gchar *name);
 void ulink_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void ulink_end_element (Context *context, const gchar *name);
-void write_characters (Context *context, const gchar *chars, int len);
 StackElement *find_first_element (Context *context, GSList *args);
 ElementIndex find_first_parent (Context *context, GSList *args);
 

@@ -4,17 +4,18 @@
 
 #define IS_IN_SECT(context) (((SectContext *)context->data)->state == IN_SECT)
 
+static void sect_print (Context *context, gchar *format, ...);
 static void sect_write_characters (Context *context, const gchar *chars, int len);
 static void sect_article_end_element (Context *context, const gchar *name);
 static void sect_sect_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_sect_end_element (Context *context, const gchar *name);
 static void sect_para_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_para_end_element (Context *context, const gchar *name);
-static void sect_para_characters (Context *context, const gchar *name, gint len);
 static void sect_formalpara_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_formalpara_end_element (Context *context, const gchar *name);
 static void sect_author_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_author_characters (Context *context, const gchar *chars, int len);
+static void sect_email_characters (Context *context, const gchar *chars, int len);
 static void sect_copyright_characters (Context *context, const gchar *chars, int len);
 static void sect_title_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_title_end_element (Context *context, const gchar *name);
@@ -23,18 +24,36 @@ static void sect_ulink_start_element (Context *context, const gchar *name, const
 static void sect_ulink_end_element (Context *context, const gchar *name);
 static void sect_xref_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_footnote_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+static void sect_figure_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+static void sect_figure_end_element (Context *context, const gchar *name);
+static void sect_graphic_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_em_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_em_end_element (Context *context, const gchar *name);
 static void sect_tt_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_tt_end_element (Context *context, const gchar *name);
+static void sect_b_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+static void sect_b_end_element (Context *context, const gchar *name);
+static void sect_tti_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+static void sect_tti_end_element (Context *context, const gchar *name);
+static void sect_btt_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+static void sect_btt_end_element (Context *context, const gchar *name);
+static void sect_i_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+static void sect_i_end_element (Context *context, const gchar *name);
 static void sect_itemizedlist_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_itemizedlist_end_element (Context *context, const gchar *name);
+static void sect_orderedlist_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+static void sect_orderedlist_end_element (Context *context, const gchar *name);
+static void sect_variablelist_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+static void sect_variablelist_end_element (Context *context, const gchar *name);
 static void sect_listitem_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+static void sect_listitem_end_element (Context *context, const gchar *name);
 static void sect_programlisting_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_programlisting_end_element (Context *context, const gchar *name);
 static void sect_infobox_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_infobox_end_element (Context *context, const gchar *name);
 static void sect_cdata_characters (Context *context, const gchar *chars, int len);
+static void sect_keysym_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+static void sect_keysym_end_element (Context *context, const gchar *name);
 
 ElementInfo sect_elements[] = {
 	{ ARTICLE, "article", (startElementSAXFunc) article_start_element, (endElementSAXFunc) sect_article_end_element, NULL},
@@ -45,7 +64,7 @@ ElementInfo sect_elements[] = {
 	{ SECT3, "sect3", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
 	{ SECT4, "sect4", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
 	{ SECT5, "sect5", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
-	{ PARA, "para", (startElementSAXFunc) sect_para_start_element, (endElementSAXFunc) sect_para_end_element, (charactersSAXFunc) sect_para_characters},
+	{ PARA, "para", (startElementSAXFunc) sect_para_start_element, (endElementSAXFunc) sect_para_end_element, (charactersSAXFunc) sect_write_characters},
 	{ FORMALPARA, "formalpara", (startElementSAXFunc) sect_formalpara_start_element, (endElementSAXFunc) sect_formalpara_end_element, NULL },
 	{ ARTHEADER, "artheader", NULL, NULL, NULL}, //(startElementSAXFunc) artheader_start_element, (endElementSAXFunc) sect_artheader_end_element, NULL},
 	{ AUTHORGROUP, "authorgroup", NULL, NULL, NULL},
@@ -54,7 +73,7 @@ ElementInfo sect_elements[] = {
 	{ OTHERNAME, "othername", NULL, NULL, (charactersSAXFunc) sect_author_characters },
 	{ SURNAME, "surname", NULL, NULL, (charactersSAXFunc) sect_author_characters },
 	{ AFFILIATION, "affiliation", NULL, NULL, NULL},
-	{ EMAIL, "email", NULL, NULL, (charactersSAXFunc) sect_author_characters },
+	{ EMAIL, "email", NULL, NULL, (charactersSAXFunc) sect_email_characters },
 	{ ORGNAME, "orgname", NULL, NULL, (charactersSAXFunc) sect_author_characters },
 	{ ADDRESS, "address", NULL, NULL, NULL},
 	{ COPYRIGHT, "copyright", NULL, NULL, NULL},
@@ -65,23 +84,80 @@ ElementInfo sect_elements[] = {
 	{ ULINK, "ulink", (startElementSAXFunc) sect_ulink_start_element, (endElementSAXFunc) sect_ulink_end_element, (charactersSAXFunc) sect_write_characters},
 	{ XREF, "xref", (startElementSAXFunc) sect_xref_start_element, NULL, NULL},
 	{ FOOTNOTE, "footnote", (startElementSAXFunc) sect_footnote_start_element, NULL, NULL},
-	{ FIGURE, "figure", NULL, NULL, NULL},
-	{ GRAPHIC, "graphic", NULL, NULL, NULL},
-	{ CITETITLE, "citetitle", (startElementSAXFunc) sect_em_start_element, (endElementSAXFunc) sect_em_end_element, (charactersSAXFunc) sect_write_characters},
+	{ FIGURE, "figure", (startElementSAXFunc) sect_figure_start_element, (endElementSAXFunc) sect_figure_end_element, NULL},
+	{ GRAPHIC, "graphic", (startElementSAXFunc) sect_graphic_start_element, NULL, NULL},
+	{ CITETITLE, "citetitle", (startElementSAXFunc) sect_i_start_element, (endElementSAXFunc) sect_i_end_element, (charactersSAXFunc) sect_write_characters},
 	{ APPLICATION, "application", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
 	{ FILENAME, "filename", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
 	{ ITEMIZEDLIST, "itemizedlist", (startElementSAXFunc) sect_itemizedlist_start_element, (endElementSAXFunc) sect_itemizedlist_end_element, NULL},
-	{ LISTITEM, "listitem", (startElementSAXFunc) sect_listitem_start_element, NULL, NULL},
+	{ ORDEREDLIST, "orderedlist", (startElementSAXFunc) sect_orderedlist_start_element, (endElementSAXFunc) sect_orderedlist_end_element, NULL},
+	{ VARIABLELIST, "variablelist", (startElementSAXFunc) sect_itemizedlist_start_element, (endElementSAXFunc) sect_itemizedlist_end_element, NULL},
+	{ LISTITEM, "listitem", (startElementSAXFunc) sect_listitem_start_element, (endElementSAXFunc) sect_listitem_end_element, NULL},
 	{ PROGRAMLISTING, "programlisting", (startElementSAXFunc) sect_programlisting_start_element, (endElementSAXFunc) sect_programlisting_end_element, (charactersSAXFunc) sect_write_characters},
 	{ SGMLTAG, "sgmltag", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
-	{ EMPHASIS, "EMPHASIS", (startElementSAXFunc) sect_em_start_element, (endElementSAXFunc) sect_em_end_element, (charactersSAXFunc) sect_write_characters},
+	{ EMPHASIS, "emphasis", (startElementSAXFunc) sect_em_start_element, (endElementSAXFunc) sect_em_end_element, (charactersSAXFunc) sect_write_characters},
 	{ TIP, "tip", (startElementSAXFunc) sect_infobox_start_element, (endElementSAXFunc) sect_infobox_end_element, NULL},
 	{ WARNING, "warning", (startElementSAXFunc) sect_infobox_start_element, (endElementSAXFunc) sect_infobox_end_element, NULL},
 	{ IMPORTANT, "important", (startElementSAXFunc) sect_infobox_start_element, (endElementSAXFunc) sect_infobox_end_element, NULL},
 	{ NOTE, "note", (startElementSAXFunc) sect_infobox_start_element, (endElementSAXFunc) sect_infobox_end_element, NULL},
 	{ CDATA, "cdata", NULL, NULL, (charactersSAXFunc) sect_cdata_characters},
+	{ SCREEN, "screen", (startElementSAXFunc)sect_programlisting_start_element, (endElementSAXFunc) sect_programlisting_end_element, (charactersSAXFunc) sect_write_characters},
+	{ SCREENSHOT, "screenshot", NULL, NULL, NULL},
+	{ SCREENINFO, "screeninfo", NULL, NULL, NULL},
+	{ COMMAND, "command", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_end_element, (charactersSAXFunc) sect_write_characters},
+	{ REPLACEABLE, "replaceable", (startElementSAXFunc) sect_tti_start_element, (endElementSAXFunc) sect_tti_end_element, (charactersSAXFunc) sect_write_characters},
+	{ FUNCTION, "function", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
+	{ GUIBUTTON, "guibutton", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_end_element, (charactersSAXFunc) sect_write_characters},
+	{ GUIICON, "guiicon", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_end_element, (charactersSAXFunc) sect_write_characters},
+	{ GUILABEL, "guilabel", (startElementSAXFunc) sect_btt_start_element, (endElementSAXFunc) sect_btt_end_element, (charactersSAXFunc) sect_write_characters},
+	{ GUIMENU, "guimenu", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_end_element, (charactersSAXFunc) sect_write_characters},
+	{ GUIMENUITEM, "guimenuitem", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_end_element, (charactersSAXFunc) sect_write_characters},
+	{ HARDWARE, "hardware", (startElementSAXFunc) sect_btt_start_element, (endElementSAXFunc) sect_btt_end_element, (charactersSAXFunc) sect_write_characters},
+	{ KEYCAP, "keycap", (startElementSAXFunc) sect_b_start_element, (endElementSAXFunc) sect_b_end_element, (charactersSAXFunc) sect_write_characters},
+	{ KEYCAP, "keycode", NULL, NULL, (charactersSAXFunc) sect_write_characters},
+	{ KEYCAP, "keysym", (startElementSAXFunc) sect_keysym_start_element, (endElementSAXFunc) sect_keysym_end_element, (charactersSAXFunc) sect_write_characters},
+	{ LITERAL, "literal", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
+	{ PARAMETER, "parameter", (startElementSAXFunc) sect_tti_start_element, (endElementSAXFunc) sect_tti_end_element, (charactersSAXFunc) sect_write_characters},
+	{ PROMPT, "prompt", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
+	{ SYMBOL, "symbol", NULL, NULL, (charactersSAXFunc) sect_write_characters},
+	{ USERINPUT, "userinput", (startElementSAXFunc) sect_btt_start_element, (endElementSAXFunc) sect_btt_end_element, (charactersSAXFunc) sect_write_characters},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
+
+static void
+sect_print (Context *context, gchar *format, ...)
+{
+	va_list args;
+	gchar *string;
+	GSList *list;
+	ElementIndex index;
+
+	g_return_if_fail (format != NULL);
+
+	va_start (args, format);
+	string = g_strdup_vprintf (format, args);
+	va_end (args);
+
+	list = g_slist_prepend (NULL, GINT_TO_POINTER (FOOTNOTE));
+	index = find_first_parent (context, list);
+
+	if (index == UNDEFINED) {
+		/* EVIL EVIL EVIL HACK UNTIL ENTITIES GET FIXED */
+		if ((*string == '<') && (*(string +1) == '\000'))
+			printf ("&lt;");
+		else if ((*string == '&') && (*(string +1) == '\000'))
+			printf ("&amp;");
+		else
+			printf (string);
+	} else {
+		GString *footnote;
+
+		list = g_slist_last (context->footnotes);
+		footnote = (GString *) list->data;
+		g_string_append (footnote, string);
+	}
+	g_free (string);
+}
 
 gpointer
 sect_init_data (void)
@@ -99,10 +175,14 @@ sect_write_characters (Context *context,
 		      const gchar *chars,
 		      int len)
 {
+	gchar *temp;
+
 	if (!IS_IN_SECT (context))
 		return;
 
-	write_characters (context, chars, len);
+	temp = g_strndup (chars, len);
+	sect_print (context, temp);
+	g_free (temp);
 }
 
 static void
@@ -111,7 +191,7 @@ sect_article_end_element (Context *context, const gchar *name)
 	if (context->footnotes) {
 		GSList *list;
 		gint i = 1;
-
+		
 		g_print ("<HR>");
 		g_print ("<H4>Notes:</H4>");
 		g_print ("<TABLE BORDER=\"0\" WIDTH=\"100%%\">\n\n");
@@ -123,7 +203,7 @@ sect_article_end_element (Context *context, const gchar *name)
 		}
 		g_print ("</TABLE>");
 	}
-	g_print ("</BODY>\n</HEAD>\n");
+	sect_print (context, "</BODY>\n</HEAD>\n");
 }
 
 static void
@@ -158,7 +238,7 @@ sect_para_start_element (Context *context, const gchar *name, const xmlChar **at
 	case SECT4:
 	case SECT5:
 	case SECTION:
-		g_print ("<P>\n");
+		sect_print (context, "<P>\n");
 		break;
 	case FORMALPARA:
 	case LISTITEM:
@@ -199,7 +279,7 @@ sect_para_end_element (Context *context, const gchar *name)
 	case SECT4:
 	case SECT5:
 	case SECTION:
-		g_print ("</P>\n");
+		sect_print (context, "</P>\n");
 		break;
 	case FORMALPARA:
 	case LISTITEM:
@@ -209,17 +289,6 @@ sect_para_end_element (Context *context, const gchar *name)
 }
 
 
-static void
-sect_para_characters (Context *context,
-		      const gchar *chars,
-		      int len)
-{
-	if (!IS_IN_SECT (context))
-		return;
-
-	write_characters (context, chars, len);
-}
-
 
 static void
 sect_formalpara_start_element (Context *context, const gchar *name, const xmlChar **atrs)
@@ -227,7 +296,7 @@ sect_formalpara_start_element (Context *context, const gchar *name, const xmlCha
 	if (!IS_IN_SECT (context))
 		return;
 
-	g_print ("<P>");
+	sect_print (context, "<P>");
 }
 
 static void
@@ -236,7 +305,7 @@ sect_formalpara_end_element (Context *context, const gchar *name)
 	if (!IS_IN_SECT (context))
 		return;
 
-	g_print ("</P>");
+	sect_print (context, "</P>");
 }
 
 
@@ -393,6 +462,30 @@ sect_author_characters (Context *context, const gchar *chars, int len)
 }
 
 static void
+sect_email_characters (Context *context, const gchar *chars, int len)
+{
+	GSList *element_list = NULL;
+	ElementIndex index;
+	char *temp;
+
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ARTHEADER));
+	index = find_first_parent (context, element_list);
+	g_slist_free (element_list);
+
+	switch (index) {
+	case ARTHEADER:
+		sect_author_characters (context, chars, len);
+		return;
+	default:
+		break;
+	};
+
+	temp = g_strndup (chars, len);
+	sect_print (context, "<tt>&lt;<A href=\"mailto:%s\">%s</A>&gt;</tt>", temp, temp);
+	g_free (temp);
+}
+
+static void
 sect_copyright_characters (Context *context,
 			  const gchar *chars,
 			  int len)
@@ -455,24 +548,24 @@ sect_title_start_element (Context *context,
 	case SECT5:
 	case SECTION:
 		if (context->sect2 == 0)
-			g_print ("<H2>");
+			sect_print (context, "<H2>");
 		else
-			g_print ("<H3>");
-		g_print ("<A name=\"");
+			sect_print (context, "<H3>");
+		sect_print (context, "<A name=\"");
 
 		atrs_ptr = (stack_el->atrs);
 		while (atrs_ptr && *atrs_ptr) {
 			if (!strcasecmp (*atrs_ptr, "id")) {
 				atrs_ptr++;
-				g_print ("%s", *atrs_ptr);
+				sect_print (context, "%s", *atrs_ptr);
 				break;
 			}
 			atrs_ptr += 2;
 		}
-		g_print ("\">&nbsp;</A><BR>");
+		sect_print (context, "\">");
 		break;
 	case FORMALPARA:
-		g_print ("<B>");
+		sect_print (context, "<B>");
 		break;
 	default:
 		break;
@@ -504,16 +597,16 @@ sect_title_end_element (Context *context,
 	switch (index) {
 	case SECT1:
 	case SECTION:
-		g_print ("</A></H2>\n");
+		sect_print (context, "</A></H2>\n");
 		break;
 	case SECT2:
 	case SECT3:
 	case SECT4:
 	case SECT5:
-		g_print ("</A></H3>\n");
+		sect_print (context, "</A></H3>\n");
 		break;
 	case FORMALPARA:
-		g_print (".</B>");
+		sect_print (context, ".</B>");
 		break;
 	default:
 		break;
@@ -547,19 +640,19 @@ sect_title_characters (Context *context,
 
 		temp = g_strndup (chars, len);
 
-		g_print ("<TITLE>%s</TITLE>\n</HEAD>\n", temp);
-		g_print ("<BODY BGCOLOR=\"#FFFFFF\" TEXT=\"#000000\" LINK=\"#0000FF\" VLINK=\"#840084\" ALINK=\"#0000FF\">\n");
+		sect_print (context, "<TITLE>%s</TITLE>\n</HEAD>\n", temp);
+		sect_print (context, "<BODY BGCOLOR=\"#FFFFFF\" TEXT=\"#000000\" LINK=\"#0000FF\" VLINK=\"#840084\" ALINK=\"#0000FF\">\n");
 		if (stack_el == NULL)
-			g_print ("<A href=\"%s\"><font size=3>Up to Table of Contents</font></A><BR>\n",
+			sect_print (context, "<A href=\"%s\"><font size=3>Up to Table of Contents</font></A><BR>\n",
 				 context->base_file);
 #if 0
 		else
-			g_print ("<A href=\"%s#%s\"><font size=3>Up to %s</font></A><BR>\n",
+			sect_print (context, "<A href=\"%s#%s\"><font size=3>Up to %s</font></A><BR>\n",
 				 context->base_file,
 				 sect_context->topid,
 				 sect_context->top);
 #endif
-		g_print ("<H1>%s</H1>\n", temp);
+		sect_print (context, "<H1>%s</H1>\n", temp);
 		((SectContext *)context->data)->state = IN_SECT;
 		g_free (temp);
 		return;
@@ -591,7 +684,7 @@ sect_title_characters (Context *context,
 	case SECT5:
 	case SECTION:
 	case FORMALPARA:
-		g_print (temp);
+		sect_print (context, temp);
 		g_free (temp);
 		break;
 	case ARTHEADER:
@@ -599,6 +692,9 @@ sect_title_characters (Context *context,
 			((SectContext *) context->data)->header->title = temp;
 		else if (((StackElement *)context->stack->data)->info->index == SUBTITLE)
 			((SectContext *) context->data)->header->subtitle = temp;
+		break;
+	case FIGURE:
+		((SectContext *) context->data)->figure->title = temp;
 		break;
 	default:
 		g_free (temp);
@@ -638,12 +734,12 @@ sect_xref_start_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	g_print ("<A HREF=\"%s?", context->base_file);
+	sect_print (context, "<A HREF=\"%s?", context->base_file);
 	atrs_ptr = (gchar **) atrs;
 	while (atrs_ptr && *atrs_ptr) {
 		if (!strcasecmp (*atrs_ptr, "linkend")) {
 			atrs_ptr++;
-			g_print ("%s", *atrs_ptr);
+			sect_print (context, "%s", *atrs_ptr);
 			break;
 		}
 		atrs_ptr += 2;
@@ -653,9 +749,9 @@ sect_xref_start_element (Context *context,
 		title = g_hash_table_lookup (((SectContext *)context->data)->title_hash, *atrs_ptr);
 
 	if (title == NULL)
-		g_print ("\">the section here</A>");
+		sect_print (context, "\">the section here</A>");
 	else
-		g_print ("\">the section <EM>%s</EM></A>", title);
+		sect_print (context, "\">the section <EM>%s</EM></A>", title);
 }
 
 static void
@@ -674,6 +770,89 @@ sect_footnote_start_element (Context *context, const gchar *name, const xmlChar 
 }
 
 static void
+sect_figure_start_element (Context *context,
+			    const gchar *name,
+			    const xmlChar **atrs)
+{
+	SectContext *sect_context = (SectContext *)context->data;
+
+	if (!IS_IN_SECT (context))
+		return;
+
+	if (sect_context->figure != NULL)
+		return;
+
+	sect_context->figure = g_new0 (FigureInfo, 1);
+	sect_context->figure_count ++;
+}
+
+static void
+sect_figure_end_element (Context *context,
+			  const gchar *name)
+{
+	SectContext *sect_context = (SectContext *)context->data;
+
+	if (!IS_IN_SECT (context))
+		return;
+
+	if (sect_context->figure == NULL)
+		return;
+
+	if (sect_context->figure->img != NULL) {
+ 		if (sect_context->figure->title)
+			sect_print (context, "<P><B>Figure %d. %s</B><P>",
+				    sect_context->figure_count,
+				    sect_context->figure->title);
+		sect_print (context, "<IMG SRC=\"%s\" ALT=\"%s\"><P>",
+			    sect_context->figure->img,
+			    (sect_context->figure->alt) ? sect_context->figure->alt : "IMAGE");
+	}
+	g_free (sect_context->figure->title);
+	g_free (sect_context->figure->alt);
+	g_free (sect_context->figure->img);
+	g_free (sect_context->figure);
+	sect_context->figure = NULL;
+}
+
+static void
+sect_graphic_start_element (Context *context,
+			    const gchar *name,
+			    const xmlChar **atrs)
+{
+	gchar **atrs_ptr;
+	gchar *format = NULL;
+	gchar *fileref = NULL;
+	SectContext *sect_context = (SectContext *)context->data;
+
+	if (!IS_IN_SECT (context))
+		return;
+
+	atrs_ptr = (gchar **) atrs;
+	while (atrs_ptr && *atrs_ptr) {
+		if (!strcasecmp (*atrs_ptr, "format")) {
+			atrs_ptr++;
+			format =  *atrs_ptr;
+			atrs_ptr++;
+			continue;
+		} else if (!strcasecmp (*atrs_ptr, "fileref")) {
+			atrs_ptr++;
+			fileref =  *atrs_ptr;
+			atrs_ptr++;
+			continue;
+		}
+		atrs_ptr += 2;
+	}
+
+	if (fileref == NULL)
+		return;
+
+	if (format == NULL || (!strcasecmp (format, "gif")))
+		sect_context->figure->img = g_strdup_printf ("%s.gif", fileref);
+	else
+		sect_context->figure->img = g_strdup_printf ("%s.png", fileref);
+}
+
+static void
 sect_em_start_element (Context *context,
 		       const gchar *name,
 		       const xmlChar **atrs)
@@ -681,7 +860,7 @@ sect_em_start_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	g_print ("<EM>");
+	sect_print (context, "<EM>");
 }
 
 static void
@@ -691,7 +870,7 @@ sect_em_end_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	g_print ("</EM>");
+	sect_print (context, "</EM>");
 }
 
 static void
@@ -702,7 +881,7 @@ sect_tt_start_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	g_print ("<TT>");
+	sect_print (context, "<TT>");
 }
 
 static void
@@ -712,7 +891,91 @@ sect_tt_end_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	g_print ("</TT>");
+	sect_print (context, "</TT>");
+}
+
+static void
+sect_b_start_element (Context *context,
+		       const gchar *name,
+		       const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<B>");
+}
+
+static void
+sect_b_end_element (Context *context,
+		     const gchar *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "</B>");
+}
+
+static void
+sect_tti_start_element (Context *context,
+		       const gchar *name,
+		       const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<TT><I>");
+}
+
+static void
+sect_tti_end_element (Context *context,
+		     const gchar *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "</I></TT>");
+}
+
+static void
+sect_btt_start_element (Context *context,
+		       const gchar *name,
+		       const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<B><TT>");
+}
+
+static void
+sect_btt_end_element (Context *context,
+		     const gchar *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "</TT></B>");
+}
+
+static void
+sect_i_start_element (Context *context,
+		       const gchar *name,
+		       const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<I>");
+}
+
+static void
+sect_i_end_element (Context *context,
+		     const gchar *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "</I>");
 }
 
 static void
@@ -723,7 +986,7 @@ sect_itemizedlist_start_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	g_print ("<UL>");
+	sect_print (context, "<UL>");
 }
 
 static void
@@ -733,18 +996,70 @@ sect_itemizedlist_end_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	g_print ("</UL>");
+	sect_print (context, "</UL>");
 }
 
 static void
-sect_listitem_start_element (Context *context,
+sect_orderedlist_start_element (Context *context,
 				 const gchar *name,
 				 const xmlChar **atrs)
 {
 	if (!IS_IN_SECT (context))
 		return;
 
-	g_print ("<LI>");
+	sect_print (context, "<OL>");
+}
+
+static void
+sect_orderedlist_end_element (Context *context,
+			       const gchar *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "</OL>");
+}
+
+static void
+sect_variablelist_start_element (Context *context,
+				 const gchar *name,
+				 const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<OL>");
+}
+
+static void
+sect_variablelist_end_element (Context *context,
+			       const gchar *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "</OL>");
+}
+
+static void
+sect_listitem_start_element (Context *context,
+			     const gchar *name,
+			     const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<LI>");
+}
+
+static void
+sect_listitem_end_element (Context *context,
+			   const gchar *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<P>");
 }
 
 static void
@@ -755,7 +1070,7 @@ sect_programlisting_start_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	g_print ("<table border=\"0\" bgcolor=\"#E0E0E0\" width=\"100%%\">\n<tr><td>\n<pre>\n");
+	sect_print (context, "<table border=\"0\" bgcolor=\"#E0E0E0\" width=\"100%%\">\n<tr><td>\n<pre>");
 }
 
 static void
@@ -765,7 +1080,7 @@ sect_programlisting_end_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	g_print ("</pre>\n</td></tr>\n</table>\n");
+	sect_print (context, "</pre>\n</td></tr>\n</table>\n");
 }
 
 static gchar *
@@ -795,8 +1110,8 @@ sect_infobox_start_element (Context *context,
 
 	logo = sect_get_infobox_logo (name);
 
-	g_print ("<TABLE BORDER=\"0\" WIDTH=\"100%%\">\n<tr><TD WIDTH=\"25\" ALIGN=\"CENTER\" VALIGN=\"TOP\"><IMG ALT=\"%s\" SRC=\"%s\"><TH ALIGN=\"LEFT\" VALIGN=\"CENTER\"></TD>\n", name, logo);
-	g_print ("<TD>&nbsp;</TD>\n<TD ALIGN=\"LEFT\" VALIGN=\"TOP\">\n");
+	sect_print (context, "<TABLE BORDER=\"0\" WIDTH=\"100%%\">\n<tr><TD WIDTH=\"25\" ALIGN=\"CENTER\" VALIGN=\"TOP\"><IMG ALT=\"%s\" SRC=\"%s\"><TH ALIGN=\"LEFT\" VALIGN=\"CENTER\"></TD>\n", name, logo);
+	sect_print (context, "<TD>&nbsp;</TD>\n<TD ALIGN=\"LEFT\" VALIGN=\"TOP\">\n");
 	g_free (logo);
 }
 
@@ -807,7 +1122,7 @@ sect_infobox_end_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	g_print ("</td></tr>\n</table>\n");
+	sect_print (context, "</td></tr>\n</table>\n");
 }
 
 static void
@@ -820,9 +1135,31 @@ sect_cdata_characters (Context *context,
 		return;
 
 	for (i = 0; i < len; i++) {
+		if ((i == 0) && (*chars == '\n'))
+			continue;
 		if (chars[i] == '<')
-			g_print ("&lt;");
-		else g_print ("%c", chars[i]);
+			sect_print (context, "&lt;");
+		else sect_print (context, "%c", chars[i]);
 	}
-	
+
+}
+
+static void
+sect_keysym_start_element (Context *context,
+			   const gchar *name,
+			   const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<B>(");
+}
+
+static void
+sect_keysym_end_element (Context *context, const gchar *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, ")</B>");
 }

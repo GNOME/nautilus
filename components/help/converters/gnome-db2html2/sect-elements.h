@@ -18,6 +18,8 @@ typedef enum SectContextState {
 typedef struct _SectContext SectContext;
 struct _SectContext {
 	HeaderInfo *header;
+	FigureInfo *figure;
+	gint figure_count;
 	gchar *prev;
 	gchar *previd;
 	SectContextState state;
