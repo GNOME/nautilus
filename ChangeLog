@@ -1,3 +1,23 @@
+2001-01-22  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix 5613 - Icon captions in sidebar get cropped when toggling
+	"smooth graphics.
+	
+	* libnautilus-extensions/nautilus-label.c:
+	(label_force_cached_requisition_flush),
+	(nautilus_label_set_is_smooth):
+	Flush the GtkLabel's requisition cache when the is_smooth
+	attribute is changed.
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize),
+	(nautilus_property_browser_destroy),
+	(nautilus_property_browser_theme_changed):
+	Remove attempt at fixing parts of 5613.  The fix above should fix
+	it everywhere.
+	
 2001-01-20  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com> (except

@@ -1177,6 +1177,36 @@ nautilus_label_get_smooth_font_size (const NautilusLabel *label)
 	return label->detail->smooth_font_size;
 }
 
+/* This function is an ugly hack.  The issue is that we want
+ * GtkLabel to flush its cached requisition dimensions.  GtkLabel
+ * caches these for efficiency.  Unfortunately, there is no public
+ * way to do this for GtkLabel.  So, instead we trick the GtkLabel
+ * into thinking that its justification has changed.  As a result
+ * of this phony change, GtkLabel will flush the requisition cache
+ * Of course, we don't really change the justification.  We hack 
+ * the old one to a different value and tell GtkLabel to use the 
+ * old real justification.
+ */
+static void
+label_force_cached_requisition_flush (NautilusLabel *label)
+{
+	GtkJustification real_justification;
+	GtkJustification phony_justification;
+
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	
+	real_justification = GTK_LABEL (label)->jtype;
+
+	phony_justification = real_justification + 1;
+
+	if (phony_justification >= GTK_JUSTIFY_FILL) {
+		real_justification = GTK_JUSTIFY_LEFT;
+	}
+
+	GTK_LABEL (label)->jtype = phony_justification;
+	gtk_label_set_justify (GTK_LABEL (label), real_justification);
+}
+
 void
 nautilus_label_set_is_smooth (NautilusLabel *label,
 			      gboolean is_smooth)
@@ -1190,6 +1220,14 @@ nautilus_label_set_is_smooth (NautilusLabel *label,
 	label->detail->is_smooth = is_smooth;
 
 	label_line_geometries_recompute (label);
+
+	/* Force GtkLabel to flush its cached requisition dimensions.
+	 * GtkLabel caches its requisition for efficiency.  We need this
+	 * dimensions to be flushed when our is_smooth attribute changes.
+	 * The reason is that the geometry of the widget is dependent on
+	 * whether it is_smooth or not.
+	 */
+	label_force_cached_requisition_flush (label);
 
 	gtk_widget_queue_resize (GTK_WIDGET (label));
 }
