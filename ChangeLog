@@ -1,5 +1,17 @@
 2001-01-04  Darin Adler  <darin@eazel.com>
 
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fixed bug 5435 (Irreproducible crash in nautilus_directory_destroy
+	after copy/move operations).
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_notify_files_moved): Removed an extra unref
+	and slightly reordered the code to make it clearer why the rest of
+	the ref count manipulation is correct.
+
+2001-01-04  Darin Adler  <darin@eazel.com>
+
 	reviewed by: Rebecca Schulman  <rebecka@eazel.com>
 
 	Fixed bug 3811 (shallow file counts and top-left text are fetched

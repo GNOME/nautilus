@@ -1173,6 +1173,12 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 			/* Locate the new directory. */
 			new_directory = get_parent_directory (pair->to_uri);
 			collect_parent_directories (parent_directories, new_directory);
+			/* We can unref now -- new_directory is in the
+			 * parent directories list so it will be
+			 * around until the end of this function
+			 * anyway.
+			 */
+			nautilus_directory_unref (new_directory);
 
 			/* Update the file's name. */
 			name = nautilus_uri_get_basename (pair->to_uri);
@@ -1188,9 +1194,6 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 				hash_table_list_prepend
 					(added_lists, new_directory, file);
 			}
-
-			nautilus_directory_unref (old_directory);
-			nautilus_directory_unref (new_directory);
 
 			/* Unref each file once to balance out nautilus_file_get. */
 			unref_list = g_list_prepend (unref_list, file);
