@@ -1073,34 +1073,46 @@ static float fm_directory_view_preferred_zoom_levels[] = {
 	(float) NAUTILUS_ICON_SIZE_LARGEST	/ NAUTILUS_ICON_SIZE_STANDARD
 };
 
-static NautilusDirectory *
-get_scripts_directory (void)
+static void
+set_up_scripts_directory_global (void)
 {
-	char *main_directory_path;
-	char *scripts_directory_path;
-	
-	if (scripts_directory_uri == NULL) {
-		main_directory_path = nautilus_get_user_main_directory ();
-		
-		/* Localizers: This is the name of a directory that's created in ~/Nautilus, and
-		 * stores the scripts that appear in the Scripts submenu.
-		 */
-		scripts_directory_path = nautilus_make_path (main_directory_path, _("scripts"));
-		
-		g_free (main_directory_path);
-		
-		if (!g_file_exists (scripts_directory_path)) {
-			mkdir (scripts_directory_path, 
-			       GNOME_VFS_PERM_USER_ALL | GNOME_VFS_PERM_GROUP_ALL | GNOME_VFS_PERM_OTHER_READ);
-		}
-		
-		scripts_directory_uri = gnome_vfs_get_uri_from_local_path (scripts_directory_path);
-		scripts_directory_uri_length = strlen (scripts_directory_uri);
-		
-		g_free (scripts_directory_path);
+	char *main_directory_path, *scripts_directory_path;
+
+	if (scripts_directory_uri != NULL) {
+		return;
 	}
 
-	return nautilus_directory_get (scripts_directory_uri);
+	main_directory_path = nautilus_get_user_main_directory ();
+	
+	/* FIXME: We've discussed that we don't want names of
+	 * directories to be localized, and we also don't think that
+	 * this should be in ~/Nautilus, since we want to get rid of
+	 * the novice home directory, so this should be changed.
+	 */
+	/* Localizers: This is the name of a directory that's created
+	 * in ~/Nautilus, and stores the scripts that appear in the
+	 * Scripts submenu.
+	 */
+	scripts_directory_path = nautilus_make_path (main_directory_path, _("scripts"));
+	
+	g_free (main_directory_path);
+	
+	scripts_directory_uri = gnome_vfs_get_uri_from_local_path (scripts_directory_path);
+	scripts_directory_uri_length = strlen (scripts_directory_uri);
+	
+	g_free (scripts_directory_path);
+}
+
+static void
+create_scripts_directory (void)
+{
+	char *path;
+
+	set_up_scripts_directory_global ();
+	path = gnome_vfs_get_local_path_from_uri (scripts_directory_uri);
+	mkdir (path, 
+	       GNOME_VFS_PERM_USER_ALL | GNOME_VFS_PERM_GROUP_ALL | GNOME_VFS_PERM_OTHER_READ);
+	g_free (path);
 }
 
 static void
@@ -1171,7 +1183,9 @@ fm_directory_view_initialize (FMDirectoryView *view)
 
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 
-	scripts_directory = get_scripts_directory ();
+	set_up_scripts_directory_global ();
+
+	scripts_directory = nautilus_directory_get (scripts_directory_uri);
 	add_scripts_directory (view, scripts_directory);
 	nautilus_directory_unref (scripts_directory);
 
@@ -3754,7 +3768,9 @@ open_scripts_folder_callback (BonoboUIComponent *component,
 {      
 	FMDirectoryView *view;
 
-	view = FM_DIRECTORY_VIEW (callback_data);          
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	create_scripts_directory ();
 
 	open_location (view, scripts_directory_uri, RESPECT_PREFERENCE);
 	

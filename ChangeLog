@@ -1,5 +1,14 @@
 2001-08-24  Darin Adler  <darin@bentspoon.com>
 
+	* src/file-manager/fm-directory-view.c:
+	(set_up_scripts_directory_global): Separate this from the code to
+	create the scripts directory.
+	(create_scripts_directory): New function.
+	(fm_directory_view_initialize): Use set_up_scripts_directory_global.
+	(open_scripts_folder_callback): Use create_scripts_directory.
+
+2001-08-24  Darin Adler  <darin@bentspoon.com>
+
 	Added support for nested directories inside the scripts directory,
 	starting with a patch by David Emory Watson <dwatson@cs.ucr.edu>.
 
