@@ -1,3 +1,14 @@
+2000-11-07  Mike Fleming  <mfleming@eazel.com>
+
+	* components/mozilla/main.c: (main):
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_destroy),
+	(mozilla_open_uri_callback), (eazel_services_scheme_translate),
+	(mozilla_content_view_one_time_happenings):
+
+	fix for bugzillea.eazel.com 4596: using services in two Embedded Mozilla
+	windows crashes
+
 2000-11-07  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 4489 (some menu items are missing status bar hints)

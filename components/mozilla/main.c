@@ -33,6 +33,10 @@
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
 
+#ifdef EAZEL_SERVICES
+#include <libtrilobite/libammonite-gtk.h>
+#endif
+
 #include <stdlib.h>
 
 #define nopeDEBUG_mfleming 1
@@ -80,6 +84,11 @@ run_test_cases (void)
 	return test_make_full_uri_from_relative ();
 }
 
+#ifdef EAZEL_SERVICES
+/*Defined in nautilus-mozilla-content-view.c*/
+extern EazelProxy_UserControl nautilus_mozilla_content_view_user_control;
+#endif
+
 int
 main (int argc, char *argv[])
 {
@@ -111,7 +120,13 @@ main (int argc, char *argv[])
 	g_free (registration_id);
 	
 	gnome_vfs_init ();
-	
+
+#ifdef EAZEL_SERVICES
+	if (ammonite_init ((PortableServer_POA) bonobo_poa)) {
+		nautilus_mozilla_content_view_user_control = ammonite_get_user_control ();
+	}
+#endif 
+
 #ifdef DEBUG_mfleming
 	g_print ("OAF registration complete.\n");
 #endif
@@ -119,6 +134,10 @@ main (int argc, char *argv[])
 	do {
 		bonobo_main ();
 	} while (object_count > 0);
-	
+
+#ifdef EAZEL_SERVICES
+	ammonite_shutdown ();
+#endif /*EAZEL_SERVICES*/
+
 	return 0;
 }

@@ -52,14 +52,12 @@
 
 #ifdef EAZEL_SERVICES
 #include <libtrilobite/libammonite-gtk.h>
-/* for bonobo_poa() */
-#include <bonobo/bonobo-main.h>
 #endif
 
 #define NUM_ELEMENTS_IN_ARRAY(_a) (sizeof (_a) / sizeof ((_a)[0]))
 
 #ifdef EAZEL_SERVICES
-static EazelProxy_UserControl global_user_control = CORBA_OBJECT_NIL;
+EazelProxy_UserControl nautilus_mozilla_content_view_user_control = CORBA_OBJECT_NIL;
 #endif
 
 struct NautilusMozillaContentViewDetails {
@@ -247,10 +245,6 @@ nautilus_mozilla_content_view_destroy (GtkObject *object)
 	if (view->details->busy_cursor != NULL) {
 		gdk_cursor_destroy (view->details->busy_cursor);
 	}
-
-#ifdef EAZEL_SERVICES
-	ammonite_shutdown ();
-#endif /*EAZEL_SERVICES*/
 
 	g_free (view->details);
 
@@ -730,6 +724,9 @@ mozilla_open_uri_callback (GtkMozEmbed *mozilla,
 	 */
 
 	if ( mozilla_events_is_url_in_iframe (mozilla, uri)) {
+#ifdef DEBUG_mfleming
+		g_print ("URI is in an iframe;ignoring '%s' ", uri);
+#endif
 		return FALSE;
 	}
 	
@@ -1120,7 +1117,7 @@ eazel_services_scheme_translate	(NautilusMozillaContentView	*view,
 	char *ret = NULL;
 	AmmoniteError err;
 
-	if (CORBA_OBJECT_NIL == global_user_control) {
+	if (CORBA_OBJECT_NIL == nautilus_mozilla_content_view_user_control) {
 		return NULL;
 	}
 
@@ -1301,10 +1298,5 @@ mozilla_content_view_one_time_happenings (void)
 	/* Setup routing of proxy preferences from gconf to mozilla */
 	mozilla_gconf_listen_for_proxy_changes ();
 
-#ifdef EAZEL_SERVICES
-	if (ammonite_init ((PortableServer_POA) bonobo_poa)) {
-		global_user_control = ammonite_get_user_control ();
-	}
-#endif 
 }
 
