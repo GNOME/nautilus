@@ -1,5 +1,19 @@
-2001-03-05  Eskil Olsen  <set EMAIL_ADDRESS environment variable>
+2001-03-05  Eskil Olsen  <eskil@eazel.com>
 
+	reviewed by: Mike Fleming <mfleming@eazel.com> who almost feels
+	bad about it...
+
+	"Fixes" bug 7413
+	
+	* components/Makefile.am:
+	Removed the rpmview from build.
+
+2001-03-05  Eskil Olsen  <eskil@eazel.com>
+
+	reviewed by: Robey Pointer <robey@eazel.com> who sez "yup".
+
+	Fixed bug 7070.
+	
 	* components/rpmview/nautilus-rpm-view-install.c:
 	(get_detailed_errors), 
 	Flipped the meaning of the third argument.
