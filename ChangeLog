@@ -1,3 +1,17 @@
+2001-01-22  Rebecca Schulman  <rebecka@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_default_drop_action_for_icons):
+	Switch the order of the arguments to
+	gnome_vfs_check_same_fs_uris so that
+	the source uri is first and the target uri
+	of the drag second. This is rest of the fix 
+	for bugzilla.eazel.com 5498, which necessitated
+	making the uri arguments to this function have
+	a required ordering.
+
 2001-01-21  Andy Hertzfeld  <andy@eazel.com>
 
 	* data/browser.xml:
