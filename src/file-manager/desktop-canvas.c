@@ -25,6 +25,7 @@
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include <libgnomeui/gnome-canvas-text.h>
 #include <gtk/gtk.h>
+#include "desktop-menu.h"
 
 static void desktop_canvas_class_init (DesktopCanvasClass *class);
 static void desktop_canvas_init       (DesktopCanvas      *dcanvas);
@@ -85,209 +86,17 @@ desktop_canvas_class_init (DesktopCanvasClass *class)
 }
 
 static void
-event_cb(GnomeCanvasItem* item, GdkEvent* event, gpointer data)
-{
-        /* Debug */
-        if (event->type == GDK_BUTTON_PRESS)
-                gtk_main_quit();
-
-}
-
-
-static gint
-item_event (GnomeCanvasItem *item, GdkEvent *event, gpointer data)
-{
-	static double x, y;
-	double new_x, new_y;
-	GdkCursor *fleur;
-	static int dragging;
-	double item_x, item_y;
-
-	/* set item_[xy] to the event x,y position in the parent's item-relative coordinates */
-	item_x = event->button.x;
-	item_y = event->button.y;
-	gnome_canvas_item_w2i (item->parent, &item_x, &item_y);
-
-	switch (event->type) {
-	case GDK_BUTTON_PRESS:
-		switch (event->button.button) {
-		case 1:
-			if (event->button.state & GDK_SHIFT_MASK)
-				gtk_object_destroy (GTK_OBJECT (item));
-			else {
-				x = item_x;
-				y = item_y;
-
-				fleur = gdk_cursor_new (GDK_FLEUR);
-				gnome_canvas_item_grab (item,
-							GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK,
-							fleur,
-							event->button.time);
-				gdk_cursor_destroy (fleur);
-				dragging = TRUE;
-			}
-			break;
-
-		case 2:
-			if (event->button.state & GDK_SHIFT_MASK)
-				gnome_canvas_item_lower_to_bottom (item);
-			else
-				gnome_canvas_item_lower (item, 1);
-			break;
-
-		case 3:
-			if (event->button.state & GDK_SHIFT_MASK)
-				gnome_canvas_item_raise_to_top (item);
-			else
-				gnome_canvas_item_raise (item, 1);
-			break;
-
-		default:
-			break;
-		}
-
-		break;
-
-	case GDK_MOTION_NOTIFY:
-		if (dragging && (event->motion.state & GDK_BUTTON1_MASK)) {
-			new_x = item_x;
-			new_y = item_y;
-
-			gnome_canvas_item_move (item, new_x - x, new_y - y);
-			x = new_x;
-			y = new_y;
-		}
-		break;
-
-	case GDK_BUTTON_RELEASE:
-		gnome_canvas_item_ungrab (item, event->button.time);
-		dragging = FALSE;
-		break;
-
-	default:
-		break;
-	}
-
-	return FALSE;
-}
-
-static void
-setup_item (GnomeCanvasItem *item)
-{
-	gtk_signal_connect (GTK_OBJECT (item), "event",
-			    (GtkSignalFunc) item_event,
-			    NULL);
-}
-
-#define gray50_width 2
-#define gray50_height 2
-static char gray50_bits[] = {
-  0x02, 0x01, };
-
-static void
 desktop_canvas_init (DesktopCanvas *dcanvas)
 {
-        GnomeCanvasItem* ellipse;
-        GnomeCanvasItem* rect;
-        GnomeCanvasItem* text;
-        double x, y;
-        GdkBitmap* stipple;
-        gboolean use_stipple = FALSE;
-
         dcanvas->background_info = desktop_background_info_new();
         dcanvas->background_update_idle = 0;
-        
-        stipple = gdk_bitmap_create_from_data (NULL, gray50_bits, gray50_width, gray50_height);
-        
-        rect = gnome_canvas_item_new ((GnomeCanvasGroup*)GNOME_CANVAS(dcanvas)->root,
-                                      gnome_canvas_rect_get_type (),
-                                      "x1", 0.0,
-                                      "y1", 0.0,
-                                      "x2", (double)gdk_screen_width(),
-                                      "y2", (double)gdk_screen_height(),
-                                      "outline_color", "red",
-                                      "fill_color", "blue", 
-                                      "width_pixels", 8,
-                                      NULL);
 
-        x = gdk_screen_width();
-        y = 0.0;
+        dcanvas->popup = desktop_menu_new();
 
-        while (x > 0.0 || y < gdk_screen_height()) {
-        
-                rect = gnome_canvas_item_new ((GnomeCanvasGroup*)GNOME_CANVAS(dcanvas)->root,
-                                              gnome_canvas_rect_get_type (),
-                                              "x1", x - 103.0,
-                                              "y1", y,
-                                              "x2", x,
-                                              "y2", y + 70.0,
-                                              "fill_color", "red",
-                                              "fill_stipple",
-                                              use_stipple ? stipple : NULL,
-                                              NULL);
-
-                setup_item(rect);
-
-                use_stipple = !use_stipple;
-                
-                x -= 105;
-                y += 80;
-        }
-        
-        x = 0.0;
-        y = 0.0;
-
-        while (x < gdk_screen_width() || y < gdk_screen_height()) {
-        
-                rect = gnome_canvas_item_new ((GnomeCanvasGroup*)GNOME_CANVAS(dcanvas)->root,
-                                              gnome_canvas_rect_get_type (),
-                                              "x1", x,
-                                              "y1", y,
-                                              "x2", x + 53.0,
-                                              "y2", y + 30.0,
-                                              "fill_color", "green",
-                                              "fill_stipple",
-                                              use_stipple ? stipple : NULL,
-                                              NULL);
-
-                setup_item(rect);
-
-                use_stipple = !use_stipple;
-                
-                x += 90;
-                y += 80;
-        }
-
-        gdk_bitmap_unref (stipple);
-        
-        ellipse =
-                gnome_canvas_item_new ((GnomeCanvasGroup*)GNOME_CANVAS(dcanvas)->root,
-                                       gnome_canvas_ellipse_get_type (),
-                                       "x1", 220.0,
-                                       "y1", 30.0,
-                                       "x2", 270.0,
-                                       "y2", 60.0,
-                                       "outline_color", "goldenrod",
-                                       "width_pixels", 8,
-                                       NULL);
-
-        gtk_signal_connect(GTK_OBJECT(ellipse), "event",
-                           GTK_SIGNAL_FUNC(event_cb), NULL);
-        
-
-        text = gnome_canvas_item_new ((GnomeCanvasGroup*)GNOME_CANVAS(dcanvas)->root,
-                                       gnome_canvas_text_get_type (),
-                                      "x", 300.0,
-                                      "y", 70.0,
-                                      "text", "click ellipse to exit",
-                                      "font", "fixed",
-                                      "anchor", GTK_ANCHOR_NORTH_WEST,
-                                      "fill_color", "black",
-                                      NULL);
-
-        setup_item(text);
+        /* the attachment holds a refcount and eventually destroys
+           the popup */
+        gnome_popup_menu_attach(dcanvas->popup, dcanvas, NULL);
 }
-
 
 static void
 desktop_canvas_destroy (GtkObject *object)
@@ -415,7 +224,7 @@ update_bg_idle(gpointer data)
                 set_widget_color(GTK_WIDGET(canvas), canvas->background_info->solid_color);
                 break;
         default:
-                g_warning("FIXME not implemented yet");
+                g_warning("FIXME background features not all implemented yet");
                 break;
         }
                 

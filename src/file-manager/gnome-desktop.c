@@ -45,8 +45,8 @@ main (int argc, char *argv[])
         GtkWidget *window;
         GtkWidget *canvas;
 
-        (void) bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
-        (void) textdomain (PACKAGE);
+        (void)bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
+        (void)textdomain (PACKAGE);
         
         gnome_init ("gnome-desktop", VERSION, argc, argv);
         
@@ -54,6 +54,8 @@ main (int argc, char *argv[])
         canvas = desktop_canvas_new();
 
         gtk_container_add(GTK_CONTAINER(window), canvas);
+
+        desktop_canvas_set_solid_background_color(DESKTOP_CANVAS(canvas), 0xFF0000);
         
         gtk_signal_connect(GTK_OBJECT(window), "delete_event",
                            GTK_SIGNAL_FUNC(delete_event_cb), NULL);

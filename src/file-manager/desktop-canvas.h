@@ -86,6 +86,8 @@ struct _DesktopCanvas {
 
         DesktopBackgroundInfo *background_info;
         guint background_update_idle;
+
+        GtkWidget *popup;
 };
 
 struct _DesktopCanvasClass {

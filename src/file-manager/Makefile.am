@@ -17,6 +17,8 @@ libntl_file_manager_la_SOURCES=		\
 	fm-icon-cache.h			\
 	desktop-canvas.c		\
 	desktop-canvas.h		\
+	desktop-layout.h		\
+	desktop-layout.c		\
 	desktop-window.c		\
 	desktop-window.h		\
 	dfos-corba.c			\
@@ -36,6 +38,10 @@ noinst_PROGRAMS=gnome-desktop
 gnome_desktop_SOURCES=			\
 	desktop-canvas.c		\
 	desktop-canvas.h		\
+	desktop-layout.h		\
+	desktop-layout.c		\
+	desktop-menu.h			\
+	desktop-menu.c			\
 	desktop-window.c		\
 	desktop-window.h		\
 	gnome-desktop.c

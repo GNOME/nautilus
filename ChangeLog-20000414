@@ -1,3 +1,17 @@
+1999-12-16  Havoc Pennington  <hp@redhat.com>
+
+	* src/ntl-window-state.c (nautilus_window_save_state): lookup
+	signum before it's first used.
+	
+	* src/file-manager/desktop-layout.c: new layout module, not yet
+	done
+
+	* src/file-manager/desktop-canvas.c (desktop_canvas_init): Create
+	the right-click menu.
+
+	* src/file-manager/desktop-menu.c (desktop_menu_new): New module
+	to stick the right-click menu code in
+
 1999-12-16  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/ntl-window.c: Put meta-views on the right.
@@ -63,6 +77,7 @@
 
 	* src/file-manager/gnome-desktop.c (main): Quiet some warnings.
 
+>>>>>>> 1.33
 1999-12-16  Havoc Pennington  <hp@redhat.com>
 
 	* src/file-manager/gnome-desktop.c (main): warning fixes

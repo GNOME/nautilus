@@ -91,7 +91,7 @@ nautilus_window_change_location_internal(NautilusWindow *window, NautilusNavigat
       /* Going back. Remove one item from the prev list and add the current item to the next list. */
 
       g_assert(window->uris_prev);
-      g_assert(!strcmp(window->uris_prev->data, loci->navinfo.requested_uri));
+      g_assert(!strcmp((const gchar*)window->uris_prev->data, loci->navinfo.requested_uri));
       g_assert(window->ni);
 
       window->uris_next = g_slist_prepend(window->uris_next, g_strdup(window->ni->requested_uri));
@@ -104,7 +104,7 @@ nautilus_window_change_location_internal(NautilusWindow *window, NautilusNavigat
        * Otherwise, clobber the entire next list.
        */
 
-      if (window->uris_next && !strcmp(loci->navinfo.requested_uri, window->uris_next->data))
+      if (window->uris_next && !strcmp(loci->navinfo.requested_uri, (const gchar*)window->uris_next->data))
 	{
 	  g_free(window->uris_next->data);
 	  window->uris_next = g_slist_remove_link(window->uris_next, window->uris_next);

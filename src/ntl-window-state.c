@@ -78,6 +78,10 @@ nautilus_window_save_state(NautilusWindow *window, const char *config_path)
   guint signum;
   char cbuf[1024];
 
+  signum = gtk_signal_lookup("save_state", nautilus_view_get_type());
+
+  g_assert(signum != 0);
+  
   gnome_config_push_prefix(config_path);
   if(window->content_view)
     {
@@ -95,7 +99,7 @@ nautilus_window_save_state(NautilusWindow *window, const char *config_path)
 
 
   n = g_slist_length(window->meta_views);
-  signum = gtk_signal_lookup("save_state", nautilus_view_get_type());
+
   for(n = 0, cur = window->meta_views; cur; cur = cur->next, n++)
     {
       if(!NAUTILUS_VIEW(cur->data)->iid)
