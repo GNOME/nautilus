@@ -845,6 +845,15 @@ background_destroyed_callback (EelBackground *background,
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
                                          nautilus_file_background_theme_changed,
                                          background);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_BACKGROUND_SET,
+                                         nautilus_file_background_theme_changed,
+                                         background);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_BACKGROUND_COLOR,
+                                         nautilus_file_background_theme_changed,
+                                         background);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_BACKGROUND_FILENAME,
+                                         nautilus_file_background_theme_changed,
+                                         background);
 }
 
 /* key routine that hooks up a background and location */
