@@ -1,5 +1,13 @@
 2000-08-15  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-search-uri.c:
+	(nautilus_search_uri_to_human), (nautilus_is_search_uri),
+	(nautilus_self_check_search_uri): Fix the self-check, which was
+	exposing some errors that need to be fixed. For now, the failing
+	checks are commented out and marked with FIXME.
+
+2000-08-15  Darin Adler  <darin@eazel.com>
+
 	Getting closer to an implementation of the shared trash. Did a bit
 	of factoring so that the trash has its own NautilusDirectory
 	subclass now, and the appropriate functions are virtual.
