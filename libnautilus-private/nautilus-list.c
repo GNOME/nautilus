@@ -3167,7 +3167,9 @@ nautilus_list_get_drop_action (NautilusList *list,
 
 	drag_info = NAUTILUS_LIST (list)->details->drag_info;
 
-	/* FIXME bugzilla.eazel.com 2569: Too much code copied from nautilus-icon-dnd.c. Need to share more. */
+	/* FIXME bugzilla.eazel.com 2569: Too much code copied from nautilus-icon-dnd.c.
+	 * Need to share more.
+	 */
 
 	if (!drag_info->got_drop_data_type) {
 		/* drag_data_received didn't get called yet */

@@ -1,3 +1,16 @@
+2001-01-16  Pavel Cisler  <pavel@eazel.com>
+
+	Fix 5511: Dropping a file in same folder asks about replacing it.
+	Fix 5606: Left drag into window where file exists deletes file.
+	
+	* src/file-manager/fm-list-view.c: (fm_list_receive_dropped_icons):
+	During a file move, add a check to see if the dragged items are in the
+	target directory.
+	
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_get_drop_action):
+	Tiny tweak.
+	
 2001-01-16  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-background.c:
