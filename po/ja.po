@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-30 13:04+0100\n"
-"PO-Revision-Date: 2004-01-14 00:32+0900\n"
+"POT-Creation-Date: 2004-01-31 10:56+0900\n"
+"PO-Revision-Date: 2004-01-31 10:55+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -2235,6 +2235,10 @@ msgid "Replace _All"
 msgstr "全て置き換える(_A)"
 
 #. appended to new link file
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4690
 #, c-format
@@ -2289,6 +2293,9 @@ msgid " (another copy)"
 msgstr " (別のコピー)"
 
 #. localizers: tag used to detect the x11th copy of a file
+#. localizers: tag used to detect the x12th copy of a file
+#. localizers: tag used to detect the x13th copy of a file
+#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2324,6 +2331,9 @@ msgid "%s (another copy)%s"
 msgstr "%s (別のコピー)%s"
 
 #. localizers: appended to x11th file copy
+#. localizers: appended to x12th file copy
+#. localizers: appended to x13th file copy
+#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -2453,9 +2463,8 @@ msgid "You cannot copy items into the trash."
 msgstr "アイテムをゴミ箱の中へコピーできません。"
 
 #: libnautilus-private/nautilus-file-operations.c:1931
-#, fuzzy
 msgid "You cannot create links inside the trash."
-msgstr "アイテムをゴミ箱の中へコピーできません。"
+msgstr "ゴミ箱の中にリンクを生成できません。"
 
 #: libnautilus-private/nautilus-file-operations.c:1932
 msgid "Files and folders can only be moved into the trash."
@@ -3401,10 +3410,6 @@ msgstr "\"%s\" に関連づけられたアクションはありません。"
 msgid "No Action Associated"
 msgstr "関連づけられたアクションがありません"
 
-#. Note: This might be misleading in the components case, since the
-#. * user can't add components to the complete list even from the capplet.
-#. * (They can add applications though.)
-#.
 #: libnautilus-private/nautilus-program-chooser.c:1605
 msgid ""
 "You can configure GNOME to associate applications with file types. Do you "
@@ -4164,10 +4169,6 @@ msgstr "%s, 空き容量: %s"
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
 
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
 #: src/file-manager/fm-directory-view.c:1960
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
@@ -4451,9 +4452,8 @@ msgid "_Copy Files"
 msgstr "ファイルのコピー(_C)"
 
 #: src/file-manager/fm-directory-view.c:5579
-#, fuzzy
 msgid "The link is broken, do you want to move it to the Trash?"
-msgstr "リンク先が存在しません。ごみ箱に移動しますか？"
+msgstr "リンクが存在しません。ごみ箱に移動しますか？"
 
 #: src/file-manager/fm-directory-view.c:5581
 msgid "This link can't be used, because it has no target."
@@ -5073,8 +5073,6 @@ msgstr ""
 msgid "Error During Search"
 msgstr "検索エラー"
 
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
 #: src/file-manager/fm-search-list-view.c:211
 msgid ""
 "Find cannot open your file system index.  Your index may be missing or "
@@ -5770,16 +5768,6 @@ msgstr ""
 msgid "Migrated Old Desktop"
 msgstr "古いデスクトップの移行"
 
-#. Can't register myself due to trouble locating the
-#. * Nautilus_Shell.server file. This has happened when you
-#. * launch Nautilus with an LD_LIBRARY_PATH that
-#. * doesn't include the directory containing the oaf
-#. * library. It could also happen if the
-#. * Nautilus_Shell.server file was not present for some
-#. * reason. Sometimes killing oafd and gconfd fixes
-#. * this problem but we don't exactly understand why,
-#. * since neither of the above causes explain it.
-#.
 #: src/nautilus-application.c:534
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -5790,7 +5778,6 @@ msgstr ""
 "\"bonobo-slay\" コマンドを実行して下さい。あるいは、コンピュータの再起動また"
 "は Nautilus の再インストールを試みて下さい。"
 
-#. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:540
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -5838,6 +5825,7 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
+#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:570 src/nautilus-application.c:588
 #: src/nautilus-application.c:595
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -5946,19 +5934,16 @@ msgid "Connect to Server"
 msgstr "サーバへ接続"
 
 #: src/nautilus-connect-server-dialog.c:191
-#, fuzzy
 msgid "Link _Name:"
-msgstr "名前(_N):"
+msgstr "リンクの名前(_N):"
 
 #: src/nautilus-connect-server-dialog.c:210
-#, fuzzy
 msgid "_Location (URL):"
-msgstr "場所(_L):"
+msgstr "場所 (URL)(_L):"
 
 #: src/nautilus-connect-server-dialog.c:231
-#, fuzzy
 msgid "Example:"
-msgstr "エンブレム:"
+msgstr "サンプル:"
 
 #: src/nautilus-connect-server-dialog.c:248
 msgid "C_onnect"
@@ -6320,22 +6305,27 @@ msgid "Nautilus"
 msgstr "Nautilus"
 
 #: src/nautilus-main.c:259
+#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check オプションには URI を指定できません。\n"
 
 #: src/nautilus-main.c:263
+#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check オプションには他のオプションを指定できません。\n"
 
 #: src/nautilus-main.c:267
+#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit オプションには URI を指定できません。\n"
 
 #: src/nautilus-main.c:271
+#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart オプションには URI を指定できません。\n"
 
 #: src/nautilus-main.c:275
+#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry オプションには複数の URI を指定できません。\n"
 
@@ -6988,9 +6978,8 @@ msgid "Choose a view for the current location, or modify the set of views"
 msgstr "この場所の表示スタイルの選択、またはスタイルを変更します"
 
 #: src/nautilus-shell-ui.xml.h:3
-#, fuzzy
 msgid "Close this folder"
-msgstr "このフォルダの親フォルダを閉じます"
+msgstr "このフォルダを閉じます"
 
 #: src/nautilus-shell-ui.xml.h:5
 msgid "Display Nautilus help"
@@ -7083,18 +7072,16 @@ msgid "_About"
 msgstr "情報(_A)"
 
 #: src/nautilus-shell-ui.xml.h:31
-#, fuzzy
 msgid "_Backgrounds and Emblems..."
-msgstr "背景とエンブレム(_B)"
+msgstr "背景とエンブレム(_B)..."
 
 #: src/nautilus-shell-ui.xml.h:32
 msgid "_CD Creator"
 msgstr "CD の作成(_C)"
 
 #: src/nautilus-shell-ui.xml.h:33
-#, fuzzy
 msgid "_Close"
-msgstr "ウィンドウを閉じる(_C)"
+msgstr "閉じる(_C)"
 
 #: src/nautilus-shell-ui.xml.h:34
 msgid "_Contents"
@@ -7434,18 +7421,3 @@ msgstr "ネットワーク・サーバ"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Nautilus でお使いのネットワークのサーバを表示します"
-
-#~ msgid "C_hoose"
-#~ msgstr "選択(_H)"
-
-#~ msgid "Other _Viewer..."
-#~ msgstr "他のビューア(_V)..."
-
-#~ msgid "A _Viewer..."
-#~ msgstr "ビューア(_V)..."
-
-#~ msgid "Choose another viewer with which to view the selected item"
-#~ msgstr "選択したアイテムを表示する他のビューアを選びます"
-
-#~ msgid "Close this window"
-#~ msgstr "このウィンドウを閉じます"
