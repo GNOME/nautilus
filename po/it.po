@@ -7,9 +7,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.0.4\n"
-"POT-Creation-Date: 2002-09-13 20:23-0400\n"
-"PO-Revision-Date: 2002-09-11 19:55+0200\n"
-"Last-Translator: Pier Luigi Fiorini <plfiorini@supereva.it>\n"
+"POT-Creation-Date: 2002-09-15 18:29+0200\n"
+"PO-Revision-Date: 2002-11-07 11:19+0100\n"
+"Last-Translator: Luca Ferretti <elle.uca@genie.it>\n"
 "Language-Team: Italiano <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -59,7 +59,7 @@ msgstr "Vista hardware"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:5
 msgid "View as Hardware"
-msgstr "Vedi come Hardware"
+msgstr "Vedi come hardware"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:6
 msgid "hardware view"
@@ -134,11 +134,11 @@ msgstr "Cronologia"
 
 #: components/history/Nautilus_View_history.server.in.in.h:2
 msgid "History side pane"
-msgstr "Pannello laterale \"Cronologia\""
+msgstr "Riquadro laterale \"Cronologia\""
 
 #: components/history/Nautilus_View_history.server.in.in.h:3
 msgid "History side pane for Nautilus"
-msgstr "Pannello laterale \"Cronologia\" per Nautilus"
+msgstr "Riquadro laterale \"Cronologia\" per Nautilus"
 
 # ma che e'?
 #: components/loser/content/Nautilus_View_content-loser.server.in.in.h:1
@@ -272,7 +272,7 @@ msgstr "Fabbrica della vista musica"
 
 #: components/music/Nautilus_View_music.server.in.in.h:6
 msgid "View as Music"
-msgstr "Vedi come Musica"
+msgstr "Vedi come musica"
 
 #: components/music/mpg123.c:30
 msgid "Blues"
@@ -876,9 +876,11 @@ msgstr "Synthpop"
 msgid "Unknown"
 msgstr "Sconosciuto"
 
+# non si tratta di reale traccia su cd audio, 
+# ma del tag degli mp3
 #: components/music/nautilus-music-view.c:348
 msgid "Track"
-msgstr "Traccia"
+msgstr "Brano"
 
 #: components/music/nautilus-music-view.c:359
 msgid "Title"
@@ -999,7 +1001,7 @@ msgstr "<span size=\"xx-large\">%s - %s</span>"
 
 #: components/notes/Nautilus_View_notes.server.in.in.h:1
 msgid "Nodes side pane for Nautilus"
-msgstr "Pannello laterale \"Note\" per Nautilus"
+msgstr "Riquadro laterale \"Note\" per Nautilus"
 
 #: components/notes/Nautilus_View_notes.server.in.in.h:2
 msgid "Notes"
@@ -1007,7 +1009,7 @@ msgstr "Note"
 
 #: components/notes/Nautilus_View_notes.server.in.in.h:3
 msgid "Notes side pane"
-msgstr "Pannello laterale \"Note\""
+msgstr "Riquadro laterale \"Note\""
 
 #: components/sample/Nautilus_View_sample.server.in.in.h:1
 msgid "Nautilus Sample view"
@@ -1110,7 +1112,7 @@ msgstr "Fabbrica della vista testo"
 
 #: components/text/Nautilus_View_text.server.in.in.h:6
 msgid "View as Text"
-msgstr "Vedi come Testo"
+msgstr "Vedi come testo"
 
 # Questo ed i successivi riferiti ai caratteri non dovrebbero essere obsoleti?
 #: components/text/nautilus-text-view-ui.xml.h:1
@@ -1208,7 +1210,7 @@ msgstr "fornisce uno stato visuale"
 
 #: components/tree/Nautilus_View_tree.server.in.in.h:1
 msgid "Nautilus Tree side pane"
-msgstr "Pannello laterale \"Albero\" per Nautilus"
+msgstr "Riquadro laterale \"Albero\" per Nautilus"
 
 #: components/tree/Nautilus_View_tree.server.in.in.h:2
 msgid "Nautilus Tree view"
@@ -1624,7 +1626,7 @@ msgstr "Imposta l'ambiente utente"
 
 #: data/preferences.desktop.in.h:2
 msgid "Desktop Preferences"
-msgstr "Impostazioni Desktop"
+msgstr "Preferenze del Desktop"
 
 #: data/serverconfig.desktop.in.h:1
 msgid "Configure network services (web server, DNS server, etc.)"
@@ -3350,7 +3352,7 @@ msgstr "Attivare gli oggetti con un _doppio clic"
 
 #: libnautilus-private/nautilus-global-preferences.c:149
 msgid "E_xecute files when they are clicked"
-msgstr "_Eseguire i file quando vengono cliccati"
+msgstr "Ese_guire i file quando vengono cliccati"
 
 #: libnautilus-private/nautilus-global-preferences.c:153
 msgid "Display _files when they are clicked"
@@ -3764,14 +3766,12 @@ msgstr "Tipi di file e programmi"
 msgid "_Go There"
 msgstr "_Vai là"
 
-# :stringa originale errata!! problema del gnomecc
+# Per ora la sezione "File type .." non ha traduzione in italiano
 #: libnautilus-private/nautilus-program-chooser.c:1453
 msgid ""
 "You can configure which programs are offered for which file types in the "
 "File Types and Programs dialog."
-msgstr ""
-"Per una gestione avanzata riferirsi alla sezione \"Avanzate\" delle "
-"\"Impostazioni Desktop\"."
+msgstr "Per una gestione avanzata riferirsi alla sezione \"Avanzate\" delle \"Preferenze del Desktop\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:1487
 msgid "Open with Other Application"
@@ -3784,7 +3784,7 @@ msgstr "Scegliere un'applicazione con la quale aprire \"%s\":"
 
 #: libnautilus-private/nautilus-program-chooser.c:1492
 msgid "Open with Other Viewer"
-msgstr "Apri con un altro visualizzatore"
+msgstr "Scelta di un altro visualizzatore"
 
 #: libnautilus-private/nautilus-program-chooser.c:1493
 #, c-format
@@ -4446,11 +4446,11 @@ msgstr "Lista di ricerca"
 
 #: src/Nautilus_shell.server.in.h:20
 msgid "View as Icons"
-msgstr "Vedi come Icone"
+msgstr "Vedi come icone"
 
 #: src/Nautilus_shell.server.in.h:21
 msgid "View as List"
-msgstr "Vedi come Lista"
+msgstr "Vedi come lista"
 
 #: src/file-manager/fm-desktop-icon-view.c:751
 msgid "Background"
@@ -4459,7 +4459,7 @@ msgstr "Sfondo"
 #: src/file-manager/fm-desktop-icon-view.c:922
 #, c-format
 msgid "Error executing utility program '%s': %s"
-msgstr "Errore nell'esecuzione del programma di utilità  '%s': %s"
+msgstr "Errore nell'esecuzione del programma di utilità '%s': %s"
 
 #: src/file-manager/fm-desktop-icon-view.c:1256
 msgid "E_ject"
@@ -4800,12 +4800,12 @@ msgstr "_Elimina"
 
 #: src/file-manager/fm-directory-view.c:4401
 msgid "Ma_ke Links"
-msgstr "Crea co_llegamenti"
+msgstr "Crea colle_gamenti"
 
 #: src/file-manager/fm-directory-view.c:4402
 #: src/file-manager/nautilus-directory-view-ui.xml.h:14
 msgid "Ma_ke Link"
-msgstr "Crea co_llegamento"
+msgstr "Crea colle_gamento"
 
 #. FIXME: We don't use spaces to pad labels!
 #: src/file-manager/fm-directory-view.c:4415
@@ -4817,11 +4817,11 @@ msgstr "S_vuota Cestino"
 #: src/file-manager/fm-directory-view.c:4425
 #: src/file-manager/nautilus-directory-view-ui.xml.h:27
 msgid "Re_move Custom Icons"
-msgstr "_Rimuovi icone personalizzate"
+msgstr "Ri_muovi icone personalizzate"
 
 #: src/file-manager/fm-directory-view.c:4426
 msgid "Re_move Custom Icon"
-msgstr "_Rimuovi icona personalizzata"
+msgstr "Ri_muovi icona personalizzata"
 
 #: src/file-manager/fm-directory-view.c:4439
 msgid "Cu_t File"
@@ -5163,10 +5163,13 @@ msgstr ""
 msgid "Images Only"
 msgstr "Solo immagini"
 
+# %s e' il nome del file di cui si visualizzano le prop
+# il messagio e' l'intestazione della finestra prop
+# quindi portebbe anche essere "prop del file "%s""
 #: src/file-manager/fm-properties-window.c:609
 #, c-format
 msgid "%s Properties"
-msgstr "Proprietà  di %s"
+msgstr "Proprietà di \"%s\""
 
 #: src/file-manager/fm-properties-window.c:810
 msgid "Cancel Group Change?"
@@ -5244,9 +5247,8 @@ msgstr "Collegamento a:"
 
 #: src/file-manager/fm-properties-window.c:1638
 msgid "MIME type:"
-msgstr "tipo MIME:"
+msgstr "Tipo MIME:"
 
-# sembra strano, ma in nautilus-2.0.0 questa stringa e' associata alla data di creazione!
 #: src/file-manager/fm-properties-window.c:1644
 msgid "Modified:"
 msgstr "Ultima modifica:"
@@ -5347,7 +5349,7 @@ msgstr "Permessi come numero:"
 # si riferisce all'ultima modifica dei soli permessi!!
 #: src/file-manager/fm-properties-window.c:2091
 msgid "Last changed:"
-msgstr "Cambiati:"
+msgstr "Permessi cambiati il:"
 
 #: src/file-manager/fm-properties-window.c:2095
 #, c-format
@@ -5790,7 +5792,7 @@ msgstr "Usa lo sfondo predefinito per questa posizione"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:38
 msgid "View or modify the properties of each selected item"
-msgstr "Mostra o modifica le proprietà  di ogni oggetto selezionato"
+msgstr "Mostra o modifica le proprietà di ogni oggetto selezionato"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:42
 msgid "_New Folder"
@@ -5831,7 +5833,7 @@ msgstr "_Disponi questi elementi"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:2
 msgid "By Modification _Date"
-msgstr "Per _data di modifica"
+msgstr "Per d_ata di modifica"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:3
 msgid "By _Emblems"
@@ -5888,7 +5890,7 @@ msgstr "Ripristina ogni icona selezionata alle sue dimensioni originali"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:21
 msgid "Str_etch Icon"
-msgstr "Ri_dimensiona _icona"
+msgstr "Ri_dimensiona icona"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:22
 msgid "Toggle using a tighter layout scheme"
@@ -6129,7 +6131,7 @@ msgstr "Nessun segnalibro definito"
 
 #: src/nautilus-bookmarks-window.glade.h:1
 msgid "Edit Bookmarks"
-msgstr "_Modifica segnalibri"
+msgstr "Modifica i segnalibri"
 
 #: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:56
 msgid "_Bookmarks"
@@ -6260,7 +6262,7 @@ msgstr "Elementi nuova finestra"
 # :: pref-finestre-02
 #: src/nautilus-preferences-dialog.c:78
 msgid "Display _side pane"
-msgstr "Mostrare la barra _laterale"
+msgstr "Mostrare il riquadro _laterale"
 
 # :: pref-finestre-03
 #: src/nautilus-preferences-dialog.c:83
@@ -6402,7 +6404,7 @@ msgstr "Vista a lista"
 
 #: src/nautilus-preferences-dialog.c:206
 msgid "Arrange _items:"
-msgstr "Disporre _elementi:"
+msgstr "Dispo_rre gli elementi:"
 
 #: src/nautilus-preferences-dialog.c:211
 msgid "Sort in _reverse"
@@ -6458,7 +6460,7 @@ msgstr "Schede"
 
 #: src/nautilus-preferences-dialog.c:297
 msgid "_Show folders only"
-msgstr "_Mostrare sole le cartelle"
+msgstr "_Mostrare solo le cartelle"
 
 #: src/nautilus-preferences-dialog.c:305
 msgid "Maximum items per site"
@@ -6476,9 +6478,10 @@ msgstr "Aggiornamento in minuti"
 msgid "_Update frequency in minutes"
 msgstr "_Frequenza d'aggiornamento in minuti"
 
+#  :sravolto
 #: src/nautilus-preferences-dialog.c:322
 msgid "Views"
-msgstr "Viste"
+msgstr "Vista delle cartelle"
 
 #: src/nautilus-preferences-dialog.c:323
 msgid "Appearance"
@@ -6500,7 +6503,7 @@ msgstr "Gestione dei file"
 
 #: src/nautilus-preferences-dialog.c:328
 msgid "Side Panes"
-msgstr "Pannelli laterali"
+msgstr "Riquadri laterali"
 
 #: src/nautilus-preferences-dialog.c:330
 msgid "Search"
@@ -6511,9 +6514,11 @@ msgid "Navigation"
 msgstr "Navigazione"
 
 # preferences -> miniature, testo nelle icone ...
+#
+#  :stravolto
 #: src/nautilus-preferences-dialog.c:335
 msgid "Performance"
-msgstr "Dettagli"
+msgstr "Dettagli delle icone"
 
 #: src/nautilus-preferences-dialog.c:337
 msgid "News Panel"
@@ -6522,7 +6527,7 @@ msgstr "Pannello delle notizie"
 # titolo della finestra
 #: src/nautilus-preferences-dialog.c:427
 msgid "Preferences"
-msgstr "Impostazioni"
+msgstr "Preferenze del file manager"
 
 #: src/nautilus-profiler.c:209
 msgid "Print"
@@ -6888,7 +6893,7 @@ msgstr "[Proprietario del file] non è [root]"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
-msgstr "Aggiunge un segnalibro per la posizione corrente a questo menù"
+msgstr "Aggiunge a questo menù un segnalibro per la posizione corrente"
 
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Back"
@@ -6896,23 +6901,23 @@ msgstr "Indietro"
 
 #: src/nautilus-shell-ui.xml.h:4
 msgid "Change the visibility of this window's location bar"
-msgstr "Cambia la visibilità  della barra della posizione di questa finestra"
+msgstr "Cambia la visibilità della barra della posizione di questa finestra"
 
 #: src/nautilus-shell-ui.xml.h:5
 msgid "Change the visibility of this window's sidebar"
-msgstr "Cambia la visibilità  della barra laterale di questa finestra"
+msgstr "Cambia la visibilità della barra laterale di questa finestra"
 
 #: src/nautilus-shell-ui.xml.h:6
 msgid "Change the visibility of this window's statusbar"
-msgstr "Cambia la visibilità  della barra di stato di questa finestra"
+msgstr "Cambia la visibilità della barra di stato di questa finestra"
 
 #: src/nautilus-shell-ui.xml.h:7
 msgid "Change the visibility of this window's toolbar"
-msgstr "Cambia la visibilità  della barra degli strumenti di questa finestra"
+msgstr "Cambia la visibilità della barra degli strumenti di questa finestra"
 
 #: src/nautilus-shell-ui.xml.h:8
 msgid "Choose a view for the current location, or modify the set of views"
-msgstr "Scegle una vista per la posizione corrente, o modifica il set di viste"
+msgstr "Sceglie una vista per la posizione corrente, o modifica il set di viste"
 
 # :pessima!!!!
 #: src/nautilus-shell-ui.xml.h:9
@@ -6960,7 +6965,7 @@ msgstr "Aggiorna la posizione corrente all'ultimo contenuto"
 
 #: src/nautilus-shell-ui.xml.h:19
 msgid "Edit Nautilus preferences"
-msgstr "Modifica le impostazioni di Nautilus"
+msgstr "Personalizza l'aspetto e il modo d'uso del programma"
 
 #: src/nautilus-shell-ui.xml.h:20
 msgid "Find"
@@ -6978,12 +6983,10 @@ msgstr "Mostra le Risorse"
 msgid "Go to the home location"
 msgstr "Mostra la Home"
 
-# non mi soddisfa molto
 #: src/nautilus-shell-ui.xml.h:24
 msgid "Go to the next visited location"
 msgstr "Va alla posizione successiva"
 
-# non mi soddisfa molto
 #: src/nautilus-shell-ui.xml.h:25
 msgid "Go to the previous visited location"
 msgstr "Va alla posizione precedente"
@@ -7015,7 +7018,7 @@ msgstr "Apre un'altra finestra di Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:33
 msgid "Prefere_nces"
-msgstr "I_mpostazioni"
+msgstr "Preferen_ze"
 
 #: src/nautilus-shell-ui.xml.h:34
 msgid "Reload"
@@ -7037,7 +7040,7 @@ msgstr "Cerca dei file in questo computer"
 # usato posizione per coerenza con altre voci
 #: src/nautilus-shell-ui.xml.h:39
 msgid "Show the contents at the normal size"
-msgstr "Mostra la poszione corrente alla dimensione normale"
+msgstr "Mostra la posizione corrente alla dimensione normale"
 
 #: src/nautilus-shell-ui.xml.h:40 src/nautilus-zoom-control.c:108
 msgid "Show the contents in less detail"
@@ -7087,7 +7090,7 @@ msgstr "Zoom _indietro"
 
 #: src/nautilus-shell-ui.xml.h:52
 msgid "_About"
-msgstr "_Informazioni su..."
+msgstr "_Informazioni"
 
 #: src/nautilus-shell-ui.xml.h:53
 msgid "_Add Bookmark"
@@ -7097,7 +7100,6 @@ msgstr "_Aggiungi segnalibro"
 msgid "_Back"
 msgstr "_Indietro"
 
-# Che diavolo vuole dire close accelerator??
 #: src/nautilus-shell-ui.xml.h:55
 msgid "_Backgrounds and Emblems"
 msgstr "Sfondi e sim_boli"
@@ -7165,7 +7167,7 @@ msgstr "_Reimposta il profiling"
 
 #: src/nautilus-shell-ui.xml.h:75
 msgid "_Side Pane"
-msgstr "Barra _laterale"
+msgstr "Riquadro _laterale"
 
 #: src/nautilus-shell-ui.xml.h:76
 msgid "_Start Here"
@@ -7257,7 +7259,6 @@ msgstr "Spiacente, ma \"%s\" non è un file di tema valido."
 msgid "Select a theme folder to add as a new theme:"
 msgstr "Selezionare la cartella del nuovo tema:"
 
-# :modif
 #: src/nautilus-theme-selector.c:306
 msgid ""
 "Sorry, but you can't remove the current theme. Please change to another "
@@ -7455,12 +7456,12 @@ msgstr "Impossibile mostrare la posizione"
 
 #: src/nautilus-window-manage-views.c:1603
 msgid "Side Pane"
-msgstr "Barra laterale"
+msgstr "Riquadro laterale"
 
 # non sicuro su forma verbalem, ma non so quando appare
 #: src/nautilus-window-manage-views.c:1605
 msgid "Contains a side pane view"
-msgstr "Contiente la vista di un pannello laterale"
+msgstr "Contiente la vista di un riquadro laterale"
 
 # c'era una revisione megliore di questo sulla mailing-l
 #. This is a little joke, shows up occasionally. I only
@@ -7504,9 +7505,7 @@ msgstr ""
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
-msgstr ""
-"Nautilus è una shell grafica per GNOME che rende facile la gestione dei "
-"propri file e del resto del sistema."
+msgstr "Shell grafica per GNOME che rende facile la gestione dei propri file e del resto del sistema."
 
 #: src/nautilus-window-menus.c:728
 #, c-format
