@@ -1,3 +1,14 @@
+2000-05-14  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/trilobite/lib/helixcode-utils.c:
+	(determine_distribution_type), (get_distribution_name):
+	Beginning part of fix for Bug #860.  Created the 2 functions listed
+	above to determine valid DistributionType and return a printable
+	string name of the DistributionType.
+	* components/services/trilobite/lib/helixcode-utils.h:
+	Minor fixes to DistributionType enum.  Added declarations for
+	determine_distribution_type and get_distribution_name.
+
 2000-05-13  Andy Hertzfeld <andy@eazel.com>
 
 	fixed bug 842, finish emblems UI in properties window 

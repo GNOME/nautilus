@@ -107,6 +107,12 @@ check_for_redhat () {
 	}
 } /* end check_for_redhat */
 
+
+/* FIXME - the following functions are not closing fd correctly.  This needs
+   to be fixed and the functions need to be cleaned up.  They are ugly right
+   now.  Bug #908 in Bugzilla.
+ */
+
 static float
 determine_redhat_version () {
 
@@ -258,86 +264,74 @@ determine_debian_version () {
 	return version;
 } /* determine_debian_version */
 
-void
-determine_distro (DistributionType *dtype, char **distro_string) {
+DistributionType
+determine_distribution_type (void) {
 
 	float version;
+	DistributionType rv;
 
 	/* Check for TurboLinux */
 	if (g_file_exists ("/etc/turbolinux-release")) {
 		version = determine_turbolinux_version ();
 		if (version >= 7) {
-			*dtype = DISTRO_TURBOLINUX_6;
-			*distro_string = "TurboLinux 7.0";
+			rv = DISTRO_TURBOLINUX_6;
 		}
 		else if (version >= 6) {
-			*dtype = DISTRO_TURBOLINUX_6;
-			*distro_string = "TurboLinux 6.0";
+			rv = DISTRO_TURBOLINUX_6;
 		}
 		else if (version >= 4) {
-			*dtype = DISTRO_TURBOLINUX_4;
-			*distro_string = "TurboLinux 4.0";
+			rv = DISTRO_TURBOLINUX_4;
 		}
-		return;
+		return rv;
 	}
 	/* Check for Mandrake */
 	if (g_file_exists ("/etc/mandrake-release")) {
 		version = determine_mandrake_version ();
 		if (version >= 7) {
-			*dtype = DISTRO_MANDRAKE_7;
-			*distro_string = "Linux Mandrake 7.0 or newer";
+			rv = DISTRO_MANDRAKE_7;
 		}
 		else if (version > 6) {
-			*dtype = DISTRO_MANDRAKE_6_1;
-			*distro_string = "Linux Mandrake 6.1";
+			rv = DISTRO_MANDRAKE_6_1;
 		}
 		else {
-			*dtype = DISTRO_UNSUPPORTED;
-			*distro_string = "Unsupported Linux Mandrake";
+			rv = DISTRO_UNKNOWN;
 		}
-		return;
+		return rv;
 	}
 	/* Check for SuSE */
 	else if (g_file_exists ("/etc/SuSE-release")) {
 		version = determine_suse_version ();
 		if (version) {
-			*dtype = DISTRO_SUSE;
-			*distro_string = "SuSE";
+			rv = DISTRO_SUSE;
 		}
 		else {
-			*dtype = DISTRO_UNSUPPORTED;
-			*distro_string = "Unsupported SuSE";
+			rv = DISTRO_UNKNOWN;
 		}
-		return;
+		return rv;
 	}
 	/* Check for Corel */
 	else if (g_file_exists ("/etc/environment.corel")) {
-	        *dtype = DISTRO_COREL;
-		*distro_string = "Corel Linux";
-		return;
+	        rv = DISTRO_COREL;
+		return rv;
 	}
 	/* Check for Debian */
 	else if (g_file_exists ("/etc/debian_version")) {
 		version = determine_debian_version ();
 		if (version == 2.1) {
-			*dtype = DISTRO_DEBIAN_2_1;
-			*distro_string = "Debian GNU/Linux 2.1";
+			rv = DISTRO_DEBIAN_2_1;
 		}
 		else if (version >= 2.2) {
-			*dtype = DISTRO_DEBIAN_2_2;
-			*distro_string = "Debian GNU/Linux 2.2 or newer";
+			rv = DISTRO_DEBIAN_2_2;
 		}
 		else {
-			*dtype = DISTRO_UNSUPPORTED;
-			*distro_string = "Unsupported Debian GNU/Linux";
+			rv = DISTRO_UNKNOWN;
 		}
-		return;
+		return rv;
 	}
 	/* Check for Caldera */
 	else if (g_file_exists ("/etc/coas")) {
-		*dtype = DISTRO_CALDERA;
-		*distro_string = "Caldera OpenLinux";
-		return;
+		rv = DISTRO_CALDERA;
+		return rv;
 	}
 	/* Check for Red Hat/LinuxPPC */
 	/* This has to be checked last because many of the Red Hat knockoff
@@ -345,29 +339,93 @@ determine_distro (DistributionType *dtype, char **distro_string) {
 	if (g_file_exists ("/etc/redhat-release")) {
 		version = determine_redhat_version ();
 		if (version >= 1999) {
-			*dtype = DISTRO_LINUXPPC;
-			*distro_string = "LinuxPPC";
+			rv = DISTRO_LINUXPPC;
 		}
 		else if (version == 6.0) {
-			*dtype = DISTRO_REDHAT_6;
-			*distro_string = "Red Hat Linux 6.0";
+			rv = DISTRO_REDHAT_6;
 		}
-		else if (version > 6) {
-			*dtype = DISTRO_REDHAT_6;
-			*distro_string = "Red Hat Linux 6.1 or newer";
+		else if (version == 6.1) {
+			rv = DISTRO_REDHAT_6_1;
+		}
+		else if (version >= 6.2) {
+			rv = DISTRO_REDHAT_6_2;
 		}
 		else if (version >= 5) {
-			*dtype = DISTRO_REDHAT_5;
-			*distro_string = "Red Hat Linux 5.x";
+			rv = DISTRO_REDHAT_5;
 		}
 		else {
-			*dtype = DISTRO_UNSUPPORTED;
-			*distro_string = "Unsupported Red Hat";
+			rv = DISTRO_UNKNOWN;
 		}
-		return;
+		return rv;
 	}
 	/* If all fail... */
-	*dtype = DISTRO_UNKNOWN;
-	*distro_string = "Unknown Distribution";
+	rv = DISTRO_UNKNOWN;
+	return rv;
+} /* determine_distribution_type */
 
-} /* determine_distro */
+char*
+get_distribution_name (const DistributionType* dtype) {
+
+	char* rv;
+	rv = NULL;
+
+	while (rv != NULL) {
+		switch ((int) dtype) {
+			case DISTRO_REDHAT_5:
+				rv = g_strdup ("RedHat Linux 5.x");
+				break;
+			case DISTRO_REDHAT_6:
+				rv = g_strdup ("RedHat Linux 6.0");
+				break;
+			case DISTRO_REDHAT_6_1:
+				rv = g_strdup ("RedHat Linux 6.1");
+				break;
+			case DISTRO_REDHAT_6_2:
+				rv = g_strdup ("RedHat Linux 6.2");
+				break;
+			case DISTRO_MANDRAKE_6_1:
+				rv = g_strdup ("Mandrake Linux 6.2");
+				break;
+			case DISTRO_MANDRAKE_7:
+				rv = g_strdup ("Mandrake Linux 7.x");
+				break;
+			case DISTRO_CALDERA:
+				rv = g_strdup ("Caldera OpenLinux");
+				break;
+			case DISTRO_SUSE:
+				rv = g_strdup ("SuSe Linux");
+				break;
+			case DISTRO_LINUXPPC:
+				rv = g_strdup ("LinuxPPC");
+				break;
+			case DISTRO_TURBOLINUX_4:
+				rv = g_strdup ("TurboLinux 4.x");
+				break;
+			case DISTRO_TURBOLINUX_6:
+				rv = g_strdup ("TurboLinux 6.x");
+				break;
+			case DISTRO_COREL:
+				rv = g_strdup ("Corel Linux");
+				break;
+			case DISTRO_DEBIAN_2_1:
+				rv = g_strdup ("Debian GNU/Linux 2.1");
+				break;
+			case DISTRO_DEBIAN_2_2:
+				rv = g_strdup ("Debian GNU/Linux 2.2");
+				break;
+			case DISTRO_UNKNOWN:
+				rv = g_strdup ("Unknown Linux Distribtion");
+				break;
+			default:
+				rv = g_strdup ("INVALID_RETURN_VALUE");
+				break;
+		}
+	}
+	if (rv == "INVALID_RETURN_VALUE") {
+		fprintf (stderr, "Invalid DistributionType !\n");
+		exit (1);
+	}
+	else {
+		return rv;
+	}
+} /* end get_distribution_name */
