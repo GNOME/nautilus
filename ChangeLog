@@ -1,3 +1,18 @@
+2002-04-21  Alexander Larsson  <alla@lysator.liu.se>
+
+	* src/nautilus-window.h:
+	* src/nautilus-window-manage-views.c:
+	Only display toplevel window when it's fully constructed.
+
+	* src/nautilus-desktop-window.c (nautilus_desktop_window_new): 
+	* src/nautilus-application.c (nautilus_application_create_desktop_window):
+	Don't show desktop window here. It's shown later when the view
+	is loaded.
+
+	* libnautilus-private/nautilus-horizontal-splitter.c
+	(nautilus_horizontal_splitter_pack2): Remove old code that is
+	not neccesary when we display the window fully constructed.
+
 2002-04-21  Anders Carlsson  <andersca@gnu.org>
 
 	* libnautilus-private/nautilus-icon-container.c:

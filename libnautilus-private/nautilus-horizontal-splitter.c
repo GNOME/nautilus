@@ -283,34 +283,11 @@ void
 nautilus_horizontal_splitter_pack2 (NautilusHorizontalSplitter *splitter,
 				    GtkWidget                  *child2)
 {
-	gboolean re_expose;
 	GtkPaned *paned;
 	
 	g_return_if_fail (GTK_IS_WIDGET (child2));
 	g_return_if_fail (NAUTILUS_IS_HORIZONTAL_SPLITTER (splitter));
 
 	paned = GTK_PANED (splitter);
-
-	re_expose = (paned->child2 == NULL ||
-		     !GTK_WIDGET_VISIBLE (paned->child2));
-
 	gtk_paned_pack2 (paned, child2, TRUE, TRUE);
-
-
-	if (re_expose) {
-		/* We have to expose the divider, since the pane relies
-		 * on a resize when you add the 2nd item to get it's
-		 * rendering right */
-
-		/* this calculates the handle positon correctly */
-		gtk_widget_size_allocate (GTK_WIDGET (splitter),
-					  &GTK_WIDGET (splitter)->allocation);
-
-		/* and this renders it */
-		gtk_widget_queue_draw_area (GTK_WIDGET (splitter),
-					    paned->handle_pos.x,
-					    paned->handle_pos.y,
-					    paned->handle_pos.width,
-					    paned->handle_pos.height);
-	}
 }

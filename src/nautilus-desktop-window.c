@@ -117,8 +117,6 @@ nautilus_desktop_window_new (NautilusApplication *application)
 	 */
 	nautilus_desktop_window_update_directory (window);
 
-	gtk_widget_show (GTK_WIDGET (window));
-
 	return window;
 }
 

@@ -62,6 +62,12 @@ typedef struct {
         void (* add_current_location_to_history_list) (NautilusWindow *window);
 } NautilusWindowClass;
 
+typedef enum {
+        NAUTILUS_WINDOW_NOT_SHOWN,
+        NAUTILUS_WINDOW_POSITION_SET,
+        NAUTILUS_WINDOW_SHOULD_SHOW
+} NautilusWindowShowState;
+
 typedef struct NautilusWindowDetails NautilusWindowDetails;
 
 struct NautilusWindow {
@@ -101,6 +107,9 @@ struct NautilusWindow {
         
         /* Pending changes */
         NautilusViewFrame *new_content_view;
+
+        /* Window showed state (for saved_window_positions) */
+        NautilusWindowShowState show_state;
 };
 
 GtkType          nautilus_window_get_type             (void);

@@ -590,8 +590,6 @@ nautilus_application_create_desktop_window (NautilusApplication *application)
 	nautilus_application_desktop_window = nautilus_desktop_window_new (application);
 
 	create_in_progress = FALSE;
-
-	gtk_widget_show (GTK_WIDGET (nautilus_application_desktop_window));
 }
 
 void
