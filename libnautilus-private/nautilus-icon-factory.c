@@ -1123,7 +1123,7 @@ load_icon_file (const char    *filename,
 			height = gdk_pixbuf_get_height (pixbuf);
 			size = MAX (width, height);
 
-			if (size > base_size) {
+			if (size > nominal_size) {
 				base_size = size;
 			}
 		} else if (base_size == 0) {
