@@ -1,7 +1,7 @@
 #! /bin/bash
 make clean
 make CFLAGS="-O -Werror" LDFLAGS="-static"
-gcc -static -O -Werror -o nautilus-installer main.o support.o interface.o callbacks.o installer.o ../../components/services/trilobite/libtrilobite/helixcode-utils.o ../../components/services/install/lib/libinstall.a -L/gnome/lib -lgnomeui -lgnome -lart_lgpl -lgdk_imlib -lgtk -lgdk -lgmodule -lglib -L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE /usr/lib/libesd.a /usr/lib/libaudiofile.a -lghttp -L/usr/lib -lrpm -lz -ldb1 -lpopt -lxml
+gcc -static -O -Werror -o nautilus-installer main.o support.o interface.o callbacks.o installer.o ../../components/services/trilobite/libtrilobite/helixcode-utils.o ../../components/services/trilobite/libtrilobite/trilobite-core-distribution.o ../../components/services/install/lib/libinstall.a -L/gnome/lib -lgnomeui -lgnome -lart_lgpl -lgdk_imlib -lgtk -lgdk -lgmodule -lglib -L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE /usr/lib/libesd.a /usr/lib/libaudiofile.a -lghttp -L/usr/lib -lrpm -lz -ldb1 -lpopt -lxml
 
 echo Stripping...
 strip nautilus-installer
