@@ -28,6 +28,7 @@
 
 #include "libnautilus-extensions/nautilus-directory.h"
 #include "libnautilus-extensions/nautilus-gtk-macros.h"
+#include "libnautilus-extensions/nautilus-volume-monitor.h"
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs-find-directory.h>
 #include <libgnomevfs/gnome-vfs-types.h>
@@ -191,3 +192,39 @@ nautilus_trash_monitor_is_empty (void)
 {
 	return nautilus_trash_monitor_get ()->details->empty;
 }
+
+static gboolean
+add_one_writable_device (const DeviceInfo *device, gpointer context)
+{
+	GList **uris = (GList **)context;
+	char *uri;
+	if (device->type == DEVICE_EXT2 && !device->is_read_only) {
+		uri = g_strdup_printf ("file://%s", device->mount_path);
+		*uris = g_list_prepend (*uris, gnome_vfs_uri_new (uri));
+		g_free (uri);
+	}
+	return FALSE;
+}
+
+static GList *
+get_trashable_volume_uris (void)
+{
+	GList *uris;
+	uris = NULL;
+
+	nautilus_volume_monitor_each_mounted_device (nautilus_volume_monitor_get (),
+		add_one_writable_device, &uris);
+
+	return uris;
+}
+
+void
+nautilus_trash_monitor_async_get_trash_directories (GnomeVFSAsyncFindDirectoryCallback callback,
+	gpointer context)
+{
+	GnomeVFSAsyncHandle *async_handle;
+	
+	gnome_vfs_async_find_directory (&async_handle, get_trashable_volume_uris (), 
+		GNOME_VFS_DIRECTORY_KIND_TRASH, TRUE, TRUE, 0777, callback, context);
+}
+

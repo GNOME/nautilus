@@ -51,14 +51,6 @@ struct NautilusVolumeMonitorClass {
 	char *	     (* volume_unmounted)	(NautilusVolumeMonitor *monitor);
 };
 
-struct NautilusVolumeMonitorDetails
-{
-	GHashTable *devices_by_fsname;
-	GList *devices;
-	guint mount_device_timer_id;
-};
-
-
 #define MOUNT_TYPE_ISO9660 	"iso9660"
 #define MOUNT_TYPE_EXT2 	"ext2"
 #define MOUNT_OPTIONS_USER 	"user"
@@ -93,15 +85,25 @@ typedef struct {
 	
 	gboolean is_mounted;
 	gboolean did_mount;
+	
+	gboolean is_read_only;
 } DeviceInfo;
+
+typedef gboolean (* EachDeviceFunction) (const DeviceInfo *, gpointer);
 
 GtkType               	nautilus_volume_monitor_get_type 		(void);
 NautilusVolumeMonitor 	*nautilus_volume_monitor_get 			(void);
 GList 			*fm_desktop_get_removable_volume_list 		(void);
 gboolean		nautilus_volume_monitor_volume_is_mounted 	(const char		*mount_point);
-void			nautilus_volume_monitor_find_mount_devices 	(NautilusVolumeMonitor 	*icon_view);
+void			nautilus_volume_monitor_find_mount_devices 	(NautilusVolumeMonitor 	*monitor);
 gboolean		nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor 	*monitor, 
 									 const char 		*mount_point);
 gboolean		nautilus_volume_monitor_is_volume_link 		(const char 		*path);
+void			nautilus_volume_monitor_each_device		(NautilusVolumeMonitor *monitor,
+									 EachDeviceFunction	function,
+									 gpointer		context);
+void			nautilus_volume_monitor_each_mounted_device	(NautilusVolumeMonitor *monitor,
+									 EachDeviceFunction	function,
+									 gpointer		context);
 
 #endif

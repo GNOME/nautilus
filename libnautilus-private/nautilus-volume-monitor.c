@@ -48,6 +48,12 @@
 #include <sys/types.h>
 #include <xmlmemory.h>
 
+struct NautilusVolumeMonitorDetails
+{
+	GHashTable *devices_by_fsname;
+	GList *devices;
+	guint mount_device_timer_id;
+};
 
 NautilusVolumeMonitor *global_volume_monitor = NULL;
 
@@ -171,16 +177,19 @@ nautilus_volume_monitor_get (void)
 	return global_volume_monitor;
 }
 
+#define FLOPPY_MOUNT_PATH "/mnt/fd"
+#define FLOPPY_DEVICE_PATH "/dev/fd"
+
 static int
 floppy_sort (const char *name_1, const char *name_2) 
 {
 	/* If both are floppies, we don't care yet */
-	if ((strncmp (name_1, "/mnt/fd", strlen("/mnt/fd")) == 0) &&
-	   (strncmp (name_2, "/mnt/fd", strlen("/mnt/fd")) == 0)) {
+	if ((strncmp (name_1, FLOPPY_MOUNT_PATH, sizeof (FLOPPY_MOUNT_PATH) - 1) == 0) &&
+	   (strncmp (name_2, FLOPPY_MOUNT_PATH, sizeof (FLOPPY_MOUNT_PATH) - 1) == 0)) {
 		return 0; 
 	}
 
-	if (strncmp (name_1, "/mnt/fd", strlen("/mnt/fd")) != 0) {
+	if (strncmp (name_1, FLOPPY_MOUNT_PATH, sizeof (FLOPPY_MOUNT_PATH) - 1) != 0) {
 		return 1; 
 	}
 
@@ -547,7 +556,6 @@ mount_device_check_change (gpointer data, gpointer callback_data)
 	DeviceInfo *device;
 	NautilusVolumeMonitor *monitor;
 	DeviceState old_state;
-	ChangeDeviceInfoFunction f;
 
 	g_assert (data != NULL);
 
@@ -559,8 +567,7 @@ mount_device_check_change (gpointer data, gpointer callback_data)
   	mount_device_set_state (device, monitor);
 
   	if (old_state != device->state) {
-    		f = state_transitions[device->state][old_state];			
-		(* f) (monitor, device);
+		(* state_transitions[device->state][old_state]) (monitor, device);
   	}
 }
 
@@ -585,7 +592,7 @@ mount_devices_update_is_mounted (NautilusVolumeMonitor *monitor)
     	}
 
 	while (fgets (line, sizeof(line), fh)) {
-		sscanf(line, "%s %s", devname, mntpoint);
+		sscanf (line, "%s %s", devname, mntpoint);
     		device = g_hash_table_lookup (monitor->details->devices_by_fsname, devname);
 
     		if(device) {
@@ -616,8 +623,8 @@ mount_devices_check_status (NautilusVolumeMonitor *monitor)
 static gboolean
 check_permissions (gchar *filename, int mode)
 {
-	int euid = geteuid();
-	int egid = getegid();
+	int euid = geteuid ();
+	int egid = getegid ();
 
 	struct stat statbuf;
 
@@ -690,7 +697,7 @@ static gboolean
 mount_device_iso9660_add (NautilusVolumeMonitor *monitor, DeviceInfo *device)
 {		
 	device->device_fd = open (device->fsname, O_RDONLY|O_NONBLOCK);
-	if(device->device_fd < 0) {
+	if (device->device_fd < 0) {
 		return FALSE;
 	}
 	
@@ -720,13 +727,13 @@ mount_device_add_aliases (NautilusVolumeMonitor *monitor, const char *alias, Dev
 	g_hash_table_insert (monitor->details->devices_by_fsname, (gpointer)alias, device);
 
 	buflen = readlink (alias, buf, sizeof(buf));
-	if(buflen < 1) {
+	if (buflen < 1) {
     		return;
     	}
 
 	buf[buflen] = '\0';
 
-	if(buf[0] != '/') {
+	if (buf[0] != '/') {
 		char buf2[PATH_MAX];
 		char *dn;
     		dn = g_dirname(alias);
@@ -758,15 +765,16 @@ add_mount_device (NautilusVolumeMonitor *monitor, struct mntent *ent)
 	
 	if (strcmp (ent->mnt_type, MOUNT_TYPE_ISO9660) == 0) {		
     		mounted = mount_device_iso9660_add (monitor, newdev); 
-	} else if (strncmp (ent->mnt_fsname, "/dev/fd", strlen("/dev/fd")) == 0) {		
+	} else if (strncmp (ent->mnt_fsname, FLOPPY_DEVICE_PATH, sizeof (FLOPPY_DEVICE_PATH) - 1) == 0) {		
 		mounted = mount_device_floppy_add (monitor, newdev);
 	} else if (strcmp (ent->mnt_type, MOUNT_TYPE_EXT2) == 0) {		
 		mounted = mount_device_ext2_add (newdev);
 	}
 	
 	if (mounted) {
+		newdev->is_read_only = strstr (ent->mnt_opts, MNTOPT_RO) != NULL;
 		monitor->details->devices = g_list_append (monitor->details->devices, newdev);
-		mount_device_add_aliases (monitor, newdev->fsname, newdev);		
+		mount_device_add_aliases (monitor, newdev->fsname, newdev);
 	} else {
 		close (newdev->device_fd);
 		g_free (newdev->fsname);
@@ -790,7 +798,7 @@ mntent_is_removable_fs (struct mntent *ent)
 		return TRUE;
 	}
 	
-	if (strncmp (ent->mnt_fsname, "/dev/fd", strlen("/dev/fd")) == 0) {
+	if (strncmp (ent->mnt_fsname, FLOPPY_DEVICE_PATH, sizeof (FLOPPY_DEVICE_PATH) - 1) == 0) {
 		return TRUE;
 	}
 	
@@ -854,11 +862,40 @@ nautilus_volume_monitor_find_mount_devices (NautilusVolumeMonitor *monitor)
 	/* Manually set state of all volumes to empty so we update */
 	g_list_foreach (monitor->details->devices, (GFunc) device_set_state_empty, monitor);
 
-	/* Add a timer function to check for status change in mounted devices */
+	/* make sure the mount states of disks are set up */
+	mount_devices_check_status (monitor);
+
+	/* Add a timer function to check for status change in mounted devices periodically */
 	monitor->details->mount_device_timer_id = 
 		gtk_timeout_add (CHECK_INTERVAL, (GtkFunction) mount_devices_check_status, monitor);
 }
 
+void
+nautilus_volume_monitor_each_device (NautilusVolumeMonitor *monitor, 
+	EachDeviceFunction function, gpointer context)
+{
+	GList *element;
+
+	for (element = monitor->details->devices; element != NULL; element = element->next) {
+		if (function ((DeviceInfo *)element->data, context)) {
+			break;
+		}
+	}
+}
+
+void
+nautilus_volume_monitor_each_mounted_device (NautilusVolumeMonitor *monitor, 
+	EachDeviceFunction function, gpointer context)
+{
+	GList *element;
+	DeviceInfo *device;
+	for (element = monitor->details->devices; element != NULL; element = element->next) {
+		device = (DeviceInfo *)element->data;
+		if (device->is_mounted && function (device, context)) {
+			break;
+		}
+	}
+}
 
 gboolean
 nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor, const char *mount_point)
@@ -889,16 +926,14 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 		argv[2] = NULL;
 
 		if (is_mounted) {
-			/* Unount */
+			/* Unmount */
 			argv[0] = "/bin/umount";
-			exec_err = gnome_execute_async (g_get_home_dir(), 2, argv);
-			is_mounted = FALSE;
 		} else {
 			/* Mount */
 			argv[0] = "/bin/mount";
-			exec_err = gnome_execute_async (g_get_home_dir(), 2, argv);
-			is_mounted = TRUE;
 		}
+		exec_err = gnome_execute_async (g_get_home_dir(), 2, argv);
+		is_mounted = !is_mounted;
 	}
 
 	return is_mounted;

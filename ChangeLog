@@ -1,3 +1,35 @@
+2000-08-14  Pavel Cisler  <pavel@eazel.com>
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_discover_trash_callback),
+	(fm_desktop_icon_view_initialize):
+	* src/file-manager/nautilus-trash-monitor.c:
+	(add_one_writable_device), (get_trashable_volume_uris),
+	(nautilus_trash_monitor_async_get_trash_directories):
+	* src/file-manager/nautilus-trash-monitor.h:
+	Fix bugzilla 1855 - nautilus_trash_monitor_async_get_trash_directories
+	returns the list of URIs of all the available trash directories, finding
+	and creating them as needed.
+
+	* libnautilus-extensions/nautilus-volume-monitor.c: (floppy_sort),
+	(mount_device_check_change), (mount_devices_update_is_mounted),
+	(check_permissions), (mount_device_iso9660_add),
+	(mount_device_add_aliases), (add_mount_device),
+	(mntent_is_removable_fs),
+	(nautilus_volume_monitor_find_mount_devices),
+	(nautilus_volume_monitor_each_device),
+	(nautilus_volume_monitor_each_mounted_device),
+	(nautilus_volume_monitor_mount_unmount_removable):
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	Made nautilus_volume_monitor_find_mount_device call
+	mount_devices_check_status explicitly so that the mounted volume state
+	is correct when the call returns.
+	Add nautilus_volume_monitor_each_device and
+	nautilus_volume_monitor_each_mounted_device.
+	Moved NautilusVolumeMonitorDetails into nautilus-volume-monitor.c,
+	away from prying eyes.
+	Tweak some string matching code.
+
 2000-08-14  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 2159 (crash when trying to drag a selected item

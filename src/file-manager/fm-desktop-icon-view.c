@@ -174,6 +174,34 @@ fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
 }
 
 static void
+fm_desktop_icon_view_discover_trash_callback (GnomeVFSAsyncHandle *handle,
+	GList *results, gpointer data)
+{
+#if 0
+	/* Debug code only for now.
+	 * Bugzilla task 571 will use the resulting list to 
+	 * create new NautilusDirectory objects for Trash.
+	 */
+	GnomeVFSFindDirectoryResult *result;
+	GList *p;
+
+	for (p = results; p != NULL; p = p->next) {
+		char *uri_text;
+
+		result = p->data;
+		uri_text = "";
+
+		if (result->uri) {
+			uri_text = gnome_vfs_uri_to_string (result->uri, 
+				GNOME_VFS_URI_HIDE_NONE);
+		}
+		
+		printf("trash dir %s, %s\n", uri_text, strerror (result->result));
+	}
+#endif
+}
+
+static void
 fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 {
 	NautilusIconContainer *icon_container;
@@ -221,6 +249,10 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 
 	/* Check for mountable devices */
 	nautilus_volume_monitor_find_mount_devices (desktop_icon_view->details->volume_monitor);
+
+	/* Find/create Trash directories */
+	nautilus_trash_monitor_async_get_trash_directories (fm_desktop_icon_view_discover_trash_callback,
+		desktop_icon_view);
 }
 
 static void

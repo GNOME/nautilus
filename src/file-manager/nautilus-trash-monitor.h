@@ -27,6 +27,7 @@
 #define NAUTILUS_TRASH_MONITOR_H
 
 #include <gtk/gtkobject.h>
+#include <libgnomevfs/gnome-vfs.h>
 
 typedef struct NautilusTrashMonitor NautilusTrashMonitor;
 typedef struct NautilusTrashMonitorClass NautilusTrashMonitorClass;
@@ -55,9 +56,11 @@ struct NautilusTrashMonitorClass {
 				      gboolean 			 new_state);
 };
 
-GtkType			nautilus_trash_monitor_get_type		(void);
+GtkType			nautilus_trash_monitor_get_type				(void);
 
-NautilusTrashMonitor   *nautilus_trash_monitor_get 		(void);
-gboolean		nautilus_trash_monitor_is_empty 	(void);
+NautilusTrashMonitor   *nautilus_trash_monitor_get 				(void);
+gboolean		nautilus_trash_monitor_is_empty 			(void);
+void			nautilus_trash_monitor_async_get_trash_directories 	(GnomeVFSAsyncFindDirectoryCallback callback,
+										 gpointer context);
 
 #endif
