@@ -3,7 +3,6 @@ villadir = $(datadir)/pixmaps/nautilus/villanova
 SUBDIRS = 
 
 villa_DATA =	\
-	green_ridges.png		\
 	green_weave.png			\
 	i-directory-12.png		\
 	i-directory-12-aa.png		\
@@ -25,5 +24,6 @@ villa_DATA =	\
 	i-directory-accept-aa.png	\
 	number_strip.png		\
 	theme_preview.png		\
+	villanova_green.png		\
 	villanova.xml
 EXTRA_DIST = $(villa_DATA)
