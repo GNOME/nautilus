@@ -1,3 +1,80 @@
+2000-11-28  Rebecca Schulman  <rebecka@eazel.com>
+	Fixes for bugs 2376, 4553, and 3799
+	This should make the complex search bar usable
+	and visible.
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	* configure.in:
+	* libnautilus-extensions/Makefile.am:
+	* cut-n-paste-code/widgets/Makefile.am:
+	* cut-n-paste-code/widgets/gimphwrapbox/.cvsignore:
+	* cut-n-paste-code/widgets/gimphwrapbox/Makefile.am:
+	* cut-n-paste-code/widgets/gimphwrapbox/gtkhwrapbox.c:
+	(gtk_hwrap_box_get_type), (gtk_hwrap_box_class_init),
+	(gtk_hwrap_box_init), (gtk_hwrap_box_new), (get_child_requisition),
+	(_gtk_hwrap_box_size_request), (get_layout_size),
+	(gtk_hwrap_box_size_request), (reverse_list_row_children),
+	(layout_row), (layout_rows), (gtk_hwrap_box_size_allocate):
+	* cut-n-paste-code/widgets/gimphwrapbox/gtkhwrapbox.h:
+	* cut-n-paste-code/widgets/gimphwrapbox/gtkwrapbox.c:
+	(gtk_wrap_box_get_type), (gtk_wrap_box_class_init),
+	(gtk_wrap_box_init), (gtk_wrap_box_set_arg),
+	(gtk_wrap_box_get_arg), (gtk_wrap_box_set_child_arg),
+	(gtk_wrap_box_get_child_arg), (gtk_wrap_box_child_type),
+	(gtk_wrap_box_set_homogeneous), (gtk_wrap_box_set_hspacing),
+	(gtk_wrap_box_set_vspacing), (gtk_wrap_box_set_justify),
+	(gtk_wrap_box_set_line_justify), (gtk_wrap_box_set_aspect_ratio),
+	(gtk_wrap_box_pack), (gtk_wrap_box_reorder_child),
+	(gtk_wrap_box_query_child_packing),
+	(gtk_wrap_box_query_child_forced_break),
+	(gtk_wrap_box_set_child_packing),
+	(gtk_wrap_box_set_child_forced_break),
+	(gtk_wrap_box_query_line_lengths), (gtk_wrap_box_map),
+	(gtk_wrap_box_unmap), (gtk_wrap_box_draw), (gtk_wrap_box_expose),
+	(gtk_wrap_box_add), (gtk_wrap_box_remove), (gtk_wrap_box_forall):
+	* cut-n-paste-code/widgets/gimphwrapbox/gtkwrapbox.h:
+	Copied and pasted the wrapping hbox from the Gimp.
+	I made a few modifications, including some resizing requests,
+	when the chosen size is not the right one for the actual 
+	space available.  Sizing wrapping boxes is a tricky problem
+	with gtk, because they have nonstandard sizing requests
+	(they can request x or y or z) and my solution is probably
+	not optimal, since some of the sizing adjustments are visible
+	on screen.  However, a better fix is a lot more time consuming,
+	and should probably wait for past 1.0.
+	
+
+	* src/nautilus-complex-search-bar.c:
+	(search_bar_criterion_type_changed_callback),
+	(queue_search_bar_resize_callback),
+	(nautilus_complex_search_bar_initialize_class),
+	(nautilus_complex_search_bar_initialize), (real_activate),
+	(nautilus_complex_search_bar_queue_resize),
+	(attach_criterion_to_search_bar),
+	(unattach_criterion_from_search_bar),
+	(load_find_them_pixmap_widget), (more_options_callback),
+	(fewer_options_callback), (update_options_buttons_state):
+	* src/nautilus-complex-search-bar.h:
+	Changed the criteria layout to be in a vbox instead of a table,
+	so that we can insert wrapping hboxes.  Added a new function
+	that will effectively resize the complex search bar, and we call
+	it at appropriate points. Switched the packing order of the
+	buttons, since the wrap box has only one packing function, and it is
+	a pack_start, rather than a pack_end function
+	
+	* src/nautilus-search-bar-criterion-private.h:
+	* src/nautilus-search-bar-criterion.c: (queue_bar_resize_callback),
+	(nautilus_search_bar_criterion_new_from_values),
+	(nautilus_search_bar_criterion_show),
+	(nautilus_search_bar_criterion_hide),
+	(nautilus_search_bar_criterion_update_valid_criteria_choices),
+	(hide_date_widget), (show_date_widget), (make_emblem_value_menu):
+	Put the criteria into wrapping boxes as part of their creation, and 
+	trigger a resize of the complex search bar when the wrapping box 
+	complains about its allocated size.
+	
+
 2000-11-28  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-background.c:

@@ -38,7 +38,10 @@
 struct NautilusSearchBarCriterionDetails {
 	NautilusSearchBarCriterionType type;
 
-	/* various widgets hold by the criterion */
+	/* The container for the widgets */
+	GtkWidget *box;
+
+	/* various widgets held by the criterion */
 	GtkOptionMenu *available_criteria;
 	GtkOptionMenu *relation_menu;
 	gboolean use_value_entry;

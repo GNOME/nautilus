@@ -25,6 +25,7 @@ INCLUDES = 						\
 dependency_static_libs = \
 	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
 	$(top_builddir)/cut-n-paste-code/widgets/nautilusclist/libnautilusclist.la \
+	$(top_builddir)/cut-n-paste-code/widgets/gimphwrapbox/libgtkhwrapbox.la \
 	$(top_builddir)/librsvg/librsvg.la \
 	$(NULL)
 

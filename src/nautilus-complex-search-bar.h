@@ -55,6 +55,6 @@ GtkType    nautilus_complex_search_bar_get_type (void);
 GtkWidget *nautilus_complex_search_bar_new      (NautilusWindow *window);
 
 GSList *   nautilus_complex_search_bar_get_search_criteria (NautilusComplexSearchBar *bar);
-
+void       nautilus_complex_search_bar_queue_resize     (NautilusComplexSearchBar      *bar);
 #endif /* NAUTILUS_COMPLEX_SEARCH_BAR_H */
 

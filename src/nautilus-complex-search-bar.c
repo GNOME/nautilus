@@ -44,10 +44,11 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
+#include <widgets/gimphwrapbox/gtkhwrapbox.h>
 
 struct NautilusComplexSearchBarDetails {
 	GtkVBox *bar_container;
-	GtkTable *table;
+	GtkWidget *criteria_container;
 
 	GtkWidget *more_options;
 	GtkWidget *fewer_options;
@@ -68,7 +69,8 @@ static void  nautilus_complex_search_bar_initialize       (NautilusComplexSearch
 static void  nautilus_complex_search_bar_destroy 	  (GtkObject 			 *object);
 static void  attach_criterion_to_search_bar               (NautilusComplexSearchBar      *bar,
 							   NautilusSearchBarCriterion    *criterion,
-							   int                            row_number);
+							   int                           position);
+
 static void  unattach_criterion_from_search_bar           (NautilusComplexSearchBar      *bar,
 							   NautilusSearchBarCriterion    *criterion);
 static void  more_options_callback                        (GtkObject                     *object,
@@ -86,7 +88,6 @@ static void        update_criteria_choices                (gpointer list_item,
 							   gpointer data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusComplexSearchBar, nautilus_complex_search_bar, NAUTILUS_TYPE_SEARCH_BAR)
-
 
 /* called by the criterion when the user chooses
    a new criterion type */
@@ -120,11 +121,11 @@ search_bar_criterion_type_changed_callback (GtkObject *old_criterion_object,
 	unattach_criterion_from_search_bar (bar,
 					    criterion);
 	gtk_object_destroy (GTK_OBJECT (criterion));
+	nautilus_search_bar_criterion_show (new_criterion);
 	attach_criterion_to_search_bar (bar,
 					new_criterion,
 					g_slist_position (bar->details->search_criteria,
-							  old_criterion_location) + 1);
-
+							  old_criterion_location));
 	
 	/* Then tell the other criteria to take update their
 	   menus to reflect the other criteria you can really choose now */
@@ -152,15 +153,33 @@ update_criteria_choices (gpointer list_item,
 								     bar->details->search_criteria);
 	
 }
+
+static void
+queue_search_bar_resize_callback (GtkObject *search_bar,
+				  gpointer data)
+{
+	NautilusComplexSearchBar *bar;
+
+	bar = NAUTILUS_COMPLEX_SEARCH_BAR (data);
+	if (GTK_WIDGET_VISIBLE (search_bar)) {
+		nautilus_complex_search_bar_queue_resize (bar);
+	}
+}
      
 static void
 nautilus_complex_search_bar_initialize_class (NautilusComplexSearchBarClass *klass)
 {
-	GTK_OBJECT_CLASS (klass)->destroy = nautilus_complex_search_bar_destroy;
+	GtkObjectClass *object_class;
+	NautilusNavigationBarClass *navigation_bar_class;
 
-	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->activate = real_activate;
-	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->get_location = nautilus_complex_search_bar_get_location;
-	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->set_location = nautilus_complex_search_bar_set_location;
+	object_class = GTK_OBJECT_CLASS (klass);
+	object_class->destroy = nautilus_complex_search_bar_destroy;
+
+	navigation_bar_class = NAUTILUS_NAVIGATION_BAR_CLASS (klass);
+	navigation_bar_class->activate = real_activate;
+	navigation_bar_class->get_location = nautilus_complex_search_bar_get_location;
+	navigation_bar_class->set_location = nautilus_complex_search_bar_set_location;
+
 }
 
 static void
@@ -172,40 +191,64 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 	
 	bar->details = g_new0 (NautilusComplexSearchBarDetails, 1);
 	
-	bar->details->bar_container = GTK_VBOX (gtk_vbox_new (FALSE, GNOME_PAD_SMALL));
+	bar->details->bar_container = GTK_VBOX (gtk_vbox_new (FALSE, 1));
 
-	bar->details->table = GTK_TABLE (gtk_table_new (1, 3, TRUE));
-	gtk_table_set_col_spacings (bar->details->table,
-				    1);
-	gtk_table_set_row_spacings (bar->details->table,
-				    1);
+	bar->details->criteria_container = gtk_vbox_new (FALSE, 1);
 
-	gtk_container_set_resize_mode (GTK_CONTAINER (bar->details->table),
+	gtk_container_set_resize_mode (GTK_CONTAINER (bar->details->criteria_container),
 				       GTK_RESIZE_IMMEDIATE);
 
 	/* Create button before criterion so we text fields can hook to criterion's signal */
 	bar->details->find_them = gtk_button_new ();
 
 	file_name_criterion = nautilus_search_bar_criterion_first_new (bar);
-	g_assert (GTK_IS_OBJECT (GTK_OBJECT (file_name_criterion)));
+
 	gtk_signal_connect (GTK_OBJECT (file_name_criterion),
 			    "criterion_type_changed",
 			    search_bar_criterion_type_changed_callback,
 			    (gpointer) bar);
 	bar->details->search_criteria = g_slist_append (NULL,
 							file_name_criterion);
-	attach_criterion_to_search_bar (bar, file_name_criterion, 1);
+
 	nautilus_search_bar_criterion_show (file_name_criterion);
+	attach_criterion_to_search_bar (bar, file_name_criterion, 1);
 
 	gtk_box_pack_start (GTK_BOX (bar->details->bar_container),
-			    GTK_WIDGET (bar->details->table),
+			    GTK_WIDGET (bar->details->criteria_container),
 			    TRUE,
 			    FALSE,
 			    0);
-	gtk_widget_show (GTK_WIDGET (bar->details->table));
+	gtk_widget_show (GTK_WIDGET (bar->details->criteria_container));
 
-	hbox = gtk_hbox_new (FALSE, 1);
+	hbox = gtk_hwrap_box_new (FALSE);
 
+	gtk_wrap_box_set_hspacing (GTK_WRAP_BOX (hbox), GNOME_PAD_SMALL);
+	gtk_wrap_box_set_vspacing (GTK_WRAP_BOX (hbox), 1);
+
+	gtk_signal_connect (GTK_OBJECT (hbox),
+			    "need_reallocation",
+			    queue_search_bar_resize_callback,
+			    bar);
+
+	bar->details->more_options = gtk_button_new_with_label ("More Options");
+	gtk_signal_connect (GTK_OBJECT (bar->details->more_options), "clicked",
+			    more_options_callback, bar);
+				
+				
+	gtk_wrap_box_pack (GTK_WRAP_BOX (hbox),
+			   bar->details->more_options,
+			   FALSE, FALSE, FALSE, FALSE);
+	gtk_widget_show (bar->details->more_options);
+
+	bar->details->fewer_options = gtk_button_new_with_label ("Fewer Options");
+	gtk_signal_connect (GTK_OBJECT (bar->details->fewer_options), "clicked",
+			    fewer_options_callback, bar);
+
+	gtk_wrap_box_pack (GTK_WRAP_BOX (hbox),
+			    bar->details->fewer_options,
+			   FALSE, FALSE, FALSE, FALSE);
+
+	gtk_widget_show (bar->details->fewer_options);
 
 	find_them_box = gtk_hbox_new (FALSE, 1);
 	find_them_pixmap_widget = load_find_them_pixmap_widget ();
@@ -227,32 +270,11 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 				   nautilus_navigation_bar_location_changed,
 				   GTK_OBJECT (bar));
 
-	gtk_box_pack_end (GTK_BOX (hbox), 
-			  bar->details->find_them, FALSE, FALSE, 0);
+	gtk_wrap_box_pack (GTK_WRAP_BOX (hbox), 
+			   bar->details->find_them, 
+			   FALSE, FALSE,
+			   FALSE, FALSE);
 	gtk_widget_show (bar->details->find_them);
-
-
-	
-	bar->details->fewer_options = gtk_button_new_with_label ("Fewer Options");
-	gtk_signal_connect (GTK_OBJECT (bar->details->fewer_options), "clicked",
-			    fewer_options_callback, bar);
-
-	gtk_box_pack_end (GTK_BOX (hbox),
-			    bar->details->fewer_options,
-			    FALSE, FALSE, 2 * GNOME_PAD_SMALL);
-
-	gtk_widget_show (bar->details->fewer_options);
-
-	bar->details->more_options = gtk_button_new_with_label ("More Options");
-	gtk_signal_connect (GTK_OBJECT (bar->details->more_options), "clicked",
-			    more_options_callback, bar);
-				
-				
-	gtk_box_pack_end (GTK_BOX (hbox),
-			     bar->details->more_options,
-			     FALSE, FALSE, 0);
-	gtk_widget_show (bar->details->more_options);
-
 	gtk_box_pack_start (GTK_BOX (bar->details->bar_container),
 			    hbox,
 			    TRUE,
@@ -301,6 +323,7 @@ real_activate (NautilusNavigationBar *navigation_bar)
 	if (initial_focus_widget != NULL) {
 		gtk_widget_grab_focus (initial_focus_widget);
 	}
+	nautilus_complex_search_bar_queue_resize (bar);
 }
 
 /* returned string should be g_freed by the caller */
@@ -354,54 +377,56 @@ nautilus_complex_search_bar_set_location (NautilusNavigationBar *navigation_bar,
 	/* FIXME bugzilla.eazel.com 2517: Not implemented. */
 }
 
+void  
+nautilus_complex_search_bar_queue_resize (NautilusComplexSearchBar      *bar)
+{
+	GtkWidget *dock;
+
+	gtk_widget_queue_resize (bar->details->criteria_container);
+	/* FIXME bugzilla.eazel.com 3171:
+	 * (It is possible this comment is no longer correct due to
+	 * a change in the layout code)
+	 * We don't know why this line is needed here, but if it's removed
+	 * then the bar sometimes won't shrink when we press the fewer options
+	 * button. Specifically, if the window is very wide, then it won't 
+	 * shrink when pressing the fewer options button, but it will if the
+	 * window is fairly narrow.
+	 */
+	dock = gtk_widget_get_ancestor (GTK_WIDGET (bar), GNOME_TYPE_DOCK);
+	if (dock != NULL) {
+		gtk_widget_queue_resize (dock);
+	}
+	
+
+}
+
 static void
 attach_criterion_to_search_bar (NautilusComplexSearchBar *bar,
 				NautilusSearchBarCriterion *criterion,
-				int row)
+				int position)
 {
-	GtkWidget *hbox;
-	
 	g_return_if_fail (NAUTILUS_IS_COMPLEX_SEARCH_BAR (bar));
 
-	gtk_table_attach_defaults (bar->details->table,
-				   GTK_WIDGET (criterion->details->available_criteria),
-				   0, 1, row - 1, row);
-	
-	gtk_table_attach_defaults  (bar->details->table,
-				    GTK_WIDGET (criterion->details->relation_menu),
-				    1, 2, row - 1, row);
+	gtk_box_pack_start (GTK_BOX (bar->details->criteria_container),
+			    GTK_WIDGET (criterion->details->box),			  
+			    FALSE,
+			    FALSE,
+			    1);
+	gtk_box_reorder_child (GTK_BOX (bar->details->criteria_container),
+			       GTK_WIDGET (criterion->details->box),
+			       position);
+			       
 	g_assert (criterion->details->use_value_entry + 
 		  criterion->details->use_value_menu == 1 ||
 		  criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION);
+	
 	if (criterion->details->use_value_entry) {
-		/* If there is a suffix, we want to take the space from
-		   the entry, to keep things neat.  So make a box 
-		   for the entry and the suffix together */
-		if (criterion->details->use_value_suffix) {
-			hbox = gtk_hbox_new (FALSE, 0);
-			gtk_box_pack_start (GTK_BOX (hbox),
-					    GTK_WIDGET (criterion->details->value_entry),
-					    TRUE, TRUE,
-					    GNOME_PAD_SMALL);
-			gtk_box_pack_start (GTK_BOX (hbox),
-					    GTK_WIDGET (criterion->details->value_suffix),
-					    FALSE, TRUE, GNOME_PAD_SMALL);
-			gtk_widget_show_all (hbox);
-			gtk_table_attach_defaults (bar->details->table,
-						   GTK_WIDGET (hbox),
-						   2, 3, row - 1, row);
-		}
-		else {
-			gtk_table_attach_defaults (bar->details->table,
-						   GTK_WIDGET (criterion->details->value_entry),
-						   2, 3, row - 1, row);
-		}
 		/* We want to track whether the entry text is empty or not. */
 		gtk_signal_connect_object (GTK_OBJECT (criterion->details->value_entry),
-				    	   "changed", 
-				    	   update_find_button_state, 
-				    	   GTK_OBJECT (bar));
-
+					   "changed", 
+					   update_find_button_state, 
+					   GTK_OBJECT (bar));
+		
 		/* We want to activate the "Find" button when any entry text is not empty */
 		g_assert (GTK_IS_BUTTON (bar->details->find_them));
 		gtk_signal_connect_object (GTK_OBJECT (criterion->details->value_entry), 
@@ -409,53 +434,21 @@ attach_criterion_to_search_bar (NautilusComplexSearchBar *bar,
 					   nautilus_gtk_button_auto_click, 
 					   GTK_OBJECT (bar->details->find_them));
 	}
-	if (criterion->details->use_value_menu) {
-		gtk_table_attach_defaults (bar->details->table,
-					   GTK_WIDGET (criterion->details->value_menu),
-					   2, 3, row - 1, row);
-	}
-	if (criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
-		gtk_table_attach_defaults (bar->details->table,
-					   GTK_WIDGET (criterion->details->date),
-					   2, 3, row - 1, row);
-	}
-	gtk_table_resize (bar->details->table, row, 3);
-
+	nautilus_complex_search_bar_queue_resize (bar);
 }
 
 static void
 unattach_criterion_from_search_bar (NautilusComplexSearchBar *bar,
 				    NautilusSearchBarCriterion *criterion)
 {
-	gtk_container_remove (GTK_CONTAINER (bar->details->table),
-			      GTK_WIDGET (criterion->details->available_criteria));
 
-	gtk_container_remove (GTK_CONTAINER (bar->details->table),
-			      GTK_WIDGET (criterion->details->relation_menu));
+	gtk_container_remove (GTK_CONTAINER (bar->details->criteria_container),
+			      GTK_WIDGET (criterion->details->box));
+
 	g_assert ((criterion->details->use_value_entry + 
 		   criterion->details->use_value_menu == 1) ||
 		  criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION);
-	if (criterion->details->use_value_entry 
-	    && !criterion->details->use_value_suffix) {
-		gtk_container_remove (GTK_CONTAINER (bar->details->table),
-				      GTK_WIDGET (criterion->details->value_entry));
-	}
-	if (criterion->details->use_value_menu) {
-		gtk_container_remove (GTK_CONTAINER (bar->details->table),
-				      GTK_WIDGET (criterion->details->value_menu));
-	}
-	if (criterion->details->use_value_suffix) {
-		gtk_container_remove (GTK_CONTAINER (bar->details->table),
-				      GTK_WIDGET (criterion->details->value_suffix)->parent);
-	}	
-	if (criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
-		gtk_container_remove (GTK_CONTAINER (bar->details->table),
-				      GTK_WIDGET (criterion->details->date));
-	}
-	gtk_table_resize (bar->details->table, 
-			  g_slist_length (bar->details->search_criteria) - 1, 
-			  3);
-
+	nautilus_complex_search_bar_queue_resize (bar);
 }
 
 static GtkWidget *
@@ -470,8 +463,9 @@ load_find_them_pixmap_widget (void)
 		gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 		gdk_pixbuf_unref (pixbuf);
 		return gtk_pixmap_new (pixmap, mask);
-	} else
+	} else {
 		return NULL;
+	}
 }
 				  
 
@@ -512,9 +506,10 @@ more_options_callback (GtkObject *object,
 			    (gpointer) bar);
 	bar->details->search_criteria = g_slist_append (list, criterion);
 
-	attach_criterion_to_search_bar (bar, criterion, 
-					g_slist_length (bar->details->search_criteria));
 	nautilus_search_bar_criterion_show (criterion);
+	attach_criterion_to_search_bar (bar, criterion,
+					g_slist_length (bar->details->search_criteria));
+
 	update_dynamic_buttons_state (bar);
 	g_slist_foreach (bar->details->search_criteria,
 			 update_criteria_choices,
@@ -528,7 +523,6 @@ fewer_options_callback (GtkObject *object,
 {
 	NautilusSearchBarCriterion *criterion;
 	NautilusComplexSearchBar *bar;
-	GtkWidget *dock;
 	GSList *last;
 	int old_length, new_length;
 
@@ -557,17 +551,6 @@ fewer_options_callback (GtkObject *object,
 			 update_criteria_choices,
 			 bar);
 
-	/* FIXME bugzilla.eazel.com 3171:
-	 * We don't know why this line is needed here, but if it's removed
-	 * then the bar sometimes won't shrink when we press the fewer options
-	 * button. Specifically, if the window is very wide, then it won't 
-	 * shrink when pressing the fewer options button, but it will if the
-	 * window is fairly narrow.
-	 */
-	dock = gtk_widget_get_ancestor (GTK_WIDGET (bar), GNOME_TYPE_DOCK);
-	if (dock != NULL) {
-		gtk_widget_queue_resize (dock);
-	}
 }
 
 static void
@@ -577,10 +560,6 @@ update_options_buttons_state (NautilusComplexSearchBar *bar)
 	gtk_widget_set_sensitive (GTK_WIDGET (bar->details->fewer_options), g_slist_length (bar->details->search_criteria) > 1);
 	gtk_widget_set_sensitive (GTK_WIDGET (bar->details->more_options), g_slist_length (bar->details->search_criteria) < NAUTILUS_NUMBER_OF_SEARCH_CRITERIA);
 
-	/* FIXME bugzilla.eazel.com 1937:
-	 * When we limit the number of criteria available for a single search, we need to
-	 * sensitize the "More Options" button correctly here.
-	 */
 }
 
 static gboolean

@@ -54,6 +54,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <widgets/gimphwrapbox/gtkhwrapbox.h>
 
 enum {
 	CRITERION_TYPE_CHANGED,
@@ -69,7 +70,7 @@ static char * criteria_titles [] = {
 	N_("Size"),
 	N_("With Emblem"),
 	N_("Last Modified"),
-	N_("Owned By"),
+	N_("Owner"),
 	NULL
 };
 
@@ -254,6 +255,18 @@ nautilus_search_bar_criterion_initialize (NautilusSearchBarCriterion *criterion)
 	criterion->details = g_new0 (NautilusSearchBarCriterionDetails, 1);
 }
 
+static void
+queue_bar_resize_callback (GtkObject *wrap_box,
+			   gpointer bar)
+{
+	NautilusComplexSearchBar *complex_bar;
+
+	complex_bar = NAUTILUS_COMPLEX_SEARCH_BAR (bar);
+	if (GTK_WIDGET_VISIBLE (wrap_box)) {
+		nautilus_complex_search_bar_queue_resize (complex_bar);
+	}
+}
+
 static NautilusSearchBarCriterion *
 nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType type,
 					       char *relation_options[],
@@ -265,6 +278,7 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 					       NautilusComplexSearchBar *bar)
 {
 	NautilusSearchBarCriterion *criterion;
+	NautilusSearchBarCriterionDetails *details;
 	GtkWidget *search_criteria_option_menu, *search_criteria_menu; 
 	GtkWidget *relation_option_menu, *relation_menu;
 	GtkWidget *value_option_menu, *value_menu; 
@@ -275,39 +289,50 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 
 	criterion = NAUTILUS_SEARCH_BAR_CRITERION (nautilus_search_bar_criterion_new ());
 	nautilus_search_bar_criterion_initialize (criterion);
-	criterion->details->type = type;
-	criterion->details->bar = bar;
+	details = criterion->details;
 
+	details->type = type;
+	details->bar = bar;
+	details->box = gtk_hwrap_box_new (FALSE);
+
+	gtk_signal_connect (GTK_OBJECT (details->box),
+			    "need_reallocation",
+			    queue_bar_resize_callback,
+			    bar);
 	gtk_signal_connect (GTK_OBJECT (nautilus_signaller_get_current ()),
 			    "emblems_changed",
 			    emblems_changed_callback,
 			    (gpointer) criterion);
-				       
+	
 
 	search_criteria_option_menu = gtk_option_menu_new ();
 	search_criteria_menu = gtk_menu_new ();
-	/* Should we even be making the menu here? */
+
 	for (i = 0; criteria_titles[i] != NULL; i++) {
 		GtkWidget *item;
-
+		
 		item = gtk_menu_item_new_with_label (_(criteria_titles[i]));
 
 		gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
-
 		gtk_signal_connect (GTK_OBJECT (item),
 				    "activate",
 				    criterion_type_changed_callback,
 				    (gpointer) criterion);
 		gtk_menu_append (GTK_MENU (search_criteria_menu),
 				 item);
+		gtk_widget_show (item);
 	}
-
-
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (search_criteria_option_menu),
 				  search_criteria_menu);
-	criterion->details->available_criteria = GTK_OPTION_MENU (search_criteria_option_menu);
-	gtk_widget_show_all (GTK_WIDGET(search_criteria_option_menu));
-
+	details->available_criteria = GTK_OPTION_MENU (search_criteria_option_menu);
+	gtk_widget_show_all (GTK_WIDGET (search_criteria_option_menu));
+	gtk_wrap_box_pack (GTK_WRAP_BOX (details->box),
+			   GTK_WIDGET (details->available_criteria),
+			   FALSE,
+			   FALSE,
+			   FALSE,
+			   FALSE);
+	
 	relation_option_menu = gtk_option_menu_new ();
 	relation_menu = gtk_menu_new ();
 	for (i = 0; relation_options[i] != NULL; i++) {
@@ -319,10 +344,11 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 		} else {
 			item = gtk_menu_item_new_with_label (_(relation_options[i]));
 		}
+		gtk_widget_show (item);
 		gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
 		/* Callback to desensitize the date widget for menu items that
 		   don't need a date, like "yesterday" */
-		if (criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
+		if (details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
 			if (modified_relation_should_show_value (i)) {
 				gtk_signal_connect (GTK_OBJECT (item), "activate",
 						    show_date_widget,
@@ -339,51 +365,88 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 	}
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (relation_option_menu),
 				  relation_menu);
-	criterion->details->relation_menu = GTK_OPTION_MENU (relation_option_menu);
+	details->relation_menu = GTK_OPTION_MENU (relation_option_menu);
 	gtk_widget_show_all (GTK_WIDGET(relation_option_menu));
-
-
+	gtk_wrap_box_pack (GTK_WRAP_BOX (details->box),
+			   GTK_WIDGET (details->relation_menu),
+			   FALSE,
+			   FALSE,
+			   FALSE,
+			   FALSE);
 
 	g_assert (! (use_value_entry && use_value_menu));
-	criterion->details->use_value_entry = use_value_entry;
+	details->use_value_entry = use_value_entry;
 	if (use_value_entry) {
-		criterion->details->value_entry = NAUTILUS_ENTRY (nautilus_entry_new ());
-		gtk_widget_show_all(GTK_WIDGET(criterion->details->value_entry));
-		nautilus_undo_set_up_nautilus_entry_for_undo (criterion->details->value_entry);
-		nautilus_undo_editable_set_undo_key (GTK_EDITABLE (criterion->details->value_entry), TRUE);
+		details->value_entry = NAUTILUS_ENTRY (nautilus_entry_new ());
+		gtk_widget_show_all(GTK_WIDGET(details->value_entry));
+		gtk_wrap_box_pack (GTK_WRAP_BOX (details->box),
+				   GTK_WIDGET (details->value_entry),
+				   FALSE,
+				   FALSE,
+				   FALSE,
+				   FALSE);
+
+		nautilus_undo_set_up_nautilus_entry_for_undo (details->value_entry);
+		nautilus_undo_editable_set_undo_key (GTK_EDITABLE (details->value_entry), TRUE);
 	}
-	criterion->details->use_value_menu = use_value_menu;
-	if (use_value_menu && criterion->details->type != NAUTILUS_EMBLEM_SEARCH_CRITERION) {
+	details->use_value_menu = use_value_menu;
+	if (use_value_menu && details->type != NAUTILUS_EMBLEM_SEARCH_CRITERION) {
 		g_return_val_if_fail (value_options != NULL, NULL);
 		value_option_menu = gtk_option_menu_new ();
 		value_menu = gtk_menu_new ();
 		for (i = 0; value_options[i] != NULL; i++) {
 			GtkWidget *item;
 			item = gtk_menu_item_new_with_label (_(value_options[i]));
+			gtk_widget_show (item);
 			gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
 			gtk_menu_append (GTK_MENU (value_menu),
 					 item);
 		}
 		gtk_option_menu_set_menu (GTK_OPTION_MENU (value_option_menu),
 					  value_menu);
-		criterion->details->value_menu = GTK_OPTION_MENU (value_option_menu);
-		gtk_widget_show_all (GTK_WIDGET(criterion->details->value_menu));
+		details->value_menu = GTK_OPTION_MENU (value_option_menu);
+		gtk_widget_show_all (GTK_WIDGET(details->value_menu));
+		gtk_wrap_box_pack (GTK_WRAP_BOX (details->box),
+				   GTK_WIDGET (details->value_menu),
+				   FALSE,
+				   FALSE,
+				   FALSE,
+				   FALSE);
 	}
-	criterion->details->use_value_suffix = use_value_suffix;
+	details->use_value_suffix = use_value_suffix;
 	if (use_value_suffix) {
 		g_return_val_if_fail (value_suffix != NULL, NULL);
-		criterion->details->value_suffix = GTK_LABEL (gtk_label_new (value_suffix));
-		gtk_widget_show_all (GTK_WIDGET (criterion->details->value_suffix));
+		details->value_suffix = GTK_LABEL (gtk_label_new (value_suffix));
+		gtk_widget_show_all (GTK_WIDGET (details->value_suffix));
+		gtk_wrap_box_pack (GTK_WRAP_BOX (details->box),
+				   GTK_WIDGET (details->value_suffix),
+				   FALSE,
+				   FALSE,
+				   FALSE,
+				   FALSE);
 	}
 	/* Special case widgets here */
-	if (criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
-		criterion->details->date = GNOME_DATE_EDIT (gnome_date_edit_new (time (NULL), FALSE, FALSE));
-		gtk_widget_show_all (GTK_WIDGET (criterion->details->date));
+	if (details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
+		details->date = GNOME_DATE_EDIT (gnome_date_edit_new (time (NULL), FALSE, FALSE));
+		gtk_widget_show_all (GTK_WIDGET (details->date));
+		gtk_wrap_box_pack (GTK_WRAP_BOX (details->box),
+				   GTK_WIDGET (details->date),
+				   FALSE,
+				   FALSE,
+				   FALSE,
+				   FALSE);
 	}
-	if (criterion->details->type == NAUTILUS_EMBLEM_SEARCH_CRITERION) {
+	if (details->type == NAUTILUS_EMBLEM_SEARCH_CRITERION) {
 		value_option_menu = gtk_option_menu_new ();
-		criterion->details->value_menu = GTK_OPTION_MENU (value_option_menu);
+		details->value_menu = GTK_OPTION_MENU (value_option_menu);
 		make_emblem_value_menu (criterion);
+		gtk_wrap_box_pack (GTK_WRAP_BOX (details->box),
+				   GTK_WIDGET (details->value_menu),
+				   FALSE,
+				   FALSE,
+				   FALSE,
+				   FALSE);
+
 	}
 
 	return criterion;
@@ -614,6 +677,7 @@ nautilus_search_bar_criterion_show (NautilusSearchBarCriterion *criterion)
 	if (criterion->details->use_value_menu) {
 		gtk_widget_show (GTK_WIDGET (criterion->details->value_menu));
 	}
+	gtk_widget_show (criterion->details->box);
 }
 
 
@@ -631,6 +695,7 @@ nautilus_search_bar_criterion_hide (NautilusSearchBarCriterion *criterion)
 	if (criterion->details->use_value_menu) {
 		gtk_widget_hide (GTK_WIDGET (criterion->details->value_menu));
 	}
+	gtk_widget_hide (criterion->details->box);
 }
 
 void                              
@@ -655,6 +720,7 @@ nautilus_search_bar_criterion_update_valid_criteria_choices (NautilusSearchBarCr
 				    (gpointer) criterion);
 		gtk_menu_append (GTK_MENU (new_menu),
 				 item);
+		gtk_widget_show (item);
 		if (i == criterion->details->type) {
 			gtk_menu_set_active (GTK_MENU (new_menu), i);
 		}
@@ -724,6 +790,7 @@ hide_date_widget (GtkObject *object,
 	details = criterion->details;
 
 	gtk_widget_hide (GTK_WIDGET (details->date));
+	nautilus_complex_search_bar_queue_resize (details->bar);
 }
 
 static void
@@ -737,6 +804,7 @@ show_date_widget (GtkObject *object,
 	details = criterion->details;
 
 	gtk_widget_show (GTK_WIDGET (details->date));
+	nautilus_complex_search_bar_queue_resize (details->bar);
 }
 
 
@@ -937,13 +1005,13 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 		gtk_box_pack_start (GTK_BOX (temp_hbox), emblem_pixmap_widget, FALSE, FALSE, 0);
 		gtk_box_pack_start (GTK_BOX (temp_hbox), emblem_label, FALSE, FALSE, 0);
 		gtk_container_add (GTK_CONTAINER (menu_item), temp_hbox);
+		gtk_widget_show_all (menu_item);
 		gtk_menu_append (GTK_MENU (value_menu), menu_item);
 	}
 	
-		
+	gtk_widget_show_all (GTK_WIDGET (criterion->details->value_menu));		
 	gtk_option_menu_set_menu (criterion->details->value_menu,
 				  value_menu);
-	gtk_widget_show_all (GTK_WIDGET (criterion->details->value_menu));
 	criterion->details->use_value_menu = TRUE;
 	g_free (emblem_file_name);
 }
