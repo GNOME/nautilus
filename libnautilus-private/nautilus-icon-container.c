@@ -3324,14 +3324,11 @@ key_press_event (GtkWidget *widget,
 			undo_stretching (container);
 			handled = TRUE;
 			break;
-		case GDK_F9:
-			if (event->state & GDK_SHIFT_MASK) {
+		case GDK_F10:
+			if (event->state & GDK_CONTROL_MASK) {
 				handled = handle_popups (container, event,
 							 "context_click_background");
-			}
-			break;
-		case GDK_F10:
-			if (event->state & GDK_SHIFT_MASK) {
+			} else if (event->state & GDK_SHIFT_MASK) {
 				if (has_selection (container)) {
 					handled = handle_popups (container, event,
 								 "context_click_selection");

@@ -507,13 +507,10 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 	view = FM_DIRECTORY_VIEW (callback_data);
 	
 	switch (event->keyval) {
-	case GDK_F9:
-		if (event->state & GDK_SHIFT_MASK) {
-			fm_directory_view_pop_up_background_context_menu (view, &button_event);
-		}
-		break;
 	case GDK_F10:
-		if (event->state & GDK_SHIFT_MASK) {
+		if (event->state & GDK_CONTROL_MASK) {
+			fm_directory_view_pop_up_background_context_menu (view, &button_event);
+		} else if (event->state & GDK_SHIFT_MASK) {
 			if (tree_view_has_selection (GTK_TREE_VIEW (widget))) {
 				fm_directory_view_pop_up_selection_context_menu (view, &button_event);
 			} else {

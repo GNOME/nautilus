@@ -1,3 +1,10 @@
+2003-04-23  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-list-view.c (key_press_callback): 
+	* libnautilus-private/nautilus-icon-container.c (key_press_event): 
+	* docs/key_mouse_navigation.txt (Keyboard):
+	Bring up context menu is Ctrl-F10, not Shift-F9
+
 2003-04-23  Glynn Foster  <glynn.foster@sun.com>
 
 	* src/nautilus-bookmarks-window.c:
@@ -10,7 +17,7 @@
 	dialog. Fixes bug #47180.
 
 2003-04-23  Alexander Larsson  <alexl@redhat.com>
-
+	
 	* src/file-manager/fm-desktop-icon-view.c (volume_ops_callback):
 	Check for file: instead of is_local when verifying a volume desktop file
 	is ok. Fixes bug #98306.
