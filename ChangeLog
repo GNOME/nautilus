@@ -1,3 +1,12 @@
+2000-10-26  Darin Adler  <darin@eazel.com>
+
+	Fix bug 4052 (sidebar file count is not updated as settings are
+	changed).
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(dequeue_pending_idle_callback): Add a missing call to
+	nautilus_file_changed.
+
 2000-10-26  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c
