@@ -70,7 +70,8 @@ typedef enum
   NAUTILUS_CELL_PIXTEXT,
   NAUTILUS_CELL_WIDGET,
   NAUTILUS_CELL_PIXBUF_LIST,   	/* new for Nautilus */
-  NAUTILUS_CELL_LINK_TEXT	        /* new for Nautilus */
+  NAUTILUS_CELL_LINK_TEXT,	/* new for Nautilus */
+  NAUTILUS_CELL_PIXBUF,   	/* new for Nautilus */
 } NautilusCellType;
 
 typedef enum

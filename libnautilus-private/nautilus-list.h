@@ -43,6 +43,7 @@
 
 /* pointer casting for cells */
 #define NAUTILUS_CELL_PIXBUF_LIST(cell)	((NautilusCellPixbufList *) &(cell))
+#define NAUTILUS_CELL_PIXBUF(cell)	((GdkPixbuf *) ((cell).u.text))
 /* no #define for NAUTILUS_CELL_LINK_TEXT, use GTK_CELL_TEXT instead */
 
 /* returns the GList item for the nth row */
@@ -151,6 +152,10 @@ void         nautilus_list_set_pixbuf_list       (NautilusList            *list,
 						  gint                     row,
 						  gint                     column,
 						  GList                   *pixbufs);
+void	     nautilus_list_set_pixbuf		 (NautilusList		  *list,
+						  int			   row_index,
+						  int			   column_index,
+						  GdkPixbuf		  *pixbuf);
 void         nautilus_list_mark_cell_as_link     (NautilusList            *list,
 						  gint                     row,
 						  gint                     column);

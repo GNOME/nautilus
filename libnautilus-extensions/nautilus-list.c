@@ -121,6 +121,14 @@ struct NautilusListDetails
 	GdkGC *selection_medium_color;
 	GdkGC *selection_main_color;
 
+	/* Need RGB background values when compositing images */
+	guint32 cell_lighter_background_rgb;
+	guint32 cell_darker_background_rgb;
+	guint32 cell_selected_lighter_background_rgb;
+	guint32 cell_selected_darker_background_rgb;
+	guint32 selection_light_color_rgb;
+	guint32 selection_medium_color_rgb;
+	guint32 selection_main_color_rgb;
 };
 
 /* maximum amount of milliseconds the mouse button is allowed to stay down and still be considered a click */
@@ -206,7 +214,8 @@ static void     get_cell_style                          (NautilusList         *c
 							 int                   column_index,
 							 GtkStyle            **style,
 							 GdkGC               **fg_gc,
-							 GdkGC               **bg_gc);
+							 GdkGC               **bg_gc,
+							 guint32	      *bg_rgb);
 static void     nautilus_list_initialize_class          (NautilusListClass    *class);
 static void     nautilus_list_initialize                (NautilusList         *list);
 static void     nautilus_list_destroy                   (GtkObject            *object);
@@ -1086,7 +1095,7 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 					/* One final test. Check whether the click was in the
 					 * horizontal bounds of the displayed text.
 					 */
-					get_cell_style (list, row, GTK_STATE_NORMAL, row_index, column_index, &style, NULL, NULL);
+					get_cell_style (list, row, GTK_STATE_NORMAL, row_index, column_index, &style, NULL, NULL, NULL);
 					text_width = gdk_string_width (style->font, NAUTILUS_CELL_TEXT (row->cell[column_index])->text);
 					text_x = get_cell_horizontal_start_position (clist, row, column_index, text_width);
 					if (event->x >= text_x && event->x <= text_x + text_width) {
@@ -1505,10 +1514,15 @@ nautilus_list_key_press (GtkWidget *widget,
 	return TRUE;
 }
 
-static void
+static guint32
 nautilus_gdk_set_shifted_foreground_gc_color (GdkGC *gc, guint32 color, float shift_by)
 {
-	gdk_rgb_gc_set_foreground (gc, nautilus_rgb_shift_color (color, shift_by));
+	guint32 shifted_color;
+
+	shifted_color = nautilus_rgb_shift_color (color, shift_by);
+	gdk_rgb_gc_set_foreground (gc, shifted_color);
+
+	return shifted_color;
 }
 
 static GdkGC *
@@ -1541,29 +1555,36 @@ nautilus_list_setup_style_colors (NautilusList *list)
 	selection_background_color = nautilus_gdk_color_to_rgb
 		(&GTK_WIDGET (list)->style->bg [GTK_STATE_SELECTED]);
 
-	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_lighter_background, 
-		style_background_color, 1);
+	list->details->cell_lighter_background_rgb
+	    = nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_lighter_background, 
+							    style_background_color, 1);
 
-	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_darker_background, 
-		style_background_color, 1.05);
+	list->details->cell_darker_background_rgb
+	    = nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_darker_background, 
+							    style_background_color, 1.05);
 
-	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_selected_lighter_background, 
-		style_background_color, 1.05);
+	list->details->cell_selected_lighter_background_rgb
+	    = nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_selected_lighter_background, 
+							    style_background_color, 1.05);
 
-	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_selected_darker_background, 
-		style_background_color, 1.10);
+	list->details->cell_selected_darker_background_rgb
+	    = nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_selected_darker_background, 
+							    style_background_color, 1.10);
 
 	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_divider_color, 
-		style_background_color, 0.8);
+						      style_background_color, 0.8);
 
-	nautilus_gdk_set_shifted_foreground_gc_color (list->details->selection_main_color, 
-		selection_background_color, 1);
+	list->details->selection_main_color_rgb
+	    = nautilus_gdk_set_shifted_foreground_gc_color (list->details->selection_main_color, 
+							    selection_background_color, 1);
 		
-	nautilus_gdk_set_shifted_foreground_gc_color (list->details->selection_medium_color, 
-		selection_background_color, 0.7);
+	list->details->selection_medium_color_rgb
+	    = nautilus_gdk_set_shifted_foreground_gc_color (list->details->selection_medium_color, 
+							    selection_background_color, 0.7);
 
-	nautilus_gdk_set_shifted_foreground_gc_color (list->details->selection_light_color, 
-		selection_background_color, 0.5);
+	list->details->selection_light_color_rgb
+	    = nautilus_gdk_set_shifted_foreground_gc_color (list->details->selection_light_color, 
+							    selection_background_color, 0.5);
 }
 
 static void
@@ -1939,7 +1960,7 @@ get_column_background (NautilusList *list, GdkGC **selected, GdkGC **plain)
 static void
 get_cell_style (NautilusList *list, NautilusCListRow *row,
 		int state, int row_index, int column_index, GtkStyle **style,
-		GdkGC **fg_gc, GdkGC **bg_gc)
+		GdkGC **fg_gc, GdkGC **bg_gc, guint32 *bg_rgb)
 {
 	if (style) {
 		*style = GTK_WIDGET (list)->style;
@@ -1956,6 +1977,14 @@ get_cell_style (NautilusList *list, NautilusCListRow *row,
 				*bg_gc = list->details->selection_light_color;
 			}
 		}
+		if (bg_rgb != NULL) {
+			if (column_index == selected_column_index (list)) {
+				*bg_rgb = list->details->selection_medium_color_rgb;
+			} else  {
+				*bg_rgb = list->details->selection_light_color_rgb;
+			}
+		}
+
 
 		return;
 	}
@@ -1976,6 +2005,21 @@ get_cell_style (NautilusList *list, NautilusCListRow *row,
 				*bg_gc = list->details->cell_lighter_background;
 			} else {
 				*bg_gc = list->details->cell_darker_background;
+			}
+		}
+	}
+	if (bg_rgb != NULL) {
+		if (column_index == selected_column_index (list)) {
+			if ((row_index % 2) != 0) {
+				*bg_rgb = list->details->cell_selected_lighter_background_rgb;
+			} else {
+				*bg_rgb = list->details->cell_selected_darker_background_rgb;
+			}
+		} else {
+			if ((row_index % 2) != 0) {
+				*bg_rgb = list->details->cell_lighter_background_rgb;
+			} else {
+				*bg_rgb = list->details->cell_darker_background_rgb;
 			}
 		}
 	}
@@ -2026,11 +2070,12 @@ draw_cell_pixmap (GdkWindow *window, GdkRectangle *clip_rectangle, GdkGC *fg_gc,
 }
 
 static int
-draw_cell_pixbuf (GdkWindow *window, GdkRectangle *clip_rectangle, GdkGC *fg_gc,
-		  GdkPixbuf *pixbuf, int x, int y)
+draw_cell_pixbuf (GdkWindow *window, GdkRectangle *clip_rectangle,
+		  GdkGC *fg_gc, guint32 bg_rgb, GdkPixbuf *pixbuf, int x, int y)
 {
 	GdkRectangle image_rectangle;
 	GdkRectangle intersect_rectangle;
+	GdkPixbuf *composited;
 
 	image_rectangle.width = gdk_pixbuf_get_width (pixbuf);
 	image_rectangle.height = gdk_pixbuf_get_height (pixbuf);
@@ -2040,13 +2085,27 @@ draw_cell_pixbuf (GdkWindow *window, GdkRectangle *clip_rectangle, GdkGC *fg_gc,
 	if (!gdk_rectangle_intersect (clip_rectangle, &image_rectangle, &intersect_rectangle)) {
 		return x;
 	}
-	
-	gdk_pixbuf_render_to_drawable_alpha (pixbuf, window, 
-			 		     intersect_rectangle.x - x, intersect_rectangle.y - y, 
-			 		     image_rectangle.x, image_rectangle.y, 
-					     intersect_rectangle.width, intersect_rectangle.height,
-					     GDK_PIXBUF_ALPHA_BILEVEL, 128, GDK_RGB_DITHER_MAX,
-					     0, 0);
+
+	/* Composite a version of the pixbuf with the background color */
+	composited = gdk_pixbuf_composite_color_simple (pixbuf,
+							image_rectangle.width,
+							image_rectangle.height,
+							GDK_INTERP_BILINEAR,
+							255, 64,
+							bg_rgb, bg_rgb);
+	if (composited == NULL) {
+		return x;
+	}
+
+	gdk_pixbuf_render_to_drawable (composited, window, fg_gc,
+				       intersect_rectangle.x - x,
+				       intersect_rectangle.y - y, 
+				       image_rectangle.x, image_rectangle.y, 
+				       intersect_rectangle.width,
+				       intersect_rectangle.height,
+				       GDK_RGB_DITHER_MAX, 0, 0);
+
+	gdk_pixbuf_unref (composited);
 
 	return x + intersect_rectangle.width;
 }
@@ -2124,6 +2183,7 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 	GtkStyle *style;
 	GdkGC *fg_gc;
 	GdkGC *bg_gc;
+	guint32 bg_rgb;
 	GdkGCValues saved_values;
 
 	GList *p;
@@ -2144,7 +2204,7 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 	}
 
 	get_cell_style (NAUTILUS_LIST(clist), row, row->state, row_index, 
-		column_index, &style, &fg_gc, &bg_gc);
+		column_index, &style, &fg_gc, &bg_gc, &bg_rgb);
 	get_cell_rectangle (clist, row_index, column_index, &cell_rectangle);
 	get_cell_greater_rectangle (&cell_rectangle, &erase_rectangle, 
 		column_index == last_column_index (clist));
@@ -2189,6 +2249,9 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 			}
 			width += gdk_pixbuf_get_width (p->data);
 		}
+		break;
+	case NAUTILUS_CELL_PIXBUF:
+		width = gdk_pixbuf_get_width (NAUTILUS_CELL_PIXBUF (row->cell[column_index]));
 		break;
 	default:
 		return;
@@ -2322,7 +2385,7 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 			height = gdk_pixbuf_get_height (p->data);
 
 	  		offset = draw_cell_pixbuf (clist->clist_window,
-		  				   &cell_rectangle, fg_gc,
+		  				   &cell_rectangle, fg_gc, bg_rgb,
 		  				   p->data,
 				  		   offset,
 				 		   cell_rectangle.y + row->cell[column_index].vertical +
@@ -2331,6 +2394,17 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 			offset += PIXBUF_LIST_SPACING;
 		}
 		break;
+	}
+	case NAUTILUS_CELL_PIXBUF: {
+		GdkPixbuf *pixbuf;
+		guint height;
+		pixbuf = NAUTILUS_CELL_PIXBUF (row->cell[column_index]);
+		height = gdk_pixbuf_get_height (pixbuf);
+		offset = draw_cell_pixbuf (clist->clist_window, &cell_rectangle,
+					   fg_gc, bg_rgb, pixbuf,
+					   offset, cell_rectangle.y
+					   + row->cell[column_index].vertical
+					   + (cell_rectangle.height - height) / 2);
 	}
 	default:
 		break;
@@ -2716,9 +2790,11 @@ nautilus_list_set_cell_contents (NautilusCList    *clist,
 	 * chances seem larger that we'll switch away from CList first.
 	 */
 
+	/* Clean up old data, which parent class doesn't know about. */
 	if ((NautilusCellType)row->cell[column_index].type == NAUTILUS_CELL_PIXBUF_LIST) {
-		/* Clean up old data, which parent class doesn't know about. */
 		nautilus_gdk_pixbuf_list_free (NAUTILUS_CELL_PIXBUF_LIST (row->cell[column_index])->pixbufs);
+	} else if ((NautilusCellType)row->cell[column_index].type == NAUTILUS_CELL_PIXBUF) {
+		gdk_pixbuf_unref (NAUTILUS_CELL_PIXBUF (row->cell[column_index]));
 	}
 
 	/* If old cell was a link-text cell, convert it back to a normal text
@@ -2730,29 +2806,22 @@ nautilus_list_set_cell_contents (NautilusCList    *clist,
 
 	NAUTILUS_CALL_PARENT_CLASS (NAUTILUS_CLIST_CLASS, set_cell_contents, (clist, row, column_index, type, text, spacing, pixmap, mask));
 
-
 	if ((NautilusCellType)type == NAUTILUS_CELL_PIXBUF_LIST) {
 		row->cell[column_index].type = NAUTILUS_CELL_PIXBUF_LIST;
 		/* Hideously, we concealed our list of pixbufs in the pixmap parameter. */
 	  	NAUTILUS_CELL_PIXBUF_LIST (row->cell[column_index])->pixbufs = (GList *)pixmap;
+	} else if ((NautilusCellType)type == NAUTILUS_CELL_PIXBUF) {
+		row->cell[column_index].type = NAUTILUS_CELL_PIXBUF;
+		/* Hideously, we concealed our pixbuf in the pixmap parameter. */
+	  	NAUTILUS_CELL_PIXBUF (row->cell[column_index]) = pixmap;
 	}
 }
 
-/**
- * nautilus_list_set_pixbuf_list:
- * 
- * Set the contents of a cell to a list of similarly-sized GdkPixbufs.
- * 
- * @list: The NautilusList in question.
- * @row: The row of the target cell.
- * @column_index: The column of the target cell.
- * @pixbufs: A GList of GdkPixbufs.
- */
-void 	   
-nautilus_list_set_pixbuf_list (NautilusList *list,
-			       int row_index,
-			       int column_index,
-			       GList *pixbufs)
+static void
+set_list_cell (NautilusList *list,
+	       int row_index, int column_index,
+	       NautilusCellType type,
+	       gpointer data)
 {
 	NautilusCList    *clist;
 	NautilusCListRow *row;
@@ -2773,13 +2842,12 @@ nautilus_list_set_pixbuf_list (NautilusList *list,
 
 	/*
 	 * We have to go through the set_cell_contents bottleneck, which only
-	 * allows expected parameter types. Since our pixbuf_list is not an
+	 * allows expected parameter types. Since our pixbuf is not an
 	 * expected parameter type, we have to sneak it in by casting it into
 	 * one of the expected parameters.
 	 */
 	NAUTILUS_CALL_VIRTUAL (NAUTILUS_CLIST_CLASS, clist, set_cell_contents, 
-		(clist, row, column_index, (NautilusCellType)NAUTILUS_CELL_PIXBUF_LIST, 
-		NULL, 0, (GdkPixmap *)pixbufs, NULL));
+		(clist, row, column_index, type, NULL, 0, (GdkPixmap *) data, NULL));
 
 	/* redraw the list if it's not frozen */
 	if (CLIST_UNFROZEN (clist) 
@@ -2787,6 +2855,46 @@ nautilus_list_set_pixbuf_list (NautilusList *list,
 		NAUTILUS_CALL_VIRTUAL (NAUTILUS_CLIST_CLASS, clist, draw_row, 
 			(clist, NULL, row_index, row));
 	}
+}
+
+/**
+ * nautilus_list_set_pixbuf_list:
+ * 
+ * Set the contents of a cell to a list of similarly-sized GdkPixbufs.
+ * 
+ * @list: The NautilusList in question.
+ * @row: The row of the target cell.
+ * @column_index: The column of the target cell.
+ * @pixbufs: A GList of GdkPixbufs.
+ */
+void 	   
+nautilus_list_set_pixbuf_list (NautilusList *list,
+			       int row_index,
+			       int column_index,
+			       GList *pixbufs)
+{
+	set_list_cell (list, row_index, column_index,
+		       NAUTILUS_CELL_PIXBUF_LIST, pixbufs);
+}
+
+/**
+ * nautilus_list_set_pixbuf:
+ * 
+ * Similar to nautilus_list_set_pixbuf_list, but with a single pixbuf.
+ * 
+ * @list: The NautilusList in question.
+ * @row: The row of the target cell.
+ * @column_index: The column of the target cell.
+ * @pixbuf: A GdkPixbuf.
+ */
+void 	   
+nautilus_list_set_pixbuf (NautilusList *list,
+			  int row_index,
+			  int column_index,
+			  GdkPixbuf *pixbuf)
+{
+	set_list_cell (list, row_index, column_index,
+		       NAUTILUS_CELL_PIXBUF, pixbuf);
 }
 
 static void

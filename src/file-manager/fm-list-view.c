@@ -1699,8 +1699,7 @@ install_row_images (FMListView *list_view, guint row)
 	NautilusList *list;
 	NautilusCList *clist;
 	NautilusFile *file;
-	GdkPixmap *pixmap;
-	GdkBitmap *bitmap;
+	GdkPixbuf *icon;
 
 	g_return_if_fail (FM_IS_LIST_VIEW (list_view));
 
@@ -1711,16 +1710,9 @@ install_row_images (FMListView *list_view, guint row)
 	g_return_if_fail (file != NULL);
 
 	/* Install the icon for this file. */
-	nautilus_icon_factory_get_pixmap_and_mask_for_file
-		(file,
-		 NULL,
-		 fm_list_view_get_icon_size (list_view),
-		 &pixmap, &bitmap);
-	nautilus_clist_set_pixmap (clist, row, LIST_VIEW_COLUMN_ICON, pixmap, bitmap);
-	gdk_pixmap_unref (pixmap);
-	if (bitmap != NULL) {
-		gdk_bitmap_unref (bitmap);
-	}
+	icon = (nautilus_icon_factory_get_pixbuf_for_file
+		(file, NULL, fm_list_view_get_icon_size (list_view), TRUE));
+	nautilus_list_set_pixbuf (list, row, LIST_VIEW_COLUMN_ICON, icon);
 
 	/* Install any emblems for this file. */
 	nautilus_list_set_pixbuf_list (list, row, LIST_VIEW_COLUMN_EMBLEMS, 

@@ -1,3 +1,48 @@
+2001-01-09  John Harper  <jsh@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Work to make icons in list view draw anti-aliased in respect to
+	the background. Fixes bug 1659
+
+	* cut-n-paste-code/widgets/nautilusclist/nautilusclist.h
+	(NautilusCellType): added new type NAUTILUS_CELL_PIXBUF at end
+	of this enum
+
+	* libnautilus-extensions/nautilus-list.c (NautilusListDetails):
+	added fields for RGB values of all background colors
+
+	(nautilus_gdk_set_shifted_foreground_gc_color): return the
+	shifted RGB value
+
+	(nautilus_list_setup_style_colors): save RGB values of all
+	background colors into the details structure
+
+	(get_cell_style): added another parameter: `bg_rgb', when a non
+	null pointer it gets set to the RGB value of the chosen
+	background color
+
+	(draw_cell_pixbuf): added another parameter: `bg_rgb'.
+	Composite the pixbuf onto a square of this color (using the
+	full 8-bit alpha), then blit the entire square onto the
+	drawable
+
+	(draw_cell): added cases to handle NAUTILUS_CELL_PIXBUF type.
+	Also pass the extra arg to draw_cell_pixbuf in
+	NAUTILUS_CELL_PIXBUF_LIST case
+
+	(nautilus_list_set_cell_contents): handle NAUTILUS_CELL_PIXBUF
+	case
+
+	(nautilus_list_set_pixbuf_list): broke out contents into the
+	new function set_list_cell, parameterized by the
+	NautilusCellType in addition
+	(nautilus_list_set_pixbuf): new function, calls set_list_cell
+
+	* src/file-manager/fm-list-view.c (install_row_images): get the
+	file's icon as a pixbuf, not a pixmap/mask pair. Then use
+	nautilus_list_set_pixbuf to install it in the list cell
+
 2001-01-09  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Mike Engber <engber@eazel.com>
