@@ -86,28 +86,17 @@ nautilus_string_list_new_from_string (const char *string)
  * Returns the string list.
  */
 NautilusStringList *
-nautilus_string_list_new_from_string_list (const NautilusStringList *other)
+nautilus_string_list_new_from_string_list (const NautilusStringList *other_or_null)
 {
 	NautilusStringList *string_list;
-	GList *other_iterator;
-	const char *other_string;
 
-	if (other == NULL) {
+	if (other_or_null == NULL) {
 		return NULL;
 	}
 
 	string_list = nautilus_string_list_new ();
 
-	for (other_iterator = other->strings; 
-	     other_iterator != NULL; 
-	     other_iterator = other_iterator->next) {
-
-		other_string = (const char *) other_iterator->data;
-
-		g_assert (other_string != NULL);
-
-		nautilus_string_list_insert (string_list, other_string);
-	}
+	nautilus_string_list_assign_from_string_list (string_list, other_or_null);
 
 	return string_list;
 }
@@ -140,14 +129,39 @@ nautilus_string_list_new_from_tokens (const char *string,
 }
 
 void
-nautilus_string_list_free (NautilusStringList *string_list)
+nautilus_string_list_assign_from_string_list (NautilusStringList       *string_list,
+					      const NautilusStringList *other_or_null)
 {
-	if (string_list == NULL) {
+	GList		*other_iterator;
+	const char	*other_string;
+
+	g_return_if_fail (string_list != NULL);
+
+	nautilus_string_list_clear (string_list);
+
+	if (other_or_null == NULL) {
 		return;
 	}
 
-	nautilus_string_list_clear (string_list);
-	g_free (string_list);
+	for (other_iterator = other_or_null->strings; 
+	     other_iterator != NULL; 
+	     other_iterator = other_iterator->next) {
+		
+		other_string = (const char *) other_iterator->data;
+
+		nautilus_string_list_insert (string_list, other_string);
+	}
+}
+
+void
+nautilus_string_list_free (NautilusStringList *string_list_or_null)
+{
+	if (string_list_or_null == NULL) {
+		return;
+	}
+	
+	nautilus_string_list_clear (string_list_or_null);
+	g_free (string_list_or_null);
 }
 
 void
@@ -220,8 +234,6 @@ nautilus_string_list_equals (const NautilusStringList *a,
 {
 	GList *a_iterator;
 	GList *b_iterator;
-	const char * a_string;
-	const char * b_string;
 
 	g_return_val_if_fail (a != NULL, FALSE);
 	g_return_val_if_fail (b != NULL, FALSE);
@@ -229,15 +241,11 @@ nautilus_string_list_equals (const NautilusStringList *a,
 	for (a_iterator = a->strings, b_iterator = b->strings; 
 	     a_iterator != NULL && b_iterator != NULL;
 	     a_iterator = a_iterator->next, b_iterator = b_iterator->next) {
-
-		a_string = (const char *) a_iterator->data;
-		b_string = (const char *) b_iterator->data;
-
-		if (strcmp (a_string, b_string) != 0) {
+		if (!nautilus_str_is_equal ((const char *) a_iterator->data, (const char *) b_iterator->data)) {
 			return FALSE;
 		}
 	}
-
+	
 	return a_iterator == NULL && b_iterator == NULL;
 }
 
@@ -284,14 +292,10 @@ nautilus_string_list_get_index_for_string (const NautilusStringList	*string_list
 	g_return_val_if_fail (string != NULL, NAUTILUS_STRING_LIST_NOT_FOUND);
 
 	for (iterator = string_list->strings; iterator != NULL; iterator = iterator->next) {
-		const char *current = (const char *) iterator->data;
-		
-		g_assert (current != NULL);
-
-		if (strcmp (current, string) == 0) {
+		if (nautilus_str_is_equal ((const char *) iterator->data, string)) {
 			return n;
 		}
-
+		
 		n++;
 	}
 
@@ -346,6 +350,52 @@ nautilus_string_list_as_concatenated_string (const NautilusStringList *string_li
 	}
 
 	return result;
+}
+
+static int
+compare_strings (gconstpointer a, gconstpointer b)
+{
+        return nautilus_strcmp ((const char *) a, (const char *) b);
+}
+
+void
+nautilus_string_list_sort (NautilusStringList *string_list)
+{
+	g_return_if_fail (string_list != NULL);
+
+	string_list->strings = g_list_sort (string_list->strings, compare_strings);
+}
+
+void
+nautilus_string_list_remove_duplicates (NautilusStringList *string_list)
+{
+	GList	*new_strings = NULL;
+	GList	*iterator;
+
+	g_return_if_fail (string_list != NULL);
+	
+	for (iterator = string_list->strings; iterator != NULL; iterator = iterator->next) {
+		const char *string = (const char *) iterator->data;
+		g_assert (string != NULL);
+
+		if (g_list_find_custom (new_strings, (gpointer) string, (GCompareFunc) strcmp) == NULL) {
+			new_strings = g_list_append (new_strings, g_strdup (string));
+		}
+	}
+
+	nautilus_string_list_clear (string_list);
+
+	string_list->strings = new_strings;
+}
+
+void
+nautilus_string_list_for_each (const NautilusStringList *string_list,
+			       GFunc                     function,
+			       gpointer                  user_data)
+{
+	g_return_if_fail (string_list != NULL);
+
+	g_list_foreach (string_list->strings, function, user_data);
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
@@ -530,7 +580,7 @@ nautilus_self_check_string_list (void)
 	{
 		NautilusStringList *l;
 
-		fruits = nautilus_string_list_new ();
+		l = nautilus_string_list_new ();
 		
 		nautilus_string_list_insert (l, "x");
 
@@ -546,6 +596,105 @@ nautilus_self_check_string_list (void)
 		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_as_concatenated_string (l, "abc"), "xabcyabcz");
 
 		nautilus_string_list_free (l);
+	}
+
+
+	/*
+	 * nautilus_string_list_sort
+	 *
+	 */
+	{
+		NautilusStringList *l;
+
+		l = nautilus_string_list_new ();
+		
+		nautilus_string_list_insert (l, "dog");
+		nautilus_string_list_insert (l, "cat");
+		nautilus_string_list_insert (l, "bird");
+
+		nautilus_string_list_sort (l);
+
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (l, 0), "bird");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (l, 1), "cat");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (l, 2), "dog");
+
+		nautilus_string_list_free (l);
+	}
+
+	/*
+	 * nautilus_string_list_remove_duplicates
+	 *
+	 */
+	{
+		NautilusStringList *l;
+
+		l = nautilus_string_list_new ();
+
+		nautilus_string_list_remove_duplicates (l);
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (l), 0);
+		
+		nautilus_string_list_insert (l, "foo");
+		nautilus_string_list_insert (l, "bar");
+		nautilus_string_list_insert (l, "bar");
+		nautilus_string_list_insert (l, "foo");
+		nautilus_string_list_insert (l, "foo");
+
+		nautilus_string_list_remove_duplicates (l);
+
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (l), 2);
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (l, 0), "foo");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (l, 1), "bar");
+
+		nautilus_string_list_clear (l);
+
+		nautilus_string_list_remove_duplicates (l);
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (l), 0);
+
+		nautilus_string_list_insert (l, "single");
+		nautilus_string_list_remove_duplicates (l);
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (l), 1);
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (l, 0), "single");
+
+		nautilus_string_list_clear (l);
+
+		nautilus_string_list_free (l);
+	}
+
+	/*
+	 * nautilus_string_list_assign_from_string_list
+	 *
+	 */
+	{
+		NautilusStringList *l;
+		NautilusStringList *other;
+
+		l = nautilus_string_list_new ();
+		other = nautilus_string_list_new ();
+
+		/* assign an other with some items */
+		nautilus_string_list_insert (other, "dog");
+		nautilus_string_list_insert (other, "cat");
+		nautilus_string_list_insert (other, "mouse");
+		nautilus_string_list_assign_from_string_list (l, other);
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (l), 3);
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (l, 0), "dog");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (l, 1), "cat");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (l, 2), "mouse");
+
+		/* assign an other with 1 item */
+		nautilus_string_list_clear (other);
+		nautilus_string_list_insert (other, "something");
+		nautilus_string_list_assign_from_string_list (l, other);
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (l), 1);
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (l, 0), "something");
+
+		/* assign an empty other */
+		nautilus_string_list_clear (other);
+		nautilus_string_list_assign_from_string_list (l, other);
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (l), 0);
+
+		nautilus_string_list_free (l);
+		nautilus_string_list_free (other);
 	}
 }
 

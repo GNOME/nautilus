@@ -33,64 +33,110 @@
 typedef struct _NautilusStringList NautilusStringList;
 
 /* Construct an empty string list. */
-NautilusStringList *nautilus_string_list_new                    (void);
+NautilusStringList *nautilus_string_list_new                     (void);
+
+
 
 
 /* Construct a string list with a single element */
-NautilusStringList *nautilus_string_list_new_from_string        (const char               *string);
+NautilusStringList *nautilus_string_list_new_from_string         (const char               *string);
+
+
 
 
 /* Construct a string list that is a copy of another string list */
-NautilusStringList *nautilus_string_list_new_from_string_list   (const NautilusStringList *other);
+NautilusStringList *nautilus_string_list_new_from_string_list    (const NautilusStringList *other_or_null);
+
+
 
 
 /* Construct a string list from tokens delimited by the given string and delimeter */
-NautilusStringList *nautilus_string_list_new_from_tokens        (const char               *string,
-								 const char               *delimiter);
+NautilusStringList *nautilus_string_list_new_from_tokens         (const char               *string,
+								  const char               *delimiter);
+
+
+
+/* Assign the contents another string list.  The other string list can be null. */
+void                nautilus_string_list_assign_from_string_list (NautilusStringList       *string_list,
+								  const NautilusStringList *other_or_null);
 
 
 
 /* Free a string list */
-void                nautilus_string_list_free                   (NautilusStringList       *string_list);
+void                nautilus_string_list_free                    (NautilusStringList       *string_list_or_null);
+
+
 
 
 /* Insert a string into the collection. */
-void                nautilus_string_list_insert                 (NautilusStringList       *string_list,
-								 const char               *string);
+void                nautilus_string_list_insert                  (NautilusStringList       *string_list,
+								  const char               *string);
+
+
 
 /* Clear the collection. */
-void                nautilus_string_list_clear                  (NautilusStringList       *string_list);
+void                nautilus_string_list_clear                   (NautilusStringList       *string_list);
+
+
 
 
 /* Access the nth string in the collection.  Returns an strduped string. */
-char *              nautilus_string_list_nth                    (const NautilusStringList *string_list,
-								 guint                     n);
+char *              nautilus_string_list_nth                     (const NautilusStringList *string_list,
+								  guint                     n);
+
+
 
 /* Does the string list contain the given string ? */
-gboolean            nautilus_string_list_contains               (const NautilusStringList *string_list,
-								 const char               *string);
+gboolean            nautilus_string_list_contains                (const NautilusStringList *string_list,
+								  const char               *string);
+
+
 
 /* How many strings are currently in the collection ? */
-guint               nautilus_string_list_get_length             (const NautilusStringList *string_list);
+guint               nautilus_string_list_get_length              (const NautilusStringList *string_list);
+
+
 
 
 /* Get the index for the given string.  Return NAUTILUS_STRING_LIST_NOT_FOUND if not found. */
-gint                nautilus_string_list_get_index_for_string   (const NautilusStringList *string_list,
-								 const char               *string);
+gint                nautilus_string_list_get_index_for_string    (const NautilusStringList *string_list,
+								  const char               *string);
+
+
 
 
 /* Does the string list a equal string list b ? */
-gboolean            nautilus_string_list_equals                 (const NautilusStringList *a,
-								 const NautilusStringList *b);
+gboolean            nautilus_string_list_equals                  (const NautilusStringList *a,
+								  const NautilusStringList *b);
+
+
 
 
 /* Return the string list in a GList.  Must deep free the result with nautilus_g_list_free_deep() */
-GList *             nautilus_string_list_as_g_list              (const NautilusStringList *string_list);
+GList *             nautilus_string_list_as_g_list               (const NautilusStringList *string_list);
+
+
 
 
 /* Return the string list as a concatenation of all the items delimeted by delimeter. */
-char *              nautilus_string_list_as_concatenated_string (const NautilusStringList *string_list,
-								 const char               *delimiter);
+char *              nautilus_string_list_as_concatenated_string  (const NautilusStringList *string_list,
+								  const char               *delimiter);
+
+
+
+/* Sort the string collection. */
+void                nautilus_string_list_sort                    (NautilusStringList       *string_list);
+
+
+
+/* Remove duplicate strings from the collection. */
+void                nautilus_string_list_remove_duplicates       (NautilusStringList       *string_list);
+
+
+/* Invoke the given function for each string in the collection. */
+void                nautilus_string_list_for_each                (const NautilusStringList *string_list,
+								  GFunc                     function,
+								  gpointer                  user_data);
 
 #endif /* NAUTILUS_STRING_LIST_H */
 

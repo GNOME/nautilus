@@ -1,5 +1,22 @@
 2000-08-17  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-string-list.c:
+	(nautilus_string_list_new_from_string_list),
+	(nautilus_string_list_assign_from_string_list),
+	(nautilus_string_list_free), (nautilus_string_list_equals),
+	(nautilus_string_list_get_index_for_string), (compare_strings),
+	(nautilus_string_list_sort),
+	(nautilus_string_list_remove_duplicates),
+	(nautilus_string_list_for_each), (nautilus_self_check_string_list):
+	* libnautilus-extensions/nautilus-string-list.h:
+
+	New function to assign one string list to another.
+	New function to sort the string list.
+	New function to remove duplicate strings.
+	Also added tests for all these.
+	
+2000-08-17  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-string.c:
 	(nautilus_str_is_equal), (nautilus_self_check_string):
 	* libnautilus-extensions/nautilus-string.h:
