@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.5.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-30 13:04+0100\n"
-"PO-Revision-Date: 2004-01-24 11:14+0100\n"
+"POT-Creation-Date: 2004-01-30 14:48+0100\n"
+"PO-Revision-Date: 2004-01-29 00:24+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -1181,7 +1181,7 @@ msgstr "Forvalgt zoom-nivå for ikonvisning."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
 msgid "Default zoom level used by the list view."
-msgstr "Forvalgt zoom-nivå for listevisning"
+msgstr "Forvalgt zoom-nivå for listevisning."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
 msgid "Desktop font"
@@ -1258,7 +1258,7 @@ msgstr "Nye vinduer ha statuslinjen synlig hvis satt til «true»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
 msgid "If set to true, newly opened windows will have toolbars visible."
-msgstr "Nye vinduer har verktøylinjen synlig hvis satt til «true»"
+msgstr "Nye vinduer har verktøylinjen synlig hvis satt til «true»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
 msgid ""
@@ -1266,7 +1266,7 @@ msgid ""
 "options of a file in the file preferences dialog."
 msgstr ""
 "Nautilus lar deg rediger noen av de mer esoteriske alternativen egenskapene "
-"ved en fil i brukervalg-dialogen hvis satt til «true»"
+"ved en fil i brukervalg-dialogen hvis satt til «true»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
 msgid ""
@@ -1556,7 +1556,7 @@ msgid ""
 "\"name\", \"size\", \"type\", and \"modification_date\"."
 msgstr ""
 "Forvalgt sorteringsrekkefølge for oppføringer i listevisning. Mulige verdier "
-"er «name», «size», «type» og «modification_date»"
+"er «name», «size», «type» og «modification_date»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid "The default width of the side pane in new windows."
@@ -1714,7 +1714,7 @@ msgstr "Volum for maskinvareenhet"
 
 #: libnautilus-private/filesystem-attributes.xml.h:12
 msgid "Hsfs CDROM Volume"
-msgstr "Hsfs CDROM-volum"
+msgstr "Hsfs CD-ROM-volum"
 
 #: libnautilus-private/filesystem-attributes.xml.h:13
 msgid "JFS Volume"
@@ -1766,7 +1766,7 @@ msgstr "Windows NT-volum"
 
 #: libnautilus-private/filesystem-attributes.xml.h:25
 msgid "Windows Shared Volume"
-msgstr "Windows delt volum"
+msgstr "Delt Windows-volum"
 
 #: libnautilus-private/filesystem-attributes.xml.h:26
 msgid "Windows VFAT Volume"
@@ -1882,7 +1882,7 @@ msgstr "Kan ikke slette et volumikon."
 msgid ""
 "If you want to eject the volume, please use Eject in the right-click menu of "
 "the volume."
-msgstr "Vennligst bruk menyvalget «Løs ut» hvis du ønsker å løse ut volumet"
+msgstr "Vennligst bruk menyvalget «Løs ut» hvis du ønsker å løse ut volumet."
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:108
 msgid "Can't Delete Volume"
@@ -3092,7 +3092,7 @@ msgstr "merket for slipp"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2838
 msgid "whether we are highlighted for a D&D drop"
-msgstr "om vi er merket for slipp"
+msgstr "om vi er merket for en slipp-operasjon"
 
 #: libnautilus-private/nautilus-icon-container.c:2068
 msgid "The selection rectangle"
@@ -5005,7 +5005,7 @@ msgstr "Avbryt visning av egenskaper-vinduet?"
 
 #: src/file-manager/fm-properties-window.c:3524
 msgid "Creating Properties window."
-msgstr "Oppretter egenskaper-vindu"
+msgstr "Oppretter egenskaper-vindu."
 
 #: src/file-manager/fm-properties-window.c:3650
 msgid "Select an icon"
@@ -6299,7 +6299,7 @@ msgstr ""
 
 #: src/nautilus-main.c:197
 msgid "open a browser window."
-msgstr "åpne et nettleservindu"
+msgstr "åpne et nettleservindu."
 
 #: src/nautilus-main.c:199
 msgid "Quit Nautilus."
@@ -6990,9 +6990,8 @@ msgid "Choose a view for the current location, or modify the set of views"
 msgstr "Velg en visning for aktiv adresse, eller endre visningssettet"
 
 #: src/nautilus-shell-ui.xml.h:3
-#, fuzzy
 msgid "Close this folder"
-msgstr "Lukk denne mappens opphav"
+msgstr "Lukk denne mappen"
 
 #: src/nautilus-shell-ui.xml.h:5
 msgid "Display Nautilus help"
@@ -7095,9 +7094,8 @@ msgid "_CD Creator"
 msgstr "_CD-brenner"
 
 #: src/nautilus-shell-ui.xml.h:33
-#, fuzzy
 msgid "_Close"
-msgstr "_Lukk vindu"
+msgstr "_Lukk"
 
 #: src/nautilus-shell-ui.xml.h:34
 msgid "_Contents"
@@ -7360,10 +7358,7 @@ msgstr "Copyright © 1999-2001 Eazel, Inc."
 #.
 #: src/nautilus-window-menus.c:599 src/nautilus-window-menus.c:600
 msgid "Translator Credits"
-msgstr ""
-"Oversatt til norsk av\n"
-"Kjartan Maraas\n"
-"<kmaraas@gnome.org>"
+msgstr "Kjartan Maraas <kmaraas@gnome.org>"
 
 #: src/nautilus-window-menus.c:605
 msgid ""
@@ -7392,7 +7387,7 @@ msgstr "Applikasjons-ID"
 
 #: src/nautilus-window.c:1607
 msgid "The application ID of the window."
-msgstr "Applikasjons-ID for vinduet"
+msgstr "Applikasjons-ID for vinduet."
 
 #: src/nautilus-window.c:1613
 msgid "Application"
