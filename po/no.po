@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.2\n"
-"POT-Creation-Date: 2001-02-23 20:23+0100\n"
-"PO-Revision-Date: 2001-02-23 20:46+01:00\n"
+"POT-Creation-Date: 2001-02-24 20:02+0100\n"
+"PO-Revision-Date: 2001-02-24 20:40+01:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -79,7 +79,7 @@ msgstr "Oversikt over maskinvare"
 
 #: components/hardware/Nautilus_View_hardware.oaf.in.h:2
 #: components/hardware/nautilus-hardware-view.c:631
-#: data/static_bookmarks.xml.h:13
+#: data/static_bookmarks.xml.h:16
 msgid "Hardware"
 msgstr "Maskinvare"
 
@@ -102,7 +102,7 @@ msgstr "Forrige"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:719
 #: libnautilus-extensions/nautilus-global-preferences.c:684
-#: src/nautilus-shell-ui.xml.h:37
+#: src/nautilus-shell-ui.xml.h:38
 msgid "Home"
 msgstr "Hjem"
 
@@ -415,7 +415,7 @@ msgstr "Drep taperen innholdsvisning"
 #: components/loser/content/nautilus-content-loser-ui.xml.h:3
 #: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
 #: components/sample/nautilus-sample-content-view-ui.xml.h:4
-#: src/nautilus-shell-ui.xml.h:78
+#: src/nautilus-shell-ui.xml.h:82
 msgid "_File"
 msgstr "_Fil"
 
@@ -848,7 +848,7 @@ msgstr "x-imap4-modified-utf7"
 msgid "x-u-escaped"
 msgstr "x-u-escaped"
 
-#: components/mozilla/nautilus-mozilla-content-view.c:838
+#: components/mozilla/nautilus-mozilla-content-view.c:842
 msgid ""
 "A Javascript function (small software program) on this page tried to open a "
 "new window, but nautilus does not support the opening of new windows by "
@@ -856,11 +856,12 @@ msgid ""
 "\n"
 "Try viewing the page in a different web browser, such as Mozilla or Netscape."
 msgstr ""
-"En Javascript-funksjon (et lite program) på denne siden prøvde å åpne et nytt vindu, men nautilus støtter ikke åpning av nye vinduer fra Javascript.\n"
+"En Javascript-funksjon (et lite program) på denne siden prøvde å åpne et "
+"nytt vindu, men nautilus støtter ikke åpning av nye vinduer fra Javascript.\n"
 "\n"
 "Prøv å vise siden i en annen nettleser, slik som Mozilla eller Netscape."
 
-#: components/mozilla/nautilus-mozilla-content-view.c:839
+#: components/mozilla/nautilus-mozilla-content-view.c:843
 msgid "Nautilus Mozilla View Warning"
 msgstr "Nautilus Mozilla-visning advarsel"
 
@@ -1578,7 +1579,7 @@ msgstr "Pause"
 #: libnautilus-extensions/nautilus-file-operations.c:945
 #: libnautilus-extensions/nautilus-file-operations.c:960
 #: libnautilus-extensions/nautilus-file-operations.c:979
-#: src/nautilus-shell-ui.xml.h:55
+#: src/nautilus-shell-ui.xml.h:58
 msgid "Stop"
 msgstr "Stopp"
 
@@ -1713,76 +1714,80 @@ msgstr "Avinstalller"
 msgid "Verify"
 msgstr "Verifisér"
 
-#: components/rpmview/nautilus-rpm-view.c:370
+#: components/rpmview/nautilus-rpm-view.c:375
 msgid "Description"
 msgstr "Beskrivelse"
 
-#: components/rpmview/nautilus-rpm-view.c:565
+#: components/rpmview/nautilus-rpm-view.c:570
 #, c-format
 msgid "Package Contents: %d files"
 msgstr "Pakkeinnhold: %d filer"
 
-#: components/rpmview/nautilus-rpm-view.c:571
+#: components/rpmview/nautilus-rpm-view.c:576
 #, c-format
 msgid "Package \"%s\" "
 msgstr "Pakke \"%s\""
 
-#: components/rpmview/nautilus-rpm-view.c:747
+#: components/rpmview/nautilus-rpm-view.c:762
 msgid "Verification completed, package ok."
 msgstr "Verifisering fullført, pakker ok."
 
-#: components/rpmview/nautilus-rpm-view-install.c:116
+#: components/rpmview/nautilus-rpm-view-install.c:119
 #, c-format
 msgid "%s would not work anymore\n"
 msgstr "%s ville ikke virke mer\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:119
+#: components/rpmview/nautilus-rpm-view-install.c:122
 #, c-format
 msgid "%s would break other installed packages\n"
 msgstr "%s ville ødelegge andre installerte pakker\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:124
+#: components/rpmview/nautilus-rpm-view-install.c:127
 #, c-format
 msgid "%s is needed, but could not be found\n"
 msgstr "%s er nødvendig, men kunne ikke finnes\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:129
+#: components/rpmview/nautilus-rpm-view-install.c:132
 #, c-format
 msgid "%s was already installed\n"
 msgstr "%s var allerede installert\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:132
+#: components/rpmview/nautilus-rpm-view-install.c:135
 #, c-format
 msgid "%s causes a circular dependency problem\n"
 msgstr "%s forårsaker et problem med sirkulære avhengigheter\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:150
+#: components/rpmview/nautilus-rpm-view-install.c:140
+msgid "Cannot access the local package system\n"
+msgstr "Kan ikke aksessere lokalt pakkesystem\n"
+
+#: components/rpmview/nautilus-rpm-view-install.c:156
 #, c-format
 msgid "Installing %s failed because of the following issue(s):\n"
 msgstr "Installasjon av %s feilet pga følgende problem(er):\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:152
+#: components/rpmview/nautilus-rpm-view-install.c:158
 #, c-format
 msgid "Uninstalling %s failed because of the following issue(s):\n"
 msgstr "Avinstallasjon av %s feilet pga følgende problem(er):\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:248
+#: components/rpmview/nautilus-rpm-view-install.c:278
 msgid "Uninstall failed..."
 msgstr "Avinstallering feilet..."
 
-#: components/rpmview/nautilus-rpm-view-install.c:249
+#: components/rpmview/nautilus-rpm-view-install.c:279
 msgid "Uninstall Failed"
 msgstr "Avinstallering feilet"
 
-#: components/rpmview/nautilus-rpm-view-install.c:251
+#: components/rpmview/nautilus-rpm-view-install.c:281
 msgid "Install failed..."
 msgstr "Installasjon feilet..."
 
-#: components/rpmview/nautilus-rpm-view-install.c:252
+#: components/rpmview/nautilus-rpm-view-install.c:282
 msgid "Install Failed"
 msgstr "Installasjon feilet"
 
-#: components/rpmview/nautilus-rpm-view-install.c:303
+#: components/rpmview/nautilus-rpm-view-install.c:342
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:514
 msgid "Incorrect password."
 msgstr "Ugyldig passord."
@@ -1867,140 +1872,373 @@ msgstr "Eksempel på innholdsvisningskomponent"
 msgid "Sample content view component's factory"
 msgstr "Factory for eksempelvisningskomponent"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:106
+#: components/services/install/command-line/eazel-alt-install-corba.c:107
 msgid "Set the default answer to continue, also default delete to Yes"
 msgstr "Sett standard svar for å fortsette, sett i tillegg slett til Ja"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:107
+#: components/services/install/command-line/eazel-alt-install-corba.c:108
 msgid "Specify search cgi"
 msgstr "Spesifisér cgi for søk"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:108
+#: components/services/install/command-line/eazel-alt-install-corba.c:109
 #: components/services/install/command-line/eazel-gen-xml.c:43
 #: components/services/install/command-line/eazel-test-packsys.c:590
 #: components/services/install/command-line/eazel-test-softcat.c:45
 msgid "Show debug output"
 msgstr "Vis avlusingsdata"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:109
+#: components/services/install/command-line/eazel-alt-install-corba.c:110
 msgid "10 sec delay after starting service"
 msgstr "10 sek pause etter start av tjeneste"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:110
+#: components/services/install/command-line/eazel-alt-install-corba.c:111
 msgid "Allow downgrades"
 msgstr "Tillat nedgraderinger"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:111
+#: components/services/install/command-line/eazel-alt-install-corba.c:112
 msgid "Erase packages"
 msgstr "Slett pakker"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:112
+#: components/services/install/command-line/eazel-alt-install-corba.c:113
 msgid "enable ei2"
 msgstr "slå på ei2"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:113
+#: components/services/install/command-line/eazel-alt-install-corba.c:114
 msgid "RPM args are filename"
 msgstr "RPM argumenter er filnavn"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:114
+#: components/services/install/command-line/eazel-alt-install-corba.c:115
 msgid "Force install"
 msgstr "Tvungen installasjon"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:115
+#: components/services/install/command-line/eazel-alt-install-corba.c:116
 msgid "Use ftp"
 msgstr "Bruk ftp"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:116
+#: components/services/install/command-line/eazel-alt-install-corba.c:117
 msgid "Use local"
 msgstr "Bruk lokal"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:117
+#: components/services/install/command-line/eazel-alt-install-corba.c:118
 msgid "Use http"
 msgstr "Bruk http"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:118
+#: components/services/install/command-line/eazel-alt-install-corba.c:119
 msgid "RPM args are Eazel Ids"
 msgstr "RPM argumenter er Eazel Id'er"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:119
+#: components/services/install/command-line/eazel-alt-install-corba.c:120
 msgid "machine readable output"
 msgstr "maskinlesbare data"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:120
+#: components/services/install/command-line/eazel-alt-install-corba.c:121
 msgid "Don't print fancy percent output"
 msgstr "Ikke skriv ut fancy prosentdata"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:121
+#: components/services/install/command-line/eazel-alt-install-corba.c:122
 msgid "don't use eazel auth stuff"
 msgstr "ikke bruk eazel autentisering"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:122
+#: components/services/install/command-line/eazel-alt-install-corba.c:123
 msgid "Specify package file"
 msgstr "Spesifisér pakkefil"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:123
+#: components/services/install/command-line/eazel-alt-install-corba.c:124
 msgid "RPM args are needed files"
 msgstr "RPM argumenter er nødvendige filnavn"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:124
+#: components/services/install/command-line/eazel-alt-install-corba.c:125
 msgid "Run Query"
 msgstr "Kjør spørring"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:125
+#: components/services/install/command-line/eazel-alt-install-corba.c:126
 msgid "Revert"
 msgstr "Forkast"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:126
+#: components/services/install/command-line/eazel-alt-install-corba.c:127
 msgid "Set root"
 msgstr "Sett rot"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:127
+#: components/services/install/command-line/eazel-alt-install-corba.c:128
 msgid "Specify server"
 msgstr "Spesifisér tjener"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:128
+#: components/services/install/command-line/eazel-alt-install-corba.c:129
 msgid "Dont print too much, just problems and download"
 msgstr "Ikke skriv ut for mye, bare problemer og nedlasting"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:129
+#: components/services/install/command-line/eazel-alt-install-corba.c:130
 msgid "Perform ssl renaming"
 msgstr "Utfør ssl-omdøping"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:130
+#: components/services/install/command-line/eazel-alt-install-corba.c:131
 msgid "argument is a suite id"
 msgstr "argumentet er en suite-id"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:131
+#: components/services/install/command-line/eazel-alt-install-corba.c:132
 msgid "Test run"
 msgstr "Testkjøring"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:132
+#: components/services/install/command-line/eazel-alt-install-corba.c:133
 msgid "Allow username"
 msgstr "Tillat brukernavn"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:133
-#: components/services/install/lib/eazel-install-problem.c:992
+#: components/services/install/command-line/eazel-alt-install-corba.c:134
+#: components/services/install/lib/eazel-install-problem.c:1005
 msgid "Allow upgrades"
 msgstr "Tillat oppgraderinger"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:134
+#: components/services/install/command-line/eazel-alt-install-corba.c:135
 msgid "Verbose output"
 msgstr "Utfyllende utskrift"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:642
-#, c-format
-msgid "About to install a total of %d packages, %dKb\n"
-msgstr "I ferd med å installere totalt %d pakker, %dKb\n"
+#: components/services/install/command-line/eazel-alt-install-corba.c:136
+msgid "Install a specific package version"
+msgstr "Installér en spesifikk pakkeversjon"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:646
-#, c-format
-msgid "About to uninstall a total of %d packages, %dKb\n"
-msgstr "I ferd med å avinstallere totalt %d pakker, %dKb\n"
+#: components/services/install/command-line/eazel-alt-install-corba.c:167
+msgid "*** You cannot specify more then one protocol type.\n"
+msgstr "*** Du kan ikke spesifisere mer enn én type protokoll.\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:650
+#: components/services/install/command-line/eazel-alt-install-corba.c:184
+msgid "*** Erase and revert ?  Somebody set us up the bomb!\n"
+msgstr "*** Slett og forkast? Noen har laget en bombe til oss!\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:293
 #, c-format
-msgid "About to revert a total of %d packages, %dKb\n"
-msgstr "I ferd med å forkaste totalt %d pakker, %dKb\n"
+msgid "File conflict checking %s...\n"
+msgstr "Sjekk etter filkonflikt %s...\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:307
+#, c-format
+msgid "File uniqueness checking %s...\n"
+msgstr "Sjekker om filen er unik %s...\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:321
+#, c-format
+msgid "Feature consistency checking %s...\n"
+msgstr "Sjekker etter konsistente funksjoner %s...\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:352
+#: components/services/install/lib/eazel-install-protocols.c:110
+#: components/services/install/lib/eazel-install-protocols.c:248
+#, c-format
+msgid "Downloading %s..."
+msgstr "Laster ned %s..."
+
+#. I18N note: %s is a package name, %d/%d is bytes/totalbytes,
+#. the next %d is a percentage completed, %1.f is a KB/s, and the
+#. trailing spaces must be present to overwrite KB/s if it changes
+#. radically
+#: components/services/install/command-line/eazel-alt-install-corba.c:369
+msgid "\rDownloading %s... (%d/%d) = %d%% %.1f KB/s     \r"
+msgstr "Laster ned %s... (%d/%d) = %d%% %.1f KB/s"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:374
+msgid "\rDownloading %s... (%d/%d) = %d%%"
+msgstr "Laster ned %s... (%d/%d) = %d%%"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:381
+#, c-format
+msgid "\rDownloading %s... (%d/%d) %.1f KB/s Done      \n"
+msgstr "Laster ned %s... (%d/%d) %.1f KB/s Ferdig\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:386
+#, c-format
+msgid "Downloading %s... %3.1f KB/s Done\n"
+msgstr "Laster ned %s... %3.1f KB/s Ferdig\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:413
+msgid "\rInstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
+msgstr "Installerer %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:420
+msgid "\rUninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
+msgstr "Avinstallerer %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:441
+msgid "\rInstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
+msgstr "Installerer %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Ferdig\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:447
+msgid "\rUnnstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
+msgstr "Avinstallerer %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Ferdig\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:455
+msgid "Done\n"
+msgstr "Ferdig\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:475
+#, c-format
+msgid "Download of %s FAILED\n"
+msgstr "Nedlasting av %s FEILET\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:595
+#, c-format
+msgid "Package %s failed to uninstall.\n"
+msgstr "Feilet avinstallering for pakke %s.\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:597
+#, c-format
+msgid "Package %s failed to install.\n"
+msgstr "Feilet installering for pakke %s.\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:617
+#, c-format
+msgid "\t· Problem : %s\n"
+msgstr "\t· Problem: %s\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:625
+#, c-format
+msgid "\t· Action : %s\n"
+msgstr "\t· Handling: %s\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:668
+msgid "Cancelling operation\n"
+msgstr "Avbryter operasjon\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:679
+#, c-format
+msgid "About to install a total of %d packages, %dKB\n"
+msgstr "I ferd med å installere totalt %d pakker, %dKB\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:683
+#, c-format
+msgid "About to uninstall a total of %d packages, %dKB\n"
+msgstr "I ferd med å avinstallere totalt %d pakker, %dKB\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:687
+#, c-format
+msgid "About to revert a total of %d packages, %d KB\n"
+msgstr "I ferd med å forkaste totalt %d pakker, %dKB\n"
+
+#. I18N note: %s is a package name
+#: components/services/install/command-line/eazel-alt-install-corba.c:702
+#, c-format
+msgid "\t· %s and it's dependencies\n"
+msgstr "\t· %s med avhengigheter\n"
+
+#. I18N note: %s is a package name
+#: components/services/install/command-line/eazel-alt-install-corba.c:705
+#, c-format
+msgid "\t· %s\n"
+msgstr "\t· %s\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:727
+#, c-format
+msgid "Dependency : %s needs %s\n"
+msgstr "Avhengighet: %s trenger %s\n"
+
+#. I18N note: %s is a package name
+#: components/services/install/command-line/eazel-alt-install-corba.c:745
+#, c-format
+msgid "Package %s failed md5 check!\n"
+msgstr "Pakke %s feilet md5 sjekk!\n"
+
+#. I18N note: %s is a 32 bytes hex numbers
+#: components/services/install/command-line/eazel-alt-install-corba.c:747
+#, c-format
+msgid "\t· server MD5 checksum is %s\n"
+msgstr "\t· tjeners MD5-sjekksum er %s\n"
+
+#. I18N note: %s is a 32 bytes hex numbers
+#: components/services/install/command-line/eazel-alt-install-corba.c:749
+#, c-format
+msgid "\t· actual MD5 checksum is %s\n"
+msgstr "\t· faktisk MD5-sjekksum er %s\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:810
+msgid "Continue? (y/n) "
+msgstr "Fortsett? (j/n) "
+
+#. I18N note: y is the letter for the word Yes. This is
+#. used in the response for a yes/no questions. Your translation
+#. must be 1 character only.
+#: components/services/install/command-line/eazel-alt-install-corba.c:821
+#: components/services/install/command-line/eazel-alt-install-corba.c:858
+msgid "y"
+msgstr "j"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:846
+msgid "Should i delete the RPM files? (y/n) "
+msgstr "Skal jeg slette RPM-filene? (y/n) "
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:878
+msgid "Operation ok\n"
+msgstr "Operasjon ok\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:880
+msgid "Operation failed\n"
+msgstr "Operasjonen feilet\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:997
+msgid "Installing"
+msgstr "Installerer"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:1006
+msgid "Uninstalling"
+msgstr "Avinstallerer"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:1021
+msgid "Only one operation at a time please."
+msgstr "Kun en operasjon om gangen er du snill."
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:1026
+#: components/services/install/command-line/eazel-alt-install-corba.c:1034
+#: components/services/install/command-line/eazel-alt-install-corba.c:1078
+#: components/services/install/command-line/eazel-alt-install-corba.c:1085
+#, c-format
+msgid "%s: --help for usage\n"
+msgstr "%s: --help for bruksmelding\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:1050
+#, c-format
+msgid "Name         : %s\n"
+msgstr "Navn         : %s\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:1051
+#, c-format
+msgid "Version      : %s\n"
+msgstr "Versjon      : %s\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:1052
+#, c-format
+msgid "Minor        : %s\n"
+msgstr "Mindre       : %s\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:1054
+#, c-format
+msgid "Size         : %d\n"
+msgstr "Størrelse    : %d\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:1055
+#, c-format
+msgid "Arch         : %s\n"
+msgstr "Ark          : %s\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:1056
+#, c-format
+msgid "Distribution : %s\n"
+msgstr "Distribusjon : %s\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:1057
+#, c-format
+msgid "Description  : %s\n"
+msgstr "Beskrivelse  : %s\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:1059
+#, c-format
+msgid "Install root : %s\n"
+msgstr "Installasjonsrot :  %s\n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:1062
+msgid "Provides     : \n"
+msgstr "Tilbyr       : \n"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:1104
+#, c-format
+msgid "exit code %d\n"
+msgstr "avsluttende kode %d\n"
 
 #: components/services/install/command-line/eazel-gen-xml.c:41
 msgid "Specify package list to use (/var/eazel/service/package-list.xml)"
@@ -2065,43 +2303,43 @@ msgstr "Kunne ikke låse nedlastingsfilen"
 msgid "MD5 mismatch, package %s may be compromised"
 msgstr "MD5-feil, pakke %s kan være tuklet med"
 
-#: components/services/install/lib/eazel-install-logic2.c:446
+#: components/services/install/lib/eazel-install-logic2.c:453
 #, c-format
 msgid "%s-%s version %s-%s already installed"
 msgstr "%s-%s versjon %s-%s er allerede installert"
 
-#: components/services/install/lib/eazel-install-logic2.c:450
+#: components/services/install/lib/eazel-install-logic2.c:457
 #, c-format
 msgid "%s version %s already installed"
 msgstr "%s versjon %s er allerede installert"
 
-#: components/services/install/lib/eazel-install-logic2.c:459
-#: components/services/install/lib/eazel-install-logic2.c:464
+#: components/services/install/lib/eazel-install-logic2.c:466
+#: components/services/install/lib/eazel-install-logic2.c:471
 #, c-format
 msgid "%s upgrades from version %s-%s to %s-%s"
 msgstr "%s oppgraderinger fra versjon %s-%s til %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:473
+#: components/services/install/lib/eazel-install-logic2.c:480
 #, c-format
 msgid "%s downgrades from version %s-%s to %s-%s"
 msgstr "%s nedgraderinger fra versjon %s-%s til %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:478
+#: components/services/install/lib/eazel-install-logic2.c:485
 #, c-format
 msgid "%s downgrades from version %s to %s"
 msgstr "%s nedgraderinger fra versjon %s til %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:531
+#: components/services/install/lib/eazel-install-logic2.c:538
 #, c-format
 msgid "%s installs version %s-%s"
 msgstr "%s installerer versjon %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:536
+#: components/services/install/lib/eazel-install-logic2.c:543
 #, c-format
 msgid "%s installs version %s"
 msgstr "%s installerer versjon %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1467
+#: components/services/install/lib/eazel-install-logic2.c:1763
 #, c-format
 msgid "could not revive %s"
 msgstr "kunne ikke gjenopplive %s"
@@ -2150,44 +2388,34 @@ msgstr "*** Kunne ikke opprette transaksjonskatalog (%s)! ***\n"
 msgid "Writing transaction to %s"
 msgstr "Skriver transaksjon til %s"
 
-#: components/services/install/lib/eazel-install-problem.c:146
+#: components/services/install/lib/eazel-install-problem.c:155
 #, c-format
 msgid "%s was cancelled"
 msgstr "%s ble avbrutt"
 
-#: components/services/install/lib/eazel-install-problem.c:151
-#: components/services/install/lib/eazel-install-problem.c:321
+#: components/services/install/lib/eazel-install-problem.c:160
+#: components/services/install/lib/eazel-install-problem.c:323
 #, c-format
 msgid "%s is a source package, which is not yet supported"
 msgstr "%s er en kildepakke, hvilket ikke er støttet ennå"
 
-#: components/services/install/lib/eazel-install-problem.c:156
-#, c-format
-msgid "%s had a file conflict with %s which %s required"
-msgstr "%s hadde en filkonflikt med %s som %s er avhengig av"
-
-#: components/services/install/lib/eazel-install-problem.c:161
-#, c-format
-msgid "%s had a file conflict with %s"
-msgstr "%s hadde en filkonflikt med %s"
-
-#: components/services/install/lib/eazel-install-problem.c:173
-#: components/services/install/lib/eazel-install-problem.c:184
+#: components/services/install/lib/eazel-install-problem.c:174
+#: components/services/install/lib/eazel-install-problem.c:185
 #, c-format
 msgid "%s would break other packages"
 msgstr "%s ville ødelegge andre pakker"
 
-#: components/services/install/lib/eazel-install-problem.c:176
+#: components/services/install/lib/eazel-install-problem.c:177
 #, c-format
 msgid "%s would break"
 msgstr "%s vil ikke fungere"
 
-#: components/services/install/lib/eazel-install-problem.c:182
+#: components/services/install/lib/eazel-install-problem.c:183
 #, c-format
 msgid "%s would break %s"
 msgstr "%s vil ødelegge %s"
 
-#: components/services/install/lib/eazel-install-problem.c:188
+#: components/services/install/lib/eazel-install-problem.c:189
 #, c-format
 msgid "%s is damaged"
 msgstr "%s er skadet"
@@ -2197,55 +2425,55 @@ msgstr "%s er skadet"
 msgid "%s requires %s, which could not be found on the server"
 msgstr "%s trenger %s, som ikke kunne finnes på tjeneren"
 
-#: components/services/install/lib/eazel-install-problem.c:197
+#: components/services/install/lib/eazel-install-problem.c:196
 #, c-format
 msgid "%s could not be found on the server"
 msgstr "%s kunne ikke finnes på tjeneren"
 
-#: components/services/install/lib/eazel-install-problem.c:205
-#: components/services/install/lib/eazel-install-problem.c:346
+#: components/services/install/lib/eazel-install-problem.c:204
+#: components/services/install/lib/eazel-install-problem.c:348
 #, c-format
 msgid "%s is already installed"
 msgstr "%s er allerede installert"
 
-#: components/services/install/lib/eazel-install-problem.c:246
+#: components/services/install/lib/eazel-install-problem.c:248
 #, c-format
 msgid "%s, which is newer, needs downgrade and downgrade is not enabled"
 msgstr "%s, som er nyere, må nedgraderes, og nedgradering er ikke slått på"
 
-#: components/services/install/lib/eazel-install-problem.c:250
+#: components/services/install/lib/eazel-install-problem.c:252
 #, c-format
 msgid "%s, which is older, needs upgrade and upgrade is not enabled"
 msgstr "%s, som er eldre, må oppgraderes, og oppgradering er ikke slått på"
 
-#: components/services/install/lib/eazel-install-problem.c:329
-#: components/services/install/lib/eazel-install-problem.c:332
+#: components/services/install/lib/eazel-install-problem.c:331
+#: components/services/install/lib/eazel-install-problem.c:334
 #, c-format
 msgid "%s requires %s"
 msgstr "%s er avhengig av %s"
 
-#: components/services/install/lib/eazel-install-problem.c:340
+#: components/services/install/lib/eazel-install-problem.c:342
 #, c-format
 msgid "%s is not installed"
 msgstr "%s er ikke installert"
 
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. %s is a package name or filename
-#: components/services/install/lib/eazel-install-problem.c:894
+#: components/services/install/lib/eazel-install-problem.c:907
 #, c-format
 msgid "Check for a new version of %s"
 msgstr "Sjekk etter en ny versjon av %s"
 
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. both %s's are package names or filenames
-#: components/services/install/lib/eazel-install-problem.c:905
+#: components/services/install/lib/eazel-install-problem.c:918
 #, c-format
 msgid "Install both %s and %s"
 msgstr "Installér både %s og %s"
 
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. %s is a package name or filename
-#: components/services/install/lib/eazel-install-problem.c:920
+#: components/services/install/lib/eazel-install-problem.c:933
 #, c-format
 msgid "Remove %s from your system"
 msgstr "Fjern %s fra ditt system"
@@ -2253,29 +2481,23 @@ msgstr "Fjern %s fra ditt system"
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. %s is a package name or filename. "Force" is in the rpm sense of force,
 #. meaning that no dependency checking etc will be done
-#: components/services/install/lib/eazel-install-problem.c:933
+#: components/services/install/lib/eazel-install-problem.c:946
 #, c-format
 msgid "Force the removal of %s from your system"
 msgstr "Tvungen fjerning av %s fra ditt system"
 
 #. TRANSLATORS : This string is a solution to a dependency problem
-#: components/services/install/lib/eazel-install-problem.c:941
+#: components/services/install/lib/eazel-install-problem.c:954
 msgid "Package database has an inconsistency"
 msgstr "Pakkedatabasen er ikke konsistent"
 
-#: components/services/install/lib/eazel-install-problem.c:989
+#: components/services/install/lib/eazel-install-problem.c:1002
 msgid "Continue with force"
 msgstr "Fortsett med tvang"
 
-#: components/services/install/lib/eazel-install-problem.c:995
+#: components/services/install/lib/eazel-install-problem.c:1008
 msgid "Allow downgrade"
 msgstr "Tillat nedgradering"
-
-#: components/services/install/lib/eazel-install-protocols.c:110
-#: components/services/install/lib/eazel-install-protocols.c:248
-#, c-format
-msgid "Downloading %s..."
-msgstr "Laster ned %s..."
 
 #: components/services/install/lib/eazel-install-protocols.c:123
 #: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:166
@@ -2284,7 +2506,6 @@ msgid "Could not open target file %s"
 msgstr "Kunne ikke åpne målfil %s"
 
 #: components/services/install/lib/eazel-install-protocols.c:130
-#: components/services/inventory/eazel-inventory-service.c:253
 #: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:92
 msgid "Could not create an http request !"
 msgstr "Kunne ikke lage en http forespørsel!"
@@ -2295,13 +2516,11 @@ msgid "Proxy: Invalid uri !"
 msgstr "Proxy: Ugyldig uri!"
 
 #: components/services/install/lib/eazel-install-protocols.c:142
-#: components/services/inventory/eazel-inventory-service.c:258
 #: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:105
 msgid "Invalid uri !"
 msgstr "Ugyldig uri!"
 
 #: components/services/install/lib/eazel-install-protocols.c:149
-#: components/services/inventory/eazel-inventory-service.c:301
 #: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:115
 msgid "Could not prepare http request !"
 msgstr "Kunne ikke forberede http forespørsel!"
@@ -2454,40 +2673,40 @@ msgstr "*** Feil under generering av xml pakkeliste! ***\n"
 msgid "*** Error reading package list! ***\n"
 msgstr "*** Feil under lesing av pakkelisten! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:893
+#: components/services/install/lib/eazel-install-xml-package-list.c:909
 msgid "*** The osd xml contains no data! ***\n"
 msgstr "*** Osd xml inneholder ikke data! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:898
+#: components/services/install/lib/eazel-install-xml-package-list.c:914
 msgid "*** Bailing from osd parse! ***\n"
 msgstr "*** Hopper ut av osd tolking! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:959
+#: components/services/install/lib/eazel-install-xml-package-list.c:976
 #, c-format
 msgid "Could not parse the xml (length %d)"
 msgstr "Kunne ikke tolke xml (lengde %d)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:754
+#: components/services/install/lib/eazel-package-system-rpm3.c:755
 #, c-format
 msgid "Opened packages database in %s"
 msgstr "Åpnet pakkedatabasen i %s"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:759
+#: components/services/install/lib/eazel-package-system-rpm3.c:760
 #, c-format
 msgid "Opening packages database in %s failed"
 msgstr "Åpning av pakkedatabasen i %s feilet"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:792
+#: components/services/install/lib/eazel-package-system-rpm3.c:793
 #, c-format
 msgid "Closing db for %s (open)"
 msgstr "Lukker db for %s (åpen)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:797
+#: components/services/install/lib/eazel-package-system-rpm3.c:798
 #, c-format
 msgid "Closing db for %s (not open)"
 msgstr "Lukker db for %s (ikke åpen)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:1077
+#: components/services/install/lib/eazel-package-system-rpm3.c:1081
 #, c-format
 msgid "Cannot open %s"
 msgstr "Kan ikke åpne %s"
@@ -2576,61 +2795,21 @@ msgstr "Factory for visningskomponent for tjenesteinstallering"
 msgid "Factory for the install service"
 msgstr "Factory for installasjonstjenesten"
 
-#: components/services/inventory/eazel-inventory-client.c:66
+#: components/services/inventory/eazel-inventory-client.c:70
 msgid "Enable inventory upload."
 msgstr "Slå på opplasting av inventar."
 
-#: components/services/inventory/eazel-inventory-client.c:68
+#: components/services/inventory/eazel-inventory-client.c:72
 msgid "Disable inventory upload."
 msgstr "Slå av opplasting av inventar."
 
-#: components/services/inventory/eazel-inventory-client.c:69
-msgid "Enable warning before each upload."
-msgstr "Vis advarsel før hver opplasting."
-
-#: components/services/inventory/eazel-inventory-client.c:70
-msgid "Disable warning before each upload."
-msgstr "Slå av advarsel før hver opplasting."
-
-#: components/services/inventory/eazel-inventory-client.c:71
-msgid "Set machine name."
-msgstr "Sett maskinnavn."
-
-#: components/services/inventory/eazel-inventory-client.c:72
+#: components/services/inventory/eazel-inventory-client.c:73
 msgid "Display information about current inventory settings."
 msgstr "Vis informasjon om aktive inventarinnstillinger."
 
-#: components/services/inventory/eazel-inventory-client.c:73
+#: components/services/inventory/eazel-inventory-client.c:74
 msgid "Upload inventory now, if not up to date."
 msgstr "Last opp inventar nå, hvis den ikke er oppdatert."
-
-#: components/services/inventory/eazel-inventory-service.c:233
-msgid "User isn't logged into ammonite yet.\n"
-msgstr "Bruker er ikke logget på ammonite ennå.\n"
-
-#: components/services/inventory/eazel-inventory-service.c:236
-msgid "The supplied URL was bad.\n"
-msgstr "Oppgitt URL er ugyldig.\n"
-
-#: components/services/inventory/eazel-inventory-service.c:239
-msgid "A CORBA error occured.\n"
-msgstr "En CORBA-feil oppsto.\n"
-
-#: components/services/inventory/eazel-inventory-service.c:242
-msgid "Ammonite returned an error translating the url.\n"
-msgstr "Ammonite returnerte en feil under oversetting av url.\n"
-
-#: components/services/inventory/eazel-inventory-service.c:263
-msgid "Can't post !"
-msgstr "Kan ikke postere!"
-
-#: components/services/inventory/eazel-inventory-service.c:276
-msgid "can't open tempory file hell\n"
-msgstr "kan ikke åpne midlertidig filskall\n"
-
-#: components/services/inventory/eazel-inventory-service.c:296
-msgid "Can't set body !"
-msgstr "Kan ikke sette kropp!"
 
 #: components/services/inventory/Trilobite_Service_inventory.oaf.in.h:1
 msgid "Factory for the inventory service"
@@ -2859,60 +3038,60 @@ msgstr "Vennligst logg inn til Eazel-tjenester"
 msgid "Your user name or password were not correct.  Please try again."
 msgstr "Ditt brukernavn og passord var ikke korrekt. Vennligst forsøk igjen."
 
-#: components/services/summary/nautilus-summary-view.c:109
+#: components/services/summary/nautilus-summary-view.c:113
 msgid "Account Preferences"
 msgstr "Brukervalg for konto"
 
-#: components/services/summary/nautilus-summary-view.c:110
+#: components/services/summary/nautilus-summary-view.c:114
 msgid "Logout"
 msgstr "Logg ut"
 
-#: components/services/summary/nautilus-summary-view.c:111
-#: components/services/summary/nautilus-summary-view.c:119
+#: components/services/summary/nautilus-summary-view.c:115
+#: components/services/summary/nautilus-summary-view.c:123
 msgid "Terms of Use"
 msgstr "Bruksbetingelser"
 
-#: components/services/summary/nautilus-summary-view.c:112
-#: components/services/summary/nautilus-summary-view.c:120
+#: components/services/summary/nautilus-summary-view.c:116
+#: components/services/summary/nautilus-summary-view.c:124
 msgid "Privacy Statement"
 msgstr "Erklæring om konfidensialitet"
 
-#: components/services/summary/nautilus-summary-view.c:117
+#: components/services/summary/nautilus-summary-view.c:121
 msgid "Register"
 msgstr "Registrér"
 
-#: components/services/summary/nautilus-summary-view.c:118
+#: components/services/summary/nautilus-summary-view.c:122
 msgid "Login"
 msgstr "Logg inn"
 
-#: components/services/summary/nautilus-summary-view.c:131
+#: components/services/summary/nautilus-summary-view.c:152
 #, c-format
 msgid "Welcome, %s!"
 msgstr "Velkommen, %s!"
 
-#: components/services/summary/nautilus-summary-view.c:136
+#: components/services/summary/nautilus-summary-view.c:157
 msgid "You are not logged in"
 msgstr "Du er ikke logget inn"
 
-#: components/services/summary/nautilus-summary-view.c:143
+#: components/services/summary/nautilus-summary-view.c:164
 msgid "Connecting to Eazel Services..."
 msgstr "Kobler til Eazel tjenester..."
 
-#: components/services/summary/nautilus-summary-view.c:579
+#: components/services/summary/nautilus-summary-view.c:604
 #, c-format
 msgid "Version: %s"
 msgstr "Versjon: %s"
 
-#: components/services/summary/nautilus-summary-view.c:673
+#: components/services/summary/nautilus-summary-view.c:698
 #: data/linksets/home.xml.h:3 src/nautilus-service-ui.xml.h:4
 msgid "Services"
 msgstr "Tjenester"
 
-#: components/services/summary/nautilus-summary-view.c:684
+#: components/services/summary/nautilus-summary-view.c:709
 msgid "Featured Downloads"
 msgstr "Inkluderte nedlastinger"
 
-#: components/services/summary/nautilus-summary-view.c:812
+#: components/services/summary/nautilus-summary-view.c:837
 msgid ""
 "Unable to get services data from Eazel's server. The server might be "
 "unavailable right now, or your computer might be configured incorrectly. "
@@ -2922,7 +3101,7 @@ msgstr ""
 "utilgjengelig akkurat nå, eller kanskje din datamaskin ikke er riktig "
 "konfigurert. Vennligst kontakt support@eazel.com."
 
-#: components/services/summary/nautilus-summary-view.c:822
+#: components/services/summary/nautilus-summary-view.c:847
 msgid ""
 "Found a problem with services data on Eazel servers. Please contact "
 "support@eazel.com."
@@ -2930,7 +3109,15 @@ msgstr ""
 "Fant et problem med tjenestedata på Eazel's tjenere. Vennligst kontakt "
 "support@eazel.com."
 
-#: components/services/summary/nautilus-summary-view.c:851
+#: components/services/summary/nautilus-summary-view.c:870
+msgid ""
+"Information is missing from the redirect data on Eazel servers. Please "
+"contact support@eazel.com."
+msgstr ""
+"Manglende informasjon fra omdirigeringsdata på Eazel's tjenere. Vennligst "
+"kontakt support@eazel.com."
+
+#: components/services/summary/nautilus-summary-view.c:912
 msgid ""
 "Unable to connect to Eazel's server. The server might be unavailable right "
 "now, or your computer might be configured incorrectly. You could try again "
@@ -2940,7 +3127,7 @@ msgstr ""
 "nå, eller kanskje din datamaskin ikke er riktig konfigurert. Du kan prøve "
 "igjen senere."
 
-#: components/services/summary/nautilus-summary-view.c:861
+#: components/services/summary/nautilus-summary-view.c:922
 msgid ""
 "Found a problem with redirect data on Eazel servers. Please contact "
 "support@eazel.com."
@@ -2948,13 +3135,14 @@ msgstr ""
 "Fant et problem med omdirigeringsdata på Eazel's tjenere. Vennligst kontakt "
 "support@eazel.com."
 
-#: components/services/summary/nautilus-summary-view.c:872
-msgid ""
-"Information is missing from the redirect data on Eazel servers. Please "
-"contact support@eazel.com."
-msgstr ""
-"Manglende informasjon fra omdirigeringsdata på Eazel's tjenere. Vennligst "
-"kontakt support@eazel.com."
+#: components/services/summary/nautilus-summary-view.c:939
+msgid "Failed to upload system inventory."
+msgstr "Feil under opplasting av systeminventar."
+
+#: components/services/summary/nautilus-summary-view.c:1002
+#: src/nautilus-first-time-druid.c:250
+msgid "Eazel Services"
+msgstr "Eazel tjenester"
 
 #: components/services/summary/nautilus-summary-view-ui.xml.h:1
 msgid "Configure your service preferences"
@@ -3512,7 +3700,7 @@ msgstr "GIMP"
 msgid "Desktop"
 msgstr "Skrivebord"
 
-#: data/linksets/desktop.xml.h:2 libnautilus-extensions/nautilus-file.c:4723
+#: data/linksets/desktop.xml.h:2 libnautilus-extensions/nautilus-file.c:4740
 #: libnautilus-extensions/nautilus-trash-directory.c:301
 #: src/file-manager/fm-desktop-icon-view.c:65
 msgid "Trash"
@@ -3552,157 +3740,172 @@ msgid "Search Engines"
 msgstr "Søkemotorer"
 
 #: data/static_bookmarks.xml.h:1
+msgid "Allaire"
+msgstr "Allaire"
+
+#: data/static_bookmarks.xml.h:2
+msgid "Binary Freedom"
+msgstr "Binær frihet"
+
+#: data/static_bookmarks.xml.h:3
 msgid "Borland"
 msgstr "Borland"
 
-#: data/static_bookmarks.xml.h:2
+#: data/static_bookmarks.xml.h:4
 msgid "CNET Computers.com"
 msgstr "CNET Computers.com"
 
-#: data/static_bookmarks.xml.h:3
+#: data/static_bookmarks.xml.h:5
 msgid "CNET Linux Center"
 msgstr "CNET Linux senter"
 
-#: data/static_bookmarks.xml.h:4
-msgid "Caldera"
-msgstr "Caldera"
-
-#: data/static_bookmarks.xml.h:5
+#: data/static_bookmarks.xml.h:6
 msgid "CollabNet"
 msgstr "Collabnet"
 
-#: data/static_bookmarks.xml.h:6
+#: data/static_bookmarks.xml.h:7
 msgid "Compaq"
 msgstr "Compaq"
 
-#: data/static_bookmarks.xml.h:7
+#: data/static_bookmarks.xml.h:8
+msgid "Conectiva"
+msgstr "Conectiva"
+
+#: data/static_bookmarks.xml.h:9
+msgid "Covalent"
+msgstr "Kovalent"
+
+#: data/static_bookmarks.xml.h:10
 msgid "Debian.org"
 msgstr "Debian.org"
 
-#: data/static_bookmarks.xml.h:8
+#: data/static_bookmarks.xml.h:11
 msgid "Dell"
 msgstr "Dell"
 
-#: data/static_bookmarks.xml.h:9
+#: data/static_bookmarks.xml.h:12
 msgid "Eazel"
 msgstr "Eazel"
 
-#: data/static_bookmarks.xml.h:10
+#: data/static_bookmarks.xml.h:13
 msgid "Freshmeat.net"
 msgstr "Freshmeat.net"
 
-#: data/static_bookmarks.xml.h:11
+#: data/static_bookmarks.xml.h:14
 msgid "GNOME.org"
 msgstr "GNOME.org"
 
-#: data/static_bookmarks.xml.h:12
+#: data/static_bookmarks.xml.h:15
 msgid "GNU.org"
 msgstr "GNU.org"
 
-#: data/static_bookmarks.xml.h:14
-msgid "Hewlett-Packard"
-msgstr "Hewlett-Packard"
-
-#: data/static_bookmarks.xml.h:15
-msgid "IBM"
-msgstr "IBM"
-
-#: data/static_bookmarks.xml.h:16
-msgid "Linux Companies"
-msgstr "Linux-selskaper"
-
 #: data/static_bookmarks.xml.h:17
+msgid "International"
+msgstr "Internasjonal"
+
+#: data/static_bookmarks.xml.h:18
+msgid "LWN.net"
+msgstr "LWN.net"
+
+#: data/static_bookmarks.xml.h:19
 msgid "Linux Documentation Project"
 msgstr "Linux dokumentasjonsprosjektet"
 
-#: data/static_bookmarks.xml.h:18
+#: data/static_bookmarks.xml.h:20
+msgid "Linux One"
+msgstr "Linux One"
+
+#: data/static_bookmarks.xml.h:21
 msgid "Linux Online"
 msgstr "Linux Online"
 
-#: data/static_bookmarks.xml.h:19
+#: data/static_bookmarks.xml.h:22
 msgid "Linux Resources"
 msgstr "Linux ressurser"
 
-#: data/static_bookmarks.xml.h:20
-msgid "Linux at IBM"
-msgstr "Linux hos IBM"
-
-#: data/static_bookmarks.xml.h:21
+#: data/static_bookmarks.xml.h:23
 msgid "LinuxNewbie.org"
 msgstr "LinuxNewbie.org"
 
-#: data/static_bookmarks.xml.h:22
-msgid "Linuxcare"
-msgstr "Linuxcare"
-
-#: data/static_bookmarks.xml.h:23
-msgid "Myplay"
-msgstr "Myplay"
-
-#. The copyright character in here is correct for
-#. * Latin-1 encoding, but not for UTF-8, so we have
-#. * to change it when we upgrade to GTK 2.0.
-#.
-#: data/static_bookmarks.xml.h:24 nautilus.desktop.in.h:1
-#: src/nautilus-window-manage-views.c:254 src/nautilus-window-menus.c:553
-msgid "Nautilus"
-msgstr "Nautilus"
+#: data/static_bookmarks.xml.h:24
+msgid "LinuxOrbit.com"
+msgstr "LinuxOrbit.com"
 
 #: data/static_bookmarks.xml.h:25
+msgid "Netraverse"
+msgstr "Netraverse"
+
+#: data/static_bookmarks.xml.h:26
 msgid "News and Media"
 msgstr "Nyheter og media"
 
-#: data/static_bookmarks.xml.h:26
+#: data/static_bookmarks.xml.h:27
+msgid "O'Reilly"
+msgstr "O'Reilly"
+
+#: data/static_bookmarks.xml.h:28
 msgid "OSDN"
 msgstr "OSDN"
 
-#: data/static_bookmarks.xml.h:27
+#: data/static_bookmarks.xml.h:29
+msgid "Open Source Asia"
+msgstr "Open Source Asia"
+
+#: data/static_bookmarks.xml.h:30
 msgid "OpenOffice"
 msgstr "OpenOffice"
 
-#: data/static_bookmarks.xml.h:28
+#: data/static_bookmarks.xml.h:31
+msgid "Penguin Computing"
+msgstr "Penguin Computing"
+
+#: data/static_bookmarks.xml.h:32
+msgid "Rackspace"
+msgstr "Rackspace"
+
+#: data/static_bookmarks.xml.h:33
 msgid "Red Hat"
 msgstr "Red Hat"
 
-#: data/static_bookmarks.xml.h:29
-msgid "Slashdot"
-msgstr "Slashdot"
+#: data/static_bookmarks.xml.h:34
+msgid "Red Hat Network"
+msgstr "Red Hat Network"
 
-#: data/static_bookmarks.xml.h:30
+#: data/static_bookmarks.xml.h:35
+msgid "RedFlag Linux"
+msgstr "RedFlag Linux"
+
+#: data/static_bookmarks.xml.h:36
 msgid "Software"
 msgstr "Programvare"
 
-#: data/static_bookmarks.xml.h:31
+#: data/static_bookmarks.xml.h:37
 msgid "SourceForge"
 msgstr "SourceForge"
 
-#: data/static_bookmarks.xml.h:32
-msgid "SourceXchange"
-msgstr "SourceXchange"
-
-#: data/static_bookmarks.xml.h:33
+#: data/static_bookmarks.xml.h:38
 msgid "Sun StarOffice"
 msgstr "Sun StarOffice"
 
-#: data/static_bookmarks.xml.h:34
-msgid "VA Linux"
-msgstr "VA Linux"
+#: data/static_bookmarks.xml.h:39
+msgid "Sun Wah Linux"
+msgstr "Sun Wah Linux"
 
-#: data/static_bookmarks.xml.h:35
-msgid "VMWare"
-msgstr "VMWare"
-
-#: data/static_bookmarks.xml.h:36
+#: data/static_bookmarks.xml.h:40
 msgid "Web Services"
 msgstr "Web-tjenester"
 
-#: data/static_bookmarks.xml.h:37
-msgid "Ximian"
-msgstr "Ximian"
+#: data/static_bookmarks.xml.h:41
+msgid "ZDNet Linux Hardware Database"
+msgstr "ZDNet Linux maskinvaredatabase"
 
-#: data/static_bookmarks.xml.h:38
+#: data/static_bookmarks.xml.h:42
 msgid "ZDNet Linux Resource Center"
 msgstr "ZDNET Linux ressurssenter"
+
+#: data/static_bookmarks.xml.h:43
+msgid "Zero-Knowledge"
+msgstr "Zero-Knowledge"
 
 #: icons/ardmore/ardmore.xml.h:1
 msgid "Tahoe"
@@ -3749,12 +3952,12 @@ msgid "Uses manila folders and gray-green backgrounds."
 msgstr "Bruker mapper i manila og grågrønne bakgrunner."
 
 #. Note to localizers: this font is used for text items in Druid pages
-#: libnautilus-extensions/nautilus-druid-page-eazel.c:368
+#: libnautilus-extensions/nautilus-druid-page-eazel.c:381
 msgid "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
 msgstr "-adobe-helvetica-fet-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
 
 #. Note to localizers: this font is used for page titles in Druid pages
-#: libnautilus-extensions/nautilus-druid-page-eazel.c:547
+#: libnautilus-extensions/nautilus-druid-page-eazel.c:560
 msgid "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
 msgstr "-adobe-helvetica-fet-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
 
@@ -5187,24 +5390,24 @@ msgstr "Bytt til manuell plassering?"
 msgid "Switch"
 msgstr "Bytt"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1546
+#: libnautilus-extensions/nautilus-icon-text-item.c:1550
 #: src/file-manager/nautilus-icon-view-ui.xml.h:25
 msgid "Rename"
 msgstr "Gi nytt navn"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1547
+#: libnautilus-extensions/nautilus-icon-text-item.c:1551
 msgid "Undo Typing"
 msgstr "Angre inntasting"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1548
+#: libnautilus-extensions/nautilus-icon-text-item.c:1552
 msgid "Restore the old name"
 msgstr "Gjenopprett det gamle navnet"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1549
+#: libnautilus-extensions/nautilus-icon-text-item.c:1553
 msgid "Redo Typing"
 msgstr "Gjenopprett inntasting"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1550
+#: libnautilus-extensions/nautilus-icon-text-item.c:1554
 msgid "Restore the changed name"
 msgstr "Gjenopprett det endrede navnet"
 
@@ -5387,7 +5590,9 @@ msgstr ""
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations.  Would you like to choose another application?"
-msgstr "\"%s\" kan ikke åpne \"%s\" fordi \"%s\" ikke kan aksessere filer i \"%s\"-plasseringer. Vil du velge en annen applikasjon?"
+msgstr ""
+"\"%s\" kan ikke åpne \"%s\" fordi \"%s\" ikke kan aksessere filer i "
+"\"%s\"-plasseringer. Vil du velge en annen applikasjon?"
 
 #: libnautilus-extensions/nautilus-program-choosing.c:521
 #: libnautilus-extensions/nautilus-program-choosing.c:542
@@ -5400,7 +5605,11 @@ msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations.  No other applications are available to view this file.  If you "
 "copy this file onto your computer, you will be able to open it."
-msgstr "\"%s\" kan ikke åpne \"%s\" fordi \"%s\" ikke kan aksessere filer i \"%s\"-lokasjoner. Ingen andre applikasjoner er tilgjengelig for å vise denne filen. Hvis du kopierer denne filen til din datamaskin, vil du kunne åpne den."
+msgstr ""
+"\"%s\" kan ikke åpne \"%s\" fordi \"%s\" ikke kan aksessere filer i "
+"\"%s\"-lokasjoner. Ingen andre applikasjoner er tilgjengelig for å vise "
+"denne filen. Hvis du kopierer denne filen til din datamaskin, vil du kunne "
+"åpne den."
 
 #. Human readable description for a criterion in a search for
 #. files. Bracketed items are context, and are message
@@ -5698,38 +5907,52 @@ msgstr "Gjenopprett redigering"
 msgid "Redo the edit"
 msgstr "Gjenopprett redigeringen"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:506
-#: libnautilus-extensions/nautilus-volume-monitor.c:525
+#: libnautilus-extensions/nautilus-volume-monitor.c:514
+#: libnautilus-extensions/nautilus-volume-monitor.c:533
 msgid "Unknown"
 msgstr "Ukjent"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:613
-#: libnautilus-extensions/nautilus-volume-monitor.c:635
+#. Populate table with items we know localized names for.
+#: libnautilus-extensions/nautilus-volume-monitor.c:619
+#: libnautilus-extensions/nautilus-volume-monitor.c:1807
+msgid "Floppy"
+msgstr "Diskett"
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:620
+msgid "CD-ROM"
+msgstr "CD-ROM"
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:621
+msgid "Zip Drive"
+msgstr "Zip-disk"
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:642
+#: libnautilus-extensions/nautilus-volume-monitor.c:664
 msgid "Audio CD"
 msgstr "Lyd-CD"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1494
+#: libnautilus-extensions/nautilus-volume-monitor.c:1523
 msgid "Mount Error"
 msgstr "Monteringsfeil"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1496
+#: libnautilus-extensions/nautilus-volume-monitor.c:1525
 msgid "Unmount Error"
 msgstr "Feil under avmontering"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1526
+#: libnautilus-extensions/nautilus-volume-monitor.c:1555
 msgid "is write-protected, mounting read-only"
 msgstr "er skrivebeskyttet, monterer med lesetilgang"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1529
+#: libnautilus-extensions/nautilus-volume-monitor.c:1558
 msgid "is not a valid block device"
 msgstr "er ikke en gyldig blokkenhet"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1530
+#: libnautilus-extensions/nautilus-volume-monitor.c:1559
 msgid "No medium found"
 msgstr "Ingen media funnet"
 
 #. Handle floppy case
-#: libnautilus-extensions/nautilus-volume-monitor.c:1534
+#: libnautilus-extensions/nautilus-volume-monitor.c:1563
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -5738,7 +5961,7 @@ msgstr ""
 "i stasjonen."
 
 #. All others
-#: libnautilus-extensions/nautilus-volume-monitor.c:1538
+#: libnautilus-extensions/nautilus-volume-monitor.c:1567
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
@@ -5746,11 +5969,11 @@ msgstr ""
 "Nautilus klarte ikke å montere volumet. Det er sannsynligvis ikke noe media "
 "i enheten."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1541
+#: libnautilus-extensions/nautilus-volume-monitor.c:1570
 msgid "wrong fs type, bad option, bad superblock on"
 msgstr "feil fs-type, ugyldig flagg, ugyldig superblokk på"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1544
+#: libnautilus-extensions/nautilus-volume-monitor.c:1573
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -5758,7 +5981,7 @@ msgstr ""
 "Nautilus klarte ikke å montere diskettstasjonen. Disketten er sannsynligvis "
 "i et format som ikke kan monteres."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1547
+#: libnautilus-extensions/nautilus-volume-monitor.c:1576
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -5766,44 +5989,40 @@ msgstr ""
 "Nautilus klarte ikke å montere det valgte volumet. Volumet er sannsynligvis "
 "i et format som ikke kan monteres."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1552
+#: libnautilus-extensions/nautilus-volume-monitor.c:1581
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilus klarte ikke å montere valgt diskettstasjon."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1554
+#: libnautilus-extensions/nautilus-volume-monitor.c:1583
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilus kunne ikke montere det valgte volumet."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-extensions/nautilus-volume-monitor.c:1559
+#: libnautilus-extensions/nautilus-volume-monitor.c:1588
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilus kunne ikke avmontere det valgte volumet."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1711
+#: libnautilus-extensions/nautilus-volume-monitor.c:1740
 msgid "ISO 9660 Volume"
 msgstr "ISO 9660 volum"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1726
+#: libnautilus-extensions/nautilus-volume-monitor.c:1755
 msgid "Root"
 msgstr "Root"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1733
+#: libnautilus-extensions/nautilus-volume-monitor.c:1762
 msgid "Ext2 Volume"
 msgstr "Ext2 volum"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1748
+#: libnautilus-extensions/nautilus-volume-monitor.c:1777
 msgid "MSDOS Volume"
 msgstr "MSDOS-volum"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1763
+#: libnautilus-extensions/nautilus-volume-monitor.c:1792
 msgid "NFS Volume"
 msgstr "NFS-volum"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1778
-msgid "Floppy"
-msgstr "Diskett"
-
-#: libnautilus-extensions/nautilus-volume-monitor.c:1793
+#: libnautilus-extensions/nautilus-volume-monitor.c:1822
 msgid "Unknown Volume"
 msgstr "Ukjent volum"
 
@@ -5819,7 +6038,7 @@ msgstr "Kopiér valgt tekst til utklippstavlen"
 msgid "Cut the selected text to the clipboard"
 msgstr "Klipp ut valgt tekst til utklippstavlen"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:4 src/nautilus-shell-ui.xml.h:42
+#: libnautilus/nautilus-clipboard-ui.xml.h:4 src/nautilus-shell-ui.xml.h:45
 msgid "Paste the text stored on the clipboard"
 msgstr "Lim inn tekst som er lagret på utklippstavlen"
 
@@ -5827,7 +6046,7 @@ msgstr "Lim inn tekst som er lagret på utklippstavlen"
 msgid "Remove the selected text without putting it on the clipboard"
 msgstr "Fjerner den valgte teksten uten å plassere den på utklippstavlen"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:74
+#: libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:77
 msgid "_Copy Text"
 msgstr "_Kopier tekst"
 
@@ -5835,9 +6054,18 @@ msgstr "_Kopier tekst"
 msgid "_Cut Text"
 msgstr "_Klipp ut tekst"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:88
+#: libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:91
 msgid "_Paste Text"
 msgstr "_Lim inn tekst"
+
+#. The copyright character in here is correct for
+#. * Latin-1 encoding, but not for UTF-8, so we have
+#. * to change it when we upgrade to GTK 2.0.
+#.
+#: nautilus.desktop.in.h:1 src/nautilus-window-manage-views.c:254
+#: src/nautilus-window-menus.c:559
+msgid "Nautilus"
+msgstr "Nautilus"
 
 #: nautilus.desktop.in.h:2
 msgid "Nautilus File Manager and Graphic Shell"
@@ -5851,22 +6079,22 @@ msgstr "Nautilus filhåndterer og grafisk skall"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: src/file-manager/fm-desktop-icon-view.c:731
+#: src/file-manager/fm-desktop-icon-view.c:735
 #, c-format
 msgid "%s's Home"
 msgstr "Hjem til %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1020
+#: src/file-manager/fm-desktop-icon-view.c:1021
 msgid "Empty Trash..."
 msgstr "Tøm søppelkurv..."
 
-#: src/file-manager/fm-desktop-icon-view.c:1022
+#: src/file-manager/fm-desktop-icon-view.c:1023
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "Empty Trash"
 msgstr "Tøm søppelkurv"
 
-#: src/file-manager/fm-desktop-icon-view.c:1042
+#: src/file-manager/fm-desktop-icon-view.c:1043
 msgid "Unmount Volume"
 msgstr "Avmonter volum"
 
@@ -7285,7 +7513,7 @@ msgid "About Nautilus"
 msgstr "Om Nautilus"
 
 #. draw the authors title
-#: src/nautilus-about.c:360
+#: src/nautilus-about.c:361
 msgid "Authors"
 msgstr "Forfattere"
 
@@ -7309,37 +7537,37 @@ msgstr "Kunne ikke opprette nødvendige mapper"
 #.
 #: src/nautilus-application.c:404
 msgid ""
-"Nautilus can't be used now. Rebooting the computer or installing Nautilus "
-"again may fix the problem."
-msgstr ""
-"Nautilus kan ikke brukes nå. Problemet vil kanskje løses ved å starte om "
-"datamaskinen eller installere Nautilus på nytt."
+"Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
+"from the console may fix the problem. If not, you can try rebooting the "
+"computer or installing Nautilus again."
+msgstr "Nautilus kan ikke brukes nå. Du kan kanskje rette problemet ved å kjøre kommandoen \"nautilus-clean.sh -x\" fra konsollet. Hvis ikke kan du prøve å starte datamaskinen på nytt eller installere Nautilus en gang til."
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:408
+#: src/nautilus-application.c:410
 msgid ""
-"Nautilus can't be used now. Rebooting the computer or installing Nautilus "
-"again may fix the problem.\n"
+"Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
+"from the console may fix the problem. If not, you can try rebooting the "
+"computer or installing Nautilus again.\n"
 "\n"
 "OAF couldn't locate the Nautilus_shell.oaf file. One cause of this seems to "
 "be an LD_LIBRARY_PATH that does not include the oaf library's directory. "
 "Another possible cause would be bad install with a missing "
 "Nautilus_Shell.oaf file.\n"
 "\n"
+"Running \"nautilus-clean.sh -x\" will kill all OAF and GConf processes, "
+"which may be needed by other applications.\n"
+"\n"
 "Sometimes killing oafd and gconfd fixes the problem, but we don't know why.\n"
 "\n"
 "We have also seen this error when a faulty version of oaf was installed."
 msgstr ""
-"Nautilus kan ikke brukes nå. Problemet vil kanskje løses ved å starte om "
-"datamaskinen eller installere Natutilus på nytt. \n"
+"Nautilus kan ikke brukes nå. Problemet vil kanskje løses ved å kjøre kommandoen \"nautilus-clean.sh -x\" fra konsollet. Hvis ikke kan du prøve å starte om datamaskinen eller installere Natutilus på nytt. \n"
 "\n"
-"OAF kunne ikke finne en Nautilus_Shell.oaf fil. En årsak til dette ser ut "
-"til å være en LD_LIBRARY_PATH som ikke inneholder oaf-bibliotekets katalog. "
-"En annen mulig årsak kan være en ugyldig installasjon som mangler "
-"Nautilus_Shell.oaf filen. \n"
+"OAF kunne ikke finne Nautilus_Shell.oaf filen. En årsak til dette ser ut til å være en LD_LIBRARY_PATH som ikke inneholder oaf-bibliotekets katalog. En annen mulig årsak kan være en ugyldig installasjon som mangler Nautilus_Shell.oaf filen. \n"
 "\n"
-"Noen ganger vil det være nok å drepe oafd og gconfd, men vi vet ikke "
-"hvorfor.\n"
+"Hvis du kjører \"nautilus-clean.sh -x\" vil dette drepe alle OAF- og GConf-prosesser som andre applikasjoner er avhengig av.\n"
+"\n"
+"Noen ganger vil det være nok å drepe oafd og gconfd, men vi vet ikke hvorfor.\n"
 "\n"
 "Vi har også sett denne feilen når en feil versjon av oaf var installert."
 
@@ -7352,12 +7580,12 @@ msgstr ""
 #. * wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:434 src/nautilus-application.c:452
-#: src/nautilus-application.c:459
+#: src/nautilus-application.c:441 src/nautilus-application.c:459
+#: src/nautilus-application.c:466
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus kan ikke brukes nå, pga en uventet feil."
 
-#: src/nautilus-application.c:435
+#: src/nautilus-application.c:442
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to register the file manager view server."
@@ -7365,7 +7593,7 @@ msgstr ""
 "Nautilus kan ikke brukes nå pga en uventet feil fra OAF under forsøk på å "
 "registrere visningstjeneren i filbehandleren."
 
-#: src/nautilus-application.c:453
+#: src/nautilus-application.c:460
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the factory.Killing oafd and restarting Nautilus may "
@@ -7375,7 +7603,7 @@ msgstr ""
 "finne factory. Du kan fikse problemet ved å drepe oafd og starte Nautilus på "
 "nytt."
 
-#: src/nautilus-application.c:460
+#: src/nautilus-application.c:467
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the shell object. Killing oafd and restarting Nautilus "
@@ -7385,7 +7613,7 @@ msgstr ""
 "finne factory. Hvis du dreper oafd og starter Nautilus på nytt vil dette "
 "kunne fikse problemet."
 
-#: src/nautilus-application.c:625
+#: src/nautilus-application.c:632
 msgid ""
 "You are about to run Nautilus as root.\n"
 "\n"
@@ -7397,7 +7625,7 @@ msgstr ""
 "Du kan, som root, ødelegge ditt system hvis du ikke er forsiktig, og\n"
 "Nautilus vil ikke hindre deg i å gjøre dette."
 
-#: src/nautilus-application.c:629
+#: src/nautilus-application.c:636
 msgid "Quit"
 msgstr "Avslutt"
 
@@ -7409,7 +7637,7 @@ msgstr "Bokmerker"
 msgid "Location"
 msgstr "Plassering"
 
-#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:735
+#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:749
 msgid "Remove"
 msgstr "Fjern"
 
@@ -7439,10 +7667,6 @@ msgstr ""
 "\n"
 "Du kan slette denne filen manuelt for å få denne frem igjen.\n"
 "\n"
-
-#: src/nautilus-first-time-druid.c:250
-msgid "Eazel Services"
-msgstr "Eazel tjenester"
 
 #. Note to localizers: this font is used for title text in
 #. * the first time druid
@@ -7497,7 +7721,7 @@ msgid ""
 "if you need an update.\n"
 "\n"
 "If you know your computer uses a proxy connection, click\n"
-"Verify and Nautilus will use it."
+"Verify and Nautilus will use it.\n"
 msgstr ""
 "For å verifisere din Internett-tilkobling og fastslå at du har\n"
 "de siste oppdateringene til Nautilus, vil Nautilus nå koble til\n"
@@ -7506,7 +7730,7 @@ msgstr ""
 "hvis du trenger en oppdatering.\n"
 "\n"
 "Hvis du vet at din maskin bruker en proxy-tilkobling, klikker\n"
-"du verifisér for å la Nautilus bruke den."
+"du verifisér for å la Nautilus bruke den.\n"
 
 #: src/nautilus-first-time-druid.c:546
 msgid "Verify my connection and check for updates"
@@ -7571,19 +7795,19 @@ msgstr "Start Nautilus når GNOME starter opp."
 
 #: src/nautilus-first-time-druid.c:926
 msgid ""
-"The Medusa daemon indexes all the items on your hard\n"
-"disk and mounted volumes, so you can quickly search\n"
-"by name, date, and other attributes as well as by content.\n"
-"Without Medusa, searching is slower.\n"
+"The fast search feature indexes all the items on your hard disk.\n"
+"It speeds up searching and allows you to search by file content\n"
+"as well as filename, date, and other file properties. The indexing\n"
+"takes time but is performed only when your computer is idle.\n"
 msgstr ""
-"Medusa-daemonen indekserer alle oppføringer på din harddisk\n"
-"og monterte volumer, slik at du kan utføre raske søk etter\n"
-"navn, dato og andre attributter i tillegg til innhold.\n"
-"Uten medusa vil søk være tregere.\n"
+"Raske søk indekserer alle oppføringer på din harddisk.\n"
+"Det gjør søk raskere og lar deg søke på filinnhold i tillegg\n"
+"til filnavn, dato og andre filegenskaper. Indekseringen tar\n"
+"tid, men utføres kun når datamaskinen ikke er i bruk.\n"
 
 #: src/nautilus-first-time-druid.c:934
-msgid "Launch medusa."
-msgstr "Start medusa."
+msgid "Enable fast search"
+msgstr "Bruk raskt søk"
 
 #: src/nautilus-first-time-druid.c:1028
 msgid "Nautilus First Time Setup"
@@ -7621,7 +7845,7 @@ msgstr "Fullført"
 #: src/nautilus-first-time-druid.c:1079
 msgid ""
 "Click Finish to launch Nautilus. You'll start with two\n"
-"Nautilus windows: one shows your home directory, and the\n"
+"Nautilus windows: one shows your home folder, and the\n"
 "other tells you about Eazel's services that make the life\n"
 "of a Linux user easier.\n"
 "\n"
@@ -7646,8 +7870,8 @@ msgstr "GMC til Nautilus overgang"
 
 #. set up the `Launch Medusa' page
 #: src/nautilus-first-time-druid.c:1096
-msgid "Launch Medusa"
-msgstr "Start Medusa"
+msgid "Fast Searches"
+msgstr "Raske søk"
 
 #. set up the update page
 #: src/nautilus-first-time-druid.c:1100
@@ -7893,15 +8117,15 @@ msgid "Cancel Remove"
 msgstr "Avbryt fjern"
 
 #: src/nautilus-property-browser.c:2024
-msgid "  Add a new pattern  "
+msgid "  Add a New Pattern  "
 msgstr "  Legg til et nytt mønster  "
 
 #: src/nautilus-property-browser.c:2027
-msgid "  Add a new color  "
+msgid "  Add a New Color  "
 msgstr "  Legg til en ny farge  "
 
 #: src/nautilus-property-browser.c:2030
-msgid "  Add a new emblem  "
+msgid "  Add a New Emblem  "
 msgstr "  Legg til et nytt emblem  "
 
 #: src/nautilus-property-browser.c:2053
@@ -7929,15 +8153,15 @@ msgid "Emblems:"
 msgstr "Emblemer:"
 
 #: src/nautilus-property-browser.c:2092
-msgid "  Remove a pattern  "
+msgid "  Remove a Pattern  "
 msgstr "  Fjern et mønster  "
 
 #: src/nautilus-property-browser.c:2095
-msgid "  Remove a color  "
+msgid "  Remove a Color  "
 msgstr "  Fjern en farge  "
 
 #: src/nautilus-property-browser.c:2098
-msgid "  Remove an emblem  "
+msgid "  Remove an Emblem  "
 msgstr "  Fjern et emblem  "
 
 #. Menu item in the search bar.
@@ -8303,297 +8527,305 @@ msgid "Display quick reference pages for Nautilus"
 msgstr "Vis hurtigreferansesider for Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:22
+msgid "Display release notes for Nautilus"
+msgstr "Vis versjonsnotis for Nautilus"
+
+#: src/nautilus-shell-ui.xml.h:23
 msgid "Display support information for Nautilus and Eazel Services"
 msgstr "Vis støtteinformasjon for Nautilus og Eazel tjenester"
 
-#: src/nautilus-shell-ui.xml.h:23
+#: src/nautilus-shell-ui.xml.h:24
 msgid "Display the latest contents of the current location"
 msgstr "Vis det nyeste innholder i aktiv lokasjon"
 
-#: src/nautilus-shell-ui.xml.h:24
+#: src/nautilus-shell-ui.xml.h:25
 msgid "Display the set of available appearance themes"
 msgstr "Vis tilgjengelige temaer for utseende"
 
-#: src/nautilus-shell-ui.xml.h:25
+#: src/nautilus-shell-ui.xml.h:26
 msgid "Edit various Nautilus preferences"
 msgstr "Redigér forskjellige brukervalg for Nautilus"
 
-#: src/nautilus-shell-ui.xml.h:26
+#: src/nautilus-shell-ui.xml.h:27
 msgid "Find"
 msgstr "Finn"
 
-#: src/nautilus-shell-ui.xml.h:27
+#: src/nautilus-shell-ui.xml.h:28
 msgid "For_get History"
 msgstr "_Glem historikk"
 
-#: src/nautilus-shell-ui.xml.h:28
+#: src/nautilus-shell-ui.xml.h:29
 msgid "Go to Eazel Services"
 msgstr "Gå til Eazel tjenester"
 
-#: src/nautilus-shell-ui.xml.h:29
+#: src/nautilus-shell-ui.xml.h:30
 msgid "Go to the home location"
 msgstr "Gå til hovedsiden"
 
-#: src/nautilus-shell-ui.xml.h:30
+#: src/nautilus-shell-ui.xml.h:31
 msgid "Go to the location that contains this one"
 msgstr "Gå til lokasjonen som inneholder denne"
 
-#: src/nautilus-shell-ui.xml.h:31
+#: src/nautilus-shell-ui.xml.h:32
 msgid "Go to the next visited location"
 msgstr "Gå til neste besøkte lokasjon"
 
-#: src/nautilus-shell-ui.xml.h:32
+#: src/nautilus-shell-ui.xml.h:33
 msgid "Go to the previous visited location"
 msgstr "Gå til forrige besøkte lokasjon"
 
-#: src/nautilus-shell-ui.xml.h:33 src/nautilus-window-menus.c:434
+#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:440
 msgid "Hide Location Bar"
 msgstr "Skjul adresselinje"
 
-#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:422
+#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:428
 msgid "Hide Sidebar"
 msgstr "Skjul sidelinje"
 
-#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:416
+#: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:422
 msgid "Hide Status Bar"
 msgstr "Skjul statuslinje"
 
-#: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:428
+#: src/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:434
 msgid "Hide Toolbar"
 msgstr "Skjul verktøylinje"
 
-#: src/nautilus-shell-ui.xml.h:38
+#: src/nautilus-shell-ui.xml.h:39
 msgid "Nautilus Quick _Reference"
 msgstr "Nautilus hurtig_referanse"
 
-#: src/nautilus-shell-ui.xml.h:39
+#: src/nautilus-shell-ui.xml.h:40
+msgid "Nautilus Release _Notes"
+msgstr "Nautilus versjons_notis"
+
+#: src/nautilus-shell-ui.xml.h:41
+msgid "Nautilus User _Manual"
+msgstr "Nautilus bruker_håndbok"
+
+#: src/nautilus-shell-ui.xml.h:42
 msgid "New Window"
 msgstr "Nytt vindu"
 
-#: src/nautilus-shell-ui.xml.h:40
+#: src/nautilus-shell-ui.xml.h:43
 msgid "Normal Size"
 msgstr "Normal størrelse"
 
-#: src/nautilus-shell-ui.xml.h:41
+#: src/nautilus-shell-ui.xml.h:44
 msgid "Open another Nautilus window for the displayed location"
 msgstr "Åpne et nytt Nautilus-vindu for vist lokasjon"
 
-#: src/nautilus-shell-ui.xml.h:43
+#: src/nautilus-shell-ui.xml.h:46
 msgid "Preferences..."
 msgstr "Brukervalg..."
 
-#: src/nautilus-shell-ui.xml.h:44
+#: src/nautilus-shell-ui.xml.h:47
 msgid "Refresh"
 msgstr "Gjenoppfrisk"
 
-#: src/nautilus-shell-ui.xml.h:45
+#: src/nautilus-shell-ui.xml.h:48
 msgid "Removes the selected text without putting it on the clipboard"
 msgstr "Fjerner den valgte teksten uten å plassere den på utklippstavlen"
 
-#: src/nautilus-shell-ui.xml.h:46
+#: src/nautilus-shell-ui.xml.h:49
 msgid "Report Profiling"
 msgstr "Rapportér profilering"
 
-#: src/nautilus-shell-ui.xml.h:47
+#: src/nautilus-shell-ui.xml.h:50
 msgid "Reset Profiling"
 msgstr "Nullstill profilering"
 
-#: src/nautilus-shell-ui.xml.h:48
+#: src/nautilus-shell-ui.xml.h:51
 msgid "Search the World Wide Web"
 msgstr "Søk på World Wide Web"
 
-#: src/nautilus-shell-ui.xml.h:49
+#: src/nautilus-shell-ui.xml.h:52
 msgid "Search this computer for files"
 msgstr "Søk etter filer på denne datamaskinen"
 
-#: src/nautilus-shell-ui.xml.h:50
+#: src/nautilus-shell-ui.xml.h:53
 msgid ""
 "Show a page from which you can send feedback about Nautilus and Eazel "
 "Services"
 msgstr ""
 "Vis en side du kan sende tilbakemeldinger om Nautilus og Eazel tjenester"
 
-#: src/nautilus-shell-ui.xml.h:51
+#: src/nautilus-shell-ui.xml.h:54
 msgid "Show the contents at the normal size"
 msgstr "Vis innholdet i normal størrelse"
 
-#: src/nautilus-shell-ui.xml.h:52
+#: src/nautilus-shell-ui.xml.h:55
 msgid "Show the contents in less detail"
 msgstr "Vis innholdet med mindre grad av detaljer"
 
-#: src/nautilus-shell-ui.xml.h:53
+#: src/nautilus-shell-ui.xml.h:56
 msgid "Show the contents in more detail"
 msgstr "Vis innhold med større grad av detaljer"
 
-#: src/nautilus-shell-ui.xml.h:54
+#: src/nautilus-shell-ui.xml.h:57
 msgid "Start Profiling"
 msgstr "Start profilering"
 
-#: src/nautilus-shell-ui.xml.h:56
+#: src/nautilus-shell-ui.xml.h:59
 msgid "Stop Profiling"
 msgstr "Stopp profilering"
 
-#: src/nautilus-shell-ui.xml.h:57
+#: src/nautilus-shell-ui.xml.h:60
 msgid "Stop loading this location"
 msgstr "Stopp nedlasting av denne lokasjonen"
 
-#: src/nautilus-shell-ui.xml.h:58
+#: src/nautilus-shell-ui.xml.h:61
 msgid "Undo the last text change"
 msgstr "Angre siste tekstendring"
 
-#: src/nautilus-shell-ui.xml.h:59
+#: src/nautilus-shell-ui.xml.h:62
 msgid "Up"
 msgstr "Opp"
 
-#: src/nautilus-shell-ui.xml.h:60
+#: src/nautilus-shell-ui.xml.h:63
 msgid "Use Advanced settings"
 msgstr "Bruk avanserte innstillinger"
 
-#: src/nautilus-shell-ui.xml.h:61
+#: src/nautilus-shell-ui.xml.h:64
 msgid "Use Beginner settings"
 msgstr "Bruk innstillinger for begynner"
 
-#: src/nautilus-shell-ui.xml.h:62
+#: src/nautilus-shell-ui.xml.h:65
 msgid "Use Intermediate settings"
 msgstr "Bruk innstillinger for viderekommen"
 
-#: src/nautilus-shell-ui.xml.h:63
+#: src/nautilus-shell-ui.xml.h:66
 msgid "Web Search"
 msgstr "Web-søk"
 
-#: src/nautilus-shell-ui.xml.h:64
+#: src/nautilus-shell-ui.xml.h:67
 msgid "Zoom In"
 msgstr "Zoom inn"
 
-#: src/nautilus-shell-ui.xml.h:65
+#: src/nautilus-shell-ui.xml.h:68
 msgid "Zoom Out"
 msgstr "Zoom ut"
 
-#: src/nautilus-shell-ui.xml.h:66
+#: src/nautilus-shell-ui.xml.h:69
 msgid "Zoom _In"
 msgstr "Zoom _inn"
 
-#: src/nautilus-shell-ui.xml.h:67
+#: src/nautilus-shell-ui.xml.h:70
 msgid "Zoom _Out"
 msgstr "Zoom _ut"
 
-#: src/nautilus-shell-ui.xml.h:68
-msgid "_About Nautilus..."
-msgstr "_Om Nautilus..."
+#: src/nautilus-shell-ui.xml.h:71
+msgid "_About Nautilus"
+msgstr "_Om Nautilus"
 
-#: src/nautilus-shell-ui.xml.h:69
+#: src/nautilus-shell-ui.xml.h:72
 msgid "_Add Bookmark"
 msgstr "_Legg til bokmerke"
 
-#: src/nautilus-shell-ui.xml.h:70
+#: src/nautilus-shell-ui.xml.h:73
 msgid "_Back"
 msgstr "_Tilbake"
 
-#: src/nautilus-shell-ui.xml.h:71
+#: src/nautilus-shell-ui.xml.h:74
 msgid "_Backgrounds and Emblems..."
 msgstr "_Bakgrunner og emblemer..."
 
-#: src/nautilus-shell-ui.xml.h:72
+#: src/nautilus-shell-ui.xml.h:75
 msgid "_Bookmarks"
 msgstr "_Bokmerker"
 
-#: src/nautilus-shell-ui.xml.h:73
+#: src/nautilus-shell-ui.xml.h:76
 msgid "_Close Window"
 msgstr "_Lukk vindu"
 
-#: src/nautilus-shell-ui.xml.h:75
+#: src/nautilus-shell-ui.xml.h:78
+msgid "_Customer Support"
+msgstr "_Kundestøtte"
+
+#: src/nautilus-shell-ui.xml.h:79
 msgid "_Edit"
 msgstr "_Rediger"
 
-#: src/nautilus-shell-ui.xml.h:76
+#: src/nautilus-shell-ui.xml.h:80
 msgid "_Edit Bookmarks..."
 msgstr "R_ediger bokmerker..."
 
-#: src/nautilus-shell-ui.xml.h:77
-msgid "_Feedback..."
-msgstr "Til_bakemeldinger..."
+#: src/nautilus-shell-ui.xml.h:81
+msgid "_Feedback"
+msgstr "T_ilbakemeldinger"
 
-#: src/nautilus-shell-ui.xml.h:79 src/nautilus-window-menus.c:1291
+#: src/nautilus-shell-ui.xml.h:83 src/nautilus-window-menus.c:1306
 msgid "_Find"
 msgstr "_Finn"
 
-#: src/nautilus-shell-ui.xml.h:80
+#: src/nautilus-shell-ui.xml.h:84
 msgid "_Forward"
 msgstr "_Fremover"
 
-#: src/nautilus-shell-ui.xml.h:81
+#: src/nautilus-shell-ui.xml.h:85
 msgid "_Go"
 msgstr "_Gå"
 
-#: src/nautilus-shell-ui.xml.h:82
+#: src/nautilus-shell-ui.xml.h:86
 msgid "_Help"
 msgstr "_Hjelp"
 
-#: src/nautilus-shell-ui.xml.h:83
+#: src/nautilus-shell-ui.xml.h:87
 msgid "_Home"
 msgstr "_Hjem"
 
-#: src/nautilus-shell-ui.xml.h:84
+#: src/nautilus-shell-ui.xml.h:88
 msgid "_Nautilus Themes..."
 msgstr "Nautilus tema..."
 
-#: src/nautilus-shell-ui.xml.h:85
-msgid "_Nautilus User Manual"
-msgstr "_Nautilus brukerhåndbok"
-
-#: src/nautilus-shell-ui.xml.h:86
+#: src/nautilus-shell-ui.xml.h:89
 msgid "_New Window"
 msgstr "_Nytt vindu"
 
-#: src/nautilus-shell-ui.xml.h:87
+#: src/nautilus-shell-ui.xml.h:90
 msgid "_Normal Size"
 msgstr "_Normal størrelse"
 
-#: src/nautilus-shell-ui.xml.h:89
+#: src/nautilus-shell-ui.xml.h:92
 msgid "_Profiler"
 msgstr "_Profilering"
 
-#: src/nautilus-shell-ui.xml.h:90
+#: src/nautilus-shell-ui.xml.h:93
 msgid "_Refresh"
 msgstr "Oppf_risk"
 
-#: src/nautilus-shell-ui.xml.h:91
+#: src/nautilus-shell-ui.xml.h:94
 msgid "_Report Profiling"
 msgstr "_Rapportér profilering"
 
-#: src/nautilus-shell-ui.xml.h:92
+#: src/nautilus-shell-ui.xml.h:95
 msgid "_Reset Profiling"
 msgstr "_Nullstill profilering"
 
-#: src/nautilus-shell-ui.xml.h:93
+#: src/nautilus-shell-ui.xml.h:96
 msgid "_Select All"
 msgstr "_Velg alt"
 
-#: src/nautilus-shell-ui.xml.h:94
+#: src/nautilus-shell-ui.xml.h:97
 msgid "_Start Profiling"
 msgstr "_Start profilering"
 
-#: src/nautilus-shell-ui.xml.h:95
+#: src/nautilus-shell-ui.xml.h:98
 msgid "_Stop Profiling"
 msgstr "_Stopp profilering"
 
-#: src/nautilus-shell-ui.xml.h:96
-msgid "_Support"
-msgstr "_Brukerstøtte"
-
-#: src/nautilus-shell-ui.xml.h:97
+#: src/nautilus-shell-ui.xml.h:99
 msgid "_Undo"
 msgstr "_Angre"
 
-#: src/nautilus-shell-ui.xml.h:98
+#: src/nautilus-shell-ui.xml.h:100
 msgid "_Up a Level"
 msgstr "_Opp ett nivå"
 
-#: src/nautilus-shell-ui.xml.h:99
+#: src/nautilus-shell-ui.xml.h:101
 msgid "_View"
 msgstr "_Vis"
 
-#: src/nautilus-shell-ui.xml.h:100
+#: src/nautilus-shell-ui.xml.h:102
 msgid "_Web Search"
 msgstr "_Web-søk"
 
@@ -8663,11 +8895,11 @@ msgid "Nautilus Theme:"
 msgstr "Nautilus tema:"
 
 #: src/nautilus-theme-selector.c:276
-msgid "  Add new theme  "
+msgid "  Add New Theme  "
 msgstr "  Legg til et nytt tema  "
 
 #: src/nautilus-theme-selector.c:285
-msgid "  Remove theme  "
+msgid "  Remove Theme  "
 msgstr "  Fjern tema  "
 
 #: src/nautilus-theme-selector.c:397
@@ -8753,11 +8985,11 @@ msgstr "Lukk"
 msgid "Preview Release %s: %s"
 msgstr "Preview versjon %s: %s"
 
-#: src/nautilus-window-manage-views.c:771
+#: src/nautilus-window-manage-views.c:798
 msgid "View Failed"
 msgstr "Visning feilet"
 
-#: src/nautilus-window-manage-views.c:782
+#: src/nautilus-window-manage-views.c:809
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -8766,12 +8998,12 @@ msgstr ""
 "%s-visningen ble utsatt for en feil og kan ikke fortsette. Du kan velge en "
 "annen visning eller gå til en annen lokasjon."
 
-#: src/nautilus-window-manage-views.c:793
+#: src/nautilus-window-manage-views.c:820
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "%s-visningen ble utsatt for en feil under oppstart."
 
-#: src/nautilus-window-manage-views.c:948
+#: src/nautilus-window-manage-views.c:975
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -8779,7 +9011,7 @@ msgstr ""
 "Ett av sidepanelene ble utsatt for en feil og kan ikke fortsette. "
 "Beklageligvis kan jeg ikke si hvilket dette gjelder."
 
-#: src/nautilus-window-manage-views.c:952
+#: src/nautilus-window-manage-views.c:979
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -8788,23 +9020,23 @@ msgstr ""
 "Sidepanelet %s ble utsatt for en feil og kan ikke fortsette. Hvis dette "
 "fortsetter, kan du slå av dette panelet."
 
-#: src/nautilus-window-manage-views.c:957
+#: src/nautilus-window-manage-views.c:984
 msgid "Sidebar Panel Failed"
 msgstr "Sidelinjepanel feilet"
 
-#: src/nautilus-window-manage-views.c:1174
+#: src/nautilus-window-manage-views.c:1194
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr "Kunne ikke finne \"%s\". Vennligst sjekk stavingen og forsøk igjen."
 
-#: src/nautilus-window-manage-views.c:1180
+#: src/nautilus-window-manage-views.c:1200
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
 "\"%s\" er ikke en gyldig lokasjon. Vennligst sjekk stavingen og forsøk igjen."
 
-#: src/nautilus-window-manage-views.c:1194
+#: src/nautilus-window-manage-views.c:1214
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -8812,29 +9044,29 @@ msgid ""
 msgstr ""
 "Kunne ikke vise \"%s\" fordi Nautilus ikke fant ut hvilken filtype det er."
 
-#: src/nautilus-window-manage-views.c:1202
+#: src/nautilus-window-manage-views.c:1222
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Nautilus har ingen installerte visningsprogrammer som kan vise \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1214
+#: src/nautilus-window-manage-views.c:1234
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Kunne ikke vise \"%s\", fordi Nautilus ikke kan håndtere %s: lokasjoner."
 
-#: src/nautilus-window-manage-views.c:1220
+#: src/nautilus-window-manage-views.c:1240
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "Kunne ikke vise \"%s\", fordi påloggingsforsøket feilet."
 
-#: src/nautilus-window-manage-views.c:1225
+#: src/nautilus-window-manage-views.c:1245
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Kunne ikke vise \"%s\", fordi tilgang ble nektet."
 
-#: src/nautilus-window-manage-views.c:1236
+#: src/nautilus-window-manage-views.c:1256
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -8843,7 +9075,7 @@ msgstr ""
 "Kunne ikke vise \"%s\", fordi verten, \"%s\", ikke ble funnet. Sjekk at "
 "stavingen er korrekt og at proxy-innstillingene er korrekte."
 
-#: src/nautilus-window-manage-views.c:1244
+#: src/nautilus-window-manage-views.c:1264
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -8852,7 +9084,7 @@ msgstr ""
 "Kunne ikke vise \"%s\", fordi vertsnavnet var tomt. Sjekk at "
 "proxy-innstillingene er korrekte."
 
-#: src/nautilus-window-manage-views.c:1256
+#: src/nautilus-window-manage-views.c:1276
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -8864,23 +9096,23 @@ msgstr ""
 "søketjenesten Medusa, og hvis du ikke har en indeks, at Medusa "
 "indekseringsmotoren kjører."
 
-#: src/nautilus-window-manage-views.c:1260
+#: src/nautilus-window-manage-views.c:1280
 msgid "Searching Unavailable"
 msgstr "Søk ikke tilgjengelig"
 
-#: src/nautilus-window-manage-views.c:1264
+#: src/nautilus-window-manage-views.c:1284
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kan ikke vise \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1269
+#: src/nautilus-window-manage-views.c:1289
 msgid "Can't Display Location"
 msgstr "Kan ikke vise lokasjon"
 
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:307
+#: src/nautilus-window-menus.c:313
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
@@ -8888,37 +9120,37 @@ msgstr ""
 "Er du sikker på at du ønsker å glemme historikken? Hvis det er tilfelle, vil "
 "du være dømt til å gjenta den."
 
-#: src/nautilus-window-menus.c:310
+#: src/nautilus-window-menus.c:316
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr ""
 "Er du sikker på at du ønsker at Nautilus skal glemme stedene du har besøkt?"
 
-#: src/nautilus-window-menus.c:315
+#: src/nautilus-window-menus.c:321
 msgid "Forget History?"
 msgstr "Glem historikk?"
 
-#: src/nautilus-window-menus.c:316
+#: src/nautilus-window-menus.c:322
 msgid "Forget"
 msgstr "Glem"
 
-#: src/nautilus-window-menus.c:417
+#: src/nautilus-window-menus.c:423
 msgid "Show Status Bar"
 msgstr "Vis statuslinje"
 
-#: src/nautilus-window-menus.c:423
+#: src/nautilus-window-menus.c:429
 msgid "Show Sidebar"
 msgstr "Vis sidelinje"
 
-#: src/nautilus-window-menus.c:429
+#: src/nautilus-window-menus.c:435
 msgid "Show Toolbar"
 msgstr "Vis verktøylinje"
 
-#: src/nautilus-window-menus.c:435
+#: src/nautilus-window-menus.c:441
 msgid "Show Location Bar"
 msgstr "Vis adresselinje"
 
-#: src/nautilus-window-menus.c:484
+#: src/nautilus-window-menus.c:490
 msgid "Preferences"
 msgstr "Brukervalg"
 
@@ -8928,11 +9160,11 @@ msgstr "Brukervalg"
 #. * not translate the
 #. * company name, please.
 #.
-#: src/nautilus-window-menus.c:561
+#: src/nautilus-window-menus.c:567
 msgid "Copyright © 1999-2001 Eazel, Inc."
 msgstr "Copyright © 1999-2001 Eazel, Inc."
 
-#: src/nautilus-window-menus.c:563
+#: src/nautilus-window-menus.c:569
 msgid ""
 "Nautilus is a graphical shell\n"
 "for GNOME that makes it\n"
@@ -8949,11 +9181,11 @@ msgstr ""
 #. * bottom of the about box to give credit
 #. * to the translator(s)
 #.
-#: src/nautilus-window-menus.c:572
+#: src/nautilus-window-menus.c:578
 msgid "Translator Credits"
 msgstr "Kjartan Maraas"
 
-#: src/nautilus-window-menus.c:730
+#: src/nautilus-window-menus.c:744
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -8962,24 +9194,24 @@ msgstr ""
 "Lokasjonen \"%s\" eksisterer ikke. Ønsker du å fjerne alle bokmerker med "
 "denne lokasjonen fra din liste?"
 
-#: src/nautilus-window-menus.c:734
+#: src/nautilus-window-menus.c:748
 msgid "Bookmark for Nonexistent Location"
 msgstr "Bokmerke for ikke-eksisterende lokasjon"
 
-#: src/nautilus-window-menus.c:748
+#: src/nautilus-window-menus.c:762
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Lokasjonen \"%s\" eksisterer ikke lenger."
 
-#: src/nautilus-window-menus.c:749
+#: src/nautilus-window-menus.c:763
 msgid "Go to Nonexistent Location"
 msgstr "Gå til ikke-eksisterende lokasjon"
 
-#: src/nautilus-window-menus.c:816
+#: src/nautilus-window-menus.c:830
 msgid "Go to the location specified by this bookmark"
 msgstr "Gå til lokasjonen spesifisert i dette bokmerket"
 
-#: src/nautilus-window-menus.c:1290
+#: src/nautilus-window-menus.c:1305
 msgid "_Browse"
 msgstr "_Bla gjennom"
 
@@ -9001,6 +9233,108 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 #: src/nautilus-zoom-control.c:592
 msgid "%d%%"
 msgstr "%d%%"
+
+#~ msgid "%s had a file conflict with %s which %s required"
+#~ msgstr "%s hadde en filkonflikt med %s som %s er avhengig av"
+
+#~ msgid "%s had a file conflict with %s"
+#~ msgstr "%s hadde en filkonflikt med %s"
+
+#~ msgid "Enable warning before each upload."
+#~ msgstr "Vis advarsel før hver opplasting."
+
+#~ msgid "Disable warning before each upload."
+#~ msgstr "Slå av advarsel før hver opplasting."
+
+#~ msgid "Set machine name."
+#~ msgstr "Sett maskinnavn."
+
+#~ msgid "User isn't logged into ammonite yet.\n"
+#~ msgstr "Bruker er ikke logget på ammonite ennå.\n"
+
+#~ msgid "The supplied URL was bad.\n"
+#~ msgstr "Oppgitt URL er ugyldig.\n"
+
+#~ msgid "A CORBA error occured.\n"
+#~ msgstr "En CORBA-feil oppsto.\n"
+
+#~ msgid "Ammonite returned an error translating the url.\n"
+#~ msgstr "Ammonite returnerte en feil under oversetting av url.\n"
+
+#~ msgid "Can't post !"
+#~ msgstr "Kan ikke postere!"
+
+#~ msgid "can't open tempory file hell\n"
+#~ msgstr "kan ikke åpne midlertidig filskall\n"
+
+#~ msgid "Can't set body !"
+#~ msgstr "Kan ikke sette kropp!"
+
+#~ msgid "Caldera"
+#~ msgstr "Caldera"
+
+#~ msgid "Hewlett-Packard"
+#~ msgstr "Hewlett-Packard"
+
+#~ msgid "IBM"
+#~ msgstr "IBM"
+
+#~ msgid "Linux Companies"
+#~ msgstr "Linux-selskaper"
+
+#~ msgid "Linux at IBM"
+#~ msgstr "Linux hos IBM"
+
+#~ msgid "Linuxcare"
+#~ msgstr "Linuxcare"
+
+#~ msgid "Myplay"
+#~ msgstr "Myplay"
+
+#~ msgid "Slashdot"
+#~ msgstr "Slashdot"
+
+#~ msgid "SourceXchange"
+#~ msgstr "SourceXchange"
+
+#~ msgid "VA Linux"
+#~ msgstr "VA Linux"
+
+#~ msgid "VMWare"
+#~ msgstr "VMWare"
+
+#~ msgid "Ximian"
+#~ msgstr "Ximian"
+
+#~ msgid ""
+#~ "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
+#~ "again may fix the problem."
+#~ msgstr ""
+#~ "Nautilus kan ikke brukes nå. Problemet vil kanskje løses ved å starte om "
+#~ "datamaskinen eller installere Nautilus på nytt."
+
+#~ msgid ""
+#~ "The Medusa daemon indexes all the items on your hard\n"
+#~ "disk and mounted volumes, so you can quickly search\n"
+#~ "by name, date, and other attributes as well as by content.\n"
+#~ "Without Medusa, searching is slower.\n"
+#~ msgstr ""
+#~ "Medusa-daemonen indekserer alle oppføringer på din harddisk\n"
+#~ "og monterte volumer, slik at du kan utføre raske søk etter\n"
+#~ "navn, dato og andre attributter i tillegg til innhold.\n"
+#~ "Uten medusa vil søk være tregere.\n"
+
+#~ msgid "Launch medusa."
+#~ msgstr "Start medusa."
+
+#~ msgid "Launch Medusa"
+#~ msgstr "Start Medusa"
+
+#~ msgid "_About Nautilus..."
+#~ msgstr "_Om Nautilus..."
+
+#~ msgid "_Support"
+#~ msgstr "_Brukerstøtte"
 
 #~ msgid "Nautilus does not support javascript spawning of new windows!"
 #~ msgstr "Nautilus støtter ikke javascript til åpning av nye vinduer!"
@@ -9137,9 +9471,6 @@ msgstr "%d%%"
 
 #~ msgid "Nautilus _License"
 #~ msgstr "Nautilus _lisens"
-
-#~ msgid "_Customer Service"
-#~ msgstr "_Kundetjenester"
 
 #~ msgid ""
 #~ "Do slower but more complete search whenever possible\n"
@@ -9279,14 +9610,8 @@ msgstr "%d%%"
 #~ msgid "Installation aborted."
 #~ msgstr "Installasjon avbrutt."
 
-#~ msgid "This package has already been installed."
-#~ msgstr "Denne pakken er allerede installert."
-
 #~ msgid "Installation complete."
 #~ msgstr "Installasjon fullført."
-
-#~ msgid "Installation failed."
-#~ msgstr "Installasjon feilet."
 
 #~ msgid "Some packages installed successfully:"
 #~ msgstr "Noen pakker fullførte installasjon:"
@@ -9603,9 +9928,6 @@ msgstr "%d%%"
 #~ msgid " and "
 #~ msgstr " og "
 
-#~ msgid "Content"
-#~ msgstr "Innhold"
-
 #~ msgid "With Emblem"
 #~ msgstr "Med emblem"
 
@@ -9809,9 +10131,6 @@ msgstr "%d%%"
 
 #~ msgid "Progress"
 #~ msgstr "Fremgang"
-
-#~ msgid "Dependency check: Package %s needs %s"
-#~ msgstr "Avhengighetssjekk: Pakke %s trenger %s"
 
 #~ msgid ""
 #~ "Your user name or password were not correct, or you have not activated your "
@@ -10025,9 +10344,6 @@ msgstr "%d%%"
 
 #~ msgid "version %s-%s"
 #~ msgstr "versjon %s-%s"
-
-#~ msgid "checking %s..."
-#~ msgstr "sjekker %s..."
 
 #~ msgid "file %s has an error!"
 #~ msgstr "fil %s har en feil!"
