@@ -96,6 +96,17 @@
 	* src/Makefile.am: Added nautilus-search-bar-private.h.
 	* src/file-manager/fm-directory-list.h: Obsolete file.
 
+2000-07-05  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-user-level-manager.c:
+	(user_level_manager_new):
+	Initialize gconf if needed right before creating a gconf_client.
+	
+	* src/nautilus-first-time-druid.c: (user_level_selection_changed),
+	(set_up_user_level_page):
+	Set the user level when toggled by the user.  Also make sure the
+	initiali user level is correct.
+	
 2000-07-05  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-first-time-druid.c: (druid_finished),
