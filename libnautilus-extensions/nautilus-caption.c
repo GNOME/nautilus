@@ -37,8 +37,9 @@ static const gint CAPTION_SPACING = 10;
 
 struct _NautilusCaptionDetail
 {
-	GtkWidget		*title_label;
-	GtkWidget		*child;
+	GtkWidget	*title_label;
+	GtkWidget	*child;
+	gboolean	show_title;
 };
 
 /* NautilusCaptionClass methods */
@@ -47,6 +48,10 @@ static void      nautilus_caption_initialize       (NautilusCaption      *captio
 
 /* GtkObjectClass methods */
 static void      nautilus_caption_destroy          (GtkObject            *object);
+
+static void nautilus_font_picker_show_all (GtkWidget *widget);
+
+static void update_title (NautilusCaption	*caption);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusCaption, nautilus_caption, GTK_TYPE_HBOX)
 
@@ -64,6 +69,9 @@ nautilus_caption_initialize_class (NautilusCaptionClass *caption_class)
 
 	/* GtkObjectClass */
 	object_class->destroy = nautilus_caption_destroy;
+
+	/* GtkWidgetClass */
+	widget_class->show_all = nautilus_font_picker_show_all;
 }
 
 static void
@@ -74,6 +82,7 @@ nautilus_caption_initialize (NautilusCaption *caption)
 	gtk_box_set_homogeneous (GTK_BOX (caption), FALSE);
 	gtk_box_set_spacing (GTK_BOX (caption), CAPTION_SPACING);
 
+	caption->detail->show_title = TRUE;
 	caption->detail->title_label = gtk_label_new ("Title Label:");
 	caption->detail->child = NULL;
 
@@ -105,6 +114,29 @@ nautilus_caption_destroy (GtkObject* object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
+/* GtkObjectClass methods */
+static void
+nautilus_font_picker_show_all (GtkWidget *widget)
+{
+	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, show_all, (widget));
+
+	/* Now update the title visibility */
+	update_title (NAUTILUS_CAPTION (widget));
+}
+
+static void
+update_title (NautilusCaption	*caption)
+{
+	g_return_if_fail (NAUTILUS_IS_CAPTION (caption));
+
+	if (caption->detail->show_title) {
+		gtk_widget_show (caption->detail->title_label);
+	}
+	else {
+		gtk_widget_hide (caption->detail->title_label);
+	}
+}
+
 /*
  * NautilusCaption public methods
  */
@@ -133,6 +165,27 @@ nautilus_caption_set_title_label (NautilusCaption		*caption,
 	g_return_if_fail (title_label != NULL);
 
 	gtk_label_set_text (GTK_LABEL (caption->detail->title_label), title_label);
+}
+
+/**
+ * nautilus_caption_set_show_title:
+ * @caption: A NautilusCaption
+ * @show_title: Whether to show the title or not
+ *
+ */
+void
+nautilus_caption_set_show_title (NautilusCaption	*caption,
+				 gboolean		show_title)
+				 {
+	g_return_if_fail (NAUTILUS_IS_CAPTION (caption));
+
+	if (caption->detail->show_title == show_title) {
+		return;
+	}
+
+	caption->detail->show_title = show_title;
+
+	update_title (caption);
 }
 
 /**
@@ -181,7 +234,6 @@ nautilus_caption_set_child (NautilusCaption *caption,
 			  TRUE,		/* expand */
 			  TRUE,		/* fill */
 			  0);		/* padding */
-
 
 	gtk_widget_show (caption->detail->child);
 

@@ -63,16 +63,21 @@ struct _NautilusCaptionClass
 GtkType    nautilus_caption_get_type        (void);
 GtkWidget* nautilus_caption_new             (void);
 
+
 /* Title label mutator. */
-void  nautilus_caption_set_title_label (NautilusCaption       *caption,
-					const char            *title_label);
+void       nautilus_caption_set_title_label (NautilusCaption       *caption,
+					     const char            *title_label);
+void       nautilus_caption_set_show_title  (NautilusCaption       *caption,
+					     gboolean               show_title);
+
 
 /* Title label accessor. */
-char *nautilus_caption_get_title_label (const NautilusCaption *caption);
+char *     nautilus_caption_get_title_label (const NautilusCaption *caption);
+
 
 /* Set the child. */
-void  nautilus_caption_set_child       (NautilusCaption       *caption,
-					GtkWidget             *child);
+void       nautilus_caption_set_child       (NautilusCaption       *caption,
+					     GtkWidget             *child);
 
 BEGIN_GNOME_DECLS
 
