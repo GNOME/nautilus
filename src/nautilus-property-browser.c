@@ -56,6 +56,7 @@ struct NautilusPropertyBrowserDetails {
 	
 	GtkWidget *title_box;
 	GtkWidget *title_label;
+	GtkWidget *up_arrow;
 	
 	GtkWidget *add_button;
 	GtkWidget *add_button_label;	
@@ -149,7 +150,8 @@ nautilus_property_browser_initialize (GtkObject *object)
 {
 	NautilusBackground *background;
 	NautilusPropertyBrowser *property_browser;
- 	GtkWidget* widget, *temp_hbox, *temp_frame;
+ 	char *image_file_name;
+	GtkWidget* widget, *temp_hbox, *temp_frame;
 	
 	property_browser = NAUTILUS_PROPERTY_BROWSER (object);
 	widget = GTK_WIDGET (object);
@@ -200,7 +202,15 @@ nautilus_property_browser_initialize (GtkObject *object)
   	temp_hbox = gtk_hbox_new(FALSE, 0);
   	gtk_widget_show(temp_hbox);
   	gtk_container_add(GTK_CONTAINER(temp_frame), temp_hbox);
-  	
+ 
+ 	/* add an up arrow image for an affordance for "go back" */
+	
+	image_file_name = gnome_pixmap_file ("nautilus/uparrow.png"); 
+	property_browser->details->up_arrow = GTK_WIDGET (gnome_pixmap_new_from_file (image_file_name));
+	gtk_box_pack_start (GTK_BOX(temp_hbox), property_browser->details->up_arrow, FALSE, FALSE, 2);
+ 	g_free(image_file_name);
+	
+	/* add the title label */
 	property_browser->details->title_label = gtk_label_new("Select A Category:");
 	nautilus_gtk_widget_set_font_by_name(property_browser->details->title_label, "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); 	
   	gtk_widget_show(property_browser->details->title_label);
@@ -599,18 +609,36 @@ get_xml_path(NautilusPropertyBrowser *property_browser)
 static void
 add_background_to_browser (GtkWidget *widget, gpointer *data)
 {
+	gboolean is_image;
 	char *directory_path, *source_file_name, *destination_name;
-	char *command_str;
+	char *command_str, *path_uri;
+	GnomeVFSResult result;
+	GnomeVFSFileInfo *file_info;
+	
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(data);
 
 	/* get the file path from the file selection widget */
-	char *path_name =g_strdup(gtk_file_selection_get_filename (GTK_FILE_SELECTION (property_browser->details->dialog)));
+	char *path_name = g_strdup(gtk_file_selection_get_filename (GTK_FILE_SELECTION (property_browser->details->dialog)));
 	
 	gtk_widget_destroy (property_browser->details->dialog);
 	property_browser->details->dialog = NULL;
 
 	/* fetch the mime type and make sure that the file is an image */
+	path_uri = g_strdup_printf("file://%s", path_name);
+	file_info = gnome_vfs_file_info_new ();
+	result = gnome_vfs_get_file_info (path_uri, file_info,
+					  GNOME_VFS_FILE_INFO_GETMIMETYPE
+					  | GNOME_VFS_FILE_INFO_FASTMIMETYPE
+		  			  | GNOME_VFS_FILE_INFO_FOLLOWLINKS, NULL);
+        is_image = nautilus_str_has_prefix(file_info->mime_type, "image/");
+	g_free(path_uri);
+	gnome_vfs_file_info_unref(file_info);
 	
+	if (!is_image) {
+		/* FIXME: we should put up an error dialog here - only accept images */
+		return;
+	}
+		
 	/* copy the image file to the backgrounds directory */
 	/* FIXME: do we need to do this with gnome-vfs? */
 
@@ -1167,6 +1195,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 
 	if (property_browser->details->category == NULL) {
 		gtk_label_set_text(GTK_LABEL(property_browser->details->title_label), "Select A Category:");
+		gtk_widget_hide(property_browser->details->up_arrow);		
 		gtk_widget_hide(property_browser->details->add_button);
 		gtk_widget_hide(property_browser->details->remove_button);
 	
@@ -1180,6 +1209,8 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 			temp_str[strlen(temp_str) - 1] = '\0'; /* trim trailing s */
 		}
 		
+		gtk_widget_show(property_browser->details->up_arrow);		
+
 		/* enable the "add new" button and update it's name */		
 		
 		gtk_label_set(GTK_LABEL(property_browser->details->add_button_label), temp_str);

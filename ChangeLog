@@ -1,3 +1,15 @@
+2000-05-08  Andy Hertzfeld <andy@eazel.com>
+
+	* src/nautilus-property-browser.c:
+	added an up arrow image in the property browser title bar, to act
+	as a "go-back" button.
+	Also, made the "add background" command check the mime-type of the
+	specified file and only add it if it's an image
+	* icons/uparrow.png:
+	new image to serve as goback button in browser title bar
+	* icons/Makefile.am:
+	added new image to Makefile
+	
 2000-05-08  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:

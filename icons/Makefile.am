@@ -62,6 +62,7 @@ icon_DATA =					\
 	not.png					\
 	tableft.png				\
 	tabright.png				\
+	uparrow.png				\
 	zoom.png
 
 EXTRA_DIST = $(icon_DATA)
