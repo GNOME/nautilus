@@ -1,3 +1,22 @@
+2000-09-09  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-about.c: (nautilus_about_destroy),
+	(nautilus_about_initialize), (randomize_authors),
+	(draw_author_list), (nautilus_about_draw_info),
+	(nautilus_about_update_authors), (nautilus_about_close),
+	(update_authors_if_necessary):
+	made the about box "scalable" by picking and ordering the
+	authors randomly, shuffling the list peroidically.
+	* src/nautilus-about.h:
+	added nautilus_about_update_authors
+	
+	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):
+	made it call nautilus_about_update_authors if the about dialog
+	already exists
+	
+	* libnautilus-extensions/nautilus-graphic-effects.c:
+	just moved a comment to it's proper place
+
 2000-09-09  Ali Abdin  <aliabdin@aucegypt.edu>
 
         Should fix bug #2229. Also make HTML output more 'valid'

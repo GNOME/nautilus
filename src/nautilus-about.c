@@ -40,6 +40,7 @@
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-pixmap.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
+#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -49,10 +50,18 @@
 #include <libnautilus-extensions/nautilus-scalable-font.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 
+#define MAX_AUTHOR_COUNT 128
+
 struct NautilusAboutDetails {
 	GtkWidget *drawing_area;
 	GdkPixbuf *background_pixbuf;	
+	int	  last_update_time;
+	int	  timer_task;
+	char	  **authors;
+	int	  order_array[MAX_AUTHOR_COUNT];
 };
+
+static gboolean nautilus_about_close 		(NautilusAbout *about, gpointer  *unused);
 
 static void     nautilus_about_initialize_class	(NautilusAboutClass *klass);
 static void     nautilus_about_initialize		(NautilusAbout *about);
@@ -67,7 +76,20 @@ static void	nautilus_about_draw_info 	(NautilusAbout  *about,
 						 const char	**authors,
 						 const char	*comments,
 						 const char	*timestamp);
+static int	update_authors_if_necessary 	(NautilusAbout *about);
 
+/* author box layout definitions */
+#define	AUTHOR_TOP_POS 88
+#define	AUTHOR_LEFT_POS 200
+#define	AUTHOR_COLUMN_WIDTH 140
+#define AUTHOR_LINE_HEIGHT 15
+#define ITEMS_PER_COLUMN 11
+
+/* delay between randomizing, in seconds  */
+#define UPDATE_TIME_INTERVAL 8
+#define SHUFFLE_COUNT 200
+
+/* gtk class definition boilerplate */
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusAbout, nautilus_about, GNOME_TYPE_DIALOG)
 
 static void
@@ -88,6 +110,13 @@ nautilus_about_destroy (GtkObject *object)
 	if (about->details->background_pixbuf) {
 		gdk_pixbuf_unref (about->details->background_pixbuf);
 	}
+	
+	if (about->details->authors) {
+		g_strfreev (about->details->authors);
+	}
+
+	if (about->details->timer_task != -1)
+		gtk_timeout_remove(about->details->timer_task);
 	
 	g_free (NAUTILUS_ABOUT (object)->details);
 	
@@ -134,13 +163,23 @@ nautilus_about_initialize (NautilusAbout *about)
 
 	gtk_widget_show (about->details->drawing_area);
  	gtk_container_add (GTK_CONTAINER (frame), about->details->drawing_area);
-        
+
+	/* set up the timer task */
+	about->details->timer_task = gtk_timeout_add (2000, (GtkFunction) update_authors_if_necessary, about); 
+	       
 	/* configure the dialog */                                  
 	gnome_dialog_append_button ( GNOME_DIALOG(about),
 				     GNOME_STOCK_BUTTON_OK);
 	
 	gnome_dialog_set_close( GNOME_DIALOG(about), TRUE);			
 	gnome_dialog_close_hides ( GNOME_DIALOG(about), TRUE);
+
+	gtk_signal_connect
+	        (GTK_OBJECT (about),
+	         "close",
+	         GTK_SIGNAL_FUNC (nautilus_about_close), 
+	         NULL);
+
 }
 
 /* allocate a new about dialog */
@@ -201,6 +240,63 @@ draw_aa_string (NautilusScalableFont *font, GdkPixbuf *pixbuf, int font_size, in
 	nautilus_scalable_font_draw_text (font, pixbuf, x_pos, y_pos, NULL, font_size, font_size, text, strlen (text), color, 255, FALSE);	
 }
 
+/* randomize_authors randomizes the order array so different names get displayed in different positions each time */
+
+static void
+randomize_authors (NautilusAbout *about)
+{
+	int author_count;
+	int index, temp;
+	int first_element, second_element;
+	/* count the authors */	
+	author_count = 0;
+	while (about->details->authors[author_count] != NULL)
+		author_count += 1;
+
+	/* initialize the order array */
+	for (index = 0; index < author_count; index++) {
+		about->details->order_array[index] = index;
+	}
+	
+	/* randomize the order array */
+	for (index = 0; index < SHUFFLE_COUNT; index++) {
+		first_element = rand() % author_count; 
+		second_element = rand() % author_count; 
+		temp = about->details->order_array[first_element];
+		about->details->order_array[first_element] = about->details->order_array[second_element];
+		about->details->order_array[second_element] = temp;
+	}
+}
+
+/* draw the author list */
+static void
+draw_author_list (NautilusAbout *about, GdkPixbuf *pixbuf, NautilusScalableFont *plain_font)
+{
+	int index, column_count;
+	int xpos, ypos;
+	
+	/* draw the authors */
+	index = 0;
+	column_count = 0;
+	
+	xpos = AUTHOR_LEFT_POS; ypos = AUTHOR_TOP_POS;
+	while (about->details->authors[about->details->order_array[index]] != NULL) {
+		draw_aa_string (plain_font, pixbuf, 12, xpos, ypos, NAUTILUS_RGB_COLOR_BLACK, NAUTILUS_RGB_COLOR_BLACK, about->details->authors[about->details->order_array[index]], 0);
+		ypos += AUTHOR_LINE_HEIGHT;
+		index++;
+		column_count++;
+		if (column_count >= ITEMS_PER_COLUMN) {
+			/* two columns only and then stop drawing */
+			if (xpos != AUTHOR_LEFT_POS)
+				break;
+			
+			column_count = 0;
+			ypos = AUTHOR_TOP_POS;
+			xpos += AUTHOR_COLUMN_WIDTH;
+		}
+	}	
+}
+
 /* draw the information onto the pixbuf */
 static void
 nautilus_about_draw_info (
@@ -212,12 +308,13 @@ nautilus_about_draw_info (
 	const char	*comments,
 	const char	*timestamp)
 {
-	char *display_str;
+	char *display_str, *temp_str  ;
 	char **comment_array;
 	NautilusScalableFont *plain_font, *bold_font;
 	GdkPixbuf *pixbuf;
 	uint	black, white, grey;
-	int xpos, ypos, total_height, index;
+	int xpos, ypos, total_height;
+	int index;
 	
 	plain_font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL));
 	bold_font  = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL));
@@ -243,25 +340,25 @@ nautilus_about_draw_info (
 	/* draw the timestamp */
 	draw_aa_string (plain_font, pixbuf, 11, 284, total_height - 14, grey, black, timestamp, 0);
 	
-	/* draw the authors */
-	index = 0;
-	xpos = 200; ypos = 88;
-	while (authors[index] != NULL) {
-		draw_aa_string (plain_font, pixbuf, 12, xpos, ypos, black, black, authors[index], 0);
-		ypos += 15;
-		index++;	
-		if (index == 11) {
-			ypos = 88;
-			xpos = 340;
-		}
-	}	
+	/* remember the authors */
+	if (about->details->authors != NULL) {
+		g_strfreev (about->details->authors);
+	}
 
+	temp_str = g_strjoinv ("\n", (char**) authors);
+	about->details->authors = g_strsplit (temp_str, "\n", MAX_AUTHOR_COUNT);
+	g_free (temp_str);
+	
+	randomize_authors (about);
+	draw_author_list (about, pixbuf, plain_font);
+	about->details->last_update_time = time (NULL);
+	
 	/* draw the comment, breaking it up into multiple lines */
 	comment_array = g_strsplit (comments, "\n", 10);
 	index = 0;
 	xpos = 6; ypos = 118;
 	while (comment_array[index] != NULL) {
-		draw_aa_string (plain_font, pixbuf, 14, xpos, ypos, black, white, comment_array[index], 1);
+		draw_aa_string (plain_font, pixbuf, 14, xpos, ypos, black, black, comment_array[index], 0);
 		ypos += 18;
 		index++;	
 	}
@@ -271,3 +368,66 @@ nautilus_about_draw_info (
 	gtk_object_unref (GTK_OBJECT(plain_font));
 	gtk_object_unref (GTK_OBJECT(bold_font));
 }
+
+/* update authors is called to randomize the author array and redraw it */ 
+
+void
+nautilus_about_update_authors (NautilusAbout *about)
+{
+	GdkRectangle author_area;
+	NautilusScalableFont *plain_font;
+	
+	/* clear the author area */
+	author_area.x = AUTHOR_LEFT_POS - 24;
+	author_area.y = AUTHOR_TOP_POS;
+	author_area.width = 2 * AUTHOR_COLUMN_WIDTH;
+	author_area.height = AUTHOR_LINE_HEIGHT * ITEMS_PER_COLUMN;
+	
+	nautilus_gdk_pixbuf_fill_rectangle_with_color (about->details->background_pixbuf, &author_area, NAUTILUS_RGBA_COLOR_PACK (255, 255, 255, 255));
+
+	/* randomize the author array */
+	randomize_authors (about);
+	
+	/* redraw the authors */
+	plain_font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL));
+	draw_author_list (about, about->details->background_pixbuf, plain_font);
+	gtk_object_unref (GTK_OBJECT(plain_font));
+	
+	about->details->last_update_time = time (NULL);
+
+	/* set up the timer task if necessary */
+	if (about->details->timer_task == -1) {
+		about->details->timer_task = gtk_timeout_add (2000, (GtkFunction) update_authors_if_necessary, about); 
+  	}  
+	
+	/* schedule a redraw for the about box */
+	gtk_widget_queue_draw (GTK_WIDGET (about));
+}
+
+/* handle the dialog closing by killing the timer task */
+
+static gboolean
+nautilus_about_close (NautilusAbout *about, gpointer  *unused)
+{
+  if (about->details->timer_task != -1) {
+	gtk_timeout_remove(about->details->timer_task);
+  	about->details->timer_task = -1;
+  }  
+  return FALSE;
+}
+
+static int
+update_authors_if_necessary (NautilusAbout *about)
+{
+	uint current_time, next_time;
+	
+	current_time = time(NULL);
+	next_time = about->details->last_update_time + UPDATE_TIME_INTERVAL;
+
+	if (current_time > next_time) {
+		nautilus_about_update_authors (about);
+	}
+	return TRUE;
+	
+}
+

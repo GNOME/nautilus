@@ -243,6 +243,7 @@ draw_frame_row (GdkPixbuf *frame_image, int target_width, int source_width, int 
 	}
 }
 
+/* utility to draw the middle section of the frame in a loop */
 static void
 draw_frame_column (GdkPixbuf *frame_image, int target_height, int source_height, int source_h_position, int dest_h_position, GdkPixbuf *result_pixbuf, int top_offset, int width)
 {
@@ -306,8 +307,6 @@ stretch_frame_image (GdkPixbuf *frame_image, int left_offset, int top_offset, in
 	return result_pixbuf;
 }
 
-
-/* utility to draw the middle section of the frame in a loop */
 
 /* draw an arbitrary frame around an image, with the result passed back in a newly allocated pixbuf */
 GdkPixbuf *

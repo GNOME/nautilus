@@ -607,9 +607,9 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
 		       		   gpointer user_data,
 		      		   const char *path)
 {
-	static GtkWidget *aboot = NULL;
+	static GtkWidget *about = NULL;
 
-	if (aboot == NULL) {
+	if (about == NULL) {
 
 		const char *authors[] = {
 			"Ali Abdin",
@@ -640,18 +640,20 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
 			NULL
 		};
 
-		aboot = nautilus_about_new(_("Nautilus"),
+		about = nautilus_about_new(_("Nautilus"),
 					VERSION,
 					"(C) 1999-2000 Eazel, Inc.",
 					authors,
 					_("Nautilus is a graphical shell \nfor GNOME that makes it \neasy to manage your files \nand the rest of your system."),
 					NAUTILUS_TIMESTAMP);
+	} else {
+		nautilus_about_update_authors (NAUTILUS_ABOUT (about));
 	}
-
-	nautilus_gtk_window_present (GTK_WINDOW (aboot));
+	
+	nautilus_gtk_window_present (GTK_WINDOW (about));
 }
 
-/* utility routine to returnan image corresponding to the passed-in user level */
+/* utility routine to return an image corresponding to the passed-in user level */
 
 static GdkPixbuf*
 get_user_level_image (int user_level, gboolean is_selected)

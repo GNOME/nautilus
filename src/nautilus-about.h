@@ -63,6 +63,8 @@ GtkWidget*	nautilus_about_new	(const gchar	*title,		/* Name of the application. 
 				 	 const char	*comments, 	/* Other comments. */
 	 			 	 const char *timestamp  /* date and time of build */
 	 			 	);
+void		nautilus_about_update_authors (NautilusAbout *about);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
