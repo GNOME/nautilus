@@ -2501,6 +2501,8 @@ motion_notify_event (GtkWidget *widget,
 			if (abs (details->drag_x - world_x) >= SNAP_RESISTANCE
 			    || abs (details->drag_y - world_y) >= SNAP_RESISTANCE) {
 				details->drag_started = TRUE;
+
+				end_renaming_mode (container, TRUE);
 				
 				/* KLUDGE ALERT: Poke the starting values into the motion
 				 * structure so that dragging behaves as expected.

@@ -1,3 +1,11 @@
+2000-10-13  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3592 (rename text widget persists after dragging icon)
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(motion_notify_event): added end_renaming_mode call
+	when a drag begins.
+
 2000-10-13  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-file.c:
