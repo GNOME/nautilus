@@ -1,3 +1,31 @@
+2003-06-27  Alexander Larsson  <alexl@redhat.com>
+
+	This is based on a patch by Jürg Billeter <j@bitron.ch> which was
+	partly based on a patch by Wolfgang Pichler <madmin@dialog-telekom.at>.
+
+	* components/tree/nautilus-tree-model.[ch]:
+	Support multiple roots. New row_loaded signal that gets fired when a
+	directory has been fully loaded. New font-weight column.
+	* components/tree/nautilus-tree-view.c:
+	Remove tree expansion.
+	Populate multiple roots: ~/,  / and mounted removable media.
+	Tree follows view uri.
+	* libnautilus-private/nautilus-desktop-link-monitor.c:
+	(create_volume_link), (nautilus_desktop_link_monitor_init),
+	(desktop_link_monitor_finalize):
+	Kill black_list, its moved to nautilus-volume-manager.
+	* libnautilus-private/nautilus-desktop-link.c:
+	(nautilus_desktop_link_new_from_volume):
+	Move get_icon_for_volume to nautilus-volume-manager
+	* libnautilus-private/nautilus-tree-view-drag-dest.c:
+	(file_for_path), (get_drop_target):
+	Handle NULL for root_uri, meaning drops on the background
+	are not allowed.
+	* libnautilus-private/nautilus-volume-monitor.[ch]:
+	(nautilus_volume_get_icon),
+	(nautilus_volume_is_in_removable_blacklist):
+	Add get_icon and the removable media blacklist.
+
 2003-06-26  James Willcox  <jwillcox@gnome.org>
 
 	* src/nautilus-property-browser.c: (emblem_dialog_clicked):

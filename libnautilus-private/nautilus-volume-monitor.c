@@ -834,6 +834,52 @@ nautilus_volume_get_name (const NautilusVolume *volume)
 }
 
 
+char *
+nautilus_volume_get_icon (const NautilusVolume *volume)
+{
+	char *icon_name;
+	
+	icon_name = "gnome-dev-harddisk";
+	switch (nautilus_volume_get_device_type (volume)) {
+	case NAUTILUS_DEVICE_AUDIO_CD:
+	case NAUTILUS_DEVICE_CDROM_DRIVE:
+		icon_name = "gnome-dev-cdrom";
+		break;
+
+	case NAUTILUS_DEVICE_FLOPPY_DRIVE:
+		icon_name = "gnome-dev-floppy";
+		break;
+
+	case NAUTILUS_DEVICE_JAZ_DRIVE:
+		icon_name = "gnome-dev-jazdisk";
+		break;
+
+	case NAUTILUS_DEVICE_MEMORY_STICK:
+		icon_name = "gnome-dev-memory";
+		break;
+	
+	case NAUTILUS_DEVICE_NFS:
+		icon_name = "gnome-fs-nfs";
+		break;
+
+	case NAUTILUS_DEVICE_SMB:
+		icon_name = "gnome-fs-smb";
+		break;
+	
+	case NAUTILUS_DEVICE_ZIP_DRIVE:
+		icon_name = "gnome-dev-zipdisk";
+		break;
+
+	case NAUTILUS_DEVICE_APPLE:
+	case NAUTILUS_DEVICE_WINDOWS:
+	case NAUTILUS_DEVICE_CAMERA:
+	case NAUTILUS_DEVICE_UNKNOWN:
+		break;
+	}
+
+	return g_strdup (icon_name);
+}
+
 /* modify_volume_name_for_display
  *	
  * Modify volume to be in human readable form
@@ -2171,6 +2217,29 @@ nautilus_volume_monitor_get_mount_name_for_display (NautilusVolumeMonitor *monit
 		return name;
 	}
 }
+
+/*
+ * HORRORS OF HORROR.
+ * This really should be fixed to not be needed (if it is?).
+ * I just moved it from the desktop icon code so it can be shared
+ * between the desktop icons and the sidebar tree.
+*/
+
+gboolean
+nautilus_volume_is_in_removable_blacklist (const NautilusVolume *volume)
+{
+	char *blacklist[] = { "/proc", "/boot" };
+	int i;
+
+	for (i = 0; i < G_N_ELEMENTS (blacklist); i++) {
+		if (strcmp (blacklist[i], nautilus_volume_get_mount_path (volume)) == 0) {
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
 
 #ifdef HAVE_CDDA
 

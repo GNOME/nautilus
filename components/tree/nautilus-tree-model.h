@@ -42,6 +42,7 @@ enum {
 	NAUTILUS_TREE_MODEL_CLOSED_PIXBUF_COLUMN,
 	NAUTILUS_TREE_MODEL_OPEN_PIXBUF_COLUMN,
 	NAUTILUS_TREE_MODEL_FONT_STYLE_COLUMN,
+	NAUTILUS_TREE_MODEL_FONT_WEIGHT_COLUMN,
 	NAUTILUS_TREE_MODEL_NUM_COLUMNS
 };
 
@@ -54,10 +55,13 @@ typedef struct {
 
 typedef struct {
 	GObjectClass parent_class;
+
+	void         (* row_loaded)      (NautilusTreeModel *tree_model,
+					  GtkTreeIter       *iter);
 } NautilusTreeModelClass;
 
 GType              nautilus_tree_model_get_type                  (void);
-NautilusTreeModel *nautilus_tree_model_new                       (const char        *opt_root_uri);
+NautilusTreeModel *nautilus_tree_model_new                       (void);
 void               nautilus_tree_model_set_show_hidden_files     (NautilusTreeModel *model,
 								  gboolean           show_hidden_files);
 void               nautilus_tree_model_set_show_backup_files     (NautilusTreeModel *model,
@@ -66,8 +70,18 @@ void               nautilus_tree_model_set_show_only_directories (NautilusTreeMo
 								  gboolean           show_only_directories);
 NautilusFile *     nautilus_tree_model_iter_get_file             (NautilusTreeModel *model,
 								  GtkTreeIter       *iter);
-void               nautilus_tree_model_set_root_uri              (NautilusTreeModel *model,
+void               nautilus_tree_model_add_root_uri              (NautilusTreeModel *model,
+								  const char        *root_uri,
+								  const char        *display_name,
+								  const char        *icon_name);
+void               nautilus_tree_model_remove_root_uri           (NautilusTreeModel *model,
 								  const char        *root_uri);
+gboolean           nautilus_tree_model_iter_is_root              (NautilusTreeModel *model,
+								  GtkTreeIter *iter);
+gboolean           nautilus_tree_model_file_get_iter             (NautilusTreeModel *model,
+								  GtkTreeIter *iter,
+								  NautilusFile *file,
+								  GtkTreeIter *currentIter);
 
 void               nautilus_tree_model_set_theme                 (NautilusTreeModel *model);
 

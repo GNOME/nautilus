@@ -161,52 +161,6 @@ nautilus_desktop_link_new (NautilusDesktopLinkType type)
 	return link;
 }
 
-static char *
-get_icon_for_volume (const NautilusVolume *volume)
-{
-	char *icon_name;
-	
-	icon_name = "gnome-dev-harddisk";
-	switch (nautilus_volume_get_device_type (volume)) {
-	case NAUTILUS_DEVICE_AUDIO_CD:
-	case NAUTILUS_DEVICE_CDROM_DRIVE:
-		icon_name = "gnome-dev-cdrom";
-		break;
-
-	case NAUTILUS_DEVICE_FLOPPY_DRIVE:
-		icon_name = "gnome-dev-floppy";
-		break;
-
-	case NAUTILUS_DEVICE_JAZ_DRIVE:
-		icon_name = "gnome-dev-jazdisk";
-		break;
-
-	case NAUTILUS_DEVICE_MEMORY_STICK:
-		icon_name = "gnome-dev-memory";
-		break;
-	
-	case NAUTILUS_DEVICE_NFS:
-		icon_name = "gnome-fs-nfs";
-		break;
-
-	case NAUTILUS_DEVICE_SMB:
-		icon_name = "gnome-fs-smb";
-		break;
-	
-	case NAUTILUS_DEVICE_ZIP_DRIVE:
-		icon_name = "gnome-dev-zipdisk";
-		break;
-
-	case NAUTILUS_DEVICE_APPLE:
-	case NAUTILUS_DEVICE_WINDOWS:
-	case NAUTILUS_DEVICE_CAMERA:
-	case NAUTILUS_DEVICE_UNKNOWN:
-		break;
-	}
-
-	return g_strdup (icon_name);
-}
-
 NautilusDesktopLink *
 nautilus_desktop_link_new_from_volume (const NautilusVolume *volume)
 {
@@ -239,7 +193,7 @@ nautilus_desktop_link_new_from_volume (const NautilusVolume *volume)
 	link->details->display_name = nautilus_volume_get_name (volume);
 	
 	link->details->activation_uri = nautilus_volume_get_target_uri (volume);
-	link->details->icon = get_icon_for_volume (volume);
+	link->details->icon = nautilus_volume_get_icon (volume);
 	
 	create_icon_file (link);
 

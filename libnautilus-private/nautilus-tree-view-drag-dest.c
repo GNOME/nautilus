@@ -254,8 +254,11 @@ file_for_path (NautilusTreeViewDragDest *dest, GtkTreePath *path)
 		g_signal_emit (dest, signals[GET_FILE_FOR_PATH], 0, path, &file);
 	} else {
 		uri = get_root_uri (dest);
-		
-		file = nautilus_file_get (uri);
+
+		file = NULL;
+		if (uri != NULL) {
+			file = nautilus_file_get (uri);
+		}
 		
 		g_free (uri);
 	}
@@ -302,6 +305,10 @@ get_drop_target (NautilusTreeViewDragDest *dest,
 	char *target;
 
 	file = file_for_path (dest, path);
+	if (file == NULL) {
+		return NULL;
+	}
+	
 	target = nautilus_file_get_drop_target_uri (file);
 	nautilus_file_unref (file);
 	

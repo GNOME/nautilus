@@ -49,8 +49,6 @@ struct NautilusDesktopLinkMonitorDetails {
 	NautilusDesktopLink *trash_link;
 
 	GList *volume_links;
-
-	GList *mount_black_list;
 };
 
 
@@ -112,23 +110,6 @@ nautilus_desktop_link_monitor_delete_link (NautilusDesktopLinkMonitor *monitor,
 
 
 static gboolean
-volume_in_black_list (NautilusDesktopLinkMonitor *monitor,
-		      const NautilusVolume *volume)
-{
-	GList *p;
-	
-	g_return_val_if_fail (NAUTILUS_IS_DESKTOP_LINK_MONITOR (monitor), TRUE);
-
-	for (p = monitor->details->mount_black_list; p != NULL; p = p->next) {
-		if (strcmp ((char *) p->data, nautilus_volume_get_mount_path (volume)) == 0) {
-			return TRUE;
-		}
-	}
-
-	return FALSE;
-}
-
-static gboolean
 volume_name_exists (NautilusDesktopLinkMonitor *monitor,
 		    const char *name)
 {
@@ -155,7 +136,7 @@ create_volume_link (NautilusDesktopLinkMonitor *monitor,
 	char *unique_name;
 	int index;
 	
-	if (volume_in_black_list (monitor, volume)) {
+	if (nautilus_volume_is_in_removable_blacklist (volume)) {
 		return;
 	}
 
@@ -273,16 +254,10 @@ static void
 nautilus_desktop_link_monitor_init (gpointer object, gpointer klass)
 {
 	NautilusDesktopLinkMonitor *monitor;
-	GList *list;
 
 	monitor = NAUTILUS_DESKTOP_LINK_MONITOR (object);
 
 	monitor->details = g_new0 (NautilusDesktopLinkMonitorDetails, 1);
-
-	/* Set up default mount black list */
-	list = g_list_prepend (NULL, g_strdup ("/proc"));
-	list = g_list_prepend (list, g_strdup ("/boot"));
-	monitor->details->mount_black_list = list;
 
 	/* We keep around a ref to the desktop dir */
 	monitor->details->desktop_dir = nautilus_directory_get (EEL_DESKTOP_URI);
@@ -337,9 +312,6 @@ desktop_link_monitor_finalize (GObject *object)
 		
 	nautilus_directory_unref (monitor->details->desktop_dir);
 	monitor->details->desktop_dir = NULL;
-
-	eel_g_list_free_deep (monitor->details->mount_black_list);
-	monitor->details->mount_black_list = NULL;
 
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DESKTOP_HOME_VISIBLE,
 					 desktop_home_visible_changed,

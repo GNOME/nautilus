@@ -96,6 +96,7 @@ NautilusVolume          *nautilus_volume_monitor_get_volume_for_path        (Nau
 
 /* Volume operations. */
 char *                   nautilus_volume_get_name                           (const NautilusVolume       *volume);
+char *                   nautilus_volume_get_icon                           (const NautilusVolume       *volume);
 NautilusDeviceType       nautilus_volume_get_device_type                    (const NautilusVolume       *volume);
 gboolean                 nautilus_volume_is_removable                       (const NautilusVolume       *volume);
 gboolean                 nautilus_volume_is_read_only                       (const NautilusVolume       *volume);
@@ -109,6 +110,6 @@ void                     nautilus_volume_free                               (Nau
 guint                    nautilus_volume_hash                               (const NautilusVolume       *volume);
 gboolean                 nautilus_volume_is_equal                           (const NautilusVolume       *volume1,
 									     const NautilusVolume       *volume2);
-
+gboolean                 nautilus_volume_is_in_removable_blacklist          (const NautilusVolume       *volume);
 
 #endif /* NAUTILUS_VOLUME_MONITOR_H */
