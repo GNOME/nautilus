@@ -38,12 +38,11 @@
 #include "nautilus-medusa-support.h"
 #include "nautilus-stock-dialogs.h"
 #include "nautilus-view-identifier.h"
+#include "nautilus-sidebar-functions.h"
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
-#include <gtk/gtkbox.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
-#include <liboaf/liboaf.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
 /* Constants */
@@ -57,10 +56,6 @@ static const char SYSTEM_GNOME_VFS_PATH[] = "/system/gnome-vfs";
 typedef struct PreferenceDialogItem PreferenceDialogItem;
 
 /* Forward declarations */
-static char *     global_preferences_make_sidebar_panel_key             (const char                 *panel_iid);
-static gboolean   global_preferences_is_sidebar_panel_enabled_cover     (gpointer                    data,
-									 gpointer                    callback_data);
-static GList *    global_preferences_get_sidebar_panel_view_identifiers (void);
 static gboolean   global_preferences_close_dialog_callback              (GtkWidget                  *dialog,
 									 gpointer                    user_data);
 static void       global_preferences_install_sidebar_panel_defaults     (void);
@@ -68,8 +63,6 @@ static void       global_preferences_install_defaults                   (void);
 static void       global_preferences_install_home_location_defaults     (void);
 static void       global_preferences_install_medusa_defaults            (void);
 static void       global_preferences_install_font_defaults              (void);
-static int        compare_view_identifiers                              (gconstpointer               a,
-									 gconstpointer               b);
 static GtkWidget *global_preferences_create_dialog                      (void);
 static void       global_preferences_create_search_pane                 (NautilusPreferencesBox     *preference_box);
 static void       global_preferences_create_sidebar_panels_pane         (NautilusPreferencesBox     *preference_box);
@@ -464,20 +457,6 @@ global_preferences_install_defaults (void)
 /*
  * Private stuff
  */
-static int
-compare_view_identifiers (gconstpointer a, gconstpointer b)
-{
- 	NautilusViewIdentifier *idenfifier_a;
- 	NautilusViewIdentifier *idenfifier_b;
-	
- 	g_assert (a != NULL);
- 	g_assert (b != NULL);
-
- 	idenfifier_a = (NautilusViewIdentifier*) a;
- 	idenfifier_b = (NautilusViewIdentifier*) b;
-	
-	return nautilus_strcmp (idenfifier_a->name, idenfifier_b->name);
-}
 
 /* An enumeration structure used for NAUTILUS_PREFERENCE_ITEM_ENUM items. */
 typedef struct
@@ -1078,108 +1057,51 @@ static PreferenceDialogItem sidebar_items[] = {
 };
 
 static void
+global_preferences_populate_sidebar_panels_callback (const char *name,
+						     const char *iid,
+						     const char *preference_key,
+						     gpointer callback_data) 
+{
+	NautilusPreferencesPane *sidebar_pane;
+	char *description;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (iid != NULL);
+	g_return_if_fail (preference_key != NULL);
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_PANE (callback_data));
+
+	sidebar_pane = NAUTILUS_PREFERENCES_PANE (callback_data);
+	
+	description = g_strdup_printf (_("Display %s tab in sidebar"), name);
+	
+	nautilus_preferences_set_description (preference_key, description);
+
+	nautilus_preferences_pane_add_item_to_nth_group (sidebar_pane,
+							 0,
+							 preference_key,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+	
+	g_free (description);
+}
+
+static void
 global_preferences_create_sidebar_panels_pane (NautilusPreferencesBox *preference_box)
 {
-	char *preference_key;
-	GList *view_identifiers;
-	GList *p;
-	NautilusViewIdentifier *identifier;
-	char *description;
-	
 	GtkWidget *sidebar_pane;
 
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_BOX (preference_box));
 
-	/* Sidebar Panels - dynamic part */
-	sidebar_pane = nautilus_preferences_box_add_pane (preference_box, _("Sidebar Panels"));
-
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (sidebar_pane), _("Tabs"));
-
-	view_identifiers = global_preferences_get_sidebar_panel_view_identifiers ();
+ 	/* Sidebar Panels - dynamic part */
+ 	sidebar_pane = nautilus_preferences_box_add_pane (preference_box, _("Sidebar Panels"));
 	
-	view_identifiers = g_list_sort (view_identifiers, compare_view_identifiers);
-	
-	for (p = view_identifiers; p != NULL; p = p->next) {
-		identifier = (NautilusViewIdentifier *) (p->data);
-		
-		preference_key = global_preferences_make_sidebar_panel_key (identifier->iid);
-		
-		g_assert (preference_key != NULL);
-		
-		description = g_strdup_printf (_("Display %s tab in sidebar"), identifier->name);
-		nautilus_preferences_set_description (preference_key, description);
-		g_free (description);
-		
-		nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (sidebar_pane),
-								 0,
-								 preference_key,
-								 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-		
-		g_free (preference_key);
-		
-	}
-	nautilus_view_identifier_list_free (view_identifiers);
+ 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (sidebar_pane), _("Tabs"));
 
+	nautilus_sidebar_for_each_panel (global_preferences_populate_sidebar_panels_callback, sidebar_pane);
 
 	/* Sidebar Panels - non dynamic parts */
 	global_preferences_populate_pane (preference_box,
 					  _("Sidebar Panels"),
 					  sidebar_items);
-}
-
-/* Make a query to find out what sidebar panels are available. */
-static GList *
-global_preferences_get_sidebar_panel_view_identifiers (void)
-{
-	CORBA_Environment ev;
-	const char *query;
-        OAF_ServerInfoList *oaf_result;
-	guint i;
-	NautilusViewIdentifier *id;
-	GList *view_identifiers;
-
-	CORBA_exception_init (&ev);
-
-	query = "nautilus:sidebar_panel_name.defined() AND repo_ids.has ('IDL:Bonobo/Control:1.0')";
-
-	oaf_result = oaf_query (query, NULL, &ev);
-		
-	view_identifiers = NULL;
-
-        if (ev._major == CORBA_NO_EXCEPTION && oaf_result != NULL) {
-		for (i = 0; i < oaf_result->_length; i++) {
-			id = nautilus_view_identifier_new_from_sidebar_panel
-				(&oaf_result->_buffer[i]);
-			view_identifiers = g_list_prepend (view_identifiers, id);
-		}
-		view_identifiers = g_list_reverse (view_identifiers);
-	} 
-
-	if (oaf_result != NULL) {
-		CORBA_free (oaf_result);
-	}
-	
-	CORBA_exception_free (&ev);
-
-	return view_identifiers;
-}
-
-GList *
-nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers (void)
-{
-	GList *enabled_view_identifiers;
- 	GList *disabled_view_identifiers;
-        
-	enabled_view_identifiers = global_preferences_get_sidebar_panel_view_identifiers ();
-
-	enabled_view_identifiers = nautilus_g_list_partition (enabled_view_identifiers,
-							      global_preferences_is_sidebar_panel_enabled_cover,
-							      NULL,
-							      &disabled_view_identifiers);
-	
-	nautilus_view_identifier_list_free (disabled_view_identifiers);
-	
-        return enabled_view_identifiers;
 }
 
 static void
@@ -1229,58 +1151,28 @@ static struct
 static void
 global_preferences_install_sidebar_panel_defaults (void)
 {
+	char *preference_key;
 	guint i;
 	
 	/* Install the user level on/off defaults for known sidebar panels */
 	for (i = 0; i < NAUTILUS_N_ELEMENTS (known_sidebar_panels); i++) {
-		char *key = global_preferences_make_sidebar_panel_key (known_sidebar_panels[i].name);
+		preference_key = nautilus_sidebar_panel_make_preference_key (known_sidebar_panels[i].name);
 		
-		nautilus_preferences_default_set_boolean (key,
+		nautilus_preferences_default_set_boolean (preference_key,
 							  NAUTILUS_USER_LEVEL_NOVICE,
 							  known_sidebar_panels[i].novice_default);
-		nautilus_preferences_default_set_boolean (key,
+		nautilus_preferences_default_set_boolean (preference_key,
 							  NAUTILUS_USER_LEVEL_INTERMEDIATE,
 							  known_sidebar_panels[i].intermediate_default);
-		nautilus_preferences_default_set_boolean (key,
+		nautilus_preferences_default_set_boolean (preference_key,
 							  NAUTILUS_USER_LEVEL_ADVANCED,
 							  known_sidebar_panels[i].advanced_default);
 
-		nautilus_preferences_set_visible_user_level (key,
+		nautilus_preferences_set_visible_user_level (preference_key,
 							     known_sidebar_panels[i].visible_user_level);
-
-		g_free (key);
+		
+		g_free (preference_key);
 	}
-}
-
-static char *
-global_preferences_make_sidebar_panel_key (const char *panel_iid)
-{
-	g_return_val_if_fail (panel_iid != NULL, NULL);
-
-	return g_strdup_printf ("%s/%s", NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE, panel_iid);
-}
-
-static gboolean
-global_preferences_is_sidebar_panel_enabled (NautilusViewIdentifier *panel_identifier)
-{
-	gboolean enabled;
-        gchar  *key;
-	
-	g_return_val_if_fail (panel_identifier != NULL, FALSE);
-	g_return_val_if_fail (panel_identifier->iid != NULL, FALSE);
-	
-	key = global_preferences_make_sidebar_panel_key (panel_identifier->iid);
-	g_return_val_if_fail (key != NULL, FALSE);
-        enabled = nautilus_preferences_get_boolean (key);
-        g_free (key);
-
-        return enabled;
-}
-
-static gboolean
-global_preferences_is_sidebar_panel_enabled_cover (gpointer data, gpointer callback_data)
-{
-	return global_preferences_is_sidebar_panel_enabled (data);
 }
 
 static void

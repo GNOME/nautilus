@@ -61,12 +61,11 @@
 #include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
+#include <libnautilus-extensions/nautilus-sidebar-functions.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 #include <libnautilus-extensions/nautilus-trash-monitor.h>
-#include <libnautilus-extensions/nautilus-view-identifier.h>
-#include <liboaf/liboaf.h>
 #include <math.h>
 
 struct NautilusSidebarDetails {
@@ -315,15 +314,6 @@ nautilus_sidebar_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
-/* utility routines to test if sidebar panel is currently enabled */
-static char *
-nautilus_sidebar_get_sidebar_panel_key (const char *panel_iid)
-{
-	g_return_val_if_fail (panel_iid != NULL, NULL);
-
-	return g_strdup_printf ("%s/%s", NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE, panel_iid);
-}
-
 /* callback to handle resetting the background */
 static void
 reset_background_callback (GtkWidget *menu_item, GtkWidget *sidebar)
@@ -380,7 +370,7 @@ nautilus_sidebar_hide_active_panel_if_matches (NautilusSidebar *sidebar, const c
 }
 
 static gboolean
-any_panel_matches_id (NautilusSidebar *sidebar, const char *id)
+any_panel_matches_iid (NautilusSidebar *sidebar, const char *id)
 {
 	int i, count;
 	const char *page_iid;
@@ -397,82 +387,92 @@ any_panel_matches_id (NautilusSidebar *sidebar, const char *id)
 
 /* callback for sidebar panel menu items to toggle their visibility */
 static void
-toggle_sidebar_panel (GtkWidget *widget, char *sidebar_id)
+toggle_sidebar_panel (GtkWidget *widget,
+		      const char *sidebar_iid)
 {
  	NautilusSidebar *sidebar;
-        char *key;
-	gboolean already_on;
-	
+	const char *preference_key;
+
+	g_return_if_fail (GTK_IS_CHECK_MENU_ITEM (widget));
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (widget))));
+	g_return_if_fail (gtk_object_get_data (GTK_OBJECT (widget), "preference-key") != NULL);
+
+	preference_key = gtk_object_get_data (GTK_OBJECT (widget), "preference-key");
+
 	sidebar = NAUTILUS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (widget)));
 
-	nautilus_sidebar_hide_active_panel_if_matches (sidebar, sidebar_id);
-	
-	key = nautilus_sidebar_get_sidebar_panel_key (sidebar_id);
-	already_on = any_panel_matches_id (sidebar, sidebar_id);
+	nautilus_sidebar_hide_active_panel_if_matches (sidebar, sidebar_iid);
 
-	/* This little dance gets the preferences code to send a
-	 * notification even though it thinks there's "no change".
+	nautilus_preferences_set_boolean (preference_key, GTK_CHECK_MENU_ITEM (widget)->active);
+}
+
+typedef struct
+{
+	NautilusSidebar *sidebar;
+	GtkMenu *menu;
+} ForEachPanelData;
+
+static void
+sidebar_for_each_sidebar_panel (const char *name,
+				const char *iid,
+				const char *preference_key,
+				gpointer callback_data) 
+{
+	ForEachPanelData *data;
+	GtkWidget *menu_item;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (iid != NULL);
+	g_return_if_fail (preference_key != NULL);
+	g_return_if_fail (callback_data != NULL);
+
+	data = callback_data;
+
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR (data->sidebar));
+	g_return_if_fail (GTK_IS_MENU (data->menu));
+
+	/* If the panel is not visible in the current user level, then
+	 * we dont need to create a menu item for it.
 	 */
-	nautilus_preferences_set_boolean (key, already_on);
-	nautilus_preferences_set_boolean (key, !already_on);
+	if (!nautilus_preferences_is_visible (preference_key)) {
+		return;
+	}
 
-	g_free (key);
+	/* add a check menu item */
+	menu_item = gtk_check_menu_item_new_with_label (name);
+
+	gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (menu_item), TRUE);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item),
+					any_panel_matches_iid (data->sidebar, iid));
+	gtk_widget_show (menu_item);
+	gtk_object_set_user_data (GTK_OBJECT (menu_item), data->sidebar);
+	gtk_menu_append (data->menu, menu_item);
+	gtk_signal_connect_full (GTK_OBJECT (menu_item),
+				 "activate",
+				 GTK_SIGNAL_FUNC (toggle_sidebar_panel),
+				 NULL,
+				 g_strdup (iid),
+				 g_free,
+				 FALSE,
+				 FALSE);
+
+	gtk_object_set_data_full (GTK_OBJECT (menu_item),
+				  "preference-key",
+				  g_strdup (preference_key),
+				  g_free);
 }
 
 /* utility routine to add a menu item for each potential sidebar panel */
-
 static void
-nautilus_sidebar_add_panel_items(NautilusSidebar *sidebar, GtkWidget *menu)
+sidebar_add_panel_context_menu_items (NautilusSidebar *sidebar,
+				      GtkWidget *menu)
 {
-	CORBA_Environment ev;
-	const char *query;
-        OAF_ServerInfoList *oaf_result;
-	guint i;
-	gboolean enabled;
-	GList *name_list;
-	GtkWidget *menu_item;
-	NautilusViewIdentifier *id;
+	ForEachPanelData data;
 
-	CORBA_exception_init (&ev);
+	data.sidebar = sidebar;
+	data.menu = GTK_MENU (menu);
 
-	/* ask OAF for all of the sidebars panels */
-	query = "nautilus:sidebar_panel_name.defined() AND repo_ids.has ('IDL:Bonobo/Control:1.0')";
-	oaf_result = oaf_query (query, NULL, &ev);
-	
-	/* loop through the results, appending a new menu item for each unique sidebar panel */
-	name_list = NULL;
-        if (ev._major == CORBA_NO_EXCEPTION && oaf_result != NULL) {
-		for (i = 0; i < oaf_result->_length; i++) {
-			id = nautilus_view_identifier_new_from_sidebar_panel
-				(&oaf_result->_buffer[i]);
-			/* check to see if we've seen this one */
-			if (g_list_find_custom (name_list, id->name, (GCompareFunc) strcmp) == NULL) {
-				name_list = g_list_append (name_list, g_strdup (id->name));
-				
-				/* add a check menu item */
-				menu_item = gtk_check_menu_item_new_with_label (id->name);
-				enabled = any_panel_matches_id (sidebar, id->iid);
-				gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM(menu_item), TRUE);
-				gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), enabled);
-				gtk_widget_show (menu_item);
-				gtk_object_set_user_data (GTK_OBJECT (menu_item), sidebar);
-				gtk_menu_append (GTK_MENU(menu), menu_item);
-				gtk_signal_connect_full (GTK_OBJECT (menu_item), "activate",
-							 GTK_SIGNAL_FUNC (toggle_sidebar_panel),
-							 NULL, g_strdup(id ->iid), g_free,
-							 FALSE, FALSE);
-			}
-			nautilus_view_identifier_free (id);
-		}
-	} 
-	if (name_list != NULL)
-		nautilus_g_list_free_deep(name_list);
-		
-	if (oaf_result != NULL) {
-		CORBA_free (oaf_result);
-	}
-	
-	CORBA_exception_free (&ev);
+	nautilus_sidebar_for_each_panel (sidebar_for_each_sidebar_panel, &data);
 }
 
 /* check to see if the background matches the default */
@@ -522,7 +522,7 @@ nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar)
 	gtk_menu_append (GTK_MENU (menu), menu_item);
 	
 	/* add the sidebar panels */
-	nautilus_sidebar_add_panel_items(sidebar, menu);
+	sidebar_add_panel_context_menu_items (sidebar, menu);
 	return menu;
 }
 

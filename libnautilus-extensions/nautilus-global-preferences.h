@@ -100,12 +100,6 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR		"preferences/start_with_status_bar"
 #define NAUTILUS_PREFERENCES_START_WITH_SIDEBAR		 	"preferences/start_with_sidebar"
 
-/* The sidebar panel preferences are computed from their oafids, which aren't known at
- * compile time. We publish the namespace so that interested parties can monitor changes
- * to all of them collectively, without having to know the exact oaf iids.
- */
-#define NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE		"sidebar-panels"
-
 /* Sorting order */
 #define NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST		"preferences/sort_directories_first"
 
@@ -168,7 +162,6 @@ void                         nautilus_global_preferences_hide_dialog            
 void                         nautilus_global_preferences_set_dialog_title                           (const char *title);
 
 /* Sidebar */
-GList *                      nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers (void);
 struct NautilusScalableFont *nautilus_global_preferences_get_icon_view_smooth_font                  (void);
 struct NautilusScalableFont *nautilus_global_preferences_get_default_smooth_font                    (void);
 struct NautilusScalableFont *nautilus_global_preferences_get_default_smooth_bold_font               (void);

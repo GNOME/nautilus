@@ -1,5 +1,53 @@
 2001-03-31  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-sidebar-functions.h:
+	* libnautilus-extensions/nautilus-sidebar-functions.c:
+	(compare_view_identifiers), (sidebar_is_sidebar_panel_enabled),
+	(sidebar_is_sidebar_panel_enabled_cover),
+	(sidebar_get_sidebar_panel_view_identifiers),
+	(nautilus_sidebar_get_enabled_sidebar_panel_view_identifiers),
+	(nautilus_sidebar_panel_make_preference_key),
+	(nautilus_sidebar_for_each_panel):
+	New functions.  Move sidebar and sidebar panel specific code used
+	throughout Nautilus to its own place.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_populate_sidebar_panels_callback),
+	(global_preferences_create_sidebar_panels_pane),
+	(global_preferences_install_sidebar_panel_defaults):
+	Move sidebar and sidebar panel specific code to
+	nautilus-sidebar-functions.[ch].  Simplify sidebar panel creation
+	a bit.
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Remove the sidebar panel NAMESPACE as preferences dont support
+	namespaces any more.
+
+	* src/nautilus-sidebar.c: (any_panel_matches_iid): Tiny anal
+	renaming.
+	(toggle_sidebar_panel): Simplify this function a bit.  The
+	previous "dance" that the code was doing was not really
+	necessariy.
+	(sidebar_for_each_sidebar_panel),
+	(sidebar_add_panel_context_menu_items): Simplify a lot by using
+	the new sidebar panel iterator.  Remove a bunch of oaf code which
+	is handled by the iterator in sidebar-functions.  Also, only
+	create the menu items if the preference is visible at the current
+	user level.
+	(nautilus_sidebar_get_sidebar_panel_key): Yank this function as it
+	is not needed anymore.
+
+	* src/nautilus-window.c: (nautilus_window_for_each_sidebar_panel),
+	(nautilus_window_initialize): Keep track of sidebar panel changes
+	for each individual panel instead of trying to use the whole
+	namespace.  The namespace thing was a broken feature of
+	preferences which is no longer supported.
+	(update_sidebar_panels_from_preferences): Update for new public
+	sidebar functions.
+
+2001-03-31  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* src/nautilus-window.c: (nautilus_window_initialize),
 	(nautilus_window_destroy):
 	Fix a bug introduced by my last checkin.  No longer need to remove

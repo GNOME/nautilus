@@ -71,6 +71,7 @@
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
+#include <libnautilus-extensions/nautilus-sidebar-functions.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus/nautilus-clipboard.h>
@@ -186,17 +187,31 @@ nautilus_window_initialize_class (NautilusWindowClass *klass)
 }
 
 static void
+nautilus_window_for_each_sidebar_panel (const char *name,
+					const char *iid,
+					const char *preference_key,
+					gpointer callback_data) 
+{
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (iid != NULL);
+	g_return_if_fail (preference_key != NULL);
+	g_return_if_fail (NAUTILUS_IS_WINDOW (callback_data));
+	
+	nautilus_preferences_add_callback_while_alive (preference_key,
+						       sidebar_panels_changed_callback,
+						       callback_data,
+						       GTK_OBJECT (callback_data));
+}
+
+static void
 nautilus_window_initialize (NautilusWindow *window)
 {
 	window->details = g_new0 (NautilusWindowDetails, 1);
 
 	gtk_quit_add_destroy (1, GTK_OBJECT (window));
-	
-	/* Keep track of any sidebar panel changes */
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE,
-						       sidebar_panels_changed_callback,
-						       window,
-						       GTK_OBJECT (window));
+
+	/* Keep track of changes in enabled state of sidebar panels */
+	nautilus_sidebar_for_each_panel (nautilus_window_for_each_sidebar_panel, window);
 
 	/* Keep the main event loop alive as long as the window exists */
 	nautilus_main_event_loop_register (GTK_OBJECT (window));
@@ -1787,7 +1802,7 @@ update_sidebar_panels_from_preferences (NautilusWindow *window)
 	}
 
 	/* Obtain list of enabled view identifiers */
-	identifier_list = nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers ();
+	identifier_list = nautilus_sidebar_get_enabled_sidebar_panel_view_identifiers ();
 	nautilus_window_set_sidebar_panels (window, identifier_list);
 	nautilus_view_identifier_list_free (identifier_list);
 }
