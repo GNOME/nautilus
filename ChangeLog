@@ -1,3 +1,17 @@
+2001-05-07  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 8122 (Folders opened from the desktop should not
+	reuse frontmost window). The previous behavior was intended to
+	match the behavior of web browsers, but user feedback made it
+	clear that it was confusing and annoying people too much.
+
+	* src/nautilus-window-manage-views.c: 
+	(get_topmost_nautilus_window_in_current_workspace_and_area):
+	Removed this no-longer-needed function.
+	(open_location): Always create a new window in the desktop case.
+
 2001-05-07  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

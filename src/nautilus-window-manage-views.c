@@ -673,28 +673,6 @@ location_has_really_changed (NautilusWindow *window)
 }
 
 
-static NautilusWindow *
-get_topmost_nautilus_window_in_current_workspace_and_area (void)
-{
-        GList *window_list, *node;
-        NautilusWindow *result;
-
-        window_list = eel_get_window_list_ordered_front_to_back ();
-
-        result = NULL;
-        for (node = window_list; node != NULL; node = node->next) {
-                if (NAUTILUS_IS_WINDOW (node->data)
-		    && eel_gtk_window_is_on_current_workspace_and_area (GTK_WINDOW (node->data))) {
-                        result = NAUTILUS_WINDOW (node->data);
-                        break;
-                }
-        }
-
-        g_list_free (window_list);
-
-        return result;
-}
-
 static void
 open_location (NautilusWindow *window,
                const char *location,
@@ -711,21 +689,18 @@ open_location (NautilusWindow *window,
 	 * We should use inheritance instead of these special cases
 	 * for the desktop window.
 	 */
-        /* When loading a location on the desktop (in "open within
-         * same window mode"), always use another window. Either use
-         * the topmost window, or create a new window if the desktop
-         * is the topmost (and only).
-         */
+	/* We used to have behavior here that worked like this: when 
+	 * loading a location on the desktop in "open within same window 
+	 * mode", always use another window. Either use the topmost window, 
+	 * or create a new window if the desktop is the topmost (and only).
+	 * However, this behavior was nearly universally disliked (see 
+	 * bugzilla.eazel.com bug 8122).
+	 */
         if (!create_new_window && NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-                if (NAUTILUS_DESKTOP_WINDOW(window)->affect_desktop_on_next_location_change == FALSE) {
-                        target_window = get_topmost_nautilus_window_in_current_workspace_and_area ();
-                        if (target_window == NULL || target_window == window) {
-                                create_new_window = TRUE;
-                        } else {
-                                eel_gtk_window_present (GTK_WINDOW (target_window));
-                        }
+                if (!NAUTILUS_DESKTOP_WINDOW (window)->affect_desktop_on_next_location_change) {
+                        create_new_window = TRUE;
                 } else {
-                        NAUTILUS_DESKTOP_WINDOW(window)->affect_desktop_on_next_location_change = FALSE;
+                        NAUTILUS_DESKTOP_WINDOW (window)->affect_desktop_on_next_location_change = FALSE;
                 }
         }
 
