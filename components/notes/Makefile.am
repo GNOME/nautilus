@@ -12,7 +12,7 @@ LDADD=\
 
 ntl_notes_SOURCES=ntl-notes.c
 
-goaddir=$(sysconfdir)/CORBA/servers
-goad_DATA=ntl-notes.goad
+oafdir=$(datadir)/oaf
+oaf_DATA=ntl-notes.oafinfo
 
-EXTRA_DIST=$(goad_DATA)
+EXTRA_DIST=$(oaf_DATA)

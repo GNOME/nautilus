@@ -23,9 +23,11 @@
 
 #include <config.h>
 
-#include <libgnorba/gnorba.h>
+#include <liboaf/liboaf.h>
 
 #include "dfos.h"
+
+#include <libgnome/gnome-i18n.h>
 
 
 struct _FileOperationServiceServant {
@@ -212,7 +214,7 @@ init (DFOS *dfos,
 	PortableServer_POAManager poa_manager;
 
 	poa = (PortableServer_POA) CORBA_ORB_resolve_initial_references
-		(gnome_CORBA_ORB (), "RootPOA", ev);
+		(oaf_orb_get (), "RootPOA", ev);
 	if (ev->_major != CORBA_NO_EXCEPTION)
 		return FALSE;
 
@@ -228,11 +230,8 @@ init (DFOS *dfos,
 	if (ev->_major != CORBA_NO_EXCEPTION)
 		return CORBA_OBJECT_NIL;
 
-	if (! goad_server_register (CORBA_OBJECT_NIL,
-				    objref,
-				    "IDL:GNOME:Desktop:FileOperationService:1.0",
-				    "object", ev))
-		return objref;
+	if (! oaf_active_server_register ("IDL:GNOME:Desktop:FileOperationService:1.0", objref))
+	    return objref;
 
 	return CORBA_OBJECT_NIL;
 }

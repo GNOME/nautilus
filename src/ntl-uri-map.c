@@ -36,7 +36,6 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 
-#include <libgnorba/gnorba.h>
 #include <sys/types.h>
 #include <dirent.h>
 #include <limits.h>
@@ -262,13 +261,13 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
         }
         
         if (strcmp (navinfo->navinfo.content_type, "text/html") == 0) {
-                fallback_iid = "ntl_web_browser";
+                fallback_iid = "OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b";
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("ntl_web_browser", "Web Page"));
+                         nautilus_view_identifier_new ("OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b", "Web Page"));
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("embeddable:text-plain", "Text"));
+                         nautilus_view_identifier_new ("OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821", "Text"));
         } else if (nautilus_str_has_prefix (navinfo->navinfo.content_type, "image/")) {
                 fallback_iid = "eog-image-viewer";
                 navinfo->content_identifiers = g_slist_append
@@ -281,13 +280,13 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                          nautilus_view_identifier_new ("xchat", "Chat room"));
         } else if (strcmp(navinfo->navinfo.content_type, "special/directory") == 0
                    || strcmp(navinfo->navinfo.content_type, "application/x-nautilus-vdir") == 0) {
-                fallback_iid = "ntl_file_manager_icon_view";
+                fallback_iid = "OAFIID:ntl_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058";
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("ntl_file_manager_icon_view", "Icons"));
+                         nautilus_view_identifier_new ("OAFIID:ntl_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058", "Icons"));
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("ntl_file_manager_list_view", "List"));
+                         nautilus_view_identifier_new ("OAFIID:ntl_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c", "List"));
                 
                 /* besides the information in OAF/GConf, we also want to offer components that are specifically refered to in the metadata,
                    so we ask the metadata for content views here and add them accordingly.  */      
@@ -295,19 +294,19 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                 /* FIXME:  for now, we just do this for directories but it should apply to all places with available metadata */
                 add_components_from_metadata (navinfo);
         } else if (strcmp (navinfo->navinfo.content_type, "special/webdav-directory") == 0) {
-                fallback_iid = "ntl_web_browser";
+                fallback_iid = "OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b";
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("ntl_web_browser", "Web Page"));
+                         nautilus_view_identifier_new ("OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b", "Web Page"));
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("ntl_file_manager_icon_view", "Icons"));
+                         nautilus_view_identifier_new ("OAFIID:ntl_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058", "Icons"));
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("ntl_file_manager_list_view", "List"));
+                         nautilus_view_identifier_new ("OAFIID:ntl_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c", "List"));
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("embeddable:text-plain", "Text"));
+                         nautilus_view_identifier_new ("OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821", "Text"));
                 
                 /* besides the information in OAF/GConf, we also want to offer components that are specifically refered to in the metadata,
                    so we ask the metadata for content views here and add them accordingly.  */      
@@ -317,26 +316,28 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
         }
         else if (strcmp (navinfo->navinfo.content_type, "application/x-rpm") == 0
                  || nautilus_str_has_suffix (navinfo->navinfo.requested_uri, ".rpm")) {
-                fallback_iid = "nautilus_rpm_view";
+                fallback_iid = "OAFIID:nautilus_rpm_view:22ea002c-11e6-44fd-b13c-9445175a5e70";
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("nautilus_rpm_view", "Package"));      
+                         nautilus_view_identifier_new ("OAFIID:nautilus_rpm_view:22ea002c-11e6-44fd-b13c-9445175a5e70", 
+                                                       "Package"));      
         } else if (strcmp(navinfo->navinfo.content_type, "special/eazel-service") == 0) {
-                fallback_iid = "nautilus_service_startup_view";
+                fallback_iid = "OAFIID:nautilus_service_startup_view:a8f1b0ef-a39f-4f92-84bc-1704f0321a82";
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("nautilus_service_startup_view", "Service"));      
+                         nautilus_view_identifier_new ("OAFIID:nautilus_service_startup_view:a8f1b0ef-a39f-4f92-84bc-1704f0321a82", "Service"));      
         /* FIXME: This mozilla-hack should be short lived until http issues are solved */
         } else if (strcmp(navinfo->navinfo.content_type, "special/mozilla-hack") == 0) {
                 fallback_iid = "nautilus_mozilla_content_view";
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("nautilus_mozilla_content_view", "Mozilla"));
+                         nautilus_view_identifier_new ("OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1",
+                                                       "Mozilla"));
         } else if (strcmp(navinfo->navinfo.content_type, "text/plain") == 0) {
-                fallback_iid = "embeddable:text-plain";
+                fallback_iid = "OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821";
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("embeddable:text-plain", "Text"));
+                         nautilus_view_identifier_new ("OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821", "Text"));
         } else {
                 /* Can't display file; nothing registered to handle this file type. */
                 result_code = NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE;
@@ -346,7 +347,7 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
         /* FIXME: Should do this only when in some special testing mode or something. */
         navinfo->content_identifiers = g_slist_append
                 (navinfo->content_identifiers, 
-                 nautilus_view_identifier_new ("nautilus_sample_content_view", "Sample"));
+                 nautilus_view_identifier_new ("OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae", "Sample"));
         
         add_meta_view_iids_from_preferences (navinfo);
         
@@ -361,7 +362,7 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
 }
 
 /* The following routine uses metadata associated with the current url to add content view components specified in the metadata */
-/* the content views are specified in the string as "componentname1:label1\ncomponentname2:label2\n..." */
+/* the content views are specified in the string as "label=componentname11\nlabel=componentname2\n..." */
 
 static void
 add_components_from_metadata (NautilusNavigationInfo *navinfo)
@@ -369,7 +370,7 @@ add_components_from_metadata (NautilusNavigationInfo *navinfo)
 	char *content_views;
         char **pieces;
         const char *component_str;
-        char *colon_pos;
+        char *equal_pos;
         int index;
 	
         content_views = nautilus_directory_get_metadata
@@ -382,14 +383,16 @@ add_components_from_metadata (NautilusNavigationInfo *navinfo)
 
 	 	for (index = 0; (component_str = pieces[index]) != NULL; index++) {
 			/* break the component string into the name and label */
-			colon_pos = strchr(component_str, ':');
-			if (colon_pos != NULL) {
-				*colon_pos++ = '\0';
+                        puts (component_str);
+                        
+			equal_pos = strchr (component_str, '=');
+			if (equal_pos != NULL) {
+				*equal_pos++ = '\0';
 				
 				/* add it to the list */
 				navinfo->content_identifiers = g_slist_append
                                         (navinfo->content_identifiers,
-                                         nautilus_view_identifier_new (component_str, colon_pos));
+                                         nautilus_view_identifier_new (equal_pos, component_str));
 			}
 	 	}
 	 	g_strfreev (pieces);

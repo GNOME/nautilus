@@ -12,10 +12,10 @@ LDADD=\
 
 ntl_web_search_SOURCES=ntl-web-search.c
 
-goaddir=$(sysconfdir)/CORBA/servers
-goad_DATA=ntl-web-search.goad
+oafdir=$(datadir)/oaf
+oaf_DATA=ntl-web-search.oafinfo
 
 enginesdir=$(datadir)/ntl-web-search
 engines_DATA=standard.eng
 
-EXTRA_DIST=$(goad_DATA) $(engines_DATA)
+EXTRA_DIST=$(oaf_DATA) $(engines_DATA)

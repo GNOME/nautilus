@@ -28,7 +28,7 @@
 #include "nautilus-service-startup-view.h"
 
 #include <gnome.h>
-#include <libgnorba/gnorba.h>
+#include <liboaf/liboaf.h>
 #include <bonobo.h>
 
 static int object_count = 0;
@@ -53,7 +53,7 @@ services_make_object (BonoboGenericFactory *factory,
 
 	puts ("Trying to create object.");
 
-	if (strcmp (goad_id, "nautilus_service_startup_view")) {
+	if (strcmp (goad_id, "OAFIID:nautilus_service_startup_view:a8f1b0ef-a39f-4f92-84bc-1704f0321a82")) {
 		return NULL;
 	}
 	
@@ -79,11 +79,14 @@ int main(int argc, char *argv[])
 	
 	CORBA_exception_init(&ev);
 	
-	orb = gnome_CORBA_init_with_popt_table ("nautilus-service-startup-view", VERSION, &argc, argv, NULL, 0, NULL,
-						GNORBA_INIT_SERVER_FUNC, &ev);
+        gnome_init_with_popt_table("nautilus-service-startup-view", VERSION, 
+				   argc, argv,
+				   oaf_popt_options, 0, NULL); 
+
+	orb = oaf_init (argc, argv);
 	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-	factory = bonobo_generic_factory_new_multi ("nautilus_service_startup_view_factory", services_make_object, NULL);
+	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_service_startup_view_factory:fafa0f0d-a2d1-41f9-8164-4beb5e34656c", services_make_object, NULL);
 	
 	do {
 		bonobo_main ();

@@ -1,3 +1,80 @@
+2000-04-19  Maciej Stachowiak  <mjs@eazel.com>
+
+	OAF conversion. You must now build bonobo and gnome-vfs with --enable-oaf
+
+	* configure.in: Check for OAF
+
+	* libnautilus/nautilus-view-component.idl: Inherit from
+	Bonobo::Unknown instead of GNOME::Unknown.
+
+	* libnautilus-extensions/nautilus-global-preferences.c,
+	libnautilus-extensions/nautilus-global-preferences.h: Refer to
+	meta views by OAFIID, not GOAD ID.
+
+	* src/ntl-uri-map.c (my_notify_when_ready): Replaced hardcoded
+	list of GOAD IDs with a hardcoded list of OAFIIDs.
+	(add_components_from_metadata): Changed the expected format; it is
+	now label=component instead of component:label since OAFIIDs
+	contain colons.
+
+	* src/ntl-view.c (nautilus_view_destroy_client): unref the
+	Zoomable interface of the View, if any.
+
+	* src/file-manager/dfos-corba.c, src/file-manager/dfos.c: replace
+	GOAD calls with OAF ones; untested since this code is not really
+	used right now.
+
+	* src/ntl-main.c: Use OAF calls to intialize CORBA.
+
+	* src/ntl-app.c: Replace GOAD IDs with OAFIIDs. Use
+	Bonobo_Generic_Factory instead of GNOME_Generic_Factory to make
+	the linker happy. Register the factory server with OAF, not GOAD.
+
+	* src/nautilus.h: Include <liboaf/liboaf.h> instead of <libgnorba/gnorba.h>
+
+
+	* components/help/Makefile.am, components/history/Makefile.am,
+	components/html/Makefile.am, components/mozilla/Makefile.am,
+	components/music/Makefile.am, components/notes/Makefile.am,
+	components/rpmview/Makefile.am, components/sample/Makefile.am,
+	components/services/startup/Makefile.am,
+	components/websearch/Makefile.am, libnautilus/Makefile.am,
+	libnautilus-extensions/Makefile.am, src/Makefile.am,
+	src/file-manager/Makefile.am: Updated for OAF; install .oafinfo
+	files instead of .gnorba.
+
+	* components/help/hyperbola-main.c,
+	components/history/ntl-history-view.c,
+	components/html/ntl-web-browser.c, components/mozilla/main.c,
+	components/music/main.c, components/notes/ntl-notes.c,
+	components/rpmview/main.c, components/sample/main.c,
+	components/services/startup/main.c,
+	components/websearch/ntl-web-search.c: Convert to OAF; use OAFIIDs
+	and oaf intialization functions.
+
+	* src/nautilus.oafinfo, components/help/hyperbola.oafinfo,
+	components/history/ntl-history-view.oafinfo,
+	components/html/ntl-web-browser.oafinfo,
+	components/music/nautilus-music-view.oafinfo,
+	components/notes/ntl-notes.oafinfo,
+	components/rpmview/nautilus-rpm-view.oafinfo,
+	components/services/startup/nautilus-service-startup-view.oafinfo,
+	components/websearch/ntl-web-search.oafinfo,
+	components/sample/nautilus-sample-content-view.oafinfo,
+	components/mozilla/nautilus-mozilla-content-view.oafinfo: New OAF
+	activation records.
+	
+	* src/nautilus.goad, components/help/hyperbola.goad,
+	components/history/ntl-history-view.goad,
+	components/html/ntl-web-browser.goad,
+	components/music/nautilus-music-view.goad,
+	components/notes/ntl-notes.goad,
+	components/rpmview/nautilus-rpm-view.goad,
+	components/services/startup/nautilus-service-startup-view.goad,
+	components/websearch/ntl-web-search.goad,
+	components/sample/nautilus-sample-content-view.goad,
+	components/mozilla/nautilus-mozilla-content-view.goad: Removed.
+	
 2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* configure.in,

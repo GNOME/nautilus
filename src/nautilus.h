@@ -4,7 +4,7 @@
 #define NAUTILUS_H 1
 
 #include <gnome.h>
-#include <libgnorba/gnorba.h>
+#include <liboaf/liboaf.h>
 #include <bonobo.h>
 
 #include "ntl-types.h"

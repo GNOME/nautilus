@@ -29,7 +29,7 @@
 #include "nautilus-mozilla-content-view.h"
 
 #include <gnome.h>
-#include <libgnorba/gnorba.h>
+#include <liboaf/liboaf.h>
 #include <bonobo.h>
 
 #include <stdlib.h>
@@ -54,7 +54,7 @@ mozilla_make_object (BonoboGenericFactory *factory,
 	NautilusMozillaContentView *view;
 	NautilusViewFrame *view_frame;
 
-	if (strcmp (goad_id, "nautilus_mozilla_content_view")) {
+	if (strcmp (goad_id, "OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1")) {
 		return NULL;
 	}
 	
@@ -102,13 +102,14 @@ main (int argc, char *argv[])
 
 	mozilla_hack_environment ();
 
-	CORBA_exception_init(&ev);
-	
-	orb = gnome_CORBA_init_with_popt_table ("nautilus-mozilla-content-view", VERSION, &argc, argv, NULL, 0, NULL,
-						GNORBA_INIT_SERVER_FUNC, &ev);
-	
+	gnome_init_with_popt_table("nautilus-mozilla-content-view", VERSION, 
+				   argc, argv,
+				   oaf_popt_options, 0, NULL); 
+	orb = oaf_init (argc, argv);
+
+
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-	factory = bonobo_generic_factory_new_multi ("nautilus_mozilla_content_view_factory", mozilla_make_object, NULL);
+	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_mozilla_content_view_factory:020a0285-6b96-4685-84a1-4a56eb6baa2b", mozilla_make_object, NULL);
 	
 	do {
 		bonobo_main ();

@@ -228,6 +228,9 @@ nautilus_view_init (NautilusView *view)
 static void
 nautilus_view_destroy_client(NautilusView *view)
 {
+  CORBA_Environment ev;
+  CORBA_exception_init(&ev);
+ 
   if(!view->component_class)
     return;
 
@@ -237,18 +240,21 @@ nautilus_view_destroy_client(NautilusView *view)
 
   gtk_container_remove (GTK_CONTAINER(view), view->client_widget); view->client_widget = NULL;
 
-  if(view->component_class->destroy)
-    {
-      CORBA_Environment ev;
-      CORBA_exception_init(&ev);
-      view->component_class->destroy(view, &ev);
-      CORBA_exception_free(&ev);
-    }
+  if (! CORBA_Object_is_nil (view->zoomable, &ev)) {
+    Bonobo_Unknown_unref (view->zoomable, &ev);
+    view->zoomable = CORBA_OBJECT_NIL;
+  }
+
+  if(view->component_class->destroy) {
+    view->component_class->destroy(view, &ev);
+  }
 
   bonobo_object_unref (view->view_frame); view->view_frame = NULL;
 
   view->component_class = NULL;
   view->component_data = NULL;
+
+  CORBA_exception_free(&ev);
 }
 
 static void

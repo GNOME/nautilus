@@ -27,7 +27,7 @@
 
 #include <libnautilus/libnautilus.h>
 #include <gnome.h>
-#include <libgnorba/gnorba.h>
+#include <liboaf/liboaf.h>
 #include <limits.h>
 #include <ctype.h>
 
@@ -166,7 +166,7 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   GtkWidget *vbox;
   WebSearchView *hview;
 
-  g_return_val_if_fail(!strcmp(goad_id, "ntl_websearch_view"), NULL);
+  g_return_val_if_fail(!strcmp(goad_id, "OAFIID:ntl_websearch_view:8216e1e4-6b01-4a28-82d9-5df30ed7d044"), NULL);
 
   hview = g_new0(WebSearchView, 1);
 
@@ -231,14 +231,16 @@ int main(int argc, char *argv[])
 {
   BonoboGenericFactory *factory;
   CORBA_ORB orb;
-  CORBA_Environment ev;
 
-  CORBA_exception_init(&ev);
-  orb = gnome_CORBA_init_with_popt_table("ntl-web-search", VERSION, &argc, argv, NULL, 0, NULL,
-					 GNORBA_INIT_SERVER_FUNC, &ev);
+  gnome_init_with_popt_table("ntl-web-search", VERSION, 
+                             argc, argv,
+                             oaf_popt_options, 0, NULL); 
+  
+  orb = oaf_init (argc, argv);
+
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
-  factory = bonobo_generic_factory_new_multi("ntl_websearch_view_factory", make_obj, NULL);
+  factory = bonobo_generic_factory_new_multi("OAFIID:ntl_websearch_view_factory:c69658b2-732c-4a04-a493-4efe57051291", make_obj, NULL);
 
   do {
     bonobo_main();

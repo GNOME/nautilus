@@ -25,7 +25,6 @@
 #include "dfos.h"
 
 #include <gnome.h>
-#include <libgnorba/gnorba.h>
 #include <orb/orbit.h>
 
 

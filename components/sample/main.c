@@ -28,7 +28,7 @@
 #include "nautilus-sample-content-view.h"
 
 #include <gnome.h>
-#include <libgnorba/gnorba.h>
+#include <liboaf/liboaf.h>
 #include <bonobo.h>
 
 static int object_count = 0;
@@ -44,15 +44,19 @@ sample_object_destroyed(GtkObject *obj)
 
 static BonoboObject *
 sample_make_object (BonoboGenericFactory *factory, 
-		    const char *goad_id, 
+		    const char *iid, 
 		    void *closure)
 {
 	NautilusSampleContentView *view;
 	NautilusViewFrame *view_frame;
 
-	if (strcmp (goad_id, "nautilus_sample_content_view")) {
+	puts ("Checking IID!");
+
+	if (strcmp (iid, "OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae")) {
 		return NULL;
 	}
+
+	puts ("Trying to make object!");
 	
 	view = NAUTILUS_SAMPLE_CONTENT_VIEW (gtk_object_new (NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW, NULL));
 
@@ -72,13 +76,21 @@ int main(int argc, char *argv[])
 	CORBA_Environment ev;
 	
 	CORBA_exception_init(&ev);
+
+        puts ("In component.");        
 	
-	orb = gnome_CORBA_init_with_popt_table ("nautilus-sample-content-view", VERSION, &argc, argv, NULL, 0, NULL,
-						GNORBA_INIT_SERVER_FUNC, &ev);
+        gnome_init_with_popt_table("nautilus-sample-content-view", VERSION, 
+				   argc, argv,
+				   oaf_popt_options, 0, NULL); 
+
+	orb = oaf_init (argc, argv);
 	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-	factory = bonobo_generic_factory_new_multi ("nautilus_sample_content_view_factory", sample_make_object, NULL);
+
+	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_sample_content_view_factory:3df6b028-be44-4a18-95c3-7720f50ca0c5", sample_make_object, NULL);
 	
+        puts ("About to do main loop.");        
+
 	do {
 		bonobo_main ();
 	} while (object_count > 0);

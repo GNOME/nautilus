@@ -42,12 +42,12 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_HOME_URI                 		"/nautilus/preferences/home_uri"
 
 /* Wellknown meta views */
-#define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_ANNOTATIONS	"/nautilus/metaviews/ntl_notes_view"
-#define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_CONTENTS	"/nautilus/metaviews/hyperbola_navigation_tree"
-#define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_INDEX		"/nautilus/metaviews/hyperbola_navigation_index"
-#define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_SEARCH	"/nautilus/metaviews/hyperbola_navigation_search"
-#define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HISTORY		"/nautilus/metaviews/ntl_history_view"
-#define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_WEB_SEARCH		"/nautilus/metaviews/ntl_websearch_view"
+#define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_ANNOTATIONS	"/nautilus/metaviews/OAFIID:ntl_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185"
+#define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_CONTENTS	"/nautilus/metaviews/OAFIID:hyperbola_navigation_tree:57542ce0-71ff-442d-a764-462c92514234"
+#define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_INDEX		"/nautilus/metaviews/OAFIID:hyperbola_navigation_index:0bafadc7-09f1-4f10-8c8e-dad53124fc49"
+#define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_SEARCH	"/nautilus/metaviews/OAFIID:hyperbola_navigation_search:89b2f3b8-4f09-49c8-9a7b-ccb14d034813"
+#define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HISTORY		"/nautilus/metaviews/OAFIID:ntl_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb"
+#define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_WEB_SEARCH		"/nautilus/metaviews/OAFIID:ntl_websearch_view:8216e1e4-6b01-4a28-82d9-5df30ed7d044"
 
 /* Preferences not (currently?) displayed in dialog */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES	"/nautilus/icon_view/text_attribute_names"

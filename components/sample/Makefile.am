@@ -8,10 +8,10 @@ INCLUDES =					\
 	$(GNOMEUI_CFLAGS)                       \
 	$(WERROR)
 
-gnorbadir = $(sysconfdir)/CORBA/servers
+oafdir = $(datadir)/oaf
 
-gnorba_DATA =					\
-	nautilus-sample-content-view.goad
+oaf_DATA =					\
+	nautilus-sample-content-view.oafinfo
 
 
 bin_PROGRAMS =					\
@@ -26,9 +26,9 @@ nautilus_sample_content_view_LDFLAGS =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
 	$(top_builddir)/librsvg/librsvg.la		\
-	$(BONOBO_LIBS)					\
 	$(GNOMEUI_LIBS)					\
+	$(BONOBO_LIBS)					\
 	$(VFS_LIBS)					\
-	$(GNORBA_LIBS)
+	$(OAF_LIBS)
 
-EXTRA_DIST = nautilus-sample-content-view.goad
+EXTRA_DIST = $(oaf_DATA)

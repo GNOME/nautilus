@@ -46,11 +46,11 @@ impl_Nautilus_Application_new_view_window(impl_POA_Nautilus_Application *servant
                                           CORBA_Environment * ev);
 static CORBA_boolean
 impl_Nautilus_Application_supports(impl_POA_Nautilus_Application * servant,
-				   CORBA_char *obj_goad_id,
+				   CORBA_char *obj_iid,
 				   CORBA_Environment * ev);
 static CORBA_Object
 impl_Nautilus_Application_create_object(impl_POA_Nautilus_Application *servant,
-                                        CORBA_char * goad_id,
+                                        CORBA_char *obj_iid,
 					GNOME_stringlist * params,
 					CORBA_Environment * ev);
 
@@ -60,7 +60,7 @@ static POA_Nautilus_Application__epv impl_Nautilus_Application_epv = {
    (gpointer) &impl_Nautilus_Application_new_view_window
 
 };
-static POA_GNOME_GenericFactory__epv impl_Nautilus_Application_GNOME_GenericFactory_epv = {
+static POA_Bonobo_GenericFactory__epv impl_Nautilus_Application_Bonobo_GenericFactory_epv = {
    NULL,			/* _private */
    (gpointer) &impl_Nautilus_Application_supports,
    (gpointer) &impl_Nautilus_Application_create_object
@@ -72,7 +72,7 @@ static PortableServer_ServantBase__epv impl_Nautilus_Application_base_epv = {
 };
 static POA_Nautilus_Application__vepv impl_Nautilus_Application_vepv = {
    &impl_Nautilus_Application_base_epv,
-   &impl_Nautilus_Application_GNOME_GenericFactory_epv,
+   &impl_Nautilus_Application_Bonobo_GenericFactory_epv,
    NULL,
    &impl_Nautilus_Application_epv,
 };
@@ -119,17 +119,17 @@ impl_Nautilus_Application_new_view_window(impl_POA_Nautilus_Application *servant
 
 static CORBA_boolean
 impl_Nautilus_Application_supports(impl_POA_Nautilus_Application * servant,
-				   CORBA_char * obj_goad_id,
+				   CORBA_char * obj_iid,
 				   CORBA_Environment * ev)
 {
-   return (!strcmp(obj_goad_id, "ntl_file_manager_icon_view")
-           || !strcmp(obj_goad_id, "ntl_file_manager_list_view")
-           || !strcmp(obj_goad_id, "ntl_window"));
+   return (!strcmp(obj_iid, "OAFIID:ntl_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058")
+           || !strcmp(obj_iid, "OAFIID:ntl_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c")
+           || !strcmp(obj_iid, "OAFIID:ntl_window:88e8b2e4-b627-4221-b566-5ba32185c88d"));
 }
 
 static CORBA_Object
 impl_Nautilus_Application_create_object(impl_POA_Nautilus_Application *servant,
-                                        CORBA_char * goad_id,
+                                        CORBA_char *obj_iid,
 					GNOME_stringlist * params,
 					CORBA_Environment * ev)
 {
@@ -137,15 +137,15 @@ impl_Nautilus_Application_create_object(impl_POA_Nautilus_Application *servant,
   FMDirectoryView *dir_view;
   NautilusContentViewFrame *view_frame;
 
-  if(!impl_Nautilus_Application_supports(servant, goad_id, ev))
+  if(!impl_Nautilus_Application_supports(servant, obj_iid, ev))
     return CORBA_OBJECT_NIL;
         
-  if (strcmp (goad_id, "ntl_file_manager_icon_view") == 0)
+  if (strcmp (obj_iid, "OAFIID:ntl_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058") == 0)
     dir_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_icon_view_get_type (), NULL));
-  else if (strcmp (goad_id, "ntl_file_manager_list_view") == 0)
+  else if (strcmp (obj_iid, "OAFIID:ntl_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c") == 0)
     dir_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_list_view_get_type (), NULL));
-  else if (strcmp (goad_id, "ntl_window"))
-    retval = impl_Nautilus_Application_new_view_window(servant, ev);
+  else if (strcmp (obj_iid,"OAFIID:ntl_window:88e8b2e4-b627-4221-b566-5ba32185c88d") == 0)
+    retval = impl_Nautilus_Application_new_view_window (servant, ev);
   else
     dir_view = NULL;
         
@@ -154,6 +154,8 @@ impl_Nautilus_Application_create_object(impl_POA_Nautilus_Application *servant,
   if(dir_view)
     {
       view_frame = fm_directory_view_get_view_frame (dir_view);
+
+      printf ("CREATING content view: 0x%x\n", (unsigned) view_frame);
         
       retval = CORBA_Object_duplicate(bonobo_object_corba_objref(BONOBO_OBJECT(view_frame)), ev);
     }
@@ -236,7 +238,9 @@ nautilus_app_init (NautilusApp *app)
 
   CORBA_exception_init(&ev);
   objref = impl_Nautilus_Application__create(bonobo_poa(), app, &ev);
-  goad_server_register(NULL, objref, "ntl_file_manager_factory", NULL, &ev);
+
+  oaf_active_server_register("OAFIID:ntl_file_manager_factory:bd1e1862-92d7-4391-963e-37583f0daef3", objref);
+
   bonobo_object_construct(BONOBO_OBJECT(app), objref);
   CORBA_exception_free(&ev);
 }

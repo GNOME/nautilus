@@ -52,8 +52,9 @@ main(int argc, char *argv[])
 	struct poptOption options[] = {
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 		{ "check", '\0', POPT_ARG_NONE, &check, 0, N_("Perform high-speed self-check tests."), NULL },
-		POPT_AUTOHELP
 #endif
+		{ NULL, '\0', POPT_ARG_INCLUDE_TABLE, &oaf_popt_options, 0, NULL, NULL },
+		POPT_AUTOHELP
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
 	};
 	
@@ -67,8 +68,12 @@ main(int argc, char *argv[])
 	
 	/* Initialize the services that we use. */
 	CORBA_exception_init(&ev);
-	orb = gnome_CORBA_init_with_popt_table ("nautilus", VERSION, &argc, argv, options,
-						0, &ctx, GNORBA_INIT_SERVER_FUNC, &ev);
+
+        gnome_init_with_popt_table("nautilus", VERSION, 
+				   argc, argv,
+				   options, 0, &ctx); 
+	orb = oaf_init (argc, argv);
+	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 	g_thread_init (NULL);
 	gnome_vfs_init ();
@@ -97,3 +102,4 @@ main(int argc, char *argv[])
 
 	return EXIT_SUCCESS;
 }
+

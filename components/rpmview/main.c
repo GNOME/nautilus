@@ -28,7 +28,7 @@
 
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libgnorba/gnorba.h>
+#include <liboaf/liboaf.h>
 #include <bonobo.h>
 
 static int object_count = 0;
@@ -50,7 +50,7 @@ rpm_view_make_object (BonoboGenericFactory *factory,
 	NautilusRPMView *rpm_view;
 	NautilusViewFrame *view_frame;
 
-	if (strcmp (goad_id, "nautilus_rpm_view")) {
+	if (strcmp (goad_id, "OAFIID:nautilus_rpm_view:22ea002c-11e6-44fd-b13c-9445175a5e70")) {
 		return NULL;
 	}
 	
@@ -68,12 +68,12 @@ int main(int argc, char *argv[])
 {
 	BonoboGenericFactory *factory;
 	CORBA_ORB orb;
-	CORBA_Environment ev;
 	
-	CORBA_exception_init(&ev);
-	
-	orb = gnome_CORBA_init_with_popt_table ("nautilus-rpm-view", VERSION, &argc, argv, NULL, 0, NULL,
-						GNORBA_INIT_SERVER_FUNC, &ev);
+        gnome_init_with_popt_table("nautilus-rpm-view", VERSION, 
+				   argc, argv,
+				   oaf_popt_options, 0, NULL); 
+
+	orb = oaf_init (argc, argv);
 	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
@@ -81,7 +81,8 @@ int main(int argc, char *argv[])
 	g_thread_init (NULL);
 	gnome_vfs_init ();
 	
-	factory = bonobo_generic_factory_new_multi ("nautilus_rpm_view_factory", rpm_view_make_object, NULL);
+	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_rpm_view_factory:5986d6a5-8840-44ea-84a1-e7f052bd85cf", 
+						    rpm_view_make_object, NULL);
 	
 	do {
 		bonobo_main ();

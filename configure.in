@@ -212,6 +212,16 @@ gnomelocaledir='${prefix}/${DATADIRNAME}/locale'
 AC_SUBST(gnomelocaledir)
 
 
+dnl Check for OAF
+
+
+dnl Check for OAF
+
+AC_PATH_PROG(OAF_CONFIG,oaf-config,no)
+
+OAF_LIBS=`$OAF_CONFIG --libs`
+OAF_CFLAGS=`$OAF_CONFIG --cflags`
+
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST

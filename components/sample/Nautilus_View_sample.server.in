@@ -1,0 +1,20 @@
+<oaf_info>
+
+<oaf_server iid="OAFIID:nautilus_sample_content_view_factory:3df6b028-be44-4a18-95c3-7720f50ca0c5" type="exe" location="nautilus-sample-content-view">
+<oaf_attribute name="repo_ids" type="stringv">
+<item value="IDL:GNOME/GenericFactory:1.0"/>
+</oaf_attribute>
+<oaf_attribute name="description" type="string" value="Sample content view component's factory"/>
+</oaf_server>
+
+<oaf_server iid="OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae" type="factory" location="OAFIID:nautilus_sample_content_view_factory:3df6b028-be44-4a18-95c3-7720f50ca0c5">
+<oaf_attribute name="repo_ids" type="stringv">
+<item value="IDL:Bonobo/Control:1.0"/>
+<item value="IDL:Bonobo/Unknown:1.0"/>
+<item value="IDL:Nautilus/ContentView:1.0"/>
+<item value="IDL:Nautilus/View:1.0"/>
+</oaf_attribute>
+<oaf_attribute name="description" type="string" value="Sample content view component"/>
+</oaf_server>
+
+</oaf_info>

@@ -101,7 +101,7 @@ module Nautilus {
 	
 	typedef sequence<ViewWindow> ViewWindowList;
 	
-	interface Application : ::GNOME::GenericFactory, ::Bonobo::Unknown {
+	interface Application : ::Bonobo::GenericFactory, ::Bonobo::Unknown {
 		readonly attribute ViewWindowList view_windows;
 		ViewWindow new_view_window ();
 	};

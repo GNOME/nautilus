@@ -1,7 +1,7 @@
 noinst_LTLIBRARIES=libntl-file-manager.la
 
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
-	$(BONOBO_CFLAGS) $(GNORBA_CFLAGS) \
+	$(BONOBO_CFLAGS) $(OAF_CFLAGS) \
 	$(GNOMEUI_CFLAGS) -DVERSION="\"$(VERSION)\"" \
 	$(GNOMECANVASPIXBUF_INCLUDEDIR)			\
 	$(WERROR)					\
@@ -55,7 +55,7 @@ libntl_file_manager_la_SOURCES=	\
 
 # gnome_desktop_LDADD=\
 # 		$(BONOBO_LIBS) \
-# 		$(GNORBA_LIBS) \
+# 		$(OAF_LIBS) \
 # 		$(GNOMEUI_LIBS) \
 # 		$(GDK_PIXBUF_LIBS) \
 # 		$(VFS_LIBS)

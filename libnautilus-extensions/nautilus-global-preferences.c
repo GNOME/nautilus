@@ -131,12 +131,6 @@ global_preferences_create_dialog (void)
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (meta_view_pane),
 							 0,
 							 preferences,
-							 NAUTILUS_PREFERENCES_META_VIEWS_SHOW_ANNOTATIONS,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-	
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (meta_view_pane),
-							 0,
-							 preferences,
 							 NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_CONTENTS,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
@@ -199,12 +193,18 @@ nautilus_global_preferences_get_meta_view_iids (void)
 	{
 		meta_view_names = nautilus_string_list_new ();
 
-		nautilus_string_list_insert (meta_view_names, "ntl_notes_view");
-		nautilus_string_list_insert (meta_view_names, "hyperbola_navigation_tree");
-		nautilus_string_list_insert (meta_view_names, "hyperbola_navigation_index");
-		nautilus_string_list_insert (meta_view_names, "hyperbola_navigation_search");
-		nautilus_string_list_insert (meta_view_names, "ntl_history_view");
-		nautilus_string_list_insert (meta_view_names, "ntl_websearch_view");
+		nautilus_string_list_insert (meta_view_names, 
+					     "OAFIID:ntl_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185");
+		nautilus_string_list_insert (meta_view_names, 
+					     "OAFIID:hyperbola_navigation_tree:57542ce0-71ff-442d-a764-462c92514234");
+		nautilus_string_list_insert (meta_view_names, 
+					     "OAFIID:hyperbola_navigation_index:0bafadc7-09f1-4f10-8c8e-dad53124fc49");
+		nautilus_string_list_insert (meta_view_names, 
+					     "OAFIID:hyperbola_navigation_search:89b2f3b8-4f09-49c8-9a7b-ccb14d034813");
+		nautilus_string_list_insert (meta_view_names, 
+					     "OAFIID:ntl_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb");
+		nautilus_string_list_insert (meta_view_names, 
+					     "OAFIID:ntl_websearch_view:8216e1e4-6b01-4a28-82d9-5df30ed7d044");
 	}
 
 	return meta_view_names;

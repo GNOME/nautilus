@@ -12,9 +12,9 @@ INCLUDES =					\
 	$(GTKHTML_CFLAGS)			\
 	$(LIBWWW_CFLAGS)
 
-gnorbadir = $(sysconfdir)/CORBA/servers
-gnorba_DATA =					\
-	ntl-web-browser.goad
+oafdir = $(datadir)/oaf
+oaf_DATA =					\
+	ntl-web-browser.oafinfo
 
 
 bin_PROGRAMS =					\
@@ -37,7 +37,7 @@ ntl_web_browser_LDFLAGS =				\
 	$(BONOBO_LIBS)					\
 	$(GNOMEUI_LIBS)					\
 	$(VFS_LIBS)					\
-	$(GNORBA_LIBS)					\
+	$(OAF_LIBS)					\
 	$(LIBWWW_LIBS)
 
-EXTRA_DIST = ntl-web-browser.goad
+EXTRA_DIST = $(oaf_DATA)

@@ -26,10 +26,8 @@ hyperbola_SOURCES=		\
 	hyperbola-nav-index.c	\
 	hyperbola-nav-search.c
 
-EXTRA_DIST=pages.map hyperbola.goad help-methods.conf
-
-goaddir=$(sysconfdir)/CORBA/servers
-goad_DATA=hyperbola.goad
+oafdir=$(datadir)/oaf
+oaf_DATA=hyperbola.oafinfo
 
 mapdatadir=$(datadir)/hyperbola/maps
 mapdata_DATA=pages.map
@@ -43,3 +41,6 @@ libvfs_help_la_LIBADD  = $(GLIB_LIBS)
 
 modulesconfdir=$(sysconfdir)/vfs/modules
 modulesconf_DATA = help-methods.conf
+
+EXTRA_DIST=pages.map $(oaf_DATA) help-methods.conf
+

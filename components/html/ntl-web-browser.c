@@ -24,7 +24,7 @@
 #include <gnome.h>
 #include <libnautilus/libnautilus.h>
 #include <gtkhtml/gtkhtml.h>
-#include <libgnorba/gnorba.h>
+#include <liboaf/liboaf.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extensions/nautilus-debug.h>
 
@@ -579,7 +579,7 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, void *closure)
   BrowserInfo *bi;
   GtkWidget *wtmp;
 
-  if(strcmp(goad_id, "ntl_web_browser"))
+  if(strcmp(goad_id, "OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b"))
     return NULL;
 
   bi = g_new0(BrowserInfo, 1);
@@ -623,10 +623,11 @@ int main(int argc, char *argv[])
        "Nautilus-HTML", "gtkhtml", NULL);
 
 
-  CORBA_exception_init(&ev);
-  orb = gnome_CORBA_init_with_popt_table("ntl-web-browser", VERSION, &argc, argv, NULL, 0, NULL,
-					 GNORBA_INIT_SERVER_FUNC, &ev);
-
+  gnome_init_with_popt_table("ntl-web-browser", VERSION, 
+			     argc, argv,
+			     oaf_popt_options, 0, NULL); 
+  
+  orb = oaf_init (argc, argv);
 
   gnome_vfs_init();
   gdk_rgb_init();
@@ -634,7 +635,8 @@ int main(int argc, char *argv[])
   HTNet_addAfter(request_terminator, NULL, NULL, HT_ALL, HT_FILTER_LAST);
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
-  factory = bonobo_generic_factory_new_multi("ntl_web_browser_factory", make_obj, NULL);
+  factory = bonobo_generic_factory_new_multi("OAFIID:ntl_web_browser_factory:e553fd3e-101d-445d-ae53-a3a59e77fcc9", 
+					     make_obj, NULL);
 
   do {
     bonobo_main();

@@ -8,10 +8,10 @@ INCLUDES =					\
 	$(GNOMEUI_CFLAGS)                       \
 	$(WERROR)
 
-gnorbadir = $(sysconfdir)/CORBA/servers
+oafdir = $(datadir)/oaf
 
-gnorba_DATA =					\
-	nautilus-music-view.goad
+oaf_DATA =					\
+	nautilus-music-view.oafinfo
 
 
 bin_PROGRAMS =					\
@@ -32,4 +32,4 @@ nautilus_music_view_LDFLAGS =			\
 	$(VFS_LIBS)					\
 	$(GNORBA_LIBS)
 
-EXTRA_DIST = nautilus-music-view.goad
+EXTRA_DIST = $(oaf_DATA)

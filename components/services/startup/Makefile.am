@@ -11,10 +11,10 @@ INCLUDES =					\
 	$(GNOMEUI_CFLAGS)                       \
 	$(WERROR)
 
-gnorbadir = $(sysconfdir)/CORBA/servers
+oafdir = $(datadir)/oaf
 
-gnorba_DATA =					\
-	nautilus-service-startup-view.goad
+oaf_DATA =					\
+	nautilus-service-startup-view.oafinfo
 
 
 bin_PROGRAMS =					\
@@ -35,6 +35,6 @@ nautilus_service_startup_view_LDFLAGS =			\
 	$(VFS_LIBS)					\
 	-lrpm						\
 	-lghttp						\
-	$(GNORBA_LIBS)
+	$(OAF_LIBS)
 
-EXTRA_DIST = nautilus-service-startup-view.goad
+EXTRA_DIST = $(oaf_DATA)

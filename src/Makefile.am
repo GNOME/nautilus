@@ -6,7 +6,7 @@ bin_PROGRAMS=nautilus
 
 INCLUDES =\
 	-I$(top_srcdir) -I$(top_builddir) \
-	$(BONOBO_CFLAGS) $(GNORBA_CFLAGS) \
+	$(BONOBO_CFLAGS) $(OAF_CFLAGS) \
 	$(GNOMEUI_CFLAGS) $(GNOMECANVASPIXBUF_INCLUDEDIR) \
 	$(VFS_CFLAGS) \
 	$(XML_CFLAGS) \
@@ -21,7 +21,7 @@ LDADD =\
 	../libnautilus-extensions/libnautilus-extensions.la \
 	../librsvg/librsvg.la \
 	$(BONOBO_LIBS) \
-	$(GNORBA_LIBS) \
+	$(OAF_LIBS) \
 	$(GNOMEUI_LIBS) \
 	$(GNOMECANVASPIXBUF_LIBS) \
 	$(VFS_LIBS) \
@@ -80,8 +80,8 @@ nautilus_SOURCES =\
 
 TESTS=check-nautilus
 
-gnorbadir = $(sysconfdir)/CORBA/servers
-gnorba_DATA =					\
-	nautilus.goad
+oafdir = $(datadir)/oaf
+oaf_DATA =					\
+	nautilus.oafinfo
 
-EXTRA_DIST = nautilus.goad
+EXTRA_DIST = $(oaf_DATA)

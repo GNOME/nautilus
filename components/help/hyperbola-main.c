@@ -1,7 +1,9 @@
-#include "config.h"
 
-#include <libnautilus/libnautilus.h>
-#include <libgnorba/gnorba.h>
+#include <config.h>
+
+#include <libnautilus-extensions/libnautilus-extensions.h>
+#include <gnome.h>
+#include <liboaf/liboaf.h>
 
 /* In hyperbola-nav-tree.c */
 extern BonoboObject *hyperbola_navigation_tree_new(void);
@@ -26,11 +28,11 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, void *closure)
 {
   BonoboObject *retval = NULL;
 
-  if(!strcmp(goad_id, "hyperbola_navigation_tree"))
+  if(!strcmp(goad_id, "OAFIID:hyperbola_navigation_tree:57542ce0-71ff-442d-a764-462c92514234"))
     retval = hyperbola_navigation_tree_new();
-  else if(!strcmp(goad_id, "hyperbola_navigation_index"))
+  else if(!strcmp(goad_id, "OAFIID:hyperbola_navigation_index:0bafadc7-09f1-4f10-8c8e-dad53124fc49"))
     retval = hyperbola_navigation_index_new();
-  else if(!strcmp(goad_id, "hyperbola_navigation_search"))
+  else if(!strcmp(goad_id, "OAFIID:hyperbola_navigation_search:89b2f3b8-4f09-49c8-9a7b-ccb14d034813"))
     retval = hyperbola_navigation_search_new();
 
   if(retval)
@@ -48,12 +50,16 @@ int main(int argc, char *argv[])
   CORBA_ORB orb;
   CORBA_Environment ev;
 
-  CORBA_exception_init(&ev);
-  orb = gnome_CORBA_init_with_popt_table("hyperbola", VERSION, &argc, argv, NULL, 0, NULL,
-					 GNORBA_INIT_SERVER_FUNC, &ev);
+  gnome_init_with_popt_table("hyperbola", VERSION, 
+			     argc, argv,
+			     oaf_popt_options, 0, NULL); 
+  
+  orb = oaf_init (argc, argv);
+
+
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
-  factory = bonobo_generic_factory_new_multi("hyperbola_factory", make_obj, NULL);
+  factory = bonobo_generic_factory_new_multi("OAFIID:hyperbola_factory:02b54c63-101b-4b27-a285-f99ed332ecdb", make_obj, NULL);
 
   do {
     bonobo_main();

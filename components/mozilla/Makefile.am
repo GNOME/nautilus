@@ -12,12 +12,6 @@ INCLUDES = \
 	$(MOZILLA_COMPONENT_CFLAGS) \
 	$(NULL)
 
-gnorbadir = $(sysconfdir)/CORBA/servers
-
-gnorba_DATA = \
-	nautilus-mozilla-content-view.goad \
-	$(NULL)
-
 bin_PROGRAMS =\
 	nautilus-mozilla-content-view \
 	$(NULL)
@@ -32,12 +26,15 @@ nautilus_mozilla_content_view_LDFLAGS = \
 	$(BONOBO_LIBS) \
 	$(GNOMEUI_LIBS) \
 	$(VFS_LIBS) \
-	$(GNORBA_LIBS) \
+	$(OAF_LIBS) \
 	$(MOZILLA_COMPONENT_LDFLAGS) \
 	$(MOZILLA_COMPONENT_LIBS) \
 	$(NULL)
 
-EXTRA_DIST = \
-	nautilus-mozilla-content-view.goad \
+oafdir = $(datadir)/oaf
+
+oaf_DATA = \
+	nautilus-mozilla-content-view.oafinfo \
 	$(NULL)
 
+EXTRA_DIST = $(oaf_DATA) $(NULL)

@@ -31,7 +31,7 @@
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libgnorba/gnorba.h>
+#include <liboaf/liboaf.h>
 #include <limits.h>
 #include <ctype.h>
 #include <libnautilus-extensions/nautilus-background.h>
@@ -132,6 +132,8 @@ do_destroy (GtkObject *obj, Notes *notes)
         g_free (notes->uri);
         g_free (notes);
 
+        puts ("XXX notes: --");
+
         notes_object_count--;
         if (notes_object_count <= 0) {
                 gtk_main_quit();
@@ -144,8 +146,8 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         GtkWidget *vbox;
         Notes *notes;
         NautilusBackground *background;
-        
-        g_return_val_if_fail (strcmp (goad_id, "ntl_notes_view") == 0, NULL);
+
+        g_return_val_if_fail (strcmp (goad_id, "OAFIID:ntl_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185") == 0, NULL);
         
         notes = g_new0 (Notes, 1);
         notes->uri = g_strdup ("");
@@ -177,6 +179,10 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         nautilus_meta_view_frame_set_label (NAUTILUS_META_VIEW_FRAME (notes->view),
                                             _("Notes"));
         
+        puts ("XXX notes: ++");
+
+        printf ("CREATING notes view: 0x%x\n", (unsigned) notes->view);
+
         return BONOBO_OBJECT (notes->view);
 }
 
@@ -185,7 +191,8 @@ main(int argc, char *argv[])
 {
         BonoboGenericFactory *factory;
         CORBA_ORB orb;
-        CORBA_Environment ev;
+
+        puts ("YYY: notes main");
         
 	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
 	 * Unfortunately, this has to be done explicitly for each domain.
@@ -196,19 +203,21 @@ main(int argc, char *argv[])
 	}
 	
         /* initialize CORBA and Bonobo */
-        CORBA_exception_init (&ev);
-        orb = gnome_CORBA_init_with_popt_table ("ntl-notes", VERSION, &argc, argv,
-                                                NULL, 0, NULL,
-                                                GNORBA_INIT_SERVER_FUNC, &ev);
+
+        gnome_init_with_popt_table("ntl-notes", VERSION,
+				   argc, argv,
+				   oaf_popt_options, 0, NULL); 
+	orb = oaf_init (argc, argv);
+
         bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
         
         /* initialize gnome-vfs, etc */
         g_thread_init (NULL);
         gnome_vfs_init ();
         
-        factory = bonobo_generic_factory_new_multi ("ntl_notes_view_factory",
+        factory = bonobo_generic_factory_new_multi ("OAFIID:ntl_notes_view_factory:4b39e388-3ca2-4d68-9f3d-c137ee62d5b0",
                                                     make_notes_view, NULL);
-        
+
         do {
                 bonobo_main();
         } while (notes_object_count > 0);

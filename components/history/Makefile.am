@@ -12,6 +12,6 @@ LDADD=\
 
 ntl_history_view_SOURCES=ntl-history-view.c
 
-goaddir=$(sysconfdir)/CORBA/servers
-goad_DATA=ntl-history-view.goad
-EXTRA_DIST=$(goad_DATA)
+oafdir=$(datadir)/oaf
+oaf_DATA=ntl-history-view.oafinfo
+EXTRA_DIST=$(oaf_DATA)

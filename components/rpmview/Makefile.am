@@ -9,10 +9,10 @@ INCLUDES =					\
 	$(GNOMEUI_CFLAGS)                       \
 	$(WERROR)
 
-gnorbadir = $(sysconfdir)/CORBA/servers
+oafdir = $(datadir)/oaf
 
-gnorba_DATA =					\
-	nautilus-rpm-view.goad
+oaf_DATA =					\
+	nautilus-rpm-view.oafinfo
 
 
 bin_PROGRAMS =					\
@@ -32,6 +32,6 @@ nautilus_rpm_view_LDFLAGS =			\
 	$(GNOMEUI_LIBS)					\
 	-lrpm						\
 	$(VFS_LIBS)					\
-	$(GNORBA_LIBS)
+	$(OAF_LIBS)
 
-EXTRA_DIST = nautilus-rpm-view.goad
+EXTRA_DIST = $(oaf_DATA)
