@@ -182,15 +182,17 @@ enum {
 
 char *text_labels[LAST_LABEL];
 
-int installer_debug = 0;
+/* FIXME -- CHANGE THIS BEFORE RELEASING! */
+int installer_debug = 1;
+char *installer_server = "checkpoint.eazel.com";
+int installer_server_port = 8888;
+
 int installer_spam = 0;		/* dump logging stuff to stderr (automatically adds --debug) */
 int installer_test = 0;
 int installer_force = 0;
 int installer_local = 0;
 char *installer_package = NULL;
 int installer_dont_ask_questions = 0;
-char *installer_server =NULL;
-int installer_server_port = 0;
 char *installer_cgi_path = NULL;
 char *installer_tmpdir = "/tmp";
 char *installer_homedir = NULL;
