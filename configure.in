@@ -478,6 +478,32 @@ XML_CFLAGS=`$XML_CONFIG --cflags`
 AC_SUBST(XML_LIBS)
 AC_SUBST(XML_CFLAGS)
 
+#BUILD_GNOME_DB2HTML3=yes
+if test $BUILD_GNOME_DB2HTML3 = yes; then
+	AC_PATH_PROG(XML2_CONFIG,xml2-config,no)
+	if test x$XML2_CONFIG = xno; then
+  	    AC_MSG_ERROR(Couldn't find xml2-config please install the libxml2 package)
+	fi
+
+	XML2_LIBS=`$XML2_CONFIG --libs`
+	XML2_CFLAGS=`$XML2_CONFIG --cflags`
+	AC_SUBST(XML2_LIBS)
+	AC_SUBST(XML2_CFLAGS)
+
+	AC_PATH_PROG(XSLT_CONFIG,xslt-config,no)
+	if test x$XSLT_CONFIG = xno; then
+	  AC_MSG_ERROR(Couldn't find xslt-config please install the libxslt package)
+	fi
+
+	XSLT_LIBS=`$XSLT_CONFIG --libs`
+	XSLT_CFLAGS=`$XSLT_CONFIG --cflags`
+	AC_SUBST(XSLT_LIBS)
+	AC_SUBST(XSLT_CFLAGS)
+
+	GNOME_DB2HTML3_FLAG=-DUSE_GNOME_DB2HTML3
+	AC_SUBST(GNOME_DB2HTML3_FLAG)
+fi
+
 dnl ====================================
 dnl = Begin tests for scrollkeeper
 dnl ====================================
@@ -812,6 +838,12 @@ components/history/Makefile
 components/help/Makefile
 components/help/converters/Makefile
 components/help/converters/gnome-db2html2/Makefile
+components/help/converters/gnome-db2html3/Makefile
+components/help/converters/gnome-db2html3/docbook/Makefile
+components/help/converters/gnome-db2html3/docbook/common/Makefile
+components/help/converters/gnome-db2html3/docbook/html/Makefile
+components/help/converters/gnome-db2html3/docbook/lib/Makefile
+components/help/converters/gnome-db2html3/gnome-customization/Makefile
 components/help/converters/gnome-info2html2/Makefile
 components/help/converters/gnome-man2html2/Makefile
 components/image-viewer/Makefile
