@@ -26,9 +26,17 @@
 #include <config.h>
 #endif
 
-#include <gnome.h>
-
 #include "explorer-location-bar.h"
+
+#include <gtk/gtklabel.h>
+#include <gtk/gtkentry.h>
+#include <gtk/gtkeventbox.h>
+#include <gtk/gtkdnd.h>
+#include <gtk/gtksignal.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-mime.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-uidefs.h>
 
 #define EXPLORER_DND_URI_LIST_TYPE 	  "text/uri-list"
 #define EXPLORER_DND_TEXT_PLAIN_TYPE 	  "text/plain"

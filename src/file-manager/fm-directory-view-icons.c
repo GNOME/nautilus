@@ -231,9 +231,9 @@ add_to_icon_container (FMDirectoryViewIcons *icon_view,
 	/* Get the current position of this icon from the metadata. */
 	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
 	x_good = nautilus_eat_string_to_int (nautilus_directory_get_file_metadata
-					     (directory, info->name, "x", NULL), &x);
+					     (directory, info->name, "ICON_X", NULL), &x);
 	y_good = nautilus_eat_string_to_int (nautilus_directory_get_file_metadata
-					     (directory, info->name, "y", NULL), &y);
+					     (directory, info->name, "ICON_Y", NULL), &y);
 
 	/* Get the appropriate image for this icon. */
 	image = fm_icon_cache_get_icon (icon_manager, info);
@@ -277,8 +277,8 @@ set_up_base_uri (FMDirectoryViewIcons *icon_view)
 static void
 fm_directory_view_icons_clear (FMDirectoryView *view)
 {
-	char *background_color;
 	GnomeIconContainer *icon_container;
+	char *background_color;
 	
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
 
@@ -289,7 +289,7 @@ fm_directory_view_icons_clear (FMDirectoryView *view)
 
 	/* Set up the background color from the metadata. */
 	background_color = nautilus_directory_get_metadata (fm_directory_view_get_model (view),
-							    "icon_view_background_color",
+							    "ICON_VIEW_BACKGROUND_COLOR",
 							    DEFAULT_BACKGROUND_COLOR);
 	nautilus_background_set_color (nautilus_get_widget_background (GTK_WIDGET (icon_container)),
 				       background_color);
@@ -444,7 +444,7 @@ fm_directory_view_icons_background_changed_cb (NautilusBackground *background,
 
 	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
 	g_assert (background == nautilus_get_widget_background
-			  (GTK_WIDGET (get_icon_container (FM_DIRECTORY_VIEW_ICONS (icon_view)))));
+		  (GTK_WIDGET (get_icon_container (icon_view))));
 
 	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
 	if (directory == NULL)
@@ -452,7 +452,7 @@ fm_directory_view_icons_background_changed_cb (NautilusBackground *background,
 	
 	color_spec = nautilus_background_get_color (background);
 	nautilus_directory_set_metadata (directory,
-					 "icon_view_background_color",
+					 "ICON_VIEW_BACKGROUND_COLOR",
 					 DEFAULT_BACKGROUND_COLOR,
 					 color_spec);
 	g_free (color_spec);
@@ -469,15 +469,15 @@ fm_directory_view_icons_icon_moved_cb (GnomeIconContainer *container,
 	char *x_as_string, *y_as_string;
 
 	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
-	g_assert (container == get_icon_container (FM_DIRECTORY_VIEW_ICONS (icon_view)));
+	g_assert (container == get_icon_container (icon_view));
 	g_assert (icon_data != NULL);
 
 	/* Store the new position of the icon in the metadata. */
 	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
 	x_as_string = g_strdup_printf ("%d", x);
 	y_as_string = g_strdup_printf ("%d", y);
-	nautilus_directory_set_file_metadata (directory, icon_name, "x", NULL, x_as_string);
-	nautilus_directory_set_file_metadata (directory, icon_name, "y", NULL, y_as_string);
+	nautilus_directory_set_file_metadata (directory, icon_name, "ICON_X", NULL, x_as_string);
+	nautilus_directory_set_file_metadata (directory, icon_name, "ICON_Y", NULL, y_as_string);
 	g_free (x_as_string);
 	g_free (y_as_string);
 }

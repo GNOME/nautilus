@@ -42,6 +42,7 @@ static gpointer parent_class; \
 GtkType \
 class_name_in_function_format##_get_type (void) \
 { \
+	GtkType parent_type; \
 	static GtkType type; \
         \
 	if (type == 0) { \
@@ -56,8 +57,9 @@ class_name_in_function_format##_get_type (void) \
 			NULL \
 		}; \
 		\
-		type = gtk_type_unique ((parent_class_type), &info); \
-		parent_class = gtk_type_class ((parent_class_type)); \
+		parent_type = (parent_class_type); \
+		type = gtk_type_unique (parent_type, &info); \
+		parent_class = gtk_type_class (parent_type); \
 	} \
         \
 	return type; \
@@ -71,10 +73,10 @@ class_name_in_function_format##_get_type (void) \
 
 #define NAUTILUS_CALL_PARENT_CLASS(parent_class_cast_macro, signal, parameters) \
 \
-G_STMT_START { \
-	if (parent_class_cast_macro (parent_class)->signal != NULL) \
-		(* parent_class_cast_macro (parent_class)->signal) parameters; \
-} G_STMT_END
+(parent_class_cast_macro (parent_class)->signal == NULL) \
+	? 0 \
+	: (* parent_class_cast_macro (parent_class)->signal) parameters
+
 
 
 #ifndef G_DISABLE_ASSERT

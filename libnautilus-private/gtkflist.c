@@ -2,6 +2,7 @@
 /* File list widget for the Midnight Commander
  *
  * Copyright (C) 1999, 2000 The Free Software Foundation
+ * Copyright (C) 2000 Eazel, Inc.
  *
  * Author: Federico Mena <federico@nuclecu.unam.mx>
  * Modified by Ettore Perazzoli <ettore@gnu.org>
@@ -11,9 +12,17 @@
    native List widget that uses a simple API similiar to the GnomeIconContainer
    one.  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
 #include "gtkflist.h"
 
+#include <gtk/gtkdnd.h>
+#include "nautilus-gtk-macros.h"
+#include "nautilus-background.h"
+
+#define ARRAY_LENGTH(a) (sizeof(a) / sizeof((a)[0]))
 
 enum {
 	ROW_POPUP_MENU,
@@ -24,9 +33,16 @@ enum {
 	LAST_SIGNAL
 };
 
+enum {
+	TARGET_COLOR
+};
 
-static void gtk_flist_class_init (GtkFListClass *class);
-static void gtk_flist_init (GtkFList *flist);
+static GtkTargetEntry gtk_flist_dnd_target_table[] = {
+	{ "application/x-color", 0, TARGET_COLOR }
+};
+
+static void gtk_flist_initialize_class (GtkFListClass *class);
+static void gtk_flist_initialize (GtkFList *flist);
 
 static gint gtk_flist_button_press (GtkWidget *widget, GdkEventButton *event);
 static gint gtk_flist_button_release (GtkWidget *widget, GdkEventButton *event);
@@ -47,46 +63,13 @@ static void gtk_flist_drag_data_received (GtkWidget *widget, GdkDragContext *con
 
 static void gtk_flist_clear (GtkCList *clist);
 
-
-static GtkCListClass *parent_class;
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (GtkFList, gtk_flist, GTK_TYPE_CLIST)
 
 static guint flist_signals[LAST_SIGNAL];
 
-
-/**
- * gtk_flist_get_type:
- * @void: 
- * 
- * Creates the GtkFList class and its type information
- * 
- * Return value: The type ID for GtkFListClass
- **/
-GtkType
-gtk_flist_get_type (void)
-{
-	static GtkType flist_type = 0;
-
-	if (!flist_type) {
-		GtkTypeInfo flist_info = {
-			"GtkFList",
-			sizeof (GtkFList),
-			sizeof (GtkFListClass),
-			(GtkClassInitFunc) gtk_flist_class_init,
-			(GtkObjectInitFunc) gtk_flist_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		flist_type = gtk_type_unique (gtk_clist_get_type (), &flist_info);
-	}
-
-	return flist_type;
-}
-
 /* Standard class initialization function */
 static void
-gtk_flist_class_init (GtkFListClass *class)
+gtk_flist_initialize_class (GtkFListClass *class)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
@@ -95,8 +78,6 @@ gtk_flist_class_init (GtkFListClass *class)
 	object_class = (GtkObjectClass *) class;
 	widget_class = (GtkWidgetClass *) class;
 	clist_class = (GtkCListClass *) class;
-
-	parent_class = gtk_type_class (gtk_clist_get_type ());
 
 	flist_signals[ROW_POPUP_MENU] =
 		gtk_signal_new ("row_popup_menu",
@@ -159,12 +140,19 @@ gtk_flist_class_init (GtkFListClass *class)
 
 /* Standard object initialization function */
 static void
-gtk_flist_init (GtkFList *flist)
+gtk_flist_initialize (GtkFList *flist)
 {
 	flist->anchor_row = -1;
 
 	/* GtkCList does not specify pointer motion by default */
 	gtk_widget_add_events (GTK_WIDGET (flist), GDK_POINTER_MOTION_MASK);
+
+	/* Get ready to accept some dragged stuff. */
+	gtk_drag_dest_set (GTK_WIDGET (flist),
+			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
+			   gtk_flist_dnd_target_table,
+			   ARRAY_LENGTH (gtk_flist_dnd_target_table),
+			   GDK_ACTION_COPY);
 }
 
 static gboolean
@@ -250,7 +238,7 @@ gtk_flist_button_press (GtkWidget *widget, GdkEventButton *event)
 	retval = FALSE;
 
 	if (event->window != clist->clist_window)
-		return (* GTK_WIDGET_CLASS (parent_class)->button_press_event) (widget, event);
+		return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_press_event, (widget, event));
 
 	on_row = gtk_clist_get_selection_info (clist, event->x, event->y, &row, &col);
 
@@ -344,7 +332,7 @@ gtk_flist_button_release (GtkWidget *widget, GdkEventButton *event)
 	retval = FALSE;
 
 	if (event->window != clist->clist_window)
-		return (* GTK_WIDGET_CLASS (parent_class)->button_release_event) (widget, event);
+		return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_release_event, (widget, event));
 
 	on_row = gtk_clist_get_selection_info (clist, event->x, event->y, &row, &col);
 
@@ -385,7 +373,7 @@ gtk_flist_motion (GtkWidget *widget, GdkEventMotion *event)
 	clist = GTK_CLIST (widget);
 
 	if (event->window != clist->clist_window)
-		return (* GTK_WIDGET_CLASS (parent_class)->motion_notify_event) (widget, event);
+		return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, motion_notify_event, (widget, event));
 
 	if (!((flist->dnd_press_button == 1 && (event->state & GDK_BUTTON1_MASK))
 	      || (flist->dnd_press_button == 2 && (event->state & GDK_BUTTON2_MASK))))
@@ -441,7 +429,7 @@ gtk_flist_drag_end (GtkWidget *widget, GdkDragContext *context)
 /* We override the drag_data_get signal to do nothing */
 static void
 gtk_flist_drag_data_get (GtkWidget *widget, GdkDragContext *context,
-				     GtkSelectionData *data, guint info, guint time)
+			 GtkSelectionData *data, guint info, guint time)
 {
 	/* nothing */
 }
@@ -456,7 +444,7 @@ gtk_flist_drag_leave (GtkWidget *widget, GdkDragContext *context, guint time)
 /* We override the drag_motion signal to do nothing */
 static gboolean
 gtk_flist_drag_motion (GtkWidget *widget, GdkDragContext *context,
-				   gint x, gint y, guint time)
+		       gint x, gint y, guint time)
 {
 	return FALSE;
 }
@@ -464,18 +452,26 @@ gtk_flist_drag_motion (GtkWidget *widget, GdkDragContext *context,
 /* We override the drag_drop signal to do nothing */
 static gboolean
 gtk_flist_drag_drop (GtkWidget *widget, GdkDragContext *context,
-				 gint x, gint y, guint time)
+		     gint x, gint y, guint time)
 {
 	return FALSE;
 }
 
-/* We override the drag_data_received signal to do nothing */
+/* We override the drag_data_received signal to accept colors. */
 static void
 gtk_flist_drag_data_received (GtkWidget *widget, GdkDragContext *context,
-					  gint x, gint y, GtkSelectionData *data,
-					  guint info, guint time)
+			      gint x, gint y, GtkSelectionData *data,
+			      guint info, guint time)
 {
-	/* nothing */
+	switch (info) {
+	case TARGET_COLOR:
+		nautilus_background_receive_dropped_color
+			(nautilus_get_widget_background (widget),
+			 widget, x, y, data);
+		break;
+	default:
+		g_assert_not_reached ();
+	}
 }
 
 /* Our handler for the clear signal of the clist.  We have to reset the anchor
@@ -492,8 +488,7 @@ gtk_flist_clear (GtkCList *clist)
 	flist = GTK_FLIST (clist);
 	flist->anchor_row = -1;
 
-	if (parent_class->clear)
-		(* parent_class->clear) (clist);
+	NAUTILUS_CALL_PARENT_CLASS (GTK_CLIST_CLASS, clear, (clist));
 }
 
 

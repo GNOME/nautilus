@@ -21,9 +21,10 @@
    Author: Ettore Perazzoli <ettore@gnu.org>
 */
 
-#ifndef _EXPLORER_LOCATION_BAR_H
-#define _EXPLORER_LOCATION_BAR_H
-#include <gnome.h>
+#ifndef EXPLORER_LOCATION_BAR_H
+#define EXPLORER_LOCATION_BAR_H
+
+#include <gtk/gtkhbox.h>
 
 #define EXPLORER_LOCATION_BAR(obj) \
   GTK_CHECK_CAST (obj, explorer_location_bar_get_type (), ExplorerLocationBar)
@@ -54,4 +55,4 @@ void		 explorer_location_bar_set_uri_string
 						 (ExplorerLocationBar *bar,
 						  const gchar *uri_string);
 
-#endif /* _EXPLORER_LOCATION_BAR_H */
+#endif /* EXPLORER_LOCATION_BAR_H */

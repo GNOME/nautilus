@@ -1,5 +1,41 @@
 2000-01-19  Darin Adler  <darin@eazel.com>
 
+	The list view now has a background color just like the
+	icon view does. Some more code could be saved, but that's
+	a refactoring for another time.
+
+	* libnautilus/gtkflist.c: Added support for receiving dragged
+	colors to set the background of the list.
+
+	* src/file-manager/fm-directory-view-list.c:
+	(fm_directory_view_list_initialize_class):
+	(fm_directory_view_list_clear):
+	(fm_directory_view_list_background_changed_cb): Added code to load
+	and save the background color from metadata.
+
+	* libnautilus/nautilus-background.c: Put the background color in
+	all the bg and base colors in the style instead of putting it only
+	in bg[GTK_STATE_NORMAL].
+
+	* libnautilus/nautilus-gtk-macros.h:
+	(NAUTILUS_DEFINE_CLASS_BOILERPLATE): Make sure that the macro only
+	evaluates the parent_class_type argument once, like it says in the
+	comment. (NAUTILUS_CALL_PARENT_CLASS): Fix this macro so it can
+	be used in places where an expression is expected.
+
+	* RENAMING: Added this file to list name changes we are
+	planning for the future.
+
+	* libnautilus/gtkflist.h: libnautilus/gtkflist.c:
+	src/explorer-location-bar.h: src/explorer-location-bar.c:
+	Minimized includes.
+
+	* src/ntl-index-panel.c:
+	src/file-manager/fm-directory-view-icons.c: Fixed some comments
+	and formatting.
+
+2000-01-19  Darin Adler  <darin@eazel.com>
+
 	Icon positions are now written out when you drag an icon,
 	and read in when you visit a directory. But the code then
 	immediately re-lays out the icons, so the position is lost!

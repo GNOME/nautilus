@@ -9,9 +9,7 @@
 #ifndef GTKFLIST_H
 #define GTKFLIST_H
 
-#include "panel.h"
 #include <gtk/gtkclist.h>
-
 
 /* It is sad that we have to do this.  GtkCList's behavior is so broken that we
  * have to override all the event handlers and implement our own selection

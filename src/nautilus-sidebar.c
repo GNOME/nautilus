@@ -24,6 +24,10 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "ntl-index-panel.h"
 
 #include "ntl-meta-view.h"
@@ -65,15 +69,12 @@ static GdkFont *select_font(const gchar *text_to_format, gint width, const gchar
 
 /* drag and drop definitions */
 
-enum dnd_targets_enum
-{
-	TARGET_STRING,
+enum {
 	TARGET_COLOR,
 	TARGET_URI_LIST
 };
 
-static GtkTargetEntry index_dnd_target_table[] = 
-{
+static GtkTargetEntry index_dnd_target_table[] = {
 	{ "application/x-color", 0, TARGET_COLOR },
 	{ "text/uri-list",  0, TARGET_URI_LIST }
 };
@@ -198,9 +199,7 @@ nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 			break;
   		
       
-			/* handle colors - for now, just use a simple color, and don't save it in the meta-data yet */
-      
-		case TARGET_COLOR:
+ 		case TARGET_COLOR:
 			/* Let the background change based on the dropped color. */
 			nautilus_background_receive_dropped_color
 				(nautilus_get_widget_background (widget),
@@ -341,7 +340,7 @@ nautilus_index_panel_background_changed (NautilusIndexPanel *index_panel)
 	background = nautilus_get_widget_background (GTK_WIDGET (index_panel));
 	color_spec = nautilus_background_get_color (background);
 	nautilus_directory_set_metadata (index_panel->details->directory,
-					 "index_panel_background_color",
+					 "INDEX_PANEL_BACKGROUND_COLOR",
 					 DEFAULT_BACKGROUND_COLOR,
 					 color_spec);
 	g_free (color_spec);
@@ -372,7 +371,7 @@ nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const gchar* 
 
 	/* Set up the background color from the metadata. */
 	background_color = nautilus_directory_get_metadata (directory,
-							    "index_panel_background_color",
+							    "INDEX_PANEL_BACKGROUND_COLOR",
 							    DEFAULT_BACKGROUND_COLOR);
 	nautilus_background_set_color (background, background_color);
 	g_free (background_color);

@@ -277,6 +277,8 @@ nautilus_background_set_widget_style (NautilusBackground *background,
 {
 	GtkStyle *style;
 	char *start_color_spec;
+	GdkColor color;
+	int i;
 	
 	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
 	g_return_if_fail (GTK_IS_WIDGET (widget));
@@ -294,7 +296,11 @@ nautilus_background_set_widget_style (NautilusBackground *background,
 	/* Set up the colors in the style. */
 	start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
 	nautilus_gdk_color_parse_with_white_default
-		(start_color_spec, &style->bg[GTK_STATE_NORMAL]);
+		(start_color_spec, &color);
+	for (i = 0; i <= 5; i++) {
+		style->bg[i] = color;
+		style->base[i] = color;
+	}
 	g_free (start_color_spec);
 	
 	/* Put the style in the widget. */

@@ -31,12 +31,15 @@
 #include <libgnome/gnome-i18n.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/gtkflist.h>
+#include <libnautilus/nautilus-background.h>
 
 struct _FMDirectoryViewListDetails
 {
 	FMDirectoryViewSortType sort_type;
 	gboolean sort_reversed;
 };
+
+#define DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
 
 
 /* forward declarations */
@@ -51,17 +54,20 @@ static void flist_activate_cb 			    (GtkFList *ignored,
 			       	 		     gpointer entry_data,
 			       	 		     gpointer data);
 static void flist_selection_changed_cb 	  	    (GtkFList *flist, gpointer data);
-static void fm_directory_view_list_initialize_class (gpointer klass);
-static void fm_directory_view_list_initialize 	    (gpointer object, gpointer klass);
-static void fm_directory_view_list_destroy 	    (GtkObject *object);
 static void fm_directory_view_list_add_entry 	    (FMDirectoryView *view, 
 				 		     GnomeVFSFileInfo *info);
-static void fm_directory_view_list_begin_adding_entries 
+static void fm_directory_view_list_background_changed_cb
+                                                    (NautilusBackground *background,
+						     FMDirectoryViewList *list_view);
+static void fm_directory_view_list_begin_adding_entries
 						    (FMDirectoryView *view);
 static void fm_directory_view_list_clear 	    (FMDirectoryView *view);
+static GList *fm_directory_view_list_get_selection  (FMDirectoryView *view);
+static void fm_directory_view_list_initialize 	    (gpointer object, gpointer klass);
+static void fm_directory_view_list_initialize_class (gpointer klass);
+static void fm_directory_view_list_destroy 	    (GtkObject *object);
 static void fm_directory_view_list_done_adding_entries 
 						    (FMDirectoryView *view);
-static GList * fm_directory_view_list_get_selection (FMDirectoryView *view);
 static GtkFList *get_flist 			    (FMDirectoryViewList *list_view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryViewList, fm_directory_view_list, FM_TYPE_DIRECTORY_VIEW);
@@ -211,6 +217,12 @@ create_flist (FMDirectoryViewList *list_view)
 			    "click_column",
 			    column_clicked_cb,
 			    list_view);
+
+	gtk_signal_connect (GTK_OBJECT (nautilus_get_widget_background (GTK_WIDGET (flist))),
+			    "changed",
+			    GTK_SIGNAL_FUNC (fm_directory_view_list_background_changed_cb),
+			    list_view);
+
 	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (flist));
 
 	gtk_widget_show (GTK_WIDGET (flist));
@@ -288,9 +300,23 @@ get_flist (FMDirectoryViewList *list_view)
 static void
 fm_directory_view_list_clear (FMDirectoryView *view)
 {
+	GtkFList *flist;
+	char *background_color;
+
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view));
 
-	gtk_clist_clear (GTK_CLIST (get_flist (FM_DIRECTORY_VIEW_LIST (view))));
+	flist = get_flist (FM_DIRECTORY_VIEW_LIST (view));
+
+	/* Clear away the existing list items. */
+	gtk_clist_clear (GTK_CLIST (flist));
+
+	/* Set up the background color from the metadata. */
+	background_color = nautilus_directory_get_metadata (fm_directory_view_get_model (view),
+							    "LIST_VIEW_BACKGROUND_COLOR",
+							    DEFAULT_BACKGROUND_COLOR);
+	nautilus_background_set_color (nautilus_get_widget_background (GTK_WIDGET (flist)),
+				       background_color);
+	g_free (background_color);
 }
 
 static void
@@ -325,4 +351,25 @@ fm_directory_view_list_get_selection (FMDirectoryView *view)
 	return gtk_flist_get_selection (get_flist (FM_DIRECTORY_VIEW_LIST (view)));
 }
 
+static void
+fm_directory_view_list_background_changed_cb (NautilusBackground *background,
+					      FMDirectoryViewList *list_view)
+{
+	NautilusDirectory *directory;
+	char *color_spec;
 
+	g_assert (FM_IS_DIRECTORY_VIEW_LIST (list_view));
+	g_assert (background == nautilus_get_widget_background
+		  (GTK_WIDGET (get_flist (list_view))));
+
+	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (list_view));
+	if (directory == NULL)
+		return;
+	
+	color_spec = nautilus_background_get_color (background);
+	nautilus_directory_set_metadata (directory,
+					 "LIST_VIEW_BACKGROUND_COLOR",
+					 DEFAULT_BACKGROUND_COLOR,
+					 color_spec);
+	g_free (color_spec);
+}
