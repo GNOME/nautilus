@@ -31,6 +31,7 @@
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-choosing.h"
 #include "nautilus-stock-dialogs.h"
+#include "nautilus-string.h"
 #include "nautilus-view-identifier.h"
 #include <gtk/gtkclist.h>
 #include <gtk/gtkframe.h>
@@ -89,8 +90,15 @@ typedef struct {
  */
 #define NAME_COLUMN_INITIAL_WIDTH	 200
 
-/* Progamr name of the mime type capplet */
+/* Program name of the mime type capplet */
 #define FILE_TYPES_CAPPLET_NAME 	"file-types-capplet"
+
+/* This number controls a maximum character count for a file name that is
+ * displayed as part of a dialog (beyond this it will be truncated). 
+ * It's fairly arbitrary -- big enough to allow most "normal" names to display 
+ * in full, but small enough to prevent the dialog from getting insanely wide.
+ */
+#define MAX_DISPLAYED_FILE_NAME_LENGTH 40
 
 /* Forward declarations as needed */
 static gboolean program_file_pair_is_default_for_file_type 	 (ProgramFilePair *pair);
@@ -244,6 +252,22 @@ program_file_pair_get_short_status_text (ProgramFilePair *pair)
 }
 
 static char *
+get_file_name_for_display (NautilusFile *file)
+{
+	char *full_name;
+	char *truncated_name;
+
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	full_name = nautilus_file_get_name (file);
+	truncated_name = nautilus_str_middle_truncate
+		(full_name, MAX_DISPLAYED_FILE_NAME_LENGTH);
+	g_free (full_name);
+
+	return truncated_name;
+}
+
+static char *
 program_file_pair_get_long_status_text (ProgramFilePair *pair)
 {
 	char *file_type;
@@ -253,7 +277,7 @@ program_file_pair_get_long_status_text (ProgramFilePair *pair)
 
 	file_type = nautilus_file_get_string_attribute_with_default (pair->file, "type");
 	supertype = get_supertype_from_file (pair->file);
-	file_name = nautilus_file_get_name (pair->file);
+	file_name = get_file_name_for_display (pair->file);
 
 	switch (pair->status) {
 	default:
@@ -954,7 +978,7 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 	clist = nautilus_program_chooser_get_clist (program_chooser);
 
 	file_type = nautilus_file_get_string_attribute_with_default (file, "type");
-	file_name = nautilus_file_get_name (file);
+	file_name = get_file_name_for_display (file);
 
 	pair = get_selected_program_file_pair (program_chooser);
 	if (pair == NULL) {
@@ -1229,7 +1253,7 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	file_name = nautilus_file_get_name (file);
+	file_name = get_file_name_for_display (file);
 
 	switch (action_type) {
 	case GNOME_VFS_MIME_ACTION_TYPE_APPLICATION:
@@ -1455,7 +1479,7 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 	char *dialog_title;
 	GnomeDialog *dialog;
 
-	file_name = nautilus_file_get_name (file);
+	file_name = get_file_name_for_display (file);
 
 	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
 		unavailable_message = g_strdup_printf ("No viewers are available for \"%s\".", file_name);		

@@ -82,6 +82,7 @@ struct NautilusSidebarTitleDetails {
 	GtkWidget		*notes;
 
 	int			shadow_offset;
+	gboolean		determined_icon;
 };
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSidebarTitle, nautilus_sidebar_title, gtk_vbox_get_type ())
@@ -359,11 +360,13 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 {
 	GdkPixbuf *pixbuf;
 	char *uri, *icon_path;
+	gboolean leave_pixbuf_unchanged;
 	
 	/* FIXME bugzilla.eazel.com 5043: currently, components can't specify their own sidebar icon.  This
 	  needs to be added to the framework, but for now we special-case some
 	  important ones here */
-	
+
+	leave_pixbuf_unchanged = FALSE;
 	uri = NULL;
 	icon_path = NULL;
 	if (sidebar_title->details->file) {
@@ -379,7 +382,8 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 	} else if (nautilus_istr_has_prefix (uri, "hardware:")) {
 		icon_path = nautilus_theme_get_image_path ("computer.svg");
 	}
-	
+
+	pixbuf = NULL;
 	if (icon_path != NULL) {
 		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_path, NULL, NAUTILUS_ICON_SIZE_LARGE, TRUE);
 	} else if (nautilus_icon_factory_is_icon_ready_for_file (sidebar_title->details->file)) {
@@ -387,14 +391,26 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 								    "accept",
 								    NAUTILUS_ICON_SIZE_LARGE,
 								    TRUE);
-	} else {
-		pixbuf = NULL;
+	} else if (sidebar_title->details->determined_icon) {
+		/* We used to know the icon for this file, but now the file says it isn't
+		 * ready. This means that some file info has been invalidated, which
+		 * doesn't necessarily mean that the previously-determined icon is
+		 * wrong (in fact, in practice it usually doesn't mean that). Keep showing
+		 * the one we last determined for now.
+		 */
+		 leave_pixbuf_unchanged = TRUE;
 	}
-
+	
 	g_free (uri);	
 	g_free (icon_path);
-	
-	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (sidebar_title->details->icon), pixbuf);
+
+	if (pixbuf != NULL) {
+		sidebar_title->details->determined_icon = TRUE;
+	}
+
+	if (!leave_pixbuf_unchanged) {
+		nautilus_image_set_pixbuf (NAUTILUS_IMAGE (sidebar_title->details->icon), pixbuf);
+	}
 }
 
 static void
@@ -652,6 +668,7 @@ nautilus_sidebar_title_set_file (NautilusSidebarTitle *sidebar_title,
 	if (file != sidebar_title->details->file) {
 		release_file (sidebar_title);
 		sidebar_title->details->file = file;
+		sidebar_title->details->determined_icon = FALSE;
 		nautilus_file_ref (sidebar_title->details->file);
 	
 		/* attach file */

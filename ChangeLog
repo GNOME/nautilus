@@ -1,3 +1,32 @@
+2001-02-27  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 7096 ("Open with Other" dialog doesn't truncate
+	really long file names)
+
+	Fixed bug 7108 (icon in sidebar vanishes & reappears at load time)
+
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(get_file_name_for_display): New function, returns a truncated
+	copy of the file name.
+	(program_file_pair_get_long_status_text),
+	(run_program_configurator_callback),
+	(nautilus_program_chooser_new),
+	(nautilus_program_chooser_show_no_choices_message):
+	Use truncated file name whenever file name is displayed.
+	
+	* src/nautilus-sidebar-title.c: 
+	Added "determined_icon" boolean to Details struct.
+	(nautilus_sidebar_title_set_file): set determined_icon to
+	FALSE when new file comes along.
+	(update_icon): set determined_icon to TRUE when any non-NULL
+	pixbuf is determined for this file. Only check
+	nautilus_icon_factory_icon_is_ready_for_file () if 
+	determined_icon is FALSE, to avoid the icon vanishing
+	temporarily because someone invalidated some NautilusFile
+	attributes.
+
 2001-02-27  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
