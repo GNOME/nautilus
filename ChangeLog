@@ -1,3 +1,15 @@
+2000-08-19  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/tree/nautilus-tree-model.c: (report_node_added,
+	report_node_changed): Create the NautilusDirectory for a node when
+	and if we discover it is a directory.
+	* components/tree/nautilus-tree-node.c:
+	(nautilus_tree_node_destroy, nautilus_tree_node_new): Don't
+	automatically create a NautilusDirectory; unref the
+	NautilusDirectory only if present.
+	* components/tree/nautilus-tree-view.c: Remove gratuitous include
+	of nautilus-directory.h
+
 2000-08-19  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar-tabs.c: (draw_or_layout_all_tabs):

@@ -444,7 +444,11 @@ report_node_added (NautilusTreeModel *model,
 	NautilusTreeNode *parent_node;
 
 	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
-	
+
+	if (node->details->directory == NULL && nautilus_file_is_directory (node->details->file)) {
+		node->details->directory = nautilus_directory_get (uri);
+	}
+
 	if (g_hash_table_lookup (model->details->uri_to_node_map, uri) == NULL) {
 		parent_uri = uri_get_parent_text (uri);
 
@@ -482,6 +486,14 @@ report_node_changed (NautilusTreeModel *model,
 	NautilusTreeNode *parent_node;
 
 	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
+
+	if (node->details->directory == NULL && nautilus_file_is_directory (node->details->file)) {
+		node->details->directory = nautilus_directory_get (uri);
+	}
+
+	/* FIXME: if the node is no longer a directory, we should free
+           disconnect from it's NautilusDirectory and unref it; need
+           to figure out how to do this safely) */
 	
 	if (g_hash_table_lookup (model->details->uri_to_node_map, uri) == NULL) {
 		/* Actually added, go figure */
