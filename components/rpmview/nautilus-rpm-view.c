@@ -678,6 +678,7 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	}
 	if (is_installed != 0) {
 		gtk_widget_show (rpm_view->details->package_uninstall_button);
+                gtk_widget_show (rpm_view->details->package_verify_button);
         } else {
                 gtk_widget_hide (rpm_view->details->package_uninstall_button);
                 gtk_widget_hide (rpm_view->details->package_verify_button);

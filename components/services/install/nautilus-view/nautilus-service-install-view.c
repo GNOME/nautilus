@@ -787,7 +787,7 @@ dig_up_errors (const PackageData *package, GString *messages)
 
 	switch (package->status) {
 	case PACKAGE_DEPENDENCY_FAIL:
-		g_string_sprintfa (messages, _("%s %s: failed dependency check\n"), package->name, package->version);
+		g_string_sprintfa (messages, _("%s %s: would not work anymore\n"), package->name, package->version);
 		break;
 	case PACKAGE_CANNOT_OPEN:
 		g_string_sprintfa (messages, _("%s %s: couldn't find this package\n"), package->name, package->version);
@@ -796,10 +796,11 @@ dig_up_errors (const PackageData *package, GString *messages)
 		g_string_sprintfa (messages, _("%s %s: source package (not supported)\n"), package->name, package->version);
 		break;
 	case PACKAGE_BREAKS_DEPENDENCY:
-		g_string_sprintfa (messages, _("%s %s: would break other dependencies\n"), package->name, package->version);
+		g_string_sprintfa (messages, _("%s %s: would break other installed packages\n"),
+				   package->name, package->version);
 		break;
 	case PACKAGE_FILE_CONFLICT:
-		g_string_sprintfa (messages, _("%s %s: conflicts with installd files\n"), package->name, package->version);
+		g_string_sprintfa (messages, _("%s %s: conflicts with installed files\n"), package->name, package->version);
 		break;
 	case PACKAGE_ALREADY_INSTALLED:
 		g_string_sprintfa (messages, _("%s %s: already installed\n"), package->name, package->version);

@@ -36,7 +36,8 @@ nautilus_rpm_view_download_progress_signal (EazelInstallCallback *service,
 					    int amount, 
 					    int total,
 					    NautilusRPMView *rpm_view) 
-{	
+{
+#if 0
 	fprintf (stdout, "DEBUG: Download progress - %s %% %f\r",  name,
 		 (total ? ((float)
 			   ((((float) amount) / total) * 100))
@@ -45,6 +46,7 @@ nautilus_rpm_view_download_progress_signal (EazelInstallCallback *service,
 	if (amount == total && total!=0) {
 		fprintf (stdout, "\n");
 	}
+#endif
 	nautilus_view_report_load_underway (nautilus_rpm_view_get_view (rpm_view));
 }
 
@@ -56,6 +58,7 @@ nautilus_rpm_view_install_progress_signal (EazelInstallCallback *service,
 					   int total_size_completed, int total_size, 
 					   NautilusRPMView *rpm_view) 
 {
+#if 0
 	double progress;
 
 	fprintf (stdout, "DEBUG: Install progress - %s (%d/%d), (%d/%d)b - (%d/%d) %% %f\r", 
@@ -71,10 +74,13 @@ nautilus_rpm_view_install_progress_signal (EazelInstallCallback *service,
 	if (amount == total && total!=0) {
 		fprintf (stdout, "\n");
 	}
-	
+
+#endif	
 	nautilus_view_report_load_underway (nautilus_rpm_view_get_view (rpm_view));
+#if 0
 	progress = total==amount ? 1.0 : (double)(((double)amount)/total);
 	/* nautilus_view_report_load_progress (nautilus_rpm_view_get_view (rpm_view), progress); */
+#endif
 }
 
 static void
@@ -82,13 +88,12 @@ nautilus_rpm_view_download_failed (EazelInstallCallback *service,
 				   const char *name,
 				   NautilusRPMView *rpm_view)
 {
-	fprintf (stdout, "DEBUG: Download of %s FAILED\n", name);
+	trilobite_debug ("Download of %s FAILED", name);
 }
 
 static void
-get_detailed_errors_foreach (const PackageData *pack, char **result)
+get_detailed_errors_foreach (const PackageData *pack, GString *message)
 {
-	char *tmp = *result;;
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
 		break;
@@ -96,48 +101,49 @@ get_detailed_errors_foreach (const PackageData *pack, char **result)
 		break;
 	case PACKAGE_FILE_CONFLICT:
 	case PACKAGE_DEPENDENCY_FAIL:
-		tmp = g_strdup_printf ("%s\n%s %s",
-				       *result, 
-				       pack->name, 
-				       _("would not work anymore"));
-		g_free (*result);
+		g_string_sprintfa (message, _("%s would not work anymore\n"), pack->name);
 		break;
 	case PACKAGE_BREAKS_DEPENDENCY:
+		g_string_sprintfa (message, _("%s would break other installed packages\n"), pack->name);
 		break;
 	case PACKAGE_INVALID:
 		break;
 	case PACKAGE_CANNOT_OPEN:
-		tmp = g_strdup_printf ("%s\n%s %s",
-				       *result, 
-				       pack->name, 
-				       _("is needed, but could not be found"));
-		g_free (*result);
+		g_string_sprintfa (message, _("%s is needed, but could not be found\n"), pack->name);
 		break;
 	case PACKAGE_PARTLY_RESOLVED:
 		break;
 	case PACKAGE_ALREADY_INSTALLED:
-		 tmp = g_strdup_printf ("%s\n%s %s",
-					*result, 
-					pack->name, 
-					_("was already installed"));
-		g_free (*result);
+		g_string_sprintfa (message, _("%s was already installed\n"), pack->name);
 		break;
 	case PACKAGE_RESOLVED:
 		break;
 	}
-	(*result) = tmp;
+	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_errors_foreach, message);
+	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_errors_foreach, message);
+	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, message);
+	g_list_foreach (pack->breaks, (GFunc)get_detailed_errors_foreach, message);
 }
 
 static char*
-get_detailed_errors (const PackageData *pack)
+get_detailed_errors (const PackageData *pack, int installing)
 {
 	char *result;
+	GString *message;
 
-	result = g_strdup_printf (_("%s failed because of the following issue(s):"), pack->name);
-	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_errors_foreach, &result);
-	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_errors_foreach, &result);
-	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, &result);
+	message = g_string_new ("");
+	if (installing) {
+		g_string_sprintfa (message, _("Installing %s failed because of the following issue(s):\n"), pack->name);
+	} else {
+		g_string_sprintfa (message, _("Uninstalling %s failed because of the following issue(s):\n"), pack->name);
+	}
+	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_errors_foreach, message);
+	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_errors_foreach, message);
+	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, message);
+	g_list_foreach (pack->breaks, (GFunc)get_detailed_errors_foreach, message);
 
+	result = message->str;
+	g_string_free (message, FALSE);
 	return result;
 }
 
@@ -148,10 +154,20 @@ nautilus_rpm_view_install_failed (EazelInstallCallback *service,
 {
 	char *detailed;
 
-	detailed = get_detailed_errors (pd);		
+	detailed = get_detailed_errors (pd, 1);
 	gtk_object_set_data (GTK_OBJECT (rpm_view), "details", detailed);
 }
 
+static void
+nautilus_rpm_view_uninstall_failed (EazelInstallCallback *service,
+				    const PackageData *pd,
+				    NautilusRPMView *rpm_view)
+{
+	char *detailed;
+
+	detailed = get_detailed_errors (pd, 0);
+	gtk_object_set_data (GTK_OBJECT (rpm_view), "details", detailed);
+}
 
 static void
 nautilus_rpm_view_dependency_check (EazelInstallCallback *service,
@@ -331,6 +347,15 @@ delete_files (EazelInstallCallback *service,
 	return FALSE;
 }
 
+/* we don't really need this confirmation stage */
+static gboolean
+preflight_check (EazelInstallCallback *cb, const GList *packages,
+		 int total_bytes, int total_packages, void *unused)
+{
+	return TRUE;
+}
+
+
 void 
 nautilus_rpm_view_install_package_callback (GtkWidget *widget,
                                             NautilusRPMView *rpm_view)
@@ -353,6 +378,7 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 
 	gtk_widget_set_sensitive (GTK_WIDGET (rpm_view->details->package_install_button), FALSE);
 	gtk_widget_set_sensitive (GTK_WIDGET (rpm_view->details->package_uninstall_button), FALSE);
+	nautilus_view_report_load_underway (nautilus_rpm_view_get_view (rpm_view));
 
 	pack = (PackageData *) gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
 	g_assert (pack);
@@ -377,6 +403,7 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", nautilus_rpm_view_dependency_check, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "done", nautilus_rpm_view_install_done, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "delete_files", GTK_SIGNAL_FUNC (delete_files), NULL);
+	gtk_signal_connect (GTK_OBJECT (cb), "preflight_check", GTK_SIGNAL_FUNC (preflight_check), NULL);
 
 	eazel_install_callback_install_packages (cb, categories, NULL, &ev);
 
@@ -408,6 +435,7 @@ nautilus_rpm_view_uninstall_package_callback (GtkWidget *widget,
 
 	gtk_widget_set_sensitive (GTK_WIDGET (rpm_view->details->package_install_button), FALSE);
 	gtk_widget_set_sensitive (GTK_WIDGET (rpm_view->details->package_uninstall_button), FALSE);
+	nautilus_view_report_load_underway (nautilus_rpm_view_get_view (rpm_view));
 
 	pack = (PackageData *) gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
 	g_assert (pack);
@@ -423,10 +451,11 @@ nautilus_rpm_view_uninstall_package_callback (GtkWidget *widget,
 	Trilobite_Eazel_Install__set_tmp_dir (eazel_install_callback_corba_objref (cb), "/tmp/eazel-install", &ev);
 	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", nautilus_rpm_view_download_progress_signal, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_progress", nautilus_rpm_view_install_progress_signal, rpm_view);
-	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_failed", nautilus_rpm_view_install_failed, rpm_view);
+	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_failed", nautilus_rpm_view_uninstall_failed, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", nautilus_rpm_view_dependency_check, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "done", nautilus_rpm_view_install_done, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "delete_files", GTK_SIGNAL_FUNC (delete_files), NULL);
+	gtk_signal_connect (GTK_OBJECT (cb), "preflight_check", GTK_SIGNAL_FUNC (preflight_check), NULL);
 	
 	eazel_install_callback_uninstall_packages (cb, categories, NULL, &ev);
 

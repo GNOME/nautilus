@@ -1,3 +1,24 @@
+2000-09-13  Robey Pointer  <robey@eazel.com>
+
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(nautilus_rpm_view_download_progress_signal),
+	(nautilus_rpm_view_install_progress_signal),
+	(nautilus_rpm_view_download_failed), (get_detailed_errors_foreach),
+	(get_detailed_errors), (nautilus_rpm_view_install_failed),
+	(nautilus_rpm_view_uninstall_failed), (preflight_check),
+	(nautilus_rpm_view_install_package_callback),
+	(nautilus_rpm_view_uninstall_package_callback):
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_update_from_uri):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (dig_up_errors):
+
+	Fix annoying fprintf's to debug messages.  Fix error message
+	assembly on failed install/uninstall.  Catch new signals from the
+	install library.  Turn on the verify button after an install.
+	Sync up install error messages between RPM view and the install
+	service a little bit.
+	
 2000-09-14  Josh Barrow  <linuxfan@ionet.net>
 
 	* configure.in:
