@@ -1611,7 +1611,7 @@ destroy (GtkObject *object)
 		gtk_idle_remove (container->details->idle_id);
 	if (container->details->linger_selection_mode_timer_id != 0)
 		gtk_timeout_remove (container->details->linger_selection_mode_timer_id);
-        for (index = 0; index < NAUTILUS_G_N_ELEMENTS (container->details->label_font); index++)
+        for (index = 0; index < NAUTILUS_N_ELEMENTS (container->details->label_font); index++)
         	if (container->details->label_font[index] != NULL)
                 	gdk_font_unref(container->details->label_font[index]);
 	
