@@ -27,11 +27,12 @@
 #include <gtk/gtkwidget.h>
 #include "nautilus-file.h"
 #include "nautilus-background.h"
+#include "libnautilus-extensions/nautilus-icon-container.h"
 
 void nautilus_connect_background_to_file_metadata         (GtkWidget         *widget,
                                                            NautilusFile      *file);
-void nautilus_connect_desktop_background_to_file_metadata (GtkWidget         *widget,
-                                                           NautilusFile      *file);
+void nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *icon_container,
+                                                           NautilusFile		 *file);
 void nautilus_connect_background_to_file_metadata_by_uri  (GtkWidget         *widget,
                                                            const char        *uri);
 gboolean nautilus_file_background_is_set		  (NautilusBackground *background);

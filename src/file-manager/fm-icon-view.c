@@ -823,7 +823,7 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	 * of hardcoding desktop knowledge in here.
 	 */
 	if (FM_IS_DESKTOP_ICON_VIEW (view)) {
-		nautilus_connect_desktop_background_to_file_metadata (icon_container, file);
+		nautilus_connect_desktop_background_to_file_metadata (NAUTILUS_ICON_CONTAINER (icon_container), file);
 	} else {
 		nautilus_connect_background_to_file_metadata (icon_container, file);
 	}
