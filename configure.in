@@ -34,7 +34,7 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	-Wno-sign-compare -Wsign-promo"
 fi
 if test "$GCC" = "yes"; then
-	WERROR="-Werror"
+	WERROR=""
 fi
 AC_SUBST(WERROR)
 
@@ -45,7 +45,7 @@ AC_MSG_ERROR([
 *** is always available from ftp://ftp.gtk.org/.]))
 
 AM_PATH_GNOME(1.0.0,,AC_MSG_ERROR([*** GNOME 1.0.0 or better is
-required.]), gnomecanvaspixbuf gnorba bonobo vfs)
+required.]), gnomecanvaspixbuf bonobo vfs)
 AC_SUBST(GNOMECANVASPIXBUF_LIBS)
 AC_SUBST(GNOMECANVASPIXBUF_INCLUDEDIR)
 AC_SUBST(GNORBA_CFLAGS)
@@ -77,6 +77,21 @@ AC_SUBST(LIBWWW_CFLAGS)
 
 AC_CHECK_LIB(z, gzopen, [Z_LIBS=-lz
 AC_SUBST(Z_LIBS)], AC_MSG_ERROR([*** zlib is required]))
+
+dnl GtkHTML checking
+dnl Currently we cannot do any version check as GtkHTML has not
+dnl been released yet.
+AC_MSG_CHECKING(for GtkHTML)
+if gnome-config --libs gtkhtml > /dev/null 2>&1; then
+    AC_MSG_RESULT(yes)
+    GTKHTML_LIBS=`gnome-config --libs gtkhtml`
+    GTKHTML_CFLAGS=`gnome-config --cflags gtkhtml`
+else
+    AC_MSG_ERROR([Not Found])
+    AC_MSG_ERROR([GtkHTML from the GNOME CVS is required])
+fi
+AC_SUBST(GTKHTML_LIBS)
+AC_SUBST(GTKHTML_CFLAGS)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST

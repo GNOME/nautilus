@@ -9,6 +9,7 @@ INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
 	$(GNOMEUI_CFLAGS)			\
+	$(GTKHTML_CFLAGS)			\
 	$(LIBWWW_CFLAGS)
 
 gnorbadir = $(sysconfdir)/CORBA/servers
@@ -29,7 +30,7 @@ ntl_web_browser_SOURCES =		\
 
 ntl_web_browser_LDFLAGS =				\
 	$(top_builddir)/libnautilus/libnautilus.la	\
-	-lgtkhtml -lgdk_pixbuf				\
+	$(GTKHTML_LIBS)					\
 	$(BONOBO_LIBS)					\
 	$(GNOMEUI_LIBS)					\
 	$(VFS_LIBS)					\
