@@ -1,3 +1,33 @@
+2001-07-23  Andy Hertzfeld  <andy@differnet.com>
+
+	changed thumbnailing to not draw the frame into the
+	thumbnail images themselves anymore; instead, draw it at the time
+	they're loaded. This makes anti-aliased thumbnail variants no
+	longer necessary, so they're no longer used.  There's a cheap test so
+	old thumbnails aren't framed twice.
+	
+	* libnautilus-private/nautilus-thumbnails.c: (make_thumbnail_uri),
+	(make_thumbnails), (pixel_matches_value), (pixbuf_is_framed),
+	(nautilus_thumbnail_load_framed_image):
+	don't frame the thumbnails at creation time; instead, provide
+	a routine to frame them at load time if necessary.
+	
+	* libnautilus-private/nautilus-thumbnails.h:
+	added nautilus_thumbnail_load_framed_image
+	
+	* libnautilus-private/nautilus-icon-factory-private.h:
+	added nautilus_icon_factory_get_thumbnail_frame
+	
+	* libnautilus-private/nautilus-icon-factory.c:
+	(load_thumbnail_frames), (nautilus_icon_factory_initialize),
+	(nautilus_icon_factory_destroy), (icon_theme_changed_callback),
+	(load_icon_from_path), (load_named_icon), (load_specific_icon),
+	(nautilus_icon_factory_get_thumbnail_frame):
+	made it call nautilus_thumbnail_load_framed_image to load
+	thumbnails; made the icon factory load the thumbnail frames so it
+	doesn't have to be done repeatedly; changed how the aa flag is
+	passed around a little, although this could be cleaned up more now.
+	
 2001-07-23 Benedikt Roth  <Benedikt.Roth@gmx.net>
 
 	* src/file-manager/fm-directory-view.c: (real_update_menus):

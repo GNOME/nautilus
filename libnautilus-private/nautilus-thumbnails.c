@@ -157,7 +157,6 @@ make_thumbnail_uri (const char *image_uri, gboolean directory_only, gboolean use
 	char *thumbnail_uri, *thumbnail_path;
 	char *directory_name = g_strdup (image_uri);
 	char *last_slash = strrchr (directory_name, '/');
-	char *dot_pos, *slash_pos;
 	
 	*last_slash = '\0';
 	
@@ -177,6 +176,7 @@ make_thumbnail_uri (const char *image_uri, gboolean directory_only, gboolean use
 	        	
 		char *escaped_uri = gnome_vfs_escape_slashes (directory_name);
 		char *protected_uri = obfuscate_password (escaped_uri);
+		
 		g_free (escaped_uri);
 		thumbnail_path = g_strdup_printf ("%s/.nautilus/thumbnails/%s", g_get_home_dir(), protected_uri);
 		thumbnail_uri = gnome_vfs_get_uri_from_local_path (thumbnail_path);
@@ -206,21 +206,7 @@ make_thumbnail_uri (const char *image_uri, gboolean directory_only, gboolean use
 		char* old_uri = thumbnail_uri;
 		thumbnail_uri = g_strdup_printf ("%s/%s", thumbnail_uri, last_slash + 1);
 		g_free(old_uri);			
-	
-		/* append the anti-aliased suffix if necessary */
-		if (anti_aliased) {
-			char *old_uri = thumbnail_uri;
-			dot_pos = strrchr (thumbnail_uri, '.');
-			slash_pos = strrchr (thumbnail_uri, '/');
-			if (dot_pos && dot_pos > slash_pos) {
-				*dot_pos = '\0';
-				thumbnail_uri = g_strdup_printf ("%s.aa.%s", old_uri, dot_pos + 1);
-			} else {
-				thumbnail_uri = g_strconcat (old_uri, ".aa", NULL);				
-			}
-			g_free (old_uri);
-		}
-		
+			
 		/* append an image suffix if the correct one isn't already present */
 		if (!eel_istr_has_suffix (image_uri, ".png")) {		
 			char *old_uri = thumbnail_uri;
@@ -563,28 +549,12 @@ check_for_thumbnails (void)
 }
 
 /* make_thumbnails is invoked periodically as a timer task to launch a task to make thumbnails */
-
-static GdkPixbuf*
-load_thumbnail_frame (gboolean anti_aliased)
-{
-	char *image_path;
-	GdkPixbuf *frame_image;
-				
-	/* load the thumbnail frame */
-	image_path = nautilus_theme_get_image_path (anti_aliased ? "thumbnail_frame.aa.png" : "thumbnail_frame.png");
-	frame_image = gdk_pixbuf_new_from_file (image_path);
-	g_free (image_path);
-	return frame_image;
-}
-
 static int
 make_thumbnails (gpointer data)
 {
 	NautilusThumbnailInfo *info;
 	GList *next_thumbnail = thumbnails;
-	GdkPixbuf *scaled_image, *framed_image, *thumbnail_image_frame;
-	char *frame_offset_str;
-	int left_offset, top_offset, right_offset, bottom_offset;
+	GdkPixbuf *scaled_image;
 	
 	/* if the queue is empty, there's nothing more to do */
 	if (next_thumbnail == NULL) {
@@ -643,43 +613,18 @@ make_thumbnails (gpointer data)
 			}
 			nautilus_file_unref (file);
 			
-			if (full_size_image != NULL) {				
-				thumbnail_image_frame = load_thumbnail_frame (info->anti_aliased);
-									
+			if (full_size_image != NULL) {													
 				/* scale the content image as necessary */	
 				scaled_image = eel_gdk_pixbuf_scale_down_to_fit (full_size_image, 96, 96);	
 				gdk_pixbuf_unref (full_size_image);
 				
-				/* embed the content image in the frame, if necessary  */
-				if (file_size > SELF_THUMBNAIL_SIZE_THRESHOLD) {
-
-					frame_offset_str = nautilus_theme_get_theme_data ("thumbnails", "FRAME_OFFSETS");
-					if (frame_offset_str != NULL) {
-						sscanf (frame_offset_str," %d , %d , %d , %d %*s",
-							&left_offset, &top_offset, &right_offset, &bottom_offset);
-					} else {
-						/* use nominal values since the info in the theme couldn't be found */
-						left_offset = 3; top_offset = 3;
-						right_offset = 6; bottom_offset = 6;
-					}
-					
-					framed_image = eel_embed_image_in_frame (scaled_image, thumbnail_image_frame,
-										 left_offset, top_offset, right_offset, bottom_offset);
-					g_free (frame_offset_str);
-				
-					gdk_pixbuf_unref (scaled_image);
-					gdk_pixbuf_unref (thumbnail_image_frame);
-				} else {
-					framed_image = scaled_image;
-				}
-				
 				thumbnail_path = gnome_vfs_get_local_path_from_uri (new_thumbnail_uri);
 				if (thumbnail_path == NULL
-				    || !eel_gdk_pixbuf_save_to_file (framed_image, thumbnail_path)) {
+				    || !eel_gdk_pixbuf_save_to_file (scaled_image, thumbnail_path)) {
 					g_warning ("error saving thumbnail %s", thumbnail_path);
 				}
 				g_free (thumbnail_path);
-				gdk_pixbuf_unref (framed_image);
+				gdk_pixbuf_unref (scaled_image);
 			} else {
 				/* gdk-pixbuf couldn't load the image, so trying using ImageMagick */
 				char *temp_str;
@@ -707,3 +652,95 @@ make_thumbnails (gpointer data)
 	
 	return TRUE;  /* we're not done yet */
 }
+
+
+/* Here is  a heuristic compatability routine to determine if a pixbuf already has a frame
+ * around it or not.  
+ *
+ * This only happens with earlier versions of Nautilus using a fixed frame, so we can test for
+ * a few pixels to determine it. This is biased toward being quick and saying yes, since it's not
+ * that big a deal if we're wrong, and it looks better to have no frame than two frame.
+ */
+
+static gboolean
+pixel_matches_value (guchar *pixels, guchar value)
+{
+	guchar *test_pixel;
+
+	test_pixel = pixels;
+	
+	if (*test_pixel++ != value) {
+		return FALSE;
+	}
+	
+	if (*test_pixel++ != value) {
+		return FALSE;
+	}
+	
+	if (*test_pixel++ != value) {
+		return FALSE;
+	}
+	
+	return TRUE;
+}
+
+static gboolean
+pixbuf_is_framed (GdkPixbuf *pixbuf)
+{
+	guchar *pixels;
+	int row_stride;	
+	
+	row_stride = gdk_pixbuf_get_rowstride (pixbuf);
+	pixels = gdk_pixbuf_get_pixels (pixbuf);
+
+	if (!pixel_matches_value (pixels, 255)) {
+		return FALSE;
+	}
+	
+	if (!pixel_matches_value (pixels + row_stride + 4, 0)) {
+		return FALSE;
+	}
+	
+	if (!pixel_matches_value (pixels +  2 * row_stride + 8, 187)) {
+		return FALSE;
+	}
+		
+	return TRUE;
+}
+
+/* routine to load an image from the passed-in path, and then embed it in
+ * a frame if necessary
+ */
+GdkPixbuf * nautilus_thumbnail_load_framed_image (const char *path, gboolean anti_aliased)
+{
+	GdkPixbuf *pixbuf, *framed_image, *thumbnail_image_frame;
+	char *frame_offset_str;
+	int left_offset, top_offset, right_offset, bottom_offset;
+	
+	pixbuf = gdk_pixbuf_new_from_file (path);
+	if (pixbuf_is_framed (pixbuf)) {
+		return pixbuf;
+	}
+	
+	/* the pixbuf isn't framed (i.e., it was made with newer code), so we must embed it in it's frame now */
+	
+	thumbnail_image_frame = nautilus_icon_factory_get_thumbnail_frame (anti_aliased);
+	
+	frame_offset_str = nautilus_theme_get_theme_data ("thumbnails", "FRAME_OFFSETS");
+	if (frame_offset_str != NULL) {
+		sscanf (frame_offset_str," %d , %d , %d , %d %*s",
+			&left_offset, &top_offset, &right_offset, &bottom_offset);
+	} else {
+		/* use nominal values since the info in the theme couldn't be found */
+		left_offset = 3; top_offset = 3;
+		right_offset = 6; bottom_offset = 6;
+	}
+					
+	framed_image = eel_embed_image_in_frame (pixbuf, thumbnail_image_frame,
+						 left_offset, top_offset, right_offset, bottom_offset);
+	g_free (frame_offset_str);
+				
+	gdk_pixbuf_unref (pixbuf);	
+	return framed_image;
+}
+ 

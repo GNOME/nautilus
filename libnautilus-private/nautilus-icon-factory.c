@@ -173,6 +173,10 @@ typedef struct {
 	CircularList recently_used_dummy_head;
 	guint recently_used_count;
         guint sweep_timer;
+
+	/* frames to use for thumbnail icons */
+	GdkPixbuf *thumbnail_frame;
+	GdkPixbuf *thumbnail_frame_aa;
 } NautilusIconFactory;
 
 #define NAUTILUS_ICON_FACTORY(obj) \
@@ -361,6 +365,27 @@ check_recently_used_list (void)
 	g_assert (count == factory->recently_used_count);
 }
 
+/* load the thumbnail frames for both the anti-aliased and non-aa cases */
+static void
+load_thumbnail_frames (NautilusIconFactory *factory)
+{
+	char *image_path;
+	
+	image_path = nautilus_theme_get_image_path ("thumbnail_frame.png");
+	if (factory->thumbnail_frame != NULL) {
+		gdk_pixbuf_unref (factory->thumbnail_frame);
+	}
+	factory->thumbnail_frame = gdk_pixbuf_new_from_file (image_path);
+	g_free (image_path);
+	
+	image_path = nautilus_theme_get_image_path ("thumbnail_frame.aa.png");
+	if (factory->thumbnail_frame_aa != NULL) {
+		gdk_pixbuf_unref (factory->thumbnail_frame_aa);
+	}
+	factory->thumbnail_frame_aa = gdk_pixbuf_new_from_file (image_path);
+	g_free (image_path);
+}
+
 static void
 nautilus_icon_factory_initialize (NautilusIconFactory *factory)
 {
@@ -373,6 +398,8 @@ nautilus_icon_factory_initialize (NautilusIconFactory *factory)
 	/* Empty out the recently-used list. */
 	factory->recently_used_dummy_head.next = &factory->recently_used_dummy_head;
 	factory->recently_used_dummy_head.prev = &factory->recently_used_dummy_head;
+
+	load_thumbnail_frames (factory);
 }
 
 static void
@@ -585,6 +612,13 @@ nautilus_icon_factory_destroy (GtkObject *object)
 
         g_hash_table_destroy (factory->scalable_icons);
         g_hash_table_destroy (factory->icon_cache);
+
+	if (factory->thumbnail_frame != NULL) {
+		gdk_pixbuf_unref (factory->thumbnail_frame);
+	}
+	if (factory->thumbnail_frame_aa != NULL) {
+		gdk_pixbuf_unref (factory->thumbnail_frame_aa);
+	}
 
         g_free (factory->theme_name);
         g_free (factory->default_theme_name);
@@ -1173,7 +1207,8 @@ icon_theme_changed_callback (gpointer user_data)
 	icon_theme = nautilus_theme_get_theme_data ("icons", "icon_theme");
 	
 	set_theme (icon_theme == NULL ? theme_preference : icon_theme);
-	
+
+	load_thumbnail_frames (get_icon_factory ());	
 	g_free (theme_preference);
 	g_free (icon_theme);
 }
@@ -1839,7 +1874,8 @@ static GdkPixbuf *
 load_icon_from_path (const char *path,
 		     guint size_in_pixels,
 		     gboolean custom,
-		     gboolean is_emblem) /* for emblem scaling hack only */
+		     gboolean is_emblem,  /* for emblem scaling hack only */
+		     gboolean optimized_for_aa)
 {
 	/* Get the icon. */
 	if (path == NULL) {
@@ -1848,12 +1884,19 @@ load_icon_from_path (const char *path,
 	if (path_represents_svg_image (path)) {
 		return load_pixbuf_svg (path, size_in_pixels, is_emblem);
 	}
+	
 	/* Custom non-svg icons exist at one size.
 	 * Non-custom icons have their size encoded in their path.
 	 */
 	if (custom && size_in_pixels != NAUTILUS_ICON_SIZE_STANDARD) {
 		return NULL;
 	}
+	
+	/* if it's a thumbnail, frame it if necessary */
+	if (strstr (path, ".thumbnails") != NULL) {
+		return nautilus_thumbnail_load_framed_image (path, optimized_for_aa);
+	}
+	
 	return gdk_pixbuf_new_from_file (path);
 }
 
@@ -1871,7 +1914,8 @@ load_named_icon (const char *name,
 				   size_in_pixels, optimized_for_aa,
 				   details);
 	pixbuf = load_icon_from_path (path, size_in_pixels, FALSE,
-				      eel_str_has_prefix (name, EMBLEM_NAME_PREFIX));
+				      eel_str_has_prefix (name, EMBLEM_NAME_PREFIX),
+				      optimized_for_aa);
 	g_free (path);
 
 	if (pixbuf == NULL) {
@@ -1909,7 +1953,7 @@ load_specific_icon (NautilusScalableIcon *scalable_icon,
 	if (type == REQUEST_PICKY_CUSTOM_ONLY) {
 		/* We don't support custom icons that are not local here. */
 		path = gnome_vfs_get_local_path_from_uri (scalable_icon->uri);
-		pixbuf = load_icon_from_path (path, size_in_pixels, TRUE, FALSE);
+		pixbuf = load_icon_from_path (path, size_in_pixels, TRUE, FALSE, optimized_for_aa);
 		g_free (path);
 	} else {
 		mime_type_icon_name = get_mime_type_icon_without_suffix (scalable_icon->mime_type);
@@ -2519,6 +2563,17 @@ nautilus_icon_factory_get_pixbuf_from_name (const char *icon_name,
 	return pixbuf;
 }
 									  
+GdkPixbuf *
+nautilus_icon_factory_get_thumbnail_frame (gboolean anti_aliased)
+{
+	NautilusIconFactory *icon_factory;
+	icon_factory = get_icon_factory ();
+	if (anti_aliased) {
+		return icon_factory->thumbnail_frame_aa;
+	} else {
+		return icon_factory->thumbnail_frame;
+	}
+}
 
 static gboolean
 embedded_text_rect_usable (ArtIRect embedded_text_rect)

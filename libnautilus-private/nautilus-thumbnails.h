@@ -26,11 +26,14 @@
 #define NAUTILUS_THUMBNAILS_H
 
 #include "nautilus-file.h"
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 /* Returns NULL if there's no thumbnail yet. */
 char *nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased);
 
 gboolean nautilus_thumbnail_has_invalid_thumbnail (NautilusFile *file, gboolean anti_aliased);
+
+GdkPixbuf * nautilus_thumbnail_load_framed_image (const char *path, gboolean anti_aliased);
 
 void nautilus_update_thumbnail_file_renamed (const char *old_file_uri,
 					     const char *new_file_uri);
