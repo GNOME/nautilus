@@ -1,3 +1,21 @@
+2000-05-16  Pavel Cisler  <pavel@eazel.com>
+
+	* src/file-manager/fm-list-view.c: (make_sorted_row_array),
+	(select_row_common), (select_matching_name_callback),
+	(create_list):
+	Fix a problem in my new typeselect code where it would only 
+	work properly if the list was sorted alphabetically to begin with.
+
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_key_press):
+	* src/file-manager/fm-list-view.c: (make_sorted_row_array),
+	(select_row_common), (select_matching_name_callback),
+	(select_previous_next_common), (select_previous_name_callback),
+	(select_next_name_callback), (create_list):
+	Added support for Tab and Shift-Tab selecting the alphabetically
+	next and previous files. Reorganized the code a bit to share more
+	with the typeselect calls.
+
 2000-05-16  Darin Adler  <darin@eazel.com>
 
 	* check-FIXME.pl: Maciej helped me refine the find command so it

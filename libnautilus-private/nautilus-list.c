@@ -1220,6 +1220,14 @@ nautilus_list_key_press (GtkWidget *widget,
 	case GDK_Return:
 		nautilus_list_activate_selected_items (list);
 		break;
+	case GDK_Tab:
+	case GDK_ISO_Left_Tab:
+		if ((event->state & GDK_SHIFT_MASK) == 0) {
+			gtk_signal_emit (GTK_OBJECT (list), list_signals[SELECT_PREVIOUS_NAME]);
+		} else {
+			gtk_signal_emit (GTK_OBJECT (list), list_signals[SELECT_NEXT_NAME]);
+		}
+		break;
 	default:
 		if (nautilus_list_handle_typeahead (list, event->string))
 			return TRUE;

@@ -326,31 +326,151 @@ context_click_background_callback (GtkCList *clist, FMListView *list_view)
 	fm_directory_view_pop_up_background_context_menu (FM_DIRECTORY_VIEW (list_view));
 }
 
-static void
-select_matching_name_callback (GtkWidget *widget, const char *pattern, FMListView *list_view)
+static GPtrArray *
+make_sorted_row_array (GtkWidget *widget)
 {
 	GPtrArray *array;
-	int row_index;
 
-	g_assert (NAUTILUS_IS_LIST (widget));
-	g_assert (gtk_object_get_data (GTK_OBJECT (widget), PENDING_USER_DATA_KEY) == NULL);
-
+	if (GTK_CLIST (widget)->rows == 0)
+		/* empty list, no work */
+		return NULL;
+		
 	/* build an array of rows */
 	array = nautilus_g_ptr_array_new_from_list (GTK_CLIST (widget)->row_list);
 
 	/* sort the array by the names of the NautilusFile objects */
 	nautilus_g_ptr_array_sort (array, compare_rows_by_name, NULL);
 
+	return array;
+}
+
+static void
+select_row_common (GtkWidget *widget, const GPtrArray *array, int array_row_index)
+{
+	GtkCListRow *row;
+	int list_row_index;
+
+	if (array_row_index >= array->len)
+		array_row_index = array->len - 1;
+
+	g_assert (array_row_index >= 0);
+	row = g_ptr_array_index (array, array_row_index);
+
+	g_assert (row != NULL);
+
+	list_row_index = g_list_index (GTK_CLIST (widget)->row_list, row);
+	g_assert (list_row_index >= 0);
+	g_assert (list_row_index < GTK_CLIST (widget)->rows);
+
+	/* select the matching row */
+	nautilus_list_select_row (NAUTILUS_LIST (widget), list_row_index);
+}
+
+static void
+select_matching_name_callback (GtkWidget *widget, const char *pattern, FMListView *list_view)
+{
+	GPtrArray *array;
+	int array_row_index;
+
+	g_assert (NAUTILUS_IS_LIST (widget));
+	g_assert (gtk_object_get_data (GTK_OBJECT (widget), PENDING_USER_DATA_KEY) == NULL);
+		
+	/* build an array of rows, sorted by name */
+	array = make_sorted_row_array (widget);
+	if (array == NULL)
+		return;
+
 	/* Find the row that matches our search pattern or one after the
 	 * closest match if the pattern does not match exactly.
 	 */
-	row_index = nautilus_g_ptr_array_search (array, match_row_name, 
+	array_row_index = nautilus_g_ptr_array_search (array, match_row_name, 
 		(char *)pattern, FALSE);
 
-	/* select the matching row */
-	nautilus_list_select_row (NAUTILUS_LIST (widget), row_index);
+	select_row_common (widget, array, array_row_index);
+
 	g_ptr_array_free (array, TRUE);
 }
+
+static void
+select_previous_next_common (GtkWidget *widget, FMListView *list_view, gboolean next)
+{
+	GPtrArray *array;
+	int array_row_index;
+	int index;
+	int first_selected_row;
+	int last_selected_row;
+
+	g_assert (NAUTILUS_IS_LIST (widget));
+	g_assert (gtk_object_get_data (GTK_OBJECT (widget), PENDING_USER_DATA_KEY) == NULL);
+
+	/* build an array of rows */
+	array = make_sorted_row_array (widget);
+	if (array == NULL)
+		return;
+
+	/* sort the array by the names of the NautilusFile objects */
+	nautilus_g_ptr_array_sort (array, compare_rows_by_name, NULL);
+
+	/* find the index of the first and the last selected row */
+	first_selected_row = -1;
+	last_selected_row = -1;
+	for (index = 0; index < array->len; index++) {
+		if (((GtkCListRow *) g_ptr_array_index (array, index))->state == GTK_STATE_SELECTED) {
+			if (first_selected_row < 0) {
+				first_selected_row = index;
+			}
+			last_selected_row = index;
+		}
+	}
+
+	if (first_selected_row == -1 && last_selected_row == -1) {
+		/* nothing selected, pick the first or the last */
+		if (next) {
+			array_row_index = 0;
+		} else {
+			array_row_index = array->len - 1;
+		}
+	} else if (first_selected_row != last_selected_row) {
+		/* more than one item selected, pick the first or the last selected */
+		if (next) {
+			array_row_index = last_selected_row;
+		} else {
+			array_row_index = first_selected_row;
+		}
+	} else {
+		/* one item selected, pick previous/next item */
+		if (next) {
+			array_row_index = last_selected_row + 1;
+		} else {
+			array_row_index = first_selected_row - 1;
+		}
+	}
+
+ 	if (array_row_index < 0) {
+ 		array_row_index = 0;
+ 	}
+
+ 	if (array_row_index >= array->len) {
+ 		array_row_index = array->len - 1;
+ 	}
+
+	select_row_common (widget, array, array_row_index);
+
+	g_ptr_array_free (array, TRUE);
+}
+
+static void
+select_previous_name_callback (GtkWidget *widget, FMListView *list_view)
+{
+	select_previous_next_common (widget, list_view, TRUE);
+}
+
+static void
+select_next_name_callback (GtkWidget *widget, FMListView *list_view)
+{
+	select_previous_next_common (widget, list_view, FALSE);
+}
+
 
 static NautilusList *
 create_list (FMListView *list_view)
@@ -464,6 +584,14 @@ create_list (FMListView *list_view)
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "select_matching_name",
 			    select_matching_name_callback,
+			    list_view);
+	gtk_signal_connect (GTK_OBJECT (list),
+			    "select_previous_name",
+			    select_previous_name_callback,
+			    list_view);
+	gtk_signal_connect (GTK_OBJECT (list),
+			    "select_next_name",
+			    select_next_name_callback,
 			    list_view);
 
 	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (list));
