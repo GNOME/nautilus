@@ -1,3 +1,16 @@
+2000-09-08  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_forget_activation_uri):
+	Add call to nautilus_directory_async_state_changed.
+	
+	* libnautilus-extensions/nautilus-link.c:
+	(nautilus_link_set_link_uri):
+	Removed private nautilus_directory_async_state_changed call.
+	
+	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):
+	Added middle inital to my name.
+	
 2000-09-08  Mathieu Lacage  <mathieu@eazel.com>
 
 	* components/tree/nautilus-tree-view.c: fix many bugs.

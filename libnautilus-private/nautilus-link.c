@@ -27,7 +27,6 @@
 
 #include "nautilus-directory.h"
 #include "nautilus-directory-notify.h"
-#include "nautilus-directory-private.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
@@ -162,9 +161,8 @@ gboolean
 nautilus_link_set_link_uri (const char *path, const char *link_uri)
 {
 	xmlDocPtr document;
-	char *uri, *file_uri;
+	char *uri;
 	NautilusFile *file;
-	NautilusDirectory *directory;
 
 	document = xmlParseFile (path);
 	if (document == NULL) {
@@ -181,14 +179,9 @@ nautilus_link_set_link_uri (const char *path, const char *link_uri)
 	file = nautilus_file_get (uri);
 	if (file != NULL) {
 		nautilus_file_forget_activation_uri (file);
-		file_uri = nautilus_file_get_uri (file);
-		directory = nautilus_directory_get (file_uri);
-		nautilus_directory_async_state_changed (directory);
-		nautilus_directory_unref (directory);		
 		nautilus_file_changed (file);
 		
 		nautilus_file_unref (file);
-		g_free (file_uri);
 	}
 	g_free (uri);
 	

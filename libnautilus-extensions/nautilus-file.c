@@ -3599,10 +3599,24 @@ nautilus_file_changed (NautilusFile *file)
 void
 nautilus_file_forget_activation_uri (NautilusFile *file)
 {
+	char *file_uri;
+	NautilusDirectory *directory;
+	
 	g_free (file->details->activation_uri);
 	file->details->activation_uri = NULL;
 
 	file->details->got_activation_uri = FALSE;
+
+	/* Inform directory that its state has changed */
+	file_uri = nautilus_file_get_uri (file);
+	if (file_uri != NULL) {
+		directory = nautilus_directory_get (file_uri);
+		if (directory != NULL) {
+			nautilus_directory_async_state_changed (directory);
+			nautilus_directory_unref (directory);
+		}
+		g_free (file_uri);
+	}
 }
 
 /**
