@@ -25,6 +25,7 @@
 
 #include <libgnome/gnome-defs.h>
 #include <libgnomeui/gnome-canvas.h>
+#include "desktop-layout.h"
 
 BEGIN_GNOME_DECLS
 
@@ -88,6 +89,8 @@ struct _DesktopCanvas {
         guint background_update_idle;
 
         GtkWidget *popup;
+
+        DesktopLayout *layout;
 };
 
 struct _DesktopCanvasClass {

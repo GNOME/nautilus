@@ -168,6 +168,8 @@ desktop_canvas_size_allocate(GtkWidget        *widget,
                                        allocation->width,
                                        allocation->height);
 
+        
+        
         if (GTK_WIDGET_CLASS (parent_class)->size_allocate)
 		(* GTK_WIDGET_CLASS (parent_class)->size_allocate) (widget,
                                                                     allocation);

@@ -363,6 +363,7 @@ layout_rows_left_to_right(DesktopLayout *layout,
 void
 desktop_layout_arrange (DesktopLayout *layout, gboolean ignore_position_requests)
 {
-        /* FIXME */
+        /* Testing */
+        layout_rows_left_to_right(layout, FALSE);
 }
 

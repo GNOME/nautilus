@@ -29,8 +29,13 @@
 #include "nautilus.h"
 #include "explorer-location-bar.h"
 #include "ntl-window-private.h"
+#include "ntl-miniicon.h"
+#include <gdk-pixbuf/gdk-pixbuf.h>
+
+static void nautilus_window_realize (GtkWidget *widget);
 
 static int window_count = 0;
+static GnomeAppClass *parent_class = NULL;
 
 /* Stuff for handling the CORBA interface */
 typedef struct {
@@ -296,6 +301,8 @@ nautilus_window_class_init (NautilusWindowClass *klass)
   GtkWidgetClass *widget_class;
   int i;
 
+  parent_class = gtk_type_class(gnome_app_get_type());
+  
   object_class = (GtkObjectClass*) klass;
   object_class->destroy = (void (*)(GtkObject *))nautilus_window_destroy;
   object_class->get_arg = nautilus_window_get_arg;
@@ -338,6 +345,8 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 			   GTK_ARG_READWRITE,
 			   ARG_CONTENT_VIEW);
   impl_Nautilus_ViewWindow_vepv.GNOME_Unknown_epv = gnome_object_get_epv();
+
+  widget_class->realize = nautilus_window_realize;
 }
 
 static gboolean
@@ -616,6 +625,104 @@ nautilus_window_new(const char *app_id)
 {
   return GTK_WIDGET (gtk_object_new (nautilus_window_get_type(), "app_id", app_id, NULL));
 }
+
+static void
+would_be_in_gdk_pixbuf_if_federico_wasnt_stubborn_pixbuf_render(GdkPixbuf  *pixbuf,
+                                                                GdkPixmap **pixmap,
+                                                                GdkBitmap **mask_retval,
+                                                                gint        alpha_threshold)
+{
+        GdkBitmap *mask = NULL;
+
+        g_return_if_fail(pixbuf != NULL);
+
+        /* generate mask */
+        if (gdk_pixbuf_get_has_alpha(pixbuf)) {
+                mask = gdk_pixmap_new(NULL,
+                                      gdk_pixbuf_get_width(pixbuf),
+                                      gdk_pixbuf_get_height(pixbuf),
+                                      1);
+
+                gdk_pixbuf_render_threshold_alpha(pixbuf, mask,
+                                                  0, 0, 0, 0,
+                                                  gdk_pixbuf_get_width(pixbuf),
+                                                  gdk_pixbuf_get_height(pixbuf),
+                                                  alpha_threshold);
+        }
+
+        /* Draw to pixmap */
+
+        if (pixmap != NULL) {
+                GdkGC* gc;
+
+                *pixmap = gdk_pixmap_new(NULL,
+                                         gdk_pixbuf_get_width(pixbuf),
+                                         gdk_pixbuf_get_height(pixbuf),
+                                         gdk_rgb_get_visual()->depth);
+
+                gc = gdk_gc_new(*pixmap);
+
+                gdk_gc_set_clip_mask(gc, mask);
+
+                gdk_pixbuf_render_to_drawable(pixbuf, *pixmap,
+                                              gc,
+                                              0, 0, 0, 0,
+                                              gdk_pixbuf_get_width(pixbuf),
+                                              gdk_pixbuf_get_height(pixbuf),
+                                              GDK_RGB_DITHER_NORMAL,
+                                              0, 0);
+
+                gdk_gc_unref(gc);
+        }
+
+        if (mask_retval)
+                *mask_retval = mask;
+        else
+                gdk_bitmap_unref(mask);
+}
+
+static void
+nautilus_window_realize (GtkWidget *widget)
+{
+        GdkPixmap *pixmap = NULL;
+        GdkBitmap *mask = NULL;
+        gchar *filename;
+        
+        /* Create our GdkWindow */
+        if (GTK_WIDGET_CLASS(parent_class)->realize)
+                (* GTK_WIDGET_CLASS(parent_class)->realize) (widget);
+        
+        /* Set the mini icon */
+        /* FIXME draw a real icon */
+        /* FIXME The icon should be 16x16, we get garbage on the edges
+           since it's 12x12 */
+        filename = gnome_pixmap_file("panel-arrow-down.png");
+        
+        if (filename != NULL) {
+                GdkPixbuf *pixbuf;
+
+                pixbuf = gdk_pixbuf_new_from_file(filename);
+
+                if (pixbuf != NULL) {
+                        would_be_in_gdk_pixbuf_if_federico_wasnt_stubborn_pixbuf_render(pixbuf,
+                                                                                        &pixmap,
+                                                                                        &mask,
+                                                                                        128);
+                }
+        }
+                
+                
+        if (pixmap != NULL)
+                nautilus_set_mini_icon(widget->window,
+                                       pixmap,
+                                       mask);
+
+        /* FIXME I think we are leaking the pixmap/mask here */
+}
+
+/*
+ * Main API
+ */
 
 static gboolean
 nautilus_window_send_show_properties(GtkWidget *dockitem, GdkEventButton *event, NautilusView *meta_view)
