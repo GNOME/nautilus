@@ -79,6 +79,7 @@ static void	nautilus_throbber_load_images		 (NautilusThrobber *throbber);
 static void	nautilus_throbber_unload_images		 (NautilusThrobber *throbber);
 static void	nautilus_throbber_theme_changed 	 (gpointer user_data);
 static void	nautilus_throbber_size_allocate		 (GtkWidget *widget, GtkAllocation *allocation);
+static void	nautilus_throbber_size_request		 (GtkWidget *widget, GtkRequisition *requisition);
 static void     nautilus_throbber_remove_update_callback (NautilusThrobber *throbber);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusThrobber, nautilus_throbber, GTK_TYPE_EVENT_BOX)
@@ -107,6 +108,7 @@ nautilus_throbber_initialize_class (NautilusThrobberClass *throbber_class)
 	widget_class->expose_event = nautilus_throbber_expose;
 	widget_class->button_press_event = nautilus_throbber_button_press_event;
 	widget_class->size_allocate = nautilus_throbber_size_allocate;
+	widget_class->size_request = nautilus_throbber_size_request;	
 }
 
 static void 
@@ -166,8 +168,6 @@ static void
 nautilus_throbber_initialize (NautilusThrobber *throbber)
 {
 	GtkWidget *widget = GTK_WIDGET (throbber);
-	int	  throbber_width, throbber_height;
-
 	GTK_WIDGET_UNSET_FLAGS (throbber, GTK_NO_WINDOW);
 
 	gtk_widget_set_events (widget, 
@@ -181,9 +181,6 @@ nautilus_throbber_initialize (NautilusThrobber *throbber)
 	/* allocate the pixmap that holds the image */
 	nautilus_throbber_load_images (throbber);
 	
-	get_throbber_dimensions (throbber, &throbber_width, &throbber_height);
-	gtk_widget_set_usize (GTK_WIDGET (throbber), throbber_width, throbber_height);
-
 	/* add a callback for when the theme changes */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
 					  nautilus_throbber_theme_changed,
@@ -207,6 +204,7 @@ nautilus_throbber_theme_changed (gpointer user_data)
 	gtk_widget_hide (GTK_WIDGET (throbber));
 	nautilus_throbber_load_images (throbber);
 	gtk_widget_show (GTK_WIDGET (throbber));	
+	gtk_widget_queue_resize ( GTK_WIDGET (throbber));
 }
 
 
@@ -456,7 +454,7 @@ nautilus_throbber_set_small_mode (NautilusThrobber *throbber, gboolean new_mode)
 
 /* handle setting the size */
 static void
-nautilus_throbber_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
+nautilus_throbber_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 {
 	int throbber_width, throbber_height;
 	NautilusThrobber *throbber = NAUTILUS_THROBBER (widget);
@@ -466,6 +464,18 @@ nautilus_throbber_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 	get_throbber_dimensions (throbber, &throbber_width, &throbber_height);
 	
 	widget->allocation.width = throbber_width;
-   	widget->allocation.height = throbber_height;
+   	widget->allocation.height = throbber_height;	
 }
 
+/* handle setting the size */
+static void
+nautilus_throbber_size_request (GtkWidget *widget, GtkRequisition *requisition)
+{
+	int throbber_width, throbber_height;
+	NautilusThrobber *throbber = NAUTILUS_THROBBER (widget);
+
+	get_throbber_dimensions (throbber, &throbber_width, &throbber_height);
+	
+	requisition->width = throbber_width;
+   	requisition->height = throbber_height;	
+}

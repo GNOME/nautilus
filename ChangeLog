@@ -1,3 +1,13 @@
+2000-10-14  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-throbber.c: (nautilus_throbber_initialize_class),
+	(nautilus_throbber_initialize), (nautilus_throbber_theme_changed),
+	(nautilus_throbber_size_allocate),
+	(nautilus_throbber_size_request):
+	made the throbber resize and reposition itself properly when the
+	theme changes by implementing size_request and calling queue_resize
+	when the theme changes.
+	
 2000-10-13  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-throbber.c: (bump_throbber_frame),
