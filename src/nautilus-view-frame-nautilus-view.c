@@ -139,36 +139,6 @@ nv_stop_location_change(NautilusView *view, CORBA_Environment *ev)
     gtk_object_destroy(GTK_OBJECT(view));
 }
 
-static char *
-nv_get_label(NautilusView *view, CORBA_Environment *ev)
-{
-  NautilusViewInfo *nvi = view->component_data;
-  BonoboPropertyBagClient *bc;
-  Bonobo_Property prop;
-  char *retval = NULL;
-  CORBA_any *anyval;
-  BonoboControlFrame *control_frame;
-
-  control_frame = BONOBO_CONTROL_FRAME(nvi->control_frame);
-  bc = bonobo_control_frame_get_control_property_bag(control_frame);
-  g_return_val_if_fail(bc, NULL);
-
-  prop = bonobo_property_bag_client_get_property(bc, "label");
-
-  if(CORBA_Object_is_nil(prop, ev))
-    return NULL;
-
-  anyval = Bonobo_Property_get_value(prop, ev);
-  if(ev->_major == CORBA_NO_EXCEPTION && CORBA_TypeCode_equal(anyval->_type, TC_string, ev))
-    {
-      retval = g_strdup(*(CORBA_char **)anyval->_value);
-
-      CORBA_free(anyval);
-    }
-
-  return retval;
-}
-
 NautilusViewComponentType nautilus_view_component_type = {
   "IDL:Nautilus/View:1.0",
   &nautilus_view_try_load_client, /* try_load */
@@ -178,6 +148,5 @@ NautilusViewComponentType nautilus_view_component_type = {
   &nv_notify_location_change, /* notify_location_change */
   &nv_stop_location_change, /*stop_location_change */
   &nv_notify_selection_change, /* notify_selection_change */
-  &nv_show_properties, /* show_properties */
-  &nv_get_label /* get_label */
+  &nv_show_properties  /* show_properties */
 };

@@ -25,6 +25,7 @@
 #include <config.h>
 #include "nautilus-string-list.h"
 
+#include "nautilus-glib-extensions.h"
 #include <string.h>
 #include "nautilus-lib-self-check-functions.h"
 
@@ -199,8 +200,7 @@ nautilus_string_list_clear (NautilusStringList *string_list)
 {
 	g_return_if_fail (string_list != NULL);
 
-	g_list_foreach (string_list->strings, (GFunc) g_free, NULL);
-	g_list_free (string_list->strings);
+	nautilus_g_list_free_deep_custom (string_list->strings, (GFunc) g_free, NULL);
 
 	string_list->strings = NULL;
 }

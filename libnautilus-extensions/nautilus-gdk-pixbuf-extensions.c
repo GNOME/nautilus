@@ -25,6 +25,7 @@
 #include <config.h>
 #include <math.h>
 #include "nautilus-gdk-pixbuf-extensions.h"
+#include "nautilus-glib-extensions.h"
 
 #include <gdk-pixbuf/gdk-pixbuf-loader.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
@@ -77,8 +78,7 @@ nautilus_gdk_pixbuf_list_ref (GList *pixbuf_list)
 void
 nautilus_gdk_pixbuf_list_free (GList *pixbuf_list)
 {
-	g_list_foreach (pixbuf_list, (GFunc) gdk_pixbuf_unref, NULL);
-	g_list_free (pixbuf_list);
+	nautilus_g_list_free_deep_custom (pixbuf_list, (GFunc) gdk_pixbuf_unref, NULL);
 }
 
 GdkPixbuf *

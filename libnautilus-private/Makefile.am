@@ -64,6 +64,7 @@ libnautilus_extensionsinclude_HEADERS=		\
 	nautilus-self-checks.h			\
 	nautilus-string-list.h			\
 	nautilus-string.h			\
+	nautilus-view-identifier.h		\
 	nautilus-xml-extensions.h		\
 	$(NULL)
 
@@ -113,5 +114,6 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-self-checks.c			\
 	nautilus-string-list.c			\
 	nautilus-string.c			\
+	nautilus-view-identifier.c		\
 	nautilus-xml-extensions.c		\
 	$(NULL)

@@ -1,4 +1,3 @@
-
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*- */
 
 /*
@@ -217,8 +216,6 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
 
         gtk_signal_connect (GTK_OBJECT (notes->view), "destroy", nautilus_clipboard_info_destroy, info);
         /* set description */
-        nautilus_meta_view_frame_set_label (NAUTILUS_META_VIEW_FRAME (notes->view),
-                                            _("Notes"));
 
         return BONOBO_OBJECT (notes->view);        
 }

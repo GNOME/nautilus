@@ -95,7 +95,6 @@ hyperbola_navigation_tree_new(void)
   gtk_signal_connect(GTK_OBJECT(view->view_frame), "notify_location_change", 
 		     hyperbola_navigation_tree_notify_location_change,
 		     view);
-  nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(view->view_frame), _("Help Contents"));
 
   return BONOBO_OBJECT (view->view_frame);
 }

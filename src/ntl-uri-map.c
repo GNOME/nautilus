@@ -39,6 +39,8 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-view-identifier.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
 
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
@@ -54,7 +56,7 @@
 #include "ntl-types.h"
 
 /* forward declarations */
-static void add_meta_view_iids_from_preferences (NautilusNavigationInfo            *navinfo);
+static void add_sidebar_panel_identifiers       (NautilusNavigationInfo            *navinfo);
 static void async_get_file_info_text            (GnomeVFSAsyncHandle              **handle,
                                                  const char                        *text_uri,
                                                  GnomeVFSFileInfoOptions            options,
@@ -62,31 +64,6 @@ static void async_get_file_info_text            (GnomeVFSAsyncHandle            
                                                  gpointer                           callback_data);
 
 /* Nautilus View Identifiers associate a component name with a user displayable name */
-
-static NautilusViewIdentifier *
-nautilus_view_identifier_new (const char *iid, const char *name)
-{
-        NautilusViewIdentifier *new_identifier;
-        
-        g_return_val_if_fail (iid != NULL, NULL);
-        g_return_val_if_fail (name != NULL, NULL);
-        
-        new_identifier = g_new0 (NautilusViewIdentifier, 1);
-        new_identifier->iid = g_strdup (iid);
-        new_identifier->name = g_strdup (name);
-        
-        return new_identifier;
-}
-
-static void
-nautilus_view_identifier_free (NautilusViewIdentifier *identifier)
-{
-        if (identifier != NULL) {
-                g_free (identifier->iid);
-                g_free (identifier->name);
-                g_free (identifier);
-        }
-}
 
 static NautilusNavigationResult
 get_nautilus_navigation_result_from_gnome_vfs_result (GnomeVFSResult gnome_vfs_result)
@@ -151,7 +128,7 @@ set_initial_content_iid (NautilusNavigationInfo *navinfo,
 	const char *value = NULL;
 
 	g_assert (fallback_value != NULL);
-	g_assert (g_slist_length (navinfo->content_identifiers) > 0);
+	g_assert (g_list_length (navinfo->content_identifiers) > 0);
 
 	/* NOTE: Darin doesn't like the unpredictability of this three-choice system.
 	 * He'd prefer a global setting and perhaps an explicit location-specific
@@ -163,8 +140,8 @@ set_initial_content_iid (NautilusNavigationInfo *navinfo,
         
         /* Use the remembered value if it's non-NULL and in the list of choices. */
         if (remembered_value != NULL) {
-                if (g_slist_find_custom (navinfo->content_identifiers,
-                                         remembered_value, check_iid)) {
+                if (g_list_find_custom (navinfo->content_identifiers,
+                                        remembered_value, check_iid)) {
                         value = remembered_value;
                 } else {
                         g_message ("Unknown iid \"%s\" stored for %s",
@@ -178,8 +155,8 @@ set_initial_content_iid (NautilusNavigationInfo *navinfo,
 		 * it's non-NULL and in the list of choices. 
 		 */
 		if (navinfo->referring_iid != NULL) {
-			if (g_slist_find_custom (navinfo->content_identifiers,
-                                                 navinfo->referring_iid, check_iid)) {
+			if (g_list_find_custom (navinfo->content_identifiers,
+                                                navinfo->referring_iid, check_iid)) {
 				value = navinfo->referring_iid;
 			}
 		}
@@ -514,57 +491,6 @@ server_matches_content_requirements (OAF_ServerInfo *server, GHashTable *type_ta
 }
 
 
-static GSList *
-get_lang_list (void)
-{
-        GSList *retval;
-        char *lang;
-        char * equal_char;
-
-        retval = NULL;
-
-        lang = getenv ("LANGUAGE");
-
-        if (!lang) {
-                lang = getenv ("LANG");
-        }
-
-
-        if (lang) {
-                equal_char = strchr (lang, '=');
-                if (equal_char != NULL) {
-                        lang = equal_char + 1;
-                }
-
-                retval = g_slist_prepend (retval, lang);
-        }
-        
-        return retval;
-}
-
-static NautilusViewIdentifier *
-nautilus_view_identifier_new_from_oaf_server_info (OAF_ServerInfo *server)
-{
-        const char *view_as_name;
-        GSList *langs;
-
-        langs = get_lang_list ();
-        
-        view_as_name = oaf_server_info_attr_lookup (server, "nautilus:view_as_name", langs);
-
-        if (view_as_name == NULL) {
-                view_as_name = oaf_server_info_attr_lookup (server, "name", langs);
-        }
-
-        if (view_as_name == NULL) {
-                view_as_name = server->iid;
-        }
-       
-        g_slist_free (langs);
-
-        return nautilus_view_identifier_new (server->iid, view_as_name);
-}
-
 static void
 got_file_info_callback (GnomeVFSAsyncHandle *ah,
                         GList *result_list,
@@ -657,9 +583,9 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
                         server = &oaf_result->_buffer[i];
 
                         if (server_matches_content_requirements (server, content_types, navinfo->explicit_iids)) {
-                                navinfo->content_identifiers = g_slist_append
+                                navinfo->content_identifiers = g_list_append
                                         (navinfo->content_identifiers, 
-                                         nautilus_view_identifier_new_from_oaf_server_info (server));
+                                         nautilus_view_identifier_new_from_content_view (server));
                         }
                 }
 
@@ -689,7 +615,7 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
 #endif
         }
   
-        add_meta_view_iids_from_preferences (navinfo);
+        add_sidebar_panel_identifiers (navinfo);
         
         /* Now that all the content_identifiers are in place, we're ready to choose
          * the initial one.
@@ -703,35 +629,40 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
 
 /* The following routine uses metadata associated with the current url to add content view components specified in the metadata */
 
-static void
-add_meta_view_iids_from_preferences (NautilusNavigationInfo *navinfo)
+
+static gboolean
+sidebar_panel_preference_is_on (NautilusViewIdentifier *identifier,
+                                gpointer ignore)
 {
-	const NautilusStringList *meta_view_iids;
-	guint i;
-        char *iid;
+        gchar *pref_name;
         gboolean enabled;
-        GString	*pref_name;
+
+        pref_name = g_strconcat ("/nautilus/metaviews/", identifier->iid, NULL);
+        enabled = nautilus_preferences_get_boolean (pref_name, FALSE);
+        g_free (pref_name);
+
+        return enabled;
+}
+
+
+static void
+add_sidebar_panel_identifiers (NautilusNavigationInfo *navinfo)
+{
+	GList *view_identifiers;
+	GList *disabled_view_identifiers;
         
 	g_assert (navinfo != NULL);
 	
-	meta_view_iids = nautilus_global_preferences_get_meta_view_iids ();
-	g_assert (meta_view_iids != NULL);
-	
-	for (i = 0; i < nautilus_string_list_get_length (meta_view_iids); i++) {
-		iid = nautilus_string_list_nth (meta_view_iids, i);
-		g_assert (iid != NULL);
+	view_identifiers = nautilus_global_preferences_get_sidebar_panel_view_identifiers ();
+        
+        view_identifiers = nautilus_g_list_partition (view_identifiers,
+                                                      (NautilusGPredicateFunc) sidebar_panel_preference_is_on,
+                                                      NULL,
+                                                      &disabled_view_identifiers);
 
-		pref_name = g_string_new ("/nautilus/metaviews/");
-		g_string_append (pref_name, iid);
-		enabled = nautilus_preferences_get_boolean (pref_name->str, FALSE);
-		g_string_free (pref_name, TRUE);
-		
-		if (enabled) {
-			navinfo->meta_iids = g_slist_prepend (navinfo->meta_iids, iid);
-		} else {
-                        g_free (iid);
-                }
-	}
+        navinfo->sidebar_panel_identifiers = view_identifiers;
+
+        nautilus_view_identifier_free_list (disabled_view_identifiers);
 }
 
 static void
@@ -818,16 +749,9 @@ nautilus_navigation_info_free (NautilusNavigationInfo *info)
         
         nautilus_navigation_info_cancel (info);
 
-        g_slist_foreach (info->content_identifiers,
-                         (GFunc) nautilus_view_identifier_free,
-                         NULL);
-        g_slist_free (info->content_identifiers);
-
-        g_slist_foreach (info->meta_iids, (GFunc) g_free, NULL);
-        g_slist_free (info->meta_iids);
-
-        g_list_foreach (info->explicit_iids, (GFunc) g_free, NULL);
-        g_list_free (info->explicit_iids);
+        nautilus_view_identifier_free_list (info->sidebar_panel_identifiers);
+        nautilus_view_identifier_free_list (info->content_identifiers);
+        nautilus_g_list_free_deep (info->explicit_iids);
 
         g_free (info->referring_iid);
         g_free (info->initial_content_iid);

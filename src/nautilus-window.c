@@ -47,6 +47,7 @@
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-view-identifier.h>
 #include <libnautilus/nautilus-undo-manager.h>
 #include "nautilus-zoom-control.h"
 #include <ctype.h>
@@ -511,7 +512,7 @@ nautilus_window_destroy (NautilusWindow *window)
 {
   NautilusWindowClass *klass = NAUTILUS_WINDOW_CLASS(GTK_OBJECT(window)->klass);
 
-  g_slist_free(window->meta_views);
+  g_list_free (window->meta_views);
 
   CORBA_free(window->ni);
   CORBA_free(window->si);
@@ -694,7 +695,7 @@ void
 nautilus_window_load_content_view_menu (NautilusWindow *window,
                                         NautilusNavigationInfo *ni)
 {
-        GSList *p;
+        GList *p;
         GtkWidget *new_menu;
         int index, default_view_index;
         GtkWidget *menu_item;
@@ -758,7 +759,7 @@ nautilus_window_load_content_view_menu (NautilusWindow *window,
 }
 
 void
-nautilus_window_set_content_view(NautilusWindow *window, NautilusView *content_view)
+nautilus_window_set_content_view (NautilusWindow *window, NautilusView *content_view)
 {
   nautilus_window_real_set_content_view (window, content_view);
 }
@@ -766,26 +767,26 @@ nautilus_window_set_content_view(NautilusWindow *window, NautilusView *content_v
 void
 nautilus_window_add_meta_view(NautilusWindow *window, NautilusView *meta_view)
 {
-  g_return_if_fail (!g_slist_find (window->meta_views, meta_view));
+  g_return_if_fail (!g_list_find (window->meta_views, meta_view));
   g_return_if_fail (NAUTILUS_IS_META_VIEW (meta_view));
 
   nautilus_index_panel_add_meta_view (window->index_panel, meta_view);
-  window->meta_views = g_slist_prepend (window->meta_views, meta_view);
+  window->meta_views = g_list_prepend (window->meta_views, meta_view);
 }
 
 void
-nautilus_window_remove_meta_view_real(NautilusWindow *window, NautilusView *meta_view)
+nautilus_window_remove_meta_view_real (NautilusWindow *window, NautilusView *meta_view)
 {
   nautilus_index_panel_remove_meta_view(window->index_panel, meta_view);
 }
 
 void
-nautilus_window_remove_meta_view(NautilusWindow *window, NautilusView *meta_view)
+nautilus_window_remove_meta_view (NautilusWindow *window, NautilusView *meta_view)
 {
-  if(!g_slist_find(window->meta_views, meta_view))
+  if (!g_list_find(window->meta_views, meta_view))
     return;
 
-  window->meta_views = g_slist_remove(window->meta_views, meta_view);
+  window->meta_views = g_list_remove(window->meta_views, meta_view);
   nautilus_window_remove_meta_view_real(window, meta_view);
 }
 

@@ -40,11 +40,9 @@
 
 typedef struct NautilusMetaViewFrame NautilusMetaViewFrame;
 typedef struct NautilusMetaViewFrameClass NautilusMetaViewFrameClass;
-typedef struct NautilusMetaViewFrameDetails NautilusMetaViewFrameDetails;
 
 struct NautilusMetaViewFrame {
 	NautilusViewFrame base;
-	NautilusMetaViewFrameDetails *details;
 };
 
 struct NautilusMetaViewFrameClass {
@@ -54,7 +52,5 @@ struct NautilusMetaViewFrameClass {
 GtkType                nautilus_meta_view_frame_get_type                (void);
 NautilusMetaViewFrame *nautilus_meta_view_frame_new                     (GtkWidget             *widget);
 NautilusMetaViewFrame *nautilus_meta_view_frame_new_from_bonobo_control (BonoboControl         *control);
-void                   nautilus_meta_view_frame_set_label               (NautilusMetaViewFrame *view,
-									 const char            *label);
 
 #endif

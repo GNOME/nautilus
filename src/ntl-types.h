@@ -29,9 +29,5 @@
 
 typedef char *NautilusLocationReference;
 
-typedef struct {
-	char *iid;	/* magic key */
-	char *name;	/* human-readable name */
-} NautilusViewIdentifier;
-
 #endif
+

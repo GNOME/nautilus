@@ -73,27 +73,18 @@ nautilus_meta_view_initialize (NautilusMetaView *view)
 }
 
 
+void
+nautilus_meta_view_set_label (NautilusMetaView *nview,
+                              const char *label)
+{
+  nview->label = g_strdup (label);
+}
+
+
 const char *
 nautilus_meta_view_get_label(NautilusMetaView *nview)
 {
-  NautilusView *view = NAUTILUS_VIEW(nview);
-  char *retval = NULL;
-
-  g_return_val_if_fail(view, NULL);
-  g_return_val_if_fail(view->component_class, NULL);
-
-  if(view->component_class->get_label)
-    {
-      CORBA_Environment ev;
-
-      CORBA_exception_init(&ev);
-
-      retval = view->component_class->get_label(view, &ev);
-
-      CORBA_exception_free(&ev);
-    }
-
-  return retval;
+  return nview->label;
 }
 
 

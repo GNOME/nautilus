@@ -1910,8 +1910,7 @@ load_image_with_embedded_text (NautilusScalableIcon *scalable_icon,
 void
 nautilus_scalable_icon_list_free (GList *icon_list)
 {
-	g_list_foreach (icon_list, (GFunc) nautilus_scalable_icon_unref, NULL);
-	g_list_free (icon_list);
+	nautilus_g_list_free_deep_custom (icon_list, (GFunc) nautilus_scalable_icon_unref, NULL);
 }
 
 /* utility routine for saving a pixbuf to a png file.

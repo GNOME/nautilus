@@ -90,7 +90,7 @@ struct _NautilusWindow {
 
   /* Current views stuff */
   NautilusView *content_view;
-  GSList *meta_views;
+  GList *meta_views;
 
   /* Widgets to keep track of (for state changes, etc) */
   GtkWidget *back_button;
@@ -103,7 +103,8 @@ struct _NautilusWindow {
   /* Pending changes */
   NautilusNavigationInfo *pending_ni;
   NautilusView *new_content_view, *new_requesting_view;
-  GSList *new_meta_views, *error_views;
+  GList *new_meta_views;
+  GList *error_views;
 
   enum { NW_LOADING_INFO, NW_LOADING_VIEWS, NW_IDLE } state;
 

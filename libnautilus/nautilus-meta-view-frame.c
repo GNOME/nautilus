@@ -32,17 +32,7 @@
 
 #include <libgnome/gnome-i18n.h>
 #include <bonobo/bonobo-control.h>
-#include <bonobo/bonobo-property-bag.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
-
-struct NautilusMetaViewFrameDetails {
-	char *label;
-};
-
-/* Property indices. */
-enum {
-	LABEL
-};
 
 typedef struct {
 	POA_Nautilus_View servant;
@@ -71,7 +61,6 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMetaViewFrame, nautilus_meta_view_fra
 static void
 nautilus_meta_view_frame_initialize (NautilusMetaViewFrame *view)
 {
-	view->details = g_new0 (NautilusMetaViewFrameDetails, 1);
 }
 
 NautilusMetaViewFrame *
@@ -85,64 +74,18 @@ nautilus_meta_view_frame_new (GtkWidget *widget)
 	return nautilus_meta_view_frame_new_from_bonobo_control (control);
 }
 
-static void
-set_property (BonoboPropertyBag *bag,
-	      const BonoboArg *arg,
-	      guint arg_id,
-	      gpointer user_data)
-{
-	NautilusMetaViewFrame *view;
-
-	view = NAUTILUS_META_VIEW_FRAME (user_data);
-	
-	switch (arg_id) {
-	case LABEL:
-		nautilus_meta_view_frame_set_label (view,
-						    BONOBO_ARG_GET_STRING (arg));
-		break;
-		
-	default:
-		g_warning ("unknown property");
-	}
-}
-
-static void
-get_property (BonoboPropertyBag *bag,
-	      BonoboArg *arg,
-	      guint arg_id,
-	      gpointer user_data)
-{
-	NautilusMetaViewFrame *view;
-
-	view = NAUTILUS_META_VIEW_FRAME (user_data);
-	
-	switch (arg_id) {
-	case LABEL:
-		BONOBO_ARG_SET_STRING (arg, view->details->label);
-		break;
-		
-	default:
-		g_warning ("unknown property");
-	}
-}
 
 NautilusMetaViewFrame *
 nautilus_meta_view_frame_new_from_bonobo_control (BonoboControl *bonobo_control)
 {
 	NautilusMetaViewFrame *view;
-	BonoboPropertyBag *bag;
 
 	g_return_val_if_fail (BONOBO_IS_CONTROL (bonobo_control), NULL);
-	g_return_val_if_fail (bonobo_control_get_property_bag (BONOBO_CONTROL (bonobo_control)) == NULL, NULL);
 
 	view = NAUTILUS_META_VIEW_FRAME (gtk_object_new (NAUTILUS_TYPE_META_VIEW_FRAME,
 							 "bonobo_control", bonobo_control,
 							 NULL));
 
-	bag = bonobo_property_bag_new (get_property, set_property, view);
-	bonobo_property_bag_add (bag, "label", LABEL, BONOBO_ARG_STRING, NULL,
-				 _("Label"), 0);
-	bonobo_control_set_property_bag (bonobo_control, bag);
 	
 	return view;
 }
@@ -150,8 +93,6 @@ nautilus_meta_view_frame_new_from_bonobo_control (BonoboControl *bonobo_control)
 static void
 nautilus_meta_view_frame_destroy (NautilusMetaViewFrame *view)
 {
-	g_free (view->details->label);
-	g_free (view->details);
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, GTK_OBJECT (view));
 }
 
@@ -169,12 +110,3 @@ nautilus_meta_view_frame_initialize_class (NautilusMetaViewFrameClass *klass)
 	view_class->vepv = &impl_Nautilus_MetaView_vepv;
 }
 
-void
-nautilus_meta_view_frame_set_label (NautilusMetaViewFrame *view,
-				    const char *label)
-{
-	g_return_if_fail (NAUTILUS_IS_META_VIEW_FRAME (view));
-
-	g_free (view->details->label);
-	view->details->label = g_strdup (label);
-}

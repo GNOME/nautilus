@@ -68,3 +68,4 @@ gboolean            nautilus_string_list_equals               (const NautilusStr
 							       const NautilusStringList *b);
 
 #endif /* NAUTILUS_STRING_LIST_H */
+

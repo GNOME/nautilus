@@ -232,11 +232,6 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
                       GTK_SIGNAL_FUNC (nautilus_component_unmerge_bonobo_items_cb), info); 
   gtk_signal_connect (GTK_OBJECT (hview->ent_params), "destroy", nautilus_clipboard_info_destroy, info);
   
-  /* set description */
-  nautilus_meta_view_frame_set_label (NAUTILUS_META_VIEW_FRAME (hview->view),
-                                      _("WebSearch"));
-
-
   return BONOBO_OBJECT (hview->view);
 }
 

@@ -72,12 +72,6 @@ bonobo_control_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Envir
   return TRUE;
 }
 
-static char *
-bonobo_control_get_label(NautilusView *view, CORBA_Environment *ev)
-{
-  return g_strdup_printf(_("Control %p"), view);
-}
-
 static void
 bonobo_control_notify_location_change(NautilusView *view, Nautilus_NavigationInfo *real_nav_ctx, CORBA_Environment *ev)
 {
@@ -98,6 +92,5 @@ NautilusViewComponentType bonobo_control_component_type = {
   &bonobo_control_notify_location_change, /* notify_location_change */
   NULL, /* stop_location_change */
   NULL, /* notify_selection_change */
-  NULL, /* show_properties */
-  &bonobo_control_get_label /* get_label */
+  NULL  /* show_properties */
 };

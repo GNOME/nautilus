@@ -175,7 +175,6 @@ BonoboObject *hyperbola_navigation_search_new(void)
   gtk_widget_show_all(vbox);
 
   hns->view_frame = NAUTILUS_VIEW_FRAME (nautilus_meta_view_frame_new (vbox));
-  nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(hns->view_frame), _("Help Search"));
 
   return BONOBO_OBJECT (hns->view_frame);
 }

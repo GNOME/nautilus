@@ -242,10 +242,6 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 
   hview->clist = (GtkCList *)clist;
 
-  /* set description */
-  nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(hview->view),
-                                     _("History"));
-
   /* handle events */
   gtk_signal_connect(GTK_OBJECT(hview->view), "notify_location_change", hyperbola_navigation_history_notify_location_change, hview);
   gtk_signal_connect(GTK_OBJECT(clist), "select_row", hyperbola_navigation_history_select_row, hview);

@@ -43,6 +43,7 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
+#include <libnautilus-extensions/nautilus-view-identifier.h>
 #include "ntl-app.h"
 #include "ntl-meta-view.h"
 #include "ntl-uri-map.h"
@@ -117,7 +118,7 @@ nautilus_window_request_selection_change(NautilusWindow *window,
 					 Nautilus_SelectionRequestInfo *loc,
 					 NautilusView *requesting_view)
 {
-        GSList *p;
+        GList *p;
         Nautilus_SelectionInfo selinfo;
         CORBA_Environment environment;
         
@@ -489,8 +490,9 @@ nautilus_window_view_destroyed (NautilusView *view, NautilusWindow *window)
 static void
 nautilus_window_has_really_changed(NautilusWindow *window)
 {
-        GSList *p, *discard_views;
-        GSList *new_meta_views;
+        GList *discard_views;
+        GList *p;
+        GList *new_meta_views;
         
         new_meta_views = window->new_meta_views;
         window->new_meta_views = NULL;
@@ -515,16 +517,16 @@ nautilus_window_has_really_changed(NautilusWindow *window)
                 
                 discard_views = NULL;
                 for (p = window->meta_views; p != NULL; p = p->next) {
-                        if (!g_slist_find(new_meta_views, p->data)) {
-                                discard_views = g_slist_prepend(discard_views, p->data);
+                        if (!g_list_find (new_meta_views, p->data)) {
+                                discard_views = g_list_prepend(discard_views, p->data);
                         }
                 }
-                g_slist_free (new_meta_views);
+                g_list_free (new_meta_views);
                 
                 for (p = discard_views; p != NULL; p = p->next) {
-                        nautilus_window_remove_meta_view(window, p->data);
+                        nautilus_window_remove_meta_view (window, p->data);
                 }
-                g_slist_free (discard_views);
+                g_list_free (discard_views);
         }
         
         if (window->pending_ni != NULL) {
@@ -573,7 +575,7 @@ nautilus_window_load_meta_view(NautilusWindow *window,
                                NautilusView *requesting_view)
 {
         NautilusView *meta_view;
-        GSList *p;
+        GList *p;
         
         meta_view = NULL;
         for (p = window->meta_views; p != NULL; p = p->next) {
@@ -718,7 +720,7 @@ static gboolean
 nautilus_window_update_state (gpointer data)
 {
         NautilusWindow *window;
-        GSList *p;
+        GList *p;
         gboolean result;
 
         window = data;
@@ -766,17 +768,17 @@ nautilus_window_update_state (gpointer data)
                         }
                         else if (NAUTILUS_IS_META_VIEW(error_view))
                         {
-                                if (g_slist_find (window->new_meta_views, error_view) != NULL) {
-                                        window->new_meta_views = g_slist_remove (window->new_meta_views, error_view);
+                                if (g_list_find (window->new_meta_views, error_view) != NULL) {
+                                        window->new_meta_views = g_list_remove (window->new_meta_views, error_view);
                                         gtk_widget_unref (GTK_WIDGET (error_view));
                                 }
-                                if (g_slist_find (window->meta_views, error_view) != NULL) {
+                                if (g_list_find (window->meta_views, error_view) != NULL) {
                                         nautilus_window_remove_meta_view (window, error_view);
                                 }
                         }
                         gtk_widget_unref (GTK_WIDGET (error_view));
                 }
-                g_slist_free (window->error_views);
+                g_list_free (window->error_views);
                 window->error_views = NULL;
                 
                 window->view_bombed_out = FALSE;
@@ -800,7 +802,7 @@ nautilus_window_update_state (gpointer data)
                         
                         /* Tell previously-notified views to go back to the old page */
                         for (p = window->meta_views; p != NULL; p = p->next) {
-                                if (g_slist_find (window->new_meta_views, p->data) != NULL) {
+                                if (g_list_find (window->new_meta_views, p->data) != NULL) {
                                         nautilus_window_update_view (window, p->data, window->ni, window->si,
                                                                      NULL, window->content_view);
                                 }
@@ -821,7 +823,7 @@ nautilus_window_update_state (gpointer data)
                 for (p = window->new_meta_views; p != NULL; p = p->next) {
                         gtk_widget_unref (GTK_WIDGET (p->data));
                 }
-                g_slist_free (window->new_meta_views);
+                g_list_free (window->new_meta_views);
                 
                 nautilus_window_free_load_info (window);
                 
@@ -840,13 +842,19 @@ nautilus_window_update_state (gpointer data)
                                  &window->pending_ni->navinfo,
                                  &window->new_requesting_view);
                         
-                        for (p = window->pending_ni->meta_iids; p != NULL; p = p->next) {
+                        for (p = window->pending_ni->sidebar_panel_identifiers; p != NULL; p = p->next) {
                                 NautilusView *meta_view;
+                                NautilusViewIdentifier *identifier;
+
+                                identifier = (NautilusViewIdentifier *) (p->data);
 
                                 meta_view = nautilus_window_load_meta_view
-                                        (window, p->data, window->new_requesting_view);
+                                        (window, identifier->iid, window->new_requesting_view);
+
                                 if (meta_view != NULL) {
-                                        window->new_meta_views = g_slist_prepend (window->new_meta_views, meta_view);
+                                        nautilus_meta_view_set_label (NAUTILUS_META_VIEW (meta_view), 
+                                                                      identifier->name);
+                                        window->new_meta_views = g_list_prepend (window->new_meta_views, meta_view);
                                 }
                         }
                         
@@ -967,7 +975,7 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
                         x_message (("VIEW_ERROR on %p", new_view));
                         window->view_bombed_out = TRUE;
                         gtk_object_ref (GTK_OBJECT (new_view));
-                        window->error_views = g_slist_prepend (window->error_views, new_view);
+                        window->error_views = g_list_prepend (window->error_views, new_view);
                         break;
 
                 case NEW_CONTENT_VIEW_ACTIVATED:
@@ -987,7 +995,7 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
                         x_message (("NEW_META_VIEW_ACTIVATED"));
                         new_view = va_arg (args, NautilusView*);
                         /* Don't ref here, reference is held by widget hierarchy. */
-                        window->new_meta_views = g_slist_prepend (window->new_meta_views, new_view);
+                        window->new_meta_views = g_list_prepend (window->new_meta_views, new_view);
                         window->changes_pending = TRUE;
                         window->views_shown = FALSE;
                         break;

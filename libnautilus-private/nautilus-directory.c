@@ -786,8 +786,7 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	g_hash_table_destroy (added_lists);
 
 	/* Let the file objects go. */
-	g_list_foreach (unref_list, (GFunc) nautilus_file_unref, NULL);
-	g_list_free (unref_list);
+	nautilus_g_list_free_deep_custom (unref_list, (GFunc) nautilus_file_unref, NULL);
 
 	/* Separate handling for brand new file objects. */
 	nautilus_directory_notify_files_added (new_files_list);

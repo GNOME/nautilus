@@ -718,7 +718,6 @@ BonoboObject *hyperbola_navigation_index_new(void)
   gtk_widget_show_all(vbox);
 
   hni->view_frame = NAUTILUS_VIEW_FRAME (nautilus_meta_view_frame_new (vbox));
-  nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(hni->view_frame), _("Help Index"));
 
   return BONOBO_OBJECT (hni->view_frame);
 }

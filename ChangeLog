@@ -1,3 +1,112 @@
+2000-05-19  Maciej Stachowiak  <mjs@eazel.com>
+
+	Fix bugzilla tasks #599 (hex number is bad default for meta view
+	names) and #631 (nead oaf query to determine metaviews).
+
+	* libnautilus-extensions/nautilus-view-identifier.h,
+	libnautilus-extensions/nautilus-view-identifier.c:
+	(nautilus_view_identifier_new, get_lang_list,
+	nautilus_view_identifier_new_from_oaf_server_info,
+	nautilus_view_identifier_free): Moved NautilusViewIdentifier code
+	here from ntl-uri-map.[ch].
+	(nautilus_view_identifier_new_from_content_view),
+	(nautilus_view_identifier_new_from_sidebar_panel),
+	(nautilus_view_identifier_free_callback),
+	(nautilus_view_identifier_free_list): New functions.
+	* libnautilus-extensions/Makefile.am: Add
+	nautilus-view-identifier.[ch] to build.
+	* src/ntl-types.h: Removed typedef for NautilusViewIdentifier.
+
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	* libnautilus-extensions/nautilus-glib-extensions.c
+	(nautilus_g_list_free_deep_custom): New function, like
+	`nautilus_g_list_free_deep' but lets you pass your own free
+	function.
+	(nautilus_g_list_free_deep): Use `nautilus_g_list_free_deep_custom'
+	(nautilus_g_list_partition): New function to destructively
+	partition a GList into two, depending on whether they satisfy the
+	provided predicate or not.
+	(nautilus_test_predicate), (nautilus_self_check_glib_extensions):
+	Added unit tests for `nautilus_g_list_partition' and for
+	`nautilus_g_list_equal' since the `nautilus_g_list_partition'
+	tests rely on it.
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_notify_files_moved): Use
+	`nautilus_g_list_free_deep_custom'.
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c
+	(nautilus_gdk_pixbuf_list_free): Likewise.
+	* libnautilus-extensions/nautilus-icon-factory.c
+	(nautilus_scalable_icon_list_free): Likewise.
+	* libnautilus-extensions/nautilus-string-list.c
+	(nautilus_string_list_clear): Likewise.
+	* nautilus-widgets/nautilus-preferences.c (pref_hash_node_free,
+	prefs_hash_lookup_with_implicit_registration): Likewise.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c,
+	libnautilus-extensions/nautilus-global-preferences.h
+	(global_preferences_create_dialog,
+	nautilus_global_preferences_get_sidebar_panel_view_identifiers,
+	nautilus_global_preferences_get_meta_view_iids,
+	nautilus_preferences_register_meta_view_preferences_for_ui,
+	global_preferences_register_for_ui): Change things around to
+	determine the set of sidebar panel prefs at run time, and to pass
+	around NautilusViewIdentifiers rather than just iid strings so we
+	can use the statically defined name in the oafinfo.
+
+	* src/ntl-uri-map.h, src/ntl-uri-map.c: (set_initial_content_iid,
+	got_file_info_callback, sidebar_panel_preference_is_on,
+	(add_sidebar_panel_identifiers, nautilus_navigation_info_free):
+	Changed things around to better handle sidebar panel (AKA meta
+	view) selection, and pass around both name and iid.
+
+	* src/ntl-window-msgs.c:
+	(nautilus_window_request_selection_change,
+	nautilus_window_has_really_changed,
+	nautilus_window_load_meta_view, nautilus_window_update_state,
+	nautilus_window_set_state_info): Fixed everything to pass around
+	ViewIdentifiers instead of iids for sidebar panels and set the
+	label approrpiately when activating; replaced a whole bunch of
+	GSList usage with GList (we can always optimize this stuff later).
+	* src/ntl-window.h, src/ntl-window.c: (nautilus_window_destroy,
+	nautilus_window_load_content_view_menu,
+	nautilus_window_set_content_view, nautilus_window_add_meta_view,
+	nautilus_window_remove_meta_view_real,
+	nautilus_window_remove_meta_view): Deal with the above changes
+	(mostly GSList -> GList changes).
+
+	* src/ntl-view-bonobo-control.c, src/ntl-view-bonobo-subdoc.c,
+	src/ntl-view-nautilus.c, src/ntl-view-private.h: Remove all
+	get_label related calls since we get that from the oafinfo now.
+	* libnautilus/nautilus-meta-view-frame.h,
+	libnautilus/nautilus-meta-view-frame.c:
+	(nautilus_meta_view_frame_initialize,
+	nautilus_meta_view_frame_new_from_bonobo_control,
+	nautilus_meta_view_frame_destroy): Remove
+	`nautilus_meta_view_frame_set_label' machinery and associated
+	machinery since we now get the label statically from the oafinfo.
+	* components/history/ntl-history-view.c: (make_obj): Don't call
+	`nautilus_meta_view_frame_set_label' any more, the label is now
+	statically determined from the oafinfo file.
+	* components/notes/ntl-notes.c: (make_notes_view): Likewise.
+	* components/websearch/ntl-web-search.c: (make_obj): Likewise.
+	* components/help/hyperbola-nav-index.c: Likewise.
+	(hyperbola_navigation_index_new): Likewise.
+	* components/help/hyperbola-nav-search.c: Likewise.
+	(hyperbola_navigation_search_new): Likewise.
+	* components/help/hyperbola-nav-tree.c: Likewise.
+	(hyperbola_navigation_tree_new): Likewise.
+	* src/ntl-meta-view.h, src/ntl-meta-view.c:
+	(nautilus_meta_view_set_label),
+	(nautilus_meta_view_get_label): Have an explicit value to set,
+	rather than trying to get it through CORBA. This is kind of a
+	hack, really we should pass around a label and a NautilusMetaView
+	separately and remove this stuff.
+	* components/help/hyperbola.oafinfo,
+	components/notes/ntl-notes.oafinfo,
+	components/websearch/ntl-web-search.oafinfo,
+	components/history/ntl-history-view.oafinfo: Updated to include
+	latest Nautilus attributes.
+	
 2000-05-19  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/Makefile.am:

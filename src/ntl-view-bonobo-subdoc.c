@@ -114,7 +114,6 @@ NautilusViewComponentType bonobo_subdoc_component_type = {
   &bonobo_subdoc_notify_location_change, /* notify_location_change */
   NULL, /* stop_location_change */
   NULL, /* notify_selection_change */
-  NULL, /* show_properties */
-  NULL, /* get_label */
+  NULL  /* show_properties */
 };
 

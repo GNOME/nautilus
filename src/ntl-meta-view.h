@@ -45,10 +45,13 @@ typedef struct {
 
 struct _NautilusMetaView {
   NautilusView parent_object;
+  char *label;
 };
 
-GtkType nautilus_meta_view_get_type(void);
-NautilusMetaView *nautilus_meta_view_new(void);
-const char *nautilus_meta_view_get_label(NautilusMetaView *nview);
+GtkType           nautilus_meta_view_get_type      (void);
+NautilusMetaView *nautilus_meta_view_new           (void);
+const char       *nautilus_meta_view_get_label     (NautilusMetaView *nview);
+void              nautilus_meta_view_set_label     (NautilusMetaView *nview,
+                                                    const char *label);
 
 #endif

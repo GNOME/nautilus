@@ -49,6 +49,10 @@ char *     nautilus_strdup_strftime           (const char               *format,
 					       struct tm                *time_pieces);
 
 /* List functions. */
+typedef gboolean (*NautilusGPredicateFunc) 	(gpointer	data,
+						 gpointer	user_data);
+
+
 gboolean   nautilus_g_list_exactly_one_item   (GList                    *list);
 gboolean   nautilus_g_list_more_than_one_item (GList                    *list);
 gboolean   nautilus_g_list_equal              (GList                    *list_a,
@@ -56,6 +60,13 @@ gboolean   nautilus_g_list_equal              (GList                    *list_a,
 GList *    nautilus_g_list_copy               (GList                    *list);
 void       nautilus_g_list_safe_for_each      (GList                    *list,
 					       GFunc                     function,
+					       gpointer                  user_data);
+GList *    nautilus_g_list_partition          (GList                    *list,
+					       NautilusGPredicateFunc    predicate,
+					       gpointer	                 user_data,
+					       GList                   **removed);
+void       nautilus_g_list_free_deep_custom   (GList                    *list, 
+					       GFunc                     element_free_func, 
 					       gpointer                  user_data);
 
 /* List functions for lists of g_free'able objects. */

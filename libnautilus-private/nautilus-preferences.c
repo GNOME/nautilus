@@ -26,6 +26,7 @@
 #include "nautilus-preferences.h"
 
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
 
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
@@ -157,9 +158,9 @@ pref_hash_node_free (PrefHashNode *pref_hash_node)
 
 	g_assert (pref_hash_node->preference != NULL);
 
-	g_list_foreach (pref_hash_node->callback_list,
-			pref_callback_info_free_func,
-			NULL);
+	nautilus_g_list_free_deep_custom (pref_hash_node->callback_list,
+					  pref_callback_info_free_func,
+					  NULL);
 	
 	gtk_object_unref (GTK_OBJECT (pref_hash_node->preference));
 	pref_hash_node->preference = NULL;
@@ -574,7 +575,7 @@ prefs_hash_lookup_with_implicit_registration (const char		*name,
 	hash_node = prefs_hash_lookup (name);
 
 	if (!hash_node) {
-		preferences_register ((char *) name,
+		preferences_register (g_strdup (name),
 				      "Unspecified Description",
 				      type,						   
 				      default_value,

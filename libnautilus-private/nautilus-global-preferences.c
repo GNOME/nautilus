@@ -23,6 +23,7 @@
 */
 
 #include <config.h>
+#include <liboaf/liboaf.h>
 #include "nautilus-global-preferences.h"
 
 #include <nautilus-widgets/nautilus-preferences-group.h>
@@ -30,6 +31,7 @@
 #include <nautilus-widgets/nautilus-preferences-dialog.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-view-identifier.h>
 
 /* Constants */
 #define GLOBAL_PREFERENCES_DIALOG_TITLE _("Nautilus Preferences")
@@ -118,38 +120,38 @@ global_preferences_create_dialog (void)
 	
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (meta_view_pane), "Meta Views");
 	
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (meta_view_pane),
-							 0,
-							 NAUTILUS_PREFERENCES_META_VIEWS_SHOW_ANNOTATIONS,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+	{
+		char *meta_view_pref;
+		GList *view_identifiers;
+		GList *p;
+		NautilusViewIdentifier *identifier;
+
+		view_identifiers = nautilus_global_preferences_get_sidebar_panel_view_identifiers ();
+
+
+		for (p = view_identifiers; p != NULL; p = p->next) {
+			identifier = (NautilusViewIdentifier *) (p->data);
+
+			meta_view_pref = g_strconcat ("/nautilus/metaviews/", 
+						      identifier->iid,
+						      NULL);
+
+			nautilus_preferences_pane_add_item_to_nth_group 
+				(NAUTILUS_PREFERENCES_PANE (meta_view_pane),
+				 0,
+				 meta_view_pref,
+				 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (meta_view_pane),
-							 0,
-							 NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_CONTENTS,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+			g_free (meta_view_pref);
 
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (meta_view_pane),
-							 0,
-							 NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_INDEX,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (meta_view_pane),
-							 0,
-							 NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_SEARCH,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (meta_view_pane),
-							 0,
-							 NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HISTORY,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (meta_view_pane),
-							 0,
-							 NAUTILUS_PREFERENCES_META_VIEWS_SHOW_WEB_SEARCH,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+		}
+	
+		nautilus_view_identifier_free_list (view_identifiers);
+	}
 
 	return prefs_dialog;
 }
+
 
 /* 
  * Presummably, the following would be registered
@@ -159,28 +161,71 @@ global_preferences_create_dialog (void)
  * For now turn on all the ones we know about.
  */
 
-const NautilusStringList *
+GList *
+nautilus_global_preferences_get_sidebar_panel_view_identifiers (void)
+{
+        OAF_ServerInfoList *oaf_result;
+	const char *query;
+	CORBA_Environment ev;
+	int i;
+	GList *view_identifiers;
+
+	CORBA_exception_init (&ev);
+
+	view_identifiers = NULL;
+
+	oaf_result = NULL;
+	
+	query = "repo_ids.has_all (['IDL:Nautilus/MetaView:1.0','IDL:Bonobo/Control:1.0'])";
+
+	oaf_result = oaf_query (query, NULL /* alphabetize by name in the future */, &ev);
+		
+        if (ev._major == CORBA_NO_EXCEPTION && oaf_result != NULL && oaf_result->_length > 0) {
+		for (i = 0; i < oaf_result->_length; i++) {
+			view_identifiers = g_list_append (view_identifiers,
+							  nautilus_view_identifier_new_from_sidebar_panel 
+							  (&oaf_result->_buffer[i]));
+		}
+	} 
+
+	if (oaf_result != NULL) {
+		CORBA_free (oaf_result);
+	}
+	
+	CORBA_exception_free (&ev);
+
+	return view_identifiers;
+}
+
+
+/* 
+ * Presummably, the following would be registered
+ * only if the component was present.  Once we
+ * have smarter activation, that will be case.
+ * 
+ * For now turn on all the ones we know about.
+ */
+
+NautilusStringList *
 nautilus_global_preferences_get_meta_view_iids (void)
 {
-	static NautilusStringList * meta_view_names = NULL;
-	
-	if (!meta_view_names)
-	{
-		meta_view_names = nautilus_string_list_new ();
+	NautilusStringList *meta_view_names;
+	GList *view_identifiers;
+	GList *p;
+	NautilusViewIdentifier *identifier;
 
+	view_identifiers = nautilus_global_preferences_get_sidebar_panel_view_identifiers ();
+
+	meta_view_names = nautilus_string_list_new ();
+
+
+	for (p = view_identifiers; p != NULL; p = p->next) {
+		identifier = (NautilusViewIdentifier *) (p->data);
 		nautilus_string_list_insert (meta_view_names, 
-					     "OAFIID:ntl_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185");
-		nautilus_string_list_insert (meta_view_names, 
-					     "OAFIID:hyperbola_navigation_tree:57542ce0-71ff-442d-a764-462c92514234");
-		nautilus_string_list_insert (meta_view_names, 
-					     "OAFIID:hyperbola_navigation_index:0bafadc7-09f1-4f10-8c8e-dad53124fc49");
-		nautilus_string_list_insert (meta_view_names, 
-					     "OAFIID:hyperbola_navigation_search:89b2f3b8-4f09-49c8-9a7b-ccb14d034813");
-		nautilus_string_list_insert (meta_view_names, 
-					     "OAFIID:ntl_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb");
-		nautilus_string_list_insert (meta_view_names, 
-					     "OAFIID:ntl_websearch_view:8216e1e4-6b01-4a28-82d9-5df30ed7d044");
+					     identifier->iid);
 	}
+	
+	nautilus_view_identifier_free_list (view_identifiers);
 
 	return meta_view_names;
 }
@@ -198,6 +243,33 @@ global_preferences_get_dialog (void)
 	}
 
 	return global_prefs_dialog;
+}
+
+
+static void
+nautilus_preferences_register_meta_view_preferences_for_ui (void)
+{
+	GList *view_identifiers;
+	GList *p;
+	NautilusViewIdentifier *identifier;
+	char *preference_key;
+
+	view_identifiers = nautilus_global_preferences_get_sidebar_panel_view_identifiers ();
+
+	for (p = view_identifiers; p != NULL; p = p->next) {
+		identifier = (NautilusViewIdentifier *) (p->data);
+
+		preference_key = g_strconcat ("/nautilus/metaviews/", identifier->iid, NULL);
+
+		nautilus_preferences_set_info (preference_key,
+					       identifier->name,
+					       NAUTILUS_PREFERENCE_BOOLEAN,
+					       (gconstpointer) TRUE);
+
+		g_free (preference_key);
+	}
+
+	nautilus_view_identifier_free_list (view_identifiers);
 }
 
 static void
@@ -263,35 +335,10 @@ global_preferences_register_for_ui ()
 					     NAUTILUS_USER_LEVEL_HACKER);
 
 	/* Meta views */
-	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HISTORY,
-				       "History View",
-				       NAUTILUS_PREFERENCE_BOOLEAN,
-				       (gconstpointer) TRUE);
-	
-	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_META_VIEWS_SHOW_WEB_SEARCH,
-				       "Web Search View",
-				       NAUTILUS_PREFERENCE_BOOLEAN,
-				       (gconstpointer) FALSE);
 
-	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_META_VIEWS_SHOW_ANNOTATIONS,
-				       "Annotations",
-				       NAUTILUS_PREFERENCE_BOOLEAN,
-				       (gconstpointer) TRUE);
+	nautilus_preferences_register_meta_view_preferences_for_ui ();
 
-	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_CONTENTS,
-				       "Help Contents",
-				       NAUTILUS_PREFERENCE_BOOLEAN,
-				       (gconstpointer) TRUE);
 
-	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_INDEX,
-				       "Help Index",
-				       NAUTILUS_PREFERENCE_BOOLEAN,
-				       (gconstpointer) FALSE);
-
-	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_SEARCH,
-				       "Help Search",
-				       NAUTILUS_PREFERENCE_BOOLEAN,
-				       (gconstpointer) FALSE);
 	/* miscellaneous */
 	
 	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME,
