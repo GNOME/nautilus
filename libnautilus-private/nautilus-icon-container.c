@@ -4395,6 +4395,7 @@ handle_icon_button_press (NautilusIconContainer *container,
 		start_icon = details->range_selection_base_icon;
 		if (start_icon == NULL || !start_icon->is_selected) {
 			start_icon = icon;
+			details->range_selection_base_icon = icon;
 		} 
 		if (select_range (container, start_icon, icon)) {
 			g_signal_emit (container,
