@@ -676,7 +676,16 @@ osd_parse_provides (PackageData *pack, xmlNodePtr node, GList **feature_list)
 				dep = packagedependency_new ();
 				dep->version = trilobite_xml_get_string (child, "version");
 				tmp = trilobite_xml_get_string (child, "sense");
-				dep->sense = eazel_softcat_convert_sense_flags (atoi (tmp));
+				if (atoi (tmp) > 0) {
+					/* old-style numeric "12" sense */
+					dep->sense = eazel_softcat_convert_sense_flags (atoi (tmp));
+				} else {
+					/* new-style symbolic ">=" sense */
+					dep->sense = eazel_softcat_string_to_sense_flags (tmp);
+				}
+				if (dep->sense == 0) {
+					g_warning ("unreadable sense %s from softcat :(", tmp);
+				}
 				g_free (tmp);
 				got_package = TRUE;
 			}
@@ -867,6 +876,7 @@ osd_parse_shared (xmlDocPtr doc)
 {
 	GList *result;
 	xmlNodePtr base, child;
+	char *tmp;
 
 	result = NULL;
 
@@ -891,6 +901,10 @@ osd_parse_shared (xmlDocPtr doc)
 			} else {
 				trilobite_debug ("SOFTPKG parse failed");
 			}
+		} else if (g_strcasecmp (child->name, "DB_CONTROL") == 0) {
+			tmp = trilobite_xml_get_string (child, "VALUE");
+			trilobite_debug ("(softcat db revision %s)", tmp);
+			g_free (tmp);
 		} else {
 			trilobite_debug ("child is not a SOFTPKG, but a \"%s\"", child->name);
 		}

@@ -1,3 +1,51 @@
+2001-02-07  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(expand_package_suites), (install_packages):
+
+	Do a softcat query for any suite ids in the initial package list,
+	so they're expanded first and then all future queries will return
+	single packages.
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_emit_preflight_check):
+
+	Don't restrict the preflight signal to toplevel packages anymore:
+	we send the whole package tree now so no editing is necessary.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(osd_parse_provides), (osd_parse_shared):
+
+	Softcat server has started filling in the sense flag differently
+	(without notice, I might grumpily add), so handle both types now
+	and whine if we can't figure out how to decode it.  Log the
+	softcat DB version now (eventually should store it somewhere).
+	
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_error_string), (eazel_softcat_query),
+	(eazel_softcat_get_info), (eazel_softcat_available_update):
+	* components/services/install/lib/eazel-softcat.h:
+
+	Split up the handling for single-package softcat queries and
+	multi-package suite queries.
+	
+	* components/services/install/nautilus-view/main.c:
+	(service_install_make_object), (main):
+
+	Remove redundant 2nd ammonite_init call and a long-since useless
+	printf from object creation.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_downloading),
+	(flatten_package_tree_foreach), (nautilus_service_install_done),
+	(nautilus_service_install_failed):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.h:
+
+	Clean up final dialog text generation, and only ask about deleting
+	RPMs if the user level is "advanced".  Also don't ask if no files
+	were even downloaded.
+	
 2001-02-07  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Mike Fleming <mfleming@eazel.com>

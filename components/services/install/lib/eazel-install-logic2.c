@@ -1667,6 +1667,36 @@ install_packages_helper (EazelInstall *service,
 }
 
 static void
+expand_package_suites (EazelInstall *service, GList **packages)
+{
+	GList *iter, *newlist, *sublist;
+	EazelSoftCatError err;
+	PackageData *pack;
+
+	newlist = NULL;
+	for (iter = g_list_first (*packages); iter != NULL; iter = g_list_next (iter)) {
+		pack = PACKAGEDATA (iter->data);
+		if (pack->suite_id != NULL) {
+			/* could be multiple packages */
+			sublist = NULL;
+			err = eazel_softcat_query (service->private->softcat, pack, 
+						   EAZEL_SOFTCAT_SENSE_EQ, MUST_HAVE, &sublist);
+			if (err != EAZEL_SOFTCAT_SUCCESS) {
+				g_warning ("softcat query on suite (%s) failed", pack->suite_id);
+				/* leave the package alone for now */
+				newlist = g_list_prepend (newlist, pack);
+			} else {
+				gtk_object_unref (GTK_OBJECT (pack));
+				newlist = g_list_concat (sublist, newlist);
+			}
+		} else {
+			newlist = g_list_prepend (newlist, pack);
+		}
+	}
+	*packages = newlist;
+}
+
+static void
 set_toplevel (PackageData *package,
 	      EazelInstall *service)
 {
@@ -1681,6 +1711,7 @@ install_packages (EazelInstall *service, GList *categories)
 	GList *extra_packages = NULL;
 
 	packages = packagedata_list_copy (categorylist_flatten_to_packagelist (categories), TRUE);
+	expand_package_suites (service, &packages);
 	g_list_foreach (packages, (GFunc)set_toplevel, service);
 	do {
 		extra_packages = NULL;

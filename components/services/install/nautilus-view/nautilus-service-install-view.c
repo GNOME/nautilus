@@ -47,6 +47,7 @@
 #include <libnautilus-extensions/nautilus-password-dialog.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-viewport.h>
+#include <libnautilus-extensions/nautilus-preferences.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <dirent.h>
@@ -687,6 +688,7 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const PackageDat
 
 	/* install lib better damn well know the name of the package by the time we download it! */
 	g_assert (pack->name != NULL);
+	view->details->downloaded_anything = TRUE;
 
 	if (amount == 0) {
 		/* could be a redundant zero-trigger for the same rpm... */
@@ -833,7 +835,6 @@ flatten_package_tree_foreach (PackageData *package, GList **flattened_list)
 		*flattened_list = g_list_prepend (*flattened_list, package);
 
 		g_list_foreach (package->depends, (GFunc)flatten_package_tree_depends_foreach, flattened_list);
-		g_list_foreach (package->soft_depends, (GFunc)flatten_package_tree_foreach, flattened_list);
 	}
 }
 
@@ -1242,7 +1243,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 	GtkWidget *toplevel;
 	GtkWidget *dialog;
 	char *message;
-	char *real_message;
+	GString *real_message;
 	gboolean answer = FALSE;
 	gboolean question_dialog;
 
@@ -1283,44 +1284,51 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 						    NULL,
 						    NULL);
 	} else {
+		real_message = g_string_new (message);
 		question_dialog = TRUE;
 
 		if (success && view->details->desktop_files &&
-				!view->details->cancelled &&
-				!view->details->already_installed) {
-			real_message = g_strdup_printf (_("%s\n%s\nErase the leftover RPM files?"), 
-							message,
-							nautilus_install_service_locate_menu_entries (view));
-		} else if (view->details->cancelled_before_downloads || view->details->already_installed) {
-			real_message = g_strdup (message);
-			question_dialog = FALSE;
-		} else {
-			if (view->details->cancelled || view->details->failure) {
-				real_message = g_strdup_printf (_("%s\nErase the RPM files?"), message);
-			} else {
-				real_message = g_strdup_printf (_("%s\nErase the leftover RPM files?"), message);
-			}
+		    !view->details->cancelled &&
+		    !view->details->already_installed) {
+			g_string_sprintfa (real_message, "\n%s", nautilus_install_service_locate_menu_entries (view));
 		}
+		if (view->details->cancelled_before_downloads ||
+		    view->details->already_installed ||
+		    (nautilus_preferences_get_user_level () < NAUTILUS_USER_LEVEL_ADVANCED)) {
+			/* don't ask about erasing rpms */
+			question_dialog = FALSE;
+		} else if (view->details->downloaded_anything) {
+			if (view->details->cancelled || view->details->failure) {
+				g_string_sprintfa (real_message, "\n%s", _("Erase the RPM files?"));
+			} else {
+				g_string_sprintfa (real_message, "\n%s", _("Erase the leftover RPM files?"));
+			}
+		} else {
+			question_dialog = FALSE;
+		}
+
 		toplevel = gtk_widget_get_toplevel (view->details->message_box);
 		if (GTK_IS_WINDOW (toplevel)) {
 			if (question_dialog) {
-				dialog = gnome_question_dialog_parented (real_message, (GnomeReplyCallback)reply_callback,
+				dialog = gnome_question_dialog_parented (real_message->str,
+									 (GnomeReplyCallback)reply_callback,
 									 &answer, GTK_WINDOW (toplevel));
 			} else {
-				dialog = gnome_ok_dialog_parented (real_message, GTK_WINDOW (toplevel));
+				dialog = gnome_ok_dialog_parented (real_message->str, GTK_WINDOW (toplevel));
 				answer = FALSE;
 			}
 		} else {
 			if (question_dialog) {
-				dialog = gnome_question_dialog (real_message, (GnomeReplyCallback)reply_callback, &answer);
+				dialog = gnome_question_dialog (real_message->str,
+								(GnomeReplyCallback)reply_callback, &answer);
 			} else {
-				dialog = gnome_ok_dialog (real_message);
+				dialog = gnome_ok_dialog (real_message->str);
 				answer = FALSE;
 			}
 		}
 		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
-		g_free (real_message);
+		g_string_free (real_message, TRUE);
 
 		if (answer) {
 			CORBA_exception_init (&ev);
@@ -1374,13 +1382,13 @@ nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pa
 
 	g_assert (NAUTILUS_IS_SERVICE_INSTALL_VIEW (view));
 
-	/* override the "success" result for install_done signal */
-	view->details->failure = TRUE;
-
 	if (package->status == PACKAGE_ALREADY_INSTALLED) {
 		view->details->already_installed = TRUE;
 		return;
 	}
+
+	/* override the "success" result for install_done signal */
+	view->details->failure = TRUE;
 
 	tmp = packagedata_get_readable_name (package);
 	message = g_strdup_printf (_("Installation failed on %s"), tmp);

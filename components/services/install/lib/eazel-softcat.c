@@ -287,6 +287,8 @@ eazel_softcat_error_string (EazelSoftCatError err)
 		return "internal error";
 	case EAZEL_SOFTCAT_ERROR_SERVER_UNREACHABLE:
 		return "softcat server is unreachable";
+	case EAZEL_SOFTCAT_ERROR_MULTIPLE_RESPONSES:
+		return "softcat server returned multiple responses to a single-package query";
 	case EAZEL_SOFTCAT_ERROR_NO_SUCH_PACKAGE:
 		return "no such package";
 	}
@@ -602,10 +604,8 @@ remove_directories_from_provides_list (PackageData *pack)
 	}
 }
 
-/* Given a partially filled packagedata object, 
-   check softcat, and fill it with the desired info */
 EazelSoftCatError
-eazel_softcat_get_info (EazelSoftCat *softcat, PackageData *package, int sense_flags, int fill_flags)
+eazel_softcat_query (EazelSoftCat *softcat, PackageData *package, int sense_flags, int fill_flags, GList **result)
 {
 	char *search_url;
 	char *body = NULL;
@@ -613,7 +613,6 @@ eazel_softcat_get_info (EazelSoftCat *softcat, PackageData *package, int sense_f
 	int tries_left;
 	gboolean got_happy;
 	GList *packages;
-	PackageData *full_package;
 	int err;
 
 	search_url = get_search_url_for_package (softcat, package, sense_flags);
@@ -667,34 +666,44 @@ eazel_softcat_get_info (EazelSoftCat *softcat, PackageData *package, int sense_f
 		goto out;
 	}
 
-	if (g_list_length (packages) > 1) {
-		trilobite_debug ("more than one match: making a suite");
-		err = EAZEL_SOFTCAT_SUCCESS;
-
-		/* clear out any old deps */
-		if (package->soft_depends != NULL) {
-			g_list_foreach (package->soft_depends, (GFunc)gtk_object_unref, NULL);
-		}
-		package->soft_depends = packages;
-		g_free (package->filename);
-		g_free (package->remote_url);
-		package->filename = NULL;
-		package->remote_url = NULL;
-	} else {
-		trilobite_debug ("package info ok.");
-		err = EAZEL_SOFTCAT_SUCCESS;
-
-		full_package = (PackageData *) packages->data;
-		packagedata_fill_in_missing (package, full_package, fill_flags);
-		remove_directories_from_provides_list (package);
-		g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
-		g_list_free (packages);
-	}
+	trilobite_debug ("package info ok.");
+	*result = packages;
+	err = EAZEL_SOFTCAT_SUCCESS;
 
 out:
 	g_free (body);
 	g_free (search_url);
 
+	return err;
+}
+
+/* Given a partially filled packagedata object, 
+   check softcat, and fill it with the desired info */
+EazelSoftCatError
+eazel_softcat_get_info (EazelSoftCat *softcat, PackageData *package, int sense_flags, int fill_flags)
+{
+	GList *packages;
+	PackageData *full_package;
+	EazelSoftCatError err;
+
+	err = eazel_softcat_query (softcat, package, sense_flags, fill_flags, &packages);
+	if (err != EAZEL_SOFTCAT_SUCCESS) {
+		return err;
+	}
+
+	if (g_list_length (packages) > 1) {
+		g_warning ("softcat query returned %d results!", g_list_length (packages));
+		g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
+		g_list_free (packages);
+		err = EAZEL_SOFTCAT_ERROR_MULTIPLE_RESPONSES;
+		return err;
+	}
+
+	full_package = PACKAGEDATA (packages->data);
+	packagedata_fill_in_missing (package, full_package, fill_flags);
+	remove_directories_from_provides_list (package);
+	g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
+	g_list_free (packages);
 	return err;
 }
 
@@ -722,7 +731,7 @@ eazel_softcat_available_update (EazelSoftCat *softcat, PackageData *oldpack, Pac
 	} else {
 		gtk_object_unref (GTK_OBJECT (tmp_pack));
 		/* Null in case it's givin */
-		if (newpack!=NULL) {
+		if (newpack != NULL) {
 			(*newpack) = NULL;
 		}
 	}

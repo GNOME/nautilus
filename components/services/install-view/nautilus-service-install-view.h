@@ -88,6 +88,7 @@ struct _NautilusServiceInstallViewDetails {
 	gboolean	failure;
 	gboolean	cancelled;
 	gboolean	already_installed;
+	gboolean	downloaded_anything;
 	int		last_k;			/* used to avoid flickering the KB count so much */
 	gboolean	cancelled_before_downloads;
 	unsigned long	download_bytes_total;

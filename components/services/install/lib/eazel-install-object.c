@@ -1486,8 +1486,6 @@ gboolean
 eazel_install_emit_preflight_check (EazelInstall *service, 
 				    GList *packages)
 {
-	GList *packages_in_signal = NULL;
-	GList *iterator;
 	unsigned long size_packages, num_packages;
 	gboolean result;
 	GList *flat_packages;
@@ -1499,21 +1497,12 @@ eazel_install_emit_preflight_check (EazelInstall *service,
 	num_packages = g_list_length (flat_packages);
 	g_list_free (flat_packages);
 
-	for (iterator = packages; iterator; glist_step (iterator)) {
-		PackageData *pack = (PackageData*)iterator->data;
-		
-		if (eazel_install_get_ei2 (service) || pack->toplevel) {
-			packages_in_signal = g_list_prepend (packages_in_signal, pack);
-		} 
-	}
-
 	gtk_signal_emit (GTK_OBJECT (service), 
 			 signals[PREFLIGHT_CHECK], 
-			 packages_in_signal,
+			 packages,
 			 size_packages,
 			 num_packages,
 			 &result);
-	g_list_free (packages_in_signal);
 
 	return result;
 }

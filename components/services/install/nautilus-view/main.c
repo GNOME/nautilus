@@ -64,8 +64,6 @@ service_install_make_object (BonoboGenericFactory	*factory,
 	
 	gtk_signal_connect (GTK_OBJECT (nautilus_view), "destroy", service_install_object_destroyed, NULL);
 
-	printf ("Returning new object %p\n", nautilus_view);
-
 	return BONOBO_OBJECT (nautilus_view);
 }
 
@@ -93,8 +91,6 @@ main (int argc, char *argv[])
 
 	/* log to stderr, for now (but leave debug mode off) */
 	trilobite_set_log_handler (stderr, G_LOG_DOMAIN);
-
-	ammonite_init (bonobo_poa());
 
         registration_id = oaf_make_registration_id ("OAFIID:nautilus_service_install_view_factory:e59e53d1-e3d1-46fe-ae28-3ec5c56b7d32", getenv ("DISPLAY"));
 	factory = bonobo_generic_factory_new_multi (registration_id, 
