@@ -111,7 +111,6 @@ struct FMDirectoryViewDetails
 /* forward declarations */
 
 static int            display_selection_info_idle_callback                        (gpointer                  data);
-static void           display_selection_info                                      (FMDirectoryView          *view);
 static void           fm_directory_view_initialize_class                          (FMDirectoryViewClass     *klass);
 static void           fm_directory_view_initialize                                (FMDirectoryView          *view);
 static void           fm_directory_view_duplicate_selection                       (FMDirectoryView          *view,
@@ -766,14 +765,14 @@ fm_directory_view_destroy (GtkObject *object)
 
 
 /**
- * display_selection_info:
+ * fm_directory_view_display_selection_info:
  *
  * Display information about the current selection, and notify the view frame of the changed selection.
  * @view: FMDirectoryView for which to display selection info.
  * 
  **/
-static void
-display_selection_info (FMDirectoryView *view)
+void
+fm_directory_view_display_selection_info (FMDirectoryView *view)
 {
 	GList *selection;
 	GnomeVFSFileSize non_folder_size;
@@ -1129,7 +1128,7 @@ display_selection_info_idle_callback (gpointer data)
 
 	view->details->display_selection_idle_id = 0;
 
-	display_selection_info (view);
+	fm_directory_view_display_selection_info (view);
 	fm_directory_view_send_selection_change (view);
 
 	return FALSE;
