@@ -338,7 +338,7 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 					 guint info,
 					 guint32 time)
 {
-	char *path, *image_file_name, *image_file_uri;
+	char  *image_file_name, *image_file_uri;
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(widget);
 	
 	g_return_if_fail (widget != NULL);
@@ -387,7 +387,6 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 		image_file_uri = g_strdup_printf ("file://%s", image_file_name);
 		gtk_selection_data_set (selection_data, selection_data->target, 8, image_file_uri, strlen(image_file_uri));
 		
-		g_free (path);
 		g_free (image_file_name);
 		g_free (image_file_uri);
 		

@@ -1,3 +1,11 @@
+2000-06-12  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_drag_data_get):
+	fixed a crash I noticed while demoing today where dropping image backgrounds
+	would segfault or hang.  Fixed by removing code that was freeing an
+	otherwise unused variable.
+	
 2000-06-12  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/eazel-alt-install.c:
