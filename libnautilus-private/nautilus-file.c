@@ -2258,6 +2258,7 @@ nautilus_file_get_display_name_nocopy (NautilusFile *file)
 	char *name, *utf8_name;
 	gboolean broken_filenames;
 	gboolean validated;
+	GnomeVFSURI *vfs_uri;
 
 	if (file == NULL) {
 		return NULL;
@@ -2302,6 +2303,12 @@ nautilus_file_get_display_name_nocopy (NautilusFile *file)
 					/* name was valid, no need to re-validate */
 					validated = TRUE;
 				}
+			} else if (strcmp (name, "/") == 0) {
+				/* Special-case the display name for roots that are not local files */
+				g_free (name);
+				vfs_uri = gnome_vfs_uri_new (file->details->directory->details->uri);
+				name = gnome_vfs_uri_to_string (vfs_uri, GNOME_VFS_URI_HIDE_PASSWORD);
+				gnome_vfs_uri_unref (vfs_uri);
 			}
 		}
 	}

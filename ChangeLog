@@ -1,5 +1,11 @@
 2002-12-12  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-file.c:
+	Special case the display name for the root of non-local files.
+	This means we show e.g. fonts:// instead of / as the title.
+
+2002-12-12  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-applicable-views.c:
 	* src/nautilus-applicable-views.h:
 	Add NAUTILUS_DETERMINE_VIEW_NO_MASTER_BROWSER result.
