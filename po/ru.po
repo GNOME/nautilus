@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2003-01-27 21:43-0500\n"
-"PO-Revision-Date: 2003-01-21 15:33+0300\n"
+"POT-Creation-Date: 2003-01-21 15:20+0300\n"
+"PO-Revision-Date: 2003-01-29 13:42+0300\n"
 "Last-Translator: Dmitry G. Mastrukov <dmitry@taurussoft.org>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -58,8 +58,8 @@ msgid ""
 "Couldn't remove emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one you added yourself."
 msgstr ""
-"Не удалось убрать эмблему с именем \"%s\". Это может значить, что эмблема "
-"встроенная, а не добавленная."
+"Не удалось убрать эмблему с именем \"%s\". Это может значить, что "
+"эмблема встроенная, а не добавленная."
 
 #: components/emblem/nautilus-emblem-view.c:203
 msgid "Couldn't remove emblem"
@@ -1311,8 +1311,7 @@ msgid ""
 msgstr ""
 "Произошла ошибка при перемещении.\n"
 "\n"
-"Элемент \"%s\" не может быть перемещён, потому что этот диск только для "
-"чтения."
+"Элемент \"%s\" не может быть перемещён, потому что этот диск только для чтения."
 
 #: libnautilus-private/nautilus-file-operations.c:553
 #, c-format
@@ -1348,8 +1347,8 @@ msgid ""
 msgstr ""
 "Произошла ошибка при перемещении.\n"
 "\n"
-"Элемент \"%s\" не может быть перемещен, потому что у вас недостаточно прав "
-"для изменения его или его родительской папки."
+"Элемент \"%s\" не может быть перемещен, потому что у вас недостаточно прав для "
+"изменения его или его родительской папки."
 
 #: libnautilus-private/nautilus-file-operations.c:595
 #, c-format
@@ -1361,8 +1360,8 @@ msgid ""
 msgstr ""
 "Произошла ошибка при перемещении.\n"
 "\n"
-"Элемент \"%s\" не может быть перемещён, потому что он или его родительский "
-"каталог содержаться в месте назначения."
+"Элемент \"%s\" не может быть перемещён, потому что он или его родительский каталог содержаться "
+"в месте назначения."
 
 #: libnautilus-private/nautilus-file-operations.c:605
 #, c-format
@@ -1373,8 +1372,8 @@ msgid ""
 "change it or its parent folder."
 msgstr ""
 "Произошла ошибка при перемещении.\n"
-"Элемент \"%s\" не может быть перемещён в мусорную корзину, потому что вы не "
-"имеете достаточных прав для изменения его или его родительской папки."
+"Элемент \"%s\" не может быть перемещён в мусорную корзину, потому что вы не имеете "
+"достаточных прав для изменения его или его родительской папки."
 
 #: libnautilus-private/nautilus-file-operations.c:628
 #, c-format
@@ -1385,8 +1384,8 @@ msgid ""
 msgstr ""
 "Произошла ошибка при копировании.\n"
 "\n"
-"Элемент \"%s\" не может быть скопирован, потому что у вас недостаточно прав "
-"для чтения."
+"Элемент \"%s\" не может быть скопирован, потому что у вас недостаточно прав для "
+"чтения."
 
 #: libnautilus-private/nautilus-file-operations.c:649
 #, c-format
@@ -1618,11 +1617,11 @@ msgid ""
 "If you still want to move \"%s\", rename it and try again."
 msgstr ""
 "Элемент \"%s\" не может быть перемещен в новое местоположение, поскольку его "
-"имя уже используется для специального элемента, который не может быть удалён "
-"или заменён.\n"
+"имя уже используется для специального элемента, который не может быть "
+"удалён или заменён.\n"
 "\n"
-"Если вы всё ещё хотите переместить элемент \"%s\", переименуйте его и "
-"попробуйте ещё раз."
+"Если вы всё ещё хотите переместить элемент \"%s\", переименуйте его и попробуйте ещё "
+"раз."
 
 #: libnautilus-private/nautilus-file-operations.c:1029
 #, c-format
@@ -1632,12 +1631,12 @@ msgid ""
 "\n"
 "If you still want to copy \"%s\", rename it and try again."
 msgstr ""
-"Элемент \"%s\" не может быть скопирован в новое местоположение, поскольку "
-"его название уже используется для специального элемента, который не может "
-"быть удалён или заменён.\n"
+"Элемент \"%s\" не может быть скопирован в новое местоположение, поскольку его "
+"название уже используется для специального элемента, который не может быть "
+"удалён или заменён.\n"
 "\n"
-"Если вы всё ещё хотите переместить элемент \"%s\", переименуйте его и "
-"попробуйте ещё раз."
+"Если вы всё ещё хотите переместить элемент \"%s\", переименуйте его и попробуйте ещё "
+"раз."
 
 #: libnautilus-private/nautilus-file-operations.c:1037
 msgid "Unable to replace file."
@@ -2970,7 +2969,7 @@ msgstr "в меню для этого файла"
 #: libnautilus-private/nautilus-program-chooser.c:342
 #, c-format
 msgid "in menu for \"%s\""
-msgstr "в меню для \"%s\""
+msgstr "в меню для типа \"%s\""
 
 #: libnautilus-private/nautilus-program-chooser.c:345
 msgid "default for this file"
@@ -2980,42 +2979,42 @@ msgstr "по умолчанию для этого файла"
 #: libnautilus-private/nautilus-program-chooser.c:351
 #, c-format
 msgid "default for \"%s\""
-msgstr "по умолчанию для \"%s\""
+msgstr "по умолчанию для типа \"%s\""
 
 #: libnautilus-private/nautilus-program-chooser.c:396
 #, c-format
 msgid "Is not in the menu for \"%s\" items."
-msgstr "Нет в меню для элементов \"%s\"."
+msgstr "Нет в меню для элементов типа \"%s\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:399
 #, c-format
 msgid "Is in the menu for \"%s\"."
-msgstr "Есть в меню для \"%s\"."
+msgstr "Есть в меню для типа \"%s\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:402
 #, c-format
 msgid "Is in the menu for \"%s\" items."
-msgstr "Есть в меню для элементов \"%s\"."
+msgstr "Есть в меню для элементов типа \"%s\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:405
 #, c-format
 msgid "Is in the menu for all \"%s\" items."
-msgstr "Есть в меню для всех элементов \"%s\"."
+msgstr "Есть в меню для всех элементов типа \"%s\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:408
 #, c-format
 msgid "Is the default for \"%s\"."
-msgstr "По умолчанию для \"%s\"."
+msgstr "По умолчанию для типа \"%s\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:411
 #, c-format
 msgid "Is the default for \"%s\" items."
-msgstr "По умолчанию для элементов \"%s\"."
+msgstr "По умолчанию для элементов типа \"%s\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:414
 #, c-format
 msgid "Is the default for all \"%s\" items."
-msgstr "По умолчанию для всех элементов \"%s\"."
+msgstr "По умолчанию для всех элементов типа \"%s\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:1041
 #, c-format
