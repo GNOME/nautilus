@@ -2219,6 +2219,8 @@ handle_icon_button_press (GnomeIconContainer *container,
 	GnomeIconContainerPrivate *priv;
 	gdouble world_x, world_y;
 
+	priv = container->priv;
+
 	if (event->button == 3) {
 		/* FIXME this means you cannot drag with right click.  Instead,
                    we should setup a timeout and emit this signal if the
@@ -2235,8 +2237,6 @@ handle_icon_button_press (GnomeIconContainer *container,
 
 	if (event->button != 1)
 		return FALSE;
-
-	priv = container->priv;
 
 	if (event->state & GDK_CONTROL_MASK) {
 		toggle_icon (container, icon);
