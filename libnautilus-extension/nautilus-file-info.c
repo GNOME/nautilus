@@ -118,6 +118,15 @@ nautilus_file_info_get_parent_uri (NautilusFileInfo *file)
 }
 
 char *
+nautilus_file_info_get_uri_scheme (NautilusFileInfo *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);
+	g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_uri_scheme != NULL, NULL);
+
+	return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_uri_scheme (file);
+}
+
+char *
 nautilus_file_info_get_mime_type (NautilusFileInfo *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);

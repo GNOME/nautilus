@@ -71,6 +71,7 @@ void              nautilus_menu_item_set_icon      (NautilusMenuItem *item,
 gboolean          nautilus_menu_item_get_sensitive (NautilusMenuItem *item);
 void              nautilus_menu_item_set_sensitive (NautilusMenuItem *item,
 						    gboolean          sensitive);
+
 void              nautilus_menu_item_activate      (NautilusMenuItem *item);
 
 

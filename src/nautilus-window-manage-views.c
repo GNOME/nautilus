@@ -387,16 +387,6 @@ update_up_button (NautilusWindow *window)
 }
 
 static void
-update_burn_cd_items (NautilusWindow *window)
-{
-        gboolean show_burn_cd;
-        
-        show_burn_cd = eel_istr_has_prefix (window->details->location, "burn:");
-
-        nautilus_window_allow_burn_cd (window, show_burn_cd);
-}
-
-static void
 viewed_file_changed_callback (NautilusFile *file,
                               NautilusWindow *window)
 {
@@ -550,11 +540,11 @@ update_for_new_location (NautilusWindow *window)
         /* Check if we can go up. */
         update_up_button (window);
 
-        /* Check if we can go up. */
-        update_burn_cd_items (window);
-
         /* Set up the content view menu for this new location. */
         nautilus_window_load_view_as_menus (window);
+	
+	/* Load menus from nautilus extensions for this location */
+	nautilus_window_load_extension_menus (window);
       
 #if !NEW_UI_COMPLETE
         if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
@@ -565,6 +555,8 @@ update_for_new_location (NautilusWindow *window)
                 /* Change the location bar to match the current location. */
                 nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (NAUTILUS_NAVIGATION_WINDOW (window)->navigation_bar),
                                                       window->details->location);
+
+		nautilus_navigation_window_load_extension_toolbar_items (NAUTILUS_NAVIGATION_WINDOW (window));
         }
         
         /* Notify the information panel of the location change. */

@@ -28,6 +28,8 @@
 #include <config.h>
 #include "nautilus-bonobo-extensions.h"
 
+#include "nautilus-icon-factory.h"
+
 #include <eel/eel-string.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-debug.h>
@@ -485,6 +487,141 @@ nautilus_bonobo_set_label_for_toolitem_and_command (BonoboUIComponent *ui,
 				   label_no_underscore);
 	
 	g_free (label_no_underscore);
+}
+
+static char *
+get_extension_menu_item_xml (NautilusMenuItem *item)
+{
+	GString *ui_xml;
+	char *pixbuf_data;
+	GdkPixbuf *pixbuf;
+	
+	ui_xml = g_string_new ("");
+
+	g_string_append_printf (ui_xml,
+				"<menuitem name=\"%s\" verb=\"%s\"",
+				nautilus_menu_item_get_name (item),
+				nautilus_menu_item_get_name (item));
+	
+	if (nautilus_menu_item_get_icon (item)) {
+		pixbuf = nautilus_icon_factory_get_pixbuf_from_name 
+			(nautilus_menu_item_get_icon (item),
+			 NULL,
+			 NAUTILUS_ICON_SIZE_FOR_MENUS,
+			 NULL);
+		if (pixbuf) {
+			pixbuf_data = bonobo_ui_util_pixbuf_to_xml (pixbuf);
+			g_string_append_printf (ui_xml, " pixtype=\"pixbuf\" pixname=\"%s\"", pixbuf_data);
+			g_free (pixbuf_data);
+			g_object_unref (pixbuf);
+		}
+	}
+	g_string_append (ui_xml, "/>");
+
+	return g_string_free (ui_xml, FALSE);
+}
+
+static void
+extension_action_callback (BonoboUIComponent *component,
+			   gpointer callback_data, const char *path)
+{
+	nautilus_menu_item_activate (NAUTILUS_MENU_ITEM (callback_data));
+}
+
+void
+nautilus_bonobo_add_extension_item_command (BonoboUIComponent *ui,
+					    NautilusMenuItem *item)
+{
+	GString *ui_xml;
+	GClosure *closure;
+
+	ui_xml = g_string_new ("<Root><commands>");
+
+	g_string_append_printf (ui_xml, 
+				"<cmd name=\"%s\" label=\"%s\" tip=\"%s\" sensitive=\"%s\"/>", 
+				nautilus_menu_item_get_name (item), 
+				nautilus_menu_item_get_label (item),
+				nautilus_menu_item_get_tip (item),
+				nautilus_menu_item_get_sensitive (item) ? "1" : "0");
+	ui_xml = g_string_append (ui_xml, "</commands></Root>");
+	
+	bonobo_ui_component_set (ui, "/", ui_xml->str, NULL);
+	g_string_free (ui_xml, TRUE);
+
+
+	closure = g_cclosure_new
+		(G_CALLBACK (extension_action_callback),
+		 g_object_ref (item),
+		 (GClosureNotify)g_object_unref);
+	
+	bonobo_ui_component_add_verb_full
+		(ui, nautilus_menu_item_get_name (item), closure);
+}
+
+void 
+nautilus_bonobo_add_extension_item (BonoboUIComponent *ui,
+				    const char *path,
+				    NautilusMenuItem *item)
+{
+	char *item_xml;
+
+	item_xml = get_extension_menu_item_xml (item);
+	
+	bonobo_ui_component_set (ui, path, item_xml, NULL);
+
+	g_free (item_xml);
+}
+
+static char *
+get_extension_toolbar_item_xml (NautilusMenuItem *item)
+{
+	GString *ui_xml;
+	char *pixbuf_data;
+	GdkPixbuf *pixbuf;
+	gboolean priority;
+	
+	ui_xml = g_string_new ("");
+
+	g_string_append_printf (ui_xml,
+				"<toolitem name=\"%s\" verb=\"%s\"",
+				nautilus_menu_item_get_name (item),
+				nautilus_menu_item_get_name (item));
+
+	g_object_get (item, "priority", &priority, NULL);
+	if (priority) {
+		g_string_append (ui_xml, " priority=\"1\"");
+	}
+
+	if (nautilus_menu_item_get_icon (item)) {
+		pixbuf = nautilus_icon_factory_get_pixbuf_from_name 
+			(nautilus_menu_item_get_icon (item),
+			 NULL,
+			 NAUTILUS_ICON_SIZE_FOR_MENUS,
+			 NULL);
+		if (pixbuf) {
+			pixbuf_data = bonobo_ui_util_pixbuf_to_xml (pixbuf);
+			g_string_append_printf (ui_xml, " pixtype=\"pixbuf\" pixname=\"%s\"", pixbuf_data);
+			g_free (pixbuf_data);
+			g_object_unref (pixbuf);
+		}
+	}
+	g_string_append (ui_xml, "/>");
+
+	return g_string_free (ui_xml, FALSE);
+}
+
+void 
+nautilus_bonobo_add_extension_toolbar_item (BonoboUIComponent *ui,
+					    const char *path,
+					    NautilusMenuItem *item)
+{
+	char *item_xml;
+
+	item_xml = get_extension_toolbar_item_xml (item);
+	
+	bonobo_ui_component_set (ui, path, item_xml, NULL);
+
+	g_free (item_xml);
 }
 
 static void

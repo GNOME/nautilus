@@ -155,7 +155,8 @@
 #define FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS_SEPARATOR    		"/menu/File/Open Placeholder/Scripts/After Scripts"
 #define FM_DIRECTORY_VIEW_MENU_PATH_CUT_FILES    			"/menu/Edit/Cut"
 #define FM_DIRECTORY_VIEW_MENU_PATH_COPY_FILES		    		"/menu/Edit/Copy"
-#define FM_DIRECTORY_VIEW_MENU_PATH_PASTE_FILES		    		"/menu/File/Paste"
+#define FM_DIRECTORY_VIEW_MENU_PATH_PASTE_FILES		    		"/menu/Edit/Paste"
+#define FM_DIRECTORY_VIEW_MENU_PATH_EXTENSION_ACTIONS_PLACEHOLDER       "/menu/Edit/Extension Actions"
 
 #define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND				"/popups/background"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_SELECTION				"/popups/selection"
@@ -171,7 +172,7 @@
 #define FM_DIRECTORY_VIEW_POPUP_PATH_SCRIPTS_SEPARATOR    		"/popups/selection/Open Placeholder/Scripts/After Scripts"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_OPEN_WITH				"/popups/selection/Open Placeholder/Open With"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_SCRIPTS				"/popups/selection/Open Placeholder/Scripts"
-#define FM_DIRECTORY_VIEW_POPUP_PATH_MIME_ACTIONS			"/popups/selection/Mime Actions"
+#define FM_DIRECTORY_VIEW_POPUP_PATH_EXTENSION_ACTIONS			"/popups/selection/Extension Actions"
 
 #define MAX_MENU_LEVELS 5
 
@@ -3557,105 +3558,25 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 }
 
 static void
-extension_action_callback (BonoboUIComponent *component,
-			   gpointer callback_data, const char *path)
-{
-	nautilus_menu_item_activate (NAUTILUS_MENU_ITEM (callback_data));
-}
-
-static void
 add_extension_menu_items (FMDirectoryView *view,
 			  GList *files,
 			  GList *menu_items)
 {
 	GList *l;
-	GString *ui_xml;
-	char *ui_xml_str;
-
-	ui_xml = g_string_new ("<Root><commands>");
-
-	/* build the commands */
 	for (l = menu_items; l; l = l->next) {
 		NautilusMenuItem *item;
-
-		item = l->data;
-
-		g_string_append_printf (ui_xml, 
-					"<cmd name=\"%s\" label=\"%s\" tip=\"%s\"/>", 
-					nautilus_menu_item_get_name (item), 
-					nautilus_menu_item_get_label (item),
-					nautilus_menu_item_get_tip (item));
-	}
-
-	ui_xml = g_string_append (ui_xml, "</commands><popups><popup name=\"selection\"><placeholder name=\"Mime Actions\"><separator/>");
-
-	/* build the UI */
-	for (l = menu_items; l; l = l->next) {
-		NautilusMenuItem *item;
-		char *pixbuf_data;
-		GdkPixbuf *pixbuf;
-
-		item = l->data;
-
-		g_string_append_printf (ui_xml,
-					"<menuitem name=\"%s\" verb=\"%s\"",
-					nautilus_menu_item_get_name (item),
-					nautilus_menu_item_get_name (item));
-
-		if (nautilus_menu_item_get_icon (item)) {
-			pixbuf = nautilus_icon_factory_get_pixbuf_from_name 
-				(nautilus_menu_item_get_icon (item),
-				 NULL,
-				 NAUTILUS_ICON_SIZE_FOR_MENUS,
-				 NULL);
-			if (pixbuf) {
-				pixbuf_data = bonobo_ui_util_pixbuf_to_xml (pixbuf);
-				g_string_append_printf (ui_xml, " pixtype=\"pixbuf\" pixname=\"%s\"", pixbuf_data);
-				g_free (pixbuf_data);
-				g_object_unref (pixbuf);
-			}
-		}
-		g_string_append (ui_xml, "/>");
-	}
-	
-	ui_xml = g_string_append (ui_xml, "</placeholder></popup></popups></Root>");
-	ui_xml_str = g_string_free (ui_xml, FALSE);
-
-	bonobo_ui_component_set (view->details->ui, "/",
-				 ui_xml_str, NULL);
-	g_free (ui_xml_str);
-
-	for (l = menu_items; l != NULL; l = l->next) {
-		NautilusMenuItem *item;
-
-		item = l->data;
-
-		if (!nautilus_menu_item_get_sensitive (item)) {
-			char *path = g_strdup_printf ("/commands/%s",
-						      nautilus_menu_item_get_name (item));
-			bonobo_ui_component_set_prop (view->details->ui,
-						      path,
-						      "sensitive",
-						      "0", NULL);
-			g_free (path);
-		}
-	}
-
-	/* add the verbs */
-	for (l = menu_items; l; l = l->next) {
-		NautilusMenuItem *item;
-		GClosure *closure;
-
-		item = l->data;
 		
-		closure = g_cclosure_new
-			(G_CALLBACK (extension_action_callback),
-			 g_object_ref (item),
-			 (GClosureNotify)g_object_unref);
+		item = NAUTILUS_MENU_ITEM (l->data);
 		
-		bonobo_ui_component_add_verb_full
-			(view->details->ui, 
-			 nautilus_menu_item_get_name (item), closure); 
+		nautilus_bonobo_add_extension_item_command (view->details->ui,
+							    item);
+		
+		nautilus_bonobo_add_extension_item (view->details->ui,
+						    FM_DIRECTORY_VIEW_POPUP_PATH_EXTENSION_ACTIONS,
+						    item);
+		nautilus_bonobo_add_extension_item (view->details->ui,
+						    FM_DIRECTORY_VIEW_MENU_PATH_EXTENSION_ACTIONS_PLACEHOLDER,
+						    item);
 	}
 }
 
@@ -3701,7 +3622,8 @@ get_unique_files (GList *selection)
 }
 
 static GList *
-get_all_extension_menu_items (GList *selection)
+get_all_extension_menu_items (GtkWidget *window,
+			      GList *selection)
 {
 	GList *items;
 	GList *providers;
@@ -3716,6 +3638,7 @@ get_all_extension_menu_items (GList *selection)
 		
 		provider = NAUTILUS_MENU_PROVIDER (l->data);
 		file_items = nautilus_menu_provider_get_file_items (provider,
+								    window,
 								    selection);
 		items = g_list_concat (items, file_items);		
 	}
@@ -3732,13 +3655,16 @@ reset_extension_actions_menu (FMDirectoryView *view, GList *selection)
 	GList *items;
 	GList *l;
 
-	/* Clear any previous inserted items in the mime actions placeholder */
+	/* Clear any previous inserted items in the extension actions placeholder */
 	nautilus_bonobo_remove_menu_items_and_commands
-		(view->details->ui, FM_DIRECTORY_VIEW_POPUP_PATH_MIME_ACTIONS);
+		(view->details->ui, FM_DIRECTORY_VIEW_POPUP_PATH_EXTENSION_ACTIONS);
+	nautilus_bonobo_remove_menu_items_and_commands
+		(view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_EXTENSION_ACTIONS_PLACEHOLDER);
 
 	/* only query for the unique files */
 	unique_selection = get_unique_files (selection);
-	items = get_all_extension_menu_items (selection);
+	items = get_all_extension_menu_items (gtk_widget_get_toplevel (GTK_WIDGET (view)), 
+					      selection);
 	
 	if (items) {
 		add_extension_menu_items (view, unique_selection, items);

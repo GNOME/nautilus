@@ -1,3 +1,54 @@
+2003-12-10  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-extension/nautilus-file-info.c:
+	(nautilus_file_info_get_uri_scheme):
+	* libnautilus-extension/nautilus-file-info.h:
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_info_iface_init): Added a
+	nautilus_file_info_get_uri_scheme convenience function.
+	* libnautilus-extension/nautilus-menu-item.h:
+	* libnautilus-extension/nautilus-menu-item.c:
+	(nautilus_menu_item_get_property),
+	(nautilus_menu_item_set_property), 
+	(nautilus_menu_item_class_init): Added a priority text property.
+	* libnautilus-extension/nautilus-menu-provider.h:
+	* libnautilus-extension/nautilus-menu-provider.c:
+	(nautilus_menu_provider_get_file_items): Pass in the GtkWindow,
+	so that callbacks can parent dialogs appropriately.
+	(nautilus_menu_provider_get_background_items),
+	(nautilus_menu_provider_get_toolbar_items): New functions.
+	* libnautilus-private/nautilus-bonobo-extensions.h:
+	* libnautilus-private/nautilus-bonobo-extensions.c:
+	(get_extension_menu_item_xml), (extension_action_callback),
+	(nautilus_bonobo_add_extension_item_command),
+	(nautilus_bonobo_add_extension_item),
+	(get_extension_toolbar_item_xml),
+	(nautilus_bonobo_add_extension_toolbar_item): Move the extension
+	menu/toolbar stuff here.
+	* src/file-manager/fm-bonobo-provider.c:
+	(fm_bonobo_provider_get_file_items): Updated for new API.
+	* src/file-manager/fm-directory-view.c: (add_extension_menu_items),
+	(get_all_extension_menu_items), (reset_extension_actions_menu): Use
+	new nautilus-bonobo-extensions helpers.
+	* src/nautilus-shell-ui.xml:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/nautilus-navigation-window-ui.xml: Move stuff around.
+	* src/nautilus-window.c: (ui_idle_handler), (real_merge_menus_2),
+	(nautilus_window_constructed), (nautilus_window_class_init):
+	* src/nautilus-window.h: 
+	* src/nautilus-navigation-window.c: (real_merge_menus_2),
+	(nautilus_navigation_window_class_init): Move part two of the
+	menu merging to a virtual function.
+	* src/nautilus-window-manage-views.c: (update_for_new_location):
+	* src/nautilus-window-menus.c:
+	(nautilus_window_initialize_menus_part_1), (get_extension_menus),
+	(nautilus_window_load_extension_menus): Load background menu items
+	from the extensions.
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-toolbars.c: (get_extension_toolbar_items),
+	(nautilus_navigation_window_load_extension_toolbar_items):
+	Load toolbar items from the extensions
+
 2003-11-28  Dave Camp  <dave@ximian.com>
 
 	* libnautilus-extension/Makefile.am:

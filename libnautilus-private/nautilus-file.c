@@ -5731,6 +5731,7 @@ nautilus_file_info_iface_init (NautilusFileInfoIface *iface)
 	iface->get_name = nautilus_file_get_name;
 	iface->get_uri = nautilus_file_get_uri;
 	iface->get_parent_uri = nautilus_file_get_parent_uri;
+	iface->get_uri_scheme = nautilus_file_get_uri_scheme;
 	iface->get_mime_type = nautilus_file_get_mime_type;
 	iface->is_mime_type = nautilus_file_is_mime_type;
 	iface->is_directory = nautilus_file_is_directory;

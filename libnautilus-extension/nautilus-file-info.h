@@ -55,6 +55,7 @@ struct _NautilusFileInfoIface
 	char *            (*get_name)             (NautilusFileInfo *file);
 	char *            (*get_uri)              (NautilusFileInfo *file);
 	char *            (*get_parent_uri)       (NautilusFileInfo *file);
+	char *            (*get_uri_scheme)       (NautilusFileInfo *file);
 	
 	char *            (*get_mime_type)        (NautilusFileInfo *file);
 	gboolean          (*is_mime_type)         (NautilusFileInfo *file,
@@ -81,7 +82,7 @@ gboolean          nautilus_file_info_is_gone           (NautilusFileInfo *file);
 char *            nautilus_file_info_get_name          (NautilusFileInfo *file);
 char *            nautilus_file_info_get_uri           (NautilusFileInfo *file);
 char *            nautilus_file_info_get_parent_uri    (NautilusFileInfo *file);
-
+char *            nautilus_file_info_get_uri_scheme    (NautilusFileInfo *file);
 
 /* File Type */
 char *            nautilus_file_info_get_mime_type     (NautilusFileInfo *file);

@@ -38,6 +38,7 @@ enum {
 	PROP_TIP,
 	PROP_ICON,
 	PROP_SENSITIVE,
+	PROP_PRIORITY,
 	LAST_PROP
 };
 
@@ -47,9 +48,10 @@ struct _NautilusMenuItemDetails {
 	char *tip;
 	char *icon;
 	gboolean sensitive;
+	gboolean priority;
 };
 
-static guint signals [LAST_SIGNAL];
+static guint signals[LAST_SIGNAL];
 
 NautilusMenuItem *
 nautilus_menu_item_new (const char *name,
@@ -164,6 +166,9 @@ nautilus_menu_item_get_property (GObject *object,
 	case PROP_SENSITIVE :
 		g_value_set_boolean (value, item->details->sensitive);
 		break;
+	case PROP_PRIORITY :
+		g_value_set_boolean (value, item->details->priority);
+		break;
 	default :
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
 		break;
@@ -204,6 +209,10 @@ nautilus_menu_item_set_property (GObject *object,
 	case PROP_SENSITIVE :
 		item->details->sensitive = g_value_get_boolean (value);
 		g_object_notify (object, "sensitive");
+		break;
+	case PROP_PRIORITY :
+		item->details->priority = g_value_get_boolean (value);
+		g_object_notify (object, "priority");
 		break;
 	default :
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
@@ -284,6 +293,13 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
 					 g_param_spec_boolean ("sensitive",
 							       _("Sensitive"),
 							       _("Whether the menu item is sensitive"),
+							       TRUE,
+							       G_PARAM_READWRITE));
+	g_object_class_install_property (G_OBJECT_CLASS (class),
+					 PROP_PRIORITY,
+					 g_param_spec_boolean ("priority",
+							       _("Priority"),
+							       _("Show priority text in toolbars"),
 							       TRUE,
 							       G_PARAM_READWRITE));
 }

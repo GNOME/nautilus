@@ -853,6 +853,19 @@ real_merge_menus (NautilusWindow *nautilus_window)
 }
 
 static void
+real_merge_menus_2 (NautilusWindow *nautilus_window)
+{
+	NautilusNavigationWindow *window;
+
+	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS, 
+			 merge_menus_2, (nautilus_window));
+
+	window = NAUTILUS_NAVIGATION_WINDOW (nautilus_window);
+	
+	nautilus_navigation_window_initialize_menus_part_2 (window);
+}
+
+static void
 zoom_level_changed_callback (NautilusViewFrame *view,
                              NautilusNavigationWindow *window)
 {
@@ -1463,6 +1476,7 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 	GTK_WIDGET_CLASS (class)->show = nautilus_navigation_window_show;
 	GTK_WIDGET_CLASS (class)->unrealize = nautilus_navigation_window_unrealize;
 	NAUTILUS_WINDOW_CLASS (class)->merge_menus = real_merge_menus;
+	NAUTILUS_WINDOW_CLASS (class)->merge_menus_2 = real_merge_menus_2;
 	NAUTILUS_WINDOW_CLASS (class)->load_view_as_menu = real_load_view_as_menu;
 	NAUTILUS_WINDOW_CLASS (class)->set_content_view_widget = real_set_content_view_widget;
 	NAUTILUS_WINDOW_CLASS (class)->set_throbber_active = real_set_throbber_active;

@@ -148,6 +148,7 @@ typedef void (*NautilusBookmarkFailedCallback) (NautilusWindow *window,
 void               nautilus_window_set_status                            (NautilusWindow    *window,
                                                                           const char        *status);
 void               nautilus_window_load_view_as_menus                    (NautilusWindow    *window);
+void               nautilus_window_load_extension_menus                  (NautilusWindow    *window);
 void               nautilus_window_initialize_menus_part_1               (NautilusWindow    *window);
 void               nautilus_window_initialize_menus_part_2               (NautilusWindow    *window);
 void               nautilus_menus_append_bookmark_to_menu                (NautilusWindow    *window, 
@@ -200,6 +201,7 @@ void               nautilus_navigation_window_update_show_hide_menu_items       
 /* Navigation window toolbar */
 void               nautilus_navigation_window_activate_throbber                     (NautilusNavigationWindow    *window);
 void               nautilus_navigation_window_initialize_toolbars                   (NautilusNavigationWindow    *window);
+void               nautilus_navigation_window_load_extension_toolbar_items          (NautilusNavigationWindow    *window);
 void               nautilus_navigation_window_set_throbber_active                   (NautilusNavigationWindow    *window, 
                                                                                      gboolean                     active);
 void               nautilus_navigation_window_go_back                               (NautilusNavigationWindow    *window);

@@ -47,10 +47,12 @@
 #include <gdk/gdkkeysyms.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-popup-menu.h>
+#include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-bookmark.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-theme.h>
 
 /* FIXME bugzilla.gnome.org 41243: 
@@ -58,6 +60,8 @@
  * for the desktop window.
  */
 #include "nautilus-desktop-window.h"
+
+#define TOOLBAR_PATH_EXTENSION_ACTIONS "/Toolbar/Extra Buttons Placeholder/Extension Actions"
 
 enum {
 	TOOLBAR_ITEM_STYLE_PROP,
@@ -365,4 +369,62 @@ nautilus_navigation_window_initialize_toolbars (NautilusNavigationWindow *window
 		 "/Toolbar/ForwardMenu");
 
 	nautilus_window_ui_thaw (NAUTILUS_WINDOW (window));
+}
+
+static GList *
+get_extension_toolbar_items (NautilusNavigationWindow *window)
+{
+	GList *items;
+	GList *providers;
+	GList *l;
+	
+	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
+	items = NULL;
+
+	for (l = providers; l != NULL; l = l->next) {
+		NautilusMenuProvider *provider;
+		GList *file_items;
+		
+		provider = NAUTILUS_MENU_PROVIDER (l->data);
+		file_items = nautilus_menu_provider_get_toolbar_items 
+			(provider, 
+			 GTK_WIDGET (window),
+			 NAUTILUS_WINDOW (window)->details->viewed_file);
+		items = g_list_concat (items, file_items);		
+	}
+
+	nautilus_module_extension_list_free (providers);
+
+	return items;
+}
+
+void
+nautilus_navigation_window_load_extension_toolbar_items (NautilusNavigationWindow *window)
+{
+	GList *items;
+	GList *l;
+	
+	nautilus_bonobo_remove_menu_items_and_commands
+		(NAUTILUS_WINDOW (window)->details->shell_ui, 
+		 TOOLBAR_PATH_EXTENSION_ACTIONS);
+
+	items = get_extension_toolbar_items (window);
+
+	for (l = items; l != NULL; l = l->next) {
+		NautilusMenuItem *item;
+		
+		item = NAUTILUS_MENU_ITEM (l->data);
+
+		nautilus_bonobo_add_extension_item_command
+			(NAUTILUS_WINDOW (window)->details->shell_ui, item);
+		
+		nautilus_bonobo_add_extension_toolbar_item
+			(NAUTILUS_WINDOW (window)->details->shell_ui, 
+			 TOOLBAR_PATH_EXTENSION_ACTIONS,
+			 item);
+
+		g_object_unref (item);
+	}
+
+	g_list_free (items);
 }

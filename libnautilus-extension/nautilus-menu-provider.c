@@ -62,13 +62,49 @@ nautilus_menu_provider_get_type (void)
 
 GList *
 nautilus_menu_provider_get_file_items (NautilusMenuProvider *provider,
+				       GtkWidget *window,
 				       GList *files)
 {
 	g_return_val_if_fail (NAUTILUS_IS_MENU_PROVIDER (provider), NULL);
-	g_return_val_if_fail (NAUTILUS_MENU_PROVIDER_GET_IFACE (provider)->get_file_items != NULL, NULL);
 
-	return NAUTILUS_MENU_PROVIDER_GET_IFACE (provider)->get_file_items 
-		(provider, files);	
+	if (NAUTILUS_MENU_PROVIDER_GET_IFACE (provider)->get_file_items) {
+		return NAUTILUS_MENU_PROVIDER_GET_IFACE (provider)->get_file_items 
+			(provider, window, files);
+	} else {
+		return NULL;
+	}
 }
 
-					       
+GList *
+nautilus_menu_provider_get_background_items (NautilusMenuProvider *provider,
+					     GtkWidget *window,
+					     NautilusFileInfo *current_folder)
+{
+	g_return_val_if_fail (NAUTILUS_IS_MENU_PROVIDER (provider), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (current_folder), NULL);
+
+	if (NAUTILUS_MENU_PROVIDER_GET_IFACE (provider)->get_background_items) {
+		return NAUTILUS_MENU_PROVIDER_GET_IFACE (provider)->get_background_items 
+			(provider, window, current_folder);
+	} else {
+		return NULL;
+	}
+}
+
+GList *
+nautilus_menu_provider_get_toolbar_items (NautilusMenuProvider *provider,
+					  GtkWidget *window,
+					  NautilusFileInfo *current_folder)
+{
+	g_return_val_if_fail (NAUTILUS_IS_MENU_PROVIDER (provider), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (current_folder), NULL);
+
+	if (NAUTILUS_MENU_PROVIDER_GET_IFACE (provider)->get_toolbar_items) {
+		return NAUTILUS_MENU_PROVIDER_GET_IFACE (provider)->get_toolbar_items 
+			(provider, window, current_folder);
+	} else {
+		return NULL;
+	}
+}
+
+

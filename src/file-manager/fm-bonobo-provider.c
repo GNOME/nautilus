@@ -328,6 +328,7 @@ get_menu_items_for_server (Bonobo_ServerInfo *info,
 
 static GList *
 fm_bonobo_provider_get_file_items (NautilusMenuProvider *provider,
+				   GtkWidget *window,
 				   GList *selection)
 {
 	GList *components;

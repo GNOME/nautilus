@@ -31,6 +31,7 @@
 #define NAUTILUS_MENU_PROVIDER_H
 
 #include <glib-object.h>
+#include <gtk/gtkwidget.h>
 #include "nautilus-extension-types.h"
 #include "nautilus-file-info.h"
 #include "nautilus-menu-item.h"
@@ -48,14 +49,28 @@ typedef struct _NautilusMenuProviderIface  NautilusMenuProviderIface;
 struct _NautilusMenuProviderIface {
 	GTypeInterface g_iface;
 
-	GList *(*get_file_items) (NautilusMenuProvider     *provider,
-				  GList                    *files);
+	GList *(*get_file_items)       (NautilusMenuProvider *provider,
+					GtkWidget            *window,
+					GList                *files);
+	GList *(*get_background_items) (NautilusMenuProvider *provider,
+					GtkWidget            *window,
+					NautilusFileInfo     *current_folder);
+	GList *(*get_toolbar_items)    (NautilusMenuProvider *provider,
+					GtkWidget            *window,
+				        NautilusFileInfo     *current_folder);
 };
 
 /* Interface Functions */
-GType                   nautilus_menu_provider_get_type       (void);
-GList                  *nautilus_menu_provider_get_file_items (NautilusMenuProvider *provider,
-							       GList                *files);
+GType                   nautilus_menu_provider_get_type             (void);
+GList                  *nautilus_menu_provider_get_file_items       (NautilusMenuProvider *provider,
+								     GtkWidget            *window,
+								     GList                *files);
+GList                  *nautilus_menu_provider_get_background_items (NautilusMenuProvider *provider,
+								     GtkWidget            *window,
+								     NautilusFileInfo     *current_folder);
+GList                  *nautilus_menu_provider_get_toolbar_items    (NautilusMenuProvider *provider,
+								     GtkWidget            *window,
+								     NautilusFileInfo     *current_folder);
 
 G_END_DECLS
 

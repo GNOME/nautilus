@@ -221,12 +221,8 @@ ui_idle_handler (gpointer data)
 	old_updating_bonobo_state = window->details->updating_bonobo_state;
 
 	if (window->details->ui_pending_initialize_menus_part_2) {
-#if !NEW_UI_COMPLETE
-		if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
-			nautilus_navigation_window_initialize_menus_part_2 (NAUTILUS_NAVIGATION_WINDOW (window));
-		}
-#endif
-		window->details->ui_pending_initialize_menus_part_2 = FALSE;
+		EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+				 merge_menus_2, (window));
 	}
 
 	if (window->details->ui_is_frozen) {
@@ -432,19 +428,6 @@ nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
 }
 
 void
-nautilus_window_allow_burn_cd (NautilusWindow *window, gboolean allow)
-{
-        g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	nautilus_window_ui_freeze (window);
-
-        nautilus_bonobo_set_hidden (window->details->shell_ui,
-				    NAUTILUS_COMMAND_BURN_CD, !allow);
-
-	nautilus_window_ui_thaw (window);
-}
-
-void
 nautilus_window_go_home (NautilusWindow *window)
 {
 	char *home_uri;
@@ -466,29 +449,6 @@ nautilus_window_go_home (NautilusWindow *window)
 	g_assert (home_uri != NULL);
 	nautilus_window_go_to (window, home_uri);
 	g_free (home_uri);
-}
-
-void
-nautilus_window_launch_cd_burner (NautilusWindow *window)	
-{
-	GError *error;
-	char *argv[] = { "nautilus-cd-burner", NULL};
-	char *text;
-
-	error = NULL;
-	if (!g_spawn_async (NULL,
-			    argv, NULL,
-			    G_SPAWN_SEARCH_PATH,
-			    NULL, NULL,
-			    NULL,
-			    &error)) {
-		text = g_strdup_printf (_("Unable to launch the cd burner application:\n%s"), error->message);
-		eel_show_error_dialog (text,
-				       _("Can't launch cd burner"),
-				       GTK_WINDOW (window));
-		g_free (text);
-		g_error_free (error);
-	}
 }
 
 void
@@ -620,6 +580,12 @@ real_merge_menus (NautilusWindow *window)
 }
 
 static void
+real_merge_menus_2 (NautilusWindow *window)
+{
+	window->details->ui_pending_initialize_menus_part_2 = FALSE;
+}
+
+static void
 nautilus_window_constructed (NautilusWindow *window)
 {
 	nautilus_window_ui_freeze (window);
@@ -630,7 +596,6 @@ nautilus_window_constructed (NautilusWindow *window)
 			 merge_menus, (window));
 
 	nautilus_window_allow_stop (window, FALSE);
-	nautilus_window_allow_burn_cd (window, FALSE);
 
 	/* Set up undo manager */
 	nautilus_undo_manager_attach (window->application->undo_manager, G_OBJECT (window));	
@@ -1601,6 +1566,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	class->get_title = real_get_title;
 	class->set_title = real_set_title;
 	class->merge_menus = real_merge_menus;
+	class->merge_menus_2 = real_merge_menus_2;
 	class->set_content_view_widget = real_set_content_view_widget;
 	class->load_view_as_menu = real_load_view_as_menu;
 	
