@@ -33,6 +33,7 @@
 #include "nautilus-preferences-dialog.h"
 #include "nautilus-user-level-manager.h"
 #include "nautilus-glib-extensions.h"
+#include "nautilus-gtk-extensions.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-view-identifier.h"
 #include "nautilus-string.h"
@@ -788,7 +789,7 @@ nautilus_global_preferences_show_dialog (void)
 {
 	GtkWidget *dialog = global_preferences_get_dialog ();
 
-	gtk_widget_show (dialog);
+	nautilus_gtk_window_present (GTK_WINDOW (dialog));
 }
 
 void

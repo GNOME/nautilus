@@ -1,3 +1,16 @@
+2000-08-02  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1877 (Customize window doesn't come to front if
+	it's already showing when menu item selected)
+
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_show): Use nautilus_gtk_window_present
+	instead of gtk_widget_show.
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(nautilus_global_preferences_show_dialog): Same thing for the
+	user-level settings window.
+
 2000-08-02  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-file.c: (nautilus_file_changed):

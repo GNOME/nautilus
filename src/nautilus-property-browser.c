@@ -391,7 +391,7 @@ nautilus_property_browser_show (void)
 	if (main_browser == NULL) {
 		main_browser = nautilus_property_browser_new ();
 	} else {
-		gtk_widget_show (GTK_WIDGET (main_browser));
+		nautilus_gtk_window_present (GTK_WINDOW (main_browser));
 	}
 }
 
