@@ -59,6 +59,7 @@
 #include <libnautilus-extensions/nautilus-file-operations.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
@@ -127,7 +128,7 @@ static void           fm_directory_view_duplicate_selection                     
 										   GList                    *files);
 static void           fm_directory_view_create_links_for_files 			  (FMDirectoryView 	    *view, 
 										   GList		    *files);
-static void           fm_directory_view_trash_or_delete_selection                 (FMDirectoryView          *view,
+static void           fm_directory_view_trash_or_delete_files                 	  (FMDirectoryView          *view,
 										   GList                    *files);
 static void           fm_directory_view_destroy                                   (GtkObject                *object);
 static void           fm_directory_view_activate_file	                          (FMDirectoryView          *view,
@@ -648,7 +649,7 @@ trash_callback (gpointer *ignored, gpointer callback_data)
         view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
 	check_selection_not_empty (selection);
-        fm_directory_view_trash_or_delete_selection (view, selection);
+        fm_directory_view_trash_or_delete_files (view, selection);
 
         nautilus_file_list_free (selection);
 }
@@ -2102,7 +2103,7 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean
 }
 
 static void
-fm_directory_view_trash_or_delete_selection (FMDirectoryView *view, GList *files)
+fm_directory_view_trash_or_delete_files (FMDirectoryView *view, GList *files)
 {
 	GList *file_node;
 	NautilusFile *file;
@@ -3343,6 +3344,52 @@ file_is_launchable (NautilusFile *file)
 		&& nautilus_file_can_execute (file);
 }
 
+static void
+report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
+{
+	char *target_path;
+	char *prompt;
+	GnomeDialog *dialog;
+	GList file_as_list;
+	
+	g_assert (nautilus_file_is_broken_symbolic_link (file));
+
+	target_path = nautilus_file_get_symbolic_link_target_path (file);
+	if (target_path == NULL) {
+		prompt = g_strdup_printf (_("This link can't be used, because it has no target. Do you want "
+		"to put this link in the trash?"));
+	} else {
+		prompt = g_strdup_printf (_("This link can't be used, because its target \"%s\" doesn't exist. "
+				 	    "Do you want to put this link in the trash?"), target_path);
+	}
+
+	dialog = nautilus_yes_no_dialog (prompt,
+					 _("Nautilus: Broken link"),
+					 _("Throw Away"),
+					 GNOME_STOCK_BUTTON_CANCEL,
+					 get_containing_window (view));
+
+	gnome_dialog_set_default (dialog, GNOME_CANCEL);
+
+	/* Make this modal to avoid problems with reffing the view & file
+	 * to keep them around in case the view changes, which would then
+	 * cause the old view not to be destroyed, which would cause its
+	 * merged Bonobo items not to be un-merged. Maybe we need to unmerge
+	 * explicitly when disconnecting views instead of relying on the
+	 * unmerge in Destroy. But since BonoboUIHandler is probably going
+	 * to change wildly, I don't want to mess with this now.
+	 */
+	if (gnome_dialog_run (dialog) == GNOME_OK) {
+		file_as_list.data = file;
+		file_as_list.next = NULL;
+		file_as_list.prev = NULL;
+		fm_directory_view_trash_or_delete_files (view, &file_as_list);
+	}
+
+	g_free (target_path);
+	g_free (prompt);
+}
+
 typedef struct {
 	FMDirectoryView *view;
 	NautilusFile *file;
@@ -3367,8 +3414,15 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	performed_special_handling = FALSE;
 
-	/* FIXME bugzilla.eazel.com 2390: Quite a security hole here. */
-	if (nautilus_istr_has_prefix (uri, "command:")) {
+	/* Note that we check for FILE_TYPE_SYMBOLIC_LINK only here, not specifically
+	 * for broken-ness, because the file type will be the target's file type
+	 * in the non-broken case.
+	 */
+	if (nautilus_file_is_broken_symbolic_link (file)) {
+		report_broken_symbolic_link (view, file);
+		performed_special_handling = TRUE;
+	} else if (nautilus_istr_has_prefix (uri, "command:")) {
+		/* FIXME bugzilla.eazel.com 2390: Quite a security hole here. */
 		command = g_strconcat (uri + 8, " &", NULL);
 		system (command);
 		g_free (command);
@@ -3446,23 +3500,24 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 				 gboolean use_new_window)
 {
 	ActivateParameters *parameters;
-	GList dummy_list;
+	GList *attributes;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
 	/* Might have to read some of the file to activate it. */
-	dummy_list.data = NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI;
-	dummy_list.next = NULL;
-	dummy_list.prev = NULL;
+	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
+	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE);
 	parameters = g_new (ActivateParameters, 1);
 	parameters->view = view;
 	parameters->file = file;
 	parameters->use_new_window = use_new_window;
 	nautilus_file_call_when_ready
-		(file, &dummy_list, FALSE, activate_callback, parameters);
+		(file, attributes, FALSE, activate_callback, parameters);
 
 	/* FIXME bugzilla.eazel.com 2392: Need a timed wait here too. */
+
+	g_list_free (attributes);
 }
 
 

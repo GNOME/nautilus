@@ -124,6 +124,7 @@ gboolean                nautilus_file_is_mime_type              (NautilusFile   
 gboolean                nautilus_file_is_symbolic_link          (NautilusFile                  *file);
 char *			nautilus_file_get_symbolic_link_target_path
 								(NautilusFile		       *file);
+gboolean                nautilus_file_is_broken_symbolic_link   (NautilusFile                  *file);
 gboolean                nautilus_file_is_nautilus_link          (NautilusFile                  *file);
 gboolean                nautilus_file_is_executable             (NautilusFile                  *file);
 gboolean                nautilus_file_is_directory              (NautilusFile                  *file);

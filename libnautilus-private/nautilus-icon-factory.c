@@ -590,6 +590,7 @@ nautilus_icon_factory_get_icon_name_for_file (NautilusFile *file)
         case GNOME_VFS_FILE_TYPE_BLOCK_DEVICE:
 		return ICON_NAME_BLOCK_DEVICE;
         case GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK:
+        	/* Non-broken symbolic links return the target's type. */
                 return ICON_NAME_BROKEN_SYMBOLIC_LINK;
         case GNOME_VFS_FILE_TYPE_REGULAR:
         case GNOME_VFS_FILE_TYPE_UNKNOWN:

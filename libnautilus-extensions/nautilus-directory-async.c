@@ -739,6 +739,10 @@ set_up_request_by_file_attributes (Request *request,
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY,
 		 nautilus_str_compare) != NULL;
+	request->file_info |= g_list_find_custom
+		(file_attributes,
+		 NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE,
+		 nautilus_str_compare) != NULL;
 	if (g_list_find_custom (file_attributes,
 				NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI,
 				nautilus_str_compare) != NULL) {

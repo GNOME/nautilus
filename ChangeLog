@@ -1,3 +1,39 @@
+2000-09-14  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3043 (clicking on broken symbolic link tries
+	to execute it).
+
+	Now clicking on it brings up a dialog telling the user
+	about the missing target file and asking whether they
+	want to throw the link away. Also, I changed the type
+	string for link files to be "link to <whatever>" instead
+	of just "<whatever>", and "link (broken)" for broken ones.
+
+	* libnautilus-extensions/nautilus-file-attributes.h:
+	define NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE for callers
+	interested in GnomeVFS's concept of file type.
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(set_up_request_by_file_attributes): Get file_info if
+	NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE is requested.
+	* libnautilus-extensions/nautilus-file.h,
+	* libnautilus-extensions/nautilus-file.c:
+	(type_as_string_considering_link): New function,
+	converts target-type to link-type string if necessary.
+	(nautilus_file_get_type_as_string): Deploy
+	type_as_string_considering_link at each return location.
+	(nautilus_file_is_broken_symbolic_link): New public function.
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_name_for_file): Added comment.
+	* src/file-manager/fm-directory-view.c: 
+	(fm_directory_view_trash_or_delete_files): Renamed from
+	..._selection since it is passed the list of files.
+	(trash_callback): Updated for name change.
+	(report_broken_symbolic_link): New function, puts up dialog.
+	(activate_callback): Calls report_broken_symbolic_link if
+	appropriate.
+	(fm_directory_view_activate_file): include 
+	NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE in list to pass to call_when_ready.
+
 2000-09-14  Darin Adler  <darin@eazel.com>
 
 	Some fixes to "make dist" to make the tinderbox happy.

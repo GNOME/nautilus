@@ -3115,6 +3115,21 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 	return result;
 }
 
+static char *
+type_as_string_considering_link (NautilusFile *file, const char *string)
+{
+	if (nautilus_file_is_symbolic_link (file)) {
+		g_assert (!nautilus_file_is_broken_symbolic_link (file));
+		/* Note to localizers: convert file type string for file 
+		 * (e.g. "folder", "plain text") to file type for symbolic link 
+		 * to that kind of file (e.g. "link to folder").
+		 */
+		return g_strdup_printf (_("link to %s"), string);
+	}
+
+	return g_strdup (string);
+}
+
 /**
  * nautilus_file_get_type_as_string:
  * 
@@ -3131,24 +3146,28 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 	const char *mime_type;
 	const char *description;
 
+	if (nautilus_file_is_broken_symbolic_link (file)) {
+		return g_strdup (_("link (broken)"));
+	}
+
 	mime_type = info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE)
 		? NULL : file->details->info->mime_type;
 
 	if (nautilus_strlen (mime_type) == 0) {
 		/* No mime type, anything else interesting we can say about this? */
 		if (nautilus_file_is_executable (file)) {
-			return g_strdup (_("program"));
+			return type_as_string_considering_link (file, _("program"));
 		}
 
-		return NULL;
+		return type_as_string_considering_link (file, NULL);
 	}
 
 	description = gnome_vfs_mime_get_description (mime_type);
 	if (nautilus_strlen (description) > 0) {
-		return g_strdup (description);
+		return type_as_string_considering_link (file, description);
 	}
 
-	/* We want to update nautilus/data/nautilus.keys to include 
+	/* We want to update gnome-vfs/data/mime/gnome-vfs.keys to include 
 	 * English (& localizable) versions of every mime type anyone ever sees.
 	 */
 	if (strcasecmp (mime_type, "x-directory/normal") == 0) {
@@ -3161,7 +3180,7 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 			    mime_type,
 			    file->details->name);
 	}
-	return g_strdup (mime_type);
+	return type_as_string_considering_link (file, mime_type);
 }
 
 /**
@@ -3354,6 +3373,28 @@ nautilus_file_is_symbolic_link (NautilusFile *file)
 {
 	return info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_FLAGS)
 		? FALSE : (file->details->info->flags & GNOME_VFS_FILE_FLAGS_SYMLINK);
+}
+
+/**
+ * nautilus_file_is_broken_symbolic_link
+ * 
+ * Check if this file is a symbolic link with a missing target.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: True if the file is a symbolic link with a missing target.
+ * 
+ **/
+gboolean
+nautilus_file_is_broken_symbolic_link (NautilusFile *file)
+{
+	if (file == NULL) {
+		return FALSE;
+	}
+		
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	/* Non-broken symbolic links return the target's type for get_file_type. */
+	return nautilus_file_get_file_type (file) == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK;
 }
 
 /**

@@ -36,6 +36,7 @@
 #define NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE       "MIME type"
 #define NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT        "top left text"
 #define NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY         "is directory"
+#define NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE	     "file type"
 
 #endif /* NAUTILUS_FILE_ATTRIBUTES_H */
 
