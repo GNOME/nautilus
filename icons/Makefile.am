@@ -141,7 +141,6 @@ icon_DATA =\
 	rightarrow.png \
 	tableft.png \
 	tabright.png \
-	trash.png \
 	trash-empty.png \
 	trash-full.png \
 	uparrow.png \
