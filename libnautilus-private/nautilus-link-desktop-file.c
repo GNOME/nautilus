@@ -103,7 +103,7 @@ nautilus_link_desktop_file_local_create (const char        *directory_uri,
 					 const GdkPoint    *point,
 					 NautilusLinkType   type)
 {
-	char *uri, *contents;
+	char *uri, *contents, *escaped_name;
 	GnomeDesktopItem *desktop_item;
 	GList dummy_list;
 	NautilusFileChangesQueuePosition item;
@@ -112,7 +112,9 @@ nautilus_link_desktop_file_local_create (const char        *directory_uri,
 	g_return_val_if_fail (name != NULL, FALSE);
 	g_return_val_if_fail (target_uri != NULL, FALSE);
 
-	uri = g_strdup_printf ("%s/%s", directory_uri, name);
+	escaped_name = gnome_vfs_escape_string (name);
+	uri = g_strdup_printf ("%s/%s", directory_uri, escaped_name);
+	g_free (escaped_name);
 
 	contents = g_strdup_printf ("[Desktop Entry]\n"
 				    "Encoding=UTF-8\n"
