@@ -6,7 +6,6 @@ Release:          1
 License:          GPL
 Group:            User Interface/Desktop
 Source:           ftp://ftp.gnome.org/pub/GNOME/sources/%{name}-%{version}.tar.gz
-Source2:          fixed-ltmain.sh
 URL:              http://nautilus.eazel.com/
 BuildRoot:        %{_tmppath}/%{name}-%{version}-root
 BuildRequires:    pkgconfig >= 0.8
@@ -93,7 +92,6 @@ sed s/relink=yes/relink=no/ ltmain.sh.orig > ltmain.sh
 
 %build
 %configure
-rm ltmain.sh && cp %{SOURCE2} ltmain.sh
 make %{?_smp_mflags}
 
 %install
@@ -115,21 +113,25 @@ make %{?_smp_mflags}
 %defattr(-, root, root)
 %doc AUTHORS COPYING COPYING-DOCS COPYING.LIB ChangeLog INSTALL
 %doc MAINTAINERS NEWS README THANKS TODO
-%doc %{_datadir}/gnome/help/*
+#%doc %{_datadir}/gnome/help/*
+%{_sysconfdir}/gconf/*
 %{_sysconfdir}/X11/serverconfig/.directory
 %{_sysconfdir}/X11/starthere/*
 %{_sysconfdir}/X11/starthere/.directory
 %{_sysconfdir}/X11/sysconfig/.directory
 %{_bindir}/*
 %{_libdir}/*.so*
-%{_libdir}/libnautilus-tree-view.so
+%{_libdir}/bonobo/libnautilus-*-view.so
 %{_libdir}/bonobo/servers/*
+%{_libexecdir}/*
 %{_datadir}/applications/*
 %{_datadir}/gnome-2.0/ui/*
 %{_datadir}/idl/*
 %{_datadir}/nautilus
-%doc %{_datadir}/omf/nautilus/*
+%{_datadir}/locale/*/*
 %{_datadir}/pixmaps/*
+%{_datadir}/gnome/network/*
+#%doc %{_datadir}/omf/nautilus/*
 
 
 %files devel
@@ -141,6 +143,15 @@ make %{?_smp_mflags}
 
 
 %changelog
+* Tue Mar 12 2003 Neil Weisenfeld <weisen@ai.mit.edu>
+- Added various file targets: gnome/network, the libexecdir stuff,
+  locale, gconf (do we need to register this somehow?)
+- Fixed nautilus-tree-view to come from lib/bonobo instead of lib/
+- Actually, now pick up nautilus-*-view.so from lib/bonobo
+- Commented out omf and gnome/help documentation.  (should this be
+  coming from somewhere else?)
+- killed dependence on ltmain-fixed.sh as we're "fixing" it in the %prep
+
 * Tue Mar 05 2002 Chris Chabot <chabotc@reviewboard.com>
 - Fixed file list
 - ltmain.sh fix

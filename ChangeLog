@@ -1,3 +1,17 @@
+2003-03-13  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-file-management-properties.c (nautilus_file_management_properties_dialog_show):
+	Call the response callback on delete_event, with GTK_RESPONSE_CLOSE.
+	
+	* src/nautilus-file-management-properties-mail.c:
+	indentation fix.
+	
+2003-03-13  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in: 
+	* nautilus.spec.in: 
+	Updated spec file from Neil Weisenfeld <weisen@ai.mit.edu>
+
 2003-03-12  Bastien Nocera  <hadess@hadess.net>
 
 	* src/file-manager/fm-icon-view.c: (icon_view_handle_uri_list): do not

@@ -38,7 +38,7 @@
 
 static void
 nautilus_file_management_properties_main_close_callback (GtkDialog *dialog,
-		    int response_id)
+							 int response_id)
 {
 	if (response_id == GTK_RESPONSE_CLOSE) {
 		gtk_main_quit ();

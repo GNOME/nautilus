@@ -416,6 +416,21 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 	gtk_widget_show (dialog);
 }
 
+static gboolean
+delete_event_callback (GtkWidget       *widget,
+		       GdkEventAny     *event,
+		       gpointer         data)
+{
+	void (*response_callback) (GtkDialog *dialog,
+				   gint response_id);
+
+	response_callback = data;
+
+	response_callback (GTK_DIALOG (widget), GTK_RESPONSE_CLOSE);
+	
+	return TRUE;
+}
+
 void
 nautilus_file_management_properties_dialog_show (GCallback close_callback, GtkWindow *window)
 {
@@ -425,6 +440,8 @@ nautilus_file_management_properties_dialog_show (GCallback close_callback, GtkWi
 	
 	g_signal_connect (G_OBJECT (glade_xml_get_widget (xml_dialog, "file_management_dialog")),
 			  "response", close_callback, NULL);
+	g_signal_connect (G_OBJECT (glade_xml_get_widget (xml_dialog, "file_management_dialog")),
+			  "delete_event", G_CALLBACK (delete_event_callback), close_callback);
 
 	nautilus_file_management_properties_dialog_setup (xml_dialog, window);
 }
