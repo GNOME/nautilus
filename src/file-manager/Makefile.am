@@ -36,6 +36,7 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-list-view.c			\
 	fm-properties-window.c		\
 	fm-search-list-view.c		\
+	nautilus-trash-monitor.c	\
 	$(NULL)
 
 noinst_HEADERS = \
@@ -52,6 +53,7 @@ noinst_HEADERS = \
 	fm-list-view.h \
 	fm-properties-window.h \
 	fm-search-list-view.h \
+	nautilus-trash-monitor.h \
 	$(NULL)
 
 dfos-corba.h: GNOME_Desktop_FileOperationService.h

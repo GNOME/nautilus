@@ -69,13 +69,13 @@
 #include <libnautilus-extensions/nautilus-view-identifier.h>
 #include <libnautilus-extensions/nautilus-mime-actions.h>
 
-#include "fm-properties-window.h"
 #include "dfos-xfer.h"
+#include "fm-properties-window.h"
+#include "nautilus-trash-monitor.h"
 
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
 
-enum
-{
+enum {
 	ADD_FILE,
 	CREATE_BACKGROUND_CONTEXT_MENU_ITEMS,
 	CREATE_SELECTION_CONTEXT_MENU_ITEMS,
@@ -183,7 +183,9 @@ static void           start_renaming_item                   	                  (
 static void           metadata_ready_callback                                     (NautilusDirectory        *directory,
 										   GList                    *files,
 										   gpointer                  callback_data);
-static void	      set_trash_empty 						  (gboolean 		    state);
+static void	      trash_state_changed_callback				  (NautilusTrashMonitor     *trash,
+										   gboolean 		     state,
+										   gpointer		     callback_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_file)
@@ -619,8 +621,6 @@ bonobo_menu_empty_trash_callback (BonoboUIHandler *ui_handler, gpointer user_dat
         g_assert (FM_IS_DIRECTORY_VIEW (user_data));
 
 	fs_empty_trash (GTK_WIDGET (FM_DIRECTORY_VIEW (user_data)));
-
-	set_trash_empty (TRUE);
 }
 
 static void
@@ -840,6 +840,10 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 	gtk_signal_connect (GTK_OBJECT (directory_view->details->zoomable), 
 			    "zoom_to_fit", 
 			    zoomable_zoom_to_fit_callback,
+			    directory_view);
+	gtk_signal_connect (GTK_OBJECT(nautilus_trash_monitor_get ()),
+			    "trash_state_changed",
+			    trash_state_changed_callback,
 			    directory_view);
 
 	gtk_widget_show (GTK_WIDGET (directory_view));
@@ -1873,7 +1877,6 @@ fm_directory_view_trash_or_delete_selection (FMDirectoryView *view, GList *files
 	g_assert (g_list_length (uris) == g_list_length (files));
 
 	if (fm_directory_can_move_to_trash (view)) {
-		set_trash_empty (FALSE);
 		fs_move_to_trash (uris, GTK_WIDGET (view));
 	} else if (fm_directory_is_trash (view)
 		|| fm_directory_view_confirm_deletion (view, files)) {
@@ -3202,7 +3205,7 @@ finish_loading_uri (FMDirectoryView *view)
 	/* Tell interested parties that we've begun loading this directory now.
 	 * Subclasses use this to know that the new metadata is now available.
 	 */
-	gtk_signal_emit (GTK_OBJECT (view), signals[BEGIN_LOADING]);
+	fm_directory_view_begin_loading (view);
 
 	schedule_timeout_display_of_pending_files (view);
 	view->details->loading = TRUE;
@@ -3473,9 +3476,9 @@ fm_directory_view_get_context_menu_index (const char *menu_name)
 	}
 }
 
-/* FIXME: This should go in fs_move_to_trash and fs_empty_trash. */
 static void
-set_trash_empty (gboolean state)
+trash_state_changed_callback (NautilusTrashMonitor *trash_monitor,
+	gboolean state, gpointer callback_data)
 {
 	char *desktop_directory_path, *path;
 

@@ -1,3 +1,35 @@
+2000-08-02  Pavel Cisler  <pavel@eazel.com>
+
+	Bugzilla bug 1400
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	* libnautilus-extensions/nautilus-directory.h:
+	(any_non_metafile_item),
+	(nautilus_directory_is_not_empty):
+	Added a call I needed to check a directory empty state.
+	
+	* src/file-manager/Makefile.am:
+	* src/file-manager/nautilus-trash-monitor.h:
+	* src/file-manager/nautilus-trash-monitor.c:
+	(nautilus_trash_monitor_initialize_class),
+	(nautilus_trash_files_changed_callback),
+	(nautilus_trash_metadata_ready_callback),
+	(nautilus_trash_monitor_initialize), (nautilus_trash_monitor_get),
+	(nautilus_trash_monitor_shutdown):
+	New trash state monitoring class, used to update the Trash icon, etc.
+	
+	* src/file-manager/fm-directory-view.c:
+	(bonobo_menu_empty_trash_callback), (fm_directory_view_initialize),
+	(fm_directory_view_trash_or_delete_selection),
+	(trash_state_changed_callback):
+	Hook up to the Trash monitor change signal.
+	Tweak the callback Gene prepared for me earlier that updates the
+	Trash icon to use the new signal.
+
+	* src/file-manager/fm-directory-view.c:
+	(finish_loading_uri):
+	Tiny tweak - use a cover call instead of emitting a signal directly.
+	
 2000-08-02  Ali Abdin  <aliabdin@aucegypt.edu>
         * components/help/help-method.c:
         (transform_file):

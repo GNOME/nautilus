@@ -163,6 +163,11 @@ gboolean           nautilus_directory_is_local             (NautilusDirectory   
 
 gboolean           nautilus_directory_is_search_directory  (NautilusDirectory         *directory);
 
+/* Return false if directory contains anything besides a nautilus metafile.
+ * Only valid if directory is monitored.
+ * Used by the Trash monitor
+ */
+gboolean	   nautilus_directory_is_not_empty	   (NautilusDirectory	      *directory);
 
 typedef struct NautilusDirectoryDetails NautilusDirectoryDetails;
 

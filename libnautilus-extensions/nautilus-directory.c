@@ -493,7 +493,7 @@ nautilus_directory_is_search_directory (NautilusDirectory *directory)
 		nautilus_strcasecmp (info->mime_type, "x-special/virtual-directory") == 0;
 	
 	gnome_vfs_file_info_unref (info);
-	
+
 	return is_search_directory;
 #endif
 }
@@ -1026,6 +1026,40 @@ nautilus_directory_file_monitor_remove (NautilusDirectory *directory,
 					gconstpointer client)
 {
 	nautilus_directory_monitor_remove_internal (directory, NULL, client);
+}
+
+static int
+any_non_metafile_item (gconstpointer item, gconstpointer data)
+{
+	/* A metafile is exactly what we are not looking for, anything else is a match. */
+	return nautilus_file_matches_uri (NAUTILUS_FILE (item), (const char *)data) ? 1 : 0;
+}
+
+gboolean
+nautilus_directory_is_not_empty (NautilusDirectory *directory)
+{
+	char *metafile_uri_string;
+	gboolean result;
+	
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
+
+	/* directory must be monitored for this call to be correct */
+	g_assert (nautilus_directory_is_file_list_monitored (directory));
+
+	if (directory->details->metafile_uri == NULL) {
+		/* we don't have a metafile - we're not empty if we have at least one file */
+		return directory->details->files != NULL;
+	}
+
+	metafile_uri_string = gnome_vfs_uri_to_string (directory->details->metafile_uri,
+		GNOME_VFS_URI_HIDE_NONE);
+
+	/* Return TRUE if the directory contains anything besides a metafile. */
+	result = g_list_find_custom (directory->details->files,
+		metafile_uri_string, any_non_metafile_item) != NULL;
+
+	g_free (metafile_uri_string);
+	return result;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
