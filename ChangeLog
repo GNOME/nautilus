@@ -1,3 +1,9 @@
+2004-05-18  Martin Wehner  <martin.wehner@epost.de>
+
+	* libnautilus-private/nautilus-desktop-icon-file.c (update_info_from_link):
+	Provide group write permissions by default. Prevents read-only
+	emblem from being shown when user is in root group (#141390).
+
 2004-05-14  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/apps_nautilus_preferences.schemas.in:
