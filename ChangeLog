@@ -1,5 +1,10 @@
 2002-10-10  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-theme.c (theme_list_prepend):
+	If no preview pixmap found. ignore theme. Fixes crash for some crap theme i had installed.
+
+2002-10-10  Alexander Larsson  <alexl@redhat.com>
+	
 	* libnautilus-private/nautilus-emblem-utils.c (nautilus_emblem_install_custom_emblem):
 	Touch the theme toplevel dir when finished installing emblem.
 

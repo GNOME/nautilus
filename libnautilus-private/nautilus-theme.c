@@ -491,11 +491,16 @@ theme_list_prepend (GList *theme_list,
 	g_return_val_if_fail (theme_name != NULL, NULL);
 	g_return_val_if_fail (themes_location_uri != NULL, NULL);
 	
+	unscaled_preview_pixbuf = nautilus_theme_make_preview_pixbuf (theme_name);
+
+	if (unscaled_preview_pixbuf == NULL) {
+		return theme_list;
+	}
+	
 	attributes = g_new0 (ThemeAttibutes, 1);
 	attributes->name = g_strdup (theme_name);
 	attributes->path = g_build_filename (themes_location_uri, theme_name, NULL);
 
-	unscaled_preview_pixbuf = nautilus_theme_make_preview_pixbuf (theme_name);
 	attributes->preview_pixbuf = eel_gdk_pixbuf_scale_down_to_fit (unscaled_preview_pixbuf,
 								       THEME_PREVIEW_ICON_WIDTH,
 								       THEME_PREVIEW_ICON_HEIGHT);
