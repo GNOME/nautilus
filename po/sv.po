@@ -13,8 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.1\n"
-"POT-Creation-Date: 2000-09-14 14:48+0200\n"
-"PO-Revision-Date: 2000-09-14 14:54+0200\n"
+"POT-Creation-Date: 2000-09-14 22:13+0200\n"
+"PO-Revision-Date: 2000-09-14 22:14+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1501,7 +1501,21 @@ msgstr "okänd MIME-typ"
 msgid "unknown"
 msgstr "okänd"
 
-#: libnautilus-extensions/nautilus-file.c:3140
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
+#: libnautilus-extensions/nautilus-file-operations.c:499
+#: libnautilus-extensions/nautilus-file.c:3127
+#, c-format
+msgid "link to %s"
+msgstr "länk till %s"
+
+#: libnautilus-extensions/nautilus-file.c:3150
+msgid "link (broken)"
+msgstr "länk (trasig)"
+
+#: libnautilus-extensions/nautilus-file.c:3159
 msgid "program"
 msgstr "program"
 
@@ -1569,11 +1583,6 @@ msgstr "Ersätt"
 #: libnautilus-extensions/nautilus-file-operations.c:458
 msgid "Replace All"
 msgstr "Ersätt alla"
-
-#: libnautilus-extensions/nautilus-file-operations.c:499
-#, c-format
-msgid "link to %s"
-msgstr "länk till %s"
 
 #: libnautilus-extensions/nautilus-file-operations.c:502
 #, c-format
@@ -2093,7 +2102,7 @@ msgid "Prefs Box"
 msgstr "Inställningsfönster"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:188
-#: src/nautilus-window.c:645
+#: src/nautilus-window.c:642
 #, c-format
 msgid "View as %s"
 msgstr "Visa som %s"
@@ -2710,61 +2719,61 @@ msgstr "Återställ skrivbordsbakgrund"
 msgid "Change Desktop Background"
 msgstr "Byt skrivbordsbakgrund"
 
-#: src/file-manager/fm-directory-view.c:388
+#: src/file-manager/fm-directory-view.c:389
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
 msgstr ""
 "Det här kommer att öppna %d separata fönster. Är du säker på att du vill "
 "göra detta?"
 
-#: src/file-manager/fm-directory-view.c:390
+#: src/file-manager/fm-directory-view.c:391
 #, c-format
 msgid "Nautilus: Open %d Windows?"
 msgstr "Nautilus: Öppna %d fönster?"
 
-#: src/file-manager/fm-directory-view.c:1112
+#: src/file-manager/fm-directory-view.c:1110
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" markerad"
 
-#: src/file-manager/fm-directory-view.c:1114
+#: src/file-manager/fm-directory-view.c:1112
 msgid "1 folder selected"
 msgstr "1 mapp markerad"
 
-#: src/file-manager/fm-directory-view.c:1117
+#: src/file-manager/fm-directory-view.c:1115
 #, c-format
 msgid "%d folders selected"
 msgstr "%d mappar markerade"
 
-#: src/file-manager/fm-directory-view.c:1123
+#: src/file-manager/fm-directory-view.c:1121
 msgid " (containing 0 items)"
 msgstr " (innehåller 0 objekt)"
 
-#: src/file-manager/fm-directory-view.c:1125
+#: src/file-manager/fm-directory-view.c:1123
 msgid " (containing 1 item)"
 msgstr " (innehåller 1 objekt)"
 
-#: src/file-manager/fm-directory-view.c:1127
+#: src/file-manager/fm-directory-view.c:1125
 #, c-format
 msgid " (containing %d items)"
 msgstr " (innehåller %d objekt)"
 
-#: src/file-manager/fm-directory-view.c:1138
+#: src/file-manager/fm-directory-view.c:1136
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" markerad (%s)"
 
-#: src/file-manager/fm-directory-view.c:1142
+#: src/file-manager/fm-directory-view.c:1140
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d objekt markerade (%s)"
 
-#: src/file-manager/fm-directory-view.c:1149
+#: src/file-manager/fm-directory-view.c:1147
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 annat objekt markerat (%s)"
 
-#: src/file-manager/fm-directory-view.c:1152
+#: src/file-manager/fm-directory-view.c:1150
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d andra objekt markerade (%s)"
@@ -2772,19 +2781,19 @@ msgstr "%d andra objekt markerade (%s)"
 #. This is marked for translation in case a localizer
 #. * needs to change ", " to something else.
 #.
-#: src/file-manager/fm-directory-view.c:1177
+#: src/file-manager/fm-directory-view.c:1175
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
 
-#: src/file-manager/fm-directory-view.c:2085
+#: src/file-manager/fm-directory-view.c:2083
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the trash. Do you want to delete it immediately?"
 msgstr ""
 "\"%s\" kan inte flyttas till papperskorgen. Vill du ta bort det omedelbart?"
 
-#: src/file-manager/fm-directory-view.c:2090
+#: src/file-manager/fm-directory-view.c:2088
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the trash. Do you want to delete "
@@ -2793,7 +2802,7 @@ msgstr ""
 "De %d markerade objekten kan inte flyttas till papperskorgen. Vill du ta "
 "bort dem omedelbart?"
 
-#: src/file-manager/fm-directory-view.c:2094
+#: src/file-manager/fm-directory-view.c:2092
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the trash. Do you want to delete "
@@ -2802,171 +2811,196 @@ msgstr ""
 "%d av de markerade objekten kan inte flyttas till papperskorgen. Vill du ta "
 "bort de %d objekten omedelbart?"
 
-#: src/file-manager/fm-directory-view.c:2100
+#: src/file-manager/fm-directory-view.c:2098
 msgid "Can't Move to Trash"
 msgstr "Kan inte flytta till papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:2101
+#: src/file-manager/fm-directory-view.c:2099
 msgid "Delete"
 msgstr "Ta bort"
 
-#: src/file-manager/fm-directory-view.c:2101
+#: src/file-manager/fm-directory-view.c:2099
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: src/file-manager/fm-directory-view.c:2342
+#: src/file-manager/fm-directory-view.c:2340
 msgid "_Open"
 msgstr "_Öppna"
 
-#: src/file-manager/fm-directory-view.c:2345
+#: src/file-manager/fm-directory-view.c:2343
 msgid "Open With"
 msgstr "Öppna med"
 
-#: src/file-manager/fm-directory-view.c:2348
+#: src/file-manager/fm-directory-view.c:2346
 msgid "Other Application..."
 msgstr "Annan applikation..."
 
-#: src/file-manager/fm-directory-view.c:2350
+#: src/file-manager/fm-directory-view.c:2348
 msgid "Other Viewer..."
 msgstr "Andra visare..."
 
-#: src/file-manager/fm-directory-view.c:2354
+#: src/file-manager/fm-directory-view.c:2352
 msgid "Open in _New Window"
 msgstr "Öppna i _nytt fönster"
 
-#: src/file-manager/fm-directory-view.c:2356
+#: src/file-manager/fm-directory-view.c:2354
 #, c-format
 msgid "Open in %d _New Windows"
 msgstr "Öppna i %d _nya fönster"
 
-#: src/file-manager/fm-directory-view.c:2368
+#: src/file-manager/fm-directory-view.c:2366
 msgid "New Folder"
 msgstr "Ny mapp"
 
-#: src/file-manager/fm-directory-view.c:2371
+#: src/file-manager/fm-directory-view.c:2369
 msgid "Delete from _Trash"
 msgstr "Ta bort från _papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:2374
+#: src/file-manager/fm-directory-view.c:2372
 msgid "Move to _Trash"
 msgstr "Flytta till _papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:2377
+#: src/file-manager/fm-directory-view.c:2375
 msgid "_Duplicate"
 msgstr "_Mångfaldiga"
 
-#: src/file-manager/fm-directory-view.c:2381
+#: src/file-manager/fm-directory-view.c:2379
 msgid "Create _Links"
 msgstr "Skapa _länkar"
 
-#: src/file-manager/fm-directory-view.c:2383
+#: src/file-manager/fm-directory-view.c:2381
 msgid "Create _Link"
 msgstr "Skapa _länk"
 
 #. No ellipses here because this command does not require further
 #. * information to be completed.
 #.
-#: src/file-manager/fm-directory-view.c:2390
+#: src/file-manager/fm-directory-view.c:2388
 msgid "Show _Properties"
 msgstr "Visa _egenskaper"
 
-#: src/file-manager/fm-directory-view.c:2393
+#: src/file-manager/fm-directory-view.c:2391
 msgid "_Empty Trash"
 msgstr "_Töm papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:2396
+#: src/file-manager/fm-directory-view.c:2394
 msgid "_Select All Files"
 msgstr "_Markera alla filer"
 
-#: src/file-manager/fm-directory-view.c:2404
+#: src/file-manager/fm-directory-view.c:2402
 msgid "R_emove Custom Images"
 msgstr "_Ta bort anpassade bilder"
 
-#: src/file-manager/fm-directory-view.c:2406
+#: src/file-manager/fm-directory-view.c:2404
 msgid "R_emove Custom Image"
 msgstr "_Ta bort anpassad bild"
 
-#: src/file-manager/fm-directory-view.c:2410
+#: src/file-manager/fm-directory-view.c:2408
 msgid "Reset _Background"
 msgstr "Återställ _bakgrunden"
 
-#: src/file-manager/fm-directory-view.c:2565
+#: src/file-manager/fm-directory-view.c:2563
 msgid "Zoom In"
 msgstr "Zooma in"
 
-#: src/file-manager/fm-directory-view.c:2567
+#: src/file-manager/fm-directory-view.c:2565
 msgid "Zoom Out"
 msgstr "Zooma ut"
 
-#: src/file-manager/fm-directory-view.c:2569
+#: src/file-manager/fm-directory-view.c:2567
 msgid "Normal Size"
 msgstr "Normal storlek"
 
-#: src/file-manager/fm-directory-view.c:2579
+#: src/file-manager/fm-directory-view.c:2577
 msgid "_New Folder"
 msgstr "_Ny mapp"
 
-#: src/file-manager/fm-directory-view.c:2672
-#: src/file-manager/fm-directory-view.c:2930
+#: src/file-manager/fm-directory-view.c:2670
+#: src/file-manager/fm-directory-view.c:2928
 #, c-format
 msgid "%s Viewer"
 msgstr "%s-visare"
 
-#: src/file-manager/fm-directory-view.c:2959
+#: src/file-manager/fm-directory-view.c:2957
 msgid "Move all selected items to the Trash"
 msgstr "Flytta alla markerade objekt till papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:2968
+#: src/file-manager/fm-directory-view.c:2966
 msgid "Delete all selected items permanently"
 msgstr "Ta bort alla markerade objekt permanent"
 
-#: src/file-manager/fm-directory-view.c:2990
+#: src/file-manager/fm-directory-view.c:2988
 msgid "Choose a program with which to open the selected item"
 msgstr "Välj ett program att öppna det markerade objektet med"
 
-#: src/file-manager/fm-directory-view.c:3010
+#: src/file-manager/fm-directory-view.c:3008
 msgid "Choose another application with which to open the selected item"
 msgstr "Välj en annan applikation att öppna det markerade objektet med"
 
-#: src/file-manager/fm-directory-view.c:3032
+#: src/file-manager/fm-directory-view.c:3030
 msgid "Choose another viewer with which to view the selected item"
 msgstr "Välj en annan visare att öppna det markerade objektet med"
 
-#: src/file-manager/fm-directory-view.c:3054
+#: src/file-manager/fm-directory-view.c:3052
 msgid "Create a new folder in this window"
 msgstr "Skapa en ny mapp i det här fönstret"
 
-#: src/file-manager/fm-directory-view.c:3062
+#: src/file-manager/fm-directory-view.c:3060
 msgid "Open the selected item in this window"
 msgstr "Öppna det markerade objetet i det här fönstret"
 
-#: src/file-manager/fm-directory-view.c:3070
+#: src/file-manager/fm-directory-view.c:3068
 msgid "Open each selected item in a new window"
 msgstr "Öppna varje markerat objekt i ett nytt fönster"
 
-#: src/file-manager/fm-directory-view.c:3085
+#: src/file-manager/fm-directory-view.c:3083
 msgid "View or modify the properties of the selected items"
 msgstr "Visa eller ändra de markerade objektens egenskaper"
 
-#: src/file-manager/fm-directory-view.c:3096
+#: src/file-manager/fm-directory-view.c:3094
 msgid "Duplicate each selected item"
 msgstr "Mångfaldiga varje markerat objekt"
 
-#: src/file-manager/fm-directory-view.c:3104
+#: src/file-manager/fm-directory-view.c:3102
 msgid "Create a symbolic link for each selected item"
 msgstr "Skapa en symbolisk länk för varje markerat objekt"
 
-#: src/file-manager/fm-directory-view.c:3118
+#: src/file-manager/fm-directory-view.c:3116
 msgid "Delete all items in the trash"
 msgstr "Ta bort alla objekt i papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:3126
+#: src/file-manager/fm-directory-view.c:3124
 msgid "Select all items in this window"
 msgstr "Markera alla objekt i det här fönstret"
 
-#: src/file-manager/fm-directory-view.c:3140
+#: src/file-manager/fm-directory-view.c:3138
 msgid "Remove the custom image from each selected icon"
 msgstr "Ta bort den anpassade bilden från varje markerad ikon"
+
+#: src/file-manager/fm-directory-view.c:3359
+msgid ""
+"This link can't be used, because it has no target. Do you want to put this "
+"link in the trash?"
+msgstr ""
+"Den här länken kan inte användas eftersom den inte har något mål. Vill du "
+"kasta den här länken i papperskorgen?"
+
+#: src/file-manager/fm-directory-view.c:3362
+#, c-format
+msgid ""
+"This link can't be used, because its target \"%s\" doesn't exist. Do you "
+"want to put this link in the trash?"
+msgstr ""
+"Den här länken kan inte användas eftersom dess mål \"%s\" inte finns. Vill "
+"du kasta den här länken i papperskorgen?"
+
+#: src/file-manager/fm-directory-view.c:3367
+msgid "Nautilus: Broken link"
+msgstr "Nautilus: Trasig länk"
+
+#: src/file-manager/fm-directory-view.c:3368
+msgid "Throw Away"
+msgstr "Kasta"
 
 #: src/file-manager/fm-error-reporting.c:50
 #, c-format
@@ -4221,47 +4255,47 @@ msgstr "Välj en temakatalog att lägga till som ett nytt tema:"
 msgid "No information available for the  %s theme"
 msgstr "Ingen information finns tillgänglig för temat %s"
 
-#: src/nautilus-window.c:874
+#: src/nautilus-window.c:871
 #, c-format
 msgid "View as %s..."
 msgstr "Visa som %s..."
 
 #. Add "View as Other..." extra bonus choice.
-#: src/nautilus-window.c:896
+#: src/nautilus-window.c:893
 msgid "View as Other..."
 msgstr "Visa som annat...."
 
-#: src/nautilus-window.c:1442
+#: src/nautilus-window.c:1439
 msgid "Close"
 msgstr "Stäng"
 
-#: src/nautilus-window-manage-views.c:198
+#: src/nautilus-window-manage-views.c:192
 msgid "(untitled)"
 msgstr "(namnlös)"
 
-#: src/nautilus-window-manage-views.c:262 src/nautilus-window-menus.c:643
+#: src/nautilus-window-manage-views.c:256 src/nautilus-window-menus.c:643
 msgid "Nautilus"
 msgstr "Nautilus"
 
-#: src/nautilus-window-manage-views.c:265
+#: src/nautilus-window-manage-views.c:259
 #, c-format
 msgid "Nautilus: %s"
 msgstr "Nautilus: %s"
 
-#: src/nautilus-window-manage-views.c:725
+#: src/nautilus-window-manage-views.c:713
 #, c-format
 msgid "You do not have the permissions necessary to view \"%s\"."
 msgstr "Du har inte de rättigheter som krävs för att se \"%s\"."
 
-#: src/nautilus-window-manage-views.c:727
+#: src/nautilus-window-manage-views.c:715
 msgid "Nautilus: Inadequate permissions"
 msgstr "Nautilus: Otillräckliga rättigheter"
 
-#: src/nautilus-window-manage-views.c:922
+#: src/nautilus-window-manage-views.c:910
 msgid "Nautilus: View failed"
 msgstr "Nautilus: Vy misslyckades"
 
-#: src/nautilus-window-manage-views.c:935
+#: src/nautilus-window-manage-views.c:923
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -4269,7 +4303,7 @@ msgstr ""
 "En av sidoradspanelerna råkade ut för ett fel och kan inte fortsätta. Tyvärr "
 "kan jag inte säga vilken."
 
-#: src/nautilus-window-manage-views.c:939
+#: src/nautilus-window-manage-views.c:927
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -4278,18 +4312,18 @@ msgstr ""
 "Sidoradspanelen %s råkade ut för ett fel och kan inte fortsätta. Om det här "
 "fortsätter att hända kanske du vill stänga av den här panelen."
 
-#: src/nautilus-window-manage-views.c:946
+#: src/nautilus-window-manage-views.c:934
 msgid "Nautilus: Sidebar panel failed"
 msgstr "Nautilus: Sidoradspanel misslyckades"
 
-#: src/nautilus-window-manage-views.c:1349
+#: src/nautilus-window-manage-views.c:1292
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "Kunde inte hitta \"%s\". Var vänlig och kontrollera stavningen och försök "
 "igen."
 
-#: src/nautilus-window-manage-views.c:1355
+#: src/nautilus-window-manage-views.c:1298
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
@@ -4297,7 +4331,7 @@ msgstr ""
 "\"%s\" är ingen giltig plats. Var vänlig och kontrollera stavningen och "
 "försök igen."
 
-#: src/nautilus-window-manage-views.c:1373
+#: src/nautilus-window-manage-views.c:1316
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot handle items of this type."
@@ -4305,7 +4339,7 @@ msgstr ""
 "Kunde inte visa \"%s\", eftersom Nautilus inte kan hantera objekt av den här "
 "typen."
 
-#: src/nautilus-window-manage-views.c:1377
+#: src/nautilus-window-manage-views.c:1320
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot handle items of type \"%s\"."
@@ -4314,19 +4348,19 @@ msgstr ""
 "\"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1389
+#: src/nautilus-window-manage-views.c:1332
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Kunde inte visa \"%s\", eftersom Nautilus inte kan hantera %s:-platser."
 
-#: src/nautilus-window-manage-views.c:1395
+#: src/nautilus-window-manage-views.c:1338
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "Kunde inte visa \"%s\", eftersom inloggningsförsöket misslyckades."
 
 #. FIXME bugzilla.eazel.com 2458: Need to give the user some advice about what to do here.
-#: src/nautilus-window-manage-views.c:1402
+#: src/nautilus-window-manage-views.c:1345
 msgid ""
 "Sorry, searching can't be used now. In the future this message will be more "
 "helpful."
@@ -4334,16 +4368,16 @@ msgstr ""
 "Tyvärr, sökning kan inte användas än. I framtiden kommer detta meddelande "
 "att bli till mer hjälp."
 
-#: src/nautilus-window-manage-views.c:1403
+#: src/nautilus-window-manage-views.c:1346
 msgid "Nautilus: Searching unavailable"
 msgstr "Nautilus: Sökning är inte tillgänglig"
 
-#: src/nautilus-window-manage-views.c:1407
+#: src/nautilus-window-manage-views.c:1350
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kan inte visa \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1419
+#: src/nautilus-window-manage-views.c:1362
 msgid "Nautilus: Can't display location"
 msgstr "Nautilus: Kan inte visa plats"
 
