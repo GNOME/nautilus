@@ -874,10 +874,10 @@ update_layout_menus (FMIconView *view)
 				
 #endif
 		nautilus_bonobo_set_toggle_state 
-			(view->details->ui, MENU_PATH_TIGHTER_LAYOUT, fm_icon_view_using_tighter_layout (view));
+			(view->details->ui, COMMAND_TIGHTER_LAYOUT, fm_icon_view_using_tighter_layout (view));
 
 		nautilus_bonobo_set_toggle_state 
-			(view->details->ui, MENU_PATH_SORT_REVERSED, view->details->sort_reversed);
+			(view->details->ui, COMMAND_SORT_REVERSED, view->details->sort_reversed);
 
 		/* Sort order isn't relevant for manual layout. */
 		nautilus_bonobo_set_sensitive

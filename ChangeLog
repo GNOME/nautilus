@@ -1,3 +1,14 @@
+2000-10-10  Rebecca Schulman  <rebecka@eazel.com>
+
+	* src/file-manager/fm-icon-view.c: (update_layout_menus):
+	used the command path instead of widget path, fixing
+	the error in my last bugfix about the lack of 
+	command widget separation
+	* src/nautilus-complex-search-bar.c:
+	(attach_criterion_to_search_bar):
+	Fixed some calls to hbox_new which were 0, FALSE instead
+	of FALSE, 0
+	
 2000-10-10  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-install-logic.c:
@@ -1200,7 +1211,6 @@
 	(nautilus_window_update_find_menu_item): Removed stray debugging
 	comment.
 
->>>>>>> 1.2225
 2000-10-06  Mike Fleming  <mfleming@eazel.com>
 
 	* components/mozilla/nautilus-mozilla-content-view.c:

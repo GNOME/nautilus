@@ -375,7 +375,7 @@ attach_criterion_to_search_bar (NautilusComplexSearchBar *bar,
 		   the entry, to keep things neat.  So make a box 
 		   for the entry and the suffix together */
 		if (criterion->details->use_value_suffix) {
-			hbox = gtk_hbox_new (0, FALSE);
+			hbox = gtk_hbox_new (FALSE, 0);
 			gtk_box_pack_start (GTK_BOX (hbox),
 					    GTK_WIDGET (criterion->details->value_entry),
 					    TRUE, TRUE,
