@@ -118,6 +118,7 @@ ElementInfo sect_preparse[] = {
         { ANSWER, "answer", NULL, NULL, NULL},
         { CHAPTER, "chapter", (startElementSAXFunc) sect_preparse_sect_start_element, NULL, NULL},
 	{ PREFACE, "preface", (startElementSAXFunc) sect_preparse_sect_start_element, NULL, NULL},
+	{ APPENDIX, "appendix", (startElementSAXFunc) sect_preparse_sect_start_element, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -191,6 +192,7 @@ sect_preparse_title_characters (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT3));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT4));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT5));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (APPENDIX));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
 

@@ -112,6 +112,7 @@ ElementInfo sect_elements[] = {
 	{ ANSWER, "answer", (startElementSAXFunc) sect_answer_start_element, (endElementSAXFunc) sect_formalpara_end_element, NULL /* charactersSAXFunc) sect_write_characters */},
 	{ CHAPTER, "chapter", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
 	{ PREFACE, "preface", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
+	{ APPENDIX, "appendix", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -262,6 +263,7 @@ sect_para_start_element (Context *context, const gchar *name, const xmlChar **at
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT3));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT4));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT5));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (APPENDIX));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FOOTNOTE));
@@ -284,6 +286,7 @@ sect_para_start_element (Context *context, const gchar *name, const xmlChar **at
 	case SECT3:
 	case SECT4:
 	case SECT5:
+	case APPENDIX:
 	case SECTION:
 	case LEGALNOTICE:
 		sect_print (context, "<P>\n");
@@ -313,6 +316,7 @@ sect_para_end_element (Context *context, const gchar *name)
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT3));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT4));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT5));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (APPENDIX));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FOOTNOTE));
@@ -335,6 +339,7 @@ sect_para_end_element (Context *context, const gchar *name)
 	case SECT3:
 	case SECT4:
 	case SECT5:
+	case APPENDIX:
 	case SECTION:
 	case LEGALNOTICE:
 		sect_print (context, "</P>\n");
@@ -397,6 +402,7 @@ sect_sect_start_element (Context *context,
 
 	switch (name[4]) {
 	case 'a':
+		/* Preface tag */
 	        context->preface++;
 		context->chapter = 0;
 		context->sect1 = 0;
@@ -404,13 +410,27 @@ sect_sect_start_element (Context *context,
 		context->sect3 = 0;
 		context->sect4 = 0;
 		context->sect5 = 0;
+		break;
 	case 't':
+		/* Chapter tag */
 		context->chapter++;
 		context->sect1 = 0;
 		context->sect2 = 0;
 		context->sect3 = 0;
 		context->sect4 = 0;
 		context->sect5 = 0;
+		break;
+	case 'n':
+		/* Appendix tag */
+		context->appendix++;
+		context->chapter = 0;
+		context->sect1 = 0;
+		context->sect2 = 0;
+		context->sect3 = 0;
+		context->sect4 = 0;
+		context->sect5 = 0;
+		break;
+		
 	case '1':
 		if (sect_context->state != LOOKING_FOR_SECT_TITLE) {
 			g_free (sect_context->prev);
@@ -435,8 +455,8 @@ sect_sect_start_element (Context *context,
 		break;
 	case '4':
 		context->sect4++;
-		break;
 		context->sect5 = 0;
+		break;
 	case '5':
 		context->sect4++;
 		break;
@@ -468,6 +488,9 @@ sect_sect_end_element (Context *context,
 		context->sect4 = 0;
 	case '4':
 		context->sect5 = 0;
+	case 'n':
+		context->appendix = 0;
+		context->sect1 = 0;
 	default:
 		break;
 	}
@@ -634,6 +657,7 @@ sect_title_start_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT3));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT4));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT5));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (APPENDIX));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
@@ -656,6 +680,7 @@ sect_title_start_element (Context *context,
 	case SECT3:
 	case SECT4:
 	case SECT5:
+	case APPENDIX:
 	case SECTION:
 		if (context->sect1 == 0)
 			sect_print (context, "<H1>");
@@ -702,6 +727,7 @@ sect_title_end_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT3));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT4));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT5));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (APPENDIX));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
@@ -715,6 +741,7 @@ sect_title_end_element (Context *context,
 		sect_print (context, "</B></P>\n");
 		break;
 	case PREFACE:
+	case APPENDIX:
 	        sect_print (context, "</A></H1>\n");
 		break;
 	case CHAPTER:
@@ -763,6 +790,7 @@ sect_title_characters (Context *context,
 		element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT3));
 		element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT4));
 		element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT5));
+		element_list = g_slist_prepend (element_list, GINT_TO_POINTER (APPENDIX));
 		element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
 
 		stack_el = find_first_element (context, element_list);
@@ -799,6 +827,7 @@ sect_title_characters (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT3));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT4));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT5));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (APPENDIX));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ARTHEADER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
@@ -816,6 +845,7 @@ sect_title_characters (Context *context,
 	case SECT3:
 	case SECT4:
 	case SECT5:
+	case APPENDIX:
 	case SECTION:
 	case FORMALPARA:
 		sect_print (context, temp);

@@ -117,7 +117,8 @@ typedef enum ElementIndex {
 	ANSWER, /* 105 */
 	CHAPTER,
 	PREFACE,
-	UNDEFINED /* 108 */
+	APPENDIX,
+	UNDEFINED /* 109 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;
@@ -161,6 +162,7 @@ struct _Context {
 	gint sect3;
 	gint sect4;
 	gint sect5;
+	gint appendix;
 
 	gboolean empty_element; /* This is to determine if the element is
 				   empty or not */

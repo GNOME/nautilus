@@ -128,6 +128,7 @@ ElementInfo toc_elements[] = {
 	{ ANSWER, "answer", NULL, NULL, NULL},
 	{ CHAPTER, "chapter", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
 	{ PREFACE, "preface", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
+	{ APPENDIX, "appendix", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -172,7 +173,16 @@ toc_sect_start_element (Context *context,
 		context->sect4 = 0;
 		context->sect5 = 0;
 		break;
-		
+	case 'n':
+		sect1id_stack_add (context, name, atrs);
+		context->appendix++;
+		context->chapter = 0;
+		context->sect1 = 0;
+		context->sect2 = 0;
+		context->sect3 = 0;
+		context->sect4 = 0;
+		context->sect5 = 0;
+		break;
 	case '1':
 		if (context->doctype == ARTICLE) {
 			sect1id_stack_add (context, name, atrs);
@@ -229,6 +239,7 @@ toc_sect_end_element (Context *context,
 
 	switch (name[4]) {
 	case 'a':
+		/* FIXME: should chapter be set to zero? */
 	        context->preface = 0;
 		context->sect1 = 0;
 	case 't':
@@ -241,6 +252,10 @@ toc_sect_end_element (Context *context,
 		context->sect4 = 0;
 	case '4':
 		context->sect5 = 0;
+	case 'n':
+		/* FIXME: should chapter be set to zero? */
+		context->appendix = 0;
+		context->sect1 = 0;
 	default:
 		break;
 	}
@@ -399,6 +414,7 @@ toc_title_start_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT3));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT4));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT5));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (APPENDIX));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
@@ -420,6 +436,7 @@ toc_title_start_element (Context *context,
 	case CHAPTER:
 	case SECT1:
 	case SECTION:
+	case APPENDIX:
 		if (context->sect1 == 0) {
 			g_print ("<H1>");
 		} else if (context->sect2 == 0) {
@@ -443,6 +460,12 @@ toc_title_start_element (Context *context,
 			g_print ("%d", context->chapter);
 			if (context->sect1 > 0) g_print (".%d", context->sect1);
 									
+		} else if (context->appendix > 0) {
+			if (context->sect1 == 0) {
+				g_print ("APPENDIX:<BR>");
+			} else if (context->sect1 > 0) {
+				g_print ("&nbsp;&nbsp;%d",context->sect1);
+			}
 		} else {
 			if (context->sect1 > 0) g_print ("%d", context->sect1);
 		}
@@ -453,14 +476,18 @@ toc_title_start_element (Context *context,
                 if (context->sect4 > 0) g_print (".%d", context->sect4);
                 if (context->sect5 > 0) g_print (".%d", context->sect5);
 
-		/* Don't print the "." if you are in the preface title */
-		if (stack_el->info->index != PREFACE)  g_print (".&nbsp;&nbsp;"); 
+		/* Don't print the "." if you are in the preface or appendix title */
+		if (stack_el->info->index != PREFACE && stack_el->info->index != APPENDIX) {
+		       g_print (".&nbsp;&nbsp;");
+		}
 		
 		/* Only print the link if we are the chapter tag, or the sect1 tag
-		 * (and the document is an article) or preface */
-		print_link = (((stack_el->info->index == SECT1) && (context->doctype != BOOK_DOC))
+		 * (and the document is an article) or preface or appendix */
+		print_link = (((stack_el->info->index == SECT1) && (context->doctype != BOOK_DOC)
+				&& (context->appendix == 0))
 				|| stack_el->info->index == CHAPTER
-		                || stack_el->info->index == PREFACE);
+		                || stack_el->info->index == PREFACE
+				|| stack_el->info->index == APPENDIX);
 
 		if (print_link) {
 			g_print ("<A href=\"gnome-help:%s", context->base_file);
@@ -519,6 +546,7 @@ toc_title_end_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT3));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT4));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT5));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (APPENDIX));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
@@ -534,6 +562,7 @@ toc_title_end_element (Context *context,
 
 	switch (index) {
 	case PREFACE:
+	case APPENDIX:
 		g_print ("</A></H1>");
 		break;
 	case CHAPTER:
@@ -576,6 +605,7 @@ toc_title_characters (Context *context, const gchar *chars, int len)
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT3));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT4));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT5));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (APPENDIX));	
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ARTHEADER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (BOOKINFO));
@@ -602,6 +632,7 @@ toc_title_characters (Context *context, const gchar *chars, int len)
 	case SECT4:
 	case SECT5:
 	case SECTION:
+	case APPENDIX:
 		g_print (temp);
 		g_free (temp);
 		break;
