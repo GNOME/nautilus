@@ -74,11 +74,21 @@ enum {
 };
 
 enum {
-	PERMISSIONS_PAGE_PERMISSIONS_ROW,
+	PERMISSIONS_PAGE_TITLE_ROW,
 	PERMISSIONS_PAGE_OWNER_ROW,
 	PERMISSIONS_PAGE_GROUP_ROW,
+	PERMISSIONS_PAGE_OTHERS_ROW,
+	PERMISSIONS_PAGE_INTENTIONALLY_BLANK_ROW,
+	PERMISSIONS_PAGE_FULL_STRING_ROW,
 	PERMISSIONS_PAGE_ROW_COUNT
-};
+};	
+
+enum {
+	PERMISSIONS_CHECKBOXES_READ_COLUMN,
+	PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
+	PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
+	PERMISSIONS_CHECKBOXES_COLUMN_COUNT
+};	
 
 enum {
 	MORE_PAGE_MIME_TYPE_ROW,
@@ -90,6 +100,35 @@ enum {
 	VALUE_COLUMN,
 	COLUMN_COUNT
 };
+
+static void
+add_prompt (GtkVBox *vbox, const char *prompt_text, gboolean pack_at_start)
+{
+	GtkWidget *prompt;
+
+	prompt = gtk_label_new (prompt_text);
+   	gtk_label_set_justify (GTK_LABEL (prompt), GTK_JUSTIFY_LEFT);
+	gtk_label_set_line_wrap (GTK_LABEL (prompt), TRUE);
+	gtk_widget_show (prompt);
+	if (pack_at_start) {
+		gtk_box_pack_start (GTK_BOX (vbox), prompt, FALSE, FALSE, 0);
+	} else {
+		gtk_box_pack_end (GTK_BOX (vbox), prompt, FALSE, FALSE, 0);
+	}
+}
+
+static void
+add_prompt_and_separator (GtkVBox *vbox, const char *prompt_text)
+{
+	GtkWidget *separator_line;
+
+	add_prompt (vbox, prompt_text, FALSE);
+
+	/* Separator between check buttons and prompt. */
+  	separator_line = gtk_hseparator_new ();
+  	gtk_widget_show (separator_line);
+  	gtk_box_pack_end (GTK_BOX (vbox), separator_line, TRUE, TRUE, GNOME_PAD_BIG);
+}		   
 
 static void
 get_pixmap_and_mask_for_properties_window (NautilusFile *file,
@@ -376,30 +415,21 @@ value_field_update (GtkLabel *label, NautilusFile *file)
 }
 
 static void
-install_title_value_pair (GtkTable *table, 
-			  int row, 
-			  const char *title, 
-			  NautilusFile *file, 
-			  const char *file_attribute_name)
+install_value_field (GtkTable *table,
+		     int row,
+		     int start_column,
+		     int column_span,
+		     NautilusFile *file,
+		     const char *file_attribute_name)
 {
-	GtkWidget *title_field, *value_field;
-
-	title_field = gtk_label_new (title);
-	/* Move widget to right edge (justifying text not the right thing here). */
-	gtk_misc_set_alignment (GTK_MISC (title_field), 1, 0.5);
-	gtk_widget_show (title_field);
-	gtk_table_attach (GTK_TABLE (table), title_field,
-			  TITLE_COLUMN, TITLE_COLUMN + 1,
-			  row, row + 1,
-			  GTK_FILL, 0,
-			  0, 0);
+	GtkWidget *value_field;
 
 	value_field = gtk_label_new ("");
 	/* Move widget to left edge (justifying text not the right thing here). */
 	gtk_misc_set_alignment (GTK_MISC (value_field), 0, 0.5);
 	gtk_widget_show (value_field);
 	gtk_table_attach (GTK_TABLE (table), value_field,
-			  VALUE_COLUMN, VALUE_COLUMN + 1,
+			  start_column, start_column + column_span,
 			  row, row + 1,
 			  GTK_FILL, 0,
 			  0, 0);
@@ -417,8 +447,66 @@ install_title_value_pair (GtkTable *table,
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
 					       "changed",
 					       value_field_update,
-					       GTK_OBJECT (value_field));
-			  
+					       GTK_OBJECT (value_field));	
+}		     
+
+static void
+install_title_value_pair (GtkTable *table, 
+			  int row, 
+			  const char *title, 
+			  NautilusFile *file, 
+			  const char *file_attribute_name)
+{
+	GtkWidget *title_field;
+
+	title_field = gtk_label_new (title);
+	/* Move widget to right edge (justifying text not the right thing here). */
+	gtk_misc_set_alignment (GTK_MISC (title_field), 1, 0.5);
+	gtk_widget_show (title_field);
+	gtk_table_attach (GTK_TABLE (table), title_field,
+			  TITLE_COLUMN, TITLE_COLUMN + 1,
+			  row, row + 1,
+			  GTK_FILL, 0,
+			  0, 0);
+
+	install_value_field (table, row, VALUE_COLUMN, 1, file, file_attribute_name); 
+}
+
+static GtkWidget *
+create_page_with_vbox (GtkNotebook *notebook,
+		       const char *title)
+{
+	GtkWidget *vbox;
+
+	g_assert (GTK_IS_NOTEBOOK (notebook));
+	g_assert (title != NULL);
+
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), GNOME_PAD);
+	gtk_notebook_append_page (notebook, vbox, gtk_label_new (title));
+
+	return vbox;
+}		       
+
+static void
+apply_standard_table_padding (GtkTable *table)
+{
+	gtk_table_set_row_spacings (table, GNOME_PAD);
+	gtk_table_set_col_spacings (table, GNOME_PAD);	
+}
+
+static GtkWidget *
+create_attribute_value_table (GtkVBox *vbox, int row_count)
+{
+	GtkWidget *table;
+
+	table = gtk_table_new (row_count, COLUMN_COUNT, FALSE);
+	apply_standard_table_padding (GTK_TABLE (table));
+	gtk_widget_show (table);
+	gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 0);	
+
+	return table;
 }
 
 static void
@@ -431,19 +519,8 @@ create_page_with_table_in_vbox (GtkNotebook *notebook,
 	GtkWidget *table;
 	GtkWidget *vbox;
 
-	g_assert (GTK_IS_NOTEBOOK (notebook));
-	g_assert (title != NULL);
-
-	vbox = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), GNOME_PAD);
-	gtk_notebook_append_page (notebook, vbox, gtk_label_new (title));
-
-	table = gtk_table_new (row_count, COLUMN_COUNT, FALSE);
-	gtk_table_set_row_spacings (GTK_TABLE (table), GNOME_PAD);
-	gtk_table_set_col_spacings (GTK_TABLE (table), GNOME_PAD);
-	gtk_widget_show (table);
-	gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 0);	
+	vbox = create_page_with_vbox (notebook, title);
+	table = create_attribute_value_table (GTK_VBOX (vbox), row_count);
 
 	if (return_table != NULL) {
 		*return_table = table;
@@ -534,7 +611,7 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 static void
 create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 {
-	GtkWidget *emblems_page_vbox, *prompt, *separator_line, *button;
+	GtkWidget *emblems_page_vbox, *button;
 	GtkWidget *check_buttons_box, *left_buttons_box, *right_buttons_box;
 	int i;
 
@@ -586,60 +663,343 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 		}
 	}
 
-	/* The prompt. */
-	prompt = gtk_label_new (_("Images and a complete list of available emblems coming soon."));
-	gtk_widget_show (prompt);
-	gtk_box_pack_end (GTK_BOX (emblems_page_vbox), prompt, FALSE, FALSE, 0);
-   	gtk_label_set_justify (GTK_LABEL (prompt), GTK_JUSTIFY_LEFT);
-	gtk_label_set_line_wrap (GTK_LABEL (prompt), TRUE);
+	add_prompt_and_separator (GTK_VBOX (emblems_page_vbox),
+				  _("Images and a complete list of available emblems coming soon."));
+}
 
-	/* Separator between check buttons and prompt. */
-  	separator_line = gtk_hseparator_new ();
-  	gtk_widget_show (separator_line);
-  	gtk_box_pack_end (GTK_BOX (emblems_page_vbox), separator_line, TRUE, TRUE, 8);
+static void
+permissions_label_update (GtkLabel *label, NautilusFile *file)
+{
+	const char *attribute_name;
+	const char *pattern;
+	char *attribute_value;
+	char *label_text;
 
+	g_assert (GTK_IS_LABEL (label));
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	attribute_name = gtk_object_get_data (GTK_OBJECT (label), "file_attribute");
+	pattern = gtk_object_get_data (GTK_OBJECT (label), "pattern");
+
+	/* The pattern must be a plain string if there's no attribute,
+	 * or a pattern with exactly one %s if there is an attribute.
+	 */
+	if (attribute_name == NULL) {
+		gtk_label_set_text (label, pattern);
+	} else {
+		attribute_value = nautilus_file_get_string_attribute (file, attribute_name);
+		label_text = g_strdup_printf (pattern, attribute_value);
+		gtk_label_set_text (label, label_text);
+		g_free (label_text);
+		g_free (attribute_value);
+	}
+}
+
+static void
+add_permissions_row_label (GtkTable *table, 
+			   NautilusFile *file, 
+			   int row, 
+			   const char *pattern, 
+			   const char *attribute_name)
+{
+	GtkWidget *label;
+
+	label = gtk_label_new ("");
+
+	/* Move widget to right edge (justifying text not the right thing here). */
+	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
+	gtk_widget_show (label);
+	
+	gtk_table_attach (table, label,
+			  0, 0 + 1,
+			  row, row + 1,
+			  GTK_FILL, 0,
+			  0, 0);
+
+	/* Stash copies of the pattern and file attribute name in the label 
+	 * for the callback's sake. 
+	 */
+	if (attribute_name != NULL) {
+		gtk_object_set_data_full (GTK_OBJECT (label),
+					  "file_attribute",
+					  g_strdup (attribute_name),
+					  (GtkDestroyNotify) g_free);
+	}
+	gtk_object_set_data_full (GTK_OBJECT (label),
+				  "pattern",
+				  g_strdup (pattern),
+				  (GtkDestroyNotify) g_free);
+
+	/* Fill in the value. */
+	permissions_label_update (GTK_LABEL (label), file);
+
+	/* Connect to signal to update value when file changes, if
+	 * there's an attribute that might change. 
+	 */
+	if (attribute_name != NULL) {
+		gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
+						       "changed",
+						       permissions_label_update,
+						       GTK_OBJECT (label));
+	}
+}			   
+
+static void
+add_permissions_column_label (GtkTable *table, 
+			      int column, 
+			      const char *title_text)
+{
+	GtkWidget *label;
+
+	label = gtk_label_new (title_text);
+
+	/* Text is centered in table cell by default, which is what we want here. */
+	gtk_widget_show (label);
+	
+	gtk_table_attach_defaults (table, label,
+			  	   column, column + 1,
+			  	   PERMISSIONS_PAGE_TITLE_ROW, 
+			  	   PERMISSIONS_PAGE_TITLE_ROW + 1);
+}	
+
+static void
+update_permissions_check_button_state (GtkWidget *check_button, NautilusFile *file)
+{
+	GnomeVFSFilePermissions file_permissions, permission;
+	guint toggled_signal_id;
+
+	g_assert (GTK_IS_CHECK_BUTTON (check_button));
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (nautilus_file_can_get_permissions (file));
+
+	toggled_signal_id = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (check_button),
+						 		  "toggled_signal_id"));
+	permission = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (check_button),
+							   "permission"));
+	g_assert (toggled_signal_id > 0);
+	g_assert (permission != 0);
+
+	file_permissions = nautilus_file_get_permissions (file);
+	gtk_widget_set_sensitive (GTK_WIDGET (check_button), 
+				  nautilus_file_can_set_permissions (file));
+
+	/* Don't react to the "toggled" signal here to avoid recursion. */
+	gtk_signal_handler_block (GTK_OBJECT (check_button),
+				  toggled_signal_id);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button),
+				      (file_permissions & permission) != 0);
+	gtk_signal_handler_unblock (GTK_OBJECT (check_button),
+				    toggled_signal_id);
+}
+
+static void
+permissions_check_button_toggled (GtkToggleButton *toggle_button, gpointer user_data)
+{
+	NautilusFile *file;
+	GnomeVFSFilePermissions permissions, permission_bit;
+	GnomeVFSResult result;
+
+	g_assert (NAUTILUS_IS_FILE (user_data));
+
+	file = NAUTILUS_FILE (user_data);
+	g_assert (nautilus_file_can_get_permissions (file));
+	g_assert (nautilus_file_can_set_permissions (file));
+
+	permission_bit = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (toggle_button),
+					  "permission"));
+
+	/* Modify the file's permissions according to the state of this check button. */
+	permissions = nautilus_file_get_permissions (file);
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (toggle_button))) {
+		/* Turn this specific permission bit on. */
+		permissions |= permission_bit;
+	} else {
+		/* Turn this specific permission bit off. */
+		permissions &= ~permission_bit;
+	}
+
+	/* Try to change file permissions. If this fails, complain to user. */
+	result = nautilus_file_set_permissions (file, permissions);
+	if (result != GNOME_VFS_OK) {
+		fm_report_error_setting_permissions (file, result);
+		
+		/* Reset check button state to match file permissions. */
+		update_permissions_check_button_state (GTK_WIDGET (toggle_button), file);
+	}
+}
+
+static void
+add_permissions_checkbox (GtkTable *table, 
+			  NautilusFile *file,
+			  int row, int column, 
+			  GnomeVFSFilePermissions permission_to_check)
+{
+	GtkWidget *check_button;
+	guint toggled_signal_id;
+
+	check_button = gtk_check_button_new ();
+	gtk_widget_show (check_button);
+	gtk_table_attach (table, check_button,
+			  column, column + 1,
+			  row, row + 1,
+			  0, 0,
+			  0, 0);
+
+	toggled_signal_id = gtk_signal_connect (GTK_OBJECT (check_button), "toggled",
+      	              	    			GTK_SIGNAL_FUNC (permissions_check_button_toggled),
+                            			file);
+
+	/* Load up the check_button with data we'll need when updating its state. */
+        gtk_object_set_data (GTK_OBJECT (check_button), 
+        		     "toggled_signal_id", 
+        		     GINT_TO_POINTER (toggled_signal_id));
+        gtk_object_set_data (GTK_OBJECT (check_button), 
+        		     "permission", 
+        		     GINT_TO_POINTER (permission_to_check));
+	
+	/* Set initial state. */
+        update_permissions_check_button_state (check_button, file);
+
+        /* Update state later if file changes. */
+	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
+					       "changed",
+					       update_permissions_check_button_state,
+					       GTK_OBJECT (check_button));
 }
 
 static void
 create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 {
-	GtkWidget *table;
 	GtkWidget *vbox;
-	GtkWidget *prompt, *separator_line;
+	GtkTable *row_label_table, *check_button_table;
+	GtkWidget *check_buttons_hbox;
+	char *file_name, *prompt_text;
 
-	create_page_with_table_in_vbox (notebook, 
-					_("Permissions"), 
-					PERMISSIONS_PAGE_ROW_COUNT, 
-					&table, 
-					&vbox);
+	vbox = create_page_with_vbox (notebook, _("Permissions"));
 
-	install_title_value_pair (GTK_TABLE (table), PERMISSIONS_PAGE_PERMISSIONS_ROW,
-				  _("as string:"), file, "permissions");
-	install_title_value_pair (GTK_TABLE (table), PERMISSIONS_PAGE_OWNER_ROW,
-				  _("Owner:"), file, "owner");
-	install_title_value_pair (GTK_TABLE (table), PERMISSIONS_PAGE_GROUP_ROW,
-				  _("Group:"), file, "group");
+	if (!nautilus_file_can_get_permissions (file)) {
+		if (!nautilus_file_can_set_permissions (file)) {
+			add_prompt_and_separator (
+				GTK_VBOX (vbox), 
+				_("You are not the owner, so you can't change these permissions."));
+		}
 
-	/* Here's some temporary stuff to avoid frightening the masses. */
-	prompt = gtk_label_new (_("Don't panic. This is not the final permissions user interface."));
-	gtk_widget_show (prompt);
-	gtk_box_pack_end (GTK_BOX (vbox), prompt, FALSE, FALSE, 0);
-   	gtk_label_set_justify (GTK_LABEL (prompt), GTK_JUSTIFY_LEFT);
-	gtk_label_set_line_wrap (GTK_LABEL (prompt), TRUE);
+		check_buttons_hbox = gtk_hbox_new (FALSE, 0);
+		gtk_box_set_spacing (GTK_BOX (check_buttons_hbox), GNOME_PAD);
+		gtk_widget_show (check_buttons_hbox);
+		gtk_box_pack_start (GTK_BOX (vbox), 
+				    GTK_WIDGET (check_buttons_hbox), 
+				    FALSE, FALSE, 0);
 
-  	separator_line = gtk_hseparator_new ();
-  	gtk_widget_show (separator_line);
-  	gtk_box_pack_end (GTK_BOX (vbox), separator_line, TRUE, TRUE, 8);
+		row_label_table = GTK_TABLE (gtk_table_new 
+						(PERMISSIONS_PAGE_ROW_COUNT, 
+						 1, TRUE));
+		apply_standard_table_padding (row_label_table);
+		gtk_widget_show (GTK_WIDGET (row_label_table));
+		gtk_box_pack_start (GTK_BOX (check_buttons_hbox), 
+				    GTK_WIDGET (row_label_table), 
+				    FALSE, FALSE, 0);
+
+		check_button_table = GTK_TABLE (gtk_table_new 
+						   (PERMISSIONS_PAGE_ROW_COUNT, 
+						    PERMISSIONS_CHECKBOXES_COLUMN_COUNT, 
+						    TRUE));
+		apply_standard_table_padding (check_button_table);
+		gtk_widget_show (GTK_WIDGET (check_button_table));
+		gtk_box_pack_start (GTK_BOX (check_buttons_hbox), 
+				    GTK_WIDGET (check_button_table), 
+				    FALSE, FALSE, 0);
+
+		add_permissions_row_label (row_label_table, file, 
+					   PERMISSIONS_PAGE_OWNER_ROW, 
+					   _("owner (%s):"), "owner");
+		add_permissions_row_label (row_label_table, file, 
+					   PERMISSIONS_PAGE_GROUP_ROW, 
+					   _("group (%s):"), "group");
+		add_permissions_row_label (row_label_table, file, 
+					   PERMISSIONS_PAGE_OTHERS_ROW, 
+					   _("others:"), NULL);
+		
+		add_permissions_row_label (row_label_table, file, 
+					   PERMISSIONS_PAGE_FULL_STRING_ROW, 
+					   _("standard format:"), NULL);
+		
+		add_permissions_column_label (check_button_table, 
+					      PERMISSIONS_CHECKBOXES_READ_COLUMN,
+					      _("read"));
+
+		add_permissions_column_label (check_button_table, 
+					      PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
+					      _("write"));
+
+		add_permissions_column_label (check_button_table, 
+					      PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
+					      _("execute"));
+
+		add_permissions_checkbox (check_button_table, file, 
+					  PERMISSIONS_PAGE_OWNER_ROW,
+					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
+					  GNOME_VFS_PERM_USER_READ);
+
+		add_permissions_checkbox (check_button_table, file, 
+					  PERMISSIONS_PAGE_OWNER_ROW,
+					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
+					  GNOME_VFS_PERM_USER_WRITE);
+
+		add_permissions_checkbox (check_button_table, file, 
+					  PERMISSIONS_PAGE_OWNER_ROW,
+					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
+					  GNOME_VFS_PERM_USER_EXEC);
+
+		add_permissions_checkbox (check_button_table, file, 
+					  PERMISSIONS_PAGE_GROUP_ROW,
+					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
+					  GNOME_VFS_PERM_GROUP_READ);
+
+		add_permissions_checkbox (check_button_table, file, 
+					  PERMISSIONS_PAGE_GROUP_ROW,
+					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
+					  GNOME_VFS_PERM_GROUP_WRITE);
+
+		add_permissions_checkbox (check_button_table, file, 
+					  PERMISSIONS_PAGE_GROUP_ROW,
+					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
+					  GNOME_VFS_PERM_GROUP_EXEC);
+
+		add_permissions_checkbox (check_button_table, file, 
+					  PERMISSIONS_PAGE_OTHERS_ROW,
+					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
+					  GNOME_VFS_PERM_OTHER_READ);
+
+		add_permissions_checkbox (check_button_table, file, 
+					  PERMISSIONS_PAGE_OTHERS_ROW,
+					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
+					  GNOME_VFS_PERM_OTHER_WRITE);
+
+		add_permissions_checkbox (check_button_table, file, 
+					  PERMISSIONS_PAGE_OTHERS_ROW,
+					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
+					  GNOME_VFS_PERM_OTHER_EXEC);
+
+		install_value_field (check_button_table, 
+				     PERMISSIONS_PAGE_FULL_STRING_ROW, 
+				     PERMISSIONS_CHECKBOXES_READ_COLUMN, 
+				     PERMISSIONS_CHECKBOXES_COLUMN_COUNT - PERMISSIONS_CHECKBOXES_READ_COLUMN, 
+				     file, "permissions"); 
+	} else {
+		file_name = nautilus_file_get_name (file);
+		prompt_text = g_strdup_printf (_("The permissions of \"%s\" could not be determined."), file_name);
+		g_free (file_name);
+		add_prompt (GTK_VBOX (vbox), prompt_text, TRUE);
+		g_free (prompt_text);
+	}
 }
-
-
 
 static void
 create_more_page (GtkNotebook *notebook, NautilusFile *file)
 {
 	GtkWidget *table;
 	GtkWidget *vbox;
-	GtkWidget *separator_line, *prompt;
 
 	create_page_with_table_in_vbox (notebook, 
 					_("More"), 
@@ -650,17 +1010,9 @@ create_more_page (GtkNotebook *notebook, NautilusFile *file)
 	install_title_value_pair (GTK_TABLE (table), MORE_PAGE_MIME_TYPE_ROW,
 				  _("MIME type:"), file, "mime_type");
 
-	/* The prompt. */
-	prompt = gtk_label_new (_("Tell sullivan@eazel.com all your good ideas for what should go here."));
-	gtk_widget_show (prompt);
-	gtk_box_pack_end (GTK_BOX (vbox), prompt, FALSE, FALSE, 0);
-   	gtk_label_set_justify (GTK_LABEL (prompt), GTK_JUSTIFY_LEFT);
-	gtk_label_set_line_wrap (GTK_LABEL (prompt), TRUE);
-
-	/* Separator between check buttons and prompt. */
-  	separator_line = gtk_hseparator_new ();
-  	gtk_widget_show (separator_line);
-  	gtk_box_pack_end (GTK_BOX (vbox), separator_line, TRUE, TRUE, 8);
+	add_prompt_and_separator (
+		GTK_VBOX (vbox),
+		_("Tell sullivan@eazel.com all your good ideas for what should go here."));
 }
 
 static GtkWindow *

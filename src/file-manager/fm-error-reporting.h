@@ -28,9 +28,13 @@
 
 #include <glib.h>
 #include <libgnomevfs/gnome-vfs-types.h>
+#include <libnautilus-extensions/nautilus-file.h>
 
-void fm_report_error_renaming_file (const char     *original_name,
-				    const char     *new_name,
-				    GnomeVFSResult  error_code);
+void fm_report_error_renaming_file 	 (const char     *original_name,
+				    	  const char     *new_name,
+				    	  GnomeVFSResult  error_code);
+
+void fm_report_error_setting_permissions (NautilusFile   *file,
+					  GnomeVFSResult  error_code);			    
 
 #endif /* FM_ERROR_REPORTING_H */

@@ -317,7 +317,7 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 {
 	g_assert (NAUTILUS_IS_FILE (file));
 
-	if ((file->details->info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS) == 0) {
+	if (!nautilus_file_can_get_permissions (file)) {
 		/* 
 		 * File's permissions field is not valid.
 		 * Can't access specific permissions, so return FALSE.
@@ -1141,6 +1141,112 @@ nautilus_file_get_size (NautilusFile *file)
 }
 
 /**
+ * nautilus_file_can_get_permissions:
+ * 
+ * Check whether the permissions for a file are determinable.
+ * This might not be the case for files on non-UNIX file systems.
+ * 
+ * @file: The file in question.
+ * 
+ * Return value: TRUE if the permissions are valid.
+ */
+gboolean
+nautilus_file_can_get_permissions (NautilusFile *file)
+{
+	return (file->details->info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS) != 0;
+}
+
+/**
+ * nautilus_file_can_set_permissions:
+ * 
+ * Check whether the current user is allowed to change
+ * the permissions of a file.
+ * 
+ * @file: The file in question.
+ * 
+ * Return value: TRUE if the current user can change the
+ * permissions of @file, FALSE otherwise.
+ */
+gboolean
+nautilus_file_can_set_permissions (NautilusFile *file)
+{
+	/* Not allowed to set the permissions if we can't
+	 * even read them. This can happen on non-UNIX file
+	 * systems.
+	 */
+	if (!nautilus_file_can_get_permissions (file)) {
+		return FALSE;
+	}
+
+	/* Owner is allowed to set permissions. */
+	if (getuid() == file->details->info->uid) {
+		return TRUE;
+	}
+
+	/* Root is also allowed to set permissions. */
+	if (getuid() == 0) {
+		return TRUE;
+	}
+
+	/* Nobody else is allowed. */
+	return FALSE;
+	
+}
+
+GnomeVFSFilePermissions
+nautilus_file_get_permissions (NautilusFile *file) {
+	g_return_val_if_fail (nautilus_file_can_get_permissions (file), 0);
+
+	return file->details->info->permissions;
+}
+
+/**
+ * nautilus_file_set_permissions:
+ * 
+ * Change a file's permissions. This should only be called if
+ * nautilus_file_can_set_permissions returned TRUE.
+ * 
+ * @file: NautilusFile representing the file in question.
+ * @new_permissions: New permissions value. This is the whole
+ * set of permissions, not a delta.
+ * 
+ * Returns: GnomeVFSResult reporting the success or failure of
+ * trying to change the file's permissions.
+ * 
+ **/
+GnomeVFSResult
+nautilus_file_set_permissions (NautilusFile *file, 
+			       GnomeVFSFilePermissions new_permissions) {
+	GnomeVFSResult result;
+	GnomeVFSFileInfo *partial_file_info;
+	char *uri;
+			       
+	g_return_val_if_fail (nautilus_file_can_set_permissions (file), 
+			      GNOME_VFS_ERROR_ACCESSDENIED);
+
+	if (new_permissions == file->details->info->permissions) {
+		return GNOME_VFS_OK;
+	}
+
+	/* Change the file-on-disk permissions. */
+	partial_file_info = gnome_vfs_file_info_new ();
+	partial_file_info->permissions = new_permissions;
+	uri = nautilus_file_get_uri (file);
+	result = gnome_vfs_set_file_info (uri, partial_file_info, 
+				 	  GNOME_VFS_SET_FILE_INFO_PERMISSIONS);
+	gnome_vfs_file_info_unref (partial_file_info);
+	g_free (uri);
+
+	/* Update the permissions in our NautilusFile object. */
+	if (result == GNOME_VFS_OK) {
+		file->details->info->permissions = new_permissions;
+		nautilus_file_changed (file);
+	}
+
+	return result;
+}
+
+/**
  * nautilus_file_get_permissions_as_string:
  * 
  * Get a user-displayable string representing a file's permissions. The caller
@@ -1669,10 +1775,10 @@ nautilus_file_is_executable (NautilusFile *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	if ((file->details->info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS) == 0){
+	if (!nautilus_file_can_get_permissions (file)) {
 		/* 
-		 * Permissions field is not valid.
-		 * Can't tell whether this file is executable, so return FALSE.
+		 * File's permissions field is not valid.
+		 * Can't access specific permissions, so return FALSE.
 		 */
 		return FALSE;
 	}

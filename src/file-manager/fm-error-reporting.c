@@ -65,3 +65,31 @@ fm_report_error_renaming_file (const char *original_name,
 	gtk_widget_show (message_box);
 }		
 
+void
+fm_report_error_setting_permissions (NautilusFile *file,
+			       	     GnomeVFSResult error)
+{
+	GtkWidget *message_box;
+	char *message;
+	char *file_name;
+
+	g_return_if_fail (error != GNOME_VFS_OK);
+
+	switch (error) {
+		default:
+			/* We should invent decent error messages for every case we actually experience. */
+			g_warning ("Hit unhandled case %d in fm_report_error_setting_permissions, tell sullivan@eazel.com", error);
+			file_name = nautilus_file_get_name (file);
+			message = g_strdup_printf (_("Sorry, couldn't change the permissions of \"%s\"."), file_name);
+			g_free (file_name);
+	}
+
+	message_box = gnome_message_box_new (message,
+					     GNOME_MESSAGE_BOX_ERROR,
+					     GNOME_STOCK_BUTTON_OK,
+					     NULL);
+	g_free (message);
+	
+	gtk_widget_show (message_box);
+}		
+

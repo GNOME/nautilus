@@ -116,6 +116,14 @@ void             nautilus_file_set_keywords              (NautilusFile         *
 GList *          nautilus_file_get_emblem_names          (NautilusFile         *file);
 char *           nautilus_file_get_top_left_text         (NautilusFile         *file);
 
+
+/* Permissions. */
+gboolean	nautilus_file_can_get_permissions	 (NautilusFile	       *file);
+gboolean	nautilus_file_can_set_permissions	 (NautilusFile	       *file);
+GnomeVFSFilePermissions nautilus_file_get_permissions    (NautilusFile	       *file);
+GnomeVFSResult	nautilus_file_set_permissions		 (NautilusFile	       *file,
+							  GnomeVFSFilePermissions permissions);
+
 /* Basic operations for file objects. */
 gboolean         nautilus_file_can_read                  (NautilusFile         *file);
 gboolean         nautilus_file_can_write                 (NautilusFile         *file);

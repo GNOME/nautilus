@@ -1,3 +1,49 @@
+2000-05-09  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 547 (show and set permissions in
+	Properties window). It's kinda geeky as unix
+	permissions like to be. As always, I welcome feedback
+	about this UI.
+
+	* libnautilus-extensions/nautilus-file.h,
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_can_get_permissions): New function, checks
+	whether the permissions of a file can be determined.
+	(nautilus_file_can_set_permissions): New function, checks
+	whether the current user is capable of changing the
+	permissions of a file.
+
+	(nautilus_file_denies_access_permission),
+	(nautilus_file_is_executable): Deploy _can_get_permissions.
+	
+	(nautilus_file_get_permissions): New function, returns
+	permissions for file.
+	
+	(nautilus_file_set_permissions): New function, changes
+	permissions for file. Returns GnomeVFSResult that reports
+	whether change succeeded.
+	 
+	* src/file-manager/fm-properties-window.c: (add_prompt),
+	(add_prompt_and_separator),
+	(get_pixmap_and_mask_for_properties_window), (install_value_field),
+	(install_title_value_pair), (create_page_with_vbox),
+	(apply_standard_table_padding), (create_attribute_value_table),
+	(create_page_with_table_in_vbox), (create_emblems_page),
+	(permissions_label_update), (add_permissions_row_label),
+	(add_permissions_column_label),
+	(update_permissions_check_button_state),
+	(permissions_check_button_toggled), (add_permissions_checkbox),
+	(create_permissions_page), (create_more_page): Lots of new code
+	and refactoring to display the permissions UI.
+
+	* src/file-manager/fm-error-reporting.h,
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_setting_permissions): New function to
+	complain to user if attempt to set permissions fails.
+	The UI won't let the user try to set the permissions if
+	nautilus_file_can_set_permissions returns FALSE, but there
+	can always be oddball failures for other reasons.
+	
 2000-05-08  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/ntl-uri-map.c (get_lang_list),
