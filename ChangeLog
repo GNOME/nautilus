@@ -1,3 +1,19 @@
+2003-02-17  Arvind Samptur <arvind.samptur@wipro.com>
+	* src/nautilus-file-management-properties.[ch]:
+	(nautilus_file_management_properties_dialog_setup):
+	(nautilus_file_management_properties_dialog_show):
+	* src/nautilus-window-menus.c:
+	(preferences_callback):
+	* src/nautilus-file-management-properties-main.c:
+	(main):
+
+	Multi-head stuff done for the preferences dialog.
+
+	* libnautilus-private/nautilus-icon-dnd.c: (confirm_switch_to_manual_layout)
+	Get the transient parent for the "Switch to Manual Layout ?" right.
+
+	Patches approved by Dave Camp. #100343 and #106086.
+	
 2003-02-13  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-thumbnails.c (thumbnail_thread_start):

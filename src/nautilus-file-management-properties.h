@@ -26,10 +26,11 @@
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_H
 
 #include <glib-object.h>
+#include <gtk/gtkwindow.h>
 
 G_BEGIN_DECLS
 
-void nautilus_file_management_properties_dialog_show (GCallback close_callback);
+void nautilus_file_management_properties_dialog_show (GCallback close_callback, GtkWindow *window);
 
 G_END_DECLS
 

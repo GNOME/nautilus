@@ -58,7 +58,7 @@ main (int argc, char *argv[])
 
 	eel_preferences_init ("/apps/nautilus");
 
-	nautilus_file_management_properties_dialog_show (G_CALLBACK (nautilus_file_management_properties_main_close_callback));
+	nautilus_file_management_properties_dialog_show (G_CALLBACK (nautilus_file_management_properties_main_close_callback), NULL);
 
 	gtk_main ();
 	

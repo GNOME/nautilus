@@ -282,8 +282,8 @@ nautilus_file_management_properties_dialog_response_cb (GtkDialog *parent,
 	}
 }
 
-static void
-nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog)
+static  void
+nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindow *window)
 {
 	GtkWidget *dialog;
 
@@ -407,11 +407,16 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog)
 			  xml_dialog);
 
 	nautilus_file_management_properties_dialog_set_icons (GTK_WINDOW (dialog));
+
+	if (window) {
+		gtk_window_set_screen (GTK_WINDOW (dialog), gtk_window_get_screen(window));
+	}
+
 	gtk_widget_show (dialog);
 }
 
 void
-nautilus_file_management_properties_dialog_show (GCallback close_callback)
+nautilus_file_management_properties_dialog_show (GCallback close_callback, GtkWindow *window)
 {
 	GladeXML *xml_dialog;
 
@@ -420,5 +425,5 @@ nautilus_file_management_properties_dialog_show (GCallback close_callback)
 	g_signal_connect (G_OBJECT (glade_xml_get_widget (xml_dialog, "file_management_dialog")),
 			  "response", close_callback, NULL);
 
-	nautilus_file_management_properties_dialog_setup (xml_dialog);
+	nautilus_file_management_properties_dialog_setup (xml_dialog, window);
 }

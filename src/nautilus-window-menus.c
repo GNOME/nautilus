@@ -583,7 +583,7 @@ preferences_callback (BonoboUIComponent *component,
 
 	window = GTK_WINDOW (user_data);
 
-	nautilus_file_management_properties_dialog_show (G_CALLBACK (preferences_respond_callback));
+	nautilus_file_management_properties_dialog_show (G_CALLBACK (preferences_respond_callback), window);
 }
 
 static void
