@@ -43,10 +43,8 @@ icon_set_new (const gchar *name)
 {
   IconSet *new;
 
-  new = g_new (IconSet, 1);
+  new = g_new0 (IconSet, 1);
   new->name = g_strdup (name);
-  new->plain = NULL;
-  new->symlink = NULL;
 
   return new;
 }

@@ -37,21 +37,10 @@
 #include "fm-icon-cache.h"
 #include "fm-public-api.h"
 
-
-enum {
-	OPEN_FAILED,
-	OPEN_DONE,
-	LOAD_FAILED,
-	LOAD_DONE,
-	ACTIVATE_URI,
-	LAST_SIGNAL
-};
-
 #define DISPLAY_TIMEOUT_INTERVAL 500
 
 
 static NautilusViewClientClass *parent_class = NULL;
-static guint signals[LAST_SIGNAL] = { 0 };
 
 static FMIconCache *icm = NULL;
 
@@ -190,13 +179,19 @@ icon_container_activate_cb (GnomeIconContainer *icon_container,
 	FMDirectoryView *directory_view;
 	GnomeVFSURI *new_uri;
 	GnomeVFSFileInfo *info;
+	Nautilus_NavigationRequestInfo nri;
 
 	info = (GnomeVFSFileInfo *) icon_data;
 	directory_view = FM_DIRECTORY_VIEW (data);
 
 	new_uri = gnome_vfs_uri_append_path (directory_view->uri, name);
-	gtk_signal_emit (GTK_OBJECT (directory_view),
-			 signals[ACTIVATE_URI], new_uri, info->mime_type);
+
+	nri.requested_uri = gnome_vfs_uri_to_string(new_uri, 0);
+	nri.new_window_default = nri.new_window_suggested = Nautilus_V_FALSE;
+	nri.new_window_enforced = Nautilus_V_UNKNOWN;
+	nautilus_view_client_request_location_change(NAUTILUS_VIEW_CLIENT(directory_view),
+						     &nri);
+	g_free(nri.requested_uri);
 	gnome_vfs_uri_unref (new_uri);
 }
 
@@ -208,6 +203,8 @@ add_to_icon_container (FMDirectoryView *view,
 		       gboolean with_layout)
 {
 	GdkPixbuf *image;
+
+	g_return_if_fail(info);
 
 	image = fm_icon_cache_get_icon (icon_manager, info);
 
@@ -248,6 +245,8 @@ load_icon_container (FMDirectoryView *view,
 
 			info = gnome_vfs_directory_list_get
 				(view->directory_list, position);
+
+			g_return_if_fail(info);
 			add_to_icon_container (view, icm,
 					       icon_container, info, TRUE);
 
@@ -380,13 +379,18 @@ flist_activate_cb (GtkFList *flist,
 	FMDirectoryView *directory_view;
 	GnomeVFSURI *new_uri;
 	GnomeVFSFileInfo *info;
+	Nautilus_NavigationRequestInfo nri;
 
 	info = (GnomeVFSFileInfo *) entry_data;
 	directory_view = FM_DIRECTORY_VIEW (data);
 
 	new_uri = gnome_vfs_uri_append_path (directory_view->uri, info->name);
-	gtk_signal_emit (GTK_OBJECT (directory_view),
-			 signals[ACTIVATE_URI], new_uri, info->mime_type);
+	nri.requested_uri = gnome_vfs_uri_to_string(new_uri, 0);
+	nri.new_window_default = nri.new_window_suggested = Nautilus_V_FALSE;
+	nri.new_window_enforced = Nautilus_V_UNKNOWN;
+	nautilus_view_client_request_location_change(NAUTILUS_VIEW_CLIENT(directory_view),
+						     &nri);
+	g_free(nri.requested_uri);
 	gnome_vfs_uri_unref (new_uri);
 }
 
@@ -437,7 +441,8 @@ create_flist (FMDirectoryView *view)
 		FMIconCache *icon_manager;
 
 		if(!icm)
-			icm = icon_manager = fm_icon_cache_new(NULL);
+			icm = fm_icon_cache_new(NULL);
+		icon_manager = icm;
 
 		position = gnome_vfs_directory_list_get_first_position
 			(view->directory_list);
@@ -599,7 +604,8 @@ display_pending_entries (FMDirectoryView *view)
 	FM_DEBUG (("Adding %d entries.", view->entries_to_display));
 
 	if(!icm)
-		icm = fm_icon_cache_new(NULL);
+	       icm = fm_icon_cache_new(NULL);
+	icon_manager = icm;
 
 	if (view_has_icon_container (view)) {
 		icon_container = get_icon_container (view);
@@ -610,7 +616,8 @@ display_pending_entries (FMDirectoryView *view)
 		gtk_clist_freeze (GTK_CLIST (flist));
 	}
 
-	for (i = 0; i < view->entries_to_display; i++) {
+	for (i = 0; i < view->entries_to_display
+		     && view->current_position != GNOME_VFS_DIRECTORY_LIST_POSITION_NONE; i++) {
 		GnomeVFSFileInfo *info;
 
 		info = gnome_vfs_directory_list_get (view->directory_list,
@@ -647,7 +654,8 @@ display_icons_not_in_layout (FMDirectoryView *view)
 	FM_DEBUG (("Adding entries not in layout."));
 
 	if (!icm)
-		icm = icon_manager = fm_icon_cache_new(NULL);
+		icm = fm_icon_cache_new(NULL);
+	icon_manager = icm;
 
 	icon_container = get_icon_container (view);
 	g_return_if_fail (icon_container != NULL);
@@ -720,7 +728,7 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 
 	if (view->directory_list == NULL) {
 		if (result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_EOF) {
-			gtk_signal_emit (GTK_OBJECT (view), signals[OPEN_DONE]);
+			/* gtk_signal_emit (GTK_OBJECT (view), signals[OPEN_DONE]); */
 
 			setup_base_uri (view);
 
@@ -739,14 +747,16 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 						 display_timeout_cb,
 						 view);
 		} else if (entries_read == 0) {
+			/*
 			gtk_signal_emit (GTK_OBJECT (view),
 					 signals[OPEN_FAILED]);
+			*/
 		}
 	}
 
 	if (view->current_position == GNOME_VFS_DIRECTORY_LIST_POSITION_NONE)
 		view->current_position
-			= gnome_vfs_directory_list_get_position (list);
+			= gnome_vfs_directory_list_get_first_position (list);
 
 	view->entries_to_display += entries_read;
 
@@ -754,11 +764,11 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 		display_pending_entries (view);
 		display_icons_not_in_layout (view);
 		stop_load (view);
-		gtk_signal_emit (GTK_OBJECT (view), signals[LOAD_DONE]);
+		/* gtk_signal_emit (GTK_OBJECT (view), signals[LOAD_DONE]); */
 	} else if (result != GNOME_VFS_OK) {
 		stop_load (view);
-		gtk_signal_emit (GTK_OBJECT (view), signals[LOAD_FAILED],
-				 result);
+		/* gtk_signal_emit (GTK_OBJECT (view), signals[LOAD_FAILED],
+		   result); */
 		return;
 	}
 }
@@ -885,9 +895,11 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 		 directory_load_cb,	 		/* callback */
 		 view);		 			/* callback_data */
 
+	/*
 	if (result != GNOME_VFS_OK)
 		gtk_signal_emit (GTK_OBJECT (view), signals[OPEN_FAILED],
 				 result);
+	*/
 }
 
 void

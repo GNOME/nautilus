@@ -69,9 +69,9 @@ POA_Nautilus_ViewFrame__epv impl_Nautilus_ViewFrame_epv =
 {
    NULL,			/* _private */
    (void(*))&impl_Nautilus_ViewFrame__get_main_window,
+   (void(*))&impl_Nautilus_ViewFrame_request_status_change,
    (void(*))&impl_Nautilus_ViewFrame_request_location_change,
-   (void(*))&impl_Nautilus_ViewFrame_request_selection_change,
-   (void(*))&impl_Nautilus_ViewFrame_request_status_change
+   (void(*))&impl_Nautilus_ViewFrame_request_selection_change
 };
 
 static PortableServer_ServantBase__epv base_epv = { NULL};
