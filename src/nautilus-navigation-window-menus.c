@@ -92,7 +92,6 @@
 #define COMMAND_PATH_CLOSE_WINDOW			"/commands/Close"
 
 #define USER_MANUAL_URI		"help:nautilus-user-manual"
-#define CUSTOMER_FEEDBACK_URI	"http://www.eazel.com/feedback.html"
 #define START_HERE_URI          "start-here:"
 
 #define RESPONSE_FORGET		1000
@@ -162,7 +161,6 @@ bookmark_holder_free (BookmarkHolder *bookmark_holder)
  * don't want other code relying on their existence.
  */
 
-#define NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM			"/menu/Edit/Customization"
 
 static void
 bookmark_holder_free_cover (gpointer callback_data, GClosure *closure)
@@ -351,7 +349,7 @@ forget_history_if_confirmed (NautilusWindow *window)
 	dialog = eel_create_question_dialog (prompt,
 					     _("Clear History?"), 
 					     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-					     _("Clear"), RESPONSE_FORGET,
+					     GTK_STOCK_CLEAR, RESPONSE_FORGET,
 					     GTK_WINDOW (window));
 
 	gtk_widget_show (GTK_WIDGET (dialog));
@@ -525,7 +523,7 @@ bookmarks_menu_edit_bookmarks_callback (BonoboUIComponent *component,
 }
 
 static void
-user_level_customize_callback (BonoboUIComponent *component, 
+preferences_callback (BonoboUIComponent *component, 
 			       gpointer user_data, 
 			       const char *verb)
 {
@@ -533,7 +531,7 @@ user_level_customize_callback (BonoboUIComponent *component,
 }
 
 static void
-customize_callback (BonoboUIComponent *component, 
+backgrounds_and_emblems_callback (BonoboUIComponent *component, 
 		    gpointer user_data, 
 		    const char *verb)
 {
@@ -634,15 +632,6 @@ help_menu_nautilus_manual_callback (BonoboUIComponent *component,
 			              const char *verb)
 {
 	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), USER_MANUAL_URI);
-}
-
-static void
-help_menu_nautilus_feedback_callback (BonoboUIComponent *component, 
-			              gpointer user_data, 
-			              const char *verb)
-{
-	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
-			       CUSTOMER_FEEDBACK_URI);
 }
 
 static void
@@ -1086,7 +1075,7 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("Toggle Find Mode", toolbar_toggle_find_mode_callback),
 #endif
 		BONOBO_UI_VERB ("Undo", edit_menu_undo_callback),
-		BONOBO_UI_VERB ("Customize", customize_callback),
+		BONOBO_UI_VERB ("Backgrounds and Emblems", backgrounds_and_emblems_callback),
 		BONOBO_UI_VERB ("Back", go_menu_back_callback),
 		BONOBO_UI_VERB ("Forward", go_menu_forward_callback),
 		BONOBO_UI_VERB ("Up", go_menu_up_callback),
@@ -1115,8 +1104,7 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 
 		BONOBO_UI_VERB ("About Nautilus", help_menu_about_nautilus_callback),
 		BONOBO_UI_VERB ("Nautilus Manual", help_menu_nautilus_manual_callback),
-		BONOBO_UI_VERB ("Nautilus Feedback", help_menu_nautilus_feedback_callback),
-		BONOBO_UI_VERB ("User Level Customization", user_level_customize_callback),
+		BONOBO_UI_VERB ("Preferences", preferences_callback),
 		BONOBO_UI_VERB ("Stop", stop_button_callback),
 
 		BONOBO_UI_VERB_END
