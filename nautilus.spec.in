@@ -64,7 +64,7 @@ Conflicts:	mozilla = M17
 Summary:        Nautilus component framework for services
 Group:          User Interface/Desktop
 Requires:       %name = %{PACKAGE_VERSION}
-Requires:	ammonite >= 0.9
+Requires:	ammonite >= 1.0
 Requires:	rpm >= @RPM_VERSION@
 Requires:	usermode >= 1.37
 Requires:	pam >= 0.72
@@ -75,6 +75,7 @@ Group:          User Interface/Desktop
 Requires:	xpdf >= 0.90
 Requires:	mpg123
 Requires:	sox
+Requires:	gnome-user-docs >= 1.3
 
 %package suggested
 Summary:	Nautilus and a suggested set of components
@@ -126,12 +127,14 @@ LINGUAS=""
 LANG=""
 export LC_ALL LINGUAS LANG
 
+MESSAGE="Eazel candidate build on "`date +%c`
+
 ## Warning!  Make sure there are no spaces or tabs after the \ 
 ## continuation character, or else the rpm demons will eat you.
 CFLAGS="$RPM_OPT_FLAGS -DENABLE_SCROLLKEEPER_SUPPORT" ./configure $MYARCH_FLAGS --prefix=%{prefix} \
 	--enable-eazel-services \
 	--enable-more-warnings \
-	--with-build-message="Candidate Build" \
+	--with-build-message="$MESSAGE" \
 	--sysconfdir=%{sysconfdir}
 
 make -k
