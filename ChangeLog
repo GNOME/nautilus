@@ -1,3 +1,21 @@
+2001-03-02  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Refixed bug 5863 (Opening folder triggers recalculation
+	of deep count in Properties window)
+
+	The deep count was being invalidated by the directory
+	loading mechanism, which is legal and should be
+	harmless. Taught the properties window not to do the
+	visible recount whenever deep count is invalidated.
+
+	* src/file-manager/fm-properties-window.c:
+	(directory_contents_value_field_update): Set new
+	deep_count_finished variable when the deep count is
+	done. Afterwards, only update the display if a new
+	deep count is completed (don't show future count-ups).
+
 2001-03-01  Eric Fischer  <eric@eazel.com>
 
 	reviewed by: Michael Engber <engber@eazel.com>
@@ -29,6 +47,7 @@
 	nautilus_directory_async_state_changed. These didn't actually
 	cause the bug.
 
+>>>>>>> 1.4114
 2001-03-02  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Seth Nickell  <seth@eazel.com>

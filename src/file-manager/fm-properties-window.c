@@ -97,6 +97,7 @@ struct FMPropertiesWindowDetails {
 	int first_special_flags_row;
 	int num_special_flags_rows;
 
+	gboolean deep_count_finished;
 };
 
 enum {
@@ -1043,6 +1044,14 @@ directory_contents_value_field_update (FMPropertiesWindow *window)
 						&unreadable_directory_count, 
 						&total_size);
 
+	/* If we've already displayed the total once, don't do another visible
+	 * count-up if the deep_count happens to get invalidated. But still display
+	 * the new total, since it might have changed.
+	 */
+	if (window->details->deep_count_finished && status != NAUTILUS_REQUEST_DONE) {
+		return;
+	}
+
 	text = NULL;
 	total_count = file_count + directory_count;
 	used_two_lines = FALSE;
@@ -1092,6 +1101,10 @@ directory_contents_value_field_update (FMPropertiesWindow *window)
 	}
 	gtk_label_set_text (window->details->directory_contents_title_field, text);
 	g_free (text);
+
+	if (status == NAUTILUS_REQUEST_DONE) {
+		window->details->deep_count_finished = TRUE;
+	}
 }
 
 static gboolean
