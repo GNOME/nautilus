@@ -1,4 +1,4 @@
-NULL=
+NULL =
 
 CPPFLAGS =					\
 	-DPREFIX=\"$(prefix)\"                  \
@@ -24,10 +24,13 @@ oaf_DATA =					\
 bin_PROGRAMS =					\
 	nautilus-tree-view
 
-nautilus_tree_view_SOURCES =		\
-	nautilus-tree-view.h          \
-	nautilus-tree-view.c          \
-	main.c
+nautilus_tree_view_SOURCES =	       \
+	nautilus-tree-view.h           \
+	nautilus-tree-view.c           \
+	nautilus-tree-model.h          \
+	nautilus-tree-model.c          \
+	main.c                         \
+	$(NULL)
 
 nautilus_tree_view_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
@@ -38,6 +41,7 @@ nautilus_tree_view_LDADD =			\
 	$(BONOBO_LIBS)					\
 	$(GCONF_LIBS) \
 	$(VFS_LIBS)					\
-	$(OAF_LIBS)
+	$(OAF_LIBS)                                      \
+	$(NULL)
 
 EXTRA_DIST = $(oaf_DATA)

@@ -1,3 +1,10 @@
+2000-07-18  Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory.c
+	(nautilus_uri_is_search_uri): Always return false to try to
+	disable special-casing the brute force way (so Nautilus can
+	actually display search results).
+
 2000-07-18  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-list.c:

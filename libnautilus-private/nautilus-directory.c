@@ -990,7 +990,8 @@ nautilus_directory_file_monitor_remove (NautilusDirectory *directory,
 gboolean
 nautilus_uri_is_search_uri (const char *uri)
 {
-	return nautilus_str_has_prefix (uri, "search:");
+	return FALSE;
+	//return nautilus_str_has_prefix (uri, "search:");
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
