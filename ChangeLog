@@ -1,3 +1,11 @@
+2000-12-01  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/tree/nautilus-tree-view.c
+	(nautilus_tree_view_insert_model_node): Fix bug 4930 (Tree sidebar
+	panel doesn't expand remembered directories until second window is
+	opened) by making sure to expand directories that should be
+	expanded when initially inserting nodes, not just updating.
+
 2000-12-01  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	Migrated more code into eazel-package-system and finished

@@ -154,7 +154,8 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 	GdkBitmap *closed_mask;
 	GdkPixmap *open_pixmap;
 	GdkBitmap *open_mask;
-	
+	char *uri;
+
 	file = nautilus_tree_node_get_file (node);
 
 	if (nautilus_tree_view_should_skip_file (view, file)) {
@@ -217,6 +218,26 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 		nautilus_file_ref (file);
 		g_hash_table_insert (view->details->file_to_node_map, file, view_node); 
+		
+		if (nautilus_file_is_directory (nautilus_tree_node_get_file (node))) {
+			uri = nautilus_file_get_uri (file);
+			
+			if (nautilus_tree_expansion_state_is_node_expanded (view->details->expansion_state, uri)) {
+				if (!ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree),
+							     view_node)) {
+					nautilus_ctree_expand (NAUTILUS_CTREE (view->details->tree),
+							       view_node);
+				} 
+			} else {
+				if (ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree),
+							    view_node)) {
+					nautilus_ctree_collapse (NAUTILUS_CTREE (view->details->tree),
+								 view_node);
+				}
+			}
+
+			g_free (uri);
+		}
 	}
 
 	g_free (text[0]);
