@@ -1,3 +1,11 @@
+2002-07-27  Mark McLoughlin  <mark@skynet.ie>
+
+	* libnautilus-private/nautilus-directory-background.c:
+	(make_root_pixmap), (set_root_pixmap): don't pass
+	a screen number arg, pass a GdkScreen instead. Also,
+	fix bogus use of the default root window.
+	(image_loading_done_callback): update.
+
 2002-07-22  Alexander Larsson  <alexl@redhat.com>
 
 	* NEWS:

@@ -426,12 +426,15 @@ nautilus_file_background_receive_gconf_changes (EelBackground *background)
  * (copied from gnome-source/control-panels/capplets/background-properties/render-background.c)
  */
 static GdkPixmap *
-make_root_pixmap (int screen, gint width, gint height)
+make_root_pixmap (GdkScreen *screen, gint width, gint height)
 {
 	Display *display;
         char *display_name;
 	Pixmap result;
 	GdkPixmap *gdk_pixmap;
+	int screen_num;
+
+	screen_num = gdk_screen_get_number (screen);
 
 	gdk_flush ();
 
@@ -447,15 +450,15 @@ make_root_pixmap (int screen, gint width, gint height)
 	XSetCloseDownMode (display, RetainPermanent);
 
 	result = XCreatePixmap (display,
-				RootWindow (display, screen),
+				RootWindow (display, screen_num),
 				width, height,
-				DefaultDepth (display, screen));
+				DefaultDepth (display, screen_num));
 
 	XCloseDisplay (display);
 
 	gdk_pixmap = gdk_pixmap_foreign_new (result);
 	gdk_drawable_set_colormap (GDK_DRAWABLE (gdk_pixmap),
-				   gdk_drawable_get_colormap (gdk_get_default_root_window ()));
+				   gdk_drawable_get_colormap (gdk_screen_get_root_window (screen)));
 
 	return gdk_pixmap;
 }
@@ -468,7 +471,7 @@ make_root_pixmap (int screen, gint width, gint height)
  * (copied from gnome-source/control-panels/capplets/background-properties/render-background.c)
  */
 static void 
-set_root_pixmap (GdkPixmap *pixmap, int screen)
+set_root_pixmap (GdkPixmap *pixmap, GdkScreen *screen)
 {
 	int      result;
 	gint     format;
@@ -478,13 +481,16 @@ set_root_pixmap (GdkPixmap *pixmap, int screen)
 	Pixmap   pixmap_id;
 	Atom     type;
 	Display *display;
+	int      screen_num;
+
+	screen_num = gdk_screen_get_number (screen);
 
 	data_esetroot = NULL;
 	display = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
 
 	XGrabServer (display);
 
-	result = XGetWindowProperty (display, RootWindow (display, screen),
+	result = XGetWindowProperty (display, RootWindow (display, screen_num),
 				     gdk_x11_get_xatom_by_name ("ESETROOT_PMAP_ID"),
 				     0L, 1L, False, XA_PIXMAP,
 				     &type, &format, &nitems, &bytes_after,
@@ -502,17 +508,17 @@ set_root_pixmap (GdkPixmap *pixmap, int screen)
 
 	pixmap_id = GDK_WINDOW_XWINDOW (pixmap);
 
-	XChangeProperty (display, RootWindow (display, screen),
+	XChangeProperty (display, RootWindow (display, screen_num),
 			 gdk_x11_get_xatom_by_name ("ESETROOT_PMAP_ID"), XA_PIXMAP,
 			 32, PropModeReplace,
 			 (guchar *) &pixmap_id, 1);
-	XChangeProperty (display, RootWindow (display, screen),
+	XChangeProperty (display, RootWindow (display, screen_num),
 			 gdk_x11_get_xatom_by_name ("_XROOTPMAP_ID"), XA_PIXMAP,
 			 32, PropModeReplace,
 			 (guchar *) &pixmap_id, 1);
 
-	XSetWindowBackgroundPixmap (display, RootWindow (display, screen), pixmap_id);
-	XClearWindow (display, RootWindow (display, screen));
+	XSetWindowBackgroundPixmap (display, RootWindow (display, screen_num), pixmap_id);
+	XClearWindow (display, RootWindow (display, screen_num));
 
 	XUngrabServer (display);
 	
@@ -524,7 +530,6 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
 {
 	int	      width;
 	int	      height;
-	int           screen_num;
 	GdkGC        *gc;
 	GdkPixmap    *pixmap;
 	GdkWindow    *background_window;
@@ -542,9 +547,8 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
 		return;
 	width = gdk_screen_get_width (screen);
 	height = gdk_screen_get_height (screen);
-	screen_num = gdk_screen_get_number (screen);
 
-	pixmap = make_root_pixmap (screen_num, width, height);
+	pixmap = make_root_pixmap (screen, width, height);
         if (pixmap == NULL) {
                 return;
         }
@@ -553,7 +557,7 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
 	eel_background_draw_to_drawable (background, pixmap, gc, 0, 0, width, height, width, height);
 	g_object_unref (gc);
 
-	set_root_pixmap (pixmap, screen_num);
+	set_root_pixmap (pixmap, screen);
 
 	background_window = background_get_desktop_background_window (background);
 	if (background_window != NULL &&
