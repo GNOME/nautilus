@@ -528,11 +528,11 @@ nautilus_icon_factory_get_icon_name_for_file (NautilusFile *file)
                 return ICON_NAME_FIFO;
         case GNOME_VFS_FILE_TYPE_SOCKET:
 		return ICON_NAME_SOCKET;
-        case GNOME_VFS_FILE_TYPE_CHARDEVICE:
+        case GNOME_VFS_FILE_TYPE_CHARACTER_DEVICE:
 		return ICON_NAME_CHARACTER_DEVICE;
-        case GNOME_VFS_FILE_TYPE_BLOCKDEVICE:
+        case GNOME_VFS_FILE_TYPE_BLOCK_DEVICE:
 		return ICON_NAME_BLOCK_DEVICE;
-        case GNOME_VFS_FILE_TYPE_BROKENSYMLINK:
+        case GNOME_VFS_FILE_TYPE_BROKEN_SYMBOLIC_LINK:
                 return ICON_NAME_BROKEN_SYMBOLIC_LINK;
         case GNOME_VFS_FILE_TYPE_REGULAR:
         case GNOME_VFS_FILE_TYPE_UNKNOWN:
