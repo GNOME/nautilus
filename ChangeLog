@@ -1,3 +1,19 @@
+2000-12-12  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	Fix an infinite loop problem that my last change caused:
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(activation_uri_read_done): Remove setting of
+	activation_uri_is_up_to_date to TRUE
+	(activation_uri_done): and move it here, because this function
+	gets called directly for files that are not nautilus or gmc links,
+	as well as being called from activation_uri_done.
+
+	* components/services/install/command-line/.cvsignore: Add
+	eazel-softcat
+
 2000-12-11  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/Makefile.am:

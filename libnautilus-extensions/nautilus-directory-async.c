@@ -2962,6 +2962,8 @@ activation_uri_done (NautilusDirectory *directory,
 		     NautilusFile *file,
 		     const char *uri)
 {
+	file->details->activation_uri_is_up_to_date = TRUE;
+
 	file->details->got_activation_uri = TRUE;
 	g_free (file->details->activation_uri);
 	file->details->activation_uri = g_strdup (uri);
@@ -2977,8 +2979,6 @@ activation_uri_read_done (NautilusDirectory *directory,
 	NautilusFile *file;
 
 	file = directory->details->activation_uri_read_state->file;
-	file->details->activation_uri_is_up_to_date = TRUE;
-
 	g_free (directory->details->activation_uri_read_state);
 	directory->details->activation_uri_read_state = NULL;
 
