@@ -225,10 +225,12 @@ The latest Mozilla RPMs that we require can be found here:
 RedHat 6.x: http://developer.eazel.com/eazel-hacking/updates/redhat62/mozilla
 RedHat 7.x: http://developer.eazel.com/eazel-hacking/updates/redhat70/mozilla
 
-The minimum Mozilla version required is Mozilla 0.8. Mozilla 0.7 and M18, the
-0.8 predecessors, no longer work.  Mozilla 0.8.1 is not recommended.  Among other
-thinkgs, you will not be able to follow links in help documents if you install
-Mozilla 0.8.1.
+The minimum Mozilla version required is Mozilla 0.8.  Mozilla 0.7 and
+M18, the 0.8 predecessors, no longer work.  Mozilla 0.8.1 should work
+only if you are using the RPMS in the links above.  In particular, you
+need at least mozilla-0.8.1-5 RPMS.  Previous RPMS (as well as the
+plain 0.8.1 release from mozilla.org) have a bug that breaks the
+Nautilus documentation system - Nautilus bug 7961.
 
 After installing these rpms, you can build nautilus with Mozilla
 support as follows:
