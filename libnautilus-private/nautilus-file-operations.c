@@ -188,9 +188,9 @@ extract_and_ellipsize_file_name_for_dialog (const char *uri)
 {
 	const char *last_part;
 	char *unescaped, *result;
-
+	
 	last_part = g_basename (uri);
-	g_return_val_if_fail (last_part == NULL, NULL);
+	g_return_val_if_fail (last_part != NULL, NULL);
 
 	unescaped = gnome_vfs_unescape_string_for_display (last_part);
 	result = ellipsize_string_for_dialog (unescaped);

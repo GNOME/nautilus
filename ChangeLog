@@ -1,3 +1,11 @@
+2001-01-16  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed mistake in asserting on a NULL value. Assert if the
+	value is NULL, not non-NULL.
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(extract_and_ellipsize_file_name_for_dialog):
+
 2001-01-16  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Gene Ragan <gzr@eazel.com>
