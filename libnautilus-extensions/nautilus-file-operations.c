@@ -78,7 +78,6 @@ icon_position_iterator_new (const GdkPoint *icon_positions, const GList *uris)
 {
 	IconPositionIterator *result;
 	int uri_count;
-	const GList *p;
 
 	uri_count = g_list_length ((GList *)uris);
 	result = g_new (IconPositionIterator, 1);
@@ -87,18 +86,7 @@ icon_position_iterator_new (const GdkPoint *icon_positions, const GList *uris)
 	memcpy (result->icon_positions, icon_positions, uri_count * sizeof (GdkPoint));
 	result->last_icon_position_index = 0;
 
-	result->uris = NULL;
-
-	/* FIXME:
-	 * should use escaped string here
-	 */
-	for (p = uris; p != NULL; p = p->next) {
-		result->uris = g_list_prepend (result->uris, 
-			gnome_vfs_unescape_string_for_display (p->data));
-	}
-
-	result->uris = g_list_reverse (result->uris);
-
+	result->uris = nautilus_g_str_list_copy ((GList *)uris);
 	result->last_uri = result->uris;
 
 	return result;

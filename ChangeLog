@@ -1,3 +1,11 @@
+2000-09-13  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(icon_position_iterator_new):
+	Remove an extra unescape call that worked around an escaping
+	bug in the copy engine. This bug is now fixed in Gnome VFS
+	and the workaround is not needed any more.
+
 2000-09-12  Robey Pointer  <robey@eazel.com>
 
 	* components/rpmview/nautilus-rpm-view-install.c:
