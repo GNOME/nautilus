@@ -1,5 +1,20 @@
 1999-12-19  Havoc Pennington  <hp@pobox.com>
 
+	* src/file-manager/desktop-window.c (desktop_window_realize): turn
+	on window decorations for debugging
+	(desktop_window_init): debug comment-out the no-resize policy
+
+	* src/file-manager/desktop-layout.c (desktop_layout_arrange):
+	fool with layout routines
+	
+	* src/file-manager/desktop-canvas.c
+	(desktop_canvas_size_allocate): debugging border to detect layout screwups
+
+	* src/file-manager/desktop-item.c (icon_realize): set the canvas
+	item, oops.
+
+1999-12-19  Havoc Pennington  <hp@pobox.com>
+
 	* src/file-manager/desktop-layout.c: don't do an arrangement
 	on every change
 
