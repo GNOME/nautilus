@@ -534,6 +534,32 @@ nautilus_str_middle_truncate (const char *string,
 	return truncated;
 }
 
+/**
+ * nautilus_str_count_characters:
+ * Count the number of 'c' characters that occur in 'string.
+ * 
+ * @string: The string to be scanned.
+ * @c: The char to count.
+ * 
+ * Return value: @count, the 'c' occurance count.
+ */
+guint
+nautilus_str_count_characters (const char	*string,
+			       char		c)
+{
+	guint count = 0;
+
+	while (string && *string != '\0') {
+		if (*string == c) {
+			count++;
+		}
+
+		string++;
+	}
+
+	return count;
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static int
@@ -733,6 +759,16 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_is_equal ("", ""), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_is_equal ("foo", "foo"), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_is_equal ("foo", "bar"), FALSE);
+
+	/* nautilus_str_count_characters */
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_str_count_characters (NULL, 'x'), 0);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_str_count_characters ("", 'x'), 0);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_str_count_characters (NULL, '\0'), 0);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_str_count_characters ("", '\0'), 0);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_str_count_characters ("foo", 'x'), 0);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_str_count_characters ("foo", 'f'), 1);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_str_count_characters ("foo", 'o'), 2);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_str_count_characters ("xxxx", 'x'), 4);
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

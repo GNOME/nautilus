@@ -45,6 +45,7 @@ int      nautilus_strcasecmp             (const char    *string_a,
 					  const char    *string_b);
 
 
+
 /* GCompareFunc version. */
 int      nautilus_str_compare            (gconstpointer  string_a,
 					  gconstpointer  string_b);
@@ -52,9 +53,10 @@ int      nautilus_istr_compare           (gconstpointer  string_a,
 					  gconstpointer  string_b);
 
 
+
 /* Other basic string operations. */
 gboolean nautilus_str_is_empty           (const char    *string_or_null);
-gboolean nautilus_str_is_equal           (const char    *string_a, 
+gboolean nautilus_str_is_equal           (const char    *string_a,
 					  const char    *string_b);
 gboolean nautilus_str_has_prefix         (const char    *target,
 					  const char    *prefix);
@@ -78,6 +80,7 @@ char *   nautilus_str_strip_trailing_str (const char    *string,
 					  const char    *remove_this);
 
 
+
 /* Conversions to and from strings. */
 gboolean nautilus_str_to_int             (const char    *string,
 					  int           *integer);
@@ -85,16 +88,20 @@ gboolean nautilus_eat_str_to_int         (char          *string_gets_freed,
 					  int           *integer);
 
 
+
 /* Escape function for slashes */
 char *   nautilus_str_escape_slashes     (const char    *string);
+
 
 
 /* Escape function for '_' character. */
 char *   nautilus_str_double_underscores (const char    *string);
 
 
+
 /* Capitalize a string */
 char *   nautilus_str_capitalize         (const char    *string);
+
 
 
 /* Middle truncate a string to a maximum of truncate_length characters.
@@ -103,6 +110,11 @@ char *   nautilus_str_capitalize         (const char    *string);
  */
 char *   nautilus_str_middle_truncate    (const char    *string,
 					  guint          truncate_length);
+
+
+/* Count the number of 'c' characters that occur in 'string'. */
+guint    nautilus_str_count_characters   (const char    *string,
+					  char           c);
 
 
 #endif /* NAUTILUS_STRING_H */
