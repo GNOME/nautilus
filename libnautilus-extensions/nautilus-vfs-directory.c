@@ -154,8 +154,8 @@ vfs_is_not_empty (NautilusDirectory *directory)
 	char *public_metafile_uri;
 	gboolean not_empty;
 	
-	g_assert (NAUTILUS_IS_VFS_DIRECTORY (directory));
-	g_assert (nautilus_directory_is_file_list_monitored (directory));
+	g_return_val_if_fail (NAUTILUS_IS_VFS_DIRECTORY (directory), FALSE);
+	g_return_val_if_fail (nautilus_directory_is_anyone_monitoring_file_list (directory), FALSE);
 	
 	if (directory->details->public_metafile_vfs_uri == NULL) {
 		not_empty = directory->details->files != NULL;

@@ -606,7 +606,7 @@ print_key_string (gpointer key, gpointer value, gpointer callback_data)
 {
 	g_assert (callback_data == NULL);
 
-	g_print ("-> %s\n", (char *) key);
+	g_print ("--> %s\n", (char *) key);
 }
 
 static void
@@ -621,13 +621,17 @@ free_hash_tables_at_exit (void)
 
 		size = g_hash_table_size (hash_table_to_free->hash_table);
 		if (size != 0) {
-			g_warning ("hash table %s still has %u elements at quit time",
-				   hash_table_to_free->display_name, size);
 			if (hash_table_to_free->keys_known_to_be_strings) {
+				g_print ("\n--- Hash table keys for warning below:\n");
 				g_hash_table_foreach (hash_table_to_free->hash_table,
 						      print_key_string,
 						      NULL);
 			}
+			g_warning ("\"%s\" hash table still has %u element%s at quit time%s",
+				   hash_table_to_free->display_name, size,
+				   size == 1 ? "" : "s",
+				   hash_table_to_free->keys_known_to_be_strings
+				   ? " (keys above)" : "");
 		}
 
 		g_hash_table_destroy (hash_table_to_free->hash_table);

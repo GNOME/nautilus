@@ -1534,8 +1534,8 @@ call_ready_callbacks (NautilusDirectory *directory)
 }
 
 /* This checks if there's a request for monitoring the file list. */
-static gboolean
-is_anyone_monitoring_file_list (NautilusDirectory *directory)
+gboolean
+nautilus_directory_is_anyone_monitoring_file_list (NautilusDirectory *directory)
 {
 	GList *p;
 	ReadyCallback *callback;
@@ -2414,7 +2414,7 @@ start_or_stop_io (NautilusDirectory *directory)
 	}
 
 	/* Start or stop reading files. */
-	if (is_anyone_monitoring_file_list (directory)) {
+	if (nautilus_directory_is_anyone_monitoring_file_list (directory)) {
 		start_monitoring_file_list (directory);
 	} else {
 		nautilus_directory_stop_monitoring_file_list (directory);

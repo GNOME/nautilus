@@ -1,3 +1,25 @@
+2000-09-01  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(nautilus_directory_is_anyone_monitoring_file_list):
+	Made this function public because it's needed to get the
+	assert right.
+	(start_or_stop_io): Use it by the new public name.
+	* libnautilus-extensions/nautilus-vfs-directory.c:
+	(vfs_is_not_empty): Use the new function to get the assert
+	right, which fixes bug 2706 (crash at startup with
+	bookmark for nonexistent trash file).
+	
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(remove_trash_volume): Fix a NautilusDirectory leak.
+
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(print_key_string), (free_hash_tables_at_exit):
+	Print keys before complaining about hash table so you
+	see them first if you have things set to drop into
+	the debugger on warnings.
+
 2000-09-01  John Sullivan  <sullivan@eazel.com>
 
 	Changed all nautilus dialog calls to take a window title

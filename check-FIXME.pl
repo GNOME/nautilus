@@ -65,7 +65,7 @@ foreach my $file (@ARGV)
     while (<FILE>)
       {
         next if !/FIXME/;
-        if (/FIXME\s?:?\s?bugzilla.eazel.com\s+(\d+)/)
+        if (/FIXME\s*:?\s*bugzilla.eazel.com\s+(\d+)/)
           {
             $bug_lines{$1} .= "$file:$.:$_";
           }

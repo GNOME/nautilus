@@ -172,6 +172,7 @@ remove_trash_volume (TrashVolume *trash_volume)
 		nautilus_merged_directory_remove_real_directory
 			(NAUTILUS_MERGED_DIRECTORY (trash_volume->trash),
 			 trash_volume->real_directory);
+		nautilus_directory_unref (trash_volume->real_directory);
 	}
 	g_free (trash_volume);
 }
