@@ -1,3 +1,167 @@
+2000-11-13  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	A lot of housecleaning, for which there were no bug reports...
+	amongst this some of the leak fixing that libleakcheck pointed
+	out.
+	
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (delete_files), (main):
+	Pass the install categories to the problem handler
+	Don't ask about delete iff --file was used
+	
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_check_for_file_conflicts),
+	Added a comment
+	(eazel_install_do_transaction_save_report),
+	Don't store the provides lists when storing the transaction
+	(eazel_install_display_arguments),
+	(eazel_install_start_transaction),
+	Log rpm arguments again
+	(eazel_install_add_to_extras_foreach),
+	(eazel_install_check_existing_packages),
+	(eazel_install_ensure_deps), (eazel_uninstall_upward_traverse),
+	(eazel_uninstall_downward_traverse),
+	(eazel_uninstall_check_for_install):
+	Leak fixing
+	
+	* components/services/install/lib/eazel-install-md5.c:
+	(md5_get_digest_from_file):
+	Close files after md5 check
+	* components/services/install/lib/eazel-install-object.c:
+	(xml_from_packagedata), (xml_from_packagedata_list),
+	Packagedata to xml with provides lists
+	(eazel_install_unref), 
+	call gtk_object_unref i EAZEL_INSTALL_NO_CORBA
+	(eazel_install_initialize),
+	(eazel_install_fetch_remote_package_list), (eazel_install_log),
+	(eazel_install_open_log), (eazel_install_alter_mode_on_temp),
+	(eazel_install_delete_downloads), (eazel_install_install_packages),
+	(eazel_install_uninstall_packages),
+	(eazel_install_emit_install_progress),
+	(eazel_install_emit_install_progress_default),
+	(eazel_install_emit_download_progress),
+	(eazel_install_emit_download_progress_default),
+	(eazel_install_emit_preflight_check),
+	(eazel_install_emit_preflight_check_default),
+	(eazel_install_emit_download_failed),
+	(eazel_install_emit_download_failed_default),
+	(eazel_install_emit_md5_check_failed),
+	(eazel_install_emit_md5_check_failed_default),
+	(eazel_install_emit_install_failed),
+	(eazel_install_emit_install_failed_default),
+	(eazel_install_emit_uninstall_failed),
+	(eazel_install_emit_uninstall_failed_default),
+	(eazel_install_emit_dependency_check),
+	(eazel_install_emit_dependency_check_default),
+	(eazel_install_emit_done), (eazel_install_emit_done_default):
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-private.h:
+	The rest is rename of a define in the .h file
+	
+	* components/services/install/lib/eazel-install-problem.h:
+	* components/services/install/lib/eazel-install-problem.c:
+	(eazel_install_problem_debug_attempts), (compare_problem_case),
+	(add_case), (add_cannot_solve_case), (add_force_install_both_case),
+	(add_force_remove_case), (eazel_install_problem_case_to_string),
+	(eazel_install_problem_case_foreach_destroy),
+	(finalize_attempts_hash_cleanup), (eazel_install_problem_finalize),
+	(problem_step_foreach_remove), (eazel_install_problem_step),
+	(eazel_install_problem_tree_to_case),
+	(eazel_install_problem_find_dominant_problem_type),
+	(find_dominant_problems), (build_categories_from_problem_list),
+	(eazel_install_problem_handle_cases):
+	Strewed debug output around.
+	Added a CANNOT_SOLVE case.
+	Fixed a memory corruption that occured when I freed handled
+	problems
+	Made the humanreadable strings i18n'ed, and added comments for the
+	translators.
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package), (get_search_url_for_package):
+	Leak fixing.
+	
+	* components/services/install/lib/eazel-install-query.c:
+	(eazel_install_simple_rpm_query), (eazel_install_simple_query):
+	Added which root it's opening to the debug output, used to catch a
+	bug in the installer.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_rpm_set_settings),
+	(eazel_install_start_transaction_make_rpm_argument_list),
+	(eazel_install_free_rpm_system),
+	(eazel_install_prepare_rpm_system):
+	Leak fixing and debug output changing...
+	
+	* components/services/install/lib/eazel-install-xml-package-list.h:
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_package), (parse_category),
+	(eazel_install_packagedata_to_xml),
+	(eazel_install_packagelist_to_xml),
+	(eazel_install_categorydata_to_xml), (osd_parse_implementation),
+	(osd_parse_softpkg):
+	Leak fixing, plus the ability to generate xml without PROVIDES.
+	
+	* components/services/install/lib/makefile.staticlib.in:
+	Added eazel-install-problem, since the installer now uses it.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.h:
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_install_parse_uri),
+	(nautilus_service_install_done),
+	(nautilus_service_install_view_update_from_uri):
+	Moved the category list into the details for the view, so when
+	calling eazel-install-problem handler, I could pass the categories
+	to install.
+	
+	* components/services/trilobite/helper/eazel-helper.security.in:
+	Fixed so it should work with all usermode versions.
+	
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.h
+	:
+	* components/services/trilobite/libtrilobite/helixcode-utils.c:
+	* components/services/trilobite/libtrilobite/helixcode-utils.h:
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_fetch_uri), (trilobite_fetch_uri_to_file),
+	(trilobite_setenv):
+	Leak fixing and debug output and s/glib types/c types/.
+	
+	* nautilus-installer/src/HACKING:
+	Added a warning saying you have to be Eskil or Robey to make this
+	compile.
+	
+	* nautilus-installer/src/Makefile:
+	Yes.
+	
+	* nautilus-installer/src/callbacks.c: (begin_install):
+	Hacked to use the eazel-install problem solver.
+	
+	* nautilus-installer/src/installer.h:
+	* nautilus-installer/src/installer.c: (create_what_to_do_page),
+	(create_install_page), (jump_to_error_page), (start_over),
+	(dont_start_over_callback), (jump_to_retry_page),
+	(create_finish_page_good), (eazel_install_progress),
+	(eazel_download_progress), (create_initial_force_remove_category),
+	(add_force_remove), (get_detailed_errors_foreach),
+	(get_detailed_errors), (install_failed), (eazel_install_preflight),
+	(install_done), (eazel_installer_add_category), (check_system),
+	(more_check_system), (eazel_installer_do_install),
+	(eazel_installer_post_install), (draw_splash_text),
+	(eazel_installer_set_default_texts), (eazel_installer_setup_texts),
+	(eazel_install_get_depends), (add_singular_package),
+	(eazel_installer_initialize):
+	Changed to use the eazel-install-problem handler.
+	Most text strings are taken from a array, which is set in a
+	function that can grab the strings from a server (partly fix for
+	1094).
+	Removed all the old problem handler code.
+
+	* nautilus-installer/src/main.c: (main):
+	Added a secret --package option that makes the installer ignore
+	the server specified package and just download another. Good for
+	debugging.
+
 2000-11-13  Mathieu Lacage  <mathieu@eazel.com>
 
 	Make maciej happy and split the dnd code in a new file.

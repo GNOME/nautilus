@@ -191,27 +191,26 @@ void eazel_install_delete_downloads (EazelInstall *service);
 /******************************************************************************/
 /* Beware, from hereonafter, it's #def madness, to make the get/set functions */
 
-#define SANITY_VAL(name, ret)\
+#define EAZEL_INSTALL_SANITY_VAL(name, ret)\
 	g_return_val_if_fail (name != NULL, ret); \
 	g_return_val_if_fail (IS_EAZEL_INSTALL (name), ret); \
 	g_assert (name->private != NULL); \
 	g_assert (name->private->iopts != NULL); \
 	g_assert (name->private->topts != NULL) 
 
-#define SANITY(name)\
+#define EAZEL_INSTALL_SANITY(name)\
 	g_return_if_fail (name != NULL); \
 	g_return_if_fail (IS_EAZEL_INSTALL (name)); \
 	g_assert (name->private != NULL); \
 	g_assert (name->private->iopts != NULL); \
 	g_assert (name->private->topts != NULL) 
 
-
 #define ei_access_decl(name, type) \
 type eazel_install_get_##name (EazelInstall *service)
 
 #define ei_access_impl(name, type, var, defl) \
 type eazel_install_get_##name (EazelInstall *service) { \
-        SANITY_VAL (service, defl); \
+        EAZEL_INSTALL_SANITY_VAL (service, defl); \
 	return service->private->var; \
 }
 
@@ -222,14 +221,14 @@ void eazel_install_set_##name (EazelInstall *service, \
 #define ei_mutator_impl(name, type,var) \
 void eazel_install_set_##name (EazelInstall *service, \
                                          type name) { \
-        SANITY (service); \
+        EAZEL_INSTALL_SANITY (service); \
 	service->private->var = name; \
 }
 
 #define ei_mutator_impl_copy(name, type, var, copyfunc) \
 void eazel_install_set_##name (EazelInstall *service, \
                                          const type name) { \
-        SANITY (service); \
+        EAZEL_INSTALL_SANITY (service); \
         g_free (service->private->var); \
 	service->private->var = copyfunc ( name ); \
 }

@@ -31,9 +31,10 @@
 #ifndef TRILOBITE_CORE_UTILS_H
 #define TRILOBITE_CORE_UTILS_H
 
+#include <config.h>
+#include <glib.h>
 
-
-void trilobite_debug (const gchar *format, ...);
+void trilobite_debug (const char *format, ...);
 
 int trilobite_pexec (const char *path, 
 		     char * const argv[], 

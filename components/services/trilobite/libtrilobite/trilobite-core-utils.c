@@ -28,6 +28,8 @@
  *
  */
 
+#include "trilobite-core-utils.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -42,7 +44,6 @@
 #include <ghttp.h>
 #endif /* TRILOBITE_SLIM */
 
-#include "trilobite-core-utils.h"
 
 #define TRILOBITE_SERVICE_CONFIG_DIR "/etc/trilobite"
 #define TRILOBITE_SERVICE_CONFIG_DIR_ENV "TRILOBITE_CONFIG"
@@ -390,8 +391,10 @@ gboolean trilobite_fetch_uri (const char *uri_text,
         }
 
         if (result && (ghttp_status_code (request) != 200)) {
-                g_warning (_("HTTP error: %d %s"), ghttp_status_code (request),
-			   ghttp_reason_phrase (request));
+                g_warning (_("HTTP error %d \"%s\" on uri %s"), 
+			   ghttp_status_code (request),
+			   ghttp_reason_phrase (request),
+			   uri);
                 result = FALSE;
         }
 	if (result && (ghttp_status_code (request) != 404)) {
@@ -431,6 +434,7 @@ gboolean trilobite_fetch_uri_to_file (const char *uri_text,
 		} else {
 			fwrite (body, length, 1, file);
 		}
+		fclose (file);
 	} 
 
 	return result;	
@@ -554,15 +558,16 @@ trilobite_setenv (const char *name, const char *value, gboolean overwrite)
 #if defined (HAVE_SETENV)
 	return (setenv (name, value, overwrite) == 0);
 #else
-	char *string;
+	char *string = NULL;
 
-	if (! overwrite && g_getenv (name) != NULL) {
+	if (!overwrite && getenv (name) != NULL) {
 		return FALSE;
 	}
 
 	/* This results in a leak when you overwrite existing
 	 * settings. It would be fairly easy to fix this by keeping
 	 * our own parallel array or hash table.
+	 * FIXME: bugzilla.eazel.com 2900
 	 */
 	string = g_strconcat (name, "=", value, NULL);
 	return putenv (string);

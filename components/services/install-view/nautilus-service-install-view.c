@@ -342,14 +342,14 @@ create_package (char *name, int local_file)
  * "eazel-install:" [ "//" [ username "@" ] [ "hostname" [ ":" port ] ] "/" ] package-name [ "?version=" version ]
  */
 static void
-nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view, GList **categories,
+nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view,
 			    char **host, int *port, char **username)
 {
 	char *p, *q, *package_name, *host_spec;
 	GList *packages = NULL;
 	PackageData *pack;
 
-	*categories = NULL;
+	view->details->categories = NULL;
 
 	p = strchr (uri, ':');
 	if (! p) {
@@ -428,7 +428,7 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view, G
 
 		category = categorydata_new ();
 		category->packages = packages;
-		*categories = g_list_prepend (NULL, category);
+		view->details->categories = g_list_prepend (view->details->categories, category);
 	}
 	return;
 }
@@ -966,6 +966,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 		eazel_install_problem_handle_cases (view->details->problem, 
 						    view->details->installer, 
 						    &(view->details->problem_cases), 
+						    &(view->details->categories),
 						    NULL);
 	} else {
 		if (success && view->details->desktop_files) {
@@ -1191,7 +1192,6 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 {
 	PackageData		*pack;
 	CategoryData		*category_data;
-	GList			*categories;
 	char			*host;
 	int			port;
 	char			*username;
@@ -1208,9 +1208,9 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 		port = 443;
 	}
 	username = NULL;
-	nautilus_install_parse_uri (uri, view, &categories, &host, &port, &username);
+	nautilus_install_parse_uri (uri, view, &host, &port, &username);
 
-	if (! categories) {
+	if (! view->details->categories) {
 		return;
 	}
 
@@ -1222,7 +1222,7 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	}
 
 	/* find the package data for the package we're about to install */
-	category_data = (CategoryData *) categories->data;
+	category_data = (CategoryData *) view->details->categories->data;
 	pack = (PackageData *) category_data->packages->data;
 
 	gtk_object_set_data (GTK_OBJECT (view), "packagedata", pack);
@@ -1270,7 +1270,9 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "delete_files",
 			    GTK_SIGNAL_FUNC (nautilus_service_install_delete_files), view);
 #endif
-	eazel_install_callback_install_packages (view->details->installer, categories, NULL, &ev);
+	eazel_install_callback_install_packages (view->details->installer, 
+						 view->details->categories, 
+						 NULL, &ev);
 
 	CORBA_exception_free (&ev);
 

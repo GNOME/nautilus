@@ -33,7 +33,6 @@
 #include "eazel-install-types.h"
 #include <libtrilobite/helixcode-utils.h>
 #include <gnome-xml/tree.h>
-#include <gnome-xml/parser.h>
 
 GList* parse_memory_xml_package_list (const char *mem, int size);
 GList* parse_local_xml_package_list (const char* pkg_list_file, char **splash_text, char **finish_text);
@@ -43,8 +42,9 @@ void free_categories (GList* categories);
 gboolean generate_xml_package_list (const char* pkg_template_file,
                                     const char* target_file);
 
-xmlNodePtr eazel_install_packagedata_to_xml (const PackageData *pack, char *title, xmlNodePtr droot);
-xmlNodePtr eazel_install_packagelist_to_xml (GList *packages);
+xmlNodePtr eazel_install_packagedata_to_xml (const PackageData *pack, char *title, 
+					     xmlNodePtr droot, gboolean include_provides);
+xmlNodePtr eazel_install_packagelist_to_xml (GList *packages, gboolean include_provides);
 xmlNodePtr eazel_install_categorydata_to_xml (const CategoryData *category);
 
 GList *parse_osd_xml_from_memory (const char *mem, int size);

@@ -71,6 +71,7 @@ enum _EazelInstallProblemEnum {
 	EI_PROBLEM_REMOVE,                 /* Remove a package might help */
 	EI_PROBLEM_FORCE_INSTALL_BOTH,     /* two packages are fighting it out, install both ? */	
         EI_PROBLEM_FORCE_REMOVE,           /* Okaeh, force remove the package */
+	EI_PROBLEM_CANNOT_SOLVE,           /* The water is too deep */
         EI_PROBLEM_INCONSISTENCY           /* There's an inconsistency in the db */ 
 };
 
@@ -90,6 +91,9 @@ struct _EazelInstallProblemCase {
 		struct {
 			PackageData *pack;
 		} force_remove;
+		struct {
+			EazelInstallProblemCase *problem;
+		} cannot_solve;
 	} u;
 };
 
@@ -114,7 +118,11 @@ struct _EazelInstallProblem {
 	   EI_PROBLEM_REMOVE -> EI_PROBLEM_FORCE_REMOVE
 	   EI_PROBLEM_FORCE_REMOVE -> no help
 	*/
+
 	GHashTable *attempts;
+	/* This is the list of problems currently being build,
+	   called eazel_install_problem_step moves these into
+	   atttempts */
 	GHashTable *pre_step_attempts;
 };
 
@@ -139,6 +147,13 @@ GList * eazel_install_problem_tree_to_string (EazelInstallProblem *problem,
 GList * eazel_install_problem_cases_to_string (EazelInstallProblem *problem,
 					       GList *cases);
 
+/* This lets you know which type of problems the next call
+   to eazel_install_handle_cases will handle. So if eg. 
+   the next type is EI_PROBLEM_FORCE_REMOVE, you can alert the user */
+EazelInstallProblemEnum 
+eazel_install_problem_find_dominant_problem_type (EazelInstallProblem *problem,
+						  GList *problems);
+
 /* Given a series of problems, it will remove
    the most important ones, and execute them given 
    a EazelInstall service object */
@@ -150,6 +165,7 @@ void eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
 					 GList **problems,
+					 GList **install_categories,
 					 char *root);
 
 #ifdef __cplusplus

@@ -75,7 +75,7 @@ eazel_install_rpm_set_settings (EazelInstall *service) {
 	}
 
 	if (eazel_install_get_force (service)) {
-		trilobite_debug ("Force install is enabled");
+		trilobite_debug ("Force is enabled");
 		problem_filters |= RPMPROB_FILTER_REPLACEPKG |
 			RPMPROB_FILTER_REPLACEOLDFILES |
 			RPMPROB_FILTER_REPLACENEWFILES |
@@ -91,10 +91,6 @@ eazel_install_rpm_set_settings (EazelInstall *service) {
 	if (eazel_install_get_debug (service) && 0) {
 		rpmSetVerbosity (RPMMESS_DEBUG);
 	}
-
-	trilobite_debug ("Read rpmrc file %s", eazel_install_get_rpmrc_file (service));
-	rpmReadConfigFiles (eazel_install_get_rpmrc_file (service), NULL);
-
 }
 
 void
@@ -105,7 +101,7 @@ eazel_install_start_transaction_make_rpm_argument_list (EazelInstall *service,
 		(*args) = g_list_prepend (*args, g_strdup ("--test"));
 	} 
 	if (eazel_install_get_force (service)) {
-		g_warning ("Force install mode!");
+		g_warning ("Force mode!");
 		if (!eazel_install_get_uninstall (service)) {
 			(*args) = g_list_prepend (*args, g_strdup ("--force"));
 		}
@@ -264,12 +260,18 @@ eazel_install_free_rpm_system (EazelInstall *service)
 {
 	/* Close all the db's */
 	g_assert (service->private->packsys.rpm.dbs);
-	trilobite_debug ("service->private->packsys.rpm.dbs.size = %d", g_hash_table_size (service->private->packsys.rpm.dbs));
+	trilobite_debug ("g_hash_table_size (service->private->packsys.rpm.dbs) = %d",
+			 g_hash_table_size (service->private->packsys.rpm.dbs));
 	g_hash_table_foreach_remove (service->private->packsys.rpm.dbs, 
 				     (GHRFunc)eazel_install_free_rpm_system_close_db_foreach,
-				     NULL);
-	trilobite_debug ("service->private->packsys.rpm.dbs.size = %d", g_hash_table_size (service->private->packsys.rpm.dbs));
-	
+				     NULL);	
+	trilobite_debug ("g_hash_table_size (service->private->packsys.rpm.dbs) = %d",
+			 g_hash_table_size (service->private->packsys.rpm.dbs));
+
+	if (service->private->packsys.rpm.rpmrc_read) {
+		rpmFreeRpmrc ();
+	}
+	service->private->packsys.rpm.rpmrc_read = FALSE;
 /*
   This crashes, so it's commented out. 
   These are the vars used for this.
@@ -292,7 +294,11 @@ eazel_install_prepare_rpm_system(EazelInstall *service)
 
 	g_assert (service->private->packsys.rpm.dbs);
 
-	rpmReadConfigFiles (eazel_install_get_rpmrc_file (service), NULL);
+	if (service->private->packsys.rpm.rpmrc_read==FALSE) {
+		trilobite_debug ("Read rpmrc file %s", eazel_install_get_rpmrc_file (service));
+		rpmReadConfigFiles (eazel_install_get_rpmrc_file (service), NULL);
+	}
+	service->private->packsys.rpm.rpmrc_read = TRUE;
 
 	g_assert (g_list_length (eazel_install_get_root_dirs (service)));
 

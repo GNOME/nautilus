@@ -163,7 +163,8 @@ xml_from_packagedata (const PackageData *pack) {
 	
 	node = xmlAddChild (node, xmlNewNode (NULL, "PACKAGES"));
 
-	xmlAddChild (node, eazel_install_packagedata_to_xml (pack, NULL, NULL));
+	xmlAddChild (node, 
+		     eazel_install_packagedata_to_xml (pack, NULL, NULL, TRUE));
 
 	xmlDocDumpMemory (doc, &mem, &size);
 	result = CORBA_string_dup (mem);
@@ -193,7 +194,11 @@ xml_from_packagedata_list (const GList *packages) {
 
 	for (iterator = packages; iterator; glist_step (iterator)) {
 		PackageData *pack = (PackageData*)iterator->data;
-		xmlAddChild (node, eazel_install_packagedata_to_xml (pack, NULL, NULL));
+		xmlAddChild (node, 
+			     eazel_install_packagedata_to_xml (pack, 
+							       NULL, 
+							       NULL, 
+							       TRUE));
 	}
 
 	xmlDocDumpMemory (doc, &mem, &size);
@@ -269,7 +274,7 @@ void eazel_install_unref (GtkObject *object)
 #ifndef EAZEL_INSTALL_SLIM
 	bonobo_object_unref (BONOBO_OBJECT (object));
 #else
-	eazel_install_finalize (object);
+	gtk_object_unref (object);
 #endif
 }
 
@@ -564,14 +569,6 @@ eazel_install_initialize (EazelInstall *service) {
 	}	
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
-	/* when running as part of trilobite, don't catch logs */
-#ifdef EAZEL_INSTALL_NO_CORBA
-	g_log_set_handler (G_LOG_DOMAIN,
-			   G_LOG_LEVEL_DEBUG | G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING | G_LOG_LEVEL_ERROR, 
-			   (GLogFunc)eazel_install_log, 
-			   service);
-#endif
-
 	service->private = g_new0 (EazelInstallPrivate,1);
 	service->private->topts = g_new0 (TransferOptions, 1);
 	service->private->iopts = g_new0 (InstallOptions, 1);
@@ -584,6 +581,7 @@ eazel_install_initialize (EazelInstall *service) {
 		service->private->transaction_dir = NULL;
 		g_message (_("Transactions are not stored, could not find home dir"));
 	}
+	service->private->packsys.rpm.rpmrc_read = FALSE;
 	service->private->packsys.rpm.dbs = g_hash_table_new (g_str_hash, g_str_equal);
 	trilobite_debug ("packsys.rpm.dbs = 0x%x", service->private->packsys.rpm.dbs);
 	service->private->logfile = NULL;
@@ -621,6 +619,14 @@ eazel_install_initialize (EazelInstall *service) {
 		g_free (tmp);
 		g_list_free (list);
 	}
+
+	/* when running as part of trilobite, don't catch logs */
+#ifdef EAZEL_INSTALL_NO_CORBA
+	g_log_set_handler (G_LOG_DOMAIN,
+			   G_LOG_LEVEL_DEBUG | G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING | G_LOG_LEVEL_ERROR, 
+			   (GLogFunc)eazel_install_log, 
+			   service);
+#endif
 }
 
 GtkType
@@ -767,7 +773,7 @@ eazel_install_fetch_remote_package_list (EazelInstall *service)
 	char *url;
 	char *destination;
 	
-	SANITY_VAL(service, FALSE);
+	EAZEL_INSTALL_SANITY_VAL(service, FALSE);
 
 	trilobite_debug (_("Getting package list from remote server ...\n"));
 
@@ -806,7 +812,7 @@ eazel_install_log (const char *domain,
 {
 	char *format;
 
-	SANITY (service);
+	EAZEL_INSTALL_SANITY (service);
 
 	if (flags & G_LOG_LEVEL_DEBUG) {
 		format = "d: %s\n";
@@ -850,7 +856,7 @@ eazel_install_open_log (EazelInstall *service,
 {
 	FILE *fp;
 
-	SANITY (service);
+	EAZEL_INSTALL_SANITY (service);
 
 	fp = fopen (fname, "wt");
 	if (fp != NULL) {
@@ -878,7 +884,7 @@ eazel_install_alter_mode_on_temp (EazelInstall *service,
 	GList *iterator;
 	gboolean result = TRUE;
 
-	SANITY_VAL (service, FALSE);
+	EAZEL_INSTALL_SANITY_VAL (service, FALSE);
 
 	trilobite_debug ("locking dir to 0%o", mode);
 
@@ -922,7 +928,7 @@ eazel_install_delete_downloads (EazelInstall *service)
 	GList *iterator;
 	char *filename;
 
-	SANITY (service);
+	EAZEL_INSTALL_SANITY (service);
 
 	if (service->private->downloaded_files) {
 		trilobite_debug ("*** deleting the package files");
@@ -952,7 +958,7 @@ eazel_install_install_packages (EazelInstall *service,
 				const char *root)
 {
 	EazelInstallOperationStatus result;
-	SANITY (service);
+	EAZEL_INSTALL_SANITY (service);
 
 	trilobite_debug ("eazel_install_install_packages (..., %d cats, %s)", 
 			 g_list_length (categories),
@@ -1004,7 +1010,7 @@ void
 eazel_install_uninstall_packages (EazelInstall *service, GList *categories, const char *root)
 {
 	EazelInstallOperationStatus result;
-	SANITY (service);
+	EAZEL_INSTALL_SANITY (service);
 
 	trilobite_debug ("eazel_install_uninstall_packages (..., %d cats, %s)", 
 			 g_list_length (categories),
@@ -1105,7 +1111,7 @@ eazel_install_emit_install_progress (EazelInstall *service,
 				     int package_size_completed, int package_size_total,
 				     int total_size_completed, int total_size)
 {
-	SANITY(service);
+	EAZEL_INSTALL_SANITY(service);
 	gtk_signal_emit (GTK_OBJECT (service), signals[INSTALL_PROGRESS], 
 			 pack,
 			 package_num, num_packages,
@@ -1124,7 +1130,7 @@ eazel_install_emit_install_progress_default (EazelInstall *service,
 #ifndef EAZEL_INSTALL_NO_CORBA
 	CORBA_Environment ev;
 	CORBA_exception_init (&ev);
-	SANITY(service);
+	EAZEL_INSTALL_SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
 		Trilobite_Eazel_PackageDataStruct *package;
 		package = corba_packagedatastruct_from_packagedata (pack);
@@ -1146,7 +1152,7 @@ eazel_install_emit_download_progress (EazelInstall *service,
 				      int amount, 
 				      int total)
 {
-	SANITY(service);
+	EAZEL_INSTALL_SANITY(service);
 	gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_PROGRESS], name, amount, total);
 }
 
@@ -1159,7 +1165,7 @@ eazel_install_emit_download_progress_default (EazelInstall *service,
 #ifndef EAZEL_INSTALL_NO_CORBA
 	CORBA_Environment ev;
 	CORBA_exception_init (&ev);
-	SANITY(service);
+	EAZEL_INSTALL_SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
 		Trilobite_Eazel_InstallCallback_download_progress (service->callback, name, amount, total, &ev);	
 		if (ev._major != CORBA_NO_EXCEPTION) {
@@ -1180,7 +1186,7 @@ eazel_install_emit_preflight_check (EazelInstall *service,
 	unsigned long size_packages, num_packages;
 	gboolean result;
 
-	SANITY_VAL(service, FALSE);
+	EAZEL_INSTALL_SANITY_VAL(service, FALSE);
 
 	size_packages = eazel_install_get_total_size_of_packages (service, packages);
 	num_packages = g_list_length (packages);
@@ -1215,7 +1221,7 @@ eazel_install_emit_preflight_check_default (EazelInstall *service,
 	CORBA_boolean result = FALSE;
 
 	CORBA_exception_init (&ev);
-	SANITY_VAL (service, FALSE);
+	EAZEL_INSTALL_SANITY_VAL (service, FALSE);
 
 	if (service->callback != CORBA_OBJECT_NIL) {
 		CORBA_char *corbapackages;
@@ -1243,7 +1249,7 @@ void
 eazel_install_emit_download_failed (EazelInstall *service, 
 				    const char *name)
 {
-	SANITY(service);
+	EAZEL_INSTALL_SANITY(service);
 	gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_FAILED], name);
 }
 
@@ -1254,7 +1260,7 @@ eazel_install_emit_download_failed_default (EazelInstall *service,
 #ifndef EAZEL_INSTALL_NO_CORBA
 	CORBA_Environment ev;
 	CORBA_exception_init (&ev);
-	SANITY(service);
+	EAZEL_INSTALL_SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
 		Trilobite_Eazel_InstallCallback_download_failed (service->callback, name, &ev);	
 	} 
@@ -1267,7 +1273,7 @@ eazel_install_emit_md5_check_failed (EazelInstall *service,
 				     const PackageData *pd,
 				     const char *actual_md5)
 {
-	SANITY(service);
+	EAZEL_INSTALL_SANITY(service);
 	gtk_signal_emit (GTK_OBJECT (service), signals[MD5_CHECK_FAILED], pd, actual_md5);
 }
 
@@ -1279,7 +1285,7 @@ eazel_install_emit_md5_check_failed_default (EazelInstall *service,
 #ifndef EAZEL_INSTALL_NO_CORBA
 	CORBA_Environment ev;
 	CORBA_exception_init (&ev);
-	SANITY(service);
+	EAZEL_INSTALL_SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
 		Trilobite_Eazel_PackageDataStruct *corbapack;
 
@@ -1299,7 +1305,7 @@ void
 eazel_install_emit_install_failed (EazelInstall *service, 
 				   const PackageData *pd)
 {
-	SANITY(service);
+	EAZEL_INSTALL_SANITY(service);
 	gtk_signal_emit (GTK_OBJECT (service), signals[INSTALL_FAILED], pd);
 }
 
@@ -1310,7 +1316,7 @@ eazel_install_emit_install_failed_default (EazelInstall *service,
 #ifndef EAZEL_INSTALL_NO_CORBA
 	CORBA_Environment ev;
 	CORBA_exception_init (&ev);
-	SANITY(service);
+	EAZEL_INSTALL_SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
 		CORBA_char *package;
 		package = xml_from_packagedata (pack);
@@ -1325,7 +1331,7 @@ void
 eazel_install_emit_uninstall_failed (EazelInstall *service, 
 				     const PackageData *pd)
 {
-	SANITY(service);
+	EAZEL_INSTALL_SANITY(service);
 	gtk_signal_emit (GTK_OBJECT (service), signals[UNINSTALL_FAILED], pd);
 }
 
@@ -1336,7 +1342,7 @@ eazel_install_emit_uninstall_failed_default (EazelInstall *service,
 #ifndef EAZEL_INSTALL_NO_CORBA
 	CORBA_Environment ev;
 	CORBA_exception_init (&ev);
-	SANITY(service);
+	EAZEL_INSTALL_SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
 		CORBA_char *package;
 		package = xml_from_packagedata (pack);
@@ -1352,7 +1358,7 @@ eazel_install_emit_dependency_check (EazelInstall *service,
 				     const PackageData *package,
 				     const PackageData *needs)
 {
-	SANITY(service);
+	EAZEL_INSTALL_SANITY(service);
 	gtk_signal_emit (GTK_OBJECT (service), signals[DEPENDENCY_CHECK], package, needs);
 }
 
@@ -1364,7 +1370,7 @@ eazel_install_emit_dependency_check_default (EazelInstall *service,
 #ifndef EAZEL_INSTALL_NO_CORBA
 	CORBA_Environment ev;
 	CORBA_exception_init (&ev);
-	SANITY(service);
+	EAZEL_INSTALL_SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
 		Trilobite_Eazel_PackageDataStruct *corbapack;
 		Trilobite_Eazel_PackageDataStruct *corbaneeds;
@@ -1393,7 +1399,7 @@ eazel_install_emit_dependency_check_default (EazelInstall *service,
 void 
 eazel_install_emit_done (EazelInstall *service, gboolean result)
 {
-	SANITY(service);
+	EAZEL_INSTALL_SANITY(service);
 
 	trilobite_debug ("emit_done (result = %s)", result ? "TRUE" : "FALSE");
 	gtk_signal_emit (GTK_OBJECT (service), signals[DONE], result);
@@ -1405,7 +1411,7 @@ eazel_install_emit_done_default (EazelInstall *service, gboolean result)
 #ifndef EAZEL_INSTALL_NO_CORBA
 	CORBA_Environment ev;
 	CORBA_exception_init (&ev);
-	SANITY(service);
+	EAZEL_INSTALL_SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
 		Trilobite_Eazel_InstallCallback_done (service->callback, result, &ev);	
 	} 

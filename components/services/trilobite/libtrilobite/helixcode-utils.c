@@ -34,7 +34,7 @@
    Change this into a const char * function, and modify all uses of
    it to g_strdup / peek */
 
-const char*
+char*
 xml_get_value (xmlNode* node, const char* name)
 {
 	char* ret;

@@ -41,11 +41,11 @@ extern int installer_debug;
 extern int installer_output;
 extern int installer_test;
 extern int installer_force;
-extern int installer_no_helix;
 extern int installer_dont_ask_questions;
 extern char *installer_server;
 extern int installer_server_port;
 extern char* installer_local;
+extern char* installer_package;
 extern char* installer_cgi_path;
 extern char* installer_tmpdir;
 extern char* installer_homedir;
@@ -62,9 +62,7 @@ static const struct poptOption options[] = {
 	{"tmpdir", '\0', POPT_ARG_STRING, &installer_tmpdir, 0, N_("Specify download dir"), NULL},
 	{"homedir", '\0', POPT_ARG_STRING|POPT_ARGFLAG_DOC_HIDDEN, &installer_homedir, 0, "", NULL},
 	{"user", '\0', POPT_ARG_STRING|POPT_ARGFLAG_DOC_HIDDEN, &installer_user, 0, "", NULL},
-#if 0
-	{"nohelix", '\0', POPT_ARG_NONE, &installer_no_helix, 0, N_("Assume no-helix"), NULL},
-#endif
+	{"package", '\0', POPT_ARG_STRING, &installer_package, 0 , N_("Install package"), NULL},
 	{"port", '\0', POPT_ARG_INT, &installer_server_port, 0 , N_("Set port number for Eazel installation server (default: 80)"), NULL},
 	{"cgi-path", '\0', POPT_ARG_STRING, &installer_cgi_path, 0, N_("Specify CGI path for Eazel installation server"), NULL},
 	{"build", 'B', POPT_ARG_NONE, &installer_show_build, 0, N_("Display installer version"), NULL},
@@ -118,6 +116,10 @@ main (int argc, char *argv[])
 	installer = eazel_installer_new ();
 
 	gtk_main ();
+
+	gtk_object_unref (GTK_OBJECT (installer->service));
+	gtk_object_unref (GTK_OBJECT (installer->problem));
+
 	printf ("Exiting\n");
 	g_mem_profile ();
 	return 0;

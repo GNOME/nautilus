@@ -90,7 +90,7 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 	g_assert (service->private->packsys.rpm.dbs);
 	db = (rpmdb)g_hash_table_lookup (service->private->packsys.rpm.dbs, root);	
 	if (db==NULL) {
-		trilobite_debug ("will open db system");
+		trilobite_debug ("will open db system, need %s", root);
 		free_db_system = TRUE;
 		if (eazel_install_prepare_package_system (service)) {
 			db = (rpmdb)g_hash_table_lookup (service->private->packsys.rpm.dbs, root);
@@ -141,11 +141,12 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 		}
 		dbiFreeIndexRecord (matches);
 	}
-	
+#if 0	
 	if (free_db_system) {
 		trilobite_debug ("closing db system");
 		eazel_install_free_package_system (service);
 	}
+#endif
 }
 
 GList* 
@@ -156,7 +157,6 @@ eazel_install_simple_query (EazelInstall *service,
 			    ...)
 {
 	GList *result = NULL;
-	GList *remove = NULL;
 	GList *iterator = NULL;
 	GList *root_dirs = NULL;
 	GHashTable *names_to_ignore = NULL;
@@ -205,7 +205,7 @@ eazel_install_simple_query (EazelInstall *service,
 
 	/* Now strip the packages to ignore */
 	if (neglist_count) {
-		remove = NULL;
+		GList *remove = NULL;
 
 		/* Collect the packages in "remove" */
 		for (iterator = result; iterator; iterator = iterator->next) {

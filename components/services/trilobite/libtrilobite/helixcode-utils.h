@@ -35,7 +35,7 @@
 #include <gnome-xml/tree.h>
 #include <gnome-xml/parser.h>
 
-const char* xml_get_value (xmlNode* node, const char* name);
+char* xml_get_value (xmlNode* node, const char* name);
 
 gboolean check_for_root_user (void);
 gboolean check_for_redhat (void);

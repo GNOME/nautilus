@@ -425,6 +425,7 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 				packagedata_destroy (owner, TRUE);
 			}
 		}
+		/* free the _simple_query result list */
 		g_list_free (owners);
 
 #ifdef EAZEL_INSTALL_SLIM
@@ -771,7 +772,7 @@ eazel_install_do_transaction_save_report (EazelInstall *service)
 	
 	/* Open and save */
 	outfile = fopen (name, "w");
-	xmlAddChild (root, eazel_install_packagelist_to_xml (service->private->transaction));
+	xmlAddChild (root, eazel_install_packagelist_to_xml (service->private->transaction, FALSE));
 	node = xmlAddChild (node, xmlNewNode (NULL, "DESCRIPTIONS"));
 
 	{
@@ -845,18 +846,25 @@ eazel_install_monitor_err_process_pipe (GIOChannel *source,
 #endif /* DEBUG_RPM_OUTPUT */
 #endif
 
-#if 0
 static void
 eazel_install_display_arguments (GList *args) 
 {
+	char *str, *tmp;
 	GList *iterator;
-	fprintf (stdout, "\nARGS: ");
+
+	str = g_strdup ("ARGS: ");
 	for (iterator = args; iterator; iterator = g_list_next (iterator)) {
-		fprintf (stdout, "%s ", (char*)iterator->data);
+		tmp = g_strdup_printf ("%s%s ", str, (char*)iterator->data);
+		g_free (str);
+		str = tmp;
+		if (strlen (str) > 1000) {
+			trilobite_debug ("%s", str);
+			g_free (str);
+			str = g_strdup ("");
+		}
 	}
-	fprintf (stdout, "\n");
+	trilobite_debug ("%s", str);
 }
-#endif
 
 /* Monitors the subcommand pipe and returns the number of packages installed */
 static gint
@@ -1108,11 +1116,10 @@ eazel_install_start_transaction (EazelInstall *service,
 		} 
 	}
 
-#if 0
 	if (res==0) {	     
 		eazel_install_display_arguments (args);
 	}
-#endif
+
 #ifdef EAZEL_INSTALL_SLIM
 	if (res == 0) {
 		char **argv;
@@ -1408,6 +1415,7 @@ eazel_install_add_to_extras_foreach (char *key, GList *list, GList **extrapackag
 		dep = (PackageData*)iterator->data;
 		(*extrapackages) =  g_list_prepend (*extrapackages, dep);		
 	}
+	g_list_free (list);
 }
 
 static EazelInstallStatus
@@ -1545,6 +1553,9 @@ eazel_install_check_existing_packages (EazelInstall *service,
 				packagedata_destroy (existing_package, TRUE);
 			}
 		}
+
+		/* Free the list structure from _simple_query */
+		g_list_free (existing_packages);
 	} else {
 		if (pack->minor) {
 			trilobite_debug (_("%s installs version %s-%s"), 
@@ -2200,6 +2211,7 @@ eazel_install_ensure_deps (EazelInstall *service,
 		for (iterator = extrapackages; iterator; iterator = g_list_next (iterator)) {
 			(*packages) = g_list_append (*packages, iterator->data);
 		}
+		g_list_free (extrapackages);
 		
 		/* Now recurse into eazel_install_ensure_deps with
 		   the new "packages" list */
@@ -2247,7 +2259,7 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 
 	for (iterator = *packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack = (PackageData*)iterator->data;
-		GList *matches;
+		GList *matches = NULL;
 		GList *match_iterator;
 		GList *tmp_breaks = NULL;
 		GList *break_iterator = NULL;
@@ -2285,7 +2297,8 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 				(*failed) = g_list_prepend (*failed, pack);
 			}
 		}
-		
+		/* fre the list structure from _simple_query */
+		g_list_free (matches);
 		
 		if (*breaks) {
 			eazel_uninstall_upward_traverse (service, breaks, failed, &tmp_breaks);
@@ -2329,7 +2342,7 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 	
 	/* First iterate across the packages in "packages" */
 	for (iterator = *packages; iterator; iterator = g_list_next (iterator)) {
-		GList *matches;
+		GList *matches = NULL;
 		PackageData *pack;
 		GList *match_iterator;
 
@@ -2479,6 +2492,8 @@ eazel_uninstall_check_for_install (EazelInstall *service,
  			} else {
 				g_assert_not_reached ();
 			}
+			/* Free the list structure */
+			g_list_free (matches);
 			continue;
 		} else {
 			pack->status = PACKAGE_CANNOT_OPEN;

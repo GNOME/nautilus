@@ -85,6 +85,7 @@ CORBA_ORB orb;
 CORBA_Environment ev;
 int cli_result = 0;
 GList *cases = NULL;
+GList *categories;
 
 static const struct poptOption options[] = {
 	{"batch", '\0', POPT_ARG_STRING, &arg_batch, 0, N_("Set the default answer to continue, also default delete to Yes"), NULL},
@@ -542,7 +543,7 @@ delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 		}
 		if (answer[0] == 'y' || answer[0] == 'Y') {
 			fflush (stdout);
-			eazel_install_problem_handle_cases (problem, service, &cases, arg_root);
+			eazel_install_problem_handle_cases (problem, service, &cases, &categories, arg_root);
 			ask_delete = FALSE;
 			result = FALSE;
 		} else {
@@ -551,7 +552,7 @@ delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 		}		
 	} 
 
-	if (ask_delete) {
+	if (!arg_file && ask_delete) {
 		printf ("should i delete the RPM files? (y/n) ");
 		fflush (stdout);
 		if (arg_batch) {			
@@ -619,7 +620,6 @@ set_root_client (BonoboObjectClient *service)
 int main(int argc, char *argv[]) {
 	poptContext ctxt;
 	GList *packages;
-	GList *categories;
 	char *str;
 	GList *strs;
 	EazelInstallCallback *cb;		

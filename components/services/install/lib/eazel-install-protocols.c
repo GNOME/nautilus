@@ -612,6 +612,8 @@ eazel_install_fetch_package (EazelInstall *service,
 		g_warning (_("File download failed"));
 		unlink (targetname);
 	} 
+	g_free (name);
+	g_free (version);
 	g_free (targetname);
 	g_free (url);
 
@@ -887,9 +889,8 @@ char* get_search_url_for_package (EazelInstall *service,
 
 #ifndef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
 	if (dist.name != DISTRO_UNKNOWN) {
-		char *distro;
-		distro = g_strdup_printf ("%s", 
-					  trilobite_get_distribution_name (dist, TRUE, TRUE));
+		char *distro;		
+		distro = trilobite_get_distribution_name (dist, TRUE, TRUE);
 		add_to_url (&url, "&distro=", distro);
 		g_free (distro);
 	}

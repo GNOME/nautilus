@@ -25,6 +25,7 @@
 #define EAZEL_INSTALLER_PUBLIC_H
 
 #include <eazel-install-public.h>
+#include <eazel-install-problem.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -57,10 +58,12 @@ struct _EazelInstaller
 
 	EazelInstall *service;
 
+	EazelInstallProblem *problem;
+	GList *problems;
+
 	GList *categories;
 
 	GList *install_categories;
-	GList *force_categories;
 	GList *force_remove_categories;
 
 	GList *must_have_categories;
@@ -76,11 +79,6 @@ struct _EazelInstaller
 	unsigned long total_bytes_downloaded;
 	unsigned long last_KB;
 
-	/* if all errors during an install are because we would break other packages, we
-	 * can try upgrading those packages.  this is the list of packages to try.
-	 */
-	gboolean all_errors_are_recoverable;
-	GList *additional_packages;
 	gboolean successful;
 
 	GList *attempted_updates; /* This is a list of packages we tried to update,
@@ -90,35 +88,13 @@ struct _EazelInstaller
 	gboolean got_dep_check;
 };
 
-typedef enum {
-	MUST_UPDATE,      /* package is in the way, update or remove */
-	FORCE_BOTH,       /* two packages are fighting it out, install both ? */	
-	REMOVE            /* Can't be helped, get rid of that wart */
-} RepairEnum;
-
-typedef struct {
-	RepairEnum t;
-	union {
-		struct {
-			PackageData *pack;
-		} in_the_way;
-		struct {
-			PackageData *pack_1;
-			PackageData *pack_2;
-		} force_both;
-		struct {
-			PackageData *pack;
-		} remove;
-	} u;
-} RepairCase;
-
 GtkType            eazel_installer_get_type(void);
 EazelInstaller    *eazel_installer_new   (void);
 void               eazel_installer_unref (GtkObject *object);
 void               eazel_installer_do_install (EazelInstaller *installer,
-					       GList *categories,
-					       gboolean force,
+					       GList *categories, 
 					       gboolean remove);
+void               eazel_installer_post_install (EazelInstaller *installer);
 
 
 #ifdef __cplusplus

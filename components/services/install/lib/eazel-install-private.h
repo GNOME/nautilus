@@ -58,6 +58,7 @@ struct _EazelInstallPrivate {
 	PackageSystem package_system;
 	union {
 		struct {
+			gboolean rpmrc_read;
 			GHashTable *dbs;
 			unsigned long total_size, 
 				      current_installed_size, 

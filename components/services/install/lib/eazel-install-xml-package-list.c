@@ -33,6 +33,7 @@
 
 #include <libtrilobite/trilobite-core-utils.h>
 #include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
 
 static PackageData* parse_package (xmlNode* package, gboolean set_toplevel);
 static CategoryData* parse_category (xmlNode* cat);
@@ -45,43 +46,56 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 
 	xmlNodePtr dep;
 	PackageData* rv;
-	const char *temp;
+	char *tmp;
 
 	rv = packagedata_new ();
 
-	rv->name = g_strdup (xml_get_value (package, "NAME"));
-	rv->version = g_strdup (xml_get_value (package, "VERSION"));
-	rv->minor = g_strdup (xml_get_value (package, "MINOR"));
-	rv->archtype = g_strdup (xml_get_value (package, "ARCH"));
-	if (xml_get_value (package, "STATUS")) {
-		rv->status = packagedata_status_str_to_enum (xml_get_value (package, "STATUS"));
-	}
-	if (xml_get_value (package, "MODSTATUS")) {
-		rv->modify_status = packagedata_modstatus_str_to_enum (xml_get_value (package, "MODSTATUS"));
+	rv->name = xml_get_value (package, "NAME");
+	rv->version = xml_get_value (package, "VERSION");
+	rv->minor = xml_get_value (package, "MINOR");
+	rv->archtype = xml_get_value (package, "ARCH");
+	
+	tmp = xml_get_value (package, "STATUS");
+	if (tmp) {
+		rv->status = packagedata_status_str_to_enum (tmp);
+		g_free (tmp);
 	}
 
-	temp = xml_get_value (package, "BYTESIZE");
-	if (temp) {
-		rv->bytesize = atoi (temp);
+	tmp = xml_get_value (package, "MODSTATUS");
+	if (tmp) {
+		rv->modify_status = packagedata_modstatus_str_to_enum (tmp);
+		g_free (tmp);
+	}
+
+	tmp = xml_get_value (package, "BYTESIZE");
+	if (tmp) {
+		rv->bytesize = atoi (tmp);
+		g_free (tmp);
 	} else {
 		rv->bytesize = 0;
 	}
-	temp = xml_get_value (package, "PROVIDES");
-	if (temp) {
-		const char *tmp1, *sep, *end;		
-		tmp1 = temp;
-		end = temp + strlen (temp);
-		while ((sep = strchr (tmp1, G_SEARCHPATH_SEPARATOR))!= NULL) {
-			rv->provides = g_list_prepend (rv->provides, g_strndup (tmp1, (int)(sep - tmp1)));
-			tmp1 = sep;
-			tmp1 ++;
+
+	tmp = xml_get_value (package, "PROVIDES");
+	if (tmp) {
+		char **files;
+		int iterator;
+
+		files = g_strsplit (tmp, G_SEARCHPATH_SEPARATOR_S, 0);
+		if (files) {
+			/* we don't free the individual files[x]'s, as
+			   they end up in the package data object */
+			for (iterator = 0; files[iterator]; iterator++) {
+				rv->provides = g_list_prepend (rv->provides,
+							       files[iterator]);
+			}
+			rv->provides = g_list_reverse (rv->provides);
+			g_free (files);
 		}
-		rv->provides = g_list_prepend (rv->provides, g_strdup (tmp1));
-		rv->provides = g_list_reverse (rv->provides);
+		g_free (tmp);
 	}
 
-	rv->summary = g_strdup (xml_get_value (package, "SUMMARY"));
-	rv->description = g_strdup (xml_get_value (package, "DESCRIPTION"));
+	rv->summary = xml_get_value (package, "SUMMARY");
+	rv->description = xml_get_value (package, "DESCRIPTION");
 	rv->distribution = trilobite_get_distribution ();
 	if (set_toplevel) {
 		rv->toplevel = TRUE;
@@ -135,7 +149,7 @@ parse_category (xmlNode* cat) {
 	char *text, *textp;
 
 	category = categorydata_new ();
-	category->name = g_strdup (xml_get_value (cat, "name"));
+	category->name = xml_get_value (cat, "name");
 
 	pkg = cat->xmlChildrenNode;
 	if (pkg == NULL) {
@@ -520,7 +534,10 @@ parse_pkg_template (const char* pkg_template_file, char **result) {
    (primarily used for the recursiveness of PackageData objects.
    If not, creates a node with the name "PACKAGE" */
 xmlNodePtr
-eazel_install_packagedata_to_xml (const PackageData *pack, char *title, xmlNodePtr droot)
+eazel_install_packagedata_to_xml (const PackageData *pack, 
+				  char *title, 
+				  xmlNodePtr droot, 
+				  gboolean include_provides)
 {
 	xmlNodePtr root, node;
 	char *tmp;
@@ -559,7 +576,7 @@ eazel_install_packagedata_to_xml (const PackageData *pack, char *title, xmlNodeP
 	node = xmlNewChild (root, NULL, "BYTESIZE", tmp);
 	g_free (tmp);
 
-	if (pack->provides) {
+	if (include_provides && pack->provides) {
 		tmp = g_strdup ((char*)(pack->provides->data));
 		for (iterator = g_list_next (pack->provides); iterator; iterator = g_list_next (iterator)) {
 			char *fname = (char*)(iterator->data);
@@ -572,24 +589,36 @@ eazel_install_packagedata_to_xml (const PackageData *pack, char *title, xmlNodeP
 	}
 
 	for (iterator = pack->soft_depends; iterator; iterator = iterator->next) {
-		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, "SOFT_DEPEND", root);
+		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, 
+						  "SOFT_DEPEND", 
+						  root, 
+						  include_provides);
 	}
 	for (iterator = pack->hard_depends; iterator; iterator = iterator->next) {
 		node = xmlNewChild (root, NULL, "HARD_DEPEND", NULL);
-		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, "HARD_DEPEND", root);
+		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, 
+						  "HARD_DEPEND", 
+						  root,
+						  include_provides);
 	}
 	for (iterator = pack->breaks; iterator; iterator = iterator->next) {
-		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, "BREAKS", root);
+		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, 
+						  "BREAKS", 
+						  root,
+						  include_provides);
 	}
 	for (iterator = pack->modifies; iterator; iterator = iterator->next) {
-		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, "MODIFIES", root);
+		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, 
+						  "MODIFIES", 
+						  root,
+						  include_provides);
 	}
 
 	return root;
 }
 
 xmlNodePtr
-eazel_install_packagelist_to_xml (GList *packages) {
+eazel_install_packagelist_to_xml (GList *packages, gboolean include_provides) {
 	xmlNodePtr node;
 	GList *iterator;
 
@@ -598,7 +627,8 @@ eazel_install_packagelist_to_xml (GList *packages) {
 	for (iterator = packages; iterator; iterator = iterator->next) {
 		xmlAddChild (node, 
 			     eazel_install_packagedata_to_xml ((PackageData*)iterator->data, 
-							       NULL, NULL));
+							       NULL, NULL, include_provides)
+			);
 	}
 
 	return node;	
@@ -611,7 +641,7 @@ eazel_install_categorydata_to_xml (const CategoryData *category)
 
 	node = xmlNewNode (NULL, "CATEGORY");
 	xmlSetProp (node, "name", category->name);
-	xmlAddChild (node, eazel_install_packagelist_to_xml (category->packages));
+	xmlAddChild (node, eazel_install_packagelist_to_xml (category->packages, TRUE));
 
 	return node;
 }
@@ -650,19 +680,21 @@ osd_parse_implementation (PackageData *pack,
 	child = node->xmlChildrenNode;
 	while (child) {
 		if (g_strcasecmp (child->name, "PROCESSOR")==0) {
-			pack->archtype = g_strdup (xml_get_value (child, "VALUE"));
+			pack->archtype = xml_get_value (child, "VALUE");
 		} else if (g_strcasecmp (child->name, "OS")==0) {
-			char *dtmp = xmlGetProp (child, "VALUE");
+			char *dtmp = xml_get_value (child, "VALUE");
 			if (dtmp) {
 				pack->distribution.name = trilobite_get_distribution_enum (dtmp,
 											   TRUE);
+				g_free (dtmp);
 			} 
 		} else if (g_strcasecmp (child->name, "CODEBASE")==0) {			
-			const char *temp;
-			pack->remote_url = g_strdup (xml_get_value (child, "HREF"));
-			temp = xml_get_value (child, "SIZE");
-			if (temp) {
-				pack->bytesize = atoi (temp);
+			char *tmp;
+			pack->remote_url = xml_get_value (child, "HREF");
+			tmp = xml_get_value (child, "SIZE");
+			if (tmp) {
+				pack->bytesize = atoi (tmp);
+				g_free (tmp);
 			} else {
 				pack->bytesize = 0;
 			}
@@ -687,14 +719,17 @@ osd_parse_softpkg (xmlNodePtr softpkg)
 
 	result = packagedata_new ();
 
-	result->name = g_strdup (xml_get_value (softpkg, "NAME"));
-	result->version = g_strdup (xml_get_value (softpkg, "VERSION"));
-	result->md5 = g_strdup (xml_get_value (softpkg, "MD5"));
+	result->name = xml_get_value (softpkg, "NAME");
+	result->version = xml_get_value (softpkg, "VERSION");
+	result->md5 = xml_get_value (softpkg, "MD5");
 	
 	child = softpkg->xmlChildrenNode;
 	while (child) {
 		if (g_strcasecmp (child->name, "ABSTRACT")==0) {
-			result->description = g_strdup (xmlNodeGetContent (child));
+			char *tmp = xmlNodeGetContent (child);
+			result->description = g_strdup (tmp);
+			xmlFree (tmp);
+			
 		} else if (g_strcasecmp (child->name, "IMPLEMENTATION")==0) {
 			osd_parse_implementation (result, child);
 		} else {
