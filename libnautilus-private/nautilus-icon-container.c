@@ -3530,12 +3530,10 @@ nautilus_icon_container_new (void)
 {
 	GtkWidget *container;
 
-	gtk_widget_push_visual (gdk_rgb_get_visual ());
 	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
 
 	container = gtk_widget_new (nautilus_icon_container_get_type (), NULL);
 	
-	gtk_widget_pop_visual ();
 	gtk_widget_pop_colormap ();
 
 	return container;

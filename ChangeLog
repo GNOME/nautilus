@@ -1,3 +1,8 @@
+2002-02-17  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libnautilus-private/nautilus-icon-container.c: Remove calls to
+	gtk_widget_push|pop_visual() since they do nothing now.
+	
 2002-02-15  David Emory Watson <dwatson@cs.ucr.edu>
 
 	* configure.in: Require eel 1.1.5.
