@@ -1,3 +1,26 @@
+2000-01-25  John Sullivan <sullivan@eazel.com>
+
+	Better text for displayed file dates. This is currently used only
+	in the list view date column, but will be used later in icon view
+	when we get multiple lines of text per icon working.
+
+	* libnautilus/nautilus-glib-extensions.c:
+	* libnautilus/nautilus-glib-extensions.h:
+	New files, intended to hold nautilus code that logically belongs
+	in glib. Now contains a g_date constructor that takes a struct tm,
+	and a strdup_strftime function that returns a new string of exactly
+	the right size.
+	* libnautilus/Makefile.am: Build and install these two new files.
+	* libnautilus/nautilus-lib-self-check-functions.h: include the
+	new self-check function for nautilus-glib-extensions.
+
+	* libnautilus/nautilus-directory.c:
+	#include nautilus-glib-extensions.h
+	(nautilus_file_get_date_as_string): Replaced simple ctime version
+	with fancy version that uses shorter date format, the words
+	"today" and "yesterday" when appropriate, and the weekday name if
+	the date is in the last week (other than today or yesterday).
+
 2000-01-25  Andy Hertzfeld <andy@eazel.com>
 
         * libnautilus/nautilus-icons-view-icon-item.c,h:

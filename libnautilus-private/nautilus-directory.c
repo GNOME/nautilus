@@ -43,6 +43,7 @@
 #include <gnome-xml/tree.h>
 #include <gnome-xml/xmlmemory.h>
 
+#include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-string.h"
@@ -845,20 +846,72 @@ nautilus_file_get_uri (NautilusFile *file)
 gchar *
 nautilus_file_get_date_as_string (NautilusFile *file)
 {
-	/* Note: There's also accessed time and changed time.
-	 * Accessed time doesn't seem worth showing to the user.
+	time_t now_secs;
+	struct tm *now;
+	struct tm *file_time;
+	GDate *today;
+	GDate *file_date;
+	gchar *result;
+	guint32 file_date_age;
+
+	/* Note: This uses modified time. There's also accessed time and 
+	 * changed time. Accessed time doesn't seem worth showing to the user.
 	 * Changed time is only subtly different from modified time
 	 * (changed time includes "metadata" changes like file permissions).
 	 * We should not display both, but we might change our minds as to
 	 * which one is better.
 	 */
-
 	g_return_val_if_fail (file != NULL, NULL);
 
-	/* Note that ctime is a funky function that returns a
-	 * string that you're not supposed to free.
+	/* Each call to localtime clobbers a static variable. So to compare two
+	 * time structures, one of the calls needs to use localtime_r to
+	 * fill in a locally created time structure. This call still clobbers
+	 * the static variable, so the other localtime call must be later.
 	 */
-	return g_strdup (ctime (&file->info->mtime));
+	file_time = g_new0 (struct tm, 1);
+	localtime_r (&file->info->mtime, file_time);
+	file_date = nautilus_g_date_new_tm (file_time);
+	
+	now_secs = time (NULL);
+	now = localtime (&now_secs);
+	today = nautilus_g_date_new_tm (now);
+
+	file_date_age = g_date_julian (today) - g_date_julian (file_date);
+
+	g_date_free (file_date);
+	g_date_free (today);
+
+	/* Format varies depending on how old the date is. This minimizes
+	 * the length (and thus clutter & complication) of typical dates
+	 * while providing sufficient detail for recent dates to make
+	 * them maximally understandable at a glance. Keep all format
+	 * strings separate rather than combining bits & pieces for
+	 * internationalization's sake.
+	 */
+
+	if (file_date_age == 0)
+	{
+		/* today, use special word */
+		result = nautilus_strdup_strftime (_("today %-I:%M %p"), file_time);	
+	}
+	else if (file_date_age == 1)
+	{
+		/* yesterday, use special word */
+		result = nautilus_strdup_strftime (_("yesterday %-I:%M %p"), file_time);	
+	}
+	else if (file_date_age < 7)
+	{
+		/* current week, include day of week */
+		result = nautilus_strdup_strftime (_("%A %-m/%-d/%y %-I:%M %p"), file_time);
+	}
+	else
+	{
+		result = nautilus_strdup_strftime (_("%-m/%-d/%y %-I:%M %p"), file_time);
+	}
+
+	g_free (file_time);
+
+	return result;
 }
 
 /**
@@ -1015,7 +1068,7 @@ nautilus_self_check_directory (void)
 
 	directory = nautilus_directory_get ("file:///etc");
 
-	g_assert (g_hash_table_size (directory_objects) == 1);
+	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directory_objects), 1);
 
 	file_count = 0;
 	nautilus_directory_get_files (directory, get_files_cb, &data_dummy);
@@ -1025,11 +1078,11 @@ nautilus_self_check_directory (void)
 
 	gtk_object_unref (GTK_OBJECT (directory));
 
-	g_assert (g_hash_table_size (directory_objects) == 0);
+	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directory_objects), 0);
 
 	directory = nautilus_directory_get ("file:///etc");
 
-	g_assert (g_hash_table_size (directory_objects) == 1);
+	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directory_objects), 1);
 
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_get_metadata (directory, "TEST", "default"), "value");
 

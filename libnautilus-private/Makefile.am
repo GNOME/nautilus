@@ -34,6 +34,7 @@ libnautilusinclude_HEADERS=			\
 	nautilus-debug.h			\
 	nautilus-directory.h			\
 	nautilus-file-utilities.h		\
+	nautilus-glib-extensions.h		\
 	nautilus-gtk-extensions.h		\
 	nautilus-icons-controller.h		\
 	nautilus-icons-view-icon-item.h         \
@@ -55,6 +56,7 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	nautilus-debug.c			\
 	nautilus-directory.c			\
 	nautilus-file-utilities.c		\
+	nautilus-glib-extensions.c		\
 	nautilus-gtk-extensions.c		\
 	nautilus-icons-controller.c		\
 	nautilus-icons-view-icon-item.c         \
