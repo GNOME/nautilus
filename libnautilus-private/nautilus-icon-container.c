@@ -3008,7 +3008,7 @@ finalize (GObject *object)
 		}
 		g_queue_free (details->a11y_item_action_queue);
 	}
-	if (details->a11y_item_action_idle_handler != NULL) {
+	if (details->a11y_item_action_idle_handler != 0) {
 		g_source_remove (details->a11y_item_action_idle_handler);
 	}
 
