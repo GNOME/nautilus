@@ -292,10 +292,13 @@ nautilus_sidebar_title_destroy (GtkObject *object)
 
 	sidebar_title = NAUTILUS_SIDEBAR_TITLE (object);
 
-	release_file (sidebar_title);
+	if (sidebar_title->details) {
+		release_file (sidebar_title);
 	
-	g_free (sidebar_title->details->title_text);
-	g_free (sidebar_title->details);
+		g_free (sidebar_title->details->title_text);
+		g_free (sidebar_title->details);
+		sidebar_title->details = NULL;
+	}
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }

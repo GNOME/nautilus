@@ -348,7 +348,7 @@ static void
 tab_item_destroy (TabItem *item)
 {
 	Bonobo_PropertyBag property_bag;
-	
+
 	g_free (item->tab_text);
 	g_free (item->indicator_pixbuf_name);
 	
@@ -379,31 +379,40 @@ tab_item_destroy_cover (gpointer item, gpointer callback_data)
 static void
 nautilus_sidebar_tabs_destroy (GtkObject *object)
 {
-	NautilusSidebarTabs *sidebar_tabs = NAUTILUS_SIDEBAR_TABS(object);
-   	
-	/* deallocate the tab piece images, if any */
-	if (sidebar_tabs->details->tab_piece_images[0] != NULL) {
-		nautilus_sidebar_tabs_unload_tab_pieces (sidebar_tabs);
+	GList *tab_items;
+	NautilusSidebarTabs *sidebar_tabs = NAUTILUS_SIDEBAR_TABS (object);
+
+   	if (sidebar_tabs->details) {
+		/* deallocate the tab piece images, if any */
+		if (sidebar_tabs->details->tab_piece_images[0] != NULL) {
+			nautilus_sidebar_tabs_unload_tab_pieces (sidebar_tabs);
+		}
+	
+		if (sidebar_tabs->details->tab_font != NULL) {
+			g_object_unref (sidebar_tabs->details->tab_font);
+			sidebar_tabs->details->tab_font = NULL;
+		}
+	
+		/* release the tab list, if any */
+		if (sidebar_tabs->details->tab_items) {
+			tab_items = sidebar_tabs->details->tab_items;
+			sidebar_tabs->details->tab_items = NULL;
+
+			eel_g_list_free_deep_custom (tab_items,
+						     tab_item_destroy_cover,
+						     NULL);
+		}
+	
+		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME, 
+						 (EelPreferencesCallback) nautilus_sidebar_tabs_load_theme_data, 
+						 sidebar_tabs);
+		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
+						 smooth_font_changed_callback,
+						 sidebar_tabs);
+	
+		g_free (sidebar_tabs->details);
+		sidebar_tabs->details = NULL;
 	}
-	
-	if (sidebar_tabs->details->tab_font != NULL) {
-		g_object_unref (sidebar_tabs->details->tab_font);
-		sidebar_tabs->details->tab_font = NULL;
-	}
-	
-	/* release the tab list, if any */
-	eel_g_list_free_deep_custom (sidebar_tabs->details->tab_items,
-				     tab_item_destroy_cover,
-				     NULL);
-	
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME, 
-					 (EelPreferencesCallback) nautilus_sidebar_tabs_load_theme_data, 
-					 sidebar_tabs);
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
-					 smooth_font_changed_callback,
-					 sidebar_tabs);
-	
-	g_free (sidebar_tabs->details);
   	
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }

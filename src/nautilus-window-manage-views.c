@@ -1966,11 +1966,11 @@ disconnect_view (NautilusWindow *window, NautilusViewFrame *view)
 
 	view_object = GTK_OBJECT (view);
 
-	#define DISCONNECT(signal) gtk_signal_disconnect_by_func \
+#define DISCONNECT(signal) gtk_signal_disconnect_by_func \
         	(view_object, \
         	 G_CALLBACK (signal##_callback), window);
         FOR_EACH_NAUTILUS_WINDOW_SIGNAL (DISCONNECT)
-	#undef DISCONNECT
+#undef DISCONNECT
 }
 
 static void

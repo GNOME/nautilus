@@ -1,3 +1,27 @@
+2001-12-12  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-window.c (nautilus_window_destroy):
+	protect vs. double destroy.
+
+	* src/nautilus-window-manage-views.c (disconnect_view):
+	start macro definitions on the first line.
+
+	* src/nautilus-sidebar.c (nautilus_sidebar_destroy):
+	protect vs. double destroy.
+
+	* src/nautilus-sidebar-tabs.c
+	(nautilus_sidebar_tabs_destroy): protect vs. double destroy
+	and theoretical re-enterancy hazard.
+
+	* src/nautilus-sidebar-title.c
+	(nautilus_sidebar_title_destroy): protect vs. double
+	destroys.
+
+	* src/nautilus-application.c (create_object): re-enable
+	list view.
+
+	* src/file-manager/fm-list-view.c: re-enable.
+
 2001-12-11  Laszlo Peter  <laca@ireland.sun.com>
 
 	* libnautilus-private/nautilus-authn-manager.c:

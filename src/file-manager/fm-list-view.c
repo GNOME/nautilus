@@ -49,10 +49,6 @@
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-metadata.h>
 
-/* Turn this whole file off until we finish with EelList and EelCList or port. */
-
-#if GNOME2_CONVERSION_COMPLETE
-
 struct FMListViewDetails {
 	int sort_column;
 	gboolean sort_reversed;
@@ -272,25 +268,25 @@ fm_list_view_init (gpointer object, gpointer klass)
 					       GTK_OBJECT (list_view));	
 
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_FONT,
-						       font_or_font_size_changed_callback, 
-						       list_view,
-						       GTK_OBJECT (list_view));
+						  font_or_font_size_changed_callback, 
+						  list_view,
+						  G_OBJECT (list_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
-						       default_sort_criteria_changed_callback, 
-						       list_view,
-						       GTK_OBJECT (list_view));
+						  default_sort_criteria_changed_callback, 
+						  list_view,
+						  G_OBJECT (list_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
-						       default_zoom_level_changed_callback, 
-						       list_view,
-						       GTK_OBJECT (list_view));
+						  default_zoom_level_changed_callback, 
+						  list_view,
+						  G_OBJECT (list_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
-						       default_sort_criteria_changed_callback, 
-						       list_view,
-						       GTK_OBJECT (list_view));
+						  default_sort_criteria_changed_callback, 
+						  list_view,
+						  G_OBJECT (list_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
-						       font_or_font_size_changed_callback, 
-						       list_view,
-						       GTK_OBJECT (list_view));
+						  font_or_font_size_changed_callback, 
+						  list_view,
+						  G_OBJECT (list_view));
 	
 	/* It's important to not create the EelList (with a call
 	 * to create_list) until later, when the function pointers
@@ -2279,5 +2275,3 @@ real_get_column_specification (FMListView *view,
 		g_assert_not_reached ();
 	}
 }
-
-#endif

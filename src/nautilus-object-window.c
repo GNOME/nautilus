@@ -880,63 +880,66 @@ nautilus_window_destroy (GtkObject *object)
 	
 	window = NAUTILUS_WINDOW (object);
 
-	/* Handle the part of destroy that's private to the view
-	 * management.
-	 */
-	nautilus_window_manage_views_destroy (window);
+	if (window->details != NULL) {
+		/* Handle the part of destroy that's private to the view
+		 * management.
+		 */
+		nautilus_window_manage_views_destroy (window);
 
-	/* Get rid of all callbacks. */
-	nautilus_window_set_viewed_file (window, NULL);
-	nautilus_window_remove_bookmarks_menu_callback (window);
-	nautilus_window_remove_go_menu_callback (window);
-	nautilus_window_toolbar_remove_theme_callback (window);
+		/* Get rid of all callbacks. */
+		nautilus_window_set_viewed_file (window, NULL);
+		nautilus_window_remove_bookmarks_menu_callback (window);
+		nautilus_window_remove_go_menu_callback (window);
+		nautilus_window_toolbar_remove_theme_callback (window);
 
-	if (window->details->ui_idle_id != 0) {
-		gtk_idle_remove (window->details->ui_idle_id);
-	}
+		if (window->details->ui_idle_id != 0) {
+			gtk_idle_remove (window->details->ui_idle_id);
+		}
 
-	/* Get rid of all owned objects. */
+		/* Get rid of all owned objects. */
 
-	if (window->details->shell_ui != NULL) {
-		bonobo_ui_component_unset_container (window->details->shell_ui, NULL);
-		bonobo_object_unref (BONOBO_OBJECT (window->details->shell_ui));
-	}
+		if (window->details->shell_ui != NULL) {
+			bonobo_ui_component_unset_container (window->details->shell_ui, NULL);
+			bonobo_object_unref (BONOBO_OBJECT (window->details->shell_ui));
+		}
 
-	nautilus_file_unref (window->details->viewed_file);
+		nautilus_file_unref (window->details->viewed_file);
 
-	g_list_free (window->sidebar_panels);
+		g_list_free (window->sidebar_panels);
 
-	free_stored_viewers (window);
+		free_stored_viewers (window);
 	
-	g_free (window->details->location);
-	eel_g_list_free_deep (window->details->selection);
-	eel_g_list_free_deep (window->details->pending_selection);
+		g_free (window->details->location);
+		eel_g_list_free_deep (window->details->selection);
+		eel_g_list_free_deep (window->details->pending_selection);
 
-	nautilus_window_clear_back_list (window);
-	nautilus_window_clear_forward_list (window);
+		nautilus_window_clear_back_list (window);
+		nautilus_window_clear_forward_list (window);
 
-	if (window->current_location_bookmark != NULL) {
-		g_object_unref (window->current_location_bookmark);
-	}
-	if (window->last_location_bookmark != NULL) {
-		g_object_unref (window->last_location_bookmark);
-	}
+		if (window->current_location_bookmark != NULL) {
+			g_object_unref (window->current_location_bookmark);
+		}
+		if (window->last_location_bookmark != NULL) {
+			g_object_unref (window->last_location_bookmark);
+		}
 	
-	if (window->status_bar_clear_id != 0) {
-		g_source_remove (window->status_bar_clear_id);
-	}
+		if (window->status_bar_clear_id != 0) {
+			g_source_remove (window->status_bar_clear_id);
+		}
 
-	if (window->details->ui_container != NULL) {
-		bonobo_object_unref (BONOBO_OBJECT (window->details->ui_container));
-	}
+		if (window->details->ui_container != NULL) {
+			bonobo_object_unref (BONOBO_OBJECT (window->details->ui_container));
+		}
 
-	if (window->details->location_change_at_idle_id != 0) {
-		gtk_idle_remove (window->details->location_change_at_idle_id);
-	}
+		if (window->details->location_change_at_idle_id != 0) {
+			gtk_idle_remove (window->details->location_change_at_idle_id);
+		}
 
-	g_free (window->details->title);
+		g_free (window->details->title);
 	
-	g_free (window->details);
+		g_free (window->details);
+		window->details = NULL;
+	}
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }

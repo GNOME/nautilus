@@ -304,23 +304,26 @@ nautilus_sidebar_destroy (GtkObject *object)
 
 	sidebar = NAUTILUS_SIDEBAR (object);
 
-	g_object_unref (sidebar->details->notebook);
+	if (sidebar->details) {
+		g_object_unref (sidebar->details->notebook);
 
-	if (sidebar->details->file != NULL) {
-		gtk_signal_disconnect (GTK_OBJECT (sidebar->details->file), 
-				       sidebar->details->file_changed_connection);
-		nautilus_file_monitor_remove (sidebar->details->file, sidebar);
-		nautilus_file_unref (sidebar->details->file);
+		if (sidebar->details->file != NULL) {
+			gtk_signal_disconnect (GTK_OBJECT (sidebar->details->file), 
+					       sidebar->details->file_changed_connection);
+			nautilus_file_monitor_remove (sidebar->details->file, sidebar);
+			nautilus_file_unref (sidebar->details->file);
+		}
+		
+		gtk_object_sink (GTK_OBJECT (sidebar->details->title_tab));
+		
+		g_free (sidebar->details->uri);
+		g_free (sidebar->details->default_background_color);
+		g_free (sidebar->details->default_background_image);
+		
+		g_free (sidebar->details);
+		sidebar->details = NULL;
 	}
-
-	gtk_object_sink (GTK_OBJECT (sidebar->details->title_tab));
-	
-	g_free (sidebar->details->uri);
-	g_free (sidebar->details->default_background_color);
-	g_free (sidebar->details->default_background_image);
-	
-	g_free (sidebar->details);
-	
+		
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					      nautilus_sidebar_theme_changed,
 					      sidebar);

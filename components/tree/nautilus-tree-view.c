@@ -1377,8 +1377,6 @@ tree_load_location_callback (NautilusView *nautilus_view,
 {
 	g_assert (nautilus_view == NAUTILUS_VIEW (view));
 
-	g_warning ("Load tree!");
-	
 	nautilus_view_report_load_complete (nautilus_view);
 
 	g_free (view->details->current_main_view_uri);
