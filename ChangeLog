@@ -1,3 +1,15 @@
+2005-01-25  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libnautilus-private/nautilus-icon-container.c: 
+	(nautilus_icon_container_accessible_selection_changed_cb): Omit call
+	to nautilus_icon_container_accessible_update_selection.
+	(nautilus_icon_container_accessible_ref_selection):
+	(nautilus_icon_container_accessible_get_selection):
+	(nautilus_icon_container_accessible_remove_selection): All call
+	to nautilus_icon_container_accessible_update_selection.
+
+	Fixes bug #160087.
+	 
 2005-01-24  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-window-menus.c (action_about_nautilus_callback):

@@ -6794,9 +6794,6 @@ static void
 nautilus_icon_container_accessible_selection_changed_cb (NautilusIconContainer *container,
 							 gpointer data)
 {
-	nautilus_icon_container_accessible_update_selection 
-		(ATK_OBJECT (data));	
-	
 	g_signal_emit_by_name (data, "selection_changed");
 }
 
@@ -6912,6 +6909,7 @@ nautilus_icon_container_accessible_ref_selection (AtkSelection *accessible,
 	GList *item;
 	NautilusIcon *icon;
 
+	nautilus_icon_container_accessible_update_selection (ATK_OBJECT (accessible));
 	priv = accessible_get_priv (ATK_OBJECT (accessible));
 
 	item = (g_list_nth (priv->selection, i));
@@ -6935,6 +6933,7 @@ nautilus_icon_container_accessible_get_selection_count (AtkSelection *accessible
 	int count;
 	NautilusIconContainerAccessiblePrivate *priv;
 
+	nautilus_icon_container_accessible_update_selection (ATK_OBJECT (accessible));
 	priv = accessible_get_priv (ATK_OBJECT (accessible));
 
 	count = g_list_length (priv->selection);
@@ -6982,6 +6981,7 @@ nautilus_icon_container_accessible_remove_selection (AtkSelection *accessible,
 		return FALSE;
 	}
 
+	nautilus_icon_container_accessible_update_selection (ATK_OBJECT (accessible));
 	priv = accessible_get_priv (ATK_OBJECT (accessible));
 
         container = NAUTILUS_ICON_CONTAINER (widget);
