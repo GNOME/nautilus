@@ -198,11 +198,9 @@ static const SortCriterion sort_criteria[] = {
 	}
 };
 
-/* some state variables used for sound previewing */
 struct FMIconViewDetails
 {
 	GList *icons_not_positioned;
-	NautilusZoomLevel default_zoom_level;
 
 	guint react_to_icon_change_idle_id;
 	gboolean menus_ready;
@@ -803,6 +801,15 @@ get_sort_criterion_by_id (const char *id)
 	return NULL;
 }
 
+static NautilusZoomLevel
+get_default_zoom_level (FMIconView *view)
+{
+	/* FIXME: This should return a value read from preferences.
+	 * It should use one of those auto-preference-storage thingies.
+	 */
+	return NAUTILUS_ZOOM_LEVEL_STANDARD;
+}
+
 static void
 fm_icon_view_begin_loading (FMDirectoryView *view)
 {
@@ -836,7 +843,7 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	level = nautilus_file_get_integer_metadata
 		(file, 
 		 NAUTILUS_METADATA_KEY_ICON_VIEW_ZOOM_LEVEL, 
-		 icon_view->details->default_zoom_level);
+		 get_default_zoom_level (icon_view));
 	fm_icon_view_set_zoom_level (icon_view, level, TRUE);
 
 	/* Set the sort mode.
@@ -876,7 +883,7 @@ fm_icon_view_end_loading (FMDirectoryView *view)
 static NautilusZoomLevel
 fm_icon_view_get_zoom_level (FMIconView *view)
 {
-	g_return_val_if_fail (FM_IS_ICON_VIEW (view), NAUTILUS_ZOOM_LEVEL_STANDARD);
+	g_return_val_if_fail (FM_IS_ICON_VIEW (view), get_default_zoom_level (view));
 	return nautilus_icon_container_get_zoom_level (get_icon_container (view));
 }
 
@@ -902,17 +909,11 @@ fm_icon_view_set_zoom_level (FMIconView *view,
 	nautilus_file_set_integer_metadata
 		(fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (view)), 
 		 NAUTILUS_METADATA_KEY_ICON_VIEW_ZOOM_LEVEL, 
-		 view->details->default_zoom_level,
+		 get_default_zoom_level (view),
 		 new_level);
 
 	nautilus_icon_container_set_zoom_level (icon_container, new_level);
 	fm_directory_view_set_zoom_level (&view->parent, new_level);
-
-	/* Reset default to new level; this way any change in zoom level
-	 * will "stick" until the user visits a directory that had its zoom
-	 * level set explicitly earlier.
-	 */
-	view->details->default_zoom_level = new_level;
 }
 
 static void
@@ -951,7 +952,8 @@ fm_icon_view_restore_default_zoom_level (FMDirectoryView *view)
 	g_return_if_fail (FM_IS_ICON_VIEW (view));
 
 	icon_view = FM_ICON_VIEW (view);
-	fm_icon_view_set_zoom_level(icon_view, NAUTILUS_ZOOM_LEVEL_STANDARD, FALSE);
+	fm_icon_view_set_zoom_level
+		(icon_view, get_default_zoom_level (icon_view), FALSE);
 }
 
 static gboolean 
@@ -1979,7 +1981,6 @@ fm_icon_view_initialize (FMIconView *icon_view)
         g_return_if_fail (GTK_BIN (icon_view)->child == NULL);
 
 	icon_view->details = g_new0 (FMIconViewDetails, 1);
-	icon_view->details->default_zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
 	icon_view->details->sort = &sort_criteria[0];
 	icon_view->details->audio_player_data = NULL;
 	icon_view->details->timeout = -1;

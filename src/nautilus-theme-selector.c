@@ -151,9 +151,8 @@ static void
 nautilus_theme_selector_initialize (GtkObject *object)
 {
  	NautilusThemeSelector *theme_selector;
- 	GtkWidget* widget, *temp_box, *temp_hbox, *temp_frame;
+ 	GtkWidget* widget, *temp_hbox;
 	GtkWidget *scrollwindow;
-	GtkWidget *title_box;
 	GtkWidget *bottom_box;
 	GtkWidget *temp_button, *temp_label;
 	
@@ -170,6 +169,7 @@ nautilus_theme_selector_initialize (GtkObject *object)
 	gtk_window_set_title (GTK_WINDOW (widget), _("Nautilus Theme Selector"));
 	gtk_window_set_wmclass(GTK_WINDOW(widget), "theme_selector", "Nautilus");
 	eel_gtk_window_set_up_close_accelerator (GTK_WINDOW (widget));
+	gtk_window_set_policy (GTK_WINDOW (widget), FALSE, TRUE, FALSE);
 	
 	/* create the container box */  
   	theme_selector->details->container =  gtk_vbox_new (FALSE, 0);
@@ -179,21 +179,11 @@ nautilus_theme_selector_initialize (GtkObject *object)
 			   GTK_WIDGET (theme_selector->details->container));	
 	
   	/* create the title box */
-  	
-  	title_box = gtk_event_box_new();
-	gtk_container_set_border_width (GTK_CONTAINER (title_box), 0);				
- 
-  	gtk_widget_show(title_box);
-	gtk_box_pack_start (GTK_BOX(theme_selector->details->container), title_box, FALSE, FALSE, 0);
-  	
-  	temp_frame = gtk_frame_new(NULL);
-  	gtk_frame_set_shadow_type(GTK_FRAME(temp_frame), GTK_SHADOW_NONE);
-  	gtk_widget_show(temp_frame);
-  	gtk_container_add(GTK_CONTAINER(title_box), temp_frame);
+
   	
   	temp_hbox = gtk_hbox_new(FALSE, 0);
   	gtk_widget_show(temp_hbox);
-  	gtk_container_add(GTK_CONTAINER(temp_frame), temp_hbox);
+	gtk_box_pack_start (GTK_BOX(theme_selector->details->container), temp_hbox, FALSE, FALSE, 0);
  	
 	/* add the title label */
 	theme_selector->details->title_label = eel_label_new (_("Nautilus Theme:"));
@@ -244,22 +234,11 @@ nautilus_theme_selector_initialize (GtkObject *object)
 			    GTK_SIGNAL_FUNC (theme_style_set_callback),
 			    theme_selector);
 
-  	/* add the bottom box to hold the command buttons */
-  	temp_box = gtk_event_box_new();
-	gtk_container_set_border_width (GTK_CONTAINER (temp_box), 0);				
-  	gtk_widget_show(temp_box);
-
-  	temp_frame = gtk_frame_new(NULL);
-  	gtk_frame_set_shadow_type(GTK_FRAME(temp_frame), GTK_SHADOW_NONE);
-  	gtk_widget_show(temp_frame);
-  	gtk_container_add(GTK_CONTAINER(temp_box), temp_frame);
-
   	bottom_box = gtk_hbox_new (FALSE, 0);
   	gtk_widget_show (bottom_box);
 	gtk_container_set_border_width (GTK_CONTAINER (bottom_box), 4);
-	gtk_box_pack_end (GTK_BOX(theme_selector->details->container), temp_box, FALSE, FALSE, 0);
-  	gtk_container_add (GTK_CONTAINER (temp_frame), bottom_box);
- 
+	gtk_box_pack_end (GTK_BOX(theme_selector->details->container), bottom_box, FALSE, FALSE, 0);
+
  	/* create the done button */
  	temp_button = gtk_button_new ();
 	gtk_widget_show(temp_button);

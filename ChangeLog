@@ -1,3 +1,42 @@
+2001-04-04  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bugs 3681, 4705, 5154, all having to do with the funky
+	behavior where the zoom level is sort of persistent as you
+	navigate around. Now it will always use the default zoom level 
+	unless the directory has a different stored value. Ramiro plans 
+	to implement global preferences for the default zoom level (one
+	each for icon & list view) that will replace the constant
+	defaults.
+
+	* src/file-manager/fm-icon-view.c: 
+	(get_default_zoom_level): New bottleneck function for getting
+	the default zoom level for icon view. Currently returns a
+	constant; later will return a preferences value.
+	(fm_icon_view_begin_loading), (fm_icon_view_get_zoom_level),
+	(fm_icon_view_set_zoom_level),
+	(fm_icon_view_restore_default_zoom_level),
+	(fm_icon_view_initialize): Use get_default_zoom_level. Also
+	get rid of code that was saving the current zoom level to use
+	as default next time.
+	
+	* src/file-manager/fm-list-view.c: 
+	(get_default_zoom_level): New bottleneck function for getting
+	the default zoom level for list view. Currently returns a
+	constant; later will return a preferences value.
+	(fm_list_view_initialize),
+	(fm_list_view_restore_default_zoom_level),
+	(fm_list_view_begin_loading), (fm_list_view_set_zoom_level):
+	Use get_default_zoom_level. Also get rid of code that was 
+	saving the current zoom level to use as default next time.
+
+
+	Other stuff
+	
+	* src/nautilus-theme-selector.c:
+	(nautilus_theme_selector_initialize): Removed some unnecessary
+	extra invisible widgets. I was trying to get the window size
+	to pin sensibly but have not (yet) actually gotten that to work.
+
 2001-04-04  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* configure.in:

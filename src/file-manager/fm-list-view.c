@@ -53,7 +53,6 @@ struct FMListViewDetails {
 	gboolean sort_reversed;
 
 	guint zoom_level;
-	NautilusZoomLevel default_zoom_level;
 };
 
 /* The list view receives files from the directory model
@@ -261,7 +260,6 @@ fm_list_view_initialize (gpointer object, gpointer klass)
 	 */
 	list_view->details->zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLER;
 	list_view->details->sort_column = LIST_VIEW_COLUMN_NONE;
-	list_view->details->default_zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLER;
 	
 	/* Register to find out about icon theme changes */
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
@@ -1304,6 +1302,15 @@ fm_list_view_zoom_to_level (FMDirectoryView *view, int zoom_level)
 	fm_list_view_set_zoom_level (list_view, zoom_level, FALSE);
 }
 
+static NautilusZoomLevel
+get_default_zoom_level (FMListView *view)
+{
+	/* FIXME: This should return a value read from preferences.
+	 * It should use one of those auto-preference-storage thingies.
+	 */
+	return NAUTILUS_ZOOM_LEVEL_SMALLER;
+}
+
 static void
 fm_list_view_restore_default_zoom_level (FMDirectoryView *view)
 {
@@ -1313,8 +1320,7 @@ fm_list_view_restore_default_zoom_level (FMDirectoryView *view)
 
 	list_view = FM_LIST_VIEW (view);
 
-	/* The list view is using NAUTILUS_ZOOM_LEVEL_SMALLER as default */
-	fm_list_view_set_zoom_level (list_view, NAUTILUS_ZOOM_LEVEL_SMALLER, FALSE);
+	fm_list_view_set_zoom_level (list_view, get_default_zoom_level (list_view), FALSE);
 }
 
 static gboolean 
@@ -1396,7 +1402,7 @@ fm_list_view_begin_loading (FMDirectoryView *view)
 		nautilus_file_get_integer_metadata (
 			file, 
 			NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
-			list_view->details->default_zoom_level),
+			get_default_zoom_level (list_view)),
 		TRUE);
 
 	default_sort_attribute = get_default_sort_attribute (list_view);
@@ -1623,16 +1629,10 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 	nautilus_file_set_integer_metadata
 		(fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (list_view)), 
 		 NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
-		 list_view->details->default_zoom_level,
+		 get_default_zoom_level (list_view),
 		 new_level);
 
 	fm_directory_view_set_zoom_level (FM_DIRECTORY_VIEW (list_view), new_level);
-
-	/* Reset default to new level; this way any change in zoom level
-	 * will "stick" until the user visits a directory that had its zoom
-	 * level set explicitly earlier.
-	 */
-	list_view->details->default_zoom_level = new_level;	
 
 	fm_list_view_update_font (list_view);
 
