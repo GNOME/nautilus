@@ -1,6 +1,61 @@
-2001-04-09  John Sullivan  <sullivan@eazel.com>
+2001-04-09  Ramiro Estrugo  <ramiro@eazel.com>
 
-	reviewed by: <delete if not using a buddy>
+	* acconfig.h:
+	Add HAVE_AMMONITE.
+	
+	* components/mozilla/main.c: (main):
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(translate_uri_nautilus_to_mozilla),
+	(translate_uri_mozilla_to_nautilus):
+	Use HAVE_AMMONITE instead of EAZEL_SERVICES for the specific
+	Ammonite features.
+	
+	* components/text/services/Makefile.am:
+	Fix rogue spacing.
+	
+	* configure.in:
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_self_check_directory):
+	Remove EAZEL_SERVICES from self test code.  Run the test for the
+	eazel-services uri scheme regardless.
+	
+	* libnautilus-extensions/nautilus-mime-actions.h:
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(mime_get_all_components_for_uri_scheme): New flavor of function
+	tha takes a uri scheme parameter instead of a NautilusFile.
+	(nautilus_mime_has_any_components_for_uri_scheme): New function to
+	find out if there exists any components registered to handle a uri
+	scheme.
+
+	* src/Makefile.am:
+	Use AMMONITE_CFLAGS and AMMONITE_LIBS instead of SERVICES_LIBS
+	hac.
+	
+	* src/nautilus-services.h,
+	* src/nautilus-services.c: New files for putting all shared
+	services related code in one places. 
+
+	* src/nautilus-window-menus.c: (services_button_callback),
+	(nautilus_window_initialize_menus_part_1):
+	Remove EAZEL_HACKING hackery.  Make the services code always be
+	linked in.  Use new shared services functions to determine whether
+	we need to populate the services menus and toolbars.
+	
+	* src/nautilus-window-service-ui.c: (goto_services_summary),
+	(goto_online_storage), (goto_software_catalog),
+	(nautilus_window_install_service_ui):
+	Simplify by using shared services code.  Remove all Ammonite code
+	from here.  Ammonite code is constrained to nautilus-services.[ch]
+	only.  Use shared services code t determine the target uris for
+	services callbacks.
+	
+	* src/nautilus-window-toolbars.c: (set_up_toolbar_images):
+	* src/nautilus-window.c: (nautilus_window_constructed):
+	Remove EAZEL_HACKING hackery.  Decide at runtime whether to setup
+	the services toobar or not.
+
+2001-04-09  John Sullivan  <sullivan@eazel.com>
 
 	Wired up the remaining new view global preferences,
 	and added a menu item for resetting the current view

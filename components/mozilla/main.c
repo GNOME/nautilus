@@ -37,7 +37,7 @@
 
 #include <gconf/gconf.h>
 
-#ifdef EAZEL_SERVICES
+#ifdef HAVE_AMMONITE
 #include <libtrilobite/libammonite-gtk.h>
 #endif
 
@@ -196,7 +196,7 @@ main (int argc, char *argv[])
 
 	gnome_vfs_init ();
 
-#ifdef EAZEL_SERVICES
+#ifdef HAVE_AMMONITE
 	ammonite_init ((PortableServer_POA) bonobo_poa);
 #endif
 

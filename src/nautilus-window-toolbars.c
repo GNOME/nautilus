@@ -29,23 +29,24 @@
 #include <config.h>
 
 #include "nautilus-application.h"
+#include "nautilus-services.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window.h"
 #include <bonobo.h>
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-string.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtktogglebutton.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-app.h>
 #include <libgnomeui/gnome-app-helper.h>
+#include <libgnomeui/gnome-app.h>
 #include <libgnomeui/gnome-preferences.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <eel/eel-gnome-extensions.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 
 static void
@@ -306,9 +307,13 @@ set_up_toolbar_images (NautilusWindow *window)
 	set_up_standard_bonobo_button (window, "/Toolbar/Toggle Find Mode", "Search", FALSE);
 	set_up_standard_bonobo_button (window, "/Toolbar/Go to Web Search", "SearchWeb", TRUE);
 	set_up_standard_bonobo_button (window, "/Toolbar/Stop", "Stop", FALSE);
-#ifdef EAZEL_SERVICES	
-	set_up_standard_bonobo_button (window, "/Toolbar/Extra Buttons Placeholder/Services", "Services", TRUE);
-#endif
+
+	/* Set up the services toolbar button if needed */
+	if (nautilus_services_are_enabled ()) {
+		set_up_standard_bonobo_button (window, "/Toolbar/Extra Buttons Placeholder/Services",
+					       "Services", TRUE);
+	}
+
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 
 	nautilus_window_ui_thaw (window);

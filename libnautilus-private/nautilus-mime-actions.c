@@ -815,6 +815,46 @@ nautilus_mime_has_any_components_for_file (NautilusFile      *file)
 	return result;
 }
 
+
+static GList *
+mime_get_all_components_for_uri_scheme (const char *uri_scheme)
+{
+	GList *info_list;
+	CORBA_Environment ev;
+
+	g_return_val_if_fail (eel_strlen (uri_scheme) > 0, NULL);
+
+	CORBA_exception_init (&ev);
+
+	info_list = nautilus_do_component_query (NULL,
+						 uri_scheme,
+						 NULL,
+						 TRUE,
+						 NULL,
+						 NULL,
+						 NULL,
+						 &ev);
+
+	CORBA_exception_free (&ev);
+
+	return info_list;
+}
+
+gboolean
+nautilus_mime_has_any_components_for_uri_scheme (const char *uri_scheme)
+{
+	GList *list;
+	gboolean result;
+
+	g_return_val_if_fail (eel_strlen (uri_scheme) > 0, FALSE);
+
+	list = mime_get_all_components_for_uri_scheme (uri_scheme);
+	result = list != NULL;
+	gnome_vfs_mime_component_list_free (list);
+
+	return result;
+}
+
 GnomeVFSResult
 nautilus_mime_set_default_action_type_for_file (NautilusFile           *file,
 						GnomeVFSMimeActionType  action_type)
@@ -1422,7 +1462,7 @@ make_oaf_query_with_uri_scheme_only (const char *uri_scheme,
                   /* The explicit metafile iid query for the %s above. */
                   , explicit_iid_query,
 		  extra_requirements != NULL ? extra_requirements : "true");
-           
+
         return result;
 }
 

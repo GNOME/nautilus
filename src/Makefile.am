@@ -13,6 +13,7 @@ INCLUDES =\
 	$(LIBRSVG_INCLUDEDIR) \
 	$(OAF_CFLAGS) \
 	$(BONOBO_CFLAGS) \
+	$(AMMONITE_CFLAGS) \
 	$(OAF_CFLAGS) \
 	$(GCONF_CFLAGS) \
 	$(GNOMEUI_CFLAGS) \
@@ -26,10 +27,6 @@ INCLUDES =\
 	-DDATADIR=\""$(datadir)"\" \
 	$(NULL)
 
-if EAZEL_SERVICES
-SERVICE_LIBS = $(AMMONITE_LIBS)
-endif
-
 LDADD =\
 	$(top_builddir)/src/file-manager/libnautilus-file-manager.la \
 	$(top_builddir)/libnautilus/libnautilus.la \
@@ -38,13 +35,13 @@ LDADD =\
 	$(EEL_LIBS) \
 	$(LIBRSVG_LIBS) \
 	$(BONOBO_LIBS) \
+	$(AMMONITE_LIBS) \
 	$(OAF_LIBS) \
 	$(GCONF_LIBS) \
 	$(GNOMEUI_LIBS) \
 	$(GNOMECANVASPIXBUF_LIBS) \
 	$(VFS_LIBS) \
 	$(XML_LIBS) \
-	$(SERVICE_LIBS) \
 	$(NULL)
 
 nautilus_shell_interface_idl_sources =		\
@@ -74,11 +71,12 @@ noinst_HEADERS = \
 	nautilus-main.h				\
 	nautilus-navigation-bar.h		\
 	nautilus-property-browser.h		\
+	nautilus-search-bar-criterion-private.h	\
+	nautilus-search-bar-criterion.h		\
 	nautilus-search-bar-private.h		\
 	nautilus-search-bar.h			\
-	nautilus-search-bar-criterion.h		\
-	nautilus-search-bar-criterion-private.h	\
 	nautilus-self-check-functions.h 	\
+	nautilus-services.h			\
 	nautilus-shell.h			\
 	nautilus-sidebar-tabs.h			\
 	nautilus-sidebar-title.h		\
@@ -115,9 +113,10 @@ nautilus_SOURCES = \
 	nautilus-main.c 			\
 	nautilus-navigation-bar.c         	\
 	nautilus-property-browser.c     	\
-	nautilus-search-bar.c			\
 	nautilus-search-bar-criterion.c		\
+	nautilus-search-bar.c			\
 	nautilus-self-check-functions.c 	\
+	nautilus-services.c			\
 	nautilus-shell.c			\
 	nautilus-sidebar-tabs.c			\
 	nautilus-sidebar-title.c		\

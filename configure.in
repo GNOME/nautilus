@@ -866,9 +866,21 @@ dnl = End tests for medusa
 dnl =======================
 
 dnl ====================================
-dnl = Begin tests for ammonite (--enable-eazel-services only)
+dnl = Begin tests for ammonite
 dnl ====================================
-if test "x$EAZEL_SERVICES_ENABLED" = "xyes" ;
+ammonite_module=`$GNOME_CONFIG --modversion ammonite 2> /dev/null | awk -F"-" '{ print $1; }'`
+
+if test "$ammonite_module" = "ammonite"
+then
+	HAVE_AMMONITE=1
+	AC_DEFINE(HAVE_AMMONITE)
+else
+	HAVE_AMMONITE=0
+fi
+
+AC_SUBST(HAVE_AMMONITE)
+
+if test "$HAVE_AMMONITE" = "1"
 then
 	EAZEL_VERSION_INSIST(ammonite, $GNOME_CONFIG --modversion ammonite | awk -F- '{print $2}', >=, AMMONITE_REQUIRED)
 
@@ -1185,6 +1197,11 @@ case "X$ENABLE_PROFILER" in
 	echo "Enable profiler                   : NO"
 	;;
 esac
+
+dnl <= Ammonite =>
+echo "HAVE_AMMONITE                     : $HAVE_AMMONITE"
+echo "AMMONITE_CFLAGS                   : $AMMONITE_CFLAGS"
+echo "AMMONITE_LIBS                     : $AMMONITE_LIBS"
 
 dnl <= FreeType2 =>
 echo "FREETYPE2_CFLAGS                  : $FREETYPE2_CFLAGS"

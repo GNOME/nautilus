@@ -32,9 +32,7 @@
 
 GList                   *nautilus_mime_actions_get_minimum_file_attributes         (void);
 GList                   *nautilus_mime_actions_get_full_file_attributes            (void);
-
 gboolean                 nautilus_mime_actions_file_needs_full_file_attributes     (NautilusFile           *file);
-
 GnomeVFSMimeActionType   nautilus_mime_get_default_action_type_for_file            (NautilusFile           *file);
 GnomeVFSMimeAction *     nautilus_mime_get_default_action_for_file                 (NautilusFile           *file);
 GnomeVFSMimeApplication *nautilus_mime_get_default_application_for_file            (NautilusFile           *file);
@@ -61,8 +59,8 @@ GnomeVFSResult           nautilus_mime_add_application_to_short_list_for_file   
 										    const char             *application_id);
 GnomeVFSResult           nautilus_mime_remove_application_from_short_list_for_file (NautilusFile           *file,
 										    const char             *application_id);
-GnomeVFSResult           nautilus_mime_set_short_list_components_for_file          (NautilusFile      *file,
-										    GList             *components);
+GnomeVFSResult           nautilus_mime_set_short_list_components_for_file          (NautilusFile           *file,
+										    GList                  *components);
 GnomeVFSResult           nautilus_mime_add_component_to_short_list_for_file        (NautilusFile           *file,
 										    const char             *iid);
 GnomeVFSResult           nautilus_mime_remove_component_from_short_list_for_file   (NautilusFile           *file,
@@ -74,6 +72,8 @@ GnomeVFSResult           nautilus_mime_extend_all_applications_for_file         
 /* Only "user" entries may be removed. */
 GnomeVFSResult           nautilus_mime_remove_from_all_applications_for_file       (NautilusFile           *file,
 										    GList                  *applications);
+gboolean                 nautilus_mime_has_any_components_for_uri_scheme           (const char             *uri_scheme);
+
 
 /* No way to add to all components; oafinfo database assumed trusted in this regard. */
 

@@ -30,9 +30,10 @@
 #include <config.h>
 #include "nautilus-window-private.h"
 
-#include "nautilus-main.h"
 #include "nautilus-application.h"
 #include "nautilus-bookmarks-window.h"
+#include "nautilus-main.h"
+#include "nautilus-services.h"
 #include "nautilus-sidebar.h"
 #include "nautilus-signaller.h"
 #include "nautilus-switchable-navigation-bar.h"
@@ -681,9 +682,9 @@ nautilus_window_constructed (NautilusWindow *window)
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 	
 	/* Load the services part of the user interface too if desired. */
-#ifdef EAZEL_SERVICES
-	nautilus_window_install_service_ui (window);
-#endif
+	if (nautilus_services_are_enabled ()) {
+		nautilus_window_install_service_ui (window);
+	}
 
 	/* set up location bar */
 	location_bar_box = gtk_hbox_new (FALSE, GNOME_PAD);

@@ -25,20 +25,21 @@
 #include <config.h>
 #include "nautilus-window-service-ui.h"
 
-#include <bonobo/bonobo-ui-util.h>
+#include "nautilus-services.h"
 #include "nautilus-window-private.h"
+#include <bonobo/bonobo-ui-util.h>
 #include <gtk/gtksignal.h>
-#ifdef EAZEL_SERVICES
-#include <libtrilobite/libammonite.h>
-#include <bonobo/bonobo-main.h>
 
 static void
 goto_services_summary (BonoboUIComponent *component, 
 		       gpointer callback_data, 
 		       const char *verb)
 {
-	nautilus_window_go_to (NAUTILUS_WINDOW (callback_data),
-			       "eazel:");
+	char *summary_uri;
+	
+	summary_uri = nautilus_services_get_summary_uri ();
+	nautilus_window_go_to (NAUTILUS_WINDOW (callback_data), summary_uri);
+	g_free (summary_uri);
 }
 
 static void
@@ -46,28 +47,11 @@ goto_online_storage (BonoboUIComponent *component,
 		     gpointer callback_data, 
 		     const char *verb)
 {
-	char			*url;
-	char			*user_name;
+	char *online_storage_uri;
 
-	if ( ammonite_init (bonobo_poa())) {
-		user_name = ammonite_get_default_user_username ();
-	} else {
-		user_name = NULL;
-	}
-
-	if (user_name == NULL) {
-		url = g_strdup ("eazel:");
-		/* FIXME bugzilla.eazel.com 5036: user feedback needs to be displayed in this case */
-		/* Something better than just going to the summary page */
-
-	} else {
-		url = g_strdup_printf ("eazel-services:///~%s", user_name);
-		g_free (user_name);
-		user_name = NULL;
-	}
-	nautilus_window_go_to (NAUTILUS_WINDOW (callback_data), url);
-	g_free (url);
-	url = NULL;
+	online_storage_uri = nautilus_services_get_online_storage_uri ();
+	nautilus_window_go_to (NAUTILUS_WINDOW (callback_data), online_storage_uri);
+	g_free (online_storage_uri);
 }
 
 static void
@@ -75,30 +59,11 @@ goto_software_catalog (BonoboUIComponent *component,
 		       gpointer callback_data, 
 		       const char *verb)
 {
-	char			*url;
-	gboolean		logged_in;
-	char 			*user_name;
+	char *software_catalog_uri;
 
-	if (ammonite_init (bonobo_poa())) {
-		user_name = ammonite_get_default_user_username ();
-
-		logged_in = (NULL != user_name);
-		g_free (user_name);
-	} else {
-		logged_in = FALSE;
-	}
-
-
-	if (!logged_in) {
-		url = g_strdup ("eazel-services://anonymous/catalog");
-	} else {
-		url = g_strdup ("eazel-services:///catalog");
-	}
-
-	nautilus_window_go_to (NAUTILUS_WINDOW (callback_data), url);
-	g_free (url);
-	url = NULL;
-
+	software_catalog_uri = nautilus_services_get_software_catalog_uri ();
+	nautilus_window_go_to (NAUTILUS_WINDOW (callback_data), software_catalog_uri);
+	g_free (software_catalog_uri);
 }
 
 static void
@@ -143,6 +108,3 @@ nautilus_window_install_service_ui (NautilusWindow *window)
 			    detach_service_ui,
 			    service_ui);
 }
-
-#endif
-

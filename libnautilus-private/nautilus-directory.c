@@ -1645,10 +1645,8 @@ nautilus_self_check_directory (void)
 	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org/dir/"), "http://le-hackeur.org/dir");
 	/* FIXME bugzilla.eazel.com 5068: the "nested" URI loses some characters here. Maybe that's OK because we escape them in practice? */
 	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("search://[file://]file_name contains stuff"), "search://[file/]file_name contains stuff");
-#ifdef EAZEL_SERVICES
 	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("eazel-services:/~turtle"), "eazel-services:///~turtle");
 	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("eazel-services:///~turtle"), "eazel-services:///~turtle");
-#endif	
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

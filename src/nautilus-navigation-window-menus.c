@@ -33,6 +33,7 @@
 #include "nautilus-bookmark-parsing.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-property-browser.h"
+#include "nautilus-services.h"
 #include "nautilus-signaller.h"
 #include "nautilus-switchable-navigation-bar.h"
 #include "nautilus-theme-selector.h"
@@ -287,15 +288,16 @@ stop_button_callback (BonoboUIComponent *component,
 	nautilus_window_stop_loading (NAUTILUS_WINDOW (user_data));
 }
 
-#ifdef EAZEL_SERVICES
 static void
 services_button_callback (BonoboUIComponent *component, 
 			       gpointer user_data, 
 			       const char *verb)
 {
-	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), "eazel:");
+	char *summary_uri;
+	summary_uri = nautilus_services_get_summary_uri ();
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), summary_uri);
+	g_free (summary_uri);
 }
-#endif
 
 static void
 edit_menu_undo_callback (BonoboUIComponent *component, 
@@ -1294,10 +1296,11 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 
 		BONOBO_UI_VERB ("Stop", stop_button_callback),
 
-#ifdef EAZEL_SERVICES
-		BONOBO_UI_VERB ("Services", services_button_callback),
-#endif
+		BONOBO_UI_VERB_END
+	};
 
+	BonoboUIVerb services_verbs [] = {
+		BONOBO_UI_VERB ("Services", services_button_callback),
 		BONOBO_UI_VERB_END
 	};
 
@@ -1306,6 +1309,10 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 
 	bonobo_ui_component_add_verb_list_with_data (window->details->shell_ui, verbs, window);
+
+	if (nautilus_services_are_enabled ()) {
+		bonobo_ui_component_add_verb_list_with_data (window->details->shell_ui, services_verbs, window);
+	}
 
         nautilus_window_update_show_hide_menu_items (window);
 

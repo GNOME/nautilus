@@ -62,7 +62,7 @@
 
 #include <eel/eel-stock-dialogs.h>
 
-#ifdef EAZEL_SERVICES
+#ifdef HAVE_AMMONITE
 #include <libtrilobite/libammonite-gtk.h>
 #endif
 
@@ -209,7 +209,7 @@ static gint	string_list_get_index_of_string 		(const char			*string_list[],
 static void	pre_widget_initialize				(void);
 static void	post_widget_initialize				(void);
 
-#ifdef EAZEL_SERVICES
+#ifdef HAVE_AMMONITE
 
 /*
  * URL scheme hack for the eazel-services: scheme
@@ -220,7 +220,7 @@ static char *	eazel_services_scheme_to_http			(NautilusMozillaContentView	*view,
 
 static char *	eazel_services_scheme_from_http			(NautilusMozillaContentView	*view,
 				  				 const char			*uri);
-#endif /* EAZEL_SERVICES */
+#endif /* HAVE_AMMONITE */
 
 /* BonoboControl callbacks */
 static void bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointer callback_data);
@@ -1346,11 +1346,11 @@ translate_uri_nautilus_to_mozilla (NautilusMozillaContentView *view, const char 
 	g_return_val_if_fail (uri != NULL, NULL);
 
 
-#ifdef EAZEL_SERVICES
+#ifdef HAVE_AMMONITE
 	if (0 == strncmp (uri, "eazel-services:", strlen ("eazel-services:"))) {
 		ret = eazel_services_scheme_to_http (view, uri);
 	} else
-#endif /* EAZEL_SERVICES */
+#endif /* HAVE_AMMONITE */
 		{
 		ret = g_strdup (uri);
 	}
@@ -1362,11 +1362,11 @@ translate_uri_nautilus_to_mozilla (NautilusMozillaContentView *view, const char 
 static char *
 translate_uri_mozilla_to_nautilus (NautilusMozillaContentView *view, const char *uri)
 {
-#ifdef EAZEL_SERVICES
+#ifdef HAVE_AMMONITE
 	return eazel_services_scheme_from_http (view, uri);
 #else
 	return g_strdup (uri);
-#endif /* EAZEL_SERVICES */
+#endif /* HAVE_AMMONITE */
 }
 
 #ifdef BUSY_CURSOR
@@ -1966,7 +1966,7 @@ post_widget_initialize (void)
 }
 
 
-#ifdef EAZEL_SERVICES
+#ifdef HAVE_AMMONITE
 
 /*
  * URL scheme hack for the eazel-services: scheme
@@ -2045,4 +2045,4 @@ eazel_services_scheme_from_http	(NautilusMozillaContentView	*view,
 	return ret;
 }
 
-#endif /* EAZEL_SERVICES */
+#endif /* HAVE_AMMONITE */
