@@ -150,9 +150,10 @@ nautilus_bonobo_get_hidden (BonoboUIComponent *ui,
 }
 
 void
-nautilus_bonobo_add_menu_item (BonoboUIComponent *ui, const char *path, const char *label)
+nautilus_bonobo_add_menu_item (BonoboUIComponent *ui, const char *id, const char *path, const char *label)
 {
-	char *xml_string, *encoded_label, *name;
+	char *xml_string, *encoded_label, *verb_name;
+	char *name, *full_id;
 
 	/* Because we are constructing the XML ourselves, we need to
          * encode the label.
@@ -162,14 +163,18 @@ nautilus_bonobo_add_menu_item (BonoboUIComponent *ui, const char *path, const ch
 	/* Labels may contain characters that are illegal in names. So
 	 * we create the name by URI-encoding the label.
 	 */
-	name = gnome_vfs_escape_string (label);
-	
+	full_id = g_strdup_printf ("%s/%s", path, id);
+	name = gnome_vfs_escape_string (id);
+	verb_name = gnome_vfs_escape_string (id);
+
 	xml_string = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"verb:%s\"/>\n", 
-				      name, encoded_label, name);
+				      name, encoded_label, verb_name);
 	bonobo_ui_component_set (ui, path, xml_string, NULL);
 
 	g_free (encoded_label);
 	g_free (name);
+	g_free (verb_name);
+	g_free (full_id);
 	g_free (xml_string);
 }
 
@@ -206,15 +211,15 @@ nautilus_bonobo_add_menu_separator (BonoboUIComponent *ui, const char *path)
 }
 
 char *
-nautilus_bonobo_get_menu_item_verb_name (const char *label)
+nautilus_bonobo_get_menu_item_verb_name (const char *path)
 {
-	char *verb_name, *escaped_label;
+	char *verb_name, *escaped_path;
 	
-	escaped_label = gnome_vfs_escape_string (label);
+	escaped_path = gnome_vfs_escape_string (path);
 
-	verb_name = g_strdup_printf ("verb:%s", escaped_label);
+	verb_name = g_strdup_printf ("verb:%s", escaped_path);
 
-	g_free (escaped_label);
+	g_free (escaped_path);
 	
 	return verb_name;
 }

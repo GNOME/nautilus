@@ -55,6 +55,7 @@ void     nautilus_bonobo_set_hidden              (BonoboUIComponent *ui,
 gboolean nautilus_bonobo_get_hidden              (BonoboUIComponent *ui,
 						  const char        *path);
 void     nautilus_bonobo_add_menu_item           (BonoboUIComponent *ui,
+						  const char        *id,
 						  const char        *path,
 						  const char        *label);
 void     nautilus_bonobo_add_submenu             (BonoboUIComponent *ui,
@@ -64,7 +65,7 @@ void     nautilus_bonobo_add_menu_separator      (BonoboUIComponent *ui,
 						  const char        *path);
 void     nautilus_bonobo_remove_menu_items       (BonoboUIComponent *ui,
 						  const char        *path);
-char *   nautilus_bonobo_get_menu_item_verb_name (const char        *label);
+char *   nautilus_bonobo_get_menu_item_verb_name (const char        *path);
 void     nautilus_bonobo_set_icon                (BonoboUIComponent *ui,
 						  const char        *path,
 						  const char        *icon_relative_path);

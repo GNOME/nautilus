@@ -1,3 +1,21 @@
+2000-10-13  Gene Z. Ragan  <gzr@eazel.com>
+
+	Work in progress on creating unique ideas for menu items
+	added to the bookmarks menu.
+	
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	(nautilus_bonobo_add_menu_item),
+	(nautilus_bonobo_get_menu_item_verb_name):
+
+	* src/file-manager/fm-directory-view.c:
+	(add_open_with_app_bonobo_menu_item),
+	(add_open_with_viewer_bonobo_menu_item):
+	
+	* src/nautilus-window-menus.c: (append_bookmark_to_menu),
+	(create_menu_item_from_node), (append_dynamic_bookmarks),
+	(refresh_go_menu):
+
 2000-10-13  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3592 (rename text widget persists after dragging icon)
