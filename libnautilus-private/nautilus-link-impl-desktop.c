@@ -223,6 +223,7 @@ nautilus_link_impl_desktop_local_create (const char        *directory_path,
 	GList dummy_list;
 	NautilusFileChangesQueuePosition item;
 	GnomeVFSHandle *handle;
+	GnomeVFSFileSize bytes_read;
 
 	g_return_val_if_fail (directory_path != NULL, FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
@@ -232,20 +233,25 @@ nautilus_link_impl_desktop_local_create (const char        *directory_path,
 	path = nautilus_make_path (directory_path, name);
 	handle = NULL;
 
-	if (gnome_vfs_open (&handle, path, GNOME_VFS_OPEN_READ) != GNOME_VFS_OK) {
+	if (gnome_vfs_create (&handle, path,
+			      GNOME_VFS_OPEN_WRITE,
+			      FALSE,
+			      GNOME_VFS_PERM_USER_READ | GNOME_VFS_PERM_USER_WRITE |
+			      GNOME_VFS_PERM_GROUP_READ |
+			      GNOME_VFS_PERM_OTHER_READ) != GNOME_VFS_OK) {
 		g_free (path);
 		return FALSE;
 	}
 
-	gnome_vfs_write (handle, "[Desktop Entry]\nEncoding=Legacy-Mixed\nName=", strlen ("[Desktop Entry]\nEncoding=Legacy-Mixed\nName="), NULL);
-	gnome_vfs_write (handle, name, strlen (name), NULL);
-	gnome_vfs_write (handle, "\nType=", strlen ("\nType="), NULL);
-	gnome_vfs_write (handle, get_tag (type), strlen (get_tag (type)), NULL);
-	gnome_vfs_write (handle, "\nX-Nautilus-Icon=", strlen ("\nX-Nautilus-Icon="), NULL);
-	gnome_vfs_write (handle, image, strlen (image), NULL);
-	gnome_vfs_write (handle, "\nURL=", strlen ("\nURL="), NULL);
-	gnome_vfs_write (handle, target_uri, strlen (target_uri), NULL);
-	gnome_vfs_write (handle, "\n", 1, NULL);
+	gnome_vfs_write (handle, "[Desktop Entry]\nEncoding=Legacy-Mixed\nName=", strlen ("[Desktop Entry]\nEncoding=Legacy-Mixed\nName="), &bytes_read);
+	gnome_vfs_write (handle, name, strlen (name), &bytes_read);
+	gnome_vfs_write (handle, "\nType=", strlen ("\nType="), &bytes_read);
+	gnome_vfs_write (handle, get_tag (type), strlen (get_tag (type)), &bytes_read);
+	gnome_vfs_write (handle, "\nX-Nautilus-Icon=", strlen ("\nX-Nautilus-Icon="), &bytes_read);
+	gnome_vfs_write (handle, image, strlen (image), &bytes_read);
+	gnome_vfs_write (handle, "\nURL=", strlen ("\nURL="), &bytes_read);
+	gnome_vfs_write (handle, target_uri, strlen (target_uri), &bytes_read);
+	gnome_vfs_write (handle, "\n", 1, &bytes_read);
 	/* ... */
 	gnome_vfs_close (handle);
 
