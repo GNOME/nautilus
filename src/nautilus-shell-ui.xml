@@ -13,6 +13,7 @@
 	<cmd name="Forward" accel="*Control*bracketright"
 	 _tip="Go to the next visited location"/>
 	<cmd name="New Window"
+	 _label="New Window"
 	 _tip="Open another Nautilus window for the displayed location"/>
 	<cmd name="Stop"
 	 _tip="Stop loading this location"/>
@@ -343,7 +344,11 @@
 
 <popups>
 	<popup name="background">
-		<placeholder name="Before Zoom Items"/>
+		<placeholder name="Before Zoom Items">
+			<placeholder name="New Items">
+				<menuitem name="New Window" verb="New Window"/>
+			</placeholder>
+		</placeholder>
 		<placeholder name="Zoom Items" delimit="top">
 			<menuitem name="Zoom In" verb="Zoom In"/>
 			<menuitem name="Zoom Out" verb="Zoom Out"/>
