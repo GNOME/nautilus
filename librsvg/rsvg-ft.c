@@ -662,6 +662,15 @@ rsvg_ft_render_string (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 		glyph_index = FT_Get_Char_Index (font->face,
 						 ((unsigned char *)str)[i]);
 
+		/* FIXME bugzilla.eazel.com 2775: Need a better way to deal
+		 * with unknown characters.
+		 *
+		 * The following is just a band aid fix.
+		 */
+		if (glyph_index == 0) {
+			glyph_index = FT_Get_Char_Index (font->face, '?');
+		}
+
 		if (last_glyph != 0 && glyph_index != 0) {
 			FT_Vector kern;
 			double kx, ky;
