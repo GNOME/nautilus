@@ -87,6 +87,11 @@
 
 #ifdef HAVE_CDDA_INTERFACE_H
 #ifdef HAVE_CDDA_PARANOIA_H
+#define HAVE_CDDA 1
+#endif
+#endif
+
+#ifdef HAVE_CDDA
 
 #define size16 short
 #define size32 int
@@ -105,7 +110,6 @@
  */
 char **broken_header_fix = strerror_tr;
 
-#endif
 #endif
 
 #define CHECK_STATUS_INTERVAL 2000
@@ -170,11 +174,9 @@ static void		free_mount_list 				(GList 				*mount_list);
 static GList 		*get_removable_volumes 				(void);
 static GHashTable 	*create_readable_mount_point_name_table 	(void);
 									 
-#ifdef HAVE_CDDA_INTERFACE_H
-#ifdef HAVE_CDDA_PARANOIA_H
+#ifdef HAVE_CDDA
 static cdrom_drive 	*open_cdda_device 				(GnomeVFSURI 			*uri);
 static gboolean 	locate_audio_cd 				(void);
-#endif
 #endif
 
 #ifdef SOLARIS_MNT
@@ -393,11 +395,9 @@ get_removable_volumes (void)
 			
 	fclose (file);
 	
-#ifdef HAVE_CDDA_INTERFACE_H
-#ifdef HAVE_CDDA_PARANOIA_H
+#ifdef HAVE_CDDA
 	volume = create_volume (CD_AUDIO_PATH, CD_AUDIO_PATH, CDDA_SCHEME);
 	volumes = mount_volume_add_filesystem (volume, volumes);
-#endif
 #endif
 
 	/* Move all floppy mounts to top of list */
@@ -998,15 +998,13 @@ get_current_mount_list (void)
 		fclose (fh);
 	}
 	
-#ifdef HAVE_CDDA_INTERFACE_H
-#ifdef HAVE_CDDA_PARANOIA_H
+#ifdef HAVE_CDDA
 	/* CD Audio tricks */
 	if (locate_audio_cd ()) {
 		volume = create_volume (CD_AUDIO_PATH, CD_AUDIO_PATH, CDDA_SCHEME);
 		mount_volume_get_name (volume);
 		current_mounts = mount_volume_add_filesystem (volume, current_mounts);
 	}
-#endif
 #endif
 
 	return current_mounts;
@@ -1913,20 +1911,22 @@ nautilus_volume_monitor_get_mount_name_for_display (NautilusVolumeMonitor *monit
 	}
 }
 
-#ifdef HAVE_CDDA_INTERFACE_H
-#ifdef HAVE_CDDA_PARANOIA_H
+#ifdef HAVE_CDDA
 
-static cdrom_drive *
+static gboolean
 open_cdda_device (GnomeVFSURI *uri)
 {
 	const char *device_name;
 	cdrom_drive *drive;
+	gboolean opened;
+	
+	g_message ("open_cdda_device");
 	
 	device_name = gnome_vfs_uri_get_path (uri);
 
 	drive = cdda_identify (device_name, FALSE, NULL);
 	if (drive == NULL) {
-		return NULL;
+		return FALSE;
 	}
 	
 	/* Turn off verbosity */
@@ -1939,46 +1939,44 @@ open_cdda_device (GnomeVFSURI *uri)
   		case -4:
   		case -5:
     		/*g_message ("Unable to open disc.  Is there an audio CD in the drive?");*/
-    		return NULL;
-
+    		opened = FALSE;
+		break;
+		
   		case -6:
     		/*g_message ("CDDA method could not find a way to read audio from this drive.");*/
-    		return NULL;
+		opened = FALSE;
+		break;
     			
   		case 0:
+		opened = TRUE;
     		break;
 
   		default:
     		/*g_message ("Unable to open disc.");*/
-    		return NULL;
+		opened = FALSE;
+		break;
+
 	}
+	cdda_close (drive);
 	
-	return drive;
+	return opened;
 }
 
 static gboolean
 locate_audio_cd (void) {
-	cdrom_drive *drive;
 	GnomeVFSURI *uri;
-	gboolean found_one;
+	gboolean found_drive;
 	
-	found_one = FALSE;
-		
 	uri = gnome_vfs_uri_new (CD_AUDIO_URI);
 	if (uri == NULL) {
 		return found_one;
 	}
 		
-	drive = open_cdda_device (uri);
+	found_drive = open_cdda_device (uri);
 	gnome_vfs_uri_unref (uri);
 	
-	if (drive != NULL) {
-		found_one = TRUE;				
-		cdda_close (drive);
-	}
-		
-	return found_one;
+	return found_drive;
 }
 
 #endif
-#endif
+

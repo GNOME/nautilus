@@ -1,4 +1,12 @@
 2001-04-06  Gene Z. Ragan  <gzr@eazel.com>
+
+	Attempt to track down possible file descriptor leak.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(get_removable_volumes), (get_current_mount_list),
+	(open_cdda_device), (locate_audio_cd):
+
+2001-04-06  Gene Z. Ragan  <gzr@eazel.com>
 	
 	Add more verbose error message in the case that
 	/proc/mounts or /etc/mnttab cannot be opened.
