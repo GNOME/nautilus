@@ -425,6 +425,20 @@ nautilus_image_new (void)
 	return gtk_widget_new (nautilus_image_get_type (), NULL);
 }
 
+/* cover routine to allocate an image widget from the passed in image file path */
+GtkWidget *
+nautilus_image_new_from_file (const char* filename)
+{
+	GtkWidget *image_widget;
+	GdkPixbuf *pixbuf;
+	
+	pixbuf = gdk_pixbuf_new_from_file (filename);			
+	image_widget = nautilus_image_new ();
+	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image_widget), pixbuf);	
+	gdk_pixbuf_unref (pixbuf);
+	return image_widget;
+}
+
 void
 nautilus_image_set_pixbuf (NautilusImage *image, GdkPixbuf *pixbuf)
 {

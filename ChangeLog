@@ -1,3 +1,17 @@
+2000-11-22  Andy Hertzfeld  <andy@eazel.com>
+
+`	* libnautilus-extensions/nautilus-image.h:
+	added nautilus_image_new_from_file convenience routine
+	* libnautilus-extensions/nautilus-image.c:
+	(nautilus_image_new_from_file):
+	implemented nautilus_image_new_from_file to make it easy to
+	convert code that used gnome_pixmap_new_from_file to use
+	anti-aliased images
+	
+	* components/hardware/nautilus-hardware-view.c: (setup_form_title),
+	(setup_overview_form):
+	converted the hardware view to use anti-aliased images
+	
 2000-11-22  Michael K. Fleming  <mfleming@eazel.com>
 
 	* src/nautilus-first-time-druid.c: (set_http_proxy):

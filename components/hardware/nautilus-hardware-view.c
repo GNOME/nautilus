@@ -42,6 +42,7 @@
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-label.h>
@@ -349,7 +350,7 @@ setup_form_title (NautilusHardwareView *view, const char* image_name, const char
 	if (image_name != NULL) {
  		file_name = gnome_pixmap_file (image_name);
 		if (file_name != NULL) {
-			temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
+			temp_widget = nautilus_image_new_from_file (file_name);
 			gtk_box_pack_start(GTK_BOX(temp_container), temp_widget, 0, 0, 8);		
 			gtk_widget_show(temp_widget);
 			g_free (file_name);
@@ -409,10 +410,10 @@ static void setup_overview_form (NautilusHardwareView *view)
 		gtk_widget_show (temp_box);
 
 		file_name = nautilus_pixmap_file ("cpu.png");
-                temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
+                temp_widget = nautilus_image_new_from_file (file_name);
 		gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);		
-			gtk_widget_show(temp_widget);
-			g_free (file_name);
+		gtk_widget_show(temp_widget);
+		g_free (file_name);
 		
 		temp_widget = nautilus_label_new (temp_text);
 		nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
@@ -429,7 +430,7 @@ static void setup_overview_form (NautilusHardwareView *view)
 	gtk_widget_show (temp_box);
 
  	file_name = nautilus_pixmap_file ("memory_chip.gif");
-  	temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
+  	temp_widget = nautilus_image_new_from_file (file_name);
 	gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);		
   	gtk_widget_show(temp_widget);
   	g_free (file_name);
@@ -467,7 +468,7 @@ static void setup_overview_form (NautilusHardwareView *view)
                                         file_name = nautilus_pixmap_file("i-harddisk.png");
                                 }
                                 
-				pixmap_widget = GTK_WIDGET (gnome_pixmap_new_from_file(file_name));
+				pixmap_widget = nautilus_image_new_from_file(file_name);
 				gtk_box_pack_start (GTK_BOX(temp_box), pixmap_widget, 0, 0, 0);
 				gtk_widget_show(pixmap_widget);
 				g_free(file_name);
