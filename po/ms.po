@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 10:55+0200\n"
+"POT-Creation-Date: 2004-09-24 21:05+0800\n"
 "PO-Revision-Date: 2004-08-29 19:21+0730\n"
 "Last-Translator: Hasbullah Bin Pit <sebol@my-penguin.org>\n"
 "Language-Team: Projek Gabai <gabai-penyumbang@lists.sourceforge.org>\n"
@@ -236,7 +236,11 @@ msgid_plural ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
 msgstr[0] ""
+"<b>Jenis Imej:</b> %s (%s)\n"
+"<b>Resolusi:</b> %dx%d pikel\n"
 msgstr[1] ""
+"<b>Jenis Imej:</b> %s (%s)\n"
+"<b>Resolusi:</b> %dx%d pikel\n"
 
 #: components/image_properties/nautilus-image-properties-view.c:237
 msgid "Failed to load image information"
@@ -2069,7 +2073,7 @@ msgstr "Pautan ke %s"
 msgid "link (broken)"
 msgstr "pautan (rosak)"
 
-#: libnautilus-private/nautilus-file.c:6173
+#: libnautilus-private/nautilus-file.c:6174
 #: libnautilus-private/nautilus-global-preferences.c:546
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
@@ -3584,12 +3588,12 @@ msgstr "_Papar"
 msgid "_Run"
 msgstr "_Laksana"
 
-#: src/file-manager/fm-directory-view.c:4126
+#: src/file-manager/fm-directory-view.c:4128
 #, c-format
 msgid "Cannot open %s"
 msgstr "Tak dapat membuka %s"
 
-#: src/file-manager/fm-directory-view.c:4129
+#: src/file-manager/fm-directory-view.c:4131
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -3602,21 +3606,21 @@ msgid ""
 "Open With menu to choose a specific application for the file. "
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4515
+#: src/file-manager/fm-directory-view.c:4517
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Laksanakan \"%s\" pada item dipilih"
 
-#: src/file-manager/fm-directory-view.c:4749
+#: src/file-manager/fm-directory-view.c:4751
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Cipta Dokumen drpd templat \"%s\""
 
-#: src/file-manager/fm-directory-view.c:4933
+#: src/file-manager/fm-directory-view.c:4935
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "Semua fail bolehlaksana pada folder ini akan ada pada menu Skrip."
 
-#: src/file-manager/fm-directory-view.c:4935
+#: src/file-manager/fm-directory-view.c:4937
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -3624,12 +3628,12 @@ msgstr ""
 "Memilih skrip pada menu akan melaksanakan skrip dengan item dipilih sebagai "
 "inputnya."
 
-#: src/file-manager/fm-directory-view.c:4937
+#: src/file-manager/fm-directory-view.c:4939
 msgid "About Scripts"
 msgstr "Perihal Skrip"
 
 # lom
-#: src/file-manager/fm-directory-view.c:4938
+#: src/file-manager/fm-directory-view.c:4940
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3651,19 +3655,19 @@ msgid ""
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:5069
+#: src/file-manager/fm-directory-view.c:5071
 #: src/file-manager/fm-tree-view.c:788
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" akan dipindah jika anda pilih arahan Fail Tepek"
 
-#: src/file-manager/fm-directory-view.c:5073
+#: src/file-manager/fm-directory-view.c:5075
 #: src/file-manager/fm-tree-view.c:792
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" akan disalin jika anda pilih Arahan Fail Tepek"
 
-#: src/file-manager/fm-directory-view.c:5080
+#: src/file-manager/fm-directory-view.c:5082
 #, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -3672,7 +3676,7 @@ msgid_plural ""
 msgstr[0] "%d item dipilih akan dipindah jika anda pilih arahan Fail Tepek"
 msgstr[1] "%d item dipilih akan dipindah jika anda pilih arahan Fail Tepek"
 
-#: src/file-manager/fm-directory-view.c:5087
+#: src/file-manager/fm-directory-view.c:5089
 #, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -3681,152 +3685,151 @@ msgid_plural ""
 msgstr[0] "%d item dipilih akan disalin jika anda pilih Arahan Fail Tepek"
 msgstr[1] "%d item dipilih akan disalin jika anda pilih Arahan Fail Tepek"
 
-#: src/file-manager/fm-directory-view.c:5169
+#: src/file-manager/fm-directory-view.c:5171
 #: src/file-manager/fm-tree-view.c:868
 msgid "There is nothing on the clipboard to paste."
 msgstr "Tiada apa-apa pada papanklip untuk ditepek."
 
-#: src/file-manager/fm-directory-view.c:5272
-#: src/file-manager/fm-directory-view.c:6507
+#: src/file-manager/fm-directory-view.c:5274
+#: src/file-manager/fm-directory-view.c:6510
 msgid "Mount Error"
 msgstr "Ralat Lekapan"
 
-#: src/file-manager/fm-directory-view.c:5334
+#: src/file-manager/fm-directory-view.c:5336
 msgid "Eject Error"
 msgstr "Ralat Lentingan"
 
-#: src/file-manager/fm-directory-view.c:5337
+#: src/file-manager/fm-directory-view.c:5339
 msgid "Unmount Error"
 msgstr "Ralat NyahLekap"
 
-#: src/file-manager/fm-directory-view.c:5461
+#: src/file-manager/fm-directory-view.c:5463
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Sambung ke Pelayan %s"
 
-#: src/file-manager/fm-directory-view.c:5466
+#: src/file-manager/fm-directory-view.c:5468
 msgid "_Connect"
 msgstr "_Sambung"
 
-#: src/file-manager/fm-directory-view.c:5480
+#: src/file-manager/fm-directory-view.c:5482
 msgid "Link _name:"
 msgstr "_Nama pautan:"
 
-#: src/file-manager/fm-directory-view.c:5792
+#: src/file-manager/fm-directory-view.c:5795
 msgid "E_ject"
 msgstr "_Lenting"
 
-#: src/file-manager/fm-directory-view.c:5792
+#: src/file-manager/fm-directory-view.c:5795
 #: src/file-manager/nautilus-directory-view-ui.xml.h:66
 msgid "_Unmount Volume"
 msgstr "_NyahLekap Volum"
 
-#: src/file-manager/fm-directory-view.c:5936
+#: src/file-manager/fm-directory-view.c:5939
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_Buka dengan \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5948
+#: src/file-manager/fm-directory-view.c:5951
 #: src/file-manager/nautilus-directory-view-ui.xml.h:59
 msgid "_Open"
 msgstr "_Buka"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5957
+#: src/file-manager/fm-directory-view.c:5960
 #: src/file-manager/fm-tree-view.c:960
-#, fuzzy, c-format
 msgid "Open in New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "Buka di %d Tetingkap Baru"
 msgstr[1] "Buka di %d Tetingkap Baru"
 
-#: src/file-manager/fm-directory-view.c:5964
+#: src/file-manager/fm-directory-view.c:5967
 msgid "Browse Folder"
 msgstr "Lungsuri Folder"
 
-#: src/file-manager/fm-directory-view.c:5966
+#: src/file-manager/fm-directory-view.c:5969
 msgid "Browse Folders"
 msgstr "Lungsuri Folder"
 
-#: src/file-manager/fm-directory-view.c:5989
+#: src/file-manager/fm-directory-view.c:5992
 msgid "_Delete from Trash"
 msgstr "Pa_dam daripada Sampah"
 
-#: src/file-manager/fm-directory-view.c:5991
+#: src/file-manager/fm-directory-view.c:5994
 msgid "Delete all selected items permanently"
 msgstr "Padam semua item dipilih selamanya"
 
-#: src/file-manager/fm-directory-view.c:5994
-#: src/file-manager/fm-directory-view.c:6339
+#: src/file-manager/fm-directory-view.c:5997
+#: src/file-manager/fm-directory-view.c:6342
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Mo_ve to Trash"
 msgstr "Pi_ndah ke Sampah"
 
-#: src/file-manager/fm-directory-view.c:5996
+#: src/file-manager/fm-directory-view.c:5999
 #: src/file-manager/nautilus-directory-view-ui.xml.h:24
 msgid "Move each selected item to the Trash"
 msgstr "Pindahkan setiap item dipilih ke Sampah"
 
-#: src/file-manager/fm-directory-view.c:6020
+#: src/file-manager/fm-directory-view.c:6023
 #: src/file-manager/nautilus-directory-view-ui.xml.h:54
 msgid "_Delete"
 msgstr "Pa_dam"
 
-#: src/file-manager/fm-directory-view.c:6040
+#: src/file-manager/fm-directory-view.c:6043
 msgid "Ma_ke Links"
 msgstr "Buat _Pautan"
 
-#: src/file-manager/fm-directory-view.c:6041
+#: src/file-manager/fm-directory-view.c:6044
 #: src/file-manager/nautilus-directory-view-ui.xml.h:19
 msgid "Ma_ke Link"
 msgstr "Buat _Pautan"
 
-#: src/file-manager/fm-directory-view.c:6054
+#: src/file-manager/fm-directory-view.c:6057
 #: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "_Empty Trash"
 msgstr "_Kosongkan Sampah"
 
-#: src/file-manager/fm-directory-view.c:6070
+#: src/file-manager/fm-directory-view.c:6073
 msgid "Cu_t File"
 msgstr "_Potong Fail"
 
-#: src/file-manager/fm-directory-view.c:6071
+#: src/file-manager/fm-directory-view.c:6074
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "Cu_t Files"
 msgstr "_Potong Fail"
 
-#: src/file-manager/fm-directory-view.c:6080
+#: src/file-manager/fm-directory-view.c:6083
 msgid "_Copy File"
 msgstr "_Salin Fail"
 
-#: src/file-manager/fm-directory-view.c:6081
+#: src/file-manager/fm-directory-view.c:6084
 #: src/file-manager/nautilus-directory-view-ui.xml.h:53
 msgid "_Copy Files"
 msgstr "_Salin Fail"
 
-#: src/file-manager/fm-directory-view.c:6330
+#: src/file-manager/fm-directory-view.c:6333
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "Pautan ini rosak, adalah anda ingin memindahkan pautan ini ke Sampah?"
 
-#: src/file-manager/fm-directory-view.c:6332
+#: src/file-manager/fm-directory-view.c:6335
 msgid "This link can't be used, because it has no target."
 msgstr "Pautan ini tak boleh digunakan, kerana ia tiada sasaran."
 
-#: src/file-manager/fm-directory-view.c:6334
+#: src/file-manager/fm-directory-view.c:6337
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "Pautan ini tak dapat digunakan, kerana sasarannya \"%s\" tidak wujud."
 
-#: src/file-manager/fm-directory-view.c:6339
+#: src/file-manager/fm-directory-view.c:6342
 msgid "Broken Link"
 msgstr "Pautan Rosak"
 
-#: src/file-manager/fm-directory-view.c:6643
+#: src/file-manager/fm-directory-view.c:6646
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Membuka \"%s\"."
 
-#: src/file-manager/fm-directory-view.c:6650
+#: src/file-manager/fm-directory-view.c:6653
 msgid "Cancel Open?"
 msgstr "Batal Buka?"
 
