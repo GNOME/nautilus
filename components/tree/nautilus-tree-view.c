@@ -2054,9 +2054,10 @@ nautilus_tree_view_find_drop_target (NautilusTreeView *tree_view,
 	node = nautilus_tree_view_tree_node_at (NAUTILUS_TREE_VIEW (tree_view), x, y);
 	is_directory = nautilus_tree_view_is_tree_node_directory (NAUTILUS_TREE_VIEW (tree_view), node);
 
+	current_node = view_node_to_model_node (tree_view, node);
+
 	if (is_directory == FALSE) {
 		NautilusTreeNode *parent_node;
-		current_node = view_node_to_model_node (tree_view, node);
 		parent_node = nautilus_tree_node_get_parent (current_node);
 		file = nautilus_tree_node_get_file (parent_node);
 	} else {
