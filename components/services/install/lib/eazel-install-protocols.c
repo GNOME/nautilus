@@ -77,12 +77,13 @@ gboolean local_fetch_remote_file (EazelInstall *service,
 				  const char *file_to_report,
 				  const char* target_file);
 
-typedef enum { RPMSEARCH_ENTRY_NAME, RPMSEARCH_ENTRY_PROVIDES } RpmSearchEntry;
+typedef enum { RPMSEARCH_ENTRY_NAME, RPMSEARCH_ENTRY_PROVIDES, RPMSEARCH_ENTRY_ID } RpmSearchEntry;
 
 /* This method takes a RpmSearch, which describes the thing to search for
    (ie. a package name or a package that provides file foo).
    If RPMSEARCH_ENTRY_NAME, data must be a PackageData pointer,
    if PROVIDES, it must be a string containing the file which is needed.
+   if ID, it must be a string containing the id of the package (provided by the rpm service).
    It creates a search url when can be used to get info about the package */
 char* get_search_url_for_package (EazelInstall *service, 
 				  RpmSearchEntry, 
@@ -92,6 +93,7 @@ char* get_search_url_for_package (EazelInstall *service,
    (ie. a package name or a package that provides file foo).
    If RPMSEARCH_ENTRY_NAME, data must be a PackageData pointer,
    if PROVIDES, it must be a string containing the file which is needed.
+   if ID, it must be a string containing the id of the package
    The last argument is a PackageData structure to insert info into, 
    eg. the url (->filename), the server md5 (->md5).
    It uses get_search_url_for_package, downloads the contents of the url and
@@ -603,6 +605,55 @@ gboolean eazel_install_fetch_package_which_provides (EazelInstall *service,
 	return result;
 }
 
+gboolean eazel_install_fetch_package_by_id (EazelInstall *service,
+					    const char *id,
+					    PackageData *package)
+{
+	gboolean result;
+	char *url;
+	char *targetname;
+
+	g_assert (package != NULL);
+
+	result = FALSE;
+
+	switch (eazel_install_get_protocol (service)) {
+	case PROTOCOL_FTP:
+	case PROTOCOL_HTTP: 
+	{
+		url = get_url_for_package (service, RPMSEARCH_ENTRY_ID, (const gpointer)id, package);
+	}
+	break;
+	case PROTOCOL_LOCAL:
+		g_warning (_("Using local protocol cannot fetch by id"));
+		url = NULL;
+		break;
+	};
+
+	if (url == NULL) {
+		g_warning (_("Could not get a URL for package id %s"), id);
+	} else {
+		/* FIXME bugzilla.eazel.com 1315:
+		   Loose the check once a proper rpmsearch.cgi is up and running */
+		if (filename_from_url (url) && strlen (filename_from_url (url))>1) {
+			targetname = g_strdup_printf ("%s/%s",
+						      eazel_install_get_tmp_dir (service),
+						      filename_from_url (url));
+			result = eazel_install_fetch_file (service, url, NULL, targetname);
+			if (result) {
+				packagedata_fill_from_file (package, targetname);
+			} else {
+				package->status = PACKAGE_DEPENDENCY_FAIL;
+				g_warning (_("File download failed"));
+			}
+			g_free (targetname);
+		}
+		g_free (url);
+	}
+
+	return result;
+}
+
 
 static void
 add_to_url (char **url,
@@ -636,6 +687,7 @@ get_url_for_package  (EazelInstall *service,
 	search_url = get_search_url_for_package (service, entry, data);
 	trilobite_debug ("Search URL: %s", search_url);
 
+#if 0
 	{
 		/* NOTE: uses snprintf, as this memory ends up somewhere in libc */
 		char *tmp;
@@ -650,6 +702,10 @@ get_url_for_package  (EazelInstall *service,
 		   I set it...
 		   FIXME: bugzilla.eazel.com  */
 	}
+#else
+	/* i think this is a better way... */
+	setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (FALSE, NULL), 1);
+#endif
 
 	if (trilobite_fetch_uri (search_url, &body, &length)) {
 #ifndef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
@@ -676,10 +732,11 @@ get_url_for_package  (EazelInstall *service,
 			g_list_foreach (packages, 
 					(GFunc)packagedata_destroy, 
 					GINT_TO_POINTER (TRUE));
+			g_list_free (packages);
 		}						
 #else /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 		if (body) {
-			body[length] = 0;
+			/* body is already null-terminated, luckily */
 			url = g_strdup (body);
 		}
 #endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
@@ -693,6 +750,10 @@ get_url_for_package  (EazelInstall *service,
 		case RPMSEARCH_ENTRY_PROVIDES:
 			g_warning (_("Could not retrieve a URL for %s"),
 				   (char*)data);
+			break;
+		case RPMSEARCH_ENTRY_ID:
+			g_warning (_("Could not retrieve a URL for id %s"),
+				   (char *)data);
 			break;
 		}
 	}
@@ -731,6 +792,13 @@ char* get_search_url_for_package (EazelInstall *service,
 		struct utsname buf;
 		uname (&buf);
 		add_to_url (&url, "?provides=", (char*)data);
+		add_to_url (&url, "&arch=", buf.machine);
+	}
+	break;
+	case RPMSEARCH_ENTRY_ID: {
+		struct utsname buf;
+		uname (&buf);
+		add_to_url (&url, "?rpm_id=", (char *)data);
 		add_to_url (&url, "&arch=", buf.machine);
 	}
 	break;

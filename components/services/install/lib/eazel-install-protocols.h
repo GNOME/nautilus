@@ -43,4 +43,8 @@ gboolean eazel_install_fetch_package_which_provides (EazelInstall *service,
 						     const char *file,
 						     PackageData *package);
 
+gboolean eazel_install_fetch_package_by_id (EazelInstall *service,
+					    const char *id,
+					    PackageData *package);
+
 #endif /* EAZEL_INSTALL_PROTOCOLS_H */

@@ -1006,7 +1006,11 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 
 	gtk_object_set_data (GTK_OBJECT (view), "packagedata", pack);
 
-	out = g_strdup_printf (_("Downloading \"%s\""), pack->name);
+	if (strncmp (pack->name, "id%3D", 5) == 0) {
+		out = g_strdup_printf (_("Downloading remote package"));
+	} else {
+		out = g_strdup_printf (_("Downloading \"%s\""), pack->name);
+	}
 	gtk_label_set_text (GTK_LABEL (view->details->package_name), out);
 	g_free (out);
 

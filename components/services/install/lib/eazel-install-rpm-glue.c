@@ -263,7 +263,14 @@ eazel_install_download_packages (EazelInstall *service,
 		} 
 
 		if (fetch_package) {
-			if (eazel_install_fetch_package (service, package)==FALSE) {
+			if (strncmp (package->name, "id%3D", 5) == 0) {
+				/* nautilus encodes "id=" to "id%3D" */
+				result = eazel_install_fetch_package_by_id (service, package->name + 5, package);
+			} else {
+				result = eazel_install_fetch_package (service, package);
+			}
+
+			if (result == FALSE) {
 				remove_list = g_list_prepend (remove_list, package);
 			} else {
 				result = TRUE;

@@ -1,3 +1,23 @@
+2000-09-14  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package_by_id), (get_url_for_package),
+	(get_search_url_for_package):
+	* components/services/install/lib/eazel-install-protocols.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_download_packages):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_view_update_from_uri):
+
+	Add support for package names of the type "id=NNN" where the id
+	will refer to a specific RPM on the remote server.  Services wants
+	this for the case when the user has clicked on a specific package.
+	
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_fetch_uri):
+
+	Fix bug in ghttp code that forgot to add a trailing null.
+	
 2000-09-14  Darin Adler  <darin@eazel.com>
 
 	Fixed bug 3079 (Cannot copy or link files or folders with current
