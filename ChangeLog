@@ -1,5 +1,11 @@
 2001-10-12  Darin Adler  <darin@bentspoon.com>
 
+	* src/file-manager/fm-directory-view.c: Change hysteresis value
+	from .1 second to 4 seconds. I think this will get rid of the
+	slowness people have been reporting.
+
+2001-10-12  Darin Adler  <darin@bentspoon.com>
+
 	* configure.in: Bumped gnome-vfs requirement to 1.0.3.
 
 2001-10-11  Darin Adler  <darin@bentspoon.com>
