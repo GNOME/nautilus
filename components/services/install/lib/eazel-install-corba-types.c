@@ -64,7 +64,7 @@ corba_packagedatastruct_from_packagedata (const PackageData *pack)
 		corbapack.distribution.minor = pack->distribution.version_minor;
 	}
 	corbapack.release = pack->minor ? CORBA_string_dup (pack->minor) : CORBA_string_dup ("");
-	corbapack.summary = pack->summary ? CORBA_string_dup (pack->minor) : CORBA_string_dup ("");
+	corbapack.summary = pack->summary ? CORBA_string_dup (pack->summary) : CORBA_string_dup ("");
 
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:

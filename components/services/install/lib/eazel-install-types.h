@@ -115,6 +115,11 @@ struct _CategoryData {
 void categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed);
 void categorydata_destroy (CategoryData *pd);
 
+/* FIXME: bugzilla.eazel.com 1586
+   for each package, I'll also need to remember the which packages
+   it replaces/upgrades. This mean yet another field in this struct.
+   This field prolly doesn't need to get transferred over corba, but
+   doing so, would let the view display upgrades */
 struct _PackageData {
 	char* name;
 	char* version;

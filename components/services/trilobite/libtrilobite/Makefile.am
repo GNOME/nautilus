@@ -39,6 +39,7 @@ libtrilobiteincludedir = $(includedir)/libtrilobite
 libtrilobite_serviceincludedir = $(includedir)/libtrilobite
 
 TRILOBITE_CORBA_GENERATED =		\
+	trilobite-service.h		\
 	trilobite-service-stubs.c	\
 	trilobite-service-common.c	\
 	trilobite-service-skels.c	\
@@ -89,13 +90,14 @@ libtrilobite_service_la_SOURCES =		\
 	trilobite-service-passwordquery.c	\
 	$(NULL)
 
-$(TRILOBITE_CORBA_GENERATED): trilobite-service.h
+$(TRILOBITE_CORBA_GENERATED): idl_stamp
 
 IDL = $(top_srcdir)/components/services/trilobite/idl/trilobite-service.idl
 
-trilobite-service.h: $(IDL)
+idl_stamp: $(IDL)
 	$(ORBIT_IDL) $(IDL_CFLAGS) $(IDL)
+	touch idl_stamp
 
-CLEANFILES= $(TRILOBITE_CORBA_GENERATED) trilobite-service.h
+CLEANFILES= $(TRILOBITE_CORBA_GENERATED) idl_stamp
 
 trilobite-service.c: trilobite-service.h

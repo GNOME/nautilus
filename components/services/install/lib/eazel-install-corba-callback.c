@@ -37,6 +37,7 @@
 
 enum {
 	DOWNLOAD_PROGRESS,
+	PREFLIGHT_CHECK,
 	INSTALL_PROGRESS,
 	UNINSTALL_PROGRESS,
 
@@ -72,6 +73,15 @@ impl_download_progress (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 			CORBA_Environment * ev)
 {
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DOWNLOAD_PROGRESS], name, amount, total);
+}
+
+static void
+impl_preflight_check (impl_POA_Trilobite_Eazel_InstallCallback *servant,
+		      const CORBA_long total_bytes,
+		      const CORBA_long total_packages,
+		      CORBA_Environment * ev)
+{
+	gtk_signal_emit (GTK_OBJECT (servant->object), signals[PREFLIGHT_CHECK], total_bytes, total_packages);
 }
 
 static void
@@ -167,6 +177,7 @@ eazel_install_callback_get_epv ()
 
 	epv = g_new0 (POA_Trilobite_Eazel_InstallCallback__epv, 1);
 	epv->download_progress   = (gpointer)&impl_download_progress;
+	epv->preflight_check     = (gpointer)&impl_preflight_check;
 	epv->dependency_check    = (gpointer)&impl_dep_check;
 	epv->install_progress    = (gpointer)&impl_install_progress;
 	epv->uninstall_progress  = (gpointer)&impl_uninstall_progress;
@@ -188,7 +199,9 @@ eazel_install_callback_create_corba_object (BonoboObject *service) {
 	
 	CORBA_exception_init (&ev);
 	
-	servant = (impl_POA_Trilobite_Eazel_InstallCallback*)g_new0 (PortableServer_Servant,1);
+	servant = g_new0 (impl_POA_Trilobite_Eazel_InstallCallback,1);
+	servant->object = EAZEL_INSTALL_CALLBACK (service);
+
 	((POA_Trilobite_Eazel_InstallCallback*) servant)->vepv = 
 		EAZEL_INSTALL_CALLBACK_CLASS ( GTK_OBJECT (service)->klass)->servant_vepv;
 	POA_Trilobite_Eazel_InstallCallback__init (servant, &ev);
@@ -220,6 +233,8 @@ eazel_install_callback_destroy (GtkObject *object)
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (EAZEL_INSTALL_CALLBACK (object));
 
+	g_message ("in eazel_install_callback_destroy ");
+
 	service = EAZEL_INSTALL_CALLBACK (object);
 
 	if (service->installservice_corba != CORBA_OBJECT_NIL) {
@@ -230,7 +245,12 @@ eazel_install_callback_destroy (GtkObject *object)
 		CORBA_Object_release (service->cb, &ev);
 		CORBA_exception_free (&ev);		
 	}
-	bonobo_object_unref (BONOBO_OBJECT (service->installservice_bonobo)); 
+
+	if (GTK_OBJECT_CLASS (eazel_install_callback_parent_class)->destroy) {
+		GTK_OBJECT_CLASS (eazel_install_callback_parent_class)->destroy (object);
+	}
+	g_message ("out eazel_install_callback_destroy ");
+
 }
 
 static void
@@ -255,6 +275,13 @@ eazel_install_callback_class_initialize (EazelInstallCallbackClass *klass)
 				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, download_progress),
 				gtk_marshal_NONE__POINTER_INT_INT,
 				GTK_TYPE_NONE, 3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
+	signals[PREFLIGHT_CHECK] = 
+		gtk_signal_new ("preflight_check",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, preflight_check),
+				gtk_marshal_NONE__INT_INT,
+				GTK_TYPE_NONE, 2, GTK_TYPE_INT, GTK_TYPE_INT);
 	signals[INSTALL_PROGRESS] = 
 		gtk_signal_new ("install_progress",
 				GTK_RUN_LAST,

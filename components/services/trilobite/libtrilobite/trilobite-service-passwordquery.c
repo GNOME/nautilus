@@ -322,7 +322,6 @@ trilobite_passwordquery_get_password (TrilobiteRootHelper *roothelper,
 		   dep on libnautilus-extensions.
 		 */
 
-		g_message ("PROMPT IS %s", trilobite->private->prompt);
 		dialog = nautilus_password_dialog_new ("Authenticate Me",
 						       trilobite->private->prompt,
 						       "",

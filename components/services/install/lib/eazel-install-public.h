@@ -64,6 +64,9 @@ struct _EazelInstallClass
 #endif /* EAZEL_INSTALL_NO_CORBA */
 	/* signal prototypes */
 	void (*download_progress) (EazelInstall *service, const char *file, int amount, int total);
+
+	void (*preflight_check) (EazelInstall *service, int total_size, int num_packages);
+
 	void (*install_progress)  (EazelInstall *service, 
 				   const PackageData *pack, 
 				   int package_num, int num_packages, 
@@ -123,6 +126,9 @@ void eazel_install_emit_download_progress         (EazelInstall *service,
 						   const char *name,
 						   int amount, 
 						   int total);
+void eazel_install_emit_preflight_check         (EazelInstall *service, 
+						 int total_bytes,
+						 int total_packages);
 void eazel_install_emit_download_failed           (EazelInstall *service, 
 						   const char *name);
 void eazel_install_emit_install_failed            (EazelInstall *service, 

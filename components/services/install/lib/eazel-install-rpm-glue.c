@@ -461,13 +461,14 @@ do_rpm_install (EazelInstall *service,
 	GList *iterator;
 	int fd;
 		
-	service->private->packsys.rpm.packages_installed = -1;
+	service->private->packsys.rpm.packages_installed = 0;
 	service->private->packsys.rpm.num_packages = g_list_length (packages);
 	service->private->packsys.rpm.current_installed_size = 0;
 	service->private->packsys.rpm.total_size = 0;
 
 	args = NULL;
-	g_message ("packages.length () = %d", g_list_length (packages));
+
+	/* Add the packages to the arg list */
 	for (iterator = packages; iterator; iterator = iterator->next) {
 		PackageData *pd1;
 		char *tmp;
@@ -480,7 +481,7 @@ do_rpm_install (EazelInstall *service,
 		g_hash_table_insert (service->private->name_to_package_hash,
 				     tmp,
 				     pd1);
-		g_message ("HASH-ADD \"%s\"", tmp);
+		g_message ("HASH ADD \"%s\" = \"%s\"", pd1->name, pd1->summary);
 	}
 	
 	/* Set the RPM parameters */
@@ -491,22 +492,32 @@ do_rpm_install (EazelInstall *service,
 	} else {
 		args = g_list_prepend (args, "-iv");
 	}
-
 	args = g_list_prepend (args, "--percent");
 	if (eazel_install_get_test (service)) {
+		g_message ("Dry run mode!");
 		args = g_list_prepend (args, "--test");
 	} 
 	if (eazel_install_get_force (service)) {
+		g_warning ("Force install mode!");
 		args = g_list_prepend (args, "--force --nodeps");
 	} 
 	
+	eazel_install_emit_preflight_check (service, 					     
+					    service->private->packsys.rpm.total_size,
+					    service->private->packsys.rpm.num_packages);
+
+	/* Fire off the helper */
 	root_helper = gtk_object_get_data (GTK_OBJECT (service), "trilobite-root-helper");
 	if (trilobite_root_helper_start (root_helper) != TRILOBITE_ROOT_HELPER_SUCCESS) {
-		g_error ("blah");
+		g_warning ("Error in starting trilobite_root_helper");
+		return service->private->packsys.rpm.num_packages;
 	}
+
+	/* Run RPM */
 	if (trilobite_root_helper_run (root_helper, TRILOBITE_ROOT_HELPER_RUN_RPM, args, &fd) != 
 	    TRILOBITE_ROOT_HELPER_SUCCESS) {
-		g_error ("blech");
+		g_warning ("Error in running trilobite_root_helper");
+		return service->private->packsys.rpm.num_packages;
 	}
 	
 	{
@@ -514,46 +525,73 @@ do_rpm_install (EazelInstall *service,
 		FILE *pipe;
 		PackageData *pd2;
 
+		/* Get the helpers stdout */
 		pipe = fdopen (fd, "r");
 		fflush (pipe);
 		tmp = g_new0 (char, 1024);
+		pd2 = NULL;
 
+		/* while something there... */
 		while (!feof (pipe)) {
 			fgets (tmp, 1023, pipe);
+			if (feof (pipe)) {
+				break;
+			}
 
 			if (tmp) {
+				/* Percentage output, parse and emit... */
 				if (tmp[0]=='%' && tmp[1]=='%') {
 					char *ptr;
 					int pct;
 					int amount;
+
+					if (pd2 == NULL) {
+						continue;
+					}
 					ptr = tmp + 3;
-					
-					pct = strtol (tmp, NULL, 10);
+					pct = strtol (ptr, NULL, 10);
 					if (pct == 100) {
 						amount = pd2->bytesize;
 					} else if (pct != 0) {
-						amount = (pd2->bytesize/100) * pct;
+						amount = (pd2->bytesize * pct) / 100;
 					}
-					eazel_install_emit_install_progress (service, 
-									     pd2, 
-									     service->private->packsys.rpm.packages_installed, 
-									     service->private->packsys.rpm.num_packages,
-									     amount, 
-									     pd2->bytesize,
-									     service->private->packsys.rpm.current_installed_size,
-									     service->private->packsys.rpm.total_size);
-				}  else {
-					g_message ("HASH LOOKUP \"%s\"", tmp); 
+					if (pd2) {
+						eazel_install_emit_install_progress (service, 
+										     pd2, 
+										     service->private->packsys.rpm.packages_installed, 
+										     service->private->packsys.rpm.num_packages,
+										     amount, 
+										     pd2->bytesize,
+										     service->private->packsys.rpm.current_installed_size + amount,
+										     service->private->packsys.rpm.total_size);
+					}
+					/* By invalidating the pointer here, we
+					   only emit with amount==total once */
+					if (pct==100) {
+						/* FIXME: bugzilla.eazel.com 1586
+						   At this point, add the package to a list of packages to which something was done.
+						   Beforehand, figure out if this is upgrading an existing package...
+						*/
+						service->private->packsys.rpm.current_installed_size += pd2->bytesize;
+						pd2 = NULL;
+					}
+				}  else if (strlen (tmp)) {
+					/* Not percantage mark, that means filename, step ahead one file */
+					tmp [ strlen (tmp) - 1] = 0;
 					pd2 = g_hash_table_lookup (service->private->name_to_package_hash, tmp);
-					service->private->packsys.rpm.packages_installed ++;
-					eazel_install_emit_install_progress (service, 
-									     pd2, 
-									     service->private->packsys.rpm.packages_installed, 
-									     service->private->packsys.rpm.num_packages,
-									     0, 
-									     pd2->bytesize,
-									     service->private->packsys.rpm.current_installed_size,
-									     service->private->packsys.rpm.total_size);
+					if (pd2==NULL) {						
+						g_warning ("lookup \"%s\" failed");
+					} else {
+						service->private->packsys.rpm.packages_installed ++;
+						eazel_install_emit_install_progress (service, 
+										     pd2, 
+										     service->private->packsys.rpm.packages_installed, 
+										     service->private->packsys.rpm.num_packages,
+										     0, 
+										     pd2->bytesize,
+										     service->private->packsys.rpm.current_installed_size,
+										     service->private->packsys.rpm.total_size);
+					}
 				}
 			}
 		}
@@ -563,6 +601,12 @@ do_rpm_install (EazelInstall *service,
 	
 	
 	g_list_free (args);
+
+	/* FIXME: bugzilla.eazel.com 1586
+	   at this point, we could emit the transaction info, by finding the toplevel
+	   packages, and spewing out xml for them */
+
+	return 0;
 	
 #else /* TEST_NEW_PASSWORD_STUFF */
 	int mode;
@@ -782,7 +826,6 @@ do_rpm_install (EazelInstall *service,
 	return num_failed;
 
 #endif /* TEST_NEW_PASSWORD_STUFF */
-	return 0;
 } /* end do_rpm_install */
 
 static int
@@ -1378,6 +1421,11 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 			   We cannot just put it into extrapackages, as a later dep
 			   might fail, and then we have to fail the package */
 			GList *extralist;
+
+			/* FIXME: bugzilla.eazel.com 1586
+			   If we already have a package of this name,
+			   add it the list of packages being upgraded during this 
+			   transaction */
 
 			extralist = g_hash_table_lookup (extras, pack->name);
 			extralist = g_list_append (extralist, dep);

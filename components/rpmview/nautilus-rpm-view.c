@@ -26,7 +26,6 @@
 #include <config.h>
 
 #include "nautilus-rpm-view.h"
-#include "nautilus-rpm-view-install.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -53,7 +52,10 @@
 #include <libgnorba/gnorba.h>
 #include <limits.h>
 
+#ifdef EAZEL_SERVICES
 #include <libeazelinstall.h>
+#include "nautilus-rpm-view-install.h"
+#endif
 
 #define RPM_VIEW_DEFAULT_BACKGROUND_COLOR  "rgb:DDDD/DDDD/BBBB"
 
@@ -263,10 +265,12 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 				 FALSE, FALSE, 2);		
 	gtk_widget_show(rpm_view->details->package_install_button);
 
+#ifdef EAZEL_SERVICES
         gtk_signal_connect (GTK_OBJECT (rpm_view->details->package_install_button), 
                             "clicked", 
                             GTK_SIGNAL_FUNC (nautilus_rpm_view_install_package_callback), 
                             rpm_view);
+#endif
 	
 	/* update button */
 	rpm_view->details->package_update_button = gtk_button_new();		    
@@ -285,10 +289,13 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_uninstall_button,
 				 FALSE, FALSE, 2);		
 	gtk_widget_show(rpm_view->details->package_uninstall_button);
+
+#ifdef EAZEL_SERVICES
         gtk_signal_connect (GTK_OBJECT (rpm_view->details->package_uninstall_button), 
                             "clicked", 
                             GTK_SIGNAL_FUNC (nautilus_rpm_view_uninstall_package_callback), 
                             rpm_view);
+#endif
 	
 	/* add the list of files contained in the package */
 
@@ -444,7 +451,9 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	gboolean is_installed;
 	FD_t file_descriptor;
 	gint *integer_ptr;
+#ifdef EAZEL_SERVICES
         PackageData *pack;
+#endif
   	
 	gchar **path = NULL;
 	gchar **links = NULL;	
@@ -590,6 +599,7 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
   	g_free(links);
   	gtk_clist_thaw(GTK_CLIST(rpm_view->details->package_file_list));
         
+#ifdef EAZEL_SERVICES
         /* NOTE: This adds a libeazelinstall packagedata object to the rpm_view */
         pack = (PackageData*)gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
         if (pack != NULL) {
@@ -601,7 +611,7 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
         pack->version = g_strdup (temp_version);
         pack->minor = g_strdup (temp_release);
         gtk_object_set_data (GTK_OBJECT (rpm_view), "packagedata", pack);
-        /* */
+#endif      
         
 	if (package_name)
 		g_free(package_name);

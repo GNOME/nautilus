@@ -1,3 +1,74 @@
+2000-07-13  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/rpmview/Makefile.am:
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_initialize),
+	(nautilus_rpm_view_update_from_uri):
+	Fixed so it should compile without enable-eazel-services (close
+	bug 1654)
+	
+	*
+	components/services/install/command-line/eazel-alt-install-corba.c:
+	(eazel_preflight_check_signal), (eazel_install_progress_signal),
+	(done), (main):
+	Uses the new preflight signal.
+	
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_preflight_check), (eazel_install_callback_get_epv),
+	(eazel_install_callback_create_corba_object),
+	(eazel_install_callback_destroy),
+	(eazel_install_callback_class_initialize):
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install_install), (impl_Eazel_Install_uninstall),
+	(impl_Eazel_Install_install_packages),
+	(impl_Eazel_Install_uninstall_packages),
+	(eazel_install_create_corba_object):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_destroy), (eazel_install_class_initialize),
+	(eazel_install_emit_download_progress_default),
+	(eazel_install_emit_preflight_check),
+	(eazel_install_emit_preflight_check_default):
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(do_rpm_install), (eazel_install_fetch_rpm_dependencies):
+	* components/services/install/lib/eazel-install-types.h:
+	Fixed bug 1615, now emits the preflight_check signal, before
+	running rpm and after completing downloads.
+	Also corrected some bad stuff in the corba usage reg. duplicating
+	the callback objects and releasing them.
+	The RPM output parsing now seems to work fine, and signals are
+	again emitted as expected.
+	Added FIXME:s for bug 1586, so I can split it up.
+	
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagedatastruct_from_packagedata):
+	Fixed dumb bug reg. converting PackageData to corba.
+		
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_fill_from_rpm_header):
+	Correct read of the bytesize.
+
+	* components/services/time/command-line/main.c: (main):
+	Fixed dumb bug that prevented a maxdiff=0.
+	* components/services/time/service/main.c:
+	(trilobite_service_factory_destroy):
+	* components/services/time/service/trilobite-eazel-time-service.c:
+	(impl_Trilobite_Eazel_Time_Service_check_time),
+	(impl_Trilobite_Eazel_Time_Service_update_time):
+	Uses the TrilobiteRootHelper object now.
+	*
+	components/services/trilobite/libtrilobite/trilobite-service-passwo
+	rdquery.c: (trilobite_passwordquery_get_password):
+	Added a debug output, will remove.
+
+	* components/services/time/command-line/Makefile.am:
+	* components/services/time/nautilus-view/Makefile.am:
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	* components/services/trilobite/sample/lib/Makefile.am:
+	Added the idl_stamp to CLEAN_FILES.
+	
 2000-07-13  Andy Hertzfeld  <andy@eazel.com>
 
 	* icons/eazel/eazel.xml:

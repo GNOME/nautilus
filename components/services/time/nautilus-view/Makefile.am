@@ -33,15 +33,15 @@ CORBA_GENERATED = \
 # this is to ensure the individual files wait for each other before
 # proceeding which is needed in parallel makes
 
-$(CORBA_GENERATED): trilobite_eazel_time_service_idl_stamp
+$(CORBA_GENERATED): idl_stamp
 
-trilobite_eazel_time_service_idl_stamp: $(IDL)
+idl_stamp: $(IDL)
 	$(ORBIT_IDL) $(IDL_CFLAGS) $(IDL)
-	touch trilobite_eazel_time_service_idl_stamp
+	touch idl_stamp
 
 main.c trilobite-eazel-time-view.c: $(CORBA_GENERATED)
 
-CLEANFILES+=$(CORBA_GENERATED) trilobite_eazel_time_service_idl_stamp
+CLEANFILES+=$(CORBA_GENERATED) idl_stamp
 
 
 

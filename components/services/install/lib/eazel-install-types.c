@@ -132,6 +132,8 @@ void
 packagedata_fill_from_rpm_header (PackageData *pack, 
 				  Header *hd) 
 {
+	unsigned long *sizep;
+
 	headerGetEntry (*hd,
 			RPMTAG_NAME, NULL,
 			(void **) &pack->name, NULL);
@@ -146,10 +148,12 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 			(void **) &pack->archtype, NULL);
 	headerGetEntry (*hd,
 			RPMTAG_SIZE, NULL,
-			(void **) &pack->bytesize, NULL);
+			(void **) &sizep, NULL);
+	pack->bytesize = *sizep;
 	headerGetEntry (*hd,
-			RPMTAG_SUMMARY, NULL,
+			RPMTAG_DESCRIPTION, NULL,
 			(void **) &pack->summary, NULL);
+
 	pack->packsys_struc = (gpointer)hd;
 }
 

@@ -20,20 +20,22 @@ noinst_LIBRARIES = libsample_corba.a
 ## CORBA magic
 
 CORBA_GENERATED =						\
+	sample-service.h					\
 	sample-service-common.c					\
 	sample-service-skels.c					\
 	sample-service-stubs.c					\
 	$(NULL)
 
-$(CORBA_GENERATED): sample-service.h
+$(CORBA_GENERATED): idl_stamp
 
 IDLDIR = $(top_srcdir)/components/services/trilobite/sample/idl
 IDL = $(IDLDIR)/sample-service.idl
 
-sample-service.h: $(IDL)
+idl_stamp: $(IDL)
 	$(ORBIT_IDL) $(IDL_CFLAGS) -I$(IDLDIR) $(IDL)
+	touch idl_stamp
 
-CLEANFILES+=$(CORBA_GENERATED) sample-service.h
+CLEANFILES+=$(CORBA_GENERATED) idl_stamp
 
 noinst_HEADERS =		\
 	sample-service-public.h	\

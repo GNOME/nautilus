@@ -143,6 +143,15 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 }
 
 static void 
+eazel_preflight_check_signal (EazelInstallCallback *service, 
+			      int total_bytes,
+			      int total_packages,
+			      gpointer unused) 
+{
+	fprintf (stdout, "About to install a total of %d packages, %dKb\n", total_packages, total_bytes/1024);
+}
+
+static void 
 eazel_download_progress_signal (EazelInstallCallback *service, 
 				const char *name,
 				int amount, 
@@ -172,7 +181,7 @@ eazel_install_progress_signal (EazelInstallCallback *service,
 			       char *title)
 {
 	if (amount==0) {
-		fprintf (stdout, "Installing %s...\n", pack->name);
+		fprintf (stdout, "Installing %s: \"%20.20s\"...\n", pack->name, pack->summary);
 	} else if (amount != total ) {
 		fprintf (stdout, "(%d/%d), (%d/%d)b - (%d/%d) %% %f\r", 
 			 package_num, num_packages,
@@ -285,7 +294,7 @@ static void
 done (EazelInstallCallback *service,
       gpointer unused)
 {
-	fprintf (stderr, "Installtion Done\n");
+	fprintf (stderr, "Installation Done\n");
 	eazel_install_callback_destroy (GTK_OBJECT (service));
 	gtk_main_quit ();
 }
@@ -350,6 +359,7 @@ int main(int argc, char *argv[]) {
 	set_parameters_from_command_line (eazel_install_callback_corba_objref (cb));
 	
 	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", eazel_download_progress_signal, "Download progress");
+	gtk_signal_connect (GTK_OBJECT (cb), "preflight_check", eazel_preflight_check_signal, NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "install_progress", eazel_install_progress_signal, "Install progress");
 	gtk_signal_connect (GTK_OBJECT (cb), "install_failed", install_failed, "");
 	gtk_signal_connect (GTK_OBJECT (cb), "download_failed", download_failed, NULL);

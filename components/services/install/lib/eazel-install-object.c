@@ -42,6 +42,7 @@
 
 enum {
 	DOWNLOAD_PROGRESS,
+	PREFLIGHT_CHECK,
 	INSTALL_PROGRESS,
 	DOWNLOAD_FAILED,
 	INSTALL_FAILED,
@@ -96,6 +97,9 @@ void  eazel_install_emit_download_progress_default (EazelInstall *service,
 						    const char *name,
 						  int amount,
 						  int total);
+void  eazel_install_emit_preflight_check_default (EazelInstall *service, 
+						  int total_bytes,
+						  int total_packages);
 void  eazel_install_emit_download_failed_default (EazelInstall *service, 
 						  const char *name);
 void eazel_install_emit_install_failed_default (EazelInstall *service,
@@ -129,7 +133,20 @@ eazel_install_destroy (GtkObject *object)
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (EAZEL_INSTALL (object));
 
+	g_message ("in eazel_install_destroy");
+	
 	service = EAZEL_INSTALL (object);
+
+#ifndef EAZEL_INSTALL_NO_CORBA
+	{
+		CORBA_Environment ev;
+		CORBA_exception_init (&ev);
+		if (service->callback != CORBA_OBJECT_NIL) {
+			CORBA_Object_release (service->callback, &ev);
+		}
+		CORBA_exception_free (&ev);
+	}
+#endif
 
 	g_hash_table_destroy (service->private->name_to_package_hash);
 	g_free (service->private->logfilename);
@@ -140,6 +157,8 @@ eazel_install_destroy (GtkObject *object)
 	if (GTK_OBJECT_CLASS (eazel_install_parent_class)->destroy) {
 		GTK_OBJECT_CLASS (eazel_install_parent_class)->destroy (object);
 	}
+
+	g_message ("out eazel_install_destroy");
 }
 
 static void
@@ -238,6 +257,13 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				GTK_SIGNAL_OFFSET (EazelInstallClass, download_progress),
 				gtk_marshal_NONE__POINTER_INT_INT,
 				GTK_TYPE_NONE, 3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);	
+	signals[PREFLIGHT_CHECK] = 
+		gtk_signal_new ("preflight_check",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallClass, preflight_check),
+				gtk_marshal_NONE__INT_INT,
+				GTK_TYPE_NONE, 2, GTK_TYPE_INT, GTK_TYPE_INT);	
 	signals[INSTALL_PROGRESS] = 
 		gtk_signal_new ("install_progress",
 				GTK_RUN_LAST,
@@ -285,6 +311,7 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 
 	klass->install_progress = eazel_install_emit_install_progress_default;
 	klass->download_progress = eazel_install_emit_download_progress_default;
+	klass->preflight_check = eazel_install_emit_preflight_check_default;
 	klass->download_failed = eazel_install_emit_download_failed_default;
 	klass->install_failed = eazel_install_emit_install_failed_default;
 	klass->uninstall_failed = eazel_install_emit_uninstall_failed_default;
@@ -681,6 +708,31 @@ eazel_install_emit_download_progress_default (EazelInstall *service,
 	SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
 		Trilobite_Eazel_InstallCallback_download_progress (service->callback, name, amount, total, &ev);	
+	} 
+	CORBA_exception_free (&ev);
+#endif /* EAZEL_INSTALL_NO_CORBA */
+} 
+
+void 
+eazel_install_emit_preflight_check (EazelInstall *service, 
+				      int total_bytes, 
+				      int total_packages)
+{
+	SANITY(service);
+	gtk_signal_emit (GTK_OBJECT (service), signals[PREFLIGHT_CHECK], total_bytes, total_packages);
+}
+
+void 
+eazel_install_emit_preflight_check_default (EazelInstall *service, 
+					      int total_bytes, 
+					      int total_packages)
+{
+#ifndef EAZEL_INSTALL_NO_CORBA
+	CORBA_Environment ev;
+	CORBA_exception_init (&ev);
+	SANITY(service);
+	if (service->callback != CORBA_OBJECT_NIL) {
+		Trilobite_Eazel_InstallCallback_preflight_check (service->callback, total_bytes, total_packages, &ev);	
 	} 
 	CORBA_exception_free (&ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */

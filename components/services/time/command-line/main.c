@@ -40,7 +40,7 @@ char   *arg_url;
 
 static const struct poptOption options[] = {
 	{"info", 'i', POPT_ARG_NONE, &arg_list_info, 0, N_("display service name and such"), NULL},
-	{"maxdiff", '\0', POPT_ARG_INT, &arg_max_diff, 0, N_("maximum allowed difference in seconds"), NULL},
+	{"maxdiff", '\0', POPT_ARG_INT, &arg_max_diff, -1, N_("maximum allowed difference in seconds"), NULL},
 	{"update", 'u', POPT_ARG_NONE, &arg_update_time, 0, N_("update the system clock"), NULL},
 	{"url", '\0', POPT_ARG_STRING, &arg_url, 0, N_("specify time url"), NULL},
 	{NULL, '\0', 0, NULL, 0}
@@ -89,11 +89,12 @@ int main(int argc, char *argv[]) {
 		g_message ("service url         : %s", Trilobite_Service_get_url (trilobite, &ev));
 		g_message ("service icon        : %s", Trilobite_Service_get_icon (trilobite, &ev));		
 		Trilobite_Service_unref (trilobite, &ev);
+		CORBA_Object_release (trilobite, &ev);
 	} 
 
 	timeservice = bonobo_object_query_interface (BONOBO_OBJECT (service), "IDL:Trilobite/Eazel/Time:1.0");
 
-	if (arg_max_diff) {
+	if (arg_max_diff>=0) {
 		Trilobite_Eazel_Time_set_max_difference (timeservice, arg_max_diff, &ev);
 	}
 
@@ -135,7 +136,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	Trilobite_Service_unref (timeservice, &ev);
+	Bonobo_Unknown_unref (timeservice, &ev);
 	CORBA_Object_release (timeservice, &ev);
 	bonobo_object_unref (BONOBO_OBJECT (service)); 
 	CORBA_exception_free (&ev);

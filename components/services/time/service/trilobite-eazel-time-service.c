@@ -88,6 +88,8 @@ impl_Trilobite_Eazel_Time_Service_check_time  (impl_POA_Trilobite_Eazel_Time_Ser
 
 	g_message ("Local time  : %ld", local_time);
 	g_message ("Server time : %ld", server_time);
+	g_message ("Diff is     : %d", abs (server_time - local_time));
+	g_message ("Allowed d   : %d", service->object->private->maxd);
 
 	/* If we did not get the time, raise an exception */
 	if (server_time != 0) {
@@ -111,6 +113,14 @@ impl_Trilobite_Eazel_Time_Service_update_time  (impl_POA_Trilobite_Eazel_Time_Se
 
 	get_time = FALSE;
 
+	root_helper = gtk_object_get_data (GTK_OBJECT (service->object), "trilobite-root-helper");
+	if (trilobite_root_helper_start (root_helper) != TRILOBITE_ROOT_HELPER_SUCCESS) {
+		Trilobite_Eazel_Time_NotPermitted *exn; 
+		exn = Trilobite_Eazel_Time_NotPermitted__alloc ();
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION, ex_Trilobite_Eazel_Time_NotPermitted, exn);
+		return;
+	}
+
 	/* if we have the server time, and it's less then 10 minutes old, use it */
 	if (service->object->private->server_time != 0) {
 		if (abs (service->object->private->time_obtained - time (NULL)) > 60*10) {
@@ -133,15 +143,6 @@ impl_Trilobite_Eazel_Time_Service_update_time  (impl_POA_Trilobite_Eazel_Time_Se
 		
 		diff = time (NULL) - service->object->private->time_obtained;
 		service->object->private->server_time += diff;
-		service->object->private->time_obtained += diff;
-	}
-
-	root_helper = gtk_object_get_data (GTK_OBJECT (service->object), "trilobite-root-helper");
-	if (trilobite_root_helper_start (root_helper) != TRILOBITE_ROOT_HELPER_SUCCESS) {
-		Trilobite_Eazel_Time_NotPermitted *exn; 
-		exn = Trilobite_Eazel_Time_NotPermitted__alloc ();
-		CORBA_exception_set (ev, CORBA_USER_EXCEPTION, ex_Trilobite_Eazel_Time_NotPermitted, exn);
-		return;
 	}
 
 	tmp = g_strdup_printf ("%ld", service->object->private->server_time);

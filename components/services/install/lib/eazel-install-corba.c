@@ -35,6 +35,11 @@
 
 #include "eazel-install-corba-types.h"
 
+#define RELEASE_CB if (servant->object->callback != CORBA_OBJECT_NIL) { \
+   CORBA_Object_release (servant->object->callback, ev); \
+}
+#define SET_CB(cb) servant->object->callback = CORBA_Object_duplicate(cb, ev)
+
 /*****************************************
   Corba stuff
 *****************************************/
@@ -44,15 +49,15 @@ typedef struct {
 	EazelInstall *object;
 } impl_POA_Trilobite_Eazel_Install;
 
+
 static void 
 impl_Eazel_Install_install(impl_POA_Trilobite_Eazel_Install *servant,
 			   const CORBA_char *package_list,
 			   const Trilobite_Eazel_InstallCallback cb,
 			   CORBA_Environment * ev) 
 {
-	servant->object->callback = cb;
-
-	return;
+	RELEASE_CB;
+	SET_CB (cb);
 }
 
 static void 
@@ -61,7 +66,8 @@ impl_Eazel_Install_uninstall(impl_POA_Trilobite_Eazel_Install *servant,
 			     const Trilobite_Eazel_InstallCallback cb,
 			     CORBA_Environment * ev) 
 {
-	servant->object->callback = cb;
+	RELEASE_CB;
+	SET_CB (cb);
 
 	return;
 }
@@ -74,11 +80,10 @@ impl_Eazel_Install_install_packages(impl_POA_Trilobite_Eazel_Install *servant,
 {
 	GList *categories;
 
-	servant->object->callback = cb;
+	RELEASE_CB;
+	SET_CB (cb);
+
 	categories = NULL;
-
-
-	servant->object->callback = cb;
 	categories = categorydata_list_from_corba_categorystructlist (*corbacategories);
 	eazel_install_install_packages (servant->object, categories);
 	
@@ -96,10 +101,10 @@ impl_Eazel_Install_uninstall_packages(impl_POA_Trilobite_Eazel_Install *servant,
 {
 	GList *categories;
 
-	servant->object->callback = cb;
+	RELEASE_CB;
+	SET_CB (cb);
+
 	categories = NULL;
-
-
 	servant->object->callback = cb;
 	categories = categorydata_list_from_corba_categorystructlist (*corbacategories);
 	eazel_install_uninstall_packages (servant->object, categories);
@@ -362,7 +367,9 @@ eazel_install_create_corba_object (BonoboObject *service) {
 	
 	CORBA_exception_init (&ev);
 	
-	servant = (impl_POA_Trilobite_Eazel_Install*)g_new0 (PortableServer_Servant,1);
+	servant = g_new0 (impl_POA_Trilobite_Eazel_Install,1);
+	servant->object = EAZEL_INSTALL (service);
+
 	((POA_Trilobite_Eazel_Install*) servant)->vepv = EAZEL_INSTALL_CLASS ( GTK_OBJECT (service)->klass)->servant_vepv;
 	POA_Trilobite_Eazel_Install__init (servant, &ev);
 	ORBIT_OBJECT_KEY (((POA_Trilobite_Eazel_Install*)servant)->_private)->object = NULL;

@@ -91,6 +91,10 @@ module Trilobite {
 
 			/* Called when dependency check is being handled */
 			oneway void dependency_check (in PackageDataStruct package, in PackageDataStruct needs);
+
+			/* Called after download is complete, and before the (un)install begins.
+			   Typically while heating up RPM */
+			oneway void preflight_check (in long total_size, in long num_packages);
 			
 			/* Called during (un)installation of a package */
 			oneway void install_progress (in PackageDataStruct package, 
