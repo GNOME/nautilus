@@ -1,3 +1,11 @@
+2002-12-04  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-tree-view-drag-dest.c:
+	(tree_view_weak_notify), (nautilus_tree_view_drag_dest_dispose),
+	(nautilus_tree_view_drag_dest_class_init),
+	(nautilus_tree_view_drag_dest_new): Remove the scroll timeout
+	when either the TreeView or the DragDest is destroyed. 
+
 2002-12-04  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-properties-window.c (create_properties_window):

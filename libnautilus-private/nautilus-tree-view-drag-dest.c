@@ -588,6 +588,37 @@ drag_drop_callback (GtkWidget *widget,
 }
 
 static void
+tree_view_weak_notify (gpointer user_data,
+		       GObject *object)
+{
+	NautilusTreeViewDragDest *dest;
+
+	dest = NAUTILUS_TREE_VIEW_DRAG_DEST (user_data);
+	
+	remove_scroll_timeout (dest);
+
+	dest->details->tree_view = NULL;
+}
+
+static void
+nautilus_tree_view_drag_dest_dispose (GObject *object)
+{
+	NautilusTreeViewDragDest *dest;
+	
+	dest = NAUTILUS_TREE_VIEW_DRAG_DEST (object);
+
+	if (dest->details->tree_view) {
+		g_object_weak_unref (G_OBJECT (dest->details->tree_view),
+				     tree_view_weak_notify,
+				     dest);
+	}
+	
+	remove_scroll_timeout (dest);
+
+	EEL_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
+}
+
+static void
 nautilus_tree_view_drag_dest_finalize (GObject *object)
 {
 	NautilusTreeViewDragDest *dest;
@@ -614,6 +645,7 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
 
 	gobject_class = G_OBJECT_CLASS (class);
 	
+	gobject_class->dispose = nautilus_tree_view_drag_dest_dispose;
 	gobject_class->finalize = nautilus_tree_view_drag_dest_finalize;
 
 	signals[GET_ROOT_URI] = 
@@ -652,6 +684,8 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
 			      G_TYPE_INT);
 }
 
+
+
 NautilusTreeViewDragDest *
 nautilus_tree_view_drag_dest_new (GtkTreeView *tree_view)
 {
@@ -660,6 +694,8 @@ nautilus_tree_view_drag_dest_new (GtkTreeView *tree_view)
 	dest = g_object_new (NAUTILUS_TYPE_TREE_VIEW_DRAG_DEST, NULL);
 
 	dest->details->tree_view = tree_view;
+	g_object_weak_ref (G_OBJECT (dest->details->tree_view),
+			   tree_view_weak_notify, dest);
 	
 	gtk_drag_dest_set (GTK_WIDGET (tree_view),
 			   0, drag_types, G_N_ELEMENTS (drag_types),
