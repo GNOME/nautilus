@@ -36,15 +36,16 @@
 #include <libgnome/gnome-i18n.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 
-static void fm_search_list_view_initialize       (gpointer          object,
-						  gpointer          klass);
-static void fm_search_list_view_initialize_class (gpointer          klass);
-static int  real_get_number_of_columns           (FMListView       *list_view);
-static int  real_get_link_column                 (FMListView       *list_view);
-static void real_get_column_specification        (FMListView       *list_view,
-						  int               column_number,
-						  FMListViewColumn *specification);
-static void begin_loading_callback               (FMDirectoryView *view);
+static void 	fm_search_list_view_initialize       (gpointer          object,
+						      gpointer          klass);
+static void 	fm_search_list_view_initialize_class (gpointer          klass);
+static int  	real_get_number_of_columns           (FMListView       *list_view);
+static int  	real_get_link_column                 (FMListView       *list_view);
+static void 	real_get_column_specification        (FMListView       *list_view,
+						      int               column_number,
+						      FMListViewColumn *specification);
+static gboolean real_supports_properties 	     (FMDirectoryView *view);
+static void 	begin_loading_callback               (FMDirectoryView *view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMSearchListView,
 				   fm_search_list_view,
@@ -71,10 +72,14 @@ begin_loading_callback (FMDirectoryView *view)
 static void
 fm_search_list_view_initialize_class (gpointer klass)
 {
+	FMDirectoryViewClass *fm_directory_view_class;
 	FMListViewClass *fm_list_view_class;
 	
+	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (klass);
 	fm_list_view_class = FM_LIST_VIEW_CLASS (klass);
   
+	fm_directory_view_class->supports_properties = real_supports_properties;
+
 	fm_list_view_class->get_number_of_columns = real_get_number_of_columns;
 	fm_list_view_class->get_link_column = real_get_link_column;
 	fm_list_view_class->get_column_specification = real_get_column_specification;
@@ -163,3 +168,16 @@ real_get_column_specification (FMListView *view,
 		g_assert_not_reached ();
 	}
 }
+
+static gboolean
+real_supports_properties (FMDirectoryView *view)
+{
+	/* Disable "Show Properties" menu item in this view, because changing
+	 * properties could cause the item to no longer match the search
+	 * criteria. Eventually we might want to solve this a different way,
+	 * perhaps by showing items that don't match the search criteria any
+	 * more a different way.
+	 */
+	return FALSE;
+}
+

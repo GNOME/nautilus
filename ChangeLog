@@ -1,5 +1,27 @@
 2000-08-08  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 1749 (Show Properties should be disabled in 
+	search results)
+
+	* src/file-manager/fm-directory-view.h: added new function
+	pointer supports_properties and new function
+	fm_directory_view_supports_properties.
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize_class): Fill in supports_properties 
+	function pointer with fm_directory_view_real_supports_properties.
+	(compute_menu_item_info): Use fm_directory_view_supports_properties
+	to decide whether to make "Show Properties" sensitive.
+	(fm_directory_view_supports_properties): New function, calls 
+	possibly-overridden function pointer.
+	(fm_directory_view_real_supports_properties): New function,
+	returns TRUE.
+	* src/file-manager/fm-search-list-view.c:
+	(fm_search_list_view_initialize_class): Fill in supports_properties
+	function pointer with real_supports_properties.
+	(real_supports_properties): return FALSE.
+
+2000-08-08  John Sullivan  <sullivan@eazel.com>
+
 	Fixed real and potential memory leaks involving
 	nautilus_directory_wait_until_ready.
 

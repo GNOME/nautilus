@@ -202,6 +202,13 @@ struct FMDirectoryViewClass {
 					  	 GList           **directory_metadata_keys,
 					  	 GList           **file_metadata_keys);
 
+	/* supports_properties is a function pointer that subclasses may
+	 * override to control whether the "Show Properties" menu item
+	 * should be enabled for selected items. The default implementation 
+	 * returns TRUE.
+	 */
+	gboolean (* supports_properties)	(FMDirectoryView *view);
+
 	void	(* start_renaming_item)	 	(FMDirectoryView *view,
 					  	 const char *uri);
 
@@ -248,6 +255,7 @@ void               fm_directory_view_restore_default_zoom_level     (FMDirectory
 void               fm_directory_view_select_all                     (FMDirectoryView       *view);
 void               fm_directory_view_set_selection                  (FMDirectoryView       *view,
 								     GList                 *selection);
+gboolean	   fm_directory_view_supports_properties	    (FMDirectoryView	   *view);
 void               fm_directory_view_move_copy_items                (const GList           *item_uris,
 								     const GdkPoint        *relative_item_points,
 								     const char            *target_uri,

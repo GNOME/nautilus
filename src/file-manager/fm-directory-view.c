@@ -141,6 +141,7 @@ static void           fm_directory_view_real_create_selection_context_menu_items
 										   GList                    *files);
 static void           fm_directory_view_real_merge_menus                          (FMDirectoryView          *view);
 static void           fm_directory_view_real_update_menus                         (FMDirectoryView          *view);
+static gboolean	      fm_directory_view_real_supports_properties 		  (FMDirectoryView 	    *view);
 static GtkMenu *      create_selection_context_menu                               (FMDirectoryView          *view);
 static GtkMenu *      create_background_context_menu                              (FMDirectoryView          *view);
 static BonoboControl *get_bonobo_control                                          (FMDirectoryView          *view);
@@ -274,6 +275,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
         klass->update_menus = fm_directory_view_real_update_menus;
 	klass->get_required_metadata_keys = get_required_metadata_keys;
 	klass->start_renaming_item = start_renaming_item;
+	klass->supports_properties = fm_directory_view_real_supports_properties;
 
 	/* Function pointers that subclasses must override */
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, add_file);
@@ -2149,7 +2151,7 @@ compute_menu_item_info (FMDirectoryView *directory_view,
 		*return_sensitivity = selection != NULL;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES) == 0) {
 		name = g_strdup (_("Show _Properties"));
-		*return_sensitivity = selection != NULL;
+		*return_sensitivity = selection != NULL && fm_directory_view_supports_properties (directory_view);
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH) == 0) {
 		name = g_strdup (_("_Empty Trash"));
 		*return_sensitivity =  !nautilus_trash_monitor_is_empty ();
@@ -3369,6 +3371,23 @@ fm_directory_view_stop (FMDirectoryView *view)
 		nautilus_directory_file_monitor_remove (view->details->model, view);
 	}
 	done_loading (view);
+}
+
+
+gboolean
+fm_directory_view_supports_properties (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	return (* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->supports_properties) (view);
+}
+
+static gboolean
+fm_directory_view_real_supports_properties (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	return TRUE;
 }
 
 /**
