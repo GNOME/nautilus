@@ -1014,3 +1014,64 @@ nautilus_gtk_label_make_bold (GtkLabel *label)
 	gdk_font_unref (bold_font);
 }
 
+void
+nautilus_gtk_widget_set_background_color (GtkWidget              *widget,
+					  const char		*color_spec)
+{
+	GtkStyle	*style;
+	GdkColor	color;
+
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+
+	style = gtk_widget_get_style (widget);
+
+	/* Make a copy of the style. */
+	style = gtk_style_copy (style);
+
+	nautilus_gdk_color_parse_with_white_default (color_spec, &color);
+	style->bg[GTK_STATE_NORMAL] = color;
+	style->base[GTK_STATE_NORMAL] = color;
+	style->bg[GTK_STATE_ACTIVE] = color;
+	style->base[GTK_STATE_ACTIVE] = color;
+
+	/* Put the style in the widget. */
+	gtk_widget_set_style (widget, style);
+	gtk_style_unref (style);
+}
+
+void
+nautilus_gtk_widget_set_foreground_color (GtkWidget              *widget,
+					  const char		*color_spec)
+{
+	GtkStyle	*style;
+	GdkColor	color;
+
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+
+	style = gtk_widget_get_style (widget);
+
+	/* Make a copy of the style. */
+	style = gtk_style_copy (style);
+
+	nautilus_gdk_color_parse_with_white_default (color_spec, &color);
+	style->fg[GTK_STATE_NORMAL] = color;
+	style->base[GTK_STATE_NORMAL] = color;
+	style->fg[GTK_STATE_ACTIVE] = color;
+	style->base[GTK_STATE_ACTIVE] = color;
+
+	/* Put the style in the widget. */
+	gtk_widget_set_style (widget, style);
+	gtk_style_unref (style);
+}
+
+GtkWidget *
+nautilus_gtk_widget_find_windowed_ancestor (GtkWidget *widget)
+{
+	g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
+
+	while (widget && GTK_WIDGET_NO_WINDOW (widget)) {
+		widget = widget->parent;
+	}
+
+	return widget;
+}

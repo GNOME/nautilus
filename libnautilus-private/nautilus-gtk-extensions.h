@@ -83,6 +83,12 @@ gboolean          nautilus_point_in_widget                     (GtkWidget       
 								int                     x,
 								int                     y);
 
+void              nautilus_gtk_widget_set_background_color     (GtkWidget              *widget,
+								const char		*color_spec);
+void              nautilus_gtk_widget_set_foreground_color     (GtkWidget              *widget,
+								const char		*color_spec);
+
+GtkWidget * nautilus_gtk_widget_find_windowed_ancestor (GtkWidget *widget);
 /* GtkContainer */
 GtkWidget        *nautilus_gtk_container_get_first_child       (GtkContainer           *container);
 

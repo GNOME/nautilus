@@ -1,5 +1,16 @@
 2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_widget_set_background_color),
+	(nautilus_gtk_widget_set_foreground_color),
+	(nautilus_gtk_widget_find_windowed_ancestor):
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+
+	New function to find a windowed ancestor for a GtkWidget.
+	New functions to change a widget's background and foreground.
+	
+2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-gdk-extensions.c:
 	(nautilus_gdk_font_get_bold), (nautilus_gdk_create_copy_area_gc):
 	* libnautilus-extensions/nautilus-gdk-extensions.h:
