@@ -19,6 +19,10 @@
 	<cmd name="Services"
 	 _tip="Go to Eazel Services"/>
 	<cmd name="Select All" accel="*Control*a" sensitive="0"/>
+        <cmd name="Cut" accel="*Control*x" sensitive="0"/>
+        <cmd name="Copy" accel="*Control*c" sensitive="0"/>
+        <cmd name="Paste" accel="*Control*v" sensitive="0"/>
+        <cmd name="Clear" sensitive="0"/>
 	<cmd name="Up" accel="*Control*u"
 	 _tip="Go to the location that contains this one"/>
 	<cmd name="Zoom In" accel="*Control*="
@@ -88,19 +92,16 @@
 			  _label="Cut _Text" 
 			  _tip="Cut the selected text to the clipboard"
 			  pixtype="stock" pixname="Cut" 
-			  accel="*Control*x"
 			  verb="Cut"/>
 		<menuitem name="Copy" 
 			  _label="_Copy Text" 
 			  _tip="Copy the selected text to the clipboard"
 			  pixtype="stock" pixname="Copy" 
-			  accel="*Control*c"
 			  verb="Copy"/>
 		<menuitem name="Paste" 
 			  _label="_Paste Text" 
 			  _tip="Paste the text stored on the clipboard"
 			  pixtype="stock" pixname="Paste" 
-			  accel="*Control*v"
 			  verb="Paste"/>
 		<menuitem name="Clear"
 			  _label="C_lear Text" 

@@ -81,12 +81,43 @@
 
 #define NAUTILUS_MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER	"/menu/Bookmarks/Built-in Bookmarks Placeholder"
 #define NAUTILUS_MENU_PATH_BOOKMARK_ITEMS_PLACEHOLDER		"/menu/Bookmarks/Bookmarks Placeholder"
+#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_BOOKMARKS   	"/menu/Bookmarks/Separator before Bookmarks"
+
+#define NAUTILUS_MENU_PATH_ABOUT_ITEM				"/menu/Help/About Nautilus"
+#define NAUTILUS_MENU_PATH_NAUTILUS_FEEDBACK			"/menu/Help/Nautilus Feedback"
+
 
 #define SWITCH_TO_BEGINNER_VERB					"Switch to Beginner Level"
 #define SWITCH_TO_INTERMEDIATE_VERB				"Switch to Intermediate Level"
 #define SWITCH_TO_ADVANCED_VERB					"Switch to Advanced Level"
 
 #define NAUTILUS_MENU_PATH_TOGGLE_FIND_MODE			"/menu/File/Toggle Find Mode"
+
+static GtkWindow *bookmarks_window = NULL;
+
+static void                  append_bookmark_to_menu                        (NautilusWindow         *window,
+									     NautilusBookmark *bookmark,
+									     const char             *menu_item_path,
+									     const char 	    *menu_item_name,
+									     gboolean		     is_in_bookmarks_menu);
+static void		     append_dynamic_bookmarks 			    (NautilusWindow *window);
+static NautilusBookmarkList *get_bookmark_list                              (void);
+static void                  refresh_go_menu                   		    (NautilusWindow         *window);
+static void                  refresh_bookmarks_menu            	    	    (NautilusWindow         *window);
+static void		     schedule_refresh_go_menu 		    	    (NautilusWindow 	    *window);
+static void		     schedule_refresh_bookmarks_menu 	    	    (NautilusWindow 	    *window);
+static void                  edit_bookmarks                                 (NautilusWindow         *window);
+
+/* User level things */
+static guint                 convert_verb_to_user_level                    (const char       *verb);
+static const char *          convert_user_level_to_path                    (guint             user_level);
+static char *                get_customize_user_level_settings_menu_string (void);
+static void                  update_user_level_menu_items                  (NautilusWindow   *window);
+static char *                get_customize_user_level_string               (void);
+static void                  switch_to_user_level                          (NautilusWindow   *window,
+									    int               new_user_level);
+static void                  update_preferences_dialog_title               (void);
+
 
 #define NAUTILUS_MENU_PATH_USER_LEVEL				"/menu/Preferences"
 #define NAUTILUS_MENU_PATH_NOVICE_ITEM				"/menu/Preferences/User Levels Placeholder/Switch to Beginner Level"
@@ -102,7 +133,6 @@ typedef struct {
         guint changed_handler_id;
 } BookmarkHolder;
 
-static GtkWindow *bookmarks_window = NULL;
 
 static const char * normal_menu_paths[] = {
 	NAUTILUS_MENU_PATH_FILE_MENU,
@@ -112,29 +142,6 @@ static const char * normal_menu_paths[] = {
 	NAUTILUS_MENU_PATH_BOOKMARKS_MENU,
 	NAUTILUS_MENU_PATH_HELP_MENU
 };
-
-static void                  append_bookmark_to_menu                       (NautilusWindow   *window,
-									    NautilusBookmark *bookmark,
-									    const char       *menu_item_path,
-									    const char       *menu_item_name,
-									    gboolean          is_in_bookmarks_menu);
-static void                  append_dynamic_bookmarks                      (NautilusWindow   *window);
-static NautilusBookmarkList *get_bookmark_list                             (void);
-static void                  refresh_go_menu                               (NautilusWindow   *window);
-static void                  refresh_bookmarks_menu                        (NautilusWindow   *window);
-static void                  schedule_refresh_go_menu                      (NautilusWindow   *window);
-static void                  schedule_refresh_bookmarks_menu               (NautilusWindow   *window);
-static void                  edit_bookmarks                                (NautilusWindow   *window);
-
-/* User level things */
-static guint                 convert_verb_to_user_level                    (const char       *verb);
-static const char *          convert_user_level_to_path                    (guint             user_level);
-static char *                get_customize_user_level_settings_menu_string (void);
-static void                  update_user_level_menu_items                  (NautilusWindow   *window);
-static char *                get_customize_user_level_string               (void);
-static void                  switch_to_user_level                          (NautilusWindow   *window,
-									    int               new_user_level);
-static void                  update_preferences_dialog_title               (void);
 
 static BookmarkHolder *
 bookmark_holder_new (NautilusBookmark *bookmark, 
@@ -170,6 +177,15 @@ bookmark_holder_free (BookmarkHolder *bookmark_holder)
 	gtk_object_unref (GTK_OBJECT (bookmark_holder->bookmark));
 	g_free (bookmark_holder);
 }
+
+/* Private menu definitions; others are in <libnautilus/nautilus-bonobo-ui.h>.
+ * These are not part of the published set, either because they are
+ * development-only or because we expect to change them and
+ * don't want other code relying on their existence.
+ */
+
+#define NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM			"/menu/Edit/Customization"
+#define NAUTILUS_MENU_PATH_CHANGE_APPEARANCE_ITEM		"/menu/Edit/Change_Appearance"
 
 static void
 bookmark_holder_free_cover (gpointer callback_data)
@@ -254,62 +270,6 @@ edit_menu_undo_callback (BonoboUIComponent *component,
 {
 	nautilus_undo_manager_undo
 		(NAUTILUS_WINDOW (user_data)->application->undo_manager);
-}
-
-static void
-edit_menu_cut_callback (BonoboUIComponent *component, 
-			gpointer user_data, 
-			const char *verb) 
-{
-	GtkWindow *window;
-
-	window = GTK_WINDOW (user_data);
-	if (GTK_IS_EDITABLE (window->focus_widget)) {
-		gtk_editable_cut_clipboard (GTK_EDITABLE (window->focus_widget));
-	}
-}
-
-static void
-edit_menu_copy_callback (BonoboUIComponent *component, 
-			 gpointer user_data, 
-			 const char *verb) 
-{
-	GtkWindow *window;
-
-	window = GTK_WINDOW (user_data);
-	if (GTK_IS_EDITABLE (window->focus_widget)) {
-		gtk_editable_copy_clipboard (GTK_EDITABLE (window->focus_widget));
-	}
-}
-
-
-static void
-edit_menu_paste_callback (BonoboUIComponent *component, 
-			  gpointer user_data, 
-			  const char *verb) 
-{
-	GtkWindow *window;
-
-	window = GTK_WINDOW (user_data);
-	if (GTK_IS_EDITABLE (window->focus_widget)) {
-		gtk_editable_paste_clipboard (GTK_EDITABLE (window->focus_widget));
-	}
-
-}
-
-static void
-edit_menu_clear_callback (BonoboUIComponent *component, 
-			  gpointer user_data, 
-			  const char *verb) 
-{
-	GtkWindow *window;
-
-	window = GTK_WINDOW (user_data);
-	if (GTK_IS_EDITABLE (window->focus_widget)) {
-		/* A negative index deletes until the end of the string */
-		gtk_editable_delete_text (GTK_EDITABLE (window->focus_widget),0, -1);
-	}
-
 }
 
 static void
@@ -1234,10 +1194,6 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 		BONOBO_UI_VERB ("Toggle Find Mode With State", file_menu_toggle_find_mode_callback),
 		BONOBO_UI_VERB ("Go to Web Search", file_menu_web_search_callback),
 		BONOBO_UI_VERB ("Undo", edit_menu_undo_callback),
-		BONOBO_UI_VERB ("Cut", edit_menu_cut_callback),
-		BONOBO_UI_VERB ("Copy", edit_menu_copy_callback),
-		BONOBO_UI_VERB ("Paste", edit_menu_paste_callback),
-		BONOBO_UI_VERB ("Clear", edit_menu_clear_callback),
 		BONOBO_UI_VERB ("Customize", customize_callback),
 		BONOBO_UI_VERB ("Change Appearance", change_appearance_callback),
 		BONOBO_UI_VERB ("Back", go_menu_back_callback),
@@ -1360,6 +1316,7 @@ nautilus_window_update_find_menu_item (NautilusWindow *window)
 				   label_string);
 	g_free (label_string);
 }
+
 
 static void
 append_dynamic_bookmarks (NautilusWindow *window)

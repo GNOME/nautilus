@@ -1,3 +1,32 @@
+2000-10-11  Rebecca Schulman  <rebecka@eazel.com>
+	First part of the bug fix for 3514.
+	We still need to add a local clipboard interface,
+	and set up the clipboard to work with the location bar.
+
+	* components/notes/nautilus-notes.c: (make_notes_view):
+	Use the new clipboard api call
+	* libnautilus/nautilus-clipboard-ui.xml:
+	* libnautilus/Makefile.am:
+	Define DATADIR so we can install the new bonobo ui
+	xml file for the clipboard
+	* libnautilus/nautilus-clipboard.c: (cut_callback),
+	(copy_callback), (paste_callback), (clear_callback),
+	(add_menu_items_callback), (remove_menu_items_callback),
+	(ui_component_remove_container_and_unref),
+	(finish_setting_up_editable_from_bonobo_control),
+	(nautilus_clipboard_set_up_editable_from_bonobo_control):
+	Gutted the bonobo code from the old functions and added
+	new code where appropriate that should approximate the functionality
+	we had before the ui handler change
+	
+	* src/nautilus-shell-ui.xml:
+	Declare the cut copy and paste menu items insensitive by default.
+	Maintain cmd/widget separation by creating separate commands for them.
+	
+	* src/nautilus-window-menus.c: (nautilus_window_initialize_menus):
+	Remove unused cut, copy and paste callbacks
+	Removed ui verbs relating to these that we don't need.
+
 2000-10-11  Darin Adler  <darin@eazel.com>
 
 	* HACKING: Fixed typo.

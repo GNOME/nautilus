@@ -9,6 +9,7 @@ INCLUDES=-I$(top_srcdir) -I$(top_builddir) -I. \
 	$(OAF_CFLAGS) \
 	$(VFS_CFLAGS) \
 	$(XML_CFLAGS) \
+	-DDATADIR=\""$(datadir)"\" 		\
 	-D_REENTRANT
 
 libnautilus_la_LDFLAGS=\
@@ -51,7 +52,6 @@ libnautilusinclude_HEADERS=			\
 	nautilus-zoomable.h			\
 	$(NULL)
 
-
 libnautilus_la_SOURCES=					\
 	$(nautilus_view_component_idl_sources)		\
 	$(nautilus_distributed_undo_idl_sources)	\
@@ -80,9 +80,15 @@ CLEANFILES = \
 	$(nautilus_distributed_undo_idl_sources)	\
 	nautilus_distributed_undo_idl_stamp             
 
+uidir = $(datadir)/gnome/ui
+ui_DATA = \
+	nautilus-clipboard-ui.xml	\
+	$(NULL)
+
+
 EXTRA_DIST = \
+	$(ui_DATA)			\
 	nautilus-view-component.idl	\
 	nautilus-distributed-undo.idl	\
 	$(NULL)
-
 

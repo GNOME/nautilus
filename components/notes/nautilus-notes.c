@@ -181,7 +181,6 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
                 (GTK_EDITABLE (notes->note_text_field),
                  nautilus_view_get_bonobo_control (notes->view));
 
-	/* Setup up text field for undo */
 	nautilus_undo_set_up_editable_for_undo (GTK_EDITABLE (notes->note_text_field));
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (notes->note_text_field), TRUE);
 
