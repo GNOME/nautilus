@@ -39,6 +39,7 @@
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-string.h>
 
 /* FIXME bugzilla.eazel.com 4436: 
  * Undo not working in notes-view.
@@ -60,6 +61,7 @@ typedef struct {
         char *uri;
         NautilusFile *file;
         guint save_timeout_id;
+        char* previous_saved_text;
 } Notes;
 
 static void notes_save_metainfo (Notes *notes);
@@ -102,23 +104,22 @@ schedule_save (Notes *notes)
 }
 
 static void
-set_note_text_from_metadata (NautilusFile *file,
-                     Notes *notes)
+load_note_text_from_metadata (NautilusFile *file,
+			      Notes *notes)
 {
         int position;
         char *saved_text;
-        char *current_text;
 
         g_assert (NAUTILUS_IS_FILE (file));
         g_assert (notes->file == file);
 
         saved_text = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_ANNOTATION, "");
-	current_text = gtk_editable_get_chars (GTK_EDITABLE (notes->note_text_field), 0, -1);
 
 	/* This fn is called for any change signal on the file, so make sure that the
 	 * metadata has actually changed.
 	 */
-        if (strcmp (saved_text, current_text) != 0) {
+        if (nautilus_strcmp (saved_text, notes->previous_saved_text) != 0) {
+        	notes->previous_saved_text = saved_text;
         	cancel_pending_save (notes);
         	
 	        gtk_editable_delete_text (GTK_EDITABLE (notes->note_text_field), 0, -1);
@@ -128,11 +129,10 @@ set_note_text_from_metadata (NautilusFile *file,
 	                                  saved_text,
 	                                  strlen (saved_text),
 	                                  &position);
+	} else {
+		g_free (saved_text);
 	}
 	
-	g_free (saved_text);
-	g_free (current_text);
-
 /* FIXME bugzilla.eazel.com 4436: 
  * Undo not working in notes-view.
  */
@@ -145,11 +145,13 @@ static void
 done_with_file (Notes *notes)
 {
 	cancel_pending_save (notes);
-
+	g_free (notes->previous_saved_text);
+	notes->previous_saved_text = NULL;
+	
 	if (notes->file != NULL) {
 		nautilus_file_monitor_remove (notes->file, notes);
 		gtk_signal_disconnect_by_func (GTK_OBJECT (notes->file),
-					       GTK_SIGNAL_FUNC (set_note_text_from_metadata),
+					       GTK_SIGNAL_FUNC (load_note_text_from_metadata),
 					       notes);
 	        nautilus_file_unref (notes->file);
         }
@@ -173,14 +175,14 @@ notes_load_metainfo (Notes *notes)
         nautilus_file_monitor_add (notes->file, notes, attributes);
 
 	if (nautilus_file_check_if_ready (notes->file, attributes)) {
-		set_note_text_from_metadata (notes->file, notes);
+		load_note_text_from_metadata (notes->file, notes);
 	}
 	
         g_list_free (attributes);
         
 	gtk_signal_connect (GTK_OBJECT (notes->file),
 			    "changed",
-			    GTK_SIGNAL_FUNC (set_note_text_from_metadata),
+			    GTK_SIGNAL_FUNC (load_note_text_from_metadata),
 			    notes);
 }
 
@@ -200,7 +202,7 @@ notes_save_metainfo (Notes *notes)
         /* Block the handler, so we don't respond to our own change.
          */
         gtk_signal_handler_block_by_func (GTK_OBJECT (notes->file),
-                                          set_note_text_from_metadata,
+                                          load_note_text_from_metadata,
                                           notes);
                                           
         notes_text = gtk_editable_get_chars (GTK_EDITABLE (notes->note_text_field), 0 , -1);
@@ -208,7 +210,7 @@ notes_save_metainfo (Notes *notes)
         g_free (notes_text);
         
         gtk_signal_handler_unblock_by_func (GTK_OBJECT (notes->file),
-                                            set_note_text_from_metadata,
+                                            load_note_text_from_metadata,
                                             notes);
 }
 

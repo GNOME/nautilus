@@ -1,3 +1,11 @@
+2001-03-30  Michael Engber  <engber@eazel.com>
+
+	* components/notes/nautilus-notes.c:
+	(load_note_text_from_metadata), (done_with_file),
+	(notes_load_metainfo), (notes_save_metainfo):
+	Ensure notes have actually changed, by comparing to a
+	copy of the old value, before responding to change signals.
+
 2001-03-30  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	reviewed by: the toad that lives under my table
