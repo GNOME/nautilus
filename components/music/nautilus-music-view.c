@@ -5,7 +5,7 @@
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation; either version 2 of the
+ *  by the Free Software Foundation; either version 2 of the
  *  License, or (at your option) any later version.
  *
  *  This library is distributed in the hope that it will be useful,
@@ -26,11 +26,14 @@
 #include <config.h>
 #include "nautilus-music-view.h"
 
+#include "esd-audio.h"
 #include "mp3head.h"
-#include "mpg123_handler.h"
+#include "mpg123.h"
 #include "pixmaps.h"
+
 #include <ctype.h>
 #include <esd.h>
+#include <fcntl.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gnome.h>
 #include <gtk/gtksignal.h>
@@ -58,7 +61,16 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus/libnautilus.h>
 #include <limits.h>
+#include <sys/stat.h>
 #include <sys/types.h>
+
+
+typedef enum {
+	PLAYER_STOPPED,
+	PLAYER_PAUSED,
+	PLAYER_PLAYING,
+	PLAYER_NEXT
+} PlayerState;
 
 struct _NautilusMusicViewDetails {
         NautilusFile *file;
@@ -68,11 +80,9 @@ struct _NautilusMusicViewDetails {
 	int selected_index;
 	int status_timeout;
 	
-	int current_file_size;
-	int current_bitrate;
-	int last_play_status;
 	int current_samprate;
-	
+	int current_duration;
+		
 	gboolean slider_dragging;
 	gboolean sound_enabled;
 	
@@ -97,6 +107,9 @@ struct _NautilusMusicViewDetails {
 	GtkWidget *active_play_pixwidget;
 	GtkWidget *inactive_pause_pixwidget;
 	GtkWidget *active_pause_pixwidget;
+
+	PlayerState player_state;
+	PlayerState last_player_state;
 };
 
 
@@ -183,6 +196,12 @@ static void go_to_next_track                                  (NautilusMusicView
 static void play_current_file                                 (NautilusMusicView      *music_view,
                                                                gboolean                from_start);
 static void detach_file                                       (NautilusMusicView      *music_view);
+static void start_playing_file 				      (NautilusMusicView      *music_view, 
+							       const char 	      *file_name);
+static void stop_playing_file 				      (NautilusMusicView      *music_view);
+static PlayerState get_player_state 			      (NautilusMusicView      *music_view);
+static void set_player_state 				      (NautilusMusicView      *music_view, 
+							       PlayerState 	      state);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMusicView,
                                    nautilus_music_view,
@@ -227,16 +246,14 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 
 	music_view->details->sound_enabled = nautilus_sound_can_play_sound ();
 	
-	/* allocate a vbox to contain all of the views */
-	
+	/* allocate a vbox to contain all of the views */	
 	music_view->details->album_container = GTK_VBOX (gtk_vbox_new (FALSE, 8));
 	gtk_container_set_border_width (GTK_CONTAINER (music_view->details->album_container), 4);
 	gtk_container_add (GTK_CONTAINER (music_view), GTK_WIDGET (music_view->details->album_container));
 	
 	gtk_widget_show (GTK_WIDGET (music_view->details->album_container));
 	
-	/* allocate a widget for the album title */
-	
+	/* allocate a widget for the album title */	
 	music_view->details->album_title = nautilus_label_new ("");
         /* FIXME: Hardcoded font and size! */
 	nautilus_label_set_font_from_components (NAUTILUS_LABEL (music_view->details->album_title),
@@ -247,7 +264,6 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	gtk_widget_show (music_view->details->album_title);
 	
 	/* allocate a list widget to hold the song list */
-
 	music_view->details->song_list = gtk_clist_new_with_titles (10, titles);
 		
 	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 0, 36);		/* track number */
@@ -311,13 +327,16 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	gtk_widget_show (label);
 	gtk_container_add (GTK_CONTAINER(button), label);
 	gtk_box_pack_end (GTK_BOX(music_view->details->control_box), music_view->details->image_box, FALSE, FALSE, 4);  
- 	gtk_signal_connect (GTK_OBJECT (button), "clicked",
-                            image_button_callback, music_view);
+ 	gtk_signal_connect (GTK_OBJECT (button), "clicked", image_button_callback, music_view);
  	
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (music_view),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
 			   music_dnd_target_table, NAUTILUS_N_ELEMENTS (music_dnd_target_table), GDK_ACTION_COPY);
+
+
+	music_view->details->player_state = PLAYER_STOPPED;
+	music_view->details->last_player_state = PLAYER_STOPPED;
 
 	/* finally, show the view itself */	
 	gtk_widget_show (GTK_WIDGET (music_view));
@@ -332,7 +351,7 @@ nautilus_music_view_destroy (GtkObject *object)
 
 	/* we'd rather allow the song to keep playing, but it's hard to maintain state */
 	/* so we stop things on exit for now, and improve it post 1.0 */
-	stop_playing_file();
+	stop_playing_file (music_view);
 
         detach_file (music_view);
 	g_free (music_view->details);
@@ -397,18 +416,18 @@ selection_callback (GtkCList * clist, int row, int column, GdkEventButton * even
 {
 	gboolean is_playing;
 	char *song_name;
-	int play_mode;
 	
-	play_mode = get_play_status();
-	is_playing = (play_mode == STATUS_PLAY) || (play_mode == STATUS_PAUSE);
-	
+	is_playing = get_player_state (music_view) == PLAYER_PLAYING;
+
+	/* Exit if we are playing and clicked on the row that represents the playing song */
 	if (is_playing && (music_view->details->selected_index == row)) {
 		return;
         }
-		
+
 	if (is_playing) {
-		stop_playing_file();
+		stop_playing_file (music_view);
         }
+        
         song_name = gtk_clist_get_row_data (clist, row);
 	if (song_name == NULL) {
 		return;
@@ -421,7 +440,6 @@ selection_callback (GtkCList * clist, int row, int column, GdkEventButton * even
 } 
 
 /* handle clicks in the songlist columns */
-
 static void
 click_column_callback (GtkCList * clist, int column, NautilusMusicView *music_view)
 {
@@ -547,7 +565,6 @@ nautilus_music_view_get_nautilus_view (NautilusMusicView *music_view)
 /* here are some utility routines for reading ID3 tags from mp3 files */
 
 /* initialize a songinfo structure */
-
 static void
 initialize_song_info (SongInfo *info)
 {
@@ -692,7 +709,6 @@ extract_number(const char *name_str)
 }
 
 /* allocate a return a song info record, from an mp3 tag if present, or from intrinsic info */
-
 static SongInfo *
 fetch_song_info (const char *song_uri, GnomeVFSFileInfo *file_info, int file_order) 
 {
@@ -893,11 +909,10 @@ sort_song_list(NautilusMusicView *music_view, GList* song_list)
 }
 
 /* update the status feedback of the play controls */
-
 static void
-update_play_controls_status (NautilusMusicView *music_view, int new_status)
+update_play_controls_status (NautilusMusicView *music_view, PlayerState state)
 {
-	if (new_status == STATUS_PLAY) {
+	if (state == PLAYER_PLAYING) {
 		gtk_widget_show(music_view->details->active_play_pixwidget);
 		gtk_widget_hide(music_view->details->inactive_play_pixwidget);
 	} else {
@@ -905,14 +920,13 @@ update_play_controls_status (NautilusMusicView *music_view, int new_status)
 		gtk_widget_show(music_view->details->inactive_play_pixwidget);
 	}
 
-	if (new_status == STATUS_PAUSE) {
+	if (state == PLAYER_PAUSED) {
 		gtk_widget_show(music_view->details->active_pause_pixwidget);
 		gtk_widget_hide(music_view->details->inactive_pause_pixwidget);
 	} else {
 		gtk_widget_hide(music_view->details->active_pause_pixwidget);
 		gtk_widget_show(music_view->details->inactive_pause_pixwidget);
 	}
-
 }
 
 /* utility to reset the playtime to the inactive state */
@@ -935,45 +949,42 @@ play_status_display (NautilusMusicView *music_view)
 	int minutes, seconds;
 	float percentage;
 	char play_time_str[256];
-	int frameNo, status;
+	int current_time;
 	gboolean is_playing;
 	int samps_per_frame;
-	gfloat avgframesize;
+	PlayerState status;
 	
-	status = get_play_status();
-	is_playing = (status == STATUS_PLAY) || (status == STATUS_PAUSE);
+	status = get_player_state (music_view);
+	is_playing = (status == PLAYER_PLAYING) || (status == PLAYER_PAUSED);
 	
-	if (status == STATUS_NEXT) {
-		stop_playing_file();
-		go_to_next_track(music_view);
+	if (status == PLAYER_NEXT) {
+		stop_playing_file (music_view);
+		go_to_next_track (music_view);
 		music_view->details->status_timeout = 0;
 		return FALSE;
 	}
 	
-	if (music_view->details->last_play_status != status) {
-		music_view->details->last_play_status = status;
-		update_play_controls_status(music_view, status);
+	if (music_view->details->last_player_state != status) {
+		music_view->details->last_player_state = status;
+		update_play_controls_status (music_view, status);
 	}
 	
 	if (is_playing) {			
-		if (!music_view->details->slider_dragging) {
-			frameNo = get_current_frame();	
+		if (!music_view->details->slider_dragging) {									
 			samps_per_frame = (music_view->details->current_samprate >= 32000) ? 1152 : 576;
                         
-  			if (music_view->details->current_samprate != 0 && music_view->details->current_bitrate != 0 
-							       && music_view->details->current_file_size != 0) {
-
-                     		seconds = frameNo * samps_per_frame / music_view->details->current_samprate;	
+  			if (music_view->details->current_duration != 0) {
+				current_time = esdout_get_output_time ();
+                     		seconds = current_time / 1000;
 				minutes = seconds / 60;
 				seconds = seconds % 60;
 				sprintf(play_time_str, "%02d:%02d", minutes, seconds);
-			
- 				avgframesize = (gfloat)samps_per_frame * music_view->details->current_bitrate * 125 / music_view->details->current_samprate;
-				percentage = (gfloat) frameNo * avgframesize / music_view->details->current_file_size * 100;
-				gtk_adjustment_set_value (GTK_ADJUSTMENT (music_view->details->playtime_adjustment),
-                                                  percentage);
- 				gtk_range_set_adjustment (GTK_RANGE (music_view->details->playtime_bar),
-                                                  GTK_ADJUSTMENT(music_view->details->playtime_adjustment));	
+				
+				percentage = (float) ((float)current_time / (float)music_view->details->current_duration) * 100.0;
+				
+				gtk_adjustment_set_value (GTK_ADJUSTMENT (music_view->details->playtime_adjustment), percentage);
+				gtk_range_set_adjustment (GTK_RANGE (music_view->details->playtime_bar),
+                                			  GTK_ADJUSTMENT(music_view->details->playtime_adjustment));	
 
 				if (!music_view->details->slider_dragging) {
 		 			nautilus_label_set_text (NAUTILUS_LABEL(music_view->details->playtime), play_time_str);	
@@ -994,20 +1005,20 @@ play_status_display (NautilusMusicView *music_view)
 	return is_playing;
 }
 
+
 /* track incrementing routines */
 static void
 play_current_file (NautilusMusicView *music_view, gboolean from_start)
 {
-	int play_mode;
-	char *song_filename, *temp_str, *song_uri;
+	char *song_filename, *song_uri, *title;
         GnomeVFSResult result;
         GnomeVFSFileInfo file_info;
+	int length;
 
 	if (!music_view->details->sound_enabled) {
 		return;	
 	}
        
-	play_mode = get_play_status();
 	gtk_clist_select_row (GTK_CLIST(music_view->details->song_list), music_view->details->selected_index, 0);
 	
 	song_uri = gtk_clist_get_row_data (GTK_CLIST (music_view->details->song_list),
@@ -1026,13 +1037,10 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
                 return;
 	}
 	
-	/* set up the current bitrate and file size so we can give progress feedback */        
-        gtk_clist_get_text (GTK_CLIST(music_view->details->song_list),
-                            music_view->details->selected_index, 4, &temp_str);
-	music_view->details->current_bitrate = atoi (temp_str);
-        gtk_clist_get_text (GTK_CLIST(music_view->details->song_list),
-                            music_view->details->selected_index, 9, &temp_str);
-	music_view->details->current_samprate = atoi (temp_str);
+	/* set up the current duration so we can give progress feedback */        
+	get_song_info (song_filename, &title, &length);
+	music_view->details->current_duration = length;
+	g_free (title);
 	
         result = gnome_vfs_get_file_info (song_uri, &file_info, GNOME_VFS_FILE_INFO_DEFAULT);
 	if (result != GNOME_VFS_OK) {
@@ -1044,21 +1052,15 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 		return;
 	}
 
- 	music_view->details->current_file_size =
-                (result == GNOME_VFS_OK
-                 && (file_info.valid_fields & GNOME_VFS_FILE_INFO_FIELDS_SIZE) != 0)
-                ? file_info.size
-                : 0;
-
 	gtk_widget_set_sensitive (music_view->details->playtime_bar, TRUE);
 	
 	if (music_view->details->status_timeout != 0) {
 		gtk_timeout_remove (music_view->details->status_timeout);
         }
-	music_view->details->status_timeout = gtk_timeout_add
-                (900, (GtkFunction) play_status_display, music_view);
+        
+	music_view->details->status_timeout = gtk_timeout_add (900, (GtkFunction) play_status_display, music_view);
 
- 	start_playing_file (song_filename, from_start || (play_mode != STATUS_PAUSE));
+	start_playing_file (music_view, song_filename);
 
 	g_free (song_filename);
 }
@@ -1066,13 +1068,7 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 static void
 stop_if_playing (NautilusMusicView *music_view)
 {
-	int play_mode;
-	
-	play_mode = get_play_status();
-	
-	if (play_mode == STATUS_PLAY || play_mode == STATUS_PAUSE) {
-		stop_playing_file();
-        }
+	mpg123_stop ();
 }
 
 static void
@@ -1083,24 +1079,24 @@ go_to_next_track (NautilusMusicView *music_view)
 		music_view->details->selected_index += 1;
 		play_current_file (music_view, TRUE);
 	} else {  
-		update_play_controls_status (music_view, STATUS_STOP);
+		update_play_controls_status (music_view, get_player_state (music_view));
 		reset_playtime (music_view);
-		stop_playing_file ();
+		stop_playing_file (music_view);
 	}
 }
 
 static void
 go_to_previous_track (NautilusMusicView *music_view)
 {
-	int frame;
+	//int frame;
 	
 	stop_if_playing (music_view);		
-	frame = get_current_frame ();
+	//frame = get_current_frame (music_view);
 	
 	/* if we're in the first 3 seconds of the song, go to the previous one, otherwise go to the beginning of this track */	
-	if ((frame < 3*72) && (music_view->details->selected_index > 0)) {
-		music_view->details->selected_index -= 1;
-        }
+	//if ((frame < 3*72) && (music_view->details->selected_index > 0)) {
+	//	music_view->details->selected_index -= 1;
+       // }
 	play_current_file (music_view, TRUE);
 }
 
@@ -1112,27 +1108,20 @@ go_to_previous_track (NautilusMusicView *music_view)
 static void
 play_button_callback (GtkWidget *widget, NautilusMusicView *music_view)
 {
-	int play_mode;
-
-	/* Exit if we are aready playing */
-	play_mode = get_play_status();
-	if (play_mode == STATUS_PLAY) {
-		return;
-	}
-	
 	play_current_file (music_view, FALSE);
 }
 
 static void
 stop_button_callback (GtkWidget *widget, NautilusMusicView *music_view)
 {
-	stop_playing_file ();
+	stop_playing_file (music_view);
 }
 
 static void
 pause_button_callback (GtkWidget *widget, NautilusMusicView *music_view)
 {
-	pause_playing_file ();
+	set_player_state (music_view, PLAYER_PAUSED);
+	mpg123_pause ();
 }
 
 static void
@@ -1152,7 +1141,6 @@ next_button_callback (GtkWidget *widget, NautilusMusicView *music_view)
    "mouse up" actually moves the frame index.  */
 
 /* handle slider button press */
-
 static int
 slider_press_callback (GtkWidget *bar, GdkEvent *event, NautilusMusicView *music_view)
 {
@@ -1161,33 +1149,32 @@ slider_press_callback (GtkWidget *bar, GdkEvent *event, NautilusMusicView *music
 }
 
 /* handle mouse motion by updating the time, but not actually seeking until the user lets go */
-
 static int
 slider_moved_callback (GtkWidget *bar, GdkEvent *event, NautilusMusicView *music_view)
-{
-	char temp_str[256];
-	int nframe, seconds, minutes;
+{	
 	GtkAdjustment *adjustment;
-	int samps_per_frame;
-	gfloat avgframesize;
+	char temp_str[256];
+	int time, seconds, minutes;
+	float multiplier;
 		
 	if (music_view->details->slider_dragging) {
 		adjustment = gtk_range_get_adjustment (GTK_RANGE (bar));
 		
 		/* don't attempt this if any of the values are zero */	
-		if (music_view->details->current_samprate == 0 || music_view->details->current_bitrate == 0 
-							       || music_view->details->current_file_size == 0) {
+		if (music_view->details->current_duration == 0) {
 			return FALSE;
 		}
+
+		multiplier = adjustment->value / 100.0;
+		time = (int) (multiplier * (float)music_view->details->current_duration);
 		
-		samps_per_frame = (music_view->details->current_samprate >= 32000) ? 1152 : 576;
-		avgframesize = (gfloat)samps_per_frame * music_view->details->current_bitrate * 125 / music_view->details->current_samprate;
-		nframe = adjustment->value / (avgframesize / music_view->details->current_file_size * 100.0);	
-		seconds = nframe * samps_per_frame / music_view->details->current_samprate; 
+		seconds = time / 1000; 
 		minutes = seconds / 60;
 		seconds = seconds % 60;
 		sprintf(temp_str, "%02d:%02d", minutes, seconds);
+
 		nautilus_label_set_text (NAUTILUS_LABEL(music_view->details->playtime), temp_str);
+		
                 /* FIXME: Hardcoded font size. */
 		nautilus_label_set_font_size (NAUTILUS_LABEL (music_view->details->playtime), 14);
 	}
@@ -1198,37 +1185,30 @@ slider_moved_callback (GtkWidget *bar, GdkEvent *event, NautilusMusicView *music
 static int
 slider_release_callback (GtkWidget *bar, GdkEvent *event, NautilusMusicView *music_view)
 {
-	int play_status, nframe;
 	GtkAdjustment *adjustment;
-	int samps_per_frame;
-	gfloat avgframesize;
+	float multiplier;
+	int time;
 	
-	play_status = get_play_status();
 	if (music_view->details->slider_dragging) {
 		adjustment = gtk_range_get_adjustment (GTK_RANGE (bar));
 		
-		if (music_view->details->current_samprate == 0 || music_view->details->current_bitrate == 0 
-							       || music_view->details->current_file_size == 0) {
+		if (music_view->details->current_duration == 0) {
 			music_view->details->slider_dragging = FALSE;
-			return FALSE;
+			return FALSE;		
 		}
 
-		samps_per_frame = (music_view->details->current_samprate >= 32000) ? 1152 : 576;
-		avgframesize = (gfloat)samps_per_frame * music_view->details->current_bitrate * 125 / music_view->details->current_samprate;
-		nframe = adjustment->value / (avgframesize / music_view->details->current_file_size * 100.0);	
-		if ((play_status == STATUS_PLAY) || (play_status == STATUS_PAUSE)) {
-			pause_playing_file ();
-			set_current_frame (nframe);
-			play_current_file (music_view, FALSE);
-		}
+		/* Seek to time */
+		multiplier = adjustment->value / 100.0;
+		time = (int) (multiplier * (float)music_view->details->current_duration);
+
+		mpg123_seek (time / 1000);
 	}
 	music_view->details->slider_dragging = FALSE;
-
+	
         return FALSE;
 }
 
 /* create a button with an xpm label */
-
 static GtkWidget *
 xpm_label_box (NautilusMusicView *music_view, char * xpm_data[])
 {
@@ -1331,7 +1311,6 @@ add_play_controls (NautilusMusicView *music_view)
 	music_view->details->play_control_box = vbox;
 	
 	/* playtime label */
-
 	hbox2 = gtk_hbox_new (0, 0);
 	gtk_table_attach (GTK_TABLE (table), hbox2, 0, 6, 0, 1, 0, 0, 0, 0);
 	gtk_widget_show (hbox2);
@@ -1345,7 +1324,6 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_box_pack_start (GTK_BOX (hbox2), music_view->details->playtime, FALSE, FALSE, 0);
 	
 	/* progress bar */
-
 	music_view->details->playtime_adjustment = gtk_adjustment_new (0, 0, 101, 1, 5, 1);
 	music_view->details->playtime_bar = gtk_hscale_new (GTK_ADJUSTMENT (music_view->details->playtime_adjustment));
 	
@@ -1364,7 +1342,6 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_box_pack_start (GTK_BOX (hbox2), music_view->details->playtime_bar, FALSE, FALSE, 4);	
 	
 	/* total label */
-
 	music_view->details->total_track_time = nautilus_label_new ("--:--");
 	nautilus_label_set_text_justification (NAUTILUS_LABEL (music_view->details->total_track_time), GTK_JUSTIFY_LEFT);
 	
@@ -1584,9 +1561,7 @@ nautilus_music_view_update (NautilusMusicView *music_view)
                         song_list = g_list_append (song_list, info);
 		} else {
 		        /* it's not an mp3 file, so see if it's an image */
-        		const char *mime_type = gnome_vfs_file_info_get_mime_type
-                                (current_file_info);
-		        	
+        		const char *mime_type = gnome_vfs_file_info_get_mime_type (current_file_info);		        	
 		        if (nautilus_istr_has_prefix (mime_type, "image/")) {
 		        	/* for now, just keep the first image */
 		        	if (image_path_uri == NULL) {
@@ -1678,16 +1653,14 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 		} else {
 			temp_str = g_strdup (album_name);
                 }
-		nautilus_label_set_text (NAUTILUS_LABEL (music_view->details->album_title),
-                                         temp_str);
+		nautilus_label_set_text (NAUTILUS_LABEL (music_view->details->album_title), temp_str);
 		
 		g_free (temp_str);
 		g_free (album_name);
 	}
 
 
-	/* allocate the play controls if necessary */
-	
+	/* allocate the play controls if necessary */	
 	if (music_view->details->play_control_box == NULL)
 		add_play_controls(music_view);
 	
@@ -1796,4 +1769,35 @@ nautilus_music_view_drag_data_received (GtkWidget *widget, GdkDragContext *conte
         }
 	
 	g_strfreev (uris);
+}
+
+static void
+start_playing_file (NautilusMusicView *music_view, const char *file_name)
+{
+	mpg123_play_file (file_name);
+	set_player_state (music_view, PLAYER_PLAYING);
+}
+
+static void
+stop_playing_file (NautilusMusicView *music_view)
+{
+	mpg123_stop ();
+	set_player_state (music_view, PLAYER_STOPPED);
+}
+
+static PlayerState
+get_player_state (NautilusMusicView *music_view)
+{
+	if (music_view->details->player_state == PLAYER_PLAYING && esdout_playing ()
+	    && (esdout_get_output_time () + 500) >= music_view->details->current_duration) {
+		music_view->details->player_state = PLAYER_NEXT;
+	}
+
+	return music_view->details->player_state;
+}
+
+static void
+set_player_state (NautilusMusicView *music_view, PlayerState state)
+{
+	music_view->details->player_state = state;
 }

@@ -1,3 +1,121 @@
+2000-12-06  Gene Z. Ragan  <gzr@eazel.com>
+
+	Changes in the music view to use a threaded file reader
+	and threaded audio output mechanism.  Modified the xmms
+	engine to be used as the mp3 engine that the view uses.
+	Removed the use of stored proc IDs as the mechanism to 
+	determine if the view is currently in the process of
+	playing a file.
+	
+	* components/music/Makefile.am:
+	* components/music/common.c: (fullread), (stream_init),
+	(stream_rewind), (mpg123_stream_close), (stream_head_read),
+	(stream_head_shift), (stream_mpg123_read_frame_body),
+	(stream_back_bytes), (mpg123_stream_jump_to_frame),
+	(mpg123_stream_jump_to_byte),
+	(mpg123_stream_check_for_xing_header), (stream_init),
+	(mpg123_stream_close), (stream_head_read), (stream_head_shift),
+	(stream_mpg123_read_frame_body), (mpg123_stream_jump_to_frame),
+	(mpg123_stream_jump_to_byte),
+	(mpg123_stream_check_for_xing_header), (get_fileinfo),
+	(mpg123_read_frame_init), (read_id3v2_tag), (mpg123_head_check),
+	(mpg123_read_frame), (mpg123_decode_header), (mpg123_open_stream),
+	(mpg123_set_pointer), (mpg123_compute_bpf),
+	(mpg123_calc_numframes):
+	* components/music/configure.c: (mpg123_configurewin_ok),
+	(auto_select_cb), (use_3dnow_cb), (use_fpu_cb), (proxy_use_cb),
+	(proxy_auth_use_cb), (streaming_save_dirbrowser_cb),
+	(streaming_save_browse_cb), (streaming_save_use_cb),
+	(title_id3_use_cb), (configure_destroy), (mpg123_configure):
+	* components/music/dct64.c: (mpg123_dct64):
+	* components/music/dct64_i386.c: (mpg123_dct64_1), (mpg123_dct64):
+	* components/music/decode_2to1.c: (mpg123_synth_2to1_8bit),
+	(mpg123_synth_2to1_8bit_mono),
+	(mpg123_synth_2to1_8bit_mono2stereo), (mpg123_synth_2to1_mono),
+	(mpg123_synth_2to1_mono2stereo), (mpg123_synth_2to1):
+	* components/music/decode_4to1.c: (mpg123_synth_4to1_8bit),
+	(mpg123_synth_4to1_8bit_mono),
+	(mpg123_synth_4to1_8bit_mono2stereo), (mpg123_synth_4to1_mono),
+	(mpg123_synth_4to1_mono2stereo), (mpg123_synth_4to1):
+	* components/music/decode_i386.c: (mpg123_synth_1to1_8bit),
+	(mpg123_synth_1to1_8bit_mono),
+	(mpg123_synth_1to1_8bit_mono2stereo), (mpg123_synth_1to1_mono),
+	(mpg123_synth_1to1_mono2stereo), (mpg123_synth_1to1):
+	* components/music/decode_ntom.c: (mpg123_synth_ntom_set_step),
+	(mpg123_synth_ntom_8bit), (mpg123_synth_ntom_8bit_mono),
+	(mpg123_synth_ntom_8bit_mono2stereo), (mpg123_synth_ntom_mono),
+	(mpg123_synth_ntom_mono2stereo), (mpg123_synth_ntom):
+	* components/music/dxhead.c: (ExtractI4), (mpg123_get_xing_header),
+	(mpg123_seek_point):
+	* components/music/dxhead.h:
+	* components/music/esd-audio.c: (esdout_init), (get_latency),
+	(esd_stou8), (esd_utos16sw), (esd_utos16), (esd_16sw),
+	(esdout_setup_format), (esdout_get_written_time),
+	(esdout_get_output_time), (esdout_used), (esdout_playing),
+	(esdout_free), (esdout_write_audio), (esdout_write),
+	(esdout_close), (esdout_flush), (esdout_pause), (esdout_loop),
+	(esdout_set_audio_params), (esdout_open):
+	* components/music/esd-audio.h:
+	* components/music/esd-mixer.c: (esdout_get_volume),
+	(esdout_set_volume):
+	* components/music/fileinfo.c: (set_entry_tag), (get_entry_tag),
+	(find_genre_id), (genre_comp_func), (save_cb), (label_set_text),
+	(remove_id3_cb), (set_mpeg_level_label), (channel_mode_name),
+	(file_info_http), (mpg123_file_info_box):
+	* components/music/getbits.c: (check_buffer_range),
+	(mpg123_backbits), (mpg123_getbitoffset), (mpg123_getbyte),
+	(mpg123_getbits), (mpg123_getbits_fast), (mpg123_get1bit):
+	* components/music/getbits.h:
+	* components/music/huffman.h:
+	* components/music/id3.c: (id3_seek_mem), (id3_read_mem),
+	(id3_seek_fd), (id3_read_fd), (id3_seek_fp), (id3_read_fp),
+	(id3_open_mem), (id3_open_fd), (id3_open_fp), (id3_close),
+	(id3_tell), (id3_alter_file), (safe_write), (id3_write_tag):
+	* components/music/id3.h:
+	* components/music/id3_frame.c: (id3_read_frame), (id3_get_frame),
+	(id3_decompress_frame), (id3_delete_frame), (id3_add_frame):
+	* components/music/id3_frame_content.c: (id3_get_content):
+	* components/music/id3_frame_text.c: (id3_get_encoding),
+	(id3_set_encoding), (id3_get_text), (id3_get_text_desc),
+	(id3_get_text_number), (id3_set_text), (id3_set_text_number):
+	* components/music/id3_frame_url.c: (id3_get_url),
+	(id3_get_url_desc):
+	* components/music/id3_header.h:
+	* components/music/id3_tag.c: (id3_init_tag), (id3_read_tag):
+	* components/music/l2tables.h:
+	* components/music/layer1.c: (I_step_one), (I_step_two),
+	(mpg123_do_layer1):
+	* components/music/layer2.c: (mpg123_init_layer2), (II_step_one),
+	(II_step_two), (II_select_table), (mpg123_do_layer2):
+	* components/music/layer3.c: (mpg123_init_layer3),
+	(III_get_side_info), (III_get_scale_factors_1),
+	(III_get_scale_factors_2), (III_dequantize_sample), (III_i_stereo),
+	(III_antialias), (dct36), (dct12), (III_hybrid),
+	(mpg123_do_layer3):
+	* components/music/mpg123.c: (mpg123_compute_tpf),
+	(set_mpg123_synth_functions), (mpg123_init), (convert_to_header),
+	(play_frame), (get_id3_genre), (mpg123_strip_spaces), (extname),
+	(eval_id3_format), (mpg123_id3v1_to_id3v2),
+	(mpg123_format_song_title), (mpg123_get_id3v2), (get_song_title),
+	(get_song_time), (get_song_info), (decode_loop),
+	(mpg123_play_file), (mpg123_stop), (mpg123_seek), (mpg123_pause),
+	(get_time):
+	* components/music/mpg123.h:
+	* components/music/mpg123_handler.c:
+	* components/music/mpg123_handler.h:
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (nautilus_music_view_destroy),
+	(selection_callback), (update_play_controls_status),
+	(play_status_display), (play_current_file), (stop_if_playing),
+	(go_to_next_track), (go_to_previous_track), (play_button_callback),
+	(stop_button_callback), (pause_button_callback),
+	(slider_moved_callback), (slider_release_callback),
+	(add_play_controls), (nautilus_music_view_update),
+	(nautilus_music_view_drag_data_received), (start_playing_file),
+	(stop_playing_file), (get_player_state), (set_player_state):
+	* components/music/tabinit.c: (mpg123_make_decode_tables),
+	(mpg123_make_conv16to8_table):
+
 2000-12-06  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

@@ -21,13 +21,29 @@ bin_PROGRAMS =					\
 
 nautilus_music_view_SOURCES =		        \
 	mp3head.c				\
-	mp3head.h				\
-	mpg123_handler.c			\
-	mpg123_handler.h			\
 	nautilus-music-view.c			\
 	nautilus-music-view.h			\
 	main.c					\
-	pixmaps.h
+	tabinit.c				\
+	dct64_i386.c   				\
+	decode_2to1.c				\
+	decode_4to1.c  				\
+	decode_i386.c  				\
+	decode_ntom.c  				\
+	layer1.c				\
+	layer2.c				\
+	layer3.c				\
+	dxhead.c       				\
+	mpg123.c				\
+	common.c       				\
+	id3.c		   			\
+	id3_frame.c	   			\
+	id3_frame_content.c  			\
+	id3_frame_text.c			\
+	id3_frame_url.c	   			\
+	id3_tag.c				\
+	esd-audio.c				\
+	esd-mixer.c
 
 nautilus_music_view_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
@@ -39,12 +55,3 @@ nautilus_music_view_LDADD =			\
 	$(GNORBA_LIBS)
 
 EXTRA_DIST = $(oaf_DATA)
-
-install-exec-hook:
-	MPG123_PATH=`which mpg123`; \
-	if test -x /usr/bin/mpg123; then \
-	ln -sf /usr/bin/mpg123 $(DESTDIR)/$(bindir)/nautilus-mpg123; \
-	elif test "x$${MPG123_PATH}" != "x"; then \
-	ln -sf "$${MPG123_PATH}" $(DESTDIR)/$(bindir)/nautilus-mpg123; \
-	fi
-
