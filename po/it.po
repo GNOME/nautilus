@@ -1,15 +1,16 @@
 # Italian translation for Nautilus.
-# Copyright (C) 2001 Free Software Foundation, Inc.
+# Copyright (C) 2000-2002 Free Software Foundation, Inc.
 # Christopher R. Gabriel <cgabriel@pluto.linux.it>, 2000.
-# Pier Luigi Fiorini <plfiorini@libero.it>, 2001.
+# Pier Luigi Fiorini <plfiorini@libero.it>, 2001-2002.
+# Pier Luigi Fiorini <plfiorini@libero.it>, 2002.
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 1.0.4.1\n"
-"POT-Creation-Date: 2002-05-20 09:29-0400\n"
-"PO-Revision-Date: 2001-07-09 22:20+0200\n"
-"Last-Translator: Pier Luigi Fiorini <plfiorini@libero.it>\n"
-"Language-Team: Italian <it@li.org>\n"
+"Project-Id-Version: nautilus 1.1.15\n"
+"POT-Creation-Date: 2002-05-13 19:10+0200\n"
+"PO-Revision-Date: 2002-05-11 01:13+0200\n"
+"Last-Translator: Pier Luigi Fiorini <plfiorini@supereva.it>\n"
+"Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -32,11 +33,11 @@ msgstr ""
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.h:4
 msgid "Nautilus component adapter factory"
-msgstr "Fabbrica di componenti adattatori per Nautilus"
+msgstr "Fabbrica del componente adattatore per Nautilus"
 
 #: components/adapter/main.c:100
 msgid "bonobo_ui_init() failed."
-msgstr ""
+msgstr "bonobo_ui_init() fallita."
 
 #: components/hardware/Nautilus_View_hardware.server.in.h:1
 msgid "Factory for hardware view"
@@ -50,11 +51,11 @@ msgstr "Hardware"
 
 #: components/hardware/Nautilus_View_hardware.server.in.h:3
 msgid "Hardware Viewer"
-msgstr "Visualizzatore dell'hardware"
+msgstr "Visualizzatore hardware"
 
 #: components/hardware/Nautilus_View_hardware.server.in.h:4
 msgid "Hardware view"
-msgstr "Vista dell'hardware"
+msgstr "Vista hardware"
 
 #: components/hardware/Nautilus_View_hardware.server.in.h:5
 msgid "View as Hardware"
@@ -62,20 +63,18 @@ msgstr "Vedi come Hardware"
 
 #: components/hardware/Nautilus_View_hardware.server.in.h:6
 msgid "hardware view"
-msgstr "vista dell'hardware"
+msgstr "vista hardware"
 
 #: components/hardware/nautilus-hardware-view.c:175
-#, fuzzy
 msgid "name of icon for the hardware view"
-msgstr "Fabbrica per la vista dell'hardware"
+msgstr "nome dell'icona per la vista dell'hardware"
 
 #: components/hardware/nautilus-hardware-view.c:177
-#, fuzzy
 msgid "summary of hardware info"
-msgstr "Fabbrica per la vista dell'hardware"
+msgstr "sommario delle informazioni sull'hardware"
 
 #: components/hardware/nautilus-hardware-view.c:309
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s CPU\n"
 "%s MHz\n"
@@ -83,7 +82,7 @@ msgid ""
 msgstr ""
 "CPU %s\n"
 "%s MHz\n"
-"%s di cache"
+"%s K di cache"
 
 #: components/hardware/nautilus-hardware-view.c:344
 #, c-format
@@ -108,7 +107,7 @@ msgstr "%lu MB"
 #: components/hardware/nautilus-hardware-view.c:486
 #, c-format
 msgid "Uptime is %d days, %d hours, %d minutes"
-msgstr ""
+msgstr "Il tempo di attività è %d giorni, %d ore, %d minuti"
 
 #. set up the title
 #: components/hardware/nautilus-hardware-view.c:512
@@ -128,16 +127,20 @@ msgid "This is a placeholder for the IDE page."
 msgstr "Questo è un segnaposto per la pagina dei dischi IDE."
 
 #: components/history/Nautilus_View_history.server.in.h:1
+msgid "Factory for history views"
+msgstr "Fabbrica delle viste della cronologia"
+
+#: components/history/Nautilus_View_history.server.in.h:2
 msgid "History"
 msgstr "Cronologia"
 
-#: components/history/Nautilus_View_history.server.in.h:2
-msgid "History sidebar panel"
-msgstr "Pannello 'Cronologia' della barra laterale"
-
 #: components/history/Nautilus_View_history.server.in.h:3
+msgid "History sidebar panel"
+msgstr "Pannello \"Cronologia\" della barra laterale"
+
+#: components/history/Nautilus_View_history.server.in.h:4
 msgid "History sidebar panel for Nautilus"
-msgstr "Pannello 'Cronologia' della barra laterale per Nautilus"
+msgstr "Pannello \"Cronologia\" della barra laterale per Nautilus"
 
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:1
 msgid "Content Loser"
@@ -149,15 +152,15 @@ msgstr "Visualizzatore Content Loser"
 
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:3
 msgid "Nautilus Content Loser"
-msgstr "Content Loser di Nautilus"
+msgstr "Content Loser per Nautilus"
 
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:4
 msgid "Nautilus content loser component's factory"
-msgstr "Fabbrica del componente content loser di Nautilus"
+msgstr "Fabbrica del componente content loser per Nautilus"
 
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:5
 msgid "Nautilus content loser factory"
-msgstr "Fabbrica del content loser di Nautilus"
+msgstr "Fabbrica del content loser per Nautilus"
 
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:6
 msgid "Nautilus content view that fails on command"
@@ -173,7 +176,7 @@ msgstr "Uccidi Content Loser"
 
 #: components/loser/content/nautilus-content-loser-ui.xml.h:2
 msgid "Kill the Loser content view"
-msgstr "Uccidi la vista Loser di contenuto"
+msgstr "Uccidi la vista Content Loser"
 
 #: components/loser/content/nautilus-content-loser-ui.xml.h:3
 #: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
@@ -184,7 +187,7 @@ msgstr "_File"
 
 #: components/loser/content/nautilus-content-loser-ui.xml.h:4
 msgid "_Kill Content Loser"
-msgstr "_Uccidi Content Loser"
+msgstr "_Uccidi content loser"
 
 #: components/loser/content/nautilus-content-loser.c:136
 #, c-format
@@ -207,7 +210,7 @@ msgstr "Loser della barra laterale di Nautilus"
 
 #: components/loser/sidebar/Nautilus_View_sidebar-loser.server.in.h:2
 msgid "Nautilus sidebar loser component's factory"
-msgstr "Fabbrica del component Loser della barra laterale di Nautilus"
+msgstr "Fabbrica del componente Loser della barra laterale di Nautilus"
 
 #: components/loser/sidebar/Nautilus_View_sidebar-loser.server.in.h:3
 msgid "Nautilus sidebar loser factory"
@@ -386,7 +389,7 @@ msgstr "Trip-Hop"
 
 #: components/music/mpg123.c:36
 msgid "Vocal"
-msgstr "Vocal"
+msgstr "Vocale"
 
 #: components/music/mpg123.c:37
 msgid "Jazz+Funk"
@@ -896,7 +899,7 @@ msgstr "Imposta copertina"
 #: components/music/nautilus-music-view.c:728
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file."
-msgstr "Spiacente, ma '%s' non è un file immagine utilizzabile."
+msgstr "Spiacente, ma \"%s\" non è un file immagine utilizzabile."
 
 #: components/music/nautilus-music-view.c:730
 #: src/nautilus-property-browser.c:1068 src/nautilus-property-browser.c:1322
@@ -905,7 +908,7 @@ msgstr "Non è un'immagine"
 
 #: components/music/nautilus-music-view.c:776
 msgid "Select an image file for the album cover:"
-msgstr "Seleziona un'immagine per la copertina dell'album:"
+msgstr "Selezionare un'immagine per la copertina dell'album:"
 
 #: components/music/nautilus-music-view.c:1178
 msgid ""
@@ -913,9 +916,9 @@ msgid ""
 "because the Enable sound server startup setting in the Sound section of the "
 "Control Center is turned off."
 msgstr ""
-"Spiacente, ma la vista musica non è in grado di riprodurre il suono in "
-"questo momento. Ciò accade perchè l'opzione 'Abilita avvio del server audio' "
-"nella sezione 'Audio' del Control Center non è stata attivata."
+"Spiacente, ma la vista della musica non è in grado di riprodurre il suono in "
+"questo momento. Ciò accade perchè l'opzione \"Abilita avvio del server audio"
+"\" nella sezione \"Audio\" del Control Center non è stata attivata."
 
 #: components/music/nautilus-music-view.c:1181
 #: components/music/nautilus-music-view.c:1193
@@ -931,8 +934,8 @@ msgid ""
 msgstr ""
 "Spiacente, ma la vista musica non è in grado di riprodurre il suono in "
 "questo momento. Un'altro programma sta usando o bloccando la scheda audio, o "
-"la scheda audio non è stata configurata correttamente. Provare ad uscire da "
-"una qualsiasi applicazione che può bloccare l'uso della scheda audio."
+"lei non è stata configurata correttamente. Provare ad uscire da una "
+"qualsiasi applicazione che può bloccare l'uso della scheda sonora."
 
 #: components/music/nautilus-music-view.c:1217
 msgid "Sorry, but the music view can't play non-local files yet."
@@ -941,7 +944,7 @@ msgstr ""
 
 #: components/music/nautilus-music-view.c:1218
 msgid "Can't Play Remote Files"
-msgstr "Impossibile riprodurre il file remoto"
+msgstr "Impossibile riprodurre file remoti"
 
 #: components/music/nautilus-music-view.c:1504
 msgid "Drag to seek within track"
@@ -953,7 +956,7 @@ msgstr "Precedente"
 
 #: components/music/nautilus-music-view.c:1546
 msgid "Play"
-msgstr "Riproduci"
+msgstr "Riproduzione"
 
 #: components/music/nautilus-music-view.c:1560
 msgid "Pause"
@@ -972,9 +975,8 @@ msgid "Next"
 msgstr "Successivo"
 
 #: components/music/nautilus-music-view.c:1626
-#, fuzzy
 msgid "cover image"
-msgstr "Imposta copertina"
+msgstr "immagine di copertina"
 
 #: components/music/nautilus-music-view.c:1697
 #, c-format
@@ -988,7 +990,7 @@ msgstr "Impossibile leggere la cartella"
 #: components/music/nautilus-music-view.c:1798
 #, c-format
 msgid "<span size=\"xx-large\">%s - %s</span>"
-msgstr ""
+msgstr "<span size=\"xx-large\">%s - %s</span>"
 
 #: components/news/Nautilus_View_news.server.in.h:1
 msgid "Factory for news view"
@@ -1000,7 +1002,7 @@ msgstr "Notizie"
 
 #: components/news/Nautilus_View_news.server.in.h:3
 msgid "News sidebar panel"
-msgstr "Pannello Notizie della barra laterale"
+msgstr "Pannello \"Notizie\" della barra laterale"
 
 #: components/news/Nautilus_View_news.server.in.h:4
 msgid "News sidebar panel fetches and displays RSS feeds"
@@ -1009,29 +1011,27 @@ msgstr ""
 
 #: components/news/nautilus-cell-renderer-news.c:144
 msgid "Wrap at"
-msgstr ""
+msgstr "A capo a"
 
 #: components/news/nautilus-cell-renderer-news.c:145
 msgid "Width the cell should wrap to."
-msgstr ""
+msgstr "Larghezza cui la cella deve andare a capo."
 
 #: components/news/nautilus-cell-renderer-news.c:154
 msgid "Markup"
-msgstr ""
+msgstr "Con marcatori"
 
 #: components/news/nautilus-cell-renderer-news.c:155
 msgid "Marked up text to display"
-msgstr ""
+msgstr "Testo con marcatori da mostrare"
 
 #: components/news/nautilus-cell-renderer-news.c:161
-#, fuzzy
 msgid "Bullet"
-msgstr "Beat"
+msgstr "Puntato"
 
 #: components/news/nautilus-cell-renderer-news.c:162
-#, fuzzy
 msgid "Bullet to display"
-msgstr "Eseguire o mostrare?"
+msgstr "Punto da mostrare"
 
 #: components/news/nautilus-cell-renderer-news.c:168
 msgid "Prelight Bullet"
@@ -1042,9 +1042,8 @@ msgid "Bullet to display when prelit"
 msgstr ""
 
 #: components/news/nautilus-news.c:574 components/news/nautilus-news.c:801
-#, fuzzy
 msgid "%I:%M %p"
-msgstr "%I:%M %p, %x"
+msgstr "%I:%M %p"
 
 #: components/news/nautilus-news.c:929
 #, c-format
@@ -1059,7 +1058,7 @@ msgstr "Caricamento di %s"
 
 #: components/news/nautilus-news.c:1756
 msgid "Sorry, but you have not specified a name for the site!"
-msgstr "Spiacente, ma non hai specificato un nome per il sito!"
+msgstr "Spiacente, ma non è stato specificato un nome per il sito!"
 
 #: components/news/nautilus-news.c:1756
 msgid "Missing Site Name Error"
@@ -1067,7 +1066,7 @@ msgstr "Nome del sito mancante"
 
 #: components/news/nautilus-news.c:1760
 msgid "Sorry, but you have not specified a URL for the site!"
-msgstr "Spiacente, ma non hai specificato un URL per il sito!"
+msgstr "Spiacente, ma non è stato specificato un URL per il sito!"
 
 #: components/news/nautilus-news.c:1760
 msgid "Missing URL Error"
@@ -1079,38 +1078,32 @@ msgstr "Spiacente, ma l'url specificato non sembra essere un file RSS valido!"
 
 #: components/news/nautilus-news.c:1777
 msgid "Invalid RSS URL"
-msgstr "URL RSS non valido"
+msgstr "File RSS non valido"
 
 #: components/news/nautilus-news.c:1870
-#, fuzzy
 msgid "Edi_t"
-msgstr "Modifica"
+msgstr "_Modifica"
 
 #: components/news/nautilus-news.c:2145
-#, fuzzy
 msgid "Site Name"
-msgstr "Nome del sito:"
+msgstr "Nome del sito"
 
 #: components/news/nautilus-news.c:2171
-#, fuzzy
 msgid "_Remove Site"
-msgstr "Elimina sito"
+msgstr "_Rimuovi sito"
 
 #. allocate the name field
 #: components/news/nautilus-news.c:2197
-#, fuzzy
 msgid "Site _Name:"
-msgstr "Nome del sito:"
+msgstr "_Nome del sito:"
 
 #: components/news/nautilus-news.c:2215
-#, fuzzy
 msgid "Site _RSS URL:"
-msgstr "URL del RSS del sito:"
+msgstr "URL del _RSS del sito:"
 
 #: components/news/nautilus-news.c:2235
-#, fuzzy
 msgid "_Add New Site"
-msgstr "Aggiungi nuovo sito"
+msgstr "_Aggiungi nuovo sito"
 
 #. make the add new site label
 #: components/news/nautilus-news.c:2265
@@ -1118,21 +1111,18 @@ msgid "Add a New Site:"
 msgstr "Aggiungi un nuovo sito:"
 
 #: components/news/nautilus-news.c:2276
-#, fuzzy
 msgid "Remove a _Site:"
-msgstr "Elimina un sito:"
+msgstr "Rimuovi un _sito:"
 
 #. add a descriptive label
 #: components/news/nautilus-news.c:2326
-#, fuzzy
 msgid "_Select Sites:"
-msgstr "Seleziona i siti:"
+msgstr "_Seleziona siti:"
 
 #. allocate the button box for the done button
 #: components/news/nautilus-news.c:2356
-#, fuzzy
 msgid "_Done"
-msgstr "Fatto"
+msgstr "_Fatto"
 
 #. add the empty message
 #: components/news/nautilus-news.c:2427
@@ -1140,34 +1130,37 @@ msgid ""
 "The News panel displays current headlines from your favorite websites.  "
 "Click the 'Select Sites' button to select the sites to display."
 msgstr ""
-"Il pannelo 'Notizie' mostra i titoli correnti dai tuoi siti Web preferiti. "
-"Clicca sul pulsante 'Seleziona siti' per selezionare i siti da mostrare."
+"Il pannelo \"Notizie\" mostra i titoli correnti dai siti Web preferiti. "
+"Cliccare sul pulsante \"Seleziona siti\" per selezionare i siti da mostrare."
 
 #. create a button box to hold the command buttons
 #: components/news/nautilus-news.c:2448
-#, fuzzy
 msgid "_Select Sites"
-msgstr "Seleziona siti"
+msgstr "_Seleziona siti"
 
 #: components/news/nautilus-news.c:2515
 msgid "image indicating that the news has changed"
-msgstr ""
+msgstr "immagine indicante che le notizie sono cambiate"
 
 #: components/notes/Nautilus_View_notes.server.in.h:1
+msgid "Factory for annotation view"
+msgstr "Fabbrica per la vista annotazione"
+
+#: components/notes/Nautilus_View_notes.server.in.h:2
 msgid "Notes"
 msgstr "Note"
 
-#: components/notes/Nautilus_View_notes.server.in.h:2
-msgid "Notes sidebar panel"
-msgstr "Pannello Note della barra laterale"
-
 #: components/notes/Nautilus_View_notes.server.in.h:3
+msgid "Notes sidebar panel"
+msgstr "Pannello \"Note\" della barra laterale"
+
+#: components/notes/Nautilus_View_notes.server.in.h:4
 msgid "Notes sidebar panel for Nautilus"
 msgstr "Pannello Note della barra laterale per Nautilus"
 
 #: components/sample/Nautilus_View_sample.server.in.h:1
 msgid "Nautilus Sample view"
-msgstr "Vista d'esempio di Nautilus"
+msgstr "Vista d'esempio per Nautilus"
 
 #: components/sample/Nautilus_View_sample.server.in.h:2
 msgid "Nautilus Sample view factory"
@@ -1184,7 +1177,7 @@ msgstr "Visualizzatore d'esempio"
 
 #: components/sample/Nautilus_View_sample.server.in.h:5
 msgid "Sample content view component"
-msgstr "Componente della vista del contenuto d'esempio"
+msgstr "Componente della vista di contenuto d'esempio"
 
 #: components/sample/Nautilus_View_sample.server.in.h:6
 msgid "Sample content view component's factory"
@@ -1196,7 +1189,7 @@ msgstr "Vedi come Esempio"
 
 #: components/sample/nautilus-sample-content-view-ui.xml.h:2
 msgid "This is a sample merged menu item"
-msgstr "Questo è un'esempio di voce di menu unita."
+msgstr "Questo è un'esempio di voce di menù unita."
 
 #: components/sample/nautilus-sample-content-view-ui.xml.h:3
 msgid "This is a sample merged toolbar button"
@@ -1215,10 +1208,10 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"Questo è un'esempio di componente della vista del contenuto per Nautilus."
+"Questo è un'esempio di componente della vista di contenuto per Nautilus."
 
 #: components/sample/nautilus-sample-content-view.c:138
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s\n"
 "\n"
@@ -1226,7 +1219,7 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"Hai cliccato il bottone Esempio della barra degli strimenti."
+"È stato cliccato la voce di menù Esempio."
 
 #: components/sample/nautilus-sample-content-view.c:142
 #, c-format
@@ -1237,7 +1230,7 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"Hai cliccato il bottone Esempio della barra degli strimenti."
+"È stato cliccato il bottone Esempio della barra degli strumenti."
 
 #: components/sample/nautilus-sample-content-view.c:197
 msgid "(none)"
@@ -1290,7 +1283,7 @@ msgstr "Usa il carattere Fixed"
 
 #: components/text/nautilus-text-view-ui.xml.h:7
 msgid "Use the GTK System Font"
-msgstr "Usa il carattere di sistema di GTK"
+msgstr "Usa il carattere predefinito"
 
 #: components/text/nautilus-text-view-ui.xml.h:8
 msgid "Use the Helvetica Font"
@@ -1314,7 +1307,7 @@ msgstr "_Fixed"
 
 #: components/text/nautilus-text-view-ui.xml.h:13
 msgid "_GTK System Font"
-msgstr "Carattere di sistema di _GTK"
+msgstr "Carattere _predefinito"
 
 #: components/text/nautilus-text-view-ui.xml.h:14
 msgid "_Helvetica"
@@ -1359,15 +1352,15 @@ msgstr "Fabbrica dell'oggetto lampeggiatore"
 
 #: components/throbber/nautilus-throbber.c:703
 msgid "provides visual status"
-msgstr ""
+msgstr "fornisce uno stato visuale"
 
 #: components/tree/Nautilus_View_tree.server.in.h:1
 msgid "Nautilus Tree sidebar panel"
-msgstr "Pannello 'Albero' della barra laterale di Nautilus"
+msgstr "Pannello \"Albero\" della barra laterale di Nautilus"
 
 #: components/tree/Nautilus_View_tree.server.in.h:2
 msgid "Nautilus Tree view"
-msgstr "Vista albero di Nautilus"
+msgstr "Vista ad albero di Nautilus"
 
 #: components/tree/Nautilus_View_tree.server.in.h:3
 #: src/nautilus-preferences-dialog.c:289
@@ -1375,14 +1368,12 @@ msgid "Tree"
 msgstr "Albero"
 
 #: components/tree/nautilus-tree-model.c:1065
-#, fuzzy
 msgid "(Empty)"
-msgstr "Svuota"
+msgstr "(Vuoto)"
 
 #: components/tree/nautilus-tree-model.c:1065
-#, fuzzy
 msgid "Loading..."
-msgstr "_Indirizzo..."
+msgstr "Caricamento..."
 
 #: data/applications.desktop.in.h:1
 msgid "Applications"
@@ -1390,16 +1381,15 @@ msgstr "Applicazioni"
 
 #: data/applications.desktop.in.h:2
 msgid "Browse available software"
-msgstr ""
+msgstr "Naviga nel software disponibile"
 
 #: data/browser.xml.h:1
 msgid "Apparition"
-msgstr "Apparizione"
+msgstr "Apparition"
 
 #: data/browser.xml.h:2
-#, fuzzy
 msgid "Art"
-msgstr "Artista"
+msgstr "Arte"
 
 #: data/browser.xml.h:3
 msgid "Azul"
@@ -1411,19 +1401,19 @@ msgstr "Nero"
 
 #: data/browser.xml.h:5
 msgid "Blue Ridge"
-msgstr ""
+msgstr "Blue Ridge"
 
 #: data/browser.xml.h:6
 msgid "Blue Rough"
-msgstr ""
+msgstr "Blue Rough"
 
 #: data/browser.xml.h:7
 msgid "Blue Type"
-msgstr ""
+msgstr "Blue Type"
 
 #: data/browser.xml.h:8
 msgid "Brushed Metal"
-msgstr ""
+msgstr "Brushed Metal"
 
 #: data/browser.xml.h:9
 msgid "Bubble Gum"
@@ -1434,9 +1424,8 @@ msgid "Burlap"
 msgstr "Burlap"
 
 #: data/browser.xml.h:11
-#, fuzzy
 msgid "Camera"
-msgstr "Caveat"
+msgstr "Camera"
 
 #: data/browser.xml.h:12
 msgid "Camouflage"
@@ -1460,7 +1449,7 @@ msgstr "Colori"
 
 #: data/browser.xml.h:17
 msgid "Concrete"
-msgstr ""
+msgstr "Concrete"
 
 #: data/browser.xml.h:18
 msgid "Cool"
@@ -1492,20 +1481,19 @@ msgstr "GNOME scuro"
 
 #: data/browser.xml.h:25
 msgid "Deep Teal"
-msgstr ""
+msgstr "Deep Teal"
 
 #: data/browser.xml.h:26
 msgid "Distinguished"
 msgstr "Distinto"
 
 #: data/browser.xml.h:27
-#, fuzzy
 msgid "Documents"
-msgstr "Documentazione di GNOME"
+msgstr "Documenti"
 
 #: data/browser.xml.h:28
 msgid "Dots"
-msgstr "Punti"
+msgstr "Puntini"
 
 #: data/browser.xml.h:29
 msgid "Draft"
@@ -1517,7 +1505,7 @@ msgstr "Trascinare un colore su un oggetto per cambiarlo con esso"
 
 #: data/browser.xml.h:31
 msgid "Drag a pattern tile to an object to change it"
-msgstr "Trascinarere un motivo su un oggetto per cambiarlo"
+msgstr "Trascinarere un motivo su un oggetto per cambiarlo con esso"
 
 #: data/browser.xml.h:32
 msgid "Drag an emblem to an object to add it to the object"
@@ -1550,7 +1538,7 @@ msgstr "Fibre"
 
 #: data/browser.xml.h:39
 msgid "Fire Engine"
-msgstr ""
+msgstr "Fire Engine"
 
 #: data/browser.xml.h:40
 msgid "Fleur De Lis"
@@ -1601,9 +1589,8 @@ msgid "Lemon"
 msgstr "Limone"
 
 #: data/browser.xml.h:52
-#, fuzzy
 msgid "Mail"
-msgstr "Metal"
+msgstr "Lettera"
 
 #: data/browser.xml.h:53
 msgid "Mango"
@@ -1615,7 +1602,7 @@ msgstr "Carta da manila"
 
 #: data/browser.xml.h:55
 msgid "Moss Ridge"
-msgstr ""
+msgstr "Moss Ridge"
 
 #: data/browser.xml.h:56
 msgid "Mud"
@@ -1623,7 +1610,7 @@ msgstr "Fango"
 
 #: data/browser.xml.h:57
 msgid "Multimedia"
-msgstr ""
+msgstr "Multimedia"
 
 #: data/browser.xml.h:58
 msgid "New"
@@ -1639,7 +1626,7 @@ msgstr "OK"
 
 #: data/browser.xml.h:61
 msgid "Ocean Strips"
-msgstr ""
+msgstr "Ocean Strips"
 
 #: data/browser.xml.h:62
 msgid "Oh No"
@@ -1647,16 +1634,15 @@ msgstr "Oh no"
 
 #: data/browser.xml.h:63
 msgid "Onyx"
-msgstr ""
+msgstr "Onyx"
 
 #: data/browser.xml.h:64
 msgid "Orange"
 msgstr "Arancio"
 
 #: data/browser.xml.h:65
-#, fuzzy
 msgid "Package"
-msgstr "Rackspace"
+msgstr "Pacchetto"
 
 #: data/browser.xml.h:66
 msgid "Pale Blue"
@@ -1672,7 +1658,7 @@ msgstr "Personale"
 
 #: data/browser.xml.h:69
 msgid "Pictures"
-msgstr ""
+msgstr "Immagini"
 
 #: data/browser.xml.h:70
 msgid "Purple Marble"
@@ -1684,7 +1670,7 @@ msgstr "Carta increspata"
 
 #: data/browser.xml.h:72
 msgid "Rough Paper"
-msgstr ""
+msgstr "Rough Paper"
 
 #: data/browser.xml.h:73
 msgid "Ruby"
@@ -1692,7 +1678,7 @@ msgstr "Rubino"
 
 #: data/browser.xml.h:74
 msgid "Sea Foam"
-msgstr ""
+msgstr "Sea Foam"
 
 #: data/browser.xml.h:75
 msgid "Shale"
@@ -1708,16 +1694,15 @@ msgstr "Cielo"
 
 #: data/browser.xml.h:78
 msgid "Sky Ridge"
-msgstr ""
+msgstr "Sky Ridge"
 
 #: data/browser.xml.h:79
 msgid "Snow Ridge"
-msgstr ""
+msgstr "Snow Ridge"
 
 #: data/browser.xml.h:80
-#, fuzzy
 msgid "Sound"
-msgstr "Soul"
+msgstr "Suono"
 
 #: data/browser.xml.h:81
 msgid "Special"
@@ -1729,7 +1714,7 @@ msgstr "Stucco"
 
 #: data/browser.xml.h:83
 msgid "Tangerine"
-msgstr ""
+msgstr "Tangerine"
 
 #: data/browser.xml.h:84
 msgid "Terracotta"
@@ -1745,11 +1730,11 @@ msgstr "Violetto"
 
 #: data/browser.xml.h:87
 msgid "Wavy White"
-msgstr ""
+msgstr "Wavy White"
 
 #: data/browser.xml.h:88
 msgid "Web"
-msgstr ""
+msgstr "Web"
 
 #: data/browser.xml.h:89
 msgid "White"
@@ -1760,43 +1745,37 @@ msgid "White Ribs"
 msgstr "Nervature bianche"
 
 #: data/favorites.desktop.in.h:1
-#, fuzzy
 msgid "Favorite applications"
-msgstr "[Il tipo di file è] applicazione"
+msgstr "Applicazioni preferite"
 
 #: data/favorites.desktop.in.h:2
-#, fuzzy
 msgid "Favorites"
-msgstr "Preferito"
+msgstr "Preferiti"
 
 #: data/preferences.desktop.in.h:1
 msgid "Adjust your user environment"
-msgstr ""
+msgstr "Imposta l'ambiente utente"
 
 #: data/preferences.desktop.in.h:2
-#, fuzzy
 msgid "Desktop Preferences"
-msgstr "Preferenze delle viste"
+msgstr "Preferenze del desktop"
 
 #: data/serverconfig.desktop.in.h:1
 msgid "Configure network services (web server, DNS server, etc.)"
-msgstr ""
+msgstr "Configura i servizi di rete (server Web, server DNS, etc.)"
 
 #: data/serverconfig.desktop.in.h:2 data/serverconfig.directory.in.h:2
-#, fuzzy
 msgid "Server Settings"
-msgstr "Amministrazione del sistema"
+msgstr "Impostazioni del server"
 
 #: data/serverconfig.directory.in.h:1
-#, fuzzy
 msgid "Configure network services"
-msgstr "File di configurazione"
+msgstr "Configurazione dei servizi di rete"
 
 #: data/starthere-link.desktop.in.h:1 data/starthere.desktop.in.h:1
 #: data/starthere.directory.in.h:1
-#, fuzzy
 msgid "Start Here"
-msgstr "Avvia"
+msgstr "Start Here"
 
 #: data/static_bookmarks.xml.h:1
 msgid "Allaire"
@@ -1944,7 +1923,7 @@ msgstr "SourceForge"
 
 #: data/static_bookmarks.xml.h:38
 msgid "SuSE"
-msgstr ""
+msgstr "SuSE"
 
 #: data/static_bookmarks.xml.h:39
 msgid "Sun StarOffice"
@@ -1960,7 +1939,7 @@ msgstr "Servizi Web"
 
 #: data/static_bookmarks.xml.h:42
 msgid "Ximian"
-msgstr ""
+msgstr "Ximian"
 
 #: data/static_bookmarks.xml.h:43
 msgid "ZDNet Linux Hardware Database"
@@ -1977,15 +1956,15 @@ msgstr "Zero-Knowledge"
 #: data/sysconfig.desktop.in.h:1 data/sysconfig.directory.in.h:1
 msgid "Change systemwide settings (affects all users)"
 msgstr ""
+"Modifica delle impostazioni di sistema (ha effetto su tutti gli utenti)"
 
 #: data/sysconfig.desktop.in.h:2 data/sysconfig.directory.in.h:2
-#, fuzzy
 msgid "System Settings"
-msgstr "Amministrazione del sistema"
+msgstr "Impostazioni del sistema"
 
 #: icons/crux_eggplant/crux_eggplant.xml.h:1
 msgid "An Eggplant variation of the Crux theme."
-msgstr "Una variante Eggplant del tema Crux."
+msgstr "Variante Eggplant del tema Crux."
 
 #: icons/crux_eggplant/crux_eggplant.xml.h:2
 msgid "Crux-Eggplant"
@@ -2005,12 +1984,11 @@ msgstr "Eazel"
 
 #: icons/default/default.xml.h:2
 msgid "This is the default theme for Nautilus."
-msgstr "Questo è il tema predefinito per Nautilus."
+msgstr "Questo è il tema predefinito di Nautilus."
 
 #: icons/gnome/gnome.xml.h:1
-#, fuzzy
 msgid "A theme designed to fit well with the classic GNOME environment."
-msgstr "Un tema progettato per adattarsi al meglio all'ambiente GNOME classico"
+msgstr "Un tema progettato per adattarsi bene al classico ambiente GNOME"
 
 #: icons/sierra/sierra.xml.h:1
 msgid "Sierra"
@@ -2031,131 +2009,111 @@ msgstr "Questo tema usa cartelle foto realistiche."
 #: libbackground/preview-file-selection.c:193
 msgid "Can't find an hbox, using a normal file selection"
 msgstr ""
+"Impossibile trovare un hbox, si sta usando una normale selezione di file"
 
 #: libbackground/preview-file-selection.c:198
-#, fuzzy
 msgid "Preview"
-msgstr "Precedente"
+msgstr "Anteprima"
 
 #: libnautilus-private/filesystem-attributes.xml.h:1
-#, fuzzy
 msgid "AFFS Volume"
-msgstr "Volume XFS"
+msgstr "Volume AFFS"
 
 #: libnautilus-private/filesystem-attributes.xml.h:2
-#, fuzzy
 msgid "AFS Network Volume"
-msgstr "Volume NFS"
+msgstr "Volume AFS di rete"
 
 #: libnautilus-private/filesystem-attributes.xml.h:3
 msgid "Auto-detected Volume"
-msgstr ""
+msgstr "Volume auto rilevato"
 
 #: libnautilus-private/filesystem-attributes.xml.h:4
 msgid "CD Digital Audio"
-msgstr ""
+msgstr "CD Digital Audio"
 
 #: libnautilus-private/filesystem-attributes.xml.h:5
-#, fuzzy
 msgid "CD-ROM Drive"
-msgstr "CD-ROM"
+msgstr "Unità CD-ROM"
 
 #: libnautilus-private/filesystem-attributes.xml.h:6
-#, fuzzy
 msgid "CDROM Volume"
-msgstr "Volume MSDOS"
+msgstr "Volume CDROM"
 
 #: libnautilus-private/filesystem-attributes.xml.h:7
-#, fuzzy
 msgid "DVD Volume"
-msgstr "Volume MSDOS"
+msgstr "Volume DVD"
 
 #: libnautilus-private/filesystem-attributes.xml.h:8
-#, fuzzy
 msgid "Enhanced DOS Volume"
-msgstr "Volume MSDOS"
+msgstr "Volume DOS avanzato"
 
 #: libnautilus-private/filesystem-attributes.xml.h:9
-#, fuzzy
 msgid "Ext2 Linux Volume"
-msgstr "Volume Ext2"
+msgstr "Volume Linux Ext2"
 
 #: libnautilus-private/filesystem-attributes.xml.h:10
-#, fuzzy
 msgid "Ext3 Linux Volume"
-msgstr "Volume Ext3"
+msgstr "Volume Linux Ext3"
 
 #: libnautilus-private/filesystem-attributes.xml.h:11
-#, fuzzy
 msgid "Hardware Device Volume"
-msgstr "Vista dell'hardware"
+msgstr "Dispositivo hardware"
 
 #: libnautilus-private/filesystem-attributes.xml.h:12
-#, fuzzy
 msgid "JFS Volume"
-msgstr "Volume NFS"
+msgstr "Volume JFS"
 
 #: libnautilus-private/filesystem-attributes.xml.h:13
 msgid "MSDOS Volume"
 msgstr "Volume MSDOS"
 
 #: libnautilus-private/filesystem-attributes.xml.h:14
-#, fuzzy
 msgid "Minix Volume"
-msgstr "Volume Ext3"
+msgstr "Volume Minix"
 
 #: libnautilus-private/filesystem-attributes.xml.h:15
-#, fuzzy
 msgid "NFS Network Volume"
-msgstr "Volume NFS"
+msgstr "Volume NFS di rete"
 
 #: libnautilus-private/filesystem-attributes.xml.h:16
-#, fuzzy
 msgid "ReiserFS Linux Volume"
-msgstr "Volume ReiserFS"
+msgstr "Volume Linux ReiserFS"
 
 #: libnautilus-private/filesystem-attributes.xml.h:17
-#, fuzzy
 msgid "Solaris/BSD Volume"
-msgstr "Volume ReiserFS"
+msgstr "Volume Solaris/BSD"
 
 #: libnautilus-private/filesystem-attributes.xml.h:18
-#, fuzzy
 msgid "System Volume"
-msgstr "Volume XFS"
+msgstr "Volume di sistema"
 
 #: libnautilus-private/filesystem-attributes.xml.h:19
-#, fuzzy
 msgid "Windows NT Volume"
-msgstr "Volume sconosciuto"
+msgstr "Volume Windows NT"
 
 #: libnautilus-private/filesystem-attributes.xml.h:20
 msgid "Windows Shared Volume"
-msgstr ""
+msgstr "Volume Windows condiviso"
 
 #: libnautilus-private/filesystem-attributes.xml.h:21
-#, fuzzy
 msgid "Windows VFAT Volume"
-msgstr "Volume sconosciuto"
+msgstr "Volume Windows VFAT"
 
 #: libnautilus-private/filesystem-attributes.xml.h:22
-#, fuzzy
 msgid "XFS Linux Volume"
-msgstr "Volume XFS"
+msgstr "Volume Linux XFS"
 
 #: libnautilus-private/filesystem-attributes.xml.h:23
-#, fuzzy
 msgid "XIAFS Volume"
-msgstr "Volume XFS"
+msgstr "Volume XIAFS"
 
 #: libnautilus-private/filesystem-attributes.xml.h:24
-#, fuzzy
 msgid "Xenix Volume"
-msgstr "Volume XFS"
+msgstr "Volume Xenix"
 
 #: libnautilus-private/nautilus-authn-manager.c:60
 msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr ""
+msgstr "Il proxy HTTP richiede di fare log in.\n"
 
 #: libnautilus-private/nautilus-authn-manager.c:61
 #, c-format
@@ -2164,44 +2122,41 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
+"Si deve effettuare il log in per accedere a \"%s\".\n"
+"\n"
+"%s"
 
 #: libnautilus-private/nautilus-authn-manager.c:64
 msgid "Your password will be transmitted unencrypted."
-msgstr ""
+msgstr "La password verrà trasmessa in chiaro."
 
 #: libnautilus-private/nautilus-authn-manager.c:65
 msgid "Your password will be transmitted encrypted."
-msgstr ""
+msgstr "La password verrà trasmessa crittata."
 
 #: libnautilus-private/nautilus-authn-manager.c:68
-#, fuzzy
 msgid "Authentication Required"
-msgstr "questa sezione"
+msgstr "Autenticazione richiesta"
 
 #: libnautilus-private/nautilus-customization-data.c:372
-#, fuzzy
 msgid "reset"
-msgstr "Albero"
+msgstr "reimposta"
 
 #: libnautilus-private/nautilus-dnd.c:548
-#, fuzzy
 msgid "_Move here"
-msgstr "Vai li"
+msgstr "_Sposta qui"
 
 #: libnautilus-private/nautilus-dnd.c:553
-#, fuzzy
 msgid "_Copy here"
-msgstr "Vai li"
+msgstr "_Copia qui"
 
 #: libnautilus-private/nautilus-dnd.c:558
-#, fuzzy
 msgid "_Link here"
-msgstr "Obiettivo del collegamento:"
+msgstr "C_ollega qui"
 
 #: libnautilus-private/nautilus-dnd.c:563
-#, fuzzy
 msgid "Set as _Background"
-msgstr "Reimposta sfondo"
+msgstr "Imposta come _sfondo"
 
 #: libnautilus-private/nautilus-dnd.c:572
 msgid "Cancel"
@@ -2492,7 +2447,7 @@ msgstr "Errore durante lo spostamento."
 
 #: libnautilus-private/nautilus-file-operations.c:889
 msgid "Error while linking."
-msgstr "Errore durante la crazione di un collegamento."
+msgstr "Errore durante il collegamento."
 
 #: libnautilus-private/nautilus-file-operations.c:894
 msgid "Error while deleting."
@@ -2548,7 +2503,7 @@ msgid ""
 msgstr ""
 "Il file \"%s\" esiste già.\n"
 "\n"
-"Vuoi sostituirlo?"
+"Si vuole sostituirlo?"
 
 #: libnautilus-private/nautilus-file-operations.c:1045
 #: libnautilus-private/nautilus-file-operations.c:1059
@@ -2566,7 +2521,7 @@ msgstr "Sostituisci tutto"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1109
-#: libnautilus-private/nautilus-file.c:4252
+#: libnautilus-private/nautilus-file.c:4232
 #, c-format
 msgid "link to %s"
 msgstr "collegamento a %s"
@@ -2584,25 +2539,25 @@ msgstr "altro collegamento a %s"
 #: libnautilus-private/nautilus-file-operations.c:1129
 #, c-format
 msgid "%dst link to %s"
-msgstr "collegamento %d a %s"
+msgstr "%d° collegamento a %s"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1133
 #, c-format
 msgid "%dnd link to %s"
-msgstr "collegamento·%d·a·%s"
+msgstr "%d° collegamento·a·%s"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1137
 #, c-format
 msgid "%drd link to %s"
-msgstr "collegamento·%d·a·%s"
+msgstr "%d° collegamento·a·%s"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1141
 #, c-format
 msgid "%dth link to %s"
-msgstr "collegamento·%d·a·%s"
+msgstr "%d° collegamento·a·%s"
 
 #. Localizers:
 #. * Feel free to leave out the st, nd, rd and th suffix or
@@ -2907,9 +2862,8 @@ msgstr ""
 "Cestino?"
 
 #: libnautilus-private/nautilus-file-operations.c:2222
-#, fuzzy
-msgid "Empty Trash?"
-msgstr "Svuota il cestino"
+msgid "Delete Trash Contents?"
+msgstr "Eliminare il contenuto del Cestino?"
 
 #: libnautilus-private/nautilus-file-operations.c:2223
 msgid "Empty"
@@ -3137,60 +3091,50 @@ msgid "foo (12th copy).txt"
 msgstr "foo (12 copia).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2299
-#, fuzzy
 msgid "foo (110th copy)"
-msgstr "foo (10 copia)"
+msgstr "foo (110° copia)"
 
 #: libnautilus-private/nautilus-file-operations.c:2299
-#, fuzzy
 msgid "foo (111th copy)"
-msgstr "foo (11 copia)"
+msgstr "foo (111° copia)"
 
 #: libnautilus-private/nautilus-file-operations.c:2300
-#, fuzzy
 msgid "foo (110th copy).txt"
-msgstr "foo (11 copia).txt"
+msgstr "foo (110° copia).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2300
-#, fuzzy
 msgid "foo (111th copy).txt"
-msgstr "foo (11 copia).txt"
+msgstr "foo (111° copia).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2301
-#, fuzzy
 msgid "foo (122nd copy)"
-msgstr "foo (22 copia)"
+msgstr "foo (122° copia)"
 
 #: libnautilus-private/nautilus-file-operations.c:2301
 #: libnautilus-private/nautilus-file-operations.c:2303
-#, fuzzy
 msgid "foo (123rd copy)"
-msgstr "foo (23 copia)"
+msgstr "foo (123° copia)"
 
 #: libnautilus-private/nautilus-file-operations.c:2302
-#, fuzzy
 msgid "foo (122nd copy).txt"
-msgstr "foo (12 copia).txt"
+msgstr "foo (122° copia).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2302
 #: libnautilus-private/nautilus-file-operations.c:2304
-#, fuzzy
 msgid "foo (123rd copy).txt"
-msgstr "foo (13 copia).txt"
+msgstr "foo (123° copia).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2303
-#, fuzzy
 msgid "foo (124th copy)"
-msgstr "foo (14 copia)"
+msgstr "foo (124° copia)"
 
 #: libnautilus-private/nautilus-file-operations.c:2304
-#, fuzzy
 msgid "foo (124th copy).txt"
-msgstr "foo (12 copia).txt"
+msgstr "foo (124° copia).txt"
 
-#: libnautilus-private/nautilus-file.c:2225
+#: libnautilus-private/nautilus-file.c:2205
 msgid " (invalid Unicode)"
-msgstr ""
+msgstr " (Unicode non valido)"
 
 #. Today, use special word.
 #. * strftime patterns preceeded with the widest
@@ -3207,64 +3151,64 @@ msgstr ""
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2503
+#: libnautilus-private/nautilus-file.c:2483
 msgid "today at 00:00:00 PM"
-msgstr "oggi alle 00:00:00 PM"
+msgstr "oggi alle 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2504
+#: libnautilus-private/nautilus-file.c:2484
 msgid "today at %-I:%M:%S %p"
-msgstr "oggi alle %-I:%M:S %p"
+msgstr "oggi alle %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2506
+#: libnautilus-private/nautilus-file.c:2486
 msgid "today at 00:00 PM"
-msgstr "oggi alle 00:00 PM"
+msgstr "oggi alle 00:00"
 
-#: libnautilus-private/nautilus-file.c:2507
+#: libnautilus-private/nautilus-file.c:2487
 msgid "today at %-I:%M %p"
 msgstr "oggi alle %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2509
+#: libnautilus-private/nautilus-file.c:2489
 msgid "today, 00:00 PM"
-msgstr "oggi, 00:00 PM"
+msgstr "oggi, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2510
+#: libnautilus-private/nautilus-file.c:2490
 msgid "today, %-I:%M %p"
 msgstr "oggi, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2512
-#: libnautilus-private/nautilus-file.c:2513
+#: libnautilus-private/nautilus-file.c:2492
+#: libnautilus-private/nautilus-file.c:2493
 msgid "today"
 msgstr "oggi"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2522
+#: libnautilus-private/nautilus-file.c:2502
 msgid "yesterday at 00:00:00 PM"
-msgstr "ieri alle 00:00:00 PM"
+msgstr "ieri alle 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2523
+#: libnautilus-private/nautilus-file.c:2503
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "ieri alle %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2525
+#: libnautilus-private/nautilus-file.c:2505
 msgid "yesterday at 00:00 PM"
-msgstr "ieri alle 00:00 PM"
+msgstr "ieri alle 00:00"
 
-#: libnautilus-private/nautilus-file.c:2526
+#: libnautilus-private/nautilus-file.c:2506
 msgid "yesterday at %-I:%M %p"
 msgstr "ieri alle %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2528
+#: libnautilus-private/nautilus-file.c:2508
 msgid "yesterday, 00:00 PM"
-msgstr "ieri, 00:00 PM"
+msgstr "ieri, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2529
+#: libnautilus-private/nautilus-file.c:2509
 msgid "yesterday, %-I:%M %p"
 msgstr "ieri, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2531
-#: libnautilus-private/nautilus-file.c:2532
+#: libnautilus-private/nautilus-file.c:2511
+#: libnautilus-private/nautilus-file.c:2512
 msgid "yesterday"
 msgstr "ieri"
 
@@ -3273,177 +3217,174 @@ msgstr "ieri"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2543
+#: libnautilus-private/nautilus-file.c:2523
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
-msgstr "Mercoledì, 00 settembre 0000 alle 00:00:00 PM"
+msgstr "Mercoledì, 00 settembre 0000 alle 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2544
+#: libnautilus-private/nautilus-file.c:2524
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %-d %B %Y alle %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2546
+#: libnautilus-private/nautilus-file.c:2526
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
-msgstr "Lun, 00 ott 0000 alle 00:00:00 PM"
+msgstr "Lun, 00 ott 0000 alle 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2547
+#: libnautilus-private/nautilus-file.c:2527
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %-d %b %Y alle %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2549
+#: libnautilus-private/nautilus-file.c:2529
 msgid "Mon, Oct 00 0000 at 00:00 PM"
-msgstr "Lun, 00 ott 0000 alle 00:00 PM"
+msgstr "Lun, 00 ott 0000 alle 00:00"
 
-#: libnautilus-private/nautilus-file.c:2550
+#: libnautilus-private/nautilus-file.c:2530
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %-d %b %Y alle %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2552
+#: libnautilus-private/nautilus-file.c:2532
 msgid "Oct 00 0000 at 00:00 PM"
-msgstr "00 ott 0000 alle 00:00 PM"
+msgstr "00 ott 0000 alle 00:00"
 
-#: libnautilus-private/nautilus-file.c:2553
+#: libnautilus-private/nautilus-file.c:2533
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y alle %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2555
+#: libnautilus-private/nautilus-file.c:2535
 msgid "Oct 00 0000, 00:00 PM"
-msgstr "00 ott 0000, 00:00 PM"
+msgstr "00 ott 0000, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2556
+#: libnautilus-private/nautilus-file.c:2536
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2558
+#: libnautilus-private/nautilus-file.c:2538
 msgid "00/00/00, 00:00 PM"
-msgstr "00/00/00, 00:00 PM"
+msgstr "00/00/00, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2559
+#: libnautilus-private/nautilus-file.c:2539
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "-%d/%m/%y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2561
+#: libnautilus-private/nautilus-file.c:2541
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2562
+#: libnautilus-private/nautilus-file.c:2542
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
-#: libnautilus-private/nautilus-file.c:3837
+#: libnautilus-private/nautilus-file.c:3817
 msgid "0 items"
 msgstr "0 oggetti"
 
-#: libnautilus-private/nautilus-file.c:3837
+#: libnautilus-private/nautilus-file.c:3817
 msgid "0 folders"
 msgstr "0 cartelle"
 
-#: libnautilus-private/nautilus-file.c:3838
+#: libnautilus-private/nautilus-file.c:3818
 msgid "0 files"
 msgstr "0 file"
 
-#: libnautilus-private/nautilus-file.c:3842
+#: libnautilus-private/nautilus-file.c:3822
 msgid "1 item"
 msgstr "1 oggetto"
 
-#: libnautilus-private/nautilus-file.c:3842
+#: libnautilus-private/nautilus-file.c:3822
 msgid "1 folder"
 msgstr "1 cartella"
 
-#: libnautilus-private/nautilus-file.c:3843
+#: libnautilus-private/nautilus-file.c:3823
 msgid "1 file"
 msgstr "1 file"
 
-#: libnautilus-private/nautilus-file.c:3846
+#: libnautilus-private/nautilus-file.c:3826
 #, c-format
 msgid "%u items"
 msgstr "%u oggetti"
 
-#: libnautilus-private/nautilus-file.c:3846
+#: libnautilus-private/nautilus-file.c:3826
 #, c-format
 msgid "%u folders"
 msgstr "%u cartelle"
 
-#: libnautilus-private/nautilus-file.c:3847
+#: libnautilus-private/nautilus-file.c:3827
 #, c-format
 msgid "%u files"
 msgstr "%u file"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4154
-#: libnautilus-private/nautilus-file.c:4170
+#: libnautilus-private/nautilus-file.c:4134
+#: libnautilus-private/nautilus-file.c:4150
 msgid "? items"
 msgstr "? oggetti"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4160
+#: libnautilus-private/nautilus-file.c:4140
 msgid "? bytes"
 msgstr "? byte"
 
-#: libnautilus-private/nautilus-file.c:4175
+#: libnautilus-private/nautilus-file.c:4155
 msgid "unknown type"
 msgstr "tipo sconosciuto"
 
-#: libnautilus-private/nautilus-file.c:4178
+#: libnautilus-private/nautilus-file.c:4158
 msgid "unknown MIME type"
 msgstr "tipo MIME sconosciuto"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4184
+#: libnautilus-private/nautilus-file.c:4164
 msgid "unknown"
 msgstr "sconosciuto"
 
-#: libnautilus-private/nautilus-file.c:4216
+#: libnautilus-private/nautilus-file.c:4196
 msgid "program"
 msgstr "programma"
 
-#: libnautilus-private/nautilus-file.c:4228
+#: libnautilus-private/nautilus-file.c:4208
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
 "some other reason."
 msgstr ""
-"Non posso trovare una descrizione per \"x-directory/normal\". Questo "
-"significa probabilmente che il tuo file gnome-vfs.keys è in un posto "
-"sbagliato o non viene trovato per qualche altra ragione."
+"Impossibile trovare una descrizione per \"x-directory/normal\". Ciò "
+"significa probabilmente che il file gnome-vfs.keys si trova nel posto "
+"sbagliato o non viene trovato per altri motivi."
 
-#: libnautilus-private/nautilus-file.c:4232
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file.c:4212
+#, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
 "gnome-vfs mailing list."
 msgstr ""
-"Nessuna descrizione è stata trovata per il tipo mime \"%s\" (il file è \"%s"
-"\"), avvisa aaron@eazel.com"
+"Nessuna descrizione è stata trovate per il tipo MIME \"%s\" (il file è \"%s"
+"\"), avvisare la mailing list di gnome-vfs."
 
-#: libnautilus-private/nautilus-file.c:4246
+#: libnautilus-private/nautilus-file.c:4226
 msgid "link"
 msgstr "collegamento"
 
-#: libnautilus-private/nautilus-file.c:4266
+#: libnautilus-private/nautilus-file.c:4246
 msgid "link (broken)"
 msgstr "collegamento (interrotto)"
 
-#: libnautilus-private/nautilus-file.c:5302
+#: libnautilus-private/nautilus-file.c:5282
 #: libnautilus-private/nautilus-trash-directory.c:373
 #: src/file-manager/fm-desktop-icon-view.c:70
 msgid "Trash"
 msgstr "Cestino"
 
 #: libnautilus-private/nautilus-global-preferences.c:100
-#, fuzzy
-msgid "_Always"
+msgid "Always"
 msgstr "Sempre"
 
 #: libnautilus-private/nautilus-global-preferences.c:101
-#, fuzzy
-msgid "_Local Files Only"
+msgid "Local Files Only"
 msgstr "Solo file locali"
 
 #: libnautilus-private/nautilus-global-preferences.c:102
-#, fuzzy
-msgid "_Never"
+msgid "Never"
 msgstr "Mai"
 
 #: libnautilus-private/nautilus-global-preferences.c:108
@@ -3510,41 +3451,36 @@ msgid "100 MB"
 msgstr "100 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:137
-#, fuzzy
-msgid "Activate items with a _single click"
-msgstr "Attiva gli oggetti con un singolo clic"
+msgid "Activate items with a single click"
+msgstr "Attivazione degli oggetti con un solo clic"
 
 #: libnautilus-private/nautilus-global-preferences.c:141
-#, fuzzy
-msgid "Activate items with a _double click"
-msgstr "Attiva gli oggetti con un doppio clic"
+msgid "Activate items with a double click"
+msgstr "Attivazione degli oggetti con un doppio clic"
 
 #: libnautilus-private/nautilus-global-preferences.c:149
-#, fuzzy
-msgid "E_xecute files when they are clicked"
-msgstr "Esegui i file quando vengono cliccati"
+msgid "Execute files when they are clicked"
+msgstr "Eseguire i file quando vengono cliccati"
 
 #: libnautilus-private/nautilus-global-preferences.c:153
-#, fuzzy
-msgid "Display _files when they are clicked"
-msgstr "Mostra i file quando vengono cliccati"
+msgid "Display files when they are clicked"
+msgstr "Mostrare i file quando vengono cliccati"
 
 #: libnautilus-private/nautilus-global-preferences.c:157
-#, fuzzy
-msgid "_Ask each time"
-msgstr "Chiedi ogni volta"
+msgid "Ask each time"
+msgstr "Chiedere ogni volta"
 
 #: libnautilus-private/nautilus-global-preferences.c:165
 msgid "Search for files by file name only"
-msgstr "Cerca i file solo per nome"
+msgstr "Cercare i file solo per nome"
 
 #: libnautilus-private/nautilus-global-preferences.c:169
 msgid "Search for files by file name and file properties"
-msgstr "Cerca i file per nome e proprietà"
+msgstr "Cercare i file per nome e proprietà"
 
 #: libnautilus-private/nautilus-global-preferences.c:176
 msgid "Icon View"
-msgstr "Vista a icona"
+msgstr "Vista a icone"
 
 #: libnautilus-private/nautilus-global-preferences.c:177
 msgid "List View"
@@ -3639,7 +3575,7 @@ msgstr "data di cambiamento"
 
 #: libnautilus-private/nautilus-global-preferences.c:219
 msgid "date accessed"
-msgstr "data di accesso"
+msgstr "data d'accesso"
 
 #: libnautilus-private/nautilus-global-preferences.c:220
 msgid "owner"
@@ -3667,29 +3603,27 @@ msgstr "nessuno"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:1793
 msgid "file icon"
-msgstr ""
+msgstr "icona del file"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:1940
-#, fuzzy
 msgid "editable text"
-msgstr "Meditativa"
+msgstr "testo modificabile"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:1941
 msgid "the editable label"
-msgstr ""
+msgstr "l'etichetta modificabile"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:1948
 msgid "additional text"
-msgstr ""
+msgstr "testo addizionale"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:1949
 msgid "some more text"
-msgstr ""
+msgstr "altro testo"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:1956
-#, fuzzy
 msgid "highlighted for selection"
-msgstr "la sezione"
+msgstr "evidenziazione per la selezione"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:1957
 msgid "whether we are highlighted for a selection"
@@ -3697,7 +3631,7 @@ msgstr ""
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:1964
 msgid "highlighted as keyboard focus"
-msgstr ""
+msgstr "evidenziazione al focus della tastiera"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:1965
 msgid "whether we are highlighted to render keyboard focus"
@@ -3712,20 +3646,18 @@ msgid "whether we are highlighted for a D&D drop"
 msgstr ""
 
 #: libnautilus-private/nautilus-icon-container.c:1644
-#, fuzzy
 msgid "The selection rectangle"
-msgstr "Rende ridimensionabile l'icona selezionata"
+msgstr "Il rettangolo di selezione"
 
 #: libnautilus-private/nautilus-icon-dnd.c:625
-#, fuzzy
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
 "manual layout."
 msgstr ""
-"Questa cartella usa una disposizione degli oggetti automatica. Vuoi passare "
-"ad una disposizione manuale e lasciare quest'oggetto dove lo hai trascinato? "
-"This will clobber the stored manual layout."
+"Questa cartella usa una disposizione degli oggetti automatica. Si vuole "
+"passare ad una disposizione manuale e lasciare quest'oggetto dove è stato "
+"trascinato? Ciò annullerà la disposizione memorizzata."
 
 #: libnautilus-private/nautilus-icon-dnd.c:629
 msgid ""
@@ -3733,25 +3665,27 @@ msgid ""
 "and leave these items where you dropped them? This will clobber the stored "
 "manual layout."
 msgstr ""
-"Questa cartella usa una disposizione automatica degli oggetti. Vuoi passare "
-"alla disposizione manuale e lasciare gli oggetti dove li hai trascinati? "
-"Perderai la disposizone memorizzata."
+"Questa cartella usa una disposizione automatica degli oggetti. Si vuole "
+"passare alla disposizione manuale e lasciare gli oggetti dove sono stati "
+"trascinati? Ciò annullerà la disposizione memorizzata."
 
 #: libnautilus-private/nautilus-icon-dnd.c:635
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
 msgstr ""
-"Questa·cartella·usa·una·disposizione·automatica·degli·oggetti."
-"·Vuoi·passare·alla·disposizione·manuale·e·lasciare·l'oggetto·dove·lo·hai·trascinato?"
+"Questa cartella usa una disposizione automatica degli oggetti. Si vuole "
+"passare alla disposizione manuale e lasciare gli oggetti dove sono stati "
+"trascinati?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:638
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
 msgstr ""
-"Questa cartella usa una disposizione automatica degli oggetti. Vuoi passare "
-"alla disposizione manuale e lasciare gli oggetti dove li hai trascinati?"
+"Questa cartella usa una disposizione automatica degli oggetti. Si vuole "
+"passare alla disposizione manuale e lasciare gli oggetti dove sono stati "
+"trascinati?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:643
 msgid "Switch to Manual Layout?"
@@ -3759,7 +3693,7 @@ msgstr "Passare alla disposizione manuale?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:644
 msgid "Switch"
-msgstr "Passa"
+msgstr "Passare"
 
 #: libnautilus-private/nautilus-medusa-support.c:123
 #, c-format
@@ -3775,6 +3709,17 @@ msgid ""
 "Fast searches will not be available until an initial index of your files has "
 "been created.  This may take a long time."
 msgstr ""
+"Se si vogliono abilitare le ricerche veloci, si può modificare il file %s "
+"come root. Impostando l'opzione enabled a \"yes\" i servizi medusa saranno "
+"attivati.\n"
+"Per avviare i servizi d'indicizzazione e ricerca subito, si dovrebbe anche "
+"eseguire i seguenti comandi come root:\n"
+"\n"
+"medusa-indexd\n"
+"medusa-searchd\n"
+"\n"
+"Le ricerche veloci non saranno disponibili sino a che non sarà creato un "
+"indice iniziale dei file. Ciò può impiegare molto tempo."
 
 #: libnautilus-private/nautilus-medusa-support.c:138
 msgid ""
@@ -3785,11 +3730,11 @@ msgid ""
 "If you are using a packaged version of Nautilus, fast searching is not "
 "available.\n"
 msgstr ""
-"Medusa, l'applicazione che effettua le ricerche, non è stata trovata nel tuo "
-"sistema.  Se hai compilato Nautilus da solo, hai bisogno di installare una "
-"copia di Medusa e ricompilare Nautilus.  (Una copia di Medusa è disponibile "
-"su ftp://ftp.gnome.org)\n"
-"Se stai usando una versione pacchettizata di Nautilus, allora la ricerca "
+"Medusa, l'applicazione che effettua le ricerche, non è stata trovata nel "
+"sistema.  Se si è compilato Nautilus da soli, si ha bisogno di installare "
+"una copia di Medusa e ricompilare Nautilus.  (Una copia di Medusa è "
+"disponibile su ftp://ftp.gnome.org)\n"
+"Se si sta usando una versione pacchettizata di Nautilus, allora la ricerca "
 "veloce non è disponibile.\n"
 
 #: libnautilus-private/nautilus-program-chooser.c:290
@@ -3854,13 +3799,13 @@ msgstr "È predefinito per tutti gli oggetti \"%s\"."
 #: libnautilus-private/nautilus-program-chooser.c:989
 #, c-format
 msgid "Modify \"%s\""
-msgstr "Modifica \"%s\""
+msgstr "Modificare \"%s\""
 
 #. Radio button for adding to short list for file type.
 #: libnautilus-private/nautilus-program-chooser.c:1015
 #, c-format
 msgid "Include in the menu for \"%s\" items"
-msgstr "Includi nel menù per gli oggetti \"%s\""
+msgstr "Includere nel menù per gli oggetti \"%s\""
 
 #. Radio button for setting default for file type.
 #: libnautilus-private/nautilus-program-chooser.c:1022
@@ -3872,7 +3817,7 @@ msgstr "Predefinito per gli oggetti \"%s\""
 #: libnautilus-private/nautilus-program-chooser.c:1029
 #, c-format
 msgid "Include in the menu just for \"%s\""
-msgstr "Includi nel menù solo per \"%s\""
+msgstr "Includere nel menù solo per \"%s\""
 
 #. Radio button for setting default for specific file.
 #: libnautilus-private/nautilus-program-chooser.c:1035
@@ -3888,6 +3833,7 @@ msgstr "Non includere nel menù per gli oggetti \"%s\""
 
 #: libnautilus-private/nautilus-program-chooser.c:1200
 #: src/file-manager/fm-search-list-view.c:494
+#: src/nautilus-bookmarks-window.c:202
 msgid "Name"
 msgstr "Nome"
 
@@ -3897,16 +3843,15 @@ msgstr "Stato"
 
 #: libnautilus-private/nautilus-program-chooser.c:1287
 msgid "Choose"
-msgstr "Scegli"
+msgstr "Scelta"
 
 #: libnautilus-private/nautilus-program-chooser.c:1290
 msgid "Done"
 msgstr "Fatto"
 
 #: libnautilus-private/nautilus-program-chooser.c:1360
-#, fuzzy
 msgid "_Modify..."
-msgstr "Modifica..."
+msgstr "_Modifica..."
 
 #. Framed area with button to launch mime type editing capplet.
 #: libnautilus-private/nautilus-program-chooser.c:1369
@@ -3914,16 +3859,15 @@ msgid "File Types and Programs"
 msgstr "Tipi di file e programmi"
 
 #: libnautilus-private/nautilus-program-chooser.c:1381
-#, fuzzy
 msgid "_Go There"
-msgstr "Vai li"
+msgstr "_Andare la"
 
 #: libnautilus-private/nautilus-program-chooser.c:1388
 msgid ""
 "You can configure which programs are offered for which file types in the "
 "GNOME Control Center."
 msgstr ""
-"Puoi configurare i programmi che vengono offerti per ogni tipo di file nel "
+"È possibile configurare i programmi offerti per ogni tipo di file nel "
 "Control Center di GNOME."
 
 #: libnautilus-private/nautilus-program-chooser.c:1419
@@ -3933,7 +3877,7 @@ msgstr "Apri con altro"
 #: libnautilus-private/nautilus-program-chooser.c:1420
 #, c-format
 msgid "Choose an application with which to open \"%s\"."
-msgstr "Scegli un'applicazione con la quale aprire \"%s\"."
+msgstr "Scegliere un'applicazione con la quale aprire \"%s\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:1424
 msgid "View as Other"
@@ -3942,7 +3886,7 @@ msgstr "Vedi come Altro"
 #: libnautilus-private/nautilus-program-chooser.c:1425
 #, c-format
 msgid "Choose a view for \"%s\"."
-msgstr "Scegli una vista per \"%s\"."
+msgstr "Scegliere una vista per \"%s\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:1527
 #, c-format
@@ -3977,9 +3921,9 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"Puoi configurare i programmi che vengono offerti per ogni tipo di file con "
-"la parte del Control Center di GNOME \"Tipi di file e programmi\". Vuoi "
-"andari li ora?"
+"È possibile configurare i programmi offerti per ogni tipo di file con la "
+"parte \"Tipi di file e programmi\" del Control Center di GNOME. Si vuole "
+"andare la ora?"
 
 #: libnautilus-private/nautilus-program-choosing.c:491
 #, c-format
@@ -3988,7 +3932,7 @@ msgid ""
 "locations.  Would you like to choose another application?"
 msgstr ""
 "\"%s\" non può aprire \"%s\" perchè \"%s\" non può accedere ai file nelle "
-"posizioni \"%s\".  Vorresti scegliere un'altra applicazione?"
+"posizioni \"%s\".  Si vorrebbei scegliere un'altra applicazione?"
 
 #: libnautilus-private/nautilus-program-choosing.c:496
 #: libnautilus-private/nautilus-program-choosing.c:518
@@ -4004,8 +3948,8 @@ msgid ""
 msgstr ""
 "\"%s\" non può aprire \"%s\" perchè \"%s\" non può avere accesso ai file "
 "nelle posizioni \"%s\".  Nessun'altra applicazione è disponibile per "
-"visualizzare questo file.  Se copi questo file nel tuo computer, potrai "
-"aprirlo."
+"visualizzare questo file.  Se si copia questo file nel proprio computer, lo "
+"si potrà aprirlo."
 
 #. Human readable description for a criterion in a search for
 #. files. Bracketed items are context, and are message
@@ -4256,7 +4200,7 @@ msgstr "Oggetti contenenti \"medusa\" nei loro nomi e che sono cartelle"
 #: libnautilus-private/nautilus-theme.c:501
 #, c-format
 msgid "No description available for the \"%s\" theme"
-msgstr "Non è disponibile nessuna descrizione per il tema \"%s\"."
+msgstr "Nessuna descrizione disponibile per il tema \"%s\"."
 
 #: libnautilus-private/nautilus-trash-directory.c:69
 msgid "Searching Disks"
@@ -4264,7 +4208,7 @@ msgstr "Ricerca nei dischi"
 
 #: libnautilus-private/nautilus-trash-directory.c:70
 msgid "Nautilus is searching your disks for trash folders."
-msgstr "Nautilus sta cercando nei tuoi dischi le cartelle del cestino."
+msgstr "Nautilus sta cercando nei dischi le cartelle del cestino."
 
 #: libnautilus-private/nautilus-trash-file.c:718
 msgid "on the desktop"
@@ -4319,13 +4263,12 @@ msgid "Audio CD"
 msgstr "CD audio"
 
 #: libnautilus-private/nautilus-volume-monitor.c:848
-#, fuzzy
 msgid "Root Volume"
-msgstr "Volume Ext2"
+msgstr "Volume root"
 
 #: libnautilus-private/nautilus-volume-monitor.c:1450
 msgid "Mount Error"
-msgstr "Errore montando"
+msgstr "Errore di mount"
 
 #: libnautilus-private/nautilus-volume-monitor.c:1450
 msgid "Unmount Error"
@@ -4337,8 +4280,8 @@ msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
 msgstr ""
-"Nautilus non è stato capace di montare il lettore di dischetti. "
-"Probabilmente non è presente nessun dischetto."
+"Nautilus non è stato capace di montare il dischetto. Probabilmente non è "
+"presente nessun dischetto."
 
 #. All others
 #: libnautilus-private/nautilus-volume-monitor.c:1527
@@ -4347,7 +4290,7 @@ msgid ""
 "device."
 msgstr ""
 "Nautilus non è stato in grado di montare il volume. Probabilmente non c'è "
-"nessun media nella periferica."
+"niente nella periferica."
 
 #: libnautilus-private/nautilus-volume-monitor.c:1533
 msgid ""
@@ -4367,7 +4310,7 @@ msgstr ""
 
 #: libnautilus-private/nautilus-volume-monitor.c:1541
 msgid "Nautilus was unable to mount the selected floppy drive."
-msgstr "Nautilus non può montare la periferica dei dischetti selezionata."
+msgstr "Nautilus non può montare la il dischetto selezionato."
 
 #: libnautilus-private/nautilus-volume-monitor.c:1543
 msgid "Nautilus was unable to mount the selected volume."
@@ -4443,14 +4386,12 @@ msgid "_Paste Text"
 msgstr "_Incolla testo"
 
 #: nautilus.desktop.in.h:1
-#, fuzzy
 msgid "Home Folder"
-msgstr "Nuova cartella"
+msgstr "Cartella Home"
 
 #: nautilus.desktop.in.h:2
-#, fuzzy
 msgid "View your home folder in the Nautilus file manager"
-msgstr "Fabbrica per la shell e file manager Nautilus"
+msgstr "Vedi la tua cartella home nel file manager Nautilus"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4501,7 +4442,7 @@ msgstr ""
 
 #: src/Nautilus_shell.server.in.h:11
 msgid "Nautilus file manager desktop icon view"
-msgstr "Vista ad icona per la scrivania del file manager Nautilus"
+msgstr "Vista ad icone per la scrivania del file manager Nautilus"
 
 #: src/Nautilus_shell.server.in.h:12
 msgid "Nautilus file manager icon view"
@@ -4537,7 +4478,7 @@ msgstr "Produce degli oggetti metafile per l'accesso ai metadati di Nautilus"
 
 #: src/Nautilus_shell.server.in.h:19
 msgid "Search List"
-msgstr "Lista della ricerca"
+msgstr "Lista di ricerca"
 
 #: src/Nautilus_shell.server.in.h:20
 msgid "View as Icons"
@@ -4551,7 +4492,7 @@ msgstr "Vedi come Lista"
 msgid "Background"
 msgstr "Sfondo"
 
-#: src/file-manager/fm-desktop-icon-view.c:883
+#: src/file-manager/fm-desktop-icon-view.c:885
 #, c-format
 msgid "Error executing utility program '%s': %s"
 msgstr ""
@@ -4564,16 +4505,16 @@ msgstr ""
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: src/file-manager/fm-desktop-icon-view.c:1117
+#: src/file-manager/fm-desktop-icon-view.c:1127
 #, c-format
 msgid "%s's Home"
 msgstr "Home di %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1310
+#: src/file-manager/fm-desktop-icon-view.c:1320
 msgid "Empty Trash..."
 msgstr "Svuota il cestino..."
 
-#: src/file-manager/fm-desktop-icon-view.c:1312
+#: src/file-manager/fm-desktop-icon-view.c:1322
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
 msgid "Empty Trash"
@@ -4582,7 +4523,7 @@ msgstr "Svuota il cestino"
 #: src/file-manager/fm-directory-view.c:475
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
-msgstr "Verranno aperte %d finestre separate. Sei sicuro di volerlo fare?"
+msgstr "Verranno aperte %d finestre separate. Si è sicuri di volerlo fare?"
 
 #: src/file-manager/fm-directory-view.c:477
 #, c-format
@@ -4605,8 +4546,8 @@ msgid "Delete?"
 msgstr "Eliminare?"
 
 #: src/file-manager/fm-directory-view.c:797
-#: src/file-manager/fm-directory-view.c:2957
-#: src/file-manager/fm-directory-view.c:2999
+#: src/file-manager/fm-directory-view.c:2960
+#: src/file-manager/fm-directory-view.c:3002
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Delete"
 msgstr "Elimina"
@@ -4700,14 +4641,14 @@ msgstr ""
 msgid "Too Many Files"
 msgstr "Troppi file"
 
-#: src/file-manager/fm-directory-view.c:2940
+#: src/file-manager/fm-directory-view.c:2943
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr ""
 "\"%s\" non puo' essere spostato nel cestino. Vuoi eliminarlo immediatamente?"
 
-#: src/file-manager/fm-directory-view.c:2945
+#: src/file-manager/fm-directory-view.c:2948
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
@@ -4716,7 +4657,7 @@ msgstr ""
 "I %d oggetti selezionati non possono essere spostati nel cestino. Vuoi "
 "eliminarli immediatamente?"
 
-#: src/file-manager/fm-directory-view.c:2949
+#: src/file-manager/fm-directory-view.c:2952
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
@@ -4725,16 +4666,16 @@ msgstr ""
 "%d degli oggetti selezionati non possono essere spostati nel Cestino. Vuoi "
 "eliminare questi %d oggetti immediatamente?"
 
-#: src/file-manager/fm-directory-view.c:2957
+#: src/file-manager/fm-directory-view.c:2960
 msgid "Delete Immediately?"
 msgstr "Eliminare immediatamente?"
 
-#: src/file-manager/fm-directory-view.c:2989
+#: src/file-manager/fm-directory-view.c:2992
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
 msgstr "Sei sicuro di voler eliminare permanentemente \"%s\" dal Cestino?"
 
-#: src/file-manager/fm-directory-view.c:2993
+#: src/file-manager/fm-directory-view.c:2996
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
@@ -4743,40 +4684,40 @@ msgstr ""
 "Sei sicuro di voler eliminare permanentemente i %d oggetti selezionati dal "
 "Cestino?"
 
-#: src/file-manager/fm-directory-view.c:2999
+#: src/file-manager/fm-directory-view.c:3002
 msgid "Delete From Trash?"
 msgstr "Eliminare dal cestino?"
 
-#: src/file-manager/fm-directory-view.c:3319
-#: src/file-manager/fm-directory-view.c:3361
+#: src/file-manager/fm-directory-view.c:3322
+#: src/file-manager/fm-directory-view.c:3364
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Usa \"%s\" per aprire l'oggetto selezionato"
 
-#: src/file-manager/fm-directory-view.c:3443
+#: src/file-manager/fm-directory-view.c:3446
 #: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Other _Application..."
 msgstr "Altre applicazioni..."
 
-#: src/file-manager/fm-directory-view.c:3443
+#: src/file-manager/fm-directory-view.c:3446
 msgid "An _Application..."
 msgstr "Una _applicazione..."
 
-#: src/file-manager/fm-directory-view.c:3449
+#: src/file-manager/fm-directory-view.c:3452
 #: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Other _Viewer..."
-msgstr "Altri _visualizzatori..."
+msgstr "Altro _visualizzatore..."
 
-#: src/file-manager/fm-directory-view.c:3449
+#: src/file-manager/fm-directory-view.c:3452
 msgid "A _Viewer..."
 msgstr "Un _visualizzatore..."
 
-#: src/file-manager/fm-directory-view.c:3667
+#: src/file-manager/fm-directory-view.c:3670
 #, c-format
 msgid "Run \"%s\" on any selected items"
-msgstr "Esegui \"%s\" in uno degli oggetti selezionati"
+msgstr "Eseguire \"%s\" in uno degli oggetti selezionati"
 
-#: src/file-manager/fm-directory-view.c:3875
+#: src/file-manager/fm-directory-view.c:3878
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
@@ -4786,11 +4727,11 @@ msgstr ""
 "Scegliendo uno script da questo menù, esso verrà avviato con ogni oggetto "
 "selezionato come input."
 
-#: src/file-manager/fm-directory-view.c:3878
+#: src/file-manager/fm-directory-view.c:3881
 msgid "About Scripts"
 msgstr "Informazioni sugli script"
 
-#: src/file-manager/fm-directory-view.c:3879
+#: src/file-manager/fm-directory-view.c:3882
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4830,17 +4771,17 @@ msgstr ""
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: posizione e dimensione della finestra "
 "corrente"
 
-#: src/file-manager/fm-directory-view.c:3991
+#: src/file-manager/fm-directory-view.c:3994
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" verrà spostato se selezioni il comando Incolla i file"
 
-#: src/file-manager/fm-directory-view.c:3995
+#: src/file-manager/fm-directory-view.c:3998
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" verrà copiato se selezioni il comando Incolla i file"
 
-#: src/file-manager/fm-directory-view.c:4002
+#: src/file-manager/fm-directory-view.c:4005
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
@@ -4848,7 +4789,7 @@ msgstr ""
 "I %d oggetti selezionati verranno spostato se selezioni il comando Incolla i "
 "file"
 
-#: src/file-manager/fm-directory-view.c:4006
+#: src/file-manager/fm-directory-view.c:4009
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
@@ -4856,97 +4797,95 @@ msgstr ""
 "I %d oggetti selezionati verranno copiati se selezioni il comando Incolla i "
 "file"
 
-#: src/file-manager/fm-directory-view.c:4091
+#: src/file-manager/fm-directory-view.c:4094
 msgid "There is nothing on the clipboard to paste."
 msgstr "Non c'è nulla da incollare negli appunti."
 
-#: src/file-manager/fm-directory-view.c:4268
+#: src/file-manager/fm-directory-view.c:4269
 msgid "Open _in This Window"
 msgstr "Apri _in questa finestra"
 
-#: src/file-manager/fm-directory-view.c:4271
+#: src/file-manager/fm-directory-view.c:4272
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Open _in New Window"
 msgstr "Apri _in una nuova finestra"
 
-#: src/file-manager/fm-directory-view.c:4273
+#: src/file-manager/fm-directory-view.c:4274
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "Apri _in %d nuove finestre"
 
-#: src/file-manager/fm-directory-view.c:4291
+#: src/file-manager/fm-directory-view.c:4292
 msgid "Delete from _Trash..."
 msgstr "Elimina dal _Cestino..."
 
-#: src/file-manager/fm-directory-view.c:4291
+#: src/file-manager/fm-directory-view.c:4292
 msgid "Delete from _Trash"
 msgstr "Elimina dal Ces_tino"
 
-#: src/file-manager/fm-directory-view.c:4293
+#: src/file-manager/fm-directory-view.c:4294
 msgid "Delete all selected items permanently"
 msgstr "Elimina tutti gli oggetti selezionati permanentemente"
 
-#: src/file-manager/fm-directory-view.c:4296
+#: src/file-manager/fm-directory-view.c:4297
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Move to _Trash"
 msgstr "Sposta nel Ces_tino"
 
-#: src/file-manager/fm-directory-view.c:4298
+#: src/file-manager/fm-directory-view.c:4299
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Move each selected item to the Trash"
 msgstr "Sposta ogni oggetto selezionato nel Cestino"
 
-#: src/file-manager/fm-directory-view.c:4325
+#: src/file-manager/fm-directory-view.c:4326
 msgid "De_lete..."
 msgstr "E_limina..."
 
-#: src/file-manager/fm-directory-view.c:4325
+#: src/file-manager/fm-directory-view.c:4326
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "De_lete"
 msgstr "E_limina"
 
-#: src/file-manager/fm-directory-view.c:4346
+#: src/file-manager/fm-directory-view.c:4347
 msgid "Make _Links"
 msgstr "Crea co_llegamenti"
 
-#: src/file-manager/fm-directory-view.c:4347
+#: src/file-manager/fm-directory-view.c:4348
 msgid "Make _Link"
 msgstr "Crea co_llegamento"
 
-#: src/file-manager/fm-directory-view.c:4362 src/nautilus-sidebar.c:1501
+#: src/file-manager/fm-directory-view.c:4363 src/nautilus-sidebar.c:1501
 msgid "_Empty Trash..."
 msgstr "S_vuota Cestino..."
 
-#: src/file-manager/fm-directory-view.c:4363
+#: src/file-manager/fm-directory-view.c:4364
 #: src/file-manager/nautilus-directory-view-ui.xml.h:58
 #: src/nautilus-sidebar.c:1502
 msgid "_Empty Trash"
 msgstr "S_vuota Cestino"
 
-#: src/file-manager/fm-directory-view.c:4374
-#, fuzzy
-msgid "R_emove Custom Icons"
-msgstr "Rimuovi icona personalizzata"
-
 #: src/file-manager/fm-directory-view.c:4375
-#, fuzzy
-msgid "R_emove Custom Icon"
-msgstr "Rimuovi icona personalizzata"
+msgid "R_emove Custom Icons"
+msgstr "_Rimuovi icone personalizzate"
 
-#: src/file-manager/fm-directory-view.c:4389
+#: src/file-manager/fm-directory-view.c:4376
+msgid "R_emove Custom Icon"
+msgstr "R_imuovi icona personalizzata"
+
+#: src/file-manager/fm-directory-view.c:4390
 msgid "Cu_t File"
 msgstr "_Taglia file"
 
-#: src/file-manager/fm-directory-view.c:4390
+#: src/file-manager/fm-directory-view.c:4391
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "_Taglia i file"
 
-#: src/file-manager/fm-directory-view.c:4400
+#: src/file-manager/fm-directory-view.c:4401
 msgid "_Copy File"
 msgstr "_Copia file"
 
-#: src/file-manager/fm-directory-view.c:4401
+#: src/file-manager/fm-directory-view.c:4402
 #: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "_Copy Files"
 msgstr "_Copia i file"
@@ -4982,7 +4921,8 @@ msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
 "contents?"
 msgstr ""
-"\"%s\" è un file di testo eseguibile. Vuoi eseguirlo, o vederne il contenuto?"
+"\"%s\" è un file di testo eseguibile. Si vuole eseguirlo, o vederne il "
+"contenuto?"
 
 #: src/file-manager/fm-directory-view.c:4643
 msgid "Run or Display?"
@@ -5021,7 +4961,7 @@ msgstr "Annullare l'apertura?"
 #, c-format
 msgid ""
 "You do not have the permissions necessary to view the contents of \"%s\"."
-msgstr "Non hai i permessi necessari per vedere il contenuto di \"%s\"."
+msgstr "Non si hanno i permessi necessari per vedere il contenuto di \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:61
 #, c-format
@@ -5041,7 +4981,7 @@ msgstr "Errore mostrando la cartella"
 #, c-format
 msgid ""
 "The name \"%s\" is already used in this folder. Please use a different name."
-msgstr "Il nome \"%s\" è già in uso in questa cartella. Usa un nome diverso."
+msgstr "Il nome \"%s\" è già in uso in questa cartella. Usare un nome diverso."
 
 #: src/file-manager/fm-error-reporting.c:107
 #, c-format
@@ -5052,7 +4992,7 @@ msgstr "Non c'è \"%s\" in questa cartella. Forse è stato spostato o eliminato?"
 #: src/file-manager/fm-error-reporting.c:112
 #, c-format
 msgid "You do not have the permissions necessary to rename \"%s\"."
-msgstr "Non hai permessi necessari per rinominare \"%s\"."
+msgstr "Non si hanno i permessi necessari per rinominare \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:117
 #, c-format
@@ -5060,13 +5000,13 @@ msgid ""
 "The name \"%s\" is not valid because it contains the character \"/\". Please "
 "use a different name."
 msgstr ""
-"Il nome \"%s\" non è valido perchè contiene il carattere \"/\". Usa un nome "
-"diverso."
+"Il nome \"%s\" non è valido perchè contiene il carattere \"/\". Usare un "
+"nome diverso."
 
 #: src/file-manager/fm-error-reporting.c:121
 #, c-format
 msgid "The name \"%s\" is not valid. Please use a different name."
-msgstr "Il nome \"%s\" non è valido. Usa un nome diverso."
+msgstr "Il nome \"%s\" non è valido. Usare un nome diverso."
 
 #: src/file-manager/fm-error-reporting.c:127
 #, c-format
@@ -5193,50 +5133,47 @@ msgstr "per _simboli"
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Mantieni le icone ordinate per simboli nelle righe"
 
-#: src/file-manager/fm-icon-view.c:1295
+#: src/file-manager/fm-icon-view.c:1285
 #: src/file-manager/nautilus-icon-view-ui.xml.h:25
-#, fuzzy
 msgid "Restore Icons' _Original Sizes"
-msgstr "Ripristina le dimensioni originali delle icone"
+msgstr "Ripristina le dimensioni _originali delle icone"
 
-#: src/file-manager/fm-icon-view.c:1296
-#, fuzzy
+#: src/file-manager/fm-icon-view.c:1286
 msgid "Restore Icon's _Original Size"
-msgstr "_Reimposta dimensioni originali icone"
+msgstr "Reimposta dimensioni _originali icona"
 
-#: src/file-manager/fm-icon-view.c:1631
+#: src/file-manager/fm-icon-view.c:1621
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "punta a \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2164
+#: src/file-manager/fm-icon-view.c:2157
 msgid "Drag and drop is only supported to local file systems."
-msgstr ""
+msgstr "Il drag and drop è supportato solo nei file system locali."
 
-#: src/file-manager/fm-icon-view.c:2165 src/file-manager/fm-icon-view.c:2184
+#: src/file-manager/fm-icon-view.c:2158 src/file-manager/fm-icon-view.c:2177
 msgid "Drag and Drop error"
-msgstr ""
+msgstr "Errore di drag and drop"
 
-#: src/file-manager/fm-icon-view.c:2183
+#: src/file-manager/fm-icon-view.c:2176
 msgid "An invalid drag type was used."
-msgstr ""
+msgstr "È stato usato un tipo non valido di drag."
 
-#: src/file-manager/fm-list-view.c:333
-#, fuzzy
+#: src/file-manager/fm-list-view.c:319
 msgid "File name"
-msgstr "Proprietario del file:"
+msgstr "Nome di file"
 
-#: src/file-manager/fm-list-view.c:355
+#: src/file-manager/fm-list-view.c:341
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Dimensione"
 
-#: src/file-manager/fm-list-view.c:366
+#: src/file-manager/fm-list-view.c:352
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Tipo"
 
-#: src/file-manager/fm-list-view.c:377
+#: src/file-manager/fm-list-view.c:363
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Data modifica"
@@ -5246,8 +5183,8 @@ msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
 "image to set a custom icon."
 msgstr ""
-"Non puoi assegnare più di un'icona personalizzata alla volta! Trascinare "
-"solo un'immagine per impostare l'icona personalizzata."
+"Non è possibile assegnare più di un'icona personalizzata alla volta! "
+"Trascinare solo un'immagine per impostare l'icona personalizzata."
 
 #: src/file-manager/fm-properties-window.c:317 src/nautilus-sidebar.c:750
 msgid "More Than One Image"
@@ -5258,8 +5195,8 @@ msgid ""
 "The file that you dropped is not local.  You can only use local images as "
 "custom icons."
 msgstr ""
-"Il file che hai trascinato non è locale.  Puoi usare solo immagini locali "
-"come icone personalizzate."
+"Il file che è stato trascinato non è locale.  Si possono usare solo immagini "
+"locali come icone personalizzate."
 
 #: src/file-manager/fm-properties-window.c:328 src/nautilus-sidebar.c:771
 msgid "Local Images Only"
@@ -5280,7 +5217,7 @@ msgstr "Solo immagini"
 #: src/file-manager/fm-properties-window.c:610
 #, c-format
 msgid "%s Properties"
-msgstr "Proprietà - %s"
+msgstr "Proprietà di %s"
 
 #: src/file-manager/fm-properties-window.c:806
 msgid "Cancel Group Change?"
@@ -5342,6 +5279,7 @@ msgid "Size:"
 msgstr "Dimensione:"
 
 #: src/file-manager/fm-properties-window.c:1611 src/nautilus-location-bar.c:60
+#: src/nautilus-preferences-dialog.c:239
 msgid "Location:"
 msgstr "Posizione:"
 
@@ -5362,14 +5300,12 @@ msgid "Accessed:"
 msgstr "Accesso:"
 
 #: src/file-manager/fm-properties-window.c:1634
-#, fuzzy
 msgid "_Select Custom Icon..."
-msgstr "Seleziona icona personalizzata..."
+msgstr "_Seleziona icona personalizzata..."
 
 #: src/file-manager/fm-properties-window.c:1640
-#, fuzzy
 msgid "_Remove Custom Icon"
-msgstr "Rimuovi icona personalizzata"
+msgstr "_Rimuovi icona personalizzata"
 
 #: src/file-manager/fm-properties-window.c:1930
 msgid "Set User ID"
@@ -5444,15 +5380,15 @@ msgstr "Ultimo cambiamento:"
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "I permessi di \"%s\" non possono essere determinati."
 
-#: src/file-manager/fm-properties-window.c:2400
+#: src/file-manager/fm-properties-window.c:2402
 msgid "Cancel Showing Properties Window?"
 msgstr "Annullare la finestra delle proprietà?"
 
-#: src/file-manager/fm-properties-window.c:2401
+#: src/file-manager/fm-properties-window.c:2403
 msgid "Creating Properties window"
 msgstr "Creazione della finestra delle proprietà"
 
-#: src/file-manager/fm-properties-window.c:2495
+#: src/file-manager/fm-properties-window.c:2497
 msgid "Select an icon:"
 msgstr "Seleziona un'icona:"
 
@@ -5687,9 +5623,8 @@ msgid "Change Desktop Background"
 msgstr "Cambia sfondo scrivania"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:2
-#, fuzzy
 msgid "Create a new launcher"
-msgstr "Crea un nuovo colore:"
+msgstr "Crea una nuova icona"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:3
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
@@ -5701,18 +5636,16 @@ msgid "Disks"
 msgstr "Dischi"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
-#, fuzzy
 msgid "Format"
-msgstr "Perdi"
+msgstr ""
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:7
 msgid "Format Conditionally"
 msgstr ""
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
-#, fuzzy
 msgid "Media Properties"
-msgstr "Proprietà - %s"
+msgstr "Proprietà media"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
 #, fuzzy
@@ -5724,9 +5657,8 @@ msgid "Mount or unmount disks"
 msgstr "Monta o smonta i dischi"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:11
-#, fuzzy
 msgid "New Launcher"
-msgstr "Pannello delle notizie"
+msgstr "Nuova icona"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:12
 msgid "New Terminal"
@@ -5762,14 +5694,12 @@ msgstr "Smonta volume"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:19
 #: src/file-manager/nautilus-directory-view-ui.xml.h:53
-#, fuzzy
 msgid "Use Default Background"
-msgstr "Reimposta sfondo della scrivania"
+msgstr "Usa sfondo predefinito"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
-#, fuzzy
 msgid "Use the default desktop background"
-msgstr "Reimposta sfondo della scrivania"
+msgstr "Usa lo sfondo predefinito della scrivania"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
 msgid "Choose a program with which to open the selected item"
@@ -5883,14 +5813,12 @@ msgstr ""
 "Prepara i file selezionati ad essere spostati con il comando Incolla i file"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:37
-#, fuzzy
 msgid "Properties"
-msgstr "Proprietà - %s"
+msgstr "Proprietà"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:38
-#, fuzzy
 msgid "Remove Custom Icons"
-msgstr "Rimuovi icona personalizzata"
+msgstr "Rimuovi icone personalizzate"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "Remove any custom images from selected icons"
@@ -5901,19 +5829,16 @@ msgid "Rename"
 msgstr "Rinomina"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
-#, fuzzy
 msgid "Rename selected item"
-msgstr "Rinomina l'icona selezionata"
+msgstr "Rinomina l'oggetto selezionato"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:42
-#, fuzzy
 msgid "Reset View to Default"
-msgstr "Impostazioni predefinite della vista a lista"
+msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:43
-#, fuzzy
 msgid "Reset View to _Defaults"
-msgstr "Impostazioni predefinite della vista a lista"
+msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:44
 msgid "Reset sorting order and zoom level to match preferences for this view"
@@ -5954,9 +5879,8 @@ msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Mostra la cartella contenente gli script che appaiono in questo menù"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:54
-#, fuzzy
 msgid "Use the default background for this location"
-msgstr "Apri un'altra finestra di Nautilus per la posizione mostrata"
+msgstr "Usa lo sfondo predefinito per questa posizione"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:55
 msgid "View or modify the properties of each selected item"
@@ -5987,9 +5911,8 @@ msgid "_Paste Files"
 msgstr "_Incolla i file"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:64
-#, fuzzy
 msgid "_Properties"
-msgstr "Proprietà - %s"
+msgstr "_Proprietà"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:65
 msgid "_Rename"
@@ -6209,19 +6132,17 @@ msgstr ""
 #. * since neither of the above causes explain it.
 #.
 #: src/nautilus-application.c:440
-#, fuzzy
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
 "installing Nautilus again."
 msgstr ""
-"Nautilus non può essere usato in questo momento. Eseguire il comando "
-"\"nautilus-clean.sh -x\" dalla console per risolvere il problema. Se ciò non "
-"accade, puoi provare riavviando il computer o reinstallando Nautilus."
+"Nautilus non può essere usato ora. Eseguire il comando \"bonobo-slay\" dalla "
+"console per risolvere il problema. Se ciò non accade, si può tentare di "
+"riavviare il comuter o reinstallare Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:446
-#, fuzzy
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6241,23 +6162,25 @@ msgid ""
 "We have also seen this error when a faulty version of bonobo-activation was "
 "installed."
 msgstr ""
-"Nautilus non può essere usato ora. Eseguire il comando \"nautilus-clean.sh -x"
-"\" dalla console per risolvere il problema. Se ciò non accade, provare a "
-"riavviare il computer o a reinstallare Nautilus.\n"
+"Nautilus non può essere usato ora. Eseguire il comando \"bonobo-slay\" dalla "
+"console per risolvere il problema. Se ciò non accade, provare a riavviare il "
+"computer o a reinstallare Nautilus.\n"
 "\n"
-"OAF non può trovare il file Nautilus_shell.oaf. Una delle possibili cause è "
-"l'assenza nella variabile ambientale LD_LIBRARY_PATH della directory "
-"contenente la libreria oaf. Un'altra causa possibile riguarda la non "
-"corretta installazione con un file Nautilus_shell.oaf mancante.\n"
+"Bonobo non può trovare il file Nautilus_shell.sever. Una delle possibili "
+"cause è l'assenza nella variabile ambientale LD_LIBRARY_PATH della directory "
+"contenente la libreria bonobo-activation. Un'altra causa possibile può "
+"essere la non corretta installazione con un file Nautilus_shell.sever "
+"mancante.\n"
 "\n"
-"Eseguire \"nautilus-clean.sh -x\" ucciderà tutti i processi di OAF e GConf, "
-"che possono essere necessari ad altre applicazioni.\n"
+"Eseguendo \"bonobo-slay\" tutti i processi figli di Bonobo Activation e "
+"GConf, che possono essere necessari alle altre applicazioni, verranno "
+"uccisi.\n"
 "\n"
-"A volte uccidere oafd e gconfd risolve il problema, ma non si conosce il "
-"motivo.\n"
+"A volte uccidere bonobo-activation-server e gconfd risolve il problema, ma "
+"non se ne conosce il motivo.\n"
 "\n"
-"Questo errore si presenta anche quando una versione con errori di oaf è "
-"stata installata."
+"Questo errore si presenta anche quando una versione con errori di bonobo-"
+"activation è stata installata."
 
 #. Some misc. error (can never happen with current
 #. * version of bonobo-activation). Show dialog and terminate the
@@ -6273,34 +6196,31 @@ msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus non può essere usato ora, per via di un errore inatteso."
 
 #: src/nautilus-application.c:477
-#, fuzzy
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
 msgstr ""
-"Nautilus non può essere usato ora, per via di un errore inatteso di OAF "
+"Nautilus non può essere usato ora, per via di un errore inatteso di Bonobo "
 "durante il tentativo di registrazione del server per la vista del file "
 "manager."
 
 #: src/nautilus-application.c:495
-#, fuzzy
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
-"Nautilus non può essere usato ora, per via di un errore inattesto di OAF "
+"Nautilus non può essere usato ora, per via di un errore inattesto di Bonobo "
 "durante il tentativo di localizzazione della fabbrica. Uccidere oafd e "
 "riavviando Nautilus può aiutare a risolvere il problema."
 
 #: src/nautilus-application.c:502
-#, fuzzy
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
-"Nautilus non può essere usato ora, per via di un errore inatteso di OAF "
+"Nautilus non può essere usato ora, per via di un errore inatteso di Bonobo "
 "durante il tentativo di localizzazione dell'oggetto shell. Uccidere oafd e "
 "riavviare Nautilus può aiutare a risolvere il problema."
 
@@ -6308,20 +6228,13 @@ msgstr ""
 msgid "Bookmarks"
 msgstr "Segnalibri"
 
-#: src/nautilus-bookmarks-window.c:202
-#, fuzzy
-msgid "_Name"
-msgstr "Nome"
-
-#: src/nautilus-bookmarks-window.c:217
-#, fuzzy
-msgid "_Location"
+#: src/nautilus-bookmarks-window.c:215
+msgid "Location"
 msgstr "Posizione"
 
-#: src/nautilus-bookmarks-window.c:232
-#, fuzzy
+#: src/nautilus-bookmarks-window.c:228
 msgid "_Remove"
-msgstr "Rimuovi"
+msgstr "_Rimuovi"
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6337,18 +6250,17 @@ msgid "Find Them!"
 msgstr "Trovalo!"
 
 #: src/nautilus-first-time-druid.c:40
-#, fuzzy
 msgid ""
 "Existence of this file indicates that the Nautilus configuration druid\n"
 "has been presented.\n"
 "\n"
 "You can manually erase this file to present the druid again.\n"
 msgstr ""
-"L'esistenza di questo file indica che il druid di configurazione di "
-"Nautilus\n"
-"è stato mostrato.\n"
+"L'esistenza di questo file indica che la configurazione guidata di\n"
+"Nautilus è stata usata.\n"
 "\n"
-"Puoi eliminare manualmente questo file per vedere nuovamente il druid.\n"
+"È possibile eliminare manualmente questo file per vedere di nuovo\n"
+"la configurazione guidata.\n"
 
 #: src/nautilus-location-bar.c:61
 msgid "Go To:"
@@ -6432,57 +6344,48 @@ msgid "Opening New Windows"
 msgstr "Apertura di nuove finestre"
 
 #: src/nautilus-preferences-dialog.c:69
-#, fuzzy
-msgid "_Open each file or folder in a separate window"
-msgstr "Apri ogni file o cartella in una finestra separata"
+msgid "Open each file or folder in a separate window"
+msgstr "Aprire ogni file o cartella in una finestra separata"
 
 #: src/nautilus-preferences-dialog.c:74
-#, fuzzy
-msgid "Display _sidebar in new windows"
-msgstr "Mostra la barra laterale nelle nuove finestre"
+msgid "Display toolbar in new windows"
+msgstr "Mostrare la barra degli strumenti nelle nuove finestre"
 
 #: src/nautilus-preferences-dialog.c:79
-#, fuzzy
-msgid "Display _toolbar in new windows"
-msgstr "Mostra la barra degli strumenti nelle nuove finestre"
+msgid "Display location bar in new windows"
+msgstr "Mostrare la barra dell'indirizzo nelle nuove finestre"
 
 #: src/nautilus-preferences-dialog.c:84
-#, fuzzy
-msgid "Display location _bar in new windows"
-msgstr "Mostra la barra dell'indirizzo nelle nuove finestre"
+msgid "Display status bar in new windows"
+msgstr "Mostrare la barra di stato nelle nuove finestre"
 
 #: src/nautilus-preferences-dialog.c:89
-#, fuzzy
-msgid "Display st_atus bar in new windows"
-msgstr "Mostra la barra di stato nelle nuove finestre"
+msgid "Display sidebar in new windows"
+msgstr "Mostrare la barra laterale nelle nuove finestre"
 
 #: src/nautilus-preferences-dialog.c:96 src/nautilus-preferences-dialog.c:101
 msgid "Desktop"
 msgstr "Scrivania"
 
 #: src/nautilus-preferences-dialog.c:98
-#, fuzzy
-msgid "_Use Nautilus to draw the desktop"
-msgstr "Usa Nautilus per disegnare la scrivania"
+msgid "Use Nautilus to draw the desktop"
+msgstr "Usare Nautilus per disegnare la scrivania"
 
 #: src/nautilus-preferences-dialog.c:103
-#, fuzzy
-msgid "Use your _home folder as the desktop"
-msgstr "Usa la tua cartella home come scrivania"
+msgid "Use your home folder as the desktop"
+msgstr "Usare la propria cartella home come scrivania"
 
 #: src/nautilus-preferences-dialog.c:106 src/nautilus-preferences-dialog.c:111
 msgid "Trash Behavior"
 msgstr "Comportamento del Cestino"
 
 #: src/nautilus-preferences-dialog.c:108
-#, fuzzy
-msgid "_Ask before emptying the Trash or deleting files"
-msgstr "Chiedi conferma prima di svuotare il Cestino o cancellare i file"
+msgid "Ask before emptying the Trash or deleting files"
+msgstr "Chiedere conferma prima di svuotare il Cestino o cancellare i file"
 
 #: src/nautilus-preferences-dialog.c:113
-#, fuzzy
-msgid "_Include a Delete command that bypasses Trash"
-msgstr "Includi un comando Elimina che scavalchi il Cestino"
+msgid "Include a Delete command that bypasses Trash"
+msgstr "Includere il comando Elimina che scavalchi il Cestino"
 
 #: src/nautilus-preferences-dialog.c:120 src/nautilus-preferences-dialog.c:122
 msgid "Click Behavior"
@@ -6498,46 +6401,44 @@ msgid "Show/Hide Options"
 msgstr "Mostra/Nascondi"
 
 #: src/nautilus-preferences-dialog.c:132
-#, fuzzy
-msgid "Show _hidden files (file names start with \".\")"
-msgstr "Mostra i file nascosti (file i cui nomi iniziano con \".\")"
+msgid "Show hidden files (file names start with \".\")"
+msgstr "Mostrare i file nascosti (file i cui nomi iniziano con \".\")"
 
 #: src/nautilus-preferences-dialog.c:137
-#, fuzzy
-msgid "Show _backup files (file names end with \"~\")"
-msgstr "Mostra i file di backup (file i cui nomi finiscono con \"~\")"
+msgid "Show backup files (file names end with \"~\")"
+msgstr "Mostrare i file di backup (file i cui nomi finiscono con \"~\")"
 
 #: src/nautilus-preferences-dialog.c:142
-#, fuzzy
-msgid "Show special flags in _Properties window"
-msgstr "Mostra i flag speciali nella finestra Proprietà"
+msgid "Show special flags in Properties window"
+msgstr "Mostrare i flag speciali nella finestra Proprietà"
 
 #: src/nautilus-preferences-dialog.c:145
 msgid "Sorting Order"
 msgstr "Ordinamento"
 
 #: src/nautilus-preferences-dialog.c:147
-#, fuzzy
-msgid "Always _list folders before files"
-msgstr "Elenca sempre le cartelle prima dei file"
+msgid "Always list folders before files"
+msgstr "Elencare sempre le cartelle prima dei file"
 
 #: src/nautilus-preferences-dialog.c:154 src/nautilus-preferences-dialog.c:321
 msgid "Icon Captions"
 msgstr "Titoli delle icone"
 
 #: src/nautilus-preferences-dialog.c:156
+#, fuzzy
 msgid ""
 "Choose the order for information to appear beneath icon names.\n"
 "More information appears as you zoom in closer"
 msgstr ""
+"Scegliere l'ordine di apparizione per le informazioni _ i nomi delle icone.\n"
+"Maggiori informazioni vengono mostrate aumentando il livello di zoom"
 
 #: src/nautilus-preferences-dialog.c:169
 msgid "Default View"
 msgstr "Vista predefinita"
 
 #: src/nautilus-preferences-dialog.c:171
-#, fuzzy
-msgid "_View new folders using:"
+msgid "View new folders using:"
 msgstr "Mostra le nuove cartelle usando:"
 
 #. Icon View Defaults
@@ -6546,24 +6447,21 @@ msgstr "Mostra le nuove cartelle usando:"
 msgid "Icon View Defaults"
 msgstr "Impostazioni predefinite della vista a icone"
 
-#: src/nautilus-preferences-dialog.c:178
-msgid "_Arrange Items:"
-msgstr ""
+#: src/nautilus-preferences-dialog.c:178 src/nautilus-preferences-dialog.c:202
+msgid "Arrange Items:"
+msgstr "Disponi oggetti:"
 
-#: src/nautilus-preferences-dialog.c:183
-#, fuzzy
-msgid "_Sort in reversed order"
+#: src/nautilus-preferences-dialog.c:183 src/nautilus-preferences-dialog.c:207
+msgid "Sort in reversed order"
 msgstr "Ordina al contrario"
 
-#: src/nautilus-preferences-dialog.c:188
-#, fuzzy
-msgid "_Default zoom level:"
-msgstr "Livello d'ingrandimento predefinito:"
+#: src/nautilus-preferences-dialog.c:188 src/nautilus-preferences-dialog.c:212
+msgid "Default zoom level:"
+msgstr "Livello di zoom predefinito:"
 
 #: src/nautilus-preferences-dialog.c:194
-#, fuzzy
-msgid "Use _tighter layout"
-msgstr "Stringi la disposizione"
+msgid "Use tighter layout"
+msgstr "Stringere la disposizione"
 
 #. List View Defaults
 #: src/nautilus-preferences-dialog.c:200 src/nautilus-preferences-dialog.c:205
@@ -6571,61 +6469,40 @@ msgstr "Stringi la disposizione"
 msgid "List View Defaults"
 msgstr "Impostazioni predefinite della vista a lista"
 
-#: src/nautilus-preferences-dialog.c:202
-msgid "Arrange _Items:"
-msgstr ""
-
-#: src/nautilus-preferences-dialog.c:207
-#, fuzzy
-msgid "Sort in _reversed order"
-msgstr "Ordina al contrario"
-
-#: src/nautilus-preferences-dialog.c:212
-#, fuzzy
-msgid "Default _zoom level:"
-msgstr "Livello d'ingrandimento predefinito:"
-
 #: src/nautilus-preferences-dialog.c:227
 msgid "Search Complexity Options"
 msgstr "Opzioni della complessità della ricerca"
 
 #: src/nautilus-preferences-dialog.c:229
 msgid "search type to do by default"
-msgstr "tipo di ricerca da fare predefinito"
+msgstr "tipo di ricerca predefinita"
 
 #: src/nautilus-preferences-dialog.c:237 src/nautilus-shell-ui.xml.h:29
 msgid "Home"
 msgstr "Home"
-
-#: src/nautilus-preferences-dialog.c:239
-#, fuzzy
-msgid "_Location:"
-msgstr "Posizione:"
 
 #: src/nautilus-preferences-dialog.c:242
 msgid "Built-in Bookmarks"
 msgstr "Segnalibri predefiniti"
 
 #: src/nautilus-preferences-dialog.c:244
-#, fuzzy
-msgid "_Don't include the built-in bookmarks in the Bookmarks menu"
+msgid "Don't include the built-in bookmarks in the Bookmarks menu"
 msgstr "Non includere i segnalibri predefiniti nel menù Segnalibri"
 
 #: src/nautilus-preferences-dialog.c:251
 msgid "Show Text in Icons"
-msgstr "Mostra il testo nelle icone"
+msgstr "Mostrare il testo nelle icone"
 
 #: src/nautilus-preferences-dialog.c:256
 msgid "Show Count of Items in Folders"
-msgstr "Mostra il numero di oggetti nelle cartelle"
+msgstr "Mostrare il numero di oggetti nelle cartelle"
 
 #: src/nautilus-preferences-dialog.c:261 src/nautilus-preferences-dialog.c:266
 msgid "Show Thumbnails for Image Files"
-msgstr "Mostra le miniature per le immagini"
+msgstr "Mostrare le miniature per le immagini"
 
 #: src/nautilus-preferences-dialog.c:268
-#, fuzzy
-msgid "_Don't make thumbnails for files larger than:"
+msgid "Don't make thumbnails for files larger than:"
 msgstr "Non creare le miniature per i file più grandi di:"
 
 #: src/nautilus-preferences-dialog.c:271
@@ -6637,17 +6514,15 @@ msgid "Tabs"
 msgstr "Schede"
 
 #: src/nautilus-preferences-dialog.c:291
-#, fuzzy
-msgid "_Show only folders (no files) in the tree"
-msgstr "Mostra solo le cartelle (nessun file) nell'albero"
+msgid "Show only folders (no files) in the tree"
+msgstr "Mostrare solo le cartelle (nessun file) nell'albero"
 
 #: src/nautilus-preferences-dialog.c:299
 msgid "Maximum items per site"
 msgstr "Voci massime per sito"
 
 #: src/nautilus-preferences-dialog.c:301
-#, fuzzy
-msgid "_Maximum number of items displayed per site"
+msgid "Maximum number of items displayed per site"
 msgstr "Numero massimo di oggetti mostrati per sito"
 
 #: src/nautilus-preferences-dialog.c:304
@@ -6655,8 +6530,7 @@ msgid "Update Minutes"
 msgstr "Aggiornamento in minuti"
 
 #: src/nautilus-preferences-dialog.c:306
-#, fuzzy
-msgid "_Update frequency in minutes"
+msgid "Update frequency in minutes"
 msgstr "Frequenza di aggiornamento in minuti"
 
 #: src/nautilus-preferences-dialog.c:316
@@ -6669,14 +6543,12 @@ msgid "Appearance"
 msgstr "Aspetto"
 
 #: src/nautilus-preferences-dialog.c:318
-#, fuzzy
 msgid "Windows"
-msgstr "Nuova finestra"
+msgstr "Finestre"
 
 #: src/nautilus-preferences-dialog.c:319
-#, fuzzy
 msgid "Desktop & Trash"
-msgstr "Sposta nel Cestino"
+msgstr "Scrivania & Cestino"
 
 #: src/nautilus-preferences-dialog.c:320
 msgid "Icon & List Views"
@@ -6709,22 +6581,19 @@ msgstr "Preferenze"
 #: src/nautilus-preferences-dialog.c:382
 #, c-format
 msgid "Display %s tab in sidebar"
-msgstr "Mostra la scheda %s nella barra laterale"
+msgstr "Mostrare la scheda %s nella barra laterale"
 
 #: src/nautilus-profiler.c:209
-#, fuzzy
 msgid "Print"
-msgstr "Porta:"
+msgstr "Stampa"
 
 #: src/nautilus-profiler.c:210
-#, fuzzy
 msgid "Save"
-msgstr "Rave"
+msgstr "Salva"
 
 #: src/nautilus-profiler.c:246
-#, fuzzy
 msgid "Profile Dump"
-msgstr "_Profiler"
+msgstr "Dump del profilo"
 
 #. set the title and standard close accelerator
 #: src/nautilus-property-browser.c:265
@@ -6732,19 +6601,17 @@ msgid "Backgrounds and Emblems"
 msgstr "Sfondi e simboli"
 
 #: src/nautilus-property-browser.c:369
-#, fuzzy
 msgid "_Remove..."
-msgstr "Elimina..."
+msgstr "_Rimuovi..."
 
 #: src/nautilus-property-browser.c:390
-#, fuzzy
 msgid "_Add new..."
-msgstr "Aggiungi nuovo..."
+msgstr "_Aggiungi nuovo..."
 
 #: src/nautilus-property-browser.c:866
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
-msgstr "Spiacente, ma il motivo %s non puo' essere eliminato."
+msgstr "Spiacente, ma il motivo %s non può essere eliminato."
 
 #: src/nautilus-property-browser.c:867 src/nautilus-property-browser.c:896
 msgid "Couldn't delete pattern"
@@ -6761,15 +6628,13 @@ msgstr "Crea un nuovo simbolo:"
 
 #. make the keyword label and field
 #: src/nautilus-property-browser.c:947
-#, fuzzy
 msgid "_Keyword:"
-msgstr "Parola chiave:"
+msgstr "_Parola chiave:"
 
 #. set up a gnome icon entry to pick the image file
 #: src/nautilus-property-browser.c:965
-#, fuzzy
 msgid "_Image:"
-msgstr "Immagine:"
+msgstr "_Immagine:"
 
 #: src/nautilus-property-browser.c:969
 msgid "Select an image file for the new emblem:"
@@ -6781,14 +6646,12 @@ msgstr "Crea un nuovo colore:"
 
 #. make the name label and field
 #: src/nautilus-property-browser.c:1006
-#, fuzzy
 msgid "Color _name:"
-msgstr "Nome del colore:"
+msgstr "_Nome del colore:"
 
 #: src/nautilus-property-browser.c:1022
-#, fuzzy
 msgid "Color _value:"
-msgstr "Valore del colore:"
+msgstr "_Valore del colore:"
 
 #: src/nautilus-property-browser.c:1053
 #, c-format
@@ -7071,11 +6934,11 @@ msgstr "[Ultima data di modifica] è ieri"
 
 #: src/nautilus-search-bar-criterion.c:138
 msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr ""
+msgstr "[Ultima data di modifica] è nella settimana di [24/1/00]"
 
 #: src/nautilus-search-bar-criterion.c:139
 msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr ""
+msgstr "[Ultima data di modifica] è nel mese di [24/1/00]"
 
 #: src/nautilus-search-bar-criterion.c:158
 msgid "[File owner] is [root]"
@@ -7098,7 +6961,6 @@ msgid "Change the visibility of this window's sidebar"
 msgstr "Cambia la visibilità della barra laterale di questa finestra"
 
 #: src/nautilus-shell-ui.xml.h:5
-#, fuzzy
 msgid "Change the visibility of this window's statusbar"
 msgstr "Cambia la visibilità della barra di stato di questa finestra"
 
@@ -7138,7 +7000,7 @@ msgstr ""
 
 #: src/nautilus-shell-ui.xml.h:15
 msgid "Display credits for the creators of Nautilus"
-msgstr "Mostra i crediti per i creatori di Nautilus"
+msgstr "Mostra i crediti dei i creatori di Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:16
 msgid ""
@@ -7153,43 +7015,40 @@ msgid "Display the latest contents of the current location"
 msgstr "Mostra l'ultimo contenuto della posizione corrente"
 
 #: src/nautilus-shell-ui.xml.h:18
-#, fuzzy
 msgid "Edit Nautilus preferences"
-msgstr "Modifica varie preferenze di Nautilus"
+msgstr "Modifica le preferenze di Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:19
 msgid "Find"
 msgstr "Trova"
 
 #: src/nautilus-shell-ui.xml.h:20
-#, fuzzy
 msgid "Go to the Start Here folder"
-msgstr "[Oggetti che sono]cartelle"
+msgstr "Andare alla cartella Start Here"
 
 #: src/nautilus-shell-ui.xml.h:21
 msgid "Go to the home location"
 msgstr "Vai alla posizione home"
 
-#: src/nautilus-shell-ui.xml.h:22 src/nautilus-window-toolbars.c:585
+#: src/nautilus-shell-ui.xml.h:22 src/nautilus-window-toolbars.c:568
 msgid "Go to the next visited location"
 msgstr "Vai alla prossima posizione visitata"
 
-#: src/nautilus-shell-ui.xml.h:23 src/nautilus-window-toolbars.c:582
+#: src/nautilus-shell-ui.xml.h:23 src/nautilus-window-toolbars.c:565
 msgid "Go to the previous visited location"
 msgstr "Vai alla precedente posizione visitata"
 
 #: src/nautilus-shell-ui.xml.h:24
 msgid "Go up one level"
-msgstr ""
+msgstr "Va su di un livello"
 
 #: src/nautilus-shell-ui.xml.h:25 src/nautilus-window-menus.c:472
 msgid "Hide Location _Bar"
 msgstr "Nascondi la _barra dell'indirizzo"
 
 #: src/nautilus-shell-ui.xml.h:26
-#, fuzzy
 msgid "Hide St_atusbar"
-msgstr "Nascondi la barra di st_ato"
+msgstr "Nascondi barra di st_ato"
 
 #: src/nautilus-shell-ui.xml.h:27 src/nautilus-window-menus.c:460
 msgid "Hide _Sidebar"
@@ -7227,7 +7086,7 @@ msgstr "Lettura"
 
 #: src/nautilus-shell-ui.xml.h:36
 msgid "Report Profiling"
-msgstr ""
+msgstr "Riporta profiling"
 
 #: src/nautilus-shell-ui.xml.h:37
 msgid "Reset Profiling"
@@ -7374,16 +7233,15 @@ msgstr "Lettura"
 
 #: src/nautilus-shell-ui.xml.h:76
 msgid "_Report Profiling"
-msgstr ""
+msgstr "_Riporta profiling"
 
 #: src/nautilus-shell-ui.xml.h:77
 msgid "_Reset Profiling"
 msgstr "_Reimposta il profiling"
 
 #: src/nautilus-shell-ui.xml.h:78
-#, fuzzy
 msgid "_Start Here"
-msgstr "Avvia"
+msgstr "_Start Here"
 
 #: src/nautilus-shell-ui.xml.h:79
 msgid "_Start Profiling"
@@ -7496,18 +7354,16 @@ msgid "Cancel Remove"
 msgstr "Annulla rimozione"
 
 #: src/nautilus-view-frame.c:549
-#, fuzzy
 msgid "a title"
-msgstr "Titolo"
+msgstr "un titolo"
 
 #: src/nautilus-view-frame.c:558
 msgid "the browse history"
-msgstr ""
+msgstr "la cronologia della navigazione"
 
 #: src/nautilus-view-frame.c:567
-#, fuzzy
 msgid "the current selection"
-msgstr "la sezione"
+msgstr "la selezione corrente"
 
 #: src/nautilus-window-manage-views.c:801
 msgid "View Failed"
@@ -7629,14 +7485,15 @@ msgid "Searching Unavailable"
 msgstr "Ricerca non disponibile"
 
 #: src/nautilus-window-manage-views.c:1316
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
 "browser.\n"
 "Check that an SMB server is running in the local network."
 msgstr ""
-"Impossibile mostrare \"%s\", perchè Nautilus non può determinare quale tipo "
-"di file sia."
+"Impossibile mostrare \"%s\", perchè Nautilus non può contattare il browser "
+"SMB principale.\n"
+"Verificare che sia in esecuzione un server SMB nella rete locale."
 
 #: src/nautilus-window-manage-views.c:1324
 #, c-format
@@ -7708,18 +7565,15 @@ msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 #.
 #: src/nautilus-window-menus.c:609 src/nautilus-window-menus.c:610
 msgid "Translator Credits"
-msgstr "Crediti dei traduttori"
+msgstr "Pier Luigi Fiorini <plfiorini@libero.it>"
 
 #: src/nautilus-window-menus.c:615
-#, fuzzy
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
 msgstr ""
-"Nautilus è una shell grafica\n"
-"per GNOME che rende\n"
-"facile gestire i tuoi file\n"
-"e il resto del tuo sistema."
+"Nautilus è una shell grafica per GNOME che rende facile la gestione dei "
+"propri file e del resto del sistema."
 
 #: src/nautilus-window-menus.c:676
 #, c-format
@@ -7751,11 +7605,11 @@ msgstr "Vai in una posizione non esistente"
 msgid "Go to the location specified by this bookmark"
 msgstr "Vai nella posizione specificata da questo segnalibro"
 
-#: src/nautilus-window-toolbars.c:582
+#: src/nautilus-window-toolbars.c:565
 msgid "Back"
 msgstr "Indietro"
 
-#: src/nautilus-window-toolbars.c:585
+#: src/nautilus-window-toolbars.c:568
 msgid "Forward"
 msgstr "Avanti"
 
@@ -7764,23 +7618,21 @@ msgstr "Avanti"
 msgid "Display this location with \"%s\""
 msgstr "Mostra questa posizione con \"%s\""
 
-#: src/nautilus-window.c:2084
-#, fuzzy
+#: src/nautilus-window.c:2083
 msgid "Application ID"
-msgstr "Applicazioni"
+msgstr "ID applicazione"
 
-#: src/nautilus-window.c:2085
+#: src/nautilus-window.c:2084
 msgid "The application ID of the window."
-msgstr ""
+msgstr "L'ID dell'applicazione della finestra."
+
+#: src/nautilus-window.c:2090
+msgid "Application"
+msgstr "Applicazione"
 
 #: src/nautilus-window.c:2091
-#, fuzzy
-msgid "Application"
-msgstr "Applicazioni"
-
-#: src/nautilus-window.c:2092
 msgid "The NautilusApplication associated with this window."
-msgstr ""
+msgstr "L'oggetto NautilusApplication associato a questa finestra."
 
 #: src/nautilus-zoom-control.c:97
 #, fuzzy
@@ -7790,28 +7642,46 @@ msgstr "Zoom indietro"
 #: src/nautilus-zoom-control.c:109
 #, fuzzy
 msgid "Try to fit in window"
-msgstr "Mostra la barra degli strumenti nelle nuove finestre"
+msgstr "Mostrare la barra degli strumenti nelle nuove finestre"
 
 #: src/nautilus-zoom-control.c:1082
-#, fuzzy
 msgid "Zoom"
-msgstr "Zoom avanti"
+msgstr "Zoom"
 
 #: src/nautilus-zoom-control.c:1088
 msgid "Set the zoom level of the current view"
-msgstr ""
+msgstr "Imposta il livello di zoom di questa vista"
 
-#~ msgid "Factory for history views"
-#~ msgstr "Fabbrica delle viste della cronologia"
+#~ msgid "Server Configuration"
+#~ msgstr "Configurazione del server"
 
-#~ msgid "Factory for annotation view"
-#~ msgstr "Fabbrica per la vista annotazione"
+#~ msgid "R_emove Custom Images"
+#~ msgstr "_Elimina immagini personalizzate"
 
-#~ msgid "Delete Trash Contents?"
-#~ msgstr "Eliminare il contenuto del Cestino?"
+#~ msgid "R_emove Custom Image"
+#~ msgstr "_Elimina immagini personalizzate"
 
 #~ msgid "_Restore Icons' Original Sizes"
 #~ msgstr "_Ripristina dimensioni originali delle icone"
+
+#~ msgid "Remove any custom pattern or color from the desktop background"
+#~ msgstr ""
+#~ "Rimuovi ogni motivo personalizzato o colore dallo sfondo della scrivania"
+
+#~ msgid "Remove Custom Images"
+#~ msgstr "Rimuovi immagini personalizzate"
+
+#~ msgid ""
+#~ "Remove any custom pattern or color from the background of this location"
+#~ msgstr ""
+#~ "Rimuovi ogni motivo personalizzato o color dallo sfondo di questa "
+#~ "posizione"
+
+#~ msgid "Reset View to Match Preferences"
+#~ msgstr "Reimposta la vista in modo che corrisponda con le preferenze"
+
+#~ msgid "Reset View to Match _Preferences"
+#~ msgstr "Reimposta vista alle _preferenze"
 
 #~ msgid "Show Properties"
 #~ msgstr "Mostra proprietà"
@@ -7819,24 +7689,32 @@ msgstr ""
 #~ msgid "Show _Properties"
 #~ msgstr "Mostra _proprietà"
 
+#~ msgid "Lay Out Items"
+#~ msgstr "Disponi gli oggetti"
+
+#~ msgid "_Lay Out Items"
+#~ msgstr "Disponi g_li oggetti"
+
 #~ msgid "Fonts"
 #~ msgstr "Caratteri"
 
-#, fuzzy
 #~ msgid "Default font:"
-#~ msgstr "Carattere smussato predefinito:"
+#~ msgstr "Carattere predefinito:"
+
+#~ msgid "Lay Out Items:"
+#~ msgstr "Disponi gli oggetti:"
 
 #~ msgid "Font:"
 #~ msgstr "Carattere:"
 
 #~ msgid "Font size at default zoom level:"
-#~ msgstr "Dimensione del carattere nel livello predefinito di zoom:"
+#~ msgstr "Dimensione carattere nello zoome predefinito:"
 
 #~ msgid "HTTP Proxy Settings"
 #~ msgstr "Configurazione proxy HTTP"
 
 #~ msgid "Use HTTP Proxy"
-#~ msgstr "Usa proxy HTTP"
+#~ msgstr "Usare proxy HTTP"
 
 #~ msgid "Port:"
 #~ msgstr "Porta:"
@@ -7851,17 +7729,10 @@ msgstr ""
 #~ msgstr "Password:"
 
 #~ msgid "Make Folder Appearance Details Public"
-#~ msgstr "Rendi pubblici i dettagli dell'apparenza delle cartelle"
+#~ msgstr "Rendere pubblici i dettagli dell'apparenza delle cartelle"
 
-#~ msgid "Remove any custom pattern or color from the desktop background"
-#~ msgstr ""
-#~ "Rimuovi ogni motivo personalizzato o colore dallo sfondo della scrivania"
-
-#~ msgid ""
-#~ "Remove any custom pattern or color from the background of this location"
-#~ msgstr ""
-#~ "Rimuovi ogni motivo personalizzato o color dallo sfondo di questa "
-#~ "posizione"
+#~ msgid "Windows & Desktop"
+#~ msgstr "Finestre & scrivania"
 
 #~ msgid "Display on-line help for Nautilus"
 #~ msgstr "Mostra la guida in linea per Nautilus"
@@ -7878,49 +7749,17 @@ msgstr ""
 #~ msgid "Nautilus User _Manual"
 #~ msgstr "_Manuale dell'utente di Nautilus"
 
-#, fuzzy
 #~ msgid "P_references..."
-#~ msgstr "Preferenze"
-
-#~ msgid "_About Nautilus..."
-#~ msgstr "_Informazioni su Nautilus..."
-
-#, fuzzy
-#~ msgid "Server Configuration"
-#~ msgstr "Configurazione proxy Web"
-
-#~ msgid "R_emove Custom Images"
-#~ msgstr "_Elimina immagini personalizzate"
-
-#~ msgid "R_emove Custom Image"
-#~ msgstr "_Elimina immagini personalizzate"
-
-#~ msgid "Remove Custom Images"
-#~ msgstr "Rimuovi immagini personalizzate"
-
-#~ msgid "Reset View to Match _Preferences"
-#~ msgstr "Reimposta vista alle _preferenze"
+#~ msgstr "P_referenze..."
 
 #~ msgid "Refresh"
 #~ msgstr "Aggiorna"
 
+#~ msgid "_About Nautilus..."
+#~ msgstr "_Informazioni su Nautilus..."
+
 #~ msgid "_Refresh"
 #~ msgstr "Aggio_rna"
-
-#~ msgid "Reset View to Match Preferences"
-#~ msgstr "Reimposta la vista in modo che corrisponda con le preferenze"
-
-#~ msgid "Lay Out Items"
-#~ msgstr "Disponi gli oggetti"
-
-#~ msgid "_Lay Out Items"
-#~ msgstr "Disponi g_li oggetti"
-
-#~ msgid "Lay Out Items:"
-#~ msgstr "Disponi gli oggetti:"
-
-#~ msgid "Windows & Desktop"
-#~ msgstr "Finestre e scrivania"
 
 #~ msgid "Preview Release %s: %s"
 #~ msgstr "Rilascio d'anteprima %s: %s"
