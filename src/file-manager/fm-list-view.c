@@ -101,6 +101,8 @@ static void                 fm_list_view_set_zoom_level        (FMListView *view
 static void		    fm_list_view_scale_font_size       (FMListView *view, 
 								NautilusZoomLevel new_level,
 								gboolean update_size_table);
+static void                 fm_list_view_scroll_to_file        (FMListView *view,
+								NautilusFile *file);
 
 GNOME_CLASS_BOILERPLATE (FMListView, fm_list_view,
 			 FMDirectoryView, FM_TYPE_DIRECTORY_VIEW)
@@ -954,6 +956,24 @@ fm_list_view_select_all (FMDirectoryView *view)
 	gtk_tree_selection_select_all (gtk_tree_view_get_selection (FM_LIST_VIEW (view)->details->tree_view));
 }
 
+static void
+fm_list_view_reveal_selection (FMDirectoryView *view)
+{
+	GList *selection;
+
+	g_return_if_fail (FM_IS_LIST_VIEW (view));
+
+        selection = fm_directory_view_get_selection (view);
+
+	/* Make sure at least one of the selected items is scrolled into view */
+	if (selection != NULL) {
+		fm_list_view_scroll_to_file (FM_LIST_VIEW (view), selection->data);
+	}
+
+        nautilus_file_list_free (selection);
+}
+
+
 /* Reset sort criteria and zoom level to match defaults */
 static void
 fm_list_view_reset_to_defaults (FMDirectoryView *view)
@@ -1306,29 +1326,34 @@ list_view_get_first_visible_file_callback (NautilusScrollPositionable *positiona
 }
 
 static void
+fm_list_view_scroll_to_file (FMListView *view, NautilusFile *file)
+{
+	GtkTreePath *path;
+	GtkTreeIter iter;
+	
+	if (!fm_list_model_get_tree_iter_from_file (view->details->model, file, &iter)) {
+		return;
+	}
+		
+	path = gtk_tree_model_get_path (GTK_TREE_MODEL (view->details->model), &iter);
+
+	gtk_tree_view_scroll_to_cell (view->details->tree_view,
+				      path, NULL,
+				      TRUE, 0.0, 0.0);
+	
+	gtk_tree_path_free (path);
+}
+
+static void
 list_view_scroll_to_file_callback (NautilusScrollPositionable *positionable,
 				   const char *uri,
 				   FMListView *list_view)
 {
 	NautilusFile *file;
-	GtkTreePath *path;
-	GtkTreeIter iter;
 
 	if (uri != NULL) {
 		file = nautilus_file_get (uri);
-
-		if (!fm_list_model_get_tree_iter_from_file (list_view->details->model, file, &iter)) {
-			nautilus_file_unref (file);
-			return;
-		}
-		
-		path = gtk_tree_model_get_path (GTK_TREE_MODEL (list_view->details->model), &iter);
-
-		gtk_tree_view_scroll_to_cell (list_view->details->tree_view,
-					      path, NULL,
-					      TRUE, 0.0, 0.0);
-
-		gtk_tree_path_free (path);
+		fm_list_view_scroll_to_file (list_view, file);
 		nautilus_file_unref (file);
 	}
 }
@@ -1347,7 +1372,6 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->add_file = fm_list_view_add_file;
 	fm_directory_view_class->begin_loading = fm_list_view_begin_loading;
 	fm_directory_view_class->bump_zoom_level = fm_list_view_bump_zoom_level;
-	fm_directory_view_class->zoom_to_level = fm_list_view_zoom_to_level;
 	fm_directory_view_class->can_zoom_in = fm_list_view_can_zoom_in;
 	fm_directory_view_class->can_zoom_out = fm_list_view_can_zoom_out;
 	fm_directory_view_class->clear = fm_list_view_clear;
@@ -1355,14 +1379,16 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->get_background_widget = fm_list_view_get_background_widget;
 	fm_directory_view_class->get_selection = fm_list_view_get_selection;
 	fm_directory_view_class->is_empty = fm_list_view_is_empty;
+	fm_directory_view_class->remove_file = fm_list_view_remove_file;
 	fm_directory_view_class->reset_to_defaults = fm_list_view_reset_to_defaults;
 	fm_directory_view_class->restore_default_zoom_level = fm_list_view_restore_default_zoom_level;
-	fm_directory_view_class->remove_file = fm_list_view_remove_file;
+	fm_directory_view_class->reveal_selection = fm_list_view_reveal_selection;
 	fm_directory_view_class->select_all = fm_list_view_select_all;
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
-        fm_directory_view_class->emblems_changed = fm_list_view_emblems_changed;
 	fm_directory_view_class->sort_directories_first_changed = fm_list_view_sort_directories_first_changed;
 	fm_directory_view_class->start_renaming_file = fm_list_view_start_renaming_file;
+	fm_directory_view_class->zoom_to_level = fm_list_view_zoom_to_level;
+        fm_directory_view_class->emblems_changed = fm_list_view_emblems_changed;
 
 	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
 				       &click_policy_auto_value);
