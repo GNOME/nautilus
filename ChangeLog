@@ -1,3 +1,35 @@
+2000-10-02  John Sullivan  <sullivan@eazel.com>
+
+	Fixed the worst part of bug 2068 (dragging icon causes
+	immediate update of scroll area). Some related bugs
+	remain, which I'll write up separately
+
+	* libnautilus-extensions/nautilus-gnome-extensions.h:
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	(nautilus_gnome_canvas_set_scroll_region_include_visible_area):
+	New function, sets scroll region to given parameters,
+	also forcing visible area to be included.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(update_scroll_region): New function, extracted from
+	nautilus_icon_container_update_scroll_region, now takes
+	boolean for whether to include the visible area.
+	(nautilus_icon_container_update_scroll_region): Now calls
+	update_scroll_region.
+	(nautilus_icon_container_update_scroll_region_include_visible_area):
+	New function, calls update_scroll_region.
+	(size_allocate): Do no work if allocation hasn't changed. This
+	didn't help with bug 2068 but is a worthwhile optimization.
+	
+	* libnautilus-extensions/nautilus-icon-private.h:
+	Prototype for nautilus_icon_container_update_scroll_region_
+	include_visible_area
+
+	* libnautilus-extensions/nautilus-icon-dnd.c: (handle_local_move):
+	call ..._include_visible_area when updating scroll region after
+	drag & drop, instead of just ..._update_scroll_region, so no
+	origin-shifting occurs.
+
 2000-10-02  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-protocols.c:

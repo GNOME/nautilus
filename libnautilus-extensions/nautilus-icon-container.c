@@ -476,8 +476,8 @@ get_all_icon_bounds (NautilusIconContainer *container,
 		 x1, y1, x2, y2);
 }
 
-void
-nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
+static void
+update_scroll_region (NautilusIconContainer *container, gboolean include_visible)
 {
 	double x1, y1, x2, y2;
 	GtkAdjustment *hadj, *vadj;
@@ -497,12 +497,22 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 	}
 
 	get_all_icon_bounds (container, &x1, &y1, &x2, &y2);
-	nautilus_gnome_canvas_set_scroll_region_left_justify
-		(GNOME_CANVAS (container),
-		 x1 - CONTAINER_PAD_LEFT,
-		 y1 - CONTAINER_PAD_TOP,
-		 x2 + CONTAINER_PAD_RIGHT,
-		 y2 + CONTAINER_PAD_BOTTOM);
+
+	if (include_visible) {
+		nautilus_gnome_canvas_set_scroll_region_include_visible_area
+			(GNOME_CANVAS (container),
+			 x1 - CONTAINER_PAD_LEFT,
+			 y1 - CONTAINER_PAD_TOP,
+			 x2 + CONTAINER_PAD_RIGHT,
+			 y2 + CONTAINER_PAD_BOTTOM);
+	} else {
+		nautilus_gnome_canvas_set_scroll_region_left_justify
+			(GNOME_CANVAS (container),
+			 x1 - CONTAINER_PAD_LEFT,
+			 y1 - CONTAINER_PAD_TOP,
+			 x2 + CONTAINER_PAD_RIGHT,
+			 y2 + CONTAINER_PAD_BOTTOM);
+	}
 
 	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (container));
 	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
@@ -524,6 +534,18 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 	 */
 	nautilus_gtk_adjustment_clamp_value (hadj);
 	nautilus_gtk_adjustment_clamp_value (vadj);
+}
+
+void
+nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
+{
+	update_scroll_region (container, FALSE);
+}
+
+void
+nautilus_icon_container_update_scroll_region_include_visible_area (NautilusIconContainer *container)
+{
+	update_scroll_region (container, TRUE);
 }
 
 static NautilusIconContainer *sort_hack_container;
@@ -2069,9 +2091,15 @@ static void
 size_allocate (GtkWidget *widget,
 	       GtkAllocation *allocation)
 {
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	if (allocation->x != widget->allocation.x || 
+	    allocation->width != widget->allocation.width ||
+	    allocation->y != widget->allocation.y ||
+	    allocation->height != widget->allocation.height) {
+	    
+		NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 
-	relayout (NAUTILUS_ICON_CONTAINER (widget));
+		relayout (NAUTILUS_ICON_CONTAINER (widget));
+	}
 }
 
 static void

@@ -422,6 +422,34 @@ nautilus_gnome_canvas_set_scroll_region_left_justify (GnomeCanvas *canvas,
 		 MAX (x2, x1 + width), MAX (y2, y1 + height));
 }
 
+/* Set a new scroll region without eliminating any of the currently-visible area. */
+void
+nautilus_gnome_canvas_set_scroll_region_include_visible_area (GnomeCanvas *canvas,
+						      	      double x1, double y1,
+						      	      double x2, double y2)
+{
+	double old_x1, old_y1, old_x2, old_y2;
+	double old_scroll_x, old_scroll_y;
+	double height, width;
+
+	gnome_canvas_get_scroll_region (canvas, &old_x1, &old_y1, &old_x2, &old_y2);
+
+	/* The -1 here is due to the ill-conceived ++ in scroll_to. */
+	width = (GTK_WIDGET (canvas)->allocation.width - 1) / canvas->pixels_per_unit;
+	height = (GTK_WIDGET (canvas)->allocation.height - 1) / canvas->pixels_per_unit;
+
+	old_scroll_x = gtk_layout_get_hadjustment (GTK_LAYOUT (canvas))->value;
+	old_scroll_y = gtk_layout_get_vadjustment (GTK_LAYOUT (canvas))->value;
+
+	x1 = MIN (x1, old_x1 + old_scroll_x);
+	y1 = MIN (y1, old_y1 + old_scroll_y);
+	x2 = MAX (x2, old_x1 + old_scroll_x + width);
+	y2 = MAX (y2, old_y1 + old_scroll_y + height);
+
+	nautilus_gnome_canvas_set_scroll_region
+		(canvas, x1, y1, x2, y2);
+}
+
 
 /* Code from GMC, contains all the voodoo needed to start
  * a terminal from the file manager nicely

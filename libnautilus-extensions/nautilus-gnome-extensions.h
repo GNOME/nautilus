@@ -53,6 +53,13 @@ void       nautilus_gnome_canvas_set_scroll_region_left_justify (GnomeCanvas    
 								 double           x2,
 								 double           y2);
 
+/* Set a new scroll region without eliminating any of the currently-visible area. */
+void       nautilus_gnome_canvas_set_scroll_region_include_visible_area (GnomeCanvas     *canvas,
+								 double           x1,
+								 double           y1,
+								 double           x2,
+								 double           y2);
+
 /* For cases where you need to get more than one item updated. */
 void       nautilus_gnome_canvas_request_update_all             (GnomeCanvas     *canvas);
 void       nautilus_gnome_canvas_item_request_update_deep       (GnomeCanvasItem *item);
