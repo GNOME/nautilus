@@ -32,12 +32,15 @@
 #include <libgnorba/gnorba.h>
 #include <bonobo.h>
 
+#include <stdlib.h>
+
 static int object_count = 0;
 
 static void
-mozilla_object_destroyed(GtkObject *obj)
+mozilla_object_destroyed (GtkObject *obj)
 {
 	object_count--;
+
 	if (object_count <= 0) {
 		gtk_main_quit ();
 	}
@@ -45,8 +48,8 @@ mozilla_object_destroyed(GtkObject *obj)
 
 static BonoboObject *
 mozilla_make_object (BonoboGenericFactory *factory, 
-		    const char *goad_id, 
-		    void *closure)
+		     const char *goad_id, 
+		     void *closure)
 {
 	NautilusMozillaContentView *view;
 	NautilusViewFrame *view_frame;
@@ -66,12 +69,39 @@ mozilla_make_object (BonoboGenericFactory *factory,
 	return BONOBO_OBJECT (view_frame);
 }
 
-int main(int argc, char *argv[])
+/* Do evil evil things */
+static void
+mozilla_hack_environment (void)
+{
+	char *mozilla_five_home;
+
+	mozilla_five_home = g_getenv ("MOZILLA_FIVE_HOME");
+
+	if (mozilla_five_home)
+	{
+		g_free (mozilla_five_home);
+	}
+	else
+	{
+#ifdef MOZILLA_FIVE_HOME
+		setenv ("MOZILLA_FIVE_HOME", MOZILLA_FIVE_HOME, TRUE);
+		g_print ("Hacking MOZILLA_FIVE_HOME to '%s' for your own good\n",
+			 MOZILLA_FIVE_HOME);
+#else
+		g_print ("There is no reasonable default for MOZILLA_FIVE_HOME.  You lose.\n");
+#endif
+	}
+}
+
+int
+main (int argc, char *argv[])
 {
 	BonoboGenericFactory *factory;
 	CORBA_ORB orb;
 	CORBA_Environment ev;
-	
+
+	mozilla_hack_environment ();
+
 	CORBA_exception_init(&ev);
 	
 	orb = gnome_CORBA_init_with_popt_table ("nautilus-mozilla-content-view", VERSION, &argc, argv, NULL, 0, NULL,

@@ -216,6 +216,10 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                 } else if (nautilus_str_has_prefix (navinfo->navinfo.requested_uri, "eazel:")) {
                         navinfo->navinfo.content_type = g_strdup ("special/eazel-service");
                         result = GNOME_VFS_OK;
+                /* FIXME: This mozilla-hack should be short lived until http issues are solved */
+                } else if (nautilus_str_has_prefix (navinfo->navinfo.requested_uri, "moz:")) {
+                        navinfo->navinfo.content_type = g_strdup ("special/mozilla-hack");
+                        result = GNOME_VFS_OK;
                 }
         }
                         
@@ -322,6 +326,12 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 
                          nautilus_view_identifier_new ("nautilus_service_startup_view", "Service"));      
+        /* FIXME: This mozilla-hack should be short lived until http issues are solved */
+        } else if (strcmp(navinfo->navinfo.content_type, "special/mozilla-hack") == 0) {
+                fallback_iid = "nautilus_mozilla_content_view";
+                navinfo->content_identifiers = g_slist_append
+                        (navinfo->content_identifiers, 
+                         nautilus_view_identifier_new ("nautilus_mozilla_content_view", "Mozilla"));
         } else if (strcmp(navinfo->navinfo.content_type, "text/plain") == 0) {
                 fallback_iid = "embeddable:text-plain";
                 navinfo->content_identifiers = g_slist_append

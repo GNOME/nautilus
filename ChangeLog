@@ -1,5 +1,18 @@
 2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* configure.in,
+	  acconfig.h: Add support for setting a reasonable default for
+	MOZILLA_FIVE_HOME - which mozilla needs to survie.
+
+	* components/mozilla/main.c: (mozilla_setup_environment) Add a
+	function to hack the mozilla environment into something that might
+	have a chance of working by default.
+
+	* src/ntl-uri-map.c: Add a temporary hack protocol moz:// to test
+	mozilla in isolation from gnome-vfs trying to do http stuff.
+	
+2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* configure.in: Add voodoo to support --with-mozilla.
 
 	* components/Makefile.am: Add conditional build of mozilla subdir.
