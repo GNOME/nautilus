@@ -413,7 +413,7 @@ action_about_nautilus_callback (GtkAction *action,
 		   "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the \n"
 		   "GNU General Public License for more details."),
 		N_("You should have received a copy of the GNU General Public License \n"
-		   "along with Evince; if not, write to the Free Software Foundation, Inc., \n"
+		   "along with Nautilus; if not, write to the Free Software Foundation, Inc., \n"
 		   "59 Temple Place, Suite 330, Boston, MA  02111-1307  USA")
 	};
 	gchar *license_trans;
