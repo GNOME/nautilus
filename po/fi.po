@@ -24,8 +24,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.1.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-05 22:17+0200\n"
-"PO-Revision-Date: 2004-02-01 18:01+0200\n"
+"POT-Creation-Date: 2004-02-11 01:06+0200\n"
+"PO-Revision-Date: 2004-02-11 01:01+0200\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
 "Language-Team: Gnome Finnish Translation Team <gnome-fi-laatu@lists."
 "sourceforge.net>\n"
@@ -265,10 +265,10 @@ msgid_plural ""
 "<b>Resolution:</b> %dx%d pixels\n"
 msgstr[0] ""
 "<b>Kuvan tyyppi:</b> %s (%s)\n"
-"<b>Koko:</b> %dx%d kuvapistettä\n"
+"<b>Koko:</b> %d×%d kuvapistettä\n"
 msgstr[1] ""
 "<b>Kuvien tyyppi:</b> %s (%s)\n"
-"<b>Koot:</b> %dx%d kuvapistettä\n"
+"<b>Koot:</b> %d×%d kuvapistettä\n"
 
 #: components/image_properties/nautilus-image-properties-view.c:237
 msgid "Failed to load image information"
@@ -990,6 +990,7 @@ msgstr "Esikatselu"
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
+#: src/file-manager/fm-list-view.c:1052
 #: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Nimi"
@@ -1240,7 +1241,7 @@ msgid ""
 "due to the reading of folders chunk-wise."
 msgstr ""
 "Tätä suuremmat hakemistot typistyvät noin tähän kokoon. Tämän tarkoitus on "
-"välttää kasan paisuttamista vahingossa ja Nautiluksen kaatumista suuria "
+"välttää keon paisuttamista vahingossa ja Nautiluksen kaatumista suuria "
 "hakemistoja näytettäessä. Negatiivinen arvo tarkoittaa, ettei rajaa ole. "
 "Raja ei ole tarkka, koska hakemistot luetaan lohkoittain."
 
@@ -1366,7 +1367,7 @@ msgstr ""
 msgid ""
 "If this is set to true, an icon linking to the computer location will be put "
 "on the desktop."
-msgstr "Jos tosi, roskakorin kuvake näkyy työpöydällä."
+msgstr "Jos tosi, tietokonesijainnin kuvake näkyy työpöydällä."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid ""
@@ -2030,7 +2031,7 @@ msgid ""
 "parent folder."
 msgstr ""
 "Kohdetta \"%s\" ei voi poistaa, koska sinulla ei ole oikeuksia sen "
-"sisältävän hakemiston muuttamiseen."
+"ylähakemiston muuttamiseen."
 
 #: libnautilus-private/nautilus-file-operations.c:569
 #, c-format
@@ -2045,7 +2046,7 @@ msgid ""
 "its parent folder."
 msgstr ""
 "Kohdetta \"%s\" ei voi siirtää, koska sinulla ei ole oikeuksia sen tai sen "
-"sisältävän hakemiston muuttamiseen."
+"ylähakemiston muuttamiseen."
 
 #: libnautilus-private/nautilus-file-operations.c:604
 msgid "Error while moving. "
@@ -2057,7 +2058,7 @@ msgid ""
 "Cannot move \"%s\" because it or its parent folder are contained in the "
 "destination."
 msgstr ""
-"Kohdetta \"%s\" ei voi siirtää, koska se tai sen sisältävä hakemisto ovat jo "
+"Kohdetta \"%s\" ei voi siirtää, koska se tai sen ylähakemisto ovat jo "
 "kohteessa."
 
 #: libnautilus-private/nautilus-file-operations.c:615
@@ -2067,7 +2068,7 @@ msgid ""
 "change it or its parent folder."
 msgstr ""
 "Kohdetta \"%s\" ei voi siirtää roskakoriin, koska sinulla ei ole oikeuksia "
-"sen tai sen sisältävän hakemiston muuttamiseen."
+"sen tai sen ylähakemiston muuttamiseen."
 
 #: libnautilus-private/nautilus-file-operations.c:637
 msgid "Error while copying."
@@ -2628,16 +2629,15 @@ msgstr "Tyhjennetään roskakori"
 msgid "Preparing to Empty the Trash..."
 msgstr "Valmistellaan roskakorin tyhjentämistä..."
 
-#: libnautilus-private/nautilus-file-operations.c:2528
+#: libnautilus-private/nautilus-file-operations.c:2529
 msgid "Are you sure you want to empty all of the items from the trash?"
-msgstr ""
-"Oletko varma, että haluat poistaa pysyvästi kaiken roskakorin sisällön?"
+msgstr "Haluatko varmasti poistaa pysyvästi kaiken roskakorin sisällön?"
 
-#: libnautilus-private/nautilus-file-operations.c:2542
+#: libnautilus-private/nautilus-file-operations.c:2543
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr "Kun roskakori tyhjennetään, sen sisältö häviää pysyvästi."
 
-#: libnautilus-private/nautilus-file-operations.c:2554
+#: libnautilus-private/nautilus-file-operations.c:2555
 msgid "_Empty"
 msgstr "_Tyhjennä"
 
@@ -3135,51 +3135,51 @@ msgstr "onko korostettu vetämistä ja pudotusta varten"
 msgid "The selection rectangle"
 msgstr "Valittu suorakulmio"
 
-#: libnautilus-private/nautilus-icon-container.c:4176
+#: libnautilus-private/nautilus-icon-container.c:4175
 msgid "Frame Text"
 msgstr "Kehystä teksti"
 
-#: libnautilus-private/nautilus-icon-container.c:4177
+#: libnautilus-private/nautilus-icon-container.c:4176
 msgid "Draw a frame around unselected text"
 msgstr "Piirrä kehys valitsemattoman tekstin ympärille"
 
-#: libnautilus-private/nautilus-icon-container.c:4183
+#: libnautilus-private/nautilus-icon-container.c:4182
 msgid "Selection Box Color"
 msgstr "Valintalaatikon väri"
 
-#: libnautilus-private/nautilus-icon-container.c:4184
+#: libnautilus-private/nautilus-icon-container.c:4183
 msgid "Color of the selection box"
 msgstr "Valintalaatikon väri"
 
-#: libnautilus-private/nautilus-icon-container.c:4189
+#: libnautilus-private/nautilus-icon-container.c:4188
 msgid "Selection Box Alpha"
 msgstr "Valintalaatikon peittävyys"
 
-#: libnautilus-private/nautilus-icon-container.c:4190
+#: libnautilus-private/nautilus-icon-container.c:4189
 msgid "Opacity of the selection box"
 msgstr "Valintalaatikon värin peittävyys"
 
-#: libnautilus-private/nautilus-icon-container.c:4197
+#: libnautilus-private/nautilus-icon-container.c:4196
 msgid "Highlight Alpha"
 msgstr "Korostuksen peittävyys"
 
-#: libnautilus-private/nautilus-icon-container.c:4198
+#: libnautilus-private/nautilus-icon-container.c:4197
 msgid "Opacity of the highlight for selected icons"
 msgstr "Valittujen kuvakkeiden korostuksen peittävyys"
 
-#: libnautilus-private/nautilus-icon-container.c:4204
+#: libnautilus-private/nautilus-icon-container.c:4203
 msgid "Light Info Color"
 msgstr "Vaalea tiedoteväri"
 
-#: libnautilus-private/nautilus-icon-container.c:4205
+#: libnautilus-private/nautilus-icon-container.c:4204
 msgid "Color used for information text against a dark background"
 msgstr "Tummalla taustalla olevan tiedotetekstin väri"
 
-#: libnautilus-private/nautilus-icon-container.c:4210
+#: libnautilus-private/nautilus-icon-container.c:4209
 msgid "Dark Info Color"
 msgstr "Tumma tiedoteväri"
 
-#: libnautilus-private/nautilus-icon-container.c:4211
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Color used for information text against a light background"
 msgstr "Vaalealla taustalla olevan tiedotetekstin väri"
 
@@ -3265,7 +3265,7 @@ msgid ""
 "If you are using a packaged version of Nautilus, fast searching is not "
 "available.\n"
 msgstr ""
-"Medusaa, hakusovellusta, ei löydy järjestelmästäsi. Jos olet kääntänyt "
+"Medusa-hakusovellusta ei löydy järjestelmästäsi. Jos olet kääntänyt "
 "Nautiluksen itse, tarvitset kopion Medusasta ja lisäksi Nautilus pitäisi "
 "kääntää uudestaan. (Medusa on saatavilla osoitteessa ftp://ftp.gnome.org)\n"
 "Jos käytät valmiiksi paketoitua Nautilusta, pikahakuja ei voi tehdä.\n"
@@ -3595,7 +3595,7 @@ msgstr "Sovelluksen käynnistäminen epäonnistui."
 #: libnautilus-private/nautilus-program-choosing.c:1208
 #: libnautilus-private/nautilus-program-choosing.c:1274
 msgid "Error Launching Application"
-msgstr "Sovelluksen käynnistäminen epäonnistui"
+msgstr "Virhe sovelluksen käynnistämisessä"
 
 #: libnautilus-private/nautilus-program-choosing.c:1236
 #: libnautilus-private/nautilus-program-choosing.c:1248
@@ -4104,7 +4104,7 @@ msgstr[1] "Avataanko %d ikkunaa?"
 
 #: src/file-manager/fm-directory-view.c:537
 msgid "Are you sure you want to open all files?"
-msgstr "Oletko varma, että haluat avata kaikki tiedostot?"
+msgstr "Haluatko varmasti avata kaikki tiedostot?"
 
 #: src/file-manager/fm-directory-view.c:538 src/nautilus-location-bar.c:158
 #, c-format
@@ -4116,16 +4116,15 @@ msgstr[1] "Tämä avaisi %d erillistä ikkunaa."
 #: src/file-manager/fm-directory-view.c:885
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
-msgstr "Oletko varma, että haluat poistaa kohteen \"%s\" pysyvästi?"
+msgstr "Haluatko varmasti poistaa kohteen \"%s\" pysyvästi?"
 
 #: src/file-manager/fm-directory-view.c:889
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items?"
-msgstr[0] "Oletko varma, että haluat poistaa pysyvästi yhden valitun kohteen?"
-msgstr[1] ""
-"Oletko varma, että haluat poistaa pysyvästi kaikki %d valittua kohdetta?"
+msgstr[0] "Haluatko varmasti poistaa pysyvästi yhden valitun kohteen?"
+msgstr[1] "Haluatko varmasti poistaa pysyvästi kaikki %d valittua kohdetta?"
 
 #: src/file-manager/fm-directory-view.c:897
 msgid "If you delete an item, it is permanently lost."
@@ -4251,8 +4250,7 @@ msgstr "Poistetaanko heti?"
 #: src/file-manager/fm-directory-view.c:3282
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
-msgstr ""
-"Oletko varma, että haluat poistaa kohteen \"%s\" pysyvästi roskakorista?"
+msgstr "Haluatko varmasti poistaa kohteen \"%s\" pysyvästi roskakorista?"
 
 #: src/file-manager/fm-directory-view.c:3286
 #, c-format
@@ -4263,11 +4261,9 @@ msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
 msgstr[0] ""
-"Oletko varma, että haluat poistaa pysyvästi yhden valitun kohteen "
-"roskakorista?"
+"Haluatko varmasti poistaa pysyvästi yhden valitun kohteen roskakorista?"
 msgstr[1] ""
-"Oletko varma, että haluat poistaa pysyvästi kaikki %d valittua kohdetta "
-"roskakorista?"
+"Haluatko varmasti poistaa pysyvästi kaikki %d valittua kohdetta roskakorista?"
 
 #: src/file-manager/fm-directory-view.c:3295
 msgid "If you delete an item, it will be permanently lost."
@@ -4753,30 +4749,26 @@ msgstr "Palauta kuvakkeiden alkuper_äiset koot"
 msgid "Restore Icon's Original Si_ze"
 msgstr "Palauta kuvakkeen alkuper_äinen koko"
 
-#: src/file-manager/fm-icon-view.c:1989
+#: src/file-manager/fm-icon-view.c:1996
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "viittaa kohteeseen \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2572 src/file-manager/fm-icon-view.c:2596
+#: src/file-manager/fm-icon-view.c:2579 src/file-manager/fm-icon-view.c:2603
 msgid "Drag and drop is not supported."
 msgstr "Veto ja pudotus ei toimi."
 
-#: src/file-manager/fm-icon-view.c:2573
+#: src/file-manager/fm-icon-view.c:2580
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Veto ja pudotus toimii vain paikallisissa tiedostojärjestelmissä."
 
-#: src/file-manager/fm-icon-view.c:2574 src/file-manager/fm-icon-view.c:2598
+#: src/file-manager/fm-icon-view.c:2581 src/file-manager/fm-icon-view.c:2605
 msgid "Drag and Drop Error"
 msgstr "Veto- ja pudotusvirhe"
 
-#: src/file-manager/fm-icon-view.c:2597
+#: src/file-manager/fm-icon-view.c:2604
 msgid "An invalid drag type was used."
 msgstr "Vetotyyppi oli väärä."
-
-#: src/file-manager/fm-list-view.c:1052
-msgid "File name"
-msgstr "Tiedostonimi"
 
 #: src/file-manager/fm-list-view.c:1512
 #, c-format
@@ -5990,7 +5982,7 @@ msgid "Connect to Server"
 msgstr "Yhdistä palvelimeen"
 
 #: src/nautilus-connect-server-dialog.c:191
-msgid "Link _Name:"
+msgid "Link _name:"
 msgstr "Linkin _nimi:"
 
 #: src/nautilus-connect-server-dialog.c:210
@@ -6392,15 +6384,15 @@ msgstr ""
 #.
 #: src/nautilus-navigation-window-menus.c:187
 msgid "Are you sure you want to forget history?"
-msgstr "Oletko varma, että haluat tyhjentää historiikin?"
+msgstr "Haluatko varmasti tyhjentää historiikin?"
 
 #: src/nautilus-navigation-window-menus.c:188
 msgid "If you do, you will be doomed to repeat it."
-msgstr "Jos näin, voit toistaa sen itse."
+msgstr "Muista kuitenkin, että historia toistaa itseään."
 
 #: src/nautilus-navigation-window-menus.c:190
 msgid "Are you sure you want to clear the list of locations you have visited?"
-msgstr "Oletko varma, että haluat tyhjentää käytyjen sijaintien luettelon?"
+msgstr "Haluatko varmasti tyhjentää käytyjen sijaintien luettelon?"
 
 #: src/nautilus-navigation-window-menus.c:192
 msgid "If you clear the list of locations, they will be permanently deleted."
@@ -6773,7 +6765,7 @@ msgstr "Valitse lisättävä väri"
 #: src/nautilus-property-browser.c:1327 src/nautilus-property-browser.c:1343
 #, c-format
 msgid "Sorry, but \"%s\" is not a usable image file."
-msgstr "\"%s\" ei ole kelvollinen kuvatiedosto."
+msgstr "\"%s\" ei ole käyttökelpoinen kuvatiedosto."
 
 #: src/nautilus-property-browser.c:1328 src/nautilus-property-browser.c:1344
 msgid "The file is not an image."
@@ -7232,11 +7224,11 @@ msgstr "Avaa _sijainti..."
 
 #: src/nautilus-spatial-window-ui.xml.h:10
 msgid "Open _Parent"
-msgstr "Avaa _hakemisto"
+msgstr "Avaa _ylähakemisto"
 
 #: src/nautilus-spatial-window-ui.xml.h:11
 msgid "Open the parent folder"
-msgstr "Avaa sisältävä hakemisto"
+msgstr "Avaa ylähakemisto"
 
 #: src/nautilus-spatial-window-ui.xml.h:14
 msgid "_Places"
@@ -7340,12 +7332,11 @@ msgstr ""
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr ""
-"Varmista että kirjoitit oikein, ja että välityspalvelinasetukset ovat "
-"kunnossa."
+"Varmista että kirjoitit oikein, ja että välipalvelinasetukset ovat kunnossa."
 
 #: src/nautilus-window-manage-views.c:1331
 msgid "Check that your proxy settings are correct."
-msgstr "Varmista, että välityspalvelinasetukset ovat kunnossa."
+msgstr "Varmista, että välipalvelinasetukset ovat kunnossa."
 
 #: src/nautilus-window-manage-views.c:1336
 #, c-format
@@ -7354,7 +7345,7 @@ msgid ""
 "browser."
 msgstr ""
 "Ei voitu näyttää kohdetta \"%s\", koska Nautilus ei pystynyt ottamaan "
-"yhteyttä SMB-pääselaajaan."
+"yhteyttä SMB-pääselaimeen."
 
 #: src/nautilus-window-manage-views.c:1339
 msgid "Check that an SMB server is running in the local network."
@@ -7484,6 +7475,9 @@ msgstr "Verkkopalvelimet"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Katsele verkkopalvelimia Nautilus-tiedostonhallintaohjelmalla"
+
+#~ msgid "File name"
+#~ msgstr "Tiedostonimi"
 
 #~ msgid "0 items"
 #~ msgstr "0 kohdetta"
