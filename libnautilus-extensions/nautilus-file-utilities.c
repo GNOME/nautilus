@@ -25,7 +25,7 @@
 #include <config.h>
 #include "nautilus-file-utilities.h"
 #include "nautilus-glib-extensions.h"
-
+#include "nautilus-lib-self-check-functions.h"
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <sys/stat.h>
@@ -676,3 +676,34 @@ nautilus_read_file_cancel (NautilusReadFileHandle *handle)
 	g_free (handle->buffer);
 	g_free (handle);
 }
+
+#if !defined (NAUTILUS_OMIT_SELF_CHECK)
+
+void
+nautilus_self_check_file_utilities (void)
+{
+	char *tmp;
+
+	/* check to make sure the current implementation doesn't cause problems     */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu"), "http://null.stanford.edu");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu:80"), "http://null.stanford.edu:80");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://seth@null.stanford.edu:80"), "http://seth@null.stanford.edu:80");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu/some file"), "http://null.stanford.edu/some%20file");
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:///home/joe/some file"), "file:///home/joe/some%20file");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file://home/joe/some file"), "file://home/joe/some%20file");
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("foo://foobar.txt"), "foo://foobar.txt");
+
+	/* now we test input we just want to make sure doesn't crash the function */
+	tmp = nautilus_make_uri_from_input (":://:://:::::::::::::::::");
+	g_free (tmp);		
+	tmp = nautilus_make_uri_from_input ("file:::::////");
+	g_free (tmp);
+	tmp = nautilus_make_uri_from_input ("http:::::::::");
+	g_free (tmp);
+	tmp = nautilus_make_uri_from_input ("::");
+	g_free (tmp);
+}
+
+#endif /* !NAUTILUS_OMIT_SELF_CHECK */
