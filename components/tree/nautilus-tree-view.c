@@ -948,7 +948,7 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 			    tree_view_realize_callback, view);
 
 	
-        gtk_clist_set_selection_mode (GTK_CLIST (view->details->tree), GTK_SELECTION_BROWSE);
+        gtk_clist_set_selection_mode (GTK_CLIST (view->details->tree), GTK_SELECTION_SINGLE);
 	gtk_clist_set_auto_sort (GTK_CLIST (view->details->tree), TRUE);
 	gtk_clist_set_sort_type (GTK_CLIST (view->details->tree), GTK_SORT_ASCENDING);
 	gtk_clist_set_column_auto_resize (GTK_CLIST (view->details->tree), 0, TRUE);
