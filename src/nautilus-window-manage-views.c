@@ -1501,7 +1501,7 @@ begin_location_change (NautilusWindow *window,
         end_location_change (window);
         
         nautilus_window_allow_stop (window, TRUE);
-        nautilus_window_set_status (window, NULL);
+        nautilus_window_set_status (window, " ");
 
         window->details->pending_location = g_strdup (location);
         window->details->location_change_type = type;

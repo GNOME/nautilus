@@ -1492,6 +1492,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 	char *folder_count_str;
 	char *folder_item_count_str;
 	char *status_string;
+	char *free_space_string;
 	NautilusFile *file;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
@@ -1600,7 +1601,13 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 	}
 
 	if (folder_count == 0 && non_folder_count == 0)	{
-		status_string = g_strdup ("");
+               free_space_string = nautilus_file_get_volume_free_space (view->details->directory_as_file);
+               if (free_space_string) {
+                       status_string = g_strdup_printf ("%s %s", _("Free space:"), free_space_string);
+                       g_free (free_space_string);
+               } else {
+                       status_string = g_strdup ("");
+               }
 	} else if (folder_count == 0) {
 		status_string = g_strdup (non_folder_str);
 	} else if (non_folder_count == 0) {

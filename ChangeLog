@@ -1,5 +1,13 @@
 2003-03-25  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-directory-view.c (fm_directory_view_display_selection_info):
+	Free space in status bar.
+
+	* src/nautilus-window-manage-views.c (begin_location_change):
+	Set status to " " instead to avoid status bar disappearing.
+	
+2003-03-25  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-window-manage-views.c (begin_location_change):
 	Clear status on location change.
 
