@@ -123,6 +123,12 @@ static void destroy_node_without_reporting (NautilusTreeModel *model,
 static void report_node_contents_changed   (NautilusTreeModel *model,
 					    TreeNode          *node);
 
+static guint
+nautilus_tree_model_get_flags (GtkTreeModel *tree_model)
+{
+	return GTK_TREE_MODEL_ITERS_PERSIST;
+}
+
 static void
 object_unref_if_not_NULL (gpointer object)
 {
@@ -1740,6 +1746,7 @@ nautilus_tree_model_class_init (NautilusTreeModelClass *class)
 static void
 nautilus_tree_model_tree_model_init (GtkTreeModelIface *iface)
 {
+	iface->get_flags = nautilus_tree_model_get_flags;
 	iface->get_n_columns = nautilus_tree_model_get_n_columns;
 	iface->get_column_type = nautilus_tree_model_get_column_type;
 	iface->get_iter = nautilus_tree_model_get_iter;
