@@ -1,3 +1,14 @@
+2000-07-15  Ali Abdin  <aliabdin@aucegypt.edu>
+
+	* components/help/help-contents.oafinfo:
+	* components/help/help-methods.conf:
+	* components/help/help-search.oafinfo:
+	Add 'ghelp' as a URI for backwards-compatibility (many doc files
+	and applications currently use 'ghelp:' prefix to bring up help
+	files we should handle it just like 'help:').
+
+	We might want to emit a 'warning' message saying its deprecated.
+
 2000-07-14  Gene Z. Ragan  <gzr@eazel.com>
 
 	* components/help/help-method.c: (transform_absolute_file):
