@@ -168,6 +168,8 @@ static char *get_xml_path                               (NautilusPropertyBrowser
 
 #define CONTENT_TABLE_HEIGHT 4
 
+#define ERASE_OBJECT_NAME "erase.png"
+
 enum {
 	PROPERTY_TYPE,
 };
@@ -1429,16 +1431,21 @@ static int
 make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 {
 	NautilusCustomizationData *customization_data;
-	char *emblem_name;
+	char *object_name;
 	GtkWidget *pixmap_widget;
 	GtkWidget *label;
-	int index;
-
+	GtkWidget *erase_object;
+	int index, object_position;
 
 	/* make room for the reset property if necessary */
-	index = (strcmp (property_browser->details->category, "backgrounds") == 0);
+	if (property_browser->details->category_type == NAUTILUS_PROPERTY_BACKGROUND) {
+		index = 1;
+	} else {
+		index = 0;
+	}
 	
-		
+	g_message ("in make properties!");
+			
 	customization_data = nautilus_customization_data_new (property_browser->details->category,
 							      !property_browser->details->remove_mode,
 							      FALSE,
@@ -1448,20 +1455,41 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 		return index;
 	}
 
-	/* interate through the set of emblems and display each */
+	erase_object = NULL;
+	
+	/* interate through the set of objects and display each */
 	while (nautilus_customization_data_get_next_element_for_display (customization_data,
-									 &emblem_name,
+									 &object_name,
 									 &pixmap_widget,
 									 &label) == GNOME_VFS_OK) {
 		GtkWidget *temp_vbox;
-		
+
 		/* allocate a pixmap and insert it into the table */
-		temp_vbox = make_property_tile (property_browser, pixmap_widget, label, emblem_name);
+		temp_vbox = make_property_tile (property_browser, pixmap_widget, label, object_name);
 				
-		/* put the reset item in the pole position */
-		add_to_content_table(property_browser, temp_vbox, 
-				     strcmp(emblem_name, RESET_IMAGE_NAME) ? index++ : 0, 2);			
-		g_free (emblem_name);
+		/* put the reset item in the pole position or the erase image at the end */
+		object_position = index++;
+		if (property_browser->details->category_type == NAUTILUS_PROPERTY_BACKGROUND) {
+			if (nautilus_strcmp (object_name, RESET_IMAGE_NAME) == 0) {
+				object_position = 0;
+				index -= 1;	
+			}
+		} else if (property_browser->details->category_type == NAUTILUS_PROPERTY_EMBLEM) {		
+			if (nautilus_strcmp (object_name, ERASE_OBJECT_NAME) == 0) {
+				object_position = -1;
+				erase_object = temp_vbox;
+				index -= 1;	
+			}
+		}
+		if (object_position >= 0) {
+			add_to_content_table(property_browser, temp_vbox, object_position, 2);
+		}
+		g_free (object_name);
+	}
+	
+	/* add the eraser if necessary */
+	if (erase_object != NULL) {
+		add_to_content_table(property_browser, erase_object, object_position + 2, 2);
 	}
 	
 	property_browser->details->has_local = nautilus_customization_data_private_data_was_displayed (customization_data);	
@@ -1514,7 +1542,7 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNod
 
 			/* make the tile from the pixmap and name */
 			new_property = make_property_tile (property_browser, image_widget, label, color_str);
-			add_to_content_table (property_browser, new_property, index++, 12);				
+			add_to_content_table (property_browser, new_property, index++, 2);				
 		}
 	}
 }
