@@ -6,10 +6,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.0.5\n"
-"POT-Creation-Date: 2003-01-13 17:08+0100\n"
-"PO-Revision-Date: 2002-11-30 04:01-0300\n"
-"Last-Translator: Evandro Fernandes Giovanini <evandrofg@ig.com.br>\n"
-"Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
+"POT-Creation-Date: 2003-01-16 00:46-0200\n"
+"PO-Revision-Date: 2003-01-16 01:01-0200\n"
+"Last-Translator: Gustavo Noronha Silva <kov@debian.org>\n"
+"Language-Team: GNOME-BR <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -124,13 +124,10 @@ msgid "Couldn't add emblems"
 msgstr "Não foi possível adicionar emblemas"
 
 #: components/emblem/nautilus-emblem-view.c:720
-#, fuzzy
 msgid ""
 "None of the files could be added as emblems because they did not appear to "
 "be valid images."
-msgstr ""
-"Nenhum dos arquivos não pôde ser adicionado como emblema por não ser arquivo "
-"de imagem válido."
+msgstr "Nenhum dos arquivos pôde ser adicionado como emblema porque eles não parecem ser imagens válidas."
 
 #: components/emblem/nautilus-emblem-view.c:741
 msgid "The dragged text was not a valid file location."
@@ -297,9 +294,8 @@ msgid "Notes side pane"
 msgstr "Painel da barra lateral de notas"
 
 #: components/notes/Nautilus_View_notes.server.in.in.h:3
-#, fuzzy
 msgid "Notes side pane for Nautilus"
-msgstr "Painel da barra lateral de notas para o Nautilus"
+msgstr "Painel de notas da barra lateral para o Nautilus"
 
 #: components/text/Nautilus_View_text.server.in.in.h:1
 msgid "Factory for text view"
@@ -1242,14 +1238,12 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #: libnautilus-private/nautilus-dnd.c:628
-#, fuzzy
 msgid "Set as background for _all folders"
-msgstr "Definir como fundo p_ara todos os diretórios"
+msgstr "Definir como fundo p_ara todos as pastas"
 
 #: libnautilus-private/nautilus-dnd.c:633
-#, fuzzy
 msgid "Set as background for _this folder"
-msgstr "Definir como fundo para este diretório"
+msgstr "Definir como fundo para es_ta pasta"
 
 #: libnautilus-private/nautilus-emblem-utils.c:194
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
@@ -1357,7 +1351,7 @@ msgstr ""
 "lo ou modificar a sua pasta pai."
 
 #: libnautilus-private/nautilus-file-operations.c:595
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Error while moving.\n"
 "\n"
@@ -1366,7 +1360,7 @@ msgid ""
 msgstr ""
 "Erro ao mover.\n"
 "\n"
-"\"%s\" não pode ser movido porque ele está em um disco de apenas leitura."
+"\"%s\" não pode ser movida porque ela ou a pasta em que ela está estão contidas no destino."
 
 #: libnautilus-private/nautilus-file-operations.c:605
 #, c-format
@@ -3507,12 +3501,12 @@ msgstr "Refazer editar"
 msgid "Redo the edit"
 msgstr "Refaz a edição"
 
-#: libnautilus-private/nautilus-view-identifier.c:60
+#: libnautilus-private/nautilus-view-identifier.c:62
 #, c-format
 msgid "View as %s"
 msgstr "Ver como %s"
 
-#: libnautilus-private/nautilus-view-identifier.c:63
+#: libnautilus-private/nautilus-view-identifier.c:68
 #, c-format
 msgid "%s Viewer"
 msgstr "Visualizador de %s"
@@ -3755,10 +3749,18 @@ msgid "Search List"
 msgstr "Lista de busca"
 
 #: src/Nautilus_shell.server.in.h:20
+msgid "View as Icons"
+msgstr "Ver como Ícones"
+
+#: src/Nautilus_shell.server.in.h:21
+msgid "View as List"
+msgstr "Ver como Lista"
+
+#: src/Nautilus_shell.server.in.h:22
 msgid "View as _Icons"
 msgstr "Ver como _Ícones"
 
-#: src/Nautilus_shell.server.in.h:21
+#: src/Nautilus_shell.server.in.h:23
 msgid "View as _List"
 msgstr "Ver como _Lista"
 
@@ -4384,29 +4386,29 @@ msgstr "por _emblemas"
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Mantém ícones ordenados por emblemas nas linhas"
 
-#: src/file-manager/fm-icon-view.c:1437
+#: src/file-manager/fm-icon-view.c:1439
 #: src/file-manager/nautilus-icon-view-ui.xml.h:19
 msgid "Restore Icons' Original Si_zes"
 msgstr "Restaurar _Tamanho Original dos Ícones"
 
-#: src/file-manager/fm-icon-view.c:1438
+#: src/file-manager/fm-icon-view.c:1440
 msgid "Restore Icon's Original Si_ze"
 msgstr "Rest_aurar Tamanho Original do Ícone"
 
-#: src/file-manager/fm-icon-view.c:1773
+#: src/file-manager/fm-icon-view.c:1775
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "apontando para \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2299
+#: src/file-manager/fm-icon-view.c:2303
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Arrastar e soltar só é suportado em sistemas de arquivos locais."
 
-#: src/file-manager/fm-icon-view.c:2300 src/file-manager/fm-icon-view.c:2318
+#: src/file-manager/fm-icon-view.c:2304 src/file-manager/fm-icon-view.c:2322
 msgid "Drag and Drop error"
 msgstr "Erro de arrastar e soltar"
 
-#: src/file-manager/fm-icon-view.c:2317
+#: src/file-manager/fm-icon-view.c:2321
 msgid "An invalid drag type was used."
 msgstr "Um tipo de arraste inválido foi usado."
 
@@ -5427,14 +5429,12 @@ msgid "    "
 msgstr "    "
 
 #: src/nautilus-file-management-properties.glade.h:4
-#, fuzzy
 msgid "100 KB"
-msgstr "100 k"
+msgstr "100 KB"
 
 #: src/nautilus-file-management-properties.glade.h:20
-#, fuzzy
 msgid "500 KB"
-msgstr "500 k"
+msgstr "500 KB"
 
 #: src/nautilus-file-management-properties.glade.h:23
 msgid "<span weight=\"bold\">Behaviour</span>"
@@ -5494,7 +5494,7 @@ msgstr "Perguntar antes de _esvaziar a Lixeira ou excluir arquivos"
 
 #: src/nautilus-file-management-properties.glade.h:37
 msgid "Behavior"
-msgstr ""
+msgstr "Comportamento"
 
 #: src/nautilus-file-management-properties.glade.h:43
 msgid ""
@@ -5505,9 +5505,8 @@ msgstr ""
 "informação aparecerá a medida que a visão se aproximar"
 
 #: src/nautilus-file-management-properties.glade.h:44
-#, fuzzy
 msgid "Count _number of items:"
-msgstr "Exibir a co_ntagem de itens:"
+msgstr "Contar _número de itens:"
 
 #: src/nautilus-file-management-properties.glade.h:45
 msgid "Default _zoom level:"
@@ -5574,7 +5573,6 @@ msgid "Views"
 msgstr "Visões"
 
 #: src/nautilus-file-management-properties.glade.h:65
-#, fuzzy
 msgid "_Arrange items:"
 msgstr "Org_anizar Itens:"
 
@@ -5584,34 +5582,31 @@ msgstr "Nível pa_drão de zoom:"
 
 #: src/nautilus-file-management-properties.glade.h:68
 msgid "_Double click to activate items"
-msgstr ""
+msgstr "_Duplo clique para ativar itens"
 
 #: src/nautilus-file-management-properties.glade.h:69
 msgid "_Only for files smaller than:"
 msgstr "Apenas para arquivos men_ores que:"
 
 #: src/nautilus-file-management-properties.glade.h:70
-#, fuzzy
 msgid "_Open activated item in a new window"
-msgstr "Abrir o item selecionado em uma nova janela"
+msgstr "Abrir o item selecionad_o em uma nova janela"
 
 #: src/nautilus-file-management-properties.glade.h:71
-#, fuzzy
 msgid "_Run executable text files when they are clicked"
-msgstr "E_xecutar arquivos quando eles são clicados"
+msgstr "E_xecutar arquivos texto executáveis quando eles são clicados"
 
 #: src/nautilus-file-management-properties.glade.h:72
 msgid "_Single click to activate items"
-msgstr ""
+msgstr "Clique _único para ativar itens"
 
 #: src/nautilus-file-management-properties.glade.h:73
 msgid "_Use compact layout"
 msgstr "_Usar aparência compacta"
 
 #: src/nautilus-file-management-properties.glade.h:74
-#, fuzzy
 msgid "_View executable text files when they are clicked"
-msgstr "E_xecutar arquivos quando eles são clicados"
+msgstr "_Visualizar arquivos texto executáveis quando eles são clicados"
 
 #: src/nautilus-first-time-druid.c:40
 msgid ""
@@ -5638,9 +5633,8 @@ msgstr "Abrir com..."
 
 #. FIXME: We don't use spaces to pad labels!
 #: src/nautilus-information-panel.c:1018
-#, fuzzy
 msgid "Empty _Trash"
-msgstr "Esvaziar lixeira"
+msgstr "Esvaziar _Lixeira"
 
 #: src/nautilus-location-bar.c:62
 msgid "Go To:"
