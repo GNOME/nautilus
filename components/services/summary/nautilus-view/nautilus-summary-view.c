@@ -79,9 +79,9 @@
 #define REGISTER_KEY				"eazel_service_register"
 #define PREFERENCES_KEY				"eazel_service_account_maintenance"
 
-#define	GOTO_BUTTON_LABEL			"Go There!"
-#define	SOFTCAT_GOTO_BUTTON_LABEL		"More Info!"
-#define	INSTALL_GOTO_BUTTON_LABEL		"Install Me!"
+#define	GOTO_BUTTON_LABEL			_("Go There!")
+#define	SOFTCAT_GOTO_BUTTON_LABEL		_("More Info!")
+#define	INSTALL_GOTO_BUTTON_LABEL		_("Install Me!")
 
 #define MAX_IMAGE_WIDTH				50
 #define MAX_IMAGE_HEIGHT			50
@@ -595,7 +595,7 @@ generate_summary_form (NautilusSummaryView	*view)
 		update_news_node = iterator->data;
 		view->details->update_icon_name = update_news_node->icon;
 		view->details->update_description_header = update_news_node->name;
-		view->details->update_description_version = g_strdup_printf ("Version %s", update_news_node->version);
+		view->details->update_description_version = g_strdup_printf (_("Version %s"), update_news_node->version);
 		view->details->update_description_body = update_news_node->description;
 		view->details->update_goto_label = g_strdup (_(INSTALL_GOTO_BUTTON_LABEL));
 		view->details->update_softcat_goto_label = g_strdup (_(SOFTCAT_GOTO_BUTTON_LABEL));
@@ -747,9 +747,8 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 static void
 generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 {
-
 	/* Generate first box with icon */
-	view->details->news_icon_container = gtk_vbox_new (FALSE, 4);
+	view->details->news_icon_container = gtk_vbox_new (FALSE, 2);
 	gtk_widget_show (view->details->news_icon_container);
 	view->details->news_icon_widget = create_image_widget_from_uri (view->details->news_icon_name,
 									DEFAULT_SUMMARY_BACKGROUND_COLOR,
@@ -766,15 +765,18 @@ generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 						 "bold",
 						 NULL,
 						 NULL);
+
 	gtk_box_pack_start (GTK_BOX (view->details->service_news_row), view->details->news_date_widget, FALSE, FALSE, 2);
 	gtk_widget_show (view->details->news_date_widget);
 	g_free (view->details->news_date);
 	view->details->news_date = NULL;
+	
 	/* Generate third box with news content */
 	view->details->news_description_body_widget = nautilus_label_new (view->details->news_description_body);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->news_description_body_widget), 12);
 	nautilus_label_set_line_wrap (NAUTILUS_LABEL (view->details->news_description_body_widget), TRUE);
 	gtk_box_pack_start (GTK_BOX (view->details->service_news_row), view->details->news_description_body_widget, FALSE, FALSE, 2);
+	
 	gtk_widget_show (view->details->news_description_body_widget);
 	g_free (view->details->news_description_body);
 	view->details->news_description_body = NULL;
@@ -1241,6 +1243,7 @@ generate_login_dialog (NautilusSummaryView	*view)
 	GtkWidget	*hbox;
 	GtkWidget	*pixmap;
 	GtkWidget	*message;
+	GtkWidget	*caption_hbox;
 	char		*message_text;
 	char		*pixmap_name;
 	char		*button_text;
@@ -1249,9 +1252,9 @@ generate_login_dialog (NautilusSummaryView	*view)
 	pixmap = NULL;
 
 	if (view->details->attempt_number == 0) {
-		button_text = g_strdup ("Register Now");
+		button_text = g_strdup (_("Register Now"));
 	} else {
-		button_text = g_strdup ("I forgot my password");
+		button_text = g_strdup (_("Help"));
 	}
 
 	dialog = GNOME_DIALOG (gnome_dialog_new (_("Services Login"), button_text, 
@@ -1266,14 +1269,14 @@ generate_login_dialog (NautilusSummaryView	*view)
 
 	nautilus_caption_table_set_row_info (NAUTILUS_CAPTION_TABLE (view->details->caption_table),
 					     LOGIN_DIALOG_NAME_ROW,
-					     "Username:",
+					     _("Username:"),
 					     "",
 					     TRUE,
 					     FALSE);
 
 	nautilus_caption_table_set_row_info (NAUTILUS_CAPTION_TABLE (view->details->caption_table),
 					     LOGIN_DIALOG_PASSWORD_ROW,
-					     "Password:",
+					     _("Password:"),
 					     "",
 					     FALSE,
 					     FALSE);
@@ -1304,28 +1307,24 @@ generate_login_dialog (NautilusSummaryView	*view)
 		gtk_box_pack_start (GTK_BOX (hbox), pixmap, FALSE, FALSE, 0);
 		gtk_widget_show (pixmap);
 	}
-	gtk_box_pack_end (GTK_BOX (hbox), view->details->caption_table, TRUE, TRUE, 0);
 
-	gtk_box_set_spacing (GTK_BOX (dialog->vbox), 10);
+	gtk_box_set_spacing (GTK_BOX (dialog->vbox), 4);
 
-	message = nautilus_label_new (message_text);
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (message), GTK_JUSTIFY_LEFT);
-	nautilus_label_set_line_wrap (NAUTILUS_LABEL (message), TRUE);
-	/* FIXME: setting a fixed size here seems so hackish, but the results are so ugly otherwise. */
-	nautilus_label_set_line_wrap_width (NAUTILUS_LABEL (message), 300);
+	message = gtk_label_new (message_text);
+	gtk_label_set_justify (GTK_LABEL (message), GTK_JUSTIFY_LEFT);
+	gtk_label_set_line_wrap (GTK_LABEL (message), TRUE);
+	nautilus_gtk_label_make_bold (GTK_LABEL (message));
 	gtk_widget_show (message);
 
-	gtk_box_pack_start (GTK_BOX (dialog->vbox),
-			    GTK_WIDGET (message),
-			    TRUE,
-			    TRUE,
-			    0);
-
-	gtk_box_pack_start (GTK_BOX (dialog->vbox),
-			    hbox,
-			    TRUE,
-			    TRUE,
-			    0);
+	/* right justify the caption table box */
+	caption_hbox = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (caption_hbox);
+	gtk_widget_set_usize (view->details->caption_table, 260, -1);
+	gtk_box_pack_end (GTK_BOX (caption_hbox), view->details->caption_table, FALSE, FALSE, 0);
+	
+	gtk_box_pack_start (GTK_BOX (hbox), message, FALSE, FALSE, 0);	
+	gtk_box_pack_start (GTK_BOX (dialog->vbox), hbox, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (dialog->vbox), caption_hbox, FALSE, FALSE, 0);
 
 	gtk_container_set_border_width (GTK_CONTAINER (view->details->caption_table), 4);
 
