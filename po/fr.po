@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 2.3.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-06-08 23:02+0200\n"
-"PO-Revision-Date: 2003-06-08 21:55+0200\n"
+"POT-Creation-Date: 2003-06-09 12:02+0200\n"
+"PO-Revision-Date: 2003-06-09 11:17+0200\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -29,12 +29,12 @@ msgid ""
 "Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
 "look like Nautilus Views"
 msgstr ""
-"Usine pour les objets qui emballent les Bonobo Control ou Embeddable afin "
+"Fabrique pour les objets qui emballent les Bonobo Control ou Embeddable afin "
 "qu'ils ressemblent à des vues Nautilus"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:4
 msgid "Nautilus component adapter factory"
-msgstr "Usine pour les adaptateurs de composant Nautilus"
+msgstr "Fabrique pour les adaptateurs de composant Nautilus"
 
 #: components/adapter/main.c:101
 msgid "bonobo_ui_init() failed."
@@ -135,7 +135,7 @@ msgstr ""
 
 #: components/emblem/nautilus-emblem-view.c:741
 msgid "The dragged text was not a valid file location."
-msgstr "Le texte déposé n'est pas un emplacement de fichier valide."
+msgstr "Le texte déposé n'est pas un emplacement de fichiers valide."
 
 #: components/emblem/nautilus-emblem-view.c:741
 #: components/emblem/nautilus-emblem-view.c:765
@@ -160,7 +160,7 @@ msgstr "À effacer"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:1
 msgid "Factory for hardware view"
-msgstr "Usine pour la vue matériel"
+msgstr "Fabrique pour la vue matériel"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:2
 #: components/hardware/nautilus-hardware-view.c:754
@@ -304,7 +304,7 @@ msgstr "Panneau latéral de notes de Nautilus"
 
 #: components/text/Nautilus_View_text.server.in.in.h:1
 msgid "Factory for text view"
-msgstr "Usine pour la vue texte"
+msgstr "Fabrique pour la vue texte"
 
 #: components/text/Nautilus_View_text.server.in.in.h:2
 msgid "Text"
@@ -320,7 +320,7 @@ msgstr "Vue texte"
 
 #: components/text/Nautilus_View_text.server.in.in.h:5
 msgid "Text view factory"
-msgstr "Usine de vue texte"
+msgstr "Fabrique de vue texte"
 
 #: components/text/Nautilus_View_text.server.in.in.h:6
 msgid "View as Text"
@@ -363,7 +363,7 @@ msgstr "animation"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:3
 msgid "throbber factory"
-msgstr "usine pour l'animation"
+msgstr "Fabrique pour l'animation"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:4
 msgid "throbber object factory"
@@ -1269,6 +1269,7 @@ msgstr ""
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid "If true, new windows will use manual layout by default."
 msgstr ""
+"Si vrai, les nouvelles fenêtres utiliseront un agencement manuel par défaut."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid ""
@@ -1276,6 +1277,9 @@ msgid ""
 "setting is to avoid thumbnailing large images that may take a long time to "
 "load or use lots of memory."
 msgstr ""
+"Les images plus grandes que cette taille ne seront pas mise en vignette. "
+"L'objectif de ce réglage est d'éviter la mise en vignette d'images trop "
+"grande qui prendrait trop de temps à charger ou utiliserait trop de mémoire."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid "List of possible captions on icons"
@@ -1287,13 +1291,15 @@ msgstr "Nombre maximum de fichiers gérés dans un répertoire"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid "Maximum image size for thumbnailing"
-msgstr ""
+msgstr "Taille d'images maximum pour les vignettes"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
 msgstr ""
+"Nom du thème Nautilus à utiliser. C'est obsolète depuis Nautilus 2.2. "
+"Veuillez utiliser les thèmes d'icônes à la place."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid "Nautilus handles drawing the desktop"
@@ -1301,7 +1307,7 @@ msgstr "Nautilus gère l'affichage du bureau"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid "Nautilus uses the users home directory as the desktop"
-msgstr "Nautilus tilise le répertoire personnel des utilisateurs comme bureau"
+msgstr "Nautilus utilise le dossier personnel des utilisateurs comme bureau"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid "Only show directories in the tree sidebar"
@@ -1312,6 +1318,8 @@ msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
 msgstr ""
+"Les valeurs possibles sont « single » pour lancer les fichiers avec un "
+"simple clic, ou « double » pour les lancer avec un double-clic."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid "Reverse sort order in new windows"
@@ -3029,7 +3037,7 @@ msgstr "Activer les éléments avec un _simple clic"
 
 #: libnautilus-private/nautilus-global-preferences.c:142
 msgid "Activate items with a _double click"
-msgstr "Activer les éléments avec un _double clic"
+msgstr "Activer les éléments avec un _double-clic"
 
 #: libnautilus-private/nautilus-global-preferences.c:150
 msgid "E_xecute files when they are clicked"
@@ -3516,7 +3524,7 @@ msgid ""
 "File Types and Programs dialog."
 msgstr ""
 "Vous pouvez configurer les applications proposées pour chaque type de "
-"fichier dans la boîte de dialogue « Types de fichiers et de programmes »."
+"fichiers dans la boîte de dialogue « Types de fichiers et de programmes »."
 
 #: libnautilus-private/nautilus-program-chooser.c:1493
 msgid "Open with Other Application"
@@ -4139,7 +4147,7 @@ msgstr "_Tout sélectionner"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:9
 msgid "Select all the text in a text field"
-msgstr "Sélectionner tout le texte dans une zone de texte"
+msgstr "Sélectionne tout le texte dans une zone de texte"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:11 src/nautilus-shell-ui.xml.h:74
 msgid "_Paste Text"
@@ -4184,7 +4192,7 @@ msgstr "Visionneur de liste"
 
 #: src/Nautilus_shell.server.in.h:6
 msgid "Nautilus factory"
-msgstr "Usine Nautilus"
+msgstr "Fabrique Nautilus"
 
 #: src/Nautilus_shell.server.in.h:7
 msgid "Nautilus file manager component that shows a scrollable list"
@@ -4231,7 +4239,7 @@ msgstr ""
 
 #: src/Nautilus_shell.server.in.h:15
 msgid "Nautilus metafile factory"
-msgstr "Usine de metafichiers Nautilus"
+msgstr "Fabrique de metafichiers Nautilus"
 
 #: src/Nautilus_shell.server.in.h:16
 msgid "Nautilus shell"
@@ -4457,7 +4465,7 @@ msgstr "Supprimer de la corbeille ?"
 #: src/file-manager/fm-directory-view.c:3427
 #, c-format
 msgid "Use \"%s\" to open the selected item"
-msgstr "Utiliser « %s » pour ouvrir l'élément sélectionné"
+msgstr "Utilise « %s » pour ouvrir l'élément sélectionné"
 
 #: src/file-manager/fm-directory-view.c:3508
 #: src/file-manager/nautilus-directory-view-ui.xml.h:23
@@ -4611,7 +4619,7 @@ msgstr "_Mettre dans la corbeille"
 #: src/file-manager/fm-directory-view.c:4768
 #: src/file-manager/nautilus-directory-view-ui.xml.h:16
 msgid "Move each selected item to the Trash"
-msgstr "Déplacer chaque élément sélectionné dans la corbeille"
+msgstr "Déplace chaque élément sélectionné dans la corbeille"
 
 #: src/file-manager/fm-directory-view.c:4792
 #: src/file-manager/nautilus-directory-view-ui.xml.h:38
@@ -5524,15 +5532,15 @@ msgstr "_Formater"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
 msgid "Choose a program with which to open the selected item"
-msgstr "Choisir une application avec laquelle ouvrir l'élément sélectionné"
+msgstr "Choisit une application avec laquelle ouvrir l'élément sélectionné"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:2
 msgid "Choose another application with which to open the selected item"
-msgstr "Choisir une autre application pour ouvrir l'élément sélectionné"
+msgstr "Choisit une autre application pour ouvrir l'élément sélectionné"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:3
 msgid "Choose another viewer with which to view the selected item"
-msgstr "Choisir un autre visionneur pour afficher l'élément sélectionné"
+msgstr "Choisit un autre visionneur pour afficher l'élément sélectionné"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:4
 msgid "Create a new empty folder inside this folder"
@@ -5549,11 +5557,11 @@ msgstr "_Dupliquer"
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Delete each selected item, without moving to the Trash"
 msgstr ""
-"Effacer tous les éléments sélectionnés, sans les déplacer dans la corbeille"
+"Efface tous les éléments sélectionnés, sans les déplacer dans la corbeille"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "Duplicate each selected item"
-msgstr "Dupliquer chaque élément sélectionné"
+msgstr "Duplique chaque élément sélectionné"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:12
 msgid "Edit Launcher"
@@ -5576,11 +5584,11 @@ msgstr "Ouvrir _avec"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:21
 msgid "Open each selected item in a new window"
-msgstr "Ouvrir chaque élément sélectionné dans une nouvelle fenêtre"
+msgstr "Ouvre chaque élément sélectionné dans une nouvelle fenêtre"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Open the selected item in this window"
-msgstr "Ouvrir l'élément sélectionné dans cette fenêtre"
+msgstr "Ouvre l'élément sélectionné dans cette fenêtre"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:25
 msgid "Prepare the selected files to be copied with a Paste Files command"
@@ -5596,7 +5604,7 @@ msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:27
 msgid "Rename selected item"
-msgstr "Renommer l'élément sélectionné"
+msgstr "Renomme l'élément sélectionné"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:28
 msgid "Reset View to _Defaults"
@@ -5618,7 +5626,7 @@ msgstr "Sélectionner _tous les fichiers"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Select all items in this window"
-msgstr "Sélectionner tous les éléments de cette fenêtre"
+msgstr "Sélectionne tous les éléments de cette fenêtre"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Show the folder containing the scripts that appear in this menu"
@@ -5626,11 +5634,11 @@ msgstr "Affiche le dossier qui contient les scripts listés dans ce menu"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:35
 msgid "Use the default background for this location"
-msgstr "Utiliser l'arrière-plan par défaut pour cet emplacement"
+msgstr "Utilise l'arrière-plan par défaut pour cet emplacement"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:36
 msgid "View or modify the properties of each selected item"
-msgstr "Voir ou modifier les propriétés de chaque élément sélectionné"
+msgstr "Affiche ou modifie les propriétés de chaque élément sélectionné"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "_New Folder"
@@ -6163,7 +6171,7 @@ msgstr "_Niveau de zoom : "
 
 #: src/nautilus-file-management-properties.glade.h:69
 msgid "_Double click to activate items"
-msgstr "_Double-clique pour activer les éléments"
+msgstr "_Double-clic pour activer les éléments"
 
 #: src/nautilus-file-management-properties.glade.h:70
 msgid "_Only for files smaller than:"
@@ -6179,7 +6187,7 @@ msgstr "_Lancer les fichiers textes exécutables lorsqu'ils sont cliqués"
 
 #: src/nautilus-file-management-properties.glade.h:73
 msgid "_Single click to activate items"
-msgstr "_Simple clique pour activer les éléments"
+msgstr "_Simple clic pour activer les éléments"
 
 #: src/nautilus-file-management-properties.glade.h:74
 msgid "_Use compact layout"
@@ -6385,11 +6393,11 @@ msgstr "_Valeur de couleur :"
 #: src/nautilus-property-browser.c:1101
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
-msgstr "Désolé, mais « %s » n'est pas un nom de fichier valide."
+msgstr "Désolé, mais « %s » n'est pas un nom de fichiers valide."
 
 #: src/nautilus-property-browser.c:1103
 msgid "Sorry, but you did not supply a valid file name."
-msgstr "Désolé, mais vous n'avez pas fournit de nom de fichier valide."
+msgstr "Désolé, mais vous n'avez pas fournit de nom de fichiers valide."
 
 #: src/nautilus-property-browser.c:1105 src/nautilus-property-browser.c:1148
 msgid "Couldn't install pattern"
@@ -6741,14 +6749,14 @@ msgstr "Affiche une fenêtre qui permets d'éditer les signets de ce menu"
 
 #: src/nautilus-shell-ui.xml.h:16
 msgid "Display credits for the creators of Nautilus"
-msgstr "Afficher la liste des créateurs de Nautilus"
+msgstr "Affiche la liste des créateurs de Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:17
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
 msgstr ""
-"Afficher les motifs, couleurs, et emblèmes qui peuvent être utilisés pour "
+"Affiche les motifs, couleurs, et emblèmes qui peuvent être utilisés pour "
 "personnaliser l'apparence"
 
 #: src/nautilus-shell-ui.xml.h:18
@@ -6757,7 +6765,7 @@ msgstr "Affiche le contenu actuel de l'emplacement courant"
 
 #: src/nautilus-shell-ui.xml.h:19
 msgid "Edit Nautilus preferences"
-msgstr "Éditer les préférences de Nautilus"
+msgstr "Édite les préférences de Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:20
 msgid "Find"
@@ -7519,7 +7527,7 @@ msgstr "Affiche vos serveurs réseaux dans le gestionnaire de fichiers Nautilus"
 #~ msgstr "Vous avez essayé de détruire le panneau « Loser »"
 
 #~ msgid "Factory for music view"
-#~ msgstr "Usine pour le vue Musique"
+#~ msgstr "Fabrique pour le vue Musique"
 
 #~ msgid "Music"
 #~ msgstr "Musique"
@@ -7531,7 +7539,7 @@ msgstr "Affiche vos serveurs réseaux dans le gestionnaire de fichiers Nautilus"
 #~ msgstr "Vue musique"
 
 #~ msgid "Music view factory"
-#~ msgstr "Usine pour la vue Musique"
+#~ msgstr "Fabrique pour la vue Musique"
 
 #~ msgid "View as Music"
 #~ msgstr "Voir en tant que Musique"
@@ -8563,7 +8571,7 @@ msgstr "Affiche vos serveurs réseaux dans le gestionnaire de fichiers Nautilus"
 #~ msgstr "Enlever toutes les images personnalisées de l'icône sélectionné"
 
 #~ msgid "Factory for news view"
-#~ msgstr "Usine pour la vue des nouvelles"
+#~ msgstr "Fabrique pour la vue des nouvelles"
 
 #~ msgid "News"
 #~ msgstr "Nouvelles"
@@ -8859,7 +8867,7 @@ msgstr "Affiche vos serveurs réseaux dans le gestionnaire de fichiers Nautilus"
 #~ msgstr "Vider"
 
 #~ msgid "Factory for history views"
-#~ msgstr "Usine pour les vues d'historiques"
+#~ msgstr "Fabrique pour les vues d'historiques"
 
 #~ msgid "Factory for annotation view"
 #~ msgstr "Fabrique pour la vue d'annotation"
@@ -9183,7 +9191,7 @@ msgstr "Affiche vos serveurs réseaux dans le gestionnaire de fichiers Nautilus"
 #~ msgstr "Visionneur d'images générique"
 
 #~ msgid "Generic image control factory"
-#~ msgstr "Usine pour les contrôles génériques d'images"
+#~ msgstr "Fabrique pour les contrôles génériques d'images"
 
 #~ msgid "Image Viewer"
 #~ msgstr "Visionneur d'images"
@@ -9192,7 +9200,7 @@ msgstr "Affiche vos serveurs réseaux dans le gestionnaire de fichiers Nautilus"
 #~ msgstr "Visionneur d'images Nautilus"
 
 #~ msgid "Nautilus Image viewer factory"
-#~ msgstr "Usine pour le visionneur d'images de Nautilus"
+#~ msgstr "Fabrique pour le visionneur d'images de Nautilus"
 
 #~ msgid "View as Image"
 #~ msgstr "Voir en tant qu'Image"
@@ -9204,13 +9212,13 @@ msgstr "Affiche vos serveurs réseaux dans le gestionnaire de fichiers Nautilus"
 #~ msgstr "Vue Nautilus Mozilla"
 
 #~ msgid "Mozilla Nautilus view factory"
-#~ msgstr "Usine pour la vue Mozilla de Nautilus"
+#~ msgstr "Fabrique pour la vue Mozilla de Nautilus"
 
 #~ msgid "Mozilla content view component"
 #~ msgstr "Composant pour la vue Mozilla de Nautilus"
 
 #~ msgid "Mozilla content view component's factory"
-#~ msgstr "Usine pour le composent de la vue Mozilla de Nautilus"
+#~ msgstr "Fabrique pour le composent de la vue Mozilla de Nautilus"
 
 #~ msgid "View as Web Page"
 #~ msgstr "Voir en tant que Page Web"
@@ -9528,7 +9536,7 @@ msgstr "Affiche vos serveurs réseaux dans le gestionnaire de fichiers Nautilus"
 #~ msgstr "Poste de travail"
 
 #~ msgid "Home Directory"
-#~ msgstr "Répertoire perso"
+#~ msgstr "Dossier personnel"
 
 #~ msgid "Excite"
 #~ msgstr "Excite"
@@ -9718,7 +9726,7 @@ msgstr "Affiche vos serveurs réseaux dans le gestionnaire de fichiers Nautilus"
 #~ "We hope you enjoy Nautilus!"
 #~ msgstr ""
 #~ "Cliquez sur « Terminer » pour lancer Nautilus. Vous démarrerez\n"
-#~ "avec une fenêtre affichant votre répertoire personnel.\n"
+#~ "avec une fenêtre affichant votre dossier personnel.\n"
 #~ "\n"
 #~ "Nous espérons que vous apprécierez Nautilus !"
 
@@ -10703,7 +10711,7 @@ msgstr "Affiche vos serveurs réseaux dans le gestionnaire de fichiers Nautilus"
 #~ msgstr "Vue d'Inventaire de Nautilus"
 
 #~ msgid "Nautilus Inventory view factory"
-#~ msgstr "Usine de vue d'inventaire système"
+#~ msgstr "Fabrique de vue d'inventaire système"
 
 #~ msgid "System Inventory"
 #~ msgstr "Inventaire système"
@@ -10934,13 +10942,13 @@ msgstr "Affiche vos serveurs réseaux dans le gestionnaire de fichiers Nautilus"
 #~ msgstr "_Abonnement aux services Eazel"
 
 #~ msgid "Nautilus Service Summary View Factory"
-#~ msgstr "Usine de la vue Résumé des Services Nautilus"
+#~ msgstr "Fabrique de la vue Résumé des Services Nautilus"
 
 #~ msgid "Nautilus Summary View"
 #~ msgstr "Vue du Résumé Nautilus"
 
 #~ msgid "Service Summary View Component's Factory"
-#~ msgstr "Composant de visualisation de résumé des services de l'usine"
+#~ msgstr "Composant de visualisation de résumé des services de la fabrique"
 
 #~ msgid "Service Summary view component"
 #~ msgstr "Composant de visualisation de résumé des services"
