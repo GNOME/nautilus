@@ -1154,7 +1154,18 @@ add_scripts_directory (FMDirectoryView *view,
 static void
 fm_directory_view_init (FMDirectoryView *view)
 {
+	static gboolean setup_autos = FALSE;
 	NautilusDirectory *scripts_directory;
+
+	if (!setup_autos) {
+		setup_autos = TRUE;
+		eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+						  &confirm_trash_auto_value);
+		eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_ENABLE_DELETE,
+						  &show_delete_command_auto_value);
+		eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
+						  &use_new_window_auto_value);
+	}
 
 	view->details = g_new0 (FMDirectoryViewDetails, 1);
 
@@ -5800,11 +5811,4 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 
 	clipboard_atom = gdk_atom_intern ("CLIPBOARD", FALSE);
 	copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
-
-	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-					  &confirm_trash_auto_value);
-	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_ENABLE_DELETE,
-					  &show_delete_command_auto_value);
-	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-					  &use_new_window_auto_value);
 }

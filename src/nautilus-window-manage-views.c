@@ -861,14 +861,21 @@ load_new_location_in_sidebar_panels (NautilusWindow *window,
                                      GList *selection,
                                      NautilusViewFrame *view_to_skip)
 {
-	GList *sidebar_panels;
+        GList *l;
         GList *node;
+	GList *sidebar_panels;
         NautilusViewFrame *view;
 
 	/* Copy the list before traversing it, because during a failure in
 	 * load_new..., list could be modified and bad things would happen
+         * also reference each object in case of re-enterency eg. window close.
 	 */
-	sidebar_panels = g_list_copy (window->sidebar_panels);
+        sidebar_panels = NULL;
+        for (l = window->sidebar_panels; l; l = l->next) {
+                sidebar_panels = g_list_prepend (sidebar_panels,
+                                                 g_object_ref (l->data));
+        }
+
         for (node = sidebar_panels; node != NULL; node = node->next) {
                 view = node->data;
                 if (view != view_to_skip
@@ -876,6 +883,11 @@ load_new_location_in_sidebar_panels (NautilusWindow *window,
                         load_new_location_in_one_view (view, location, selection);
                 }
         }
+
+        for (l = sidebar_panels; l; l = l->next) {
+                g_object_unref (l->data);
+        }
+
 	g_list_free (sidebar_panels);
 }
 

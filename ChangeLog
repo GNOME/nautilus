@@ -1,3 +1,14 @@
+2002-02-06  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-window-manage-views.c
+	(load_new_location_in_sidebar_panels): guard
+	against re-enterancy; hold refs on the sidebars.
+
+	* src/file-manager/fm-directory-view.c
+	(fm_directory_view_class_init): move re-entering
+	auto preference registers to 
+	(fm_directory_view_init): here.
+
 2002-02-05  Darin Adler  <darin@bentspoon.com>
 
 	* components/tree/nautilus-tree-change-queue.c: Remove.
