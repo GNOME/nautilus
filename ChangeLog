@@ -1,3 +1,17 @@
+2001-08-19  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* components/music/nautilus-music-view.c: (get_cell_text),
+	(nautilus_music_view_initialize), (get_song_text),
+	(music_view_set_selected_song_title), (selection_callback),
+	(value_changed_callback), (compare_song_numbers),
+	(compare_song_titles), (compare_song_artists),
+	(compare_song_times), (compare_song_bitrates), (sort_list),
+	(click_column_callback), (list_move_vertical), (list_moveto),
+	(list_reveal_row), (play_current_file), (go_to_next_track),
+	(nautilus_music_view_update), (nautilus_music_view_load_uri):
+	Ported to use EelList instead of GtkCList. This looks better and
+	allows for futre drag and drop support.
+
 2001-08-18  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-directory-background.c:
