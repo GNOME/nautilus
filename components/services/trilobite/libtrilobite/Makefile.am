@@ -11,7 +11,6 @@ INCLUDES = \
 	-I.			\
 	-I$(top_srcdir)		\
 	-I$(top_builddir)	\
-	-I/usr/include/rpm	\
 	-I$(top_srcdir)/components/services/trilobite/libtrilobite \
 	$(GNOME_CFLAGS)		\
 	$(GCONF_CFLAGS)		\
@@ -27,7 +26,6 @@ libtrilobite_la_LDFLAGS =	\
 	$(BONOBO_LIBS)		\
 	$(XML_LIBS)		\
 	$(VFS_LIBS)		\
-	$(RPM_LIBS)		\
 	$(NULL)
 
 libtrilobite_service_la_LDFLAGS =\
@@ -58,7 +56,6 @@ libtrilobiteinclude_HEADERS =			\
 	trilobite-root-helper.h			\
 	trilobite-root-client-public.h		\
 	trilobite-redirect.h			\
-	trilobite-inventory-utils.h		\
 	helixcode-utils.h			\
 	$(NULL)
 
@@ -71,7 +68,6 @@ libtrilobite_la_SOURCES =			\
 	trilobite-root-helper.c			\
 	trilobite-root-client.c			\
 	trilobite-redirect.c			\
-	trilobite-inventory-utils.c		\
 	helixcode-utils.c			\
 	$(NULL)
 
