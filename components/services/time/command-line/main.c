@@ -25,6 +25,7 @@
 #include <gnome.h>
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
+#include <unistd.h>		/* for getpass() */
 
 #include <libtrilobite/libtrilobite.h>
 #include <libtrilobite/libtrilobite-service.h>
@@ -53,13 +54,14 @@ CORBA_ORB orb;
 static char *
 get_password (GtkObject *object, const char *prompt)
 {
-	char password[80];
+	char * real_prompt;
+	char * passwd;
 
-	fprintf (stderr, "%s: ", prompt);
-	fflush (stderr);
-	fgets (password, 80, stdin);
-	password[79] = 0;
-	return g_strdup (password);
+	real_prompt = g_strdup_printf ("%s: ", prompt);
+	passwd = getpass (real_prompt);
+	g_free (real_prompt);
+
+	return g_strdup (passwd);
 }
 
 

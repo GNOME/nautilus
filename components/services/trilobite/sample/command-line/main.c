@@ -29,6 +29,8 @@
 #include <libtrilobite/libtrilobite.h>
 #include <libtrilobite/libtrilobite-service.h>
 
+#include <unistd.h>
+
 #include "sample-service.h"
 
 #define OAF_ID "OAFIID:trilobite_eazel_sample_service:3d972cc6-d42d-4669-bd42-966998b3c306"
@@ -41,17 +43,14 @@ CORBA_ORB orb;
 static char *
 get_password_dude (TrilobiteRootClient *root_client, const char *prompt, void *user_data)
 {
-	char password[80];
+	char * real_prompt;
+	char * passwd;
 
-	printf ("password for %s: ", prompt);
-	fflush (stdout);
+	real_prompt = g_strdup_printf ("%s: ", prompt);
+	passwd = getpass (real_prompt);
+	g_free (real_prompt);
 
-	fgets (password, 80, stdin);
-	if (password[strlen (password) - 1] == '\n') {
-		password[strlen (password) - 1] = 0;
-	}
-	password[79] = 0;
-	return g_strdup (password);
+	return g_strdup (passwd);
 }
 
 

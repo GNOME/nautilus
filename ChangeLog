@@ -1,3 +1,16 @@
+2000-08-03  Michael K. Fleming  <mfleming@eazel.com>
+
+	*
+	components/services/install/command-line/eazel-alt-install-corba.c:
+	(get_password_dude):
+	* components/services/time/command-line/main.c: (get_password):
+	* components/services/trilobite/sample/command-line/main.c:
+	(get_password_dude):
+	Changed CLI password prompts to use getpass()
+
+	* nautilus-clean.sh:
+	added eazel-proxy to -x
+
 2000-08-03  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-volume-monitor.c:

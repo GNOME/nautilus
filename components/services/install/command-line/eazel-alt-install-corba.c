@@ -34,6 +34,8 @@
 #include <libtrilobite/libtrilobite.h>
 #include <trilobite-eazel-install.h>
 
+#include <unistd.h>
+
 #define PACKAGE_FILE_NAME "package-list.xml"
 #define DEFAULT_CONFIG_FILE "/var/eazel/services/eazel-services-config.xml"
 
@@ -346,17 +348,14 @@ done (EazelInstallCallback *service,
 static char *
 get_password_dude (TrilobiteRootClient *root_client, const char *prompt, void *user_data)
 {
-	char password[80];
+	char * real_prompt;
+	char * passwd;
 
-	printf ("gimme %s's password : ", prompt);
-	fflush (stdout);
+	real_prompt = g_strdup_printf ("%s: ", prompt);
+	passwd = getpass (real_prompt);
+	g_free (real_prompt);
 
-	fgets (password, 80, stdin);
-	if (password[strlen (password) - 1] == '\n') {
-		password[strlen (password) - 1] = 0;
-	}
-	password[79] = 0;
-	return g_strdup (password);
+	return g_strdup (passwd);
 }
 
 static TrilobiteRootClient *
