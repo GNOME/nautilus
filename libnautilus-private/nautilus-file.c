@@ -30,13 +30,14 @@
 #include "nautilus-directory-private.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-private.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-link.h"
+#include "nautilus-metadata.h"
 #include "nautilus-trash-directory.h"
 #include "nautilus-trash-file.h"
 #include "nautilus-vfs-file.h"
-#include "nautilus-file-utilities.h"
 #include <ctype.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
@@ -46,7 +47,9 @@
 #include <grp.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-dentry.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-metadata.h>
 #include <libgnome/gnome-mime-info.h>
 #include <libgnome/gnome-mime.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
@@ -737,6 +740,10 @@ nautilus_file_can_rename (NautilusFile *file)
 		return FALSE;
 	}
 
+	if (nautilus_file_is_mime_type (file, "application/x-gnome-app-info")) {
+		return FALSE;
+	}
+	
 	can_rename = TRUE;
 	uri = nautilus_file_get_uri (file);
 	path = gnome_vfs_get_local_path_from_uri (uri);
@@ -941,11 +948,31 @@ nautilus_file_rename (NautilusFile *file,
 	Operation *op;
 	GnomeVFSFileInfo *partial_file_info;
 	GnomeVFSURI *vfs_uri;
+	char *uri, *path;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (new_name != NULL);
 	g_return_if_fail (callback != NULL);
 
+	/* FIXME: Rename GMC URLs on the local file system by setting
+	 * their metadata only. This leaves no way to rename them for
+	 * real.
+	 */
+	if (nautilus_file_is_gmc_url (file)) {
+		uri = nautilus_file_get_uri (file);
+		path = gnome_vfs_get_local_path_from_uri (uri);
+		g_free (uri);
+
+		if (path != NULL) {
+			gnome_metadata_set (path, "icon-caption", strlen (new_name) + 1, new_name);
+			g_free (path);
+		
+			(* callback) (file, GNOME_VFS_OK, callback_data);
+			nautilus_file_changed (file);
+			return;
+		}
+	}
+	
 	 /* Make return an error for incoming names containing path separators. */
 	 if (strstr (new_name, "/") != NULL) {
 		(* callback) (file, GNOME_VFS_ERROR_NOT_PERMITTED, callback_data);
@@ -1872,6 +1899,76 @@ typedef enum {
 } NautilusFileFilterOptions;
 
 static gboolean
+is_special_desktop_gmc_file (NautilusFile *file)
+{
+	static char *home_dir;
+	static int home_dir_len;
+	char buffer [1024];
+	char *uri, *path;
+	int s;
+
+	if (!nautilus_file_is_local (file)) {
+		return FALSE;
+	}
+	
+	if (strcmp (file->details->relative_uri, "Trash.gmc") == 0) {
+		return TRUE;
+	}
+
+	if (nautilus_file_is_symbolic_link (file)) {
+		/* You would think that
+		 * nautilus_file_get_symbolic_link_target_path would
+		 * be useful here, but you would be wrong.  The
+		 * information kept around by NautilusFile is not
+		 * available right now, and I have no clue how to fix
+		 * this. On top of that, inode/device are not stored,
+		 * so it is not possible to see if a link is a symlink
+		 * to the home directory.  sigh. -Miguel
+		 */
+		uri = nautilus_file_get_uri (file);
+		path = gnome_vfs_get_local_path_from_uri (uri);
+		if (path != NULL){
+			s = readlink (path, buffer, sizeof (buffer)-1);
+			g_free (path);
+		} else {
+			s = -1;
+		}
+		g_free (uri);
+
+		if (s == -1) {
+			return FALSE;
+		}
+
+		buffer [s] = 0;
+		
+		if (home_dir == NULL) {
+			home_dir = g_strdup (g_get_home_dir ());
+			home_dir_len = strlen (home_dir);
+			
+			if (home_dir != NULL && home_dir [home_dir_len-1] == '/') {
+				home_dir [home_dir_len-1] = 0;
+				home_dir_len--;
+			}
+			
+		}
+		if (home_dir != NULL) {
+			if (strcmp (home_dir, buffer) == 0)
+				return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+gboolean
+nautilus_file_is_in_desktop (NautilusFile *file)
+{
+	/* This handles visiting other people's desktops, but it can arguably
+	 * be said that this might break and that we should lookup the passwd table.
+	 */
+	return strstr (file->details->directory->details->uri, "/.gnome-desktop") != NULL;
+}
+
+static gboolean
 filter_hidden_and_backup_partition_callback (gpointer data,
 					     gpointer callback_data)
 {
@@ -1881,6 +1978,10 @@ filter_hidden_and_backup_partition_callback (gpointer data,
 	file = NAUTILUS_FILE (data);
 	options = (NautilusFileFilterOptions) callback_data;
 
+	if (nautilus_file_is_in_desktop (file) && is_special_desktop_gmc_file (file)) {
+		return FALSE;
+	}
+	
 	return nautilus_file_should_show (file, 
 					  options & SHOW_HIDDEN,
 					  options & SHOW_BACKUP);
@@ -1971,10 +2072,32 @@ nautilus_file_set_metadata (NautilusFile *file,
 			    const char *default_metadata,
 			    const char *metadata)
 {
+	char *icon_path;
+	char *local_path;
+	char *local_uri;
+	
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (key != NULL);
 	g_return_if_fail (key[0] != '\0');
 
+	if (strcmp (key, NAUTILUS_METADATA_KEY_CUSTOM_ICON) == 0) {
+		if (nautilus_file_is_in_desktop (file)
+		    && nautilus_file_is_local (file)) {
+
+			local_uri = nautilus_file_get_uri (file);
+			local_path = gnome_vfs_get_local_path_from_uri (local_uri);
+			icon_path = gnome_vfs_get_local_path_from_uri (metadata);
+
+			if (local_path != NULL && icon_path != NULL) {
+				gnome_metadata_set (local_path, "icon-filename", strlen (icon_path)+1, icon_path);
+			}
+
+			g_free (icon_path);
+			g_free (local_path);
+			g_free (local_uri);
+		}
+	}
+	
 	nautilus_directory_set_file_metadata
 		(file->details->directory,
 		 get_metadata_name (file),
@@ -2086,11 +2209,58 @@ char *
 nautilus_file_get_name (NautilusFile *file)
 {
 	char *name;
-	
+	GnomeDesktopEntry *entry;
+	char *path, *uri;
+	char *caption;
+	int size, res;
+
 	if (file == NULL) {
 		return NULL;
 	}
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	if (nautilus_file_is_mime_type (file, "application/x-gnome-app-info")) {
+		uri = nautilus_file_get_uri (file);
+		path = gnome_vfs_get_local_path_from_uri (uri);
+
+		name = NULL;
+		if (path != NULL) {
+			entry = gnome_desktop_entry_load (path);
+			if (entry != NULL) {
+				name = g_strdup (entry->name);
+				gnome_desktop_entry_free (entry);
+			}
+		}
+		
+		g_free (path);
+		g_free (uri);
+
+		if (name != NULL) {
+			return name;
+		}
+	}
+
+	/* Desktop directories contain special "URL" files, handle
+	 * those by using the gnome metadata caption.
+	 */
+	if (nautilus_file_is_gmc_url (file)) {
+		uri = nautilus_file_get_uri (file);
+		path = gnome_vfs_get_local_path_from_uri (uri);
+
+		if (path != NULL) {
+			res = gnome_metadata_get (path, "icon-caption", &size, &caption);
+		} else {
+			res = -1;
+		}
+		
+		g_free (path);
+		g_free (uri);
+
+		if (res == 0 && caption != NULL) {
+			return caption;
+		}
+	}
+
 	name = gnome_vfs_unescape_string (file->details->relative_uri, "/");
 	if (name != NULL) {
 		return name;
@@ -2382,7 +2552,7 @@ nautilus_file_fit_date_as_string (NautilusFile *file,
 				return date_string;
 			}
 			
-			result = (truncate_callback) (date_string, width, measure_context);
+			result = (* truncate_callback) (date_string, width, measure_context);
 			g_free (date_string);
 			return result;
 		}
@@ -4241,6 +4411,22 @@ gboolean
 nautilus_file_is_nautilus_link (NautilusFile *file)
 {
 	return nautilus_file_is_mime_type (file, "application/x-nautilus-link");
+}
+
+/**
+ * nautilus_file_is_gmc_url
+ * 
+ * Check if this file is a gmc url
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: True if the file is a gmc url
+ * 
+ **/
+gboolean
+nautilus_file_is_gmc_url (NautilusFile *file)
+{
+	return strncmp (file->details->relative_uri, "url", 3) == 0
+		&& nautilus_file_is_in_desktop (file);
 }
 
 /**

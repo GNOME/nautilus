@@ -40,7 +40,7 @@
 #define NAUTILUS_USER_DIRECTORY_NAME ".nautilus"
 #define DEFAULT_NAUTILUS_DIRECTORY_MODE (0755)
 
-#define DESKTOP_DIRECTORY_NAME "desktop"
+#define DESKTOP_DIRECTORY_NAME ".gnome-desktop"
 #define DEFAULT_DESKTOP_DIRECTORY_MODE (0755)
 
 #define NAUTILUS_USER_MAIN_DIRECTORY_NAME "Nautilus"
@@ -137,14 +137,12 @@ nautilus_get_user_directory (void)
 char *
 nautilus_get_desktop_directory (void)
 {
-	char *desktop_directory, *user_directory;
+	char *desktop_directory;
 
 	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
-		desktop_directory = strdup (g_get_home_dir());
+		desktop_directory = g_strdup (g_get_home_dir());
 	} else {
-		user_directory = nautilus_get_user_directory ();
-		desktop_directory = nautilus_make_path (user_directory, DESKTOP_DIRECTORY_NAME);
-		g_free (user_directory);
+		desktop_directory = nautilus_make_path (g_get_home_dir (), DESKTOP_DIRECTORY_NAME);
 	}
 
 	if (!g_file_exists (desktop_directory)) {

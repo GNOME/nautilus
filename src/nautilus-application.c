@@ -39,6 +39,7 @@
 #include "nautilus-shell.h"
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-object.h>
+#include <dirent.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string-list.h>
@@ -47,6 +48,7 @@
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-config.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-metadata.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-client.h>
 #include <libgnomeui/gnome-messagebox.h>
@@ -334,6 +336,84 @@ nautilus_make_uri_list_from_shell_strv (const char * const *strv)
 	return uri_list;
 }
 
+/* Find ~/.gnome-desktop/Trash and rename it to ~/.gnome-desktop/Trash-gmc
+ * Only if it is a directory
+ */
+static void
+migrate_gmc_trash (void)
+{
+	char *dp, *trash_dir, *dest;
+	struct stat buf;
+
+	dp = nautilus_get_desktop_directory ();
+	trash_dir = g_strconcat (dp, "/", "Trash", NULL);
+	dest = g_strconcat (dp, "/", "Trash.gmc", NULL);
+	
+	if (stat (trash_dir, &buf) == 0 && S_ISDIR (buf.st_mode)) {
+		rename (trash_dir, dest);
+		gnome_metadata_rename (trash_dir, dest);
+	}
+	
+	g_free (dp);
+	g_free (trash_dir);
+	g_free (dest);
+}
+
+static void
+migrate_old_nautilus_files (void)
+{
+	char *new_desktop_dir, *np;
+	char *old_desktop_dir, *op;
+	char *old_desktop_dir_new_name;
+	struct stat buf;
+	DIR *dir;
+	struct dirent *de;
+	
+	old_desktop_dir = g_strconcat (g_get_home_dir (), "/.nautilus/desktop", NULL);
+	if (stat (old_desktop_dir, &buf) == -1) {
+		g_free (old_desktop_dir);
+		return;
+	}
+	if (!S_ISLNK (buf.st_mode)){
+		dir = opendir (old_desktop_dir);
+		if (dir == NULL) {
+			g_free (old_desktop_dir);
+			return;
+		}
+	
+		new_desktop_dir = nautilus_get_desktop_directory ();
+		
+		while ((de = readdir (dir)) != NULL){
+			if (de->d_name [0] == '.'){
+				if (de->d_name [0] == 0)
+					continue;
+				
+				if (de->d_name [1] == '.' && de->d_name [2] == 0)
+					continue;
+			}
+	
+			op = g_strconcat (old_desktop_dir, "/", de->d_name, NULL);
+			np = g_strconcat (new_desktop_dir, "/", de->d_name, NULL);
+	
+			rename (op, np);
+	
+			g_free (op);
+			g_free (np);
+		}
+
+		closedir (dir);
+
+		g_free (new_desktop_dir);
+	}
+
+	/* In case we miss something */
+	old_desktop_dir_new_name = g_strconcat (old_desktop_dir, "-old", NULL);
+	rename (old_desktop_dir, old_desktop_dir_new_name);
+	g_free (old_desktop_dir_new_name);
+
+	g_free (old_desktop_dir);
+}
+
 void
 nautilus_application_startup (NautilusApplication *application,
 			      gboolean kill_shell,
@@ -374,6 +454,10 @@ nautilus_application_startup (NautilusApplication *application,
 		nautilus_first_time_druid_show (application, urls);
 		return;
 	}
+
+	/* Make the desktop work with gmc and old Nautilus. */
+	migrate_gmc_trash ();
+	migrate_old_nautilus_files ();
 	
 	/* initialize the sound machinery */
 	nautilus_sound_initialize ();

@@ -47,12 +47,14 @@
 #include <eel/eel-scalable-font.h>
 #include <eel/eel-smooth-text-layout.h>
 #include <eel/eel-string.h>
-#include <eel/eel-xml-extensions.h>
 #include <eel/eel-vfs-extensions.h>
+#include <eel/eel-xml-extensions.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
 #include <gtk/gtksignal.h>
+#include <libgnome/gnome-dentry.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-metadata.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
@@ -1379,9 +1381,12 @@ NautilusScalableIcon *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifier)
 {
 	char *uri, *file_uri, *file_path, *image_uri, *icon_name, *mime_type, *top_left_text;
+	char *directory, *desktop_directory, *buf;
  	gboolean is_local;
- 	int file_size;
+ 	int file_size, size, res;
  	NautilusScalableIcon *scalable_icon;
+	char *directory_uri;
+	GnomeDesktopEntry *entry;
 	
 	if (file == NULL) {
 		return NULL;
@@ -1399,6 +1404,37 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 	   If a thumbnail is required, but does not yet exist,  put an entry on the thumbnail queue so we
 	   eventually make one */
 
+	if (uri == NULL) {
+		/* Do we have to check the gnome metadata?
+		 *
+		 * Do this only for the ~/.gnome-desktop directory, as it was
+		 * the only place where GMC used it (since everywhere else we could
+		 * not do it because of the imlib leaks).
+		 */
+		desktop_directory = nautilus_get_desktop_directory ();
+		directory_uri = nautilus_file_get_parent_uri (file);
+		directory = gnome_vfs_get_local_path_from_uri (directory_uri);
+		if (directory != NULL && strcmp (directory, desktop_directory) == 0) {
+			file_path = gnome_vfs_get_local_path_from_uri (file_uri);
+
+			if (file_path != NULL) {
+				res = gnome_metadata_get (file_path, "icon-filename", &size, &buf);
+			} else {
+				res = -1;
+			}
+
+			if (res == 0 && buf != NULL) {
+				uri = gnome_vfs_get_uri_from_local_path (buf);
+				g_free (buf);
+			}
+			
+			g_free (file_path);
+			file_path = NULL;
+		}
+		g_free (directory);
+		g_free (desktop_directory);
+	}
+	
 	/* also, dont make thumbnails for images in the thumbnails directory */  
 	if (uri == NULL) {		
 		mime_type = nautilus_file_get_mime_type (file);
@@ -1442,6 +1478,22 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 				}
 			}
 			g_free (file_path);
+			file_path = NULL;
+		}
+	}
+
+	if (uri == NULL && nautilus_file_is_mime_type (file, "application/x-gnome-app-info")) {
+		file_path = gnome_vfs_get_local_path_from_uri (file_uri);
+		if (file_path != NULL) {
+			entry = gnome_desktop_entry_load (file_path);
+			if (entry != NULL) {
+				if (entry->icon != NULL) {
+					uri = gnome_vfs_get_uri_from_local_path (entry->icon);
+				}
+				gnome_desktop_entry_free (entry);
+			}
+			g_free (file_path);
+			file_path = NULL;
 		}
 	}
 	

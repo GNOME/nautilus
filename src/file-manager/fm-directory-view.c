@@ -52,6 +52,7 @@
 #include <libgnomeui/gnome-geometry.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
+#include <libgnomevfs/gnome-vfs-mime.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-result.h>
@@ -4393,6 +4394,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	FMDirectoryView *view;
 	char *uri, *command, *executable_path, *quoted_path, *name;
 	GnomeVFSMimeApplication *application;
+	GnomeDesktopEntry *entry;
 	ActivationAction action;
 	gboolean need_to_continue_monitoring_file_for_activation;
 	
@@ -4439,6 +4441,23 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		}
 	}
 
+	if (action != ACTIVATION_ACTION_DO_NOTHING
+	    && strcmp (gnome_vfs_mime_type_from_name_or_default (uri, ""),
+		       "application/x-gnome-app-info") == 0) {
+
+		executable_path = gnome_vfs_get_local_path_from_uri (uri);
+		if (executable_path != NULL) {
+			entry = gnome_desktop_entry_load (executable_path);
+			if (entry != NULL) {
+				gnome_desktop_entry_launch (entry);
+			}
+			gnome_desktop_entry_free (entry);
+		}
+		g_free (executable_path);
+
+		action = ACTIVATION_ACTION_DO_NOTHING;
+	}
+	
 	if (action != ACTIVATION_ACTION_DO_NOTHING && file_is_launchable (file)) {
 
 		action = ACTIVATION_ACTION_LAUNCH;

@@ -113,7 +113,7 @@ char **broken_cdda_interface_h_workaround = strerror_tr;
 
 #endif
 
-#define CHECK_STATUS_INTERVAL 2000
+#define CHECK_STATUS_INTERVAL 4000
 
 #define FLOPPY_MOUNT_PATH_PREFIX "/mnt/fd"
 

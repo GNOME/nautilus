@@ -65,7 +65,9 @@
 /* Druid page number enumeration */
 enum {
 	USER_LEVEL_PAGE = 0,
+#ifdef TRANSITIONAL_NAUTILUS
 	GMC_TRANSITION_PAGE,
+#endif
 	OFFER_UPDATE_PAGE,
 	UPDATE_FEEDBACK_PAGE,
 	PROXY_CONFIGURATION_PAGE,
@@ -135,9 +137,11 @@ static pid_t child_pid;
 
 /* GMC transition tool globals */
 static gboolean draw_desktop = TRUE;
+#ifdef TRANSITIONAL_NAUTILUS
 static gboolean add_to_session = TRUE;
 static gboolean transfer_gmc_icons = TRUE;
 static GtkWidget *draw_desktop_checkbox_widget;
+#endif
 
 static int current_user_level;
 
@@ -145,7 +149,9 @@ static void     initiate_file_download           (GnomeDruid 	*druid);
 static gboolean set_http_proxy                   (const char 	*proxy_url);
 static gboolean attempt_http_proxy_autoconfigure (void);
 static gboolean check_network_connectivity	 (void);
+#ifdef TRANSITIONAL_NAUTILUS
 static gint	convert_gmc_desktop_icons 	 (gpointer       unused_data);
+#endif
 static void	update_finished_label		 (void);
 
 static void
@@ -245,7 +251,7 @@ druid_finished (GtkWidget *druid_page)
 		signup_uris[1] = NULL;
 	}
 
-
+#ifdef TRANSITIONAL_NAUTILUS
 	/* Do the GMC to Nautilus Transition */
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP, draw_desktop);	
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_ADD_TO_SESSION, add_to_session);	
@@ -256,6 +262,7 @@ druid_finished (GtkWidget *druid_page)
 		 */
 		gtk_idle_add (convert_gmc_desktop_icons, NULL);
 	}
+#endif
 
 	/* Arrange to create default services icon on the desktop. Do this
 	 * at idle time for the same reason as when converting gmc icons
@@ -293,11 +300,13 @@ set_up_background (NautilusDruidPageEazel *page, const char *background_color)
 static void
 update_draw_desktop_checkbox_state (void)
 {
+#ifdef TRANSITIONAL_NAUTILUS
 	if (current_user_level == NAUTILUS_USER_LEVEL_NOVICE) {
 		gtk_widget_hide (draw_desktop_checkbox_widget);
 	} else {
 		gtk_widget_show (draw_desktop_checkbox_widget);
 	}
+#endif
 }
 
 /* handler for user level buttons changing */
@@ -819,13 +828,13 @@ next_proxy_configuration_page_callback (GtkWidget *button, GnomeDruid *druid)
 	return TRUE;
 }
 
+#ifdef TRANSITIONAL_NAUTILUS
 
 static gint
 convert_gmc_desktop_icons (gpointer unused_data)
 {
 	const char *home_dir;
-	char *gmc_desktop_dir,*nautilus_desktop_dir, *link_path;
-	struct stat st;
+	char *gmc_desktop_dir, *nautilus_desktop_dir, *link_path;
 	DIR *dir;
 	struct dirent *dirent;
 	GnomeDesktopEntry *gmc_link;
@@ -836,17 +845,6 @@ convert_gmc_desktop_icons (gpointer unused_data)
 	}
 		
 	gmc_desktop_dir = g_strdup_printf ("%s/.gnome-desktop", home_dir);
-	
-	if (stat (gmc_desktop_dir, &st) != 0) {
-		g_free (gmc_desktop_dir);
-		return FALSE;
-	}
-	
-	if (!S_ISDIR (st.st_mode)) {
-		g_free (gmc_desktop_dir);
-		g_message ("Not a dir");
-		return FALSE;
-	}
 	
 	dir = opendir (gmc_desktop_dir);
 	if (dir == NULL) {
@@ -863,8 +861,6 @@ convert_gmc_desktop_icons (gpointer unused_data)
 		}
 		
 		link_path = g_strdup_printf ("%s/%s", gmc_desktop_dir, dirent->d_name);
-
-		gmc_link = gnome_desktop_entry_load (link_path);
 		gmc_link = gnome_desktop_entry_load_unconditional (link_path);
 		g_free (link_path);
 		
@@ -873,7 +869,9 @@ convert_gmc_desktop_icons (gpointer unused_data)
 			gnome_desktop_entry_free (gmc_link);
 		}
 	}
-				
+
+	closedir (dir);
+	
 	g_free (gmc_desktop_dir);
 	g_free (nautilus_desktop_dir);	
 
@@ -941,6 +939,7 @@ set_up_gmc_transition_page (NautilusDruidPageEazel *page)
 	gtk_widget_show_all (main_box);
 }
 
+#endif
 
 
 /* handle the "back" signal from the finish page to skip the feedback page */
@@ -1108,10 +1107,12 @@ nautilus_first_time_druid_show (NautilusApplication *application, const char *ur
 	/* set up the user level page */
 	set_page_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[USER_LEVEL_PAGE]), _("Choose Your User Level"));
 	set_up_user_level_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[USER_LEVEL_PAGE]));
-				
+	
+#ifdef TRANSITIONAL_NAUTILUS
 	/* set up the GMC transition page */
 	set_page_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[GMC_TRANSITION_PAGE]), _("GMC to Nautilus Transition"));
 	set_up_gmc_transition_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[GMC_TRANSITION_PAGE]));
+#endif
 
 	/* set up the update page */
 	set_page_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[OFFER_UPDATE_PAGE]), _("Checking Your Internet Connection"));

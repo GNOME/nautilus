@@ -2787,7 +2787,7 @@ activation_uri_gmc_link_read_callback (GnomeVFSResult result,
 	}
 
 	g_free (file_contents);
-	activation_uri_read_done (directory, uri);
+	activation_uri_read_done (directory, uri ? uri + 5 : NULL);
 	g_free (uri);
 
 	nautilus_directory_unref (directory);

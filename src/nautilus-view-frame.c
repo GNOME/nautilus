@@ -1353,8 +1353,7 @@ nautilus_view_frame_set_label (NautilusViewFrame *view,
 /* Activate the underlying control frame whenever the view is mapped.
  * This causes the view to merge its menu items, for example. For
  * sidebar panels, it might be a little late to merge them at map
- * time, especially since we don't unmerge them at unmap time (not
- * until destroy time).
+ * time. What's a better time?
  */
 static void
 nautilus_view_frame_map (GtkWidget *view_as_widget)
