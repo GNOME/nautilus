@@ -1,3 +1,4 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* GTK - The GIMP Toolkit
  * Copyright (C) 1995-1997 Peter Mattis, Spencer Kimball, Josh MacDonald
  * Copyright (C) 1997-1998 Jay Painter <jpaint@serv.net><jpaint@gimp.org>
@@ -114,6 +115,8 @@ struct _NautilusCTree
 
 	NautilusCTreeNode *prelight_node;
 
+	NautilusCTreeRow *dnd_prelighted_row;
+
 	NautilusCTreeCompareDragFunc drag_compare;
 };
 
@@ -159,6 +162,7 @@ struct _NautilusCTreeRow
 
 	gboolean mouse_down;
 	gboolean in_hotspot;
+
 };
 
 struct _NautilusCTreeNode {
@@ -372,7 +376,11 @@ gint nautilus_ctree_get_node_info                     (NautilusCTree     *ctree,
 						  GdkBitmap   **mask_opened,
 						  gboolean     *is_leaf,
 						  gboolean     *expanded);
-void nautilus_ctree_node_set_row_style                (NautilusCTree     *ctree,
+
+void nautilus_ctree_set_prelight                 (NautilusCTree *ctree,
+						  int            y);
+
+void nautilus_ctree_node_set_row_style           (NautilusCTree     *ctree,
 						  NautilusCTreeNode *node,
 						  GtkStyle     *style);
 GtkStyle * nautilus_ctree_node_get_row_style          (NautilusCTree     *ctree,

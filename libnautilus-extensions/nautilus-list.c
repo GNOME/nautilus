@@ -3025,10 +3025,6 @@ nautilus_list_prelight_if_necessary (NautilusList *list, GdkDragContext *context
 		 	 &is_prelight_necessary);
 
 	if (is_prelight_necessary) {
-		/* Mark this item to be prelit */
-		NautilusCListRow *row;
-		
-		row = nautilus_list_row_at (list, y);
 		nautilus_list_set_drag_prelight_row (list, y);
 	} else {
 		nautilus_list_set_drag_prelight_row (list, -1);
@@ -3453,3 +3449,4 @@ nautilus_list_set_drag_prelight_row (NautilusList *list, int y)
 		}
 	}
 }
+

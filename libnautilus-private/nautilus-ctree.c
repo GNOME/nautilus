@@ -1,3 +1,4 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* GTK - The GIMP Toolkit
  * Copyright (C) 1995-1997 Peter Mattis, Spencer Kimball, Josh MacDonald, 
  * Copyright (C) 1997-1998 Jay Painter <jpaint@serv.net><jpaint@gimp.org>  
@@ -40,6 +41,11 @@
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 #include <stdlib.h>
+#include <gtk/gtkclist.h>
+
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include "libnautilus-extensions/nautilus-graphic-effects.h"
+#include "libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h"
 
 #define PM_SIZE                    8
 #define TAB_SIZE                   (PM_SIZE + 6)
@@ -1034,6 +1040,75 @@ draw_drag_highlight (GtkCList        *clist,
     }
 }
 
+static NautilusCTreeRow *
+nautilus_ctree_row_at (NautilusCTree *ctree, int y)
+{
+	int row_index, column_index;
+
+	y -= (GTK_CONTAINER (ctree)->border_width +
+		GTK_WIDGET (ctree)->style->klass->ythickness +
+		GTK_CLIST (ctree)->column_title_area.height);
+	
+	if (!gtk_clist_get_selection_info (GTK_CLIST (ctree), 10, y, &row_index, &column_index)) {
+		return NULL;
+	}
+	
+	return g_list_nth (GTK_CLIST (ctree)->row_list, row_index)->data;
+}
+
+
+static void
+get_cell_rectangle (GtkCList *clist, int row_index, int column_index, GdkRectangle *result)
+{
+	result->x = clist->column[column_index].area.x + clist->hoffset;
+	result->y = ROW_TOP_YPIXEL (clist, row_index);
+	result->width = clist->column[column_index].area.width;
+	result->height = clist->row_height;
+}
+
+
+void 
+nautilus_ctree_set_prelight (NautilusCTree      *ctree,
+			     int                 y)
+{
+	GtkCList *clist;
+	NautilusCTreeRow *row, *last_row;
+
+	g_return_if_fail (ctree != NULL);
+	g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
+
+	clist = GTK_CLIST (ctree);
+
+	row = NULL;
+
+	if (y >= 0) { 
+		row = nautilus_ctree_row_at (ctree, y);
+	}
+	
+	if (row != ctree->dnd_prelighted_row) {
+		last_row = ctree->dnd_prelighted_row;
+		ctree->dnd_prelighted_row = row;
+
+		{
+			GdkRectangle rect;
+			int row_index;
+			/* Redraw old cell */
+			if (last_row != NULL) {
+				row_index = g_list_index (clist->row_list, last_row);
+				get_cell_rectangle (clist, row_index, 0, &rect);
+				gtk_widget_draw (GTK_WIDGET (clist), &rect);			
+			}
+
+			/* Draw new cell */
+			if (ctree->dnd_prelighted_row != NULL) {
+				row_index = g_list_index (clist->row_list, ctree->dnd_prelighted_row);
+				get_cell_rectangle (clist, row_index, 0, &rect);
+				gtk_widget_draw (GTK_WIDGET (clist), &rect);
+			}
+		}
+	}
+}
+
 static gint
 draw_cell_pixmap (GdkWindow    *window,
 		  GdkRectangle *clip_rectangle,
@@ -1882,24 +1957,23 @@ draw_row (GtkCList     *clist,
 	      switch (clist_row->cell[i].type)
 		{
 		case GTK_CELL_PIXMAP:
-		  draw_cell_pixmap
-		    (clist->clist_window, &clip_rectangle, fg_gc,
-		     GTK_CELL_PIXMAP (clist_row->cell[i])->pixmap,
-		     GTK_CELL_PIXMAP (clist_row->cell[i])->mask,
-		     offset,
-		     clip_rectangle.y + clist_row->cell[i].vertical +
-		     (clip_rectangle.height - height) / 2,
-		     pixmap_width, height);
+			offset = draw_cell_pixmap (clist->clist_window, &cell_rectangle, fg_gc,
+						   GTK_CELL_PIXMAP (clist_row->cell[i])->pixmap,
+						   GTK_CELL_PIXMAP (clist_row->cell[i])->mask,
+						   offset,
+						   clip_rectangle.y + clist_row->cell[i].vertical +
+						   (clip_rectangle.height - height) / 2,
+						   pixmap_width, height);
 		  break;
 		case GTK_CELL_PIXTEXT:
-		  offset = draw_cell_pixmap
-		    (clist->clist_window, &clip_rectangle, fg_gc,
-		     GTK_CELL_PIXTEXT (clist_row->cell[i])->pixmap,
-		     GTK_CELL_PIXTEXT (clist_row->cell[i])->mask,
-		     offset,
-		     clip_rectangle.y + clist_row->cell[i].vertical +
-		     (clip_rectangle.height - height) / 2,
-		     pixmap_width, height);
+			offset = draw_cell_pixmap (clist->clist_window, &clip_rectangle, fg_gc,
+						   GTK_CELL_PIXTEXT (clist_row->cell[i])->pixmap,
+						   GTK_CELL_PIXTEXT (clist_row->cell[i])->mask,
+						   offset,
+						   clip_rectangle.y + clist_row->cell[i].vertical +
+						   (clip_rectangle.height - height) / 2,
+						   pixmap_width, height);
+
 		  offset += GTK_CELL_PIXTEXT (clist_row->cell[i])->spacing;
 		case GTK_CELL_TEXT:
 		  if (style != GTK_WIDGET (clist)->style)
@@ -1959,13 +2033,55 @@ draw_row (GtkCList     *clist,
 	offset += clist_row->cell[i].horizontal;
 
       old_offset = offset;
-      offset = draw_cell_pixmap (clist->clist_window, &clip_rectangle, fg_gc,
-				 GTK_CELL_PIXTEXT (clist_row->cell[i])->pixmap,
-				 GTK_CELL_PIXTEXT (clist_row->cell[i])->mask,
-				 offset, 
-				 clip_rectangle.y + clist_row->cell[i].vertical
-				 + (clip_rectangle.height - height) / 2,
-				 pixmap_width, height);
+      {
+	      int dark_width, dark_height;
+	      GdkPixbuf *src_pixbuf, *dark_pixbuf;
+	      GdkPixmap *dark_pixmap;
+	      GdkBitmap *dark_mask;
+
+	      if (((GtkCListRow *)ctree->dnd_prelighted_row) == clist_row) {
+		      
+		      gdk_window_get_geometry (GTK_CELL_PIXTEXT (clist_row->cell[i])->pixmap,
+					       NULL, NULL, &dark_width, &dark_height, NULL);
+		      
+		      src_pixbuf = gdk_pixbuf_get_from_drawable 
+			      (NULL,
+			       GTK_CELL_PIXTEXT (clist_row->cell[i])->pixmap,
+			       gdk_rgb_get_cmap (),
+			       0, 0, 0, 0, dark_width, dark_height);
+		      
+		      if (src_pixbuf != NULL) {
+			      /* Create darkened pixmap */			
+			      dark_pixbuf = nautilus_create_darkened_pixbuf (src_pixbuf,
+									     0.8 * 255,
+									     0.8 * 255);
+			      if (dark_pixbuf != NULL) {
+				      gdk_pixbuf_render_pixmap_and_mask (dark_pixbuf,
+									 &dark_pixmap, &dark_mask,
+									 NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+				      
+				      offset = draw_cell_pixmap (clist->clist_window, &cell_rectangle, fg_gc,
+							dark_pixmap, GTK_CELL_PIXTEXT (clist_row->cell[i])->mask, offset,
+							clip_rectangle.y + clist_row->cell[i].vertical +
+							(clip_rectangle.height - height) / 2,
+							pixmap_width, height);
+				      
+							gdk_pixbuf_unref (dark_pixbuf);
+			      }
+			      gdk_pixbuf_unref (src_pixbuf);
+		      }					
+	      } else {		
+		      offset = draw_cell_pixmap (clist->clist_window, &clip_rectangle, fg_gc,
+						 GTK_CELL_PIXTEXT (clist_row->cell[i])->pixmap,
+						 GTK_CELL_PIXTEXT (clist_row->cell[i])->mask,
+						 offset,
+						 clip_rectangle.y + clist_row->cell[i].vertical +
+						 (clip_rectangle.height - height) / 2,
+						 pixmap_width, height);
+
+
+	      }
+      }
 
       if (string_width)
 	{ 
@@ -3641,7 +3757,7 @@ real_insert_row (GtkCList *clist,
     parent = NAUTILUS_CTREE_ROW (sibling)->parent;
 
   node = nautilus_ctree_insert_node (NAUTILUS_CTREE (clist), parent, sibling, text, 5,
-				NULL, NULL, NULL, NULL, TRUE, FALSE);
+				     NULL, NULL, NULL, NULL, TRUE, FALSE);
 
   if (GTK_CLIST_AUTO_SORT (clist) || !sibling)
     return g_list_position (clist->row_list, (GList *) node);
@@ -4135,7 +4251,7 @@ nautilus_ctree_find_node_ptr (NautilusCTree    *ctree,
 
 NautilusCTreeNode *
 nautilus_ctree_node_nth (NautilusCTree *ctree,
-		    int     row)
+			 int     row)
 {
   g_return_val_if_fail (ctree != NULL, NULL);
   g_return_val_if_fail (NAUTILUS_IS_CTREE (ctree), NULL);
@@ -4148,8 +4264,8 @@ nautilus_ctree_node_nth (NautilusCTree *ctree,
 
 gboolean
 nautilus_ctree_find (NautilusCTree     *ctree,
-		NautilusCTreeNode *node,
-		NautilusCTreeNode *child)
+		     NautilusCTreeNode *node,
+		     NautilusCTreeNode *child)
 {
   if (!child)
     return FALSE;

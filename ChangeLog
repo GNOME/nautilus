@@ -1,3 +1,24 @@
+2000-11-14  Mathieu Lacage  <mathieu@eazel.com>
+
+	* components/tree/nautilus-tree-view-dnd.c:
+	(nautilus_tree_view_drag_motion),
+	(nautilus_tree_view_motion_notify),
+	(nautilus_tree_view_make_prelight_if_file_operation),
+	(nautilus_tree_view_prelight_stop),
+	(nautilus_tree_view_drag_destroy):
+	make it use the new prelighting code. leave the old code around
+	even though it does nothing. The new prelighting now flickers like
+	hell but maciej says he wants to fix it.
+	* libnautilus-extensions/nautilus-ctree.c: (nautilus_ctree_row_at),
+	(get_cell_rectangle), (nautilus_ctree_set_prelight), (draw_row),
+	(real_insert_row), (nautilus_ctree_node_nth),
+	(nautilus_ctree_find): implement prelighting. copy/paste code from 
+	the NautilusList code to do it.
+	* libnautilus-extensions/nautilus-ctree.h: add signature for
+	nautilus_ctree_set_prelight plus fields in NautilusCTreeRow.
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_prelight_if_necessary): remove useless code.
+
 2000-11-14  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	buddy: Ramiro Estrugo <ramiro@eazel.com>

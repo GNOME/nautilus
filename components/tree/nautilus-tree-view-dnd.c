@@ -52,6 +52,7 @@
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libgnomevfs/gnome-vfs.h>
 
+#include <libnautilus-extensions/nautilus-ctree.h>
 
 #include "nautilus-tree-view-private.h"
 
@@ -386,8 +387,13 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 		case NAUTILUS_ICON_DND_URI_LIST:
 			nautilus_tree_view_expand_maybe_later (NAUTILUS_TREE_VIEW (tree_view), 
 							       x, y);
+			nautilus_ctree_set_prelight (NAUTILUS_CTREE (tree_view->details->tree), 
+						     y);
+
+			
 			nautilus_tree_view_make_prelight_if_file_operation (NAUTILUS_TREE_VIEW (tree_view), 
 									    x, y);
+
 			break;
 		case NAUTILUS_ICON_DND_KEYWORD:	
 		case NAUTILUS_ICON_DND_COLOR:
@@ -744,6 +750,11 @@ nautilus_tree_view_motion_notify (GtkWidget *widget, GdkEventButton *event)
 					action,
 					tree_view->details->dnd->pressed_button,
 					(GdkEvent *) event);
+
+
+			nautilus_ctree_set_prelight (NAUTILUS_CTREE (tree_view->details->tree), 
+						     tree_view->details->dnd->press_y);
+
 		}
 	} 
 
@@ -779,6 +790,7 @@ static void
 nautilus_tree_view_make_prelight_if_file_operation (NautilusTreeView *tree_view, 
 						    int x, int y)
 {
+#if 0
 	NautilusTreeViewDndDetails *dnd;
 	NautilusCTreeNode *node;
 	gboolean is_directory;
@@ -810,7 +822,7 @@ nautilus_tree_view_make_prelight_if_file_operation (NautilusTreeView *tree_view,
 				      node,
 				      tree_view->details->dnd->highlight_style);
 	dnd->current_prelighted_node = node;
-
+#endif
 }
 
 
@@ -1491,6 +1503,7 @@ nautilus_tree_view_receive_dropped_icons (NautilusTreeView *view,
 static void
 nautilus_tree_view_prelight_stop (NautilusTreeView *tree_view)
 {
+#if 0
 	NautilusTreeViewDndDetails *dnd;
 
 	g_assert (NAUTILUS_IS_TREE_VIEW (tree_view));
@@ -1499,11 +1512,11 @@ nautilus_tree_view_prelight_stop (NautilusTreeView *tree_view)
 
 	if (dnd->current_prelighted_node != NULL) {
 		nautilus_ctree_node_set_row_style (NAUTILUS_CTREE (tree_view->details->tree), 
-					      dnd->current_prelighted_node,
-					      tree_view->details->dnd->normal_style);
+						   dnd->current_prelighted_node,
+						   tree_view->details->dnd->normal_style);
 	}
 	dnd->current_prelighted_node = NULL;
-
+#endif
 }
 
 
@@ -1525,6 +1538,8 @@ nautilus_tree_view_drag_destroy (NautilusTreeView *tree_view)
 	nautilus_tree_view_stop_auto_scroll (tree_view);
 
 	/* remove prelighting */
+	nautilus_ctree_set_prelight (NAUTILUS_CTREE (tree_view->details->tree), 
+				     -1);
 	nautilus_tree_view_prelight_stop (tree_view);
 
 	nautilus_tree_view_expand_maybe_later (tree_view, 0, 0);
