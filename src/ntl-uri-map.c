@@ -257,7 +257,7 @@ nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
       navinfo->navinfo.referring_content_type = old_navinfo->content_type;
     }
 
-  navinfo->navinfo.requested_uri = g_strdup(nri->requested_uri == NULL ? "" : nri->requested_uri);
+  navinfo->navinfo.requested_uri = g_strdup(nri->requested_uri);
 
   nautilus_navinfo_map(navinfo);
 
