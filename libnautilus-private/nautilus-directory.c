@@ -1202,7 +1202,7 @@ nautilus_directory_moved (const char *old_uri,
 		file = NAUTILUS_FILE (node->data);
 		hash_table_list_prepend (hash,
 					 file->details->directory,
-					 file);
+					 nautilus_file_ref (file));
 	}
 	nautilus_file_list_free (list);
 

@@ -1,3 +1,15 @@
+2001-02-23  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 6933 (Assertions & crash after renaming
+	open folder)
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_moved): Added a missing
+	nautilus_file_ref in the code that runs when a
+	directory is renamed.
+
 2001-02-23  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
