@@ -37,8 +37,6 @@ static GSList *           tokenize_uri                (const char *string);
 static char *             get_translated_criterion    (const GSList *criterion);
 static char *             get_first_criterion_prefix  (GSList *criterion);
 static char *             get_nth_criterion_prefix    (GSList *criterion);
-static char *             get_nth_criterion_suffix    (GSList *criterion);
-static char *             get_first_criterion_suffix  (GSList *criterion);
 static char *             parse_uri                   (const char *search_uri);
 static void               free_tokenized_uri          (GSList *list);
 
@@ -544,37 +542,6 @@ get_nth_criterion_prefix (GSList *criterion)
 }
 
 /**
- * get_nth_criterion_suffix:
- * @criterion: The GSList whose data field points to the criterion GSList.
- *
- * calculates the "." suffix for any criterion.
- *
- * return value: the translated suffix.
- * FIXME bugzilla.eazel.com 5019: This function should be removed.
- */
-static char *
-get_nth_criterion_suffix (GSList *criterion)
-{
-        /* if we are the last criterion, put it here. */
-
-        return g_strdup ("");
-}
-
-/**
- * get_first_criterion_suffix:
- * @criterion: The GSList whose data field points to the criterion GSList.
- *
- * calculates the "." suffix for any criterion.
- *
- * return value: the translated suffix.
- */
-static char *
-get_first_criterion_suffix (GSList *criterion)
-{
-        return get_nth_criterion_suffix (criterion);
-}
-
-/**
  * parse_uri:
  * @search_uri: uri to translate.
  *
@@ -584,7 +551,7 @@ static char *
 parse_uri (const char *search_uri)
 {
         GSList *criteria, *criterion;
-        char *translated_criterion, *translated_prefix, *translated_suffix;
+        char *translated_criterion, *translated_prefix;
         char *ret_val, *temp;
         
         criteria = tokenize_uri (search_uri);
@@ -599,15 +566,13 @@ parse_uri (const char *search_uri)
                 return NULL;
         }
         translated_prefix = get_first_criterion_prefix (criteria);
-        translated_suffix = get_first_criterion_suffix (criteria);
         if (strcmp (translated_prefix, "") == 0) {
-                ret_val = g_strdup_printf (_("Items %s%s"), 
-                                           translated_criterion, translated_suffix);
+                ret_val = g_strdup_printf (_("Items %s"),
+                                           translated_criterion);
         } else {
-                ret_val = g_strdup_printf (_("Items %s %s%s"), 
-                                           translated_prefix, translated_criterion, translated_suffix);
+                ret_val = g_strdup_printf (_("Items %s %s"),
+                                           translated_prefix, translated_criterion);
         }
-        g_free (translated_suffix);
         g_free (translated_criterion);
         g_free (translated_prefix);
         
@@ -620,13 +585,11 @@ parse_uri (const char *search_uri)
                         return NULL;
                 }
                 translated_prefix = get_nth_criterion_prefix (criterion);
-                translated_suffix = get_nth_criterion_suffix (criterion);
                 temp = g_strconcat (ret_val, translated_prefix, 
-                                    translated_criterion, translated_suffix, NULL);
+                                    translated_criterion, NULL);
                 g_free (ret_val);
                 ret_val = temp;
                 g_free (translated_criterion);
-                g_free (translated_suffix);
                 g_free (translated_prefix);
         }
         
@@ -713,16 +676,19 @@ nautilus_self_check_search_uri (void)
 
         /* make sure all the code paths work */
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff"), 
-                                      _("Items with \"stuff\" in the name."));
+                                      _("Items with \"stuff\" in the name"));
+        /* FIXME: This may be what the function calls "human", but it's bad grammar. */
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"), 
-                                      _("Items with \"stuff\" in the name and are regular files."));
+                                      _("Items with \"stuff\" in the name and are regular files"));
+        /* FIXME: This may be what the function calls "human", but it's bad grammar. */
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"
                                                                     " & size smaller_than 2000"), 
                                       _("Items with \"stuff\" in the name, are regular files and "
-                                        "smaller than 2000 bytes."));
+                                        "smaller than 2000 bytes"));
+        /* FIXME: This may be what the function calls "human", but it's bad grammar. */
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains medusa & file_type is directory"), 
                                       _("Items with \"medusa\" in the name and are "
-                                        "folders."));
+                                        "folders"));
         
         /* is_search_uri */
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri (""), FALSE);

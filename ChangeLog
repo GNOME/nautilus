@@ -1,3 +1,13 @@
+2000-12-07  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-search-uri.c: (parse_uri): Removed
+	the *_suffix code. The change log said this would require data structure
+	chagnges, but it didn't. Just deleting the code.
+	(nautilus_self_check_search_uri): Fix test cases that were causing
+	"make check" and Tinderbox to fail, added FIXMES.
+
 2000-12-07  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: OK this time I really will remove nautilus-mpg123
