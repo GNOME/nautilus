@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* 
- * Copyright (C) 2000 Eazel, Inc
+ * Copyright (C) 2000, 2001  Eazel, Inc
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -204,6 +204,9 @@ install_message_new (NautilusServiceInstallView *view, const char *package_name)
 	add_padding_to_box (im->hbox, 20, 0);
 	gtk_widget_show (im->hbox);
 
+	/* show the middle header in case this is the first install message */
+	gtk_widget_show (view->details->middle_title);
+
 #if 0
 	if (g_list_length (view->details->message) == STATUS_ROWS) {
 		gtk_widget_set_usize (view->details->pane, -2, view->details->pane->allocation.height);
@@ -354,7 +357,7 @@ generate_install_form (NautilusServiceInstallView	*view)
 	 */
 	view->details->middle_title = eazel_services_header_middle_new (_("Messages"), "");
         gtk_box_pack_end (GTK_BOX (view->details->form), view->details->middle_title, FALSE, FALSE, 0);
-	gtk_widget_show (view->details->middle_title);
+	/* don't show the progress header until there's still to go there */
 
 	gtk_widget_show (view->details->form);
 }
@@ -945,6 +948,11 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb,
 	message = g_string_append (message, _("\nIs this okay?"));
 	toplevel = gtk_widget_get_toplevel (view->details->message_box);
 
+#if 0	/* not yet */
+	nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_details), message->str);
+	gtk_widget_show (view->details->package_details);
+#endif
+
 	if (GTK_IS_WINDOW (toplevel)) {
 		dialog = gnome_ok_cancel_dialog_parented (message->str, (GnomeReplyCallback)reply_callback,
 							  &answer, GTK_WINDOW (toplevel));
@@ -1315,7 +1323,8 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 	} else if (success) {
 		message = _("Installation complete.");
 	} else {
-		if ((guint) view->details->failures == g_list_length (packlist)) {
+		/* FIXME 5906: this isn't really working right yet, so fix it later */
+		if (1 || ((guint) view->details->failures == g_list_length (packlist))) {
 			message = _("Installation failed.");
 			answer = nautilus_service_install_solve_cases (view);
 		} else {
@@ -1439,8 +1448,14 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 		} else {
 			message = g_strdup (NEXT_URL);
 		}
+		message = NULL;
 		if (eazel_install_configure_check_jump_after_install (&message)) {
-			nautilus_view_open_location_in_this_window (view->details->nautilus_view, message);
+			if (message != NULL) {
+				nautilus_view_open_location_in_this_window (view->details->nautilus_view, message);
+			} else {
+				g_warning ("attemping to go back");
+				nautilus_view_go_back (view->details->nautilus_view);
+			}
 		}
 		g_free (message);
 	}

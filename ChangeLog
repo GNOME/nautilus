@@ -1,3 +1,14 @@
+2001-02-19  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (install_message_new), (generate_install_form),
+	(nautilus_service_install_preflight_check),
+	(nautilus_service_install_done):
+
+	Hide the install view's progress header until downloading begins.
+	Try to use nautilus_view_go_back, though it appears to not be
+	functional yet.
+	
 2001-02-20  Rebecca Schulman  <rebecka@eazel.com>
 	Complete bug 6416, to add dialogs to explain
 	that searches will be slow when medusa is disabled or 
