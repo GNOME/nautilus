@@ -1797,7 +1797,9 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 
 	/* Get the font the first time through. */
 	if (font == NULL) {
-		/* FIXME bugzilla.eazel.com 667: the font shouldn't be hard-wired like this */
+		/* FIXME bugzilla.eazel.com 1102: Embedded text should use preferences to determine
+		 * the font it uses
+		 */
 		font = gdk_font_load ("-bitstream-charter-medium-r-normal-*-9-*-*-*-*-*-*-*");
 		g_return_val_if_fail (font != NULL, gdk_pixbuf_ref (pixbuf_without_text));
 	}

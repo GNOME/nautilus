@@ -228,8 +228,8 @@ nautilus_index_title_update_label (NautilusIndexTitle *index_title)
 		gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->title, 1);
 	}
 	
-	/* FIXME bugzilla.eazel.com 667: 
-	 * don't use hardwired font like this - get it from preferences 
+	/* FIXME bugzilla.eazel.com 1103: 
+	 * Make this use the font factory 
 	 */
 	label_font = nautilus_get_largest_fitting_font (displayed_text, GTK_WIDGET (index_title)->allocation.width - 4,
 				  "-*-helvetica-medium-r-normal-*-%d-*-*-*-*-*-*-*");
