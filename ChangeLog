@@ -1,3 +1,15 @@
+2001-12-11  Laszlo Peter  <laca@ireland.sun.com>
+
+	* libnautilus-private/nautilus-authn-manager.c:
+	s/__FUNCTION__/G_GNUC_FUNCTION/
+
+	* libnautilus-private/nautilus-directory-background.c: get rid of
+	_gdk_display_name
+
+	* libnautilus-private/nautilus-volume-monitor.c
+	(nautilus_volume_get_device_type): remove "const" to match the
+	prototype.
+
 2001-12-09  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-file-operations.c:

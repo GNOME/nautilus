@@ -42,9 +42,6 @@
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
-/* FIXME: Is there a better way to do this? */
-extern char *_gdk_display_name;
-
 static void background_changed_callback     (EelBackground *background, 
                                              NautilusFile       *file);
 static void background_reset_callback       (EelBackground *background, 
@@ -560,7 +557,7 @@ make_root_pixmap (gint width, gint height)
 
 	gdk_flush ();
 
-	display = XOpenDisplay (_gdk_display_name);
+	display = XOpenDisplay (DisplayString (GDK_DISPLAY ()));
 
 	XSetCloseDownMode (display, RetainPermanent);
 

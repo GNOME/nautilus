@@ -122,7 +122,7 @@ authentication_dialog_button_clicked (GtkDialog *dialog,
 				      gint button_number, 
 				      CallbackInfo *info)
 {
-	DEBUG_MSG (("+%s button: %d\n", __FUNCTION__, button_number));
+	DEBUG_MSG (("+%s button: %d\n", G_GNUC_FUNCTION, button_number));
 
 	if (button_number == GNOME_OK) {
 		info->out_args->username 
@@ -139,7 +139,7 @@ authentication_dialog_button_clicked (GtkDialog *dialog,
 static void
 authentication_dialog_closed (GtkDialog *dialog, CallbackInfo *info)
 {
-	DEBUG_MSG (("+%s\n", __FUNCTION__));
+	DEBUG_MSG (("+%s\n", G_GNUC_FUNCTION));
 
 	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
@@ -147,7 +147,7 @@ authentication_dialog_closed (GtkDialog *dialog, CallbackInfo *info)
 static void
 authentication_dialog_destroyed (GtkDialog *dialog, CallbackInfo *info)
 {
-	DEBUG_MSG (("+%s\n", __FUNCTION__));
+	DEBUG_MSG (("+%s\n", G_GNUC_FUNCTION));
 
 	mark_callback_completed (info);	
 }
@@ -208,7 +208,7 @@ vfs_async_authentication_callback (gconstpointer in, size_t in_size,
 
 	is_proxy_authentication = (user_data == GINT_TO_POINTER (1));
 
-	DEBUG_MSG (("+%s uri:'%s' is_proxy_auth: %u\n", __FUNCTION__, in_real->uri, (unsigned) is_proxy_authentication));
+	DEBUG_MSG (("+%s uri:'%s' is_proxy_auth: %u\n", G_GNUC_FUNCTION, in_real->uri, (unsigned) is_proxy_authentication));
 
 	info = g_new (CallbackInfo, 1);
 
@@ -220,7 +220,7 @@ vfs_async_authentication_callback (gconstpointer in, size_t in_size,
 
 	present_authentication_dialog_nonblocking (info);
 
-	DEBUG_MSG (("-%s\n", __FUNCTION__));
+	DEBUG_MSG (("-%s\n", G_GNUC_FUNCTION));
 }
 
 static void /* GnomeVFSModuleCallback */
@@ -243,11 +243,11 @@ vfs_authentication_callback (gconstpointer in, size_t in_size,
 
 	is_proxy_authentication = (user_data == GINT_TO_POINTER (1));
 
-	DEBUG_MSG (("+%s uri:'%s' is_proxy_auth: %u\n", __FUNCTION__, in_real->uri, (unsigned) is_proxy_authentication));
+	DEBUG_MSG (("+%s uri:'%s' is_proxy_auth: %u\n", G_GNUC_FUNCTION, in_real->uri, (unsigned) is_proxy_authentication));
 
 	present_authentication_dialog_blocking (is_proxy_authentication, in_real, out_real);
 
-	DEBUG_MSG (("-%s\n", __FUNCTION__));
+	DEBUG_MSG (("-%s\n", G_GNUC_FUNCTION));
 }
 
 void
