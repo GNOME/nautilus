@@ -634,16 +634,11 @@ static gboolean
 sidebar_panel_preference_is_on (NautilusViewIdentifier *identifier,
                                 gpointer ignore)
 {
-        gchar *pref_name;
-        gboolean enabled;
+	g_assert (identifier != NULL);
+	g_assert (identifier->iid != NULL);
 
-        pref_name = g_strconcat ("/nautilus/sidebar-views/", identifier->iid, NULL);
-        enabled = nautilus_preferences_get_boolean (pref_name, FALSE);
-        g_free (pref_name);
-
-        return enabled;
+	return nautilus_global_preferences_is_sidebar_panel_enabled (identifier->iid);
 }
-
 
 static void
 add_sidebar_panel_identifiers (NautilusNavigationInfo *navinfo)

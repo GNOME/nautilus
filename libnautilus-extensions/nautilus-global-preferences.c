@@ -37,7 +37,10 @@
 #define GLOBAL_PREFERENCES_DIALOG_TITLE _("Nautilus Preferences")
 
 /* User level */
-#define NAUTILUS_PREFERENCES_USER_LEVEL				"/nautilus/preferences/user_level"
+#define NAUTILUS_PREFERENCES_USER_LEVEL_KEY			"/nautilus/preferences/user_level"
+
+/* Sidebar panels */
+#define NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE		"/nautilus/sidebar-panels"
 
 enum
 {
@@ -48,10 +51,11 @@ enum
 };
 
 /* Private stuff */
-static GtkWidget *global_preferences_create_dialog   (void);
-static GtkWidget *global_preferences_get_dialog      (void);
-static void       global_preferences_register_for_ui (void);
-static void       user_level_changed_callback        (gpointer             user_data);
+static GtkWidget *global_preferences_create_dialog         (void);
+static GtkWidget *global_preferences_get_dialog            (void);
+static void       global_preferences_register_for_ui       (void);
+static void       user_level_changed_callback              (gpointer    user_data);
+static char *     global_preferences_get_sidebar_panel_key (const char *panel_iid);
 
 /*
  * Private stuff
@@ -63,7 +67,7 @@ global_preferences_create_dialog (void)
 	NautilusPreferencesBox	*preference_box;
 	GtkWidget		*user_level_pane;
 	GtkWidget		*directory_views_pane;
-	GtkWidget		*sidebar_view_pane;
+	GtkWidget		*sidebar_panels_pane;
 	GtkWidget		*appearance_pane;
 
 
@@ -89,7 +93,7 @@ global_preferences_create_dialog (void)
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (user_level_pane),
 							 0,
-							 NAUTILUS_PREFERENCES_USER_LEVEL,
+							 NAUTILUS_PREFERENCES_USER_LEVEL_KEY,
 							 NAUTILUS_PREFERENCE_ITEM_ENUM);
 	/*
 	 * Directory Views pane
@@ -121,16 +125,16 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
 	/*
-	 * Meta view pane
+	 * Sidebar panels pane
 	 */
-	sidebar_view_pane = nautilus_preferences_box_add_pane (preference_box,
-							    "Meta Views",
-							    "Meta Views Something");
+	sidebar_panels_pane = nautilus_preferences_box_add_pane (preference_box,
+								 "Sidebar Panels",
+								 "Sidebar Panels Description");
 	
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (sidebar_view_pane), "Meta Views");
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (sidebar_panels_pane), "Sidebar Panels");
 	
 	{
-		char *sidebar_view_pref;
+		char *preference_key;
 		GList *view_identifiers;
 		GList *p;
 		NautilusViewIdentifier *identifier;
@@ -140,17 +144,18 @@ global_preferences_create_dialog (void)
 
 		for (p = view_identifiers; p != NULL; p = p->next) {
 			identifier = (NautilusViewIdentifier *) (p->data);
+			
+			preference_key = global_preferences_get_sidebar_panel_key (identifier->iid);
 
-			sidebar_view_pref = g_strconcat ("/nautilus/sidebar-views/", 
-							 identifier->iid, NULL);
+			g_assert (preference_key != NULL);
 
 			nautilus_preferences_pane_add_item_to_nth_group 
-				(NAUTILUS_PREFERENCES_PANE (sidebar_view_pane),
+				(NAUTILUS_PREFERENCES_PANE (sidebar_panels_pane),
 				 0,
-				 sidebar_view_pref,
+				 preference_key,
 				 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	
-			g_free (sidebar_view_pref);
+			g_free (preference_key);
 
 		}
 	
@@ -268,7 +273,7 @@ global_preferences_get_dialog (void)
 
 
 static void
-nautilus_preferences_register_sidebar_view_preferences_for_ui (void)
+global_preferences_register_sidebar_panels_preferences_for_ui (void)
 {
 	GList *view_identifiers;
 	GList *p;
@@ -279,23 +284,51 @@ nautilus_preferences_register_sidebar_view_preferences_for_ui (void)
 
 	for (p = view_identifiers; p != NULL; p = p->next) {
 		identifier = (NautilusViewIdentifier *) (p->data);
+		
+		preference_key = global_preferences_get_sidebar_panel_key (identifier->iid);
 
-		preference_key = g_strconcat ("/nautilus/sidebar-views/",
-					      identifier->iid, NULL);
-
+		g_assert (preference_key != NULL);
+ 		
 		nautilus_preferences_set_info (preference_key,
 					       identifier->name,
 					       NAUTILUS_PREFERENCE_BOOLEAN,
 					       (gconstpointer) TRUE);
-
+		
 		g_free (preference_key);
 	}
 
 	nautilus_view_identifier_free_list (view_identifiers);
 }
 
+static char *
+global_preferences_get_sidebar_panel_key (const char *panel_iid)
+{
+	g_return_val_if_fail (panel_iid != NULL, NULL);
+
+	return g_strdup_printf ("%s/%s", NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE, panel_iid);
+}
+
+gboolean
+nautilus_global_preferences_is_sidebar_panel_enabled (const char *panel_iid)
+{
+	gboolean enabled;
+        gchar	 *key;
+
+	g_return_val_if_fail (panel_iid != NULL, FALSE);
+
+	key = global_preferences_get_sidebar_panel_key (panel_iid);
+	
+	g_assert (key != NULL);
+
+        enabled = nautilus_preferences_get_boolean (key, FALSE);
+
+        g_free (key);
+
+        return enabled;
+}
+
 static void
-global_preferences_register_for_ui ()
+global_preferences_register_for_ui (void)
 {
 	static gboolean preference_for_ui_registered = FALSE;
 
@@ -347,33 +380,31 @@ global_preferences_register_for_ui ()
 				       (gconstpointer) FALSE);
 
 	/* User level */
-	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_USER_LEVEL,
+	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_USER_LEVEL_KEY,
 				       "User Level",
 				       NAUTILUS_PREFERENCE_ENUM,
 				       (gconstpointer) NAUTILUS_USER_LEVEL_HACKER);
 	
 	
-	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES_USER_LEVEL,
+	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES_USER_LEVEL_KEY,
 					     "novice",
 					     "Novice",
 					     NAUTILUS_USER_LEVEL_NOVICE);
 
-	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES_USER_LEVEL,
+	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES_USER_LEVEL_KEY,
 					     "intermediate",
 					     "Intermediate",
 					     NAUTILUS_USER_LEVEL_INTERMEDIATE);
 
-	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES_USER_LEVEL,
+	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES_USER_LEVEL_KEY,
 					     "hacker",
 					     "Hacker",
 					     NAUTILUS_USER_LEVEL_HACKER);
 
-	/* Sidebar views */
-
-	nautilus_preferences_register_sidebar_view_preferences_for_ui ();
+	/* Sidebar panels */
+	global_preferences_register_sidebar_panels_preferences_for_ui ();
 
 	/* Appearance options */
-	
 	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
 				       "Use smoother (but slower) graohics",
 				       NAUTILUS_PREFERENCE_BOOLEAN,
@@ -400,7 +431,7 @@ user_level_changed_callback (gpointer user_data)
 	
 	const char		*user_main_directory;
 
-	user_level = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_USER_LEVEL,
+	user_level = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_USER_LEVEL_KEY,
 						    NAUTILUS_USER_LEVEL_HACKER);
 
 	/* Set some preferences according to the user level */
@@ -482,7 +513,7 @@ nautilus_global_preferences_startup (void)
 	global_preferences_register_for_ui ();
 
 	/* Keep track of user level changes */
-	nautilus_preferences_add_enum_callback (NAUTILUS_PREFERENCES_USER_LEVEL,
+	nautilus_preferences_add_enum_callback (NAUTILUS_PREFERENCES_USER_LEVEL_KEY,
 						user_level_changed_callback,
 						NULL);
 

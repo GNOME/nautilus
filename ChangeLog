@@ -1,3 +1,34 @@
+2000-05-25  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Cleanup cut-n-paste code for dealing the sidebar panels.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog),
+	(global_preferences_register_sidebar_panels_preferences_for_ui),
+	(global_preferences_get_sidebar_panel_key),
+	(nautilus_global_preferences_is_sidebar_panel_enabled),
+	(global_preferences_register_for_ui),
+	(user_level_changed_callback),
+	(nautilus_global_preferences_startup):
+	Added define for sidebar panels namespace.
+	
+	Rename preference defines to make it clear whether they are keys
+	or namespaces.
+
+	Add function to obtain a sidebar panel key from an iid.
+
+	Use "sidebar panels" consistently in both code and preferences
+	dialog. 
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	New public function
+	nautilus_global_preferences_is_sidebar_panel_enabled () that
+	returns whether a sidebar panel is enabled.
+
+	* src/ntl-uri-map.c: (sidebar_panel_preference_is_on):
+	Use nautilus_global_preferences_is_sidebar_panel_enabled() instead
+	of hard-coding the namespace string.
+	
 2000-05-25  Robin * Slomkowski <rslomkow@eazel.com>
 
 	* configure.in (added fr)

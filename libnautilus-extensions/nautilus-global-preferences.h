@@ -57,7 +57,6 @@ BEGIN_GNOME_DECLS
 /* use anti-aliased canvas */
 #define NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS		"/nautilus/preferences/anti_aliased_canvas"
 
-
 enum
 {
 	NAUTILUS_CLICK_POLICY_SINGLE,
@@ -69,8 +68,12 @@ enum
 void                      nautilus_global_preferences_startup                            (void);
 void                      nautilus_global_preferences_shutdown                           (void);
 void                      nautilus_global_preferences_show_dialog                        (void);
+
+
+/* Sidebar */
 NautilusStringList       *nautilus_global_preferences_get_sidebar_view_iids              (void);
 GList                    *nautilus_global_preferences_get_sidebar_panel_view_identifiers (void);
+gboolean                  nautilus_global_preferences_is_sidebar_panel_enabled           (const char *panel_iid);
 
 BEGIN_GNOME_DECLS
 
