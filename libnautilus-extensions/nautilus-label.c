@@ -33,6 +33,7 @@
 #include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-art-gtk-extensions.h"
 #include "nautilus-string.h"
+#include "nautilus-text-layout.h"
 #include "nautilus-debug-drawing.h"
 
 /* These are arbitrary constants to catch insane values */

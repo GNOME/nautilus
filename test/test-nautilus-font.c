@@ -4,6 +4,7 @@
 #include "test.h"
 
 #include <libnautilus-extensions/nautilus-scalable-font.h>
+#include <libnautilus-extensions/nautilus-text-layout.h>
 
 int 
 main (int argc, char* argv[])

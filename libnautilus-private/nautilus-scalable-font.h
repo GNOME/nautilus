@@ -152,51 +152,6 @@ gboolean               nautilus_scalable_font_query_font                      (c
 									       NautilusStringList         **set_widths);
 NautilusScalableFont  *nautilus_scalable_font_make_bold                       (NautilusScalableFont        *font);
 
-/*
- * The following text_layout stuff was shamelessly plundered
- * from libgnomeui/gnome-icon-text.[ch] by Federico Mena.
- *
- * It was hacked to use NautilusScalableFont and GdkPixbuf
- * instead of GdkFont and GdkDrawable.  We want to use the
- * same layout algorithm in Nautilus so that both the smooth
- * and not smooth text rendering cases have predictably 
- * similar result.
- *
- * I also made some minor Nautilus-like style changes. -re
-
- */
-typedef struct
-{
-	char *text;
-	int width;
-	guint text_length;
-} NautilusTextLayoutRow;
-
-typedef struct
-{
-	GList *rows;
-	const NautilusScalableFont *font;
-	int font_size;
-	int width;
-	int height;
-	int baseline_skip;
-} NautilusTextLayout;
-
-NautilusTextLayout *nautilus_text_layout_new   (const NautilusScalableFont *font,
-						int                         font_size,
-						const char                 *text,
-						const char                 *separators,
-						int                         max_width,
-						gboolean                    confine);
-void                nautilus_text_layout_paint (const NautilusTextLayout   *text_info,
-						GdkPixbuf                  *pixbuf,
-						int                         x,
-						int                         y,
-						GtkJustification            justification,
-						guint32                     color,
-						gboolean                    underlined);
-void                nautilus_text_layout_free  (NautilusTextLayout         *text_info);
-
 END_GNOME_DECLS
 
 #endif /* NAUTILUS_SCALABLE_FONT_H */

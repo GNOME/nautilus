@@ -147,6 +147,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-string.c			\
 	nautilus-tabs.c				\
 	nautilus-text-caption.c			\
+	nautilus-text-layout.c			\
 	nautilus-theme.c			\
 	nautilus-thumbnails.c			\
 	nautilus-trash-directory.c		\
@@ -267,6 +268,7 @@ noinst_HEADERS =				\
 	nautilus-string.h			\
 	nautilus-tabs.h				\
 	nautilus-text-caption.h			\
+	nautilus-text-layout.h			\
 	nautilus-theme.h			\
 	nautilus-thumbnails.h			\
 	nautilus-trash-directory.h		\
