@@ -886,9 +886,7 @@ edit_bookmarks (NautilusWindow *window)
 static void
 refresh_all_bookmarks (NautilusWindow *window)
 {
-	remove_bookmarks_after (window, 
-				NAUTILUS_MENU_PATH_BOOKMARKS_MENU, 
-				NAUTILUS_MENU_PATH_EDIT_BOOKMARKS_ITEM);
+	nautilus_window_remove_bookmarks_menu_items (window);				
 
 	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BUILT_IN_BOOKMARKS, 
 					      TRUE)) {
@@ -1431,6 +1429,8 @@ nautilus_window_remove_bookmarks_menu_items (NautilusWindow *window)
 	remove_bookmarks_after (window, 
 				NAUTILUS_MENU_PATH_BOOKMARKS_MENU, 
 				NAUTILUS_MENU_PATH_EDIT_BOOKMARKS_ITEM);
+
+	window->details->last_static_bookmark_path = NULL;
 }
 
 void

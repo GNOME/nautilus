@@ -1,3 +1,20 @@
+2000-08-07  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1979 (Crash involving bookmarks)
+
+	Gene did all the hard work of finding a reproducible case
+	for this. From there it was easy for me to fix the bug
+	in code I wrote. He gets 3/4 of all klocs assigned for
+	this bug.
+
+	* src/nautilus-window-menus.c: 
+	(nautilus_window_remove_bookmarks_menu_items): 
+	Set last_static_bookmark_path to NULL after removing menu 
+	items from bookmarks menu.
+	(refresh_all_bookmarks): 
+	Call nautilus_window_remove_bookmarks_menu_items instead 
+	of lower-level remove_bookmarks_after.
+
 Mon Aug 07 14:47:28 2000  George Lebl <jirka@5z.com>
 
 	* libnautilus-extensions/nautilus-list-column-title.c
@@ -29,7 +46,7 @@ Mon Aug 07 14:47:28 2000  George Lebl <jirka@5z.com>
 	(nautilus_get_largest_fitting_font):
 
 	Change the number of sizes to choose from to 4 (from 5).  Also,
-	remove the 28 size which is usually available.  This size is what
+	remove the 28 size which is usually unavailable.  This size is what
 	was causing the ugliness in the font.
 	
 	* src/nautilus-sidebar-title.c: (update_font):
