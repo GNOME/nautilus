@@ -26,32 +26,49 @@
 
 #include "config.h"
 #include "nautilus.h"
+#include "nautilus-self-checks.h"
 
 int main(int argc, char *argv[])
 {
   poptContext ctx;
   CORBA_Environment ev;
   CORBA_ORB orb;
+#if !defined (NAUTILUS_OMIT_SELF_CHECK)
+  int check = FALSE;
+#endif
+  const char **args;
+
   struct poptOption options[] = {
+#if !defined (NAUTILUS_OMIT_SELF_CHECK)
+    { "check", '\0', POPT_ARG_NONE, &check, 0, N_("Perform high-speed self-check tests."), NULL },
+    POPT_AUTOHELP
+#endif
     { NULL, '\0', 0, NULL, 0, NULL, NULL }
   };
-  const char **args;
 
   /* FIXME: This should also include G_LOG_LEVEL_WARNING, but I had to take it
    * out temporarily so we could continue to work on other parts of the software
    * until the only-one-icon-shows-up problem is fixed
    */
   if (getenv("NAUTILUS_DEBUG"))
-    g_log_set_always_fatal(G_LOG_FATAL_MASK | G_LOG_LEVEL_CRITICAL);
+    g_log_set_always_fatal (G_LOG_FATAL_MASK | G_LOG_LEVEL_CRITICAL);
 
-  orb = gnome_CORBA_init_with_popt_table("nautilus", VERSION, &argc, argv, options, 0, &ctx, GNORBA_INIT_SERVER_FUNC, &ev);
-  bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-  g_thread_init(NULL);
-  gnome_vfs_init();
+  orb = gnome_CORBA_init_with_popt_table ("nautilus", VERSION, &argc, argv, options, 0, &ctx, GNORBA_INIT_SERVER_FUNC, &ev);
+  bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+  g_thread_init (NULL);
+  gnome_vfs_init ();
 
-  args = poptGetArgs(ctx);
-  nautilus_app_init(args?args[0]:NULL);
+  args = poptGetArgs (ctx);
 
-  bonobo_main();
+#if !defined (NAUTILUS_OMIT_SELF_CHECK)
+  if (check)
+    nautilus_run_all_self_checks();
+  else
+#endif
+  {
+    nautilus_app_init (args ? args[0] : NULL);
+    bonobo_main();
+  }
+
   return 0;
 }

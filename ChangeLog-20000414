@@ -1,3 +1,32 @@
+2000-01-04  Darin Adler  <darin@eazel.com>
+
+	* src/Makefile.am, src/check-nautilus,
+	src/nautilus-self-check-functions.h, src/nautilus-self-checks.c,
+	src/nautilus-self-checks.h, src/ntl-main.c (main): Added self
+	checks to nautilus. The checks are invoked by "make check"
+	(actually need to do "make install check" if you changed
+	libnautilus) or by invoking the nautilus executable with "--check".
+	Later, nautilus-self-checks.h may include various helpful
+	functions for use by the self-checking code.
+
+	* src/file-manager/Makefile.am, src/file-manager/fm-directory.c,
+	src/file-manager/fm-directory.h,
+	src/file-manager/fm-directory-protected.h,
+	src/file-manager/fm-vfs-directory.c,
+	src/file-manager/fm-vfs-directory.h: Started work on an abstract
+	FMDirectory class that provides a model for what's viewed by the
+	file manager. Also began work on the FMVFSDirectory concrete child
+	class that implements this on top of VFS. It's not hooked up yet,
+	and there's a lot that needs to be done before it's ready to use.
+
+	* libnautilus/gdk-extensions.c, libnautilus/gdk-extensions.h:
+	Renamed functions to use nautilus_ prefix instead of gdk_
+	prefix. Added a tiny bit of self-check code.
+
+	* libnautilus/nautilus-gtk-macros.h: Added some macros (that will
+	no doubt be controversial) to do some basic GTK object
+	boilerplate.
+
 2000-01-04  John Sullivan  <sullivan@eazel.com>
 
 	Made location-entering field handle bogus URIs better
@@ -147,7 +176,7 @@
 	harm in repeating them in here and it fixes the problem for
 	now, but I'd like to know what happened.
         * components/html/.cvsignore: Added some generated files.
-	* components/html/gnome-dialogs.c (glibwww_progress):
+	* components/html/gnome-dialogs.c: (glibwww_progress):
 	Replaced an incorrect "%l" in a printf format string with
 	the correct "%ld".
 	* libnautilus/.cvsignore: Added some generated files.
@@ -577,7 +606,6 @@
 
 	* src/file-manager/gnome-desktop.c (main): Quiet some warnings.
 
->>>>>>> 1.33
 1999-12-16  Havoc Pennington  <hp@redhat.com>
 
 	* src/file-manager/gnome-desktop.c (main): warning fixes

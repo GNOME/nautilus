@@ -25,7 +25,11 @@ libntl_file_manager_la_SOURCES=		\
 	dfos.h				\
 	$(dfos_corba_srcs)		\
 	fm-directory-view.h		\
-	fm-directory-view.c
+	fm-directory-view.c		\
+	fm-directory.h			\
+	fm-directory.c			\
+	fm-vfs-directory.h		\
+	fm-vfs-directory.c
 
 # noinst_PROGRAMS=gnome-desktop
 

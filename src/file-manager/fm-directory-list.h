@@ -38,7 +38,7 @@ void                  fm_directory_list_entry_ref           (FMDirectoryListEntr
 void                  fm_directory_list_entry_unref         (FMDirectoryListEntry *entry);
 GnomeVFSFileInfo*     fm_directory_list_entry_get_file_info (FMDirectoryListEntry *entry);
 GdkPixbuf*            fm_directory_list_entry_get_icon      (FMDirectoryListEntry *entry);
-const gchar*          fm_directory_list_entry_get_name     (FMDirectoryListEntry *entry);
+const gchar*          fm_directory_list_entry_get_name      (FMDirectoryListEntry *entry);
 
 
 

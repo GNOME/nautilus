@@ -28,6 +28,8 @@ nautilus_SOURCES=			\
 	nautilus-bookmarks-menu.c	\
 	nautilus-bookmarks-window.h	\
 	nautilus-bookmarks-window.c	\
+	nautilus-self-checks.c		\
+	nautilus-self-checks.h		\
 	ntl-app.h			\
 	ntl-app.c			\
 	ntl-content-view.h		\
@@ -62,3 +64,5 @@ nautilus_SOURCES=			\
 goaddir=$(sysconfdir)/CORBA/servers
 goad_DATA=nautilus.goad
 EXTRA_DIST=$(goad_DATA)
+
+TESTS=check-nautilus

@@ -21,7 +21,12 @@
  * Developed by: Havoc Pennington
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "fm-directory-list.h"
+
 #include "fm-icon-cache.h"
 
 /*
@@ -341,9 +346,9 @@ fm_directory_list_load_uri (FMDirectoryList *dlist,
 		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR  /* filter_options */
 		  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
 		 NULL, 					/* filter_pattern */
-		 ENTRIES_PER_CB,			 /* items_per_notification */
+		 ENTRIES_PER_CB,			/* items_per_notification */
 		 directory_load_cb,	 		/* callback */
-		 dlist);		 			/* callback_data */
+		 dlist);		 	       	/* callback_data */
         
 	g_return_if_fail(result == GNOME_VFS_OK);
 }

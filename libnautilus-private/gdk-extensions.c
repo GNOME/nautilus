@@ -1,6 +1,6 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
 
-/* gdk-extensions.c - Possible additions for gdk.
+   gdk-extensions.c: Graphics routines to augment what's in gdk.
 
    Copyright (C) 1999, 2000 Eazel, Inc.
 
@@ -28,10 +28,12 @@
 
 #include "gdk-extensions.h"
 
+#include "../src/nautilus-self-check-functions.h"
+
 #define GRADIENT_BAND_SIZE 4
 
 /**
- * gdk_fill_rectangle:
+ * nautilus_fill_rectangle:
  * @drawable: Target to draw into.
  * @gc: Graphics context (mainly for clip).
  * @rectangle: Rectangle to fill.
@@ -40,16 +42,16 @@
  * Convenient when you have a GdkRectangle structure.
  */
 void
-gdk_fill_rectangle (GdkDrawable *drawable,
-		    GdkGC *gc,
-		    const GdkRectangle *rectangle)
+nautilus_fill_rectangle (GdkDrawable *drawable,
+			 GdkGC *gc,
+			 const GdkRectangle *rectangle)
 {
 	gdk_draw_rectangle (drawable, gc, TRUE,
 			    rectangle->x, rectangle->y, rectangle->width, rectangle->height);
 }
 
 /**
- * gdk_fill_rectangle_with_color:
+ * nautilus_fill_rectangle_with_color:
  * @drawable: Target to draw into.
  * @gc: Graphics context (mainly for clip).
  * @rectangle: Rectangle to fill.
@@ -59,21 +61,21 @@ gdk_fill_rectangle (GdkDrawable *drawable,
  * Convenient when you have a GdkRectangle structure.
  */
 void
-gdk_fill_rectangle_with_color (GdkDrawable *drawable,
-			       GdkGC *gc,
-			       const GdkRectangle *rectangle,
-			       const GdkColor *color)
+nautilus_fill_rectangle_with_color (GdkDrawable *drawable,
+				    GdkGC *gc,
+				    const GdkRectangle *rectangle,
+				    const GdkColor *color)
 {
 	GdkGCValues saved_values;
 	
 	gdk_gc_get_values(gc, &saved_values);
 	gdk_gc_set_foreground (gc, (GdkColor *) color);
-	gdk_fill_rectangle (drawable, gc, rectangle);
+	nautilus_fill_rectangle (drawable, gc, rectangle);
 	gdk_gc_set_foreground (gc, &saved_values.foreground);
 }
 
 /**
- * gdk_fill_rectangle_with_gradient:
+ * nautilus_fill_rectangle_with_gradient:
  * @drawable: Target to draw into.
  * @gc: Graphics context (mainly for clip).
  * @colormap: Map to use to allocate colors for gradient.
@@ -88,13 +90,13 @@ gdk_fill_rectangle_with_color (GdkDrawable *drawable,
  * This effect works best on true color displays.
  */
 void
-gdk_fill_rectangle_with_gradient (GdkDrawable *drawable,
-				  GdkGC *gc,
-				  GdkColormap *colormap,
-				  const GdkRectangle *rectangle,
-				  const GdkColor *start_color,
-				  const GdkColor *end_color,
-				  gboolean horizontal)
+nautilus_fill_rectangle_with_gradient (GdkDrawable *drawable,
+				       GdkGC *gc,
+				       GdkColormap *colormap,
+				       const GdkRectangle *rectangle,
+				       const GdkColor *start_color,
+				       const GdkColor *end_color,
+				       gboolean horizontal)
 {
 	GdkRectangle band_box;
 	gint16 *position;
@@ -126,12 +128,12 @@ gdk_fill_rectangle_with_gradient (GdkDrawable *drawable,
 	/* Set up a multiplier to use to interpolate the colors as we go. */
 	multiplier = num_bands <= 1 ? 0.0 : 1.0 / (num_bands - 1);
 	
-	/* Fill each band with a separate gdk_draw_rectangle call. */
+	/* Fill each band with a separate nautilus_draw_rectangle call. */
 	for (band = 0; band < num_bands; band++) {
 		GdkColor band_color;
 
 		/* Compute a new color value for each band. */
-		gdk_interpolate_color(band * multiplier, start_color, end_color, &band_color);
+		nautilus_interpolate_color (band * multiplier, start_color, end_color, &band_color);
 		if (!gdk_colormap_alloc_color (colormap, &band_color, FALSE, TRUE))
 			g_warning ("could not allocate color for gradient");
 		else {
@@ -141,14 +143,14 @@ gdk_fill_rectangle_with_gradient (GdkDrawable *drawable,
 			if (band == num_bands - 1)
 				*size = last_band_size;
 
-			gdk_fill_rectangle_with_color (drawable, gc, &band_box, &band_color);
+			nautilus_fill_rectangle_with_color (drawable, gc, &band_box, &band_color);
 		}
 		*position += *size;
 	}
 }
 
 /**
- * gdk_interpolate_color:
+ * nautilus_interpolate_color:
  * @ratio: Place on line between colors to interpolate.
  * @start_color: Color for one end.
  * @end_color: Color for the other end
@@ -160,18 +162,46 @@ gdk_fill_rectangle_with_gradient (GdkDrawable *drawable,
  * human perception.
  */
 void
-gdk_interpolate_color (gdouble ratio,
-		       const GdkColor *start_color,
-		       const GdkColor *end_color,
-		       GdkColor *interpolated_color)
+nautilus_interpolate_color (gdouble ratio,
+			    const GdkColor *start_color,
+			    const GdkColor *end_color,
+			    GdkColor *interpolated_color)
 {
-	g_return_if_fail(ratio >= 0.0);
-	g_return_if_fail(ratio <= 1.0);
-	g_return_if_fail(start_color);
-	g_return_if_fail(end_color);
-	g_return_if_fail(interpolated_color);
+	g_return_if_fail (ratio >= 0.0);
+	g_return_if_fail (ratio <= 1.0);
+	g_return_if_fail (start_color);
+	g_return_if_fail (end_color);
+	g_return_if_fail (interpolated_color);
 
 	interpolated_color->red = start_color->red * (1.0 - ratio) + end_color->red * ratio;
 	interpolated_color->green = start_color->green * (1.0 - ratio) + end_color->green * ratio;
 	interpolated_color->blue = start_color->blue * (1.0 - ratio) + end_color->blue * ratio;
 }
+
+#if ! defined (NAUTILUS_OMIT_SELF_CHECK)
+
+static void
+self_check_interpolate(gdouble ratio,
+		       gushort r1, gushort g1, gushort b1,
+		       gushort r2, gushort g2, gushort b2,
+		       gushort r3, gushort g3, gushort b3)
+{
+	GdkColor start_color = { 0, r1, g1, b1 };
+	GdkColor end_color = { 0, r2, g2, b2 };
+	GdkColor interpolated_color;
+	nautilus_interpolate_color(ratio, &start_color, &end_color, &interpolated_color);
+	g_assert(interpolated_color.red == r3);
+	g_assert(interpolated_color.red == g3);
+	g_assert(interpolated_color.red == b3);
+}
+
+void
+self_check_gdk_extensions (void)
+{
+	self_check_interpolate(0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+	self_check_interpolate(0.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF, 0, 0, 0);
+	self_check_interpolate(0.5, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF, 0x7FFF, 0x7FFF, 0x7FFF);
+	self_check_interpolate(1.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF);
+}
+
+#endif /* ! NAUTILUS_OMIT_SELF_CHECK */
