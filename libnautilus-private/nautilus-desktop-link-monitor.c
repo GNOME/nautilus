@@ -66,24 +66,24 @@ EEL_CLASS_BOILERPLATE (NautilusDesktopLinkMonitor,
 		       nautilus_desktop_link_monitor,
 		       G_TYPE_OBJECT)
 
-static NautilusDesktopLinkMonitor *link_monitor = NULL;
+static NautilusDesktopLinkMonitor *the_link_monitor = NULL;
 
 static void
 destroy_desktop_link_monitor (void)
 {
-	if (link_monitor != NULL) {
-		g_object_unref (link_monitor);
+	if (the_link_monitor != NULL) {
+		g_object_unref (the_link_monitor);
 	}
 }
 
 NautilusDesktopLinkMonitor *
 nautilus_desktop_link_monitor_get (void)
 {
-	if (link_monitor == NULL) {
-		link_monitor = NAUTILUS_DESKTOP_LINK_MONITOR (g_object_new (NAUTILUS_TYPE_DESKTOP_LINK_MONITOR, NULL));
+	if (the_link_monitor == NULL) {
+		g_object_new (NAUTILUS_TYPE_DESKTOP_LINK_MONITOR, NULL);
 		eel_debug_call_at_shutdown (destroy_desktop_link_monitor);
 	}
-	return link_monitor;
+	return the_link_monitor;
 }
 
 void
@@ -111,6 +111,43 @@ nautilus_desktop_link_monitor_delete_link (NautilusDesktopLinkMonitor *monitor,
 	}
 }
 
+static gboolean
+volume_file_name_used (NautilusDesktopLinkMonitor *monitor,
+		       const char *name)
+{
+	GList *l;
+	char *other_name;
+	gboolean same;
+
+	for (l = monitor->details->volume_links; l != NULL; l = l->next) {
+		other_name = nautilus_desktop_link_get_file_name (l->data);
+		same = strcmp (name, other_name) == 0;
+		g_free (other_name);
+
+		if (same) {
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+char *
+nautilus_desktop_link_monitor_make_filename_unique (NautilusDesktopLinkMonitor *monitor,
+						    const char *filename)
+{
+	char *unique_name;
+	int i;
+	
+	i = 2;
+	unique_name = g_strdup (filename);
+	while (volume_file_name_used (monitor, unique_name)) {
+		g_free (unique_name);
+		unique_name = g_strdup_printf ("%s.%d", filename, i++);
+	}
+	return unique_name;
+}
+
 static void
 create_volume_link (NautilusDesktopLinkMonitor *monitor,
 		    GnomeVFSVolume *volume)
@@ -127,7 +164,6 @@ create_volume_link (NautilusDesktopLinkMonitor *monitor,
 		link = nautilus_desktop_link_new_from_volume (volume);
 		monitor->details->volume_links = g_list_prepend (monitor->details->volume_links, link);
 	}
-	
 }
 
 
@@ -259,6 +295,8 @@ nautilus_desktop_link_monitor_init (gpointer object, gpointer klass)
 
 	monitor = NAUTILUS_DESKTOP_LINK_MONITOR (object);
 
+	the_link_monitor = monitor;
+	
 	monitor->details = g_new0 (NautilusDesktopLinkMonitorDetails, 1);
 
 	/* We keep around a ref to the desktop dir */
