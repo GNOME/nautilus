@@ -26,35 +26,21 @@
 #ifndef NAUTILUS_BACKGROUND_CANVAS_GROUP_H
 #define NAUTILUS_BACKGROUND_CANVAS_GROUP_H
 
-#include "nautilus-background.h"
 #include <libgnomeui/gnome-canvas.h>
 
-/* A NautilusBackgroundCanvasGroup is used internally by NautilusBackground to change
-   the color of a canvas. The reason we have to change the class of a canvas group is
+/* nautilus_background_canvas_group_supplant_root_class is used internally by
+   NautilusBackground to change the class of a canvas in order to customize its
+   background drawing. The reason we have to change the class of a canvas group is
    that the cleanest way to hook into the code that erases the canvas is to be the
    root canvas group. But the canvas class creates the root object and doesn't allow
    it to be destroyed, so we change the class of the root object in place.
 
    A future version of GnomeCanvas may allow a nicer way of hooking in to the code
-   that draws the background, and then we can get rid of this class.
+   obviating this fn.
 
-   This class is private to NautilusBackground.
+   This fn is private to NautilusBackground.
 */
 
-typedef GnomeCanvasGroup NautilusBackgroundCanvasGroup;
-typedef GnomeCanvasGroupClass NautilusBackgroundCanvasGroupClass;
-
-#define NAUTILUS_TYPE_BACKGROUND_CANVAS_GROUP \
-	(nautilus_background_canvas_group_get_type ())
-#define NAUTILUS_BACKGROUND_CANVAS_GROUP(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_BACKGROUND_CANVAS_GROUP, NautilusBackgroundCanvasGroup))
-#define NAUTILUS_BACKGROUND_CANVAS_GROUP_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_BACKGROUND_CANVAS_GROUP, NautilusBackgroundCanvasGroupClass))
-#define NAUTILUS_IS_BACKGROUND_CANVAS_GROUP(obj) \
-	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_BACKGROUND_CANVAS_GROUP))
-#define NAUTILUS_IS_BACKGROUND_CANVAS_GROUP_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_BACKGROUND_CANVAS_GROUP))
-
-GtkType             nautilus_background_canvas_group_get_type       (void);
+void nautilus_background_canvas_group_supplant_root_class (GnomeCanvas *canvas);
 
 #endif /* NAUTILUS_BACKGROUND_CANVAS_GROUP_H */

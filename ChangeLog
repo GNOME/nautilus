@@ -1,3 +1,19 @@
+2001-01-10  Michael Engber  <engber@eazel.com>
+
+	reviewed by: John Harper
+
+	* configure.in:
+	* libnautilus-extensions/nautilus-background-canvas-group.c:
+	(nautilus_background_canvas_group_initialize_common),
+	(nautilus_background_canvas_group_initialize),
+	(nautilus_background_canvas_group_supplant_root_class):
+	* libnautilus-extensions/nautilus-background-canvas-group.h:
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_set_up_canvas):
+	Turned on dithering for canvases (aa mode). We no longer expose
+	NautilusBackgroundCanvasGroupClass, in nautilus-background-canvas-
+	group.h. Now we just provide an API to do the class change.
+
 2001-01-10  Pavel Cisler  <pavel@eazel.com>
 
 	* components/services/install/nautilus-view/nautilus-service-install-view.c:

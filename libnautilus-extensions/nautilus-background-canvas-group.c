@@ -54,6 +54,23 @@ static void nautilus_background_canvas_group_draw (GnomeCanvasItem	*item,
 static void nautilus_background_canvas_group_render (GnomeCanvasItem	*item,
 						     GnomeCanvasBuf	*buffer);
 
+
+typedef GnomeCanvasGroup NautilusBackgroundCanvasGroup;
+typedef GnomeCanvasGroupClass NautilusBackgroundCanvasGroupClass;
+
+#define NAUTILUS_TYPE_BACKGROUND_CANVAS_GROUP \
+	(nautilus_background_canvas_group_get_type ())
+#define NAUTILUS_BACKGROUND_CANVAS_GROUP(obj) \
+	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_BACKGROUND_CANVAS_GROUP, NautilusBackgroundCanvasGroup))
+#define NAUTILUS_BACKGROUND_CANVAS_GROUP_CLASS(klass) \
+	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_BACKGROUND_CANVAS_GROUP, NautilusBackgroundCanvasGroupClass))
+#define NAUTILUS_IS_BACKGROUND_CANVAS_GROUP(obj) \
+	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_BACKGROUND_CANVAS_GROUP))
+#define NAUTILUS_IS_BACKGROUND_CANVAS_GROUP_CLASS(klass) \
+	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_BACKGROUND_CANVAS_GROUP))
+
+GtkType nautilus_background_canvas_group_get_type (void);
+
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBackgroundCanvasGroup, nautilus_background_canvas_group, GNOME_TYPE_CANVAS_GROUP)
 
 static void
@@ -64,9 +81,58 @@ nautilus_background_canvas_group_initialize_class (gpointer klass)
 	GNOME_CANVAS_ITEM_CLASS (klass)->update = nautilus_background_canvas_group_update;
 }
 
+/* This function is for initialization code that's needed both when we're allocating
+ * a new NautilusBackgroundCanvasGroup object as well as when we're taking over an existing
+ * GnomeCanvasGroup item (replacing its klass).
+ */
+static void
+nautilus_background_canvas_group_initialize_common (NautilusBackgroundCanvasGroup *canvas_group)
+{
+	/* gnome_canvas_set_dither is only available in gnome-libs > v 1.2.8
+	 */
+#ifdef HAVE_GNOME_CANVAS_SET_DITHER
+	gnome_canvas_set_dither (GNOME_CANVAS_ITEM (canvas_group)->canvas, GDK_RGB_DITHER_MAX);
+#endif
+}
+
 static void
 nautilus_background_canvas_group_initialize (gpointer object, gpointer klass)
 {
+	/* The way we currently use nautilus_background_canvas_group, assigning
+	 * it to the klass of a root canvas object, circumvents this initialze fn.
+	 */
+	nautilus_background_canvas_group_initialize_common (NAUTILUS_BACKGROUND_CANVAS_GROUP (object));
+}
+
+
+void
+nautilus_background_canvas_group_supplant_root_class (GnomeCanvas *canvas)
+{
+	/* Attach ourselves to a canvas in a way that will work.
+	   Changing the style is not sufficient.
+
+	   Since there's no signal to override in GnomeCanvas to control
+	   drawing the background, we change the class of the canvas root.
+	   This gives us a chance to draw the background before any of the
+	   objects draw themselves, and has no effect on the bounds or
+	   anything related to scrolling.
+
+	   We settled on this after less-than-thrilling results using a
+	   canvas item as the background. The canvas item contributed to
+	   the bounds of the canvas and had to constantly be resized.
+	*/
+	
+	g_assert (GNOME_IS_CANVAS (canvas));
+	
+	if (GTK_OBJECT (canvas->root)->klass != gtk_type_class (NAUTILUS_TYPE_BACKGROUND_CANVAS_GROUP)) {
+	
+		g_assert (GTK_OBJECT (canvas->root)->klass == gtk_type_class (GNOME_TYPE_CANVAS_GROUP));
+	
+		GTK_OBJECT (canvas->root)->klass =
+			gtk_type_class (NAUTILUS_TYPE_BACKGROUND_CANVAS_GROUP);
+
+		nautilus_background_canvas_group_initialize_common (NAUTILUS_BACKGROUND_CANVAS_GROUP (canvas->root));
+	}
 }
 
 static void

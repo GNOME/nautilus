@@ -1335,29 +1335,8 @@ nautilus_background_reset (NautilusBackground *background)
 static void
 nautilus_background_set_up_canvas (GtkWidget *widget)
 {
-	g_return_if_fail (GTK_IS_WIDGET (widget));
-
-	/* Attach ourselves to a canvas in a way that will work.
-	   Changing the style is not sufficient.
-
-	   Since there's no signal to override in GnomeCanvas to control
-	   drawing the background, we change the class of the canvas root.
-	   This gives us a chance to draw the background before any of the
-	   objects draw themselves, and has no effect on the bounds or
-	   anything related to scrolling.
-
-	   We settled on this after less-than-thrilling results using a
-	   canvas item as the background. The canvas item contributed to
-	   the bounds of the canvas and had to constantly be resized.
-	*/
 	if (GNOME_IS_CANVAS (widget)) {
-		g_assert (GTK_OBJECT (GNOME_CANVAS (widget)->root)->klass
-			  == gtk_type_class (GNOME_TYPE_CANVAS_GROUP)
-			  || GTK_OBJECT (GNOME_CANVAS (widget)->root)->klass
-			  == gtk_type_class (NAUTILUS_TYPE_BACKGROUND_CANVAS_GROUP));
-
-		GTK_OBJECT (GNOME_CANVAS (widget)->root)->klass =
-			gtk_type_class (NAUTILUS_TYPE_BACKGROUND_CANVAS_GROUP);
+		nautilus_background_canvas_group_supplant_root_class (GNOME_CANVAS (widget));
 	}
 }
 
