@@ -43,6 +43,9 @@
 #endif
 #define REDIRECT_GCONF_PATH	"/apps/eazel-trilobite/redirect-table"
 
+#define SERVICES_DEFAULT_HOST	"services.eazel.com:8888"
+#define SERVICES_GCONF_PATH	"/apps/eazel-trilobite/services-host"
+
 static GConfEngine *conf_engine = NULL;
 
 
@@ -181,12 +184,12 @@ out:
  * since it involves iterations of gtk_main.
  */
 gboolean
-trilobite_redirect_fetch_table (void)
+trilobite_redirect_fetch_table (const char *url)
 {
 	char *body;
 	int length;
 
-	if (! trilobite_fetch_uri (REDIRECT_TABLE_URL, &body, &length)) {
+	if (! trilobite_fetch_uri (url == NULL ? REDIRECT_TABLE_URL : url, &body, &length)) {
 		return FALSE;
 	}
 
@@ -219,5 +222,24 @@ trilobite_redirect_lookup (const char *key)
 	}
 
 	g_free (full_key);
+	return value;
+}
+
+/* find the default server hostname and port to use for eazel services */
+const char *
+trilobite_get_services_address (void)
+{
+	GConfError *error = NULL;
+	char *value;
+
+	check_gconf_init ();
+	value = gconf_get_string (conf_engine, SERVICES_GCONF_PATH, &error);
+	if (error != NULL) {
+		g_warning ("trilobite: no gconf key for %s", SERVICES_GCONF_PATH);
+		gconf_error_destroy (error);
+
+		value = SERVICES_DEFAULT_HOST;
+	}
+
 	return value;
 }

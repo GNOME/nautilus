@@ -1,3 +1,15 @@
+2000-09-14  Robey Pointer  <robey@eazel.com>
+
+	* components/services/trilobite/doc/gconf.txt:
+	* components/services/trilobite/libtrilobite/trilobite-redirect.c:
+	(trilobite_redirect_fetch_table), (trilobite_redirect_lookup),
+	(trilobite_get_services_address):
+	* components/services/trilobite/libtrilobite/trilobite-redirect.h:
+
+	Add documentation on gconf settings and add services-host setting
+	so we can later change the default servier:port for Eazel
+	services.  Fix API for downloading the redirection table.
+
 2000-09-14  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-scalable-font.c:
