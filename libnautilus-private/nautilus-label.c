@@ -39,7 +39,7 @@
 #define MIN_SMOOTH_FONT_SIZE 5
 #define MAX_SMOOTH_FONT_SIZE 64
 
-#define DEFAULT_FONT_SIZE 30
+#define DEFAULT_FONT_SIZE 14
 #define LINE_WRAP_SEPARATORS _(" -_,;.?/&")
 #define LINE_OFFSET 2
 
