@@ -13,8 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2000-11-02 15:07+0100\n"
-"PO-Revision-Date: 2000-11-02 15:08+0100\n"
+"POT-Creation-Date: 2000-11-03 23:54+0100\n"
+"PO-Revision-Date: 2000-11-03 23:55+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -773,11 +773,11 @@ msgstr "%s nergraderar från version %s till %s"
 msgid "%s installs version %s"
 msgstr "%s installerar version %s"
 
-#: components/services/install/lib/eazel-install-logic.c:2102
+#: components/services/install/lib/eazel-install-logic.c:2104
 msgid "Dependencies appear ok"
 msgstr "Beroendena verkar vara okej"
 
-#: components/services/install/lib/eazel-install-logic.c:2105
+#: components/services/install/lib/eazel-install-logic.c:2107
 msgid "But there are file conflicts"
 msgstr "Men det det finns filkonflikter"
 
@@ -785,33 +785,33 @@ msgstr "Men det det finns filkonflikter"
 msgid "Could not set URLType from config file!"
 msgstr "Kunde inte sätta URLType från konfigurationsfilen!"
 
-#: components/services/install/lib/eazel-install-object.c:564
+#: components/services/install/lib/eazel-install-object.c:582
 #, c-format
 msgid "Transactions are stored in %s"
 msgstr "Överföringar lagras i %s"
 
-#: components/services/install/lib/eazel-install-object.c:567
+#: components/services/install/lib/eazel-install-object.c:585
 msgid "Transactions are not stored, could not find home dir"
 msgstr "Överföringar lagras inte, kunde inte hitta hemkatalog"
 
-#: components/services/install/lib/eazel-install-object.c:753
+#: components/services/install/lib/eazel-install-object.c:772
 msgid "Getting package list from remote server ...\n"
 msgstr "Hämtar paketlistan från fjärrserver ...\n"
 
-#: components/services/install/lib/eazel-install-object.c:773
+#: components/services/install/lib/eazel-install-object.c:792
 msgid "Unable to retrieve package-list.xml!\n"
 msgstr "Kunde inte hämta package-list.xml!\n"
 
-#: components/services/install/lib/eazel-install-object.c:818
+#: components/services/install/lib/eazel-install-object.c:863
 #, c-format
 msgid "Cannot write to file %s, using default log handler"
 msgstr "Kan inte skriva till filen %s, använder standardlogghanteraren"
 
-#: components/services/install/lib/eazel-install-object.c:930
+#: components/services/install/lib/eazel-install-object.c:983
 msgid "Install failed"
 msgstr "Installationen misslyckades"
 
-#: components/services/install/lib/eazel-install-object.c:973
+#: components/services/install/lib/eazel-install-object.c:1026
 msgid "Uninstall failed"
 msgstr "Avinstallationen misslyckades"
 
@@ -918,45 +918,45 @@ msgid "Dry Run Mode Activated.  Packages will not actually be installed ..."
 msgstr ""
 "Torrkörningsläge aktiverat. Paketen kommer egentligen inte att installeras..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:250
+#: components/services/install/lib/eazel-install-rpm-glue.c:251
 #, c-format
 msgid "Closing db for %s (open)"
 msgstr "Stänger databas för %s (öppen)"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:255
+#: components/services/install/lib/eazel-install-rpm-glue.c:256
 #, c-format
 msgid "Closing db for %s (not open)"
 msgstr "Stänger databas för %s (inte öppen)"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:316
+#: components/services/install/lib/eazel-install-rpm-glue.c:317
 #, c-format
 msgid "Opened packages database in %s"
 msgstr "Öppnade paketdatabasen i %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:321
+#: components/services/install/lib/eazel-install-rpm-glue.c:322
 #, c-format
 msgid "Opening packages database in %s failed"
 msgstr "Öppning av paketdatabasen i %s misslyckades"
 
 #. Possibly the implest case, we're installing package A, which requires
 #. B that is not installed.
-#: components/services/install/lib/eazel-install-rpm-glue.c:480
+#: components/services/install/lib/eazel-install-rpm-glue.c:481
 #, c-format
 msgid "%s requires %s"
 msgstr "%s kräver %s"
 
 #. If we end here, it's a conflict is going to break something
-#: components/services/install/lib/eazel-install-rpm-glue.c:616
+#: components/services/install/lib/eazel-install-rpm-glue.c:617
 #, c-format
 msgid "Package %s conflicts with %s-%s"
 msgstr "Paketet %s är i konflikt med %s-%s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:630
+#: components/services/install/lib/eazel-install-rpm-glue.c:631
 #, c-format
 msgid "Processing dep for %s, requires library %s"
 msgstr "Behandlar beroenden för %s, kräver bibliotek %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:637
+#: components/services/install/lib/eazel-install-rpm-glue.c:638
 #, c-format
 msgid "Processing dep for %s, requires package %s"
 msgstr "Behandlar beroenden för %s, kräver paket %s"
@@ -1379,9 +1379,11 @@ msgstr "Ytterligare tjänster"
 
 #: components/services/summary/nautilus-view/nautilus-summary-view.c:527
 msgid ""
+"\n"
 "Check back here for new system management\n"
 "services that will help make Linux easier to use."
 msgstr ""
+"\n"
 "Kom tillbaka hit om du vill hitta nya tjänster\n"
 "för systemadministration som kommer att göra\n"
 "Linux enklare att använda."
@@ -1620,7 +1622,7 @@ msgstr "Ersätt alla"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: libnautilus-extensions/nautilus-file-operations.c:557
-#: libnautilus-extensions/nautilus-file.c:3392
+#: libnautilus-extensions/nautilus-file.c:3406
 #, c-format
 msgid "link to %s"
 msgstr "länk till %s"
@@ -2026,104 +2028,104 @@ msgstr "test test (kopia nummer 100000000000000).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-extensions/nautilus-file.c:1931
+#: libnautilus-extensions/nautilus-file.c:1945
 msgid "today %-I:%M %p"
 msgstr "idag %H:%M"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:1936
+#: libnautilus-extensions/nautilus-file.c:1950
 msgid "yesterday %-I:%M %p"
 msgstr "igår %H:%M"
 
 #. Current week, include day of week.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:1941
+#: libnautilus-extensions/nautilus-file.c:1955
 msgid "%A %-m/%-d/%y %-I:%M %p"
 msgstr "%A %y-%m-%d %H:%M"
 
 #. Other dates.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:1946
+#: libnautilus-extensions/nautilus-file.c:1960
 msgid "%-m/%-d/%y %-I:%M %p"
 msgstr "%y-%m-%d %H:%M"
 
-#: libnautilus-extensions/nautilus-file.c:2970
+#: libnautilus-extensions/nautilus-file.c:2984
 msgid "0 items"
 msgstr "0 objekt"
 
-#: libnautilus-extensions/nautilus-file.c:2970
+#: libnautilus-extensions/nautilus-file.c:2984
 msgid "0 folders"
 msgstr "0 mappar"
 
-#: libnautilus-extensions/nautilus-file.c:2971
+#: libnautilus-extensions/nautilus-file.c:2985
 msgid "0 files"
 msgstr "0 filer"
 
-#: libnautilus-extensions/nautilus-file.c:2975
+#: libnautilus-extensions/nautilus-file.c:2989
 msgid "1 item"
 msgstr "1 objekt"
 
-#: libnautilus-extensions/nautilus-file.c:2975
+#: libnautilus-extensions/nautilus-file.c:2989
 msgid "1 folder"
 msgstr "1 mapp"
 
-#: libnautilus-extensions/nautilus-file.c:2976
+#: libnautilus-extensions/nautilus-file.c:2990
 msgid "1 file"
 msgstr "1 fil"
 
-#: libnautilus-extensions/nautilus-file.c:2979
+#: libnautilus-extensions/nautilus-file.c:2993
 #, c-format
 msgid "%u items"
 msgstr "%u objekt"
 
-#: libnautilus-extensions/nautilus-file.c:2979
+#: libnautilus-extensions/nautilus-file.c:2993
 #, c-format
 msgid "%u folders"
 msgstr "%u mappar"
 
-#: libnautilus-extensions/nautilus-file.c:2980
+#: libnautilus-extensions/nautilus-file.c:2994
 #, c-format
 msgid "%u files"
 msgstr "%u filer"
 
 #. This means no contents at all were readable
-#: libnautilus-extensions/nautilus-file.c:3280
 #: libnautilus-extensions/nautilus-file.c:3294
+#: libnautilus-extensions/nautilus-file.c:3308
 msgid "? items"
 msgstr "? objekt"
 
-#: libnautilus-extensions/nautilus-file.c:3298
+#: libnautilus-extensions/nautilus-file.c:3312
 msgid "unknown type"
 msgstr "okänd typ"
 
-#: libnautilus-extensions/nautilus-file.c:3300
+#: libnautilus-extensions/nautilus-file.c:3314
 msgid "unknown MIME type"
 msgstr "okänd MIME-typ"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-extensions/nautilus-file.c:3305
+#: libnautilus-extensions/nautilus-file.c:3319
 msgid "unknown"
 msgstr "okänd"
 
-#: libnautilus-extensions/nautilus-file.c:3351
+#: libnautilus-extensions/nautilus-file.c:3365
 msgid "folder"
 msgstr "mapp"
 
-#: libnautilus-extensions/nautilus-file.c:3354
+#: libnautilus-extensions/nautilus-file.c:3368
 msgid "program"
 msgstr "program"
 
-#: libnautilus-extensions/nautilus-file.c:3386
+#: libnautilus-extensions/nautilus-file.c:3400
 msgid "link"
 msgstr "länk"
 
-#: libnautilus-extensions/nautilus-file.c:3406
+#: libnautilus-extensions/nautilus-file.c:3420
 msgid "link (broken)"
 msgstr "länk (trasig)"
 
@@ -3297,7 +3299,7 @@ msgstr "Flytta alla markerade objekt till papperskorgen"
 msgid "*Control*t"
 msgstr "*Control*t"
 
-#: src/file-manager/fm-directory-view.c:3660
+#: src/file-manager/fm-directory-view.c:3661
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the trash?"
@@ -3305,7 +3307,7 @@ msgstr ""
 "Den här länken kan inte användas eftersom den inte har något mål. Vill du "
 "kasta den här länken i papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:3663
+#: src/file-manager/fm-directory-view.c:3664
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -3314,15 +3316,15 @@ msgstr ""
 "Den här länken kan inte användas eftersom dess mål \"%s\" inte finns. Vill "
 "du kasta den här länken i papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:3669
+#: src/file-manager/fm-directory-view.c:3670
 msgid "Broken Link"
 msgstr "Trasig länk"
 
-#: src/file-manager/fm-directory-view.c:3670
+#: src/file-manager/fm-directory-view.c:3671
 msgid "Throw Away"
 msgstr "Kasta"
 
-#: src/file-manager/fm-directory-view.c:3732
+#: src/file-manager/fm-directory-view.c:3733
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -3330,7 +3332,7 @@ msgstr ""
 "Tyvärr, men du kan inte köra kommandon från en fjärrplats på grund av "
 "säkerhetsskäl."
 
-#: src/file-manager/fm-directory-view.c:3733
+#: src/file-manager/fm-directory-view.c:3734
 msgid "Can't execute remote links"
 msgstr "Kunde inte köra fjärrlänkar"
 
@@ -4078,12 +4080,12 @@ msgstr ""
 
 #: src/nautilus-first-time-druid.c:348
 msgid ""
-"User levels provide a way to adjust the software to\n"
-"your level of technical expertise.  Pick an initial level that you\n"
+"User levels provide a way to adjust the software to your\n"
+"level of technical expertise.  Pick an initial level that you\n"
 "feel comfortable with; you can always change it later."
 msgstr ""
-"Användarnivåer är ett sätt att anpassa programvaran till dina\n"
-"teknikkunskapsnivåer. Välj till att börja med en nivå som känns\n"
+"Användarnivåer är ett sätt att anpassa programvaran till din\n"
+"teknikkunskapsnivå. Välj till att börja med en nivå som känns\n"
 "bekväm; du kan alltid ändra den senare."
 
 #: src/nautilus-first-time-druid.c:358
@@ -4113,15 +4115,17 @@ msgstr ""
 #. allocate a descriptive label
 #: src/nautilus-first-time-druid.c:406
 msgid ""
-"Eazel offers a growing number of services to \n"
-"help you install and maintain new software and manage \n"
-"your files across the network.  If you want to find out more \n"
-"about Eazel services, just press the 'Next' button. "
+"Eazel offers a growing number of services to help you\n"
+" install and maintain new software and manage your files\n"
+" across the network.  Choose an option below, and the\n"
+"information will be presented in Nautilus after you've\n"
+"finished setting up."
 msgstr ""
-"Eazel erbjuder ett växande antal tjänster som hjälper dig att \n"
-"installera och underhålla ny programvara och hantera dina filer \n"
-"i nätverket. Om du vill veta mer om Eazel Services trycker du \n"
-"bara på knappen \"Nästa\". "
+"Eazel erbjuder ett växande antal tjänster som hjälper dig\n"
+" att installera och underhålla ny programvara och hantera\n"
+" dina filer i nätverket. Välj ett alternativ nedan, så\n"
+"kommer informationen att visas i Nautilus efter att du\n"
+"har slutfört installationen."
 
 #: src/nautilus-first-time-druid.c:410
 msgid "Eazel Services"
@@ -4214,8 +4218,8 @@ msgid "Downloading Nautilus updates..."
 msgstr "Hämtar Nautilus-uppdateringar..."
 
 #: src/nautilus-first-time-druid.c:678
-msgid "Initial Preferences"
-msgstr "Startinställningar"
+msgid "Nautilus First Time Setup"
+msgstr "Nautilus förstagångsinstallation"
 
 #. make the title label
 #: src/nautilus-first-time-druid.c:707
@@ -5446,6 +5450,9 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 #: src/nautilus-zoom-control.c:565
 msgid "%.0f%%"
 msgstr "%.0f%%"
+
+#~ msgid "Initial Preferences"
+#~ msgstr "Startinställningar"
 
 #~ msgid " · %s in somewhere...\n"
 #~ msgstr " · %s finns någonstans...\n"
