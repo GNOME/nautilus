@@ -135,10 +135,13 @@ nautilus_bonobo_get_hidden (BonoboUIComponent *ui,
 {
 	char *value;
 	gboolean hidden;
+	CORBA_Environment ev;
 
 	g_return_val_if_fail (BONOBO_IS_UI_COMPONENT (ui), FALSE);
 
-	value = bonobo_ui_component_get_prop (ui, path, "hidden", NULL);
+	CORBA_exception_init (&ev);
+	value = bonobo_ui_component_get_prop (ui, path, "hidden", &ev);
+	CORBA_exception_free (&ev);
 
 	if (value == NULL) {
 		/* No hidden attribute means not hidden. */

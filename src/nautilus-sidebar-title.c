@@ -887,8 +887,9 @@ sidebar_title_create_more_info_label (void)
 	GtkWidget *more_info_label;
 
 	more_info_label = eel_label_new_with_background ("");
+#if GNOME2_CONVERSION_COMPLETE
 	eel_label_make_smaller (EEL_LABEL (more_info_label), 2);
-	eel_label_set_justify (EEL_LABEL (more_info_label), GTK_JUSTIFY_CENTER);
+#endif
 	eel_label_set_justify (EEL_LABEL (more_info_label), GTK_JUSTIFY_CENTER);
 	
 	return more_info_label;

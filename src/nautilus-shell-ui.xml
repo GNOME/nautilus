@@ -93,7 +93,7 @@
 		<menuitem name="Undo" 
 			  _label="_Undo" 
 			  _tip="Undo the last text change"
-			  pixtype="stock" pixname="Undo" 
+			  pixtype="stock" pixname="gtk-undo" 
 			  accel="*Control*z"
 			  verb="Undo"/>
 
@@ -102,15 +102,15 @@
 
 		<menuitem name="Cut" 
 			  _label="Cut _Text"
-			  pixtype="stock" pixname="Cut" 
+			  pixtype="stock" pixname="gtk-cut" 
 			  verb="Cut"/>
 		<menuitem name="Copy" 
 			  _label="_Copy Text"
-			  pixtype="stock" pixname="Copy" 
+			  pixtype="stock" pixname="gtk-copy" 
 			  verb="Copy"/>
 		<menuitem name="Paste" 
 			  _label="_Paste Text"
-			  pixtype="stock" pixname="Paste" 
+			  pixtype="stock" pixname="gtk-paste" 
 			  verb="Paste"/>
 		<menuitem name="Clear"
 			  _label="C_lear Text"
@@ -310,20 +310,20 @@
 
 	<control name="BackWrapper" 
 		 min_width="48"
-	         pixtype="stock" pixname="Back"/>
+	         pixtype="stock" pixname="gtk-go-back"/>
 	<control name="ForwardWrapper"
 		 min_width="48"
-	         pixtype="stock" pixname="Forward"/>
+	         pixtype="stock" pixname="gtk-go-forward"/>
 	<toolitem name="Up"
                   _label="Up"
 	          min_width="48"
-	          pixtype="stock" pixname="Up"
+	          pixtype="stock" pixname="gtk-go-up"
 	          verb="Up"/>
 	<toolitem name="Reload"
 		  _label="Refresh"
 		  _tip="Display the latest contents of the current location"
 	          min_width="48"
-	          pixtype="stock" pixname="Refresh"
+	          pixtype="stock" pixname="gtk-refresh"
 		  verb="Reload"/>
 
 	<separator/>
@@ -332,24 +332,24 @@
 		  _label="Home"
 		  _tip="Go to the home location"
 	          min_width="48"
-	          pixtype="stock" pixname="Home"
+	          pixtype="stock" pixname="gtk-home"
 		  verb="Home"/>
 	<toolitem name="Toggle Find Mode"
 	          min_width="48"
 	          type="toggle"
-	          pixtype="stock" pixname="Search"
+	          pixtype="stock" pixname="gtk-find"
 		  verb="Toggle Find Mode"/>
 	<toolitem name="Go to Web Search"
 		  _label="Web Search"
 		  _tip="Search the World Wide Web"
-	          pixtype="stock" pixname="Search"
+	          pixtype="stock" pixname="gtk-find"
 		  verb="Go to Web Search"/>
 
 	<separator/>
 
 	<toolitem name="Stop" _label="Stop"
 	          min_width="48"
-	          pixtype="stock" pixname="Stop"
+	          pixtype="stock" pixname="gtk-stop"
 	          verb="Stop"/>	
 
 	<placeholder name="Extra Buttons Placeholder" delimit="top"/>

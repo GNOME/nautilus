@@ -390,7 +390,9 @@ void
 nautilus_window_initialize_toolbars (NautilusWindow *window)
 {
 	CORBA_Environment ev;
+#ifdef GNOME2_CONVERSION_COMPLETE
 	char *exception_as_text;
+#endif
 
 	CORBA_exception_init (&ev);
 
@@ -405,6 +407,7 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 	 * at realize time, but another way is to special-case the
 	 * desktop window.
 	 */
+#ifdef GNOME2_CONVERSION_COMPLETE
 	if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		window->throbber = bonobo_get_object ("OAFIID:nautilus_throbber", "IDL:Bonobo/Control:1.0", &ev);
 		if (BONOBO_EX (&ev)) {
@@ -415,6 +418,7 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 			window->throbber = CORBA_OBJECT_NIL;
 		}
 	}
+#endif
 
 	nautilus_window_ui_freeze (window);
 

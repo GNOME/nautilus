@@ -2059,6 +2059,9 @@ nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
 	pixbuf = icon->pixbuf;
 	if (!icon->outstanding) {
 		icon->outstanding = TRUE;
+#ifndef GNOME2_CONVERSION_COMPLETE
+		gdk_pixbuf_ref (pixbuf);
+#endif
 	} else {
 		gdk_pixbuf_ref (pixbuf);
 	}

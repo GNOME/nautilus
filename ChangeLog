@@ -1,3 +1,40 @@
+2001-11-05  Darin Adler  <darin@bentspoon.com>
+
+	* cut-n-paste-code/widgets/e-paned/e-paned.c:
+	(e_paned_handle_shown): Fix a G_OBJECT_CLASS that should
+	have been G_OBJECT_GET_CLASS.
+
+	* libnautilus-private/Makefile.am: Add back the dependency on
+	the cut-n-paste libraries.
+
+	* libnautilus-private/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_get_hidden): Silently ignore when there's no
+	"hidden" attribute rather than warning every time.
+
+	* libnautilus-private/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_pixbuf_for_icon): Ref all the pixbufs
+	on their way out of the icon factory since we don't have a new
+	strategy for removing them from the cache when the caller is done
+	yet.
+
+	* src/nautilus-sidebar-title.c:
+	(sidebar_title_create_more_info_label): Don't call make_smaller
+	so Havoc won't complain every time we do it.
+
+	* src/nautilus-view-frame.c: (nautilus_view_frame_destroy): Check
+	for NULL so we can call destroy any number of times.
+
+	* src/nautilus-window-toolbars.c:
+	(nautilus_window_initialize_toolbars): Turn off the code that
+	tries to load the throbber since we aren't compiling it yet.
+
+	* components/loser/content/nautilus-content-loser-ui.xml:
+	* components/loser/sidebar/nautilus-sidebar-loser-ui.xml:
+	* components/sample/nautilus-sample-content-view-ui.xml:
+	* libnautilus/nautilus-clipboard-ui.xml:
+	* src/nautilus-shell-ui.xml:
+	Update for new names of stock icons.
+
 2001-11-03  Darin Adler  <darin@bentspoon.com>
 
 	* Tons of files.

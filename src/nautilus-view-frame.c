@@ -378,7 +378,10 @@ nautilus_view_frame_destroy (GtkObject *object)
 	stop_activation (view);
 	destroy_view (view);
 
-	nautilus_idle_queue_destroy (view->details->idle_queue);
+	if (view->details->idle_queue != NULL) {
+		nautilus_idle_queue_destroy (view->details->idle_queue);
+		view->details->idle_queue = NULL;
+	}
 
 	if (view->details->failed_idle_id != 0) {
 		gtk_idle_remove (view->details->failed_idle_id);

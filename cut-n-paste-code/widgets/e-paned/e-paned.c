@@ -616,7 +616,7 @@ e_paned_compute_position(EPaned *paned,
 gboolean
 e_paned_handle_shown(EPaned *paned)
 {
-  EPanedClass *klass = E_PANED_CLASS(G_OBJECT_CLASS(paned));
+  EPanedClass *klass = E_PANED_CLASS(G_OBJECT_GET_CLASS(paned));
   if (klass->handle_shown)
     return (*klass->handle_shown)(paned);
   else
