@@ -840,6 +840,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	int x;
 	GdkGC *gc;
 	ArtIRect text_rect;
+	int text_back_padding_x, text_back_padding_y;
 	
 	icon_width = 0;
 	gc = NULL;
@@ -921,12 +922,16 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 
 	if (ANTIALIAS_SELECTION_RECTANGLE) {
 		/* add some extra space for highlighting even when we don't highlight so things won't move */
-		details->text_height += 2; /* extra slop for nicer highlighting */	
-		details->text_width += 8;  /* extra to make it look nicer */
+		text_back_padding_x = 4;
+		text_back_padding_y = 1;
 	} else {
 		/* add slop used for highlighting, even if we're not highlighting now */
-		details->text_width += 4;
+		text_back_padding_x = 2;
+		text_back_padding_y = 0;
 	}
+
+	details->text_height += text_back_padding_y*2; /* extra slop for nicer highlighting */
+	details->text_width += text_back_padding_x*2;  /* extra to make it look nicer */
 
 	/* if measuring, we are done */
 	if (!drawable) {
@@ -984,7 +989,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 				   editable_layout, needs_highlight,
 				   label_color,
 				   x,
-				   text_rect.y0, gc);
+				   text_rect.y0 + text_back_padding_y*2, gc);
 	}
 
 	if (have_additional) {
@@ -996,7 +1001,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 				   additional_layout, needs_highlight,
 				   label_color,
 				   x,
-				   text_rect.y0 + editable_height + LABEL_LINE_SPACING, gc);
+				   text_rect.y0 + editable_height + LABEL_LINE_SPACING + text_back_padding_y*2, gc);
 	}
 
 	if (item->details->is_highlighted_as_keyboard_focus) {
