@@ -392,11 +392,54 @@ mozilla_title_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 	g_free (new_title);
 }
 
+static gboolean
+mozilla_uris_differ_only_by_fragment_identifier (const char *uri1, const char *uri2)
+{
+	char *uri1_hash;
+	char *uri2_hash;
+
+	uri1_hash = strchr (uri1, '#');
+	uri2_hash = strchr (uri2, '#');
+
+	if (uri1_hash == NULL && uri2_hash == NULL) {
+		/* neither has a fragment identifier - return true
+		 * only if they match exactly 
+		 */
+		return (strcasecmp (uri1, uri2) == 0);
+	}
+
+	if (uri1_hash == NULL) {
+		/* only the second has an fragment identifier - return
+		 * true only if the part before the fragment
+		 * identifier matches the first URI 
+		 */
+		return (strncasecmp (uri1, uri2, uri2_hash - uri2) == 0);
+	}
+
+	if (uri2_hash == NULL) {
+		/* only the first has a fragment identifier - return
+		 * true only if the part before the fragment
+		 * identifier matches the second URI 
+		 */
+		return (strncasecmp (uri1, uri2, uri1_hash - uri1) == 0);
+	}
+
+	if (uri1_hash - uri1 == uri2_hash - uri2) {
+		/* both have a fragment identifier - return true only
+		 * if the parts before the fragment identifier match
+		 */
+		return (strncasecmp (uri1, uri2, uri1_hash - uri1) == 0);
+	}
+	
+	return FALSE;
+}
+
 static void
 mozilla_location_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 {
  	NautilusMozillaContentView	*view;
 	char				*new_location;
+
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
@@ -411,7 +454,20 @@ mozilla_location_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 	nautilus_view_report_location_change
 		(view->details->nautilus_view, new_location);
 
-	g_free (new_location);
+	/* If we only changed anchors in the same page, we should
+           report some fake progress to Nautilus. */
+
+	if (mozilla_uris_differ_only_by_fragment_identifier (view->details->uri,
+							     new_location)) {
+		nautilus_view_report_load_underway (view->details->nautilus_view);
+		nautilus_view_report_load_complete (view->details->nautilus_view);
+	}
+
+	if (view->details->uri) {
+		g_free (view->details->uri);
+	}
+	
+	view->details->uri = new_location;
 }
 
 #if defined(DEBUG_ramiro) && (MOZILLA_MILESTONE == 17)
