@@ -5,6 +5,7 @@ SUBDIRS = eazel
 icondir = $(datadir)/pixmaps/nautilus
 
 icon_DATA =\
+	About_Image.png \
 	backgrounds.png \
 	colors.png \
 	computer.png \
@@ -131,7 +132,6 @@ icon_DATA =\
 	loading.png \
 	multi-ok.png \
 	nautilus-logo.png \
-	nautilus3.jpg \
 	not.png \
 	rightarrow.png \
 	tableft.png \

@@ -297,10 +297,14 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
   {
     const char *authors[] = {
       "Darin Adler",
+      "Pavel Cisler", /* fixme: needs accent mark on the i */
       "Ramiro Estrugo",
       "Andy Hertzfeld",
       "Elliot Lee",
       "Ettore Perazzoli",
+      "Gene Ragan",
+      "Arlo Rose",
+      "Rebecca Schulman",
       "Maciej Stachowiak",
       "John Sullivan",
       NULL
@@ -310,8 +314,8 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
                             VERSION,
                             "Copyright (C) 1999, 2000",
                             authors,
-                            _("The Cool Shell Program"),
-                            "nautilus/nautilus3.jpg");
+                            _("The Gnome Shell"),
+                            "nautilus/About_Image.png");
 
     gnome_dialog_close_hides (GNOME_DIALOG (aboot), TRUE);
   }
