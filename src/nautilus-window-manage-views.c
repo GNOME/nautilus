@@ -34,6 +34,7 @@
 #include "nautilus-window-manage-views.h"
 
 #include <stdarg.h>
+#include <gdk/gdkx.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dialog-util.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
@@ -641,8 +642,10 @@ open_location (NautilusWindow *window,
                NautilusViewFrame *view_if_already_loading)
 {
         NautilusWindow *new_window;
+        NautilusWindow *traverse_window;
         gboolean create_new_window;
-
+	GSList *element;
+	
         if (handle_unreadable_location (window, location)) {
 		return;
         }
@@ -658,6 +661,30 @@ open_location (NautilusWindow *window,
 
         if (create_new_window) {
                 g_assert (view_if_already_loading == NULL);
+
+                /* Determine if a window with this uri is already open.  If so, activate it */
+		/* FIXME: This may be the desired bahavior, but the prefs UI still says open
+		 * new window.  How can we resolve this inconsistancy?
+		 */                 
+		for (element = window->application->windows; element != NULL; element = element->next) {
+			traverse_window = element->data;
+			if (strcmp (traverse_window->location, location) == 0) {
+				gtk_widget_show_now (GTK_WIDGET (traverse_window));
+				gdk_window_raise (GTK_WIDGET (traverse_window)->window);
+
+				/* doesn't seem to be a better way to do this without an xlib call */
+				gdk_error_trap_push ();
+				XSetInputFocus (GDK_DISPLAY (),
+				 	GDK_WINDOW_XWINDOW (GTK_WIDGET (traverse_window)->window),
+				    	RevertToPointerRoot,
+				     	GDK_CURRENT_TIME);
+				gdk_flush();
+				gdk_error_trap_pop ();
+				return;
+			}
+		}
+
+		/* No open window found.  Create a new one. */
                 new_window = nautilus_application_create_window (window->application);
                 nautilus_window_goto_uri (new_window, location);
         } else {

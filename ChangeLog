@@ -1,3 +1,15 @@
+2000-07-10  Gene Z. Ragan  <gzr@eazel.com>
+
+	* src/nautilus-window-manage-views.c: 
+	(open_location):
+	Modified function to handle the folloing case:
+	If a user has selected open location in new window
+	in prefs, and a window is already open for the location,
+	the window is activated and given focus.  This feature
+	makes the most sense, but conflicts with the wording
+	of the preferences item.  We need a way to express
+	this feature in the prefs.
+
 2000-07-10  Andy Hertzfeld  <andy@eazel.com>
 
 		
