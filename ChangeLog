@@ -1,3 +1,10 @@
+2000-12-29  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Changed gconf key for the show desktop option in order to
+	avoid using the old default value (OFF) in existing gconf
+	databases (bug 5148)
+
 2000-12-29  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/file-manager/fm-list-view.c:

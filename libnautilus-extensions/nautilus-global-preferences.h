@@ -43,7 +43,6 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"/apps/nautilus/preferences/sidebar_width"
 /* Keep track of the sound playing process */
 #define NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE		"/apps/nautilus/preferences/sound_state"
-/* Show the desktop window or not */
 
 /*
  * The following preferences are coupled to the user level.
@@ -60,7 +59,11 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_CONFIRM_TRASH			"preferences/confirm_trash"
 
 /* Desktop options */
-#define NAUTILUS_PREFERENCES_SHOW_DESKTOP			"preferences/show_desktop"
+/*  - NAUTILUS_PREFERENCES_SHOW_DESKTOP used to be "preferences/show_desktop"
+ *    The name was changed because the default changed (to TRUE), but was still
+ *    in existing user gconf data.
+ */
+#define NAUTILUS_PREFERENCES_SHOW_DESKTOP			"preferences/open_desktop_at_startup"
 
 /* Display  */
 #define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"preferences/show_hidden_files"
