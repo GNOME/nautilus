@@ -542,3 +542,53 @@ nautilus_gnome_open_terminal (const char *command)
 	g_free (shell);
 	g_free (terminal_path);
 }
+
+
+/* Set an icon on GnomeStock widget.  If the setting fails register this
+ * as a new file.  Returns FALSE if even that failed */
+gboolean
+nautilus_gnome_stock_set_icon_or_register (GnomeStock *stock, const char *icon)
+{
+	GnomeStockPixmapEntryPath *new_entry;
+
+	g_return_val_if_fail (stock != NULL, FALSE);
+	g_return_val_if_fail (GNOME_IS_STOCK (stock), FALSE);
+	g_return_val_if_fail (icon != NULL, FALSE);
+
+	/* if we can set the icon and everything goes well we have succeeded */
+	if (gnome_stock_set_icon (stock, icon)) {
+		return TRUE;
+	}
+
+	/* If the icon string is not an existing file then this is just a
+	 * bogus request and we return FALSE */
+	if ( ! g_file_exists (icon)) {
+		return FALSE;
+	}
+
+	/* If icon exists but gnome_stock_set_icon fails,
+	 * that means this file has NOT been registered with
+	 * gnome stock.  Unfortunately gnome_stock is a
+	 * worthless pile of dung and doesn't do this for us.
+	 * Do note however that it DOES register this stuff
+	 * when it first creates the toolbars from
+	 * GnomeUIInfo.  Go figure.
+	 *
+	 * Note that all this will be completely different in gnome 2.0
+	 */
+
+	new_entry = g_malloc (sizeof (GnomeStockPixmapEntryPath));
+	new_entry->type = GNOME_STOCK_PIXMAP_TYPE_PATH;
+	new_entry->label = NULL;
+	new_entry->pathname = g_strdup (icon);
+	new_entry->width = 0;
+	new_entry->height = 0;
+
+	/* Register this under the "icon" as that's what
+	 * we'll look it up under later.
+	 */
+	gnome_stock_pixmap_register (icon, GNOME_STOCK_PIXMAP_REGULAR,
+				     (GnomeStockPixmapEntry *) new_entry);
+
+	return gnome_stock_set_icon (stock, icon);
+}

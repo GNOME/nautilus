@@ -29,6 +29,7 @@
 
 #include <libgnomeui/gnome-canvas.h>
 #include <libgnomeui/gnome-dialog.h>
+#include <libgnomeui/gnome-stock.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkwindow.h>
 
@@ -109,4 +110,10 @@ GtkButton *nautilus_gnome_dialog_get_button_by_index            (GnomeDialog    
 
 /* Open up a new terminal, optionally passing in a command to execute */
 void	   nautilus_gnome_open_terminal 			(const char 	 *command);
+
+/* Set an icon on GnomeStock widget.  If the setting fails register this
+ * as a new file.  Returns FALSE if even that failed */
+gboolean   nautilus_gnome_stock_set_icon_or_register		(GnomeStock *stock,
+								 const char *icon);
+
 #endif /* NAUTILUS_GNOME_EXTENSIONS_H */

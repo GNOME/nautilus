@@ -36,6 +36,7 @@
 #include <libnautilus-extensions/nautilus-bookmark.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 
 /* forward declarations */
@@ -285,14 +286,9 @@ set_up_button (GtkWidget* button,
 	       const char *theme_name,
 	       const char *icon_name)
 {
-	/* FIXME: This GnomeStock trickery belongs in the
-	 * libnautilus-extensions library. That's where we put
-	 * workarounds like this.
-	 */
 	GnomeStock *stock_widget;
 	char *full_name;
 	GtkToolbarChild *toolbar_child;
-	GnomeStockPixmapEntryPath *new_entry;
 
 	if (theme_name == NULL || strcmp (theme_name, "default") == 0) {
 		full_name = g_strdup (icon_name);
@@ -309,35 +305,11 @@ set_up_button (GtkWidget* button,
 		stock_widget = NULL;
 	}
 			
-	if (stock_widget != NULL
-	    && ! gnome_stock_set_icon (stock_widget, full_name)
-	    && g_file_exists (full_name)) {
-		/* If full_name exists but gnome_stock_set_icon fails,
-		 * that means this file has NOT been registered with
-		 * gnome stock.  Unfortunately gnome_stock is a
-		 * worthless pile of dung and doesn't do this for us.
-		 * Do note however that it DOES register this stuff
-		 * when it first creates the toolbars from
-		 * GnomeUIInfo.
-		 */
-		new_entry = g_malloc (sizeof (GnomeStockPixmapEntryPath));
-		new_entry->type = GNOME_STOCK_PIXMAP_TYPE_PATH;
-		new_entry->label = NULL;
-		new_entry->pathname = full_name;
-		new_entry->width = 0;
-		new_entry->height = 0;
-
-		/* Register this under the "full_name" as that's what
-		 * we'll look it up under later.
-		 */
-		gnome_stock_pixmap_register (full_name, GNOME_STOCK_PIXMAP_REGULAR,
-					     (GnomeStockPixmapEntry *) new_entry);
-		gnome_stock_set_icon (stock_widget, full_name);
-
-		/* We used full_name in new_entry, so we just transfer
-		 * ownership.
-		 */
-		full_name = NULL;
+	if (stock_widget != NULL) {
+		/* We can't just gnome_stock_set_icon here, as that
+		 * doesn't register new pixmaps automatically */
+		nautilus_gnome_stock_set_icon_or_register (stock_widget,
+							   full_name);
 	}
 
 	g_free (full_name);

@@ -1,3 +1,19 @@
+Sat Aug 19 23:43:23 2000  George Lebl <jirka@5z.com>
+
+	* librsvg/rsvg.c (rsvg_ctx_free_helper) (rsvg_entity_decl):
+	  use xml memory allocation/deallocation routines for strings
+	  which are allocated/deallocated inside libxml to make glib
+	  memory checking not crash
+
+	* libnautilus-extentions/nautilus-gnome-extentions.[ch]:
+	  add a function nautilus_gnome_stock_set_icon_or_register which
+	  does the GnomeStock voodoo for setting stock toolbar icons to
+	  arbitrary files
+
+	* src/nautilus-window-toolbars.c (set_up_button):  Use the
+	  nautilus_gnome_stock_set_icon_or_register function as per Darin's
+	  FIXME which thus got removed.
+
 2000-08-19  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/tree/nautilus-tree-model.c: (report_node_added,

@@ -48,6 +48,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include "SAX.h"
+#include "xmlmemory.h"
 
 #include "rsvg-bpath-util.h"
 #include "rsvg-defs.h"
@@ -173,8 +174,8 @@ rsvg_ctx_free_helper (gpointer key, gpointer value, gpointer user_data)
   g_free ((xmlChar *)entval->name);
   g_free ((xmlChar *)entval->ExternalID);
   g_free ((xmlChar *)entval->SystemID);
-  g_free (entval->content);
-  g_free (entval->orig);
+  xmlFree (entval->content);
+  xmlFree (entval->orig);
   g_free (entval);
 }
 
@@ -1176,7 +1177,7 @@ rsvg_entity_decl (void *data, const xmlChar *name, int type,
   entity->name = dupname;
   entity->ExternalID = g_strdup (publicId);
   entity->SystemID = g_strdup (systemId);
-  entity->content = g_strdup (content);
+  entity->content = xmlMemStrdup (content);
   entity->length = strlen (content);
   entity->orig = NULL;
   g_hash_table_insert (entities, dupname, entity);
