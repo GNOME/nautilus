@@ -1102,8 +1102,6 @@ switch_to_manual_layout (FMIconView *icon_view)
 
 	icon_view->details->sort = &sort_criteria[0];
 	
-	nautilus_icon_container_reset_scroll_region
-		(get_icon_container (icon_view));
 	nautilus_icon_container_set_auto_layout
 		(get_icon_container (icon_view), FALSE);
 }

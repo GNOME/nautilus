@@ -1,5 +1,16 @@
 2001-01-12  John Sullivan  <sullivan@eazel.com>
 
+	Fixed the corner of bug 3405 that valiant bug verifier Brett
+	discovered while verifying. Yay for bug verification!
+
+	* src/file-manager/fm-icon-view.c: (switch_to_manual_layout):
+	I had neglected to remove an extra call to
+	nautilus_icon_container_reset_scroll_region here. It's already
+	handled one level lower, where the empty directory case is
+	taken into account.
+
+2001-01-12  John Sullivan  <sullivan@eazel.com>
+
 	reviewed by: Michael Engber  <engber@eazel.com>
 
 	Fixed bug 2207 (Search needs to gracefully handle too
