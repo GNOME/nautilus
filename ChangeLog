@@ -1,5 +1,11 @@
 2003-03-17  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-container.c (record_arrow_key_start): 
+	Use bottom middle point as start position, since otherwise you might miss
+	icons that are not as tall as half the height of the current one.
+	
+2003-03-17  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-file-management-properties.c
 	(nautilus_file_management_properties_dialog_setup):
 	Correctly handle cases where one widget controls several keys

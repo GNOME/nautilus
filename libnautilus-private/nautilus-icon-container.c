@@ -2171,7 +2171,7 @@ record_arrow_key_start (NautilusIconContainer *container,
 	eel_canvas_w2c
 		(EEL_CANVAS (container),
 		 (world_rect.x0 + world_rect.x1) / 2,
-		 (world_rect.y0 + world_rect.y1) / 2,
+		 world_rect.y1,
 		 arrow_key_axis == AXIS_VERTICAL
 		 ? &container->details->arrow_key_start : NULL,
 		 arrow_key_axis == AXIS_HORIZONTAL
