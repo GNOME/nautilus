@@ -70,6 +70,7 @@
 /* maximum size allowed for icons at the time they are installed - the user can still stretch them further */
 #define MAXIMUM_INITIAL_ICON_SIZE  80
 
+static void gnome_icon_container_activate_selected_items (GnomeIconContainer *container);
 static void gnome_icon_container_initialize_class (GnomeIconContainerClass *class);
 static void gnome_icon_container_initialize (GnomeIconContainer *container);
 static void update_icon (GnomeIconContainer *container, 
@@ -1988,6 +1989,9 @@ key_press_event (GtkWidget *widget,
 	case GDK_space:
 		kbd_space (container, event);
 		break;
+	case GDK_Return:
+		gnome_icon_container_activate_selected_items(container);
+		break;
 	default:
 		return FALSE;
 	}
@@ -2398,8 +2402,26 @@ remove_icon_from_container(GnomeIconContainer *container,
 	icon_destroy (icon);
 }
 
-/* clear the selected items in the container */
+/* activate any selected items in the container */
+void
+gnome_icon_container_activate_selected_items (GnomeIconContainer *container)
+{
+	GnomeIconContainerIcon *current_icon;
+	GList *current_item;
 
+	g_return_if_fail (container != NULL);
+
+	for (current_item = container->details->icons; current_item != NULL; current_item = current_item->next)
+	  {  	
+	  	current_icon = (GnomeIconContainerIcon*) current_item->data;
+		if (current_icon->is_selected)
+	  		gtk_signal_emit (GTK_OBJECT (container),
+					 signals[ACTIVATE],
+					 current_icon->data);
+	  }	
+}
+
+/* clear the selected items in the container */
 void
 gnome_icon_container_clear_selected_items (GnomeIconContainer *container)
 {
@@ -2416,15 +2438,13 @@ gnome_icon_container_clear_selected_items (GnomeIconContainer *container)
 	
 	current_item = details->icons;
 	while (current_item != NULL)
-	  {
-	  	
+	  {  	
 	  	next_item = current_item->next;
 	  	current_icon = (GnomeIconContainerIcon*) current_item->data;
 		if (current_icon->is_selected)
 	  		remove_icon_from_container(container, current_icon);
 	  	current_item = next_item;
-	  }
-	
+	  }	
 }
 
 static void
