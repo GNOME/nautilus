@@ -1,5 +1,41 @@
 2000-09-05  Ramiro Estrugo  <ramiro@eazel.com>
 
+	More work on task 1588.
+
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_draw_text),
+	(nautilus_scalable_font_measure_text_lines),
+	(nautilus_scalable_font_draw_text_lines):
+	* libnautilus-extensions/nautilus-scalable-font.h:
+	Change text rendering api to take in x,y coordinates along with a
+	clip_area.  
+
+	Remove some #if 0 code i left in before.
+
+	Also change the text lines rendering api to optionally do its own
+	line measuring - for the convenience of the caller.
+	
+	* libnautilus-extensions/nautilus-label.c: (render_buffer_pixbuf):
+	Update for text rendering changes.
+	Fix the justification bug.
+	Fix the multiple newlines bug.
+	
+	* src/nautilus-about.c: (draw_aa_string):
+	Update for text rendering changes.
+	
+	* src/nautilus-sidebar-tabs.c: (draw_one_tab_plain),
+	(draw_one_tab_themed):
+	Update for text rendering changes.
+
+	* test/test-nautilus-font.c: (main):
+	Update for text rendering changes.
+	Also add multiple new lines test and clipping test.
+	
+	* test/test-nautilus-label.c: (main):
+	Update for text rendering changes.
+
+2000-09-05  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* librsvg/rsvg-ft.c: (rsvg_ft_render_string):
 	Add a band aid fix for the unknown character problem when trying
 	to index glyphs from a font face.  I filed a bug for this issue:

@@ -189,28 +189,16 @@ nautilus_about_repaint (GtkWidget *widget, GdkEventExpose *event, NautilusAbout 
 static void
 draw_aa_string (NautilusScalableFont *font, GdkPixbuf *pixbuf, int font_size, int x_pos, int y_pos, uint color, uint shadow_color, const char* text, int shadow_offset)
 {
-	ArtIRect dest_rect;
-	int text_width, text_height;	
-	
-	nautilus_scalable_font_measure_text (font, font_size, font_size, text, strlen (text), &text_width, &text_height);
-	
-	/* draw the title in shadowed text*/
-	
-	dest_rect.x0 = x_pos;
-	dest_rect.x1 = dest_rect.x0 + text_width;
-	dest_rect.y0 = y_pos;
-	dest_rect.y1 =  dest_rect.y0 + text_height;
-
 	if (shadow_offset) {
-		dest_rect.x0 += shadow_offset;
-		dest_rect.y0 += shadow_offset;
-		nautilus_scalable_font_draw_text (font, pixbuf, &dest_rect, font_size, font_size, text, strlen (text), shadow_color, 255);	
-		
-		dest_rect.x0 -= shadow_offset;
-		dest_rect.y0 -= shadow_offset;
+		nautilus_scalable_font_draw_text (font, pixbuf,
+						  x_pos + shadow_offset, y_pos + shadow_offset,
+						  NULL,
+						  font_size, font_size,
+						  text, strlen (text),
+						  shadow_color, 255);	
 	}
 	
-	nautilus_scalable_font_draw_text (font, pixbuf, &dest_rect, font_size, font_size, text, strlen (text), color, 255);	
+	nautilus_scalable_font_draw_text (font, pixbuf, x_pos, y_pos, NULL, font_size, font_size, text, strlen (text), color, 255);	
 }
 
 /* draw the information onto the pixbuf */

@@ -307,9 +307,11 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 {
 	NautilusLabel	*label;
 	GtkWidget	*widget;
-	ArtIRect	area;
+	ArtIRect	clip_area;
 	guint		total_text_width;
 	guint		total_text_height;
+	int		text_x;
+	int		text_y;
 	
 
 	g_return_if_fail (NAUTILUS_IS_LABEL (buffered_widget));
@@ -329,30 +331,37 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 
 
 	if (total_text_width <= widget->allocation.width) {
-		area.x0 = ((int) widget->allocation.width - (int) total_text_width) / 2;
+		clip_area.x0 = ((int) widget->allocation.width - (int) total_text_width) / 2;
 	}
 	else {
-		area.x0 = - ((int) total_text_width - (int) widget->allocation.width) / 2;
+		clip_area.x0 = - ((int) total_text_width - (int) widget->allocation.width) / 2;
 	}
 	
 	if (total_text_height <= widget->allocation.height) {
-		area.y0 = ((int) widget->allocation.height - (int) total_text_height) / 2;
+		clip_area.y0 = ((int) widget->allocation.height - (int) total_text_height) / 2;
 	}
 	else {
-		area.y0 = - ((int) total_text_height - (int) widget->allocation.height) / 2;
+		clip_area.y0 = - ((int) total_text_height - (int) widget->allocation.height) / 2;
 	}
 
-	area.x0 += horizontal_offset;
-	area.y0 += vertical_offset;
+	clip_area.x0 = 0;
+	clip_area.y0 = 0;
 
-	area.x1 = area.x0 + total_text_width + label->detail->drop_shadow_offset;
-	area.y1 = area.y0 + total_text_width + label->detail->drop_shadow_offset;
+	clip_area.x1 = widget->allocation.width;
+	clip_area.y1 = widget->allocation.height;
+
+	text_x = 0;
+	text_y = 0;
 
 	if (label->detail->num_text_lines > 0) {
 		if (label->detail->drop_shadow_offset > 0) {
+			text_x += label->detail->drop_shadow_offset;
+			text_y += label->detail->drop_shadow_offset;
 			nautilus_scalable_font_draw_text_lines (label->detail->font,
 								buffer,
-								&area,
+								text_x,
+								text_y,
+								&clip_area,
 								label->detail->font_size,
 								label->detail->font_size,
 								label->detail->text,
@@ -364,16 +373,15 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 								label->detail->drop_shadow_color,
 								label->detail->text_alpha);
 
-			area.x0 -= label->detail->drop_shadow_offset;
-			area.y0 -= label->detail->drop_shadow_offset;
-			
-			area.x1 -= label->detail->drop_shadow_offset;
-			area.y1 -= label->detail->drop_shadow_offset;
+			text_x -= label->detail->drop_shadow_offset;
+			text_y -= label->detail->drop_shadow_offset;
 		}
 
 		nautilus_scalable_font_draw_text_lines (label->detail->font,
 							buffer,
-							&area,
+							text_x,
+							text_y,
+							&clip_area,
 							label->detail->font_size,
 							label->detail->font_size,
 							label->detail->text,

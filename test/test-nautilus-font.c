@@ -24,10 +24,8 @@ int
 main (int argc, char* argv[])
 {
 	GdkPixbuf		*pixbuf;
-	ArtIRect		area;
 	NautilusScalableFont	*font;
 	guint			num_text_lines;
-	char			**text_lines;
 	guint			*text_line_widths;
 	guint			*text_line_heights;
 	guint			max_width_out;
@@ -40,6 +38,9 @@ main (int argc, char* argv[])
 	const guint pixbuf_width = 500;
 	const guint pixbuf_height = 700;
 
+	GdkRectangle blue_area;
+	ArtIRect     clip_area;
+
 	gtk_init (&argc, &argv);
 	gdk_rgb_init ();
 
@@ -48,20 +49,19 @@ main (int argc, char* argv[])
 
 	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, pixbuf_width, pixbuf_height);
 	g_assert (pixbuf != NULL);
-	
-	area.x0 = 0;
-	area.y0 = 0;
-	
-	area.x1 = pixbuf_width;
-	area.y1 = pixbuf_height;
 
+	blue_area.x = 20;
+	blue_area.y = 20;
+	blue_area.width = 100;
+	blue_area.height = 400;
+
+	nautilus_gdk_pixbuf_fill_rectangle_with_color (pixbuf, &blue_area, NAUTILUS_RGBA_COLOR_PACK (0, 0, 255, 255));
+	
 	num_text_lines = nautilus_str_count_characters (text, '\n') + 1;
-
-	text_lines = g_strsplit (text, "\n", -1);
 
 	text_line_widths = g_new (guint, num_text_lines);
 	text_line_heights = g_new (guint, num_text_lines);
-	
+
 	nautilus_scalable_font_measure_text_lines (font,
 						   font_width,
 						   font_height,
@@ -74,9 +74,17 @@ main (int argc, char* argv[])
 
 	g_print ("max_width = %d, total_height = %d\n", max_width_out, total_height_out);
 
+	clip_area.x0 = blue_area.x;
+	clip_area.y0 = blue_area.y;
+	clip_area.x1 = blue_area.x + blue_area.width;
+	clip_area.y1 = blue_area.y + blue_area.height;
+
+#if 0	
 	nautilus_scalable_font_draw_text_lines (font,
 						pixbuf,
-						&area,
+						0,
+						0,
+						&clip_area,
 						font_width,
 						font_height,
 						text,
@@ -87,7 +95,20 @@ main (int argc, char* argv[])
 						2,
 						NAUTILUS_RGB_COLOR_RED,
 						255);
-	
+#else
+	nautilus_scalable_font_draw_text (font,
+					  pixbuf,
+					  10,
+					  30,
+					  &clip_area,
+					  font_width,
+					  font_height,
+					  "Something",
+					  strlen ("Something"),
+					  NAUTILUS_RGB_COLOR_RED,
+					  255);
+#endif
+
 	nautilus_gdk_pixbuf_save_to_file (pixbuf, "font_test.png");
 
 	g_print ("saving test png file to font_test.png\n");

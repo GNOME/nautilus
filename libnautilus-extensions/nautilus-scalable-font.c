@@ -653,7 +653,9 @@ nautilus_scalable_font_measure_text (const NautilusScalableFont	*font,
 void
 nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 				  GdkPixbuf		     *destination_pixbuf,
-				  const ArtIRect	     *destination_area,
+				  int			     x,
+				  int			     y,
+				  const ArtIRect              *clip_area,
 				  guint			     font_width,
 				  guint			     font_height,
 				  const char		     *text,
@@ -678,9 +680,7 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 
 	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
 	g_return_if_fail (destination_pixbuf != NULL);
-	g_return_if_fail (destination_area != NULL);
-	g_return_if_fail (destination_area->x1 > destination_area->x0);
-	g_return_if_fail (destination_area->y1 > destination_area->y0);
+	g_return_if_fail (gdk_pixbuf_get_has_alpha (destination_pixbuf));
 	g_return_if_fail (font_width > 0);
 	g_return_if_fail (font_height > 0);
 
@@ -689,6 +689,11 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 	}
 
 	g_return_if_fail (text_length <= strlen (text));
+
+	if (clip_area != NULL) {
+		g_return_if_fail (clip_area->x1 > clip_area->x0);
+		g_return_if_fail (clip_area->y1 > clip_area->y0);
+	}
 
 	art_affine_identity (affine);
 
@@ -726,22 +731,27 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 	
 	art_render_image_solid (art_render, art_color_array);
 
-	glyph_area.x0 = glyph_xy[0] + destination_area->x0;
-	glyph_area.y0 = glyph_xy[1] + destination_area->y0;
+	glyph_area.x0 = glyph_xy[0] + x;
+	glyph_area.y0 = glyph_xy[1] + y;
 
 	glyph_area.x1 = glyph_area.x0 + glyph->width;
 	glyph_area.y1 = glyph_area.y0 + glyph->height;
-	
-	art_irect_union (&area, &glyph_area, destination_area);
+
+	if (clip_area != NULL) {
+		art_irect_intersect (&area, &glyph_area, clip_area);
+	}
+	else {
+		area = glyph_area;
+	}
 
 /* 	glyph_xy[0] += destination_point->x; */
 /*  	glyph_xy[1] += destination_point->y; */
 
 	art_render_mask (art_render,
-			 glyph_area.x0,
-			 glyph_area.y0,
-			 glyph_area.x1,
-			 glyph_area.y1,
+			 area.x0,
+			 area.y0,
+			 area.x1,
+			 area.y1,
 			 glyph->buf, 
 			 glyph->rowstride);
 
@@ -750,152 +760,8 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 	rsvg_ft_glyph_unref (glyph);
 }
 
-#if 0
 void
-nautilus_scalable_font_measure_text_lines (NautilusScalableFont	*font,
-					   guint                font_width,
-					   guint                font_height,
-					   const char           *text_lines[],
-					   guint		num_text_lines,
-					   guint		text_line_widths[],
-					   guint		text_line_heights[],
-					   guint		*max_width_out,
-					   guint		*total_height_out)
-{
-	guint i;
-
-	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
-	g_return_if_fail (font_width > 0);
-	g_return_if_fail (font_height > 0);
-	g_return_if_fail (text_lines != NULL);
-	g_return_if_fail (text_line_widths != NULL);
-	g_return_if_fail (text_line_heights != NULL);
-	g_return_if_fail (num_text_lines > 0);
-
-	if (max_width_out != NULL) {
-		*max_width_out = 0;
-	}
-
-	if (total_height_out != NULL) {
-		*total_height_out = 0;
-	}
-
-	for (i = 0; i < num_text_lines; i++) {
-		g_assert (text_lines[i] != NULL);
-
-		nautilus_scalable_font_measure_text (font,
-						     font_width,
-						     font_height,
-						     text_lines[i],
-						     strlen (text_lines[i]),
-						     &text_line_widths[i],
-						     &text_line_heights[i]);
-
-		if (total_height_out != NULL) {
-			*total_height_out += text_line_heights[i];
-		}
-
-		if ((max_width_out != NULL) && (text_line_widths[i] > *max_width_out)) {
-			*max_width_out = text_line_widths[i];
-		}
-	}
-}
-
-void
-nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
-					GdkPixbuf                   *destination_pixbuf,
-					const ArtIRect              *destination_area,
-					guint                        font_width,
-					guint                        font_height,
-					const char                  *text_lines[],
-					const guint                  text_line_widths[],
-					const guint                  text_line_heights[],
-					GtkJustification	     justification,
-					const guint                  num_text_lines,
-					guint                        line_offset,
-					guint32                      color,
-					guchar                       overall_alpha)
-{
-	guint i;
-
-	gint  x;
-	gint  y;
-
-	guint available_width;
-	guint available_height;
-
-	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
-	g_return_if_fail (destination_pixbuf != NULL);
-	g_return_if_fail (destination_area != NULL);
-	g_return_if_fail (font_width > 0);
-	g_return_if_fail (font_height > 0);
-	g_return_if_fail (text_lines != NULL);
-	g_return_if_fail (text_line_widths != NULL);
-	g_return_if_fail (text_line_heights != NULL);
-	g_return_if_fail (num_text_lines > 0);
-	g_return_if_fail (justification >= GTK_JUSTIFY_LEFT && justification <= GTK_JUSTIFY_FILL);
-	g_return_if_fail (destination_area->x1 > destination_area->x0);
-	g_return_if_fail (destination_area->y1 > destination_area->y0);
-
-	x = destination_area->x0;
-	y = destination_area->y0;
-
-	available_width = destination_area->x1 - destination_area->x0;
-	available_height = destination_area->y1 - destination_area->y0;
-
-	for (i = 0; i < num_text_lines; i++) {
-		ArtIRect area;
-
-		g_assert (text_lines[i] != NULL);
-
-		if (text_line_widths[i] == 0 && text_line_heights[i] == 0) {
-			y += font_height;
-		}
-		else {
-			switch (justification) {
-			case GTK_JUSTIFY_LEFT:
-				area.x0 = x;
-				break;
-				
-			case GTK_JUSTIFY_CENTER:
-			case GTK_JUSTIFY_FILL:
-				if (text_line_widths[i] <= available_width) {
-					area.x0 = x + ((available_width - text_line_widths[i]) / 2);
-				}
-				else {
-					area.x0 = x - ((text_line_widths[i] - available_width) / 2);
-				}
-				break;
-
-			case GTK_JUSTIFY_RIGHT:
-				area.x0 = x + available_width - text_line_widths[i];
-				break;
-				
-			default:
-				g_assert_not_reached ();
-			}
-			
-			area.x1 = area.x0 + text_line_widths[i];
-			area.y0 = y;
-			area.y1 = area.y0 + text_line_heights[i];
-			
-			nautilus_scalable_font_draw_text (font,
-							  destination_pixbuf,
-							  &area,
-							  font_width,
-							  font_height,
-							  text_lines[i],
-							  strlen (text_lines[i]),
-							  color,
-							  overall_alpha);
-			
-			y += (line_offset + text_line_heights[i]);
-		}
-	}
-}
-#else
-void
-nautilus_scalable_font_measure_text_lines (NautilusScalableFont        *font,
+nautilus_scalable_font_measure_text_lines (const NautilusScalableFont	*font,
 					   guint                        font_width,
 					   guint                        font_height,
 					   const char                  *text,
@@ -984,13 +850,15 @@ nautilus_scalable_font_measure_text_lines (NautilusScalableFont        *font,
 void
 nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
 					GdkPixbuf                   *destination_pixbuf,
-					const ArtIRect              *destination_area,
+					int			     x,
+					int			     y,
+					const ArtIRect              *clip_area,
 					guint                        font_width,
 					guint                        font_height,
 					const char                  *text,
 					guint			    num_text_lines,
-					const guint                  text_line_widths[],
-					const guint                  text_line_heights[],
+					const guint                  *text_line_widths,
+					const guint                  *text_line_heights,
 					GtkJustification             justification,
 					guint                        line_offset,
 					guint32                      color,
@@ -999,30 +867,62 @@ nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
 	guint i;
 	const char *line;
 
-	gint  x;
-	gint  y;
+	guint *temp_text_line_widths = NULL;
+	guint *temp_text_line_heights = NULL;
 
 	guint available_width;
 	guint available_height;
 
+	guint max_num_text_lines;
+
 	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
 	g_return_if_fail (destination_pixbuf != NULL);
-	g_return_if_fail (destination_area != NULL);
+	g_return_if_fail (gdk_pixbuf_get_has_alpha (destination_pixbuf));
+	g_return_if_fail (clip_area != NULL);
 	g_return_if_fail (font_width > 0);
 	g_return_if_fail (font_height > 0);
-	g_return_if_fail (text_line_widths != NULL);
-	g_return_if_fail (text_line_heights != NULL);
 	g_return_if_fail (justification >= GTK_JUSTIFY_LEFT && justification <= GTK_JUSTIFY_FILL);
-	g_return_if_fail (destination_area->x1 > destination_area->x0);
-	g_return_if_fail (destination_area->y1 > destination_area->y0);
+	g_return_if_fail (clip_area->x1 > clip_area->x0);
+	g_return_if_fail (clip_area->y1 > clip_area->y0);
 	g_return_if_fail (num_text_lines > 0);
 	g_return_if_fail (num_text_lines <= (nautilus_str_count_characters (text, '\n') + 1));
 
-	x = destination_area->x0;
-	y = destination_area->y0;
+	available_width = clip_area->x1 - clip_area->x0;
+	available_height = clip_area->y1 - clip_area->y0;
 
-	available_width = destination_area->x1 - destination_area->x0;
-	available_height = destination_area->y1 - destination_area->y0;
+	if (text_line_widths) {
+		g_return_if_fail (text_line_heights != NULL);
+	}
+
+	if (text_line_heights) {
+		g_return_if_fail (text_line_widths != NULL);
+	}
+
+	max_num_text_lines = (available_height / font_height);
+
+	if (text_line_widths == NULL && text_line_heights == NULL) {
+		temp_text_line_widths = g_new (guint, num_text_lines);
+		temp_text_line_heights = g_new (guint, num_text_lines);
+
+		nautilus_scalable_font_measure_text_lines (font,
+							   font_width,
+							   font_height,
+							   text,
+							   num_text_lines,
+							   temp_text_line_widths,
+							   temp_text_line_heights,
+							   NULL,
+							   NULL);
+
+		text_line_widths = temp_text_line_widths;
+		text_line_heights = temp_text_line_heights;
+	}
+
+	g_return_if_fail (text_line_widths != NULL);
+	g_return_if_fail (text_line_heights != NULL);
+
+// 	x = clip_area->x0;
+// 	y = clip_area->y0;
 
 	line = text;
 
@@ -1051,38 +951,39 @@ nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
 			y += font_height;
 		}
 		else {
-			ArtIRect area;
-
+			int text_x;
+			int text_y;
+			
 			switch (justification) {
 			case GTK_JUSTIFY_LEFT:
-				area.x0 = x;
+				text_x = x;
 				break;
 				
 			case GTK_JUSTIFY_CENTER:
 			case GTK_JUSTIFY_FILL:
 				if (text_line_widths[i] <= available_width) {
-					area.x0 = x + ((available_width - text_line_widths[i]) / 2);
+					text_x = x + ((available_width - text_line_widths[i]) / 2);
 				}
 				else {
-					area.x0 = x - ((text_line_widths[i] - available_width) / 2);
+					text_x = x - ((text_line_widths[i] - available_width) / 2);
 				}
 				break;
 
 			case GTK_JUSTIFY_RIGHT:
-				area.x0 = x + available_width - text_line_widths[i];
+				text_x = x + available_width - text_line_widths[i];
 				break;
 				
 			default:
 				g_assert_not_reached ();
 			}
 			
-			area.x1 = area.x0 + text_line_widths[i];
-			area.y0 = y;
-			area.y1 = area.y0 + text_line_heights[i];
+			text_y = y;
 			
 			nautilus_scalable_font_draw_text (font,
 							  destination_pixbuf,
-							  &area,
+							  text_x,
+							  text_y,
+							  clip_area,
 							  font_width,
 							  font_height,
 							  line,
@@ -1100,8 +1001,15 @@ nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
 			line = NULL;
 		}
 	}
+
+	if (temp_text_line_widths != NULL) {
+		g_free (temp_text_line_widths);
+	}
+
+	if (temp_text_line_heights != NULL) {
+		g_free (temp_text_line_heights);
+	}
 }
-#endif
 
 guint
 nautilus_scalable_font_largest_fitting_font_size (const NautilusScalableFont  *font,

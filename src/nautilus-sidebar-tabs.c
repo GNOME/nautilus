@@ -484,7 +484,6 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 	int		total_width;
 	GtkWidget	*widget;
 	GdkPixbuf	*temp_pixbuf;
-	ArtIRect	text_rect;
 	
 	g_assert (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 
@@ -533,19 +532,16 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 	temp_pixbuf = make_colored_pixbuf (name_width + 1, name_height + 1, prelight_flag ? &sidebar_tabs->details->prelight_color : &sidebar_tabs->details->tab_color);
 	
 	/* draw the name into the pixbuf using anti-aliased text */
-	text_rect.x0 = 1;
-	text_rect.x1 = text_rect.x0 + name_width;
-	text_rect.y0 = 1;
-	text_rect.y1 = text_rect.y0 + name_height;
-	
-	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, temp_pixbuf, &text_rect,
+	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, temp_pixbuf, 
+					  1, 1, 
+					  NULL,
 					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
 					  tab_name, strlen (tab_name),
 					  prelight_flag ? NAUTILUS_RGB_COLOR_WHITE : NAUTILUS_RGB_COLOR_BLACK, 255);
 	
-	text_rect.x0 -= 1;
-	text_rect.y0 -= 1;
-	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, temp_pixbuf, &text_rect,
+	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, temp_pixbuf, 
+					  0, 0,
+					  NULL,
 					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
 					  tab_name, strlen (tab_name),
 					  prelight_flag ? NAUTILUS_RGB_COLOR_BLACK : NAUTILUS_RGB_COLOR_WHITE, 255);
@@ -639,7 +635,8 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 	int current_pos, right_edge_pos;
 	int text_x_pos, left_width;
 	int highlight_offset;
-	ArtIRect text_rect;
+	int text_x;
+	int text_y;
 	
 	widget = GTK_WIDGET (sidebar_tabs);
 	/* FIXME bugzilla.eazel.com 2504: can't prelight active state yet */
@@ -678,18 +675,21 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 		text_x_pos += text_h_offset;
 	}
 
-	text_rect.x0 = text_x_pos + 1;
-	text_rect.y0 = y - widget->allocation.y + (name_height >> 1);
-	text_rect.x1 = text_x_pos + 1 + name_width;
-	text_rect.y1 = y + sidebar_tabs->details->tab_height;
+	text_x = text_x_pos + 1;
+	text_y = y - widget->allocation.y + (name_height >> 1);
 		
-	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, tab_pixbuf, &text_rect,
+	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, tab_pixbuf, 
+					  text_x, text_y,
+					  NULL,
 					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
 					  tab_name, strlen (tab_name),
 					  NAUTILUS_RGB_COLOR_BLACK, 255);
-	text_rect.x0 -= 1;
-	text_rect.y0 -= 1;
-	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, tab_pixbuf, &text_rect,
+	text_x -= 1;
+	text_y -= 1;
+
+	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, tab_pixbuf,
+					  text_x, text_y,
+					  NULL,
 					  sidebar_tabs->details->font_size, sidebar_tabs->details->font_size,
 					  tab_name, strlen (tab_name),
 					  NAUTILUS_RGB_COLOR_WHITE, 255);
