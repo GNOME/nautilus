@@ -980,7 +980,7 @@ make_title_page_icon_box (void)
 	const char *names[4] = {
 		"temp-home.png",
 		"hand.png",
-		"arlo/i-directory-aa.png",
+		"crux_eggplant/i-directory-aa.png",
 		"trash-full.png"
 	};
 	int i;
