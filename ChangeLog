@@ -1,3 +1,35 @@
+2000-10-10  John Sullivan  <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_get_label): New function, does the obvious.
+	(nautilus_bonobo_get_hidden): Check for "0" for FALSE rather
+	than "1" for TRUE, since anything non-"0" is more TRUE than
+	it is FALSE.
+
+	* src/nautilus-about.c: (nautilus_about_draw_info):
+	Fixed build-breakage where MAX_AUTHOR_COUNT wasn't #defined,
+	by replacing it with "-1" for g_strsplit.
+	
+	* src/nautilus-window-menus.c:
+	(remove_underline_accelerator_from_menu_title),
+	(nautilus_window_disable_keyboard_navigation_for_menus):
+	Modernized this code to try to fix bug 2327, but it seems
+	there is some new Bonobo bug in the way.
+	
+	(update_user_level_menu_items): Removed obsolete comment.
+
+2000-10-10  John Sullivan  <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_get_hidden), (nautilus_bonobo_get_label),
+	(nautilus_bonobo_add_menu_item), (nautilus_bonobo_add_submenu):
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	* src/nautilus-window-menus.c:
+	(remove_underline_accelerator_from_menu_title),
+	(nautilus_window_disable_keyboard_navigation_for_menus),
+	(update_user_level_menu_items):
+
 2000-10-10  Darin Adler  <darin@eazel.com>
 
 	* README: Changed gnome-print to work at HEAD.

@@ -141,7 +141,7 @@ static void		     switch_to_user_level 			    (NautilusWindow 	    *window,
 									     int 		     new_user_level);
 static void		     update_preferences_dialog_title		    (void);
 
-static const char * normal_menu_titles[] = {
+static const char * normal_menu_paths[] = {
 	NAUTILUS_MENU_PATH_FILE_MENU,
 	NAUTILUS_MENU_PATH_EDIT_MENU,
 	NAUTILUS_MENU_PATH_VIEW_MENU,
@@ -1109,17 +1109,15 @@ static void
 remove_underline_accelerator_from_menu_title (NautilusWindow *window, 
 					      const char *menu_path)
 {
-#ifdef UIH
 	char *old_label;
 	char *new_label;
 
-	old_label = bonobo_ui_handler_menu_get_label (window->ui_handler, menu_path);
+	old_label = nautilus_bonobo_get_label (window->details->shell_ui, menu_path);
 	new_label = nautilus_str_strip_chr (old_label, '_');
-	bonobo_ui_handler_menu_set_label (window->ui_handler, menu_path, new_label);
+	nautilus_bonobo_set_label (window->details->shell_ui, menu_path, new_label);
 
 	g_free (old_label);
 	g_free (new_label);
-#endif
 }					      
 
 /**
@@ -1132,8 +1130,14 @@ nautilus_window_disable_keyboard_navigation_for_menus (NautilusWindow *window)
 {
 	int index;
 
-	for (index = 0; index < NAUTILUS_N_ELEMENTS (normal_menu_titles); ++index) {
-		remove_underline_accelerator_from_menu_title (window, normal_menu_titles[index]);
+#ifdef UIH
+	/* FIXME bugzilla.eazel.com 2327: 
+	 * This trick doesn't work with the new Bonobo UI code. 
+	 * Changing the label to one without an underscore does not remove the accelerator.
+	 */
+#endif /* Just to remind us where this bug came from */
+	for (index = 0; index < NAUTILUS_N_ELEMENTS (normal_menu_paths); ++index) {
+		remove_underline_accelerator_from_menu_title (window, normal_menu_paths[index]);
 	}
 }
 
@@ -1539,7 +1543,6 @@ update_user_level_menu_items (NautilusWindow *window)
 	user_level = nautilus_user_level_manager_get_user_level ();
 	user_level_icon_name = get_user_level_icon_name (user_level, FALSE);
 
-	/* the line below is disabled because of a bug in bonobo */
 	nautilus_bonobo_set_icon (window->details->shell_ui,
 				  NAUTILUS_MENU_PATH_USER_LEVEL,
 				  user_level_icon_name);

@@ -101,6 +101,15 @@ nautilus_bonobo_set_hidden (BonoboUIComponent *ui,
 				      NULL);
 }
 
+char * 
+nautilus_bonobo_get_label (BonoboUIComponent *ui,
+		           const char        *path)
+{
+	g_return_val_if_fail (ui != NULL, FALSE);
+
+	return g_strdup (bonobo_ui_component_get_prop (ui, path, "label", NULL));
+}
+
 gboolean 
 nautilus_bonobo_get_hidden (BonoboUIComponent *ui,
 		            const char        *path)
@@ -116,11 +125,8 @@ nautilus_bonobo_get_hidden (BonoboUIComponent *ui,
 		return TRUE;
 	}
 
-	if (strcmp (value, "1") == 0) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
+	/* Anything other than "0" counts as TRUE */
+	return (strcmp (value, "0") != 0);
 }
 
 void

@@ -361,7 +361,7 @@ nautilus_about_draw_info (
 	g_strfreev (about->details->authors);
 
 	temp_str = g_strjoinv ("\n", (char**) authors);
-	about->details->authors = g_strsplit (temp_str, "\n", MAX_AUTHOR_COUNT);
+	about->details->authors = g_strsplit (temp_str, "\n", -1);
 	g_free (temp_str);
 	
 	randomize_authors (about);
