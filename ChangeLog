@@ -1,3 +1,10 @@
+2004-06-14  Martin Wehner  <martin.wehner@epost.de>
+
+	* libnautilus-private/nautilus-file-operations-progress.c:
+	(nautilus_file_operations_progress_init):
+	Prevent a resizing of the progress bar when the remaining
+	time is inserted after the timeout.
+
 2004-06-09  Dave Camp  <dave@novell.com>
 
 	* libnautilus-private/nautilus-file-operations.c:

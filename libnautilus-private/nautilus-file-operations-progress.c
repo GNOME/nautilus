@@ -304,6 +304,8 @@ nautilus_file_operations_progress_init (NautilusFileOperationsProgress *progress
 	progress->details->progress_bar = gtk_progress_bar_new ();
 	gtk_window_set_default_size (GTK_WINDOW (progress), PROGRESS_DIALOG_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (vbox), progress->details->progress_bar, FALSE, TRUE, 0);
+	/* prevent a resizing of the bar when a real text is inserted later */
+	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progress->details->progress_bar), " ");
 
 	titled_label_table = GTK_TABLE (gtk_table_new (3, 2, FALSE));
 	gtk_table_set_row_spacings (titled_label_table, 4);
