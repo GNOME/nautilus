@@ -1,3 +1,44 @@
+2000-07-25  Andy Hertzfeld  <andy@eazel.com>
+
+	reorganized the menus.  There's now a user level menu, which uses
+	the current user level symbol as its title, to feedback the
+	current level.  There is no longer a settings menu; the rest of
+	the stuff in the settings menu was moved to the bottom of the
+	edit menu.  We probably want to tweak the order of items some more,
+	but this mostly complete now.
+	
+	Note: you need to get a new bonobo to see the user level symbol
+	in the menu title.
+
+	* src/nautilus-window-menus.c: (user_level_customize_callback),
+	(customize_callback), (help_menu_about_nautilus_callback),
+	(get_user_level_image), (user_level_menu_item_callback),
+	(user_level_changed_callback), (nautilus_window_initialize_menus),
+	(update_user_level_menu_items), (convert_menu_path_to_user_level),
+	(convert_user_level_to_menu_path):
+	removed the settings menu and added a user level menu, using ski-slope
+	symbols to express the user levels.
+		
+	* libnautilus/nautilus-bonobo-ui.h:
+	changed the path of some menu items
+	* src/file-manager/fm-directory-view.h:
+	changed the path of some menu items
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_create_background_context_menu_items),
+	(fm_icon_view_merge_menus):
+	moved items from setting to edit menu
+
+	* icons/Makefile.am:
+	* icons/novice-selected.png:
+	* icons/intermediate-selected.png:
+	* icons/expert-selected.png:
+	made the user level symbols smaller, and added checked ones to
+	use in the menu to indicate selection.
+	
+	* icons/eazel/i-regular.xml:
+	tweaked the text rectangles for the standard document icon in
+	the eazel theme.
+
 2000-07-25  John Sullivan  <sullivan@eazel.com>
 
 	Note: this requires the latest gnome-vfs changes to compile.

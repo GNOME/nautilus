@@ -61,10 +61,10 @@
 #include <unistd.h>
 
 /* Paths to use when creating & referring to Bonobo menu items */
-#define MENU_PATH_STRETCH_ICON 			"/Settings/Stretch"
-#define MENU_PATH_UNSTRETCH_ICONS 		"/Settings/Unstretch"
-#define MENU_PATH_AFTER_STRETCH_SEPARATOR 	"/Settings/After Stretch Separator"
-#define MENU_PATH_CUSTOMIZE_ICON_TEXT 		"/Settings/Icon Text"
+#define MENU_PATH_STRETCH_ICON 			"/Edit/Stretch"
+#define MENU_PATH_UNSTRETCH_ICONS 		"/Edit/Unstretch"
+#define MENU_PATH_AFTER_STRETCH_SEPARATOR 	"/Edit/After Stretch Separator"
+#define MENU_PATH_CUSTOMIZE_ICON_TEXT 		"/Edit/Icon Text"
 #define MENU_PATH_LAYOUT_MENU 			"/Layout"
 #define MENU_PATH_MANUAL_LAYOUT 		"/Layout/Manual Layout"
 #define MENU_PATH_LAYOUT_SEPARATOR 		"/Layout/Separator"
@@ -450,7 +450,7 @@ fm_icon_view_create_background_context_menu_items (FMDirectoryView *view,
 		(FM_DIRECTORY_VIEW_CLASS, 
 		 create_background_context_menu_items, 
 		 (view, menu));
-
+	
 	/* Put a separator before this item, since previous items are
 	 * window-specific and this one is global.
 	 */
@@ -1058,7 +1058,7 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	 */
 	position = bonobo_ui_handler_menu_get_pos
 		(ui_handler,
-		 NAUTILUS_MENU_PATH_SETTINGS_MENU) + 1,
+		 NAUTILUS_MENU_PATH_BOOKMARKS_MENU) + 1,
  	bonobo_ui_handler_menu_new_subtree
 		(ui_handler,
 		 MENU_PATH_LAYOUT_MENU,

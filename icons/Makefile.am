@@ -31,6 +31,7 @@ icon_DATA =\
 	emblem-symbolic-link.png \
 	emblems.png \
 	expert.png \
+	expert-selected.png \
 	gnome-application-encapsulated_postscript.png \
 	gnome-application-pdf.png \
 	gnome-application-pgp.png \
@@ -144,6 +145,7 @@ icon_DATA =\
 	i-zipdisk2.png \
 	increment.png \
 	intermediate.png \
+	intermediate-selected.png \
 	knob.png \
 	leftarrow.png \
 	loading.png \
@@ -153,6 +155,7 @@ icon_DATA =\
 	netscape.png \
 	not.png \
 	novice.png \
+	novice-selected.png \
 	rightarrow.png \
 	search.png \
 	tableft.png \

@@ -53,6 +53,7 @@
 #define NAUTILUS_MENU_PATH_CLEAR_ITEM			"/Edit/Clear"
 #define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_CLEAR	"/Edit/Separator after Clear"
 #define NAUTILUS_MENU_PATH_SELECT_ALL_ITEM		"/Edit/Select All"
+#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_SELECT_ALL	"/Edit/Separator after Select All"
 
 /* Go menu */
 #define NAUTILUS_MENU_PATH_GO_MENU			"/Go"
