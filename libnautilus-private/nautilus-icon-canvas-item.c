@@ -707,7 +707,7 @@ compute_text_rectangle (const NautilusIconCanvasItem *item,
 	if (NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas)->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
                 text_rectangle.x0 = icon_rectangle.x1;
                 text_rectangle.x1 = text_rectangle.x0 + text_width;
-                text_rectangle.y0 = icon_rectangle.y0;
+                text_rectangle.y0 = (icon_rectangle.y0 + icon_rectangle.y1) / 2- (int) text_height / 2;
                 text_rectangle.y1 = text_rectangle.y0 + text_height + LABEL_OFFSET / pixels_per_unit;
 	} else {
                 text_rectangle.x0 = (icon_rectangle.x0 + icon_rectangle.x1) / 2 - (int) text_width / 2;

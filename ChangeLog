@@ -1,3 +1,15 @@
+2004-10-29  Iain <iaingnome@gmail.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c 
+	(compute_text_rectangle): Line up the text with the middle of the icon.
+
+	* libnautilus-private/nautilus-icon-container.c 
+	(lay_down_one_line): Take the max height of the row so that icons can
+	be lined up.
+	(lay_down_icons_horizontal): Calculate the grid_width depending on the
+	max width of an icon.
+	Line up icons on a vertical line set at the left of the text.
+
 2004-10-29  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
