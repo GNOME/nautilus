@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-30 13:04+0100\n"
+"POT-Creation-Date: 2004-02-02 20:58+0100\n"
 "PO-Revision-Date: 2004-01-16 15:28+0100\n"
 "Last-Translator: Reinout van Schouwen <reinout@cs.vu.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
@@ -2301,6 +2301,10 @@ msgid "Replace _All"
 msgstr "_Alles vervangen"
 
 #. appended to new link file
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4690
 #, c-format
@@ -2355,6 +2359,9 @@ msgid " (another copy)"
 msgstr " (nog een kopie)"
 
 #. localizers: tag used to detect the x11th copy of a file
+#. localizers: tag used to detect the x12th copy of a file
+#. localizers: tag used to detect the x13th copy of a file
+#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2390,6 +2397,9 @@ msgid "%s (another copy)%s"
 msgstr "%s (nog een kopie)%s"
 
 #. localizers: appended to x11th file copy
+#. localizers: appended to x12th file copy
+#. localizers: appended to x13th file copy
+#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -2519,9 +2529,8 @@ msgid "You cannot copy items into the trash."
 msgstr "U kunt geen items naar de prullenbak kopiëren."
 
 #: libnautilus-private/nautilus-file-operations.c:1931
-#, fuzzy
 msgid "You cannot create links inside the trash."
-msgstr "U kunt geen items naar de prullenbak kopiëren."
+msgstr "U kunt geen verwijzingen in de prullenbak maken."
 
 #: libnautilus-private/nautilus-file-operations.c:1932
 msgid "Files and folders can only be moved into the trash."
@@ -4098,7 +4107,7 @@ msgstr "Lijstweergave"
 
 #: src/Nautilus_shell.server.in.h:25
 msgid "View as _Icons"
-msgstr "P_ictogrammenweergave"
+msgstr "Pi_ctogrammenweergave"
 
 #: src/Nautilus_shell.server.in.h:26
 msgid "View as _List"
@@ -4486,7 +4495,7 @@ msgstr "Verwijder alle geselecteerde items blijvend"
 #: src/file-manager/fm-directory-view.c:5588
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Mo_ve to Trash"
-msgstr "_Verplaatsen naar Prullenbak"
+msgstr "Verplaatsen naar _Prullenbak"
 
 #: src/file-manager/fm-directory-view.c:5236
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
@@ -4496,16 +4505,16 @@ msgstr "Verplaats alle geselecteerde items naar de Prullenbak"
 #: src/file-manager/fm-directory-view.c:5260
 #: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "_Delete"
-msgstr "_Verwijderen"
+msgstr "Verwij_deren"
 
 #: src/file-manager/fm-directory-view.c:5280
 msgid "Ma_ke Links"
-msgstr "Verwijzingen ma_ken"
+msgstr "Verwij_zingen maken"
 
 #: src/file-manager/fm-directory-view.c:5281
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Ma_ke Link"
-msgstr "Verwijzing ma_ken"
+msgstr "Verwij_zing maken"
 
 #: src/file-manager/fm-directory-view.c:5294
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
@@ -4523,15 +4532,14 @@ msgstr "Bestanden k_nippen"
 
 #: src/file-manager/fm-directory-view.c:5320
 msgid "_Copy File"
-msgstr "Bestand _kopiëren"
+msgstr "Bestand kopië_ren"
 
 #: src/file-manager/fm-directory-view.c:5321
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "_Copy Files"
-msgstr "Bestanden _kopiëren"
+msgstr "Bestanden kopië_ren"
 
 #: src/file-manager/fm-directory-view.c:5579
-#, fuzzy
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "De verwijzing is loos, wilt u haar in de prullenbak gooien?"
 
@@ -4784,11 +4792,11 @@ msgstr "Pictogrammen gesorteerd op emblemen in rijen"
 #: src/file-manager/fm-icon-view.c:1632
 #: src/file-manager/nautilus-icon-view-ui.xml.h:20
 msgid "Restore Icons' Original Si_zes"
-msgstr "_Oorspronkelijke pictogramafmetingen herstellen"
+msgstr "Oorspronkelijke pictogram_groottes herstellen"
 
 #: src/file-manager/fm-icon-view.c:1633
 msgid "Restore Icon's Original Si_ze"
-msgstr "_Oorspronkelijke pictogramafmetingen herstellen"
+msgstr "Oorspronkelijke pictogram_grootte herstellen"
 
 #: src/file-manager/fm-icon-view.c:1989
 #, c-format
@@ -5431,7 +5439,7 @@ msgstr ""
 #: src/file-manager/nautilus-directory-view-ui.xml.h:46
 #: src/nautilus-information-panel.c:349
 msgid "Use _Default Background"
-msgstr "_Standaard achtergrond terugzetten"
+msgstr "Standaard achter_grond terugzetten"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
 msgid "Use the default desktop background"
@@ -5451,7 +5459,7 @@ msgstr "_Document aanmaken"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:5
 msgid "Create _Folder"
-msgstr "Ma_p aanmaken"
+msgstr "_Map aanmaken"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:6
 msgid "Create a new empty file inside this folder"
@@ -5467,11 +5475,11 @@ msgstr "Symbolische verwijzing maken voor elk geselecteerd item"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "D_uplicate"
-msgstr "_Klonen"
+msgstr "Klo_nen"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:13
 msgid "Delete each selected item, without moving to the Trash"
-msgstr "Alle geselecteerde items wissen, zonder ze in de Prullenbak te gooien."
+msgstr "Elk geselecteerd item wissen, zonder het in de prullenbak te gooien."
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:14
 msgid "Duplicate each selected item"
@@ -5558,7 +5566,7 @@ msgstr "Geselecteerde item hernoemen"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:36
 msgid "Reset View to _Defaults"
-msgstr "Weergave terugzetten naar _standaard"
+msgstr "Terug naar s_tandaardweergave"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "Reset sorting order and zoom level to match preferences for this view"
@@ -5644,7 +5652,7 @@ msgstr "_Hernoemen..."
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:61
 msgid "_Scripts"
-msgstr "_Scripts"
+msgstr "S_cripts"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:1
 msgid "Arran_ge Items"
@@ -5943,6 +5951,7 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
+#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:570 src/nautilus-application.c:588
 #: src/nautilus-application.c:595
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -6051,19 +6060,16 @@ msgid "Connect to Server"
 msgstr "Verbinden met server"
 
 #: src/nautilus-connect-server-dialog.c:191
-#, fuzzy
 msgid "Link _Name:"
-msgstr "_Naam:"
+msgstr "Verwijzings_naam:"
 
 #: src/nautilus-connect-server-dialog.c:210
-#, fuzzy
 msgid "_Location (URL):"
-msgstr "_Lokatie:"
+msgstr "_Lokatie (URL):"
 
 #: src/nautilus-connect-server-dialog.c:231
-#, fuzzy
 msgid "Example:"
-msgstr "Emblemen:"
+msgstr "Voorbeeld:"
 
 #: src/nautilus-connect-server-dialog.c:248
 msgid "C_onnect"
@@ -6429,22 +6435,27 @@ msgid "Nautilus"
 msgstr "Nautilus"
 
 #: src/nautilus-main.c:259
+#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check kan niet gebruikt worden met URI's.\n"
 
 #: src/nautilus-main.c:263
+#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check kan niet gebruik worden met andere opties.\n"
 
 #: src/nautilus-main.c:267
+#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit kan niet gebruikt worden met URI's.\n"
 
 #: src/nautilus-main.c:271
+#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart kan niet gebruik worden met URI's.\n"
 
 #: src/nautilus-main.c:275
+#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry kan niet worden gebruik met meer dan één URI.\n"
 
@@ -6578,7 +6589,7 @@ msgstr "Op deze computer zoeken naar bestanden"
 
 #: src/nautilus-navigation-window-ui.xml.h:22
 msgid "St_atusbar"
-msgstr "_Statusbalk"
+msgstr "St_atusbalk"
 
 #: src/nautilus-navigation-window-ui.xml.h:23
 msgid "Stop"
@@ -6602,7 +6613,7 @@ msgstr "Bl_adwijzers"
 
 #: src/nautilus-navigation-window-ui.xml.h:28
 msgid "_Clear History"
-msgstr "Geschiedenis _opschonen"
+msgstr "_Geschiedenis opschonen"
 
 #: src/nautilus-navigation-window-ui.xml.h:29
 #: src/nautilus-spatial-window-ui.xml.h:12
@@ -6611,7 +6622,7 @@ msgstr "_Computer"
 
 #: src/nautilus-navigation-window-ui.xml.h:30
 msgid "_Edit Bookmarks"
-msgstr "_Bladwijzers bewerken"
+msgstr "Blad_wijzers bewerken"
 
 #: src/nautilus-navigation-window-ui.xml.h:31
 msgid "_Forward"
@@ -7104,9 +7115,8 @@ msgstr ""
 "wijzigen"
 
 #: src/nautilus-shell-ui.xml.h:3
-#, fuzzy
 msgid "Close this folder"
-msgstr "Ouders van deze map sluiten"
+msgstr "Deze map sluiten"
 
 #: src/nautilus-shell-ui.xml.h:5
 msgid "Display Nautilus help"
@@ -7114,7 +7124,7 @@ msgstr "Nautilus-hulp weergeven"
 
 #: src/nautilus-shell-ui.xml.h:6
 msgid "Display credits for the creators of Nautilus"
-msgstr "Gegevens van de Nautilus-bedenkers tonen"
+msgstr "Dankbetuiging aan de schrijvers van Nautilus weergeven"
 
 #: src/nautilus-shell-ui.xml.h:7
 msgid ""
@@ -7196,21 +7206,19 @@ msgstr "_Uitzoomen"
 
 #: src/nautilus-shell-ui.xml.h:30
 msgid "_About"
-msgstr "_Info"
+msgstr "In_fo"
 
 #: src/nautilus-shell-ui.xml.h:31
-#, fuzzy
 msgid "_Backgrounds and Emblems..."
-msgstr "_Achtergronden en emblemen"
+msgstr "Achtergronden en _emblemen..."
 
 #: src/nautilus-shell-ui.xml.h:32
 msgid "_CD Creator"
 msgstr "_CD-maker"
 
 #: src/nautilus-shell-ui.xml.h:33
-#, fuzzy
 msgid "_Close"
-msgstr "Venster _sluiten"
+msgstr "_Sluiten"
 
 #: src/nautilus-shell-ui.xml.h:34
 msgid "_Contents"
