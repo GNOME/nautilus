@@ -137,6 +137,8 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget,
 					 EEL_DEFAULT_POPUP_MENU_DISPLACEMENT,
 					 event);
 		return TRUE;
+	} else if (event->button == 1) {
+		g_signal_emit (zoom_control, signals[ZOOM_TO_FIT], 0);
 	}
 
 	/* We don't change our state (to reflect the new zoom) here.
