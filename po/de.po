@@ -44,7 +44,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.0.x\n"
-"POT-Creation-Date: 2001-04-29 03:26+0200\n"
+"POT-Creation-Date: 2001-04-30 14:20+0200\n"
 "PO-Revision-Date: 2001-04-29 03:26+0200\n"
 "Last-Translator: Christian Meyer <chrisime@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -1977,7 +1977,7 @@ msgstr "Schwarz"
 
 #: data/browser.xml.h:4
 msgid "Blue Ridge"
-msgstr "Blaue Rippen"
+msgstr "Blau gerippt"
 
 #: data/browser.xml.h:5
 msgid "Blue Rough"
@@ -2057,7 +2057,7 @@ msgstr "Tiefes Blaugrün"
 
 #: data/browser.xml.h:24
 msgid "Distinguished"
-msgstr "Abgehoben"
+msgstr "Ausgezeichnet"
 
 #: data/browser.xml.h:25
 msgid "Dots"
@@ -2167,7 +2167,7 @@ msgstr "Manilapapier"
 
 #: data/browser.xml.h:51
 msgid "Moss Ridge"
-msgstr "Mooshügel"
+msgstr "Moos gerippt"
 
 #: data/browser.xml.h:52
 msgid "Mud"
@@ -2248,15 +2248,15 @@ msgstr "Himmel"
 
 #: data/browser.xml.h:71
 msgid "Sky Ridge"
-msgstr "Himmelsrippen"
+msgstr "Himmel gerippt"
 
 #: data/browser.xml.h:72
 msgid "Snow Ridge"
-msgstr "Schneewächte"
+msgstr "Schnee gerippt"
 
 #: data/browser.xml.h:73
 msgid "Special"
-msgstr "Speziell"
+msgstr "Besonderes"
 
 #: data/browser.xml.h:74
 msgid "Stucco"
@@ -2288,7 +2288,7 @@ msgstr "Weiß"
 
 #: data/browser.xml.h:81
 msgid "White Ribs"
-msgstr "Weiße Rippen"
+msgstr "Weiß gerippt"
 
 #: data/linksets/apps.xml.h:2
 msgid "Gnumeric"
@@ -4760,7 +4760,7 @@ msgid "_Paste Text"
 msgstr "Text _einfügen"
 
 #: nautilus.desktop.in.h:1 src/nautilus-window-manage-views.c:255
-#: src/nautilus-window-menus.c:645
+#: src/nautilus-window-menus.c:647
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -5771,9 +5771,8 @@ msgid ""
 "running \"medusa-indexd\" as root on the command line."
 msgstr ""
 "Die von Ihnen gewählte Suche ist neuer als der Index auf Ihrem System. Die "
-"Suche wird darum jetzt noch keine Ergebnisse liefern. Sie können einen neuen "
-"Index erzeugen, indem Sie \"medusa-indexd\" als root auf der Kommandozeile "
-"ausführen."
+"Suche wird darum jetzt noch keine Ergebnisse liefern. Sie können einen Index "
+"erzeugen, indem Sie als root auf der Befehlszeile \"medusa-index\" ausführen."
 
 #: src/file-manager/fm-search-list-view.c:195
 msgid "Search for items that are too new"
@@ -5802,6 +5801,9 @@ msgid ""
 "corrupt.  You can create a new index by running \"medusa-indexd\" as root on "
 "the command line."
 msgstr ""
+"Die Suchen kann Ihren Dateisystem-Index nicht finden. Ihr Index fehlt "
+"vielleicht oder ist beschädigt. Sie können einen neuen erzeugen, indem Sie "
+"als root auf der Befehlszeile \"medusa-indexd\" ausführen."
 
 #: src/file-manager/fm-search-list-view.c:213
 msgid "Error reading file index"
@@ -5852,8 +5854,8 @@ msgid ""
 msgstr ""
 "Ihre Indexdateien sind verfügbar, aber der Medusa-Suchdämon, der "
 "Indexanfragen bearbeitet, läuft nicht.  Um dieses Programm zu starten, "
-"melden Sie sich als root an und geben Sie auf der Kommandozeile diesen "
-"Befehl ein:\n"
+"melden Sie sich als root an und geben Sie auf der Befehlszeile diesen Befehl "
+"ein:\n"
 "\n"
 "medusa-searchd"
 
@@ -6143,11 +6145,11 @@ msgstr "Hintergrund zurücksetzen"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:42
 msgid "Reset View to Match Preferences"
-msgstr "Ansicht zurücksetzen um mit Vorlieben übereinzustimmen"
+msgstr "Ansicht auf Vorgaben zurücksetzen"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:43
 msgid "Reset View to Match _Preferences"
-msgstr "Ansicht·zurücksetzen·um·mit·_Vorlieben·übereinzustimmen"
+msgstr "Ansicht auf _Vorgaben zurücksetzen"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:44
 msgid "Reset sorting order and zoom level to match preferences for this view"
@@ -6574,7 +6576,7 @@ msgstr "Lesezeichen"
 msgid "Location"
 msgstr "Ort"
 
-#: src/nautilus-bookmarks-window.c:191 src/nautilus-window-menus.c:816
+#: src/nautilus-bookmarks-window.c:191 src/nautilus-window-menus.c:818
 msgid "Remove"
 msgstr "Löschen"
 
@@ -7176,19 +7178,19 @@ msgstr "Nur Ordner (keine Dateien) im Baum anzeigen"
 
 #: src/nautilus-preferences-dialog.c:396
 msgid "Maximum items per site"
-msgstr "Maximale Elemente pro Seite"
+msgstr "Maximale Eintragsanzahl pro Site"
 
 #: src/nautilus-preferences-dialog.c:398
 msgid "Maximum number of items displayed per site"
-msgstr "Maximale Anzahl von Elementen, die pro Seite angezeigt werden sollen"
+msgstr "Maximale Anzahl von Einträgen, die für eine Site angezeigt werden"
 
 #: src/nautilus-preferences-dialog.c:401
 msgid "Update Minutes"
-msgstr "Aktualiserungen"
+msgstr "Minuten zwischen Aktualisierungen"
 
 #: src/nautilus-preferences-dialog.c:403
 msgid "Update frequency in minutes"
-msgstr "Aktualisierungsrate in Minuten"
+msgstr "Aktualisierungsabstand in Minuten"
 
 #: src/nautilus-preferences-dialog.c:412
 msgid "View Preferences"
@@ -7224,7 +7226,7 @@ msgstr "Geschwindigkeit<->Komfort"
 
 #: src/nautilus-preferences-dialog.c:421
 msgid "News Panel"
-msgstr "News-Paneele"
+msgstr "News-Paneel"
 
 #: src/nautilus-preferences-dialog.c:448
 msgid "Preferences"
@@ -7740,19 +7742,19 @@ msgstr "Zum vorher besuchten Ort gehen"
 msgid "Go up to the location that contains the displayed location"
 msgstr "Zum Ort hochgehen, der den angezeigten Ort enthält"
 
-#: src/nautilus-shell-ui.xml.h:32 src/nautilus-window-menus.c:490
+#: src/nautilus-shell-ui.xml.h:32 src/nautilus-window-menus.c:492
 msgid "Hide Location _Bar"
 msgstr "_Adressleiste verbergen"
 
-#: src/nautilus-shell-ui.xml.h:33 src/nautilus-window-menus.c:472
+#: src/nautilus-shell-ui.xml.h:33 src/nautilus-window-menus.c:474
 msgid "Hide St_atus Bar"
 msgstr "_Statusleiste verbergen"
 
-#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:478
+#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:480
 msgid "Hide _Sidebar"
 msgstr "Sei_tenleiste verbergen"
 
-#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:484
+#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:486
 msgid "Hide _Toolbar"
 msgstr "_Werkzeugleiste verbergen"
 
@@ -7911,9 +7913,8 @@ msgid "_Close Window"
 msgstr "Fenster s_chließen"
 
 #: src/nautilus-shell-ui.xml.h:76
-#, fuzzy
 msgid "_Community Support"
-msgstr "Kundendienst"
+msgstr "_Support durch Mitnutzer"
 
 #: src/nautilus-shell-ui.xml.h:78
 msgid "_Edit"
@@ -8285,7 +8286,7 @@ msgstr "Ort kann nicht angezeigt werden"
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:361
+#: src/nautilus-window-menus.c:363
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
@@ -8293,34 +8294,34 @@ msgstr ""
 "Sind Sie sicher, dass Sie die Geschichte vergessen wollen? Wenn ja, werden "
 "Sie dazu verdammt sein, Sie zu wiederholen."
 
-#: src/nautilus-window-menus.c:364
+#: src/nautilus-window-menus.c:366
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr ""
 "Sind Sie sicher, dass Sie wollen, dass Nautilus vergisst, welche Orte Sie "
 "besucht haben?"
 
-#: src/nautilus-window-menus.c:369
+#: src/nautilus-window-menus.c:371
 msgid "Forget History?"
 msgstr "Chronik vergessen?"
 
-#: src/nautilus-window-menus.c:370
+#: src/nautilus-window-menus.c:372
 msgid "Forget"
 msgstr "Vergessen"
 
-#: src/nautilus-window-menus.c:473
+#: src/nautilus-window-menus.c:475
 msgid "Show St_atus Bar"
 msgstr "_Statusleiste zeigen"
 
-#: src/nautilus-window-menus.c:479
+#: src/nautilus-window-menus.c:481
 msgid "Show _Sidebar"
 msgstr "Sei_tenleiste zeigen"
 
-#: src/nautilus-window-menus.c:485
+#: src/nautilus-window-menus.c:487
 msgid "Show _Toolbar"
 msgstr "_Werkzeugleiste zeigen"
 
-#: src/nautilus-window-menus.c:491
+#: src/nautilus-window-menus.c:493
 msgid "Show Location _Bar"
 msgstr "_Adressleiste zeigen"
 
@@ -8328,15 +8329,15 @@ msgstr "_Adressleiste zeigen"
 #. * symbol characters -- do not translate the company
 #. * name, please.
 #.
-#: src/nautilus-window-menus.c:636
+#: src/nautilus-window-menus.c:638
 msgid "Copyright (C) 1999-2001 Eazel, Inc."
-msgstr "Copyright·(C)·1999-2001·Eazel,·Inc."
+msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window-menus.c:643
+#: src/nautilus-window-menus.c:645
 msgid "Translator Credits"
 msgstr ""
 "Deutsche Übersetzung:\n"
@@ -8344,7 +8345,7 @@ msgstr ""
 "Christian Meyer <chrisime@gnome.org>\n"
 "Benedikt Roth <Benedikt.Roth@gmx.net>"
 
-#: src/nautilus-window-menus.c:649
+#: src/nautilus-window-menus.c:651
 msgid ""
 "Nautilus is a graphical shell\n"
 "for GNOME that makes it\n"
@@ -8357,7 +8358,7 @@ msgstr ""
 "und den Rest des Systems\n"
 "zu verwalten."
 
-#: src/nautilus-window-menus.c:811
+#: src/nautilus-window-menus.c:813
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -8366,20 +8367,20 @@ msgstr ""
 "Der Ort \"%s\" existiert nicht. Möchten Sie alle Lesezeichen mit diesem Ort "
 "aus Ihrer Liste entfernen?"
 
-#: src/nautilus-window-menus.c:815
+#: src/nautilus-window-menus.c:817
 msgid "Bookmark for Nonexistent Location"
 msgstr "Lesezeichen für nicht existierenden Ort"
 
-#: src/nautilus-window-menus.c:829
+#: src/nautilus-window-menus.c:831
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Der Ort \"%s\" existiert nicht mehr."
 
-#: src/nautilus-window-menus.c:830
+#: src/nautilus-window-menus.c:832
 msgid "Go to Nonexistent Location"
 msgstr "\"Gehe zu\" nichtexistentem Ort"
 
-#: src/nautilus-window-menus.c:899
+#: src/nautilus-window-menus.c:901
 msgid "Go to the location specified by this bookmark"
 msgstr "Zum durch dieses Lesezeichen angegebenen Ort gehen"
 
