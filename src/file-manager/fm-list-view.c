@@ -822,13 +822,12 @@ fm_list_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 	FMListView *list_view;
 	GtkTreeIter iter;
 	GtkTreePath *path;
-	GtkTreeViewColumn *column;
 	
 	list_view = FM_LIST_VIEW (view);
 	
 	/* Don't start renaming if another rename in this listview is
 	 * already in progress. */
-	if (file_name_column && file_name_column->editable_widget) {
+	if (list_view->details->file_name_column && list_view->details->file_name_column->editable_widget) {
 		return;
 	}
 
