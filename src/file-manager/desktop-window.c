@@ -82,15 +82,16 @@ static void
 desktop_window_init (DesktopWindow *dwindow)
 {
         /* Should never resize this thing */
-        gtk_window_set_policy(GTK_WINDOW(dwindow),
+        /* FIXME, uncomment post-debug */
+        /*         gtk_window_set_policy(GTK_WINDOW(dwindow),
                               FALSE, FALSE, FALSE);
-
-        /* Match the screen size */
-        gtk_widget_set_usize(GTK_WIDGET(dwindow),
-                             350, 350
-                             /* FIXME hard to debug :-)
-                                gdk_screen_width(),
-                                gdk_screen_height() */);
+        */
+        /* Match the screen size FIXME usize for production version */
+        gtk_window_set_default_size(GTK_WINDOW(dwindow),
+                                    350, 350
+                                    /* FIXME hard to debug :-)
+                                       gdk_screen_width(),
+                                       gdk_screen_height() */);
 }
 
 GtkWidget*
@@ -146,6 +147,7 @@ desktop_window_realize (GtkWidget *widget)
 	if (GTK_WIDGET_CLASS (parent_class)->realize)
 		(* GTK_WIDGET_CLASS (parent_class)->realize) (widget);
 
+#if 0
         /* Turn off all decorations and window manipulation functions */
         gdk_window_set_decorations(widget->window, 0);
         gdk_window_set_functions(widget->window, 0);
@@ -167,4 +169,5 @@ desktop_window_realize (GtkWidget *widget)
 	} else {
                 g_warning("window manager doesn't like us");
         }
+#endif
 }

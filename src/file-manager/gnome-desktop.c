@@ -70,7 +70,7 @@ main (int argc, char *argv[])
         desktop_canvas_set_solid_background_color(DESKTOP_CANVAS(canvas), 0xFF0000);
 
         desktop_canvas_load_desktop_icons(DESKTOP_CANVAS (canvas),
-                                          "file:/home/");
+                                          "file:/cvs/gnome-cvs/nautilus/");
         
         gtk_signal_connect(GTK_OBJECT(window), "delete_event",
                            GTK_SIGNAL_FUNC(delete_event_cb), NULL);

@@ -297,22 +297,13 @@ desktop_layout_remove_item (DesktopLayout *layout,
         queue_arrange(layout);
 }
 
-
-static void
-layout_top_to_bottom_right_to_left(DesktopLayout *layout,
-                                   gboolean ignore_position_requests)
-{
-        
-
-}
-
-static void
-layout_top_to_bottom_left_to_right(DesktopLayout *layout,
-                                   gboolean ignore_position_requests)
-{
-        
-
-}                     
+#if 1 /* SAMPLE CODE */
+/* There are 8 ways to do the layout; you can go in rows or columns;
+   you can snake in left-to-right or right-to-left; you can go from
+   top-to-bottom or bottom-to-top. The below is _one_ way,
+   which should give you a clear idea what's going on. However, the
+   actual implementation is more abstract to avoid massive cut-and-pastage.
+*/
 
 static void
 layout_rows_left_to_right(DesktopLayout *layout,
@@ -323,6 +314,7 @@ layout_rows_left_to_right(DesktopLayout *layout,
         gint right_edge = layout->x + layout->width - layout->hpadding;
         gint bottom_edge = layout->y + layout->height - layout->vpadding;
         gint row_height = 0;
+        gboolean first_item_in_row = TRUE;
         GList *iter;
 
         iter = layout->items;
@@ -334,44 +326,234 @@ layout_rows_left_to_right(DesktopLayout *layout,
                 item_size_request(item, &req_x, &req_y, &req_w, &req_h);
 
                 if (!ignore_position_requests && req_x >= 0) {
-                        g_assert(req_y >= 0); /* req_x and req_y must be on the same side of 0 */
+                        g_assert(req_y >= 0); /* req_x and req_y must
+                                                 be on the same side
+                                                 of 0 */
                         
-                        /* Give it its request - eventually we may take w/h into account though,
-                           and flow the other icons around this one? */
+                        /* Give it its request - eventually we may
+                           take w/h into account though, and flow the
+                           other icons around this one? */
                         item_size_allocate(item, req_x, req_y, req_w, req_h);
 
                         iter = g_list_next(iter);
                         continue;
                 } else {
+                        gint this_x, this_y;
+                        
                         /* We're either ignoring req_x or the item did not specify
                            a req_x */
                         g_assert(ignore_position_requests || req_x < 0);
-                        
-                        item_size_allocate(item, next_x, next_y, req_w, req_h);
+
+                        this_x = next_x;
+                        this_y = next_y;
 
                         next_x += req_w + layout->hpadding;
 
                         row_height = MAX(row_height, req_h);
                         
-                        /* It is important not to check for reset until we place the item;
-                           if there's no room for even a single item, we need to go ahead and
-                           place one per row anyway */
                         if (next_x > right_edge) {
                                 /* Reset */
                                 next_x = layout->x + layout->hpadding;
                                 next_y += row_height + layout->vpadding;
-                                row_height = 0;
-                        }
 
+                                /* if this is the first item in the row, then
+                                   we need to place it no matter what, or we might
+                                   go on forever */
+                                if (first_item_in_row) {
+                                        item_size_allocate(item,
+                                                           this_x, this_y,
+                                                           req_w, req_h);
+
+                                        /* move on to next item */
+                                        iter = g_list_next(iter);
+                                } else {
+                                        /* don't move on, leave this
+                                           item as the first one on
+                                           the next row */
+                                        ;
+                                }
+
+                                first_item_in_row = TRUE;
+                                row_height = 0;
+                        } else {
+                                first_item_in_row = FALSE;
+                                
+                                /* didn't reset, simply place the item */
+                                item_size_allocate(item,
+                                                   this_x, this_y,
+                                                   req_w, req_h);
+
+                                iter = g_list_next(iter);
+                        }
+                        
                         if (next_y > bottom_edge) {
                                 /* return to the top */
                                 next_y = layout->y + layout->vpadding;
                         }
-                        
-                        iter = g_list_next(iter);
                 }
         }
 }
+#endif /* Sample code */
+
+#if 0
+/* Crap code, this does the wrong thing in a lame way */
+
+/* depending on the layout direction, we want to x and y to represent
+   different corners */
+static void
+cornerized_allocate(DesktopLayoutItem *item,
+                    gboolean x_increasing,
+                    gboolean y_increasing,
+                    gint x, gint y, gint width, gint height)
+{
+        gint real_x;
+        gint real_y;
+
+        if (x_increasing)
+                real_x = x;
+        else
+                real_x = x - width;
+
+        if (y_increasing)
+                real_y = y;
+        else
+                real_y = y - height;
+
+        
+        item_size_allocate(item, real_x, real_y, width, height);
+}
+
+static void
+perform_row_layout(DesktopLayout *layout,
+                   gboolean ignore_position_requests,
+                   gint start_x,
+                   gint start_y,
+                   gint reset_x_at,
+                   gint reset_y_at,
+                   gboolean x_increasing,
+                   gboolean y_increasing)
+{
+        gint next_x = start_x;
+        gint next_y = start_y;
+        gint row_height = 0;
+        GList *iter;
+        gboolean first_in_row = TRUE;
+        
+        iter = layout->items;
+
+        while (iter != NULL) {
+                DesktopLayoutItem *item = iter->data;
+                gint req_x, req_y, req_w, req_h;
+                
+                item_size_request(item, &req_x, &req_y, &req_w, &req_h);
+
+                if (!ignore_position_requests && req_x >= 0) {
+                        g_assert(req_y >= 0); /* req_x and req_y must
+                                                 be on the same side
+                                                 of 0 */
+                        
+                        /* Give it its request - eventually we may
+                           take w/h into account though, and flow the
+                           other icons around this one? */
+                        item_size_allocate(item, req_x, req_y, req_w, req_h);
+
+                        iter = g_list_next(iter);
+                        continue;
+                } else {
+                        gint this_x, this_y;
+                        
+                        /* We're either ignoring req_x or the item did not specify
+                           a req_x */
+                        g_assert(ignore_position_requests || req_x < 0);
+
+                        this_x = next_x;
+                        this_y = next_y;
+                        
+                        if (x_increasing)
+                                next_x += (req_w + layout->hpadding);
+                        else 
+                                next_x -= (req_w + layout->hpadding);
+
+                        row_height = MAX(row_height, req_h);
+
+                        /* If we are the first on a row, we always "fit" */
+                        if (first_in_row) {
+                                cornerized_allocate(item, x_increasing, y_increasing,
+                                                    this_x, this_y, req_w, req_h);
+                        }
+
+                        if ((y_increasing && next_y > reset_y_at) ||
+                            (!y_increasing && next_y < reset_y_at)) {
+                                /* return to the top */
+                                next_y = start_y;
+                        }
+                        
+                        /* See if we did an overflow; if yes, then we
+                           want to go on the next row */
+                        if ((x_increasing && (next_x > reset_x_at)) ||
+                            (!x_increasing && (next_x < reset_x_at))) {
+                                /* Reset */
+                                next_x = start_x;
+                                
+                                if (y_increasing)
+                                        next_y += (row_height + layout->vpadding);
+                                else
+                                        next_y -= (row_height + layout->vpadding);
+
+                                row_height = 0;
+
+                                if (first_in_row) {
+                                        /* already placed the item on this row,
+                                           so advance */
+                                        iter = g_list_next(iter);
+                                } else {
+                                        /* Didn't place it, we'll put
+                                           it on the next row */
+                                        ; /* nothing */
+                                }
+                                first_in_row = TRUE;
+                        } else {
+                                /* Stay on this row, and allocate if necessary */
+                                first_in_row = FALSE;
+
+                                if (!first_in_row)
+                                        cornerized_allocate(item, x_increasing, y_increasing,
+                                                            this_x, this_y, req_w, req_h);
+
+                                iter = g_list_next(iter);
+                        }
+                }
+        }
+}
+
+static void
+layout_rows_top_to_bottom_left_to_right(DesktopLayout *layout,
+                                        gboolean ignore_position_requests)
+{
+        perform_row_layout(layout,
+                           ignore_position_requests,
+                           layout->x + layout->hpadding,
+                           layout->y + layout->vpadding,
+                           layout->x + layout->width - layout->hpadding,
+                           layout->y + layout->height - layout->vpadding,
+                           TRUE,
+                           TRUE);
+}
+
+static void
+layout_rows_top_to_bottom_right_to_left(DesktopLayout *layout,
+                                        gboolean ignore_position_requests)
+{
+        perform_row_layout(layout,
+                           ignore_position_requests,
+                           layout->x + layout->width - layout->hpadding,
+                           layout->y + layout->vpadding,
+                           layout->x + layout->hpadding,
+                           layout->y + layout->height - layout->vpadding,
+                           FALSE,
+                           TRUE);
+}
+#endif
 
 void
 desktop_layout_arrange (DesktopLayout *layout, gboolean ignore_position_requests)
@@ -379,4 +561,3 @@ desktop_layout_arrange (DesktopLayout *layout, gboolean ignore_position_requests
         /* Testing */
         layout_rows_left_to_right(layout, FALSE);
 }
-

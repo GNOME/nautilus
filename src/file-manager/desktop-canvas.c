@@ -193,6 +193,8 @@ desktop_canvas_size_allocate(GtkWidget        *widget,
                                 allocation->width,
                                 allocation->height);
 
+        desktop_layout_arrange(DESKTOP_CANVAS(widget)->layout, FALSE); /* FIXME */
+        
         if (GTK_WIDGET_CLASS (parent_class)->size_allocate)
 		(* GTK_WIDGET_CLASS (parent_class)->size_allocate) (widget,
                                                                     allocation);
@@ -259,13 +261,15 @@ entries_loaded_cb(FMDirectoryList *dlist,
                                                       dicon_destroy_notify,
                                                       icon);
 
+
+                /* sort of a hack to have this here */
+                desktop_item_realize(icon,
+                                     GNOME_CANVAS_GROUP(GNOME_CANVAS(canvas)->root));
+                
                 desktop_layout_add_item(canvas->layout,
                                         layout_item);
 
                 desktop_layout_item_unref(layout_item);
-
-                /* sort of a hack to have this here */
-                desktop_item_realize(icon, GNOME_CANVAS_GROUP(GNOME_CANVAS(canvas)->root));
                 
                 iter = g_slist_next(iter);
         }

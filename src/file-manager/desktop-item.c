@@ -157,8 +157,9 @@ desktop_item_set_canvas_item (DesktopItem *item,
 
         item->canvas_item = canvas_item;
 
-        if (item->canvas_item != NULL)
+        if (item->canvas_item != NULL) {
                 gtk_object_ref(GTK_OBJECT(item->canvas_item));
+        }
 }
 
 GnomeCanvasItem*
@@ -246,6 +247,7 @@ icon_realize (DesktopItem *item, GnomeCanvasGroup *group)
                                             "width_set", TRUE, "height_set", TRUE,
                                             NULL);
 
+        desktop_item_set_canvas_item(item, canvas_item);
 }
 
 static void
@@ -297,6 +299,7 @@ icon_size_allocate   (DesktopItem      *item,
         icon = item->user_data;
 
         if (item->canvas_item) {
+                printf("setting allocate\n");
                 gnome_canvas_item_set (item->canvas_item,
                                        "x", (double)x,
                                        "y", (double)y,
