@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 0.8.1\n"
-"POT-Creation-Date: 2001-02-02 12:11+0100\n"
-"PO-Revision-Date: 2001-02-02 12:14CET\n"
+"POT-Creation-Date: 2001-02-05 13:31+0100\n"
+"PO-Revision-Date: 2001-02-05 13:44CET\n"
 "Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
 "Language-Team: Slovak <sk-i18n@rak.isternet.sk>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,10 @@ msgstr ""
 #: applets/launcher/nautilus-launcher-applet.c:272
 msgid "Can't create nautilus-launcher-applet!"
 msgstr "Nie je mo¾né vytvori» aplet nautilus-launcher-applet!"
+
+#: applets/preferences-applet/nautilus-preferences-applet.c:192
+msgid "Can't create nautilus-preferences-applet!"
+msgstr "Nie je mo¾né vytvori» aplet nautilus-preferences-applet!"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -40,23 +44,6 @@ msgstr ""
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:4
 msgid "Nautilus component adapter factory"
 msgstr "Vytváracie rozhranie pre komponentové adaptéry Nautilus"
-
-#: components/hardware/Nautilus_View_hardware.oaf.in.h:1
-msgid "Factory for hardware view"
-msgstr "Vytváracie rozhranie pre hardwarový pohµad"
-
-#: components/hardware/Nautilus_View_hardware.oaf.in.h:2
-#: components/hardware/nautilus-hardware-view.c:631
-msgid "Hardware"
-msgstr "Hardware"
-
-#: components/hardware/Nautilus_View_hardware.oaf.in.h:3
-msgid "Hardware view"
-msgstr "Hardwarový pohµad"
-
-#: components/hardware/Nautilus_View_hardware.oaf.in.h:4
-msgid "hardware view"
-msgstr "hardwarový pohµad"
 
 #: components/hardware/nautilus-hardware-view.c:230
 #, c-format
@@ -94,38 +81,23 @@ msgstr "%lu MB"
 msgid "Hardware Overview"
 msgstr "Prehµad hardware"
 
-#: components/help/Nautilus_View_help.oaf.in.h:1
-#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:104
-msgid "Help"
-msgstr "Pomocník"
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:2
+#: components/hardware/nautilus-hardware-view.c:631
+#: data/static_bookmarks.xml.h:13
+msgid "Hardware"
+msgstr "Hardware"
 
-#: components/help/Nautilus_View_help.oaf.in.h:2
-msgid "Help Index"
-msgstr "Index Pomocníka"
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:1
+msgid "Factory for hardware view"
+msgstr "Vytváracie rozhranie pre hardwarový pohµad"
 
-#: components/help/Nautilus_View_help.oaf.in.h:3
-msgid "Help Index sidebar panel"
-msgstr "Panel Index Pomocníka pre boèný panel"
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:3
+msgid "Hardware view"
+msgstr "Hardwarový pohµad"
 
-#: components/help/Nautilus_View_help.oaf.in.h:4
-msgid "Help Navigation Tree"
-msgstr "Navigaèný strom pomocníka"
-
-#: components/help/Nautilus_View_help.oaf.in.h:5
-msgid "Help Search"
-msgstr "Hµadanie v Pomocníkovi"
-
-#: components/help/Nautilus_View_help.oaf.in.h:6
-msgid "Help Search sidebar panel"
-msgstr "Panel Hµadanie v Pomocníkovi pre boèný panel"
-
-#: components/help/Nautilus_View_help.oaf.in.h:7
-msgid "Help sidebar panel"
-msgstr "Pomocník pre boèný panel"
-
-#: components/help/Nautilus_View_help.oaf.in.h:8
-msgid "Internal use only"
-msgstr "Len pre interné pou¾itie"
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:4
+msgid "hardware view"
+msgstr "hardwarový pohµad"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:708
 #: components/music/nautilus-music-view.c:1553
@@ -265,63 +237,63 @@ msgstr "PRÍLOHA"
 #. GNU Public  License  and  many  people  are
 #. working on changes to the kernel)
 #. **
-#: components/help/hyperbola-filefmt.c:479
-#: components/help/hyperbola-filefmt.c:480
-#: components/help/hyperbola-filefmt.c:481
-#: components/help/hyperbola-filefmt.c:482
-#: components/help/hyperbola-filefmt.c:483
+#: components/help/hyperbola-filefmt.c:495
+#: components/help/hyperbola-filefmt.c:497
+#: components/help/hyperbola-filefmt.c:501
+#: components/help/hyperbola-filefmt.c:503
+#: components/help/hyperbola-filefmt.c:507
 msgid "Manual"
 msgstr "Manuálové stránky UNIX"
 
-#: components/help/hyperbola-filefmt.c:480
+#: components/help/hyperbola-filefmt.c:497
 msgid "System"
 msgstr "Systém"
 
-#: components/help/hyperbola-filefmt.c:480
+#: components/help/hyperbola-filefmt.c:497
 msgid "Configuration"
 msgstr "Nastavenie"
 
-#: components/help/hyperbola-filefmt.c:480
+#: components/help/hyperbola-filefmt.c:497
 msgid "Config files"
 msgstr "Konfiguraèné súbory"
 
-#: components/help/hyperbola-filefmt.c:481
-#: components/help/hyperbola-filefmt.c:772 data/linksets/apps.xml.h:1
+#: components/help/hyperbola-filefmt.c:501
+#: components/help/hyperbola-filefmt.c:809 data/linksets/apps.xml.h:1
 msgid "Applications"
 msgstr "Aplikácie"
 
-#: components/help/hyperbola-filefmt.c:481
+#: components/help/hyperbola-filefmt.c:501
 msgid "Command Line"
 msgstr "Príkazový riadok"
 
-#: components/help/hyperbola-filefmt.c:482
-#: components/help/hyperbola-filefmt.c:483
+#: components/help/hyperbola-filefmt.c:503
+#: components/help/hyperbola-filefmt.c:507
 msgid "Development"
 msgstr "Vývoj"
 
-#: components/help/hyperbola-filefmt.c:482
-#: components/help/hyperbola-filefmt.c:483
+#: components/help/hyperbola-filefmt.c:503
+#: components/help/hyperbola-filefmt.c:507
 msgid "APIs"
 msgstr "API"
 
-#: components/help/hyperbola-filefmt.c:482
+#: components/help/hyperbola-filefmt.c:503
 msgid "Miscellaneous"
 msgstr "Rôzne"
 
-#: components/help/hyperbola-filefmt.c:483
+#: components/help/hyperbola-filefmt.c:507
 msgid "System Calls"
 msgstr "Systémové volania"
 
-#: components/help/hyperbola-filefmt.c:641
+#: components/help/hyperbola-filefmt.c:668
 #: libnautilus-extensions/nautilus-stock-dialogs.c:473
 msgid "Info"
 msgstr "Info"
 
-#: components/help/hyperbola-nav-index.c:124
+#: components/help/hyperbola-nav-index.c:121
 msgid "see "
 msgstr "viï "
 
-#: components/help/hyperbola-nav-index.c:128
+#: components/help/hyperbola-nav-index.c:125
 msgid "see also "
 msgstr "viï tie¾ "
 
@@ -329,13 +301,46 @@ msgstr "viï tie¾ "
 msgid "No matches."
 msgstr "Niè nenájdené."
 
-#: components/help/hyperbola-nav-index.c:479
+#: components/help/hyperbola-nav-index.c:476
 msgid " (see \""
 msgstr " (viï \""
 
-#: components/help/hyperbola-nav-index.c:484
+#: components/help/hyperbola-nav-index.c:479
 msgid " (see also \""
 msgstr " (viï tie¾ \""
+
+#: components/help/Nautilus_View_help.oaf.in.h:1
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:104
+msgid "Help"
+msgstr "Pomocník"
+
+#: components/help/Nautilus_View_help.oaf.in.h:2
+msgid "Help Index"
+msgstr "Index Pomocníka"
+
+#: components/help/Nautilus_View_help.oaf.in.h:3
+msgid "Help Index sidebar panel"
+msgstr "Panel Index Pomocníka pre boèný panel"
+
+#: components/help/Nautilus_View_help.oaf.in.h:4
+msgid "Help Navigation Tree"
+msgstr "Navigaèný strom pomocníka"
+
+#: components/help/Nautilus_View_help.oaf.in.h:5
+msgid "Help Search"
+msgstr "Hµadanie v Pomocníkovi"
+
+#: components/help/Nautilus_View_help.oaf.in.h:6
+msgid "Help Search sidebar panel"
+msgstr "Panel Hµadanie v Pomocníkovi pre boèný panel"
+
+#: components/help/Nautilus_View_help.oaf.in.h:7
+msgid "Help sidebar panel"
+msgstr "Pomocník pre boèný panel"
+
+#: components/help/Nautilus_View_help.oaf.in.h:8
+msgid "Internal use only"
+msgstr "Len pre interné pou¾itie"
 
 #: components/history/Nautilus_View_history.oaf.in.h:1
 msgid "Factory for history views"
@@ -352,6 +357,10 @@ msgstr "Panel histórie pre boèný panel"
 #: components/history/Nautilus_View_history.oaf.in.h:4
 msgid "History sidebar panel for Nautilus"
 msgstr "Panel histórie pre boèný panel Nautilu"
+
+#: components/image-viewer/nautilus-image-view.c:823
+msgid "I could not initialize Bonobo"
+msgstr "Nie je mo¾né inicializova» Bonobo"
 
 #: components/image-viewer/Nautilus_View_image.oaf.in.h:1
 msgid "Generic Image Viewer"
@@ -373,29 +382,20 @@ msgstr "Prehliadaè obrázkov pre Nautilus"
 msgid "Nautilus Image viewer factory"
 msgstr "Vytváracie rozhranie pre Prehliadaè obrázkov pre Nautilus"
 
-#: components/image-viewer/nautilus-image-view.c:823
-msgid "I could not initialize Bonobo"
-msgstr "Nie je mo¾né inicializova» Bonobo"
+#: components/loser/content/nautilus-content-loser.c:140
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"This is a Nautilus content view that fails on demand."
+msgstr ""
+"%s\n"
+"\n"
+"Toto je pohµad na obsah pre Nautilus, ktorý na po¾iadanie spadne."
 
-#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:1
-msgid "Content Loser"
-msgstr "Zábudlivec obsahu"
-
-#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:2
-msgid "Nautilus Content Loser"
-msgstr "Zábudlivec obsahu pre Nautilus"
-
-#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:3
-msgid "Nautilus content loser component's factory"
-msgstr "Vytváracie rozhranie pre komponent Zábudlivec obsahu pre Nautilus"
-
-#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:4
-msgid "Nautilus content loser factory"
-msgstr "Vytváracie rozhranie pre Zábudlivca obsahu pre Nautilus"
-
-#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:5
-msgid "Nautilus content view that fails on command"
-msgstr "Pohµad pre Nautilus, ktorý zlyhá pri príkazoch"
+#: components/loser/content/nautilus-content-loser.c:189
+msgid "You have tried to kill the Content Loser"
+msgstr "Pokúsili ste sa zabi» Zábudlivca obsahu"
 
 #: components/loser/content/nautilus-content-loser-ui.xml.h:1
 msgid "Kill Content Loser"
@@ -417,20 +417,52 @@ msgstr "_Súbor"
 msgid "_Kill Content Loser"
 msgstr "_Zabi» Zábudlivca obsahu"
 
-#: components/loser/content/nautilus-content-loser.c:140
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:1
+msgid "Content Loser"
+msgstr "Zábudlivec obsahu"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:2
+msgid "Nautilus Content Loser"
+msgstr "Zábudlivec obsahu pre Nautilus"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:3
+msgid "Nautilus content loser component's factory"
+msgstr "Vytváracie rozhranie pre komponent Zábudlivec obsahu pre Nautilus"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:4
+msgid "Nautilus content loser factory"
+msgstr "Vytváracie rozhranie pre Zábudlivca obsahu pre Nautilus"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:5
+msgid "Nautilus content view that fails on command"
+msgstr "Pohµad pre Nautilus, ktorý zlyhá pri príkazoch"
+
+#: components/loser/sidebar/nautilus-sidebar-loser.c:143
 #, c-format
 msgid ""
 "%s\n"
 "\n"
-"This is a Nautilus content view that fails on demand."
+"Loser sidebar."
 msgstr ""
 "%s\n"
 "\n"
-"Toto je pohµad na obsah pre Nautilus, ktorý na po¾iadanie spadne."
+"Zábudlivec pre boèný panel."
 
-#: components/loser/content/nautilus-content-loser.c:189
-msgid "You have tried to kill the Content Loser"
-msgstr "Pokúsili ste sa zabi» Zábudlivca obsahu"
+#: components/loser/sidebar/nautilus-sidebar-loser.c:192
+msgid "You have tried to kill the Sidebar Loser"
+msgstr "Pokúsili ste sa zabi» Zábudlivca pre boèný panel"
+
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:1
+msgid "Kill Sidebar Loser"
+msgstr "Zabi» Zábudlivca pre boèný panel"
+
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:2
+msgid "Kill the Loser sidebar panel"
+msgstr "Zabije Zábudlivca pre boèný panel"
+
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:4
+msgid "_Kill Sidebar Loser"
+msgstr "_Zabi» Zábudlivca pre boèný panel"
 
 #: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:1
 msgid "Nautilus Sidebar Loser"
@@ -452,54 +484,8 @@ msgstr "Pohµad pre boèný panel Nautilu, ktorý zlyhá pri príkazoch"
 msgid "Sidebar Loser"
 msgstr "Zábudlivec pre boèný panel"
 
-#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:1
-msgid "Kill Sidebar Loser"
-msgstr "Zabi» Zábudlivca pre boèný panel"
-
-#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:2
-msgid "Kill the Loser sidebar panel"
-msgstr "Zabije Zábudlivca pre boèný panel"
-
-#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:4
-msgid "_Kill Sidebar Loser"
-msgstr "_Zabi» Zábudlivca pre boèný panel"
-
-#: components/loser/sidebar/nautilus-sidebar-loser.c:143
-#, c-format
-msgid ""
-"%s\n"
-"\n"
-"Loser sidebar."
-msgstr ""
-"%s\n"
-"\n"
-"Zábudlivec pre boèný panel."
-
-#: components/loser/sidebar/nautilus-sidebar-loser.c:192
-msgid "You have tried to kill the Sidebar Loser"
-msgstr "Pokúsili ste sa zabi» Zábudlivca pre boèný panel"
-
-#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:1
-msgid "Mozilla Nautilus view"
-msgstr "Mozilla pre Nautilus"
-
-#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:2
-msgid "Mozilla Nautilus view factory"
-msgstr "Vytváracie rozhranie pre pohµad Mozilla pre Nautilus"
-
-#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:3
-msgid "Mozilla content view component"
-msgstr "Komponent pre pohµad Mozilla"
-
-#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:4
-msgid "Mozilla content view component's factory"
-msgstr "Vytváracie rozhranie pre komponent pohµadu Mozilla"
-
-#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
-msgid "Web Page"
-msgstr "WWW stránka"
-
 #: components/mozilla/mozilla-preferences.cpp:118
+#: libnautilus-extensions/nautilus-gconf-extensions.c:80
 #, c-format
 msgid ""
 "GConf error:\n"
@@ -509,6 +495,7 @@ msgstr ""
 "  %s"
 
 #: components/mozilla/mozilla-preferences.cpp:125
+#: libnautilus-extensions/nautilus-gconf-extensions.c:84
 #, c-format
 msgid ""
 "GConf error:\n"
@@ -535,21 +522,25 @@ msgstr "Toto je vlo¾ené tlaèidlo nástrojového panelu Mozilly"
 msgid "_Mozilla Test"
 msgstr "Test _Mozilly"
 
-#: components/music/Nautilus_View_music.oaf.in.h:1
-msgid "Factory for music view"
-msgstr "Vytváracie rozhranie pre hudobný pohµad"
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:1
+msgid "Mozilla Nautilus view"
+msgstr "Mozilla pre Nautilus"
 
-#: components/music/Nautilus_View_music.oaf.in.h:2
-msgid "Music"
-msgstr "Hudba"
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:2
+msgid "Mozilla Nautilus view factory"
+msgstr "Vytváracie rozhranie pre pohµad Mozilla pre Nautilus"
 
-#: components/music/Nautilus_View_music.oaf.in.h:3
-msgid "Music view"
-msgstr "Hudobný pohµad"
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:3
+msgid "Mozilla content view component"
+msgstr "Komponent pre pohµad Mozilla"
 
-#: components/music/Nautilus_View_music.oaf.in.h:4
-msgid "Music view factory"
-msgstr "Vytváracie rozhranie pre hudobný pohµad"
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:4
+msgid "Mozilla content view component's factory"
+msgstr "Vytváracie rozhranie pre komponent pohµadu Mozilla"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
+msgid "Web Page"
+msgstr "WWW stránka"
 
 #: components/music/mpg123.c:29
 msgid "Blues"
@@ -1273,6 +1264,22 @@ msgstr "Mono"
 msgid "%s by %s"
 msgstr "%s od %s"
 
+#: components/music/Nautilus_View_music.oaf.in.h:1
+msgid "Factory for music view"
+msgstr "Vytváracie rozhranie pre hudobný pohµad"
+
+#: components/music/Nautilus_View_music.oaf.in.h:2
+msgid "Music"
+msgstr "Hudba"
+
+#: components/music/Nautilus_View_music.oaf.in.h:3
+msgid "Music view"
+msgstr "Hudobný pohµad"
+
+#: components/music/Nautilus_View_music.oaf.in.h:4
+msgid "Music view factory"
+msgstr "Vytváracie rozhranie pre hudobný pohµad"
+
 #: components/notes/Nautilus_View_notes.oaf.in.h:1
 msgid "Factory for annotation view"
 msgstr "Vytváracie rozhranie pre pohµad Poznámky"
@@ -1284,26 +1291,6 @@ msgstr "Panel Poznámky pre boèný panel"
 #: components/notes/Nautilus_View_notes.oaf.in.h:4
 msgid "Notes sidebar panel for Nautilus"
 msgstr "Panel poznámok pre boèný panel Nautilu"
-
-#: components/rpmview/Nautilus_View_rpm.oaf.in.h:1
-msgid "Factory for rpm view"
-msgstr "Vytváracie rozhranie pre pohµad rpm"
-
-#: components/rpmview/Nautilus_View_rpm.oaf.in.h:2
-msgid "Package"
-msgstr "Balík"
-
-#: components/rpmview/Nautilus_View_rpm.oaf.in.h:3
-msgid "RPM component"
-msgstr "RPM komponent"
-
-#: components/rpmview/Nautilus_View_rpm.oaf.in.h:4
-msgid "RPM view factory"
-msgstr "Vytváracie rozhranie pre pohµad RPM"
-
-#: components/rpmview/Nautilus_View_rpm.oaf.in.h:5
-msgid "rpm view"
-msgstr "pohµad RPM"
 
 #. set up the window title
 #: components/rpmview/nautilus-rpm-verify-window.c:183
@@ -1322,62 +1309,6 @@ msgstr "Zlyhal na \"%s\""
 #, c-format
 msgid "Checking \"%s\" (%ld/%ld)"
 msgstr "Kontrolujem \"%s\" (%ld/%ld)"
-
-#: components/rpmview/nautilus-rpm-view-install.c:104
-#, c-format
-msgid "%s would not work anymore\n"
-msgstr "%s by u¾ nefungoval\n"
-
-#: components/rpmview/nautilus-rpm-view-install.c:107
-#, c-format
-msgid "%s would break other installed packages\n"
-msgstr "%s by poru¹il ostatné nain¹talované balíky\n"
-
-#: components/rpmview/nautilus-rpm-view-install.c:112
-#, c-format
-msgid "%s is needed, but could not be found\n"
-msgstr "%s je potrebný, ale neporadilo sa ho nájs»\n"
-
-#: components/rpmview/nautilus-rpm-view-install.c:117
-#, c-format
-msgid "%s was already installed\n"
-msgstr "%s u¾ bol nain¹talovaný\n"
-
-#: components/rpmview/nautilus-rpm-view-install.c:120
-#, c-format
-msgid "%s causes a circular dependency problem\n"
-msgstr "%s spôsobuje cyklickú závislos»\n"
-
-#: components/rpmview/nautilus-rpm-view-install.c:138
-#, c-format
-msgid "Installing %s failed because of the following issue(s):\n"
-msgstr "In¹talácia %s zlyhala, preto¾e:\n"
-
-#: components/rpmview/nautilus-rpm-view-install.c:140
-#, c-format
-msgid "Uninstalling %s failed because of the following issue(s):\n"
-msgstr "Odin¹talácia %s zlyhala, preto¾e:\n"
-
-#: components/rpmview/nautilus-rpm-view-install.c:236
-msgid "Uninstall failed..."
-msgstr "Odin¹talácia zlyhala..."
-
-#: components/rpmview/nautilus-rpm-view-install.c:237
-msgid "Uninstall Failed"
-msgstr "Pokus odin¹talova» zlyhal"
-
-#: components/rpmview/nautilus-rpm-view-install.c:239
-msgid "Install failed..."
-msgstr "In¹talácia zlyhala..."
-
-#: components/rpmview/nautilus-rpm-view-install.c:240
-msgid "Install Failed"
-msgstr "In¹talácia zlyhala"
-
-#: components/rpmview/nautilus-rpm-view-install.c:291
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1401
-msgid "Incorrect password."
-msgstr "Neplatné heslo."
 
 #: components/rpmview/nautilus-rpm-view.c:123
 msgid "Package Contents"
@@ -1465,39 +1396,81 @@ msgstr "Balík \"%s\""
 msgid "Verification completed, package ok."
 msgstr "Overenie dokonèené, balík je v poriadku."
 
-#: components/sample/Nautilus_View_sample.oaf.in.h:1
-msgid "Nautilus Sample view"
-msgstr "Uká¾kový pohµad pre Nautilus"
+#: components/rpmview/nautilus-rpm-view-install.c:104
+#, c-format
+msgid "%s would not work anymore\n"
+msgstr "%s by u¾ nefungoval\n"
 
-#: components/sample/Nautilus_View_sample.oaf.in.h:2
-msgid "Nautilus Sample view factory"
-msgstr "Vytváracie rozhranie pre Uká¾kový pohµad pre Nautilus"
+#: components/rpmview/nautilus-rpm-view-install.c:107
+#, c-format
+msgid "%s would break other installed packages\n"
+msgstr "%s by poru¹il ostatné nain¹talované balíky\n"
 
-#: components/sample/Nautilus_View_sample.oaf.in.h:3
-#: components/sample/nautilus-sample-content-view-ui.xml.h:1
-#: components/services/trilobite/sample/service/Trilobite_Service_sample.oaf.in.h:2
-msgid "Sample"
-msgstr "Uká¾ka"
+#: components/rpmview/nautilus-rpm-view-install.c:112
+#, c-format
+msgid "%s is needed, but could not be found\n"
+msgstr "%s je potrebný, ale neporadilo sa ho nájs»\n"
 
-#: components/sample/Nautilus_View_sample.oaf.in.h:4
-msgid "Sample content view component"
-msgstr "Komponent Uká¾kového pohµadu"
+#: components/rpmview/nautilus-rpm-view-install.c:117
+#, c-format
+msgid "%s was already installed\n"
+msgstr "%s u¾ bol nain¹talovaný\n"
 
-#: components/sample/Nautilus_View_sample.oaf.in.h:5
-msgid "Sample content view component's factory"
-msgstr "Vytváracie rozhranie pre komponent Uká¾kového pohµadu"
+#: components/rpmview/nautilus-rpm-view-install.c:120
+#, c-format
+msgid "%s causes a circular dependency problem\n"
+msgstr "%s spôsobuje cyklickú závislos»\n"
 
-#: components/sample/nautilus-sample-content-view-ui.xml.h:2
-msgid "This is a sample merged menu item"
-msgstr "Toto je vlo¾ená uká¾ková polo¾ka menu"
+#: components/rpmview/nautilus-rpm-view-install.c:138
+#, c-format
+msgid "Installing %s failed because of the following issue(s):\n"
+msgstr "In¹talácia %s zlyhala, preto¾e:\n"
 
-#: components/sample/nautilus-sample-content-view-ui.xml.h:3
-msgid "This is a sample merged tool bar button"
-msgstr "Toto je vlo¾ené uká¾kové tlaèidlo"
+#: components/rpmview/nautilus-rpm-view-install.c:140
+#, c-format
+msgid "Uninstalling %s failed because of the following issue(s):\n"
+msgstr "Odin¹talácia %s zlyhala, preto¾e:\n"
 
-#: components/sample/nautilus-sample-content-view-ui.xml.h:5
-msgid "_Sample"
-msgstr "_Uká¾ka"
+#: components/rpmview/nautilus-rpm-view-install.c:236
+msgid "Uninstall failed..."
+msgstr "Odin¹talácia zlyhala..."
+
+#: components/rpmview/nautilus-rpm-view-install.c:237
+msgid "Uninstall Failed"
+msgstr "Pokus odin¹talova» zlyhal"
+
+#: components/rpmview/nautilus-rpm-view-install.c:239
+msgid "Install failed..."
+msgstr "In¹talácia zlyhala..."
+
+#: components/rpmview/nautilus-rpm-view-install.c:240
+msgid "Install Failed"
+msgstr "In¹talácia zlyhala"
+
+#: components/rpmview/nautilus-rpm-view-install.c:291
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1413
+msgid "Incorrect password."
+msgstr "Neplatné heslo."
+
+#: components/rpmview/Nautilus_View_rpm.oaf.in.h:1
+msgid "Factory for rpm view"
+msgstr "Vytváracie rozhranie pre pohµad rpm"
+
+#: components/rpmview/Nautilus_View_rpm.oaf.in.h:2
+msgid "Package"
+msgstr "Balík"
+
+#: components/rpmview/Nautilus_View_rpm.oaf.in.h:3
+msgid "RPM component"
+msgstr "RPM komponent"
+
+#: components/rpmview/Nautilus_View_rpm.oaf.in.h:4
+msgid "RPM view factory"
+msgstr "Vytváracie rozhranie pre pohµad RPM"
+
+#: components/rpmview/Nautilus_View_rpm.oaf.in.h:5
+msgid "rpm view"
+msgstr "pohµad RPM"
 
 #: components/sample/nautilus-sample-content-view.c:136
 msgid "(none)"
@@ -1524,6 +1497,40 @@ msgstr ""
 "%s\n"
 "\n"
 "Stlaèili ste uká¾kové tlaèidlo v nástrojovom paneli."
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:3
+#: components/sample/nautilus-sample-content-view-ui.xml.h:1
+#: components/services/trilobite/sample/service/Trilobite_Service_sample.oaf.in.h:2
+msgid "Sample"
+msgstr "Uká¾ka"
+
+#: components/sample/nautilus-sample-content-view-ui.xml.h:2
+msgid "This is a sample merged menu item"
+msgstr "Toto je vlo¾ená uká¾ková polo¾ka menu"
+
+#: components/sample/nautilus-sample-content-view-ui.xml.h:3
+msgid "This is a sample merged tool bar button"
+msgstr "Toto je vlo¾ené uká¾kové tlaèidlo"
+
+#: components/sample/nautilus-sample-content-view-ui.xml.h:5
+msgid "_Sample"
+msgstr "_Uká¾ka"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:1
+msgid "Nautilus Sample view"
+msgstr "Uká¾kový pohµad pre Nautilus"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:2
+msgid "Nautilus Sample view factory"
+msgstr "Vytváracie rozhranie pre Uká¾kový pohµad pre Nautilus"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:4
+msgid "Sample content view component"
+msgstr "Komponent Uká¾kového pohµadu"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:5
+msgid "Sample content view component's factory"
+msgstr "Vytváracie rozhranie pre komponent Uká¾kového pohµadu"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:93
 msgid "Set the default answer to continue, also default delete to Yes"
@@ -1686,6 +1693,51 @@ msgstr "pou¾i» testovaciu funkciu (pre ladenie)"
 msgid "Show detailed sub-package info"
 msgstr "Zobrazi» detailné informácie o pod-balíku"
 
+#: components/services/install/lib/eazel-install-logic2.c:124
+msgid "Failed to lock the downloaded file"
+msgstr "Nepodarilo sa zamknú» stiahnutý súbor"
+
+#: components/services/install/lib/eazel-install-logic2.c:141
+#, c-format
+msgid "MD5 mismatch, package %s may be compromised"
+msgstr "MD5 nesúhlasí, balík %s je mo¾no naru¹ený"
+
+#: components/services/install/lib/eazel-install-logic2.c:356
+#, c-format
+msgid "%s-%s version %s-%s already installed"
+msgstr "%s-%s verzia %s-%s je u¾ nain¹talovaný"
+
+#: components/services/install/lib/eazel-install-logic2.c:360
+#, c-format
+msgid "%s version %s already installed"
+msgstr "%s verzia %s je u¾ nain¹talovaný"
+
+#: components/services/install/lib/eazel-install-logic2.c:369
+#: components/services/install/lib/eazel-install-logic2.c:374
+#, c-format
+msgid "%s upgrades from version %s-%s to %s-%s"
+msgstr "%s aktualizuje z verzie %s-%s na %s-%s"
+
+#: components/services/install/lib/eazel-install-logic2.c:383
+#, c-format
+msgid "%s downgrades from version %s-%s to %s-%s"
+msgstr "%s prejde na ni¾¹iu verziu z verzie %s-%s na %s-%s"
+
+#: components/services/install/lib/eazel-install-logic2.c:388
+#, c-format
+msgid "%s downgrades from version %s to %s"
+msgstr "%s prejde na ni¾¹iu verziu z verzie %s na %s"
+
+#: components/services/install/lib/eazel-install-logic2.c:420
+#, c-format
+msgid "%s installs version %s-%s"
+msgstr "%s nain¹taluje verziu %s-%s"
+
+#: components/services/install/lib/eazel-install-logic2.c:425
+#, c-format
+msgid "%s installs version %s"
+msgstr "%s nain¹taluje verziu %s"
+
 #: components/services/install/lib/eazel-install-logic.c:142
 #, c-format
 msgid "Reading the install package list %s"
@@ -1763,90 +1815,90 @@ msgstr "In¹talácia zlyhala"
 msgid "Uninstall failed"
 msgstr "Odin¹talácia zlyhala"
 
-#: components/services/install/lib/eazel-install-problem.c:88
-#: components/services/install/lib/eazel-install-problem.c:228
+#: components/services/install/lib/eazel-install-problem.c:129
+#: components/services/install/lib/eazel-install-problem.c:269
 #, c-format
 msgid "%s is a source package, which is not yet supported"
 msgstr "%s je zdrojový balík, tie zatiaµ nie sú podporované"
 
-#: components/services/install/lib/eazel-install-problem.c:93
+#: components/services/install/lib/eazel-install-problem.c:134
 #, c-format
 msgid "%s had a file conflict with %s which %s required"
 msgstr "%s obsahuje konflikt súborov s %s, ktorý potrebuje %s"
 
-#: components/services/install/lib/eazel-install-problem.c:98
+#: components/services/install/lib/eazel-install-problem.c:139
 #, c-format
 msgid "%s had a file conflict with %s"
 msgstr "%s obsahuje konflikt súborov s %s"
 
-#: components/services/install/lib/eazel-install-problem.c:110
-#: components/services/install/lib/eazel-install-problem.c:121
+#: components/services/install/lib/eazel-install-problem.c:151
+#: components/services/install/lib/eazel-install-problem.c:162
 #, c-format
 msgid "%s would break other packages"
 msgstr "%s by poru¹il ostatné balíky"
 
-#: components/services/install/lib/eazel-install-problem.c:113
+#: components/services/install/lib/eazel-install-problem.c:154
 #, c-format
 msgid "%s would break"
 msgstr "%s by poru¹il"
 
-#: components/services/install/lib/eazel-install-problem.c:119
+#: components/services/install/lib/eazel-install-problem.c:160
 #, c-format
 msgid "%s would break %s"
 msgstr "%s by poru¹il %s"
 
-#: components/services/install/lib/eazel-install-problem.c:129
+#: components/services/install/lib/eazel-install-problem.c:170
 #, c-format
 msgid "%s requires %s, which could not be found on the server"
 msgstr "%s vy¾aduje %s, ktorý sa nepodarilo na serveri nájs»"
 
-#: components/services/install/lib/eazel-install-problem.c:133
+#: components/services/install/lib/eazel-install-problem.c:174
 #, c-format
 msgid "%s could not be found on the server"
 msgstr "%s nebol na serveri nájdený"
 
-#: components/services/install/lib/eazel-install-problem.c:140
-#: components/services/install/lib/eazel-install-problem.c:253
+#: components/services/install/lib/eazel-install-problem.c:181
+#: components/services/install/lib/eazel-install-problem.c:294
 #, c-format
 msgid "%s is already installed"
 msgstr "%s je u¾ nain¹talovaný"
 
-#: components/services/install/lib/eazel-install-problem.c:172
+#: components/services/install/lib/eazel-install-problem.c:213
 #, c-format
 msgid "%s, which is newer, is already installed"
 msgstr "%s, ktorý je nov¹í, u¾ je nain¹talovaný"
 
 #. Possibly the implest case, we're installing package A, which requires
 #. B that is not installed.
-#: components/services/install/lib/eazel-install-problem.c:236
-#: components/services/install/lib/eazel-install-problem.c:239
+#: components/services/install/lib/eazel-install-problem.c:277
+#: components/services/install/lib/eazel-install-problem.c:280
 #: components/services/install/lib/eazel-install-rpm-glue.c:314
 #, c-format
 msgid "%s requires %s"
 msgstr "%s vy¾aduje %s"
 
-#: components/services/install/lib/eazel-install-problem.c:247
+#: components/services/install/lib/eazel-install-problem.c:288
 #, c-format
 msgid "%s is not installed"
 msgstr "%s nie je nain¹talovaný"
 
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. %s is a package name or filename
-#: components/services/install/lib/eazel-install-problem.c:725
+#: components/services/install/lib/eazel-install-problem.c:764
 #, c-format
 msgid "Check for a new version of %s"
 msgstr "Skontrolova» novú verziu %s"
 
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. both %s's are package names or filenames
-#: components/services/install/lib/eazel-install-problem.c:736
+#: components/services/install/lib/eazel-install-problem.c:775
 #, c-format
 msgid "Install both %s and %s"
 msgstr "In¹talova» obidva %s aj %s"
 
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. %s is a package name or filename
-#: components/services/install/lib/eazel-install-problem.c:751
+#: components/services/install/lib/eazel-install-problem.c:790
 #, c-format
 msgid "Remove %s from your system"
 msgstr "Odstráni» %s zo systému"
@@ -1854,13 +1906,13 @@ msgstr "Odstráni» %s zo systému"
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. %s is a package name or filename. "Force" is in the rpm sense of force,
 #. meaning that no dependency checking etc will be done
-#: components/services/install/lib/eazel-install-problem.c:764
+#: components/services/install/lib/eazel-install-problem.c:803
 #, c-format
 msgid "Force the removal of %s from your system"
 msgstr "Vynúti» odstránenie %s zo systému"
 
 #. TRANSLATORS : This string is a solution to a dependency problem
-#: components/services/install/lib/eazel-install-problem.c:772
+#: components/services/install/lib/eazel-install-problem.c:811
 msgid "Package database has an inconsistency"
 msgstr "Databáza balíkov nie je konzistentná"
 
@@ -1871,30 +1923,36 @@ msgid "Downloading %s..."
 msgstr "S»ahujem %s..."
 
 #: components/services/install/lib/eazel-install-protocols.c:124
+#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:166
 #, c-format
 msgid "Could not open target file %s"
 msgstr "Nie je mo¾né otvori» cieµový súbor %s"
 
 #: components/services/install/lib/eazel-install-protocols.c:131
 #: components/services/inventory/eazel-inventory-service.c:253
+#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:92
 msgid "Could not create an http request !"
 msgstr "Nie je mo¾né vytvori» http po¾iadavku!"
 
 #: components/services/install/lib/eazel-install-protocols.c:138
+#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:99
 msgid "Proxy: Invalid uri !"
 msgstr "Proxy: Neplatné uri!"
 
 #: components/services/install/lib/eazel-install-protocols.c:143
 #: components/services/inventory/eazel-inventory-service.c:258
+#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:105
 msgid "Invalid uri !"
 msgstr "Neplatné uri!"
 
 #: components/services/install/lib/eazel-install-protocols.c:150
 #: components/services/inventory/eazel-inventory-service.c:301
+#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:115
 msgid "Could not prepare http request !"
 msgstr "Nie je mo¾né pripravi» http po¾iadavku!"
 
 #: components/services/install/lib/eazel-install-protocols.c:155
+#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:120
 msgid "Couldn't get async mode "
 msgstr "Nie je mo¾né získa» asynchrónny mód"
 
@@ -2109,6 +2167,294 @@ msgstr "Zatváram databázu pre %s (neotvorená)"
 msgid "Cannot open %s"
 msgstr "Nie je mo¾né otvori» %s"
 
+#. Setup the title
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:257
+msgid "Easy Install"
+msgstr "¥ahká in¹talácia"
+
+#. Setup the progress header
+#. FIXME: the middle header is all fubar now, so we just say "messages", but the spec
+#. * shows "progress" over the 2nd column of the message box.  it's just too hard to get
+#. * it aligned currently.
+#.
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:360
+msgid "Messages"
+msgstr "Správy"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:657
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:542
+#, c-format
+msgid "Version: %s"
+msgstr "Verzia: %s"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:706
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1602
+#, c-format
+msgid "Downloading \"%s\""
+msgstr "S»ahujem \"%s\""
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:712
+#, c-format
+msgid "0K of %dK"
+msgstr "0K z %dK"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:719
+#, c-format
+msgid ""
+"The package \"%s\" needs \"%s\" to run.\n"
+"I'm now attempting to download it."
+msgstr ""
+"Balík \"%s\" vy¾aduje pre svoj beh \"%s\".\n"
+"Pokú¹am sa ho teraz stiahnu»."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:722
+#, c-format
+msgid "I'm attempting to download package \"%s\"."
+msgstr "Pokú¹am sa stiahnu» balík \"%s\"."
+
+#. done!
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:728
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:976
+msgid "Complete"
+msgstr "Hotovo"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:732
+#, c-format
+msgid ""
+"The package \"%s\" needs \"%s\" to run.\n"
+"I've downloaded it successfully."
+msgstr ""
+"Balík \"%s\" vy¾aduje pre svoj beh \"%s\".\n"
+"Ten bol úspe¹ne stiahnutý."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:735
+#, c-format
+msgid "I've successfully downloaded package \"%s\"."
+msgstr "Úspe¹ne som stiahol balík \"%s\"."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:754
+#, c-format
+msgid "%dK of %dK"
+msgstr "%dK z %dK"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:788
+#, c-format
+msgid "Getting information about package \"%s\" ..."
+msgstr "Získavam informácie o balíku \"%s\" ..."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:876
+msgid "Preparing to download packages..."
+msgstr "Pripravuje stiahnutie balíkov..."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:879
+msgid ""
+"I'm about to download and install the following packages:\n"
+"\n"
+msgstr ""
+"Chystám sa stiahnu» a nain¹talova» tieto balíky:\n"
+"\n"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:898
+#, c-format
+msgid "for a total of %ld MB."
+msgstr "celkom %ld MB."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:901
+#, c-format
+msgid "for a total of %ld KB."
+msgstr "celkom %ld kB."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:907
+msgid ""
+"\n"
+"Is this okay?"
+msgstr ""
+"\n"
+"V poriadku?"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:935
+#, c-format
+msgid "Downloading 1 package (%s)"
+msgstr "S»ahujem 1 balík (%s)"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:937
+#, c-format
+msgid "Downloading %d packages (%s)"
+msgstr "S»ahujem %d balíkov (%s)"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:959
+#, c-format
+msgid "Download of package \"%s\" failed!"
+msgstr "Stiahnutie balíka \"%s\" zlyhalo!"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:981
+#, c-format
+msgid ""
+"The package \"%s\" needed \"%s\" to run.\n"
+"I've downloaded and installed it."
+msgstr ""
+"Balík \"%s\" vy¾aduje pre svoj beh \"%s\".\n"
+"Ten bol úspe¹ne stiahnutý a nain¹talovaný."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:984
+#, c-format
+msgid "I've downloaded and installed package \"%s\"."
+msgstr "Stiahol a nain¹taloval som balík \"%s\"."
+
+#. starting a new package -- create new progress indicator
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1012
+#, c-format
+msgid "Installing package %d of %d"
+msgstr "In¹talujem balík %d z %d"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1039
+#, c-format
+msgid ""
+"The package \"%s\" needs \"%s\" to run.\n"
+"I'm now installing it."
+msgstr ""
+"Balík \"%s\" vy¾aduje pre svoj beh \"%s\".\n"
+"Teraz ho in¹talujem."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1042
+#, c-format
+msgid "I'm installing package \"%s\"."
+msgstr "In¹taluje balík \"%s\"."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1050
+#, c-format
+msgid "Installing \"%s\""
+msgstr "In¹taluje \"%s\""
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1058
+msgid "%d%%"
+msgstr "%d%%"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1113
+#, c-format
+msgid " · %s is in the Gnome menu under %s"
+msgstr " · %s je v menu Gnome pod %s"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1131
+#, c-format
+msgid " · %s is in the Gnome menu.\n"
+msgstr " · %s je v menu Gnome.\n"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1158
+#, c-format
+msgid " · %s is in the KDE menu.\n"
+msgstr " · %s je v menu KDE.\n"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1211
+msgid "I ran into problems while installing."
+msgstr "Nastali problémy pri in¹talácii."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1212
+msgid "I'd like to try the following :"
+msgstr "Pokúsim sa urobi» toto:"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1221
+msgid "Is this ok ?"
+msgstr "V poriadku?"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1266
+msgid "Installation aborted."
+msgstr "In¹talácia preru¹ená."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1268
+msgid "This package has already been installed."
+msgstr "Tento balík u¾ je nain¹talovaný."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1270
+msgid "Installation complete!"
+msgstr "In¹talácia dokonèená!"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1272
+msgid "Installation failed!"
+msgstr "In¹talácia zlyhala!"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1291
+#, c-format
+msgid ""
+"%s\n"
+"%s\n"
+"Erase the leftover RPM files?"
+msgstr ""
+"%s\n"
+"%s\n"
+"Odstráni» zanechané súbory RPM?"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1299
+#, c-format
+msgid ""
+"%s\n"
+"Erase the RPM files?"
+msgstr ""
+"%s\n"
+"Odstráni» súbory RPM?"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1301
+#, c-format
+msgid ""
+"%s\n"
+"Erase the leftover RPM files?"
+msgstr ""
+"%s\n"
+"Odstráni» zanechané súbory RPM?"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1332
+msgid ""
+"A core package of Nautilus has been\n"
+"updated.  You should restart Nautilus.\n"
+"\n"
+"Do you wish to do that now?"
+msgstr ""
+"Kµúèový balík Nautilu bol aktualizovaný.\n"
+"Mali by ste Nautilus re¹tartova».\n"
+"\n"
+"Chcete to urobi» teraz?"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1386
+#, c-format
+msgid "Installation failed on %s"
+msgstr "In¹talácia zlyhala na %s"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1545
+msgid "Checking for authorization..."
+msgstr "Kontrolujem pre overenie..."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1600
+msgid "Downloading remote package"
+msgstr "S»ahujem vzdialený balík"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1604
+msgid "Downloading some package"
+msgstr "S»ahujem nejaký balík"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1621
+msgid ""
+"The Eazel install service is missing:\n"
+"Installs will not work."
+msgstr ""
+"Chýba in¹talaèná slu¾ba Eazel:\n"
+"In¹talácia nebude fungova»."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1666
+msgid "Contacting the software catalog ..."
+msgstr "Kontaktujem softvérový katalóg..."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1728
+msgid "Aborting package downloads..."
+msgstr "Ru¹ím prenos balíkov..."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1743
+msgid "Package download aborted."
+msgstr "S»ahovanie balíku preru¹ené."
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1744
+msgid "Aborted"
+msgstr "Preru¹ené"
+
 #: components/services/install/nautilus-view/Nautilus_View_install.oaf.in.h:2
 msgid "Nautilus Service Install View"
 msgstr "Pohµad In¹talácia slu¾by pre Nautilus"
@@ -2125,305 +2471,9 @@ msgstr "Komponent Pohµad pre in¹taláciu slu¾by"
 msgid "Service Install View Component's Factory"
 msgstr "Vytváracie rozhranie pre komponent Pohµad pre in¹taláciu slu¾by"
 
-#. Setup the title
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:257
-msgid "Easy Install"
-msgstr "¥ahká in¹talácia"
-
-#. Setup the progress header
-#. FIXME: the middle header is all fubar now, so we just say "messages", but the spec
-#. * shows "progress" over the 2nd column of the message box.  it's just too hard to get
-#. * it aligned currently.
-#.
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:360
-msgid "Messages"
-msgstr "Správy"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:641
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:549
-#, c-format
-msgid "Version: %s"
-msgstr "Verzia: %s"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:690
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1590
-#, c-format
-msgid "Downloading \"%s\""
-msgstr "S»ahujem \"%s\""
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:696
-#, c-format
-msgid "0K of %dK"
-msgstr "0K z %dK"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:703
-#, c-format
-msgid ""
-"The package \"%s\" needs \"%s\" to run.\n"
-"I'm now attempting to download it."
-msgstr ""
-"Balík \"%s\" vy¾aduje pre svoj beh \"%s\".\n"
-"Pokú¹am sa ho teraz stiahnu»."
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:706
-#, c-format
-msgid "I'm attempting to download package \"%s\"."
-msgstr "Pokú¹am sa stiahnu» balík \"%s\"."
-
-#. done!
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:712
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:964
-msgid "Complete"
-msgstr "Hotovo"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:716
-#, c-format
-msgid ""
-"The package \"%s\" needs \"%s\" to run.\n"
-"I've downloaded it successfully."
-msgstr ""
-"Balík \"%s\" vy¾aduje pre svoj beh \"%s\".\n"
-"Ten bol úspe¹ne stiahnutý."
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:719
-#, c-format
-msgid "I've successfully downloaded package \"%s\"."
-msgstr "Úspe¹ne som stiahol balík \"%s\"."
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:738
-#, c-format
-msgid "%dK of %dK"
-msgstr "%dK z %dK"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:772
-#, c-format
-msgid "Getting information about package \"%s\" ..."
-msgstr "Získavam informácie o balíku \"%s\" ..."
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:864
-msgid "Preparing to download packages..."
-msgstr "Pripravuje stiahnutie balíkov..."
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:867
-msgid ""
-"I'm about to download and install the following packages:\n"
-"\n"
-msgstr ""
-"Chystám sa stiahnu» a nain¹talova» tieto balíky:\n"
-"\n"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:886
-#, c-format
-msgid "for a total of %ld MB."
-msgstr "celkom %ld MB."
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:889
-#, c-format
-msgid "for a total of %ld KB."
-msgstr "celkom %ld kB."
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:895
-msgid ""
-"\n"
-"Is this okay?"
-msgstr ""
-"\n"
-"V poriadku?"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:923
-#, c-format
-msgid "Downloading 1 package (%s)"
-msgstr "S»ahujem 1 balík (%s)"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:925
-#, c-format
-msgid "Downloading %d packages (%s)"
-msgstr "S»ahujem %d balíkov (%s)"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:947
-#, c-format
-msgid "Download of package \"%s\" failed!"
-msgstr "Stiahnutie balíka \"%s\" zlyhalo!"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:969
-#, c-format
-msgid ""
-"The package \"%s\" needed \"%s\" to run.\n"
-"I've downloaded and installed it."
-msgstr ""
-"Balík \"%s\" vy¾aduje pre svoj beh \"%s\".\n"
-"Ten bol úspe¹ne stiahnutý a nain¹talovaný."
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:972
-#, c-format
-msgid "I've downloaded and installed package \"%s\"."
-msgstr "Stiahol a nain¹taloval som balík \"%s\"."
-
-#. starting a new package -- create new progress indicator
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1000
-#, c-format
-msgid "Installing package %d of %d"
-msgstr "In¹talujem balík %d z %d"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1027
-#, c-format
-msgid ""
-"The package \"%s\" needs \"%s\" to run.\n"
-"I'm now installing it."
-msgstr ""
-"Balík \"%s\" vy¾aduje pre svoj beh \"%s\".\n"
-"Teraz ho in¹talujem."
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1030
-#, c-format
-msgid "I'm installing package \"%s\"."
-msgstr "In¹taluje balík \"%s\"."
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1038
-#, c-format
-msgid "Installing \"%s\""
-msgstr "In¹taluje \"%s\""
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1046
-msgid "%d%%"
-msgstr "%d%%"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1101
-#, c-format
-msgid " · %s is in the Gnome menu under %s"
-msgstr " · %s je v menu Gnome pod %s"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1119
-#, c-format
-msgid " · %s is in the Gnome menu.\n"
-msgstr " · %s je v menu Gnome.\n"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1146
-#, c-format
-msgid " · %s is in the KDE menu.\n"
-msgstr " · %s je v menu KDE.\n"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1199
-msgid "I ran into problems while installing."
-msgstr "Nastali problémy pri in¹talácii."
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1200
-msgid "I'd like to try the following :"
-msgstr "Pokúsim sa urobi» toto:"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1209
-msgid "Is this ok ?"
-msgstr "V poriadku?"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1254
-msgid "Installation aborted."
-msgstr "In¹talácia preru¹ená."
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1256
-msgid "This package has already been installed."
-msgstr "Tento balík u¾ je nain¹talovaný."
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1258
-msgid "Installation complete!"
-msgstr "In¹talácia dokonèená!"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1260
-msgid "Installation failed!"
-msgstr "In¹talácia zlyhala!"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1279
-#, c-format
-msgid ""
-"%s\n"
-"%s\n"
-"Erase the leftover RPM files?"
-msgstr ""
-"%s\n"
-"%s\n"
-"Odstráni» zanechané súbory RPM?"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1287
-#, c-format
-msgid ""
-"%s\n"
-"Erase the RPM files?"
-msgstr ""
-"%s\n"
-"Odstráni» súbory RPM?"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1289
-#, c-format
-msgid ""
-"%s\n"
-"Erase the leftover RPM files?"
-msgstr ""
-"%s\n"
-"Odstráni» zanechané súbory RPM?"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1320
-msgid ""
-"A core package of Nautilus has been\n"
-"updated.  You should restart Nautilus.\n"
-"\n"
-"Do you wish to do that now?"
-msgstr ""
-"Kµúèový balík Nautilu bol aktualizovaný.\n"
-"Mali by ste Nautilus re¹tartova».\n"
-"\n"
-"Chcete to urobi» teraz?"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1374
-#, c-format
-msgid "Installation failed on %s"
-msgstr "In¹talácia zlyhala na %s"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1533
-msgid "Checking for authorization..."
-msgstr "Kontrolujem pre overenie..."
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1588
-msgid "Downloading remote package"
-msgstr "S»ahujem vzdialený balík"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1592
-msgid "Downloading some package"
-msgstr "S»ahujem nejaký balík"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1609
-msgid ""
-"The Eazel install service is missing:\n"
-"Installs will not work."
-msgstr ""
-"Chýba in¹talaèná slu¾ba Eazel:\n"
-"In¹talácia nebude fungova»."
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1654
-msgid "Contacting the software catalog ..."
-msgstr "Kontaktujem softvérový katalóg..."
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1716
-msgid "Aborting package downloads..."
-msgstr "Ru¹ím prenos balíkov..."
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1731
-msgid "Package download aborted."
-msgstr "S»ahovanie balíku preru¹ené."
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1732
-msgid "Aborted"
-msgstr "Preru¹ené"
-
 #: components/services/install/server/Trilobite_Service_install.oaf.in.h:1
 msgid "Factory for the install service"
 msgstr "Vytváracie rozhranie pre in¹talaènú slu¾bu"
-
-#: components/services/inventory/Trilobite_Service_inventory.oaf.in.h:1
-msgid "Factory for the inventory service"
-msgstr "Vytváracie rozhranie pre inventárovú slu¾bu"
-
-#: components/services/inventory/Trilobite_Service_inventory.oaf.in.h:2
-msgid "Inventory"
-msgstr "Inventár"
 
 #: components/services/inventory/eazel-inventory-client.c:66
 msgid "Enable inventory upload."
@@ -2481,25 +2531,33 @@ msgstr "nie je mo¾né otvori» doèasný súbor hell\n"
 msgid "Can't set body !"
 msgstr "Nie je mo¾né nastavi» telo!"
 
-#: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:1
-msgid "Change Password"
-msgstr "Zmeni» heslo"
+#: components/services/inventory/Trilobite_Service_inventory.oaf.in.h:1
+msgid "Factory for the inventory service"
+msgstr "Vytváracie rozhranie pre inventárovú slu¾bu"
 
-#: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:2
-msgid "Eazel Change Password View"
-msgstr "Pohµad Zmeni» Eazel heslo"
+#: components/services/inventory/Trilobite_Service_inventory.oaf.in.h:2
+msgid "Inventory"
+msgstr "Inventár"
 
-#: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:3
-msgid "Eazel Change Password view component"
-msgstr "Komponent Pohµad zmeni» Eazel heslo"
+#: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:1
+msgid "Nautilus Inventory view"
+msgstr "Inventárový pohµad pre Nautilus"
 
-#: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:4
-msgid "Nautilus Service Login View Factory"
-msgstr "Vytváracie rozhranie pre pohµad Prihlásenie k slu¾be pre Nautilus"
+#: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:2
+msgid "Nautilus Inventory view factory"
+msgstr "Vytváracie rozhranie pre Inventárový pohµad pre Nautilus"
 
-#: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:5
-msgid "Service Login View Component's Factory"
-msgstr "Vytváracie rozhranie pre komponent Pohµad Prihlásenie k slu¾be"
+#: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:3
+msgid "Nautilus System Inventory component's component's factory"
+msgstr "Vytváracie rozhranie pre komponent Systémový inventár pre Nautilus"
+
+#: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:4
+msgid "System Inventory"
+msgstr "Systémový inventár"
+
+#: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:5
+msgid "System inventory view component"
+msgstr "Komponent pohµadu Systémového inventára"
 
 #. Setup the title
 #: components/services/login/nautilus-view/nautilus-change-password-view.c:148
@@ -2603,6 +2661,26 @@ msgstr ""
 "¥utujem, ale va¹e nové heslo\n"
 "nebolo dvakrát rovnako napísané.\n"
 "Prosím, skúste to znovu."
+
+#: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:1
+msgid "Change Password"
+msgstr "Zmeni» heslo"
+
+#: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:2
+msgid "Eazel Change Password View"
+msgstr "Pohµad Zmeni» Eazel heslo"
+
+#: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:3
+msgid "Eazel Change Password view component"
+msgstr "Komponent Pohµad zmeni» Eazel heslo"
+
+#: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:4
+msgid "Nautilus Service Login View Factory"
+msgstr "Vytváracie rozhranie pre pohµad Prihlásenie k slu¾be pre Nautilus"
+
+#: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:5
+msgid "Service Login View Component's Factory"
+msgstr "Vytváracie rozhranie pre komponent Pohµad Prihlásenie k slu¾be"
 
 #: components/services/nautilus-dependent-shared/eazel-services-extensions.c:260
 msgid "Unknown Date"
@@ -2718,6 +2796,68 @@ msgstr "Prosím, prihláste sa k slu¾bám Eazel"
 msgid "Your user name or password were not correct.  Please try again."
 msgstr "Va¹e pou¾ívateµské meno alebo heslo nie je správne. Skúste to znovu."
 
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:102
+msgid "Register"
+msgstr "Registrácia"
+
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:103
+msgid "Login"
+msgstr "Prihlásenie"
+
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:104
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:112
+msgid "Terms of Use"
+msgstr "Pravidlá pou¾itia"
+
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:105
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:113
+msgid "Privacy Statement"
+msgstr "Informácia o zabezpeèení súkromia"
+
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:110
+msgid "Account Preferences"
+msgstr "Nastavenie úètu"
+
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:111
+msgid "Logout"
+msgstr "Odhlási»"
+
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:124
+#, c-format
+msgid "Welcome, %s!"
+msgstr "Vítajte, %s!"
+
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:129
+msgid "You are not logged in"
+msgstr "Nie ste prihlásený"
+
+#. add the tab
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:666
+#: src/nautilus-service-ui.xml.h:5
+msgid "Services"
+msgstr "Slu¾by"
+
+#. add the tab
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:702
+msgid "Featured Downloads"
+msgstr "Reklamné odkazy"
+
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:862
+msgid ""
+"Unable to connect to Eazel's server. The server might be unavailable right "
+"now, or your computer might be configured incorrectly.You could try again "
+"later."
+msgstr ""
+"Nie je mo¾né sa spoji» so serverom firmy Eazel. Tento server mo¾no nie je "
+"momentálne k dispozícii alebo vá¹ poèítaè nefunguje správne. Mô¾ete to tie¾ "
+"skúsi» neskôr."
+
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:880
+msgid "Found problem with data on Eazel servers. Please contact support@eazel.com."
+msgstr ""
+"Bol nájdený problém dát na serveroch firmy Eazel. Prosím, kontaktujte "
+"support@eazel.com."
+
 #: components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:1
 msgid "Configure your service preferences"
 msgstr "Nastavi» va¹e slu¾by"
@@ -2750,67 +2890,10 @@ msgstr "_Odhlási» sa z slu¾ieb Eazel"
 msgid "_Register for Eazel Services"
 msgstr "Za_registrova» sa u slu¾ieb Eazel"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:105
-msgid "Register"
-msgstr "Registrácia"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:106
-msgid "Login"
-msgstr "Prihlásenie"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:107
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:115
-msgid "Terms of Use"
-msgstr "Pravidlá pou¾itia"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:108
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:116
-msgid "Privacy Statement"
-msgstr "Informácia o zabezpeèení súkromia"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:113
-msgid "Account Preferences"
-msgstr "Nastavenie úètu"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:114
-msgid "Logout"
-msgstr "Odhlási»"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:127
+#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:130
 #, c-format
-msgid "Welcome, %s!"
-msgstr "Vítajte, %s!"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:132
-msgid "You are not logged in"
-msgstr "Nie ste prihlásený"
-
-#. add the tab
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:673
-#: src/nautilus-service-ui.xml.h:5
-msgid "Services"
-msgstr "Slu¾by"
-
-#. add the tab
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:709
-msgid "Featured Downloads"
-msgstr "Reklamné odkazy"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:869
-msgid ""
-"Unable to connect to Eazel's server. The server might be unavailable right "
-"now, or your computer might be configured incorrectly.You could try again "
-"later."
-msgstr ""
-"Nie je mo¾né sa spoji» so serverom firmy Eazel. Tento server mo¾no nie je "
-"momentálne k dispozícii alebo vá¹ poèítaè nefunguje správne. Mô¾ete to tie¾ "
-"skúsi» neskôr."
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:887
-msgid "Found problem with data on Eazel servers. Please contact support@eazel.com."
-msgstr ""
-"Bol nájdený problém dát na serveroch firmy Eazel. Prosím, kontaktujte "
-"support@eazel.com."
+msgid "HTTP error %d \"%s\" on uri %s"
+msgstr "Chyba HTTP %d \"%s\" pre URI %s"
 
 #: components/services/trilobite/libtrilobite/trilobite-core-utils.c:200
 msgid "Could not initialize Bonobo"
@@ -2877,21 +2960,14 @@ msgstr ""
 "Chyba: Neplatná operácia\n"
 "Syntax: %s\n"
 
-#: components/text/Nautilus_View_text.oaf.in.h:1
-msgid "Factory for text view"
-msgstr "Vytváracie rozhranie pre textový pohµad"
+#: components/text/nautilus-text-view.c:315
+#, c-format
+msgid "Sorry, but %s is too large for Nautilus to load all of it."
+msgstr "¥utujem, ale %s je príli¹ veµký, tak¾e ho Nautilus nedoká¾e naèíta» celý."
 
-#: components/text/Nautilus_View_text.oaf.in.h:2
-msgid "Text"
-msgstr "Text"
-
-#: components/text/Nautilus_View_text.oaf.in.h:3
-msgid "Text view"
-msgstr "Textový pohµad"
-
-#: components/text/Nautilus_View_text.oaf.in.h:4
-msgid "Text view factory"
-msgstr "Vytváracie rozhranie pre Textový pohµad"
+#: components/text/nautilus-text-view.c:316
+msgid "File too large"
+msgstr "Súbor príli¹ veµký"
 
 #: components/text/nautilus-text-view-ui.xml.h:1
 msgid "Lucida"
@@ -2929,14 +3005,37 @@ msgstr "_Helvetica"
 msgid "_Times"
 msgstr "_Times"
 
-#: components/text/nautilus-text-view.c:315
-#, c-format
-msgid "Sorry, but %s is too large for Nautilus to load all of it."
-msgstr "¥utujem, ale %s je príli¹ veµký, tak¾e ho Nautilus nedoká¾e naèíta» celý."
+#: components/text/Nautilus_View_text.oaf.in.h:1
+msgid "Factory for text view"
+msgstr "Vytváracie rozhranie pre textový pohµad"
 
-#: components/text/nautilus-text-view.c:316
-msgid "File too large"
-msgstr "Súbor príli¹ veµký"
+#: components/text/Nautilus_View_text.oaf.in.h:2
+msgid "Text"
+msgstr "Text"
+
+#: components/text/Nautilus_View_text.oaf.in.h:3
+msgid "Text view"
+msgstr "Textový pohµad"
+
+#: components/text/Nautilus_View_text.oaf.in.h:4
+msgid "Text view factory"
+msgstr "Vytváracie rozhranie pre Textový pohµad"
+
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:1
+msgid "animation to indicate on-going activity"
+msgstr "animova» pre zobrazenie aktivity"
+
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:2
+msgid "throbber"
+msgstr "Pulzovaè"
+
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:3
+msgid "throbber factory"
+msgstr "Vytváracie rozhranie pre Pulzovaè"
+
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:4
+msgid "throbber object factory"
+msgstr "Vytváracie rozhranie pre Pulzovaè"
 
 #: components/tree/Nautilus_View_tree.oaf.in.h:1
 msgid "Nautilus Tree sidebar panel"
@@ -3300,7 +3399,7 @@ msgstr "Gimp"
 msgid "Desktop"
 msgstr "Plocha"
 
-#: data/linksets/desktop.xml.h:2 libnautilus-extensions/nautilus-file.c:4676
+#: data/linksets/desktop.xml.h:2 libnautilus-extensions/nautilus-file.c:4690
 #: libnautilus-extensions/nautilus-trash-directory.c:301
 #: src/file-manager/fm-desktop-icon-view.c:65
 msgid "Trash"
@@ -3330,6 +3429,159 @@ msgstr "Google"
 msgid "Search Engines"
 msgstr "Vyhµadávacie slu¾by"
 
+#: data/static_bookmarks.xml.h:1
+msgid "Borland"
+msgstr "Borland"
+
+#: data/static_bookmarks.xml.h:2
+msgid "CNET Computers.com"
+msgstr "CNET Computers.com"
+
+#: data/static_bookmarks.xml.h:3
+msgid "CNET Linux Center"
+msgstr "CNET Linux Center"
+
+#: data/static_bookmarks.xml.h:4
+msgid "Caldera"
+msgstr "Caldera"
+
+#: data/static_bookmarks.xml.h:5
+msgid "CollabNet"
+msgstr "CollabNet"
+
+#: data/static_bookmarks.xml.h:6
+msgid "Compaq"
+msgstr "Compaq"
+
+#: data/static_bookmarks.xml.h:7
+msgid "Debian.org"
+msgstr "Debian.org"
+
+#: data/static_bookmarks.xml.h:8
+msgid "Dell"
+msgstr "Dell"
+
+#: data/static_bookmarks.xml.h:9
+msgid "Eazel"
+msgstr "Eazel"
+
+#: data/static_bookmarks.xml.h:10
+msgid "Freshmeat.net"
+msgstr "Freshmeat.net"
+
+#: data/static_bookmarks.xml.h:11
+msgid "GNOME.org"
+msgstr "GNOME.org"
+
+#: data/static_bookmarks.xml.h:12
+msgid "GNU.org"
+msgstr "GNU.org"
+
+#: data/static_bookmarks.xml.h:14
+msgid "Hewlett-Packard"
+msgstr "Hewlett-Packard"
+
+#: data/static_bookmarks.xml.h:15
+msgid "IBM"
+msgstr "IBM"
+
+#: data/static_bookmarks.xml.h:16
+msgid "Linux Companies"
+msgstr "Linuxové firmy"
+
+#: data/static_bookmarks.xml.h:17
+msgid "Linux Documentation Project"
+msgstr "Linux Dokumentaèný projekt"
+
+#: data/static_bookmarks.xml.h:18
+msgid "Linux Online"
+msgstr "Linux Online"
+
+#: data/static_bookmarks.xml.h:19
+msgid "Linux Resources"
+msgstr "Zdroje pre Linux"
+
+#: data/static_bookmarks.xml.h:20
+msgid "Linux at IBM"
+msgstr "Linux v IBM"
+
+#: data/static_bookmarks.xml.h:21
+msgid "LinuxNewbie.org"
+msgstr "LinuxNewbie.org"
+
+#: data/static_bookmarks.xml.h:22
+msgid "Linuxcare"
+msgstr "Linuxcare"
+
+#: data/static_bookmarks.xml.h:23
+msgid "Myplay"
+msgstr "Myplay"
+
+#. The copyright character in here is correct for
+#. * Latin-1 encoding, but not for UTF-8, so we have
+#. * to change it when we upgrade to GTK 2.0.
+#.
+#: data/static_bookmarks.xml.h:24 src/nautilus-window-manage-views.c:245
+#: src/nautilus-window-menus.c:553
+msgid "Nautilus"
+msgstr "Nautilus"
+
+#: data/static_bookmarks.xml.h:25
+msgid "News and Media"
+msgstr "Správy a médiá"
+
+#: data/static_bookmarks.xml.h:26
+msgid "OSDN"
+msgstr "OSDN"
+
+#: data/static_bookmarks.xml.h:27
+msgid "OpenOffice"
+msgstr "OpenOffice"
+
+#: data/static_bookmarks.xml.h:28
+msgid "Red Hat"
+msgstr "Red Hat"
+
+#: data/static_bookmarks.xml.h:29
+msgid "Slashdot"
+msgstr "Slashdot"
+
+#: data/static_bookmarks.xml.h:30
+msgid "Software"
+msgstr "Softvér"
+
+#: data/static_bookmarks.xml.h:31
+msgid "SourceForge"
+msgstr "SourceForge"
+
+#: data/static_bookmarks.xml.h:32
+msgid "SourceXchange"
+msgstr "SourceXchange"
+
+#: data/static_bookmarks.xml.h:33
+msgid "Sun StarOffice"
+msgstr "Sun StarOffice"
+
+#: data/static_bookmarks.xml.h:34
+msgid "VA Linux"
+msgstr "VA Linux"
+
+#: data/static_bookmarks.xml.h:35
+msgid "VMWare"
+msgstr "VMWare"
+
+#: data/static_bookmarks.xml.h:36
+msgid "Web Services"
+msgstr "Slu¾by WWW"
+
+#: data/static_bookmarks.xml.h:37
+msgid "Ximian"
+msgstr "Ximian"
+
+#: data/static_bookmarks.xml.h:38
+msgid "ZDNet Linux Resource Center"
+msgstr "ZDNet Linux Resource Center"
+
 #: icons/ardmore/ardmore.xml.h:1
 msgid "Tahoe"
 msgstr "Tahoe"
@@ -3345,6 +3597,14 @@ msgstr "Modrozelená variácia témy Crux."
 #: icons/arlo/arlo.xml.h:2
 msgid "Crux-Teal"
 msgstr "Crux-Modrozelená"
+
+#: icons/crux_eggplant/crux_eggplant.xml.h:1
+msgid "An Eggplant variation of the Crux theme."
+msgstr "Eggplant variácia témy Crux."
+
+#: icons/crux_eggplant/crux_eggplant.xml.h:2
+msgid "Crux-Eggplant"
+msgstr "Crux-Eggplant"
 
 #: icons/default.xml.h:1
 msgid "Default"
@@ -3374,10 +3634,148 @@ msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
 msgid "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
 msgstr "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
 
-#: libnautilus-extensions/nautilus-file-operations-progress.c:330
+#. Today, use special word.
+#. * Note to localizers: You can look at man strftime
+#. * for details on the format, but you should only use
+#. * the specifiers from the C standard, not extensions.
+#. * These include "%" followed by one of
+#. * "aAbBcdHIjmMpSUwWxXyYZ". There are two extensions
+#. * in the Nautilus version of strftime that can be
+#. * used (and match GNU extensions). Putting a "-"
+#. * between the "%" and any numeric directive will turn
+#. * off zero padding, and putting a "_" there will use
+#. * space padding instead of zero padding.
+#.
+#: libnautilus-extensions/nautilus-file.c:2274
+msgid "today at %-I:%M %p"
+msgstr "dnes o %-I:%M %p"
+
+#. Yesterday, use special word.
+#. * Note to localizers: Same issues as "today" string.
+#.
+#: libnautilus-extensions/nautilus-file.c:2279
+msgid "yesterday at %-I:%M %p"
+msgstr "vèera o %-I:%M %p"
+
+#. Current week, include day of week.
+#. * Note to localizers: Same issues as "today" string.
+#.
+#: libnautilus-extensions/nautilus-file.c:2284
+msgid "%A %-m/%-d/%y at %-I:%M %p"
+msgstr "%A %-d.%-m.%y o %-I:%M %p"
+
+#. Other dates.
+#. * Note to localizers: Same issues as "today" string.
+#.
+#: libnautilus-extensions/nautilus-file.c:2289
+msgid "%-m/%-d/%y at %-I:%M %p"
+msgstr "%-d.%-m.%y o %-I:%M %p"
+
+#: libnautilus-extensions/nautilus-file.c:3345
+msgid "0 items"
+msgstr "0 polo¾iek"
+
+#: libnautilus-extensions/nautilus-file.c:3345
+msgid "0 folders"
+msgstr "0 prieèinkov"
+
+#: libnautilus-extensions/nautilus-file.c:3346
+msgid "0 files"
+msgstr "0 súborov"
+
+#: libnautilus-extensions/nautilus-file.c:3350
+msgid "1 item"
+msgstr "1 polo¾ka"
+
+#: libnautilus-extensions/nautilus-file.c:3350
+msgid "1 folder"
+msgstr "1 prieèinok"
+
+#: libnautilus-extensions/nautilus-file.c:3351
+msgid "1 file"
+msgstr "1 súbor"
+
+#: libnautilus-extensions/nautilus-file.c:3354
 #, c-format
-msgid "%ld of %ld"
-msgstr "%ld z %ld"
+msgid "%u items"
+msgstr "%u polo¾iek"
+
+#: libnautilus-extensions/nautilus-file.c:3354
+#, c-format
+msgid "%u folders"
+msgstr "%u prieèinkov"
+
+#: libnautilus-extensions/nautilus-file.c:3355
+#, c-format
+msgid "%u files"
+msgstr "%u súborov"
+
+#. This means no contents at all were readable
+#: libnautilus-extensions/nautilus-file.c:3655
+#: libnautilus-extensions/nautilus-file.c:3669
+msgid "? items"
+msgstr "? polo¾iek"
+
+#. This means no contents at all were readable
+#: libnautilus-extensions/nautilus-file.c:3660
+msgid "? bytes"
+msgstr "? bajtov"
+
+#: libnautilus-extensions/nautilus-file.c:3673
+msgid "unknown type"
+msgstr "neznámy typ"
+
+#: libnautilus-extensions/nautilus-file.c:3675
+msgid "unknown MIME type"
+msgstr "neznámy typ MIME"
+
+#. Fallback, use for both unknown attributes and attributes
+#. * for which we have no more appropriate default.
+#.
+#: libnautilus-extensions/nautilus-file.c:3680
+msgid "unknown"
+msgstr "neznámy"
+
+#: libnautilus-extensions/nautilus-file.c:3716
+msgid "program"
+msgstr "program"
+
+#: libnautilus-extensions/nautilus-file.c:3728
+msgid ""
+"Can't find description even for \"x-directory/normal\". This probably means "
+"that your gnome-vfs.keys file is in the wrong place or isn't being found for "
+"some other reason."
+msgstr ""
+"Nie je mo¾né nájs» popis ani pre \"x-directory/normal\". To asi znamená, ¾e "
+"súbor gnome-vfs.keys nie je na správnom mieste alebo z nejakého iného dôvodu "
+"sa nedá nájs»."
+
+#: libnautilus-extensions/nautilus-file.c:3732
+#, c-format
+msgid ""
+"No description found for mime type \"%s\" (file is \"%s\"), tell "
+"aaron@eazel.com"
+msgstr ""
+"Pre typ MIME \"%s\" (súbor je \"%s\") nebol nájdený ¾iadny popis. Oznámte to "
+"na adresu aaron@eazel.com"
+
+#: libnautilus-extensions/nautilus-file.c:3746
+msgid "link"
+msgstr "odkaz"
+
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
+#: libnautilus-extensions/nautilus-file-operations.c:1146
+#: libnautilus-extensions/nautilus-file.c:3752
+#, c-format
+msgid "link to %s"
+msgstr "odkaz na %s"
+
+#: libnautilus-extensions/nautilus-file.c:3766
+msgid "link (broken)"
+msgstr "odkaz (neplatný)"
 
 #. "From" dialog label, source path gets placed next to it in the dialog
 #: libnautilus-extensions/nautilus-file-operations.c:385
@@ -3729,13 +4127,6 @@ msgstr "Nahradi»"
 #: libnautilus-extensions/nautilus-file-operations.c:1097
 msgid "Replace All"
 msgstr "Nahradi» v¹etky"
-
-#. appended to new link file
-#: libnautilus-extensions/nautilus-file-operations.c:1146
-#: libnautilus-extensions/nautilus-file.c:3738
-#, c-format
-msgid "link to %s"
-msgstr "odkaz na %s"
 
 #. appended to new link file
 #: libnautilus-extensions/nautilus-file-operations.c:1150
@@ -4277,142 +4668,22 @@ msgstr "bla bla (25. kópia).txt"
 msgid "foo foo (100000000000000th copy).txt"
 msgstr "bla bla (100000000000000. kópia).txt"
 
-#. Today, use special word.
-#. * Note to localizers: You can look at man strftime
-#. * for details on the format, but you should only use
-#. * the specifiers from the C standard, not extensions.
-#. * These include "%" followed by one of
-#. * "aAbBcdHIjmMpSUwWxXyYZ". There are two extensions
-#. * in the Nautilus version of strftime that can be
-#. * used (and match GNU extensions). Putting a "-"
-#. * between the "%" and any numeric directive will turn
-#. * off zero padding, and putting a "_" there will use
-#. * space padding instead of zero padding.
-#.
-#: libnautilus-extensions/nautilus-file.c:2260
-msgid "today at %-I:%M %p"
-msgstr "dnes o %-I:%M %p"
-
-#. Yesterday, use special word.
-#. * Note to localizers: Same issues as "today" string.
-#.
-#: libnautilus-extensions/nautilus-file.c:2265
-msgid "yesterday at %-I:%M %p"
-msgstr "vèera o %-I:%M %p"
-
-#. Current week, include day of week.
-#. * Note to localizers: Same issues as "today" string.
-#.
-#: libnautilus-extensions/nautilus-file.c:2270
-msgid "%A %-m/%-d/%y at %-I:%M %p"
-msgstr "%A %-d.%-m.%y o %-I:%M %p"
-
-#. Other dates.
-#. * Note to localizers: Same issues as "today" string.
-#.
-#: libnautilus-extensions/nautilus-file.c:2275
-msgid "%-m/%-d/%y at %-I:%M %p"
-msgstr "%-d.%-m.%y o %-I:%M %p"
-
-#: libnautilus-extensions/nautilus-file.c:3331
-msgid "0 items"
-msgstr "0 polo¾iek"
-
-#: libnautilus-extensions/nautilus-file.c:3331
-msgid "0 folders"
-msgstr "0 prieèinkov"
-
-#: libnautilus-extensions/nautilus-file.c:3332
-msgid "0 files"
-msgstr "0 súborov"
-
-#: libnautilus-extensions/nautilus-file.c:3336
-msgid "1 item"
-msgstr "1 polo¾ka"
-
-#: libnautilus-extensions/nautilus-file.c:3336
-msgid "1 folder"
-msgstr "1 prieèinok"
-
-#: libnautilus-extensions/nautilus-file.c:3337
-msgid "1 file"
-msgstr "1 súbor"
-
-#: libnautilus-extensions/nautilus-file.c:3340
+#: libnautilus-extensions/nautilus-file-operations-progress.c:330
 #, c-format
-msgid "%u items"
-msgstr "%u polo¾iek"
-
-#: libnautilus-extensions/nautilus-file.c:3340
-#, c-format
-msgid "%u folders"
-msgstr "%u prieèinkov"
-
-#: libnautilus-extensions/nautilus-file.c:3341
-#, c-format
-msgid "%u files"
-msgstr "%u súborov"
-
-#. This means no contents at all were readable
-#: libnautilus-extensions/nautilus-file.c:3641
-#: libnautilus-extensions/nautilus-file.c:3655
-msgid "? items"
-msgstr "? polo¾iek"
-
-#. This means no contents at all were readable
-#: libnautilus-extensions/nautilus-file.c:3646
-msgid "? bytes"
-msgstr "? bajtov"
-
-#: libnautilus-extensions/nautilus-file.c:3659
-msgid "unknown type"
-msgstr "neznámy typ"
-
-#: libnautilus-extensions/nautilus-file.c:3661
-msgid "unknown MIME type"
-msgstr "neznámy typ MIME"
-
-#. Fallback, use for both unknown attributes and attributes
-#. * for which we have no more appropriate default.
-#.
-#: libnautilus-extensions/nautilus-file.c:3666
-msgid "unknown"
-msgstr "neznámy"
-
-#: libnautilus-extensions/nautilus-file.c:3702
-msgid "program"
-msgstr "program"
-
-#: libnautilus-extensions/nautilus-file.c:3714
-msgid ""
-"Can't find description even for \"x-directory/normal\". This probably means "
-"that your gnome-vfs.keys file is in the wrong place or isn't being found for "
-"some other reason."
-msgstr ""
-"Nie je mo¾né nájs» popis ani pre \"x-directory/normal\". To asi znamená, ¾e "
-"súbor gnome-vfs.keys nie je na správnom mieste alebo z nejakého iného dôvodu "
-"sa nedá nájs»."
-
-#: libnautilus-extensions/nautilus-file.c:3718
-#, c-format
-msgid ""
-"No description found for mime type \"%s\" (file is \"%s\"), tell "
-"aaron@eazel.com"
-msgstr ""
-"Pre typ MIME \"%s\" (súbor je \"%s\") nebol nájdený ¾iadny popis. Oznámte to "
-"na adresu aaron@eazel.com"
-
-#: libnautilus-extensions/nautilus-file.c:3732
-msgid "link"
-msgstr "odkaz"
-
-#: libnautilus-extensions/nautilus-file.c:3752
-msgid "link (broken)"
-msgstr "odkaz (neplatný)"
+msgid "%ld of %ld"
+msgstr "%ld z %ld"
 
 #: libnautilus-extensions/nautilus-font-picker.c:131
 msgid "Font"
 msgstr "Písmo"
+
+#: libnautilus-extensions/nautilus-gconf-extensions.c:88
+msgid "GConf Error"
+msgstr "Chyba GConf"
+
+#: libnautilus-extensions/nautilus-gdk-font-extensions.c:638
+msgid "fixed"
+msgstr "pevná ¹írka"
 
 #. localizers: These strings are part of the strftime
 #. * self-check code and must be changed to match what strtfime
@@ -4449,8 +4720,8 @@ msgid "Ask before deleting items from the trash"
 msgstr "Pýta» sa pred odstránením polo¾iek z Odpadkov"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:100
-msgid "Click policy"
-msgstr "Politika kliknutí"
+msgid "Click behavior"
+msgstr "Chovanie pri kliknutí"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:103
 msgid "single"
@@ -4591,8 +4862,8 @@ msgid "Show special flags in Properties window"
 msgstr "Ukáza» ¹peciálne príznaky v okne Vlastnosti"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:206
-msgid "Show only folders in tree sidebar panel"
-msgstr "Ukáza» iba prieèinky v strome v boènom paneli"
+msgid "Show only folders (no files) in Tree sidebar panel"
+msgstr "Ukáza» iba prieèinky (nie súbory) v strome v boènom paneli"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:209
 msgid "Can add Content"
@@ -4661,9 +4932,8 @@ msgid "Trash Behavior"
 msgstr "Chovanie Odpadkov"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:602
-#: src/file-manager/fm-directory-view.c:3450
-msgid "Display"
-msgstr "Displej"
+msgid "Show/Hide Options"
+msgstr "Ukáza»/Skry» mo¾nosti"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:635
 msgid "Search"
@@ -4847,10 +5117,6 @@ msgstr "Opakova» vrátené Písanie"
 msgid "Restore the changed name"
 msgstr "Obnovi» zmenené meno"
 
-#: libnautilus-extensions/nautilus-preferences-dialog.c:207
-msgid "Prefs Box"
-msgstr "Nastavenie"
-
 #: libnautilus-extensions/nautilus-preferences.c:76
 msgid "Beginner"
 msgstr "Zaèiatoèník"
@@ -4863,8 +5129,12 @@ msgstr "Priemerný"
 msgid "Advanced"
 msgstr "Pokroèilý"
 
+#: libnautilus-extensions/nautilus-preferences-dialog.c:207
+msgid "Prefs Box"
+msgstr "Nastavenie"
+
 #: libnautilus-extensions/nautilus-program-chooser.c:186
-#: src/nautilus-window.c:895 src/nautilus-window.c:1136
+#: src/nautilus-window.c:903 src/nautilus-window.c:1145
 #, c-format
 msgid "View as %s"
 msgstr "Zobrazi» ako %s"
@@ -5312,6 +5582,10 @@ msgstr "Prehµadávam disky"
 msgid "Nautilus is searching for trash folders."
 msgstr "Nautilus hµadá prieèinky s Odpadkami."
 
+#: libnautilus-extensions/nautilus-trash-file.c:591
+msgid "on the desktop"
+msgstr "na ploche"
+
 #: libnautilus-extensions/nautilus-undo-signal-handlers.c:175
 msgid "Edit"
 msgstr "Upravi»"
@@ -5332,50 +5606,50 @@ msgstr "Opakova» vrátenú úpravu"
 msgid "Redo the edit"
 msgstr "Opakova» vrátenú úpravu"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:465
-#: libnautilus-extensions/nautilus-volume-monitor.c:487
+#: libnautilus-extensions/nautilus-volume-monitor.c:471
+#: libnautilus-extensions/nautilus-volume-monitor.c:493
 msgid "Audio CD"
 msgstr "Audio CD"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1281
+#: libnautilus-extensions/nautilus-volume-monitor.c:1287
 msgid "Mount Error"
 msgstr "Chyba pripojenia"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1283
+#: libnautilus-extensions/nautilus-volume-monitor.c:1289
 msgid "Unmount Error"
 msgstr "Chyba odpojenia"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1313
+#: libnautilus-extensions/nautilus-volume-monitor.c:1319
 msgid "is write-protected, mounting read-only"
 msgstr "je chránený proti zápisu, pripojený len pre èítanie"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1316
+#: libnautilus-extensions/nautilus-volume-monitor.c:1322
 msgid "is not a valid block device"
 msgstr "nie je platné blokové zariadenie"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1317
+#: libnautilus-extensions/nautilus-volume-monitor.c:1323
 msgid "No medium found"
 msgstr "Médium nenájdené"
 
 #. Handle floppy case
-#: libnautilus-extensions/nautilus-volume-monitor.c:1321
+#: libnautilus-extensions/nautilus-volume-monitor.c:1327
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
 msgstr "Nautilus nemohol pripoji» disketovú mechaniku. Mo¾no v nej nie je disketa."
 
 #. All others
-#: libnautilus-extensions/nautilus-volume-monitor.c:1325
+#: libnautilus-extensions/nautilus-volume-monitor.c:1331
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
 msgstr "Nautilus nemohol pripoji» disk. Mo¾no v òom nie je médium."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1328
+#: libnautilus-extensions/nautilus-volume-monitor.c:1334
 msgid "wrong fs type, bad option, bad superblock on"
 msgstr "nesprávny typ súborového systému, nesprávna voµba, chybný superblok na"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1331
+#: libnautilus-extensions/nautilus-volume-monitor.c:1337
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -5383,7 +5657,7 @@ msgstr ""
 "Nautilus nemohol pripoji» disketovú mechaniku. Disketa asi obsahuje systém "
 "súborov, ktorý sa nedá pripoji»."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1334
+#: libnautilus-extensions/nautilus-volume-monitor.c:1340
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -5391,43 +5665,43 @@ msgstr ""
 "Nautilus nemohol pripoji» vybraný disk. Disk asi obsahuje systém súborov, "
 "ktorý sa nedá pripoji»."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1339
+#: libnautilus-extensions/nautilus-volume-monitor.c:1345
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilus nemohol pripoji» vybranú disketovú mechaniku."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1341
+#: libnautilus-extensions/nautilus-volume-monitor.c:1347
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilus nemohol pripoji» vybraný disk."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1345
+#: libnautilus-extensions/nautilus-volume-monitor.c:1351
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilus nemohol odpoji» vybraný disk."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1482
+#: libnautilus-extensions/nautilus-volume-monitor.c:1488
 msgid "ISO 9660 Volume"
 msgstr "Disk ISO 9660"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1497
+#: libnautilus-extensions/nautilus-volume-monitor.c:1503
 msgid "Root"
 msgstr "Koreò"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1504
+#: libnautilus-extensions/nautilus-volume-monitor.c:1510
 msgid "Ext2 Volume"
 msgstr "Disk ext2"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1519
+#: libnautilus-extensions/nautilus-volume-monitor.c:1525
 msgid "MSDOS Volume"
 msgstr "Disk MSDOS"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1534
+#: libnautilus-extensions/nautilus-volume-monitor.c:1540
 msgid "NFS Volume"
 msgstr "Disk NFS"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1549
+#: libnautilus-extensions/nautilus-volume-monitor.c:1555
 msgid "Floppy"
 msgstr "Disketa"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1564
+#: libnautilus-extensions/nautilus-volume-monitor.c:1570
 msgid "Unknown Volume"
 msgstr "Neznámy disk"
 
@@ -5462,72 +5736,6 @@ msgstr "Vystri_hnú» text"
 #: libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:87
 msgid "_Paste Text"
 msgstr "V_lo¾i» text"
-
-#: src/Nautilus_shell.oaf.in.h:1
-msgid "Factory for Nautilus shell and file manager"
-msgstr "Vytváracie rozhranie pre shell Nautilus a správcu súborov"
-
-#: src/Nautilus_shell.oaf.in.h:2
-msgid "Icons"
-msgstr "Ikony"
-
-#: src/Nautilus_shell.oaf.in.h:3
-msgid "List"
-msgstr "Zoznam"
-
-#: src/Nautilus_shell.oaf.in.h:4
-msgid "Nautilus factory"
-msgstr "Vytváracie rozhranie pre Nautilus"
-
-#: src/Nautilus_shell.oaf.in.h:5
-msgid "Nautilus file manager component that shows a scrollable list"
-msgstr "Komponent správca súborov, ktorý zobrazuje posuvný zoznam."
-
-#: src/Nautilus_shell.oaf.in.h:6
-msgid ""
-"Nautilus file manager component that shows a scrollable list for search "
-"results"
-msgstr ""
-"Komponent správca súborov, ktorý zobrazuje posuvný zoznam pre výsledky "
-"hµadania."
-
-#: src/Nautilus_shell.oaf.in.h:7
-msgid "Nautilus file manager component that shows a two-dimensional icon space"
-msgstr "Komponent správca súborov, ktorý zobrazuje dvojrozmerný priestor ikon."
-
-#: src/Nautilus_shell.oaf.in.h:8
-msgid "Nautilus file manager component that shows icons on the the desktop"
-msgstr "Komponent Správca súborov pre Nautilus zobrazuje ikony na ploche"
-
-#: src/Nautilus_shell.oaf.in.h:9
-msgid "Nautilus file manager desktop icon view"
-msgstr "Pohµad správcu súborov na ikony plochy"
-
-#: src/Nautilus_shell.oaf.in.h:10
-msgid "Nautilus file manager icon view"
-msgstr "Pohµad správcu súborov na ikony"
-
-#: src/Nautilus_shell.oaf.in.h:11
-msgid "Nautilus file manager list view"
-msgstr "Pohµad správcu súborov ako zoznam"
-
-#: src/Nautilus_shell.oaf.in.h:12
-msgid "Nautilus file manager search results list view"
-msgstr "Pohµad správcu súborov ako zoznam výsledkov hµadania"
-
-#: src/Nautilus_shell.oaf.in.h:13
-msgid "Nautilus shell"
-msgstr "Nautilus shell"
-
-#: src/Nautilus_shell.oaf.in.h:14
-msgid ""
-"Nautilus shell operations that can be done from subsequent command-line "
-"invocations"
-msgstr "Operácie shellu Nautilus, ktoré je mo¾né neskôr vykona» z príkazového riadku."
-
-#: src/Nautilus_shell.oaf.in.h:15
-msgid "Search List"
-msgstr "Zoznam hµadania"
 
 #. Note to translators: If it's hard to compose a good home
 #. * icon name from the user name, you can use a string without
@@ -5799,6 +6007,10 @@ msgstr "Spusti» alebo zobrazi»?"
 #: src/file-manager/fm-directory-view.c:3449
 msgid "Run"
 msgstr "Spusti»"
+
+#: src/file-manager/fm-directory-view.c:3450
+msgid "Display"
+msgstr "Displej"
 
 #: src/file-manager/fm-directory-view.c:3453
 msgid "Cancel"
@@ -6798,9 +7010,7 @@ msgstr "Nebe¾í indexovací stroj alebo neodpovedá na po¾iadavky o novú indexáciu.
 msgid ""
 "An attempt to reindex, caused an Internal Indexer Error.  Tell "
 "rebecka@eazel.com"
-msgstr ""
-"Pokus o novú indexáciu spôsobil internú chybu. Oznámte ju "
-"rebecka@eazel.com"
+msgstr "Pokus o novú indexáciu spôsobil internú chybu. Oznámte ju rebecka@eazel.com"
 
 #: src/file-manager/nautilus-indexing-info.c:165
 msgid "Reindexing Failed"
@@ -6902,7 +7112,7 @@ msgstr "Nie je mo¾né vytvori» po¾adované prieèinky"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:392
+#: src/nautilus-application.c:394
 msgid ""
 "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
 "again may fix the problem."
@@ -6911,7 +7121,7 @@ msgstr ""
 "in¹talácia Nautilu by mohla pomôc» opravi» problém."
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:396
+#: src/nautilus-application.c:398
 msgid ""
 "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
 "again may fix the problem.\n"
@@ -6923,7 +7133,7 @@ msgid ""
 "\n"
 "Sometimes killing oafd and gconfd fixes the problem, but we don't know why.\n"
 "\n"
-"We need a much less confusing message here for Nautilus 1.0."
+"We have also seen this error when a faulty version of oaf was installed."
 msgstr ""
 "Nautilus nie je momentálne mo¾né pou¾íva». Re¹tart poèítaèa alebo nová "
 "in¹talácia Nautilu by mohla pomôc» opravi» problém.\n"
@@ -6932,7 +7142,9 @@ msgstr ""
 "LD_LIBRARY_PATH, ktorá neobsahuje prieèinok kni¾níc OAF. Iný dôvod by mohol "
 "by» nesprávna in¹talácia bez súboru Nautilus_Shell.oaf.\n"
 "\n"
-"Niekedy pomô¾e zabi» oafd a gconfd, ale nevieme preèo."
+"Niekedy pomô¾e zabi» oafd a gconfd, ale nevieme preèo.\n"
+"\n"
+"S touto chybou sme sa stretli aj pri pou¾itý vadnej verzie oaf."
 
 #. Some misc. error (can never happen with current
 #. * version of OAF). Show dialog and terminate the
@@ -6943,12 +7155,12 @@ msgstr ""
 #. * wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:421 src/nautilus-application.c:439
-#: src/nautilus-application.c:446
+#: src/nautilus-application.c:424 src/nautilus-application.c:442
+#: src/nautilus-application.c:449
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus nie je momentálne mo¾né pou¾íva» kvôli neoèakávanej chybe."
 
-#: src/nautilus-application.c:422
+#: src/nautilus-application.c:425
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to register the file manager view server."
@@ -6956,7 +7168,7 @@ msgstr ""
 "Nautilus nie je momentálne mo¾né pou¾íva» kvôli neoèakávanej chybe od OAF "
 "pri pokuse zaregistrova» server pre pohµady správcu súborov."
 
-#: src/nautilus-application.c:440
+#: src/nautilus-application.c:443
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the factory.Killing oafd and restarting Nautilus may "
@@ -6966,7 +7178,7 @@ msgstr ""
 "pri pokuse nájs» vytváracie rozhranie. Zabitím oafd a re¹tartom Nautilus by "
 "mohlo pomôc» problém vyrie¹i»."
 
-#: src/nautilus-application.c:447
+#: src/nautilus-application.c:450
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the shell object. Killing oafd and restarting Nautilus "
@@ -6976,9 +7188,9 @@ msgstr ""
 "pri pokuse nájs» objekt shellu. Zabitím oafd a re¹tartom Nautilus by mohlo "
 "pomôc» problém vyrie¹i»."
 
-#: src/nautilus-application.c:605
+#: src/nautilus-application.c:612
 msgid ""
-"You are running Nautilus as root.\n"
+"You are about to run Nautilus as root.\n"
 "\n"
 "As root, you can damage your system if you are not careful, and\n"
 "Nautilus will not stop you from doing it."
@@ -6988,6 +7200,10 @@ msgstr ""
 "Ako root, mô¾ete po¹kodi» vá¹ systém, ak si nedáte pozor, a\n"
 "Nautilus vám v tom nebude bráni»."
 
+#: src/nautilus-application.c:616
+msgid "Quit"
+msgstr "Koniec"
+
 #: src/nautilus-bookmarks-window.c:127
 msgid "Bookmarks"
 msgstr "Zálo¾ky"
@@ -6996,7 +7212,7 @@ msgstr "Zálo¾ky"
 msgid "Location"
 msgstr "Umiestnenie"
 
-#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:722
+#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:725
 msgid "Remove"
 msgstr "Odstráni»"
 
@@ -7686,6 +7902,98 @@ msgstr "_Slu¾by"
 msgid "_Support"
 msgstr "_Podpora"
 
+#: src/nautilus-shell.c:188
+msgid "Caveat"
+msgstr "Výstraha"
+
+#: src/nautilus-shell.c:225
+msgid ""
+"Thank you for your interest in Nautilus.\n"
+" \n"
+"As with any software under development, you should exercise caution when "
+"using Nautilus.  Eazel does not provide any guarantee that it will work "
+"properly, or assume any liability for your use of it.  Please use it at your "
+"own risk.\n"
+"\n"
+"Please visit http://www.eazel.com/feedback.html to provide feedback, "
+"comments, and suggestions."
+msgstr ""
+"Ïakujeme, ¾e sa zaujímate o Nautilus.\n"
+" \n"
+"Ako s ka¾dým softvérom, ktorý je stále vo vývoji, mali by ste si dáva» pozor "
+"pri práci s Nautilom.  Eazel neposkytuje ¾iadne záruky, ¾e program bude "
+"správne fungova», ani nepredpokladá ¾iadne povinnosti pri jeho pou¾ívaní. "
+"Prosím, pou¾ívajte ho na svoje vlastné nebezpeèenstvo.\n"
+"\n"
+"Prosím, nav¹tívte http:/www.eazel.com/feedback.html a prípadne nám napí¹te "
+"va¹e pripomienky, námety a komentáre."
+
+#: src/Nautilus_shell.oaf.in.h:1
+msgid "Factory for Nautilus shell and file manager"
+msgstr "Vytváracie rozhranie pre shell Nautilus a správcu súborov"
+
+#: src/Nautilus_shell.oaf.in.h:2
+msgid "Icons"
+msgstr "Ikony"
+
+#: src/Nautilus_shell.oaf.in.h:3
+msgid "List"
+msgstr "Zoznam"
+
+#: src/Nautilus_shell.oaf.in.h:4
+msgid "Nautilus factory"
+msgstr "Vytváracie rozhranie pre Nautilus"
+
+#: src/Nautilus_shell.oaf.in.h:5
+msgid "Nautilus file manager component that shows a scrollable list"
+msgstr "Komponent správca súborov, ktorý zobrazuje posuvný zoznam."
+
+#: src/Nautilus_shell.oaf.in.h:6
+msgid ""
+"Nautilus file manager component that shows a scrollable list for search "
+"results"
+msgstr ""
+"Komponent správca súborov, ktorý zobrazuje posuvný zoznam pre výsledky "
+"hµadania."
+
+#: src/Nautilus_shell.oaf.in.h:7
+msgid "Nautilus file manager component that shows a two-dimensional icon space"
+msgstr "Komponent správca súborov, ktorý zobrazuje dvojrozmerný priestor ikon."
+
+#: src/Nautilus_shell.oaf.in.h:8
+msgid "Nautilus file manager component that shows icons on the the desktop"
+msgstr "Komponent Správca súborov pre Nautilus zobrazuje ikony na ploche"
+
+#: src/Nautilus_shell.oaf.in.h:9
+msgid "Nautilus file manager desktop icon view"
+msgstr "Pohµad správcu súborov na ikony plochy"
+
+#: src/Nautilus_shell.oaf.in.h:10
+msgid "Nautilus file manager icon view"
+msgstr "Pohµad správcu súborov na ikony"
+
+#: src/Nautilus_shell.oaf.in.h:11
+msgid "Nautilus file manager list view"
+msgstr "Pohµad správcu súborov ako zoznam"
+
+#: src/Nautilus_shell.oaf.in.h:12
+msgid "Nautilus file manager search results list view"
+msgstr "Pohµad správcu súborov ako zoznam výsledkov hµadania"
+
+#: src/Nautilus_shell.oaf.in.h:13
+msgid "Nautilus shell"
+msgstr "Nautilus shell"
+
+#: src/Nautilus_shell.oaf.in.h:14
+msgid ""
+"Nautilus shell operations that can be done from subsequent command-line "
+"invocations"
+msgstr "Operácie shellu Nautilus, ktoré je mo¾né neskôr vykona» z príkazového riadku."
+
+#: src/Nautilus_shell.oaf.in.h:15
+msgid "Search List"
+msgstr "Zoznam hµadania"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid " Advanced"
 msgstr " Pokroèilý"
@@ -7724,7 +8032,7 @@ msgstr "Vyma¾e obsah menu Prejs» a zoznamy Dopredu/Dozadu"
 
 #: src/nautilus-shell-ui.xml.h:11
 msgid "Close _All Windows"
-msgstr "Zatvori» _v¹etky okná"
+msgstr "Zavrie» _v¹etky okná"
 
 #: src/nautilus-shell-ui.xml.h:12
 msgid "Close all Nautilus windows"
@@ -7970,7 +8278,7 @@ msgstr "_Upravi» zálo¾ky..."
 msgid "_Feedback..."
 msgstr "_Komentáre..."
 
-#: src/nautilus-shell-ui.xml.h:78 src/nautilus-window-menus.c:1277
+#: src/nautilus-shell-ui.xml.h:78 src/nautilus-window-menus.c:1280
 msgid "_Find"
 msgstr "_Nájs»"
 
@@ -8049,32 +8357,6 @@ msgstr "_Zobrazi»"
 #: src/nautilus-shell-ui.xml.h:98
 msgid "_Web Search"
 msgstr "Hµadanie _WWW"
-
-#: src/nautilus-shell.c:187
-msgid "Caveat"
-msgstr "Výstraha"
-
-#: src/nautilus-shell.c:224
-msgid ""
-"Thank you for your interest in Nautilus.\n"
-" \n"
-"As with any software under development, you should exercise caution when "
-"using Nautilus.  Eazel does not provide any guarantee that it will work "
-"properly, or assume any liability for your use of it.  Please use it at your "
-"own risk.\n"
-"\n"
-"Please visit http://www.eazel.com/feedback.html to provide feedback, "
-"comments, and suggestions."
-msgstr ""
-"Ïakujeme, ¾e sa zaujímate o Nautilus.\n"
-" \n"
-"Ako s ka¾dým softvérom, ktorý je stále vo vývoji, mali by ste si dáva» pozor "
-"pri práci s Nautilom.  Eazel neposkytuje ¾iadne záruky, ¾e program bude "
-"správne fungova», ani nepredpokladá ¾iadne povinnosti pri jeho pou¾ívaní. "
-"Prosím, pou¾ívajte ho na svoje vlastné nebezpeèenstvo.\n"
-"\n"
-"Prosím, nav¹tívte http:/www.eazel.com/feedback.html a prípadne nám napí¹te "
-"va¹e pripomienky, námety a komentáre."
 
 #: src/nautilus-sidebar.c:655
 msgid ""
@@ -8208,38 +8490,39 @@ msgstr "Nie je mo¾né odstráni» tému"
 msgid "No description available for the \"%s\" theme"
 msgstr "Pre tému \"%s\" nie je k dispozícii ¾iadny popis"
 
+#. Add "View as Other..." extra bonus choice.
+#: src/nautilus-window.c:1167
+msgid "View as Other..."
+msgstr "Zobrazi» inak..."
+
+#: src/nautilus-window.c:1530
+msgid "Close"
+msgstr "Zavrie»"
+
 #. FIXME bugzilla.eazel.com 5037: The text Preview
 #. * Release is hardcoded here. Are all builds with
 #. * time stamps really best described as "preview
 #. * release"?.
 #.
-#: src/nautilus-window-manage-views.c:203
+#: src/nautilus-window-manage-views.c:208
 #, c-format
 msgid "Preview Release %s: %s"
 msgstr "Uká¾ková verzia %s: %s"
 
-#. The copyright character in here is correct for
-#. * Latin-1 encoding, but not for UTF-8, so we have
-#. * to change it when we upgrade to GTK 2.0.
-#.
-#: src/nautilus-window-manage-views.c:240 src/nautilus-window-menus.c:553
-msgid "Nautilus"
-msgstr "Nautilus"
-
-#: src/nautilus-window-manage-views.c:646
+#: src/nautilus-window-manage-views.c:645
 #, c-format
 msgid "You do not have the permissions necessary to view \"%s\"."
 msgstr "Nemáte dostatoèné práva pre zobrazenie \"%s\"."
 
-#: src/nautilus-window-manage-views.c:648
+#: src/nautilus-window-manage-views.c:647
 msgid "Inadequate Permissions"
 msgstr "Nedostatoèné práva"
 
-#: src/nautilus-window-manage-views.c:795
+#: src/nautilus-window-manage-views.c:793
 msgid "View Failed"
 msgstr "Zobrazenie zlyhalo"
 
-#: src/nautilus-window-manage-views.c:806
+#: src/nautilus-window-manage-views.c:804
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -8248,12 +8531,12 @@ msgstr ""
 "Pohµad %s zaznamenal chybu a nie je schopný pokraèova» v èinnosti. Mô¾ete "
 "vybra» iný pohµad alebo prejs» na iné miesto."
 
-#: src/nautilus-window-manage-views.c:817
+#: src/nautilus-window-manage-views.c:815
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "Pohµad %s zaznamenal chybu pri spú¹taní."
 
-#: src/nautilus-window-manage-views.c:944
+#: src/nautilus-window-manage-views.c:950
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -8261,7 +8544,7 @@ msgstr ""
 "Jeden z boèných panelov narazil na chybu a nie je schopný pokraèova» v "
 "èinnosti. Bohu¾iaµ, nie je mo¾né poveda», ktorý."
 
-#: src/nautilus-window-manage-views.c:948
+#: src/nautilus-window-manage-views.c:954
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -8270,21 +8553,21 @@ msgstr ""
 "Boèný panel %s zaznamenal chybu a nie je schopný pokraèova» v èinnosti. Ak "
 "sa to bude opakova», mo¾no budete chcie» tento panel vypnú»."
 
-#: src/nautilus-window-manage-views.c:953
+#: src/nautilus-window-manage-views.c:959
 msgid "Sidebar Panel Failed"
 msgstr "Boèný panel zlyhal"
 
-#: src/nautilus-window-manage-views.c:1173
+#: src/nautilus-window-manage-views.c:1162
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr "Nie je mo¾né nájs» \"%s\". Prosím, overte zadaný text a skúste to znovu."
 
-#: src/nautilus-window-manage-views.c:1179
+#: src/nautilus-window-manage-views.c:1168
 #, c-format
 msgid "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr "\"%s\" nie je platné miesto. Prosím, overte zadaný text a skúste to znovu."
 
-#: src/nautilus-window-manage-views.c:1193
+#: src/nautilus-window-manage-views.c:1182
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -8293,30 +8576,30 @@ msgstr ""
 "Nie je mo¾né zobrazi» \"%s\", preto¾e Nautilus nie je schopný urèi» typ "
 "súboru."
 
-#: src/nautilus-window-manage-views.c:1201
+#: src/nautilus-window-manage-views.c:1190
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Nautilus nemá nain¹talovaný ¾iadny program schopný zobrazi» \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1213
+#: src/nautilus-window-manage-views.c:1202
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Nie je mo¾né zobrazi» \"%s\", preto¾e Nautilus nie je schopný pracova» s "
 "miestami %s:."
 
-#: src/nautilus-window-manage-views.c:1219
+#: src/nautilus-window-manage-views.c:1208
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "Nie je mo¾né zobrazi» \"%s\", preto¾e pokus o prihlásenie zlyhal."
 
-#: src/nautilus-window-manage-views.c:1224
+#: src/nautilus-window-manage-views.c:1213
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Nie je mo¾né zobrazi» \"%s\", preto¾e bol prístup odmietnutý."
 
-#: src/nautilus-window-manage-views.c:1235
+#: src/nautilus-window-manage-views.c:1224
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -8325,7 +8608,7 @@ msgstr ""
 "Nie je mo¾né zobrazi» \"%s\", preto¾e hostiteµ \"%s\" nebol nájdený. Overte, "
 "èi ste správne zadali meno a máte správne nastavené proxy."
 
-#: src/nautilus-window-manage-views.c:1242
+#: src/nautilus-window-manage-views.c:1232
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -8334,7 +8617,7 @@ msgstr ""
 "Nie je mo¾né zobrazi» \"%s\", preto¾e meno hostiteµa je prázdne. Overte, ¾e "
 "máte správne nastavené proxy."
 
-#: src/nautilus-window-manage-views.c:1254
+#: src/nautilus-window-manage-views.c:1244
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -8345,16 +8628,16 @@ msgstr ""
 "vyhµadávacia slu¾ba nefunguje. Overte, ¾e ste spustili vyhµadávaciu slu¾bu "
 "Medusa a ak nemáte index, ¾e be¾í indexaèný program pre slu¾bu Medusa."
 
-#: src/nautilus-window-manage-views.c:1258
+#: src/nautilus-window-manage-views.c:1248
 msgid "Searching Unavailable"
 msgstr "Hµadanie nie je k dispozícii"
 
-#: src/nautilus-window-manage-views.c:1262
+#: src/nautilus-window-manage-views.c:1252
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus nemô¾e zobrazi» \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1275
+#: src/nautilus-window-manage-views.c:1257
 msgid "Can't Display Location"
 msgstr "Nie je mo¾né zobrazi» miesto"
 
@@ -8423,7 +8706,7 @@ msgstr ""
 "správu va¹ich súborov a celého\n"
 "systému."
 
-#: src/nautilus-window-menus.c:717
+#: src/nautilus-window-menus.c:720
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -8432,24 +8715,24 @@ msgstr ""
 "Umiestnenie \"%s\" neexistuje. Naozaj chcete odstráni» zálo¾ky s týmto "
 "miestom z vá¹ho zoznamu?"
 
-#: src/nautilus-window-menus.c:721
+#: src/nautilus-window-menus.c:724
 msgid "Bookmark for Nonexistent Location"
 msgstr "Zálo¾ka pre neexistujúce miesto"
 
-#: src/nautilus-window-menus.c:735
+#: src/nautilus-window-menus.c:738
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Miesto \"%s\" u¾ neexistuje."
 
-#: src/nautilus-window-menus.c:736
+#: src/nautilus-window-menus.c:739
 msgid "Go to Nonexistent Location"
 msgstr "Prejs» na neexistujúce miesto"
 
-#: src/nautilus-window-menus.c:803
+#: src/nautilus-window-menus.c:806
 msgid "Go to the location specified by this bookmark"
 msgstr "Prejs» na miesto definované touto zálo¾kou"
 
-#: src/nautilus-window-menus.c:1276
+#: src/nautilus-window-menus.c:1279
 msgid "_Browse"
 msgstr "_Prechádza»"
 
@@ -8460,15 +8743,6 @@ msgstr "Dozadu"
 #: src/nautilus-window-toolbars.c:383
 msgid "Forward"
 msgstr "Dopredu"
-
-#. Add "View as Other..." extra bonus choice.
-#: src/nautilus-window.c:1158
-msgid "View as Other..."
-msgstr "Zobrazi» inak..."
-
-#: src/nautilus-window.c:1539
-msgid "Close"
-msgstr "Zavrie»"
 
 #: src/nautilus-zoom-control.c:528
 msgid "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
