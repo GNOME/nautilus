@@ -119,6 +119,7 @@ struct NautilusIconContainerDetails {
 
 	/* Current icon for keyboard navigation. */
 	NautilusIcon *keyboard_focus;
+	NautilusIcon *keyboard_rubberband_start;
 
 	/* Current icon with stretch handles, so we have only one. */
 	NautilusIcon *stretch_icon;

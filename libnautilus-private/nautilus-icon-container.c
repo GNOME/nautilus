@@ -709,6 +709,19 @@ set_keyboard_focus (NautilusIconContainer *container,
 }
 
 static void
+set_keyboard_rubberband_start (NautilusIconContainer *container,
+			       NautilusIcon *icon)
+{
+	container->details->keyboard_rubberband_start = icon;
+}
+
+static void
+clear_keyboard_rubberband_start (NautilusIconContainer *container)
+{
+	container->details->keyboard_rubberband_start = NULL;
+}
+
+static void
 get_all_icon_bounds (NautilusIconContainer *container,
 		     double *x1, double *y1,
 		     double *x2, double *y2)
@@ -2455,9 +2468,30 @@ closest_in_90_degrees (NautilusIconContainer *container,
 	return FALSE;
 }
 
+static ArtDRect 
+get_rubberband (NautilusIcon *icon1,
+		NautilusIcon *icon2)
+{
+	ArtDRect rect1;
+	ArtDRect rect2;
+	ArtDRect ret;
+
+	eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (icon1->item),
+				    &rect1.x0, &rect1.y0, 
+				    &rect1.x1, &rect1.y1);
+	eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (icon2->item),
+				    &rect2.x0, &rect2.y0, 
+				    &rect2.x1, &rect2.y1);
+
+	art_drect_union (&ret, &rect1, &rect2);
+
+	return ret;
+}
+
 static void
 keyboard_move_to (NautilusIconContainer *container,
 		  NautilusIcon *icon,
+		  NautilusIcon *from,
 		  GdkEventKey *event)
 {
 	if (icon == NULL) {
@@ -2469,9 +2503,29 @@ keyboard_move_to (NautilusIconContainer *container,
 		 * rather than Alt to avoid Sawfish conflict.
 		 */
 		set_keyboard_focus (container, icon);
+		container->details->keyboard_rubberband_start = NULL;
+	} else if ((event->state & GDK_SHIFT_MASK) != 0) {
+		/* Do rubberband selection */		
+		ArtDRect rect;
+
+		if (from && !container->details->keyboard_rubberband_start) {
+			set_keyboard_rubberband_start (container, from);
+		} 
+
+		unselect_all (container);	
+		icon_set_selected (container, icon, TRUE);
+		set_keyboard_focus (container, icon);
+
+		if (icon && container->details->keyboard_rubberband_start && container->details->keyboard_rubberband_start != icon) {
+			rect = get_rubberband (container->details->keyboard_rubberband_start,
+					       icon);
+			rubberband_select (container, NULL, &rect);
+		}
 	} else {
 		/* Select icons and get rid of the special keyboard focus. */
 		clear_keyboard_focus (container);
+		clear_keyboard_rubberband_start (container);
+		
 		if (select_one_unselect_others (container, icon)) {
 			g_signal_emit (container,
 					 signals[SELECTION_CHANGED], 0);
@@ -2484,32 +2538,39 @@ static void
 keyboard_home (NautilusIconContainer *container,
 	       GdkEventKey *event)
 {
+	NautilusIcon *from;
+	NautilusIcon *to;
+	
 	/* Home selects the first icon.
 	 * Control-Home sets the keyboard focus to the first icon.
 	 */
+
+	from = find_best_selected_icon (container, NULL,
+					rightmost_in_bottom_row, 
+					NULL);
+	to = find_best_icon (container, NULL, leftmost_in_top_row, NULL);	
+
 	container->details->arrow_key_axis = AXIS_NONE;
-	keyboard_move_to (container,
-			  find_best_icon (container,
-					  NULL,
-					  leftmost_in_top_row,
-					  NULL),
-			  event);
+	keyboard_move_to (container, to, from, event);
 }
 
 static void
 keyboard_end (NautilusIconContainer *container,
 	      GdkEventKey *event)
 {
+	NautilusIcon *to;
+	NautilusIcon *from;
+
 	/* End selects the last icon.
 	 * Control-End sets the keyboard focus to the last icon.
 	 */
+	from = find_best_selected_icon (container, NULL,
+					leftmost_in_top_row, 
+					NULL);
+	to = find_best_icon (container, NULL, rightmost_in_bottom_row, NULL);
+
 	container->details->arrow_key_axis = AXIS_NONE;
-	keyboard_move_to (container,
-			  find_best_icon (container,
-					  NULL,
-					  rightmost_in_bottom_row,
-					  NULL),
-			  event);
+	keyboard_move_to (container, to, from, event);
 }
 
 static void
@@ -2554,7 +2615,8 @@ keyboard_arrow_key (NautilusIconContainer *container,
 		    IsBetterIconFunction better_destination,
 		    IsBetterIconFunction better_destination_manual)
 {
-	NautilusIcon *icon;
+	NautilusIcon *from;
+	NautilusIcon *to;
 	int data;
 
 	/* Chose the icon to start with.
@@ -2562,34 +2624,38 @@ keyboard_arrow_key (NautilusIconContainer *container,
 	 * Otherwise, use the single selected icon.
 	 * If there's multiple selection, use the icon farthest toward the end.
 	 */
-	icon = container->details->keyboard_focus;
-	if (icon == NULL) {
+	
+	from = container->details->keyboard_focus;
+
+	if (from == NULL) {
 		if (has_multiple_selection (container)) {
-			icon = find_best_selected_icon
+			from = find_best_selected_icon
 				(container, NULL,
 				 better_start, NULL);
 		} else {
-			icon = get_first_selected_icon (container);
+			from = get_first_selected_icon (container);
 		}
 	}
 
 	/* If there's no icon, select the icon farthest toward the end.
 	 * If there is an icon, select the next icon based on the arrow direction.
 	 */
-	if (icon == NULL) {
+	if (from == NULL) {
 		container->details->arrow_key_axis = AXIS_NONE;
-		icon = find_best_icon
+		to = from = find_best_icon
 			(container, NULL,
 			 empty_start, NULL);
+		
 	} else {
-		record_arrow_key_start (container, icon, direction);
-		icon = find_best_icon
-			(container, icon,
+		record_arrow_key_start (container, from, direction);
+		
+		to = find_best_icon
+			(container, from,
 			 container->details->auto_layout ? better_destination : better_destination_manual,
 			 &data);
 	}
 
-	keyboard_move_to (container, icon, event);
+	keyboard_move_to (container, to, from, event);
 }
 
 static void
@@ -2773,6 +2839,7 @@ select_matching_name (NautilusIconContainer *container,
 
 	/* Select icons and get rid of the special keyboard focus. */
 	clear_keyboard_focus (container);
+	clear_keyboard_rubberband_start (container);
 	if (select_one_unselect_others (container, icon)) {
 		g_signal_emit (container,
 				 signals[SELECTION_CHANGED], 0);
@@ -2817,7 +2884,7 @@ select_previous_or_next_icon (NautilusIconContainer *container,
 	icon = (item != NULL) ? item->data : NULL;
 
 	if (icon != NULL) {
-		keyboard_move_to (container, icon, event);
+		keyboard_move_to (container, icon, NULL, event);
 	}
 }
 
@@ -3012,6 +3079,7 @@ button_press_event (GtkWidget *widget,
 	
         /* Forget about the old keyboard selection now that we've started mousing. */
         clear_keyboard_focus (container);
+	clear_keyboard_rubberband_start (container);
 
 	/* Forget about where we began with the arrow keys now that we're mousing. */
 	container->details->arrow_key_axis = AXIS_NONE;
@@ -4289,6 +4357,7 @@ nautilus_icon_container_clear (NautilusIconContainer *container)
 	end_renaming_mode (container, TRUE);
 	
 	clear_keyboard_focus (container);
+	clear_keyboard_rubberband_start (container);
 	unschedule_keyboard_icon_reveal (container);
 	set_pending_icon_to_reveal (container, NULL);
 	details->stretch_icon = NULL;
@@ -4454,6 +4523,11 @@ icon_destroy (NautilusIconContainer *container,
 			clear_keyboard_focus (container);
 		}
 	}
+	
+	if (details->keyboard_rubberband_start == icon) {
+		clear_keyboard_rubberband_start (container);
+	}
+
 	if (details->keyboard_icon_to_reveal == icon) {
 		unschedule_keyboard_icon_reveal (container);
 	}
