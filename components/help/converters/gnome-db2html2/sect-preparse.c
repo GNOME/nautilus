@@ -8,6 +8,9 @@ static void sect_preparse_sect_start_element (Context *context, const gchar *nam
 static void sect_preparse_title_characters (Context *context, const gchar *chars, gint len);
 static void sect_preparse_figure_start_element (Context *context, const char *name, const xmlChar **atrs);
 static void sect_preparse_set_doctype (Context *context, const char *name, const xmlChar **atrs);
+static void sect_preparse_glossterm_characters (Context *context, const gchar *chars, int len);
+static void sect_preparse_glossentry_start_element (Context *context, const char *name, const xmlChar **atrs);
+
 
 ElementInfo sect_preparse[] = {
 	{ ARTICLE, "article", (startElementSAXFunc) sect_preparse_set_doctype, NULL, NULL},
@@ -120,6 +123,13 @@ ElementInfo sect_preparse[] = {
 	{ PREFACE, "preface", (startElementSAXFunc) sect_preparse_sect_start_element, NULL, NULL},
 	{ TERM, "term", NULL, NULL, NULL},
 	{ APPENDIX, "appendix", (startElementSAXFunc) sect_preparse_sect_start_element, NULL, NULL},
+	{ DOCINFO, "docinfo", NULL, NULL, NULL},
+	{ GLOSSARY, "glossary", (startElementSAXFunc) sect_preparse_set_doctype, NULL, NULL},
+	{ GLOSSDIV, "glossdiv", NULL, NULL, NULL},
+	{ GLOSSENTRY, "glossentry", (startElementSAXFunc) sect_preparse_glossentry_start_element, NULL, NULL},
+	{ GLOSSTERM, "glossterm", NULL, NULL, (charactersSAXFunc) sect_preparse_glossterm_characters},
+	{ GLOSSSEE, "glosssee", NULL, NULL, NULL},
+	{ GLOSSSEEALSO, "glossseealso", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -129,9 +139,11 @@ sect_preparse_set_doctype (Context *context,
 			   const xmlChar **atrs)
 {
 	if (g_strcasecmp (name, "article") == 0) {
-		context->doctype = ARTICLE;
+		context->doctype = ARTICLE_DOC;
 	} else if (g_strcasecmp (name, "book") == 0) {
-		context->doctype = BOOK;
+		context->doctype = BOOK_DOC;
+	} else if (g_strcasecmp (name, "glossary") == 0) {
+	        context->doctype = GLOSSARY_DOC;
 	}
 }
 
@@ -277,3 +289,41 @@ sect_preparse_figure_start_element (Context *context,
         }
 
 }
+
+static void
+sect_preparse_glossterm_characters (Context *context,
+				    const gchar *chars,
+				    int len)
+{
+        GList *temp_list;
+        char *temp_glossentry;
+	char *temp;
+
+	temp = g_strndup (chars, len);
+	temp_glossentry = NULL;
+        /* get most recent entry to glossentry stack */
+        temp_list = g_list_first (context->glossentry_stack);
+
+        if (temp_list != NULL) {
+		temp_glossentry = g_strdup_printf ("%s", (char *)temp_list->data);
+	}
+	
+	/* check to see if glossary_data hash exists - if not create it */
+	if (context->glossary_data == NULL) {
+		context->glossary_data = g_hash_table_new (g_str_hash, g_str_equal);
+	}
+	/* check to see if an entry for temp_glossentry exists - if not create it */
+	if (g_hash_table_lookup (context->glossary_data, temp_glossentry) == NULL) {
+		/* The key is the 'glossentry id' - The data is the 'glossterm' */
+        	g_hash_table_insert (context->glossary_data, g_strdup (temp_glossentry), temp);
+	}
+}
+
+static void
+sect_preparse_glossentry_start_element (Context *context,
+				  	const gchar *name,
+				  	const xmlChar **atrs)
+{
+	glossentry_stack_add (context, name, atrs);
+}
+
