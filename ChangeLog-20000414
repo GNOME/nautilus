@@ -1,5 +1,16 @@
 2000-03-09  Darin Adler  <darin@eazel.com>
 
+	* src/file-manager/fm-directory-view-icons.c
+	(fm_directory_view_icons_clear,
+	fm_directory_view_icons_begin_loading),
+	src/file-manager/fm-directory-view-list.c
+	(fm_directory_view_list_clear,
+	fm_directory_view_list_begin_loading): Moved the code that loads
+	the background color from clear to begin_loading. Otherwise the
+	background color from one directory affects another.
+
+2000-03-09  Darin Adler  <darin@eazel.com>
+
 	* nautilus-icons-view-icon-item.c (emblem_layout_next,
 	nautilus_icons_view_icon_item_bounds):
 	Andy's check-in yesterday accidentally rolled out some changes

@@ -549,23 +549,10 @@ fm_directory_view_list_can_zoom_out (FMDirectoryView *view)
 static void
 fm_directory_view_list_clear (FMDirectoryView *view)
 {
-	GtkFList *flist;
-	char *background_color;
-
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view));
 
-	flist = get_flist (FM_DIRECTORY_VIEW_LIST (view));
-
 	/* Clear away the existing list items. */
-	gtk_clist_clear (GTK_CLIST (flist));
-
-	/* Set up the background color from the metadata. */
-	background_color = nautilus_directory_get_metadata (fm_directory_view_get_model (view),
-							    INDEX_PANEL_BACKGROUND_COLOR_METADATA_KEY,
-							    DEFAULT_BACKGROUND_COLOR);
-	nautilus_background_set_color (nautilus_get_widget_background (GTK_WIDGET (flist)),
-				       background_color);
-	g_free (background_color);
+	gtk_clist_clear (GTK_CLIST (get_flist (FM_DIRECTORY_VIEW_LIST (view))));
 }
 
 static void
@@ -581,11 +568,20 @@ fm_directory_view_list_begin_loading (FMDirectoryView *view)
 {
 	NautilusDirectory *directory;
 	FMDirectoryViewList *list_view;
+	char *background_color;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view));
 
 	directory = fm_directory_view_get_model (view);
 	list_view = FM_DIRECTORY_VIEW_LIST (view);
+
+	/* Set up the background color from the metadata. */
+	background_color = nautilus_directory_get_metadata (directory,
+							    LIST_VIEW_BACKGROUND_COLOR_METADATA_KEY,
+							    DEFAULT_BACKGROUND_COLOR);
+	nautilus_background_set_color (nautilus_get_widget_background (GTK_WIDGET (get_flist (list_view))),
+				       background_color);
+	g_free (background_color);
 
 	fm_directory_view_list_set_zoom_level (
 		list_view,
@@ -809,7 +805,7 @@ fm_directory_view_list_background_changed_cb (NautilusBackground *background,
 	
 	color_spec = nautilus_background_get_color (background);
 	nautilus_directory_set_metadata (directory,
-					 INDEX_PANEL_BACKGROUND_COLOR_METADATA_KEY,
+					 LIST_VIEW_BACKGROUND_COLOR_METADATA_KEY,
 					 DEFAULT_BACKGROUND_COLOR,
 					 color_spec);
 	g_free (color_spec);

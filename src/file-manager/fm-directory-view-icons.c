@@ -486,7 +486,6 @@ static void
 fm_directory_view_icons_clear (FMDirectoryView *view)
 {
 	GnomeIconContainer *icon_container;
-	char *background_color;
 	
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
 
@@ -494,14 +493,6 @@ fm_directory_view_icons_clear (FMDirectoryView *view)
 
 	/* Clear away the existing icons. */
 	gnome_icon_container_clear (icon_container);
-
-	/* Set up the background color from the metadata. */
-	background_color = nautilus_directory_get_metadata (fm_directory_view_get_model (view),
-							    ICON_VIEW_BACKGROUND_COLOR_METADATA_KEY,
-							    DEFAULT_BACKGROUND_COLOR);
-	nautilus_background_set_color (nautilus_get_widget_background (GTK_WIDGET (icon_container)),
-				       background_color);
-	g_free (background_color);
 }
 
 static void
@@ -537,12 +528,23 @@ fm_directory_view_icons_begin_loading (FMDirectoryView *view)
 {
 	NautilusDirectory *directory;
 	FMDirectoryViewIcons *icon_view;
+	char *background_color;
+	NautilusBackground *background;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
 
 	directory = fm_directory_view_get_model (view);
 	icon_view = FM_DIRECTORY_VIEW_ICONS (view);
 
+	/* Set up the background color from the metadata. */
+	background = nautilus_get_widget_background (GTK_WIDGET (get_icon_container (icon_view)));
+	background_color = nautilus_directory_get_metadata (directory,
+							    ICON_VIEW_BACKGROUND_COLOR_METADATA_KEY,
+							    DEFAULT_BACKGROUND_COLOR);
+	nautilus_background_set_color (background, background_color);
+	g_free (background_color);
+
+	/* Set up the zoom level from the metadata. */
 	fm_directory_view_icons_set_zoom_level
 		(icon_view,
 		 nautilus_directory_get_integer_metadata (directory, 
