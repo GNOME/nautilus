@@ -36,6 +36,7 @@
 #include <libgnome/gnome-mime.h>
 
 #include <stdlib.h>
+#include <parser.h>
 #include <xmlmemory.h>
 
 #include "nautilus-glib-extensions.h"
@@ -765,6 +766,19 @@ nautilus_file_get_mapped_uri(NautilusFile *file)
 		}
 		gnome_vfs_close (handle);
 	}
+	
+	/* see if it's a nautilus object xml file - if so, open and parse the file to fetch the uri */
+	if (nautilus_str_has_suffix(actual_uri, "-ntl.xml")) {
+		xmlDoc *doc = xmlParseFile (actual_uri + 7);
+		if (doc) {
+			char* link_str = xmlGetProp (doc->root, "LINK");
+			if (link_str) {
+				actual_uri = g_strdup(link_str);
+				xmlFree(link_str);
+			}
+		xmlFreeDoc (doc);
+		} 	
+	}
 		
 	/* all done so return the result */
 	return actual_uri;
@@ -1395,6 +1409,9 @@ nautilus_file_is_symbolic_link (NautilusFile *file)
 gboolean
 nautilus_file_is_directory (NautilusFile *file)
 {
+	if (file == NULL)
+		return FALSE;
+		
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
 	return nautilus_file_get_file_type (file) == GNOME_VFS_FILE_TYPE_DIRECTORY;

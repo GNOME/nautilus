@@ -1,3 +1,15 @@
+2000-04-19 Andy Hertzfeld <andy@eazel.com>
+
+	added a new, xml-based type of link file that can specify it's own icon and
+	other behavior.  Soon they will be used for the novice home directory.
+	
+	* libnautilus-extensions.nautilus-file.c:
+	check for the new file type in nautilus_directory_mapped_uri, and
+	return the link contained in the file if present.
+	* libnautilus-icon-factory.c:
+	check for the new file type in nautilus_icon_factory_get_icon_for_file
+	and return the specified image as appropriate.
+	
 2000-04-18 Shane Culpepper <pepper@eazel.com>
 
 	adding the eazel-installer skelton.  very rough prototype right now

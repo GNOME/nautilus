@@ -771,8 +771,9 @@ NautilusScalableIcon *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifier)
 {
 	char *uri, *file_uri;
-        const char *name;
-	NautilusScalableIcon *scalable_icon;
+ 	NautilusScalableIcon *scalable_icon;
+        const char *name = NULL;
+	gboolean need_to_free_name = FALSE;
 	
 	if (file == NULL) {
 		return NULL;
@@ -795,6 +796,25 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 		}
 	}
 	
+	/* handle nautilus object xml files, which may specify their own image */	
+	if (nautilus_str_has_suffix(file_uri, "-ntl.xml")) {
+		xmlDoc *doc = xmlParseFile (file_uri + 7);
+		if (doc) {
+			char *icon_str = xmlGetProp (doc->root, NAUTILUS_METADATA_KEY_CUSTOM_ICON);
+			xmlFreeDoc (doc);
+			/* the icon specification may be a full path or not, so set up the appropriate variable */
+			if (icon_str) {
+				if (nautilus_str_has_prefix(icon_str, "file://")) {
+					uri = g_strdup(icon_str);
+				} else {
+					name = (const char*) g_strdup(icon_str);
+					need_to_free_name = TRUE;
+				}
+				xmlFree(icon_str);
+			}
+		} 	
+	}
+	
 	/* handle .svg files */
 	/* FIXME: we should be checking the mime-type but for now we use the suffix, as the mime-type
 	   isn't defined in standard setups */
@@ -804,12 +824,15 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	
 	/* Get the generic icon set for this file. */
         g_free(file_uri);
-        name = nautilus_icon_factory_get_icon_name_for_file (file);
+        if (name == NULL)
+		name = nautilus_icon_factory_get_icon_name_for_file (file);
 	
 	/* Create the icon or find it in the cache if it's already there. */
 	scalable_icon = nautilus_scalable_icon_get (uri, name, modifier);
 	g_free (uri);
-	
+	if (need_to_free_name)
+		g_free((char *) name);
+		
 	return scalable_icon;
 }
 
