@@ -29,11 +29,7 @@
 #include <stdlib.h>
 #include "nautilus-shell.h"
 
-/* FIXME bugzilla.eazel.com 2535: This is a workaround for ORBit bug where including idl files
- * in other idl files causes trouble.
- */
 #include "nautilus-shell-interface.h"
-#define nautilus_view_component_H
 
 #include "nautilus-desktop-window.h"
 #include "nautilus-main.h"

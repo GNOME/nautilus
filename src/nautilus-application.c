@@ -27,11 +27,7 @@
 #include <config.h>
 #include "nautilus-application.h"
 
-/* FIXME bugzilla.eazel.com 2535: This is a workaround for ORBit bug where including idl files
- * in other idl files causes trouble. We should remove this workaround when the bug is fixed.
- */
 #include "nautilus-shell-interface.h"
-#define nautilus_view_component_H
 
 #include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-desktop-icon-view.h"
