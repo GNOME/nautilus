@@ -352,43 +352,6 @@ get_file_path_for_mode (const NautilusCustomizationData *data,
 	return directory_name;
 }
 
-/* utility to composite localizable text onto the reset pixbuf */
-static void
-add_reset_text (GdkPixbuf *pixbuf)
-{
-	int width, height;
-	int h_offset, v_offset;
-	PangoContext *context;
-	PangoLayout *layout;
-	PangoRectangle text_extent;
-	PangoFontDescription *font_desc;
-
-	width = gdk_pixbuf_get_width (pixbuf);
-	height = gdk_pixbuf_get_height (pixbuf);
-
-	font_desc = pango_font_description_from_string ("Mono");
-
-	context = eel_pango_ft2_get_context ();
-	layout = pango_layout_new (context);
-	g_object_unref (context);
-	pango_layout_set_text (layout, _("reset"), -1);
-	pango_layout_set_font_description (layout, font_desc);
-	pango_font_description_free (font_desc);
-	
-	text_extent = eel_pango_layout_fit_to_dimensions (
-		layout, width - 12, -1);
-	
-	/* compute text position, correcting for the imbalanced shadow, etc. */
-	h_offset = ((width - text_extent.width) / 2) - 2;
-	v_offset = (((height - 8)/ 2) - text_extent.height) / 2;
-
-	eel_gdk_pixbuf_draw_layout (pixbuf,
-				    h_offset, v_offset,
-				    EEL_RGBA_COLOR_OPAQUE_WHITE,
-				    layout);
-
-	g_object_unref (layout);
-}
 
 /* utility to make an attractive pattern image by compositing with a frame */
 GdkPixbuf*
@@ -425,10 +388,6 @@ nautilus_customization_make_pattern_chit (GdkPixbuf *pattern_tile, GdkPixbuf *fr
 			      
 	g_object_unref (pattern_tile);
 
-	if (is_reset) {
-		add_reset_text (pixbuf);
-	}
-
 	return pixbuf;
 }
 
@@ -444,7 +403,7 @@ format_name_for_display (NautilusCustomizationData *data, const char* name)
 	/* don't display a name for the "reset" property, since its name is
 	   contained in its image and also to help distinguish it */  
 	if (!eel_strcmp(name, RESET_IMAGE_NAME)) {
-		return g_strdup("");
+		return g_strdup(_("reset"));
 	}
 
 	/* map file names to display names using the mappings defined in the hash table */

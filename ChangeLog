@@ -1,5 +1,16 @@
 2003-03-10  Alexander Larsson  <alexl@redhat.com>
 
+	* configure.in: 
+	* NEWS:
+	Bump to 2.2.2.
+	Require Eel 2.2.2
+
+	* libnautilus-private/nautilus-customization-data.c:
+	Don't embedd reset label into the reset image.
+	This drops the last user of PangoFT2.
+
+2003-03-10  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-global-preferences.c: 
 	* libnautilus-private/apps_nautilus_preferences.schemas:
 	Make 50% the default list view zoom.
