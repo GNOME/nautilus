@@ -12,8 +12,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2003-07-14 06:53+0100\n"
-"PO-Revision-Date: 2003-07-14 06:51+0100\n"
+"POT-Creation-Date: 2003-07-16 16:50+0100\n"
+"PO-Revision-Date: 2003-07-16 17:22+0100\n"
 "Last-Translator: Dafydd Harries <daf@parnassus.ath.cx>\n"
 "Language-Team: Cymraeg <gnome-cy@pengwyn.linux.org.uk>\n"
 "MIME-Version: 1.0\n"
@@ -25,9 +25,8 @@ msgid "Factory for Nautilus component adapter factories"
 msgstr "Ffatri ar gyfer ffatriau addasyddion cydran Nautilus"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:2
-#, fuzzy
 msgid "Factory for Nautilus component adapter factories "
-msgstr "Ffatri ar gyfer ffatriau addasyddion cydran Nautilus "
+msgstr "Ffatri ar gyfer ffatrïoedd addasyddion cydran Nautilus "
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:3
 msgid ""
@@ -381,7 +380,7 @@ msgstr "Llwytho..."
 
 #: components/tree/nautilus-tree-view.c:505 nautilus.desktop.in.h:1
 msgid "Home Folder"
-msgstr ""
+msgstr "Plygell Cartref"
 
 #: components/tree/nautilus-tree-view.c:507
 msgid "Filesystem"
@@ -1028,7 +1027,7 @@ msgstr "Methu canfod hbox, defnyddio dewisydd ffeil arferol"
 #: libbackground/preview-file-selection.c:212
 #: src/nautilus-file-management-properties.glade.h:55
 msgid "Preview"
-msgstr "Rhagweld"
+msgstr "Rhagolwg"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:1
 msgid ""
@@ -1081,14 +1080,16 @@ msgstr "Lliw Rhagosodedig y _Cefndir"
 msgid "Default Background Filename"
 msgstr "Enw Ffeil Cefndir Rhagosodedig"
 
+# msgstr "Lliw Cefndir Cwarel Ochr Rhagosodiedig"
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:11
 #, fuzzy
 msgid "Default Side Pane Background Color"
-msgstr "Lliw Cefndir Cwarel Ochr Rhagosodiedig"
+msgstr "Rhagosodiad Lliw Cefndir Cwarel Ochr"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:12
+#, fuzzy
 msgid "Default Side Pane Background Filename"
-msgstr ""
+msgstr "Rhagosodiad Enw Ffeil Cefndir Cwarel Ochr"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:13
 msgid "Default folder viewer"
@@ -1096,7 +1097,7 @@ msgstr "Gwyliwr plygell rhagosodedig"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
 msgid "Default icon zoom level"
-msgstr "Rhagosodiad lefel chwyddo eicon"
+msgstr "Rhagosodiad lefel chwyddo eiconau"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
 msgid "Default list zoom level"
@@ -1108,11 +1109,11 @@ msgstr "Trefn rhagosodedig"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
 msgid "Default zoom level used by the icon view."
-msgstr ""
+msgstr "Y rhagosodiad lefel chwyddo a ddefnyddir gan y golwg eiconau."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
 msgid "Default zoom level used by the list view."
-msgstr ""
+msgstr "Y rhagosodiad lefel chwyddo a ddefnyddir gan y golwg rhestr."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:19
 msgid "Desktop font"
@@ -1136,13 +1137,15 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
 msgid "Enable 'special' flags in file preferences dialog"
-msgstr ""
+msgstr "Galluogi baneri 'arbennig' yn y deialog hoffterau ffeil"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
 msgid ""
 "Filename for the default directory background. Only used if background_set "
 "is true."
 msgstr ""
+"Enw ffeil y delwedd cefndir cyfeiriadur rhagosodedig. Defnyddir ond os mae "
+"background_set yn wir."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid ""
@@ -1152,11 +1155,11 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
 msgid "Hide default bookmarks in the bookmark menu"
-msgstr ""
+msgstr "Cuddio llyfrnodau rhagosodedig yn y dewislen llyfnodau"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
 msgid "Home icon visible on desktop"
-msgstr ""
+msgstr "Eicon cartref yn weladwy ar y penbwrdd"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
 msgid ""
@@ -1304,7 +1307,6 @@ msgstr "Uchafrif y ffeiliau a ymddelir a hwy mewn cyfeiriadur"
 
 # EFALLAI
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
-#, fuzzy
 msgid "Maximum image size for thumbnailing"
 msgstr "Maint mwyaf delwedd ar gyfer creu lluniau cryno"
 
@@ -1412,7 +1414,6 @@ msgid ""
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
-#, fuzzy
 msgid "The default width of the side pane in new windows."
 msgstr "Lled rhagosodedig y bar ochr mewn ffenestri newydd."
 
@@ -1429,8 +1430,8 @@ msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
 msgstr ""
-"Gellir gosod yr enw hwn os hoffech enw addasiedig ar gyfer yr eicon "
-"cartref ar y penbwrdd."
+"Gellir gosod yr enw hwn os hoffech enw addasiedig ar gyfer yr eicon cartref "
+"ar y penbwrdd."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
@@ -1447,18 +1448,16 @@ msgid "Type of click used to launch/open files"
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
-#, fuzzy
 msgid "Use manual layout in new windows"
-msgstr "Creu ffenest newydd"
+msgstr "Defnyddio llunwedd llaw mewn ffenestri newydd"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
-#, fuzzy
 msgid "Use tighter Layout in new windows"
-msgstr "Creu ffenest newydd"
+msgstr "Defnyddio llunwedd closiach mewn ffenestri newydd"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
 msgid "What to do with executable text files when activated"
-msgstr ""
+msgstr "Beth i'w wnud efo ffeiliau testun gweithredadwy pan gweithredir hwy"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid ""
@@ -2974,31 +2973,31 @@ msgstr "Gyda Llaw"
 #: libnautilus-private/nautilus-global-preferences.c:194
 #: src/nautilus-file-management-properties.glade.h:41
 msgid "By Name"
-msgstr "Gan Enw"
+msgstr "Yn ôl Enw"
 
 #: libnautilus-private/nautilus-global-preferences.c:186
 #: libnautilus-private/nautilus-global-preferences.c:195
 #: src/nautilus-file-management-properties.glade.h:42
 msgid "By Size"
-msgstr "Gan Faint"
+msgstr "Yn ôl Maint"
 
 #: libnautilus-private/nautilus-global-preferences.c:187
 #: libnautilus-private/nautilus-global-preferences.c:196
 #: src/nautilus-file-management-properties.glade.h:43
 msgid "By Type"
-msgstr "Gan Fath"
+msgstr "Yn ôl Math"
 
 #: libnautilus-private/nautilus-global-preferences.c:188
 #: libnautilus-private/nautilus-global-preferences.c:197
 #: src/nautilus-file-management-properties.glade.h:40
 msgid "By Modification Date"
-msgstr "Gan Dyddiad Newid"
+msgstr "Yn ôl Dyddiad Newid"
 
 #: libnautilus-private/nautilus-global-preferences.c:189
 #: libnautilus-private/nautilus-global-preferences.c:198
 #: src/nautilus-file-management-properties.glade.h:39
 msgid "By Emblems"
-msgstr "Gan Fathodynau"
+msgstr "Yn ôl Bathodynau"
 
 #: libnautilus-private/nautilus-global-preferences.c:203
 msgid "8"
@@ -3265,97 +3264,97 @@ msgstr "Roedd gwall wrth ddangos cymorth: %s"
 
 #: libnautilus-private/nautilus-program-chooser.c:333
 msgid "not in menu"
-msgstr ""
+msgstr "ddim yn y dewislen"
 
 #: libnautilus-private/nautilus-program-chooser.c:336
 msgid "in menu for this file"
-msgstr ""
+msgstr "yn y ddewislen ar gyfer y ffeil hwn"
 
 #: libnautilus-private/nautilus-program-chooser.c:339
 #: libnautilus-private/nautilus-program-chooser.c:342
 #, c-format
 msgid "in menu for \"%s\""
-msgstr ""
+msgstr "yn y dewislen ar gyfer \"%s\""
 
 #: libnautilus-private/nautilus-program-chooser.c:345
 msgid "default for this file"
-msgstr ""
+msgstr "rhagosodiad ar gyfer y ffeil hwn"
 
 #: libnautilus-private/nautilus-program-chooser.c:348
 #: libnautilus-private/nautilus-program-chooser.c:351
 #, c-format
 msgid "default for \"%s\""
-msgstr ""
+msgstr "rhagosodiad ar gyfer \"%s\""
 
 #: libnautilus-private/nautilus-program-chooser.c:396
 #, c-format
 msgid "Is not in the menu for \"%s\" items."
-msgstr ""
+msgstr "Nid yw yn y dewislen ar gyfer eitemau \"%s\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:399
 #, c-format
 msgid "Is in the menu for \"%s\"."
-msgstr ""
+msgstr "Mae yn y dewislen ar gyfer \"%s\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:402
 #, c-format
 msgid "Is in the menu for \"%s\" items."
-msgstr ""
+msgstr "Mae yn y dewislen ar gyfer eitemau \"%s\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:405
 #, c-format
 msgid "Is in the menu for all \"%s\" items."
-msgstr ""
+msgstr "Mae yn y dewislen ar gyfer pob eitem \"%s\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:408
 #, c-format
 msgid "Is the default for \"%s\"."
-msgstr ""
+msgstr "Y rhagosodiad ar gyfer \"%s\" ydyw."
 
 #: libnautilus-private/nautilus-program-chooser.c:411
 #, c-format
 msgid "Is the default for \"%s\" items."
-msgstr ""
+msgstr "Y rhagosodiad ar gyfer eitemau \"%s\" ydyw."
 
 #: libnautilus-private/nautilus-program-chooser.c:414
 #, c-format
 msgid "Is the default for all \"%s\" items."
-msgstr ""
+msgstr "Y rhagosodiad ar gyfer pob eitem \"%s\" ydyw."
 
 #: libnautilus-private/nautilus-program-chooser.c:1041
 #, c-format
 msgid "Modify \"%s\""
-msgstr ""
+msgstr "Newid \"%s\""
 
 #. Radio button for adding to short list for file type.
 #: libnautilus-private/nautilus-program-chooser.c:1067
 #, c-format
 msgid "Include in the menu for \"%s\" items"
-msgstr ""
+msgstr "Cynnwys yn y dewislen ar gyfer eitemau \"%s\""
 
 #. Radio button for setting default for file type.
 #: libnautilus-private/nautilus-program-chooser.c:1074
 #, c-format
 msgid "Use as default for \"%s\" items"
-msgstr ""
+msgstr "Defnyddio fel rhagosodiad ar gyfer eitemau \"%s\""
 
 #. Radio button for adding to short list for specific file.
 #: libnautilus-private/nautilus-program-chooser.c:1081
 #, c-format
 msgid "Include in the menu for \"%s\" only"
-msgstr ""
+msgstr "Cynnwys yn y dewislen ar gyfer \"%s\" yn unig"
 
 #. Radio button for setting default for specific file.
 #: libnautilus-private/nautilus-program-chooser.c:1087
 #, c-format
 msgid "Use as default for \"%s\" only"
-msgstr ""
+msgstr "Defnyddio fel rhagosodiad ar gyfer \"%s\" yn unig"
 
 #. Radio button for not including program in short list for type or file.
 #: libnautilus-private/nautilus-program-chooser.c:1094
 #, c-format
 msgid "Don't include in the menu for \"%s\" items"
-msgstr ""
+msgstr "Peidio cynnwys yn y dewislen ar gyfer eitemau \"%s\""
 
 #: libnautilus-private/nautilus-program-chooser.c:1252
 #: src/file-manager/fm-search-list-view.c:494
@@ -3400,11 +3399,11 @@ msgstr "Agor efo Rhaglen Arall"
 #: libnautilus-private/nautilus-program-chooser.c:1494
 #, c-format
 msgid "Choose an application with which to open \"%s\":"
-msgstr ""
+msgstr "Dewiswch rhaglen i agor \"%s\" efo:"
 
 #: libnautilus-private/nautilus-program-chooser.c:1498
 msgid "Open with Other Viewer"
-msgstr ""
+msgstr "Agor gyda Syllwr Arall"
 
 #: libnautilus-private/nautilus-program-chooser.c:1499
 #, c-format
@@ -3414,20 +3413,20 @@ msgstr "Dewiswch olwg ar gyfer \"%s\":"
 #: libnautilus-private/nautilus-program-chooser.c:1601
 #, c-format
 msgid "No viewers are available for \"%s\"."
-msgstr ""
+msgstr "Does dim syllwyr ar gael ar gyfer \"%s\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:1602
 msgid "No Viewers Available"
-msgstr ""
+msgstr "Dim Syllwyr ar Gael"
 
 #: libnautilus-private/nautilus-program-chooser.c:1604
 #, c-format
 msgid "There is no application associated with \"%s\"."
-msgstr ""
+msgstr "Does dim rhaglen wedi ei gysylltu efo \"%s\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:1605
 msgid "No Application Associated"
-msgstr ""
+msgstr "Dim Rhaglen wedi ei Gysylltu"
 
 #: libnautilus-private/nautilus-program-chooser.c:1607
 #, c-format
@@ -3453,15 +3452,14 @@ msgstr ""
 
 #: libnautilus-private/nautilus-program-chooser.c:1622
 msgid "Associate Application"
-msgstr ""
+msgstr "Cysylltu Rhaglen"
 
 #: libnautilus-private/nautilus-program-chooser.c:1648
-#, fuzzy, c-format
+#, c-format
 msgid "The viewer associated with \"%s\" is invalid."
 msgstr "Mae'r syllwr a chysylltir a \"%s\" yn annilys."
 
 #: libnautilus-private/nautilus-program-chooser.c:1649
-#, fuzzy
 msgid "Invalid Viewer Associated"
 msgstr "Syllwr Annilys wedi ei Gysylltu"
 
@@ -3495,7 +3493,7 @@ msgstr ""
 
 #: libnautilus-private/nautilus-program-chooser.c:1665
 msgid "Associate Action"
-msgstr ""
+msgstr "Cysylltu Gweithred"
 
 #: libnautilus-private/nautilus-program-choosing.c:504
 #, c-format
@@ -3514,7 +3512,7 @@ msgstr ""
 #: libnautilus-private/nautilus-program-choosing.c:515
 #: libnautilus-private/nautilus-program-choosing.c:546
 msgid "Can't Open Location"
-msgstr ""
+msgstr "Methu Agor Lleoliad"
 
 #: libnautilus-private/nautilus-program-choosing.c:534
 #, c-format
@@ -3546,7 +3544,7 @@ msgstr ""
 
 #: libnautilus-private/nautilus-program-choosing.c:1163
 msgid "Can't execute remote links"
-msgstr ""
+msgstr "Ni ellir gweithredu cysylltion pell"
 
 #: libnautilus-private/nautilus-program-choosing.c:1173
 #: libnautilus-private/nautilus-program-choosing.c:1239
@@ -3555,11 +3553,14 @@ msgid ""
 "\n"
 "Details: "
 msgstr ""
+"Roedd gwall wrth lansio'r rhaglen.\n"
+"\n"
+"Manylion: "
 
 #: libnautilus-private/nautilus-program-choosing.c:1177
 #: libnautilus-private/nautilus-program-choosing.c:1243
 msgid "Error launching application"
-msgstr ""
+msgstr "Gwall wrth lansio'r rhaglen"
 
 #: libnautilus-private/nautilus-program-choosing.c:1205
 msgid ""
@@ -3571,7 +3572,7 @@ msgstr ""
 #: libnautilus-private/nautilus-program-choosing.c:1208
 #: libnautilus-private/nautilus-program-choosing.c:1220
 msgid "Drop target only supports local files"
-msgstr ""
+msgstr "Mae'r targed gollwng ond yn cynnal ffeiliau lleol"
 
 #: libnautilus-private/nautilus-program-choosing.c:1217
 msgid ""
@@ -3593,34 +3594,34 @@ msgstr ""
 #: libnautilus-private/nautilus-search-uri.c:211
 #, c-format
 msgid "[Items ]containing \"%s\" in their names"
-msgstr ""
+msgstr "yn cynnwys \"%s\" yn eu enwau"
 
 #. "%s" here is a pattern the file name started with, such as
 #. "nautilus"
 #: libnautilus-private/nautilus-search-uri.c:216
 #, c-format
 msgid "[Items ]starting with \"%s\""
-msgstr ""
+msgstr "yn dechrau efo \"%s\""
 
 #. "%s" here is a pattern the file name ended with, such as
 #. "mime"
 #: libnautilus-private/nautilus-search-uri.c:221
 #, c-format
 msgid "[Items ]ending with %s"
-msgstr ""
+msgstr "yn diewddu efo \"%s\""
 
 #. "%s" here is a pattern the file name did not match, such
 #. as "nautilus"
 #: libnautilus-private/nautilus-search-uri.c:226
 #, c-format
 msgid "[Items ]not containing \"%s\" in their names"
-msgstr ""
+msgstr "ddim yn cynnwys \"%s\" yn eu henwau"
 
 #. "%s" is a regular expression string, for example "[abc]"
 #: libnautilus-private/nautilus-search-uri.c:230
 #, c-format
 msgid "[Items ]matching the regular expression \"%s\""
-msgstr ""
+msgstr "yn cydweddu'r mynegiant rheolaidd \"%s\""
 
 #. "%s" is a file glob, for example "*.txt"
 #: libnautilus-private/nautilus-search-uri.c:234
@@ -3798,37 +3799,40 @@ msgstr ""
 #: libnautilus-private/nautilus-search-uri.c:590
 #, c-format
 msgid "Items %s"
-msgstr ""
+msgstr "Eitemau %s"
 
 #: libnautilus-private/nautilus-search-uri.c:700
 msgid "Items containing \"stuff\" in their names"
-msgstr ""
+msgstr "Eitemau sy'n cynnwys \"rhywbeth yn eu henwau"
 
 #: libnautilus-private/nautilus-search-uri.c:702
 msgid "Items that are regular files"
-msgstr ""
+msgstr "Eitemau sy'n ffeiliau rheolaidd"
 
 #: libnautilus-private/nautilus-search-uri.c:705
 msgid "Items containing \"stuff\" in their names and that are regular files"
 msgstr ""
+"Eitemau sy'n cynnwys \"rhywbeth\" yn eu henwau a sy'n ffeiliau rheolaidd"
 
 #: libnautilus-private/nautilus-search-uri.c:709
 msgid ""
 "Items containing \"stuff\" in their names, that are regular files and "
 "smaller than 2000 bytes"
 msgstr ""
+"Eitemau sy'n cynnwys \"rhywbeth\" yn eu henwau, sy'n ffeiliau rheolaidd ac "
+"yn llai na 2000 beit"
 
 #: libnautilus-private/nautilus-search-uri.c:713
 msgid "Items containing \"medusa\" in their names and that are folders"
-msgstr ""
+msgstr "Eitemau sy'n cynnwys \"medusa\" yn eu henwau a sy'n blygellau"
 
 #: libnautilus-private/nautilus-trash-directory.c:69
 msgid "Searching Disks"
-msgstr ""
+msgstr "Yn Chwilio Disgiau"
 
 #: libnautilus-private/nautilus-trash-directory.c:70
 msgid "Nautilus is searching your disks for trash folders."
-msgstr ""
+msgstr "Mae Nautilus yn chwilio eich disgiau ar gyfer plygellau sbwriel."
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -3836,19 +3840,19 @@ msgstr "Golygu"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:175
 msgid "Undo Edit"
-msgstr "Dad-wneud Golygu"
+msgstr "Datwneud Golygu"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:176
 msgid "Undo the edit"
-msgstr "Dad-wneud y golygu"
+msgstr "Datwneud y golygu"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:177
 msgid "Redo Edit"
-msgstr ""
+msgstr "Ailwneud Golygu"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:178
 msgid "Redo the edit"
-msgstr ""
+msgstr "Ailwneud y golygu"
 
 #: libnautilus-private/nautilus-view-identifier.c:62
 #, c-format
@@ -3858,7 +3862,7 @@ msgstr "Dangos fel %s"
 #: libnautilus-private/nautilus-view-identifier.c:68
 #, c-format
 msgid "%s Viewer"
-msgstr "Gweledydd %s"
+msgstr "Syllwr %s"
 
 #: libnautilus-private/nautilus-volume-monitor.c:897
 msgid "Unknown"
@@ -3889,11 +3893,11 @@ msgstr "Cyfrol Gwreiddiol"
 
 #: libnautilus-private/nautilus-volume-monitor.c:1801
 msgid "Mount Error"
-msgstr ""
+msgstr "Gwall Gosod"
 
 #: libnautilus-private/nautilus-volume-monitor.c:1801
 msgid "Unmount Error"
-msgstr ""
+msgstr "Gwall Datosod"
 
 #. Handle floppy case
 #: libnautilus-private/nautilus-volume-monitor.c:1874
@@ -3952,15 +3956,15 @@ msgstr "Torri _Testun"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:5
 msgid "Cut the selected text to the clipboard"
-msgstr ""
+msgstr "Torri'r testun a ddewiswyd i'r clipfwrdd"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:6
 msgid "Paste the text stored on the clipboard"
-msgstr ""
+msgstr "Gludo'r testun sydd ar y clipfwrdd"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:7
 msgid "Remove the selected text without putting it on the clipboard"
-msgstr ""
+msgstr "Tynnu'r testun a ddewiswyd heb ei roi e ar y clipfwrdd"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:39
 msgid "Select _All"
@@ -3968,7 +3972,7 @@ msgstr "Dewis _Popeth"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:9
 msgid "Select all the text in a text field"
-msgstr ""
+msgstr "Dewis y holl destun mewn maes testun"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:11 src/nautilus-shell-ui.xml.h:74
 msgid "_Paste Text"
@@ -3976,15 +3980,15 @@ msgstr "_Gludo Testun"
 
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
-msgstr ""
+msgstr "Newid sut rheolir ffeiliau"
 
 #: nautilus-file-management-properties.desktop.in.h:2
 msgid "File Management"
-msgstr ""
+msgstr "Rheolaeth Ffeiliau"
 
 #: nautilus.desktop.in.h:2
 msgid "View your home folder in the Nautilus file manager"
-msgstr ""
+msgstr "Gweld eich plygell cartred yn y rheolwr ffeiliau Nautilus"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -3996,7 +4000,7 @@ msgstr "Eiconau"
 
 #: src/Nautilus_shell.server.in.h:3
 msgid "Icons Viewer"
-msgstr ""
+msgstr "Syllwr Eiconau"
 
 #: src/Nautilus_shell.server.in.h:4
 msgid "List"
@@ -4004,11 +4008,11 @@ msgstr "Rhestr"
 
 #: src/Nautilus_shell.server.in.h:5
 msgid "List Viewer"
-msgstr ""
+msgstr "Syllwr Rhestr"
 
 #: src/Nautilus_shell.server.in.h:6
 msgid "Nautilus factory"
-msgstr ""
+msgstr "ffatri Nautilus"
 
 #: src/Nautilus_shell.server.in.h:7
 msgid "Nautilus file manager component that shows a scrollable list"
@@ -4034,15 +4038,15 @@ msgstr ""
 
 #: src/Nautilus_shell.server.in.h:12
 msgid "Nautilus file manager icon view"
-msgstr ""
+msgstr "Golwg eicon y rheolwr ffeiliau Nautilus"
 
 #: src/Nautilus_shell.server.in.h:13
 msgid "Nautilus file manager list view"
-msgstr ""
+msgstr "Golwg rhestr y rheolwr ffeiliau Nautilus"
 
 #: src/Nautilus_shell.server.in.h:14
 msgid "Nautilus file manager search results list view"
-msgstr ""
+msgstr "Golwg rhestr canlyniadau chwilio y rheolwr ffeiliau Nautilus"
 
 #: src/Nautilus_shell.server.in.h:15
 msgid "Nautilus metafile factory"
@@ -4064,7 +4068,7 @@ msgstr ""
 
 #: src/Nautilus_shell.server.in.h:19
 msgid "Search List"
-msgstr ""
+msgstr "Rhestr Chwilio"
 
 #: src/Nautilus_shell.server.in.h:20
 msgid "View as Icons"
@@ -4131,58 +4135,58 @@ msgstr ""
 
 #: src/file-manager/fm-directory-view.c:1543
 msgid "1 folder selected"
-msgstr ""
+msgstr "dewiswyd 1 plygell"
 
 #: src/file-manager/fm-directory-view.c:1546
 #, c-format
 msgid "%d folders selected"
-msgstr ""
+msgstr "dewiswyd %d plygell"
 
 #: src/file-manager/fm-directory-view.c:1553
 msgid " (containing 0 items)"
-msgstr ""
+msgstr " (yn cynnwys 0 eitem)"
 
 #: src/file-manager/fm-directory-view.c:1555
 msgid " (containing 1 item)"
-msgstr ""
+msgstr " (yn cynnwys 1 eitem)"
 
 #: src/file-manager/fm-directory-view.c:1557
 #, c-format
 msgid " (containing %d items)"
-msgstr ""
+msgstr " (yn cynnwys %d eitem)"
 
 #: src/file-manager/fm-directory-view.c:1564
 msgid " (containing a total of 0 items)"
-msgstr ""
+msgstr " (yn cynnwys cyfanswm o 0 eitem)"
 
 #: src/file-manager/fm-directory-view.c:1566
 msgid " (containing a total of 1 item)"
-msgstr ""
+msgstr " (yn cynnwys cyfanswm o 1 eitem)"
 
 #: src/file-manager/fm-directory-view.c:1568
 #, c-format
 msgid " (containing a total of %d items)"
-msgstr ""
+msgstr " (yn cynnwys cyfanswm o %d eitem)"
 
 #: src/file-manager/fm-directory-view.c:1581
 #, c-format
 msgid "\"%s\" selected (%s)"
-msgstr ""
+msgstr "dewiswyd \"%s\" (%s)"
 
 #: src/file-manager/fm-directory-view.c:1585
 #, c-format
 msgid "%d items selected (%s)"
-msgstr ""
+msgstr "dewiswyd %d eitem (%s)"
 
 #: src/file-manager/fm-directory-view.c:1592
 #, c-format
 msgid "1 other item selected (%s)"
-msgstr ""
+msgstr "dewiswyd 1 eitem arall (%s)"
 
 #: src/file-manager/fm-directory-view.c:1595
 #, c-format
 msgid "%d other items selected (%s)"
-msgstr ""
+msgstr "dewiswyd %d eitem arall (%s)"
 
 #. This is marked for translation in case a localizer
 #. * needs to change ", " to something else. The comma
@@ -4194,7 +4198,7 @@ msgstr ""
 #: src/file-manager/fm-directory-view.c:1624
 #, c-format
 msgid "%s%s, %s"
-msgstr ""
+msgstr "%s%s, %s"
 
 #. Note that the number of items actually displayed varies somewhat due
 #. * to the way files are collected in batches. So you can't assume that
@@ -4209,7 +4213,7 @@ msgstr ""
 
 #: src/file-manager/fm-directory-view.c:1756
 msgid "Too Many Files"
-msgstr ""
+msgstr "Gormod o Ffeiliau"
 
 #: src/file-manager/fm-directory-view.c:3050
 #, c-format
@@ -4233,7 +4237,7 @@ msgstr ""
 
 #: src/file-manager/fm-directory-view.c:3067
 msgid "Delete Immediately?"
-msgstr ""
+msgstr "Dileu ar Unwaith?"
 
 #: src/file-manager/fm-directory-view.c:3099
 #, c-format
@@ -4249,40 +4253,40 @@ msgstr ""
 
 #: src/file-manager/fm-directory-view.c:3109
 msgid "Delete From Trash?"
-msgstr ""
+msgstr "Dileu O'r Sbwriel?"
 
 #: src/file-manager/fm-directory-view.c:3387
 #: src/file-manager/fm-directory-view.c:3429
 #, c-format
 msgid "Use \"%s\" to open the selected item"
-msgstr ""
+msgstr "Defnyddio \"%s\" i agor yr eitem a ddewiswyd"
 
 #: src/file-manager/fm-directory-view.c:3510
 #: src/file-manager/nautilus-directory-view-ui.xml.h:25
 msgid "Other _Application..."
-msgstr ""
+msgstr "Rhaglen _Arall..."
 
 #: src/file-manager/fm-directory-view.c:3510
 msgid "An _Application..."
-msgstr ""
+msgstr "_Rhaglen..."
 
 #: src/file-manager/fm-directory-view.c:3515
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Other _Viewer..."
-msgstr ""
+msgstr "_Syllwr Arall..."
 
 #: src/file-manager/fm-directory-view.c:3515
 msgid "A _Viewer..."
-msgstr ""
+msgstr "_Syllwr..."
 
 #: src/file-manager/fm-directory-view.c:3597
 #, c-format
 msgid "Could not complete specified action:  %s"
-msgstr ""
+msgstr "Methwyd cyflawnu y weithed a benodwyd: %s"
 
 #: src/file-manager/fm-directory-view.c:3621
 msgid "Could not complete specified action."
-msgstr ""
+msgstr "Methwyd cyflawnu y weithred a benodwyd."
 
 #: src/file-manager/fm-directory-view.c:4130
 #, c-format
@@ -4298,7 +4302,7 @@ msgstr ""
 
 #: src/file-manager/fm-directory-view.c:4350
 msgid "About Scripts"
-msgstr ""
+msgstr "Ynghylch Sgriptiau"
 
 #: src/file-manager/fm-directory-view.c:4351
 msgid ""
@@ -4346,7 +4350,7 @@ msgstr ""
 
 #: src/file-manager/fm-directory-view.c:4566
 msgid "There is nothing on the clipboard to paste."
-msgstr ""
+msgstr "Does dim byd ar y clipfwrdd i'w ludo."
 
 #: src/file-manager/fm-directory-view.c:4823
 msgid "Open _in This Window"
@@ -4636,16 +4640,16 @@ msgstr ""
 #: src/file-manager/fm-icon-view.c:1605
 #: src/file-manager/nautilus-icon-view-ui.xml.h:20
 msgid "Restore Icons' Original Si_zes"
-msgstr "Adfer Maint Eiconau"
+msgstr "Adfer Maint _Gwreiddiol Eiconau"
 
 #: src/file-manager/fm-icon-view.c:1606
 msgid "Restore Icon's Original Si_ze"
-msgstr "Adfer Maint Eicon"
+msgstr "Adfer Maint _Gwreiddiol yr Eicon"
 
 #: src/file-manager/fm-icon-view.c:1943
 #, c-format
 msgid "pointing at \"%s\""
-msgstr ""
+msgstr "pwyntio at \"%s\""
 
 #: src/file-manager/fm-icon-view.c:2522
 msgid "Drag and drop is only supported to local file systems."
@@ -5357,23 +5361,23 @@ msgstr "Tre_fnu Eitemau"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:2
 msgid "By Modification _Date"
-msgstr ""
+msgstr "Yn ôl _Ddydiad Newid"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:3
 msgid "By _Emblems"
-msgstr ""
+msgstr "Yn ôl _Bathodynau"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:4
 msgid "By _Name"
-msgstr ""
+msgstr "Yn ôl _Enw"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:5
 msgid "By _Size"
-msgstr ""
+msgstr "Yn ôl M_aint"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:6
 msgid "By _Type"
-msgstr ""
+msgstr "Yn ôl _Math"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:7
 msgid "Clean _Up by Name"
@@ -5780,19 +5784,19 @@ msgstr ""
 
 #: src/nautilus-file-management-properties.glade.h:63
 msgid "Views"
-msgstr ""
+msgstr "Golygion"
 
 #: src/nautilus-file-management-properties.glade.h:64
 msgid "_Arrange items:"
-msgstr ""
+msgstr "_Trefnu eitemau:"
 
 #: src/nautilus-file-management-properties.glade.h:66
 msgid "_Default zoom level:"
-msgstr ""
+msgstr "_Rhagosodiad lefel chwyddo:"
 
 #: src/nautilus-file-management-properties.glade.h:67
 msgid "_Double click to activate items"
-msgstr ""
+msgstr "Clic _ddwbl er mwyn gweithredu eitemau"
 
 #: src/nautilus-file-management-properties.glade.h:68
 msgid "_Only for files smaller than:"
@@ -5916,17 +5920,24 @@ msgstr "Rheolwr Ffeiliau"
 msgid "Nautilus"
 msgstr "Nautilus"
 
-#. translators: %s is an option (e.g. --check)
-#: src/nautilus-main.c:215 src/nautilus-main.c:224 src/nautilus-main.c:229
-#, fuzzy, c-format
-msgid "nautilus: %s cannot be used with URIs.\n"
-msgstr "nautilus: ni ellir defnyddio --quit efo URI.\n"
+# TRWSIO
+#: src/nautilus-main.c:214
+msgid "nautilus: --check cannot be used with URIs.\n"
+msgstr "nautilus: ni ellir defnyddio --check efo URI.\n"
 
-#: src/nautilus-main.c:220
+#: src/nautilus-main.c:218
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: ni ellir defnyddio --check efo opsiynnau eraill.\n"
 
-#: src/nautilus-main.c:234
+#: src/nautilus-main.c:222
+msgid "nautilus: --quit cannot be used with URIs.\n"
+msgstr "nautilus: ni ellir defnyddio --quit efo URI.\n"
+
+#: src/nautilus-main.c:226
+msgid "nautilus: --restart cannot be used with URIs.\n"
+msgstr "nautilus: ni ellir defnyddio --restart efo URI.\n"
+
+#: src/nautilus-main.c:230
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: ni ellir defnyddio --geometry efo mwy nag un URI.\n"
 
@@ -5959,20 +5970,20 @@ msgstr "_Ychwannegu newydd..."
 #: src/nautilus-property-browser.c:913
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
-msgstr ""
+msgstr "Mae'n flin gen i, ond methwyd dilu y patrwm %s."
 
 #: src/nautilus-property-browser.c:914 src/nautilus-property-browser.c:943
 msgid "Couldn't delete pattern"
-msgstr ""
+msgstr "Methwyd dileu y patrwm"
 
 #: src/nautilus-property-browser.c:942
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
-msgstr ""
+msgstr "Mae'n flin gen i, ond methwyd dileu y bathodyn %s."
 
 #: src/nautilus-property-browser.c:981
 msgid "Create a New Emblem:"
-msgstr ""
+msgstr "Creu Bathodyn Newydd:"
 
 #. make the keyword label and field
 #: src/nautilus-property-browser.c:994
@@ -5986,7 +5997,7 @@ msgstr "_Delwedd:"
 
 #: src/nautilus-property-browser.c:1016
 msgid "Select an image file for the new emblem:"
-msgstr ""
+msgstr "Dewiswch ffeil delwedd ar gyfer y bathodyn newydd:"
 
 #: src/nautilus-property-browser.c:1040
 msgid "Create a New Color:"
@@ -6004,19 +6015,19 @@ msgstr "_Gwerth y lliw:"
 #: src/nautilus-property-browser.c:1101
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
-msgstr ""
+msgstr "Mae'n flin gen i, ond dyw \"%s\" ddim yn enw ffeil dilys."
 
 #: src/nautilus-property-browser.c:1103
 msgid "Sorry, but you did not supply a valid file name."
-msgstr ""
+msgstr "Mae'n flin gen i, ond ni wnaethoch chi ddarparu enw ffeil dilys."
 
 #: src/nautilus-property-browser.c:1105 src/nautilus-property-browser.c:1148
 msgid "Couldn't install pattern"
-msgstr ""
+msgstr "Methwyd sefydlu y patrwm"
 
 #: src/nautilus-property-browser.c:1116
 msgid "Sorry, but you can't replace the reset image."
-msgstr ""
+msgstr "Mae'n flin, on ni allwch amnewid y delwedd datosod."
 
 #: src/nautilus-property-browser.c:1116 src/nautilus-property-browser.c:1319
 #: src/nautilus-property-browser.c:1335
@@ -6026,7 +6037,7 @@ msgstr "Nid yw'n Ddelwedd"
 #: src/nautilus-property-browser.c:1147
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
-msgstr ""
+msgstr "Mae'n flin, on methwyd sefydlu y patrwm %s."
 
 #: src/nautilus-property-browser.c:1167
 msgid "Select an image file to add as a pattern"
@@ -6034,20 +6045,21 @@ msgstr "Dewis ffeil delwedd i'w ychwannegu fel patrwm"
 
 #: src/nautilus-property-browser.c:1228
 msgid "Sorry, but you must specify a non-blank name for the new color."
-msgstr ""
+msgstr "Mae'n flin gen i, ond rhaid i chi benodi enw nid yw'n wag ar gyfer "
+"y lliw newydd."
 
 #: src/nautilus-property-browser.c:1229
 msgid "Couldn't install color"
-msgstr ""
+msgstr "Methwyd sefydlu y lliw"
 
 #: src/nautilus-property-browser.c:1281
 msgid "Select a color to add"
-msgstr ""
+msgstr "Dewiswch liw i'w ychwanegu"
 
 #: src/nautilus-property-browser.c:1318 src/nautilus-property-browser.c:1334
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
-msgstr ""
+msgstr "Mae'n flin gen i, ond nid yw '%s' yn ffeil delwedd gellir defnyddio."
 
 #: src/nautilus-property-browser.c:2039
 msgid "Select a Category:"
@@ -6055,7 +6067,7 @@ msgstr "Dewiswch Gategori:"
 
 #: src/nautilus-property-browser.c:2048
 msgid "C_ancel Remove"
-msgstr ""
+msgstr "C_anslo Tynnu"
 
 #: src/nautilus-property-browser.c:2054
 msgid "_Add a New Pattern..."
@@ -6067,7 +6079,7 @@ msgstr "_Ychwanegu Lliw Newydd..."
 
 #: src/nautilus-property-browser.c:2060
 msgid "_Add a New Emblem..."
-msgstr ""
+msgstr "_Ychwanegu Bathodyn Newydd..."
 
 #: src/nautilus-property-browser.c:2083
 msgid "Click on a pattern to remove it"
@@ -6079,7 +6091,7 @@ msgstr "Cliciwch ar liw er mwyn ei dynnu"
 
 #: src/nautilus-property-browser.c:2089
 msgid "Click on an emblem to remove it"
-msgstr ""
+msgstr "Cliciwch ar fathodyn er mwyn ei dynnu"
 
 #: src/nautilus-property-browser.c:2098
 msgid "Patterns:"
@@ -6091,7 +6103,7 @@ msgstr "Lliwiau:"
 
 #: src/nautilus-property-browser.c:2104
 msgid "Emblems:"
-msgstr ""
+msgstr "Bathodynnau:"
 
 #: src/nautilus-property-browser.c:2124
 msgid "_Remove a Pattern..."
@@ -6103,7 +6115,7 @@ msgstr "_Tynnu Lliw..."
 
 #: src/nautilus-property-browser.c:2130
 msgid "_Remove an Emblem..."
-msgstr ""
+msgstr "_Tynnu Bathodyn..."
 
 #. Menu item in the search bar.
 #. Bracketed items are context, and are message
@@ -6130,7 +6142,7 @@ msgstr "Maint"
 
 #: src/nautilus-search-bar-criterion.c:77
 msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr ""
+msgstr "Efo Bathodyn"
 
 #: src/nautilus-search-bar-criterion.c:78
 msgid "[Search for] Last Modified [before yesterday]"
@@ -6142,7 +6154,7 @@ msgstr "Perchennog"
 
 #: src/nautilus-search-bar-criterion.c:85
 msgid "[File name] contains [help]"
-msgstr "cynnwys"
+msgstr "yn cynnwys"
 
 #: src/nautilus-search-bar-criterion.c:86
 msgid "[File name] starts with [nautilus]"
@@ -6162,19 +6174,19 @@ msgstr ""
 
 #: src/nautilus-search-bar-criterion.c:94
 msgid "[File content] includes all of [apple orange]"
-msgstr ""
+msgstr "yn cynnwys pob un o"
 
 #: src/nautilus-search-bar-criterion.c:95
 msgid "[File content] includes any of [apply orange]"
-msgstr ""
+msgstr "yn cynnwys unrhyw un o"
 
 #: src/nautilus-search-bar-criterion.c:96
 msgid "[File content] does not include all of [apple orange]"
-msgstr ""
+msgstr "ddim yn cynnwys pob un o"
 
 #: src/nautilus-search-bar-criterion.c:97
 msgid "[File content] includes none of [apple orange]"
-msgstr ""
+msgstr "yn dynnwys dim o"
 
 #: src/nautilus-search-bar-criterion.c:103
 msgid "[File type] is [folder]"
@@ -6214,11 +6226,11 @@ msgstr "yn llai na"
 
 #: src/nautilus-search-bar-criterion.c:124
 msgid "[With emblem] marked with [Important]"
-msgstr ""
+msgstr "wedi ei farcio efo"
 
 #: src/nautilus-search-bar-criterion.c:125
 msgid "[With emblem] not marked with [Important]"
-msgstr ""
+msgstr "heb ei farcio efo"
 
 #: src/nautilus-search-bar-criterion.c:130
 msgid "[Last modified date] is [1/24/00]"
@@ -6226,45 +6238,47 @@ msgstr "yw"
 
 #: src/nautilus-search-bar-criterion.c:131
 msgid "[Last modified date] is not [1/24/00]"
-msgstr ""
+msgstr "nid yw"
 
 #: src/nautilus-search-bar-criterion.c:132
 msgid "[Last modified date] is after [1/24/00]"
-msgstr ""
+msgstr "ar ôl"
 
 #: src/nautilus-search-bar-criterion.c:133
 msgid "[Last modified date] is before [1/24/00]"
-msgstr ""
+msgstr "cyn"
 
 #: src/nautilus-search-bar-criterion.c:135
 msgid "[Last modified date] is today"
-msgstr ""
+msgstr "yw heddiw"
 
 #: src/nautilus-search-bar-criterion.c:136
 msgid "[Last modified date] is yesterday"
-msgstr ""
+msgstr "yw ddoe"
 
 #: src/nautilus-search-bar-criterion.c:138
 msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr ""
+msgstr "o fewn wythnos o"
 
 #: src/nautilus-search-bar-criterion.c:139
 msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr ""
+msgstr "o fewn mis o"
 
 #: src/nautilus-search-bar-criterion.c:158
 msgid "[File owner] is [root]"
-msgstr ""
+msgstr "yn"
 
 #: src/nautilus-search-bar-criterion.c:159
 msgid "[File owner] is not [root]"
-msgstr ""
+msgstr "ddim yn"
 
 #: src/nautilus-server-connect.c:132
 msgid ""
 "Couldn't execute nautilus\n"
 "Make sure nautilus is in your path and correctly installed"
 msgstr ""
+"Methwyd gweithredu nautilus\n"
+"Sicrhewch fod nautilus yn eich llwybr a wedi ei sefydlu yn gywir"
 
 #: src/nautilus-server-connect.c:395
 #, c-format
@@ -6497,7 +6511,7 @@ msgstr ""
 
 #: src/nautilus-shell-ui.xml.h:52
 msgid "Write to CD"
-msgstr ""
+msgstr "Ysgrifennu at CD"
 
 #: src/nautilus-shell-ui.xml.h:53
 msgid "Zoom _In"
@@ -6633,7 +6647,7 @@ msgstr "I _fyny"
 
 #: src/nautilus-shell-ui.xml.h:88
 msgid "_View"
-msgstr "_Gweld"
+msgstr "_Golwg"
 
 #: src/nautilus-shell-ui.xml.h:89
 msgid "_View as..."
@@ -6641,7 +6655,7 @@ msgstr "_Dangos fel..."
 
 #: src/nautilus-shell-ui.xml.h:90
 msgid "_Write to CD"
-msgstr ""
+msgstr "_Ysgrigennu at CD"
 
 #: src/nautilus-side-pane.c:395
 msgid "Close the side pane"
@@ -6675,7 +6689,7 @@ msgstr "Penbwrdd"
 
 #: src/nautilus-window-manage-views.c:863
 msgid "View Failed"
-msgstr ""
+msgstr "Methodd Syllwr"
 
 #: src/nautilus-window-manage-views.c:874
 #, c-format
@@ -6687,21 +6701,23 @@ msgstr ""
 #: src/nautilus-window-manage-views.c:885
 #, c-format
 msgid "The %s view encountered an error while starting up."
-msgstr ""
+msgstr "Cafodd y syllwr %s wall tra'n cychwyn."
 
 #: src/nautilus-window-manage-views.c:1042
 msgid "Content View"
-msgstr ""
+msgstr "Golwg Cynnwyd"
 
 #: src/nautilus-window-manage-views.c:1043
 msgid "View of the current file or folder"
-msgstr ""
+msgstr "Golwg o'r ffeil neu blygell cyfredol"
 
 #: src/nautilus-window-manage-views.c:1066
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
 msgstr ""
+"Roedd gwall gyda un o baneli y bar ochr a ni all barhau. "
+"Yn anffodus dyd I ddim yn gwybod pa un."
 
 #: src/nautilus-window-manage-views.c:1070
 #, c-format
@@ -6712,18 +6728,21 @@ msgstr ""
 
 #: src/nautilus-window-manage-views.c:1075
 msgid "Sidebar Panel Failed"
-msgstr ""
+msgstr "Methodd Panel Bar Ochr"
 
 #: src/nautilus-window-manage-views.c:1328
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
-msgstr ""
+msgstr "Methwyd canfod \"%s\". Os gwelwch yn dda, gwiriwch y sillafu a "
+"ceisiwch eto."
 
 #: src/nautilus-window-manage-views.c:1334
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
+"Nid yw \"%s\" yn leeoliad dilys. Os gwelwch yn dda, gwiriwch y sillafu "
+"a ceisiwch eto."
 
 #: src/nautilus-window-manage-views.c:1348
 #, c-format
@@ -6731,27 +6750,30 @@ msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
 "it is."
 msgstr ""
+"Ni ellir dangos \"%s\", oherwydd ni all Nautilus benderfynnu pa fath o "
+"ffeil ydyw."
 
 #: src/nautilus-window-manage-views.c:1356
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
-msgstr ""
+msgstr "Does dim syllwr wedi ei sefydlu gan Nautilus all ddangos \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
 #: src/nautilus-window-manage-views.c:1368
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
-msgstr ""
+msgstr "Methwyd dangos \"%s\", oherwydd ni all Nautilus ymdrin a "
+"lleoliadau %s:."
 
 #: src/nautilus-window-manage-views.c:1374
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
-msgstr ""
+msgstr "Methwyd dangos \"%s\", oherwydd methodd y cais mewngofnodi."
 
 #: src/nautilus-window-manage-views.c:1379
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
-msgstr ""
+msgstr "Methwyd dangos \"%s\", oherwydd gwrthodwyd mynediad."
 
 #: src/nautilus-window-manage-views.c:1390
 #, c-format
@@ -6759,6 +6781,8 @@ msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
 "the spelling is correct and that your proxy settings are correct."
 msgstr ""
+"Methwyd dangos \"%s\", oherwyddmethwyd canfod gwesteiwr o'r enw \"%s\". "
+"Gwiriwch fod y sillafu'n gywir a bod eich gosodiadau dirprwy yn gywir."
 
 #: src/nautilus-window-manage-views.c:1398
 #, c-format
@@ -6766,6 +6790,8 @@ msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
 "proxy settings are correct."
 msgstr ""
+"Methwyd dangos \"%s\", oherwydd roedd yr enw gwesteiwr yn wag. "
+"Gwiriwch fod eich gosodiadau dirprwy yn gywir."
 
 #: src/nautilus-window-manage-views.c:1405
 #, c-format
@@ -6936,13 +6962,6 @@ msgstr "Gweinyddion Rhwydwaith"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Gweld eich gweinyddion rhwydwaith yn y rheolwr ffeiliau Nautilus"
-
-# TRWSIO
-#~ msgid "nautilus: --check cannot be used with URIs.\n"
-#~ msgstr "nautilus: ni ellir defnyddio --check efo URI.\n"
-
-#~ msgid "nautilus: --restart cannot be used with URIs.\n"
-#~ msgstr "nautilus: ni ellir defnyddio --restart efo URI.\n"
 
 #~ msgid "_Location:"
 #~ msgstr "_Lleoliad:"
