@@ -74,6 +74,14 @@ aclocal $ACLOCAL_FLAGS
 (autoheader --version)  < /dev/null > /dev/null 2>&1 && autoheader
 
 automake -a $am_opt
+
+if [ -r po/Makefile.i18npatch ]; 
+	if grep GENPOT po/Makefile.in.in >/dev/null; 
+	then echo "no need for patching file \`Makefile.in.in'"; 
+	else patch po/Makefile.in.in < po/Makefile.i18npatch; 
+	fi;
+fi 
+
 autoconf
 
 cd $ORIGDIR
