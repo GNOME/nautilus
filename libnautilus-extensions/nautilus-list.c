@@ -2478,6 +2478,8 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 		break;
 	case NAUTILUS_ICON_DND_COLOR:
 		/* FIXME bugzilla.eazel.com 1289: cache the data here and use it in nautilus_list_drag_drop */
+		list->details->got_drop_data_type = TRUE;
+		list->details->data_type = info;
 		nautilus_background_receive_dropped_color
 			(nautilus_get_widget_background (widget),
 			 widget, x, y, data);
