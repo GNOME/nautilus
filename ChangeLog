@@ -1,3 +1,11 @@
+2000-08-04  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* src/nautilus-sidebar-title.c: (update_font):
+
+	Revert the font change since the font I picked is not available on
+	all platforms.  Ill make a better fix soon.  In the mean time this
+	should fix the torrent of assertions.
+	
 2000-08-04  Mathieu Lacage  <set EMAIL_ADDRESS environment variable>
 
 	first draft at the 1744 and 1761 tasks.
