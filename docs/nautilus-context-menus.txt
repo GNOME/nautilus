@@ -27,6 +27,13 @@ Ok, this is how it works:
 
 	<oaf_attribute name="nautilusverb:DoExtract" type="string" _value="Extract To..."/>
 
+    To specify an icon to display next to the context menu, you can
+    specify a nautilusverbicon property:
+
+	<oaf_attribute name="nautilusverbicon:DoExtract" type="string" _value="icon-name"/>
+
+    The icon will be taken from the current icon theme.
+
     If the component has "nauitlus:can_handle_multiple_files" set to false,
     the item will still be displayed when multiple files are selected, but
     it will be insensitive.  When the user clicks the menu item, nautilus

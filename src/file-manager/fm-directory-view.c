@@ -3698,8 +3698,40 @@ add_bonobo_menu_ui_and_verbs (FMDirectoryView *view, GList *files,
 	/* build the UI */
 	for (l = verb_names; l; l = l->next) {
 		char *verb = l->data;
+		char *icon_attribute_name;
+		const char *icon_name;
+		char *pixbuf_data;
+		GdkPixbuf *pixbuf;
 
-		g_string_append_printf (ui_xml, "<menuitem name=\"%s\" verb=\"%s\"/>", verb, verb);
+		g_string_append_printf (ui_xml,
+					"<menuitem name=\"%s\" verb=\"%s\"",
+					verb, verb);
+
+		icon_attribute_name = g_strdup_printf ("nautilusverbicon:%s",
+						       verb);
+		icon_name = bonobo_server_info_prop_lookup (info,
+							    icon_attribute_name,
+							    langs_cpy);
+		g_free (icon_attribute_name);
+		if (!icon_name) {
+			icon_name = bonobo_server_info_prop_lookup (info, "nautilus:icon",
+								    langs_cpy);
+		}
+			
+		if (icon_name) {
+			pixbuf = nautilus_icon_factory_get_pixbuf_from_name 
+				(icon_name,
+				 NULL,
+				 NAUTILUS_ICON_SIZE_FOR_MENUS,
+				 NULL);
+			if (pixbuf) {
+				pixbuf_data = bonobo_ui_util_pixbuf_to_xml (pixbuf);
+				g_string_append_printf (ui_xml, " pixtype=\"pixbuf\" pixname=\"%s\"", pixbuf_data);
+				g_free (pixbuf_data);
+				g_object_unref (pixbuf);
+			}
+		}
+		g_string_append (ui_xml, "/>");
 	}
 	
 	ui_xml = g_string_append (ui_xml, "</placeholder></popup></popups></Root>");
