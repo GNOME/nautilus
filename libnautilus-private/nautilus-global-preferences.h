@@ -54,6 +54,10 @@ BEGIN_GNOME_DECLS
 /* Single/Double click preference  */
 #define NAUTILUS_PREFERENCES_CLICK_POLICY			"/nautilus/preferences/click_policy"
 
+/* use anti-aliased canvas */
+#define NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS		"/nautilus/preferences/anti_aliased_canvas"
+
+
 enum
 {
 	NAUTILUS_CLICK_POLICY_SINGLE,

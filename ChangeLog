@@ -1,3 +1,31 @@
+2000-05-23  Andy Hertzfeld  <andy@eazel.com>
+
+	made a preference for the anti-aliased canvas, and hooked it up so you can
+	switch on the fly. Anti-aliased drawing is still only partially implemented, so
+	it defaults off.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog),
+	(global_preferences_register_for_ui):
+	added a preference category "Appearance" and an entry for "smoother but slower" 
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	added NAUTILUS_PREFERENCE_ANTI_ALIASED_CANVAS
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_pixbuf_aa), (map_pixbuf), (nautilus_icon_canvas_item_draw),
+	(nautilus_icon_canvas_item_render):
+	made the render method draw right at different scales, partially implemented
+	emblems
+	* libnautilus-extensions/nautilus-icon-container.c: (destroy),
+	(nautilus_icon_container_initialize),
+	(nautilus_icon_container_new),
+	(nautilus_icon_container_set_anti_aliased_mode),
+	(click_policy_changed_callback),
+	(anti_aliased_preferences_changed):
+	receive notification when the anti-aliased preference changes,
+	and update the canvas
+	* libnautilus-extensions/nautilus-icon-container.h:
+	added nautilus_icon_container_set_anti_aliased_mode
+	
 2000-05-22  Maciej Stachowiak  <mjs@eazel.com>
 
 	Completed bugzilla task 763, Test component needed for failure

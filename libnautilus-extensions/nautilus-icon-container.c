@@ -75,9 +75,6 @@
 #define MAXIMUM_IMAGE_SIZE 1000
 #define MAXIMUM_EMBLEM_SIZE 100
 
-/* for now, anti-aliased mode is a compile time option, defaulted off */
-#define ANTI_ALIASED 0
-
 static void          activate_selected_items                  (NautilusIconContainer      *container);
 static void          nautilus_icon_container_initialize_class (NautilusIconContainerClass *class);
 static void          nautilus_icon_container_initialize       (NautilusIconContainer      *container);
@@ -93,6 +90,7 @@ static void          end_renaming_mode                        (NautilusIconConta
 							       gboolean                    commit);
 static void          hide_rename_widget                       (NautilusIconContainer      *container,
 							       NautilusIcon               *icon);
+static void	     anti_aliased_preferences_changed	      (gpointer 		   user_data);
 static void          click_policy_changed_callback            (gpointer                    user_data);
 
 static void 	     remember_selected_files		      (NautilusIconContainer 	*container);
@@ -1643,6 +1641,10 @@ destroy (GtkObject *object)
 					      click_policy_changed_callback,
 					      container);
 	
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
+					      anti_aliased_preferences_changed,
+					      container);
+	
 	nautilus_icon_container_flush_typeselect_state (container);
 	
 	g_free (container->details);
@@ -2486,6 +2488,11 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 		(NAUTILUS_PREFERENCES_CLICK_POLICY,
 		 click_policy_changed_callback,
 		 container);
+
+	/* add callback for preference changes */
+	nautilus_preferences_add_boolean_callback(NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS, 
+						(NautilusPreferencesCallback) anti_aliased_preferences_changed, 
+						container);
 }
 
 
@@ -2626,7 +2633,7 @@ nautilus_icon_container_new (void)
 	gtk_widget_pop_colormap ();
 
 	canvas = GNOME_CANVAS(new);
-	if (ANTI_ALIASED)
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS, FALSE))
 		canvas->aa = TRUE;
 	
 	return new;
@@ -3011,7 +3018,22 @@ nautilus_icon_container_request_update_all (NautilusIconContainer *container)
 	relayout (container);
 }
 
-
+/** * nautilus_icon_container_set_anti_aliased_mode:
+ * Change the anti-aliased mode and redraw everything
+ *
+ **/
+
+void
+nautilus_icon_container_set_anti_aliased_mode (NautilusIconContainer *container, gboolean anti_aliased_mode)
+{
+	GnomeCanvas *canvas;
+
+	canvas = GNOME_CANVAS (container);
+	if (canvas->aa != anti_aliased_mode) {
+		canvas->aa = anti_aliased_mode;
+		nautilus_icon_container_request_update_all (container);	
+	}
+}
 
 /**
  * nautilus_icon_container_get_selection:
@@ -3626,6 +3648,23 @@ click_policy_changed_callback (gpointer user_data)
 		 NAUTILUS_CLICK_POLICY_SINGLE);
 	container->details->single_click_mode =
 		mode == NAUTILUS_CLICK_POLICY_SINGLE;
+}
+
+static void
+anti_aliased_preferences_changed (gpointer user_data)
+{
+	NautilusIconContainer *container;
+	gboolean aa_mode;
+
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (user_data));
+	
+	container = NAUTILUS_ICON_CONTAINER (user_data);
+
+	aa_mode = nautilus_preferences_get_boolean
+		(NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
+		 FALSE);
+
+	nautilus_icon_container_set_anti_aliased_mode(container, aa_mode);
 }
 
 gboolean

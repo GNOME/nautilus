@@ -64,6 +64,8 @@ global_preferences_create_dialog (void)
 	GtkWidget		*user_level_pane;
 	GtkWidget		*directory_views_pane;
 	GtkWidget		*meta_view_pane;
+	GtkWidget		*appearance_pane;
+
 
 	/*
 	 * In the soon to come star trek future, the following widgetry
@@ -110,13 +112,13 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_CLICK_POLICY,
 							 NAUTILUS_PREFERENCE_ITEM_ENUM);
 
+
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), "Remote Views");
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
 							 2,
 							 NAUTILUS_PREFERENCES_REMOTE_VIEWS,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-
 
 	/*
 	 * Meta view pane
@@ -155,6 +157,21 @@ global_preferences_create_dialog (void)
 	
 		nautilus_view_identifier_free_list (view_identifiers);
 	}
+
+
+	/*
+	 * Appearance
+	 */
+	appearance_pane = nautilus_preferences_box_add_pane (preference_box,
+							     "Appearance",
+							     "Appearance Options");
+	
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), "Appearance");
+	
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
+							 0,
+							 NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
 	return prefs_dialog;
 }
@@ -319,8 +336,15 @@ global_preferences_register_for_ui ()
 					     "Activate items with a double click",
 					     NAUTILUS_CLICK_POLICY_DOUBLE);
 
+	/* remote views */
 	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_REMOTE_VIEWS,
 			               "Fully Decorate Remote Views",
+				       NAUTILUS_PREFERENCE_BOOLEAN,
+				       (gconstpointer) FALSE);
+
+	/* Anti-aliased canvas */
+	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
+				       "Use smoother (but slower) graphics",
 				       NAUTILUS_PREFERENCE_BOOLEAN,
 				       (gconstpointer) FALSE);
 
@@ -350,7 +374,13 @@ global_preferences_register_for_ui ()
 
 	nautilus_preferences_register_meta_view_preferences_for_ui ();
 
-
+	/* Appearance options */
+	
+	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
+				       "Use smoother (but slower) graohics",
+				       NAUTILUS_PREFERENCE_BOOLEAN,
+				       (gconstpointer) FALSE);
+	 
 	/* miscellaneous */
 	
 	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME,

@@ -928,6 +928,58 @@ draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 					     0, 0);
 }
 
+static void
+draw_pixbuf_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buf, double affine[6], int x, int y)
+{
+	/* FIXME: must take x,y into account in affine */
+	
+	if (gdk_pixbuf_get_has_alpha(pixbuf))
+		art_rgb_rgba_affine (buf->buf,
+				     buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1,
+				     buf->buf_rowstride,
+				     gdk_pixbuf_get_pixels(pixbuf),
+				     gdk_pixbuf_get_width(pixbuf), gdk_pixbuf_get_height(pixbuf),
+				     gdk_pixbuf_get_rowstride(pixbuf),
+				     affine,
+				     ART_FILTER_NEAREST,
+				     NULL);
+	else
+		art_rgb_affine (buf->buf,
+				buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1,
+				buf->buf_rowstride,
+				gdk_pixbuf_get_pixels(pixbuf),
+				gdk_pixbuf_get_width(pixbuf), gdk_pixbuf_get_height(pixbuf),
+				gdk_pixbuf_get_rowstride(pixbuf),
+				affine,
+				ART_FILTER_NEAREST,
+				NULL);
+}
+
+/* shared code to highlight or dim the passed-in pixbuf */
+
+static GdkPixbuf *
+map_pixbuf(NautilusIconCanvasItem *icon_item)
+{
+	GdkPixbuf *temp_pixbuf, *old_pixbuf;
+	temp_pixbuf = icon_item->details->pixbuf;
+	
+	if (icon_item->details->is_prelit) {
+		temp_pixbuf = nautilus_create_spotlight_pixbuf (icon_item->details->pixbuf);
+	}
+	
+	if (icon_item->details->is_highlighted_for_selection || icon_item->details->is_highlighted_for_drop) {
+		old_pixbuf = temp_pixbuf;
+		temp_pixbuf = nautilus_create_darkened_pixbuf (temp_pixbuf,
+							       0.8 * 255,
+							       0.8 * 255);
+		if (old_pixbuf != icon_item->details->pixbuf) {
+			gdk_pixbuf_unref (old_pixbuf);
+		}
+	} 
+
+	return temp_pixbuf;
+}
+
 /* Draw the icon item for non-anti-aliased mode. */
 static void
 nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
@@ -937,7 +989,7 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 	NautilusIconCanvasItemDetails *details;
 	ArtIRect icon_rect, emblem_rect;
 	EmblemLayout emblem_layout;
-	GdkPixbuf *emblem_pixbuf, *temp_pixbuf, *old_pixbuf;
+	GdkPixbuf *emblem_pixbuf, *temp_pixbuf;
 			
 	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
 	details = icon_item->details;
@@ -955,23 +1007,7 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 	icon_rect.y1 -= y;
 
 	/* if the pre-lit or selection flag is set, make a pre-lit or darkened pixbuf and draw that instead */
-	
-	temp_pixbuf = details->pixbuf;
-	
-	if (details->is_prelit) {
-		temp_pixbuf = nautilus_create_spotlight_pixbuf (details->pixbuf);
-	}
-	
-	if (details->is_highlighted_for_selection || details->is_highlighted_for_drop) {
-		old_pixbuf = temp_pixbuf;
-		temp_pixbuf = nautilus_create_darkened_pixbuf (temp_pixbuf,
-							       0.8 * 255,
-							       0.8 * 255);
-		if (old_pixbuf != details->pixbuf) {
-			gdk_pixbuf_unref (old_pixbuf);
-		}
-	} 
-	
+	temp_pixbuf = map_pixbuf(icon_item);
 	draw_pixbuf (temp_pixbuf, drawable, icon_rect.x0, icon_rect.y0);
 	if (temp_pixbuf != details->pixbuf) {
 		gdk_pixbuf_unref (temp_pixbuf);
@@ -997,26 +1033,32 @@ static void
 nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 {
 	
-	GdkPixbuf *pixbuf;
+	ArtIRect icon_rect, emblem_rect;
+	EmblemLayout emblem_layout;
+	GdkPixbuf *emblem_pixbuf, *temp_pixbuf;
 	NautilusIconCanvasItem *icon_item;
 	double i2c[6];
 
 	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
-	pixbuf = icon_item->details->pixbuf;
+	
+	/* map the pixbuf for selection or other effects */
+	temp_pixbuf = map_pixbuf(icon_item);
 
-	if (!pixbuf)
-		return;
-
+	/* compute the affine transform, but force the scale to 1.0 because the icon factory does
+	   the scaling for us */
 	gnome_canvas_item_i2c_affine (item, i2c);
+        i2c[0] = 1.0;
+        i2c[3] = 1.0;
         gnome_canvas_buf_ensure_buf (buf);
 
-	if (gdk_pixbuf_get_has_alpha(pixbuf))
+	/* draw the icon */
+	if (gdk_pixbuf_get_has_alpha(temp_pixbuf))
 		art_rgb_rgba_affine (buf->buf,
 				     buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1,
 				     buf->buf_rowstride,
-				     gdk_pixbuf_get_pixels(pixbuf),
-				     gdk_pixbuf_get_width(pixbuf), gdk_pixbuf_get_height(pixbuf),
-				     gdk_pixbuf_get_rowstride(pixbuf),
+				     gdk_pixbuf_get_pixels(temp_pixbuf),
+				     gdk_pixbuf_get_width(temp_pixbuf), gdk_pixbuf_get_height(temp_pixbuf),
+				     gdk_pixbuf_get_rowstride(temp_pixbuf),
 				     i2c,
 				     ART_FILTER_NEAREST,
 				     NULL);
@@ -1024,13 +1066,26 @@ nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 		art_rgb_affine (buf->buf,
 				buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1,
 				buf->buf_rowstride,
-				gdk_pixbuf_get_pixels(pixbuf),
-				gdk_pixbuf_get_width(pixbuf), gdk_pixbuf_get_height(pixbuf),
-				gdk_pixbuf_get_rowstride(pixbuf),
+				gdk_pixbuf_get_pixels(temp_pixbuf),
+				gdk_pixbuf_get_width(temp_pixbuf), gdk_pixbuf_get_height(temp_pixbuf),
+				gdk_pixbuf_get_rowstride(temp_pixbuf),
 				i2c,
 				ART_FILTER_NEAREST,
 				NULL);
 
+	if (temp_pixbuf != icon_item->details->pixbuf)
+		gdk_pixbuf_unref(temp_pixbuf);
+
+	/* draw the emblems */
+	emblem_layout_reset (&emblem_layout, icon_item, &icon_rect);
+	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
+		draw_pixbuf_aa (emblem_pixbuf, buf, i2c, emblem_rect.x0, emblem_rect.y0);
+	}
+	
+	/* draw the stretch handles */
+	
+	/* draw the text */
+	
 	buf->is_bg = FALSE;
 }
 
