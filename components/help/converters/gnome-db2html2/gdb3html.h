@@ -1,0 +1,103 @@
+#ifndef __GDB3HTML_H__
+#define __GDB3HTML_H__
+
+#include <parser.h>
+#include <parserInternals.h>
+#include <glib.h>
+#include <string.h>
+
+typedef enum ElementIndex {
+	ARTICLE = 0,
+	BOOK,
+	SECTION,
+	SECT1,
+	SECT2,
+	SECT3, /* 5 */
+	SECT4,
+	SECT5,
+	PARA,
+	FORMALPARA,
+	ARTHEADER, /* 10 */
+	AUTHORGROUP,
+	AUTHOR,
+	FIRSTNAME,
+	OTHERNAME,
+	SURNAME, /* 15 */
+	AFFILIATION,
+	EMAIL,
+	ORGNAME,
+	ADDRESS,
+	COPYRIGHT, /* 20 */
+	YEAR,
+	HOLDER,
+	TITLE,
+	SUBTITLE,
+	ULINK, /* 25 */
+	XREF,
+	FOOTNOTE,
+	FIGURE,
+	GRAPHIC,
+	UNDEFINED /* 30 */
+} ElementIndex;
+
+typedef struct _ElementInfo ElementInfo;
+struct _ElementInfo {
+	ElementIndex index;
+	gchar *name;
+	startElementSAXFunc start_element_func;
+	endElementSAXFunc end_element_func;
+	charactersSAXFunc characters_func;
+};
+
+typedef struct _StackElement StackElement;
+struct _StackElement {
+	ElementInfo *info;
+	gchar **atrs;
+};
+		
+
+typedef struct _Context Context;
+struct _Context {
+	ElementInfo *elements;
+	gchar *base_file;
+	gchar *target_section;
+	GList *stack;
+	gpointer data;
+
+	/* determine the "depth" that the current section is on.
+	 * only applies to section */
+	gint sect1;
+	gint sect2;
+	gint sect3;
+	gint sect4;
+	gint sect5;
+};
+
+/* useful structs */
+typedef struct AuthorInfo {
+	gchar *firstname;
+	gchar *othername;
+	gchar *surname;
+	gchar *email;
+	gchar *orgname;
+} AuthorInfo;
+
+
+typedef struct HeaderInfo {
+	gchar *title;
+	gchar *subtitle;
+	gchar *copyright_year;
+	gchar *copyright_holder;
+	GSList *authors;
+} HeaderInfo;
+
+void article_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void article_end_element (Context *context, const gchar *name);
+void artheader_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void para_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void para_end_element (Context *context, const gchar *name);
+void write_characters (Context *context, const gchar *chars, int len);
+StackElement *find_first_element (Context *context, GSList *args);
+ElementIndex find_first_parent (Context *context, GSList *args);
+
+#endif

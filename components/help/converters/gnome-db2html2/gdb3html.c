@@ -1,0 +1,273 @@
+#include "gdb3html.h"
+#include "toc-elements.h"
+#include "sect-elements.h"
+
+/* Generic functions.  Used by both elements and toc_elements */
+void
+article_start_element (Context *context, const gchar *name, const xmlChar **atrs)
+{
+	g_print ("<HTML>\n");
+}
+
+void
+article_end_element (Context *context, const gchar *name)
+{
+	g_print ("</BODY>\n</HTML>\n");
+}
+
+void
+artheader_start_element (Context *context, const gchar *name, const xmlChar **atrs)
+{
+	g_print ("<HEAD>\n");
+}
+
+void
+write_characters (Context *context,
+		  const gchar *chars,
+		  int len)
+{
+	char *temp;
+
+	temp = g_strndup (chars, len);
+	g_print ("chars:%s:\n", temp);
+	g_free (temp);
+	
+}
+
+StackElement *
+find_first_element (Context *context, GSList *args)
+{
+	GList *ptr;
+	GSList *element_ptr;
+
+	for (ptr = context->stack; ptr; ptr = ptr->next) {
+		for (element_ptr = args; element_ptr; element_ptr = element_ptr->next) {
+			if (((StackElement*) ptr->data)->info->index == GPOINTER_TO_INT (element_ptr->data))
+				return (StackElement *) ptr->data;
+		}
+	}
+	return NULL;
+}
+
+ElementIndex
+find_first_parent (Context *context, GSList *args)
+{
+	StackElement *stack_el;
+
+	stack_el = find_first_element (context, args);
+	if (stack_el == NULL)
+		return UNDEFINED;
+	else
+		return stack_el->info->index;
+		
+}
+
+
+/* helper functions */
+
+static ElementInfo *
+find_element_info (ElementInfo *elements,
+		   const gchar *name)
+{
+	while (elements->name != NULL) {
+		if (!g_strcasecmp (elements->name, name))
+			return elements;
+		elements++;
+	}
+
+	return NULL;
+}
+
+/* our callbacks for the xmlSAXHandler */
+
+static xmlEntityPtr
+get_entity (Context *context, const gchar *name)
+{
+#ifdef ERROR_OUTPUT
+	g_print ("in getEntity:%s\n", name);
+#endif
+	return xmlGetPredefinedEntity (name);
+}
+
+static void
+start_document (Context *context)
+{
+}
+
+static void
+end_document (Context *context)
+{
+
+}
+
+static void
+start_element(Context *context,
+	      const gchar *name,
+	      const xmlChar **attrs)
+{
+	ElementInfo *element;
+	StackElement *stack_el = g_new0 (StackElement, 1);
+
+	element = find_element_info (context->elements, name);
+
+	stack_el->info = element;
+	context->stack = g_list_prepend (context->stack, stack_el);
+
+	if (element && element->start_element_func)
+		(* element->start_element_func) (context, name, attrs);
+}
+
+static void
+end_element (Context *context,
+	     const gchar *name)
+{
+	ElementInfo *element;
+	StackElement *stack_el;
+	gchar **atrs_ptr;
+
+	element = find_element_info (context->elements, name);
+	stack_el = (StackElement *) context->stack->data;
+	g_assert (stack_el->info == element);
+	if (element && element->end_element_func)
+		(* element->end_element_func) (context, name);
+
+	context->stack = g_list_remove_link (context->stack, context->stack);
+
+	atrs_ptr = stack_el->atrs;
+	while (atrs_ptr && *atrs_ptr) {
+		g_free (*atrs_ptr);
+		atrs_ptr++;
+	};
+	g_free (stack_el->atrs);
+	g_free (stack_el);
+}
+
+static void
+characters (Context *context,
+	    const gchar *chars,
+	    int len)
+{
+	ElementInfo *element;
+
+
+	element = ((StackElement *)context->stack->data)->info;
+
+	if (element && element->characters_func)
+		(* element->characters_func) (context, chars, len);
+}
+
+static void
+comment (Context *context, const char *msg)
+{
+#ifdef ERROR_OUTPUT
+	g_log("XML", G_LOG_LEVEL_MESSAGE, "%s", msg);
+#endif
+}
+
+static void
+warning (Context *context, const char *msg, ...)
+{
+	va_list args;
+
+	va_start(args, msg);
+#ifdef ERROR_OUTPUT
+	g_logv("XML", G_LOG_LEVEL_WARNING, msg, args);
+#endif
+	va_end(args);
+}
+
+static void
+error (Context *context, const char *msg, ...)
+{
+	va_list args;
+
+	va_start(args, msg);
+#ifdef ERROR_OUTPUT
+	g_logv("XML", G_LOG_LEVEL_CRITICAL, msg, args);
+#endif
+	va_end(args);
+}
+
+static void
+fatal_error (Context *context, const char *msg, ...)
+{
+	va_list args;
+
+	va_start(args, msg);
+#ifdef ERROR_OUTPUT
+	g_logv("XML", G_LOG_LEVEL_ERROR, msg, args);
+#endif
+	va_end(args);
+}
+
+
+static xmlSAXHandler parser = {
+	NULL,  /* internalSubset */
+	NULL, /* isStandalone */
+	NULL, /* hasInternalSubset */
+	NULL, /* hasExternalSubset */
+	NULL, /* resolveEntity */
+	(getEntitySAXFunc) get_entity, /* getEntity */
+	NULL, /* entityDecl */
+	NULL, /* notationDecl */
+	NULL, /* attributeDecl */
+	NULL, /* elementDecl */
+	NULL, /* unparsedEntityDecl */
+	NULL, /* setDocumentLocator */
+	(startDocumentSAXFunc) start_document, /* startDocument */
+	(endDocumentSAXFunc) end_document, /* endDocument */
+	(startElementSAXFunc) start_element, /* startElement */
+	(endElementSAXFunc) end_element, /* endElement */
+	NULL, /* reference */
+	(charactersSAXFunc) characters, /* characters */
+	NULL, /* ignorableWhitespace */
+	NULL, /* processingInstruction */
+	(commentSAXFunc) comment, /* comment */
+	(warningSAXFunc) warning, /* warning */
+	(errorSAXFunc) error, /* error */
+	(fatalErrorSAXFunc) fatal_error /* fatalError */
+};
+
+static void
+parse_file (gchar *filename, gchar *section)
+{
+	Context *context = g_new0 (Context, 1);
+
+	if (section) {
+		context->target_section = g_strdup (section);
+		context->elements = sect_elements;
+		context->data = sect_init_data ();
+		context->base_file = g_strdup (filename);
+	} else {
+		context->elements = toc_elements;
+		context->data = toc_init_data ();
+		context->base_file = g_strdup (filename);
+	}
+	if (xmlSAXUserParseFile (&parser, context, context->base_file) < 0) {
+		g_print ("error\n");
+	};
+}
+
+int
+main (int argc, char *argv[])
+{
+	gchar *section = NULL;
+	gchar *ptr;
+
+	if (argc != 2) {
+		g_print ("Usage:  gdb2html FILE[#SECTIONID]\n\n");
+		return 0;
+	}
+
+	for (ptr = argv[1]; *ptr; ptr++){
+		if (*ptr == '#') {
+			*ptr = '\000';
+			if (*(ptr + 1))
+				section = ptr + 1;
+			break;
+		}
+	}
+	parse_file (argv[1], section);
+
+	return 0;
+}
