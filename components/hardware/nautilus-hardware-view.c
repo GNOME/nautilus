@@ -18,6 +18,7 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *  Author: Andy Hertzfeld <andy@eazel.com>
+ *          Shane Butler <shane_b@bigfoot.com>
  *
  */
 
@@ -52,7 +53,7 @@
 #include <limits.h>
 
 #define HARDWARE_FONT_SIZE 14
-#define HARDWARE_TITLE_FONT_SIZE 18
+#define HARDWARE_TITLE_FONT_SIZE 24
 
 struct _NautilusHardwareViewDetails {
         char *uri;
@@ -256,11 +257,10 @@ get_RAM_description (void)
 	GString* string_data = g_string_new("");
 	char* proc_data = read_proc_info("meminfo");
 	
-	temp_str = extract_info(proc_data, "MemTotal", 0);
+	temp_str = extract_info (proc_data, "MemTotal", 0);
 	/* strip kbyte suffix */
 	temp_str[strlen(temp_str) - 3] = '\0';
 
-        /* FIXME bugzilla.eazel.com 2398: Would 1024 give a better result? */
         num_str = gnome_vfs_format_file_size_for_display (1024 * atoi (temp_str));
 	
 	g_string_append(string_data, num_str);
@@ -342,7 +342,6 @@ setup_form_title (NautilusHardwareView *view, const char* image_name, const char
 	GtkWidget *temp_widget;
 	char *file_name;	
 	GtkWidget *temp_container = gtk_hbox_new(FALSE, 0);
-	GdkFont *font;
 
 	gtk_box_pack_start (GTK_BOX(view->details->form), temp_container, 0, 0, 4);	
 	gtk_widget_show(temp_container);
@@ -360,24 +359,32 @@ setup_form_title (NautilusHardwareView *view, const char* image_name, const char
  	temp_widget = nautilus_label_new (title_text);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_TITLE_FONT_SIZE);
 
-        font = nautilus_font_factory_get_font_from_preferences (HARDWARE_TITLE_FONT_SIZE);
-
-	nautilus_gtk_widget_set_font (temp_widget, font);
-        gdk_font_unref (font);
-
 	gtk_box_pack_start (GTK_BOX (temp_container), temp_widget, 0, 0, 8);			 	
 	gtk_widget_show (temp_widget);
 }
 
-/* set up the widgetry for the overview page */
+/* utility to add an element to the hardware view */
+static void
+add_element_to_table (GtkWidget *table, GtkWidget *element, int element_index)
+{
+	int column_pos, row_pos;
+	
+	column_pos = element_index % 3;
+	row_pos = element_index / 3;
+  	
+	gtk_table_attach (GTK_TABLE (table),element,
+			  column_pos, column_pos + 1, row_pos ,row_pos + 1, 
+			  GTK_FILL, GTK_FILL, 12, 12);
+}
 
-static void setup_overview_form(NautilusHardwareView *view)
+/* set up the widgetry for the overview page */
+static void setup_overview_form (NautilusHardwareView *view)
 {
 	char  *file_name, *temp_text;
 	GtkWidget *temp_widget, *temp_box;
-	GtkWidget *container_box;
-	int cpunum = 0;
-        DIR *directory;
+	GtkWidget *table;
+	int cpunum, element_index;
+	DIR *directory;
         struct dirent* entry;
         char *device, *proc_file, *ide_media;
 	
@@ -387,18 +394,18 @@ static void setup_overview_form(NautilusHardwareView *view)
 	gtk_widget_show(view->details->form);
 
 	/* set up the title */	
+	setup_form_title (view, NULL, "Hardware Overview");
+
+	/* allocate a table to hold the elements */
+	table =  gtk_table_new (3, 3, FALSE);	
+	gtk_box_pack_start (GTK_BOX (view->details->form), table, 0, 0, 2);	
+	gtk_widget_show (GTK_WIDGET(table));
+   	element_index = 0;
 	
-	setup_form_title(view, NULL, "Hardware Overview");
-
-	/* allocate a horizontal box */
-
-	container_box = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (view->details->form), container_box, 0, 0, 2);	
-	gtk_widget_show (GTK_WIDGET(container_box));
-   
+   	cpunum = 0;
 	while( (temp_text = get_CPU_description(cpunum)) != NULL ) {
 		temp_box = gtk_vbox_new(FALSE, 4);
-		gtk_box_pack_start (GTK_BOX (container_box), temp_box, 0, 0, 24);	
+		add_element_to_table (table, temp_box, element_index++);
 		gtk_widget_show (temp_box);
 
 		file_name = nautilus_pixmap_file ("cpu.png");
@@ -407,7 +414,6 @@ static void setup_overview_form(NautilusHardwareView *view)
 			gtk_widget_show(temp_widget);
 			g_free (file_name);
 		
-		//temp_text = get_CPU_description(cpunum);
 		temp_widget = nautilus_label_new (temp_text);
 		nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
 		g_free(temp_text);
@@ -419,7 +425,7 @@ static void setup_overview_form(NautilusHardwareView *view)
 
 	/* set up the memory info */
        	temp_box = gtk_vbox_new(FALSE, 4);
-  	gtk_box_pack_start (GTK_BOX (container_box), temp_box, 0, 0, 24);	
+	add_element_to_table (table, temp_box, element_index++);
 	gtk_widget_show (temp_box);
 
  	file_name = nautilus_pixmap_file ("memory_chip.gif");
@@ -428,7 +434,7 @@ static void setup_overview_form(NautilusHardwareView *view)
   	gtk_widget_show(temp_widget);
   	g_free (file_name);
 	
-	temp_text = get_RAM_description();
+	temp_text = get_RAM_description ();
 	temp_widget = nautilus_label_new (temp_text);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
 	g_free(temp_text);
@@ -442,7 +448,7 @@ static void setup_overview_form(NautilusHardwareView *view)
                         /* Scan though each entry for actual device dirs */
                         if(!strncmp(entry->d_name, "hd", 2)) {
                                 temp_box = gtk_vbox_new(FALSE, 4);
-                                gtk_box_pack_start (GTK_BOX (container_box), temp_box, 0, 0, 24);
+				add_element_to_table (table, temp_box, element_index++);
                                 gtk_widget_show(temp_box);
                                 
                                 device = g_strdup_printf("ide/%s", entry->d_name);
@@ -466,7 +472,7 @@ static void setup_overview_form(NautilusHardwareView *view)
                                 g_free(file_name);
                                 g_free(ide_media);
                                 
-                                temp_text = get_IDE_description(device);
+                                temp_text = get_IDE_description (device);
                                 temp_widget = nautilus_label_new(temp_text);
 				nautilus_label_set_font_size(NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
                                 g_free(temp_text);
@@ -493,7 +499,7 @@ static void setup_CPU_form(NautilusHardwareView *view)
 	gtk_widget_show(view->details->form);
 
 	/* set up the title */	
-	setup_form_title(view, NULL, "CPU");
+	setup_form_title (view, NULL, "CPU");
 	
 	message = "This is a placeholder for the CPU page.";
 	temp_widget = nautilus_label_new (message);
@@ -517,7 +523,7 @@ static void setup_RAM_form(NautilusHardwareView *view)
 	gtk_widget_show(view->details->form);
 
 	/* set up the title */	
-	setup_form_title(view, NULL, "RAM");
+	setup_form_title (view, NULL, "RAM");
 	
 	message = "This is a placeholder for the RAM page.";
 	temp_widget = nautilus_label_new (message);
@@ -541,7 +547,7 @@ static void setup_IDE_form(NautilusHardwareView *view)
         gtk_widget_show(view->details->form);
         
         /* set up the title */  
-        setup_form_title(view, NULL, "IDE");
+        setup_form_title (view, NULL, "IDE");
         
         message = "This is a placeholder for the IDE page.";
         temp_widget = nautilus_label_new (message);

@@ -1,3 +1,13 @@
+2000-09-11  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/hardware/nautilus-hardware-view.c:
+	(get_RAM_description), (setup_form_title), (add_element_to_table),
+	(setup_overview_form), (setup_CPU_form), (setup_RAM_form),
+	(setup_IDE_form):
+	made the hardware view use a table for 2D layout instead of a
+	horizontal box, since the IDE drives were making it too wide.  Also,
+	removed an obsolete fixme.
+	
 2000-09-11  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 818, clicking on .doc and .pdf crashes Nautilus
