@@ -73,11 +73,15 @@ enum {
 static char*
 notes_get_indicator_image (Notes *notes)
 {
-	if (notes->has_text) {
+	char *notes_text;
+        notes_text = gtk_editable_get_chars (GTK_EDITABLE (notes->note_text_field), 0 , -1);
+
+	if (notes_text != NULL && strlen (notes_text) > 0) {
+		g_free (notes_text);
 		return g_strdup ("bullet.png");
-	} else {
-		return g_strdup ("empty.png");
 	}
+	
+	g_free (notes_text);
 	return NULL;
 }
 
@@ -199,8 +203,7 @@ notes_load_metainfo (Notes *notes)
         g_list_free (attributes);
 }
 
-/* save the metainfo corresponding to the current uri, if any, into the text field */
-
+/* save the note text in the text field to the metadata store */
 static void
 notes_save_metainfo (Notes *notes)
 {
@@ -211,7 +214,7 @@ notes_save_metainfo (Notes *notes)
         }
 
         notes_text = gtk_editable_get_chars (GTK_EDITABLE (notes->note_text_field), 0 , -1);
-        notes->has_text = notes_text != NULL;
+        notes->has_text = notes_text != NULL && strlen (notes_text) > 0;
         nautilus_file_set_metadata (notes->file, NAUTILUS_METADATA_KEY_ANNOTATION, NULL, notes_text);
         g_free (notes_text);
 }

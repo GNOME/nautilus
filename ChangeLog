@@ -1,5 +1,20 @@
 2001-03-26  Andy Hertzfeld  <andy@eazel.com>
 
+	completed indicator sidebar tab framework and notes indicator
+	application by plotting the indicator better, resizing the
+	tab appropriately, and updating the indicator when a tab closes.
+	This work is now complete.
+	
+	* components/notes/nautilus-notes.c: (notes_get_indicator_image),
+	(notes_save_metainfo):
+	* src/nautilus-sidebar-tabs.c: (recalculate_size),
+	(nautilus_sidebar_tabs_size_allocate), (pixbuf_composite),
+	(draw_one_tab_themed), (get_tab_width),
+	(nautilus_sidebar_tabs_update_tab_item),
+	(nautilus_sidebar_tabs_select_tab):
+
+2001-03-26  Andy Hertzfeld  <andy@eazel.com>
+
 	implemented indicator in tab for whether notes are present or not by
 	implementing a framework for sidebar views to specify an indicator
 	tab image, using the bonobo property bag interface; not quite

@@ -509,7 +509,7 @@ measure_total_height (NautilusSidebarTabs *sidebar_tabs)
 /* resize the widget based on the number of tabs */
 
 static void
-recalculate_size(NautilusSidebarTabs *sidebar_tabs)
+recalculate_size (NautilusSidebarTabs *sidebar_tabs)
 {
 	GtkWidget *widget = GTK_WIDGET (sidebar_tabs);
 	
@@ -525,7 +525,7 @@ recalculate_size(NautilusSidebarTabs *sidebar_tabs)
 }
 
 static void
-nautilus_sidebar_tabs_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
+nautilus_sidebar_tabs_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 {
 	NautilusSidebarTabs *sidebar_tabs = NAUTILUS_SIDEBAR_TABS(widget);
 	
@@ -696,6 +696,33 @@ draw_tab_piece_aa (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *dest_pixbuf, in
 	return width;
 }
 
+/* convenience routine to composite an image with the proper clipping */
+static void
+pixbuf_composite (GdkPixbuf *source, GdkPixbuf *destination, int x_offset, int y_offset, int alpha)
+{
+	int source_width, source_height, dest_width, dest_height;
+	double float_x_offset, float_y_offset;
+	
+	source_width  = gdk_pixbuf_get_width (source);
+	source_height = gdk_pixbuf_get_height (source);
+	dest_width  = gdk_pixbuf_get_width (destination);
+	dest_height = gdk_pixbuf_get_height (destination);
+	
+	float_x_offset = x_offset;
+	float_y_offset = y_offset;
+	
+	/* clip to the destination size */
+	if ((x_offset + source_width) > dest_width) {
+		source_width = dest_width - x_offset;
+	}
+	if ((y_offset + source_height) > dest_height) {
+		source_height = dest_height - y_offset;
+	}
+	
+	gdk_pixbuf_composite (source, destination, x_offset, y_offset, source_width, source_height,
+					float_x_offset, float_y_offset, 1.0, 1.0, GDK_PIXBUF_ALPHA_BILEVEL, alpha);
+}
+
 /* draw a single tab using the theme image to define it's appearance.  This does not
    draw the right edge of the tab, as we don't have enough info about the next tab
    to do it properly at this time.  We draw into an offscreen pixbuf so we can get nice anti-aliased text */
@@ -712,10 +739,15 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf, G
 	int text_x_pos, left_width;
 	int highlight_offset;
 	int text_x, text_y;
-	int indicator_width, indicator_height;
+	int indicator_width;
 	
 	left_width = 0;
-	indicator_width = 0;
+	
+	if (indicator_pixbuf != NULL) {
+		indicator_width = gdk_pixbuf_get_width (indicator_pixbuf);
+	} else {
+		indicator_width = 0;
+	}
 	
 	widget = GTK_WIDGET (sidebar_tabs);
 	highlight_offset = prelight_flag && !sidebar_tabs->details->title_mode ? TAB_PRELIGHT_LEFT : 0; 
@@ -741,7 +773,7 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf, G
 	
 	/* draw the middle portion in a loop */	
 	text_x_pos = current_pos;
-	right_edge_pos = current_pos + name_dimensions.width;
+	right_edge_pos = current_pos + name_dimensions.width + indicator_width;
 	while (current_pos < right_edge_pos) {
 		piece_width = draw_tab_piece_aa (sidebar_tabs, tab_pixbuf, current_pos, y - widget->allocation.y, 
 						 right_edge_pos, TAB_NORMAL_FILL + highlight_offset);
@@ -757,21 +789,11 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf, G
 	
 	/* make sure we can at least draw some of it */
 	if (text_x < gdk_pixbuf_get_width (tab_pixbuf)) {	
-		
 		if (indicator_pixbuf) {
-			indicator_width = gdk_pixbuf_get_height (indicator_pixbuf);
-			indicator_height = gdk_pixbuf_get_height (indicator_pixbuf);
 			
-			gdk_pixbuf_copy_area (indicator_pixbuf,
-				0, 0,
-				indicator_width, indicator_height,
-				tab_pixbuf,
-				text_x, text_x);
-			
-			text_x += gdk_pixbuf_get_width (indicator_pixbuf) + 2;
-		} else {
-			indicator_width = 0;
-		}
+			pixbuf_composite (indicator_pixbuf, tab_pixbuf, text_x, text_y, 160);
+			text_x += indicator_width;
+		} 
 		
 		nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, tab_pixbuf, 
 					  text_x, text_y,
@@ -826,11 +848,17 @@ get_text_offset (void)
 static int
 get_tab_width (NautilusSidebarTabs *sidebar_tabs, TabItem *this_tab, gboolean is_themed, gboolean first_flag)
 {
-	int edge_width;
+	int edge_width, indicator_width;
 	NautilusDimensions name_dimensions;
 	
 	if (this_tab == NULL)
 		return 0;
+	
+	if (this_tab->indicator_pixbuf != NULL) {
+		indicator_width = gdk_pixbuf_get_width (this_tab->indicator_pixbuf);
+	} else {
+		indicator_width = 0;
+	}
 	
 	if (is_themed) {
 		if (first_flag) {
@@ -848,7 +876,7 @@ get_tab_width (NautilusSidebarTabs *sidebar_tabs, TabItem *this_tab, gboolean is
 		edge_width = 2 * TAB_MARGIN;
 		name_dimensions.width = gdk_string_width (GTK_WIDGET (sidebar_tabs)->style->font, this_tab->tab_text);
 	}		
-	return name_dimensions.width + edge_width;
+	return name_dimensions.width + edge_width + indicator_width;
 }
 
 /* fill the canvas buffer with a tiled pixmap */
@@ -1257,6 +1285,7 @@ nautilus_sidebar_tabs_expose (GtkWidget *widget, GdkEventExpose *event)
 	return FALSE;
 }
 
+/* update the indicator image for the passed in tab */
 static void
 nautilus_sidebar_tabs_update_tab_item (NautilusSidebarTabs *sidebar_tabs, TabItem *tab_item)
 {
@@ -1273,6 +1302,8 @@ nautilus_sidebar_tabs_update_tab_item (NautilusSidebarTabs *sidebar_tabs, TabIte
 		if (property_bag != NULL) {
 			tab_image_name = bonobo_property_bag_client_get_value_string (property_bag, "tab_image", &ev);
 			bonobo_object_release_unref (property_bag, &ev);	
+
+			/* see if the indicator icon changed; if so, fetch the new one */
 			if (nautilus_strcmp (tab_image_name, tab_item->indicator_pixbuf_name) != 0) {
 				g_free (tab_item->indicator_pixbuf_name);
 
@@ -1285,7 +1316,6 @@ nautilus_sidebar_tabs_update_tab_item (NautilusSidebarTabs *sidebar_tabs, TabIte
 					tab_item->indicator_pixbuf_name = g_strdup (tab_image_name);	
 					image_path = nautilus_theme_get_image_path (tab_image_name);
 					if (image_path != NULL) {
-						g_message ("fetching image path %s", image_path);
 						tab_item->indicator_pixbuf = gdk_pixbuf_new_from_file (image_path);	
 						g_free (image_path);
 					}
@@ -1515,8 +1545,8 @@ nautilus_sidebar_tabs_prelight_tab (NautilusSidebarTabs *sidebar_tabs, int which
 }
 
 /* select a tab, from its associated notebook page number, by making it invisible 
-   and all the others visible */
-
+   and all the others visible.  Also, update the indicator image for the
+   formerly active tab */
 void
 nautilus_sidebar_tabs_select_tab (NautilusSidebarTabs *sidebar_tabs, int which_tab)
 {
@@ -1527,6 +1557,10 @@ nautilus_sidebar_tabs_select_tab (NautilusSidebarTabs *sidebar_tabs, int which_t
 	for (next_tab = sidebar_tabs->details->tab_items; next_tab != NULL; next_tab = next_tab->next) {
 		TabItem *item = next_tab->data;
 
+		if (!item->visible && item->notebook_page != which_tab) {
+			nautilus_sidebar_tabs_update_tab_item (sidebar_tabs, item);
+		}
+		
 		item->visible = (item->notebook_page != which_tab);
 		item->prelit = FALSE;		
 	}
