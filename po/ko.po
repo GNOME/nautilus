@@ -2,11 +2,11 @@
 # Young-Ho, Cha <ganadist@chollian.net>, 2000, 2001, 2002
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 2.3.7\n"
+"Project-Id-Version: nautilus 2.3.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-08-24 03:12+0900\n"
-"PO-Revision-Date: 2003-08-24 03:15+0900\n"
-"Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
+"POT-Creation-Date: 2003-08-24 15:48+0900\n"
+"PO-Revision-Date: 2003-08-24 06:54+0900\n"
+"Last-Translator: Young-Ho, Cha <ganadist at mizi.com>\n"
 "Language-Team: GTP Korean <gnome-kr-translation@gnome.or.kr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -149,7 +149,7 @@ msgstr "끌어 놓은 파일이 올바른 그림파일이 아닌것 같습니다
 #: components/emblem/nautilus-emblem-view.c:899 data/browser.xml.h:35
 #: src/nautilus-property-browser.c:1730
 msgid "Erase"
-msgstr "지움"
+msgstr "지우기"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:1
 msgid "Factory for hardware view"
@@ -1176,7 +1176,9 @@ msgstr "바탕화면에 홈 아이콘을 보입니다"
 msgid ""
 "If set to true, Nautilus will only show directories in the tree side pane. "
 "Otherwise it will show both directories and files."
-msgstr "참으로 설정하면, 노틸러스의 트리 가장자리 창에서 디렉토리만 보여줍니다. 아니면, 디렉토리와 파일을 모두 보여줍니다."
+msgstr ""
+"참으로 설정하면, 폴더 가장자리 창에서 디렉토리만 보여줍니다. 아니면, 디렉토리"
+"와 파일을 모두 보여줍니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid ""
@@ -2468,7 +2470,7 @@ msgstr "파일 지우는중"
 #: libnautilus-private/nautilus-file-operations.c:2191
 #: libnautilus-private/nautilus-file-operations.c:2226
 msgid "Files deleted:"
-msgstr "파일 지움:"
+msgstr "파일 지워짐:"
 
 #. localizers: label prepended to the name of the current file deleted
 #: libnautilus-private/nautilus-file-operations.c:2193
@@ -3399,7 +3401,7 @@ msgstr "수동 배치로 바꾸겠습니까?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:750
 msgid "Switch"
-msgstr "바꿈"
+msgstr "바꾸기"
 
 #: libnautilus-private/nautilus-medusa-support.c:123
 #, c-format
@@ -4048,23 +4050,23 @@ msgstr "노틸러스가 휴지통 폴더를 찾는 중입니다."
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
-msgstr "편집"
+msgstr "고치기"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:175
 msgid "Undo Edit"
-msgstr "편집 취소"
+msgstr "고치기 취소"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:176
 msgid "Undo the edit"
-msgstr "편집한 것을 취소합니다"
+msgstr "고친 것을 취소합니다"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:177
 msgid "Redo Edit"
-msgstr "편집 다시 실행"
+msgstr "고친 것 되돌리기"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:178
 msgid "Redo the edit"
-msgstr "편집한 것을 다시 실행합니다"
+msgstr "고친 것을 되돌립니다"
 
 #: libnautilus-private/nautilus-view-identifier.c:62
 #, c-format
@@ -4700,7 +4702,7 @@ msgstr ""
 
 #: src/file-manager/fm-directory-view.c:5195
 msgid "Run or Display?"
-msgstr "실행 또는 보임?"
+msgstr "실행 또는 보기?"
 
 #: src/file-manager/fm-directory-view.c:5196
 msgid "_Display"
@@ -4787,7 +4789,7 @@ msgstr "\"%s\"을(를) \"%s\"(으)로 바꾸지 못합니다."
 
 #: src/file-manager/fm-error-reporting.c:143
 msgid "Renaming Error"
-msgstr "이름 바꿈 오류"
+msgstr "이름 바꾸기 오류"
 
 #: src/file-manager/fm-error-reporting.c:163
 #, c-format
@@ -4841,11 +4843,11 @@ msgstr "허가권 설정 오류"
 #: src/file-manager/fm-error-reporting.c:309
 #, c-format
 msgid "Renaming \"%s\" to \"%s\"."
-msgstr "\"%s\"의 이름을 \"%s\"(으)로 바꿈."
+msgstr "\"%s\"의 이름을 \"%s\"(으)로 바꾸기."
 
 #: src/file-manager/fm-error-reporting.c:314
 msgid "Cancel Rename?"
-msgstr "이름바꿈을 취소할까요?"
+msgstr "이름 바꾸기를 취소할까요?"
 
 #: src/file-manager/fm-icon-view.c:161
 msgid "by _Name"
@@ -4895,11 +4897,11 @@ msgstr "꼬리표순으로 아이콘을 정렬합니다"
 #: src/file-manager/fm-icon-view.c:1605
 #: src/file-manager/nautilus-icon-view-ui.xml.h:20
 msgid "Restore Icons' Original Si_zes"
-msgstr "아이콘을 원래크기로 되돌림(_Z)"
+msgstr "아이콘을 원래크기로 되돌리기(_Z)"
 
 #: src/file-manager/fm-icon-view.c:1606
 msgid "Restore Icon's Original Si_ze"
-msgstr "원래 크기의 아이콘으로 되돌림(_Z)"
+msgstr "원래 크기의 아이콘으로 되돌리기(_Z)"
 
 #: src/file-manager/fm-icon-view.c:1945
 #, c-format
@@ -4990,7 +4992,7 @@ msgstr "%s 등록 정보"
 
 #: src/file-manager/fm-properties-window.c:1359
 msgid "Cancel Group Change?"
-msgstr "그룹 바꿈 취소?"
+msgstr "그룹 바꾸기 취소?"
 
 #: src/file-manager/fm-properties-window.c:1360
 msgid "Changing group"
@@ -4998,7 +5000,7 @@ msgstr "그룹 바꾸는 중"
 
 #: src/file-manager/fm-properties-window.c:1521
 msgid "Cancel Owner Change?"
-msgstr "소유주 바꿈 취소?"
+msgstr "소유주 바꾸기 취소?"
 
 #: src/file-manager/fm-properties-window.c:1522
 msgid "Changing owner"
@@ -5438,7 +5440,7 @@ msgstr "너무 많은 결과"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:1
 msgid "Change Desktop _Background"
-msgstr "바탕화면 바꿈(_B)"
+msgstr "바탕화면 바꾸기(_B)"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:2
 #: src/file-manager/nautilus-directory-view-ui.xml.h:4
@@ -5545,7 +5547,7 @@ msgstr "사본 만들기(_U)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:12
 msgid "Delete each selected item, without moving to the Trash"
-msgstr "선택한 항목을 휴지통으로 보내지 않고 지움"
+msgstr "선택한 항목을 휴지통으로 보내지 않고 지우기"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:13
 msgid "Duplicate each selected item"
@@ -5553,11 +5555,11 @@ msgstr "각각 선택한 항목을 하나 더 만듭니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:14
 msgid "Edit Launcher"
-msgstr "실행기 편집"
+msgstr "실행기 고치기"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
 msgid "Edit the launcher information"
-msgstr "실행기 정보를 편집합니다"
+msgstr "실행기 정보를 고칩니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:19
 msgid ""
@@ -5794,11 +5796,11 @@ msgstr "새 창에서 보기"
 
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:3
 msgid "Show Indexing Status"
-msgstr "색인 상황 보임"
+msgstr "색인 상황 보기"
 
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:4
 msgid "Show _Indexing Status"
-msgstr "인덱싱 상황 보임(_I)"
+msgstr "인덱싱 상황 보기(_I)"
 
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:5
 msgid "Show status of indexing used when searching"
@@ -5974,7 +5976,7 @@ msgstr "<b>이름(_N)</b>"
 
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
-msgstr "책갈피 편집"
+msgstr "책갈피 고치기"
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6075,7 +6077,7 @@ msgstr ""
 
 #: src/nautilus-file-management-properties.glade.h:45
 msgid "Count _number of items:"
-msgstr "항목개수 보임(_N):"
+msgstr "항목개수 보기(_N):"
 
 #: src/nautilus-file-management-properties.glade.h:46
 msgid "Default _zoom level:"
@@ -6107,19 +6109,19 @@ msgstr "소리 파일 미리보기(_S):"
 
 #: src/nautilus-file-management-properties.glade.h:57
 msgid "Show _only folders"
-msgstr "폴더만 보임(_O)"
+msgstr "폴더만 보기(_O)"
 
 #: src/nautilus-file-management-properties.glade.h:58
 msgid "Show _thumbnails:"
-msgstr "미리보기 보임(_T):"
+msgstr "미리보기(_T):"
 
 #: src/nautilus-file-management-properties.glade.h:59
 msgid "Show hidden and _backup files"
-msgstr "숨김/백업 파일 보임(_B)"
+msgstr "숨김/백업 파일 보기(_B)"
 
 #: src/nautilus-file-management-properties.glade.h:60
 msgid "Show te_xt in icons:"
-msgstr "아이콘안에 글자 보임(_X):"
+msgstr "아이콘안에 글자 보기(_X):"
 
 #: src/nautilus-file-management-properties.glade.h:61
 msgid "Sort _folders before files"
@@ -6732,7 +6734,7 @@ msgstr "현재위치의 최근 내용을 보여줍니다"
 
 #: src/nautilus-shell-ui.xml.h:19
 msgid "Edit Nautilus preferences"
-msgstr "노틸러스의 기본 설정을 편집합니다"
+msgstr "노틸러스의 기본 설정을 고칩니다"
 
 #: src/nautilus-shell-ui.xml.h:20
 msgid "Find"
@@ -6832,19 +6834,19 @@ msgstr "프로파일 시작"
 
 #: src/nautilus-shell-ui.xml.h:45
 msgid "Stop"
-msgstr "멈춤"
+msgstr "멈추기"
 
 #: src/nautilus-shell-ui.xml.h:46
 msgid "Stop Profiling"
-msgstr "프로파일 마침"
+msgstr "프로파일 마치기"
 
 #: src/nautilus-shell-ui.xml.h:47
 msgid "Stop loading this location"
-msgstr "이 위치 읽기 멈춤"
+msgstr "이 위치 읽기 멈추기"
 
 #: src/nautilus-shell-ui.xml.h:48
 msgid "Undo the last text change"
-msgstr "마지막으로 바뀐 글자를 되돌림"
+msgstr "마지막으로 바뀐 글자를 되돌리기"
 
 #: src/nautilus-shell-ui.xml.h:49
 msgid "Up"
@@ -6910,11 +6912,11 @@ msgstr "차례(_C)"
 
 #: src/nautilus-shell-ui.xml.h:65
 msgid "_Edit"
-msgstr "편집(_E)"
+msgstr "고치기(_E)"
 
 #: src/nautilus-shell-ui.xml.h:66
 msgid "_Edit Bookmarks"
-msgstr "책갈피 편집(_E)"
+msgstr "책갈피 고치기(_E)"
 
 #: src/nautilus-shell-ui.xml.h:67
 msgid "_File"
@@ -6974,11 +6976,11 @@ msgstr "프로파일 시작(_S)"
 
 #: src/nautilus-shell-ui.xml.h:82
 msgid "_Stop"
-msgstr "멈춤(_S)"
+msgstr "멈추기(_S)"
 
 #: src/nautilus-shell-ui.xml.h:83
 msgid "_Stop Profiling"
-msgstr "프로파일 마침(_S)"
+msgstr "프로파일 마치기(_S)"
 
 #: src/nautilus-shell-ui.xml.h:84
 msgid "_Toolbar"
