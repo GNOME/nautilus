@@ -180,8 +180,6 @@ AC_SUBST(BONOBO_LIBS)
 AC_SUBST(VFS_CFLAGS)
 AC_SUBST(VFS_LIBS)
 
-AM_PATH_LIBGLADE(,AC_MSG_ERROR([*** Libglade 0.7 or better is needed.]), gnome)
-
 AM_PATH_OAF(0.1.0)
 
 AM_PATH_GCONF(0.1.0,,,gconf-gtk)
