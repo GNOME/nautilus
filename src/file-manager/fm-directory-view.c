@@ -136,6 +136,7 @@ struct FMDirectoryViewDetails
 	guint files_added_handler_id;
 	guint files_changed_handler_id;
 	guint load_error_handler_id;
+	guint file_changed_handler_id;
 	
 	GList *pending_files_added;
 	GList *pending_files_changed;
@@ -1354,12 +1355,13 @@ check_for_directory_hard_limit (FMDirectoryView *view)
 
 	directory = view->details->model;
 	if (nautilus_directory_file_list_length_reached (directory)) {
-		dialog = nautilus_warning_dialog (_("We're sorry, but the directory you're viewing has more files than "
-						    "we're able to display.  As a result, we are only able to show you the "
-						    "first 4000 files it contains. "
+		/* FIXME: This says Preview Release explicitly. Must remove for real thing. */
+		dialog = nautilus_warning_dialog (_("We're sorry, but the folder you're viewing has more files than "
+						    "we're able to display. As a result, we are only able to show you the "
+						    "first 4000 files it contains."
 						    "\n"
 						    "This is a temporary limitation in this Preview Release of Nautilus, "
-						    "and will not be present in the final shipping version.\n"),
+						    "and will not be present in the final version."),
 						  _("Too many Files"),
 						  get_containing_window (view));
 	}
@@ -3468,6 +3470,12 @@ fm_directory_view_activate_files (FMDirectoryView *view,
 	}
 }
 
+static void
+file_changed_callback (NautilusFile *file, gpointer callback_data)
+{
+	schedule_update_menus (FM_DIRECTORY_VIEW (callback_data));
+}
+
 /**
  * load_directory:
  * 
@@ -3512,9 +3520,9 @@ load_directory (FMDirectoryView *view,
 
 	view->details->force_reload = force_reload;
 
-	/* FIXME: In theory, we also need to monitor here (as well as
-         * doing a call when ready), in case external forces change
-         * the directory's file metadata.
+	/* FIXME: In theory, we also need to monitor metadata here (as
+         * well as doing a call when ready), in case external forces
+         * change the directory's file metadata.
 	 */
 	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 	nautilus_file_call_when_ready
@@ -3522,6 +3530,20 @@ load_directory (FMDirectoryView *view,
 		 attributes,
 		 metadata_ready_callback, view);
 	g_list_free (attributes);
+
+	/* If capabilities change, then we need to update the menus
+	 * because of New Folder.
+	 */
+	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES);
+	nautilus_file_monitor_add (view->details->directory_as_file,
+				   view, attributes);
+	g_list_free (attributes);
+
+	view->details->file_changed_handler_id = gtk_signal_connect
+		(GTK_OBJECT (view->details->directory_as_file), 
+		 "changed",
+		 file_changed_callback,
+		 view);
 }
 
 static void
@@ -3633,26 +3655,42 @@ fm_directory_view_merge_menus (FMDirectoryView *view)
 }
 
 static void
-disconnect_handler (FMDirectoryView *view, int *id)
+disconnect_handler (GtkObject *object, int *id)
 {
 	if (*id != 0) {
-		gtk_signal_disconnect (GTK_OBJECT (view->details->model), *id);
+		gtk_signal_disconnect (object, *id);
 		*id = 0;
 	}
 }
 
 static void
+disconnect_directory_handler (FMDirectoryView *view, int *id)
+{
+	disconnect_handler (GTK_OBJECT (view->details->model), id);
+}
+
+static void
+disconnect_directory_as_file_handler (FMDirectoryView *view, int *id)
+{
+	disconnect_handler (GTK_OBJECT (view->details->directory_as_file), id);
+}
+
+static void
 disconnect_model_handlers (FMDirectoryView *view)
 {
-	disconnect_handler (view, &view->details->files_added_handler_id);
-	disconnect_handler (view, &view->details->files_changed_handler_id);
-	disconnect_handler (view, &view->details->load_error_handler_id);
-	if (view->details->model != NULL) {
-		nautilus_directory_file_monitor_remove (view->details->model, view);
-		nautilus_file_cancel_call_when_ready (view->details->directory_as_file,
-						      metadata_ready_callback,
-						      view);
+	if (view->details->model == NULL) {
+		return;
 	}
+	disconnect_directory_handler (view, &view->details->files_added_handler_id);
+	disconnect_directory_handler (view, &view->details->files_changed_handler_id);
+	disconnect_directory_handler (view, &view->details->load_error_handler_id);
+	disconnect_directory_as_file_handler (view, &view->details->file_changed_handler_id);
+	nautilus_directory_file_monitor_remove (view->details->model, view);
+	nautilus_file_cancel_call_when_ready (view->details->directory_as_file,
+					      metadata_ready_callback,
+					      view);
+	nautilus_file_monitor_remove (view->details->directory_as_file,
+				      view);
 }
 
 /**

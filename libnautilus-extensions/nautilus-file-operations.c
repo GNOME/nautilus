@@ -536,7 +536,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 							 "permissions to change it's parent folder.");
 				} else {
 					error_string = _("Error while moving.\n"
-							 "%s cannot be moved because it's parent folder "
+							 "%s cannot be moved because its parent folder "
 							 "is read-only.");
 				}
 			} else if (progress_info->phase == GNOME_VFS_XFER_PHASE_OPENSOURCE

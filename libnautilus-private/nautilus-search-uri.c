@@ -241,7 +241,7 @@ static value_criterion_item file_type_options3_table [] = {
          N_("applications"),
          NULL},
         {"directory",
-         N_("directories"),
+         N_("folders"),
          NULL},
         {"music",
          N_("music"),
@@ -500,7 +500,7 @@ get_translated_criterion (const GSList *criterion)
                 return ret_val;
         }
 
-        return g_strdup (_("are directories"));
+        return g_strdup (_("are folders"));
 }
 
 /**
@@ -724,7 +724,7 @@ nautilus_self_check_search_uri (void)
                                         "smaller than 2000 bytes."));
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains medusa & file_type is directory"), 
                                       _("Items with \"medusa\" in the name and are "
-                                        "directories."));
+                                        "folders."));
         
         /* is_search_uri */
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri (""), FALSE);

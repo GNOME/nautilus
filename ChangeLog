@@ -1,3 +1,99 @@
+2000-12-06  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fixed bug 4992 ("New folder" menu item enable state doesn't follow
+	permissions), bug 4965 (Dragging multiple items to location bar
+	crashes Nautilus), and bug 4995 (Rename a file to bad name ->
+	error cites wrong filename).
+
+	Fixed a bug jsh spotted where we were doing the mod. time checks
+	wrong in the icon factory for thumbnails.
+
+	Did some wording fixes after menthos pointed out some problems.
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(get_cache_time): Split out this function to get the mtime of a
+	file so we can check when it changed.
+	(load_specific_icon): Get the time when loading an icon.
+	(scale_icon): Copy the time when making a scaled icon from an
+	existing icon.
+	(remove_icons_if_file_changed): New renamed function uses
+	get_cache_time to check if the icon needs recomputing because of a
+	change in the underlying file.
+	(get_icon_from_cache): Call the new remove_icons_if_file_changed.
+	(load_icon_with_embedded_text): Copy the time when making an icon
+	with text from an existing icon.
+	
+	* libnautilus-extensions/nautilus-file-attributes.h: Added
+	ATTRIBUTE_CAPABILITIES (and sorted in alphabetical order).
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(nautilus_directory_set_up_request): Changed the name of this,
+	made it public, and added ATTRIBUTE_CAPABILITIES as another
+	way to ask for the file info.
+	(cancel_loading_attributes),
+	(nautilus_directory_cancel_loading_file_attributes): Set up a
+	request and use it to decide what to cancel.
+	* libnautilus-extensions/nautilus-directory-private.h: Moved the
+	request structure and call into here so it can be used by
+	NautilusFile and NautilusDirectory both.
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_forget_attributes_internal): Set up a request and
+	use it to decide what to forget.
+	(nautilus_file_forget_all_attributes): Add ATTRIBUTE_CAPABILITIES
+	to the set of things in "all".
+	
+	* src/file-manager/fm-directory-view.c:
+	(check_for_directory_hard_limit): Added a FIXME and made some
+	minor wording improvements.
+	(file_changed_callback): Helper to schedule a menu update when
+	the directory's NautilusFile reports a change.
+	(load_directory): Add monitoring of the directory's "capabilities"
+	since they affect whether "New Folder" is allowed. Fixes 4992.
+	(disconnect_handler): Helper for the two functions below.
+	(disconnect_directory_handler): Disconnect a NautilusDirectory
+	handler.
+	(disconnect_directory_as_file_handler): Disconnect a NautilusFile
+	handler.
+	(disconnect_model_handlers): Add code to stop monitoring the
+	directory's "capabilities".
+	
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_renaming_file): Got rid of some unneeded "\n"
+	characters. Improved the error message in the "/"-forbidden case
+	with a specific special case message and the proper file name (was
+	using the old file name, not the new one). Fixes 4995.
+	(fm_rename_file): Added quotes to message.
+	
+	* src/nautilus-location-bar.h: Removed unused fields.
+	* src/nautilus-location-bar.c: (nautilus_location_bar_get_window):
+	Find the window by looking for an ancestor instead of trying to
+	use gtk_object_get_data (on data no one was setting any
+	more!). Fixes 4965.
+	(nautilus_location_bar_initialize): Got rid of redundant
+	initialization to NULL.
+	(nautilus_location_bar_set_location): Got rid of gratuitous check
+	before calling g_free.
+	(nautilus_location_bar_update_label): Added a localization-related
+	FIXME here.
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(handle_xfer_vfs_error): Corrected the "it's" to "its" even though
+	I know that John and Pavel were writing an improved version of the
+	entire message.
+
+	* libnautilus-extensions/nautilus-search-uri.c:
+	(get_translated_criterion), (nautilus_self_check_search_uri): Say
+	"folder" instead of "directory".
+	* src/nautilus-search-bar-criterion.c: Say "folder" instead of
+	"directory".
+	* src/nautilus-theme-selector.c: (add_theme_to_icons): Say
+	"folder" instead of "directory". Other minor wording improvements.
+	(make_theme_description): Minor wording improvement.
+	
+	* src/nautilus-window-manage-views.c:
+	(window_set_title_with_timestamp): Added a FIXME.
+
 2000-12-06  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

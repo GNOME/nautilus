@@ -107,6 +107,17 @@ struct NautilusDirectoryDetails
 	GList *file_operations_in_progress; /* list of FileOperation * */
 };
 
+/* A request for information about one or more files. */
+typedef struct {
+	gboolean activation_uri;
+	gboolean deep_count;
+	gboolean directory_count;
+	gboolean file_info;
+	gboolean file_list; /* always FALSE if file != NULL */
+	gboolean metafile;
+	gboolean mime_list;
+	gboolean top_left_text;
+} Request;
 
 NautilusDirectory *nautilus_directory_get_existing                    (const char                *uri);
 
@@ -153,7 +164,6 @@ void               nautilus_directory_cancel_loading_file_attributes  (NautilusD
 								       NautilusFile              *file,
 								       GList                     *file_attributes);
 
-
 /* Calls shared between directory, file, and async. code. */
 void               nautilus_directory_emit_metadata_changed           (NautilusDirectory         *directory);
 void               nautilus_directory_emit_files_added                (NautilusDirectory         *directory,
@@ -164,10 +174,12 @@ void               nautilus_directory_emit_change_signals_deep        (NautilusD
 								       GList                     *changed_files);
 void               nautilus_directory_emit_done_loading               (NautilusDirectory         *directory);
 void               nautilus_directory_emit_load_error                 (NautilusDirectory         *directory,
-								       GnomeVFSResult            error_result);
+								       GnomeVFSResult             error_result);
 NautilusDirectory *nautilus_directory_get_internal                    (const char                *uri,
 								       gboolean                   create);
-char		  *          nautilus_directory_get_name_for_self_as_new_file   (NautilusDirectory         *directory);
+char *             nautilus_directory_get_name_for_self_as_new_file   (NautilusDirectory         *directory);
+void               nautilus_directory_set_up_request                  (Request                   *request,
+								       GList                     *file_attributes);
 
 /* Interface to the file list. */
 NautilusFile *     nautilus_directory_find_file_by_name               (NautilusDirectory         *directory,
@@ -183,11 +195,8 @@ GList *            nautilus_directory_begin_file_name_change          (NautilusD
 void               nautilus_directory_end_file_name_change            (NautilusDirectory         *directory,
 								       NautilusFile              *file,
 								       GList                     *node);
-
-
-void               nautilus_directory_handle_directory_moved          (NautilusDirectory *directory,
-								       const char        *to_uri);
+void               nautilus_directory_handle_directory_moved          (NautilusDirectory         *directory,
+								       const char                *to_uri);
 
 /* debugging functions */
 int                nautilus_directory_number_outstanding              (void);
-

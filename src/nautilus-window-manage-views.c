@@ -170,6 +170,7 @@ static void
 window_set_title_with_timestamp (NautilusWindow *window, const char *title)
 {
         char *timestamp;
+	char *title_with_timestamp;
 	
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
         g_return_if_fail (title != NULL);
@@ -177,12 +178,14 @@ window_set_title_with_timestamp (NautilusWindow *window, const char *title)
 	timestamp = nautilus_get_build_timestamp ();
 	
 	if (timestamp != NULL) {
-		char *title_with_timestamp;
+		/* FIXME: The text Preview Release is hardcoded here.
+		 * Are all builds with timestamps really best described
+		 * as "preview release"?.
+		 */
 		title_with_timestamp = g_strdup_printf ("Preview Release %s: %s", timestamp, title);
 		gtk_window_set_title (GTK_WINDOW (window), title_with_timestamp);
 		g_free (title_with_timestamp);
-	}
-	else {
+	} else {
 		gtk_window_set_title (GTK_WINDOW (window), title);
 	}
 

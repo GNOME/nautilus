@@ -370,7 +370,7 @@ add_theme_to_icons (GtkWidget *widget, gpointer *data)
 	g_free (temp_path);
 	
 	if (!g_file_exists (xml_path)) {
-		char *message = g_strdup_printf (_("Sorry, but %s is not a valid theme directory."), theme_path);
+		char *message = g_strdup_printf (_("Sorry, but \"%s\" is not a valid theme folder."), theme_path);
 		nautilus_error_dialog (message, _("Couldn't add theme"), GTK_WINDOW (theme_selector));
 		g_free (message);
 	} else {
@@ -399,7 +399,7 @@ add_theme_to_icons (GtkWidget *widget, gpointer *data)
 		g_free (theme_destination_path);
 		
 		if (result != GNOME_VFS_OK) {
-			char *message = g_strdup_printf (_("Sorry, but the theme %s couldn't be installed."), theme_path);
+			char *message = g_strdup_printf (_("Sorry, but the \"%s\" theme couldn't be installed."), theme_path);
 			nautilus_error_dialog (message, _("Couldn't install theme"), GTK_WINDOW (theme_selector));
 			g_free (message);
 		
@@ -441,7 +441,7 @@ add_new_theme_button_callback(GtkWidget *widget, NautilusThemeSelector *theme_se
 		GtkFileSelection *file_dialog;
 
 		theme_selector->details->dialog = gtk_file_selection_new
-			(_("Select a theme directory to add as a new theme:"));
+			(_("Select a theme folder to add as a new theme:"));
 		file_dialog = GTK_FILE_SELECTION (theme_selector->details->dialog);
 		
 		gtk_signal_connect (GTK_OBJECT (theme_selector->details->dialog),
@@ -463,24 +463,20 @@ add_new_theme_button_callback(GtkWidget *widget, NautilusThemeSelector *theme_se
 	}
 }
 
-/* handle the "remove" button */
 static void
-remove_button_callback(GtkWidget *widget, NautilusThemeSelector *theme_selector)
+remove_button_callback (GtkWidget *widget, NautilusThemeSelector *theme_selector)
 {
 	if (theme_selector->details->remove_mode) {
 		return;
 	}
 	
 	theme_selector->details->remove_mode = TRUE;
-	/* change the label to the remove message */
-	nautilus_label_set_text (NAUTILUS_LABEL(theme_selector->details->help_label),
-	_("Click on a theme to remove it."));
+
+	nautilus_label_set_text (NAUTILUS_LABEL (theme_selector->details->help_label),
+				 _("Click on a theme to remove it."));
+	nautilus_label_set_text (NAUTILUS_LABEL (theme_selector->details->add_button_label),
+				 _("Cancel Remove"));
 	
-	/* change the add button label */
-	nautilus_label_set_text (NAUTILUS_LABEL(theme_selector->details->add_button_label),
-	_("Cancel Remove"));
-	
-	/* regenerate the list */
 	populate_list_with_themes (theme_selector);
 }
 
@@ -527,7 +523,8 @@ set_help_label (NautilusThemeSelector *theme_selector, gboolean remove_mode)
 					_("Click on a theme to remove it."));	
 	} else {
 		nautilus_label_set_text (NAUTILUS_LABEL(theme_selector->details->help_label),
-					_("Click on a theme to change the\nappearance of Nautilus."));	
+					_("Click on a theme to change the\n"
+					  "appearance of Nautilus."));	
 
 	}
 }
@@ -567,7 +564,8 @@ theme_select_row_callback (GtkCList * clist, int row, int column, GdkEventButton
 		if (nautilus_strcmp (theme_name, current_theme) == 0) {
 			g_free (current_theme);
 			exit_remove_mode (theme_selector);
-			nautilus_error_dialog (_("Sorry, but you can't remove the current theme.  Please change to another theme before removing this one"),
+			nautilus_error_dialog (_("Sorry, but you can't remove the current theme. "
+						 "Please change to another theme before removing this one."),
 				       _("Can't delete current theme"),
 				       GTK_WINDOW (theme_selector));
 			theme_selector->details->handling_theme_change = FALSE;	
@@ -624,18 +622,18 @@ vfs_file_exists (const char *file_uri)
 
 /* utility routine to test for the presence of an icon file */
 static gboolean
-has_image_file(const char *path_uri, const char *dir_name, const char *image_file)
+has_image_file (const char *path_uri, const char *dir_name, const char *image_file)
 {
 	char* image_uri;
 	gboolean exists;
 	
-	image_uri = g_strdup_printf("%s/%s/%s.png", path_uri, dir_name, image_file);
+	image_uri = g_strdup_printf ("%s/%s/%s.png", path_uri, dir_name, image_file);
 	exists = vfs_file_exists (image_uri);
 	g_free (image_uri);
 	if (exists)
 		return TRUE;
 
-	image_uri = g_strdup_printf("%s/%s/%s.svg", path_uri, dir_name, image_file);
+	image_uri = g_strdup_printf ("%s/%s/%s.svg", path_uri, dir_name, image_file);
 	exists = vfs_file_exists (image_uri);
 	g_free (image_uri);
 	return exists;
@@ -657,29 +655,29 @@ make_theme_description (const char *theme_name, const char *theme_path_uri)
 	theme_path = nautilus_make_path (theme_local_path, theme_file_name);
 	g_free (theme_local_path);
 		
-	if (theme_path) {
+	if (theme_path != NULL) {
 		/* read the xml document */
 		theme_document = xmlParseFile(theme_path);
 		
 		if (theme_document != NULL) {
 			/* fetch the description mode, of any */		
-			description_node = nautilus_xml_get_child_by_name (xmlDocGetRootElement (theme_document), "description");
-			if (description_node) {		
-				temp_str = xmlGetProp(description_node, "TEXT");
-				if (temp_str)
-					description_result = g_strdup (temp_str);
+			description_node = nautilus_xml_get_child_by_name (xmlDocGetRootElement (theme_document),
+									   "description");
+			if (description_node != NULL) {
+				temp_str = xmlGetProp (description_node, "TEXT");
+				description_result = g_strdup (temp_str);
 			}
-		
+			
 			xmlFreeDoc (theme_document);
 		}
-			
+		
 		g_free (theme_path);
 	}
-		
+	
 	g_free (theme_file_name);
 	if (description_result)
 		return description_result;
-	return g_strdup_printf (_("No information available for the  %s theme"), theme_name);
+	return g_strdup_printf (_("No information available for the \"%s\" theme"), theme_name);
 }
 
 

@@ -104,32 +104,27 @@ static const char *icon_file_name_suffixes[] =
  */
 #define ICON_CACHE_SWEEP_TIMEOUT        (10 * 1000)
 
-/* For now, images are used themselves as thumbnails when they are
- * below this threshold size. Later we might have to have a more
- * complex rule about when to use an image for itself.
+/* Images are used themselves as thumbnails when they are below this
+ * threshold size.
+ */
+/* FIXME: Later we might have to have a more complex rule about when
+ * to use an image for itself.
  */
 #define SELF_THUMBNAIL_SIZE_THRESHOLD   16384
 
-/* extremely large images can eat up hundreds of megabytes of memory, so we
- * shouldn't automatically thumbnail when larges are too large.  Eventually,
- * we want this threshold to be user-settable, but for now it's hard-wired.
+/* Extremely large images can eat up hundreds of megabytes of memory, so we
+ * shouldn't automatically thumbnail when larges are too large.
  */
- #define INHIBIT_THUMBNAIL_SIZE_THRESHOLD 1048576
+/* FIXME: Eventually, we want this threshold to be user-settable, but
+ * for now it's hard-wired.
+ */
+#define INHIBIT_THUMBNAIL_SIZE_THRESHOLD (1024 * 1024)
  
-/* This circular doubly-linked list structure is used to keep a list
- * of the most recently used items in the cache.
- */
-typedef struct NautilusCircularList NautilusCircularList;
-struct NautilusCircularList {
-	NautilusCircularList *next;
-	NautilusCircularList *prev;
-};
-
-/* maximum size for either dimension at the standard zoom level */
-#define MAXIMUM_ICON_SIZE 96
+/* Maximum size for either dimension at the standard zoom level. */
+#define MAXIMUM_ICON_SIZE                96
 
 /* FIXME bugzilla.eazel.com 1102: Embedded text should use preferences
- * to determine what font it uses.
+ * to determine what font it uses instead of this set of constants.
  */
 #define EMBEDDED_TEXT_FONT_FAMILY       _("helvetica")
 #define EMBEDDED_TEXT_FONT_WEIGHT       _("medium")
@@ -138,6 +133,18 @@ struct NautilusCircularList {
 #define EMBEDDED_TEXT_FONT_SIZE         9
 #define EMBEDDED_TEXT_LINE_OFFSET       1
 #define EMBEDDED_TEXT_EMPTY_LINE_HEIGHT 4
+
+#define MINIMUM_EMBEDDED_TEXT_RECT_WIDTH	20.0
+#define MINIMUM_EMBEDDED_TEXT_RECT_HEIGHT	20.0
+
+/* This circular doubly-linked list structure is used to keep a list
+ * of the most recently used items in the cache.
+ */
+typedef struct CircularList CircularList;
+struct CircularList {
+	CircularList *next;
+	CircularList *prev;
+};
 
 /* The icon factory.
  * These are just globals, but they're in an object so we can
@@ -173,7 +180,7 @@ typedef struct {
 	 * let them go when we sweep the cache.
 	 */
 	GHashTable *icon_cache;
-	NautilusCircularList recently_used_dummy_head;
+	CircularList recently_used_dummy_head;
 	guint recently_used_count;
         guint sweep_timer;
 } NautilusIconFactory;
@@ -235,7 +242,7 @@ typedef struct {
 	guint internal_ref_count;
 
 	/* Used to decide when to kick icons out of the cache. */
-	NautilusCircularList recently_used_node;
+	CircularList recently_used_node;
 
 	/* Used to know when to make a new thumbnail. */
 	time_t cache_time;
@@ -244,9 +251,6 @@ typedef struct {
 	gboolean custom;
 	gboolean scaled;
 } CacheIcon;
-
-#define MINIMUM_EMBEDDED_TEXT_RECT_WIDTH	20.0
-#define MINIMUM_EMBEDDED_TEXT_RECT_HEIGHT	20.0
 
 static CacheIcon *fallback_icon;
 
@@ -316,7 +320,7 @@ static void
 check_recently_used_list (void)
 {
 	NautilusIconFactory *factory;
-	NautilusCircularList *head, *node, *next;
+	CircularList *head, *node, *next;
 	guint count;
 
 	factory = get_icon_factory ();
@@ -456,7 +460,7 @@ static void
 cache_icon_unref (CacheIcon *icon)
 {
 	NautilusIconFactory *factory;
-	NautilusCircularList *node;
+	CircularList *node;
 
 	factory = get_icon_factory ();
 
@@ -531,7 +535,7 @@ static void
 nautilus_icon_factory_clear (void)
 {
 	NautilusIconFactory *factory;
-	NautilusCircularList *head;
+	CircularList *head;
 
 	factory = get_icon_factory ();
 
@@ -1278,7 +1282,7 @@ should_display_image_file_as_itself (NautilusFile *file)
 
 /* key routine to get the scalable icon for a file */
 NautilusScalableIcon *
-nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifier, gboolean anti_aliased)
+nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifier, gboolean anti_aliased)
 {
 	char *uri, *file_uri, *file_path, *image_uri, *icon_name, *mime_type, *top_left_text;
  	gboolean is_local;
@@ -1566,6 +1570,41 @@ path_represents_svg_image (const char *path)
 	return is_svg;
 }
 
+/* Returns GNOME_VFS_ERROR_NOT_SUPPORTED for icons that are not files. */
+static GnomeVFSResult
+get_cache_time (const char *file_uri, time_t *cache_time)
+{
+	GnomeVFSURI *vfs_uri;
+	GnomeVFSFileInfo file_info;
+	GnomeVFSResult result;
+	gboolean is_local;
+
+	/* If there's no specific file, simply return. */
+	if (file_uri == NULL) {
+		return GNOME_VFS_ERROR_NOT_SUPPORTED;
+	}
+		
+	/* FIXME bugzilla.eazel.com 2566: if the URI is remote, assume
+	 * it's valid to match logic below.
+	 */
+	vfs_uri = gnome_vfs_uri_new (file_uri);
+	is_local = gnome_vfs_uri_is_local (vfs_uri);
+	gnome_vfs_uri_unref (vfs_uri);
+	if (!is_local) {
+		return GNOME_VFS_ERROR_NOT_SUPPORTED;
+	}
+	
+	/* Gather the info and then compare modification times. */
+	gnome_vfs_file_info_init (&file_info);
+	result = gnome_vfs_get_file_info (file_uri, &file_info, GNOME_VFS_FILE_INFO_DEFAULT);
+	if (result == GNOME_VFS_OK) {
+		*cache_time = file_info.mtime;
+	}
+	gnome_vfs_file_info_clear (&file_info);
+
+	return result;
+}
+
 /* This load function returns NULL if the icon is not available at
  * this size.
  */
@@ -1617,7 +1656,10 @@ load_specific_icon (NautilusScalableIcon *scalable_icon,
 
 	/* Since we got something, we can create a cache icon. */
 	icon = cache_icon_new (pixbuf, custom, FALSE, &details);
+	get_cache_time (scalable_icon->uri,
+			&icon->cache_time);
 	gdk_pixbuf_unref (pixbuf);
+
 	return icon;
 }
 
@@ -1754,6 +1796,7 @@ scale_icon (CacheIcon *icon,
 				      icon->custom,
 				      TRUE,
 				      &scaled_details);
+	scaled_icon->cache_time = icon->cache_time;
 	gdk_pixbuf_unref (scaled_pixbuf);
 	return scaled_icon;
 }
@@ -1828,10 +1871,10 @@ load_icon_scale_if_necessary (NautilusScalableIcon *scalable_icon,
  * bumping the last item off that list if necessary.
  */
 static void
-mark_recently_used (NautilusCircularList *node)
+mark_recently_used (CircularList *node)
 {
 	NautilusIconFactory *factory;
-	NautilusCircularList *head, *last_node;
+	CircularList *head, *last_node;
 
 	check_recently_used_list ();
 
@@ -1875,46 +1918,32 @@ mark_recently_used (NautilusCircularList *node)
 	check_recently_used_list ();
 }
 
-/* Utility routine that checks if a cached icon has changed since it
- * was cached. It returns TRUE if the icon is still valid, and
- * removes it from the cache if it's not.
+/* Utility routine that checks if a cached thubmnail-type icon has
+ * changed since it was cached. Returns TRUE after removing the icon
+ * from the cache if the icon has changed.
  */
 static gboolean
-cached_icon_still_valid (const char *file_uri, time_t cached_time)
+remove_icons_if_file_changed (const char *file_uri, time_t cached_time)
 {
-	GnomeVFSURI *vfs_uri;
-	GnomeVFSFileInfo file_info;
 	GnomeVFSResult result;
-	gboolean is_local, is_valid;
+	time_t new_time;
 
-	/* If there's no specific file, simply return TRUE. */
-	if (file_uri == NULL) {
-		return TRUE;
-	}
-		
-	/* FIXME bugzilla.eazel.com 2566: if the URI is remote, assume
-	 * it's valid to avoid delay of testing. Eventually we'll have
-	 * to make this async to fix this.
-	 */
-	vfs_uri = gnome_vfs_uri_new (file_uri);
-	is_local = gnome_vfs_uri_is_local (vfs_uri);
-	gnome_vfs_uri_unref (vfs_uri);	
-	if (!is_local) {
-		return TRUE;
-	}
-	
-	/* Gather the info and then compare modification times. */
-	gnome_vfs_file_info_init (&file_info);
-	result = gnome_vfs_get_file_info (file_uri, &file_info, GNOME_VFS_FILE_INFO_DEFAULT);
-	is_valid = result == GNOME_VFS_OK && file_info.mtime <= cached_time;
-	gnome_vfs_file_info_clear (&file_info);
+	/* Get the time from the file. */
+	result = get_cache_time (file_uri, &new_time);
 
-	/* if it's not valid, remove it from the cache */
-	if (!is_valid) {
-		nautilus_icon_factory_remove_by_uri (file_uri);	
+	/* Do nothing for cases where a time doesn't apply. */
+	if (result == GNOME_VFS_ERROR_NOT_SUPPORTED) {
+		return FALSE;
 	}
-	
-	return is_valid;
+
+	/* Do nothing if the file is still the same as before. */
+	if (result == GNOME_VFS_OK && new_time == cached_time) {
+		return FALSE;
+	}
+
+	/* Remove the icon from the cache and inform the caller. */
+	nautilus_icon_factory_remove_by_uri (file_uri);	
+	return TRUE;
 }
 
 /* Get the icon, handling the caching.
@@ -1962,8 +1991,8 @@ get_icon_from_cache (NautilusScalableIcon *scalable_icon,
 		}
 
 		/* Check if the cached image is good before using it. */
-		if (!cached_icon_still_valid (scalable_icon->uri,
-					      icon->cache_time)) {
+		if (remove_icons_if_file_changed (scalable_icon->uri,
+						  icon->cache_time)) {
 			icon = NULL;
 		}
 	}
@@ -2305,6 +2334,7 @@ load_icon_with_embedded_text (NautilusScalableIcon *scalable_icon,
 					 icon_without_text->custom,
 					 icon_without_text->scaled,
 					 &details);
+	icon_with_text->cache_time = icon_without_text->cache_time;
 	cache_icon_unref (icon_without_text);
 	gdk_pixbuf_unref (pixbuf_with_text);
 

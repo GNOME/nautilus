@@ -103,7 +103,7 @@ static char *type_objects [] = {
 	N_("regular file"),
 	N_("text file"),
 	N_("application"),
-	N_("directory"),
+	N_("folder"),
 	N_("music"),
 	NULL
 };

@@ -4329,83 +4329,36 @@ forget_activation_uri (NautilusFile *file)
 
 void
 nautilus_file_forget_attributes_internal (NautilusFile *file,
-					  GList        *file_attributes)
+					  GList *file_attributes)
 {
+	Request request;
+
 	if (file == NULL) {
 		return;
 	}
 
-	if (g_list_find_custom (file_attributes,
-				NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
-				nautilus_str_compare) != NULL) {
+	nautilus_directory_set_up_request (&request, file_attributes);
+
+	if (request.directory_count) {
 		forget_directory_count (file);
 	}
-
-	if (g_list_find_custom (file_attributes,
-				NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS,
-				nautilus_str_compare) != NULL) {
+	if (request.deep_count) {
 		forget_deep_counts (file);
 	}
-
-	if (g_list_find_custom (file_attributes,
-				NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES,
-				nautilus_str_compare) != NULL) {
+	if (request.mime_list) {
 		forget_mime_list (file);
 	}
-
-	if (g_list_find_custom (file_attributes,
-				NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE,
-				nautilus_str_compare) != NULL ||
-	    g_list_find_custom (file_attributes,
-				NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE,
-				nautilus_str_compare) != NULL ||
-	    g_list_find_custom (file_attributes,
-				NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY,
-				nautilus_str_compare) != NULL) {
+	if (request.file_info) {
 		forget_file_info (file);
 	}
-
-
-	if (g_list_find_custom (file_attributes,
-				NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT,
-				nautilus_str_compare) != NULL) {
-		/* Forget file info too, since applicability of 
-		 * activation URI depends on it. 
-		 */
-		forget_file_info (file);
-
-		/* Forget actual activation top left text */
+	if (request.top_left_text) {
 		forget_top_left_text (file);
 	}
-
-
-	if (g_list_find_custom (file_attributes,
-				NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI,
-				nautilus_str_compare) != NULL) {
-		/* Forget file info too, since applicability of 
-		 * activation URI depends on it. 
-		 */
-		forget_file_info (file);
-		
-		/* Forget actual activation URI info */
+	if (request.activation_uri) {
 		forget_activation_uri (file);
 	}
-	
-	if (g_list_find_custom (file_attributes,
-				NAUTILUS_FILE_ATTRIBUTE_METADATA,
-				nautilus_str_compare) != NULL ||
-	    /* FIXME bugzilla.eazel.com 2435:
-	     * Some file attributes are really pieces of metadata.
-	     * This is a confusing/broken design, since other metadata
-	     * pieces are handled separately from file attributes...
-	     */
-	    g_list_find_custom (file_attributes,
-				NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON,
-				nautilus_str_compare) != NULL) {
-		/* FIXME: implement forgetting metadata */
-		
-		/* ?? reload the directory's metafile ?? */
-	}
+
+	/* FIXME: implement forgetting metadata */
 }
 
 
@@ -4439,6 +4392,7 @@ nautilus_file_forget_all_attributes (NautilusFile *file)
 	GList *attributes;
 
 	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
+	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES);
 	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS);
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);

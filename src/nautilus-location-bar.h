@@ -49,10 +49,7 @@ typedef struct NautilusLocationBar {
 
 	GtkLabel *label;
 	GtkEntry *entry;
-
-	gchar *undo_text;
-	gchar *last_location;
-	gboolean undo_registered;
+	char *last_location;
 } NautilusLocationBar;
 
 typedef struct {

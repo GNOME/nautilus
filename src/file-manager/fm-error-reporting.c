@@ -26,6 +26,7 @@
 #include <config.h>
 #include "fm-error-reporting.h"
 
+#include <string.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libnautilus-extensions/nautilus-file.h>
@@ -51,20 +52,29 @@ fm_report_error_renaming_file (NautilusFile *file,
 	
 	switch (error) {
 	case GNOME_VFS_ERROR_FILE_EXISTS:
-		message = g_strdup_printf (_("The name \"%s\" is already used in this folder.\nPlease use a different name."), 
+		message = g_strdup_printf (_("The name \"%s\" is already used in this folder. "
+					     "Please use a different name."), 
 					   new_name);
 		break;
 	case GNOME_VFS_ERROR_NOT_FOUND:
-		message = g_strdup_printf (_("There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"), 
+		message = g_strdup_printf (_("There is no \"%s\" in this folder. "
+					     "Perhaps it was just moved or deleted?"), 
 					   new_name);
 		break;
 	case GNOME_VFS_ERROR_ACCESS_DENIED:
-		message = g_strdup_printf (_("You do not have the permissions necessary to rename \"%s.\""),
+		message = g_strdup_printf (_("You do not have the permissions necessary to rename \"%s\"."),
 					   original_name);
 		break;
 	case GNOME_VFS_ERROR_NOT_PERMITTED:
-		message = g_strdup_printf (_("The name \"%s.\" is not valid. \nPlease use a different name."),
-					   original_name);
+		if (strchr (new_name, '/') != NULL) {
+			message = g_strdup_printf (_("The name \"%s\" is not valid because it contains the character \"/\". "
+						     "Please use a different name."),
+						   new_name);
+		} else {
+			message = g_strdup_printf (_("The name \"%s\" is not valid. "
+						     "Please use a different name."),
+						   new_name);
+		}
 		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
@@ -73,6 +83,7 @@ fm_report_error_renaming_file (NautilusFile *file,
 		message = g_strdup_printf (_("Sorry, couldn't rename \"%s\" to \"%s\"."),
 					   original_name, new_name);
 	}
+
 	g_free (original_name);
 
 	nautilus_error_dialog (message, _("Renaming Error"), NULL);
@@ -211,7 +222,7 @@ fm_rename_file (NautilusFile *file,
 
 	/* Start the timed wait to cancel the rename. */
 	old_name = nautilus_file_get_name (file);
-	wait_message = g_strdup_printf (_("Renaming %s to %s."),
+	wait_message = g_strdup_printf (_("Renaming \"%s\" to \"%s\"."),
 					old_name,
 					new_name);
 	g_free (old_name);

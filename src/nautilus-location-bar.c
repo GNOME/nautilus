@@ -92,7 +92,7 @@ static NautilusWindow *
 nautilus_location_bar_get_window (GtkWidget *bar)
 {
 
-	return NAUTILUS_WINDOW (gtk_object_get_data (GTK_OBJECT (bar), "associated_window"));
+	return NAUTILUS_WINDOW (gtk_widget_get_ancestor (bar, NAUTILUS_TYPE_WINDOW));
 }
 
 static void
@@ -439,8 +439,6 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 	GtkWidget *event_box;
 	GtkWidget *hbox;
 
-	bar->last_location = NULL;
-	
 	hbox = gtk_hbox_new (0, FALSE);
 
 	event_box = gtk_event_box_new ();
@@ -495,8 +493,6 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 
 	bar->label = GTK_LABEL (label);
 	bar->entry = GTK_ENTRY (entry);	
-
-
 }
 
 
@@ -540,10 +536,7 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
 
 	/* remember the original location for later comparison */
 	
-	if (bar->last_location) {
-		g_free (bar->last_location);
-	}
-
+	g_free (bar->last_location);
 	bar->last_location = g_strdup (location);
 	nautilus_location_bar_update_label (bar);
 }
@@ -591,6 +584,9 @@ nautilus_location_bar_update_label (NautilusLocationBar *bar)
 	if (nautilus_uris_match (bar->last_location, current_location)) {
 		gtk_label_set_text (GTK_LABEL (bar->label), _("Location:"));
 	} else {		 
+		/* FIXME: Use of spaces here to line up Go To with
+		 * Location is fragile and hard to translate.
+		 */
 		gtk_label_set_text (GTK_LABEL (bar->label), _("   Go To:"));
 	}	
 	g_free (current_location);
