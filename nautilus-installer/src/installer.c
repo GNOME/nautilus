@@ -978,13 +978,13 @@ collect_failure_info (EazelInstall *service,
 	GList *failure_info_addition;
 
 	eazel_install_problem_tree_to_case (installer->problem,
-					    pd,
+					    PACKAGEDATA (pd),
 					    uninstall,
 					    &(installer->problems));
 	if (!installer->failure_info || 1) {
 		/* could be multiple toplevel packages */
 		failure_info_addition = eazel_install_problem_tree_to_string (installer->problem,
-									      pd,
+									      PACKAGEDATA (pd),
 									      uninstall);
 		if (installer->failure_info) {
 			installer->failure_info = g_list_concat (installer->failure_info, 

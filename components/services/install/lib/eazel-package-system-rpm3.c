@@ -866,6 +866,7 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 							int detail_level)
 {
 	unsigned long *sizep;
+	unsigned long *epochp;
 
 	eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_NAME, &pack->name);
 	eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_VERSION, &pack->version);
@@ -881,6 +882,13 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 			(void **) &sizep, NULL);	
 
 	pack->bytesize = *sizep;
+
+	/* Load the crack that is epoch/serial */
+	if (!headerGetEntry (hd, RPMTAG_EPOCH, NULL, (void**)&epochp, NULL)) {
+		pack->epoch = 0;
+	} else {
+		pack->epoch = *epochp;
+	}
 
 	pack->packsys_struc = (gpointer)hd;
 	
@@ -1038,10 +1046,6 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 		free ((void*)provides_name);
 	}
 
-	/* Load the crack that is epoch/serial */
-	if (!headerGetEntry (hd, RPMTAG_EPOCH, NULL, (void**)&pack->epoch, NULL)) {
-		pack->epoch = 0;
-	}
 }
 
 static gboolean 

@@ -1,3 +1,18 @@
+2001-02-22  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	reviewed by: Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(eazel_package_system_rpm3_packagedata_fill_from_header):
+	Long the epoch in the right way.
+	
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedata_dump_int):
+	Display the epoch in the right way.
+	
+	* nautilus-installer/src/installer.c: (collect_failure_info):
+	Const abuse to fix tinderbox build.
+
 2001-02-22  Mike Fleming  <mfleming@eazel.com>
 
 	reviewed by: <pavel@eazel.com>

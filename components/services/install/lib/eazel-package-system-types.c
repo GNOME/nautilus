@@ -1439,10 +1439,14 @@ packagedata_dump_int (const PackageData *package, gboolean deep, int indent)
 		g_string_sprintfa (out, ", checked");
 	}
 	if (package->epoch) {
-		g_string_sprintfa (out, "\nEPOCH %d", package->epoch);
+		g_string_sprintfa (out, "\n");
+		gstr_indent (out, indent);
+		g_string_sprintfa (out, "EPOCH %d", package->epoch);
 	}
 	if (package->obsoletes) {
-		g_string_sprintfa (out, "\nObsoletes %s", package->obsoletes);
+		g_string_sprintfa (out, "\n");
+		gstr_indent (out, indent);
+		g_string_sprintfa (out, "Obsoletes %s", package->obsoletes);
 	}
 	g_string_sprintfa (out, "\n");
 
