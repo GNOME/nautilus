@@ -144,7 +144,6 @@ EXTRA_DIST =					\
 	$(ui_DATA)				\
 	check-nautilus				\
 	nautilus-shell-interface.idl		\
-	nautilus-shell-marshal.list		\
 	run-nautilus				\
 	$(NULL)
 
