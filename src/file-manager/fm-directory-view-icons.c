@@ -29,7 +29,6 @@
 #include "fm-directory-view-icons.h"
 
 #include "fm-icons-controller.h"
-#include "fm-icon-cache.h"
 
 #include <ctype.h>
 #include <errno.h>

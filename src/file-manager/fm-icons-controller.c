@@ -30,7 +30,7 @@
 #include "fm-icons-controller.h"
 
 #include <libnautilus/nautilus-gtk-macros.h>
-#include "fm-icon-cache.h"
+#include <libnautilus/nautilus-icon-factory.h>
 
 static void       fm_icons_controller_initialize_class (FMIconsControllerClass  *klass);
 static void       fm_icons_controller_initialize       (FMIconsController       *controller);
@@ -80,9 +80,10 @@ fm_icons_controller_get_icon_image (NautilusIconsController *controller,
 	/* Get the appropriate image and name for the file. For the moment,
 	 * we always use the standard size of icons.
 	 */
-	return fm_icon_cache_get_icon_for_file (fm_get_current_icon_cache (), 		
-						NAUTILUS_FILE (icon),
-						NAUTILUS_ICON_SIZE_STANDARD);
+	return nautilus_icon_factory_get_icon_for_file (
+		nautilus_get_current_icon_factory (), 		
+		NAUTILUS_FILE (icon),
+		NAUTILUS_ICON_SIZE_STANDARD);
 }
 
 static char *

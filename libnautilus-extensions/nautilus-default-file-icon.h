@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
 
-   Default file icon used by the icon cache.
+   Default file icon used by the icon factory.
  
    Copyright (C) 2000 Eazel, Inc.
   
@@ -22,12 +22,12 @@
    Author: Darin Adler <darin@eazel.com>
 */
 
-#ifndef FM_DEFAULT_FILE_ICON_H
-#define FM_DEFAULT_FILE_ICON_H
+#ifndef NAUTILUS_DEFAULT_FILE_ICON_H
+#define NAUTILUS_DEFAULT_FILE_ICON_H
 
-extern const int fm_default_file_icon_width;
-extern const int fm_default_file_icon_height;
-extern const int fm_default_file_icon_has_alpha;
-extern const unsigned char fm_default_file_icon[];
+extern const int nautilus_default_file_icon_width;
+extern const int nautilus_default_file_icon_height;
+extern const int nautilus_default_file_icon_has_alpha;
+extern const unsigned char nautilus_default_file_icon[];
 
-#endif /* FM_DEFAULT_FILE_ICON_H */
+#endif /* NAUTILUS_DEFAULT_FILE_ICON_H */

@@ -28,10 +28,6 @@ libntl_file_manager_la_SOURCES=	\
 	fm-directory-view-list.h	\
 	fm-directory-view.c		\
 	fm-directory-view.h		\
-	fm-default-file-icon.c		\
-	fm-default-file-icon.h		\
-	fm-icon-cache.c			\
-	fm-icon-cache.h			\
 	fm-icons-controller.c		\
 	fm-icons-controller.h
 
@@ -51,8 +47,6 @@ libntl_file_manager_la_SOURCES=	\
 # 	desktop-window.h		\
 # 	fm-directory-list.h		\
 # 	fm-directory-list.c		\
-# 	fm-icon-cache.c			\
-# 	fm-icon-cache.h			\
 # 	gnome-desktop.c
 
 # gnome_desktop_LDADD=\

@@ -28,7 +28,6 @@
 
 #include "fm-directory-view-list.h"
 
-#include "fm-icon-cache.h"
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
@@ -38,6 +37,7 @@
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/gtkflist.h>
 #include <libnautilus/nautilus-background.h>
+#include <libnautilus/nautilus-icon-factory.h>
 
 struct _FMDirectoryViewListDetails
 {
@@ -738,9 +738,10 @@ install_icon (FMDirectoryViewList *list_view, guint row)
 
 	g_assert (file != NULL);
 	
-	pixbuf = fm_icon_cache_get_icon_for_file (fm_get_current_icon_cache(), 
-					 	  file,
-					 	  fm_directory_view_list_get_icon_size (list_view));
+	pixbuf = nautilus_icon_factory_get_icon_for_file (
+		nautilus_get_current_icon_factory(), 
+		file,
+		fm_directory_view_list_get_icon_size (list_view));
 
 	/* GtkCList requires a pixmap & mask rather than a pixbuf */
 	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &bitmap, 100);

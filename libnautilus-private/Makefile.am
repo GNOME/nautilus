@@ -37,6 +37,7 @@ libnautilusinclude_HEADERS=			\
 	nautilus-file-utilities.h		\
 	nautilus-glib-extensions.h		\
 	nautilus-gtk-extensions.h		\
+	nautilus-icon-factory.h			\
 	nautilus-icons-controller.h		\
 	nautilus-icons-view-icon-item.h         \
         nautilus-lib-self-check-functions.h	\
@@ -55,10 +56,13 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	nautilus-background.c			\
 	nautilus-background-canvas-group.c	\
 	nautilus-debug.c			\
+	nautilus-default-file-icon.c		\
+	nautilus-default-file-icon.h		\
 	nautilus-directory.c			\
 	nautilus-file-utilities.c		\
 	nautilus-glib-extensions.c		\
 	nautilus-gtk-extensions.c		\
+	nautilus-icon-factory.c			\
 	nautilus-icons-controller.c		\
 	nautilus-icons-view-icon-item.c         \
 	nautilus-lib-self-check-functions.c	\

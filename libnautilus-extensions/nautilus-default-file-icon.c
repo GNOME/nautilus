@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
 
-   Default file icon used by the icon cache.
+   Default file icon used by the icon factory.
  
    Copyright (C) 2000 Eazel, Inc.
   
@@ -26,12 +26,12 @@
 #include <config.h>
 #endif
 
-#include "fm-default-file-icon.h"
+#include "nautilus-default-file-icon.h"
 
-const int fm_default_file_icon_width = 48;
-const int fm_default_file_icon_height = 48;
-const int fm_default_file_icon_has_alpha = 1;
-const unsigned char fm_default_file_icon[] = {
+const int nautilus_default_file_icon_width = 48;
+const int nautilus_default_file_icon_height = 48;
+const int nautilus_default_file_icon_has_alpha = 1;
+const unsigned char nautilus_default_file_icon[] = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,

@@ -1,5 +1,32 @@
 2000-01-28  John Sullivan  <sullivan@eazel.com>
 
+	Moved FMIconCache to libnautilus, renaming it
+	NautilusIconFactory at the same time. Renamed all public
+	and private functions accordingly.
+
+	* RENAMING: removed this finished item.
+
+	* src/file-manager/fm-default-file-icon.c: Removed file
+	* src/file-manager/fm-default-file-icon.h: Removed file
+	* src/file-manager/fm-icon-cache.c: Removed file
+	* src/file-manager/fm-icon-cache.h: Removed file
+	* src/file-manager/Makefile.am: Took out mentions of remove files.
+
+	* libnautilus/nautilus-default-file-icon.c: New file
+	* libnautilus/nautilus-default-file-icon.h: New file
+	* libnautilus/nautilus-icon-factory.c: New file
+	* libnautilus/nautilus-icon-factory.h: New file
+	* libnautilus/Makefile.am: Added new files to build.
+
+	* src/file-manager/fm-directory-view-icons.c: Took out
+	#include for fm-icon-cache, which was obsolete in this file.
+	* src/file-manager/fm-directory-view-list.c: Renamed #include
+	and affected function calls. 
+	* src/file-manager/fm-icons-controller.c: Renamed #include
+	and affected function calls. 
+
+2000-01-28  John Sullivan  <sullivan@eazel.com>
+
 	Made zooming work in directory list view. Also made
 	right-click menu on a directory view always include
 	the non-icon-specific items.

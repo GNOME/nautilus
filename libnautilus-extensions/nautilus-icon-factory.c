@@ -1,24 +1,27 @@
-/*  -*- Mode: C; c-set-style: linux; indent-tabs-mode: nil; c-basic-offset: 8 -*-
- * GNOME File Manager: Icon Cache
- * 
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
+
+   nautilus-icon-factory.c: Class for obtaining icons for files and other objects.
+ 
  * Copyright (C) 1999, 2000 Red Hat Inc.
- * Copyright (C) 2000 Eazel, Inc.
- *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
- * USA
- */
+   Copyright (C) 1999, 2000 Eazel, Inc.
+  
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation; either version 2 of the
+   License, or (at your option) any later version.
+  
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+  
+   You should have received a copy of the GNU General Public
+   License along with this program; if not, write to the
+   Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+   Boston, MA 02111-1307, USA.
+  
+   Author: John Sullivan <sullivan@eazel.com>
+*/
 
 #ifdef HAVE_CONFIG_H
 #include <string.h>
@@ -26,13 +29,13 @@
 #include <config.h>
 #endif
 
-#include "fm-icon-cache.h"
+#include "nautilus-icon-factory.h"
 
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-mime-info.h>
 #include <libgnome/gnome-util.h>
 
-#include "fm-default-file-icon.h"
+#include "nautilus-default-file-icon.h"
 
 #define ICON_CACHE_MAX_ENTRIES 10
 #define ICON_CACHE_SWEEP_TIMEOUT 10
@@ -61,7 +64,7 @@ typedef enum {
         ICON_SET_SPECIAL_LAST
 } SpecialIconSetType;
 
-struct _FMIconCache {
+struct _NautilusIconFactory {
         char *theme_name;
         GHashTable *name_to_image;
 
@@ -73,7 +76,7 @@ struct _FMIconCache {
 };
 
 /* forward declarations */
-static GdkPixbuf *fm_icon_cache_scale (FMIconCache *factory,
+static GdkPixbuf *nautilus_icon_factory_scale (NautilusIconFactory *factory,
 		     		       GdkPixbuf *standard_sized_pixbuf,
 		     		       guint size_in_pixels);
 
@@ -102,12 +105,12 @@ icon_set_destroy (IconSet *icon_set, gboolean free_name)
         }
 }
 
-FMIconCache *
-fm_icon_cache_new(const char *theme_name)
+NautilusIconFactory *
+nautilus_icon_factory_new(const char *theme_name)
 {
-        FMIconCache *factory;
+        NautilusIconFactory *factory;
         
-        factory = g_new0 (FMIconCache, 1);
+        factory = g_new0 (NautilusIconFactory, 1);
 
         factory->theme_name = g_strdup (theme_name);
         factory->name_to_image = g_hash_table_new (g_str_hash, g_str_equal);
@@ -127,19 +130,19 @@ fm_icon_cache_new(const char *theme_name)
 }
 
 static gboolean
-fm_icon_cache_destroy_icon_sets(gpointer key, gpointer value, gpointer user_data)
+nautilus_icon_factory_destroy_icon_sets(gpointer key, gpointer value, gpointer user_data)
 {
         icon_set_destroy(value, TRUE);
         return TRUE;
 }
 
 static void
-fm_icon_cache_invalidate (FMIconCache *factory)
+nautilus_icon_factory_invalidate (NautilusIconFactory *factory)
 {
         int i;
 
         g_hash_table_foreach_remove (factory->name_to_image,
-                                     fm_icon_cache_destroy_icon_sets,
+                                     nautilus_icon_factory_destroy_icon_sets,
                                      NULL);
 
         for (i = 0; i < ICON_SET_SPECIAL_LAST; i++)
@@ -152,9 +155,9 @@ fm_icon_cache_invalidate (FMIconCache *factory)
 }
 
 void
-fm_icon_cache_destroy (FMIconCache *factory)
+nautilus_icon_factory_destroy (NautilusIconFactory *factory)
 {
-        fm_icon_cache_invalidate (factory);
+        nautilus_icon_factory_invalidate (factory);
         g_hash_table_destroy (factory->name_to_image);
 
         g_free (factory->theme_name);
@@ -188,9 +191,9 @@ icon_set_possibly_free (gpointer key, gpointer value, gpointer user_data)
 }
 
 static gboolean
-fm_icon_cache_sweep(gpointer data)
+nautilus_icon_factory_sweep(gpointer data)
 {
-        FMIconCache *factory = data;
+        NautilusIconFactory *factory = data;
 
         g_hash_table_foreach_remove(factory->name_to_image, icon_set_possibly_free, NULL);
 
@@ -200,7 +203,7 @@ fm_icon_cache_sweep(gpointer data)
 }
 
 static void
-fm_icon_cache_setup_sweep(FMIconCache *factory)
+nautilus_icon_factory_setup_sweep(NautilusIconFactory *factory)
 {
         if(factory->sweep_timer)
                 return;
@@ -209,19 +212,19 @@ fm_icon_cache_setup_sweep(FMIconCache *factory)
                 return;
 
         factory->sweep_timer = g_timeout_add(ICON_CACHE_SWEEP_TIMEOUT * 1000,
-                                             fm_icon_cache_sweep, factory);
+                                             nautilus_icon_factory_sweep, factory);
 }
 
 void
-fm_icon_cache_set_theme(FMIconCache *factory, const char *theme_name)
+nautilus_icon_factory_set_theme(NautilusIconFactory *factory, const char *theme_name)
 {
-        fm_icon_cache_invalidate(factory);
+        nautilus_icon_factory_invalidate(factory);
         g_free(factory->theme_name);
         factory->theme_name = g_strdup(theme_name);
 }
 
 static IconSet *
-fm_icon_cache_get_icon_set_for_file (FMIconCache *factory, NautilusFile *file)
+nautilus_icon_factory_get_icon_set_for_file (NautilusIconFactory *factory, NautilusFile *file)
 {
         IconSet *icon_set;
         const char *mime_type;
@@ -250,7 +253,7 @@ fm_icon_cache_get_icon_set_for_file (FMIconCache *factory, NautilusFile *file)
 }
 
 static GdkPixbuf *
-fm_icon_cache_load_file(FMIconCache *factory, const char *fn)
+nautilus_icon_factory_load_file(NautilusIconFactory *factory, const char *fn)
 {
         char *file_name = NULL;
         char cbuf[128];
@@ -290,7 +293,7 @@ my_gdk_pixbuf_composite(GdkPixbuf *dest, GdkPixbuf *src)
 }
 
 static GdkPixbuf *
-fm_icon_cache_load_icon(FMIconCache *factory, IconSet *is, gboolean is_symlink)
+nautilus_icon_factory_load_icon(NautilusIconFactory *factory, IconSet *is, gboolean is_symlink)
 {
         GdkPixbuf *image;
 
@@ -302,22 +305,22 @@ fm_icon_cache_load_icon(FMIconCache *factory, IconSet *is, gboolean is_symlink)
         if (!image) {
                 if (*is->name == '\0') {
                         /* This is the fallback icon set */
-                        image = gdk_pixbuf_new_from_data ((guchar*)fm_default_file_icon,
+                        image = gdk_pixbuf_new_from_data ((guchar*)nautilus_default_file_icon,
                                                            ART_PIX_RGB,
-                                                           fm_default_file_icon_has_alpha,
-                                                           fm_default_file_icon_width,
-                                                           fm_default_file_icon_height,
+                                                           nautilus_default_file_icon_has_alpha,
+                                                           nautilus_default_file_icon_width,
+                                                           nautilus_default_file_icon_height,
                                                            /* rowstride */
-                                                           fm_default_file_icon_width*4,
+                                                           nautilus_default_file_icon_width*4,
                                                            NULL, /* don't destroy data */
                                                            NULL );
                 } else {
                         /* need to load the file */
-                        image = fm_icon_cache_load_file(factory, is->name);
+                        image = nautilus_icon_factory_load_file(factory, is->name);
                 }
                 if (is_symlink) {
                         if (!factory->symlink_overlay)
-                                factory->symlink_overlay = fm_icon_cache_load_file(factory, "i-symlink.png");
+                                factory->symlink_overlay = nautilus_icon_factory_load_file(factory, "i-symlink.png");
                   
                         if(factory->symlink_overlay)
                                 my_gdk_pixbuf_composite(image, factory->symlink_overlay);
@@ -333,7 +336,7 @@ fm_icon_cache_load_icon(FMIconCache *factory, IconSet *is, gboolean is_symlink)
 }
 
 GdkPixbuf *
-fm_icon_cache_get_icon_for_file (FMIconCache  *factory,
+nautilus_icon_factory_get_icon_for_file (NautilusIconFactory  *factory,
                                  NautilusFile *file,
                                  guint	       size_in_pixels)
 {
@@ -349,7 +352,7 @@ fm_icon_cache_get_icon_for_file (FMIconCache  *factory,
         case GNOME_VFS_FILE_TYPE_UNKNOWN:
         case GNOME_VFS_FILE_TYPE_REGULAR:
         default:
-                set = fm_icon_cache_get_icon_set_for_file (factory, file);
+                set = nautilus_icon_factory_get_icon_set_for_file (factory, file);
                 break;
         case GNOME_VFS_FILE_TYPE_DIRECTORY:
                 set = &factory->special_icon_sets[ICON_SET_DIRECTORY];
@@ -383,13 +386,13 @@ fm_icon_cache_get_icon_for_file (FMIconCache  *factory,
 		else
 		  {		
             set->last_use = use_counter++;
-            image = fm_icon_cache_load_icon (factory, set, is_symbolic_link);
+            image = nautilus_icon_factory_load_icon (factory, set, is_symbolic_link);
 		  }
 
         if (image == NULL) {
                 set = &factory->special_icon_sets[ICON_SET_FALLBACK];
                 set->last_use = use_counter++;
-                image = fm_icon_cache_load_icon (factory, set, is_symbolic_link);
+                image = nautilus_icon_factory_load_icon (factory, set, is_symbolic_link);
         }
 
         g_assert (image != NULL);
@@ -404,29 +407,29 @@ fm_icon_cache_get_icon_for_file (FMIconCache  *factory,
         {
         	GdkPixbuf *non_standard_size_icon;
 
-        	non_standard_size_icon = fm_icon_cache_scale (factory,
+        	non_standard_size_icon = nautilus_icon_factory_scale (factory,
         						      image, 
         						      size_in_pixels);
         	gdk_pixbuf_unref (image);
         	image = non_standard_size_icon;
         }
   
-        fm_icon_cache_setup_sweep (factory);
+        nautilus_icon_factory_setup_sweep (factory);
   
         return image;
 }
 
-FMIconCache *
-fm_get_current_icon_cache (void)
+NautilusIconFactory *
+nautilus_get_current_icon_factory (void)
 {
-        static FMIconCache *global_icon_cache = NULL;
-        if (global_icon_cache == NULL)
-                global_icon_cache = fm_icon_cache_new (NULL);
-        return global_icon_cache;
+        static NautilusIconFactory *global_icon_factory = NULL;
+        if (global_icon_factory == NULL)
+                global_icon_factory = nautilus_icon_factory_new (NULL);
+        return global_icon_factory;
 }
 
 static GdkPixbuf *
-fm_icon_cache_scale (FMIconCache *factory,
+nautilus_icon_factory_scale (NautilusIconFactory *factory,
 		     GdkPixbuf *standard_sized_pixbuf,
 		     guint size_in_pixels)
 {
