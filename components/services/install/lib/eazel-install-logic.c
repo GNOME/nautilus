@@ -374,10 +374,6 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 				continue;
 			}
 
-			/* FIXME: bugzilla.eazel.com 2986
-			   Ideally, this should be done by checking that owner
-			   does not appear in pack->modifes, so we
-			   can use the Obsoltes thingy in rpm */
 			if (strcmp (pack->name, owner->name)) {
 				trilobite_debug ("file %s from package %s conflicts with file from package %s", 
 						 filename, pack->name, owner->name);
@@ -1740,10 +1736,11 @@ eazel_install_do_file_conflict_check (EazelInstall *service,
 					gboolean fail_it = FALSE;
 					for (break_iterator = breaks; break_iterator; glist_step (break_iterator)) {
 						PackageData *broken_package = (PackageData*)break_iterator->data;
+						trilobite_debug ("breaking %s", broken_package->name);
 						if (g_list_find_custom (*packages, 
 									broken_package->name,
 									(GCompareFunc)eazel_install_package_name_compare)) {
-							trilobite_debug ("breaking %s but we're updating it", broken_package->name);
+							trilobite_debug ("but we're updating it");
 							/* packagedata_destroy (broken_package, FALSE); */
 						} else {
 							fail_it = TRUE;
