@@ -144,7 +144,7 @@ categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed)
 
 	g_return_if_fail (cd != NULL);
 	if (g_list_length (cd->packages)) {
-		g_list_foreach (cd->packages, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
+		g_list_foreach (cd->packages, (GFunc)gtk_object_unref, NULL);
 	}
 	g_list_free (cd->packages);
 	cd->packages = NULL;
@@ -194,61 +194,50 @@ categorylist_flatten_to_packagelist (GList *categories)
 }
 
 /*************************************************************************************************/
-static void
-packagedata_class_initialize (PackageDataClass *klass) 
-{
-	GtkObjectClass *object_class;
 
-	object_class = (GtkObjectClass*)klass;
-	object_class->finalize = packagedata_finalize;
+PackageDependency *
+packagedependency_new (void)
+{
+	PackageDependency *dep;
+
+	dep = g_new0 (PackageDependency, 1);
+	dep->package = NULL;
+	dep->version = NULL;
+	return dep;
 }
 
-static void
-packagedata_initialize (PackageData *package) {
-	g_assert (package!=NULL); 
-	g_assert (IS_PACKAGEDATA (package));
+PackageDependency *
+packagedependency_copy (const PackageDependency *dep, gboolean deep)
+{
+	PackageDependency *newdep;
 
-
-#ifdef DEBUG_PACKAGE_ALLOCS
-	package_allocs ++;
-	if (report_all) trilobite_debug ("package_allocs inced to %d (0x%p)", package_allocs, package);
-	if (!at_exit_registered) {
-		atexit (&at_exit_package_data_info);
-		at_exit_registered = TRUE;
+	newdep = g_new0 (PackageDependency, 1);
+	newdep->sense = dep->sense;
+	newdep->version = g_strdup (dep->version);
+	if (dep->package != NULL) {
+		newdep->package = packagedata_copy (dep->package, deep);
 	}
-	packages_allocated = g_list_prepend (packages_allocated, package);
-#endif /* DEBUG_PACKAGE_ALLOCS */
-
-	package->name = NULL;
-	package->version = NULL;
-	package->minor = NULL;
-	package->archtype = NULL;
-	package->source_package = FALSE;
-	package->summary = NULL;
-	package->description = NULL;
-	package->bytesize = 0;
-	package->filesize = 0;
-	package->distribution = trilobite_get_distribution ();
-	package->filename = NULL;
-	package->eazel_id = NULL;
-	package->suite_id = NULL;
-	package->remote_url = NULL;
-	package->conflicts_checked = FALSE;
-	package->install_root = NULL;
-	package->provides = NULL;
-	package->soft_depends = NULL;
-	package->breaks = NULL;
-	package->modifies = NULL;
-	package->depends = NULL;
-	package->status = PACKAGE_UNKNOWN_STATUS;
-	package->modify_status = PACKAGE_MOD_UNTOUCHED;
-	package->md5 = NULL;
-	package->packsys_struc = NULL;
-	package->features = NULL;
-	package->fillflag = PACKAGE_FILL_INVALID;
+	return newdep;
 }
 
 void
+packagedependency_destroy (PackageDependency *dep)
+{
+	if (dep->package) {
+		gtk_object_unref (GTK_OBJECT (dep->package));
+	}
+	dep->package = NULL;
+	g_free (dep->version);
+	dep->version = NULL;
+	dep->sense = 0;
+	g_free (dep);
+}
+
+/**********************************************************************************
+  GTK+ crap for PackageData objects 
+ **********************************************************************************/
+
+static void
 packagedata_finalize (GtkObject *obj) 
 {
 	PackageData *pack = PACKAGEDATA (obj);
@@ -310,19 +299,18 @@ packagedata_finalize (GtkObject *obj)
 
 	g_list_foreach (pack->depends, (GFunc)packagedependency_destroy, GINT_TO_POINTER (FALSE));
 	g_list_free (pack->depends);
+	pack->depends = NULL;
 
 	g_list_foreach (pack->soft_depends, (GFunc)gtk_object_unref, NULL);
 	g_list_free (pack->soft_depends);
+	pack->soft_depends = NULL;
 
 	g_list_foreach (pack->breaks, (GFunc)gtk_object_unref, NULL);
 	g_list_free (pack->breaks);
+	pack->breaks = NULL;
 
 	g_list_foreach (pack->modifies, (GFunc)gtk_object_unref, NULL);
 	g_list_free (pack->modifies);
-
-	pack->soft_depends = NULL;
-	pack->depends = NULL;
-	pack->breaks = NULL;
 	pack->modifies = NULL;
 
 	if (pack->packsys_struc) {
@@ -335,42 +323,58 @@ packagedata_finalize (GtkObject *obj)
 	}
 }
 
-PackageDependency *
-packagedependency_new (void)
+static void
+packagedata_class_initialize (PackageDataClass *klass) 
 {
-	PackageDependency *dep;
+	GtkObjectClass *object_class;
 
-	dep = g_new0 (PackageDependency, 1);
-	dep->package = NULL;
-	dep->version = NULL;
-	return dep;
+	object_class = (GtkObjectClass*)klass;
+	object_class->finalize = packagedata_finalize;
 }
 
-PackageDependency *
-packagedependency_copy (const PackageDependency *dep, gboolean deep)
-{
-	PackageDependency *newdep;
+static void
+packagedata_initialize (PackageData *package) {
+	g_assert (package!=NULL); 
+	g_assert (IS_PACKAGEDATA (package));
 
-	newdep = g_new0 (PackageDependency, 1);
-	newdep->sense = dep->sense;
-	newdep->version = g_strdup (dep->version);
-	if (dep->package != NULL) {
-		newdep->package = packagedata_copy (dep->package, deep);
-	}
-	return newdep;
-}
 
-void
-packagedependency_destroy (PackageDependency *dep)
-{
-	if (dep->package) {
-		gtk_object_unref (GTK_OBJECT (dep->package));
+#ifdef DEBUG_PACKAGE_ALLOCS
+	package_allocs ++;
+	if (report_all) trilobite_debug ("package_allocs inced to %d (0x%p)", package_allocs, package);
+	if (!at_exit_registered) {
+		atexit (&at_exit_package_data_info);
+		at_exit_registered = TRUE;
 	}
-	dep->package = NULL;
-	g_free (dep->version);
-	dep->version = NULL;
-	dep->sense = 0;
-	g_free (dep);
+	packages_allocated = g_list_prepend (packages_allocated, package);
+#endif /* DEBUG_PACKAGE_ALLOCS */
+
+	package->name = NULL;
+	package->version = NULL;
+	package->minor = NULL;
+	package->archtype = NULL;
+	package->source_package = FALSE;
+	package->summary = NULL;
+	package->description = NULL;
+	package->bytesize = 0;
+	package->filesize = 0;
+	package->distribution = trilobite_get_distribution ();
+	package->filename = NULL;
+	package->eazel_id = NULL;
+	package->suite_id = NULL;
+	package->remote_url = NULL;
+	package->conflicts_checked = FALSE;
+	package->install_root = NULL;
+	package->provides = NULL;
+	package->soft_depends = NULL;
+	package->breaks = NULL;
+	package->modifies = NULL;
+	package->depends = NULL;
+	package->status = PACKAGE_UNKNOWN_STATUS;
+	package->modify_status = PACKAGE_MOD_UNTOUCHED;
+	package->md5 = NULL;
+	package->packsys_struc = NULL;
+	package->features = NULL;
+	package->fillflag = PACKAGE_FILL_INVALID;
 }
 
 GtkType 
@@ -410,6 +414,8 @@ packagedata_new ()
 
 	return package;
 }
+
+/**********************************************************************************/
 
 GList *
 packagedata_list_copy (const GList *list, gboolean deep)
@@ -461,6 +467,7 @@ packagedata_copy (const PackageData *pack, gboolean deep)
 	result->install_root = g_strdup (pack->install_root);
 	result->eazel_id = g_strdup (pack->eazel_id);
 	result->suite_id = g_strdup (pack->suite_id);
+	result->md5 = g_strdup (pack->md5);
 
 	result->toplevel = pack->toplevel;
 	result->status = pack->status;
@@ -476,7 +483,11 @@ packagedata_copy (const PackageData *pack, gboolean deep)
 		result->soft_depends = packagedata_list_copy (pack->soft_depends, TRUE);
 		result->depends = packagedata_deplist_copy (pack->depends, TRUE);
 		result->modifies = packagedata_list_copy (pack->modifies, TRUE);
-		result->breaks = packagedata_list_copy (pack->breaks, TRUE);
+
+		/* Sloppy, just ref and copy the pointer rather then copying the
+		   object */
+		g_list_foreach (pack->breaks, (GFunc)gtk_object_ref, NULL);
+		result->breaks = g_list_copy (pack->breaks);
 
 		for (ptr = pack->provides; ptr; ptr = g_list_next (ptr)) {
 			result->provides = g_list_prepend (result->provides, g_strdup (ptr->data));
@@ -560,18 +571,6 @@ packagedata_fill_in_missing (PackageData *package, const PackageData *full_packa
 }
 
 void 
-packagedata_destroy (PackageData *pack, gboolean deep)
-{
-	if (deep) {
-		g_list_foreach (pack->soft_depends, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
-		g_list_foreach (pack->breaks, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
-		g_list_foreach (pack->modifies, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
-	}
-
-	gtk_object_unref (GTK_OBJECT (pack));
-}
-
-void 
 packagedata_remove_soft_dep (PackageData *remove, 
 			     PackageData *from)
 {
@@ -580,7 +579,7 @@ packagedata_remove_soft_dep (PackageData *remove,
 
 	trilobite_debug ("removing %s from %s's deps", remove->name, from->name);
 	from->soft_depends = g_list_remove (from->soft_depends, remove);
-	packagedata_destroy (remove, TRUE);
+	gtk_object_unref (GTK_OBJECT (remove));
 }
 
 const char*
@@ -647,13 +646,13 @@ packagedata_get_readable_name (const PackageData *pack)
 	} else if ((pack->name != NULL) && (pack->version != NULL)) {
 		/* This is a hack to shorten EazelSourceSnapshot names
 		   into the build date/time */
-		if (strstr (pack->version, "Eazel")!=NULL && strstr (pack->version, ".200") != NULL) {
+		if (strstr (pack->version, "Eazel")!=NULL && strstr (pack->minor, ".200") != NULL) {
 			char *month[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
 					 "Sep", "Oct", "Nov", "Dec"};
 			char *temp, *temp2;
 			int mo, da, ho, mi;
 			/* this crap is too long to display ! */
-			temp = g_strdup (pack->version);
+			temp = g_strdup (pack->minor);
 			temp2 = strstr (temp, ".200");
 			strcpy (temp2, "ESS");
 			temp2 += strlen (".200x");
@@ -824,18 +823,17 @@ packagedata_modstatus_str_to_enum (const char *st)
 }
 
 static void
-packagedata_add_pack_to (GList **list, PackageData *pack) {
-	(*list) = g_list_prepend (*list, pack);
-	gtk_object_ref (GTK_OBJECT (pack));
+packagedata_add_pack_to (GList **list, GtkObject *b) {
+	gtk_object_ref (b);
+	(*list) = g_list_prepend (*list, b);
 }
 
 void 
-packagedata_add_pack_to_breaks (PackageData *pack, PackageData *b) 
+packagedata_add_to_breaks (PackageData *pack, PackageBreaks *b) 
 {
 	g_assert (pack);
 	g_assert (b);
-	g_assert(pack != b);
-	packagedata_add_pack_to (&pack->breaks, b);
+	packagedata_add_pack_to (&pack->breaks, GTK_OBJECT (b));
 }
 
 void 
@@ -844,7 +842,7 @@ packagedata_add_pack_to_soft_depends (PackageData *pack, PackageData *b)
 	g_assert (pack);
 	g_assert (b);
 	g_assert (pack != b);
-	packagedata_add_pack_to (&pack->soft_depends, b);
+	packagedata_add_pack_to (&pack->soft_depends, GTK_OBJECT (b));
 }
 
 void 
@@ -853,7 +851,7 @@ packagedata_add_pack_to_modifies (PackageData *pack, PackageData *b)
 	g_assert (pack);
 	g_assert (b);
 	g_assert (pack != b);
-	packagedata_add_pack_to (&pack->modifies, b);
+	packagedata_add_pack_to (&pack->modifies, GTK_OBJECT (b));
 }
 
 static void
@@ -916,7 +914,7 @@ packagedata_list_prune (GList **input,
 		if (in_it && in) {
 			(*input) = g_list_remove (*input, in);
 			if (destroy) {
-				packagedata_destroy (in, deep);
+				gtk_object_unref (GTK_OBJECT (in));
 			}
 		}
 	}
@@ -1295,6 +1293,44 @@ dump_package_deplist (GString *out, const GList *list, gboolean deep, int indent
 }
 
 /* useful debugging tool: dump a packagedata struct into a string */
+
+static void
+add_string_list (GString *out, GList *list, int indent, char *title) 
+{
+	GList *fit;
+	for (fit = list; fit; fit = g_list_next (fit)) {
+		gstr_indent (out, indent);
+		g_string_sprintfa (out, "\t%s : %s\n", title, (char*)fit->data);
+	}
+}
+
+static void
+dump_package_break_list (GString *out, GList *breaks, gboolean deep, int indent)
+{
+	GList *iterator;
+
+	for (iterator = breaks; iterator; iterator = g_list_next (iterator)) {
+		PackageBreaks *breakage = PACKAGEBREAKS (iterator->data);
+		char *readable_name = packagedata_get_readable_name (packagebreaks_get_package (breakage));
+
+		gstr_indent (out, indent);
+
+		g_string_sprintfa (out, "Breaks : %s\n", readable_name);
+		if (IS_PACKAGEFEATUREMISSING (breakage)) {
+			add_string_list (out, 
+					 PACKAGEFILECONFLICT (breakage)->files,
+					 indent,
+					 "FeautureMissing");
+		} else if (IS_PACKAGEFILECONFLICT (breakage)) {
+			add_string_list (out, 
+					 PACKAGEFEATUREMISSING (breakage)->features,
+					 indent,
+					 "FeautureMissing");
+		} 
+		
+	}
+}
+
 static char *
 packagedata_dump_int (const PackageData *package, gboolean deep, int indent)
 {
@@ -1408,7 +1444,7 @@ packagedata_dump_int (const PackageData *package, gboolean deep, int indent)
 	if (package->breaks != NULL) {
 		gstr_indent (out, indent);
 		g_string_sprintfa (out, "Breaks: ");
-		dump_package_list (out, package->breaks, deep, indent);
+		dump_package_break_list (out, package->breaks, deep, indent);
 		g_string_sprintfa (out, "\n");
 	}
 
@@ -1424,3 +1460,223 @@ packagedata_dump (const PackageData *package, gboolean deep)
 {
 	return packagedata_dump_int (package, deep, 0);
 }
+
+
+/**********************************************************************************
+  GTK+ crap for PackageBreaks objects 
+ **********************************************************************************/
+
+static void
+packagebreaks_finalize (GtkObject *obj)
+{
+	PackageBreaks *breaks = PACKAGEBREAKS (obj);
+	gtk_object_unref (GTK_OBJECT (breaks->__package));
+	trilobite_debug ("I'm DYING! %p", obj);
+}
+
+static void
+packagebreaks_class_initialize (PackageBreaksClass *klass)
+{
+	GtkObjectClass *object_class;
+	
+	object_class = (GtkObjectClass*)klass;
+	object_class->finalize = packagebreaks_finalize;
+}
+
+static void
+packagebreaks_initialize (PackageBreaks *breaks)
+{
+	g_assert (breaks);
+	g_assert (IS_PACKAGEBREAKS (breaks));
+	breaks->__package = NULL;
+}
+
+GtkType
+packagebreaks_get_type (void)
+{
+	static GtkType object_type = 0;
+
+	/* First time it's called ? */
+	if (!object_type)
+	{
+		static const GtkTypeInfo object_info =
+		{
+			"PackageBreaks",
+			sizeof (PackageBreaks),
+			sizeof (PackageBreaksClass),
+			(GtkClassInitFunc) packagebreaks_class_initialize,
+			(GtkObjectInitFunc) packagebreaks_initialize,
+			/* reserved_1 */ NULL,
+			/* reserved_2 */ NULL,
+			(GtkClassInitFunc) NULL,
+		};
+
+		object_type = gtk_type_unique (gtk_object_get_type (), &object_info);
+	}
+
+	return object_type;
+}
+
+PackageBreaks*
+packagebreaks_new (void)
+{
+	PackageBreaks *result;
+
+	result = PACKAGEBREAKS (gtk_object_new (TYPE_PACKAGEBREAKS, NULL));
+	gtk_object_ref (GTK_OBJECT (result));
+	gtk_object_sink (GTK_OBJECT (result));
+	
+	return result;
+}
+void 
+packagebreaks_set_package (PackageBreaks *breaks, 
+			   PackageData *pack)
+{
+	if (breaks->__package) {
+		gtk_object_unref (GTK_OBJECT (pack));
+	}
+	gtk_object_ref (GTK_OBJECT (pack));
+	breaks->__package = pack;
+}
+
+PackageData *
+packagebreaks_get_package (PackageBreaks *breaks)
+{
+	return breaks->__package;
+}
+
+/**********************************************************************************/
+
+/**********************************************************************************
+  GTK+ crap for PackageFileConflict objects 
+ **********************************************************************************/
+
+static void
+packagefileconflict_finalize (GtkObject *obj)
+{
+	PackageFileConflict *conflict = PACKAGEFILECONFLICT (obj);
+	g_list_foreach (conflict->files, (GFunc)g_free, NULL);
+}
+
+static void
+packagefileconflict_class_initialize (PackageFileConflictClass *klass)
+{
+	GtkObjectClass *object_class;
+	
+	object_class = (GtkObjectClass*)klass;
+	object_class->finalize = packagefileconflict_finalize;
+}
+
+static void
+packagefileconflict_initialize (PackageFileConflict *fileconflict)
+{
+	g_assert (fileconflict);
+	g_assert (IS_PACKAGEFILECONFLICT (fileconflict));
+}
+
+GtkType
+packagefileconflict_get_type (void)
+{
+	static GtkType object_type = 0;
+
+	/* First time it's called ? */
+	if (!object_type)
+	{
+		static const GtkTypeInfo object_info =
+		{
+			"PackageFileConflict",
+			sizeof (PackageFileConflict),
+			sizeof (PackageFileConflictClass),
+			(GtkClassInitFunc) packagefileconflict_class_initialize,
+			(GtkObjectInitFunc) packagefileconflict_initialize,
+			/* reserved_1 */ NULL,
+			/* reserved_2 */ NULL,
+			(GtkClassInitFunc) NULL,
+		};
+
+		object_type = gtk_type_unique (packagebreaks_get_type (), &object_info);
+	}
+
+	return object_type;
+}
+
+PackageFileConflict*
+packagefileconflict_new (void)
+{
+	PackageFileConflict *result;
+
+	result = PACKAGEFILECONFLICT (gtk_object_new (TYPE_PACKAGEFILECONFLICT, NULL));
+	gtk_object_ref (GTK_OBJECT (result));
+	gtk_object_sink (GTK_OBJECT (result));
+	
+	return result;
+}
+
+/**********************************************************************************/
+
+/**********************************************************************************
+  GTK+ crap for PackageFeatureMissing objects 
+ **********************************************************************************/
+
+static void
+packagefeaturemissing_finalize (GtkObject *obj)
+{
+	PackageFeatureMissing *conflict = PACKAGEFEATUREMISSING (obj);
+	g_list_foreach (conflict->features, (GFunc)g_free, NULL);
+}
+
+static void
+packagefeaturemissing_class_initialize (PackageFeatureMissingClass *klass)
+{
+	GtkObjectClass *object_class;
+	
+	object_class = (GtkObjectClass*)klass;
+	object_class->finalize = packagefeaturemissing_finalize;
+}
+
+static void
+packagefeaturemissing_initialize (PackageFeatureMissing *breaks)
+{
+	g_assert (breaks);
+	g_assert (IS_PACKAGEFEATUREMISSING (breaks));
+}
+
+GtkType
+packagefeaturemissing_get_type (void)
+{
+	static GtkType object_type = 0;
+
+	/* First time it's called ? */
+	if (!object_type)
+	{
+		static const GtkTypeInfo object_info =
+		{
+			"PackageFeatureMissing",
+			sizeof (PackageFeatureMissing),
+			sizeof (PackageFeatureMissingClass),
+			(GtkClassInitFunc) packagefeaturemissing_class_initialize,
+			(GtkObjectInitFunc) packagefeaturemissing_initialize,
+			/* reserved_1 */ NULL,
+			/* reserved_2 */ NULL,
+			(GtkClassInitFunc) NULL,
+		};
+
+		object_type = gtk_type_unique (packagebreaks_get_type (), &object_info);
+	}
+
+	return object_type;
+}
+
+PackageFeatureMissing*
+packagefeaturemissing_new (void)
+{
+	PackageFeatureMissing *result;
+
+	result = PACKAGEFEATUREMISSING (gtk_object_new (TYPE_PACKAGEFEATUREMISSING, NULL));
+	gtk_object_ref (GTK_OBJECT (result));
+	gtk_object_sink (GTK_OBJECT (result));
+	
+	return result;
+}
+
+/**********************************************************************************/

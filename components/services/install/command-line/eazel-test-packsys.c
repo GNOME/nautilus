@@ -113,6 +113,15 @@ test_is_installed (EazelPackageSystem *packsys)
 static void
 test_version_compare (EazelPackageSystem *packsys)
 {
+	g_message ("version compare M1 is %s",
+		   eazel_package_system_compare_version (packsys, "M18", "M17") > 0 ? "ok" : "FAILED");
+	g_message ("version compare M2 is %s",
+		   eazel_package_system_compare_version (packsys, "M17", "M18") < 0 ? "ok" : "FAILED");
+	g_message ("version compare M3 is %s",
+		   eazel_package_system_compare_version (packsys, "M18", "0.7") < 0 ? "ok" : "FAILED");
+	g_message ("version compare M4 is %s",
+		   eazel_package_system_compare_version (packsys, "0.7", "M18") > 0 ? "ok" : "FAILED");
+
 	g_message ("version compare 1 is %s",
 		   eazel_package_system_compare_version (packsys, "1.0", "1.1") < 0 ? "ok" : "FAILED");
 	g_message ("version compare 2 is %s",

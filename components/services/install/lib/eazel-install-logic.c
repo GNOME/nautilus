@@ -71,12 +71,12 @@ static gboolean eazel_install_download_packages (EazelInstall *service,
 						 gboolean toplevel,
 						 GList **packages,
 						 GList **failed_packages);
-
+#if 0
 static gboolean  eazel_install_check_for_file_conflicts (EazelInstall *service,
 							 PackageData *pack,
 							 GList **breaks,
 							 GList **requires);
-
+#endif
 static void eazel_install_prune_packages (EazelInstall *service, 
 					  PackageData *pack, 
 					  ...);
@@ -174,6 +174,9 @@ eazel_install_download_packages (EazelInstall *service,
 				 GList **packages,
 				 GList **failed_packages)
 {
+	g_assert_not_reached ();
+	return TRUE;
+#if 0
 	GList *iterator;
 	gboolean result = TRUE;
 	GList *remove_list = NULL;
@@ -285,8 +288,9 @@ eazel_install_download_packages (EazelInstall *service,
 	}
 
 	return result;
+#endif
 }
-
+#if 0
 /*
   This function checks all files in pack->provides, and
   checks if another already installed package owns this file.
@@ -366,7 +370,7 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 			    g_list_find_custom (*requires, owner->name, 
 						(GCompareFunc)eazel_install_package_name_compare)) {
 				/* trilobite_debug ("already breaking %s", owner->name); */
-				packagedata_destroy (owner, TRUE);
+				gtk_object_unref (GTK_OBJECT (owner));
 				owner = NULL;
 				continue;
 			}
@@ -390,7 +394,7 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 			} else {
 				/* else it's the same package and it's okay */
 				/* so FREE IT YOU SICK MONKEY! */
-				packagedata_destroy (owner, TRUE);
+				gtk_object_unref (GTK_OBJECT (owner));
 			}
 		}
 		/* free the _simple_query result list */
@@ -404,6 +408,7 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 	}
 	return result;
 }
+#endif
 
 static gboolean
 eazel_install_do_install_packages (EazelInstall *service,
@@ -569,7 +574,7 @@ ei_revert_transaction (EazelInstall *service,
 		eazel_install_set_update (service, TRUE);
 		cat->packages = upgrade;
 		result |= ei_install_packages (service, categories);
-		g_list_foreach (upgrade, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
+		g_list_foreach (upgrade, (GFunc)gtk_object_unref, NULL);
 	}
 
 	return result;
@@ -691,6 +696,9 @@ static gboolean
 eazel_install_do_transaction_all_files_check (EazelInstall *service,
 					      GList **packages)
 {
+	g_assert_not_reached ();
+	return FALSE;
+#if 0
 	gboolean result = TRUE;
 	GList *iterator;
 	GList *conflicts = NULL;  /* PackageRequirements. ->package is the first found package
@@ -763,11 +771,12 @@ eazel_install_do_transaction_all_files_check (EazelInstall *service,
 		trilobite_debug ("Conflict between %s and %s", req->package->name, req->required->name);
 		req->package->status = PACKAGE_FILE_CONFLICT;
 		req->required->status = PACKAGE_FILE_CONFLICT;
-		packagedata_add_pack_to_breaks (req->package, req->required);
+		Xpackagedata_add_pack_to_breaks (req->package, req->required);
 		eazel_install_prune_packages (service, req->package, packages, NULL);
 	}
 
 	return result;
+#endif
 }
 
 
@@ -1018,7 +1027,7 @@ eazel_install_prune_packages (EazelInstall *service,
 	for (iterator = pruned; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack;
 		pack = (PackageData*)iterator->data;
-		packagedata_destroy (pack, TRUE); 
+		gtk_object_unref (GTK_OBJECT (pack)); 
 	};
 	*/
 
@@ -1026,7 +1035,7 @@ eazel_install_prune_packages (EazelInstall *service,
 
 	va_end (ap);
 }
-
+#if 0
 static void
 eazel_install_add_to_extras_foreach (char *key, GList *list, GList **extrapackages)
 {
@@ -1038,7 +1047,7 @@ eazel_install_add_to_extras_foreach (char *key, GList *list, GList **extrapackag
 	}
 	g_list_free (list);
 }
-
+#endif
 
 /*
   This function tests wheter "package" and "dep"
@@ -1126,6 +1135,9 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 				  GList **failedpackages,
 				  GList *requirements)
 {
+	g_assert_not_reached ();
+	return FALSE;
+#if 0
 	GList *iterator;
 	/* Contains the packages downloaded when handling the list of requirements */
 	GList *extras_in_this_batch = NULL;
@@ -1150,7 +1162,7 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 			tmp = packagedata_get_readable_name (pack);
 			trilobite_debug ("%s already failed, will not download it's requirements", tmp);
 			g_free (tmp);
-			packagedata_destroy (dep, TRUE);
+			gtk_object_unref (GTK_OBJECT (dep));
 			continue;
 		}
 
@@ -1193,7 +1205,7 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 
 				if (pack_entry) {
 					PackageData *evil_package = packagedata_copy ((PackageData*)(pack_entry->data), FALSE);
-					packagedata_add_pack_to_breaks (dep, evil_package); 
+					Xpackagedata_add_pack_to_breaks (dep, evil_package); 
 					trilobite_debug ("Circular dependency caused by %s-%s-%s at 0x%p", 
 							 evil_package->name,
 							 evil_package->version,
@@ -1241,7 +1253,7 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 					   I suspect that adding this to adding evil_package to pack's breaks
 					   might yield a more pleasant tree */
 					PackageData *evil_package = (PackageData*)pack_entry->data;
-					packagedata_add_pack_to_breaks (evil_package, dep);
+					Xpackagedata_add_pack_to_breaks (evil_package, dep);
 					evil_package->status = PACKAGE_BREAKS_DEPENDENCY;
 				} else {
 					trilobite_debug ("This is also Bad: I cannot set the funky break list");
@@ -1354,6 +1366,7 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 	} else {
 		return TRUE;
 	}
+#endif
 }
 
 static void
@@ -1465,6 +1478,8 @@ eazel_install_do_file_conflict_check (EazelInstall *service,
 				      GList **failedpackages,
 				      GList **requirements)
 {
+	g_assert_not_reached ();
+#if 0
 	GList *iterator;
 	GList *tmp_failed = NULL;
 
@@ -1491,8 +1506,8 @@ eazel_install_do_file_conflict_check (EazelInstall *service,
 						if (g_list_find_custom (*packages, 
 									required_pack->name,
 									(GCompareFunc)eazel_install_package_name_compare)) {
-							trilobite_debug ("but we're updating it (requirement)");
-							/* packagedata_destroy (broken_package, FALSE); */
+							trilobite_debug ("but we'e updating it (requirement)");
+							/* gtk_object_unref (GTK_OBJECT (broken_package)); */
 						} else {
 							PackageRequirement *req;
 							req = packagerequirement_new (pack, required_pack);
@@ -1510,10 +1525,10 @@ eazel_install_do_file_conflict_check (EazelInstall *service,
 									broken_package->name,
 									(GCompareFunc)eazel_install_package_name_compare)) {
 							trilobite_debug ("but we're updating it");
-							/* packagedata_destroy (broken_package, FALSE); */
+							/* gtk_object_unref (GTK_OBJECT (broken_package)); */
 						} else {
 							fail_it = TRUE;
-							packagedata_add_pack_to_breaks (pack, broken_package);
+							Xpackagedata_add_pack_to_breaks (pack, broken_package);
 						}
 					}
 					if (fail_it) {
@@ -1532,6 +1547,7 @@ eazel_install_do_file_conflict_check (EazelInstall *service,
 		(*failedpackages) = g_list_prepend (*failedpackages, cpack);
 		(*packages) = g_list_remove (*packages, cpack);
 	}
+#endif
 }
 
 /* 
@@ -1747,14 +1763,19 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 			if (g_list_find_custom (*breaks, (gpointer)requiredby->name, 
 						(GCompareFunc)eazel_install_package_name_compare)) {
 				trilobite_debug ("skip %s", requiredby->name);
-				packagedata_destroy (requiredby, TRUE);
+				gtk_object_unref (GTK_OBJECT (requiredby));
 				requiredby = NULL;
 				continue;
 			}
 			*/
 
 			/* Guess not, mark it as breaking (and that pack is the offender */
-			packagedata_add_pack_to_breaks (pack, requiredby);
+			{
+				PackageFeatureMissing *breakage = packagefeaturemissing_new ();
+				packagebreaks_set_package (PACKAGEBREAKS (breakage), requiredby);
+				packagedata_add_to_breaks (pack, PACKAGEBREAKS (breakage));
+				gtk_object_unref (GTK_OBJECT (requiredby));
+			}
 			(*breaks) = g_list_prepend ((*breaks), requiredby);
 
 			/* If the package has not been failed yet (and is a toplevel),
@@ -1859,7 +1880,7 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 									    PACKAGE_FILL_NO_DIRS_IN_PROVIDES);
 					packagedata_list_prune (&second_matches, *packages, TRUE, TRUE);
 					packagedata_list_prune (&second_matches, *requires, TRUE, TRUE);
-					packagedata_destroy (tmp_pack, TRUE);
+					gtk_object_unref (GTK_OBJECT (tmp_pack));
 
 					/* Iterate over all packages that match the required package */
 					for (second_match_iterator = second_matches;
@@ -1873,7 +1894,7 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 						    g_list_find_custom (*packages, isrequired->name,
 									(GCompareFunc)eazel_install_package_name_compare)) {
 							trilobite_debug ("skipped %s", isrequired->name);
-							packagedata_destroy (isrequired, TRUE);\
+							gtk_object_unref (GTK_OBJECT (isrequired));\
 							isrequired = NULL;
 							continue;
 						}		
@@ -1903,11 +1924,10 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 									   isrequired->name);
 								print_package_list ("BY", third_matches, FALSE);
 								g_list_foreach (third_matches, 
-										(GFunc)packagedata_destroy, 
-										GINT_TO_POINTER (TRUE));
+										(GFunc)gtk_object_unref, NULL);
 								g_list_free (third_matches);
 								third_matches = NULL;
-								packagedata_destroy (isrequired, TRUE);
+								gtk_object_unref (GTK_OBJECT (isrequired));
 								isrequired = NULL;
 							} else {
 								trilobite_debug ("Also nuking %s", isrequired->name);
@@ -1928,7 +1948,7 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 
 			headerFree (hd);
 		}
-		g_list_foreach (matches, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
+		g_list_foreach (matches, (GFunc)gtk_object_unref, NULL);
 		g_list_free (matches);
 		matches = NULL;
 	}
@@ -1982,7 +2002,7 @@ eazel_uninstall_check_for_install (EazelInstall *service,
 					any = TRUE;
 					result = g_list_prepend (result, matched);
 				} else {
-					packagedata_destroy (matched, TRUE);
+					gtk_object_unref (GTK_OBJECT (matched));
 				}
 				
  			} 
@@ -2008,7 +2028,7 @@ eazel_uninstall_check_for_install (EazelInstall *service,
 	trilobite_debug ("g_list_length (*packages) = %d", g_list_length (*packages)); 
 	trilobite_debug ("g_list_length (result) = %d", g_list_length (result)); 
 
-	g_list_foreach (*packages, (GFunc)packagedata_destroy, FALSE);
+ g_list_foreach (*packages, (GFunc)gtk_object_unref, NULL);
 	g_list_free (*packages);
 	(*packages) = result;
 

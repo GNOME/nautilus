@@ -79,7 +79,7 @@ impl_download_progress (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 
 	pack = packagedata_from_corba_packagedatastruct (*corbapack);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DOWNLOAD_PROGRESS], pack, amount, total);
-	packagedata_destroy (pack, TRUE);
+	gtk_object_unref (GTK_OBJECT (pack));
 }
 
 static CORBA_boolean
@@ -124,7 +124,7 @@ impl_download_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 
 	pack = packagedata_from_corba_packagedatastruct (*corbapack);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DOWNLOAD_FAILED], pack);
-	packagedata_destroy (pack, TRUE);
+	gtk_object_unref (GTK_OBJECT (pack));
 }
 
 static void 
@@ -137,8 +137,8 @@ impl_dep_check (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 	pack = packagedata_from_corba_packagedatastruct (*corbapack);
 	needs = packagedata_from_corba_packagedatastruct (*corbaneeds);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DEPENDENCY_CHECK], pack, needs);
-	packagedata_destroy (pack, TRUE);
-	packagedata_destroy (needs, TRUE);
+	gtk_object_unref (GTK_OBJECT (pack));
+	gtk_object_unref (GTK_OBJECT (needs));
 }
 
 static void 
@@ -156,7 +156,7 @@ impl_install_progress (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 			 package_num, num_packages,
 			 package_size_completed, package_size_total,
 			 total_size_completed, total_size);
-	packagedata_destroy (pack, TRUE);
+	gtk_object_unref (GTK_OBJECT (pack));
 }
 
 static void 
@@ -169,7 +169,7 @@ impl_uninstall_progress (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant
 	PackageData *pack;
 	pack = packagedata_from_corba_packagedatastruct (*corbapack);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[UNINSTALL_PROGRESS], pack, amount, total);
-	packagedata_destroy (pack, TRUE);
+	gtk_object_unref (GTK_OBJECT (pack));
 }
 
 static void 
@@ -181,7 +181,7 @@ impl_md5_check_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 	PackageData *pack;
 	pack = packagedata_from_corba_packagedatastruct (*corbapack);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[MD5_CHECK_FAILED], pack, actual_md5);
-	packagedata_destroy (pack, TRUE);
+	gtk_object_unref (GTK_OBJECT (pack));
 }
 
 static void 

@@ -493,7 +493,7 @@ impl_Eazel_Install_simple_query (impl_POA_GNOME_Trilobite_Eazel_Install *servant
 	result = GNOME_Trilobite_Eazel_PackageDataStructList__alloc ();
 	(*result) = corba_packagedatastructlist_from_packagedata_list (tmp_result);
 
-	g_list_foreach (tmp_result, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
+	g_list_foreach (tmp_result, (GFunc)gtk_object_unref, NULL);
 	
 	return result;
 }

@@ -43,7 +43,7 @@
   0x4 enables random spewing
   0x8 enables dumping the final tree
  */
-#define EI2_DEBUG 0xff
+#define EI2_DEBUG 0x0
 #define PATCH_FOR_SOFTCAT_BUG 1
 #define MUST_HAVE PACKAGE_FILL_NO_DIRS_IN_PROVIDES
 
@@ -74,21 +74,22 @@ dump_tree_helper (GList *packages, char *indent, GList *path)
 		}
 		
 		name = packagedata_get_readable_name (pack);
-		trilobite_debug ("%s%p (%s) %s %s%s", 
+		trilobite_debug ("%s%p (%s) %s %s%s %s", 
 				 indent, 
 				 pack, 
 				 name, 
 				 pack->eazel_id,
-				 pack->fillflag & MUST_HAVE ? "filled" : "not filled",
-				 pack->status == PACKAGE_CANNOT_OPEN ? " but failed" : "");
+				 (pack->fillflag & MUST_HAVE) ? "filled" : "not filled",
+				 (pack->status == PACKAGE_CANNOT_OPEN) ? " but failed" : "",
+				 pack->md5);
 		tmp = g_strdup_printf ("%s  ", indent);
-		if (g_list_find_custom (path, name, (GCompareFunc)strcmp)) {
-			trilobite_debug ("%s... %p %s recurses .., softcat is probably in flux", indent, pack, pack->name);
+		if (g_list_find (path, pack)) {
+			trilobite_debug ("%s... %p %s recurses ..", indent, pack, pack->name);
 		} else {
-			path = g_list_prepend (path, name);
+			path = g_list_prepend (path, pack);
 			dump_tree_helper (pack->depends, tmp, path);
+			path = g_list_remove (path, pack);
 		}
-		path = g_list_remove (path, name);
 		g_free (name);
 		g_free (tmp);
 	}
@@ -288,7 +289,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 #if EI2_DEBUG & 0x4
 				trilobite_debug ("%s already marked as modified", existing_package->name);
 #endif
-				packagedata_destroy (existing_package, TRUE);
+				gtk_object_unref (GTK_OBJECT (existing_package));
 				existing_package = NULL;
 				continue;
 			}
@@ -307,7 +308,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 #endif
 				if (pack->minor && existing_package->minor) {
 #if EI2_DEBUG & 0x4
-					trilobite_debug ("minors are %s and %s (installed)", 
+					trilobite_debug ("minors are %s for new and %s for installed)", 
 							 pack->minor, existing_package->minor);
 #endif
 					res = eazel_package_system_compare_version (service->private->package_system,
@@ -319,7 +320,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 					   This is a patch, it should be res=1, revert when
 					   softcat is updated to have revisions for all packages 
 					   (post PR3) */
-					res = 0;
+					res = 1;
 				} else {
 					/* Eh, do nothing just to be safe */
 					res = 0;
@@ -496,12 +497,8 @@ get_softcat_info (EazelInstall *service,
 	if (result != NO_SOFTCAT_HIT) {
 		PackageData *p1 = NULL;
 
-		if ((*package)->eazel_id == NULL) {
-			(*package)->eazel_id = g_strdup_printf ("%s-%s-%s", 
-								(*package)->name, (*package)->version, (*package)->minor);
-		}
-
-		p1 = g_hash_table_lookup (service->private->dedupe_hash, (*package)->eazel_id);
+		g_assert ((*package)->md5);
+		p1 = g_hash_table_lookup (service->private->dedupe_hash, (*package)->md5);
 
 		if (p1) {
 #if EI2_DEBUG & 0x4
@@ -520,7 +517,7 @@ get_softcat_info (EazelInstall *service,
 			case EAZEL_INSTALL_STATUS_UPGRADES:
 				gtk_object_ref (GTK_OBJECT (*package));
 				g_hash_table_insert (service->private->dedupe_hash, 
-						     (*package)->eazel_id, 
+						     (*package)->md5, 
 						     *package);
 				break;
 			case EAZEL_INSTALL_STATUS_DOWNGRADES:
@@ -596,22 +593,23 @@ dedupe_foreach_depends (PackageDependency *d,
 	
 	p1 = d->package;
 
-	if (p1->eazel_id == NULL) {
-		/* softcat didn't have this package */
+	if (p1->md5 == NULL) {
+		/* Package info not received from SoftCat */
 		return;
 	}
 
 	if (~p1->fillflag & MUST_HAVE) {
 		PackageData *p11;
 
-		p11 = g_hash_table_lookup (service->private->dedupe_hash, p1->eazel_id);
+		p11 = g_hash_table_lookup (service->private->dedupe_hash, p1->md5);
+
 		if (p11) {
 			gtk_object_ref (GTK_OBJECT (p11));
 			gtk_object_unref (GTK_OBJECT (p1)); 
 			d->package = p11;
 		} else {
 			gtk_object_ref (GTK_OBJECT (p1));
-			g_hash_table_insert (service->private->dedupe_hash, p1->eazel_id, p1);			
+			g_hash_table_insert (service->private->dedupe_hash, p1->md5, p1);			
 			dedupe_foreach (p1, service);
 		}
 	}
@@ -673,6 +671,9 @@ is_satisfied (EazelInstall *service,
 		trilobite_debug ("is_satisfied? %p %s", 
 				 dep->package, dep->package->name);
 		trilobite_debug ("\t -> already filled, must be ok");
+#else
+		g_message ("checking dependency for %s (already checked)", 
+			   dep->package->name);
 #endif
 		
 		return FALSE;
@@ -683,6 +684,10 @@ is_satisfied (EazelInstall *service,
 	trilobite_debug ("is_satisfied? %p %s %s %s", 
 			 dep->package, dep->package->name, sense_str,
 			 (dep->version != NULL ? dep->version : ""));
+#else
+	g_message ("checking dependency %s %s %s", 
+		   dep->package->name, sense_str,
+		   (dep->version != NULL ? dep->version : ""));
 #endif
 	key = g_strdup_printf ("%s/%s/%s", dep->package->name, sense_str,
 			       (dep->version != NULL ? dep->version : ""));
@@ -743,6 +748,8 @@ is_satisfied (EazelInstall *service,
 		if (result) {
 #if EI2_DEBUG & 0x4
 			trilobite_debug ("\t--> feature is satisfied");
+#else
+			g_message ("\tok");
 #endif
 			g_hash_table_insert (service->private->dep_ok_hash, 
 					     key,
@@ -751,6 +758,8 @@ is_satisfied (EazelInstall *service,
 		} else {
 #if EI2_DEBUG & 0x4
 			trilobite_debug ("\t--> feature not satisfied");
+#else
+			g_message ("\tnot ok");
 #endif
 			g_hash_table_insert (service->private->dep_ok_hash, 
 					     key,
@@ -883,6 +892,27 @@ void check_feature_consistency (EazelInstall *service, GList *packages);
 void check_conflicts_against_already_installed_packages (EazelInstall *service, GList *packages);
 void check_tree_for_conflicts (EazelInstall *service, GList **packages, GList **extra_packages);
 
+static gboolean
+check_update_for_no_more_file_conflicts (PackageFileConflict *conflict, 
+					 PackageData *pack_update)
+{
+	GList *iterator;
+
+	g_assert (IS_PACKAGEFILECONFLICT (conflict));
+	g_assert (conflict->files);
+	g_assert (g_list_length (conflict->files));
+
+	for (iterator = conflict->files; iterator; iterator = g_list_next (iterator)) {
+		char *filename = (char*)iterator->data;
+		if (g_list_find_custom (pack_update->provides, 
+					filename,
+					(GCompareFunc)strcmp)) {
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+
 static void
 check_tree_helper (EazelInstall *service, 
 		   PackageData *pack,
@@ -890,6 +920,7 @@ check_tree_helper (EazelInstall *service,
 		   GList **path)
 {
 	GList *iterator;
+	GList *remove = NULL;
 
 	if (g_list_find (*path, pack)) {
 #if EI2_DEBUG & 0x4
@@ -903,22 +934,62 @@ check_tree_helper (EazelInstall *service,
 #endif
 	if (pack->status == PACKAGE_FILE_CONFLICT) {
 #if EI2_DEBUG & 0x4
-		trilobite_debug ("reviving %s", pack->name);
+		trilobite_debug ("trying to revive %s", pack->name);
 #endif
-		pack->status = PACKAGE_PARTLY_RESOLVED;
 		for (iterator = pack->breaks; iterator; iterator = g_list_next (iterator)) {
-			PackageData *pack_broken = PACKAGEDATA (iterator->data);
-			/* reset pack_broken to some sane values */
-			pack_broken->status = PACKAGE_UNKNOWN_STATUS;
-			pack_broken->fillflag = PACKAGE_FILL_INVALID;
-			g_free (pack_broken->version);
-			pack_broken->version = NULL;
-			g_free (pack_broken->minor);
-			pack_broken->minor = NULL;
-			(*extra_packages) = g_list_prepend (*extra_packages, pack_broken);
+			PackageBreaks *breakage = PACKAGEBREAKS (iterator->data);
+
+			if (IS_PACKAGEFILECONFLICT (breakage)) {
+				PackageFileConflict *conflict = PACKAGEFILECONFLICT (breakage); 
+				PackageData *pack_broken = packagebreaks_get_package (breakage);
+				PackageData *pack_update = NULL;
+
+				/* reset pack_broken to some sane values */
+				if (eazel_softcat_available_update (service->private->softcat,
+								    pack_broken,
+								    &pack_update,
+								    MUST_HAVE)) {
+					if (check_update_for_no_more_file_conflicts (conflict, pack_update)) {
+#if EI2_DEBUG & 0x4
+						trilobite_debug ("adding %s to packages to be installed", 
+								 pack_update->name);
+#else
+						g_message ("updating %s to version %s-%s solves conflict",
+							   pack_update->name, pack_update->version,
+							   pack_update->minor);
+#endif
+                                                /* ref the package and add it to the extra_packages list */
+						gtk_object_ref (GTK_OBJECT (pack_update));
+						(*extra_packages) = g_list_prepend (*extra_packages, 
+										    pack_update);
+						pack_update->status = PACKAGE_PARTLY_RESOLVED;
+						remove = g_list_prepend (remove, breakage);
+						pack->status = PACKAGE_PARTLY_RESOLVED;
+					} else {
+#if EI2_DEBUG & 0x4
+						trilobite_debug ("%s still has conflict", pack_update->name);
+#else
+						g_message ("available update to %s does not solves conflict",
+							   pack_update->name);
+#endif
+					}
+				}
+			}
 		}
-		g_list_free (pack->breaks);
-		pack->breaks = NULL;
+
+		/* Now nuke the successfully revived PackageBreaks */
+		for (iterator = remove; iterator; iterator = g_list_next (iterator)) {
+			PackageBreaks *breakage = PACKAGEBREAKS (iterator->data);
+			gtk_object_unref (GTK_OBJECT (breakage));
+			pack->breaks = g_list_remove (pack->breaks, breakage);
+		}
+		g_list_free (remove);
+
+		/* if no breaks were unrevived, null out the list */
+		if (g_list_length (pack->breaks)==0) {
+			g_list_free (pack->breaks);
+			pack->breaks = NULL;
+		}
 	}
 	
 	for (iterator = pack->depends; iterator; iterator = g_list_next (iterator)) {
@@ -956,6 +1027,40 @@ check_tree_for_conflicts (EazelInstall *service,
 #endif
 }
 
+static int
+find_break_by_package_name (PackageBreaks *breaks, PackageData *pack)
+{
+	return eazel_install_package_compare (packagebreaks_get_package (breaks), 
+					      pack);
+}
+
+static void
+add_file_conflict (PackageData *pack, 
+		   PackageData *broken,
+		   char *filename)
+{
+	GList *prev;
+	prev = g_list_find_custom (pack->breaks, 
+				   broken,
+				   (GCompareFunc)find_break_by_package_name);
+	pack->status = PACKAGE_FILE_CONFLICT;
+
+	if (prev) {
+		PackageFileConflict *conflict = PACKAGEFILECONFLICT (prev->data);
+		conflict->files = g_list_prepend (conflict->files, g_strdup (filename));
+	} else {
+		PackageFileConflict *conflict = packagefileconflict_new ();
+		
+		pack->status = PACKAGE_FILE_CONFLICT;
+		broken->status = PACKAGE_FILE_CONFLICT;
+	
+		packagebreaks_set_package (PACKAGEBREAKS (conflict), broken);
+		conflict->files = g_list_prepend (conflict->files, g_strdup (filename));
+		packagedata_add_to_breaks (pack, PACKAGEBREAKS (conflict));
+		//gtk_object_unref (GTK_OBJECT (conflict));
+	}
+}
+
 /* make sure none of the packages we're installing will share files
 
    add code to check that no two packages provides the same file 
@@ -981,13 +1086,11 @@ check_no_two_packages_has_same_file (EazelInstall *service,
 				     GList *packages)
 {
 	GHashTable *file_table;		/* filename(char *) -> package(PackageData *) */
-	GList *broken_packages;		/* (PackageData *) packages known to have conflicts already */
 	GList *iter, *iter_file;
 	PackageData *pack, *pack_other;
 	char *filename;
 	GList *flat_packages;
 
-	broken_packages = NULL;
 	flat_packages = flatten_packagedata_dependency_tree (packages);
 
 	if (eazel_install_get_force (service) ||
@@ -1001,7 +1104,7 @@ check_no_two_packages_has_same_file (EazelInstall *service,
 	file_table = g_hash_table_new (g_str_hash, g_str_equal);
 
 #if EI2_DEBUG & 0x4
-	trilobite_debug ("-> no_two_packages conflict check begins (%d packages)", g_list_length (flat_packages));
+	trilobite_debug ("-> no-two-packages conflict check begins (%d unique packages)", g_list_length (flat_packages));
 #endif
 	
 	for (iter = g_list_first (flat_packages); iter != NULL; iter = g_list_next (iter)) {
@@ -1010,9 +1113,8 @@ check_no_two_packages_has_same_file (EazelInstall *service,
 
 		pack = PACKAGEDATA (iter->data);
 
-#if EI2_DEBUG & 0x4
-		trilobite_debug ("checking %s", pack->name);
-#endif
+		g_message ("file uniqueness checking %s", pack->name);
+
 		for (iter_file = g_list_first (pack->provides); iter_file != NULL; iter_file = g_list_next (iter_file)) {
 			filename = (char *)(iter_file->data);
 
@@ -1030,20 +1132,14 @@ check_no_two_packages_has_same_file (EazelInstall *service,
 				/* Only report it once in the debug log or we'll spam to eternity on some
 				 * large broken packages... */
 				if (! reported_yet) {
-					trilobite_debug ("file conflict 1: %s from package %s is also in %s",
-							 filename, pack->name, pack_other->name);
+					g_message ("Duplicate file : %s occurs in %s and %s",
+						   filename, pack->name, pack_other->name);
 					reported_yet = TRUE;
 				} else {
 					other_conflicts++;
 				}
-
-				/* 'pack' broke 'pack_other', but only if 'pack_other' isn't already broken */
-				if (! g_list_find (broken_packages, pack_other)) {
-					broken_packages = g_list_prepend (broken_packages, pack_other);
-					packagedata_add_pack_to_breaks (pack, pack_other);
-					pack->status = PACKAGE_FILE_CONFLICT;
-					pack_other->status = PACKAGE_FILE_CONFLICT;
-				}
+				add_file_conflict (pack, pack_other, filename);
+				gtk_object_unref (GTK_OBJECT (pack_other));
 			} else {
 				/* file is okay */
 				g_hash_table_insert (file_table, filename, pack);
@@ -1055,8 +1151,9 @@ check_no_two_packages_has_same_file (EazelInstall *service,
 	}
 
 	/* let's free all this crap, unlike last time (cough cough) :) */
-	g_list_free (broken_packages);
+	/* elements in flat_packages are not to be unreffed */
 	g_list_free (flat_packages);
+	/* the hashentries point to strings inside the packagedata objects */
 	g_hash_table_destroy (file_table);	
 
 #if EI2_DEBUG & 0x4
@@ -1073,6 +1170,7 @@ package_is_upgrading_and_doesnt_need_file (PackageData *pack, GList *packages, c
 	PackageData *pack_upgrade;
 	GList *item, *item2;
 
+	/* Hmmm, would eazel_install_package_compare be better ? */
 	item = g_list_find_custom (packages, pack->name,
 				   (GCompareFunc)eazel_install_package_name_compare);
 	if (item != NULL) {
@@ -1132,7 +1230,7 @@ check_conflicts_against_already_installed_packages (EazelInstall *service,
 	flat_packages = flatten_packagedata_dependency_tree (packages);
 
 #if EI2_DEBUG & 0x4
-	trilobite_debug ("-> file conflict check begins (%d packages)", g_list_length (flat_packages));
+	trilobite_debug ("-> file conflict check begins (%d unique packages)", g_list_length (flat_packages));
 #endif
 
 	for (iter = g_list_first (flat_packages); iter != NULL; iter = g_list_next (iter)) {
@@ -1142,9 +1240,7 @@ check_conflicts_against_already_installed_packages (EazelInstall *service,
 			continue;
 		}
 
-#if EI2_DEBUG & 0x4
-		trilobite_debug ("checking %s", pack->name);
-#endif
+		g_message ("file conflict checking %s", pack->name);
 
 		pack->conflicts_checked = TRUE;
 		for (iter_file = g_list_first (pack->provides); iter_file != NULL; iter_file = g_list_next (iter_file)) {
@@ -1178,23 +1274,16 @@ check_conflicts_against_already_installed_packages (EazelInstall *service,
 					continue;
 				}
 
-				trilobite_debug ("file conflict 2: %s from %s conflicts with %p %s",
-						 filename, pack->name, pack_owner, pack_owner->name);
+				g_message ("file conflict : package %s already provides %s also provided by %s",
+						 pack_owner->name, filename, pack->name);
 				if (package_is_upgrading_and_doesnt_need_file (pack_owner, 
 									       flat_packages, filename)) {
 					/* the owner of this file is a package that we're upgrading, and the
 					 * new version no longer has this file, so everything's okay. */
-					trilobite_debug ("...but it's okay, we're upgrading %s and it ditched that file",
+					g_message ("...but it's okay, we're upgrading %s and it ditched that file",
 							 pack_owner->name);
 				} else {
-					/* boo */
-					pack->status = PACKAGE_FILE_CONFLICT;
-					/* did we already mark this in ->breaks ? */
-					if (g_list_find_custom (pack->breaks, pack_owner->name,
-						     (GCompareFunc)eazel_install_package_name_compare)==NULL) {
-						pack_owner->status = PACKAGE_FILE_CONFLICT;
-						packagedata_add_pack_to_breaks (pack, pack_owner);
-					}
+					add_file_conflict (pack, pack_owner, filename);
 				}
 				gtk_object_unref (GTK_OBJECT (pack_owner));
 			}
@@ -1208,9 +1297,7 @@ check_conflicts_against_already_installed_packages (EazelInstall *service,
 	g_list_free (flat_packages);
 }
 
-/* FIXME: bugzilla.eazel.com 5277 (still need to test this)
-   add code to check that no features are lost, and if, that they're not required
-   
+/* 
    hash<char*, PackageData> Hfeat;
    
 	for each p in packages {
@@ -1303,6 +1390,7 @@ check_feature_consistency (EazelInstall *service,
 										  EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
 										  PACKAGE_FILL_NO_DIRS_IN_PROVIDES);
 					for (break_it = required_by; break_it; break_it = g_list_next (break_it)) {
+						PackageFeatureMissing *feature_missing = packagefeaturemissing_new ();
 						PackageData *pack_broken = PACKAGEDATA (break_it->data);
 
 #if EI2_DEBUG & 0x4
@@ -1311,13 +1399,11 @@ check_feature_consistency (EazelInstall *service,
 								 pack, pack->name,
 								 pack_modified, pack_modified->name);
 #endif
-						/* FIXME 5277 and 5721 more here 
-						   For me to finish this, I need softcat to emit
-						   features in the xml
-						 */
 						pack_broken->status = PACKAGE_DEPENDENCY_FAIL;
 						pack->status = PACKAGE_BREAKS_DEPENDENCY;
-						packagedata_add_pack_to_breaks (pack, pack_broken);
+						packagebreaks_set_package (PACKAGEBREAKS (feature_missing), pack_broken);
+						feature_missing->features = g_list_prepend (feature_missing->features, g_strdup (feature));
+						packagedata_add_to_breaks (pack, PACKAGEBREAKS (feature_missing));
 						gtk_object_unref (GTK_OBJECT (pack_broken));
 					}
 					g_list_free (required_by);
@@ -1541,6 +1627,10 @@ install_packages_helper (EazelInstall *service,
 #if EI2_DEBUG & 0x8
 	trilobite_debug ("FINAL TREE BEGIN");
 	dump_tree (*packages);
+	if (*extra_packages) {
+		trilobite_debug ("EXTRA PACKAGES BEGIN");
+		dump_tree (*extra_packages);
+	}
 	trilobite_debug ("FINAL TREE END");
 #endif
 	

@@ -502,7 +502,7 @@ get_search_url_for_package (EazelSoftCat *softcat, const PackageData *package, i
 
 	if (dist.name != DISTRO_UNKNOWN) {
 		dist_name = trilobite_get_distribution_name (dist, TRUE, TRUE);
-		add_to_url (url, "&distro=", "RedHat62");
+		add_to_url (url, "&distro=", dist_name);
 		g_free (dist_name);
 	}
 	/* FIXME: should let them specify a protocol other than http, someday */
@@ -657,16 +657,28 @@ out:
 gboolean
 eazel_softcat_available_update (EazelSoftCat *softcat, PackageData *oldpack, PackageData **newpack, int fill_flags)
 {
-	*newpack = packagedata_new ();
-	(*newpack)->name = g_strdup (oldpack->name);
-	(*newpack)->version = g_strdup (oldpack->version);
-	(*newpack)->distribution = oldpack->distribution;
-	(*newpack)->archtype = g_strdup (oldpack->archtype);
+	PackageData *tmp_pack;
+	gboolean result = TRUE;
 
-	if (eazel_softcat_get_info (softcat, *newpack, EAZEL_SOFTCAT_SENSE_GT, fill_flags) != EAZEL_SOFTCAT_SUCCESS) {
-		packagedata_destroy (*newpack, TRUE);
-		*newpack = NULL;
-		return FALSE;
+	tmp_pack = packagedata_new ();
+	tmp_pack->name = g_strdup (oldpack->name);
+	tmp_pack->version = g_strdup (oldpack->version);
+	tmp_pack->distribution = oldpack->distribution;
+	tmp_pack->archtype = g_strdup (oldpack->archtype);
+
+	if (eazel_softcat_get_info (softcat, tmp_pack, EAZEL_SOFTCAT_SENSE_GT, fill_flags) != EAZEL_SOFTCAT_SUCCESS) {
+		result = FALSE;
 	}
-	return TRUE;
+
+	if (newpack!=NULL && result==TRUE) {
+		(*newpack) = tmp_pack;
+	} else {
+		gtk_object_unref (GTK_OBJECT (tmp_pack));
+		/* Null in case it's givin */
+		if (newpack!=NULL) {
+			(*newpack) = NULL;
+		}
+	}
+
+	return result;
 }

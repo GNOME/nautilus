@@ -125,7 +125,7 @@ main (int argc, char **argv)
 				info = packagedata_dump (newpack, arg_verbose ? TRUE : FALSE);
 				printf ("%s\n", info);
 				g_free (info);
-				packagedata_destroy (newpack, TRUE);
+				gtk_object_unref (GTK_OBJECT (newpack));
 			} else {
 				printf ("No new package available.\n");
 			}
@@ -142,7 +142,7 @@ main (int argc, char **argv)
 		}
 
 		package_list = g_list_remove (package_list, package);
-		packagedata_destroy (package, TRUE);
+		gtk_object_unref (GTK_OBJECT (package));
 	}
 
 	return 0;

@@ -395,7 +395,7 @@ nautilus_rpm_view_destroy (GtkObject *object)
 #ifdef EAZEL_SERVICES
         pack = (PackageData *) gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
         if (pack) {
-                packagedata_destroy (pack, TRUE);
+                gtk_object_unref (GTK_OBJECT (pack));
         }
 
 	if (rpm_view->details->root_client) {

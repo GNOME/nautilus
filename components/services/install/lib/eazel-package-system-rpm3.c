@@ -207,6 +207,9 @@ make_rpm_argument_list (EazelPackageSystemRpm3 *system,
 	if (op == EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL) {
 		(*args) = g_list_prepend (*args, g_strdup ("-e"));
 	} else  {
+#ifdef USE_PERCENT
+		(*args) = g_list_prepend (*args, g_strdup ("--percent"));
+#endif
 		if (flags & EAZEL_PACKAGE_SYSTEM_OPERATION_DOWNGRADE) {
 			(*args) = g_list_prepend (*args, g_strdup ("--oldpackage"));
 		}
@@ -943,11 +946,13 @@ rpm_packagedata_new_from_file (EazelPackageSystemRpm3 *system,
 	PackageData *pack;
 
 	pack = packagedata_new ();
+
 	if (rpm_packagedata_fill_from_file (system, pack, file, detail_level)==FALSE) {
 		trilobite_debug ("RPM3 unable to fill from file '%s'", file);
 		gtk_object_unref (GTK_OBJECT (pack));
 		pack = NULL;
 	}
+
 	return pack;
 }
 
@@ -1051,7 +1056,7 @@ eazel_package_system_rpm3_query_impl (EazelPackageSystemRpm3 *system,
 						pack, 
 						(GCompareFunc)eazel_install_package_compare)!=NULL) {
 				info (system, "%s already in set", pack->name);
-				packagedata_destroy (pack, TRUE);
+				gtk_object_unref (GTK_OBJECT (pack));
 			} else {
 				(*result) = g_list_prepend (*result, pack);
 			}
@@ -1536,7 +1541,13 @@ eazel_package_system_rpm3_compare_version (EazelPackageSystem *system,
 					   const char *a,
 					   const char *b)
 {
-	return rpmvercmp (a, b);
+	int result;
+	result = rpmvercmp (a, b);
+	/* Special bandaid for M18 <> 0.7 mozilla versions */
+	if (isdigit (*a) && *b=='M') {
+		if (result < 0) { result = abs (result); }
+	}
+	return result;
 }
 
 /*****************************************

@@ -526,6 +526,8 @@ eazel_preflight_check_signal (EazelInstallCallback *service,
 {	
 	const GList *iterator;
 
+	if (cases) return FALSE;
+
 	fprintf (stdout, "About to %s a total of %d packages, %dKb\n", 
 		 arg_erase ? "uninstall" : "install",
 		 total_packages, total_bytes/1024);

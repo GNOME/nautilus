@@ -1447,7 +1447,7 @@ eazel_install_emit_preflight_check (EazelInstall *service,
 		
 		if (eazel_install_get_ei2 (service) || pack->toplevel) {
 			packages_in_signal = g_list_prepend (packages_in_signal, pack);
-		}
+		} 
 	}
 
 	gtk_signal_emit (GTK_OBJECT (service), 

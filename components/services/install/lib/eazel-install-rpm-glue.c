@@ -79,6 +79,7 @@ packagedata_new_from_rpm_conflict_reversed (struct rpmDependencyConflict conflic
 	return result;
 }
 
+#if 0
 /*
   Adds the headers to the package system set
  */
@@ -204,7 +205,7 @@ eazel_install_rpm_create_requirement (EazelInstall *service,
 		}
 	}
 }
-
+#endif
 
 /* This is the function to do the RPM system dependency check */
 void
@@ -213,6 +214,8 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 				       GList **failedpackages,
 				       GList **requirements)
 {
+	g_assert_not_reached ();
+#if 0
 	int iterator;
 	rpmTransactionSet set;
 	int num_conflicts;
@@ -239,7 +242,7 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 	rpmdepCheck (set, &conflicts, &num_conflicts);
 	eazel_package_system_rpm3_close_dbs (EAZEL_PACKAGE_SYSTEM_RPM3 (service->private->package_system));
 
-	/* FIXME bugzilla.eazel.com 1512:
+	/* FIXME bugzilla.eazel.com 1512 (BUG OBSOLETED, DON'T REOPEN <eskil, 20010129>)
 	   This piece of code is rpm specific. It has some generic algorithm
 	   for doing the dep stuff, but it's rpm entangled */
 
@@ -463,4 +466,5 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 	trilobite_debug ("eazel_install_do_rpm_dependency_check ended with %d fails and %d requirements", 
 			 g_list_length (*failedpackages),
 			 g_list_length (*requirements));
+#endif
 }

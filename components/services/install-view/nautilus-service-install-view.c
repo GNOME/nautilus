@@ -1506,7 +1506,7 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	pack = (PackageData*) gtk_object_get_data (GTK_OBJECT (view), "packagedata");
 	if (pack != NULL) {
 		/* Destroy the old */
-		packagedata_destroy (pack, TRUE);
+		gtk_object_unref (GTK_OBJECT (pack));
 	}
 
 	/* find the package data for the package we're about to install */

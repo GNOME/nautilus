@@ -186,7 +186,7 @@ struct _PackageData {
 	char* description;	
 	GList* soft_depends;
 	GList* depends;		/* GList<PackageDependency *> */
-	GList* breaks; 	
+	GList* breaks; 	        /* GList<PackageBreaks*> */
 
 	char *filename;
 	char *remote_url;		/* url where we can get this rpm */
@@ -246,7 +246,6 @@ struct _PackageData {
 
 PackageData* packagedata_new (void);
 GtkType packagedata_get_type (void);
-void packagedata_finalize (GtkObject *obj);
 
 PackageData* packagedata_new_from_file (const char *file);
 PackageData* packagedata_copy (const PackageData *pack, gboolean deep);
@@ -267,13 +266,7 @@ char *packagedata_get_readable_name (const PackageData *pack);
    from a given package, real meanign name[-version-[release]] string */
 char *packagedata_get_name (const PackageData *pack);
 
-void packagedata_destroy (PackageData *pd, gboolean deep);
-
 int packagedata_hash_equal (PackageData *a, PackageData *b);
-
-void packagedata_add_pack_to_breaks (PackageData *pack, PackageData *b);
-void packagedata_add_pack_to_soft_depends (PackageData *pack, PackageData *b);
-void packagedata_add_pack_to_modifies (PackageData *pack, PackageData *b);
 
 GList *flatten_packagedata_dependency_tree (GList *packages);
 
@@ -309,9 +302,85 @@ void packagedependency_destroy (PackageDependency *dep);
 
 #define PACKAGEDEPENDENCY(obj) ((PackageDependency*)(obj))
 #define IS_PACKAGEDEPENDENCY(obj) (1)
+
 /*************************************************************************************************/
 
-	/* OBSOLETE */
+#define TYPE_PACKAGEBREAKS           (packagebreaks_get_type ())
+#define PACKAGEBREAKS(obj)           (GTK_CHECK_CAST ((obj), TYPE_PACKAGEBREAKS, PackageBreaks))
+#define PACKAGEBREAKS_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TYPE_PACKAGEBREAKS, PackageBreaksClass))
+#define IS_PACKAGEBREAKS(obj)        (GTK_CHECK_TYPE ((obj), TYPE_PACKAGEBREAKS))
+#define IS_PACKAGEBREAKS_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_PACKAGEBREAKS))
+
+typedef struct _PackageBreaks PackageBreaks;
+typedef struct _PackageBreaksClass PackageBreaksClass;
+
+struct _PackageBreaksClass {
+	GtkObjectClass parent_class;
+};
+
+struct _PackageBreaks {
+	GtkObject parent;
+	PackageData *__package;
+};
+
+PackageBreaks* packagebreaks_new (void);
+GtkType packagebreaks_get_type (void);
+void packagebreaks_set_package (PackageBreaks *breaks, PackageData *pack);
+PackageData *packagebreaks_get_package (PackageBreaks *breaks);
+
+#define TYPE_PACKAGEFILECONFLICT           (packagefileconflict_get_type ())
+#define PACKAGEFILECONFLICT(obj)           (GTK_CHECK_CAST ((obj), TYPE_PACKAGEFILECONFLICT, PackageFileConflict))
+#define PACKAGEFILECONFLICT_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TYPE_PACKAGEFILECONFLICT, PackageFileConflictClass))
+#define IS_PACKAGEFILECONFLICT(obj)        (GTK_CHECK_TYPE ((obj), TYPE_PACKAGEFILECONFLICT))
+#define IS_PACKAGEFILECONFLICT_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_PACKAGEFILECONFLICT))
+
+typedef struct _PackageFileConflict PackageFileConflict;
+typedef struct _PackageFileConflictClass PackageFileConflictClass;
+
+struct _PackageFileConflictClass {
+	PackageBreaksClass parent_class;
+};
+
+struct _PackageFileConflict {
+	PackageBreaks parent;
+	GList *files;
+};
+
+PackageFileConflict* packagefileconflict_new (void);
+GtkType packagefileconflict_get_type (void);
+
+#define TYPE_PACKAGEFEATUREMISSING           (packagefeaturemissing_get_type ())
+#define PACKAGEFEATUREMISSING(obj)           (GTK_CHECK_CAST ((obj), TYPE_PACKAGEFEATUREMISSING, PackageFeatureMissing))
+#define PACKAGEFEATUREMISSING_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TYPE_PACKAGEFEATUREMISSING, PackageFeatureMissingClass))
+#define IS_PACKAGEFEATUREMISSING(obj)        (GTK_CHECK_TYPE ((obj), TYPE_PACKAGEFEATUREMISSING))
+#define IS_PACKAGEFEATUREMISSING_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_PACKAGEFEATUREMISSING))
+
+typedef struct _PackageFeatureMissing PackageFeatureMissing;
+typedef struct _PackageFeatureMissingClass PackageFeatureMissingClass;
+
+struct _PackageFeatureMissingClass {
+	PackageBreaksClass parent_class;
+};
+
+struct _PackageFeatureMissing {
+	PackageBreaks parent;
+	GList *features;
+};
+
+PackageFeatureMissing* packagefeaturemissing_new (void);
+GtkType packagefeaturemissing_get_type (void);
+
+
+/*************************************************************************************************/
+
+void packagedata_add_to_breaks (PackageData *pack, PackageBreaks *b);
+void packagedata_add_pack_to_breaks (PackageData *pack, PackageData *b);
+void packagedata_add_pack_to_soft_depends (PackageData *pack, PackageData *b);
+void packagedata_add_pack_to_modifies (PackageData *pack, PackageData *b);
+
+/*************************************************************************************************/
+/* FIXME: deprecating eazel-install-logic.c will also deprecate this structure */
+
 typedef struct {
 	PackageData *package;
 	PackageData *required;

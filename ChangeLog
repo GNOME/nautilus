@@ -1,3 +1,131 @@
+2001-02-01  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	This patch is temporarily going to break a few things, will sync
+	up with Robey tomorrow. Eg. eazel-install (cli tool) now sigsegvs
+	on error.
+	
+	* components/rpmview/nautilus-rpm-view-install.c:
+	s/packagedata_destroy/gtk_object_unref/
+
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_destroy):
+	s/packagedata_destroy/gtk_object_unref/
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (eazel_preflight_check_signal):
+	If there were problems, abort.
+	
+	* components/services/install/command-line/eazel-test-softcat.c:
+	(main):
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_download_progress), (impl_download_failed), (impl_dep_check),
+	(impl_install_progress), (impl_uninstall_progress),
+	(impl_md5_check_failed):
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install_simple_query):
+	s/packagedata_destroy/gtk_object_unref/
+
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_download_packages),
+	(eazel_install_check_for_file_conflicts), (ei_revert_transaction),
+	(eazel_install_do_transaction_all_files_check),
+	(eazel_install_prune_packages), (eazel_install_fetch_dependencies),
+	(eazel_install_do_file_conflict_check),
+	(eazel_uninstall_upward_traverse),
+	(eazel_uninstall_downward_traverse),
+	(eazel_uninstall_check_for_install):
+	ifdeffed out a lot of old code that's no longer used, but it still
+	compiles. logic.c will soon be entirely removed.
+	s/packagedata_destroy/gtk_object_unref/
+	Uninstall stuff uses the new PackageBreaks objects.
+	
+	* components/services/install/lib/eazel-install-logic2.c:
+	(dump_tree_helper), (eazel_install_check_existing_packages),
+	(get_softcat_info), (dedupe_foreach_depends), (is_satisfied),
+	(check_update_for_no_more_file_conflicts), (check_tree_helper),
+	(find_break_by_package_name), (add_file_conflict),
+	(check_no_two_packages_has_same_file),
+	(package_is_upgrading_and_doesnt_need_file),
+	(check_conflicts_against_already_installed_packages),
+	(check_feature_consistency), (install_packages_helper):
+	Nicer output.
+	Fixes 6172 and 6173.
+	s/packagedata_destroy/gtk_object_unref/
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	Removed unused define
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_do_rpm_dependency_check):
+	More code ifdeffed out, see comment for eazel-install-logic.c
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_package), (eazel_install_packagedata_to_xml_int),
+	(eazel_install_packagelist_to_xml), (osd_parse_shared):
+	Use the new PackageBreak objects.
+	
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(make_rpm_argument_list), (rpm_packagedata_new_from_file),
+	(eazel_package_system_rpm3_query_impl),
+	(eazel_package_system_rpm3_compare_version):
+	s/packagedata_destroy/gtk_object_unref/
+
+	* components/services/install/lib/eazel-package-system-types.h:
+	* components/services/install/lib/eazel-package-system-types.c:
+	(categorydata_destroy_foreach), (packagedependency_new),
+	(packagedependency_copy), (packagedependency_destroy),
+	(packagedata_finalize), (packagedata_class_initialize),
+	(packagedata_initialize), (packagedata_copy),
+	(packagedata_remove_soft_dep), (packagedata_get_readable_name),
+	(packagedata_add_pack_to), (packagedata_add_to_breaks),
+	(packagedata_add_pack_to_soft_depends),
+	(packagedata_add_pack_to_modifies), (packagedata_list_prune),
+	(add_string_list), (dump_package_break_list),
+	(packagedata_dump_int), (packagebreaks_finalize),
+	(packagebreaks_class_initialize), (packagebreaks_initialize),
+	(packagebreaks_get_type), (packagebreaks_new),
+	(packagebreaks_set_package), (packagebreaks_get_package),
+	(packagefileconflict_finalize),
+	(packagefileconflict_class_initialize),
+	(packagefileconflict_initialize), (packagefileconflict_get_type),
+	(packagefileconflict_new), (packagefeaturemissing_finalize),
+	(packagefeaturemissing_class_initialize),
+	(packagefeaturemissing_initialize),
+	(packagefeaturemissing_get_type), (packagefeaturemissing_new):
+	s/packagedata_destroy/gtk_object_unref/
+	Wrote some objects representing package breakage.
+
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_is_installed):
+	s/packagedata_destroy/gtk_object_unref/
+
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_available_update):
+	Fixed the function so it matches the intended semantics
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_view_update_from_uri):
+	s/packagedata_destroy/gtk_object_unref/
+
+	Merge from PR3 branch
+	
+	2001-01-26  Eskil Olsen  <eskil@eazel.com> 
+
+ 	reviewed by: Ramiri Estrugo <ramiro@eazel.com>
+
+ 	* components/services/install/command-line/eazel-test-packsys.c:
+ 	(test_version_compare):
+ 	Testing the Mozilla hack...
+ 	
+ 	* components/services/install/lib/eazel-package-system-rpm3.c:
+ 	(eazel_package_system_rpm3_compare_version):
+ 	Special case for Mxx versions because rpmvercmp is not obeying
+ 	the laws of mathematics...
+ 	
+ 	* components/services/install/lib/eazel-softcat.c:
+ 	(get_search_url_for_package):
+ 	Fix for 6055 - no longer use hardcoded RedHat62 as distro.
+
 2001-02-01  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>

@@ -50,9 +50,6 @@
 #include <libgnomevfs/gnome-vfs.h>
 #endif /* EAZEL_INSTALL_SLIM */
 
-/* evil evil hack because RPM doesn't understand that a package for i386 is still okay to run on i686! */
-#define ASSUME_ix86_IS_i386
-
 typedef struct {
 	EazelInstall *service;
 	const PackageData *package;

@@ -212,7 +212,7 @@ eazel_package_system_is_installed (EazelPackageSystem *package_system,
 		} else {
 			result = TRUE;
 		}
-		g_list_foreach (matches, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
+		g_list_foreach (matches, (GFunc)gtk_object_unref, NULL);
 	}
 	g_list_free (matches);
 	

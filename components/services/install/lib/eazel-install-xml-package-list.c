@@ -125,10 +125,17 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 			depend = parse_package (dep, FALSE);
 			packagedata_add_pack_to_soft_depends (rv, depend);
 		} else if (g_strcasecmp (dep->name, "BREAKS") == 0) {
+			/* FIXME: bugzilla.eazel.com 1542 
+			   This needs to parse all of the stuff, letting robey handle
+			   this as part of bug 1542. Right now I just get the borked
+			   package, the files/feature info is lost
+			*/
 			PackageData* depend;
-
+			PackageBreaks *breakage = packagebreaks_new ();
+			
 			depend = parse_package (dep, FALSE);
-			packagedata_add_pack_to_breaks (rv, depend);
+			packagebreaks_set_package (breakage, depend);
+			packagedata_add_to_breaks (rv, breakage);
 		} else if (g_strcasecmp (dep->name, "MODIFIES") == 0) {
 			PackageData* depend;
 
@@ -552,6 +559,7 @@ eazel_install_packagedata_to_xml_int (const PackageData *pack,
 	} else {
 		root = xmlNewNode (NULL, "PACKAGE");
 	}
+
 	node = xmlNewChild (root, NULL, "NAME", pack->name);
 	node = xmlNewChild (root, NULL, "VERSION", pack->version);
 	node = xmlNewChild (root, NULL, "MINOR", pack->minor);
@@ -594,32 +602,32 @@ eazel_install_packagedata_to_xml_int (const PackageData *pack,
 		}
 		node = xmlNewChild (root, NULL, "PROVIDES", tmp);
 	}
-
+	
 	for (iterator = pack->depends; iterator; iterator = iterator->next) {
-		if (g_list_find (*path, ((PackageDependency*)iterator->data)->package) == NULL) {
-			(*path) = g_list_prepend (*path, ((PackageDependency*)iterator->data)->package);
-			eazel_install_packagedata_to_xml_int (((PackageDependency*)iterator->data)->package, 
+		if (g_list_find (*path, PACKAGEDEPENDENCY (iterator->data)->package) == NULL) {
+			(*path) = g_list_prepend (*path, PACKAGEDEPENDENCY (iterator->data)->package);
+			eazel_install_packagedata_to_xml_int (PACKAGEDEPENDENCY (iterator->data)->package, 
 							      "SOFT_DEPEND", 
 							      root, 
 							      include_provides,
 							      path);
-			(*path) = g_list_remove (*path, ((PackageDependency*)iterator->data)->package);
+			(*path) = g_list_remove (*path, PACKAGEDEPENDENCY (iterator->data)->package);
 		}
 	}
 	for (iterator = pack->soft_depends; iterator; iterator = iterator->next) {
-		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, 
+		eazel_install_packagedata_to_xml (PACKAGEDATA (iterator->data), 
 						  "SOFT_DEPEND", 
 						  root, 
 						  include_provides);
 	}
 	for (iterator = pack->breaks; iterator; iterator = iterator->next) {
-		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, 
+		eazel_install_packagedata_to_xml (packagebreaks_get_package (PACKAGEBREAKS (iterator->data)), 
 						  "BREAKS", 
 						  root,
 						  include_provides);
 	}
 	for (iterator = pack->modifies; iterator; iterator = iterator->next) {
-		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, 
+		eazel_install_packagedata_to_xml (PACKAGEDATA (iterator->data), 
 						  "MODIFIES", 
 						  root,
 						  include_provides);
@@ -648,7 +656,7 @@ eazel_install_packagelist_to_xml (GList *packages, gboolean include_provides) {
 	node = xmlNewNode (NULL, "PACKAGES");
 	for (iterator = packages; iterator; iterator = iterator->next) {
 		xmlAddChild (node, 
-			     eazel_install_packagedata_to_xml ((PackageData*)iterator->data, 
+			     eazel_install_packagedata_to_xml (PACKAGEDATA (iterator->data), 
 							       NULL, NULL, include_provides)
 			);
 	}
@@ -900,7 +908,6 @@ osd_parse_shared (xmlDocPtr doc)
 		if (g_strcasecmp (child->name, "SOFTPKG") == 0) {
 			PackageData *pack;
 			pack = osd_parse_softpkg (child);
-			g_message (packagedata_dump (pack, FALSE));
 			if (pack) {
 				result = g_list_prepend (result, pack);
 			} else {
