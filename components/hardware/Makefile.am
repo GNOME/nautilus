@@ -10,7 +10,7 @@ INCLUDES =						\
 	$(COMPONENT_CFLAGS)				\
 	$(NULL)
 
-server_in_files = Nautilus_View_hardware.server.in
+server_in_files = Nautilus_View_hardware.server.in.in
 
 serverdir = $(libdir)/bonobo/servers
 $(server_in_files:.server.in.in=.server.in): $(server_in_files)
