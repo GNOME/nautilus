@@ -439,22 +439,67 @@ global_preferences_get_dialog (void)
 /* FIXME bugzilla.eazel.com 1275: 
  * The actual defaults need to be user level specific.
  */
-static const char *default_sidebar_panel_iids[] =
+static const char *novice_default_sidebar_panel_iids[] =
+{
+	"OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185",
+	"OAFIID:hyperbola_navigation_tree:57542ce0-71ff-442d-a764-462c92514234",
+	"OAFIID:nautilus_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb",
+	NULL
+};
+
+static const char *intermediate_default_sidebar_panel_iids[] =
 {
 	"OAFIID:nautilus_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb",
 	"OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185",
 	"OAFIID:nautilus_tree_view:2d826a6e-1669-4a45-94b8-23d65d22802d",
-	"OAFIID:hyperbola_navigation_tree:57542ce0-71ff-442d-a764-462c92514234"
+	"OAFIID:hyperbola_navigation_tree:57542ce0-71ff-442d-a764-462c92514234",
+	NULL
+
 };
 
+static const char *hacker_default_sidebar_panel_iids[] = 
+{
+	"OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185",
+	"OAFIID:nautilus_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb",
+	"OAFIID:nautilus_tree_view:2d826a6e-1669-4a45-94b8-23d65d22802d",
+	"OAFIID:hyperbola_navigation_tree:57542ce0-71ff-442d-a764-462c92514234",
+	NULL
+};
+
+static const char **
+get_default_sidebar_iids_for_user_level (guint user_level)
+{
+
+	switch (user_level) {
+	case NAUTILUS_USER_LEVEL_NOVICE:
+		return novice_default_sidebar_panel_iids;
+		break;
+	case NAUTILUS_USER_LEVEL_INTERMEDIATE:
+		return intermediate_default_sidebar_panel_iids;
+		break;
+	case NAUTILUS_USER_LEVEL_HACKER:
+		return hacker_default_sidebar_panel_iids;
+		break;
+	default:
+		g_assert_not_reached ();
+		break;
+	}
+
+	g_assert_not_reached ();
+	return NULL;
+}
+
 static gboolean
-sidebar_panel_iid_is_in_default_list (const char *iid)
+sidebar_panel_iid_is_in_default_list (const char *iid,
+				      guint user_level)
 {
 	guint i;
+	const char **default_sidebar_panel_iids;
 
 	g_return_val_if_fail (iid != NULL, FALSE);
+	default_sidebar_panel_iids = get_default_sidebar_iids_for_user_level (user_level);
 	
-	for (i = 0; i < NAUTILUS_N_ELEMENTS (default_sidebar_panel_iids); i++) {
+	for (i = 0; default_sidebar_panel_iids[i] != NULL; i++) {
 		if (strcmp (iid, default_sidebar_panel_iids[i]) == 0) {
 			return TRUE;
 		}
@@ -474,21 +519,27 @@ global_preferences_register_sidebar_panels (void)
 	for (p = view_identifiers; p != NULL; p = p->next) {
 		NautilusViewIdentifier	 *identifier;
 		char			 *preference_key;
-		gboolean		 default_value;
+		gboolean		 novice_default_value;
+		gboolean                 intermediate_default_value;
+		gboolean                 hacker_default_value;
 
 		identifier = (NautilusViewIdentifier *) (p->data);
 		g_assert (identifier != NULL);
 		
 		preference_key = global_preferences_get_sidebar_panel_key (identifier->iid);
 		g_assert (preference_key != NULL);
-
-		default_value = sidebar_panel_iid_is_in_default_list (identifier->iid);
 		
+		novice_default_value = sidebar_panel_iid_is_in_default_list (identifier->iid,
+									    NAUTILUS_USER_LEVEL_NOVICE);
+		intermediate_default_value = sidebar_panel_iid_is_in_default_list (identifier->iid,
+										   NAUTILUS_USER_LEVEL_INTERMEDIATE);
+		hacker_default_value = sidebar_panel_iid_is_in_default_list (identifier->iid,
+									     NAUTILUS_USER_LEVEL_HACKER);
 		global_preferences_register_boolean_with_defaults (preference_key,
 								   identifier->name,
-								   default_value,
-								   default_value,
-								   default_value);
+								   novice_default_value,
+								   intermediate_default_value,
+								   hacker_default_value);
 
 		g_free (preference_key);
 	}
@@ -514,7 +565,7 @@ global_preferences_is_sidebar_panel_enabled (NautilusViewIdentifier *panel_ident
 	g_return_val_if_fail (panel_identifier->iid != NULL, FALSE);
 
 	key = global_preferences_get_sidebar_panel_key (panel_identifier->iid);
-	
+
 	g_assert (key != NULL);
 
         enabled = nautilus_preferences_get_boolean (key, FALSE);

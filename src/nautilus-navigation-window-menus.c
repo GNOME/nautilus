@@ -1458,7 +1458,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 
         bonobo_ui_handler_menu_new_item (ui_handler,
         				 NAUTILUS_MENU_PATH_CUT_ITEM,
-        				 _("_Cut Tex"),
+        				 _("_Cut Text"),
         				 _("Cuts the selected text to the clipboard"),
         				 -1,
         				 BONOBO_UI_HANDLER_PIXMAP_STOCK,

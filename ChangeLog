@@ -1,3 +1,24 @@
+2000-09-27  Rebecca Schulman  <rebecka@eazel.com>
+	Fixed bug 1275, that sidebar panels don't have defaults 
+	per user level.
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(get_default_sidebar_iids_for_user_level),
+	(sidebar_panel_iid_is_in_default_list),
+	(global_preferences_register_sidebar_panels),
+	(global_preferences_is_sidebar_panel_enabled):
+	Added default sets (hard coded, as before) for each
+	user level, and used them to get the defaults, instead of
+	 the single set for all levels
+	
+	* libnautilus/nautilus-clipboard.c:
+	(set_paste_sensitive_if_clipboard_contains_data):
+	simplified check whether paste should be available.
+	
+	* src/nautilus-window-menus.c: (nautilus_window_initialize_menus):
+	Fixed a typo in the clipboard menu text.
+	
+
 2000-09-27  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3294 ("Find them" button remains insensitive when search

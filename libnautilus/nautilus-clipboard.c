@@ -105,16 +105,9 @@ set_paste_sensitive_if_clipboard_contains_data (GtkWidget *window,
 						BonoboUIHandler *ui_handler)
 {
 	gboolean clipboard_contains_data;
-	gboolean are_already_selection_owner;
-	GdkAtom clipboard_atom;
-
-	clipboard_atom = gdk_atom_intern ("CLIPBOARD", TRUE);
-	g_return_if_fail (clipboard_atom != GDK_NONE);
-	are_already_selection_owner = gdk_selection_owner_get (clipboard_atom) != NULL;
-	clipboard_contains_data = gtk_selection_convert (GTK_WIDGET (window),
-							 GDK_SELECTION_PRIMARY,
-							 clipboard_atom,
-							 GDK_CURRENT_TIME);
+	
+	clipboard_contains_data = 
+		(gdk_selection_owner_get (GDK_SELECTION_PRIMARY) != NULL);
 
 	bonobo_ui_handler_menu_set_sensitivity (ui_handler,
 						NAUTILUS_MENU_PATH_PASTE_ITEM,
