@@ -268,10 +268,9 @@ nautilus_throbber_instance_init (NautilusThrobber *throbber)
 	/* attach a property bag with the configure property */
 	throbber->details->property_bag = bonobo_property_bag_new (get_bonobo_properties, 
 								   set_bonobo_properties, throbber);
-#ifdef GNOME2_CONVERSION_COMPLETE
 	bonobo_control_set_properties (BONOBO_CONTROL (throbber->details->control), 
-				       throbber->details->property_bag);
-#endif	
+				       BONOBO_OBJREF (throbber->details->property_bag), NULL);
+
 	bonobo_property_bag_add (throbber->details->property_bag, "throbbing", THROBBING, BONOBO_ARG_BOOLEAN, NULL,
 				 "Throbber active", 0);
 	bonobo_property_bag_add (throbber->details->property_bag, "location", LOCATION, BONOBO_ARG_STRING, NULL,

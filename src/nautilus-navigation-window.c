@@ -40,6 +40,7 @@
 #include "nautilus-zoom-control.h"
 #include <X11/Xatom.h>
 #include <bonobo/bonobo-exception.h>
+#include <bonobo/bonobo-property-bag-client.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <ctype.h>
 #include <eel/eel-gdk-extensions.h>
@@ -1719,10 +1720,9 @@ nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 	if (window->throbber != CORBA_OBJECT_NIL) {
 		CORBA_exception_init (&ev);
 		property_bag = Bonobo_Control_getProperties (window->throbber, &ev);
+
 		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
-#if GNOME2_CONVERSION_COMPLETE
-			bonobo_property_bag_client_set_value_gboolean (property_bag, "throbbing", allow, &ev);
-#endif
+			bonobo_pbclient_set_boolean (property_bag, "throbbing", allow, &ev);
 			bonobo_object_release_unref (property_bag, NULL);
 		}
 		CORBA_exception_free (&ev);
