@@ -1,3 +1,11 @@
+2002-02-24  Seth Nickell  <snickell@stanford.edu>
+
+	* src/file-manager/nautilus-indexing-info.c:
+	(update_progress_display), (index_progress_dialog_new):
+
+	Convert deprecated use of GtkProgress to GtkProgressBar
+	to fix the build.
+
 2002-02-24  Alexander Larsson  <alla@lysator.liu.se>
 
 	* libnautilus-private/nautilus-directory-background.c (image_loading_done_callback):

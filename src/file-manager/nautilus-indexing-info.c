@@ -50,7 +50,7 @@
 
 typedef struct {
         GtkLabel *progress_label;
-        GtkProgress *progress_bar;
+        GtkProgressBar *progress_bar;
 } ProgressChangeData;
 
 typedef struct {
@@ -103,7 +103,8 @@ update_progress_display (gpointer callback_data)
         progress_string = get_text_for_progress_label ();
         gtk_label_set_text (progress_label, progress_string);
         g_free (progress_string);
-        gtk_progress_set_value (progress_change_data->progress_bar, get_index_percentage_complete ());
+        gtk_progress_bar_set_fraction (progress_change_data->progress_bar, 
+                                       get_index_percentage_complete () / 100.0f);
 
 
         return TRUE;
@@ -209,8 +210,8 @@ index_progress_dialog_new (void)
 
         embedded_vbox = gtk_vbox_new (FALSE, GNOME_PAD_SMALL);
 
-        gtk_progress_set_show_text (GTK_PROGRESS (indexing_progress_bar), FALSE);
-        gtk_progress_configure (GTK_PROGRESS (indexing_progress_bar), percentage_complete, 0, 100);
+        /* turn off text display by setting text to NULL */
+        gtk_progress_bar_set_text (GTK_PROGRESS_BAR (indexing_progress_bar), NULL);
         /* Put the progress bar in an hbox to make it a more sane size */
         gtk_box_pack_start (GTK_BOX (embedded_vbox), indexing_progress_bar, FALSE, FALSE, 0);
 
@@ -229,7 +230,7 @@ index_progress_dialog_new (void)
         /* Keep the dialog current with actual indexing progress */
         progress_data = g_new (ProgressChangeData, 1);
         progress_data->progress_label = GTK_LABEL (progress_label);
-        progress_data->progress_bar = GTK_PROGRESS (indexing_progress_bar);
+        progress_data->progress_bar = GTK_PROGRESS_BAR (indexing_progress_bar);
         timeout_id = gtk_timeout_add_full (PROGRESS_UPDATE_INTERVAL,
                                            update_progress_display,
                                            NULL,
