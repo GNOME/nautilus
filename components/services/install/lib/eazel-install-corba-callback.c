@@ -121,6 +121,7 @@ impl_download_progress (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 
 static CORBA_boolean
 impl_preflight_check (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
+		      const GNOME_Trilobite_Eazel_Operation corba_op,
 		      const GNOME_Trilobite_Eazel_PackageDataStructList *package_tree,
 		      const CORBA_long total_bytes,
 		      const CORBA_long total_packages,
@@ -128,12 +129,27 @@ impl_preflight_check (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 {
 	GList *packages;
 	gboolean result;
+	EazelInstallCallbackOperation op;
+
+	switch (corba_op) {
+	default:
+	case GNOME_Trilobite_Eazel_OPERATION_INSTALL:
+		op = EazelInstallCallbackOperation_INSTALL;
+		break;
+	case GNOME_Trilobite_Eazel_OPERATION_UNINSTALL:
+		op = EazelInstallCallbackOperation_UNINSTALL;
+		break;
+	case GNOME_Trilobite_Eazel_OPERATION_REVERT:
+		op = EazelInstallCallbackOperation_REVERT;
+		break;
+	}
 
 	packages = packagedata_tree_from_corba_packagedatastructlist (package_tree);
 	if (packages == NULL) {
 		g_warning ("preflight called with error in package tree!");
 	} else {
 		gtk_signal_emit (GTK_OBJECT (servant->object), signals[PREFLIGHT_CHECK], 
+				 op, 
 				 packages,
 				 total_bytes, 
 				 total_packages,
@@ -407,8 +423,8 @@ eazel_install_callback_class_initialize (EazelInstallCallbackClass *klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, preflight_check),
-				gtk_marshal_BOOL__POINTER_INT_INT,
-				GTK_TYPE_BOOL, 3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
+				eazel_install_gtk_marshal_BOOL__ENUM_POINTER_INT_INT,
+				GTK_TYPE_BOOL, 4, GTK_TYPE_ENUM, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
 	signals[INSTALL_PROGRESS] = 
 		gtk_signal_new ("install_progress",
 				GTK_RUN_LAST,

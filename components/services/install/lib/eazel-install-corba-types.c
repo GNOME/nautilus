@@ -19,6 +19,7 @@
  * Boston, MA 02111-1307, USA.
  *
  * Authors: Eskil Heyn Olsen <eskil@eazel.com>
+ *          Robey Pointer <robey@eazel.com>
  */
 
 #include "eazel-install-corba-types.h"
@@ -124,6 +125,25 @@ corba_packagedatastruct_fill_from_packagedata (GNOME_Trilobite_Eazel_PackageData
 		corbapack->status = GNOME_Trilobite_Eazel_CIRCULAR_DEPENDENCY;
 		break;
 	}
+
+	switch (pack->modify_status) {
+	case PACKAGE_MOD_UNTOUCHED:
+		corbapack->modify_status = GNOME_Trilobite_Eazel_UNTOUCHED;
+		break;
+	case PACKAGE_MOD_UPGRADED:
+		corbapack->modify_status = GNOME_Trilobite_Eazel_UPGRADED;
+		break;
+	case PACKAGE_MOD_DOWNGRADED:
+		corbapack->modify_status = GNOME_Trilobite_Eazel_DOWNGRADED;
+		break;
+	case PACKAGE_MOD_INSTALLED:
+		corbapack->modify_status = GNOME_Trilobite_Eazel_INSTALLED;
+		break;
+	case PACKAGE_MOD_UNINSTALLED:
+		corbapack->modify_status = GNOME_Trilobite_Eazel_UNINSTALLED;
+		break;
+	}
+	
 
 	/* depends will be filled in further up, if they're required --
 	 * many times, this function is called to create a single corba package with no other package pointers */
@@ -394,6 +414,24 @@ packagedata_from_corba_packagedatastruct (const GNOME_Trilobite_Eazel_PackageDat
 		break;
 	case GNOME_Trilobite_Eazel_RESOLVED:
 		pack->status = PACKAGE_RESOLVED;
+		break;
+	}
+
+	switch (corbapack->modify_status) {
+	case GNOME_Trilobite_Eazel_UNTOUCHED:
+		pack->modify_status = PACKAGE_MOD_UNTOUCHED;
+		break;
+	case GNOME_Trilobite_Eazel_UPGRADED:
+		pack->modify_status = PACKAGE_MOD_UPGRADED;
+		break;
+	case GNOME_Trilobite_Eazel_DOWNGRADED:
+		pack->modify_status = PACKAGE_MOD_DOWNGRADED;
+		break;
+	case GNOME_Trilobite_Eazel_INSTALLED:
+		pack->modify_status = PACKAGE_MOD_INSTALLED;
+		break;
+	case GNOME_Trilobite_Eazel_UNINSTALLED:
+		pack->modify_status = PACKAGE_MOD_UNINSTALLED;
 		break;
 	}
 

@@ -93,7 +93,7 @@ get_detailed_messages_breaks_foreach (PackageBreaks *breakage, GetErrorsForEachD
 	} else {
 		char *message;
 		
-		message = g_strdup_printf ("Fuckup between %s and %s", 
+		message = g_strdup_printf ("Feature dependency between %s and %s", 
 					   previous_pack->name,
 					   package_broken_name);
 		(*errors) = g_list_append (*errors, message);
@@ -135,7 +135,11 @@ get_detailed_messages_foreach (GtkObject *foo, GetErrorsForEachData *data)
 
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
+		break;
 	case PACKAGE_CANCELLED:
+		if (required_by) {
+			message = g_strdup_printf (_("%s was cancelled"), required);
+		}
 		break;
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
 		message = g_strdup_printf (_("%s is a source package, which is not yet supported"), 
@@ -175,6 +179,7 @@ get_detailed_messages_foreach (GtkObject *foo, GetErrorsForEachData *data)
 		}
 		break;
 	case PACKAGE_INVALID:
+		message = g_strdup_printf (_("%s is damaged"), required);
 		break;
 	case PACKAGE_CANNOT_OPEN:
 		if (previous_pack) {
@@ -190,7 +195,9 @@ get_detailed_messages_foreach (GtkObject *foo, GetErrorsForEachData *data)
 	case PACKAGE_PARTLY_RESOLVED:
 		break;
 	case PACKAGE_ALREADY_INSTALLED:
-		message = g_strdup_printf (_("%s is already installed"), required);
+		if (pack->modifies==NULL) {
+			message = g_strdup_printf (_("%s is already installed"), required);
+		}
 		break;
 	case PACKAGE_CIRCULAR_DEPENDENCY: 
 		if (previous_pack->status == PACKAGE_CIRCULAR_DEPENDENCY) {
@@ -219,18 +226,20 @@ get_detailed_messages_foreach (GtkObject *foo, GetErrorsForEachData *data)
 		switch (pack->modify_status) {
 		case PACKAGE_MOD_UNTOUCHED:
 			break;
-		case PACKAGE_MOD_UPGRADED:
-			break;
 		case PACKAGE_MOD_DOWNGRADED:
-			message = g_strdup_printf (_("%s, which is newer, is already installed"), 
+			message = g_strdup_printf (_("%s, which is newer, is already installed and downgrade is not enabled"), 
 						   required);
+			break;
+		case PACKAGE_MOD_UPGRADED:
+			message = g_strdup_printf (_("%s, which is older, is already installed and upgrade is not enabled"), 
+						   required);						     
 			break;
 		case PACKAGE_MOD_INSTALLED:
 			break;
 		case PACKAGE_MOD_UNINSTALLED:
 			break;
 		}
-
+		
 		if (message != NULL) {
 			(*errors) = g_list_append (*errors, message);
 		}
@@ -243,9 +252,11 @@ get_detailed_messages_foreach (GtkObject *foo, GetErrorsForEachData *data)
 	/* Create the path list */
 	data->path = g_list_prepend (data->path, pack);
 
-	g_list_foreach (pack->depends, (GFunc)get_detailed_messages_foreach, data);
-	g_list_foreach (pack->modifies, (GFunc)get_detailed_messages_foreach, data);
-	g_list_foreach (pack->breaks, (GFunc)get_detailed_messages_breaks_foreach, data);
+	if (pack->status != PACKAGE_CANCELLED) {
+		g_list_foreach (pack->depends, (GFunc)get_detailed_messages_foreach, data);
+		g_list_foreach (pack->modifies, (GFunc)get_detailed_messages_foreach, data);
+		g_list_foreach (pack->breaks, (GFunc)get_detailed_messages_breaks_foreach, data);
+	}
 
 	/* Pop the currect pack from the path */
 	data->path = g_list_remove (data->path, pack);
@@ -377,8 +388,8 @@ compare_problem_case (EazelInstallProblemCase *a, EazelInstallProblemCase *b)
 			result = compare_problem_case (a->u.cannot_solve.problem,
 						       b->u.cannot_solve.problem);
 			break;
-		case EI_PROBLEM_CONTINUE_WITH_FORCE:
-			result = 0;
+		case EI_PROBLEM_CONTINUE_WITH_FLAG:
+			result = (a->u.continue_with_flag.flag == a->u.continue_with_flag.flag);
 			break;
 		case EI_PROBLEM_CASCADE_REMOVE: {
 			GList *a_iterator;
@@ -491,19 +502,24 @@ add_cannot_solve_case (EazelInstallProblem *problem,
 }
 
 static void
-add_continue_with_force_case (EazelInstallProblem *problem,
-			      EazelInstallProblemCase *org_pcase,
-			      gboolean file_conflict,
+add_continue_with_flag_case (EazelInstallProblem *problem,
+			     EazelInstallProblemCase *org_pcase,
+			     EazelInstallProblemContinueFlag flag,
+			     gboolean file_conflict,
 			      GList **output)
 {
-	EazelInstallProblemCase *pcase = eazel_install_problem_case_new (EI_PROBLEM_CONTINUE_WITH_FORCE);
-
-#ifdef EIP_DEBUG
-	g_message ("add_continue_with_force_case");
-#endif /* EIP_DEBUG */
+	EazelInstallProblemCase *pcase = eazel_install_problem_case_new (EI_PROBLEM_CONTINUE_WITH_FLAG);
 
 	pcase->u.cannot_solve.problem = org_pcase;
 	pcase->file_conflict = file_conflict;
+	pcase->u.continue_with_flag.flag = flag;
+
+#ifdef EIP_DEBUG
+	g_message ("add_continue_with_flag_case %p %d %d", 
+		   pcase, flag,
+		   pcase->u.continue_with_flag.flag);
+#endif /* EIP_DEBUG */
+
 
 	if (!add_case (problem, pcase, output)) {
 		eazel_install_problem_case_destroy (pcase);
@@ -528,7 +544,11 @@ add_force_install_both_case (EazelInstallProblem *problem,
 	pcase->u.force_install_both.pack_2 = copy_2;
 	
 	if (!add_case (problem, pcase, output)) {
-		add_continue_with_force_case (problem, pcase, FALSE, output);
+		add_continue_with_flag_case (problem, 
+					     pcase, 
+					     EazelInstallProblemContinueFlag_FORCE, 
+					     FALSE, 
+					     output);
 	}
 }
 
@@ -549,7 +569,10 @@ add_force_remove_case (EazelInstallProblem *problem,
 	pcase->file_conflict = file_conflict;
 	
 	if (!add_case (problem, pcase, output)) {
-		add_continue_with_force_case (problem, pcase, file_conflict, output);
+		add_continue_with_flag_case (problem, 
+					     pcase, 
+					     EazelInstallProblemContinueFlag_FORCE, 
+					     file_conflict, output);
 	}
 }
 
@@ -643,6 +666,7 @@ get_detailed_cases_foreach (GtkObject *foo,
 	/* GList **errors = &(data->errors); */
 	PackageData *previous_pack = NULL;
 	PackageData *pack = NULL;
+	gboolean no_problem_added = TRUE;
 
 	if (IS_PACKAGEDATA (foo)) {
 		pack = PACKAGEDATA (foo);
@@ -669,6 +693,7 @@ get_detailed_cases_foreach (GtkObject *foo,
 
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
+		break;
 	case PACKAGE_CANCELLED:
 		break;
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
@@ -680,6 +705,7 @@ get_detailed_cases_foreach (GtkObject *foo,
 		} else {
 			if (previous_pack && previous_pack->status == PACKAGE_BREAKS_DEPENDENCY) {
 				add_update_case (data->problem, pack, FALSE, &(data->errors)); 
+				no_problem_added = FALSE;
 			} else {
 				g_warning ("%s:%d : oops", __FILE__,__LINE__);
 			}
@@ -688,6 +714,10 @@ get_detailed_cases_foreach (GtkObject *foo,
 	case PACKAGE_BREAKS_DEPENDENCY:
 		break;
 	case PACKAGE_INVALID:
+		if (previous_pack) {
+			add_remove_case (data->problem, pack, FALSE, &(data->errors));
+			no_problem_added = FALSE;
+		}
 		break;
 	case PACKAGE_CANNOT_OPEN:
 		break;
@@ -698,12 +728,40 @@ get_detailed_cases_foreach (GtkObject *foo,
 	case PACKAGE_CIRCULAR_DEPENDENCY: 
 		if (previous_pack && previous_pack->status == PACKAGE_CIRCULAR_DEPENDENCY) {
 			add_force_install_both_case (data->problem, pack, previous_pack, &(data->errors));
+			no_problem_added = FALSE;
 		} else {
 			g_warning ("%s:%d : oops", __FILE__,__LINE__);
 		}
 		break;
 	case PACKAGE_RESOLVED:
 		break;
+	}
+
+	if (no_problem_added) {
+		switch (pack->modify_status) {
+		case PACKAGE_MOD_UNTOUCHED:
+			break;
+		case PACKAGE_MOD_DOWNGRADED:
+			add_continue_with_flag_case (data->problem,
+						     NULL,
+						     EazelInstallProblemContinueFlag_DOWNGRADE,
+						     FALSE,
+						     &(data->errors));
+			no_problem_added = FALSE;
+			break;
+		case PACKAGE_MOD_UPGRADED:
+			add_continue_with_flag_case (data->problem,
+						     NULL,
+						     EazelInstallProblemContinueFlag_UPGRADE,
+						     FALSE,
+						     &(data->errors));
+			no_problem_added = FALSE;
+			break;
+		case PACKAGE_MOD_INSTALLED:
+			break;
+		case PACKAGE_MOD_UNINSTALLED:
+			break;
+		}
 	}
 
 	/* Create the path list */
@@ -901,14 +959,18 @@ eazel_install_problem_case_to_string (EazelInstallProblemCase *pcase, gboolean n
 		g_string_free (str, TRUE);
 	}
 	break;
-	case EI_PROBLEM_CONTINUE_WITH_FORCE: {
-		/* FIXME
-		   needs better string */
-		if (! name_only) {
-			if (pcase->file_conflict) {
-				message = g_strdup_printf ("Complete operation by ignoring file conflicts");
-			} else {
-				message = g_strdup_printf ("Complete operation by ignoring problems");
+	case EI_PROBLEM_CONTINUE_WITH_FLAG: {
+		if (!name_only) {
+			switch (pcase->u.continue_with_flag.flag) {
+			case EazelInstallProblemContinueFlag_FORCE:
+				message = g_strdup_printf (_("Continue with force"));
+				break;
+			case EazelInstallProblemContinueFlag_UPGRADE:
+				message = g_strdup_printf (_("Allow upgrades"));
+				break;
+			case EazelInstallProblemContinueFlag_DOWNGRADE:
+				message = g_strdup_printf (_("Allow downgrade"));
+				break;
 			}
 		}
 	}
@@ -965,7 +1027,7 @@ eazel_install_problem_case_foreach_destroy (EazelInstallProblemCase *pcase,
 	case EI_PROBLEM_CANNOT_SOLVE:
 		eazel_install_problem_case_foreach_destroy (pcase->u.cannot_solve.problem, NULL);
 		break;
-	case EI_PROBLEM_CONTINUE_WITH_FORCE:
+	case EI_PROBLEM_CONTINUE_WITH_FLAG:
 		break;
 	case EI_PROBLEM_CASCADE_REMOVE:
 		g_list_foreach (pcase->u.cascade.packages,
@@ -1321,7 +1383,7 @@ build_categories_from_problem_list (EazelInstallProblem *problem,
 			}
 		}
 		break;
-		case EI_PROBLEM_CONTINUE_WITH_FORCE:
+		case EI_PROBLEM_CONTINUE_WITH_FLAG:
 		case EI_PROBLEM_INCONSISTENCY:
 		case EI_PROBLEM_CANNOT_SOLVE:
 			break;
@@ -1391,7 +1453,7 @@ eazel_install_problem_step_problem (EazelInstallProblem *problem,
 					 pcase->file_conflict,
 					 &result);
 			break;
-		case EI_PROBLEM_CONTINUE_WITH_FORCE:		
+		case EI_PROBLEM_CONTINUE_WITH_FLAG:		
 			g_message ("%s:%d, conflict = %s", __FILE__, __LINE__, pcase->file_conflict ? "TRUE":"FALSE");
 			add_cannot_solve_case (problem, 
 					       pcase, 
@@ -1399,10 +1461,11 @@ eazel_install_problem_step_problem (EazelInstallProblem *problem,
 			break;
 		case EI_PROBLEM_FORCE_INSTALL_BOTH:
 			g_message ("%s:%d, conflict = %s", __FILE__, __LINE__, pcase->file_conflict ? "TRUE":"FALSE");
-			add_continue_with_force_case (problem, 
-						      pcase, 
-						      pcase->file_conflict,
-						      &result);
+			add_continue_with_flag_case (problem, 
+						     pcase, 
+						     EazelInstallProblemContinueFlag_FORCE,
+						     pcase->file_conflict,
+						     &result);
 			break;
 		case EI_PROBLEM_CASCADE_REMOVE:
 			g_message ("%s:%d, conflict = %s", __FILE__, __LINE__, pcase->file_conflict ? "TRUE":"FALSE");
@@ -1420,10 +1483,11 @@ eazel_install_problem_step_problem (EazelInstallProblem *problem,
 			break;
 		case EI_PROBLEM_FORCE_REMOVE:
 			g_message ("%s:%d, conflict = %s", __FILE__, __LINE__, pcase->file_conflict ? "TRUE":"FALSE");
-			add_continue_with_force_case (problem, 
-						      pcase, 
-						      pcase->file_conflict,
-						      &result);
+			add_continue_with_flag_case (problem, 
+						     pcase, 
+						     EazelInstallProblemContinueFlag_FORCE,
+						     pcase->file_conflict,
+						     &result);
 			break;
 		case EI_PROBLEM_INCONSISTENCY:
 			g_message ("%s:%d, conflict = %s", __FILE__, __LINE__, pcase->file_conflict ? "TRUE":"FALSE");
@@ -1451,6 +1515,33 @@ eazel_install_problem_step_problem (EazelInstallProblem *problem,
 /* Given a series of problems, it will remove
    the most important ones, and execute them given 
    a EazelInstall service object */
+
+#ifndef EAZEL_INSTALL_NO_CORBA
+static void
+eazel_install_problem_done (EazelInstallCallback *service,
+			    gboolean result,
+			    gboolean *done)
+{
+	(*done) = TRUE;
+}
+
+static void
+eazel_install_problem_wait_for_completion (EazelInstallProblem *problem,
+					   EazelInstallCallback *service)
+{
+	guint handle;
+	gboolean done = FALSE;
+	handle = gtk_signal_connect (GTK_OBJECT (service), "done", 
+				     GTK_SIGNAL_FUNC (eazel_install_problem_done), 
+				     (gpointer)&done);
+
+	while (!done) {
+		g_main_iteration (TRUE);
+	}
+
+	gtk_signal_disconnect (GTK_OBJECT (service), handle);
+}
+#endif
 
 /*
   FIXME:
@@ -1485,10 +1576,13 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 
 	P_SANITY (problem);
 
+	/* the service_ are used to store the current values */
 	service_force = FALSE; 
 	service_update = FALSE; 
 	service_downgrade = FALSE; 
 	service_uninstall = FALSE;
+
+	/* These are used to set new values */
 	force = FALSE; 
 	update = FALSE; 
 	downgrade = FALSE;
@@ -1528,6 +1622,10 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 	service_downgrade = GNOME_Trilobite_Eazel_Install__get_downgrade (corba_service, &ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
+	force = service_force;
+	update = service_update;
+	downgrade = service_downgrade;
+
 	/* now determine the new parameters */
 	switch (dominant_problem_type) {
 	case EI_PROBLEM_UPDATE:
@@ -1535,15 +1633,25 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 		update = TRUE;
 		downgrade = FALSE;
 		break;
-	case EI_PROBLEM_CONTINUE_WITH_FORCE:		
-		/* FIXME
-		   this is a complete hack to make the installer
-		   work without force installing */
-#ifdef EAZEL_INSTALL_NO_CORBA		
-		eazel_install_set_ignore_file_conflicts (service, TRUE);
-#else /* EAZEL_INSTALL_NO_CORBA */
-		GNOME_Trilobite_Eazel_Install__set_ignore_file_conflicts (corba_service, TRUE, &ev);
-#endif /* EAZEL_INSTALL_NO_CORBA */
+	case EI_PROBLEM_CONTINUE_WITH_FLAG: {
+		GList *iterator;
+
+		for (iterator = dominant_problems; iterator; iterator = g_list_next (iterator)) {
+			EazelInstallProblemCase *pcase = (EazelInstallProblemCase*)iterator->data;
+			switch (pcase->u.continue_with_flag.flag) {
+			case EazelInstallProblemContinueFlag_FORCE:
+				force = TRUE;
+				break;
+			case EazelInstallProblemContinueFlag_UPGRADE:
+				update = TRUE;
+				break;
+			case EazelInstallProblemContinueFlag_DOWNGRADE:
+				downgrade = TRUE;
+				break;
+			}
+		}
+		break;
+	}
 	case EI_PROBLEM_FORCE_INSTALL_BOTH:
 		force = TRUE;
 		update = TRUE;
@@ -1574,9 +1682,9 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 	eazel_install_set_update (service, update);
 	eazel_install_set_downgrade (service, downgrade);
 #else /* EAZEL_INSTALL_NO_CORBA */
-	GNOME_Trilobite_Eazel_Install__set_force (corba_service, service_force, &ev);
-	GNOME_Trilobite_Eazel_Install__set_update (corba_service, service_update, &ev);
-	GNOME_Trilobite_Eazel_Install__set_downgrade (corba_service, service_downgrade, &ev);
+	GNOME_Trilobite_Eazel_Install__set_force (corba_service, force, &ev);
+	GNOME_Trilobite_Eazel_Install__set_update (corba_service, update, &ev);
+	GNOME_Trilobite_Eazel_Install__set_downgrade (corba_service, downgrade, &ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
 	/* do we add any of the usergiven cateogries ? */
@@ -1589,7 +1697,7 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 			final_categories = g_list_copy (categories);
 		}
 		break;
-	case EI_PROBLEM_CONTINUE_WITH_FORCE:
+	case EI_PROBLEM_CONTINUE_WITH_FLAG:
 		if (service_uninstall) {
 			if (!categories) {
 				final_categories = categorydata_list_copy (*uninstall_categories);
@@ -1634,7 +1742,7 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 
 	/* fire it off */
 	switch (dominant_problem_type) {
-	case EI_PROBLEM_CONTINUE_WITH_FORCE:
+	case EI_PROBLEM_CONTINUE_WITH_FLAG:
 		if (service_uninstall) {
 #ifdef EAZEL_INSTALL_NO_CORBA
 			eazel_install_uninstall_packages (service, final_categories, root);
@@ -1674,6 +1782,10 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 		g_warning ("%s:%d: should not be reached", __FILE__, __LINE__);
 		break;
 	}
+
+#ifndef EAZEL_INSTALL_NO_CORBA 
+	eazel_install_problem_wait_for_completion (problem, service);
+#endif
 
 #ifdef EAZEL_INSTALL_NO_CORBA
 	eazel_install_set_force (service, service_force);

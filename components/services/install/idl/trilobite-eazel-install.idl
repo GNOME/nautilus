@@ -31,9 +31,18 @@ module Trilobite {
 			CIRCULAR_DEPENDENCY   /* bad: two packages are fighting it out */
 		};
 
+		enum PackageModificationStatus {
+			UNTOUCHED,
+			INSTALLED,
+			UNINSTALLED,
+			UPGRADED,
+			DOWNGRADED
+		};
+
 		enum Operation {
 			OPERATION_INSTALL,
-			OPERATION_UNINSTALL
+			OPERATION_UNINSTALL,
+			OPERATION_REVERT
 		};
 		
 		enum ProtocolEnum {
@@ -129,6 +138,8 @@ module Trilobite {
 			*/
 			PackageStatusEnum status;
 
+			PackageModificationStatus modify_status;
+
 			sequence <PackageDependencyStruct> depends;
 			sequence <PackageBreaksStruct> breaks;
 			sequence <string> modifies;	/* MD5 identifiers */
@@ -175,7 +186,8 @@ module Trilobite {
 
 			/* Called after download is complete, and before the (un)install begins.
 			   Typically while heating up RPM */
-			boolean preflight_check (in PackageDataStructList package_tree,
+			boolean preflight_check (in Operation op,
+						 in PackageDataStructList package_tree,
 						 in long total_size, 
 						 in long num_packages);
 			
@@ -254,6 +266,7 @@ module Trilobite {
 
 			/* These are for installing/uninstalling specific packages */
 /*
+  This is for bug 5267
 			oneway void prepare_operation (in PackageDataStructList packages,
 						       in string root,
 						       in Operation op,

@@ -1175,6 +1175,10 @@ eazel_install_install_packages (EazelInstall *service,
 	trilobite_debug ("eazel_install_install_packages (..., %d cats, %s)", 
 			 g_list_length (categories),
 			 root);
+	trilobite_debug ("eazel_install_install_packages (update = %d, downgrade = %d, force = %d)",
+			 eazel_install_get_update (service),
+			 eazel_install_get_downgrade (service),
+			 eazel_install_get_force (service));
 
 #ifndef EAZEL_INSTALL_SLIM
 	/* we're about to call g_main_iteraton sometimes, so grab a ref on ourself to avoid vanishing. */
@@ -1202,7 +1206,7 @@ eazel_install_install_packages (EazelInstall *service,
 			g_warning (_("Install failed"));
 		} 
 		
-		trilobite_debug ("service->private->downloaded_files = 0x%p", 
+		trilobite_debug ("service->private->downloaded_files = %p", 
 				 (unsigned int)service->private->downloaded_files);
 		
 		g_free (service->private->cur_root);
@@ -1419,8 +1423,8 @@ eazel_install_init_transaction (EazelInstall *service)
 	service->private->transaction = NULL;
 
 	/* Null the list of files met in the transaction */
-	g_list_free (service->private->transaction);
-	service->private->transaction = NULL;
+	g_list_free (service->private->failed_packages);
+	service->private->failed_packages = NULL;
 }
 
 /************************************************
@@ -1689,13 +1693,23 @@ eazel_install_emit_preflight_check_default (EazelInstall *service,
 	CORBA_Environment ev;
 	CORBA_boolean result = FALSE;
 	GNOME_Trilobite_Eazel_PackageDataStructList *package_tree;
+	GNOME_Trilobite_Eazel_Operation corba_op;
 
 	CORBA_exception_init (&ev);
 	EAZEL_INSTALL_SANITY_VAL (service, FALSE);
 
+	if (service->private->revert) {
+		corba_op = GNOME_Trilobite_Eazel_OPERATION_REVERT;
+	} else if (eazel_install_get_uninstall (service)==TRUE) {
+		corba_op = GNOME_Trilobite_Eazel_OPERATION_UNINSTALL;		
+	} else {
+		corba_op = GNOME_Trilobite_Eazel_OPERATION_INSTALL;
+	} 
+
 	if (service->callback != CORBA_OBJECT_NIL) {
 		package_tree = corba_packagedatastructlist_from_packagedata_tree (packages);
 		result = GNOME_Trilobite_Eazel_InstallCallback_preflight_check (service->callback, 
+										corba_op,
 										package_tree,
 										total_bytes,
 										total_packages, 

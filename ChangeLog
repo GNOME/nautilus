@@ -1,3 +1,91 @@
+2001-02-13  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	reviewed by: Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (eazel_file_conflict_check_signal),
+	(eazel_file_uniqueness_check_signal),
+	(eazel_feature_consistency_check_signal), (something_failed),
+	(eazel_preflight_check_signal), (dep_check), (md5_check_failed),
+	(delete_files):
+	Added --silent, suppresses random spewage.
+	Added autocont, so if there was multiple problems, answering y to
+	first "continue y/n ?" will answer y to all.
+	Fixed for the modified preflight signal.
+	
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagedatastruct_fill_from_packagedata),
+	(packagedata_from_corba_packagedatastruct):
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_preflight_check), (eazel_install_callback_class_initialize):
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	Changed preflight to take the operation type as argument.
+	Added modification status to the corba version of package data.
+	
+	* components/services/install/lib/eazel-install-logic2.c:
+	(prune_failed_packages_helper),
+	(eazel_install_check_existing_packages), (get_softcat_info),
+	(is_satisfied), (check_dependencies_foreach),
+	(do_file_conflict_check), (execute),
+	(eazel_uninstall_upward_traverse), (install_packages):
+	Fixed bug 3511, 4502 (libeazelinstall part, view still needs
+	stuff).
+	
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_install_packages), (eazel_install_init_transaction),
+	(eazel_install_emit_preflight_check_default):
+	More debug spewage.
+	Fixed cut'n'paste bug in init_transaction.
+	Updated preflight signal.
+	
+	* components/rpmview/nautilus-rpm-view-install.c
+	* components/services/install/nautilus-view/nautilus-service-install-view.c
+	Updated preflight signal.
+
+	* components/services/install/lib/eazel-install-problem.h:
+	* components/services/install/lib/eazel-install-problem.c:
+	(get_detailed_messages_breaks_foreach),
+	(get_detailed_messages_foreach), (compare_problem_case),
+	(add_continue_with_flag_case), (add_force_install_both_case),
+	(add_force_remove_case), (get_detailed_cases_foreach),
+	(eazel_install_problem_case_to_string),
+	(eazel_install_problem_case_foreach_destroy),
+	(build_categories_from_problem_list),
+	(eazel_install_problem_step_problem), (eazel_install_problem_done),
+	(eazel_install_problem_wait_for_completion),
+	(eazel_install_problem_handle_cases):
+	s/Fuckup/Feature dependency/
+	Lots of improvement.
+	Change some cases.
+	Did stuff...
+	Added cases of "cancelling package", "continue with flag",
+	"invalid".
+	Made EazelInstallProblem wait for the operation to complete, as
+	not to confuse the service object by starting it and resetting
+	values.
+	
+	
+	* components/services/install/lib/eazel-package-system-types.h:
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_is_installed), (eazel_package_system_verify):
+	* components/services/install/lib/eazel-package-system.h:
+	* components/services/install/lib/eazel-package-system-private.h:
+	* components/services/install/lib/eazel-package-system-rpm3-private
+	.h:
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(rpmmonitorpiggybag_new), (eazel_package_system_rpm3_verify_impl),
+	(eazel_package_system_rpm3_verify):
+	* components/services/install/lib/eazel-package-system-skeleton.c:
+	(eazel_package_system_skeleton_verify):
+	Fixed 6494, also made verify return boolean, propageted change
+	down throughout the hierachy.
+	
+	* components/services/install/lib/eazel-package-system-types.c:
+	(eazel_install_gtk_marshal_BOOL__ENUM_POINTER_INT_INT):
+	New signal for preflight.
+
 2001-02-14  Eric Fischer <eric@eazel.com>
 
 	This is a bunch of changes leading up to Bug 6515, so
@@ -113,7 +201,7 @@
 	(nautilus_property_browser_update_contents):
 	Set the "never_smooth" attribute of the viewports to FALSE so that
 	the can be smooth.
-	
+
 2001-02-13  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* test/test-nautilus-glyph.c: (main):

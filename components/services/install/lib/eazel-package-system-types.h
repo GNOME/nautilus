@@ -421,6 +421,10 @@ void eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT (GtkObject 
 								      GtkSignalFunc func,
 								      gpointer func_data, GtkArg * args);
 
+void eazel_install_gtk_marshal_BOOL__ENUM_POINTER_INT_INT (GtkObject * object,
+							   GtkSignalFunc func,
+							   gpointer func_data, GtkArg * args);
+
 char *packagedata_dump (const PackageData *package, gboolean deep);
 
 #ifdef __cplusplus

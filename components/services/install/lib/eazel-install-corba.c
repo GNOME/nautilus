@@ -49,7 +49,6 @@ typedef struct {
 	EazelInstall *object;
 } impl_POA_GNOME_Trilobite_Eazel_Install;
 
-
 static void 
 impl_Eazel_Install_install(impl_POA_GNOME_Trilobite_Eazel_Install *servant,
 			   const CORBA_char *package_list,

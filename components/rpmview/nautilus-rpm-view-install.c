@@ -377,8 +377,12 @@ delete_files (EazelInstallCallback *service,
 
 /* we don't really need this confirmation stage */
 static gboolean
-preflight_check (EazelInstallCallback *cb, const GList *packages,
-		 int total_bytes, int total_packages, void *unused)
+preflight_check (EazelInstallCallback *cb, 
+		 EazelInstallCallbackOperation op,
+		 const GList *packages,
+		 int total_bytes, 
+		 int total_packages, 
+		 void *unused)
 {
 	return TRUE;
 }

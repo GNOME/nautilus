@@ -43,6 +43,12 @@ extern "C" {
 typedef struct _EazelInstallCallback EazelInstallCallback;
 typedef struct _EazelInstallCallbackClass EazelInstallCallbackClass;
 
+typedef enum EazelInstallCallbackOperation {
+	EazelInstallCallbackOperation_INSTALL,
+	EazelInstallCallbackOperation_UNINSTALL,
+	EazelInstallCallbackOperation_REVERT
+} EazelInstallCallbackOperation;
+
 struct _EazelInstallCallbackClass 
 {
 	BonoboObjectClass parent_class;
@@ -52,6 +58,7 @@ struct _EazelInstallCallbackClass
 
 	/* Called after download and before (un)install_progress */
 	gboolean (*preflight_check) (EazelInstallCallback *service, 
+				     EazelInstallCallbackOperation op,
 				     const GList *packages,
 				     int total_size, 
 				     int num_packages);

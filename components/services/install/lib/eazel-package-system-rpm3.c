@@ -123,7 +123,7 @@ rpmmonitorpiggybag_new (EazelPackageSystemRpm3 *system,
 #ifdef USE_PERCENT
 	lc = localeconv ();
 	pig.separator = *(lc->decimal_point);
-	info (system, "I am in in a %c country",  pig.separator);
+	info (system, "decimal seperator is '%c'",  pig.separator);
 	pig.state = 1;
 	pig.bytes_read_in_line = 0;
 	pig.line[0] = '\0';
@@ -1527,7 +1527,7 @@ eazel_package_system_rpm3_uninstall (EazelPackageSystemRpm3 *system,
  Verify implemementation
 *************************************************************/
 
-static void
+static gboolean
 eazel_package_system_rpm3_verify_impl (EazelPackageSystemRpm3 *system, 
 				       const char *root,
 				       PackageData *package,
@@ -1535,8 +1535,10 @@ eazel_package_system_rpm3_verify_impl (EazelPackageSystemRpm3 *system,
 				       gboolean *cont)
 {
 	unsigned int i;
-	int result;
+	int v_result;
 	unsigned long infoblock[EAZEL_PACKAGE_SYSTEM_PROGRESS_LONGS];
+	gboolean result;
+	char *p_name = packagedata_get_readable_name (package);
 
 	g_assert (package->packsys_struc);
 
@@ -1552,8 +1554,12 @@ eazel_package_system_rpm3_verify_impl (EazelPackageSystemRpm3 *system,
 						   package);
 	/* abort if signal returns false */
 	if (*cont == FALSE) {
-		return;
+		g_free (p_name);
+		return FALSE;
 	}
+
+	result = TRUE;
+
 	for (i = 0; i < g_list_length (package->provides); i++) {
 		int res;
 		/* next file... */
@@ -1563,23 +1569,26 @@ eazel_package_system_rpm3_verify_impl (EazelPackageSystemRpm3 *system,
 		info (system, "checking file %d/%d \"%s\" from \"%s\"", 
 		      infoblock[0], g_list_length (package->provides),
 		      (char*)((g_list_nth (package->provides, i))->data),
-		      package->name);
+		      p_name);
 
 		(*cont) = eazel_package_system_emit_progress (EAZEL_PACKAGE_SYSTEM (system), 
 							      EAZEL_PACKAGE_SYSTEM_OPERATION_VERIFY,
 							      package, 
-							      infoblock);
-		/* abort if signal returns false */
+							      infoblock);		/* abort if signal returns false */
 		if (*cont == FALSE) {
+			result = FALSE;
 			break;
 		}
-		res = rpmVerifyFile ("", (Header)package->packsys_struc, i, &result, 0);
-		if (res!=0) {
-			fail (system, "%d failed", i);
+		res = rpmVerifyFile ("", (Header)package->packsys_struc, i, &v_result, RPMVERIFY_NONE);
+		if (v_result!=0) {
+			fail (system, "file %d (%s) failed", i,
+			      (char*)((g_list_nth (package->provides, i))->data));
 			(*cont) = eazel_package_system_emit_failed (EAZEL_PACKAGE_SYSTEM (system), 
 								    EAZEL_PACKAGE_SYSTEM_OPERATION_VERIFY,
 								    package);
 			
+			result = FALSE;
+
 			/* abort if signal returns false */
 			if (*cont == FALSE) {
 				break;
@@ -1596,6 +1605,8 @@ eazel_package_system_rpm3_verify_impl (EazelPackageSystemRpm3 *system,
 							 package);
 		/* no need to check, called will abort if *cont == FALSE */
 	}
+	g_free (p_name);
+	return result;
 }
 
 static unsigned long
@@ -1610,7 +1621,7 @@ get_num_of_files_in_packages (GList *packages)
 	return result;
 }
 
-void                 
+gboolean
 eazel_package_system_rpm3_verify (EazelPackageSystemRpm3 *system, 
 				  const char *dbpath,
 				  GList* packages)
@@ -1619,6 +1630,7 @@ eazel_package_system_rpm3_verify (EazelPackageSystemRpm3 *system,
 	char *root = ""; /* FIXME: fill this using dbpath */
 	unsigned long info[4];
 	gboolean cont = TRUE;
+	gboolean result = TRUE;
 
 	info[0] = 0;
 	info[1] = g_list_length (packages);
@@ -1631,12 +1643,15 @@ eazel_package_system_rpm3_verify (EazelPackageSystemRpm3 *system,
 	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack = (PackageData*)iterator->data;
 		info[0] ++;
-		eazel_package_system_rpm3_verify_impl (system, root, pack, info, &cont);
+		if (eazel_package_system_rpm3_verify_impl (system, root, pack, info, &cont) == FALSE) {
+			result = FALSE;
+		}
 		if (cont == FALSE) {
 			break;
 		}
 	}
 	eazel_package_system_rpm3_close_dbs (system);
+	return result;
 }
 
 /************************************************************

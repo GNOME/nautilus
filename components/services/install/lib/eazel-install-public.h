@@ -258,7 +258,7 @@ type eazel_install_get_##name (EazelInstall *service) { \
 void eazel_install_set_##name (EazelInstall *service, \
                                          const type name)
 
-#define ei_mutator_impl(name, type,var) \
+#define ei_mutator_impl(name, type, var) \
 void eazel_install_set_##name (EazelInstall *service, \
                                          type name) { \
         EAZEL_INSTALL_SANITY (service); \

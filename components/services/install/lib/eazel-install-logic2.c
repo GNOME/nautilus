@@ -197,7 +197,9 @@ prune_failed_packages_helper (EazelInstall *service,
 #if EI2_DEBUG & 0x4
 		trilobite_debug ("subpruner kill root %s because of %s", root->name, pack->name);
 #endif
-		(*result) = g_list_prepend (*result, root);
+		if (g_list_find (*result, root)==NULL) {
+			(*result) = g_list_prepend (*result, root);
+		}
 	} else {
 		for (iterator = pack->depends; iterator; iterator = g_list_next (iterator)) {
 			PackageDependency *dep = PACKAGEDEPENDENCY (iterator->data);
@@ -207,6 +209,10 @@ prune_failed_packages_helper (EazelInstall *service,
 		}
 	}
 }
+
+/* If the calls to prune_failed_packages are removed, no
+  install_failed signals are emitted, and the client gets the entire
+  tree list.  This is for bug 5267 */
 
 void 
 prune_failed_packages (EazelInstall *service, 
@@ -255,6 +261,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 				       PackageData *pack)
 {
 	GList *existing_packages;
+	GList *borked_packages = NULL;
 	EazelInstallStatus result;
 
 #if EI2_DEBUG & 0x4
@@ -270,55 +277,79 @@ eazel_install_check_existing_packages (EazelInstall *service,
 	if (existing_packages) {
 		/* Get the existing package, set it's modify flag and add it */
 		GList *iterator;
+		PackageData *survivor = NULL;
+		gboolean abort = FALSE;
+		int res;
+
 		if (g_list_length (existing_packages)>1) {
 			trilobite_debug ("there are %d existing packages called %s",
 					 g_list_length (existing_packages),
 					 pack->name);
+			/* Verify them all, to find one that is not damaged. Mark the rest
+			   as invalid so the client can suggest the user should delete them */
+			for (iterator = existing_packages; iterator; iterator = g_list_next (iterator)) {
+				PackageData *existing_package = PACKAGEDATA (iterator->data);
+				char *name = packagedata_get_readable_name (existing_package);
+				GList *foo = NULL;
+				
+				foo = g_list_prepend (foo, existing_package);
+				if (eazel_package_system_verify (service->private->package_system,
+								 service->private->cur_root,
+								 foo)) {
+					g_message ("%s is ok", name);
+					if (survivor == NULL) {
+						survivor = existing_package;
+					} else {
+						trilobite_debug ("This sucks, two of the packages are intact!");
+						abort = TRUE;
+						break;
+					}
+				} else {
+					g_message ("%s is NOT ok", name);
+					existing_package->status = PACKAGE_INVALID;
+					/* I add the borked packages later, so they'll show up
+					   earlier in the tree */
+					borked_packages = g_list_prepend (borked_packages, existing_package);
+				}
+				g_list_free (foo);
+				g_free (name);
+			}
+		} else {
+			survivor = PACKAGEDATA (g_list_first (existing_packages)->data);
+		}
+		
+		if (abort) {
 			trilobite_debug ("*********************************************************");
 			trilobite_debug ("This is a bad bad case, see bug 3511");
 			trilobite_debug ("To circumvent this problem, as root, execute this command");
 			trilobite_debug ("(which is dangerous by the way....)");
 			trilobite_debug ("rpm -e --nodeps `rpm -q %s`", pack->name);
 			trilobite_debug ("Or wait for the author to fix bug 3511");
-			/* FIXME bugzilla.eazel.com 3511
-			   g_assert_not_reached ();
-			*/
+			/* FIXME bugzilla.eazel.com 3511 */
+			g_assert_not_reached ();
 		}
-		for (iterator = existing_packages; iterator; iterator = g_list_next (iterator)) {
-			PackageData *existing_package = (PackageData*)iterator->data;
-			int res;
 
-			if (g_list_find_custom (pack->modifies, 
-						existing_package->name,
-						(GCompareFunc)eazel_install_package_name_compare)) {
-#if EI2_DEBUG & 0x4
-				trilobite_debug ("%s already marked as modified", existing_package->name);
-#endif
-				gtk_object_unref (GTK_OBJECT (existing_package));
-				existing_package = NULL;
-				continue;
-			}
-
+		if (survivor) {
 			g_assert (pack->version);
-			g_assert (existing_package->version);
+			g_assert (survivor->version);
 
 			res = eazel_package_system_compare_version (service->private->package_system,
 								    pack->version, 
-								    existing_package->version);
+								    survivor->version);
 			
 			/* check against minor version */
 			if (res==0) {
 #if EI2_DEBUG & 0x4
 				trilobite_debug ("versions are equal (%s), comparing minors", pack->version);
 #endif
-				if (pack->minor && existing_package->minor) {
+				if (pack->minor && survivor->minor) {
 #if EI2_DEBUG & 0x4
 					trilobite_debug ("minors are %s for new and %s for installed)", 
-							 pack->minor, existing_package->minor);
+							 pack->minor, survivor->minor);
 #endif
 					res = eazel_package_system_compare_version (service->private->package_system,
-										    pack->minor, existing_package->minor);
-				} else if (!pack->minor && existing_package->minor) {
+										    pack->minor, survivor->minor);
+				} else if (!pack->minor && survivor->minor) {
 					/* If the given packages does not have a minor,
 					   but the installed has, assume we're fine */
 					/* FIXME: bugzilla.eazel.com
@@ -334,11 +365,11 @@ eazel_install_check_existing_packages (EazelInstall *service,
 
 			/* Set the modify_status flag */
 			if (res == 0) {
-				existing_package->modify_status = PACKAGE_MOD_UNTOUCHED;
+				survivor->modify_status = PACKAGE_MOD_UNTOUCHED;
 			} else if (res > 0) {
-				existing_package->modify_status = PACKAGE_MOD_UPGRADED;
+				survivor->modify_status = PACKAGE_MOD_UPGRADED;
 			} else {
-				existing_package->modify_status = PACKAGE_MOD_DOWNGRADED;
+				survivor->modify_status = PACKAGE_MOD_DOWNGRADED;
 			}
 
 			/* Calc the result */
@@ -354,42 +385,42 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			/* Debug output */ 
 			switch (result) {
 			case EAZEL_INSTALL_STATUS_QUO: {
-				if (pack->minor && existing_package->minor) {
+				if (pack->minor && survivor->minor) {
 					trilobite_debug (_("%s-%s version %s-%s already installed"), 
 							 pack->name, pack->minor, 
-							 existing_package->version, existing_package->minor);
+							 survivor->version, survivor->minor);
 				} else {
 					trilobite_debug (_("%s version %s already installed"), 
 							 pack->name, 
-							 existing_package->version);
+							 survivor->version);
 				}
 			} 
 			break;
 			case EAZEL_INSTALL_STATUS_UPGRADES: {
 				/* This is certainly ugly as helll */
-				if (pack->minor && existing_package->minor) {
+				if (pack->minor && survivor->minor) {
 					trilobite_debug (_("%s upgrades from version %s-%s to %s-%s"),
 							 pack->name, 
-							 existing_package->version, existing_package->minor, 
+							 survivor->version, survivor->minor, 
 							 pack->version, pack->minor);
 				} else {
 					trilobite_debug (_("%s upgrades from version %s-%s to %s-%s"),
 							 pack->name, 
-							 existing_package->version, existing_package->minor, 
+							 survivor->version, survivor->minor, 
 							 pack->version, pack->minor);
 				}
 			}
 			break;
 			case EAZEL_INSTALL_STATUS_DOWNGRADES: {
-				if (pack->minor && existing_package->minor) {
+				if (pack->minor && survivor->minor) {
 					trilobite_debug (_("%s downgrades from version %s-%s to %s-%s"),
 							 pack->name, 
-							 existing_package->version, existing_package->minor, 
+							 survivor->version, survivor->minor, 
 							 pack->version, pack->minor);
 				} else {
 					trilobite_debug (_("%s downgrades from version %s to %s"),
 							 pack->name, 
-							 existing_package->version, 
+							 survivor->version, 
 							 pack->version);
 				}
 			}
@@ -397,22 +428,44 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			default:
 				break;
 			}
-#endif				
+#endif		
+/*
+			if (g_list_find_custom (pack->modifies, 
+						survivor->name,
+						(GCompareFunc)eazel_install_package_name_compare)) {
+#if EI2_DEBUG & 0x4
+				trilobite_debug ("%s already marked as modified", survivor->name);
+#endif
+				gtk_object_unref (GTK_OBJECT (survivor));
+				survivor = NULL;
+				continue;
+			}
+*/
+		
 			/* Set modifies list */
 			if (result != EAZEL_INSTALL_STATUS_QUO) {
 #if EI2_DEBUG & 0x4
 				trilobite_debug ("%p %s modifies %p %s",
 						 pack, pack->name,
-						 existing_package, existing_package->name);
+						 survivor, survivor->name);
 #endif
 
-				packagedata_add_pack_to_modifies (pack, existing_package);
-				existing_package->status = PACKAGE_RESOLVED;
+				packagedata_add_pack_to_modifies (pack, survivor);
+				survivor->status = PACKAGE_RESOLVED;
 			} else {
 				pack->status = PACKAGE_ALREADY_INSTALLED;
 			}
-			gtk_object_unref (GTK_OBJECT (existing_package));
+			gtk_object_unref (GTK_OBJECT (survivor));
 		}
+
+		/* Now add the borked packages */
+		for (iterator = borked_packages; iterator; iterator = g_list_next (iterator)) {
+			PackageData *existing_package = PACKAGEDATA (iterator->data);
+			packagedata_add_pack_to_modifies (pack, existing_package);
+			gtk_object_unref (GTK_OBJECT (existing_package));
+
+		}
+		g_list_free (borked_packages);
 
 		/* Free the list structure from _simple_query */
 		g_list_free (existing_packages);
@@ -428,6 +481,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 					 pack->name, 
 					 pack->version);
 		}
+
 #endif
 	}
 
@@ -517,25 +571,39 @@ get_softcat_info (EazelInstall *service,
 			(*package) = p1;
 		} else {
 			EazelInstallStatus status;
+			gboolean accept = TRUE;
 
 			status = eazel_install_check_existing_packages (service, *package);
 			switch (status) {
 			case EAZEL_INSTALL_STATUS_NEW_PACKAGE:
+				accept = TRUE;
+				break;
 			case EAZEL_INSTALL_STATUS_UPGRADES:
+				if (eazel_install_get_update (service)) {
+					accept = TRUE;
+				} else {
+					accept = FALSE;
+				}
+				break;
+			case EAZEL_INSTALL_STATUS_DOWNGRADES:
+				if (eazel_install_get_downgrade (service)) {
+					accept = TRUE;
+				} else {
+					accept = FALSE;
+				}
+				break;
+			case EAZEL_INSTALL_STATUS_QUO:
+				accept = FALSE;
+				break;
+			}
+			if (accept) {
 				gtk_object_ref (GTK_OBJECT (*package));
 				g_hash_table_insert (service->private->dedupe_hash, 
 						     (*package)->md5, 
 						     *package);
-				break;
-			case EAZEL_INSTALL_STATUS_DOWNGRADES:
-			case EAZEL_INSTALL_STATUS_QUO:
+			} else {
 				(*package)->status = PACKAGE_ALREADY_INSTALLED;
-/*
-				eazel_install_emit_install_failed (service, *package);
-				gtk_object_unref (GTK_OBJECT (*package));
-*/
 				result = PACKAGE_SKIPPED;
-				break;
 			}
 		}
 	}
@@ -706,9 +774,12 @@ is_satisfied (EazelInstall *service,
 	key = g_strdup_printf ("%s/%s/%s", dep->package->name, sense_str,
 			       (dep->version != NULL ? dep->version : ""));
 
-	if (key != NULL) {
+	if (key != NULL && strcmp (key, "(null)//")!=0) {
 		previous_check_state = GPOINTER_TO_INT (g_hash_table_lookup (service->private->dep_ok_hash, key));
 	}
+#if EI2_DEBUG & 0x4
+	trilobite_debug ("\t--> key is %s", key);
+#endif
 	switch (previous_check_state) {
 	case DEPENDENCY_OK: {
 #if EI2_DEBUG & 0x4
@@ -861,6 +932,19 @@ check_dependencies_foreach (PackageData *package,
 	g_assert (package);
 	g_assert (IS_PACKAGEDATA (package));
 
+	/*
+	  FIXME: bugzilla.eazel.com 6485
+	  This is the initial fix for 6485, but I'll also need
+	  to evaporate ->depends, lest the next depcheck step begins
+	  depchekking the packages in ->depends, and treat them like
+	  new installs which is definitely non-optimial (actually 
+	  it's really bad)
+
+	if (package->status == PACKAGE_CANCELLED) {
+		return;
+	}
+	*/
+
 #if EI2_DEBUG & 0x4
 	trilobite_debug ("check deps for %p %s", package, package->name);
 #else
@@ -882,7 +966,7 @@ check_dependencies_foreach (PackageData *package,
 			g_free (name_a);
 			g_free (name_b);
 
-			package->status = PACKAGE_INVALID;
+			package->status = PACKAGE_CANCELLED;
 			remove = g_list_prepend (remove, dep);
 		} else {
 			if (is_satisfied (service, dep)) {
@@ -1598,7 +1682,7 @@ do_file_conflict_check (EazelInstall *service,
 			GList **extra_packages)
 {
 	check_no_two_packages_has_same_file (service, *packages);
-	prune_failed_packages (service, packages);
+	prune_failed_packages (service, packages); 
 
 	check_conflicts_against_already_installed_packages (service, *packages);
 	check_tree_for_conflicts (service, packages, extra_packages);
@@ -1792,6 +1876,9 @@ execute (EazelInstall *service,
 		eazel_install_save_transaction_report (service);
 		result = TRUE;
 	} 
+
+	eazel_install_init_transaction (service);
+
 	g_list_free (flat_packages);
 	
 	return result;
@@ -1929,6 +2016,7 @@ debug_revert (PackageData *pack, char *str)
 /***********************************************************************************/
 /* This is the uninstall dep check majick */
 
+/*
 static int
 compare_break_to_package_by_name (PackageBreaks *breakage, PackageData *pack)
 {
@@ -1936,6 +2024,7 @@ compare_break_to_package_by_name (PackageBreaks *breakage, PackageData *pack)
 
 	return eazel_install_package_compare (broken_package, pack);
 }
+*/
 
 /* This traverses upwards in the deptree from the initial list, and adds
    all packages that will break to "breaks" */
@@ -1985,26 +2074,28 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 			
 			requiredby->status = PACKAGE_DEPENDENCY_FAIL;
 			pack->status = PACKAGE_BREAKS_DEPENDENCY;
-			trilobite_debug ("logic.c: %p %s requires %p %s", 
+			trilobite_debug ("%p %s requires %p %s", 
 					 requiredby, requiredby->name, 
 					 pack, pack->name);
 
 			/* If the broken package is in packages, just continue */
 			if (g_list_find_custom (*packages, requiredby,
 						(GCompareFunc)eazel_install_package_compare)) {
+#if EI2_DEBUG & 0x4
 				trilobite_debug ("skip %p %s", requiredby, requiredby->name);
+#endif
 				continue;
 			}
 
 			/* only add to breaks if it's a new breakage */
-			if (g_list_find_custom (*breaks, (gpointer)requiredby, 
-						(GCompareFunc)compare_break_to_package_by_name)) {
-				(*breaks) = g_list_prepend ((*breaks), requiredby);
-			}
-			
-			/* Create a FeatureMissing breakage */
-			{
+			if (g_list_find_custom (*breaks, 
+						(gpointer)requiredby, 
+						(GCompareFunc)eazel_install_package_compare) == NULL) {
 				PackageFeatureMissing *breakage = packagefeaturemissing_new ();
+#if EI2_DEBUG & 0x4
+				trilobite_debug ("Adding %p %s to breaks", requiredby, requiredby->name);
+#endif
+				(*breaks) = g_list_prepend ((*breaks), requiredby);
 				packagebreaks_set_package (PACKAGEBREAKS (breakage), requiredby);
 				packagedata_add_to_breaks (pack, PACKAGEBREAKS (breakage));
 				gtk_object_unref (GTK_OBJECT (breakage));
@@ -2171,6 +2262,9 @@ install_packages (EazelInstall *service, GList *categories)
 			int flags = EAZEL_PACKAGE_SYSTEM_OPERATION_UPGRADE | EAZEL_PACKAGE_SYSTEM_OPERATION_DOWNGRADE | EAZEL_PACKAGE_SYSTEM_OPERATION_FORCE;
 			gboolean go_ahead = TRUE;
 			
+#if EI2_DEBUG & 0x4
+			trilobite_debug ("emit_preflight returned true");
+#endif	
 			/* FIXME: bugzilla.eazel.com 5722
 			   download could fail, do the download func needs to
 			   be able to fail the operation... */

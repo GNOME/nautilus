@@ -71,7 +71,8 @@ int     arg_dry_run,
 	arg_id,
 	arg_ei2,
 	arg_no_pct,
-	arg_no_auth;
+	arg_no_auth,
+	arg_silent;
 char    *arg_server,
 	*arg_cgi,
 	*arg_config_file,
@@ -88,6 +89,7 @@ int cli_result = 0;
 GList *cases = NULL;
 GList *categories;
 gboolean downloaded_files = FALSE;
+gboolean auto_cont = FALSE;
 
 static const struct poptOption options[] = {
 	{"batch", '\0', POPT_ARG_STRING, &arg_batch, 0, N_("Set the default answer to continue, also default delete to Yes"), NULL},
@@ -111,6 +113,7 @@ static const struct poptOption options[] = {
 	{"revert", 'r', POPT_ARG_NONE, &arg_revert, 0, N_("Revert"), NULL},
 	{"root", '\0', POPT_ARG_STRING, &arg_root, 0, N_("Set root"), NULL},
 	{"server", '\0', POPT_ARG_STRING, &arg_server, 0, N_("Specify server"), NULL},
+	{"silent", '\0', POPT_ARG_NONE, &arg_silent, 0, N_("Dont print too much, just problems and download"), NULL},
 	{"ssl-rename", 's', POPT_ARG_NONE, &arg_ssl_rename, 0, N_("Perform ssl renaming"), NULL},
 	{"test", 't', POPT_ARG_NONE, &arg_dry_run, 0, N_("Test run"), NULL},
 	{"username", '\0', POPT_ARG_STRING, &arg_username, 0, N_("Allow username"), NULL},
@@ -265,7 +268,11 @@ eazel_file_conflict_check_signal (EazelInstallCallback *service,
 				  const PackageData *pack,
 				  gpointer unused)
 {
-	printf ("File conflict checking %s...\n", pack->name);
+	if (!arg_silent) {
+		printf ("File conflict checking %s...\n", pack->name);
+	} else {
+		printf ("."); fflush (stdout);
+	}
 }
 
 static void 
@@ -273,7 +280,11 @@ eazel_file_uniqueness_check_signal (EazelInstallCallback *service,
 				    const PackageData *pack,
 				    gpointer unused)
 {
-	printf ("File uniqueness checking %s...\n", pack->name);
+	if (!arg_silent) {
+		printf ("File uniqueness checking %s...\n", pack->name);
+	} else {
+		printf ("."); fflush (stdout);
+	}
 }
 
 static void 
@@ -281,7 +292,11 @@ eazel_feature_consistency_check_signal (EazelInstallCallback *service,
 					const PackageData *pack,
 					gpointer unused)
 {
-	printf ("Feature consistency checking %s...\n", pack->name);
+	if (!arg_silent) {
+		printf ("Feature consistency checking %s...\n", pack->name);
+	} else {
+		printf ("."); fflush (stdout);
+	}
 }
 
 static void 
@@ -486,10 +501,13 @@ something_failed (EazelInstallCallback *service,
 
 	gtk_object_ref (GTK_OBJECT (pd));
 
+	auto_cont = FALSE;
+
+	if (arg_silent) { printf ("\n"); }
 	if (uninstall) {
-		title = g_strdup_printf ("\nPackage %s failed to uninstall.\n", pd->name);
+		title = g_strdup_printf ("Package %s failed to uninstall.\n", pd->name);
 	} else {
-		title = g_strdup_printf ("\nPackage %s failed to install.\n", pd->name);
+		title = g_strdup_printf ("Package %s failed to install.\n", pd->name);
 	}
 
 	if (arg_debug) {
@@ -506,18 +524,17 @@ something_failed (EazelInstallCallback *service,
 		if (stuff) {
 			GList *it;
 			for (it = stuff; it; it = g_list_next (it)) {
-				fprintf (stdout, "Problem : %s\n", (char*)(it->data));
+				fprintf (stdout, "\t\xB7 Problem : %s\n", (char*)(it->data));
 			}
-		}
-		
-		eazel_install_problem_tree_to_case (problem, pd, uninstall, &cases);
-		stuff = eazel_install_problem_cases_to_string (problem, cases);
-		if (cases) {
+			eazel_install_problem_tree_to_case (problem, pd, uninstall, &cases);
 			stuff = eazel_install_problem_cases_to_string (problem, cases);
-			if (stuff) {
-				GList *it;
-				for (it = stuff; it; it = g_list_next (it)) {
-					fprintf (stdout, "Solution : %s\n", (char*)(it->data));
+			if (cases) {
+				stuff = eazel_install_problem_cases_to_string (problem, cases);
+				if (stuff) {
+					GList *it;
+					for (it = stuff; it; it = g_list_next (it)) {
+						fprintf (stdout, "\t\xB7 Action : %s\n", (char*)(it->data));
+					}
 				}
 			}
 		}
@@ -546,6 +563,7 @@ uninstall_failed (EazelInstallCallback *service,
 
 static gboolean
 eazel_preflight_check_signal (EazelInstallCallback *service, 
+			      EazelInstallCallbackOperation op,
 			      const GList *packages,
 			      int total_bytes,
 			      int total_packages,
@@ -553,14 +571,40 @@ eazel_preflight_check_signal (EazelInstallCallback *service,
 {	
 	const GList *iterator;
 
-	if (cases) return FALSE;
+	if (cases && (total_packages == 0)) {
+		fprintf (stdout, "Cancelling operation\n");
+		return FALSE;
+	}
 
-	fprintf (stdout, "About to %s a total of %d packages, %dKb\n", 
-		 arg_erase ? "uninstall" : arg_revert ? "revert" : "install",
-		 total_packages, total_bytes/1024);
+	if (arg_silent) { printf ("\n"); }
+	switch (op) {
+	case EazelInstallCallbackOperation_INSTALL:
+		fprintf (stdout, _("About to install a total of %d packages, %dKb\n"), 
+			 total_packages, total_bytes/1024);
+		break;
+	case EazelInstallCallbackOperation_UNINSTALL:
+		fprintf (stdout, _("About to uninstall a total of %d packages, %dKb\n"), 
+			 total_packages, total_bytes/1024);
+		break;
+	case EazelInstallCallbackOperation_REVERT:
+		fprintf (stdout, _("About to revert a total of %d packages, %dKb\n"), 
+			 total_packages, total_bytes/1024);
+		break;
+	}
+		
 	for (iterator = packages; iterator; iterator = iterator->next) {
 		PackageData *pack = (PackageData*)iterator->data;
-		tree_helper (service, pack, "", "", 4, NULL);
+		if (arg_debug ) {
+			tree_helper (service, pack, "", "", 4, NULL);
+		} else {
+			char *name = packagedata_get_readable_name (pack);
+			if (pack->depends) {
+				printf ("\t\xB7 %s and dependencies\n", name);
+			} else {
+				printf ("\t\xB7 %s\n", name);
+			}
+			g_free (name);
+		}
 	}
 
 	return TRUE;
@@ -575,7 +619,11 @@ dep_check (EazelInstallCallback *service,
 	char *pack, *needs;
 	pack = packagedata_get_readable_name (package);
 	needs = packagedata_get_readable_name (needs_package);
-	printf ("Dependency : %s needs %s\n", pack, needs);
+	if (!arg_silent) {
+		printf ("Dependency : %s needs %s\n", pack, needs);
+	} else {
+		printf ("."); fflush (stdout);
+	}
 	g_free (pack);
 	g_free (needs);
 }
@@ -586,6 +634,7 @@ md5_check_failed (EazelInstallCallback *service,
 		  const char *actual_md5,
 		  gpointer unused) 
 {
+	if (arg_silent) { printf ("\n"); }
 	fprintf (stdout, "Package %s failed md5 check!\n", package->name);
 	fprintf (stdout, "\tserver MD5 checksum is %s\n", package->md5);
 	fprintf (stdout, "\tactual MD5 checksum is %s\n", actual_md5);
@@ -638,17 +687,28 @@ delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 	gboolean ask_delete = TRUE;
 	gboolean result = TRUE;
 	
-	if (cases) {
-		printf ("continue? (y/n) ");
-		fflush (stdout);
-		if (arg_batch) {			
-			fprintf (stdout, "%s\n", arg_batch);
-			strcpy (answer, arg_batch);
-		} else {
-			fgets (answer, 10, stdin);
-		}
-		if (answer[0] == 'y' || answer[0] == 'Y') {
+	if ((auto_cont && cases) || cases ) {
+		gboolean cont = FALSE;
+
+		if (auto_cont == FALSE) {
+			printf ("continue? (y/n) ");
 			fflush (stdout);
+			if (arg_batch) {			
+				fprintf (stdout, "%s\n", arg_batch);
+				strcpy (answer, arg_batch);
+			} else {
+				fgets (answer, 10, stdin);
+			}
+			if (answer[0] == 'y' || answer[0] == 'Y') {
+				fflush (stdout);
+				cont = TRUE;
+			}
+
+		} else {
+			cont = TRUE;
+		}
+		if (cont) {
+			auto_cont = TRUE;
 			eazel_install_problem_handle_cases (problem, 
 							    service, 
 							    &cases, 
@@ -660,7 +720,7 @@ delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 		} else {
 			eazel_install_problem_case_list_destroy (cases);
 			cases = NULL;
-		}		
+		}
 	} 
 
 	if (downloaded_files && !arg_query && !arg_erase && !arg_file && ask_delete) {

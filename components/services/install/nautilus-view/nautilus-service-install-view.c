@@ -863,8 +863,11 @@ flatten_package_tree (GList *package_list_in, GList **flattened_list)
 }
 
 static gboolean
-nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList *packages,
-					  int total_bytes, int total_packages,
+nautilus_service_install_preflight_check (EazelInstallCallback *cb, 
+					  EazelInstallCallbackOperation op,
+					  const GList *packages,
+					  int total_bytes, 
+					  int total_packages,
 					  NautilusServiceInstallView *view)
 {
 	GtkWidget *dialog;
@@ -892,7 +895,22 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 	show_overall_feedback (view, _("Preparing to download packages..."));
 
 	message = g_string_new ("");
-	message = g_string_append (message, _("These packages are about to be downloaded and installed:\n\n"));
+
+	switch (op) {
+	case EazelInstallCallbackOperation_INSTALL:
+		message = g_string_append (message, 
+					   _("These packages are about to be downloaded and installed:\n\n"));	
+		break;
+	case EazelInstallCallbackOperation_UNINSTALL:
+		message = g_string_append (message, 
+					   _("These packages are about to be uninstalled:\n\n"));	
+		break;
+	case EazelInstallCallbackOperation_REVERT:
+		message = g_string_append (message, 
+					   _("These packages are about to be reverted:\n\n"));	
+		break;
+	}
+
 
 	view->details->download_bytes_total = view->details->download_bytes_sofar = 0;
 	for (iter = g_list_first (package_list); iter != NULL; iter = g_list_next (iter)) {

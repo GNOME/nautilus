@@ -85,7 +85,7 @@ eazel_package_system_skeleton_uninstall (EazelPackageSystemSkeleton *system,
 	/* Code Here */
 }
 
-static void                 
+static gboolean
 eazel_package_system_skeleton_verify (EazelPackageSystemSkeleton *system, 
 				      GList* packages)
 {
@@ -93,6 +93,7 @@ eazel_package_system_skeleton_verify (EazelPackageSystemSkeleton *system,
 	g_assert (EAZEL_IS_PACKAGE_SYSTEM_SKELETON (system));
 	trilobite_debug ("eazel_package_system_skeleton_verify");
 	/* Code Here */
+	return FALSE;
 }
 
 static int

@@ -53,9 +53,9 @@ void eazel_package_system_rpm3_uninstall (EazelPackageSystemRpm3 *system,
 					  const char *dbpath,
 					  GList* packages,
 					  unsigned long flags);
-void eazel_package_system_rpm3_verify (EazelPackageSystemRpm3 *system, 
-				       const char *dbpath,
-				       GList* packages);
+gboolean eazel_package_system_rpm3_verify (EazelPackageSystemRpm3 *system, 
+					   const char *dbpath,
+					   GList* packages);
 
 int eazel_package_system_rpm3_compare_version (EazelPackageSystem *system,
 					       const char *a,

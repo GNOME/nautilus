@@ -61,9 +61,9 @@ typedef void (*EazelPackageSytemUninstallFunc) (EazelPackageSystem*,
 						const char *,
 						GList*, 
 						unsigned long);
-typedef void (*EazelPackageSytemVerifyFunc) (EazelPackageSystem*, 
-					     const char*,
-					     GList*);
+typedef gboolean (*EazelPackageSytemVerifyFunc) (EazelPackageSystem*, 
+						 const char*,
+						 GList*);
 typedef int (*EazelPackageSystemCompareVersionFunc) (EazelPackageSystem*, 
 						     const char *,
 						     const char *);

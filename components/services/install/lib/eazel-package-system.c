@@ -29,6 +29,8 @@
 #include <libtrilobite/trilobite-core-utils.h>
 #include <libtrilobite/trilobite-md5-tools.h>
 
+#define EPS_DEBUG 1
+
 enum {
 	START,
 	END,
@@ -182,6 +184,11 @@ eazel_package_system_is_installed (EazelPackageSystem *package_system,
 	GList *matches;
 	gboolean result = FALSE;
 	
+#if EPS_DEBUG
+	trilobite_debug ("eazel_package_system_is_installed (..., %s, %s, %s, %d)",
+			 name, version, minor, version_sense);
+#endif			 
+
 	matches = eazel_package_system_query (package_system,
 					      dbpath,
 					      (const gpointer)name,
@@ -201,16 +208,16 @@ eazel_package_system_is_installed (EazelPackageSystem *package_system,
 									     minor, 
 									     version_sense)) {
 					result = TRUE;
-#if 0
-					g_message("is_installed (%s, %s, %s, %d) == (%s-%s %d %s-%s) %s", 
-						  name, version, minor, version_sense, 
-						  pack->version, pack->minor,
-						  version_sense, 
-						  version, minor, 
-						  result ? "TRUE" : "FALSE");
-#endif
 					
 				}
+#if EPS_DEBUG
+				g_message("is_installed (%s, %s, %s, %d) == (%s-%s %d %s-%s) %s", 
+					  name, version, minor, version_sense, 
+					  pack->version, pack->minor,
+					  version_sense, 
+					  version, minor, 
+					  result ? "TRUE" : "FALSE");
+#endif
 			}
 		} else {
 			result = TRUE;
@@ -285,14 +292,14 @@ eazel_package_system_uninstall (EazelPackageSystem *system,
 	(*system->private->uninstall) (system, root, packages, flags);
 }
 
-void                 
+gboolean
 eazel_package_system_verify (EazelPackageSystem *system, 
 			     const char *dbpath,
 			     GList* packages)
 {
-	EPS_SANE (system);
+	EPS_SANE_VAL (system, FALSE);
 	g_assert (system->private->verify);
-	(*system->private->verify) (system, dbpath, packages);
+	return (*system->private->verify) (system, dbpath, packages);
 }
 
 int

@@ -1245,6 +1245,29 @@ eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT (GtkObject * obj
 	    GTK_VALUE_INT (args[5]), GTK_VALUE_INT (args[6]),func_data);
 }
 
+typedef gboolean (*GtkSignal_BOOL__ENUM_POINTER_INT_INT) (GtkObject * object,
+							  gint arg1,
+							  gpointer arg2,
+							  gint arg3,
+							  gint arg4,
+							  gpointer user_data);
+void
+eazel_install_gtk_marshal_BOOL__ENUM_POINTER_INT_INT (GtkObject * object,
+						      GtkSignalFunc func,
+						      gpointer func_data, GtkArg * args)
+{
+  GtkSignal_BOOL__ENUM_POINTER_INT_INT rfunc;
+  gboolean *return_val;
+  return_val = GTK_RETLOC_BOOL (args[4]);
+  rfunc = (GtkSignal_BOOL__ENUM_POINTER_INT_INT) func;
+  *return_val = (*rfunc) (object,
+			  GTK_VALUE_ENUM (args[0]),
+			  GTK_VALUE_POINTER (args[1]), 
+			  GTK_VALUE_INT (args[2]),
+			  GTK_VALUE_INT (args[3]),
+			  func_data);
+}
+
 
 static void
 gstr_indent (GString *out, int indent)

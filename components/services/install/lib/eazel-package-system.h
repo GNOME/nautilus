@@ -135,9 +135,9 @@ void                 eazel_package_system_uninstall (EazelPackageSystem *package
 						     const char *dbpath,
 						     GList* packages,
 						     unsigned long flags);
-void                 eazel_package_system_verify (EazelPackageSystem *package_system, 
-						  const char *dbpath,
-						  GList* packages);
+gboolean                 eazel_package_system_verify (EazelPackageSystem *package_system, 
+						      const char *dbpath,
+						      GList* packages);
 int                  eazel_package_system_compare_version (EazelPackageSystem *package_system, 
 							   const char *a,
 							   const char *b);

@@ -55,6 +55,7 @@ extern "C" {
 #define EAZEL_IS_INSTALL_PROBLEM(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_INSTALL_PROBLEM))
 #define EAZEL_IS_INSTALL_PROBLEM_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_INSTALL_PROBLEM))
 	
+typedef enum _EazelInstallProblemContinueFlag EazelInstallProblemContinueFlag;
 typedef enum _EazelInstallProblemEnum EazelInstallProblemEnum;
 typedef struct _EazelInstallProblemCase EazelInstallProblemCase;
 typedef struct _EazelInstallProblemClass EazelInstallProblemClass;
@@ -65,22 +66,32 @@ typedef struct _EazelInstallProblem EazelInstallProblem;
    That ways you cannot add a enum without
    getting compiler borkage to let you know you're
    about to fuck up. */
+
 enum _EazelInstallProblemEnum {
 	EI_PROBLEM_BASE = 0,
 	EI_PROBLEM_UPDATE,                 /* package is in the way, update or remove */
+	EI_PROBLEM_CONTINUE_WITH_FLAG,     /* Ok, just barge ahead with the operation */
 	EI_PROBLEM_REMOVE,                 /* Remove a package might help */
 	EI_PROBLEM_FORCE_INSTALL_BOTH,     /* two packages are fighting it out, install both ? */	
+	EI_PROBLEM_CASCADE_REMOVE,         /* Delete a lot of stuff */
         EI_PROBLEM_FORCE_REMOVE,           /* Okaeh, force remove the package */
 	EI_PROBLEM_CANNOT_SOLVE,           /* The water is too deep */
-	EI_PROBLEM_CASCADE_REMOVE,         /* Delete a lot of stuff */
-	EI_PROBLEM_CONTINUE_WITH_FORCE,    /* Ok, just barge ahead with the operation */
         EI_PROBLEM_INCONSISTENCY           /* There's an inconsistency in the db */ 
+};
+
+enum _EazelInstallProblemContinueFlag {
+	EazelInstallProblemContinueFlag_FORCE = 0x1,
+	EazelInstallProblemContinueFlag_UPGRADE = 0x2,
+	EazelInstallProblemContinueFlag_DOWNGRADE = 0x4
 };
 
 struct _EazelInstallProblemCase {
 	EazelInstallProblemEnum problem;
 	gboolean file_conflict;
 	union {
+		struct {
+			EazelInstallProblemContinueFlag flag;
+		} continue_with_flag;
 		struct {
 			PackageData *pack;
 		} update;
