@@ -1,3 +1,21 @@
+2001-01-17  Rebecca Schulman  <rebecka@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_initialize):
+	Remove some spacing settings that caused the 
+	"More Options", "Fewer Options" and "Find Them"
+	buttons in the search bar too have way too much
+	space beneath them, fixing bug 4917
+	* src/nautilus-window-private.h:
+	Up the minimum width of nautilus so that
+	the search controls are always still
+	readable (from 450 to 480). However,
+	this does not guarantee that on all
+	configurations you wil be able to see the
+	controls, but it should for the default case.
+
 2001-01-17  Ian McKellar  <ian@eazel.com>
 
 	reviewed by: Mike Fleming  <mfleming@eazel.com>

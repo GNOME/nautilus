@@ -75,7 +75,7 @@ struct NautilusWindowDetails
 #define NAUTILUS_COMMAND_ZOOM_NORMAL			"/commands/Zoom Normal"
 
 /* window geometry */
-#define NAUTILUS_WINDOW_MIN_WIDTH			450
+#define NAUTILUS_WINDOW_MIN_WIDTH			480
 #define NAUTILUS_WINDOW_MIN_HEIGHT			350
 
 #define NAUTILUS_WINDOW_DEFAULT_WIDTH			800

@@ -225,9 +225,6 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 
 	hbox = gtk_hwrap_box_new (FALSE);
 
-	gtk_wrap_box_set_hspacing (GTK_WRAP_BOX (hbox), GNOME_PAD_SMALL);
-	gtk_wrap_box_set_vspacing (GTK_WRAP_BOX (hbox), 1);
-
 	gtk_signal_connect (GTK_OBJECT (hbox),
 			    "need_reallocation",
 			    queue_search_bar_resize_callback,
