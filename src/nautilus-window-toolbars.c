@@ -103,6 +103,7 @@ toolbar_search_local_callback (GtkWidget *widget, NautilusWindow *window)
 static void
 toolbar_search_web_callback (GtkWidget *widget, NautilusWindow *window)
 {
+  	toolbar_clear_search_mode (window);  
 	nautilus_window_go_web_search (window);
 }
 

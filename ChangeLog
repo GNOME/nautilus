@@ -1,3 +1,19 @@
+2000-07-11  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-tabs.c: (draw_or_hit_test_all_tabs):
+	made the Arlo tabs use a new right edge when appropriate
+	* icons/arlo/arlo.xml:
+	added rectangle for new tab edge piece
+	* src/nautilus-window-toolbars.c: (toolbar_search_web_callback):
+	made it disable local search mode before invoking web search
+	* data/emblems/Makefile.am:
+	removed emblems that represent intrinisc properties from browser
+	* icons/Makefile.am:
+	* icons/novice.png:
+	* icons/intermediate.png:
+	* icons/expert.png:
+	added Susan's user level images
+	
 2000-07-11  Robin * Slomkowski <rslomkow@eazel.com>
 
 	* components/hardware/Makefile.am: chaned to LDADD

@@ -28,6 +28,7 @@ icon_DATA =\
 	emblem-remote.gif \
 	emblem-symbolic-link.png \
 	emblems.png \
+	expert.png \
 	gnome-application-encapsulated_postscript.png \
 	gnome-application-pdf.png \
 	gnome-application-pgp.png \
@@ -139,13 +140,16 @@ icon_DATA =\
 	i-stalled.png \
 	i-zipdisk.png \
 	i-zipdisk2.png \
+	intermediate.png \
 	knob.png \
 	leftarrow.png \
 	loading.png \
 	multi-ok.png \
 	nautilus-logo.png \
+	nautilus-mini-logo.png \
 	netscape.png \
 	not.png \
+	novice.png \
 	rightarrow.png \
 	search.png \
 	tableft.png \

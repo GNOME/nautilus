@@ -43,16 +43,18 @@
 #define	TAB_NORMAL_FILL		1
 #define TAB_NORMAL_NEXT		2
 #define TAB_NORMAL_RIGHT	3
-#define	TAB_PRELIGHT_LEFT	4
-#define	TAB_PRELIGHT_FILL	5
-#define TAB_PRELIGHT_NEXT	6
-#define TAB_PRELIGHT_RIGHT	7
-#define	TAB_ACTIVE_LEFT		8
-#define	TAB_ACTIVE_FILL		9
-#define TAB_ACTIVE_NEXT		10
-#define TAB_ACTIVE_RIGHT	11
-#define TAB_BACKGROUND		12
-#define LAST_TAB_OFFSET		13
+#define TAB_NORMAL_EDGE		4
+#define	TAB_PRELIGHT_LEFT	5
+#define	TAB_PRELIGHT_FILL	6
+#define TAB_PRELIGHT_NEXT	7
+#define TAB_PRELIGHT_RIGHT	8
+#define TAB_PRELIGHT_EDGE	9
+#define	TAB_ACTIVE_LEFT		10
+#define	TAB_ACTIVE_FILL		11
+#define TAB_ACTIVE_NEXT		12
+#define TAB_ACTIVE_RIGHT	13
+#define TAB_BACKGROUND		14
+#define LAST_TAB_OFFSET		15
 
 
 /* data structures */
@@ -651,7 +653,7 @@ draw_or_hit_test_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean draw_flag
 		if (is_themed && draw_flag) {
 			tab_select = TAB_NORMAL_NEXT;
 			if ((y_pos != last_y_pos) || (this_item == NULL) || !this_item->visible)
-				tab_select += 1;
+				tab_select = prev_item->prelit ? TAB_PRELIGHT_EDGE : TAB_NORMAL_EDGE;
 			if (!prev_item->visible)
 				tab_select = TAB_NORMAL_LEFT;
 				
