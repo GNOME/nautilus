@@ -1,3 +1,25 @@
+2002-02-12  David Emory Watson  <dwatson@cvs.gnome.org>
+
+	* libnautilus-private/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_add_submenu): Allow submenus to have pixbufs.
+
+	* libnautilus-private/nautilus-bonobo-extensions.h: Add pixbuf argument
+	to prototype for nautilus_bonobo_add_submenu ()
+
+	* src/nautilus-window-menus.c:
+	(create_menu_item_from_node): Make reference to
+	nautilus_bonobo_add_submenu conform to new prototype.
+
+	* src/file-manager/fm-directory-view.c:
+	(add_submenu): Make reference to nautilus_bonobo_add_submenu conform to
+	new prototype and remove FIXME.
+
+2002-02-12  David Emory Watson  <dwatson@cvs.gnome.org>
+
+	* data/browser.xml: The blue component for Danube was 7FF but somehow
+	got converted to FF instead of the correct value of 7F.  This fix makes
+	Danube a nice color again.
+
 2002-02-12  Darin Adler  <darin@bentspoon.com>
 
 	* components/tree/nautilus-tree-model.c:
