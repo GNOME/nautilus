@@ -1,3 +1,12 @@
+2000-09-12  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(load_thumbnail_frame), (nautilus_icon_factory_make_thumbnails):
+	fixed bug 2567, thumbnail frame size hardwired, by fetching the
+	frame offsets from the theme.
+	* icons/default.xml:
+	added thumbnail frame offsets for default frame to default theme
+
 2000-09-12  John Sullivan  <sullivan@eazel.com>
 
 	Fixed part of bug 1537 (double-clicking in single-click

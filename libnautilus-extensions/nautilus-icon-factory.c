@@ -2414,7 +2414,7 @@ load_thumbnail_frame (gboolean anti_aliased)
 	GdkPixbuf *frame_image;
 				
 	/* load the thumbnail frame */
-	image_path = nautilus_pixmap_file (anti_aliased ? "thumbnail_frame.aa.png" : "thumbnail_frame.png");
+	image_path = nautilus_theme_get_image_path (anti_aliased ? "thumbnail_frame.aa.png" : "thumbnail_frame.png");
 	frame_image = gdk_pixbuf_new_from_file (image_path);
 	g_free (image_path);
 	return frame_image;
@@ -2428,6 +2428,8 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 	NautilusIconFactory *factory = nautilus_get_current_icon_factory();
 	GList *next_thumbnail = factory->thumbnails;
 	GdkPixbuf *scaled_image, *framed_image, *thumbnail_image_frame;
+	char *frame_offset_str;
+	int left_offset, top_offset, right_offset, bottom_offset;
 	
 	/* if the queue is empty, there's nothing more to do */
 	if (next_thumbnail == NULL) {
@@ -2477,15 +2479,25 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 			nautilus_file_unref (file);
 			
 			if (full_size_image != NULL) {				
-				thumbnail_image_frame = load_thumbnail_frame(info->anti_aliased);
+				thumbnail_image_frame = load_thumbnail_frame (info->anti_aliased);
 									
 				/* scale the content image as necessary */	
 				scaled_image = nautilus_gdk_pixbuf_scale_down_to_fit(full_size_image, 96, 96);	
 				gdk_pixbuf_unref (full_size_image);
 				
 				/* embed the content image in the frame */
-				/* FIXME bugzilla.eazel.com 2567: the offset numbers are dependent on the frame image - we need to make them adjustable */
-				framed_image = nautilus_embed_image_in_frame (scaled_image, thumbnail_image_frame, 3, 3, 6, 6);
+				frame_offset_str = nautilus_theme_get_theme_data ("thumbnails", "FRAME_OFFSETS");
+				if (frame_offset_str != NULL) {
+					sscanf (frame_offset_str," %d , %d , %d , %d %*s", &left_offset, &top_offset, &right_offset, &bottom_offset);
+				} else {
+					/* use nominal values since the info in the theme couldn't be found */
+					left_offset = 3; top_offset = 3;
+					right_offset = 6; bottom_offset = 6;
+				}
+				
+				framed_image = nautilus_embed_image_in_frame (scaled_image, thumbnail_image_frame,
+										left_offset, top_offset, right_offset, bottom_offset);
+				g_free (frame_offset_str);
 				
 				gdk_pixbuf_unref (scaled_image);
 				gdk_pixbuf_unref (thumbnail_image_frame);
