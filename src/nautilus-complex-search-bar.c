@@ -356,7 +356,7 @@ nautilus_complex_search_bar_get_location (NautilusNavigationBar *navigation_bar)
 	escaped_fragment = gnome_vfs_escape_string (trimmed_fragment);
 	g_free (trimmed_fragment);
 
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SEARCH_METHOD)) {
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_USE_BACKUP_SEARCH)) {
 		search_uri = g_strconcat ("search:index-with-backup", escaped_fragment, NULL);
 	} else {
 		search_uri = g_strconcat ("search:index-if-available", escaped_fragment, NULL);

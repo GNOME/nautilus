@@ -28,6 +28,7 @@
 #include "nautilus-gconf-extensions.h"
 #include "nautilus-string-list.h"
 #include "nautilus-string.h"
+#include "nautilus-system-preferences.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-enumeration.h"
 #include "nautilus-lib-self-check-functions.h"
@@ -408,6 +409,11 @@ nautilus_preferences_set_boolean (const char *name,
 
 	g_return_if_fail (name != NULL);
 	
+	if (nautilus_is_system_preference (name)) {
+		nautilus_system_preference_set_boolean (name, boolean_value);
+		return;
+	}
+
 	key = preferences_key_make (name);
 	nautilus_gconf_set_boolean (key, boolean_value);
 	g_free (key);
@@ -438,6 +444,10 @@ nautilus_preferences_get_boolean (const char *name)
 	char *key;
 	
 	g_return_val_if_fail (name != NULL, FALSE);
+
+	if (nautilus_is_system_preference (name)) {
+		return nautilus_system_preference_get_boolean (name);
+	}
 	
 	key = preferences_key_make_for_getter (name);
 	result = nautilus_gconf_get_boolean (key);

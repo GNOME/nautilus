@@ -1,3 +1,38 @@
+2001-02-20  Rebecca Schulman  <rebecka@eazel.com>
+	Fix bugzilla.eazel.com 6414 to add prefence to nautilus
+	to enable/disable medusa
+
+	* libnautilus-extensions/nautilus-global-preferences.h:	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_descriptions),
+	(global_preferences_install_defaults),
+	(global_preferences_install_visibility),
+	(global_preferences_create_dialog):
+	Add the fast search preference pane, visibility level,
+	change SEARCH_METHOD -> BACKUP_SEARCH
+
+	* libnautilus-extensions/nautilus-system-preferences.c:	
+	* libnautilus-extensions/nautilus-system-preferences.h:
+	* libnautilus-extensions/Makefile.am:
+	(nautilus_is_system_preference),
+	(nautilus_system_preference_get_boolean),
+	(nautilus_system_preference_set_boolean):
+	Add setters and getters for system preferences that are not
+	managed by gconf.  The current set and get functions
+	turn on and off medusa services
+
+	* libnautilus-extensions/nautilus-preferences.c:
+	(nautilus_preferences_set_boolean),
+	(nautilus_preferences_get_boolean):
+	Use the new system preference setters and getters instead of the standard
+	ones if the preference is not managed by gconf
+	
+	* src/file-manager/fm-search-list-view.c: (load_location_callback),
+	(display_system_services_are_blocked_dialog):
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_get_location):
+	change SEARCH_METHOD -> BACKUP_SEARCH
+
 2001-02-19  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: John Harper  <jsh@eazel.com> 

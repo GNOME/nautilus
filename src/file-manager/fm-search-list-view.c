@@ -137,7 +137,7 @@ load_location_callback (NautilusView *nautilus_view, char *location)
 		indexed_search_is_available = medusa_indexed_search_is_available () == GNOME_VFS_OK;
 
 		if (indexed_search_is_available &&
-		    !nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SEARCH_METHOD)) {
+		    !nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_USE_BACKUP_SEARCH)) {
 			last_indexing_time = nautilus_indexing_info_get_last_index_time ();
 			if (last_indexing_time) {
 				status_string = g_strdup_printf (_("Search results may not include items modified after %s, "
@@ -367,6 +367,7 @@ display_system_services_are_blocked_dialog (gboolean unindexed_search_is_availab
 						    "minutes.  "),
 						  _("Indexing is Blocked on Your Computer"),
 						  NULL);
+	
 }
 
 

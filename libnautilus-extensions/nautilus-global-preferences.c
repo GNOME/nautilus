@@ -32,6 +32,7 @@
 #include "nautilus-preferences-group.h"
 #include "nautilus-preferences-item.h"
 #include "nautilus-string.h"
+#include "nautilus-system-preferences.h"
 #include "nautilus-view-identifier.h"
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
@@ -166,7 +167,14 @@ global_preferences_install_descriptions (void)
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 					      _("Use Nautilus to draw the desktop"));
 								  
-	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SEARCH_METHOD,
+	/* search tradeoffs */
+	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
+					      _("Enable fast search (indexes your hard drive)\n"
+						"Turns on the Medusa daemon, which indexes your hard disk\n"
+						"when your computer is idle."));
+
+
+	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_USE_BACKUP_SEARCH,
 					      _("Do slower but more complete search whenever possible\n"
 						"(slower search is not available when searching by content)"));
 
@@ -301,7 +309,7 @@ global_preferences_install_defaults (void)
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 						  NAUTILUS_USER_LEVEL_NOVICE,
 						  TRUE);
-	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_SEARCH_METHOD,
+	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_USE_BACKUP_SEARCH,
 						  NAUTILUS_USER_LEVEL_NOVICE,
 						  TRUE);
 
@@ -454,7 +462,10 @@ global_preferences_install_visibility (void)
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
 
-	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SEARCH_METHOD,
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_USE_BACKUP_SEARCH,
 						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
@@ -589,7 +600,6 @@ global_preferences_create_dialog (void)
 								 _("Icon & List Views"),
 								 _("Icon & List Views Settings"));
 	
-
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), _("Click Behavior"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
@@ -682,10 +692,16 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 							 NAUTILUS_PREFERENCE_ITEM_ENUM);
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
+					    _("Fast Search"));
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
+							1,
+							NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
+							NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
 					     _("Search Tradeoffs"));
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
 							 1,
-							 NAUTILUS_PREFERENCES_SEARCH_METHOD,
+							 NAUTILUS_PREFERENCES_USE_BACKUP_SEARCH,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	
 	

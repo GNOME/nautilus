@@ -145,6 +145,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-string-map.c			\
 	nautilus-string-picker.c		\
 	nautilus-string.c			\
+	nautilus-system-preferences.c		\
 	nautilus-tabs.c				\
 	nautilus-text-caption.c			\
 	nautilus-text-layout.c			\
@@ -266,6 +267,7 @@ noinst_HEADERS =				\
 	nautilus-string-map.h			\
 	nautilus-string-picker.h		\
 	nautilus-string.h			\
+	nautilus-system-preferences.h		\
 	nautilus-tabs.h				\
 	nautilus-text-caption.h			\
 	nautilus-text-layout.h			\
