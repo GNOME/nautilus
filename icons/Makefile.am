@@ -18,7 +18,7 @@ icon_DATA =\
 	emblem-certified.gif \
 	emblem-changed.gif \
 	emblem-confidential.gif \
-	emblem-distinguised.svg \
+	emblem-distinguished.svg \
 	emblem-draft.svg \
 	emblem-encrypted.gif \
 	emblem-favorite.svg \
