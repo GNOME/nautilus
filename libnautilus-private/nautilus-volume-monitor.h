@@ -104,4 +104,11 @@ const char *             nautilus_volume_get_mount_path                     (con
 char *                   nautilus_volume_get_target_uri                     (const NautilusVolume       *volume);
 const char *             nautilus_volume_get_device_path                    (NautilusVolume             *volume);
 
+NautilusVolume *         nautilus_volume_copy                               (const NautilusVolume       *volume);
+void                     nautilus_volume_free                               (NautilusVolume             *volume);
+guint                    nautilus_volume_hash                               (const NautilusVolume       *volume);
+gboolean                 nautilus_volume_is_equal                           (const NautilusVolume       *volume1,
+									     const NautilusVolume       *volume2);
+
+
 #endif /* NAUTILUS_VOLUME_MONITOR_H */

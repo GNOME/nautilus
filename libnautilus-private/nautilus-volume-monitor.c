@@ -213,7 +213,6 @@ static GList *         finish_creating_volume_and_prepend       (NautilusVolumeM
 								 NautilusVolume             *volume,
 								 const char                 *file_system_type_name,
 								 GList                      *volume_list);
-static NautilusVolume *copy_volume                              (const NautilusVolume       *volume);
 static void            find_volumes                             (NautilusVolumeMonitor      *monitor);
 static void            free_mount_list                          (GList                      *mount_list);
 static GList *         copy_mount_list                          (GList                      *mount_list);
@@ -221,7 +220,6 @@ static GList *         get_removable_volumes                    (NautilusVolumeM
 static GHashTable *    create_readable_mount_point_name_table   (void);
 static int             get_cdrom_type                           (const char                 *vol_dev_path,
 								 int                        *fd);
-static void            nautilus_volume_free                     (NautilusVolume             *volume);
 static void            nautilus_file_system_type_free           (NautilusFileSystemType     *type);
 static gboolean        entry_is_supermounted_volume             (const MountTableEntry *ent, 
 								 const NautilusVolume *volume);
@@ -768,6 +766,26 @@ nautilus_volume_get_device_type (const NautilusVolume *volume)
 	return volume->device_type;
 }
 
+gboolean
+nautilus_volume_is_equal (const NautilusVolume       *volume1,
+			  const NautilusVolume       *volume2)
+{
+	if (strcmp (volume1->mount_path, volume2->mount_path) != 0) {
+		return FALSE;
+	}
+	if (strcmp (volume1->device_path, volume2->device_path) != 0) {
+		return FALSE;
+	}
+	
+	return TRUE;
+}
+
+guint
+nautilus_volume_hash (const NautilusVolume       *volume)
+{
+	return g_str_hash (volume->mount_path);
+}
+
 
 /* create_readable_mount_point_name_table
  *
@@ -898,7 +916,7 @@ copy_mount_list (GList *mount_list)
 	while (list) {
 		volume = list->data;
 
-		new_list = g_list_prepend (new_list, copy_volume (volume));
+		new_list = g_list_prepend (new_list, nautilus_volume_copy (volume));
 				
 		list = list->next;
 	}
@@ -935,7 +953,7 @@ build_volume_list_delta (GList *list_one, GList *list_two)
 		
 		if (!found_match) {
 			/* No match. Add it to the list to be returned; */
-			new_volume = copy_volume (volOne);
+			new_volume = nautilus_volume_copy (volOne);
 			new_list = g_list_prepend (new_list, new_volume);
 		}
 	}
@@ -1684,8 +1702,8 @@ create_volume (const char *device_path, const char *mount_path)
 	return volume;
 }
 
-static NautilusVolume *
-copy_volume (const NautilusVolume *volume)
+NautilusVolume *
+nautilus_volume_copy (const NautilusVolume *volume)
 {
 	NautilusVolume *new_volume;
 
