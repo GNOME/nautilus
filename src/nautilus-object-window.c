@@ -531,8 +531,6 @@ set_initial_window_geometry (NautilusWindow *window)
 				          max_height_for_screen));
 }
 
-#if GNOME2_CONVERSION_COMPLETE
-
 static gboolean
 location_change_at_idle_callback (gpointer callback_data)
 {
@@ -555,11 +553,11 @@ location_change_at_idle_callback (gpointer callback_data)
 /* handle bonobo events from the throbber -- since they can come in at
    any time right in the middle of things, defer until idle */
 static void 
-throbber_location_change_request_callback (BonoboListener *listener,
-					   char *event_name, 
-					   CORBA_any *arg,
-					   CORBA_Environment *ev,
-					   gpointer callback_data)
+throbber_callback (BonoboListener *listener,
+		   const char *event_name, 
+		   const CORBA_any *arg,
+		   CORBA_Environment *ev,
+		   gpointer callback_data)
 {
 	NautilusWindow *window;
 
@@ -573,8 +571,6 @@ throbber_location_change_request_callback (BonoboListener *listener,
 			gtk_idle_add (location_change_at_idle_callback, window);
 	}
 }
-
-#endif
 
 /* Add a dummy menu with a "View as ..." item when we first create the
  * view_as_option_menu -- without this the menu draws empty and shrunk,
@@ -746,16 +742,15 @@ nautilus_window_constructed (NautilusWindow *window)
 	window->details->ui_pending_initialize_menus_part_2 = TRUE;
 
 	/* watch for throbber location changes, too */
-	if (window->throbber != CORBA_OBJECT_NIL) {
+	if (window->details->throbber != CORBA_OBJECT_NIL) {
 		CORBA_exception_init (&ev);
-		property_bag = Bonobo_Control_getProperties (window->throbber, &ev);
+		property_bag = Bonobo_Control_getProperties (window->details->throbber, &ev);
 		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
-#if GNOME2_CONVERSION_COMPLETE
-			window->details->throbber_location_change_request_listener_id =
-				bonobo_event_source_client_add_listener
-				(property_bag, throbber_location_change_request_callback, 
-				 "Bonobo/Property:change:location", NULL, window); 
-#endif
+			window->details->throbber_listener =
+				bonobo_event_source_client_add_listener_full
+				(property_bag,
+				 g_cclosure_new (G_CALLBACK (throbber_callback), window, NULL), 
+				 "Bonobo/Property:change:location", NULL); 
 			bonobo_object_release_unref (property_bag, NULL);	
 		}
 		CORBA_exception_free (&ev);
@@ -851,23 +846,25 @@ nautilus_window_unrealize (GtkWidget *widget)
 	/* Get rid of the throbber explicitly before it self-destructs
 	 * (which it will do when the control frame goes away.
 	 */
-	if (window->throbber != CORBA_OBJECT_NIL) {
-		CORBA_exception_init (&ev);
-		property_bag = Bonobo_Control_getProperties (window->throbber, &ev);
-		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {	
-#if GNOME2_CONVERSION_COMPLETE
-			bonobo_event_source_client_remove_listener
-				(property_bag,
-				 window->details->throbber_location_change_request_listener_id,
-				 &ev);
-#endif
-			bonobo_object_release_unref (property_bag, NULL);	
+	if (window->details->throbber != CORBA_OBJECT_NIL) {
+		if (window->details->throbber_listener != CORBA_OBJECT_NIL) {
+			CORBA_exception_init (&ev);
+
+			property_bag = Bonobo_Control_getProperties (window->details->throbber, &ev);
+			if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {	
+				bonobo_event_source_client_remove_listener
+					(property_bag, window->details->throbber_listener, NULL);
+				bonobo_object_release_unref (property_bag, NULL);	
+			}
+
+			CORBA_Object_release (window->details->throbber_listener, &ev);
+			window->details->throbber_listener = CORBA_OBJECT_NIL;
+
+			CORBA_exception_free (&ev);
 		}
-		CORBA_exception_free (&ev);
 
-		bonobo_object_release_unref (window->throbber, NULL);
-
-		window->throbber = CORBA_OBJECT_NIL;
+		bonobo_object_release_unref (window->details->throbber, NULL);
+		window->details->throbber = CORBA_OBJECT_NIL;
 	}
 
 	EEL_CALL_PARENT (GTK_WIDGET_CLASS, unrealize, (widget));
@@ -1720,10 +1717,9 @@ nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 				       NAUTILUS_COMMAND_STOP, allow);
 
-	if (window->throbber != CORBA_OBJECT_NIL) {
+	if (window->details->throbber != CORBA_OBJECT_NIL) {
 		CORBA_exception_init (&ev);
-		property_bag = Bonobo_Control_getProperties (window->throbber, &ev);
-
+		property_bag = Bonobo_Control_getProperties (window->details->throbber, &ev);
 		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
 			bonobo_pbclient_set_boolean (property_bag, "throbbing", allow, &ev);
 			bonobo_object_release_unref (property_bag, NULL);

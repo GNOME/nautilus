@@ -398,7 +398,7 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 	CORBA_Environment ev;
 	char *exception_as_text;
 
-	CORBA_exception_init (&ev);
+	nautilus_window_ui_freeze (window);
 
 	/* FIXME bugzilla.gnome.org 41243: 
 	 * We should use inheritance instead of these special cases
@@ -412,23 +412,20 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 	 * desktop window.
 	 */
 	if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-		window->throbber = bonobo_get_object ("OAFIID:nautilus_throbber", "IDL:Bonobo/Control:1.0", &ev);
+		CORBA_exception_init (&ev);
+
+		window->details->throbber = bonobo_get_object ("OAFIID:nautilus_throbber", "IDL:Bonobo/Control:1.0", &ev);
 		if (BONOBO_EX (&ev)) {
 			exception_as_text = bonobo_exception_get_text (&ev);
-			g_warning ("Throbber Activation exception '%s'",
-				   exception_as_text);
+			g_warning ("Throbber activation exception '%s'", exception_as_text);
 			g_free (exception_as_text);
-			window->throbber = CORBA_OBJECT_NIL;
+			window->details->throbber = CORBA_OBJECT_NIL;
+		} else if (window->details->throbber != CORBA_OBJECT_NIL) {
+			bonobo_ui_component_object_set (window->details->shell_ui, "/Toolbar/ThrobberWrapper",
+							window->details->throbber, NULL);
 		}
+		CORBA_exception_free (&ev);
 	}
-
-	nautilus_window_ui_freeze (window);
-
-	bonobo_ui_component_object_set (window->details->shell_ui,
-					"/Toolbar/ThrobberWrapper",
-					window->throbber,
-					&ev);
-	CORBA_exception_free (&ev);
 	
 	window->details->back_button_item = create_back_or_forward_toolbar_item 
 		(window, _("Back"), "/Toolbar/BackWrapper");

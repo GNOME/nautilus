@@ -35,8 +35,6 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk-pixbuf/gdk-pixbuf-loader.h>
 
-#include "io-png.h"
-
 #define LOAD_BUFFER_SIZE 65536
 
 /*
@@ -449,13 +447,7 @@ save_image_to_stream (BonoboPersistStream *ps, Bonobo_Stream stream,
 		      Bonobo_Persist_ContentType type, void *data,
 		      CORBA_Environment *ev)
 {
-	bonobo_object_data_t *bod = data;
-
-	if (bod->pixbuf == NULL) {
-		return;
-	}
-
-	image_save (stream, bod->pixbuf, ev);
+	g_warning ("save not implemented");
 }
 
 /*

@@ -1,5 +1,36 @@
 2002-01-24  Darin Adler  <darin@bentspoon.com>
 
+	GNOME2_CONVERSION_COMPLETE eradication campaign
+
+	* components/hardware/nautilus-hardware-view.c:
+	(nautilus_hardware_view_init): Re-enable the property bag.
+	
+	* components/image-viewer/Makefile.am: Remove io-png.[ch].
+	* components/image-viewer/io-png.c: Remove.
+	* components/image-viewer/io-png.h: Remove.
+	* components/image-viewer/nautilus-image-view.c:
+	(save_image_to_stream): Not implemented.
+	
+	* libnautilus-private/nautilus-directory-metafile.c:
+	(nautilus_directory_register_metadata_monitor),
+	(nautilus_directory_unregister_metadata_monitor):
+	Wipe out some bonobo_object_corba_objref calls.
+	
+	* src/nautilus-window.h: Make the throbber private.
+	* src/nautilus-window-private.h: Make the throbber private.
+	Use a listener object now, not a listener ID.
+	
+	* src/nautilus-window-toolbars.c:
+	(nautilus_window_initialize_toolbars): Move the throbber
+	into details.
+	
+	* src/nautilus-window.c: (nautilus_window_constructed),
+	(nautilus_window_unrealize): Use the new listener calls that
+	use an object, not an ID.
+	(nautilus_window_allow_stop): Move the throbber into details.
+
+2002-01-24  Darin Adler  <darin@bentspoon.com>
+
 	* src/nautilus-bookmarks-window.c: (create_bookmarks_window):
 	Remove stray call to gtk_tree_view_column_new.
 

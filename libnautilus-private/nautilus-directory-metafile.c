@@ -558,7 +558,7 @@ nautilus_directory_register_metadata_monitor (NautilusDirectory *directory)
 
 	Nautilus_Metafile_register_monitor
 		(metafile,
-		 bonobo_object_corba_objref (BONOBO_OBJECT (directory->details->metafile_monitor)),
+		 BONOBO_OBJREF (directory->details->metafile_monitor),
 		 &ev);
 
 	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
@@ -581,7 +581,7 @@ nautilus_directory_unregister_metadata_monitor (NautilusDirectory *directory)
 
 	Nautilus_Metafile_unregister_monitor
 		(metafile,
-		 bonobo_object_corba_objref (BONOBO_OBJECT (directory->details->metafile_monitor)),
+		 BONOBO_OBJREF (directory->details->metafile_monitor),
 		 &ev);
 
 	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */

@@ -2,10 +2,7 @@ NULL =
 
 bin_PROGRAMS = nautilus-image-view
 
-nautilus_image_view_SOURCES =	\
-	nautilus-image-view.c	\
-	io-png.c		\
-	io-png.h
+nautilus_image_view_SOURCES = nautilus-image-view.c
 
 INCLUDES =			\
 	-I$(top_srcdir)		\

@@ -153,16 +153,15 @@ static void
 nautilus_hardware_view_init (NautilusHardwareView *hardware_view)
 {
   	EelBackground *background;
+
 	hardware_view->details = g_new0 (NautilusHardwareViewDetails, 1);
 
 	hardware_view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (hardware_view));
 
 	g_signal_connect (hardware_view->details->nautilus_view, 
-			    "load_location",
-			    G_CALLBACK (hardware_view_load_location_callback), 
-			    hardware_view);
-
-	hardware_view->details->form = NULL;
+			  "load_location",
+			  G_CALLBACK (hardware_view_load_location_callback), 
+			  hardware_view);
 
   	background = eel_get_widget_background (GTK_WIDGET (hardware_view));
   	eel_background_set_color (background, HARDWARE_DEFAULT_BACKGROUND_COLOR);
@@ -173,14 +172,13 @@ nautilus_hardware_view_init (NautilusHardwareView *hardware_view)
 			   hardware_dnd_target_table, G_N_ELEMENTS (hardware_dnd_target_table), GDK_ACTION_COPY);
  
  	/* allocate a property bag to specify the name of the icon for this component */
-	hardware_view->details->property_bag = bonobo_property_bag_new (get_bonobo_properties,  set_bonobo_properties, hardware_view);
-#ifdef GNOME2_CONVERSION_COMPLETE
-	bonobo_control_set_properties (nautilus_view_get_bonobo_control (hardware_view->details->nautilus_view), hardware_view->details->property_bag);
-#endif
+	hardware_view->details->property_bag = bonobo_property_bag_new (get_bonobo_properties, set_bonobo_properties, hardware_view);
 	bonobo_property_bag_add (hardware_view->details->property_bag, "icon_name", ICON_NAME, BONOBO_ARG_STRING, NULL,
 				 _("name of icon for the hardware view"), 0);
 	bonobo_property_bag_add (hardware_view->details->property_bag, "summary_info", COMPONENT_INFO, BONOBO_ARG_STRING, NULL,
 				 _("summary of hardware info"), 0);
+	bonobo_control_set_properties (nautilus_view_get_bonobo_control (hardware_view->details->nautilus_view),
+	                               BONOBO_OBJREF (hardware_view->details->property_bag), NULL);
 
 	/* add the timer task to update the uptime */
 	hardware_view->details->timer_task = gtk_timeout_add (60000, update_uptime_text, hardware_view); 
