@@ -1,3 +1,9 @@
+2004-07-02  Bastien Nocera  <hadess@hadess.net>
+
+	* src/file-manager/fm-directory-view.c:
+	(activate_check_mime_types): Don't warn about mime-type mismatches
+	if the handler is the same for both mime-types (Closes: #145086)
+
 2004-06-24  Narayana Pattipati  <narayana.pattipati@wipro.com>
 
 	* src/nautilus-window-manage-views.c (determined_initial_view_callback):
