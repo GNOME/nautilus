@@ -864,7 +864,8 @@ static void
 set_to_pending_location_and_selection (NautilusWindow *window)
 {
         g_assert (window->new_content_view != NULL);
-        
+        g_assert (window->details->pending_location != NULL);
+
         load_new_location_in_all_views (window,
                                         window->details->pending_location,
                                         window->details->pending_selection,
@@ -1736,11 +1737,13 @@ view_loaded_callback (NautilusViewFrame *view,
 {
         g_assert (NAUTILUS_IS_WINDOW (window));
 
-        if (view == window->new_content_view) {
+        if (view == window->new_content_view 
+            && window->details->pending_location != NULL) {
                 set_to_pending_location_and_selection (window);
         } else {
-                /* it's a sidebar panel being loaded */
-                g_assert (view != window->content_view);
+                /* It's a sidebar panel being loaded, or a content view
+                 * being switched (with unchanged location and selection).
+                 */
                 if (window->details->location != NULL) {
                         load_new_location_in_one_view (view,
                                                        window->details->location,

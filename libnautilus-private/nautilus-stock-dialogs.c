@@ -37,7 +37,7 @@
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
 
-#define TIMED_WAIT_STANDARD_DURATION 3000
+#define TIMED_WAIT_STANDARD_DURATION 2000
 #define TIMED_WAIT_MIN_TIME_UP 3000
 
 typedef struct {

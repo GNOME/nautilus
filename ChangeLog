@@ -1,6 +1,22 @@
-2001-02-05  Michael Engber  <engber@eazel.com>
+2001-02-05  John Sullivan  <sullivan@eazel.com>
 
-	reviewed by: <delete if not using a buddy>
+	reviewed by: Mike Fleming <mfleming@eazel.com>
+
+	Fixed bug 6324 (Switching views crashes every time)
+	
+	* src/nautilus-window-manage-views.c:
+	(set_to_pending_location_and_selection): Added assert
+	to make future similar bugs even easier to catch.
+	(view_loaded_callback): Don't call set_to_pending_location_and_selection
+	when the content view is changing without the location & selection 
+	changing; just update the one view instead.
+
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	Reduced the timed-wait timeout from 3 seconds to 2 after
+	more investigation of timed-wait-related bugs. 3 seconds
+	just felt a little too long.
+
+2001-02-05  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-metafile-factory.c:
 	(nautilus_metafile_factory_new), (free_factory_instance),
