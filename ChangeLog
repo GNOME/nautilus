@@ -1,3 +1,11 @@
+2000-11-05  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* src/nautilus-first-time-druid.c:
+	(next_proxy_configuration_page_callback):
+	Fix for bug 4488.  Proxy string is defaulting to ":".  Do some
+	validation on the user input.  Only set the proxy if the proxy and
+	port entry text fields are not blank.
+
 2000-11-05  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-protocols.c:

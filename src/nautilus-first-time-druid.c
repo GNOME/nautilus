@@ -48,6 +48,7 @@
 #include <libnautilus-extensions/nautilus-radio-button-group.h>
 #include <libnautilus-extensions/nautilus-user-level-manager.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
+#include <libnautilus-extensions/nautilus-string.h>
 
 #include "nautilus-first-time-druid.h"
 
@@ -623,11 +624,19 @@ next_update_feedback_page_callback (GtkWidget *button, GnomeDruid *druid)
 static gboolean
 next_proxy_configuration_page_callback (GtkWidget *button, GnomeDruid *druid)
 {
-	char *proxy_string;
+	const char *proxy_text;
+	const char *port_text;
 
-	proxy_string = g_strdup_printf ("http://%s:%s", gtk_entry_get_text (GTK_ENTRY(proxy_address_entry)), gtk_entry_get_text (GTK_ENTRY(port_number_entry)));
-	set_http_proxy (proxy_string);
-	g_free (proxy_string);
+	proxy_text = gtk_entry_get_text (GTK_ENTRY (proxy_address_entry));
+	port_text = gtk_entry_get_text (GTK_ENTRY (port_number_entry));
+
+	/* Update the http proxy only if there is some user input */
+	if (nautilus_strlen (proxy_text) > 0 && nautilus_strlen (port_text) > 0) {
+		char *proxy_url;
+		proxy_url = g_strdup_printf ("http://%s:%s", proxy_text, port_text);
+		set_http_proxy (proxy_url);
+		g_free (proxy_url);
+	}
 	
 	/* now, go back to the offer update page or finish, depending on the user's selection */
 	if (last_proxy_choice == 1) {
