@@ -972,7 +972,7 @@ append_static_bookmarks (NautilusWindow *window, const char *menu_path)
 
 	node = nautilus_xml_get_root_children (doc);
 	index = 0;
-	
+
 	for (index = 0; node != NULL; node = node->next, ++index) {
 		create_menu_item_from_node (window, node, menu_path, index);
 	}
@@ -1051,6 +1051,7 @@ refresh_bookmarks_menu (NautilusWindow *window)
 	/* Unregister any pending call to this function. */
 	nautilus_window_remove_bookmarks_menu_callback (window);
 
+	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 	nautilus_window_remove_bookmarks_menu_items (window);				
 
 	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS, 
@@ -1059,6 +1060,7 @@ refresh_bookmarks_menu (NautilusWindow *window)
 	}
 
 	append_dynamic_bookmarks (window);
+	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 }
 
 static void
@@ -1416,6 +1418,8 @@ refresh_go_menu (NautilusWindow *window)
 	/* Unregister any pending call to this function. */
 	nautilus_window_remove_go_menu_callback (window);
 
+	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
+
 	/* Remove old set of history items. */
 	nautilus_window_remove_go_menu_items (window);
 
@@ -1429,6 +1433,8 @@ refresh_go_menu (NautilusWindow *window)
 					 index,
 					 FALSE);
 	}
+
+	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 }
 
 static gboolean

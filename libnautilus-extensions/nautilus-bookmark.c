@@ -373,7 +373,7 @@ bookmark_file_changed_callback (NautilusFile *file, NautilusBookmark *bookmark)
 	should_emit_changed_signal = FALSE;
 	file_uri = nautilus_file_get_uri (file);
 
-	if (nautilus_uris_match (bookmark->details->uri, file_uri) != 0) {
+	if (!nautilus_uris_match (bookmark->details->uri, file_uri)) {
 		g_free (bookmark->details->uri);
 		bookmark->details->uri = file_uri;
 		should_emit_changed_signal = TRUE;

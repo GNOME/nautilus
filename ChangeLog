@@ -1,3 +1,31 @@
+2000-12-06  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Addressed bug 4208 (Opening new window is slow)
+
+	Pavel identified the 2nd biggest performance bottleneck in
+	opening a new window (1st being tree view) as the code that
+	sets up the bookmark menus. I found some good speedups; time
+	to profile again.
+
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(bookmark_file_changed_callback): nautilus_uris_match returns
+	a gboolean, not a strcmp-style int. Doh! Sense of test was
+	reversed, causing many unnecessary rebuild-bookmarks-menus.
+	
+	* src/nautilus-window-menus.c: 
+	(append_static_bookmarks), (refresh_bookmarks_menu): Wrapped
+	some Bonobo-ui-manipulating code with freeze/thaw; this speeds
+	up rebuild-bookmarks_menu by an order of magnitude or so.
+
+	Fixed bug 4334: (Icon name being edited can get separated
+	from icon on restore-original-size)
+
+	* libnautilus-extensions/nautilus-icon_container.c:
+	(nautilus_icon_container_move_icon): End renaming mode
+	if icon being renamed is moved.
+
 2000-12-06  Rebecca Schulman  <rebecka@eazel.com>
 
 	* libnautilus-extensions/nautilus-search-uri.c:

@@ -1228,6 +1228,10 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 	
 	emit_signal = FALSE;
 	
+	if (icon == get_icon_being_renamed (container)) {
+		end_renaming_mode (container, TRUE);
+	}
+
 	if (!details->auto_layout) {
 		if (x != icon->x || y != icon->y) {
 			icon_set_position (icon, x, y);
