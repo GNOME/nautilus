@@ -1926,6 +1926,10 @@ leftmost_in_top_row (NautilusIconContainer *container,
 		     NautilusIcon *candidate,
 		     void *data)
 {
+	if (container->details->auto_layout) {
+		return (container->details->icons->data == candidate);
+	}
+	
 	if (best_so_far == NULL) {
 		return TRUE;
 	}
@@ -1939,6 +1943,13 @@ rightmost_in_bottom_row (NautilusIconContainer *container,
 			 NautilusIcon *candidate,
 			 void *data)
 {
+	GList *last;
+	
+	if (container->details->auto_layout) {
+		last = g_list_last (container->details->icons);
+		return (last->data == candidate);
+	}
+	
 	if (best_so_far == NULL) {
 		return TRUE;
 	}
@@ -2103,6 +2114,76 @@ same_column_below_highest (NautilusIconContainer *container,
 	return TRUE;
 }
 
+static gboolean
+closest_in_90_degrees (NautilusIconContainer *container,
+		       NautilusIcon *start_icon,
+		       NautilusIcon *best_so_far,
+		       NautilusIcon *candidate,
+		       void *data)
+{
+	ArtDRect world_rect;
+	int x, y;
+	int dx, dy;
+	int dist;
+	int *best_dist;
+
+
+	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (candidate->item);
+	eel_canvas_w2c
+		(EEL_CANVAS (container),
+		 (world_rect.x0 + world_rect.x1) / 2,
+		 world_rect.y1,
+		 &x,
+		 &y);
+
+	dx = x - container->details->arrow_key_start_x;
+	dy = y - container->details->arrow_key_start_y;
+	
+	switch (container->details->arrow_key_direction) {
+	case GTK_DIR_UP:
+		if (dy > 0 ||
+		    ABS(dx) > ABS(dy)) {
+			return FALSE;
+		}
+		break;
+	case GTK_DIR_DOWN:
+		if (dy < 0 ||
+		    ABS(dx) > ABS(dy)) {
+			return FALSE;
+		}
+		break;
+	case GTK_DIR_LEFT:
+		if (dx > 0 ||
+		    ABS(dy) > ABS(dx)) {
+			return FALSE;
+		}
+		break;
+	case GTK_DIR_RIGHT:
+		if (dx < 0 ||
+		    ABS(dy) > ABS(dx)) {
+			return FALSE;
+		}
+		break;
+	default:
+		g_assert_not_reached();
+	}
+
+	dist = dx*dx + dy*dy;
+	best_dist = data;
+	
+	if (best_so_far == NULL) {
+		*best_dist = dist;
+		return TRUE;
+	}
+
+	if (dist < *best_dist) {
+		*best_dist = dist;
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 static void
 keyboard_move_to (NautilusIconContainer *container,
 		  NautilusIcon *icon,
@@ -2163,35 +2244,47 @@ keyboard_end (NautilusIconContainer *container,
 static void
 record_arrow_key_start (NautilusIconContainer *container,
 			NautilusIcon *icon,
-			Axis arrow_key_axis)
+			GtkDirectionType direction)
 {
 	ArtDRect world_rect;
-
-	if (container->details->arrow_key_axis == arrow_key_axis) {
-		return;
-	}
 
 	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
 	eel_canvas_w2c
 		(EEL_CANVAS (container),
 		 (world_rect.x0 + world_rect.x1) / 2,
 		 world_rect.y1,
-		 arrow_key_axis == AXIS_VERTICAL
-		 ? &container->details->arrow_key_start : NULL,
-		 arrow_key_axis == AXIS_HORIZONTAL
-		 ? &container->details->arrow_key_start : NULL);
-	container->details->arrow_key_axis = arrow_key_axis;
+		 &container->details->arrow_key_start_x,
+		 &container->details->arrow_key_start_y);
+	
+	container->details->arrow_key_direction = direction;
+	
+	switch (container->details->arrow_key_direction) {
+	case GTK_DIR_UP:
+	case GTK_DIR_DOWN:
+		container->details->arrow_key_axis = AXIS_VERTICAL;
+		container->details->arrow_key_start = container->details->arrow_key_start_x;
+		break;
+	case GTK_DIR_LEFT:
+	case GTK_DIR_RIGHT:
+		container->details->arrow_key_axis = AXIS_HORIZONTAL;
+		container->details->arrow_key_start = container->details->arrow_key_start_y;
+		break;
+	default:
+		g_assert_not_reached();
+	}
 }
 
 static void
 keyboard_arrow_key (NautilusIconContainer *container,
 		    GdkEventKey *event,
-		    Axis axis,
+		    GtkDirectionType direction,
 		    IsBetterIconFunction better_start,
 		    IsBetterIconFunction empty_start,
-		    IsBetterIconFunction better_destination)
+		    IsBetterIconFunction better_destination,
+		    IsBetterIconFunction better_destination_manual)
 {
 	NautilusIcon *icon;
+	int data;
 
 	/* Chose the icon to start with.
 	 * If we have a keyboard focus, start with it.
@@ -2218,10 +2311,11 @@ keyboard_arrow_key (NautilusIconContainer *container,
 			(container, NULL,
 			 empty_start, NULL);
 	} else {
-		record_arrow_key_start (container, icon, axis);
+		record_arrow_key_start (container, icon, direction);
 		icon = find_best_icon
 			(container, icon,
-			 better_destination, NULL);
+			 container->details->auto_layout ? better_destination : better_destination_manual,
+			 &data);
 	}
 
 	keyboard_move_to (container, icon, event);
@@ -2236,10 +2330,11 @@ keyboard_right (NautilusIconContainer *container,
 	 */
 	keyboard_arrow_key (container,
 			    event,
-			    AXIS_HORIZONTAL,
+			    GTK_DIR_RIGHT,
 			    rightmost_in_bottom_row,
 			    leftmost_in_top_row,
-			    same_row_right_side_leftmost);
+			    same_row_right_side_leftmost,
+			    closest_in_90_degrees);
 }
 
 static void
@@ -2251,10 +2346,11 @@ keyboard_left (NautilusIconContainer *container,
 	 */
 	keyboard_arrow_key (container,
 			    event,
-			    AXIS_HORIZONTAL,
+			    GTK_DIR_LEFT,
 			    leftmost_in_top_row,
 			    rightmost_in_bottom_row,
-			    same_row_left_side_rightmost);
+			    same_row_left_side_rightmost,
+			    closest_in_90_degrees);
 }
 
 static void
@@ -2266,10 +2362,11 @@ keyboard_down (NautilusIconContainer *container,
 	 */
 	keyboard_arrow_key (container,
 			    event,
-			    AXIS_VERTICAL,
+			    GTK_DIR_DOWN,
 			    rightmost_in_bottom_row,
 			    leftmost_in_top_row,
-			    same_column_below_highest);
+			    same_column_below_highest,
+			    closest_in_90_degrees);
 }
 
 static void
@@ -2281,10 +2378,11 @@ keyboard_up (NautilusIconContainer *container,
 	 */
 	keyboard_arrow_key (container,
 			    event,
-			    AXIS_VERTICAL,
+			    GTK_DIR_UP,
 			    leftmost_in_top_row,
 			    rightmost_in_bottom_row,
-			    same_column_above_lowest);
+			    same_column_above_lowest,
+			    closest_in_90_degrees);
 }
 
 static void
