@@ -1,3 +1,15 @@
+2001-03-16  Gene Z. Ragan  <gzr@eazel.com>
+
+	* configure.in:	
+	* libnautilus-extensions/Makefile.am:
+	Add checks for cdparanoia to allow enabling of
+	cd audio mounting on the desktop.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	Clean up build conditional audio CD handling and
+	centralize the allocation of NautilusVolume structures.
+
 2001-03-16  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

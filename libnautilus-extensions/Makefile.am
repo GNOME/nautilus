@@ -46,8 +46,10 @@ libnautilus_extensions_la_LDFLAGS =	\
 	$(OAF_LIBS) 			\
 	$(VFS_LIBS) 			\
 	$(XML_LIBS) 			\
+	-lcdda_paranoia			\
+	-lcdda_interface 		\
 	$(NULL)
-
+	
 nautilus_metafile_server_idl_sources =		\
 	nautilus-metafile-server-stubs.c	\
 	nautilus-metafile-server-skels.c	\

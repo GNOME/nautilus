@@ -540,6 +540,17 @@ dnl <= Check for bzip2 > 1.0.0
 	   ])
     dnl =>
 AC_SUBST(BZ_LIBS)
+
+dnl ====================================
+dnl = cdda module support
+dnl ====================================
+
+AM_CONDITIONAL(HAVE_CDDA, false);
+AC_CHECK_HEADERS(cdda_interface.h cdda_paranoia.h, [
+	CDDA_LIBS="$CDDA_LIBS -lcdda_paranoia, -lcdda_interface";
+		AM_CONDITIONAL(HAVE_CDDA, true);
+	])
+
 dnl ====================================
 dnl = rpmview component support
 dnl ====================================
