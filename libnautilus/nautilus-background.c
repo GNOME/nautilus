@@ -225,10 +225,12 @@ nautilus_background_draw_flat_box (GtkStyle *style,
 
 	call_parent = TRUE;
 
-	background = nautilus_get_widget_background (widget);
-	if (background != NULL) {
-		if (nautilus_gradient_is_gradient (background->details->color))
-			call_parent = FALSE;
+	if (state_type == GTK_STATE_NORMAL) {
+		background = nautilus_get_widget_background (widget);
+		if (background != NULL) {
+			if (nautilus_gradient_is_gradient (background->details->color))
+				call_parent = FALSE;
+		}
 	}
 
 	if (call_parent) {
@@ -278,7 +280,6 @@ nautilus_background_set_widget_style (NautilusBackground *background,
 	GtkStyle *style;
 	char *start_color_spec;
 	GdkColor color;
-	int i;
 	
 	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
 	g_return_if_fail (GTK_IS_WIDGET (widget));
@@ -297,11 +298,11 @@ nautilus_background_set_widget_style (NautilusBackground *background,
 	start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
 	nautilus_gdk_color_parse_with_white_default
 		(start_color_spec, &color);
-	for (i = 0; i <= 5; i++) {
-		style->bg[i] = color;
-		style->base[i] = color;
-	}
 	g_free (start_color_spec);
+	style->bg[GTK_STATE_NORMAL] = color;
+	style->base[GTK_STATE_NORMAL] = color;
+	style->bg[GTK_STATE_ACTIVE] = color;
+	style->base[GTK_STATE_ACTIVE] = color;
 	
 	/* Put the style in the widget. */
 	gtk_widget_set_style (widget, style);

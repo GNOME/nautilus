@@ -1,5 +1,18 @@
 2000-01-20  Darin Adler  <darin@eazel.com>
 
+	Made backgrounds work better in the list view. Gradients still
+	won't work because the list view draws its background with calls
+	to gdk_draw_rectangle explicitly, and doesn't call the functions
+	in the style, so it can't be overridden.
+
+	* libnautilus/nautilus-background.c:
+	(nautilus_background_set_widget_style): Fix bug where the list
+	items were not highlighting properly. Set only the NORMAL and
+	ACTIVE background color. That way we don't screw up the SELECTED
+	and other background colors.
+
+2000-01-20  Darin Adler  <darin@eazel.com>
+
 	* libnautilus/nautilus-directory.c:
 	(nautilus_directory_get_file_metadata): Fix segfault that was
 	happening when viewing a folder without a metafile.
