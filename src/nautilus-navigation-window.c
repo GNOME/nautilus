@@ -153,19 +153,6 @@ file_menu_new_window_callback (BonoboUIComponent *component,
 	nautilus_window_open_location (window, uri, FALSE);
 }
 
-#ifdef BONOBO_DONE
-/* see below */
-static void
-go_to_callback (GtkWidget *widget,
-		const char *uri,
-		NautilusNavigationWindow *window)
-{
-	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
-
-	nautilus_window_go_to (NAUTILUS_WINDOW (window), uri);
-}
-#endif
-
 static void
 navigation_bar_location_changed_callback (GtkWidget *widget,
 					  const char *uri,
@@ -311,11 +298,6 @@ nautilus_navigation_window_set_up_sidebar (NautilusNavigationWindow *window)
 			  G_CALLBACK (side_pane_size_allocate_callback),
 			  window);
 	
-#ifdef BONOBO_DONE
-	g_signal_connect_object (window->information_panel, "location_changed",
-				 G_CALLBACK (go_to_callback), window, 0);
-#endif
-
 	add_sidebar_panels (window);
 
 	g_signal_connect (window->sidebar,

@@ -312,7 +312,6 @@ viewed_file_changed_callback (NautilusFile *file,
                          * need to cancel it before closing the window
                          * or things break.
                          */
-			/* BONOBOTODO: remove this? */
                         /* FIXME: It makes no sense that this call is
                          * needed. When the window is destroyed, it
                          * calls nautilus_window_manage_views_destroy,
