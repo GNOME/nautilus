@@ -4,8 +4,8 @@ CPPFLAGS = \
 	-DPREFIX=\"$(prefix)\" \
 	-DG_LOG_DOMAIN=\"Nautilus-Services\"
 
-CFLAGS = -O
-LDFLAGS = -static
+## CFLAGS = -O -g
+## LDFLAGS = -static
 
 INCLUDES = \
 	-I$(top_srcdir)						\

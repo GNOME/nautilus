@@ -35,6 +35,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <rpm/rpmlib.h>
+#include <libtrilobite/helixcode-utils.h>
 
 typedef enum _URLType URLType;
 typedef enum _PackageType PackageType;
@@ -42,12 +43,17 @@ typedef struct _TransferOptions TransferOptions;
 typedef struct _InstallOptions InstallOptions;
 typedef struct _CategoryData CategoryData;
 typedef struct _PackageData PackageData;
-typedef enum _RPM_FAIL RPM_FAIL;
+typedef enum _PackageSystemStatus PackageSystemStatus;
 
-enum _RPM_FAIL {
-	RPM_SRC_NOT_SUPPORTED,
-	RPM_DEP_FAIL,
-	RPM_NOT_AN_RPM
+enum _PackageSystemStatus {
+	PACKAGE_UNKNOWN_STATUS=0,
+	PACKAGE_SOURCE_NOT_SUPPORTED,
+	PACKAGE_DEPENDENCY_FAIL,
+	PACKAGE_BREAKS_DEPENDENCY,
+	PACKAGE_INVALID,
+	PACKAGE_CANNOT_OPEN,
+	PACKAGE_PARTLY_RESOLVED,
+	PACKAGE_RESOLVED
 };
 
 struct _HTTPError {
@@ -60,6 +66,7 @@ enum _URLType {
 	PROTOCOL_HTTP,
 	PROTOCOL_FTP
 };
+const char *protocol_as_string (URLType protocol);
 
 enum _PackageType {
 	PACKAGE_TYPE_RPM,
@@ -102,13 +109,42 @@ struct _PackageData {
 	char* version;
 	char* minor;
 	char* archtype;
+	DistributionType distribution;
 	int bytesize;
 	char* summary;
 	GList* soft_depends;
 	GList* hard_depends;
+	GList* breaks; 
+	/* 
+	   toplevel = TRUE if this a package the user requested.
+	   It's used to ensure that a "install_failed" signal is
+	   only emitted for toplevel packages.
+	   It's set to true during the xml loading (that means
+	   it should be set before given to the eazel_install_ensure_deps
+	 */
+	gboolean toplevel;
+	/*
+	  Identifies the status of the installation
+	*/
+	PackageSystemStatus status;
+	/*
+	  Pointer to keep a structure for the package system
+	 */
+	gpointer *packsys_struc;
 };
-PackageData* packagedata_new_from_rpm_header (Header);
+
+PackageData* packagedata_new (void);
+PackageData* packagedata_new_from_rpm_header (Header*);
+PackageData* packagedata_new_from_rpm_conflict (struct rpmDependencyConflict);
+PackageData* packagedata_new_from_rpm_conflict_reversed (struct rpmDependencyConflict);
+
+void packagedata_fill_from_rpm_header (PackageData *pack, Header*);
+const char *rpmfilename_from_packagedata (const PackageData *pack);
+
 void packagedata_destroy_foreach (PackageData *pd, gpointer unused);
 void packagedata_destroy (PackageData *pd);
+
+int packagedata_hash (PackageData *pd);
+int packagedata_equal (PackageData *a, PackageData *b);
 
 #endif /* __EAZEL_SERVICES_TYPES_H__ */

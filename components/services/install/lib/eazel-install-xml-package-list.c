@@ -41,7 +41,7 @@ parse_package (xmlNode* package) {
 	xmlNodePtr dep;
 	PackageData* rv;
 
-	rv = g_new0 (PackageData, 1);
+	rv = packagedata_new ();
 
 	rv->name = g_strdup (xml_get_value (package, "NAME"));
 	rv->version = g_strdup (xml_get_value (package, "VERSION"));
@@ -49,6 +49,7 @@ parse_package (xmlNode* package) {
 	rv->archtype = g_strdup (xml_get_value (package, "ARCH"));
 	rv->bytesize = atoi (xml_get_value (package, "BYTESIZE"));
 	rv->summary = g_strdup (xml_get_value (package, "SUMMARY"));
+	rv->toplevel = TRUE;
 	
 	/* Dependency Lists */
 	rv->soft_depends = NULL;
@@ -155,45 +156,6 @@ parse_local_xml_package_list (const char* pkg_list_file) {
 	return rv;
 	
 } /*end fetch_xml_packages_local */
-
-void
-free_categories (GList* categories) {
-
-	while (categories) {
-		CategoryData* c = categories->data;
-		GList* t = c->packages;
-
-		while (t) {
-			PackageData* pack = t->data;
-			GList* temp;
-
-			temp = pack->soft_depends;
-			while (temp) {
-				g_free (temp->data);
-				temp = temp->next;
-			}
-			g_list_free(pack->soft_depends);
-
-			temp = pack->hard_depends;
-			while (temp) {
-				g_free (temp->data);
-				temp = temp->next;
-			}
-			g_list_free (pack->hard_depends);
-			
-			g_free (t->data);
-
-			t = t->next;
-		}
-
-		g_list_free (c->packages);
-		g_free (c);
-
-		categories = categories->next;
-	}
-	g_list_free (categories);
-
-} /* end free_categories */
 
 gboolean
 generate_xml_package_list (const char* pkg_template_file,

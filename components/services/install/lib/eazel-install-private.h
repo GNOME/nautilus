@@ -24,13 +24,29 @@
 #ifndef EAZEL_INSTALL__PRIVATE_H
 #define EAZEL_INSTALL__PRIVATE_H
 
-typedef enum {
-	REQUEST_BY_HTTP
-} RequestMethod;
+#include "eazel-install-public.h"
 
 struct _EazelInstallPrivate {	
 	TransferOptions *topts;
 	InstallOptions *iopts;
+ 
+        /* Used in rpm-glue */
+	char *root_dir;
+	int install_flags; 
+	int interface_flags; 
+	int problem_filters; 
+
+	gboolean use_local_package_list;
+	
+	PackageSystem package_system;
+	union {
+		struct {
+			rpmdb db;
+			rpmTransactionSet set;
+			struct rpmDependencyConflict *conflicts;
+			int num_conflicts;
+		} rpm;
+	} packsys;
 
 	FILE *logfile;
 };

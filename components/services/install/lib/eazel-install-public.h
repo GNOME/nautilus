@@ -48,6 +48,10 @@ extern "C" {
 #define IS_EAZEL_INSTALL(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_INSTALL))
 #define IS_EAZEL_INSTALL_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((obj), TYPE_EAZEL_INSTALL))
 
+typedef enum {
+	EAZEL_INSTALL_USE_RPM
+} PackageSystem;;
+
 typedef struct _EazelInstall EazelInstall;
 typedef struct _EazelInstallClass EazelInstallClass;
 
@@ -61,7 +65,7 @@ struct _EazelInstallClass
 	/* signal prototypes */
 	void (*download_progress) (char *file, int amount, int total);
 	void (*install_progress)  (char *name, int amount, int total);
-
+	void (*dependency_check) (const PackageData *package, const PackageData *needed );
 	/* 
 	   if the set URLType is PROTOCOL_HTTP, info is a HTTPError struc 
 	*/
@@ -71,7 +75,7 @@ struct _EazelInstallClass
 	                 RPM_DEP_FAIL, info is a GSList of required packages (PackageData objects)
 			 RPM_NOT_AN_RPM, info is NULL
 	*/
-	void (*install_failed) (PackageData *pd, RPM_FAIL code, gpointer info);
+	void (*install_failed) (PackageData *pd);
 	void (*uninstall_failed) (PackageData *pd);
 #ifndef STANDALONE
 	gpointer servant_vepv;
@@ -115,15 +119,16 @@ void eazel_install_emit_download_failed           (EazelInstall *service,
 						   const char *name,
 						   const gpointer info);
 void eazel_install_emit_install_failed            (EazelInstall *service, 
-						   const PackageData *pd,
-						   RPM_FAIL code,
-						   const gpointer info);
+						   const PackageData *pd);
 void eazel_install_emit_uninstall_failed          (EazelInstall *service, 
 						   const PackageData *pd);
+void eazel_install_emit_dependency_check          (EazelInstall *service, 
+						   const PackageData *package, 
+						   const PackageData *needed );
 
 /* This is in flux */
 void eazel_install_fetch_pockage_list (EazelInstall *service);
-void eazel_install_new_packages (EazelInstall *service);
+void eazel_install_install_packages (EazelInstall *service, GList *categories);
 void eazel_install_uninstall (EazelInstall *service);
 
 /******************************************************************************/
@@ -147,29 +152,29 @@ void eazel_install_uninstall (EazelInstall *service);
 #define ei_access_decl(name, type) \
 type eazel_install_get_##name (EazelInstall *service)
 
-#define ei_access_impl(name, type, str, var, defl) \
+#define ei_access_impl(name, type, var, defl) \
 type eazel_install_get_##name (EazelInstall *service) { \
         SANITY_VAL (service, defl); \
-	return service->private->##str##->var; \
+	return service->private->var; \
 }
 
 #define ei_mutator_decl(name, type) \
 void eazel_install_set_##name (EazelInstall *service, \
                                          type name)
 
-#define ei_mutator_impl(name, type, str, var) \
+#define ei_mutator_impl(name, type,var) \
 void eazel_install_set_##name (EazelInstall *service, \
                                          type name) { \
         SANITY (service); \
-	service->private->str->var = name; \
+	service->private->var = name; \
 }
 
-#define ei_mutator_impl_string(name, type, str, var) \
+#define ei_mutator_impl_string(name, type, var) \
 void eazel_install_set_##name (EazelInstall *service, \
                                          type name) { \
         SANITY (service); \
-        g_free (service->private->str->var); \
-	service->private->str->var = g_strdup ( name ); \
+        g_free (service->private->var); \
+	service->private->var = g_strdup ( name ); \
 }
 
 ei_mutator_decl (verbose, gboolean);
@@ -188,7 +193,14 @@ ei_mutator_decl (hostname, char*);
 ei_mutator_decl (rpm_storage_path, char*);
 ei_mutator_decl (package_list_storage_path, char*);
 ei_mutator_decl (package_list, char*);
+ei_mutator_decl (root_dir, char*);
 ei_mutator_decl (port_number, guint);
+
+ei_mutator_decl (install_flags, int);
+ei_mutator_decl (interface_flags, int);
+ei_mutator_decl (problem_filters, int);
+
+ei_mutator_decl (package_system, int);
 
 ei_access_decl (verbose, gboolean);
 ei_access_decl (silent, gboolean);
@@ -206,7 +218,14 @@ ei_access_decl (hostname, const char*);
 ei_access_decl (rpm_storage_path, const char*);
 ei_access_decl (package_list_storage_path, const char*);
 ei_access_decl (package_list, const char*);
+ei_access_decl (root_dir, const char*);
 ei_access_decl (port_number, guint);
+
+ei_access_decl (install_flags, int);
+ei_access_decl (interface_flags, int);
+ei_access_decl (problem_filters, int);
+
+ei_access_decl (package_system, int);
 
 #ifdef __cplusplus
 }

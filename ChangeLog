@@ -1,3 +1,76 @@
+2000-06-08  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/docs/installer-dep-check:
+	(set_parameters_from_command_line), (eazel_progress_signal),
+	(download_failed), (install_failed), (dep_check), (create_package),
+	(main):
+	* components/services/install/lib/Makefile.am:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_set_arg), (eazel_install_class_initialize),
+	(eazel_install_initialize),
+	(eazel_install_fetch_remote_package_list),
+	(eazel_install_emit_install_failed),
+	(eazel_install_emit_dependency_check),
+	(eazel_install_install_packages), (eazel_install_uninstall):
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file), (ftp_fetch_remote_file),
+	(local_fetch_remote_file), (eazel_install_fetch_file),
+	(eazel_install_fetch_package):
+	* components/services/install/lib/eazel-install-protocols.h:
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_new_packages), (download_all_packages),
+	(install_all_packages), (uninstall_packages),
+	(uninstall_a_package), (build_packagedata_list_from_deps),
+	(do_rpm_install), (do_rpm_uninstall),
+	(eazel_install_prune_packages_helper),
+	(eazel_install_prune_packages), (eazel_install_load_rpm_headers),
+	(eazel_install_load_headers), (eazel_install_free_rpm_system),
+	(eazel_install_prepare_rpm_system),
+	(eazel_install_prepare_package_system),
+	(eazel_install_free_package_system),
+	(eazel_install_add_headers_to_rpm_set),
+	(eazel_install_add_headers_to_set),
+	(eazel_install_package_name_compare),
+	(eazel_install_package_conflict_compare),
+	(eazel_install_add_to_extras_foreach),
+	(eazel_install_fetch_rpm_dependencies),
+	(eazel_install_fetch_dependencies), (print_package_list),
+	(eazel_install_ensure_deps), (rpm_install):
+	* components/services/install/lib/eazel-install-rpm-glue.h:
+	* components/services/install/lib/eazel-install-types.c:
+	(protocol_as_string), (packagedata_new),
+	(packagedata_new_from_rpm_conflict),
+	(packagedata_new_from_rpm_conflict_reversed),
+	(packagedata_new_from_rpm_header),
+	(packagedata_fill_from_rpm_header), (packagedata_destroy_foreach),
+	(packagedata_destroy), (rpmfilename_from_packagedata),
+	(packagedata_hash), (packagedata_equal):
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_package), (parse_local_xml_package_list):
+	* components/services/trilobite/libtrilobite/helixcode-utils.c:
+	(xml_get_value):
+	Too much to list it all. Basically it now tries to do what apt-get
+	has done for ages. Given a list of packages to install, it
+	recursively traverses the packagelist, fetches missing
+	dependencies (no remote fetch yet, requires a search script on the
+	server side) untill all deps are satisfies. If deps failed, it
+	prunes the tree and emit signals.
+
+	* components/services/install/command-line/Makefile.am:
+	* components/services/install/command-line/eazel-alt-install.c:
+	Now takes random package names at commandline and should
+	ideally try to download them from the server.
+	
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/Makefile.am:
+	* nautilus-installer/src/installer.c: (eazel_download_progress),
+	(install_failed_helper), (install_failed), (installer):
+	Fixed to work the new stuff in libinstall. Also generates
+	prettier (but still ugly) error reports.
+	
 2000-06-08  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 542 (context menus in directory view sometimes

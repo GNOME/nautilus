@@ -4,7 +4,7 @@ NULL =
 
 INCLUDES = \
 	-I$(top_srcdir)/components/services/install/lib 	\
-	-I$(top_srcdir)/components/services/trilbite		\
+	-I$(top_srcdir)/components/services/trilobite		\
 	-I/usr/include/rpm					\
 	$(GNOMEUI_CFLAGS)					\
 	$(XML_CFLAGS)						\

@@ -34,8 +34,11 @@
 
 #define USER_AGENT_STRING "eazel-install/"
 
-gboolean http_fetch_remote_file (EazelInstall *service,
-				 char* url, 
-				 const char* target_file);
+gboolean eazel_install_fetch_file (EazelInstall *service,
+				   char* url, 
+				   const char* target_file);
+
+gboolean eazel_install_fetch_package (EazelInstall *service,
+				      PackageData *package);
 
 #endif /* __EAZEL_SERVICES_PROTOCOLS_H__ */

@@ -32,7 +32,7 @@
 #include "eazel-install-protocols.h"
 #include "eazel-install-public.h"
 
-gboolean install_new_packages (EazelInstall *service);
+gboolean install_new_packages (EazelInstall *service, GList *categories);
 gboolean uninstall_packages (EazelInstall *service);
 
 

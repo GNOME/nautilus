@@ -23,6 +23,8 @@ static char *package_list[LAST] = {
 	"/package-uninstall-list.xml",
 };
 
+char *failure_info;
+
 static void 
 eazel_install_progress (EazelInstall *service, 
 			const char *name,
@@ -79,118 +81,89 @@ eazel_download_progress (EazelInstall *service,
 	gtk_progress_bar_update (progressbar, pct/100);
 
 	fflush (stdout);
-	if (amount == total) {
-		fprintf (stdout, "\n");
+	if (amount != total) {
+		gtk_main_iteration ();		
 	}
-	
-	gtk_main_iteration ();
 }
 
 static void
-append_string_to_window_list (GtkWidget *widget,
-		const char *listname,
-		const char *name)
+install_failed_helper (EazelInstall *service,
+		       const PackageData *pd,
+		       char *indent,
+		       char **str)
 {
-	GSList *list;
+	GList *iterator;
 
-	list = (GSList*)gtk_object_get_data (GTK_OBJECT (widget), listname);
-	list = g_slist_append (list, g_strdup (name));
-	gtk_object_set_data (GTK_OBJECT (widget), listname, list);
+	if (pd->toplevel) {
+		char *tmp;
+		tmp = g_strdup_printf ("%s\n***The package %s failed. Here's the dep tree\n", *str, pd->name);
+		g_free (*str);
+		(*str) = tmp;
+	}
+	switch (pd->status) {
+	case PACKAGE_DEPENDENCY_FAIL: {
+		char *tmp;
+		tmp = g_strdup_printf ("%s%s-%s failed\n", *str, indent, rpmfilename_from_packagedata (pd));
+		g_free (*str);
+		(*str) = tmp;
+		break;
+	}
+	case PACKAGE_CANNOT_OPEN: {
+		char *tmp;
+		tmp = g_strdup_printf ("%s%s-%s NOT FOUND\n", *str, indent, rpmfilename_from_packagedata (pd));
+		g_free (*str);
+		(*str) = tmp;
+		break;		
+	}
+	case PACKAGE_SOURCE_NOT_SUPPORTED: {
+		char *tmp;
+		tmp = g_strdup_printf ("%s%s-%s is a source\n", *str, indent, rpmfilename_from_packagedata (pd));
+		g_free (*str);
+		(*str) = tmp;
+		break;
+	}
+	case PACKAGE_BREAKS_DEPENDENCY: {
+		char *tmp;
+		tmp = g_strdup_printf ("%s%s-%s breaks\n", *str, indent, rpmfilename_from_packagedata (pd));
+		g_free (*str);
+		(*str) = tmp;
+		break;
+	}
+	default: {
+		char *tmp;
+		tmp = g_strdup_printf ("%s%s-%s\n", *str, indent, rpmfilename_from_packagedata (pd));
+		g_free (*str);
+		(*str) = tmp;
+		break;
+	}
+	}
+	for (iterator = pd->soft_depends; iterator; iterator = iterator->next) {			
+		PackageData *pack;
+		char *indent2;
+		indent2 = g_strconcat (indent, iterator->next ? " |" : "  " , NULL);
+		pack = (PackageData*)iterator->data;
+		install_failed_helper (service, pack, indent2, str);
+		g_free (indent2);
+	}
+	for (iterator = pd->breaks; iterator; iterator = iterator->next) {			
+		PackageData *pack;
+		char *indent2;
+		indent2 = g_strconcat (indent, iterator->next ? " |" : "  " , NULL);
+		pack = (PackageData*)iterator->data;
+		install_failed_helper (service, pack, indent2, str);
+		g_free (indent2);
+	}
 }
+
 
 static void
-download_failed (EazelInstall *service,
-		 const char *name,
-		 GtkWidget *window)
-{
-	append_string_to_window_list (window, "download_failed_list", name);
-}
-
-static void
-install_failed_foreach (PackageData *dep,
-			GtkWidget *window)
-{	
-	char *string;
-	string = g_strdup_printf (" requires %s %s", dep->name,
-				  dep->version ? dep->version : "");
-	append_string_to_window_list (window, "install_failed_list", string);
-	g_free (string);
-}
-
-static void
-requeue (PackageData *dep,
-	 const PackageData *pd)
-{
-	g_message ("%s-%s failed, requeue and add %s for %s, version >= %s",
-		   pd->name, 
-		   pd->version,
-		   dep->name,
-		   dep->archtype,
-		   dep->version);
-}
-
-void
 install_failed (EazelInstall *service,
 		const PackageData *pd,
-		RPM_FAIL code,
-		GList *deps,
-		GtkWidget *window)
+		char **output)
 {
-	append_string_to_window_list (window, "install_failed_list", pd->name);
-
-	switch (code) {
-	case RPM_DEP_FAIL:
-		g_list_foreach (deps, (GFunc)install_failed_foreach, window);
-		g_list_foreach (deps, (GFunc)requeue, (gpointer)pd);
-		break;
-	case RPM_SRC_NOT_SUPPORTED: 
-		append_string_to_window_list (window, "install_failed_list", "source packaages not supported" );
-		break;
-	default:
-		break;
+	if (pd->toplevel == TRUE) {
+		install_failed_helper (service, pd, g_strdup (""), output);
 	}
-
-}
-
-static void
-gen_report (GtkWidget *widget,
-	    const char *listname,
-	    char **text,
-	    const char *title)
-{
-	GSList *list;
-
-	list = gtk_object_get_data (GTK_OBJECT (widget), listname);
-	if (list != NULL) {
-		GSList *ptr;
-		if ((*text)==NULL) {
-			(*text) = g_strdup (title);
-		} else {
-			char *tmp;
-			tmp = g_strconcat ((*text), title, NULL);
-			g_free ((*text));
-			(*text) = tmp;
-		}
-		ptr = list;
-		while (ptr) {
-			char *tmp;
-			tmp = g_strconcat ((*text), (char*)ptr->data, "\n", NULL);
-			g_free ((*text));
-			(*text) = tmp;
-			ptr = ptr->next;
-		}
-	}
-}
-
-static void
-dump_failure_info (GtkWidget *window) 
-{
-	char *text;
-
-	text = NULL;
-	gen_report (window, "download_failed_list", &text, "Download failed for\n");
-	gen_report (window, "install_failed_list", &text, "Install failed for\n");
-	gnome_warning_dialog (text);
 }
 
 void installer (GtkWidget *window,
@@ -240,15 +213,17 @@ void installer (GtkWidget *window,
 
 	gtk_signal_connect (GTK_OBJECT (service), "download_progress", eazel_download_progress, window);
 	gtk_signal_connect (GTK_OBJECT (service), "install_progress", eazel_install_progress, window);
-	gtk_signal_connect (GTK_OBJECT (service), "download_failed", download_failed, window);
-	gtk_signal_connect (GTK_OBJECT (service), "install_failed", install_failed, window);
+	/* gtk_signal_connect (GTK_OBJECT (service), "download_failed", download_failed, window); */
+	gtk_signal_connect (GTK_OBJECT (service), "install_failed", install_failed, &failure_info);
+
+	failure_info = g_new0 (char, 8192);
 
 	switch (method) {
 	case FULL_INST:
 	case NAUTILUS_ONLY:
 	case SERVICES_ONLY:
 	case UPGRADE:
-		eazel_install_new_packages (service);
+		eazel_install_install_packages (service, NULL);
 		break;
 	case UNINSTALL:
 		eazel_install_uninstall (service);
@@ -262,6 +237,5 @@ void installer (GtkWidget *window,
 	gtk_label_set_text (package_label, "Completed :");
 	gtk_progress_bar_update (progressbar, 1);
 
-
-	dump_failure_info (window);
+	gnome_error_dialog_parented (failure_info, GTK_WINDOW (window));
 }

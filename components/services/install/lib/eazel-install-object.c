@@ -46,6 +46,8 @@ enum {
 	INSTALL_FAILED,
 	UNINSTALL_FAILED,
 
+	DEPENDENCY_CHECK,
+	
 	LAST_SIGNAL
 };
 
@@ -67,6 +69,8 @@ enum {
 	ARG_RPM_STORAGE_PATH,
 	ARG_PACKAGE_LIST_STORAGE_PATH,
 	ARG_PACKAGE_LIST,
+	ARG_ROOT_DIR,
+	ARG_PACKAGE_SYSTEM,
 	ARG_PORT_NUMBER
 };
 
@@ -200,27 +204,13 @@ eazel_install_set_arg (GtkObject *object,
 	case ARG_PORT_NUMBER:
 		eazel_install_set_port_number (service, GTK_VALUE_UINT(*arg));
 		break;
+	case ARG_PACKAGE_SYSTEM:
+		eazel_install_set_package_system (service, GTK_VALUE_ENUM(*arg));
+		break;
+	case ARG_ROOT_DIR:
+		eazel_install_set_root_dir (service, (char*)GTK_VALUE_POINTER(*arg));
+		break;
 	}
-}
-
-typedef gint (*GtkSignal_NONE__POINTER_ENUM_POINTER) (GtkObject * object,
-						      gpointer arg1,
-						      gint arg2,
-						      gpointer arg3,
-						      gpointer user_data);
-static void 
-gtk_marshal_NONE__POINTER_ENUM_POINTER (GtkObject * object,
-				       GtkSignalFunc func,
-				       gpointer func_data,
-				       GtkArg * args)
-{
-	GtkSignal_NONE__POINTER_ENUM_POINTER rfunc;
-	rfunc = (GtkSignal_NONE__POINTER_ENUM_POINTER) func;
-	(*rfunc) (object,
-		  GTK_VALUE_POINTER (args[0]),
-		  GTK_VALUE_ENUM (args[1]),
-		  GTK_VALUE_POINTER (args[2]),
-		  func_data);
 }
 
 static void
@@ -268,8 +258,8 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallClass, install_failed),
-				gtk_marshal_NONE__POINTER_ENUM_POINTER,
-				GTK_TYPE_NONE, 3, GTK_TYPE_POINTER, GTK_TYPE_ENUM, GTK_TYPE_POINTER);
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
 	signals[UNINSTALL_FAILED] = 
 		gtk_signal_new ("uninstall_failed",
 				GTK_RUN_LAST,
@@ -277,6 +267,13 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				GTK_SIGNAL_OFFSET (EazelInstallClass, uninstall_failed),
 				gtk_marshal_NONE__POINTER,
 				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+	signals[DEPENDENCY_CHECK] = 
+		gtk_signal_new ("dependency_check",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallClass, dependency_check),
+				gtk_marshal_NONE__POINTER_POINTER,
+				GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	gtk_object_add_arg_type ("EazelInstall::verbose",
@@ -343,10 +340,18 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
 				 ARG_PACKAGE_LIST);
+	gtk_object_add_arg_type ("EazelInstall::root_dir",
+				 GTK_TYPE_POINTER,
+				 GTK_ARG_READWRITE,
+				 ARG_ROOT_DIR);
 	gtk_object_add_arg_type ("EazelInstall::port_number",
 				 GTK_TYPE_UINT,
 				 GTK_ARG_READWRITE,
 				 ARG_PORT_NUMBER);
+	gtk_object_add_arg_type ("EazelInstall::package_system",
+				 GTK_TYPE_ENUM,
+				 GTK_ARG_READWRITE,
+				 ARG_PACKAGE_SYSTEM);
 }
 
 #ifndef STANDALONE
@@ -402,6 +407,12 @@ eazel_install_initialize (EazelInstall *service) {
 	service->private = g_new0 (EazelInstallPrivate,1);
 	service->private->topts = g_new0 (TransferOptions, 1);
 	service->private->iopts = g_new0 (InstallOptions, 1);
+	service->private->root_dir = NULL;
+	service->private->packsys.rpm.conflicts = NULL;
+	service->private->packsys.rpm.num_conflicts = 0;
+	service->private->packsys.rpm.db = NULL;
+	service->private->packsys.rpm.set = NULL;
+	service->private->logfile = NULL;
 }
 
 GtkType
@@ -502,7 +513,7 @@ create_temporary_directory (const char* tmpdir)
 } /* end create_temporary_directory */
 
 static gboolean
-fetch_remote_package_list (EazelInstall *service) 
+eazel_install_fetch_remote_package_list (EazelInstall *service) 
 {
 	gboolean retval;
 	char* url;
@@ -515,7 +526,7 @@ fetch_remote_package_list (EazelInstall *service)
 			       eazel_install_get_hostname (service),
 			       eazel_install_get_package_list_storage_path (service));
 	
-	retval = http_fetch_remote_file (service, url, eazel_install_get_package_list (service));
+	retval = eazel_install_fetch_file (service, url, eazel_install_get_package_list (service));
 
 	if (retval == FALSE) {
 		g_free (url);
@@ -557,12 +568,10 @@ eazel_install_emit_download_failed (EazelInstall *service,
 
 void 
 eazel_install_emit_install_failed (EazelInstall *service, 
-				   const PackageData *pd,
-				   RPM_FAIL code,
-				   const gpointer info)
+				   const PackageData *pd)
 {
 	SANITY(service);
-	gtk_signal_emit (GTK_OBJECT (service), signals[INSTALL_FAILED], pd, code, info);
+	gtk_signal_emit (GTK_OBJECT (service), signals[INSTALL_FAILED], pd);
 }
 
 void 
@@ -571,6 +580,15 @@ eazel_install_emit_uninstall_failed (EazelInstall *service,
 {
 	SANITY(service);
 	gtk_signal_emit (GTK_OBJECT (service), signals[UNINSTALL_FAILED], pd);
+}
+
+void 
+eazel_install_emit_dependency_check (EazelInstall *service, 
+				     const PackageData *package,
+				     const PackageData *needs)
+{
+	SANITY(service);
+	gtk_signal_emit (GTK_OBJECT (service), signals[DEPENDENCY_CHECK], package, needs);
 }
 
 static void 
@@ -610,7 +628,7 @@ eazel_install_open_log (EazelInstall *service,
 }
 
 void 
-eazel_install_new_packages (EazelInstall *service)
+eazel_install_install_packages (EazelInstall *service, GList *categories)
 {
 	SANITY (service);
 
@@ -620,10 +638,19 @@ eazel_install_new_packages (EazelInstall *service)
 		create_temporary_directory (eazel_install_get_tmp_dir (service));
 	}
 	
-	if (service->private->iopts->protocol == PROTOCOL_HTTP) {
-		fetch_remote_package_list (service);
+	if (categories == NULL) {
+		switch (service->private->iopts->protocol) {
+		case PROTOCOL_HTTP:
+			eazel_install_fetch_remote_package_list (service);
+			break;
+		case PROTOCOL_FTP:
+			g_error ("ftp install not supported");
+			break;
+		case PROTOCOL_LOCAL:
+			break;
+		}
 	}
-	if (install_new_packages (service)==FALSE) {
+	if (install_new_packages (service, categories)==FALSE) {
 		g_warning ("*** Install failed");
 	} 
 }
@@ -635,8 +662,15 @@ eazel_install_uninstall (EazelInstall *service)
 
 	g_message ("eazel_install_new_packages");
 
-	if (service->private->iopts->protocol == PROTOCOL_HTTP) {
-		fetch_remote_package_list (service);
+	switch (service->private->iopts->protocol) {
+	case PROTOCOL_HTTP:
+		eazel_install_fetch_remote_package_list (service);
+		break;
+	case PROTOCOL_FTP:
+		g_error ("ftp install not supported");
+		break;
+	case PROTOCOL_LOCAL:
+		break;
 	}
 	if (uninstall_packages (service)==FALSE) {
 		g_warning ("*** Uninstall failed");
@@ -647,38 +681,52 @@ eazel_install_uninstall (EazelInstall *service)
 /* Welcome to define madness. These are all the get/set methods. There is nothing of
  interest beyond this point, except for a fucking big dragon*/
 
-ei_mutator_impl (verbose, gboolean, iopts, mode_verbose);
-ei_mutator_impl (silent, gboolean, iopts, mode_silent);
-ei_mutator_impl (debug, gboolean, iopts, mode_debug);
-ei_mutator_impl (test, gboolean, iopts, mode_test);
-ei_mutator_impl (force, gboolean, iopts, mode_force);
-ei_mutator_impl (depend, gboolean, iopts, mode_depend);
-ei_mutator_impl (update, gboolean, iopts, mode_update);
-ei_mutator_impl (uninstall, gboolean, iopts, mode_uninstall);
-ei_mutator_impl (downgrade, gboolean, iopts, mode_downgrade);
-ei_mutator_impl (protocol, URLType, iopts, protocol);
-ei_mutator_impl_string (tmp_dir, char*, topts, tmp_dir);
-ei_mutator_impl_string (rpmrc_file, char*, topts, rpmrc_file);
-ei_mutator_impl_string (hostname, char*, topts, hostname);
-ei_mutator_impl_string (rpm_storage_path, char*, topts, rpm_storage_path);
-ei_mutator_impl_string (package_list_storage_path, char*, topts, pkg_list_storage_path);
-ei_mutator_impl_string (package_list, char*, iopts, pkg_list);
-ei_mutator_impl (port_number, guint, topts, port_number);
+ei_mutator_impl (verbose, gboolean, iopts->mode_verbose);
+ei_mutator_impl (silent, gboolean, iopts->mode_silent);
+ei_mutator_impl (debug, gboolean, iopts->mode_debug);
+ei_mutator_impl (test, gboolean, iopts->mode_test);
+ei_mutator_impl (force, gboolean, iopts->mode_force);
+ei_mutator_impl (depend, gboolean, iopts->mode_depend);
+ei_mutator_impl (update, gboolean, iopts->mode_update);
+ei_mutator_impl (uninstall, gboolean, iopts->mode_uninstall);
+ei_mutator_impl (downgrade, gboolean, iopts->mode_downgrade);
+ei_mutator_impl (protocol, URLType, iopts->protocol);
+ei_mutator_impl_string (tmp_dir, char*, topts->tmp_dir);
+ei_mutator_impl_string (rpmrc_file, char*, topts->rpmrc_file);
+ei_mutator_impl_string (hostname, char*, topts->hostname);
+ei_mutator_impl_string (rpm_storage_path, char*, topts->rpm_storage_path);
+ei_mutator_impl_string (package_list_storage_path, char*, topts->pkg_list_storage_path);
+ei_mutator_impl_string (package_list, char*, iopts->pkg_list);
+ei_mutator_impl_string (root_dir, char*, root_dir);
+ei_mutator_impl (port_number, guint, topts->port_number);
 
-ei_access_impl (verbose, gboolean, iopts, mode_verbose, FALSE);
-ei_access_impl (silent, gboolean, iopts, mode_silent, FALSE);
-ei_access_impl (debug, gboolean, iopts, mode_debug, FALSE);
-ei_access_impl (test, gboolean, iopts, mode_test, FALSE);
-ei_access_impl (force, gboolean, iopts, mode_force, FALSE);
-ei_access_impl (depend, gboolean, iopts, mode_depend, FALSE);
-ei_access_impl (update, gboolean, iopts, mode_update, FALSE);
-ei_access_impl (uninstall, gboolean, iopts, mode_uninstall, FALSE);
-ei_access_impl (downgrade, gboolean, iopts, mode_downgrade, FALSE);
-ei_access_impl (protocol, URLType , iopts, protocol, PROTOCOL_LOCAL);
-ei_access_impl (tmp_dir, const char*, topts, tmp_dir, NULL);
-ei_access_impl (rpmrc_file, const char*, topts, rpmrc_file, NULL);
-ei_access_impl (hostname, const char*, topts, hostname, NULL);
-ei_access_impl (rpm_storage_path, const char*, topts, rpm_storage_path, NULL);
-ei_access_impl (package_list_storage_path, const char*, topts, pkg_list_storage_path, NULL);
-ei_access_impl (package_list, const char*, iopts, pkg_list, NULL);
-ei_access_impl (port_number, guint, topts, port_number, 0);
+ei_mutator_impl (install_flags, int, install_flags);
+ei_mutator_impl (interface_flags, int, interface_flags);
+ei_mutator_impl (problem_filters, int, problem_filters);
+
+ei_mutator_impl (package_system, int, package_system);
+
+ei_access_impl (verbose, gboolean, iopts->mode_verbose, FALSE);
+ei_access_impl (silent, gboolean, iopts->mode_silent, FALSE);
+ei_access_impl (debug, gboolean, iopts->mode_debug, FALSE);
+ei_access_impl (test, gboolean, iopts->mode_test, FALSE);
+ei_access_impl (force, gboolean, iopts->mode_force, FALSE);
+ei_access_impl (depend, gboolean, iopts->mode_depend, FALSE);
+ei_access_impl (update, gboolean, iopts->mode_update, FALSE);
+ei_access_impl (uninstall, gboolean, iopts->mode_uninstall, FALSE);
+ei_access_impl (downgrade, gboolean, iopts->mode_downgrade, FALSE);
+ei_access_impl (protocol, URLType , iopts->protocol, PROTOCOL_LOCAL);
+ei_access_impl (tmp_dir, const char*, topts->tmp_dir, NULL);
+ei_access_impl (rpmrc_file, const char*, topts->rpmrc_file, NULL);
+ei_access_impl (hostname, const char*, topts->hostname, NULL);
+ei_access_impl (rpm_storage_path, const char*, topts->rpm_storage_path, NULL);
+ei_access_impl (package_list_storage_path, const char*, topts->pkg_list_storage_path, NULL);
+ei_access_impl (package_list, const char*, iopts->pkg_list, NULL);
+ei_access_impl (root_dir, const char*, root_dir, NULL);
+ei_access_impl (port_number, guint, topts->port_number, 0);
+
+ei_access_impl (install_flags, int, install_flags, 0);
+ei_access_impl (interface_flags, int, interface_flags, 0);
+ei_access_impl (problem_filters, int, problem_filters, 0);
+
+ei_access_impl (package_system, int, package_system, 0);

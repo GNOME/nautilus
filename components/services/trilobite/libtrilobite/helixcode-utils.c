@@ -54,6 +54,7 @@ xml_get_value (xmlNode* node, const char* name)
 		}
 		child = child->next;
 	}
+
 	return NULL;
 } /* end xml_get_value */
 

@@ -69,9 +69,9 @@ CPP = gcc -E
 DATADIRNAME = share
 DLLTOOL = @DLLTOOL@
 EAZEL_SERVICES = 1
-GCONF_CFLAGS = -I/gnome/include
+GCONF_CFLAGS = -I/gnome/include -I/gnome/lib/glib/include -I/usr/X11R6/include
 GCONF_CONFIG = /gnome/bin/gconf-config
-GCONF_LIBS = -L/gnome/lib -lgconf -lgconf-gtk
+GCONF_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -lgconf -lgconf-gtk -lgtk -lgdk -lgmodule -lglib -ldl -lXext -lX11 -lm
 GDK_PIXBUF_CFLAGS = -I/gnome/include -I/gnome/lib/glib/include -I/gnome/include -I/usr/X11R6/include
 GDK_PIXBUF_CONFIG = /gnome/bin/gdk-pixbuf-config
 GDK_PIXBUF_LIBS = -L/gnome/lib -lgdk_pixbuf -L/gnome/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXext -lX11 -lm
@@ -88,7 +88,7 @@ GNET_CFLAGS = -I/gnome/lib/glib/include -I/gnome/include
 GNET_CONFIG = /gnome/bin/gnet-config
 GNET_LIBS = -L/gnome/lib -lgnet -lglib
 GNOMECANVASPIXBUF_INCLUDEDIR = 
-GNOMECANVASPIXBUF_LIBS = -rdynamic -L/gnome/lib -lgmodule -lglib -ldl -lgdk_pixbuf -ltiff -ljpeg -lpng -lz -lgnomecanvaspixbuf
+GNOMECANVASPIXBUF_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -lgdk_pixbuf -ltiff -ljpeg -lpng -lz -lgtk -lgdk -lgmodule -lglib -ldl -lXext -lX11 -lm -lgnomecanvaspixbuf
 GNOMEUI_CFLAGS = -I/gnome/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/lib/glib/include -I/usr/X11R6/include
 GNOMEUI_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb1 -lglib -ldl
 GNOME_CFLAGS = -I/gnome/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/lib/glib/include -I/usr/X11R6/include
@@ -125,6 +125,10 @@ OAF_CFLAGS = -I/gnome/include -I/gnome/lib/glib/include
 OAF_CONFIG = /gnome/bin/oaf-config
 OAF_LIBS = -L/gnome/lib -loaf -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
 OBJDUMP = @OBJDUMP@
+ORBIT_CFLAGS = -I/gnome/lib/glib/include -I/gnome/include
+ORBIT_CONFIG = /gnome/bin/orbit-config
+ORBIT_IDL = /gnome/bin/orbit-idl
+ORBIT_LIBS = -L/gnome/lib -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
 PACKAGE = nautilus
 PAM_LIBS = -ldl -lpam -lpam_misc
 POFILES =  da.po gl.po ja.po ko.po no.po ru.po sv.po tr.po fr.po
@@ -147,7 +151,7 @@ l =
 
 NULL = 
 
-INCLUDES =  	-I$(top_srcdir)/components/services/install/lib 		-I$(top_srcdir)/components/services/trilbite			-I/usr/include/rpm						$(GNOMEUI_CFLAGS)						$(XML_CFLAGS)							$(GNET_CFLAGS)							$(GHTTP_CFLAGS)							$(GNOME_INCLUDEDIR)						-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 			-DG_LOG_DOMAIN=\"Nautilus-Installer\"				$(NULL)
+INCLUDES =  	-I$(top_srcdir)/components/services/install/lib 		-I$(top_srcdir)/components/services/trilobite			-I/usr/include/rpm						$(GNOMEUI_CFLAGS)						$(XML_CFLAGS)							$(GNET_CFLAGS)							$(GHTTP_CFLAGS)							$(GNOME_INCLUDEDIR)						-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 			-DG_LOG_DOMAIN=\"Nautilus-Installer\"				$(NULL)
 
 
 CFLAGS = -g $(WERROR)
