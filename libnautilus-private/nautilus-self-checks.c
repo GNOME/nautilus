@@ -137,4 +137,15 @@ nautilus_check_string_result (char *result, const char *expected)
 	nautilus_after_check ();
 }
 
+void
+nautilus_before_check_function (const char *name)
+{
+	g_print ("running %s\n", name);
+}
+
+void
+nautilus_after_check_function (void)
+{
+}
+
 #endif /* ! NAUTILUS_OMIT_SELF_CHECK */

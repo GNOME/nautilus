@@ -42,6 +42,9 @@ G_STMT_START { \
 
 void nautilus_exit_if_self_checks_failed (void);
 
+void nautilus_before_check_function      (const char *name);
+void nautilus_after_check_function       (void);
+
 void nautilus_before_check               (const char *expression,
 					  const char *file_name,
 					  int         line_number);
@@ -57,6 +60,8 @@ void nautilus_check_string_result        (char       *result,
 	void function (void);
 
 #define NAUTILUS_CALL_SELF_CHECK_FUNCTION(function) \
-	function ();
+	nautilus_before_check_function (#function); \
+	function (); \
+	nautilus_after_check_function ();
 
 #endif /* NAUTILUS_SELF_CHECKS_H */
