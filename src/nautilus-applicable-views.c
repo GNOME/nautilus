@@ -171,7 +171,9 @@ set_initial_content_iid (NautilusNavigationInfo *navinfo,
 
 
 static char * const nautilus_sort_criteria[] = {
-        /* Prefer the html view most */
+        /* Prefer the industrial strengthe html viewer most */
+        "iid == 'OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1'",
+        /* Prefer the gtkhtml viewer next */
         "iid == 'OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b'",
         /* Prefer the icon view next */
         "iid == 'OAFIID:ntl_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058'",

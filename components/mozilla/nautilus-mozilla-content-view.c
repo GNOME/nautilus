@@ -94,12 +94,6 @@ static void  mozilla_content_view_request_progress_change   (NautilusMozillaCont
 							     gdouble                          progress_amount);
 static void  mozilla_content_view_request_location_change   (NautilusMozillaContentView      *view,
 							     const char                      *new_location_uri);
-static char *substitute_prefix                              (const char                      *uri,
-							     const char                      *prefix,
-							     const char                      *subsitite_prefix);
-static char *mozilla_content_view_hack_uri                  (const char                      *uri);
-static char *mozilla_content_view_unhack_uri                (const char                      *uri);
-
 
 static GtkVBoxClass *parent_class = NULL;
 
@@ -234,7 +228,7 @@ nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 		g_free (view->details->uri);
 	}
 	
-	view->details->uri = mozilla_content_view_unhack_uri (uri);
+	view->details->uri = g_strdup (uri);
 
 #ifdef DEBUG_ramiro
 	g_print ("nautilus_mozilla_content_view_load_uri (%s)\n", view->details->uri);
@@ -286,56 +280,17 @@ mozilla_content_view_request_location_change (NautilusMozillaContentView	*view,
 					      const char			*new_uri)
 {
 	Nautilus_NavigationRequestInfo	navigation_request;
-	char				*hacked_uri;
 	
         g_assert (view != NULL);
         g_assert (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (view));
         g_assert (new_uri != NULL);
 
 	memset (&navigation_request, 0, sizeof (navigation_request));
-
-	hacked_uri = mozilla_content_view_hack_uri (new_uri);
-
-	g_assert (hacked_uri);
-	
-	navigation_request.requested_uri = hacked_uri;
+	navigation_request.requested_uri = (char *) new_uri;
 	
 	nautilus_view_request_location_change (view->details->nautilus_view, 
 					       &navigation_request);
 
-	g_free (hacked_uri);
-}
-
-/* FIXME bugzilla.eazel.com 522: The http: -> moz: hack is temporary */
-static char *
-substitute_prefix (const char *uri, const char *prefix, const char *subsitite_prefix)
-{
-	char *hacked_uri = NULL;
-
-	g_assert (uri != NULL);
-
-	if (uri 
-	    && (strlen (uri) >= strlen (prefix))
-	    && (strncmp (uri, prefix, strlen (prefix)) == 0)) {
-		hacked_uri = g_strdup_printf ("%s%s", subsitite_prefix, uri + strlen (prefix));
-	}
-	else {
-		hacked_uri = g_strdup (uri);
-	}
-	
-	return hacked_uri;
-}
-
-static char *
-mozilla_content_view_hack_uri (const char *uri)
-{
-	return substitute_prefix (uri, "http:", "moz:");
-}
-
-static char *
-mozilla_content_view_unhack_uri (const char *uri)
-{
-	return substitute_prefix (uri, "moz:", "http:");
 }
 
 static void

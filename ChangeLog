@@ -1,5 +1,18 @@
 2000-05-31  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_load_uri),
+	(mozilla_content_view_request_location_change):
+	Exorcist the moz:// hack.
+	
+	* components/mozilla/nautilus-mozilla-content-view.oafinfo:
+	Change the protocol from moz to http.
+
+	* src/nautilus-applicable-views.c:
+	Prefer the mozilla component over the ntl-web-browser.
+	
+2000-05-31  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/rpmview/nautilus-rpm-view.oafinfo:
 
 	"fix" bug 725 by changing the supported uri types of the rpm view
