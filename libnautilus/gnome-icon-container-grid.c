@@ -24,6 +24,8 @@
 */
 
 #include <config.h>
+#include <string.h>
+
 #include "gnome-icon-container-grid.h"
 
 #define INITIAL_GRID_WIDTH 64
