@@ -204,6 +204,13 @@ smooth_widget_get_tile_origin_point (const GtkWidget *widget,
 
 	origin_point = NAUTILUS_ART_IPOINT_ZERO;
 
+	/* Using '0' for the ancestor origin works because our buddy GTK+ 
+	 * already makes our allocation.{x,y} the collected offsets of all
+	 * our ancestors.
+	 *
+	 * It might be more correct to make this the allocation.{x,y} of the
+	 * ancestor windowed widget - maybe.
+	 */
 	switch (tile_mode_vertical) {
 	case NAUTILUS_SMOOTH_TILE_SELF:
 		origin_point.y = widget->allocation.y;
@@ -960,8 +967,8 @@ nautilus_smooth_widget_get_preferred_frame (const GtkWidget *widget,
 	nautilus_art_irect_assign (&preferred_frame,
 				   0,
 				   0,
-				   MAX (content_frame->x1, tile_width) + (2 * GTK_MISC (widget)->xpad * 2),
-				   MAX (content_frame->y1, tile_height) + (2 * GTK_MISC (widget)->ypad * 2));
+				   MAX (content_frame->x1, tile_width) + (2 * GTK_MISC (widget)->xpad),
+				   MAX (content_frame->y1, tile_height) + (2 * GTK_MISC (widget)->ypad));
 
 	/* Make sure the frame is not zero.  Gtk goes berserk with zero size widget */
 	preferred_frame.x1 = MAX (preferred_frame.x1, 2);

@@ -66,9 +66,7 @@ ArtIRect nautilus_art_irect_align          (const ArtIRect    *container,
 					    int                aligned_width,
 					    int                aligned_height,
 					    float              x_alignment,
-					    float              y_alignment,
-					    int                x_padding,
-					    int                y_padding);
+					    float              y_alignment);
 END_GNOME_DECLS
 
 #endif /* NAUTILUS_ART_EXTENSIONS_H */

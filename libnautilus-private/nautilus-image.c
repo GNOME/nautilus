@@ -63,7 +63,7 @@ typedef enum
 static guint image_signals[LAST_SIGNAL] = { 0 };
 
 /* Detail member struct */
-struct _NautilusImageDetail
+struct _NautilusImageDetails
 {
 	gboolean is_smooth;
 
@@ -82,6 +82,7 @@ struct _NautilusImageDetail
 	/* Background */
 	NautilusSmoothBackgroundMode background_mode;
 	guint32 solid_background_color;
+	gboolean never_smooth;
 };
 
 /* GtkObjectClass methods */
@@ -108,6 +109,7 @@ static void     nautilus_image_set_is_smooth_signal (GtkWidget           *widget
 static ArtIRect image_get_pixbuf_frame              (const NautilusImage *image);
 static ArtIRect image_get_pixbuf_bounds             (const NautilusImage *image);
 static ArtIRect image_get_tile_frame                (const NautilusImage *image);
+static gboolean image_is_smooth                     (const NautilusImage *image);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusImage, nautilus_image, GTK_TYPE_MISC)
 
@@ -204,15 +206,15 @@ nautilus_image_initialize (NautilusImage *image)
 	GTK_WIDGET_UNSET_FLAGS (image, GTK_CAN_FOCUS);
 	GTK_WIDGET_SET_FLAGS (image, GTK_NO_WINDOW);
 
-	image->detail = g_new0 (NautilusImageDetail, 1);
+	image->details = g_new0 (NautilusImageDetails, 1);
 
-	image->detail->pixbuf_opacity = NAUTILUS_OPACITY_FULLY_OPAQUE;
-	image->detail->tile_opacity = NAUTILUS_OPACITY_FULLY_OPAQUE;
- 	image->detail->tile_width = NAUTILUS_SMOOTH_TILE_EXTENT_FULL;
- 	image->detail->tile_height = NAUTILUS_SMOOTH_TILE_EXTENT_FULL;
-	image->detail->tile_mode_vertical = NAUTILUS_SMOOTH_TILE_SELF;
-	image->detail->tile_mode_horizontal = NAUTILUS_SMOOTH_TILE_SELF;
-	image->detail->background_mode = NAUTILUS_SMOOTH_BACKGROUND_GTK;
+	image->details->pixbuf_opacity = NAUTILUS_OPACITY_FULLY_OPAQUE;
+	image->details->tile_opacity = NAUTILUS_OPACITY_FULLY_OPAQUE;
+ 	image->details->tile_width = NAUTILUS_SMOOTH_TILE_EXTENT_FULL;
+ 	image->details->tile_height = NAUTILUS_SMOOTH_TILE_EXTENT_FULL;
+	image->details->tile_mode_vertical = NAUTILUS_SMOOTH_TILE_SELF;
+	image->details->tile_mode_horizontal = NAUTILUS_SMOOTH_TILE_SELF;
+	image->details->background_mode = NAUTILUS_SMOOTH_BACKGROUND_GTK;
 
 	nautilus_smooth_widget_register (GTK_WIDGET (image));
 }
@@ -227,10 +229,10 @@ nautilus_image_destroy (GtkObject *object)
 
 	image = NAUTILUS_IMAGE (object);
 
-	nautilus_gdk_pixbuf_unref_if_not_null (image->detail->tile_pixbuf);
-	image->detail->tile_pixbuf = NULL;
+	nautilus_gdk_pixbuf_unref_if_not_null (image->details->tile_pixbuf);
+	image->details->tile_pixbuf = NULL;
 
-	g_free (image->detail);
+	g_free (image->details);
 
 	/* Chain destroy */
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -373,8 +375,8 @@ nautilus_image_size_request (GtkWidget *widget,
 	preferred_frame = nautilus_smooth_widget_get_preferred_frame (widget,
 								      &pixbuf_frame,
 								      &tile_frame,
-								      image->detail->tile_width,
-								      image->detail->tile_height);
+								      image->details->tile_width,
+								      image->details->tile_height);
    	requisition->width = preferred_frame.x1;
    	requisition->height = preferred_frame.y1;
 }
@@ -398,9 +400,9 @@ image_paint_pixbuf_callback (GtkWidget *widget,
 
 	image = NAUTILUS_IMAGE (widget);
 
-	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (image->detail->pixbuf));
+	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (image->details->pixbuf));
 	
-	nautilus_gdk_pixbuf_draw_to_drawable (image->detail->pixbuf,
+	nautilus_gdk_pixbuf_draw_to_drawable (image->details->pixbuf,
 					      destination_drawable,
 					      gc,
 					      source_x,
@@ -429,9 +431,9 @@ image_composite_pixbuf_callback (GtkWidget *widget,
 
 	image = NAUTILUS_IMAGE (widget);
 
-	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (image->detail->pixbuf));
+	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (image->details->pixbuf));
 
-	nautilus_gdk_pixbuf_draw_to_pixbuf_alpha (image->detail->pixbuf,
+	nautilus_gdk_pixbuf_draw_to_pixbuf_alpha (image->details->pixbuf,
 						  destination_pixbuf,
 						  source_x,
 						  source_y,
@@ -460,12 +462,12 @@ nautilus_image_expose_event (GtkWidget *widget,
 
 	pixbuf_bounds = image_get_pixbuf_bounds (image);
 	tile_bounds = nautilus_smooth_widget_get_tile_bounds (widget,
-							      image->detail->tile_pixbuf,
-							      image->detail->tile_width,
-							      image->detail->tile_height);
+							      image->details->tile_pixbuf,
+							      image->details->tile_width,
+							      image->details->tile_height);
 	
 	/* Check for the dumb case when theres nothing to do */
-	if (image->detail->pixbuf == NULL && image->detail->tile_pixbuf == NULL) {
+	if (image->details->pixbuf == NULL && image->details->tile_pixbuf == NULL) {
 		return TRUE;
 	}
 
@@ -481,16 +483,16 @@ nautilus_image_expose_event (GtkWidget *widget,
 	/* Paint ourselves */
 	nautilus_smooth_widget_paint (widget,
 				      widget->style->white_gc,
-				      image->detail->is_smooth,
-				      image->detail->background_mode,
-				      image->detail->solid_background_color,
-				      image->detail->tile_pixbuf,
+				      image_is_smooth (image),
+				      image->details->background_mode,
+				      image->details->solid_background_color,
+				      image->details->tile_pixbuf,
 				      &tile_bounds,
-				      image->detail->tile_opacity,
-				      image->detail->tile_mode_vertical,
-				      image->detail->tile_mode_horizontal,
+				      image->details->tile_opacity,
+				      image->details->tile_mode_vertical,
+				      image->details->tile_mode_horizontal,
 				      &pixbuf_bounds,
-				      image->detail->pixbuf_opacity,
+				      image->details->pixbuf_opacity,
 				      &screen_dirty_area,
 				      image_paint_pixbuf_callback,
 				      image_composite_pixbuf_callback,
@@ -517,14 +519,14 @@ image_get_pixbuf_frame (const NautilusImage *image)
 
 	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), NAUTILUS_ART_IRECT_EMPTY);
 
-	if (!image->detail->pixbuf) {
+	if (!image->details->pixbuf) {
 		return NAUTILUS_ART_IRECT_EMPTY;
 	}
 
 	pixbuf_frame.x0 = 0;
 	pixbuf_frame.y0 = 0;
-	pixbuf_frame.x1 = gdk_pixbuf_get_width (image->detail->pixbuf);
-	pixbuf_frame.y1 = gdk_pixbuf_get_height (image->detail->pixbuf);
+	pixbuf_frame.x1 = gdk_pixbuf_get_width (image->details->pixbuf);
+	pixbuf_frame.y1 = gdk_pixbuf_get_height (image->details->pixbuf);
 
 	return pixbuf_frame;
 }
@@ -550,9 +552,7 @@ image_get_pixbuf_bounds (const NautilusImage *image)
 						  pixbuf_frame.x1,
 						  pixbuf_frame.y1,
 						  GTK_MISC (image)->xalign,
-						  GTK_MISC (image)->yalign,
-						  GTK_MISC (image)->xpad,
-						  GTK_MISC (image)->ypad);
+						  GTK_MISC (image)->yalign);
 
 	return pixbuf_bounds;
 }
@@ -564,16 +564,24 @@ image_get_tile_frame (const NautilusImage *image)
 
 	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), NAUTILUS_ART_IRECT_EMPTY);
 
-	if (!image->detail->tile_pixbuf) {
+	if (!image->details->tile_pixbuf) {
 		return NAUTILUS_ART_IRECT_EMPTY;
 	}
 
 	tile_frame.x0 = 0;
 	tile_frame.y0 = 0;
-	tile_frame.x1 = gdk_pixbuf_get_width (image->detail->tile_pixbuf);
-	tile_frame.y1 = gdk_pixbuf_get_height (image->detail->tile_pixbuf);
+	tile_frame.x1 = gdk_pixbuf_get_width (image->details->tile_pixbuf);
+	tile_frame.y1 = gdk_pixbuf_get_height (image->details->tile_pixbuf);
 
 	return tile_frame;
+}
+
+gboolean
+image_is_smooth (const NautilusImage *image)
+{
+	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), FALSE);
+
+	return !image->details->never_smooth && image->details->is_smooth;
 }
 
 /* Public NautilusImage methods */
@@ -597,11 +605,15 @@ nautilus_image_set_is_smooth (NautilusImage *image,
 {
 	g_return_if_fail (NAUTILUS_IS_IMAGE (image));
 
-	if (image->detail->is_smooth == is_smooth) {
+	if (image->details->never_smooth) {
 		return;
 	}
 
-	image->detail->is_smooth = is_smooth;
+	if (image->details->is_smooth == is_smooth) {
+		return;
+	}
+
+	image->details->is_smooth = is_smooth;
 
 	/* We call queue_resize() instead queue_draw() because
 	 * we want the widget's background to be cleared of 
@@ -616,7 +628,7 @@ nautilus_image_get_is_smooth (const NautilusImage *image)
 {
 	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), FALSE);
 
-	return image->detail->is_smooth;
+	return image_is_smooth (image);
 }
 
 /**
@@ -634,11 +646,11 @@ nautilus_image_set_tile_pixbuf (NautilusImage *image,
 {
 	g_return_if_fail (NAUTILUS_IS_IMAGE (image));
 	
-	if (pixbuf != image->detail->tile_pixbuf) {
-		nautilus_gdk_pixbuf_unref_if_not_null (image->detail->tile_pixbuf);
+	if (pixbuf != image->details->tile_pixbuf) {
+		nautilus_gdk_pixbuf_unref_if_not_null (image->details->tile_pixbuf);
 		nautilus_gdk_pixbuf_ref_if_not_null (pixbuf);
 		
-		image->detail->tile_pixbuf = pixbuf;
+		image->details->tile_pixbuf = pixbuf;
 
 		gtk_widget_queue_draw (GTK_WIDGET (image));
 	}
@@ -657,9 +669,9 @@ nautilus_image_get_tile_pixbuf (const NautilusImage *image)
 {
 	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), NULL);
 
-	nautilus_gdk_pixbuf_ref_if_not_null (image->detail->tile_pixbuf);
+	nautilus_gdk_pixbuf_ref_if_not_null (image->details->tile_pixbuf);
 	
-	return image->detail->tile_pixbuf;
+	return image->details->tile_pixbuf;
 }
 
 void
@@ -668,10 +680,10 @@ nautilus_image_set_pixbuf (NautilusImage *image,
 {
 	g_return_if_fail (NAUTILUS_IS_IMAGE (image));
 
-	if (pixbuf != image->detail->pixbuf) {
-		nautilus_gdk_pixbuf_unref_if_not_null (image->detail->pixbuf);
+	if (pixbuf != image->details->pixbuf) {
+		nautilus_gdk_pixbuf_unref_if_not_null (image->details->pixbuf);
 		nautilus_gdk_pixbuf_ref_if_not_null (pixbuf);
-		image->detail->pixbuf = pixbuf;
+		image->details->pixbuf = pixbuf;
 		gtk_widget_queue_resize (GTK_WIDGET (image));
 	}
 }
@@ -698,9 +710,9 @@ nautilus_image_get_pixbuf (const NautilusImage *image)
 {
 	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), NULL);
 	
-	nautilus_gdk_pixbuf_ref_if_not_null (image->detail->pixbuf);
+	nautilus_gdk_pixbuf_ref_if_not_null (image->details->pixbuf);
 	
-	return image->detail->pixbuf;
+	return image->details->pixbuf;
 }
 
 void
@@ -711,11 +723,11 @@ nautilus_image_set_pixbuf_opacity (NautilusImage *image,
 	g_return_if_fail (pixbuf_opacity >= NAUTILUS_OPACITY_FULLY_TRANSPARENT);
 	g_return_if_fail (pixbuf_opacity <= NAUTILUS_OPACITY_FULLY_OPAQUE);
 
-	if (image->detail->pixbuf_opacity == pixbuf_opacity) {
+	if (image->details->pixbuf_opacity == pixbuf_opacity) {
 		return;
 	}
 
-	image->detail->pixbuf_opacity = pixbuf_opacity;
+	image->details->pixbuf_opacity = pixbuf_opacity;
 
 	gtk_widget_queue_draw (GTK_WIDGET (image));
 }
@@ -725,7 +737,7 @@ nautilus_image_get_pixbuf_opacity (const NautilusImage *image)
 {
 	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), NAUTILUS_OPACITY_FULLY_OPAQUE);
 
-	return image->detail->pixbuf_opacity;
+	return image->details->pixbuf_opacity;
 }
 
 void
@@ -736,11 +748,11 @@ nautilus_image_set_tile_opacity (NautilusImage *image,
 	g_return_if_fail (tile_opacity >= NAUTILUS_OPACITY_FULLY_TRANSPARENT);
 	g_return_if_fail (tile_opacity <= NAUTILUS_OPACITY_FULLY_OPAQUE);
 
-	if (image->detail->tile_opacity == tile_opacity) {
+	if (image->details->tile_opacity == tile_opacity) {
 		return;
 	}
 
-	image->detail->tile_opacity = tile_opacity;
+	image->details->tile_opacity = tile_opacity;
 
 	gtk_widget_queue_draw (GTK_WIDGET (image));
 }
@@ -750,7 +762,7 @@ nautilus_image_get_tile_opacity (const NautilusImage *image)
 {
 	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), NAUTILUS_OPACITY_FULLY_OPAQUE);
 
-	return image->detail->tile_opacity;
+	return image->details->tile_opacity;
 }
 
 void
@@ -760,11 +772,11 @@ nautilus_image_set_tile_width (NautilusImage *image,
 	g_return_if_fail (NAUTILUS_IS_IMAGE (image));
 	g_return_if_fail (tile_width >= NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP);
 	
-	if (image->detail->tile_width == tile_width) {
+	if (image->details->tile_width == tile_width) {
 		return;
 	}
 
-	image->detail->tile_width = tile_width;
+	image->details->tile_width = tile_width;
 
 	gtk_widget_queue_resize (GTK_WIDGET (image));
 }
@@ -781,7 +793,7 @@ nautilus_image_get_tile_width (const NautilusImage *image)
 {
 	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), 0);
 
-	return image->detail->tile_width;
+	return image->details->tile_width;
 }
 
 void
@@ -791,11 +803,11 @@ nautilus_image_set_tile_height (NautilusImage *image,
 	g_return_if_fail (NAUTILUS_IS_IMAGE (image));
 	g_return_if_fail (tile_height >= NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP);
 	
-	if (image->detail->tile_height == tile_height) {
+	if (image->details->tile_height == tile_height) {
 		return;
 	}
 
-	image->detail->tile_height = tile_height;
+	image->details->tile_height = tile_height;
 
 	gtk_widget_queue_resize (GTK_WIDGET (image));
 }
@@ -812,7 +824,7 @@ nautilus_image_get_tile_height (const NautilusImage *image)
 {
 	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), 0);
 
-	return image->detail->tile_height;
+	return image->details->tile_height;
 }
 
 void
@@ -823,11 +835,11 @@ nautilus_image_set_tile_mode_vertical (NautilusImage *image,
 	g_return_if_fail (tile_mode_vertical >= NAUTILUS_SMOOTH_TILE_SELF);
 	g_return_if_fail (tile_mode_vertical <= NAUTILUS_SMOOTH_TILE_ANCESTOR);
 
-	if (image->detail->tile_mode_vertical == tile_mode_vertical) {
+	if (image->details->tile_mode_vertical == tile_mode_vertical) {
 		return;
 	}
 
-	image->detail->tile_mode_vertical = tile_mode_vertical;
+	image->details->tile_mode_vertical = tile_mode_vertical;
 
 	gtk_widget_queue_draw (GTK_WIDGET (image));
 }
@@ -837,7 +849,7 @@ nautilus_image_get_tile_mode_vertical (const NautilusImage *image)
 {
 	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), 0);
 	
-	return image->detail->tile_mode_vertical;
+	return image->details->tile_mode_vertical;
 }
 
 void
@@ -848,11 +860,11 @@ nautilus_image_set_tile_mode_horizontal (NautilusImage *image,
 	g_return_if_fail (tile_mode_horizontal >= NAUTILUS_SMOOTH_TILE_SELF);
 	g_return_if_fail (tile_mode_horizontal <= NAUTILUS_SMOOTH_TILE_ANCESTOR);
 
-	if (image->detail->tile_mode_horizontal == tile_mode_horizontal) {
+	if (image->details->tile_mode_horizontal == tile_mode_horizontal) {
 		return;
 	}
 
-	image->detail->tile_mode_horizontal = tile_mode_horizontal;
+	image->details->tile_mode_horizontal = tile_mode_horizontal;
 
 	gtk_widget_queue_draw (GTK_WIDGET (image));
 }
@@ -862,7 +874,7 @@ nautilus_image_get_tile_mode_horizontal (const NautilusImage *image)
 {
 	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), 0);
 	
-	return image->detail->tile_mode_horizontal;
+	return image->details->tile_mode_horizontal;
 }
 
 void
@@ -890,11 +902,11 @@ nautilus_image_set_background_mode (NautilusImage *image,
 	g_return_if_fail (background_mode >= NAUTILUS_SMOOTH_BACKGROUND_GTK);
 	g_return_if_fail (background_mode <= NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);
 
-	if (image->detail->background_mode == background_mode) {
+	if (image->details->background_mode == background_mode) {
 		return;
 	}
 
-	image->detail->background_mode = background_mode;
+	image->details->background_mode = background_mode;
 
 	gtk_widget_queue_draw (GTK_WIDGET (image));
 }
@@ -904,7 +916,7 @@ nautilus_image_get_background_mode (const NautilusImage *image)
 {
 	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), 0);
 	
-	return image->detail->background_mode;
+	return image->details->background_mode;
 }
 
 void
@@ -913,11 +925,11 @@ nautilus_image_set_solid_background_color (NautilusImage *image,
 {
 	g_return_if_fail (NAUTILUS_IS_IMAGE (image));
 	
-	if (image->detail->solid_background_color == solid_background_color) {
+	if (image->details->solid_background_color == solid_background_color) {
 		return;
 	}
 
-	image->detail->solid_background_color = solid_background_color;
+	image->details->solid_background_color = solid_background_color;
 	
 	gtk_widget_queue_draw (GTK_WIDGET (image));
 }
@@ -927,17 +939,17 @@ nautilus_image_get_solid_background_color (const NautilusImage *image)
 {
 	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), 0);
 	
-	return image->detail->solid_background_color;
+	return image->details->solid_background_color;
 }
 
 /**
  * nautilus_image_new_solid:
  *
  * @pixbuf: A GdkPixbuf or NULL.
- * @xalign: Horizontal alignment.
- * @yalign: Vertical alignment.
- * @xpadding: Horizontal padding.
- * @ypadding: Vertical padding.
+ * @x_alignment: Horizontal alignment.
+ * @y_alignment: Vertical alignment.
+ * @x_padding: Horizontal padding.
+ * @y_padding: Vertical padding.
  * @background_color: Background color.
  * @tile_pixbuf: A GdkPixbuf or NULL.
  *
@@ -948,10 +960,10 @@ nautilus_image_get_solid_background_color (const NautilusImage *image)
  */
 GtkWidget *
 nautilus_image_new_solid (GdkPixbuf *pixbuf,
-			  float xalign,
-			  float yalign,
-			  int xpadding,
-			  int ypadding,
+			  float x_alignment,
+			  float y_alignment,
+			  int x_padding,
+			  int y_padding,
 			  guint32 background_color,
 			  GdkPixbuf *tile_pixbuf)
 {
@@ -963,16 +975,36 @@ nautilus_image_new_solid (GdkPixbuf *pixbuf,
 		nautilus_image_set_pixbuf (image, pixbuf);
 	}
 
-	nautilus_image_set_background_mode (NAUTILUS_IMAGE (image), NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);
-	nautilus_image_set_solid_background_color (NAUTILUS_IMAGE (image), background_color);
+	nautilus_image_set_background_mode (image, NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);
+	nautilus_image_set_solid_background_color (image, background_color);
 
-	gtk_misc_set_padding (GTK_MISC (image), xpadding, ypadding);
-	gtk_misc_set_alignment (GTK_MISC (image), xalign, yalign);
+	gtk_misc_set_padding (GTK_MISC (image), x_padding, y_padding);
+	gtk_misc_set_alignment (GTK_MISC (image), x_alignment, y_alignment);
 	
 	if (tile_pixbuf != NULL) {
-		nautilus_image_set_tile_pixbuf (NAUTILUS_IMAGE (image), tile_pixbuf);
+		nautilus_image_set_tile_pixbuf (image, tile_pixbuf);
 	}
 	
 	return GTK_WIDGET (image);
+}
+
+
+/**
+ * nautilus_image_set_never_smooth
+ *
+ * @image: A NautilusImage.
+ * @never_smooth: A boolean value indicating whether the image can NEVER be smooth.
+ *
+ * Force an image to never be smooth.  Calls to nautilus_image_set_is_smooth () will
+ * thus be ignored.  This is useful if you want to use a NautilusImage in a situation.
+ */
+void
+nautilus_image_set_never_smooth (NautilusImage *image,
+				 gboolean never_smooth)
+{
+	g_return_if_fail (NAUTILUS_IS_IMAGE (image));
+
+	image->details->never_smooth = never_smooth;
+	gtk_widget_queue_resize (GTK_WIDGET (image));
 }
 

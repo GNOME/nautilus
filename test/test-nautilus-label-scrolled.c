@@ -86,7 +86,7 @@ label_window_new_scrolled (void)
 					  NULL);
 	nautilus_label_set_wrap (NAUTILUS_LABEL (label), TRUE);
 	nautilus_label_set_justify (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
-	nautilus_label_make_larger (NAUTILUS_LABEL (label), 10);
+//	nautilus_label_make_larger (NAUTILUS_LABEL (label), 10);
 
 	gtk_container_add (GTK_CONTAINER (viewport), label);
 
@@ -161,7 +161,7 @@ label_window_new_table (void)
 					     0,
 					     NAUTILUS_RGB_COLOR_WHITE,
 					     NULL);
-	nautilus_label_make_larger (NAUTILUS_LABEL (label[2]), 40);
+//	nautilus_label_make_larger (NAUTILUS_LABEL (label[2]), 40);
 	
 	gtk_table_attach (GTK_TABLE (table), label[0], 0, 1, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
 	gtk_table_attach (GTK_TABLE (table), label[1], 1, 2, 18, 19, GTK_FILL, GTK_FILL, 4, 4);

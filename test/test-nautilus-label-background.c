@@ -4,6 +4,7 @@
 #include <libnautilus-extensions/nautilus-label-with-background.h>
 
 static const char tile_name[] = "patterns/camouflage.png";
+//static const char *tile_name = NULL;
 
 static GtkWidget *
 window_new_with_nautilus_background_image (void)

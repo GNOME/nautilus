@@ -26,6 +26,7 @@
 #include <config.h>
 
 #include "nautilus-art-extensions.h"
+#include <math.h>
 
 ArtIRect NAUTILUS_ART_IRECT_EMPTY = { 0, 0, 0, 0 };
 NautilusArtIPoint NAUTILUS_ART_IPOINT_ZERO = { 0, 0 };
@@ -172,8 +173,6 @@ nautilus_art_irect_get_height (const ArtIRect *rectangle)
  * @aligned_height: Height of rectangle being algined.
  * @x_alignment: X alignment.
  * @y_alignment: Y alignment.
- * @x_padding: X padding.
- * @y_padding: Y padding.
  *
  * Returns: A rectangle aligned within a container rectangle
  *          using the given alignment parameters.
@@ -183,11 +182,11 @@ nautilus_art_irect_align (const ArtIRect *container,
 			  int aligned_width,
 			  int aligned_height,
 			  float x_alignment,
-			  float y_alignment,
-			  int x_padding,
-			  int y_padding)
+			  float y_alignment)
 {
 	ArtIRect aligned;
+	int available_width;
+	int available_height;
 
 	g_return_val_if_fail (container != NULL, NAUTILUS_ART_IRECT_EMPTY);
 
@@ -200,23 +199,16 @@ nautilus_art_irect_align (const ArtIRect *container,
 	}
 
 	/* Make sure the aligment parameters are within range */
-	x_padding = MAX (0, x_padding);
-	y_padding = MAX (0, y_padding);
 	x_alignment = MAX (0, x_alignment);
 	x_alignment = MIN (1.0, x_alignment);
 	y_alignment = MAX (0, y_alignment);
 	y_alignment = MIN (1.0, y_alignment);
-	
-	aligned.x0 = (container->x0 * (1.0 - x_alignment) +
-		      (container->x0 + nautilus_art_irect_get_width (container)
-		       - (aligned_width - x_padding * 2)) *
-		      x_alignment) + 0.5;
-	
-	aligned.y0 = (container->y0 * (1.0 - y_alignment) +
-		      (container->y0 + nautilus_art_irect_get_height (container)
-		       - (aligned_height - y_padding * 2)) *
-		      y_alignment) + 0.5;
-	
+
+	available_width = nautilus_art_irect_get_width (container) - aligned_width;
+	available_height = nautilus_art_irect_get_height (container) - aligned_height;
+
+	aligned.x0 = floor (container->x0 + (available_width * x_alignment) + 0.5);
+	aligned.y0 = floor (container->y0 + (available_height * y_alignment) + 0.5);
 	aligned.x1 = aligned.x0 + aligned_width;
 	aligned.y1 = aligned.y0 + aligned_height;
 

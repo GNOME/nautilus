@@ -49,8 +49,8 @@ libnautilus_extensions_la_LDFLAGS =	\
 
 libnautilus_extensions_la_SOURCES = 		\
 	bug-5712-pr3-workaround--gdk-pixbuf-drawable.c \
-	bug-5712-pr3-workaround--gdkimage.c \
 	bug-5712-pr3-workaround--gdk-pixbuf-private.h \
+	bug-5712-pr3-workaround--gdkimage.c \
 	nautilus-art-extensions.c		\
 	nautilus-art-gtk-extensions.c		\
 	nautilus-background-canvas-group.c	\
@@ -59,6 +59,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-bookmark.c			\
 	nautilus-caption-table.c		\
 	nautilus-caption.c			\
+	nautilus-clickable-image.c		\
 	nautilus-ctree.c			\
 	nautilus-customization-data.c		\
 	nautilus-dateedit-extensions.c		\
@@ -73,8 +74,8 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-drag.c				\
 	nautilus-druid-page-eazel.c		\
 	nautilus-druid.c			\
-	nautilus-entry.c			\
 	nautilus-ellipsizing-label.c		\
+	nautilus-entry.c			\
 	nautilus-enumeration.c			\
 	nautilus-file-changes-queue.c		\
 	nautilus-file-operations-progress.c	\
@@ -104,6 +105,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-keep-last-vertical-box.c	\
 	nautilus-label-with-background.c	\
 	nautilus-label.c			\
+	nautilus-labeled-image.c		\
 	nautilus-lib-self-check-functions.c	\
 	nautilus-link-set.c			\
 	nautilus-link.c				\
@@ -160,6 +162,7 @@ noinst_HEADERS =				\
 	nautilus-caption-table.h		\
 	nautilus-caption.h			\
 	nautilus-cdrom-extensions.h		\
+	nautilus-clickable-image.h		\
 	nautilus-ctree.h			\
 	nautilus-customization-data.h		\
 	nautilus-dateedit-extensions.h 		\
@@ -212,6 +215,7 @@ noinst_HEADERS =				\
 	nautilus-keep-last-vertical-box.h	\
 	nautilus-label-with-background.h	\
 	nautilus-label.h			\
+	nautilus-labeled-image.h		\
 	nautilus-lib-self-check-functions.h	\
 	nautilus-link-set.h			\
 	nautilus-link.h				\

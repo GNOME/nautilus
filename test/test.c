@@ -10,6 +10,21 @@ test_init (int *argc,
 	gtk_init (argc, argv);
 	gdk_rgb_init ();
 	gnome_vfs_init ();
+
+	nautilus_make_warnings_and_criticals_stop_in_debugger
+		(G_LOG_DOMAIN, g_log_domain_glib,
+		 "Bonobo",
+		 "Gdk",
+		 "GnomeUI",
+		 "GnomeVFS",
+		 "GnomeVFS-CORBA",
+		 "GnomeVFS-pthread",
+		 "Gtk",
+		 "Nautilus",
+		 "Nautilus-Authenticate",
+		 "Nautilus-Tree",
+		 "ORBit",
+		 NULL);
 }
 
 void

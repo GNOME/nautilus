@@ -39,7 +39,7 @@ BEGIN_GNOME_DECLS
 
 typedef struct _NautilusLabel	       NautilusLabel;
 typedef struct _NautilusLabelClass     NautilusLabelClass;
-typedef struct _NautilusLabelDetail    NautilusLabelDetail;
+typedef struct _NautilusLabelDetails   NautilusLabelDetails;
 
 struct _NautilusLabel
 {
@@ -47,7 +47,7 @@ struct _NautilusLabel
 	GtkLabel gtk_label;
 
 	/* Private things */
-	NautilusLabelDetail *detail;
+	NautilusLabelDetails *details;
 };
 
 struct _NautilusLabelClass
@@ -134,6 +134,8 @@ NautilusSmoothTileMode       nautilus_label_get_tile_mode_vertical         (cons
 void                         nautilus_label_set_tile_mode_horizontal       (NautilusLabel                *label,
 									    NautilusSmoothTileMode        horizontal_tile_mode);
 NautilusSmoothTileMode       nautilus_label_get_tile_mode_horizontal       (const NautilusLabel          *label);
+void                         nautilus_label_set_never_smooth               (NautilusLabel                *label,
+									    gboolean                      never_smooth);
 
 END_GNOME_DECLS
 

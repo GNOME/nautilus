@@ -4,6 +4,7 @@
 #include <libnautilus-extensions/nautilus-image-with-background.h>
 #include <libnautilus-extensions/nautilus-string-picker.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 
 #include <unistd.h>
 
@@ -152,6 +153,8 @@ main (int argc, char *argv[])
 	NautilusStringList *fruits_entries;
 
 	test_init (&argc, &argv);
+
+	nautilus_global_preferences_initialize ();
 
 	user_level_entries = nautilus_string_list_new_from_tokens ("Beginner,Intermediate,Hacker", ",", TRUE);
 	color_entries = nautilus_string_list_new_from_tokens ("0,1,2,3,4,5,6,7,8,9,10", ",", TRUE);

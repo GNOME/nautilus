@@ -1,3 +1,78 @@
+2001-02-01  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/Makefile.am:
+	New files.
+	* libnautilus-extensions/nautilus-art-extensions.c:
+	(nautilus_art_irect_align):
+	* libnautilus-extensions/nautilus-art-extensions.h:
+	Make the align function actually work.  The previous version was
+	copied from GtkPixmap and i didnt realize it did not work.  Remove
+	the padding parameters which are not really needed for alignment.
+
+	* libnautilus-extensions/nautilus-clickable-image.h:
+	* libnautilus-extensions/nautilus-clickable-image.c:
+	New class.  A clickable image.
+
+	* libnautilus-extensions/nautilus-labeled-image.h:
+	* libnautilus-extensions/nautilus-labeled-image.c:
+	New class.  A labeled image.
+	
+	* libnautilus-extensions/nautilus-image.h:
+	* libnautilus-extensions/nautilus-image.c:
+	(nautilus_image_expose_event), (image_get_pixbuf_bounds),
+	(image_is_smooth), (nautilus_image_set_is_smooth),
+	(nautilus_image_get_is_smooth), (nautilus_image_new_solid),
+	(nautilus_image_set_never_smooth):
+	Add never smooth attribute to force behavior to match GTK+ for
+	cases when consistency is most important.
+ 	Update for alignment art extensions api change.
+	Some minor paramter name changes to lose abbreviations.
+	
+	* libnautilus-extensions/nautilus-label.h:
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_size_request), (nautilus_label_expose_event),
+	(label_get_text_bounds), (label_is_smooth),
+	(nautilus_label_set_is_smooth), (nautilus_label_get_is_smooth),
+	(nautilus_label_new_solid), (nautilus_label_set_never_smooth):
+	Add never smooth attribute to force behavior to match GTK+ for
+	cases when consistency is most important.
+ 	Update for alignment art extensions api change.
+ 	Update for alignment art extensions api change.
+	Some minor paramter name changes to lose abbreviations.
+
+	* libnautilus-extensions/nautilus-smooth-widget.c:
+	(smooth_widget_get_tile_origin_point),
+	(nautilus_smooth_widget_get_preferred_frame):
+	Add some comments explaining why using 0 for ancestor offsets
+	works.
+	Fix a really dumb bug, the paddings where multiplies by 2 twice
+	instead of once.
+	
+	* test/.cvsignore:
+	* test/Makefile.am:
+	* test/test-nautilus-clickable-image.c: (clicked_callback),
+	(enter_callback), (leave_callback), (clickable_image_new), (main):
+	* test/test-nautilus-label-background.c:
+	* test/test-nautilus-label-scrolled.c: (label_window_new_scrolled),
+	(label_window_new_table):
+	* test/test-nautilus-label-simple.c: (main):
+	* test/test-nautilus-label.c: (main):
+	* test/test-nautilus-labeled-image.c: (labeled_image_new),
+	(labeled_image_window_new), (labeled_image_button_window_new),
+	(main):
+	* test/test-nautilus-pixbuf-tile.c:
+	(pixbuf_drawing_area_expose_event),
+	(drawable_drawing_area_expose_event), (main):
+	* test/test-nautilus-preferences-change.c: (main):
+	* test/test.c: (test_init):
+	New tests for clickable and labeled images.  Many updates to other
+	tests.
+
+	Also, changed many instances of NautilusFooDetail to
+        NautilusFooDetails as well as the corresponding members.
+	
 2001-02-01  Gene Z. Ragan  <gzr@eazel.com>
 
 	Additional work on first time druid gmc to nautilus conversion routines.

@@ -41,7 +41,7 @@ BEGIN_GNOME_DECLS
 
 typedef struct _NautilusImage	       NautilusImage;
 typedef struct _NautilusImageClass     NautilusImageClass;
-typedef struct _NautilusImageDetail    NautilusImageDetail;
+typedef struct _NautilusImageDetails   NautilusImageDetails;
 
 struct _NautilusImage
 {
@@ -49,7 +49,7 @@ struct _NautilusImage
 	GtkMisc misc;
 
 	/* Private things */
-	NautilusImageDetail *detail;
+	NautilusImageDetails *details;
 };
 
 struct _NautilusImageClass
@@ -106,6 +106,8 @@ NautilusSmoothBackgroundMode nautilus_image_get_background_mode            (cons
 void                         nautilus_image_set_solid_background_color     (NautilusImage                *image,
 									    guint32                       solid_background_color);
 guint32                      nautilus_image_get_solid_background_color     (const NautilusImage          *image);
+void                         nautilus_image_set_never_smooth               (NautilusImage                *image,
+									    gboolean                      never_smooth);
 
 END_GNOME_DECLS
 
