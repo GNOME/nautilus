@@ -353,6 +353,10 @@ update_font (NautilusSidebarTitle *sidebar_title)
 			(sidebar_title->details->title_text,
 			 GTK_WIDGET (sidebar_title)->allocation.width - 4,
 			 "-adobe-helvetica-bold-r-normal-*-%d-*-*-*-*-*-*-*");
+
+		if (label_font == NULL) {
+			label_font = nautilus_font_factory_get_fallback_font ();
+		}
 		
 		nautilus_gtk_widget_set_font (sidebar_title->details->normal_title_label, label_font);
 		gdk_font_unref (label_font);

@@ -1,5 +1,12 @@
 2000-10-20  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* src/nautilus-sidebar-title.c: (update_font):
+	Make the code that looks for largest font that fits a sidebar
+	title work even if we dont find the exact font we look for.
+	Fixes bug 2812.
+	
+2000-10-20  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* librsvg/Makefile.am:
 	* librsvg/rsvg.c: (rsvg_text_handler_characters):
 	Make sure the font used for text is svg icons actually exists.
