@@ -6,19 +6,9 @@ bin_PROGRAMS=nautilus
 
 INCLUDES =\
 	-I$(top_srcdir) \
-	-I$(top_builddir) \
 	-I$(top_srcdir)/cut-n-paste-code \
-	-I$(top_builddir)/cut-n-paste-code \
-	$(EEL_CFLAGS) \
-	$(LIBRSVG_CFLAGS) \
-	$(OAF_CFLAGS) \
-	$(BONOBO_CFLAGS) \
+	$(NAUTILUS_PRIVATE_CFLAGS) \
 	$(AMMONITE_CFLAGS) \
-	$(GCONF_CFLAGS) \
-	$(GNOMEUI_CFLAGS) \
-	$(GNOMECANVASPIXBUF_CFLAGS) \
-	$(VFS_CFLAGS) \
-	$(XML_CFLAGS) \
 	-DVERSION="\"$(VERSION)\"" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
@@ -31,16 +21,8 @@ LDADD =\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la  \
-	$(EEL_LIBS) \
-	$(LIBRSVG_LIBS) \
-	$(BONOBO_LIBS) \
 	$(AMMONITE_LIBS) \
-	$(OAF_LIBS) \
-	$(GCONF_LIBS) \
-	$(GNOMEUI_LIBS) \
-	$(GNOMECANVASPIXBUF_LIBS) \
-	$(VFS_LIBS) \
-	$(XML_LIBS) \
+	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)
 
 nautilus_shell_interface_idl_sources =		\

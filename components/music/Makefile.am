@@ -11,18 +11,11 @@ endif
 platform_source = decode.c dct64.c decode_i386.c dct64_i386.c
 
 INCLUDES =					\
-	-DPREFIX=\"$(prefix)\"			\
 	-DG_LOG_DOMAIN=\"Nautilus-Music\"	\
 	-I$(top_srcdir)				\
-	-I$(top_builddir)			\
-	$(EEL_CFLAGS) \
-	$(LIBRSVG_CFLAGS) \
-	$(GCONF_CFLAGS) 			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(GNOMEUI_CFLAGS)                       \
-	$(OAF_CFLAGS)				\
-	$(BONOBO_CFLAGS)			\
-	$(VFS_CFLAGS)
+	$(NAUTILUS_PRIVATE_CFLAGS) \
+	$(NULL)
 
 bin_PROGRAMS =					\
 	nautilus-music-view
@@ -66,13 +59,8 @@ nautilus_music_view_SOURCES =		        \
 nautilus_music_view_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
-	$(EEL_LIBS) \
-	$(LIBRSVG_LIBS) \
-	$(BONOBO_LIBS)					\
-	$(GNOMEUI_LIBS)					\
-	$(GCONF_LIBS) \
-	$(VFS_LIBS)					\
-	$(GNORBA_LIBS)
+	$(NAUTILUS_PRIVATE_LIBS) \
+	$(NULL)
 
 oafdir = $(datadir)/oaf
 

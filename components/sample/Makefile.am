@@ -7,7 +7,6 @@
 NULL =
 
 INCLUDES =					\
-	-DPREFIX=\"$(prefix)\"			\
 	-DG_LOG_DOMAIN=\"Nautilus-Sample\"	\
 	-DDATADIR=\"$(datadir)\"		\
 	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\" \

@@ -1,18 +1,12 @@
 include $(top_srcdir)/Makefile.shared
 
 INCLUDES =					\
-	-DPREFIX=\"$(prefix)\"			\
 	-DG_LOG_DOMAIN=\"Nautilus-Test\"	\
 	-DDATADIR=\"$(datadir)\"		\
 	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\" \
 	-I$(top_srcdir)				\
-	-I$(top_builddir)			\
-	$(EEL_CFLAGS) \
-	$(LIBRSVG_CFLAGS) \
-	$(GCONF_CFLAGS) 			\
-	$(OAF_CFLAGS)				\
-	$(BONOBO_CFLAGS)			\
-	$(GNOMEUI_CFLAGS)
+	$(NAUTILUS_PRIVATE_CFLAGS) \
+	$(NULL)
 
 uidir = $(datadir)/gnome/ui
 ui_DATA = nautilus-sidebar-loser-ui.xml
@@ -28,14 +22,8 @@ nautilus_sidebar_loser_SOURCES =		\
 nautilus_sidebar_loser_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
-	$(EEL_LIBS) \
-	$(LIBRSVG_LIBS) \
-	$(GNOMEUI_LIBS)					\
-	$(BONOBO_LIBS)					\
-	$(GCONF_LIBS) \
-	$(VFS_LIBS)					\
-	$(OAF_LIBS)
-
+	$(NAUTILUS_PRIVATE_LIBS) \
+	$(NULL)
 
 oafdir = $(datadir)/oaf
 

@@ -46,65 +46,6 @@ AC_SUBST(EEL_REQUIRED)
 
 dnl ===========================================================================
 
-dnl EAZEL_VERSION_CANON(version)
-dnl                     1
-
-AC_DEFUN(EAZEL_VERSION_CANON, [`
-
-	dnl Assumes that there are no more than 999 revisions at a level,
-	dnl no more than three levels of revision.
-	dnl
-	dnl Any more than that, and test starts messing up the numeric
-	dnl comparisons because its integers overflow, and there's no
-	dnl way to do string comparisons in the shell.  Grr.
-	dnl
-	dnl Must come up with some way to fix this.
-
-	echo "$1" |
-	tr . '\012' |
-	sed -e 's/^/000/' -e 's/^.*\(...\)/\1/' |
-	tr -d '\012' |
-	sed 's/$/000000000/
-	     s/^\(.........\).*/\1/'
-`])
-
-dnl EAZEL_VERSION_INSIST(package, get-version-cmd, operator, want-version-var)
-dnl                      1        2                3         4
-
-AC_DEFUN(EAZEL_VERSION_INSIST, [
-	ez_want_version=[$]$4
-
-	case "$3" in
-		">")	ez_operator=-gt ;;
-		">=")	ez_operator=-ge ;;
-		"<")	ez_operator=-lt ;;
-		"<=")	ez_operator=-le ;;
-		"=")	ez_operator=-eq ;;
-		"!=")	ez_operator=-ne ;;
-		*)	AC_ERROR(Unknown operator $3 in configure script) ;;
-	esac
-
-	AC_MSG_CHECKING(for $1 $3 [$ez_want_version])
-
-	if ez_installed_version="`$2`"
-	then
-		AC_MSG_RESULT([$ez_installed_version])
-	else
-		AC_ERROR($2 failed)
-	fi
-
-	if test "EAZEL_VERSION_CANON([$ez_installed_version])" "$ez_operator" \
-		"EAZEL_VERSION_CANON([$ez_want_version])"
-	then
-		:
-		AC_SUBST($4)
-	else
-		AC_ERROR($1 version [$ez_want_version] is required.)
-	fi
-])
-
-dnl ===========================================================================
-
 if test -n "$GNOME2_PATH"; then
 	PATH="$GNOME2_PATH/bin:$PATH"
 	export PATH
@@ -465,7 +406,7 @@ AC_MSG_ERROR([
 
 AC_SUBST(GTK_REQUIRED)
 
-AM_PATH_GNOME($GNOME_REQUIRED,,AC_MSG_ERROR([*** GNOME $GNOME_REQUIRED or better is required.]), gnomecanvaspixbuf bonobo bonobox bonobox_print vfs idl librsvg eel)
+AM_PATH_GNOME($GNOME_REQUIRED,,AC_MSG_ERROR([*** GNOME $GNOME_REQUIRED or better is required.]), vfs xml bonobo bonobox bonobox_print idl gnomeui gtk gdk_pixbuf gnomecanvaspixbuf eel librsvg)
 
 AC_SUBST(GNOME_REQUIRED)
 
@@ -474,7 +415,7 @@ if test x$GNOME_CONFIG = xno; then
   AC_MSG_ERROR(Couldn't find gnome-config. Please install the GNOME package)
 fi
 
-EAZEL_VERSION_INSIST(gnome-libs, $GNOME_CONFIG --version | awk '{print $2}', >=, GNOME_LIBS_REQUIRED)
+NAUTILUS_VERSION_INSIST(gnome-libs, $GNOME_CONFIG --version | awk '{print $2}', >=, GNOME_LIBS_REQUIRED)
 
 dnl check for gnome_canvas_set_dither existence
 _libs="$LIBS"
@@ -483,10 +424,10 @@ AC_CHECK_FUNCS(gnome_canvas_set_dither)
 LIBS="$_libs"
 
 dnl control center
-EAZEL_VERSION_INSIST(control-center, $GNOME_CONFIG --modversion capplet | awk -F- '{print $2}', >=, CONTROL_CENTER_REQUIRED)
+NAUTILUS_VERSION_INSIST(control-center, $GNOME_CONFIG --modversion capplet | awk -F- '{print $2}', >=, CONTROL_CENTER_REQUIRED)
 
 dnl Bonobo
-EAZEL_VERSION_INSIST(bonobo, $GNOME_CONFIG --modversion bonobo | awk -F- '{print $2}', >=, BONOBO_REQUIRED)
+NAUTILUS_VERSION_INSIST(bonobo, $GNOME_CONFIG --modversion bonobo | awk -F- '{print $2}', >=, BONOBO_REQUIRED)
 
 AC_SUBST(GNOMECANVASPIXBUF_LIBS)
 AC_SUBST(GNOMECANVASPIXBUF_CFLAGS)
@@ -694,7 +635,7 @@ AC_SUBST(HAVE_AMMONITE)
 
 if test "$HAVE_AMMONITE" = "1"
 then
-	EAZEL_VERSION_INSIST(ammonite, $GNOME_CONFIG --modversion ammonite | awk -F- '{print $2}', >=, AMMONITE_REQUIRED)
+	NAUTILUS_VERSION_INSIST(ammonite, $GNOME_CONFIG --modversion ammonite | awk -F- '{print $2}', >=, AMMONITE_REQUIRED)
 
 	AMMONITE_CFLAGS=`$GNOME_CONFIG --cflags ammonite`
 	AMMONITE_LIBS=`$GNOME_CONFIG --libs ammonite`
@@ -757,22 +698,6 @@ AC_SUBST(LIBJPEG)
 dnl =======================
 dnl = End tests for libjpeg
 dnl =======================
-
-dnl =======================
-dnl = Set up for library directories
-dnl =======================
-
-NAUTILUS_LIBS="-lnautilus `gnome-config --libs bonobox gnomeui gtk vfs`"
-NAUTILUS_LIBDIR='-L${libdir}'
-NAUTILUS_INCLUDEDIR='-I${includedir} '" `gnome-config --cflags bonobox gnomeui gtk vfs`"
-AC_SUBST(NAUTILUS_LIBDIR)
-AC_SUBST(NAUTILUS_INCLUDEDIR)
-AC_SUBST(NAUTILUS_LIBS)
-
-dnl =======================
-dnl = End set up for library directories
-dnl =======================
-
 
 dnl Checks for i18n
 ALL_LINGUAS="az ca cs da de el en_GB es fi fr ga gl hu it ja ko lt nl nn no pl pt_BR ru sk sl sv ta tr uk zh_TW.Big5"
@@ -854,6 +779,26 @@ if test -n "$EAZEL_BUILD_TIMESTAMP"
 then
   AC_DEFINE_UNQUOTED(EAZEL_BUILD_TIMESTAMP,"$EAZEL_BUILD_TIMESTAMP")
 fi
+
+dnl Flags for libraries that Nautilus depends on
+NAUTILUS_DEPENDENCY_CFLAGS="`$GNOME_CONFIG --cflags bonobo bonobox bonobox_print gnomecanvaspixbuf xml vfs eel`"
+NAUTILUS_DEPENDENCY_LIBS="`$GNOME_CONFIG --libs bonobo bonobox bonobox_print gnomecanvaspixbuf xml vfs eel`"
+AC_SUBST(NAUTILUS_DEPENDENCY_CFLAGS)
+AC_SUBST(NAUTILUS_DEPENDENCY_LIBS)
+
+dnl Flags for modules that depend on Nautilus
+NAUTILUS_LIBDIR='-L${libdir}'
+NAUTILUS_INCLUDEDIR="-I${includedir} ${NAUTILUS_DEPENDENCY_CFLAGS}"
+NAUTILUS_LIBS="-lnautilus ${NAUTILUS_DEPENDENCY_LIBS}"
+AC_SUBST(NAUTILUS_LIBDIR)
+AC_SUBST(NAUTILUS_INCLUDEDIR)
+AC_SUBST(NAUTILUS_LIBS)
+
+dnl Flags for libraries that private parts of Nautilus depend on (like components)
+NAUTILUS_PRIVATE_CFLAGS="${GCONF_CFLAGS} ${NAUTILUS_DEPENDENCY_CFLAGS}"
+NAUTILUS_PRIVATE_LIBS="${GCONF_LIBS} ${NAUTILUS_DEPENDENCY_LIBS}"
+AC_SUBST(NAUTILUS_PRIVATE_CFLAGS)
+AC_SUBST(NAUTILUS_PRIVATE_LIBS)
 
 AC_OUTPUT([
 nautilus.spec
@@ -946,7 +891,7 @@ echo "Nautilus configuration summary:"
 echo ""
 
 dnl <= CFLAGS and LDFLAGS =>
-echo "CFLAGS : $CFLAGS" | tr -s [:blank:] " "
+echo "CFLAGS : $CFLAGS"
 echo "LDFLAGS : $LDFLAGS"
 echo ""
 
@@ -981,14 +926,15 @@ echo "HAVE_AMMONITE                     : $HAVE_AMMONITE"
 echo "AMMONITE_CFLAGS                   : $AMMONITE_CFLAGS"
 echo "AMMONITE_LIBS                     : $AMMONITE_LIBS"
 
-dnl <= FreeType2 =>
-echo "FREETYPE2_CFLAGS                  : $FREETYPE2_CFLAGS"
-echo "FREETYPE2_LIBS                    : $FREETYPE2_LIBS"
-
 dnl <= Snapshot things =>
 echo "EAZEL_BUILD_TIMESTAMP             : $EAZEL_BUILD_TIMESTAMP"
 echo "NAUTILUS_BUILD_MESSAGE            : $NAUTILUS_BUILD_MESSAGE"
 echo "NAUTILUS_SOURCE_DIRECTORY         : $NAUTILUS_SOURCE_DIRECTORY"
 echo "HAVE_APPLETS                      : $HAVE_APPLETS"
+
+dnl <= Nautilus =>
+echo "NAUTILUS_LIBDIR     : $NAUTILUS_LIBDIR"
+echo "NAUTILUS_INCLUDEDIR : $NAUTILUS_INCLUDEDIR"
+echo "NAUTILUS_LIBS       : $NAUTILUS_LIBS"
 
 dnl <= End of configuration summary =>

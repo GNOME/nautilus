@@ -1,7 +1,6 @@
 NULL =
 
 INCLUDES = \
-	-DPREFIX=\"$(prefix)\" \
 	-DG_LOG_DOMAIN=\"NautilusErrorDialog\" \
 	-I$(top_srcdir) \
 	$(GNOMEUI_CFLAGS) \

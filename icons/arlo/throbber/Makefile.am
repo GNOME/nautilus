@@ -35,5 +35,5 @@ throbber_DATA = 	\
 	030.png         \
 	rest.png	\
 	$(NULL)
-		
+
 EXTRA_DIST = $(throbber_DATA)

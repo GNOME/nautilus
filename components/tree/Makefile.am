@@ -1,18 +1,10 @@
 NULL =
 
 INCLUDES =						\
-	-DPREFIX=\"$(prefix)\"				\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-DG_LOG_DOMAIN=\"Nautilus-Tree\"		\
 	-I$(top_srcdir)					\
-	-I$(top_builddir)				\
-	$(EEL_CFLAGS) \
-	$(LIBRSVG_CFLAGS) \
-	$(VFS_CFLAGS)					\
-	$(GCONF_CFLAGS)					\
-	$(GNOMEUI_CFLAGS)				\
-	$(OAF_CFLAGS)					\
-	$(BONOBO_CFLAGS)				\
+	$(NAUTILUS_PRIVATE_CFLAGS)			\
 	$(NULL)
 
 TREE_VIEW_COMMON_SOURCES =			\

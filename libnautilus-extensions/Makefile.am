@@ -4,23 +4,12 @@ lib_LTLIBRARIES=libnautilus-extensions.la
 
 INCLUDES = 						\
 	-I$(top_srcdir) 				\
-	-I$(top_srcdir)/src/file-manager 		\
 	-I$(top_builddir) 				\
 	-I$(top_builddir)/libnautilus 			\
 	-I$(top_srcdir)/cut-n-paste-code 		\
-	$(LIBRSVG_CFLAGS) \
-	$(EEL_CFLAGS) \
-	$(BONOBO_PRINT_CFLAGS) 				\
-	$(BONOBOX_CFLAGS) 				\
+	$(NAUTILUS_PRIVATE_CFLAGS)			\
 	$(ESD_CFLAGS)					\
-	$(GCONF_CFLAGS) 				\
-	$(GHTTP_CFLAGS) 				\
-	$(GNOMEUI_CFLAGS) 				\
 	$(MEDUSA_CFLAGS) 				\
-	$(OAF_CFLAGS) 					\
-	$(VFS_CFLAGS) 					\
-	$(XML_CFLAGS) 					\
-	-D_REENTRANT 					\
 	-DDATADIR=\""$(datadir)"\" 			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
 	$(NULL)
@@ -38,21 +27,10 @@ endif
 
 libnautilus_extensions_la_LDFLAGS =	\
 	$(dependency_static_libs)	\
-	$(BONOBO_PRINT_LIBS) 		\
-	$(BONOBOX_LIBS) 		\
+	$(NAUTILUS_PRIVATE_LIBS)	\
 	$(ESD_LIBS)			\
-	$(FREETYPE2_LIBS)		\
-	$(GCONF_LIBS)			\
-	$(GHTTP_LIBS) 			\
-	$(GNOMECANVASPIXBUF_LIBS)	\
-	$(GNOME_LIBS) 			\
-	$(LIBPNG) 			\
 	$(LIBJPEG) 			\
 	$(MEDUSA_LIBS) 			\
-	$(OAF_LIBS) 			\
-	$(VFS_LIBS) 			\
-	$(XML_LIBS) 			\
-	$(EEL_LIBS)			\
 	$(CDDALIBADD)			\
 	$(NULL)
 

@@ -8,19 +8,13 @@ noinst_PROGRAMS=test-help-method
 
 INCLUDES = \
 	-I$(top_srcdir) \
-	-I$(top_builddir) \
-	$(EEL_CFLAGS) \
-	$(LIBRSVG_CFLAGS) \
-	$(GNOMEUI_CFLAGS) \
-	$(BONOBO_CFLAGS) \
-	$(GCONF_CFLAGS) \
-	$(VFS_CFLAGS) \
-	$(XML_CFLAGS) \
 	-DPREFIX=\""$(prefix)"\" \
 	-DHYPERBOLA_DATADIR=\""$(datadir)/nautilus/components/hyperbola"\" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DINFODIR=\"$(infodir)\" \
-	-DENABLE_SCROLLKEEPER_SUPPORT
+	-DENABLE_SCROLLKEEPER_SUPPORT \
+	$(NAUTILUS_PRIVATE_CFLAGS) \
+	$(NULL)
 
 LDADD =\
 	$(top_builddir)/libnautilus/libnautilus.la \

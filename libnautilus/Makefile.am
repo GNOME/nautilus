@@ -2,25 +2,17 @@ include $(top_srcdir)/Makefile.shared
 
 lib_LTLIBRARIES=libnautilus.la
 
-INCLUDES=-I$(top_srcdir) -I$(top_builddir) -I. \
-	$(GNOME_CFLAGS) \
-	$(GTK_CFLAGS) \
-	$(EEL_CFLAGS) \
-	$(BONOBOX_CFLAGS) \
-	$(OAF_CFLAGS) \
-	$(VFS_CFLAGS) \
-	$(XML_CFLAGS) \
-	-DDATADIR=\""$(datadir)"\" 		\
-	-D_REENTRANT
+INCLUDES=\
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
+	-I. \
+	$(NAUTILUS_DEPENDENCY_CFLAGS) \
+	-DDATADIR=\""$(datadir)"\" \
+	$(NULL)
 
 libnautilus_la_LDFLAGS=\
-	$(GNOME_LIBS) \
-	$(OAF_LIBS) \
-	$(BONOBOX_LIBS) \
-	$(VFS_LIBS) \
-	$(XML_LIBS) \
-	$(LIBPNG)	\
-	$(EEL_LIBS)
+	$(NAUTILUS_DEPENDENCY_LIBS) \
+	$(NULL)
 
 nautilus_view_component_idl_sources =		\
 	nautilus-view-component-stubs.c		\

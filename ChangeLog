@@ -1,5 +1,43 @@
 2001-05-02  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* configure.in:
+	Lots of improvement.  Make dealing with dependency libs/cflags simpler.
+
+	* applets/launcher/Makefile.am:
+	* applets/preferences-applet/Makefile.am:
+	* components/adapter/Makefile.am:
+	* components/hardware/Makefile.am:
+	* components/help/Makefile.am:
+	* components/history/Makefile.am:
+	* components/image-viewer/Makefile.am:
+	* components/loser/content/Makefile.am:
+	* components/loser/sidebar/Makefile.am:
+	* components/mozilla/Makefile.am:
+	* components/music/Makefile.am:
+	* components/news/Makefile.am:
+	* components/notes/Makefile.am:
+	* components/sample/Makefile.am:
+	* components/text/Makefile.am:
+	* components/throbber/Makefile.am:
+	* components/tree/Makefile.am:
+	* helper-utilities/error-dialog/Makefile.am:
+	* icons/arlo/throbber/Makefile.am:
+	* icons/crux_eggplant/backgrounds/Makefile.am:
+	* icons/crux_eggplant/sidebar_tab_pieces/Makefile.am:
+	* icons/crux_eggplant/throbber/Makefile.am:
+	* icons/gnome/throbber/Makefile.am:
+	* icons/sidebar_tab_pieces/Makefile.am:
+	* libnautilus-adapter/Makefile.am:
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus/Makefile.am:
+	* src/Makefile.am:
+	* src/file-manager/Makefile.am:
+	* test/Makefile.am:
+	Eliminate cut-n-paste disease by using dependency macros defined
+	in configure.in.
+
+2001-05-02  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* autogen.sh:
 	Detect whether the invocation of configure failed and print a
 	message accordingly.  We used to always assume that configure was

@@ -5,27 +5,18 @@ bin_PROGRAMS=nautilus-news
 INCLUDES=\
 	-I$(top_srcdir)/components/news \
 	-I$(top_srcdir)		\
-	-I$(top_builddir)	\
-	-I$(top_builddir)/libnautilus	\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" \
 	-DDATADIR=\""$(datadir)"\" 		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(EEL_INCLUDEDIR) \
-	$(LIBRSVG_INCLUDEDIR) \
-	$(GNOMEUI_CFLAGS)	\
-	$(GCONF_CFLAGS)		\
-	$(BONOBO_CFLAGS)	\
-	$(VFS_CFLAGS)
+	$(NAUTILUS_PRIVATE_CFLAGS) \
+	$(NULL)
 
 LDADD=\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
-	$(EEL_LIBS) \
-	$(LIBRSVG_LIBS) \
-	$(BONOBO_LIBS) \
-	$(GCONF_LIBS) \
-	$(GNOMEUI_LIBS)
+	$(NAUTILUS_PRIVATE_LIBS) \
+	$(NULL)
 
 nautilus_news_SOURCES=nautilus-news.c nautilus-news-pixmaps.h
 

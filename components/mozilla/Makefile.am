@@ -1,22 +1,17 @@
 include $(top_srcdir)/Makefile.shared
 
 INCLUDES = \
+	-I$(top_srcdir) \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	-DPREFIX=\"$(prefix)\" \
 	-DG_LOG_DOMAIN=\"Nautilus-Mozilla\" \
 	-DDATADIR=\"$(datadir)\" \
+	-DMOZILLA_MILESTONE=$(MOZILLA_MILESTONE) \
 	$(MOZILLA_COMPONENT_DEBUG_FLAGS) \
 	$(MOZILLA_PROFILES_CFLAGS) \
-	-I$(top_srcdir) \
-	-I$(top_builddir) \
-	$(EEL_CFLAGS) \
-	$(LIBRSVG_CFLAGS) \
-	$(BONOBO_CFLAGS) \
-	$(GCONF_CFLAGS) \
-	$(GNOMEUI_CFLAGS) \
 	$(MOZILLA_COMPONENT_CFLAGS) \
-	-DMOZILLA_MILESTONE=$(MOZILLA_MILESTONE) \
+	$(GCONF_CFLAGS) \
 	$(AMMONITE_CFLAGS) \
+	$(NAUTILUS_DEPENDENCY_CFLAGS) \
 	$(NULL)
 
 bin_PROGRAMS =\
@@ -46,22 +41,16 @@ noinst_HEADERS =\
 
 nautilus_mozilla_content_view_LDADD = \
 	$(top_builddir)/libnautilus/libnautilus.la \
-	$(EEL_LIBS) \
-	$(LIBRSVG_LIBS) \
-	$(BONOBO_LIBS) \
-	$(GCONF_LIBS) \
-	$(GNOMEUI_LIBS) \
-	$(VFS_LIBS) \
-	$(OAF_LIBS) \
 	$(MOZILLA_COMPONENT_LDFLAGS) \
 	$(MOZILLA_COMPONENT_LIBS) \
+	$(GCONF_LIBS) \
 	$(AMMONITE_LIBS) \
+	$(NAUTILUS_DEPENDENCY_LIBS) \
 	$(NULL)
 
 nautilus_mozilla_content_view_LDFLAGS = \
 	$(MOZILLA_COMPONENT_RPATH_FLAGS) \
 	$(NULL)
-
 
 oafdir = $(datadir)/oaf
 

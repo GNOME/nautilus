@@ -4,24 +4,15 @@ bin_PROGRAMS=nautilus-history-view
 
 INCLUDES=\
 	-I$(top_srcdir) \
-	-I$(top_builddir) \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(EEL_CFLAGS) \
-	$(LIBRSVG_CFLAGS) \
-	$(GNOMEUI_CFLAGS) \
-	$(GCONF_CFLAGS) \
-	$(BONOBO_CFLAGS) \
-	$(VFS_CFLAGS) \
+	$(NAUTILUS_PRIVATE_CFLAGS) \
 	$(NULL)
 
 LDADD=\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
-	$(EEL_LIBS)	\
-	$(LIBRSVG_LIBS)	\
-	$(BONOBO_LIBS)	\
-	$(GCONF_LIBS)	\
-	$(GNOMEUI_LIBS)
+	$(NAUTILUS_PRIVATE_LIBS) \
+	$(NULL)
 
 nautilus_history_view_SOURCES=nautilus-history-view.c
 

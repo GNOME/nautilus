@@ -1,18 +1,11 @@
 NULL =
 
 INCLUDES =					\
-	-DPREFIX=\"$(prefix)\"			\
 	-DG_LOG_DOMAIN=\"Nautilus-Adapter\"	\
 	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\" \
-	-I$(top_srcdir) -I$(top_builddir) -I.	\
-	$(EEL_CFLAGS) \
-	$(LIBRSVG_CFLAGS) \
-	$(GNOMEUI_CFLAGS)			\
-	$(BONOBOX_CFLAGS)			\
-	$(OAF_CFLAGS)				\
-	$(VFS_CFLAGS)				\
-	$(XML_CFLAGS)				\
-	-D_REENTRANT				\
+	-I$(top_srcdir) \
+	-I. \
+	$(NAUTILUS_PRIVATE_CFLAGS) \
 	$(NULL)
 
 oafdir = $(datadir)/oaf
@@ -60,20 +53,8 @@ nautilus_adapter_LDADD =							\
 	$(top_builddir)/libnautilus/libnautilus.la				\
 	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la		\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
-	$(EEL_LIBS) \
-	$(LIBRSVG_LIBS) \
-	$(GNOMEUI_LIBS)								\
-	$(OAF_LIBS)								\
-	$(BONOBO_PRINT_LIBS)							\
-	$(VFS_LIBS)								\
-	$(XML_LIBS)								\
-	$(BONOBOX_LIBS)								\
-	$(GNOMECANVASPIXBUF_LIBS)						\
-	$(GHTTP_LIBS)								\
-	$(GCONF_LIBS)								\
-	$(LIBPNG)								\
+	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)
-
 
 EXTRA_DIST = $(oaf_in_files) $(oaf_DATA)
 

@@ -3,21 +3,15 @@ NULL=
 lib_LTLIBRARIES=libnautilus-adapter.la
 
 
-INCLUDES=-I$(top_srcdir) -I$(top_builddir) -I. \
-	$(GNOME_CFLAGS) \
-	$(BONOBOX_CFLAGS) \
-	$(OAF_CFLAGS) \
-	$(VFS_CFLAGS) \
-	$(XML_CFLAGS) \
-	-D_REENTRANT
+INCLUDES=\
+	-I$(top_srcdir) \
+	-I. \
+	$(NAUTILUS_PRIVATE_CFLAGS) \
+	$(NULL)
 
 libnautilus_adapter_la_LDFLAGS= \
-	$(GNOME_LIBS) \
-	$(OAF_LIBS) \
-	$(BONOBOX_LIBS) \
-	$(VFS_LIBS) \
-	$(XML_LIBS) \
-	$(LIBPNG)
+	$(NAUTILUS_PRIVATE_LIBS) \
+	$(NULL)
 
 
 nautilus_adapter_factory_idl_sources =	        \
