@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-21 04:56+0100\n"
-"PO-Revision-Date: 2004-01-21 19:04+0100\n"
+"POT-Creation-Date: 2004-01-23 05:01+0100\n"
+"PO-Revision-Date: 2004-01-23 17:37+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1264,7 +1264,9 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
 msgid "If set to true, newly opened windows will have toolbars visible."
-msgstr "Je-li nastaveno na true, budou mít nově otevřená okna viditelné lišty nástrojů."
+msgstr ""
+"Je-li nastaveno na true, budou mít nově otevřená okna viditelné lišty "
+"nástrojů."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
 msgid ""
@@ -2393,8 +2395,8 @@ msgid " (%d"
 msgstr " (%d"
 
 #: libnautilus-private/nautilus-file-operations.c:1543
-#: libnautilus-private/nautilus-file-operations.c:2125
-#: libnautilus-private/nautilus-file-operations.c:2286
+#: libnautilus-private/nautilus-file-operations.c:2133
+#: libnautilus-private/nautilus-file-operations.c:2295
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Neznámý GnomeVFSXferProgressStatus %d"
@@ -2479,150 +2481,154 @@ msgstr "Kopíruji"
 msgid "Preparing To Copy..."
 msgstr "Připravuji kopírování..."
 
-#: libnautilus-private/nautilus-file-operations.c:1929
+#: libnautilus-private/nautilus-file-operations.c:1930
 msgid "You cannot copy items into the trash."
 msgstr "Nemůžete kopírovat položky do koše."
 
-#: libnautilus-private/nautilus-file-operations.c:1930
+#: libnautilus-private/nautilus-file-operations.c:1931
+msgid "You cannot create links inside the trash."
+msgstr "Nemůžete vytvářet odkazy v koši."
+
+#: libnautilus-private/nautilus-file-operations.c:1932
 msgid "Files and folders can only be moved into the trash."
 msgstr "Soubory a adresáře mohou být přesunuty jen do koše."
 
-#: libnautilus-private/nautilus-file-operations.c:1954
+#: libnautilus-private/nautilus-file-operations.c:1956
 msgid "You cannot move this trash folder."
 msgstr "Tento adresář koše nemůžete přesunout."
 
-#: libnautilus-private/nautilus-file-operations.c:1955
+#: libnautilus-private/nautilus-file-operations.c:1957
 msgid "You cannot copy this trash folder."
 msgstr "Nemůžete kopírovat tento adresář koše."
 
-#: libnautilus-private/nautilus-file-operations.c:1956
+#: libnautilus-private/nautilus-file-operations.c:1958
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr "Adresář koše se používá pro ukládání položek přesunutých do koše."
 
-#: libnautilus-private/nautilus-file-operations.c:1958
+#: libnautilus-private/nautilus-file-operations.c:1960
 msgid "Can't Change Trash Location"
 msgstr "Nemohu změnit umístění koše"
 
-#: libnautilus-private/nautilus-file-operations.c:1959
+#: libnautilus-private/nautilus-file-operations.c:1961
 msgid "Can't Copy Trash"
 msgstr "Nemohu kopírovat koš"
 
-#: libnautilus-private/nautilus-file-operations.c:1983
+#: libnautilus-private/nautilus-file-operations.c:1985
 msgid "You cannot move a folder into itself."
 msgstr "Nemůžete přesunout adresář do sebe."
 
-#: libnautilus-private/nautilus-file-operations.c:1984
+#: libnautilus-private/nautilus-file-operations.c:1986
 msgid "You cannot copy a folder into itself."
 msgstr "Nemůžete zkopírovat adresář do sebe."
 
-#: libnautilus-private/nautilus-file-operations.c:1985
+#: libnautilus-private/nautilus-file-operations.c:1987
 msgid "The destination folder is inside the source folder."
 msgstr "Cílový adresář je uvnitř zdrojového adresáře."
 
-#: libnautilus-private/nautilus-file-operations.c:1987
+#: libnautilus-private/nautilus-file-operations.c:1989
 msgid "Can't Move Into Self"
 msgstr "Nemohu přesunout do sebe"
 
-#: libnautilus-private/nautilus-file-operations.c:1988
+#: libnautilus-private/nautilus-file-operations.c:1990
 msgid "Can't Copy Into Self"
 msgstr "Nemohu zkopírovat do sebe"
 
-#: libnautilus-private/nautilus-file-operations.c:2001
+#: libnautilus-private/nautilus-file-operations.c:2003
 msgid "You cannot copy a file over itself."
 msgstr "Nemůžete zkopírovat soubor přes sebe."
 
-#: libnautilus-private/nautilus-file-operations.c:2002
+#: libnautilus-private/nautilus-file-operations.c:2004
 msgid "The destination and source are the same file."
 msgstr "Cíl a zdroj jsou tentýž soubor."
 
-#: libnautilus-private/nautilus-file-operations.c:2003
+#: libnautilus-private/nautilus-file-operations.c:2005
 msgid "Can't Copy Over Self"
 msgstr "Nemohu kopírovat přes sebe"
 
-#: libnautilus-private/nautilus-file-operations.c:2055
-#: libnautilus-private/nautilus-file-operations.c:2189
+#: libnautilus-private/nautilus-file-operations.c:2057
+#: libnautilus-private/nautilus-file-operations.c:2197
 msgid "You do not have permissions to write to the destination."
 msgstr "Nemáte oprávnění zapisovat do cíle."
 
-#: libnautilus-private/nautilus-file-operations.c:2057
-#: libnautilus-private/nautilus-file-operations.c:2191
+#: libnautilus-private/nautilus-file-operations.c:2059
+#: libnautilus-private/nautilus-file-operations.c:2199
 msgid "There is no space on the destination."
 msgstr "V cíli není místo."
 
-#: libnautilus-private/nautilus-file-operations.c:2059
+#: libnautilus-private/nautilus-file-operations.c:2061
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Chyba \"%s\" při vytváření nového adresáře."
 
-#: libnautilus-private/nautilus-file-operations.c:2064
+#: libnautilus-private/nautilus-file-operations.c:2066
 msgid "Error creating new folder."
 msgstr "Chyba při vytváření nového adresáře."
 
-#: libnautilus-private/nautilus-file-operations.c:2064
+#: libnautilus-private/nautilus-file-operations.c:2066
 msgid "Error Creating New Folder"
 msgstr "Chyba při vytváření nového adresáře"
 
 #. localizers: the initial name of a new folder
-#: libnautilus-private/nautilus-file-operations.c:2153
+#: libnautilus-private/nautilus-file-operations.c:2161
 msgid "untitled folder"
 msgstr "nepojmenovaný adresář"
 
-#: libnautilus-private/nautilus-file-operations.c:2193
+#: libnautilus-private/nautilus-file-operations.c:2201
 #, c-format
 msgid "Error \"%s\" creating new document."
 msgstr "Chyba \"%s\" při vytváření nového dokumentu."
 
-#: libnautilus-private/nautilus-file-operations.c:2198
+#: libnautilus-private/nautilus-file-operations.c:2206
 msgid "Error creating new document."
 msgstr "Chyba při vytváření nového dokumentu."
 
-#: libnautilus-private/nautilus-file-operations.c:2198
+#: libnautilus-private/nautilus-file-operations.c:2206
 msgid "Error Creating New Document"
 msgstr "Chyba při vytváření nového dokumenntu"
 
-#: libnautilus-private/nautilus-file-operations.c:2344
+#: libnautilus-private/nautilus-file-operations.c:2353
 msgid "new file"
 msgstr "nový soubor"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2416
+#: libnautilus-private/nautilus-file-operations.c:2425
 msgid "Deleting files"
 msgstr "Odstraňuji soubory"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2418
-#: libnautilus-private/nautilus-file-operations.c:2453
+#: libnautilus-private/nautilus-file-operations.c:2427
+#: libnautilus-private/nautilus-file-operations.c:2462
 msgid "Files deleted:"
 msgstr "Odstraněné soubory:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-private/nautilus-file-operations.c:2420
-#: libnautilus-private/nautilus-file-operations.c:2455
+#: libnautilus-private/nautilus-file-operations.c:2429
+#: libnautilus-private/nautilus-file-operations.c:2464
 msgid "Deleting"
 msgstr "Odstraňuji"
 
-#: libnautilus-private/nautilus-file-operations.c:2421
+#: libnautilus-private/nautilus-file-operations.c:2430
 msgid "Preparing to Delete files..."
 msgstr "Příprava k odstranění souborů..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2451
+#: libnautilus-private/nautilus-file-operations.c:2460
 msgid "Emptying the Trash"
 msgstr "Vyprazdňuji koš"
 
-#: libnautilus-private/nautilus-file-operations.c:2456
+#: libnautilus-private/nautilus-file-operations.c:2465
 msgid "Preparing to Empty the Trash..."
 msgstr "Připravuji vyprázdnění koše..."
 
-#: libnautilus-private/nautilus-file-operations.c:2519
+#: libnautilus-private/nautilus-file-operations.c:2528
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr "Jste si jisti, že chcete odstranit všechny položky z koše?"
 
-#: libnautilus-private/nautilus-file-operations.c:2533
+#: libnautilus-private/nautilus-file-operations.c:2542
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr "Pokud vyprázdníte koš, budou položky natrvalo odstraněny."
 
-#: libnautilus-private/nautilus-file-operations.c:2545
+#: libnautilus-private/nautilus-file-operations.c:2554
 msgid "_Empty"
 msgstr "_Vyprázdnit"
 
@@ -4391,7 +4397,7 @@ msgid "There is nothing on the clipboard to paste."
 msgstr "Ve schránce není nic ke vložení"
 
 #: src/file-manager/fm-directory-view.c:4826
-#: src/file-manager/fm-directory-view.c:5795
+#: src/file-manager/fm-directory-view.c:5801
 msgid "Mount Error"
 msgstr "Chyba při připojení"
 
@@ -4439,7 +4445,7 @@ msgid "Delete all selected items permanently"
 msgstr "Natrvalo odstranit všechny vybrané položky"
 
 #: src/file-manager/fm-directory-view.c:5231
-#: src/file-manager/fm-directory-view.c:5579
+#: src/file-manager/fm-directory-view.c:5585
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Mo_ve to Trash"
 msgstr "Pře_sunout do koše"
@@ -4486,55 +4492,55 @@ msgstr "_Kopírovat soubor"
 msgid "_Copy Files"
 msgstr "_Kopírovat soubory"
 
-#: src/file-manager/fm-directory-view.c:5570
-msgid "The link is borken, do you want to move it to the Trash?"
-msgstr "Tento odkaz je přerušen, Chcete jej přesunout do koše?"
+#: src/file-manager/fm-directory-view.c:5576
+msgid "The link is broken, do you want to move it to the Trash?"
+msgstr "Tento odkaz je přerušen, chcete jej přesunout do koše?"
 
-#: src/file-manager/fm-directory-view.c:5572
+#: src/file-manager/fm-directory-view.c:5578
 msgid "This link can't be used, because it has no target."
 msgstr "Tento odkaz nelze použít, protože nemá cíl."
 
-#: src/file-manager/fm-directory-view.c:5574
+#: src/file-manager/fm-directory-view.c:5580
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "Tento odkaz nelze použít, protože jeho cíl \"%s\" neexistuje."
 
-#: src/file-manager/fm-directory-view.c:5579
+#: src/file-manager/fm-directory-view.c:5585
 msgid "Broken Link"
 msgstr "Neplatný odkaz"
 
-#: src/file-manager/fm-directory-view.c:5637
+#: src/file-manager/fm-directory-view.c:5643
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Chcete spustit \"%s\" nebo zobrazit jeho obsah?"
 
-#: src/file-manager/fm-directory-view.c:5639
+#: src/file-manager/fm-directory-view.c:5645
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" je spustitelný textový soubor."
 
-#: src/file-manager/fm-directory-view.c:5645
+#: src/file-manager/fm-directory-view.c:5651
 msgid "Run or Display?"
 msgstr "Spustit nebo zobrazit?"
 
-#: src/file-manager/fm-directory-view.c:5646
+#: src/file-manager/fm-directory-view.c:5652
 msgid "Run in _Terminal"
 msgstr "Spustit v _terminálu"
 
-#: src/file-manager/fm-directory-view.c:5647
+#: src/file-manager/fm-directory-view.c:5653
 msgid "_Display"
 msgstr "_Zobrazit"
 
-#: src/file-manager/fm-directory-view.c:5650
+#: src/file-manager/fm-directory-view.c:5656
 msgid "_Run"
 msgstr "_Spustit"
 
-#: src/file-manager/fm-directory-view.c:5928
+#: src/file-manager/fm-directory-view.c:5934
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Otevírám \"%s\"."
 
-#: src/file-manager/fm-directory-view.c:5934
+#: src/file-manager/fm-directory-view.c:5940
 msgid "Cancel Open?"
 msgstr "Zrušit otevření?"
 
@@ -7575,9 +7581,6 @@ msgstr "Zobrazit vaše síťové servery ve správci souborů Nautilus"
 
 #~ msgid "Error executing utility program '%s': %s"
 #~ msgstr "Chyba při spouštění pomocného programu '%s': %s"
-
-#~ msgid "Dis_ks"
-#~ msgstr "Dis_ky"
 
 #~ msgid "Open _in This Window"
 #~ msgstr "Ot_evřít v tomto okně"
