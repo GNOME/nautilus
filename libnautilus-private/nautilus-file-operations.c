@@ -2250,7 +2250,8 @@ confirm_empty_trash (GtkWidget *parent_view)
 	GtkWidget *dialog;
 	GtkWindow *parent_window;
 	int response;
-	GtkWidget *hbox, *image, *label, *button;
+	GtkWidget *hbox, *vbox, *image, *label, *button;
+	gchar     *str;
 
 	/* Just Say Yes if the preference says not to confirm. */
 	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH)) {
@@ -2260,13 +2261,19 @@ confirm_empty_trash (GtkWidget *parent_view)
 	parent_window = GTK_WINDOW (gtk_widget_get_toplevel (parent_view));
 
 	dialog = gtk_dialog_new ();
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Empty Trash"));
+	gtk_window_set_title (GTK_WINDOW (dialog), "");
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 	gtk_window_set_wmclass (GTK_WINDOW (dialog), "empty_trash",
 				"Nautilus");
 	gtk_window_set_transient_for (GTK_WINDOW (dialog),
 				      GTK_WINDOW (parent_window));
 
-	hbox = gtk_hbox_new (FALSE, 6);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 14);
+
+	hbox = gtk_hbox_new (FALSE, 12);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox,
 			    FALSE, FALSE, 0);
@@ -2276,12 +2283,33 @@ confirm_empty_trash (GtkWidget *parent_view)
 	gtk_widget_show (image);
 	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("Are you sure you want to permanently delete "
-				 "all of the items in the Trash?"));
+	vbox = gtk_vbox_new (FALSE, 12);
+	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
+	gtk_widget_show (vbox);
+
+	str = g_strconcat ("<b>", 
+		_("Are you sure you want to empty "
+		"all of the items from the trash?"), 
+		"</b>", 
+		NULL);
+		
+	label = gtk_label_new (str);  
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
 	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox), label,
-			    TRUE, TRUE, 0);
+	g_free (str);
+
+	label = gtk_label_new (_("If you empty the trash, items "
+		"will be permanently deleted."));
+	
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
+	gtk_widget_show (label);
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL,
 			       GTK_RESPONSE_CANCEL);
