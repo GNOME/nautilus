@@ -3,6 +3,10 @@ SUBDIRS = eazel
 icondir = $(datadir)/pixmaps/nautilus
 
 icon_DATA =					\
+	certified.gif				\
+	changed.gif				\
+	confidential.gif			\
+	encrypted.gif				\
 	i-blockdev.png				\
 	i-cdrom.png				\
 	i-chardev.png				\
@@ -33,10 +37,14 @@ icon_DATA =					\
 	i-symlink.png				\
 	i-zipdisk.png				\
 	i-zipdisk2.png				\
+	important.gif				\
 	loading.png				\
 	multi-ok.png				\
+	new.gif					\
 	not.png					\
 	nautilus3.jpg				\
+	personal.gif				\
+	remote.gif				\
 	tableft.png				\
 	tabright.png				\
 	zoom.png
