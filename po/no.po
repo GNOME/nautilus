@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.2\n"
-"POT-Creation-Date: 2001-03-09 11:20-0500\n"
-"PO-Revision-Date: 2001-03-09 11:23-05:00\n"
+"POT-Creation-Date: 2001-03-12 22:10-0500\n"
+"PO-Revision-Date: 2001-03-12 14:32-05:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2292,21 +2292,21 @@ msgstr "%s installerer versjon %s-%s"
 msgid "%s installs version %s"
 msgstr "%s installerer versjon %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:687
+#: components/services/install/lib/eazel-install-logic2.c:691
 #, c-format
 msgid "Loading package info from file %s"
 msgstr "Leser pakkeinformasjon fra fil %s"
 
 #. I18N note: ok is for "package dependencies are ok", "not ok".. well guess...
-#: components/services/install/lib/eazel-install-logic2.c:993
+#: components/services/install/lib/eazel-install-logic2.c:1008
 msgid "ok"
 msgstr "ok"
 
-#: components/services/install/lib/eazel-install-logic2.c:993
+#: components/services/install/lib/eazel-install-logic2.c:1008
 msgid "not ok"
 msgstr "ikke ok"
 
-#: components/services/install/lib/eazel-install-logic2.c:1159
+#: components/services/install/lib/eazel-install-logic2.c:1174
 #, c-format
 msgid "Checking dependencies for %s"
 msgstr "Sjekker avhengigheter for %s"
@@ -2314,69 +2314,69 @@ msgstr "Sjekker avhengigheter for %s"
 #. I18N note: both %s' are package names.
 #. related is in the sense that the two packages apparently
 #. are connected somehow, eg. foo and foo-devel
-#: components/services/install/lib/eazel-install-logic2.c:1766
+#: components/services/install/lib/eazel-install-logic2.c:1798
 #, c-format
 msgid "%s is related to %s"
 msgstr "%s er relatert til %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1826
+#: components/services/install/lib/eazel-install-logic2.c:1874
 #, c-format
 msgid "updating %s to version %s-%s solves conflict"
 msgstr "oppdatering av %s til versjon %s-%s løser konflikt"
 
-#: components/services/install/lib/eazel-install-logic2.c:1842
+#: components/services/install/lib/eazel-install-logic2.c:1897
 #, c-format
 msgid "available update to %s (%s-%s) does not solves conflict"
 msgstr "tilgjengelig oppdatering for %s (%s-%s) løser ikke konflikt"
 
-#: components/services/install/lib/eazel-install-logic2.c:1849
+#: components/services/install/lib/eazel-install-logic2.c:1905
 #, c-format
 msgid "could not revive %s"
 msgstr "kunne ikke gjenopplive %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2004
+#: components/services/install/lib/eazel-install-logic2.c:2060
 #, c-format
 msgid "file uniqueness checking %s"
 msgstr "Sjekker om filen er unik %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2025
+#: components/services/install/lib/eazel-install-logic2.c:2081
 #, c-format
 msgid "Duplicate file : %s occurs in %s and %s"
 msgstr "Duplikatfil : %s finnes i %s og %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2037
-#: components/services/install/lib/eazel-install-logic2.c:2191
+#: components/services/install/lib/eazel-install-logic2.c:2093
+#: components/services/install/lib/eazel-install-logic2.c:2247
 msgid "... but it's ok, the packages are related"
 msgstr "... men det er ok, pakkene er relatert"
 
-#: components/services/install/lib/eazel-install-logic2.c:2045
+#: components/services/install/lib/eazel-install-logic2.c:2101
 #, c-format
 msgid "(there were %d other conflicts)"
 msgstr "(fant %d andre konflikter)"
 
-#: components/services/install/lib/eazel-install-logic2.c:2140
+#: components/services/install/lib/eazel-install-logic2.c:2196
 #, c-format
 msgid "file conflict checking %s"
 msgstr "sjekk etter filkonflikt %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2177
+#: components/services/install/lib/eazel-install-logic2.c:2233
 #, c-format
 msgid "file conflict : package %s already provides file %s also provided by %s"
 msgstr "filkonflikt : pakke %s inneholder allerede fil %s som også finnes i %s"
 
 #. the owner of this file is a package that we're upgrading, and the
 #. * new version no longer has this file, so everything's okay.
-#: components/services/install/lib/eazel-install-logic2.c:2187
+#: components/services/install/lib/eazel-install-logic2.c:2243
 #, c-format
 msgid "...but it is okay, we're upgrading %s and it ditched that file"
 msgstr "...men det er ok, vi oppgraderer %s og den forkastet den filen"
 
-#: components/services/install/lib/eazel-install-logic2.c:2279
+#: components/services/install/lib/eazel-install-logic2.c:2335
 #, c-format
 msgid "checking feature consistency of %s"
 msgstr "sjekker etter konsistente funksjoner i %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2347
+#: components/services/install/lib/eazel-install-logic2.c:2403
 #, c-format
 msgid ""
 "feature missing : %s breaks if %s is installed (feature %s would be lost"
@@ -2384,39 +2384,39 @@ msgstr ""
 "manglende funksjon : %s blir ødelagt hvis %s installeres (funksjon %s ville "
 "gå tapt)"
 
-#: components/services/install/lib/eazel-install-logic2.c:2426
+#: components/services/install/lib/eazel-install-logic2.c:2482
 #, c-format
 msgid "downloading %d packages"
 msgstr "laster ned %d pakker"
 
-#: components/services/install/lib/eazel-install-logic2.c:2695
+#: components/services/install/lib/eazel-install-logic2.c:2752
 #, c-format
 msgid "will upgrade %s"
 msgstr "vil oppgradere %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2698
+#: components/services/install/lib/eazel-install-logic2.c:2755
 #, c-format
 msgid "will downgrade %s"
 msgstr "vil nedgradere %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2701
+#: components/services/install/lib/eazel-install-logic2.c:2758
 #, c-format
 msgid "will install %s"
 msgstr "vil installere %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2704
+#: components/services/install/lib/eazel-install-logic2.c:2761
 #, c-format
 msgid "will uninstall %s"
 msgstr "vil avinstallere %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2789
+#: components/services/install/lib/eazel-install-logic2.c:2846
 #: components/services/install/lib/eazel-install-problem.c:335
 #: components/services/install/lib/eazel-install-problem.c:338
 #, c-format
 msgid "%s requires %s"
 msgstr "%s er avhengig av %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2982
+#: components/services/install/lib/eazel-install-logic2.c:3039
 #, c-format
 msgid "failed %s"
 msgstr "feilet %s"
@@ -5397,15 +5397,15 @@ msgstr "Uthevet"
 
 #: libnautilus-extensions/nautilus-font-picker.c:104
 msgid "Book"
-msgstr ""
+msgstr "Bok"
 
 #: libnautilus-extensions/nautilus-font-picker.c:106
 msgid "Demibold"
-msgstr ""
+msgstr "Halvfet"
 
 #: libnautilus-extensions/nautilus-font-picker.c:107
 msgid "Light"
-msgstr ""
+msgstr "Tynn"
 
 #: libnautilus-extensions/nautilus-font-picker.c:113
 msgid "Italic"
@@ -5413,7 +5413,7 @@ msgstr "Kursiv"
 
 #: libnautilus-extensions/nautilus-font-picker.c:114
 msgid "Oblique"
-msgstr ""
+msgstr "Hellende"
 
 #: libnautilus-extensions/nautilus-font-picker.c:115
 msgid "Reverse Italic"
@@ -5421,15 +5421,15 @@ msgstr "Omvendt kursiv"
 
 #: libnautilus-extensions/nautilus-font-picker.c:116
 msgid "Reverse Oblique"
-msgstr ""
+msgstr "Omvendt hellende"
 
 #: libnautilus-extensions/nautilus-font-picker.c:123
 msgid "Condensed"
-msgstr ""
+msgstr "Kondensert"
 
 #: libnautilus-extensions/nautilus-font-picker.c:124
 msgid "Semicondensed"
-msgstr ""
+msgstr "Halvkondensert"
 
 #: libnautilus-extensions/nautilus-font-picker.c:226
 msgid "Font"
@@ -5891,15 +5891,15 @@ msgstr "courier"
 msgid "lucida"
 msgstr "lucida"
 
-#: libnautilus-extensions/nautilus-preferences.c:76
+#: libnautilus-extensions/nautilus-preferences.c:77
 msgid "Beginner"
 msgstr "Begynner"
 
-#: libnautilus-extensions/nautilus-preferences.c:77
+#: libnautilus-extensions/nautilus-preferences.c:78
 msgid "Intermediate"
 msgstr "Viderekommen"
 
-#: libnautilus-extensions/nautilus-preferences.c:78
+#: libnautilus-extensions/nautilus-preferences.c:79
 msgid "Advanced"
 msgstr "Avansert"
 
@@ -6582,7 +6582,7 @@ msgstr "_Lim inn tekst"
 #. * to change it when we upgrade to GTK 2.0.
 #.
 #: nautilus.desktop.in.h:1 src/nautilus-window-manage-views.c:254
-#: src/nautilus-window-menus.c:563
+#: src/nautilus-window-menus.c:569
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -8182,7 +8182,7 @@ msgstr "Bokmerker"
 msgid "Location"
 msgstr "Plassering"
 
-#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:757
+#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:763
 msgid "Remove"
 msgstr "Fjern"
 
@@ -9399,7 +9399,7 @@ msgstr "R_ediger bokmerker..."
 msgid "_Feedback"
 msgstr "T_ilbakemeldinger"
 
-#: src/nautilus-shell-ui.xml.h:86 src/nautilus-window-menus.c:1352
+#: src/nautilus-shell-ui.xml.h:86 src/nautilus-window-menus.c:1358
 msgid "_Find"
 msgstr "_Finn"
 
@@ -9800,11 +9800,11 @@ msgstr "Brukervalg"
 #. * not translate the
 #. * company name, please.
 #.
-#: src/nautilus-window-menus.c:571
+#: src/nautilus-window-menus.c:577
 msgid "Copyright © 1999-2001 Eazel, Inc."
 msgstr "Copyright © 1999-2001 Eazel, Inc."
 
-#: src/nautilus-window-menus.c:573
+#: src/nautilus-window-menus.c:579
 msgid ""
 "Nautilus is a graphical shell\n"
 "for GNOME that makes it\n"
@@ -9821,14 +9821,14 @@ msgstr ""
 #. * bottom of the about box to give credit
 #. * to the translator(s)
 #.
-#: src/nautilus-window-menus.c:582
+#: src/nautilus-window-menus.c:588
 msgid "Translator Credits"
 msgstr ""
 "Oversatt til norsk av\n"
 "Kjartan Maraas\n"
 "<kmaraas@gnome.org>"
 
-#: src/nautilus-window-menus.c:752
+#: src/nautilus-window-menus.c:758
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -9837,24 +9837,24 @@ msgstr ""
 "Lokasjonen \"%s\" eksisterer ikke. Ønsker du å fjerne alle bokmerker med "
 "denne lokasjonen fra din liste?"
 
-#: src/nautilus-window-menus.c:756
+#: src/nautilus-window-menus.c:762
 msgid "Bookmark for Nonexistent Location"
 msgstr "Bokmerke for ikke-eksisterende lokasjon"
 
-#: src/nautilus-window-menus.c:770
+#: src/nautilus-window-menus.c:776
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Lokasjonen \"%s\" eksisterer ikke lenger."
 
-#: src/nautilus-window-menus.c:771
+#: src/nautilus-window-menus.c:777
 msgid "Go to Nonexistent Location"
 msgstr "Gå til ikke-eksisterende lokasjon"
 
-#: src/nautilus-window-menus.c:840
+#: src/nautilus-window-menus.c:846
 msgid "Go to the location specified by this bookmark"
 msgstr "Gå til lokasjonen spesifisert i dette bokmerket"
 
-#: src/nautilus-window-menus.c:1351
+#: src/nautilus-window-menus.c:1357
 msgid "_Browse"
 msgstr "_Bla gjennom"
 
