@@ -1,3 +1,18 @@
+2000-03-02	Andy Hertzfeld <andy@eazel.com>
+
+	Added a first cut at a component for viewing rpm packages.
+	
+	* configure.in: added components/rpmview
+	* components/Makefile.am: added rpmview
+	* components/rpmview/.cvsignore: new file
+	* components/rpmview/Makefile.am: make file for rpm view
+	* components/rpmview/main.c: boilerplate factory, main loop for component
+	* components/rpmview/nautilus-rpm-view.h: defines for rpm view component
+	* components/rpmview/nautilus-rpm-view.goad: goad record for activating rpmview component
+	* components/rpmview/nautilus-rpm-view.c: here's the actual code for the component,
+	which reads a package with rpm and sets up the fields in the view from the data
+	* src/ntl-uri-map.c: modified mapping so rpms get this component added
+	
 2000-03-01  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Add a conditionally built skeleton for a startup service.

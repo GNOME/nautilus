@@ -10,8 +10,8 @@ SUBDIRS =\
 	html \
 	music \
 	notes \
+	rpmview \
 	sample \
 	websearch \
 	$(SERVICE_SUBDIRS) \
 	$(NULL)
-

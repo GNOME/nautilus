@@ -1,0 +1,11 @@
+[nautilus_rpm_view_factory]
+type=exe
+repo_id=IDL:GNOME/GenericFactory:1.0
+description=Factory for rpm view
+location_info=nautilus-rpm-view
+
+[nautilus_rpm_view]
+type=factory
+repo_id=IDL:GNOME/Control:1.0 IDL:Nautilus/ContentView:1.0 IDL:Nautilus/View:1.0
+description=rpm view
+location_info=nautilus_rpm_view_factory

@@ -30,6 +30,7 @@
 #include <libnautilus/nautilus-directory.h>
 #include <libnautilus/nautilus-metadata.h>
 #include <libnautilus/nautilus-global-preferences.h>
+#include <libnautilus/nautilus-string.h>
 
 #include <libgnorba/gnorba.h>
 #include <sys/types.h>
@@ -245,10 +246,14 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
 
   /* This is just a hardcoded hack until OAF works with Bonobo.
      In the future we will use OAF queries to determine this information. */
-  if(!navinfo->navinfo.content_type)
+  g_message("uri is %s", navinfo->navinfo.requested_uri);
+  g_message("content type is %s", navinfo->navinfo.content_type);
+  
+  if (!navinfo->navinfo.content_type)
     navinfo->navinfo.content_type = g_strdup("text/plain");
 
-  if(!strcmp(navinfo->navinfo.content_type, "text/html"))
+  
+  if (!strcmp(navinfo->navinfo.content_type, "text/html"))
     {
       fallback_iid = "ntl_web_browser";
       navinfo->content_identifiers = g_slist_append (
@@ -258,28 +263,21 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
                                                      navinfo->content_identifiers, 
                                                      nautilus_view_identifier_new ("embeddable:text-plain", "Text"));
     }
-  else if(!strcmp(navinfo->navinfo.content_type, "text/plain"))
-    {
-      fallback_iid = "embeddable:text-plain";
-      navinfo->content_identifiers = g_slist_append (
-                                                     navinfo->content_identifiers, 
-                                                     nautilus_view_identifier_new ("embeddable:text-plain", "Text"));
-    }
-  else if(!strncmp(navinfo->navinfo.content_type, "image/", 6))
+  else if (!strncmp(navinfo->navinfo.content_type, "image/", 6))
     {
       fallback_iid = "eog-image-viewer";
       navinfo->content_identifiers = g_slist_append (
                                                      navinfo->content_identifiers, 
                                                      nautilus_view_identifier_new ("eog-image-viewer", "Image"));
     }
-  else if(!strcmp(navinfo->navinfo.content_type, "special/x-irc-session"))
+  else if (!strcmp(navinfo->navinfo.content_type, "special/x-irc-session"))
     {
       fallback_iid = "xchat";
       navinfo->content_identifiers = g_slist_append (
                                                      navinfo->content_identifiers, 
                                                      nautilus_view_identifier_new ("xchat", "Chat room"));
     }
-  else if(!strcmp(navinfo->navinfo.content_type, "special/directory")
+  else if (!strcmp(navinfo->navinfo.content_type, "special/directory")
           || !strcmp(navinfo->navinfo.content_type, "application/x-nautilus-vdir"))
     {
       fallback_iid = "ntl_file_manager_icon_view";
@@ -296,7 +294,7 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
 	/* FIXME:  for now, we just do this for directories but it should apply to all places with available metadata */
 	add_components_from_metadata(navinfo);
     }
-  else if(!strcmp(navinfo->navinfo.content_type, "special/webdav-directory"))
+  else if (!strcmp(navinfo->navinfo.content_type, "special/webdav-directory"))
     {
       fallback_iid = "ntl_web_browser";
       navinfo->content_identifiers = g_slist_append (navinfo->content_identifiers, 
@@ -314,6 +312,21 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
 	   
 	/* FIXME:  for now, we just do this for directories but it should apply to all places with available metadata */
 	add_components_from_metadata(navinfo);
+    }
+  else if (!strcmp(navinfo->navinfo.content_type, "application/x-rpm") || nautilus_str_has_suffix(navinfo->navinfo.requested_uri, ".rpm"))
+    {
+      fallback_iid = "nautilus_rpm_view";
+      g_message("adding rpm view");
+      navinfo->content_identifiers = g_slist_append (
+                                                     navinfo->content_identifiers, 
+                                                     nautilus_view_identifier_new ("nautilus_rpm_view", "Package "));      
+    }  
+  else if(!strcmp(navinfo->navinfo.content_type, "text/plain"))
+    {
+      fallback_iid = "embeddable:text-plain";
+      navinfo->content_identifiers = g_slist_append (
+                                                     navinfo->content_identifiers, 
+                                                     nautilus_view_identifier_new ("embeddable:text-plain", "Text"));
     }
   else
     {
