@@ -19,12 +19,7 @@
  * Boston, MA 02111-1307, USA.
  *
  * Authors: J Shane Culpepper <pepper@eazel.com>
- * 			Joe Shaw <joe@helixcode.com>
- * 			
- * Portions of the initial installer prototype we inspired and shamelessly ripped
- * from Joe Shaw's Helix Code install / updater, esp. the xml packaging / parsing 
- * format and the use of gnet. Without his work, this prototype would not be 
- * possible.
+ *          Joe Shaw <joe@helixcode.com>
  *
  */
 
@@ -33,11 +28,13 @@
  * file and install a services generated package-list.xml.
  */
 
+#include "eazel-install-types.h"
+#include "eazel-install-protocols.h"
+#include "eazel-install-rpm-glue.h"
+#include "helixcode-install-utils.h"
+#include "eazel-install-xml-package-list.h"
+#include "eazel-install-metadata.h"
 #include <popt-gnome.h>
-#include "eazel-install-lib.h"
-#include "eazel-install-lib-rpm.h"
-#include "eazel-install-lib-util.h"
-#include "eazel-install-lib-xml.h"
 
 static void show_usage (int exitcode, char* error);
 static void show_license (int exitcode, char* error);
@@ -126,11 +123,6 @@ main (int argc, char* argv[]) {
 	config_file = g_strdup ("/etc/eazel/services/eazel-services-config.xml");
 	remote_path = g_strdup ("/package-list.xml");
 	
-/*
-	if (argc < 2) {
-		show_usage (1, "\n***You must specify the protocol!***\n");
-	}
-*/
 	pctx = poptGetContext ("eazel-install", argc, argv, optionsTable, 0);
 
 	while ( (opt = poptGetNextOpt (pctx)) >= 0) {

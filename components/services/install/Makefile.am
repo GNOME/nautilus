@@ -20,12 +20,15 @@ gnorbadir = $(sysconfdir)/CORBA/servers
 
 bin_PROGRAMS = eazel-install
 
-eazel_install_SOURCES =		        \
-	eazel-install-lib-debug.c	\
-	eazel-install-lib-rpm.c		\
-	eazel-install-lib-util.c	\
-	eazel-install-lib-xml.c		\
-	eazel-install.c			\
+eazel_install_SOURCES =		        	\
+	eazel-install-tests.c			\
+	eazel-install-utils.c			\
+	helixcode-install-utils.c		\
+	eazel-install-metadata.c		\
+	eazel-install-xml-package-list.c	\
+	eazel-install-protocols.c		\
+	eazel-install-rpm-glue.c		\
+	eazel-install.c				\
 	$(NULL)
 
 eazel_install_LDFLAGS =	\

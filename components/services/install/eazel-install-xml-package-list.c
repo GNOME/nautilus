@@ -1,0 +1,191 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* 
+ * Copyright (C) 2000 Eazel, Inc
+ * Copyright (C) 2000 Helix Code, Inc
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ *
+ * Authors: J Shane Culpepper <pepper@eazel.com>
+ *          Joe Shaw <joe@helixcode.com>
+ */
+
+/* eazel-install - services command line install/update/uninstall
+ * component.  This program will parse the eazel-services-config.xml
+ * file and install a services generated package-list.xml.
+ */
+
+#include "eazel-install-xml-package-list.h"
+
+static PackageData* parse_package (xmlNode* package);
+static CategoryData* parse_category (xmlNode* cat);
+
+static PackageData*
+parse_package (xmlNode* package) {
+
+	xmlNode* dep;
+	PackageData* rv;
+
+	rv = g_new0 (PackageData, 1);
+
+	rv->name = g_strdup (xml_get_value (package, "NAME"));
+	rv->version = g_strdup (xml_get_value (package, "VERSION"));
+	rv->minor = g_strdup (xml_get_value (package, "MINOR"));
+	rv->archtype = g_strdup (xml_get_value (package, "ARCH"));
+	rv->bytesize = atoi (xml_get_value (package, "BYTESIZE"));
+	rv->summary = g_strdup (xml_get_value (package, "SUMMARY"));
+	
+	/* Dependency Lists */
+	rv->SoftDepends = NULL;
+	rv->HardDepends = NULL;
+
+	dep = package->childs;
+	while (dep) {
+		if (g_strcasecmp (dep->name, "SOFT_DEPEND") == 0) {
+			PackageData* depend;
+
+			depend = parse_package (dep);
+			rv->SoftDepends = g_list_append (rv->SoftDepends, depend);
+		}
+		else if (g_strcasecmp (dep->name, "HARD_DEPEND") == 0) {
+			PackageData* depend;
+
+			depend = parse_package (dep);
+			rv->HardDepends = g_list_append (rv->HardDepends, depend);
+		}
+
+		dep = dep->next;
+
+	}
+
+	return rv;
+
+} /* end parse package */
+
+static CategoryData*
+parse_category (xmlNode* cat) {
+
+	CategoryData* category;
+	xmlNode* pkg;
+
+	category = g_new0 (CategoryData, 1);
+	category->name = xmlGetProp (cat, "name");
+
+	pkg = cat->childs->childs;
+	if (pkg == NULL) {
+		fprintf (stderr, "***No package nodes!***\n");
+		g_free (category);
+		g_error ("***Bailing from package parse!***\n");
+	}
+	while (pkg) {
+		PackageData* pakdat;
+
+		pakdat = parse_package (pkg);
+		category->Packages = g_list_append (category->Packages, pakdat);
+		pkg = pkg->next;
+	}
+
+	return category;
+
+} /* end parse_category */
+
+GList*
+parse_local_xml_package_list (const char* pkg_list_file) {
+	GList* rv;
+	xmlDocPtr doc;
+	xmlNodePtr base;
+	xmlNodePtr category;
+
+	rv = NULL;
+		
+	doc = xmlParseFile (pkg_list_file);
+	
+	if (doc == NULL) {
+		fprintf (stderr, "***Unable to open pkg list file!***\n");
+		xmlFreeDoc (doc);
+		g_assert (doc != NULL);
+	}
+
+	base = doc->root;
+	if (base == NULL) {
+		fprintf (stderr, "***The pkg list file contains no data!***\n");
+		xmlFreeDoc (doc);
+		g_assert (base != NULL);
+	}
+	
+	if (g_strcasecmp (base->name, "CATEGORIES")) {
+		fprintf (stderr, "***Cannot find the CATEGORIES xmlnode!***\n");
+		xmlFreeDoc (doc);
+		g_error ("***Bailing from categories parse!***\n");
+	}
+	
+	category = doc->root->childs;
+	if(category == NULL) {
+		fprintf (stderr, "***No Categories!***\n");
+		xmlFreeDoc (doc);
+		g_error ("***Bailing from category parse!***\n");
+	}
+	
+	while (category) {
+		CategoryData* catdat;
+
+		catdat = parse_category (category);
+		rv = g_list_append (rv, catdat);
+		category = category->next;
+	}
+
+	xmlFreeDoc (doc);
+	return rv;
+	
+} /*end fetch_xml_packages_local */
+
+void
+free_categories (GList* categories) {
+
+	while (categories) {
+		CategoryData* c = categories->data;
+		GList* t = c->Packages;
+
+		while (t) {
+			PackageData* pack = t->data;
+			GList* temp;
+
+			temp = pack->SoftDepends;
+			while (temp) {
+				g_free (temp->data);
+				temp = temp->next;
+			}
+			g_list_free(pack->SoftDepends);
+
+			temp = pack->HardDepends;
+			while (temp) {
+				g_free (temp->data);
+				temp = temp->next;
+			}
+			g_list_free (pack->HardDepends);
+			
+			g_free (t->data);
+
+			t = t->next;
+		}
+
+		g_list_free (c->Packages);
+		g_free (c);
+
+		categories = categories->next;
+	}
+	g_list_free (categories);
+
+} /* end free_categories */
