@@ -26,6 +26,7 @@
  */
  
 #include <config.h>
+#include <time.h>
 #include <gnome.h>
 #include <liboaf/liboaf.h>
 
@@ -67,6 +68,10 @@ struct _NautilusRSSControlDetails {
 	char* title;
 	char* main_uri;
 	
+	guint timer_task;
+	time_t last_update;
+	uint   update_interval;
+	
 	GdkPixbuf *logo;
 	GdkPixbuf *bullet;
 	GList *items;
@@ -94,6 +99,7 @@ static gboolean nautilus_rss_control_leave_event (GtkWidget *widget, GdkEventCro
 static void nautilus_rss_control_size_request (GtkWidget *widget, GtkRequisition *request);
 
 static void nautilus_rss_control_set_uri (NautilusRSSControl *rss_control, const char *uri);
+static int  check_for_update (gpointer callback_data);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusRSSControl,
@@ -118,7 +124,6 @@ nautilus_rss_control_initialize_class (NautilusRSSControlClass *klass)
 	widget_class->motion_notify_event = nautilus_rss_control_motion_event;
 	widget_class->leave_notify_event = nautilus_rss_control_leave_event;
 	widget_class->size_request = nautilus_rss_control_size_request;
-
 }
 
 /* routines to handle setting and getting the configuration properties of the Bonobo control */
@@ -191,6 +196,13 @@ nautilus_rss_control_initialize (NautilusRSSControl *rss_control)
 	rss_control->details->font = nautilus_scalable_font_get_default_font ();
 	rss_control->details->prelight_index = -1;
 	
+	/* set up the update variables */
+	rss_control->details->last_update = 0;
+	rss_control->details->update_interval = 2 * 60; /* default to once every two minutes */
+
+	rss_control->details->timer_task
+                        = gtk_timeout_add (4000, check_for_update, rss_control);
+ 	
 	/* load the bullet used to display the items */
 	bullet_path = nautilus_pixmap_file ("bullet.png");
 	rss_control->details->bullet = gdk_pixbuf_new_from_file (bullet_path);
@@ -263,6 +275,11 @@ nautilus_rss_control_destroy (GtkObject *object)
 	
 	if (rss_control->details->font) {
 		gtk_object_unref (GTK_OBJECT (rss_control->details->font));
+	}
+
+	if (rss_control->details->timer_task != 0) {
+		gtk_timeout_remove (rss_control->details->timer_task);
+		rss_control->details->timer_task = 0;
 	}
 	
 	g_free (rss_control->details);
@@ -381,6 +398,8 @@ rss_read_done_callback (GnomeVFSResult result,
 		return;
 	}
 
+	/* flag the update time */
+	time (&rss_control->details->last_update);
 	
 	/* Parse the rss file with gnome-xml. The gnome-xml parser requires a zero-terminated array. */
 	buffer = g_realloc (file_contents, file_size + 1);
@@ -487,6 +506,25 @@ nautilus_rss_control_set_uri (NautilusRSSControl *rss_control, const char *uri)
 	}
 }
 
+/* handle periodically updating the items if necessary */
+static int
+check_for_update (gpointer callback_data)
+{
+	NautilusRSSControl *rss_control;
+	guint current_time, next_time;
+
+	rss_control = NAUTILUS_RSS_CONTROL (callback_data);
+	
+	current_time = time (NULL);
+	next_time = rss_control->details->last_update + rss_control->details->update_interval;
+
+	if (current_time > next_time) {
+		rss_control->details->load_file_handle = nautilus_read_entire_file_async (rss_control->details->rss_uri, rss_read_done_callback, rss_control);
+		rss_control->details->last_update = current_time;		
+	}
+	return TRUE;
+}
+
 /* convenience routine to composite an image with the proper clipping */
 static void
 rss_control_pixbuf_composite (GdkPixbuf *source, GdkPixbuf *destination, int x_offset, int y_offset, int alpha)
@@ -521,8 +559,10 @@ static int
 draw_rss_logo_image (NautilusRSSControl *rss_control, GdkPixbuf *pixbuf, int offset)
 {
 	GtkWidget *widget;
+	char time_str[16];
 	int logo_width, logo_height;
-	int v_offset;
+	int v_offset, pixbuf_width;
+	NautilusDimensions time_dimensions;
 	
 	widget = GTK_WIDGET (rss_control);
 	v_offset = offset;
@@ -535,6 +575,18 @@ draw_rss_logo_image (NautilusRSSControl *rss_control, GdkPixbuf *pixbuf, int off
 		v_offset += logo_height + 2;
 	}
 
+	/* also, read the update time in the upper right corner */
+	if (rss_control->details->last_update != 0) {
+		strftime (&time_str[0], 16, "%I:%M %p",	localtime (&rss_control->details->last_update));
+
+		time_dimensions = nautilus_scalable_font_measure_text (rss_control->details->font, 9, time_str, strlen (time_str));
+	
+		pixbuf_width = gdk_pixbuf_get_width (pixbuf);
+		nautilus_scalable_font_draw_text (rss_control->details->font, pixbuf, 
+					  pixbuf_width - time_dimensions.width - 4, offset,
+					  NULL, 9, time_str, strlen (time_str),
+					  NAUTILUS_RGB_COLOR_BLACK, NAUTILUS_OPACITY_FULLY_OPAQUE);
+	}
 	return v_offset;
 }
 
@@ -670,6 +722,8 @@ nautilus_rss_control_draw (GtkWidget *widget, GdkRectangle *box)
 {
 	NautilusRSSControl *control;
 	GdkPixbuf *temp_pixbuf;
+	ArtIRect pixbuf_rect;
+	
 	int width, height, v_offset;
 
 	/* allocate a pixbuf to draw into */
@@ -682,7 +736,13 @@ nautilus_rss_control_draw (GtkWidget *widget, GdkRectangle *box)
 	}
 	
 	temp_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, width, height);
-	nautilus_gdk_pixbuf_fill_rectangle_with_color (temp_pixbuf, NULL, 0xFFEFEFEF);
+	pixbuf_rect.x0 = 1;
+	pixbuf_rect.y0 = 1;
+	pixbuf_rect.x1 = width - 1;
+	pixbuf_rect.y1 = height - 1;
+	
+	nautilus_gdk_pixbuf_fill_rectangle_with_color (temp_pixbuf, NULL, 0xFF000000);	
+	nautilus_gdk_pixbuf_fill_rectangle_with_color (temp_pixbuf, &pixbuf_rect, 0xFFEFEFEF);
 		
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (NAUTILUS_IS_RSS_CONTROL (widget));

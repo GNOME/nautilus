@@ -1,3 +1,14 @@
+2001-03-26  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+
+	added frame to rss-control, and made it periodically update,
+	reflecting the last update time in the upper right corner.
+	
+	* components/rss-control/nautilus-rss-control.c:
+	(nautilus_rss_control_initialize_class),
+	(nautilus_rss_control_initialize), (nautilus_rss_control_destroy),
+	(rss_read_done_callback), (check_for_update),
+	(draw_rss_logo_image), (nautilus_rss_control_draw):
+
 2001-03-26  Andy Hertzfeld  <andy@eazel.com>
 
 	fix some miscellaneous glitches in the tab indicator stuff
