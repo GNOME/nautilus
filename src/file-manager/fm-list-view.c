@@ -70,6 +70,7 @@ static GtkTargetEntry drag_types [] = {
  */
 #define LIST_VIEW_MINIMUM_ROW_HEIGHT	28
 
+static int                      click_policy_auto_value;
 static NautilusFileSortType	default_sort_order_auto_value;
 static gboolean			default_sort_reversed_auto_value;
 static NautilusZoomLevel        default_zoom_level_auto_value;
@@ -100,7 +101,7 @@ list_activate_callback (GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewCo
 	
 	view = FM_DIRECTORY_VIEW (user_data);
 
-	if (eel_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY) == NAUTILUS_CLICK_POLICY_DOUBLE) {
+	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_DOUBLE) {
 		file_list = fm_list_view_get_selection (view);
 		fm_directory_view_activate_files (view, file_list);
 		nautilus_file_list_free (file_list);
@@ -198,7 +199,7 @@ button_release_callback (GtkWidget *widget, GdkEventButton *event, gpointer call
 
 	if (event->window == gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget)) &&
 	    event->button == 1 &&
-	    eel_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY) == NAUTILUS_CLICK_POLICY_SINGLE) {
+	    click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE) {
 		/* Handle single click activation preference. */
 		file_list = fm_list_view_get_selection (view);
 		fm_directory_view_activate_files (view, file_list);
@@ -209,24 +210,31 @@ button_release_callback (GtkWidget *widget, GdkEventButton *event, gpointer call
 }
 
 static void
-rows_reordered_callback (GtkTreeSortable *sortable, 
-			 FMListView *view)
+sort_column_changed_callback (GtkTreeSortable *sortable, 
+			      FMListView *view)
 {
 	NautilusFile *file;
 	gint sort_column_id;
-	GtkSortType order;
-	char *attr_column, *attr_order;
+	GtkSortType reversed;
+	char *sort_attr, *default_sort_attr;
+	char *reversed_attr, *default_reversed_attr;
 
 	file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (view));
-	gtk_tree_sortable_get_sort_column_id (sortable, &sort_column_id, &order);
 
-	attr_column = fm_list_model_get_attribute_from_sort_column_id (sort_column_id);
-	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN, NULL, attr_column);
+	gtk_tree_sortable_get_sort_column_id (sortable, &sort_column_id, &reversed);
 
-	attr_order = (order ? "true" : "false");
-	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED, NULL, attr_order);
+	sort_attr = fm_list_model_get_attribute_from_sort_column_id (sort_column_id);
+	sort_column_id = fm_list_model_get_sort_column_id_from_sort_type (default_sort_order_auto_value);
+	default_sort_attr = fm_list_model_get_attribute_from_sort_column_id (sort_column_id);
+	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN,
+				    default_sort_attr, sort_attr);
+	g_free (default_sort_attr);
+	g_free (sort_attr);
 
-	g_free (attr_column);
+	default_reversed_attr = (default_sort_reversed_auto_value ? "true" : "false");
+	reversed_attr = (reversed ? "true" : "false");
+	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
+				    default_reversed_attr, reversed_attr);
 }
 
 static void
@@ -257,24 +265,6 @@ cell_renderer_edited (GtkCellRendererText *cell,
 }
 
 static void
-click_policy_changed_callback (gpointer callback_data)
-{
-	FMListView *view;
-
-	view = FM_LIST_VIEW (callback_data);
-
-	if (eel_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY) == NAUTILUS_CLICK_POLICY_SINGLE) {
-		g_object_set (G_OBJECT (view->details->file_name_cell),
-			      "underline", PANGO_UNDERLINE_SINGLE,
-			      NULL);
-	} else {
-		g_object_set (G_OBJECT (view->details->file_name_cell),
-			      "underline", PANGO_UNDERLINE_NONE,
-			      NULL);
-	}
-}
-
-static void
 create_and_set_up_tree_view (FMListView *view)
 {
 	GtkCellRenderer *cell;
@@ -299,7 +289,7 @@ create_and_set_up_tree_view (FMListView *view)
 	gtk_tree_view_set_model (view->details->tree_view, GTK_TREE_MODEL (view->details->model));
 
 	g_signal_connect_object (view->details->model, "sort_column_changed",
-				 G_CALLBACK (rows_reordered_callback), view, 0);
+				 G_CALLBACK (sort_column_changed_callback), view, 0);
 
 	g_object_unref (view->details->model);
 	
@@ -404,7 +394,6 @@ set_sort_order_from_metadata_and_preferences (FMListView *list_view)
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (list_view->details->model),
 					      sort_column_id,
 					      sort_reversed ? GTK_SORT_DESCENDING : GTK_SORT_ASCENDING);
-
 }
 
 static void
@@ -533,15 +522,17 @@ fm_list_view_reset_to_defaults (FMDirectoryView *view)
 	NautilusFile *file;
 
 	file = fm_directory_view_get_directory_as_file (view);
+
 	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN, NULL, NULL);
 	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED, NULL, NULL);
+	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, NULL, NULL);
 
 	gtk_tree_sortable_set_sort_column_id
 		(GTK_TREE_SORTABLE (FM_LIST_VIEW (view)->details->model),
 		 fm_list_model_get_sort_column_id_from_sort_type (default_sort_order_auto_value),
 		 default_sort_reversed_auto_value ? GTK_SORT_DESCENDING : GTK_SORT_ASCENDING);
 
-        fm_directory_view_restore_default_zoom_level (view);
+	fm_list_view_set_zoom_level (FM_LIST_VIEW (view), default_zoom_level_auto_value, FALSE);
 }
 
 static void
@@ -687,6 +678,34 @@ fm_list_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 }
 
 static void
+click_policy_changed_callback (gpointer callback_data)
+{
+	FMListView *view;
+
+	view = FM_LIST_VIEW (callback_data);
+
+	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE) {
+		g_object_set (G_OBJECT (view->details->file_name_cell),
+			      "underline", PANGO_UNDERLINE_SINGLE,
+			      NULL);
+	} else {
+		g_object_set (G_OBJECT (view->details->file_name_cell),
+			      "underline", PANGO_UNDERLINE_NONE,
+			      NULL);
+	}
+}
+
+static void
+default_sort_order_changed_callback (gpointer callback_data)
+{
+	FMListView *list_view;
+
+	list_view = FM_LIST_VIEW (callback_data);
+
+	set_sort_order_from_metadata_and_preferences (list_view);
+}
+
+static void
 default_zoom_level_changed_callback (gpointer callback_data)
 {
 	FMListView *list_view;
@@ -760,6 +779,8 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->sort_directories_first_changed = fm_list_view_sort_directories_first_changed;
 	fm_directory_view_class->start_renaming_file = fm_list_view_start_renaming_file;
 
+	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
+				       &click_policy_auto_value);
 	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
 				       (int *) &default_sort_order_auto_value);
 	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
@@ -775,11 +796,17 @@ fm_list_view_instance_init (FMListView *list_view)
 
 	create_and_set_up_tree_view (list_view);
 
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
-						  default_zoom_level_changed_callback,
-						  list_view, G_OBJECT (list_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_CLICK_POLICY,
 						  click_policy_changed_callback,
+						  list_view, G_OBJECT (list_view));
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
+						  default_sort_order_changed_callback,
+						  list_view, G_OBJECT (list_view));
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
+						  default_sort_order_changed_callback,
+						  list_view, G_OBJECT (list_view));
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
+						  default_zoom_level_changed_callback,
 						  list_view, G_OBJECT (list_view));
 
 	click_policy_changed_callback (list_view);

@@ -77,9 +77,12 @@ gboolean fm_list_model_get_tree_iter_from_file           (FMListModel          *
 							  GtkTreeIter          *iter);
 void     fm_list_model_set_should_sort_directories_first (FMListModel          *model,
 							  gboolean              sort_directories_first);
+
 int      fm_list_model_get_sort_column_id_from_attribute (const char           *attribute);
-int      fm_list_model_get_sort_column_id_from_sort_type (NautilusFileSortType  sort_type);
 char    *fm_list_model_get_attribute_from_sort_column_id (int                   sort_column_id);
+
+int      fm_list_model_get_sort_column_id_from_sort_type (NautilusFileSortType  sort_type);
+NautilusFileSortType fm_list_model_get_sort_type_from_sort_column_id (int       sort_column_id);
 
 NautilusZoomLevel fm_list_model_get_zoom_level_from_column_id (int               column);
 int               fm_list_model_get_column_id_from_zoom_level (NautilusZoomLevel zoom_level);

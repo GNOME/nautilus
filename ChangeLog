@@ -1,3 +1,22 @@
+2002-05-10  David Emory Watson  <dwatson@cs.ucr.edu>
+
+	* src/file-manager/fm-list-view.c:
+	(list_activate_callback),
+	(click_policy_changed),
+	(fm_list_view_class_init): Update to use click_policy_auto_value.
+	(rows_reordered_callback): Renamed to
+	(sort_column_changed_callback): this and only write preferences to disk
+	if they differ from the defaults.
+	(default_sort_order_changed_callback)
+	(fm_list_view_instance_init): React to changes in the defaults.
+
+	* src/file-manager/fm-list-model.c:
+	* src/file-manager/fm-list-model.h:
+	(fm_list_model_get_nautilus_file_sort_type): Renamed to
+	(fm_list_model_get_sort_type_from_sort_column_id): this.
+	(fm_list_model_compare_func): Update.
+	(fm_list_model_add_file): Update.
+
 === nautilus 1.1.16 ===
  
 2002-05-13  Alex Larsson  <alexl@redhat.com>

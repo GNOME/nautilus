@@ -354,30 +354,6 @@ typedef struct _SortTuple
   GSList *el;
 } SortTuple;
 
-static NautilusFileSortType
-fm_list_model_get_nautilus_file_sort_type (FMListModel *model)
-{
-	if (model->details->sort_column_id == -1) {
-		return NAUTILUS_FILE_SORT_NONE;
-	}
-
-	switch (model->details->sort_column_id) {
-	case FM_LIST_MODEL_NAME_COLUMN:
-		return NAUTILUS_FILE_SORT_BY_DISPLAY_NAME;
-	case FM_LIST_MODEL_SIZE_COLUMN:
-		return NAUTILUS_FILE_SORT_BY_SIZE;
-	case FM_LIST_MODEL_TYPE_COLUMN:
-		return NAUTILUS_FILE_SORT_BY_TYPE;
-	case FM_LIST_MODEL_DATE_MODIFIED_COLUMN:
-		return NAUTILUS_FILE_SORT_BY_MTIME;
-	default:
-		g_assert_not_reached ();
-	}
-
-	/* Should not be reached */
-	return NAUTILUS_FILE_SORT_NONE;
-}
-
 static int
 fm_list_model_compare_func (gconstpointer a,
 			    gconstpointer b,
@@ -394,7 +370,7 @@ fm_list_model_compare_func (gconstpointer a,
 	file2 = ((SortTuple *)b)->el->data;
 
 	result = nautilus_file_compare_for_sort (file1, file2,
-						 fm_list_model_get_nautilus_file_sort_type (model),
+						 fm_list_model_get_sort_type_from_sort_column_id (model->details->sort_column_id),
 						 model->details->sort_directories_first,
 						 (model->details->order == GTK_SORT_DESCENDING));
 
@@ -553,7 +529,7 @@ fm_list_model_add_file (FMListModel *model, NautilusFile *file)
 			file1 = tmp->data;
 
 			result = nautilus_file_compare_for_sort (file, file1,
-								 fm_list_model_get_nautilus_file_sort_type (model),
+								 fm_list_model_get_sort_type_from_sort_column_id (model->details->sort_column_id),
 								 model->details->sort_directories_first,
 								 (model->details->order == GTK_SORT_DESCENDING));
 			if (result < 0) {
@@ -766,6 +742,23 @@ fm_list_model_get_sort_column_id_from_sort_type (NautilusFileSortType sort_type)
 	}
 
 	g_return_val_if_reached (-1);
+}
+
+NautilusFileSortType
+fm_list_model_get_sort_type_from_sort_column_id (int sort_column_id)
+{
+	switch (sort_column_id) {
+	case FM_LIST_MODEL_NAME_COLUMN:
+		return NAUTILUS_FILE_SORT_BY_DISPLAY_NAME;
+	case FM_LIST_MODEL_TYPE_COLUMN:
+		return NAUTILUS_FILE_SORT_BY_TYPE;
+	case FM_LIST_MODEL_SIZE_COLUMN:
+		return NAUTILUS_FILE_SORT_BY_SIZE;
+	case FM_LIST_MODEL_DATE_MODIFIED_COLUMN:
+		return NAUTILUS_FILE_SORT_BY_MTIME;
+	}
+
+	g_return_val_if_reached (NAUTILUS_FILE_SORT_NONE);
 }
 
 NautilusZoomLevel
