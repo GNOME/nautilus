@@ -145,6 +145,7 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 		mozilla_preference_set ("general.useragent.misc", "Nautilus");
 		/* mozilla_preference_set ("network.proxy.http", "proxy"); */
 		/* mozilla_preference_set_int ("network.proxy.http_port", 80); */
+		/* mozilla_preference_set_int ("network.proxy.type", 1); */
 
 
 /*

@@ -68,6 +68,11 @@ BEGIN_GNOME_DECLS
 /* Home URI  */
 #define NAUTILUS_PREFERENCES_HOME_URI                 		"preferences/home_uri"
 
+/* Proxy */
+#define NAUTILUS_PREFERENCES_HTTP_PROXY                 	"preferences/http-proxy"
+#define NAUTILUS_PREFERENCES_HTTP_PROXY_PORT                	"preferences/http-proxy-port"
+#define NAUTILUS_PREFERENCES_HTTP_USE_PROXY                	"preferences/http-use-proxy"
+
 /* adding/removing from property browser */
 #define NAUTILUS_PREFERENCES_CAN_ADD_CONTENT			"preferences/can_add_content"
 

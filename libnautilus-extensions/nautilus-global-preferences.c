@@ -302,6 +302,23 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_HOME_URI,
 							 NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING);
 
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (navigation_pane), _("Proxy Settings"));
+
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (navigation_pane),
+							 1,
+							 NAUTILUS_PREFERENCES_HTTP_USE_PROXY,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (navigation_pane),
+							 1,
+							 NAUTILUS_PREFERENCES_HTTP_PROXY,
+							 NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING);
+
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (navigation_pane),
+							 1,
+							 NAUTILUS_PREFERENCES_HTTP_PROXY_PORT,
+							 NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING);
+
 	/* all done */
 
 	return prefs_dialog;
@@ -827,6 +844,27 @@ global_preferences_register (void)
 		g_free (novice_home_location);
 		g_free (intermediate_home_location);
 		g_free (hacker_home_location);
+	}
+
+	{
+	
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_HTTP_USE_PROXY,
+							   _("Use HTTP Proxy"),
+							   FALSE,
+							   FALSE,
+							   FALSE);
+
+	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_HTTP_PROXY,
+								  _("HTTP Proxy"),
+								  "",
+								  "",
+								  "");
+
+	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_HTTP_PROXY_PORT,
+								  _("HTTP Proxy Port"),
+								  "",
+								  "",
+								  "");
 	}
 }
 
