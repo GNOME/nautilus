@@ -8,14 +8,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.5\n"
-"POT-Creation-Date: 2003-12-29 12:11+0100\n"
-"PO-Revision-Date: 2003-12-14 11:18+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-05 22:29+0100\n"
+"PO-Revision-Date: 2004-01-05 22:30+0100\n"
 "Last-Translator: Данило Шеган <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -229,7 +229,7 @@ msgid "Flash Fired"
 msgstr "Блиц коришћен"
 
 #: components/image_properties/nautilus-image-properties-view.c:200
-msgid "Focal Lenght"
+msgid "Focal Length"
 msgstr "Жижна даљина"
 
 #: components/image_properties/nautilus-image-properties-view.c:201
@@ -312,22 +312,6 @@ msgstr "Убаци изабрани текст међу исечке"
 #: libnautilus/nautilus-clipboard-ui.xml.h:10 src/nautilus-shell-ui.xml.h:36
 msgid "_Copy Text"
 msgstr "_Умножи текст"
-
-#: components/text/services/google.xml.h:1
-msgid "Search Google for Selected Text"
-msgstr "Пронађи изабрани текст помоћу Гугла"
-
-#: components/text/services/google.xml.h:2
-msgid "Use Google to search the web for the selected text"
-msgstr "Користи Гугл за тражење изабраног текста на вебу"
-
-#: components/text/services/webster.xml.h:1
-msgid "Look Up Selected Text in Dictionary"
-msgstr "Потражи изабрани текст у речнику"
-
-#: components/text/services/webster.xml.h:2
-msgid "Look up the selected text in the Merriam-Webster dictionary"
-msgstr "Потражи изабрани текст у Меријам-Вебстеровом речнику"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:1
 msgid "animation to indicate on-going activity"
@@ -1850,7 +1834,7 @@ msgid "Sorry, unable to save custom emblem name."
 msgstr "Нажалост, не може да сачува име прилагођеног обележја."
 
 # bug: plural-forms
-#: libnautilus-private/nautilus-file-operations-progress.c:456
+#: libnautilus-private/nautilus-file-operations-progress.c:457
 #, c-format
 msgid "%ld of %ld"
 msgstr "%ld од %ld"
@@ -1866,23 +1850,23 @@ msgstr "Одакле:"
 msgid "To:"
 msgstr "У:"
 
-#: libnautilus-private/nautilus-file-operations.c:549
-#: libnautilus-private/nautilus-file-operations.c:597
-#: libnautilus-private/nautilus-file-operations.c:612
+#: libnautilus-private/nautilus-file-operations.c:551
+#: libnautilus-private/nautilus-file-operations.c:599
+#: libnautilus-private/nautilus-file-operations.c:614
 msgid "Error while moving."
 msgstr "Грешка при премештању."
 
-#: libnautilus-private/nautilus-file-operations.c:550
+#: libnautilus-private/nautilus-file-operations.c:552
 #, c-format
 msgid "\"%s\" cannot be moved because it is on a read-only disk."
 msgstr "Не може се преместити „%s“ зато што је на диску само за читање."
 
-#: libnautilus-private/nautilus-file-operations.c:560
-#: libnautilus-private/nautilus-file-operations.c:566
+#: libnautilus-private/nautilus-file-operations.c:562
+#: libnautilus-private/nautilus-file-operations.c:568
 msgid "Error while deleting."
 msgstr "Грешка при брисању."
 
-#: libnautilus-private/nautilus-file-operations.c:561
+#: libnautilus-private/nautilus-file-operations.c:563
 #, c-format
 msgid ""
 "\"%s\" cannot be deleted because you do not have permissions to modify its "
@@ -1891,12 +1875,12 @@ msgstr ""
 "Не може се обрисати „%s“ зато што немате овлашћења да мењате директоријум у "
 "ком се налази."
 
-#: libnautilus-private/nautilus-file-operations.c:567
+#: libnautilus-private/nautilus-file-operations.c:569
 #, c-format
 msgid "\"%s\" cannot be deleted because it is on a read-only disk."
 msgstr "Не може се обрисати „%s“ зато што се налази на диску само за читање."
 
-#: libnautilus-private/nautilus-file-operations.c:598
+#: libnautilus-private/nautilus-file-operations.c:600
 #, c-format
 msgid ""
 "\"%s\" cannot be moved because you do not have permissions to change it or "
@@ -1905,11 +1889,11 @@ msgstr ""
 "Не може се преместити датотека „%s“ зато што немате овлашћења да мењате њу "
 "или директоријум у ком се налази."
 
-#: libnautilus-private/nautilus-file-operations.c:602
+#: libnautilus-private/nautilus-file-operations.c:604
 msgid "Error while moving. "
 msgstr "Грешка при премештању. "
 
-#: libnautilus-private/nautilus-file-operations.c:603
+#: libnautilus-private/nautilus-file-operations.c:605
 #, c-format
 msgid ""
 "Cannot move \"%s\" because it or its parent folder are contained in the "
@@ -1918,7 +1902,7 @@ msgstr ""
 "Не могу да преместим датотеку „%s“ зато што се она или њен директоријум "
 "налазе у одредишту."
 
-#: libnautilus-private/nautilus-file-operations.c:613
+#: libnautilus-private/nautilus-file-operations.c:615
 #, c-format
 msgid ""
 "Cannot move \"%s\" to the trash because you do not have permissions to "
@@ -1927,147 +1911,147 @@ msgstr ""
 "Не могу да преместим датотеку „%s“ у смеће зато што немате овлашћења да "
 "мењате њу или њен директоријум."
 
-#: libnautilus-private/nautilus-file-operations.c:635
+#: libnautilus-private/nautilus-file-operations.c:637
 msgid "Error while copying."
 msgstr "Грешка при умножавању."
 
-#: libnautilus-private/nautilus-file-operations.c:636
+#: libnautilus-private/nautilus-file-operations.c:638
 #, c-format
 msgid "\"%s\" cannot be copied because you do not have permissions to read it."
 msgstr ""
 "Не могу да умножим датотеку „%s“ зато што немате овлашћења да је читате."
 
-#: libnautilus-private/nautilus-file-operations.c:656
-#: libnautilus-private/nautilus-file-operations.c:677
-#: libnautilus-private/nautilus-file-operations.c:681
+#: libnautilus-private/nautilus-file-operations.c:658
+#: libnautilus-private/nautilus-file-operations.c:679
+#: libnautilus-private/nautilus-file-operations.c:683
 #, c-format
 msgid "Error while copying to \"%s\"."
 msgstr "Грешка при умножавању у „%s“."
 
-#: libnautilus-private/nautilus-file-operations.c:657
-#: libnautilus-private/nautilus-file-operations.c:662
-#: libnautilus-private/nautilus-file-operations.c:666
+#: libnautilus-private/nautilus-file-operations.c:659
+#: libnautilus-private/nautilus-file-operations.c:664
+#: libnautilus-private/nautilus-file-operations.c:668
 msgid "There is not enough space on the destination."
 msgstr "Нема довољно места у одредишту."
 
-#: libnautilus-private/nautilus-file-operations.c:661
+#: libnautilus-private/nautilus-file-operations.c:663
 #, c-format
 msgid "Error while moving to \"%s\"."
 msgstr "Грешка при премештању у „%s“."
 
-#: libnautilus-private/nautilus-file-operations.c:665
+#: libnautilus-private/nautilus-file-operations.c:667
 #, c-format
 msgid "Error while creating link in \"%s\"."
 msgstr "Грешка при успостављању везе у „%s“."
 
-#: libnautilus-private/nautilus-file-operations.c:678
-#: libnautilus-private/nautilus-file-operations.c:689
-#: libnautilus-private/nautilus-file-operations.c:700
+#: libnautilus-private/nautilus-file-operations.c:680
+#: libnautilus-private/nautilus-file-operations.c:691
+#: libnautilus-private/nautilus-file-operations.c:702
 msgid "You do not have permissions to write to this folder."
 msgstr "Нисте овлашћени да пишете у овај директоријум."
 
-#: libnautilus-private/nautilus-file-operations.c:682
-#: libnautilus-private/nautilus-file-operations.c:693
-#: libnautilus-private/nautilus-file-operations.c:704
+#: libnautilus-private/nautilus-file-operations.c:684
+#: libnautilus-private/nautilus-file-operations.c:695
+#: libnautilus-private/nautilus-file-operations.c:706
 msgid "The destination disk is read-only."
 msgstr "Са одредишног диска се може само читати."
 
-#: libnautilus-private/nautilus-file-operations.c:688
-#: libnautilus-private/nautilus-file-operations.c:692
+#: libnautilus-private/nautilus-file-operations.c:690
+#: libnautilus-private/nautilus-file-operations.c:694
 #, c-format
 msgid "Error while moving items to \"%s\"."
 msgstr "Грешка при премештању ставки у „%s“."
 
-#: libnautilus-private/nautilus-file-operations.c:699
-#: libnautilus-private/nautilus-file-operations.c:703
+#: libnautilus-private/nautilus-file-operations.c:701
+#: libnautilus-private/nautilus-file-operations.c:705
 #, c-format
 msgid "Error while creating links in \"%s\"."
 msgstr "Грешка при успостављању везе у „%s“."
 
-#: libnautilus-private/nautilus-file-operations.c:731
+#: libnautilus-private/nautilus-file-operations.c:733
 #, c-format
 msgid "Error \"%s\" while copying \"%s\"."
 msgstr "Грешка „%s“ при умножавању „%s“."
 
-#: libnautilus-private/nautilus-file-operations.c:732
-#: libnautilus-private/nautilus-file-operations.c:736
-#: libnautilus-private/nautilus-file-operations.c:740
-#: libnautilus-private/nautilus-file-operations.c:746
-#: libnautilus-private/nautilus-file-operations.c:761
-#: libnautilus-private/nautilus-file-operations.c:765
-#: libnautilus-private/nautilus-file-operations.c:769
-#: libnautilus-private/nautilus-file-operations.c:775
+#: libnautilus-private/nautilus-file-operations.c:734
+#: libnautilus-private/nautilus-file-operations.c:738
+#: libnautilus-private/nautilus-file-operations.c:742
+#: libnautilus-private/nautilus-file-operations.c:748
+#: libnautilus-private/nautilus-file-operations.c:763
+#: libnautilus-private/nautilus-file-operations.c:767
+#: libnautilus-private/nautilus-file-operations.c:771
+#: libnautilus-private/nautilus-file-operations.c:777
 msgid "Would you like to continue?"
 msgstr "Желите ли да наставите?"
 
-#: libnautilus-private/nautilus-file-operations.c:735
+#: libnautilus-private/nautilus-file-operations.c:737
 #, c-format
 msgid "Error \"%s\" while moving \"%s\"."
 msgstr "Грешка „%s“ при премештању „%s“."
 
-#: libnautilus-private/nautilus-file-operations.c:739
+#: libnautilus-private/nautilus-file-operations.c:741
 #, c-format
 msgid "Error \"%s\" while creating a link to \"%s\"."
 msgstr "Грешка „%s“ при установљавању везе „%s“."
 
-#: libnautilus-private/nautilus-file-operations.c:745
+#: libnautilus-private/nautilus-file-operations.c:747
 #, c-format
 msgid "Error \"%s\" while deleting \"%s\"."
 msgstr "Грешка „%s“ при брисању „%s“."
 
-#: libnautilus-private/nautilus-file-operations.c:760
+#: libnautilus-private/nautilus-file-operations.c:762
 #, c-format
 msgid "Error \"%s\" while copying."
 msgstr "Грешка „%s“ при умножавању."
 
-#: libnautilus-private/nautilus-file-operations.c:764
+#: libnautilus-private/nautilus-file-operations.c:766
 #, c-format
 msgid "Error \"%s\" while moving."
 msgstr "Грешка „%s“ при премештању."
 
-#: libnautilus-private/nautilus-file-operations.c:768
+#: libnautilus-private/nautilus-file-operations.c:770
 #, c-format
 msgid "Error \"%s\" while linking."
 msgstr "Грешка „%s“ при успостављању везе."
 
-#: libnautilus-private/nautilus-file-operations.c:774
+#: libnautilus-private/nautilus-file-operations.c:776
 #, c-format
 msgid "Error \"%s\" while deleting."
 msgstr "Грешка „%s“ при брисању."
 
-#: libnautilus-private/nautilus-file-operations.c:900
+#: libnautilus-private/nautilus-file-operations.c:902
 msgid "Error While Copying"
 msgstr "Грешка при умножавању"
 
-#: libnautilus-private/nautilus-file-operations.c:903
+#: libnautilus-private/nautilus-file-operations.c:905
 msgid "Error While Moving"
 msgstr "Грешка при премештању"
 
-#: libnautilus-private/nautilus-file-operations.c:906
+#: libnautilus-private/nautilus-file-operations.c:908
 msgid "Error While Linking"
 msgstr "Грешка при успостављању везе"
 
-#: libnautilus-private/nautilus-file-operations.c:911
+#: libnautilus-private/nautilus-file-operations.c:913
 msgid "Error While Deleting"
 msgstr "Грешка при брисању"
 
-#: libnautilus-private/nautilus-file-operations.c:938
-#: libnautilus-private/nautilus-file-operations.c:959
-#: libnautilus-private/nautilus-file-operations.c:1069
-#: libnautilus-private/nautilus-file-operations.c:1088
+#: libnautilus-private/nautilus-file-operations.c:940
+#: libnautilus-private/nautilus-file-operations.c:961
+#: libnautilus-private/nautilus-file-operations.c:1071
+#: libnautilus-private/nautilus-file-operations.c:1090
 msgid "_Skip"
 msgstr "Пре_скочи"
 
-#: libnautilus-private/nautilus-file-operations.c:959
+#: libnautilus-private/nautilus-file-operations.c:961
 msgid "_Retry"
 msgstr "По_нови"
 
-#: libnautilus-private/nautilus-file-operations.c:1025
+#: libnautilus-private/nautilus-file-operations.c:1027
 #, c-format
 msgid "Could not move \"%s\" to the new location."
 msgstr "Не могу да преместим „%s“ на нову путању."
 
-#: libnautilus-private/nautilus-file-operations.c:1028
+#: libnautilus-private/nautilus-file-operations.c:1030
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to move the item, rename it and try again."
@@ -2076,12 +2060,12 @@ msgstr ""
 "заменити.  Ако и даље желите да преместите ставку, преименујте је и "
 "покушајте поново."
 
-#: libnautilus-private/nautilus-file-operations.c:1032
+#: libnautilus-private/nautilus-file-operations.c:1034
 #, c-format
 msgid "Could not copy \"%s\" to the new location."
 msgstr "Не могу да умножим „%s“ на нову путању."
 
-#: libnautilus-private/nautilus-file-operations.c:1035
+#: libnautilus-private/nautilus-file-operations.c:1037
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
@@ -2090,43 +2074,43 @@ msgstr ""
 "заменити.  Ако и даље желите да умножите ставку, преименујте је и покушајте "
 "поново."
 
-#: libnautilus-private/nautilus-file-operations.c:1041
+#: libnautilus-private/nautilus-file-operations.c:1043
 msgid "Unable to Replace File"
 msgstr "Не могу да заменим датотеку"
 
-#: libnautilus-private/nautilus-file-operations.c:1054
+#: libnautilus-private/nautilus-file-operations.c:1056
 #, c-format
 msgid "The file \"%s\" already exists.  Would you like to replace it?"
 msgstr "Већ постоји датотека „%s“.  Желите ли да је замените?"
 
-#: libnautilus-private/nautilus-file-operations.c:1067
-#: libnautilus-private/nautilus-file-operations.c:1086
+#: libnautilus-private/nautilus-file-operations.c:1069
+#: libnautilus-private/nautilus-file-operations.c:1088
 msgid "If you replace an existing file, its contents will be overwritten."
 msgstr "Уколико замените постојећу датотеку, њен садржај ће бити преснимљен."
 
-#: libnautilus-private/nautilus-file-operations.c:1068
-#: libnautilus-private/nautilus-file-operations.c:1087
+#: libnautilus-private/nautilus-file-operations.c:1070
+#: libnautilus-private/nautilus-file-operations.c:1089
 msgid "Conflict While Copying"
 msgstr "Судар при умножавању"
 
-#: libnautilus-private/nautilus-file-operations.c:1069
-#: libnautilus-private/nautilus-file-operations.c:1088
+#: libnautilus-private/nautilus-file-operations.c:1071
+#: libnautilus-private/nautilus-file-operations.c:1090
 msgid "_Replace"
 msgstr "_Замени"
 
-#: libnautilus-private/nautilus-file-operations.c:1088
+#: libnautilus-private/nautilus-file-operations.c:1090
 msgid "Replace _All"
 msgstr "Замени _све"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1146
+#: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4539
 #, c-format
 msgid "link to %s"
 msgstr "веза на %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1150
+#: libnautilus-private/nautilus-file-operations.c:1152
 #, c-format
 msgid "another link to %s"
 msgstr "допунска веза на %s"
@@ -2135,25 +2119,25 @@ msgstr "допунска веза на %s"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: libnautilus-private/nautilus-file-operations.c:1166
+#: libnautilus-private/nautilus-file-operations.c:1168
 #, c-format
 msgid "%dst link to %s"
 msgstr "%d. веза на %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1170
+#: libnautilus-private/nautilus-file-operations.c:1172
 #, c-format
 msgid "%dnd link to %s"
 msgstr "%d. веза на %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1174
+#: libnautilus-private/nautilus-file-operations.c:1176
 #, c-format
 msgid "%drd link to %s"
 msgstr "%d. веза на %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1178
+#: libnautilus-private/nautilus-file-operations.c:1180
 #, c-format
 msgid "%dth link to %s"
 msgstr "%d. веза на %s"
@@ -2163,584 +2147,584 @@ msgstr "%d. веза на %s"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1199
-#: libnautilus-private/nautilus-file-operations.c:2589
+#: libnautilus-private/nautilus-file-operations.c:1201
+#: libnautilus-private/nautilus-file-operations.c:2591
 msgid " (copy)"
 msgstr "(умножак)"
 
 #. localizers: tag used to detect the second copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1201
-#: libnautilus-private/nautilus-file-operations.c:2589
+#: libnautilus-private/nautilus-file-operations.c:1203
+#: libnautilus-private/nautilus-file-operations.c:2591
 msgid " (another copy)"
 msgstr "(додатни умножак)"
 
 #. localizers: tag used to detect the x11th copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1204
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
-#: libnautilus-private/nautilus-file-operations.c:1218
+#: libnautilus-private/nautilus-file-operations.c:1210
+#: libnautilus-private/nautilus-file-operations.c:1220
 msgid "th copy)"
 msgstr ". умножак)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1211
+#: libnautilus-private/nautilus-file-operations.c:1213
 msgid "st copy)"
 msgstr ". умножак)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1213
+#: libnautilus-private/nautilus-file-operations.c:1215
 msgid "nd copy)"
 msgstr ". умножак)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1215
+#: libnautilus-private/nautilus-file-operations.c:1217
 msgid "rd copy)"
 msgstr ". умножак)"
 
 #. localizers: appended to first file copy
-#: libnautilus-private/nautilus-file-operations.c:1232
+#: libnautilus-private/nautilus-file-operations.c:1234
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (умножак)%s"
 
 #. localizers: appended to second file copy
-#: libnautilus-private/nautilus-file-operations.c:1234
+#: libnautilus-private/nautilus-file-operations.c:1236
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (додатни умножак)%s"
 
 #. localizers: appended to x11th file copy
-#: libnautilus-private/nautilus-file-operations.c:1237
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
-#: libnautilus-private/nautilus-file-operations.c:1250
+#: libnautilus-private/nautilus-file-operations.c:1243
+#: libnautilus-private/nautilus-file-operations.c:1252
 #, c-format
 msgid "%s (%dth copy)%s"
 msgstr "%s (%d. умножак)%s"
 
 #. localizers: appended to x1st file copy
-#: libnautilus-private/nautilus-file-operations.c:1244
+#: libnautilus-private/nautilus-file-operations.c:1246
 #, c-format
 msgid "%s (%dst copy)%s"
 msgstr "%s (%d. умножак)%s"
 
 #. localizers: appended to x2nd file copy
-#: libnautilus-private/nautilus-file-operations.c:1246
+#: libnautilus-private/nautilus-file-operations.c:1248
 #, c-format
 msgid "%s (%dnd copy)%s"
 msgstr "%s (%d. умножак)%s"
 
 #. localizers: appended to x3rd file copy
-#: libnautilus-private/nautilus-file-operations.c:1248
+#: libnautilus-private/nautilus-file-operations.c:1250
 #, c-format
 msgid "%s (%drd copy)%s"
 msgstr "%s (%d. умножак)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: libnautilus-private/nautilus-file-operations.c:1348
+#: libnautilus-private/nautilus-file-operations.c:1350
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: libnautilus-private/nautilus-file-operations.c:1356
+#: libnautilus-private/nautilus-file-operations.c:1358
 #, c-format
 msgid " (%d"
 msgstr " (%d"
 
-#: libnautilus-private/nautilus-file-operations.c:1541
-#: libnautilus-private/nautilus-file-operations.c:2123
-#: libnautilus-private/nautilus-file-operations.c:2284
+#: libnautilus-private/nautilus-file-operations.c:1543
+#: libnautilus-private/nautilus-file-operations.c:2125
+#: libnautilus-private/nautilus-file-operations.c:2286
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Непознат GnomeVFSXferProgressStatus %d"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1868
+#: libnautilus-private/nautilus-file-operations.c:1870
 msgid "Moving files to the Trash"
 msgstr "Премешта датотеке у Смеће"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1870
+#: libnautilus-private/nautilus-file-operations.c:1872
 msgid "Files thrown out:"
 msgstr "Одбачене датотеке:"
 
 #. localizers: label prepended to the name of the current file moved
-#: libnautilus-private/nautilus-file-operations.c:1872
-#: libnautilus-private/nautilus-file-operations.c:1883
+#: libnautilus-private/nautilus-file-operations.c:1874
+#: libnautilus-private/nautilus-file-operations.c:1885
 msgid "Moving"
 msgstr "Премешта"
 
-#: libnautilus-private/nautilus-file-operations.c:1873
+#: libnautilus-private/nautilus-file-operations.c:1875
 msgid "Preparing to Move to Trash..."
 msgstr "Припрема за премештање у Смеће..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1879
+#: libnautilus-private/nautilus-file-operations.c:1881
 msgid "Moving files"
 msgstr "Премешта датотеке"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1881
+#: libnautilus-private/nautilus-file-operations.c:1883
 msgid "Files moved:"
 msgstr "Премештених датотека:"
 
-#: libnautilus-private/nautilus-file-operations.c:1884
+#: libnautilus-private/nautilus-file-operations.c:1886
 msgid "Preparing To Move..."
 msgstr "Припрема за премештање..."
 
-#: libnautilus-private/nautilus-file-operations.c:1885
+#: libnautilus-private/nautilus-file-operations.c:1887
 msgid "Finishing Move..."
 msgstr "Завршава премештање..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1893
+#: libnautilus-private/nautilus-file-operations.c:1895
 msgid "Creating links to files"
 msgstr "Образује везе ка датотекама"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1895
+#: libnautilus-private/nautilus-file-operations.c:1897
 msgid "Files linked:"
 msgstr "Повезаних датотека:"
 
 #. localizers: label prepended to the name of the current file linked
-#: libnautilus-private/nautilus-file-operations.c:1897
+#: libnautilus-private/nautilus-file-operations.c:1899
 msgid "Linking"
 msgstr "Образује везе"
 
-#: libnautilus-private/nautilus-file-operations.c:1898
+#: libnautilus-private/nautilus-file-operations.c:1900
 msgid "Preparing to Create Links..."
 msgstr "Припрема за установљавање веза..."
 
-#: libnautilus-private/nautilus-file-operations.c:1899
+#: libnautilus-private/nautilus-file-operations.c:1901
 msgid "Finishing Creating Links..."
 msgstr "Завршава установљавање веза..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1905
+#: libnautilus-private/nautilus-file-operations.c:1907
 msgid "Copying files"
 msgstr "Умножава датотеке"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1907
+#: libnautilus-private/nautilus-file-operations.c:1909
 msgid "Files copied:"
 msgstr "Умножених датотека:"
 
 #. localizers: label prepended to the name of the current file copied
-#: libnautilus-private/nautilus-file-operations.c:1909
+#: libnautilus-private/nautilus-file-operations.c:1911
 msgid "Copying"
 msgstr "Умножава"
 
-#: libnautilus-private/nautilus-file-operations.c:1910
+#: libnautilus-private/nautilus-file-operations.c:1912
 msgid "Preparing To Copy..."
 msgstr "Припрема за умножавање..."
 
-#: libnautilus-private/nautilus-file-operations.c:1927
+#: libnautilus-private/nautilus-file-operations.c:1929
 msgid "You cannot copy items into the trash."
 msgstr "Не можете умножити ставке у смеће."
 
-#: libnautilus-private/nautilus-file-operations.c:1928
+#: libnautilus-private/nautilus-file-operations.c:1930
 msgid "Files and folders can only be moved into the trash."
 msgstr "Датотеке и директоријуми се могу једино преместити у смеће."
 
-#: libnautilus-private/nautilus-file-operations.c:1952
+#: libnautilus-private/nautilus-file-operations.c:1954
 msgid "You cannot move this trash folder."
 msgstr "Не можете преместити овај директоријум за смеће."
 
-#: libnautilus-private/nautilus-file-operations.c:1953
+#: libnautilus-private/nautilus-file-operations.c:1955
 msgid "You cannot copy this trash folder."
 msgstr "Не можете умножити овај директоријум за смеће."
 
-#: libnautilus-private/nautilus-file-operations.c:1954
+#: libnautilus-private/nautilus-file-operations.c:1956
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr "Директоријум за смеће се користи за држање ставки бачених у смеће."
 
-#: libnautilus-private/nautilus-file-operations.c:1956
+#: libnautilus-private/nautilus-file-operations.c:1958
 msgid "Can't Change Trash Location"
 msgstr "Не може да премести смеће"
 
-#: libnautilus-private/nautilus-file-operations.c:1957
+#: libnautilus-private/nautilus-file-operations.c:1959
 msgid "Can't Copy Trash"
 msgstr "Не може да умножи смеће"
 
-#: libnautilus-private/nautilus-file-operations.c:1981
+#: libnautilus-private/nautilus-file-operations.c:1983
 msgid "You cannot move a folder into itself."
 msgstr "Не можете преместити директоријум у себе самог."
 
-#: libnautilus-private/nautilus-file-operations.c:1982
+#: libnautilus-private/nautilus-file-operations.c:1984
 msgid "You cannot copy a folder into itself."
 msgstr "Не можете умножити директоријум у себе самог."
 
-#: libnautilus-private/nautilus-file-operations.c:1983
+#: libnautilus-private/nautilus-file-operations.c:1985
 msgid "The destination folder is inside the source folder."
 msgstr "Одредишни директоријум је унутар полазног директоријума."
 
-#: libnautilus-private/nautilus-file-operations.c:1985
+#: libnautilus-private/nautilus-file-operations.c:1987
 msgid "Can't Move Into Self"
 msgstr "Не може преместити у себе"
 
-#: libnautilus-private/nautilus-file-operations.c:1986
+#: libnautilus-private/nautilus-file-operations.c:1988
 msgid "Can't Copy Into Self"
 msgstr "Не може умножити у себе"
 
-#: libnautilus-private/nautilus-file-operations.c:1999
+#: libnautilus-private/nautilus-file-operations.c:2001
 msgid "You cannot copy a file over itself."
 msgstr "Не можете умножити датотеку преко ње саме."
 
-#: libnautilus-private/nautilus-file-operations.c:2000
+#: libnautilus-private/nautilus-file-operations.c:2002
 msgid "The destination and source are the same file."
 msgstr "Одредиште и извор су иста датотека."
 
-#: libnautilus-private/nautilus-file-operations.c:2001
+#: libnautilus-private/nautilus-file-operations.c:2003
 msgid "Can't Copy Over Self"
 msgstr "Не може умножити преко себе"
 
-#: libnautilus-private/nautilus-file-operations.c:2053
-#: libnautilus-private/nautilus-file-operations.c:2187
+#: libnautilus-private/nautilus-file-operations.c:2055
+#: libnautilus-private/nautilus-file-operations.c:2189
 msgid "You do not have permissions to write to the destination."
 msgstr "Нисте овлашћени да пишете у одредишту."
 
-#: libnautilus-private/nautilus-file-operations.c:2055
-#: libnautilus-private/nautilus-file-operations.c:2189
+#: libnautilus-private/nautilus-file-operations.c:2057
+#: libnautilus-private/nautilus-file-operations.c:2191
 msgid "There is no space on the destination."
 msgstr "Нема места у одредишту."
 
-#: libnautilus-private/nautilus-file-operations.c:2057
+#: libnautilus-private/nautilus-file-operations.c:2059
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Грешка „%s“ при образовању новог директоријума."
 
-#: libnautilus-private/nautilus-file-operations.c:2062
+#: libnautilus-private/nautilus-file-operations.c:2064
 msgid "Error creating new folder."
 msgstr "Грешка при образовању новог директоријума."
 
-#: libnautilus-private/nautilus-file-operations.c:2062
+#: libnautilus-private/nautilus-file-operations.c:2064
 msgid "Error Creating New Folder"
 msgstr "Грешка при образовању новог директоријума"
 
 #. localizers: the initial name of a new folder
-#: libnautilus-private/nautilus-file-operations.c:2151
+#: libnautilus-private/nautilus-file-operations.c:2153
 msgid "untitled folder"
 msgstr "безимени директоријум"
 
-#: libnautilus-private/nautilus-file-operations.c:2191
+#: libnautilus-private/nautilus-file-operations.c:2193
 #, c-format
 msgid "Error \"%s\" creating new document."
 msgstr "Грешка „%s“ при стварању новог документа."
 
-#: libnautilus-private/nautilus-file-operations.c:2196
+#: libnautilus-private/nautilus-file-operations.c:2198
 msgid "Error creating new document."
 msgstr "Грешка при стварању новог документа."
 
-#: libnautilus-private/nautilus-file-operations.c:2196
+#: libnautilus-private/nautilus-file-operations.c:2198
 msgid "Error Creating New Document"
 msgstr "Грешка при стварању новог документа"
 
-#: libnautilus-private/nautilus-file-operations.c:2342
+#: libnautilus-private/nautilus-file-operations.c:2344
 msgid "new file"
 msgstr "нова датотека"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2414
+#: libnautilus-private/nautilus-file-operations.c:2416
 msgid "Deleting files"
 msgstr "Бришем датотеке"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2416
-#: libnautilus-private/nautilus-file-operations.c:2451
+#: libnautilus-private/nautilus-file-operations.c:2418
+#: libnautilus-private/nautilus-file-operations.c:2453
 msgid "Files deleted:"
 msgstr "Обрисаних датотека:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-private/nautilus-file-operations.c:2418
-#: libnautilus-private/nautilus-file-operations.c:2453
+#: libnautilus-private/nautilus-file-operations.c:2420
+#: libnautilus-private/nautilus-file-operations.c:2455
 msgid "Deleting"
 msgstr "Бришем"
 
-#: libnautilus-private/nautilus-file-operations.c:2419
+#: libnautilus-private/nautilus-file-operations.c:2421
 msgid "Preparing to Delete files..."
 msgstr "Припрема за брисање датотека..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2449
+#: libnautilus-private/nautilus-file-operations.c:2451
 msgid "Emptying the Trash"
 msgstr "Избацујем смеће"
 
-#: libnautilus-private/nautilus-file-operations.c:2454
+#: libnautilus-private/nautilus-file-operations.c:2456
 msgid "Preparing to Empty the Trash..."
 msgstr "Припрема за избацивање смећа..."
 
-#: libnautilus-private/nautilus-file-operations.c:2517
+#: libnautilus-private/nautilus-file-operations.c:2519
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr "Сигурно желите да избаците све ставке из смећа?"
 
-#: libnautilus-private/nautilus-file-operations.c:2531
+#: libnautilus-private/nautilus-file-operations.c:2533
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr "Уколико испразните смеће, ставке ће бити трајно уклоњене."
 
-#: libnautilus-private/nautilus-file-operations.c:2543
+#: libnautilus-private/nautilus-file-operations.c:2545
 msgid "_Empty"
 msgstr "_Испразни"
 
-#: libnautilus-private/nautilus-file-operations.c:2590
+#: libnautilus-private/nautilus-file-operations.c:2592
 msgid "foo"
 msgstr "нешто"
 
-#: libnautilus-private/nautilus-file-operations.c:2590
-#: libnautilus-private/nautilus-file-operations.c:2600
+#: libnautilus-private/nautilus-file-operations.c:2592
+#: libnautilus-private/nautilus-file-operations.c:2602
 msgid "foo (copy)"
 msgstr "нешто (умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2591
+#: libnautilus-private/nautilus-file-operations.c:2593
 msgid ".bashrc"
 msgstr ".bashrc"
 
-#: libnautilus-private/nautilus-file-operations.c:2591
+#: libnautilus-private/nautilus-file-operations.c:2593
 msgid ".bashrc (copy)"
 msgstr ".bashrc (умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2592
+#: libnautilus-private/nautilus-file-operations.c:2594
 msgid ".foo.txt"
 msgstr ".нешто.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2592
+#: libnautilus-private/nautilus-file-operations.c:2594
 msgid ".foo (copy).txt"
 msgstr ".нешто (умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2593
+#: libnautilus-private/nautilus-file-operations.c:2595
 msgid "foo foo"
 msgstr "нешто нешто"
 
-#: libnautilus-private/nautilus-file-operations.c:2593
+#: libnautilus-private/nautilus-file-operations.c:2595
 msgid "foo foo (copy)"
 msgstr "нешто нешто (умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2594
+#: libnautilus-private/nautilus-file-operations.c:2596
 msgid "foo.txt"
 msgstr "нешто.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2594
-#: libnautilus-private/nautilus-file-operations.c:2601
+#: libnautilus-private/nautilus-file-operations.c:2596
+#: libnautilus-private/nautilus-file-operations.c:2603
 msgid "foo (copy).txt"
 msgstr "нешто (умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2595
+#: libnautilus-private/nautilus-file-operations.c:2597
 msgid "foo foo.txt"
 msgstr "нешто нешто.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2595
-#: libnautilus-private/nautilus-file-operations.c:2617
+#: libnautilus-private/nautilus-file-operations.c:2597
+#: libnautilus-private/nautilus-file-operations.c:2619
 msgid "foo foo (copy).txt"
 msgstr "нешто нешто (умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2596
+#: libnautilus-private/nautilus-file-operations.c:2598
 msgid "foo foo.txt txt"
 msgstr "нешто нешто.txt txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2596
+#: libnautilus-private/nautilus-file-operations.c:2598
 msgid "foo foo (copy).txt txt"
 msgstr "нешто нешто (умножак).txt txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2597
+#: libnautilus-private/nautilus-file-operations.c:2599
 msgid "foo...txt"
 msgstr "нешто...txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2597
+#: libnautilus-private/nautilus-file-operations.c:2599
 msgid "foo.. (copy).txt"
 msgstr "нешто.. (умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2598
+#: libnautilus-private/nautilus-file-operations.c:2600
 msgid "foo..."
 msgstr "нешто..."
 
-#: libnautilus-private/nautilus-file-operations.c:2598
+#: libnautilus-private/nautilus-file-operations.c:2600
 msgid "foo... (copy)"
 msgstr "нешто... (умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2599
+#: libnautilus-private/nautilus-file-operations.c:2601
 msgid "foo. (copy)"
 msgstr "нешто. (умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2599
+#: libnautilus-private/nautilus-file-operations.c:2601
 msgid "foo. (another copy)"
 msgstr "нешто. (додатни умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2600
 #: libnautilus-private/nautilus-file-operations.c:2602
+#: libnautilus-private/nautilus-file-operations.c:2604
 msgid "foo (another copy)"
 msgstr "нешто (додатни умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2601
 #: libnautilus-private/nautilus-file-operations.c:2603
+#: libnautilus-private/nautilus-file-operations.c:2605
 msgid "foo (another copy).txt"
 msgstr "нешто (додатни умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2602
+#: libnautilus-private/nautilus-file-operations.c:2604
 msgid "foo (3rd copy)"
 msgstr "нешто (3. умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2603
+#: libnautilus-private/nautilus-file-operations.c:2605
 msgid "foo (3rd copy).txt"
 msgstr "нешто (3. умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2604
+#: libnautilus-private/nautilus-file-operations.c:2606
 msgid "foo foo (another copy).txt"
 msgstr "нешто нешто (додатни умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2604
+#: libnautilus-private/nautilus-file-operations.c:2606
 msgid "foo foo (3rd copy).txt"
 msgstr "нешто нешто (3. умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2605
-#: libnautilus-private/nautilus-file-operations.c:2622
+#: libnautilus-private/nautilus-file-operations.c:2607
+#: libnautilus-private/nautilus-file-operations.c:2624
 msgid "foo (13th copy)"
 msgstr "нешто (13. умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2605
+#: libnautilus-private/nautilus-file-operations.c:2607
 msgid "foo (14th copy)"
 msgstr "нешто (14. умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2606
-#: libnautilus-private/nautilus-file-operations.c:2623
+#: libnautilus-private/nautilus-file-operations.c:2608
+#: libnautilus-private/nautilus-file-operations.c:2625
 msgid "foo (13th copy).txt"
 msgstr "нешто (13. умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2606
+#: libnautilus-private/nautilus-file-operations.c:2608
 msgid "foo (14th copy).txt"
 msgstr "нешто (14. умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2607
+#: libnautilus-private/nautilus-file-operations.c:2609
 msgid "foo (21st copy)"
 msgstr "нешто (21. умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2607
 #: libnautilus-private/nautilus-file-operations.c:2609
+#: libnautilus-private/nautilus-file-operations.c:2611
 msgid "foo (22nd copy)"
 msgstr "нешто (22. умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2608
+#: libnautilus-private/nautilus-file-operations.c:2610
 msgid "foo (21st copy).txt"
 msgstr "нешто (21. умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2608
 #: libnautilus-private/nautilus-file-operations.c:2610
+#: libnautilus-private/nautilus-file-operations.c:2612
 msgid "foo (22nd copy).txt"
 msgstr "нешто (22. умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2609
 #: libnautilus-private/nautilus-file-operations.c:2611
+#: libnautilus-private/nautilus-file-operations.c:2613
 msgid "foo (23rd copy)"
 msgstr "нешто (23. умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2610
 #: libnautilus-private/nautilus-file-operations.c:2612
+#: libnautilus-private/nautilus-file-operations.c:2614
 msgid "foo (23rd copy).txt"
 msgstr "нешто (23. умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2611
 #: libnautilus-private/nautilus-file-operations.c:2613
+#: libnautilus-private/nautilus-file-operations.c:2615
 msgid "foo (24th copy)"
 msgstr "нешто (24. умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2612
 #: libnautilus-private/nautilus-file-operations.c:2614
+#: libnautilus-private/nautilus-file-operations.c:2616
 msgid "foo (24th copy).txt"
 msgstr "нешто (24. умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2613
+#: libnautilus-private/nautilus-file-operations.c:2615
 msgid "foo (25th copy)"
 msgstr "нешто (25. умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2614
+#: libnautilus-private/nautilus-file-operations.c:2616
 msgid "foo (25th copy).txt"
 msgstr "нешто (25. умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2615
+#: libnautilus-private/nautilus-file-operations.c:2617
 msgid "foo foo (24th copy)"
 msgstr "нешто нешто (24. умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2615
+#: libnautilus-private/nautilus-file-operations.c:2617
 msgid "foo foo (25th copy)"
 msgstr "нешто нешто (25. умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2616
+#: libnautilus-private/nautilus-file-operations.c:2618
 msgid "foo foo (24th copy).txt"
 msgstr "нешто нешто (24. умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2616
+#: libnautilus-private/nautilus-file-operations.c:2618
 msgid "foo foo (25th copy).txt"
 msgstr "нешто нешто (25. умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2617
+#: libnautilus-private/nautilus-file-operations.c:2619
 msgid "foo foo (100000000000000th copy).txt"
 msgstr "нешто нешто (100000000000000. умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2618
+#: libnautilus-private/nautilus-file-operations.c:2620
 msgid "foo (10th copy)"
 msgstr "нешто (10. умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2618
 #: libnautilus-private/nautilus-file-operations.c:2620
+#: libnautilus-private/nautilus-file-operations.c:2622
 msgid "foo (11th copy)"
 msgstr "нешто (11. умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2619
+#: libnautilus-private/nautilus-file-operations.c:2621
 msgid "foo (10th copy).txt"
 msgstr "нешто (10. умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2619
 #: libnautilus-private/nautilus-file-operations.c:2621
+#: libnautilus-private/nautilus-file-operations.c:2623
 msgid "foo (11th copy).txt"
 msgstr "нешто (11. умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2620
 #: libnautilus-private/nautilus-file-operations.c:2622
+#: libnautilus-private/nautilus-file-operations.c:2624
 msgid "foo (12th copy)"
 msgstr "нешто (12. умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2621
 #: libnautilus-private/nautilus-file-operations.c:2623
+#: libnautilus-private/nautilus-file-operations.c:2625
 msgid "foo (12th copy).txt"
 msgstr "нешто (12. умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2624
+#: libnautilus-private/nautilus-file-operations.c:2626
 msgid "foo (110th copy)"
 msgstr "нешто (110. умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2624
+#: libnautilus-private/nautilus-file-operations.c:2626
 msgid "foo (111th copy)"
 msgstr "нешто (111. умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2625
+#: libnautilus-private/nautilus-file-operations.c:2627
 msgid "foo (110th copy).txt"
 msgstr "нешто (110. умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2625
+#: libnautilus-private/nautilus-file-operations.c:2627
 msgid "foo (111th copy).txt"
 msgstr "нешто (111. умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2626
+#: libnautilus-private/nautilus-file-operations.c:2628
 msgid "foo (122nd copy)"
 msgstr "нешто (122. умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2626
 #: libnautilus-private/nautilus-file-operations.c:2628
+#: libnautilus-private/nautilus-file-operations.c:2630
 msgid "foo (123rd copy)"
 msgstr "нешто (123. умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2627
+#: libnautilus-private/nautilus-file-operations.c:2629
 msgid "foo (122nd copy).txt"
 msgstr "нешто (122. умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2627
 #: libnautilus-private/nautilus-file-operations.c:2629
+#: libnautilus-private/nautilus-file-operations.c:2631
 msgid "foo (123rd copy).txt"
 msgstr "нешто (123. умножак).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2628
+#: libnautilus-private/nautilus-file-operations.c:2630
 msgid "foo (124th copy)"
 msgstr "нешто (124. умножак)"
 
-#: libnautilus-private/nautilus-file-operations.c:2629
+#: libnautilus-private/nautilus-file-operations.c:2631
 msgid "foo (124th copy).txt"
 msgstr "нешто (124. умножак).txt"
 
@@ -3249,7 +3233,7 @@ msgstr "Лични директоријум (%s)"
 
 #: libnautilus-private/nautilus-global-preferences.c:549
 #: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:9
-#: src/nautilus-window.c:1176
+#: src/nautilus-window.c:1175
 msgid "Computer"
 msgstr "Рачунар"
 
@@ -4252,7 +4236,7 @@ msgid "Are you sure you want to open all files?"
 msgstr "Сигурно желите да отворите све датотеке?"
 
 # bug: plural-forms
-#: src/file-manager/fm-directory-view.c:543 src/nautilus-location-bar.c:157
+#: src/file-manager/fm-directory-view.c:543 src/nautilus-location-bar.c:156
 #, c-format
 msgid "This will open %d separate windows."
 msgstr "Ово ће отворити %d одвојених прозора."
@@ -5054,7 +5038,7 @@ msgid "_Names:"
 msgstr "_Имена:"
 
 #: src/file-manager/fm-properties-window.c:2214
-#: src/nautilus-connect-server-dialog.c:187
+#: src/nautilus-connect-server-dialog.c:190
 msgid "_Name:"
 msgstr "_Име:"
 
@@ -5084,8 +5068,7 @@ msgstr "—"
 msgid "Size:"
 msgstr "Величина:"
 
-#: src/file-manager/fm-properties-window.c:2279 src/nautilus-location-bar.c:61
-#: src/nautilus-location-dialog.c:144
+#: src/file-manager/fm-properties-window.c:2279 src/nautilus-location-bar.c:60
 msgid "Location:"
 msgstr "Путања:"
 
@@ -6123,13 +6106,13 @@ msgstr "Проверите да ли сте добро укуцали и пок�
 msgid "Connect to Server"
 msgstr "Повежи се са сервером"
 
-#: src/nautilus-connect-server-dialog.c:205
+#: src/nautilus-connect-server-dialog.c:209 src/nautilus-location-dialog.c:147
 msgid "_Location:"
 msgstr "_Путања:"
 
-#: src/nautilus-connect-server-dialog.c:230
-msgid "Connect"
-msgstr "Повежи се"
+#: src/nautilus-connect-server-dialog.c:235
+msgid "C_onnect"
+msgstr "По_вежи се"
 
 #: src/nautilus-desktop-window.c:356
 msgid "Desktop"
@@ -6346,11 +6329,11 @@ msgstr "Отвори помоћу: %s"
 msgid "Open with..."
 msgstr "Отвори помоћу..."
 
-#: src/nautilus-information-panel.c:993 src/nautilus-window.c:485
+#: src/nautilus-information-panel.c:993 src/nautilus-window.c:484
 msgid "Unable to launch the cd burner application."
 msgstr "Не могу да покренем програм за снимање ЦД-а."
 
-#: src/nautilus-information-panel.c:994 src/nautilus-window.c:486
+#: src/nautilus-information-panel.c:994 src/nautilus-window.c:485
 msgid "Can't Launch CD Burner"
 msgstr "Не могу да покренем ЦД резач"
 
@@ -6364,17 +6347,17 @@ msgstr "Избаци _смеће"
 msgid "_Write contents to CD"
 msgstr "_Упиши садржај на ЦД"
 
-#: src/nautilus-location-bar.c:62
+#: src/nautilus-location-bar.c:61
 msgid "Go To:"
 msgstr "Иди у:"
 
 # bug: plural-forms
-#: src/nautilus-location-bar.c:155
+#: src/nautilus-location-bar.c:154
 #, c-format
 msgid "Do you want to view %d locations?"
 msgstr "Желите ли да видите %d путања?"
 
-#: src/nautilus-location-bar.c:167
+#: src/nautilus-location-bar.c:166
 msgid "View in Multiple Windows?"
 msgstr "Прегледај у више прозора?"
 
@@ -6423,8 +6406,8 @@ msgid "File Manager"
 msgstr "Управник датотека"
 
 #. Set initial window title
-#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:272
-#: src/nautilus-window-menus.c:603 src/nautilus-window.c:174
+#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:271
+#: src/nautilus-window-menus.c:603 src/nautilus-window.c:173
 msgid "Nautilus"
 msgstr "Наутилус"
 
@@ -6655,46 +6638,46 @@ msgstr "_Горе"
 msgid "_View"
 msgstr "П_реглед"
 
-#: src/nautilus-navigation-window.c:338
+#: src/nautilus-navigation-window.c:337
 msgid "Information"
 msgstr "Обавештење"
 
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-navigation-window.c:702 src/nautilus-shell-ui.xml.h:27
+#: src/nautilus-navigation-window.c:701 src/nautilus-shell-ui.xml.h:27
 msgid "View as..."
 msgstr "Гледај као..."
 
-#: src/nautilus-navigation-window.c:734
+#: src/nautilus-navigation-window.c:733
 #, c-format
 msgid "File Browser: %s"
 msgstr "Прегледач датотека: %s"
 
-#: src/nautilus-navigation-window.c:1105
+#: src/nautilus-navigation-window.c:1104
 msgid "One of the side panels encountered an error and can't continue."
 msgstr "Једна од површи постранце је наишла на грешку и не може да настави."
 
-#: src/nautilus-navigation-window.c:1106
+#: src/nautilus-navigation-window.c:1105
 msgid "Unfortunately I couldn't tell which one."
 msgstr "Нажалост, не могу да утврдим која."
 
-#: src/nautilus-navigation-window.c:1109
+#: src/nautilus-navigation-window.c:1108
 #, c-format
 msgid "The %s side panel encountered an error and can't continue."
 msgstr "Површ постранце „%s“ је наишла на грешку и не може да настави."
 
-#: src/nautilus-navigation-window.c:1110
+#: src/nautilus-navigation-window.c:1109
 msgid "If this keeps happening, you might want to turn this panel off."
 msgstr "Уколико се ово настави, можете желети да искључите ову површ."
 
-#: src/nautilus-navigation-window.c:1113
+#: src/nautilus-navigation-window.c:1112
 msgid "Side Panel Failed"
 msgstr "Неуспешна површ постранце"
 
-#: src/nautilus-navigation-window.c:1244
+#: src/nautilus-navigation-window.c:1243
 msgid "Side Pane"
 msgstr "Површ постранце"
 
-#: src/nautilus-navigation-window.c:1246
+#: src/nautilus-navigation-window.c:1245
 msgid "Contains a side pane view"
 msgstr "Садржи и површ постранце"
 
@@ -7503,40 +7486,40 @@ msgstr "Иди назад за неколико страница"
 msgid "Go forward a number of pages"
 msgstr "Иди напред за неколико страница"
 
-#: src/nautilus-window.c:907
+#: src/nautilus-window.c:906
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Прикажи ову локацију помоћу „%s“"
 
-#: src/nautilus-window.c:1178
+#: src/nautilus-window.c:1177
 msgid "Network"
 msgstr "Мрежа"
 
-#: src/nautilus-window.c:1180
+#: src/nautilus-window.c:1179
 msgid "Fonts"
 msgstr "Фонтови"
 
-#: src/nautilus-window.c:1182
+#: src/nautilus-window.c:1181
 msgid "Themes"
 msgstr "Теме"
 
-#: src/nautilus-window.c:1184
+#: src/nautilus-window.c:1183
 msgid "CD Creator"
 msgstr "Израда ЦД-а"
 
-#: src/nautilus-window.c:1624
+#: src/nautilus-window.c:1623
 msgid "Application ID"
 msgstr "ID програма"
 
-#: src/nautilus-window.c:1625
+#: src/nautilus-window.c:1624
 msgid "The application ID of the window."
 msgstr "ID програма овог прозора"
 
-#: src/nautilus-window.c:1631
+#: src/nautilus-window.c:1630
 msgid "Application"
 msgstr "Програм"
 
-#: src/nautilus-window.c:1632
+#: src/nautilus-window.c:1631
 msgid "The NautilusApplication associated with this window."
 msgstr "Наутилус Програм везан за овај прозор."
 
@@ -7571,6 +7554,18 @@ msgstr "Мрежни сервери"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Прегледајте ваше мрежне сервере у Наутилусовом управнику датотека"
+
+#~ msgid "Search Google for Selected Text"
+#~ msgstr "Пронађи изабрани текст помоћу Гугла"
+
+#~ msgid "Use Google to search the web for the selected text"
+#~ msgstr "Користи Гугл за тражење изабраног текста на вебу"
+
+#~ msgid "Look Up Selected Text in Dictionary"
+#~ msgstr "Потражи изабрани текст у речнику"
+
+#~ msgid "Look up the selected text in the Merriam-Webster dictionary"
+#~ msgstr "Потражи изабрани текст у Меријам-Вебстеровом речнику"
 
 #~ msgid "Factory for hardware view"
 #~ msgstr "Фабрика за преглед хардвера"
