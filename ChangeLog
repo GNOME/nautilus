@@ -1,3 +1,27 @@
+2001-02-22  Gene Z. Ragan  <gzr@eazel.com>
+ 
+ 	reviewed by: Pavel Cisler <pavel@eazel.com>
+ 
+ 	Fixed bug 4907, Can't drag from Nautilus to Netscape
+ 	
+ 	Fixed bug 5334, Can't drag file from Nautilus into
+ 	Netscape's attachment window
+ 	
+ 	Fixed bug 6563, Drag & Drop of files with non-alphanumeric
+ 	characters broken
+ 	
+ 	* libnautilus-extensions/nautilus-drag.c:
+ 	(add_one_netscape_url_list):
+ 	Make sure that only one item is added to the return
+ 	value. Netscape is only expecting one item and fails
+ 	if more than one item is in the list.
+ 	
+ 	(nautilus_drag_drag_data_get):
+ 	Rename add_one_url_list to add_one_netscape_url_list
+ 
+ 	(add_one_path_list):
+ 	Return a path, not a URI.
+ 	
 2001-02-22  Arlo Rose  <arlo@eazel.com>
 
 	* icons/hand.png:

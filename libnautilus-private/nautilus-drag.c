@@ -31,6 +31,7 @@
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomeui/gnome-popup-menu.h>
 #include <stdio.h>
@@ -373,13 +374,19 @@ add_one_uri_list (const char *uri, int x, int y, int w, int h,
 	g_string_append (result, "\r\n");
 }
 
-/* Encode a "_NETSCAPE_URL_" selection.  */
+/* Encode a "_NETSCAPE_URL_" selection.
+ * As far as I can tell, Netscape is expecting a single
+ * URL to be returned.  I cannot discover a way to construct
+ * a list to be returned that Netscape can understand.
+ * GMC also fails to do this as well.
+ */
 static void
-add_one_url_list (const char *url, int x, int y, int w, int h, gpointer data)
+add_one_netscape_url_list (const char *url, int x, int y, int w, int h, gpointer data)
 {
-	GString *result = (GString *)data;	
-	g_string_append (result, url);
-	g_string_append (result, "\n");
+	GString *result = (GString *)data;
+	if (result->len == 0) {
+		g_string_append (result, url);
+	}
 }
 
 /* Encode a "text/path" selection.  */
@@ -387,27 +394,17 @@ static void
 add_one_path_list (const char *uri, int x, int y, int w, int h, gpointer data)
 {
 	GString *result = (GString *)data;
-	const char *path, *scheme;
-	GnomeVFSURI *vfs_uri;
+	char *local_path;
 	
-	vfs_uri = gnome_vfs_uri_new (uri);
-	if (vfs_uri == NULL) {
+	g_return_if_fail (uri != NULL);
+
+	local_path = gnome_vfs_get_local_path_from_uri (uri);
+	if (local_path == NULL)
 		return;
-	}
-	
-	/* Only accept the file scheme */
-	scheme = gnome_vfs_uri_get_scheme (vfs_uri);
-	if (strncmp (scheme, "file", strlen ("file") != 0)) {
-		gnome_vfs_uri_unref (vfs_uri);
-		return;
-	}
-	
-	path = gnome_vfs_uri_get_path (vfs_uri);
-	
-	g_string_append (result, path);
-	g_string_append (result, " ");
-	
-	gnome_vfs_uri_unref (vfs_uri);
+		
+	g_string_append (result, local_path);
+	g_string_append (result, "\r\n");
+	g_free (local_path);
 }
 
 
@@ -424,7 +421,7 @@ nautilus_drag_drag_data_get (GtkWidget *widget,
 			     NautilusDragEachSelectedItemIterator each_selected_item_iterator)
 {
 	GString *result;
-
+		
 	switch (info) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
 		result = g_string_new (NULL);
@@ -443,7 +440,7 @@ nautilus_drag_drag_data_get (GtkWidget *widget,
 		
 	case NAUTILUS_ICON_DND_URL:
 		result = g_string_new (NULL);
-		each_selected_item_iterator (add_one_url_list, container_context, result);
+		each_selected_item_iterator (add_one_netscape_url_list, container_context, result);
 		break;
 		
 	default:
