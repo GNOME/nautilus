@@ -443,6 +443,14 @@ initialize_kde_trash_hack (void)
 		g_free (kde_conf_file);
 		g_free (key);
 
+		if (kde_trash_dir == NULL) {
+			kde_conf_file = "/usr/share/config/kdeglobals";
+			key = g_strconcat ("=", kde_conf_file, "=/Paths/Trash", NULL);
+			kde_trash_dir = gnome_config_get_string_with_default (key, &def);
+			gnome_config_drop_file (kde_conf_file);
+			g_free (key);
+		}
+
 		if (kde_trash_dir != NULL) {
 			basename = g_path_get_basename (kde_trash_dir);
 			g_free (kde_trash_dir);
