@@ -1069,7 +1069,7 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 		g_assert (grid_memory);
 
 		/* Allocate room for the pointers to the rows */
-		icon_grid = malloc (num_rows * sizeof (int));
+		icon_grid = malloc (num_rows * sizeof (int *));
 		g_assert (icon_grid);
 
 		/* Point to array pointers */

@@ -42,6 +42,7 @@
 #include "nsIMarkupDocumentViewer.h"
 #include "nsICharsetConverterManager.h"
 #include "nsICharsetConverterManager2.h"
+#include "nsIPlatformCharset.h"
 #include <vector>
 #include <string>
 
@@ -326,3 +327,72 @@ convert_ns_string_to_c_string (const nsString & ns_string)
 
 	return c_string;
 }
+
+/* This is from Galeon */
+static gchar *
+mozilla_unicode_to_locale (const PRUnichar *uniStr)
+{
+	PRInt32 sSize,dSize;
+	gchar *output;
+	nsAutoString platformCharset;
+	nsresult rv;
+
+	/* sanity */
+	if (uniStr == NULL) {
+		return NULL;
+	}
+
+	nsCOMPtr<nsIPlatformCharset> svc;
+	nsCOMPtr<nsICharsetConverterManager> ccm;
+	nsCOMPtr<nsIUnicodeEncoder> encoder;
+	const nsString str (uniStr);
+
+	svc = do_GetService(NS_PLATFORMCHARSET_CONTRACTID, &rv);
+	if (NS_SUCCEEDED(rv)) {
+		rv = svc->GetCharset(kPlatformCharsetSel_Menu,
+				     platformCharset);
+	}
+	if (NS_SUCCEEDED(rv)) {
+		ccm = do_GetService (NS_CHARSETCONVERTERMANAGER_CONTRACTID,
+				     &rv);
+	}
+	if (NS_SUCCEEDED(rv)) {
+		rv = ccm->GetUnicodeEncoder(&platformCharset,
+					    getter_AddRefs(encoder));
+	}
+	if (NS_SUCCEEDED(rv)) {
+		sSize = str.Length ();
+		encoder->GetMaxLength (str.get(), sSize, &dSize);
+		if (dSize) {
+			output = g_new0 (gchar, dSize + 1);
+			encoder->Convert (str.get(), &sSize, output, &dSize);
+			encoder->Finish (output, &dSize);
+			encoder->Reset ();
+			return output;
+		}
+	}
+	/* return empty string, if something fail */
+	output = g_new0 (gchar, 1);
+	*output = '\0';
+	return output;
+}
+
+char * 
+mozilla_get_document_title (const GtkMozEmbed *mozilla_embed)
+{
+	PRUnichar *unicode_title;
+	gchar *title;
+
+	/* get the title in unicode */
+	unicode_title = gtk_moz_embed_get_title_unichar ((GtkMozEmbed *) mozilla_embed);
+
+	/* attempt conversion */
+	title = mozilla_unicode_to_locale (unicode_title);
+
+	/* free unicode version */
+	g_free (unicode_title);
+
+	/* return it */
+	return title;
+}
+

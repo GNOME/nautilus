@@ -2,7 +2,7 @@ include $(top_srcdir)/Makefile.shared
 
 @XML_I18N_MERGE_DESKTOP_RULE@
 
-DESKTOP_IN_FILES=nautilus.desktop.in
+DESKTOP_IN_FILES=nautilus.desktop.in nautilus-help.desktop.in
 DESKTOP_FILES=$(DESKTOP_IN_FILES:.desktop.in=.desktop)
 
 if HAVE_APPLETS
@@ -39,6 +39,8 @@ EXTRA_DIST=					\
 	nautilus-clean.sh			\
 	nautilus.desktop			\
 	nautilus.desktop.in			\
+	nautilus-help.desktop			\
+	nautilus-help.desktop.in		\
 	nautilus-launch-icon.png		\
 	nautilusConf.sh.in			\
 	nautilus-config.in			\
@@ -60,7 +62,8 @@ appicon_DATA = nautilus-launch-icon.png
 Applicationsdir = $(datadir)/gnome/apps/Applications
 Applications_DATA = $(DESKTOP_FILES)
 
-
+Toplevelmenudir = $(datadir)/gnome/apps
+Toplevelmenu_DATA = nautilus-help.desktop
 
 ## [The following is shamelessly copied from gnome-vfs.]
 

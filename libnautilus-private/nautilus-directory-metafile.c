@@ -51,6 +51,52 @@ free_factory (void)
 	bonobo_object_release_unref (factory, NULL);
 }
 
+
+static void
+die_on_failed_activation (const char        *server_name,
+			  CORBA_Environment *ev)
+{
+	/* This isn't supposed to happen. So do some core-dumping action,
+	 * and don't bother translating the error message.
+	 */
+	const char *extra;
+
+	extra = NULL;
+	
+	switch (ev->_major) {
+	case CORBA_NO_EXCEPTION:
+		break;
+
+	case CORBA_SYSTEM_EXCEPTION:
+		extra = CORBA_exception_id (ev);
+		break;
+
+	case CORBA_USER_EXCEPTION:
+		{
+			const gchar* id = CORBA_exception_id (ev);
+		  
+			if (strcmp (id, "IDL:OAF/GeneralError:1.0") == 0) {
+				OAF_GeneralError* ge = CORBA_exception_value (ev);
+
+				extra = ge->description;
+			} else {
+				extra = id;
+			}
+		}
+		break;
+
+	default:
+		g_assert_not_reached ();
+		break;
+	}
+
+	g_error ("Failed to activate the server %s; this may indicate a broken\n"
+		 "Nautilus or OAF installation, or may reflect a bug in something,\n"
+		 "or may mean that your PATH or LD_LIBRARY_PATH or the like is\n"
+		 "incorrect. Nautilus will dump core and exit.\n"
+		 "Details: '%s'", server_name, extra);
+}
+
 static Nautilus_MetafileFactory
 get_factory (void)
 {
@@ -58,7 +104,19 @@ get_factory (void)
 
 	if (factory == CORBA_OBJECT_NIL) {
 		if (get_factory_from_oaf) {
-			factory = oaf_activate_from_id (METAFILE_FACTORY_IID, 0, NULL, NULL);
+			CORBA_Environment ev;
+			
+			CORBA_exception_init (&ev);
+
+			factory = oaf_activate_from_id (METAFILE_FACTORY_IID, 0,
+							NULL, &ev);
+
+			if (factory == CORBA_OBJECT_NIL) {
+				die_on_failed_activation ("Nautilus_MetafileFactory",
+							  &ev);
+			}
+
+			CORBA_exception_free (&ev);
 		} else {
 			instance = nautilus_metafile_factory_get_instance ();
 			factory = bonobo_object_dup_ref (bonobo_object_corba_objref (BONOBO_OBJECT (instance)), NULL);
@@ -83,12 +141,19 @@ get_metafile (NautilusDirectory *directory)
 
 		directory->details->metafile_corba_object = Nautilus_MetafileFactory_open (get_factory (), uri, &ev);
 
-		/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+		if (ev._major != CORBA_NO_EXCEPTION) {
+			g_error ("%s: CORBA error opening MetafileFactory: %s\n",
+				 g_get_prgname (),
+				 CORBA_exception_id (&ev));
+		}
+		
 		CORBA_exception_free (&ev);
 	
 		g_free (uri);
 	}
 
+	g_assert (directory->details->metafile_corba_object != CORBA_OBJECT_NIL);
+	
 	return bonobo_object_dup_ref (directory->details->metafile_corba_object, NULL);	
 }
 

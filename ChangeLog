@@ -1,3 +1,38 @@
+2001-09-03  Alex Larsson  <alexl@redhat.com>
+
+	Merge some stuff from the redhat-outstanding-patches branch
+
+	* components/mozilla/nautilus-mozilla-embed-extensions.cpp
+	(mozilla_get_document_title): add this from Galeon
+	
+	* components/mozilla/nautilus-mozilla-embed-extensions.cpp
+	(mozilla_unicode_to_locale): copy code from Galeon to use Mozilla
+	conversion features to convert unicode to locale encoding
+
+	* components/mozilla/nautilus-mozilla-content-view.c
+	(mozilla_title_changed_callback): set title in locale encoding
+	
+	* libnautilus-private/nautilus-directory-metafile.c
+	(get_metafile): print error and exit if we fail to open the
+	metafile factory; somewhat cleaner than segfaulting.
+	
+	* libnautilus-private/nautilus-file.c:
+	Cache user information to avoid many getpwuid calls etc.
+
+	* src/nautilus-complex-search-bar.c (load_find_them_pixmap_widget):
+	Don't leak pixmap and mask.
+
+	* libnautilus-private/nautilus-icon-container.c (lay_down_icons_tblr):
+	64bit clean. Use sizeof (int *), not sizeof (int). 
+
+
+	* Makefile.am, nautilus-help.desktop.in: Add a help icon that uses
+	Nautilus
+
+	* components/help/help-method.c (help_name_to_local_path): 
+	handle ghelp:toc to go to the default page gnome-help-browser used
+	to go to. kind of a lame hack, but so is this whole vfs module ;-)
+
 2001-09-01  Maciej Stachowiak  <mjs@noisehavoc.org>
 
 	* libnautilus-private/nautilus-authn-manager.h,
