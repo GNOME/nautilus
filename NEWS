@@ -10,11 +10,26 @@ A lot of features have gone in since Nautilus 1.0.2. These include:
 	- icon in title of Notes sidebar panel if the location has notes
 	- Scripts menu to make it easy to run selected scripts on any
 	  file; a new way to extend Nautilus
+	- a News sidebar panel that displays headlines from web sites
+	  that use the RSS format
 
 	- tree view is faster, and also doesn't run at all unless it's
 	  opened, so it doesn't slow things down when you don't use it
 	- improved rubber-banding speed (in smooth mode)
 	- other small speed improvements
+	- faster JPEG thumbnailing (contributed by Alexander Larsson)
+
+	- ~/.gnome-desktop directory is now used for the desktop instead
+	  of ~/.nautilus/desktop. This change and others, done by Miguel,
+	  were in the Nautilus from Ximian's GNOME 1.4 packages, and his
+	  changes are now integrated into Nautilus 1.0.3.
+	- more icons and descriptions for more types of removable media
+	- xalf support in code that launches new programs; since there
+	  are still many small problems with xalf, this is only on if
+	  you set up a NAUTILUS_USE_XALF environment variable
+	- added a "--no-desktop" option for the command line that makes
+	  desktop-related preferences disappear and prevents Nautilus
+	  from trying to manage the desktop -- good for running under KDE
 
 	- Preferences menu now named "Preferences" instead of icon
 	- preference to turn emacs keybindings on (for location field in
@@ -27,6 +42,8 @@ A lot of features have gone in since Nautilus 1.0.2. These include:
 	- support for HTTP proxies that require a user name and password
 	- preference for maximum image size for thumbnailing (and upped
 	  default from 1 MB to 3 MB)
+	- preference for experts who want to use their home directory for
+	  the desktop
 
 	- add "View as" items to menu bar
 	- put ellipses ("...") in the middle of file names, not the

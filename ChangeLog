@@ -1,5 +1,17 @@
 2001-04-30  Darin Adler  <darin@eazel.com>
 
+	Worked on bug 8206 (xalf problems):
+
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(get_xalf_prefix): Don't use xalf unless a NAUTILUS_USE_XALF
+	environment variable is defined.
+
+	* NEWS: Updated with the features added since last time I edited
+	the NEWS file. Since we are mostly doing bug fixes, there aren't
+	too many.
+	
+2001-04-30  Darin Adler  <darin@eazel.com>
+
 	* help/nautilus-screenshot-guidelines/C/.cvsignore:
 	Ignore the .junk directory.
 
@@ -69,8 +81,7 @@
 	* help/nautilus-quick-reference/C/figures/menus_nqr.png:
 	* help/nautilus-quick-reference/C/figures/music.png:
 	* help/nautilus-quick-reference/C/figures/music_nqr.png:
-	* help/nautilus-quick-reference/C/figures/nautilus_window_full_nqr.
-	png:
+	* help/nautilus-quick-reference/C/figures/nautilus_window_full_nqr.png:
 	* help/nautilus-quick-reference/C/figures/navbar.png:
 	* help/nautilus-quick-reference/C/figures/patterns.png:
 	* help/nautilus-quick-reference/C/figures/sidebar.png:
@@ -78,8 +89,7 @@
 	* help/nautilus-quick-reference/C/figures/themes.png:
 	* help/nautilus-quick-reference/C/figures/themes_nqr.png:
 	* help/nautilus-quick-reference/C/figures/toolbar_nqr.png:
-	* help/nautilus-quick-reference/C/figures/xcf/nautilus_window_full_
-	nqr.xcf:
+	* help/nautilus-quick-reference/C/figures/xcf/nautilus_window_full_nqr.xcf:
 	* help/nautilus-quick-reference/C/index.html:
 
 2001-04-30  Ramiro Estrugo  <ramiro@eazel.com>
@@ -307,7 +317,7 @@
 
 	* configure.in: Make the control-center (capplet module) check
 	properly decode the version number.  Awk wasn't being fed the
-	right delimeter.
+	right delimiter.
 	
 2001-04-26  Dan Mueth  <dan@eazel.com>
 
@@ -400,18 +410,12 @@
 	* help/nautilus-screenshot-guidelines/C/Makefile.am:
 	* help/nautilus-screenshot-guidelines/C/figures/callout_after.png:
 	* help/nautilus-screenshot-guidelines/C/figures/callout_before.png:
-	* help/nautilus-screenshot-guidelines/C/figures/circle_callout_afte
-	r.png:
-	* help/nautilus-screenshot-guidelines/C/figures/circle_callout_befo
-	re.png:
-	* help/nautilus-screenshot-guidelines/C/figures/dropshadow_after.pn
-	g:
-	* help/nautilus-screenshot-guidelines/C/figures/dropshadow_before.p
-	ng:
-	* help/nautilus-screenshot-guidelines/C/nautilus-screenshot-guideli
-	nes-C.omf:
-	* help/nautilus-screenshot-guidelines/C/nautilus-screenshot-guideli
-	nes.sgml:
+	* help/nautilus-screenshot-guidelines/C/figures/circle_callout_after.png:
+	* help/nautilus-screenshot-guidelines/C/figures/circle_callout_before.png:
+	* help/nautilus-screenshot-guidelines/C/figures/dropshadow_after.png:
+	* help/nautilus-screenshot-guidelines/C/figures/dropshadow_before.png:
+	* help/nautilus-screenshot-guidelines/C/nautilus-screenshot-guidelines-C.omf:
+	* help/nautilus-screenshot-guidelines/C/nautilus-screenshot-guidelines.sgml:
 	* help/nautilus-screenshot-guidelines/Makefile.am:
 
 2001-04-26  Darin Adler  <darin@eazel.com>
@@ -668,7 +672,6 @@ Here are changes that Miguel made, but did not mention in his notes:
 	was breaking launching applications unless you had xalf
 	installed (not from branch)
 	
-
 2001-04-26  Dan Mueth  <dan@eazel.com>
 
 	Cleaning up documentation build system.  Now there should

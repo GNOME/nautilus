@@ -604,6 +604,17 @@ get_xalf_prefix (const char *name)
 	char *quoted;
 	char *prefix;
 
+	/* FIXME bugzilla.eazel.com 8206: At time I am writing this,
+	 * xalf is still pretty buggy, and Nautilus uses it a lot more
+	 * than the Panel does with no way to turn it off for
+	 * individual programs the way you can in the Panel. Sadly,
+	 * Ximian GNOME 1.4 ships with xalf on by default. So we did
+	 * this lame thing and turned it off unless you define this
+	 * environment variable. Some day we can remove this.
+	 */
+	if (g_getenv ("NAUTILUS_USE_XALF") == NULL) {
+		return g_strdup ("");
+	}
 	if (!gnome_config_get_bool ("/xalf/settings/enabled=true")) {
 		return g_strdup ("");
 	}
