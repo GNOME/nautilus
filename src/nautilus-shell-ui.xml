@@ -59,17 +59,7 @@
 		</placeholder>
 		<placeholder name="Open Placeholder" delimit="top"/>
 
-		<menuitem name="Close"
-			  _label="_Close Window"
-			  _tip="Close this window"
-			  accel="*Control*w"
-			  pixtype="stock" pixname="gtk-close"
-			  verb="Close"/>
-		<menuitem name="Close All Windows"
-			  _label="Close _All Windows"
-			  _tip="Close all Nautilus windows"
-			  accel="*Control**Shift*w"
-			  verb="Close All Windows"/>
+		
 
 		<menuitem name="Find"
 			  _label="_Find"
@@ -80,6 +70,20 @@
 		<placeholder name="Dangerous File Items Placeholder" delimit="top"/>
 
 		<placeholder name="Global File Items Placeholder" delimit="top"/>
+		
+		<separator/>
+
+		<menuitem name="Close All Windows"
+			  _label="Close _All Windows"
+			  _tip="Close all Nautilus windows"
+			  accel="*Control**Shift*w"
+			  verb="Close All Windows"/>
+		<menuitem name="Close"
+			  _label="_Close Window"
+			  _tip="Close this window"
+			  accel="*Control*w"
+			  pixtype="stock" pixname="gtk-close"
+			  verb="Close"/>
 	</submenu>
 
 	<submenu name="Edit" _label="_Edit">
