@@ -1,5 +1,11 @@
 2002-03-28  Alex Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-thumbnails-jpeg.c:
+	Temporary revert libjpeg patch to keep it building.
+	Will fix for real later.
+
+2002-03-28  Alex Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-thumbnails.c:
 	Thumbnail in a low priority idle handler instead of
 	in a 400ms timeout. Damn, it's fast!
