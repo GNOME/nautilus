@@ -866,6 +866,21 @@ char	*nautilus_annotation_get_annotation (NautilusFile *file)
  */
 int	nautilus_annotation_has_annotation (NautilusFile *file)
 {
+	char *digest_info, *digits, *temp_str;
+	int count;
+	
+	digest_info = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_NOTES_INFO, NULL);
+	if (digest_info != NULL) {
+		digits = strrchr (digest_info, ':');
+		count = atoi (digits + 1);
+		g_free (digest_info);
+		return count;
+	} else {
+		/* initiate fetching the annotations from the server */
+		temp_str = nautilus_annotation_get_annotation (file);
+		g_free (temp_str);	
+	}
+	g_free (digest_info);
 	return 0;
 }
 

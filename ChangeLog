@@ -1,3 +1,14 @@
+2001-02-26  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+
+
+	* libnautilus-extensions/nautilus-annotation.c:
+	(nautilus_annotation_has_annotation):
+	implemented the has_annotation function
+	
+	* src/nautilus-property-browser.c: (add_reset_property):
+	fixed bug 7021 by adding a line to turn the reset image into a
+	property chit
+	
 2001-02-25  Andy Hertzfeld  <andy@eazel.com>
 
 	finished first pass at underlying annotation infrastructure:
