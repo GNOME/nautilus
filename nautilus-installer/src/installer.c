@@ -1846,7 +1846,7 @@ start_logging (EazelInstaller *installer)
 	flags |= O_NOFOLLOW;
 #endif
 	filename = g_strdup_printf ("%s/%s", installer_tmpdir, LOGFILE);
-	fd = open (filename, flags, S_IRUSR | S_IWUSR);
+	fd = open (filename, flags, S_IRUSR | S_IWUSR);		/* 0600 */
 	/* make sure that:
 	 *  - owned by root (uid = 0)
 	 *  - the mode is X00 (group/other can't read/write/execute)
@@ -1857,7 +1857,7 @@ start_logging (EazelInstaller *installer)
 	if ((fd >= 0) && (fstat (fd, &statbuf) == 0) &&
 	    (lstat (filename, &lstatbuf) == 0) &&
 	    ((lstatbuf.st_mode & S_IFLNK) != S_IFLNK) &&
-	    ((statbuf.st_mode & 0077) == 0) &&
+	    ((statbuf.st_mode & 0033) == 0) &&
 	    (statbuf.st_mode & S_IFREG) &&
 	    (statbuf.st_nlink == 1) &&
 	    (statbuf.st_uid == 0)) {
@@ -1865,7 +1865,7 @@ start_logging (EazelInstaller *installer)
 		fprintf (stderr, "Writing logfile to %s ...\n", filename);
 		ftruncate (fd, 0);
                 /* Now make it world-readable */
-                fchmod (fd, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH); 
+                fchmod (fd, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH); 	/* 0644 */
 		fp = fdopen (fd, "wt");
 		eazel_install_set_log (installer->service, fp);
 	} else {
