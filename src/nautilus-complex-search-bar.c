@@ -510,6 +510,7 @@ fewer_options_callback (GtkObject *object,
 {
 	NautilusSearchBarCriterion *criterion;
 	NautilusComplexSearchBar *bar;
+	GtkWidget *dock;
 	GSList *last;
 	int old_length, new_length;
 
@@ -537,6 +538,18 @@ fewer_options_callback (GtkObject *object,
 	g_slist_foreach (bar->details->search_criteria,
 			 update_criteria_choices,
 			 bar);
+
+	/* FIXME bugzilla.eazel.com 3171:
+	 * We don't know why this line is needed here, but if it's removed
+	 * then the bar sometimes won't shrink when we press the fewer options
+	 * button. Specifically, if the window is very wide, then it won't 
+	 * shrink when pressing the fewer options button, but it will if the
+	 * window is fairly narrow.
+	 */
+	dock = gtk_widget_get_ancestor (GTK_WIDGET (bar), GNOME_TYPE_DOCK);
+	if (dock != NULL) {
+		gtk_widget_queue_resize (dock);
+	}
 }
 
 static void

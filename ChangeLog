@@ -1,3 +1,10 @@
+2000-09-20  John Sullivan  <sullivan@eazel.com>
+
+	* src/nautilus-complex-search-bar.c: (fewer_options_callback):
+	Reinstated a less vile form of the queue_resize hack that had
+	been here now that Rebecca and I discovered that without it the
+	toolbar doesn't shrink correctly when the window is very wide.
+
 2000-09-20  Rebecca Schulman  <rebecka@eazel.com>
 
 	* po/POTFILES.in:
