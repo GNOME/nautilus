@@ -1029,6 +1029,61 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 	draw_label_text (icon_item, drawable, icon_rect.x0, icon_rect.y1);
 }
 
+/* draw the text for an icon in anti-aliased mode */
+
+static void
+draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, double i2c[6], int x_delta)
+{
+	GdkVisual *visual;
+	GdkGC *gc;
+	GdkColormap *colormap;
+	GdkPixmap *pixmap;
+	GdkPixbuf *text_pixbuf, *text_pixbuf_with_alpha;
+	guchar *pixels;
+	gboolean needs_highlight;
+	
+	visual = gdk_visual_get_system ();
+
+	/* allocate a pixmap to draw the text into, and clear it to white */
+	pixmap = gdk_pixmap_new (NULL, icon_item->details->text_width, icon_item->details->text_height, visual->depth);
+	gc = gdk_gc_new (pixmap);
+
+	/* Set up the background. */
+	needs_highlight = icon_item->details->is_highlighted_for_selection || icon_item->details->is_highlighted_for_drop;
+	
+	gdk_rgb_gc_set_foreground (gc, needs_highlight ? NAUTILUS_RGB_COLOR_BLACK : NAUTILUS_RGB_COLOR_WHITE);
+	gdk_draw_rectangle (pixmap, gc, TRUE, 0, 0, icon_item->details->text_width, icon_item->details->text_height);
+	gdk_gc_unref (gc);
+	
+	/* use a common routine to draw the label into the pixmap */
+	draw_label_text (icon_item, pixmap, x_delta, 0);
+	
+	/* turn it into a pixbuf */
+	colormap = gdk_colormap_new (visual, FALSE);
+	text_pixbuf = gdk_pixbuf_get_from_drawable (NULL, pixmap, colormap,
+						    0, 0,
+						    0, 0, 
+						    icon_item->details->text_width, 
+						    icon_item->details->text_height);
+	gdk_colormap_unref (colormap);
+	gdk_pixmap_unref (pixmap);
+	
+	/* add an alpha channel to the pixbuf */
+	pixels = gdk_pixbuf_get_pixels (text_pixbuf);
+	if (needs_highlight) {
+		text_pixbuf_with_alpha = text_pixbuf;
+	} else {
+		text_pixbuf_with_alpha = gdk_pixbuf_add_alpha
+			(text_pixbuf,
+		 	TRUE, pixels[0], pixels[1], pixels[2]);
+		gdk_pixbuf_unref (text_pixbuf);
+	}
+	
+	i2c[4] -= x_delta;
+	/* draw the pixbuf containing the label */
+	draw_pixbuf_aa(text_pixbuf_with_alpha, buf, i2c, 0, 0);
+	gdk_pixbuf_unref (text_pixbuf_with_alpha);
+}
 
 /* draw the item for anti-aliased mode */
 
@@ -1036,6 +1091,7 @@ static void
 nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 {
 	
+	int x_delta;
 	ArtIRect icon_rect, emblem_rect;
 	EmblemLayout emblem_layout;
 	GdkPixbuf *emblem_pixbuf, *temp_pixbuf;
@@ -1091,6 +1147,9 @@ nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 	/* draw the stretch handles */
 	
 	/* draw the text */
+	i2c[5] += icon_rect.y1 - icon_rect.y0;
+	x_delta = (icon_item->details->text_width - (icon_rect.x1 - icon_rect.x0)) / 2;
+	draw_label_text_aa (icon_item, buf, i2c, x_delta);
 	
 	buf->is_bg = FALSE;
 }
