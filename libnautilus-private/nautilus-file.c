@@ -3425,6 +3425,66 @@ nautilus_file_cancel_call_when_ready (NautilusFile *file,
 }
 
 /**
+ * nautilus_file_dump
+ *
+ * Debugging call, prints out the contents of the file
+ * fields.
+ *
+ * @file: file to dump.
+ **/
+void
+nautilus_file_dump (NautilusFile *file)
+{
+	long size = file->details->deep_size;
+	char *uri;
+	const char *file_kind;
+
+	uri = nautilus_file_get_uri (file);
+	g_print("file: %s \n", file->details->name);
+	g_print("uri: %s \n", uri);
+	if (file->details->info == NULL) {
+		g_print("no file info \n");
+	} else if (file->details->get_info_failed) {
+		g_print("failed to get file info \n");
+	} else {
+		g_print("size: %ld \n", size);
+		switch (file->details->info->type) {
+			case GNOME_VFS_FILE_TYPE_UNKNOWN:
+				file_kind = "unknown";
+				break;
+			case GNOME_VFS_FILE_TYPE_REGULAR:
+				file_kind = "regular file";
+				break;
+			case GNOME_VFS_FILE_TYPE_DIRECTORY:
+				file_kind = "directory";
+				break;
+			case GNOME_VFS_FILE_TYPE_FIFO:
+				file_kind = "fifo";
+				break;
+			case GNOME_VFS_FILE_TYPE_SOCKET:
+				file_kind = "socket";
+				break;
+			case GNOME_VFS_FILE_TYPE_CHARACTER_DEVICE:
+				file_kind = "character device";
+				break;
+			case GNOME_VFS_FILE_TYPE_BLOCK_DEVICE:
+				file_kind = "block device";
+				break;
+			case GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK:
+				file_kind = "symbolic link";
+				break;
+		}
+		g_print("kind: %s \n", file_kind);
+		if (file->details->info->type == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK) {
+			g_print("link to %s \n", file->details->info->symlink_name);
+			/* FIXME: add following of symlinks here */
+		}
+		/* FIXME: add permissions and other useful stuff here */
+	}
+	g_free (uri);
+}
+
+/**
  * nautilus_file_list_ref
  *
  * Ref all the files in a list.

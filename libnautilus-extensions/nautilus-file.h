@@ -247,6 +247,9 @@ void                    nautilus_file_list_unref                (GList          
 void                    nautilus_file_list_free                 (GList                         *file_list);
 GList *                 nautilus_file_list_copy                 (GList                         *file_list);
 
+/* Debugging */
+void			nautilus_file_dump			(NautilusFile		       *file);
+
 typedef struct NautilusFileDetails NautilusFileDetails;
 
 struct NautilusFile {
