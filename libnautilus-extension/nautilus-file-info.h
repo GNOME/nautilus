@@ -68,8 +68,10 @@ struct _NautilusFileInfoIface
 	
 };
 
-GType             nautilus_file_info_get_type          (void);
+GList            *nautilus_file_info_list_copy         (GList *files);
+void              nautilus_file_info_list_free         (GList *files);
 
+GType             nautilus_file_info_get_type          (void);
 
 /* Return true if the file has been deleted */
 gboolean          nautilus_file_info_is_gone           (NautilusFileInfo *file);

@@ -1,3 +1,57 @@
+2003-11-28  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-extension/Makefile.am:
+	* libnautilus-extension/nautilus-extension-i18n.h: New file.
+	* libnautilus-extension/nautilus-info-provider.h:
+	* libnautilus-extension/nautilus-file-info.h:
+	* libnautilus-extension/nautilus-file-info.c:
+	(nautilus_file_info_list_copy), (nautilus_file_info_list_free): New
+	functions.
+	* libnautilus-extension/nautilus-menu-item.c:
+	* libnautilus-extension/nautilus-menu-item.h:
+	* libnautilus-extension/nautilus-menu-provider.c:
+	* libnautilus-extension/nautilus-menu-provider.h: New files, 
+	allow extensions to provide context menu items.	
+	* libnautilus-extension/nautilus-property-page-provider.c:
+	* libnautilus-extension/nautilus-property-page-provider.h:
+	* libnautilus-extension/nautilus-property-page.c:
+	* libnautilus-extension/nautilus-property-page.h: New files,
+	allow extensions to provider property pages.
+	* libnautilus-private/nautilus-module.h:
+	* libnautilus-private/nautilus-module.c: (add_module_objects),
+	(nautilus_module_load_file),
+	(nautilus_module_get_extensions_for_type),
+	(nautilus_module_extension_list_free), (nautilus_module_add_type):
+	New functions.
+	* src/file-manager/Makefile.am:
+	* src/file-manager/fm-bonobo-provider.c:
+	(bonobo_mime_action_data_new), (bonobo_mime_action_data_free),
+	(bonobo_mime_action_activate_callback),
+	(bonobo_mime_action_callback),
+	(bonobo_mime_action_menu_data_destroy_callback),
+	(no_locale_at_end), (get_bonobo_menu_verb_names),
+	(can_handle_multiple_files), (get_menu_items_for_server),
+	(fm_bonobo_provider_get_file_items),
+	(fm_bonobo_provider_menu_provider_iface_init),
+	(bonobo_page_error_message), (get_uri_list),
+	(bonobo_page_activate_callback), (fm_bonobo_provider_get_pages),
+	(fm_bonobo_provider_property_page_provider_iface_init),
+	(fm_bonobo_provider_instance_init),
+	(fm_bonobo_provider_class_init), (fm_bonobo_provider_get_type):
+	* src/file-manager/fm-bonobo-provider.h:  Moved the bonobo context
+	menu and property pages here.  Export them through the extension
+	interface.
+	* src/file-manager/fm-directory-view.c:
+	(extension_action_callback), (add_extension_menu_items),
+	(get_all_extension_menu_items), (reset_extension_actions_menu),
+	(real_update_menus): Get context menu items from extensions.
+	* src/file-manager/fm-properties-window.c: (clear_extension_pages),
+	(refresh_extension_pages), (properties_window_update),
+	(append_extension_pages), (create_properties_window): Get property
+	pages from extensions.
+	* src/nautilus-application.c: (finish_startup):  Add the 
+	bonobo provider to the extension manager.
+
 2003-11-20  Dave Camp  <dave@ximian.com>
 
 	* Makefile.am:

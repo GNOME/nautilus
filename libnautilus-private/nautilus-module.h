@@ -29,8 +29,13 @@
 G_BEGIN_DECLS
 
 void   nautilus_module_init                    (void);
-GList *nautilus_module_get_extensions_for_type (GType type);
+GList *nautilus_module_get_extensions_for_type (GType  type);
+void   nautilus_module_extension_list_free     (GList *list);
 
+
+/* Add a type to the module interface - allows nautilus to add its own modules
+ * without putting them in separate shared libraries */
+void   nautilus_module_add_type                (GType  type);
 
 G_END_DECLS
 

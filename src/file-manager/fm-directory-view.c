@@ -69,6 +69,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-recent.h>
 #include <libegg/egg-screen-exec.h>
+#include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <libnautilus-private/nautilus-desktop-directory.h>
@@ -83,6 +84,7 @@
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
+#include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-trash-directory.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
@@ -271,12 +273,6 @@ typedef struct {
 	gboolean mounting;
 	gboolean cancelled;
 } ActivateParameters;
-
-typedef struct {
-	char *id;
-	char *verb;
-	CORBA_sequence_CORBA_string *uri_list;
-} BonoboMimeActionData;
 
 enum {
 	GNOME_COPIED_FILES
@@ -3560,199 +3556,55 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 				       sensitive);
 }
 
-static BonoboMimeActionData *
-bonobo_mime_action_data_new (const char *id, const char *verb, GList *files)
+static void
+extension_action_callback (BonoboUIComponent *component,
+			   gpointer callback_data, const char *path)
 {
-	BonoboMimeActionData *data;
-	CORBA_sequence_CORBA_string *uri_list;
-	int i;
-
-	data = g_new (BonoboMimeActionData, 1);
-	data->id = g_strdup (id);
-	data->verb = g_strdup (verb);
-
-
-	/* convert the GList of files into a CORBA sequence */
-
-	uri_list = CORBA_sequence_CORBA_string__alloc ();
-	uri_list->_maximum = g_list_length (files);
-	uri_list->_length = uri_list->_maximum;
-	uri_list->_buffer = CORBA_sequence_CORBA_string_allocbuf (uri_list->_length);
-
-	for (i=0; files; files = files->next, i++)
-	{
-		NautilusFile *file;
-		char *uri;
-
-		file = files->data;
-		uri = nautilus_file_get_uri (file);
-
-		uri_list->_buffer[i] = CORBA_string_dup ((char*)uri);
-
-		g_free (uri);
-	}
-
-	CORBA_sequence_set_release (uri_list, CORBA_TRUE);
-	data->uri_list = uri_list;
-
-
-	return data;
+	nautilus_menu_item_activate (NAUTILUS_MENU_ITEM (callback_data));
 }
 
 static void
-bonobo_mime_action_data_free (BonoboMimeActionData *data)
-{
-	g_free (data->id);
-	g_free (data->verb);
-	g_free (data);
-}
-
-
-static void
-bonobo_mime_action_activate_callback (CORBA_Object obj,
-				      const char *error_reason,
-				      gpointer user_data)
-{
-	Bonobo_Listener listener;
-	CORBA_Environment ev;
-	BonoboMimeActionData *data;
-	CORBA_any any;
-
-	data = user_data;
-
-	if (obj == CORBA_OBJECT_NIL) {
-		GtkWidget *dialog;
-
-		/* FIXME: make an error message that is not so lame */
-		dialog = gtk_message_dialog_new (NULL, 0, GTK_MESSAGE_ERROR,
-						 GTK_BUTTONS_OK,
-						 _("Could not complete specified action:  %s"), error_reason);
-		g_signal_connect (dialog, "response",
-				  G_CALLBACK (gtk_widget_destroy), NULL);
-		gtk_widget_show (dialog);
-		return;
-	}
-
-	CORBA_exception_init (&ev);
-
-	listener = Bonobo_Unknown_queryInterface (obj,
-						  "IDL:Bonobo/Listener:1.0",
-						  &ev);
-
-	if (!BONOBO_EX (&ev)) {
-		any._type = TC_CORBA_sequence_CORBA_string;
-		any._value = data->uri_list;
-		Bonobo_Listener_event (listener, data->verb, &any, &ev);
-		bonobo_object_release_unref (listener, &ev);
-	} else {
-		GtkWidget *dialog;
-
-		/* FIXME: make an error message that is not so lame */
-		dialog = gtk_message_dialog_new (NULL, 0, GTK_MESSAGE_ERROR,
-				GTK_BUTTONS_OK,
-				_("Could not complete specified action."));
-		g_signal_connect (dialog, "response",
-				  G_CALLBACK (gtk_widget_destroy), NULL);
-		gtk_widget_show (dialog);
-	}
-
-}
-
-
-static void
-bonobo_mime_action_callback (BonoboUIComponent *component,
-			     gpointer callback_data, const char *path)
-{
-	BonoboMimeActionData *data;
-
-	data = callback_data;
-
-	bonobo_activation_activate_from_id_async (data->id, 0,
-				bonobo_mime_action_activate_callback,
-				data, NULL);
-	
-}
-
-static void
-bonobo_mime_action_menu_data_destroy_callback (gpointer data, GClosure *closure)
-{
-	bonobo_mime_action_data_free ((BonoboMimeActionData *)data);
-}
-
-static gboolean
-can_handle_multiple_files (Bonobo_ServerInfo *info)
-{
-	Bonobo_ActivationProperty *prop;
-
-	prop = bonobo_server_info_prop_find (info, "nautilus:can_handle_multiple_files");
-	return prop->v._u.value_boolean;
-}
-
-static void
-add_bonobo_menu_ui_and_verbs (FMDirectoryView *view, GList *files,
-			      Bonobo_ServerInfo *info, GList *verb_names)
+add_extension_menu_items (FMDirectoryView *view,
+			  GList *files,
+			  GList *menu_items)
 {
 	GList *l;
 	GString *ui_xml;
-	const GList *langs;
-	GSList *langs_cpy;
 	char *ui_xml_str;
-
-	g_return_if_fail (verb_names != NULL);
-
-	langs = gnome_i18n_get_language_list ("LANG");
-	langs_cpy = NULL;
-	/* copy it to a singly linked list since bonobo wants that...sigh */
-	for (; langs; langs = langs->next) {
-		langs_cpy = g_slist_append (langs_cpy, langs->data);
-	}
 
 	ui_xml = g_string_new ("<Root><commands>");
 
 	/* build the commands */
-	for (l = verb_names; l; l = l->next) {
-		const char *label;
-		char *prop_name;
-		char *verb;
+	for (l = menu_items; l; l = l->next) {
+		NautilusMenuItem *item;
 
-		verb = l->data;
+		item = l->data;
 
-		prop_name = g_strdup_printf ("nautilusverb:%s", verb);
-		label = bonobo_server_info_prop_lookup (info, prop_name,
-							langs_cpy);
-		g_free (prop_name);
-
-		g_string_append_printf (ui_xml, "<cmd name=\"%s\" label=\"%s\"/>", verb, label);
+		g_string_append_printf (ui_xml, 
+					"<cmd name=\"%s\" label=\"%s\" tip=\"%s\"/>", 
+					nautilus_menu_item_get_name (item), 
+					nautilus_menu_item_get_label (item),
+					nautilus_menu_item_get_tip (item));
 	}
 
 	ui_xml = g_string_append (ui_xml, "</commands><popups><popup name=\"selection\"><placeholder name=\"Mime Actions\"><separator/>");
 
 	/* build the UI */
-	for (l = verb_names; l; l = l->next) {
-		char *verb = l->data;
-		char *icon_attribute_name;
-		const char *icon_name;
+	for (l = menu_items; l; l = l->next) {
+		NautilusMenuItem *item;
 		char *pixbuf_data;
 		GdkPixbuf *pixbuf;
 
+		item = l->data;
+
 		g_string_append_printf (ui_xml,
 					"<menuitem name=\"%s\" verb=\"%s\"",
-					verb, verb);
+					nautilus_menu_item_get_name (item),
+					nautilus_menu_item_get_name (item));
 
-		icon_attribute_name = g_strdup_printf ("nautilusverbicon:%s",
-						       verb);
-		icon_name = bonobo_server_info_prop_lookup (info,
-							    icon_attribute_name,
-							    langs_cpy);
-		g_free (icon_attribute_name);
-		if (!icon_name) {
-			icon_name = bonobo_server_info_prop_lookup (info, "nautilus:icon",
-								    langs_cpy);
-		}
-			
-		if (icon_name) {
+		if (nautilus_menu_item_get_icon (item)) {
 			pixbuf = nautilus_icon_factory_get_pixbuf_from_name 
-				(icon_name,
+				(nautilus_menu_item_get_icon (item),
 				 NULL,
 				 NAUTILUS_ICON_SIZE_FOR_MENUS,
 				 NULL);
@@ -3766,8 +3618,6 @@ add_bonobo_menu_ui_and_verbs (FMDirectoryView *view, GList *files,
 		g_string_append (ui_xml, "/>");
 	}
 	
-	g_slist_free (langs_cpy);
-
 	ui_xml = g_string_append (ui_xml, "</placeholder></popup></popups></Root>");
 	ui_xml_str = g_string_free (ui_xml, FALSE);
 
@@ -3775,93 +3625,38 @@ add_bonobo_menu_ui_and_verbs (FMDirectoryView *view, GList *files,
 				 ui_xml_str, NULL);
 	g_free (ui_xml_str);
 
-	/* if it doesn't handle multiple files, disable the menu items */
-	if ((g_list_length (files) > 1) &&
-	    (can_handle_multiple_files (info) == FALSE)) {
+	for (l = menu_items; l != NULL; l = l->next) {
+		NautilusMenuItem *item;
 
-		for (; verb_names; verb_names = verb_names->next) {
+		item = l->data;
+
+		if (!nautilus_menu_item_get_sensitive (item)) {
 			char *path = g_strdup_printf ("/commands/%s",
-						      (char *)verb_names->data);
+						      nautilus_menu_item_get_name (item));
 			bonobo_ui_component_set_prop (view->details->ui,
 						      path,
 						      "sensitive",
 						      "0", NULL);
 			g_free (path);
 		}
-
-		/* no reason to continue */
-		return;
 	}
 
 	/* add the verbs */
-	for (l = verb_names; l; l = l->next) {
-		const char *verb;
-		BonoboMimeActionData *data;
+	for (l = menu_items; l; l = l->next) {
+		NautilusMenuItem *item;
 		GClosure *closure;
 
-		verb = l->data;
+		item = l->data;
 		
-		data = bonobo_mime_action_data_new (info->iid,
-						    verb, files);
 		closure = g_cclosure_new
-				(G_CALLBACK (bonobo_mime_action_callback),
-				 data,
-				 bonobo_mime_action_menu_data_destroy_callback);	
+			(G_CALLBACK (extension_action_callback),
+			 g_object_ref (item),
+			 (GClosureNotify)g_object_unref);
+		
 		bonobo_ui_component_add_verb_full
-					(view->details->ui,
-					 data->verb,
-					 closure); 
+			(view->details->ui, 
+			 nautilus_menu_item_get_name (item), closure); 
 	}
-
-}
-
-static gboolean
-no_locale_at_end (const char *str)
-{
-	int len;
-
-	len = strlen (str);
-	if (len > 3 &&
-	    str[len-3] == '-' &&
-	    g_ascii_isalpha (str[len-2]) &&
-	    g_ascii_isalpha (str[len-1])) {
-		return FALSE;
-	}
-	if (len > 6 &&
-	    str[len-6] == '-' &&
-	    g_ascii_isalpha (str[len-5]) &&
-	    g_ascii_isalpha (str[len-4]) &&
-	    str[len-3] == '_' &&
-	    g_ascii_isalpha (str[len-2]) &&
-	    g_ascii_isalpha (str[len-1])) {
-		return FALSE;
-	}
-	return TRUE;
-}
-
-static GList *
-get_bonobo_menu_verb_names (Bonobo_ServerInfo *info)
-{
-	GList *l;
-	unsigned int i;
-	int offset;
-
-	offset = strlen ("nautilusverb:");
-
-	l = NULL;
-	for (i = 0; i < info->props._length; i++) {
-
-		/* look for properties that start with "nautilusverb:".  The
-		 * part following the colon is the verb name
-		 */
-		if (strstr (info->props._buffer[i].name, "nautilusverb:") &&
-		    no_locale_at_end (info->props._buffer[i].name)) {
-			l = g_list_prepend (l,
-			      g_strdup (&info->props._buffer[i].name[offset]));	
-		}
-	}
-
-	return l;
 }
 
 static gboolean
@@ -3905,46 +3700,57 @@ get_unique_files (GList *selection)
 	return g_list_reverse (result);
 }
 
-static void
-reset_bonobo_mime_actions_menu (FMDirectoryView *view, GList *selection)
+static GList *
+get_all_extension_menu_items (GList *selection)
 {
-	gboolean sensitive;
-	GList *components, *l, *unique_selection;
+	GList *items;
+	GList *providers;
+	GList *l;
+	
+	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
+	items = NULL;
+
+	for (l = providers; l != NULL; l = l->next) {
+		NautilusMenuProvider *provider;
+		GList *file_items;
+		
+		provider = NAUTILUS_MENU_PROVIDER (l->data);
+		file_items = nautilus_menu_provider_get_file_items (provider,
+								    selection);
+		items = g_list_concat (items, file_items);		
+	}
+
+	nautilus_module_extension_list_free (providers);
+
+	return items;
+}
+
+static void
+reset_extension_actions_menu (FMDirectoryView *view, GList *selection)
+{
+	GList *unique_selection;
+	GList *items;
+	GList *l;
 
 	/* Clear any previous inserted items in the mime actions placeholder */
 	nautilus_bonobo_remove_menu_items_and_commands
 		(view->details->ui, FM_DIRECTORY_VIEW_POPUP_PATH_MIME_ACTIONS);
 
-	sensitive = TRUE;
-		
-	/* only query for the unique files so we can reduce oaf traffic */
+	/* only query for the unique files */
 	unique_selection = get_unique_files (selection);
+	items = get_all_extension_menu_items (selection);
+	
+	if (items) {
+		add_extension_menu_items (view, unique_selection, items);
+	
+		for (l = items; l != NULL; l = l->next) {
+			g_object_unref (l->data);
+		}
+		
+		g_list_free (items);
+	}
 
-	components = nautilus_mime_get_popup_components_for_files (unique_selection);
 	g_list_free (unique_selection);
-
-	for (l = components; l; l = l->next) {
-		Bonobo_ServerInfo *info;
-		GList *verb_names;
-
-		info = l->data;
-		verb_names = get_bonobo_menu_verb_names (info);
-		
-		add_bonobo_menu_ui_and_verbs (view, selection, info,
-					      verb_names);
-		eel_g_list_free_deep (verb_names);
-		
-	}
-
-	if (components != NULL) {
-		gnome_vfs_mime_component_list_free (components);
-	} else {
-		sensitive = FALSE;
-	}
-
-	nautilus_bonobo_set_sensitive (view->details->ui,
-				       FM_DIRECTORY_VIEW_POPUP_PATH_MIME_ACTIONS,
-				       sensitive);
 }
 
 static char *
@@ -5099,7 +4905,7 @@ real_update_menus (FMDirectoryView *view)
 	
 	/* Broken into its own function just for convenience */
 	reset_bonobo_open_with_menu (view, selection);
-	reset_bonobo_mime_actions_menu (view, selection);
+	reset_extension_actions_menu (view, selection);
 
 	if (all_selected_items_in_trash (view)) {
 		label = _("_Delete from Trash");

@@ -28,7 +28,6 @@
 #include <gmodule.h>
 #include <libgnome/gnome-macros.h>
 
-
 #define NAUTILUS_TYPE_MODULE    	(nautilus_module_get_type ())
 #define NAUTILUS_MODULE(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_MODULE, NautilusModule))
 #define NAUTILUS_MODULE_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_MODULE, NautilusModule))
@@ -158,14 +157,7 @@ add_module_objects (NautilusModule *module)
 	module->list_types (&types, &num_types);
 	
 	for (i = 0; i < num_types; i++) {
-		GObject *object;
-		
-		object = g_object_new (types[i], NULL);
-		g_object_weak_ref (object, 
-				   (GWeakNotify)module_object_weak_notify,
-				   NULL);
-
-		module_objects = g_list_prepend (module_objects, object);
+		nautilus_module_add_type (types[i]);
 	}
 }
 
@@ -174,7 +166,6 @@ nautilus_module_load_file (const char *filename)
 {
 	NautilusModule *module;
 	
-	g_print ("loading %s\n", filename);
 	module = g_object_new (NAUTILUS_TYPE_MODULE, NULL);
 	module->path = g_strdup (filename);
 	
@@ -240,4 +231,28 @@ nautilus_module_get_extensions_for_type (GType type)
 	}
 
 	return ret;	
+}
+
+void
+nautilus_module_extension_list_free (GList *extensions)
+{
+	GList *l;
+	
+	for (l = extensions; l != NULL; l = l->next) {
+		g_object_unref (l->data);
+	}
+	g_list_free (extensions);
+}
+
+void   
+nautilus_module_add_type (GType type)
+{
+	GObject *object;
+	
+	object = g_object_new (type, NULL);
+	g_object_weak_ref (object, 
+			   (GWeakNotify)module_object_weak_notify,
+			   NULL);
+
+	module_objects = g_list_prepend (module_objects, object);
 }

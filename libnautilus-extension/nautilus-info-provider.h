@@ -50,6 +50,8 @@ typedef void (*NautilusInfoProviderUpdateComplete) (NautilusInfoProvider    *pro
 						    gpointer                 user_data);
 
 struct _NautilusInfoProviderIface {
+	GTypeInterface g_iface;
+
 	NautilusOperationResult (*update_file_info) (NautilusInfoProvider     *provider,
 						     NautilusFileInfo         *file,
 						     GClosure                 *update_complete,

@@ -22,6 +22,33 @@
 #include <config.h>
 #include "nautilus-file-info.h"
 
+
+GList *
+nautilus_file_info_list_copy (GList *files)
+{
+	GList *ret;
+	GList *l;
+	
+	ret = g_list_copy (files);
+	for (l = ret; l != NULL; l = l->next) {
+		g_object_ref (G_OBJECT (l->data));
+	}
+
+	return ret;
+}
+
+void              
+nautilus_file_info_list_free (GList *files)
+{
+	GList *l;
+	
+	for (l = files; l != NULL; l = l->next) {
+		g_object_unref (G_OBJECT (l->data));
+	}
+	
+	g_list_free (files);
+}
+
 static void
 nautilus_file_info_base_init (gpointer g_class)
 {

@@ -21,12 +21,20 @@ libnautilus_extension_includedir=$(includedir)/nautilus/libnautilus-extension
 libnautilus_extension_include_HEADERS=		\
 	nautilus-extension-types.h              \
 	nautilus-file-info.h                    \
+	nautilus-menu-item.h                    \
+	nautilus-menu-provider.h                \
+	nautilus-property-page.h                \
+	nautilus-property-page-provider.h       \
 	nautilus-info-provider.h                \
 	$(NULL)
 
 libnautilus_extension_la_SOURCES=			\
 	nautilus-extension-types.c                      \
 	nautilus-file-info.c                            \
+	nautilus-menu-item.c                            \
+	nautilus-menu-provider.c                        \
+	nautilus-property-page.c                        \
+	nautilus-property-page-provider.c               \
 	nautilus-info-provider.c                        \
 	$(NULL)
 

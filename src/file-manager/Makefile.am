@@ -15,6 +15,7 @@ INCLUDES = 					\
 
 
 libnautilus_file_manager_la_SOURCES=	\
+	fm-bonobo-provider.c            \
 	fm-desktop-icon-view.c		\
 	fm-directory-view.c		\
 	fm-error-reporting.c		\
@@ -25,6 +26,7 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-properties-window.c		\
 	fm-search-list-view.c		\
 	nautilus-indexing-info.c	\
+	fm-bonobo-provider.h 		\
 	fm-desktop-icon-view.h 		\
 	fm-directory-view.h 		\
 	fm-error-reporting.h 		\

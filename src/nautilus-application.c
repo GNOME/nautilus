@@ -29,6 +29,7 @@
 #include "nautilus-application.h"
 
 
+#include "file-manager/fm-bonobo-provider.h"
 #include "file-manager/fm-desktop-icon-view.h"
 #include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-list-view.h"
@@ -393,6 +394,8 @@ finish_startup (NautilusApplication *application)
 {
 	/* initialize nautilus modules */
 	nautilus_module_init ();
+
+	nautilus_module_add_type (FM_TYPE_BONOBO_PROVIDER);
 	
 	/* initialize the sound machinery */
 	nautilus_sound_init ();
