@@ -139,6 +139,7 @@ icon_DATA =\
 	netscape.png \
 	not.png \
 	rightarrow.png \
+	search.png \
 	tableft.png \
 	tabright.png \
 	trash-empty.png \

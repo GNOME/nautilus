@@ -19,7 +19,8 @@ eazel_DATA =					\
 	i-regular-72.png			\
 	i-regular-96.png			\
 	Refresh.png				\
+	Search.png				\
 	Stop.png				\
 	Up.png
-	
+
 EXTRA_DIST = $(eazel_DATA)
