@@ -65,7 +65,7 @@
  * HORIZONTAL_OFFSET: Positive or negative amount to offset the item horizontally.
  */
 #define EAZEL_SERVICES_FOOTER_FONT_SIZE			11
-#define EAZEL_SERVICES_FOOTER_FONT_WEIGHT		"medium"
+#define EAZEL_SERVICES_FOOTER_FONT_WEIGHT		"bold"
 
 #define EAZEL_SERVICES_FOOTER_X_PADDING			2
 #define EAZEL_SERVICES_FOOTER_Y_PADDING			0
