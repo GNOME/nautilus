@@ -1,3 +1,23 @@
+2000-08-09  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Add support for Mozilla m17.
+	
+	* configure.in:
+	Add some artificial intelligence to detect whether the mozilla
+	we are using is m17.
+		
+	* components/mozilla/Makefile.am:
+	Define the mozilla milestone version.
+		
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize),
+	(debug_print_state_flags), (debug_print_status_flags),
+	(mozilla_net_state_callback), (mozilla_net_status_callback),
+	(mozilla_progress_callback):
+
+	Update for changes in the mozilla embedding api.  Also, simplify
+	the status/state flag debugging stuff a bit.
+	
 Tue Aug 08 23:23:50 2000  George Lebl <jirka@5z.com>
 
 	* libnautilus-extensions/nautilus-mime-actions.c

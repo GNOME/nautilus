@@ -172,6 +172,20 @@ else
 fi
 AM_CONDITIONAL(BUILD_MOZILLA_COMPONENT, test "x$found_mozilla" = "xtrue")
 
+if test "x$found_mozilla" = "xtrue"
+then
+	grep -w net_state $_mozilla_include_place/gtkmozembed.h > /dev/null 2>&1
+
+	if test $? -eq 0
+	then
+		MOZILLA_MILESTONE=17
+	else
+		MOZILLA_MILESTONE=16
+	fi
+
+	AC_SUBST(MOZILLA_MILESTONE)
+fi
+
 dnl ====================================
 dnl = end mozilla hacks
 dnl ====================================
@@ -515,7 +529,10 @@ dnl <= Mozilla component integrated? =>
 case $found_mozilla in
 t*)
 echo "
-Mozilla component	: YES"
+Mozilla component	: YES
+   mozilla libraries	: $_mozilla_lib_place
+   mozilla includes	: $_mozilla_include_place
+   MOZILLA_MILESTONE	: $MOZILLA_MILESTONE"
 ;;
 *)
 echo "
