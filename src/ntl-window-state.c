@@ -40,9 +40,7 @@ nautilus_window_set_initial_state (NautilusWindow *window, const char *initial_u
 		char *home_uri;
 		char *default_home_uri = g_strdup_printf ("file://%s", g_get_home_dir());
 
-		home_uri = nautilus_preferences_get (nautilus_preferences_get_global_preferences (),
-						     NAUTILUS_PREFERENCES_HOME_URI,
-						     default_home_uri);
+		home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI, default_home_uri);
 
 		g_assert (home_uri != NULL);
 

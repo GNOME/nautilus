@@ -270,7 +270,7 @@ int main(int argc, char *argv[])
 
   /* FIXME: Need better error reporting if this fails.  BUT, is it too
    * early to post a dialog here ? */
-  g_assert (nautilus_preferences_init (argc, argv));
+  g_assert (nautilus_preferences_initialize (argc, argv));
         
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
   gnome_vfs_init ();

@@ -467,13 +467,10 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 
 	/* Obtain the user level for filtering */
 	directory_view->details->show_hidden_files = 
-		nautilus_preferences_get_enum (nautilus_preferences_get_global_preferences (),
-					       NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-					       FALSE);
+		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES, FALSE);
 
 	/* Keep track of changes in this pref to filter files accordingly. */
-	nautilus_preferences_add_boolean_callback (nautilus_preferences_get_global_preferences (),
-						   NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+	nautilus_preferences_add_boolean_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 						   show_hidden_files_changed_callback,
 						   directory_view);
 }
@@ -485,8 +482,7 @@ fm_directory_view_destroy (GtkObject *object)
 
 	view = FM_DIRECTORY_VIEW (object);
 
-	nautilus_preferences_remove_callback (nautilus_preferences_get_global_preferences (),
-					      NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 					      show_hidden_files_changed_callback,
 					      view);
 	
@@ -1869,8 +1865,7 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 {
 	gboolean use_new_window_preference;
 
-	use_new_window_preference = nautilus_preferences_get_boolean (nautilus_preferences_get_global_preferences (),
-								      NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
+	use_new_window_preference = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 								      FALSE);
 
 	fm_directory_view_activate_file_internal (view,
@@ -2113,9 +2108,7 @@ show_hidden_files_changed_callback (gpointer		user_data)
 	directory_view = FM_DIRECTORY_VIEW (user_data);
 
 	directory_view->details->show_hidden_files = 
-		nautilus_preferences_get_boolean (nautilus_preferences_get_global_preferences (),
-						  NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-						  FALSE);
+		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES, FALSE);
 
 	/* Reload the current uri so that the filtering changes take place. */
 	if (directory_view->details->model != NULL) {

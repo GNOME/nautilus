@@ -1,7 +1,98 @@
 2000-04-25  Ramiro Estrugo  <ramiro@eazel.com>
 
+	Simplified preferences api by letting gconf do most of the work.
+	Removed usage of global preferences from everywhere.  There is no
+	longer a global preferences object.  All preference peek/poke
+	operations are done through a gconf client thing.
+
+	* components/history/ntl-history-view.c:
+	(main): Call nautilus_preferences_initialize()
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	Removed usage of global preferences.
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	Remove usage of unneeded global preferences.
+
+	* libnautilus-extensions/nautilus-icon-factory.c
+	Remove usage of unneeded global preferences.
+
+	* libnautilus-extensions/nautilus-list.c:
+	Remove usage of unneeded global preferences.
+
+	* nautilus-widgets/nautilus-preference.c
+	  nautilus-widgets/nautilus-preference.h:
+	Remove all default_value related crap.  Not needed no more.  Let
+	gconf worry about default values.
+
+	* nautilus-widgets/nautilus-preferences-group.c,
+	  nautilus-widgets/nautilus-preferences-group.h:
+	(nautilus_preferences_group_add_item): 
+	No longer need to pass in preferences.
+
+	* nautilus-widgets/nautilus-preferences-item.c,
+	  nautilus-widgets/nautilus-preferences-item.h:
+	No longer need to store a reference to a preferences object in our
+	class.  Also,  no longer need to pass in preferences to any
+	function.
+
+	* nautilus-widgets/nautilus-preferences-pane.c,
+	  nautilus-widgets/nautilus-preferences-pane.h:
+	(nautilus_preferences_pane_add_item_to_nth_group): No longer need
+	to pass in preferences.
+
+	* nautilus-widgets/nautilus-preferences.c,
+	  nautilus-widgets/nautilus-preferences.h:
+	Remove the NautilusPreferences class.  Gconf does the thinking for
+	preferences now and there is no need to divide things up by
+	domain - thus no need for multiple preference objects.  The api
+	was changed to reflect this.  All preferences peek/poke operations
+	go through a global gconf_client thing.
+
+	Removed the storing and usage of a value.  Gconf and only it
+	stores values for preferences.
+
+	Use gconf for callback notifications.
+
+	* nautilus-widgets/test-nautilus-widgets.c: Update for the above
+	changes.
+	
+	2000-04-25  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* nautilus-clean.sh: Return 0 at the end of the script so that it
 	can be used like this: nautilus-clean.sh && ./src/nautilus
+
+	* src/nautilus-window-menus.c:
+	(use_eazel_theme_icons_cb): No longer need to use global
+	preferences. 
+
+	* src/ntl-main.c:
+	(main): Call nautilus_preferences_initialize, not
+	nautilus_preferences_init.
+	
+	* src/ntl-uri-map.c:
+	(add_meta_view_iids_from_preferences): No longer need to use
+	global preferences.  Also, changed the default value passed in to
+	FALSE so that only meta views that are explicitly turned on
+	(somewhere else) show up.
+
+	* src/ntl-window-state.c:
+	(nautilus_window_set_initial_state): No longer need to use
+	global preferences.  
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize): No longer need to use
+	global preferences.  
+	
+	* src/file-manager/fm-icon-text-window.c:
+	(changed_attributes_option_menu_cb), (create_icon_text),
+	(fm_icon_text_window_destroy_cb),
+	(fm_get_text_attribute_names_preference_or_default): No longer
+	need to use global preferences.  
+	
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_initialize), (fm_icon_view_destroy), : No longer
+	need to use global preferences.  
 
 2000-04-25  Darin Adler  <darin@eazel.com>
 

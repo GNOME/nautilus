@@ -48,7 +48,7 @@ enum
 /* Private stuff */
 static GtkWidget *global_preferences_create_dialog   (void);
 static GtkWidget *global_preferences_get_dialog      (void);
-static void       global_preferences_register_for_ui (NautilusPreferences *preferences);
+static void       global_preferences_register_for_ui (void);
 static void       user_level_changed_callback        (gpointer             user_data);
 
 /*
@@ -59,13 +59,10 @@ global_preferences_create_dialog (void)
 {
 	GtkWidget		*prefs_dialog;
 	NautilusPreferencesBox	*preference_box;
-	NautilusPreferences	*preferences;
 	GtkWidget		*user_level_pane;
 	GtkWidget		*window_options_pane;
 	GtkWidget		*meta_view_pane;
 	GtkWidget		*icon_view_pane;
-
-	preferences = nautilus_preferences_get_global_preferences ();
 
 	/*
 	 * In the soon to come star trek future, the following widgetry
@@ -89,7 +86,6 @@ global_preferences_create_dialog (void)
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (user_level_pane),
 							 0,
-							 preferences,
 							 NAUTILUS_PREFERENCES_USER_LEVEL,
 							 NAUTILUS_PREFERENCE_ITEM_ENUM);
 	/*
@@ -103,13 +99,11 @@ global_preferences_create_dialog (void)
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (window_options_pane),
 							 0,
-							 preferences,
 							 NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (window_options_pane),
 							 0,
-							 preferences,
 							 NAUTILUS_PREFERENCES_WINDOW_SEARCH_EXISTING,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	
@@ -124,37 +118,31 @@ global_preferences_create_dialog (void)
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (meta_view_pane),
 							 0,
-							 preferences,
 							 NAUTILUS_PREFERENCES_META_VIEWS_SHOW_ANNOTATIONS,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (meta_view_pane),
 							 0,
-							 preferences,
 							 NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_CONTENTS,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (meta_view_pane),
 							 0,
-							 preferences,
 							 NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_INDEX,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (meta_view_pane),
 							 0,
-							 preferences,
 							 NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_SEARCH,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (meta_view_pane),
 							 0,
-							 preferences,
 							 NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HISTORY,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (meta_view_pane),
 							 0,
-							 preferences,
 							 NAUTILUS_PREFERENCES_META_VIEWS_SHOW_WEB_SEARCH,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
@@ -169,7 +157,6 @@ global_preferences_create_dialog (void)
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (icon_view_pane),
 							 0,
-							 preferences,
 							 NAUTILUS_PREFERENCES_CLICK_POLICY,
 							 NAUTILUS_PREFERENCE_ITEM_ENUM);
 
@@ -215,14 +202,7 @@ global_preferences_get_dialog (void)
 {
 	static GtkWidget * global_prefs_dialog = NULL;
 
-	NautilusPreferences * global_prefs = nautilus_preferences_get_global_preferences ();
-
-	if (!global_prefs)
-	{
-		g_warning ("something went terribly wrong with implicit prefs initialization");
-
-		return NULL;
-	}
+	g_assert (nautilus_preferences_is_initialized ());
 
 	if (!global_prefs_dialog)
 	{
@@ -233,20 +213,17 @@ global_preferences_get_dialog (void)
 }
 
 static void
-global_preferences_register_for_ui (NautilusPreferences *preferences)
+global_preferences_register_for_ui ()
 {
 	static gboolean preference_for_ui_registered = FALSE;
 
-	g_assert (preferences != NULL);
+	g_assert (nautilus_preferences_is_initialized ());
 
 	if (preference_for_ui_registered)
 		return;
 
 	preference_for_ui_registered = TRUE;
 
-	preferences = nautilus_preferences_get_global_preferences ();
-
-	g_assert (preferences != NULL);
 
 	/*
 	 * In the soon to come star trek future, the following information
@@ -254,97 +231,82 @@ global_preferences_register_for_ui (NautilusPreferences *preferences)
 	 */
 
 	/* Window create new */
-	nautilus_preferences_set_info (preferences,
-				       NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
+	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 				       "Create new window for each new page",
 				       NAUTILUS_PREFERENCE_BOOLEAN,
 				       (gconstpointer) FALSE);
 	
 	/* Window seatch existing */
-	nautilus_preferences_set_info (preferences,
-				       NAUTILUS_PREFERENCES_WINDOW_SEARCH_EXISTING,
+	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_WINDOW_SEARCH_EXISTING,
 				       "Do not open more than one window with the same page",
 				       NAUTILUS_PREFERENCE_BOOLEAN,
 				       (gconstpointer) FALSE);
 
 	/* Click activation type */
-	nautilus_preferences_set_info (preferences,
-				       NAUTILUS_PREFERENCES_CLICK_POLICY,
+	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_CLICK_POLICY,
 				       "Click policy",
 				       NAUTILUS_PREFERENCE_ENUM,
 				       (gconstpointer) NAUTILUS_CLICK_POLICY_SINGLE);
 
-	nautilus_preferences_enum_add_entry (preferences,
-					     NAUTILUS_PREFERENCES_CLICK_POLICY,
+	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES_CLICK_POLICY,
 					     "single",
 					     "Single Click",
 					     NAUTILUS_CLICK_POLICY_SINGLE);
 
-	nautilus_preferences_enum_add_entry (preferences,
-					     NAUTILUS_PREFERENCES_CLICK_POLICY,
+	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES_CLICK_POLICY,
 					     "double",
 					     "Double Click",
 					     NAUTILUS_CLICK_POLICY_DOUBLE);
 
 	/* User level */
-	nautilus_preferences_set_info (preferences,
-				       NAUTILUS_PREFERENCES_USER_LEVEL,
+	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_USER_LEVEL,
 				       "User Level",
 				       NAUTILUS_PREFERENCE_ENUM,
 				       (gconstpointer) NAUTILUS_USER_LEVEL_HACKER);
 	
 	
-	nautilus_preferences_enum_add_entry (preferences,
-					     NAUTILUS_PREFERENCES_USER_LEVEL,
+	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES_USER_LEVEL,
 					     "novice",
 					     "Novice",
 					     NAUTILUS_USER_LEVEL_NOVICE);
 
-	nautilus_preferences_enum_add_entry (preferences,
-					     NAUTILUS_PREFERENCES_USER_LEVEL,
+	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES_USER_LEVEL,
 					     "intermediate",
 					     "Intermediate",
 					     NAUTILUS_USER_LEVEL_INTERMEDIATE);
 
-	nautilus_preferences_enum_add_entry (preferences,
-					     NAUTILUS_PREFERENCES_USER_LEVEL,
+	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES_USER_LEVEL,
 					     "hacker",
 					     "Hacker",
 					     NAUTILUS_USER_LEVEL_HACKER);
 
 	/* Meta views */
-	nautilus_preferences_set_info (preferences,
-				       NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HISTORY,
+	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HISTORY,
 				       "History View",
 				       NAUTILUS_PREFERENCE_BOOLEAN,
 				       (gconstpointer) TRUE);
 	
-	nautilus_preferences_set_info (preferences,
-				       NAUTILUS_PREFERENCES_META_VIEWS_SHOW_WEB_SEARCH,
+	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_META_VIEWS_SHOW_WEB_SEARCH,
 				       "Web Search View",
 				       NAUTILUS_PREFERENCE_BOOLEAN,
-				       (gconstpointer) TRUE);
+				       (gconstpointer) FALSE);
 
-	nautilus_preferences_set_info (preferences,
-				       NAUTILUS_PREFERENCES_META_VIEWS_SHOW_ANNOTATIONS,
+	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_META_VIEWS_SHOW_ANNOTATIONS,
 				       "Annotations",
 				       NAUTILUS_PREFERENCE_BOOLEAN,
 				       (gconstpointer) TRUE);
 
-	nautilus_preferences_set_info (preferences,
-				       NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_CONTENTS,
+	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_CONTENTS,
 				       "Help Contents",
 				       NAUTILUS_PREFERENCE_BOOLEAN,
 				       (gconstpointer) TRUE);
 
-	nautilus_preferences_set_info (preferences,
-				       NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_INDEX,
+	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_INDEX,
 				       "Help Index",
 				       NAUTILUS_PREFERENCE_BOOLEAN,
 				       (gconstpointer) FALSE);
 
-	nautilus_preferences_set_info (preferences,
-				       NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_SEARCH,
+	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_SEARCH,
 				       "Help Search",
 				       NAUTILUS_PREFERENCE_BOOLEAN,
 				       (gconstpointer) FALSE);
@@ -353,7 +315,6 @@ global_preferences_register_for_ui (NautilusPreferences *preferences)
 static void
 user_level_changed_callback (gpointer user_data)
 {
-	NautilusPreferences	*preferences;
 	gint			user_level;
 	char			*home_uri_string;
 
@@ -362,12 +323,7 @@ user_level_changed_callback (gpointer user_data)
 
 	const char		*user_main_directory;
 
-	preferences = nautilus_preferences_get_global_preferences ();
-
-	g_assert (preferences != NULL);
-	
-	user_level = nautilus_preferences_get_enum (preferences,
-						    NAUTILUS_PREFERENCES_USER_LEVEL,
+	user_level = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_USER_LEVEL,
 						    NAUTILUS_USER_LEVEL_HACKER);
 
 	/* Set some preferences according to the user level */
@@ -389,8 +345,7 @@ user_level_changed_callback (gpointer user_data)
 		break;
 	}
 
-	nautilus_preferences_set_boolean (preferences,
-					  NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 					  show_hidden_files);
 
 	/* FIXME: This call needs to be spanked to conform.  Should return a strduped string */
@@ -403,8 +358,7 @@ user_level_changed_callback (gpointer user_data)
 
 	g_assert (home_uri_string != NULL);
 	
-	nautilus_preferences_set (preferences,
-				  NAUTILUS_PREFERENCES_HOME_URI,
+	nautilus_preferences_set (NAUTILUS_PREFERENCES_HOME_URI,
 				  home_uri_string);
 
 	g_free (home_uri_string);
@@ -424,39 +378,25 @@ nautilus_global_preferences_show_dialog (void)
 void
 nautilus_global_preferences_shutdown (void)
 {
-	GtkWidget * global_prefs_dialog;
-	GtkObject * global_prefs;
+	/* Free the dialog first, cause it has refs to preferences */
+	GtkWidget * global_prefs_dialog = global_preferences_get_dialog ();
+	gtk_widget_destroy (global_prefs_dialog);
 
-	/* FIXME: Unfortunately the following triggers a bogus gtk_object_unref */
-	return;
-
-	global_prefs_dialog = global_preferences_get_dialog ();
-
-	global_prefs = GTK_OBJECT (nautilus_preferences_get_global_preferences ());
-
-	gtk_widget_unref (global_prefs_dialog);
-
-	gtk_object_unref (global_prefs);
+	/* Now free the preferences tables and stuff */
+	nautilus_preferences_shutdown ();
 }
 
 void
 nautilus_global_preferences_startup (void)
 {
-	NautilusPreferences *preferences;
-	
-	preferences = nautilus_preferences_get_global_preferences ();
-
-	g_assert (preferences != NULL);
-
-	global_preferences_register_for_ui (preferences);
+	global_preferences_register_for_ui ();
 
 	/* Keep track of user level changes */
-	nautilus_preferences_add_enum_callback (preferences,
-						NAUTILUS_PREFERENCES_USER_LEVEL,
+	nautilus_preferences_add_enum_callback (NAUTILUS_PREFERENCES_USER_LEVEL,
 						user_level_changed_callback,
 						NULL);
 
 	/* Invoke the callback once to make sure stuff is properly setup */
-	user_level_changed_callback (preferences);
+	user_level_changed_callback (NULL);
 }
 

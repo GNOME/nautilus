@@ -434,9 +434,7 @@ add_meta_view_iids_from_preferences (NautilusNavigationInfo *navinfo)
 
 		pref_name = g_string_new ("/nautilus/metaviews/");
 		g_string_append (pref_name, iid);
-		enabled = nautilus_preferences_get_boolean (nautilus_preferences_get_global_preferences (),
-							    pref_name->str,
-                                                            TRUE);
+		enabled = nautilus_preferences_get_boolean (pref_name->str, FALSE);
 		g_string_free (pref_name, TRUE);
 		
 		if (enabled) {

@@ -68,7 +68,6 @@ GtkWidget *nautilus_preferences_pane_add_group             (NautilusPreferencesP
 							    const char                  *group_title);
 GtkWidget *nautilus_preferences_pane_add_item_to_nth_group (NautilusPreferencesPane     *prefs_pane,
 							    guint                        n,
-							    const NautilusPreferences   *preferences,
 							    const char                  *preference_name,
 							    NautilusPreferencesItemType  item_type);
 

@@ -285,7 +285,6 @@ nautilus_preferences_pane_add_group (NautilusPreferencesPane	*prefs_pane,
 GtkWidget *
 nautilus_preferences_pane_add_item_to_nth_group (NautilusPreferencesPane	*prefs_pane,
 						 guint				n,
-						 const NautilusPreferences	*preferences,
 						 const char			*preference_name,
 						 NautilusPreferencesItemType	item_type)
 {
@@ -295,8 +294,7 @@ nautilus_preferences_pane_add_item_to_nth_group (NautilusPreferencesPane	*prefs_
 	g_return_val_if_fail (prefs_pane != NULL, NULL);
 	g_return_val_if_fail (NAUTILUS_IS_PREFS_PANE (prefs_pane), NULL);
 
-	g_return_val_if_fail (preferences != NULL, NULL);
-	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES (preferences), NULL);
+	g_return_val_if_fail (nautilus_preferences_is_initialized (), NULL);
 
 	g_return_val_if_fail (preference_name != NULL, NULL);
 
@@ -318,7 +316,6 @@ nautilus_preferences_pane_add_item_to_nth_group (NautilusPreferencesPane	*prefs_
 	group = GTK_WIDGET (g_list_nth_data (prefs_pane->details->groups, n));
 
 	item = nautilus_preferences_group_add_item (NAUTILUS_PREFERENCES_GROUP (group),
-						    preferences,
 						    preference_name,
 						    item_type);
 

@@ -1439,8 +1439,7 @@ destroy (GtkObject *object)
         		gdk_font_unref (container->details->label_font[i]);
 	}
 
-	nautilus_preferences_remove_callback (nautilus_preferences_get_global_preferences (),
-					      NAUTILUS_PREFERENCES_CLICK_POLICY,
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
 					      click_policy_changed_callback,
 					      container);
 	
@@ -2130,13 +2129,11 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 
 	/* Initialize the single click mode from preferences */
 	details->single_click_mode = 
-		(nautilus_preferences_get_enum (nautilus_preferences_get_global_preferences (),
-						NAUTILUS_PREFERENCES_CLICK_POLICY,
+		(nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
 						NAUTILUS_CLICK_POLICY_SINGLE) == NAUTILUS_CLICK_POLICY_SINGLE);
 
 	/* Keep track of changes in clicking policy */
-	nautilus_preferences_add_enum_callback (nautilus_preferences_get_global_preferences (),
-						NAUTILUS_PREFERENCES_CLICK_POLICY,
+	nautilus_preferences_add_enum_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
 						click_policy_changed_callback,
 						container);
 }
@@ -3328,8 +3325,7 @@ click_policy_changed_callback (gpointer user_data)
 	container = NAUTILUS_ICON_CONTAINER (user_data);
 
 	container->details->single_click_mode =
-		(nautilus_preferences_get_enum (nautilus_preferences_get_global_preferences (),
-						NAUTILUS_PREFERENCES_CLICK_POLICY,
+		(nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
 						NAUTILUS_CLICK_POLICY_SINGLE) == NAUTILUS_CLICK_POLICY_SINGLE);
 }
 

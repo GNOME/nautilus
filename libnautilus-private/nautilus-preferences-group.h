@@ -60,7 +60,6 @@ struct _NautilusPreferencesGroupClass
 GtkType    nautilus_preferences_group_get_type (void);
 GtkWidget* nautilus_preferences_group_new      (const gchar                 *title);
 GtkWidget* nautilus_preferences_group_add_item (NautilusPreferencesGroup    *group,
-						const NautilusPreferences   *preferences,
 						const char                  *preference_name,
 						NautilusPreferencesItemType  item_type);
 

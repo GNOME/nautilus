@@ -7,16 +7,14 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 
-static void                 test_radio_group          (void);
-static void                 test_preferences_group    (NautilusPreferences *preferences);
-static void                 test_preferences_item     (void);
-static void                 test_radio_changed_signal (GtkWidget           *button_group,
-						       gpointer             user_data);
-static NautilusPreferences *create_global_preferences (void);
-GtkWidget *                 create_enum_item          (const char          *preference_name);
-GtkWidget *                 create_bool_item          (const char          *preference_name);
-
-static NautilusPreferences * global_preferences = NULL;
+static void test_radio_group            (void);
+static void test_preferences_group      (void);
+static void test_preferences_item       (void);
+static void test_radio_changed_signal   (GtkWidget  *button_group,
+					 gpointer    user_data);
+static void register_global_preferences (void);
+GtkWidget * create_enum_item            (const char *preference_name);
+GtkWidget * create_bool_item            (const char *preference_name);
 
 enum
 {
@@ -32,12 +30,12 @@ main (int argc, char * argv[])
 {
 	gtk_init (&argc, &argv);
 
-	g_assert (nautilus_preferences_init (argc, argv));
+	nautilus_preferences_initialize (argc, argv);
 
-	global_preferences = create_global_preferences ();
-	
+	register_global_preferences ();
+
 	test_radio_group ();
-	test_preferences_group (global_preferences);
+	test_preferences_group ();
 	test_preferences_item ();
 		
 	gtk_main ();
@@ -90,7 +88,7 @@ test_preferences_item (void)
 }
 
 static void
-test_preferences_group (NautilusPreferences *preferences)
+test_preferences_group (void)
 {
 	GtkWidget * window;
 	GtkWidget * group;
@@ -100,7 +98,6 @@ test_preferences_group (NautilusPreferences *preferences)
 	group = nautilus_preferences_group_new ("A group");
 	
 	nautilus_preferences_group_add_item (NAUTILUS_PREFERENCES_GROUP (group),
-					     preferences,
 					     FRUIT_PREFERENCE,
 					     NAUTILUS_PREFERENCE_ITEM_ENUM);
 	
@@ -124,9 +121,7 @@ test_radio_changed_signal (GtkWidget *buttons, gpointer user_data)
 GtkWidget *
 create_enum_item (const char *preference_name)
 {
- 	return nautilus_preferences_item_new (global_preferences,
- 					      preference_name,
- 					      NAUTILUS_PREFERENCE_ITEM_ENUM);
+ 	return nautilus_preferences_item_new (preference_name, NAUTILUS_PREFERENCE_ITEM_ENUM);
 }
 
 // GtkWidget *
@@ -137,40 +132,31 @@ create_enum_item (const char *preference_name)
 // 					      NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 // }
 
-static NautilusPreferences *
-create_global_preferences (void)
+static void
+register_global_preferences (void)
 {
-	NautilusPreferences *preferences;
-	
-	preferences = NAUTILUS_PREFERENCES (nautilus_preferences_new ("dummy"));
+	g_assert (nautilus_preferences_is_initialized ());
 
-	nautilus_preferences_set_info (NAUTILUS_PREFERENCES (preferences),
-				       FRUIT_PREFERENCE,
+	nautilus_preferences_set_info (FRUIT_PREFERENCE,
 				       "Fruits",
 				       NAUTILUS_PREFERENCE_ENUM,
 				       (gconstpointer) FRUIT_ORANGE);
 
-	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES (preferences),
-					     FRUIT_PREFERENCE,
+	nautilus_preferences_enum_add_entry (FRUIT_PREFERENCE,
 					     "apple",
 					     "Apple",
 					     FRUIT_APPLE);
 
-	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES (preferences),
-					     FRUIT_PREFERENCE,
+	nautilus_preferences_enum_add_entry (FRUIT_PREFERENCE,
 					     "orange",
 					     "Orange",
 					     FRUIT_ORANGE);
 
-	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES (preferences),
-					     FRUIT_PREFERENCE,
+	nautilus_preferences_enum_add_entry (FRUIT_PREFERENCE,
 					     "bannana",
 					     "Bannana",
 					     FRUIT_BANNANA);
 
-	nautilus_preferences_set_enum (NAUTILUS_PREFERENCES (preferences),
-				       FRUIT_PREFERENCE,
+	nautilus_preferences_set_enum (FRUIT_PREFERENCE,
 				       FRUIT_BANNANA);
-
-	return preferences;
 }

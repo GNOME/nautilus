@@ -398,13 +398,11 @@ nautilus_list_initialize (NautilusList *list)
 
 	/* Initialize the single click mode from preferences */
 	list->details->single_click_mode = 
-		(nautilus_preferences_get_enum (nautilus_preferences_get_global_preferences (),
-						NAUTILUS_PREFERENCES_CLICK_POLICY,
+		(nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
 						NAUTILUS_CLICK_POLICY_SINGLE) == NAUTILUS_CLICK_POLICY_SINGLE);
 
 	/* Keep track of changes in clicking policy */
-	nautilus_preferences_add_enum_callback (nautilus_preferences_get_global_preferences (),
-						NAUTILUS_PREFERENCES_CLICK_POLICY,
+	nautilus_preferences_add_enum_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
 						click_policy_changed_callback,
 						list);
 }
@@ -418,8 +416,7 @@ nautilus_list_destroy (GtkObject *object)
 
 	unschedule_keyboard_row_reveal (list);
 
-	nautilus_preferences_remove_callback (nautilus_preferences_get_global_preferences (),
-					      NAUTILUS_PREFERENCES_CLICK_POLICY,
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
 					      click_policy_changed_callback,
 					      list);
 
@@ -2235,8 +2232,7 @@ click_policy_changed_callback (gpointer user_data)
 	list = NAUTILUS_LIST (user_data);
 
 	list->details->single_click_mode = 
-		(nautilus_preferences_get_enum (nautilus_preferences_get_global_preferences (),
-						NAUTILUS_PREFERENCES_CLICK_POLICY,
+		(nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
 						NAUTILUS_CLICK_POLICY_SINGLE) == NAUTILUS_CLICK_POLICY_SINGLE);
 }
 

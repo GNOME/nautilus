@@ -41,7 +41,6 @@ static const char PREFERENCE_NO_DESCRIPTION[] = "No Description";
 struct NautilusPreferenceDetail {
 	char			 *name;
 	char			 *description;
-	gpointer		 default_value;
 	NautilusPreferenceType	 type;
 	gpointer		 type_info;
 };
@@ -57,17 +56,11 @@ typedef struct {
 static void nautilus_preference_initialize_class (NautilusPreferenceClass *klass);
 static void nautilus_preference_initialize       (NautilusPreference      *preference);
 
-
 /* GtkObjectClass methods */
 static void nautilus_preference_destroy          (GtkObject               *object);
 
-
-
-/* Default value functions */
-static void preference_free_default_value        (NautilusPreference      *preference);
-
 /* Type info functions */
-static void preference_free_type_info        (NautilusPreference      *preference);
+static void preference_free_type_info            (NautilusPreference      *preference);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreference, nautilus_preference, GTK_TYPE_OBJECT)
 
@@ -107,8 +100,6 @@ nautilus_preference_initialize (NautilusPreference *preference)
 
 	preference->detail->description = NULL;
 
-	preference->detail->default_value = NULL;
-
 	preference->detail->type_info = NULL;
 
 	preference->detail->type = NAUTILUS_PREFERENCE_STRING;
@@ -134,42 +125,12 @@ nautilus_preference_destroy (GtkObject *object)
 	if (preference->detail->description != NULL)
 		g_free (preference->detail->description);
 
-	preference_free_default_value (preference);
-
 	preference_free_type_info (preference);
 	
 	g_free (preference->detail);
 	
 	/* Chain */
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
-}
-
-/**
- * preference_free_default_value
- *
- * Free the default value according to the preference type
- * @preference: Pointer to self.
- *
- **/
-static void
-preference_free_default_value (NautilusPreference *preference)
-{
-	g_assert (preference != NULL);
-	g_assert (NAUTILUS_IS_PREFERENCE (preference));
-	
-	switch (preference->detail->type)
-	{
-	case NAUTILUS_PREFERENCE_STRING:
-		if (preference->detail->default_value)
-			g_free (preference->detail->default_value);
-		preference->detail->default_value = NULL;
-		break;
-
-	default:
-		break;
-	}
-	
-	preference->detail->default_value = NULL;
 }
 
 /**
@@ -327,8 +288,8 @@ nautilus_preference_get_preference_type (const NautilusPreference *preference)
  * Set the type for the given preference.  Yes it possible to morph the preference type
  * in midair.  This is actually an important feature so that users of preferences can pull 
  * them out of their assess without having to register them first.  Changing the preference
- * type is guranteed not to leak resources regardless of the old/new types (such as string
- * default values).
+ * type is guranteed not to leak resources regardless of the old/new types. (such as extra
+ * enum type info).
  *
  * @preference: The preference object.
  * @type: The new type of the preference.
@@ -345,8 +306,7 @@ nautilus_preference_set_preference_type (NautilusPreference *preference,
 	if (preference->detail->type == type)
 		return;
 
-	/* Free the old default value and type info */
-	preference_free_default_value (preference);
+	/* Free the old type info */
 	preference_free_type_info (preference);
 
 	preference->detail->type = type;
@@ -416,149 +376,6 @@ nautilus_preference_set_description (NautilusPreference *preference,
 		g_free (preference->detail->description);
 	
 	preference->detail->description = g_strdup (description);
-}
-
-
-/**
- * nautilus_preference_get_default_value
- *
- * Get a copy of the description for the given preference.
- * @preference: The preference object.
- *
- * Return value: A newly allocated string with the prefrence description.  This function is always
- * guranteed to return a valid newly allocated string (the default is "").
- *
- **/
-char *
-nautilus_preference_get_default_value (const NautilusPreference *preference)
-{
-	g_return_val_if_fail (preference != NULL, NULL);
-	g_return_val_if_fail (NAUTILUS_IS_PREFERENCE (preference), NULL);
-	g_return_val_if_fail (preference->detail->type == NAUTILUS_PREFERENCE_STRING, NULL);
-
-	return (char *) nautilus_preference_any_get_default_value (preference);
-}
-
-/**
- * nautilus_preference_set_default_value
- *
- * Set the default value for the given preference.
- * @preference: The preference object.
- * @default_value: The default value.
- *
- **/
-void 
-nautilus_preference_set_default_value (NautilusPreference	*preference,
-				       const char             *default_value)
-{
-	g_return_if_fail (preference != NULL);
-	g_return_if_fail (NAUTILUS_IS_PREFERENCE (preference));
-	g_return_if_fail (preference->detail->type == NAUTILUS_PREFERENCE_STRING);
-	g_return_if_fail (default_value != NULL);
-
-	nautilus_preference_any_set_default_value (preference, (gconstpointer) default_value);
-}
-
-
-/**
- * nautilus_preference_any_get_default_value
- *
- * Get the default value for an enum preference.
- * @preference: The preference object.
- *
- * Return value: The enum default value as an integer.
- *
- **/
-gpointer
-nautilus_preference_any_get_default_value (const NautilusPreference *preference)
-{
-	gpointer default_value;
-
-	g_return_val_if_fail (preference != NULL, 0);
-	g_return_val_if_fail (NAUTILUS_IS_PREFERENCE (preference), 0);
-
-	switch (preference->detail->type)
-	{
-	case NAUTILUS_PREFERENCE_STRING:
-		default_value = (gpointer) g_strdup ((char *) (preference->detail->default_value ? 
-							       preference->detail->default_value : ""));
-
-		break;
-
-	default:
-		default_value = preference->detail->default_value;
-		break;
-	}
-
-	return default_value;
-}
-
-/**
- * nautilus_preference_any_set_default_value
- *
- * Set the default value for an any preferece.  Deals with all types including those that require alloc/free.
- * @preference: The preference object.
- * @default_value: The new default value as generic pointer.
- *
- **/
-void
-nautilus_preference_any_set_default_value (NautilusPreference	*preference,
-					   gconstpointer	default_value)
-{
-	g_return_if_fail (preference != NULL);
-	g_return_if_fail (NAUTILUS_IS_PREFERENCE (preference));
-
-	preference_free_default_value (preference);
-
-
-	switch (preference->detail->type)
-	{
-	case NAUTILUS_PREFERENCE_STRING:
-		preference->detail->default_value = (gpointer) g_strdup (default_value ? default_value : "");
-		break;
-
-	default:
-		preference->detail->default_value = (gpointer) default_value;
-		break;
-	}
-}
-
-/**
- * nautilus_preference_enum_get_default_value
- *
- * Get the default value for an enum preference.
- * @preference: The preference object.
- *
- * Return value: The enum default value as an integer.
- *
- **/
-gint
-nautilus_preference_enum_get_default_value (const NautilusPreference	*preference)
-{
-	g_return_val_if_fail (preference != NULL, 0);
-	g_return_val_if_fail (NAUTILUS_IS_PREFERENCE (preference), 0);
-	g_return_val_if_fail (preference->detail->type == NAUTILUS_PREFERENCE_ENUM, 0);
-
-	return GPOINTER_TO_INT (nautilus_preference_any_get_default_value (preference));
-}
-
-/**
- * nautilus_preference_enum_set_default_value
- *
- * Set the default valu for an enum preferece.
- * @preference: The preference object.
- * @default_value: The new default value as an integer.
- *
- **/
-void
-nautilus_preference_enum_set_default_value (NautilusPreference	*preference,
-					    gint default_value)
-{
-	g_return_if_fail (preference != NULL);
-	g_return_if_fail (NAUTILUS_IS_PREFERENCE (preference));
-	g_return_if_fail (preference->detail->type == NAUTILUS_PREFERENCE_ENUM);
-
-	nautilus_preference_any_set_default_value (preference, GINT_TO_POINTER (default_value));
 }
 
 void
@@ -664,44 +481,6 @@ nautilus_preference_enum_get_num_entries (const NautilusPreference *preference)
 	return 0;
 }
 
-/**
- * nautilus_preference_boolean_get_default_value
- *
- * Get the default value for an boolean preference.
- * @preference: The preference object.
- *
- * Return value: The boolean default value as an integer.
- *
- **/
-gboolean
-nautilus_preference_boolean_get_default_value (const NautilusPreference *preference)
-{
-	g_return_val_if_fail (preference != NULL, 0);
-	g_return_val_if_fail (NAUTILUS_IS_PREFERENCE (preference), 0);
-	g_return_val_if_fail (preference->detail->type == NAUTILUS_PREFERENCE_BOOLEAN, 0);
-
-	return (gboolean) nautilus_preference_any_get_default_value (preference);
-}
-
-/**
- * nautilus_preference_boolean_set_default_value
- *
- * Set the default valu for an boolean preferece.
- * @preference: The preference object.
- * @default_value: The new default value.
- *
- **/
-void
-nautilus_preference_boolean_set_default_value (NautilusPreference	*preference,
-					       gboolean default_value)
-{
-	g_return_if_fail (preference != NULL);
-	g_return_if_fail (NAUTILUS_IS_PREFERENCE (preference));
-	g_return_if_fail (preference->detail->type == NAUTILUS_PREFERENCE_BOOLEAN);
-
-	nautilus_preference_any_set_default_value (preference, (gpointer) (default_value ? 1 : 0));
-}
-
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 void
@@ -721,14 +500,6 @@ nautilus_widgets_self_check_preference (void)
 
 		nautilus_preference_set_description (bp, "Is it active ?");
 		
-		nautilus_preference_boolean_set_default_value (bp, TRUE);
-
-		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_preference_boolean_get_default_value (bp), TRUE);
-		
-		nautilus_preference_boolean_set_default_value (bp, FALSE);
-
-		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_preference_boolean_get_default_value (bp), FALSE);
-
 		NAUTILUS_CHECK_STRING_RESULT (nautilus_preference_get_name (bp), "active");
 
 		NAUTILUS_CHECK_STRING_RESULT (nautilus_preference_get_description (bp), "Is it active ?");
@@ -767,10 +538,6 @@ nautilus_widgets_self_check_preference (void)
 		
 		sp = NAUTILUS_PREFERENCE (nautilus_preference_new_from_type ("font", NAUTILUS_PREFERENCE_STRING));
 		
-		nautilus_preference_set_default_value (sp, "helvetica");
-
-		NAUTILUS_CHECK_STRING_RESULT (nautilus_preference_get_default_value (sp), "helvetica");
-
 		NAUTILUS_CHECK_STRING_RESULT (nautilus_preference_get_name (sp), "font");
 
 		gtk_object_unref (GTK_OBJECT (sp));
@@ -818,18 +585,12 @@ nautilus_widgets_self_check_preference (void)
 		{
 			NautilusPreference *sp;
 			char		   *sn;
-			char		   *string_default_value;
 			
 			sn = g_strdup_printf ("sp_%d", i);
 
-			string_default_value = g_strdup_printf ("default_value_%d", i);
-
 			sp = NAUTILUS_PREFERENCE (nautilus_preference_new_from_type (sn, NAUTILUS_PREFERENCE_STRING));
 
-			nautilus_preference_set_default_value (sp, string_default_value);
-			
 			g_free (sn);
-			g_free (string_default_value);
 
 			gtk_object_unref (GTK_OBJECT (sp));
 		}

@@ -203,8 +203,7 @@ fm_icon_view_initialize (FMIconView *icon_view)
 	icon_view->details = g_new0 (FMIconViewDetails, 1);
 	icon_view->details->default_zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
 
-	nautilus_preferences_add_callback (nautilus_preferences_get_global_preferences (),
-					   NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
 					   text_attribute_names_changed_callback,
 					   icon_view);
 	
@@ -218,8 +217,7 @@ fm_icon_view_destroy (GtkObject *object)
 
 	icon_view = FM_ICON_VIEW (object);
 
-	nautilus_preferences_remove_callback (nautilus_preferences_get_global_preferences (),
-					      NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
 					      text_attribute_names_changed_callback,
 					      icon_view);
 

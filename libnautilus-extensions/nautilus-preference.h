@@ -76,19 +76,7 @@ char *                 nautilus_preference_get_name                       (const
 char *                 nautilus_preference_get_description                (const NautilusPreference *preference);
 void                   nautilus_preference_set_description                (NautilusPreference       *preference,
 									   const char               *description);
-void                   nautilus_preference_set_default_value              (NautilusPreference       *preference,
-									   const char               *default_value);
-char *                 nautilus_preference_get_default_value              (const NautilusPreference *preference);
-
-
-void                   nautilus_preference_any_set_default_value         (NautilusPreference       *preference,
-									  gconstpointer            default_value);
-gpointer               nautilus_preference_any_get_default_value         (const NautilusPreference *preference);
-
 /* Methods to deal with enum preferences */
-void                   nautilus_preference_enum_set_default_value         (NautilusPreference       *preference,
-									   gint                      default_value);
-gint                   nautilus_preference_enum_get_default_value         (const NautilusPreference *preference);
 void                   nautilus_preference_enum_add_entry                 (NautilusPreference       *preference,
 									   const char               *entry_name,
 									   const char               *entry_description,
@@ -100,12 +88,6 @@ char *                 nautilus_preference_enum_get_nth_entry_description (const
 gint                   nautilus_preference_enum_get_nth_entry_value       (const NautilusPreference *preference,
 									   guint                     n);
 guint                  nautilus_preference_enum_get_num_entries           (const NautilusPreference *preference);
-
-
-/* Methods to deal with boolean preferences */
-void                   nautilus_preference_boolean_set_default_value      (NautilusPreference       *preference,
-									   gboolean                  default_value);
-gboolean               nautilus_preference_boolean_get_default_value      (const NautilusPreference *preference);
 
 BEGIN_GNOME_DECLS
 
