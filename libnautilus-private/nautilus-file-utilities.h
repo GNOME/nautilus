@@ -59,6 +59,7 @@ char *                  nautilus_uri_make_full_from_relative       (const char  
 /* Recognizing special file names. */
 gboolean                nautilus_file_name_matches_hidden_pattern  (const char                *name_or_relative_uri);
 gboolean                nautilus_file_name_matches_backup_pattern  (const char                *name_or_relative_uri);
+gboolean                nautilus_file_name_matches_metafile_pattern(const char                *name_or_relative_uri);
 
 
 /* FIXME bugzilla.eazel.com 2424: 

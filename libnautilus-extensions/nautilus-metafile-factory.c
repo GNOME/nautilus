@@ -103,6 +103,6 @@ corba_open (PortableServer_Servant  servant,
 	    CORBA_Environment      *ev)
 {
 	BonoboObject *object;
-	object = BONOBO_OBJECT (nautilus_metafile_new (directory));
+	object = BONOBO_OBJECT (nautilus_metafile_get (directory));
 	return CORBA_Object_duplicate (bonobo_object_corba_objref (object), ev);
 }

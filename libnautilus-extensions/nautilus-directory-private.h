@@ -34,10 +34,9 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-directory-metafile-monitor.h"
 #include "nautilus-metafile-server.h"
+#include "nautilus-idle-queue.h"
 
 typedef struct ActivationURIReadState ActivationURIReadState;
-typedef struct MetafileReadState MetafileReadState;
-typedef struct MetafileWriteState MetafileWriteState;
 typedef struct TopLeftTextReadState TopLeftTextReadState;
 
 struct NautilusDirectoryDetails
@@ -45,24 +44,11 @@ struct NautilusDirectoryDetails
 	/* The location. */
 	char *uri;
 	GnomeVFSURI *vfs_uri;
-	GnomeVFSURI *private_metafile_vfs_uri;
-	GnomeVFSURI *public_metafile_vfs_uri;
 
 	/* The file objects. */
 	NautilusFile *as_file;
 	GList *file_list;
 	GHashTable *file_hash;
-
-	/* The metadata. */
-	gboolean metafile_read;
-	xmlDoc *metafile;
-	GHashTable *metafile_node_hash;
-	GHashTable *metadata_changes;
-
-	/* State for reading and writing metadata. */
-	MetafileReadState *metafile_read_state;
-	guint write_metafile_idle_id;
-	MetafileWriteState *metafile_write_state;
 
 	/* These lists are going to be pretty short.  If we think they
 	 * are going to get big, we can use hash tables instead.
@@ -70,8 +56,8 @@ struct NautilusDirectoryDetails
 	GList *call_when_ready_list;
 	GList *monitor_list;
 
+	NautilusIdleQueue *idle_queue;
 	NautilusMetafileMonitor *metafile_monitor;
-	gboolean load_metafile_for_server;
 	Nautilus_Metafile metafile_corba_object;
 
 	gboolean in_async_service_loop;
@@ -161,11 +147,9 @@ gboolean           nautilus_directory_is_file_list_monitored          (NautilusD
 gboolean           nautilus_directory_is_anyone_monitoring_file_list  (NautilusDirectory         *directory);
 void               nautilus_directory_remove_file_monitor_link        (NautilusDirectory         *directory,
 								       GList                     *link);
-void               nautilus_directory_request_write_metafile          (NautilusDirectory         *directory);
 void               nautilus_directory_schedule_dequeue_pending        (NautilusDirectory         *directory);
 void               nautilus_directory_stop_monitoring_file_list       (NautilusDirectory         *directory);
 void               nautilus_directory_cancel                          (NautilusDirectory         *directory);
-void               nautilus_metafile_write_start                      (NautilusDirectory         *directory);
 void               nautilus_async_destroying_file                     (NautilusFile              *file);
 void               nautilus_directory_force_reload_internal           (NautilusDirectory         *directory,
 								       GList                     *file_attributes);

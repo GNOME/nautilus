@@ -202,4 +202,6 @@ gboolean           nautilus_directory_is_local                 (NautilusDirector
 gboolean           nautilus_directory_is_not_empty             (NautilusDirectory         *directory);
 gboolean           nautilus_directory_file_list_length_reached (NautilusDirectory         *directory);
 
+char *		   nautilus_directory_make_uri_canonical       (const char *uri);
+
 #endif /* NAUTILUS_DIRECTORY_H */

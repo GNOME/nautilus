@@ -30,6 +30,7 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-link-set.h"
 #include "nautilus-metadata.h"
+#include "nautilus-metafile.h"
 #include "nautilus-string.h"
 #include <ctype.h>
 #include <libgnome/gnome-defs.h>
@@ -857,6 +858,14 @@ nautilus_file_name_matches_backup_pattern (const char *name_or_relative_uri)
 	g_return_val_if_fail (name_or_relative_uri != NULL, FALSE);
 
 	return nautilus_str_has_suffix (name_or_relative_uri, "~");
+}
+
+gboolean
+nautilus_file_name_matches_metafile_pattern (const char *name_or_relative_uri)
+{
+	g_return_val_if_fail (name_or_relative_uri != NULL, FALSE);
+
+	return nautilus_str_has_suffix (name_or_relative_uri, NAUTILUS_METAFILE_NAME_SUFFIX);
 }
 
 /**

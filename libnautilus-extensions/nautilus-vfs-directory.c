@@ -148,40 +148,22 @@ vfs_are_all_files_seen (NautilusDirectory *directory)
 	return directory->details->directory_loaded;
 }
 
-static int
-any_non_metafile_item (gconstpointer item, gconstpointer callback_data)
-{
-	/* A metafile is exactly what we are not looking for, anything else is a match. */
-	return nautilus_file_matches_uri
-		(NAUTILUS_FILE (item), (const char *) callback_data)
-		? 1 : 0;
-}
-
 static gboolean
 vfs_is_not_empty (NautilusDirectory *directory)
 {
-	char *public_metafile_uri;
-	gboolean not_empty;
-	
+	GList *node;
+
 	g_return_val_if_fail (NAUTILUS_IS_VFS_DIRECTORY (directory), FALSE);
 	g_return_val_if_fail (nautilus_directory_is_anyone_monitoring_file_list (directory), FALSE);
-	
-	if (directory->details->public_metafile_vfs_uri == NULL) {
-		not_empty = directory->details->file_list != NULL;
-	} else {
-		public_metafile_uri = gnome_vfs_uri_to_string
-			(directory->details->public_metafile_vfs_uri,
-			 GNOME_VFS_URI_HIDE_NONE);
-		
-		/* Return TRUE if the directory contains anything besides a metafile. */
-		not_empty = g_list_find_custom (directory->details->file_list,
-						public_metafile_uri,
-						any_non_metafile_item) != NULL;
-		
-		g_free (public_metafile_uri);
+
+	for (node = directory->details->file_list; node != NULL; node = node->next) {
+		if (!nautilus_file_is_metafile (NAUTILUS_FILE (node->data))) {
+			/* Return TRUE if the directory contains anything besides a metafile. */
+			return TRUE;
+		}
 	}
-	
-	return not_empty;
+
+	return FALSE;
 }
 
 static void

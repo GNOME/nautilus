@@ -74,6 +74,8 @@ void     nautilus_directory_remove_file_metadata           (NautilusDirectory *d
 void     nautilus_directory_rename_file_metadata           (NautilusDirectory *directory,
 							    const char        *old_file_name,
 							    const char        *new_file_name);
+void	 nautilus_directory_rename_directory_metadata      (NautilusDirectory *directory,
+							    const char        *new_directory_uri);
 
 void nautilus_directory_register_metadata_monitor   (NautilusDirectory *directory);
 void nautilus_directory_unregister_metadata_monitor (NautilusDirectory *directory);

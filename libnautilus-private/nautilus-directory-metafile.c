@@ -34,9 +34,6 @@
 #include <liboaf/liboaf.h>
 #include <stdio.h>
 
-/* FIXME: remove this when evilness is removed */
-#include <libnautilus-extensions/nautilus-metafile.h>
-
 static Nautilus_MetafileFactory factory = CORBA_OBJECT_NIL;
 static gboolean get_factory_from_oaf = TRUE;
 
@@ -73,25 +70,11 @@ get_factory (void)
 	return factory;
 }
 
-/* FIXME: Remove this code. It's ORBit dependent and generally evil */
-static gboolean
-corba_object_is_local (CORBA_Object obj)
-{
-	return obj->vepv != NULL;
-}
-static PortableServer_Servant
-corba_object_get_servant (CORBA_Object obj)
-{
-	g_assert (corba_object_is_local (obj));
-	return obj->servant;
-}
-
 static Nautilus_Metafile
 get_metafile (NautilusDirectory *directory)
 {
 	char *uri;
 	CORBA_Environment ev;
-	NautilusMetafile  *metafile;
 
 	uri = nautilus_directory_get_uri (directory);
 	
@@ -99,15 +82,6 @@ get_metafile (NautilusDirectory *directory)
 
 	if (directory->details->metafile_corba_object == CORBA_OBJECT_NIL) {
 		directory->details->metafile_corba_object = Nautilus_MetafileFactory_open (get_factory (), uri, &ev);
-
-		/* FIXME: remove this cycle-breaking when no longer needed */
-		if (corba_object_is_local (directory->details->metafile_corba_object)) {
-			metafile = NAUTILUS_METAFILE (bonobo_object_from_servant (corba_object_get_servant (directory->details->metafile_corba_object)));
-			if (!metafile->details->directory_ref_is_gone) {
-				nautilus_directory_unref (metafile->details->directory);
-				metafile->details->directory_ref_is_gone = TRUE;
-			}
-		}
 	}
 	
 	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
@@ -463,6 +437,26 @@ nautilus_directory_rename_file_metadata (NautilusDirectory *directory,
 	CORBA_exception_init (&ev);
 
 	Nautilus_Metafile_rename (metafile, old_file_name, new_file_name, &ev);
+
+	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+	CORBA_exception_free (&ev);
+	bonobo_object_release_unref (metafile, &ev);
+}
+
+void
+nautilus_directory_rename_directory_metadata (NautilusDirectory *directory,
+					      const char *new_directory_uri)
+{
+	CORBA_Environment ev;
+	Nautilus_Metafile metafile;
+
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	g_return_if_fail (new_directory_uri != NULL);
+	
+	metafile = get_metafile (directory);
+	CORBA_exception_init (&ev);
+
+	Nautilus_Metafile_rename_directory (metafile, new_directory_uri, &ev);
 
 	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
 	CORBA_exception_free (&ev);

@@ -70,12 +70,13 @@ module Nautilus {
 			       in MetadataList list);
 				     
 		/* calls to keep metadata in sync with file operations */
-		void copy   (in string  source_file_name,
-			     in URI	destination_directory_uri,
-			     in string  destination_file_name);
-		void remove (in string  file_name);
-		void rename (in string  old_file_name,
-			     in string  new_file_name);
+		void copy	      (in string  source_file_name,
+				       in URI     destination_directory_uri,
+				       in string  destination_file_name);
+		void remove	      (in string  file_name);
+		void rename	      (in string  old_file_name,
+				       in string  new_file_name);
+		void rename_directory (in string  new_directory_uri);
 
 		/* calls for registering a MetafileMonitor with a Metafile */
 		void register_monitor   (in MetafileMonitor monitor);

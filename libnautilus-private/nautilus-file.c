@@ -1843,6 +1843,13 @@ nautilus_file_is_backup_file (NautilusFile *file)
 }
 
 gboolean 
+nautilus_file_is_metafile (NautilusFile *file)
+{
+	return nautilus_file_name_matches_metafile_pattern
+		(file->details->relative_uri);
+}
+
+gboolean 
 nautilus_file_should_show (NautilusFile *file, 
 			   gboolean show_hidden,
 			   gboolean show_backup)

@@ -28,17 +28,37 @@
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 
+#include <libgnomevfs/gnome-vfs-types.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-file-info.h>
+
 #include "nautilus-string.h"
 #include "nautilus-metadata.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-xml-extensions.h"
 #include "nautilus-glib-extensions.h"
-#include "nautilus-directory-private.h"
+#include "nautilus-directory.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-file-private.h"
+#include "nautilus-search-uri.h"
 
 #include <stdlib.h>
+#include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
+#include <gtk/gtkmain.h>
 
 #define METAFILE_XML_VERSION "1.0"
+
+#define METAFILE_PERMISSIONS (GNOME_VFS_PERM_USER_READ | GNOME_VFS_PERM_USER_WRITE \
+			      | GNOME_VFS_PERM_GROUP_READ | GNOME_VFS_PERM_GROUP_WRITE \
+			      | GNOME_VFS_PERM_OTHER_READ | GNOME_VFS_PERM_OTHER_WRITE)
+
+#define METAFILES_DIRECTORY_NAME "metafiles"
+
+#define METAFILES_DIRECTORY_PERMISSIONS \
+	(GNOME_VFS_PERM_USER_ALL \
+         | GNOME_VFS_PERM_GROUP_ALL \
+	 | GNOME_VFS_PERM_OTHER_ALL)
 
 static void nautilus_metafile_init       (NautilusMetafile      *metafile);
 static void nautilus_metafile_class_init (NautilusMetafileClass *klass);
@@ -72,18 +92,21 @@ static void corba_set_list (PortableServer_Servant       servant,
 			    const Nautilus_MetadataList *list,
 			    CORBA_Environment           *ev);
 					       
-static void corba_copy  (PortableServer_Servant   servant,
-			 const CORBA_char        *source_file_name,
-			 const Nautilus_URI       destination_directory_uri,
-			 const CORBA_char        *destination_file_name,
-			 CORBA_Environment       *ev);
-static void corba_remove (PortableServer_Servant  servant,
-			 const CORBA_char        *file_name,
-			 CORBA_Environment       *ev);
-static void corba_rename (PortableServer_Servant  servant,
-			 const CORBA_char        *old_file_name,
-			 const CORBA_char        *new_file_name,
-			 CORBA_Environment       *ev);
+static void corba_copy             (PortableServer_Servant   servant,
+				    const CORBA_char        *source_file_name,
+				    const Nautilus_URI       destination_directory_uri,
+				    const CORBA_char        *destination_file_name,
+				    CORBA_Environment       *ev);
+static void corba_remove           (PortableServer_Servant  servant,
+				    const CORBA_char       *file_name,
+				    CORBA_Environment      *ev);
+static void corba_rename           (PortableServer_Servant  servant,
+				    const CORBA_char       *old_file_name,
+				    const CORBA_char       *new_file_name,
+				    CORBA_Environment      *ev);
+static void corba_rename_directory (PortableServer_Servant  servant,
+				    const CORBA_char       *new_directory_uri,
+				    CORBA_Environment      *ev);
 
 static void corba_register_monitor   (PortableServer_Servant          servant,
 				      const Nautilus_MetafileMonitor  monitor,
@@ -92,39 +115,87 @@ static void corba_unregister_monitor (PortableServer_Servant          servant,
 				      const Nautilus_MetafileMonitor  monitor,
 				      CORBA_Environment              *ev);
 
-static char    *get_file_metadata      (NautilusDirectory *directory,
-					const char *file_name,
-					const char *key,
-					const char *default_metadata);
-static GList   *get_file_metadata_list (NautilusDirectory *directory,
-					const char *file_name,
-					const char *list_key,
-					const char *list_subkey);
-static gboolean set_file_metadata      (NautilusDirectory *directory,
-					const char *file_name,
-					const char *key,
-					const char *default_metadata,
-					const char *metadata);
-static gboolean set_file_metadata_list (NautilusDirectory *directory,
-					const char *file_name,
-					const char *list_key,
-					const char *list_subkey,
+static char    *get_file_metadata      (NautilusMetafile *metafile,
+					const char       *file_name,
+					const char       *key,
+					const char       *default_metadata);
+static GList   *get_file_metadata_list (NautilusMetafile *metafile,
+					const char       *file_name,
+					const char       *list_key,
+					const char       *list_subkey);
+static gboolean set_file_metadata      (NautilusMetafile *metafile,
+					const char       *file_name,
+					const char       *key,
+					const char       *default_metadata,
+					const char       *metadata);
+static gboolean set_file_metadata_list (NautilusMetafile *metafile,
+					const char       *file_name,
+					const char       *list_key,
+					const char       *list_subkey,
 					GList *list);
 					
-static void rename_file_metadata (NautilusDirectory *directory,
-				  const char *old_file_name,
-				  const char *new_file_name);
-static void copy_file_metadata   (NautilusDirectory *source_directory,
-				  const char *source_file_name,
-				  NautilusDirectory *destination_directory,
-				  const char *destination_file_name);
-static void remove_file_metadata (NautilusDirectory *directory,
-				  const char *file_name);
+static void rename_file_metadata (NautilusMetafile *metafile,
+				  const char       *old_file_name,
+				  const char       *new_file_name);
+static void copy_file_metadata   (NautilusMetafile *source_metafile,
+				  const char       *source_file_name,
+				  NautilusMetafile *destination_metafile,
+				  const char       *destination_file_name);
+static void remove_file_metadata (NautilusMetafile *metafile,
+				  const char       *file_name);
 
-static void call_metafile_changed_for_one_file (NautilusDirectory *directory,
+static void call_metafile_changed_for_one_file (NautilusMetafile   *metafile,
 						 const CORBA_char  *file_name);
 
+static void metafile_read_restart            (NautilusMetafile *metafile);
+static void metafile_read_start              (NautilusMetafile *metafile);
+static void metafile_write_start             (NautilusMetafile *metafile);
+static void directory_request_write_metafile (NautilusMetafile *metafile);
+static void metafile_free_metadata	     (NautilusMetafile *metafile);
+static void metafile_read_cancel	     (NautilusMetafile *metafile);
+static void async_read_cancel                (NautilusMetafile *metafile);
+
+static void nautilus_metafile_set_metafile_contents (NautilusMetafile *metafile,
+					             xmlDocPtr metafile_contents);
+
 NAUTILUS_BONOBO_X_BOILERPLATE (NautilusMetafile, Nautilus_Metafile, BONOBO_X_OBJECT_TYPE, nautilus_metafile)
+
+typedef struct MetafileReadState {
+	gboolean use_public_metafile;
+	NautilusReadFileHandle *handle;
+	GnomeVFSAsyncHandle *get_file_info_handle;
+} MetafileReadState;
+
+typedef struct MetafileWriteState {
+	gboolean use_public_metafile;
+	GnomeVFSAsyncHandle *handle;
+	xmlChar *buffer;
+	GnomeVFSFileSize size;
+	gboolean write_again;
+} MetafileWriteState;
+
+struct NautilusMetafileDetails {
+	gboolean is_read;
+	
+	xmlDoc *xml;
+	GHashTable *node_hash;
+	GHashTable *changes;
+
+	/* State for reading and writing metadata. */
+	MetafileReadState *read_state;
+	guint write_idle_id;
+	MetafileWriteState *write_state;
+	
+	GList *monitors;
+
+	GnomeVFSURI *private_vfs_uri;
+	GnomeVFSURI *public_vfs_uri;
+
+	char *directory_uri;
+	GnomeVFSURI *directory_vfs_uri;
+};
+
+static GHashTable *metafiles;
 
 static void
 nautilus_metafile_class_init (NautilusMetafileClass *klass)
@@ -139,6 +210,7 @@ nautilus_metafile_class_init (NautilusMetafileClass *klass)
 	klass->epv.copy               = corba_copy;
 	klass->epv.remove             = corba_remove;
 	klass->epv.rename             = corba_rename;
+	klass->epv.rename_directory   = corba_rename_directory;
 	klass->epv.register_monitor   = corba_register_monitor;
 	klass->epv.unregister_monitor = corba_unregister_monitor;
 }
@@ -147,34 +219,236 @@ static void
 nautilus_metafile_init (NautilusMetafile *metafile)
 {
 	metafile->details = g_new0 (NautilusMetafileDetails, 1);
+	
+	metafile->details->node_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	
 }
 
 static void
 destroy (GtkObject *object)
 {
 	NautilusMetafile  *metafile;
-	NautilusDirectory *directory;
 
 	metafile  = NAUTILUS_METAFILE (object);
-	directory = metafile->details->directory;
 
-	/* FIXME: remove this conditional when the field goes away */
-	if (!metafile->details->directory_ref_is_gone) {
-		nautilus_directory_unref (directory);
+	g_assert (metafile->details->write_state == NULL);
+	async_read_cancel (metafile);
+	g_assert (metafile->details->read_state == NULL);
+
+	if (metafile->details->public_vfs_uri != NULL) {
+		gnome_vfs_uri_unref (metafile->details->public_vfs_uri);
 	}
+	if (metafile->details->private_vfs_uri != NULL) {
+		gnome_vfs_uri_unref (metafile->details->private_vfs_uri);
+	}
+	
+	g_hash_table_remove (metafiles, metafile->details->directory_uri);
+	
+	metafile_free_metadata (metafile);
+	g_hash_table_destroy (metafile->details->node_hash);
+
+	g_assert (metafile->details->write_idle_id == 0);
 
 	g_free (metafile->details);
 
 	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
-NautilusMetafile *
+static GnomeVFSURI *
+construct_private_metafile_vfs_uri (const char *uri)
+{
+	GnomeVFSResult result;
+	char *user_directory;
+	GnomeVFSURI *user_directory_uri, *metafiles_directory_uri, *alternate_uri;
+	char *escaped_uri, *file_name;
+
+	/* Ensure that the metafiles directory exists. */
+	user_directory = nautilus_get_user_directory ();
+	user_directory_uri = gnome_vfs_uri_new (user_directory);
+	g_free (user_directory);
+
+	metafiles_directory_uri = gnome_vfs_uri_append_file_name (user_directory_uri,
+								  METAFILES_DIRECTORY_NAME);
+	gnome_vfs_uri_unref (user_directory_uri);
+	result = nautilus_make_directory_and_parents (metafiles_directory_uri,
+						      METAFILES_DIRECTORY_PERMISSIONS);
+	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILE_EXISTS) {
+		gnome_vfs_uri_unref (metafiles_directory_uri);
+		return NULL;
+	}
+
+	/* Construct a file name from the URI. */
+	escaped_uri = gnome_vfs_escape_slashes (uri);
+	file_name = g_strconcat (escaped_uri, ".xml", NULL);
+	g_free (escaped_uri);
+
+	/* Construct a URI for something in the "metafiles" directory. */
+	alternate_uri = gnome_vfs_uri_append_file_name (metafiles_directory_uri, file_name);
+	gnome_vfs_uri_unref (metafiles_directory_uri);
+	g_free (file_name);
+
+	return alternate_uri;
+}
+
+static void
+nautilus_metafile_set_directory_uri (NautilusMetafile *metafile, const char *directory_uri)
+{
+	GnomeVFSURI *new_vfs_uri;
+
+	if (nautilus_strcmp (metafile->details->directory_uri, directory_uri) == 0) {
+		return;
+	}
+
+	g_free (metafile->details->directory_uri);
+	metafile->details->directory_uri = g_strdup (directory_uri);
+
+	new_vfs_uri = gnome_vfs_uri_new (directory_uri);
+
+	if (metafile->details->directory_vfs_uri != NULL) {
+		gnome_vfs_uri_unref (metafile->details->directory_vfs_uri);
+	}
+	metafile->details->directory_vfs_uri = new_vfs_uri;
+
+	if (metafile->details->public_vfs_uri != NULL) {
+		gnome_vfs_uri_unref (metafile->details->public_vfs_uri);
+	}
+	metafile->details->public_vfs_uri = new_vfs_uri == NULL ? NULL
+		: gnome_vfs_uri_append_file_name (new_vfs_uri, NAUTILUS_METAFILE_NAME_SUFFIX);
+
+	if (metafile->details->private_vfs_uri != NULL) {
+		gnome_vfs_uri_unref (metafile->details->private_vfs_uri);
+	}
+	metafile->details->private_vfs_uri
+		= construct_private_metafile_vfs_uri (directory_uri);
+
+}
+
+static NautilusMetafile *
 nautilus_metafile_new (const char *directory_uri)
 {
 	NautilusMetafile *metafile;
+	
 	metafile = NAUTILUS_METAFILE (gtk_object_new (NAUTILUS_TYPE_METAFILE, NULL));
-	metafile->details->directory = nautilus_directory_get (directory_uri);
+
+	nautilus_metafile_set_directory_uri (metafile, directory_uri);
+
 	return metafile;
+}
+
+NautilusMetafile *
+nautilus_metafile_get (const char *directory_uri)
+{
+	NautilusMetafile *metafile;
+	char *canonical_uri;
+	
+	g_return_val_if_fail (directory_uri != NULL, NULL);
+	
+	if (metafiles == NULL) {
+		metafiles = nautilus_g_hash_table_new_free_at_exit
+			(g_str_hash, g_str_equal, __FILE__ ": metafiles");
+	}
+	
+	canonical_uri = nautilus_directory_make_uri_canonical (directory_uri);
+	
+	metafile = g_hash_table_lookup (metafiles, canonical_uri);
+	
+	if (metafile != NULL) {
+		bonobo_object_ref (BONOBO_OBJECT (metafile));
+	} else {
+		metafile = nautilus_metafile_new (canonical_uri);
+		
+		g_assert (strcmp (metafile->details->directory_uri, canonical_uri) == 0);
+
+		g_hash_table_insert (metafiles,
+				     metafile->details->directory_uri,
+				     metafile);
+	}
+	
+	g_free (canonical_uri);
+
+	return metafile;
+}
+
+/* FIXME
+ * Right now we only limit the number of conccurrent reads.
+ * We may want to consider limiting writes as well.
+ */
+
+int num_reads_in_progress;
+GList *pending_reads;
+
+#if 0
+#define DEBUG_METADATA_IO
+#endif
+
+static void
+schedule_next_read ()
+{	
+	const int kMaxAsyncReads = 10;
+	
+	GList* node;
+	
+#ifdef DEBUG_METADATA_IO
+		g_message ("schedule_next_read: %d pending reads, %d reads in progress",
+			   g_list_length (pending_reads), num_reads_in_progress);
+#endif
+
+	if (pending_reads != NULL && num_reads_in_progress <= kMaxAsyncReads) {
+		node = pending_reads;
+		pending_reads = g_list_remove_link (pending_reads, node);
+#ifdef DEBUG_METADATA_IO
+		g_message ("schedule_next_read: %s", NAUTILUS_METAFILE (node->data)->details->directory_uri);
+#endif
+		metafile_read_start (node->data);
+		g_list_free_1 (node);
+		++num_reads_in_progress;
+	}
+}
+
+static void
+async_read_start (NautilusMetafile *metafile)
+{
+	if (metafile->details->is_read
+	    || metafile->details->read_state != NULL) {
+	    return;
+	}
+#ifdef DEBUG_METADATA_IO
+	g_message ("async_read_start: %s", metafile->details->directory_uri);
+#endif
+	pending_reads = g_list_prepend (pending_reads, metafile);
+	schedule_next_read ();
+}
+
+static void
+async_read_done (NautilusMetafile *metafile)
+{
+#ifdef DEBUG_METADATA_IO
+	g_message ("async_read_done: %s", metafile->details->directory_uri);
+#endif
+	--num_reads_in_progress;
+	schedule_next_read ();
+}
+
+static void
+async_read_cancel (NautilusMetafile *metafile)
+{
+	GList* node;
+
+#ifdef DEBUG_METADATA_IO
+	g_message ("async_read_cancel: %s", metafile->details->directory_uri);
+#endif
+	node = g_list_find (pending_reads, metafile);
+
+	if (node != NULL) {
+		pending_reads = g_list_remove_link (pending_reads, node);
+		g_list_free_1 (node);
+	}
+	
+	if (metafile->details->read_state != NULL) {
+		metafile_read_cancel (metafile);
+		async_read_done (metafile);
+	}
+
 }
 
 static CORBA_boolean
@@ -182,12 +456,9 @@ corba_is_read (PortableServer_Servant  servant,
 	       CORBA_Environment      *ev)
 {
 	NautilusMetafile  *metafile;
-	NautilusDirectory *directory;
 
 	metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
-	directory = metafile->details->directory;
-
-	return directory->details->metafile_read ? CORBA_TRUE : CORBA_FALSE;
+	return metafile->details->is_read ? CORBA_TRUE : CORBA_FALSE;
 }
 
 static CORBA_char *
@@ -198,15 +469,13 @@ corba_get (PortableServer_Servant  servant,
 	   CORBA_Environment      *ev)
 {
 	NautilusMetafile  *metafile;
-	NautilusDirectory *directory;
 
 	char       *metadata;
 	CORBA_char *result;
 
 	metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
-	directory = metafile->details->directory;
 
-	metadata = get_file_metadata (directory, file_name, key, default_value);
+	metadata = get_file_metadata (metafile, file_name, key, default_value);
 
 	result = CORBA_string_dup (metadata != NULL ? metadata : "");
 
@@ -223,7 +492,6 @@ corba_get_list (PortableServer_Servant  servant,
 	        CORBA_Environment      *ev)
 {
 	NautilusMetafile  *metafile;
-	NautilusDirectory *directory;
 
 	GList *metadata_list;
 	Nautilus_MetadataList *result;
@@ -232,9 +500,8 @@ corba_get_list (PortableServer_Servant  servant,
 	GList   *list_ptr;
 
 	metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
-	directory = metafile->details->directory;
 
-	metadata_list = get_file_metadata_list (directory, file_name, list_key, list_subkey);
+	metadata_list = get_file_metadata_list (metafile, file_name, list_key, list_subkey);
 
 	len = g_list_length (metadata_list);
 	result = Nautilus_MetadataList__alloc ();
@@ -269,7 +536,6 @@ corba_set (PortableServer_Servant  servant,
 	   CORBA_Environment      *ev)
 {
 	NautilusMetafile  *metafile;
-	NautilusDirectory *directory;
 
 	if (nautilus_str_is_empty (default_value)) {
 		default_value = NULL;
@@ -279,10 +545,9 @@ corba_set (PortableServer_Servant  servant,
 	}
 
 	metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
-	directory = metafile->details->directory;
 
-	if (set_file_metadata (directory, file_name, key, default_value, metadata)) {
-		call_metafile_changed_for_one_file (directory, file_name);
+	if (set_file_metadata (metafile, file_name, key, default_value, metadata)) {
+		call_metafile_changed_for_one_file (metafile, file_name);
 	}
 }
 
@@ -295,13 +560,11 @@ corba_set_list (PortableServer_Servant      servant,
 		CORBA_Environment           *ev)
 {
 	NautilusMetafile  *metafile;
-	NautilusDirectory *directory;
 
 	GList               *metadata_list;
 	CORBA_unsigned_long  buf_pos;
 
 	metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
-	directory = metafile->details->directory;
 
 	metadata_list = NULL;
 	for (buf_pos = 0; buf_pos < list->_length; ++buf_pos) {
@@ -309,8 +572,8 @@ corba_set_list (PortableServer_Servant      servant,
 	}
 	metadata_list = g_list_reverse (metadata_list);
 	
-	if (set_file_metadata_list (directory, file_name, list_key, list_subkey, metadata_list)) {
-		call_metafile_changed_for_one_file (directory, file_name);
+	if (set_file_metadata_list (metafile, file_name, list_key, list_subkey, metadata_list)) {
+		call_metafile_changed_for_one_file (metafile, file_name);
 	}
 	
 	g_list_free (metadata_list);
@@ -323,19 +586,17 @@ corba_copy (PortableServer_Servant   servant,
 	    const CORBA_char        *destination_file_name,
 	    CORBA_Environment       *ev)
 {
-	NautilusMetafile  *source_metafile;
-	NautilusDirectory *source_directory;
-	NautilusDirectory *destination_directory;
+	NautilusMetafile *source_metafile;
+	NautilusMetafile *destination_metafile;
 
 	source_metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
-	source_directory = source_metafile->details->directory;
 	
-	destination_directory = nautilus_directory_get (destination_directory_uri);
+	destination_metafile = nautilus_metafile_get (destination_directory_uri);
 
-	copy_file_metadata (source_directory, source_file_name,
-			    destination_directory, destination_file_name);
+	copy_file_metadata (source_metafile, source_file_name,
+			    destination_metafile, destination_file_name);
 			    
-	nautilus_directory_unref (destination_directory);
+	bonobo_object_unref (BONOBO_OBJECT (destination_metafile));
 }
 
 static void
@@ -344,12 +605,10 @@ corba_remove (PortableServer_Servant  servant,
 	      CORBA_Environment      *ev)
 {
 	NautilusMetafile  *metafile;
-	NautilusDirectory *directory;
 
 	metafile =  NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
-	directory = metafile->details->directory;
 	
-	remove_file_metadata (directory, file_name);
+	remove_file_metadata (metafile, file_name);
 }
 
 static void
@@ -359,59 +618,22 @@ corba_rename (PortableServer_Servant  servant,
 	      CORBA_Environment      *ev)
 {
 	NautilusMetafile  *metafile;
-	NautilusDirectory *directory;
 
 	metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
-	directory = metafile->details->directory;
 
-	rename_file_metadata (directory, old_file_name, new_file_name);
-}
-
-typedef struct {
-	GList             *monitors;
-	NautilusDirectory *directory;
-} DirectoryMonitorListEntry;
-
-static GHashTable *directory_monitor_lists;
-
-static DirectoryMonitorListEntry *
-get_or_add_directory_monitor_list_entry (NautilusDirectory *directory)
-{
-	DirectoryMonitorListEntry *entry;
-	
-	if (directory_monitor_lists == NULL) {
-		directory_monitor_lists = nautilus_g_hash_table_new_free_at_exit (g_direct_hash, g_direct_equal, __FILE__ ": metadata monitors");
-	}
-
-	entry = g_hash_table_lookup (directory_monitor_lists, directory);
-
-	if (entry == NULL) {
-		entry = g_new0 (DirectoryMonitorListEntry, 1);
-		nautilus_directory_ref (directory);
-		entry->directory = directory;
-		g_hash_table_insert (directory_monitor_lists, directory, entry);
-	}
-
-	return entry;
+	rename_file_metadata (metafile, old_file_name, new_file_name);
 }
 
 static void
-remove_directory_monitor_list_entry (NautilusDirectory *directory)
+corba_rename_directory (PortableServer_Servant  servant,
+	      const CORBA_char       *new_directory_uri,
+	      CORBA_Environment      *ev)
 {
-	DirectoryMonitorListEntry *entry;
-	
-	entry = g_hash_table_lookup (directory_monitor_lists, directory);
+	NautilusMetafile  *metafile;
 
-	if (entry != NULL) {
-		/* This fn only handles removal when there are no monitors left.
-		 * It makes no attempt to free the monitors.
-		 */
-		g_return_if_fail (entry->monitors == NULL);
-		
-		g_hash_table_remove (directory_monitor_lists, directory);
-		nautilus_directory_unref (directory);
-		g_free (entry);
-	}
+	metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
+
+	nautilus_metafile_set_directory_uri (metafile, new_directory_uri);
 }
 
 static GList *
@@ -443,21 +665,14 @@ corba_register_monitor (PortableServer_Servant          servant,
 			CORBA_Environment              *ev)
 {
 	NautilusMetafile          *metafile;
-	NautilusDirectory         *directory;
-	DirectoryMonitorListEntry *monitor_list;
 	
 	metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
-	directory = metafile->details->directory;
 
-	monitor_list = get_or_add_directory_monitor_list_entry (directory);
+	g_return_if_fail (find_monitor_node (metafile->details->monitors, monitor) == NULL);
 
-	g_return_if_fail (find_monitor_node (monitor_list->monitors, monitor) == NULL);
+	metafile->details->monitors = g_list_prepend (metafile->details->monitors, (gpointer) CORBA_Object_duplicate (monitor, ev));	
 
-	monitor_list->monitors = g_list_prepend (monitor_list->monitors, (gpointer) CORBA_Object_duplicate (monitor, ev));	
-
-	/* cause metafile to be read */
-	directory->details->load_metafile_for_server = TRUE;
-	nautilus_directory_async_state_changed (directory);
+	async_read_start (metafile);
 }
 
 static void
@@ -466,77 +681,57 @@ corba_unregister_monitor (PortableServer_Servant          servant,
 			  CORBA_Environment              *ev)
 {
 	NautilusMetafile          *metafile;
-	NautilusDirectory         *directory;
-	DirectoryMonitorListEntry *entry;
 	GList                     *node;
 
 	metafile  = NAUTILUS_METAFILE (bonobo_object_from_servant (servant));
-	directory = metafile->details->directory;
 	
-	entry = g_hash_table_lookup (directory_monitor_lists, directory);
-
-	g_return_if_fail (entry != NULL);
-
-	node = find_monitor_node (entry->monitors, monitor);
+	node = find_monitor_node (metafile->details->monitors, monitor);
 
 	g_return_if_fail (node != NULL);
 
-	entry->monitors = g_list_remove_link (entry->monitors, node);
+	metafile->details->monitors = g_list_remove_link (metafile->details->monitors, node);
 
 	CORBA_Object_release (node->data, ev);
 	g_list_free_1 (node);
-
-	if (entry->monitors == NULL) {
-		remove_directory_monitor_list_entry (directory);
-	}
-}
-
-void
-nautilus_metafile_notify_metafile_ready (NautilusDirectory *directory)
-{
-	GList                     *node;
-	CORBA_Environment          ev;
-	Nautilus_MetafileMonitor   monitor;		
-	DirectoryMonitorListEntry *entry;
-
-	entry = g_hash_table_lookup (directory_monitor_lists, directory);
-	
-	if (entry != NULL) {
-		CORBA_exception_init (&ev);
-		
-		for (node = entry->monitors; node != NULL; node = node->next) {
-			monitor = node->data;
-			Nautilus_MetafileMonitor_metafile_ready (monitor, &ev);
-			/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
-		}
-		
-		CORBA_exception_free (&ev);
-	}
 }
 
 static void
-call_metafile_changed (NautilusDirectory *directory,
-	                const Nautilus_FileNameList  *file_names)
+nautilus_metafile_notify_metafile_ready (NautilusMetafile *metafile)
 {
 	GList                     *node;
 	CORBA_Environment          ev;
 	Nautilus_MetafileMonitor   monitor;		
-	DirectoryMonitorListEntry *entry;
 
-	entry = g_hash_table_lookup (directory_monitor_lists, directory);
+	CORBA_exception_init (&ev);
 	
-	if (entry != NULL) {
-		CORBA_exception_init (&ev);
-		
-		for (node = entry->monitors; node != NULL; node = node->next) {
-			monitor = node->data;
-			Nautilus_MetafileMonitor_metafile_changed (monitor, file_names, &ev);
-			/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
-		}
-		
-		CORBA_exception_free (&ev);
+	for (node = metafile->details->monitors; node != NULL; node = node->next) {
+		monitor = node->data;
+		Nautilus_MetafileMonitor_metafile_ready (monitor, &ev);
+		/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
 	}
+	
+	CORBA_exception_free (&ev);
 }
+
+static void
+call_metafile_changed (NautilusMetafile *metafile,
+		       const Nautilus_FileNameList  *file_names)
+{
+	GList                     *node;
+	CORBA_Environment          ev;
+	Nautilus_MetafileMonitor   monitor;		
+
+	CORBA_exception_init (&ev);
+	
+	for (node = metafile->details->monitors; node != NULL; node = node->next) {
+		monitor = node->data;
+		Nautilus_MetafileMonitor_metafile_changed (monitor, file_names, &ev);
+		/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+	}
+	
+	CORBA_exception_free (&ev);
+}
+#if 0
 
 static void
 file_list_filler_ghfunc (gpointer key,
@@ -553,31 +748,32 @@ file_list_filler_ghfunc (gpointer key,
 }
 
 void
-call_metafile_changed_for_all_files_mentioned_in_metafile (NautilusDirectory *directory)
+call_metafile_changed_for_all_files_mentioned_in_metafile (NautilusMetafile *metafile)
 {
 	CORBA_unsigned_long   len;
 	Nautilus_FileNameList file_names;
 
-	len = g_hash_table_size (directory->details->metafile_node_hash);
+	len = g_hash_table_size (metafile->details->node_hash);
 
 	if (len > 0) {
 		file_names._maximum =  len;
 		file_names._length  =  0;
 		file_names._buffer  =  g_new (CORBA_char *, len);
 
-		g_hash_table_foreach (directory->details->metafile_node_hash,
+		g_hash_table_foreach (metafile->details->node_hash,
 				      file_list_filler_ghfunc,
 				      &file_names);
 
-		call_metafile_changed (directory, &file_names);
+		call_metafile_changed (metafile, &file_names);
 
 		g_free (file_names._buffer);
 	}
 }
+#endif
 
 static void
-call_metafile_changed_for_one_file (NautilusDirectory *directory,
-				     const CORBA_char  *file_name)
+call_metafile_changed_for_one_file (NautilusMetafile *metafile,
+				    const CORBA_char  *file_name)
 {
 	Nautilus_FileNameList file_names = {0};
 	
@@ -585,7 +781,7 @@ call_metafile_changed_for_one_file (NautilusDirectory *directory,
 	file_names._length  =  1;
 	file_names._buffer  =  (CORBA_char **) &file_name;
 
-	call_metafile_changed (directory, &file_names);
+	call_metafile_changed (metafile, &file_names);
 }
 
 typedef struct {
@@ -629,40 +825,40 @@ get_metadata_list_from_node (xmlNode *node,
 }
 
 static xmlNode *
-create_metafile_root (NautilusDirectory *directory)
+create_metafile_root (NautilusMetafile *metafile)
 {
 	xmlNode *root;
 
-	if (directory->details->metafile == NULL) {
-		nautilus_metafile_set_metafile_contents (directory, xmlNewDoc (METAFILE_XML_VERSION));
+	if (metafile->details->xml == NULL) {
+		nautilus_metafile_set_metafile_contents (metafile, xmlNewDoc (METAFILE_XML_VERSION));
 	}
-	root = xmlDocGetRootElement (directory->details->metafile);
+	root = xmlDocGetRootElement (metafile->details->xml);
 	if (root == NULL) {
-		root = xmlNewDocNode (directory->details->metafile, NULL, "directory", NULL);
-		xmlDocSetRootElement (directory->details->metafile, root);
+		root = xmlNewDocNode (metafile->details->xml, NULL, "directory", NULL);
+		xmlDocSetRootElement (metafile->details->xml, root);
 	}
 
 	return root;
 }
 
 static xmlNode *
-get_file_node (NautilusDirectory *directory,
+get_file_node (NautilusMetafile *metafile,
 	       const char *file_name,
 	       gboolean create)
 {
 	GHashTable *hash;
 	xmlNode *root, *node;
 	
-	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	g_assert (NAUTILUS_IS_METAFILE (metafile));
 
-	hash = directory->details->metafile_node_hash;
+	hash = metafile->details->node_hash;
 	node = g_hash_table_lookup (hash, file_name);
 	if (node != NULL) {
 		return node;
 	}
 	
 	if (create) {
-		root = create_metafile_root (directory);
+		root = create_metafile_root (metafile);
 		node = xmlNewChild (root, NULL, "file", NULL);
 		xmlSetProp (node, "name", file_name);
 		g_hash_table_insert (hash, xmlMemStrdup (file_name), node);
@@ -673,31 +869,31 @@ get_file_node (NautilusDirectory *directory,
 }
 
 static char *
-get_metadata_string_from_metafile (NautilusDirectory *directory,
+get_metadata_string_from_metafile (NautilusMetafile *metafile,
 				   const char *file_name,
 				   const char *key,
 				   const char *default_metadata)
 {
 	xmlNode *node;
 
-	node = get_file_node (directory, file_name, FALSE);
+	node = get_file_node (metafile, file_name, FALSE);
 	return get_metadata_from_node (node, key, default_metadata);
 }
 
 static GList *
-get_metadata_list_from_metafile (NautilusDirectory *directory,
+get_metadata_list_from_metafile (NautilusMetafile *metafile,
 				 const char *file_name,
 				 const char *list_key,
 				 const char *list_subkey)
 {
 	xmlNode *node;
 
-	node = get_file_node (directory, file_name, FALSE);
+	node = get_file_node (metafile, file_name, FALSE);
 	return get_metadata_list_from_node (node, list_key, list_subkey);
 }
 
 static gboolean
-set_metadata_string_in_metafile (NautilusDirectory *directory,
+set_metadata_string_in_metafile (NautilusMetafile *metafile,
 				 const char *file_name,
 				 const char *key,
 				 const char *default_metadata,
@@ -711,7 +907,7 @@ set_metadata_string_in_metafile (NautilusDirectory *directory,
 
 	/* If the data in the metafile is already correct, do nothing. */
 	old_metadata = get_file_metadata
-		(directory, file_name, key, default_metadata);
+		(metafile, file_name, key, default_metadata);
 
 	old_metadata_matches = nautilus_strcmp (old_metadata, metadata) == 0;
 	g_free (old_metadata);
@@ -729,7 +925,7 @@ set_metadata_string_in_metafile (NautilusDirectory *directory,
 	}
 
 	/* Get or create the node. */
-	node = get_file_node (directory, file_name, value != NULL);
+	node = get_file_node (metafile, file_name, value != NULL);
 
 	/* Add or remove a property node. */
 	if (node != NULL) {
@@ -740,12 +936,12 @@ set_metadata_string_in_metafile (NautilusDirectory *directory,
 	}
 	
 	/* Since we changed the tree, arrange for it to be written. */
-	nautilus_directory_request_write_metafile (directory);
+	directory_request_write_metafile (metafile);
 	return TRUE;
 }
 
 static gboolean
-set_metadata_list_in_metafile (NautilusDirectory *directory,
+set_metadata_list_in_metafile (NautilusMetafile *metafile,
 			       const char *file_name,
 			       const char *list_key,
 			       const char *list_subkey,
@@ -757,7 +953,7 @@ set_metadata_list_in_metafile (NautilusDirectory *directory,
 	xmlChar *property;
 
 	/* Get or create the node. */
-	node = get_file_node (directory, file_name, list != NULL);
+	node = get_file_node (metafile, file_name, list != NULL);
 
 	/* Work with the list. */
 	changed = FALSE;
@@ -798,7 +994,7 @@ set_metadata_list_in_metafile (NautilusDirectory *directory,
 		return FALSE;
 	}
 
-	nautilus_directory_request_write_metafile (directory);
+	directory_request_write_metafile (metafile);
 	return TRUE;
 }
 
@@ -868,7 +1064,7 @@ metadata_value_equal (const MetadataValue *value_a,
 }
 
 static gboolean
-set_metadata_in_metafile (NautilusDirectory *directory,
+set_metadata_in_metafile (NautilusMetafile *metafile,
 			  const char *file_name,
 			  const char *key,
 			  const char *subkey,
@@ -879,13 +1075,13 @@ set_metadata_in_metafile (NautilusDirectory *directory,
 	if (!value->is_list) {
 		g_assert (subkey == NULL);
 		changed = set_metadata_string_in_metafile
-			(directory, file_name, key,
+			(metafile, file_name, key,
 			 value->default_value,
 			 value->value.string);
 	} else {
 		g_assert (value->default_value == NULL);
 		changed = set_metadata_list_in_metafile
-			(directory, file_name, key, subkey,
+			(metafile, file_name, key, subkey,
 			 value->value.string_list);
 	}
 
@@ -893,7 +1089,7 @@ set_metadata_in_metafile (NautilusDirectory *directory,
 }
 
 static char *
-get_metadata_string_from_table (NautilusDirectory *directory,
+get_metadata_string_from_table (NautilusMetafile *metafile,
 				const char *file_name,
 				const char *key,
 				const char *default_metadata)
@@ -902,7 +1098,7 @@ get_metadata_string_from_table (NautilusDirectory *directory,
 	MetadataValue *value;
 
 	/* Get the value from the hash table. */
-	directory_table = directory->details->metadata_changes;
+	directory_table = metafile->details->changes;
         file_table = directory_table == NULL ? NULL
 		: g_hash_table_lookup (directory_table, file_name);
 	value = file_table == NULL ? NULL
@@ -920,7 +1116,7 @@ get_metadata_string_from_table (NautilusDirectory *directory,
 }
 
 static GList *
-get_metadata_list_from_table (NautilusDirectory *directory,
+get_metadata_list_from_table (NautilusMetafile *metafile,
 			      const char *file_name,
 			      const char *key,
 			      const char *subkey)
@@ -930,7 +1126,7 @@ get_metadata_list_from_table (NautilusDirectory *directory,
 	MetadataValue *value;
 
 	/* Get the value from the hash table. */
-	directory_table = directory->details->metadata_changes;
+	directory_table = metafile->details->changes;
         file_table = directory_table == NULL ? NULL
 		: g_hash_table_lookup (directory_table, file_name);
 	if (file_table == NULL) {
@@ -967,7 +1163,7 @@ str_or_null_equal (gconstpointer str_a, gconstpointer str_b)
 }
 
 static gboolean
-set_metadata_eat_value (NautilusDirectory *directory,
+set_metadata_eat_value (NautilusMetafile *metafile,
 			const char *file_name,
 			const char *key,
 			const char *subkey,
@@ -978,19 +1174,19 @@ set_metadata_eat_value (NautilusDirectory *directory,
 	char *combined_key;
 	MetadataValue *old_value;
 
-	if (directory->details->metafile_read) {
+	if (metafile->details->is_read) {
 		changed = set_metadata_in_metafile
-			(directory, file_name, key, subkey, value);
+			(metafile, file_name, key, subkey, value);
 		metadata_value_destroy (value);
 	} else {
 		/* Create hash table only when we need it.
 		 * We'll destroy it when we finish reading the metafile.
 		 */
-		directory_table = directory->details->metadata_changes;
+		directory_table = metafile->details->changes;
 		if (directory_table == NULL) {
 			directory_table = g_hash_table_new
 				(str_or_null_hash, str_or_null_equal);
-			directory->details->metadata_changes = directory_table;
+			metafile->details->changes = directory_table;
 		}
 		file_table = g_hash_table_lookup (directory_table, file_name);
 		if (file_table == NULL) {
@@ -1065,58 +1261,58 @@ destroy_xml_string_key (gpointer key, gpointer value, gpointer user_data)
 	xmlFree (key);
 }
 
-void
-nautilus_metafile_destroy (NautilusDirectory *directory)
+static void
+metafile_free_metadata (NautilusMetafile *metafile)
 {
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	g_return_if_fail (NAUTILUS_IS_METAFILE (metafile));
 
-	g_hash_table_foreach (directory->details->metafile_node_hash,
+	g_hash_table_foreach (metafile->details->node_hash,
 			      destroy_xml_string_key, NULL);
-	xmlFreeDoc (directory->details->metafile);
-	destroy_metadata_changes_hash_table (directory->details->metadata_changes);
+	xmlFreeDoc (metafile->details->xml);
+	destroy_metadata_changes_hash_table (metafile->details->changes);
 }
 
 static char *
-get_file_metadata (NautilusDirectory *directory,
+get_file_metadata (NautilusMetafile *metafile,
 		   const char *file_name,
 		   const char *key,
 		   const char *default_metadata)
 {
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_METAFILE (metafile), NULL);
 	g_return_val_if_fail (!nautilus_str_is_empty (file_name), NULL);
 	g_return_val_if_fail (!nautilus_str_is_empty (key), NULL);
 
-	if (directory->details->metafile_read) {
+	if (metafile->details->is_read) {
 		return get_metadata_string_from_metafile
-			(directory, file_name, key, default_metadata);
+			(metafile, file_name, key, default_metadata);
 	} else {
 		return get_metadata_string_from_table
-			(directory, file_name, key, default_metadata);
+			(metafile, file_name, key, default_metadata);
 	}
 }
 
 static GList *
-get_file_metadata_list (NautilusDirectory *directory,
+get_file_metadata_list (NautilusMetafile *metafile,
 			const char *file_name,
 			const char *list_key,
 			const char *list_subkey)
 {
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_METAFILE (metafile), NULL);
 	g_return_val_if_fail (!nautilus_str_is_empty (file_name), NULL);
 	g_return_val_if_fail (!nautilus_str_is_empty (list_key), NULL);
 	g_return_val_if_fail (!nautilus_str_is_empty (list_subkey), NULL);
 
-	if (directory->details->metafile_read) {
+	if (metafile->details->is_read) {
 		return get_metadata_list_from_metafile
-			(directory, file_name, list_key, list_subkey);
+			(metafile, file_name, list_key, list_subkey);
 	} else {
 		return get_metadata_list_from_table
-			(directory, file_name, list_key, list_subkey);
+			(metafile, file_name, list_key, list_subkey);
 	}
 }
 
 static gboolean
-set_file_metadata (NautilusDirectory *directory,
+set_file_metadata (NautilusMetafile *metafile,
 		   const char *file_name,
 		   const char *key,
 		   const char *default_metadata,
@@ -1124,22 +1320,22 @@ set_file_metadata (NautilusDirectory *directory,
 {
 	MetadataValue *value;
 
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_METAFILE (metafile), FALSE);
 	g_return_val_if_fail (!nautilus_str_is_empty (file_name), FALSE);
 	g_return_val_if_fail (!nautilus_str_is_empty (key), FALSE);
 
-	if (directory->details->metafile_read) {
-		return set_metadata_string_in_metafile (directory, file_name, key,
+	if (metafile->details->is_read) {
+		return set_metadata_string_in_metafile (metafile, file_name, key,
 							default_metadata, metadata);
 	} else {
 		value = metadata_value_new (default_metadata, metadata);
-		return set_metadata_eat_value (directory, file_name,
+		return set_metadata_eat_value (metafile, file_name,
 					       key, NULL, value);
 	}
 }
 
 static gboolean
-set_file_metadata_list (NautilusDirectory *directory,
+set_file_metadata_list (NautilusMetafile *metafile,
 			const char *file_name,
 			const char *list_key,
 			const char *list_subkey,
@@ -1147,23 +1343,47 @@ set_file_metadata_list (NautilusDirectory *directory,
 {
 	MetadataValue *value;
 
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_METAFILE (metafile), FALSE);
 	g_return_val_if_fail (!nautilus_str_is_empty (file_name), FALSE);
 	g_return_val_if_fail (!nautilus_str_is_empty (list_key), FALSE);
 	g_return_val_if_fail (!nautilus_str_is_empty (list_subkey), FALSE);
 
-	if (directory->details->metafile_read) {
-		return set_metadata_list_in_metafile (directory, file_name,
+	if (metafile->details->is_read) {
+		return set_metadata_list_in_metafile (metafile, file_name,
 						      list_key, list_subkey, list);
 	} else {
 		value = metadata_value_new_list (list);
-		return set_metadata_eat_value (directory, file_name,
+		return set_metadata_eat_value (metafile, file_name,
 					       list_key, list_subkey, value);
 	}
 }
 
+static char *
+metafile_get_file_uri (NautilusMetafile *metafile,
+		       const char *file_name)
+{
+	GnomeVFSURI *file_uri;
+	char *result;
+
+	g_return_val_if_fail (NAUTILUS_IS_METAFILE (metafile), NULL);
+	g_return_val_if_fail (file_name != NULL, NULL);
+
+	result = NULL;
+
+	g_assert (metafile->details->directory_vfs_uri != NULL);
+
+	file_uri = gnome_vfs_uri_append_string (metafile->details->directory_vfs_uri, file_name);
+
+	if (file_uri != NULL) {
+		result = gnome_vfs_uri_to_string (file_uri, GNOME_VFS_URI_HIDE_NONE);
+		gnome_vfs_uri_unref (file_uri);
+	}
+
+	return result;
+}
+
 static void
-rename_file_metadata (NautilusDirectory *directory,
+rename_file_metadata (NautilusMetafile *metafile,
 		      const char *old_file_name,
 		      const char *new_file_name)
 {
@@ -1173,15 +1393,15 @@ rename_file_metadata (NautilusDirectory *directory,
 	GHashTable *hash;
 	char *old_file_uri, *new_file_uri;
 
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	g_return_if_fail (NAUTILUS_IS_METAFILE (metafile));
 	g_return_if_fail (old_file_name != NULL);
 	g_return_if_fail (new_file_name != NULL);
 
-	remove_file_metadata (directory, new_file_name);
+	remove_file_metadata (metafile, new_file_name);
 
-	if (directory->details->metafile_read) {
+	if (metafile->details->is_read) {
 		/* Move data in XML document if present. */
-		hash = directory->details->metafile_node_hash;
+		hash = metafile->details->node_hash;
 		found = g_hash_table_lookup_extended
 			(hash, old_file_name, &key, &value);
 		if (found) {
@@ -1193,7 +1413,7 @@ rename_file_metadata (NautilusDirectory *directory,
 			g_hash_table_insert (hash,
 					     xmlMemStrdup (new_file_name), value);
 			xmlSetProp (file_node, "name", new_file_name);
-			nautilus_directory_request_write_metafile (directory);
+			directory_request_write_metafile (metafile);
 		}
 	} else {
 		/* Move data in hash table. */
@@ -1201,7 +1421,7 @@ rename_file_metadata (NautilusDirectory *directory,
 		 * metafile on disk, this doesn't arrange for that
 		 * data to be moved to the new name.
 		 */
-		hash = directory->details->metadata_changes;
+		hash = metafile->details->changes;
 		found = g_hash_table_lookup_extended
 			(hash, old_file_name, &key, &value);
 		if (found) {
@@ -1212,15 +1432,15 @@ rename_file_metadata (NautilusDirectory *directory,
 	}
 
 	/* Rename the thumbnails for the file, if any. */
-	old_file_uri = nautilus_directory_get_file_uri (directory, old_file_name);
-	new_file_uri = nautilus_directory_get_file_uri (directory, new_file_name);
+	old_file_uri = metafile_get_file_uri (metafile, old_file_name);
+	new_file_uri = metafile_get_file_uri (metafile, new_file_name);
 	nautilus_update_thumbnail_file_renamed (old_file_uri, new_file_uri);
 	g_free (old_file_uri);
 	g_free (new_file_uri);
 }
 
 typedef struct {
-	NautilusDirectory *directory;
+	NautilusMetafile *metafile;
 	const char *file_name;
 } ChangeContext;
 
@@ -1251,23 +1471,23 @@ apply_one_change (gpointer key, gpointer value, gpointer callback_data)
 	}
 
 	/* Set the metadata. */
-	set_metadata_in_metafile (context->directory, context->file_name,
+	set_metadata_in_metafile (context->metafile, context->file_name,
 				  metadata_key, subkey, value);
 	g_free (key_prefix);
 }
 
 static void
-apply_file_changes (NautilusDirectory *directory,
+apply_file_changes (NautilusMetafile *metafile,
 		    const char *file_name,
 		    GHashTable *changes)
 {
 	ChangeContext context;
 
-	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	g_assert (NAUTILUS_IS_METAFILE (metafile));
 	g_assert (file_name != NULL);
 	g_assert (changes != NULL);
 
-	context.directory = directory;
+	context.metafile = metafile;
 	context.file_name = file_name;
 
 	g_hash_table_foreach (changes, apply_one_change, &context);
@@ -1280,30 +1500,30 @@ apply_one_file_changes (gpointer key, gpointer value, gpointer callback_data)
 	g_hash_table_destroy (value);
 }
 
-void
-nautilus_metafile_apply_pending_changes (NautilusDirectory *directory)
+static void
+nautilus_metafile_apply_pending_changes (NautilusMetafile *metafile)
 {
-	if (directory->details->metadata_changes == NULL) {
+	if (metafile->details->changes == NULL) {
 		return;
 	}
-	g_hash_table_foreach (directory->details->metadata_changes,
-			      apply_one_file_changes, directory);
-	g_hash_table_destroy (directory->details->metadata_changes);
-	directory->details->metadata_changes = NULL;
+	g_hash_table_foreach (metafile->details->changes,
+			      apply_one_file_changes, metafile);
+	g_hash_table_destroy (metafile->details->changes);
+	metafile->details->changes = NULL;
 }
 
 static void
-copy_file_metadata (NautilusDirectory *source_directory,
-				       const char *source_file_name,
-				       NautilusDirectory *destination_directory,
-				       const char *destination_file_name)
+copy_file_metadata (NautilusMetafile *source_metafile,
+		    const char *source_file_name,
+		    NautilusMetafile *destination_metafile,
+		    const char *destination_file_name)
 {
 	xmlNodePtr source_node, node, root;
 	GHashTable *hash, *changes;
 
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (source_directory));
+	g_return_if_fail (NAUTILUS_IS_METAFILE (source_metafile));
 	g_return_if_fail (source_file_name != NULL);
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (destination_directory));
+	g_return_if_fail (NAUTILUS_IS_METAFILE (destination_metafile));
 	g_return_if_fail (destination_file_name != NULL);
 
 	/* FIXME bugzilla.eazel.com 3343: This does not properly
@@ -1312,17 +1532,17 @@ copy_file_metadata (NautilusDirectory *source_directory,
 	 */
 
 	remove_file_metadata
-		(destination_directory, destination_file_name);
-	g_assert (get_file_node (destination_directory, destination_file_name, FALSE) == NULL);
+		(destination_metafile, destination_file_name);
+	g_assert (get_file_node (destination_metafile, destination_file_name, FALSE) == NULL);
 
-	source_node = get_file_node (source_directory, source_file_name, FALSE);
+	source_node = get_file_node (source_metafile, source_file_name, FALSE);
 	if (source_node != NULL) {
-		if (destination_directory->details->metafile_read) {
+		if (destination_metafile->details->is_read) {
 			node = xmlCopyNode (source_node, TRUE);
-			root = create_metafile_root (destination_directory);
+			root = create_metafile_root (destination_metafile);
 			xmlAddChild (root, node);
 			xmlSetProp (node, "name", destination_file_name);
-			g_hash_table_insert (destination_directory->details->metafile_node_hash,
+			g_hash_table_insert (destination_metafile->details->node_hash,
 					     xmlMemStrdup (destination_file_name), node);
 		} else {
 			/* FIXME bugzilla.eazel.com 6526: Copying data into a destination
@@ -1332,11 +1552,11 @@ copy_file_metadata (NautilusDirectory *source_directory,
 		}
 	}
 
-	hash = source_directory->details->metadata_changes;
+	hash = source_metafile->details->changes;
 	if (hash != NULL) {
 		changes = g_hash_table_lookup (hash, source_file_name);
 		if (changes != NULL) {
-			apply_file_changes (destination_directory,
+			apply_file_changes (destination_metafile,
 					    destination_file_name,
 					    changes);
 		}
@@ -1348,8 +1568,8 @@ copy_file_metadata (NautilusDirectory *source_directory,
 }
 
 static void
-remove_file_metadata (NautilusDirectory *directory,
-					 const char *file_name)
+remove_file_metadata (NautilusMetafile *metafile,
+		      const char *file_name)
 {
 	gboolean found;
 	gpointer key, value;
@@ -1357,12 +1577,12 @@ remove_file_metadata (NautilusDirectory *directory,
 	GHashTable *hash;
 	char *file_uri;
 
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	g_return_if_fail (NAUTILUS_IS_METAFILE (metafile));
 	g_return_if_fail (file_name != NULL);
 
-	if (directory->details->metafile_read) {
+	if (metafile->details->is_read) {
 		/* Remove data in XML document if present. */
-		hash = directory->details->metafile_node_hash;
+		hash = metafile->details->node_hash;
 		found = g_hash_table_lookup_extended
 			(hash, file_name, &key, &value);
 		if (found) {
@@ -1373,7 +1593,7 @@ remove_file_metadata (NautilusDirectory *directory,
 			xmlFree (key);
 			nautilus_xml_remove_node (file_node);
 			xmlFreeNode (file_node);
-			nautilus_directory_request_write_metafile (directory);
+			directory_request_write_metafile (metafile);
 		}
 	} else {
 		/* Remove data from hash table. */
@@ -1381,7 +1601,7 @@ remove_file_metadata (NautilusDirectory *directory,
 		 * metafile on disk, this does not arrange for it to
 		 * be removed when the metafile is later read.
 		 */
-		hash = directory->details->metadata_changes;
+		hash = metafile->details->changes;
 		if (hash != NULL) {
 			found = g_hash_table_lookup_extended
 				(hash, file_name, &key, &value);
@@ -1394,30 +1614,30 @@ remove_file_metadata (NautilusDirectory *directory,
 	}
 
 	/* Delete the thumbnails for the file, if any. */
-	file_uri = nautilus_directory_get_file_uri (directory, file_name);
+	file_uri = metafile_get_file_uri (metafile, file_name);
 	nautilus_remove_thumbnail_for_file (file_uri);
 	g_free (file_uri);
 }
 
-void
-nautilus_metafile_set_metafile_contents (NautilusDirectory *directory,
-					  xmlDocPtr metafile_contents)
+static void
+nautilus_metafile_set_metafile_contents (NautilusMetafile *metafile,
+					 xmlDocPtr metafile_contents)
 {
 	GHashTable *hash;
 	xmlNodePtr node;
 	xmlChar *name;
 
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
-	g_return_if_fail (directory->details->metafile == NULL);
+	g_return_if_fail (NAUTILUS_IS_METAFILE (metafile));
+	g_return_if_fail (metafile->details->xml == NULL);
 
 	if (metafile_contents == NULL) {
 		return;
 	}
 
-	directory->details->metafile = metafile_contents;
+	metafile->details->xml = metafile_contents;
 	
 	/* Populate the node hash table. */
-	hash = directory->details->metafile_node_hash;
+	hash = metafile->details->node_hash;
 	for (node = nautilus_xml_get_root_children (metafile_contents);
 	     node != NULL; node = node->next) {
 		if (strcmp (node->name, "file") == 0) {
@@ -1432,3 +1652,478 @@ nautilus_metafile_set_metafile_contents (NautilusDirectory *directory,
 	}
 }
 
+
+static void
+metafile_read_cancel (NautilusMetafile *metafile)
+{
+	if (metafile->details->read_state != NULL) {
+		if (metafile->details->read_state->handle != NULL) {
+			nautilus_read_file_cancel (metafile->details->read_state->handle);
+		}
+		if (metafile->details->read_state->get_file_info_handle != NULL) {
+			gnome_vfs_async_cancel (metafile->details->read_state->get_file_info_handle);
+		}
+		g_free (metafile->details->read_state);
+		metafile->details->read_state = NULL;
+	}
+}
+
+static gboolean
+can_use_public_metafile (NautilusMetafile *metafile)
+{
+	NautilusSpeedTradeoffValue preference_value;
+	
+	g_return_val_if_fail (NAUTILUS_IS_METAFILE (metafile), FALSE);
+
+	if (metafile->details->public_vfs_uri == NULL) {
+		return FALSE;
+	}
+
+	preference_value = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA);
+
+	if (preference_value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
+		return TRUE;
+	}
+	
+	if (preference_value == NAUTILUS_SPEED_TRADEOFF_NEVER) {
+		return FALSE;
+	}
+
+	g_assert (preference_value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
+
+	return metafile->details->directory_vfs_uri == NULL ||
+	       gnome_vfs_uri_is_local (metafile->details->directory_vfs_uri);
+}
+
+static void
+metafile_read_mark_done (NautilusMetafile *metafile)
+{
+	g_free (metafile->details->read_state);
+	metafile->details->read_state = NULL;	
+
+	metafile->details->is_read = TRUE;
+
+	/* Move over the changes to the metafile that were in the hash table. */
+	nautilus_metafile_apply_pending_changes (metafile);
+
+	/* Tell change-watchers that we have update information. */
+	nautilus_metafile_notify_metafile_ready (metafile);
+
+	async_read_done (metafile);
+}
+
+static void
+metafile_read_done (NautilusMetafile *metafile)
+{
+	metafile_read_mark_done (metafile);
+}
+
+static void
+metafile_read_try_public_metafile (NautilusMetafile *metafile)
+{
+	metafile->details->read_state->use_public_metafile = TRUE;
+	metafile_read_restart (metafile);
+}
+
+static void
+metafile_read_check_for_directory_callback (GnomeVFSAsyncHandle *handle,
+					    GList *results,
+					    gpointer callback_data)
+{
+	NautilusMetafile *metafile;
+	GnomeVFSGetFileInfoResult *result;
+
+	metafile = NAUTILUS_METAFILE (callback_data);
+
+	g_assert (metafile->details->read_state->get_file_info_handle == handle);
+	g_assert (nautilus_g_list_exactly_one_item (results));
+
+	metafile->details->read_state->get_file_info_handle = NULL;
+
+	result = results->data;
+
+	if (result->result == GNOME_VFS_OK
+	    && ((result->file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_TYPE) != 0)
+	    && result->file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
+		/* Is a directory. */
+		metafile_read_try_public_metafile (metafile);
+	} else {
+		/* Not a directory. */
+		metafile_read_done (metafile);
+	}
+}
+
+static void
+metafile_read_check_for_directory (NautilusMetafile *metafile)
+{
+	GList fake_list;
+
+	/* We only get here if the public metafile is in question,
+	 * which in turn only happens if the URI is one that gnome-vfs
+	 * can handle.
+	 */
+	g_assert (metafile->details->directory_vfs_uri != NULL);
+
+	/* We have to do a get_info call to check if this a directory. */
+	fake_list.data = metafile->details->directory_vfs_uri;
+	fake_list.next = NULL;
+	fake_list.prev = NULL;
+	gnome_vfs_async_get_file_info
+		(&metafile->details->read_state->get_file_info_handle,
+		 &fake_list,
+		 GNOME_VFS_FILE_INFO_DEFAULT,
+		 metafile_read_check_for_directory_callback,
+		 metafile);
+}
+
+static void
+metafile_read_failed (NautilusMetafile *metafile)
+{
+	NautilusFile *file;
+	gboolean need_directory_check, is_directory;
+
+	g_assert (NAUTILUS_IS_METAFILE (metafile));
+
+	metafile->details->read_state->handle = NULL;
+
+	if (!metafile->details->read_state->use_public_metafile
+	    && can_use_public_metafile (metafile)) {
+		/* The goal here is to read the real metafile, but
+		 * only if the directory is actually a directory.
+		 */
+
+		/* First, check if we already know if it a directory. */
+		file = nautilus_file_get (metafile->details->directory_uri);
+		if (file == NULL || file->details->is_gone) {
+			need_directory_check = FALSE;
+			is_directory = FALSE;
+		} else if (file->details->info == NULL) {
+			need_directory_check = TRUE;
+			is_directory = TRUE;
+		} else {
+			need_directory_check = FALSE;
+			is_directory = nautilus_file_is_directory (file);
+		}
+		nautilus_file_unref (file);
+
+		/* Do the directory check if we don't know. */
+		if (need_directory_check) {
+			metafile_read_check_for_directory (metafile);
+			return;
+		}
+
+		/* Try for the public metafile if it is a directory. */
+		if (is_directory) {
+			metafile_read_try_public_metafile (metafile);
+			return;
+		}
+	}
+
+	metafile_read_done (metafile);
+}
+
+static void
+metafile_read_done_callback (GnomeVFSResult result,
+			     GnomeVFSFileSize file_size,
+			     char *file_contents,
+			     gpointer callback_data)
+{
+	NautilusMetafile *metafile;
+	int size;
+	char *buffer;
+
+	metafile = NAUTILUS_METAFILE (callback_data);
+	g_assert (metafile->details->xml == NULL);
+
+	if (result != GNOME_VFS_OK) {
+		g_assert (file_contents == NULL);
+		metafile_read_failed (metafile);
+		return;
+	}
+
+	size = file_size;
+	if ((GnomeVFSFileSize) size != file_size) {
+		g_free (file_contents);
+		metafile_read_failed (metafile);
+		return;
+	}
+	
+	/* The gnome-xml parser requires a zero-terminated array. */
+	buffer = g_realloc (file_contents, size + 1);
+	buffer[size] = '\0';
+	nautilus_metafile_set_metafile_contents (metafile,
+						 xmlParseMemory (buffer, size));
+	g_free (buffer);
+
+	metafile_read_done (metafile);
+}
+
+static void
+metafile_read_restart (NautilusMetafile *metafile)
+{
+	char *text_uri;
+
+	text_uri = gnome_vfs_uri_to_string
+		(metafile->details->read_state->use_public_metafile
+		 ? metafile->details->public_vfs_uri
+		 : metafile->details->private_vfs_uri,
+		 GNOME_VFS_URI_HIDE_NONE);
+
+	metafile->details->read_state->handle = nautilus_read_entire_file_async
+		(text_uri, metafile_read_done_callback, metafile);
+
+	g_free (text_uri);
+}
+
+static gboolean
+allow_metafile (NautilusMetafile *metafile)
+{
+	const char *uri;
+
+	g_assert (NAUTILUS_IS_METAFILE (metafile));
+
+	/* Note that this inhibits both reading and writing metadata
+	 * completely. In the future we may want to inhibit writing to
+	 * the real directory while allowing parallel-directory
+	 * metadata.
+	 */
+
+	/* For now, hard-code these schemes. Perhaps we should
+	 * hardcode the schemes that are good for metadata instead of
+	 * the schemes that are bad for it.
+	 */
+	/* FIXME bugzilla.eazel.com 2434: 
+	 * We need to handle this in a better way. Perhaps a
+	 * better way can wait until we have support for metadata
+	 * access inside gnome-vfs.
+	 */
+	uri = metafile->details->directory_uri;
+	if (nautilus_is_search_uri (uri)
+	    || nautilus_istr_has_prefix (uri, "ghelp:")
+	    || nautilus_istr_has_prefix (uri, "gnome-help:")
+	    || nautilus_istr_has_prefix (uri, "help:")
+	    || nautilus_istr_has_prefix (uri, "info:")
+	    || nautilus_istr_has_prefix (uri, "man:")
+	    || nautilus_istr_has_prefix (uri, "pipe:")
+	    ) {
+		return FALSE;
+	}
+	
+	return TRUE;
+}
+
+static void
+metafile_read_start (NautilusMetafile *metafile)
+{
+	g_assert (NAUTILUS_IS_METAFILE (metafile));
+
+	if (metafile->details->is_read
+	    || metafile->details->read_state != NULL) {
+		return;
+	}
+
+	if (!allow_metafile (metafile)) {
+		metafile_read_mark_done (metafile);
+	} else {
+		metafile->details->read_state = g_new0 (MetafileReadState, 1);
+		metafile_read_restart (metafile);
+	}
+}
+
+static void
+metafile_write_done (NautilusMetafile *metafile)
+{
+	if (metafile->details->write_state->write_again) {
+		metafile_write_start (metafile);
+		return;
+	}
+
+	xmlFree (metafile->details->write_state->buffer);
+	g_free (metafile->details->write_state);
+	metafile->details->write_state = NULL;
+	bonobo_object_unref (BONOBO_OBJECT (metafile));
+}
+
+static void
+metafile_write_failed (NautilusMetafile *metafile)
+{
+	if (metafile->details->write_state->use_public_metafile) {
+		metafile->details->write_state->use_public_metafile = FALSE;
+		metafile_write_start (metafile);
+		return;
+	}
+
+	metafile_write_done (metafile);
+}
+
+static void
+metafile_write_failure_close_callback (GnomeVFSAsyncHandle *handle,
+				       GnomeVFSResult result,
+				       gpointer callback_data)
+{
+	NautilusMetafile *metafile;
+
+	metafile = NAUTILUS_METAFILE (callback_data);
+
+	metafile_write_failed (metafile);
+}
+
+static void
+metafile_write_success_close_callback (GnomeVFSAsyncHandle *handle,
+				       GnomeVFSResult result,
+				       gpointer callback_data)
+{
+	NautilusMetafile *metafile;
+
+	metafile = NAUTILUS_METAFILE (callback_data);
+	g_assert (metafile->details->write_state->handle == NULL);
+
+	if (result != GNOME_VFS_OK) {
+		metafile_write_failed (metafile);
+		return;
+	}
+
+	/* Now that we have finished writing, it is time to delete the
+	 * private file if we wrote the public one.
+	 */
+	if (metafile->details->write_state->use_public_metafile) {
+		/* A synchronous unlink is OK here because the private
+		 * metafiles are local, so an unlink is very fast.
+		 */
+		gnome_vfs_unlink_from_uri (metafile->details->private_vfs_uri);
+	}
+
+	metafile_write_done (metafile);
+}
+
+static void
+metafile_write_callback (GnomeVFSAsyncHandle *handle,
+			 GnomeVFSResult result,
+			 gconstpointer buffer,
+			 GnomeVFSFileSize bytes_requested,
+			 GnomeVFSFileSize bytes_read,
+			 gpointer callback_data)
+{
+	NautilusMetafile *metafile;
+
+	metafile = NAUTILUS_METAFILE (callback_data);
+	g_assert (metafile->details->write_state->handle == handle);
+	g_assert (metafile->details->write_state->buffer == buffer);
+	g_assert (metafile->details->write_state->size == bytes_requested);
+
+	g_assert (metafile->details->write_state->handle != NULL);
+	gnome_vfs_async_close (metafile->details->write_state->handle,
+			       result == GNOME_VFS_OK
+			       ? metafile_write_success_close_callback
+			       : metafile_write_failure_close_callback,
+			       metafile);
+	metafile->details->write_state->handle = NULL;
+}
+
+static void
+metafile_write_create_callback (GnomeVFSAsyncHandle *handle,
+				GnomeVFSResult result,
+				gpointer callback_data)
+{
+	NautilusMetafile *metafile;
+	
+	metafile = NAUTILUS_METAFILE (callback_data);
+	g_assert (metafile->details->write_state->handle == handle);
+	
+	if (result != GNOME_VFS_OK) {
+		metafile_write_failed (metafile);
+		return;
+	}
+
+	gnome_vfs_async_write (metafile->details->write_state->handle,
+			       metafile->details->write_state->buffer,
+			       metafile->details->write_state->size,
+			       metafile_write_callback,
+			       metafile);
+}
+
+static void
+metafile_write_start (NautilusMetafile *metafile)
+{
+	g_assert (NAUTILUS_IS_METAFILE (metafile));
+
+	metafile->details->write_state->write_again = FALSE;
+
+	/* Open the file. */
+	gnome_vfs_async_create_uri
+		(&metafile->details->write_state->handle,
+		 metafile->details->write_state->use_public_metafile
+		 ? metafile->details->public_vfs_uri
+		 : metafile->details->private_vfs_uri,
+		 GNOME_VFS_OPEN_WRITE, FALSE, METAFILE_PERMISSIONS,
+		 metafile_write_create_callback, metafile);
+}
+
+static void
+metafile_write (NautilusMetafile *metafile)
+{
+	int xml_doc_size;
+	
+	g_assert (NAUTILUS_IS_METAFILE (metafile));
+
+	bonobo_object_ref (BONOBO_OBJECT (metafile));
+
+	/* If we are already writing, then just remember to do it again. */
+	if (metafile->details->write_state != NULL) {
+		bonobo_object_unref (BONOBO_OBJECT (metafile));
+		metafile->details->write_state->write_again = TRUE;
+		return;
+	}
+
+	/* Don't write anything if there's nothing to write.
+	 * At some point, we might want to change this to actually delete
+	 * the metafile in this case.
+	 */
+	if (metafile->details->xml == NULL) {
+		bonobo_object_unref (BONOBO_OBJECT (metafile));
+		return;
+	}
+
+	/* Create the write state. */
+	metafile->details->write_state = g_new0 (MetafileWriteState, 1);
+	metafile->details->write_state->use_public_metafile
+		= can_use_public_metafile (metafile);
+	xmlDocDumpMemory (metafile->details->xml,
+			  &metafile->details->write_state->buffer,
+			  &xml_doc_size);
+	metafile->details->write_state->size = xml_doc_size;
+	metafile_write_start (metafile);
+}
+
+static gboolean
+metafile_write_idle_callback (gpointer callback_data)
+{
+	NautilusMetafile *metafile;
+
+	metafile = NAUTILUS_METAFILE (callback_data);
+
+	metafile->details->write_idle_id = 0;
+	metafile_write (metafile);
+
+	bonobo_object_unref (BONOBO_OBJECT (metafile));
+
+	return FALSE;
+}
+
+static void
+directory_request_write_metafile (NautilusMetafile *metafile)
+{
+	g_assert (NAUTILUS_IS_METAFILE (metafile));
+
+	if (!allow_metafile (metafile)) {
+		return;
+	}
+
+	/* Set up an idle task that will write the metafile. */
+	if (metafile->details->write_idle_id == 0) {
+		bonobo_object_ref (BONOBO_OBJECT (metafile));
+		metafile->details->write_idle_id =
+			gtk_idle_add (metafile_write_idle_callback,
+				      metafile);
+	}
+}

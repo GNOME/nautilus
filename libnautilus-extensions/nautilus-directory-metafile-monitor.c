@@ -126,6 +126,10 @@ corba_metafile_ready (PortableServer_Servant       servant,
 	NautilusMetafileMonitor *monitor;
 
 	monitor = NAUTILUS_METAFILE_MONITOR (bonobo_object_from_servant (servant));
-
 	emit_change_signals_for_all_files (monitor->details->directory);
+	nautilus_idle_queue_add (monitor->details->directory->details->idle_queue,
+				 (GFunc) nautilus_directory_async_state_changed,
+				 monitor->details->directory,
+				 NULL,
+				 NULL);
 }

@@ -30,6 +30,7 @@
 #include <gnome-xml/tree.h>
 
 #include "nautilus-directory.h"
+#include "nautilus-file-utilities.h"
 
 #define NAUTILUS_TYPE_METAFILE	          (nautilus_metafile_get_type ())
 #define NAUTILUS_METAFILE(obj)	          (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_METAFILE, NautilusMetafile))
@@ -44,16 +45,6 @@ typedef struct {
 	NautilusMetafileDetails *details;
 } NautilusMetafile;
 
-/* FIXME: move this back to nautilus-metafile.c after changes to 
- * nautilus-directory-metafile.c mean that it doesn't need to access it.
- */
-struct NautilusMetafileDetails {
-	NautilusDirectory *directory;
-
-	/* FIXME: remove this field when gratuitous ORBit hacks are removed */
-	gboolean directory_ref_is_gone;
-};
-
 typedef struct {
 	BonoboXObjectClass parent_slot;
 	POA_Nautilus_Metafile__epv epv;
@@ -61,18 +52,9 @@ typedef struct {
 
 GtkType nautilus_metafile_get_type (void);
 
-NautilusMetafile *nautilus_metafile_new (const char *directory_uri);
+NautilusMetafile *nautilus_metafile_get (const char *directory_uri);
 
-void call_metafile_changed_for_all_files_mentioned_in_metafile (NautilusDirectory *directory);
-
-void nautilus_metafile_notify_metafile_ready (NautilusDirectory *directory);
-
-void nautilus_metafile_apply_pending_changes (NautilusDirectory *directory);
-
-void nautilus_metafile_destroy (NautilusDirectory *directory);
-
-void nautilus_metafile_set_metafile_contents (NautilusDirectory *directory,
-					  xmlDocPtr metafile_contents);
-
+/* Specifications for in-directory metafile. */
+#define NAUTILUS_METAFILE_NAME_SUFFIX ".nautilus-metafile.xml"
 
 #endif /* NAUTILUS_METAFILE_H */

@@ -57,28 +57,11 @@
 #define DEBUG_START_STOP
 #endif
 
-#define METAFILE_PERMISSIONS (GNOME_VFS_PERM_USER_READ | GNOME_VFS_PERM_USER_WRITE \
-			      | GNOME_VFS_PERM_GROUP_READ | GNOME_VFS_PERM_GROUP_WRITE \
-			      | GNOME_VFS_PERM_OTHER_READ | GNOME_VFS_PERM_OTHER_WRITE)
 
 #define DIRECTORY_LOAD_ITEMS_PER_CALLBACK 32
 
 /* Keep async. jobs down to this number for all directories. */
 #define MAX_ASYNC_JOBS 10
-
-struct MetafileReadState {
-	gboolean use_public_metafile;
-	NautilusReadFileHandle *handle;
-	GnomeVFSAsyncHandle *get_file_info_handle;
-};
-
-struct MetafileWriteState {
-	gboolean use_public_metafile;
-	GnomeVFSAsyncHandle *handle;
-	xmlChar *buffer;
-	GnomeVFSFileSize size;
-	gboolean write_again;
-};
 
 struct TopLeftTextReadState {
 	NautilusFile *file;
@@ -121,7 +104,6 @@ static GHashTable *async_jobs;
 /* Forward declarations for functions that need them. */
 static void     deep_count_load           (NautilusDirectory *directory,
 					   const char        *uri);
-static void     metafile_read_restart     (NautilusDirectory *directory);
 static gboolean request_is_satisfied      (NautilusDirectory *directory,
 					   NautilusFile      *file,
 					   Request           *request);
@@ -414,539 +396,6 @@ file_info_cancel (NautilusDirectory *directory)
 		directory->details->get_info_in_progress = NULL;
 
 		async_job_end (directory, "file info");
-	}
-}
-
-static void
-metafile_read_cancel (NautilusDirectory *directory)
-{
-	if (directory->details->metafile_read_state != NULL) {
-		if (directory->details->metafile_read_state->handle != NULL) {
-			nautilus_read_file_cancel (directory->details->metafile_read_state->handle);
-		}
-		if (directory->details->metafile_read_state->get_file_info_handle != NULL) {
-			gnome_vfs_async_cancel (directory->details->metafile_read_state->get_file_info_handle);
-		}
-		g_free (directory->details->metafile_read_state);
-		directory->details->metafile_read_state = NULL;
-
-		async_job_end (directory, "metafile read");
-	}
-}
-
-static gboolean
-can_use_public_metafile (NautilusDirectory *directory)
-{
-	NautilusSpeedTradeoffValue preference_value;
-	
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
-
-	if (directory->details->public_metafile_vfs_uri == NULL) {
-		return FALSE;
-	}
-
-	preference_value = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA);
-
-	if (preference_value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
-		return TRUE;
-	}
-	
-	if (preference_value == NAUTILUS_SPEED_TRADEOFF_NEVER) {
-		return FALSE;
-	}
-
-	g_assert (preference_value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
-	return nautilus_directory_is_local (directory);
-}
-
-static void
-metafile_read_mark_done (NautilusDirectory *directory)
-{
-	g_free (directory->details->metafile_read_state);
-	directory->details->metafile_read_state = NULL;	
-
-	directory->details->metafile_read = TRUE;
-
-	/* Move over the changes to the metafile that were in the hash table. */
-	nautilus_metafile_apply_pending_changes (directory);
-
-	/* Tell change-watchers that we have update information. */
-	nautilus_metafile_notify_metafile_ready (directory);
-
-	/* Let the callers that were waiting for the metafile know. */
-	nautilus_directory_async_state_changed (directory);
-}
-
-static void
-metafile_read_done (NautilusDirectory *directory)
-{
-	async_job_end (directory, "metafile read");
-	metafile_read_mark_done (directory);
-}
-
-static void
-metafile_read_try_public_metafile (NautilusDirectory *directory)
-{
-	directory->details->metafile_read_state->use_public_metafile = TRUE;
-	metafile_read_restart (directory);
-}
-
-static void
-metafile_read_check_for_directory_callback (GnomeVFSAsyncHandle *handle,
-					    GList *results,
-					    gpointer callback_data)
-{
-	NautilusDirectory *directory;
-	GnomeVFSGetFileInfoResult *result;
-
-	directory = NAUTILUS_DIRECTORY (callback_data);
-
-	g_assert (directory->details->metafile_read_state->get_file_info_handle == handle);
-	g_assert (nautilus_g_list_exactly_one_item (results));
-
-	nautilus_directory_ref (directory);
-
-	directory->details->metafile_read_state->get_file_info_handle = NULL;
-
-	result = results->data;
-
-	if (result->result == GNOME_VFS_OK
-	    && ((result->file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_TYPE) != 0)
-	    && result->file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
-		/* Is a directory. */
-		metafile_read_try_public_metafile (directory);
-	} else {
-		/* Not a directory. */
-		metafile_read_done (directory);
-	}
-
-	nautilus_directory_unref (directory);
-}
-
-static void
-metafile_read_check_for_directory (NautilusDirectory *directory)
-{
-	GList fake_list;
-	
-	/* We only get here if the public metafile is in question,
-	 * which in turn only happens if the URI is one that gnome-vfs
-	 * can handle.
-	 */
-	g_assert (directory->details->vfs_uri != NULL);
-
-	/* We have to do a get_info call to check if this a directory. */
-	fake_list.data = directory->details->vfs_uri;
-	fake_list.next = NULL;
-	fake_list.prev = NULL;
-	gnome_vfs_async_get_file_info
-		(&directory->details->metafile_read_state->get_file_info_handle,
-		 &fake_list,
-		 GNOME_VFS_FILE_INFO_DEFAULT,
-		 metafile_read_check_for_directory_callback,
-		 directory);
-}
-
-static void
-metafile_read_failed (NautilusDirectory *directory)
-{
-	NautilusFile *file;
-	gboolean need_directory_check, is_directory;
-
-	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-	g_assert (directory->details->metafile == NULL);
-
-	directory->details->metafile_read_state->handle = NULL;
-
-	if (!directory->details->metafile_read_state->use_public_metafile
-	    && can_use_public_metafile (directory)) {
-		/* The goal here is to read the real metafile, but
-		 * only if the directory is actually a directory.
-		 */
-
-		/* First, check if we already know if it a directory. */
-		file = nautilus_file_get (directory->details->uri);
-		if (file == NULL || file->details->is_gone) {
-			need_directory_check = FALSE;
-			is_directory = FALSE;
-		} else if (file->details->info == NULL) {
-			need_directory_check = TRUE;
-			is_directory = TRUE;
-		} else {
-			need_directory_check = FALSE;
-			is_directory = nautilus_file_is_directory (file);
-		}
-		nautilus_file_unref (file);
-
-		/* Do the directory check if we don't know. */
-		if (need_directory_check) {
-			metafile_read_check_for_directory (directory);
-			return;
-		}
-
-		/* Try for the public metafile if it is a directory. */
-		if (is_directory) {
-			metafile_read_try_public_metafile (directory);
-			return;
-		}
-	}
-
-	metafile_read_done (directory);
-}
-
-static void
-metafile_read_done_callback (GnomeVFSResult result,
-			     GnomeVFSFileSize file_size,
-			     char *file_contents,
-			     gpointer callback_data)
-{
-	NautilusDirectory *directory;
-	int size;
-	char *buffer;
-
-	directory = NAUTILUS_DIRECTORY (callback_data);
-	g_assert (directory->details->metafile == NULL);
-
-	nautilus_directory_ref (directory);
-
-	if (result != GNOME_VFS_OK) {
-		g_assert (file_contents == NULL);
-		metafile_read_failed (directory);
-		nautilus_directory_unref (directory);
-		return;
-	}
-	
-	size = file_size;
-	if ((GnomeVFSFileSize) size != file_size) {
-		g_free (file_contents);
-		metafile_read_failed (directory);
-		nautilus_directory_unref (directory);
-		return;
-	}
-
-	/* The gnome-xml parser requires a zero-terminated array. */
-	buffer = g_realloc (file_contents, size + 1);
-	buffer[size] = '\0';
-	nautilus_metafile_set_metafile_contents (directory,
-						 xmlParseMemory (buffer, size));
-	g_free (buffer);
-
-	metafile_read_done (directory);
-
-	nautilus_directory_unref (directory);
-}
-
-static void
-metafile_read_restart (NautilusDirectory *directory)
-{
-	char *text_uri;
-
-	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-
-	text_uri = gnome_vfs_uri_to_string
-		(directory->details->metafile_read_state->use_public_metafile
-		 ? directory->details->public_metafile_vfs_uri
-		 : directory->details->private_metafile_vfs_uri,
-		 GNOME_VFS_URI_HIDE_NONE);
-
-	directory->details->metafile_read_state->handle = nautilus_read_entire_file_async
-		(text_uri, metafile_read_done_callback, directory);
-
-	g_free (text_uri);
-}
-
-static gboolean
-allow_metafile (NautilusDirectory *directory)
-{
-	const char *uri;
-
-	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-
-	/* Note that this inhibits both reading and writing metadata
-	 * completely. In the future we may want to inhibit writing to
-	 * the real directory while allowing parallel-directory
-	 * metadata.
-	 */
-
-	/* For now, hard-code these schemes. Perhaps we should
-	 * hardcode the schemes that are good for metadata instead of
-	 * the schemes that are bad for it.
-	 */
-	/* FIXME bugzilla.eazel.com 2434: 
-	 * We need to handle this in a better way. Perhaps a
-	 * better way can wait until we have support for metadata
-	 * access inside gnome-vfs.
-	 */
-	uri = directory->details->uri;
-	if (nautilus_is_search_uri (uri)
-	    || nautilus_istr_has_prefix (uri, "ghelp:")
-	    || nautilus_istr_has_prefix (uri, "gnome-help:")
-	    || nautilus_istr_has_prefix (uri, "help:")
-	    || nautilus_istr_has_prefix (uri, "info:")
-	    || nautilus_istr_has_prefix (uri, "man:")
-	    || nautilus_istr_has_prefix (uri, "pipe:")
-	    ) {
-		return FALSE;
-	}
-	
-	return TRUE;
-}
-
-/* This checks if there's a request for the metafile contents. */
-static gboolean
-is_anyone_waiting_for_metafile (NautilusDirectory *directory)
-{
-	GList *node;
-	ReadyCallback *callback;
-	Monitor *monitor;	
-
-	for (node = directory->details->call_when_ready_list; node != NULL; node = node->next) {
-		callback = node->data;
-		if (callback->request.metafile) {
-			return TRUE;
-		}
-	}
-
-	for (node = directory->details->monitor_list; node != NULL; node = node->next) {
-		monitor = node->data;
-		if (monitor->request.metafile) {
-			return TRUE;
-		}
-	}	
-
-	return FALSE;
-}
-
-static void
-metafile_read_start (NautilusDirectory *directory)
-{
-	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-
-	if (directory->details->metafile_read
-	    || directory->details->metafile_read_state != NULL) {
-		return;
-	}
-
-	g_assert (directory->details->metafile == NULL);
-
-	if (!directory->details->load_metafile_for_server) {
-		return;
-	}
-
-	if (!allow_metafile (directory)) {
-		metafile_read_mark_done (directory);
-	} else {
-		if (!async_job_start (directory, "metafile read")) {
-			return;
-		}
-		directory->details->metafile_read_state = g_new0 (MetafileReadState, 1);
-		metafile_read_restart (directory);
-	}
-}
-
-static void
-metafile_write_done (NautilusDirectory *directory)
-{
-	if (directory->details->metafile_write_state->write_again) {
-		nautilus_metafile_write_start (directory);
-		return;
-	}
-
-	xmlFree (directory->details->metafile_write_state->buffer);
-	g_free (directory->details->metafile_write_state);
-	directory->details->metafile_write_state = NULL;
-	nautilus_directory_unref (directory);
-}
-
-static void
-metafile_write_failed (NautilusDirectory *directory)
-{
-	if (directory->details->metafile_write_state->use_public_metafile) {
-		directory->details->metafile_write_state->use_public_metafile = FALSE;
-		nautilus_metafile_write_start (directory);
-		return;
-	}
-
-	metafile_write_done (directory);
-}
-
-static void
-metafile_write_failure_close_callback (GnomeVFSAsyncHandle *handle,
-				       GnomeVFSResult result,
-				       gpointer callback_data)
-{
-	NautilusDirectory *directory;
-
-	directory = NAUTILUS_DIRECTORY (callback_data);
-
-	nautilus_directory_ref (directory);
-	metafile_write_failed (directory);
-	nautilus_directory_unref (directory);
-}
-
-static void
-metafile_write_success_close_callback (GnomeVFSAsyncHandle *handle,
-				       GnomeVFSResult result,
-				       gpointer callback_data)
-{
-	NautilusDirectory *directory;
-
-	directory = NAUTILUS_DIRECTORY (callback_data);
-	g_assert (directory->details->metafile_write_state->handle == NULL);
-
-	nautilus_directory_ref (directory);
-
-	if (result != GNOME_VFS_OK) {
-		metafile_write_failed (directory);
-		nautilus_directory_unref (directory);
-		return;
-	}
-
-	/* Now that we have finished writing, it is time to delete the
-	 * private file if we wrote the public one.
-	 */
-	if (directory->details->metafile_write_state->use_public_metafile) {
-		/* A synchronous unlink is OK here because the private
-		 * metafiles are local, so an unlink is very fast.
-		 */
-		gnome_vfs_unlink_from_uri (directory->details->private_metafile_vfs_uri);
-	}
-
-	metafile_write_done (directory);
-
-	nautilus_directory_unref (directory);
-}
-
-static void
-metafile_write_callback (GnomeVFSAsyncHandle *handle,
-			 GnomeVFSResult result,
-			 gconstpointer buffer,
-			 GnomeVFSFileSize bytes_requested,
-			 GnomeVFSFileSize bytes_read,
-			 gpointer callback_data)
-{
-	NautilusDirectory *directory;
-
-	directory = NAUTILUS_DIRECTORY (callback_data);
-	g_assert (directory->details->metafile_write_state->handle == handle);
-	g_assert (directory->details->metafile_write_state->buffer == buffer);
-	g_assert (directory->details->metafile_write_state->size == bytes_requested);
-
-	g_assert (directory->details->metafile_write_state->handle != NULL);
-	gnome_vfs_async_close (directory->details->metafile_write_state->handle,
-			       result == GNOME_VFS_OK
-			       ? metafile_write_success_close_callback
-			       : metafile_write_failure_close_callback,
-			       directory);
-	directory->details->metafile_write_state->handle = NULL;
-}
-
-static void
-metafile_write_create_callback (GnomeVFSAsyncHandle *handle,
-				GnomeVFSResult result,
-				gpointer callback_data)
-{
-	NautilusDirectory *directory;
-	
-	directory = NAUTILUS_DIRECTORY (callback_data);
-	g_assert (directory->details->metafile_write_state->handle == handle);
-	
-	if (result != GNOME_VFS_OK) {
-		nautilus_directory_ref (directory);
-		metafile_write_failed (directory);
-		nautilus_directory_unref (directory);
-		return;
-	}
-
-	gnome_vfs_async_write (directory->details->metafile_write_state->handle,
-			       directory->details->metafile_write_state->buffer,
-			       directory->details->metafile_write_state->size,
-			       metafile_write_callback,
-			       directory);
-}
-
-void
-nautilus_metafile_write_start (NautilusDirectory *directory)
-{
-	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-
-	directory->details->metafile_write_state->write_again = FALSE;
-
-	/* Open the file. */
-	gnome_vfs_async_create_uri
-		(&directory->details->metafile_write_state->handle,
-		 directory->details->metafile_write_state->use_public_metafile
-		 ? directory->details->public_metafile_vfs_uri
-		 : directory->details->private_metafile_vfs_uri,
-		 GNOME_VFS_OPEN_WRITE, FALSE, METAFILE_PERMISSIONS,
-		 metafile_write_create_callback, directory);
-}
-
-static void
-metafile_write (NautilusDirectory *directory)
-{
-	int xml_doc_size;
-	
-	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-
-	nautilus_directory_ref (directory);
-
-	/* If we are already writing, then just remember to do it again. */
-	if (directory->details->metafile_write_state != NULL) {
-		nautilus_directory_unref (directory);
-		directory->details->metafile_write_state->write_again = TRUE;
-		return;
-	}
-
-	/* Don't write anything if there's nothing to write.
-	 * At some point, we might want to change this to actually delete
-	 * the metafile in this case.
-	 */
-	if (directory->details->metafile == NULL) {
-		nautilus_directory_unref (directory);
-		return;
-	}
-
-	/* Create the write state. */
-	directory->details->metafile_write_state = g_new0 (MetafileWriteState, 1);
-	directory->details->metafile_write_state->use_public_metafile
-		= can_use_public_metafile (directory);
-	xmlDocDumpMemory (directory->details->metafile,
-			  &directory->details->metafile_write_state->buffer,
-			  &xml_doc_size);
-	directory->details->metafile_write_state->size = xml_doc_size;
-	nautilus_metafile_write_start (directory);
-}
-
-static gboolean
-metafile_write_idle_callback (gpointer callback_data)
-{
-	NautilusDirectory *directory;
-
-	directory = NAUTILUS_DIRECTORY (callback_data);
-
-	directory->details->write_metafile_idle_id = 0;
-	metafile_write (directory);
-
-	nautilus_directory_unref (directory);
-
-	return FALSE;
-}
-
-void
-nautilus_directory_request_write_metafile (NautilusDirectory *directory)
-{
-	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-
-	if (!allow_metafile (directory)) {
-		return;
-	}
-
-	/* Set up an idle task that will write the metafile. */
-	if (directory->details->write_metafile_idle_id == 0) {
-		nautilus_directory_ref (directory);
-		directory->details->write_metafile_idle_id =
-			gtk_idle_add (metafile_write_idle_callback,
-				      directory);
 	}
 }
 
@@ -1524,6 +973,31 @@ directory_load_callback (GnomeVFSAsyncHandle *handle,
 	}
 
 	nautilus_directory_unref (directory);
+}
+
+/* This checks if there's a request for the metafile contents. */
+static gboolean
+is_anyone_waiting_for_metafile (NautilusDirectory *directory)
+{
+	GList *node;
+	ReadyCallback *callback;
+	Monitor *monitor;	
+
+	for (node = directory->details->call_when_ready_list; node != NULL; node = node->next) {
+		callback = node->data;
+		if (callback->request.metafile) {
+			return TRUE;
+		}
+	}
+
+	for (node = directory->details->monitor_list; node != NULL; node = node->next) {
+		monitor = node->data;
+		if (monitor->request.metafile) {
+			return TRUE;
+		}
+	}	
+
+	return FALSE;
 }
 
 static void
@@ -2104,7 +1578,6 @@ call_ready_callbacks (NautilusDirectory *directory)
 		     node != NULL; node = next) {
 			next = node->next;
 			callback = node->data;
-
 			if (request_is_satisfied (directory, callback->file, &callback->request)) {
 				break;
 			}
@@ -3299,9 +2772,6 @@ start_or_stop_io (NautilusDirectory *directory)
 	/* Start or stop getting file info. */
 	file_info_start (directory);
 
-	/* Start or stop reading the metafile. */
-	metafile_read_start (directory);
-
 	/* Start or stop reading files. */
 	file_list_start (directory);
 
@@ -3367,7 +2837,6 @@ nautilus_directory_cancel (NautilusDirectory *directory)
 	directory_count_cancel (directory);
 	file_info_cancel (directory);
 	file_list_cancel (directory);
-	metafile_read_cancel (directory);
 	mime_list_cancel (directory);
 	top_left_cancel (directory);
 
