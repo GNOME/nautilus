@@ -261,8 +261,10 @@ struct FMDirectoryViewClass {
 	 */
 	gboolean (* accepts_dragged_files)	(FMDirectoryView *view);
 
-	void	 (* start_renaming_item)        (FMDirectoryView *view,
-					  	 const char *uri);
+	gboolean (* can_rename_file)            (FMDirectoryView *view,
+						 NautilusFile *file);
+	void	 (* start_renaming_file)        (FMDirectoryView *view,
+					  	 NautilusFile *file);
 
 	gboolean (* file_still_belongs)		(FMDirectoryView *view,
 						 NautilusFile	 *file);

@@ -1,5 +1,8 @@
 <Root>
 <commands>
+	<cmd name="Rename"
+         _label="Rename"
+	 _tip="Rename selected item"/>
 	<cmd name="Create Link"
          _label="Make Link"
 	 _tip="Create a symbolic link for each selected item"/>
@@ -123,6 +126,10 @@
 				  _label="_Make Link"
 				  accel="*Control*m"
 				  verb="Create Link"/>
+			<menuitem name="Rename"
+				  accel="F2"
+				  _label="_Rename"
+				  verb="Rename"/>
 		</placeholder>
 		<placeholder name="Dangerous File Items Placeholder">
 			<menuitem name="Trash"
@@ -237,6 +244,7 @@
 			<menuitem name="Show Properties" verb="Show Properties"/>
 			<menuitem name="Duplicate" verb="Duplicate"/>
 			<menuitem name="Create Link" verb="Create Link"/>
+			<menuitem name="Rename" verb="Rename"/>
 		</placeholder>
 		<placeholder name="Dangerous File Actions" delimit="top">
 			<menuitem name="Trash" verb="Trash"/>

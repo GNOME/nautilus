@@ -1,3 +1,27 @@
+2002-03-11  Anders Carlsson  <andersca@gnu.org>
+
+	* src/file-manager/fm-directory-view.c: (process_old_files),
+	(queue_pending_files), (fm_directory_view_can_rename_file),
+	(can_rename_file), (start_renaming_file),
+	(reveal_newly_added_folder), (rename_file_callback),
+	(real_merge_menus), (real_update_menus),
+	(fm_directory_view_class_init):
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c: 
+	(fm_icon_view_can_rename_file), (fm_icon_view_start_renaming_file),
+	(fm_icon_view_merge_menus), (fm_icon_view_update_menus),
+	(fm_icon_view_class_init):
+	* src/file-manager/fm-list-model.c:
+	(fm_list_model_get_column_type), (fm_list_model_get_value):
+	* src/file-manager/fm-list-model.h:
+	* src/file-manager/fm-list-view.c: (cell_renderer_edited),
+	(create_and_set_up_tree_view), (fm_list_view_start_renaming_file),
+	(fm_list_view_class_init):
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	Move the "Rename" verb into fm-directory-view and implement rename
+	callbacks for both the list and icon view.
+	
 2002-03-10  Darin Adler  <darin@bentspoon.com>
 
 	* NEWS: Bump version.

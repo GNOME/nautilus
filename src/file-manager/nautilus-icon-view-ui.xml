@@ -1,8 +1,5 @@
 <Root>
 <commands>
-	<cmd name="Rename"
-         _label="Rename"
-	 _tip="Rename selected item"/>
 	<cmd name="Stretch"
          _label="Stretch Icon"
 	 _tip="Make the selected icon stretchable"/>
@@ -38,15 +35,6 @@
 	 _tip="Reposition icons to better fit in the window and avoid overlapping"/>
 </commands>
 <menu>
-	<submenu name="File">
-		<placeholder name="File Items Placeholder">
-			<menuitem name="Rename"
-				  accel="F2"
-				  _label="_Rename"
-				  verb="Rename"/>
-		</placeholder>
-	</submenu>
-	
 	<submenu name="Edit">
 		<placeholder name="Edit Items Placeholder">
 			<menuitem name="Stretch"
@@ -143,9 +131,6 @@
 		</placeholder>
 	</popup>
 	<popup name="selection">
-		<placeholder name="File Actions">
-			<menuitem name="Rename" verb="Rename"/>
-		</placeholder>
 		<placeholder name="Icon Appearance Items">
 			<menuitem name="Stretch" verb="Stretch"/>
 			<menuitem name="Unstretch" verb="Unstretch"/>

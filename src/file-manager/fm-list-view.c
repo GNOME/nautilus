@@ -27,6 +27,7 @@
 #include <config.h>
 #include "fm-list-view.h"
 
+#include "fm-error-reporting.h"
 #include "fm-list-model.h"
 #include <eel/eel-cell-renderer-pixbuf-list.h>
 #include <gtk/gtkcellrendererpixbuf.h>
@@ -43,6 +44,8 @@
 struct FMListViewDetails {
 	GtkTreeView *tree_view;
 	FMListModel *model;
+
+	GtkTreeViewColumn *file_name_column;
 };
 
 static GtkTargetEntry drag_types [] = {
@@ -150,6 +153,33 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 }
 
 static void
+cell_renderer_edited (GtkCellRendererText *cell,
+		      const char          *path_str,
+		      const char          *new_text,
+		      FMListView          *view)
+{
+	GtkTreePath *path;
+	NautilusFile *file;
+	GtkTreeIter iter;
+	
+	path = gtk_tree_path_new_from_string (path_str);
+
+	gtk_tree_model_get_iter (GTK_TREE_MODEL (view->details->model),
+				 &iter, path);
+
+	gtk_tree_path_free (path);
+	
+	gtk_tree_model_get (GTK_TREE_MODEL (view->details->model),
+			    &iter,
+			    FM_LIST_MODEL_FILE_COLUMN, &file,
+			    -1);
+
+	fm_rename_file (file, new_text);
+	
+	nautilus_file_unref (file);
+}
+
+static void
 create_and_set_up_tree_view (FMListView *view)
 {
 	GtkCellRenderer *cell;
@@ -166,7 +196,7 @@ create_and_set_up_tree_view (FMListView *view)
 				 G_CALLBACK (event_after_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "button_press_event",
 				 G_CALLBACK (button_press_callback), view, 0);
-	
+
 	view->details->model = g_object_new (FM_TYPE_LIST_MODEL, NULL);
 	gtk_tree_view_set_model (view->details->tree_view, GTK_TREE_MODEL (view->details->model));
 	g_object_unref (view->details->model);
@@ -179,23 +209,25 @@ create_and_set_up_tree_view (FMListView *view)
 	
 	/* Create the file name column */
 	cell = gtk_cell_renderer_pixbuf_new ();
-	gtk_cell_renderer_set_fixed_size (cell, -1, LIST_VIEW_MINIMUM_ROW_HEIGHT);
 	
-	column = gtk_tree_view_column_new ();
-	gtk_tree_view_column_set_sort_column_id (column, FM_LIST_MODEL_NAME_COLUMN);
-	gtk_tree_view_column_set_title (column, _("File name"));
-	
-	gtk_tree_view_column_pack_start (column, cell, FALSE);
-	gtk_tree_view_column_set_attributes (column, cell,
+	view->details->file_name_column = gtk_tree_view_column_new ();
+	gtk_tree_view_column_set_sort_column_id (view->details->file_name_column, FM_LIST_MODEL_NAME_COLUMN);
+	gtk_tree_view_column_set_title (view->details->file_name_column, _("File name"));
+
+	gtk_tree_view_column_pack_start (view->details->file_name_column, cell, FALSE);
+	gtk_tree_view_column_set_attributes (view->details->file_name_column, cell,
 					     "pixbuf", FM_LIST_MODEL_ICON_COLUMN,
 					     NULL);
-	
+
 	cell = gtk_cell_renderer_text_new ();
-	gtk_tree_view_column_pack_start (column, cell, TRUE);
-	gtk_tree_view_column_set_attributes (column, cell,
+	g_signal_connect (cell, "edited", G_CALLBACK (cell_renderer_edited), view);
+	
+	gtk_tree_view_column_pack_start (view->details->file_name_column, cell, TRUE);
+	gtk_tree_view_column_set_attributes (view->details->file_name_column, cell,
 					     "text", FM_LIST_MODEL_NAME_COLUMN,
+					     "editable", FM_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN,
 					     NULL);
-	gtk_tree_view_append_column (view->details->tree_view, column);
+	gtk_tree_view_append_column (view->details->tree_view, view->details->file_name_column);
 
 	/* Create the size column */
 	cell = gtk_cell_renderer_text_new ();
@@ -385,6 +417,28 @@ fm_list_view_reset_to_defaults (FMDirectoryView *view)
         fm_directory_view_restore_default_zoom_level (view);
 }
 
+static void
+fm_list_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
+{
+	FMListView *list_view;
+	GtkTreeIter iter;
+	GtkTreePath *path;
+	
+	list_view = FM_LIST_VIEW (view);
+	
+	if (!fm_list_model_get_tree_iter_from_file (list_view->details->model, file, &iter)) {
+		return;
+	}
+
+	path = gtk_tree_model_get_path (GTK_TREE_MODEL (list_view->details->model), &iter);
+	
+	gtk_tree_view_set_cursor (list_view->details->tree_view,
+				  path,
+				  list_view->details->file_name_column,
+				  TRUE);
+}
+
+
 #if GNOME2_CONVERSION_COMPLETE
 
 /* This is needed when writing out the sort to metadata. But we don't
@@ -486,6 +540,7 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
         fm_directory_view_class->emblems_changed = fm_list_view_emblems_changed;
 	fm_directory_view_class->sort_directories_first_changed = fm_list_view_sort_directories_first_changed;
+	fm_directory_view_class->start_renaming_file = fm_list_view_start_renaming_file;
 	
 	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
 				       (int *) &default_sort_order_auto_value);

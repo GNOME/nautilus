@@ -86,6 +86,8 @@ fm_list_model_get_column_type (GtkTreeModel *tree_model, int index)
 		return G_TYPE_STRING;
 	case FM_LIST_MODEL_ICON_COLUMN:
 		return GDK_TYPE_PIXBUF;
+	case FM_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN:
+		return G_TYPE_BOOLEAN;
 	default:
 		return G_TYPE_INVALID;
 	}
@@ -197,6 +199,11 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 
 		str = nautilus_file_get_string_attribute_with_default (file, "date_modified");
 		g_value_set_string_take_ownership (value, str);
+		break;
+	case FM_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN:
+		g_value_init (value, G_TYPE_BOOLEAN);
+
+		g_value_set_boolean (value, nautilus_file_can_rename (file));
 		break;
 	default:
 		g_assert_not_reached ();

@@ -103,6 +103,7 @@
 /* Paths to use when referring to bonobo menu items. Paths used by
  * subclasses are in fm-directory-view.h 
  */
+#define FM_DIRECTORY_VIEW_COMMAND_RENAME                                "/commands/Rename"
 #define FM_DIRECTORY_VIEW_COMMAND_OPEN                      		"/commands/Open"
 #define FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE        		"/commands/OpenAlternate"
 #define FM_DIRECTORY_VIEW_COMMAND_OPEN_WITH				"/commands/Open With"
@@ -2075,7 +2076,7 @@ process_old_files (FMDirectoryView *view)
 	NautilusFile *file;
 	GList *selection;
 	gboolean send_selection_change;
-	
+
 	files_added = split_off_first_n (&view->details->old_added_files, FILES_TO_PROCESS_AT_ONCE);
 	files_changed = split_off_first_n (&view->details->old_changed_files, FILES_TO_PROCESS_AT_ONCE);
 	
@@ -2092,6 +2093,7 @@ process_old_files (FMDirectoryView *view)
 
 		for (node = files_changed; node != NULL; node = node->next) {
 			file = NAUTILUS_FILE (node->data);
+			
 			g_signal_emit (view,
 				       signals[still_should_show_file (view, file)
 					       ? FILE_CHANGED : REMOVE_FILE], 0,
@@ -2294,6 +2296,7 @@ queue_pending_files (FMDirectoryView *view,
 
 	*pending_list = g_list_concat (*pending_list,
 				       nautilus_file_list_copy (files));
+
 	if (view->details->loading)
 		schedule_timeout_display_of_pending_files (view);
 	else
@@ -2551,6 +2554,23 @@ fm_directory_view_can_zoom_in (FMDirectoryView *view)
 	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 can_zoom_in, (view));
+}
+
+/**
+ * fm_directory_view_can_rename_file
+ *
+ * Determine whether a file can be renamed.
+ * @file: A NautilusFile
+ * 
+ * Return value: TRUE if @file can be renamed, FALSE otherwise.
+ * 
+ **/
+static gboolean
+fm_directory_view_can_rename_file (FMDirectoryView *view, NautilusFile *file)
+{
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 can_rename_file, (view, file));
 }
 
 /**
@@ -3097,11 +3117,15 @@ trash_or_delete_files (FMDirectoryView *view,
 	eel_g_list_free_deep (file_uris);
 }
 
-static void
-start_renaming_item (FMDirectoryView *view, const char *uri)
+static gboolean
+can_rename_file (FMDirectoryView *view, NautilusFile *file)
 {
-	NautilusFile *file;
-	file = nautilus_file_get (uri);
+	return nautilus_file_can_rename (file);
+}
+
+static void
+start_renaming_file (FMDirectoryView *view, NautilusFile *file)
+{
 	if (file !=  NULL) {
 		fm_directory_view_select_file (view, file);
 	}
@@ -3114,10 +3138,10 @@ reveal_newly_added_folder (FMDirectoryView *view, NautilusFile *new_file, const 
 		g_signal_handlers_disconnect_by_func (view,
 						      G_CALLBACK (reveal_newly_added_folder),
 						      (void *) target_uri);
-		/* no need to select because start_renaming_item selects
+		/* no need to select because start_renaming_file selects
 		 * fm_directory_view_select_file (view, new_file);
 		 */
-		EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_item, (view, target_uri));
+		EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, new_file));
 		fm_directory_view_reveal_selection (view);
 	}
 }
@@ -4117,9 +4141,27 @@ real_selection_received (GtkWidget *widget,
 }
 
 static void
+rename_file_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
+{
+	FMDirectoryView *view;
+	NautilusFile *file;
+	GList *selection;
+	
+	view = FM_DIRECTORY_VIEW (callback_data);
+	selection = fm_directory_view_get_selection (view);
+
+	file = NAUTILUS_FILE (selection->data);
+
+	EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, file));
+	
+	nautilus_file_list_free (selection);
+}
+
+static void
 real_merge_menus (FMDirectoryView *view)
 {
 	BonoboUIVerb verbs [] = {
+		BONOBO_UI_VERB ("Rename", rename_file_callback),
 		BONOBO_UI_VERB ("Copy Files", copy_files_callback),
 		BONOBO_UI_VERB ("Create Link", create_link_callback),
 		BONOBO_UI_VERB ("Cut Files", cut_files_callback),
@@ -4203,6 +4245,10 @@ real_update_menus (FMDirectoryView *view)
 
 	bonobo_ui_component_freeze (view->details->ui, NULL);
 
+	nautilus_bonobo_set_sensitive (view->details->ui, 
+				       FM_DIRECTORY_VIEW_COMMAND_RENAME,
+				       selection_count == 1 &&
+				       fm_directory_view_can_rename_file (view, selection->data));
 
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_NEW_FOLDER,
@@ -5787,7 +5833,8 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 	klass->is_read_only = real_is_read_only;
 	klass->load_error = real_load_error;
 	klass->sort_files = real_sort_files;
-	klass->start_renaming_item = start_renaming_item;
+	klass->can_rename_file = can_rename_file;
+	klass->start_renaming_file = start_renaming_file;
 	klass->supports_creating_files = real_supports_creating_files;
 	klass->supports_properties = real_supports_properties;
 	klass->supports_zooming = real_supports_zooming;

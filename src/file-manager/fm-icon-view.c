@@ -78,7 +78,6 @@
 #define READ_CHUNK_SIZE 16384
 
 /* Paths to use when creating & referring to Bonobo menu items */
-#define MENU_PATH_RENAME 			"/menu/File/File Items Placeholder/Rename"
 #define MENU_PATH_STRETCH_ICON 			"/menu/Edit/Edit Items Placeholder/Stretch"
 #define MENU_PATH_UNSTRETCH_ICONS 		"/menu/Edit/Edit Items Placeholder/Unstretch"
 #define MENU_PATH_LAY_OUT			"/menu/View/View Items Placeholder/Lay Out"
@@ -90,7 +89,6 @@
 #define POPUP_PATH_LAY_OUT			"/popups/background/Before Zoom Items/View Items/Lay Out"
 
 #define COMMAND_PREFIX                          "/commands/"
-#define COMMAND_RENAME 				"/commands/Rename"
 #define COMMAND_STRETCH_ICON 			"/commands/Stretch"
 #define COMMAND_UNSTRETCH_ICONS 		"/commands/Unstretch"
 #define COMMAND_TIGHTER_LAYOUT 			"/commands/Tighter Layout"
@@ -378,19 +376,6 @@ static void
 clean_up_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
 	fm_icon_view_clean_up (FM_ICON_VIEW (callback_data));
-}
-
-	
-
-static void
-rename_icon_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
-{
-	g_assert (FM_IS_ICON_VIEW (callback_data));
-  		
-	nautilus_icon_container_start_renaming_selected_item
-		(get_icon_container (FM_ICON_VIEW (callback_data)));
-
-	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (callback_data));
 }
 
 static void
@@ -1261,11 +1246,23 @@ layout_changed_callback (NautilusIconContainer *container,
 	update_layout_menus (icon_view);
 }
 
+static gboolean
+fm_icon_view_can_rename_file (FMDirectoryView *view, NautilusFile *file)
+{
+	if (!(fm_icon_view_get_zoom_level (FM_ICON_VIEW (view)) > NAUTILUS_ZOOM_LEVEL_SMALLEST)) {
+		return FALSE;
+	}
+
+	return EEL_CALL_PARENT_WITH_RETURN_VALUE (
+		FM_DIRECTORY_VIEW_CLASS, can_rename_file, (view, file));
+}
+
 static void
-fm_icon_view_start_renaming_item  (FMDirectoryView *view, const char *uri)
+fm_icon_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 {
 	/* call parent class to make sure the right icon is selected */
-	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, start_renaming_item, (view, uri));
+	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, start_renaming_file, (view, file));
+	
 	/* start renaming */
 	nautilus_icon_container_start_renaming_selected_item
 		(get_icon_container (FM_ICON_VIEW (view)));
@@ -1290,7 +1287,6 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	FMIconView *icon_view;
 	Bonobo_UIContainer ui_container;
 	BonoboUIVerb verbs [] = {
-		BONOBO_UI_VERB ("Rename", rename_icon_callback),
 		BONOBO_UI_VERB ("Stretch", show_stretch_handles_callback),
 		BONOBO_UI_VERB ("Unstretch", unstretch_icons_callback),
 		BONOBO_UI_VERB ("Clean Up", clean_up_callback),
@@ -1383,12 +1379,6 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 				       icon_container != NULL
 			    	       && nautilus_icon_container_is_stretched (icon_container));
 
-	nautilus_bonobo_set_sensitive (icon_view->details->ui, 
-				       COMMAND_RENAME,
-				       selection_count == 1
-				       && fm_icon_view_get_zoom_level (icon_view) > NAUTILUS_ZOOM_LEVEL_SMALLEST
-				       && nautilus_file_can_rename (selection->data));
-				       
 	bonobo_ui_component_thaw (icon_view->details->ui, NULL);
 	
 	nautilus_file_list_free (selection);
@@ -2639,6 +2629,7 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 	fm_directory_view_class->add_file = fm_icon_view_add_file;
 	fm_directory_view_class->begin_loading = fm_icon_view_begin_loading;
 	fm_directory_view_class->bump_zoom_level = fm_icon_view_bump_zoom_level;
+	fm_directory_view_class->can_rename_file = fm_icon_view_can_rename_file;
 	fm_directory_view_class->can_zoom_in = fm_icon_view_can_zoom_in;
 	fm_directory_view_class->can_zoom_out = fm_icon_view_can_zoom_out;
 	fm_directory_view_class->clear = fm_icon_view_clear;
@@ -2662,7 +2653,7 @@ fm_icon_view_class_init (FMIconViewClass *klass)
         fm_directory_view_class->merge_menus = fm_icon_view_merge_menus;
         fm_directory_view_class->emblems_changed = fm_icon_view_emblems_changed;
         fm_directory_view_class->sort_directories_first_changed = fm_icon_view_sort_directories_first_changed;
-        fm_directory_view_class->start_renaming_item = fm_icon_view_start_renaming_item;
+        fm_directory_view_class->start_renaming_file = fm_icon_view_start_renaming_file;
         fm_directory_view_class->text_attribute_names_changed = fm_icon_view_text_attribute_names_changed;
         fm_directory_view_class->update_menus = fm_icon_view_update_menus;
 
