@@ -1053,12 +1053,11 @@ properties_window_update (FMPropertiesWindow *window,
 		changed_file = NAUTILUS_FILE (tmp->data);
 
 		if (changed_file && nautilus_file_is_gone (changed_file)) {
+			/* Remove the file from the property dialog */
 			remove_from_dialog (window, changed_file);
 			changed_file = NULL;
 			
-			/* Remove the file from the property dialog */
 			if (window->details->original_files == NULL) {
-				gtk_widget_destroy (GTK_WIDGET (window));
 				return;
 			}
 		}		
@@ -1121,8 +1120,14 @@ update_files_callback (gpointer data)
 	window->details->update_files_timeout_id = 0;
 
 	properties_window_update (window, window->details->changed_files);
-	nautilus_file_list_free (window->details->changed_files);
-	window->details->changed_files = NULL;
+	
+	if (window->details->original_files == NULL) {
+		/* Close the window if no files are left */
+		gtk_widget_destroy (GTK_WIDGET (window));
+	} else {
+		nautilus_file_list_free (window->details->changed_files);
+		window->details->changed_files = NULL;
+	}
 	
  	return FALSE;
  }

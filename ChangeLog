@@ -1,3 +1,9 @@
+2004-05-07  Martin Wehner  <martin.wehner@epost.de>
+
+	* src/file-manager/fm-properties-window.c (properties_window_update),
+	(update_files_callback):
+	Move window destruction into update_files_callback (Fixes #141440).
+
 2004-05-07  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-icon-container.c (button_press_event):
