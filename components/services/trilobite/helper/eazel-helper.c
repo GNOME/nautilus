@@ -79,14 +79,46 @@ find_path_to (const char *filename)
 	return NULL;
 }
 
+static void
+do_command (char *command, int args)
+{
+	char *filename;
+	const char *path;
+	char buffer[256];
+	char **pargv;
+	int i;
+
+	pargv = g_new0 (char *, args + 2);
+
+	path = find_path_to (command);
+	if (! path) {
+		printf ("* Can't find %s. :(\n", command);
+		exit (1);
+	}
+
+	filename = g_strdup_printf ("%s/%s", path, command);
+	pargv[0] = command;
+	for (i = 0; i < args; i++) {
+		fgets (buffer, 256, stdin);
+		chomp (buffer);
+		pargv[i + 1] = g_strdup (buffer);
+	}
+	pargv[args + 1] = NULL;
+
+	/* we never free any of the args, but it doesn't matter, because
+	 * if the exec succeeds, this all suddenly vanishes. :)
+	 */
+	execv (filename, pargv);
+
+	printf ("* Can't run %s :(\n", command);
+	exit (1);
+}
+
 int
 main (int argc, char **argv)
 {
 	char buffer[256];
-	const char *path;
-	char *filename;
-	char **pargv;
-	int args, i;
+	int args;
 	time_t new_time;
 
 	printf ("* OK.\n");
@@ -107,30 +139,7 @@ main (int argc, char **argv)
 	/* (followed by N lines of parameters) */
 	if (g_strncasecmp (buffer, "rpm ", 4) == 0) {
 		args = atoi (buffer + 4);
-		pargv = g_new0 (char *, args + 2);
-
-		path = find_path_to ("rpm");
-		if (! path) {
-			printf ("* Can't find RPM. :(\n");
-			exit (1);
-		}
-
-		filename = g_strdup_printf ("%s/%s", path, "rpm");
-		pargv[0] = "rpm";
-		for (i = 0; i < args; i++) {
-			fgets (buffer, 256, stdin);
-			chomp (buffer);
-			pargv[i + 1] = g_strdup (buffer);
-		}
-		pargv[args + 1] = NULL;
-
-		/* we never free any of the args, but it doesn't matter, because
-		 * if the exec succeeds, this all suddenly vanishes. :)
-		 */
-		execv (filename, pargv);
-
-		printf ("* Can't run RPM. :(\n");
-		exit (1);
+		do_command ("rpm", args);
 	}
 
 	/* set-time <time_t> */
@@ -143,6 +152,12 @@ main (int argc, char **argv)
 		}
 
 		exit (0);
+	}
+
+	/* ls <# of parameters> */
+	if (g_strncasecmp (buffer, "ls ", 3) == 0) {
+		args = atoi (buffer + 3);
+		do_command ("ls", args);
 	}
 
 	printf ("* What?\n");

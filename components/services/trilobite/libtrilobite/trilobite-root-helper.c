@@ -383,7 +383,7 @@ failed:
  * on failure, returns -1.
  */
 static TrilobiteRootHelperStatus
-trilobite_root_helper_rpm (TrilobiteRootHelper *root_helper, GList *argv, int *fd)
+trilobite_root_helper_run_program (TrilobiteRootHelper *root_helper, const char *program, GList *argv, int *fd)
 {
 	GList *item;
 	char *p, *out;
@@ -393,15 +393,15 @@ trilobite_root_helper_rpm (TrilobiteRootHelper *root_helper, GList *argv, int *f
 	for (item = g_list_first (argv); item; item = g_list_next (item)) {
 		for (p = (char *)item->data; *p; p++) {
 			if ((*p < ' ') || (*p == 127)) {
-				g_warning ("TrilobiteRootHelper: RPM: argument %d contained an "
+				g_warning ("TrilobiteRootHelper: run %s: argument %d contained an "
 					   "unprintable character: %02X",
-					   g_list_position (argv, item), *p);
+					   program, g_list_position (argv, item), *p);
 				return TRILOBITE_ROOT_HELPER_BAD_ARGS;
 			}
 		}
 	}
 
-	out = g_strdup_printf ("rpm %u\n", g_list_length (argv));
+	out = g_strdup_printf ("%s %u\n", program, g_list_length (argv));
 	if (write (root_helper->pipe_stdin, out, strlen (out)) < strlen (out)) {
 		g_free (out);
 		goto bail;
@@ -489,9 +489,11 @@ trilobite_root_helper_run (TrilobiteRootHelper *root_helper, TrilobiteRootHelper
 
 	switch (command) {
 	case TRILOBITE_ROOT_HELPER_RUN_RPM:
-		return trilobite_root_helper_rpm (root_helper, argv, fd);
+		return trilobite_root_helper_run_program (root_helper, "rpm", argv, fd);
 	case TRILOBITE_ROOT_HELPER_RUN_SET_TIME:
 		return trilobite_root_helper_set_time (root_helper, argv, fd);
+	case TRILOBITE_ROOT_HELPER_RUN_LS:
+		return trilobite_root_helper_run_program (root_helper, "ls", argv, fd);
 	default:
 		g_warning ("unknown TrilobiteRootHelper command: 0x%02X", command);
 		return TRILOBITE_ROOT_HELPER_BAD_COMMAND;
