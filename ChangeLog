@@ -1,5 +1,14 @@
 2001-07-05  Benedikt Roth  <Benedikt.Roth@gmx.net>
 
+	* src/nautilus-sidebar.c: (nautilus_sidebar_initialize),
+	(nautilus_sidebar_destroy), (nautilus_sidebar_theme_changed),
+	(nautilus_sidebar_confirm_trash_changed):
+	Fix bug #8133 where changing of the
+	NAUTILUS_PREFERENCES_CONFIRM_TRASH value led to inconsistent menu
+	descriptions by adding a eel_preferences callback.
+
+2001-07-05  Benedikt Roth  <Benedikt.Roth@gmx.net>
+
 	* src/file-manager/fm-directory-view.c:
 	(fm_directory_view_display_selection_info):
 	Made the statusbar messages when selecting several folders clearer

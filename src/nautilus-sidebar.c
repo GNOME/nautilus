@@ -94,35 +94,36 @@ struct NautilusSidebarDetails {
 /* button assignments */
 #define CONTEXTUAL_MENU_BUTTON 3
 
-static void     nautilus_sidebar_initialize_class    (GtkObjectClass   *object_klass);
-static void     nautilus_sidebar_initialize          (GtkObject        *object);
-static void     nautilus_sidebar_deactivate_panel    (NautilusSidebar  *sidebar);
-static gboolean nautilus_sidebar_press_event         (GtkWidget        *widget,
-						      GdkEventButton   *event);
-static gboolean nautilus_sidebar_release_event       (GtkWidget        *widget,
-						      GdkEventButton   *event);
-static gboolean nautilus_sidebar_leave_event         (GtkWidget        *widget,
-						      GdkEventCrossing *event);
-static gboolean nautilus_sidebar_motion_event        (GtkWidget        *widget,
-						      GdkEventMotion   *event);
-static void     nautilus_sidebar_destroy             (GtkObject        *object);
-static void     nautilus_sidebar_drag_data_received  (GtkWidget        *widget,
-						      GdkDragContext   *context,
-						      int               x,
-						      int               y,
-						      GtkSelectionData *selection_data,
-						      guint             info,
-						      guint             time);
-static void     nautilus_sidebar_read_theme          (NautilusSidebar  *sidebar);
-static void     nautilus_sidebar_size_allocate       (GtkWidget        *widget,
-						      GtkAllocation    *allocation);
-static void     nautilus_sidebar_realize             (GtkWidget        *widget);
-static void     nautilus_sidebar_theme_changed       (gpointer          user_data);
-static void     nautilus_sidebar_update_appearance   (NautilusSidebar  *sidebar);
-static void     nautilus_sidebar_update_buttons      (NautilusSidebar  *sidebar);
-static void     add_command_buttons                  (NautilusSidebar  *sidebar,
-						      GList            *application_list);
-static void     background_metadata_changed_callback (NautilusSidebar  *sidebar);
+static void     nautilus_sidebar_initialize_class      (GtkObjectClass   *object_klass);
+static void     nautilus_sidebar_initialize            (GtkObject        *object);
+static void     nautilus_sidebar_deactivate_panel      (NautilusSidebar  *sidebar);
+static gboolean nautilus_sidebar_press_event           (GtkWidget        *widget,
+							GdkEventButton   *event);
+static gboolean nautilus_sidebar_release_event         (GtkWidget        *widget,
+						        GdkEventButton   *event);
+static gboolean nautilus_sidebar_leave_event           (GtkWidget        *widget,
+							GdkEventCrossing *event);
+static gboolean nautilus_sidebar_motion_event          (GtkWidget        *widget,
+							GdkEventMotion   *event);
+static void     nautilus_sidebar_destroy               (GtkObject        *object);
+static void     nautilus_sidebar_drag_data_received    (GtkWidget        *widget,
+							GdkDragContext   *context,
+							int               x,
+							int               y,
+							GtkSelectionData *selection_data,
+							guint             info,
+							guint             time);
+static void     nautilus_sidebar_read_theme            (NautilusSidebar  *sidebar);
+static void     nautilus_sidebar_size_allocate         (GtkWidget        *widget,
+							GtkAllocation    *allocation);
+static void     nautilus_sidebar_realize               (GtkWidget        *widget);
+static void     nautilus_sidebar_theme_changed         (gpointer          user_data);
+static void     nautilus_sidebar_confirm_trash_changed (gpointer          user_data);
+static void     nautilus_sidebar_update_appearance     (NautilusSidebar  *sidebar);
+static void     nautilus_sidebar_update_buttons        (NautilusSidebar  *sidebar);
+static void     add_command_buttons                    (NautilusSidebar  *sidebar,
+							GList            *application_list);
+static void     background_metadata_changed_callback   (NautilusSidebar  *sidebar);
 
 #define DEFAULT_TAB_COLOR "rgb:9999/9999/9999"
 
@@ -284,7 +285,10 @@ nautilus_sidebar_initialize (GtkObject *object)
 	make_button_box (sidebar);
 
 	/* add a callback for when the theme changes */
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_sidebar_theme_changed, sidebar);	
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_sidebar_theme_changed, sidebar);
+
+	/* add a callback for when the preference whether to confirm trashing/deleting file changes */
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH, nautilus_sidebar_confirm_trash_changed, sidebar);
 
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (sidebar),
@@ -317,6 +321,10 @@ nautilus_sidebar_destroy (GtkObject *object)
 	
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					      nautilus_sidebar_theme_changed,
+					      sidebar);
+
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+					      nautilus_sidebar_confirm_trash_changed,
 					      sidebar);
 
 
@@ -614,6 +622,17 @@ nautilus_sidebar_theme_changed (gpointer user_data)
 	nautilus_sidebar_read_theme (sidebar);
 	nautilus_sidebar_update_appearance (sidebar);
 	gtk_widget_queue_draw (GTK_WIDGET (sidebar)) ;	
+}
+
+/* handler for handling confirming trash preferences changes */
+
+static void
+nautilus_sidebar_confirm_trash_changed (gpointer user_data)
+{
+	NautilusSidebar *sidebar;
+	
+	sidebar = NAUTILUS_SIDEBAR (user_data);
+	nautilus_sidebar_update_buttons (sidebar);
 }
 
 /* hit testing */
