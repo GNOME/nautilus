@@ -14,10 +14,5 @@ nautilus_error_dialog_SOURCES =\
 	$(NULL)
 
 nautilus_error_dialog_LDADD =	\
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la  \
 	$(GNOMEUI_LIBS)	\
-	$(GCONF_LIBS) \
-	$(PAM_LIBS) \
-	$(top_builddir)/libnautilus/libnautilus.la \
-	$(BONOBO_LIBS) \
 	$(NULL)

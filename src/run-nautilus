@@ -24,6 +24,13 @@ ps_rv=$?
 
 if [ $ps_rv -eq 1 ]
 then
+  ## Do a sanity check on the nautilus RPM
+  nautilus-verify-rpm.sh
+  if [ $? -ne 1 ]
+  then
+    exit 1
+  fi
+
   ##
   ## Start with a fresh environment
   ##
