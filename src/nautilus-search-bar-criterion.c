@@ -753,7 +753,7 @@ static char *
 get_emblem_location_for  (int relation_number,
 			  GtkWidget *menu_item)
 {
-	const char *possible_relations[] = {"include", "does_not_include" };
+	const char *possible_relations[] = {"include", "do_not_include" };
 	char *emblem_text;
 	
 	g_assert (relation_number == 0 ||

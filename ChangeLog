@@ -1,4 +1,13 @@
 2000-09-08  Rebecca Schulman  <rebecka@eazel.com>
+
+	* libnautilus-extensions/nautilus-search-uri.c:
+	(nautilus_self_check_search_uri):
+	Fixed make check for my earlier changes
+	* src/nautilus-search-bar-criterion.c: (get_emblem_location_for):
+	fixed the emblem criteria uris so they now are recognized by
+	medusa
+
+2000-09-08  Rebecca Schulman  <rebecka@eazel.com>
 	Fixed bugzilla.eazel.com bugs 1937, 2014, and 2633,
 	to disallow repeat criteria in the search bar,
 	limit number of criteria on the bar, 
