@@ -1038,6 +1038,7 @@ am_i_logged_in (NautilusSummaryView	*view)
 	EazelProxy_User		*user;
 	gboolean		rv = FALSE;
 
+	rv = FALSE;
 	CORBA_exception_init (&ev);
 
 	if (CORBA_OBJECT_NIL != view->details->user_control) {

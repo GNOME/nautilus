@@ -50,6 +50,7 @@ struct NautilusMozillaContentViewDetails {
 	GtkWidget			 *mozilla;
 	NautilusView	                 *nautilus_view;
 	GdkCursor			 *busy_cursor;
+	gboolean                          got_called_by_nautilus;
 };
 
 static void     nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass *klass);
@@ -129,6 +130,8 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 	view->details = g_new0 (NautilusMozillaContentViewDetails, 1);
 
 	view->details->uri = NULL;
+
+	view->details->got_called_by_nautilus = FALSE;
 
 	/* Conjure up the beast.  May God have mercy on our souls. */
 	view->details->mozilla = gtk_moz_embed_new ();
@@ -368,7 +371,6 @@ mozilla_vfs_callback (GnomeVFSAsyncHandle *handle, GnomeVFSResult result, gpoint
 	}
 }
 
-
 /**
  * nautilus_mozilla_content_view_load_uri:
  *
@@ -383,6 +385,8 @@ nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 	GnomeVFSAsyncHandle *async_handle;
 	
 	g_assert (uri != NULL);
+
+	view->details->got_called_by_nautilus = TRUE;
 
 	if (view->details->uri) {
 		g_free (view->details->uri);
@@ -639,9 +643,6 @@ mozilla_location_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 	g_print ("mozilla_location_changed_callback (%s)\n", new_location);
 #endif
 
-	nautilus_view_report_location_change
-		(view->details->nautilus_view, new_location);
-
 	/* If we only changed anchors in the same page, we should
            report some fake progress to Nautilus. */
 
@@ -789,29 +790,38 @@ mozilla_progress_callback (GtkMozEmbed *mozilla,
 	}
 }
 
+
 static gint
 mozilla_open_uri_callback (GtkMozEmbed *mozilla,
 			   const char	*uri,
 			   gpointer	user_data)
 {
-	gint				abort_uri_open;
- 	NautilusMozillaContentView	*view;
+	gint                            abort_uri_open;
+ 	NautilusMozillaContentView     *view;
+	static gboolean                 do_nothing = FALSE;
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
 	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
 
 	/* Determine whether we want to abort this uri load */
- 	abort_uri_open = mozilla_is_uri_handled_by_nautilus (uri);
-	
+	abort_uri_open = mozilla_is_uri_handled_by_nautilus (uri);
+
 #ifdef DEBUG_ramiro
 	g_print ("mozilla_open_uri_callback (uri = %s) abort = %s\n",
 		 uri,
 		 abort_uri_open ? "TRUE" : "FALSE");
 #endif
 
-	/* Let nautilus grok the uri instead */
-	if (abort_uri_open) {
+	if (do_nothing == TRUE) {
+		do_nothing = FALSE;
+		view->details->got_called_by_nautilus = FALSE;
+	} else if (view->details->got_called_by_nautilus == TRUE) {
+		view->details->got_called_by_nautilus = FALSE;
+	} else {
+		/* set it so that we load next time we are called. */
+	        do_nothing = TRUE;
+		abort_uri_open = TRUE;
 		bonobo_object_ref (BONOBO_OBJECT (view->details->nautilus_view));
 		nautilus_view_open_location (view->details->nautilus_view, uri);
 		bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
@@ -883,6 +893,7 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 static char *handled_by_nautilus[] =
 {
 	"ftp",
+	"eazel",
 	"eazel",
 	"eazel-install",
 	"eazel-pw",

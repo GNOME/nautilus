@@ -496,7 +496,7 @@ dump_one_file_node (gpointer key, gpointer value, gpointer user_data)
 	file_number = (guint *)user_data;
 	uri = nautilus_file_get_uri (NAUTILUS_FILE (key));
 
-	g_print ("%d: %s\n", ++(*file_number), uri);
+	g_print ("%d: %s|\n", ++(*file_number), uri);
 	
 	g_free (uri);
 }

@@ -1,3 +1,14 @@
+2000-09-28  Mathieu Lacage  <mathieu@eazel.com>
+
+	Fix bug 2688. back and forward buttons do not work 
+	with mozilla.
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_load_uri),
+	(mozilla_location_changed_callback), 
+	(mozilla_open_uri_callback): add a flag to remember
+	when nautilus calls the component and another to remember 
+	when the user clicks on a button.
+
 2000-09-28  Darin Adler  <darin@eazel.com>
 
 	Fixed renaming bug with names with unusual characters and problems
