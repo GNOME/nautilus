@@ -1,5 +1,10 @@
 2003-03-13  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-factory.c (should_show_thumbnail):
+	Make the thumbnail size prefs only affect images.
+
+2003-03-13  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-file-management-properties.c (nautilus_file_management_properties_dialog_show):
 	Call the response callback on delete_event, with GTK_RESPONSE_CLOSE.
 	

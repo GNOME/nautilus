@@ -706,10 +706,41 @@ image_uri_to_name_or_uri (const char *image_uri)
 }
 
 static gboolean
-should_show_thumbnail (NautilusFile *file)
+mimetype_limited_by_size (const char *mime_type)
 {
-	if (nautilus_file_get_size (file) >
-	    (unsigned int)cached_thumbnail_limit) {
+        guint i;
+        static GHashTable *formats = NULL;
+        static const char *types [] = {
+          "image/x-bmp", "image/x-ico", "image/jpeg", "image/gif",
+          "image/png", "image/pnm", "image/ras", "image/tga",
+          "image/tiff", "image/wbmp", "image/x-xbitmap",
+          "image/x-xpixmap"
+        };
+
+	if (formats == NULL) {
+		formats = eel_g_hash_table_new_free_at_exit
+			(g_str_hash, g_str_equal,
+			 "nautilus-icon-factory.c: mimetype_limited_by_size");
+		
+                for (i = 0; i < G_N_ELEMENTS (types); i++) {
+                        g_hash_table_insert (formats,
+                                             (gpointer) types [i],
+                                             GUINT_TO_POINTER (1));
+		}
+        }
+
+        if (g_hash_table_lookup (formats, mime_type)) {
+                return TRUE;
+	}
+
+        return FALSE;
+}
+
+static gboolean
+should_show_thumbnail (NautilusFile *file, const char *mime_type)
+{
+	if (mimetype_limited_by_size (mime_type) &&
+	    nautilus_file_get_size (file) > (unsigned int)cached_thumbnail_limit) {
 		return FALSE;
 	}
 	
@@ -765,7 +796,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, gboolean embedd_tex
 	
 	file_info = nautilus_file_peek_vfs_file_info (file);
 	
-	show_thumb = should_show_thumbnail (file);	
+	show_thumb = should_show_thumbnail (file, mime_type);	
 	
 	if (show_thumb) {
 		thumb_factory = factory->thumbnail_factory;
