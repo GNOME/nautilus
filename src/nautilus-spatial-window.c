@@ -34,7 +34,6 @@
 #include "nautilus-application.h"
 #include "nautilus-desktop-window.h"
 #include "nautilus-bookmarks-window.h"
-#include "nautilus-file-utilities.h"
 #include "nautilus-location-dialog.h"
 #include "nautilus-main.h"
 #include "nautilus-signaller.h"

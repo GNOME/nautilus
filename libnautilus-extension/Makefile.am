@@ -33,6 +33,7 @@ libnautilus_extension_include_HEADERS=		\
 libnautilus_extension_la_SOURCES=			\
 	nautilus-column.c                               \
 	nautilus-column-provider.c                      \
+	nautilus-extension-i18n.h                       \
 	nautilus-extension-types.c                      \
 	nautilus-file-info.c                            \
 	nautilus-menu-item.c                            \
