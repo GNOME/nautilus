@@ -233,7 +233,8 @@ try_to_expand_path(GtkEditable *editable)
 	char *current_path;
 	char *dir_name;
 	char *expand_text;
-
+	char *expand_name;
+	
 	user_location = gtk_editable_get_chars (editable, 0, -1);
  	
 	current_path = nautilus_make_uri_from_input (user_location);
@@ -277,7 +278,13 @@ try_to_expand_path(GtkEditable *editable)
 	expand_text = NULL;
 	while (current_file_info != NULL) {
 		if (nautilus_str_has_prefix (current_file_info->name, base_name)) {
-			expand_text = accumulate_name (expand_text, current_file_info->name);
+			if (current_file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
+				expand_name = g_strconcat (current_file_info->name, "/", NULL);
+			} else {
+				expand_name = g_strdup (current_file_info->name);
+			}
+			expand_text = accumulate_name (expand_text, expand_name);
+			g_free (expand_name);
 		}
 		current_file_info = gnome_vfs_directory_list_next (list);
 	}
