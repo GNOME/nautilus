@@ -36,6 +36,7 @@
 #include <stdio.h>
 #include "nautilus-gdk-pixbuf-extensions.h"
 #include <unistd.h>
+#include <sys/wait.h>
 #include <librsvg/rsvg.h>
 #include "nautilus-graphic-effects.h"
 
@@ -181,6 +182,7 @@ typedef struct {
 	char *thumbnail_uri;
 	gboolean is_local;
 	gboolean anti_aliased;
+	pid_t thumbnail_task;
 } NautilusThumbnailInfo;
 
 /* GCompareFunc-style function for comparing NautilusThumbnailInfos.
@@ -208,27 +210,27 @@ char *
 nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 {
 	GnomeVFSResult result;
+	GnomeVFSURI *temp_uri;
 	char *thumbnail_uri;
 	char *file_uri;
+	gboolean can_write, uri_is_local;
+	NautilusFile *destination_file;
 	gboolean local_flag = TRUE;
 	gboolean  remake_thumbnail = FALSE;
 	
 	file_uri = nautilus_file_get_uri (file);
 	
 	/* compose the uri for the thumbnail locally */
-	thumbnail_uri = make_thumbnail_path (file_uri, FALSE, TRUE, anti_aliased);
+	temp_uri = gnome_vfs_uri_new (file_uri);
+	uri_is_local = gnome_vfs_uri_is_local (temp_uri);
+	gnome_vfs_uri_unref (temp_uri);
+	
+	thumbnail_uri = make_thumbnail_path (file_uri, FALSE, uri_is_local, anti_aliased);
 		
 	/* if the thumbnail file already exists locally, simply return the uri */
 	
-	/* FIXME bugzilla.eazel.com 3137: this synchronous I/O is a
-	   disaster when loading remote locations. It blocks the UI
-	   when trying to load a slow remote image over http for
-	   instance. The fact that we must do this potentially slow
-	   operation implies the IconFactory interface needs to be
-	   asynchronous! Either that, or thumbnail existence is
-	   somthing we need to be able to monitor/call_when_ready on,
-	   on a NautilusFile. */
-
+	/* note: thumbnail_uri is always local here, so it's not a disaster that we make a synchronous call below.
+	   Eventually, we'll want to do everything asynchronously, when we have time to restructure the thumbnail engine */
 	if (vfs_file_exists (thumbnail_uri)) {
 		
 		/* see if the file changed since it was thumbnailed by comparing the modification time */
@@ -241,9 +243,8 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 		} else {
 			nautilus_icon_factory_remove_by_uri (thumbnail_uri);
 
-			/* FIXME bugzilla.eazel.com 3137: more potentially
-                           losing synch I/O. */
-			gnome_vfs_unlink (thumbnail_uri);
+			/* the thumbnail uri is always local, so we can do synchronous I/O to delete it */
+ 			gnome_vfs_unlink (thumbnail_uri);
 		}
 	}
 	
@@ -252,13 +253,8 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 		g_free (thumbnail_uri);
 		thumbnail_uri = make_thumbnail_path (file_uri, FALSE, FALSE, anti_aliased);
 		
-		/* if the thumbnail file already exists in the common area,  return that uri */
-
-		/* FIXME bugzilla.eazel.com 3137: more potentially losing
-		   synch I/O - this should be guaranteed local, so
-		   perhaps not as bad (unless you have an NFS homedir,
-		   say... */
-
+		/* if the thumbnail file already exists in the common area,  return that uri, */
+		/* the uri is guaranteed to be local */
 		if (vfs_file_exists (thumbnail_uri)) {
 		
 			/* see if the file changed since it was thumbnailed by comparing the modification time */
@@ -271,10 +267,7 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 			} else {
 				nautilus_icon_factory_remove_by_uri (thumbnail_uri);
 
-				/* FIXME bugzilla.eazel.com 3137: more potentially losing
-				   synch I/O - this should be guaranteed local, so
-				   perhaps not as bad (unless you have an NFS homedir,
-				   say... */
+				/* the uri is guaranteed to be local */
 				gnome_vfs_unlink (thumbnail_uri);
 			}
 		}
@@ -284,21 +277,26 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 	g_free (thumbnail_uri);
 	local_flag = TRUE;
 	thumbnail_uri = make_thumbnail_path (file_uri, TRUE, local_flag, anti_aliased);
-	
 				
 	/* FIXME bugzilla.eazel.com 3137: more potentially losing
 	   synch I/O - this could be remote */
 
 	result = gnome_vfs_make_directory (thumbnail_uri, THUMBNAIL_DIR_PERMISSIONS);
+	
+	/* the directory could already exist, but we better make sure we can write to it */
+	destination_file = nautilus_file_get (thumbnail_uri);
+	can_write = FALSE;
+	if (destination_file != NULL) {
+		can_write = nautilus_file_can_write (destination_file);
+		nautilus_file_unref (destination_file);
+	}
 
 	/* if we can't make if locally, try it in the global place */
-	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILE_EXISTS) {	
+	if (!can_write || (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILE_EXISTS)) {	
 		g_free (thumbnail_uri);
 		local_flag = FALSE;
 		thumbnail_uri = make_thumbnail_path (file_uri, TRUE, local_flag, anti_aliased);
-		/* FIXME bugzilla.eazel.com 3137: more potentially
-		   losing synch I/O - this is probably local? */
-
+		/* this is guaranteed to be local, so synch I/O can be tolerated here */
 		result = gnome_vfs_make_directory (thumbnail_uri, THUMBNAIL_DIR_PERMISSIONS);	
 	}
 	
@@ -334,52 +332,39 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 	return NULL;
 }
 
-/* check_for_thumbnails is a utility that checks to see if any of the thumbnails in the pending
-   list have been created yet.  If it finds one, it removes the elements from the queue and
-   returns true, otherwise it returns false
+/* check_for_thumbnails is a utility that checks to see if the current thumbnail task has terminated.
+   If it has, remove the thumbnail info from the queue and return TRUE; if it's still in progress, return FALSE.
 */
+
 static gboolean 
 check_for_thumbnails (void)
 {
-	char *current_thumbnail;
 	NautilusThumbnailInfo *info;
-	GList *stop_element;
-	GList *next_thumbnail;
 	GList *head;
 	NautilusFile *file;
-
-	for (next_thumbnail = thumbnails;
-	     next_thumbnail != NULL;
-	     next_thumbnail = next_thumbnail->next) {
-		info = (NautilusThumbnailInfo*) next_thumbnail->data;
-		current_thumbnail = make_thumbnail_path (info->thumbnail_uri, FALSE, info->is_local, info->anti_aliased);
-		/* FIXME bugzilla.eazel.com 3137: synchronous I/O */
-		if (vfs_file_exists (current_thumbnail)) {
-			/* we found one, so update the icon and remove all of the elements up to and including
-			   this one from the pending list. */
-			g_free (current_thumbnail);
-			file = nautilus_file_get (info->thumbnail_uri);
-						
-			if (file != NULL) {
-				nautilus_file_changed (file);
-				nautilus_file_unref (file);
-			}
-			
-			stop_element = next_thumbnail->next;
-			while (thumbnails != stop_element) {
-				info = (NautilusThumbnailInfo *) thumbnails->data;
-				g_free (info->thumbnail_uri);
-				g_free (info);
-				head = thumbnails;
-				thumbnails = g_list_remove_link (thumbnails, head);
-				g_list_free_1 (head);
-			}
-			return TRUE;
-		}
-	    
-		g_free (current_thumbnail);
-	}
+	int status;
+	gboolean task_terminated;
 	
+	info = (NautilusThumbnailInfo*) thumbnails->data;
+	
+	task_terminated = waitpid (info->thumbnail_task, &status, WNOHANG) != 0;	
+	if (task_terminated) {
+		/* the thumbnail task has completed, so update the current entry from the list */
+		file = nautilus_file_get (info->thumbnail_uri);
+					
+		if (file != NULL) {
+			nautilus_file_changed (file);
+			nautilus_file_unref (file);
+		}
+
+		g_free (info->thumbnail_uri);
+		g_free (info);
+		head = thumbnails;
+		thumbnails = g_list_remove_link (thumbnails, head);
+		g_list_free_1 (head);
+		return TRUE;
+	}
+    
 	return FALSE;
 }
 
@@ -401,7 +386,6 @@ load_thumbnail_frame (gboolean anti_aliased)
 static int
 make_thumbnails (gpointer data)
 {
-	pid_t thumbnail_pid;
 	NautilusThumbnailInfo *info;
 	GList *next_thumbnail = thumbnails;
 	GdkPixbuf *scaled_image, *framed_image, *thumbnail_image_frame;
@@ -429,9 +413,9 @@ make_thumbnails (gpointer data)
 		/* First, compute the path name of the target thumbnail */
 		g_free (new_thumbnail_path);
 		new_thumbnail_path = make_thumbnail_path (info->thumbnail_uri, FALSE, info->is_local, info->anti_aliased);
-
+		
 		/* fork a task to make the thumbnail, using gdk-pixbuf to do the scaling */
-		if (!(thumbnail_pid = fork())) {
+		if (!(info->thumbnail_task = fork())) {
 			GdkPixbuf* full_size_image;
 			NautilusFile *file;
 			char *thumbnail_path;

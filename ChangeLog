@@ -1,3 +1,15 @@
+2000-09-25  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-thumbnails.c:
+	(nautilus_get_thumbnail_uri), (check_for_thumbnails),
+	(make_thumbnails):
+	fixed big 2932, nautilus doesn't finish making
+	thumbnails if there is a problematic image, by changing the logic
+	of how it determines when a thumbnail is made.  Now it simply checks
+	if the thumbnail task has terminated, instead of checking for
+	the created thumbnail, so failures shouldn't faze it anymore.  Also
+	fixed some other associated bugs.
+	
 2000-09-25  John Sullivan  <sullivan@eazel.com>
 
 	Band-aid for bug 2752 (intermittent failure trying to
