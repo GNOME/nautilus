@@ -56,9 +56,11 @@
 /* Paths to use when creating & referring to bonobo menu items */
 #define MENU_PATH_OPEN                      "/File/Open"
 #define MENU_PATH_OPEN_IN_NEW_WINDOW        "/File/OpenNew"
+#define MENU_PATH_CLOSE                     "/File/Close"
+#define MENU_PATH_SEPARATOR_AFTER_CLOSE	    "/File/SeparatorAfterClose"
 #define MENU_PATH_DELETE                    "/File/Delete"
 #define MENU_PATH_SELECT_ALL                "/Edit/Select All"
-#define MENU_PATH_SET_PROPERTIES            "/Edit/Set Properties"
+#define MENU_PATH_SET_PROPERTIES            "/File/Set Properties"
 
 enum
 {
@@ -140,6 +142,8 @@ static void           open_in_new_window_cb                                     
 										   GList                   *files);
 static void           open_one_in_new_window                                      (gpointer                 data,
 										   gpointer                 user_data);
+static void	      open_one_properties_window 				  (gpointer 		    data, 
+										   gpointer 		    user_data);
 static void           select_all_cb                                               (GtkMenuItem             *item,
 										   FMDirectoryView         *directory_view);
 static void           zoom_in_cb                                                  (GtkMenuItem             *item,
@@ -330,6 +334,27 @@ bonobo_menu_delete_cb (BonoboUIHandler *ui_handler, gpointer user_data, const ch
         g_assert (g_list_length(selection) > 0);
 
         fm_directory_view_delete_with_confirm (view, selection);
+
+        nautilus_file_list_free (selection);
+}
+
+static void
+bonobo_menu_open_properties_window_cb (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
+{
+        FMDirectoryView *view;
+        GList *selection;
+        
+        g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+
+        view = FM_DIRECTORY_VIEW (user_data);
+	selection = fm_directory_view_get_selection (view);
+
+        /* UI should have prevented this from being called unless at least
+         * one item is selected.
+         */
+        g_assert (g_list_length(selection) > 0);
+
+	g_list_foreach (selection, open_one_properties_window, view);
 
         nautilus_file_list_free (selection);
 }
@@ -1455,11 +1480,25 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          0,
                                          bonobo_menu_open_in_new_window_cb,
                                          view);                
+        bonobo_ui_handler_menu_new_separator (ui_handler,
+                                         MENU_PATH_SEPARATOR_AFTER_CLOSE,
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, MENU_PATH_CLOSE) + 1);
+        bonobo_ui_handler_menu_new_item (ui_handler,
+                                         MENU_PATH_SET_PROPERTIES,
+                                         _("Set Properties..."),
+                                         _("View or modify the properties of the selected items"),
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, MENU_PATH_CLOSE) + 2,
+                                         BONOBO_UI_HANDLER_PIXMAP_NONE,
+                                         NULL,
+                                         0,
+                                         0,
+                                         bonobo_menu_open_properties_window_cb,
+                                         view);                
         bonobo_ui_handler_menu_new_item (ui_handler,
                                          MENU_PATH_DELETE,
                                          _("Delete..."),
                                          _("Delete all selected items"),
-                                         3,	                                        
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, MENU_PATH_CLOSE) + 3,
                                          BONOBO_UI_HANDLER_PIXMAP_NONE,
                                          NULL,
                                          0,
@@ -1506,6 +1545,7 @@ fm_directory_view_real_update_menus (FMDirectoryView *view)
         update_one_menu_item (handler, MENU_PATH_OPEN, count);
         update_one_menu_item (handler, MENU_PATH_OPEN_IN_NEW_WINDOW, count);
         update_one_menu_item (handler, MENU_PATH_DELETE, count);
+        update_one_menu_item (handler, MENU_PATH_SET_PROPERTIES, count);
 }
 
 static GtkMenu *

@@ -25,19 +25,26 @@
 #include <config.h>
 #include "fm-properties-window.h"
 
+#include "fm-error-reporting.h"
+
 #include <string.h>
 
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-uidefs.h>
 
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkhseparator.h>
 #include <gtk/gtkcheckbutton.h>
+#include <gtk/gtkentry.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtkhseparator.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtknotebook.h>
+#include <gtk/gtkpixmap.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkvbox.h>
 
 #include <libnautilus/nautilus-glib-extensions.h>
+#include <libnautilus/nautilus-icon-factory.h>
 
 /* static GHashTable *windows; */
 
@@ -52,6 +59,135 @@ static const char * const property_names[] =
 	"personal",
 	"remote"
 };
+
+static void
+get_pixmap_and_mask_for_properties_window (NautilusFile *file,
+					   GdkPixmap **pixmap_return,
+					   GdkBitmap **mask_return)
+{
+	GdkPixbuf *pixbuf;
+
+	g_assert (NAUTILUS_IS_FILE (file));
+	
+	/* FIXME: Do something about giant icon sizes here */
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, NAUTILUS_ICON_SIZE_STANDARD);
+        gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap_return, mask_return, 128);
+	gdk_pixbuf_unref (pixbuf);
+}
+
+static void
+update_properties_window_icon (GtkPixmap *pixmap_widget)
+{
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
+	NautilusFile *file;
+
+	g_assert (GTK_IS_PIXMAP (pixmap_widget));
+
+	file = gtk_object_get_data (GTK_OBJECT (pixmap_widget), "nautilus_file");
+
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	get_pixmap_and_mask_for_properties_window (file, &pixmap, &mask);
+	gtk_pixmap_set (pixmap_widget, pixmap, mask);
+}
+
+static GtkWidget *
+create_pixmap_widget_for_file (NautilusFile *file)
+{
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
+	GtkWidget *widget;
+
+	get_pixmap_and_mask_for_properties_window (file, &pixmap, &mask);
+	widget = gtk_pixmap_new (pixmap, mask);
+
+	gtk_object_set_data_full (GTK_OBJECT (widget),
+				  "nautilus_file",
+				  file,
+				  (GtkDestroyNotify) nautilus_file_unref);
+
+	/* React to icon theme changes. */
+	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
+					       "icons_changed",
+					       update_properties_window_icon,
+					       GTK_OBJECT (widget));
+
+	/* Name changes can also change icon (e.g. "core") */
+	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
+					       "changed",
+					       update_properties_window_icon,
+					       GTK_OBJECT (widget));
+	return widget;
+}
+
+static gboolean
+name_field_done_editing (GtkWidget *widget,
+			 GdkEventFocus *event,
+			 gpointer user_data)
+{
+	NautilusFile *file;
+	GnomeVFSResult rename_result;
+	const char *new_name;
+	char *original_name;
+	
+	g_assert (GTK_IS_ENTRY (widget));
+
+	file = gtk_object_get_data (GTK_OBJECT (widget), "nautilus_file");
+
+	g_assert (NAUTILUS_IS_FILE (file));
+	if (nautilus_file_is_gone (file)) {
+		return FALSE;
+	}
+
+	new_name = gtk_entry_get_text (GTK_ENTRY (widget));
+	rename_result = nautilus_file_rename (file, new_name);
+
+	if (rename_result == GNOME_VFS_OK) {
+		return FALSE;
+	}
+
+	/* Rename failed; restore old name, complain to user. */
+	original_name = nautilus_file_get_name (file);
+	gtk_entry_set_text (GTK_ENTRY (widget), original_name);
+
+	fm_report_error_renaming_file (original_name,
+		 		       new_name,
+		 		       rename_result);
+	
+	g_free (original_name);
+
+	return TRUE;
+}
+
+static void
+name_field_update (GtkEntry *name_field)
+{
+	NautilusFile *file;
+	char *name;
+
+	file = gtk_object_get_data (GTK_OBJECT (name_field), "nautilus_file");
+
+	if (file == NULL || nautilus_file_is_gone (file)) {
+		gtk_widget_set_sensitive (GTK_WIDGET (name_field), FALSE);
+		gtk_entry_set_text (name_field, "");
+		return;
+	}
+
+	name = nautilus_file_get_name (file);
+	gtk_entry_set_text (name_field, name);
+	g_free (name);
+
+	/* 
+	 * The UI would look better here if the name were just drawn as
+	 * a plain label in the case where it's not editable, with no
+	 * border at all. That doesn't seem to be possible with GtkEntry,
+	 * so we'd have to swap out the widget to achieve it. I don't
+	 * care enough to change this now.
+	 */
+	gtk_widget_set_sensitive (GTK_WIDGET (name_field), 
+				  nautilus_file_can_rename (file));
+}
 
 static void
 property_button_update (GtkToggleButton *button)
@@ -106,48 +242,129 @@ property_button_toggled (GtkToggleButton *button)
 	nautilus_file_set_keywords (file, keywords);
 }
 
+static void
+update_properties_window_title (GtkWindow *window, NautilusFile *file)
+{
+	char *name, *title;
+
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (GTK_IS_WINDOW (window));
+
+	name = nautilus_file_get_name (file);
+	title = g_strdup_printf (_("Nautilus: %s Properties"), name);
+  	gtk_window_set_title (window, title);
+
+	g_free (name);	
+	g_free (title);
+}
+
+static void
+properties_window_file_changed_callback (GtkWindow *window, NautilusFile *file)
+{
+	g_assert (GTK_IS_WINDOW (window));
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	if (nautilus_file_is_gone (file)) {
+		gtk_widget_destroy (GTK_WIDGET (window));
+	}
+
+	update_properties_window_title (window, file);
+}
+
 static GtkWindow *
 create_properties_window (NautilusFile *file)
 {
 	GtkWindow *window;
-	GtkWidget *top_level_vbox, *prompt, *separator_line, *button;
+	GtkWidget *notebook;
+	GtkWidget *basic_page_vbox, *icon_and_name_hbox, *icon_pixmap_widget, *name_field;
+	GtkWidget *emblems_page_vbox, *prompt, *separator_line, *button;
 	GtkWidget *check_buttons_box, *left_buttons_box, *right_buttons_box;
-	char *name, *title;
 	int i;
-
-	/* Compute the title. */
-	name = nautilus_file_get_name (file);
-	title = g_strdup_printf (_("Nautilus: %s Properties"), name);
-	g_free (name);
 
 	/* Create the window. */
 	window = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
-  	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
-  	gtk_window_set_title (window, title);
+  	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
   	gtk_window_set_policy (window, FALSE, FALSE, FALSE);
-	g_free (title);
 
-	/* Create the top-level box. */
-	top_level_vbox = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (top_level_vbox);
-	gtk_container_add (GTK_CONTAINER (window), top_level_vbox);
+	/* Set initial window title */
+	update_properties_window_title (window, file);
+
+	/* React to future name changes */
+	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
+					       "changed",
+					       properties_window_file_changed_callback,
+					       GTK_OBJECT (window));
+
+	/* Create the notebook tabs. */
+	notebook = gtk_notebook_new ();
+	gtk_widget_show (notebook);
+	gtk_container_add (GTK_CONTAINER (window), notebook);
+
+	/* Create the Basic page. */
+	basic_page_vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (basic_page_vbox);
+	gtk_container_add (GTK_CONTAINER (notebook), basic_page_vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (basic_page_vbox), GNOME_PAD);
+	gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook),
+				    gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 0),
+				    gtk_label_new (_("Basic")));
+
+	icon_and_name_hbox = gtk_hbox_new (FALSE, GNOME_PAD);
+	gtk_widget_show (icon_and_name_hbox);
+	gtk_box_pack_start (GTK_BOX (basic_page_vbox), icon_and_name_hbox, FALSE, FALSE, 0);
+
+	/* Create the icon pixmap */
+	icon_pixmap_widget = create_pixmap_widget_for_file (file);
+	gtk_widget_show (icon_pixmap_widget);
+	gtk_box_pack_start (GTK_BOX (icon_and_name_hbox), icon_pixmap_widget, FALSE, FALSE, 0);
+
+	/* Create the name field */
+	name_field = gtk_entry_new ();
+	gtk_widget_show (name_field);
+	gtk_box_pack_start (GTK_BOX (icon_and_name_hbox), name_field, TRUE, TRUE, 0);
+
+	/* Attach parameters and signal handler. */
+	nautilus_file_ref (file);
+	gtk_object_set_data_full (GTK_OBJECT (name_field),
+				  "nautilus_file",
+				  file,
+				  (GtkDestroyNotify) nautilus_file_unref);
+
+	/* Update name field initially before hooking up changed signal. */
+	name_field_update (GTK_ENTRY (name_field));
+
+	gtk_signal_connect (GTK_OBJECT (name_field), "focus_out_event",
+      	              	    GTK_SIGNAL_FUNC (name_field_done_editing),
+                            NULL);                            			    
+	/* FIXME: react to name (file) changes from elsewhere */
+
+
+	/* Create the Emblems Page. */
+	emblems_page_vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (emblems_page_vbox);
+	gtk_container_add (GTK_CONTAINER (notebook), emblems_page_vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (emblems_page_vbox), GNOME_PAD);
+	gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook),
+				    gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 1),
+				    gtk_label_new (_("Emblems")));
+	
 
 	/* The prompt. */
-	prompt = gtk_label_new (_("This is a placeholder for the real properties dialog. For now, you can turn some hard-wired properties with corresponding emblems on and off."));
+	prompt = gtk_label_new (_("This is a placeholder for the final emblems design. For now, you can turn some hard-wired properties with corresponding emblems on and off."));
 	gtk_widget_show (prompt);
-	gtk_box_pack_start (GTK_BOX (top_level_vbox), prompt, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (emblems_page_vbox), prompt, FALSE, FALSE, 0);
    	gtk_label_set_justify (GTK_LABEL (prompt), GTK_JUSTIFY_LEFT);
 	gtk_label_set_line_wrap (GTK_LABEL (prompt), TRUE);
 
 	/* Separator between prompt and check buttons. */
   	separator_line = gtk_hseparator_new ();
   	gtk_widget_show (separator_line);
-  	gtk_box_pack_start (GTK_BOX (top_level_vbox), separator_line, TRUE, TRUE, 8);
+  	gtk_box_pack_start (GTK_BOX (emblems_page_vbox), separator_line, TRUE, TRUE, 8);
 
 	/* Holder for two columns of check buttons. */
-	check_buttons_box = gtk_hbox_new (FALSE, 0);
+	check_buttons_box = gtk_hbox_new (TRUE, 0);
 	gtk_widget_show (check_buttons_box);
-	gtk_box_pack_start (GTK_BOX (top_level_vbox), check_buttons_box, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (emblems_page_vbox), check_buttons_box, FALSE, FALSE, 0);
 
 	/* Left column of check buttons. */
 	left_buttons_box = gtk_vbox_new (FALSE, 0);

@@ -1,3 +1,79 @@
+2000-04-04  John Sullivan <sullivan@eazel.com>
+
+	Renaming a file from its Set Properties dialog now works, though
+	there are various odds and ends I still need to clean up. 
+	It turned out (surprise!) that there was a lot of 
+	underpinnings work involved in implementing this feature.
+	Fortunately most of it will be shared by rename-in-place.
+	
+	* libnautilus/nautilus-directory-private.h:
+	add #define for METADATA_NODE_NAME_FOR_FILE_NAME
+	* libnautilus/nautilus-directory.c:
+	(nautilus_directory_get_file_metadata_node): Use 
+	METADATA_NODE_NAME_FOR_FILE_NAME #define
+	(nautilus_directory_set_file_metadata): Use g_return_val_if_fail
+	to prevent callers from changing the file name this way, since
+	that wouldn't work right.
+	
+	* libnautilus/nautilus-file.h:
+	* libnautilus/nautilus-file.c:
+	(nautilus_file_can_rename): New function, returns TRUE if the
+	user has write permission for this file.
+	(nautilus_file_rename): New function, uses gnome_vfs_move to
+	try to rename the file, updating metadata as appropriate.
+	Returns the GnomeVFSResult from gnome_vfs_move.
+	
+	* libnautilus/nautilus-list.c
+	(row_selected): Renamed this formerly private function to
+	nautilus_list_is_row_selected and made it check its parameters
+	more carefully.
+	* libnautilus/nautilus-list.h:
+	(nautilus_list_is_row_selected): Made this public.
+	
+	* src/file-manager/fm-error-reporting.c,
+	* src/file-manager/fm-error-reporting.h: New files, home for
+	UI code to display user error messages and such. It's initial
+	occupant is:
+	(fm_report_error_renaming_file): New function, puts up a non-modal
+	alert reporting the renaming failure.
+	* src/file-manager/Makefile.am: Add these two new files to the build.
+
+	* src/file-manager/fm-directory-view.c:
+	(bonobo_menu_open_properties_window_cb): New function, opens a
+	Properties window for each selected item using the Bonobo callback API.
+	(fm_directory_view_real_merge_menus): Include Set Properties item in
+	File menu, and rearrange other items a little.
+	(fm_directory_view_real_update_menus): Update sensitivity of Set
+	Properties menu item.
+	
+	* src/file-manager/fm-list-view.c:
+	(add_to_list): Return the new row index.
+	(fm_list_view_file_changed): Remove and reinsert the changed file; this
+	not only does less sorting but also recomputes all the text so name
+	changes will be displayed.
+	
+	* src/file-manager/fm-properties-window.c:
+	(get_pixmap_and_mask_for_properties_window),
+	(update_properties_window_icon),
+	(create_pixmap_widget_for_file),
+	(name_field_done_editing),
+	(name_field_update),
+	(update_properties_window_title),
+	(properties_window_file_changed_callback):
+	New functions used to wire up the new editable name field
+	and new icon pixmap widget in the properties window.
+	(create_properties_window): Added notebook tabs, first
+	one is Basic and currently contains icon & name; second
+	is Emblems and has all those checkboxes. Use all the
+	new functions to create and wire up things so that name
+	changes & icon changes are propagated and reflected correctly.
+
+	* src/nautilus-bookmarks-window.c:
+	(create_bookmarks_window): Removed a bunch of unnecessary
+	and leak-causing gtk_widget_refs that I happened to notice
+	in here. I left these behind when modifying code originally
+	created by glade, where the refs are necessary.
+
 2000-04-04  Andy Hertzfeld <andy@eazel.com>
 
 	* components.services/startup/nautilus-service-startup-view.c:

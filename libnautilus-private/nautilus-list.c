@@ -261,10 +261,13 @@ activate_row (NautilusList *list, gint row)
 			 elem->data);
 }
 
-static gboolean
-row_selected (NautilusList *list, gint row)
+gboolean
+nautilus_list_is_row_selected (NautilusList *list, gint row)
 {
 	GtkCListRow *elem;
+
+	g_return_val_if_fail (row >= 0, FALSE);
+	g_return_val_if_fail (row < GTK_CLIST (list)->rows, FALSE);
 
 	elem = g_list_nth (GTK_CLIST (list)->row_list, row)->data;
 
@@ -307,7 +310,7 @@ select_row (NautilusList *list, int row, guint state)
 
 	if (!range) {
 		if (additive) {
-			if (row_selected (list, row))
+			if (nautilus_list_is_row_selected (list, row))
 				gtk_clist_unselect_row
 					(GTK_CLIST (list), row, 0);
 			else
@@ -363,7 +366,7 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 	
 				/* Handle selection */
 
-				if ((row_selected (list, row)
+				if ((nautilus_list_is_row_selected (list, row)
 				     && !(event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)))
 				    || ((event->state & GDK_CONTROL_MASK)
 					&& !(event->state & GDK_SHIFT_MASK))) {

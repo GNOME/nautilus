@@ -89,7 +89,7 @@ struct FMListViewDetails
 #define LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE	LIST_VIEW_NAME_ATTRIBUTE
 
 /* forward declarations */
-static void              add_to_list                              (FMListView         *list_view,
+static int               add_to_list                              (FMListView         *list_view,
 								   NautilusFile       *file);
 static void              column_clicked_callback                  (GtkCList           *clist,
 								   int                 column,
@@ -437,7 +437,7 @@ list_selection_changed_callback (NautilusList *list,
 	fm_directory_view_notify_selection_changed (FM_DIRECTORY_VIEW (data));
 }
 
-static void
+static int
 add_to_list (FMListView *list_view, NautilusFile *file)
 {
 	GtkCList *clist;
@@ -445,8 +445,8 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 	int new_row;
 	int column;
 
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (list_view));
-	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (list_view), -1);
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), -1);
 
 	nautilus_file_ref (file);
 
@@ -478,6 +478,8 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 	install_row_images (list_view, new_row);
 
 	g_strfreev (text);
+
+	return new_row;
 }
 
 static NautilusList *
@@ -618,25 +620,35 @@ static void
 fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 {
 	FMListView *list_view;
-	GtkCList *clist;
-	int row;
+	NautilusList *nautilus_list;
+	int old_row, new_row;
+	gboolean was_selected;
 
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
 	list_view = FM_LIST_VIEW (view);
-	clist = GTK_CLIST (get_list (list_view));
-	row = gtk_clist_find_row_from_data (clist, file);
-	if (row != -1) {
-		install_row_images (list_view, row);
-		/* 
-		 * Resort because the file change *might* have affected
-		 * the current sort order. It would be more efficient
-		 * to tell clist that this one row needs resorting, but
-		 * there's no API for that. Removing the row and re-adding
-		 * it is another option.
-		 */
-		gtk_clist_sort (clist);
+	nautilus_list = get_list (list_view);
+	old_row = gtk_clist_find_row_from_data (GTK_CLIST (nautilus_list), file);
+
+	if (old_row < 0) {
+		g_assert_not_reached ();
+		return;
 	}
+
+	/* Keep this item selected if necessary. */
+	was_selected = nautilus_list_is_row_selected (nautilus_list, old_row);
+	
+	gtk_clist_freeze (GTK_CLIST (nautilus_list));
+
+	/* Remove and re-add file to get new text/icon values and sort correctly. */
+	fm_list_view_remove_file (FM_DIRECTORY_VIEW (list_view), file);
+	new_row = add_to_list (list_view, file);
+
+	if (was_selected) {
+		gtk_clist_select_row (GTK_CLIST (nautilus_list), new_row, -1);
+	}
+
+	gtk_clist_thaw (GTK_CLIST (nautilus_list));
 }
 
 static void

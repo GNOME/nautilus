@@ -84,7 +84,11 @@ guint            nautilus_file_get_directory_item_count  (NautilusFile         *
 GList *          nautilus_file_get_keywords              (NautilusFile         *file);
 void             nautilus_file_set_keywords              (NautilusFile         *file,
 							  GList                *keywords);
-GList *		 nautilus_file_get_emblem_names	   	 (NautilusFile	     *file);
+GList *		 nautilus_file_get_emblem_names	   	 (NautilusFile	       *file);
+gboolean	 nautilus_file_can_rename		 (NautilusFile	       *file);
+GnomeVFSResult	 nautilus_file_rename			 (NautilusFile	       *file, 
+							  const char 	       *new_name);
+
 
 /* Return true if this file has already been deleted.
    This object will be unref'd after sending the files_removed signal,

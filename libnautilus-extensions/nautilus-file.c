@@ -235,6 +235,71 @@ nautilus_file_unref (NautilusFile *file)
 	gtk_object_unref (GTK_OBJECT (file));
 }
 
+gboolean
+nautilus_file_can_rename (NautilusFile *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	return (file->details->info->flags & GNOME_VFS_PERM_USER_WRITE) != 0;
+}
+
+GnomeVFSResult
+nautilus_file_rename (NautilusFile *file, const char *new_name)
+{
+	GnomeVFSURI *new_uri;
+	char *old_uri_text;
+	char *new_uri_text;
+	GnomeVFSResult result;
+	xmlNode *file_node;
+
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), GNOME_VFS_ERROR_BADPARAMS);
+	g_return_val_if_fail (!nautilus_file_is_gone (file), GNOME_VFS_ERROR_BADPARAMS);
+	g_return_val_if_fail (nautilus_strlen (new_name) > 0, GNOME_VFS_ERROR_BADPARAMS);
+
+	/* 
+	 * Test the name-hasn't-changed case explicitly, for two reasons.
+	 * (1) gnome_vfs_move returns an error if new & old are same.
+	 * (2) We don't want to send file-changed signal if nothing changed.
+	 */
+	if (strcmp (new_name, file->details->info->name) == 0) {
+		return GNOME_VFS_OK;
+	}
+
+	old_uri_text = nautilus_file_get_uri (file);
+
+	new_uri = gnome_vfs_uri_append_path (file->details->directory->details->uri,
+					     new_name);
+	new_uri_text = gnome_vfs_uri_to_string (new_uri, GNOME_VFS_URI_HIDE_NONE);
+	gnome_vfs_uri_unref (new_uri);
+
+	/* FIXME: Should handle possibility of slow asynch call here. */
+	result = gnome_vfs_move (old_uri_text, new_uri_text, FALSE);
+	if (result == GNOME_VFS_OK) {
+		file_node = nautilus_directory_get_file_metadata_node 
+			(file->details->directory,
+			 file->details->info->name,
+			 FALSE);
+
+		if (file_node != NULL) {
+			xmlSetProp (file_node, METADATA_NODE_NAME_FOR_FILE_NAME, new_name);
+			nautilus_directory_request_write_metafile (file->details->directory);
+		}
+		
+		/* FIXME: Make sure this does something sensible with incoming names containing
+		 * path separators.
+		 */
+		g_free (file->details->info->name);
+		file->details->info->name = g_strdup (new_name);
+
+		nautilus_file_changed (file);
+	}
+
+	g_free (old_uri_text);
+	g_free (new_uri_text);
+	
+	return result;
+}
+
 static int
 nautilus_file_compare_by_size_with_directories (NautilusFile *file_1, NautilusFile *file_2)
 {

@@ -125,18 +125,15 @@ create_bookmarks_window(NautilusBookmarkList *list)
 	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
 
 	content_area = gtk_hbox_new (TRUE, GNOME_PAD);
-	gtk_widget_ref (content_area);
 	gtk_widget_show (content_area);
 	gtk_container_add (GTK_CONTAINER (window), content_area);
 
 	list_scroller = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_ref (list_scroller);
 	gtk_widget_show (list_scroller);
 	gtk_box_pack_start (GTK_BOX (content_area), list_scroller, TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (list_scroller), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
 	bookmark_list_widget = gtk_clist_new (BOOKMARK_LIST_COLUMN_COUNT);
-	gtk_widget_ref (bookmark_list_widget);
 	gtk_widget_show (bookmark_list_widget);
 	gtk_container_add (GTK_CONTAINER (list_scroller), bookmark_list_widget);
 	gtk_clist_column_titles_hide (GTK_CLIST (bookmark_list_widget));
@@ -149,42 +146,34 @@ create_bookmarks_window(NautilusBookmarkList *list)
 	gtk_clist_set_use_drag_icons(GTK_CLIST (bookmark_list_widget), FALSE);
 
 	right_side = gtk_vbox_new (FALSE, GNOME_PAD);
-	gtk_widget_ref (right_side);
 	gtk_widget_show (right_side);
 	gtk_box_pack_start (GTK_BOX (content_area), right_side, TRUE, TRUE, 0);
 
 	vbox3 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_ref (vbox3);
 	gtk_widget_show (vbox3);
 	gtk_box_pack_start (GTK_BOX (right_side), vbox3, FALSE, FALSE, 0);
 
 	name_label = gtk_label_new (_("Name"));
-	gtk_widget_ref (name_label);
 	gtk_widget_show (name_label);
 	gtk_box_pack_start (GTK_BOX (vbox3), name_label, FALSE, FALSE, 0);
 
 	name_field = gtk_entry_new ();
-	gtk_widget_ref (name_field);
 	gtk_widget_show (name_field);
 	gtk_box_pack_start (GTK_BOX (vbox3), name_field, FALSE, FALSE, 0);
 
 	vbox4 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_ref (vbox4);
 	gtk_widget_show (vbox4);
 	gtk_box_pack_start (GTK_BOX (right_side), vbox4, FALSE, FALSE, 0);
 
 	url_label = gtk_label_new (_("Location"));
-	gtk_widget_ref (url_label);
 	gtk_widget_show (url_label);
 	gtk_box_pack_start (GTK_BOX (vbox4), url_label, FALSE, FALSE, 0);
 
 	uri_field = gtk_entry_new ();
-	gtk_widget_ref (uri_field);
 	gtk_widget_show (uri_field);
 	gtk_box_pack_start (GTK_BOX (vbox4), uri_field, FALSE, FALSE, 0);
 
 	hbox2 = gtk_hbox_new (FALSE, 0);
-	gtk_widget_ref (hbox2);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (right_side), hbox2, FALSE, FALSE, 0);
 
@@ -192,7 +181,6 @@ create_bookmarks_window(NautilusBookmarkList *list)
 	gtk_misc_set_padding (GTK_MISC (GTK_BIN(remove_button)->child), 
 			      GNOME_PAD_SMALL, 
 			      GNOME_PAD_SMALL);
-	gtk_widget_ref (remove_button);
 	gtk_widget_show (remove_button);
 	gtk_box_pack_start (GTK_BOX (hbox2), remove_button, TRUE, FALSE, 0);
 

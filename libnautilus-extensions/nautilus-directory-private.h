@@ -32,6 +32,8 @@
 
 #include "nautilus-file.h"
 
+#define METADATA_NODE_NAME_FOR_FILE_NAME	"NAME"
+
 struct NautilusDirectoryDetails
 {
 	char *uri_text;

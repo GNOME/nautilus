@@ -1056,7 +1056,7 @@ nautilus_directory_get_file_metadata_node (NautilusDirectory *directory,
 	 */
 	child = nautilus_xml_get_root_child_by_name_and_property
 		(directory->details->metafile,
-		 "FILE", "NAME", file_name);
+		 "FILE", METADATA_NODE_NAME_FOR_FILE_NAME, file_name);
 	if (child != NULL) {
 		return child;
 	}
@@ -1065,7 +1065,7 @@ nautilus_directory_get_file_metadata_node (NautilusDirectory *directory,
 	if (create) {
 		root = nautilus_directory_create_metafile_root (directory);
 		child = xmlNewChild (root, NULL, "FILE", NULL);
-		xmlSetProp (child, "NAME", file_name);
+		xmlSetProp (child, METADATA_NODE_NAME_FOR_FILE_NAME, file_name);
 		return child;
 	}
 	
@@ -1096,6 +1096,7 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 	const char *value;
 	xmlAttr *property_node;
 
+	g_return_val_if_fail (strcmp (tag, METADATA_NODE_NAME_FOR_FILE_NAME) != 0, FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 	g_return_val_if_fail (tag != NULL, FALSE);
 	g_return_val_if_fail (tag[0] != '\0', FALSE);

@@ -25,6 +25,8 @@ libntl_file_manager_la_SOURCES=	\
 	dfos.h				\
 	fm-directory-view.c		\
 	fm-directory-view.h		\
+	fm-error-reporting.c		\
+	fm-error-reporting.h		\
 	fm-icon-text-window.c		\
 	fm-icon-text-window.h		\
 	fm-icon-view.c			\
