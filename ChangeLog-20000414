@@ -1,5 +1,42 @@
 2000-03-17  Darin Adler  <darin@eazel.com>
 
+	* libnautilus/gnome-icon-container-grid.h:
+	* libnautilus/gnome-icon-container-grid.c:
+	* libnautilus/gnome-icon-container-private.h:
+	* libnautilus/gnome-icon-container.c:
+	* libnautilus/nautilus-icons-view-icon-item.c:
+	* libnautilus/nautilus-icons-view-icon-item.h:
+	Simplified the grid a bit and did some redesign. The grid now
+	takes into account the height and width of the icons. More work
+	to come.
+
+	* libnautilus/nautilus-global-preferences.c:
+	* nautilus-widgets/nautilus-preferences.h:
+	Some cleanup, including types for constants.
+
+	* libnautilus/nautilus-gnome-extensions.h:
+	* libnautilus/nautilus-gnome-extensions.c:
+	(nautilus_art_irect_equal), (nautilus_art_drect_equal),
+	(nautilus_gnome_canvas_item_get_current_canvas_bounds),
+	(nautilus_gnome_canvas_item_request_redraw),
+	(nautilus_gnome_canvas_request_redraw_rectangle),
+	(nautilus_gnome_canvas_item_get_world_bounds):
+	More useful canvas and libart routines.
+	
+	* RENAMING: More renaming ideas.
+
+2000-03-17  Elliot Lee  <sopwith@eazel.com>
+
+	* libnautilus/gnome-icon-container-grid.c:
+	Added #include <string.h>. For some reason Elliot needs this on
+	his configuration even though I (Darin) don't need it on mine.
+	Some day we have to track this down.
+
+	Elliot checked in the above change without a ChangeLog entry,
+	so I decided to make one for him.
+
+2000-03-17  Darin Adler  <darin@eazel.com>
+
 	* HACKING: Fixed to match what we actually have on Eazel machines.
 
 2000-03-17  John Sullivan  <sullivan@eazel.com>
