@@ -78,3 +78,20 @@ const gpointer oaf_popt_options = NULL;
 gpointer oaf_init (int argc, char *argv[]) { return NULL; }
 int bonobo_init (gpointer a, gpointer b, gpointer c) { return 0; };
 char *nautilus_pixmap_file (const char *a) { return NULL; };
+
+/* stub out esound */
+int esd_open_sound (const char *host) { return -1; }
+int esd_sample_getid (int esd, const char *name) { return -1; }
+int esd_sample_play (int esd, int sample) { return -1; }
+int esd_sample_cache (int esd, void *format, const int rate, const int length, const char *name) { return -1; }
+int esd_sample_free (int esd, int sample) { return -1; }
+int esd_confirm_sample_cache (int esd) { return -1; }
+int esd_close (int esd) { return -1; }
+
+void *afOpenFile (const char *filename, const char *mode, int setup) { return NULL; }
+int afGetFrameCount (void *file, int track) { return 0; }
+int afGetChannels (void *file, int track) { return 0; }
+double afGetRate (void *file, int track) { return 0.0; }
+void afGetSampleFormat (void *file, int track, int *sampfmt, int *sampwidth) { }
+int afReadFrames (void *file, int track, void *buffer, int frameCount) { return 0; }
+int afCloseFile (void *file) { return 0; }

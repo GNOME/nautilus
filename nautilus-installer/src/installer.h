@@ -63,10 +63,13 @@ struct _EazelInstaller
 	GList *implicit_must_have;
 	GList *dont_show;
 
-	GString *failure_info;
+	GList *failure_info;		/* GList<char *> */
 
 	gboolean debug, output;
 	gboolean test;
+
+	unsigned long total_bytes_downloaded;
+	unsigned long last_KB;
 };
 
 GtkType            eazel_installer_get_type(void);
@@ -74,6 +77,14 @@ EazelInstaller    *eazel_installer_new   (void);
 void               eazel_installer_unref (GtkObject *object);
 void               eazel_installer_do_install (EazelInstaller *installer,
 					       GList *categories);
+
+#define DEBUG
+
+#ifdef DEBUG
+#define LOG_DEBUG(x) g_message x
+#else
+#define LOG_DEBUG(x)
+#endif
 
 #ifdef __cplusplus
 }

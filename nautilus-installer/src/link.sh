@@ -26,8 +26,8 @@ gcc -static -g -Wall -Werror -o nautilus-installer main.o support.o callbacks.o 
 -lgnomeui -lgnome -lart_lgpl 								\
 -lgtk -lgdk -lgmodule -lglib -lgdk_imlib 						\
 -L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE 					\
-/usr/lib/libesd.a /usr/lib/libaudiofile.a -lghttp 					\
--L/usr/lib -lrpm -lbz2 -lz -ldb1 -lpopt -lxml 
+-lghttp											\
+-L/usr/lib -lrpm -lbz2 -lz -ldb1 -lpopt -lxml
 
 cp nautilus-installer nautilus-installer-prezip
 

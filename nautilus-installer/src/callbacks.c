@@ -64,7 +64,7 @@ begin_install (EazelInstaller  *installer)
 		eazel_installer_do_install (installer, install_categories);
 	}
 
-	gnome_druid_set_buttons_sensitive(druid,FALSE,TRUE,TRUE);
+	gnome_druid_set_buttons_sensitive(druid, FALSE, TRUE, TRUE);
 	
 	return FALSE;
 }
