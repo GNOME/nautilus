@@ -73,7 +73,9 @@ nautilus_make_path(const char *path, const char* name)
 	return result;
 }
 
-
+/* FIXME bugzilla.eazel.com 1117: Change file-utilities.c to always create user
+ * directorie if needed.  See bug for detail
+ */
 
 /**
  * nautilus_user_directory:
