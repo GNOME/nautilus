@@ -4,7 +4,7 @@
  *  Nautilus
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
- *  Copyright (C) 1999, 2000 Eazel, Inc.
+ *  Copyright (C) 1999, 2000, 2001 Eazel, Inc.
  *
  *  Nautilus is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
@@ -20,7 +20,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Author: Elliot Lee <sopwith@redhat.com>
+ *  Authors: Elliot Lee <sopwith@redhat.com>
+ *           Darin Adler <darin@eazel.com>
  *
  */
 
@@ -36,6 +37,11 @@
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <libnautilus/nautilus-view.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
+
+typedef struct {
+	char *location;
+	GList *selection;
+} LocationAndSelection;
 
 static void impl_Nautilus_ViewFrame_open_location_in_this_window         (PortableServer_Servant  servant,
 									  Nautilus_URI            location,
@@ -134,17 +140,108 @@ impl_Nautilus_ViewFrame__create (NautilusViewFrame *view, CORBA_Environment *ev)
 }
 
 static void
+list_free_deep_callback (gpointer callback_data)
+{
+	nautilus_g_list_free_deep (callback_data);
+}
+
+static void
+free_location_and_selection_callback (gpointer callback_data)
+{
+	LocationAndSelection *location_and_selection;
+
+	location_and_selection = callback_data;
+	g_free (location_and_selection->location);
+	nautilus_g_list_free_deep (location_and_selection->selection);
+	g_free (location_and_selection);
+}
+
+static void
+open_in_this_window (NautilusViewFrame *view,
+		     gpointer callback_data)
+{
+	nautilus_view_frame_open_location_in_this_window (view, callback_data);
+}
+
+static void
+open_prefer_existing_window (NautilusViewFrame *view,
+			     gpointer callback_data)
+{
+	nautilus_view_frame_open_location_prefer_existing_window (view, callback_data);
+}
+
+static void
+open_force_new_window (NautilusViewFrame *view,
+		       gpointer callback_data)
+{
+	LocationAndSelection *location_and_selection;
+
+	location_and_selection = callback_data;
+	nautilus_view_frame_open_location_force_new_window
+		(view,
+		 location_and_selection->location,
+		 location_and_selection->selection);
+}
+
+static void
+report_selection_change (NautilusViewFrame *view,
+			 gpointer callback_data)
+{
+	nautilus_view_frame_report_selection_change (view, callback_data);
+}
+
+static void
+report_status (NautilusViewFrame *view,
+	       gpointer callback_data)
+{
+	nautilus_view_frame_report_status (view, callback_data);
+}
+
+static void
+report_load_underway (NautilusViewFrame *view,
+		      gpointer callback_data)
+{
+	nautilus_view_frame_report_load_underway (view);
+}
+
+static void
+report_load_progress (NautilusViewFrame *view,
+		      gpointer callback_data)
+{
+	nautilus_view_frame_report_load_progress (view, * (float *) callback_data);
+}
+
+static void
+report_load_complete (NautilusViewFrame *view,
+		      gpointer callback_data)
+{
+	nautilus_view_frame_report_load_complete (view);
+}
+
+static void
+report_load_failed (NautilusViewFrame *view,
+		      gpointer callback_data)
+{
+	nautilus_view_frame_report_load_failed (view);
+}
+
+static void
+set_title (NautilusViewFrame *view,
+	   gpointer callback_data)
+{
+	nautilus_view_frame_set_title (view, callback_data);
+}
+
+static void
 impl_Nautilus_ViewFrame_open_location_in_this_window (PortableServer_Servant servant,
 						      Nautilus_URI location,
 						      CORBA_Environment *ev)
 {
-	NautilusViewFrame *view;
-
-	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
-	if (view == NULL) {
-		return;
-	}
-	nautilus_view_frame_open_location_in_this_window (view, location);
+	nautilus_view_frame_queue_incoming_call
+		(servant,
+		 open_in_this_window,
+		 g_strdup (location),
+		 g_free);
 }
 
 static void
@@ -152,13 +249,11 @@ impl_Nautilus_ViewFrame_open_location_prefer_existing_window (PortableServer_Ser
 							      Nautilus_URI location,
 							      CORBA_Environment *ev)
 {
-	NautilusViewFrame *view;
-
-	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
-	if (view == NULL) {
-		return;
-	}
-	nautilus_view_frame_open_location_prefer_existing_window (view, location);
+	nautilus_view_frame_queue_incoming_call
+		(servant,
+		 open_prefer_existing_window,
+		 g_strdup (location),
+		 g_free);
 }
 
 static void
@@ -167,17 +262,17 @@ impl_Nautilus_ViewFrame_open_location_force_new_window (PortableServer_Servant s
 							const Nautilus_URIList *selection,
 							CORBA_Environment *ev)
 {
-	NautilusViewFrame *view;
-	GList *selection_as_g_list;
+	LocationAndSelection *location_and_selection;
 
-	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
-	if (view == NULL) {
-		return;
-	}
-	selection_as_g_list = nautilus_g_list_from_uri_list (selection);
-	nautilus_view_frame_open_location_force_new_window
-		(view, location, selection_as_g_list);
-	nautilus_g_list_free_deep (selection_as_g_list);
+	location_and_selection = g_new (LocationAndSelection, 1);
+	location_and_selection->location = g_strdup (location);
+	location_and_selection->selection = nautilus_g_list_from_uri_list (selection);
+
+	nautilus_view_frame_queue_incoming_call
+		(servant,
+		 open_force_new_window,
+		 location_and_selection,
+		 free_location_and_selection_callback);
 }
 
 static void
@@ -185,17 +280,11 @@ impl_Nautilus_ViewFrame_report_selection_change (PortableServer_Servant servant,
 						 const Nautilus_URIList *selection,
 						 CORBA_Environment *ev)
 {
-	GList *selection_as_g_list;
-	NautilusViewFrame *view;
-
-	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
-	if (view == NULL) {
-		return;
-	}
-	selection_as_g_list = nautilus_g_list_from_uri_list (selection);
-	nautilus_view_frame_report_selection_change
-		(view, selection_as_g_list);
-	nautilus_g_list_free_deep (selection_as_g_list);
+	nautilus_view_frame_queue_incoming_call
+		(servant,
+		 report_selection_change,
+		 nautilus_g_list_from_uri_list (selection),
+		 list_free_deep_callback);
 }
 
 static void
@@ -203,26 +292,22 @@ impl_Nautilus_ViewFrame_report_status (PortableServer_Servant servant,
 				       const CORBA_char *status,
 				       CORBA_Environment *ev)
 {
-	NautilusViewFrame *view;
-
-	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
-	if (view == NULL) {
-		return;
-	}
-	nautilus_view_frame_report_status (view, status);
+	nautilus_view_frame_queue_incoming_call
+		(servant,
+		 report_status,
+		 g_strdup (status),
+		 g_free);
 }
 
 static void
 impl_Nautilus_ViewFrame_report_load_underway (PortableServer_Servant servant,
 					      CORBA_Environment *ev)
 {
-	NautilusViewFrame *view;
-
-	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
-	if (view == NULL) {
-		return;
-	}
-	nautilus_view_frame_report_load_underway (view);
+	nautilus_view_frame_queue_incoming_call
+		(servant,
+		 report_load_underway,
+		 NULL,
+		 NULL);
 }
 
 static void
@@ -230,39 +315,37 @@ impl_Nautilus_ViewFrame_report_load_progress (PortableServer_Servant servant,
 					      CORBA_float fraction_done,
 					      CORBA_Environment *ev)
 {
-	NautilusViewFrame *view;
+	float *copy;
 
-	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
-	if (view == NULL) {
-		return;
-	}
-	nautilus_view_frame_report_load_progress (view, fraction_done);
+	copy = g_new (float, 1);
+	*copy = fraction_done;
+	nautilus_view_frame_queue_incoming_call
+		(servant,
+		 report_load_progress,
+		 copy,
+		 g_free);
 }
 
 static void
 impl_Nautilus_ViewFrame_report_load_complete (PortableServer_Servant servant,
 					      CORBA_Environment *ev)
 {
-	NautilusViewFrame *view;
-
-	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
-	if (view == NULL) {
-		return;
-	}
-	nautilus_view_frame_report_load_complete (view);
+	nautilus_view_frame_queue_incoming_call
+		(servant,
+		 report_load_complete,
+		 NULL,
+		 NULL);
 }
 
 static void
 impl_Nautilus_ViewFrame_report_load_failed (PortableServer_Servant servant,
 					    CORBA_Environment *ev)
 {
-	NautilusViewFrame *view;
-
-	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
-	if (view == NULL) {
-		return;
-	}
-	nautilus_view_frame_report_load_failed (view);
+	nautilus_view_frame_queue_incoming_call
+		(servant,
+		 report_load_failed,
+		 NULL,
+		 NULL);
 }
 
 static void
@@ -270,11 +353,9 @@ impl_Nautilus_ViewFrame_set_title (PortableServer_Servant servant,
 				   const CORBA_char *title,
 				   CORBA_Environment *ev)
 {
-	NautilusViewFrame *view;
-
-	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
-	if (view == NULL) {
-		return;
-	}
-	nautilus_view_frame_set_title (view, title);
+	nautilus_view_frame_queue_incoming_call
+		(servant,
+		 set_title,
+		 g_strdup (title),
+		 g_free);
 }

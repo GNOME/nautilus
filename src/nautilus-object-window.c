@@ -974,6 +974,7 @@ nautilus_window_synch_view_as_menu (NautilusWindow *window)
 {
 	GList *children, *child;
 	GtkWidget *menu;
+	const char *content_view_iid;
 	NautilusViewIdentifier *item_id;
 	int index, matching_index;
 
@@ -987,11 +988,15 @@ nautilus_window_synch_view_as_menu (NautilusWindow *window)
 	children = gtk_container_children (GTK_CONTAINER (menu));
 	matching_index = -1;
 
-	for (child = children, index = 0; child != NULL; child = child->next, ++index) {
-		item_id = (NautilusViewIdentifier *)(gtk_object_get_data (GTK_OBJECT (child->data), "identifier"));
-		if (item_id != NULL && strcmp (window->content_view->iid, item_id->iid) == 0) {
-			matching_index = index;
-			break;
+	if (window->content_view != NULL) {
+		content_view_iid = nautilus_view_frame_get_view_iid (window->content_view);
+
+		for (child = children, index = 0; child != NULL; child = child->next, ++index) {
+			item_id = (NautilusViewIdentifier *) gtk_object_get_data (GTK_OBJECT (child->data), "identifier");
+			if (item_id != NULL && strcmp (content_view_iid, item_id->iid) == 0) {
+				matching_index = index;
+				break;
+			}
 		}
 	}
 
@@ -1410,6 +1415,7 @@ static void
 real_add_current_location_to_history_list (NautilusWindow *window)
 {
 	g_assert (NAUTILUS_IS_WINDOW (window));
+
 	nautilus_add_to_history_list (window->current_location_bookmark);
 }
 
@@ -1417,9 +1423,9 @@ void
 nautilus_window_add_current_location_to_history_list (NautilusWindow *window)
 {
 	g_assert (NAUTILUS_IS_WINDOW (window));
+
 	NAUTILUS_CALL_VIRTUAL (NAUTILUS_WINDOW_CLASS, window,
 			       add_current_location_to_history_list, (window));
-			       
 }
 
 void
@@ -1546,8 +1552,7 @@ nautilus_window_set_content_view_widget (NautilusWindow *window,
 	}
 	
 	if (window->content_view != NULL) {
-		gtk_container_remove (GTK_CONTAINER (window->content_hbox),
-				      GTK_WIDGET (window->content_view));      
+		gtk_object_destroy (GTK_OBJECT (window->content_view));
 		window->content_view = NULL;
 	}
 
@@ -1569,7 +1574,7 @@ nautilus_window_set_content_view_widget (NautilusWindow *window,
 	}
 
 	/* Display or hide zoom control */
-	if (nautilus_view_frame_is_zoomable (new_view)) {
+	if (new_view != NULL && nautilus_view_frame_get_is_zoomable (new_view)) {
 		gtk_widget_show (window->zoom_control);
 	} else {
 		gtk_widget_hide (window->zoom_control);

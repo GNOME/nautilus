@@ -4,7 +4,7 @@
  *  Nautilus
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
- *  Copyright (C) 1999, 2000 Eazel, Inc.
+ *  Copyright (C) 1999, 2000, 2001 Eazel, Inc.
  *
  *  Nautilus is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
@@ -51,18 +51,6 @@ typedef struct NautilusViewFrameDetails NautilusViewFrameDetails;
 typedef struct {
         NautilusGenerousBin parent;
         NautilusViewFrameDetails *details;
-
-        NautilusUndoManager *undo_manager;
-     
-        char *iid;
-
-        /* The frame itself (from various interface points of view). */
-        BonoboObject *view_frame;
-        BonoboZoomableFrame *zoomable_frame;
-        
-        /* The view inside the (various interfaces). */
-        BonoboObjectClient *client_object;
-        GtkWidget *client_widget;
 } NautilusViewFrame;
 
 typedef struct {
@@ -70,8 +58,8 @@ typedef struct {
         
         /* These roughly correspond to CORBA calls, but in some cases they are higher level. */
 
-        /* This happens only just after load_client. */
-        void               (* client_loaded)               (NautilusViewFrame *view);
+        /* This happens only just after load_view. */
+        void               (* view_loaded)                 (NautilusViewFrame *view);
 
         /* These can happen pretty much any time. */
         void               (* load_underway)               (NautilusViewFrame *view);
@@ -101,44 +89,44 @@ typedef struct {
 } NautilusViewFrameClass;
 
 /* basic view management */
-GtkType               nautilus_view_frame_get_type                  (void);
-NautilusViewFrame *   nautilus_view_frame_new                       (BonoboUIContainer   *ui_container,
-                                                                     NautilusUndoManager *undo_manager);
-void                  nautilus_view_frame_load_client               (NautilusViewFrame   *view,
-                                                                     const char          *iid);
-void                  nautilus_view_frame_load_client_async         (NautilusViewFrame   *view,
-                                                                     const char          *iid);
-const char *          nautilus_view_frame_get_iid                   (NautilusViewFrame   *view);
-void                  nautilus_view_frame_stop                      (NautilusViewFrame   *view);
+GtkType            nautilus_view_frame_get_type                  (void);
+NautilusViewFrame *nautilus_view_frame_new                       (BonoboUIContainer   *ui_container,
+                                                                  NautilusUndoManager *undo_manager);
+
+/* connecting to a Nautilus:View */
+void               nautilus_view_frame_load_view                 (NautilusViewFrame   *view,
+                                                                  const char          *view_iid);
+void               nautilus_view_frame_stop                      (NautilusViewFrame   *view);
 
 /* calls to Nautilus:View functions */
-void                  nautilus_view_frame_load_location             (NautilusViewFrame   *view,
-                                                                     const char          *location);
-void                  nautilus_view_frame_selection_changed         (NautilusViewFrame   *view,
-                                                                     GList               *selection);
-void                  nautilus_view_frame_title_changed             (NautilusViewFrame   *view,
-                                                                     const char          *title);
-/* calls to Nautilus:Zoomable functions */
-gdouble               nautilus_view_frame_get_zoom_level            (NautilusViewFrame   *view);
-void                  nautilus_view_frame_set_zoom_level            (NautilusViewFrame   *view,
-                                                                     double               zoom_level);
-gdouble               nautilus_view_frame_get_min_zoom_level        (NautilusViewFrame   *view);
-gdouble               nautilus_view_frame_get_max_zoom_level        (NautilusViewFrame   *view);
-gboolean              nautilus_view_frame_get_has_min_zoom_level    (NautilusViewFrame   *view);
-gboolean              nautilus_view_frame_get_has_max_zoom_level    (NautilusViewFrame   *view);
-gboolean              nautilus_view_frame_get_is_continuous         (NautilusViewFrame   *view);
-GList *               nautilus_view_frame_get_preferred_zoom_levels (NautilusViewFrame   *view);
-void                  nautilus_view_frame_zoom_in                   (NautilusViewFrame   *view);
-void                  nautilus_view_frame_zoom_out                  (NautilusViewFrame   *view);
-void                  nautilus_view_frame_zoom_to_fit               (NautilusViewFrame   *view);
+void               nautilus_view_frame_load_location             (NautilusViewFrame   *view,
+                                                                  const char          *location);
+void               nautilus_view_frame_selection_changed         (NautilusViewFrame   *view,
+                                                                  GList               *selection);
+void               nautilus_view_frame_title_changed             (NautilusViewFrame   *view,
+                                                                  const char          *title);
+
+/* calls to Bonobo:Zoomable functions */
+double             nautilus_view_frame_get_zoom_level            (NautilusViewFrame   *view);
+void               nautilus_view_frame_set_zoom_level            (NautilusViewFrame   *view,
+                                                                  double               zoom_level);
+double             nautilus_view_frame_get_min_zoom_level        (NautilusViewFrame   *view);
+double             nautilus_view_frame_get_max_zoom_level        (NautilusViewFrame   *view);
+gboolean           nautilus_view_frame_get_has_min_zoom_level    (NautilusViewFrame   *view);
+gboolean           nautilus_view_frame_get_has_max_zoom_level    (NautilusViewFrame   *view);
+gboolean           nautilus_view_frame_get_is_continuous         (NautilusViewFrame   *view);
+GList *            nautilus_view_frame_get_preferred_zoom_levels (NautilusViewFrame   *view);
+void               nautilus_view_frame_zoom_in                   (NautilusViewFrame   *view);
+void               nautilus_view_frame_zoom_out                  (NautilusViewFrame   *view);
+void               nautilus_view_frame_zoom_to_fit               (NautilusViewFrame   *view);
 
 /* Other. */
-gboolean              nautilus_view_frame_is_zoomable               (NautilusViewFrame   *view);
-char *                nautilus_view_frame_get_label                 (NautilusViewFrame   *view);
-void                  nautilus_view_frame_set_label                 (NautilusViewFrame   *view,
-                                                                     const char          *label);
-/* view state */
-char *                nautilus_view_frame_get_title                 (NautilusViewFrame   *view);
-gboolean              nautilus_view_frame_get_is_underway           (NautilusViewFrame   *view);
+gboolean           nautilus_view_frame_get_is_view_loaded        (NautilusViewFrame   *view);
+const char *       nautilus_view_frame_get_view_iid              (NautilusViewFrame   *view);
+gboolean           nautilus_view_frame_get_is_zoomable           (NautilusViewFrame   *view);
+char *             nautilus_view_frame_get_title                 (NautilusViewFrame   *view);
+char *             nautilus_view_frame_get_label                 (NautilusViewFrame   *view);
+void               nautilus_view_frame_set_label                 (NautilusViewFrame   *view,
+                                                                  const char          *label);
 
 #endif /* NAUTILUS_VIEW_FRAME_H */

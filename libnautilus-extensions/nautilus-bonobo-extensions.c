@@ -4,7 +4,7 @@
                                   belong in bonobo. Perhaps some of these will be
                                   actually rolled into bonobo someday.
 
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -21,7 +21,8 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: John Sullivan <sullivan@eazel.com>
+   Authors: John Sullivan <sullivan@eazel.com>
+            Darin Adler <darin@eazel.com>
 */
 
 #include <config.h>
@@ -29,6 +30,7 @@
 
 #include "nautilus-string.h"
 #include <bonobo/bonobo-ui-util.h>
+#include <gtk/gtkmain.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <liboaf/oaf-async.h>
 
@@ -36,7 +38,9 @@ struct NautilusBonoboActivationHandle {
 	NautilusBonoboActivationHandle **early_completion_hook;
 	NautilusBonoboActivationCallback callback;
 	gpointer callback_data;
+	Bonobo_Unknown activated_object;
 	gboolean cancel;
+	guint idle_id;
 };
 
 void
@@ -411,8 +415,8 @@ nautilus_bonobo_set_label_for_menu_item_and_command (BonoboUIComponent *ui,
 
 void
 nautilus_bonobo_set_icon (BonoboUIComponent *ui,
-			  const char        *path,
-			  const char        *icon_relative_path)
+			  const char *path,
+			  const char *icon_relative_path)
 {
 	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
 	g_return_if_fail (path != NULL);
@@ -430,31 +434,57 @@ nautilus_bonobo_set_icon (BonoboUIComponent *ui,
 }
 
 static void
+activation_handle_done (NautilusBonoboActivationHandle *handle)
+{
+	if (handle->early_completion_hook != NULL) {
+		g_assert (*handle->early_completion_hook == handle);
+		*handle->early_completion_hook = NULL;
+	}
+}
+
+static gboolean
+activation_idle_callback (gpointer callback_data)
+{
+	NautilusBonoboActivationHandle *handle;
+	
+	handle = (NautilusBonoboActivationHandle *) callback_data;
+
+	(* handle->callback) (handle,
+			      handle->activated_object,
+			      handle->callback_data);
+
+	activation_handle_done (handle);
+	g_free (handle);
+
+	return FALSE;
+}
+
+static void
+activation_cancel (NautilusBonoboActivationHandle *handle)
+{
+	bonobo_object_release_unref (handle->activated_object, NULL);
+
+	activation_handle_done (handle);
+	g_free (handle);
+}
+
+static void
 oaf_activation_callback (Bonobo_Unknown activated_object, 
 			 const char *error_reason, 
 			 gpointer callback_data)
 {
 	NautilusBonoboActivationHandle *handle;
-	CORBA_Environment ev;
 	
 	handle = (NautilusBonoboActivationHandle *) callback_data;
 
+	handle->activated_object = activated_object;
+
 	if (handle->cancel) {
-		CORBA_exception_init (&ev);
-		Bonobo_Unknown_unref (activated_object, &ev);
-		CORBA_exception_free (&ev);
+		activation_cancel (handle);
 	} else {
-		(* handle->callback) (handle,
-				      activated_object,
-				      handle->callback_data);
+		handle->idle_id = gtk_idle_add (activation_idle_callback,
+						handle);
 	}
-
-	if (handle->early_completion_hook != NULL) {
-		g_assert (*handle->early_completion_hook == handle);
-		*handle->early_completion_hook = NULL;
-	}
-
-	g_free (handle);
 }
 
 /**
@@ -502,15 +532,20 @@ nautilus_bonobo_activate_from_id (const char *iid,
  * Stops activation of a component. Your callback will not be called
  * after this call.
  */
-
 void 
 nautilus_bonobo_activate_cancel (NautilusBonoboActivationHandle *handle)
 {
-	if (handle != NULL) {
+	if (handle == NULL) {
+		return;
+	}
+
+	activation_handle_done (handle);
+
+	if (handle->idle_id == 0) {
+		/* no way to cancel the OAF part, so we just set a flag */
 		handle->cancel = TRUE;
-		if (handle->early_completion_hook != NULL) {
-			g_assert (*handle->early_completion_hook == handle);
-			*handle->early_completion_hook = NULL;
-		}
+	} else {
+		gtk_idle_remove (handle->idle_id);
+		activation_cancel (handle);
 	}
 }

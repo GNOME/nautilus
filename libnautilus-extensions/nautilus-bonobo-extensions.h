@@ -87,6 +87,7 @@ void                            nautilus_bonobo_set_label_for_menu_item_and_comm
 void                            nautilus_bonobo_set_icon                            (BonoboUIComponent                *ui,
 										     const char                       *path,
 										     const char                       *icon_relative_path);
+
 NautilusBonoboActivationHandle *nautilus_bonobo_activate_from_id                    (const char                       *iid,
 										     NautilusBonoboActivationCallback  callback,
 										     gpointer                          callback_data);

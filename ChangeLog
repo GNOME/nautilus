@@ -1,3 +1,227 @@
+2001-01-29  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	Fixed bug 2131 (Change Nautilus to use OAF asynchronous activation
+	interface). In making view activation work right, I also
+	eliminated the state machine that was almost gone from
+	NautilusWindow. There's still some additional simplification we
+	can do, but it's simpler than it was. At the same time, made sure
+	all incoming CORBA calls are deferred until idle time. This is
+	most of what the old state machine was accomplishing, believe it
+	or not, although it didn't do it 100%.
+
+	Also fixes bug 2457 (Silent error loading content view), bug 2461
+	(progress from old and new content view sometimes confused), and
+	bug 6109 (Assertion hit on clicking the refresh button many times
+	very quickly). Perhaps others too, we need to test some old bugs
+	to see if they have changed behavior.
+	
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	(activation_handle_done), (activation_idle_callback),
+	(activation_cancel), (oaf_activation_callback),
+	(nautilus_bonobo_activate_cancel): Change implementation so that
+	the actual callback happens at idle time, since CORBA callbacks
+	can happen at almost any time.
+	
+	* libnautilus/Makefile.am:
+	* libnautilus/nautilus-idle-queue.h:
+	* libnautilus/nautilus-idle-queue.c: (execute_queued_functions),
+	(nautilus_idle_queue_new), (nautilus_idle_queue_add),
+	(nautilus_idle_queue_destroy): Factored out the idle queueing that
+	I added to NautilusView so we can use it on the NautilusViewFrame
+	side too.
+	
+	* libnautilus/nautilus-view.c: (queue_incoming_call),
+	(nautilus_view_initialize), (nautilus_view_destroy): Change to use
+	the new NautilusIdleQueue so we can share code.
+	
+	* src/nautilus-view-frame-private.h:
+	* src/nautilus-view-frame-corba.c: (list_free_deep_callback),
+	(free_location_and_selection_callback), (open_in_this_window),
+	(open_prefer_existing_window), (open_force_new_window),
+	(report_selection_change), (report_status),
+	(report_load_underway), (report_load_progress),
+	(report_load_complete), (report_load_failed), (set_title),
+	(impl_Nautilus_ViewFrame_open_location_in_this_window),
+	(impl_Nautilus_ViewFrame_open_location_prefer_existing_window),
+	(impl_Nautilus_ViewFrame_open_location_force_new_window),
+	(impl_Nautilus_ViewFrame_report_selection_change),
+	(impl_Nautilus_ViewFrame_report_status),
+	(impl_Nautilus_ViewFrame_report_load_underway),
+	(impl_Nautilus_ViewFrame_report_load_progress),
+	(impl_Nautilus_ViewFrame_report_load_complete),
+	(impl_Nautilus_ViewFrame_report_load_failed),
+	(impl_Nautilus_ViewFrame_set_title): Deal with all incoming CORBA
+	calls through the idle queue.
+	
+	* src/nautilus-view-frame.h: Moved all the fields into
+	details. Renamed client_loaded to view_loaded. Renamed load_client
+	to load_view. Eliminated load_client_sync. Renamed get_iid to
+	get_view_iid. Eliminated get_is_underway. Added
+	get_is_view_loaded.
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_queue_incoming_call): Simple cover for
+	putting an incoming CORBA call on the idle queue.
+	(nautilus_view_frame_initialize_class): Change client_loaded
+	signal name to view_loaded.
+	(nautilus_view_frame_initialize): Allocate the idle queue.
+	(stop_activation): New function that stops a load_view that is
+	underway.
+	(destroy_view): Use the "view" field to tell if a view was
+	loaded. The old code used the "iid" field, but now we set that
+	even before the load is completed.
+	(nautilus_view_frame_destroy): Destroy the idle queue. Also put
+	the view into "failed" state once it's destroyed so additional
+	calls are harmless.
+	(nautilus_view_frame_finalize): Check that we're in the failed
+	state.
+	(emit_zoom_parameters_changed): New function so we can share more
+	code.
+	(view_frame_activated): Emit the zoom_parameters_changed signal
+	here since a new view should always should get this signal.
+	(view_frame_underway): Make this do nothing in the failed case
+	instead of complaining.
+	(view_frame_loaded): Make this do nothing in the failed case
+	instead of complaining.
+	(view_frame_failed): Stop whatever's in progress when the view
+	fails. Also, allow calling this on a view that's already failed.
+	(check_if_view_is_gone): Consolidate the calls to
+	deregister_dead_components so we don't need an explicit call here.
+	(emit_zoom_parameters_changed_callback),
+	(zoom_parameters_changed_callback),
+	(emit_zoom_level_changed_callback), (zoom_level_changed_callback):
+	Redo these so they queue onto the idle queue, since they are
+	triggered by incoming CORBA calls that can happen at any time.
+	(create_corba_objects): Factor out the part of the code that makes
+	the CORBA objects. Make error handling more complete and keep
+	around pointers to the Bonobo objects for various parts of the
+	aggregate so we can connect the appropriate signal handlers.
+	(attach_view): Change code so it no longer connects signals to the
+	BonoboObjectClient, since the signals won't go out on that
+	GtkObject. Connect to the exception signals for all objects in the
+	aggregate (any failure means "view failed"). Also connect to the
+	"destroy" signal for one object (doesn't matter which since the
+	entire aggregate goes away at once) and to the zoom-related
+	signals. Report errors with signals rather than returning a
+	boolean.
+	(activation_callback): Add code to handle failure case.
+	(nautilus_view_frame_load_view): Renamed. Got rid of "sync."
+	version.
+	(nautilus_view_frame_stop): Stop OAF activation of the view if
+	it's in progress.
+	(nautilus_view_frame_selection_changed): Make it a quiet no-op to
+	send a selection change notice if no view is loaded. This helps
+	keep the code simple for sidebars. Later we may make the view
+	frame responsible for sending the selection on once the view is
+	loaded.
+	(nautilus_view_frame_title_changed): Same change as for selection,
+	same idea.
+	(nautilus_view_frame_get_is_zoomable),
+	(nautilus_view_frame_get_zoom_level),
+	(nautilus_view_frame_set_zoom_level),
+	(nautilus_view_frame_get_min_zoom_level),
+	(nautilus_view_frame_get_max_zoom_level),
+	(nautilus_view_frame_get_has_min_zoom_level),
+	(nautilus_view_frame_get_has_max_zoom_level),
+	(nautilus_view_frame_get_is_continuous),
+	(nautilus_view_frame_get_preferred_zoom_levels),
+	(nautilus_view_frame_zoom_in), (nautilus_view_frame_zoom_out),
+	(nautilus_view_frame_zoom_to_fit): Since a failed view has a
+	zoomable_frame field set to NULL, got rid of all the explicit
+	failure-case code for these functions.
+	(nautilus_view_frame_get_view_iid): Renamed from get_iid. 
+	(nautilus_view_frame_report_load_underway),
+	(nautilus_view_frame_report_load_complete),
+	(nautilus_view_frame_report_load_failed): Moved the "quiet"
+	handling of failed views down into the underlying functions, so
+	these no longer need explicit failure-case code.
+	(nautilus_view_frame_set_label): It's OK to allow this even for a
+	failed view.
+	(nautilus_view_frame_map): Use a kept-around reference to the
+	control frame instead of relying on query_local_interface.
+	(nautilus_view_frame_get_is_view_loaded): Add this so callers can
+	tell when a sidebar view is not yet loaded. Might not need this
+	when we clean things up more, but it's no big deal either way.
+	
+	* src/nautilus-window-manage-views.c: (update_title): No need to
+	send the title change to the new content view -- it gets a title
+	change once it comes up "for real".
+	(set_displayed_location): Handle location of NULL here so we don't
+	need to worry about it elsewhere.
+	(check_bookmark_location_matches): Remove "uri" from name.
+	(location_has_really_changed): Now that the state machine is gone,
+	it's easy to see that this is never called with pending_ni equal
+	to cancel_tag, so remove the code for that and add an assert.
+	(set_view_location_and_selection): New name for what was called
+	update_view.
+	(set_sidebar_panels_location_and_selection): Cover since this loop
+	occurs in two places.
+	(update_for_new_location_and_selection): New name for what was
+	called set_view_location_and_selection. Since it's now clear this
+	can't be called with new_content_view equal to NULL, remove the
+	code to handle that (fixes bug 2457).
+	(load_content_view): Use async. view loading here. Get rid of
+	"Avoid being fooled by extra done notifications from the last
+	view. This is a HACK because the state machine SUCKS." by
+	eliminating the "cv_progress_done" and "cv_progress_error" flags
+	altogether. In the case where we reuse the same view, just call
+	update_for_new_location_and_selection -- the old code set
+	"view_activation_complete", but I eliminated that flag.
+	(handle_view_failure): Remove the old view using
+	nautilus_window_set_content_view_widget instead of having
+	duplicate code here. Use a call to cancel_location_change instead
+	of setting the "reset_to_idle" and "cv_progress_error" flags
+	(both gone now).
+	(free_location_change): No need to clean up "error_views" any
+	more, because that field is gone.
+	(end_location_change): New helper to stop the throbber from
+	throbbing and then free the location change state.
+	(cancel_location_change): Get rid of special case for NULL
+	location now that set_displayed_location can handle it.
+	(nautilus_window_end_location_change_callback): Remove
+	"superstitiously" added call to update_state and call
+	load_content_view_for_new_location directly.
+	(nautilus_window_begin_location_change): Use a call to
+	cancel_location_change to deal with the possibility that we may
+	have a change already in progress.
+	(nautilus_window_stop_loading): Use cancel_location_change to stop
+	the loading.
+	(nautilus_window_set_content_view): Remove calls to update_state
+	-- there's no state to update any more.
+	(nautilus_window_set_sidebar_panels): Do an async. load here and
+	finish the setup in the view_loaded callback.
+	(failed_callback): Do a handle_view_failed right here, now that we
+	have no state machine to satisfy.
+	(load_underway_callback): Change code to handle the two
+	interesting cases separately without a state machine. When the new
+	content view says "underway", it's time for
+	location_has_really_changed. When an existing content view says
+	"underway", we restart the throbber (fixes 1/2 of bug 2461).
+	(load_complete_callback): Since view frames now ensure we get an
+	underway call before a complete call, we can simplify the
+	logic. If the main content view says "complete", it's time to stop
+	the throbber (fixes other 1/2 of bug 2461).
+	(view_loaded_callback): Renamed the client_loaded callback. Also
+	made it update location and selection for sidebar panels when they
+	are loaded. Also made it update the title for any view when it's
+	loaded.
+
+	* src/nautilus-window.h:
+	* src/nautilus-window.c: (nautilus_window_synch_view_as_menu):
+	Handle case of NULL content view.
+	(nautilus_window_set_content_view_widget): Destroy the view when
+	it's going away instead of removing it from the parent. Also make
+	this function handle the NULL case so we can use it to remove the
+	old view, not just to add the new one.
+
+	* libnautilus-extensions/nautilus-bonobo-extensions.h: Whitespace
+	tweak.
+
+	* src/nautilus-sidebar.c:
+	(nautilus_sidebar_active_panel_matches_id): Update for
+	nautilus_view_frame_get_view_iid name change.
+	
 2001-01-29  Arik Devens  <arik@eazel.com>
 
 	reviewed by: <delete if not using a buddy>

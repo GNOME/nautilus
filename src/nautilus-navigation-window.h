@@ -4,7 +4,7 @@
  *  Nautilus
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
- *  Copyright (C) 1999, 2000 Eazel, Inc.
+ *  Copyright (C) 1999, 2000, 2001 Eazel, Inc.
  *
  *  Nautilus is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
@@ -37,10 +37,10 @@
 #include "nautilus-sidebar.h"
 #include "nautilus-application.h"
 
-#define NAUTILUS_TYPE_WINDOW (nautilus_window_get_type())
-#define NAUTILUS_WINDOW(obj)	        (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_WINDOW, NautilusWindow))
+#define NAUTILUS_TYPE_WINDOW              (nautilus_window_get_type())
+#define NAUTILUS_WINDOW(obj)	          (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_WINDOW, NautilusWindow))
 #define NAUTILUS_WINDOW_CLASS(klass)      (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_WINDOW, NautilusWindowClass))
-#define NAUTILUS_IS_WINDOW(obj)	        (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_WINDOW))
+#define NAUTILUS_IS_WINDOW(obj)	          (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_WINDOW))
 #define NAUTILUS_IS_WINDOW_CLASS(klass)   (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_WINDOW))
 
 #ifndef NAUTILUS_WINDOW_DEFINED
@@ -116,21 +116,11 @@ struct NautilusWindow {
         NautilusNavigationInfo *pending_ni;
         NautilusViewFrame *new_content_view;
         GList *pending_selection;
-        GList *error_views;
         NautilusNavigationInfo *cancel_tag;
         gboolean location_change_end_reached;
         
-        guint16 making_changes;
-        
         NautilusLocationChangeType location_change_type;
         guint location_change_distance;
-        
-        gboolean view_activation_complete;
-        gboolean sent_update_view;
-        gboolean cv_progress_initial;
-        gboolean cv_progress_done;
-        gboolean cv_progress_error;
-        gboolean reset_to_idle;
 };
 
 GtkType          nautilus_window_get_type             (void);

@@ -3,7 +3,7 @@
 /*
  * Nautilus
  *
- * Copyright (C) 1999, 2000 Eazel, Inc.
+ * Copyright (C) 1999, 2000, 2001 Eazel, Inc.
  *
  * Nautilus is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -359,7 +359,7 @@ nautilus_sidebar_active_panel_matches_id (NautilusSidebar *sidebar, const char *
 	}
 	current_view = gtk_notebook_get_nth_page (GTK_NOTEBOOK (sidebar->details->notebook),
 							sidebar->details->selected_index);
-	current_iid = nautilus_view_frame_get_iid (NAUTILUS_VIEW_FRAME (current_view));
+	current_iid = nautilus_view_frame_get_view_iid (NAUTILUS_VIEW_FRAME (current_view));
 	return nautilus_strcmp (current_iid, id) == 0;	
 }
 

@@ -41,6 +41,7 @@ libnautilusinclude_HEADERS=			\
 	nautilus-bonobo-workarounds.h		\
 	nautilus-clipboard.h			\
 	nautilus-distributed-undo.h		\
+	nautilus-idle-queue.h			\
 	nautilus-view-component.h		\
 	nautilus-view.h				\
 	nautilus-view-standard-main.h		\
@@ -53,6 +54,7 @@ libnautilus_la_SOURCES=					\
 	$(nautilus_distributed_undo_idl_sources)	\
 	nautilus-bonobo-workarounds.c			\
 	nautilus-clipboard.c				\
+	nautilus-idle-queue.c				\
 	nautilus-undo-transaction.c			\
 	nautilus-undo-transaction.h			\
 	nautilus-undo.c					\

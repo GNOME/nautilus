@@ -33,6 +33,7 @@
 #include "nautilus-view.h"
 
 #include "nautilus-bonobo-workarounds.h"
+#include "nautilus-idle-queue.h"
 #include "nautilus-undo.h"
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-main.h>
@@ -55,8 +56,7 @@ static guint signals[LAST_SIGNAL];
 
 struct NautilusViewDetails {
 	BonoboControl *control;
-	GList *call_queue;
-	guint dequeue_calls_at_idle_id;
+	NautilusIdleQueue *idle_queue;
 };
 
 typedef struct {
@@ -112,87 +112,20 @@ static POA_Nautilus_View__vepv impl_Nautilus_View_vepv =
 };
 
 static void
-execute_queued_calls (NautilusView *view)
-{
-	GList *queue, *node;
-	IncomingCall *call;
-
-	/* We could receive more incoming calls while dispatching
-	 * these, so keep going until the call queue is empty.
-	 */
-	while (view->details->call_queue != NULL) {
-		queue = g_list_reverse (view->details->call_queue);
-		view->details->call_queue = NULL;
-
-		for (node = queue; node != NULL; node = node->next) {
-			call = node->data;
-
-			(* call->call) (view, call->callback_data);
-			if (call->destroy_callback_data != NULL) {
-				(* call->destroy_callback_data) (call->callback_data);
-			}
-		}
-
-		g_list_free (queue);
-	}
-}
-
-static gboolean
-dequeue_calls_at_idle (gpointer callback_data)
-{
-	NautilusView *view;
-
-	view = NAUTILUS_VIEW (callback_data);
-	execute_queued_calls (view);
-	view->details->dequeue_calls_at_idle_id = 0;
-	return FALSE;
-}
-
-static void
-discard_queued_calls (NautilusView *view)
-{
-	GList *queue, *node;
-	IncomingCall *call;
-
-	queue = view->details->call_queue;
-	view->details->call_queue = NULL;
-	
-	for (node = queue; node != NULL; node = node->next) {
-		call = node->data;
-		
-		if (call->destroy_callback_data != NULL) {
-			(* call->destroy_callback_data) (call->callback_data);
-		}
-	}
-	
-	g_list_free (queue);
-
-	g_assert (view->details->call_queue == NULL);
-}
-
-static void
 queue_incoming_call (PortableServer_Servant servant,
 		     ViewFunction call,
 		     gpointer callback_data,
 		     GDestroyNotify destroy_callback_data)
 {
 	NautilusView *view;
-	IncomingCall *incoming_call;
 
 	view = ((impl_POA_Nautilus_View *) servant)->bonobo_object;
 
-	incoming_call = g_new (IncomingCall, 1);
-	incoming_call->call = call;
-	incoming_call->callback_data = callback_data;
-	incoming_call->destroy_callback_data = destroy_callback_data;
-
-	view->details->call_queue = g_list_prepend
-		(view->details->call_queue, incoming_call);
-
-	if (view->details->dequeue_calls_at_idle_id == 0) {
-		view->details->dequeue_calls_at_idle_id = gtk_idle_add
-			(dequeue_calls_at_idle, view);
-	}
+	nautilus_idle_queue_add (view->details->idle_queue,
+				 (GFunc) call,
+				 view,
+				 callback_data,
+				 destroy_callback_data);
 }
 
 GList *
@@ -454,14 +387,14 @@ nautilus_view_initialize (NautilusView *view)
 {
 	CORBA_Environment ev;
 
-	CORBA_exception_init (&ev);
-	
 	view->details = g_new0 (NautilusViewDetails, 1);
 	
+	view->details->idle_queue = nautilus_idle_queue_new ();
+
+	CORBA_exception_init (&ev);
 	bonobo_object_construct
 		(BONOBO_OBJECT (view),
 		 impl_Nautilus_View__create (view, &ev));
-	
 	CORBA_exception_free (&ev);
 }
 
@@ -509,11 +442,7 @@ nautilus_view_destroy (GtkObject *object)
 
 	view = NAUTILUS_VIEW (object);
 
-	discard_queued_calls (view);
-
-	if (view->details->dequeue_calls_at_idle_id != 0) {
-		gtk_idle_remove (view->details->dequeue_calls_at_idle_id);
-	}
+	nautilus_idle_queue_destroy (view->details->idle_queue);
 
 	g_free (view->details);
 	
