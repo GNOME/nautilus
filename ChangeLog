@@ -1,3 +1,18 @@
+2000-09-29  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3352 (New Folder is not selected for renaming)
+	Fixed bug 913 (Any changes to a file while renaming results
+	in ending the name edit)
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(get_icon_being_renamed): New convenience function; gets the
+	icon being renamed (or NULL) and does some sanity checking.
+	(key_press_event): Added a FIXME about direct use of nautilus_file.
+	(nautilus_icon_container_update_icon): Don't end renaming mode
+	on every update; end renaming mode only if the editable text
+	of the icon being renamed changed.
+	(end_renaming_mode): Use get_icon_being_renamed.
+
 2000-09-29  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c: (cache_icon_ref),

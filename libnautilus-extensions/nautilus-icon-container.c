@@ -115,6 +115,7 @@ static void          icon_destroy                             (NautilusIconConta
 							       NautilusIcon               *icon);
 static void          end_renaming_mode                        (NautilusIconContainer      *container,
 							       gboolean                    commit);
+static NautilusIcon *get_icon_being_renamed 		      (NautilusIconContainer 	  *container);
 static void          hide_rename_widget                       (NautilusIconContainer      *container,
 							       NautilusIcon               *icon);
 static void          finish_adding_new_icons                  (NautilusIconContainer      *container);
@@ -2619,6 +2620,9 @@ key_press_event (GtkWidget *widget,
 		case GDK_Return:
 		case GDK_KP_Enter:
 			/* Return enters renaming mode if only one item is selected. */
+			/* FIXME: This code shouldn't know about nautilus_file. It
+			 * needs to be generalized.
+			 */
 			/*activate_selected_items (container);*/
 			selection = nautilus_icon_container_get_selection (container);
 			if (selection != NULL) {
@@ -3250,6 +3254,23 @@ activate_selected_items (NautilusIconContainer *container)
 	g_list_free (selection);
 }
 
+static NautilusIcon *
+get_icon_being_renamed (NautilusIconContainer *container)
+{
+	NautilusIcon *rename_icon;
+
+	if (!nautilus_icon_container_is_renaming (container)) {
+		return NULL;
+	}
+
+	g_assert (!has_multiple_selection (container));
+
+	rename_icon = get_first_selected_icon (container);
+	g_assert (rename_icon != NULL);
+
+	return rename_icon;
+}			 
+
 void 
 nautilus_icon_container_update_icon (NautilusIconContainer *container,
 				     NautilusIcon *icon)
@@ -3269,15 +3290,6 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	if (icon == NULL) {
 		return;
 	}
-
-	/* Close any open edit. */
-	/* FIXME bugzilla.eazel.com 913: Why must we do this? This
-	 * function is called if there's any change. Probably we only
-	 * want to do this for certain kinds of changes and even then
-	 * it seems rude to discard the user's text instead of
-	 * prompting.
-	 */
-	end_renaming_mode (container, TRUE);
 
 	details = container->details;
 
@@ -3328,6 +3340,18 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 			 icon->data,
 			 &editable_text,
 			 &additional_text);
+
+	/* If name of icon being renamed was changed from elsewhere, end renaming mode. 
+	 * Alternatively, we could replace the characters in the editable text widget
+	 * with the new name, but that could cause timing problems if the user just
+	 * happened to be typing at that moment.
+	 */
+	if (icon == get_icon_being_renamed (container) &&
+	    nautilus_strcmp (editable_text, 
+	    		     nautilus_icon_canvas_item_get_editable_text (icon->item)) != 0) {
+		end_renaming_mode (container, FALSE);
+	    		     
+	}
 	
 	font = details->label_font[details->zoom_level];
 
@@ -4290,12 +4314,8 @@ end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 {
 	NautilusIcon *icon;
 	char *changed_text;
-		
-	if (!container->details->renaming) {
-		return;
-	}
 
-	icon = get_first_selected_icon (container);
+	icon = get_icon_being_renamed (container);
 	if (icon == NULL) {
 		return;
 	}
