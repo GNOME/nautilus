@@ -654,6 +654,8 @@ nautilus_background_ensure_image_scaled (NautilusBackground *background, int des
 	} else if (!nautilus_background_is_image_load_in_progress (background)){
 		int image_width;
 		int image_height;
+		int fit_width;
+		int fit_height;
 		gboolean cur_scaled;
 		gboolean reload_image;
 		GdkPixbuf *scaled_pixbuf;
@@ -684,7 +686,11 @@ nautilus_background_ensure_image_scaled (NautilusBackground *background, int des
 			}
 			break;
 		case NAUTILUS_BACKGROUND_SCALED_ASPECT:
-			if (!nautilus_gdk_pixbuf_is_scaled_to_fit (background->details->image, dest_width, dest_height)) {
+			nautilus_gdk_scale_to_fit_factor (background->details->image_width_unscaled,
+							  background->details->image_height_unscaled,
+							  dest_width, dest_height,
+							  &fit_width, &fit_height);
+			if (image_width != fit_width || image_height != fit_height) {
 				if (cur_scaled) {
 					reload_image = TRUE;
 				} else {

@@ -37,7 +37,8 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-link.h>
-
+#include <X11/Xatom.h>
+#include <gdk/gdkx.h>
 
 struct NautilusDesktopWindowDetails {
 	GList *unref_list;
@@ -88,6 +89,17 @@ nautilus_desktop_window_initialize (NautilusDesktopWindow *window)
 			       FALSE, FALSE, FALSE);
 }
 
+static void
+nautilus_desktop_window_realized (NautilusDesktopWindow *window)
+{
+	/* Tuck the desktop windows xid in the root to indicate we own the desktop.
+	 */
+	Window window_xid;
+	window_xid = GDK_WINDOW_XWINDOW (GTK_WIDGET (window)->window);
+	gdk_property_change (NULL, gdk_atom_intern ("NAUTILUS_DESKTOP_WINDOW_ID", FALSE),
+			     XA_WINDOW, 32, PropModeReplace, (guchar *) &window_xid, 1);
+}
+
 NautilusDesktopWindow *
 nautilus_desktop_window_new (NautilusApplication *application)
 {
@@ -106,7 +118,9 @@ nautilus_desktop_window_new (NautilusApplication *application)
 
 	/* Special sawmill setting*/
 	gtk_window_set_wmclass (GTK_WINDOW (window), "desktop_window", "Nautilus");
-	
+
+	gtk_signal_connect (GTK_OBJECT (window), "realize", GTK_SIGNAL_FUNC (nautilus_desktop_window_realized), NULL);
+
 	desktop_directory_path = nautilus_get_desktop_directory ();
 	
 	/* Point window at the desktop folder.
@@ -129,6 +143,8 @@ destroy (GtkObject *object)
 	NautilusDesktopWindow *window;
 
 	window = NAUTILUS_DESKTOP_WINDOW (object);
+
+	gdk_property_delete (NULL, gdk_atom_intern ("NAUTILUS_DESKTOP_WINDOW_ID", TRUE));
 
 	nautilus_gtk_object_list_free (window->details->unref_list);
 	g_free (window->details);

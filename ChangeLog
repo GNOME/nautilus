@@ -1,3 +1,18 @@
+2000-10-11  Michael Engber  <engber@eazel.com>
+
+	Tuck id of desktop window in root so other apps can detect when
+	Nautilus owns the desktop.
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_ensure_image_scaled):
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_scale_to_fit_factor),
+	(nautilus_gdk_pixbuf_scale_to_fit),
+	(nautilus_gdk_pixbuf_scale_down_to_fit):
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
+	* src/nautilus-desktop-window.c:
+	(nautilus_desktop_window_realized), (nautilus_desktop_window_new),
+	(destroy):
+
 2000-10-11  Darin Adler  <darin@eazel.com>
 
 	Added a hash table to make access of files by name fast.

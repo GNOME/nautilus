@@ -419,23 +419,14 @@ nautilus_gdk_pixbuf_average_value (GdkPixbuf *pixbuf, GdkColor *color)
 	color->blue =  (blue_total  * 256) / count;
 }
 
-static double
-nautilus_gdk_pixbuf_scale_to_fit_factor (GdkPixbuf *pixbuf, int max_width, int max_height, int *scaled_width, int *scaled_height)
+double
+nautilus_gdk_scale_to_fit_factor (int width, int height,
+				  int max_width, int max_height,
+				  int *scaled_width, int *scaled_height)
 {
-	int width;
-	int height;
-	
-	double h_scale;
-	double v_scale;
 	double scale_factor;
-
-	width  = gdk_pixbuf_get_width(pixbuf);
-	height = gdk_pixbuf_get_height(pixbuf);
 	
-	h_scale = max_width  / (double) width;
-	v_scale = max_height / (double) height;
-	
-	scale_factor = MIN (h_scale, v_scale);
+	scale_factor = MIN (max_width  / (double) width, max_height / (double) height);
 
 	*scaled_width  = floor (width * scale_factor + .5);
 	*scaled_height = floor (height * scale_factor + .5);
@@ -443,19 +434,8 @@ nautilus_gdk_pixbuf_scale_to_fit_factor (GdkPixbuf *pixbuf, int max_width, int m
 	return scale_factor;
 }
 
-gboolean
-nautilus_gdk_pixbuf_is_scaled_to_fit (GdkPixbuf *pixbuf, int max_width, int max_height)
-{
-	int scaled_width;
-	int scaled_height;
-
-	nautilus_gdk_pixbuf_scale_to_fit_factor (pixbuf, max_width, max_height, &scaled_width, &scaled_height);
-
-	return (scaled_width == gdk_pixbuf_get_width(pixbuf)) && (scaled_height == gdk_pixbuf_get_height(pixbuf));	
-}
-
 /* Returns a scaled copy of pixbuf, preserving aspect ratio. The copy will
- * be scaled as large as possible with exceeding the specified width and height.
+ * be scaled as large as possible without exceeding the specified width and height.
  */
 GdkPixbuf *
 nautilus_gdk_pixbuf_scale_to_fit (GdkPixbuf *pixbuf, int max_width, int max_height)
@@ -463,7 +443,9 @@ nautilus_gdk_pixbuf_scale_to_fit (GdkPixbuf *pixbuf, int max_width, int max_heig
 	int scaled_width;
 	int scaled_height;
 
-	nautilus_gdk_pixbuf_scale_to_fit_factor (pixbuf, max_width, max_height, &scaled_width, &scaled_height);
+	nautilus_gdk_scale_to_fit_factor (gdk_pixbuf_get_width(pixbuf), gdk_pixbuf_get_height(pixbuf),
+					  max_width, max_height,
+					  &scaled_width, &scaled_height);
 
 	return gdk_pixbuf_scale_simple (pixbuf, scaled_width, scaled_height, GDK_INTERP_BILINEAR);	
 }
@@ -480,7 +462,9 @@ nautilus_gdk_pixbuf_scale_down_to_fit (GdkPixbuf *pixbuf, int max_width, int max
 	
 	double scale_factor;
 
-	scale_factor = nautilus_gdk_pixbuf_scale_to_fit_factor (pixbuf, max_width, max_height, &scaled_width, &scaled_height);
+	scale_factor = nautilus_gdk_scale_to_fit_factor (gdk_pixbuf_get_width(pixbuf), gdk_pixbuf_get_height(pixbuf),
+							 max_width, max_height,
+							 &scaled_width, &scaled_height);
 
 	if (scale_factor >= 1.0) {
 		return gdk_pixbuf_copy (pixbuf);
