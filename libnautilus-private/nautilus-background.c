@@ -64,6 +64,7 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBackground, nautilus_background, GTK_
 enum {
 	APPEARANCE_CHANGED,
 	SETTINGS_CHANGED,
+	IMAGE_LOADED,
 	RESET,
 	LAST_SIGNAL
 };
@@ -105,6 +106,15 @@ nautilus_background_initialize_class (gpointer klass)
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusBackgroundClass,
 						   settings_changed),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE,
+				0);
+	signals[IMAGE_LOADED] =
+		gtk_signal_new ("image_loaded",
+				GTK_RUN_LAST | GTK_RUN_NO_RECURSE,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusBackgroundClass,
+						   image_loaded),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE,
 				0);
@@ -532,24 +542,31 @@ nautilus_background_get_image_uri (NautilusBackground *background)
 	return g_strdup (background->details->image_uri);
 }
 
-void
-nautilus_background_set_color (NautilusBackground *background,
+static gboolean
+nautilus_background_set_color_no_signal (NautilusBackground *background,
 			       const char *color)
 {
-	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
+	g_return_val_if_fail (NAUTILUS_IS_BACKGROUND (background), FALSE);
 
 	if (nautilus_strcmp (background->details->color, color) == 0) {
-		return;
+		return FALSE;
 	}
 
 	g_free (background->details->color);
 	background->details->color = g_strdup (color);
-
-	gtk_signal_emit (GTK_OBJECT (background),
-			 signals[SETTINGS_CHANGED]);
-	gtk_signal_emit (GTK_OBJECT (background),
-			 signals[APPEARANCE_CHANGED]);
+	return TRUE;
 }
+
+void
+nautilus_background_set_color (NautilusBackground *background,
+			       const char *color)
+{
+	if (nautilus_background_set_color_no_signal (background, color)) {
+		gtk_signal_emit (GTK_OBJECT (background), signals[SETTINGS_CHANGED]);
+		gtk_signal_emit (GTK_OBJECT (background), signals[APPEARANCE_CHANGED]);
+	}
+}
+
 
 static void
 load_image_callback (GnomeVFSResult error,
@@ -575,6 +592,8 @@ load_image_callback (GnomeVFSResult error,
 
 	gtk_signal_emit (GTK_OBJECT (background),
 			 signals[APPEARANCE_CHANGED]);
+	gtk_signal_emit (GTK_OBJECT (background),
+			 signals[IMAGE_LOADED]);
 }
 
 static void
@@ -602,14 +621,14 @@ nautilus_background_receive_dropped_background_image (NautilusBackground *backgr
 	}
 }
 
-void
-nautilus_background_set_image_uri (NautilusBackground *background,
+static gboolean
+nautilus_background_set_image_uri_no_signal (NautilusBackground *background,
 					const char *image_uri)
 {
-	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
+	g_return_val_if_fail (NAUTILUS_IS_BACKGROUND (background), FALSE);
 
 	if (nautilus_strcmp (background->details->image_uri, image_uri) == 0) {
-		return;
+		return FALSE;
 	}
 
 	nautilus_cancel_gdk_pixbuf_load (background->details->load_image_handle);
@@ -624,10 +643,17 @@ nautilus_background_set_image_uri (NautilusBackground *background,
 	background->details->image_uri = g_strdup (image_uri);
 	start_loading_image (background);
 
-	gtk_signal_emit (GTK_OBJECT (background),
-			 signals[SETTINGS_CHANGED]);
-	gtk_signal_emit (GTK_OBJECT (background),
-			 signals[APPEARANCE_CHANGED]);
+	return TRUE;
+}
+
+void
+nautilus_background_set_image_uri (NautilusBackground *background,
+					const char *image_uri)
+{
+	if (nautilus_background_set_image_uri_no_signal (background, image_uri)) {
+		gtk_signal_emit (GTK_OBJECT (background), signals[SETTINGS_CHANGED]);
+		gtk_signal_emit (GTK_OBJECT (background), signals[APPEARANCE_CHANGED]);
+	}
 }
 
 static GtkStyleClass *
@@ -774,6 +800,16 @@ nautilus_background_is_set (NautilusBackground *background)
 	       background->details->image_uri != NULL;
 }
 
+/* Returns false if the image is still loading, true
+ * if it's done loading or there is no image.
+ */
+gboolean
+nautilus_background_is_loaded (NautilusBackground *background)
+{
+	return background->details->image_uri == NULL ||
+	       background->details->image != NULL;
+}
+
 /**
  * nautilus_background_reset:
  *
@@ -790,8 +826,10 @@ nautilus_background_reset (NautilusBackground *background)
 static void
 nautilus_background_real_reset (NautilusBackground *background)
 {
-	nautilus_background_set_color (background, NULL);
-	nautilus_background_set_image_uri (background, NULL);
+	nautilus_background_set_color_no_signal (background, NULL);
+	nautilus_background_set_image_uri_no_signal (background, NULL);
+	gtk_signal_emit (GTK_OBJECT (background), signals[SETTINGS_CHANGED]);
+	gtk_signal_emit (GTK_OBJECT (background), signals[APPEARANCE_CHANGED]);
 }
 
 static void
@@ -974,9 +1012,11 @@ nautilus_background_receive_dropped_color (NautilusBackground *background,
 	
 	g_free (color_spec);
 
-	nautilus_background_set_color (background, new_gradient_spec);
-	nautilus_background_set_image_uri (background, NULL);
-	
+	nautilus_background_set_color_no_signal (background, new_gradient_spec);
+	nautilus_background_set_image_uri_no_signal (background, NULL);
+	gtk_signal_emit (GTK_OBJECT (background), signals[SETTINGS_CHANGED]);
+	gtk_signal_emit (GTK_OBJECT (background), signals[APPEARANCE_CHANGED]);
+
 	g_free (new_gradient_spec);
 }
 

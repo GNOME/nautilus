@@ -1,3 +1,26 @@
+2000-08-15  Michael Engber  <engber@eazel.com>
+
+	Third cut at syncing our desktop background with GNOME's (bug 1047)
+	Now we update the GNOME desktop (root window) when we make changes.
+	Still need to handle nautilus getting notified when the capplet makes
+	changes.
+
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_initialize_class),
+	(nautilus_background_set_color_no_signal),
+	(nautilus_background_set_color), (load_image_callback),
+	(nautilus_background_set_image_uri_no_signal),
+	(nautilus_background_set_image_uri),
+	(nautilus_background_is_loaded), (nautilus_background_real_reset),
+	(nautilus_background_receive_dropped_color):
+	* libnautilus-extensions/nautilus-background.h:
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(nautilus_directory_background_write_desktop_settings),
+	(nautilus_directory_background_write_desktop_default_settings),
+	(make_root_pixmap), (dispose_root_pixmap), (set_root_pixmap),
+	(image_loaded_callback), (nautilus_directory_update_root_window),
+	(background_changed_callback), (background_reset_callback):
+
 2000-08-15  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-search-uri.c:

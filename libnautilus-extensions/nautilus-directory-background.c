@@ -36,13 +36,16 @@
 #include "nautilus-theme.h"
 #include "libnautilus-extensions/nautilus-gdk-extensions.h"
 
+#include <gdk/gdkx.h>
+#include <X11/Xatom.h>
+
 static void background_changed_callback (NautilusBackground *background,
                                          NautilusDirectory  *directory);
 static void directory_changed_callback  (NautilusDirectory  *directory,
                                          NautilusBackground *background);
 static void background_reset_callback   (NautilusBackground *background,
                                          NautilusDirectory  *directory);
-
+                                         
 void
 static nautilus_directory_background_set_desktop (NautilusBackground *background)
 {
@@ -257,10 +260,6 @@ nautilus_directory_background_write_desktop_settings (char *color, char *image, 
 	}
 
 	gnome_config_sync ();
-	
-	/* FIXME
-	 * Try to trick GNOME into re-reading the settings.
-	 */
 }
 
 static void
@@ -272,7 +271,138 @@ nautilus_directory_background_write_desktop_default_settings ()
 	nautilus_background_image_placement placement;
 	nautilus_directory_background_get_default_settings (TRUE, &color, &image, &placement, &combine);
 	nautilus_directory_background_write_desktop_settings (color, image, placement, combine);
-}	
+}
+
+/* Create a persistant pixmap. We create a separate display
+ * and set the closedown mode on it to RetainPermanent
+ * (copied from gnome-source/control-panels/capplets/background-properties/render-background.c)
+ */
+static GdkPixmap *
+make_root_pixmap (gint width, gint height)
+{
+	Pixmap result;
+
+	gdk_flush ();
+
+	XSetCloseDownMode (gdk_display, RetainPermanent);
+
+	result = XCreatePixmap (gdk_display,
+				DefaultRootWindow (gdk_display),
+				width, height,
+				DefaultDepthOfScreen (DefaultScreenOfDisplay (GDK_DISPLAY())));
+
+	return gdk_pixmap_foreign_new (result);
+}
+
+/* (copied from gnome-source/control-panels/capplets/background-properties/render-background.c)
+ */
+static void
+dispose_root_pixmap (GdkPixmap *pixmap)
+{
+	/* Unrefing a foreign pixmap causes it to be destroyed - so we include
+	 * this bad hack, that will work for GTK+-1.2 until the problem
+	 * is fixed in the next release
+	 */
+
+	GdkWindowPrivate *private = (GdkWindowPrivate *)pixmap;
+	
+	gdk_xid_table_remove (private->xwindow);
+	g_dataset_destroy (private);
+	g_free (private);
+
+}
+
+/* Set the root pixmap, and properties pointing to it. We
+ * do this atomically with XGrabServer to make sure that
+ * we won't leak the pixmap if somebody else it setting
+ * it at the same time. (This assumes that they follow the
+ * same conventions we do
+ * (copied from gnome-source/control-panels/capplets/background-properties/render-background.c)
+ */
+static void 
+set_root_pixmap (GdkPixmap *pixmap)
+{
+	GdkAtom type;
+	gulong nitems, bytes_after;
+	gint format;
+	guchar *data_esetroot;
+	Pixmap pixmap_id = GDK_WINDOW_XWINDOW (pixmap);
+
+	XGrabServer (GDK_DISPLAY());
+
+	XGetWindowProperty (GDK_DISPLAY(), GDK_ROOT_WINDOW(),
+			    gdk_atom_intern("ESETROOT_PMAP_ID", FALSE),
+			    0L, 1L, False, XA_PIXMAP,
+			    &type, &format, &nitems, &bytes_after,
+			    &data_esetroot);
+
+	if (type == XA_PIXMAP) {
+		if (format == 32 && nitems == 4)
+			XKillClient(GDK_DISPLAY(), *((Pixmap*)data_esetroot));
+
+		XFree (data_esetroot);
+	}
+
+	XChangeProperty (GDK_DISPLAY(), GDK_ROOT_WINDOW(),
+			 gdk_atom_intern("ESETROOT_PMAP_ID", FALSE), XA_PIXMAP,
+			 32, PropModeReplace,
+			 (guchar *) &pixmap_id, 1);
+	XChangeProperty (GDK_DISPLAY(), GDK_ROOT_WINDOW(),
+			 gdk_atom_intern("_XROOTPMAP_ID", FALSE), XA_PIXMAP,
+			 32, PropModeReplace,
+			 (guchar *) &pixmap_id, 1);
+
+	XSetWindowBackgroundPixmap (GDK_DISPLAY(), GDK_ROOT_WINDOW(), pixmap_id);
+	XClearWindow (GDK_DISPLAY (), GDK_ROOT_WINDOW ());
+
+	XUngrabServer (GDK_DISPLAY());
+	
+	XFlush(GDK_DISPLAY());
+}
+
+static void
+image_loaded_callback (NautilusBackground *background, void *calledDirectly)
+{
+	GdkGC        *gc;
+	GdkPixmap    *bg_pixmap;
+	GdkRectangle  screen_rectangle;
+
+        g_assert (NAUTILUS_IS_BACKGROUND (background));
+
+        if (!(gboolean) calledDirectly) {
+		gtk_signal_disconnect_by_func (GTK_OBJECT (background),
+					       GTK_SIGNAL_FUNC (image_loaded_callback),
+					       calledDirectly);
+	}
+	
+	screen_rectangle.x = 0;
+	screen_rectangle.y = 0;
+	screen_rectangle.width  = gdk_screen_width ();
+	screen_rectangle.height = gdk_screen_height ();
+	
+	bg_pixmap = make_root_pixmap (screen_rectangle.width, screen_rectangle.height);
+	gc = gdk_gc_new (bg_pixmap);
+
+	nautilus_background_draw (background, bg_pixmap, gc, &screen_rectangle, 0, 0);
+			    
+	set_root_pixmap (bg_pixmap);
+	
+	dispose_root_pixmap (bg_pixmap);
+	gdk_gc_unref (gc);
+}
+
+static void
+nautilus_directory_update_root_window (NautilusBackground *background)
+{
+	if (nautilus_background_is_loaded (background)) {
+		image_loaded_callback (background, (void *) TRUE);
+	} else {
+		gtk_signal_connect (GTK_OBJECT (background),
+				    "image_loaded",
+				    GTK_SIGNAL_FUNC (image_loaded_callback),
+				    (void *) FALSE);
+	}
+}
 
 /* return true if the background is not in the default state */
 gboolean
@@ -353,6 +483,10 @@ background_changed_callback (NautilusBackground *background,
 
 	g_free (color);
 	g_free (image);
+	
+	if (nautilus_directory_background_is_desktop (background)) {
+		nautilus_directory_update_root_window (background);
+	}
 }
 
 /* handle the directory changed signal */
@@ -461,6 +595,10 @@ background_reset_callback (NautilusBackground *background,
 	 * It will set color and image_uri  to NULL.
 	 */
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (background), "reset");
+
+	if (nautilus_directory_background_is_desktop (background)) {
+		nautilus_directory_update_root_window (background);
+	}
 }
 
 /* handle the background destroyed signal */

@@ -80,12 +80,13 @@ void                nautilus_background_set_image_placement              (Nautil
 
 /* Calls to interrogate the current state of a background. */
 char *              nautilus_background_get_color                        (NautilusBackground     *background);
-char *              nautilus_background_get_image_uri               (NautilusBackground     *background);
+char *              nautilus_background_get_image_uri                    (NautilusBackground     *background);
 gboolean	    nautilus_background_get_combine_mode		 (NautilusBackground	 *background);
 nautilus_background_image_placement
 		    nautilus_background_get_image_placement		 (NautilusBackground	 *background);
 gboolean	    nautilus_background_is_dark				 (NautilusBackground	 *background);
 gboolean            nautilus_background_is_set                           (NautilusBackground     *background);
+gboolean            nautilus_background_is_loaded                        (NautilusBackground     *background);
 
 /* Explicitly fills a rectangle with a background. */
 void                nautilus_background_draw                             (NautilusBackground     *background,
@@ -140,6 +141,10 @@ struct NautilusBackgroundClass
 	 * altered or when an image is loaded.
 	 */
 	void (* appearance_changed) (NautilusBackground *);
+
+	/* This signal is emitted whenever an image is loaded.
+	 */
+	void (* image_loaded) (NautilusBackground *);
 
 	/* This signal is emitted when the background is reset by receiving
 	   the reset property from a drag */
