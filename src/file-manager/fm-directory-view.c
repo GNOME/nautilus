@@ -1306,6 +1306,7 @@ fm_directory_view_destroy (GtkObject *object)
 	 * NautilusView goes away, but this is good enough for our
 	 * purposes.
 	 */
+	view->details->zoomable = NULL;
 	view->details->nautilus_view = NULL;
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
@@ -5355,6 +5356,10 @@ gboolean
 fm_directory_view_supports_zooming (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	if (!view->details->zoomable) {
+		return FALSE;
+	}
 
 	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_DIRECTORY_VIEW_CLASS, view,

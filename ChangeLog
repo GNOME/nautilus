@@ -1,5 +1,12 @@
 2002-03-05  Michael Meeks  <michael@ximian.com>
 
+	* src/file-manager/fm-directory-view.c
+	(fm_directory_view_supports_zooming): check if
+	zoomable is non NULL.
+	(fm_directory_view_destroy): NULL the zoomable at
+	the same time as the nautilus_view, since they're
+	the same aggregate.
+
 	* libnautilus-private/nautilus-icon-factory.c
 	(get_image_cache_view): impl.
 	(cache_icon_new): add the icon to the cache view.
