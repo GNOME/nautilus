@@ -35,6 +35,8 @@ module Nautilus {
 		 * report_selection_change.
 		 */
 		oneway void selection_changed (in URIList selection);
+
+		oneway void title_changed ();
 	};
 	
 	/* The ViewFrame interface is used by the view to communicate

@@ -129,6 +129,8 @@ get_history_list (HistoryView *hview)
 	return list;
 }
 
+
+
 static void
 history_load_location (NautilusView *view,
 		       const char *location,
@@ -141,6 +143,12 @@ history_load_location (NautilusView *view,
 	Nautilus_HistoryList *history_list;
 	Nautilus_HistoryItem *item;
 	int i;
+	static int lock = 0;
+
+	if (lock != 0) {
+		return;
+	}
+	lock = 1;
 
 	hview->notify_count++;
 
@@ -154,7 +162,7 @@ history_load_location (NautilusView *view,
 	history_list = get_history_list (hview);
 	
 	for (i = 0; i < history_list->_length; i++) {
-		item = &history_list->_buffer[i];		
+		item = &history_list->_buffer[i];
 		bookmark = nautilus_bookmark_new (item->location, item->title);
 		
 		cols[HISTORY_VIEW_COLUMN_ICON] = NULL;
@@ -179,6 +187,15 @@ history_load_location (NautilusView *view,
 	gtk_clist_thaw (clist);
 	
   	hview->notify_count--;
+
+	lock = 0;
+}
+
+static void
+history_title_changed (NautilusView *view,
+		       HistoryView *hview)
+{
+	history_load_location (view, NULL, hview);
 }
 
 
@@ -273,6 +290,8 @@ make_obj (BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 	/* handle events */
 	gtk_signal_connect(GTK_OBJECT(hview->view), "load_location", 
 			   history_load_location, hview);
+	gtk_signal_connect(GTK_OBJECT(hview->view), "title_changed", 
+			   history_title_changed, hview);
 
 	gtk_signal_connect(GTK_OBJECT(clist), "button-press-event", history_button_press, hview);
 	gtk_signal_connect(GTK_OBJECT(clist), "button-release-event", history_button_release, hview);

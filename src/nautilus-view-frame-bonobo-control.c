@@ -84,8 +84,9 @@ bonobo_control_load_location(NautilusViewFrame *view, Nautilus_URI location, COR
 NautilusViewComponentType bonobo_control_component_type = {
   "IDL:Bonobo/Control:1.0",
   &bonobo_control_try_load_client, /* try_load */
-  &destroy_bonobo_control_view, /* destroy */
-  &bonobo_control_load_location, /* load_location */
-  NULL, /* stop_loading */
-  NULL /* selection_changed */
+  &destroy_bonobo_control_view,    /* destroy */
+  &bonobo_control_load_location,   /* load_location */
+  NULL,                            /* stop_loading */
+  NULL,                            /* selection_changed */
+  NULL                             /* title_changed */
 };

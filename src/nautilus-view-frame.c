@@ -469,6 +469,24 @@ nautilus_view_frame_selection_changed (NautilusViewFrame *view,
 	CORBA_free (uri_list);
 }
 
+void
+nautilus_view_frame_title_changed (NautilusViewFrame *view)
+{
+	CORBA_Environment ev;
+	
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+	g_return_if_fail (view->component_class != NULL);
+	
+	if (view->component_class->title_changed == NULL) {
+		return;
+	}
+	
+	CORBA_exception_init(&ev);
+	view->component_class->title_changed(view, &ev);
+	CORBA_exception_free(&ev);
+}	
+
+
 gboolean
 nautilus_view_frame_is_zoomable (NautilusViewFrame *view)
 {
@@ -868,3 +886,6 @@ nautilus_view_frame_get_history_list (NautilusViewFrame *view)
 			 &history_list);
   	return history_list;
 }
+
+
+

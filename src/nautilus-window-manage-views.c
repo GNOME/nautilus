@@ -239,6 +239,7 @@ nautilus_window_update_title (NautilusWindow *window)
         char *title;
         char *window_title;
         char *truncated_title;
+        GList *temp;
 
         title = nautilus_window_get_current_location_title (window);
 
@@ -259,6 +260,21 @@ nautilus_window_update_title (NautilusWindow *window)
 
         /* Name of item in history list may have changed, tell listeners. */
         nautilus_send_history_list_changed ();
+
+        /* warn all views and sidebar panels of the potential title change */
+        if (window->content_view != NULL) {
+                nautilus_view_frame_title_changed (window->content_view);
+        }
+        if (window->new_content_view != NULL) {
+                nautilus_view_frame_title_changed (window->new_content_view);
+        }
+        
+        for (temp = window->sidebar_panels; temp != NULL; temp = temp->next) {
+                if (temp->data != NULL) {
+                        nautilus_view_frame_title_changed (NAUTILUS_VIEW_FRAME (temp->data));
+                }
+        }
+
 }
 
 /* nautilus_window_set_displayed_location:

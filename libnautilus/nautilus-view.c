@@ -40,6 +40,7 @@ enum {
 	LOAD_LOCATION,
 	STOP_LOADING,
 	SELECTION_CHANGED,
+	TITLE_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -62,6 +63,8 @@ static void impl_Nautilus_View_stop_loading      (PortableServer_Servant  servan
 static void impl_Nautilus_View_selection_changed (PortableServer_Servant  servant,
 						  const Nautilus_URIList *selection,
 						  CORBA_Environment      *ev);
+static void impl_Nautilus_View_title_changed     (PortableServer_Servant  servant,
+						  CORBA_Environment      *ev);
 static void nautilus_view_initialize             (NautilusView           *view);
 static void nautilus_view_destroy                (GtkObject              *object);
 static void nautilus_view_initialize_class       (NautilusViewClass      *klass);
@@ -73,7 +76,8 @@ POA_Nautilus_View__epv libnautilus_Nautilus_View_epv =
 	NULL,
 	&impl_Nautilus_View_load_location,
 	&impl_Nautilus_View_stop_loading,
-	&impl_Nautilus_View_selection_changed
+	&impl_Nautilus_View_selection_changed,
+	&impl_Nautilus_View_title_changed
 };
 
 static PortableServer_ServantBase__epv base_epv;
@@ -161,6 +165,15 @@ impl_Nautilus_View_selection_changed (PortableServer_Servant servant,
 	g_list_free (selection_as_g_list);
 }
 
+static void 
+impl_Nautilus_View_title_changed     (PortableServer_Servant  servant,
+				      CORBA_Environment      *ev)
+{
+	gtk_signal_emit (GTK_OBJECT (((impl_POA_Nautilus_View *) servant)->bonobo_object),
+			 signals[TITLE_CHANGED]);
+}
+
+
 static void
 impl_Nautilus_View__destroy (BonoboObject *object, PortableServer_Servant servant)
 {
@@ -230,6 +243,13 @@ nautilus_view_initialize_class (NautilusViewClass *klass)
 			       GTK_SIGNAL_OFFSET (NautilusViewClass, selection_changed),
 			       gtk_marshal_NONE__POINTER,
 			       GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+	signals[TITLE_CHANGED] =
+		gtk_signal_new ("title_changed",
+			       GTK_RUN_LAST,
+			       object_class->type,
+			       GTK_SIGNAL_OFFSET (NautilusViewClass, title_changed),
+			       gtk_marshal_NONE__NONE,
+			       GTK_TYPE_NONE, 0);
 	
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }

@@ -115,11 +115,29 @@ selection_changed(NautilusViewFrame *view, const Nautilus_URIList *selection, CO
     gtk_object_destroy(GTK_OBJECT(view));
 }
 
+void
+title_changed (NautilusViewFrame *view, CORBA_Environment *ev);
+
+void
+title_changed (NautilusViewFrame *view, CORBA_Environment *ev)
+{
+  NautilusViewInfo *nvi = view->component_data;
+
+  Nautilus_View_title_changed(nvi->view_client, ev);
+
+  if(ev->_major != CORBA_NO_EXCEPTION)
+    /* FIXME: Is a destroy really sufficient here? Who does the unref? */
+    gtk_object_destroy(GTK_OBJECT(view));
+       
+}
+
+
 NautilusViewComponentType nautilus_view_component_type = {
   "IDL:Nautilus/View:1.0",
-  &nautilus_view_try_load_client, /* try_load */
-  &destroy_nautilus_view, /* destroy */
-  &load_location, /* load_location */
-  &stop_loading, /* stop_loading */
-  &selection_changed /* selection_changed */
+  &nautilus_view_try_load_client,   /* try_load */
+  &destroy_nautilus_view,           /* destroy */
+  &load_location,                   /* load_location */
+  &stop_loading,                    /* stop_loading */
+  &selection_changed,               /* selection_changed */
+  &title_changed                    /* title_changed */
 };

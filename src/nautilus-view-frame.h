@@ -158,4 +158,7 @@ void               nautilus_view_frame_set_label          (NautilusViewFrame   *
 void               nautilus_view_frame_activate           (NautilusViewFrame   *view);
 Nautilus_HistoryList * nautilus_view_frame_get_history_list   (NautilusViewFrame   *view);
 
+void               nautilus_view_frame_title_changed      (NautilusViewFrame   *view);
+
+
 #endif /* NAUTILUS_VIEW_FRAME_H */

@@ -85,6 +85,7 @@ struct NautilusViewComponentType {
         void (* load_location) (NautilusViewFrame *view, Nautilus_URI location, CORBA_Environment *ev);
         void (* stop_loading) (NautilusViewFrame *view, CORBA_Environment *ev);
         void (* selection_changed) (NautilusViewFrame *view, const Nautilus_URIList *selection, CORBA_Environment *ev);
+        void (* title_changed) (NautilusViewFrame *view, CORBA_Environment *ev);
 };
 
 #endif /* NAUTILUS_VIEW_FRAME_PRIVATE_H */

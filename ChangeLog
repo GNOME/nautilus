@@ -1,3 +1,40 @@
+2000-08-19  Mathieu Lacage  <mathieu@eazel.com>
+
+	completes task 1567. it shows a bug in the way the history
+	view displays the current location given the history. to be 
+	fixed soon.
+	
+	* components/history/nautilus-history-view.c:
+	(history_load_location), (history_title_changed), (make_obj):
+	add title_changed_callback, connect it to changed_title signal.
+	make it call load_location.
+	Hack evil stuff in load_location: a hand-made lock because the 
+	function calls some gtk calls which seem to make the main loop 
+	run at least once. This allowed the main loop to use the events 
+	in the event queue and it happened that the title_changed signal
+	is usually emited more than once so it called again the 
+	non-reentrant signal callback... BAD THINGS HAPPENED.
+	
+	
+	* libnautilus/nautilus-view-component.idl: add changed_title method 
+	to Nautilus::View.
+	* libnautilus/nautilus-view.c: (impl_Nautilus_View_title_changed),
+	(nautilus_view_initialize_class): implement the new idl function and
+	add a signal for it.
+	* libnautilus/nautilus-view.h: add the new signal class method.
+
+	
+	* src/nautilus-view-frame-bonobo-control.c: add the title_changed 
+	field to the vtable.
+	* src/nautilus-view-frame-nautilus-view.c: (title_changed): idem.
+	* src/nautilus-view-frame-private.h: idem.
+	* src/nautilus-view-frame.c: (nautilus_view_frame_title_changed):
+	add api function to emit the signal and make the actual corba call.
+	* src/nautilus-view-frame.h: add function prototype.
+	* src/nautilus-window-manage-views.c: add calls to 
+	(nautilus_window_update_title): to notify view frames of changed 
+	titles.
+
 2000-08-18  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-volume-monitor.c:
