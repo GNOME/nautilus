@@ -577,9 +577,7 @@ lay_down_icons (NautilusIconContainer *container,
 	double canvas_width, line_width, space_width, y;
 
 	/* Lay out icons a line at a time. */
-	gnome_canvas_c2w (GNOME_CANVAS (container),
-			  GTK_WIDGET (container)->allocation.width, 0,
-			  &canvas_width, NULL);
+	canvas_width = GTK_WIDGET (container)->allocation.width / GNOME_CANVAS (container)->pixels_per_unit;
 	line_width = 0;
 	line_start = icons;
 	y = start_y;
@@ -1677,7 +1675,6 @@ size_allocate (GtkWidget *widget,
 	       GtkAllocation *allocation)
 {
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
-
 	world_width_changed (NAUTILUS_ICON_CONTAINER (widget), widget->allocation.width);
 }
 
