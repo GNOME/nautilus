@@ -177,6 +177,8 @@ main (int argc, char *argv[])
 	perform_self_check = FALSE;
 	restart_shell = FALSE;
 
+	g_set_application_name (_("File Manager"));
+	
 	program = gnome_program_init ("nautilus", VERSION,
 				      LIBGNOMEUI_MODULE, argc, argv,
 				      GNOME_PROGRAM_STANDARD_PROPERTIES,
