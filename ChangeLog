@@ -1,5 +1,12 @@
 2002-05-08  Damon Chaplin  <damon@ximian.com>
 
+	* src/nautilus-property-browser.c (add_new_pattern): handle the
+	icon selector dialog being returned as NULL, which can happen if the
+	user presses Escape or clicks OK/Cancel while the icons are loading.
+	Fixes part of bug #75387.
+
+2002-05-08  Damon Chaplin  <damon@ximian.com>
+
 	* src/nautilus-window-manage-views.c (nautilus_window_back_or_forward):
 	If we can't move in the given direction just return, and if the given
 	distance to move is off the end of our history list just jump to the

@@ -1125,7 +1125,8 @@ add_new_pattern (NautilusPropertyBrowser *property_browser)
 				(EelIconSelectionFunction) add_pattern_to_browser,
 				property_browser);						   
 
-		eel_add_weak_pointer (&property_browser->details->dialog);
+		if (property_browser->details->dialog)
+			eel_add_weak_pointer (&property_browser->details->dialog);
 	}
 }
 
