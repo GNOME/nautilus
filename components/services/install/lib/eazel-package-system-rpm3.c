@@ -1086,7 +1086,7 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 
 	}
 
-	if (~detail_level & PACAKGE_FILL_NO_FEATURES) {		
+	if (~detail_level & PACKAGE_FILL_NO_FEATURES) {		
 		const char **provides_name;
 		int count;
 		int index;

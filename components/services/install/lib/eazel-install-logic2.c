@@ -63,63 +63,19 @@ enum {
 */
 #if EI2_DEBUG & 0x10
 static void
-dump_tree_helper (GList *packages, char *indent, GList *path, GList **touched) 
-{
-	GList *iterator;
-	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
-		PackageData *pack = NULL;
-		char *tmp;
-		char *name;
-
-		if (IS_PACKAGEDATA (iterator->data)) {
-			pack = PACKAGEDATA (iterator->data);
-		} else {
-			pack = (PACKAGEDEPENDENCY (iterator->data))->package;
-		}
-		
-		name = packagedata_get_readable_name (pack);
-		if (g_list_find (*touched, pack) != NULL) {
-			trilobite_debug ("%s%p (%s) %s   [see above]",
-					 indent,
-					 pack,
-					 name,
-					 pack->eazel_id);
-		} else {
-			trilobite_debug ("%s%p (%s) %s %s%s %s %s", 
-					 indent, 
-					 pack, 
-					 name, 
-					 pack->eazel_id,
-					 (pack->fillflag == MUST_HAVE) ? "filled" : 
-					     (pack->suite_id != NULL) ? "suite" : "not filled",
-					 (pack->status == PACKAGE_CANNOT_OPEN) ? " but failed" : "",
-					 packagedata_status_enum_to_str (pack->status),
-					 pack->toplevel ? "TOP":"");
-			if (g_list_find (path, pack)) {
-				trilobite_debug ("%s... %p %s recurses ..", indent, pack, pack->name);
-			} else {
-				path = g_list_prepend (path, pack);
-				*touched = g_list_prepend (*touched, pack);
-				tmp = g_strdup_printf ("%s  ", indent);
-				dump_tree_helper (pack->depends, tmp, path, touched);
-				g_free (tmp);
-				tmp = g_strdup_printf ("%sM ", indent);
-				dump_tree_helper (pack->modifies, tmp, path, touched);
-				g_free (tmp);
-				path = g_list_remove (path, pack);
-			}
-		}
-		g_free (name);
-	}
-}
-
-static void
 dump_tree (GList *packages)
 {
-	GList *touched = NULL;
+	char *out;
+	char **lines;
+	int i;
 
-	dump_tree_helper (packages, "", NULL, &touched);
-	g_list_free (touched);
+	out = packagedata_dump_tree (packages, 2);
+	lines = g_strsplit (out, "\n", 0);
+	for (i = 0; lines[i] != NULL; i++) {
+		trilobite_debug ("%s", lines[i]);
+	}
+	g_strfreev (lines);
+	g_free (out);
 }
 #endif
 

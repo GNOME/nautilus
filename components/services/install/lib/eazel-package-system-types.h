@@ -113,7 +113,7 @@ enum _PackageFillFlags {
 	PACKAGE_FILL_NO_PROVIDES = 0x02,
 	PACKAGE_FILL_NO_DEPENDENCIES = 0x04,
 	PACKAGE_FILL_NO_DIRS_IN_PROVIDES = 0x8, /* only used if PACKAGE_FILL_NO_PROVIDES is not set */
-	PACAKGE_FILL_NO_FEATURES = 0x10,
+	PACKAGE_FILL_NO_FEATURES = 0x10,
 	PACKAGE_FILL_MINIMAL = 0x7fff,
 	PACKAGE_FILL_INVALID = 0x8000
 };
@@ -434,6 +434,7 @@ void eazel_install_gtk_marshal_BOOL__ENUM_POINTER_INT_INT (GtkObject * object,
 							   GtkSignalFunc func,
 							   gpointer func_data, GtkArg * args);
 
+char *packagedata_dump_tree (const GList *packlst, int indent_level);
 char *packagedata_dump (const PackageData *package, gboolean deep);
 
 #ifdef __cplusplus

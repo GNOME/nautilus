@@ -1296,6 +1296,146 @@ eazel_install_gtk_marshal_BOOL__ENUM_POINTER_INT_INT (GtkObject * object,
 }
 
 
+/* useful debugging tool: dump out a concise package tree, with dep/modifies chains shown */
+
+static void packagedata_dump_tree_int (GString *out, PackageData *pd, gchar *indent, gchar *indent_type,
+				       int indent_level, GList **seen);
+
+static void
+packagedata_dump_tree_helper (GString *out,
+			      gchar *indent,
+			      gchar indent_type,
+			      int indent_level,
+			      GList *iterator,
+			      GList *next_list,
+			      GList **seen)
+{
+	PackageData *pack;
+	char *indent2, *indent3;
+	gchar *extra_space = NULL;
+	int i;
+	gboolean more;
+
+	if (IS_PACKAGEDATA (iterator->data)) {
+		pack = PACKAGEDATA (iterator->data);
+	} else if (IS_PACKAGEBREAKS (iterator->data)) {
+		PackageBreaks *breakage = PACKAGEBREAKS (iterator->data);
+		pack = packagebreaks_get_package (breakage);
+	} else {
+		PackageDependency *dep = PACKAGEDEPENDENCY (iterator->data);
+		pack = dep->package;
+	}
+
+	if (indent_level > 0) {
+		extra_space = g_new0 (char, indent_level+1);
+		for (i = 0; i < indent_level; i++) {
+			extra_space[i] = ' ';
+		}
+		extra_space[indent_level] = '\0';
+	}
+
+	if (iterator->next || next_list) {
+		more = TRUE;
+	} else {
+		more = FALSE;
+	}
+
+	if (g_list_find (*seen, iterator) == NULL) {
+		indent2 = g_strdup_printf ("%s%s%s", indent, extra_space ? extra_space : "",
+					   more ? "|" : "");
+		indent3 = g_strdup_printf ("%s-%c- ", 
+					   more ? "" : "\\",
+					   indent_type);
+		packagedata_dump_tree_int (out, pack, indent2, indent3, more ? 4 : 5, seen);
+		g_free (indent2);
+		g_free (indent3);
+		(*seen) = g_list_prepend (*seen, iterator);
+	}
+	g_free (extra_space);	
+}
+
+static void
+packagedata_dump_tree_int (GString *out,
+			   PackageData *pd,		
+			   gchar *indent,
+			   gchar *indent_type,
+			   int indent_level,
+			   GList **seen)
+{
+	char *readable_name;
+	GList *iterator;
+	char fillstr[20];
+
+	if (pd->fillflag == PACKAGE_FILL_INVALID) {
+		strcpy (fillstr, "unfilled");
+	} else {
+		strcpy (fillstr, "fill:");
+		/* usually we don't care about this */
+		if (! (pd->fillflag & PACKAGE_FILL_NO_TEXT)) {
+			strcat (fillstr, "T");
+		}
+		if (! (pd->fillflag & PACKAGE_FILL_NO_PROVIDES)) {
+			strcat (fillstr, "P");
+		}
+		if (! (pd->fillflag & PACKAGE_FILL_NO_DEPENDENCIES)) {
+			strcat (fillstr, "D");
+		}
+		if (! (pd->fillflag & PACKAGE_FILL_NO_DIRS_IN_PROVIDES)) {
+			strcat (fillstr, "R");
+		}
+		if (! (pd->fillflag & PACKAGE_FILL_NO_FEATURES)) {
+			strcat (fillstr, "F");
+		}
+	}
+
+	readable_name = packagedata_get_readable_name (pd);
+	g_string_sprintfa (out, "%s%s%s %s %s%s%s (%s/%s) %p\n",
+			   indent, indent_type, readable_name,
+			   fillstr,
+			   pd->toplevel ? "TOP " : "",
+			   pd->suite_id ? "suite " : "",
+			   pd->eazel_id ? pd->eazel_id : (pd->suite_id ? pd->suite_id : "no-id"),
+			   packagedata_status_enum_to_str (pd->status),
+			   packagedata_modstatus_enum_to_str (pd->modify_status),
+			   pd);
+	g_free (readable_name);
+
+	if (g_list_find (*seen, pd)) { return; }
+	(*seen) = g_list_prepend (*seen, pd);
+
+	for (iterator = pd->modifies; iterator; iterator = iterator->next) {
+		packagedata_dump_tree_helper (out, indent, 'm', indent_level, iterator,
+					      pd->breaks ? pd->breaks : pd->depends, seen);
+	}
+	for (iterator = pd->breaks; iterator; iterator = iterator->next) {			
+		packagedata_dump_tree_helper (out, indent, 'b', indent_level, iterator, pd->depends, seen);
+	}
+	for (iterator = pd->depends; iterator; iterator = iterator->next) {		
+		packagedata_dump_tree_helper (out, indent, 'd', indent_level, iterator, NULL, seen);
+	}
+}
+
+char *
+packagedata_dump_tree (const GList *packlist, int indent_level)
+{
+	GList *seen = NULL;
+	GList *iter;
+	GString *out;
+	char *outstr;
+
+	out = g_string_new ("");
+	for (iter = g_list_first ((GList *)packlist); iter != NULL; iter = g_list_next (iter)) {
+		packagedata_dump_tree_int (out, PACKAGEDATA (iter->data), "", "", indent_level, &seen);
+	}
+	g_list_free (seen);
+	outstr = out->str;
+	g_string_free (out, FALSE);
+	return outstr;
+}
+
+
+/* useful debugging tool: dump a packagedata struct into a string */
+
 static void
 gstr_indent (GString *out, int indent)
 {
@@ -1376,8 +1516,6 @@ dump_package_deplist (GString *out, const GList *list, gboolean deep, int indent
 		}
 	}
 }
-
-/* useful debugging tool: dump a packagedata struct into a string */
 
 static void
 add_string_list (GString *out, GList *list, int indent, char *title) 

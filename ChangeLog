@@ -1,3 +1,32 @@
+2001-02-28  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen <eskil@eazel.com>
+	"the most beautiful patch I've ever seen"
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (something_failed), (eazel_preflight_check_signal):
+	* components/services/install/lib/eazel-install-logic2.c:
+	(dump_tree):
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedata_dump_tree_helper), (packagedata_dump_tree_int),
+	(packagedata_dump_tree), (dump_package_deplist):
+
+	Move the package-tree dumper from the command-line util into the
+	install lib, and remove the redundant copies.  This cleans up the
+	debug output to fix bug 7127.
+	
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(eazel_package_system_rpm3_packagedata_fill_from_header):
+	* components/services/install/lib/eazel-package-system-types.h:
+
+	Someone mispelled PACKAGE as PACAKGE fairly consistently.  It was
+	probably me.
+	
+	* components/services/trilobite/libtrilobite/trilobite-core-messagi
+	ng.c: (trilobite_add_log):
+
+	Handle multi-line debug output without spazzing.
+
 2001-02-28  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	reviewed by: Robey Pointer  <robey@eazel.com>

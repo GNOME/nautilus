@@ -136,14 +136,6 @@ static const struct poptOption options[] = {
 	{NULL, '\0', 0, NULL, 0}
 };
 
-static void tree_helper (EazelInstallCallback *service,
-			 PackageData *pd,		
-			 gchar *indent,
-			 gchar *indent_type,
-			 int indent_level,
-			 char *title,
-			 GList **seen);
-
 #define check_ev(s)                                                \
 if (ev._major!=CORBA_NO_EXCEPTION) {                               \
 	fprintf (stderr, "*** %s: Caught exception %s",            \
@@ -482,104 +474,6 @@ download_failed (EazelInstallCallback *service,
 	}
 }
 
-/* This is ridiculous... */
-static void
-tree_helper_helper(EazelInstallCallback *service,
-		   gchar *indent,
-		   gchar *indent_type,
-		   int indent_level,
-		   GList *iterator,
-		   GList *next_list,
-		   GList **seen)
-{
-	PackageData *pack;
-	char *indent2;
-	char indenter;
-	gchar *extra_space=NULL;
-	int indent_level_cnt;
-
-	if (IS_PACKAGEDATA (iterator->data)) {
-		pack = PACKAGEDATA (iterator->data);
-	} else if (IS_PACKAGEBREAKS (iterator->data)) {
-		PackageBreaks *breakage = PACKAGEBREAKS (iterator->data);
-		pack = packagebreaks_get_package (breakage);
-	} else {
-		PackageDependency *dep = PACKAGEDEPENDENCY (iterator->data);
-		pack = dep->package;
-	}
-
-	if (indent_level>0) {
-		extra_space = g_new0 (char, indent_level+1);
-		for (indent_level_cnt = 0; indent_level_cnt < indent_level; indent_level_cnt++) {
-			extra_space [indent_level_cnt] = ' ';
-		}
-	}
-
-	if (iterator->next || next_list) {
-		indenter = '|';
-	} else {
-		indenter = ' ';
-		*indent_type = '\\';
-	}
-	
-	if (g_list_find (*seen, iterator)==NULL) { 		
-		indent2 = g_strdup_printf ("%s%s%c", indent, extra_space ? extra_space : "", indenter);
-		tree_helper (service, pack, indent2, indent_type, indent_level, NULL, seen);
-		g_free (indent2);
-		(*seen) = g_list_prepend (*seen, iterator);
-	}
-	g_free (extra_space);	
-}
-
-
-static void
-tree_helper (EazelInstallCallback *service,
-	     PackageData *pd,		
-	     gchar *indent,
-	     gchar *indent_type,
-	     int indent_level,
-	     char *title,
-	     GList **seen)
-{
-	char *readable_name;
-	GList *iterator;
-
-	if (title && pd->toplevel) {
-		fprintf (stdout, title);
-	}
-
-	readable_name = packagedata_get_readable_name (pd);
-	fprintf (stdout, "%s%s%s (%s/%s)\n", 
-		 indent,  indent_type,
-		 readable_name,
-		 packagedata_status_enum_to_str (pd->status),
-		 packagedata_modstatus_enum_to_str (pd->modify_status));
-	g_free (readable_name);
-
-	if (g_list_find (*seen, pd)) { return; }
-	(*seen) = g_list_prepend (*seen, pd);
-
-	for (iterator = pd->depends; iterator; iterator = iterator->next) {		
-		char *tmp;
-		tmp = g_strdup ("-d-");
-		tree_helper_helper (service, indent, tmp, indent_level, iterator, 
-				    pd->breaks ? pd->breaks : pd->modifies, seen);
-		g_free (tmp);
-	}
-	for (iterator = pd->breaks; iterator; iterator = iterator->next) {			
-		char *tmp;
-		tmp = g_strdup ("-b-");
-		tree_helper_helper (service, indent, tmp, indent_level, iterator, pd->modifies, seen);
-		g_free (tmp);
-	}
-	for (iterator = pd->modifies; iterator; iterator = iterator->next) {			
-		char *tmp;
-		tmp = g_strdup ("-m-");
-		tree_helper_helper (service, indent, tmp, indent_level, iterator, NULL, seen);
-		g_free (tmp);
-	}
-}
-
 static void
 something_failed (EazelInstallCallback *service,
 		  PackageData *pd,
@@ -603,16 +497,16 @@ something_failed (EazelInstallCallback *service,
 		title = g_strdup_printf (_("Package %s failed to install.\n"), pd->name);
 	}
 
-	if (arg_debug) {
-		GList *seen = NULL;
-		tree_helper (service, pd, "", "", 4, title, &seen);
-		g_list_free (seen);
-		fprintf (stdout, "\n");
-	} else {
-		fprintf (stdout, "%s", title);
-	}
-
+	fprintf (stdout, "%s\n", title);
 	g_free (title);
+
+	if (arg_debug) {
+		GList *list = g_list_prepend (NULL, pd);
+		char *out = packagedata_dump_tree (list, 2);
+		fprintf (stdout, "%s\n", out);
+		g_list_free (list);
+		g_free (out);
+	}
 
 	if (problem) {
 		stuff = eazel_install_problem_tree_to_string (problem, pd, uninstall);
@@ -699,10 +593,12 @@ eazel_preflight_check_signal (EazelInstallCallback *service,
 		
 	for (iterator = packages; iterator; iterator = iterator->next) {
 		PackageData *pack = (PackageData*)iterator->data;
-		if (arg_debug ) {
-			GList *seen = NULL;
-			tree_helper (service, pack, "", "", 4, NULL, &seen);
-			g_list_free (seen);
+		if (arg_debug) {
+			GList *list = g_list_prepend (NULL, pack);
+			char *out = packagedata_dump_tree (list, 2);
+			fprintf (stdout, "%s", out);
+			g_list_free (list);
+			g_free (out);
 		} else {
 			char *name = packagedata_get_readable_name (pack);
 			if (pack->depends) {

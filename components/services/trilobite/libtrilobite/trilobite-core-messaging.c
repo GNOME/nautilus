@@ -44,6 +44,8 @@ trilobite_add_log (const char *domain, GLogLevelFlags flags, const char *message
 {
 	char *prefix;
 	char *timestamp = NULL;
+	char **lines;
+	int i;
 #ifdef ROBEY_LIKES_TIMESTAMPS
 	struct timeval now;
 #endif
@@ -75,7 +77,11 @@ trilobite_add_log (const char *domain, GLogLevelFlags flags, const char *message
 	sprintf (timestamp + strlen (timestamp), ".%02ld ", now.tv_usec/10000L);
 #endif
 
-	fprintf (logf, "%s%s %s\n", timestamp != NULL ? timestamp : "", prefix, message);
+	lines = g_strsplit (message, "\n", 0);
+	for (i = 0; lines[i] != NULL; i++) {
+		fprintf (logf, "%s%s %s\n", timestamp != NULL ? timestamp : "", prefix, lines[i]);
+	}
+	g_strfreev (lines);
 	fflush (logf);
 }
 
