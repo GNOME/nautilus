@@ -905,17 +905,10 @@ nautilus_preferences_get (const char	*name,
 }
 
 gboolean
-nautilus_preferences_initialize (int				argc, 
-				 char				**argv,
-				 guint				num_user_levels,
-				 const NautilusStringList	*user_level_names)
+nautilus_preferences_initialize (int argc, char **argv)
 {
 	GConfError *error = NULL;
 
-	g_return_val_if_fail (num_user_levels > 0, FALSE);
-	g_return_val_if_fail (user_level_names != NULL, FALSE);
-	g_return_val_if_fail (nautilus_string_list_get_length (user_level_names) == num_user_levels, FALSE);
-	
 	if (!gconf_init (argc, argv, &error)) {
 		g_assert (error != NULL);
 

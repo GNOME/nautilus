@@ -72,9 +72,7 @@ void                nautilus_preferences_set                  (const char       
 char *              nautilus_preferences_get                  (const char                   *name,
 							       const gchar                  *default_value);
 gboolean            nautilus_preferences_initialize           (int                           argc,
-							       char                        **argv,
-							       guint                         num_user_levels,
-							       const NautilusStringList     *user_level_names);
+							       char                        **argv);
 gboolean            nautilus_preferences_is_initialized       (void);
 gboolean            nautilus_preferences_shutdown             (void);
 

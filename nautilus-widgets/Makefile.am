@@ -31,6 +31,7 @@ libnautilus_widgetsinclude_HEADERS =\
 	nautilus-preferences.h \
 	nautilus-radio-button-group.h \
 	nautilus-string-picker.h \
+	nautilus-user-level-manager.h \
 	$(NULL)
 
 libnautilus_widgets_la_SOURCES =\
@@ -45,6 +46,7 @@ libnautilus_widgets_la_SOURCES =\
 	nautilus-preferences.c \
 	nautilus-radio-button-group.c \
 	nautilus-string-picker.c \
+	nautilus-user-level-manager.c \
 	nautilus-widgets-self-check-functions.c \
 	nautilus-widgets-self-check-functions.h \
 	$(NULL)

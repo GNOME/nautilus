@@ -1,3 +1,30 @@
+2000-05-30  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* nautilus-widgets/nautilus-user-level-manager.c:
+	(user_level_manager_new), (nautilus_user_level_manager_initialize),
+	(nautilus_user_level_manager_initialize_class),
+	(user_level_manager_destroy),
+	(user_level_manager_get_global_manager),
+	(user_level_manager_is_initialized), (get_gconf_user_level_string),
+	(user_level_set_default_if_needed),
+	(nautilus_user_level_manager_get),
+	(nautilus_user_level_manager_set_user_level),
+	(nautilus_user_level_manager_get_user_level),
+	(nautilus_user_level_manager_get_num_user_levels),
+	(nautilus_user_level_manager_get_user_level_names):
+	* nautilus-widgets/nautilus-user-level-manager.h:
+	New class to manager user level stuff.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(nautilus_global_preferences_startup):
+	* nautilus-widgets/Makefile.am:
+	* nautilus-widgets/nautilus-preferences.c:
+	(nautilus_preferences_initialize):
+	* nautilus-widgets/nautilus-preferences.h:
+	* nautilus-widgets/test-nautilus-preferences.c: (main):
+	Undo the last stoopid change cuz the user level stuff is now
+	hidden in the NautilusUserLevelManager class.
+	
 2000-05-30  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-drag.c:

@@ -543,21 +543,10 @@ nautilus_global_preferences_shutdown (void)
 void
 nautilus_global_preferences_startup (int argc, char **argv)
 {
-	NautilusStringList	*user_level_names;
-	gboolean		result;
-
-	user_level_names = nautilus_string_list_new ();
-	nautilus_string_list_insert (user_level_names, "novice");
-	nautilus_string_list_insert (user_level_names, "intermediate");
-	nautilus_string_list_insert (user_level_names, "hacker");
+	gboolean result;
 
 	/* Initialize preferences */
-	result = nautilus_preferences_initialize (argc,
-						  argv,
-						  nautilus_string_list_get_length (user_level_names),
-						  user_level_names);
-
-	nautilus_string_list_free (user_level_names);
+	result = nautilus_preferences_initialize (argc, argv);
 
 	/* FIXME bugzilla.eazel.com 672: 
 	 * Need error reporting if this fails instead of a core dump.
