@@ -1,3 +1,11 @@
+2001-02-06  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_do_component_query):
+	fixed bug 5479, two "View as Text" items in "View as Other"
+	dialog list, by special casing the sample text component so
+	it doesn't get added to the list.
+	
 2001-02-06  Arik Devens  <arik@eazel.com>
 
 	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>

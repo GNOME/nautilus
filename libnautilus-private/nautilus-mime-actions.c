@@ -1562,9 +1562,14 @@ nautilus_do_component_query (const char        *mime_type,
 
                         if (ignore_content_mime_types || 
 			    server_matches_content_requirements (server, content_types, explicit_iids)) {
-                                retval = g_list_append
-                                        (retval, 
-                                         OAF_ServerInfo_duplicate (server));
+                                /* Hack to suppress the Bonobo_Sample_Text component, since the Nautilus text
+                                 * view is a superset and it's confusing for the user to be presented with both
+                                 */
+                                if (server->iid != NULL && strcmp (server->iid, "OAFIID:Bonobo_Sample_Text") != 0) {
+                                	retval = g_list_append
+                                        	(retval, 
+                                         	OAF_ServerInfo_duplicate (server));
+                        	}
                         }
                 }
 
