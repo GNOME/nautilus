@@ -65,7 +65,6 @@ void nautilus_window_initialize_toolbars (NautilusWindow *window);
 void nautilus_window_go_back (NautilusWindow *window);
 void nautilus_window_go_forward (NautilusWindow *window);
 void nautilus_window_go_up (NautilusWindow *window);
-void nautilus_window_go_home (NautilusWindow *window);
 void nautilus_window_toolbar_remove_theme_callback(void);
 
 NautilusUndoManager *nautilus_window_get_undo_manager (NautilusWindow *window);

@@ -27,7 +27,6 @@
 #include <config.h>
 #include "nautilus-application.h"
 
-#include "nautilus-window-state.h"
 #include <libnautilus/libnautilus.h>
 #include <bonobo.h>
 #include "file-manager/fm-icon-view.h"
@@ -317,33 +316,54 @@ display_caveat (GtkWindow *parent_window)
 
   	gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
 
-  	gnome_dialog_set_parent (GNOME_DIALOG (dialog), parent_window);
+	if (parent_window != NULL) {
+		gnome_dialog_set_parent (GNOME_DIALOG (dialog), parent_window);
+	}
 
 	gtk_widget_show (GTK_WIDGET (dialog));
 }
 
 void
 nautilus_app_startup (NautilusApp *app,
-		      const char *initial_url,
-		      gboolean handle_desktop)
+		      gboolean manage_desktop,
+		      const char *urls[])
 {
+	const char **p;
 	NautilusWindow *window;
+	NautilusWindow *first_window;
 
-	if (handle_desktop) {
+	/* Set up the desktop. */
+	if (manage_desktop) {
 		gtk_widget_show (GTK_WIDGET (nautilus_desktop_window_new (app)));
 	}
 
-  	/* Set default configuration */
-  	window = nautilus_app_create_window (app);
-  	bonobo_activate ();
-  	nautilus_window_set_initial_state (window, initial_url);
+  	/* Create the other windows. */
+	first_window = NULL;
+	if (urls != NULL) {
+		for (p = urls; *p != NULL; p++) {
+			window = nautilus_app_create_window (app);
+			nautilus_window_goto_uri (window, *p);
+			if (first_window == NULL) {
+				first_window = window;
+			}
+		}
+	}
+	if (!manage_desktop && first_window == NULL) {
+		first_window = nautilus_app_create_window (app);
+		nautilus_window_go_home (first_window);
+	}
 
-	/* Show the "not ready for prime time" dialog after this
+	/* Show the "not ready for prime time" dialog after the first
 	 * window appears, so it's on top.
 	 */
+	/* FIXME: It's not on top of the other windows. */
 	if (g_getenv ("NAUTILUS_NO_CAVEAT_DIALOG") == NULL) {
-	  	gtk_signal_connect (GTK_OBJECT (window), "show",
-	  			    display_caveat, window);
+	  	if (first_window == NULL) {
+			display_caveat (NULL);
+		} else {
+			gtk_signal_connect (GTK_OBJECT (first_window), "show",
+					    display_caveat, first_window);
+		}
   	}
 }
 
@@ -368,8 +388,8 @@ nautilus_app_create_window (NautilusApp *app)
 {
 	NautilusWindow *window;
 	
-	window = NAUTILUS_WINDOW (gtk_object_new (nautilus_window_get_type(),
-						  "app", BONOBO_OBJECT(app),
+	window = NAUTILUS_WINDOW (gtk_object_new (nautilus_window_get_type (),
+						  "app", BONOBO_OBJECT (app),
 						  "app_id", "nautilus", NULL));
 	
 	gtk_signal_connect (GTK_OBJECT (window),

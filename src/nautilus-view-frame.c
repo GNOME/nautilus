@@ -28,10 +28,11 @@
    object. */
 
 #include <config.h>
-
 #include "nautilus-view-frame-private.h"
+
 #include "nautilus-window.h"
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtk.h>
 #include <libnautilus/nautilus-undo-manager.h>
@@ -52,60 +53,30 @@ enum {
   ARG_MAIN_WINDOW
 };
 
-static void nautilus_view_frame_init          (NautilusViewFrame      *view);
-static void nautilus_view_frame_destroy       (GtkObject              *view);
-static void nautilus_view_frame_constructed   (NautilusViewFrame      *view);
-static void nautilus_view_frame_class_init    (NautilusViewFrameClass *klass);
-static void nautilus_view_frame_set_arg       (GtkObject              *object,
-                                               GtkArg                 *arg,
-                                               guint                   arg_id);
-static void nautilus_view_frame_get_arg       (GtkObject              *object,
-                                               GtkArg                 *arg,
-                                               guint                   arg_id);
-static void nautilus_view_frame_size_request  (GtkWidget              *widget,
-                                               GtkRequisition         *requisition);
-static void nautilus_view_frame_size_allocate (GtkWidget              *widget,
-                                               GtkAllocation          *allocation);
+static void nautilus_view_frame_initialize       (NautilusViewFrame      *view);
+static void nautilus_view_frame_destroy          (GtkObject              *view);
+static void nautilus_view_frame_constructed      (NautilusViewFrame      *view);
+static void nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass);
+static void nautilus_view_frame_set_arg          (GtkObject              *object,
+                                                  GtkArg                 *arg,
+                                                  guint                   arg_id);
+static void nautilus_view_frame_get_arg          (GtkObject              *object,
+                                                  GtkArg                 *arg,
+                                                  guint                   arg_id);
 
 static guint signals[LAST_SIGNAL];
 
-GtkType
-nautilus_view_frame_get_type (void)
-{
-  static GtkType view_type = 0;
-
-  if (!view_type)	{
-    const GtkTypeInfo view_info = {
-      "NautilusViewFrame",
-      sizeof (NautilusViewFrame),
-      sizeof (NautilusViewFrameClass),
-      (GtkClassInitFunc) nautilus_view_frame_class_init,
-      (GtkObjectInitFunc) nautilus_view_frame_init,
-      /* reserved_1 */ NULL,
-      /* reserved_2 */ NULL,
-      (GtkClassInitFunc) NULL,
-    };
-
-    view_type = gtk_type_unique (gtk_bin_get_type(), &view_info);
-  }
-	
-  return view_type;
-}
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusViewFrame, nautilus_view_frame, NAUTILUS_TYPE_GENEROUS_BIN)
 
 static void
-nautilus_view_frame_class_init (NautilusViewFrameClass *klass)
+nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
 {
   GtkObjectClass *object_class;
-  GtkWidgetClass *widget_class;
 
   object_class = (GtkObjectClass*) klass;
   object_class->destroy = nautilus_view_frame_destroy;
   object_class->set_arg = nautilus_view_frame_set_arg;
   object_class->get_arg = nautilus_view_frame_get_arg;
-
-  widget_class = (GtkWidgetClass*) klass;
-  widget_class->size_request = nautilus_view_frame_size_request;
-  widget_class->size_allocate = nautilus_view_frame_size_allocate;
 
   klass->servant_init_func = POA_Nautilus_ViewFrame__init;
   klass->servant_destroy_func = POA_Nautilus_ViewFrame__fini;
@@ -115,7 +86,6 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *klass)
   klass->zoomable_servant_destroy_func = POA_Nautilus_ZoomableFrame__fini;
   klass->zoomable_vepv = &impl_Nautilus_ZoomableFrame_vepv;
 
-  klass->parent_class = gtk_type_class (gtk_type_parent (object_class->type));
   /* klass->request_location_change = NULL; */
   /* klass->request_selection_change = NULL; */
   /* klass->request_status_change = NULL; */
@@ -211,9 +181,9 @@ nautilus_view_frame_get_arg (GtkObject      *object,
 }
 
 static void
-nautilus_view_frame_init (NautilusViewFrame *view)
+nautilus_view_frame_initialize (NautilusViewFrame *view)
 {
-	GTK_WIDGET_SET_FLAGS (view, GTK_NO_WINDOW);	
+  GTK_WIDGET_SET_FLAGS (view, GTK_NO_WINDOW);	
 }
 
 static void
@@ -242,6 +212,7 @@ nautilus_view_frame_destroy_client(NautilusViewFrame *view)
 
   /* FIXME bugzilla.eazel.com 917: This should be bonobo_object_unref,
    * but there is a circular reference that prevents it from working.
+   * Once that's fixed, we'd really like to change it to unref instead of destroy.
    */
   bonobo_object_destroy (view->view_frame);
   view->view_frame = NULL;
@@ -255,7 +226,6 @@ nautilus_view_frame_destroy_client(NautilusViewFrame *view)
 static void
 nautilus_view_frame_destroy(GtkObject      *view)
 {
-  NautilusViewFrameClass *klass = NAUTILUS_VIEW_FRAME_CLASS(view->klass);
   NautilusViewFrame *nview = NAUTILUS_VIEW_FRAME(view);
 
   if(nview->timer_id)
@@ -266,8 +236,7 @@ nautilus_view_frame_destroy(GtkObject      *view)
 
   nautilus_view_frame_destroy_client(nview);
 
-  if(GTK_OBJECT_CLASS(klass->parent_class)->destroy)
-    GTK_OBJECT_CLASS(klass->parent_class)->destroy(view);
+  NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (view));
 }
 
 static void
@@ -290,42 +259,6 @@ nautilus_view_frame_construct_arg_set(NautilusViewFrame *view)
 	if((view->construct_arg_count >= nca) && klass->view_constructed) {
 		klass->view_constructed(view);
 	}
-}
-
-static void
-nautilus_view_frame_size_request (GtkWidget      *widget,
-			     GtkRequisition *requisition)
-{
-  GtkBin *bin;
-
-  bin = GTK_BIN (widget);
-
-  requisition->width = 0;
-  requisition->height = 0;
-
-  if (bin->child && GTK_WIDGET_VISIBLE (bin->child))
-    {
-      GtkRequisition child_requisition;
-      
-      gtk_widget_size_request (bin->child, &child_requisition);
-
-      requisition->width += child_requisition.width;
-      requisition->height += child_requisition.height;
-    }
-}
-
-static void
-nautilus_view_frame_size_allocate (GtkWidget     *widget,
-			      GtkAllocation *allocation)
-{
-  GtkBin *bin;
-  GtkAllocation child_allocation;
-
-  widget->allocation = child_allocation = *allocation;
-  bin = GTK_BIN (widget);
-
-  if (bin->child && GTK_WIDGET_VISIBLE (bin->child))
-    gtk_widget_size_allocate (bin->child, &child_allocation);
 }
 
 extern NautilusViewComponentType nautilus_view_component_type; /* ntl-view-nautilus.c */

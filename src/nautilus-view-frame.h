@@ -30,8 +30,7 @@
 #ifndef NAUTILUS_VIEW_FRAME_H
 #define NAUTILUS_VIEW_FRAME_H
 
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkbin.h>
+#include <libnautilus-extensions/nautilus-generous-bin.h>
 #include <bonobo.h>
 #include <libnautilus/nautilus-view-component.h>
 
@@ -44,12 +43,36 @@ extern "C" {
 #define NAUTILUS_VIEW_FRAME_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_VIEW_FRAME, NautilusViewFrameClass))
 #define NAUTILUS_IS_VIEW_FRAME(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_VIEW_FRAME))
 #define NAUTILUS_IS_VIEW_FRAME_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_VIEW_FRAME))
-        
-typedef struct NautilusViewFrame NautilusViewFrame;
-typedef struct NautilusViewFrameClass NautilusViewFrameClass;
 
-struct NautilusViewFrameClass {
-        GtkBinClass parent_spot;
+typedef struct NautilusViewComponentType NautilusViewComponentType;
+
+typedef struct {
+        NautilusGenerousBin parent;
+        
+        GtkWidget *main_window;
+        
+        char *iid;
+        
+        BonoboObjectClient *client_object;
+        GtkWidget *client_widget;
+        
+        BonoboObject *view_frame;
+        BonoboObject *zoomable_frame;
+        
+        Nautilus_Zoomable zoomable;
+        NautilusViewComponentType *component_class;
+        gpointer component_data;
+        
+        guint construct_arg_count;
+        
+        guint timer_id;
+        guint checking;
+
+        char *label;
+} NautilusViewFrame;
+
+typedef struct {
+        NautilusGenerousBinClass parent_spot;
         
         /* These signals correspond to the Nautilus::ViewFrame CORBA interface. They
          * are requests that the underlying view may make of the shell via the frame.
@@ -72,39 +95,11 @@ struct NautilusViewFrameClass {
         /* Not a signal. Work-around for Gtk+'s lack of a 'constructed' operation */
         void (*view_constructed)         (NautilusViewFrame *view);
         
-        GtkBinClass *parent_class;
         guint num_construct_args;
         
         gpointer servant_init_func, servant_destroy_func, vepv;
         gpointer zoomable_servant_init_func, zoomable_servant_destroy_func, zoomable_vepv;
-};
-
-typedef struct NautilusViewComponentType NautilusViewComponentType;
-
-struct NautilusViewFrame {
-        GtkBin parent;
-        
-        GtkWidget *main_window;
-        
-        char *iid;
-        
-        BonoboObjectClient *client_object;
-        GtkWidget *client_widget;
-        
-        BonoboObject *view_frame;
-        BonoboObject *zoomable_frame;
-        
-        Nautilus_Zoomable zoomable;
-        NautilusViewComponentType *component_class;
-        gpointer component_data;
-        
-        guint construct_arg_count;
-        
-        guint timer_id;
-        guint checking;
-
-        char *label;
-};
+} NautilusViewFrameClass;
 
 GtkType       nautilus_view_frame_get_type                (void);
 gboolean      nautilus_view_frame_load_client             (NautilusViewFrame       *view,

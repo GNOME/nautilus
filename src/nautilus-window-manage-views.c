@@ -48,7 +48,6 @@
 #include "nautilus-application.h"
 #include "nautilus-applicable-views.h"
 #include "nautilus-window-private.h"
-#include "nautilus-window-state.h"
 #include "nautilus-location-bar.h"
 
 /*#define EXTREME_DEBUGGING*/
@@ -650,7 +649,7 @@ nautilus_window_request_location_change (NautilusWindow *window,
         
         if (loc->new_window_requested) {
                 new_window = nautilus_app_create_window (NAUTILUS_APP(window->app));
-                nautilus_window_set_initial_state (new_window, loc->requested_uri);
+                nautilus_window_goto_uri (new_window, loc->requested_uri);
         } else {
                 nautilus_window_begin_location_change (window, loc,
                                                        requesting_view,

@@ -76,8 +76,6 @@ nautilus_SOURCES =\
 	nautilus-window-manage-views.c		\
 	nautilus-window-manage-views.h		\
 	nautilus-window-private.h		\
-	nautilus-window-state.c			\
-	nautilus-window-state.h			\
 	nautilus-window.c			\
 	nautilus-window.h			\
 	$(NULL)

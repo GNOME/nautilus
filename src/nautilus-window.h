@@ -141,6 +141,7 @@ void             nautilus_window_remove_sidebar_panel (NautilusWindow    *window
                                                        NautilusViewFrame *sidebar_panel);
 void             nautilus_window_goto_uri             (NautilusWindow    *window,
                                                        const char        *uri);
+void             nautilus_window_go_home              (NautilusWindow    *window);
 void             nautilus_window_display_error        (NautilusWindow    *window,
                                                        const char        *error_msg);
 const char *     nautilus_window_get_requested_uri    (NautilusWindow    *window);

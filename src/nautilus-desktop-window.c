@@ -26,11 +26,17 @@
 #include "nautilus-desktop-window.h"
 
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libgnomeui/gnome-winhints.h>
 
+struct NautilusDesktopWindowDetails {
+	GList *unref_list;
+};
+
 static void nautilus_desktop_window_initialize_class (NautilusDesktopWindowClass *klass);
 static void nautilus_desktop_window_initialize       (NautilusDesktopWindow      *window);
+static void destroy                                  (GtkObject                  *object);
 static void realize                                  (GtkWidget                  *widget);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_window, NAUTILUS_TYPE_WINDOW)
@@ -38,30 +44,39 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_windo
 static void
 nautilus_desktop_window_initialize_class (NautilusDesktopWindowClass *klass)
 {
+	GTK_OBJECT_CLASS (klass)->destroy = destroy;
 	GTK_WIDGET_CLASS (klass)->realize = realize;
 }
 
 static void
 nautilus_desktop_window_initialize (NautilusDesktopWindow *window)
 {
-	/* FIXME: Although Havoc had this in his code, it seems to
-	 * have no effect for me. But the gdk_window_move_resize
-	 * below does seem to work. Not sure if this should stay
-	 * here or not.
+	window->details = g_new0 (NautilusDesktopWindowDetails, 1);
+
+	/* FIXME: Although Havoc had this call to set_default_size in
+	 * his code, it seems to have no effect for me. But the
+	 * gdk_window_move_resize below does seem to work. Not sure if
+	 * this should stay or not.
 	 */
 	gtk_window_set_default_size (GTK_WINDOW (window),
 				     gdk_screen_width (),
 				     gdk_screen_height ());
+
+	/* These calls seem to have some effect, but it's not clear if
+	 * they are the right thing to do.
+	 */
 	gtk_widget_set_uposition (GTK_WIDGET (window), 0, 0);
 	gtk_widget_set_usize (GTK_WIDGET (window),
 			      gdk_screen_width (),
 			      gdk_screen_height ());
 
-	/* Tell the window manager to never resize this. */
-#if 0
+	/* Tell the window manager to never resize this. This is not
+	 * known to have any specific beneficial effect with any
+	 * particular window manager for the case of the desktop
+	 * window, but it doesn't seem to do any harm.
+	 */
 	gtk_window_set_policy (GTK_WINDOW (window),
 			       FALSE, FALSE, FALSE);
-#endif
 }
 
 NautilusDesktopWindow *
@@ -89,20 +104,64 @@ nautilus_desktop_window_new (NautilusApp *application)
 }
 
 static void
+destroy (GtkObject *object)
+{
+	NautilusDesktopWindow *window;
+
+	window = NAUTILUS_DESKTOP_WINDOW (object);
+
+	nautilus_gtk_object_list_free (window->details->unref_list);
+	g_free (window->details);
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+static void
 realize (GtkWidget *widget)
 {
-	/* Hide unused pieces of the GnomeApp. */
-	gtk_widget_hide (GNOME_APP (widget)->menubar);
-	gtk_widget_hide (GNOME_APP (widget)->dock);
+	NautilusDesktopWindow *window;
+	GtkContainer *dock_as_container;
+	GList *children, *p;
+	GtkWidget *child;
 
+	window = NAUTILUS_DESKTOP_WINDOW (widget);
+
+	/* Hide unused pieces of the GnomeApp.
+	 * We don't want a menu bar, toolbars, or status bar on the desktop.
+	 * But we don't want to hide the client area!
+	 */
+	gtk_widget_hide (GNOME_APP (window)->menubar);
+	gtk_widget_hide (GNOME_APP (window)->statusbar);
+	dock_as_container = GTK_CONTAINER (GNOME_APP (window)->dock);
+	children = gtk_container_children (dock_as_container);
+	for (p = children; p != NULL; p = p->next) {
+		child = p->data;
+		
+		if (child != gnome_dock_get_client_area (GNOME_DOCK (dock_as_container))) {
+			gtk_widget_ref (child);
+			window->details->unref_list = g_list_prepend
+				(window->details->unref_list, child);
+			gtk_container_remove (dock_as_container, child);
+		}
+	}
+	g_list_free (children);
+
+	/* Do the work of realizing. */
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
 
-        /* Set some hints for the window manager. */
 	/* FIXME: Looking at the gnome_win_hints implementation,
 	 * it looks like you can call these with an unmapped window,
 	 * but when I tried doing it in initialize it didn't work.
+	 * We'd like to set these earlier so the window doesn't show
+	 * up in front of everything before going to the back.
 	 */
+
+	/* Put this window behind all the others. */
 	gnome_win_hints_set_layer (widget, WIN_LAYER_DESKTOP);
+
+	/* Make things like the task list ignore this window and make
+	 * it clear that it it's at its full size.
+	 */
 	gnome_win_hints_set_state (widget,
 				   WIN_STATE_STICKY
 				   | WIN_STATE_MAXIMIZED_VERT
@@ -110,17 +169,31 @@ realize (GtkWidget *widget)
 				   | WIN_STATE_FIXED_POSITION
 				   | WIN_STATE_HIDDEN
 				   | WIN_STATE_ARRANGE_IGNORE);
+
+	/* Make sure that focus, and any window lists or task bars also
+	 * skip the window.
+	 */
+	/* FIXME: Is having no ability to focus on the window going to
+	 * be a problem for renaming icons?
+	 */
 	gnome_win_hints_set_hints (widget,
 				   WIN_HINTS_SKIP_FOCUS
 				   | WIN_HINTS_SKIP_WINLIST
 				   | WIN_HINTS_SKIP_TASKBAR);
 
-	/* More ways to tell the window manager to treat this like a desktop. */
-	/* FIXME: Should we do a gdk_window_set_hints here? */
+	/* FIXME: Should we do a gdk_window_set_hints or a
+	 * gdk_window_move_resize here too?
+	 */
+#if 0
 	gdk_window_move_resize (widget->window,
 				0, 0,
 				gdk_screen_width (),
 				gdk_screen_height ());
+#endif
+
+	/* Get rid of the things that window managers add to resize
+	 * and otherwise manipulate the window.
+	 */
         gdk_window_set_decorations (widget->window, 0);
         gdk_window_set_functions (widget->window, 0);
 }

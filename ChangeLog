@@ -1,3 +1,69 @@
+2000-05-31  Darin Adler  <darin@eazel.com>
+
+	Another cut on the desktop. Way closer.
+
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-generous-bin.h:
+	* libnautilus-extensions/nautilus-generous-bin.c:
+	Added a new class NautilusGenerousBin. This is a GtkBin
+	subclass that gives its entire allocation to its child.
+	Used both in the widgetry for desktop windows and as a
+	base class for NautilusViewFrame for now.
+	
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	(turn_on_line_wrap_flag), (turn_on_line_wrap_flag_callback):
+	Changed to use gtk_container_foreach instead of the old
+	gtk_container_children, since I now understand that the
+	latter is just a convenience cover for the former.
+	
+	* src/Makefile.am:
+	* src/nautilus-window-state.c: [removed]
+	* src/nautilus-window-state.h: [removed]
+	The only function in here was a wonky one that did goto_uri
+	of go_home depending on the parameter. Changed the callers
+	and things got clearer anyway.
+	
+	* src/nautilus-application.h:
+	* src/nautilus-application.c: (display_caveat),
+	(nautilus_app_startup):
+	* src/nautilus-main.c: (main):
+	Changed rules about which windows are created on startup. This
+	puts us into a slightly bad state because it's now easy to
+	create a desktop window with no way to get rid of it.
+	
+	* src/nautilus-desktop-window.h:
+	* src/nautilus-desktop-window.c:
+	(nautilus_desktop_window_initialize_class),
+	(nautilus_desktop_window_initialize), (destroy), (realize):
+	A better cut at the desktop window creation that now mostly works.
+	
+	* src/nautilus-main.c: (main):
+	Changed the "--desktop" option's name to "--manage-desktop".
+	
+	* src/nautilus-view-frame.h:
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_initialize_class),
+	(nautilus_view_frame_initialize),
+	(nautilus_view_frame_destroy_client),
+	(nautilus_view_frame_destroy),
+	(nautilus_view_frame_construct_arg_set):
+	Changed to use NautilusGenerousBin as base class. Also use the
+	Nautilus boilerplate macros.
+	
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_request_location_change):
+	Use goto_uri instead of set_initial_state.
+	
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.h:
+	* src/nautilus-window.c: (nautilus_window_go_home):
+	Make go_home public and move the actual code needed to go to the
+	home package into the function.
+
+	* src/nautilus-window.c: (nautilus_window_constructed):
+	Reduced the amount of hackery on behalf of the desktop window and
+	used the NautilusGenerousBin class.
+
 2000-05-31  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/mozilla/nautilus-mozilla-content-view.c:
@@ -214,8 +280,7 @@
 	* components/services/time/nautilus-view/Makefile.am:
 	* components/services/time/nautilus-view/main.c:
 	(sample_object_destroyed), (sample_make_object), (main):
-	*
-	components/services/time/nautilus-view/trilobite-eazel-time-view.c:
+	* components/services/time/nautilus-view/trilobite-eazel-time-view.c:
 	(set_status_text), (sync_button_pressed), (url_button_pressed),
 	(timediff_button_pressed), (update_time_display),
 	(trilobite_eazel_time_view_initialize_class),

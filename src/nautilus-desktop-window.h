@@ -33,13 +33,16 @@
 #define NAUTILUS_IS_DESKTOP_WINDOW(object)      (GTK_CHECK_TYPE ((object), NAUTILUS_TYPE_DESKTOP_WINDOW))
 #define NAUTILUS_IS_DESKTOP_WINDOW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DESKTOP_WINDOW))
 
-typedef struct {
-	NautilusWindowClass parent_spot;
-} NautilusDesktopWindowClass;
+typedef struct NautilusDesktopWindowDetails NautilusDesktopWindowDetails;
 
 typedef struct {
 	NautilusWindow parent_spot;
+	NautilusDesktopWindowDetails *details;
 } NautilusDesktopWindow;
+
+typedef struct {
+	NautilusWindowClass parent_spot;
+} NautilusDesktopWindowClass;
 
 GtkType nautilus_desktop_window_get_type (void);
 NautilusDesktopWindow *nautilus_desktop_window_new (NautilusApp *application);

@@ -31,7 +31,6 @@
 #include "nautilus-window-private.h"
 
 #include "nautilus-window-manage-views.h"
-#include "nautilus-window-state.h"
 #include "nautilus-application.h"
 
 #include <gnome.h>
@@ -53,6 +52,7 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
 #include <libnautilus-extensions/nautilus-mini-icon.h>
+#include <libnautilus-extensions/nautilus-generous-bin.h>
 #include <libnautilus/nautilus-undo-manager.h>
 #include "nautilus-zoom-control.h"
 #include <ctype.h>
@@ -369,14 +369,9 @@ nautilus_window_constructed (NautilusWindow *window)
 		behavior |= GNOME_DOCK_ITEM_BEH_LOCKED;
 	}
 
-	/* FIXME: We should use inheritance instead of these special cases
-	 * for the desktop window.
-	 */
-        if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-		gnome_app_add_docked (app, location_bar_box,
-				      "uri-entry", behavior,
-				      GNOME_DOCK_TOP, 2, 0, 0);
-	}
+	gnome_app_add_docked (app, location_bar_box,
+			      "uri-entry", behavior,
+			      GNOME_DOCK_TOP, 2, 0, 0);
 
 	/* Option menu for content view types; it's empty here, filled in when a uri is set. */
 	window->view_as_option_menu = gtk_option_menu_new();
@@ -394,13 +389,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	
 	/* set up status bar */
 	statusbar = gtk_statusbar_new ();
-
-	/* FIXME: We should use inheritance instead of these special cases
-	 * for the desktop window.
-	 */
-        if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-		gnome_app_set_statusbar (app, statusbar);
-	}
+	gnome_app_set_statusbar (app, statusbar);
 
 	/* insert a little padding so text isn't jammed against frame */
 	gtk_misc_set_padding (GTK_MISC (GTK_STATUSBAR (statusbar)->label), GNOME_PAD, 0);
@@ -411,7 +400,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	 * for the desktop window.
 	 */
         if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-		window->content_hbox = gtk_widget_new (GTK_TYPE_BIN, NULL);
+		window->content_hbox = gtk_widget_new (NAUTILUS_TYPE_GENEROUS_BIN, NULL);
 	} else {
 		/* set up window contents and policy */	
 		gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
@@ -970,7 +959,15 @@ nautilus_window_go_up (NautilusWindow *window)
 void
 nautilus_window_go_home (NautilusWindow *window)
 {
-	nautilus_window_set_initial_state(window, NULL);
+	char *default_home_uri, *home_uri;
+
+	default_home_uri = g_strdup_printf ("file://%s", g_get_home_dir());
+	home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI, default_home_uri);
+	g_free (default_home_uri);
+	
+	g_assert (home_uri != NULL);
+	nautilus_window_goto_uri (window, home_uri);
+	g_free (home_uri);
 }
 
 void

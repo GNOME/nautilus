@@ -33,6 +33,9 @@
 #include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
+#include "nautilus-string.h"
+
+static void turn_on_line_wrap_flag_callback (GtkWidget *widget, gpointer callback_data);
 
 void
 nautilus_gnome_canvas_world_to_window_rectangle (GnomeCanvas *canvas,
@@ -255,26 +258,29 @@ static void
 turn_on_line_wrap_flag (GtkWidget *widget, const char *message)
 {
 	char *text;
-	GList *children, *p;
 
 	/* Turn on the flag if we find a label with the message
 	 * in it.
 	 */
 	if (GTK_IS_LABEL (widget)) {
 		gtk_label_get (GTK_LABEL (widget), &text);
-		if (strcmp (text, message) == 0) {
+		if (nautilus_strcmp (text, message) == 0) {
 			gtk_label_set_line_wrap (GTK_LABEL (widget), TRUE);
 		}
 	}
 
 	/* Recurse for children. */
 	if (GTK_IS_CONTAINER (widget)) {
-		children = gtk_container_children (GTK_CONTAINER (widget));
-		for (p = children; p != NULL; p = p->next) {
-			turn_on_line_wrap_flag (GTK_WIDGET (p->data), message);
-		}
-		g_list_free (children);
+		gtk_container_foreach (GTK_CONTAINER (widget),
+				       turn_on_line_wrap_flag_callback,
+				       (char *) message);
 	}
+}
+
+static void
+turn_on_line_wrap_flag_callback (GtkWidget *widget, gpointer callback_data)
+{
+	turn_on_line_wrap_flag (widget, callback_data);
 }
 
 /* Shamelessly stolen from gnome-dialog-util.c: */
