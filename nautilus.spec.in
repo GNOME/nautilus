@@ -7,6 +7,8 @@
 %define sysconfdir	/etc
 
 Name:		%name
+Vendor:		GNOME
+Distribution:	CVS
 Summary:	Nautilus is a free file manager and graphical shell.
 Version: 	%ver
 Release: 	%rel
@@ -21,14 +23,14 @@ Requires:	gtk+ >= 1.2.8
 Requires:	imlib >= 1.9.8
 Requires:	libxml >= 1.8.10
 Requires:	gnome-libs >= 1.2.1
-Requires:	GConf >= 0.11
-Requires:	ORBit >= 0.5.5
-Requires:	oaf >= 0.6.0
-Requires:	gnome-vfs >= 0.3.1
+Requires:	GConf >= 0.12
+Requires:	ORBit >= 0.5.6
+Requires:	oaf >= 0.6.2
+Requires:	gnome-vfs >= 0.4.2
 Requires:	gdk-pixbuf >= 0.9.0
-Requires:	bonobo >= 0.30
+Requires:	bonobo >= 0.33
 Requires:	popt >= 1.5
-Requires:	freetype2 >= 1.0beta8
+Requires:	freetype2 >= 2.0
 Requires:	medusa >= 0.2.1
 Requires:	esound >= 0.2
 
@@ -70,6 +72,8 @@ Requires:       %name = %{PACKAGE_VERSION}
 Requires:	%name-mozilla = %{PACKAGE_VERSION}
 Requires:	%name-trilobite = %{PACKAGE_VERSION}
 Requires:	%name-extras = %{PACKAGE_VERSION}
+Requires:	mozilla-mail = 0.7
+Requires:	mozilla-psm = 0.7
 
 %description devel
 This package provides the necessary development libraries and include
