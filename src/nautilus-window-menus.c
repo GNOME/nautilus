@@ -44,6 +44,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-uidefs.h>
+#include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-debug.h>
@@ -814,28 +815,59 @@ append_bookmark_to_menu (NautilusWindow *window,
 static char *
 get_static_bookmarks_file_path (void)
 {
-	char *xml_file_path, *user_directory_path;
+	char *update_xml_file_path, *built_in_xml_file_path;
+	char *update_uri, *built_in_uri;
+	char *user_directory_path;
+	gboolean update_exists, built_in_exists;
+	GnomeVFSFileInfo update_info, built_in_info;
 	
-	/* first, try to fetch it from the service update directory. Use the one from there
-	 * if there is one, otherwise, get the built-in one from shared data
-	 */
-	
+	/* see if there is a static bookmarks file in the updates directory and get its mod-date */
 	user_directory_path = nautilus_get_user_directory ();
-	xml_file_path = g_strdup_printf ("%s/updates/%s", user_directory_path, STATIC_BOOKMARKS_FILE_NAME);
+	update_xml_file_path = g_strdup_printf ("%s/updates/%s", user_directory_path, STATIC_BOOKMARKS_FILE_NAME);
+	update_exists = g_file_exists (update_xml_file_path);
 	g_free (user_directory_path);
-	if (g_file_exists (xml_file_path)) {
-		return xml_file_path;
-	}
 	
-	g_free (xml_file_path);
+	/* get the mod date of the built-in static bookmarks file */
+	built_in_xml_file_path = nautilus_make_path (NAUTILUS_DATADIR, STATIC_BOOKMARKS_FILE_NAME);
+	built_in_exists = g_file_exists (built_in_xml_file_path);
 	
-	xml_file_path = nautilus_make_path (NAUTILUS_DATADIR, STATIC_BOOKMARKS_FILE_NAME);
-	if (g_file_exists (xml_file_path)) {
-		return xml_file_path;
+	/* if we only have one file, return its path as the one to use */
+	if (built_in_exists && !update_exists) {
+		g_free (update_xml_file_path);
+		return built_in_xml_file_path;
 	}
-	g_free (xml_file_path);
 
-	return NULL;
+	if (!built_in_exists && update_exists) {
+		g_free (built_in_xml_file_path);
+		return update_xml_file_path;
+	}
+	
+	/* if we have neither file, return NULL */		
+	if (!built_in_exists && !update_exists) {
+		g_free (built_in_xml_file_path);
+		g_free (update_xml_file_path);
+		return NULL;
+	}
+	
+	/* both files exist, so use the one with the most recent mod-date */
+	update_uri = gnome_vfs_get_local_path_from_uri (update_xml_file_path);
+	gnome_vfs_file_info_init (&update_info);
+	gnome_vfs_get_file_info (update_uri, &update_info, GNOME_VFS_FILE_INFO_DEFAULT);
+	g_free (update_uri);
+	
+	built_in_uri = gnome_vfs_get_local_path_from_uri (built_in_xml_file_path);
+	gnome_vfs_file_info_init (&built_in_info);
+	gnome_vfs_get_file_info (built_in_uri, &built_in_info, GNOME_VFS_FILE_INFO_DEFAULT);
+	g_free (built_in_uri);
+
+	/* see which is most recent */
+	if (update_info.mtime > built_in_info.mtime) {
+		g_free (built_in_xml_file_path);
+		return update_xml_file_path;
+	} 
+		
+	g_free (update_xml_file_path);
+	return built_in_xml_file_path;
 }
 
 static void
