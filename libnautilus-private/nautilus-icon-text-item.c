@@ -15,6 +15,7 @@
 
 #include "nautilus-entry.h"
 #include <libnautilus/nautilus-undo.h>
+#include "nautilus-gdk-extensions.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -23,6 +24,9 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-i18n.h>
+#include <libart_lgpl/art_rgb_affine.h>
+#include <libart_lgpl/art_rgb_rgba_affine.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 /* Margins used to display the information */
 #define MARGIN_X 2
@@ -551,6 +555,91 @@ iti_draw (GnomeCanvasItem *item, GdkDrawable *drawable, int x, int y, int width,
 	}
 }
 
+/* utility to draw a pixbuf to the anti-aliased canvas */
+
+static void
+draw_pixbuf_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buf, double affine[6], int x_offset, int y_offset)
+{
+	void (* affine_function)
+		(art_u8 *dst, int x0, int y0, int x1, int y1, int dst_rowstride,
+		 const art_u8 *src, int src_width, int src_height, int src_rowstride,
+		 const double affine[6],
+		 ArtFilterLevel level,
+		 ArtAlphaGamma *alpha_gamma);
+
+	affine[4] += x_offset;
+	affine[5] += y_offset;
+
+	affine_function = gdk_pixbuf_get_has_alpha (pixbuf)
+		? art_rgb_rgba_affine
+		: art_rgb_affine;
+	
+	(* affine_function)
+		(buf->buf,
+		 buf->rect.x0, buf->rect.y0,
+		 buf->rect.x1, buf->rect.y1,
+		 buf->buf_rowstride,
+		 gdk_pixbuf_get_pixels (pixbuf),
+		 gdk_pixbuf_get_width (pixbuf),
+		 gdk_pixbuf_get_height (pixbuf),
+		 gdk_pixbuf_get_rowstride (pixbuf),
+		 affine,
+		 ART_FILTER_NEAREST,
+		 NULL);
+
+	affine[4] -= x_offset;
+	affine[5] -= y_offset;
+}
+
+static void
+iti_render (GnomeCanvasItem *item, GnomeCanvasBuf *buffer)
+{
+	GdkVisual *visual;
+	GdkGC *gc;
+	GdkColormap *colormap;
+	GdkPixmap *pixmap;
+	GdkPixbuf *text_pixbuf;
+	double affine[6];
+	int text_width, text_height;
+	
+	visual = gdk_visual_get_system ();
+	art_affine_identity(affine);
+	text_width = item->x2 - item->x1;
+	text_height = item->y2 - item->y1;
+	
+	/* allocate a pixmap to draw the text into, and clear it to white */
+	pixmap = gdk_pixmap_new (NULL, text_width, text_height, visual->depth);
+
+	gc = gdk_gc_new (pixmap);
+	gdk_rgb_gc_set_foreground (gc,
+				   NAUTILUS_RGB_COLOR_WHITE);
+	gdk_draw_rectangle (pixmap, gc, TRUE,
+			    0, 0,
+			    text_width,
+			    text_height);
+	gdk_gc_unref (gc);
+	
+	/* use a common routine to draw the label into the pixmap */
+	iti_draw (item, pixmap, (int) item->x1, (int) item->y1, text_width, text_height);
+	
+	/* turn it into a pixbuf */
+	colormap = gdk_colormap_new (visual, FALSE);
+	text_pixbuf = gdk_pixbuf_get_from_drawable
+		(NULL, pixmap, colormap,
+		 0, 0,
+		 0, 0, 
+		 text_width, 
+		 text_height);
+	
+	gdk_colormap_unref (colormap);
+	gdk_pixmap_unref (pixmap);
+		
+	/* draw the pixbuf containing the label */
+	draw_pixbuf_aa (text_pixbuf, buffer, affine, (int)item->x1, (int)item->y1);
+	gdk_pixbuf_unref (text_pixbuf);
+}
+
+
 /* Point method handler for the icon text item */
 static double
 iti_point (GnomeCanvasItem *item, double x, double y, int cx, int cy, GnomeCanvasItem **actual_item)
@@ -1010,6 +1099,7 @@ iti_class_init (NautilusIconTextItemClass *text_item_class)
 
 	item_class->update = iti_update;
 	item_class->draw = iti_draw;
+	item_class->render = iti_render;
 	item_class->point = iti_point;
 	item_class->bounds = iti_bounds;
 	item_class->event = iti_event;

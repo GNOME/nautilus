@@ -1,3 +1,12 @@
+2000-06-09  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-text-item.c:
+	(draw_pixbuf_aa), (iti_render), (iti_class_init):
+	made rename work in anti-aliased mode by implementing
+	a render method for the icon text item.  Modulo a few
+	minor clean-ups and possibly some performance issues,
+	this completes the work on the anti-aliased canvas.
+	
 2000-06-09  Mike Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-utilities.c:
