@@ -899,6 +899,16 @@ layout_changed_callback (NautilusIconContainer *container,
 }
 
 static void
+fm_icon_view_start_renaming_item  (FMDirectoryView *view, const char *uri)
+{
+	/* call parent class to make sure the right icon is selected */
+	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, start_renaming_item, (view, uri));
+	/* start renaming */
+	nautilus_icon_container_start_renaming_selected_item
+		(get_icon_container (FM_ICON_VIEW (view)));
+}
+
+static void
 fm_icon_view_merge_menus (FMDirectoryView *view)
 {
         GList *selection;
@@ -1471,6 +1481,7 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
 		fm_icon_view_create_selection_context_menu_items;
         fm_directory_view_class->merge_menus = fm_icon_view_merge_menus;
         fm_directory_view_class->update_menus = fm_icon_view_update_menus;
+        fm_directory_view_class->start_renaming_item = fm_icon_view_start_renaming_item;
 }
 
 static void

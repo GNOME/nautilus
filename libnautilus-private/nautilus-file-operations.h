@@ -45,6 +45,10 @@ void fs_xfer   (const GList *item_uris,
 void fs_move_to_trash (const GList *item_uris,
 		       GtkWidget *parent_view);
 
-void fs_empty_trash (GtkWidget *parent_view);
+void fs_empty_trash 	(GtkWidget *parent_view);
+void fs_new_folder 	(GtkWidget *parent_view,
+			 const char *parent_dir,
+			 void (*done_callback)(const char *new_folder_uri, gpointer data),
+			 gpointer data);
 
 #endif /* DFOS_XFER_H */

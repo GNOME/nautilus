@@ -333,10 +333,6 @@ update_xfer_callback (GnomeVFSAsyncHandle *handle,
 static int
 sync_xfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 {
-	XferInfo *xfer_info;
-
-	xfer_info = (XferInfo *) data;
-
 	if (progress_info->status == GNOME_VFS_XFER_PROGRESS_STATUS_OK) {
 		switch (progress_info->phase) {
 		case GNOME_VFS_XFER_PHASE_OPENTARGET:
@@ -562,7 +558,7 @@ fs_xfer (const GList *item_uris,
 		      		      move_options, GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
 		      		      &update_xfer_callback, xfer_info,
-		      		      &sync_xfer_callback, xfer_info);
+		      		      &sync_xfer_callback, NULL);
 	}
 
 	g_free (target_dir_uri_text);
@@ -571,6 +567,67 @@ fs_xfer (const GList *item_uris,
 	gnome_vfs_uri_unref (target_dir_uri);
 	gnome_vfs_uri_unref (source_dir_uri);
 	g_free (source_dir);
+}
+
+typedef struct {
+	GnomeVFSAsyncHandle *handle;
+	void (* done_callback)(const char *new_folder_uri, gpointer data);
+	gpointer data;
+} NewFolderXferState;
+
+static int
+new_folder_xfer_callback (GnomeVFSAsyncHandle *handle,
+	GnomeVFSXferProgressInfo *progress_info, gpointer data)
+{
+	NewFolderXferState *state;
+	char *old_name;
+	
+	state = (NewFolderXferState *) data;
+
+	switch (progress_info->status) {
+	case GNOME_VFS_XFER_PROGRESS_STATUS_OK:
+		nautilus_file_changes_consume_changes (TRUE);
+		(state->done_callback) (progress_info->target_name, state->data);
+		g_free (state);
+		return 0;
+
+	case GNOME_VFS_XFER_PROGRESS_STATUS_DUPLICATE:
+		old_name = progress_info->duplicate_name;
+		progress_info->duplicate_name = g_strdup_printf ("%s %d", 
+			progress_info->duplicate_name,
+			progress_info->duplicate_count);
+	
+		g_free (old_name);
+		return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
+
+	default:
+		g_warning (_("Unknown GnomeVFSXferProgressStatus %d"),
+			   progress_info->status);
+		return 0;
+	}
+}
+
+
+void 
+fs_new_folder (GtkWidget *parent_view, const char *parent_dir,
+	void (*done_callback)(const char *, gpointer), gpointer data)
+{
+	NewFolderXferState *state;
+	GList *dest_names;
+
+	state = g_new (NewFolderXferState, 1);
+	state->done_callback = done_callback;
+	state->data = data;
+
+	dest_names = g_list_append (NULL, "New Folder");
+	gnome_vfs_async_xfer (&state->handle, NULL, NULL,
+	      		      parent_dir, dest_names,
+	      		      GNOME_VFS_XFER_USE_UNIQUE_NAMES,
+	      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
+	      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
+	      		      &new_folder_xfer_callback, state,
+	      		      &sync_xfer_callback, NULL);
+	g_list_free (dest_names);
 }
 
 void 
@@ -662,7 +719,7 @@ fs_move_to_trash (const GList *item_uris, GtkWidget *parent_view)
 		      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
 		      		      &update_xfer_callback, xfer_info,
-		      		      &sync_xfer_callback, xfer_info);
+		      		      &sync_xfer_callback, NULL);
 
 		g_free (trash_dir_uri_text);
 	}
@@ -714,7 +771,7 @@ fs_empty_trash (GtkWidget *parent_view)
 		      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
 		      		      &update_xfer_callback, xfer_info,
-		      		      &sync_xfer_callback, xfer_info);
+		      		      &sync_xfer_callback, NULL);
 
 		nautilus_g_list_free_deep (trash_dir_list);
 	}

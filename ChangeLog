@@ -1,3 +1,30 @@
+2000-05-30  Pavel Cisler  <pavel@eazel.com>
+
+	* src/file-manager/dfos-xfer.h:
+	* src/file-manager/dfos-xfer.c: (sync_xfer_callback), (fs_xfer),
+	(new_folder_xfer_callback), (fs_new_folder), (fs_move_to_trash),
+	(fs_empty_trash):
+	New copy engine entry calls supporting New Folder creation.
+	Pass NULL to sync_xfer_callback because it doesn't use any pass-thru
+	state.
+
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize_class),
+	(bonobo_menu_new_folder_callback), (start_renaming_item),
+	(new_folder_rename_later), (new_folder_done),
+	(fm_directory_view_new_folder), (compute_menu_item_info),
+	(fm_directory_view_real_create_selection_context_menu_items),
+	(reset_bonobo_open_with_menu),
+	(fm_directory_view_real_merge_menus),
+	(fm_icon_view_start_renaming_item),
+	(fm_icon_view_initialize_class):
+	Add the "New Folder" command. Add a menu item that invokes it.
+	Add code to allow me to select the new folder once it was 
+	created and start a rename on it.
+	
+
 Tue May 30 11:21:31 2000  Raph Levien  <raph@acm.org>
 
 	* librsvg/art_render.h:

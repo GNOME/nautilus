@@ -122,6 +122,7 @@ static void           fm_directory_view_duplicate_selection                     
 										   GList                    *files);
 static void           fm_directory_view_trash_selection                           (FMDirectoryView          *view,
 										   GList                    *files);
+static void	      fm_directory_view_new_folder				  (FMDirectoryView          *view);
 static void           fm_directory_view_destroy                                   (GtkObject                *object);
 static void           fm_directory_view_activate_file_internal                    (FMDirectoryView          *view,
 										   NautilusFile             *file,
@@ -175,6 +176,8 @@ static void           show_hidden_files_changed_callback                        
 static void           get_required_metadata_keys                                  (FMDirectoryView          *view,
 										   GList                   **directory_keys_result,
 										   GList                   **file_keys_result);
+static void           start_renaming_item                   	                  (FMDirectoryView          *view,
+										   const char 		    *uri);
 static void           metadata_ready_callback                                     (NautilusDirectory        *directory,
 										   GList                    *files,
 										   gpointer                  callback_data);
@@ -261,6 +264,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
         klass->merge_menus = fm_directory_view_real_merge_menus;
         klass->update_menus = fm_directory_view_real_update_menus;
 	klass->get_required_metadata_keys = get_required_metadata_keys;
+	klass->start_renaming_item = start_renaming_item;
 
 	/* Function pointers that subclasses must override */
 
@@ -474,6 +478,14 @@ bonobo_menu_empty_trash_callback (BonoboUIHandler *ui_handler, gpointer user_dat
         g_assert (FM_IS_DIRECTORY_VIEW (user_data));
 
 	fs_empty_trash (GTK_WIDGET (FM_DIRECTORY_VIEW (user_data)));
+}
+
+static void
+bonobo_menu_new_folder_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
+{                
+        g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+
+	fm_directory_view_new_folder (FM_DIRECTORY_VIEW (user_data));
 }
 
 static void
@@ -1463,6 +1475,76 @@ trash_callback (GtkMenuItem *item, GList *files)
 		 files);
 }
 
+static void
+start_renaming_item (FMDirectoryView *view, const char *uri)
+{
+	GList *selection;
+	NautilusFile *file;
+
+	selection = NULL;
+	file = nautilus_file_get (uri);
+	if (file ==  NULL) {
+		return;
+	}
+
+	selection = g_list_prepend (NULL, file);
+	fm_directory_view_set_selection (view, selection);
+}
+
+typedef struct {
+	FMDirectoryView *view;
+	char *uri;
+} RenameLaterParameters;
+
+static gboolean
+new_folder_rename_later (void *data)
+{
+	RenameLaterParameters *parameters = (RenameLaterParameters *)data;
+
+	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (parameters->view)->klass)->start_renaming_item) 
+		(parameters->view, parameters->uri);
+
+	g_free (parameters->uri);
+	g_free (parameters);
+
+	return FALSE;
+}
+
+static void
+new_folder_done (const char *new_folder_uri, gpointer data)
+{
+	FMDirectoryView *directory_view;
+	RenameLaterParameters *parameters;
+	
+	directory_view = (FMDirectoryView *)data;
+	parameters = g_new0 (RenameLaterParameters, 1);
+
+	parameters->uri = g_strdup (new_folder_uri);
+	parameters->view = directory_view;
+
+	/* FIXME:
+	 * runing the start_renaming_item with a delay because at this point
+	 * it's not in the icon container's icon list. 
+	 * There are two problems with this besides clunkiness - by the time the 
+	 * timeout expires, the directory view could be dead and the delay value 
+	 * is arbitrary, if the machine is loaded up, it may not be enough.
+	 * Need to add a mechanism here that ensures synchronously that the item
+	 * is added to the icon container instead.
+	 */
+	gtk_timeout_add (100, new_folder_rename_later, parameters);
+}
+
+static void
+fm_directory_view_new_folder (FMDirectoryView *directory_view)
+{
+	char *parent_uri;
+
+	parent_uri = fm_directory_view_get_uri (directory_view);
+	fs_new_folder (GTK_WIDGET(directory_view), parent_uri, new_folder_done, directory_view);
+
+	g_free (parent_uri);
+}
+
 /* handle the open command */
 
 static void
@@ -1602,6 +1684,8 @@ compute_menu_item_info (const char *path,
 			name = g_strdup_printf (_("Open in %d _New Windows"), count);
 		}
 		*return_sensitivity = selection != NULL;
+        } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER) == 0) {
+		name = g_strdup (_("New Folder"));
 #if 0
 /* FIXME bugzilla.eazel.com 634, 635:
  * Delete should be used in directories that don't support moving to Trash
@@ -1831,6 +1915,9 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 	append_gtk_menu_item_with_view (view, menu, files,
 				    	FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW,
 				    	open_in_new_window_callback);
+	append_gtk_menu_item_with_view (view, menu, files,
+				    	FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER,
+				    	bonobo_menu_new_folder_callback);
 	append_selection_menu_subtree (view, menu, 
 				       create_open_with_gtk_menu (view, files), files,
 				       FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH);
@@ -1933,7 +2020,7 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler,
 		(ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH,
 		 _("Choose a program with which to open the selected item"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM) + 3,
+		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM) + 4,
 		 0, 0);
 
 	for (i = 0; i < 3; ++i) {
@@ -1982,19 +2069,25 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 
 	insert_bonobo_menu_item 
 		(ui_handler, selection,
+		 FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER,
+		 _("Create a new folder in this window"),
+		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM) + 1,
+		  0, 0,	/* Accelerator will be inherited */
+		 (BonoboUIHandlerCallbackFunc) bonobo_menu_new_folder_callback, view);
+	insert_bonobo_menu_item 
+		(ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_OPEN,
 		 _("Open the selected item in this window"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM) + 1,
+		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM) + 2,
 		 'O', GDK_CONTROL_MASK,
 		 bonobo_menu_open_callback, view);
 	insert_bonobo_menu_item 
 		(ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW,
 		 _("Open each selected item in a new window"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM) + 2,
+		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM) + 3,
 		 0, 0,
 		 bonobo_menu_open_in_new_window_callback, view);
-
 	reset_bonobo_open_with_menu (view, ui_handler, selection);
 
         bonobo_ui_handler_menu_new_separator

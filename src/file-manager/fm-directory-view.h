@@ -43,6 +43,7 @@ typedef struct FMDirectoryViewClass FMDirectoryViewClass;
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN                      	"/File/Open"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW        	"/File/OpenNew"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH			"/File/Open With"
+#define FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER			"/File/New Folder"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_AFTER_CLOSE	"/File/SeparatorAfterClose"
 #define FM_DIRECTORY_VIEW_MENU_PATH_DELETE                    	"/File/Delete"
 #define FM_DIRECTORY_VIEW_MENU_PATH_TRASH                    	"/File/Trash"
@@ -185,6 +186,9 @@ struct FMDirectoryViewClass {
                                          (FMDirectoryView *view,
 					  GList          **directory_metadata_keys,
 					  GList          **file_metadata_keys);
+
+	void	(* start_renaming_item)	 (FMDirectoryView *view,
+					  const char *uri);
 };
 
 /* GtkObject support */
