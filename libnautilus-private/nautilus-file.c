@@ -1295,16 +1295,6 @@ update_info_internal (NautilusFile *file,
 			nautilus_file_clear_cached_display_name (file);
 			nautilus_directory_end_file_name_change
 				(file->details->directory, file, node);
-			
-			/* the rename could have affected the display name if e.g.
-			 * we're in a vfolder where the name comes from a desktop file
-			 * and a rename affects the contents of the desktop file.
-			 */
-			if (file->details->display_name != NULL) {
-				name_attribute.data = NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
-				nautilus_file_invalidate_attributes (file, 
-								     &name_attribute);
-			}
 		}
 	}
 
