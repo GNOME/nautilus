@@ -613,6 +613,15 @@ get_parent_make_name_list (const GList *item_uris, GnomeVFSURI **source_dir_uri,
 	const gchar *item_name;
 	char *unescaped_item_name;
 
+	/* FIXME bugzilla.eazel.com 2186: 
+	 * Doesn't handle multiple parents. 
+	 */
+	GnomeVFSURI *item_parent;
+	gboolean item_has_different_parent;
+	gboolean more_than_one_parent_directory;
+
+	more_than_one_parent_directory = FALSE;
+
 	/* convert URI list to a source parent URI and a list of names */
 	for (p = item_uris; p != NULL; p = p->next) {
 		item_uri = gnome_vfs_uri_new (p->data);
@@ -623,12 +632,37 @@ get_parent_make_name_list (const GList *item_uris, GnomeVFSURI **source_dir_uri,
 		 * could pass us bad URIs and it would fail.
 		 */
 		g_assert (unescaped_item_name != NULL);
-		*item_names = g_list_prepend (*item_names, unescaped_item_name);
+
+		item_parent = gnome_vfs_uri_get_parent (item_uri);
+		item_has_different_parent = FALSE;
 		if (*source_dir_uri == NULL) {
-			*source_dir_uri = gnome_vfs_uri_get_parent (item_uri);
+			*source_dir_uri = item_parent;
+		} else {
+			if (!gnome_vfs_uri_equal (*source_dir_uri, item_parent)) {
+				item_has_different_parent = TRUE;
+			}
+			gnome_vfs_uri_unref (item_parent);
+		}
+
+		if (!item_has_different_parent) {
+			*item_names = g_list_prepend (*item_names, unescaped_item_name);
+		} else {
+			more_than_one_parent_directory = TRUE;
 		}
 
 		gnome_vfs_uri_unref (item_uri);
+	}
+
+	if (more_than_one_parent_directory) {
+		nautilus_simple_dialog (NULL, 
+				 	_("Oops! These items are from two or more "
+				 	  "different directories. Nautilus can't "
+				 	  "handle this correctly, so some of "
+				 	  "the items will be ignored. Harrass someone "
+				 	  "into fixing bugzilla.eazel.com 2186"),
+				 	_("Bug alert!"),
+				 	GNOME_STOCK_BUTTON_OK,
+				 	NULL);
 	}
 }
 

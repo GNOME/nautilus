@@ -1,3 +1,14 @@
+2000-08-16  John Sullivan  <sullivan@eazel.com>
+
+	* src/file-manager/dfos-xfer.c: (get_parent_make_name_list):
+	The file-transfer mechanism can only handle files from the
+	same parent directory right now. To prevent this from getting
+	in the way of other work, I isolated the problem such that when
+	you try to move/copy/make-link files from multiple directories,
+	it puts up an alert warning you that it will ignore some of the
+	files. Then it continues to process only the ones from the same
+	directory as the first one it happened to examine.
+
 2000-08-16  Gene Z. Ragan  <gzr@eazel.com>
 
 	* src/nautilus-application.c: (nautilus_application_close_desktop):
