@@ -337,11 +337,13 @@ show_indexing_info_dialog (void)
         int callback_id;
         
         if (medusa_system_services_are_blocked ()) {
-                dialog_shown = nautilus_show_info_dialog (_("An index of your files is not available because "
-                                                            "creating a nightly index of files has been disabled "
-                                                            "by your system administrator."),
-                                                          _("No index of your system is available"),
-                                                                  NULL);
+                dialog_shown = nautilus_show_info_dialog (_("To do a fast search, Find requires "
+                                                            "an index of the files on your system. "
+                                                            "Your system administrator has disabled "
+                                                            "fast search on your computer, so no "
+                                                            "index is available."),
+                                                          _("Fast searches are not available on your computer."),
+                                                          NULL);
                 callback_id = medusa_execute_once_when_system_state_changes (MEDUSA_SYSTEM_STATE_ENABLED | MEDUSA_SYSTEM_STATE_DISABLED,
                                                                              dialog_close_cover,
                                                                              dialog_shown);
@@ -354,12 +356,18 @@ show_indexing_info_dialog (void)
         }
 
         if (!medusa_system_services_are_enabled ()) {
-                dialog_shown = nautilus_show_info_dialog (_("An index of your files is not available, because you "
-                                                            "have elected to turn the indexing feature off.  You can "
-                                                            "set your computer up to index your files nightly by changing "
-                                                            "your search preferences."),
-                                                          _("No index of your system is available"),
-                                                          NULL);
+                dialog_shown = nautilus_show_info_dialog_with_details (_("To do a fast search, Find requires an index "
+                                                                         "of the files on your system. Fast search is "
+                                                                         "disabled in your Search preferences, so no "
+                                                                         "index is available."),
+                                                                       _("Fast searches are not available on your computer."),
+                                                                       _("To enable fast search, open the Preferences menu "
+                                                                         "and choose Preferences. Then select Search "
+                                                                         "preferences and put a checkmark in the Enable "
+                                                                         "Fast Search checkbox. An index will be generated "
+                                                                         "while your computer is idle, so your index won't "
+                                                                         "be available immediately."),
+                                                                       NULL);
                 
                 callback_id = medusa_execute_once_when_system_state_changes (MEDUSA_SYSTEM_STATE_ENABLED | MEDUSA_SYSTEM_STATE_BLOCKED,
                                                                              dialog_close_cover,
