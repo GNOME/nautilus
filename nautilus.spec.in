@@ -1,7 +1,7 @@
 # Note that this is NOT a relocatable package
 %define name		nautilus
 %define ver		@VERSION@
-%define RELEASE		prw2
+%define RELEASE		0_cvs_0
 %define rel		%{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define prefix		/usr
 %define sysconfdir	/etc
@@ -21,12 +21,12 @@ Requires:	gtk+ >= 1.2.8
 Requires:	imlib >= 1.9.8
 Requires:	libxml >= 1.8.10
 Requires:	gnome-libs >= 1.2.1
-Requires:	GConf >= 0.10
-Requires:	ORBit >= 0.5.4
+Requires:	GConf >= 0.11
+Requires:	ORBit >= 0.5.5
 Requires:	oaf >= 0.6.0
 Requires:	gnome-vfs >= 0.3.1
 Requires:	gdk-pixbuf >= 0.9.0
-Requires:	bonobo >= 0.24
+Requires:	bonobo >= 0.30
 Requires:	popt >= 1.5
 Requires:	freetype2 >= 1.0beta8
 Requires:	medusa >= 0.2.1
@@ -283,9 +283,9 @@ fi
 %{prefix}/lib/libeazelpackagesystem.so
 %{prefix}/lib/libeazelpackagesystem.so.0
 %{prefix}/lib/libeazelpackagesystem.so.0.0.0
-%{prefix}/lib/libeazelpackagesystem-rpm3.so
-%{prefix}/lib/libeazelpackagesystem-rpm3.so.0
-%{prefix}/lib/libeazelpackagesystem-rpm3.so.0.0.0
+%{prefix}/lib/libeazelpackagesystem-rpm*.so
+%{prefix}/lib/libeazelpackagesystem-rpm*.so.0
+%{prefix}/lib/libeazelpackagesystem-rpm*.so.0.0.0
 %{prefix}/lib/libtrilobite-service.so.0
 %{prefix}/lib/libtrilobite-service.so.0.0.0
 %{prefix}/lib/libtrilobite.so.0
