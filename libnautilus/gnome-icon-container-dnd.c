@@ -41,8 +41,8 @@
 
 
 struct _DndSelectionItem {
-	gchar *uri;
-	gint x, y;
+	char *uri;
+	int x, y;
 };
 typedef struct _DndSelectionItem DndSelectionItem;
 
@@ -71,11 +71,11 @@ create_selection_shadow (GnomeIconContainer *container,
 	GnomeCanvasGroup *group;
 	GnomeCanvas *canvas;
 	GdkBitmap *stipple;
-	gint max_x, max_y;
-	gint min_x, min_y;
-	gint icon_width, icon_height;
-	gint cell_width, cell_height;
-	gint x_offset;
+	int max_x, max_y;
+	int min_x, min_y;
+	int icon_width, icon_height;
+	int cell_width;
+	int x_offset;
 	GList *p;
 
 	if (list == NULL)
@@ -87,7 +87,6 @@ create_selection_shadow (GnomeIconContainer *container,
 	icon_width = GNOME_ICON_CONTAINER_ICON_WIDTH (container);
 	icon_height = GNOME_ICON_CONTAINER_ICON_HEIGHT (container);
 	cell_width = GNOME_ICON_CONTAINER_CELL_WIDTH (container);
-	cell_height = GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
 	x_offset = cell_width - icon_width - SHADOW_MARGIN;
 	
 	canvas = GNOME_CANVAS (container);
@@ -111,8 +110,8 @@ create_selection_shadow (GnomeIconContainer *container,
 	
 	for (p = list; p != NULL; p = p->next) {
 		DndSelectionItem *item;
-		gint x1, y1;
-		gint x2, y2;
+		int x1, y1;
+		int x2, y2;
 
 		item = p->data;
 
@@ -192,7 +191,7 @@ destroy_selection_list (GList *list)
 		return;
 
 	for (p = list; p != NULL; p = p->next)
-		dnd_selection_item_destroy ((DndSelectionItem *) p->data);
+		dnd_selection_item_destroy (p->data);
 
 	g_list_free (list);
 }
@@ -210,16 +209,8 @@ set_gnome_icon_list_selection (GnomeIconContainer *container,
 	gdouble x_offset, y_offset;
 
 	details = container->details;
-	if (details->icons == NULL) {
-		/* FIXME?  Actually this probably shouldn't happen.  */
-		gtk_selection_data_set (selection_data,
-					selection_data->target,
-					8, NULL, 0);
-		return;
-	}
-
-	x_offset = container->details->dnd_info->start_x;
-	y_offset = container->details->dnd_info->start_y;
+	x_offset = details->dnd_info->start_x;
+	y_offset = details->dnd_info->start_y;
 
 	data = g_string_new (NULL);
 	for (p = details->icons; p != NULL; p = p->next) {
@@ -232,13 +223,13 @@ set_gnome_icon_list_selection (GnomeIconContainer *container,
 		if (!icon->is_selected)
 			continue;
 
-		x = (gint) (icon->x - x_offset);
-		y = (gint) (icon->y - y_offset);
+		x = icon->x - x_offset;
+		y = icon->y - y_offset;
 
-		x += (GNOME_ICON_CONTAINER_ICON_X_OFFSET (container)
-		      - GNOME_ICON_CONTAINER_ICON_WIDTH (container) / 2);
-		y += (GNOME_ICON_CONTAINER_ICON_Y_OFFSET (container)
-		      - GNOME_ICON_CONTAINER_ICON_HEIGHT (container) / 2);
+		x += GNOME_ICON_CONTAINER_ICON_X_OFFSET (container)
+		      - GNOME_ICON_CONTAINER_ICON_WIDTH (container) / 2;
+		y += GNOME_ICON_CONTAINER_ICON_Y_OFFSET (container)
+		      - GNOME_ICON_CONTAINER_ICON_HEIGHT (container) / 2;
 
 		uri = nautilus_icons_controller_get_icon_uri (details->controller, icon->data);
 		s = g_strdup_printf ("%s\r%d:%d\r\n", uri, x, y);
@@ -262,17 +253,10 @@ set_uri_list_selection (GnomeIconContainer *container,
 {
 	GnomeIconContainerDetails *details;
 	GList *p;
-	gchar *temp_data;
+	char *uri;
 	GString *data;
 
 	details = container->details;
-	if (details->icons == NULL) {
-		/* FIXME?  Actually this probably shouldn't happen.  */
-		gtk_selection_data_set (selection_data,
-					selection_data->target,
-					8, NULL, 0);
-		return;
-	}
 
 	data = g_string_new (NULL);
 
@@ -283,10 +267,11 @@ set_uri_list_selection (GnomeIconContainer *container,
 		if (!icon->is_selected)
 			continue;
 
-		temp_data = nautilus_icons_controller_get_icon_uri (details->controller, icon->data);
-		g_string_append (data, temp_data);
+		uri = nautilus_icons_controller_get_icon_uri (details->controller, icon->data);
+		g_string_append (data, uri);
+		g_free (uri);
+
 		g_string_append (data, "\r\n");
-		g_free (temp_data);
 	}
 
 	gtk_selection_data_set (selection_data,
@@ -547,14 +532,10 @@ gnome_icon_container_receive_dropped_icons (GnomeIconContainer *container,
 					    int x, int y)
 {
 	GnomeIconContainerDndInfo *dnd_info;
-	DndSelectionItem *item;
 
 	dnd_info = container->details->dnd_info;
-	
 	if (dnd_info->selection_list == NULL)
 		return;
-
-	item = dnd_info->selection_list->data;
 
 	/* Move files in same window.
 
@@ -573,8 +554,6 @@ gnome_icon_container_receive_dropped_icons (GnomeIconContainer *container,
 	   are dropped in. The geometry that's currently included along
 	   with the selection is not sufficient.
 	*/
-	if (context->source_window != context->dest_window)
-		g_warning ("moving files between windows is not yet implemented");
 	if (context->action == GDK_ACTION_MOVE) {
 		double world_x, world_y;
 		
