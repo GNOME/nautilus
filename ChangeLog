@@ -1,3 +1,27 @@
+2001-03-02  Ian McKellar  <ian@eazel.com>
+
+	reviewed by: <robey@eazel.com>
+
+	* components/services/install-view/callbacks.c:
+	(nautilus_service_install_done):
+	* components/services/install-view/nautilus-service-install-view.c:
+	(nautilus_install_service_describe_menu_entry), (describe_dentry),
+	(drag_data_get), (drag_data_delete), (launcher_clicked_callback),
+	(make_dragable_icon_well),
+	(nautilus_install_service_add_menu_launchers):
+	* components/services/install-view/nautilus-service-install-view.h:
+	Added launchers to the congratulations page.
+	This fixes 5513.
+
+	* components/services/inventory/eazel-inventory-utils.c:
+	(eazel_inventory_clear_md5):
+	Fixed a crasher in the inventory upload.
+
+	* libnautilus-extensions/nautilus-clickable-image.c:
+	(ancestor_button_release_event):
+	Fixed NautilusClickableImage so that it doesn't generate click events
+	when you d-n-d from it.
+
 2001-03-02  Eric Fischer  <eric@eazel.com>
 
 	reviewed by: Robin * Slomkowski <rslomkow@eazel.com>

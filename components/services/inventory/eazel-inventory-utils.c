@@ -331,7 +331,7 @@ void eazel_inventory_update_md5 () {
 }
 
 void eazel_inventory_clear_md5 () {
-	GError *error;
+	GError *error = NULL;
 
 	check_gconf_init ();
 

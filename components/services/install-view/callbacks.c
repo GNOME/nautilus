@@ -36,6 +36,7 @@
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 
+#define MAX_DESCRIBE_MENUS      3
 
 /* do what gnome ought to do automatically */
 static void
@@ -521,6 +522,8 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 	gboolean question_dialog;
 	GList *packlist, *iter;
 	PackageData *pack;
+	int num_desktop_files = 0;
+	gboolean display_desktop_files = FALSE;
 	EazelInventory *inventory_service;
 
 	g_assert (NAUTILUS_IS_SERVICE_INSTALL_VIEW (view));
@@ -602,10 +605,16 @@ g_warning ("done: panic!");
 		question_dialog = TRUE;
 		answer = FALSE;
 
+
 		if (success && view->details->desktop_files &&
 		    !view->details->cancelled &&
 		    !view->details->already_installed) {
-			g_string_sprintfa (real_message, "\n%s", nautilus_install_service_locate_menu_entries (view));
+			num_desktop_files = g_list_length (view->details->desktop_files);
+			if (num_desktop_files <= MAX_DESCRIBE_MENUS) {
+				display_desktop_files = TRUE;
+			} else {
+				display_desktop_files = FALSE;
+			}
 		}
 		if (view->details->cancelled_before_downloads ||
 		    view->details->already_installed ||
@@ -640,6 +649,17 @@ g_warning ("done: panic!");
 				dialog = gnome_ok_dialog (real_message->str);
 			}
 		}
+
+		if (display_desktop_files) {
+			/* okay, at this point we've succeeded and have some
+			 * package info stuff to display
+			 */
+			gtk_object_unref (GTK_OBJECT (dialog));
+			dialog = gnome_dialog_new (_("Installation complete."),
+					_("Ok"), NULL);
+			nautilus_install_service_add_menu_launchers (view, dialog);
+		}
+
 		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 		g_string_free (real_message, TRUE);

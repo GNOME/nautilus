@@ -48,6 +48,7 @@
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-viewport.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
+#include <libnautilus-extensions/nautilus-clickable-image.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <dirent.h>
@@ -415,10 +416,10 @@ nautilus_install_service_describe_menu_entry (GnomeDesktopEntry *dentry,
 
 		if (addition == NULL) {
 			addition = g_strdup_printf 
-					(_(" \xB7 %s is in the GNOME footprint menu under %s"),
+					(_("%s is in GNOME (footprint) > %s"),
 					dentry->name, menu);
 		} else {
-			addition_tmp = g_strconcat (addition, " / ", dir_dentry->name, NULL);
+			addition_tmp = g_strconcat (addition, " > ", dir_dentry->name, NULL);
 			g_free (addition);
 			addition = addition_tmp;
 		}
@@ -433,7 +434,7 @@ nautilus_install_service_describe_menu_entry (GnomeDesktopEntry *dentry,
 	g_strfreev (pieces);
 
 	if (addition == NULL) {
-		addition = g_strdup_printf (_(" \xB7 %s is in the Gnome menu.\n"), dentry->name);
+		addition = g_strdup_printf (_("%s is in the GNOME (footprint) menu.\n"), dentry->name);
 	} else {
 		addition_tmp = g_strconcat (addition, ".\n", NULL);
 		g_free (addition);
@@ -444,57 +445,303 @@ nautilus_install_service_describe_menu_entry (GnomeDesktopEntry *dentry,
 	
 }
 
-/* Get the toplevel menu name for the desktop file installed */
-char *
-nautilus_install_service_locate_menu_entries (NautilusServiceInstallView *view) 
-{
-	GList *iterator;
-	char *result;
-	
-	result = g_strdup ("");
+static char *
+describe_dentry (GnomeDesktopEntry *dentry, char *fname) {
+	char *addition = NULL;
+	if (dentry->is_kde) {
+		addition = g_strdup_printf (_("%s is in the KDE menu.\n"), dentry->name);
+	} else {
+		/* match desktop files against a set of paths that the panel is known to
+		 * put in the menu. */
+		char *desktop_prefixes[] = {
+			"/gnome/apps/",
+			"/applnk/",
+			NULL,
+		};
+		int i;
 
-	for (iterator = view->details->desktop_files; iterator; iterator = g_list_next (iterator)) {
-		char *fname = (char*)(iterator->data);
-		char *addition = NULL;
-		char *tmp;
-		GnomeDesktopEntry *dentry = gnome_desktop_entry_load (fname);
-
-		if (dentry->is_kde) {
-			addition = g_strdup_printf (_(" \xB7 %s is in the KDE menu.\n"), dentry->name);
-		} else {
-			/* match desktop files against a set of paths that the panel is known to
-			 * put in the menu. */
-			char *desktop_prefixes[] = {
-				"/gnome/apps/",
-				"/applnk/"
-			};
-			int num_prefixes = 2;
-			int i;
-
-			for (i=0; i<num_prefixes; i++) {
-				char *gnomeapp = desktop_prefixes[i];
-				char *apps_ptr = strstr (fname, gnomeapp);
-				if (apps_ptr) {
-					char *full_prefix = g_strndup (fname, (apps_ptr)-fname + 
-							strlen (gnomeapp));
-					addition = nautilus_install_service_describe_menu_entry
-							(dentry, full_prefix, apps_ptr+strlen (gnomeapp));
-					g_free (full_prefix);
-					if (addition != NULL) {
-						break;
-					}
+		for (i=0; desktop_prefixes[i] != NULL; i++) {
+			char *gnomeapp = desktop_prefixes[i];
+			char *apps_ptr = strstr (fname, gnomeapp);
+			if (apps_ptr) {
+				char *full_prefix = g_strndup (fname, (apps_ptr)-fname + 
+						strlen (gnomeapp));
+				addition = nautilus_install_service_describe_menu_entry
+						(dentry, full_prefix, apps_ptr+strlen (gnomeapp));
+				g_free (full_prefix);
+				if (addition != NULL) {
+					break;
 				}
 			}
 		}
-		if (addition) {
-			tmp = g_strdup_printf ("%s%s", result, addition);
-			g_free (result);
-			result = tmp;
-			g_free (addition);
-		}
-		gnome_desktop_entry_free (dentry);
 	}
-	return result;
+
+	return addition;
+}
+
+static void
+drag_data_get  (GtkWidget          *widget,
+                GdkDragContext     *context,
+                GtkSelectionData   *selection_data,
+                guint               info,
+                guint               time,
+                gpointer            data)
+{
+	char *uri = g_strdup_printf ("file://%s", (char *)data);
+
+	gtk_selection_data_set (selection_data, selection_data->target,
+			8, uri, strlen (uri));
+
+	g_free (uri);
+}
+
+static void
+drag_data_delete (GtkWidget *widget,
+                  GdkDragContext *context,
+                  gpointer data)
+{
+	g_free (data);
+}
+
+static void
+launcher_clicked_callback (GtkWidget *button,
+                         gpointer user_data)
+{
+	gnome_desktop_entry_launch ((GnomeDesktopEntry *)user_data);
+}
+
+#define ICON_SIZE 48 /* the algorithm depends on icons fitting into a square space */
+#define DEFAULT_ICON "gnome-logo-icon-transparent.png"
+
+static GtkWidget *
+make_dragable_icon_well (NautilusServiceInstallView *view,
+		         GnomeDesktopEntry *dentry, 
+			 char *dentry_path) {
+	GtkWidget *aspectframe;
+	GtkWidget *eventbox;
+	GtkWidget *image;
+	GtkWidget *box;
+	GdkPixbuf *icon;
+	char *icon_name;
+	GdkPixmap *drag_pixmap;
+	GdkBitmap *drag_mask;
+	int width, height;
+	GdkPixbuf *scaledicon;
+	NautilusBackground *background;
+	static GtkTargetEntry target_table[] = {
+		{ "text/uri-list", 0, 0 }
+	};
+
+	icon_name = dentry->icon;
+
+	if (icon_name == NULL) {
+		/* use some sane default */
+		icon_name = DEFAULT_ICON;
+	}
+
+
+	icon = gdk_pixbuf_new_from_file (icon_name);
+	if (icon == NULL) {
+		/* can even load the backup image
+		 * fail... */
+		return NULL;
+	}
+
+	/* set up the "well" aspect frame */
+	aspectframe = gtk_aspect_frame_new (NULL, 0.5, 0.0, 1, TRUE);
+	gtk_frame_set_shadow_type (GTK_FRAME (aspectframe), GTK_SHADOW_IN);
+	background = nautilus_get_widget_background (GTK_WIDGET (aspectframe));
+	nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
+
+	/* scale icon to fit in an ICON_SIZExICON_SIZE box */
+	width = gdk_pixbuf_get_width (icon);
+	height = gdk_pixbuf_get_height (icon);
+	if (width == height) {
+		width = ICON_SIZE;
+		height = ICON_SIZE;
+	} else if (width > height) {
+		height = (((double)height)/width)*ICON_SIZE;
+		width = ICON_SIZE;
+	} else if (width < height) {
+		height = ICON_SIZE;
+		width = (((double)width)/height)*ICON_SIZE;
+	}
+	scaledicon = gdk_pixbuf_scale_simple (icon, 
+			width, height, GDK_INTERP_BILINEAR);
+
+	image = nautilus_clickable_image_new (NULL, scaledicon);
+	nautilus_clickable_image_set_prelight (NAUTILUS_CLICKABLE_IMAGE (image),
+			TRUE);
+
+	eventbox = gtk_event_box_new ();
+	background = nautilus_get_widget_background (GTK_WIDGET (eventbox));
+	nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
+	gtk_widget_show (eventbox);
+	box = gtk_hbox_new (FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (box), 3);
+	gtk_widget_show (box);
+	gtk_container_add (GTK_CONTAINER (box), image);
+	gtk_container_add (GTK_CONTAINER (eventbox), box);
+	gtk_container_add (GTK_CONTAINER (aspectframe), eventbox);
+
+	/* setup drag and drop */
+	gtk_drag_source_set(eventbox, GDK_BUTTON1_MASK | GDK_BUTTON3_MASK,
+			target_table, 1, GDK_ACTION_COPY | GDK_ACTION_MOVE);
+	gdk_pixbuf_render_pixmap_and_mask (icon,
+			&drag_pixmap, &drag_mask, 128);
+	gtk_drag_source_set_icon (eventbox, 
+			gtk_widget_get_colormap (GTK_WIDGET (view)), 
+			drag_pixmap, drag_mask);
+	gdk_pixmap_unref (drag_pixmap);
+	gdk_pixmap_unref (drag_mask);
+	gdk_pixbuf_unref (icon);
+	gtk_signal_connect (GTK_OBJECT (eventbox), "drag_data_get",
+			GTK_SIGNAL_FUNC (drag_data_get), 
+			g_strdup (dentry_path));
+	gtk_signal_connect (GTK_OBJECT (eventbox), "drag_data_delete",
+			GTK_SIGNAL_FUNC (drag_data_delete), NULL);
+	gtk_signal_connect (GTK_OBJECT (image), "clicked",
+			GTK_SIGNAL_FUNC (launcher_clicked_callback), dentry);
+
+	gtk_widget_show (image);
+
+	return aspectframe;
+	
+}
+
+/* Get the toplevel menu name for the desktop file installed */
+void
+nautilus_install_service_add_menu_launchers (NautilusServiceInstallView *view, GtkWidget *dialog) 
+{
+	GList *iterator;
+	char *fname;
+	char *label_text;
+	char *menu_description;
+	GtkWidget *button, *label;
+	gboolean have_icon;
+	GnomeDesktopEntry *dentry;
+	GtkWidget *buttonbox;
+	GtkWidget *iconwell;
+	GtkWidget *table;
+	GtkWidget *info_icon;
+	GtkWidget *alignment;
+	GtkWidget *hseparator;
+	char *s;
+	int num_launchers;
+	int i;
+
+	num_launchers = g_list_length (view->details->desktop_files);
+
+	table = gtk_table_new (num_launchers*3+1, 3, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (table), 10);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 10);
+	gtk_widget_show (table);
+	gtk_container_add (GTK_CONTAINER (GNOME_DIALOG (dialog)->vbox), table);
+
+	s = gnome_unconditional_pixmap_file("gnome-info.png");
+	if (s != NULL) {
+		info_icon = nautilus_image_new (s);
+		g_free (s);
+		gtk_widget_show (info_icon);
+		gtk_table_attach (GTK_TABLE (table), info_icon,
+				0, 1, 0, 1,
+				(GtkAttachOptions) (GTK_FILL),
+				(GtkAttachOptions) (GTK_FILL | GTK_FILL),
+				0, 0);
+	}
+
+	label = nautilus_label_new (_("Installation Complete"));
+	nautilus_label_set_is_smooth (NAUTILUS_LABEL (label), FALSE);
+	nautilus_label_set_wrap (NAUTILUS_LABEL (label), FALSE);
+	nautilus_label_make_bold (NAUTILUS_LABEL (label));
+	gtk_widget_show (label);
+	alignment = gtk_alignment_new (0.0, 0.5, 0.0, 0.0);
+	gtk_container_add (GTK_CONTAINER (alignment), label);
+	gtk_widget_show (alignment);
+	gtk_table_attach (GTK_TABLE (table), alignment,
+			1, 3, 0, 1,
+			(GtkAttachOptions) (GTK_FILL),
+			(GtkAttachOptions) (GTK_FILL | GTK_FILL),
+			0, 0);
+
+
+	i=-1;
+	for (iterator = view->details->desktop_files; iterator; iterator = g_list_next (iterator)) {
+		i++;
+		fname = (char*)(iterator->data);
+		have_icon = FALSE;
+		dentry = gnome_desktop_entry_load (fname);
+
+		hseparator = gtk_hseparator_new ();
+		gtk_widget_show (hseparator);
+		gtk_table_attach (GTK_TABLE (table), hseparator,
+				1, 3, i*3+1, i*3+2,
+				(GtkAttachOptions) (GTK_FILL),
+				(GtkAttachOptions) (GTK_FILL | GTK_FILL),
+				0, 0);
+
+
+		/* set up the icon well */
+		iconwell = make_dragable_icon_well (view, dentry, fname);
+		if (iconwell != NULL) {
+			gtk_table_attach (GTK_TABLE (table), iconwell,
+					1, 2, i*3+2, i*3+3,
+					(GtkAttachOptions) (GTK_FILL),
+					(GtkAttachOptions) (GTK_FILL | GTK_FILL),
+					0, 0);
+			gtk_widget_show (iconwell);
+		}
+
+		/* set up the text */
+		menu_description = describe_dentry (dentry, fname);
+		if (iconwell != NULL) {
+			label_text = g_strdup_printf (_("%sTo start %s, click "
+					"the Launch button below, or to create "
+					"a shortcut, drag the icon on the "
+					"right to the GNOME panel or your "
+					"desktop."), menu_description, 
+					dentry->name);
+		} else {
+			/* couldn't find an icon */
+			label_text = g_strdup_printf (_("%sTo start %s, click "
+					"the Launch button below."),
+					menu_description, dentry->name);
+		}
+		g_free (menu_description);
+		label = nautilus_label_new (label_text);
+		gtk_widget_set_usize (label, 400, -1);
+		nautilus_label_set_is_smooth (NAUTILUS_LABEL (label), FALSE);
+		nautilus_label_set_wrap (NAUTILUS_LABEL (label), TRUE);
+		nautilus_label_set_justify (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
+		nautilus_label_set_adjust_wrap_on_resize (NAUTILUS_LABEL (label), TRUE);
+		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 1.0);
+		gtk_widget_show (label);
+		g_free (label_text);
+		gtk_table_attach (GTK_TABLE (table), label,
+				2, 3, i*3+2, i*3+3,
+				(GtkAttachOptions) (GTK_FILL),
+				(GtkAttachOptions) (GTK_FILL | GTK_FILL),
+				0, 0);
+
+		/* set up the "launch" button */
+		buttonbox = gtk_hbutton_box_new ();
+		gtk_button_box_set_layout (GTK_BUTTON_BOX (buttonbox), GTK_BUTTONBOX_START);
+		gtk_button_box_set_spacing (GTK_BUTTON_BOX (buttonbox), 3);
+		button = gtk_button_new_with_label ("Launch");
+		gtk_container_add (GTK_CONTAINER (buttonbox), button);
+		gtk_signal_connect_full (GTK_OBJECT (button), "clicked",
+			GTK_SIGNAL_FUNC (launcher_clicked_callback), NULL,
+			dentry, (GtkDestroyNotify) gnome_desktop_entry_free,
+			FALSE, FALSE);
+		gtk_widget_show (button);
+		gtk_widget_show (buttonbox);
+		gtk_table_attach (GTK_TABLE (table), buttonbox,
+				2, 3, i*3+3, i*3+4,
+				(GtkAttachOptions) (GTK_FILL),
+				(GtkAttachOptions) (GTK_FILL | GTK_FILL),
+				0, 0);
+	}
+	gtk_widget_show (table);
 }
 
 /* signal callback -- ask the user for the root password (for installs) */

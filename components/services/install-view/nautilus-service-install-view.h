@@ -152,7 +152,7 @@ void nautilus_service_install_check_for_desktop_files (NautilusServiceInstallVie
 						       EazelInstallCallback *cb,
 						       PackageData *package);
 
-/* probe for what menu the installed package can be found in */
-char *nautilus_install_service_locate_menu_entries (NautilusServiceInstallView *view);
+/* add launchers for each menu to the congrats dialog */
+void nautilus_install_service_add_menu_launchers (NautilusServiceInstallView *view, GtkWidget *dialog);
 
 #endif /* NAUTILUS_SERVICE_INSTALL_VIEW_H */

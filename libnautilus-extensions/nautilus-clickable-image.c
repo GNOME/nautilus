@@ -447,6 +447,7 @@ ancestor_button_release_event (GtkWidget *widget,
 			       gpointer event_data)
 {
   	NautilusClickableImage *clickable_image;
+	int x, y;
 
 	g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_CLICKABLE_IMAGE (event_data), FALSE);
@@ -455,6 +456,15 @@ ancestor_button_release_event (GtkWidget *widget,
  	clickable_image = NAUTILUS_CLICKABLE_IMAGE (event_data);
 
 	gtk_grab_remove (widget);
+
+	x = event->x;
+	y = event->y;
+
+	adjust_coordinates_for_window (GTK_WIDGET (event_data)->window,
+				       widget->window,
+				       &x, &y);
+
+	label_handle_motion (NAUTILUS_CLICKABLE_IMAGE (event_data), x, y);
 
 	if (clickable_image->details->pointer_inside) {
 		label_handle_button_release (NAUTILUS_CLICKABLE_IMAGE (event_data));
