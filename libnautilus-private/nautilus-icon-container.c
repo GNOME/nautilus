@@ -4010,8 +4010,6 @@ update_label_color (NautilusBackground *background,
 		dark_info_value = 0x33337F;
 	} else {
 		dark_info_value = strtoul (dark_info_color, NULL, 0);
-		g_message ("dark info color is %s, value is %8x", dark_info_color,
-		dark_info_value);
 		g_free (dark_info_color);
 	}
 	
