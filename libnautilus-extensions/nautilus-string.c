@@ -69,6 +69,12 @@ nautilus_str_is_equal (const char *string_a, const char *string_b)
 	return (nautilus_strcmp (string_a, string_b) == 0);
 }
 
+gboolean
+nautilus_istr_is_equal (const char *string_a, const char *string_b)
+{
+	return (nautilus_strcasecmp (string_a, string_b) == 0);
+}
+
 int
 nautilus_str_compare (gconstpointer string_a, gconstpointer string_b)
 {
@@ -759,6 +765,17 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_is_equal ("", ""), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_is_equal ("foo", "foo"), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_is_equal ("foo", "bar"), FALSE);
+
+	/* nautilus_istr_is_equal */
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_istr_is_equal (NULL, NULL), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_istr_is_equal (NULL, ""), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_istr_is_equal ("", ""), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_istr_is_equal ("", NULL), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_istr_is_equal ("", ""), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_istr_is_equal ("foo", "foo"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_istr_is_equal ("foo", "bar"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_istr_is_equal ("Foo", "foo"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_istr_is_equal ("foo", "Foo"), TRUE);
 
 	/* nautilus_str_count_characters */
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_str_count_characters (NULL, 'x'), 0);
