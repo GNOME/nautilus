@@ -29,6 +29,7 @@
 #include "nautilus-view-frame-private.h"
 #include "nautilus-window.h"
 #include <libnautilus-extensions/bonobo-stream-vfs.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 
 typedef struct {
   BonoboObject *container, *client_site, *view_frame;
@@ -48,10 +49,11 @@ bonobo_subdoc_notify_location_change (NautilusViewFrame *view,
 {
   Bonobo_PersistStream persist;
   Bonobo_PersistFile persist_file;
+  gchar *local_path;
 
-  if((persist = bonobo_object_client_query_interface(view->client_object, "IDL:Bonobo/PersistStream:1.0",
-                                                     NULL))
-     && !CORBA_Object_is_nil(persist, ev))
+  persist = bonobo_object_client_query_interface(view->client_object, "IDL:Bonobo/PersistStream:1.0", NULL);
+
+  if((persist != NULL) && !CORBA_Object_is_nil(persist, ev))
     {
       BonoboStream *stream;
       Nautilus_ProgressRequestInfo pri;
@@ -78,31 +80,93 @@ bonobo_subdoc_notify_location_change (NautilusViewFrame *view,
              bonobo_object_corba_objref (BONOBO_OBJECT (stream)),
              "", /* MIME type of stream */
              ev);
-          Bonobo_Unknown_unref(persist, ev);
-          CORBA_Object_release(persist, ev);
           pri.type = Nautilus_PROGRESS_DONE_OK;
-          nautilus_view_frame_request_progress_change(view, &pri);
+        }
+      else
+        {
+          pri.type = Nautilus_PROGRESS_DONE_ERROR;
+        }
+
+      Bonobo_Unknown_unref(persist, ev);
+      CORBA_Object_release(persist, ev);
+
+      nautilus_view_frame_request_progress_change(view, &pri);
+
+      if (pri.type == Nautilus_PROGRESS_DONE_OK)
+        {
+          return;
         }
     }
-  else if ((persist_file = bonobo_object_client_query_interface(view->client_object, "IDL:Bonobo/PersistFile:1.0", NULL))
-           && !CORBA_Object_is_nil(persist_file, ev) &&
-           !strncmp (real_nav_ctx->actual_uri, "file://", 7))
+  else if (persist)
+    {
+      /* FIXME: Free it. */
+    }
+
+
+  /* FIXME: Need to implement ProgressiveDataSink. */
+
+  persist_file = bonobo_object_client_query_interface(view->client_object, "IDL:Bonobo/PersistFile:1.0", NULL);
+
+  /* FIXME:
+
+     The OAF query may return a component that supports PersistFile
+     even it it's not a file:/// URI.
+  */
+
+  local_path = nautilus_get_local_path_from_uri (real_nav_ctx->actual_uri);
+
+  if ((persist_file != NULL) && !CORBA_Object_is_nil(persist_file, ev)
+      && (local_path != NULL))
     {
       Nautilus_ProgressRequestInfo pri;
+      int result;
 
       pri.amount = 0;
       pri.type = Nautilus_PROGRESS_UNDERWAY;
       nautilus_view_frame_request_progress_change(view, &pri);
 
-      /* FIXME: `+7' is not suitable for proper character escaping. */
+      Bonobo_PersistFile_load(persist_file, local_path, ev);
 
-      Bonobo_PersistFile_load
-        (persist_file,
-         real_nav_ctx->actual_uri+7,
-         ev);
+      /* FIXME: Find out whether the loading was successful. */
+      result = 1;
 
-      pri.type = Nautilus_PROGRESS_DONE_OK;
+      Bonobo_Unknown_unref(persist_file, ev);
+      CORBA_Object_release(persist_file, ev);
+
+      g_free (local_path);
+
+      if (result)
+        {
+          pri.type = Nautilus_PROGRESS_DONE_OK;
+        }
+      else
+        {
+          pri.type = Nautilus_PROGRESS_DONE_ERROR;
+        }
+
       nautilus_view_frame_request_progress_change(view, &pri);
+
+      if (pri.type == Nautilus_PROGRESS_DONE_OK)
+        {
+          return;
+        }
+    }
+  else
+    {
+      if (persist_file)
+        {
+          if (!CORBA_Object_is_nil (persist_file, ev))
+            {
+              Bonobo_Unknown_unref(persist_file, ev);
+              CORBA_Object_release(persist_file, ev);
+            }
+          else
+            {
+              /* FIXME: Free it. */
+            }
+        }
+
+      g_free (local_path);
     }
 }      
 
