@@ -21,7 +21,8 @@ LIBXML_REQUIRED=1.8.10
 ORBIT_REQUIRED=0.5.6
 GNOME_VFS_REQUIRED=1.0
 POPT_REQUIRED=1.5
-FREETYPE_REQUIRED=2.0
+FREETYPE_REQUIRED=2.0.1
+FREETYPE_LIBRARY_REQUIRED=6.1.0
 MEDUSA_REQUIRED=0.2.2
 ESOUND_REQUIRED=0.2
 LIBGHTTP_REQUIRED=1.0.9
@@ -271,6 +272,15 @@ AC_MSG_ERROR([
 *** over here: http://developer.eazel.com/eazel-hacking/updates/freetype2
 *** source versions are available from ftp://ftp.freetype.org])
 fi
+
+if test -n "$freetype2_prefix"; then
+  FREETYPE_CONFIG="$freetype2_prefix/bin/freetype-config"
+else
+  FREETYPE_CONFIG="freetype-config"
+fi
+
+dnl check for the necessary library version
+EAZEL_VERSION_INSIST(freetype library, $FREETYPE_CONFIG --version | tr : ., >=, FREETYPE_LIBRARY_REQUIRED)
 
 FREETYPE2_CFLAGS="-I$freetype2_include_prefix"
 FREETYPE2_LIBS="-L$freetype2_lib_prefix -lfreetype"
