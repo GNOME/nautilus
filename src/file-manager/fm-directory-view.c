@@ -3870,7 +3870,9 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 		
 		uri = nautilus_file_get_uri (file);
 
-		other_applications_visible = !can_use_component_for_file (file);
+		other_applications_visible =
+			!can_use_component_for_file (file) ||
+			nautilus_file_is_directory (file);
 
 		action = get_activation_action (file);
 		/* Only use the default app for open if there is not

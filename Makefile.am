@@ -8,6 +8,7 @@ desktop_in_files = 					\
 	nautilus.desktop.in				\
 	nautilus-home.desktop.in			\
 	nautilus-computer.desktop.in			\
+	nautilus-folder-handler.desktop.in		\
 	nautilus-file-management-properties.desktop.in
 
 SUBDIRS =			\

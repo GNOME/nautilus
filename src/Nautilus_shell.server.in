@@ -8,89 +8,6 @@
   <oaf_attribute name="description" type="string" _value="Factory for Nautilus shell and file manager"/>
 </oaf_server>
 
-<oaf_server iid="OAFIID:Nautilus_File_Manager_Icon_View" type="factory" location="OAFIID:Nautilus_Factory">
-  <oaf_attribute name="repo_ids" type="stringv">
-    <item value="IDL:Bonobo/Unknown:1.0"/>
-    <item value="IDL:Bonobo/Control:1.0"/>
-    <item value="IDL:Nautilus/View:1.0"/>
-  </oaf_attribute>
-  <oaf_attribute name="name" type="string" _value="Nautilus file manager icon view"/>
-  <oaf_attribute name="description" type="string" _value="Nautilus file manager component that shows a two-dimensional icon space"/>
-  <oaf_attribute name="bonobo:supported_mime_types" type="stringv">
-    <item value="x-directory/normal"/>
-    <item value="x-directory/webdav"/>
-    <item value="x-directory/webdav-prefer-directory"/>
-    <item value="x-directory/vfolder-desktop"/>
-    <item value="x-directory/smb-share"/>
-  </oaf_attribute>
-  <oaf_attribute name="bonobo:additional_uri_schemes" type="stringv">
-    <item value="gnome-trash"/>
-    <item value="trash"/>
-    <item value="x-nautilus-desktop"/>
-  </oaf_attribute>
-  <oaf_attribute name="nautilus:view_as_name" type="string" _value="Icons"/>
-  <oaf_attribute name="nautilus:view_as_label" type="string" _value="View as Icons"/>
-  <oaf_attribute name="nautilus:view_as_label_with_mnemonic" type="string" _value="View as _Icons"/>
-  <oaf_attribute name="nautilus:viewer_label" type="string" _value="Icons Viewer"/>
-</oaf_server>
-
-<oaf_server iid="OAFIID:Nautilus_File_Manager_Desktop_Icon_View" type="factory" location="OAFIID:Nautilus_Factory">
-  <oaf_attribute name="repo_ids" type="stringv">
-    <item value="IDL:Bonobo/Unknown:1.0"/>
-    <item value="IDL:Bonobo/Control:1.0"/>
-    <item value="IDL:Nautilus/View:1.0"/>
-    <item value="IDL:Bonobo/Zoomable:1.0"/>
-  </oaf_attribute>
-  <oaf_attribute name="name" type="string" _value="Nautilus file manager desktop icon view"/>
-  <oaf_attribute name="description" type="string" _value="Nautilus file manager component that shows icons on the desktop"/>
-  <oaf_attribute name="bonobo:additional_uri_schemes" type="stringv">
-    <item value="x-nautilus-desktop"/>
-  </oaf_attribute>
-</oaf_server>
-
-<oaf_server iid="OAFIID:Nautilus_File_Manager_List_View" type="factory" location="OAFIID:Nautilus_Factory">
-  <oaf_attribute name="repo_ids" type="stringv">
-    <item value="IDL:Bonobo/Unknown:1.0"/>
-    <item value="IDL:Bonobo/Control:1.0"/>
-    <item value="IDL:Nautilus/View:1.0"/>
-    <item value="IDL:Bonobo/Zoomable:1.0"/>
-  </oaf_attribute>
-  <oaf_attribute name="name" type="string" _value="Nautilus file manager list view"/>
-  <oaf_attribute name="description" type="string" _value="Nautilus file manager component that shows a scrollable list"/>
-  <oaf_attribute name="bonobo:supported_mime_types" type="stringv">
-    <item value="x-directory/normal"/>
-    <item value="x-directory/webdav"/>
-    <item value="x-directory/webdav-prefer-directory"/>
-    <item value="x-directory/vfolder-desktop"/>
-    <item value="x-directory/smb-share"/>
-  </oaf_attribute>
-  <oaf_attribute name="bonobo:additional_uri_schemes" type="stringv">
-    <item value="gnome-trash"/>
-    <item value="trash"/>
-  </oaf_attribute>
-  <oaf_attribute name="nautilus:view_as_name" type="string" _value="List"/>
-  <oaf_attribute name="nautilus:view_as_label" type="string" _value="View as List"/>
-  <oaf_attribute name="nautilus:view_as_label_with_mnemonic" type="string" _value="View as _List"/>
-  <oaf_attribute name="nautilus:viewer_label" type="string" _value="List Viewer"/>
-</oaf_server>
-
-<oaf_server iid="OAFIID:Nautilus_File_Manager_Search_List_View" type="factory" location="OAFIID:Nautilus_Factory">
-  <oaf_attribute name="repo_ids" type="stringv">
-    <item value="IDL:Bonobo/Unknown:1.0"/>
-    <item value="IDL:Bonobo/Control:1.0"/>
-    <item value="IDL:Nautilus/View:1.0"/>
-    <item value="IDL:Bonobo/Zoomable:1.0"/>
-  </oaf_attribute>
-  <oaf_attribute name="name" type="string" _value="Nautilus file manager search results list view"/>
-  <oaf_attribute name="description" type="string" _value="Nautilus file manager component that shows a scrollable list for search results"/>
-  <oaf_attribute name="bonobo:supported_mime_types" type="stringv">
-    <item value="x-directory/search"/>
-  </oaf_attribute>
-  <oaf_attribute name="nautilus:view_as_name" type="string" _value="Search List"/>
-  <oaf_attribute name="nautilus:view_as_label" type="string" value="View as Search List"/>
-  <oaf_attribute name="nautilus:viewer_label" type="string" value="Search List Viewer"/>
-</oaf_server>
-
 <oaf_server iid="OAFIID:Nautilus_Shell" type="factory" location="OAFIID:Nautilus_Factory">
   <oaf_attribute name="repo_ids" type="stringv">
     <item value="IDL:Bonobo/Unknown:1.0"/>
@@ -107,17 +24,6 @@
   </oaf_attribute>
   <oaf_attribute name="name" type="string" _value="Nautilus metafile factory"/>
   <oaf_attribute name="description" type="string" _value="Produces metafile objects for accessing Nautilus metadata"/>
-</oaf_server>
-
-<oaf_server iid="OAFIID:Nautilus_File_Manager_Tree_View" type="factory" location="OAFIID:Nautilus_Factory">
-  <oaf_attribute name="repo_ids" type="stringv">
-    <item value="IDL:Bonobo/Unknown:1.0"/>
-    <item value="IDL:Bonobo/Control:1.0"/>
-    <item value="IDL:Nautilus/View:1.0"/>
-  </oaf_attribute>
-  <oaf_attribute name="name" type="string" _value="Nautilus Tree View"/>
-  <oaf_attribute name="description" type="string" _value="Nautilus Tree side pane"/>
-  <oaf_attribute name="nautilus:sidebar_panel_name" type="string" _value="Tree"/>
 </oaf_server>
 
 </oaf_info>
