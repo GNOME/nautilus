@@ -603,6 +603,7 @@ nautilus_image_size_allocate (GtkWidget *widget, GtkAllocation* allocation)
  */
 		nautilus_gdk_pixbuf_draw_text (image->detail->buffer,
 					       image->detail->label_font,
+					       1.0,
 					       &text_rect,
 					       image->detail->label_text,
 					       image->detail->overall_alpha);

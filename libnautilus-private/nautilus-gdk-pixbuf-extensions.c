@@ -423,12 +423,14 @@ nautilus_gdk_pixbuf_scale_to_fit (GdkPixbuf *pixbuf, int max_width, int max_heig
 void
 nautilus_gdk_pixbuf_draw_text (GdkPixbuf	*pixbuf,
 			       const GdkFont	*font,
+			       const double	font_scale,
 			       const ArtIRect	*destination_rect,
 			       const char	*text,
 			       guint		overall_alpha)
 {
 	ArtIRect	pixbuf_rect;
 	ArtIRect	text_rect;
+	int		dest_width, dest_height;
 	int		width, height;
 	GdkVisual	*visual;
 	GdkPixmap	*pixmap;
@@ -441,7 +443,7 @@ nautilus_gdk_pixbuf_draw_text (GdkPixbuf	*pixbuf,
 	GdkPixbuf	*text_pixbuf;
 	GdkPixbuf	*text_pixbuf_with_alpha;
 	guchar		*pixels;
-
+	
 	g_return_if_fail (pixbuf != NULL);
 	g_return_if_fail (font != NULL);
 	g_return_if_fail (destination_rect != NULL);
@@ -465,8 +467,11 @@ nautilus_gdk_pixbuf_draw_text (GdkPixbuf	*pixbuf,
 	visual = gdk_visual_get_system ();
 
 	/* Allocate a GdkPixmap of the appropriate size. */
-	width = text_rect.x1 - text_rect.x0;
-	height = text_rect.y1 - text_rect.y0;
+	dest_width  = text_rect.x1 - text_rect.x0;
+	dest_height = text_rect.y1 - text_rect.y0;
+	width = dest_width / font_scale;
+	height = dest_height / font_scale;
+	
 	pixmap = gdk_pixmap_new (NULL, width, height, visual->depth);
 	gc = gdk_gc_new (pixmap);
 
@@ -519,22 +524,23 @@ nautilus_gdk_pixbuf_draw_text (GdkPixbuf	*pixbuf,
 						    0, 0, width, height);
 	gdk_colormap_unref (colormap);
 	gdk_pixmap_unref (pixmap);
-
+	
 	/* White is not always FF FF FF. So we get the top left corner pixel. */
 	pixels = gdk_pixbuf_get_pixels (text_pixbuf);
 	text_pixbuf_with_alpha = gdk_pixbuf_add_alpha 
 		(text_pixbuf,
 		 TRUE, pixels[0], pixels[1], pixels[2]);
 	gdk_pixbuf_unref (text_pixbuf);
-
+	
+	/* composite using scale factor */
 	gdk_pixbuf_composite (text_pixbuf_with_alpha,
 			      pixbuf,
 			      text_rect.x0,
 			      text_rect.y0,
-			      width, height,
+			      dest_width, dest_height,
 			      text_rect.x0,
 			      text_rect.y0,
-			      1, 1,
+			      font_scale, font_scale,
 			      GDK_INTERP_BILINEAR,
 			      overall_alpha);
 

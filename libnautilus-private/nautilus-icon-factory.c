@@ -2209,7 +2209,9 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 		/* FIXME bugzilla.eazel.com 1102: Embedded text should use preferences to determine
 		 * the font it uses
 		 */
-		font = gdk_font_load ("-*-helvetica-medium-r-normal-*-9-*-*-*-*-*-*-*");
+		
+		/* for anti-aliased text, we choose a large font and scale it down */
+		font = gdk_font_load ("-*-helvetica-medium-r-normal-*-24-*-*-*-*-*-*-*");
 		g_return_val_if_fail (font != NULL, gdk_pixbuf_ref (pixbuf_without_text));
 	}
 
@@ -2222,8 +2224,7 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 
 	pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
 
-	nautilus_gdk_pixbuf_draw_text (pixbuf_with_text, font, embedded_text_rect, text, 0xFF);
-
+	nautilus_gdk_pixbuf_draw_text (pixbuf_with_text, font, .3333, embedded_text_rect, text, 0xFF);
 	return pixbuf_with_text;
 }
 

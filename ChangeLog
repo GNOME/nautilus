@@ -1,3 +1,23 @@
+2000-08-05  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed embedded icon text clarity (we were using helvetica 9, which wasn't installed
+	on many machines, and the scaled version looked hideous).  Fixed by using the
+	bigger, more commonly installed helvetica 24 font, then scaling it down using the
+	gdk_pixbuf compositing routines, which exploit the gray-scale.
+	
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
+	added a "font_scale" parameter
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_draw_text):
+	used the font scale parameter to scale up the buffer, and scale it down when
+	compositing
+	* libnautilus-extensions/nautilus-icon-factory.c: (embed_text):
+	change the default size to 24 pt, and used a scale factor of .333 for the
+	equivalent of an 8 point font
+	* libnautilus-extensions/nautilus-image.c:
+	(nautilus_image_size_allocate):
+	added a font scale parameter of 1.0.
+	
 2000-08-05  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-undo-manager.c: (corba_append),

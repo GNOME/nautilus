@@ -70,6 +70,7 @@ void                      nautilus_gdk_pixbuf_average_value            (GdkPixbu
 /* Draw text onto a GdkPixbuf using the given font and rect */
 void                      nautilus_gdk_pixbuf_draw_text                (GdkPixbuf                  *pixbuf,
 									const GdkFont              *font,
+									const double		   font_scale,
 									const ArtIRect             *destination_rect,
 									const char                 *text,
 									guint			   overall_alpha);
