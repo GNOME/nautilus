@@ -30,6 +30,7 @@
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkeventbox.h>
+#include <gtk/gtkcontainer.h>
 #include "nautilus-complex-search-bar.h"
 #include "nautilus-search-bar.h"
 
@@ -55,88 +56,33 @@ typedef enum {
 	NAUTILUS_NOTES_SEARCH_CRITERION
 } NautilusSearchBarCriterionType;
 
-typedef struct NautilusSearchBarCriterionDisplay NautilusSearchBarCriterionDisplay;
+typedef struct NautilusSearchBarCriterionDetails NautilusSearchBarCriterionDetails;
 
 /* FIXME:  Should I wrap casting functions for this type ? */
 typedef GList NautilusSearchBarCriterionList;
 
 typedef struct NautilusSearchBarCriterion {
-	/* FIXME:  This is wrong */
-	NautilusSearchBarCriterionDisplay *search_criterion_bar;
+	NautilusSearchBar parent;
+	NautilusSearchBarCriterionDetails *details;
 	NautilusSearchBarCriterionType type;
 } NautilusSearchBarCriterion;
-/*
+
+
 typedef struct NautilusSearchBarCriterionClass {
-	NautilusComplexSearchBar parent_class;
+	NautilusSearchBarClass parent_class;
 } NautilusSearchBarCriterionClass;
-*/	
+
+GtkType                        nautilus_search_bar_criterion_get_type         (void);
+GtkWidget*                     nautilus_search_bar_criterion_new              (void);
+
 
 NautilusSearchBarCriterion *   nautilus_search_bar_criterion_file_type_new    (NautilusComplexSearchBar *bar);
+void                           nautilus_search_bar_criterion_add_to_search_bar 
+                                                                              (NautilusSearchBarCriterion *criterion,
+									       GtkWidget *hbox);
 NautilusSearchBarCriterion *   nautilus_search_bar_criterion_file_name_new    (NautilusComplexSearchBar *bar);
 
 void                           nautilus_search_bar_criterion_add_to_container (GtkContainer *container, 
 									       NautilusSearchBarCriterion *criterion);
 
 #endif NAUTILUS_SEARCH_BAR_CRITERION_H
-
-/*
-Content: [contains, does not contain, [Text Field].
-
-File Name: contains, does not contain, starts with, ends with, is, is not, matches pattern]
-
-
-Size: [is less than, is greater than] [Text Field].
-
-Item: [is, is not] [My files, My folders <divider> popup of common document
-types, a divider, then MIME types].
-
-Date Modified: [is, is not, is before, is after, is today, is yesterday]
-[GtkCalendar].
-
-Notes: [contain, do not contain] [Text Field].
-*/
-
-
-/*
-union NautilusSearchCriterionDisplay {
-	struct NautilusFileTypeCriterionDisplay file_display;
-	struct NautilusLocationCriterionDisplay location_display;
-	struct NautilusContentCriterionDisplay content_display;
-	struct NautilusSizeCriterionDisplay size_display;
-	struct NautilusFileNameCriterionDisplay file_name_display;
-	struct NautilusDateModifiedDisplay date_modified_display;
-	struct NautilusNotesDisplay notes_display;
-};
-
-
-struct NautilusFileTypeCriterionDisplay {
-  GtkOptionMenu *option_menu;
-};
-
-struct NautilusLocationCriterionDisplay {
-  GtkOptionMenu
-};
-
-struct NautilusSizeCriterionDisplay {
-
-};
-
-struct NautilusContentCriterionDisplay {
-
-};
-
-struct NautilusSizeCriterionDisplay {
-
-};
-
-struct NautilusFileNameCriterionDisplay {
-
-};
-
-struct NautilusDateModifiedDisplay {
-
-};
-
-
-*/
-

@@ -25,7 +25,6 @@
 
 #include <config.h>
 #include "nautilus-search-bar.h"
-#include "nautilus-search-bar-private.h"
 #include "nautilus-simple-search-bar.h"
 #include "nautilus-complex-search-bar.h"
 #include "nautilus-search-bar-criterion.h"
@@ -60,6 +59,14 @@ destroy (GtkObject *object)
 {
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
+
+
+GtkWidget *
+nautilus_search_bar_new (void)
+{
+	return gtk_widget_new (NAUTILUS_TYPE_SEARCH_BAR, NULL);
+}
+
 
 static void
 nautilus_search_bar_initialize_class (NautilusSearchBarClass *klass)

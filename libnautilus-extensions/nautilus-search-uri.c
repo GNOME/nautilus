@@ -26,10 +26,53 @@
 
 #include "nautilus-search-uri.h"
 
+static NautilusSearchBarMode      other_search_mode        (NautilusSearchBarMode mode);
+
 char*                      
-nautilus_search_uri_to_simple_search_criteria (const char *location)
+nautilus_search_uri_to_simple_search_criteria (const char *uri)
 {
-  return "foo bar";
+	return "";
 
 }
 
+NautilusSearchBarMode 
+nautilus_search_uri_to_search_bar_mode (const char *uri)
+{
+	NautilusSearchBarMode preferred_mode;
+
+	preferred_mode = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
+							NAUTILUS_SIMPLE_SEARCH_BAR);
+	if (nautilus_search_uri_is_displayable_by_mode (uri, preferred_mode)) {
+		return preferred_mode;
+	}
+	else {
+		return (other_search_mode (preferred_mode));
+	}
+}
+
+
+
+gboolean
+nautilus_search_uri_is_displayable_by_mode (const char *uri,
+					    NautilusSearchBarMode mode)
+{
+	/* FIXME */
+	return TRUE;
+}
+
+
+static NautilusSearchBarMode
+other_search_mode (NautilusSearchBarMode mode)
+{
+	switch (mode) {
+	case NAUTILUS_SIMPLE_SEARCH_BAR:
+		return NAUTILUS_COMPLEX_SEARCH_BAR;
+		break;
+	case NAUTILUS_COMPLEX_SEARCH_BAR:
+		return NAUTILUS_SIMPLE_SEARCH_BAR;
+		break;
+	default:
+		g_assert_not_reached ();
+	}
+	return NAUTILUS_COMPLEX_SEARCH_BAR;
+}

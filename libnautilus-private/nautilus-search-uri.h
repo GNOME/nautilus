@@ -23,5 +23,12 @@
    Author: Rebecca Schulman <rebecka@eazel.com>
 */
 
+#include <libnautilus-extensions/nautilus-global-preferences.h>
+
 char *                      nautilus_search_uri_to_simple_search_criteria      (const char *location);
 char *                      nautilus_simple_search_criteria_to_search_uri      (const char *search_criteria);
+
+
+NautilusSearchBarMode       nautilus_search_uri_to_search_bar_mode             (const char *uri);
+gboolean                    nautilus_search_uri_is_displayable_by_mode         (const char *uri,
+										NautilusSearchBarMode mode);

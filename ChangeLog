@@ -1,3 +1,39 @@
+2000-06-22  Rebecka Schulman  <rebecka@eazel.com>
+
+	* libnautilus-extensions/nautilus-search-uri.c:
+	* libnautilus-extensions/nautilus-search-uri.h:
+	(nautilus_search_uri_to_simple_search_criteria),
+	(nautilus_search_uri_to_search_bar_mode),
+	(nautilus_search_uri_is_displayable_by_mode), (other_search_mode):
+	* src/nautilus-simple-search-bar.c:
+	* src/nautilus-switchable-search-bar.c:
+	(nautilus_switchable_search_bar_set_mode),
+	(nautilus_switchable_search_bar_set_search_controls):
+	* src/nautilus-switchable-search-bar.h:
+
+	(nautilus_simple_search_bar_set_search_controls):
+	Extended search uri api; Some functions came from
+	nautilus-switchable-search-bar.c
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_initialize):
+	fixed it so the containers work right
+	* src/nautilus-search-bar-criterion.c:
+	* src/nautilus-search-bar-criterion.h:
+	(nautilus_search_bar_criterion_initialize),
+	(nautilus_search_bar_criterion_initialize_class), (destroy),
+	(nautilus_search_bar_criterion_new),
+	(nautilus_search_bar_criterion_file_type_new),
+	(nautilus_search_bar_criterion_file_name_new),
+	(nautilus_search_bar_criterion_add_to_search_bar):
+	added file name and type, and new functions
+	to aid in displaying
+
+	* src/nautilus-search-bar.c: (nautilus_search_bar_new):
+	* src/nautilus-search-bar.h:
+	added nautilus_search_bar_new
+	
+
+
 2000-06-22  Michael Engber  <engber@eazel.com>
 
 	* libnautilus/nautilus-view-component.idl:

@@ -78,22 +78,38 @@ destroy (GtkObject *object)
 static void
 nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 {
-	NautilusSearchBarCriterionList *file_name_criterion;
+	NautilusSearchBarCriterion *file_type, *file_name;
+	GtkWidget *more_options, *more_options_label;
+	GtkWidget *hbox;
+
+	hbox = gtk_hbox_new (0, FALSE);
 	
 	bar->details = g_new0 (NautilusComplexSearchBarDetails, 1);
 	bar->details->search_criteria = NULL;
-	bar->details->search_criteria = g_list_append (bar->details->search_criteria,
-						       nautilus_search_bar_criterion_file_type_new (bar));
-	/*	nautilus_search_bar_criterion_file_type_show (bar->details->search_criteria->data); */
-	nautilus_search_bar_criterion_add_to_container (GTK_CONTAINER (bar),
-							bar->details->search_criteria->data);
 
+	file_type = nautilus_search_bar_criterion_file_type_new (bar);
+	nautilus_search_bar_criterion_add_to_search_bar (file_type,
+							 hbox);
 	bar->details->search_criteria = g_list_append (bar->details->search_criteria,
-						       nautilus_search_bar_criterion_file_name_new (bar));	
-	file_name_criterion = bar->details->search_criteria->next;
-	/*	nautilus_search_bar_criterion_file_name_show (file_name_criterion->data); */
-	nautilus_search_bar_criterion_add_to_container (GTK_CONTAINER (bar), file_name_criterion->data);
-						     
+						       file_type);
+
+	
+
+	file_name = nautilus_search_bar_criterion_file_name_new (bar);
+	nautilus_search_bar_criterion_add_to_search_bar (file_name,
+							 hbox);
+	bar->details->search_criteria = g_list_append (bar->details->search_criteria,
+						       file_name);
+
+	more_options = gtk_button_new ();
+	more_options_label = gtk_label_new ("More Options");
+	gtk_container_add (GTK_CONTAINER (more_options), more_options_label);
+	
+	gtk_box_pack_start (GTK_BOX (hbox), more_options, TRUE, TRUE, 1);
+
+	gtk_container_add (GTK_CONTAINER (bar), hbox); 
+	gtk_widget_show_all (hbox);
+
 }
 
 GtkWidget *

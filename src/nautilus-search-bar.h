@@ -65,3 +65,4 @@ void                      nautilus_search_bar_set_search_controls        (Nautil
 									  const char *location);
 /* FIXME:Do we need a protected location_changed function here too? */
 #endif /* NAUTILUS_SEARCH_BAR_H */
+

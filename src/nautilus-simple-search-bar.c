@@ -24,7 +24,6 @@
 
 #include "nautilus-search-bar.h"
 #include "nautilus-switchable-search-bar.h"
-#include "nautilus-search-bar-private.h"
 #include "nautilus-simple-search-bar.h"
 
 #include <glib.h>
@@ -120,9 +119,7 @@ nautilus_simple_search_bar_set_search_controls (NautilusSearchBar *search_bar,
 
 	/* We shouldn't have gotten here if the uri can't be displayed
 	   using a simple search bar */
-	g_return_if_fail (nautilus_switchable_search_bar_mode_is_useable_with_uri (search_bar,
-										   location, 
-										   NAUTILUS_SIMPLE_SEARCH_BAR));
+	g_return_if_fail (nautilus_search_uri_is_displayable_by_mode (location, NAUTILUS_SIMPLE_SEARCH_BAR));
 	/* Set the words in the box to
 	   be the words originally done in the search */
 	gtk_entry_set_text (bar->entry,

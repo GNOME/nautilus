@@ -61,13 +61,7 @@ typedef struct {
 GtkType    nautilus_switchable_search_bar_get_type     	(void);
 GtkWidget* nautilus_switchable_search_bar_new          	(void);
 void       nautilus_switchable_search_bar_set_mode      (NautilusSwitchableSearchBar     *search_bar,
-							 NautilusSearchBarMode  mode);
-void       nautilus_switchable_search_bar_mode_is_usable           (NautilusSearchBar *search_bar,
-								    NautilusSearchBarMode mode);
-gboolean   nautilus_switchable_search_bar_mode_is_useable_with_uri (NautilusSearchBar *bar,
-								    const char *location,
-								    NautilusSearchBarMode mode);
-
+							 NautilusSearchBarMode mode);
 
 #endif /* NAUTILUS_SWITCHABLE_SEARCH_BAR_H */
 
