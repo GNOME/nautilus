@@ -43,6 +43,7 @@
 #define FM_ACTION_DUPLICATE "Duplicate"
 #define FM_ACTION_CREATE_LINK "Create Link"
 #define FM_ACTION_SELECT_ALL "Select All"
+#define FM_ACTION_SELECT_PATTERN "Select Pattern"
 #define FM_ACTION_TRASH "Trash"
 #define FM_ACTION_DELETE "Delete"
 #define FM_ACTION_SHOW_HIDDEN_FILES "Show Hidden Files"

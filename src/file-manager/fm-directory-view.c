@@ -6321,6 +6321,10 @@ real_update_menus (FMDirectoryView *view)
 	gtk_action_set_sensitive (action, !fm_directory_view_is_empty (view));
 
 	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_SELECT_PATTERN);
+	gtk_action_set_sensitive (action, !fm_directory_view_is_empty (view));
+
+	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_CUT);
 	g_object_set (action, "label",
 		      selection_count == 1
