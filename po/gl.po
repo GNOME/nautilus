@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 0.1.0\n"
-"POT-Creation-Date: 2000-05-11 23:56+0200\n"
-"PO-Revision-Date: 2000-05-12 00:00+0200\n"
+"POT-Creation-Date: 2000-05-17 20:11+0200\n"
+"PO-Revision-Date: 2000-05-17 20:13+0200\n"
 "Last-Translator: Jesús Bravo Álvarez <jba@pobox.com>\n"
 "Language-Team: Galician <gpul-traduccion@ceu.fi.udc.es>\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr "Nautilus: Marcas"
 
 #. Icon
 #. Emblems
-#: src/file-manager/fm-list-view.c:339 src/nautilus-bookmarks-window.c:163
+#: src/file-manager/fm-list-view.c:490 src/nautilus-bookmarks-window.c:163
 msgid "Name"
 msgstr "Nome"
 
@@ -35,12 +35,12 @@ msgstr "Lugar"
 msgid "Remove"
 msgstr "Quitar"
 
-#: src/file-manager/fm-properties-window.c:603 src/nautilus-location-bar.c:212
+#: src/file-manager/fm-properties-window.c:590 src/nautilus-location-bar.c:212
 msgid "Location:"
 msgstr "Lugar:"
 
-#: src/nautilus-window-menus.c:299 src/ntl-window-msgs.c:209
-#: src/ntl-window-msgs.c:244 src/ntl-window-msgs.c:245
+#: src/nautilus-window-menus.c:299 src/ntl-window-msgs.c:211
+#: src/ntl-window-msgs.c:246 src/ntl-window-msgs.c:247
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -86,8 +86,7 @@ msgstr "Saír de Nautilus"
 msgid "_Edit"
 msgstr "_Editar"
 
-#. Allow undo if text has been edited
-#: src/file-manager/fm-list-view.c:1013 src/nautilus-window-menus.c:620
+#: src/nautilus-window-menus.c:620
 msgid "_Undo"
 msgstr "_Desfacer"
 
@@ -127,7 +126,7 @@ msgstr "_Limpar Texto"
 msgid "Removes the selected text without putting it on the clipboard"
 msgstr "Elimina o texto seleccionado sen poñelo no cartafol"
 
-#: src/file-manager/fm-directory-view.c:1780 src/nautilus-window-menus.c:684
+#: src/file-manager/fm-directory-view.c:1536 src/nautilus-window-menus.c:684
 msgid "_Select All"
 msgstr "_Seleccionar Todos"
 
@@ -275,7 +274,7 @@ msgstr "Inicio"
 msgid "Go to your home directory"
 msgstr "Ir ó seu directorio persoal"
 
-#: src/file-manager/dfos-xfer.c:214 src/nautilus-window-toolbars.c:95
+#: src/file-manager/dfos-xfer.c:216 src/nautilus-window-toolbars.c:95
 msgid "Stop"
 msgstr "Parar"
 
@@ -292,72 +291,62 @@ msgstr "Facer auto-comprobacións de alta velocidade."
 msgid "Control %p"
 msgstr "Control %p"
 
-#: src/ntl-window-msgs.c:247
+#: src/ntl-window-msgs.c:249
 #, c-format
 msgid "Nautilus: %s"
 msgstr "Nautilus: %s"
 
-#: src/ntl-window-msgs.c:622
+#: src/ntl-window-msgs.c:624
 #, c-format
 msgid "You do not have the right permissions to view \"%s.\""
 msgstr "Non ten os permisos apropiados para ver \"%s.\""
 
-#: src/ntl-window-msgs.c:1085
+#: src/ntl-window-msgs.c:1090
 #, c-format
-msgid ""
-"Couldn't find \"%s\".\n"
-"Please check the spelling and try again."
-msgstr ""
-"Non se puido atopar \"%s\".\n"
-"Comprobe a escrita e probe de novo."
+msgid "Couldn't find \"%s\". Please check the spelling and try again."
+msgstr "Non se puido atopar \"%s\". Comprobe a escrita e probe de novo."
 
-#: src/ntl-window-msgs.c:1089
+#: src/ntl-window-msgs.c:1094
 #, c-format
 msgid ""
-"\"%s\" is not a valid location.\n"
-"Please check the spelling and try again."
+"\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
-"\"%s\" non é unha localización válida.\n"
-"Comprobe a escrita e probe de novo."
+"\"%s\" non é unha localización válida. Comprobe a escrita e probe de novo."
 
-#: src/ntl-window-msgs.c:1096
+#: src/ntl-window-msgs.c:1101
 #, c-format
 msgid ""
-"Couldn't display \"%s\",\n"
-"because Nautilus cannot handle items of type \"%s\"."
+"Couldn't display \"%s\", because Nautilus cannot handle items of type \"%s\"."
 msgstr ""
-"Non se puido amosar \"%s\",\n"
-"xa que Nautilus non pode manexar elementos do tipo \"%s\"."
+"Non se puido amosar \"%s\", xa que Nautilus non pode manexar elementos do "
+"tipo \"%s\"."
 
-#: src/ntl-window-msgs.c:1100
+#: src/ntl-window-msgs.c:1105
 #, c-format
 msgid ""
-"Couldn't display \"%s\",\n"
-"because Nautilus cannot handle items of this type."
+"Couldn't display \"%s\", because Nautilus cannot handle items of this type."
 msgstr ""
-"Non se puido amosar \"%s\",\n"
-"xa que Nautilus non pode manexar elementos deste tipo."
+"Non se puido amosar \"%s\", xa que Nautilus non pode manexar elementos deste "
+"tipo."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/ntl-window-msgs.c:1110
+#: src/ntl-window-msgs.c:1115
 #, c-format
-msgid ""
-"Couldn't display \"%s\",\n"
-"because Nautilus cannot handle %s: locations."
+msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
-"Non se puido amosar \"%s\",\n"
-"xa que Nautilus non pode manexar localizacións %s:."
+"Non se puido amosar \"%s\", xa que Nautilus non pode manexar localizacións "
+"de tipo %s:."
 
 #. It is so sad that we can't say anything more useful than this.
 #. * When this comes up, we should figure out what's really happening
 #. * and add another specific case.
 #.
-#: src/ntl-window-msgs.c:1120
+#: src/ntl-window-msgs.c:1125
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus non pode amosar \"%s\"."
 
-#: src/ntl-window-msgs.c:1177
+#: src/ntl-window-msgs.c:1182
 msgid "Gathering information"
 msgstr "Recollendo información"
 
@@ -380,64 +369,64 @@ msgstr "XferOverwriteMode %d descoñecido"
 msgid "Unknown XferErrorMode %d"
 msgstr "XferErrorMode %d descoñecido"
 
-#: src/file-manager/dfos-xfer.c:162
+#: src/file-manager/dfos-xfer.c:163
 msgid "From:"
 msgstr "De:"
 
-#: src/file-manager/dfos-xfer.c:165
+#: src/file-manager/dfos-xfer.c:166
 msgid "To:"
 msgstr "A:"
 
 #. transfer error, prompt the user to continue or stop
-#: src/file-manager/dfos-xfer.c:208
+#: src/file-manager/dfos-xfer.c:209
 #, c-format
 msgid ""
-"Error %s copying file %s. \n"
+"Error %s copying file %s.\n"
 "Would you like to continue?"
 msgstr ""
-"Erro %s copiando o ficheiro %s. \n"
+"Erro %s copiando o ficheiro %s.\n"
 "¿Quere continuar?"
 
-#: src/file-manager/dfos-xfer.c:213
+#: src/file-manager/dfos-xfer.c:215
 msgid "File copy error"
 msgstr "Erro ó copiar ficheiro"
 
-#: src/file-manager/dfos-xfer.c:214 src/file-manager/dfos-xfer.c:256
-#: src/file-manager/dfos-xfer.c:266
+#: src/file-manager/dfos-xfer.c:216 src/file-manager/dfos-xfer.c:259
+#: src/file-manager/dfos-xfer.c:270
 msgid "Skip"
 msgstr "Omitir"
 
-#: src/file-manager/dfos-xfer.c:214
+#: src/file-manager/dfos-xfer.c:216
 msgid "Retry"
 msgstr "Retentar"
 
-#: src/file-manager/dfos-xfer.c:246
+#: src/file-manager/dfos-xfer.c:248
 #, c-format
 msgid ""
-"File %s already exists. \n"
+"File %s already exists.\n"
 "Would you like to replace it?"
 msgstr ""
-"O ficheiro %s xa existe. \n"
+"O ficheiro %s xa existe.\n"
 "¿Quere remprazalo?"
 
-#: src/file-manager/dfos-xfer.c:255 src/file-manager/dfos-xfer.c:265
+#: src/file-manager/dfos-xfer.c:258 src/file-manager/dfos-xfer.c:269
 msgid "File copy conflict"
 msgstr "Conflicto na copia do ficheiro"
 
-#: src/file-manager/dfos-xfer.c:256 src/file-manager/dfos-xfer.c:266
+#: src/file-manager/dfos-xfer.c:259 src/file-manager/dfos-xfer.c:270
 msgid "Replace"
 msgstr "Remprazar"
 
-#: src/file-manager/dfos-xfer.c:266
+#: src/file-manager/dfos-xfer.c:270
 msgid "Replace All"
 msgstr "Remprazar Todos"
 
-#: src/file-manager/dfos-xfer.c:320
+#: src/file-manager/dfos-xfer.c:324
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "GnomeVFSXferProgressStatus %d descoñecido"
 
-#: src/file-manager/dfos-xfer.c:390
+#: src/file-manager/dfos-xfer.c:394
 #, c-format
 msgid ""
 "The transfer between\n"
@@ -454,91 +443,91 @@ msgstr ""
 "non puido iniciarse:\n"
 "%s"
 
-#: src/file-manager/dfos-xfer.c:511
+#: src/file-manager/dfos-xfer.c:478
 msgid "Moving"
 msgstr "Movendo"
 
-#: src/file-manager/dfos-xfer.c:512
+#: src/file-manager/dfos-xfer.c:479
 msgid "Preparing To Move..."
 msgstr "Preparando para Mover..."
 
-#: src/file-manager/dfos-xfer.c:519
+#: src/file-manager/dfos-xfer.c:486
 msgid "Copying"
 msgstr "Copiando"
 
-#: src/file-manager/dfos-xfer.c:520
+#: src/file-manager/dfos-xfer.c:487
 msgid "Preparing To Copy..."
 msgstr "Preparando para Copiar..."
 
-#: src/file-manager/dfos-xfer.c:586
+#: src/file-manager/dfos-xfer.c:553
 msgid "Moving to Trash"
 msgstr "Movendo ó Lixo"
 
-#: src/file-manager/dfos-xfer.c:587
+#: src/file-manager/dfos-xfer.c:554
 msgid "Preparing to Move to Trash..."
 msgstr "Preparando para Mover ó Lixo..."
 
-#: src/file-manager/dfos-xfer.c:634
+#: src/file-manager/dfos-xfer.c:601
 msgid "Emptying the Trash"
 msgstr "Baleirando o Lixo"
 
-#: src/file-manager/dfos-xfer.c:635
+#: src/file-manager/dfos-xfer.c:602
 msgid "Preparing to Empty the Trash..."
 msgstr "Preparando para Copiar..."
 
-#: src/file-manager/fm-directory-view.c:611
+#: src/file-manager/fm-directory-view.c:595
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" seleccionado"
 
-#: src/file-manager/fm-directory-view.c:613
+#: src/file-manager/fm-directory-view.c:597
 msgid "1 directory selected"
 msgstr "1 directorio seleccionado"
 
-#: src/file-manager/fm-directory-view.c:616
+#: src/file-manager/fm-directory-view.c:600
 #, c-format
 msgid "%d directories selected"
 msgstr "%d directorios seleccionados"
 
-#: src/file-manager/fm-directory-view.c:622
+#: src/file-manager/fm-directory-view.c:606
 msgid " (containing 0 items)"
 msgstr " (contendo 0 elementos)"
 
-#: src/file-manager/fm-directory-view.c:624
+#: src/file-manager/fm-directory-view.c:608
 msgid " (containing 1 item)"
 msgstr " (contento 1 elemento)"
 
-#: src/file-manager/fm-directory-view.c:626
+#: src/file-manager/fm-directory-view.c:610
 #, c-format
 msgid " (containing %d items)"
 msgstr " (contento %d elementos)"
 
-#: src/file-manager/fm-directory-view.c:637
+#: src/file-manager/fm-directory-view.c:621
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" seleccionado (%s)"
 
-#: src/file-manager/fm-directory-view.c:641
+#: src/file-manager/fm-directory-view.c:625
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d elementos seleccionados (%s)"
 
-#: src/file-manager/fm-directory-view.c:648
+#: src/file-manager/fm-directory-view.c:632
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "outro elemento seleccionado (%s)"
 
-#: src/file-manager/fm-directory-view.c:651
+#: src/file-manager/fm-directory-view.c:635
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d outros elementos seleccionados (%s)"
 
-#: src/file-manager/fm-directory-view.c:665
+#: src/file-manager/fm-directory-view.c:649
 #, c-format
 msgid "%s%s"
 msgstr "%s%s"
 
-#: src/file-manager/fm-directory-view.c:669
+#: src/file-manager/fm-directory-view.c:653
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -546,140 +535,150 @@ msgstr "%s%s, %s"
 #. Don't use GNOME_STOCK_BUTTON_CANCEL because the
 #. * red X is confusing in this context.
 #.
-#: src/file-manager/fm-directory-view.c:1303
+#: src/file-manager/fm-directory-view.c:1256
 msgid "Delete Selection"
 msgstr "Borrar Selección"
 
-#: src/file-manager/fm-directory-view.c:1304
+#: src/file-manager/fm-directory-view.c:1257
 msgid "Delete"
 msgstr "Borrar"
 
-#: src/file-manager/fm-directory-view.c:1305
+#: src/file-manager/fm-directory-view.c:1258
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/file-manager/fm-directory-view.c:1324
+#: src/file-manager/fm-directory-view.c:1277
 #, c-format
 msgid "Are you sure you want to delete \"%s\"?"
 msgstr "¿Está seguro de querer borrar \"%s\"?"
 
-#: src/file-manager/fm-directory-view.c:1327
+#: src/file-manager/fm-directory-view.c:1280
 #, c-format
 msgid "Are you sure you want to delete the %d selected items?"
 msgstr "¿Está seguro de querer borrar os %d elementos seleccionados?"
 
-#: src/file-manager/fm-directory-view.c:1550
-msgid "Select All"
-msgstr "Seleccionar Todos"
-
-#: src/file-manager/fm-directory-view.c:1551
-msgid "Zoom In"
-msgstr "Achegar"
-
-#: src/file-manager/fm-directory-view.c:1553
-msgid "Zoom Out"
-msgstr "Alonxar"
-
-#: src/file-manager/fm-directory-view.c:1568
-#: src/file-manager/fm-directory-view.c:1687
+#: src/file-manager/fm-directory-view.c:1495
 msgid "_Open"
 msgstr "_Abrir"
 
-#: src/file-manager/fm-directory-view.c:1573
+#: src/file-manager/fm-directory-view.c:1498
+msgid "Open With"
+msgstr "Abrir Con"
+
+#: src/file-manager/fm-directory-view.c:1501
+msgid "Other Application..."
+msgstr "Outras Aplicacións..."
+
+#: src/file-manager/fm-directory-view.c:1504
+msgid "Other Viewer..."
+msgstr "Outro Visualizador..."
+
+#: src/file-manager/fm-directory-view.c:1509
 msgid "Open in _New Window"
 msgstr "Abrir nunha _Nova Fiestra"
 
-#: src/file-manager/fm-directory-view.c:1575
+#: src/file-manager/fm-directory-view.c:1511
 #, c-format
 msgid "Open in %d _New Windows"
 msgstr "Abrir en %d Nova_s Fiestras"
 
-#: src/file-manager/fm-directory-view.c:1583
+#: src/file-manager/fm-directory-view.c:1519
 msgid "_Delete..."
 msgstr "_Borrar..."
 
-#: src/file-manager/fm-directory-view.c:1587
+#: src/file-manager/fm-directory-view.c:1523
 msgid "_Move to Trash"
 msgstr "_Mover ó Lixo"
 
-#: src/file-manager/fm-directory-view.c:1590
+#: src/file-manager/fm-directory-view.c:1526
 msgid "_Duplicate"
 msgstr "_Duplicar"
 
-#: src/file-manager/fm-directory-view.c:1593
+#: src/file-manager/fm-directory-view.c:1529
 msgid "Show _Properties"
 msgstr "Amosar _Propiedades"
 
-#: src/file-manager/fm-directory-view.c:1596
-#: src/file-manager/fm-directory-view.c:1768
+#: src/file-manager/fm-directory-view.c:1532
 msgid "_Empty Trash"
 msgstr "_Baleirar Lixo"
 
-#: src/file-manager/fm-directory-view.c:1601
+#: src/file-manager/fm-directory-view.c:1540
 msgid "R_emove Custom Images"
 msgstr "_Quitar Imaxes Personalizadas"
 
-#: src/file-manager/fm-directory-view.c:1603
+#: src/file-manager/fm-directory-view.c:1542
 msgid "R_emove Custom Image"
 msgstr "_Quitar Imaxes Personalizadas"
 
+#. FIXME: Need to think clearly about what items to include here.
+#. * We want the list to be pretty short, but not degenerately short.
+#. * Zoom In and Out don't really seem to belong. Maybe "Show Properties"
+#. * (for the current location, not selection -- but would have to not
+#. * include this item when there's a selection)? Add Bookmark? (same issue).
+#.
+#: src/file-manager/fm-directory-view.c:1644
+msgid "Zoom In"
+msgstr "Achegar"
+
+#: src/file-manager/fm-directory-view.c:1646
+msgid "Zoom Out"
+msgstr "Alonxar"
+
+#: src/file-manager/fm-directory-view.c:1676
+#, c-format
+msgid "Application %d"
+msgstr "Aplicación %d"
+
 #: src/file-manager/fm-directory-view.c:1688
+#, c-format
+msgid "Viewer %d"
+msgstr "Visualizador %d"
+
+#: src/file-manager/fm-directory-view.c:1812
+msgid "Choose a program with which to open the selected item"
+msgstr "Escolla un programa co que abri-lo elemento seleccionado"
+
+#: src/file-manager/fm-directory-view.c:1825
+msgid "Choose another application with which to open the selected item"
+msgstr "Escolla outra aplicación coa que abri-lo elemento seleccionado"
+
+#: src/file-manager/fm-directory-view.c:1844
+msgid "Choose another viewer with which to view the selected item"
+msgstr "Escolla outro visualizador co que ver o elemento seleccionado"
+
+#: src/file-manager/fm-directory-view.c:1863
 msgid "Open the selected item in this window"
 msgstr "Abri-lo elemento seleccionado nesta fiestra"
 
-#: src/file-manager/fm-directory-view.c:1699
-msgid "Open in New Window"
-msgstr "Abrir nunha Nova Fiestra"
-
-#: src/file-manager/fm-directory-view.c:1700
+#: src/file-manager/fm-directory-view.c:1870
 msgid "Open each selected item in a new window"
 msgstr "Abrir cada elemento seleccionado nunha nova fiestra"
 
-#: src/file-manager/fm-directory-view.c:1715
-msgid "Show Properties"
-msgstr "Amosar Propiedades"
-
-#: src/file-manager/fm-directory-view.c:1716
+#: src/file-manager/fm-directory-view.c:1885
 msgid "View or modify the properties of the selected items"
 msgstr "Mirar ou modificar as propiedades dos elementos seleccionados"
 
-#: src/file-manager/fm-directory-view.c:1731
-msgid "Delete..."
-msgstr "Borrar..."
-
-#: src/file-manager/fm-directory-view.c:1732
+#: src/file-manager/fm-directory-view.c:1896
 msgid "Delete all selected items"
 msgstr "Borrar tódolos elementos seleccionados"
 
-#: src/file-manager/fm-directory-view.c:1744
-msgid "Move to Trash"
-msgstr "Mover ó Lixo"
-
-#: src/file-manager/fm-directory-view.c:1745
-msgid "Move all selected items to Trash"
+#: src/file-manager/fm-directory-view.c:1904
+msgid "Move all selected items to the Trash"
 msgstr "Mover tódolos elementos seleccionados ó Lixo"
 
-#: src/file-manager/fm-directory-view.c:1756
-msgid "Duplicate"
-msgstr "Duplicar"
-
-#: src/file-manager/fm-directory-view.c:1757
+#: src/file-manager/fm-directory-view.c:1911
 msgid "Duplicate all selected items"
 msgstr "Duplicar tódolos elementos seleccionados"
 
-#: src/file-manager/fm-directory-view.c:1769
+#: src/file-manager/fm-directory-view.c:1918
 msgid "Delete all items in the trash"
 msgstr "Borrar tódolos elementos no lixo"
 
-#: src/file-manager/fm-directory-view.c:1781
+#: src/file-manager/fm-directory-view.c:1925
 msgid "Select all items in this window"
 msgstr "Seleccionar tódolos elementos desta fiestra"
 
-#: src/file-manager/fm-directory-view.c:1797
-msgid "Remove Custom Image"
-msgstr "Quitar Imaxe Personalizada"
-
-#: src/file-manager/fm-directory-view.c:1798
+#: src/file-manager/fm-directory-view.c:1938
 msgid "Remove the custom image from each selected icon"
 msgstr "Quita-la imaxe personalizada de cada icona seleccionada"
 
@@ -731,152 +730,188 @@ msgstr ""
 "Escolla a orde da información que aparece baixo os nomes das iconas. Máis "
 "información aparece a medida que se vai achegando."
 
-#: src/file-manager/fm-icon-view.c:233
+#: src/file-manager/fm-icon-view.c:94
+msgid "Sort by _Name"
+msgstr "Ordenar polo _Nome"
+
+#: src/file-manager/fm-icon-view.c:95
+msgid "Keep icons sorted by name in rows"
+msgstr "Manter iconas ordenadas polo nome en ringleiras"
+
+#: src/file-manager/fm-icon-view.c:101
+msgid "Sort by _Size"
+msgstr "Ordenar por _Tamaño"
+
+#: src/file-manager/fm-icon-view.c:102
+msgid "Keep icons sorted by size in rows"
+msgstr "Manter iconas ordenadas por tamaño en ringleiras"
+
+#: src/file-manager/fm-icon-view.c:108
+msgid "Sort by _Type"
+msgstr "Ordenar por Ti_po"
+
+#: src/file-manager/fm-icon-view.c:109
+msgid "Keep icons sorted by type in rows"
+msgstr "Manter iconas ordenadas por tipo en ringleiras"
+
+#: src/file-manager/fm-icon-view.c:115
+msgid "Sort by Modification _Date"
+msgstr "Ordenar pola _Data de Modificación"
+
+#: src/file-manager/fm-icon-view.c:116
+msgid "Keep icons sorted by modification date in rows"
+msgstr "Manter iconas ordenadas pola data de modificación en ringleiras"
+
+#: src/file-manager/fm-icon-view.c:122
+msgid "Sort by _Emblems"
+msgstr "Ordenar por _Emblemas"
+
+#: src/file-manager/fm-icon-view.c:123
+msgid "Keep icons sorted by emblems in rows"
+msgstr "Manter iconas ordenadas por emblemas en ringleiras"
+
+#: src/file-manager/fm-icon-view.c:293
 msgid "_Stretch Icon"
 msgstr "_Alongar Icona"
 
-#: src/file-manager/fm-icon-view.c:241
+#: src/file-manager/fm-icon-view.c:301
 msgid "_Restore Icons to Unstretched Size"
 msgstr "_Restaurar Iconas ó Tamaño sen Alongar"
 
-#: src/file-manager/fm-icon-view.c:243
+#: src/file-manager/fm-icon-view.c:303
 msgid "_Restore Icon to Unstretched Size"
 msgstr "_Restaurar Icona ó Tamaño sen Alongar"
 
-#: src/file-manager/fm-icon-view.c:248
+#: src/file-manager/fm-icon-view.c:307
 msgid "Customize _Icon Text..."
 msgstr "Personalizar o Texto das _Iconas..."
 
 #. Modify file name. We only allow this on a single file selection.
-#: src/file-manager/fm-icon-view.c:252 src/file-manager/fm-list-view.c:1008
+#: src/file-manager/fm-icon-view.c:311
 msgid "_Rename"
 msgstr "_Renomear"
 
-#: src/file-manager/fm-icon-view.c:679
+#: src/file-manager/fm-icon-view.c:824
 msgid "Make the selected icon stretchable"
 msgstr "Facer que a icona seleccionada sexa alongable"
 
-#: src/file-manager/fm-icon-view.c:683
+#: src/file-manager/fm-icon-view.c:829
 msgid "Restore each selected icon to its original size"
 msgstr "Restaurar cada icona seleccionada ó seu tamaño orixinal"
 
-#: src/file-manager/fm-icon-view.c:692
+#: src/file-manager/fm-icon-view.c:838
 msgid "Choose which information appears beneath each icon's name"
 msgstr "Escolla que información aparece baixo o nome de cada icona"
 
-#: src/file-manager/fm-icon-view.c:703
-msgid "Auto Layout"
-msgstr "Auto Disposición"
+#: src/file-manager/fm-icon-view.c:851
+msgid "_Layout"
+msgstr "_Disposición"
 
-#: src/file-manager/fm-icon-view.c:704
-msgid "Keep icons sorted in rows and columns"
-msgstr "Manter iconas ordenadas en ringleiras e columnas"
+#: src/file-manager/fm-icon-view.c:859
+msgid "_Manual Layout"
+msgstr "Disposición _Manual"
 
-#: src/file-manager/fm-icon-view.c:710
-msgid "Manual Layout"
-msgstr "Disposición Manual"
-
-#: src/file-manager/fm-icon-view.c:711
+#: src/file-manager/fm-icon-view.c:860
 msgid "Leave icons wherever they are dropped"
 msgstr "Deixar as iconas onde sexan soltadas"
 
-#: src/file-manager/fm-icon-view.c:719 src/file-manager/fm-list-view.c:904
+#: src/file-manager/fm-icon-view.c:886
 msgid "Rename"
 msgstr "Renomear"
 
-#: src/file-manager/fm-icon-view.c:720 src/file-manager/fm-list-view.c:905
+#: src/file-manager/fm-icon-view.c:887
 msgid "Rename selected item"
 msgstr "Renomear o elemento seleccionado"
 
-#: src/file-manager/fm-list-view.c:340
+#: src/file-manager/fm-list-view.c:491
 msgid "Size"
 msgstr "Tamaño"
 
-#: src/file-manager/fm-list-view.c:341
+#: src/file-manager/fm-list-view.c:492
 msgid "Type"
 msgstr "Tipo"
 
-#: src/file-manager/fm-list-view.c:342
+#: src/file-manager/fm-list-view.c:493
 msgid "Date Modified"
 msgstr "Data de Modificación"
 
-#: src/file-manager/fm-properties-window.c:383
+#: src/file-manager/fm-properties-window.c:370
 #, c-format
 msgid "Nautilus: %s Properties"
 msgstr "Nautilus: Propiedades de %s"
 
-#: src/file-manager/fm-properties-window.c:542
+#: src/file-manager/fm-properties-window.c:529
 msgid "Basic"
 msgstr "Básica"
 
-#: src/file-manager/fm-properties-window.c:605
+#: src/file-manager/fm-properties-window.c:592
 msgid "Type:"
 msgstr "Tipo:"
 
-#: src/file-manager/fm-properties-window.c:607
+#: src/file-manager/fm-properties-window.c:594
 msgid "Size:"
 msgstr "Tamaño:"
 
-#: src/file-manager/fm-properties-window.c:609
+#: src/file-manager/fm-properties-window.c:596
 msgid "Date Modified:"
 msgstr "Data de Modificación:"
 
-#: src/file-manager/fm-properties-window.c:662
+#: src/file-manager/fm-properties-window.c:721
 msgid "Emblems"
 msgstr "Emblemas"
 
-#: src/file-manager/fm-properties-window.c:936
+#: src/file-manager/fm-properties-window.c:1004
 msgid "Permissions"
 msgstr "Permisos"
 
-#: src/file-manager/fm-properties-window.c:942
+#: src/file-manager/fm-properties-window.c:1010
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Vostede non é o dono, polo que non pode cambiar estes permisos."
 
-#: src/file-manager/fm-properties-window.c:973
+#: src/file-manager/fm-properties-window.c:1041
 #, c-format
 msgid "owner (%s):"
 msgstr "dono (%s):"
 
-#: src/file-manager/fm-properties-window.c:976
+#: src/file-manager/fm-properties-window.c:1044
 #, c-format
 msgid "group (%s):"
 msgstr "grupo (%s):"
 
-#: src/file-manager/fm-properties-window.c:979
+#: src/file-manager/fm-properties-window.c:1047
 msgid "others:"
 msgstr "outros:"
 
-#: src/file-manager/fm-properties-window.c:983
+#: src/file-manager/fm-properties-window.c:1051
 msgid "standard format:"
 msgstr "formato estándar:"
 
-#: src/file-manager/fm-properties-window.c:987
+#: src/file-manager/fm-properties-window.c:1055
 msgid "read"
 msgstr "lectura"
 
-#: src/file-manager/fm-properties-window.c:991
+#: src/file-manager/fm-properties-window.c:1059
 msgid "write"
 msgstr "escritura"
 
-#: src/file-manager/fm-properties-window.c:995
+#: src/file-manager/fm-properties-window.c:1063
 msgid "execute"
 msgstr "execución"
 
-#: src/file-manager/fm-properties-window.c:1049
+#: src/file-manager/fm-properties-window.c:1117
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Non se puideron determina-los permisos de \"%s\"."
 
-#: src/file-manager/fm-properties-window.c:1063
+#: src/file-manager/fm-properties-window.c:1131
 msgid "More"
 msgstr "Máis"
 
-#: src/file-manager/fm-properties-window.c:1069
+#: src/file-manager/fm-properties-window.c:1137
 msgid "MIME type:"
 msgstr "Tipo MIME:"
 
-#: src/file-manager/fm-properties-window.c:1073
+#: src/file-manager/fm-properties-window.c:1141
 msgid "Tell sullivan@eazel.com all your good ideas for what should go here."
 msgstr ""
 "Dígalle a sullivan@eazel.com tódalas súas boas ideas que deberían ir aquí."
@@ -886,66 +921,66 @@ msgid "Prefs Box"
 msgstr "Caixa de Prefs"
 
 #. today, use special word
-#: libnautilus-extensions/nautilus-file.c:1078
+#: libnautilus-extensions/nautilus-file.c:1242
 msgid "today %-I:%M %p"
 msgstr "hoxe %-I:%M %p"
 
 #. yesterday, use special word
-#: libnautilus-extensions/nautilus-file.c:1081
+#: libnautilus-extensions/nautilus-file.c:1245
 msgid "yesterday %-I:%M %p"
 msgstr "onte %-I:%M %p"
 
 #. current week, include day of week
-#: libnautilus-extensions/nautilus-file.c:1084
+#: libnautilus-extensions/nautilus-file.c:1248
 msgid "%A %-m/%-d/%y %-I:%M %p"
 msgstr "%A %-m/%-d/%y %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:1086
+#: libnautilus-extensions/nautilus-file.c:1250
 msgid "%-m/%-d/%y %-I:%M %p"
 msgstr "%-m/%-d/%y %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:1310
+#: libnautilus-extensions/nautilus-file.c:1493
 msgid "unknown owner"
 msgstr "dono descoñecido"
 
-#: libnautilus-extensions/nautilus-file.c:1341
+#: libnautilus-extensions/nautilus-file.c:1524
 msgid "unknown group"
 msgstr "grupo descoñecido"
 
-#: libnautilus-extensions/nautilus-file.c:1370
+#: libnautilus-extensions/nautilus-file.c:1553
 msgid "unknown MIME type"
 msgstr "tipo MIME descoñecido"
 
-#: libnautilus-extensions/nautilus-file.c:1394
+#: libnautilus-extensions/nautilus-file.c:1577
 msgid "xxx"
 msgstr "xxx"
 
-#: libnautilus-extensions/nautilus-file.c:1394
+#: libnautilus-extensions/nautilus-file.c:1577
 msgid "--"
 msgstr "--"
 
-#: libnautilus-extensions/nautilus-file.c:1397
+#: libnautilus-extensions/nautilus-file.c:1580
 msgid "0 items"
 msgstr "0 elementos"
 
-#: libnautilus-extensions/nautilus-file.c:1400
+#: libnautilus-extensions/nautilus-file.c:1583
 msgid "1 item"
 msgstr "1 elemento"
 
-#: libnautilus-extensions/nautilus-file.c:1402
+#: libnautilus-extensions/nautilus-file.c:1585
 #, c-format
 msgid "%u items"
 msgstr "%u elementos"
 
-#: libnautilus-extensions/nautilus-file.c:1511
+#: libnautilus-extensions/nautilus-file.c:1694
 msgid "program"
 msgstr "programa"
 
-#: libnautilus-extensions/nautilus-file.c:1514
+#: libnautilus-extensions/nautilus-file.c:1697
 msgid "unknown type"
 msgstr "tipo descoñecido"
 
-#: libnautilus-extensions/nautilus-file.c:1840
+#: libnautilus-extensions/nautilus-file.c:1974
 msgid " --"
 msgstr " --"
 
@@ -1154,28 +1189,28 @@ msgstr "Introduza o Texto"
 msgid "Enter Password"
 msgstr "Introduza o Contrasinal"
 
-#: components/music/nautilus-music-view.c:125
-msgid "Track"
-msgstr "Pista"
+#: components/music/nautilus-music-view.c:152
+msgid "#"
+msgstr "#"
 
-#: components/music/nautilus-music-view.c:125
+#: components/music/nautilus-music-view.c:152
 msgid "Title"
 msgstr "Título"
 
-#: components/music/nautilus-music-view.c:125
+#: components/music/nautilus-music-view.c:152
 msgid "Artist"
 msgstr "Artista"
 
-#: components/music/nautilus-music-view.c:125
+#: components/music/nautilus-music-view.c:152
 msgid "Time"
 msgstr "Tempo"
 
 #. allocate a widget for the album title
-#: components/music/nautilus-music-view.c:144
+#: components/music/nautilus-music-view.c:174
 msgid "Album Title"
 msgstr "Título do Álbum"
 
-#: components/notes/ntl-notes.c:185 components/notes/ntl-notes.c:194
+#: components/notes/ntl-notes.c:180 components/notes/ntl-notes.c:189
 msgid "Notes"
 msgstr "Notas"
 
@@ -1256,7 +1291,7 @@ msgstr "versión %s-%s"
 msgid "Package Contents: %d files"
 msgstr "Contido do Paquete: %d ficheiros"
 
-#: components/sample/nautilus-sample-content-view.c:141
+#: components/sample/nautilus-sample-content-view.c:142
 #, c-format
 msgid ""
 "%s\n"
@@ -1267,7 +1302,7 @@ msgstr ""
 "\n"
 "Este é un compoñente de exemplo da visualización de contidos de Nautilus."
 
-#: components/sample/nautilus-sample-content-view.c:202
+#: components/sample/nautilus-sample-content-view.c:203
 #, c-format
 msgid ""
 "%s\n"
@@ -1278,46 +1313,25 @@ msgstr ""
 "\n"
 "Vostede premeu no botón de exemplo da barra de ferramentas."
 
-#.
-#. * Create our sample menu item.
-#. *
-#. * Note that it's sorta bogus that we know Nautilus has a menu whose
-#. * path is "/File", and also that we know a sensible position to use within
-#. * that menu. Nautilus should publish this information somehow.
-#.
 #. BonoboUIHandler
 #. menu item path, must start with /some-existing-menu-path and be otherwise unique
-#: components/sample/nautilus-sample-content-view.c:243
+#: components/sample/nautilus-sample-content-view.c:244
 msgid "_Sample"
 msgstr "_Exemplo"
 
 #. menu item user-displayed label
-#: components/sample/nautilus-sample-content-view.c:244
+#: components/sample/nautilus-sample-content-view.c:245
 msgid "This is a sample merged menu item"
 msgstr "Este é un elemento de menú de exemplo"
 
-#. hint that appears in status bar
-#. position within menu; -1 means last
-#. pixmap type
-#. pixmap data
-#. accelerator key, couldn't bear the thought of using Control-S for anything except Save
-#. accelerator key modifiers
-#. callback function
-#. callback function data
-#.
-#. * Create our sample toolbar button.
-#. *
-#. * Note that it's sorta bogus that we know Nautilus has a toolbar whose
-#. * path is "/Main". Nautilus should publish this information somehow.
-#.
 #. BonoboUIHandler
-#. button path, must start with /Main/ and be otherwise unique
-#: components/sample/nautilus-sample-content-view.c:261
+#. button path, must start with /some-existing-toolbar-path and be otherwise unique
+#: components/sample/nautilus-sample-content-view.c:264
 msgid "Sample"
 msgstr "Exemplo"
 
 #. button user-displayed label
-#: components/sample/nautilus-sample-content-view.c:262
+#: components/sample/nautilus-sample-content-view.c:265
 msgid "This is a sample merged toolbar button"
 msgstr "Este é un botón de barra de ferramentas de exemplo"
 
@@ -1335,6 +1349,30 @@ msgstr "Resultados"
 #: components/websearch/ntl-web-search.c:237
 msgid "WebSearch"
 msgstr "Busca na Web"
+
+#~ msgid "Select All"
+#~ msgstr "Seleccionar Todos"
+
+#~ msgid "Track"
+#~ msgstr "Pista"
+
+#~ msgid "Open in New Window"
+#~ msgstr "Abrir nunha Nova Fiestra"
+
+#~ msgid "Show Properties"
+#~ msgstr "Amosar Propiedades"
+
+#~ msgid "Delete..."
+#~ msgstr "Borrar..."
+
+#~ msgid "Move to Trash"
+#~ msgstr "Mover ó Lixo"
+
+#~ msgid "Duplicate"
+#~ msgstr "Duplicar"
+
+#~ msgid "Remove Custom Image"
+#~ msgstr "Quitar Imaxe Personalizada"
 
 #~ msgid "Color selector"
 #~ msgstr "Escolledor de cor"
