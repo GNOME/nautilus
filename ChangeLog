@@ -1,3 +1,15 @@
+2000-10-30  Darin Adler  <darin@eazel.com>
+
+	Fix bug 4202 (rename a file to an existing file will crash
+	Nautilus).
+	
+	* libnautilus-extensions/nautilus-file.c: (rename_callback): Mark
+	the overwritten file as "gone" if we succeed in renaming to an
+	existing file's name. Either the module overwrote the file or the
+	file was deleted "under Nautilus's nose" -- in either case it is
+	gone.
+	(nautilus_file_update_name): Fix comment.
+
 2000-10-30  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar-title.c: (update_icon):

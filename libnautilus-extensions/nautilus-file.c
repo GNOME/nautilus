@@ -810,15 +810,26 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 		 gpointer callback_data)
 {
 	Operation *op;
+	NautilusDirectory *directory;
+	NautilusFile *existing_file;
 
 	op = callback_data;
 	g_assert (handle == op->handle);
 
 	if (result == GNOME_VFS_OK && new_info != NULL) {
+		directory = op->file->details->directory;
+		
+		/* If there was another file by the same name in this
+		 * directory, mark it gone.
+		 */
+		existing_file = nautilus_directory_find_file (directory, new_info->name);
+		if (existing_file != NULL) {
+			nautilus_file_mark_gone (existing_file);
+			nautilus_file_changed (existing_file);
+		}
+
 		nautilus_directory_rename_file_metadata
-			(op->file->details->directory,
-			 op->file->details->name,
-			 new_info->name);
+			(directory, op->file->details->name, new_info->name);
 		nautilus_file_update_info (op->file, new_info);
 	}
 	operation_complete (op, result);
@@ -1069,7 +1080,6 @@ nautilus_file_update_name (NautilusFile *file, const char *name)
 		return FALSE;
 	}
 
-	/* Make a copy and update the file name in the copy. */
 	if (strcmp (file->details->name, name) == 0) {
 		return FALSE;
 	}
@@ -1082,6 +1092,7 @@ nautilus_file_update_name (NautilusFile *file, const char *name)
 		nautilus_directory_end_file_name_change
 			(file->details->directory, file, node);
 	} else {
+		/* Make a copy and update the file name in the copy. */
 		info = gnome_vfs_file_info_new ();
 		gnome_vfs_file_info_copy (info, file->details->info);
 		g_free (info->name);
