@@ -338,13 +338,19 @@ set_up_toolbar_images (NautilusWindow *window)
 static GtkWidget*
 allocate_throbber (GtkWidget *toolbar)
 {
-	GtkWidget *throbber;
+	GtkWidget *throbber, *frame;
 	gboolean small_mode;
 	
 	throbber = nautilus_throbber_new ();
 	gtk_widget_show (throbber);
-	gtk_toolbar_append_widget (GTK_TOOLBAR (toolbar), throbber, NULL, NULL);
-	nautilus_toolbar_set_throbber (NAUTILUS_TOOLBAR (toolbar), throbber);
+	
+	frame = gtk_frame_new (NULL);
+	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_IN);	
+	gtk_widget_show (frame);
+	gtk_container_add (GTK_CONTAINER (frame), throbber);
+		
+	gtk_toolbar_append_widget (GTK_TOOLBAR (toolbar), frame, NULL, NULL);
+	nautilus_toolbar_set_throbber (NAUTILUS_TOOLBAR (toolbar), frame);
 	
 	small_mode = GTK_TOOLBAR (toolbar)->style != GTK_TOOLBAR_BOTH;
 	nautilus_throbber_set_small_mode (NAUTILUS_THROBBER (throbber), small_mode);

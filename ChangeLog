@@ -1,3 +1,13 @@
+2000-10-02  Andy Hertzfeld  <andy@eazel.com>
+
+	made some throbber changes for Arlo
+	
+	* src/nautilus-throbber.c: (bump_throbber_frame),
+	(nautilus_throbber_start):
+	reset the throbber frame each time it's restarted
+	* src/nautilus-window-toolbars.c: (allocate_throbber):
+	put the throbber into a gtk frame
+	
 2000-10-02  Michael Engber  <engber@eazel.com>
 
 	More background drawing speedups - this time mainly for

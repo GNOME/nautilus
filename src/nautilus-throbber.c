@@ -271,8 +271,8 @@ bump_throbber_frame (NautilusThrobber *throbber)
 	throbber->details->current_frame += 1;
 	if (throbber->details->current_frame > throbber->details->max_frame) {
 		throbber->details->current_frame = 0;
-	}	
-	
+	}
+
 	gtk_widget_queue_draw (GTK_WIDGET (throbber));
 	return TRUE;
 }
@@ -285,7 +285,9 @@ nautilus_throbber_start (NautilusThrobber *throbber)
 {
 	if (throbber->details->timer_task != -1)
 		gtk_timeout_remove(throbber->details->timer_task);
-
+	
+	/* reset the frame count */
+	throbber->details->current_frame = 0;
 	throbber->details->timer_task = gtk_timeout_add (THROBBER_TIMEOUT, (GtkFunction) bump_throbber_frame, throbber);
 }
 
