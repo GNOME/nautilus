@@ -200,7 +200,7 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 			    desktop_icon_view);
 
 	/* The desktop uses a vertical layout mode */
-	nautilus_icon_container_set_layout_mode (NAUTILUS_ICON_CONTAINER (desktop_icon_view),
+	nautilus_icon_container_set_layout_mode (NAUTILUS_ICON_CONTAINER (icon_container),
 					 	 NAUTILUS_ICON_CANVAS_LAYOUT_VERTICAL_CLIPPED);
 
 
