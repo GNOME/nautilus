@@ -1242,7 +1242,7 @@ add_play_controls (NautilusMusicView *music_view)
 	/* display the "cant play message if necessary */
 	
 	if (!music_view->details->sound_enabled) {
-		label = nautilus_label_new (_("No sound hardware detected!"));
+		label = nautilus_label_new (_("Sound hardware missing or busy!"));
 		nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 		nautilus_label_set_text_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_RED);
 		gtk_widget_show (label);

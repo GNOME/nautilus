@@ -1,3 +1,15 @@
+2000-10-02  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/file-manager/fm-directory-view.c: (activate_callback):
+	fixed the PR2 part of bug 2390, "command:" URI-activating security
+	hole, by disallowing commands from remote locations. Downgrading
+	the rest of the bug to usable, when we will implement Frank's other
+	recommendations.
+		
+	* components/music/nautilus-music-view.c: (add_play_controls):
+	tweaked the error message when we can't open the sound driver to
+	better reflect reality.
+	
 2000-10-02  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-dnd.c:
