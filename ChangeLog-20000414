@@ -1,5 +1,18 @@
 2000-01-26  John Sullivan  <sullivan@eazel.com>
 
+	Moved list view sort indicator to left of right-justified 
+	columns.
+
+	* src/file-manager/fm-directory-view-list.c:
+	(create_flist): Marked the sort indicators with special
+	data/value pairs so they can be located later regardless
+	of view order. Made right-justified ones use pack_start
+	instead of pack_end.
+	(get_sort_indicator): Find sort indicators from special
+	data/value pairs rather than relying on view order.
+
+2000-01-26  John Sullivan  <sullivan@eazel.com>
+
 	A few changes in the direction of improving the directory
 	view sorting architecture. No visible effects yet.
 

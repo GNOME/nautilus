@@ -57,6 +57,12 @@ struct _FMDirectoryViewListDetails
 #define LIST_VIEW_COLUMN_DATE_MODIFIED	4
 #define LIST_VIEW_COLUMN_COUNT		5
 
+/* special values for get_data and set_data */
+
+#define SORT_INDICATOR_KEY		"sort indicator"
+#define UP_INDICATOR_VALUE		1
+#define DOWN_INDICATOR_VALUE		2
+
 
 /* forward declarations */
 static void add_to_flist 			    (FMDirectoryViewList *list_view,
@@ -272,24 +278,34 @@ create_flist (FMDirectoryViewList *list_view)
 		label = gtk_label_new (titles[i]);
 		gtk_widget_show (GTK_WIDGET (label));
 
-		/* sort indicators are initially hidden */
+		/* Sort indicators are initially hidden. They're marked with
+		 * special data so they can be located later in each column. 
+		 */
 		sort_up_indicator = gnome_pixmap_new_from_xpm_d (up_xpm);
+		gtk_object_set_data(GTK_OBJECT(sort_up_indicator), 
+		    		    SORT_INDICATOR_KEY, 
+		    		    GINT_TO_POINTER (UP_INDICATOR_VALUE));
+
 		sort_down_indicator = gnome_pixmap_new_from_xpm_d (down_xpm);
-
-		if (!right_justified)
-		{
-			gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-		}
-
-		gtk_box_pack_end (GTK_BOX (hbox), sort_up_indicator, FALSE, FALSE, GNOME_PAD);
-		gtk_box_pack_end (GTK_BOX (hbox), sort_down_indicator, FALSE, FALSE, GNOME_PAD);
+		gtk_object_set_data(GTK_OBJECT(sort_down_indicator), 
+		    		    SORT_INDICATOR_KEY, 
+		    		    GINT_TO_POINTER (DOWN_INDICATOR_VALUE));
 
 		if (right_justified)
 		{
+			gtk_box_pack_start (GTK_BOX (hbox), sort_up_indicator, FALSE, FALSE, GNOME_PAD);
+			gtk_box_pack_start (GTK_BOX (hbox), sort_down_indicator, FALSE, FALSE, GNOME_PAD);
 			gtk_box_pack_end (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
 			gtk_clist_set_column_justification (GTK_CLIST (flist), i, GTK_JUSTIFY_RIGHT);
 		}
-		
+		else
+		{
+			gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+			gtk_box_pack_end (GTK_BOX (hbox), sort_up_indicator, FALSE, FALSE, GNOME_PAD);
+			gtk_box_pack_end (GTK_BOX (hbox), sort_down_indicator, FALSE, FALSE, GNOME_PAD);
+		}
+
 		gtk_clist_set_column_widget (GTK_CLIST (flist), i, hbox);
 	}
 
@@ -535,6 +551,7 @@ get_sort_indicator (GtkFList *flist, gint column, gboolean reverse)
 	GtkWidget *column_widget;
 	GtkWidget *result;
 	GList *children;
+	GList *iter;
 
 	g_return_val_if_fail (GTK_IS_FLIST (flist), NULL);
 	g_return_val_if_fail (column >= 0, NULL);
@@ -543,7 +560,26 @@ get_sort_indicator (GtkFList *flist, gint column, gboolean reverse)
 	g_assert (GTK_IS_HBOX (column_widget));
 
 	children = gtk_container_children (GTK_CONTAINER (column_widget));
-	result = GTK_WIDGET (g_list_nth_data (children, reverse ? 1 : 2));
+	
+	iter = children;
+	result = NULL;
+	while (iter != NULL)
+	{
+		int indicator_int = GPOINTER_TO_INT (
+			gtk_object_get_data (GTK_OBJECT (iter->data), SORT_INDICATOR_KEY));
+
+		if ((reverse && indicator_int == DOWN_INDICATOR_VALUE) ||
+		    (!reverse && indicator_int == UP_INDICATOR_VALUE))
+		{
+			result = GTK_WIDGET (iter->data);
+			break;
+		}
+
+		iter = g_list_next(iter);
+	}
+
+	g_assert (result != NULL);
+	
 	g_list_free (children);
 
 	return result;
