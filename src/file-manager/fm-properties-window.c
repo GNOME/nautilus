@@ -1714,9 +1714,9 @@ forget_properties_window (gpointer data, gpointer user_data)
 	window = GTK_WINDOW (data);
 	file = NAUTILUS_FILE (user_data);
 
+	nautilus_file_monitor_remove (file, window);
 	g_hash_table_remove (windows, file);
 	nautilus_file_unref (file);
-	nautilus_file_monitor_remove (file, window);
 }
 
 static NautilusFile *
@@ -1741,13 +1741,10 @@ get_and_ref_file_to_display (NautilusFile *file)
 		if (local_path != NULL) {
 			type = nautilus_link_get_link_type (local_path);
 			if (strcmp (type, NAUTILUS_LINK_MOUNT) == 0 ||
+			    strcmp (type, NAUTILUS_LINK_TRASH) == 0 ||
 			    strcmp (type, NAUTILUS_LINK_HOME) == 0) {
 				use_linked_file = TRUE;
 			}
-			/* FIXME bugzilla.eazel.com 2146:
-			 * Should handle NAUTILUS_LINK_TRASH too, by getting
-			 * a NautilusFile object representing the Trash.
-			 */
 		}
 
 		if (use_linked_file) {

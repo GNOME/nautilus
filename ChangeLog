@@ -1,3 +1,15 @@
+2000-08-14  John Sullivan  <sullivan@eazel.com>
+
+	* src/file-manager/fm-properties-window.c:
+	(forget_properties_window): Swapped the order of
+	nautilus_file_monitor_remove and nautilus_file_unref.
+	Unref must happen after we're otherwise done with the
+	file (I hadn't seen any symptoms of this bug).
+	(get_and_ref_file_to_display): Add NAUTILUS_LINK_TRASH
+	to the set of nautilus-link types for which we show the
+	target's properties. Currently that means you get the
+	properties of the single Trash directory.
+
 2000-08-14  Darin Adler  <darin@eazel.com>
 
 	* configure.in: Fixed GtkHTML configure section so it will
