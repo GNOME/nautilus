@@ -23,6 +23,9 @@
 
 #include <config.h>
 
+#include "nautilus-summary-view.h"
+#include "shared-service-widgets.h"
+
 #include <gnome-xml/tree.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-background.h>
@@ -36,10 +39,6 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "nautilus-summary-view.h"
-
-
-
 /* A NautilusContentView's private information. */
 struct _NautilusSummaryViewDetails {
 	char 		*uri;
@@ -49,7 +48,6 @@ struct _NautilusSummaryViewDetails {
 	GtkWidget	*feedback_text;
 };
 
-#define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR	"rgb:0000/6666/6666"
 #define SERVICE_DOMAIN_NAME			"testmachine.eazel.com"
 
 static void	nautilus_summary_view_initialize_class	(NautilusSummaryViewClass	*klass);
@@ -59,8 +57,6 @@ static void	summary_load_location_callback		(NautilusView		*nautilus_view,
 							 const char		*location,
 	 						 NautilusSummaryView	*view);
 static void	generate_summary_form			(NautilusSummaryView	*view);
-static void	generate_form_title			(NautilusSummaryView	*view,
-							 const char		*title_text);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
 
@@ -75,43 +71,13 @@ generate_summary_form (NautilusSummaryView	*view) {
 	gtk_widget_show (view->details->form);
 
 	/* setup the title */
-	generate_form_title (view, "Eazel Services Summary");
+	create_services_title_widget ("Eazel Services Summary");
 
 	/* put a mystery label here as a placeholder. */
 	temp_widget = gtk_label_new ("I am just a view.  One day I will be gone.");
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_widget, 0, 0, 0);
 	gtk_widget_show (temp_widget);
 
-}
-
-static void
-generate_form_title (NautilusSummaryView	*view,
-                  const char			*title_text) {
-
-        GtkWidget	*temp_widget;
-        char		*file_name;
-        GtkWidget	*temp_container;
-        GdkFont		*font;
-
-        temp_container = gtk_hbox_new (FALSE, 0);
-
-        gtk_box_pack_start (GTK_BOX (view->details->form), temp_container, 0, 0, 4);
-        gtk_widget_show (temp_container);
-
-        file_name = nautilus_pixmap_file ("eazel-cloud-logo.png");
-        temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
-        gtk_box_pack_start (GTK_BOX(temp_container), temp_widget, 0, 0, 8);
-        gtk_widget_show (temp_widget);
-        g_free (file_name);
-
-        view->details->form_title = gtk_label_new (title_text);
-
-        font = nautilus_font_factory_get_font_from_preferences (18);
-        nautilus_gtk_widget_set_font (view->details->form_title, font);
-        gdk_font_unref (font);
-
-        gtk_box_pack_start (GTK_BOX (temp_container), view->details->form_title, 0, 0, 8);
-        gtk_widget_show (view->details->form_title);
 }
 
 static void

@@ -25,6 +25,10 @@
 
 #include <config.h>
 
+#include "nautilus-login-view.h"
+#include "shared-service-widgets.h"
+#include "shared-service-utilities.h"
+
 #include <gnome-xml/tree.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-background.h>
@@ -40,10 +44,6 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "nautilus-login-view.h"
-
-
-
 /* A NautilusContentView's private information. */
 struct _NautilusLoginViewDetails {
 	char 		*uri;
@@ -57,9 +57,7 @@ struct _NautilusLoginViewDetails {
 	GtkWidget	*feedback_text;
 };
 
-#define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
-#define SERVICE_DOMAIN_NAME			"testmachine.eazel.com"
-#define SERVICE_SUMMARY_LOCATION                "http://eazel1.eazel.com/services/control1.html"
+#define SERVICE_SUMMARY_LOCATION                "eazel-summary:"
 #define SERVICE_HELP_LOCATION                   "http://www.eazel.com"
 
 static void       nautilus_login_view_initialize_class (NautilusLoginViewClass     *klass);
@@ -68,8 +66,6 @@ static void       nautilus_login_view_destroy          (GtkObject               
 static void       login_load_location_callback         (NautilusView               *nautilus_view,
 							const char                 *location,
 							NautilusLoginView          *view);
-static void       show_feedback                        (NautilusLoginView          *view,
-							char                       *error_message);
 static void       generate_login_form                  (NautilusLoginView          *view);
 static void       entry_changed_cb                     (GtkWidget                  *entry,
 							NautilusLoginView          *view);
@@ -77,12 +73,6 @@ static void       login_button_cb                      (GtkWidget               
 							NautilusLoginView          *view);
 static void       maintenance_button_cb                (GtkWidget                  *button,
 							NautilusLoginView          *view);
-static void       go_to_uri                            (NautilusLoginView          *view,
-							char                       *uri);
-static GtkWidget* create_title_widget                  (const char                 *title_text);
-static GtkWidget* create_image_widget                  (const char                 *icon_name,
-							const char                 *background_color_spec,
-							NautilusImagePlacementType  placement);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusLoginView, nautilus_login_view, GTK_TYPE_EVENT_BOX)
 
@@ -104,7 +94,7 @@ generate_login_form (NautilusLoginView	*view)
 	gtk_widget_show (view->details->form);
 
 	/* Setup the title */
-	title = create_title_widget ("Please Sign in!");
+	title = create_services_title_widget ("Please Sign in!");
 
         gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
         gtk_widget_show (title);
@@ -223,11 +213,11 @@ login_button_cb (GtkWidget	*button, NautilusLoginView	*view) {
 	registered_ok = TRUE;
 
 	if (registered_ok == FALSE) {
-		show_feedback (view, "Login Failed! Please try again.");
+		show_feedback (view->details->feedback_text, "Login Failed! Please try again.");
 	}
 
 	if (registered_ok) {
-		go_to_uri (view, SERVICE_SUMMARY_LOCATION);
+		go_to_uri (view->details->nautilus_view, SERVICE_SUMMARY_LOCATION);
 	}
 }
 
@@ -235,25 +225,10 @@ login_button_cb (GtkWidget	*button, NautilusLoginView	*view) {
 static void
 maintenance_button_cb (GtkWidget	*button, NautilusLoginView	*view) {
 
-	go_to_uri (view, SERVICE_HELP_LOCATION);
-}
-
-/* utility routine to show an error message */
-static void
-show_feedback (NautilusLoginView	*view, char	*error_message) {
-
-        gtk_label_set_text (GTK_LABEL (view->details->feedback_text), error_message);
-        gtk_widget_show (view->details->feedback_text);
+	go_to_uri (view->details->nautilus_view, SERVICE_HELP_LOCATION);
 }
 
 /* utility routine to go to another uri */
-
-static void
-go_to_uri (NautilusLoginView	*view, char	*uri) {
-
-	nautilus_view_open_location (view->details->nautilus_view, uri);
-
-}
 
 static void
 nautilus_login_view_initialize_class (NautilusLoginViewClass *klass) {
@@ -338,94 +313,3 @@ login_load_location_callback (NautilusView	*nautilus_view,
 	nautilus_view_report_load_complete (nautilus_view);
 }
 
-/* FIXME bugzilla.eazel.com xxxx: 
- * create_image_widget() and create_title_widget() are cut-n-pasted from 
- * components/services/install/nautilus-view/nautilus-service-install-view.c
- * These should be put in a common place.
- */
-static GtkWidget*
-create_image_widget (const char			*icon_name,
-		     const char			*background_color_spec,
-		     NautilusImagePlacementType	placement)
-{
-	char		*path;
-	GtkWidget	*image;
-	GdkPixbuf	*pixbuf;
-	guint32		background_rgb;
-
-	g_return_val_if_fail (icon_name != NULL, NULL);
-	g_return_val_if_fail (background_color_spec != NULL, NULL);
-
-	image = nautilus_image_new();
-	
-	path = nautilus_pixmap_file (icon_name);
-	
-	pixbuf = gdk_pixbuf_new_from_file (path);
-	g_free (path);
-
-	if (pixbuf != NULL) {
-		nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image), pixbuf);
-		gdk_pixbuf_unref (pixbuf);
-	}
-	else {
-		g_warning ("Could not find the requested icon.");
-	}
-	
-	nautilus_image_set_background_type (NAUTILUS_IMAGE (image),
-					    NAUTILUS_IMAGE_BACKGROUND_SOLID);
-	
-	background_rgb = nautilus_parse_rgb_with_white_default (background_color_spec);
-	
-	nautilus_image_set_background_color (NAUTILUS_IMAGE (image),
-					     background_rgb);
-
-	nautilus_image_set_placement_type (NAUTILUS_IMAGE (image), placement);
-
-	return image;
-}
-
-static GtkWidget*
-create_title_widget (const char *title_text) 
-{
-        GtkWidget	*title_hbox;
-        GtkWidget	*logo_image;
-        GtkWidget	*filler_image;
-        GtkWidget	*text_image;
-	GdkFont		*font;
-
-	g_assert (title_text != NULL);
-
-        title_hbox = gtk_hbox_new (FALSE, 0);
-
-	logo_image = create_image_widget ("eazel-services-logo.png",
-					  SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
-					  NAUTILUS_IMAGE_PLACEMENT_CENTER);
-
-	filler_image = create_image_widget ("eazel-services-logo-tile.png",
-					    SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
-					    NAUTILUS_IMAGE_PLACEMENT_TILE);
-
-	text_image = create_image_widget ("eazel-services-logo-tile.png",
-					  SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
-					  NAUTILUS_IMAGE_PLACEMENT_TILE);
-	
-	font = nautilus_font_factory_get_font_by_family ("helvetica", 20);
-
-	nautilus_image_set_label_text (NAUTILUS_IMAGE (text_image), title_text);
-	nautilus_image_set_label_font (NAUTILUS_IMAGE (text_image), font);
-	nautilus_image_set_extra_width (NAUTILUS_IMAGE (text_image), 8);
-	nautilus_image_set_right_offset (NAUTILUS_IMAGE (text_image), 8);
-	nautilus_image_set_top_offset (NAUTILUS_IMAGE (text_image), 3);
-
-	gdk_font_unref (font);
-
-	gtk_widget_show (logo_image);
-	gtk_widget_show (filler_image);
-	gtk_widget_show (text_image);
-
-        gtk_box_pack_start (GTK_BOX (title_hbox), logo_image, FALSE, FALSE, 0);
-        gtk_box_pack_start (GTK_BOX (title_hbox), filler_image, TRUE, TRUE, 0);
-        gtk_box_pack_end (GTK_BOX (title_hbox), text_image, FALSE, FALSE, 0);
-
-	return title_hbox;
-}

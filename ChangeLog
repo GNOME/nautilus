@@ -1,3 +1,36 @@
+2000-07-18  J Shane Culpepper  <pepper@eazel.com>
+
+	*
+	components/services/install/nautilus-view/nautilus-service-install-
+	view.c:
+	* components/services/login/nautilus-view/Makefile.am:
+	* components/services/login/nautilus-view/nautilus-login-view.c:
+	(generate_login_form), (login_button_cb), (maintenance_button_cb):
+	*
+	components/services/nautilus-dependant-shared/shared-service-utilit
+	ies.c: (is_location):
+	*
+	components/services/nautilus-dependant-shared/shared-service-utilit
+	ies.h:
+	*
+	components/services/nautilus-dependant-shared/shared-service-widget
+	s.c: (create_services_header_widget),
+	(set_widget_foreground_color), (show_feedback):
+	*
+	components/services/nautilus-dependant-shared/shared-service-widget
+	s.h:
+	*
+	components/services/startup/nautilus-view/nautilus-service-startup-
+	view.c: (generate_startup_form),
+	(nautilus_service_startup_view_get_nautilus_view):
+	* components/services/summary/nautilus-view/Makefile.am:
+	*
+	components/services/summary/nautilus-view/nautilus-summary-view.c:
+	(generate_summary_form):
+
+	Second half of fix for task # 1632. Most of the common funtions that
+	currently exist have been merged to a single location.
+
 2000-07-18  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/Makefile.am:

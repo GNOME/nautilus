@@ -49,8 +49,7 @@
 #include <errno.h>
 #include <sys/stat.h>
 
-#define SERVICE_DOMAIN_NAME			"testmachine.eazel.com"
-#define NEXT_VIEW				"http://eazel1.eazel.com/services/control2.html"
+#define NEXT_VIEW				"eazel-summary:"
 
 static void       nautilus_service_install_view_initialize_class (NautilusServiceInstallViewClass	*klass);
 static void       nautilus_service_install_view_initialize       (NautilusServiceInstallView		*view);

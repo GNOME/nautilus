@@ -30,6 +30,8 @@
 
 void		go_to_uri		(NautilusView		*view,
 					 char			*uri);
+gboolean	is_location		(char			*document_string,
+					 const char		*place_string);
 
 #endif /* SHARED_SERVICE_UTILITIES_H */
 

@@ -38,6 +38,10 @@ GtkWidget*	 create_image_widget			(const char			*icon_name,
 GtkWidget*	 create_services_title_widget		(const char			*title_text);
 GtkWidget*	 create_services_header_widget		(const char			*left_text,
 							 const char			*right_text);
+void		 set_widget_foreground_color		(GtkWidget			*widget,
+							 const char			*color_spec);
+void		 show_feedback				(GtkWidget			*widget,
+							 char				*error_text);
 
 #endif /* SHARED_SERVICE_WIDGETS_H */
 

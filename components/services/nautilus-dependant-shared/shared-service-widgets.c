@@ -38,6 +38,7 @@
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <stdio.h>
 
+/* Ramiro's very cool generic image widget */
 GtkWidget*
 create_image_widget (const char			*icon_name,
 		     const char			*background_color_spec,
@@ -79,6 +80,8 @@ create_image_widget (const char			*icon_name,
 	return image;
 
 }
+
+/* utility routine to create the standard services title bar */
 
 GtkWidget*
 create_services_title_widget (const char	*title_text) {
@@ -126,6 +129,8 @@ create_services_title_widget (const char	*title_text) {
 	return title_hbox;
 
 }
+
+/* utility routine to create a section header */
 
 GtkWidget*
 create_services_header_widget	(const char	*left_text,
@@ -181,6 +186,41 @@ create_services_header_widget	(const char	*left_text,
 	gtk_box_pack_end (GTK_BOX (title_hbox), right_image, FALSE, FALSE, 0);
 
 	return title_hbox;
+
+}
+
+/* utility routine to set the text color */
+
+void
+set_widget_foreground_color (GtkWidget	*widget, const char	*color_spec) {
+
+	GtkStyle	*style;
+	GdkColor	color;
+
+	style = gtk_widget_get_style (widget);
+
+	/* Make a copy of the style. */
+	style = gtk_style_copy (style);
+
+	nautilus_gdk_color_parse_with_white_default (color_spec, &color);
+	style->fg[GTK_STATE_NORMAL] = color;
+	style->base[GTK_STATE_NORMAL] = color;
+	style->fg[GTK_STATE_ACTIVE] = color;
+	style->base[GTK_STATE_ACTIVE] = color;
+
+	/* Put the style in the widget. */
+	gtk_widget_set_style (widget, style);
+	gtk_style_unref (style);
+
+}
+
+/* utility routine to show an error message */
+
+void
+show_feedback (GtkWidget	*widget, char	*error_message) {
+
+	gtk_label_set_text (GTK_LABEL (widget), error_message);
+	gtk_widget_show (widget);
 
 }
 
