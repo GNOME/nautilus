@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2000-05-10 21:34+0900\n"
+"POT-Creation-Date: 2000-05-11 22:32+0900\n"
 "PO-Revision-Date: 2000-05-10 23:59+0900\n"
 "Last-Translator: Young-Ho,Cha <ganadist@dacome.co.kr>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -743,6 +743,46 @@ msgstr ""
 "아이콘 이름밑에 나타낼 정보의 순서를 선택합니다. 크게 확대할수록 "
 "많은 정보가 나타날것 입니다."
 
+#: src/file-manager/fm-icon-view.c:89
+msgid "Sort by _Name"
+msgstr "이름순 정렬(_N)"
+
+#: src/file-manager/fm-icon-view.c:90
+msgid "Keep icons sorted by name in rows"
+msgstr "이름순으로 아이콘을 정렬합니다"
+
+#: src/file-manager/fm-icon-view.c:96
+msgid "Sort by _Size"
+msgstr "크기순 정렬(_S)"
+
+#: src/file-manager/fm-icon-view.c:97
+msgid "Keep icons sorted by size in rows"
+msgstr "크기순으로 아이콘을 정렬합니다"
+
+#: src/file-manager/fm-icon-view.c:103
+msgid "Sort by _Type"
+msgstr "형식순 정렬(_T)"
+
+#: src/file-manager/fm-icon-view.c:104
+msgid "Keep icons sorted by type in rows"
+msgstr "파일형식순으로 아이콘을 정렬합니다"
+
+#: src/file-manager/fm-icon-view.c:110
+msgid "Sort by Modification _Date"
+msgstr "변경날짜순 정렬(_D)"
+
+#: src/file-manager/fm-icon-view.c:111
+msgid "Keep icons sorted by modification date in rows"
+msgstr "변경날짜순으로 아이콘을 정렬합니다"
+
+#: src/file-manager/fm-icon-view.c:117
+msgid "Sort by _Emblems"
+msgstr "표시순 정렬(_E)"
+
+#: src/file-manager/fm-icon-view.c:118
+msgid "Keep icons sorted by emblems in rows"
+msgstr "표시순으로 아이콘을 정렬합니다"
+
 #: src/file-manager/fm-icon-view.c:440
 msgid "_Stretch Icon"
 msgstr "아이콘 확장(_R)"
@@ -776,17 +816,13 @@ msgstr "각각 선택한 아이콘은 원래 크기로 저장합니다"
 msgid "Choose which information appears beneath each icon's name"
 msgstr "각각 아이콘의 이름 바로밑에 나타낼 정보를 선택합니다"
 
-#: src/file-manager/fm-icon-view.c:915
-msgid "Auto Layout"
-msgstr "자동 배치"
+#: src/file-manager/fm-icon-view.c:792
+msgid "_Layout"
+msgstr "배치(_L)"
 
-#: src/file-manager/fm-icon-view.c:916
-msgid "Keep icons sorted in rows and columns"
-msgstr "줄과 열에 맞춰서 아이콘을 배치합니다"
-
-#: src/file-manager/fm-icon-view.c:922
-msgid "Manual Layout"
-msgstr "수동 배치"
+#: src/file-manager/fm-icon-view.c:800
+msgid "_Manual Layout"
+msgstr "수동 배치(_M)"
 
 #: src/file-manager/fm-icon-view.c:923
 msgid "Leave icons wherever they are dropped"
@@ -837,31 +873,48 @@ msgstr "변경일:"
 msgid "Emblems"
 msgstr "무늬"
 
-#. The prompt.
-#: src/file-manager/fm-properties-window.c:590
-msgid "Images and a complete list of available emblems coming soon."
-msgstr "곧 그림과 완벽한 목록의 무늬를 볼수 있습니다"
-
 #: src/file-manager/fm-properties-window.c:611
 msgid "Permissions"
 msgstr "허가권"
 
-#: src/file-manager/fm-properties-window.c:617
-msgid "as string:"
-msgstr "문자열:"
+#: src/file-manager/fm-properties-window.c:955
+msgid "You are not the owner, so you can't change these permissions."
+msgstr "당신은 이파일의 소유주가 아니기 때문에 허가권을 변경할수 없습니다."
 
-#: src/file-manager/fm-properties-window.c:619
-msgid "Owner:"
-msgstr "소유자:"
+#: src/file-manager/fm-properties-window.c:986
+#, c-format
+msgid "owner (%s):"
+msgstr "소유주 권한 (%s):"
 
-#: src/file-manager/fm-properties-window.c:621
-msgid "Group:"
-msgstr "그룹:"
+#: src/file-manager/fm-properties-window.c:989
+#, c-format
+msgid "group (%s):"
+msgstr "그룹 권한 (%s):"
 
-#. Here's some temporary stuff to avoid frightening the masses.
-#: src/file-manager/fm-properties-window.c:624
-msgid "Don't panic. This is not the final permissions user interface."
-msgstr "당황하지 마세요. 이것은 허가권 사용자 인터페이스의 최종판이 아닙니다."
+#: src/file-manager/fm-properties-window.c:992
+msgid "others:"
+msgstr "다른 사용자 권한:"
+
+#: src/file-manager/fm-properties-window.c:996
+msgid "standard format:"
+msgstr "표준 형식:"
+
+#: src/file-manager/fm-properties-window.c:1000
+msgid "read"
+msgstr "읽기"
+
+#: src/file-manager/fm-properties-window.c:1004
+msgid "write"
+msgstr "쓰기"
+
+#: src/file-manager/fm-properties-window.c:1008
+msgid "execute"
+msgstr "실행"
+
+#: src/file-manager/fm-properties-window.c:1062
+#, c-format
+msgid "The permissions of \"%s\" could not be determined."
+msgstr "\"%s\"의 허가권을 바꿀수 없습니다."
 
 #: src/file-manager/fm-properties-window.c:645
 msgid "More"
