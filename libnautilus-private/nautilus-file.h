@@ -185,7 +185,7 @@ gboolean                nautilus_file_can_set_group                     (Nautilu
 char *                  nautilus_file_get_owner_name                    (NautilusFile                   *file);
 char *                  nautilus_file_get_group_name                    (NautilusFile                   *file);
 GList *                 nautilus_get_user_names                         (void);
-GList *                 nautilus_get_group_names                        (void);
+GList *                 nautilus_get_all_group_names                    (void);
 GList *                 nautilus_file_get_settable_group_names          (NautilusFile                   *file);
 
 /* "Capabilities". */

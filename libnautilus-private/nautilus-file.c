@@ -3663,12 +3663,6 @@ get_user_id_from_user_name (const char *user_name, uid_t *id)
 }
 
 static gboolean
-get_group_id_from_user_name (const char *user_name, uid_t *id)
-{
-	return get_ids_from_user_name (user_name, NULL, id);
-}
-
-static gboolean
 get_id_from_digit_string (const char *digit_string, uid_t *id)
 {
 	long scanned_id;
@@ -4010,56 +4004,29 @@ nautilus_file_can_set_group (NautilusFile *file)
 	return FALSE;
 }
 
-static gboolean
-group_includes_user (struct group *group, const char *username)
-{
-	char *member;
-	int member_index;
-	uid_t user_gid;
-
-	/* Check whether user is in group. Check not only member list,
-	 * but also group id of username, since user is not explicitly
-	 * listed in member list of own group.
-	 */
-	if (get_group_id_from_user_name (username, &user_gid)) {
-		if (user_gid == (uid_t) group->gr_gid) {
-			return TRUE;
-		}
-	}
-
-	member_index = 0;
-	while ((member = (group->gr_mem [member_index++])) != NULL) {
-		if (strcmp (member, username) == 0) {
-			return TRUE;
-		}
-	}
-
-	return FALSE;
-}
-
 /* Get a list of group names, filtered to only the ones
  * that contain the given username. If the username is
  * NULL, returns a list of all group names.
  */
 static GList *
-nautilus_get_group_names_including (const char *username)
+nautilus_get_group_names_for_user (void)
 {
 	GList *list;
 	struct group *group;
+	int count, i;
+	gid_t gid_list[NGROUPS_MAX + 1];
+	
 
 	list = NULL;
 
-	setgrent ();
-
-	while ((group = getgrent ()) != NULL) {
-		if (username != NULL && !group_includes_user (group, username)) {
-			continue;
-		}
-
+	count = getgroups (NGROUPS_MAX + 1, gid_list);
+	for (i = 0; i < count; i++) {
+		group = getgrgid (gid_list[i]);
+		if (group == NULL)
+			break;
+		
 		list = g_list_prepend (list, g_strdup (group->gr_name));
 	}
-
-	endgrent ();
 
 	return eel_g_str_list_alphabetize (list);
 }
@@ -4070,9 +4037,21 @@ nautilus_get_group_names_including (const char *username)
  * Get a list of all group names.
  */
 GList *
-nautilus_get_group_names (void)
+nautilus_get_all_group_names (void)
 {
-	return nautilus_get_group_names_including (NULL);
+	GList *list;
+	struct group *group;
+	
+	list = NULL;
+
+	setgrent ();
+	
+	while ((group = getgrent ()) != NULL)
+		list = g_list_prepend (list, g_strdup (group->gr_name));
+	
+	endgrent ();
+	
+	return eel_g_str_list_alphabetize (list);
 }
 
 /**
@@ -4087,7 +4066,6 @@ GList *
 nautilus_file_get_settable_group_names (NautilusFile *file)
 {
 	uid_t user_id;
-	char *user_name_string;
 	GList *result;
 
 	if (!nautilus_file_can_set_group (file)) {
@@ -4099,12 +4077,10 @@ nautilus_file_get_settable_group_names (NautilusFile *file)
 
 	if (user_id == 0) {
 		/* Root is allowed to set group to anything. */
-		result = nautilus_get_group_names ();
+		result = nautilus_get_all_group_names ();
 	} else if (user_id == (uid_t) file->details->info->uid) {
 		/* Owner is allowed to set group to any that owner is member of. */
-		user_name_string = get_user_name_from_id (user_id);
-		result = nautilus_get_group_names_including (user_name_string);
-		g_free (user_name_string);
+		result = nautilus_get_group_names_for_user ();
 	} else {
 		g_warning ("unhandled case in nautilus_get_settable_group_names");
 		result = NULL;

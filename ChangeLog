@@ -1,5 +1,16 @@
 2004-08-27  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-file.c (nautilus_get_group_names_including):
+	Faster way to get list of groups.
+	Patch from Martin Hunt (hunt@redhat.com)
+
+2004-08-27  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-mime-actions.c (nautilus_mime_get_default_application_for_file_internal): 
+	Make this handle uri scheme limits.
+	
+2004-08-27  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-directory-view.c:
 	(can_use_component_for_file), (reset_bonobo_open_with_menu):
 	Don't show the open with menus for folders, nautilus links or
