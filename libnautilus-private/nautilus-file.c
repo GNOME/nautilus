@@ -2008,7 +2008,14 @@ compare_by_modification_time (NautilusFile *file_1, NautilusFile *file_2)
 	if (time_known_1 > time_known_2) {
 		return +1;
 	}
-
+	
+	/* Now time_known_1 is equal to time_known_2. Check whether 
+	 * we failed to get modification times for files
+	 */
+	if(time_known_1 == UNKNOWABLE || time_known_1 == UNKNOWN) {
+		return 0;
+	}
+		
 	if (time_1 > time_2) {
 		return -1;
 	}

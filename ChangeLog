@@ -1,5 +1,12 @@
 2003-11-16  Dave Camp  <dave@ximian.com>
 
+	* libnautilus-private/nautilus-file.c:
+	(compare_by_modification_time): Don't compare unknown
+	modification times.  Patch from Sivaiah Nallagatla 
+	<snallagatla@novell.com>.
+
+2003-11-16  Dave Camp  <dave@ximian.com>
+
 	* src/file-manager/fm-directory-view.c:
 	(activate_activation_uri_ready_callback),
 	(fm_directory_view_activate_file): Reread the activation URI of
