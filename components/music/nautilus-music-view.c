@@ -373,6 +373,12 @@ nautilus_music_view_destroy (GtkObject *object)
 	/* we'd rather allow the song to keep playing, but it's hard to maintain state */
 	/* so we stop things on exit for now, and improve it post 1.0 */
 	stop_playing_file (music_view);
+	
+	/* Free the status timer callback */
+	if (music_view->details->status_timeout != 0) {
+		gtk_timeout_remove (music_view->details->status_timeout);
+		music_view->details->status_timeout = 0;
+	}
 
         detach_file (music_view);
 	g_free (music_view->details);
@@ -1050,17 +1056,16 @@ play_status_display (NautilusMusicView *music_view)
 	gboolean is_playing_or_paused;
 	int samps_per_frame;
 	PlayerState status;
-	
+			
 	status = get_player_state (music_view);
 	is_playing_or_paused = (status == PLAYER_PLAYING) || (status == PLAYER_PAUSED);
 	
 	if (status == PLAYER_NEXT) {
 		stop_playing_file (music_view);
 		go_to_next_track (music_view);
-		music_view->details->status_timeout = 0;
 		return FALSE;
 	}
-	
+		
 	if (music_view->details->last_player_state != status) {
 		music_view->details->last_player_state = status;
 		update_play_controls_status (music_view, status);
@@ -1069,14 +1074,14 @@ play_status_display (NautilusMusicView *music_view)
 	if (is_playing_or_paused) {			
 		if (!music_view->details->slider_dragging) {									
 			samps_per_frame = (music_view->details->current_samprate >= 32000) ? 1152 : 576;
-                        
+			
   			if (music_view->details->current_duration != 0) {
 				current_time = esdout_get_output_time ();
                      		seconds = current_time / 1000;
 				minutes = seconds / 60;
 				seconds = seconds % 60;
 				sprintf(play_time_str, "%02d:%02d", minutes, seconds);
-				
+												
 				percentage = (float) ((float)current_time / (float)music_view->details->current_duration) * 100.0;
 				
 				gtk_adjustment_set_value (GTK_ADJUSTMENT (music_view->details->playtime_adjustment), percentage);
@@ -1090,14 +1095,10 @@ play_status_display (NautilusMusicView *music_view)
                                 	nautilus_label_set_font_size (NAUTILUS_LABEL (music_view->details->playtime), 14);
                         	}                             
 			}
-		}
-		
-	} else 
-		reset_playtime(music_view);
-
-	if (!is_playing_or_paused) {
-		music_view->details->status_timeout = 0;
-        }
+		}		
+	} else  {
+		reset_playtime (music_view);
+	}
 	
 	return is_playing_or_paused;
 }
@@ -1160,6 +1161,7 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 	
 	if (music_view->details->status_timeout != 0) {
 		gtk_timeout_remove (music_view->details->status_timeout);
+		music_view->details->status_timeout = 0;
         }
         
 	music_view->details->status_timeout = gtk_timeout_add (900, (GtkFunction) play_status_display, music_view);
@@ -1206,7 +1208,7 @@ play_button_callback (GtkWidget *widget, NautilusMusicView *music_view)
 		return;
 	}
 
-	if (get_player_state (music_view) == PLAYER_PAUSED) {			
+	if (get_player_state (music_view) == PLAYER_PAUSED) {				
 		set_player_state (music_view, PLAYER_PLAYING);
 		mpg123_pause (FALSE);
 	} else {
