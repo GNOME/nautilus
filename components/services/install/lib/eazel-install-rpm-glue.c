@@ -222,10 +222,10 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 
 	trilobite_debug ("eazel_install_do_rpm_dependency_check");
 
-	g_assert (EAZEL_PACKAGE_SYSTEM_RPM3 (service->private->package_system)->dbs);
+	g_assert (EAZEL_PACKAGE_SYSTEM_RPM3 (service->private->package_system)->private->dbs);
 
 	eazel_package_system_rpm3_open_dbs (EAZEL_PACKAGE_SYSTEM_RPM3 (service->private->package_system));
-	db = (rpmdb)g_hash_table_lookup (EAZEL_PACKAGE_SYSTEM_RPM3 (service->private->package_system)->dbs,
+	db = (rpmdb)g_hash_table_lookup (EAZEL_PACKAGE_SYSTEM_RPM3 (service->private->package_system)->private->dbs,
 					 service->private->cur_root);
 	if (!db) {
 		return;

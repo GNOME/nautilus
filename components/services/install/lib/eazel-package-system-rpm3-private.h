@@ -51,4 +51,23 @@ GList* eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
 					EazelPackageSystemQueryEnum flag,
 					unsigned long detail_level);
 
+typedef void (*EazelPackageSystemRpmQueryForeach)(char *dbpath, gpointer db, gpointer *pig);
+
+struct RpmQueryPiggyBag {
+	EazelPackageSystemRpm3 *system;
+	gpointer key;
+	EazelPackageSystemQueryEnum flag;
+	unsigned long detail_level;
+	GList **result;
+};
+
+struct _EazelPackageSystemRpm3Private 
+{
+	GList *dbpaths; /* GList*<EazelPackageSystemDbPath> */
+	GHashTable *db_to_root;
+	GHashTable *dbs;
+
+	EazelPackageSystemRpmQueryForeach query_foreach;
+};
+
 #endif /* EAZEL_PACKAGE_SYSTEM_RPM3_PRIVATE_H */

@@ -45,20 +45,32 @@ EazelPackageSystem* eazel_package_system_implementation (GList*);
 /* This is the parent class pointer */
 static EazelPackageSystemRpm3Class *eazel_package_system_rpm4_parent_class;
 
-static GList*               
-eazel_package_system_rpm4_query (EazelPackageSystemRpm4 *system,
-				 const char *dbpath,
-				 const gpointer key,
-				 EazelPackageSystemQueryEnum flag,
-				 unsigned long detail_level)
+static void
+eazel_package_system_rpm4_query_foreach (char *dbpath,
+					 rpmdb db,
+					 struct RpmQueryPiggyBag *pig)
 {
-	GList *result = NULL;
-	g_warning ("RPM4 is not yet supported");
-	/* hahahaha, this is such a laugh */
-	result = eazel_package_system_rpm3_query (EAZEL_PACKAGE_SYSTEM_RPM3 (system), 
-						  dbpath, key, flag, detail_level);
-	return result;
+	rpmdbMatchIterator rpm_iterator;
+
+	switch (pig->flag) {
+	case EAZEL_PACKAGE_SYSTEM_QUERY_OWNS:		
+		rpm_iterator = rpmdbInitIterator (db, RPMTAG_BASENAMES, pig->key, strlen (pig->key));
+		break;
+	case EAZEL_PACKAGE_SYSTEM_QUERY_PROVIDES:		
+		rpm_iterator = rpmdbInitIterator (db, RPMTAG_PROVIDENAME, pig->key, strlen (pig->key));
+		break;
+	case EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES:
+		rpm_iterator = rpmdbInitIterator (db, RPMDBI_LABEL, pig->key, strlen (pig->key));
+		/* FIXME: do pruning calls here */
+		break;
+	case EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES:
+	case EAZEL_PACKAGE_SYSTEM_QUERY_SUBSTR:
+		break;
+	default:
+		g_warning ("Unknown query");
+	}
 }
+
 
 /*****************************************
   GTK+ object stuff
@@ -73,9 +85,6 @@ eazel_package_system_rpm4_finalize (GtkObject *object)
 	g_return_if_fail (EAZEL_PACKAGE_SYSTEM_RPM4 (object));
 
 	system = EAZEL_PACKAGE_SYSTEM_RPM4 (object);
-
-	eazel_package_system_rpm3_free_dbs (EAZEL_PACKAGE_SYSTEM_RPM3 (system));
-	g_hash_table_destroy (system->dbs);
 
 	if (GTK_OBJECT_CLASS (eazel_package_system_rpm4_parent_class)->finalize) {
 		GTK_OBJECT_CLASS (eazel_package_system_rpm4_parent_class)->finalize (object);
@@ -98,8 +107,8 @@ eazel_package_system_rpm4_initialize (EazelPackageSystemRpm4 *system) {
 	g_assert (system != NULL);
 	g_assert (IS_EAZEL_PACKAGE_SYSTEM_RPM4 (system));
 	
-	system->dbs = g_hash_table_new (g_str_hash, g_str_equal);
-	system->db_to_root = g_hash_table_new (g_str_hash, g_str_equal);
+	EAZEL_PACKAGE_SYSTEM_RPM3 (system)->private->query_foreach = 
+		(EazelPackageSystemRpmQueryForeach)eazel_package_system_rpm4_query_foreach;	
 }
 
 GtkType
@@ -131,7 +140,6 @@ EazelPackageSystemRpm4 *
 eazel_package_system_rpm4_new (GList *dbpaths) 
 {
 	EazelPackageSystemRpm4 *system;
-	GList *iterator;
 
 	g_return_val_if_fail (dbpaths, NULL);
 
@@ -139,16 +147,6 @@ eazel_package_system_rpm4_new (GList *dbpaths)
 
 	gtk_object_ref (GTK_OBJECT (system));
 	gtk_object_sink (GTK_OBJECT (system));
-
-	system->dbpaths = dbpaths;
-	for (iterator = dbpaths; iterator; iterator = g_list_next (iterator)) {
-		char *db = (char*)iterator->data;
-		char *root = (char*)(iterator = g_list_next (iterator))->data;
-
-		info (system, "Adding %s as root for %s", root, db);
-		g_hash_table_insert (system->db_to_root, db, root);
-	}
-	eazel_package_system_rpm3_create_dbs (EAZEL_PACKAGE_SYSTEM_RPM3 (system));
 
 	return system;
 }
@@ -166,7 +164,7 @@ eazel_package_system_implementation (GList *dbpaths)
 	result = EAZEL_PACKAGE_SYSTEM (eazel_package_system_rpm4_new (tdbpaths));
 	
 	result->private->load_package = (EazelPackageSytemLoadPackageFunc)eazel_package_system_rpm3_load_package;
-	result->private->query = (EazelPackageSytemQueryFunc)eazel_package_system_rpm4_query;
+	result->private->query = (EazelPackageSytemQueryFunc)eazel_package_system_rpm3_query;
 	result->private->install = (EazelPackageSytemInstallFunc)eazel_package_system_rpm3_install;
 	result->private->uninstall = (EazelPackageSytemUninstallFunc)eazel_package_system_rpm3_uninstall;
 	result->private->verify = (EazelPackageSytemVerifyFunc)eazel_package_system_rpm3_verify;

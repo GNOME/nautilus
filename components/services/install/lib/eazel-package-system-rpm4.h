@@ -47,10 +47,7 @@ struct _EazelPackageSystemRpm4Class
 
 struct _EazelPackageSystemRpm4
 {
-	EazelPackageSystem parent;
-	GList *dbpaths; /* GList*<EazelPackageSystemDbPath> */
-	GHashTable *db_to_root;
-	GHashTable *dbs;
+	EazelPackageSystemRpm3 parent;
 };
 EazelPackageSystemRpm4 *eazel_package_system_rpm4_new (GList *dbpaths);
 GtkType              eazel_package_system_rpm4_get_type (void);

@@ -1,3 +1,36 @@
+2000-12-11  Eskil Olsen  <eskil@eazel.com>
+	
+	* components/services/install/lib/eazel-package-system-rpm3-private
+	.h:
+	* components/services/install/lib/eazel-package-system-rpm3.h:
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(make_rpm_argument_list), (eazel_package_system_rpm3_create_dbs),
+	(rpm_open_db), (eazel_package_system_rpm3_open_dbs),
+	(eazel_package_system_rpm3_close_dbs),
+	(eazel_package_system_rpm3_free_dbs),
+	(eazel_package_system_rpm3_query_impl),
+	(eazel_package_system_rpm3_query_substr),
+	(eazel_package_system_rpm3_query_requires),
+	(eazel_package_system_rpm3_query),
+	(eazel_package_system_rpm3_finalize),
+	(eazel_package_system_rpm3_initialize),
+	(eazel_package_system_rpm3_new):
+	Created a private part for EazelPackageSystemRpm3
+
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_do_rpm_dependency_check):
+	Fondle the private parts of EazelPackageSystemRpm3 (eew, 
+	can't wait to get rid of this code).
+	
+	* components/services/install/lib/eazel-package-system-rpm4.h:
+	* components/services/install/lib/eazel-package-system-rpm4.c:
+	(eazel_package_system_rpm4_query_foreach),
+	(eazel_package_system_rpm4_finalize),
+	(eazel_package_system_rpm4_initialize),
+	(eazel_package_system_rpm4_new),
+	(eazel_package_system_implementation):
+	Began hacking on the missing RPM4 pieces.
+
 2000-12-11  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 4900, Nautilus doesn't support ID3 v2.x tags

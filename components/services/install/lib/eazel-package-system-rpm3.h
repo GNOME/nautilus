@@ -45,12 +45,12 @@ struct _EazelPackageSystemRpm3Class
 	
 };
 
+typedef struct _EazelPackageSystemRpm3Private EazelPackageSystemRpm3Private;
+
 struct _EazelPackageSystemRpm3
 {
 	EazelPackageSystem parent;
-	GList *dbpaths; /* GList*<EazelPackageSystemDbPath> */
-	GHashTable *db_to_root;
-	GHashTable *dbs;
+	EazelPackageSystemRpm3Private *private;
 };
 EazelPackageSystemRpm3 *eazel_package_system_rpm3_new (GList *dbpaths);
 GtkType              eazel_package_system_rpm3_get_type (void);

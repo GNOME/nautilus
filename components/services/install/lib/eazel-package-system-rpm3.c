@@ -69,14 +69,6 @@ static EazelPackageSystemClass *eazel_package_system_rpm3_parent_class;
 /************************************************************
 *************************************************************/
 
-struct RpmQueryPiggyBag {
-	EazelPackageSystemRpm3 *system;
-	gpointer key;
-	EazelPackageSystemQueryEnum flag;
-	unsigned long detail_level;
-	GList **result;
-};
-
 #define PERCENTS_PER_RPM_HASH 2
 
 struct RpmMonitorPiggyBag {
@@ -143,7 +135,7 @@ make_rpm_argument_list (EazelPackageSystemRpm3 *system,
 		    !(flags & EAZEL_PACKAGE_SYSTEM_OPERATION_DOWNGRADE) &&
 		    !(flags & EAZEL_PACKAGE_SYSTEM_OPERATION_UPGRADE)) {
 			if (strcmp (dbpath, DEFAULT_DB_PATH)) {
-				char *root = g_hash_table_lookup (system->db_to_root, dbpath);
+				char *root = g_hash_table_lookup (system->private->db_to_root, dbpath);
 				(*args) = g_list_prepend (*args, g_strdup (root));
 				(*args) = g_list_prepend (*args, g_strdup ("--prefix"));
 			}
@@ -388,9 +380,9 @@ eazel_package_system_rpm3_create_dbs (EazelPackageSystemRpm3 *system)
 {	
 	g_assert (system);
 	g_assert (IS_EAZEL_PACKAGE_SYSTEM_RPM3 (system));
-	g_assert (system->dbs);
+	g_assert (system->private->dbs);
 
-	g_hash_table_foreach (system->db_to_root, (GHFunc)rpm_create_db, system);
+	g_hash_table_foreach (system->private->db_to_root, (GHFunc)rpm_create_db, system);
 
 	info (system, "Read rpmrc file");
 	rpmReadConfigFiles ("/usr/lib/rpm/rpmrc", NULL);	
@@ -409,7 +401,7 @@ rpm_open_db (char *dbpath,
 	} else {			
 		if (db) {
 			info (system, _("Opened packages database in %s"), dbpath);
-			g_hash_table_insert (system->dbs,
+			g_hash_table_insert (system->private->dbs,
 					     g_strdup (dbpath),
 					     db);
 		} else {
@@ -423,9 +415,9 @@ eazel_package_system_rpm3_open_dbs (EazelPackageSystemRpm3 *system)
 {
 	g_assert (system);
 	g_assert (IS_EAZEL_PACKAGE_SYSTEM_RPM3 (system));
-	g_assert (system->dbs);
+	g_assert (system->private->dbs);
 
-	g_hash_table_foreach (system->db_to_root, 
+	g_hash_table_foreach (system->private->db_to_root, 
 			      (GHFunc)rpm_open_db,
 			      system);
 }
@@ -451,8 +443,8 @@ gboolean
 eazel_package_system_rpm3_close_dbs (EazelPackageSystemRpm3 *system)
 {
 	/* Close all the db's */
-	g_assert (system->dbs);
-	g_hash_table_foreach_remove (system->dbs, 
+	g_assert (system->private->dbs);
+	g_hash_table_foreach_remove (system->private->dbs, 
 				     (GHRFunc)rpm_close_db,
 				     system);	
 	return TRUE;
@@ -472,8 +464,8 @@ gboolean
 eazel_package_system_rpm3_free_dbs (EazelPackageSystemRpm3 *system)
 {
 	/* Close all the db's */
-	g_assert (system->dbs);
-	g_hash_table_foreach_remove (system->db_to_root, 
+	g_assert (system->private->dbs);
+	g_hash_table_foreach_remove (system->private->db_to_root, 
 				     (GHRFunc)rpm_free_db,
 				     system);	
 	return TRUE;
@@ -667,7 +659,7 @@ eazel_package_system_rpm3_query_impl (EazelPackageSystemRpm3 *system,
 	int rc = 1;
 	dbiIndexSet matches;
 
-	db = g_hash_table_lookup (system->dbs, dbpath);
+	db = g_hash_table_lookup (system->private->dbs, dbpath);
 	if (db==NULL) {
 		fail (system, "query could not access db in %s", dbpath);
 		return;
@@ -681,10 +673,6 @@ eazel_package_system_rpm3_query_impl (EazelPackageSystemRpm3 *system,
 	case EAZEL_PACKAGE_SYSTEM_QUERY_PROVIDES:		
 		info (system, "query (in %s) PROVIDES %s", dbpath, key);
 		rc = rpmdbFindByProvides (db, key, &matches);
-		break;
-	case EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES:
-		info (system, "query (in %s) REQUIRES %s", dbpath, key);
-		rc = rpmdbFindByRequiredBy (db, key, &matches);
 		break;
 	case EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES:
 		info (system, "query (in %s) MATCHES %s", dbpath, key);
@@ -734,7 +722,7 @@ eazel_package_system_rpm3_query_substr (EazelPackageSystemRpm3 *system,
 	int offset;
 	rpmdb db;
 	
-	db = g_hash_table_lookup (system->dbs, dbpath);
+	db = g_hash_table_lookup (system->private->dbs, dbpath);
 	if (db==NULL) {
 		fail (system, "db == NULL");
 		return;
@@ -780,6 +768,8 @@ eazel_package_system_rpm3_query_requires (EazelPackageSystemRpm3 *system,
 	}
 	if (pack->provides) {
 		GList *iterator;
+		/* FIXME: ideally, this could use package->features instead, that would
+		   be safer then doing the strstr check */
 		for (iterator = pack->provides; iterator; iterator = g_list_next (iterator)) {
 			const char *fkey = (const char*)iterator->data;
 			if (strstr (fkey, ".so")) {
@@ -849,11 +839,11 @@ eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
 	
 	eazel_package_system_rpm3_open_dbs (system);
 	if (dbpath==NULL) {
-		g_hash_table_foreach (system->dbs, 
-				      (GHFunc)eazel_package_system_rpm3_query_foreach,
+		g_hash_table_foreach (system->private->dbs, 
+				      (GHFunc)(system->private->query_foreach),
 				      &pig);
 	} else {
-		eazel_package_system_rpm3_query_foreach ((char*)dbpath, NULL, &pig);
+		(system->private->query_foreach) ((char*)dbpath, NULL, &pig);
 	}
 	eazel_package_system_rpm3_close_dbs (system);
 
@@ -1206,7 +1196,7 @@ eazel_package_system_rpm3_finalize (GtkObject *object)
 	system = EAZEL_PACKAGE_SYSTEM_RPM3 (object);
 
 	eazel_package_system_rpm3_free_dbs (system);
-	g_hash_table_destroy (system->dbs);
+	g_hash_table_destroy (system->private->dbs);
 
 	if (GTK_OBJECT_CLASS (eazel_package_system_rpm3_parent_class)->finalize) {
 		GTK_OBJECT_CLASS (eazel_package_system_rpm3_parent_class)->finalize (object);
@@ -1229,8 +1219,12 @@ eazel_package_system_rpm3_initialize (EazelPackageSystemRpm3 *system) {
 	g_assert (system != NULL);
 	g_assert (IS_EAZEL_PACKAGE_SYSTEM_RPM3 (system));
 	
-	system->dbs = g_hash_table_new (g_str_hash, g_str_equal);
-	system->db_to_root = g_hash_table_new (g_str_hash, g_str_equal);
+	system->private = g_new0 (EazelPackageSystemRpm3Private, 1);
+	system->private->dbs = g_hash_table_new (g_str_hash, g_str_equal);
+	system->private->db_to_root = g_hash_table_new (g_str_hash, g_str_equal);
+#ifdef HAVE_RPM_30
+	system->private->query_foreach = (EazelPackageSystemRpmQueryForeach)eazel_package_system_rpm3_query_foreach;
+#endif
 }
 
 GtkType
@@ -1271,13 +1265,13 @@ eazel_package_system_rpm3_new (GList *dbpaths)
 	gtk_object_ref (GTK_OBJECT (system));
 	gtk_object_sink (GTK_OBJECT (system));
 
-	system->dbpaths = dbpaths;
+	system->private->dbpaths = dbpaths;
 	for (iterator = dbpaths; iterator; iterator = g_list_next (iterator)) {
 		char *db = (char*)iterator->data;
 		char *root = (char*)(iterator = g_list_next (iterator))->data;
 
 		info (system, "Adding %s as root for %s", root, db);
-		g_hash_table_insert (system->db_to_root, db, root);
+		g_hash_table_insert (system->private->db_to_root, db, root);
 	}
 	eazel_package_system_rpm3_create_dbs (system);
 
