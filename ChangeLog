@@ -1,3 +1,12 @@
+2000-10-05  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_summary_form), (generate_service_entry_row),
+	(generate_eazel_news_entry_row), (generate_update_news_entry_row):
+
+	Fixed gtk_widget_destroy problem, removed lots of debugging code,
+	and fixed most of the memory leaks.
+
 2000-10-06  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 2212, Not able to drag icons from the panel.
