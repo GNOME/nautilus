@@ -159,7 +159,7 @@ nautilus_zoom_control_class_init (NautilusZoomControlClass *zoom_control_class)
 		              G_STRUCT_OFFSET (NautilusZoomControlClass, 
 						   zoom_to_level),
 		              NULL, NULL,
-		              eel_gtk_marshal_NONE__DOUBLE,
+		              eel_marshal_NONE__DOUBLE,
 		              G_TYPE_NONE,
 				1,
 				GTK_TYPE_DOUBLE);

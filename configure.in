@@ -131,6 +131,8 @@ AC_SUBST(LIBNAUTILUS_PRIVATE_LIBS)
 LIBNAUTILUS_PRIVATE_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $LIBNAUTILUS_PRIVATE_MODULES | $srcdir/add-include-prefix`"
 AC_SUBST(LIBNAUTILUS_PRIVATE_IDL_INCLUDES)
 
+AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
+
 dnl ====================================
 dnl = Begin profiling support
 dnl ====================================

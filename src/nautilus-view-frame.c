@@ -187,7 +187,7 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *klass)
 		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
 				    get_history_list),
 		 NULL, NULL,
-		 eel_gtk_marshal_POINTER__NONE,
+		 eel_marshal_POINTER__NONE,
 		 GTK_TYPE_POINTER, 0);
 	signals[GO_BACK] = g_signal_new
 		("go_back",

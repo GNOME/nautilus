@@ -57,8 +57,10 @@ static gboolean nautilus_horizontal_splitter_motion           (GtkWidget      		
 static void     nautilus_horizontal_splitter_destroy          (GtkObject                       *object);
 
 /* GtkWidgetClass methods */
+#if GNOME2_CONVERSION_COMPLETE
 static void     nautilus_horizontal_splitter_draw             (GtkWidget                       *widget,
 							       GdkRectangle                    *area);
+#endif
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusHorizontalSplitter,
 				   nautilus_horizontal_splitter,
@@ -78,7 +80,9 @@ nautilus_horizontal_splitter_class_init (NautilusHorizontalSplitterClass *horizo
 	object_class->destroy = nautilus_horizontal_splitter_destroy;
 
 	/* GtkWidgetClass */
+#if GNOME2_CONVERSION_COMPLETE
 	widget_class->draw = nautilus_horizontal_splitter_draw;
+#endif
 	widget_class->button_press_event = nautilus_horizontal_splitter_button_press;
 	widget_class->button_release_event = nautilus_horizontal_splitter_button_release;
 	widget_class->motion_notify_event = nautilus_horizontal_splitter_motion;
@@ -105,6 +109,8 @@ nautilus_horizontal_splitter_destroy (GtkObject *object)
 	/* Chain */
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
+
+#if GNOME2_CONVERSION_COMPLETE
 
 static void
 draw_resize_bar (GtkWidget		*widget,
@@ -265,6 +271,8 @@ nautilus_horizontal_splitter_draw (GtkWidget    *widget,
 		}
 	}
 }
+
+#endif
 
 void
 nautilus_horizontal_splitter_expand (NautilusHorizontalSplitter *splitter)

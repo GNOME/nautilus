@@ -500,7 +500,7 @@ get_data_on_first_target_we_support (GtkWidget *widget, GdkDragContext *context,
 
 	for (target = context->targets; target != NULL; target = target->next) {
 		guint dummy_info;
-		GdkAtom target_atom = GPOINTER_TO_UINT (target->data);
+		GdkAtom target_atom = GDK_POINTER_TO_ATOM (target->data);
 
 		if (gtk_target_list_find (drop_types_list, 
 					  target_atom,
@@ -759,7 +759,7 @@ static gboolean
 confirm_switch_to_manual_layout (NautilusIconContainer *container)
 {
 	const char *message;
-	GnomeDialog *dialog;
+	GtkDialog *dialog;
 
 	/* FIXME bugzilla.gnome.org 40915: Use of the word "directory"
 	 * makes this FMIconView specific. Move these messages into
@@ -787,11 +787,11 @@ confirm_switch_to_manual_layout (NautilusIconContainer *container)
 	}
 
 	dialog = eel_show_yes_no_dialog (message, _("Switch to Manual Layout?"),
-					      _("Switch"), GNOME_STOCK_BUTTON_CANCEL,
-					      GTK_WINDOW (gtk_widget_get_ancestor 
-					 	    (GTK_WIDGET (container), GTK_TYPE_WINDOW)));
-
-	return gnome_dialog_run (dialog) == GNOME_OK;
+					 _("Switch"), GTK_RESPONSE_CANCEL,
+					 GTK_WINDOW (gtk_widget_get_ancestor 
+						     (GTK_WIDGET (container), GTK_TYPE_WINDOW)));
+	
+	return gtk_dialog_run (dialog) == GTK_RESPONSE_OK;
 }
 
 static void

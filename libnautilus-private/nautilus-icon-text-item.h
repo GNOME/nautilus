@@ -12,7 +12,6 @@
 
 #include <gtk/gtkeditable.h>
 #include <libgnomecanvas/gnome-canvas.h>
-#include <libgnomecanvas/gnome-icon-text.h>
 
 #define NAUTILUS_ICON_TEXT_ITEM(obj)     (GTK_CHECK_CAST((obj), \
         nautilus_icon_text_item_get_type (), NautilusIconTextItem))
@@ -40,7 +39,9 @@ typedef struct {
 	char *text;
 
 	/* Text layout information */
+#if GNOME2_CONVERSION_COMPLETE
 	GnomeIconTextInfo *ti;
+#endif
 
 	/* Whether the text is being edited */
 	unsigned int editing : 1;

@@ -32,7 +32,6 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomecanvas/gnome-canvas-util.h>
-#include <libgnomecanvas/gnome-icon-text.h>
 #include <libart_lgpl/art_rgb.h>
 #include <libart_lgpl/art_rgb_affine.h>
 #include <libart_lgpl/art_rgb_rgba_affine.h>
@@ -705,6 +704,8 @@ nautilus_icon_canvas_item_update (GnomeCanvasItem *item,
 
 /* routine to underline the text in a gnome_icon_text structure */
 
+#if GNOME2_CONVERSION_COMPLETE
+
 static void
 gnome_icon_underline_text (GnomeIconTextInfo *text_info,
 			   GdkDrawable *drawable,
@@ -730,6 +731,8 @@ gnome_icon_underline_text (GnomeIconTextInfo *text_info,
 			y += text_info->baseline_skip / 2;
 	}
 }
+
+#endif
 
 static gboolean
 in_single_click_mode (void)
@@ -758,8 +761,11 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	guint32 label_color;
 	GnomeCanvasItem *canvas_item;
 	int max_text_width;
-	int icon_width, text_left, box_left;
+	int icon_width, box_left;
+#if GNOME2_CONVERSION_COMPLETE
+	int text_left;
 	GnomeIconTextInfo *icon_text_info;
+#endif
 	char **pieces;
 	const char *text_piece;
 	int i;
@@ -854,6 +860,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			text_piece = " ";
 		}
 		
+#ifdef GNOME2_CONVERSION_COMPLETE
 		icon_text_info = gnome_icon_layout_text
 			(details->font, text_piece,
 			 LINE_BREAK_CHARACTERS,
@@ -897,6 +904,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		height_so_far += icon_text_info->height;
 		
 		gnome_icon_text_info_free (icon_text_info);
+#endif
 	}
 	g_strfreev (pieces);
 	

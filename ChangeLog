@@ -1,3 +1,30 @@
+2001-10-29  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Locate glib-genmarshal.
+	* libnautilus-private/.cvsignore:
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-marshal.list:
+	* src/nautilus-view-frame.c: (nautilus_view_frame_class_init):
+	* src/nautilus-zoom-control.c: (nautilus_zoom_control_class_init):
+	Add marshalers used inside Nautilus only.
+
+	* components/adapter/nautilus-adapter-load-strategy.c:
+	(nautilus_adapter_load_strategy_class_init):
+
+	* libnautilus-private/nautilus-horizontal-splitter.c:
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	* libnautilus-private/nautilus-icon-text-item.h:
+	Put code in #if GNOME2_CONVERSION_COMPLETE.
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(set_pending_icon_to_reveal), (nautilus_icon_container_class_init),
+	(nautilus_icon_container_init), (set_pending_icon_to_rename):
+	Convert signal-handling code.
+
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(get_data_on_first_target_we_support): Update for GdkAtom changes.
+	(confirm_switch_to_manual_layout): Switch to GtkDialog.
+
 2001-10-28  Darin Adler  <darin@bentspoon.com>
 
 	* Lots of files:
