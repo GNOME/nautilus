@@ -29,7 +29,6 @@
 
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-private.h"
-#include "nautilus-icon-text-item.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-marshal.h"
 #include "nautilus-theme.h"
@@ -43,6 +42,7 @@
 #include <eel/eel-string.h>
 #include <libgnomecanvas/gnome-canvas-pixbuf.h>
 #include <libgnomecanvas/gnome-canvas-rect-ellipse.h>
+#include <libgnomeui/gnome-icon-item.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtklayout.h>
 #include <gtk/gtkmain.h>
@@ -3086,7 +3086,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 icon_text_changed),
 		                NULL, NULL,
-		                nautilus_marshal_VOID__POINTER_POINTER,
+		                nautilus_marshal_VOID__POINTER_STRING,
 		                G_TYPE_NONE, 2,
 				G_TYPE_POINTER,
 				G_TYPE_STRING);
@@ -3305,11 +3305,13 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 					  &click_policy_auto_value);
 }
 
-static void
+static gboolean
 handle_focus_out_event (GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
 {
 	/* End renaming and commit change. */
 	end_renaming_mode (NAUTILUS_ICON_CONTAINER (widget), TRUE);
+
+	return FALSE;
 }
 
 static void
@@ -3347,7 +3349,7 @@ nautilus_icon_container_init (NautilusIconContainer *container)
 
 
 	g_signal_connect (container, "focus-out-event",
-			    G_CALLBACK (handle_focus_out_event), NULL);	
+			    G_CALLBACK (handle_focus_out_event), NULL);
 
 	/* FIXME: The code to extract colors from the theme should be
 	 * in FMDirectoryView, not here. The NautilusIconContainer
@@ -4745,10 +4747,9 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 {
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
-#if GNOME2_CONVERSION_COMPLETE
 	ArtDRect icon_rect;
-#endif
 	const char *editable_text;
+	int x, width;
 
 	/* Check if it already in renaming mode. */
 	details = container->details;
@@ -4782,40 +4783,52 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 
 	details->original_text = g_strdup (editable_text);
 
-#if GNOME2_CONVERSION_COMPLETE
 	/* Create text renaming widget, if it hasn't been created already.
 	 * We deal with the broken icon text item widget by keeping it around
 	 * so its contents can still be cut and pasted as part of the clipboard
 	 */
 	if (details->rename_widget == NULL) {
-		details->rename_widget = NAUTILUS_ICON_TEXT_ITEM
+		details->rename_widget = GNOME_ICON_TEXT_ITEM
 			(gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (container)),
-						nautilus_icon_text_item_get_type (),
+						gnome_icon_text_item_get_type (),
 						NULL));
 	} else {
 		gnome_canvas_item_show (GNOME_CANVAS_ITEM (details->rename_widget));
 	}
-	
+
 	icon_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
 	gnome_canvas_item_w2i (GNOME_CANVAS_ITEM (details->rename_widget), &icon_rect.x0, &icon_rect.y0);
 	gnome_canvas_item_w2i (GNOME_CANVAS_ITEM (details->rename_widget), &icon_rect.x1, &icon_rect.y1);
 	
-	nautilus_icon_text_item_configure
-		(details->rename_widget,
-		 (icon_rect.x0 + icon_rect.x1) / 2,				/* x_center */
-		 icon_rect.y1,							/* y_top */		
-		 nautilus_icon_canvas_item_get_max_text_width (icon->item),	/* max_text_width */
-		 details->label_font[details->zoom_level],			/* font */
-		 editable_text,							/* text */
-		 FALSE);							/* allocate local copy */
+	width = nautilus_icon_canvas_item_get_max_text_width (icon->item);
 
-	nautilus_icon_text_item_start_editing (details->rename_widget);
+	/* FIXME: Dividing the width by pixels_per_unit makes everything work
+	 * here, but I don't understand why.  Need to look into this. */
+	x = eel_round((icon_rect.x0 + icon_rect.x1) / 2) - (eel_round (width / GNOME_CANVAS_ITEM (icon->item)->canvas->pixels_per_unit / 2));
 	
-	g_signal_emit (container,
-			 signals[RENAMING_ICON], 0,
-			 nautilus_icon_text_item_get_renaming_editable (details->rename_widget));
+	gnome_icon_text_item_configure
+		(details->rename_widget,
+		 x,
+		 eel_round (icon_rect.y1),							/* y_top */		
+		 width,
+#ifdef GNOME2_CONVERSION_COMPLETE
+		 details->label_font[details->zoom_level],			/* font */
+#else
+		 "Helvetica",
 #endif
+		 editable_text,							/* text */
+		 TRUE, FALSE);							/* allocate local copy */
 
+        if (GNOME_CANVAS_ITEM (details->rename_widget)->canvas->focused_item != GNOME_CANVAS_ITEM (details->rename_widget)) {
+        	gnome_canvas_item_grab_focus (GNOME_CANVAS_ITEM (details->rename_widget));
+        }
+
+	gnome_icon_text_item_start_editing (details->rename_widget);
+
+	g_signal_emit (container,
+		       signals[RENAMING_ICON], 0,
+		       gnome_icon_text_item_get_editable (details->rename_widget));
+	
 	nautilus_icon_container_update_icon (container, icon);
 	
 	/* We are in renaming mode */
@@ -4827,9 +4840,7 @@ static void
 end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 {
 	NautilusIcon *icon;
-#if GNOME2_CONVERSION_COMPLETE
 	const char *changed_text;
-#endif
 
 	set_pending_icon_to_rename (container, NULL);
 
@@ -4837,11 +4848,14 @@ end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 	if (icon == NULL) {
 		return;
 	}
-		
-#if GNOME2_CONVERSION_COMPLETE
+
+	/* We are not in renaming mode */
+	container->details->renaming = FALSE;
+	nautilus_icon_canvas_item_set_renaming (icon->item, FALSE);
+
 	if (commit) {
 		/* Verify that text has been modified before signalling change. */			
-		changed_text = nautilus_icon_text_item_get_text (container->details->rename_widget);
+		changed_text = gnome_icon_text_item_get_text (container->details->rename_widget);
 		if (strcmp (container->details->original_text, changed_text) != 0) {			
 			g_signal_emit (container,
 					 signals[ICON_TEXT_CHANGED], 0,
@@ -4850,16 +4864,12 @@ end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 		}
 	}
 	
-	nautilus_icon_text_item_stop_editing (container->details->rename_widget, TRUE);
-#endif
+	gnome_icon_text_item_stop_editing (container->details->rename_widget, TRUE);
 
 	gnome_canvas_item_hide (GNOME_CANVAS_ITEM (container->details->rename_widget));
 
 	g_free (container->details->original_text);
 
-	/* We are not in renaming mode */
-	container->details->renaming = FALSE;
-	nautilus_icon_canvas_item_set_renaming (icon->item, FALSE);		
 }
 
 /* emit preview signal, called by the canvas item */

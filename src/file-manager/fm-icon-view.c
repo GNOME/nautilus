@@ -1754,11 +1754,12 @@ renaming_icon_callback (NautilusIconContainer *container,
 	FMDirectoryView *directory_view;
 
 	directory_view = FM_DIRECTORY_VIEW (callback_data);
-
+#ifdef GNOME2_CONVERSION_COMPLETE
 	nautilus_clipboard_set_up_editable_in_control
 		(editable,
 		 fm_directory_view_get_bonobo_control (directory_view),
 		 TRUE);
+#endif
 }
 
 static int

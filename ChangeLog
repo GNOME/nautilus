@@ -1,3 +1,29 @@
+2002-02-01  Dave Camp  <dave@ximian.com>
+
+	* configure.in: Increased GNOME_UI_REQUIRED to 1.110.1
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_class_init): Use
+	nautilus_marshal_VOID__POINTER_STRING instead of
+	nautilus_marshal_VOID__POINTER_POINTER for the icon_text_changed
+	signal.
+	(handle_focus_out_event): Return FALSE.
+	(nautilus_icon_container_start_renaming_selected_item),
+	(end_renaming_mode): Use GnomeIconTextItem instead of
+	NautilusIconTextItem.  This includes changing how the size was
+	calculated, as NautilusIconTextItem expected a center point and
+	maximum width, and GnomeIconTextItem expects a bounding box.
+
+	* libnautilus-private/nautilus-icon-private.h: Use
+	GnomeIconTextItem instead of NautilusIconTextItem for
+	rename_widget.
+	* libnautilus-private/nautilus-marshal.list: Added
+	VOID:POINTER,STRING.
+	* src/file-manager/fm-icon-view.c: (renaming_icon_callback):
+	Temporarily #ifed out the
+	nautilus_clipboard_set_up_editable_in_control for the renaming
+	editable.
+
 2002-01-31  John Harper  <jsh@unfactored.org>
 
 	Make the search feature work again:

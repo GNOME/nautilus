@@ -27,11 +27,11 @@
 
 #include "nautilus-entry.h"
 #include <eel/eel-glib-extensions.h>
+#include <libgnomeui/gnome-icon-item.h>
 #include "nautilus-icon-container.h"
 #include "nautilus-icon-dnd.h"
 #include "nautilus-icon-factory.h"
 #include "nautilus-icon-canvas-item.h"
-#include "nautilus-icon-text-item.h"
 
 /* An Icon. */
 
@@ -149,7 +149,7 @@ struct NautilusIconContainerDetails {
 
 	/* Renaming Details */
 	gboolean renaming;
-	NautilusIconTextItem *rename_widget;	/* Editable text item */
+	GnomeIconTextItem *rename_widget;	/* Editable text item */
 	char *original_text;			/* Copy of editable text for later compare */
 
 	/* typeahead selection state */
