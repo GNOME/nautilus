@@ -106,10 +106,16 @@ void               nautilus_directory_cancel_callback      (NautilusDirectory   
 char *             nautilus_directory_get_metadata         (NautilusDirectory         *directory,
 							    const char                *key,
 							    const char                *default_metadata);
+
 void               nautilus_directory_set_metadata         (NautilusDirectory         *directory,
 							    const char                *key,
 							    const char                *default_metadata,
 							    const char                *metadata);
+
+GList             *nautilus_directory_get_metadata_list    (NautilusDirectory         *directory,
+							    const char                *list_key,
+							    const char                *list_subkey,
+							    GList                     *default_metadata_list);
 
 /* Covers for common data types. */
 gboolean           nautilus_directory_get_boolean_metadata (NautilusDirectory         *directory,

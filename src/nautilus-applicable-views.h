@@ -62,6 +62,7 @@ struct NautilusNavigationInfo {
 	GSList *content_identifiers;	/* list of NautilusViewIdentifiers */
 	GSList *meta_iids;	        /* list of iid strings */
         GList *files;                   /* NautilusFile's for files in the dir, if it is one. */
+        GList *explicit_iids;           /* IIDs explicitly mentioned in the metafile. */
 
 	/* internal usage */
 	NautilusNavigationCallback callback;

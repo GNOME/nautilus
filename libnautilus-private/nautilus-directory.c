@@ -65,6 +65,10 @@ static xmlNode *          create_metafile_root                (NautilusDirectory
 static char *             get_metadata_from_node              (xmlNode           *node,
 							       const char        *key,
 							       const char        *default_metadata);
+static GList *            get_metadata_list_from_node         (xmlNode           *node,
+							       const char        *list_key,
+							       const char        *list_subkey,
+							       GList             *default_metadata_list);
 static void               nautilus_directory_destroy          (GtkObject         *object);
 static void               nautilus_directory_initialize       (gpointer           object,
 							       gpointer           klass);
@@ -440,6 +444,38 @@ get_metadata_from_node (xmlNode *node,
 	return result;
 }
 
+
+static GList *
+get_metadata_list_from_node (xmlNode    *node,
+			     const char *list_key,
+			     const char *list_subkey,
+			     GList      *default_metadata_list)
+{
+	GList *property_list;
+	GList *result;
+
+	g_return_val_if_fail (list_key != NULL, NULL);
+	g_return_val_if_fail (list_key[0] != '\0', NULL);
+	g_return_val_if_fail (list_subkey != NULL, NULL);
+	g_return_val_if_fail (list_subkey[0] != '\0', NULL);
+
+	if (node == NULL) {
+		return default_metadata_list;
+	}
+
+	property_list = nautilus_xml_get_property_for_children (node,
+								list_key, list_subkey);
+
+	if (property_list == NULL) {
+		result = g_list_copy (default_metadata_list);
+	} else {
+		result = property_list;
+	}
+
+	return result;
+}
+
+
 static xmlNode *
 create_metafile_root (NautilusDirectory *directory)
 {
@@ -464,7 +500,7 @@ nautilus_directory_get_metadata (NautilusDirectory *directory,
 {
 	/* It's legal to call this on a NULL directory. */
 	if (directory == NULL) {
-		return g_strdup (default_metadata);
+		return NULL;
 	}
 
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
@@ -475,6 +511,26 @@ nautilus_directory_get_metadata (NautilusDirectory *directory,
 	return get_metadata_from_node
 		(xmlDocGetRootElement (directory->details->metafile),
 		 key, default_metadata);
+}
+
+GList *
+nautilus_directory_get_metadata_list (NautilusDirectory *directory,
+				      const char *list_key,
+				      const char *list_subkey,
+				      GList      *default_metadata_list)
+{
+	/* It's legal to call this on a NULL directory. */
+	if (directory == NULL) {
+		return g_list_copy (default_metadata_list);
+	}
+
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
+
+	nautilus_directory_request_read_metafile (directory);
+
+	/* The root itself represents the directory. */
+	return get_metadata_list_from_node (xmlDocGetRootElement (directory->details->metafile),
+					    list_key, list_subkey, default_metadata_list);
 }
 
 void
@@ -661,6 +717,22 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 		(nautilus_directory_get_file_metadata_node (directory, file_name, FALSE),
 		 key, default_metadata);
 }
+
+
+GList *
+nautilus_directory_get_file_metadata_list (NautilusDirectory *directory,
+					   const char *file_name,
+					   const char *list_key,
+					   const char *list_subkey,
+					   GList      *default_metadata_list)
+{
+	nautilus_directory_request_read_metafile (directory);
+
+	return get_metadata_list_from_node
+		(nautilus_directory_get_file_metadata_node (directory, file_name, FALSE),
+		 list_key, list_subkey, default_metadata_list);
+}
+
 
 gboolean
 nautilus_directory_set_file_metadata (NautilusDirectory *directory,

@@ -134,6 +134,10 @@ gboolean         nautilus_file_is_gone                   (NautilusFile         *
 char *           nautilus_file_get_metadata              (NautilusFile         *file,
 							  const char           *key,
 							  const char           *default_metadata);
+GList *          nautilus_file_get_metadata_list         (NautilusFile         *file,
+							  const char           *list_key,
+							  const char           *list_subkey,
+							  GList                *default_metadata_list);
 void             nautilus_file_set_metadata              (NautilusFile         *file,
 							  const char           *key,
 							  const char           *default_metadata,

@@ -133,6 +133,12 @@ char *        nautilus_directory_get_file_metadata         (NautilusDirectory   
 							    const char                *file_name,
 							    const char                *key,
 							    const char                *default_metadata);
+GList *       nautilus_directory_get_file_metadata_list    (NautilusDirectory         *directory,
+							    const char                *file_name,
+							    const char                *list_key,
+							    const char                *list_subkey,
+							    GList                     *default_metadata_list);
+
 gboolean      nautilus_directory_set_file_metadata         (NautilusDirectory         *directory,
 							    const char                *file_name,
 							    const char                *key,

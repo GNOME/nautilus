@@ -878,6 +878,22 @@ nautilus_file_get_metadata (NautilusFile *file,
 						     default_metadata);
 }
 
+GList *
+nautilus_file_get_metadata_list (NautilusFile *file,
+				 const char *list_key,
+				 const char *list_subkey,
+				 GList      *default_metadata_list)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	return nautilus_directory_get_file_metadata_list (file->details->directory,
+							  file->details->info->name,
+							  list_key,
+							  list_subkey,
+							  default_metadata_list);
+}
+
+
 void
 nautilus_file_set_metadata (NautilusFile *file,
 			    const char *key,
@@ -1521,35 +1537,14 @@ GList *
 nautilus_file_get_keywords (NautilusFile *file)
 {
 	GList *keywords;
-	xmlNode *file_node, *child;
-	xmlChar *property;
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	keywords = NULL;
-
 	/* Put all the keywords into a list. */
-	file_node = nautilus_directory_get_file_metadata_node (file->details->directory,
-							       file->details->info->name,
-							       FALSE);
-	for (child = nautilus_xml_get_children (file_node);
-	     child != NULL;
-	     child = child->next) {
-		if (strcmp (child->name, "KEYWORD") == 0) {
-			property = xmlGetProp (child, "NAME");
-			if (property != NULL) {
-				keywords = g_list_prepend (keywords,
-							   g_strdup (property));
-				xmlFree (property);
-			}
-		}
-	}
-
-	/* 
-	 * Reverse even though we're about to sort; that way
-	 * most of the time it will already be sorted.
-	 */
-	keywords = g_list_reverse (keywords);
+	keywords = nautilus_file_get_metadata_list (file,
+						    "KEYWORD",
+						    "NAME",
+						    NULL);
 	
 	return sort_keyword_list_and_remove_duplicates (keywords);
 }

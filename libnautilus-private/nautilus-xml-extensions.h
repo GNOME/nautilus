@@ -26,6 +26,7 @@
 #define NAUTILUS_XML_EXTENSIONS_H
 
 #include <tree.h>
+#include <glib.h>
 
 xmlNodePtr nautilus_xml_get_children                        (xmlNodePtr  parent);
 xmlNodePtr nautilus_xml_get_root_children                   (xmlDocPtr   document);
@@ -37,5 +38,9 @@ xmlNodePtr nautilus_xml_get_root_child_by_name_and_property (xmlDocPtr   documen
 							     const char *child_name,
 							     const char *property_name,
 							     const char *property_value);
+GList     *nautilus_xml_get_property_for_children           (xmlNodePtr  parent,
+							     const char *child_name,
+							     const char *property_name);
+
 
 #endif /* NAUTILUS_XML_EXTENSIONS_H */

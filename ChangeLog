@@ -1,5 +1,51 @@
 2000-05-08  Maciej Stachowiak  <mjs@eazel.com>
 
+	Fixed merging of explicitly specified components. Now the name is
+	properly determined from OAF, nonexistent ones are ignored, the
+	syntax for specifying then is improved, and they can be defined
+	for files as well as directories. In the process I defined some
+	new general-purpose metadata operations. These are
+	bugzilla.eazel.com tasks #763 and #673.
+
+	* libnautilus-extensions/nautilus-xml-extensions.h,
+	libnautilus-extensions/nautilus-xml-extensions.c
+	(nautilus_xml_get_property_for_children): New function. Get a
+	specific property for all children of a node that have a
+	particular name.
+
+	* libnautilus-extensions/nautilus-directory-private.h,
+	libnautilus-extensions/nautilus-directory.h,
+	libnautilus-extensions/nautilus-file.h,
+	libnautilus-extensions/nautilus-file.c
+	(nautilus_file_get_metadata_list),
+	libnautilus-extensions/nautilus-directory.c
+	(get_metadata_list_from_node), (nautilus_directory_get_metadata),
+	(nautilus_directory_get_metadata_list),
+	(nautilus_directory_get_file_metadata_list): NewFunctions to allow
+	getting lists of info for files or directories.
+
+	* libnautilus-extensions/nautilus-file.c
+	(nautilus_file_get_keywords): Use the new interface for getting
+	the keywords for a file.
+
+	* src/ntl-uri-map.h: Added explicit_iids field to
+	Nautilus_NavigationInfo struct.
+
+	* src/ntl-uri-map.c
+	(get_explicit_content_view_iids_from_metafile): New function to
+	get IIDs for explicitly selected views from the metafile.
+	(make_oaf_query_for_explicit_content_view_iids): Create a query
+	clause from the explicit IID list.
+	(make_oaf_query_with_known_mime_type),
+	(make_oaf_query_with_uri_scheme_only): Accept explicitly selected
+	IIDs whether or not they would otherwise apply.
+	(server_matches_content_requirements): Don't check content
+	requirements for explicitly selected servers.
+	(nautilus_navigation_info_new), (nautilus_navigation_info_free):
+	initialize and free the explicit_iids field.
+
+2000-05-08  Maciej Stachowiak  <mjs@eazel.com>
+
 	* libnautilus-extensions/nautilus-directory-async.c
 	(directory_count_callback): Improved the logic so it records the
 	fact that the directory count is complete earlier and more

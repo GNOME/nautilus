@@ -4,6 +4,7 @@
  *  Nautilus
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
+ *  Copyright (C) 2000 Eazel, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
@@ -23,6 +24,8 @@
  *
  */
 
+
+#define DEBUG_MJS 1
 /* ntl-uri-map.c: Implementation of routines for mapping a location
    change request to a set of views and actual URL to be loaded. */
 
@@ -50,7 +53,6 @@
 #include "ntl-types.h"
 
 /* forward declarations */
-static void add_components_from_metadata        (NautilusNavigationInfo            *navinfo);
 static void add_meta_view_iids_from_preferences (NautilusNavigationInfo            *navinfo);
 static void async_get_file_info_text            (GnomeVFSAsyncHandle              **handle,
                                                  const char                        *text_uri,
@@ -239,6 +241,60 @@ uri_string_get_scheme (const char *uri_string)
         return extract_prefix_add_suffix (uri_string, ":", "");
 }
 
+/*
+ * The following routine uses metadata associated with the current url
+ * to add content view components specified in the metadata. The
+ * content views are specified in the string as <EXPLICIT_CONTENT_VIEW
+ * IID="iid"/> elements inside the appropriate <DIRECTORY> or <FILE> element.  
+ */
+
+static void
+get_explicit_content_view_iids_from_metafile (NautilusNavigationInfo *navinfo)
+{
+        if (navinfo->directory != NULL) {
+                navinfo->explicit_iids = nautilus_directory_get_metadata_list 
+                        (navinfo->directory,
+                         "EXPLICIT_CONTENT_VIEW", "IID", NULL);
+        } 
+}
+
+static char *
+make_oaf_query_for_explicit_content_view_iids (GList *view_iids)
+{
+        GList *p;
+        char  *iid;
+        char  *query;
+        char  *old_query;
+
+        query = NULL;
+
+        for (p = view_iids; p != NULL; p = p->next) {
+                iid = (char *) p->data;
+                if (query != NULL) {
+                        old_query = query;
+                        query = g_strconcat (query, " OR ", NULL);
+                        g_free (old_query);
+                } else {
+                        query = g_strdup ("(");
+                }
+
+                old_query = query;
+                query = g_strdup_printf ("%s iid=='%s'", old_query, iid);
+                g_free (old_query);
+        }
+
+
+        if (query != NULL) {
+                old_query = query;
+                query = g_strconcat (old_query, ")", NULL);
+                g_free (old_query);
+        } else {
+                query = g_strdup ("false");
+        }
+
+        return query;
+}
+
 static char *
 make_oaf_query_with_known_mime_type (NautilusNavigationInfo *navinfo)
 {
@@ -246,10 +302,13 @@ make_oaf_query_with_known_mime_type (NautilusNavigationInfo *navinfo)
         char *mime_supertype;
         char *uri_scheme;
         char *result;
+        char *explicit_iid_query;
 
         mime_type = navinfo->navinfo.content_type;
         mime_supertype = mime_type_get_supertype (mime_type);
         uri_scheme = uri_string_get_scheme (navinfo->navinfo.requested_uri);
+
+        explicit_iid_query = make_oaf_query_for_explicit_content_view_iids (navinfo->explicit_iids);
 
         result = g_strdup_printf 
                 (
@@ -260,7 +319,7 @@ make_oaf_query_with_known_mime_type (NautilusNavigationInfo *navinfo)
                   * PersistStream, ProgressiveDataSink, or
                   * PersistFile.
                   */
-                 "(repo_ids.has_all(['IDL:Bonobo/Control:1.0',"
+                 "((repo_ids.has_all(['IDL:Bonobo/Control:1.0',"
                                     "'IDL:Nautilus/ContentView:1.0'])"
                   "OR (repo_ids.has_one(['IDL:Bonobo/Control:1.0',"
                                         "'IDL:Bonobo/Embeddable:1.0'])"
@@ -298,16 +357,25 @@ make_oaf_query_with_known_mime_type (NautilusNavigationInfo *navinfo)
                    * that would make components that are untested with
                    * Nautilus appear.
                    */
-                 "AND nautilus:view_as_name.defined()"
+                 "AND nautilus:view_as_name.defined())"
+
+                  /* Also select iids that were specifically requested
+                     for this location, even if they do not otherwise
+                     meet the requirements. */
+                  "OR %s"
 
                  /* The MIME type, MIME supertype, and URI scheme for
                   * the %s above.
                   */
-                 , mime_type, mime_supertype, uri_scheme);
+                 , mime_type, mime_supertype, uri_scheme
+
+                 /* The explicit metafile iid query for the %s above. */
+                 , explicit_iid_query
+);
 
         g_free (mime_supertype);
         g_free (uri_scheme);
-
+        g_free (explicit_iid_query);
         return result;
 }
 
@@ -316,8 +384,11 @@ make_oaf_query_with_uri_scheme_only (NautilusNavigationInfo *navinfo)
 {
         char *uri_scheme;
         char *result;
+        char *explicit_iid_query;
         
         uri_scheme = uri_string_get_scheme (navinfo->navinfo.requested_uri);
+
+        explicit_iid_query = make_oaf_query_for_explicit_content_view_iids (navinfo->explicit_iids);
 
         result = g_strdup_printf 
                 (
@@ -326,7 +397,7 @@ make_oaf_query_with_uri_scheme_only (NautilusNavigationInfo *navinfo)
                   * with a Bonobo Control or Embeddable that works on
                   * a file, which is indicated by Bonobo PersistFile.
                   */
-                  "(repo_ids.has_all(['IDL:Bonobo/Control:1.0',"
+                  "((repo_ids.has_all(['IDL:Bonobo/Control:1.0',"
                                      "'IDL:Nautilus/ContentView:1.0'])"
                    "OR (repo_ids.has_one(['IDL:Bonobo/Control:1.0',"
                                          "'IDL:Bonobo/Embeddable:1.0'])"
@@ -349,15 +420,28 @@ make_oaf_query_with_uri_scheme_only (NautilusNavigationInfo *navinfo)
                    * that would make components that are untested with
                    * Nautilus appear.
                    */
-                  "AND nautilus:view_as_name.defined()"
+                  "AND nautilus:view_as_name.defined())"
+
+                 /* Also select iids that were specifically requested
+                     for this location, even if they do not otherwise
+                     meet the requirements. */
+
+                  "OR %s"
 
                   /* The URI scheme for the %s above. */
-                  , uri_scheme);
+                  , uri_scheme
+
+                  /* The explicit metafile iid query for the %s above. */
+                  , explicit_iid_query);
+           
 
         g_free (uri_scheme);
-        
+        g_free (explicit_iid_query);
+
         return result;
 }
+
+
 
 
 static GHashTable *
@@ -403,11 +487,16 @@ mime_type_hash_table_destroy (GHashTable *table)
 }
 
 static gboolean
-server_matches_content_requirements (OAF_ServerInfo *server, GHashTable *type_table)
+server_matches_content_requirements (OAF_ServerInfo *server, GHashTable *type_table, GList *explicit_iids)
 {
         OAF_Attribute *attr;
         GNOME_stringlist types;
         int i;
+
+        /* Components explicitly requested in the metafile are not capability tested. */
+        if (g_list_find_custom (explicit_iids, (gpointer) server->iid, (GCompareFunc) strcmp) != NULL) {
+                return TRUE;
+        }
 
         attr = oaf_server_info_attr_find (server, "nautilus:required_directory_content_mime_types");
 
@@ -505,6 +594,8 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
         oaf_result = NULL;
         query = NULL;
 
+        get_explicit_content_view_iids_from_metafile (navinfo);
+
         if (vfs_result_code == GNOME_VFS_OK) {
                 /* FIXME bugzilla.eazel.com 697: disgusting hack to make rpm view work. Why
                    is the mime type not being detected properly in the
@@ -560,7 +651,7 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
 
                         server = &oaf_result->_buffer[i];
 
-                        if (server_matches_content_requirements (server, content_types)) {
+                        if (server_matches_content_requirements (server, content_types, navinfo->explicit_iids)) {
                                 navinfo->content_identifiers = g_slist_append
                                         (navinfo->content_identifiers, 
                                          nautilus_view_identifier_new_from_oaf_server_info (server));
@@ -593,7 +684,7 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
 #endif
         }
   
-        add_components_from_metadata (navinfo);
+        /* add_components_from_metadata (navinfo); */
                 
         add_meta_view_iids_from_preferences (navinfo);
         
@@ -607,43 +698,6 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
         (* notify_ready) (result_code, navinfo, notify_ready_data);
 }
 
-/* The following routine uses metadata associated with the current url to add content view components specified in the metadata */
-/* the content views are specified in the string as "label=componentname11\nlabel=componentname2\n..." */
-
-static void
-add_components_from_metadata (NautilusNavigationInfo *navinfo)
-{
-	char *content_views;
-        char **pieces;
-        const char *component_str;
-        char *equal_pos;
-        int index;
-	
-        content_views = nautilus_directory_get_metadata
-                (navinfo->directory,
-                 NAUTILUS_METADATA_KEY_CONTENT_VIEWS, NULL);
-
-	if (content_views != NULL) {
-	 	pieces = g_strsplit (content_views, "\n", 0);
-	 	g_free (content_views); 	
-
-	 	for (index = 0; (component_str = pieces[index]) != NULL; index++) {
-			/* break the component string into the name and label */
-                        puts (component_str);
-                        
-			equal_pos = strchr (component_str, '=');
-			if (equal_pos != NULL) {
-				*equal_pos++ = '\0';
-				
-				/* add it to the list */
-				navinfo->content_identifiers = g_slist_append
-                                        (navinfo->content_identifiers,
-                                         nautilus_view_identifier_new (equal_pos, component_str));
-			}
-	 	}
-	 	g_strfreev (pieces);
-	}
-}
 
 static void
 add_meta_view_iids_from_preferences (NautilusNavigationInfo *navinfo)
@@ -724,11 +778,13 @@ nautilus_navigation_info_new (Nautilus_NavigationRequestInfo *nri,
 
         info->directory = nautilus_directory_get (nri->requested_uri);
 
+
         /* Arrange for all the (directory) metadata we will need. */
         keys = NULL;
         keys = g_list_prepend (keys, NAUTILUS_METADATA_KEY_CONTENT_VIEWS);
         keys = g_list_prepend (keys, NAUTILUS_METADATA_KEY_INITIAL_VIEW);
-        
+
+                
         /* Arrange for all the file attributes we will need. */
         attributes = NULL;
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE);
@@ -739,9 +795,10 @@ nautilus_navigation_info_new (Nautilus_NavigationRequestInfo *nri,
                                             NULL,
                                             got_metadata_callback,
                                             info);
+        
+        g_list_free (attributes);
 
         g_list_free (keys);
-        g_list_free (attributes);
         
         return info;
 }
@@ -776,6 +833,9 @@ nautilus_navigation_info_free (NautilusNavigationInfo *info)
 
         g_slist_foreach (info->meta_iids, (GFunc) g_free, NULL);
         g_slist_free (info->meta_iids);
+
+        g_list_foreach (info->explicit_iids, (GFunc) g_free, NULL);
+        g_list_free (info->explicit_iids);
 
         g_free (info->referring_iid);
         g_free (info->initial_content_iid);

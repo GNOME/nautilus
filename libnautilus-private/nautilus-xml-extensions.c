@@ -83,3 +83,57 @@ nautilus_xml_get_root_child_by_name_and_property (xmlDocPtr document,
 		 property_name,
 		 property_value);
 }
+
+/**
+ * nautilus_xml_get_property_for_children
+ * 
+ * Returns a list of the values for the specified property for all
+ * children of the node that have the specified name.
+ *
+ * @parent:     xmlNodePtr representing the node in question.
+ * @child_name: child element name to look for
+ * @property:   name of propety to reutnr for matching children that have the property
+ * 
+ * Returns: A list of keywords.
+ * 
+ **/
+GList *
+nautilus_xml_get_property_for_children (xmlNodePtr  parent,
+					const char *child_name,
+					const char *property_name)
+{
+	GList *properties;
+	xmlNode *child;
+	xmlChar *property;
+
+	properties = NULL;
+
+	for (child = nautilus_xml_get_children (parent);
+	     child != NULL;
+	     child = child->next) {
+		if (strcmp (child->name, child_name) == 0) {
+			property = xmlGetProp (child, property_name);
+			if (property != NULL) {
+				properties = g_list_prepend (properties,
+							     g_strdup (property));
+				xmlFree (property);
+			}
+		}
+	}
+
+	/* 
+	 * Reverse so you get them in the same order as the XML file.
+	 */
+	properties = g_list_reverse (properties);
+
+	return properties;
+}
+
+
+
+
+
+
+
+
+
