@@ -183,24 +183,20 @@ display_caveat (GtkWindow *parent_window)
 	gtk_container_add (GTK_CONTAINER (frame), pixmap);
 
   	text = gtk_label_new
-		(_("Welcome to Nautilus Preview Release 1"
+		(_("Welcome to Nautilus Preview Release 1."
 		   "\n\n"
-		   "Thanks for your interest in using the Nautilus Preview Release 1.  As "
-		   "a user of the Preview Release, you will have the ability to try out "
+		   "Thanks for your interest in using Nautilus.  As "
+		   "a user of the Preview Release, you try out "
 		   "and provide feedback on an early version of Eazel's powerful new desktop "
-		   "manager, Nautilus."
+		   "manager for GNOME."
 		   "\n\n"
-		   "Important information on Nautilus Preview Release 1"
+		   "As with any software under development, you should exercise caution "
+		   "when running this program.  Some features are not yet complete or still "
+		   "unstable.  You will encounter many more bugs than in the completed version.  "
+		   "Eazel can provide no guarantee that it will work properly, or assume liability "
+		   "for your use of it.  Use it at your own risk."
 		   "\n\n"
-		   "As with any preview release software, users should exercise caution "
-		   "when running this software on their system.  Eazel provides no guarantees "
-		   "the software will work according to the desire of the user."
-		   "\n\n"
-		   "The software is provided as a courtesy of Eazel to the general public, "
-		   "with this stipulation: Please use at your own risk.  Eazel assumes no "
-		   "liability for issues relating to the installation, running, or removal "
-		   "of Nautilus, or any software distributed in this preview release."
-		   "\n\n"
+		   "We hope that you will enjoy using Nautilus.  "
 		   "For more information, please go to http://www.eazel.com."));
     	gtk_label_set_line_wrap (GTK_LABEL (text), TRUE);
 	gtk_widget_show (text);
