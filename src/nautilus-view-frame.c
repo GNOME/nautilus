@@ -249,11 +249,7 @@ nautilus_view_destroy_client(NautilusView *view)
     view->component_class->destroy(view, &ev);
   }
 
-  /* FIXME: Do this to make sure all refs on the control get
-     dropped. This is a hack until Bonobo lets us break the circular
-     ref properly. */
-
-  bonobo_object_destroy (view->view_frame); view->view_frame = NULL;
+  bonobo_object_unref (view->view_frame); view->view_frame = NULL;
 
   view->component_class = NULL;
   view->component_data = NULL;

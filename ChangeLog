@@ -1,5 +1,8 @@
 2000-04-19  Maciej Stachowiak  <mjs@eazel.com>
 
+	* src/ntl-view.c (nautilus_view_destroy_client): Reverted the last
+	change, it caused serious crashage in some cases.
+
 	* src/ntl-view.c (nautilus_view_destroy_client): Destroy the
 	ViewFrame instead of unreffing. This is the only way to be sure
 	the Control is fully unref()d. Ideally Bonobo would let us unbind
