@@ -170,8 +170,8 @@ static char stipple_bits[] = { 0x02, 0x01 };
 static void
 icon_free (NautilusIcon *icon)
 {
-	/* FIXME bugzilla.eazel.com 2481: Is a destroy really sufficient here? Who does the unref? */
-	gtk_object_destroy (GTK_OBJECT (icon->item));
+	/* Destroy this canvas item; the parent will unref it. */
+	gtk_widget_destroy (GTK_WIDGET (icon->item));
 	g_free (icon);
 }
 
@@ -193,26 +193,27 @@ icon_set_position (NautilusIcon *icon,
 
 	if (nautilus_icon_container_get_is_fixed_size (container)) {
 		/* Clip the position of the icon within our desktop bounds */
+
 		left = GTK_WIDGET (container)->allocation.x;
-		top  = GTK_WIDGET (container)->allocation.y;
-		right  = left + GTK_WIDGET (container)->allocation.width;
-		bottom  = top + GTK_WIDGET (container)->allocation.height;
+		top = GTK_WIDGET (container)->allocation.y;
+		right = left + GTK_WIDGET (container)->allocation.width;
+		bottom = top + GTK_WIDGET (container)->allocation.height;
 
 		icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
 		width = x2 - x1;
 		height = y2 - y1;
 
-		if (x < left) {
-			x = left;
-		}
 		if (x > right - width) {
 			x = right - width;
 		}
-		if (y < top) {
-			y = top;
+		if (x < left) {
+			x = left;
 		}
 		if (y > bottom - height) {
 			y = bottom - height;
+		}
+		if (y < top) {
+			y = top;
 		}
 	}
 
@@ -1377,9 +1378,9 @@ stop_rubberbanding (NautilusIconContainer *container,
 
 	band_info->active = FALSE;
 
+	/* Destroy this canvas item; the parent will unref it. */
 	gnome_canvas_item_ungrab (band_info->selection_rectangle, event->time);
-	/* FIXME bugzilla.eazel.com 2475: Is a destroy really sufficient here? Who does the unref? */
-	gtk_object_destroy (GTK_OBJECT (band_info->selection_rectangle));
+	gtk_widget_destroy (GTK_WIDGET (band_info->selection_rectangle));
 	band_info->selection_rectangle = NULL;
 
 
@@ -2065,8 +2066,8 @@ destroy (GtkObject *object)
 		gtk_timeout_remove (container->details->rubberband_info.timer_id);
 	}
 	if (container->details->rubberband_info.selection_rectangle != NULL) {
-		/* FIXME bugzilla.eazel.com 2475: Is a destroy really sufficient here? Who does the unref? */
-		gtk_object_destroy (GTK_OBJECT (container->details->rubberband_info.selection_rectangle));
+		/* Destroy this canvas item; the parent will unref it. */
+		gtk_widget_destroy (GTK_WIDGET (container->details->rubberband_info.selection_rectangle));
 	}
 
         if (container->details->idle_id != 0) {
@@ -4232,7 +4233,7 @@ nautilus_icon_container_set_auto_layout (NautilusIconContainer *container,
 /* Toggle the tighter layout boolean. */
 void
 nautilus_icon_container_set_tighter_layout (NautilusIconContainer *container,
-					 	gboolean tighter_layout)
+					    gboolean tighter_layout)
 {
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_return_if_fail (tighter_layout == FALSE || tighter_layout == TRUE);

@@ -1,3 +1,10 @@
+2000-10-17  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c: (icon_free),
+	(stop_rubberbanding), (destroy): Fixed a bunch of FIXMEs now that
+	I "get" widget ref. counting.
+	(icon_set_position): Clip code rearranging.
+
 2000-10-17  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/hardware/nautilus-hardware-view.c:
