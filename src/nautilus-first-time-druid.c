@@ -39,14 +39,14 @@
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-radio-button-group.h>
+#include <libnautilus-extensions/nautilus-user-level-manager.h>
 
 #include "nautilus-first-time-druid.h"
 
 static NautilusApplication *save_application;
 static gboolean save_manage_desktop;
 
-static int last_user_level;
-static int last_signup_choice;
+static int last_signup_choice = 0;
 
 static void
 druid_cancel (GtkWidget *druid)
@@ -109,8 +109,8 @@ set_up_background (NautilusDruidPageStandard *page, const char *background_color
 static void
 user_level_selection_changed (GtkWidget *radio_buttons, gpointer user_data)
 {
-
-	last_user_level = nautilus_radio_button_group_get_active_index (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons));
+	nautilus_user_level_manager_set_user_level (
+		nautilus_radio_button_group_get_active_index (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons)));
 }
 
 /* handler for signup buttons changing */
@@ -153,6 +153,8 @@ set_up_user_level_page (NautilusDruidPageStandard *page)
 	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Novice         - for beginning users"));
 	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Intermediate  - for non-technical users"));
 	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Hacker         - for expert users"));
+	nautilus_radio_button_group_set_active_index (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons),
+						      nautilus_user_level_manager_get_user_level ());
 
 	gtk_signal_connect (GTK_OBJECT (radio_buttons),
 			    "changed",

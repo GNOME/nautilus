@@ -108,6 +108,24 @@ user_level_manager_new (void)
         NautilusUserLevelManager *manager;
         guint			 i;
 
+	if (!gconf_is_initialized ()) {
+		GConfError	  *error = NULL;
+		char		  *argv[] = { "nautilus", NULL };
+		
+		if (!gconf_init (1, argv, &error)) {
+			g_assert (error != NULL);
+			
+			/* FIXME bugzilla.eazel.com 672: Need better error reporting here */
+			g_warning ("GConf init failed:\n  %s", error->str);
+			
+			gconf_error_destroy (error);
+			
+			error = NULL;
+			
+			return NULL;
+		}
+	}
+
         manager = NAUTILUS_USER_LEVEL_MANAGER (gtk_object_new (nautilus_user_level_manager_get_type (), NULL));
 
 	manager->gconf_client = gconf_client_new ();
