@@ -323,7 +323,7 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	}
 
-	g_list_free (iterator);
+	g_list_free (view->details->xml_data->services_list);
 
 	/* draw parent vbox and connect it to the login frame */
 	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->services_table), 0, 0, 0);
@@ -474,7 +474,7 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	}
 
-	g_list_free (iterator);
+	g_list_free (view->details->xml_data->eazel_news_list);
 
 	/* draw parent vbox and connect it to the service news frame */
 	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->service_news_table), TRUE, TRUE, 0);
@@ -522,8 +522,10 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	}
 
-	g_list_free (iterator);
+	g_list_free (view->details->xml_data->update_news_list);
+
 	g_free (view->details->xml_data);
+	view->details->xml_data = NULL;
 
 	/* draw parent vbox and connect it to the update news frame */
 	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->updates_table), TRUE, TRUE, 0);
@@ -570,6 +572,7 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 						 NULL);
 	gtk_widget_show (view->details->services_description_header_widget);
 	g_free (view->details->services_description_header);
+	view->details->services_description_header = NULL;
 	gtk_container_add (GTK_CONTAINER (temp_hbox), view->details->services_description_header_widget);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 0);
 	/* Body */
@@ -578,6 +581,8 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->services_description_body_widget), 12);
 	gtk_widget_show (view->details->services_description_body_widget);
 	g_free (view->details->services_description_body);
+	view->details->services_description_body = NULL;
+
 	gtk_container_add (GTK_CONTAINER (temp_hbox), view->details->services_description_body_widget);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 0);
 	gtk_table_attach (view->details->services_table, temp_vbox, 1, 2, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
@@ -590,6 +595,8 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->services_goto_label_widget), 12);
 	gtk_widget_show (view->details->services_goto_label_widget);
 	g_free (view->details->services_goto_label);
+	view->details->services_goto_label = NULL;
+	
 	gtk_container_add (GTK_CONTAINER (view->details->services_goto_button), view->details->services_goto_label_widget);
 	gtk_box_pack_end (GTK_BOX (view->details->services_button_container), view->details->services_goto_button, FALSE, FALSE, 0);
 	cbdata->nautilus_view = view->details->nautilus_view;
@@ -622,6 +629,7 @@ generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_table_attach (view->details->service_news_table, view->details->news_description_body_widget, 1, 2, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_widget_show (view->details->news_description_body_widget);
 	g_free (view->details->news_description_body);
+	view->details->news_description_body = NULL;
 
 }
 
@@ -654,6 +662,8 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 						 NULL);
 	gtk_widget_show (view->details->update_description_header_widget);
 	g_free (view->details->update_description_header);
+	view->details->update_description_header = NULL;
+	
 	gtk_container_add (GTK_CONTAINER (temp_hbox), view->details->update_description_header_widget);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 0);
 	/* Body */
@@ -662,6 +672,8 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->update_description_body_widget), 12);
 	gtk_widget_show (view->details->update_description_body_widget);
 	g_free (view->details->update_description_body);
+	view->details->update_description_body = NULL;
+	
 	gtk_container_add (GTK_CONTAINER (temp_hbox), view->details->update_description_body_widget);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 0);
 	/* Version */
@@ -675,6 +687,8 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 						 NULL);
 	gtk_widget_show (view->details->update_description_version_widget);
 	g_free (view->details->update_description_version);
+	view->details->update_description_version = NULL;
+	
 	gtk_container_add (GTK_CONTAINER (temp_hbox), view->details->update_description_version_widget);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 0);
 
@@ -688,6 +702,8 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->update_goto_label_widget), 12);
 	gtk_widget_show (view->details->update_goto_label_widget);
 	g_free (view->details->update_goto_label);
+	view->details->update_goto_label = NULL;
+	
 	gtk_container_add (GTK_CONTAINER (view->details->update_goto_button), view->details->update_goto_label_widget);
 	gtk_box_pack_start (GTK_BOX (view->details->update_button_container), view->details->update_goto_button, FALSE, FALSE, 13);
 	cbdata->nautilus_view = view->details->nautilus_view;
