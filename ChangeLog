@@ -1,3 +1,14 @@
+2001-04-21  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/news/nautilus-news.c: (do_destroy), (draw_triangle),
+	(draw_rss_logo_image), (is_current_uri), (draw_rss_items),
+	(nautilus_news_motion_notify_event), (rss_read_done_callback),
+	(make_news_view):
+
+	various improvements to the news view, including Arlofied item positioning,
+	prelighting of logos and disclosure triangle, and using bold text
+	to indicate the current item instead of a different color.
+	
 2001-04-20  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*- */
 
 /*
- *  Nautilus
+ *  Nautilus News Viewer
  *
  *  Copyright (C) 2001 Eazel, Inc.
  *
@@ -37,6 +37,7 @@
 #include <eel/eel-debug.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
+#include <eel/eel-graphic-effects.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-label.h>
 #include <eel/eel-scalable-font.h>
@@ -91,6 +92,7 @@ typedef struct {
 	GtkWidget *item_location_field;
 	
 	EelScalableFont *font;	
+	EelScalableFont *bold_font;	
 	
 	gboolean news_changed;
 	gboolean always_display_title;
@@ -145,14 +147,18 @@ typedef struct {
 #define CHANNEL_GAP_SIZE 12
 #define LOGO_GAP_SIZE 2
 #define DISCLOSURE_RIGHT_POSITION 16
-#define LOGO_LEFT_OFFSET 20
-#define ITEM_POSITION 30
+#define LOGO_LEFT_OFFSET 15
+#define ITEM_POSITION 31
 #define ITEM_FONT_SIZE 11
 #define TIME_FONT_SIZE 9
 #define TIME_MARGIN_OFFSET 2
 #define TITLE_FONT_SIZE 18
 #define MINIMUM_DRAW_SIZE 16
 #define NEWS_BACKGROUND_RGBA 0xFFFFFFFF
+
+/* special prelight values for logo and triangle */
+#define PRELIGHT_LOGO 65536
+#define PRELIGHT_TRIANGLE 65537
 
 static char *news_get_indicator_image   (News *news_data);
 static void nautilus_news_free_channel_list (News *news_data);
@@ -227,6 +233,10 @@ do_destroy (GtkObject *obj, News *news)
 	if (news->font) {
 		gtk_object_unref (GTK_OBJECT (news->font));
 	}
+	
+	if (news->bold_font) {
+		gtk_object_unref (GTK_OBJECT (news->bold_font));
+	}
 
 	if (news->timer_task != 0) {
 		gtk_timeout_remove (news->timer_task);
@@ -286,6 +296,7 @@ static void
 draw_triangle (GdkPixbuf *pixbuf, RSSChannelData *channel_data, int v_offset)
 {
 	GdkPixbuf *triangle;
+	GdkPixbuf *mapped_image;
 	int v_delta, triangle_position;
 	int logo_height;
 	if (channel_data->is_open) {
@@ -299,10 +310,19 @@ draw_triangle (GdkPixbuf *pixbuf, RSSChannelData *channel_data, int v_offset)
 	} else {
 		logo_height = gdk_pixbuf_get_height (channel_data->logo_image);
 	}
+
+	mapped_image = triangle;
+	if (channel_data->prelight_index == PRELIGHT_TRIANGLE) {
+		mapped_image = eel_create_spotlight_pixbuf (triangle);
+	}
 			
 	v_delta = logo_height - gdk_pixbuf_get_height (triangle);
 	triangle_position = v_offset + (v_delta / 2);
-	pixbuf_composite (triangle, pixbuf, 2, triangle_position, 255);
+	pixbuf_composite (mapped_image, pixbuf, 2, triangle_position, 255);
+
+	if (mapped_image != triangle) {
+		gdk_pixbuf_unref (mapped_image);
+	}
 }
 
 /* draw the logo image */
@@ -316,6 +336,7 @@ draw_rss_logo_image (RSSChannelData *channel_data,
 	int logo_width, logo_height;
 	int v_offset, pixbuf_width;
 	int time_x_pos, time_y_pos;
+	GdkPixbuf *mapped_image;
 	EelDimensions time_dimensions;
 	
 	v_offset = offset;
@@ -326,7 +347,15 @@ draw_rss_logo_image (RSSChannelData *channel_data,
 
 		if (!measure_only) {
 			draw_triangle (pixbuf, channel_data, v_offset);			
-			pixbuf_composite (channel_data->logo_image, pixbuf, LOGO_LEFT_OFFSET, v_offset, 255);
+			
+			mapped_image = channel_data->logo_image;
+			if (channel_data->prelight_index == PRELIGHT_LOGO) {
+				mapped_image = eel_create_spotlight_pixbuf (channel_data->logo_image);
+			}
+			pixbuf_composite (mapped_image, pixbuf, LOGO_LEFT_OFFSET, v_offset, 255);
+			if (mapped_image != channel_data->logo_image) {
+				gdk_pixbuf_unref (mapped_image);
+			}
 		}
 		v_offset += logo_height + 2;
 
@@ -389,6 +418,13 @@ draw_rss_title (RSSChannelData *channel_data,
 	return v_offset + title_dimensions.height;
 }
 
+/* utility to determine if a uri matches the current one */
+static gboolean
+is_current_uri (News *news_data, const char *candidate_uri)
+{
+	return eel_strcasecmp (news_data->uri, candidate_uri) == 0;
+}
+
 /* draw the items */
 static int
 draw_rss_items (RSSChannelData *channel_data,
@@ -406,7 +442,8 @@ draw_rss_items (RSSChannelData *channel_data,
 	ArtIRect dest_bounds;
 	EelSmoothTextLayout *smooth_text_layout;
 	EelDimensions text_dimensions;
-
+	EelScalableFont *font;
+	
 	if (channel_data->owner->bullet) {
 		bullet_width = gdk_pixbuf_get_width (channel_data->owner->bullet);
 		bullet_height = gdk_pixbuf_get_height (channel_data->owner->bullet);
@@ -423,10 +460,7 @@ draw_rss_items (RSSChannelData *channel_data,
 		item_data = (RSSItemData*) current_item->data;		
 		bullet_alpha = 255;
 
-		if (eel_strcasecmp (item_data->item_url, channel_data->owner->uri) == 0) {
-			text_color = EEL_RGBA_COLOR_PACK (160, 0, 160, 255);
-		}
-		else if (item_index == channel_data->prelight_index) {
+		if (item_index == channel_data->prelight_index) {
 			text_color = EEL_RGBA_COLOR_PACK (0, 0, 128, 255);
 		} else {
 			text_color = EEL_RGB_COLOR_BLACK;
@@ -435,9 +469,15 @@ draw_rss_items (RSSChannelData *channel_data,
 		
 		font_size = ITEM_FONT_SIZE;	
 		item_data->item_start_y = v_offset;
+		if (is_current_uri (channel_data->owner, item_data->item_url)) {
+			font = channel_data->owner->bold_font;
+		} else {
+			font = channel_data->owner->font;
+		}
+		
 		smooth_text_layout = eel_smooth_text_layout_new (
 				item_data->item_title, strlen(item_data->item_title),
-				channel_data->owner->font, font_size, TRUE);
+				font, font_size, TRUE);
 
 		line_width = channel_data->owner->news_display->allocation.width - ITEM_POSITION; 
 		if (line_width > 0) {
@@ -457,7 +497,7 @@ draw_rss_items (RSSChannelData *channel_data,
 		 			 0, 0, &dest_bounds, GTK_JUSTIFY_LEFT,
 		 		 	TRUE, text_color,
 		 		 	EEL_OPACITY_FULLY_OPAQUE);
-				
+									
 				/* draw the bullet */	
 				if (channel_data->owner->bullet) {
 					bullet_x_pos = ITEM_POSITION - bullet_width - 2;
@@ -700,6 +740,7 @@ nautilus_news_motion_notify_event (GtkWidget *widget, GdkEventMotion *event, New
 	GList *current_channel;
 	RSSChannelData *channel_data;
 	int which_item;
+	int prelight_value;
 	
 	/* loop through all of the channels to find the one the mouse is over */
 	current_channel = news_data->channel_list;
@@ -714,7 +755,16 @@ nautilus_news_motion_notify_event (GtkWidget *widget, GdkEventMotion *event, New
 				return TRUE;
 			}
 		} else {
-			nautilus_news_set_prelight_index (channel_data, -1);
+			if (event->y >= channel_data->logo_start_y && event->y <= channel_data->logo_end_y) {
+				if (event->x < DISCLOSURE_RIGHT_POSITION) {
+					prelight_value = PRELIGHT_TRIANGLE;
+				} else {
+					prelight_value = PRELIGHT_LOGO;
+				}
+			} else {			
+				prelight_value = -1;
+			}
+			nautilus_news_set_prelight_index (channel_data, prelight_value);
 		}
 						
 		current_channel = current_channel->next;
@@ -1053,7 +1103,7 @@ rss_read_done_callback (GnomeVFSResult result,
 	/* update the size of the display aread to reflect the new content and
 	 * schedule a redraw.
 	 */
-	update_size_and_redraw (channel_data->owner);
+	update_size_and_redraw (channel_data->owner); 
 }
 
 /* initiate the loading of a channel, by fetching the rss file through gnome-vfs */
@@ -1636,8 +1686,9 @@ make_news_view (const char *iid, gpointer callback_data)
 	set_up_configure_widgets (news, main_container);
 	set_up_add_widgets (news, main_container);
 		
-	/* set up the font */
+	/* set up the fonts */
  	news->font = eel_scalable_font_get_default_font ();
+ 	news->bold_font = eel_scalable_font_get_default_bold_font ();
        
         /* default to the main mode */
 	gtk_widget_show (main_container);
@@ -1667,7 +1718,7 @@ make_news_view (const char *iid, gpointer callback_data)
  	
         /* read the channel definition file and start loading the channels */
         read_channel_list (news);
-           
+          
     	/* return the nautilus view */    
         return news->view;
 }
