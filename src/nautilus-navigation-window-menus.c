@@ -600,9 +600,13 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 		"Susan Kare",
 		NULL
 	};
+	const char *copyright;
 	const char *translator_credits;
+	const char *locale;
 
-	if (about == NULL) {
+	if (about != NULL) {
+		nautilus_about_update_authors (NAUTILUS_ABOUT (about));
+	} else {
 		/* The time stamp overrides the build message, because
 		 * the time stamp should only be set on Tinderbox for
 		 * hourly builds.
@@ -615,6 +619,28 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 			}
 		}
 		
+		/* We could probably just put a translation in en_US
+		 * instead of doing this mess, but I got this working
+		 * and I don't feel like fiddling with it any more.
+		 */
+		locale = setlocale (LC_MESSAGES, NULL);
+		if (locale == NULL
+		    || strcmp (locale, "C") == 0
+		    || strcmp (locale, "POSIX") == 0
+		    || strcmp (locale, "en_US") == 0) {
+			/* The copyright character here is correct for
+			 * Latin-1 encoding, but not for UTF-8, so we
+			 * have to change it when we move to GTK 2.0.
+			 */
+			copyright = "Copyright \xA9 1999-2001 Eazel, Inc.";
+		} else {
+			/* Localize to deal with issues in the copyright
+			 * symbol characters -- do not translate the company
+			 * name, please.
+			 */
+			copyright = _("Copyright (C) 1999-2001 Eazel, Inc.");
+		}
+
 		/* Translators should localize the following string
 		 * which will be displayed at the bottom of the about
 		 * box to give credit to the translator(s).
@@ -623,7 +649,7 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 		
 		about = nautilus_about_new (_("Nautilus"),
 					    VERSION,
-					    "Copyright (C) 1999-2001 Eazel, Inc.",
+					    copyright,
 					    authors,
 					    _("Nautilus is a graphical shell\n"
 					      "for GNOME that makes it\n"
@@ -633,8 +659,6 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 					    build_message);
 		
 		g_free (build_message);
-	} else {
-		nautilus_about_update_authors (NAUTILUS_ABOUT (about));
 	}
 	
 	eel_gtk_window_present (GTK_WINDOW (about));
