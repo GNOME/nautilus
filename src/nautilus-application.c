@@ -371,7 +371,7 @@ nautilus_application_startup (NautilusApplication *application,
 		case OAF_REG_SUCCESS:
 			/* We are registered with OAF and all is right with the world. */
 		case OAF_REG_ALREADY_ACTIVE:
-			/* Another copy of . */
+			/* Another copy of nautilus already is running and registered. */
 			message = NULL;
 			detailed_message = NULL;
 			break;
@@ -583,24 +583,25 @@ check_for_and_run_as_super_user (void)
 {
 	GtkWidget *warning_dlg;
 	gint result;
+
 	if (geteuid () != 0) {
 		return TRUE;
 	}
 
-	warning_dlg = gnome_message_box_new (
-		_("You are running Nautilus as root.\n\n"
-		  "As root, you can damage your system if you are not careful, and\n"
-		  "Nautilus will not stop you from doing it."),
-		GNOME_MESSAGE_BOX_WARNING,
-		GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL);
-
+	warning_dlg = gnome_message_box_new
+		(_("You are running Nautilus as root.\n\n"
+		   "As root, you can damage your system if you are not careful, and\n"
+		   "Nautilus will not stop you from doing it."),
+		 GNOME_MESSAGE_BOX_WARNING,
+		 GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL);
+	
 	result = gnome_dialog_run_and_close (GNOME_DIALOG (warning_dlg));
-
+	
 	/* If they pressed cancel, quit the application */
 	if (result == 1) {
 		return FALSE;
 	}
-
+	
 	return TRUE;
 }
 

@@ -1006,7 +1006,9 @@ get_themed_icon_file_path (const char *theme_name,
 	 * check out the user's home directory, since it might be an emblem
 	 * that they've added there.
 	 */
-	if (path == NULL && icon_size == NAUTILUS_ICON_SIZE_STANDARD && nautilus_str_has_prefix (icon_name, EMBLEM_NAME_PREFIX)) {
+	if (path == NULL
+	    && icon_size == NAUTILUS_ICON_SIZE_STANDARD
+	    && nautilus_str_has_prefix (icon_name, EMBLEM_NAME_PREFIX)) {
 		for (i = 0; i < NAUTILUS_N_ELEMENTS (icon_file_name_suffixes); i++) {
 			user_directory = nautilus_get_user_directory ();
 			path = g_strdup_printf ("%s/emblems/%s%s", 
@@ -1301,7 +1303,8 @@ should_display_image_file_as_itself (NautilusFile *file, gboolean anti_aliased)
 {
 	NautilusSpeedTradeoffValue preference_value;
 	
-	preference_value = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS);
+	preference_value = nautilus_preferences_get_integer
+		(NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS);
 
 	/* see if there's a proxy thumbnail to indicate that thumbnailing
 	 * failed, in which case we shouldn't use the thumbnail.
@@ -1355,11 +1358,12 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 		mime_type = nautilus_file_get_mime_type (file);
 		file_size = nautilus_file_get_size (file);
 		
-		if (nautilus_istr_has_prefix (mime_type, "image/") &&
-				should_display_image_file_as_itself (file, anti_aliased)) {
+		if (nautilus_istr_has_prefix (mime_type, "image/")
+		    && should_display_image_file_as_itself (file, anti_aliased)) {
 			if (file_size < SELF_THUMBNAIL_SIZE_THRESHOLD && is_local) {
 				uri = nautilus_file_get_uri (file);				
-			} else if (strstr (file_uri, "/.thumbnails/") == NULL && file_size < INHIBIT_THUMBNAIL_SIZE_THRESHOLD) {
+			} else if (strstr (file_uri, "/.thumbnails/") == NULL
+				   && file_size < INHIBIT_THUMBNAIL_SIZE_THRESHOLD) {
 				uri = nautilus_get_thumbnail_uri (file, anti_aliased);
 				if (uri == NULL) {
 					uri = get_icon_file_path

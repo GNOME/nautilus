@@ -761,10 +761,10 @@ nautilus_file_background_is_set (NautilusBackground *background)
 		nautilus_file_background_peek_theme_source (background),
 		&default_color, &default_image, &default_placement, &default_combine);
 		 			    
-	matches = !nautilus_file_background_matches_default_settings (color, default_color,
-								      image, default_image,
-								      placement, default_placement,
-								      combine, default_combine);
+	matches = nautilus_file_background_matches_default_settings (color, default_color,
+                                                                     image, default_image,
+                                                                     placement, default_placement,
+                                                                     combine, default_combine);
 	
 	g_free (color);
 	g_free (image);

@@ -1,3 +1,25 @@
+2001-01-31  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Michael Engber <engber@eazel.com>
+
+	Fix bug 6192 ("mapped before underway" warning when clicking on
+	any sidebar tab).
+	
+	* src/nautilus-view-frame.c: (nautilus_view_frame_map): Remove
+	inappropriate check of state, and replace it with a simple NULL
+	check that handles the failed case.
+	
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(nautilus_file_background_is_set): Fixed backwards logic by
+	removing an erroneous "!".
+	
+	* libnautilus-extensions/nautilus-icon-factory.c: Formatting
+	tweaks.
+	* src/file-manager/fm-directory-view.c: Formatting tweak.
+	* src/nautilus-application.c: (nautilus_application_startup):
+	Fixed comment.
+	(check_for_and_run_as_super_user): Formatting tweak.
+
 2001-01-31  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Gene Z. Ragan <gzr@eazel.com>

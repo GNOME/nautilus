@@ -3214,7 +3214,8 @@ real_update_menus (FMDirectoryView *view)
 	background = fm_directory_view_get_background (view);
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_RESET_BACKGROUND,
-				       background && nautilus_file_background_is_set (background));
+				       background != NULL
+				       && nautilus_file_background_is_set (background));
 
 	nautilus_bonobo_set_label_for_menu_item_and_command 
 		(view->details->ui,

@@ -1195,7 +1195,12 @@ nautilus_view_frame_set_label (NautilusViewFrame *view,
 	view->details->label = g_strdup (label);
 }
 
-/* Calls activate on the underlying control frame. */
+/* Activate the underlying control frame whenever the view is mapped.
+ * This causes the view to merge its menu items, for example. For
+ * sidebar panels, it might be a little late to merge them at map
+ * time, especially since we don't unmerge them at unmap time (not
+ * until destroy time).
+ */
 static void
 nautilus_view_frame_map (GtkWidget *view_as_widget)
 {
@@ -1205,20 +1210,9 @@ nautilus_view_frame_map (GtkWidget *view_as_widget)
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, map, (view_as_widget));
 
-	switch (view->details->state) {
-	case VIEW_FRAME_EMPTY:
-	case VIEW_FRAME_NO_LOCATION:
-	case VIEW_FRAME_WAITING:
-		g_warning ("a view frame was mapped before it was underway");
-		break;
-	case VIEW_FRAME_FAILED:
-		return;
-	case VIEW_FRAME_UNDERWAY:
-	case VIEW_FRAME_LOADED:
-		break;
+	if (view->details->control_frame != NULL) {
+		bonobo_control_frame_control_activate (view->details->control_frame);
 	}
-
-	bonobo_control_frame_control_activate (view->details->control_frame);
 }
 
 static Nautilus_History *
