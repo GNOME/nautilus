@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.pa\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-03 21:20+0530\n"
+"POT-Creation-Date: 2004-03-08 15:18+0100\n"
 "PO-Revision-Date: 2004-03-03 19:48+0530\n"
 "Last-Translator: Amanpreet Singh Alam <amanlinux@netscape.net>\n"
 "Language-Team: KBST Punjab <kbstpunjab@netscape.net>\n"
@@ -2109,12 +2109,8 @@ msgid "Replace _All"
 msgstr "ਸਾਰਾ ਤਬਦੀਲ"
 
 #. appended to new link file
-#. Note to localizers: convert file type string for file
-#. * (e.g. "folder", "plain text") to file type for symbolic link
-#. * to that kind of file (e.g. "link to folder").
-#.
 #: libnautilus-private/nautilus-file-operations.c:1148
-#: libnautilus-private/nautilus-file.c:4714
+#: libnautilus-private/nautilus-file.c:4724
 #, c-format
 msgid "link to %s"
 msgstr "%s ਨਾਲ ਸਬੰਧ"
@@ -2167,9 +2163,6 @@ msgid " (another copy)"
 msgstr "ਇਕ ਨਕਲ ਹੋਰ"
 
 #. localizers: tag used to detect the x11th copy of a file
-#. localizers: tag used to detect the x12th copy of a file
-#. localizers: tag used to detect the x13th copy of a file
-#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2205,9 +2198,6 @@ msgid "%s (another copy)%s"
 msgstr "%s (ਇਕ ਹੋਰ ਨਕਲ) %s"
 
 #. localizers: appended to x11th file copy
-#. localizers: appended to x12th file copy
-#. localizers: appended to x13th file copy
-#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -2486,7 +2476,7 @@ msgstr "_ਖਾਲੀ"
 
 #: libnautilus-private/nautilus-file-utilities.c:369
 #: libnautilus-private/nautilus-global-preferences.c:527
-#: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:9
+#: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:10
 msgid "Computer"
 msgstr "ਮਸ਼ੀਨ"
 
@@ -2525,64 +2515,64 @@ msgstr "ਵਿੰਡੋ ਨੈਟਵਰਕ"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2922
+#: libnautilus-private/nautilus-file.c:2932
 msgid "today at 00:00:00 PM"
 msgstr "ਅਜ  ਸੰਝ 00:00:00 ਵਜੇ"
 
-#: libnautilus-private/nautilus-file.c:2923
+#: libnautilus-private/nautilus-file.c:2933
 msgid "today at %-I:%M:%S %p"
 msgstr "ਅਜ %-l:%M:%S %p  ਵਜੇ"
 
-#: libnautilus-private/nautilus-file.c:2925
+#: libnautilus-private/nautilus-file.c:2935
 msgid "today at 00:00 PM"
 msgstr "ਅਜ  ਸੰਝ 00:00 ਵਜੇ"
 
-#: libnautilus-private/nautilus-file.c:2926
+#: libnautilus-private/nautilus-file.c:2936
 msgid "today at %-I:%M %p"
 msgstr "ਅਜ %-l :%M %p ਵਜੇ"
 
-#: libnautilus-private/nautilus-file.c:2928
+#: libnautilus-private/nautilus-file.c:2938
 msgid "today, 00:00 PM"
 msgstr "ਅਜ ਸੰਝ 00:00 ਵਜੇ"
 
-#: libnautilus-private/nautilus-file.c:2929
+#: libnautilus-private/nautilus-file.c:2939
 msgid "today, %-I:%M %p"
 msgstr "ਅਜ %-l:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2931
-#: libnautilus-private/nautilus-file.c:2932
+#: libnautilus-private/nautilus-file.c:2941
+#: libnautilus-private/nautilus-file.c:2942
 msgid "today"
 msgstr "ਅਜ"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2941
+#: libnautilus-private/nautilus-file.c:2951
 msgid "yesterday at 00:00:00 PM"
 msgstr "ਕਲ ਸੰਝ 00:00:00 ਵਜੇ"
 
-#: libnautilus-private/nautilus-file.c:2942
+#: libnautilus-private/nautilus-file.c:2952
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "ਕਲ  %-l:%M:%S%p ਵਜੇ"
 
-#: libnautilus-private/nautilus-file.c:2944
+#: libnautilus-private/nautilus-file.c:2954
 msgid "yesterday at 00:00 PM"
 msgstr "ਕਲ  ਸੰਝ 00:00 ਵਜੇ"
 
-#: libnautilus-private/nautilus-file.c:2945
+#: libnautilus-private/nautilus-file.c:2955
 msgid "yesterday at %-I:%M %p"
 msgstr "ਕਲ %-l:%M%p ਵਜੇ"
 
-#: libnautilus-private/nautilus-file.c:2947
+#: libnautilus-private/nautilus-file.c:2957
 msgid "yesterday, 00:00 PM"
 msgstr "ਕਲ,  ਸੰਝ 00:00 ਵਜੇ"
 
-#: libnautilus-private/nautilus-file.c:2948
+#: libnautilus-private/nautilus-file.c:2958
 msgid "yesterday, %-I:%M %p"
 msgstr "ਕਲ, %l:%M%p"
 
-#: libnautilus-private/nautilus-file.c:2950
-#: libnautilus-private/nautilus-file.c:2951
+#: libnautilus-private/nautilus-file.c:2960
+#: libnautilus-private/nautilus-file.c:2961
 msgid "yesterday"
 msgstr "ਕਲ"
 
@@ -2591,78 +2581,78 @@ msgstr "ਕਲ"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2962
+#: libnautilus-private/nautilus-file.c:2972
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "ਬੁਧਵਾਰ, ਸਤੰਬਰ 00 0000  ਸੰਝ 00:00:00 ਵਜੇ"
 
-#: libnautilus-private/nautilus-file.c:2963
+#: libnautilus-private/nautilus-file.c:2973
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A,%B%-d%Y ਨੂੰ %-l:%M%S%p "
 
-#: libnautilus-private/nautilus-file.c:2965
+#: libnautilus-private/nautilus-file.c:2975
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "ਸੋਮ, ਅਕਤੂ 00 0000 ਸੰਝ 00:00:00 ਵਜੇ"
 
-#: libnautilus-private/nautilus-file.c:2966
+#: libnautilus-private/nautilus-file.c:2976
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a,%b%-d%Y %-l:%M%S%p"
 
-#: libnautilus-private/nautilus-file.c:2968
+#: libnautilus-private/nautilus-file.c:2978
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "ਸੋਮ,ਅਕਤੂ 00 0000 ਸੰਝ 00:00  ਵਜੇ"
 
-#: libnautilus-private/nautilus-file.c:2969
+#: libnautilus-private/nautilus-file.c:2979
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a,%b%-d%Y ਨੂੰ %-l:%M%p ਵਜੇ"
 
-#: libnautilus-private/nautilus-file.c:2971
+#: libnautilus-private/nautilus-file.c:2981
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "ਅਕਤੂ 00 0000 ਵਜੇ 00:00 ਸੰਝ"
 
-#: libnautilus-private/nautilus-file.c:2972
+#: libnautilus-private/nautilus-file.c:2982
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%b,%-d%Y %-l:%M%p"
 
-#: libnautilus-private/nautilus-file.c:2974
+#: libnautilus-private/nautilus-file.c:2984
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "ਅਕਤੂ 00 0000, 00:00 ਸੰਝ"
 
-#: libnautilus-private/nautilus-file.c:2975
+#: libnautilus-private/nautilus-file.c:2985
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b,%-d%Y, %-l:%M%p"
 
-#: libnautilus-private/nautilus-file.c:2977
+#: libnautilus-private/nautilus-file.c:2987
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 ਸੰਝ"
 
-#: libnautilus-private/nautilus-file.c:2978
+#: libnautilus-private/nautilus-file.c:2988
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%m,%-d%y, %-l:%M%p"
 
-#: libnautilus-private/nautilus-file.c:2980
+#: libnautilus-private/nautilus-file.c:2990
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2981
+#: libnautilus-private/nautilus-file.c:2991
 msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
-#: libnautilus-private/nautilus-file.c:4289
-#: src/file-manager/fm-directory-view.c:1814
+#: libnautilus-private/nautilus-file.c:4299
+#: src/file-manager/fm-directory-view.c:1818
 #, fuzzy, c-format
 msgid "%u item"
 msgid_plural "%u items"
 msgstr[0] "? ਚੀਜ਼ਾਂ"
 msgstr[1] "? ਚੀਜ਼ਾਂ"
 
-#: libnautilus-private/nautilus-file.c:4290
+#: libnautilus-private/nautilus-file.c:4300
 #, fuzzy, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
 msgstr[0] "ਫੋਲਡਰ ਕਟੋ"
 msgstr[1] "ਫੋਲਡਰ ਕਟੋ"
 
-#: libnautilus-private/nautilus-file.c:4291
+#: libnautilus-private/nautilus-file.c:4301
 #, fuzzy, c-format
 msgid "%u file"
 msgid_plural "%u files"
@@ -2670,37 +2660,37 @@ msgstr[0] "ਨਵੀ ਫਾਇਲ"
 msgstr[1] "ਨਵੀ ਫਾਇਲ"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4616
-#: libnautilus-private/nautilus-file.c:4632
+#: libnautilus-private/nautilus-file.c:4626
+#: libnautilus-private/nautilus-file.c:4642
 msgid "? items"
 msgstr "? ਚੀਜ਼ਾਂ"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4622
+#: libnautilus-private/nautilus-file.c:4632
 msgid "? bytes"
 msgstr "? ਬਾਈਟ"
 
-#: libnautilus-private/nautilus-file.c:4637
+#: libnautilus-private/nautilus-file.c:4647
 msgid "unknown type"
 msgstr "ਅਣਪਛਾਤੀ ਿਕਸਮ"
 
-#: libnautilus-private/nautilus-file.c:4640
+#: libnautilus-private/nautilus-file.c:4650
 msgid "unknown MIME type"
 msgstr "ਅਣਪਛਾਤੀ MIME ਕਿਸਮ"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4646
+#: libnautilus-private/nautilus-file.c:4656
 #: src/file-manager/fm-properties-window.c:1147
 msgid "unknown"
 msgstr "ਅਣਪਛਾਤਾ"
 
-#: libnautilus-private/nautilus-file.c:4678
+#: libnautilus-private/nautilus-file.c:4688
 msgid "program"
 msgstr "ਕਾਰਜ"
 
-#: libnautilus-private/nautilus-file.c:4690
+#: libnautilus-private/nautilus-file.c:4700
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2709,7 +2699,7 @@ msgstr ""
 " \"x-directory/normal\" ਲਈ ਕੋਈ ਵੀ ਵਰਣਨ ਨਹੀ ਹੈ । ਇਸ ਦਾ ਕਾਰਨ ਇਹ ਹੋ ਸਕਦਾ ਹੈ ਕਿ "
 "gnome-vfs.keys ਫਾਇਲ ਜਾਂ ਤਾਂ  ਗਲਤ ਥਾਂ ਤੇ ਹੈ, ਨਹੀ ਤਾਂ ਲਭੀ ਨਹੀ ਹੈ"
 
-#: libnautilus-private/nautilus-file.c:4694
+#: libnautilus-private/nautilus-file.c:4704
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2718,15 +2708,15 @@ msgstr ""
 "MIME ਕਿਸਮ \"%s\" (ਫਾਇਲ  \"%s\" ਹੈ) ਦਾ ਕੋਈ ਵਰਣਨ ਨਹੀ ਹੈ , ਕਿਰਪਾ ਕਰਕੇ  gnome-vfs "
 "mailing ਸੂਚੀ ਨੂੰ ਲਿਖੋ"
 
-#: libnautilus-private/nautilus-file.c:4708
+#: libnautilus-private/nautilus-file.c:4718
 msgid "link"
 msgstr "ਸੰਬੰਧ"
 
-#: libnautilus-private/nautilus-file.c:4728
+#: libnautilus-private/nautilus-file.c:4738
 msgid "link (broken)"
 msgstr "ਸੰਬੰਧ (ਟੁਟਿਆ)"
 
-#: libnautilus-private/nautilus-file.c:6148
+#: libnautilus-private/nautilus-file.c:6165
 #: libnautilus-private/nautilus-global-preferences.c:533
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
@@ -3285,6 +3275,10 @@ msgstr " \"%s\".ਨਾਲ ਸੰਬੰਧਤ ਕੋਈ ਸਹਾਇਕ ਨਹੀ
 msgid "No Action Associated"
 msgstr "ਕੋਈ ਸਹਾਇਕ ਕਾਰਵਾਈ ਨਹੀ ਹੈ"
 
+#. Note: This might be misleading in the components case, since the
+#. * user can't add components to the complete list even from the capplet.
+#. * (They can add applications though.)
+#.
 #: libnautilus-private/nautilus-program-chooser.c:1605
 msgid ""
 "You can configure GNOME to associate applications with file types. Do you "
@@ -3911,30 +3905,30 @@ msgstr "ਪਿਠ ਭੂਮੀ"
 msgid "Empty Trash"
 msgstr "ਰਦੀ ਖਾਲੀ"
 
-#: src/file-manager/fm-directory-view.c:540
+#: src/file-manager/fm-directory-view.c:544
 #, fuzzy, c-format
 msgid "Open %d Window?"
 msgid_plural "Open %d Windows?"
 msgstr[0] "ਨਵਾਂ ਨੈਵੀਗੇਸ਼ਨ ਝਰੋਖਾ ਖੋਲੋ"
 msgstr[1] "ਨਵਾਂ ਨੈਵੀਗੇਸ਼ਨ ਝਰੋਖਾ ਖੋਲੋ"
 
-#: src/file-manager/fm-directory-view.c:541
+#: src/file-manager/fm-directory-view.c:545
 msgid "Are you sure you want to open all files?"
 msgstr "ਕੀ ਤੁਸੀ ਸਾਰੀਆਂ ਫਾਇਲਾਂ ਖੋਲਣ ਲਈ ਤਿਆਰ ਹੋ? "
 
-#: src/file-manager/fm-directory-view.c:542 src/nautilus-location-bar.c:158
+#: src/file-manager/fm-directory-view.c:546 src/nautilus-location-bar.c:158
 #, fuzzy, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
 msgstr[0] "ਝਲਕ ਝਰੋਖਾ ਖੋਲੋ"
 msgstr[1] "ਝਲਕ ਝਰੋਖਾ ਖੋਲੋ"
 
-#: src/file-manager/fm-directory-view.c:889
+#: src/file-manager/fm-directory-view.c:893
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "\"%s\" ਨੂੰ ਪਕੇ ਤੌਰ ਤੇ ਖਤਮ ਕਰਨ ਲਈ ਤਿਆਰ ?"
 
-#: src/file-manager/fm-directory-view.c:893
+#: src/file-manager/fm-directory-view.c:897
 #, fuzzy, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
@@ -3942,35 +3936,35 @@ msgid_plural ""
 msgstr[0] "\"%s\" ਨੂੰ ਪਕੇ ਤੌਰ ਤੇ ਖਤਮ ਕਰਨ ਲਈ ਤਿਆਰ ?"
 msgstr[1] "\"%s\" ਨੂੰ ਪਕੇ ਤੌਰ ਤੇ ਖਤਮ ਕਰਨ ਲਈ ਤਿਆਰ ?"
 
-#: src/file-manager/fm-directory-view.c:901
+#: src/file-manager/fm-directory-view.c:905
 msgid "If you delete an item, it is permanently lost."
 msgstr "ਜੇ ਚੀਜ਼ ਹਟਾ ਦਿਤੀ ਤਾਂ ਇਹ ਪਕੇ ਤੋਰ ਤੇ ਹਟਾਈ ਜਾਵੇਗੀ"
 
-#: src/file-manager/fm-directory-view.c:902
+#: src/file-manager/fm-directory-view.c:906
 msgid "Delete?"
 msgstr "ਖਤਮ ?"
 
-#: src/file-manager/fm-directory-view.c:1041
+#: src/file-manager/fm-directory-view.c:1045
 msgid "Select Pattern"
 msgstr "ਇਕ ਤਰਤੀਬ ਚੁਣੋ"
 
-#: src/file-manager/fm-directory-view.c:1057
+#: src/file-manager/fm-directory-view.c:1061
 msgid "_Pattern:"
 msgstr "ਵੰਨਗੀ (ਤਰਤੀਬ)"
 
-#: src/file-manager/fm-directory-view.c:1746
+#: src/file-manager/fm-directory-view.c:1750
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" ਚੁਣੇ"
 
-#: src/file-manager/fm-directory-view.c:1748
+#: src/file-manager/fm-directory-view.c:1752
 #, fuzzy, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
 msgstr[0] "\"%s\" ਚੁਣੇ"
 msgstr[1] "\"%s\" ਚੁਣੇ"
 
-#: src/file-manager/fm-directory-view.c:1758
+#: src/file-manager/fm-directory-view.c:1762
 #, fuzzy, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -3978,19 +3972,19 @@ msgstr[0] "[ਚੀਜਾਂ]\"%s\" ਆਪਣੇ ਨਾਉ ਵਿਚ ਹਨ"
 msgstr[1] "[ਚੀਜਾਂ]\"%s\" ਆਪਣੇ ਨਾਉ ਵਿਚ ਹਨ"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:1769
+#: src/file-manager/fm-directory-view.c:1773
 #, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/file-manager/fm-directory-view.c:1785
+#: src/file-manager/fm-directory-view.c:1789
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr " \"%s\"ਚੁਣਿਆ (%s)"
 
-#: src/file-manager/fm-directory-view.c:1789
+#: src/file-manager/fm-directory-view.c:1793
 #, fuzzy, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -3998,7 +3992,7 @@ msgstr[0] " \"%s\"ਚੁਣਿਆ (%s)"
 msgstr[1] " \"%s\"ਚੁਣਿਆ (%s)"
 
 #. Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:1797
+#: src/file-manager/fm-directory-view.c:1801
 #, fuzzy, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
@@ -4006,7 +4000,7 @@ msgstr[0] " \"%s\"ਚੁਣਿਆ (%s)"
 msgstr[1] " \"%s\"ਚੁਣਿਆ (%s)"
 
 #  Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:1818
+#: src/file-manager/fm-directory-view.c:1822
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, ਖਾਲੀ ਥਾਂ: %s"
@@ -4018,52 +4012,56 @@ msgstr "%s, ਖਾਲੀ ਥਾਂ: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1843
+#: src/file-manager/fm-directory-view.c:1847
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
 
-#: src/file-manager/fm-directory-view.c:1968
+#. Note that the number of items actually displayed varies somewhat due
+#. * to the way files are collected in batches. So you can't assume that
+#. * no more than the constant limit are displayed.
+#.
+#: src/file-manager/fm-directory-view.c:1972
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr "ਫੋਲਡਰ\"%s\" ਇੰਨੀਆਂ ਰਖਦਾ ਹੈ ਜਿੰਨੀਆਂ ਨਾਟਿਲਸ ਸੰਭਾਲ ਨਹੀ ਸਕਦਾ ਹੇ"
 
-#: src/file-manager/fm-directory-view.c:1974
+#: src/file-manager/fm-directory-view.c:1978
 msgid "Some files will not be displayed."
 msgstr "ਕੁਝ ਫਾਇਲਾਂ ਹੀ ਵੇਖਾਈਆ ਨਾ  ਜਾ ਸਕਣਗੀਆਂ ।"
 
-#: src/file-manager/fm-directory-view.c:1975
+#: src/file-manager/fm-directory-view.c:1979
 msgid "Too Many Files"
 msgstr "ਬਹੁਤੀਆਂ ਫਾਇਲਾਂ"
 
-#: src/file-manager/fm-directory-view.c:3243
+#: src/file-manager/fm-directory-view.c:3247
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "ਫਾਇਲਾਂ  ਨੂੰ ਰਦੀ ਵਿਚ ਭੇਜਿਆ ਨਹੀ ਜਾ ਸਕਦਾ,ਕੀ ਹਮੇਸ਼ਾ ਲਈ ਖਤਮ ਕਰਨ ਚਾਹੋਗੇ ?"
 
-#: src/file-manager/fm-directory-view.c:3244
+#: src/file-manager/fm-directory-view.c:3248
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "ਫਾਇਲ਼  \"%s\" ਰਦੀ ਵਿਚ ਨਹੀ ਭੇਜੀ ਜਾ ਸਕਦੀ ਹੈ"
 
-#: src/file-manager/fm-directory-view.c:3248
+#: src/file-manager/fm-directory-view.c:3252
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr "ਕੁਝ ਚੀਜਾਂ ਨੂੰ ਰਦੀ ਵਿਚ ਭੇਜਿਆ ਨਹੀ ਜਾ ਸਕਦਾ,ਕੀ ਹਮੇਸ਼ਾ ਲਈ ਖਤਮ ਕਰਨ ਚਾਹੋਗੇ ?"
 
-#: src/file-manager/fm-directory-view.c:3251
+#: src/file-manager/fm-directory-view.c:3255
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr "ਕੁਝ ਚੀਜ਼ਾਂ  ਨੂੰ ਰਦੀ ਵਿਚ ਭੇਜਿਆ ਨਹੀ ਜਾ ਸਕਦਾ,ਕੀ ਹਮੇਸ਼ਾ ਲਈ ਖਤਮ ਕਰਨ ਚਾਹੋਗੇ ?"
 
-#: src/file-manager/fm-directory-view.c:3258
+#: src/file-manager/fm-directory-view.c:3262
 msgid "Delete Immediately?"
 msgstr "ਹੁਣੇ ਖਤਮ ?"
 
-#: src/file-manager/fm-directory-view.c:3290
+#: src/file-manager/fm-directory-view.c:3294
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "ਰਦੀ ਵਿਚੋ \"%s\" ਹਮੇਸ਼ਾ ਖਤਮ ਕਰਨ ਚਾਹੋਗੇ ?"
 
-#: src/file-manager/fm-directory-view.c:3294
+#: src/file-manager/fm-directory-view.c:3298
 #, fuzzy, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -4074,34 +4072,34 @@ msgid_plural ""
 msgstr[0] "ਰਦੀ ਵਿਚੋ \"%s\" ਹਮੇਸ਼ਾ ਖਤਮ ਕਰਨ ਚਾਹੋਗੇ ?"
 msgstr[1] "ਰਦੀ ਵਿਚੋ \"%s\" ਹਮੇਸ਼ਾ ਖਤਮ ਕਰਨ ਚਾਹੋਗੇ ?"
 
-#: src/file-manager/fm-directory-view.c:3303
+#: src/file-manager/fm-directory-view.c:3307
 msgid "If you delete an item, it will be permanently lost."
 msgstr "ਜੇਕਰ ਤੁਸੀ ਕੁਝ ਖਤਮ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕੀਤੀ ਤਾਂ ਇਹ ਹਮੇਸ਼ਾ ਲਈ ਖਤਮ ਹੋ ਜਾਵੇਗਾ"
 
-#: src/file-manager/fm-directory-view.c:3304
+#: src/file-manager/fm-directory-view.c:3308
 msgid "Delete From Trash?"
 msgstr "ਰਦੀ ਵਿਚੋ ਖਤਮ ?"
 
-#: src/file-manager/fm-directory-view.c:3667
+#: src/file-manager/fm-directory-view.c:3671
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "ਚੁਣੀਆਂ ਚੀਜਾਂ ਨੂੰ ਖੋਲਣ ਲਈ \"%s\" ਵਰਤੋ"
 
-#: src/file-manager/fm-directory-view.c:3731
+#: src/file-manager/fm-directory-view.c:3735
 #: src/file-manager/nautilus-directory-view-ui.xml.h:30
 msgid "Other _Application..."
 msgstr "ਹੋਰ ਕਾਰਜ......."
 
-#: src/file-manager/fm-directory-view.c:3731
+#: src/file-manager/fm-directory-view.c:3735
 msgid "An _Application..."
 msgstr "ਇਕ ਕਾਰਜ......."
 
-#: src/file-manager/fm-directory-view.c:3915
+#: src/file-manager/fm-directory-view.c:3919
 #, fuzzy, c-format
 msgid "Cannot open %s"
 msgstr "ਰਦੀ ਦੀ ਨਕਲ ਨਹੀ ਕੀਤੀ ਜਾ ਸਕਦੀ"
 
-#: src/file-manager/fm-directory-view.c:3918
+#: src/file-manager/fm-directory-view.c:3922
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -4114,31 +4112,31 @@ msgid ""
 "Open With menu to choose a specific application for the file. "
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4289
+#: src/file-manager/fm-directory-view.c:4293
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "ਚੁਣੀਆਂ ਚੀਜਾਂ ਨੂੰ ਚਲਾਉਣ ਲਈ \"%s\" ਵਰਤੋ"
 
-#: src/file-manager/fm-directory-view.c:4523
+#: src/file-manager/fm-directory-view.c:4527
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "ਨਮੂਨੇ  \"%s\" ਤੋ ਕਾਗਜ਼ਾਤ ਤਿਆਰ ਕਰੋ"
 
-#: src/file-manager/fm-directory-view.c:4707
+#: src/file-manager/fm-directory-view.c:4711
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "ਇਸ ਫੋਲਡਰ ਵਿਚਲੀਆਂ ਸਾਰੀਆਂ ਚਲਣਯੋਗ ਫਾਇਲ਼ਾਂ ਸਕ੍ਰਿਪਟ ਸੂਚੀ ਵਿਚ ਉਪਬਲਧ ਹਨ"
 
-#: src/file-manager/fm-directory-view.c:4709
+#: src/file-manager/fm-directory-view.c:4713
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr "ਸੂਚੀ ਵਿਚੋ ਚੁਣੀ ਕੋਈ ਸਕ੍ਰਿਪਟ ਕਿਸੇ ਵੀ ਚੁਣੀ ਫਾਇਲ ਨੂੰ ਇਨਪੁਟ ਲੈਕੋ ਚਲ ਸਕੇਗੀ"
 
-#: src/file-manager/fm-directory-view.c:4711
+#: src/file-manager/fm-directory-view.c:4715
 msgid "About Scripts"
 msgstr "ਸਕ੍ਰਿਪਟ ਬਾਰੇ"
 
-#: src/file-manager/fm-directory-view.c:4712
+#: src/file-manager/fm-directory-view.c:4716
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4175,19 +4173,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: ਮੌਜੂਦ ਝਰੋਖੇ ਲਈ ਸਥਾਨ ਅਤੇ ਅਕਾਰ"
 
-#: src/file-manager/fm-directory-view.c:4843
+#: src/file-manager/fm-directory-view.c:4847
 #: src/file-manager/fm-tree-view.c:788
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "ਜੇਕਰ ਚੇਪਣ ਦੀ ਕਮਾਂਡ ਚਲਾਈ ਤਾਂ ਇਹ \"%s\" ਫਾਇਲਾਂ ਭੇਜੀਆਂ ਜਾਣਗੀਆਂ"
 
-#: src/file-manager/fm-directory-view.c:4847
+#: src/file-manager/fm-directory-view.c:4851
 #: src/file-manager/fm-tree-view.c:792
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "ਜੇਕਰ ਚੇਪਣ ਦੀ ਕਮਾਂਡ ਚਲਾਈ ਤਾਂ ਇਹ \"%s\" ਫਾਇਲਾਂ ਨਕਲ ਕੀਤੀਆਂ ਜਾਣਗੀਆਂ"
 
-#: src/file-manager/fm-directory-view.c:4854
+#: src/file-manager/fm-directory-view.c:4858
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -4196,7 +4194,7 @@ msgid_plural ""
 msgstr[0] "ਜੇਕਰ ਚੇਪਣ ਦੀ ਕਮਾਂਡ ਚਲਾਈ ਤਾਂ ਇਹ \"%s\" ਫਾਇਲਾਂ ਭੇਜੀਆਂ ਜਾਣਗੀਆਂ"
 msgstr[1] "ਜੇਕਰ ਚੇਪਣ ਦੀ ਕਮਾਂਡ ਚਲਾਈ ਤਾਂ ਇਹ \"%s\" ਫਾਇਲਾਂ ਭੇਜੀਆਂ ਜਾਣਗੀਆਂ"
 
-#: src/file-manager/fm-directory-view.c:4861
+#: src/file-manager/fm-directory-view.c:4865
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -4205,35 +4203,35 @@ msgid_plural ""
 msgstr[0] "ਜੇਕਰ ਚੇਪਣ ਦੀ ਕਮਾਂਡ ਚਲਾਈ ਤਾਂ ਇਹ \"%s\" ਫਾਇਲਾਂ ਨਕਲ ਕੀਤੀਆਂ ਜਾਣਗੀਆਂ"
 msgstr[1] "ਜੇਕਰ ਚੇਪਣ ਦੀ ਕਮਾਂਡ ਚਲਾਈ ਤਾਂ ਇਹ \"%s\" ਫਾਇਲਾਂ ਨਕਲ ਕੀਤੀਆਂ ਜਾਣਗੀਆਂ"
 
-#: src/file-manager/fm-directory-view.c:4943
+#: src/file-manager/fm-directory-view.c:4947
 #: src/file-manager/fm-tree-view.c:868
 msgid "There is nothing on the clipboard to paste."
 msgstr "ਕਲਿਕਬੋਰਡ ਵਿਚ ਕੁਝ ਨਹੀ ਜੋ ਰਖਿਆ ਜਾ ਸਕੇ"
 
-#: src/file-manager/fm-directory-view.c:5046
-#: src/file-manager/fm-directory-view.c:6098
+#: src/file-manager/fm-directory-view.c:5050
+#: src/file-manager/fm-directory-view.c:6102
 msgid "Mount Error"
 msgstr "ਮਾਊਟ ਗਲਤੀ"
 
-#: src/file-manager/fm-directory-view.c:5108
+#: src/file-manager/fm-directory-view.c:5112
 msgid "Unmount Error"
 msgstr "ਅਨਮਾਊਟ ਗਲਤੀ"
 
-#: src/file-manager/fm-directory-view.c:5111
+#: src/file-manager/fm-directory-view.c:5115
 msgid "Eject Error"
 msgstr "ਬਾਹਰ ਕਢਣ ਵਿਚ ਗਲਤੀ"
 
-#: src/file-manager/fm-directory-view.c:5374
+#: src/file-manager/fm-directory-view.c:5378
 msgid "E_ject"
 msgstr "ਬਾਹਰ ਕਢੋ"
 
-#: src/file-manager/fm-directory-view.c:5374
+#: src/file-manager/fm-directory-view.c:5378
 #: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "_Unmount Volume"
 msgstr "ਵਾਲੀਅਮ ਚਾਲੂ ਨਹੀ (ਅਨਮਾਉਟ)"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5504
+#: src/file-manager/fm-directory-view.c:5508
 #: src/file-manager/fm-tree-view.c:960
 #, fuzzy, c-format
 msgid "Open in New Window"
@@ -4241,120 +4239,120 @@ msgid_plural "Open in %d New Windows"
 msgstr[0] "ਨਵਾਂ ਝਰੋਖਾ ਖੋਲੋ"
 msgstr[1] "ਨਵਾਂ ਝਰੋਖਾ ਖੋਲੋ"
 
-#: src/file-manager/fm-directory-view.c:5511
+#: src/file-manager/fm-directory-view.c:5515
 msgid "Browse Folder"
 msgstr "ਫੋਲਡਰ ਝਲਕ"
 
-#: src/file-manager/fm-directory-view.c:5513
+#: src/file-manager/fm-directory-view.c:5517
 msgid "Browse Folders"
 msgstr "ਫੋਲਡਰ ਝਲਕ"
 
-#: src/file-manager/fm-directory-view.c:5536
+#: src/file-manager/fm-directory-view.c:5540
 msgid "_Delete from Trash"
 msgstr "ਰਦੀ ਵਿਚੋ ਹਟਾਉ"
 
-#: src/file-manager/fm-directory-view.c:5538
+#: src/file-manager/fm-directory-view.c:5542
 msgid "Delete all selected items permanently"
 msgstr "ਸਾਰੀਆਂ ਚੀਜਾਂ ਪਕੇ ਤੋਰ ਤੇ ਹਟਾਉ"
 
-#: src/file-manager/fm-directory-view.c:5541
-#: src/file-manager/fm-directory-view.c:5879
+#: src/file-manager/fm-directory-view.c:5545
+#: src/file-manager/fm-directory-view.c:5883
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Mo_ve to Trash"
 msgstr "ਰਦੀ ਵਿਚ ਭੇਜੋ"
 
-#: src/file-manager/fm-directory-view.c:5543
+#: src/file-manager/fm-directory-view.c:5547
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Move each selected item to the Trash"
 msgstr "ਹਰੇਕ ਚੁਣੀ ਚੀਜ ਰਦੀ ਵਿਚ ਭੇਜੋ"
 
-#: src/file-manager/fm-directory-view.c:5567
+#: src/file-manager/fm-directory-view.c:5571
 #: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "_Delete"
 msgstr "ਹਟਾਉ"
 
-#: src/file-manager/fm-directory-view.c:5587
+#: src/file-manager/fm-directory-view.c:5591
 msgid "Ma_ke Links"
 msgstr "ਸੰਬੰਧ ਬਣਾਉ"
 
-#: src/file-manager/fm-directory-view.c:5588
+#: src/file-manager/fm-directory-view.c:5592
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Ma_ke Link"
 msgstr "ਸੰਬੰਧ ਬਣਾਉ"
 
-#: src/file-manager/fm-directory-view.c:5601
+#: src/file-manager/fm-directory-view.c:5605
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Empty Trash"
 msgstr "ਰਦੀ ਦੀ ਟੋਕਰੀ ਖਾਲੀ ਕਰੋ"
 
-#: src/file-manager/fm-directory-view.c:5617
+#: src/file-manager/fm-directory-view.c:5621
 msgid "Cu_t File"
 msgstr "ਫਾਇਲ ਵਖ ਕਰੋ"
 
-#: src/file-manager/fm-directory-view.c:5618
+#: src/file-manager/fm-directory-view.c:5622
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Cu_t Files"
 msgstr "ਫਾਇਲਾਂ ਵਖ ਕਰੋ"
 
-#: src/file-manager/fm-directory-view.c:5627
+#: src/file-manager/fm-directory-view.c:5631
 msgid "_Copy File"
 msgstr "ਫਾਇਲ ਦੀ ਨਕਲ (ਕਾਪੀ)"
 
-#: src/file-manager/fm-directory-view.c:5628
+#: src/file-manager/fm-directory-view.c:5632
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "_Copy Files"
 msgstr "ਫਾਇਲਾਂ ਦੀ ਨਕਲ(ਕਾਪੀ)"
 
-#: src/file-manager/fm-directory-view.c:5870
+#: src/file-manager/fm-directory-view.c:5874
 #, fuzzy
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "ਸੰਬੰਧ ਟੁਟ ਚੁਕਾ ਹੈ, ਕੀ ਤੁਸੀ ਇਸ ਨੂੰ ਰਦੀ ਵਿਚ ਭੇਜਣਾ ਪਸੰਦ ਕਰੋਗੇ ?"
 
-#: src/file-manager/fm-directory-view.c:5872
+#: src/file-manager/fm-directory-view.c:5876
 msgid "This link can't be used, because it has no target."
 msgstr "ਇਹ ਸੰਬੰਧ ਵਰਤੋਯੋਗ ਨਹੀ ਕਿਉਕਿ ਨਿਸ਼ਾਨਾ ਹੀ ਨਹੀ ਰਿਹਾ।"
 
-#: src/file-manager/fm-directory-view.c:5874
+#: src/file-manager/fm-directory-view.c:5878
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "ਇਹ ਸੰਬੰਧ ਵਰਤੋਯੋਗ ਨਹੀ ਕਿਉਕਿ ਨਿਸ਼ਾਨਾ\"%s\" ਹੀ ਨਹੀ ਰਿਹਾ।"
 
-#: src/file-manager/fm-directory-view.c:5879
+#: src/file-manager/fm-directory-view.c:5883
 msgid "Broken Link"
 msgstr "ਖਤਮ ਸੰਬੰਧ"
 
-#: src/file-manager/fm-directory-view.c:5937
+#: src/file-manager/fm-directory-view.c:5941
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "ਕੀ ਤੁਸੀ \"%s\" ਚਲਾਉਣਾ ਚਾਹੋਗੇ ਜਾਂ ਵੇਖਣਾ ਚਾਹੇਗੇ ?"
 
-#: src/file-manager/fm-directory-view.c:5939
+#: src/file-manager/fm-directory-view.c:5943
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" ਫਾਇਲ ਚਲਣਯੋਗ ਪਾਠ ਫਾਇਲ ਹੈ"
 
-#: src/file-manager/fm-directory-view.c:5945
+#: src/file-manager/fm-directory-view.c:5949
 msgid "Run or Display?"
 msgstr "ਚਲਾਉਣਾ ਜਾਂ ਵੇਖਣਾ ?"
 
-#: src/file-manager/fm-directory-view.c:5946
+#: src/file-manager/fm-directory-view.c:5950
 msgid "Run in _Terminal"
 msgstr "ਟਰਮੀਨਲ ਵਿਚ ਚਲ ਰਿਹਾ ਹੈ"
 
-#: src/file-manager/fm-directory-view.c:5947
+#: src/file-manager/fm-directory-view.c:5951
 msgid "_Display"
 msgstr "ਵਿਖਾਉ"
 
-#: src/file-manager/fm-directory-view.c:5950
+#: src/file-manager/fm-directory-view.c:5954
 msgid "_Run"
 msgstr "ਚਲ ਰਿਹਾ ਹੈ"
 
-#: src/file-manager/fm-directory-view.c:6232
+#: src/file-manager/fm-directory-view.c:6236
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" ਖੁਲ ਰਿਹਾ ਹੈ"
 
-#: src/file-manager/fm-directory-view.c:6238
+#: src/file-manager/fm-directory-view.c:6243
 msgid "Cancel Open?"
 msgstr "ਖੋਲਣਾ ਰੋਕਣਾ ?"
 
@@ -4913,6 +4911,8 @@ msgstr "ਤੁਸੀ ਖੋਜ ਦੇ ਸ਼ਬਦ ਵੇਖ ਸਕਦੇ ਹੋ �
 msgid "Error During Search"
 msgstr "ਭਾਲ ਦੌਰਾਨ ਗਲਤੀ"
 
+#. FIXME: This dialog does not get shown because a slow search
+#. will be performed and will not return an error.
 #: src/file-manager/fm-search-list-view.c:211
 msgid ""
 "Find cannot open your file system index.  Your index may be missing or "
@@ -5534,16 +5534,16 @@ msgstr "ਤਤਕਰੇ ਦੀ ਸਥਿਤੀ ਵਿਖਾਉ"
 msgid "Show status of indexing used when searching"
 msgstr "ਖੋਜ ਸਮੇ ਵਰਤੇ ਤਤਕਰੇ ਦੀ ਸਥਿਤੀ ਵਿਖਾਉ"
 
-#: src/nautilus-application.c:264
+#: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
 msgstr "ਚਾਹੀਦਾ ਫੋਲਡਰ ਬਣ ਨਹੀ ਸਕਦਾ"
 
-#: src/nautilus-application.c:265
+#: src/nautilus-application.c:267
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "ਨਾਟਿਲਸ ਲੋਡ਼ੀਦਾ  \"%s\".ਫੋਲਡਰ ਬਣਾ ਨਹੀ ਸਕਦਾ ਹੈ"
 
-#: src/nautilus-application.c:267
+#: src/nautilus-application.c:269
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -5551,16 +5551,16 @@ msgstr ""
 "ਕਿਰਪਾ ਕਰਕੇ, ਨਾਟਿਲਸ ਚਲਾਉਣ ਤੋ ਪਹਿਲਾਂ,  ਇਹ ਫੋਲਡਰ ਬਣਾਉ ਜਾਂ ਅਧਿਕਾਰ ਬਦਲੋ ਤਾਂਕਿ ਨਾਟਿਲਸ ਇਸ "
 "ਨੂੰ ਬਣਾ ਸਕੋ"
 
-#: src/nautilus-application.c:270
+#: src/nautilus-application.c:272
 msgid "Couldn't Create Required Folders"
 msgstr "ਚਾਹੀਦਾ ਫੋਲਡਰ ਬਣ ਨਹੀ ਸਕਦਾ ਹੈ"
 
-#: src/nautilus-application.c:271
+#: src/nautilus-application.c:273
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "ਨਾਟਿਲਸ ਲੋਡ਼ੀਦਾ ਇਹ ਫੋਲਡਰ ਨਹੀ ਬਣਾ ਸਕਿਆ ਹੈ: %s."
 
-#: src/nautilus-application.c:273
+#: src/nautilus-application.c:275
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -5568,15 +5568,15 @@ msgstr ""
 "ਕਿਰਪਾ ਕਰਕੇ, ਨਾਟਿਲਸ ਚਲਾਉਣ ਤੋ ਪਹਿਲਾਂ,  ਇਹ ਫੋਲਡਰ ਬਣਾਉ ਜਾਂ ਅਧਿਕਾਰ ਬਦਲੋ ਤਾਂਕਿ ਨਾਟਿਲਸ ਇਸ "
 "ਨੂੰ ਬਣਾ ਸਕੋ"
 
-#: src/nautilus-application.c:341
+#: src/nautilus-application.c:343
 msgid "Link To Old Desktop"
 msgstr "ਪੁਰਾਣੇ ਵਿਹਡ਼ੇ ਨਾਲ ਜੁਡ਼ੋ"
 
-#: src/nautilus-application.c:357
+#: src/nautilus-application.c:359
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr "ਇਕ ਸੰਬੰਧ ਜੋ ਕਿ \"Link To Old Desktop\" ਹੈ, ਵਿਹਡ਼ੇ ਵਿਚ ਆ ਗਿਆ ਹੈ।"
 
-#: src/nautilus-application.c:358
+#: src/nautilus-application.c:360
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
@@ -5584,11 +5584,21 @@ msgstr ""
 "ਗਨੋਮ 2.4 ਵਿਚ ਵਿਹਡ਼ੇ ਦੀ ਡਾਇਕਰੈਕਟਰੀ ਦੀ ਸਥਿਤੀ ਤਬਦੀਲ ਕਰ ਦਿਤੀ ਗਈ ਹੈ। ਤੁਸੀ ਸੰਬੰਧ ਖੋਲ ਸਕਦੇ ਹੋ, "
 "ਫਿਰ ਫਾਇਲ ਵਿਚ ਜਾਉ ਜਿਸ ਵਿਚ ਤੁਸੀ ਜਾਣਾ ਚਾਹੁੰਦੇ ਹੋ, ਫਿਰ ਸੰਬੰਧ ਹਟਾ ਦਿਉ"
 
-#: src/nautilus-application.c:360
+#: src/nautilus-application.c:362
 msgid "Migrated Old Desktop"
 msgstr "ਪੁਰਾਣੇ ਵਿਹਡ਼ੇ ਤੇ ਜਾਉ"
 
-#: src/nautilus-application.c:534
+#. Can't register myself due to trouble locating the
+#. * Nautilus_Shell.server file. This has happened when you
+#. * launch Nautilus with an LD_LIBRARY_PATH that
+#. * doesn't include the directory containing the oaf
+#. * library. It could also happen if the
+#. * Nautilus_Shell.server file was not present for some
+#. * reason. Sometimes killing oafd and gconfd fixes
+#. * this problem but we don't exactly understand why,
+#. * since neither of the above causes explain it.
+#.
+#: src/nautilus-application.c:536
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5597,7 +5607,8 @@ msgstr ""
 "ਨਾਟਿਲਸ ਹੁਣ ਵਰਿਤਆ ਨਹੀ ਜਾ ਸਕਦਾ  ਇਹ ਕਮਾਂਡ ਚਲਾਉ \"bonobo-slay\" ਜੇਕਰ ਨਹੀ ਤਾਂ ਤੁਸੀ "
 "ਮਸ਼ੀਨ ਦੁਬਾਰਾ ਚਾਲੂ ਕਰ ਸਕਦੇ ਹੋ ਜਾਂ ਨਾਟਿਲਸ ਇੰਸਟਾਲ ਕਰ ਸਕਦੇ ਹੋ"
 
-#: src/nautilus-application.c:540
+#. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
+#: src/nautilus-application.c:542
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5640,13 +5651,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#. FIXME bugzilla.gnome.org 42538: When can this happen?
-#: src/nautilus-application.c:570 src/nautilus-application.c:588
-#: src/nautilus-application.c:595
+#: src/nautilus-application.c:572 src/nautilus-application.c:590
+#: src/nautilus-application.c:597
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "ਅਣਪਛਾਤੀ ਗਲਤੀ ਕਰਕੇ ਨਾਟਿਲਸ ਹੁਣ ਵਰਿਤਆ ਨਹੀ ਜਾ ਸਕਦਾ "
 
-#: src/nautilus-application.c:571
+#: src/nautilus-application.c:573
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5654,7 +5664,7 @@ msgstr ""
 "ਨਾਟਿਲਸ ਹੁਣ ਵਰਿਤਆ ਨਹੀ ਜਾ ਸਕਦਾ ਜਦੋ ਫਾਇਲ ਪ੍ਰਬੰਧਕ ਦ੍ਰਿਸ਼ ਸਰਵਰ ਨੂੰ ਸੂਚੀਬਧ ਕਰਨ ਕੋਸ਼ਿਸ ਹੋਈ, ਤਾਂ "
 "ਬੋਨਬੋ ਵਿਚ ਅਣਪਛਾਤੀ ਗਲਤੀ ਆਈ ਹੈ ।"
 
-#: src/nautilus-application.c:589
+#: src/nautilus-application.c:591
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5664,7 +5674,7 @@ msgstr ""
 "ਅਣਪਛਾਤੀ ਗਲਤੀ ਆਈ ਹੈ । ਬੋਨਬੋ-ਸਰਗਰਮ-ਸਰਵਰ ਨੂੰ ਖਤਮ ਕਰਨ ਅਤੇ ਨਾਟਿਲਸ ਦੁਬਾਰਾ ਸ਼ੁਰੂ ਕਰਨ ਨਾਲ "
 "ਮੁਸ਼ਕਿਲ ਠੀਕ ਹੋ ਸਕਦੀ ਹੈ"
 
-#: src/nautilus-application.c:596
+#: src/nautilus-application.c:598
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5675,7 +5685,7 @@ msgstr ""
 "ਸਕਦੀ ਹੈ"
 
 #: src/nautilus-bookmarks-window.c:146
-#: src/nautilus-file-management-properties.c:231
+#: src/nautilus-file-management-properties.c:219
 #: src/nautilus-property-browser.c:1456 src/nautilus-window-menus.c:647
 #, c-format
 msgid ""
@@ -5730,15 +5740,15 @@ msgid "Can't Connect to Server"
 msgstr "ਸਰਵਰ ਨਾਲ ਜੁਡ਼ਿਆ ਨਹੀ ਜਾ ਸਕਦਾ ਹੈ"
 
 #: src/nautilus-connect-server-dialog.c:101
-#: src/nautilus-window-manage-views.c:1266
+#: src/nautilus-window-manage-views.c:1310
 #, c-format
 msgid "\"%s\" is not a valid location."
 msgstr "ਮੁਆਫੀ, ਪਰ ਸਥਿਤੀ  \"%s\"ਜਾਇਜ ਨਹੀ ਹੈ"
 
 #: src/nautilus-connect-server-dialog.c:103
 #: src/nautilus-property-browser.c:1106
-#: src/nautilus-window-manage-views.c:1261
-#: src/nautilus-window-manage-views.c:1269
+#: src/nautilus-window-manage-views.c:1305
+#: src/nautilus-window-manage-views.c:1313
 msgid "Please check the spelling and try again."
 msgstr "ਕਿਰਪਾ·ਕਰਕੇ·ਸ਼ਬਦ·ਵੇਖੋ·ਤੇ·ਫਿਰ·ਕੋਸ਼ਿਸ·ਕਰੋ"
 
@@ -5767,7 +5777,7 @@ msgstr "ਜੋਡ਼ੋ"
 msgid "Desktop"
 msgstr "ਵਿਹਡ਼ਾ"
 
-#: src/nautilus-file-management-properties.c:307
+#: src/nautilus-file-management-properties.c:295
 msgid "None"
 msgstr "ਕੁਝ ਨਹੀ"
 
@@ -6118,33 +6128,28 @@ msgid "File Manager"
 msgstr "ਫਾਇਲ ਮੈਨੇਜਰ"
 
 #. Set initial window title
-#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:301
+#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:306
 #: src/nautilus-window-menus.c:601 src/nautilus-window.c:173
 msgid "Nautilus"
 msgstr "ਨਾਟਿਲਸ"
 
 #: src/nautilus-main.c:259
-#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "ਨਾਟਿਲਸ: --ਜਾਂਚ  URIs ਨਾਲ ਵਰਤੀ ਨਹੀ ਜਾ ਸਕਦੀ ਹੈ\n"
 
 #: src/nautilus-main.c:263
-#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "ਨਾਟਿਲਸ: --ਜਾਂਚ ਕਿਸ ਹੋਰ ਚੋਣ ਨਾਲ ਵਰਤੀ ਨਹੀ ਜਾ ਸਕਦੀ ਹੈ\n"
 
 #: src/nautilus-main.c:267
-#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "ਨਾਟਿਲਸ: -- ਬਾਹਰ ਨਿਕਲਣ ਦੀ ਕਾਰਵਾਈ URI ਨਾਲ ਨਹੀ ਕੀਤੀ ਜਾ ਸਕਦੀ ਹੈ \n"
 
 #: src/nautilus-main.c:271
-#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "ਨਾਟਿਲਸ: -- URI ਨਾਲ ਦੁਬਾਰਾ ਸੁਰੂ ਨਹੀ ਕੀਤਾ ਸਕਦਾ ਹੈ\n"
 
 #: src/nautilus-main.c:275
-#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "ਨਾਟਿਲਸ: --ਜੁਮੈਟਰੀ ਇਕ ਤੋ ਵਧੇਰੇ URI ਨਾਲ ਨਹੀ ਵਰਤੀ ਜਾ ਸਕਦੀ ਹੈ\n"
 
@@ -6201,153 +6206,163 @@ msgid "Back"
 msgstr "ਪਿਛਲਾ"
 
 #: src/nautilus-navigation-window-ui.xml.h:3
+#: src/nautilus-spatial-window-ui.xml.h:1
+msgid "CD _Creator"
+msgstr "ਸੀਡੀ ਕਰੀਏਟਰ"
+
+#: src/nautilus-navigation-window-ui.xml.h:4
 msgid "Change the visibility of this window's location bar"
 msgstr "ਇਸ·ਝਰੋਖੇ·(Window)·ਦੀ·ਥਾ·ਤਖਤੀ·ਵਿਚ·ਬਦਲਾ·ਕਰੋ"
 
-#: src/nautilus-navigation-window-ui.xml.h:4
+#: src/nautilus-navigation-window-ui.xml.h:5
 msgid "Change the visibility of this window's sidebar"
 msgstr "ਇਸ·ਝਰੋਖੇ·(Window)·ਦੇ·ਟੂਲਬਾਰ·(ਸੰਦ·ਤਖਤੀ)·ਵਿਚ·ਬਦਲਾ·ਕਰੋ"
 
-#: src/nautilus-navigation-window-ui.xml.h:5
+#: src/nautilus-navigation-window-ui.xml.h:6
 msgid "Change the visibility of this window's statusbar"
 msgstr "ਇਸ·ਝਰੋਖੇ·(Window)·ਦੀ·ਸਥਿਤੀ ਤਖਤੀ·ਵਿਚ·ਬਦਲਾ·ਕਰੋ"
 
-#: src/nautilus-navigation-window-ui.xml.h:6
+#: src/nautilus-navigation-window-ui.xml.h:7
 msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "ਅਗਲੇ·ਗੋਮੀਨੂ·ਅਤੇ·ਪਿਛਲੀ·/ਅਗਲੀ·ਸੂਚੀ·ਸਾਫ·ਕਰੋ"
 
-#: src/nautilus-navigation-window-ui.xml.h:7
+#: src/nautilus-navigation-window-ui.xml.h:8
 msgid "Close _All Windows"
 msgstr "ਸਾਰੇ·ਝਰੋਖੇ·ਬੰਦ·ਕਰੋ"
 
-#: src/nautilus-navigation-window-ui.xml.h:8
+#: src/nautilus-navigation-window-ui.xml.h:9
 msgid "Close all Navigation windows"
 msgstr "ਸਾਰੇ ਨਵੇਗੇਸ਼ਨ ਝਰੋਖੇ·ਬੰਦ·ਕਰੋ"
 
-#: src/nautilus-navigation-window-ui.xml.h:10
+#: src/nautilus-navigation-window-ui.xml.h:11
 #: src/nautilus-spatial-window-ui.xml.h:4
 msgid "Connect to _Server..."
 msgstr "ਸਰਵਰ ਨਾਲ ਜੁਡ਼ ਰਿਹਾ ਹੈ....."
 
-#: src/nautilus-navigation-window-ui.xml.h:11
+#: src/nautilus-navigation-window-ui.xml.h:12
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "ਝਰੋਖਾ·ਵਿਖਾਉ·ਜੋ·ਇਸ·ਸੂਚੀ·(ਮੀਨੂ)·ਦੇ·ਬੁਕਮਾਰਕ·ਨੂੰ·ਸੋਧ·ਸਕੇ"
 
-#: src/nautilus-navigation-window-ui.xml.h:12 src/nautilus-shell-ui.xml.h:10
+#: src/nautilus-navigation-window-ui.xml.h:13 src/nautilus-shell-ui.xml.h:10
 msgid "Find"
 msgstr "ਲਭੋ"
 
-#: src/nautilus-navigation-window-ui.xml.h:13
+#: src/nautilus-navigation-window-ui.xml.h:14
 msgid "Forward"
 msgstr "ਅਗਲਾ"
 
-#: src/nautilus-navigation-window-ui.xml.h:14
+#: src/nautilus-navigation-window-ui.xml.h:15
 #: src/nautilus-spatial-window-ui.xml.h:6
 msgid "Go to templates folder"
 msgstr "ਢਾਚੇ ਦੇ·ਡਬੇ·ਵਿਚ ਜਾਉ"
 
-#: src/nautilus-navigation-window-ui.xml.h:15
+#: src/nautilus-navigation-window-ui.xml.h:16
+#: src/nautilus-spatial-window-ui.xml.h:7
+msgid "Go to the CD Creator"
+msgstr "ਸੀਡੀ ਕਰੀਏਟਰ ਤੇ ਜਾਉ"
+
+#: src/nautilus-navigation-window-ui.xml.h:17
 msgid "Go to the next visited location"
 msgstr "ਅਗਲੀ·ਸਥਿਤੀ·`ਚ·ਜਿਥੇ·ਜਾ·ਚੁਕੇ·ਹਾਂ"
 
-#: src/nautilus-navigation-window-ui.xml.h:16
+#: src/nautilus-navigation-window-ui.xml.h:18
 msgid "Go to the previous visited location"
 msgstr "ਹੁਣ·ਤੋ·ਪਹਿਲੇ·ਮੌਕੇ·ਤੇ"
 
-#: src/nautilus-navigation-window-ui.xml.h:17
+#: src/nautilus-navigation-window-ui.xml.h:19
 #: src/nautilus-spatial-window-ui.xml.h:8
 msgid "Go to the trash folder"
 msgstr "ਰਦੀ·ਦੇ·ਡਬੇ·ਵਿਚ"
 
-#: src/nautilus-navigation-window-ui.xml.h:18
+#: src/nautilus-navigation-window-ui.xml.h:20
 msgid "Home"
 msgstr "ਘਰ"
 
-#: src/nautilus-navigation-window-ui.xml.h:19
+#: src/nautilus-navigation-window-ui.xml.h:21
 msgid "Location _Bar"
 msgstr "ਸਥਿਤੀ·ਪਟੀ·(ਲੋਕੇਸ਼ਨ·ਬਾਰ)"
 
-#: src/nautilus-navigation-window-ui.xml.h:20
+#: src/nautilus-navigation-window-ui.xml.h:22
 msgid "Reload"
 msgstr "ਦੁਬਾਰਾ·ਲੋਡ·ਕਰੋ"
 
-#: src/nautilus-navigation-window-ui.xml.h:21 src/nautilus-shell-ui.xml.h:18
+#: src/nautilus-navigation-window-ui.xml.h:23 src/nautilus-shell-ui.xml.h:18
 msgid "Search this computer for files"
 msgstr "ਇਸ·ਮਸ਼ੀਨ·(ਕੰਪਿਊਟਰ)·ਤੇ·ਫਾਇਲਾ·ਲਭੋ"
 
-#: src/nautilus-navigation-window-ui.xml.h:22
+#: src/nautilus-navigation-window-ui.xml.h:24
 msgid "St_atusbar"
 msgstr "ਸਥਿਤੀਪਂਟੀ·(ਸਟੇਟਸਬਾਰ)·"
 
-#: src/nautilus-navigation-window-ui.xml.h:23
+#: src/nautilus-navigation-window-ui.xml.h:25
 msgid "Stop"
 msgstr "ਰੋਕੋ"
 
-#: src/nautilus-navigation-window-ui.xml.h:24
+#: src/nautilus-navigation-window-ui.xml.h:26
 msgid "Up"
 msgstr "ਉਂਪਰ"
 
-#: src/nautilus-navigation-window-ui.xml.h:25
+#: src/nautilus-navigation-window-ui.xml.h:27
 msgid "_Add Bookmark"
 msgstr "ਬੁਂਕਮਾਪਕ·ਲਿਖੋ (A)"
 
-#: src/nautilus-navigation-window-ui.xml.h:26
+#: src/nautilus-navigation-window-ui.xml.h:28
 msgid "_Back"
 msgstr "ਪਿਛਲਾ (B)"
 
-#: src/nautilus-navigation-window-ui.xml.h:27
+#: src/nautilus-navigation-window-ui.xml.h:29
 msgid "_Bookmarks"
 msgstr "ਬੁਕਮਾਰਕ"
 
-#: src/nautilus-navigation-window-ui.xml.h:28
+#: src/nautilus-navigation-window-ui.xml.h:30
 msgid "_Clear History"
 msgstr "ਅਤੀਤ ਖਤਮ·ਕਰੋ (C)"
 
-#: src/nautilus-navigation-window-ui.xml.h:29
+#: src/nautilus-navigation-window-ui.xml.h:31
 #: src/nautilus-spatial-window-ui.xml.h:12
 msgid "_Computer"
 msgstr "ਮਸ਼ੀਨ"
 
-#: src/nautilus-navigation-window-ui.xml.h:30
+#: src/nautilus-navigation-window-ui.xml.h:32
 msgid "_Edit Bookmarks"
 msgstr "ਬੁਂਕਮਾਰਕ·ਸੋਧੋ (E)"
 
-#: src/nautilus-navigation-window-ui.xml.h:31
+#: src/nautilus-navigation-window-ui.xml.h:33
 msgid "_Forward"
 msgstr "ਅਗਲਾ (F)"
 
-#: src/nautilus-navigation-window-ui.xml.h:32
+#: src/nautilus-navigation-window-ui.xml.h:34
 msgid "_Go"
 msgstr "ਜਾਉ(G)"
 
-#: src/nautilus-navigation-window-ui.xml.h:33
+#: src/nautilus-navigation-window-ui.xml.h:35
 #: src/nautilus-spatial-window-ui.xml.h:13
 msgid "_Home"
 msgstr "ਘਰ (H)"
 
-#: src/nautilus-navigation-window-ui.xml.h:34
+#: src/nautilus-navigation-window-ui.xml.h:36
 msgid "_Location..."
 msgstr "ਜਗਾ·(ਥਾਂ)... (L)"
 
-#: src/nautilus-navigation-window-ui.xml.h:35
+#: src/nautilus-navigation-window-ui.xml.h:37
 msgid "_Side Pane"
 msgstr "ਇਕ·ਪਾਸੇ·ਦੀ·ਬਾਹੀ (ਪੈਨ) (S)"
 
-#: src/nautilus-navigation-window-ui.xml.h:36
+#: src/nautilus-navigation-window-ui.xml.h:38
 #: src/nautilus-spatial-window-ui.xml.h:15
 msgid "_Templates"
 msgstr "ਢਾਚੇ"
 
-#: src/nautilus-navigation-window-ui.xml.h:37
+#: src/nautilus-navigation-window-ui.xml.h:39
 #: src/nautilus-spatial-window-ui.xml.h:16
 msgid "_Trash"
 msgstr "ਰਦੀ (T)"
 
-#: src/nautilus-navigation-window-ui.xml.h:38
+#: src/nautilus-navigation-window-ui.xml.h:40
 msgid "_Up"
 msgstr "ਉਪਰ (U)"
 
-#: src/nautilus-navigation-window-ui.xml.h:39 src/nautilus-shell-ui.xml.h:48
+#: src/nautilus-navigation-window-ui.xml.h:41 src/nautilus-shell-ui.xml.h:48
 msgid "_View"
 msgstr "ਵੇਖੋ (V)"
 
@@ -6931,10 +6946,6 @@ msgstr "ਕੰਨੀ ਦੇ ਪੈਨ ਨੂੰ ਬੰਦ ਕਰੋ"
 msgid "Show %s"
 msgstr "ਵੇਖਾਉ %s"
 
-#: src/nautilus-spatial-window-ui.xml.h:1
-msgid "CD _Creator"
-msgstr "ਸੀਡੀ ਕਰੀਏਟਰ"
-
 #: src/nautilus-spatial-window-ui.xml.h:2
 msgid "Close P_arent Folders"
 msgstr "ਮੂਲ ਫੋਲਡਰ ਖੋਲੋ"
@@ -6946,10 +6957,6 @@ msgstr "ਇਸ ਫੋਲਡਰ ਦੇ ਮੁਢਲੇ ਬੰਦ ਕਰੋ"
 #: src/nautilus-spatial-window-ui.xml.h:5
 msgid "Go to Computer"
 msgstr "ਮਸ਼ੀਨ ਤੇ ਜਾਉ"
-
-#: src/nautilus-spatial-window-ui.xml.h:7
-msgid "Go to the CD Creator"
-msgstr "ਸੀਡੀ ਕਰੀਏਟਰ ਤੇ ਜਾਉ"
 
 #: src/nautilus-spatial-window-ui.xml.h:9
 msgid "Open _Location..."
@@ -6987,89 +6994,89 @@ msgstr "ਇਹ·ਚੁਣਿਆ ਹੈ"
 msgid "the type of window the view is embedded in"
 msgstr "ਝਰੋਖਾ ਦੀ ਕਿਸਮ ਜਿਸ ਵਿਚ ਦ੍ਰਿਸ਼ ਬਣਾਇਆ ਹੈ"
 
-#: src/nautilus-window-manage-views.c:833
+#: src/nautilus-window-manage-views.c:836
 msgid "View Failed"
 msgstr "ਵੇਖਣਾ·ਅਸਫਲ"
 
-#: src/nautilus-window-manage-views.c:844
+#: src/nautilus-window-manage-views.c:847
 #, c-format
 msgid "The %s view encountered an error and can't continue."
 msgstr " %s ਗਲਤੀਆ ਹਨ ਅਤੇ ਜਾਰੀ ਨਹੀ ਰਹਿ ਸਕਦਾ ਹੈ"
 
-#: src/nautilus-window-manage-views.c:845
+#: src/nautilus-window-manage-views.c:848
 msgid "You can choose another view or go to a different location."
 msgstr "ਹੋਰ·ਥਾ·ਤੇ·ਦੇਖੋ·ਜਾਂ·ਹੋਰ·ਵੇਖਣ·ਵਾਲਾ·ਵਰਤੋ·।"
 
-#: src/nautilus-window-manage-views.c:855
+#: src/nautilus-window-manage-views.c:858
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "ਸ਼ੁਰੂ·ਕਰਨ·ਵੇਲੇ %s ਗਲਤੀਆਂ·ਹਨ"
 
-#: src/nautilus-window-manage-views.c:856
+#: src/nautilus-window-manage-views.c:859
 msgid "The location cannot be displayed with this viewer."
 msgstr "ਇਸ·ਦਰਸ਼ਕ ਨਾਲ ਥਾਂ ਵੇਖਾਈ ਨਹੀ ਜਾ ਸਕਦੀ ਹੈ"
 
-#: src/nautilus-window-manage-views.c:1003
+#: src/nautilus-window-manage-views.c:1006
 msgid "Content View"
 msgstr "ਸੰਖੇਪ ਵੇਖੋ"
 
-#: src/nautilus-window-manage-views.c:1004
+#: src/nautilus-window-manage-views.c:1007
 msgid "View of the current file or folder"
 msgstr "ਇਸ·ਫਾਇਲ·ਜਾਂ·ਫੋਲਡਰ·ਨੂੰ·ਵੇਖੋ"
 
-#: src/nautilus-window-manage-views.c:1258
+#: src/nautilus-window-manage-views.c:1302
 #, c-format
 msgid "Couldn't find \"%s\"."
 msgstr "\"%s\" ਨਹੀ ਲਭਿਆ"
 
 #  Shouldn't have gotten this error unless there's a : separator.
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1282
-#: src/nautilus-window-manage-views.c:1292
-#: src/nautilus-window-manage-views.c:1306
-#: src/nautilus-window-manage-views.c:1314
-#: src/nautilus-window-manage-views.c:1320
-#: src/nautilus-window-manage-views.c:1340
+#: src/nautilus-window-manage-views.c:1326
+#: src/nautilus-window-manage-views.c:1336
+#: src/nautilus-window-manage-views.c:1350
+#: src/nautilus-window-manage-views.c:1358
+#: src/nautilus-window-manage-views.c:1364
+#: src/nautilus-window-manage-views.c:1384
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr " \"%s\" ਵੇਖਿਆ·ਨਹੀ·ਸਕਦਾ ਹੈ"
 
-#: src/nautilus-window-manage-views.c:1285
+#: src/nautilus-window-manage-views.c:1329
 msgid "Nautilus cannot determine what type of file it is."
 msgstr "ਨਾਟਿਲਸ·ਫਾਇਲ·ਦੀ·ਕਿਸਮ·ਨਹੀ·ਲਭ·ਸਕਿਆ"
 
-#: src/nautilus-window-manage-views.c:1295
+#: src/nautilus-window-manage-views.c:1339
 msgid "Nautilus has no installed viewer capable of displaying the file."
 msgstr "ਫਾਇਲ ਨੂੰ ਵੇਖਾਉਣ ਲਈ ਕੋਈ·ਵਿਖਾਉਣ·ਵਾਲਾ··ਨਾਟਿਲਸ·ਕੋਲ·ਨਹੀ·ਹੈ"
 
-#: src/nautilus-window-manage-views.c:1308
+#: src/nautilus-window-manage-views.c:1352
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "ਕਿਉਕਿ·ਨਾਟਿਲਸ %s ·ਮੌਕੇ·ਨੂੰ·ਸੰਭਾਲ·ਸਕਿਆ"
 
-#: src/nautilus-window-manage-views.c:1316
+#: src/nautilus-window-manage-views.c:1360
 msgid "The attempt to log in failed."
 msgstr "ਕਿਉਕਿ·ਅਂਦਰ·ਜਾਣ·ਲਈ·ਲਾਗਆਨ(Login)·ਅਸਫਲ·ਰਿਹਾ"
 
-#: src/nautilus-window-manage-views.c:1322
+#: src/nautilus-window-manage-views.c:1366
 msgid "Access was denied."
 msgstr "ਅਧਿਕਾਰ ਨਹੀ ਹੈ"
 
-#: src/nautilus-window-manage-views.c:1332
+#: src/nautilus-window-manage-views.c:1376
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr "\"%s\" ਵਿਖਾਇਆ·ਨਹੀ·ਜਾ·ਸਕਦਾ·ਕਿਉਕਿ · \"%s\" ਮੇਜ਼ਬਾਨ ਨਹੀ ਲਭਿਆ ਹੈ"
 
-#: src/nautilus-window-manage-views.c:1335
+#: src/nautilus-window-manage-views.c:1379
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "ਜਾਂਚ·ਕਰੋ·ਕਿ·ਸ਼ਬਦ ਜੋਡ਼·ਸਹੀ·ਹਨ·ਅਤੇ·ਪਰਕਾਸੀ·(Proxy)·ਟਿਕਾਣੇ·ਠੀਕ·ਹਨ"
 
-#: src/nautilus-window-manage-views.c:1342
+#: src/nautilus-window-manage-views.c:1386
 msgid "Check that your proxy settings are correct."
 msgstr "ਜਾਚ·ਕਰੋ·ਕਿ·ਪਰਕਾਸੀ·(Proxy)·ਟਿਕਾਣੇ·ਠੀਕ·ਹਨ·।"
 
-#: src/nautilus-window-manage-views.c:1347
+#: src/nautilus-window-manage-views.c:1391
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -7077,17 +7084,17 @@ msgid ""
 msgstr ""
 "\"%s\" ਵਿਖਾਇਆ·ਨਹੀ·ਜਾ·ਸਕਦਾ·ਕਿਉਕਿ·ਨਾਟਿਲਸ SMB ਮਾਸਟਰ ਝਲਕਾਰੇ ਨਾਲ ਸੰਪਰਕ ਨਹੀ ਕਰ ਸਕਿਆ"
 
-#: src/nautilus-window-manage-views.c:1350
+#: src/nautilus-window-manage-views.c:1394
 msgid "Check that an SMB server is running in the local network."
 msgstr "ਕਿਰਪਾ ਕਰਕੇ ਜਾਂਚ ਲਵੋ ਕਿ ਸਥਾਨਿਕ ਨੈਟਵਰਕ ਵਿਚ ਸਾਬਾਂ ਸਰਵਰ ਚਲ ਰਿਹਾ ਹੈ"
 
-#: src/nautilus-window-manage-views.c:1360
+#: src/nautilus-window-manage-views.c:1404
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running."
 msgstr "ਹੁਣੇ·ਖੋਜ·ਨਹੀ·ਹੋ·ਸਕਦੀ·ਕਿਉਕਿ·ਜਾਂ·ਤਾਂ·ਤਤਕਰਾ·(Index)·ਨਹੀ·ਹੈ·ਜਾਂ·ਖੋਜੀ·ਸੇਵਾ·ਹੀ·ਨਹੀ·ਹੈ।"
 
-#: src/nautilus-window-manage-views.c:1363
+#: src/nautilus-window-manage-views.c:1407
 msgid ""
 "Be sure that you have started the Medusa search service, and if you don't "
 "have an index, that the Medusa indexer is running."
@@ -7095,20 +7102,20 @@ msgstr ""
 "ਜਾਂਚ ਲਵੋ ਕਿ ·ਮੇਡੂਸਾ·ਸੇਵਾ ਚਲ·ਰਹੀ ਹੈ·, ਅਤੇ ਜੇ ਤਤਕਰਾ·(Index)·ਨਹੀ·ਹੈ·ਤਾਂ ਮੇਡੂਸਾ ਤਤਕਰਾ·(Index)"
 "· ਚਲ ਰਿਹਾ ਹੈ ।"
 
-#: src/nautilus-window-manage-views.c:1365
+#: src/nautilus-window-manage-views.c:1409
 msgid "Searching Unavailable"
 msgstr "ਖੋਜੀ·ਉਪਲਬਧ·ਨਹੀ·ਹੈ।"
 
-#: src/nautilus-window-manage-views.c:1370
+#: src/nautilus-window-manage-views.c:1414
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "ਨਾਟਲਿਸ \"%s\" ਵਿਖਾ·ਨਹੀ·ਸਕਦਾ"
 
-#: src/nautilus-window-manage-views.c:1372
+#: src/nautilus-window-manage-views.c:1416
 msgid "Please select another viewer and try again."
 msgstr "ਕਿਰਪਾ ਕਰਕੇ ਹੋਰ ਦਰਸ਼ਕ ਚੁਣ ਕੇ ਫਿਰ ਕੋਸ਼ਿਸ ਕਰੋ"
 
-#: src/nautilus-window-manage-views.c:1376
+#: src/nautilus-window-manage-views.c:1420
 msgid "Can't Display Location"
 msgstr "ਮੌਕੇ·ਦੀ·ਥਾਂ·ਨਹੀ·ਵੇਖ·ਸਕਦੇ"
 
