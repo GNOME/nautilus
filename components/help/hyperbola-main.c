@@ -104,6 +104,8 @@ main (int argc, char *argv[])
 
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
+	nautilus_global_preferences_initialize ();
+
 	registration_id =
 		oaf_make_registration_id
 		("OAFIID:hyperbola_factory:02b54c63-101b-4b27-a285-f99ed332ecdb",
@@ -113,7 +115,6 @@ main (int argc, char *argv[])
 						  NULL);
 	g_free (registration_id);
 
-	nautilus_global_preferences_initialize ();
 
 	do {
 		bonobo_main ();

@@ -1,3 +1,16 @@
+2001-04-27  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* components/help/hyperbola-main.c: (main): 
+	Fix bug 8172 - Nautilus spews GConf error upon repeated clicking
+	of "help"
+	
+	Intiialize preferences before creating the factory in case code in
+	the factory needs to use prefernces.
+	
+	* src/nautilus-application.c: (nautilus_application_startup):
+	Dont do the GMC migration if we are about to kill the nautilus
+	shell.  Fixes criticals when 'nautilus --quit' is used.
+	
 2001-04-27  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/news/Makefile.am:

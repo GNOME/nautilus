@@ -456,8 +456,10 @@ nautilus_application_startup (NautilusApplication *application,
 	}
 
 	/* Make the desktop work with gmc and old Nautilus. */
-	migrate_gmc_trash ();
-	migrate_old_nautilus_files ();
+	if (!kill_shell) {
+		migrate_gmc_trash ();
+		migrate_old_nautilus_files ();
+	}
 	
 	/* initialize the sound machinery */
 	nautilus_sound_initialize ();
