@@ -2447,6 +2447,7 @@ realize (GtkWidget *widget)
 	style = gtk_style_copy (gtk_widget_get_style (widget));
 	style->bg[GTK_STATE_NORMAL] = style->base[GTK_STATE_NORMAL];
 	gtk_widget_set_style (widget, style);
+	g_object_unref (style);
 
 	gdk_window_set_background
 		(GTK_LAYOUT (widget)->bin_window,
