@@ -59,7 +59,7 @@ fm_report_error_renaming_file (NautilusFile *file,
 	case GNOME_VFS_ERROR_NOT_FOUND:
 		message = g_strdup_printf (_("There is no \"%s\" in this folder. "
 					     "Perhaps it was just moved or deleted?"), 
-					   new_name);
+					   original_name);
 		break;
 	case GNOME_VFS_ERROR_ACCESS_DENIED:
 		message = g_strdup_printf (_("You do not have the permissions necessary to rename \"%s\"."),

@@ -134,8 +134,9 @@ nautilus_mime_get_default_action_type_for_file (NautilusFile *file)
 	char *action_type_string;
 	GnomeVFSMimeActionType action_type;
 
-	g_return_val_if_fail (nautilus_mime_actions_check_if_minimum_attributes_ready (file), 
-			      GNOME_VFS_MIME_ACTION_TYPE_NONE);
+	if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
+		return GNOME_VFS_MIME_ACTION_TYPE_NONE;
+	}
 
 	action_type_string = nautilus_file_get_metadata
 		(file, NAUTILUS_METADATA_KEY_DEFAULT_ACTION_TYPE, NULL);
@@ -161,8 +162,9 @@ nautilus_mime_get_default_action_for_file (NautilusFile *file)
 {
 	GnomeVFSMimeAction *action;
 
-	g_return_val_if_fail (nautilus_mime_actions_check_if_minimum_attributes_ready (file), 
-			      NULL);
+	if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
+		return NULL;
+	}
 
 	action = g_new0 (GnomeVFSMimeAction, 1);
 
@@ -205,8 +207,9 @@ nautilus_mime_get_default_application_for_file_internal (NautilusFile *file,
 	char *default_application_string;
 	gboolean used_user_chosen_info;
 
-	g_return_val_if_fail (nautilus_mime_actions_check_if_minimum_attributes_ready (file), 
-			      NULL);
+	if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
+		return NULL;
+	}
 
 	used_user_chosen_info = TRUE;
 
@@ -350,8 +353,9 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 	gboolean used_user_chosen_info;
 	gboolean metadata_default;
 
-	g_return_val_if_fail (nautilus_mime_actions_check_if_minimum_attributes_ready (file), 
-			      NULL);
+	if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
+		return NULL;
+	}
 
 	used_user_chosen_info = TRUE;
 
@@ -474,8 +478,9 @@ nautilus_mime_get_short_list_applications_for_file (NautilusFile      *file)
 	GnomeVFSMimeApplication *application;
 	CORBA_Environment ev;
 
-	g_return_val_if_fail (nautilus_mime_actions_check_if_minimum_attributes_ready (file), 
-			      NULL);
+	if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
+		return NULL;
+	}
 
 	CORBA_exception_init (&ev);
 
@@ -536,8 +541,9 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile      *file)
 	char *extra_requirements;
 	char *prev;
 
-	g_return_val_if_fail (nautilus_mime_actions_check_if_minimum_attributes_ready (file), 
-			      NULL);
+	if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
+		return NULL;
+	}
 
 	CORBA_exception_init (&ev);
 
@@ -626,8 +632,9 @@ nautilus_mime_get_short_list_methods_for_file (NautilusFile      *file)
 	char *mime_type;
 	const char *method;
 
-	g_return_val_if_fail (nautilus_mime_actions_check_if_minimum_attributes_ready (file), 
-			      NULL);
+	if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
+		return NULL;
+	}
 
 	mime_type = nautilus_file_get_mime_type (file);
 	method = gnome_vfs_mime_get_value (mime_type, "vfs_method");
@@ -644,8 +651,9 @@ nautilus_mime_get_all_applications_for_file (NautilusFile      *file)
 	GList *p;
 	GnomeVFSMimeApplication *application;
 
-	g_return_val_if_fail (nautilus_mime_actions_check_if_minimum_attributes_ready (file), 
-			      NULL);
+	if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
+		return NULL;
+	}
 
 	metadata_application_ids = nautilus_file_get_metadata_list 
 		(file,
@@ -740,8 +748,9 @@ nautilus_mime_get_all_components_for_file (NautilusFile *file)
 	GList *explicit_iids;
 	CORBA_Environment ev;
 
-	g_return_val_if_fail (nautilus_mime_actions_check_if_minimum_attributes_ready (file), 
-			      NULL);
+	if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
+		return NULL;
+	}
 
 	CORBA_exception_init (&ev);
 

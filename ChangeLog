@@ -1,3 +1,34 @@
+2001-01-20  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com> (except
+	fix for bug 5884, which nobody reviewed)
+
+	Fixed bug 5766 (assertion when switching views)
+	Fixed bug 5884 (Rename file dialog for missing file
+	quotes intended name rather than current)
+
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_action_type_for_file),
+	(nautilus_mime_get_default_action_for_file),
+	(nautilus_mime_get_default_application_for_file_internal),
+	(nautilus_mime_get_default_component_for_file_internal),
+	(nautilus_mime_get_short_list_applications_for_file),
+	(nautilus_mime_get_short_list_components_for_file),
+	(nautilus_mime_get_short_list_methods_for_file),
+	(nautilus_mime_get_all_applications_for_file),
+	(nautilus_mime_get_all_components_for_file):
+	These functions were all using return_val_if_fail if
+	nautilus_mime_actions_check_if_minimum_attributes_ready
+	returned FALSE. In keeping with the style used in
+	NautilusFile, changed these to check and return, but
+	not complain, in these cases where the answer is
+	"not enough info yet". I did not change the setters;
+	they still complain.
+
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_renaming_file): Use "original_name" instead
+	of "new_name" in error message.
+
 2001-01-22  Rebecca Schulman  <rebecka@eazel.com>
         Fix bugzilla.eazel.com bug 2659, that behavior
 	with backup search is inconsistent, because content
