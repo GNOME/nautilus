@@ -1,5 +1,14 @@
 2000-09-27  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* librsvg/Makefile.am:
+	Dont install the test programs.
+
+	* nautilus.spec.in:
+	Make sure the fallback font is part of the package.
+	Dont include the rsvg test programs.
+	
+2000-09-27  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/mozilla/Makefile.am:
 	* configure.in:
 	Add support for using a debuggable version of the beast.

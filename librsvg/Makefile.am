@@ -1,6 +1,10 @@
 NULL=
 
-bin_PROGRAMS=test-rsvg test-ft test-ft-gtk
+noinst_PROGRAMS =\
+	test-rsvg \
+	test-ft \
+	test-ft-gtk \
+	$(NULL)
 
 noinst_LTLIBRARIES = librsvg.la
 
