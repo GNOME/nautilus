@@ -94,19 +94,6 @@ get_link_set_document(const char *link_set_name)
 	return document;
 }
 
-/* utility to expand the uri to deal with the home directory, etc. */
-static char *
-expand_uri (const char *uri)
-{
-	/* FIXME bugzilla.eazel.com 2487: 
-	 * This turns "~x" into "HOME", which is bad. 
-	 */
-	if (uri[0] == '~') {
-		return gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
-	}
-	return g_strdup (uri);
-}
-
 /* install a link set into the specified directory */
 
 gboolean
@@ -133,7 +120,7 @@ nautilus_link_set_install (const char *directory_path, const char *link_set_name
 			uri = xmlGetProp (node, "uri");
 
 			/* Expand special URIs */
-			full_uri = expand_uri (uri);
+			full_uri = gnome_vfs_expand_initial_tilde (uri);
 			
 			/* create the link file */
 			created = create_new_link (directory_path, link_name,

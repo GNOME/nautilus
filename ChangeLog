@@ -1,5 +1,17 @@
 2001-01-18  John Sullivan  <sullivan@eazel.com>
 
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_make_uri_from_input):
+	* libnautilus-extensions/nautilus-link-set.c:
+	(nautilus_link_set_install):
+	Used new gnome_vfs_expand_initial_tilde in two places
+	that were doing this independently (one of which is 
+	where the code for the gnome-vfs routine came from).
+
+2001-01-18  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 5260: (Should revise 'Music view is unable to play
 	back sound' dialog)
 
