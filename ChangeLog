@@ -1,3 +1,8 @@
+2004-02-10  Balamurali Viswanathan  <balamurali.viswanathan@wipro.com>
+
+	* src/file-manager/fm-icon-view.c (play_file): Use the AUDIODEV env,
+	to play sound files if it is set.  Fixes bug #88836
+
 2004-02-10  Jason Leach  <leach@wam.umd.edu>
 
 	* libnautilus-private/Makefile.am (install-data-local): Don't

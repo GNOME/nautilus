@@ -1790,8 +1790,10 @@ play_file (gpointer callback_data)
 	GnomeVFSResult result;
 	GnomeVFSHandle *handle;
 	char *buffer;
+	const char *audio_device = NULL;
 	GnomeVFSFileSize bytes_read;
 
+	audio_device = g_getenv ("AUDIODEV");
 	icon_view = FM_ICON_VIEW (callback_data);
 	
 	file = icon_view->details->audio_preview_file;
@@ -1816,7 +1818,11 @@ play_file (gpointer callback_data)
 			} else {
 				suffix += 1; /* skip the period */
 			}
-			command_str = g_strdup_printf("play -t %s -", suffix);
+			if (audio_device) {
+				command_str = g_strdup_printf("play -d %s -t %s -", audio_device, suffix);
+			} else {
+				command_str = g_strdup_printf("play -t %s -", suffix);
+			}
 		}
 
 		/* read the file with gnome-vfs, feeding it to the sound player's standard input */
