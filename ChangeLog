@@ -1,11 +1,25 @@
+2000-06-20  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_octal_permissions_as_string):
+	Make octal permissions always at least 3 digits long.
+	
+	* libnautilus-extensions/nautilus-undo-manager.c:
+	(destroy_servant), (create_servant), (release_transaction),
+	(corba_append), (corba_forget), (corba_undo),
+	(nautilus_undo_manager_initialize),
+	(nautilus_undo_manager_initialize_class),
+	(nautilus_undo_manager_undo), (destroy), (update_undo_menu_item):
+	Rewrote undo manager to support one level of undo and redo.
+
 2000-06-20  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c:
 	(nautilus_icon_factory_remove_image_uri),
 	(nautilus_icon_factory_get_icon_for_file), (mark_recently_used),
 	(cached_image_still_valid), (get_image_from_cache):
-	made image files that use themselves as their icon update properly
-	when the image file changes.  To do this, I added a "cached_time"
+	Made image files that use themselves as their icon update properly
+	when the image file changes. To do this, I added a "cached_time"
 	field to the image cache key, and used it in get_image_from_cache
 	to remove the stale image from the cache if necessary
 
@@ -135,7 +149,7 @@
 	item count, even when the item is not yet known to be a directory.
 	
 	* src/nautilus-window.c: (nautilus_window_constructed): Get rid
-	of the call to gtk_widget_show_all that was showhing things that
+	of the call to gtk_widget_show_all that was showing things that
 	were intentionally hidden.
 	(nautilus_window_load_content_view_menu): Removed an unused
 	variable that was set up but never examined.
