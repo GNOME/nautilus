@@ -17,12 +17,22 @@ arlo_DATA =	\
 	emblem-nowrite.png	\
 	emblem-nowrite-72.png      \
 	emblem-nowrite-96.png	\
+	i-directory-12-aa.png      \
+	i-directory-20-aa.png      \
+	i-directory-24-aa.png      \
+	i-directory-36-aa.png	\
 	i-directory-aa.png	\
 	i-directory-72-aa.png	\
 	i-directory-96-aa.png	\
 	i-directory-192-aa.png	\
+	i-directory-12.png      \
+	i-directory-20.png      \
+	i-directory-24.png      \
+	i-directory-36.png      \
 	i-directory.png		\
 	i-directory-72.png	\
+	i-directory-96.png      \
+	i-directory-192.png     \
 	i-directory.xml		\
 	i-regular-12.png	\
 	i-regular-20.png        \
