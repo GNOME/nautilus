@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-05-18 22:38-0400\n"
-"PO-Revision-Date: 2004-05-18 22:38-0400\n"
+"POT-Creation-Date: 2004-05-25 18:42-0400\n"
+"PO-Revision-Date: 2004-05-25 18:42-0400\n"
 "Last-Translator: Gareth Owen <gowen72@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -992,6 +992,7 @@ msgid "Label to display in the column"
 msgstr "Label to display in the column"
 
 #: libnautilus-extension/nautilus-column.c:196
+#: src/file-manager/fm-ditem-page.c:344 src/file-manager/fm-ditem-page.c:355
 msgid "Description"
 msgstr "Description"
 
@@ -3017,51 +3018,51 @@ msgstr "whether we are highlighted for a D&D drop"
 msgid "The selection rectangle"
 msgstr "The selection rectangle"
 
-#: libnautilus-private/nautilus-icon-container.c:4195
+#: libnautilus-private/nautilus-icon-container.c:4202
 msgid "Frame Text"
 msgstr "Frame Text"
 
-#: libnautilus-private/nautilus-icon-container.c:4196
+#: libnautilus-private/nautilus-icon-container.c:4203
 msgid "Draw a frame around unselected text"
 msgstr "Draw a frame around unselected text"
 
-#: libnautilus-private/nautilus-icon-container.c:4202
+#: libnautilus-private/nautilus-icon-container.c:4209
 msgid "Selection Box Color"
 msgstr "Selection Box Colour"
 
-#: libnautilus-private/nautilus-icon-container.c:4203
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Color of the selection box"
 msgstr "Colour of the selection box"
 
-#: libnautilus-private/nautilus-icon-container.c:4208
+#: libnautilus-private/nautilus-icon-container.c:4215
 msgid "Selection Box Alpha"
 msgstr "Selection Box Alpha"
 
-#: libnautilus-private/nautilus-icon-container.c:4209
+#: libnautilus-private/nautilus-icon-container.c:4216
 msgid "Opacity of the selection box"
 msgstr "Opacity of the selection box"
 
-#: libnautilus-private/nautilus-icon-container.c:4216
+#: libnautilus-private/nautilus-icon-container.c:4223
 msgid "Highlight Alpha"
 msgstr "Highlight Alpha"
 
-#: libnautilus-private/nautilus-icon-container.c:4217
+#: libnautilus-private/nautilus-icon-container.c:4224
 msgid "Opacity of the highlight for selected icons"
 msgstr "Opacity of the highlight for selected icons"
 
-#: libnautilus-private/nautilus-icon-container.c:4223
+#: libnautilus-private/nautilus-icon-container.c:4230
 msgid "Light Info Color"
 msgstr "Light Info Colour"
 
-#: libnautilus-private/nautilus-icon-container.c:4224
+#: libnautilus-private/nautilus-icon-container.c:4231
 msgid "Color used for information text against a dark background"
 msgstr "Colour used for information text against a dark background"
 
-#: libnautilus-private/nautilus-icon-container.c:4229
+#: libnautilus-private/nautilus-icon-container.c:4236
 msgid "Dark Info Color"
 msgstr "Dark Info Colour"
 
-#: libnautilus-private/nautilus-icon-container.c:4230
+#: libnautilus-private/nautilus-icon-container.c:4237
 msgid "Color used for information text against a light background"
 msgstr "Colour used for information text against a light background"
 
@@ -4084,7 +4085,7 @@ msgid "There is nothing on the clipboard to paste."
 msgstr "There is nothing on the clipboard to paste."
 
 #: src/file-manager/fm-directory-view.c:5050
-#: src/file-manager/fm-directory-view.c:6123
+#: src/file-manager/fm-directory-view.c:6128
 msgid "Mount Error"
 msgstr "Mount Error"
 
@@ -4221,14 +4222,34 @@ msgstr "_Display"
 msgid "_Run"
 msgstr "_Run"
 
-#: src/file-manager/fm-directory-view.c:6259
+#: src/file-manager/fm-directory-view.c:6264
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Opening \"%s\"."
 
-#: src/file-manager/fm-directory-view.c:6266
+#: src/file-manager/fm-directory-view.c:6271
 msgid "Cancel Open?"
 msgstr "Cancel Open?"
+
+#: src/file-manager/fm-ditem-page.c:338 src/file-manager/fm-ditem-page.c:349
+msgid "Comment"
+msgstr "Comment"
+
+#: src/file-manager/fm-ditem-page.c:341
+msgid "URL"
+msgstr "URL"
+
+#: src/file-manager/fm-ditem-page.c:345
+msgid "Link"
+msgstr "Link"
+
+#: src/file-manager/fm-ditem-page.c:352
+msgid "Command"
+msgstr "Command"
+
+#: src/file-manager/fm-ditem-page.c:356
+msgid "Launcher"
+msgstr "Launcher"
 
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
