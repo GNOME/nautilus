@@ -140,6 +140,7 @@ icon_DATA =\
 	i-directory-72.png \
 	i-directory-96.png \
 	i-directory.png \
+	i-executable-aa.png \
 	i-executable.png \
 	i-fifo.png \
 	i-floppy.png \
