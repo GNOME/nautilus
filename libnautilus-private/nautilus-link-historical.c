@@ -421,7 +421,7 @@ nautilus_link_historical_local_create_from_gnome_entry (GnomeDesktopItem *entry,
 	}
 	
 
-	icon = gnome_desktop_item_get_icon (entry);
+	icon = gnome_desktop_item_get_icon (entry, NULL);
 	if (icon != NULL) {
 		icon_name = eel_make_uri_from_half_baked_uri (icon);
 		g_free (icon);
