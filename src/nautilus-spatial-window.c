@@ -173,7 +173,7 @@ file_menu_exit_cb (GtkWidget *widget,
 }
 
 static void
-file_menu_prefs_cb(GtkWidget *widget,
+edit_menu_prefs_cb(GtkWidget *widget,
                    GtkWindow *mainwin)
 {
   nautilus_prefs_ui_show(mainwin);
@@ -188,8 +188,6 @@ static GnomeUIInfo file_menu_info[] = {
     'N', GDK_CONTROL_MASK, NULL
   },
   GNOMEUIINFO_MENU_CLOSE_ITEM(file_menu_close_cb, NULL),
-  GNOMEUIINFO_SEPARATOR,
-  GNOMEUIINFO_MENU_PREFERENCES_ITEM(file_menu_prefs_cb, NULL),
   GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_MENU_EXIT_ITEM(file_menu_exit_cb, NULL),
   GNOMEUIINFO_END
@@ -214,6 +212,8 @@ static GnomeUIInfo edit_menu_info[] = {
     GNOME_APP_PIXMAP_NONE, NULL,
     'A', GDK_CONTROL_MASK, NULL
   },
+  GNOMEUIINFO_SEPARATOR,
+  GNOMEUIINFO_MENU_PREFERENCES_ITEM(edit_menu_prefs_cb, NULL),
   GNOMEUIINFO_END
 };
 
