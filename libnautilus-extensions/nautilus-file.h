@@ -147,6 +147,8 @@ void                    nautilus_file_set_keywords              (NautilusFile   
 								 GList                         *keywords);
 GList *                 nautilus_file_get_emblem_names          (NautilusFile                  *file);
 char *                  nautilus_file_get_top_left_text         (NautilusFile                  *file);
+gboolean                nautilus_file_get_mime_list             (NautilusFile                  *file,
+								 GList                         **mime_list);
 
 
 /* Permissions. */

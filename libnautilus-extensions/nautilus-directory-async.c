@@ -82,6 +82,7 @@ typedef struct {
 	gboolean get_slow_mime_type;  /* only relevant if file_info is "true" */
 	gboolean directory_count;
 	gboolean deep_count;
+	gboolean mime_list;
 	gboolean top_left_text;
 	gboolean activation_uri;
 } Request;
@@ -143,6 +144,23 @@ cancel_deep_count (NautilusDirectory *directory)
 }
 
 static void
+cancel_mime_list (NautilusDirectory *directory)
+{
+	if (directory->details->mime_list_in_progress != NULL) {
+		g_assert (NAUTILUS_IS_FILE (directory->details->mime_list_file));
+
+		gnome_vfs_async_cancel (directory->details->mime_list_in_progress);
+
+		directory->details->mime_list_file->details->mime_list_status = NAUTILUS_REQUEST_NOT_STARTED;
+
+		directory->details->mime_list_file = NULL;
+		directory->details->mime_list_in_progress = NULL;
+		g_free (directory->details->mime_list_uri);
+		directory->details->mime_list_uri = NULL;
+	}
+}
+
+static void
 cancel_top_left_read (NautilusDirectory *directory)
 {
 	if (directory->details->top_left_read_state != NULL) {
@@ -192,6 +210,7 @@ nautilus_directory_cancel (NautilusDirectory *directory)
 {
 	cancel_deep_count (directory);
 	cancel_directory_counts (directory);
+	cancel_mime_list (directory);
 	cancel_get_info (directory);
 	cancel_metafile_read (directory);
 	cancel_top_left_read (directory);
@@ -732,6 +751,10 @@ set_up_request_by_file_attributes (Request *request,
 	request->deep_count = g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS,
+		 nautilus_str_compare) != NULL;
+	request->mime_list = g_list_find_custom
+		(file_attributes,
+		 NAUTILUS_FILE_ATTRIBUTE_MIME_LIST,
 		 nautilus_str_compare) != NULL;
 	request->top_left_text = g_list_find_custom
 		(file_attributes,
@@ -1414,6 +1437,10 @@ nautilus_async_destroying_file (NautilusFile *file)
 		directory->details->deep_count_file = NULL;
 		changed = TRUE;
 	}
+	if (directory->details->mime_list_file == file) {
+		directory->details->mime_list_file = NULL;
+		changed = TRUE;
+	}
 	if (directory->details->get_info_file == file) {
 		directory->details->get_info_file = NULL;
 		changed = TRUE;
@@ -1507,6 +1534,19 @@ wants_deep_count (const Request *request)
 }
 
 static gboolean
+lacks_mime_list (NautilusFile *file)
+{
+	return nautilus_file_is_directory (file)
+		&& file->details->mime_list_status != NAUTILUS_REQUEST_DONE;
+}
+
+static gboolean
+wants_mime_list (const Request *request)
+{
+	return request->mime_list;
+}
+
+static gboolean
 lacks_activation_uri (NautilusFile *file)
 {
 	return file->details->info != NULL
@@ -1573,6 +1613,12 @@ request_is_satisfied (NautilusDirectory *directory,
 
 	if (request->deep_count) {
 		if (has_problem (directory, file, lacks_deep_count)) {
+			return FALSE;
+		}
+	}
+
+	if (request->mime_list) {
+		if (has_problem (directory, file, lacks_mime_list)) {
 			return FALSE;
 		}
 	}
@@ -1759,10 +1805,16 @@ nautilus_directory_invalidate_counts (NautilusDirectory *directory)
 		if (parent_directory->details->deep_count_file == file) {
 			cancel_deep_count (parent_directory);
 		}
+		if (parent_directory->details->mime_list_file == file) {
+			cancel_mime_list (parent_directory);
+		}
 
 		file->details->got_directory_count = FALSE;
 		file->details->directory_count_failed = FALSE;
 		file->details->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
+		file->details->got_mime_list = FALSE;
+		file->details->mime_list_failed = FALSE;
+		file->details->mime_list_status = NAUTILUS_REQUEST_NOT_STARTED;
 
 		if (parent_directory != directory) {
 			nautilus_directory_async_state_changed (parent_directory);
@@ -2156,6 +2208,132 @@ deep_count_start (NautilusDirectory *directory)
 	directory->details->deep_count_file = file;
 	uri = nautilus_file_get_uri (file);
 	deep_count_load (directory, uri);
+	g_free (uri);
+}
+
+static void
+mime_list_one (NautilusDirectory *directory,
+	       GnomeVFSFileInfo *info)
+{
+	NautilusFile *file;
+
+	file = directory->details->mime_list_file;
+
+	if (g_list_find_custom (file->details->mime_list, info->mime_type, (GCompareFunc)g_strcasecmp) == NULL) {
+		file->details->mime_list = g_list_prepend (file->details->mime_list, g_strdup (info->mime_type));
+	}
+}
+
+static void
+mime_list_callback (GnomeVFSAsyncHandle *handle,
+		    GnomeVFSResult result,
+		    GnomeVFSDirectoryList *list,
+		    guint entries_read,
+		    gpointer callback_data)
+{
+	NautilusDirectory *directory;
+	NautilusFile *file;
+	GnomeVFSDirectoryListPosition last_handled, p;
+	gboolean done;
+
+	directory = NAUTILUS_DIRECTORY (callback_data);
+	g_assert (directory->details->mime_list_in_progress == handle);
+	file = directory->details->mime_list_file;
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	/* We can't do this in the most straightforward way, becuse the position
+	 * for a gnome_vfs_directory_list does not have a way of representing one
+	 * past the end. So we must keep a position to the last item we handled
+	 * rather than keeping a position past the last item we handled.
+	 */
+	last_handled = directory->details->mime_list_last_handled;
+        p = last_handled;
+	while ((p = directory_list_get_next_position (list, p))
+	       != GNOME_VFS_DIRECTORY_LIST_POSITION_NONE) {
+		mime_list_one (directory, gnome_vfs_directory_list_get (list, p));
+		last_handled = p;
+	}
+	directory->details->mime_list_last_handled = last_handled;
+
+	done = FALSE;
+	if (result != GNOME_VFS_OK) {
+		directory->details->mime_list_in_progress = NULL;
+		g_free (directory->details->mime_list_uri);
+		directory->details->mime_list_uri = NULL;
+
+		file->details->mime_list_status = NAUTILUS_REQUEST_DONE;
+		directory->details->mime_list_file = NULL;
+		done = TRUE;
+	}
+
+	nautilus_file_changed (file);
+
+	if (done) {
+		nautilus_directory_async_state_changed (directory);
+	}
+}
+
+static void
+mime_list_load (NautilusDirectory *directory, const char *uri)
+{
+	g_assert (directory->details->mime_list_uri == NULL);
+	directory->details->mime_list_uri = g_strdup (uri);
+	directory->details->mime_list_last_handled
+		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
+	gnome_vfs_async_load_directory
+		(&directory->details->mime_list_in_progress,
+		 uri,
+		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE,
+		 NULL,
+		 FALSE,
+		 GNOME_VFS_DIRECTORY_FILTER_NONE,
+		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR
+		  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
+		 NULL,
+		 G_MAXINT,
+		 mime_list_callback,
+		 directory);
+}
+
+static void
+mime_list_start (NautilusDirectory *directory)
+{
+	NautilusFile *file;
+	char *uri;
+
+	/* If there's already a count in progress, check to be sure
+	 * it's still wanted.
+	 */
+	if (directory->details->mime_list_in_progress != NULL) {
+		file = directory->details->mime_list_file;
+		if (file != NULL) {
+			g_assert (NAUTILUS_IS_FILE (file));
+			g_assert (file->details->directory == directory);
+			if (is_needy (file,
+				      lacks_mime_list,
+				      wants_mime_list)) {
+				return;
+			}
+		}
+
+		/* The count is not wanted, so stop it. */
+		cancel_mime_list (directory);
+	}
+
+	/* Figure out which file to get a mime list for. */
+	file = select_needy_file (directory,
+				  lacks_mime_list,
+				  wants_mime_list);
+	if (file == NULL) {
+		return;
+	}
+
+	/* Start counting. */
+	file->details->mime_list_status = NAUTILUS_REQUEST_IN_PROGRESS;
+	/* FIXME: clear out mime_list_whatever */
+	directory->details->mime_list_file = file;
+	uri = nautilus_file_get_uri (file);
+	mime_list_load (directory, uri);
 	g_free (uri);
 }
 
@@ -2557,6 +2735,9 @@ start_or_stop_io (NautilusDirectory *directory)
 	/* Start or stop getting directory counts. */
 	start_getting_directory_counts (directory);
 	deep_count_start (directory);
+
+	/* Start or stop getting mime lists. */
+	mime_list_start (directory);
 
 	/* Start or stop getting top left pieces of files. */
 	start_getting_top_lefts (directory);

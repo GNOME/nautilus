@@ -1,3 +1,25 @@
+2000-10-13  Robey Pointer  <robey@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(cancel_mime_list), (nautilus_directory_cancel),
+	(set_up_request_by_file_attributes),
+	(nautilus_directory_monitor_add_internal),
+	(nautilus_async_destroying_file), (lacks_mime_list),
+	(wants_mime_list), (request_is_satisfied),
+	(nautilus_directory_invalidate_counts), (mime_list_one),
+	(mime_list_callback), (mime_list_load), (mime_list_start),
+	(start_or_stop_io):
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-file-attributes.h:
+	* libnautilus-extensions/nautilus-file-private.h:
+	* libnautilus-extensions/nautilus-file.c: (destroy),
+	(nautilus_file_recompute_deep_counts),
+	(nautilus_file_get_mime_list):
+	* libnautilus-extensions/nautilus-file.h:
+
+	Added mime-list support (can fetch the list of mime-types in the
+	subdirs of a directory) for bug 3364.
+
 2000-10-13  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-install-rpm-glue.c:

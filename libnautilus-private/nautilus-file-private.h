@@ -55,6 +55,12 @@ struct NautilusFileDetails
 	guint deep_unreadable_count;
 	GnomeVFSFileSize deep_size;
 
+	/* if this is a directory, the list of mime-types in it */
+	NautilusRequestStatus mime_list_status;
+	GList *mime_list;
+	gboolean got_mime_list;
+	gboolean mime_list_failed;
+
 	gboolean got_top_left_text;
 	char *top_left_text;
 

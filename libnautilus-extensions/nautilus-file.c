@@ -407,6 +407,9 @@ destroy (GtkObject *object)
 	g_free (file->details->top_left_text);
 	g_free (file->details->activation_uri);
 
+	g_list_foreach (file->details->mime_list, (GFunc) g_free, NULL);
+	g_list_free (file->details->mime_list);
+
 	g_free (file->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -2050,6 +2053,33 @@ nautilus_file_recompute_deep_counts (NautilusFile *file)
 			nautilus_directory_async_state_changed (file->details->directory);
 		}
 	}
+}
+
+/**
+ * nautilus_file_get_mime_list
+ * 
+ * Get the list of mime-types present in a directory.
+ * @file: NautilusFile representing a directory. It is an error to
+ * call this function on a file that is not a directory.
+ * @mime_list: Place to put the list of mime-types.
+ * 
+ * Returns: TRUE if mime-type list is available.
+ * 
+ **/
+gboolean
+nautilus_file_get_mime_list (NautilusFile *file,
+			     GList **mime_list)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+	g_return_val_if_fail (nautilus_file_is_directory (file), FALSE);
+	g_return_val_if_fail (mime_list != NULL, FALSE);
+
+	if (! file->details->got_mime_list) {
+		return FALSE;
+	}
+
+	*mime_list = file->details->mime_list;
+	return TRUE;
 }
 
 /**

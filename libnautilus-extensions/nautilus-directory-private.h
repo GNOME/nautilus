@@ -87,6 +87,11 @@ struct NautilusDirectoryDetails
 	GnomeVFSDirectoryListPosition deep_count_last_handled;
 	GList *deep_count_subdirectories;
 
+	NautilusFile *mime_list_file;
+	GnomeVFSAsyncHandle *mime_list_in_progress;
+	char *mime_list_uri;
+	GnomeVFSDirectoryListPosition mime_list_last_handled;
+
 	GnomeVFSAsyncHandle *get_info_in_progress;
 	NautilusFile *get_info_file;
 	gboolean get_slow_mime_type_for_file;
