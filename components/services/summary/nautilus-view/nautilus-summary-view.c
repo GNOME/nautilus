@@ -334,6 +334,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_container_add (GTK_CONTAINER (view), view->details->form);
 
 	/* setup the title */
+	g_print ("Start title load.\n");
 	title = eazel_services_header_new ("");
 
 	if (view->details->logged_in) {
@@ -350,8 +351,10 @@ generate_summary_form (NautilusSummaryView	*view)
 	}
 	gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
 	gtk_widget_show (title);
+	g_print ("end title load.\n");
 	
 	/* create the news section only if there's some news */
+	g_print ("start news load.\n");
 	has_news = FALSE;
 	if (view->details->xml_data->eazel_news_list) {
 		eazel_news_node = (EazelNewsData*) view->details->xml_data->eazel_news_list->data;
@@ -409,8 +412,10 @@ generate_summary_form (NautilusSummaryView	*view)
 		gtk_container_add (GTK_CONTAINER (temp_scrolled_window), viewport);
 		gtk_box_pack_start (GTK_BOX (frame), temp_scrolled_window, FALSE, FALSE, 0);		
 	}
+	g_print ("end news load.\n");
 	
 	/* add a set of tabs to control the notebook page switching */
+	g_print ("start tab load.\n");
 	notebook_tabs = nautilus_tabs_new ();
 	gtk_widget_show (notebook_tabs);
 	gtk_box_pack_start (GTK_BOX (view->details->form), notebook_tabs, FALSE, FALSE, 0);
@@ -426,8 +431,10 @@ generate_summary_form (NautilusSummaryView	*view)
 	
 	/* add the tab */
 	nautilus_tabs_add_tab (NAUTILUS_TABS (notebook_tabs), _("Your Services"), 0);
+	g_print ("end tab load.\n");
 	
 	/* Create the Services Listing Box */
+	g_print ("start services load.\n");
 	frame = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (frame);
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), frame, NULL);
@@ -524,8 +531,10 @@ generate_summary_form (NautilusSummaryView	*view)
 	notebook_tabs = nautilus_tabs_new ();
 	gtk_widget_show (notebook_tabs);
 	gtk_box_pack_start (GTK_BOX (notebook_vbox), notebook_tabs, FALSE, FALSE, 0);
+	g_print ("end services load.\n");
 
 	/* Create the notebook container for updates */
+	g_print ("start updates load.\n");
 	notebook = gtk_notebook_new ();
 	gtk_widget_show (notebook);
 	gtk_container_add (GTK_CONTAINER (notebook_vbox), notebook);
@@ -595,6 +604,9 @@ generate_summary_form (NautilusSummaryView	*view)
 	g_free (view->details->xml_data);
 	view->details->xml_data = NULL;
 
+	g_print ("start updates load.\n");
+
+	g_print ("start footer load.\n");
 	footer = eazel_services_footer_new ();
 	gtk_signal_connect (GTK_OBJECT (footer), "item_clicked", GTK_SIGNAL_FUNC (footer_item_clicked_callback), view);
 
@@ -611,6 +623,7 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	gtk_box_pack_start (GTK_BOX (view->details->form), footer, FALSE, FALSE, 0);
 	gtk_widget_show (footer);
+	g_print ("end footer load.\n");
 
 	/* draw parent vbox and connect it to the update news frame */
 	gtk_container_add (GTK_CONTAINER (viewport), temp_box);
@@ -843,7 +856,6 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_box_pack_start (GTK_BOX (view->details->update_button_container), view->details->update_softcat_goto_button, FALSE, FALSE, 4);
 	cbdata->nautilus_view = view->details->nautilus_view;
 	cbdata->uri = view->details->update_softcat_redirects[view->details->current_update_row - 1];
-	g_print ("%s\n", view->details->update_softcat_redirects[view->details->current_update_row - 1]);
 	gtk_signal_connect (GTK_OBJECT (view->details->update_softcat_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_update_cb), cbdata);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), view->details->update_button_container, FALSE, FALSE, 4);
 
@@ -1430,8 +1442,10 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 	view->details->uri = g_strdup (uri);
 
 	/* get xml data and verify network connections */
+	g_print ("start load\n");
 	view->details->logged_in = am_i_logged_in (view->details->user_control);
 
+	g_print ("start xml table fetch\n");
 	got_url_table = trilobite_redirect_fetch_table 
 		(view->details->logged_in
 		 ? URL_REDIRECT_TABLE_HOME_2
@@ -1449,7 +1463,9 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 				 "or your computer might be configured incorrectly."
 				 "You could try again later."));
 	} else {
+		g_print ("end xml table fetch\n");
 		/* fetch and parse the xml file */
+		g_print ("start xml config fetch\n");
 		url = trilobite_redirect_lookup (SUMMARY_XML_KEY);
 		if (!url) {
 			g_assert ("Failed to get summary xml home !\n");
@@ -1461,7 +1477,10 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 				(view, _("Found problem with data on Eazel servers. "
 					 "Please contact support@eazel.com."));
 		} else {
+			g_print ("end xml config fetch\n");
+			g_print ("start summary draw\n");
 			generate_summary_form (view);		
+			g_print ("end summary draw\n");
 			if (!view->details->logged_in) {
 				generate_login_dialog (view);
 			}
