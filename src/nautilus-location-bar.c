@@ -307,7 +307,7 @@ try_to_expand_path (gpointer callback_data)
 	uint base_length;
 	int current_path_length;
 	int offset;
-	const char *base_name_ptr;
+	char *base_name_uri_escaped;
 	char *base_name;
 	char *user_location;
 	char *current_path;
@@ -342,12 +342,13 @@ try_to_expand_path (gpointer callback_data)
 
 	uri = gnome_vfs_uri_new (current_path);
 	
-	base_name_ptr = gnome_vfs_uri_get_basename (uri);
-	if (base_name_ptr == NULL) {
+	base_name_uri_escaped = gnome_vfs_uri_extract_short_name (uri);
+	if (base_name_uri_escaped == NULL) {
 		base_name = NULL;
 	} else {
-		base_name = gnome_vfs_unescape_string (base_name_ptr, NULL);
+		base_name = gnome_vfs_unescape_string (base_name_uri_escaped, NULL);
 	}
+	g_free (base_name_uri_escaped);
 
 	if (base_name == NULL) {
 		gnome_vfs_uri_unref (uri);

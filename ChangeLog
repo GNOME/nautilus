@@ -1,3 +1,10 @@
+2001-11-02  Darin Adler  <darin@bentspoon.com>
+
+	* src/nautilus-location-bar.c: (try_to_expand_path): Get rid of
+	use of gnome_vfs_uri_get_basename. Not sure if I fixed this
+	right. This could have been the one caller who really wanted a
+	basename-type call.
+
 2001-11-01  Havoc Pennington  <hp@pobox.com>
 
 	* libnautilus/nautilus-clipboard.c (select_all): remove GtkText
