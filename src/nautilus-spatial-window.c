@@ -968,7 +968,7 @@ nautilus_window_go_home (NautilusWindow *window)
 {
 	char *default_home_uri, *home_uri;
 
-	default_home_uri = g_strdup_printf ("file://%s", g_get_home_dir());
+	default_home_uri = nautilus_get_uri_from_local_path (g_get_home_dir ());
 	home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI, default_home_uri);
 	g_free (default_home_uri);
 	

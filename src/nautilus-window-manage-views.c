@@ -744,10 +744,9 @@ nautilus_window_load_content_view (NautilusWindow *window,
                                    NautilusViewIdentifier *id,
                                    NautilusViewFrame **requesting_view)
 {
+        const char *iid;
         NautilusViewFrame *content_view;
         NautilusViewFrame *new_view;
-        
-        char *iid;
 
  	/* FIXME bugzilla.eazel.com 1243: 
 	 * We should use inheritance instead of these special cases
@@ -1137,8 +1136,6 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
                 case CV_PROGRESS_INITIAL: /* We have received an "I am loading" indication from the content view */
                         x_message (("CV_PROGRESS_INITIAL"));
                         window->cv_progress_initial = TRUE;
-                        window->cv_progress_done = FALSE;
-                        window->cv_progress_error = FALSE;
                         window->changes_pending = TRUE;
                         break;
 
@@ -1149,6 +1146,10 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
 
                 case CV_PROGRESS_DONE: /* The content view is done loading */
                         x_message (("CV_PROGRESS_DONE"));
+                        if (!window->cv_progress_initial) {
+                                window->cv_progress_initial = TRUE;
+                                window->changes_pending = TRUE;
+                        }
                         window->cv_progress_done = TRUE;
                         break;
 

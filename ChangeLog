@@ -1,3 +1,25 @@
+2000-08-07  Darin Adler  <darin@eazel.com>
+
+	Fixed bugs 1985 and 1986 (infinite loops using Mozilla).
+	Both were triggered by the fact that Mozilla reports that
+	it is done before it reports that it is underway. Made
+	the state machine less picky about this.
+	
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_set_state_info): Made the "DONE" state
+	also do all the "INITIAL" state work so that reporting
+	you are done before you report that you started does not
+	cause any trouble.
+	
+	* docs/recommended-books.html: Fixed a bad URL in here.
+	
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_set_single_click_mode): Fixed formatting.
+	
+	* src/nautilus-window.c: (nautilus_window_go_home):
+	Use real function to convert path to URI instead of just
+	prepending "file://".
+
 2000-08-07  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Fix bug 2019.  Zoom control doesnt play nicely with gtk theme
@@ -25,7 +47,6 @@
 	* icons/arlo/decrement-i.png
 	* icons/arlo/Makefile.am
 	Add disabled zoom widgets.
-
 
 2000-08-07  John Sullivan  <sullivan@eazel.com>
 

@@ -467,8 +467,8 @@ event_state_modifies_selection (guint event_state)
 }
 
 void
-nautilus_list_set_single_click_mode (NautilusList	*list,
-				     gboolean		single_click_mode)
+nautilus_list_set_single_click_mode (NautilusList *list,
+				     gboolean single_click_mode)
 {
 	list->details->single_click_mode = single_click_mode;
 }
