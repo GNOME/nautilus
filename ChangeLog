@@ -1,3 +1,27 @@
+2001-03-22  Eskil Olsen  <eskil@eazel.com
+
+	reviewed by: a donkey
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(get_package_info):
+	changed a g_file_test into a access.
+	
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(err_monitor_func),
+	(eazel_package_system_rpm3_packagedata_fill_from_header),
+	(monitor_subcommand_pipe), (manual_rpm_command),
+	(eazel_package_system_rpm3_execute):
+	Read and flush stderr from rpm, should fix some of the RH70 glibc 2.1.9x problems.
+	
+	* nautilus-installer/src/installer.c: (check_system),
+	(eazel_install_get_depends), (find_old_tmpdir),
+	(eazel_installer_initialize):
+	* nautilus-installer/src/main.c:
+	Fixed so it compiles again.
+	
+	* nautilus-installer/src/prescript:
+	Warn about the glibc, but don' exit
+
 2001-03-22  John Harper  <jsh@eazel.com>
 
 	reviewed by: Robin * Slomkowski  <rslomkow@eazel.com>

@@ -904,7 +904,7 @@ get_package_info (EazelInstall *service,
 
 		if ((*pack)->filename) {
 			/* Package already has a filename, load info from disk */
-			if (g_file_test ((*pack)->filename, G_FILE_TEST_ISFILE) &&
+			if (access ((*pack)->filename, F_OK)==0 &&
 			    access ((*pack)->filename, R_OK)==0) {
 				PackageData *loaded_package;
 #if EI2_DEBUG & 0x4

@@ -58,6 +58,7 @@ extern char* installer_cgi_path;
 extern char* installer_tmpdir;
 extern char* installer_homedir;
 extern char* installer_cache_dir;
+extern char* installer_xml;
 
 static int installer_show_build = 0;
 static char *installer_user = NULL;

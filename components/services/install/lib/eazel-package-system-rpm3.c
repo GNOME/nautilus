@@ -56,16 +56,15 @@
 #error Unknown DB system
 #endif
 
+#include <glib.h>
+#include <gtk/gtk.h>
+#include <string.h>
 #include <locale.h>
 #include "eazel-package-system-rpm3-private.h"
 #include "eazel-package-system-private.h"
 #include <libtrilobite/trilobite-core-utils.h>
-#include <libtrilobite/trilobite-root-helper.h>
 #include <libtrilobite/trilobite-i18n.h>
 
-#include <gtk/gtkmain.h>
-
-#include <string.h>
 #include <rpm/rpmlib.h>
 #include <rpm/rpmmacro.h>
 #include <rpm/misc.h>
@@ -75,6 +74,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include <locale.h>
+
+#include <libtrilobite/trilobite-root-helper.h>
 
 #define DEFAULT_DB_PATH "/var/lib/rpm"
 #define DEFAULT_ROOT "/"
@@ -321,6 +323,26 @@ eazel_package_system_rpm3_set_mod_status (EazelPackageSystemRpm3 *system,
 			break;
 		}
 	}
+}
+
+static gboolean
+err_monitor_func (GIOChannel *source,
+		  GIOCondition condition,
+		  struct RpmMonitorPiggyBag *pig)
+{
+	char tmp;
+	ssize_t bytes_read;
+
+	bytes_read = 0;
+	g_io_channel_read (source, &tmp, 1, &bytes_read);
+	fprintf (stderr, "%c", tmp);
+	fflush (stderr);
+
+	if (! bytes_read) {
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 #ifdef USE_PERCENT
@@ -1066,18 +1088,9 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 				/* Otherwise, add as a package name */
 				package->name = g_strdup (requires_name[index]);
 				/* and set the version if not empty */
-				if (*requires_version[index]=='\0') {
-					pack_dep->version = NULL;
-				} else {
-					char *ptr = strchr (requires_version[index], '-');
-					/* did the baffoon insert a release into the dependency ? */
-					if (ptr != NULL) {
-						*ptr = '\0';
-					}
-					pack_dep->version = g_strdup (requires_version[index]);
-				}
+				pack_dep->version = *requires_version[index]=='\0' ? 
+					NULL : g_strdup (requires_version[index]);
 			}
-
 			/* If anything set, add dep */
 			if (package->name || package->features) {
 				pack_dep->sense = rpm_sense_to_softcat_sense (system,
@@ -1491,19 +1504,25 @@ display_arguments (EazelPackageSystemRpm3 *system,
 static void
 monitor_subcommand_pipe (EazelPackageSystemRpm3 *system,
 			 int fd, 
+			 int errfd,
 			 GIOFunc monitor_func,
 			 struct RpmMonitorPiggyBag *pig)
 {
-	GIOChannel *channel;
+	GIOChannel *channel, *err_channel;
+	guint out_src, err_src;
 
 	pig->subcommand_running = TRUE;
 	channel = g_io_channel_unix_new (fd);
+	err_channel = g_io_channel_unix_new (errfd);
 
-	info (system, "beginning monitor on %d", fd);
-	g_io_add_watch_full (channel, 10, G_IO_IN | G_IO_ERR | G_IO_NVAL | G_IO_HUP, 
-			     monitor_func, 
-			     pig, NULL);
-
+	info (system, "beginning monitor on out %d err %d", fd, errfd);
+	out_src = g_io_add_watch_full (channel, 10, G_IO_IN | G_IO_ERR | G_IO_NVAL | G_IO_HUP, 
+				       monitor_func, 
+				       pig, NULL);
+	err_src = g_io_add_watch_full (err_channel, 10, G_IO_IN | G_IO_ERR | G_IO_NVAL | G_IO_HUP,
+				       (GIOFunc)err_monitor_func,
+				       pig, NULL);
+	
 	while (pig->subcommand_running) {
 #if 0
 		/* this is evil and it still doesn't work, so foo. */
@@ -1513,7 +1532,11 @@ monitor_subcommand_pipe (EazelPackageSystemRpm3 *system,
 #endif
 		gtk_main_iteration ();
 	}
-	info (system, "ending monitor on %d", fd);
+
+	g_source_remove (out_src);
+	g_source_remove (err_src);
+
+	info (system, "ending monitor on out %d err %d", fd, errfd);
 }
 
 static void
@@ -1530,10 +1553,10 @@ eazel_package_system_rpm3_set_state (EazelPackageSystemRpm3 *system,
 
 /* returns TRUE on success */
 static gboolean
-manual_rpm_command (GList *args, int *fd)
+manual_rpm_command (GList *args, int *fd, int *errfd)
 {
 	char **argv;
-	int i, errfd, child_pid;
+	int i, child_pid;
 	GList *iterator;
 	gboolean result;
 
@@ -1553,12 +1576,11 @@ manual_rpm_command (GList *args, int *fd)
 		goto out;
 	} 
 	/* start /bin/rpm... */
-	if ((child_pid = trilobite_pexec ("/bin/rpm", argv, NULL, fd, &errfd)) == 0) {
+	if ((child_pid = trilobite_pexec ("/bin/rpm", argv, NULL, fd, errfd)) == 0) {
 		g_warning ("Could not start rpm");
 		result = FALSE;
 	} else {
-		trilobite_debug ("/bin/rpm running (pid %d, stdout %d, stderr %d)", child_pid, *fd, errfd);
-		//close (errfd);
+		trilobite_debug ("/bin/rpm running (pid %d, stdout %d, XX stderr %d)", child_pid, *fd, *errfd);
 		result = TRUE;
 	}
 
@@ -1576,7 +1598,7 @@ eazel_package_system_rpm3_execute (EazelPackageSystemRpm3 *system,
 				   GList *args)
 {
 	TrilobiteRootHelper *root_helper;
-	int fd;
+	int fd, errfd;
 	gboolean go = TRUE;
 
 	display_arguments (system, args);
@@ -1598,11 +1620,11 @@ eazel_package_system_rpm3_execute (EazelPackageSystemRpm3 *system,
 		}
 	} else {
 		/* start /bin/rpm manually -- we're in bootstrap installer mode */
-		go = manual_rpm_command (args, &fd);
+		go = manual_rpm_command (args, &fd, &errfd);
 	}
 	if (go) {
 #ifdef USE_PERCENT
-		monitor_subcommand_pipe (system, fd, (GIOFunc)monitor_rpm_process_pipe_percent_output, pig);
+		monitor_subcommand_pipe (system, fd, errfd, (GIOFunc)monitor_rpm_process_pipe_percent_output, pig);
 #else
 		monitor_subcommand_pipe (system, fd, (GIOFunc)monitor_rpm_process_pipe, pig);
 #endif

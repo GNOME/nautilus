@@ -61,8 +61,7 @@
 #define CGI_PATH	"/catalog/find"
 #define RPMRC		"/usr/lib/rpm/rpmrc"
 #define REMOTE_RPM_DIR	"/RPMS"
-#define PACKAGE_LIST	"package-list.xml"
-#define PACKAGE_LIST_URL_PATH	"/downloads/eazel-installer/package-list.xml"
+#define PACKAGE_LIST_URL_PATH	"/downloads/eazel-installer"
 #define TEXT_LIST	"installer-strings"
 
 #define LOGFILE		"eazel-install.log"
@@ -188,6 +187,7 @@ char *installer_cgi_path = NULL;
 char *installer_tmpdir = "/tmp";
 char *installer_homedir = NULL;
 char *installer_cache_dir = NULL;
+char *installer_xml = "package-list.xml";
 
 static void check_if_next_okay (GnomeDruidPage *page, void *unused, EazelInstaller *installer);
 static void jump_to_retry_page (EazelInstaller *installer);
@@ -1442,7 +1442,7 @@ eazel_installer_add_category (EazelInstaller *installer,
 static gboolean
 check_system (EazelInstaller *installer)
 {
-	DistributionInfo dist;
+	TrilobiteDistributionInfo dist;
 #ifndef NAUTILUS_INSTALLER_RELEASE
 	struct utsname ub;
 #endif
@@ -1798,12 +1798,13 @@ eazel_install_get_depends (EazelInstaller *installer, const char *dest_dir)
 	char *destination;
 	gboolean result = TRUE;
 
-	url = g_strdup_printf ("http://%s:%d%s", 
+	url = g_strdup_printf ("http://%s:%d%s/%s", 
 			       eazel_install_get_server (installer->service),
 			       eazel_install_get_server_port (installer->service),
-			       PACKAGE_LIST_URL_PATH);
+			       PACKAGE_LIST_URL_PATH,
+                               installer_xml);
 
-	destination = g_strdup_printf ("%s/%s", dest_dir, PACKAGE_LIST);
+	destination = g_strdup_printf ("%s/%s", dest_dir, installer_xml);
 
 	g_message ("Trying to contact Eazel Services...");
 
@@ -2008,7 +2009,7 @@ find_old_tmpdir (void)
 				/* acceptable */
 				log_debug ("found an old tmpdir: %s", old_tmpdir);
 				/* make sure old package list isn't hanging around */
-				old_package_list = g_strdup_printf ("%s/%s", old_tmpdir, PACKAGE_LIST);
+				old_package_list = g_strdup_printf ("%s/%s", old_tmpdir, installer_xml);
 				unlink (old_package_list);
 				g_free (old_package_list);
 				chmod (old_tmpdir, 0700);
@@ -2098,7 +2099,7 @@ eazel_installer_initialize (EazelInstaller *object)
 	installer->successful = TRUE;
 	installer->uninstalling = FALSE;
 	installer->packages_possible_broken = NULL;
-	package_destination = g_strdup_printf ("%s/%s", installer->tmpdir, PACKAGE_LIST);
+	package_destination = g_strdup_printf ("%s/%s", installer->tmpdir, installer_xml);
 	installer->downloaded_anything = FALSE;
 
 	eazel_installer_setup_texts (installer, tmpdir);
