@@ -28,10 +28,14 @@
 #include <config.h>
 #include "nautilus-application.h"
 
+
 #include "file-manager/fm-desktop-icon-view.h"
 #include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-list-view.h"
 #include "file-manager/fm-search-list-view.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "nautilus-desktop-window.h"
 #include "nautilus-first-time-druid.h"
 #include "nautilus-main.h"
@@ -39,7 +43,6 @@
 #include "nautilus-shell.h"
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-object.h>
-#include <dirent.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string-list.h>
@@ -280,56 +283,43 @@ nautilus_make_uri_list_from_shell_strv (const char * const *strv)
 static void
 migrate_old_nautilus_files (void)
 {
-	char *new_desktop_dir, *np;
-	char *old_desktop_dir, *op;
-	char *old_desktop_dir_new_name;
-	struct stat buf;
-	DIR *dir;
-	struct dirent *de;
+	char *new_desktop_dir;
+	char *old_desktop_dir;
+	char *migrated_file;
+	char *link_name;
+	char *link_path;
+	int fd;
 	
-	old_desktop_dir = g_strconcat (g_get_home_dir (), "/.nautilus/desktop", NULL);
-	if (stat (old_desktop_dir, &buf) == -1) {
+	old_desktop_dir = nautilus_get_gmc_desktop_directory ();
+	if (!g_file_test (old_desktop_dir, G_FILE_TEST_IS_DIR)) {
 		g_free (old_desktop_dir);
 		return;
 	}
-	if (!S_ISLNK (buf.st_mode)){
-		dir = opendir (old_desktop_dir);
-		if (dir == NULL) {
-			g_free (old_desktop_dir);
-			return;
-		}
-	
+	migrated_file = g_build_filename (old_desktop_dir, ".migrated", NULL);
+	if (!g_file_test (migrated_file, G_FILE_TEST_EXISTS)) {
+		link_name = g_filename_from_utf8 (_("Link To Old Desktop"), -1, NULL, NULL, NULL);
 		new_desktop_dir = nautilus_get_desktop_directory ();
+		link_path = g_build_filename (new_desktop_dir, link_name, NULL);
+	
 		
-		while ((de = readdir (dir)) != NULL){
-			if (de->d_name [0] == '.'){
-				if (de->d_name [0] == 0)
-					continue;
-				
-				if (de->d_name [1] == '.' && de->d_name [2] == 0)
-					continue;
-			}
-	
-			op = g_strconcat (old_desktop_dir, "/", de->d_name, NULL);
-			np = g_strconcat (new_desktop_dir, "/", de->d_name, NULL);
-	
-			rename (op, np);
-	
-			g_free (op);
-			g_free (np);
-		}
-
-		closedir (dir);
-
+		symlink ("../.gnome-desktop", link_path);
+		
+		g_free (link_name);
 		g_free (new_desktop_dir);
+		g_free (link_path);
+
+		fd = creat (migrated_file, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
+		if (fd >= 0) {
+			close (fd);
+		}
+		
+		eel_show_info_dialog (_("The location of the desktop directory has changed in Gnome 2.4. "
+					"A link called \"Link To Old Desktop\" has been created on the desktop. "
+					"You can open this to move over the files you want, then delete the link."),
+				      _("Migrated old desktop"),
+				      NULL);
 	}
-
-	/* In case we miss something */
-	old_desktop_dir_new_name = g_strconcat (old_desktop_dir, "-old", NULL);
-	rename (old_desktop_dir, old_desktop_dir_new_name);
-	g_free (old_desktop_dir_new_name);
-
-	g_free (old_desktop_dir);
+	g_free (migrated_file);
 }
 
 static gint
