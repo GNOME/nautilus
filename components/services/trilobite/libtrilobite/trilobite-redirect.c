@@ -249,7 +249,10 @@ trilobite_redirect_lookup (const char *key)
 	return value;
 }
 
-/* find the default server hostname and port to use for eazel services */
+/* find the default server hostname and port to use for eazel services
+ * NOTE: this should be in "host:port" format, if the ':port' is missing,
+ * the port should default to 443 (https)
+ */
 const char *
 trilobite_get_services_address (void)
 {
