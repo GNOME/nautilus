@@ -61,6 +61,8 @@ static void nautilus_entry_insert_text      (GtkEditable    	*editable,
 			 		     const gchar    	*text,
 			 		     gint            	length,
 			 		     gint           	*position);
+static gboolean nautilus_entry_selection_clear (GtkWidget        *widget,
+					     GdkEventSelection *event);
 static void nautilus_entry_delete_text      (GtkEditable    	*editable,
 			 		     gint            	start_pos,
 			 		     gint            	end_pos);
@@ -83,6 +85,7 @@ nautilus_entry_initialize_class (NautilusEntryClass *class)
 		
 	widget_class->key_press_event = nautilus_entry_key_press;
 	widget_class->motion_notify_event = nautilus_entry_motion_notify;
+	widget_class->selection_clear_event = nautilus_entry_selection_clear;
 	
 	object_class->destroy = nautilus_entry_destroy;
 	
@@ -373,4 +376,28 @@ nautilus_entry_delete_text (GtkEditable *editable, gint start_pos, gint end_pos)
 				   (editable, start_pos, end_pos));
 
 	gtk_signal_emit (GTK_OBJECT (editable), signals[SELECTION_CHANGED]);
+}
+
+/* Overridden to work around GTK bug. The selection_clear_event is queued
+ * when the selection changes. Changing the selection to NULL and then
+ * back to the original selection owner still sends the event, so the
+ * selection owner then gets the selection ripped away from it. We ran into
+ * this with type-completion behavior in NautilusLocationBar (see bug 5313).
+ * There's a FIXME comment that seems to be about this same issue in
+ * gtk+/gtkselection.c, gtk_selection_clear.
+ */
+static gboolean
+nautilus_entry_selection_clear (GtkWidget         *widget,
+			        GdkEventSelection *event)
+{
+  g_return_val_if_fail (NAUTILUS_IS_ENTRY (widget), FALSE);
+  g_return_val_if_fail (event != NULL, FALSE);
+
+  if (gdk_selection_owner_get (event->selection) == widget->window) {
+	return FALSE;
+  }
+
+  return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, 
+  				     selection_clear_event, 
+				     (widget, event));
 }

@@ -1,3 +1,19 @@
+2001-01-03  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 5313 (location bar gets partly inactive during
+	auto-completion)
+
+	This was a GTK bug involving event timing. The fix was to
+	add a workaround in NautilusEntry.
+
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_initialize_class): Wire up default handler
+	for selection_clear_event.
+	(nautilus_entry_selection_clear): Bail out without doing anything
+	if we are still the selection owner.
+
 2001-01-03  John Harper  <jsh@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
