@@ -132,6 +132,11 @@
 #define FM_DIRECTORY_VIEW_COMMAND_COPY_FILES				"/commands/Copy Files"
 #define FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES	   			"/commands/Paste Files"
 #define FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES_INTO   			"/commands/Paste Files Into"
+#define FM_DIRECTORY_VIEW_COMMAND_MOUNT_VOLUME_CONDITIONAL	        "/commands/Mount Volume Conditional"
+#define FM_DIRECTORY_VIEW_COMMAND_UNMOUNT_VOLUME_CONDITIONAL	        "/commands/Unmount Volume Conditional"
+#define FM_DIRECTORY_VIEW_COMMAND_PROTECT_VOLUME_CONDITIONAL            "/commands/Protect Conditional"
+#define FM_DIRECTORY_VIEW_COMMAND_FORMAT_VOLUME_CONDITIONAL             "/commands/Format Conditional"
+#define FM_DIRECTORY_VIEW_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL   "/commands/Media Properties Conditional"
 
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH				"/menu/File/Open Placeholder/Open With"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS				"/menu/File/Open Placeholder/Scripts"
@@ -4657,6 +4662,128 @@ rename_file_callback (BonoboUIComponent *component, gpointer callback_data, cons
 }
 
 static void
+drive_mounted_callback (gboolean succeeded,
+			char *error,
+			char *detailed_error,
+			gpointer data)
+{
+	if (!succeeded) {
+		eel_show_error_dialog_with_details (error, _("Mount Error"), detailed_error, NULL);
+	}
+}
+
+
+static void
+mount_volume_callback (BonoboUIComponent *component,
+		       gpointer data,
+		       const char *verb)
+{
+	NautilusFile *file;
+	GList *selection;
+	GnomeVFSDrive *drive;
+	FMDirectoryView *view;
+
+        view = FM_DIRECTORY_VIEW (data);
+	
+	selection = fm_directory_view_get_selection (view);
+
+	if (!eel_g_list_exactly_one_item (selection)) {
+		nautilus_file_list_free (selection);
+		return;
+	}
+
+	file = NAUTILUS_FILE (selection->data);
+	
+	if (nautilus_file_has_drive (file)) {
+		drive = nautilus_file_get_drive (file);
+		if (drive != NULL) {
+			gnome_vfs_drive_mount (drive, drive_mounted_callback, NULL);
+		}
+	}
+
+	nautilus_file_list_free (selection);
+}
+
+static gboolean
+eject_for_type (GnomeVFSDeviceType type)
+{
+	switch (type) {
+	case GNOME_VFS_DEVICE_TYPE_CDROM:
+	case GNOME_VFS_DEVICE_TYPE_ZIP:
+	case GNOME_VFS_DEVICE_TYPE_JAZ:
+		return TRUE;
+	default:
+		return FALSE;
+	}
+}
+
+
+static void
+volume_or_drive_unmounted_callback (gboolean succeeded,
+				    char *error,
+				    char *detailed_error,
+				    gpointer data)
+{
+	gboolean eject;
+
+	eject = GPOINTER_TO_INT (data);
+	if (!succeeded) {
+		if (eject) {
+			eel_show_error_dialog_with_details (error, _("Unmount Error"), detailed_error, NULL);
+		} else {
+			eel_show_error_dialog_with_details (error, _("Eject Error"), detailed_error, NULL);
+		}
+	}
+}
+
+
+static void
+unmount_volume_callback (BonoboUIComponent *component,
+			 gpointer data,
+			 const char *verb)
+{
+	NautilusFile *file;
+	GList *selection;
+	GnomeVFSDrive *drive;
+	GnomeVFSVolume *volume;
+	FMDirectoryView *view;
+
+        view = FM_DIRECTORY_VIEW (data);
+	
+	selection = fm_directory_view_get_selection (view);
+
+	if (!eel_g_list_exactly_one_item (selection)) {
+		nautilus_file_list_free (selection);
+		return;
+	}
+
+	file = NAUTILUS_FILE (selection->data);
+	
+	if (nautilus_file_has_volume (file)) {
+		volume = nautilus_file_get_volume (file);
+		if (volume != NULL) {
+			if (eject_for_type (gnome_vfs_volume_get_device_type (volume))) {
+				gnome_vfs_volume_eject (volume, volume_or_drive_unmounted_callback, GINT_TO_POINTER (TRUE));
+			} else {
+				gnome_vfs_volume_unmount (volume, volume_or_drive_unmounted_callback, GINT_TO_POINTER (FALSE));
+			}
+		}
+	} else if (nautilus_file_has_drive (file)) {
+		drive = nautilus_file_get_drive (file);
+		if (drive != NULL) {
+			if (eject_for_type (gnome_vfs_drive_get_device_type (drive))) {
+				gnome_vfs_drive_eject (drive, volume_or_drive_unmounted_callback, GINT_TO_POINTER (TRUE));
+			} else {
+				gnome_vfs_drive_unmount (drive, volume_or_drive_unmounted_callback, GINT_TO_POINTER (FALSE));
+			}
+		}
+	}
+	
+	nautilus_file_list_free (selection);
+}
+
+
+static void
 real_merge_menus (FMDirectoryView *view)
 {
 	BonoboUIVerb verbs [] = {
@@ -4683,6 +4810,8 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("Select Pattern", bonobo_menu_select_pattern_callback),
 		BONOBO_UI_VERB ("Properties", open_properties_window_callback),
 		BONOBO_UI_VERB ("Trash", trash_callback),
+		BONOBO_UI_VERB ("Mount Volume Conditional", mount_volume_callback),
+		BONOBO_UI_VERB ("Unmount Volume Conditional", unmount_volume_callback),
 		BONOBO_UI_VERB_END
 	};
 
@@ -4773,6 +4902,74 @@ file_list_all_can_use_components (GList *file_list)
 	}
 	return TRUE;
 }
+
+static void
+real_update_menus_volumes (FMDirectoryView *view,
+			   GList *selection,
+			   gint selection_count)
+{
+	NautilusFile *file;
+	gboolean show_mount;
+	gboolean show_unmount;
+	gboolean show_properties;
+	gboolean show_format;
+	gboolean show_protect;
+	gboolean unmount_is_eject;
+	GnomeVFSVolume *volume;
+	GnomeVFSDrive *drive;
+
+	show_mount = FALSE;
+	show_unmount = FALSE;
+	unmount_is_eject = FALSE;
+	show_properties = FALSE;
+	show_format = FALSE;
+	show_protect = FALSE;
+
+	if (selection_count == 1) {
+		file = NAUTILUS_FILE (selection->data);
+
+		if (nautilus_file_has_volume (file)) {
+			show_unmount = TRUE;
+
+			volume = nautilus_file_get_volume (file);
+			unmount_is_eject = eject_for_type (gnome_vfs_volume_get_device_type (volume));
+		} else if (nautilus_file_has_drive (file)) {
+			drive = nautilus_file_get_drive (file);
+			volume = gnome_vfs_drive_get_mounted_volume (drive);
+			if (volume == NULL) {
+				show_mount = TRUE;
+			} else {
+				show_unmount = TRUE;
+				unmount_is_eject = eject_for_type (gnome_vfs_drive_get_device_type (drive));
+			}
+
+			gnome_vfs_volume_unref (volume);
+		} 
+	}
+
+	nautilus_bonobo_set_hidden (view->details->ui,
+				    FM_DIRECTORY_VIEW_COMMAND_MOUNT_VOLUME_CONDITIONAL,
+				    !show_mount);
+	nautilus_bonobo_set_hidden (view->details->ui,
+				    FM_DIRECTORY_VIEW_COMMAND_UNMOUNT_VOLUME_CONDITIONAL,
+				    !show_unmount);
+	if (show_unmount) {
+		nautilus_bonobo_set_label (view->details->ui, 
+					   FM_DIRECTORY_VIEW_COMMAND_UNMOUNT_VOLUME_CONDITIONAL,
+					   unmount_is_eject? _("E_ject"):_("_Unmount Volume"));
+	}
+	
+	nautilus_bonobo_set_hidden (view->details->ui,
+				    FM_DIRECTORY_VIEW_COMMAND_PROTECT_VOLUME_CONDITIONAL,
+				    !show_protect);
+	nautilus_bonobo_set_hidden (view->details->ui,
+				    FM_DIRECTORY_VIEW_COMMAND_FORMAT_VOLUME_CONDITIONAL,
+				    !show_format);
+	nautilus_bonobo_set_hidden (view->details->ui,
+				    FM_DIRECTORY_VIEW_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL,
+				    !show_properties);
+}
+
 static void
 real_update_menus (FMDirectoryView *view)
 {
@@ -5003,6 +5200,10 @@ real_update_menus (FMDirectoryView *view)
 				       FM_DIRECTORY_VIEW_COMMAND_EDIT_LAUNCHER,
 				       selection_count == 1);
 
+
+
+	real_update_menus_volumes (view, selection, selection_count);
+	
 	bonobo_ui_component_thaw (view->details->ui, NULL);
 
 	nautilus_file_list_free (selection);

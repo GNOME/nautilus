@@ -43,7 +43,6 @@
 #include "nautilus-trash-directory.h"
 #include "nautilus-trash-file.h"
 #include "nautilus-vfs-file.h"
-#include "nautilus-volume-monitor.h"
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
@@ -57,6 +56,9 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-volume.h>
+#include <libgnomevfs/gnome-vfs-volume-monitor.h>
+#include <libgnomevfs/gnome-vfs-drive.h>
 #include <libxml/parser.h>
 #include <pwd.h>
 #include <stdlib.h>
@@ -828,6 +830,63 @@ nautilus_file_can_rename (NautilusFile *file)
 	nautilus_file_unref (parent);
 
 	return can_rename;
+}
+
+gboolean
+nautilus_file_has_volume (NautilusFile *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+	
+	return file->details->has_volume;
+}
+
+gboolean
+nautilus_file_has_drive (NautilusFile *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+	
+	return file->details->has_drive;
+}
+
+void
+nautilus_file_set_volume (NautilusFile *file,
+			  GnomeVFSVolume *volume)
+{
+	file->details->has_volume = volume != NULL;
+	gnome_vfs_volume_ref (volume);
+        g_object_set_data_full (G_OBJECT (file),
+				"nautilus_file_volume",
+				volume,
+				(GDestroyNotify)gnome_vfs_volume_unref);
+	
+}
+
+void
+nautilus_file_set_drive (NautilusFile *file,
+			 GnomeVFSDrive *drive)
+{
+	file->details->has_drive = drive != NULL;
+	gnome_vfs_drive_ref (drive);
+        g_object_set_data_full (G_OBJECT (file),
+				"nautilus_file_drive",
+				drive,
+				(GDestroyNotify)gnome_vfs_drive_unref);
+}
+
+
+GnomeVFSVolume *
+nautilus_file_get_volume (NautilusFile *file)
+{
+	return g_object_get_data (G_OBJECT (file),
+				  "nautilus_file_volume");
+
+}
+
+GnomeVFSDrive *
+nautilus_file_get_drive (NautilusFile *file)
+{
+	return g_object_get_data (G_OBJECT (file),
+				  "nautilus_file_drive");
 }
 
 static GnomeVFSURI *
@@ -1978,7 +2037,46 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 					 NautilusFileSortType sort_type)
 {
 	int compare;
+	GnomeVFSDrive *drive1, *drive2;
+	GnomeVFSVolume *volume1, *volume2;
 
+	if (file_1 == file_2) {
+		return 0;
+	}
+	
+	/* Always sort drives/volumes separately: */
+	if (file_1->details->has_drive != file_2->details->has_drive) {
+		if (file_1->details->has_drive) {
+			return -1;
+		} else {
+			return 1;
+		}
+	}
+	if (file_1->details->has_drive) {
+		drive1 = nautilus_file_get_drive (file_1);
+		drive2 = nautilus_file_get_drive (file_2);
+		compare = gnome_vfs_drive_compare (drive1, drive2);
+		if (compare != 0) {
+			return compare;
+		}
+	}
+	
+	if (file_1->details->has_volume != file_2->details->has_volume) {
+		if (file_1->details->has_volume) {
+			return -1;
+		} else {
+			return 1;
+		}
+	}
+	if (file_1->details->has_volume) {
+		volume1 = nautilus_file_get_volume (file_1);
+		volume2 = nautilus_file_get_volume (file_2);
+		compare = gnome_vfs_volume_compare (volume1, volume2);
+		if (compare != 0) {
+			return compare;
+		}
+	}
+	
 	switch (sort_type) {
 	case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
 		compare = compare_by_display_name (file_1, file_2);
@@ -4709,20 +4807,18 @@ nautilus_file_get_volume_name (NautilusFile *file)
 	char *local_path;
 	char *file_uri;
 	char *volume_name;
-	NautilusVolume *volume;
+	GnomeVFSVolume *volume;
 	file_uri = nautilus_file_get_uri (file);
 	
 	local_path = gnome_vfs_get_local_path_from_uri (file_uri);
-	volume = nautilus_volume_monitor_get_volume_for_path (nautilus_volume_monitor_get (), local_path);
+	volume = gnome_vfs_volume_monitor_get_volume_for_path (gnome_vfs_get_volume_monitor (), local_path);
 	
 	g_free (file_uri);
 	g_free (local_path);
 
 	if (volume != NULL) {
-		volume_name = nautilus_volume_get_name (volume);
-		if (volume_name == NULL) {
-			return g_strdup (nautilus_volume_get_mount_path (volume));
-		}
+		volume_name = gnome_vfs_volume_get_display_name (volume);
+		gnome_vfs_volume_unref (volume);
 		return volume_name;
 	} else {
 		return NULL;
@@ -5307,7 +5403,8 @@ nautilus_file_get_all_attributes (void)
 		NAUTILUS_FILE_ATTRIBUTE_METADATA |
 		NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE |
 		NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT |
-		NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
+		NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME |
+		NAUTILUS_FILE_ATTRIBUTE_VOLUMES;
 }
 
 void

@@ -179,6 +179,7 @@ update_info_from_link (NautilusDesktopIconFile *icon_file)
 	NautilusFile *file;
 	GnomeVFSFileInfo *file_info;
 	NautilusDesktopLink *link;
+	GnomeVFSVolume *volume;
 	
 	file = NAUTILUS_FILE (icon_file);
 	
@@ -204,6 +205,10 @@ update_info_from_link (NautilusDesktopIconFile *icon_file)
 		GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE |
 		GNOME_VFS_FILE_INFO_FIELDS_SIZE |
 		GNOME_VFS_FILE_INFO_FIELDS_LINK_COUNT;
+
+	volume = nautilus_desktop_link_get_volume (link);
+	nautilus_file_set_volume (file, volume);
+	gnome_vfs_volume_unref (volume);
 	
 	file->details->file_info_is_up_to_date = TRUE;
 

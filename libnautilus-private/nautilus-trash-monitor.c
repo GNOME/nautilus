@@ -38,6 +38,7 @@
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-volume-monitor.h>
 
 struct NautilusTrashMonitorDetails {
 	NautilusDirectory *trash_directory;
@@ -203,83 +204,73 @@ nautilus_trash_monitor_is_empty (void)
 	return nautilus_trash_monitor_get ()->details->empty;
 }
 
-static gboolean
-add_one_volume_trash (const NautilusVolume *volume,
-		      gpointer callback_data)
-{
-	char *uri_str;
-	GnomeVFSURI *volume_mount_point_uri;
-	GnomeVFSURI *trash_uri;
-	GList **result;
-	
-	result = (GList **) callback_data;
-
-	if (nautilus_volume_should_integrate_trash (volume)) {
-	
-		/* Get the uri of the volume mount point as the place
-		 * "near" which to look for trash on the given volume.
-		 */
-		uri_str = gnome_vfs_get_uri_from_local_path (nautilus_volume_get_mount_path (volume));
-		volume_mount_point_uri = gnome_vfs_uri_new (uri_str);
-		g_free (uri_str);
-
-		g_assert (volume_mount_point_uri != NULL);
-	
-		/* Look for trash. It is OK to use a sync call here because
-		 * the options we use (don't create, don't look for it if we
-		 * already don't know where it is) do not cause any IO.
-		 */
-		if (gnome_vfs_find_directory (volume_mount_point_uri,
-					      GNOME_VFS_DIRECTORY_KIND_TRASH, &trash_uri,
-					      FALSE, FALSE, 0777) == GNOME_VFS_OK) {
-			
-			/* found trash, put it on the list */
-			*result = g_list_prepend (*result, trash_uri);
-		}
-		
-		gnome_vfs_uri_unref (volume_mount_point_uri);
-	}
-
-	/* don't stop iterating */
-	return FALSE; 
-}
-
 GList *
 nautilus_trash_monitor_get_trash_directories (void)
 {
 	GList *result;
+	char *uri_str;
+	GnomeVFSURI *volume_mount_point_uri;
+	GnomeVFSURI *trash_uri;
+	GnomeVFSVolume *volume;
+	GList *l, *volumes;
 
 	result = NULL;
 
 	/* Collect the trash directories on all the mounted volumes. */
-	nautilus_volume_monitor_each_mounted_volume
-		(nautilus_volume_monitor_get (), add_one_volume_trash, &result);
-	
+	volumes = gnome_vfs_volume_monitor_get_mounted_volumes (gnome_vfs_get_volume_monitor ());
+	for (l = volumes; l != NULL; l = l->next) {
+		volume = l->data;
+		if (gnome_vfs_volume_handles_trash (volume)) {
+			
+			/* Get the uri of the volume mount point as the place
+			 * "near" which to look for trash on the given volume.
+			 */
+			uri_str = gnome_vfs_volume_get_activation_uri (volume);
+			volume_mount_point_uri = gnome_vfs_uri_new (uri_str);
+			g_free (uri_str);
+			
+			g_assert (volume_mount_point_uri != NULL);
+			
+			/* Look for trash. It is OK to use a sync call here because
+			 * the options we use (don't create, don't look for it if we
+			 * already don't know where it is) do not cause any IO.
+			 */
+			if (gnome_vfs_find_directory (volume_mount_point_uri,
+						      GNOME_VFS_DIRECTORY_KIND_TRASH, &trash_uri,
+						      FALSE, FALSE, 0777) == GNOME_VFS_OK) {
+				
+				/* found trash, put it on the list */
+				result = g_list_prepend (result, trash_uri);
+			}
+			
+			gnome_vfs_uri_unref (volume_mount_point_uri);
+		}
+		
+		gnome_vfs_volume_unref (volume);
+	}
+	g_list_free (volumes);
+		
 	return result;
-}
-
-static gboolean
-add_one_trash_directory_if_needed (const NautilusVolume *volume,
-				   gpointer callback_data)
-{
-	NautilusTrashMonitor *trash_monitor;
-
-	trash_monitor = NAUTILUS_TRASH_MONITOR (callback_data);
-	g_signal_emit (trash_monitor,
-			 signals[CHECK_TRASH_DIRECTORY_ADDED], 0,
-			 volume);
-	
-	return FALSE;
 }
 
 void 
 nautilus_trash_monitor_add_new_trash_directories (void)
 {
 	NautilusTrashMonitor *trash_monitor;
+	GList *l, *volumes;
+	GnomeVFSVolume *volume;
 
 	trash_monitor = nautilus_trash_monitor_get ();
-	nautilus_volume_monitor_each_mounted_volume
-		(nautilus_volume_monitor_get (), add_one_trash_directory_if_needed,
-		trash_monitor);
+	volumes = gnome_vfs_volume_monitor_get_mounted_volumes (gnome_vfs_get_volume_monitor ());
+	for (l = volumes; l != NULL; l = l->next) {
+		volume = l->data;
+
+		g_signal_emit (trash_monitor,
+			       signals[CHECK_TRASH_DIRECTORY_ADDED], 0,
+			       volume);
+		
+		gnome_vfs_volume_unref (volume);
+	}
+	g_list_free (volumes);
 }
 

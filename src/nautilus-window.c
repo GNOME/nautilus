@@ -1164,6 +1164,15 @@ compute_default_title (const char *text_uri)
 
 	if (text_uri == NULL) {
 		title = g_strdup ("");
+	} else if (strcmp (text_uri, "computer://") == 0 ||
+		   strcmp (text_uri, "computer:///") == 0) {
+		title = g_strdup (_("Computer"));
+	} else if (strcmp (text_uri, "network://") == 0 ||
+		   strcmp (text_uri, "network:///") == 0) {
+		title = g_strdup (_("Network"));
+	} else if (strcmp (text_uri, "fonts://") == 0 ||
+		   strcmp (text_uri, "fonts:///") == 0) {
+		title = g_strdup (_("Fonts"));
 	} else {
 		file = nautilus_file_get (text_uri);
 		title = nautilus_file_get_display_name (file);

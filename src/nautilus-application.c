@@ -65,6 +65,7 @@
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-volume-monitor.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
@@ -72,7 +73,6 @@
 #include <libnautilus-private/nautilus-sound.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
-#include <libnautilus-private/nautilus-volume-monitor.h>
 #include <libnautilus-private/nautilus-desktop-link-monitor.h>
 #include <libnautilus-private/nautilus-directory-private.h>
 #include <bonobo-activation/bonobo-activation.h>
@@ -97,8 +97,8 @@ static GList *nautilus_application_spatial_window_list;
 static gboolean need_to_show_first_time_druid     (void);
 static void     desktop_changed_callback          (gpointer                  user_data);
 static void     desktop_location_changed_callback (gpointer                  user_data);
-static void     volume_unmounted_callback         (NautilusVolumeMonitor    *monitor,
-						   NautilusVolume           *volume,
+static void     volume_unmounted_callback         (GnomeVFSVolumeMonitor    *monitor,
+						   GnomeVFSVolume           *volume,
 						   NautilusApplication      *application);
 static void     update_session                    (gpointer                  callback_data);
 static void     init_session                      (void);
@@ -170,7 +170,7 @@ nautilus_application_instance_init (NautilusApplication *application)
 	 * used anymore */
 
 	/* Watch for volume unmounts so we can close open windows */
-	g_signal_connect_object (nautilus_volume_monitor_get (), "volume_unmounted",
+	g_signal_connect_object (gnome_vfs_get_volume_monitor (), "volume_unmounted",
 				 G_CALLBACK (volume_unmounted_callback), application, 0);
 
 	nautilus_bonobo_register_activation_shortcut (NAUTILUS_ICON_VIEW_IID, create_object_shortcut, application);
@@ -1090,32 +1090,32 @@ window_can_be_closed (NautilusWindow *window)
  * It would also be cool to save open window and position info.
  */
 static void
-volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
+volume_unmounted_callback (GnomeVFSVolumeMonitor *monitor,
+			   GnomeVFSVolume *volume,
 			   NautilusApplication *application)
 {
 	GList *window_list, *node, *close_list;
 	NautilusWindow *window;
-	char *uri;
-	char *path;
+	char *uri, *activation_uri;
 		
 	close_list = NULL;
 	
 	/* Check and see if any of the open windows are displaying contents from the unmounted volume */
 	window_list = nautilus_application_get_window_list ();
-	
+
+	activation_uri = gnome_vfs_volume_get_activation_uri (volume);
 	/* Construct a list of windows to be closed. Do not add the non-closable windows to the list. */
 	for (node = window_list; node != NULL; node = node->next) {
 		window = NAUTILUS_WINDOW (node->data);
 		if (window != NULL && window_can_be_closed (window)) {
 			uri = nautilus_window_get_location (window);
-			path = gnome_vfs_get_local_path_from_uri (uri);
-			if (eel_str_has_prefix (path, nautilus_volume_get_mount_path (volume))) {
+			if (eel_str_has_prefix (uri, activation_uri)) {
 				close_list = g_list_prepend (close_list, window);
 			}
-			g_free (path);
 			g_free (uri);
 		}
 	}
+	g_free (activation_uri);
 		
 	/* Handle the windows in the close list. */
 	for (node = close_list; node != NULL; node = node->next) {

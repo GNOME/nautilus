@@ -95,7 +95,8 @@ nautilus_mime_actions_check_if_full_attributes_ready (NautilusFile *file)
 NautilusFileAttributes 
 nautilus_mime_actions_get_minimum_file_attributes (void)
 {
-	return NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI |
+	return NAUTILUS_FILE_ATTRIBUTE_VOLUMES |
+		NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI |
 		NAUTILUS_FILE_ATTRIBUTE_METADATA |
 		NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE;
 }

@@ -121,15 +121,13 @@ gboolean         nautilus_link_local_is_utf8                     (const char    
  * contents of a file already in memory.
  */
 char *           nautilus_link_local_get_link_uri                (const char       *uri);
-char *           nautilus_link_get_link_uri_given_file_contents  (const char       *uri,
-								  const char       *link_file_contents,
-								  int               link_file_size);
-char *           nautilus_link_get_link_name_given_file_contents (const char       *uri,
-								  const char       *file_contents,
-								  int               link_file_size);
-char *           nautilus_link_get_link_icon_given_file_contents (const char       *uri,
-								  const char       *file_contents,
-								  int               link_file_size);
+void           nautilus_link_get_link_info_given_file_contents (const char       *file_contents,
+								int               link_file_size,
+								char            **uri,
+								char            **name,
+								char            **icon,
+								gulong           *drive_id,
+								gulong           *volume_id);
 void             nautilus_link_local_create_from_gnome_entry     (GnomeDesktopItem *item,
 								  const char       *dest_uri,
 								  const GdkPoint   *position,

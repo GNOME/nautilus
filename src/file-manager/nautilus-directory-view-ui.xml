@@ -69,6 +69,21 @@
 	<cmd name="Trash"
          _label="Mo_ve to Trash"
 	 _tip="Move each selected item to the Trash"/>
+	<cmd name="Unmount Volume Conditional"
+         _label="_Unmount Volume"
+         _tip="Unmount the selected volume"/>
+	<cmd name="Mount Volume Conditional"
+         _label="_Mount Volume"
+         _tip="Mount the selected volume"/>
+        <cmd name="Format Conditional"
+         _label="_Format"
+         _tip="Format the selected volume"/>
+        <cmd name="Protect Conditional"
+         _label="Prot_ect"
+         _tip="Protect the selected volume"/>
+        <cmd name="Media Properties Conditional"
+         _label="Medi_a Properties"
+         _tip="Show media properties for the selected volume"/>
 </commands>
 <keybindings>
 	<accel name="*Control*BackSpace" verb="Trash"/>
@@ -274,6 +289,13 @@
                 <menuitem name="Properties"
                           pixtype="stock" pixname="gtk-properties"
                           verb="Properties"/>
+                <placeholder name="Removabel Media Holder" delimit="top">
+                        <menuitem name="Mount Volume" verb="Mount Volume Conditional"/>
+                        <menuitem name="Unmount Volume" verb="Unmount Volume Conditional"/>
+                        <menuitem name="Protect Media" verb="Protect Conditional"/>
+                        <menuitem name="Format Media" verb="Format Conditional"/>
+                        <menuitem name="Media Properties" verb="Media Properties Conditional"/>
+                </placeholder>
 	</popup>
 </popups>
 </Root>

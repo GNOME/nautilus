@@ -27,6 +27,7 @@
 
 #include <gtk/gtkobject.h>
 #include <libgnomevfs/gnome-vfs-types.h>
+#include <libgnomevfs/gnome-vfs-volume.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 
 /* NautilusFile is an object used to represent a single element of a
@@ -188,6 +189,12 @@ gboolean                nautilus_file_can_read                          (Nautilu
 gboolean                nautilus_file_can_write                         (NautilusFile                   *file);
 gboolean                nautilus_file_can_execute                       (NautilusFile                   *file);
 gboolean                nautilus_file_can_rename                        (NautilusFile                   *file);
+
+/* Volumes. */
+gboolean                nautilus_file_has_volume                        (NautilusFile                   *file);
+gboolean                nautilus_file_has_drive                         (NautilusFile                   *file);
+GnomeVFSVolume *        nautilus_file_get_volume                        (NautilusFile                   *file);
+GnomeVFSDrive *         nautilus_file_get_drive                         (NautilusFile                   *file);
 
 /* Basic operations for file objects. */
 void                    nautilus_file_set_owner                         (NautilusFile                   *file,

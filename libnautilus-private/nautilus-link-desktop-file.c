@@ -368,59 +368,38 @@ nautilus_link_desktop_file_local_get_link_uri (const char *uri)
 	return retval;
 }
 
-char *
-nautilus_link_desktop_file_get_link_uri_given_file_contents (const char *uri,
-							     const char *link_file_contents,
-							     int         link_file_size)
+void
+nautilus_link_desktop_file_get_link_info_given_file_contents (const char        *file_contents,
+							      int                link_file_size,
+							      char             **uri,
+							      char             **name,
+							      char             **icon,
+							      gulong            *drive_id,
+							      gulong            *volume_id)
 {
 	GnomeDesktopItem *desktop_file;
-	char *retval;
+	const char *id;
 
-	desktop_file = gnome_desktop_item_new_from_string (uri, link_file_contents, link_file_size, 0, NULL);
+	desktop_file = gnome_desktop_item_new_from_string (NULL, file_contents, link_file_size, 0, NULL);
 	if (desktop_file == NULL) {
-		return NULL; 
+		return; 
 	}
-	retval = nautilus_link_desktop_file_get_link_uri_from_desktop (desktop_file);
+	
+	*uri = nautilus_link_desktop_file_get_link_uri_from_desktop (desktop_file);
+	*name = nautilus_link_desktop_file_get_link_name_from_desktop (desktop_file);
+	*icon = nautilus_link_desktop_file_get_link_icon_from_desktop (desktop_file);
 
-	gnome_desktop_item_unref (desktop_file);
-	return retval;
-}
-
-char *
-nautilus_link_desktop_file_get_link_name_given_file_contents (const char *uri,
-							      const char *link_file_contents,
-							      int         link_file_size)
-{
-	GnomeDesktopItem *desktop_file;
-	char *retval;
-
-	desktop_file = gnome_desktop_item_new_from_string (uri, link_file_contents, link_file_size, 0, NULL);
-	if (desktop_file == NULL) {
-		return NULL; 
+	id = gnome_desktop_item_get_string (desktop_file, "X-Gnome-Volume");
+	if (id != NULL) {
+		*volume_id = atol (id);
 	}
-	retval = nautilus_link_desktop_file_get_link_name_from_desktop (desktop_file);
 
-	gnome_desktop_item_unref (desktop_file);
-	return retval;
-}
-
-
-char *
-nautilus_link_desktop_file_get_link_icon_given_file_contents (const char *uri,
-							      const char *link_file_contents,
-							      int         link_file_size)
-{
-	GnomeDesktopItem *desktop_file;
-	char *retval;
-
-	desktop_file = gnome_desktop_item_new_from_string (uri, link_file_contents, link_file_size, 0, NULL);
-	if (desktop_file == NULL) {
-		return NULL; 
+	id = gnome_desktop_item_get_string (desktop_file, "X-Gnome-Drive");
+	if (id != NULL) {
+		*drive_id = atol (id);
 	}
-	retval = nautilus_link_desktop_file_get_link_icon_from_desktop (desktop_file);
-
+	
 	gnome_desktop_item_unref (desktop_file);
-	return retval;
 }
 
 

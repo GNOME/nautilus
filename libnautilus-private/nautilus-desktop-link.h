@@ -26,7 +26,7 @@
 #define NAUTILUS_DESKTOP_LINK_H
 
 #include <libnautilus-private/nautilus-file.h>
-#include <libnautilus-private/nautilus-volume-monitor.h>
+#include <libgnomevfs/gnome-vfs-volume.h>
 
 #define NAUTILUS_TYPE_DESKTOP_LINK \
 	(nautilus_desktop_link_get_type ())
@@ -59,7 +59,7 @@ typedef enum {
 GType   nautilus_desktop_link_get_type (void);
 
 NautilusDesktopLink *   nautilus_desktop_link_new                (NautilusDesktopLinkType  type);
-NautilusDesktopLink *   nautilus_desktop_link_new_from_volume    (const NautilusVolume    *volume);
+NautilusDesktopLink *   nautilus_desktop_link_new_from_volume    (GnomeVFSVolume          *volume);
 NautilusDesktopLinkType nautilus_desktop_link_get_link_type      (NautilusDesktopLink     *link);
 char *                  nautilus_desktop_link_get_file_name      (NautilusDesktopLink     *link);
 char *                  nautilus_desktop_link_get_display_name   (NautilusDesktopLink     *link);
@@ -68,7 +68,7 @@ char *                  nautilus_desktop_link_get_activation_uri (NautilusDeskto
 gboolean                nautilus_desktop_link_get_date           (NautilusDesktopLink     *link,
 								  NautilusDateType         date_type,
 								  time_t                  *date);
-char *                  nautilus_desktop_link_get_mount_path     (NautilusDesktopLink     *link);
+GnomeVFSVolume *        nautilus_desktop_link_get_volume         (NautilusDesktopLink     *link);
 
 gboolean                nautilus_desktop_link_can_rename         (NautilusDesktopLink     *link);
 gboolean                nautilus_desktop_link_rename             (NautilusDesktopLink     *link,

@@ -28,7 +28,6 @@
 
 #include "nautilus-directory-private.h"
 #include "nautilus-trash-monitor.h"
-#include "nautilus-volume-monitor.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <gtk/gtkmain.h>
@@ -36,6 +35,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-volume-monitor.h>
 
 struct NautilusTrashDirectoryDetails {
 	GHashTable *volumes;
@@ -43,14 +43,14 @@ struct NautilusTrashDirectoryDetails {
 
 typedef struct {
 	NautilusTrashDirectory *trash;
-	NautilusVolume *volume;
+	GnomeVFSVolume *volume;
 
 	GnomeVFSAsyncHandle *handle;
 	NautilusDirectory *real_directory;
 } TrashVolume;
 
 static void add_volume (NautilusTrashDirectory *trash,
-			NautilusVolume         *volume);
+			GnomeVFSVolume         *volume);
 
 GNOME_CLASS_BOILERPLATE (NautilusTrashDirectory, nautilus_trash_directory,
 			 NautilusMergedDirectory, NAUTILUS_TYPE_MERGED_DIRECTORY)
@@ -131,12 +131,11 @@ find_directory_callback (GnomeVFSAsyncHandle *handle,
 
 static gboolean
 get_trash_volume (NautilusTrashDirectory *trash,
-		  NautilusVolume *volume,
+		  GnomeVFSVolume *volume,
 		  TrashVolume **trash_volume,
 		  GnomeVFSURI **volume_mount_uri)
 {
 	char *uri_str;
-	NautilusVolume *volume_copy;
 
 	/* Quick out if we already know about this volume. */
 	*trash_volume = g_hash_table_lookup (trash->details->volumes,
@@ -146,11 +145,11 @@ get_trash_volume (NautilusTrashDirectory *trash,
 		return FALSE;
 	}
 
-	if (!nautilus_volume_should_integrate_trash (volume)) {
+	if (!gnome_vfs_volume_handles_trash (volume)) {
 		return FALSE;
 	}
-
-	uri_str = gnome_vfs_get_uri_from_local_path (nautilus_volume_get_mount_path (volume));
+	
+	uri_str = gnome_vfs_volume_get_activation_uri (volume);
 	*volume_mount_uri = gnome_vfs_uri_new (uri_str);
 	g_free (uri_str);
 
@@ -158,9 +157,8 @@ get_trash_volume (NautilusTrashDirectory *trash,
 		/* Make the structure used to track the trash for this volume. */
 		*trash_volume = g_new0 (TrashVolume, 1);
 		(*trash_volume)->trash = trash;
-		volume_copy = nautilus_volume_copy (volume);
-		(*trash_volume)->volume = volume_copy;
-		g_hash_table_insert (trash->details->volumes, volume_copy, *trash_volume);
+		(*trash_volume)->volume = gnome_vfs_volume_ref (volume);
+		g_hash_table_insert (trash->details->volumes, volume, *trash_volume);
 	}
 	
 	return TRUE;
@@ -168,7 +166,7 @@ get_trash_volume (NautilusTrashDirectory *trash,
 
 static void
 add_volume (NautilusTrashDirectory *trash,
-	    NautilusVolume *volume)
+	    GnomeVFSVolume *volume)
 {
 	TrashVolume *trash_volume;
 	GnomeVFSURI *volume_mount_uri;
@@ -202,7 +200,7 @@ add_volume (NautilusTrashDirectory *trash,
 
 static void
 check_trash_created (NautilusTrashDirectory *trash,
-		     NautilusVolume *volume)
+		     GnomeVFSVolume *volume)
 {
 	GnomeVFSResult result;
 	TrashVolume *trash_volume;
@@ -258,13 +256,13 @@ remove_trash_volume (TrashVolume *trash_volume, gboolean finalizing)
 		}
 		nautilus_directory_unref (trash_volume->real_directory);
 	}
-	nautilus_volume_free (trash_volume->volume);
+	gnome_vfs_volume_unref (trash_volume->volume);
 	g_free (trash_volume);
 }
 
 static void
 remove_volume (NautilusTrashDirectory *trash,
-	       NautilusVolume *volume)
+	       GnomeVFSVolume *volume)
 {
 	TrashVolume *trash_volume;
 
@@ -275,36 +273,26 @@ remove_volume (NautilusTrashDirectory *trash,
 	}
 }
 
-static gboolean
-add_one_volume (const NautilusVolume *volume,
-		gpointer callback_data)
-{
-	/* The const is a kinda silly idea which we must cast away. */
-	add_volume (NAUTILUS_TRASH_DIRECTORY (callback_data),
-		    (NautilusVolume *) volume);
-	return FALSE; /* don't stop iterating */
-}
-
 static void
-check_trash_directory_added_callback (NautilusVolumeMonitor *monitor,
-			 NautilusVolume *volume,
-			 NautilusTrashDirectory *trash)
+check_trash_directory_added_callback (GnomeVFSVolumeMonitor *monitor,
+				      GnomeVFSVolume *volume,
+				      NautilusTrashDirectory *trash)
 {
 	check_trash_created (trash, volume);
 }
 
 static void
-volume_unmount_started_callback (NautilusVolumeMonitor *monitor,
-			   NautilusVolume *volume,
-			   NautilusTrashDirectory *trash)
+volume_unmount_started_callback (GnomeVFSVolumeMonitor *monitor,
+				 GnomeVFSVolume *volume,
+				 NautilusTrashDirectory *trash)
 {
 	remove_volume (trash, volume);
 }
 
 static void
-volume_mounted_callback (NautilusVolumeMonitor *monitor,
-			   NautilusVolume *volume,
-			   NautilusTrashDirectory *trash)
+volume_mounted_callback (GnomeVFSVolumeMonitor *monitor,
+			 GnomeVFSVolume *volume,
+			 NautilusTrashDirectory *trash)
 {
 	add_volume (trash, volume);
 }
@@ -312,17 +300,16 @@ volume_mounted_callback (NautilusVolumeMonitor *monitor,
 static void
 nautilus_trash_directory_instance_init (NautilusTrashDirectory *trash)
 {
-	NautilusVolumeMonitor *volume_monitor;
+	GnomeVFSVolumeMonitor *volume_monitor;
 
 	trash->details = g_new0 (NautilusTrashDirectoryDetails, 1);
-	trash->details->volumes = g_hash_table_new ((GHashFunc)nautilus_volume_hash,
-						    (GEqualFunc)nautilus_volume_is_equal);
+	trash->details->volumes = g_hash_table_new (NULL, NULL);
 
-	volume_monitor = nautilus_volume_monitor_get ();
+	volume_monitor = gnome_vfs_get_volume_monitor ();
 
 	g_signal_connect_object (volume_monitor, "volume_mounted",
 				 G_CALLBACK (volume_mounted_callback), trash, 0);
-	g_signal_connect_object (volume_monitor, "volume_unmount_started",
+	g_signal_connect_object (volume_monitor, "volume_pre_unmount",
 				 G_CALLBACK (volume_unmount_started_callback), trash, 0);
 }
 
@@ -334,14 +321,20 @@ nautilus_trash_directory_instance_init (NautilusTrashDirectory *trash)
 void
 nautilus_trash_directory_finish_initializing (NautilusTrashDirectory *trash)
 {
-	NautilusVolumeMonitor *volume_monitor;
+	GnomeVFSVolumeMonitor *volume_monitor;
+	GList *volumes, *l;
 	
-	volume_monitor = nautilus_volume_monitor_get ();
+	volume_monitor = gnome_vfs_get_volume_monitor ();
 
 	g_signal_connect_object (nautilus_trash_monitor_get (), "check_trash_directory_added",
 				 G_CALLBACK (check_trash_directory_added_callback), trash, 0);
-	nautilus_volume_monitor_each_mounted_volume
-		(volume_monitor, add_one_volume, trash);
+
+	volumes = gnome_vfs_volume_monitor_get_mounted_volumes (volume_monitor);
+	for (l = volumes; l != NULL; l = l->next) {
+		add_volume (trash, l->data);
+		gnome_vfs_volume_unref (l->data);
+	}
+	g_list_free (volumes);
 }
 
 static void

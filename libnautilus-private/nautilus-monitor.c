@@ -28,11 +28,11 @@
 #include "nautilus-monitor.h"
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-file-utilities.h"
-#include "nautilus-volume-monitor.h"
 
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
+#include <libgnomevfs/gnome-vfs-volume-monitor.h>
 
 struct NautilusMonitor {
 	GnomeVFSMonitorHandle *handle;
@@ -69,17 +69,19 @@ nautilus_monitor_active (void)
 static gboolean
 path_is_on_readonly_volume (const char *path)
 {
-	NautilusVolumeMonitor *volume_monitor;
-	NautilusVolume *volume;
+	GnomeVFSVolumeMonitor *volume_monitor;
+	GnomeVFSVolume *volume;
+	gboolean res;
 
-	volume_monitor = nautilus_volume_monitor_get ();
-	volume = nautilus_volume_monitor_get_volume_for_path (volume_monitor, 
-							      path);
+	volume_monitor = gnome_vfs_get_volume_monitor ();
+	volume = gnome_vfs_volume_monitor_get_volume_for_path (volume_monitor, 
+							       path);
+	res = FALSE;
 	if (volume != NULL) {
-		return nautilus_volume_is_read_only (volume);
-	} else {
-		return FALSE;
+		res = gnome_vfs_volume_is_read_only (volume);
+		gnome_vfs_volume_unref (volume);
 	}
+	return res;
 }
 
 static gboolean call_consume_changes_idle_id = 0;

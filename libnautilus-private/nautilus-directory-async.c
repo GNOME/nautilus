@@ -40,6 +40,7 @@
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-mime-monitor.h>
+#include <libgnomevfs/gnome-vfs-volume-monitor.h>
 #include <libxml/parser.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -119,7 +120,9 @@ static void     link_info_done              (NautilusDirectory      *directory,
 					     NautilusFile           *file,
 					     const char             *uri,
 					     const char             *name, 
-					     const char             *icon);
+					     const char             *icon,
+					     gulong                  drive_id,
+					     gulong                  volume_id);
 static gboolean file_needs_high_priority_work_done (NautilusDirectory *directory,
 						    NautilusFile      *file);
 static gboolean file_needs_low_priority_work_done  (NautilusDirectory *directory,
@@ -537,6 +540,10 @@ nautilus_directory_set_up_request (Request *request,
 	
 	if (file_attributes & NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI) {
 		request->file_info = TRUE;
+		request->link_info = TRUE;
+	}
+	
+	if (file_attributes & NAUTILUS_FILE_ATTRIBUTE_VOLUMES) {
 		request->link_info = TRUE;
 	}
 
@@ -1727,7 +1734,7 @@ lacks_link_info (NautilusFile *file)
 			should_look_for_dot_directory_file (file)) {
 			return TRUE;
 		} else {
-			link_info_done (file->details->directory, file, NULL, NULL, NULL);
+			link_info_done (file->details->directory, file, NULL, NULL, NULL, 0, 0);
 			return FALSE;
 		}
 	} else {
@@ -2887,8 +2894,14 @@ link_info_done (NautilusDirectory *directory,
 		NautilusFile *file,
 		const char *uri,
 		const char *name, 
-		const char *icon)
+		const char *icon,
+		gulong drive_id,
+		gulong volume_id)
 {
+	GnomeVFSVolumeMonitor *monitor;
+	GnomeVFSVolume *volume;
+	GnomeVFSDrive *drive;
+	
 	file->details->link_info_is_up_to_date = TRUE;
 
 	file->details->got_link_info = TRUE;
@@ -2900,6 +2913,22 @@ link_info_done (NautilusDirectory *directory,
 	file->details->custom_icon = g_strdup (icon);
  	nautilus_file_clear_cached_display_name (file);
 
+	volume = NULL;
+	if (volume_id != 0) {
+		monitor = gnome_vfs_get_volume_monitor ();
+		volume = gnome_vfs_volume_monitor_get_volume_by_id (monitor, volume_id);
+	}
+	nautilus_file_set_volume (file, volume);
+	gnome_vfs_volume_unref (volume);
+	
+	drive = NULL;
+	if (drive_id != 0) {
+		monitor = gnome_vfs_get_volume_monitor ();
+		drive = gnome_vfs_volume_monitor_get_drive_by_id (monitor, drive_id);
+	}
+	nautilus_file_set_drive (file, drive);
+	gnome_vfs_drive_unref (drive);
+	
 	nautilus_directory_async_state_changed (directory);
 }
 
@@ -2914,7 +2943,9 @@ static void
 link_info_read_done (NautilusDirectory *directory,
 		     const char *uri,
 		     const char *name,
-		     const char *icon)
+		     const char *icon,
+		     gulong drive_id,
+		     gulong volume_id)
 {
 	NautilusFile *file;
 
@@ -2923,7 +2954,7 @@ link_info_read_done (NautilusDirectory *directory,
 	directory->details->link_info_read_state = NULL;
 
 	nautilus_file_ref (file);
-	link_info_done (directory, file, uri, name, icon);
+	link_info_done (directory, file, uri, name, icon, drive_id, volume_id);
 	nautilus_file_changed (file);
 
 	if (!should_read_link_info_sync (file)) {
@@ -2942,6 +2973,7 @@ link_info_nautilus_link_read_callback (GnomeVFSResult result,
 {
 	NautilusDirectory *directory;
 	char *buffer, *uri, *name, *icon;
+	gulong drive_id, volume_id;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
@@ -2954,17 +2986,17 @@ link_info_nautilus_link_read_callback (GnomeVFSResult result,
 		uri = NULL;
 		name = NULL;
 		icon = NULL;
+		volume_id = drive_id = 0;
 	} else {
 		/* The libxml parser requires a zero-terminated array. */
 		buffer = g_realloc (file_contents, bytes_read + 1);
 		buffer[bytes_read] = '\0';
-		uri = nautilus_link_get_link_uri_given_file_contents (NULL, buffer, bytes_read);
-                name = nautilus_link_get_link_name_given_file_contents (NULL, buffer, bytes_read);
-                icon = nautilus_link_get_link_icon_given_file_contents (NULL, buffer, bytes_read);
+		nautilus_link_get_link_info_given_file_contents (buffer, bytes_read,
+								 &uri, &name, &icon, &drive_id, &volume_id);
 		g_free (buffer);
 	}
 
-	link_info_read_done (directory, uri, name, icon);
+	link_info_read_done (directory, uri, name, icon, drive_id, volume_id);
 	g_free (uri);
 	g_free (name);
 	g_free (icon);
@@ -3065,7 +3097,7 @@ link_info_start (NautilusDirectory *directory,
 	
 	/* If it's not a link we are done. If it is, we need to read it. */
 	if (!(nautilus_style_link || (is_directory && dot_directory_uri != NULL) )) {
-		link_info_done (directory, file, NULL, NULL, NULL);
+		link_info_done (directory, file, NULL, NULL, NULL, 0, 0);
 	} else if (should_read_link_info_sync (file)) {
 		directory->details->link_info_read_state = g_new0 (LinkInfoReadState, 1);
 		directory->details->link_info_read_state->file = file;

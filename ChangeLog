@@ -1,3 +1,56 @@
+2003-11-05  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Require new gnome-vfs
+	
+	* components/tree/nautilus-tree-view.c:
+	* libnautilus-private/nautilus-desktop-link-monitor.c:
+	* libnautilus-private/nautilus-desktop-link.[ch]:
+	* libnautilus-private/nautilus-monitor.c:
+	* libnautilus-private/nautilus-trash-directory.c:
+	* libnautilus-private/nautilus-trash-monitor.[ch]:
+	* src/nautilus-application.c:
+	Use gnome-vfs-volume-manager instead of nautilus-volume-manager.c
+	
+	* libnautilus-private/nautilus-desktop-icon-file.c:
+	Set the volume on the nautilusfile
+	
+	* libnautilus-private/nautilus-directory-async.c:
+	Load volume info from link
+	
+	* libnautilus-private/nautilus-file-attributes.h:
+	* libnautilus-private/nautilus-mime-actions.c:
+	Add new VOLUMES attribute
+	
+	* libnautilus-private/nautilus-file-private.h:
+	Add has_volume and has_drive to NautilusFile
+	
+	* libnautilus-private/nautilus-file.[ch]:
+	Add has_volume and has_drive to NautilusFile
+	Volumes/drives are sorted separately
+
+	* libnautilus-private/nautilus-link-desktop-file.[ch]:
+	* libnautilus-private/nautilus-link.[ch]:
+	Read drive and volume id from links
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	* src/file-manager/nautilus-desktop-icon-view-ui.xml:
+	Remove volume ops. Remove disks menu
+	
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Implement volume ops using gnome-vfs
+	
+	* src/file-manager/fm-properties-window.c:
+	Handle drives/volumes
+	
+	* src/nautilus-window.c:
+	Make a nicer title for some specific locations
+
+	* libnautilus-private/nautilus-volume-monitor.[ch]:
+	* libnautilus-private/Makefile.am
+	remove this old crap
+
 2003-11-03  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-bonobo-extensions.h:

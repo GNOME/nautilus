@@ -59,7 +59,6 @@
 #include <libnautilus-private/nautilus-monitor.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
-#include <libnautilus-private/nautilus-volume-monitor.h>
 #include <limits.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -93,25 +92,15 @@ struct FMDesktopIconViewDetails
 	gboolean pending_rescan;
 };
 
-typedef struct {
-	FMDesktopIconView *view;
-	char *mount_path;
-} MountParameters;
-
 static void     fm_desktop_icon_view_init                   (FMDesktopIconView      *desktop_icon_view);
 static void     fm_desktop_icon_view_class_init             (FMDesktopIconViewClass *klass);
 static void     default_zoom_level_changed                        (gpointer                user_data);
-static void     removable_volumes_changed_callback                (NautilusVolumeMonitor  *monitor,
-                                                                   FMDesktopIconView      *icon_view);
 static gboolean real_supports_auto_layout                         (FMIconView             *view);
 static gboolean real_supports_keep_aligned                        (FMIconView             *view);
 static gboolean real_supports_labels_beside_icons                 (FMIconView             *view);
 static void     real_merge_menus                                  (FMDirectoryView        *view);
 static void     real_update_menus                                 (FMDirectoryView        *view);
 static gboolean real_supports_zooming                             (FMDirectoryView        *view);
-static void     update_disks_menu                                 (FMDesktopIconView      *view);
-static gboolean	volume_link_is_selection 			  (FMDirectoryView 	  *view);
-static NautilusDeviceType volume_link_device_type                 (FMDirectoryView        *view);
 static void     fm_desktop_icon_view_update_icon_container_fonts  (FMDesktopIconView      *view);
 
 EEL_CLASS_BOILERPLATE (FMDesktopIconView,
@@ -539,9 +528,6 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 
 	g_signal_connect_object (icon_container, "middle_click",
 				 G_CALLBACK (fm_desktop_icon_view_handle_middle_click), desktop_icon_view, 0);
-	g_signal_connect_object (nautilus_volume_monitor_get (), "removable_volumes_changed",
-	                         G_CALLBACK (removable_volumes_changed_callback),
-	                         desktop_icon_view, 0);
 	g_signal_connect_object (desktop_icon_view, "realize",
 				 G_CALLBACK (realized_callback), desktop_icon_view, 0);
 	g_signal_connect_object (desktop_icon_view, "unrealize",
@@ -620,166 +606,6 @@ reset_background_callback (BonoboUIComponent *component,
 }
 
 static gboolean
-have_volume_format_app (void)
-{
-	static int have_app = -1;
-	char *app;
-
-	if (have_app < 0) {
-		app = g_find_program_in_path ("gmedia_format");
-		if (app == NULL) {
-			app = g_find_program_in_path ("gfloppy");
-		}
-		have_app = (app != NULL);
-		g_free (app);
-	}
-	return have_app;
-}
-
-static gboolean
-have_volume_properties_app (void)
-{
-	static int have_app = -1;
-	char *app;
-
-	if (have_app < 0) {
-		app = g_find_program_in_path ("gmedia_prop");
-		have_app = (app != NULL);
-		g_free (app);
-	}
-	return have_app;
-}
-
-static gboolean
-have_volume_protection_app (void)
-{
-	static int have_app = -1;
-	char *app;
-
-	if (have_app < 0) {
-		app = g_find_program_in_path ("gmedia_prot");
-		have_app = (app != NULL);
-		g_free (app);
-	}
-	return have_app;
-}
-
-static void
-volume_ops_callback (BonoboUIComponent *component, gpointer data, const char *verb)
-{
-        FMDirectoryView *view;
-	char *mount_path;
-	GList *selection;
-	char *command;
-	const char *device_path;
-	char *rawdevice_path, *quoted_path;
-	char *program;
-	NautilusVolume *volume;
-	gboolean status;
-	GError *error;
-	GtkWidget *dialog;
-	GdkScreen *screen;
-	NautilusDesktopLink *link;
-
-        g_assert (FM_IS_DIRECTORY_VIEW (data));
-        
-        view = FM_DIRECTORY_VIEW (data);
-        
-	if (!volume_link_is_selection (view)) {
-		return;       
-	}
-              
-	selection = fm_directory_view_get_selection (view);
-
-	link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (selection->data));
-	mount_path = nautilus_desktop_link_get_mount_path (link);
-	g_object_unref (link);
-	
-	if (mount_path == NULL) {
-		nautilus_file_list_free (selection);
-		return;
-	}
-	
-
-	volume = nautilus_volume_monitor_get_volume_for_path (nautilus_volume_monitor_get (), mount_path);
-	device_path = nautilus_volume_get_device_path (volume);
-	if (device_path == NULL) {
-		g_free (mount_path);
-		nautilus_file_list_free (selection);
-		return;
-	}
-		
-	/* Solaris specif cruft: */
-	if (eel_str_has_prefix (device_path, "/vol/dev/")) {
-		rawdevice_path = g_strconcat ("/vol/dev/r",
-					device_path + strlen ("/vol/dev/"),
-					NULL);
-	} else {
-		rawdevice_path = g_strdup (device_path);
-	}
-	
-	quoted_path = g_shell_quote (rawdevice_path);
-	g_free (rawdevice_path);
-	rawdevice_path = quoted_path;
-		
-	if (strcmp (verb, "Unmount Volume Conditional") == 0) {
-		nautilus_volume_monitor_mount_unmount_removable (nautilus_volume_monitor_get (),
-								 mount_path, FALSE, TRUE);
-	} else {
-		command = NULL;
-		
-		if (strcmp (verb, "Format Conditional") == 0) {
-			program = g_find_program_in_path ("gmedia_format");
-			if (program != NULL) {
-				command = g_strdup_printf ("%s -d %s", program, rawdevice_path);
-				g_free (program);
-			} else {
-				program = g_find_program_in_path ("gfloppy");
-				if (program != NULL) {
-					command = g_strdup_printf ("%s --device %s", program, device_path);
-					g_free (program);
-				}
-			}
-		} else if (strcmp (verb, "Media Properties Conditional") == 0) {
-			program = g_find_program_in_path ("gmedia_prop");
-			if (program) {
-				command = g_strdup_printf ("%s %s", program, rawdevice_path);
-				g_free (program);
-			} 
-		} else if (strcmp (verb, "Protect Conditional") == 0) {
-			program = g_find_program_in_path ("gmedia_prot");
-			if (program) {
-				command = g_strdup_printf ("%s %s", program, rawdevice_path);
-				g_free (program);
-			} 
-		}
-
-		if (command) {
-			error = NULL;
-
-			screen = gtk_widget_get_screen (GTK_WIDGET (view));
-
-			status = egg_screen_execute_command_line_async (screen, command, &error);
-			if (!status) {
-				dialog = gtk_message_dialog_new (NULL, 0,
-								 GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, 
-								 _("Error executing utility program '%s': %s"), command, error->message);
-				g_signal_connect (G_OBJECT (dialog), "response", 
-						  G_CALLBACK (gtk_widget_destroy), NULL);
-				gtk_window_set_screen (GTK_WINDOW (dialog), screen);
-				gtk_widget_show (dialog);
-				g_error_free (error);
-			}
-			g_free (command);
-		}
-	}
-	
-	g_free (rawdevice_path);
-	g_free (mount_path);
-	nautilus_file_list_free (selection);
-}
-
-static gboolean
 trash_link_is_selection (FMDirectoryView *view)
 {
 	GList *selection;
@@ -804,196 +630,12 @@ trash_link_is_selection (FMDirectoryView *view)
 	return result;
 }
 
-static gboolean
-volume_link_is_selection (FMDirectoryView *view)
-{
-	GList *selection;
-	NautilusDesktopLink *link;
-	gboolean result;
-
-	result = FALSE;
-	
-	selection = fm_directory_view_get_selection (view);
-
-	if (eel_g_list_exactly_one_item (selection) &&
-	    NAUTILUS_IS_DESKTOP_ICON_FILE (selection->data)) {
-		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (selection->data));
-		if (nautilus_desktop_link_get_link_type (link) == NAUTILUS_DESKTOP_LINK_VOLUME) {
-			result = TRUE;
-		}
-		g_object_unref (link);
-	}
-	
-	nautilus_file_list_free (selection);
-
-	return result;
-}
-
-/*
- *  Returns Device Type for device icon on desktop
- */
-
-static NautilusDeviceType
-volume_link_device_type (FMDirectoryView *view)
-{
-	GList *selection;
-	gchar *mount_path;
-	NautilusVolume *volume;
-	NautilusDesktopLink *link;
-
-	selection = fm_directory_view_get_selection (view);
-
-	if (selection == NULL) {
-		return NAUTILUS_DEVICE_UNKNOWN;
-	}
-
-	link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (selection->data));
-	mount_path = nautilus_desktop_link_get_mount_path (link);
-	volume = nautilus_volume_monitor_get_volume_for_path (nautilus_volume_monitor_get (), mount_path);
-	g_free (mount_path);
-	nautilus_file_list_free (selection);
-	g_object_unref (link);
-
-	if (volume != NULL)
-		return nautilus_volume_get_device_type (volume);
-
-	return NAUTILUS_DEVICE_UNKNOWN;
-}
-
-static void
-removable_volumes_changed_callback (NautilusVolumeMonitor *monitor,
-				    FMDesktopIconView *icon_view)
-{
-	update_disks_menu (icon_view);
-}
-
-static MountParameters *
-mount_parameters_new (FMDesktopIconView *view, const char *mount_path)
-{
-	MountParameters *new_parameters;
-
-	g_assert (FM_IS_DESKTOP_ICON_VIEW (view));
-	g_assert (!eel_str_is_empty (mount_path)); 
-
-	new_parameters = g_new (MountParameters, 1);
-	new_parameters->view = view;
-	new_parameters->mount_path = g_strdup (mount_path);
-
-	return new_parameters;
-}
-
-static void
-mount_parameters_free (MountParameters *parameters)
-{
-	g_assert (parameters != NULL);
-
-	g_free (parameters->mount_path);
-	g_free (parameters);
-}
-
-static void
-mount_parameters_free_wrapper (gpointer user_data, GClosure *closure)
-{
-	mount_parameters_free ((MountParameters *)user_data);
-}
-
-static void
-mount_or_unmount_removable_volume (BonoboUIComponent *component,
-	       			   const char *path,
-	       			   Bonobo_UIComponent_EventType type,
-	       			   const char *state,
-	       			   gpointer user_data)
-{
-	MountParameters *parameters;
-	gboolean mount;
-
-	g_assert (BONOBO_IS_UI_COMPONENT (component));
-
-	if (strcmp (state, "") == 0) {
-		/* State goes blank when component is removed; ignore this. */
-		return;
-	}
-
-	parameters = (MountParameters *) user_data;
-	mount = (strcmp (state, "1") == 0);
-	nautilus_volume_monitor_mount_unmount_removable 
-		(nautilus_volume_monitor_get (),
-		 parameters->mount_path,
-		 mount, !mount);
-	update_disks_menu (parameters->view);
-}
-
-/* Fill in the context menu with an item for each disk that is or could be mounted */
-static void
-update_disks_menu (FMDesktopIconView *view)
-{
-	const GList *disk_list, *element;
-	guint index;
-	char *name;
-	char *command_name;
-	char *command_path;
-	NautilusVolume *volume;
-	
-	/* Clear any previously inserted items */
-	nautilus_bonobo_remove_menu_items_and_commands
-		(view->details->ui, DESKTOP_BACKGROUND_POPUP_PATH_DISKS);
-	
-	/* Get a list containing the all removable volumes in the volume monitor */
-	disk_list = nautilus_volume_monitor_get_removable_volumes (nautilus_volume_monitor_get ());
-
-	/* Iterate list and populate menu with removable volumes */
-	for (element = disk_list, index = 0; 
-	     element != NULL; 
-	     element = element->next, ++index) {
-		volume = element->data;
-		
-
-		/* Determine human-readable name from mount path */
-		name = nautilus_volume_monitor_get_mount_name_for_display (nautilus_volume_monitor_get (), volume);
-		
-		nautilus_bonobo_add_numbered_toggle_menu_item 
-			(view->details->ui,
-			 DESKTOP_BACKGROUND_POPUP_PATH_DISKS,
-			 index,
-			 name);
-		g_free (name);
-
-		command_name = nautilus_bonobo_get_numbered_menu_item_command
-			(view->details->ui,
-			 DESKTOP_BACKGROUND_POPUP_PATH_DISKS,
-			 index);
-
-		command_path = g_strconcat ("/commands/", command_name, NULL);
-		nautilus_bonobo_set_toggle_state
-			(view->details->ui,
-			 command_path,
-			nautilus_volume_monitor_volume_is_mounted (nautilus_volume_monitor_get (), volume));
-		g_free (command_path);
-
-		bonobo_ui_component_add_listener_full
-			(view->details->ui, command_name,
-			 g_cclosure_new (G_CALLBACK (mount_or_unmount_removable_volume),
-					 mount_parameters_new (view, nautilus_volume_get_mount_path (volume)),
-					 mount_parameters_free_wrapper));
-		g_free (command_name);
-	}
-
-	nautilus_bonobo_set_hidden (view->details->ui,
-				    DESKTOP_BACKGROUND_POPUP_PATH_DISKS,
-				    (disk_list == NULL));
-	nautilus_bonobo_set_hidden (view->details->ui,
-				    DESKTOP_BACKGROUND_POPUP_PATH_VOLUME_ITEMS,
-				    (disk_list == NULL));
-}
-
 static void
 real_update_menus (FMDirectoryView *view)
 {
 	FMDesktopIconView *desktop_view;
 	char *label;
-	gboolean include_empty_trash, include_media_commands;
-	NautilusDeviceType media_type;
-	char *unmount_label;
+	gboolean include_empty_trash;
 	
 	g_assert (FM_IS_DESKTOP_ICON_VIEW (view));
 
@@ -1002,9 +644,6 @@ real_update_menus (FMDirectoryView *view)
 	desktop_view = FM_DESKTOP_ICON_VIEW (view);
 
 	bonobo_ui_component_freeze (desktop_view->details->ui, NULL);
-
-	/* Disks menu */
-	update_disks_menu (desktop_view);
 
 	/* Empty Trash */
 	include_empty_trash = trash_link_is_selection (view);
@@ -1025,151 +664,6 @@ real_update_menus (FMDirectoryView *view)
 		g_free (label);
 	}
 
-	/* Unmount Volume */
-	include_media_commands = volume_link_is_selection (view);
-
-	if (include_media_commands) {
-		media_type = volume_link_device_type (view);
-
-		unmount_label = _("E_ject");
-		
-		switch(media_type) {
-		case NAUTILUS_DEVICE_FLOPPY_DRIVE:
-			if (have_volume_format_app ()) {
-				nautilus_bonobo_set_hidden
-					(desktop_view->details->ui,
-					DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, FALSE);
-				nautilus_bonobo_set_sensitive
-					(desktop_view->details->ui,
-					DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, TRUE);
-			} else {
-				nautilus_bonobo_set_hidden
-					(desktop_view->details->ui,
-					DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, TRUE);
-			}
-
-			if (have_volume_properties_app ()) {
-				nautilus_bonobo_set_hidden
-					(desktop_view->details->ui,
-					 DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, FALSE);
-				nautilus_bonobo_set_sensitive
-					(desktop_view->details->ui,
-			 		DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
-			} else {
-				nautilus_bonobo_set_hidden
-					(desktop_view->details->ui,
-					 DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
-			}
-
-			nautilus_bonobo_set_hidden
-				(desktop_view->details->ui,
-				DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL, TRUE);
-			break;
-		
-		case NAUTILUS_DEVICE_CDROM_DRIVE:
-			nautilus_bonobo_set_hidden
-				(desktop_view->details->ui,
-				DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL, TRUE);
-
-			nautilus_bonobo_set_hidden
-				(desktop_view->details->ui,
-				DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, TRUE);
-
-			if (have_volume_properties_app ()) {
-				nautilus_bonobo_set_hidden
-					(desktop_view->details->ui,
-					DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, FALSE);
-				nautilus_bonobo_set_sensitive
-					(desktop_view->details->ui,
-					DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
-			} else {
-				nautilus_bonobo_set_hidden
-					(desktop_view->details->ui,
-					DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
-			}
-			break;	
-		
-		case NAUTILUS_DEVICE_ZIP_DRIVE:
-		case NAUTILUS_DEVICE_JAZ_DRIVE:
-			if (have_volume_format_app ()) {
-				nautilus_bonobo_set_hidden
-					(desktop_view->details->ui,
-					 DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, FALSE);
-				nautilus_bonobo_set_sensitive
-					(desktop_view->details->ui,
-					DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, TRUE);
-			} else {
-				nautilus_bonobo_set_hidden
-					(desktop_view->details->ui,
-					 DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, TRUE);
-			}
-
-			if (have_volume_properties_app ()) {
-				nautilus_bonobo_set_hidden
-					(desktop_view->details->ui,
-					DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, FALSE);
-				nautilus_bonobo_set_sensitive
-					(desktop_view->details->ui,
-					 DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
-			} else {
-				nautilus_bonobo_set_hidden
-					(desktop_view->details->ui,
-					DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
-			}
-
-			if (have_volume_protection_app ()) {
-				nautilus_bonobo_set_hidden
-					(desktop_view->details->ui,
-					 DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL, FALSE);
-				nautilus_bonobo_set_sensitive
-					(desktop_view->details->ui,
-					 DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL, TRUE);
-			} else {
-				nautilus_bonobo_set_hidden
-					(desktop_view->details->ui,
-					 DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL, TRUE);
-			}
-			break;
-		default:
-			unmount_label = _("_Unmount Volume");
-			break;
-		}
-
-		/* We always want a unmount entry */
-		nautilus_bonobo_set_hidden
-			(desktop_view->details->ui,
-			 DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL,
-			 FALSE);
-		nautilus_bonobo_set_sensitive
-			(desktop_view->details->ui,
-			DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL, TRUE);
-
-		/* But call it eject for removable media */
-		nautilus_bonobo_set_label
-			(desktop_view->details->ui, 
-			 DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL, unmount_label);
-	} else {
-		nautilus_bonobo_set_hidden
-			(desktop_view->details->ui,
-			 DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL,
-			 TRUE);
-		
-		nautilus_bonobo_set_hidden
-			(desktop_view->details->ui,
-			 DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL,
-			 TRUE);
-		
-		nautilus_bonobo_set_hidden
-			(desktop_view->details->ui,
-			 DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL,
-			 TRUE);
-		
-		nautilus_bonobo_set_hidden
-			(desktop_view->details->ui,
-			 DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL,
-			 TRUE);
-	}
-	
 	bonobo_ui_component_thaw (desktop_view->details->ui, NULL);
 }
 
@@ -1184,10 +678,6 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("New Terminal", new_terminal_callback),
 		BONOBO_UI_VERB ("New Launcher Desktop", new_launcher_callback),
 		BONOBO_UI_VERB ("Reset Background", reset_background_callback),
-		BONOBO_UI_VERB ("Unmount Volume Conditional", volume_ops_callback),
-		BONOBO_UI_VERB ("Protect Conditional", volume_ops_callback),
-		BONOBO_UI_VERB ("Format Conditional", volume_ops_callback),
-		BONOBO_UI_VERB ("Media Properties Conditional", volume_ops_callback),
 		BONOBO_UI_VERB_END
 	};
 

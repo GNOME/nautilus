@@ -44,13 +44,13 @@
 #include <gtk/gtktreeview.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-volume-monitor.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-tree-view-drag-dest.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
-#include <libnautilus-private/nautilus-volume-monitor.h>
 
 struct NautilusTreeViewDetails {
 	GtkWidget *scrolled_window;
@@ -463,23 +463,17 @@ theme_changed_callback (GObject *icon_factory, gpointer callback_data)
 
 static void
 add_root_for_volume (NautilusTreeView *view,
-		     const NautilusVolume *volume)
+		     GnomeVFSVolume *volume)
 {
 	char *icon, *mount_uri, *name;
 
-	if (nautilus_volume_is_in_removable_blacklist (volume)) {
-		return;
-	}
-
-	if (!nautilus_volume_is_removable (volume)) {
+	if (!gnome_vfs_volume_is_user_visible (volume)) {
 		return;
 	}
 	
-	/* Name uniqueness is handled by nautilus-desktop-link-monitor.c... */
-	
-	icon = nautilus_volume_get_icon (volume);
-	mount_uri = nautilus_volume_get_target_uri (volume);
-	name = nautilus_volume_get_name (volume);
+	icon = gnome_vfs_volume_get_icon (volume);
+	mount_uri = gnome_vfs_volume_get_activation_uri (volume);
+	name = gnome_vfs_volume_get_display_name (volume);
 	
 	nautilus_tree_model_add_root_uri (view->details->child_model,
 					  mount_uri, name, icon);
@@ -491,29 +485,21 @@ add_root_for_volume (NautilusTreeView *view,
 }
 
 static void
-volume_mounted_callback (NautilusVolumeMonitor *volume_monitor,
-			 NautilusVolume *volume,
+volume_mounted_callback (GnomeVFSVolumeMonitor *volume_monitor,
+			 GnomeVFSVolume *volume,
 			 NautilusTreeView *view)
 {
 	add_root_for_volume (view, volume);
 }
 
-static gboolean
-add_one_volume_root (const NautilusVolume *volume, gpointer callback_data)
-{
-	add_root_for_volume (NAUTILUS_TREE_VIEW (callback_data), volume);
-
-	return TRUE;
-}
-
 static void
-volume_unmounted_callback (NautilusVolumeMonitor *volume_monitor,
-			   NautilusVolume *volume,
+volume_unmounted_callback (GnomeVFSVolumeMonitor *volume_monitor,
+			   GnomeVFSVolume *volume,
 			   NautilusTreeView *view)
 {
 	char *mount_uri;
 	
-	mount_uri = nautilus_volume_get_target_uri (volume);
+	mount_uri = gnome_vfs_volume_get_activation_uri (volume);
 	nautilus_tree_model_remove_root_uri (view->details->child_model,
 					     mount_uri);
 	g_free (mount_uri);
@@ -525,8 +511,9 @@ create_tree (NautilusTreeView *view)
 {
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *column;
-	NautilusVolumeMonitor *volume_monitor;
+	GnomeVFSVolumeMonitor *volume_monitor;
 	char *home_uri;
+	GList *volumes, *l;
 	
 	view->details->child_model = nautilus_tree_model_new ();
 	view->details->sort_model = GTK_TREE_MODEL_SORT
@@ -546,10 +533,13 @@ create_tree (NautilusTreeView *view)
 	nautilus_tree_model_add_root_uri (view->details->child_model, "network:///", _("Network Neighbourhood"), "gnome-fs-network");
 #endif
 	
-	volume_monitor = nautilus_volume_monitor_get ();
-	nautilus_volume_monitor_each_mounted_volume (volume_monitor,
-					     	     add_one_volume_root,
-						     view);
+	volume_monitor = gnome_vfs_get_volume_monitor ();
+	volumes = gnome_vfs_volume_monitor_get_mounted_volumes (volume_monitor);
+	for (l = volumes; l != NULL; l = l->next) {
+		add_root_for_volume (view, l->data);
+		gnome_vfs_volume_unref (l->data);
+	}
+	g_list_free (volumes);
 	
 	g_signal_connect_object (volume_monitor, "volume_mounted",
 				 G_CALLBACK (volume_mounted_callback), view, 0);

@@ -126,7 +126,11 @@ struct NautilusFileDetails
 	eel_boolean_bit got_link_info                 : 1;
 	eel_boolean_bit link_info_is_up_to_date       : 1;
 
-	eel_boolean_bit is_thumbnailing             : 1;
+	eel_boolean_bit is_thumbnailing               : 1;
+
+	eel_boolean_bit has_volume                    : 1;
+	eel_boolean_bit has_drive                     : 1;
+
 };
 
 NautilusFile *nautilus_file_new_from_info                  (NautilusDirectory      *directory,
@@ -180,5 +184,10 @@ GnomeVFSFileInfo *     nautilus_file_peek_vfs_file_info             (NautilusFil
 void          nautilus_file_set_is_thumbnailing            (NautilusFile           *file,
 							    gboolean                is_thumbnailing);
 
+/* Volumes: */
+void nautilus_file_set_drive  (NautilusFile   *file,
+			       GnomeVFSDrive  *drive);
+void nautilus_file_set_volume (NautilusFile   *file,
+			       GnomeVFSVolume *volume);
 
 #endif

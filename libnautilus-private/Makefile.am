@@ -176,8 +176,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-vfs-file.h \
 	nautilus-view-identifier.c \
 	nautilus-view-identifier.h \
-	nautilus-volume-monitor.c \
-	nautilus-volume-monitor.h \
 	$(NULL)
 
 fsattributesdir = $(datadir)/nautilus

@@ -53,7 +53,7 @@ struct NautilusDesktopLinkDetails {
 	gulong trash_state_handler;
 
 	/* Just for volume icons: */
-	char *mount_path;
+	GnomeVFSVolume *volume;
 };
 
 static void nautilus_desktop_link_init       (gpointer              object,
@@ -162,49 +162,45 @@ nautilus_desktop_link_new (NautilusDesktopLinkType type)
 }
 
 NautilusDesktopLink *
-nautilus_desktop_link_new_from_volume (const NautilusVolume *volume)
+nautilus_desktop_link_new_from_volume (GnomeVFSVolume *volume)
 {
 	NautilusDesktopLink *link;
-	const char *mount_path;
-	char *underscore_mount_path, *p;
+	GnomeVFSDrive *drive;
+	char *name;
 
 	link = NAUTILUS_DESKTOP_LINK (g_object_new (NAUTILUS_TYPE_DESKTOP_LINK, NULL));
 	
 	link->details->type = NAUTILUS_DESKTOP_LINK_VOLUME;
 
-	mount_path = nautilus_volume_get_mount_path (volume);
-	link->details->mount_path = g_strdup (mount_path);
-	
-	/* Convert slashes in the mount path to underscores and skip
-	   first slash */
-	while (*mount_path == '/') {
-		mount_path ++;
-	}
-	underscore_mount_path = g_strdup (mount_path);
-	for (p = underscore_mount_path; *p != 0; p++) {
-		if (*p == '/') {
-			*p = '_';
-		}
-	}
+	link->details->volume = gnome_vfs_volume_ref (volume);
 
-	link->details->filename = g_strconcat ("mount_", underscore_mount_path, NULL);
-	g_free (underscore_mount_path);
+	/* We try to use the drive name to get somewhat stable filenames
+	   for metadata */
+	drive = gnome_vfs_volume_get_drive (volume);
+	if (drive != NULL) {
+		name = gnome_vfs_drive_get_display_name (drive);
+	} else {
+		name = gnome_vfs_volume_get_display_name (volume);
+	}
+	gnome_vfs_drive_unref (drive);
 	
-	link->details->display_name = nautilus_volume_get_name (volume);
+	link->details->filename = g_strconcat (name, ".volume", NULL);
+	g_free (name);
 	
-	link->details->activation_uri = nautilus_volume_get_target_uri (volume);
-	link->details->icon = nautilus_volume_get_icon (volume);
+	link->details->display_name = gnome_vfs_volume_get_display_name (volume);
+	
+	link->details->activation_uri = gnome_vfs_volume_get_activation_uri (volume);
+	link->details->icon = gnome_vfs_volume_get_icon (volume);
 	
 	create_icon_file (link);
 
 	return link;
 }
 
-char *
-nautilus_desktop_link_get_mount_path (NautilusDesktopLink *link)
+GnomeVFSVolume *
+nautilus_desktop_link_get_volume (NautilusDesktopLink *link)
 {
-	g_assert (link->details->type == NAUTILUS_DESKTOP_LINK_VOLUME);
-	return g_strdup (link->details->mount_path);
+	return gnome_vfs_volume_ref (link->details->volume);
 }
 
 
@@ -368,7 +364,7 @@ desktop_link_finalize (GObject *object)
 	}
 	
 	if (link->details->type == NAUTILUS_DESKTOP_LINK_VOLUME) {
-		g_free (link->details->mount_path);
+		gnome_vfs_volume_unref (link->details->volume);
 	}
 
 	g_free (link->details->filename);

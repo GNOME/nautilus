@@ -242,48 +242,30 @@ nautilus_link_local_is_utf8 (const char *uri,
 	}
 }
 
-char *
-nautilus_link_get_link_uri_given_file_contents (const char *uri,
-						const char *file_contents,
-						int file_size)
+void
+nautilus_link_get_link_info_given_file_contents (const char       *file_contents,
+						 int               link_file_size,
+						 char            **uri,
+						 char            **name,
+						 char            **icon,
+						 gulong           *drive_id,
+						 gulong           *volume_id)
 {
-	switch (get_link_style_for_data (file_contents, file_size)) {
+	*uri = NULL;
+	*name = NULL;
+	*icon = NULL;
+	*drive_id = 0;
+	*volume_id = 0;
+	
+	switch (get_link_style_for_data (file_contents, link_file_size)) {
 	case desktop:
-		return nautilus_link_desktop_file_get_link_uri_given_file_contents (uri, file_contents, file_size);
+		return nautilus_link_desktop_file_get_link_info_given_file_contents (file_contents, link_file_size, uri, name, icon, drive_id, volume_id);
 	case historical:
-		return nautilus_link_historical_get_link_uri_given_file_contents (file_contents, file_size);
+		*uri = nautilus_link_historical_get_link_uri_given_file_contents (file_contents, link_file_size);
+		*icon = nautilus_link_historical_get_link_icon_given_file_contents (file_contents, link_file_size);
+		break;
 	default:
-		return NULL;
-	}
-}
-
-char *
-nautilus_link_get_link_name_given_file_contents (const char *uri,
-						 const char *file_contents,
-						 int file_size)
-{
-	switch (get_link_style_for_data (file_contents, file_size)) {
-	case desktop:
-		return nautilus_link_desktop_file_get_link_name_given_file_contents (uri, file_contents, file_size);
-	case historical:
-		return NULL;
-	default:
-		return NULL;
-	}
-}
-
-char *
-nautilus_link_get_link_icon_given_file_contents (const char *uri,
-						 const char *file_contents,
-						 int file_size)
-{
-	switch (get_link_style_for_data (file_contents, file_size)) {
-	case desktop:
-		return nautilus_link_desktop_file_get_link_icon_given_file_contents (uri, file_contents, file_size);
-	case historical:
-		return nautilus_link_historical_get_link_icon_given_file_contents (file_contents, file_size);
-	default:
-		return NULL;
+		return;
 	}
 }
 
