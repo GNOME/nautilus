@@ -1,3 +1,15 @@
+2000-11-21  Ali Abdin  <aliabdin@aucegypt.edu>
+
+        * components/help/converters/gnome-info2html2/main.c:
+        (main):
+        Check /usr/share/info by default for info files too (Debian uses
+        this). This partially fixes bug #4414
+
+        * components/help/converters/gnome-db2html2/sect-preparse.c:
+        (sect_preparse_sect_start_element):
+        Apply a slightly modified patch by John Fleck to handle navigation
+        links with regards to the appendix (Fixes bug #4792)
+
 2000-11-21  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/nautilus-music-view.c: (fetch_song_info):
