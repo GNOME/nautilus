@@ -28,33 +28,16 @@
 #include <config.h>
 #include "nautilus-tree-view-dnd.h"
 
-#include "nautilus-tree-model.h"
-#include "nautilus-tree-expansion-state.h"
-
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkdnd.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
-#include <libnautilus/nautilus-bonobo-ui.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-drag.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-background.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-drag.h>
 #include <libnautilus-extensions/nautilus-file-operations.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libgnomevfs/gnome-vfs.h>
-
-#include <libnautilus-extensions/nautilus-ctree.h>
-
-#include "nautilus-tree-view-private.h"
 
 #define nopeMATHIEU_DEBUG 1
 
@@ -281,6 +264,18 @@ nautilus_tree_view_init_dnd (NautilusTreeView *view)
 			    NULL);
 	gtk_signal_connect (GTK_OBJECT (view->details->tree), "realize", 
 			    tree_view_realize_callback, view);
+}
+
+
+void
+nautilus_tree_view_free_dnd (NautilusTreeView *view)
+{
+	/* you do not need to unref the normal style */
+	if (view->details->dnd->highlight_style != NULL) {
+		gtk_style_unref (view->details->dnd->highlight_style);
+	}
+	nautilus_drag_finalize (view->details->dnd->drag_info);
+	g_free (view->details->dnd);
 }
 
 

@@ -1,34 +1,36 @@
 NULL =
 
-INCLUDES =					\
-	-DPREFIX=\"$(prefix)\"                  \
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	-DG_LOG_DOMAIN=\"Nautilus-Tree\"	\
-	-I$(top_srcdir)				\
-	-I$(top_builddir)			\
-	$(VFS_CFLAGS) 				\
-	$(GCONF_CFLAGS) 			\
-	$(GNOMEUI_CFLAGS)			\
-	$(OAF_CFLAGS)				\
-	$(BONOBO_CFLAGS)			\
+INCLUDES =						\
+	-DPREFIX=\"$(prefix)\"				\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	-DG_LOG_DOMAIN=\"Nautilus-Tree\"		\
+	-I$(top_srcdir)					\
+	-I$(top_builddir)				\
+	$(VFS_CFLAGS)					\
+	$(GCONF_CFLAGS)					\
+	$(GNOMEUI_CFLAGS)				\
+	$(OAF_CFLAGS)					\
+	$(BONOBO_CFLAGS)				\
 	$(NULL)
 
 oafdir = $(datadir)/oaf
 
-TREE_VIEW_COMMON_SOURCES = 	        \
-	nautilus-tree-expansion-state.c \
-	nautilus-tree-expansion-state.h \
-	nautilus-tree-model.c           \
-	nautilus-tree-model.h           \
-	nautilus-tree-node-private.h    \
-	nautilus-tree-node.c            \
-	nautilus-tree-node.h            \
-	nautilus-tree-view-iids.h       \
-	nautilus-tree-view.c            \
-	nautilus-tree-view.h            \
-	nautilus-tree-view-private.h    \
-	nautilus-tree-view-dnd.c        \
-	nautilus-tree-view-dnd.h        \
+TREE_VIEW_COMMON_SOURCES =			\
+	nautilus-tree-change-queue.c		\
+	nautilus-tree-change-queue.h		\
+	nautilus-tree-expansion-state.c		\
+	nautilus-tree-expansion-state.h		\
+	nautilus-tree-model.c			\
+	nautilus-tree-model.h			\
+	nautilus-tree-node-private.h		\
+	nautilus-tree-node.c			\
+	nautilus-tree-node.h			\
+	nautilus-tree-view-iids.h		\
+	nautilus-tree-view.c			\
+	nautilus-tree-view.h			\
+	nautilus-tree-view-private.h		\
+	nautilus-tree-view-dnd.c		\
+	nautilus-tree-view-dnd.h		\
 	$(NULL)
 
 

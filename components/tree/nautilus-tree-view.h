@@ -28,7 +28,6 @@
 #define NAUTILUS_TREE_VIEW_H
 
 #include <libnautilus/nautilus-view.h>
-#include <libnautilus-extensions/nautilus-ctree.h>
 #include <gtk/gtkscrolledwindow.h>
 
 typedef struct NautilusTreeView NautilusTreeView;

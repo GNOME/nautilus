@@ -60,12 +60,6 @@ NautilusFile      *nautilus_tree_node_get_file      (NautilusTreeNode   *node);
 char              *nautilus_tree_node_get_uri       (NautilusTreeNode   *node);
 NautilusDirectory *nautilus_tree_node_get_directory (NautilusTreeNode   *node);
 
-void              nautilus_tree_node_set_user_data (NautilusTreeNode   *node,
-						    gpointer           user_data,
-						    GDestroyNotify     destroy_notify);
-
-gpointer          nautilus_tree_node_get_user_data (NautilusTreeNode *node);
-						    
 
 #endif /* NAUTILUS_TREE_NODE_H */
 

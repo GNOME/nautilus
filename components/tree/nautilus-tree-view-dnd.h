@@ -25,12 +25,10 @@
 #ifndef NAUTILUS_TREE_VIEW_DND_H
 #define NAUTILUS_TREE_VIEW_DND_H
 
-#include "libnautilus-extensions/nautilus-drag.h"
-#include "libnautilus-extensions/nautilus-ctree.h"
-#include "nautilus-tree-view.h"
+#include <libnautilus-extensions/nautilus-drag.h>
+#include "nautilus-tree-view-private.h"
 
-typedef struct _NautilusTreeViewDndDetails NautilusTreeViewDndDetails;
-struct _NautilusTreeViewDndDetails {
+struct NautilusTreeViewDndDetails {
 
 	NautilusDragInfo *drag_info;
 
@@ -56,12 +54,6 @@ struct _NautilusTreeViewDndDetails {
 	GtkStyle *normal_style;
 	GtkStyle *highlight_style;
 };
-
-void nautilus_tree_view_init_dnd (NautilusTreeView *view);
-
-
-
-
 
 #endif /* NAUTILUS_TREE_VIEW_DND_H */
 

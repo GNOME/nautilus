@@ -25,6 +25,15 @@
 #ifndef NAUTILUS_TREE_VIEW_PRIVATE_H
 #define NAUTILUS_TREE_VIEW_PRIVATE_H
 
+#include "nautilus-tree-view.h"
+#include "nautilus-tree-change-queue.h"
+#include "nautilus-tree-expansion-state.h"
+#include "nautilus-tree-model.h"
+
+#include <libnautilus-extensions/nautilus-ctree.h>
+#include <libnautilus/nautilus-view.h>
+
+typedef struct NautilusTreeViewDndDetails NautilusTreeViewDndDetails;
 
 typedef void (*TreeViewCallback) (NautilusTreeView *view);
 
@@ -52,6 +61,9 @@ struct NautilusTreeViewDetails {
 	char *selected_uri;
 	char *current_main_view_uri;
 
+	NautilusTreeChangeQueue *change_queue;
+	guint pending_idle_id;
+
 	TreeViewCallback root_seen_callback;
 	char *wait_uri;
 	NautilusTreeNode *wait_node;
@@ -64,12 +76,14 @@ struct NautilusTreeViewDetails {
 	NautilusTreeViewDndDetails *dnd;
 };
 
-NautilusTreeNode  *nautilus_tree_view_node_to_model_node    (NautilusTreeView  *view,
-							     NautilusCTreeNode *node);
-NautilusFile      *nautilus_tree_view_node_to_file          (NautilusTreeView  *view,
-							     NautilusCTreeNode *node);
+NautilusTreeNode  *nautilus_tree_view_node_to_model_node      (NautilusTreeView  *view,
+							       NautilusCTreeNode *node);
+NautilusFile      *nautilus_tree_view_node_to_file            (NautilusTreeView  *view,
+							       NautilusCTreeNode *node);
 NautilusCTreeNode *nautilus_tree_view_model_node_to_view_node (NautilusTreeView  *view,
 							       NautilusTreeNode  *node);
+void               nautilus_tree_view_init_dnd                (NautilusTreeView *view);
+void               nautilus_tree_view_free_dnd                (NautilusTreeView *view);
 
 
 #endif /* NAUTILUS_TREE_VIEW_PRIVATE_H */

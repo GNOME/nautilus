@@ -1,3 +1,52 @@
+2000-12-14  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	Major boost in tree view performance, and startup/new window
+	performance when tree view is on. This fixes bugs 4922 (Opening
+	new windows is really slow when the tree view is enabled), 5149
+	(http://bugzilla.eazel.com/show_bug.cgi?id=5149) and 3936
+	(http://bugzilla.eazel.com/show_bug.cgi?id=3936).
+	
+	* components/tree/nautilus-tree-change-queue.c,
+	components/tree/nautilus-tree-change-queue.h: New files that
+	implement a change queue, so the tree view can defer processing
+	changes until idle time but still handle them in order.
+	* components/tree/Makefile.am: Add to build.
+
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_initialize): Initialize change queue.
+	(nautilus_tree_view_enqueue_change),
+	(nautilus_tree_view_model_node_added_callback,
+	nautilus_tree_view_model_node_changed_callback,
+	nautilus_tree_view_model_node_removed_callback,
+	nautilus_tree_view_model_done_loading_callback): Do no real work,
+	just enqueue the changes and schedule the idle callback.
+	(reload_model_node, reload_model_node_recursive): Don't actually
+	update all nodes, just enqueue changes and schedule idle
+	callbacks.
+	(schedule_pending_idle_callback): Helper function to schedule an
+	idle callback to process the change queue.
+	(dequeue_pending_idle_callback): Process the head of the change
+	queue, and unschedule self when done (currently it will process at
+	most 100 changes at one go). Keep the tree frozen while doing the
+	changes, to minimize redraws.
+	(nautilus_tree_view_insert_model_node): Moved call to
+	notify_node_seen here from
+	nautilus_tree_view_model_node_added_callback.
+	(nautilus_tree_view_destroy): free change queue, dnd data.
+
+	* components/tree/nautilus-tree-view-dnd.c: Prune includes.
+	(nautilus_tree_view_free_dnd): New function so
+	nautilus-tree-view.c destroy function does not need to know
+	internal details of tree view.
+	* components/tree/nautilus-tree-node.h: Removed prototypes of
+	nonexistent functions.
+	* components/tree/nautilus-tree-view.h,
+	components/tree/nautilus-tree-view-private.h,
+	components/tree/nautilus-tree-view-dnd.h: Include necessary
+	headers, to make these standalone, and prune unneeded headers.
+
 2000-12-14  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:
