@@ -7,4 +7,5 @@ endif
 SUBDIRS = \
 	$(AUTHENTICATE_HELPER_SUBDIRS) \
 	error-dialog \
+	xml-migrate \
 	$(NULL)

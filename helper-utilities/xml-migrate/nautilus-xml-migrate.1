@@ -1,0 +1,37 @@
+.TH NAUTILUS-XML-MIGRATE 1 "February 26, 2001" Eazel
+.SH NAME
+nautilus-xml-migrate \- update old Nautilus links and metafiles
+.SH SYNOPSIS
+.B nautilus-xml-migrate
+[
+.I directory
+]
+.SH DESCRIPTION
+Old versions of
+.BR nautilus (1)
+created XML files (links and metafiles) with incorrect capitalization.
+If your
+.B nautilus
+links now show up as plain-text files beginning with ``<?xml'' rather
+than as links, you can use
+.B nautilus-xml-migrate
+to correct them.
+.LP
+When you run
+.B nautilus-xml-migrate
+it will search the
+.I directory
+you specify
+(or the current directory if you don't specify one)
+and all its subdirectories
+for files named
+.B \&.nautilus-metafile.xml
+and for files that begin the first line with
+``<?xml'' and the second line with ``<NAUTILUS''.
+If any such files are found, it will correct all their
+XML tags to be lowercase instead of uppercase.
+.LP
+As it proceeds it will display its best guess about the percentage
+of the process that is complete.
+.SH SEE ALSO
+.BR nautilus (1)

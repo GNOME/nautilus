@@ -1,3 +1,31 @@
+2001-02-26  Eric Fischer <eric@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com> (code)
+	reviewed by: Robin Slomkowski <rslomkow@eazel.com> (Makefile, etc.)
+
+	Fix bug 6197 (write script to convert metafiles and links to
+	ower-case XML):
+
+	* configure.in:
+	Add helper-utilities/xml-migrate/Makefile to the list of files to
+	be created.
+
+	* helper-utilities/Makefile.am:
+	Add xml-migrate to the list of subdirectories to be built.
+
+	* helper-utilities/xml-migrate/Makefile.am:
+	New Makefile: compile nautilus-xml-migrate and install its manpage.
+
+	* helper-utilities/xml-migrate/xml-migrate.c:
+	New program: searches a directory for the old uppercase XML files
+	and turns them into lowercase ones.
+
+	* helper-utilities/xml-migrate/nautilus-xml-migrate.1:
+	New manpage: for the aforementioned program.
+
+	* nautilus.spec.in:
+	Include nautilus-xml-migrate and its manpage in the RPMs.
+
 2001-02-26  Michael Engber  <engber@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
