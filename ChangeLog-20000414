@@ -1,5 +1,11 @@
 2000-02-10  Darin Adler  <darin@eazel.com>
 
+	* ntl-window-msgs.c: (nautilus_window_has_really_changed):
+	Check GTK_OBJECT_DESTROYTED to handle the case of a view
+	that self-destructs.
+
+2000-02-10  Darin Adler  <darin@eazel.com>
+
 	* nautilus-index-tabs.c: (draw_or_hit_test_all_tabs):
 	Fix so it doesn't try to create a GC when hit testing
 	a tab. This gets rid of critical errors people were
