@@ -1490,7 +1490,11 @@ nautilus_window_go_home (NautilusWindow *window)
 
 	nautilus_window_set_search_mode (window, FALSE);
 
+#ifdef WEB_NAVIGATION_ENABLED
 	home_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
+#else
+	home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+#endif
 	
 	g_assert (home_uri != NULL);
 	nautilus_window_go_to (window, home_uri);

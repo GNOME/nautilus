@@ -1153,7 +1153,11 @@ update_home_link_and_delete_copies (void)
 	 */
 	home_link_name = g_strdup_printf (_("%s's Home"), g_get_user_name ());
 	
+#ifdef WEB_NAVIGATION_ENABLED
 	home_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
+#else
+	home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+#endif
 	
 	if (!update_link_and_delete_copies (nautilus_link_local_is_home_link,
 					    NULL,

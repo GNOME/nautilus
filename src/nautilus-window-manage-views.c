@@ -1339,7 +1339,11 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
 			   better test for that */
 
                         if (!eel_uris_match (location, "file:///")) {
+#ifdef WEB_NAVIGATION_ENABLED
                                 home_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
+#else
+                                home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+#endif
                                 if (!eel_uris_match (home_uri, location)) {	
                                         nautilus_window_go_home (NAUTILUS_WINDOW (window));
                                 } else {

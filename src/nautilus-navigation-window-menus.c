@@ -826,6 +826,7 @@ append_bookmark_to_menu (NautilusWindow *window,
 	nautilus_window_ui_thaw (window);
 }
 
+#ifdef WEB_NAVIGATION_ENABLED
 static char *
 get_static_bookmarks_file_path (void)
 {
@@ -889,6 +890,7 @@ get_static_bookmarks_file_path (void)
 	
 	return result;
 }
+#endif
 
 static void
 append_separator (NautilusWindow *window, const char *path)
@@ -950,6 +952,7 @@ create_menu_item_from_node (NautilusWindow *window,
 	nautilus_window_ui_thaw (window);
 }
 
+#ifdef WEB_NAVIGATION_ENABLED
 static void
 append_static_bookmarks (NautilusWindow *window, const char *menu_path)
 {
@@ -977,6 +980,7 @@ append_static_bookmarks (NautilusWindow *window, const char *menu_path)
 	
 	xmlFreeDoc(doc);
 }
+#endif
 
 static NautilusBookmarkList *bookmarks = NULL;
 
@@ -1060,9 +1064,11 @@ refresh_bookmarks_menu (NautilusWindow *window)
 
 	nautilus_window_remove_bookmarks_menu_items (window);
 
+#ifdef WEB_NAVIGATION_ENABLED
 	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS)) {
 		append_static_bookmarks (window, MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER);
 	}
+#endif
 
 	append_dynamic_bookmarks (window);
 

@@ -98,7 +98,7 @@ static PreferenceImportType OLD_PREFERENCES_TO_IMPORT[] = {
 /* Enumerations used to qualify some INTEGER preferences */
 static EelEnumerationEntry speed_tradeoff_enum_entries[] = {
 	{ "always",	    N_("_Always"),		NAUTILUS_SPEED_TRADEOFF_ALWAYS },
-	{ "local_only",	    N_("_Local Files Only"),	NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY },
+	{ "local_only",	    N_("_Local File Only"),	NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY },
 	{ "never",	    N_("_Never"),		NAUTILUS_SPEED_TRADEOFF_NEVER },
 	{ NULL }
 };

@@ -1,3 +1,33 @@
+2002-07-09  Damon Chaplin  <damon@ximian.com>
+
+	* src/nautilus-window-menus.c (refresh_bookmarks_menu): if
+	WEB_NAVIGATION_ENABLED is not defined don't ever append the static
+	(system default) bookmarks. Since nautilus isn't a good web browser
+	at present these make little sense.
+	(append_static_bookmarks): 
+	(get_static_bookmarks_file_path): ifdeffed out unused functions.
+
+	* src/file-manager/fm-desktop-icon-view.c
+	(update_home_link_and_delete_copies): 
+	* src/nautilus-window.c (nautilus_window_go_home): 
+	* src/nautilus-window-manage-views.c
+	(determined_initial_view_callback): use #ifdef WEB_NAVIGATION_ENABLED
+	to determine whether we use the NAUTILUS_PREFERENCES_HOME_URI
+	preference or just use the user's $HOME. WEB_NAVIGATION_ENABLED isn't
+	defined for now.
+
+	* src/nautilus-preferences-dialog.c: Lots of string changes.
+	Hid the 'Navigation' pane.
+	(global_preferences_populate_sidebar_panels_callback): just use the
+	side pane name as the preference name, rather than 'Display %s tab in
+	side pane'.
+	(preferences_dialog_populate_themes_group): set the theme selector
+	height to 300 so it fills its page a bit better. (Would be nicer if
+	we could set an 'expand' option but that is more complicated.)
+
+	* libnautilus-private/nautilus-global-preferences.c: change
+	'Local Files Only' to 'Local File Only'.
+
 2002-07-09  Michael Meeks  <michael@ximian.com>
 
 	* src/nautilus-property-browser.c
