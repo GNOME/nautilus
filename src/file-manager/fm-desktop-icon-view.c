@@ -156,6 +156,7 @@ static void
 net_workarea_changed (FMDesktopIconView *icon_view,
 		      GdkWindow         *window)
 {
+	long *nworkareas = NULL;
 	long *workareas = NULL;
 	GdkAtom type_returned;
 	int format_returned;
@@ -167,23 +168,57 @@ net_workarea_changed (FMDesktopIconView *icon_view,
 
 	icon_container = get_icon_container (icon_view);
 
+	/* Find the number of desktops so we know how long the
+	 * workareas array is going to be (each desktop will have four
+	 * elements in the workareas array describing
+	 * x,y,width,height) */
 	gdk_error_trap_push ();
 	if (!gdk_property_get (window,
-			       gdk_atom_intern ("_NET_WORKAREA", FALSE),
+			       gdk_atom_intern ("_NET_NUMBER_OF_DESKTOPS", FALSE),
 			       gdk_x11_xatom_to_atom (XA_CARDINAL),
-			       0, G_MAXLONG, FALSE,
+			       0, 4, FALSE,
 			       &type_returned,
 			       &format_returned,
 			       &length_returned,
-			       (guchar **) &workareas)) {
+			       (guchar **) &nworkareas)) {
+		g_warning("Can not caclulate _NET_NUMBER_OF_DESKTOPS");
+	}
+	if (gdk_error_trap_pop()
+	    || nworkareas == NULL
+	    || type_returned != gdk_x11_xatom_to_atom (XA_CARDINAL)
+	    || format_returned != 32)
+		g_warning("Can not calculate _NET_NUMBER_OF_DESKTOPS");
+	
+	/* Note : gdk_property_get() is broken (API documents admit
+	 * this).  As a length argument, it expects the number of
+	 * _bytes_ of data you require.  Internally, gdk_property_get
+	 * converts that value to a count of 32 bit (4 byte) elements.
+	 * However, the length returned is in bytes, but is calculated
+	 * via the count of returned elements * sizeof(long).  This
+	 * means on a 64 bit system, the number of bytes you have to
+	 * request does not correspond to the number of bytes you get
+	 * back, and is the reason for the workaround below.
+	 */ 
+	gdk_error_trap_push ();
+	if (nworkareas == NULL || (*nworkareas < 1) 
+	    || !gdk_property_get (window,
+				  gdk_atom_intern ("_NET_WORKAREA", FALSE),
+				  gdk_x11_xatom_to_atom (XA_CARDINAL),
+				  0, ((*nworkareas) * 4 * 4), FALSE,
+				  &type_returned,
+				  &format_returned,
+				  &length_returned,
+				  (guchar **) &workareas)) {
+		g_warning("Can not get _NET_WORKAREA");
 		workareas = NULL;
 	}
 
 	if (gdk_error_trap_pop ()
 	    || workareas == NULL
 	    || type_returned != gdk_x11_xatom_to_atom (XA_CARDINAL)
-	    || (length_returned % 4) != 0
+	    || ((*nworkareas) * 4 * sizeof(long)) != length_returned
 	    || format_returned != 32) {
+		g_warning("Can not determine workarea, guessing at layout");
 		nautilus_icon_container_set_margins (icon_container,
 						     0, 0, 0, 0);
 	} else {
@@ -192,6 +227,9 @@ net_workarea_changed (FMDesktopIconView *icon_view,
 		icon_container_set_workarea (
 			icon_container, screen, workareas, length_returned / sizeof (long));
 	}
+
+	if (nworkareas != NULL)
+		g_free (nworkareas);
 
 	if (workareas != NULL)
 		g_free (workareas);
