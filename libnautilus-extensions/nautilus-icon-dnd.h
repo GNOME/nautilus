@@ -41,7 +41,8 @@ enum NautilusIconDndTargetType {
 	NAUTILUS_ICON_DND_URI_LIST,
 	NAUTILUS_ICON_DND_URL,
 	NAUTILUS_ICON_DND_COLOR,
-	NAUTILUS_ICON_DND_BGIMAGE
+	NAUTILUS_ICON_DND_BGIMAGE,
+	NAUTILUS_ICON_DND_KEYWORD
 };
 
 /* DnD target names. */
@@ -50,6 +51,7 @@ enum NautilusIconDndTargetType {
 #define NAUTILUS_ICON_DND_URL_TYPE	       "_NETSCAPE_URL"
 #define NAUTILUS_ICON_DND_COLOR_TYPE           "application/x-color"
 #define NAUTILUS_ICON_DND_BGIMAGE_TYPE         "property/bgimage"
+#define NAUTILUS_ICON_DND_KEYWORD_TYPE         "property/keyword"
 
 /* DnD-related information. */
 struct NautilusIconDndInfo {

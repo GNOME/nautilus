@@ -1,3 +1,23 @@
+2000-05-04  Andy Hertzfeld <andy@eazel.com>
+
+	now you can drop emblems from the property browser onto
+	icons in the icon view.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.h:
+	added definitions for the "property/keyword" drag type
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	added receive_dropped_keyword and integrated it;
+	made it highlight by testing for keywords in
+	nautilus_icon_dnd_update_drop_target;
+	also, with Pavel's help, fixed a long-standing drag and drop bug
+	by calling nautilus_icon_container_free_drag_data in the
+	drag_leave_callback.
+	
+	* data/backgrounds/Makefile.am:
+	added another background image
+	* data/backgrounds/beige_tile.jpg:
+	new background image
+	
 2000-05-04  Darin Adler  <darin@eazel.com>
 
 	* src/ntl-uri-map.c: (file_list_to_mime_type_hash_table),

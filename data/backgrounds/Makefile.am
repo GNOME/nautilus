@@ -4,6 +4,7 @@ backdir = $(datadir)/nautilus/backgrounds
 
 back_DATA = \
 	baize.png \
+	beige_tile.jpg \
 	bricks.jpg \
 	bubbles.png \
 	buffedwood.jpg \

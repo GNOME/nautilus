@@ -83,7 +83,8 @@ static GtkTargetEntry drop_types [] = {
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
 	{ NAUTILUS_ICON_DND_COLOR_TYPE, 0, NAUTILUS_ICON_DND_COLOR },
-	{ NAUTILUS_ICON_DND_BGIMAGE_TYPE, 0, NAUTILUS_ICON_DND_BGIMAGE }
+	{ NAUTILUS_ICON_DND_BGIMAGE_TYPE, 0, NAUTILUS_ICON_DND_BGIMAGE },
+	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD }
 };
 
 static GnomeCanvasItem *
@@ -498,6 +499,8 @@ drag_data_received_callback (GtkWidget *widget,
 		break;
 	case NAUTILUS_ICON_DND_COLOR:
 	case NAUTILUS_ICON_DND_BGIMAGE:	
+	case NAUTILUS_ICON_DND_KEYWORD:	
+		
 		/* Save the data so we can do the actual work on drop. */
 
 		dnd_info->selection_data = nautilus_gtk_selection_data_copy_deep (data);
@@ -638,6 +641,7 @@ nautilus_icon_canvas_item_can_accept_item (NautilusIconContainer *container,
 {
 	gboolean result;
 
+	/* ask the controller if the icon can accept the item */
 	gtk_signal_emit_by_name (GTK_OBJECT (container),
 			 "can_accept_item",
 			 drop_target_item->data,
@@ -667,12 +671,49 @@ nautilus_icon_canvas_item_can_accept_items (NautilusIconContainer *container,
 	return TRUE;		
 }
 
+/* handle dropped tile images */
 static void
 receive_dropped_tile_image (NautilusIconContainer *container, gpointer data)
 {
 	g_assert(data != NULL);
 	nautilus_background_set_tile_image_uri
 		(nautilus_get_widget_background (GTK_WIDGET (container)), data);
+}
+
+/* handle dropped keywords */
+static void
+receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x, int y)
+{
+	GList *keywords, *word;
+	char *uri;
+	double world_x, world_y;
+
+	NautilusIcon *drop_target_icon;
+	NautilusFile *file;
+	
+	g_assert(keyword != NULL);
+
+	/* find the item we hit with our drop, if any */
+  	gnome_canvas_window_to_world (GNOME_CANVAS (container), x, y, &world_x, &world_y);
+	drop_target_icon = nautilus_icon_container_item_at (container, world_x, world_y);
+	if (drop_target_icon == NULL)
+		return;
+	
+	uri = nautilus_icon_container_get_icon_uri (container, drop_target_icon);
+	file = nautilus_file_get(uri);
+	g_free(uri);
+	
+	keywords = nautilus_file_get_keywords (file);
+	word = g_list_find_custom (keywords, keyword, (GCompareFunc) strcmp);
+	if (word == NULL)
+		keywords = g_list_append (keywords, g_strdup (keyword));
+	else
+		keywords = g_list_remove_link (keywords, word);
+
+	nautilus_file_set_keywords (file, keywords);
+	nautilus_file_unref(file);
+	nautilus_icon_container_update_icon (container, drop_target_icon);
+
 }
 
 static void
@@ -827,7 +868,8 @@ nautilus_icon_dnd_update_drop_target (NautilusIconContainer *container,
 	double world_x, world_y;
 	
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
-	if (container->details->dnd_info->selection_list == NULL) {
+	if ((container->details->dnd_info->selection_list == NULL) 
+	   && (container->details->dnd_info->data_type != NAUTILUS_ICON_DND_KEYWORD)) {
 		return;
 	}
 
@@ -838,8 +880,10 @@ nautilus_icon_dnd_update_drop_target (NautilusIconContainer *container,
 	icon = nautilus_icon_container_item_at (container, world_x, world_y);
 
 	/* Find if target icon accepts our drop. */
-	if (icon != NULL && !nautilus_icon_canvas_item_can_accept_items 
-	    (container, icon, container->details->dnd_info->selection_list)) {
+	if (icon != NULL && (container->details->dnd_info->data_type != NAUTILUS_ICON_DND_KEYWORD) 
+	    && !nautilus_icon_canvas_item_can_accept_items 
+	    (container, icon, container->details->dnd_info->selection_list
+	    )) {
 		icon = NULL;
 	}
 
@@ -875,9 +919,11 @@ drag_leave_callback (GtkWidget *widget,
 	NautilusIconDndInfo *dnd_info;
 
 	dnd_info = NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info;
-
+	
 	if (dnd_info->shadow != NULL)
 		gnome_canvas_item_hide (dnd_info->shadow);
+	
+	nautilus_icon_container_free_drag_data(NAUTILUS_ICON_CONTAINER (widget));
 }
 
 /* During drag&drop keep a saved pointer to the private drag context.
@@ -1132,6 +1178,12 @@ drag_drop_callback (GtkWidget *widget,
 		break;
 	case NAUTILUS_ICON_DND_BGIMAGE:
 		receive_dropped_tile_image (NAUTILUS_ICON_CONTAINER (widget), dnd_info->selection_data->data);
+		gtk_drag_finish (context, FALSE, FALSE, time);
+		break;
+	
+	case NAUTILUS_ICON_DND_KEYWORD:
+		receive_dropped_keyword (NAUTILUS_ICON_CONTAINER (widget), dnd_info->selection_data->data, x, y);
+		gtk_drag_finish (context, FALSE, FALSE, time);
 		break;
 	default:
 		gtk_drag_finish (context, FALSE, FALSE, time);
