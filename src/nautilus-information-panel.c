@@ -93,6 +93,8 @@ static void     nautilus_sidebar_initialize_class   (GtkObjectClass   *object_kl
 static void     nautilus_sidebar_initialize         (GtkObject        *object);
 static gboolean nautilus_sidebar_press_event        (GtkWidget        *widget,
 						     GdkEventButton   *event);
+static gboolean nautilus_sidebar_release_event      (GtkWidget        *widget,
+						     GdkEventButton   *event);
 static gboolean nautilus_sidebar_leave_event        (GtkWidget        *widget,
 						     GdkEventCrossing *event);
 static gboolean nautilus_sidebar_motion_event       (GtkWidget        *widget,
@@ -176,6 +178,7 @@ nautilus_sidebar_initialize_class (GtkObjectClass *object_klass)
 	widget_class->motion_notify_event = nautilus_sidebar_motion_event;
 	widget_class->leave_notify_event = nautilus_sidebar_leave_event;
 	widget_class->button_press_event  = nautilus_sidebar_press_event;
+	widget_class->button_release_event  = nautilus_sidebar_release_event;
 	widget_class->size_allocate = nautilus_sidebar_size_allocate;
 
 	/* add the "location changed" signal */
@@ -944,18 +947,12 @@ nautilus_sidebar_leave_event (GtkWidget *widget, GdkEventCrossing *event)
 	return TRUE;
 }
 
-/* hit-test the index tabs and activate if necessary */
-
+/* handle the context menu if necessary */
 static gboolean
 nautilus_sidebar_press_event (GtkWidget *widget, GdkEventButton *event)
 {
-	int title_top, title_bottom;
-	GtkWidget *menu;
 	NautilusSidebar *sidebar;
-	NautilusSidebarTabs *sidebar_tabs;
-	NautilusSidebarTabs *title_tab;
-	int rounded_y;
-	int which_tab;
+	GtkWidget *menu;
 		
 	if (widget->window != event->window) {
 		return FALSE;
@@ -970,8 +967,26 @@ nautilus_sidebar_press_event (GtkWidget *widget, GdkEventButton *event)
 				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
 				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
 				      event);
-		return TRUE;
+	}	
+	return TRUE;
+}
+
+/* handle the sidebar tabs on the upstroke */
+static gboolean
+nautilus_sidebar_release_event (GtkWidget *widget, GdkEventButton *event)
+{
+	int title_top, title_bottom;
+	NautilusSidebar *sidebar;
+	NautilusSidebarTabs *sidebar_tabs;
+	NautilusSidebarTabs *title_tab;
+	int rounded_y;
+	int which_tab;
+		
+	if (widget->window != event->window) {
+		return FALSE;
 	}
+
+	sidebar = NAUTILUS_SIDEBAR (widget);
 	
 	sidebar_tabs = sidebar->details->sidebar_tabs;
 	title_tab = sidebar->details->title_tab;
