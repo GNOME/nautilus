@@ -22,7 +22,7 @@
    Authors: Ramiro Estrugo <ramiro@eazel.com>
 */
 
-/* NautilusLabel is a widget that is capable of display anti aliased
+/* NautilusLabel is a widget that is capable of displaying anti aliased
  * text composited over a complex background.  The background can be
  * installed as NautilusBackground on a NautilusLabel widget or any 
  * of its ancestors.  The best background will automatically be found
@@ -31,7 +31,6 @@
  * Fonts can be specified using a NautilusScalableFont object.
  *
  * Text can contain embedded new lines.
- *
  */
 
 #ifndef NAUTILUS_LABEL_H

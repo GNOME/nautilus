@@ -22,21 +22,19 @@
    Authors: Ramiro Estrugo <ramiro@eazel.com>
 */
 
-
 /* NautilusScalableFont is a GtkObject that provdes a simple
- * interface to Raph Levien's librsvg FreeType2 bases anti aliased
+ * interface to Raph Levien's librsvg FreeType2 based anti aliased
  * text rendering.
  *
- * Currently, Type1 only Type1 fonts are supported.
+ * Currently, only Type1 fonts are supported.
  *
  * Fonts are automatically queried and used if available.  Right
  * now this is fairly simple code which does not handle all the 
- * complexities of the hell that is x fonts.
+ * complexities of the hell that is unix fonts.
  *
  * In the Star Trek future, we will use gnome-print (gnome-font?).
  * However, we will keep the interface to scalable font usage simple
  * and hidden behind this interface.
- *
  */
 
 #ifndef NAUTILUS_SCALABLE_FONT_H

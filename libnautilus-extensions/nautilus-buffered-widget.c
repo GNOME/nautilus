@@ -846,11 +846,11 @@ nautilus_buffered_widget_get_vertical_offset (const NautilusBufferedWidget *buff
  *   
  *   Look for the closest ancestor widget that has an attatched
  *   NautilusBackground and use that.  If that fails, then use
- *   the widget's background as specified by its attachted GtkStyle.
+ *   the widget's background as specified by its attached GtkStyle.
  *
  * NAUTILUS_BACKGROUND_NONE:
  * 
- *   Use the widget's background as specified by its attachted GtkStyle.
+ *   Use the widget's background as specified by its attached GtkStyle.
  *
  * NAUTILUS_BACKGROUND_SOLID:
  *
