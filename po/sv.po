@@ -6,17 +6,22 @@
 #
 # $Id$
 #
-#: libnautilus-extensions/nautilus-search-uri.c:378
-#: libnautilus-extensions/nautilus-search-uri.c:384
-#: libnautilus-extensions/nautilus-search-uri.c:387
-#: libnautilus-extensions/nautilus-search-uri.c:390
-#: libnautilus-extensions/nautilus-search-uri.c:393
-#: libnautilus-extensions/nautilus-search-uri.c:396
+#. Part of a window title for search results: Optional
+#. preposition that precedes the clause describing the file
+#. name attribute matched.  Context is after "files" and
+#. before the translation for "containing xx in the name"
+#: libnautilus-extensions/nautilus-search-uri.c:490
+#: libnautilus-extensions/nautilus-search-uri.c:497
+#: libnautilus-extensions/nautilus-search-uri.c:505
+#: libnautilus-extensions/nautilus-search-uri.c:513
+#: libnautilus-extensions/nautilus-search-uri.c:521
+#: libnautilus-extensions/nautilus-search-uri.c:529
+#: libnautilus-extensions/nautilus-search-uri.c:537
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2000-12-21 03:29+0100\n"
-"PO-Revision-Date: 2000-12-21 03:33+0100\n"
+"POT-Creation-Date: 2000-12-22 04:03+0100\n"
+"PO-Revision-Date: 2000-12-22 04:04+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -86,7 +91,7 @@ msgstr "Konfigurationsfiler"
 #: components/help/hyperbola-filefmt.c:426
 #: components/help/hyperbola-filefmt.c:711 po/tmp/apps.xml.h:1
 msgid "Applications"
-msgstr "Applikationer"
+msgstr "Program"
 
 #: components/help/hyperbola-filefmt.c:426
 msgid "Command Line"
@@ -149,7 +154,7 @@ msgstr "Döda förlorar-innehållsvyn"
 
 #: po/tmp/nautilus-content-loser-ui.xml.h:3 po/tmp/nautilus-mozilla-ui.xml.h:4
 #: po/tmp/nautilus-sample-content-view-ui.xml.h:4
-#: po/tmp/nautilus-shell-ui.xml.h:77 po/tmp/nautilus-sidebar-loser-ui.xml.h:3
+#: po/tmp/nautilus-shell-ui.xml.h:78 po/tmp/nautilus-sidebar-loser-ui.xml.h:3
 msgid "_File"
 msgstr "_Arkiv"
 
@@ -880,7 +885,7 @@ msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil."
 
 #: components/music/nautilus-music-view.c:703
-#: src/file-manager/fm-properties-window.c:2131
+#: src/file-manager/fm-properties-window.c:2174
 #: src/nautilus-property-browser.c:998 src/nautilus-property-browser.c:1135
 #: src/nautilus-property-browser.c:1403
 msgid "Not an Image"
@@ -1139,11 +1144,11 @@ msgstr "Det här är en provsammanslagen verktygsradsknapp"
 msgid "_Sample"
 msgstr "_Prov"
 
-#: components/sample/nautilus-sample-content-view.c:83
+#: components/sample/nautilus-sample-content-view.c:136
 msgid "(none)"
 msgstr "(inget)"
 
-#: components/sample/nautilus-sample-content-view.c:145
+#: components/sample/nautilus-sample-content-view.c:189
 #, c-format
 msgid ""
 "%s\n"
@@ -1154,7 +1159,7 @@ msgstr ""
 "\n"
 "Det här är en provinnehållsvy i Nautilus."
 
-#: components/sample/nautilus-sample-content-view.c:203
+#: components/sample/nautilus-sample-content-view.c:252
 #, c-format
 msgid ""
 "%s\n"
@@ -2293,7 +2298,7 @@ msgstr "Dra ett emblem till ett objekt för att lägga till det till objektet"
 msgid "Eclipse"
 msgstr "Förmörkelse"
 
-#: po/tmp/browser.xml.h:15 src/file-manager/fm-properties-window.c:1381
+#: po/tmp/browser.xml.h:15 src/file-manager/fm-properties-window.c:1410
 msgid "Emblems"
 msgstr "Emblem"
 
@@ -3567,7 +3572,7 @@ msgstr "Typsnitt"
 #. Constants
 #: libnautilus-extensions/nautilus-global-preferences.c:44
 msgid "Nautilus Preferences"
-msgstr "Nautilusinställningar"
+msgstr "Inställningar för Nautilus"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:119
 msgid "Folder Views"
@@ -3780,7 +3785,9 @@ msgstr "Använd mjukare (men långsammare) grafik"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:925
 msgid "Font family used to display file names"
-msgstr "Typsnittsfamilj som används för att visa filnamn"
+msgstr ""
+"Typsnittsfamilj som används för att\n"
+"visa filnamn"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:932
 msgid "Display tool bar in new windows"
@@ -3828,7 +3835,7 @@ msgstr "Sök efter filer på text och på deras egenskaper"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:987
 msgid "Search Web Location"
-msgstr "Sök webbplats"
+msgstr "Sökwebbplats"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:994
 msgid "Show hidden files (starting with \".\")"
@@ -4041,10 +4048,11 @@ msgstr "Använd som standard endast för \"%s\""
 msgid "Don't include in the menu for \"%s\" items"
 msgstr "Inkludera inte i menyn för \"%s\"-objekt"
 
+#. Menu item to search by file name in e.g. "Name starts with b"
 #: libnautilus-extensions/nautilus-program-chooser.c:1165
 #: src/file-manager/fm-list-view.c:1926
 #: src/file-manager/fm-search-list-view.c:330
-#: src/nautilus-bookmarks-window.c:164 src/nautilus-search-bar-criterion.c:67
+#: src/nautilus-bookmarks-window.c:164 src/nautilus-search-bar-criterion.c:68
 msgid "Name"
 msgstr "Namn"
 
@@ -4120,211 +4128,305 @@ msgstr ""
 msgid "Can't open remote file"
 msgstr "Kunde inte öppna fjärrfil"
 
-#: libnautilus-extensions/nautilus-search-uri.c:205
+#. Part of a window title for search results: a
+#. description of the set of files that contains a string
+#: libnautilus-extensions/nautilus-search-uri.c:207
+#: libnautilus-extensions/nautilus-search-uri.c:222
 #, c-format
-msgid "with \"%s\" in the name"
-msgstr "med \"%s\" i namnet"
+msgid "containing \"%s\" in their names"
+msgstr "som innehåller \"%s\" i namnet"
 
-#: libnautilus-extensions/nautilus-search-uri.c:208
+#. Part of a window title for search results: a
+#. description of the set of files that start with a string
+#: libnautilus-extensions/nautilus-search-uri.c:212
 #, c-format
 msgid "starting with \"%s\""
-msgstr "börjar med \"%s\""
+msgstr "som börjar med \"%s\""
 
-#: libnautilus-extensions/nautilus-search-uri.c:211
-#, c-format
-msgid "ending with %s"
-msgstr "slutar med %s"
-
-#: libnautilus-extensions/nautilus-search-uri.c:214
-#, c-format
-msgid "without \"%s\" in their name"
-msgstr "utan \"%s\" i namnet"
-
+#. Part of a window title for search results: a
+#. description of the set of files that end with a string
 #: libnautilus-extensions/nautilus-search-uri.c:217
 #, c-format
-msgid "matching the regular expression \"%s\""
-msgstr "passar det reguljära uttrycket \"%s\""
+msgid "ending with %s"
+msgstr "som slutar med %s"
 
-#: libnautilus-extensions/nautilus-search-uri.c:220
+#. Part of a window title for search results: a
+#. description of the set of files that match a regular
+#. expression
+#: libnautilus-extensions/nautilus-search-uri.c:228
+#, c-format
+msgid "matching the regular expression \"%s\""
+msgstr "som matchar det reguljära uttrycket \"%s\""
+
+#. Part of a window title for search results: a
+#. description of the set of files that match a glob pattern
+#: libnautilus-extensions/nautilus-search-uri.c:233
 #, c-format
 msgid "matching the file pattern \"%s\""
-msgstr "passar filmönstret \"%s\""
+msgstr "som matchar filmönstret \"%s\""
 
-#: libnautilus-extensions/nautilus-search-uri.c:233
+#. Part of a window title for search results: a
+#. description of the set of files that are not directories,
+#. sockets, etc.
+#: libnautilus-extensions/nautilus-search-uri.c:249
 msgid "regular files"
-msgstr "reguljära filer"
+msgstr "vanliga filer"
 
-#: libnautilus-extensions/nautilus-search-uri.c:236
+#. Part of a window title for search results: a
+#. description of the set of files that are stored as plain
+#. text
+#: libnautilus-extensions/nautilus-search-uri.c:255
 msgid "text files"
 msgstr "textfiler"
 
-#: libnautilus-extensions/nautilus-search-uri.c:239
+#. Part of a window title for search results: a
+#. description of the set of files that are binary files or
+#. applications you can run
+#: libnautilus-extensions/nautilus-search-uri.c:261
 msgid "applications"
-msgstr "applikationer"
+msgstr "program"
 
-#: libnautilus-extensions/nautilus-search-uri.c:242
+#. Part of a window title for search results: a
+#. description of the set of items that are folders
+#. (directories)
+#: libnautilus-extensions/nautilus-search-uri.c:267
 msgid "folders"
 msgstr "mappar"
 
-#: libnautilus-extensions/nautilus-search-uri.c:245
-#: src/nautilus-search-bar-criterion.c:107
+#. Part of a window title for search results: a
+#. description of the set of items that are music files
+#. (mp3s, wavs)
+#: libnautilus-extensions/nautilus-search-uri.c:273
+#: src/nautilus-search-bar-criterion.c:130
 msgid "music"
 msgstr "musik"
 
-#: libnautilus-extensions/nautilus-search-uri.c:252
+#. Part of a window title for search results: way of
+#. describing the fact that files are not of a certain type
+#. (folder, music, etc).  Context is "files that are [folder,
+#. music]"
+#: libnautilus-extensions/nautilus-search-uri.c:283
+#: libnautilus-extensions/nautilus-search-uri.c:290
 #, c-format
-msgid "are not %s"
-msgstr "är inte %s"
+msgid "that are %s"
+msgstr "som är %s"
 
-#: libnautilus-extensions/nautilus-search-uri.c:256
-#, c-format
-msgid "are %s"
-msgstr "är %s"
-
-#: libnautilus-extensions/nautilus-search-uri.c:267
+#. Part of a window title for search results: way of
+#. describing the fact that files are not owned by someone,
+#. Context is files not ownd by xxx
+#: libnautilus-extensions/nautilus-search-uri.c:304
 #, c-format
 msgid "not owned by \"%s\""
-msgstr "inte ägs av \"%s\""
+msgstr "som inte ägs av \"%s\""
 
-#: libnautilus-extensions/nautilus-search-uri.c:270
+#. Part of a window title for search results: way of
+#. describing the fact that files are owned by someone.
+#. Context is files owned by root
+#: libnautilus-extensions/nautilus-search-uri.c:310
 #, c-format
 msgid "owned by \"%s\""
-msgstr "ägs av \"%s\""
+msgstr "som ägs av \"%s\""
 
-#: libnautilus-extensions/nautilus-search-uri.c:274
+#. Part of a window title for search results: way of
+#. describing the fact that files have a specific owner uid.
+#. Context is "files with owner UID xx"
+#: libnautilus-extensions/nautilus-search-uri.c:316
 #, c-format
 msgid "with owner UID \"%s\""
 msgstr "med ägar-UID \"%s\""
 
-#: libnautilus-extensions/nautilus-search-uri.c:277
+#. Part of a window title for search results: way of
+#. describing the fact that files have a specific owner uid
+#. other than this one.  Context is "files with owner uid
+#. other than xx"
+#: libnautilus-extensions/nautilus-search-uri.c:323
 #, c-format
 msgid "with owner UID other than \"%s\""
 msgstr "med annat ägar-UID än \"%s\""
 
-#: libnautilus-extensions/nautilus-search-uri.c:288
+#. Part of a window title for search results: way of
+#. describing that the files are larger than a certain size.
+#. Context is "files larger than %s bytes"
+#: libnautilus-extensions/nautilus-search-uri.c:337
 #, c-format
 msgid "larger than %s bytes"
-msgstr "större än %s byte"
+msgstr "som är större än %s byte"
 
-#: libnautilus-extensions/nautilus-search-uri.c:291
+#. Part of a window title for search results: way of
+#. describing that the files are larger than a certain size.
+#. Context is "files smaller than %s bytes"
+#: libnautilus-extensions/nautilus-search-uri.c:343
 #, c-format
 msgid "smaller than %s bytes"
-msgstr "mindre än %s byte"
+msgstr "som är mindre än %s byte"
 
-#: libnautilus-extensions/nautilus-search-uri.c:294
+#. Part of a window title for search results: way of
+#. describing that the files are larger than a certain size.
+#. Context is "files of %s bytes"
+#: libnautilus-extensions/nautilus-search-uri.c:349
 #, c-format
-msgid "%s bytes"
-msgstr "%s bytes"
+msgid "of %s bytes"
+msgstr "som är %s byte"
 
-#: libnautilus-extensions/nautilus-search-uri.c:305
+#. Part of a window title for search results: way of
+#. describing that the files were modified since midnight of
+#. the current day.  Context is "files modified today"
+#: libnautilus-extensions/nautilus-search-uri.c:363
 msgid "modified today"
-msgstr "ändrad idag"
+msgstr "ändrade idag"
 
-#: libnautilus-extensions/nautilus-search-uri.c:308
+#. Part of a window title for search results: way of
+#. describing that the files were modified since midnight of
+#. the previous day.  Context is "files modified yesterday"
+#: libnautilus-extensions/nautilus-search-uri.c:369
 msgid "modified yesterday"
-msgstr "ändrad igår"
+msgstr "ändrade igår"
 
-#: libnautilus-extensions/nautilus-search-uri.c:311
+#. Part of a window title for search results: way of
+#. describing that the files were modified since midnight of
+#. the date that will replace the %s.  Context is "files
+#. modified on 11/20/00"
+#: libnautilus-extensions/nautilus-search-uri.c:376
 #, c-format
 msgid "modified on %s"
-msgstr "ändrad %s"
+msgstr "ändrade %s"
 
-#: libnautilus-extensions/nautilus-search-uri.c:314
+#. Part of a window title for search results: way of
+#. describing that the files were not modified since midnight
+#. of the date that will replace the %s.  Context is "files
+#. not modified on 11/20/00"
+#: libnautilus-extensions/nautilus-search-uri.c:383
 #, c-format
 msgid "not modified on %s"
-msgstr "inte ändrad %s"
+msgstr "inte ändrade %s"
 
-#: libnautilus-extensions/nautilus-search-uri.c:317
+#. Part of a window title for search results: way of
+#. describing that the files were not modified since midnight
+#. of the date that will replace the %s. Context is "files
+#. modified before 11/20/00"
+#: libnautilus-extensions/nautilus-search-uri.c:390
 #, c-format
 msgid "modified before %s"
-msgstr "ändrad innan %s"
+msgstr "ändrade innan %s"
 
-#: libnautilus-extensions/nautilus-search-uri.c:320
+#. Part of a window title for search results: way of
+#. describing that the files were modified after midnight of
+#. the date field that will replace the %s.  Context is
+#. "files modified after 11/20/00"
+#: libnautilus-extensions/nautilus-search-uri.c:397
 #, c-format
 msgid "modified after %s"
-msgstr "ändrad efter %s"
+msgstr "ändrade efter %s"
 
-#: libnautilus-extensions/nautilus-search-uri.c:323
+#. Part of a window title for search results: way of
+#. describing that the files were modified within a week of
+#. the date field that will replace the %s.  Context is
+#. "files within a week of 11/20/00"
+#: libnautilus-extensions/nautilus-search-uri.c:404
 #, c-format
 msgid "modified within a week of %s"
-msgstr "ändrad inom en vecka från %s"
+msgstr "ändrade inom en vecka från %s"
 
-#: libnautilus-extensions/nautilus-search-uri.c:326
+#. Part of a window title for search results: way of
+#. describing that the files were modified within a week of
+#. the date field that will replace the %s.  Context is
+#. "files within a month of 11/20/00"
+#: libnautilus-extensions/nautilus-search-uri.c:411
 #, c-format
 msgid "modified within a month of %s"
-msgstr "ändrad inom en månad från %s"
+msgstr "ändrade inom en månad från %s"
 
-#: libnautilus-extensions/nautilus-search-uri.c:338
+#. Part of a window title for search results: way of
+#. describing that the files have emblems attached that include
+#. the one that will replace the %s.  Context is "files
+#. marked with Important"
+#: libnautilus-extensions/nautilus-search-uri.c:427
 #, c-format
 msgid "marked with \"%s\""
-msgstr "märkt med \"%s\""
+msgstr "märkta med \"%s\""
 
-#: libnautilus-extensions/nautilus-search-uri.c:341
+#. Part of a window title for search results: way of
+#. describing that the files have emblems attached that don't
+#. include the one that will replace the %s.  Context is
+#. "files not marked with Important"
+#: libnautilus-extensions/nautilus-search-uri.c:434
 #, c-format
 msgid "not marked with \"%s\""
-msgstr "inte märkt med \"%s\""
+msgstr "inte märkta med \"%s\""
 
-#: libnautilus-extensions/nautilus-search-uri.c:355
+#. Part of a window title for search results: way of
+#. describing that the (text) files searched for contain the
+#. word or words that will replace the %s.  Context is "files
+#. with all the word "bob frank"
+#: libnautilus-extensions/nautilus-search-uri.c:452
 #, c-format
 msgid "with all the words \"%s\""
 msgstr "med alla orden \"%s\""
 
-#: libnautilus-extensions/nautilus-search-uri.c:358
+#. Part of a window title for search results: way of
+#. describing that the (text) files searched for contain the
+#. word or one or more of the words that will replace the %s.
+#. Context is "files containing one of the words "bob frank"
+#: libnautilus-extensions/nautilus-search-uri.c:459
 #, c-format
 msgid "containing one of the words \"%s\""
-msgstr "innehåller ett av orden \"%s\""
+msgstr "som innehåller ett av orden \"%s\""
 
-#: libnautilus-extensions/nautilus-search-uri.c:361
+#. Part of a window title for search results: way of
+#. describing that the (text) files searched for don't
+#. contain the word or all of the words that will replace the
+#. %s.  Context is "files without all the word "bob frank"
+#: libnautilus-extensions/nautilus-search-uri.c:466
 #, c-format
 msgid "without all the words \"%s\""
 msgstr "utan alla orden \"%s\""
 
-#: libnautilus-extensions/nautilus-search-uri.c:364
+#. Part of a window title for search results: way of
+#. describing that the (text) files searched for contain none of
+#. the word or words that will replace the %s.  Context is "files
+#. with none of the words "bob frank"
+#: libnautilus-extensions/nautilus-search-uri.c:473
 #, c-format
 msgid "without any of the words \"%s\""
 msgstr "utan något av orden \"%s\""
 
-#: libnautilus-extensions/nautilus-search-uri.c:381
-msgid "that"
-msgstr "som"
-
-#: libnautilus-extensions/nautilus-search-uri.c:501
+#: libnautilus-extensions/nautilus-search-uri.c:641
 msgid "are folders"
 msgstr "är mappar"
 
-#: libnautilus-extensions/nautilus-search-uri.c:539
+#: libnautilus-extensions/nautilus-search-uri.c:679
 msgid " and "
 msgstr " och "
 
-#: libnautilus-extensions/nautilus-search-uri.c:570
+#: libnautilus-extensions/nautilus-search-uri.c:710
 #, c-format
 msgid "Items %s"
 msgstr "Objekt %s"
 
-#: libnautilus-extensions/nautilus-search-uri.c:573
+#: libnautilus-extensions/nautilus-search-uri.c:713
 #, c-format
 msgid "Items %s %s"
 msgstr "Objekt %s %s"
 
-#: libnautilus-extensions/nautilus-search-uri.c:685
-msgid "Items with \"stuff\" in the name"
-msgstr "Objekt med \"saker\" i namnet"
+#: libnautilus-extensions/nautilus-search-uri.c:825
+msgid "Items containing \"stuff\" in their names"
+msgstr "Objekt som har \"saker\" i deras namn"
 
-#: libnautilus-extensions/nautilus-search-uri.c:688
-msgid "Items with \"stuff\" in the name and are regular files"
-msgstr "Objekt med \"saker\" i namnet och som är vanliga filer"
+#: libnautilus-extensions/nautilus-search-uri.c:828
+msgid "Items containing \"stuff\" in their names and that are regular files"
+msgstr "Objekt som har \"saker\" i deras namn och som är vanliga filer"
 
-#: libnautilus-extensions/nautilus-search-uri.c:692
+#: libnautilus-extensions/nautilus-search-uri.c:832
 msgid ""
-"Items with \"stuff\" in the name, are regular files and smaller than 2000 "
-"bytes"
+"Items containing \"stuff\" in their names, that are regular files and "
+"smaller than 2000 bytes"
 msgstr ""
-"Objekt med \"saker\" i namnet, som är vanliga filer och som är mindre än "
-"2000 byte"
+"Objekt som har \"saker\" i deras namn, som är vanliga filer och som är "
+"mindre än 2000 byte"
 
-#: libnautilus-extensions/nautilus-search-uri.c:696
-msgid "Items with \"medusa\" in the name and are folders"
-msgstr "Objekt med \"medusa\" i namnet och som är mappar"
+#: libnautilus-extensions/nautilus-search-uri.c:836
+msgid "Items containing \"medusa\" in their names and that are folders"
+msgstr "Objekt som har \"medusa\" i deras namn och som är mappar"
 
 #: libnautilus-extensions/nautilus-stock-dialogs.c:418
 msgid "Warning"
@@ -4375,29 +4477,37 @@ msgstr "Mellan"
 msgid "Advanced"
 msgstr "Avancerad"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:326
+#: libnautilus-extensions/nautilus-volume-monitor.c:328
 msgid "Audio CD"
 msgstr "Ljud-cd"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:430
-msgid "Unknown Volume"
-msgstr "Okänd volym"
-
-#: libnautilus-extensions/nautilus-volume-monitor.c:999
+#: libnautilus-extensions/nautilus-volume-monitor.c:1004
 msgid "ISO 9660 Volume"
 msgstr "ISO9660-volym"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1006
+#: libnautilus-extensions/nautilus-volume-monitor.c:1017
+msgid "Root"
+msgstr "Rot"
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1023
 msgid "Ext2 Volume"
 msgstr "Ext2-volym"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1012
+#: libnautilus-extensions/nautilus-volume-monitor.c:1037
 msgid "MSDOS Volume"
 msgstr "MSDOS-volym"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1018
+#: libnautilus-extensions/nautilus-volume-monitor.c:1051
+msgid "NFS Volume"
+msgstr "NFS-volym"
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1065
 msgid "Floppy"
 msgstr "Diskett"
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1079
+msgid "Unknown Volume"
+msgstr "Okänd volym"
 
 #: po/tmp/nautilus-clipboard-ui.xml.h:1 po/tmp/nautilus-shell-ui.xml.h:6
 msgid "C_lear Text"
@@ -4652,11 +4762,11 @@ msgstr "_Töm papperskorgen"
 #: po/tmp/nautilus-directory-view-ui.xml.h:26
 #: src/file-manager/fm-directory-view.c:3227
 msgid "R_emove Custom Images"
-msgstr "_Ta bort anpassade bilder"
+msgstr "Ta bort _anpassade bilder"
 
 #: src/file-manager/fm-directory-view.c:3228
 msgid "R_emove Custom Image"
-msgstr "_Ta bort anpassad bild"
+msgstr "Ta bort _anpassad bild"
 
 #: src/file-manager/fm-directory-view.c:3367
 msgid ""
@@ -4898,15 +5008,17 @@ msgstr "_Återställ ikon till originalstorlek"
 msgid "pointing at \"%s\""
 msgstr "pekar på \"%s\""
 
+#. Menu item to search by file size in e.g. "Size larger than 500K"
 #: src/file-manager/fm-list-view.c:1932
 #: src/file-manager/fm-search-list-view.c:342
-#: src/nautilus-search-bar-criterion.c:70
+#: src/nautilus-search-bar-criterion.c:74
 msgid "Size"
 msgstr "Storlek"
 
+#. Menu item to search by file type in e.g. "Type is music"
 #: src/file-manager/fm-list-view.c:1938
 #: src/file-manager/fm-search-list-view.c:348
-#: src/nautilus-search-bar-criterion.c:69
+#: src/nautilus-search-bar-criterion.c:72
 msgid "Type"
 msgstr "Typ"
 
@@ -4915,46 +5027,46 @@ msgstr "Typ"
 msgid "Date Modified"
 msgstr "Modifieringsdatum"
 
-#: src/file-manager/fm-properties-window.c:501
+#: src/file-manager/fm-properties-window.c:529
 #, c-format
 msgid "%s Properties"
 msgstr "Egenskaper för %s"
 
-#: src/file-manager/fm-properties-window.c:628
+#: src/file-manager/fm-properties-window.c:656
 msgid "Cancel Group Change?"
 msgstr "Avbryt ändring av grupp?"
 
-#: src/file-manager/fm-properties-window.c:629
+#: src/file-manager/fm-properties-window.c:657
 msgid "Changing group"
 msgstr "Ändrar grupp"
 
-#: src/file-manager/fm-properties-window.c:788
+#: src/file-manager/fm-properties-window.c:816
 msgid "Cancel Owner Change?"
 msgstr "Avbryt ändring av ägare?"
 
-#: src/file-manager/fm-properties-window.c:789
+#: src/file-manager/fm-properties-window.c:817
 msgid "Changing owner"
 msgstr "Ändrar ägare"
 
-#: src/file-manager/fm-properties-window.c:948
+#: src/file-manager/fm-properties-window.c:976
 msgid "nothing"
 msgstr "inget"
 
-#: src/file-manager/fm-properties-window.c:950
+#: src/file-manager/fm-properties-window.c:978
 msgid "unreadable"
 msgstr "oläsbar"
 
-#: src/file-manager/fm-properties-window.c:959
+#: src/file-manager/fm-properties-window.c:987
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 objekt, med storleken %s"
 
-#: src/file-manager/fm-properties-window.c:961
+#: src/file-manager/fm-properties-window.c:989
 #, c-format
 msgid "%d items, totalling %s"
 msgstr "%d objekt, totalt %s"
 
-#: src/file-manager/fm-properties-window.c:967
+#: src/file-manager/fm-properties-window.c:995
 msgid "(some contents unreadable)"
 msgstr "(en del innehåll är oläsbart)"
 
@@ -4963,135 +5075,135 @@ msgstr "(en del innehåll är oläsbart)"
 #. * "Contents:" title to line up with the first line of the 2-line value.
 #. * Maybe there's a better way to do this, but I couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:981
+#: src/file-manager/fm-properties-window.c:1009
 msgid "Contents:"
 msgstr "Innehåll:"
 
-#: src/file-manager/fm-properties-window.c:1125
+#: src/file-manager/fm-properties-window.c:1153
 msgid "Basic"
 msgstr "Grundläggande"
 
-#: src/file-manager/fm-properties-window.c:1200
+#: src/file-manager/fm-properties-window.c:1229
 msgid "Where:"
 msgstr "Var:"
 
-#: src/file-manager/fm-properties-window.c:1202
+#: src/file-manager/fm-properties-window.c:1231
 msgid "Type:"
 msgstr "Typ:"
 
-#: src/file-manager/fm-properties-window.c:1208
+#: src/file-manager/fm-properties-window.c:1237
 msgid "Size:"
 msgstr "Storlek:"
 
-#: src/file-manager/fm-properties-window.c:1215
+#: src/file-manager/fm-properties-window.c:1244
 msgid "Modified:"
 msgstr "Ändrad:"
 
-#: src/file-manager/fm-properties-window.c:1217
+#: src/file-manager/fm-properties-window.c:1246
 msgid "Accessed:"
 msgstr "Åtkommen:"
 
-#: src/file-manager/fm-properties-window.c:1220
+#: src/file-manager/fm-properties-window.c:1249
 msgid "MIME type:"
 msgstr "MIME-typ:"
 
-#: src/file-manager/fm-properties-window.c:1228
+#: src/file-manager/fm-properties-window.c:1257
 msgid "Select Custom Icon..."
 msgstr "Välj anpassad ikon..."
 
-#: src/file-manager/fm-properties-window.c:1234
+#: src/file-manager/fm-properties-window.c:1263
 msgid "Remove Custom Icon"
 msgstr "Ta bort anpassad ikon"
 
-#: src/file-manager/fm-properties-window.c:1613
+#: src/file-manager/fm-properties-window.c:1642
 msgid "Special Flags:"
 msgstr "Specialflaggor:"
 
-#: src/file-manager/fm-properties-window.c:1617
+#: src/file-manager/fm-properties-window.c:1646
 msgid "Set User ID"
 msgstr "Ställ in användar-ID"
 
-#: src/file-manager/fm-properties-window.c:1621
+#: src/file-manager/fm-properties-window.c:1650
 msgid "Set Group ID"
 msgstr "Ställ in grupp-ID"
 
-#: src/file-manager/fm-properties-window.c:1625
+#: src/file-manager/fm-properties-window.c:1654
 msgid "Sticky"
 msgstr "Klistrig"
 
-#: src/file-manager/fm-properties-window.c:1654
+#: src/file-manager/fm-properties-window.c:1683
 msgid "Permissions"
 msgstr "Rättigheter"
 
-#: src/file-manager/fm-properties-window.c:1660
+#: src/file-manager/fm-properties-window.c:1689
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Du är inte ägaren, så du kan inte ändra dessa rättigheter."
 
-#: src/file-manager/fm-properties-window.c:1694
+#: src/file-manager/fm-properties-window.c:1723
 msgid "File Owner:"
 msgstr "Filägare:"
 
-#: src/file-manager/fm-properties-window.c:1709
+#: src/file-manager/fm-properties-window.c:1738
 msgid "File Group:"
 msgstr "Filgrupp:"
 
-#: src/file-manager/fm-properties-window.c:1736
+#: src/file-manager/fm-properties-window.c:1765
 msgid "Owner:"
 msgstr "Ägare:"
 
-#: src/file-manager/fm-properties-window.c:1740
+#: src/file-manager/fm-properties-window.c:1769
 msgid "Group:"
 msgstr "Grupp:"
 
-#: src/file-manager/fm-properties-window.c:1744
+#: src/file-manager/fm-properties-window.c:1773
 msgid "Others:"
 msgstr "Andra:"
 
-#: src/file-manager/fm-properties-window.c:1751
+#: src/file-manager/fm-properties-window.c:1780
 msgid "Text View:"
 msgstr "Textvy:"
 
-#: src/file-manager/fm-properties-window.c:1755
+#: src/file-manager/fm-properties-window.c:1784
 msgid "Number View:"
 msgstr "Siffervy:"
 
-#: src/file-manager/fm-properties-window.c:1759
+#: src/file-manager/fm-properties-window.c:1788
 msgid "Last Changed:"
 msgstr "Senast ändrad:"
 
-#: src/file-manager/fm-properties-window.c:1763
+#: src/file-manager/fm-properties-window.c:1792
 msgid "Read"
 msgstr "Läs"
 
-#: src/file-manager/fm-properties-window.c:1767
+#: src/file-manager/fm-properties-window.c:1796
 msgid "Write"
 msgstr "Skriv"
 
-#: src/file-manager/fm-properties-window.c:1771
+#: src/file-manager/fm-properties-window.c:1800
 msgid "Execute"
 msgstr "Kör program"
 
-#: src/file-manager/fm-properties-window.c:1828
+#: src/file-manager/fm-properties-window.c:1857
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Rättigheterna för \"%s\" kunde inte fastställas."
 
-#: src/file-manager/fm-properties-window.c:2048
+#: src/file-manager/fm-properties-window.c:2077
 msgid "Cancel Showing Properties Window?"
 msgstr "Avbryt visandet av egenskapsfönstret?"
 
-#: src/file-manager/fm-properties-window.c:2049
+#: src/file-manager/fm-properties-window.c:2078
 msgid "Creating Properties window"
 msgstr "Skapar fönstret Egenskaper"
 
-#: src/file-manager/fm-properties-window.c:2130
+#: src/file-manager/fm-properties-window.c:2173
 #: src/nautilus-property-browser.c:996 src/nautilus-property-browser.c:1134
 #: src/nautilus-property-browser.c:1402
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil!"
 
-#: src/file-manager/fm-properties-window.c:2160
+#: src/file-manager/fm-properties-window.c:2203
 msgid "Select an image to represent the file:"
 msgstr "Välj en bild som ska representera filen:"
 
@@ -5204,7 +5316,7 @@ msgstr "Välj ett program att öppna det markerade objektet med"
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:2
 msgid "Choose another application with which to open the selected item"
-msgstr "Välj en annan applikation att öppna det markerade objektet med"
+msgstr "Välj ett annat program att öppna det markerade objektet med"
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:3
 msgid "Choose another viewer with which to view the selected item"
@@ -5268,7 +5380,7 @@ msgstr "Öppna det markerade objektet i detta fönster"
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:22
 msgid "Other Application..."
-msgstr "Annan applikation..."
+msgstr "Annat program..."
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:23
 msgid "Other Viewer..."
@@ -6117,123 +6229,152 @@ msgstr "Ta bort en färg"
 msgid "Remove an emblem"
 msgstr "Ta bort ett emblem"
 
-#: src/nautilus-search-bar-criterion.c:68
+#. Menu item to search by file content in e.g. "Contains contains GNU"
+#: src/nautilus-search-bar-criterion.c:70
 msgid "Content"
 msgstr "Innehåll"
 
-#: src/nautilus-search-bar-criterion.c:71
+#. Menu item to search for files with an emblem attached in e.g. "With emblem marked with Important"
+#: src/nautilus-search-bar-criterion.c:76
 msgid "With Emblem"
 msgstr "Med emblem"
 
-#: src/nautilus-search-bar-criterion.c:72
+#. Menu item to search for files by the time they were last modified in e.g. "Last modified before [date]"
+#: src/nautilus-search-bar-criterion.c:78
 msgid "Last Modified"
 msgstr "Senast ändrad"
 
-#: src/nautilus-search-bar-criterion.c:73
+#. Menu item to search for files by their owner in e.g. "Owner is root"
+#: src/nautilus-search-bar-criterion.c:80
 msgid "Owner"
 msgstr "Ägare"
 
-#: src/nautilus-search-bar-criterion.c:79
+#. The "contains" in a search for items where "file name contains"
+#: src/nautilus-search-bar-criterion.c:87
 msgid "contains"
 msgstr "innehåller"
 
-#: src/nautilus-search-bar-criterion.c:80
+#. The "starts with" in a search for items where  "file name starts with"
+#: src/nautilus-search-bar-criterion.c:89
 msgid "starts with"
 msgstr "börjar med"
 
-#: src/nautilus-search-bar-criterion.c:81
+#. The "ends with" in a search for items where "file name ends with"
+#: src/nautilus-search-bar-criterion.c:91
 msgid "ends with"
 msgstr "slutar med"
 
-#: src/nautilus-search-bar-criterion.c:82
+#. The "matches glob" (eg *.c) in a search for items where "file name matches glob"
+#: src/nautilus-search-bar-criterion.c:93
 msgid "matches glob"
-msgstr "passar skalmönster"
+msgstr "matchar skalmönster"
 
-#: src/nautilus-search-bar-criterion.c:83
+#. The "matches regexp" (eg '[a-z]{2}+' in a search for items where "file name matches regexp"
+#: src/nautilus-search-bar-criterion.c:95
 msgid "matches regexp"
-msgstr "passar reguljärt uttryck"
+msgstr "matchar reguljärt uttryck"
 
-#: src/nautilus-search-bar-criterion.c:88
+#. The "includes all of" in a search for items where "content includes all of"
+#: src/nautilus-search-bar-criterion.c:101
 msgid "includes all of"
 msgstr "innehåller allt av"
 
-#: src/nautilus-search-bar-criterion.c:89
+#. The "includes any of" in a search for items where "content includes any of"
+#: src/nautilus-search-bar-criterion.c:103
 msgid "includes any of"
 msgstr "innehåller något av"
 
-#: src/nautilus-search-bar-criterion.c:90
+#. The "does not include all of" in a search for items where "content does not include all of"
+#: src/nautilus-search-bar-criterion.c:105
 msgid "does not include all of"
 msgstr "innehåller inte allt av"
 
-#: src/nautilus-search-bar-criterion.c:91
+#. The "includes none of" in a search for items where "content includes none of"
+#: src/nautilus-search-bar-criterion.c:107
 msgid "includes none of"
 msgstr "innehåller inget av"
 
-#: src/nautilus-search-bar-criterion.c:97
-#: src/nautilus-search-bar-criterion.c:124
+#. The "is" in a search for items where "Type is"
+#: src/nautilus-search-bar-criterion.c:114
 #: src/nautilus-search-bar-criterion.c:152
+#: src/nautilus-search-bar-criterion.c:188
 msgid "is"
 msgstr "är"
 
-#: src/nautilus-search-bar-criterion.c:98
-#: src/nautilus-search-bar-criterion.c:125
-#: src/nautilus-search-bar-criterion.c:153
+#. The "is not" in a search for items where "Type is not"
+#: src/nautilus-search-bar-criterion.c:116
+#: src/nautilus-search-bar-criterion.c:154
+#: src/nautilus-search-bar-criterion.c:190
 msgid "is not"
 msgstr "är inte"
 
-#: src/nautilus-search-bar-criterion.c:103
+#. A type of file you can search for; context is "Type is regular file"
+#: src/nautilus-search-bar-criterion.c:122
 msgid "regular file"
-msgstr "reguljär fil"
+msgstr "vanlig fil"
 
-#: src/nautilus-search-bar-criterion.c:104
+#. A type of file you can search for; context is "Type is text file"
+#: src/nautilus-search-bar-criterion.c:124
 msgid "text file"
 msgstr "textfil"
 
-#: src/nautilus-search-bar-criterion.c:105
+#. A type of file you can search for; context is "Type is application"
+#: src/nautilus-search-bar-criterion.c:126
 msgid "application"
-msgstr "applikation"
+msgstr "program"
 
-#: src/nautilus-search-bar-criterion.c:106
+#. A type of file you can search for; context is "Type is folder"
+#: src/nautilus-search-bar-criterion.c:128
 msgid "folder"
 msgstr "mapp"
 
-#: src/nautilus-search-bar-criterion.c:112
+#. In relation to file size; context is "Size larger than"
+#: src/nautilus-search-bar-criterion.c:136
 msgid "larger than"
 msgstr "större än"
 
-#: src/nautilus-search-bar-criterion.c:113
+#. In relation to file size; context is "Size smaller than"
+#: src/nautilus-search-bar-criterion.c:138
 msgid "smaller than"
 msgstr "mindre än"
 
-#: src/nautilus-search-bar-criterion.c:118
+#. In relation to emblems; context is "With emblem marked with"
+#: src/nautilus-search-bar-criterion.c:144
 msgid "marked with"
 msgstr "märkt med"
 
-#: src/nautilus-search-bar-criterion.c:119
+#. in relation to emblems; context is "With emblem not marked with"
+#: src/nautilus-search-bar-criterion.c:146
 msgid "not marked with"
 msgstr "inte märkt med"
 
-#: src/nautilus-search-bar-criterion.c:126
+#. In relation to a file's last modfied time; context is "Last modified is after 11/2/00"
+#: src/nautilus-search-bar-criterion.c:156
 msgid "is after"
 msgstr "finns efter"
 
-#: src/nautilus-search-bar-criterion.c:127
+#. In relation to a file's last modfied time; context is "Last modified is before 11/2/00"
+#: src/nautilus-search-bar-criterion.c:158
 msgid "is before"
 msgstr "finns före"
 
-#: src/nautilus-search-bar-criterion.c:129
+#. In relation to a file's last modfied time; context is "Last modified is today"
+#: src/nautilus-search-bar-criterion.c:161
 msgid "is today"
 msgstr "är idag"
 
-#: src/nautilus-search-bar-criterion.c:130
+#. In relation to a file's last modfied time; context is "Last modified is yesterdat"
+#: src/nautilus-search-bar-criterion.c:163
 msgid "is yesterday"
 msgstr "är igår"
 
-#: src/nautilus-search-bar-criterion.c:132
+#. In relation to a file's last modfied time; context is "Last modified is within a week of"
+#: src/nautilus-search-bar-criterion.c:166
 msgid "is within a week of"
 msgstr "är inom en vecka från"
 
-#: src/nautilus-search-bar-criterion.c:133
+#. In relation to a file's last modfied time; context is "Last modified is within a month of"
+#: src/nautilus-search-bar-criterion.c:168
 msgid "is within a month of"
 msgstr "är inom en månad från"
 
@@ -6331,7 +6472,7 @@ msgstr "Stäng detta fönster"
 
 #: po/tmp/nautilus-shell-ui.xml.h:16
 msgid "Cut _Text"
-msgstr "Klipp ut _text"
+msgstr "Klipp _ut text"
 
 #: po/tmp/nautilus-shell-ui.xml.h:18
 msgid "Display a window that allows editing the bookmarks in this menu"
@@ -6421,8 +6562,8 @@ msgid "Home"
 msgstr "Hem"
 
 #: po/tmp/nautilus-shell-ui.xml.h:39
-msgid "Nautilus _Feedback..."
-msgstr "Nautilus-_feedback..."
+msgid "Nautilus _License"
+msgstr "Nautilus-_licens"
 
 #: po/tmp/nautilus-shell-ui.xml.h:40
 msgid "New Window"
@@ -6462,8 +6603,9 @@ msgstr "Sök efter filer på den här datorn"
 
 #: po/tmp/nautilus-shell-ui.xml.h:50
 msgid ""
-"Show a page from which you can send feedback about Nautilus to its creators"
-msgstr "Visa en sida där du kan skicka feedback om Nautilus till dess skapare"
+"Show a page from which you can send feedback about Nautilus and Eazel "
+"Services"
+msgstr "Visa en sida där du kan skicka feedback om Nautilus och Eazel Services"
 
 #: po/tmp/nautilus-shell-ui.xml.h:51
 msgid "Show the contents at the normal size"
@@ -6543,7 +6685,7 @@ msgstr "_Bakåt"
 
 #: po/tmp/nautilus-shell-ui.xml.h:71
 msgid "_Backgrounds and Emblems..."
-msgstr "_Bakgrunder och emblem..."
+msgstr "Bakgrunder och _emblem..."
 
 #: po/tmp/nautilus-shell-ui.xml.h:72
 msgid "_Bookmarks"
@@ -6561,29 +6703,29 @@ msgstr "R_edigera"
 msgid "_Edit Bookmarks..."
 msgstr "_Redigera bokmärken..."
 
-#: po/tmp/nautilus-shell-ui.xml.h:78 src/nautilus-window-menus.c:1311
+#: po/tmp/nautilus-shell-ui.xml.h:77
+msgid "_Feedback..."
+msgstr "_Feedback..."
+
+#: po/tmp/nautilus-shell-ui.xml.h:79 src/nautilus-window-menus.c:1311
 msgid "_Find"
 msgstr "_Sök"
 
-#: po/tmp/nautilus-shell-ui.xml.h:79
+#: po/tmp/nautilus-shell-ui.xml.h:80
 msgid "_Forward"
 msgstr "_Framåt"
 
-#: po/tmp/nautilus-shell-ui.xml.h:80
+#: po/tmp/nautilus-shell-ui.xml.h:81
 msgid "_Go"
 msgstr "_Gå till"
 
-#: po/tmp/nautilus-shell-ui.xml.h:81
+#: po/tmp/nautilus-shell-ui.xml.h:82
 msgid "_Help"
 msgstr "_Hjälp"
 
-#: po/tmp/nautilus-shell-ui.xml.h:82
+#: po/tmp/nautilus-shell-ui.xml.h:83
 msgid "_Home"
 msgstr "_Hem"
-
-#: po/tmp/nautilus-shell-ui.xml.h:83
-msgid "_Nautilus License"
-msgstr "_Nautilus-licens"
 
 #: po/tmp/nautilus-shell-ui.xml.h:84
 msgid "_Nautilus User Manual"
@@ -7090,6 +7232,15 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 #: src/nautilus-zoom-control.c:587
 msgid "%.0f%%"
 msgstr "%.0f %%"
+
+#~ msgid "with \"%s\" in the name"
+#~ msgstr "med \"%s\" i namnet"
+
+#~ msgid "are not %s"
+#~ msgstr "är inte %s"
+
+#~ msgid "that"
+#~ msgstr "som"
 
 #~ msgid "-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*"
 #~ msgstr "-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*"
