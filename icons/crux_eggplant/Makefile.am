@@ -1,6 +1,6 @@
 crux_eggplantdir = $(datadir)/pixmaps/nautilus/crux_eggplant
 
-SUBDIRS = sidebar_tab_pieces backgrounds throbber
+SUBDIRS = sidebar_tab_pieces backgrounds
 
 crux_eggplant_DATA =	\
 	crux_eggplant.xml		\
@@ -24,14 +24,6 @@ crux_eggplant_DATA =	\
 	i-directory.png		\
 	i-directory-72.png	\
 	i-directory.xml		\
-	i-regular-72-aa.png	\
-	i-regular-96-aa.png	\
-	i-regular-192-aa.png	\
-	i-regular-aa.png	\
-	i-regular-72.png	\
-	i-regular-96.png	\
-	i-regular-192.png	\
-	i-regular.png	\
 	i-regular.xml		\
 	increment.png		\
 	increment-i.png		\

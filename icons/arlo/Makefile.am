@@ -24,14 +24,20 @@ arlo_DATA =	\
 	i-directory.png		\
 	i-directory-72.png	\
 	i-directory.xml		\
-	i-regular-72-aa.png	\
-	i-regular-96-aa.png	\
-	i-regular-192-aa.png	\
-	i-regular-aa.png	\
+	i-regular-12.png	\
+	i-regular-24.png	\
+	i-regular-36.png	\
+	i-regular.png	\
 	i-regular-72.png	\
 	i-regular-96.png	\
 	i-regular-192.png	\
-	i-regular.png	\
+	i-regular-12-aa.png	\
+	i-regular-24-aa.png	\
+	i-regular-36-aa.png	\
+	i-regular-aa.png	\
+	i-regular-72-aa.png	\
+	i-regular-96-aa.png	\
+	i-regular-192-aa.png	\
 	i-regular.xml		\
 	increment.png		\
 	increment-i.png		\
