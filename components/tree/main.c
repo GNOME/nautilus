@@ -121,5 +121,7 @@ main (int argc, char *argv[])
 		bonobo_main ();
 	} while (object_count > 0);
 	
+        gnome_vfs_shutdown ();
+
 	return 0;
 }

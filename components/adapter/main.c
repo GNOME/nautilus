@@ -122,5 +122,7 @@ main (int argc, char *argv[])
 	/* Let the factory go. */
 	bonobo_object_unref (BONOBO_OBJECT (factory));
 
+        gnome_vfs_shutdown ();
+
 	return EXIT_SUCCESS;
 }

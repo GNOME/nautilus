@@ -1,3 +1,29 @@
+2001-01-04  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Rebecca Schulman  <rebecka@eazel.com>
+
+	Fix 5451 - GnomeVFS-WARNING received at startup.
+
+	* libnautilus/nautilus-view-standard-main.c:
+	(nautilus_view_standard_main_multi):
+	New standard module initialization call was not initializing
+	or shutting down gnome_vfs.
+
+	* components/adapter/main.c: (main):
+	* components/hardware/main.c: (main):
+	* components/html/ntl-web-browser.c: (main):
+	* components/mozilla/main.c: (main):
+	* components/music/main.c: (main):
+	* components/notes/nautilus-notes.c: (main):
+	* components/rpmview/main.c: (main):
+	* components/text/main.c: (main):
+	* components/tree/main.c: (main):
+	All of the above modules were initializing gnome_vfs but never
+	shutting it down. Add proper gnome_vfs_shutdown call.
+	This very likely fixes a problem with the notes module, etc.
+	sticking around after Nautilus quits.
+	
+
 2001-01-04  Darin Adler  <darin@eazel.com>
 
 	Fix a screwup in my recent check-in that made hidden files

@@ -262,5 +262,6 @@ main(int argc, char *argv[])
                 bonobo_main();
         } while (notes_object_count > 0);
         
+        gnome_vfs_shutdown ();
         return EXIT_SUCCESS;
 }

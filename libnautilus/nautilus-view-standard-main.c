@@ -35,6 +35,7 @@
 #include <bonobo/bonobo-main.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+#include <libgnomevfs/gnome-vfs-init.h>
 #include <liboaf/liboaf.h>
 #include <stdlib.h>
 
@@ -114,6 +115,7 @@ nautilus_view_standard_main_multi (const char                 *executable_name,
 				    argc, argv,
 				    oaf_popt_options, 0, NULL); 
 	orb = oaf_init (argc, argv);
+	gnome_vfs_init ();
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
 	/* Fill in the callback data */
@@ -137,6 +139,8 @@ nautilus_view_standard_main_multi (const char                 *executable_name,
 
 	/* Let the factory go. */
 	bonobo_object_unref (BONOBO_OBJECT (factory));
+
+	gnome_vfs_shutdown ();
 
 	return EXIT_SUCCESS;
 }
