@@ -1,1 +1,6 @@
-SUBDIRS = e-paned
+NULL=
+
+SUBDIRS =\
+	e-paned \
+	nautilus-druid \
+	$(NULL)
