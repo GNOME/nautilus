@@ -974,7 +974,7 @@ rename_guts (NautilusFile *file,
 	Operation *op;
 	GnomeVFSFileInfo *partial_file_info;
 	GnomeVFSURI *vfs_uri;
-	char *uri;
+	char *uri, *old_name;
 	gboolean success;
 	gboolean is_local_desktop_file;
 
@@ -1035,7 +1035,17 @@ rename_guts (NautilusFile *file,
 	}
 	
 	if (is_local_desktop_file) {
-		success = nautilus_link_desktop_file_local_set_text (uri, new_name);
+		/* Don't actually change the name if the new name is the same.
+		 * This helps for the vfolder method where this can happen and
+		 * we want to minimize actual changes
+		 */
+		old_name = nautilus_link_desktop_file_local_get_text (uri);
+		if (old_name != NULL && strcmp (new_name, old_name) == 0) {
+			success = TRUE;
+		} else {
+			success = nautilus_link_desktop_file_local_set_text (uri, new_name);
+		}
+		g_free (old_name);
 		g_free (uri);
 
 		if (success) {
