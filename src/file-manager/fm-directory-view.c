@@ -3229,9 +3229,10 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 	int index;
 	
 	/* Clear any previous inserted items in the applications and viewers placeholders */
-	/* FIXME bugzilla.eazel.com 3568: We are leaking here. We need to remove the verbs also */
-	nautilus_bonobo_remove_menu_items (view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER);
-	nautilus_bonobo_remove_menu_items (view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER);
+	nautilus_bonobo_remove_menu_items_and_verbs 
+		(view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER);
+	nautilus_bonobo_remove_menu_items_and_verbs 
+		(view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER);
 	
 	/* This menu is only displayed when there's one selected item. */
 	if (nautilus_g_list_exactly_one_item (selection)) {

@@ -65,8 +65,9 @@ void     nautilus_bonobo_add_submenu             (BonoboUIComponent *ui,
 						  const char        *label);
 void     nautilus_bonobo_add_menu_separator      (BonoboUIComponent *ui,
 						  const char        *path);
-void     nautilus_bonobo_remove_menu_items       (BonoboUIComponent *ui,
-						  const char        *path);
+void     nautilus_bonobo_remove_menu_items_and_verbs       
+						 (BonoboUIComponent *ui,
+						  const char        *container_path);
 char *   nautilus_bonobo_get_menu_item_verb_name (const char        *path);
 void     nautilus_bonobo_set_icon                (BonoboUIComponent *ui,
 						  const char        *path,

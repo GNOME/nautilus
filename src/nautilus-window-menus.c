@@ -1305,23 +1305,20 @@ nautilus_window_remove_go_menu_callback (NautilusWindow *window)
 void
 nautilus_window_remove_bookmarks_menu_items (NautilusWindow *window)
 {
-	/* FIXME bugzilla.eazel.com 3568:
-	 * We leak the verbs when we remove the menu items.
-	 */
-	nautilus_bonobo_remove_menu_items (window->details->shell_ui, 
-					   NAUTILUS_MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER);					   
-	nautilus_bonobo_remove_menu_items (window->details->shell_ui, 
-					   NAUTILUS_MENU_PATH_BOOKMARKS_PLACEHOLDER);					   
+	nautilus_bonobo_remove_menu_items_and_verbs 
+		(window->details->shell_ui, 
+		 NAUTILUS_MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER);					   
+	nautilus_bonobo_remove_menu_items_and_verbs 
+		(window->details->shell_ui, 
+		 NAUTILUS_MENU_PATH_BOOKMARKS_PLACEHOLDER);					   
 }
 
 void
 nautilus_window_remove_go_menu_items (NautilusWindow *window)
 {
-	/* FIXME bugzilla.eazel.com 3568:
-	 * We leak the verbs when we remove the menu items.
-	 */
-	nautilus_bonobo_remove_menu_items (window->details->shell_ui, 
-					   NAUTILUS_MENU_PATH_HISTORY_PLACEHOLDER);
+	nautilus_bonobo_remove_menu_items_and_verbs 
+		(window->details->shell_ui, 
+		 NAUTILUS_MENU_PATH_HISTORY_PLACEHOLDER);
 }
 
 void

@@ -239,26 +239,61 @@ nautilus_bonobo_get_menu_item_verb_name (const char *path)
 	return verb_name;
 }
 
+static void
+remove_verbs (BonoboUIComponent *ui, const char *container_path)
+{
+	BonoboUINode *path_node;
+	BonoboUINode *child_node;
+	char *verb_name;
+
+	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
+	g_return_if_fail (container_path != NULL);
+
+	bonobo_ui_component_freeze (ui, NULL);
+
+	path_node = bonobo_ui_component_get_tree (ui, container_path, TRUE, NULL);
+
+	if (path_node != NULL) {
+		for (child_node = bonobo_ui_node_children (path_node);
+		     child_node != NULL;
+		     child_node = bonobo_ui_node_next (child_node)) {
+			verb_name = bonobo_ui_node_get_attr (child_node, "verb");
+			if (verb_name != NULL) {
+				bonobo_ui_component_remove_verb (ui, verb_name);
+			}
+			bonobo_ui_node_free_string (verb_name);
+		}
+	}
+
+	bonobo_ui_node_free (path_node);
+	bonobo_ui_component_thaw (ui, NULL);
+}
+
 /**
- * nautilus_bonobo_remove_menu_items
+ * nautilus_bonobo_remove_menu_items_and_verbs
  * 
- * Removes all menu items contained in a menu or placeholder
+ * Removes all menu items contained in a menu or placeholder, and
+ * their verbs.
  * 
  * @uih: The BonoboUIHandler for this menu item.
- * @path: The standard bonobo-style path specifier for this menu item.
+ * @container_path: The standard bonobo-style path specifier for this placeholder or submenu.
  */
 void
-nautilus_bonobo_remove_menu_items (BonoboUIComponent *ui, const char *path)
+nautilus_bonobo_remove_menu_items_and_verbs (BonoboUIComponent *ui, 
+					     const char *container_path)
 {
 	char *remove_wildcard;
 	
 	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
-	g_return_if_fail (path != NULL);
+	g_return_if_fail (container_path != NULL);
 
-	remove_wildcard = g_strdup_printf ("%s/*", path);
+	remove_verbs (ui, container_path);
 
+	/* For speed, remove menu items themselves all in one fell swoop,
+	 * though we removed the verbs one-by-one.
+	 */
+	remove_wildcard = g_strdup_printf ("%s/*", container_path);
 	bonobo_ui_component_rm (ui, remove_wildcard, NULL);
-
 	g_free (remove_wildcard);
 }
 

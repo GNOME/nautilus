@@ -1,5 +1,27 @@
 2000-10-23  John Sullivan  <sullivan@eazel.com>
 
+	Fixed 3568: Bonobo verbs and data leak when menus rebuilt
+
+	Michael Meeks added verb-removing support to Bonobo, which
+	I have now deployed in Nautilus.
+
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	(remove_verbs): New function, walks through the XML nodes
+	beneath a specified path and removes each verb it finds.
+	(nautilus_bonobo_remove_menu_items_and_verbs): Now calls
+	remove_verbs; also changed name from _remove_menu_items
+	for clarity.
+
+	* src/file-manager/fm-directory-view.c:
+	(reset_bonobo_open_with_menu):
+	* src/nautilus-window-menus.c:
+	(nautilus_window_remove_bookmarks_menu_items),
+	(nautilus_window_remove_go_menu_items): Removed FIXMEs
+	and updated for name change.
+
+2000-10-23  John Sullivan  <sullivan@eazel.com>
+
 	* src/nautilus-applicable-views.c:
 	(get_nautilus_navigation_result_from_gnome_vfs_result):
 	Improved the warning message output to the terminal when 
