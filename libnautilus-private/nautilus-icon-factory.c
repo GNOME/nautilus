@@ -1198,6 +1198,8 @@ create_normal_cache_icon (const char *icon,
 	
 	cache_icon = cache_icon_new (pixbuf, icon_data);
 	cache_icon->mtime = mtime;
+
+	g_object_unref (pixbuf);
 	
 	return cache_icon;
 }
