@@ -8,6 +8,8 @@ decode_source = decode.c
 dct64_source = dct64.c
 endif
 
+platform_source = decode.c dct64.c decode_i386.c dct64_i386.c
+
 INCLUDES =					\
 	-DPREFIX=\"$(prefix)\"			\
 	-DG_LOG_DOMAIN=\"Nautilus-Music\"	\
@@ -78,4 +80,4 @@ oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 
 @XML_I18N_MERGE_OAF_RULE@
 
-EXTRA_DIST=$(oaf_DATA) $(oaf_in_files)
+EXTRA_DIST=$(oaf_DATA) $(oaf_in_files) $(platform_source)
