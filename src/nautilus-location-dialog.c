@@ -136,6 +136,7 @@ nautilus_location_dialog_init (NautilusLocationDialog *dialog)
 
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Open Location"));
 	gtk_window_set_default_size (GTK_WINDOW (dialog), 300, -1);
+	gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
 	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
@@ -186,6 +187,7 @@ nautilus_location_dialog_new (NautilusWindow *window)
 	char *formatted_location;
 	
 	dialog = gtk_widget_new (NAUTILUS_TYPE_LOCATION_DIALOG, NULL);
+	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (window));
 
 	if (window) {
 		gtk_window_set_screen (GTK_WINDOW (dialog),
