@@ -1,3 +1,28 @@
+Mon Mar 05 20:57:14 2001  George Lebl <jirka@5z.com>
+
+	Ian McKellar <ian@eazel.com> said this patch will end global
+	hunger and bring about world peace.
+
+	* components/help/hyperbola-filefmt.c (fmt_toplevel_add_doc):
+	  g_strdup and not strdup if we're going to g_free.
+	  Fixes #7414 
+
+	* components/help/hyperbola-filefmt.c (locale_score)
+	  (is_new_locale_better) (fmt_toplevel_parse_xml_tree)
+	  (fmt_toplevel_populate_tree) (get_path_from_node):
+	  When looking at the toplevels documents XML tree, score different
+	  paths for a document according to the position of the locale in the
+	  language list that was gotten from gnome_i18n_get_language_list.
+	  fmt_toplevel_parse_xml_tree now returns TRUE/FALSE for better
+	  detection of unparsable files then before.  Also check if the file
+	  exists and is readable before adding it to the tree.
+	  Fixes #7311, #7314
+
+	* components/help/converters/gnome-info2html2/main.c (main):
+	  the "bz" integer is only used when HAVE_LIBBZ2 is on, and it's
+	  not for me, so put it into the HAVE_LIBBZ2 define protected code.
+	  Fixes #7417
+
 2001-03-05  Eskil Olsen  <eskil@eazel.com>
 
 	reviewed by: Mike Fleming <mfleming@eazel.com> who almost feels

@@ -46,8 +46,8 @@ main(int argc, char **argv)
 	gzFile f = NULL;
 #ifdef HAVE_LIBBZ2
 	BZFILE *bf=NULL;
-#endif
 	int bz = 0;
+#endif
 	char line[250];
 	poptContext ctx;
 	int result;

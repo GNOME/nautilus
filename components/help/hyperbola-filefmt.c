@@ -32,6 +32,7 @@
 #include <regex.h>
 #include <limits.h>
 #include <ctype.h>
+#include <unistd.h>
 
 #include <string.h>
 
@@ -1499,7 +1500,7 @@ static void fmt_toplevel_add_doc (HyperbolaDocTree * tree, char * omf_name)
 
 	    		char *ptr;
 	    
-	    		ptr = strdup(node->childs->content);
+	    		ptr = g_strdup(node->childs->content);
 	    		str = remove_leading_and_trailing_white_spaces(ptr);
 	    		title = g_strconcat(prefix, str, NULL);
 	    		g_free(ptr);	
@@ -1544,20 +1545,95 @@ static void fmt_toplevel_add_doc (HyperbolaDocTree * tree, char * omf_name)
     	}
 }
 
-static void fmt_toplevel_parse_xml_tree (HyperbolaDocTree * tree, xmlDocPtr doc,
-						char *locale)
+/* returns -1 on invalid locale (not found), or the position
+ * in the locale list.  the lower the position the better, that
+ * is, the lower number should get precedence */
+static int
+locale_score (GList *locales, xmlNode *doc_node)
 {
-	xmlNodePtr doc_node, docpath_node;
-    	char *omf_name, *str, *doc_locale, omf_dir[256], omf_path[256];
+	GList *li;
+	char *locale;
+	int score;
+
+	if (doc_node == NULL)
+		return -1;
+
+	locale = xmlGetProp (doc_node, "locale");
+	if (locale == NULL) {
+		locale = "C";
+	}
+
+	score = 0;
+	for (li = locales; li != NULL; li = li->next) {
+		if (strcmp (locale, li->data) == 0) {
+			return score;
+		}
+
+		score++;
+	}
+
+	return -1;
+}
+
+/* do we want to use new_doc rather then current_doc.  That is, is new_doc
+ * a better translation then current_doc */
+static gboolean
+is_new_locale_better (GList *locales, xmlNode *current_doc, xmlNode *new_doc)
+{
+	int current_score, new_score;
+
+	new_score = locale_score (locales, new_doc);
+
+	/* if new document is not in our list, forget it */
+	if (new_score == -1) {
+		return FALSE;
+	}
+
+	current_score = locale_score (locales, current_doc);
+
+	/* if new document is better (has lower score) then we want to use
+	 * that, or if the current document is bogus (-1) */
+	if (new_score < current_score
+	    || current_score == -1) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+static char *
+get_path_from_node (const char *omf_dir, xmlNode *docpath_node)
+{
+	char *str, *omf_path, *omf_name;
+
+	str = g_strdup (docpath_node->childs->content);
+	omf_name = remove_leading_and_trailing_white_spaces (str);
+	omf_path = g_strdup_printf ("%s/%s", omf_dir, omf_name);
+
+	g_free (str);
+
+	return omf_path;
+}
+
+
+/* Note: Locales should include "C" as the last element.  Basically for use
+ * with locales lists returned by gnome_i18n_get_language_list. */
+static gboolean
+fmt_toplevel_parse_xml_tree (HyperbolaDocTree * tree,
+			     xmlDocPtr doc,
+			     GList *locales)
+{
+	xmlNodePtr doc_node, docpath_node, best_path_node;
+    	char omf_dir[256], *omf_path;
 	FILE *pipe;
 	int bytes_read;
-	int node_added;
+	gboolean node_added;
 
     	if (doc == NULL || doc->root == NULL)
-        	return;
+        	return FALSE;
 
-	if (locale == NULL)
-		return;
+	if (locales == NULL)
+		return FALSE;
 		
 	pipe = popen ("scrollkeeper-config --omfdir", "r");
 	bytes_read = fread ((void *) omf_dir, sizeof (char), 128, pipe);
@@ -1565,7 +1641,7 @@ static void fmt_toplevel_parse_xml_tree (HyperbolaDocTree * tree, xmlDocPtr doc,
 	/* Make sure that we don't end up out-of-bunds */
 	if (bytes_read < 1) {
 		pclose (pipe);
-		return;
+		return FALSE;
 	}
 
 	/* Make sure the string is properly terminated */
@@ -1573,57 +1649,48 @@ static void fmt_toplevel_parse_xml_tree (HyperbolaDocTree * tree, xmlDocPtr doc,
 
 	/* Exit code of 0 means we got a path back from ScrollKeeper */
 	if (pclose (pipe))
-		return;
+		return FALSE;
+
+	node_added = FALSE;
 	
     	for(doc_node = doc->root->childs; doc_node != NULL; 
             doc_node = doc_node->next) {
-	    
+
+		/* nothing found yet */
+		best_path_node = NULL;
+
 		/* check out the doc for the current locale */
 
-	        node_added = 0;
-	    
         	for(docpath_node = doc_node->childs; 
 	    	    docpath_node != NULL;
 	    	    docpath_node = docpath_node->next) {	
-		    
-	    		doc_locale = xmlGetProp(docpath_node, "locale");
-	    		if (doc_locale != NULL && !strcmp(doc_locale, locale)) {
-	        		if (docpath_node->childs != NULL && 
-	            		    docpath_node->childs->content != NULL) {
-				    
-	            			str = g_strdup(docpath_node->childs->content);
-		    			omf_name = remove_leading_and_trailing_white_spaces(str);
-					sprintf(omf_path, "%s/%s", omf_dir, omf_name);
-		    			fmt_toplevel_add_doc(tree, omf_path);
-		    			g_free(str);
-					node_added = 1;
-		 		}
-	    		}
-		}
-		
-		if (node_added || !strcmp(locale, "C"))
-			continue;
+			/* check validity of the node first */
+			if (docpath_node->childs != NULL
+			    && docpath_node->childs->content != NULL
+			    && is_new_locale_better (locales,
+						     best_path_node,
+						     docpath_node)) {
+				omf_path = get_path_from_node (omf_dir,
+							       docpath_node);
 
-		/* add the C locale one if the translated doc was not there */
-						
-		for(docpath_node = doc_node->childs; 
-	    	    docpath_node != NULL;
-	    	    docpath_node = docpath_node->next) {	
-		    
-		    	doc_locale = xmlGetProp(docpath_node, "locale");
-	    		if (doc_locale != NULL && !strcmp(doc_locale, "C")) {
-	        		if (docpath_node->childs != NULL && 
-	            		    docpath_node->childs->content != NULL) {
-				    
-	            			str = g_strdup(docpath_node->childs->content);
-		    			omf_name = remove_leading_and_trailing_white_spaces(str);
-					sprintf(omf_path, "%s/%s", omf_dir, omf_name);
-		    			fmt_toplevel_add_doc(tree, omf_path);
-		    			g_free(str);
-		 		}
-	    		}
+				if (access (omf_path, R_OK) == 0)
+					/* found a good one */
+					best_path_node = docpath_node;
+
+				g_free (omf_path);
+			}
+		}
+
+		if (best_path_node != NULL) {
+			omf_path = get_path_from_node (omf_dir, best_path_node);
+			fmt_toplevel_add_doc (tree, omf_path);
+			g_free (omf_path);
+
+			node_added = TRUE;
 		}
     	}
+
+	return node_added;
 }
 
 /* entry point for filling the toplevel tree that holds the very 
@@ -1637,25 +1704,16 @@ static int fmt_toplevel_populate_tree (HyperbolaDocTree * tree)
     	xmlDocPtr toplevel_doc;
     	char *toplevel_file;
 	int retval;
-	GList* node;
+	GList *locales;
   	
 	toplevel_file = HYPERBOLA_DATADIR "/topleveldocs.xml";
 
     	toplevel_doc = xmlParseFile (toplevel_file); 
 	
-    	if (toplevel_doc) {
-		retval = 0;
-  		for (node = gnome_i18n_get_language_list ("LC_MESSAGES");
-  		     node != NULL;
-  		     node = node->next) {
-	        	fmt_toplevel_parse_xml_tree(tree, toplevel_doc, node->data);
-			if (toplevel_doc->root != NULL &&
-			    toplevel_doc->root->childs != NULL &&
-			    toplevel_doc->root->childs->childs != NULL) {
-			    	retval = 1;
-			    	break;
-			}
-		}
+    	if (toplevel_doc != NULL) {
+		locales = gnome_i18n_get_language_list ("LC_MESSAGES");
+		retval = fmt_toplevel_parse_xml_tree (tree, toplevel_doc,
+						      locales);
     	}
     	else {
 		retval = 0;
