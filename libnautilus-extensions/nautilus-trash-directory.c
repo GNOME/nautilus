@@ -59,9 +59,14 @@ get_volume_vfs_uri_if_writable (NautilusVolume *volume)
 	char *uri;
 	GnomeVFSURI *vfs_uri;
 
-	/* FIXME: Why is trash only found on EXT2 volumes? This seems
-	 * like an incorrect check. Also, why can't we view the trash
-	 * on a read-only volume if it happens to be there?
+	/* FIXME bugzilla.eazel.com 2443: 
+	 * Why is trash only found on EXT2 volumes? This seems
+	 * like an incorrect check.
+	 */
+
+	/* FIXME bugzilla.eazel.com 2444:
+	 * Why can't we view the trash on a read-only volume 
+	 * if it happens to be there?
 	 */
 	if (volume->type != NAUTILUS_VOLUME_EXT2 || volume->is_read_only) {
 		return NULL;

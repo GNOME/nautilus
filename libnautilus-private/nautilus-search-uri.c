@@ -308,7 +308,7 @@ static operand_criterion_item mod_time2_table [] = {
    -------------------------------------------------------
 */
 
-/* FIXME: not implemented in nautilus yet */
+/* FIXME bugzilla.eazel.com 2369: not implemented in nautilus yet */
 static operand_criterion_item emblem2_table [] = {
         {NULL, NULL, NULL}
 };
@@ -319,7 +319,7 @@ static operand_criterion_item emblem2_table [] = {
    -------------------------------------------------------
 */
 
-/* FIXME: I cannot find any doc on this one */
+/* FIXME bugzilla.eazel.com 2439: I cannot find any doc on this one */
 static operand_criterion_item contains2_table [] = {
         {"includes",
          N_("with the word"),
@@ -350,15 +350,15 @@ static field_criterion_item main_table[] = {
         {"size",
          N_(""),
          size2_table},
-        /* FIXME: waiting for doc */
+        /* FIXME bugzilla.eazel.com 2439: waiting for doc */
         {"contains",
          N_(""),
          contains2_table},
-        /* FIXME: waiting for spec */
+        /* FIXME bugzilla.eazel.com 2439: waiting for spec */
         {"mod_time",
          N_(""),
          mod_time2_table},
-        /* FIXME: waiting for implementation */
+        /* FIXME bugzilla.eazel.com 2369: waiting for implementation */
         {"emblem",
          N_(""),
          emblem2_table},
@@ -473,7 +473,7 @@ get_translated_criterion (const GSList *criterion)
  * @criterion: The GSList whose data field points to the criterion GSList.
  *
  * calculates the "whose", "who" or "which" prefix for a given criterion.
- * FIXME: it is an ugly hack I added after arlo asked me to:
+ * FIXME bugzilla.eazel.com 2440: it is an ugly hack I added after arlo asked me to:
  * it is likely to be a pain for translations. I need to modify the data struct 
  * for  this to work cleanly.
  *

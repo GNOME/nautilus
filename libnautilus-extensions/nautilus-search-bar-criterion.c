@@ -104,7 +104,7 @@ static char *emblem_relations [] = {
 };
 
 static char *emblem_objects [] = {
-	/* FIXME: add emblem possibilities here.
+	/* FIXME bugzilla.eazel.com 2369: add emblem possibilities here.
 	   likely to be icon filenames
 	*/
 	NULL
@@ -163,7 +163,7 @@ static char *                              get_owner_location_for               
 void
 nautilus_search_bar_criterion_destroy (NautilusSearchBarCriterion *criterion)
 {
-	/* FIXME : need more freeage */
+	/* FIXME bugzilla.eazel.com 2437: need more freeage */
 	g_free (criterion->details);
 	g_free (criterion);
 }
@@ -609,7 +609,7 @@ get_size_location_for (int relation_number,
 	/* We put a 'K' after the size, so multiply what the user
 	   entered by 1000 */
 	entered_size = strtol (size_text, NULL, 10);
-	/* FIXME:  Need error handling here */
+	/* FIXME bugzilla.eazel.com 2438:  Need error handling here */
 	g_return_val_if_fail (entered_size >= 0, NULL);
 	return g_strdup_printf ("%s %s %d", NAUTILUS_SEARCH_URI_TEXT_SIZE, 
 				possible_relations[relation_number], 
@@ -621,7 +621,7 @@ static char *
 get_emblem_location_for  (int relation_number,
 			  int value_number)
 {
-	/* FIXME: not yet implemented */
+	/* FIXME bugzilla.eazel.com 2369: not yet implemented */
 	return g_strdup_printf ("%s ", NAUTILUS_SEARCH_URI_TEXT_EMBLEMS);
 }
 

@@ -361,7 +361,7 @@ mount_volume_mount (NautilusVolumeMonitor *view, NautilusVolume *volume)
 	 * them to something that's suitable for use in the name of a
 	 * link on the desktop.
 	 */
-	/* FIXME: Move to desktop code? */
+	/* FIXME bugzilla.eazel.com 2445: Move to desktop code? */
 	for (index = 0; ; index++) {
 		if (volume->volume_name [index] == '\0') {
 			break;
@@ -450,7 +450,7 @@ mount_volume_activate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 static void 
 eject_cdrom (NautilusVolume *volume)
 {
-	/* FIXME: We need to turn on this code, or get rid of it. */
+	/* FIXME bugzilla.eazel.com 2446: We need to turn on this code, or get rid of it. */
 #if 0
 	int fd;
 
@@ -610,7 +610,7 @@ mount_volume_floppy_add (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 	volume->type = NAUTILUS_VOLUME_FLOPPY;
 	return TRUE;
 
-	/* FIXME: Is this code needed or not? */
+	/* FIXME bugzilla.eazel.com 2447: Is this code needed or not? */
 #if 0
 	if (check_permissions (volume->fsname, R_OK)) {
 		return FALSE;
@@ -683,7 +683,7 @@ mount_volume_add_aliases (NautilusVolumeMonitor *monitor, const char *alias, Nau
 	if (buf[0] == '/') {
 		path = g_strdup (buf);
 	} else {
-		/* FIXME: This doesn't work well for paths with ".." in them. */
+		/* FIXME bugzilla.eazel.com 2449: This doesn't work well for paths with ".." in them. */
 		directory_path = g_dirname (alias);
     		path = g_strconcat (directory_path,
 				    "/",
@@ -729,11 +729,13 @@ add_mount_volume (NautilusVolumeMonitor *monitor, struct mntent *ent)
 static gboolean
 mntent_is_removable_fs (struct mntent *ent)
 {
-	/* FIXME: this does not detect removable volumes that are not
+	/* FIXME bugzilla.eazel.com 2450: 
+	   this does not detect removable volumes that are not
            CDs or floppies (e.g. zip drives, DVD-ROMs, those weird 20M
            super floppies, etc) */
 
-	/* FIXME: it's incorrect to assume that all ISO9660 volumes
+	/* FIXME bugzilla.eazel.com 2451: 
+	   it's incorrect to assume that all ISO9660 volumes
            are removable; you could create one as a "filesystem in a
            file" for testing purposes. */
 
@@ -782,7 +784,7 @@ find_volumes (NautilusVolumeMonitor *monitor)
 
 	while ((ent = getmntent (mef)) != NULL) {
 #if 0
-		/* FIXME: Think some more about these checks */
+		/* FIXME bugzilla.eazel.com 2452: Think some more about these checks */
 		/* Check for removable volume */
 		if (!mntent_is_removable_fs (ent)) {
 			continue;
@@ -877,7 +879,7 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 		argv[2] = NULL;
 
 		exec_err = gnome_execute_async (g_get_home_dir(), 2, argv);
-		/* FIXME: Ignore error? */
+		/* FIXME bugzilla.eazel.com 2453: Ignore error? */
 
 		is_mounted = !is_mounted;
 	}

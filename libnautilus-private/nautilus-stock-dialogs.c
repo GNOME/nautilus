@@ -153,7 +153,8 @@ timed_wait_callback (gpointer callback_data)
 	gnome_dialog_set_close (dialog, TRUE);
 	gtk_widget_show_all (GTK_WIDGET (dialog));
 
-	/* FIXME: Could parent here, but it's complicated because we
+	/* FIXME bugzilla.eazel.com 2441: 
+	 * Could parent here, but it's complicated because we
 	 * don't want this window to go away just because the parent
 	 * would go away first.
 	 */
