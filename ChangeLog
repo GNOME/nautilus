@@ -1,3 +1,36 @@
+2000-08-21  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 2137, renaming of trash causes a duplicate trash to 
+	appear.
+	If the user renames trash, it will get renamed back to Trash
+	when the desktop is restarted.  When we have individual file reneaming
+	permissions, this will never be an issue.
+
+	Fixed bug 2144, renaming home link on desktop causes a duplicate 
+	to appear.
+	 
+	* libnautilus-extensions/nautilus-link.c:
+	* libnautilus-extensions/nautilus-link.h:
+	(nautilus_link_is_home_link), (nautilus_link_is_trash_link):
+	Two new functions to identify specific types of links
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize):
+	Trash link is now created here,
+
+	(find_home_link),
+	(place_home_directory):
+	Modified functions to handle situations where home link 
+	has been renamed by the user.
+
+	(find_and_rename_trash_link),
+	(create_or_rename_trash):
+	New functions to handle creation of trash link.
+	
+	* src/nautilus-desktop-window.c: 
+	(nautilus_desktop_window_new):
+	Moved creation of trash link to FMDesktopIconView
+
 2000-08-21  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c:

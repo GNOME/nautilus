@@ -388,3 +388,44 @@ nautilus_link_is_volume_link (const char *path)
 	
 	return retval;
 }
+
+gboolean
+nautilus_link_is_home_link (const char *path)
+{
+	gboolean retval;
+	char *link_type;
+	
+	retval = FALSE;
+	link_type = nautilus_link_get_link_type (path);
+	if (link_type != NULL) {
+		if (strcmp (link_type, NAUTILUS_LINK_HOME) == 0) {
+			retval = TRUE;
+		} else {
+			retval = FALSE;
+		}
+		g_free (link_type);
+	}
+	
+	return retval;
+}
+
+gboolean
+nautilus_link_is_trash_link (const char *path)
+{
+	gboolean retval;
+	char *link_type;
+	
+	retval = FALSE;
+	link_type = nautilus_link_get_link_type (path);
+	if (link_type != NULL) {
+		if (strcmp (link_type, NAUTILUS_LINK_TRASH) == 0) {
+			retval = TRUE;
+		} else {
+			retval = FALSE;
+		}
+		g_free (link_type);
+	}
+	
+	return retval;
+}
+

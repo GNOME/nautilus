@@ -81,6 +81,16 @@ char * 	nautilus_link_get_link_type 			(const char *path);
  */
 gboolean nautilus_link_is_volume_link 			(const char *path);
 
+/* Returns if a link is a home link.
+ * Works only if the file is local and does sync. I/O
+ */
+gboolean nautilus_link_is_home_link 			(const char *path);
+
+/* Returns if a link is a trash link.
+ * Works only if the file is local and does sync. I/O
+ */
+gboolean nautilus_link_is_trash_link 			(const char *path);
+
 
 /* Returns the link uri associated with a link file. The first version
  * works only if the file is local and does sync. I/O, despite the

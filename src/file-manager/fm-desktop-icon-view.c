@@ -90,6 +90,7 @@ static int      desktop_icons_compare_callback                            (Nauti
 									   NautilusFile           *file_a,
 									   NautilusFile           *file_b,
 									   FMDesktopIconView      *icon_view);
+static void	create_or_rename_trash 					  (void);
 								   
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView,
 				   fm_desktop_icon_view,
@@ -256,6 +257,9 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 
 	/* Setup home directory link */
 	place_home_directory (desktop_icon_view);
+
+	/* Create trash link */
+	create_or_rename_trash ();
 
 	/* Create initial mount links */
 	nautilus_volume_monitor_each_mounted_volume (desktop_icon_view->details->volume_monitor, 
@@ -510,7 +514,53 @@ mount_unmount_removable (GtkCheckMenuItem *item, FMDesktopIconView *icon_view)
 	gtk_check_menu_item_set_active (item, is_mounted);
 }
 
-/* fm_desktop_place_home_directory
+static gboolean
+find_home_link (void)
+{
+	DIR *current_dir;
+	char *desktop_path;		
+	struct dirent *this_entry;
+	struct stat status;
+	char cwd[PATH_MAX + 1];
+	char *link_path;
+
+	desktop_path = nautilus_get_desktop_directory ();
+
+	/* Open directory for reading */
+	current_dir = opendir (desktop_path);
+	if (current_dir == NULL) {
+		return FALSE;
+	}
+
+	/* Save working directory and connect to desktop directory */
+	getcwd (cwd, PATH_MAX + 1);
+	chdir (desktop_path);
+
+	/* Look at all the entries */
+	while ((this_entry = readdir (current_dir)) != NULL) {
+		/* Ignore "." and ".." */
+		if ((strcmp (this_entry->d_name, ".") != 0) &&
+		    (strcmp (this_entry->d_name, "..") != 0)) {
+			stat (this_entry->d_name, &status);
+
+			/* Ignore directories.  The home link is at the top level */
+			if (!S_ISDIR (status.st_mode)) {
+				/* Check and see if this is a home link */
+				link_path = nautilus_make_path (desktop_path, this_entry->d_name);				
+				if (nautilus_link_is_home_link (link_path)) {
+					return TRUE;
+				}
+				g_free (link_path);
+			}
+		}
+	}
+	
+	closedir (current_dir);
+
+	return FALSE;
+}
+
+/* place_home_directory
  * 
  * Add an icon representing the user's home directory on the desktop.
  * Create if necessary
@@ -519,35 +569,116 @@ static void
 place_home_directory (FMDesktopIconView *icon_view)
 {
 	char *desktop_path, *home_link_name, *home_link_path, *home_link_uri, *home_dir_uri;
-	GnomeVFSResult result;
-	GnomeVFSFileInfo info;
 	gboolean made_link;
-	
+
+	/* Check and see if there is a home link already */
+	if (find_home_link ()) {
+		return;
+	}
+
+	/* Create the home link */
 	desktop_path = nautilus_get_desktop_directory ();
 	home_link_name = g_strdup_printf ("%s's Home", g_get_user_name ());
 	home_link_path = nautilus_make_path (desktop_path, home_link_name);
 	home_link_uri = nautilus_get_uri_from_local_path (home_link_path);
 	
-	result = gnome_vfs_get_file_info (home_link_uri, &info, 0);
-	if (result != GNOME_VFS_OK) {
-		/* FIXME: Maybe we should only create if the error was "not found". */
-		/* There was no link file.  Create it and add it to the desktop view */		
-		home_dir_uri = nautilus_get_uri_from_local_path (g_get_home_dir ());
-		made_link = nautilus_link_create (desktop_path, home_link_name, "temp-home.png", home_dir_uri);
-		g_free (home_dir_uri);
-		if (!made_link) {
-			/* FIXME: Is a message to the console acceptable here? */
-			g_message ("Unable to create home link: %s", gnome_vfs_result_to_string (result));
-		} else {
-			/* Identify as home directory link type */
-			nautilus_link_set_type (home_link_path, NAUTILUS_LINK_HOME);
-		}
+	home_dir_uri = nautilus_get_uri_from_local_path (g_get_home_dir ());
+	made_link = nautilus_link_create (desktop_path, home_link_name, "temp-home.png", home_dir_uri);
+	g_free (home_dir_uri);
+	if (!made_link) {
+		/* FIXME: Is a message to the console acceptable here? */
+		g_message ("Unable to create home link");
+	} else {
+		/* Identify as home directory link type */
+		nautilus_link_set_type (home_link_path, NAUTILUS_LINK_HOME);
 	}
 	
 	g_free (home_link_uri);
 	g_free (home_link_path);
 	g_free (home_link_name);
 	g_free (desktop_path);
+}
+
+/* Find a trash link and reset the name to Trash */	
+static gboolean
+find_and_rename_trash_link (void)
+{
+	DIR *current_dir;
+	char *desktop_path;		
+	struct dirent *this_entry;
+	struct stat status;
+	char cwd[PATH_MAX + 1];
+	char *link_path;
+
+	desktop_path = nautilus_get_desktop_directory ();
+
+	/* Open directory for reading */
+	current_dir = opendir (desktop_path);
+	if (current_dir == NULL) {
+		return FALSE;
+	}
+
+	/* Save working directory and connect to desktop directory */
+	getcwd (cwd, PATH_MAX + 1);
+	chdir (desktop_path);
+
+	/* Look at all the entries */
+	while ((this_entry = readdir (current_dir)) != NULL) {
+		/* Ignore "." and ".." */
+		if ((strcmp (this_entry->d_name, ".") != 0) &&
+		    (strcmp (this_entry->d_name, "..") != 0)) {
+			stat (this_entry->d_name, &status);
+
+			/* Ignore directories.  The home link is at the top level */
+			if (!S_ISDIR (status.st_mode)) {
+				/* Check and see if this is a home link */
+				link_path = nautilus_make_path (desktop_path, this_entry->d_name);				
+				if (nautilus_link_is_trash_link (link_path)) {
+					/* Reset name */
+					rename (this_entry->d_name, "Trash");
+					return TRUE;
+				}
+				g_free (link_path);
+			}
+		}
+	}
+	
+	closedir (current_dir);
+
+	return FALSE;
+}
+
+static void
+create_or_rename_trash (void)
+{
+	GnomeVFSURI *trash_dir_uri;
+	char *trash_dir_uri_text;
+	GnomeVFSResult result;
+	char *trash_path;
+	char *desktop_directory_path;
+
+	/* Check for trash link */
+	if (find_and_rename_trash_link ()) {
+		return;
+	}
+
+	result = gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH, 
+					   &trash_dir_uri, TRUE, FALSE, 0777);
+	if (result == GNOME_VFS_OK) {
+		trash_dir_uri_text = gnome_vfs_uri_to_string (trash_dir_uri,
+							      GNOME_VFS_URI_HIDE_NONE);
+		gnome_vfs_uri_unref (trash_dir_uri);
+		desktop_directory_path = nautilus_get_desktop_directory ();
+		if (nautilus_link_create (desktop_directory_path,
+				      _("Trash"), "trash-empty.png", 
+				      trash_dir_uri_text)) {
+			trash_path = nautilus_make_path (desktop_directory_path, _("Trash"));
+			nautilus_link_set_type (trash_path, NAUTILUS_LINK_TRASH);
+			g_free (trash_path);			
+		}		
+		g_free (trash_dir_uri_text);
+		g_free (desktop_directory_path);
+	}
 }
 
 static void
