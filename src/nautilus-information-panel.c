@@ -30,6 +30,7 @@
 #include <math.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
+#include <libgnomevfs/gnome-vfs-application-registry.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -1066,11 +1067,13 @@ command_button_callback (GtkWidget *button, char *id_str)
 	
 	sidebar = NAUTILUS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (button)));
 
-	application = gnome_vfs_mime_application_new_from_id (id_str);
+	application = gnome_vfs_application_registry_get_mime_application (id_str);
 
-	nautilus_launch_application (application, sidebar->details->uri);	
+	if (application != NULL) {
+		nautilus_launch_application (application, sidebar->details->uri);	
 
-	gnome_vfs_mime_application_free (application);
+		gnome_vfs_mime_application_free (application);
+	}
 }
 
 /* interpret commands for buttons specified by metadata. Handle some built-in ones explicitly, or fork

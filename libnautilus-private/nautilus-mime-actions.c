@@ -28,6 +28,7 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnomevfs/gnome-vfs-mime.h>
 #include <libgnomevfs/gnome-vfs-mime-info.h>
+#include <libgnomevfs/gnome-vfs-application-registry.h>
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-directory.h"
 #include "nautilus-file.h"
@@ -189,7 +190,7 @@ nautilus_mime_get_default_application_for_uri_internal (const char *uri, gboolea
 		g_free (mime_type);
 		used_user_chosen_info = FALSE;
 	} else {
-		result = gnome_vfs_mime_application_new_from_id (default_application_string);
+		result = gnome_vfs_application_registry_get_mime_application (default_application_string);
 	}
 
 	if (user_chosen != NULL) {
@@ -444,7 +445,7 @@ nautilus_mime_get_short_list_applications_for_uri (const char *uri)
 		    g_list_find_custom (metadata_application_remove_ids,
 					p->data,
 					(GCompareFunc) strcmp) == NULL) {
-			application = gnome_vfs_mime_application_new_from_id (p->data);
+			application = gnome_vfs_application_registry_get_mime_application (p->data);
 
 			if (application != NULL) {
 				result = g_list_prepend (result, application);
@@ -591,18 +592,12 @@ nautilus_mime_get_all_applications_for_uri (const char *uri)
 	mime_type = get_mime_type_from_uri (uri);
 
 	result = gnome_vfs_mime_get_all_applications (mime_type);
-	/* FIXME bugzilla.eazel.com 1268: 
-	 * temporary hack; the non_uri code should do this merge 
-	 */
-	if (result == NULL) {
-		result = gnome_vfs_mime_get_short_list_applications (mime_type);
-	}
 
 	for (p = metadata_application_ids; p != NULL; p = p->next) {
 		if (!g_list_find_custom (result,
 					 p->data,
 					 (GCompareFunc) gnome_vfs_mime_application_has_id)) {
-			application = gnome_vfs_mime_application_new_from_id (p->data);
+			application = gnome_vfs_application_registry_get_mime_application (p->data);
 
 			if (application != NULL) {
 				result = g_list_prepend (result, application);

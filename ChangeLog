@@ -1,3 +1,17 @@
+Tue Aug 08 23:23:50 2000  George Lebl <jirka@5z.com>
+
+	* libnautilus-extensions/nautilus-mime-actions.c
+	  (nautilus_mime_get_default_application_fo)
+	  (nautilus_mime_get_short_list_application)
+	  (nautilus_mime_get_all_applications_for_u):
+	  Use the new application registry api.  Also remove the hack for
+	  "merging" (bug 1268) the application with short list as this
+	  should now be not necessary because of the application registry.
+
+	* src/nautilus-sidebar.c (command_button_callback):
+	  Use the new application registry api and check for NULL
+	  return from get_mime_application just for sanity's sake.
+
 2000-08-08  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:
