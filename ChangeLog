@@ -1,3 +1,15 @@
+2002-03-04  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_directory_notify_files_removed): Don't pay any attention
+	if we're told about removal of a file we're renaming.
+
+	* libnautilus-private/nautilus-file-private.h: Add new call to tell
+	if the file is being renamed.
+	* libnautilus-private/nautilus-file.c: (rename_guts): Set flag to
+	say this file is being renamed.
+	(nautilus_file_rename_in_progress): New.
+
 2002-03-04  Michael Meeks  <michael@ximian.com>
 
 	* libnautilus-private/nautilus-global-preferences.c

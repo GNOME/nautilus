@@ -86,6 +86,7 @@ typedef struct {
 	GnomeVFSAsyncHandle *handle;
 	NautilusFileOperationCallback callback;
 	gpointer callback_data;
+	gboolean is_rename;
 } Operation;
 
 typedef GList * (* ModifyListFunction) (GList *list, NautilusFile *file);
@@ -1016,6 +1017,7 @@ rename_guts (NautilusFile *file,
 
 	/* Set up a renaming operation. */
 	op = operation_new (file, callback, callback_data);
+	op->is_rename = TRUE;
 
 	/* Do the renaming. */
 	partial_file_info = gnome_vfs_file_info_new ();
@@ -1055,17 +1057,32 @@ nautilus_file_rename (NautilusFile *file,
 	g_free (locale_name);
 }
 
+gboolean
+nautilus_file_rename_in_progress (NautilusFile *file)
+{
+	GList *node;
+	Operation *op;
+
+	for (node = file->details->operations_in_progress; node != NULL; node = node->next) {
+		op = node->data;
+		if (op->is_rename) {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
 void
 nautilus_file_cancel (NautilusFile *file,
 		      NautilusFileOperationCallback callback,
 		      gpointer callback_data)
 {
-	GList *p, *next;
+	GList *node, *next;
 	Operation *op;
 
-	for (p = file->details->operations_in_progress; p != NULL; p = next) {
-		next = p->next;
-		op = p->data;
+	for (node = file->details->operations_in_progress; node != NULL; node = next) {
+		next = node->next;
+		op = node->data;
 
 		g_assert (op->file == file);
 		if (op->callback == callback

@@ -152,9 +152,8 @@ gboolean      nautilus_file_should_get_top_left_text       (NautilusFile        
 void          nautilus_file_invalidate_attributes_internal (NautilusFile           *file,
 							    GList                  *file_attributes);
 GList *       nautilus_file_get_all_attributes             (void);
-
 gboolean      nautilus_file_is_self_owned                  (NautilusFile           *file);
-
-void          nautilus_file_invalidate_count_and_mime_list (NautilusFile              *file);
+void          nautilus_file_invalidate_count_and_mime_list (NautilusFile           *file);
+gboolean      nautilus_file_rename_in_progress             (NautilusFile           *file);
 
 #endif

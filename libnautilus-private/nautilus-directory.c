@@ -1011,7 +1011,7 @@ nautilus_directory_notify_files_removed (GList *uris)
 
 		/* Find the file. */
 		file = nautilus_file_get_existing (uri);
-		if (file != NULL) {
+		if (file != NULL && !nautilus_file_rename_in_progress (file)) {
 			/* Mark it gone and prepare to send the changed signal. */
 			nautilus_file_mark_gone (file);
 			hash_table_list_prepend (changed_lists,
