@@ -33,6 +33,7 @@
 #include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-list-view.h"
 #include "file-manager/fm-search-list-view.h"
+#include "file-manager/fm-tree-view.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -84,6 +85,7 @@
 #define FACTORY_IID	     "OAFIID:Nautilus_Factory"
 #define SEARCH_LIST_VIEW_IID "OAFIID:Nautilus_File_Manager_Search_List_View"
 #define SHELL_IID	     "OAFIID:Nautilus_Shell"
+#define TREE_VIEW_IID         "OAFIID:Nautilus_File_Manager_Tree_View"
 
 /* Keeps track of all the desktop windows. */
 static GList *nautilus_application_desktop_windows;
@@ -136,6 +138,8 @@ create_object (PortableServer_Servant servant,
 		object = BONOBO_OBJECT (nautilus_shell_new (application));
 	} else if (strcmp (iid, METAFILE_FACTORY_IID) == 0) {
 		object = BONOBO_OBJECT (nautilus_metafile_factory_get_instance ());
+	} else if (strcmp (iid, TREE_VIEW_IID) == 0) {
+		object = BONOBO_OBJECT (g_object_new (fm_tree_view_get_type (), NULL));
 	} else {
 		object = CORBA_OBJECT_NIL;
 	}
@@ -182,6 +186,7 @@ nautilus_application_instance_init (NautilusApplication *application)
 	nautilus_bonobo_register_activation_shortcut (NAUTILUS_DESKTOP_ICON_VIEW_IID, create_object_shortcut, application);
 	nautilus_bonobo_register_activation_shortcut (NAUTILUS_LIST_VIEW_IID, create_object_shortcut, application);
 	nautilus_bonobo_register_activation_shortcut (SEARCH_LIST_VIEW_IID, create_object_shortcut, application);
+	nautilus_bonobo_register_activation_shortcut (TREE_VIEW_IID, create_object_shortcut, application);
 }
 
 NautilusApplication *
@@ -209,6 +214,7 @@ nautilus_application_destroy (BonoboObject *object)
 	nautilus_bonobo_unregister_activation_shortcut (NAUTILUS_DESKTOP_ICON_VIEW_IID);
 	nautilus_bonobo_unregister_activation_shortcut (NAUTILUS_LIST_VIEW_IID);
 	nautilus_bonobo_unregister_activation_shortcut (SEARCH_LIST_VIEW_IID);
+	nautilus_bonobo_unregister_activation_shortcut (TREE_VIEW_IID);
 	
 	nautilus_bookmarks_exiting ();
 	

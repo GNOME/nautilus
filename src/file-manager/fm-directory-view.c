@@ -1158,7 +1158,7 @@ open_properties_window_callback (BonoboUIComponent *component, gpointer callback
         view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
 
-	fm_properties_window_present (selection, view);
+	fm_properties_window_present (selection, GTK_WIDGET (view));
 
         nautilus_file_list_free (selection);
 }

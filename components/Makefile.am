@@ -6,7 +6,6 @@ SUBDIRS = 					\
 	notes 					\
 	text 					\
 	throbber 				\
-	tree 					\
 	emblem					\
 	image_properties			\
 	$(NULL)

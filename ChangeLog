@@ -1,5 +1,28 @@
 2004-01-06  Alexander Larsson <alexl@redhat.com>
 
+	Patch from: Juerg Billeter <j@bitron.ch>
+
+	* components/Makefile.am:
+	* components/tree/
+	Remove tree component (moved to file-manager)
+	
+	* src/Nautilus_shell.server.in:
+	* src/file-manager/Makefile.am:
+	Move tree view here
+
+	* src/nautilus-application.c:
+	Tree view activation
+
+	* src/file-manager/fm-properties-window.[ch]:
+	* src/file-manager/fm-directory-view.c:
+	Make properties window take GtkWidget instead of DirectoryView.
+	
+	* src/file-manager/fm-tree-model.[ch]: 
+	* src/file-manager/fm-tree-view.[ch]:
+	Move tree view here, first cut at popup menus
+
+2004-01-06  Alexander Larsson <alexl@redhat.com>
+
 	* src/file-manager/fm-list-view.c (button_press_callback): 
 	Pop up folder menu on right click in background
 	Patch from chris@gnome-de.org
