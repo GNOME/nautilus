@@ -27,6 +27,7 @@
 #include <bonobo.h>
 
 #include <libtrilobite/libtrilobite.h>
+#include <libtrilobite/libtrilobite-service.h>
 
 #include "trilobite-eazel-time-service.h"
 #include "trilobite-eazel-time-service-public.h"
@@ -85,6 +86,9 @@ impl_Trilobite_Eazel_Time_Service_check_time  (impl_POA_Trilobite_Eazel_Time_Ser
 	local_time = time (NULL);
 	server_time = trilobite_eazel_time_service_get_server_time (service->object, ev);
 
+	g_message ("Local time  : %ld", local_time);
+	g_message ("Server time : %ld", server_time);
+
 	/* If we did not get the time, raise an exception */
 	if (server_time != 0) {
 		/* if we are beyond the max difference, return it */
@@ -101,6 +105,9 @@ impl_Trilobite_Eazel_Time_Service_update_time  (impl_POA_Trilobite_Eazel_Time_Se
 						CORBA_Environment *ev) 
 {
 	gboolean get_time;
+	TrilobiteRootHelper *root_helper;
+	GList *args;
+	char *tmp;
 
 	get_time = FALSE;
 
@@ -129,15 +136,25 @@ impl_Trilobite_Eazel_Time_Service_update_time  (impl_POA_Trilobite_Eazel_Time_Se
 		service->object->private->time_obtained += diff;
 	}
 
-	/* FIXME bugzilla.eazel.com 938:
-	   do auth stuff and set time */
-
-	if (stime (&service->object->private->server_time) != 0) {
+	root_helper = gtk_object_get_data (GTK_OBJECT (service->object), "trilobite-root-helper");
+	if (trilobite_root_helper_start (root_helper) != TRILOBITE_ROOT_HELPER_SUCCESS) {
 		Trilobite_Eazel_Time_NotPermitted *exn; 
 		exn = Trilobite_Eazel_Time_NotPermitted__alloc ();
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION, ex_Trilobite_Eazel_Time_NotPermitted, exn);
 		return;
 	}
+
+	tmp = g_strdup_printf ("%ld", service->object->private->server_time);
+	args = g_list_prepend (NULL, tmp);
+
+	if (trilobite_root_helper_run (root_helper, TRILOBITE_ROOT_HELPER_RUN_SET_TIME, args, NULL) != TRILOBITE_ROOT_HELPER_SUCCESS) {
+		Trilobite_Eazel_Time_NotPermitted *exn; 
+		exn = Trilobite_Eazel_Time_CannotSet__alloc ();
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION, ex_Trilobite_Eazel_Time_CannotSet, exn);
+	}
+
+	g_list_free (args);
+	g_free (tmp);
 }
 
 POA_Trilobite_Eazel_Time__epv* 
@@ -328,7 +345,7 @@ trilobite_eazel_time_service_parse_body (char *body)
 {
 	time_t result;
 	char *ptr, *nptr;
-	
+
 	result = 0;
 	ptr = strstr (body, "<time>");
 
@@ -359,7 +376,7 @@ trilobite_eazel_time_service_do_http_request (TrilobiteEazelTimeService *service
 	g_return_val_if_fail (service->private != NULL, 0);
 
 	request = ghttp_request_new ();
-	ghttp_set_header (request, http_hdr_User_Agent, "trilobite");
+	ghttp_set_header (request, http_hdr_User_Agent, "Trilobite");
 	ghttp_set_uri (request, service->private->time_url);
 	ghttp_set_type (request, ghttp_type_get);
 	ghttp_prepare (request);

@@ -69,6 +69,15 @@ TrilobitePasswordQuery*             trilobite_passwordquery_new        (void);
 POA_Trilobite_PasswordQuery__epv*   trilobite_passwordquery_get_epv    (void);
 void                                trilobite_passwordquery_destroy    (GtkObject *object);
 
+/* This should be called from the service factory.
+   It adds the interface and sets the following data :
+   "trilobite-root-helper" - a TrilobiteRootHelper object, do not destroy */
+void trilobite_passwordquery_add_interface (TrilobitePasswordQuery *trilobite, 
+					    BonoboObject *service);
+
+/* Sets the prompt */
+void trilobite_passwordquery_set_prompt (TrilobitePasswordQuery *trilobite, 
+					 const char *prompt);
 
 #ifdef __cplusplus
 }

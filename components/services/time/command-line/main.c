@@ -27,6 +27,7 @@
 #include <bonobo.h>
 
 #include <libtrilobite/libtrilobite.h>
+#include <libtrilobite/libtrilobite-service.h>
 
 #include "trilobite-eazel-time-service.h"
 
@@ -125,18 +126,12 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (arg_update_time) {
-		/* FIXME bugzilla.eazel.com 946:
-		   need proper stuff to eg. prompt user for password */
-		if (check_for_root_user() == FALSE) {
-			fprintf (stderr, "The update operation requires root access\n");
-		} else {
-			Trilobite_Eazel_Time_update_time (timeservice, &ev);
-			if (ev._major == CORBA_USER_EXCEPTION) {
-				if (strcmp (ex_Trilobite_Eazel_Time_NotPermitted, CORBA_exception_id (&ev)) == 0) {
-					fprintf (stderr, "You are not permitted to change system time");
-				}
-				CORBA_exception_free (&ev);
+		Trilobite_Eazel_Time_update_time (timeservice, &ev);
+		if (ev._major == CORBA_USER_EXCEPTION) {
+			if (strcmp (ex_Trilobite_Eazel_Time_NotPermitted, CORBA_exception_id (&ev)) == 0) {
+				fprintf (stderr, "You are not permitted to change system time");
 			}
+			CORBA_exception_free (&ev);
 		}
 	}
 

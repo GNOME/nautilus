@@ -4,6 +4,7 @@
 #include <Bonobo.idl>
 
 module Trilobite {
+	/* The basic trilobite service interface */
 	interface Service : Bonobo::Unknown {
 	  
 		/* Should return the name of the service, eg. "TimeService" */
@@ -32,11 +33,17 @@ module Trilobite {
 		 */
 		string get_icon ();
 	};
+
+	/***** Root helper interfaces ******/
 	
+	/* The client object should define this interface to query
+	   the user for the password */
 	interface PasswordQueryClient : Bonobo::Unknown {
 		string get_password (in string prompt);
 	};
 
+	/* The server implements this, and uses the "client" object
+	   to ask for a password */
 	interface PasswordQuery : Bonobo::Unknown {
 		void set_query_client (in PasswordQueryClient client);
 	};

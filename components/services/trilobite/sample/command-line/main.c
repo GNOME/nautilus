@@ -26,7 +26,7 @@
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
 
-#include <libtrilobite/libtrilobite.h>
+#include <libtrilobite/libtrilobite-service.h>
 
 #include "sample-service.h"
 
@@ -97,6 +97,7 @@ int main(int argc, char *argv[]) {
 
 		Trilobite_Eazel_Sample_remember (sample_service, "horsedung", &ev);
 		Trilobite_Eazel_Sample_say_it (sample_service, &ev);
+		Trilobite_Eazel_Sample_list_it (sample_service, "/root", &ev);
 
 		/* Cleanup the refs and objects from query_interface */
 		Trilobite_Eazel_Sample_unref (sample_service, &ev);

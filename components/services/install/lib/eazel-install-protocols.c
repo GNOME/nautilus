@@ -247,10 +247,6 @@ eazel_install_fetch_package (EazelInstall *service,
 						      filename_from_url (url));
 			g_free (package->filename);
 			package->filename = g_strdup (targetname);
-			g_hash_table_insert (service->private->filename_to_package_hash,
-					     g_strdup (package->filename),
-					     package);
-			g_message ("ADDING \"%s\"", package->filename);
 			result = eazel_install_fetch_file (service, url, targetname);
 			g_free (targetname);
 		}

@@ -5,6 +5,8 @@ module Trilobite {
 		interface Time : Bonobo::Unknown {
 
 			exception NotPermitted {};
+
+			exception CannotSet {};
 			
 			exception CannotGetTime {
 				string url;

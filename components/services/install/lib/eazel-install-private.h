@@ -52,11 +52,11 @@ struct _EazelInstallPrivate {
 		} rpm;
 	} packsys;
 
-	/* This hash maps from package filename to the 
-	   package. Packages are added in eazel-install-protocols.c 
-	   It's used in the rpm_show_progress to lookup the correct
+	/* This hash maps from package name-version-release to the 
+	   package. Packages are added in eazel-install-rpm-glue.c do_rpm_install
+	   It's used in the progress stuff to lookup the correct
 	   package */
-	GHashTable *filename_to_package_hash;
+	GHashTable *name_to_package_hash;
 
 	FILE *logfile;
 	char *logfilename;

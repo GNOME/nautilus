@@ -346,6 +346,19 @@ trilobite_service_class_initialize (TrilobiteServiceClass *klass)
 	klass->set_icon = trilobite_service_set_icon;
 };
 
+void               
+trilobite_service_add_interface (TrilobiteService *trilobite, 
+				 BonoboObject *service)
+{
+	g_assert (trilobite!=NULL);
+	g_assert (TRILOBITE_IS_SERVICE (trilobite));
+	g_assert (service!=NULL);
+	g_assert (BONOBO_IS_OBJECT (service));
+
+	bonobo_object_add_interface (BONOBO_OBJECT (trilobite), service);
+}
+
+
 gboolean
 trilobite_service_construct (TrilobiteService *trilobite,
 			     Trilobite_Service corba_trilobite)

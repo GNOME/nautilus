@@ -24,10 +24,15 @@
 #ifndef TRILOBITE_PASSWORDQUERY_PRIVATE_H
 #define TRILOBITE_PASSWORDQUERY_PRIVATE_H
 
+#include "trilobite-root-helper.h"
+
 struct _TrilobitePasswordQueryPrivate {	
 	gboolean destroyed;
 	gboolean alive;
-	     
+
+	char *prompt;
+	TrilobiteRootHelper *root_helper;
+	Trilobite_PasswordQueryClient client;
 };
 
 #endif /* TRILOBITE_PASSWORDQUERY_PRIVATE_H */

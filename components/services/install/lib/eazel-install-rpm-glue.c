@@ -34,7 +34,8 @@
 #include "eazel-install-public.h"
 #include "eazel-install-private.h"
 
-#include <libtrilobite/helixcode-utils.h>
+#include <libtrilobite/libtrilobite.h>
+#include <libtrilobite/libtrilobite-service.h>
 #include <rpm/rpmlib.h>
 #include <rpm/rpmmacro.h>
 #include <rpm/dbindex.h>
@@ -151,10 +152,6 @@ install_new_packages (EazelInstall *service, GList *categories) {
 		categories = parse_local_xml_package_list (eazel_install_get_package_list (service));
 	}
 
-	if (eazel_install_prepare_package_system (service) == FALSE) {
-		return FALSE;
-	}
-
 	if (categories == NULL) {
 		rv = FALSE;
 	} else {
@@ -163,7 +160,6 @@ install_new_packages (EazelInstall *service, GList *categories) {
 					   categories);
 	}
 	
-	eazel_install_free_package_system (service); 
 	return rv;
 } /* end install_new_packages */
 
@@ -252,7 +248,11 @@ install_all_packages (EazelInstall *service,
 		newfiles = NULL;
 		failedfiles = NULL;
 		if (pkgs) {
+			if (eazel_install_prepare_package_system (service) == FALSE) {
+				return FALSE;
+			}
 			eazel_install_ensure_deps (service, &pkgs, &failedfiles);
+			eazel_install_free_package_system (service); 
 		}
 		
 		g_message (_("Category = %s, %d packages"), cat->name, g_list_length (pkgs));
@@ -399,7 +399,7 @@ rpm_show_progress (const Header h,
 	case RPMCALLBACK_INST_CLOSE_FILE:
 		service->private->packsys.rpm.current_installed_size += kept_total;
 		fdClose (fd);
-		pack = g_hash_table_lookup (service->private->filename_to_package_hash, filename);
+		pack = g_hash_table_lookup (service->private->name_to_package_hash, filename);
 		/* ensure install_progress emit with amount==total */
 		eazel_install_emit_install_progress (service, 
 						     pack, 
@@ -425,7 +425,7 @@ rpm_show_progress (const Header h,
 				tmp = amount;
 			}
 		}
-		pack = g_hash_table_lookup (service->private->filename_to_package_hash, filename);
+		pack = g_hash_table_lookup (service->private->name_to_package_hash, filename);
 		/* this if ensures that callback_type == CLOSE_FILE ensures that
 		   amount==total only occurs once */
 		if (tmp!=kept_total) {
@@ -454,7 +454,117 @@ do_rpm_install (EazelInstall *service,
 		char* location,
                 rpm_install_cb cb, 
 		void* user_data) {
+#define TEST_NEW_PASSWORD_STUFF
+#ifdef TEST_NEW_PASSWORD_STUFF
+	TrilobiteRootHelper *root_helper;
+	GList *args;
+	GList *iterator;
+	int fd;
+		
+	service->private->packsys.rpm.packages_installed = -1;
+	service->private->packsys.rpm.num_packages = g_list_length (packages);
+	service->private->packsys.rpm.current_installed_size = 0;
+	service->private->packsys.rpm.total_size = 0;
 
+	args = NULL;
+	g_message ("packages.length () = %d", g_list_length (packages));
+	for (iterator = packages; iterator; iterator = iterator->next) {
+		PackageData *pd1;
+		char *tmp;
+
+		pd1 = (PackageData*)iterator->data;
+		args = g_list_prepend (args, pd1->filename);
+		service->private->packsys.rpm.total_size += pd1->bytesize;
+		
+		tmp = g_strdup_printf ("%s-%s-%s", pd1->name, pd1->version, pd1->minor);
+		g_hash_table_insert (service->private->name_to_package_hash,
+				     tmp,
+				     pd1);
+		g_message ("HASH-ADD \"%s\"", tmp);
+	}
+	
+	/* Set the RPM parameters */
+	if (eazel_install_get_uninstall (service)) {
+		args = g_list_prepend (args, "-ev");
+	} else 	if (eazel_install_get_update (service)) {
+		args = g_list_prepend (args, "-Uv");
+	} else {
+		args = g_list_prepend (args, "-iv");
+	}
+
+	args = g_list_prepend (args, "--percent");
+	if (eazel_install_get_test (service)) {
+		args = g_list_prepend (args, "--test");
+	} 
+	if (eazel_install_get_force (service)) {
+		args = g_list_prepend (args, "--force --nodeps");
+	} 
+	
+	root_helper = gtk_object_get_data (GTK_OBJECT (service), "trilobite-root-helper");
+	if (trilobite_root_helper_start (root_helper) != TRILOBITE_ROOT_HELPER_SUCCESS) {
+		g_error ("blah");
+	}
+	if (trilobite_root_helper_run (root_helper, TRILOBITE_ROOT_HELPER_RUN_RPM, args, &fd) != 
+	    TRILOBITE_ROOT_HELPER_SUCCESS) {
+		g_error ("blech");
+	}
+	
+	{
+		char *tmp;
+		FILE *pipe;
+		PackageData *pd2;
+
+		pipe = fdopen (fd, "r");
+		fflush (pipe);
+		tmp = g_new0 (char, 1024);
+
+		while (!feof (pipe)) {
+			fgets (tmp, 1023, pipe);
+
+			if (tmp) {
+				if (tmp[0]=='%' && tmp[1]=='%') {
+					char *ptr;
+					int pct;
+					int amount;
+					ptr = tmp + 3;
+					
+					pct = strtol (tmp, NULL, 10);
+					if (pct == 100) {
+						amount = pd2->bytesize;
+					} else if (pct != 0) {
+						amount = (pd2->bytesize/100) * pct;
+					}
+					eazel_install_emit_install_progress (service, 
+									     pd2, 
+									     service->private->packsys.rpm.packages_installed, 
+									     service->private->packsys.rpm.num_packages,
+									     amount, 
+									     pd2->bytesize,
+									     service->private->packsys.rpm.current_installed_size,
+									     service->private->packsys.rpm.total_size);
+				}  else {
+					g_message ("HASH LOOKUP \"%s\"", tmp); 
+					pd2 = g_hash_table_lookup (service->private->name_to_package_hash, tmp);
+					service->private->packsys.rpm.packages_installed ++;
+					eazel_install_emit_install_progress (service, 
+									     pd2, 
+									     service->private->packsys.rpm.packages_installed, 
+									     service->private->packsys.rpm.num_packages,
+									     0, 
+									     pd2->bytesize,
+									     service->private->packsys.rpm.current_installed_size,
+									     service->private->packsys.rpm.total_size);
+				}
+			}
+		}
+
+		fclose (pipe);
+	}
+	
+	
+	g_list_free (args);
+	
+#else /* TEST_NEW_PASSWORD_STUFF */
 	int mode;
 	int rc;
 	int i;
@@ -486,7 +596,6 @@ do_rpm_install (EazelInstall *service,
 	total_size = 0;
 	rpmdep = NULL;
 	probs = NULL;
-
 
 	if (eazel_install_get_install_flags (service) & RPMTRANS_FLAG_TEST) {
 		mode = O_RDONLY;
@@ -644,6 +753,7 @@ do_rpm_install (EazelInstall *service,
 		rpmProblemSetPrint (stdout, probs);
 		g_message ("rpmRunTransactions = %d", rc);
 		rpmProblemSetFree(probs);
+
 		if (rc == -1) {
 			 /* some error */
 			num_failed = num_packages;
@@ -670,6 +780,9 @@ do_rpm_install (EazelInstall *service,
 	g_message ("num_failed = %d", num_failed);
 
 	return num_failed;
+
+#endif /* TEST_NEW_PASSWORD_STUFF */
+	return 0;
 } /* end do_rpm_install */
 
 static int
@@ -683,7 +796,6 @@ do_rpm_uninstall (EazelInstall *service,
 	rpmdb db;
 	int count, i;
 	int rc;
-	int mode;
 	int num_packages;
 	int num_failed;
 	int num_conflicts;
@@ -698,13 +810,7 @@ do_rpm_uninstall (EazelInstall *service,
 	stop_uninstall = 0;
 	rpmdep = NULL;
 
-	if (install_flags & RPMTRANS_FLAG_TEST) {
-		mode = O_RDONLY;
-	}
-	else {
-		mode = O_RDWR | O_EXCL;
-	}
-	if (rpmdbOpen (root_dir, &db, mode, 0644)) {
+	if (rpmdbOpen (root_dir, &db, O_RDONLY, 0644)) {
 		const char* dn;
 		dn = rpmGetPath ((root_dir ? root_dir : ""), "%{_dbpath}", NULL);
 		if (!dn) {
@@ -913,9 +1019,9 @@ eazel_install_load_rpm_headers (EazelInstall *service,
 		int is_source;
 
 		pack = (PackageData*)iterator->data;
-		filename = g_strdup_printf ("%s",
-					    rpmfilename_from_packagedata (pack));
-		
+		filename = g_strdup (rpmfilename_from_packagedata (pack));
+
+		/* Open the RPM file */
 		fd = fdOpen (filename, O_RDONLY, 0644);
 		if (fd == NULL) {
 			g_warning (_("Cannot open %s"), filename);
@@ -927,18 +1033,18 @@ eazel_install_load_rpm_headers (EazelInstall *service,
 			continue;
 		}
 		
+		/* Get the header */
 		hd = g_new0 (Header, 1);
 		rpm_err = rpmReadPackageHeader (fd,
 						hd,
 						&is_source, 
 						NULL, 
 						NULL);
-		g_message ("rpmReadPackageHeader (%s) = %d%s", 
-			   rpmfilename_from_packagedata (pack),
-			   rpm_err, is_source ? " (source)":"");
+
 		g_free (filename);
 		fdClose (fd);
-		
+				   
+		/* If not a source, fill the pack from the header */
 		if (! is_source) {
 			result = g_list_prepend (result, hd);
 			packagedata_fill_from_rpm_header (pack, hd);
@@ -951,6 +1057,7 @@ eazel_install_load_rpm_headers (EazelInstall *service,
 		}
 	}
 
+	/* Remove all the source packages */
 	for (iterator = sources; iterator; iterator = iterator->next) {
 		PackageData *pack;
 		pack = (PackageData*)iterator->data;
@@ -975,31 +1082,6 @@ eazel_install_load_headers (EazelInstall *service,
 	return result;
 }
 
-/*
-static void
-eazel_install_free_rpm_headers (GList *packages) 
-{
-	GList *iterator;
-	
-	for (iterator = packages; iterator; iterator = iterator->next) {
-		PackageData *pack;
-		pack = (PackageData*)(iterator->data);
-		headerFree (*(Header*)(pack->packsys_struc));
-	}
-}
-
-static void
-eazel_install_free_headers (EazelInstall *service,
-			    GList *packages)
-{
-	switch (eazel_install_get_package_system (service)) {
-	case EAZEL_INSTALL_USE_RPM:
-		eazel_install_free_rpm_headers (packages);
-		break;
-	}      
-}
-*/
-
 static gboolean
 eazel_install_free_rpm_system (EazelInstall *service)
 {
@@ -1023,7 +1105,6 @@ eazel_install_free_rpm_system (EazelInstall *service)
 static gboolean
 eazel_install_prepare_rpm_system(EazelInstall *service)
 {
-	int mode;
 	const char *root_dir;
 	rpmdb *db;
 	rpmTransactionSet *set;
@@ -1033,14 +1114,7 @@ eazel_install_prepare_rpm_system(EazelInstall *service)
 
 	root_dir = eazel_install_get_root_dir (service) ? eazel_install_get_root_dir (service) : "";
 
-	if (eazel_install_get_install_flags (service) & RPMTRANS_FLAG_TEST) {
-		mode = O_RDONLY;
-	}
-	else {
-		mode = O_RDWR | O_EXCL;
-	}
-
-	if (rpmdbOpen (root_dir, db, mode, 0644)) {
+	if (rpmdbOpen (root_dir, db, O_RDONLY, 0644)) {
 		const char* dn;
 		dn = rpmGetPath (root_dir, "%{_dbpath}", NULL);
 		if (!dn) {

@@ -81,6 +81,11 @@ TrilobiteService*             trilobite_service_new        (void);
 POA_Trilobite_Service__epv*   trilobite_service_get_epv    (void);
 void                          trilobite_service_destroy    (GtkObject *object);
 
+/* This should be called from the service factory.
+   It adds the interface and any data that you might need access to */
+void               trilobite_service_add_interface (TrilobiteService *trilobite, 
+						    BonoboObject *service);
+
 char*              trilobite_service_get_name            (TrilobiteService *trilobite);
 char*              trilobite_service_get_version         (TrilobiteService *trilobite);
 char*              trilobite_service_get_vendor_name     (TrilobiteService *trilobite);

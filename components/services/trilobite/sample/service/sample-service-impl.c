@@ -27,6 +27,7 @@
 #include <bonobo.h>
 
 #include <libtrilobite/libtrilobite.h>
+#include <libtrilobite/libtrilobite-service.h>
 
 #include "sample-service.h"
 #include "sample-service-public.h"
@@ -94,6 +95,52 @@ impl_Trilobite_Eazel_Sample_say_it(impl_POA_Sample_Service *service,
 }
 
 /*
+  The implementation of 
+  void list_it (in string dir);
+ */
+static void
+impl_Trilobite_Eazel_Sample_list_it(impl_POA_Sample_Service *service,
+				    const CORBA_char *dir,
+				    CORBA_Environment *ev) 
+{
+	TrilobiteRootHelper *helper;
+	GList *args;
+	char *tmp;
+	int fd;
+	FILE *f;
+
+	/* Get the TrilobiteRootHelper object. This datafield is set
+	   when the factory object in main.c called trilobite_passwordquery_add_interface */
+	helper = gtk_object_get_data (GTK_OBJECT (service->object), "trilobite-root-helper");
+	
+	/* Create the GList of arguments */
+	tmp = g_strdup (dir);
+	args = g_list_append (NULL, "-lart");
+	args = g_list_append (args, tmp);
+
+	/* Start and run the eazel-helper */
+	if (trilobite_root_helper_start (helper) == TRILOBITE_ROOT_HELPER_BAD_PASSWORD) {
+		g_warning ("Incorrect password");
+	} else {
+		if (trilobite_root_helper_run (helper, TRILOBITE_ROOT_HELPER_RUN_LS, args, &fd) != TRILOBITE_ROOT_HELPER_SUCCESS) {
+			g_warning ("trilobite_root_helper failed");
+		}
+	}
+	/* Clean up */
+	g_list_free (args);
+	g_free (tmp);
+
+	f = fdopen (fd, "r");
+	fflush (f);
+	tmp = g_new0 (char, 1024);
+	while (!feof (f)) {
+		fgets (tmp, 1023, f);
+		fprintf (stdout, "GNE: %s", tmp);
+	}
+	fclose (f);
+}
+
+/*
   This creates the epv for the object.
   Basically you just have to alloc a structure of the
   appropriate type (POA_Trilobite_Eazel_Sample__epv in 
@@ -108,6 +155,7 @@ sample_service_get_epv()
 
 	epv->remember         = (gpointer) &impl_Trilobite_Eazel_Sample_remember;
 	epv->say_it           = (gpointer) &impl_Trilobite_Eazel_Sample_say_it;
+	epv->list_it          = (gpointer) &impl_Trilobite_Eazel_Sample_list_it;
 		
 	return epv;
 };

@@ -26,7 +26,7 @@
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
 
-#include <libtrilobite/libtrilobite.h>
+#include <libtrilobite/libtrilobite-service.h>
 
 #include <trilobite-eazel-install.h>
 #include <eazel-install-public.h>
@@ -67,6 +67,8 @@ eazel_install_service_factory (BonoboGenericFactory *this_factory,
 			       gpointer data) 
 {
 	TrilobiteService *trilobite;
+	TrilobitePasswordQuery *trilobite_password;
+
 	EazelInstall *service;
 	if (strcmp (oaf_id, OAF_ID)) {
 		g_warning ("Unhandled OAF id %s", oaf_id);
@@ -82,6 +84,10 @@ eazel_install_service_factory (BonoboGenericFactory *this_factory,
 						       "icon", "file:///gnome/share/pixmaps/gnome-default-dlg.png",
 						       NULL));
 
+	trilobite_password = TRILOBITE_PASSWORDQUERY (gtk_object_new (TRILOBITE_TYPE_PASSWORDQUERY, 
+								      "prompt", "root", 
+								      NULL));
+
 	service = eazel_install_new ();
 
 	g_assert (trilobite != NULL);
@@ -89,7 +95,8 @@ eazel_install_service_factory (BonoboGenericFactory *this_factory,
 
 	trilobites_active++;
 
-	bonobo_object_add_interface (BONOBO_OBJECT (trilobite), BONOBO_OBJECT (service));
+	trilobite_service_add_interface (trilobite, BONOBO_OBJECT (service));
+	trilobite_passwordquery_add_interface (trilobite_password, BONOBO_OBJECT (service));
 	
 	gtk_signal_connect (GTK_OBJECT (trilobite),
 			    "destroy",
@@ -105,12 +112,20 @@ int main(int argc, char *argv[]) {
 	textdomain (PACKAGE);
 #endif
 
+/* FIXME: bugzilla.eazel.com 1624
+   dep on libnautilus-extensions */
+#define TEST_NEW_PASSWORD_STUFF
+#ifdef TEST_NEW_PASSWORD_STUFF
+
+	gnome_init_with_popt_table ("trilobite-sample-service", "0.1", argc, argv, oaf_popt_options, 0, NULL);
+	orb = oaf_init (argc, argv);
+#else
 	gtk_type_init ();
 	gnomelib_init ("trilobite-eazel-install-service-factory", "0.1");
 	gnomelib_register_popt_table (oaf_popt_options, "Trilobite-Eazel-Install-Server");
 	orb = oaf_init (argc, argv);
 	gnomelib_parse_args (argc, argv, 0);
-	
+#endif 	
 	if (bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL) == FALSE) {
 		g_error ("Could not initialize Bonobo");
 	}

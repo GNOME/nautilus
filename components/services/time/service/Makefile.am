@@ -74,8 +74,13 @@ trilobite_eazel_time_service_SOURCES =		\
 	trilobite-eazel-time-service-skels.c	\
 	$(NULL)
 
+## FIXME: bugzilla.eazel.com 1624
+## dep on libnautilus-extensions
 trilobite_eazel_time_service_LDADD =	\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
+	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite-service.la \
+	$(top_builddir)/libnautilus-extensions/nautilus-password-dialog.o	\
+	$(top_builddir)/libnautilus-extensions/nautilus-caption-table.o	\
 	$(NULL)
 
 

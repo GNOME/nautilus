@@ -30,10 +30,22 @@
 #include "trilobite-service.h"
 #include "trilobite-service-passwordquery-public.h"
 #include "trilobite-service-passwordquery-private.h"
+/* FIXME: bugzilla.eazel.com 1624
+   this makes libtrilobite dependent on libnautilus-extensions
+*/
+#include <libnautilus-extensions/nautilus-password-dialog.h>
+
+enum {
+	ARG_0,
+	ARG_PROMPT
+};
 
 enum {
 	LAST_SIGNAL
 };
+
+static char* trilobite_passwordquery_get_password (TrilobiteRootHelper *roothelper, 
+						   TrilobitePasswordQuery *trilobite);
 
 /* static guint trilobite_passwordquery_signals[LAST_SIGNAL] = { 0 }; */
 
@@ -50,13 +62,30 @@ typedef struct {
 	BonoboObject *bonobo_object;
 } impl_POA_Trilobite_PasswordQuery;
 
+static void 
+impl_Trilobite_PasswordQuery_set_query_client(impl_POA_Trilobite_PasswordQuery *service,
+					      const Trilobite_PasswordQueryClient client,
+					      CORBA_Environment * ev)
+{
+	TrilobitePasswordQuery *trilobite;
+
+	trilobite = TRILOBITE_PASSWORDQUERY (service->bonobo_object);
+	if (trilobite->private->client != CORBA_OBJECT_NIL) {
+		CORBA_Object_release (trilobite->private->client, ev);
+	}
+	trilobite->private->client = client;
+}
+
+
 POA_Trilobite_PasswordQuery__epv* 
 trilobite_passwordquery_get_epv(void) 
 {
 	POA_Trilobite_PasswordQuery__epv *epv;
 
 	epv = g_new0 (POA_Trilobite_PasswordQuery__epv, 1);
-		
+
+	epv->set_query_client = (gpointer)&impl_Trilobite_PasswordQuery_set_query_client;
+
 	return epv;
 };
 					  
@@ -68,16 +97,23 @@ void
 trilobite_passwordquery_destroy (GtkObject *object)
 {
 	TrilobitePasswordQuery *trilobite;
+	CORBA_Environment ev;
 	/* g_message ("in trilobite_passwordquery_destroy"); */
 
+	CORBA_exception_init (&ev);
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (TRILOBITE_IS_PASSWORDQUERY (object));
 	
 	trilobite = TRILOBITE_PASSWORDQUERY (object);
 
 	if (trilobite->private != NULL) {
+		trilobite_root_helper_destroy (GTK_OBJECT (trilobite->private->root_helper));
+		g_free (trilobite->private->prompt);
+		CORBA_Object_release (trilobite->private->client, &ev);
 		g_free (trilobite->private);
 	}
+
+	CORBA_exception_free (&ev);
 
 	if (GTK_OBJECT_CLASS (trilobite_passwordquery_parent_class)->destroy) {
 		/* g_message ("calling trilobite-passwordquery-parent->destroy ()"); */
@@ -98,6 +134,10 @@ trilobite_passwordquery_set_arg (GtkObject *object,
 	trilobite = TRILOBITE_PASSWORDQUERY (object);
 
 	switch (arg_id) {
+	case ARG_PROMPT:
+		trilobite_passwordquery_set_prompt (trilobite, (char*)GTK_VALUE_OBJECT (*arg));
+		break;
+		
 	}
 }
 
@@ -121,6 +161,12 @@ trilobite_passwordquery_class_initialize (TrilobitePasswordQueryClass *klass)
 	((POA_Trilobite_PasswordQuery__vepv*)klass->servant_vepv)->_base_epv = &base_epv; 
 	((POA_Trilobite_PasswordQuery__vepv*)klass->servant_vepv)->Bonobo_Unknown_epv = bonobo_object_get_epv ();
 	((POA_Trilobite_PasswordQuery__vepv*)klass->servant_vepv)->Trilobite_PasswordQuery_epv = trilobite_passwordquery_get_epv ();
+	
+	gtk_object_add_arg_type ("TrilobitePasswordQuery::prompt",
+				 GTK_TYPE_POINTER,
+				 GTK_ARG_READWRITE | GTK_ARG_CONSTRUCT | GTK_ARG_CONSTRUCT_ONLY,
+				 ARG_PROMPT);
+
 };
 
 gboolean
@@ -192,6 +238,14 @@ trilobite_passwordquery_initialize (TrilobitePasswordQuery *trilobite)
 
 	trilobite->private->destroyed = FALSE;
 	trilobite->private->alive = TRUE;
+	trilobite->private->client = CORBA_OBJECT_NIL;
+	trilobite->private->prompt = g_strdup ("");
+
+	trilobite->private->root_helper = trilobite_root_helper_new ();
+	gtk_signal_connect (GTK_OBJECT (trilobite->private->root_helper), 
+			    "need_password", 
+			    (GFunc)trilobite_passwordquery_get_password, 
+			    trilobite);
 }
 
 GtkType
@@ -241,3 +295,65 @@ trilobite_passwordquery_new()
 	return trilobite;
 }
 
+void trilobite_passwordquery_add_interface (TrilobitePasswordQuery *trilobite, 
+					    BonoboObject *service)
+{
+	g_assert (trilobite!=NULL);
+	g_assert (TRILOBITE_IS_PASSWORDQUERY (trilobite));
+	g_assert (service!=NULL);
+	g_assert (BONOBO_IS_OBJECT (service));
+
+	gtk_object_set_data (GTK_OBJECT (service), "trilobite-root-helper", trilobite->private->root_helper);
+
+	bonobo_object_add_interface (BONOBO_OBJECT (trilobite), service);
+}
+
+static char*
+trilobite_passwordquery_get_password (TrilobiteRootHelper *roothelper, 
+				      TrilobitePasswordQuery *trilobite)
+{
+
+	if (trilobite->private->client == CORBA_OBJECT_NIL) {
+		GtkWidget *dialog;
+		gboolean rv;
+		char *tmp;
+		/* FIXME: bugzilla.eazel.com 1624
+		   dep on libnautilus-extensions.
+		 */
+
+		g_message ("PROMPT IS %s", trilobite->private->prompt);
+		dialog = nautilus_password_dialog_new ("Authenticate Me",
+						       trilobite->private->prompt,
+						       "",
+						       TRUE);
+		
+		rv = nautilus_password_dialog_run_and_block (NAUTILUS_PASSWORD_DIALOG (dialog));
+		tmp =  nautilus_password_dialog_get_password (NAUTILUS_PASSWORD_DIALOG (dialog));
+		return tmp;
+	} else {
+		CORBA_Environment ev;
+		CORBA_char *tmp;
+		
+		CORBA_exception_init (&ev);
+		tmp = Trilobite_PasswordQueryClient_get_password (trilobite->private->client, 
+								  trilobite->private->prompt, 
+								  &ev);
+		if (ev._major != CORBA_NO_EXCEPTION) {
+			g_warning ("Error during query of password from client");
+		}
+		CORBA_exception_free (&ev);
+		
+		return g_strdup (tmp);
+	}
+}
+
+/* Sets the prompt */
+void 
+trilobite_passwordquery_set_prompt (TrilobitePasswordQuery *trilobite, 
+				    const char *prompt)
+{
+	if (trilobite->private->prompt != NULL) {
+		g_free (trilobite->private->prompt);
+	}
+	trilobite->private->prompt = g_strdup (prompt);
+}

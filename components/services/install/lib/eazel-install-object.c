@@ -131,7 +131,7 @@ eazel_install_destroy (GtkObject *object)
 
 	service = EAZEL_INSTALL (object);
 
-	g_hash_table_destroy (service->private->filename_to_package_hash);
+	g_hash_table_destroy (service->private->name_to_package_hash);
 	g_free (service->private->logfilename);
 
 	transferoptions_destroy (service->private->topts);
@@ -397,8 +397,8 @@ eazel_install_initialize (EazelInstall *service) {
 	service->private->packsys.rpm.set = NULL;
 	service->private->logfile = NULL;
 	service->private->logfilename = NULL;
-	service->private->filename_to_package_hash = g_hash_table_new ((GHashFunc)g_str_hash,
-								       (GCompareFunc)g_str_equal);
+	service->private->name_to_package_hash = g_hash_table_new ((GHashFunc)g_str_hash,
+								   (GCompareFunc)g_str_equal);
 }
 
 GtkType

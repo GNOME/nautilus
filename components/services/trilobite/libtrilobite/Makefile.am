@@ -1,6 +1,6 @@
 NULL =
 
-lib_LTLIBRARIES = libtrilobite.la
+lib_LTLIBRARIES = libtrilobite.la libtrilobite-service.la
 
 CPPFLAGS = \
 	-DPREFIX=\"$(prefix)\" 			\
@@ -21,23 +21,32 @@ INCLUDES = \
 
 libtrilobite_la_LDFLAGS =	\
 	$(GNOME_LIBS)		\
+	$(OAF_LIBS)		\
+	$(GCONF_LIBS)		\
+	$(BONOBO_LIBS)		\
+	$(XML_LIBS)		\
+	$(NULL)
+
+libtrilobite_service_la_LDFLAGS =\
+	$(GNOME_LIBS)		\
 	$(GNOMEUI_LIBS)		\
 	$(OAF_LIBS)		\
 	$(GCONF_LIBS)		\
 	$(BONOBO_LIBS)		\
 	$(XML_LIBS)		\
-	$(RPM_LIBS)		\
 	$(NULL)
 
 libtrilobiteincludedir = $(includedir)/libtrilobite
+libtrilobite_serviceincludedir = $(includedir)/libtrilobite
+
+TRILOBITE_CORBA_GENERATED =		\
+	trilobite-service-stubs.c	\
+	trilobite-service-common.c	\
+	trilobite-service-skels.c	\
+	$(NULL)
 
 libtrilobiteinclude_HEADERS =			\
 	libtrilobite.h				\
-	trilobite-service.h			\
-	trilobite-service-public.h		\
-	trilobite-service-private.h		\
-	trilobite-service-passwordquery-public.h	\
-	trilobite-service-passwordquery-private.h	\
 	trilobite-core-messaging.h		\
 	trilobite-core-distribution.h		\
 	trilobite-core-metadata-manager.h	\
@@ -51,11 +60,7 @@ libtrilobiteinclude_HEADERS =			\
 	$(NULL)
 
 libtrilobite_la_SOURCES =			\
-	trilobite-service-common.c		\
-	trilobite-service-stubs.c		\
-	trilobite-service-skels.c		\
-	trilobite-service.c			\
-	trilobite-service-passwordquery.c	\
+	$(TRILOBITE_CORBA_GENERATED)		\
 	trilobite-core-messaging.c		\
 	trilobite-core-distribution.c		\
 	trilobite-core-metadata-manager.c	\
@@ -68,10 +73,18 @@ libtrilobite_la_SOURCES =			\
 	helixcode-utils.c			\
 	$(NULL)
 
-TRILOBITE_CORBA_GENERATED =		\
-	trilobite-service-stubs.c	\
-	trilobite-service-common.c	\
-	trilobite-service-skels.c	\
+libtrilobite_serviceinclude_HEADERS =		\
+	libtrilobite-service.h			\
+	trilobite-service.h			\
+	trilobite-service-public.h		\
+	trilobite-service-private.h		\
+	trilobite-service-passwordquery-public.h	\
+	trilobite-service-passwordquery-private.h	\
+	$(NULL)
+
+libtrilobite_service_la_SOURCES =		\
+	trilobite-service.c			\
+	trilobite-service-passwordquery.c	\
 	$(NULL)
 
 $(TRILOBITE_CORBA_GENERATED): trilobite-service.h

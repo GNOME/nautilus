@@ -26,7 +26,7 @@
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
 
-#include <libtrilobite/libtrilobite.h>
+#include <libtrilobite/libtrilobite-service.h>
 
 #include "trilobite-eazel-time-service.h"
 #include <trilobite-eazel-time-service-public.h>
@@ -62,6 +62,7 @@ trilobite_eazel_time_service_factory (BonoboGenericFactory *this_factory,
 {
 	TrilobiteService *trilobite;
 	TrilobiteEazelTimeService *service;
+	TrilobitePasswordQuery *trilobite_password;
 
 	if (strcmp (oaf_id, OAF_ID)) {
 		g_warning ("Unhandled OAF id %s", oaf_id);
@@ -70,12 +71,16 @@ trilobite_eazel_time_service_factory (BonoboGenericFactory *this_factory,
 
 	trilobite = TRILOBITE_SERVICE (gtk_object_new (TRILOBITE_TYPE_SERVICE,
 						       "name", "Time",
-						       "version", "0.1",
+						       "version", "0.3",
 						       "vendor_name", "Eazel, inc.",
 						       "vendor_url", "http://www.eazel.com",
-						       "url", "http://www.eazel.com/",
+						       "url", "http://testmachine.eazel.com:8888/examples/time/current/",
 						       "icon", "file:///gnome/share/pixmaps/gnome-default-dlg.png",
 						       NULL));
+
+	trilobite_password = TRILOBITE_PASSWORDQUERY (gtk_object_new (TRILOBITE_TYPE_PASSWORDQUERY,
+								      "prompt", "root password",
+								      NULL));
 
 	service = trilobite_eazel_time_service_new ();
 
@@ -84,7 +89,8 @@ trilobite_eazel_time_service_factory (BonoboGenericFactory *this_factory,
 
 	trilobites_active++;
 
-	bonobo_object_add_interface (BONOBO_OBJECT (trilobite), BONOBO_OBJECT (service));
+	trilobite_service_add_interface (trilobite, BONOBO_OBJECT (service));
+	trilobite_passwordquery_add_interface (trilobite_password, BONOBO_OBJECT (service));
 
 	gtk_signal_connect (GTK_OBJECT (trilobite),
 			    "destroy",

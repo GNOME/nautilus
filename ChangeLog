@@ -1,3 +1,93 @@
+2000-07-11  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/trilobite/idl/trilobite-service.idl:
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	*
+	components/services/trilobite/libtrilobite/libtrilobite-service.h:
+	* components/services/trilobite/libtrilobite/libtrilobite.h:
+	*
+	components/services/trilobite/libtrilobite/trilobite-service-passwo
+	rdquery-private.h:
+	*
+	components/services/trilobite/libtrilobite/trilobite-service-passwo
+	rdquery-public.h:
+	*
+	components/services/trilobite/libtrilobite/trilobite-service-passwo
+	rdquery.c: (impl_Trilobite_PasswordQuery_set_query_client),
+	(trilobite_passwordquery_get_epv),
+	(trilobite_passwordquery_destroy),
+	(trilobite_passwordquery_set_arg),
+	(trilobite_passwordquery_class_initialize),
+	(trilobite_passwordquery_initialize),
+	(trilobite_passwordquery_add_interface),
+	(trilobite_passwordquery_get_password),
+	(trilobite_passwordquery_set_prompt):
+	*
+	Added the trilobite_passwordquery interface and
+	trilobite_passwordquery_client. You add the _passwordquery
+	interface to your service, and the client (view or cli tool)
+	registers a _passwordquery_client object. When you then execute a
+	service function that requires eg. root acces, the service can
+	access a TrilobiteRootHelper (accessible using gtk_object_get_data
+	(... "trilobite-root-helper"...), and call it. This will emit a
+	signal, that will cause the _passwordquery to ask the
+	_passwordquery_client for a password. Currently, if no
+	_passwordquery_client is set, it will popup a gui input box. But
+	we should loose then when Robey does the gtk interface to be used
+	in views and cli tools.
+	
+	components/services/trilobite/libtrilobite/trilobite-service-public
+	.h:
+	* components/services/trilobite/libtrilobite/trilobite-service.c:
+	(trilobite_service_add_interface):
+	Added the trilobite_service_add_interface. All trilobite
+	interfaces should have one to handle the
+	bonobo_object_add_interface ond other magic stuff.
+	
+	* components/services/trilobite/sample/idl/sample-service.idl:
+	* components/services/trilobite/sample/command-line/main.c: (main):	
+	* components/services/trilobite/sample/service/Makefile.am:
+	* components/services/trilobite/sample/service/main.c:
+	(trilobite_sample_service_factory):
+	*
+	components/services/trilobite/sample/service/sample-service-impl.c:
+	(impl_Trilobite_Eazel_Sample_list_it), (sample_service_get_epv):
+	Added a list_it call, that given a dir does a ls on it. (proof of
+	concept stuff).	So I've also added the trilobite_passwordquery
+	interface to the sampleservice, and the cli tool tries to do an
+	ls -lart /root (thus triggering a password query).
+
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_destroy), (eazel_install_initialize):
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package):
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_new_packages), (install_all_packages),
+	(rpm_show_progress), (do_rpm_install), (do_rpm_uninstall),
+	(eazel_install_load_rpm_headers),
+	(eazel_install_prepare_rpm_system):
+	* components/services/install/server/Makefile.am:
+	* components/services/install/server/main.c:
+	(eazel_install_service_factory), (main):
+	I've partly made the installer use the use the new stuff. It
+	doesn't work yet, but it makes it all the way to password query.
+	
+	* components/services/time/command-line/main.c: (main):
+	* components/services/time/idl/trilobite-eazel-time-service.idl:
+	* components/services/time/service/Makefile.am:
+	* components/services/time/service/main.c:
+	(trilobite_eazel_time_service_factory):
+	* components/services/time/service/trilobite-eazel-time-service.c:
+	(impl_Trilobite_Eazel_Time_Service_check_time),
+	(impl_Trilobite_Eazel_Time_Service_update_time),
+	(trilobite_eazel_time_service_parse_body),
+	(trilobite_eazel_time_service_do_http_request):
+	Pached to work with the trilobite_passwordquery stuff. So as user,
+	you can now set the time if you've got the root password.
+
+	This closes 946, 938 and fixes root problem for the installer.
+
 2000-07-11  Gene Z. Ragan  <gzr@eazel.com>
 
 	* components/history/nautilus-history-view.c:

@@ -27,6 +27,7 @@
 #include <bonobo.h>
 
 #include <libtrilobite/libtrilobite.h>
+#include <libtrilobite/libtrilobite-service.h>
 
 #include "sample-service.h"
 #include <sample-service-public.h>
@@ -64,6 +65,7 @@ trilobite_sample_service_factory (BonoboGenericFactory *this_factory,
 				  gpointer data) 
 {
 	TrilobiteService *trilobite;
+	TrilobitePasswordQuery *trilobite_password;
 	SampleService *service;
 
 	g_message ("in trilobite_sample_service_factory");
@@ -81,11 +83,16 @@ trilobite_sample_service_factory (BonoboGenericFactory *this_factory,
 						       "icon", "gnome-default-dlg.png",
 						       NULL));
 
+	trilobite_password = TRILOBITE_PASSWORDQUERY (gtk_object_new (TRILOBITE_TYPE_PASSWORDQUERY, 
+								      "prompt", "root", 
+								      NULL));
+
 	service = sample_service_new ();
 
 	trilobites_active++;
 
-	bonobo_object_add_interface (BONOBO_OBJECT (trilobite), BONOBO_OBJECT (service));
+	trilobite_service_add_interface (trilobite, BONOBO_OBJECT (service));
+	trilobite_passwordquery_add_interface (trilobite_password, BONOBO_OBJECT (service));
 
 	gtk_signal_connect (GTK_OBJECT (trilobite),
 			    "destroy",

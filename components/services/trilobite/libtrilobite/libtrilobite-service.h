@@ -17,7 +17,7 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * Authors: J Shane Culpepper <pepper@eazel.com>
+ * Authors: Eskil Heyn Olsen <eskil@eazel.com>
  *
  */
 
@@ -27,22 +27,17 @@
  *
  */
 
-#ifndef __LIBTRILOBITE_H__
-#define __LIBTRILOBITE_H__
+#ifndef __LIBTRILOBITE_SERVICE_H__
+#define __LIBTRILOBITE_SERVICE_H__
 
 #include <gnome.h>
 
-#include <libtrilobite/trilobite-core-messaging.h>
-#include <libtrilobite/trilobite-core-utils.h>
-#include <libtrilobite/trilobite-core-network.h>
-#include <libtrilobite/trilobite-core-package-manager.h>
-#include <libtrilobite/trilobite-core-security-manager.h>
-#include <libtrilobite/trilobite-core-metadata-manager.h>
-#include <libtrilobite/trilobite-core-tests.h>
-#include <libtrilobite/trilobite-root-helper.h>
-#include <libtrilobite/helixcode-utils.h>
 
-#endif /* __LIBTRILOBITE_H__ */
+#include <libtrilobite/trilobite-service.h>
+#include <libtrilobite/trilobite-service-public.h>
+#include <libtrilobite/trilobite-service-passwordquery-public.h>
+
+#endif /* __LIBTRILOBITE_SERVICE_H__ */
 
 /*********************** end libtrilobite.h ***********************************/
 
