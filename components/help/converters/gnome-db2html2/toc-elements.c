@@ -303,12 +303,15 @@ toc_sect_end_element (Context *context,
 	}
 }
 
+static gboolean artheader_printed = FALSE;
+
 static void
 toc_artheader_end_element (Context *context, const gchar *name)
 {
 	GSList *ptr;
 	AuthorInfo *author;
 	HeaderInfo *header = ((TocContext *) context->data)->header;
+	if (artheader_printed == TRUE) return;
 
 	if (header->title)
 		g_print ("<TITLE>%s</TITLE>\n</HEAD>\n", header->title);
@@ -348,6 +351,7 @@ toc_artheader_end_element (Context *context, const gchar *name)
 	}
 	g_print ("<HR>\n<H2>%s</H2>\n\n", _("Table of Contents"));
 	g_print ("<P>\n");
+	artheader_printed = TRUE;
 }
 
 static void
