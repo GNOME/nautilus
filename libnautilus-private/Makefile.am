@@ -47,7 +47,14 @@ libnautilus_extensions_la_LDFLAGS =	\
 	$(XML_LIBS) 			\
 	$(NULL)
 
+nautilus_metafile_server_idl_sources =		\
+	nautilus-metafile-server-stubs.c	\
+	nautilus-metafile-server-skels.c	\
+	nautilus-metafile-server.h		\
+	nautilus-metafile-server-common.c
+
 libnautilus_extensions_la_SOURCES = 		\
+	$(nautilus_metafile_server_idl_sources)	\
 	bug-5712-pr3-workaround--gdk-pixbuf-drawable.c \
 	bug-5712-pr3-workaround--gdk-pixbuf-private.h \
 	bug-5712-pr3-workaround--gdkimage.c \
@@ -112,6 +119,8 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-list-column-title.c		\
 	nautilus-list.c                         \
 	nautilus-merged-directory.c		\
+	nautilus-metafile.c                     \
+	nautilus-metafile-factory.c             \
 	nautilus-mime-actions.c			\
 	nautilus-password-dialog.c		\
 	nautilus-preferences-box.c		\
@@ -223,6 +232,8 @@ noinst_HEADERS =				\
 	nautilus-list.h                         \
 	nautilus-merged-directory.h		\
 	nautilus-metadata.h			\
+	nautilus-metafile.h                     \
+	nautilus-metafile-factory.h             \
 	nautilus-mime-actions.h			\
 	nautilus-password-dialog.h		\
 	nautilus-preferences-box.h		\
@@ -266,3 +277,22 @@ noinst_HEADERS =				\
 	$(NULL)
 
 $(lib_LTLIBRARIES): $(dependency_static_libs)
+
+$(nautilus_metafile_server_idl_sources): nautilus_metafile_server_idl_stamp
+
+nautilus_metafile_server_idl_stamp: nautilus-metafile-server.idl $(ORBIT_IDL)
+	$(ORBIT_IDL) $(IDL_CFLAGS) $(srcdir)/nautilus-metafile-server.idl
+	touch nautilus_metafile_server_idl_stamp
+
+EXTRA_DIST = \
+	nautilus-metafile-server.idl	\
+	$(NULL)
+
+BUILT_SOURCES = \
+	$(nautilus_metafile_server_idl_sources)		\
+	$(NULL)
+
+CLEANFILES = \
+	$(nautilus_metafile_server_idl_sources)		\
+	nautilus_metafile_server_idl_stamp		\
+	$(NULL)

@@ -1,3 +1,26 @@
+2001-02-01  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-metafile-factory.c:
+	(nautilus_metafile_factory_initialize_class),
+	(nautilus_metafile_factory_get_epv),
+	(nautilus_metafile_factory_get_vepv),
+	(nautilus_metafile_factory_create_servant),
+	(nautilus_metafile_factory_initialize), (destroy),
+	(nautilus_meta_file_factory_new), (corba_open):
+	* libnautilus-extensions/nautilus-metafile-factory.h:
+	* libnautilus-extensions/nautilus-metafile-server.idl:
+	* libnautilus-extensions/nautilus-metafile.c:
+	(nautilus_metafile_initialize_class), (nautilus_metafile_get_epv),
+	(nautilus_metafile_get_vepv), (nautilus_metafile_create_servant),
+	(nautilus_metafile_initialize), (destroy), (nautilus_metafile_new),
+	(corba_get), (corba_get_list), (corba_set), (corba_set_list),
+	(corba_copy), (corba_remove), (corba_rename),
+	(corba_register_monitor), (corba_unregister_monitor):
+	* libnautilus-extensions/nautilus-metafile.h:
+	Initiall check-in of new metadata APIs (corba) - not hooked
+	up yet.
+
 2001-02-01  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

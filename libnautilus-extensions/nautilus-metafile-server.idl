@@ -1,0 +1,90 @@
+/* -*- Mode: IDL; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
+
+/* nautilus-metafile-server.idl - Interface for components to access Nautilus metadata
+ *
+ * Copyright (C) 2001 Eazel, Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+#ifndef NAUTILUS_METAFILE_SERVER_IDL_INCLUDED
+#define NAUTILUS_METAFILE_SERVER_IDL_INCLUDED
+
+#include <Bonobo.idl>
+#include <libnautilus/nautilus-view-component.idl>
+
+module Nautilus {
+
+	/* NautilusFiles creates (and registers) MetafileMonitors in order
+	 * to get notified of metafile changes.
+	 */
+	interface MetafileMonitor : ::Bonobo::Unknown {
+		void metafile_changed ();
+	};
+
+	typedef sequence<string> MetadataList;
+
+	/* A Metafile provides access to the metadata for the files
+	 * in a directory.
+	 *
+	 * Note: file names within the directory are specified, by
+	 * strings whose special characters have been URI encoded.
+	 */
+	interface Metafile : ::Bonobo::Unknown {
+
+		/* getters for a file's metadata
+		 */
+		string           get  (in string  file_name,
+				       in string  key,
+				       in string  default_value);
+		MetadataList get_list (in string  file_name,
+				       in string  list_key,
+				       in string  list_subkey);
+
+		/* setters for a file's metadata
+		 */
+		boolean set      (in string       file_name,
+				  in string       key,
+				  in string       default_value,
+				  in string       metadata);
+		boolean set_list (in string       file_name,
+				  in string       list_key,
+				  in string       list_subkey,
+				  in MetadataList list);
+				     
+		/* calls to keep metadata in sync with file operations
+		 */
+		void copy   (in Metafile source_metafile,
+			     in string   source_file_name,
+			     in string   destination_file_name);
+		void remove (in string   file_name);
+		void rename (in string   old_file_name,
+			     in string   new_file_name);
+
+		/* calls for registering a MetafileMonitor with a Metafile 
+		 */
+		void register_monitor   (in MetafileMonitor monitor);
+		void unregister_monitor (in MetafileMonitor monitor);
+	};
+
+	/* Components use the MetafileFactory to get a Metafile for a directory. 
+	 */
+	interface MetafileFactory : ::Bonobo::Unknown {
+		Metafile open (in URI directory);
+	};
+};
+
+#endif /* NAUTILUS_METAFILE_SERVER_IDL_INCLUDED */
