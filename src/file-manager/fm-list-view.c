@@ -703,6 +703,7 @@ create_and_set_up_tree_view (FMListView *view)
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *column;
 	GtkTargetEntry *drag_types;
+	AtkObject *atk_obj;
 	int num_drag_types;	
 
 	view->details->tree_view = GTK_TREE_VIEW (gtk_tree_view_new ());
@@ -817,6 +818,9 @@ create_and_set_up_tree_view (FMListView *view)
 
 	gtk_widget_show (GTK_WIDGET (view->details->tree_view));
 	gtk_container_add (GTK_CONTAINER (view), GTK_WIDGET (view->details->tree_view));
+
+        atk_obj = gtk_widget_get_accessible (GTK_WIDGET (view->details->tree_view));
+        atk_object_set_name (atk_obj, _("List View"));
 }
 
 static void
