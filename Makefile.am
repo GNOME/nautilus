@@ -40,6 +40,7 @@ EXTRA_DIST=					\
 	nautilus-clean.sh			\
 	nautilus.desktop			\
 	nautilus.desktop.in			\
+	nautilus-help.desktop			\
 	nautilus-launch-icon.png		\
 	nautilusConf.sh.in			\
 	nautilus-config.in			\
