@@ -78,6 +78,7 @@ void eazel_softcat_set_retry (EazelSoftCat *softcat, unsigned int retries, unsig
 
 EazelSoftCatSense eazel_softcat_convert_sense_flags (int flags);
 char *eazel_softcat_sense_flags_to_string (EazelSoftCatSense flags);
+EazelSoftCatSense eazel_softcat_string_to_sense_flags (const char *str);
 
 const char *eazel_softcat_error_string (EazelSoftCatError err);
 

@@ -401,7 +401,6 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 	cbstruct->package = package;
 
 	/* Execute the gnome_vfs copy */
-	service->private->cancel_download = FALSE;
 	result = gnome_vfs_xfer_uri (src_uri, dest_uri,
 				     xfer_options,
 				     GNOME_VFS_XFER_ERROR_MODE_QUERY,

@@ -43,7 +43,7 @@
   0x4 enables random spewing
   0x8 enables dumping the final tree
  */
-#define EI2_DEBUG 0x0
+#define EI2_DEBUG 0xff
 #define PATCH_FOR_SOFTCAT_BUG 1
 #define MUST_HAVE PACKAGE_FILL_NO_DIRS_IN_PROVIDES
 
@@ -665,7 +665,7 @@ is_satisfied (EazelInstall *service,
 	/* FIXME:
 	   this checks that the package isn't already filled, but what if
 	   it is, but later fails, will we loose a dependency ? */
-	/* First check if we've already downloaded the packag */
+	/* First check if we've already downloaded the package */
 	if (dep->package->fillflag & MUST_HAVE) {
 #if EI2_DEBUG & 0x4
 		trilobite_debug ("is_satisfied? %p %s", 
@@ -1517,10 +1517,14 @@ download_packages (EazelInstall *service,
 #if EI2_DEBUG & 0x4
 	trilobite_debug ("downloading %d packages", g_list_length (packages));
 #endif
+	service->private->cancel_download = FALSE;
 	for (iterator = flat_packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack = PACKAGEDATA (iterator->data);
 		if (pack->filename == NULL) {
 			eazel_install_fetch_package (service, pack);
+			if (service->private->cancel_download) {
+				break;
+			}
 		}
 	}
 

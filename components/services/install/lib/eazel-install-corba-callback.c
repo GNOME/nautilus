@@ -77,40 +77,32 @@ impl_download_progress (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 {
 	PackageData *pack;
 
-	pack = packagedata_from_corba_packagedatastruct (*corbapack);
+	pack = packagedata_from_corba_packagedatastruct (corbapack);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DOWNLOAD_PROGRESS], pack, amount, total);
 	gtk_object_unref (GTK_OBJECT (pack));
 }
 
 static CORBA_boolean
 impl_preflight_check (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
-		      const CORBA_char *xmlcorbapacks,
+		      const GNOME_Trilobite_Eazel_PackageDataStructList *package_tree,
 		      const CORBA_long total_bytes,
 		      const CORBA_long total_packages,
 		      CORBA_Environment * ev)
 {
-	GList *categories;
+	GList *packages;
 	gboolean result;
-	
-	categories = parse_memory_xml_package_list ((char*)xmlcorbapacks, strlen (xmlcorbapacks));
-	if (categories==NULL) {
-		g_warning ("install_failed called with error in xml.");
-		g_warning ("XML is = \n%s", xmlcorbapacks);
+
+	packages = packagedata_tree_from_corba_packagedatastructlist (package_tree);
+	if (packages == NULL) {
+		g_warning ("preflight called with error in package tree!");
 	} else {
-		CategoryData *cat;
-		cat = (CategoryData*)categories->data;
-		if (cat->packages==NULL) {
-			g_warning ("install_failed called with error in xml.");
-			g_warning ("XML is = \n%s", xmlcorbapacks);
-		} else {
-			gtk_signal_emit (GTK_OBJECT (servant->object), signals[PREFLIGHT_CHECK], 
-					 cat->packages,
-					 total_bytes, 
-					 total_packages,
-					 &result);
-		}
+		gtk_signal_emit (GTK_OBJECT (servant->object), signals[PREFLIGHT_CHECK], 
+				 packages,
+				 total_bytes, 
+				 total_packages,
+				 &result);
 	}
-	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
+	g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
 
 	return result ? CORBA_TRUE : CORBA_FALSE;
 }
@@ -122,7 +114,7 @@ impl_download_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 {
 	PackageData *pack;
 
-	pack = packagedata_from_corba_packagedatastruct (*corbapack);
+	pack = packagedata_from_corba_packagedatastruct (corbapack);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DOWNLOAD_FAILED], pack);
 	gtk_object_unref (GTK_OBJECT (pack));
 }
@@ -134,8 +126,8 @@ impl_dep_check (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 		CORBA_Environment * ev)
 {
 	PackageData *pack, *needs;
-	pack = packagedata_from_corba_packagedatastruct (*corbapack);
-	needs = packagedata_from_corba_packagedatastruct (*corbaneeds);
+	pack = packagedata_from_corba_packagedatastruct (corbapack);
+	needs = packagedata_from_corba_packagedatastruct (corbaneeds);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DEPENDENCY_CHECK], pack, needs);
 	gtk_object_unref (GTK_OBJECT (pack));
 	gtk_object_unref (GTK_OBJECT (needs));
@@ -150,7 +142,7 @@ impl_install_progress (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 		       CORBA_Environment * ev) 
 {
 	PackageData *pack;
-	pack = packagedata_from_corba_packagedatastruct (*corbapack);
+	pack = packagedata_from_corba_packagedatastruct (corbapack);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[INSTALL_PROGRESS], 
 			 pack,
 			 package_num, num_packages,
@@ -167,7 +159,7 @@ impl_uninstall_progress (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant
 			 CORBA_Environment * ev)
 {
 	PackageData *pack;
-	pack = packagedata_from_corba_packagedatastruct (*corbapack);
+	pack = packagedata_from_corba_packagedatastruct (corbapack);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[UNINSTALL_PROGRESS], pack, amount, total);
 	gtk_object_unref (GTK_OBJECT (pack));
 }
@@ -179,61 +171,43 @@ impl_md5_check_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 		       CORBA_Environment * ev)
 {
 	PackageData *pack;
-	pack = packagedata_from_corba_packagedatastruct (*corbapack);
+	pack = packagedata_from_corba_packagedatastruct (corbapack);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[MD5_CHECK_FAILED], pack, actual_md5);
 	gtk_object_unref (GTK_OBJECT (pack));
 }
 
 static void 
 impl_install_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
-		     const CORBA_char *xmlcorbapack,
+		     const GNOME_Trilobite_Eazel_PackageDataStructList *package_tree,
 		     CORBA_Environment * ev)
 {
-	GList *categories;
+	GList *packages;
 
-	categories = parse_memory_xml_package_list ((char*)xmlcorbapack, strlen (xmlcorbapack));
-	if (categories==NULL) {
-		g_warning ("install_failed called with error in xml.");
-		g_warning ("XML is = \n%s", xmlcorbapack);
+	packages = packagedata_tree_from_corba_packagedatastructlist (package_tree);
+	if (packages == NULL) {
+		g_warning ("install_failed called with error in package tree!");
 	} else {
-		CategoryData *cat;
-		cat = (CategoryData*)categories->data;
-		if (cat->packages==NULL) {
-			g_warning ("install_failed called with error in xml.");
-			g_warning ("XML is = \n%s", xmlcorbapack);
-		} else {
-			PackageData *pack;
-			pack = (PackageData*)cat->packages->data;
-			gtk_signal_emit (GTK_OBJECT (servant->object), signals[INSTALL_FAILED], pack);
-		}
+		/* always called with only one package at the root of the tree */
+		gtk_signal_emit (GTK_OBJECT (servant->object), signals[INSTALL_FAILED], (PackageData *)(packages->data));
 	}
-	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
+	g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
 }
 
 static void 
 impl_uninstall_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
-		       const CORBA_char *xmlcorbapack,
+		       const GNOME_Trilobite_Eazel_PackageDataStructList *package_tree,
 		       CORBA_Environment * ev)
 {
-	GList *categories;
+	GList *packages;
 
-	categories = parse_memory_xml_package_list ((char*)xmlcorbapack, strlen (xmlcorbapack));
-	if (categories==NULL) {
-		g_warning ("uninstall_failed called with error in xml.");
-		g_warning ("XML is = \n%s", xmlcorbapack);
+	packages = packagedata_tree_from_corba_packagedatastructlist (package_tree);
+	if (packages == NULL) {
+		g_warning ("uninstall_failed called with error in package tree!");
 	} else {
-		CategoryData *cat;
-		cat = (CategoryData*)categories->data;
-		if (cat->packages==NULL) {
-			g_warning ("uninstall_failed called with error in xml.");
-			g_warning ("XML is = \n%s", xmlcorbapack);
-		} else {
-			PackageData *pack;
-			pack = (PackageData*)cat->packages->data;
-			gtk_signal_emit (GTK_OBJECT (servant->object), signals[UNINSTALL_FAILED], pack);
-		}
+		/* always called with only one package at the root of the tree */
+		gtk_signal_emit (GTK_OBJECT (servant->object), signals[UNINSTALL_FAILED], (PackageData *)(packages->data));
 	}
-	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
+	g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
 }
 
 static CORBA_boolean
@@ -572,7 +546,7 @@ eazel_install_callback_simple_query (EazelInstallCallback *service,
 							       query,
 							       root ? root : "",
 							       ev);
-	result = packagedata_list_from_corba_packagedatastructlist (*corbares);
+	result = packagedata_list_from_corba_packagedatastructlist (corbares);
 	CORBA_free (corbares); 
 	
 	return result;

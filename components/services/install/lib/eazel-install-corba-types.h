@@ -28,16 +28,20 @@
 #include <trilobite-eazel-install.h>
 #include <glib.h>
 
-GNOME_Trilobite_Eazel_PackageDataStructList corba_packagedatastructlist_from_packagedata_list (GList *packages);
-
 GNOME_Trilobite_Eazel_PackageDataStruct* corba_packagedatastruct_from_packagedata (const PackageData *pack);
+
+GNOME_Trilobite_Eazel_PackageDataStructList* corba_packagedatastructlist_from_packagedata_list (GList *packages);
+
+GNOME_Trilobite_Eazel_PackageDataStructList* corba_packagedatastructlist_from_packagedata_tree (GList *packlist);
 
 GNOME_Trilobite_Eazel_CategoryStructList* corba_category_list_from_categorydata_list (GList *categories);
 
-GList* packagedata_list_from_corba_packagedatastructlist (const GNOME_Trilobite_Eazel_PackageDataStructList corbapack);
+PackageData* packagedata_from_corba_packagedatastruct (const GNOME_Trilobite_Eazel_PackageDataStruct *corbapack);
 
-PackageData* packagedata_from_corba_packagedatastruct (const GNOME_Trilobite_Eazel_PackageDataStruct corbapack);
+GList* packagedata_list_from_corba_packagedatastructlist (const GNOME_Trilobite_Eazel_PackageDataStructList *corbapack);
 
-GList* categorydata_list_from_corba_categorystructlist (const GNOME_Trilobite_Eazel_CategoryStructList corbacategories);
+GList* packagedata_tree_from_corba_packagedatastructlist (const GNOME_Trilobite_Eazel_PackageDataStructList *corbalist);
+
+GList* categorydata_list_from_corba_categorystructlist (const GNOME_Trilobite_Eazel_CategoryStructList *corbacategories);
 
 #endif /* EAZEL_INSTALL_SERVICES_TYPES_H */

@@ -21,6 +21,7 @@
  * Authors: J Shane Culpepper <pepper@eazel.com>
  *          Joe Shaw <joe@helixcode.com>
  *          Eskil Heyn Olsen <eskil@eazel.com>
+ *	    Robey Pointer <robey@eazel.com>
  */
 
 /* eazel-install - services command line install/update/uninstall
@@ -124,18 +125,6 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 
 			depend = parse_package (dep, FALSE);
 			packagedata_add_pack_to_soft_depends (rv, depend);
-		} else if (g_strcasecmp (dep->name, "BREAKS") == 0) {
-			/* FIXME: bugzilla.eazel.com 1542 
-			   This needs to parse all of the stuff, letting robey handle
-			   this as part of bug 1542. Right now I just get the borked
-			   package, the files/feature info is lost
-			*/
-			PackageData* depend;
-			PackageBreaks *breakage = packagebreaks_new ();
-			
-			depend = parse_package (dep, FALSE);
-			packagebreaks_set_package (breakage, depend);
-			packagedata_add_to_breaks (rv, breakage);
 		} else if (g_strcasecmp (dep->name, "MODIFIES") == 0) {
 			PackageData* depend;
 
@@ -614,23 +603,13 @@ eazel_install_packagedata_to_xml_int (const PackageData *pack,
 			(*path) = g_list_remove (*path, PACKAGEDEPENDENCY (iterator->data)->package);
 		}
 	}
-	for (iterator = pack->soft_depends; iterator; iterator = iterator->next) {
-		eazel_install_packagedata_to_xml (PACKAGEDATA (iterator->data), 
-						  "SOFT_DEPEND", 
-						  root, 
-						  include_provides);
-	}
-	for (iterator = pack->breaks; iterator; iterator = iterator->next) {
-		eazel_install_packagedata_to_xml (packagebreaks_get_package (PACKAGEBREAKS (iterator->data)), 
-						  "BREAKS", 
-						  root,
-						  include_provides);
-	}
 	for (iterator = pack->modifies; iterator; iterator = iterator->next) {
-		eazel_install_packagedata_to_xml (PACKAGEDATA (iterator->data), 
-						  "MODIFIES", 
-						  root,
-						  include_provides);
+		GList *subpath = NULL;
+		eazel_install_packagedata_to_xml_int (PACKAGEDATA (iterator->data), 
+						      "MODIFIES", 
+						      root,
+						      include_provides,
+						      &subpath);
 	}
 
 	return root;
@@ -638,17 +617,16 @@ eazel_install_packagedata_to_xml_int (const PackageData *pack,
 
 xmlNodePtr
 eazel_install_packagedata_to_xml (const PackageData *pack, 
-				  char *title, 
-				  xmlNodePtr droot, 
 				  gboolean include_provides)
 {
 	GList *path = NULL;
 
-	return eazel_install_packagedata_to_xml_int (pack, title, droot, include_provides, &path);
+	return eazel_install_packagedata_to_xml_int (pack, NULL, NULL, include_provides, &path);
 }
 
 xmlNodePtr
-eazel_install_packagelist_to_xml (GList *packages, gboolean include_provides) {
+eazel_install_packagelist_to_xml (GList *packages, gboolean include_provides)
+{
 	xmlNodePtr node;
 	GList *iterator;
 
@@ -657,12 +635,12 @@ eazel_install_packagelist_to_xml (GList *packages, gboolean include_provides) {
 	for (iterator = packages; iterator; iterator = iterator->next) {
 		xmlAddChild (node, 
 			     eazel_install_packagedata_to_xml (PACKAGEDATA (iterator->data), 
-							       NULL, NULL, include_provides)
+							       include_provides)
 			);
 	}
 
 	return node;	
-};
+}
 
 xmlNodePtr
 eazel_install_categorydata_to_xml (const CategoryData *category)

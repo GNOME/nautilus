@@ -362,6 +362,31 @@ eazel_softcat_sense_flags_to_string (EazelSoftCatSense flags)
 	return out;
 }
 
+EazelSoftCatSense
+eazel_softcat_string_to_sense_flags (const char *str)
+{
+	EazelSoftCatSense out = 0;
+	const char *p;
+
+	for (p = str; *p != '\0'; p++) {
+		switch (*p) {
+		case '<':
+			out |= EAZEL_SOFTCAT_SENSE_LT;
+			break;
+		case '>':
+			out |= EAZEL_SOFTCAT_SENSE_GT;
+			break;
+		case '=':
+			out |= EAZEL_SOFTCAT_SENSE_EQ;
+			break;
+		default:
+			/* ignore */
+			break;
+		}
+	}
+	return out;
+}
+
 #ifdef EAZEL_INSTALL_SLIM
 /* wow, i had no idea all these chars were evil.  they must be stopped! */
 static char _bad[] = {
@@ -446,6 +471,15 @@ get_search_url_for_package (EazelSoftCat *softcat, const PackageData *package, i
 	char *arch;
 	char *dist_name;
 	char *url_str;
+
+	g_assert (package != NULL);
+
+	/* bail out early if there's not enough info to go with */
+	if ((package->eazel_id == NULL) && (package->suite_id == NULL) && (package->name == NULL) &&
+	    (package->provides == NULL)) {
+		trilobite_debug ("softcat: no search url for completely-empty package");
+		return NULL;
+	}
 
 	verify_softcat_fields (softcat);
 	dist = trilobite_get_distribution ();

@@ -478,6 +478,7 @@ packagedata_copy (const PackageData *pack, gboolean deep)
 	result->distribution = pack->distribution;
 	result->bytesize = pack->bytesize;
 	result->filesize = pack->filesize;
+	result->md5 = g_strdup (pack->md5);
 
 	if (deep) {
 		result->soft_depends = packagedata_list_copy (pack->soft_depends, TRUE);

@@ -22,58 +22,39 @@
  */
 
 #include "eazel-install-corba-types.h"
+#include "eazel-softcat.h"
 #include <libtrilobite/trilobite-core-distribution.h>
 
 static GList*
-corba_string_sequence_to_glist (CORBA_sequence_CORBA_string provides) {
+corba_string_sequence_to_glist (const CORBA_sequence_CORBA_string *provides)
+{
 	GList *result = NULL;
 	guint iterator;
 
-	for (iterator = 0; iterator < provides._length; iterator++) {
-		result = g_list_prepend (result, g_strdup (provides._buffer[iterator]));
+	for (iterator = 0; iterator < provides->_length; iterator++) {
+		result = g_list_prepend (result, g_strdup (provides->_buffer[iterator]));
 	}
 	return result;
 }
 
-static CORBA_sequence_CORBA_string
-g_list_to_corba_string_sequence (GList *provides) {
-	CORBA_sequence_CORBA_string result;
+static void
+g_list_to_corba_string_sequence (CORBA_sequence_CORBA_string *sequence, GList *provides)
+{
 	GList *iterator;
 	int i = 0;
 
-	result._length = g_list_length (provides);
-	result._buffer = CORBA_sequence_CORBA_string_allocbuf (result._length);
+	sequence->_length = g_list_length (provides);
+	sequence->_buffer = CORBA_sequence_CORBA_string_allocbuf (sequence->_length);
 	for (iterator = provides; iterator; iterator = g_list_next (iterator)) {
-		result._buffer[i] = CORBA_string_dup ((char*)iterator->data);
+		sequence->_buffer[i] = CORBA_string_dup ((char*)iterator->data);
 		i++;
 	}
-
-	return result;
 }
 
-GNOME_Trilobite_Eazel_PackageDataStructList
-corba_packagedatastructlist_from_packagedata_list (GList *packages)
+static void
+corba_packagedatastruct_fill_from_packagedata (GNOME_Trilobite_Eazel_PackageDataStruct *corbapack,
+					       const PackageData *pack)
 {
-	GNOME_Trilobite_Eazel_PackageDataStructList packagelist;
-	guint i;
-
-	packagelist._length = g_list_length (packages);
-	packagelist._buffer = CORBA_sequence_GNOME_Trilobite_Eazel_PackageDataStruct_allocbuf (packagelist._length);
-	for (i = 0; i < packagelist._length; i++) {
-		PackageData *pack;
-		pack = (PackageData*)(g_list_nth (packages,i)->data);
-		packagelist._buffer[i] = *(corba_packagedatastruct_from_packagedata (pack));
-	}
-
-	return packagelist;
-}
-
-GNOME_Trilobite_Eazel_PackageDataStruct*
-corba_packagedatastruct_from_packagedata (const PackageData *pack)
-{
-	GNOME_Trilobite_Eazel_PackageDataStruct *corbapack;
-
-	corbapack = GNOME_Trilobite_Eazel_PackageDataStruct__alloc ();
 	corbapack->name = pack->name ? CORBA_string_dup (pack->name) : CORBA_string_dup ("");
 	corbapack->eazel_id = pack->eazel_id ? CORBA_string_dup (pack->eazel_id) : CORBA_string_dup ("");
 	corbapack->suite_id = pack->suite_id ? CORBA_string_dup (pack->suite_id) : CORBA_string_dup ("");
@@ -141,77 +122,249 @@ corba_packagedatastruct_from_packagedata (const PackageData *pack)
 	}
 
 	if (pack->provides) {		
-		corbapack->provides = g_list_to_corba_string_sequence (pack->provides);
+		g_list_to_corba_string_sequence (&(corbapack->provides), pack->provides);
 	} else {
 		corbapack->provides._length = 0;
-		corbapack->provides._buffer = 0;
+		corbapack->provides._buffer = NULL;
 	}
-/*
-  FIXME bugzilla.eazel.com 1542:
-	if (pack->soft_depends) {
-		corbapack->soft_depends = corba_packagedatastructlist_from_packagedata_list (pack->soft_depends);
-	} else {
-		corbapack->soft_depends._length = 0;
-	}
-	if (pack->breaks) {
-		corbapack->breaks = corba_packagedatastructlist_from_packagedata_list (pack->breaks);
-	} else {
-		corbapack->breaks._length = 0;
-	}
-*/
+
+	/* depends will be filled in further up, if they're required --
+	 * many times, this function is called to create a single corba package with no other package pointers */
+	corbapack->depends._length = 0;
+	corbapack->depends._buffer = NULL;
+	corbapack->breaks._length = 0;
+	corbapack->breaks._buffer = NULL;
+	corbapack->modifies._length = 0;
+	corbapack->modifies._buffer = NULL;
+}
+
+GNOME_Trilobite_Eazel_PackageDataStruct *
+corba_packagedatastruct_from_packagedata (const PackageData *pack)
+{
+	GNOME_Trilobite_Eazel_PackageDataStruct *corbapack;
+
+	corbapack = GNOME_Trilobite_Eazel_PackageDataStruct__alloc ();
+	corba_packagedatastruct_fill_from_packagedata (corbapack, pack);
+
 	return corbapack;
 }
 
-GList*
-packagedata_list_from_corba_packagedatastructlist (const GNOME_Trilobite_Eazel_PackageDataStructList corbapack)
+static void
+corba_packagedatastructlist_fill_from_packagedata_list (GNOME_Trilobite_Eazel_PackageDataStructList *packagelist,
+							GList *packages)
 {
-	GList *result;
 	guint i;
 
-	result = NULL;
-	
-	for (i = 0; i < corbapack._length; i++) {
+	packagelist->_length = g_list_length (packages);
+	packagelist->_buffer = CORBA_sequence_GNOME_Trilobite_Eazel_PackageDataStruct_allocbuf (packagelist->_length);
+	for (i = 0; i < packagelist->_length; i++) {
 		PackageData *pack;
-		pack = packagedata_from_corba_packagedatastruct (corbapack._buffer[i]);
-		result = g_list_prepend (result, pack);
+		pack = PACKAGEDATA (g_list_nth (packages, i)->data);
+		corba_packagedatastruct_fill_from_packagedata (&(packagelist->_buffer[i]), pack);
+	}
+}
+
+GNOME_Trilobite_Eazel_PackageDataStructList *
+corba_packagedatastructlist_from_packagedata_list (GList *packages)
+{
+	GNOME_Trilobite_Eazel_PackageDataStructList *packagelist;
+
+	packagelist = GNOME_Trilobite_Eazel_PackageDataStructList__alloc ();
+	corba_packagedatastructlist_fill_from_packagedata_list (packagelist, packages);
+	return packagelist;
+}
+
+static char *
+new_fake_md5 (void)
+{
+	static unsigned long counter = 23;
+
+	return g_strdup_printf ("FAKE-MD5-#%lu", counter++);
+}
+
+/* burrow through a package tree and stick them all into an MD5 hashtable */
+static void
+traverse_packagetree_md5 (const PackageData *pack, GHashTable *md5_table)
+{
+	PackageDependency *dep;
+	PackageData *subpack;
+	PackageBreaks *pbreak;
+	GList *iter;
+
+	if (pack->md5 == NULL) {
+		PACKAGEDATA (pack)->md5 = new_fake_md5 ();
 	}
 
-	return result;
+	if (g_hash_table_lookup (md5_table, pack->md5) != NULL) {
+		/* already touched this package */
+		return;
+	}
+
+	g_hash_table_insert (md5_table, pack->md5, (void *)pack);
+	for (iter = g_list_first (pack->depends); iter != NULL; iter = g_list_next (iter)) {
+		dep = (PackageDependency *)(iter->data);
+		traverse_packagetree_md5 (dep->package, md5_table);
+	}
+	for (iter = g_list_first (pack->breaks); iter != NULL; iter = g_list_next (iter)) {
+		pbreak = PACKAGEBREAKS (iter->data);
+		traverse_packagetree_md5 (packagebreaks_get_package (pbreak), md5_table);
+	}
+	for (iter = g_list_first (pack->modifies); iter != NULL; iter = g_list_next (iter)) {
+		subpack = PACKAGEDATA (iter->data);
+		traverse_packagetree_md5 (subpack, md5_table);
+	}
+}
+
+/* given a filled-in corba package, fill in the deps/breaks/modifies fields.
+ * we replace the pointers with MD5 strings, which we previously guaranteed were present (and ought to be unique).
+ */
+static void
+corba_packagedatastruct_fill_deps (GNOME_Trilobite_Eazel_PackageDataStruct *corbapack,
+				   const PackageData *pack,
+				   GHashTable *md5_table)
+{
+	GNOME_Trilobite_Eazel_PackageDependencyStruct *corbadep;
+	PackageDependency *dep;
+	PackageBreaks *pbreak;
+	PackageFileConflict *pbreakfile;
+	PackageFeatureMissing *pbreakfeature;
+	PackageData *subpack;
+	GList *iter;
+	char *sense_str;
+	int i;
+
+	if (pack->depends != NULL) {
+		corbapack->depends._length = g_list_length (pack->depends);
+		corbapack->depends._buffer = CORBA_sequence_GNOME_Trilobite_Eazel_PackageDependencyStruct_allocbuf (corbapack->depends._length);
+
+		for (iter = g_list_first (pack->depends), i = 0;
+		     iter != NULL;
+		     iter = g_list_next (iter), i++) {
+			dep = (PackageDependency *)(iter->data);
+
+			/* set up a PackageDependencyStruct for it */
+			corbadep = &(corbapack->depends._buffer[i]);
+			sense_str = eazel_softcat_sense_flags_to_string (dep->sense);
+			corbadep->sense = CORBA_string_dup (sense_str);
+			corbadep->version = CORBA_string_dup ((dep->version != NULL) ? dep->version : "");
+			corbadep->package_md5 = CORBA_string_dup (dep->package->md5);
+			g_free (sense_str);
+		}
+	}
+
+	if (pack->breaks != NULL) {
+		corbapack->breaks._length = g_list_length (pack->breaks);
+		corbapack->breaks._buffer = CORBA_sequence_GNOME_Trilobite_Eazel_PackageBreaksStruct_allocbuf (corbapack->breaks._length);
+		for (iter = g_list_first (pack->breaks), i = 0;
+		     iter != NULL;
+		     iter = g_list_next (iter), i++) {
+			pbreak = PACKAGEBREAKS (iter->data);
+			g_assert (IS_VALID_PACKAGEBREAKS (pbreak));
+			corbapack->breaks._buffer[i].package_md5 = CORBA_string_dup (packagebreaks_get_package (pbreak)->md5);
+			/* dealing with unions in corba is a pure delight. */
+			if (IS_PACKAGEFILECONFLICT (pbreak)) {
+				pbreakfile = PACKAGEFILECONFLICT (pbreak);
+				corbapack->breaks._buffer[i].u._d = GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT;
+				g_list_to_corba_string_sequence (&(corbapack->breaks._buffer[i].u._u.files), pbreakfile->files);
+			} else if (IS_PACKAGEFEATUREMISSING (pbreak)) {
+				pbreakfeature = PACKAGEFEATUREMISSING (pbreak);
+				corbapack->breaks._buffer[i].u._d = GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING;
+				g_list_to_corba_string_sequence (&(corbapack->breaks._buffer[i].u._u.features), pbreakfeature->features);
+			} else {
+				g_assert_not_reached ();
+			}
+		}
+	}
+
+	if (pack->modifies != NULL) {
+		corbapack->modifies._length = g_list_length (pack->modifies);
+		corbapack->modifies._buffer = CORBA_sequence_CORBA_string_allocbuf (corbapack->modifies._length);
+		for (iter = g_list_first (pack->modifies), i = 0;
+		     iter != NULL;
+		     iter = g_list_next (iter), i++) {
+			subpack = PACKAGEDATA (iter->data);
+			corbapack->modifies._buffer[i] = CORBA_string_dup (subpack->md5);
+		}
+	}
+}
+
+static void
+corba_packagedatastructlist_foreach (const char *key, const PackageData *package, GList **list)
+{
+	*list = g_list_prepend (*list, (void *)package);
+}
+
+/* flatten a package tree (really a directed graph) into a list of packages,
+ * changing all the depends/breaks/modifies pointers into lists of MD5's
+ */
+GNOME_Trilobite_Eazel_PackageDataStructList *
+corba_packagedatastructlist_from_packagedata_tree (GList *packlist)
+{
+	GNOME_Trilobite_Eazel_PackageDataStructList *corbalist;
+	GHashTable *md5_table;		/* GHashTable<char* md5, PackageData *> */
+	GList *list, *iter;
+	PackageData *package;
+	int i;
+
+	md5_table = g_hash_table_new (g_str_hash, g_str_equal);
+	for (iter = g_list_first (packlist); iter != NULL; iter = g_list_next (iter)) {
+		package = PACKAGEDATA (iter->data);
+		traverse_packagetree_md5 (package, md5_table);
+	}
+
+	/* convert hashtable of MD5=>PackageData into GList<PackageData *> */
+	list = NULL;
+	g_hash_table_foreach (md5_table, (GHFunc)corba_packagedatastructlist_foreach, &list);
+
+	/* build up actual corba list from the flattened tree */
+	corbalist = GNOME_Trilobite_Eazel_PackageDataStructList__alloc ();
+	corbalist->_length = g_list_length (list);
+	corbalist->_buffer = CORBA_sequence_GNOME_Trilobite_Eazel_PackageDataStruct_allocbuf (corbalist->_length);
+	for (iter = g_list_first (list), i = 0; iter != NULL; iter = g_list_next (iter), i++) {
+		package = PACKAGEDATA (iter->data);
+		corba_packagedatastruct_fill_from_packagedata (&(corbalist->_buffer[i]), package);
+		corba_packagedatastruct_fill_deps (&(corbalist->_buffer[i]), package, md5_table);
+	}
+
+	g_hash_table_destroy (md5_table);
+	g_list_free (list);
+
+	return corbalist;
 }
 
 PackageData*
-packagedata_from_corba_packagedatastruct (const GNOME_Trilobite_Eazel_PackageDataStruct corbapack)
+packagedata_from_corba_packagedatastruct (const GNOME_Trilobite_Eazel_PackageDataStruct *corbapack)
 {
 	PackageData *pack;
 	
 	pack = packagedata_new();
-	pack->name = strlen (corbapack.name) ? g_strdup (corbapack.name) : NULL;
-	pack->eazel_id = strlen (corbapack.eazel_id) ? g_strdup (corbapack.eazel_id) : NULL;
-	pack->suite_id = strlen (corbapack.suite_id) ? g_strdup (corbapack.suite_id) : NULL;
-	pack->version = strlen (corbapack.version) ? g_strdup (corbapack.version) : NULL;
-	pack->minor = strlen (corbapack.release) ? g_strdup (corbapack.release) : NULL;
-	pack->archtype = strlen (corbapack.archtype) ? g_strdup (corbapack.archtype) : NULL;
-	pack->filename = strlen (corbapack.filename) ? g_strdup (corbapack.filename) : NULL;
-	pack->summary = strlen (corbapack.summary) ? g_strdup (corbapack.summary) : NULL;
-	pack->description = strlen (corbapack.description) ? g_strdup (corbapack.description) : NULL;
-	pack->toplevel = corbapack.toplevel;
-	pack->bytesize = corbapack.bytesize;
-	pack->filesize = corbapack.filesize;
+	pack->name = strlen (corbapack->name) ? g_strdup (corbapack->name) : NULL;
+	pack->eazel_id = strlen (corbapack->eazel_id) ? g_strdup (corbapack->eazel_id) : NULL;
+	pack->suite_id = strlen (corbapack->suite_id) ? g_strdup (corbapack->suite_id) : NULL;
+	pack->version = strlen (corbapack->version) ? g_strdup (corbapack->version) : NULL;
+	pack->minor = strlen (corbapack->release) ? g_strdup (corbapack->release) : NULL;
+	pack->archtype = strlen (corbapack->archtype) ? g_strdup (corbapack->archtype) : NULL;
+	pack->filename = strlen (corbapack->filename) ? g_strdup (corbapack->filename) : NULL;
+	pack->summary = strlen (corbapack->summary) ? g_strdup (corbapack->summary) : NULL;
+	pack->description = strlen (corbapack->description) ? g_strdup (corbapack->description) : NULL;
+	pack->toplevel = corbapack->toplevel;
+	pack->bytesize = corbapack->bytesize;
+	pack->filesize = corbapack->filesize;
 
-	pack->install_root = strlen (corbapack.install_root) ? g_strdup (corbapack.install_root) : NULL;
-	pack->md5 = strlen (corbapack.md5) ? g_strdup (corbapack.md5) : NULL;
+	pack->install_root = strlen (corbapack->install_root) ? g_strdup (corbapack->install_root) : NULL;
+	pack->md5 = strlen (corbapack->md5) ? g_strdup (corbapack->md5) : NULL;
 
-	pack->distribution.name = trilobite_get_distribution_enum (corbapack.distribution.name, FALSE);
-	pack->distribution.version_major = corbapack.distribution.major;
-	pack->distribution.version_minor = corbapack.distribution.minor;
+	pack->distribution.name = trilobite_get_distribution_enum (corbapack->distribution.name, FALSE);
+	pack->distribution.version_major = corbapack->distribution.major;
+	pack->distribution.version_minor = corbapack->distribution.minor;
 
-	if (corbapack.provides._length > 0) {
-		pack->provides = corba_string_sequence_to_glist (corbapack.provides);
+	if (corbapack->provides._length > 0) {
+		pack->provides = corba_string_sequence_to_glist (&(corbapack->provides));
 	} else {
 		pack->provides = NULL;
 	}
 	
-	switch (corbapack.status) {
+	switch (corbapack->status) {
 	case GNOME_Trilobite_Eazel_UNKNOWN_STATUS:
 		pack->status = PACKAGE_UNKNOWN_STATUS;
 		break;
@@ -246,12 +399,130 @@ packagedata_from_corba_packagedatastruct (const GNOME_Trilobite_Eazel_PackageDat
 		pack->status = PACKAGE_RESOLVED;
 		break;
 	}
-/*
-  FIXME bugzilla.eazel.com 1542:
-	pack->soft_depends = packagedata_list_from_corba_packagedatastructlist (corbapack.soft_depends);
-	pack->breaks = packagedata_list_from_corba_packagedatastructlist (corbapack.breaks);
-*/
+
 	return pack;
+}
+
+GList*
+packagedata_list_from_corba_packagedatastructlist (const GNOME_Trilobite_Eazel_PackageDataStructList *corbapack)
+{
+	PackageData *pack;
+	GList *result;
+	guint i;
+
+	result = NULL;
+	
+	for (i = 0; i < corbapack->_length; i++) {
+		pack = packagedata_from_corba_packagedatastruct (&(corbapack->_buffer[i]));
+		result = g_list_prepend (result, pack);
+	}
+	result = g_list_reverse (result);
+
+	return result;
+}
+
+/* inflate a corba package list into a full-blown package tree (really a
+ * directed graph), by converting the soft MD5 pointers into physical ones.
+ */
+GList *
+packagedata_tree_from_corba_packagedatastructlist (const GNOME_Trilobite_Eazel_PackageDataStructList *corbalist)
+{
+	GList *packlist, *outlist, *iter;
+	PackageData *pack, *subpack;
+	PackageDependency *dep;
+	PackageFileConflict *pbreakfile;
+	PackageFeatureMissing *pbreakfeature;
+	GNOME_Trilobite_Eazel_PackageDataStruct *corbapack;
+	GNOME_Trilobite_Eazel_PackageDependencyStruct *corbadep;
+	GHashTable *md5_table;
+	guint i, j;
+
+	packlist = packagedata_list_from_corba_packagedatastructlist (corbalist);
+	md5_table = g_hash_table_new (g_str_hash, g_str_equal);
+
+	/* mark them all toplevel, first, and populate the MD5 hashtable */
+	for (iter = g_list_first (packlist); iter != NULL; iter = g_list_next (iter)) {
+		pack = PACKAGEDATA (iter->data);
+		pack->toplevel = TRUE;
+		if (pack->md5 == NULL) {
+			pack->md5 = new_fake_md5 ();
+		}
+		g_hash_table_insert (md5_table, pack->md5, pack);
+	}
+
+	/* now, resolve MD5 "soft" references between packages */
+	for (i = 0; i < corbalist->_length; i++) {
+		pack = PACKAGEDATA (g_hash_table_lookup (md5_table, corbalist->_buffer[i].md5));
+		g_assert (pack != NULL);
+		corbapack = &(corbalist->_buffer[i]);
+
+		for (j = 0; j < corbapack->depends._length; j++) {
+			corbadep = &(corbapack->depends._buffer[j]);
+			dep = g_new0 (PackageDependency, 1);
+			dep->sense = eazel_softcat_string_to_sense_flags (corbadep->sense);
+			dep->version = g_strdup (corbadep->version);
+			dep->package = PACKAGEDATA (g_hash_table_lookup (md5_table, corbadep->package_md5));
+			gtk_object_ref (GTK_OBJECT (dep->package));
+			if (dep->package == NULL) {
+				g_warning ("corba unpack: can't follow md5 soft pointer '%s'", corbadep->package_md5);
+				g_free (dep);
+			} else {
+				dep->package->toplevel = FALSE;
+				pack->depends = g_list_prepend (pack->depends, dep);
+			}
+		}
+		pack->depends = g_list_reverse (pack->depends);
+
+		for (j = 0; j < corbapack->breaks._length; j++) {
+			subpack = g_hash_table_lookup (md5_table, corbapack->breaks._buffer[j].package_md5);
+			if (subpack == NULL) {
+				g_warning ("corba unpack: can't follow md5 soft pointer '%s'", corbapack->breaks._buffer[j].package_md5);
+			} else {
+				subpack->toplevel = FALSE;
+				switch (corbapack->breaks._buffer[j].u._d) {
+				case GNOME_Trilobite_Eazel_PACKAGE_FILE_CONFLICT:
+					pbreakfile = packagefileconflict_new ();
+					packagebreaks_set_package (PACKAGEBREAKS (pbreakfile), subpack);
+					pbreakfile->files = corba_string_sequence_to_glist (&(corbapack->breaks._buffer[j].u._u.files));
+					packagedata_add_to_breaks (pack, PACKAGEBREAKS (pbreakfile));
+					gtk_object_unref (GTK_OBJECT (pbreakfile));
+				case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
+					pbreakfeature = packagefeaturemissing_new ();
+					packagebreaks_set_package (PACKAGEBREAKS (pbreakfeature), subpack);
+					pbreakfeature->features = corba_string_sequence_to_glist (&(corbapack->breaks._buffer[j].u._u.features));
+					packagedata_add_to_breaks (pack, PACKAGEBREAKS (pbreakfeature));
+					gtk_object_unref (GTK_OBJECT (pbreakfeature));
+				default:
+					g_assert_not_reached ();
+				}
+			}
+		}
+		pack->breaks = g_list_reverse (pack->breaks);
+
+		for (j = 0; j < corbapack->modifies._length; j++) {
+			subpack = g_hash_table_lookup (md5_table, corbapack->modifies._buffer[j]);
+			if (subpack == NULL) {
+				g_warning ("corba unpack: can't follow md5 soft pointer '%s'", corbapack->modifies._buffer[j]);
+			} else {
+				subpack->toplevel = FALSE;
+				pack->modifies = g_list_prepend (pack->modifies, subpack);
+				gtk_object_ref (GTK_OBJECT (subpack));
+			}
+		}
+		pack->modifies = g_list_reverse (pack->modifies);
+	}
+
+	/* now make a list of JUST the toplevel packages */
+	outlist = NULL;
+	for (iter = g_list_first (packlist); iter != NULL; iter = g_list_next (iter)) {
+		pack = PACKAGEDATA (iter->data);
+		if (pack->toplevel) {
+			outlist = g_list_prepend (outlist, pack);
+		}
+	}
+	g_list_free (packlist);
+
+	return outlist;
 }
 
 GNOME_Trilobite_Eazel_CategoryStructList* 
@@ -268,49 +539,43 @@ corba_category_list_from_categorydata_list (GList *categories)
 	i = 0;
 	for (iterator = categories; iterator; iterator = iterator->next) {
 		CategoryData *cat;
-		GNOME_Trilobite_Eazel_CategoryStruct corbacat;
-		GNOME_Trilobite_Eazel_PackageDataStructList corbapacklist;
 
-		cat = (CategoryData*)iterator->data;
-		corbacat.name = cat->name ? CORBA_string_dup (cat->name) : CORBA_string_dup ("");
-		corbapacklist = corba_packagedatastructlist_from_packagedata_list (cat->packages);
-		corbacat.packages = corbapacklist;
-
-		corbacats->_buffer[i] = corbacat;
+		cat = (CategoryData *)iterator->data;
+		corbacats->_buffer[i].name = CORBA_string_dup ((cat->name != NULL) ? cat->name : "");
+		corba_packagedatastructlist_fill_from_packagedata_list (&(corbacats->_buffer[i].packages), cat->packages);
 		i++;
 	}
 	return corbacats;
 }
 
 GList*
-categorydata_list_from_corba_categorystructlist (const GNOME_Trilobite_Eazel_CategoryStructList corbacategories)
+categorydata_list_from_corba_categorystructlist (const GNOME_Trilobite_Eazel_CategoryStructList *corbacategories)
 {
 	GList *categories;
 	guint i,j;
 
 	categories = NULL;
 
-	for (i = 0; i < corbacategories._length; i++) {
+	for (i = 0; i < corbacategories->_length; i++) {
 		CategoryData *category;
 		GList *packages;
-		GNOME_Trilobite_Eazel_CategoryStruct corbacategory;
-		GNOME_Trilobite_Eazel_PackageDataStructList packagelist;
+		GNOME_Trilobite_Eazel_CategoryStruct *corbacategory;
+		GNOME_Trilobite_Eazel_PackageDataStructList *packagelist;
 
 		packages = NULL;
-		corbacategory = corbacategories._buffer [i];
-		packagelist = corbacategory.packages;
+		corbacategory = &(corbacategories->_buffer[i]);
+		packagelist = &(corbacategory->packages);
 
-		for (j = 0; j < packagelist._length; j++) {
+		for (j = 0; j < packagelist->_length; j++) {
 			PackageData *pack;
-			GNOME_Trilobite_Eazel_PackageDataStruct corbapack;
+			GNOME_Trilobite_Eazel_PackageDataStruct *corbapack;
 			
-			corbapack = packagelist._buffer [j];
+			corbapack = &(packagelist->_buffer[j]);
 			pack = packagedata_from_corba_packagedatastruct (corbapack);
-			
 			packages = g_list_prepend (packages, pack);
 		}
 		category = categorydata_new ();
-		category->name = strlen (corbacategory.name)>0 ? g_strdup (corbacategory.name) : NULL;
+		category->name = (strlen (corbacategory->name) > 0) ? g_strdup (corbacategory->name) : NULL;
 		category->packages = packages;
 		categories = g_list_prepend (categories, category);
 	}

@@ -45,6 +45,32 @@ module Trilobite {
 		exception NoAccess {};         /* Raised if access to the package system wasn't allowed */
 		exception PackagesFailed {};   /* Raised if some packages failed (un)install */
 
+		/* ORBit is unable to cope with recursive struct definitions, so we refer to other
+		 * packages using a "soft pointer" (their MD5).  it sucks, but it works.
+		 */
+
+		struct PackageDependencyStruct {
+			string sense;
+			string version;
+			string package_md5;
+		};
+
+		enum PackageBreaksEnum {
+			PACKAGE_FILE_CONFLICT,
+			PACKAGE_FEATURE_MISSING
+		};
+		union PackageBreaksUnion switch (PackageBreaksEnum) {
+		case PACKAGE_FILE_CONFLICT:
+			sequence <string> files;
+		case PACKAGE_FEATURE_MISSING:
+			sequence <string> features;
+		};
+
+		struct PackageBreaksStruct {
+			string package_md5;
+			PackageBreaksUnion u;
+		};
+
 		struct PackageDataStruct {
 			/*
 			  These fields should be set when passed to 
@@ -89,7 +115,7 @@ module Trilobite {
 
 			/* When Eazel::IntallCallback::install_failed is
 			   called, this is set. The toplevel will have
-			   PARTLY_RESOLVED and in soft_ & hard_depends,
+			   PARTLY_RESOLVED and in depends,
 			   packages will have typically eiter
 			   RESOLVED for the good deps, 
 			   bad deps will have one of the
@@ -97,15 +123,10 @@ module Trilobite {
 			*/
 			PackageStatusEnum status;
 
-			/* FIXME bugzilla.eazel.com 1542:
-			   This is legal IDL, but not supported by wannabe idl compiler
-			   orbit-idl. Therefore I have to encode these
-			   trees as xml...
-			   When orbit-idl parses IDL, we can loose the xml.
-			sequence <PackageDataStruct> soft_depends;
-			sequence <PackageDataStruct> hard_depends;
-			sequence <PackageDataStruct> breaks;
-			*/	
+			sequence <PackageDependencyStruct> depends;
+			sequence <PackageBreaksStruct> breaks;
+			sequence <string> modifies;	/* MD5 identifiers */
+
 			sequence <string> provides;
 		};		
 		typedef sequence <PackageDataStruct> PackageDataStructList;
@@ -130,12 +151,9 @@ module Trilobite {
 
 			/* Called after download is complete, and before the (un)install begins.
 			   Typically while heating up RPM */
-			boolean preflight_check (in string xml_packages,
+			boolean preflight_check (in PackageDataStructList package_tree,
 						 in long total_size, 
 						 in long num_packages);
-			/* should be "in PackageDataStructList packages"
-			   instead of a string, 
-			   FIXME: bugzilla.eazel.com 1542 */
 			
 			/* Called during (un)installation of a package */
 			oneway void install_progress (in PackageDataStruct package, 
@@ -148,15 +166,8 @@ module Trilobite {
 			/* Called whenever a package (un)install fails
 			*/
 			void download_failed (in PackageDataStruct package);
-			/* FIXME bugzilla.eazel.com 1542:
-			   This is what they should be, but orbit-idl's lack of
-			   recursive structures, forces us to encode the structures
-			   as xml and transfer these instead. 
-			void install_failed (in PackageDataStruct package);
-			void uninstall_failed (in PackageDataStruct package);
-			*/
-			void install_failed (in string xml_package);
-			void uninstall_failed (in string xml_package);
+			void install_failed (in PackageDataStructList package_tree);
+			void uninstall_failed (in PackageDataStructList package_tree);
 
 			/* Emitted when a package fails the md5 check.
 			   The package structure contains the md5 it should have,

@@ -1,3 +1,85 @@
+2001-02-02  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(is_satisfied), (download_packages):
+	* components/services/install/lib/eazel-install-protocols.c:
+	(gnome_vfs_fetch_remote_file):
+
+	Fix thinko (caused by myself in October) that caused the stop
+	button to only cancel one download and then aggravatingly continue
+	with the remaining downloads.
+
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_download_progress), (impl_preflight_check),
+	(impl_download_failed), (impl_dep_check), (impl_install_progress),
+	(impl_uninstall_progress), (impl_md5_check_failed),
+	(impl_install_failed), (impl_uninstall_failed),
+	(eazel_install_callback_simple_query):
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_string_sequence_to_glist),
+	(g_list_to_corba_string_sequence),
+	(corba_packagedatastruct_fill_from_packagedata),
+	(corba_packagedatastruct_from_packagedata),
+	(corba_packagedatastructlist_fill_from_packagedata_list),
+	(corba_packagedatastructlist_from_packagedata_list),
+	(new_fake_md5), (traverse_packagetree_md5),
+	(corba_packagedatastruct_fill_deps),
+	(corba_packagedatastructlist_foreach),
+	(corba_packagedatastructlist_from_packagedata_tree),
+	(packagedata_from_corba_packagedatastruct),
+	(packagedata_list_from_corba_packagedatastructlist),
+	(packagedata_tree_from_corba_packagedatastructlist),
+	(corba_category_list_from_categorydata_list),
+	(categorydata_list_from_corba_categorystructlist):
+	* components/services/install/lib/eazel-install-corba-types.h:
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install_install_packages),
+	(impl_Eazel_Install_uninstall_packages),
+	(impl_Eazel_Install_simple_query):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_emit_preflight_check_default),
+	(eazel_install_emit_install_failed_default),
+	(eazel_install_emit_uninstall_failed_default):
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_package), (eazel_install_packagedata_to_xml_int),
+	(eazel_install_packagedata_to_xml),
+	(eazel_install_packagelist_to_xml):
+	* components/services/install/lib/eazel-install-xml-package-list.h:
+
+	Add proper "breaks", "modifies", and "depends" structures to the
+	corba interface, by using package MD5 strings to serve as "soft
+	pointers" between packages in a package tree.  Convert the
+	preflight, install_failed, and uninstall_failed signals to use the
+	new package-tree type instead of munging into and out of XML.
+	Also fixed up the API's to the corba conversion routines so they
+	would make a valiant attempt not to leak memory.
+
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedata_copy):
+
+	Don't forget to copy that pesky MD5!
+	
+	* components/services/install/lib/eazel-package-system-types.h:
+
+	Satisfy Robey's desire to avoid Carpal Tunnel Syndrome.
+	
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_string_to_sense_flags),
+	(get_search_url_for_package):
+	* components/services/install/lib/eazel-softcat.h:
+
+	Add function to convert a sense string back into flags.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (flatten_package_tree_depends_foreach),
+	(flatten_package_tree_foreach):
+
+	Fix up the install view to use the new "depends" chain instead of
+	the old "soft_depends" which is now empty.
+
 2001-02-02  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-metafile-factory.c: (corba_open):

@@ -369,6 +369,8 @@ struct _PackageFeatureMissing {
 	GList *features;
 };
 
+#define IS_VALID_PACKAGEBREAKS(obj)		(IS_PACKAGEFEATUREMISSING (obj) || IS_PACKAGEFILECONFLICT (obj))
+
 PackageFeatureMissing* packagefeaturemissing_new (void);
 GtkType packagefeaturemissing_get_type (void);
 

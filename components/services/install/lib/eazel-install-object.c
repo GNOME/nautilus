@@ -152,69 +152,6 @@ static void eazel_install_log (const char *domain,
 
 static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
 
-static CORBA_char*
-xml_from_packagedata (const PackageData *pack) {
-	xmlDocPtr doc;
-	xmlNodePtr node;
-	xmlChar *mem;
-	CORBA_char *result;
-	int size;
-
-	doc = xmlNewDoc ("1.0");
-
-	node = xmlNewDocNode (doc, NULL, "CATEGORIES", NULL);
-	xmlDocSetRootElement (doc, node);
-	node = xmlAddChild (node, xmlNewNode (NULL, "CATEGORY"));
-	xmlSetProp (node, "name", "failed");
-	
-	node = xmlAddChild (node, xmlNewNode (NULL, "PACKAGES"));
-
-	xmlAddChild (node, 
-		     eazel_install_packagedata_to_xml (pack, NULL, NULL, TRUE));
-
-	xmlDocDumpMemory (doc, &mem, &size);
-	result = CORBA_string_dup (mem);
-	free (mem);
-	xmlFreeDoc (doc);
-
-	return result;
-}
-
-static CORBA_char*
-xml_from_packagedata_list (const GList *packages) {
-	xmlDocPtr doc;
-	xmlNodePtr node;
-	xmlChar *mem;
-	CORBA_char *result;
-	int size;
-	const GList *iterator;
-
-	doc = xmlNewDoc ("1.0");
-
-	node = xmlNewDocNode (doc, NULL, "CATEGORIES", NULL);
-	xmlDocSetRootElement (doc, node);
-	node = xmlAddChild (node, xmlNewNode (NULL, "CATEGORY"));
-	xmlSetProp (node, "name", "failed");
-	
-	node = xmlAddChild (node, xmlNewNode (NULL, "PACKAGES"));
-
-	for (iterator = packages; iterator; glist_step (iterator)) {
-		PackageData *pack = (PackageData*)iterator->data;
-		xmlAddChild (node, 
-			     eazel_install_packagedata_to_xml (pack, 
-							       NULL, 
-							       NULL, 
-							       TRUE));
-	}
-
-	xmlDocDumpMemory (doc, &mem, &size);
-	result = CORBA_string_dup (mem);
-	free (mem);
-	xmlFreeDoc (doc);
-
-	return result;
-}
-
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
 /*****************************************
@@ -1470,24 +1407,23 @@ eazel_install_emit_preflight_check_default (EazelInstall *service,
 #ifndef EAZEL_INSTALL_NO_CORBA
 	CORBA_Environment ev;
 	CORBA_boolean result = FALSE;
+	GNOME_Trilobite_Eazel_PackageDataStructList *package_tree;
 
 	CORBA_exception_init (&ev);
 	EAZEL_INSTALL_SANITY_VAL (service, FALSE);
 
 	if (service->callback != CORBA_OBJECT_NIL) {
-		CORBA_char *corbapackages;
-		corbapackages = xml_from_packagedata_list (packages);
-
+		package_tree = corba_packagedatastructlist_from_packagedata_tree (packages);
 		result = GNOME_Trilobite_Eazel_InstallCallback_preflight_check (service->callback, 
-									  corbapackages,
-									  total_bytes,
-									  total_packages, 
-									  &ev);
+										package_tree,
+										total_bytes,
+										total_packages, 
+										&ev);
 		if (ev._major != CORBA_NO_EXCEPTION) {
 			/* abort on corba failure */
 			result = FALSE;
 		}
-		CORBA_free (corbapackages);
+		CORBA_free (package_tree);
 	} 
 	CORBA_exception_free (&ev);
 	return (gboolean)result;
@@ -1573,13 +1509,18 @@ eazel_install_emit_install_failed_default (EazelInstall *service,
 {
 #ifndef EAZEL_INSTALL_NO_CORBA
 	CORBA_Environment ev;
+	GNOME_Trilobite_Eazel_PackageDataStructList *package_tree;
+	GList *list;
+
+	EAZEL_INSTALL_SANITY (service);
 	CORBA_exception_init (&ev);
-	EAZEL_INSTALL_SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
-		CORBA_char *package;
-		package = xml_from_packagedata (pack);
-		GNOME_Trilobite_Eazel_InstallCallback_install_failed (service->callback, package, &ev);	
-		CORBA_free (package);
+		list = g_list_prepend (NULL, (void *)pack);
+		package_tree = corba_packagedatastructlist_from_packagedata_tree (list);
+		g_list_free (list);
+
+		GNOME_Trilobite_Eazel_InstallCallback_install_failed (service->callback, package_tree, &ev);
+		CORBA_free (package_tree);
 	} 
 	CORBA_exception_free (&ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
@@ -1599,13 +1540,18 @@ eazel_install_emit_uninstall_failed_default (EazelInstall *service,
 {
 #ifndef EAZEL_INSTALL_NO_CORBA
 	CORBA_Environment ev;
+	GNOME_Trilobite_Eazel_PackageDataStructList *package_tree;
+	GList *list;
+
+	EAZEL_INSTALL_SANITY (service);
 	CORBA_exception_init (&ev);
-	EAZEL_INSTALL_SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
-		CORBA_char *package;
-		package = xml_from_packagedata (pack);
-		GNOME_Trilobite_Eazel_InstallCallback_uninstall_failed (service->callback, package, &ev);	
-		/* CORBA_free (package); */
+		list = g_list_prepend (NULL, (void *)pack);
+		package_tree = corba_packagedatastructlist_from_packagedata_tree (list);
+		g_list_free (list);
+
+		GNOME_Trilobite_Eazel_InstallCallback_uninstall_failed (service->callback, package_tree, &ev);
+		CORBA_free (package_tree);
 	} 
 	CORBA_exception_free (&ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */

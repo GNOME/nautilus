@@ -801,6 +801,14 @@ reply_callback (int reply, gboolean *answer)
 	*answer = (reply == 0);
 }
 
+static void flatten_package_tree_foreach (PackageData *package, GList **flattened_list);
+
+static void
+flatten_package_tree_depends_foreach (PackageDependency *dep, GList **flattened_list)
+{
+	flatten_package_tree_foreach (dep->package, flattened_list);
+}
+
 static void
 flatten_package_tree_foreach (PackageData *package, GList **flattened_list)
 {
@@ -808,21 +816,13 @@ flatten_package_tree_foreach (PackageData *package, GList **flattened_list)
 	gboolean found = FALSE;
 	PackageData *pack;
 
-	for (iter = g_list_first (*flattened_list); iter != NULL; iter = g_list_next (iter)) {
-		pack = (PackageData *)(iter->data);
-		if ((strcmp (pack->name, package->name) == 0) &&
-		    (strcmp (pack->version, package->version) == 0)) {
-			found = TRUE;
-			break;
-		}
-	}
-
-	if (! found) {
+	if (g_list_find (*flattened_list, package) != NULL) {
 		/* add it to the flattened list */
 		*flattened_list = g_list_prepend (*flattened_list, package);
-	}
 
-	g_list_foreach (package->soft_depends, (GFunc)flatten_package_tree_foreach, flattened_list);
+		g_list_foreach (package->depends, (GFunc)flatten_package_tree_depends_foreach, flattened_list);
+		g_list_foreach (package->soft_depends, (GFunc)flatten_package_tree_foreach, flattened_list);
+	}
 }
 
 /* given a package tree containing possibly redundant packages, assemble a new list
