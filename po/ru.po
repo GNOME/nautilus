@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2000-07-31 21:08+0000\n"
-"PO-Revision-Date: 2000-07-31 21:31+00:00\n"
+"POT-Creation-Date: 2000-08-02 21:04+0000\n"
+"PO-Revision-Date: 2000-08-02 21:09+00:00\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -73,7 +73,9 @@ msgstr "Указать файл настроек (/var/eazel/service/eazel-services-config.xml)"
 #: components/services/install/command-line/eazel-alt-install.c:84
 #: components/services/install/command-line/eazel-gen-xml.c:42
 msgid "Use specified file to generate a package list, requires --packagelist"
-msgstr "Использовать указанный файл для создания списка пакетов, требует --packagelist"
+msgstr ""
+"Использовать указанный файл для создания списка пакетов, требует "
+"--packagelist"
 
 #: components/services/install/command-line/eazel-install.c:112
 msgid "*** Could not generate xml package list! ***\n"
@@ -84,7 +86,7 @@ msgid "XML package list successfully generated ...\n"
 msgstr "XML список пакетов успешно создан...\n"
 
 #: components/services/install/command-line/eazel-install.c:124
-#: components/services/install/lib/eazel-install-object.c:562
+#: components/services/install/lib/eazel-install-object.c:566
 msgid "Creating temporary download directory ...\n"
 msgstr "Создание временного каталога для скачивания...\n"
 
@@ -253,18 +255,16 @@ msgstr "Завершить"
 msgid ""
 "Sorry, %s can only open local files, and \"%s\" is remote. If you want to "
 "open it with %s, make a local copy first."
-msgstr ""
+msgstr "Извините, %s может открывать только локальные файлы, а \"%s\" -- удаленный. Если вы хотите открыть его с помощью %s, сначала сделайте локальную копию."
 
 #: libnautilus-extensions/nautilus-program-choosing.c:252
 msgid "Can't open remote file"
 msgstr "Невозможно открыть файл на удаленном сервере"
 
-#. Icon
-#. Emblems
 #: libnautilus-extensions/nautilus-program-chooser.c:1196
 #: libnautilus-extensions/nautilus-search-bar-criterion.c:42
-#: src/file-manager/fm-list-view.c:708
-#: src/file-manager/fm-search-list-view.c:207
+#: src/file-manager/fm-list-view.c:1572
+#: src/file-manager/fm-search-list-view.c:106
 #: src/nautilus-bookmarks-window.c:172
 msgid "Name"
 msgstr "Название"
@@ -274,8 +274,8 @@ msgid "Content"
 msgstr "Содержание"
 
 #: libnautilus-extensions/nautilus-search-bar-criterion.c:44
-#: src/file-manager/fm-list-view.c:710
-#: src/file-manager/fm-search-list-view.c:209
+#: src/file-manager/fm-list-view.c:1584
+#: src/file-manager/fm-search-list-view.c:118
 msgid "Type"
 msgstr "Тип"
 
@@ -284,8 +284,8 @@ msgid "Stored"
 msgstr "Сохраненное"
 
 #: libnautilus-extensions/nautilus-search-bar-criterion.c:46
-#: src/file-manager/fm-list-view.c:709
-#: src/file-manager/fm-search-list-view.c:208
+#: src/file-manager/fm-list-view.c:1578
+#: src/file-manager/fm-search-list-view.c:112
 msgid "Size"
 msgstr "Размер"
 
@@ -446,11 +446,21 @@ msgstr "Детали"
 
 #: components/services/install/lib/eazel-install-metadata.c:54
 #: components/services/install/lib/eazel-install-metadata.c:62
-#: nautilus-installer/src/installer.c:189
-#: nautilus-installer/src/installer.c:197
+#: nautilus-installer/src/installer.c:192
+#: nautilus-installer/src/installer.c:200
 #, c-format
 msgid "*** Could not create services directory (%s)! ***\n"
 msgstr "*** Невозможно создать каталог сервисов (%s)! ***\n"
+
+#: nautilus-installer/src/installer.c:221
+msgid ""
+"This is a warning, you're running\n"
+"the installer for real, without \n"
+"the --test flag... Beware!"
+msgstr ""
+"ВНИМАНИЕ! Вы запустили реальную\n"
+"установку, без флага --test...\n"
+"Будьте внимательны!"
 
 #: nautilus-installer/src/interface.c:67
 msgid "Nautilus install tool"
@@ -490,7 +500,7 @@ msgstr ""
 
 #: nautilus-installer/src/interface.c:141
 msgid "Most recent build"
-msgstr ""
+msgstr "Недавно собранные"
 
 #: nautilus-installer/src/interface.c:152
 msgid "Stable Nautilus"
@@ -549,27 +559,20 @@ msgstr "Невозможно найти файл изображения: %s"
 msgid "Couldn't create pixmap from file: %s"
 msgstr "Невозможно создать картинку из файла: %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:311
+#: src/file-manager/fm-desktop-icon-view.c:204
 msgid "New Terminal"
 msgstr "Новый терминал"
 
-#: src/file-manager/fm-desktop-icon-view.c:323
-msgid "Rescan Floppy"
-msgstr "Перечитать дискету"
+#: src/file-manager/fm-desktop-icon-view.c:216
+msgid "Disks"
+msgstr "Диски"
 
-#. Close desktop
-#: src/file-manager/fm-desktop-icon-view.c:336
-msgid "Close Nautilus Desktop"
-msgstr "Закрыть рабочий стол Наутилус"
-
-#. Icon
-#. Emblems
-#: src/file-manager/fm-search-list-view.c:206
+#: src/file-manager/fm-search-list-view.c:100
 msgid "Directory"
 msgstr "Каталог"
 
-#: src/file-manager/fm-list-view.c:711
-#: src/file-manager/fm-search-list-view.c:210
+#: src/file-manager/fm-list-view.c:1590
+#: src/file-manager/fm-search-list-view.c:124
 msgid "Date Modified"
 msgstr "Дата модификации"
 
@@ -690,7 +693,7 @@ msgid ""
 "For more information, visit http://nautilus.eazel.com."
 msgstr ""
 
-#: src/nautilus-switchable-search-bar.c:73
+#: src/nautilus-switchable-search-bar.c:92
 msgid "Search For:"
 msgstr "Поиск:"
 
@@ -981,12 +984,12 @@ msgstr ""
 #.
 #. BonoboUIHandler
 #. menu item path, must start with /some-existing-menu-path and be otherwise unique
-#: components/mozilla/nautilus-mozilla-content-view.c:318
+#: components/mozilla/nautilus-mozilla-content-view.c:323
 msgid "_Mozilla"
 msgstr "Mozilla"
 
 #. menu item user-displayed label
-#: components/mozilla/nautilus-mozilla-content-view.c:319
+#: components/mozilla/nautilus-mozilla-content-view.c:324
 msgid "This is a mozilla merged menu item"
 msgstr "Это объединенные элементы меню Mozilla"
 
@@ -1006,12 +1009,12 @@ msgstr "Это объединенные элементы меню Mozilla"
 #.
 #. BonoboUIHandler
 #. button path, must start with /Main/ and be otherwise unique
-#: components/mozilla/nautilus-mozilla-content-view.c:336
+#: components/mozilla/nautilus-mozilla-content-view.c:341
 msgid "Mozilla"
 msgstr "Mozilla"
 
 #. button user-displayed label
-#: components/mozilla/nautilus-mozilla-content-view.c:337
+#: components/mozilla/nautilus-mozilla-content-view.c:342
 msgid "This is a mozilla merged toolbar button"
 msgstr "Это кнопка объединенной панели инструментов Mozilla"
 
@@ -1253,7 +1256,7 @@ msgstr "*** Файл настроек не содержит данных! ***\n"
 
 #: components/services/install/lib/eazel-install-metadata.c:131
 msgid "*** Cannot find the EAZEL_INSTALLER xmlnode! ***\n"
-msgstr ""
+msgstr "*** Невозможно найти xml-узел EAZEL_INSTALLER! ***\n"
 
 #: components/services/install/lib/eazel-install-metadata.c:133
 msgid "*** Bailing from xmlparse! ***\n"
@@ -1263,158 +1266,163 @@ msgstr ""
 msgid "Could not set URLType from config file!"
 msgstr "Невозможно установить URLType из файла настроек!"
 
-#: components/services/install/lib/eazel-install-object.c:567
+#: components/services/install/lib/eazel-install-object.c:571
 msgid "Could not create temporary directory!\n"
 msgstr "Невозможно создать временный каталог!\n"
 
-#: components/services/install/lib/eazel-install-object.c:580
+#: components/services/install/lib/eazel-install-object.c:584
 msgid "Getting package list from remote server ...\n"
 msgstr "Получение списка пакетов с удаленного сервера...\n"
 
-#: components/services/install/lib/eazel-install-object.c:590
+#: components/services/install/lib/eazel-install-object.c:594
 msgid "Unable to retrieve package-list.xml!\n"
 msgstr "Невозможно получить package-list.xml!\n"
 
-#: components/services/install/lib/eazel-install-object.c:634
+#: components/services/install/lib/eazel-install-object.c:638
 #, c-format
 msgid "Cannot write to file %s, using default log handler"
 msgstr ""
 "Невозможна запись в файл %s, используется обработчик журнала по умолчанию"
 
-#: components/services/install/lib/eazel-install-object.c:653
-#: components/services/install/lib/eazel-install-object.c:710
+#: components/services/install/lib/eazel-install-object.c:661
+#: components/services/install/lib/eazel-install-object.c:718
 msgid "ftp install not supported"
 msgstr "ftp пока не поддерживается"
 
-#: components/services/install/lib/eazel-install-object.c:660
+#: components/services/install/lib/eazel-install-object.c:668
 msgid "Install failed"
 msgstr "Сбой установки"
 
-#: components/services/install/lib/eazel-install-object.c:717
+#: components/services/install/lib/eazel-install-object.c:725
 msgid "Uninstall failed"
 msgstr "Сбой удаления пакета"
 
-#: components/services/install/lib/eazel-install-protocols.c:64
-#: components/services/install/lib/eazel-install-protocols.c:154
+#: components/services/install/lib/eazel-install-protocols.c:70
+#: components/services/install/lib/eazel-install-protocols.c:172
 #, c-format
 msgid "Downloading %s..."
 msgstr "Скачивание %s..."
 
-#: components/services/install/lib/eazel-install-protocols.c:75
+#: components/services/install/lib/eazel-install-protocols.c:77
+#, c-format
+msgid "*** Could not create tmp directory (%s)! ***\n"
+msgstr "*** Невозможно создать временный каталог (%s)! ***\n"
+
+#: components/services/install/lib/eazel-install-protocols.c:93
 #, c-format
 msgid "Could not open target file %s"
 msgstr "Невозможно открыть целевой файл %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:82
-#: components/services/install/lib/eazel-install-protocols.c:351
+#: components/services/install/lib/eazel-install-protocols.c:100
+#: components/services/install/lib/eazel-install-protocols.c:369
 msgid "Could not create an http request !"
 msgstr "Невозможно создать http-запрос!"
 
-#: components/services/install/lib/eazel-install-protocols.c:87
+#: components/services/install/lib/eazel-install-protocols.c:105
 msgid "Invalid uri !"
 msgstr "Неправильный uri!"
 
-#: components/services/install/lib/eazel-install-protocols.c:94
-#: components/services/install/lib/eazel-install-protocols.c:358
+#: components/services/install/lib/eazel-install-protocols.c:112
+#: components/services/install/lib/eazel-install-protocols.c:376
 msgid "Could not prepare http request !"
 msgstr "Невозможно подготовить http-запрос!"
 
-#: components/services/install/lib/eazel-install-protocols.c:98
+#: components/services/install/lib/eazel-install-protocols.c:116
 msgid "Couldn't get async mode "
 msgstr "Невозможно установить асинхронный режим"
 
-#: components/services/install/lib/eazel-install-protocols.c:119
+#: components/services/install/lib/eazel-install-protocols.c:137
 #, c-format
 msgid "HTTP error: %d %s"
 msgstr "Ошибка HTTP: %d %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:129
+#: components/services/install/lib/eazel-install-protocols.c:147
 msgid "Could not get request body!"
 msgstr "Невозможно получить тело запроса!"
 
-#: components/services/install/lib/eazel-install-protocols.c:155
+#: components/services/install/lib/eazel-install-protocols.c:173
 msgid "FTP not supported yet"
 msgstr "FTP пока не поддерживается"
 
-#: components/services/install/lib/eazel-install-protocols.c:167
+#: components/services/install/lib/eazel-install-protocols.c:185
 #, c-format
 msgid "Checking local file %s..."
 msgstr "Проверка локального файла %s..."
 
-#: components/services/install/lib/eazel-install-protocols.c:247
-#: components/services/install/lib/eazel-install-protocols.c:295
+#: components/services/install/lib/eazel-install-protocols.c:265
+#: components/services/install/lib/eazel-install-protocols.c:313
 #, c-format
 msgid "Could not get a URL for %s"
 msgstr "Невозможно получить URL для %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:289
+#: components/services/install/lib/eazel-install-protocols.c:307
 msgid "Using local protocol cannot resolve library dependencies"
 msgstr ""
 "Использование локального протокола непозволяет разрешить зависимости "
 "библиотек"
 
-#: components/services/install/lib/eazel-install-protocols.c:347
+#: components/services/install/lib/eazel-install-protocols.c:365
 #, c-format
 msgid "Search URL: %s"
 msgstr "Поиск URL: %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:355
+#: components/services/install/lib/eazel-install-protocols.c:373
 msgid "Invalid uri"
 msgstr "Неправильный uri"
 
-#: components/services/install/lib/eazel-install-protocols.c:369
-#: components/services/install/lib/eazel-install-protocols.c:373
+#: components/services/install/lib/eazel-install-protocols.c:387
+#: components/services/install/lib/eazel-install-protocols.c:391
 #, c-format
 msgid "Could not retrieve a URL for %s"
 msgstr "Невозможно запросить URL для %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:100
-#: components/services/install/lib/eazel-install-rpm-glue.c:305
+#: components/services/install/lib/eazel-install-rpm-glue.c:105
+#: components/services/install/lib/eazel-install-rpm-glue.c:310
 msgid "Dry Run Mode Activated.  Packages will not actually be installed ..."
 msgstr ""
 "Активирован режим сухого запуска. В действительности пакеты установлены не "
 "будут..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:127
+#: components/services/install/lib/eazel-install-rpm-glue.c:132
 msgid "Reading the install package list ..."
 msgstr "Считывание списка устанавливаемых пакетов ..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:161
-#: components/services/install/lib/eazel-install-rpm-glue.c:280
+#: components/services/install/lib/eazel-install-rpm-glue.c:166
+#: components/services/install/lib/eazel-install-rpm-glue.c:285
 #, c-format
 msgid "Category = %s"
 msgstr "Категория = %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:194
+#: components/services/install/lib/eazel-install-rpm-glue.c:199
 #, c-format
 msgid "Failed to retreive %s!"
 msgstr "Не удалось получить %s!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:255
+#: components/services/install/lib/eazel-install-rpm-glue.c:260
 #, c-format
 msgid "Category = %s, %d packages"
 msgstr "Категория = %s, %d пакетов"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:522
+#: components/services/install/lib/eazel-install-rpm-glue.c:644
 #, c-format
 msgid "*** Could not create transaction directory (%s)! ***\n"
 msgstr "*** Невозможно создать каталог транзакции (%s)! ***\n"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:647
+#: components/services/install/lib/eazel-install-rpm-glue.c:753
 #, c-format
 msgid "Removing package %s"
 msgstr "Удаление пакета %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:765
+#: components/services/install/lib/eazel-install-rpm-glue.c:871
 #, c-format
 msgid "Cannot open %s"
 msgstr "Невозможно открыть %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:863
+#: components/services/install/lib/eazel-install-rpm-glue.c:969
 msgid "RPM package database query failed !"
 msgstr "Сбой запроса к базе данных пакетов!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1110
+#: components/services/install/lib/eazel-install-rpm-glue.c:1216
 #, c-format
 msgid "%s %s breaks %s"
 msgstr "%s %s остановливает %s"
@@ -1422,23 +1430,23 @@ msgstr "%s %s остановливает %s"
 #. If we end here, it's a conflict is going to break something
 #. FIXME: bugzilla.eazel.com 1514
 #. Need to handle this more intelligently
-#: components/services/install/lib/eazel-install-rpm-glue.c:1151
+#: components/services/install/lib/eazel-install-rpm-glue.c:1257
 #, c-format
 msgid "%s conflicts %s-%s"
 msgstr "%s конфликтует с %s-%s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1163
-#: components/services/install/lib/eazel-install-rpm-glue.c:1171
+#: components/services/install/lib/eazel-install-rpm-glue.c:1269
+#: components/services/install/lib/eazel-install-rpm-glue.c:1277
 #, c-format
 msgid "Processing dep for %s : requires %s"
 msgstr "Обработка зависимостей для %s: требуется %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1402
+#: components/services/install/lib/eazel-install-rpm-glue.c:1508
 #, c-format
 msgid "%d dependencies failed!"
 msgstr "Сбой %d зависимостей!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1465
+#: components/services/install/lib/eazel-install-rpm-glue.c:1571
 msgid "Dependencies are ok"
 msgstr "Зависимости в порядке"
 
@@ -1450,39 +1458,52 @@ msgstr "*** Начало дампа пакета ***\n"
 msgid "*** End pkg dump ***\n"
 msgstr "*** Конец дампа пакета ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:122
+#: components/services/install/lib/eazel-install-xml-package-list.c:124
 msgid "*** No package nodes! ***\n"
 msgstr "*** Нет узлов пакета! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:124
+#: components/services/install/lib/eazel-install-xml-package-list.c:126
 msgid "*** Bailing from package parse! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:148
+#: components/services/install/lib/eazel-install-xml-package-list.c:150
 msgid "*** The pkg list file contains no data! ***\n"
 msgstr "*** Файл списка пакетов не содержит данных! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:153
+#: components/services/install/lib/eazel-install-xml-package-list.c:155
 msgid "*** Cannot find the CATEGORIES xmlnode! ***\n"
 msgstr "*** Не удалось найти xml-узел CATEGORIES! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:155
+#: components/services/install/lib/eazel-install-xml-package-list.c:157
 msgid "*** Bailing from categories parse! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:161
+#: components/services/install/lib/eazel-install-xml-package-list.c:163
 msgid "*** No Categories! ***\n"
 msgstr "*** Нет категорий! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:163
+#: components/services/install/lib/eazel-install-xml-package-list.c:165
 msgid "*** Bailing from category parse! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:275
+#: components/services/install/lib/eazel-install-xml-package-list.c:216
+msgid "*** Cannot find the TRANSACTION xmlnode! ***\n"
+msgstr "*** Не удалось найти xml-узел TRANSACTION! ***\n"
+
+#: components/services/install/lib/eazel-install-xml-package-list.c:218
+#: components/services/install/lib/eazel-install-xml-package-list.c:226
+msgid "*** Bailing from transaction parse! ***\n"
+msgstr ""
+
+#: components/services/install/lib/eazel-install-xml-package-list.c:224
+msgid "*** No packages! ***\n"
+msgstr "*** Нет пакетов! ***\n"
+
+#: components/services/install/lib/eazel-install-xml-package-list.c:320
 msgid "*** Error generating xml package list! ***\n"
 msgstr "*** Ошибка создания списка xml-пакетов! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:322
+#: components/services/install/lib/eazel-install-xml-package-list.c:367
 msgid "*** Error reading package list! ***\n"
 msgstr "*** Ошибка считывания списка пакетов! ***\n"
 
@@ -1503,115 +1524,115 @@ msgid "specify time url"
 msgstr "указать url времени"
 
 #. today, use special word
-#: libnautilus-extensions/nautilus-file.c:1527
+#: libnautilus-extensions/nautilus-file.c:1561
 msgid "today %-I:%M %p"
 msgstr "сегодня  %-I:%M %p"
 
 #. yesterday, use special word
-#: libnautilus-extensions/nautilus-file.c:1530
+#: libnautilus-extensions/nautilus-file.c:1564
 msgid "yesterday %-I:%M %p"
 msgstr "вчера %-I:%M %p"
 
 #. current week, include day of week
-#: libnautilus-extensions/nautilus-file.c:1533
+#: libnautilus-extensions/nautilus-file.c:1567
 msgid "%A %-m/%-d/%y %-I:%M %p"
 msgstr "%A %-m/%-d/%y %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:1535
+#: libnautilus-extensions/nautilus-file.c:1569
 msgid "%-m/%-d/%y %-I:%M %p"
 msgstr "%-m/%-d/%y %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:2555
+#: libnautilus-extensions/nautilus-file.c:2589
 msgid "0 items"
 msgstr "0 элементов"
 
-#: libnautilus-extensions/nautilus-file.c:2555
+#: libnautilus-extensions/nautilus-file.c:2589
 msgid "0 directories"
 msgstr "0 каталогов"
 
-#: libnautilus-extensions/nautilus-file.c:2556
+#: libnautilus-extensions/nautilus-file.c:2590
 msgid "0 files"
 msgstr "0 файлов"
 
-#: libnautilus-extensions/nautilus-file.c:2560
+#: libnautilus-extensions/nautilus-file.c:2594
 msgid "1 item"
 msgstr "1 элемент"
 
-#: libnautilus-extensions/nautilus-file.c:2560
+#: libnautilus-extensions/nautilus-file.c:2594
 msgid "1 directory"
 msgstr "1 каталог"
 
-#: libnautilus-extensions/nautilus-file.c:2561
+#: libnautilus-extensions/nautilus-file.c:2595
 msgid "1 file"
 msgstr "1 файл"
 
-#: libnautilus-extensions/nautilus-file.c:2564
+#: libnautilus-extensions/nautilus-file.c:2598
 #, c-format
 msgid "%u items"
 msgstr "%u элементов"
 
-#: libnautilus-extensions/nautilus-file.c:2564
+#: libnautilus-extensions/nautilus-file.c:2598
 #, c-format
 msgid "%u directories"
 msgstr "%d каталогов"
 
-#: libnautilus-extensions/nautilus-file.c:2565
+#: libnautilus-extensions/nautilus-file.c:2599
 #, c-format
 msgid "%u files"
 msgstr "%u файлов"
 
 #. This means no contents at all were readable
-#: libnautilus-extensions/nautilus-file.c:2891
-#: libnautilus-extensions/nautilus-file.c:2899
+#: libnautilus-extensions/nautilus-file.c:2921
+#: libnautilus-extensions/nautilus-file.c:2929
 msgid "xxx"
 msgstr "xxx"
 
-#: libnautilus-extensions/nautilus-file.c:2891
-#: libnautilus-extensions/nautilus-file.c:2901
+#: libnautilus-extensions/nautilus-file.c:2921
+#: libnautilus-extensions/nautilus-file.c:2931
 #: src/file-manager/fm-properties-window.c:850
 msgid "--"
 msgstr "--"
 
-#: libnautilus-extensions/nautilus-file.c:2903
+#: libnautilus-extensions/nautilus-file.c:2933
 msgid "unknown type"
 msgstr "неизвестный тип"
 
-#: libnautilus-extensions/nautilus-file.c:2905
+#: libnautilus-extensions/nautilus-file.c:2935
 msgid "unknown MIME type"
 msgstr "неизвестный MIME-тип"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-extensions/nautilus-file.c:2910
+#: libnautilus-extensions/nautilus-file.c:2940
 msgid "unknown"
 msgstr "неизвестно"
 
-#: libnautilus-extensions/nautilus-file.c:2939
+#: libnautilus-extensions/nautilus-file.c:2969
 msgid "program"
 msgstr "программа"
 
-#: libnautilus-extensions/nautilus-file.c:3253
+#: libnautilus-extensions/nautilus-file.c:3281
 msgid " --"
 msgstr "--"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:596
+#: libnautilus-extensions/nautilus-global-preferences.c:640
 msgid "Display tool bar"
 msgstr "Показать панель инструментов"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:602
+#: libnautilus-extensions/nautilus-global-preferences.c:646
 msgid "Display location bar"
 msgstr "Показать строку расположения"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:608
+#: libnautilus-extensions/nautilus-global-preferences.c:652
 msgid "Display status bar"
 msgstr "Показать строку состояния"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:614
+#: libnautilus-extensions/nautilus-global-preferences.c:658
 msgid "Display Sidebar"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-icon-canvas-item.c:681
+#: libnautilus-extensions/nautilus-icon-canvas-item.c:699
 msgid " -_,;.?/&"
 msgstr " -_,;.?/&"
 
@@ -2089,148 +2110,148 @@ msgstr "Очистка мусорной корзины"
 msgid "Preparing to Empty the Trash..."
 msgstr "Подготовка к очистке мусорной корзины..."
 
-#: src/file-manager/fm-directory-view.c:958
+#: src/file-manager/fm-directory-view.c:1005
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" выделено"
 
-#: src/file-manager/fm-directory-view.c:960
+#: src/file-manager/fm-directory-view.c:1007
 msgid "1 directory selected"
 msgstr "1 каталог выделен"
 
-#: src/file-manager/fm-directory-view.c:963
+#: src/file-manager/fm-directory-view.c:1010
 #, c-format
 msgid "%d directories selected"
 msgstr "%d каталогов выделено"
 
-#: src/file-manager/fm-directory-view.c:969
+#: src/file-manager/fm-directory-view.c:1016
 msgid " (containing 0 items)"
 msgstr " (содержащий 0 элементов)"
 
-#: src/file-manager/fm-directory-view.c:971
+#: src/file-manager/fm-directory-view.c:1018
 msgid " (containing 1 item)"
 msgstr " (содержащий 1 элемент)"
 
-#: src/file-manager/fm-directory-view.c:973
+#: src/file-manager/fm-directory-view.c:1020
 #, c-format
 msgid " (containing %d items)"
 msgstr " (содержащий %d элементов)"
 
-#: src/file-manager/fm-directory-view.c:984
+#: src/file-manager/fm-directory-view.c:1031
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" выделено (%s)"
 
-#: src/file-manager/fm-directory-view.c:988
+#: src/file-manager/fm-directory-view.c:1035
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d элементов выделено (%s)"
 
-#: src/file-manager/fm-directory-view.c:995
+#: src/file-manager/fm-directory-view.c:1042
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 другой элемент выделен (%s)"
 
-#: src/file-manager/fm-directory-view.c:998
+#: src/file-manager/fm-directory-view.c:1045
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d других элементов выделено (%s)"
 
-#: src/file-manager/fm-directory-view.c:1012
+#: src/file-manager/fm-directory-view.c:1059
 #, c-format
 msgid "%s%s"
 msgstr "%s%s"
 
-#: src/file-manager/fm-directory-view.c:1016
+#: src/file-manager/fm-directory-view.c:1063
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
 
-#: src/file-manager/fm-directory-view.c:1798
+#: src/file-manager/fm-directory-view.c:1845
 #, c-format
 msgid "Are you sure you want to permanently remove item \"%s\"?"
 msgstr "Вы действительно хотите окончательно удалить \"%s\"?"
 
-#: src/file-manager/fm-directory-view.c:1803
+#: src/file-manager/fm-directory-view.c:1850
 #, c-format
 msgid "Are you sure you want to permanently remove the %d selected items?"
 msgstr "Вы действительно хотите окончательно удалить %d выделенных элементов?"
 
-#: src/file-manager/fm-directory-view.c:1807
+#: src/file-manager/fm-directory-view.c:1854
 msgid "Deleting items"
 msgstr "Удаление элементов"
 
-#: src/file-manager/fm-directory-view.c:1808
+#: src/file-manager/fm-directory-view.c:1855
 msgid "Delete"
 msgstr "Удалить"
 
-#: src/file-manager/fm-directory-view.c:1808
+#: src/file-manager/fm-directory-view.c:1855
 msgid "Cancel"
 msgstr "Отмена"
 
-#: src/file-manager/fm-directory-view.c:2058
+#: src/file-manager/fm-directory-view.c:2105
 msgid "_Open"
 msgstr "Открыть"
 
-#: src/file-manager/fm-directory-view.c:2061
+#: src/file-manager/fm-directory-view.c:2108
 msgid "Open With"
 msgstr "Открыть с помощью"
 
-#: src/file-manager/fm-directory-view.c:2064
+#: src/file-manager/fm-directory-view.c:2111
 msgid "Other Application..."
 msgstr "Другие приложения..."
 
-#: src/file-manager/fm-directory-view.c:2066
+#: src/file-manager/fm-directory-view.c:2113
 msgid "Other Viewer..."
 msgstr "Другие программы просмотра..."
 
-#: src/file-manager/fm-directory-view.c:2070
+#: src/file-manager/fm-directory-view.c:2117
 msgid "Open in _New Window"
 msgstr "Открыть в новом окне"
 
-#: src/file-manager/fm-directory-view.c:2072
+#: src/file-manager/fm-directory-view.c:2119
 #, c-format
 msgid "Open in %d _New Windows"
 msgstr "Открыть в %d новых окнах"
 
-#: src/file-manager/fm-directory-view.c:2084
-#: src/file-manager/fm-directory-view.c:2202
+#: src/file-manager/fm-directory-view.c:2131
+#: src/file-manager/fm-directory-view.c:2249
 msgid "New Folder"
 msgstr "Новая папка"
 
-#: src/file-manager/fm-directory-view.c:2086
+#: src/file-manager/fm-directory-view.c:2133
 msgid "_Delete..."
 msgstr "Удалить..."
 
-#: src/file-manager/fm-directory-view.c:2089
+#: src/file-manager/fm-directory-view.c:2136
 msgid "_Move to Trash"
 msgstr "Переместить в мусорную корзину"
 
-#: src/file-manager/fm-directory-view.c:2092
+#: src/file-manager/fm-directory-view.c:2139
 msgid "_Duplicate"
 msgstr "Продублировать"
 
-#: src/file-manager/fm-directory-view.c:2095
+#: src/file-manager/fm-directory-view.c:2142
 msgid "Show _Properties"
 msgstr "Показать свойства"
 
-#: src/file-manager/fm-directory-view.c:2098
+#: src/file-manager/fm-directory-view.c:2145
 msgid "_Empty Trash"
 msgstr "Очистить мусорную корзину"
 
-#: src/file-manager/fm-directory-view.c:2102 src/nautilus-window-menus.c:1119
+#: src/file-manager/fm-directory-view.c:2149 src/nautilus-window-menus.c:1116
 msgid "_Select All"
 msgstr "Выделить все"
 
-#: src/file-manager/fm-directory-view.c:2106
+#: src/file-manager/fm-directory-view.c:2153
 msgid "R_emove Custom Images"
 msgstr "Удалить пользовательские изображения"
 
-#: src/file-manager/fm-directory-view.c:2108
+#: src/file-manager/fm-directory-view.c:2155
 msgid "R_emove Custom Image"
 msgstr "Удалить пользовательское изображение"
 
-#: src/file-manager/fm-directory-view.c:2112
+#: src/file-manager/fm-directory-view.c:2159
 msgid "Reset _Background"
 msgstr "Сбросить фон"
 
@@ -2241,73 +2262,73 @@ msgstr "Сбросить фон"
 #. * (for the current location, not selection -- but would have to not
 #. * include this item when there's a selection)? Add Bookmark? (same issue).
 #.
-#: src/file-manager/fm-directory-view.c:2213
+#: src/file-manager/fm-directory-view.c:2260
 msgid "Zoom In"
 msgstr "Масштаб +"
 
-#: src/file-manager/fm-directory-view.c:2215
+#: src/file-manager/fm-directory-view.c:2262
 msgid "Zoom Out"
 msgstr "Масштаб -"
 
-#: src/file-manager/fm-directory-view.c:2217
+#: src/file-manager/fm-directory-view.c:2264
 msgid "Zoom to Default"
 msgstr "Масштаб по умолчанию"
 
-#: src/file-manager/fm-directory-view.c:2348
-#: src/file-manager/fm-directory-view.c:2591
+#: src/file-manager/fm-directory-view.c:2395
+#: src/file-manager/fm-directory-view.c:2638
 #, c-format
 msgid "%s Viewer"
 msgstr "%s просматриватель"
 
-#: src/file-manager/fm-directory-view.c:2614
+#: src/file-manager/fm-directory-view.c:2661
 msgid "Move all selected items to the Trash"
 msgstr "Переместить все выделенные элементы в мусорную корзину"
 
-#: src/file-manager/fm-directory-view.c:2623
+#: src/file-manager/fm-directory-view.c:2670
 msgid "Delete all selected items"
 msgstr "Удалить все выделенные элементы"
 
-#: src/file-manager/fm-directory-view.c:2645
+#: src/file-manager/fm-directory-view.c:2692
 msgid "Choose a program with which to open the selected item"
 msgstr "Выберите программу, для открытия выбранного элемента"
 
-#: src/file-manager/fm-directory-view.c:2665
+#: src/file-manager/fm-directory-view.c:2712
 msgid "Choose another application with which to open the selected item"
 msgstr "Выберите другое приложение, для открытия выбранного элемента"
 
-#: src/file-manager/fm-directory-view.c:2687
+#: src/file-manager/fm-directory-view.c:2734
 msgid "Choose another viewer with which to view the selected item"
 msgstr "Выберите другую программу просмотра для открытия выбранного элемента"
 
-#: src/file-manager/fm-directory-view.c:2709
+#: src/file-manager/fm-directory-view.c:2756
 msgid "Create a new folder in this window"
 msgstr "Создать новую папку в этом окне"
 
-#: src/file-manager/fm-directory-view.c:2717
+#: src/file-manager/fm-directory-view.c:2764
 msgid "Open the selected item in this window"
 msgstr "Открыть выбранный элемент в этом окне"
 
-#: src/file-manager/fm-directory-view.c:2725
+#: src/file-manager/fm-directory-view.c:2772
 msgid "Open each selected item in a new window"
 msgstr "Открыть каждый выделенный элемент в новом окне"
 
-#: src/file-manager/fm-directory-view.c:2740
+#: src/file-manager/fm-directory-view.c:2787
 msgid "View or modify the properties of the selected items"
 msgstr "Просмотр или изменение свойств выделенных элементов"
 
-#: src/file-manager/fm-directory-view.c:2751
+#: src/file-manager/fm-directory-view.c:2798
 msgid "Duplicate all selected items"
 msgstr "Продублировать все выделенные элементы"
 
-#: src/file-manager/fm-directory-view.c:2759
+#: src/file-manager/fm-directory-view.c:2806
 msgid "Delete all items in the trash"
 msgstr "Удалить все элементы из мусорной корзины"
 
-#: src/file-manager/fm-directory-view.c:2767
+#: src/file-manager/fm-directory-view.c:2814
 msgid "Select all items in this window"
 msgstr "Выделить все элементы в этом окне"
 
-#: src/file-manager/fm-directory-view.c:2781
+#: src/file-manager/fm-directory-view.c:2828
 msgid "Remove the custom image from each selected icon"
 msgstr "Удалить другое изображение для каждой выбранной пиктограммы"
 
@@ -2611,79 +2632,79 @@ msgstr "Дата доступа:"
 msgid "MIME type:"
 msgstr "MIME-тип:"
 
-#: src/file-manager/fm-properties-window.c:1236
+#: src/file-manager/fm-properties-window.c:1237
 msgid "Emblems"
 msgstr "Эмблемы"
 
-#: src/file-manager/fm-properties-window.c:1469
+#: src/file-manager/fm-properties-window.c:1470
 msgid "Special Flags:"
 msgstr "Особые флаги:"
 
-#: src/file-manager/fm-properties-window.c:1473
+#: src/file-manager/fm-properties-window.c:1474
 msgid "Set User ID"
 msgstr "Установить ID пользователя"
 
-#: src/file-manager/fm-properties-window.c:1477
+#: src/file-manager/fm-properties-window.c:1478
 msgid "Set Group ID"
 msgstr "Установить ID группы"
 
-#: src/file-manager/fm-properties-window.c:1481
+#: src/file-manager/fm-properties-window.c:1482
 msgid "Sticky"
 msgstr "Sticky"
 
-#: src/file-manager/fm-properties-window.c:1492
+#: src/file-manager/fm-properties-window.c:1493
 msgid "Permissions"
 msgstr "Права"
 
-#: src/file-manager/fm-properties-window.c:1498
+#: src/file-manager/fm-properties-window.c:1499
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Вы не являетесь владельцем, поэтому вы не можете изменить эти права."
 
-#: src/file-manager/fm-properties-window.c:1525
+#: src/file-manager/fm-properties-window.c:1526
 msgid "File Owner:"
 msgstr "Владелец файла:"
 
-#: src/file-manager/fm-properties-window.c:1535
+#: src/file-manager/fm-properties-window.c:1536
 msgid "File Group:"
 msgstr "Группа файла:"
 
-#: src/file-manager/fm-properties-window.c:1553
+#: src/file-manager/fm-properties-window.c:1554
 msgid "Owner:"
 msgstr "Владелец:"
 
-#: src/file-manager/fm-properties-window.c:1556
+#: src/file-manager/fm-properties-window.c:1557
 msgid "Group:"
 msgstr "Группа:"
 
-#: src/file-manager/fm-properties-window.c:1559
+#: src/file-manager/fm-properties-window.c:1560
 msgid "Others:"
 msgstr "Остальные:"
 
-#: src/file-manager/fm-properties-window.c:1562
+#: src/file-manager/fm-properties-window.c:1563
 msgid "Text View:"
 msgstr "Просмотр текста:"
 
-#: src/file-manager/fm-properties-window.c:1565
+#: src/file-manager/fm-properties-window.c:1566
 msgid "Number View:"
 msgstr "Просмотр числа:"
 
-#: src/file-manager/fm-properties-window.c:1568
+#: src/file-manager/fm-properties-window.c:1569
 msgid "Last Changed:"
 msgstr "Последние изменения:"
 
-#: src/file-manager/fm-properties-window.c:1572
+#: src/file-manager/fm-properties-window.c:1573
 msgid "Read"
 msgstr "Прочесть"
 
-#: src/file-manager/fm-properties-window.c:1576
+#: src/file-manager/fm-properties-window.c:1577
 msgid "Write"
 msgstr "Записать"
 
-#: src/file-manager/fm-properties-window.c:1580
+#: src/file-manager/fm-properties-window.c:1581
 msgid "Execute"
 msgstr "Выполить"
 
-#: src/file-manager/fm-properties-window.c:1640
+#: src/file-manager/fm-properties-window.c:1641
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Права для \"%s\" не могут быть определены."
@@ -2749,7 +2770,7 @@ msgid ""
 "attempting to locate the factory."
 msgstr ""
 
-#: src/nautilus-application.c:527
+#: src/nautilus-application.c:536
 msgid ""
 "You are running Nautilus as root.\n"
 "\n"
@@ -2814,7 +2835,7 @@ msgid "Nautilus Property Browser"
 msgstr "Обозреватель свойств Наутилуса"
 
 #. add the title label
-#: src/nautilus-property-browser.c:263 src/nautilus-property-browser.c:1958
+#: src/nautilus-property-browser.c:263 src/nautilus-property-browser.c:1971
 msgid "Select A Category:"
 msgstr "Выберите категорию:"
 
@@ -2826,49 +2847,49 @@ msgstr "Добавить новую"
 msgid "Remove..."
 msgstr "Удалить..."
 
-#: src/nautilus-property-browser.c:823 src/nautilus-property-browser.c:917
+#: src/nautilus-property-browser.c:826 src/nautilus-property-browser.c:920
 #, c-format
 msgid "Sorry, but '%s' is not an image file!"
 msgstr "Извините, но \"%s\" не является файлом изображения!"
 
-#: src/nautilus-property-browser.c:850
+#: src/nautilus-property-browser.c:853
 msgid "Create a New Emblem:"
 msgstr "Создать новую эмблему:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:855
+#: src/nautilus-property-browser.c:858
 msgid "Keyword:"
 msgstr "Ключевое слово:"
 
 #. set up a gnome file entry to pick the image file
-#: src/nautilus-property-browser.c:872
+#: src/nautilus-property-browser.c:875
 msgid "Select an image file for the new emblem:"
 msgstr "Выберите файл изображения для новой эмблемы:"
 
-#: src/nautilus-property-browser.c:976
+#: src/nautilus-property-browser.c:985
 msgid "Select an image file to add as a background:"
 msgstr "Выберите файл изображения для добавления как фон:"
 
-#: src/nautilus-property-browser.c:1074
+#: src/nautilus-property-browser.c:1083
 msgid "Select a color to add:"
 msgstr "Выберите цвет для добавления:"
 
-#: src/nautilus-property-browser.c:1966
+#: src/nautilus-property-browser.c:1979
 msgid "Cancel Remove"
 msgstr "Отменить удаление"
 
-#: src/nautilus-property-browser.c:1968
+#: src/nautilus-property-browser.c:1981
 #, c-format
 msgid "Add a new %s"
 msgstr "Добавить новый %s"
 
 #. strip trailing s
-#: src/nautilus-property-browser.c:1983
+#: src/nautilus-property-browser.c:1996
 #, c-format
 msgid "Click on a %s to remove it"
 msgstr "Щелкните на %s, чтобы удалить его"
 
-#: src/nautilus-property-browser.c:1995
+#: src/nautilus-property-browser.c:2008
 #, c-format
 msgid "Remove a %s"
 msgstr "Удалить %s"
@@ -2878,13 +2899,13 @@ msgstr "Удалить %s"
 msgid "Reset Background"
 msgstr "Сбросить фон"
 
-#: src/nautilus-sidebar.c:1146
+#: src/nautilus-sidebar.c:1152
 #, c-format
 msgid "Open with %s"
 msgstr "Открыть с помощью %s"
 
 #. Catch-all button after all the others.
-#: src/nautilus-sidebar.c:1175
+#: src/nautilus-sidebar.c:1181
 msgid "Open with..."
 msgstr "Открыть с помощью..."
 
@@ -2917,19 +2938,19 @@ msgstr "Наутилус: %s"
 msgid "You do not have the permissions necessary to view \"%s\"."
 msgstr "У вас недостаточно прав для просмотра \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1215
+#: src/nautilus-window-manage-views.c:1226
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr "Не удалось найти \"%s\". Пожалуйста проверьте ввод и попробуйте снова."
 
-#: src/nautilus-window-manage-views.c:1221
+#: src/nautilus-window-manage-views.c:1232
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
 "\"%s\" не правильное место. Пожалуйста проверьте ввод и попробуйте снова."
 
-#: src/nautilus-window-manage-views.c:1239
+#: src/nautilus-window-manage-views.c:1250
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot handle items of this type."
@@ -2937,7 +2958,7 @@ msgstr ""
 "Невозможно показать \"%s\", потому что Наутилус не может обрабатывать "
 "элементы такого типа."
 
-#: src/nautilus-window-manage-views.c:1243
+#: src/nautilus-window-manage-views.c:1254
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot handle items of type \"%s\"."
@@ -2946,21 +2967,21 @@ msgstr ""
 "элементы типа \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1255
+#: src/nautilus-window-manage-views.c:1266
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Невозможно показать \"%s\", потому что Наутилус не может обрабатывать %s: "
 "положения."
 
-#: src/nautilus-window-manage-views.c:1261
+#: src/nautilus-window-manage-views.c:1272
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr ""
 "Невозможно показать \"%s\", потому что Наутилус не удалась попытка "
 "регистрации."
 
-#: src/nautilus-window-manage-views.c:1267
+#: src/nautilus-window-manage-views.c:1278
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Наутилус не может показать \"%s\"."
@@ -3020,64 +3041,64 @@ msgstr "Закрыть окно"
 msgid "Close this window"
 msgstr "Закрыть это окно"
 
-#: src/nautilus-window-menus.c:1039
-msgid "_Exit"
-msgstr "Выход"
+#: src/nautilus-window-menus.c:1037
+msgid "Close All Windows"
+msgstr "Закрыть все окна"
 
-#: src/nautilus-window-menus.c:1040
-msgid "Exit from Nautilus"
-msgstr "Выйти из Наутилус"
+#: src/nautilus-window-menus.c:1038
+msgid "Close all windows"
+msgstr "Закрыть все окна"
 
 #. Edit menu
-#: src/nautilus-window-menus.c:1051
+#: src/nautilus-window-menus.c:1048
 msgid "_Edit"
 msgstr "Правка"
 
-#: src/nautilus-window-menus.c:1055 src/nautilus-window-menus.c:1401
+#: src/nautilus-window-menus.c:1052 src/nautilus-window-menus.c:1398
 msgid "_Undo"
 msgstr "Откат"
 
-#: src/nautilus-window-menus.c:1056 src/nautilus-window-menus.c:1401
+#: src/nautilus-window-menus.c:1053 src/nautilus-window-menus.c:1398
 msgid "Undo the last text change"
 msgstr "Отмена последнего изменения текста"
 
-#: src/nautilus-window-menus.c:1069
+#: src/nautilus-window-menus.c:1066
 msgid "_Cut Text"
 msgstr "Вырезать текст"
 
-#: src/nautilus-window-menus.c:1070
+#: src/nautilus-window-menus.c:1067
 msgid "Cuts the selected text to the clipboard"
 msgstr "Вырезать выделенный текст в буфер обмена"
 
-#: src/nautilus-window-menus.c:1081
+#: src/nautilus-window-menus.c:1078
 msgid "_Copy Text"
 msgstr "Скопировать текст"
 
-#: src/nautilus-window-menus.c:1082
+#: src/nautilus-window-menus.c:1079
 msgid "Copies the selected text to the clipboard"
 msgstr "Скопировать выделенный текст в буфер обмена"
 
-#: src/nautilus-window-menus.c:1093
+#: src/nautilus-window-menus.c:1090
 msgid "_Paste Text"
 msgstr "Вставить текст"
 
-#: src/nautilus-window-menus.c:1094
+#: src/nautilus-window-menus.c:1091
 msgid "Pastes the text stored on the clipboard"
 msgstr "Вставить текст сохраненный в буфере обмена"
 
-#: src/nautilus-window-menus.c:1105
+#: src/nautilus-window-menus.c:1102
 msgid "C_lear Text"
 msgstr "Очистить текст"
 
-#: src/nautilus-window-menus.c:1106
+#: src/nautilus-window-menus.c:1103
 msgid "Removes the selected text without putting it on the clipboard"
 msgstr "Удалить выделенный текст не помещая его в буфер обмена"
 
-#: src/nautilus-window-menus.c:1136
+#: src/nautilus-window-menus.c:1133
 msgid "_Customize..."
 msgstr "Настроить..."
 
-#: src/nautilus-window-menus.c:1137
+#: src/nautilus-window-menus.c:1134
 msgid ""
 "Displays the Property Browser, to add properties to objects and customize "
 "appearance"
@@ -3086,131 +3107,131 @@ msgstr ""
 "настраивать внешний вид"
 
 #. Go menu
-#: src/nautilus-window-menus.c:1147
+#: src/nautilus-window-menus.c:1144
 msgid "_Go"
 msgstr "Перейти"
 
-#: src/nautilus-window-menus.c:1151
+#: src/nautilus-window-menus.c:1148
 msgid "_Back"
 msgstr "Назад"
 
-#: src/nautilus-window-menus.c:1152
+#: src/nautilus-window-menus.c:1149
 msgid "Go to the previous visited location"
 msgstr "Перейти к раположению посещенному перед этим"
 
-#: src/nautilus-window-menus.c:1163
+#: src/nautilus-window-menus.c:1160
 msgid "_Forward"
 msgstr "Вперед"
 
-#: src/nautilus-window-menus.c:1164
+#: src/nautilus-window-menus.c:1161
 msgid "Go to the next visited location"
 msgstr "Перейти к следующему посещенному раположению"
 
-#: src/nautilus-window-menus.c:1175
+#: src/nautilus-window-menus.c:1172
 msgid "_Up"
 msgstr "Вверх"
 
-#: src/nautilus-window-menus.c:1176
+#: src/nautilus-window-menus.c:1173
 msgid "Go to the location that contains this one"
 msgstr "Перейти к расположению содержащему текущее"
 
-#: src/nautilus-window-menus.c:1187
+#: src/nautilus-window-menus.c:1184
 msgid "_Home"
 msgstr "Домой"
 
-#: src/nautilus-window-menus.c:1188
+#: src/nautilus-window-menus.c:1185
 msgid "Go to the home location"
 msgstr "Перейти в домашний каталог"
 
 #. Bookmarks
-#: src/nautilus-window-menus.c:1201
+#: src/nautilus-window-menus.c:1198
 msgid "_Bookmarks"
 msgstr "Закладки"
 
-#: src/nautilus-window-menus.c:1205
+#: src/nautilus-window-menus.c:1202
 msgid "_Add Bookmark"
 msgstr "Добавить закладку"
 
-#: src/nautilus-window-menus.c:1206
+#: src/nautilus-window-menus.c:1203
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Добавить закладку для текущего расположения в это меню."
 
-#: src/nautilus-window-menus.c:1217
+#: src/nautilus-window-menus.c:1214
 msgid "_Edit Bookmarks..."
 msgstr "Правка закладок..."
 
-#: src/nautilus-window-menus.c:1218
+#: src/nautilus-window-menus.c:1215
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Показать окно, в котором можно будет править закладки этого меню."
 
-#: src/nautilus-window-menus.c:1235
+#: src/nautilus-window-menus.c:1232
 msgid "Toolbar"
 msgstr "Панель инструментов"
 
-#: src/nautilus-window-menus.c:1236 src/nautilus-window-menus.c:1248
-#: src/nautilus-window-menus.c:1259 src/nautilus-window-menus.c:1270
-#: src/nautilus-window-menus.c:1281
+#: src/nautilus-window-menus.c:1233 src/nautilus-window-menus.c:1245
+#: src/nautilus-window-menus.c:1256 src/nautilus-window-menus.c:1267
+#: src/nautilus-window-menus.c:1278
 msgid "Show/Hide Stuff"
 msgstr ""
 
-#: src/nautilus-window-menus.c:1247
+#: src/nautilus-window-menus.c:1244
 msgid "Locationbar"
 msgstr "Строка расположения"
 
-#: src/nautilus-window-menus.c:1258
+#: src/nautilus-window-menus.c:1255
 msgid "Statusbar"
 msgstr "Строка состояния"
 
-#: src/nautilus-window-menus.c:1269
+#: src/nautilus-window-menus.c:1266
 msgid "Sidebar"
 msgstr ""
 
-#: src/nautilus-window-menus.c:1280
+#: src/nautilus-window-menus.c:1277
 msgid "Normalize Menu"
 msgstr "Нормализовать меню"
 
 #. Help
-#: src/nautilus-window-menus.c:1291
+#: src/nautilus-window-menus.c:1288
 msgid "_Help"
 msgstr "Справка"
 
-#: src/nautilus-window-menus.c:1295
+#: src/nautilus-window-menus.c:1292
 msgid "_About Nautilus..."
 msgstr "О программе Наутилус..."
 
-#: src/nautilus-window-menus.c:1296
+#: src/nautilus-window-menus.c:1293
 msgid "Displays information about the Nautilus program"
 msgstr "Показать информацию о программе Наутилус"
 
-#: src/nautilus-window-menus.c:1339
+#: src/nautilus-window-menus.c:1336
 msgid " Novice"
 msgstr " Новичок"
 
-#: src/nautilus-window-menus.c:1340
+#: src/nautilus-window-menus.c:1337
 msgid "Set Novice User Level"
 msgstr "Установить уровень начинающего пользователя"
 
-#: src/nautilus-window-menus.c:1353
+#: src/nautilus-window-menus.c:1350
 msgid " Intermediate"
 msgstr " Промежуточный"
 
-#: src/nautilus-window-menus.c:1354
+#: src/nautilus-window-menus.c:1351
 msgid "Set Intermediate User Level"
 msgstr "Установить уровень обычного пользователя"
 
-#: src/nautilus-window-menus.c:1368
+#: src/nautilus-window-menus.c:1365
 msgid " Expert"
 msgstr " Эксперт"
 
-#: src/nautilus-window-menus.c:1369
+#: src/nautilus-window-menus.c:1366
 msgid "Set Expert User Level"
 msgstr "Установить хакерский уровень пользователя"
 
-#: src/nautilus-window-menus.c:1385
+#: src/nautilus-window-menus.c:1382
 msgid "Edit Settings..."
 msgstr "Правка установок..."
 
-#: src/nautilus-window-menus.c:1386
+#: src/nautilus-window-menus.c:1383
 msgid "Edit Settings for the Current User Level"
 msgstr "Правка установок для текущего уровня пользователя"
 
