@@ -25,8 +25,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2002-03-17 23:46+0100\n"
-"PO-Revision-Date: 2002-02-28 21:43+0100\n"
+"POT-Creation-Date: 2002-03-19 22:01+0100\n"
+"PO-Revision-Date: 2002-03-19 22:04+0100\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -890,23 +890,23 @@ msgstr "Synthpop"
 msgid "Unknown"
 msgstr "Ukendt"
 
-#: components/music/nautilus-music-view.c:349
+#: components/music/nautilus-music-view.c:360
 msgid "Track"
 msgstr "Spor"
 
-#: components/music/nautilus-music-view.c:360
+#: components/music/nautilus-music-view.c:372
 msgid "Title"
 msgstr "Titel"
 
-#: components/music/nautilus-music-view.c:370
+#: components/music/nautilus-music-view.c:383
 msgid "Artist"
 msgstr "Kunstner"
 
-#: components/music/nautilus-music-view.c:384
+#: components/music/nautilus-music-view.c:395
 msgid "Bit Rate"
 msgstr "Bitrate"
 
-#: components/music/nautilus-music-view.c:399
+#: components/music/nautilus-music-view.c:408
 msgid "Time"
 msgstr "Tid"
 
@@ -1093,58 +1093,51 @@ msgid "Invalid RSS URL"
 msgstr "Ugyldig RSS-URL"
 
 #: components/news/nautilus-news.c:1870
-#, fuzzy
 msgid "Edi_t"
-msgstr "Redigér"
+msgstr "_Redigér"
 
-#: components/news/nautilus-news.c:2142
+#: components/news/nautilus-news.c:2127
 msgid "Site Name"
 msgstr "Navn på sted"
 
-#: components/news/nautilus-news.c:2168
-#, fuzzy
+#: components/news/nautilus-news.c:2153
 msgid "_Remove Site"
-msgstr "Fjern sted"
+msgstr "_Fjern sted"
 
 #. allocate the name field
-#: components/news/nautilus-news.c:2194
-#, fuzzy
+#: components/news/nautilus-news.c:2179
 msgid "Site _Name:"
-msgstr "Navn på sted:"
+msgstr "_Navn på sted:"
 
-#: components/news/nautilus-news.c:2212
-#, fuzzy
+#: components/news/nautilus-news.c:2197
 msgid "Site _RSS URL:"
-msgstr "RSS-adresse på sted:"
+msgstr "_RSS-adresse på sted:"
 
-#: components/news/nautilus-news.c:2232
-#, fuzzy
+#: components/news/nautilus-news.c:2217
 msgid "_Add New Site"
-msgstr "Tilføj nyt sted"
+msgstr "_Tilføj nyt sted"
 
 #. make the add new site label
-#: components/news/nautilus-news.c:2262
+#: components/news/nautilus-news.c:2247
 msgid "Add a New Site:"
 msgstr "Tilføj et nyt sted:"
 
-#: components/news/nautilus-news.c:2273
-#, fuzzy
+#: components/news/nautilus-news.c:2258
 msgid "Remove a _Site:"
-msgstr "Tilføj et sted:"
+msgstr "Tilføj et st_ed:"
 
 #. add a descriptive label
-#: components/news/nautilus-news.c:2323
-#, fuzzy
+#: components/news/nautilus-news.c:2308
 msgid "_Select Sites:"
-msgstr "Vælg steder:"
+msgstr "_Vælg steder:"
 
 #. allocate the button box for the done button
-#: components/news/nautilus-news.c:2353
+#: components/news/nautilus-news.c:2338
 msgid "_Done"
 msgstr "_Færdig"
 
 #. add the empty message
-#: components/news/nautilus-news.c:2424
+#: components/news/nautilus-news.c:2409
 msgid ""
 "The News panel displays current headlines from your favorite websites.  "
 "Click the 'Select Sites' button to select the sites to display."
@@ -1153,12 +1146,11 @@ msgstr ""
 "Klik på 'Vælg steder'-knappen for at vælge de steder der skal vises."
 
 #. create a button box to hold the command buttons
-#: components/news/nautilus-news.c:2445
-#, fuzzy
+#: components/news/nautilus-news.c:2430
 msgid "_Select Sites"
-msgstr "Vælg steder"
+msgstr "_Vælg steder"
 
-#: components/news/nautilus-news.c:2516
+#: components/news/nautilus-news.c:2497
 msgid "image indicating that the news has changed"
 msgstr "billede som indikerer at nyhederne har ændret sig"
 
@@ -1997,12 +1989,11 @@ msgstr "Dette tema bruger foto-realistiske mapper."
 
 #: libbackground/preview-file-selection.c:186
 msgid "Can't find an hbox, using a normal file selection"
-msgstr ""
+msgstr "Kan ikke finde en hbox, bruger en almindelig filvælger"
 
 #: libbackground/preview-file-selection.c:191
-#, fuzzy
 msgid "Preview"
-msgstr "Forrige"
+msgstr "Eksempel"
 
 #: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "AFFS Volume"
@@ -6964,7 +6955,6 @@ msgid "Change the visibility of this window's sidebar"
 msgstr "Skift mellem om dette vindues sidepanel er vist"
 
 #: src/nautilus-shell-ui.xml.h:5
-#, fuzzy
 msgid "Change the visibility of this window's statusbar"
 msgstr "Skift mellem om dette vindues statuslinje er vist"
 
@@ -6975,7 +6965,7 @@ msgstr "Skift mellem om dette vindues værktøjslinje er vist"
 # håber det er rigtigt
 #: src/nautilus-shell-ui.xml.h:7
 msgid "Choose a view for the current location, or modify the set of views"
-msgstr "Vælg en visning for dette sted eller ændr hvilke der er tilrådighed"
+msgstr "Vælg en visning for dette sted eller ret hvilke der er til rådighed"
 
 #: src/nautilus-shell-ui.xml.h:8
 msgid "Clear contents of Go menu and Back/Forward lists"
@@ -7063,9 +7053,8 @@ msgid "Hide Location _Bar"
 msgstr "Skjul _adresselinjen"
 
 #: src/nautilus-shell-ui.xml.h:29
-#, fuzzy
 msgid "Hide St_atusbar"
-msgstr "Skjul _statuslinjen"
+msgstr "Skjul s_tatuslinjen"
 
 #: src/nautilus-shell-ui.xml.h:30 src/nautilus-window-menus.c:455
 msgid "Hide _Sidebar"
@@ -7355,15 +7344,15 @@ msgstr "Tilføj nyt tema..."
 msgid "Remove Theme..."
 msgstr "Fjern tema..."
 
-#: src/nautilus-view-frame.c:545
+#: src/nautilus-view-frame.c:549
 msgid "a title"
 msgstr "en titel"
 
-#: src/nautilus-view-frame.c:554
+#: src/nautilus-view-frame.c:558
 msgid "the browse history"
 msgstr "gennemseningshistorikken"
 
-#: src/nautilus-view-frame.c:563
+#: src/nautilus-view-frame.c:567
 msgid "the current selection"
 msgstr "den aktuelle markering"
 
