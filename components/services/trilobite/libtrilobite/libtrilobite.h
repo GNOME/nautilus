@@ -36,9 +36,9 @@
 #include <libtrilobite/trilobite-core-messaging.h>
 #include <libtrilobite/trilobite-core-utils.h>
 #include <libtrilobite/trilobite-core-network.h>
-#include <libtrilobite/trilobite-core-package-manger.h>
-#include <libtrilobite/trilobite-core-security-manger.h>
-#include <libtrilobite/trilobite-core-metadata-manger.h>
+#include <libtrilobite/trilobite-core-package-manager.h>
+#include <libtrilobite/trilobite-core-security-manager.h>
+#include <libtrilobite/trilobite-core-metadata-manager.h>
 #include <libtrilobite/trilobite-core-tests.h>
 #include <libtrilobite/helixcode-utils.h>
 

@@ -1,3 +1,28 @@
+2000-05-24  Eskil Heyn Olsen  <eskil@eazel.om>
+
+	* configure.in: 
+	* components/services/install/command-line/Makefile.am:
+	* components/services/install/lib/Makefile.am: 
+	* components/services/startup/lib/Makefile.am: 
+	* components/services/startup/nautilus-view/Makefile.am:
+	* components/services/time/command-line/Makefile.am: 
+	* components/services/time/command-line/main.c: 
+	* components/services/time/service/Makefile.am: 
+	* components/services/time/service/main.c: 
+	* components/services/time/service/trilobite-eazel-time-service.c: 
+	* components/services/trilobite/Makefile.am (SUBDIRS): 
+	* components/services/trilobite/sample/command-line/Makefile.am: 
+	* components/services/trilobite/sample/command-line/main.c: 
+	* components/services/trilobite/sample/nautilus-view/Makefile.am (SUBDIR): 
+	* components/services/trilobite/sample/service/Makefile.am: 
+	* components/services/trilobite/sample/service/main.c: 
+	* components/services/trilobite/sample/service/sample-service-impl.c: 
+	Major cvs gymnastics to move trilobite/lib into
+	trilobite/libtrilobite.
+
+	All files in components/services/trilobite/src and lib have been
+	deleted and are now in components/services/trilobite/libtrilobite.
+	
 2000-05-24  J Shane Culpepper  <pepper@eazel.com>
 
 	*nautilus-installer/nautilus-installer.c

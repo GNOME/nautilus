@@ -8,7 +8,7 @@ CPPFLAGS =							\
 
 INCLUDES =							\
 	-I$(top_srcdir)						\
-	-I$(top_srcdir)/components/services/trilobite/lib	\
+	-I$(top_srcdir)/components/services/trilobite/libtriloibte\
 	-I$(top_builddir)					\
 	$(GNOMEUI_CFLAGS)                       		\
 	$(GCONF_CFLAGS) 					\
@@ -32,7 +32,7 @@ nautilus_eazel_sample_service_view_SOURCES =		\
 	$(NULL)
 
 nautilus_eazel_sample_service_view_LDFLAGS =			\
-	$(top_builddir)/components/services/trilobite/lib/libtrilobite.la \
+	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la \
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\

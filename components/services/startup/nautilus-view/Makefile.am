@@ -8,7 +8,7 @@ CPPFLAGS =							\
 
 INCLUDES =							\
 	-I$(top_srcdir)						\
-	-I$(top_srcdir)/components/services/trilobite/lib	\
+	-I$(top_srcdir)/components/services/trilobite/libtrilobite\
 	-I$(top_srcdir)/components/services/startup/lib		\
 	-I$(top_builddir)					\
 	$(GNOMEUI_CFLAGS)                       		\
@@ -33,7 +33,7 @@ nautilus_service_startup_view_SOURCES =		\
 	$(NULL)
 
 nautilus_service_startup_view_LDADD =                                     \
-	$(top_builddir)/components/services/trilobite/lib/libtrilobite.la \
+	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la           \
 	$(top_builddir)/libnautilus/libnautilus.la                        \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la  \

@@ -1,2 +1,2 @@
-SUBDIRS = idl lib sample
+SUBDIRS = idl libtrilobite sample
 

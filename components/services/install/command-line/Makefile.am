@@ -8,7 +8,7 @@ INCLUDES = \
 	-I$(top_srcdir)						\
 	-I$(top_builddir)					\
 	-I/usr/include/rpm					\
-        -I$(top_srcdir)/components/services/trilobite/lib	\
+        -I$(top_srcdir)/components/services/trilobite/libtrilobite	\
         -I$(top_srcdir)/components/services/install/lib		\
 	$(GNOME_CFLAGS)						\
 	$(GCONF_CFLAGS)						\
@@ -25,7 +25,7 @@ eazel_install_SOURCES =		        	\
 	$(NULL)
 
 eazel_install_LDADD =                                                     \
-        $(top_builddir)/components/services/trilobite/lib/libtrilobite.la \
+        $(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(GNOME_LIBS)                                                     \
 	$(GCONF_LIBS)                                                     \
 	$(GNET_LIBS)                                                      \

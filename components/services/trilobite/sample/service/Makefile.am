@@ -9,7 +9,7 @@ CPPFLAGS = \
 INCLUDES = \
 	-I$(top_srcdir) 	\
 	-I$(top_builddir) 	\
-	-I$(top_srcdir)/components/services/trilobite/lib \
+	-I$(top_srcdir)/components/services/trilobite \
 	-I../server/		\
 	$(GNET_CFLAGS) 		\
 	$(GCONF_CFLAGS) 	\
@@ -61,7 +61,7 @@ trilobite_eazel_sample_service_SOURCES =	\
 	$(NULL)
 
 trilobite_eazel_sample_service_LDADD =	\
-	$(top_builddir)/components/services/trilobite/lib/libtrilobite.la \
+	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(NULL)
 
 EXTRA_DIST = \

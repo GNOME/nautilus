@@ -26,9 +26,7 @@
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
 
-#include <trilobite-service.h>
-#include <trilobite-service-public.h>
-#include <helixcode-utils.h>
+#include <libtrilobite/libtrilobite.h>
 
 #include "trilobite-eazel-time-service.h"
 

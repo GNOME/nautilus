@@ -26,8 +26,7 @@
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
 
-#include <trilobite-service.h>
-#include <trilobite-service-public.h>
+#include <libtrilobite/libtrilobite.h>
 
 #include "sample-service.h"
 
