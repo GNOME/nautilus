@@ -1,3 +1,11 @@
+2000-10-11  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3603 ("Select All Files" initially insensitive)
+
+	* src/file-manager/fm-directory-view.c: (done_loading):
+	Schedule a menu update when the directory contents are
+	finished loading.
+
 2000-10-11  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/trilobite/libtrilobite/trilobite-redirect.c:

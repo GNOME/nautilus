@@ -1363,6 +1363,7 @@ done_loading (FMDirectoryView *view)
 	 */
 	if (view->details->nautilus_view != NULL) {
 		nautilus_view_report_load_complete (view->details->nautilus_view);
+		schedule_update_menus (view);
 	}
 
 	view->details->loading = FALSE;
