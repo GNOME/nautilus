@@ -1275,6 +1275,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
         char *type_string;
         char *dialog_title;
         char *home_uri;
+        const char *host_name;
         const char *location;
 	GtkDialog *dialog;
         NautilusFileAttributes attributes;
@@ -1402,9 +1403,10 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
 		 * the proxy is set up wrong.
 		 */
 		vfs_uri = gnome_vfs_uri_new (location);
+		host_name = gnome_vfs_uri_get_host_name (vfs_uri);
                 error_message = g_strdup_printf (_("Couldn't display \"%s\", because no host \"%s\" could be found."),
                                                  uri_for_display,
-                                                 gnome_vfs_uri_get_host_name (vfs_uri));
+                                                 host_name ? host_name : "");
                 detail_message = g_strdup (_("Check that the spelling is correct and that your proxy settings are correct."));
                 gnome_vfs_uri_unref (vfs_uri);
 		break;
