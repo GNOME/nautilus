@@ -2254,6 +2254,24 @@ nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile *file,
 	gdk_pixbuf_unref (pixbuf);
 }
 
+/* Convenience routine for getting a pixbuf from an icon name
+ */
+GdkPixbuf * nautilus_icon_factory_get_pixbuf_from_name (const char *icon_name,
+						       const char *modifier,
+						       guint size_in_pixels,
+						       gboolean anti_aliased)
+{
+	GdkPixbuf *pixbuf;
+	NautilusScalableIcon *icon;
+	
+	icon = nautilus_scalable_icon_new_from_text_pieces (NULL, icon_name, modifier, NULL, anti_aliased);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon, size_in_pixels, size_in_pixels,
+							    size_in_pixels, size_in_pixels, NULL, TRUE); 	
+	nautilus_scalable_icon_unref (icon);	
+	return pixbuf;
+}
+									  
+
 static gboolean
 embedded_text_rect_usable (const ArtIRect *embedded_text_rect)
 {

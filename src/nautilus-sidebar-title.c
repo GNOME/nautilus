@@ -418,10 +418,12 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 		icon_path = nautilus_theme_get_image_path ("big_services_icon.png");
 	} else if (nautilus_istr_has_prefix (uri, "man:")) {
 		icon_path = nautilus_theme_get_image_path ("manual.png");
+	} else if (nautilus_istr_has_prefix (uri, "hardware:")) {
+		icon_path = nautilus_theme_get_image_path ("computer.svg");
 	}
 	
 	if (icon_path != NULL) {
-		pixbuf = gdk_pixbuf_new_from_file (icon_path);
+		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_path, NULL, NAUTILUS_ICON_SIZE_LARGE, TRUE);
 	} else if (nautilus_icon_factory_is_icon_ready_for_file (sidebar_title->details->file)) {
 		pixbuf = nautilus_icon_factory_get_pixbuf_for_file (sidebar_title->details->file,
 								    "accept",

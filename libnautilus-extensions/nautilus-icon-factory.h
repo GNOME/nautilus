@@ -144,7 +144,12 @@ void                  nautilus_icon_factory_get_pixmap_and_mask_for_file (Nautil
 									  guint                        size_in_pixels,
 									  GdkPixmap                  **pixmap,
 									  GdkBitmap                  **mask);
-									  
+/* Convenience routine for getting a pixbuf from an icon name
+ */
+GdkPixbuf *	      nautilus_icon_factory_get_pixbuf_from_name	 (const char		      *icon_name,
+									  const char		      *modifer,
+									  guint			      size_in_pixels,
+									  gboolean		      anti_aliased);									  
 /* Manage a scalable icon.
  * Since the factory always passes out references to the same scalable
  * icon, you can compare two scalable icons to see if they are the same

@@ -1,3 +1,17 @@
+2000-12-14  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-title.c: (update_icon):
+	made the sidebar get the right icon for the hardware
+	view by special-casing it like we do for services and man.
+	As part of this, I made the sidebar work properly with
+	.svg icons by calling the icon factory to load the icon.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_pixbuf_from_name):
+	added a convenience routine to fetch icons by name.
+	* libnautilus-extensions/nautilus-icon-factory.h:
+	definition for the convenience routine.
+	
 2000-12-14  Robey Pointer  <robey@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>
