@@ -46,8 +46,6 @@ icon_DATA =\
 	emblem-nowrite.svg \
 	emblem-ohno.svg \
 	emblem-personal.svg \
-	emblem-secret.svg \
-	emblem-shared.svg \
 	emblem-special.svg \
 	emblem-symbolic-link.png \
         emblem-symbolic-link-12.png \

@@ -112,6 +112,9 @@ void            nautilus_labeled_image_set_fill                         (Nautilu
 									 gboolean                      fill);
 gboolean        nautilus_labeled_image_get_fill                         (const NautilusLabeledImage   *labeled_image);
 
+void		nautilus_labeled_image_set_fixed_image_height		(NautilusLabeledImage	      *labeled_image,
+									 int			       fixed_image_height);
+									 
 /* Functions for creating stock GtkButtons with a labeled image child */
 GtkWidget *     nautilus_labeled_image_button_new                       (const char                   *text,
 									 GdkPixbuf                    *pixbuf);

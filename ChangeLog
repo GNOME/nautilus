@@ -1,3 +1,45 @@
+2001-02-27  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 7019, emblem names are not aligned vertically in
+	show properties or the property browser.  Fixed by adding
+	a "fixed image height" attribute to nautilus-labeled-image, and
+	set it in the properties window and properties browser.
+	
+	* libnautilus-extensions/nautilus-labeled-image.c:
+	(nautilus_labeled_image_initialize), (is_fixed_height),
+	(labeled_image_get_image_dimensions),
+	(nautilus_labeled_image_get_image_bounds),
+	(nautilus_labeled_image_get_show_image),
+	(nautilus_labeled_image_set_fixed_image_height):
+	added a fixed_image_height instance variable, and used it
+	when appropriate
+	* libnautilus-extensions/nautilus-labeled-image.h:
+	added setter for the fixed image height attribute
+	
+	* src/file-manager/fm-properties-window.c: (create_emblems_page):
+	set the fixed image height attribute on the emblems
+	* src/nautilus-property-browser.c:
+	(make_properties_from_directories),
+	(property_browser_category_button_new):
+	set the fixed image height attribute for the emblems and also
+	the category buttons
+	
+	fixed bug 7022, users are confused by the "shared" and "secret"
+	emblems; fixed by removing them.
+
+	* data/browser.xml:
+	removed secret and shared emblem references
+	* data/emblems/Makefile.am:
+	removed the emblem .pngs from the makefile
+	* data/emblems/secret.png:
+	* data/emblems/shared.png:
+	removed the emblem .pngs
+	* icons/Makefile.am:
+	removed the emblem .svgs from the makefile
+	* icons/emblem-secret.svg:
+	* icons/emblem-shared.svg:
+	removed the .svgs
+
 2001-02-27  Robin * Slomkowski  <rslomkow@rslomkow.org>
 
 	* nautilus.spec.in: bug 7106, updated mozilla to

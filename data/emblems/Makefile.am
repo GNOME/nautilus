@@ -15,9 +15,7 @@ emblems_DATA = \
 	ohno.png \
 	OK.png \
 	personal.png \
-	secret.png \
 	special.png \
-	shared.png \
 	urgent.png \
 	$(NULL)
 

@@ -192,6 +192,8 @@ static void     element_clicked_callback                        (GtkWidget      
 
 #define PROPERTY_BROWSER_WIDTH 540
 #define PROPERTY_BROWSER_HEIGHT 340
+#define MAX_EMBLEM_HEIGHT 52
+#define STANDARD_BUTTON_IMAGE_HEIGHT 42
 
 #define MAX_ICON_WIDTH 63
 #define MAX_ICON_HEIGHT 63
@@ -1664,6 +1666,8 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 			keyword = g_strdup (object_name);
 			extension = strchr (keyword, '.');
 
+			nautilus_labeled_image_set_fixed_image_height (NAUTILUS_LABELED_IMAGE (property_image), MAX_EMBLEM_HEIGHT);
+
 			if (extension) {
 				*extension = '\0';
 			}
@@ -1854,6 +1858,9 @@ property_browser_category_button_new (const char *display_name,
 
 	/* We want the label to never be smooth */
 	nautilus_labeled_image_set_label_never_smooth (NAUTILUS_LABELED_IMAGE (GTK_BIN (button)->child), TRUE);
+
+	/* We also want all of the buttons to be the same height */
+	nautilus_labeled_image_set_fixed_image_height (NAUTILUS_LABELED_IMAGE (GTK_BIN (button)->child), STANDARD_BUTTON_IMAGE_HEIGHT);
 
 	g_free (file_name);
 

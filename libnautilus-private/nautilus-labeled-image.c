@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-image.c - A labeled image.
+/* nautilus-labeled-image.c - A labeled image.
 
    Copyright (C) 2000 Eazel, Inc.
 
@@ -74,6 +74,7 @@ struct _NautilusLabeledImageDetails
 	float y_alignment;
 	int x_padding;
 	int y_padding;
+	int fixed_image_height;
 	gboolean fill;
 };
 
@@ -206,6 +207,8 @@ nautilus_labeled_image_initialize (NautilusLabeledImage *labeled_image)
 	labeled_image->details->y_padding = DEFAULT_Y_PADDING;
 	labeled_image->details->x_alignment = DEFAULT_X_ALIGNMENT;
 	labeled_image->details->y_alignment = DEFAULT_Y_ALIGNMENT;
++	labeled_image->details->fixed_image_height = 0;
+
 	nautilus_labeled_image_set_fill (labeled_image, FALSE);
 }
 
@@ -593,6 +596,12 @@ nautilus_labeled_image_forall (GtkContainer *container,
 }
 
 /* Private NautilusLabeledImage methods */
+static gboolean
+is_fixed_height (const NautilusLabeledImage *labeled_image)
+{
+	return labeled_image->details->fixed_image_height > 0;
+}
+
 static NautilusDimensions
 labeled_image_get_image_dimensions (const NautilusLabeledImage *labeled_image)
 {
@@ -609,6 +618,10 @@ labeled_image_get_image_dimensions (const NautilusLabeledImage *labeled_image)
 
 	image_dimensions.width = (int) image_requisition.width;
 	image_dimensions.height = (int) image_requisition.height;
+
+	if (is_fixed_height (labeled_image)) {
+		image_dimensions.height = labeled_image->details->fixed_image_height;
+	}
 
 	return image_dimensions;
 }
@@ -693,6 +706,8 @@ ArtIRect
 nautilus_labeled_image_get_image_bounds (const NautilusLabeledImage *labeled_image)
 {
 	NautilusDimensions image_dimensions;
+	NautilusDimensions label_dimensions;
+	GtkRequisition image_requisition;
 	ArtIRect image_bounds;
 	ArtIRect content_bounds;
 
@@ -702,7 +717,16 @@ nautilus_labeled_image_get_image_bounds (const NautilusLabeledImage *labeled_ima
 		return labeled_image_get_image_bounds_fill (labeled_image);
 	}
 
-	image_dimensions = labeled_image_get_image_dimensions (labeled_image);
+	/* get true real dimensions if we're in fixed height mode */
+	if (is_fixed_height (labeled_image) && labeled_image_show_image (labeled_image)) {
+		gtk_widget_size_request (labeled_image->details->image, &image_requisition);
+		image_dimensions.width = (int) image_requisition.width;
+		image_dimensions.height = (int) image_requisition.height;
+	} else {
+		image_dimensions = labeled_image_get_image_dimensions (labeled_image);
+	}
+	
+	label_dimensions = labeled_image_get_label_dimensions (labeled_image);
 
 	if (nautilus_dimensions_empty (&image_dimensions)) {
 		return NAUTILUS_ART_IRECT_EMPTY;
@@ -744,7 +768,16 @@ nautilus_labeled_image_get_image_bounds (const NautilusLabeledImage *labeled_ima
 			image_bounds.x0 = 
 				content_bounds.x0 +
 				(nautilus_art_irect_get_width (&content_bounds) - image_dimensions.width) / 2;
-			image_bounds.y0 = content_bounds.y0;
+				
+			if (is_fixed_height (labeled_image)) {	
+				image_bounds.y0 = content_bounds.y0 + nautilus_art_irect_get_height (&content_bounds)
+						  - image_dimensions.height
+						  - label_dimensions.height
+						  - labeled_image->details->spacing;
+			} else {
+				image_bounds.y0 = content_bounds.y0;
+			}	
+
 			break;
 		}
 	}
@@ -1296,6 +1329,34 @@ nautilus_labeled_image_get_show_image (const NautilusLabeledImage *labeled_image
 	g_return_val_if_fail (NAUTILUS_IS_LABELED_IMAGE (labeled_image), 0);
 	
 	return labeled_image->details->show_image;
+}
+
+
+/**
+ * nautilus_labeled_image_set_fixed_image_height:
+ * @labeled_image: A NautilusLabeledImage.
+ * @fixed_image_height: The new fixed image height.
+ *
+ * Normally, we measure the height of images, but it's sometimes useful
+ * to use a fixed height for all the images.  This routine sets the
+ * image height to the passed in value
+ *
+ */
+void
+nautilus_labeled_image_set_fixed_image_height (NautilusLabeledImage *labeled_image,
+						int new_height)
+{
+	g_return_if_fail (NAUTILUS_IS_LABELED_IMAGE (labeled_image));
+	
+	if (labeled_image->details->fixed_image_height == new_height) {
+		return;
+	}
+	
+	labeled_image->details->fixed_image_height = new_height;
+
+	labeled_image_update_alignments (labeled_image);
+	
+	gtk_widget_queue_resize (GTK_WIDGET (labeled_image));
 }
 
 /**
