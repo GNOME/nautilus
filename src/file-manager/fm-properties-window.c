@@ -1416,6 +1416,16 @@ should_show_mime_type (FMPropertiesWindow *window)
 	return TRUE;
 }
 
+static gboolean
+should_show_link_target (FMPropertiesWindow *window)
+{
+	if (nautilus_file_is_symbolic_link (window->details->target_file)) {
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 static void
 create_basic_page (FMPropertiesWindow *window)
 {
@@ -1517,8 +1527,11 @@ create_basic_page (FMPropertiesWindow *window)
 		append_title_value_pair (table, _("Size:"), target_file, "size");
 	}
 	append_title_and_ellipsizing_value (table, _("Location:"), target_file, "where");
+	if (should_show_link_target (window)) {
+		append_title_and_ellipsizing_value (table, _("Link Target:"), target_file, "link_target");
+	}
 	if (should_show_mime_type (window)) {
-		append_title_value_pair (table, _("MIME type:"), target_file, "mime_type");
+		append_title_value_pair (table, _("MIME Type:"), target_file, "mime_type");
 	}				  
 	
 	/* Blank title ensures standard row height */

@@ -3610,7 +3610,8 @@ nautilus_file_get_deep_directory_count_as_string (NautilusFile *file)
  * @attribute_name: The name of the desired attribute. The currently supported
  * set includes "name", "type", "mime_type", "size", "deep_size", "deep_directory_count",
  * "deep_file_count", "deep_total_count", "date_modified", "date_changed", "date_accessed", 
- * "date_permissions", "owner", "group", "permissions", "octal_permissions", "uri", "where".
+ * "date_permissions", "owner", "group", "permissions", "octal_permissions", "uri", "where",
+ * "link_target".
  * 
  * Returns: Newly allocated string ready to display to the user, or NULL
  * if the value is unknown or @attribute_name is not supported.
@@ -3680,6 +3681,9 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 	}
 	if (strcmp (attribute_name, "where") == 0) {
 		return nautilus_file_get_where_string (file);
+	}
+	if (strcmp (attribute_name, "link_target") == 0) {
+		return nautilus_file_get_symbolic_link_target_path (file);
 	}
 
 	return NULL;

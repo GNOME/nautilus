@@ -1,3 +1,23 @@
+2001-03-23  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	Make properties window show link target path for
+	symbolic links (not for NautilusLinks yet; I'll do
+	that separately). This shows "unknown" with old gnome-vfs;
+	but will show the right result with the latest gnome-vfs
+	(well, it will after Pavel checks in, which will be very
+	soon).
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_string_attribute): Add support
+	for "link_target"
+	
+	* src/file-manager/fm-properties-window.c:
+	(should_show_link_target): returns TRUE if file is a
+	symbolic link.
+	(create_basic_page): Add "Link Target" field.
+
 2001-03-22  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
