@@ -29,12 +29,12 @@
 #include "ntl-app.h"
 #include "ntl-prefs.h"
 #include "ntl-window-private.h"
-#include "nautilus-global-preferences.h"
+
 
 #include <libnautilus/nautilus-gtk-extensions.h>
 #include <libnautilus/nautilus-icon-factory.h>
 #include <libnautilus/nautilus-string.h>
-
+#include <libnautilus/nautilus-global-preferences.h>
 
 static void                  activate_bookmark_in_menu_item      (BonoboUIHandler *uih, 
                                                                   gpointer user_data, 
@@ -105,9 +105,7 @@ static void
 general_settings_cb (GtkWidget *widget,
                      GtkWindow *mainwin)
 {
-/* 	nautilus_prefs_ui_show (mainwin); */
-
-	nautilus_prefs_global_show_dialog ();
+	nautilus_global_preferences_show_dialog ();
 }
 
 static GnomeUIInfo file_menu_info[] = {

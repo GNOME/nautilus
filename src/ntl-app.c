@@ -29,6 +29,7 @@
 #include <bonobo.h>
 #include "file-manager/fm-directory-view-icons.h"
 #include "file-manager/fm-directory-view-list.h"
+#include <libnautilus/nautilus-global-preferences.h>
 
 typedef struct {
   POA_Nautilus_Application servant;
@@ -243,6 +244,8 @@ nautilus_app_destroy(GtkObject *object)
 {
   /* Do those things that gotta be done just once before quitting */
   nautilus_prefs_save();
+  nautilus_global_preferences_shutdown ();
+
   nautilus_bookmarks_exiting();
   GTK_OBJECT_CLASS(app_parent_class)->destroy(object);
 }
@@ -254,6 +257,7 @@ nautilus_app_startup(NautilusApp *app, const char *initial_url)
 
   nautilus_navinfo_init();
   nautilus_prefs_load();
+  nautilus_global_preferences_initialize ();
 
   /* Set default configuration */
   mainwin = nautilus_app_create_window(app);
