@@ -101,7 +101,5 @@ oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 EXTRA_DIST =					\
 	$(oaf_in_files)				\
 	$(oaf_DATA)				\
+	$(IDL)					\
 	$(NULL)
-
-
-
