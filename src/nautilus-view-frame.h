@@ -103,12 +103,6 @@ struct _NautilusView
 };
 
 GtkType nautilus_view_get_type                (void);
-void    nautilus_view_request_location_change (NautilusView              *view,
-					       Nautilus_NavigationRequestInfo *loc);
-void    nautilus_view_request_selection_change (NautilusView              *view,
-						Nautilus_SelectionRequestInfo *loc);
-void    nautilus_view_request_status_change    (NautilusView              *view,
-                                                Nautilus_StatusRequestInfo *loc);
 gboolean nautilus_view_load_client              (NautilusView              *view,
                                                  const char *               iid);
 const char *nautilus_view_get_iid(NautilusView *view);

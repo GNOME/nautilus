@@ -877,6 +877,7 @@ nautilus_window_about_cb (GtkWidget *widget,
     "Darin Adler",
     "Elliot Lee",
     "Ettore Perazzoli",
+    "Maciej Stachowiak",
     "John Sullivan",
     NULL
   };

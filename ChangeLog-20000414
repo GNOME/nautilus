@@ -2,6 +2,25 @@
 
 	* components/html/ntl-web-browser.c: Fix warnings.
 
+	* src/ntl-view.h: Remove request_* calls from public API (they are
+	just an implementation detail of the fact that NautilusView
+	implements a Nautilus:ViewFrame CORBA server - the nautilus app
+	should not need to call these).
+
+	* src/ntl-view.c: Split all the three way conditional stuff out so
+	there is a separate function for each branch of the condition. Not
+	a big win yet, but will provide opportunities for more
+	refactoring.
+
+	* src/ntl-view-frame-svr.c, ntl-view-frame-svr.h: Move
+	implementation of Nautilus:ViewFrame CORBA server here as much as
+	possible.
+	* src/ntl-view.c: Remove it from here.
+	* src/nautilus.h: #include ntl-view-frame-svr.h
+	* src/Makefile.am: add ntl-view-frame-svr.[ch] to build.
+		
+	* src/ntl-window.c: Add myself to About box (pout).
+
 1999-12-20  Elliot Lee  <sopwith@redhat.com>
 
 	* configure.in, components/Makefile.am: Add HTML component to build.

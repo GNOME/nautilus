@@ -38,6 +38,8 @@ nautilus_SOURCES=			\
 	ntl-uri-map.c		\
 	ntl-view.h		\
 	ntl-view.c		\
+	ntl-view-frame-svr.h	\
+	ntl-view-frame-svr.c	\
 	ntl-window.h		\
 	ntl-window.c		\
 	ntl-window-msgs.c	\
