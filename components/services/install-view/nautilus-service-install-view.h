@@ -62,17 +62,15 @@ struct _NautilusServiceInstallViewDetails {
 	GtkWidget       *total_progress_bar;
 	GtkWidget       *overall_feedback_text;
 	GtkWidget	*message_box;
-#if 0
-	GtkWidget	*current_progress_alignment;
-#else
 	GList		*message_left;
 	GList		*message_right;
 	GtkWidget       *current_feedback_text;
 	GtkWidget       *current_progress_bar;
-#endif
 	EazelInstallCallback *installer;
 	char		*current_rpm;
 	int		current_package;
+	char		*remembered_password;
+	int		password_attempts;
 };
 
 

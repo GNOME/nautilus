@@ -1,3 +1,24 @@
+2000-08-24  Robey Pointer  <robey@eazel.com>
+
+	components/services/install/nautilus-view/nautilus-service-install-
+	view.c: (generate_install_form),
+	(nautilus_service_install_view_destroy),
+	(nautilus_install_parse_uri), (make_new_status),
+	(current_progress_bar_complete),
+	(nautilus_service_install_downloading),
+	(nautilus_service_install_installing),
+	(nautilus_service_install_failed),
+	(nautilus_service_need_password), (set_root_client),
+	(nautilus_service_install_view_update_from_uri):
+	components/services/install/nautilus-view/nautilus-service-install-
+	view.h:
+
+	More cleanup of the RPM install view: rudimentary password dialog,
+	cleaned out old unused code, and hooked up the RPM package info to
+	display in the top field, instead of the fake "The Gimp" info.
+	Also removed the forced delays in updating (install happens in
+	"realtime" now!).
+	 
 2000-08-24  Arlo Rose  <arlo@eazel.com>
 	* icon/search_results.png
 	Added an icon to be used in the search results side bar.
