@@ -854,6 +854,7 @@ set_scroll_region (GnomeIconContainer *container)
 	double x1, y1, x2, y2;
         double content_width, content_height;
 	double scroll_width, scroll_height;
+	int step_increment;
 	GtkAllocation *allocation;
 	GtkAdjustment *vadj, *hadj;
 
@@ -877,10 +878,24 @@ set_scroll_region (GnomeIconContainer *container)
 	hadj = GTK_LAYOUT (container)->hadjustment;
 	vadj = GTK_LAYOUT (container)->vadjustment;
 
-	if (content_width <= allocation->width)
+	if (content_width <= allocation->width) {
 		gtk_adjustment_set_value (hadj, x1);
-	if (content_height <= allocation->height)
+	}
+	if (content_height <= allocation->height) {
 		gtk_adjustment_set_value (vadj, y1);
+	}
+
+	step_increment = nautilus_get_icon_size_for_zoom_level
+		(container->details->zoom_level) / 4;
+
+	if (hadj->step_increment != step_increment) {
+		hadj->step_increment = step_increment;
+		gtk_adjustment_changed (hadj);
+	}
+	if (vadj->step_increment != step_increment) {
+		vadj->step_increment = step_increment;
+		gtk_adjustment_changed (vadj);
+	}
 }
 
 static gboolean
