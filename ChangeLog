@@ -1,3 +1,19 @@
+2001-01-25  Laszlo Kovacs <laszlo.kovacs@sun.com>
+	* added various changes to the hyperbola component,
+	  some of these are Scrollkeeper related and disabled
+	  as Scrollkeeper is not in Eazel-hacking yet
+	  Scrollkeeper related changes:
+	    - remove empty branches for Scrollkeeper generated
+	      category tree
+	    - remove old way of populating of the Applications
+	      branch with the Gnome help docs
+	  Not Scrollkeeper related changes:
+	    - fix in manpath handling when looking for man pages
+	      and manpath does not return anything
+	    - fix in title extraction from man page names
+	    - moving all the Man pages below the Manuals branch
+	      (in pages.map)
+
 2001-01-25  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-install-logic2.c:
