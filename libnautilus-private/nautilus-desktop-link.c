@@ -356,7 +356,7 @@ nautilus_desktop_link_rename (NautilusDesktopLink     *link,
 				     name);
 		break;
 	case NAUTILUS_DESKTOP_LINK_TRASH:
-		eel_preferences_set (NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME,
+		eel_preferences_set (NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME,
 				     name);
 		break;
 	default:
