@@ -1,3 +1,17 @@
+2000-10-19  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bugzilla bug 3648 (not clear what "xxx" under
+	folders means)
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_string_attribute_with_default):
+	Change some of the default strings; use "..." when
+	we were using "--" (for info not yet obtained); use
+	"? items" or "?" when we were using "xxx" (for info
+	not readable).
+	(nautilus_file_get_top_left_text): Use "..." when
+	we were using "--"
+
 2000-10-19  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c
