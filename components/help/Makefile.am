@@ -1,7 +1,7 @@
 SUBDIRS=converters
 
 bin_PROGRAMS=hyperbola
-lib_LTLIBRARIES=libvfs-help.la
+modules_LTLIBRARIES=libvfs-help.la
 
 INCLUDES = \
 	-I$(top_srcdir) \

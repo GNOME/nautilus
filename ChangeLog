@@ -1,3 +1,15 @@
+2000-06-29  Ali Abdin <aliabdin@aucegypt.edu
+
+	* components/help/Makefile.am: Install the libvfs-help.so module
+	in the right place. Closes Bug #919. (will not work though
+	if Nautilus prefix != gnome-vfs prefix (unless a fix goes into
+	gnome-vfs))
+
+	* components/websearch/ntl-web-search.c:
+	(web_search_populate_engines): Fix to make it look in the right
+	place (WEB_SEARCH_DATADIR "/standard.eng" instead of
+	WEB SEARCH_DATADIR "/ntl-web-search/standard.eng")
+
 2000-06-29  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/mozilla/nautilus-mozilla-content-view.oafinfo:
