@@ -139,6 +139,21 @@ nautilus_navigation_window_instance_init (NautilusNavigationWindow *window)
 }
 
 static void
+file_menu_new_window_callback (BonoboUIComponent *component,
+			       gpointer user_data,
+			       const char *verb)
+{
+	NautilusWindow *window = NAUTILUS_WINDOW (user_data);
+
+	const gchar    *uri = nautilus_window_get_location (window);
+
+	window = nautilus_application_create_navigation_window (window->application,
+						gtk_window_get_screen (GTK_WINDOW (window)));
+
+	nautilus_window_open_location (window, uri, FALSE);
+}
+
+static void
 go_to_callback (GtkWidget *widget,
 		const char *uri,
 		NautilusNavigationWindow *window)
@@ -703,6 +718,10 @@ real_merge_menus (NautilusWindow *nautilus_window)
 	GtkWidget *location_bar_box;
 	GtkWidget *view_as_menu_vbox;
 	BonoboControl *location_bar_wrapper;
+	BonoboUIVerb verbs [] = {
+		BONOBO_UI_VERB ("New Window", file_menu_new_window_callback),
+		BONOBO_UI_VERB_END
+	};
 
 	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS, 
 			 merge_menus, (nautilus_window));
@@ -716,6 +735,9 @@ real_merge_menus (NautilusWindow *nautilus_window)
 
 	bonobo_ui_component_freeze 
 		(NAUTILUS_WINDOW (window)->details->shell_ui, NULL);
+
+	bonobo_ui_component_add_verb_list_with_data (nautilus_window->details->shell_ui,
+						     verbs, window);
 
 	nautilus_navigation_window_initialize_menus_part_1 (window);
 	nautilus_navigation_window_initialize_toolbars (window);
