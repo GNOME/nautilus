@@ -499,6 +499,10 @@ location_button_clicked_callback (GtkWidget *widget, NautilusSpatialWindow *wind
 		name = nautilus_get_uri_shortname_for_display (uri);
 		menu_item = gtk_image_menu_item_new_with_label (name);
 		if (first_item == NULL) {
+			GtkWidget *open_icon = gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_BUTTON);
+
+			gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item), open_icon);
+
 			first_item = menu_item;
 		}
 		
@@ -594,7 +598,8 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 	GtkActionGroup *action_group;
 	GtkUIManager *ui_manager;
 	const char *ui;
-
+	GtkWidget *folder_icon;
+	
 	window->details = g_new0 (NautilusSpatialWindowDetails, 1);
 	window->affect_spatial_window_on_next_location_change = TRUE;
 
@@ -610,7 +615,7 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 
 	window->details->location_button = gtk_button_new ();
 	gtk_button_set_relief (GTK_BUTTON (window->details->location_button),
-			       GTK_RELIEF_NONE);
+			       GTK_RELIEF_NORMAL);
 	rc_style = gtk_widget_get_modifier_style (window->details->location_button);
 	rc_style->xthickness = 0;
 	rc_style->ythickness = 0;
@@ -623,6 +628,10 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 	gtk_container_add (GTK_CONTAINER (window->details->location_button), 
 			   hbox);
 	gtk_widget_show (hbox);
+
+	folder_icon = gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_BUTTON);
+	gtk_box_pack_start (GTK_BOX (hbox), folder_icon, FALSE, FALSE, 0);
+	gtk_widget_show (folder_icon);
 	
 	window->details->location_label = gtk_label_new ("");
 	gtk_box_pack_start (GTK_BOX (hbox), window->details->location_label,
