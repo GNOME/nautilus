@@ -393,6 +393,7 @@ static void
 cache_key_destroy (CacheKey *key)
 {
 	g_free (key->name);
+	g_free (key->modifier);
 	g_free (key);
 }
 

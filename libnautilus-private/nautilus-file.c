@@ -1022,6 +1022,7 @@ rename_guts (NautilusFile *file,
 	 * But not for .desktop files as '/' are allowed for them */
 	if (strstr (new_name, "/") != NULL && !is_local_desktop_file) {
 		(* callback) (file, GNOME_VFS_ERROR_NOT_PERMITTED, callback_data);
+		g_free (uri);
 		return;
 	}
 	
@@ -1037,6 +1038,7 @@ rename_guts (NautilusFile *file,
 		 */
 		nautilus_file_changed (file);
 		(* callback) (file, GNOME_VFS_ERROR_NOT_FOUND, callback_data);
+		g_free (uri);
 		return;
 	}
 
@@ -1046,6 +1048,7 @@ rename_guts (NautilusFile *file,
 	 */
 	if (name_is (file, new_name)) {
 		(* callback) (file, GNOME_VFS_OK, callback_data);
+		g_free (uri);
 		return;
 	}
 
@@ -1060,6 +1063,7 @@ rename_guts (NautilusFile *file,
 		 */
 		nautilus_file_changed (file);
 		(* callback) (file, GNOME_VFS_ERROR_NOT_SUPPORTED, callback_data);
+		g_free (uri);
 		return;
 	}
 
@@ -1068,7 +1072,7 @@ rename_guts (NautilusFile *file,
 		NautilusDesktopLink *link;
 
 		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
-
+		
 		if (nautilus_desktop_link_rename (link, new_name)) {
 			(* callback) (file, GNOME_VFS_OK, callback_data);
 		} else {
@@ -1076,6 +1080,7 @@ rename_guts (NautilusFile *file,
 		}
 		
 		g_object_unref (link);
+		g_free (uri);
 		return;
 	}
 	

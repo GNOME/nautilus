@@ -147,6 +147,7 @@ append_bookmark_node (gpointer data, gpointer user_data)
 	if (icon != NULL) {
 		/* Don't bother storing modifier or embedded text for bookmarks. */
 		xmlSetProp (bookmark_node, "icon_name", icon);
+		g_free (icon);
 	}
 }
 

@@ -319,6 +319,7 @@ migrate_old_nautilus_files (void)
 				      _("Migrated old desktop"),
 				      NULL);
 	}
+	g_free (old_desktop_dir);
 	g_free (migrated_file);
 }
 
