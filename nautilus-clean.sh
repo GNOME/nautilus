@@ -34,4 +34,5 @@ if [ -z $FOUND_ANY ]; then
     exit 0;
 fi
 
-exit -1;
+exit 0
+
