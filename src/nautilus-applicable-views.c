@@ -31,18 +31,19 @@
 NautilusNavigationInfo *
 nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
 		     Nautilus_NavigationRequestInfo *nri,
-		     NautilusLocationReference referring_uri,
-		     NautilusLocationReference actual_referring_uri,
-		     const char *referring_content_type,
-		     GtkWidget *requesting_view)
+                     Nautilus_NavigationInfo *old_navinfo,
+		     NautilusView *requesting_view)
 {
   const char *meta_keys[] = {"icon-filename", NULL};
   memset(navinfo, 0, sizeof(*navinfo));
 
   navinfo->navinfo.requested_uri = nri->requested_uri;
-  navinfo->navinfo.referring_uri = referring_uri;
-  navinfo->navinfo.actual_referring_uri = actual_referring_uri;
-  navinfo->navinfo.referring_content_type = (char *)referring_content_type;
+  if(old_navinfo)
+    {
+      navinfo->navinfo.referring_uri = old_navinfo->requested_uri;
+      navinfo->navinfo.actual_referring_uri = old_navinfo->actual_uri;
+      navinfo->navinfo.referring_content_type = old_navinfo->content_type;
+    }
 
   navinfo->requesting_view = requesting_view;
 
@@ -52,7 +53,7 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
                           GNOME_VFS_FILE_INFO_GETMIMETYPE
                           |GNOME_VFS_FILE_INFO_FOLLOWLINKS,
                           meta_keys);
-  navinfo->navinfo.content_type = gnome_vfs_file_info_get_mime_type(navinfo->vfs_fileinfo);
+  navinfo->navinfo.content_type = (char *)gnome_vfs_file_info_get_mime_type(navinfo->vfs_fileinfo);
 
   /* Given a content type and a URI, what do we do? Basically the "expert system" below
      tries to answer that question

@@ -5,6 +5,8 @@
 
 #include "ntl-types.h"
 #include "ntl-window.h"
+#include "ntl-window-state.h"
+#include "ntl-window-msgs.h"
 #include "ntl-view.h"
 #include "ntl-meta-view.h"
 #include "ntl-content-view.h"

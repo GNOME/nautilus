@@ -28,8 +28,9 @@
 #include <gnome.h>
 #include "nautilus.h"
 #include "explorer-location-bar.h"
+#include "ntl-window-private.h"
 
-
+/* Stuff for handling the CORBA interface */
 typedef struct {
   POA_Nautilus_ViewWindow servant;
   gpointer gnome_object;
@@ -102,18 +103,9 @@ static void nautilus_window_set_arg (GtkObject      *object,
 static void nautilus_window_get_arg (GtkObject      *object,
                                      GtkArg         *arg,
                                      guint	      arg_id);
-static void nautilus_window_goto_url (GtkWidget *widget,
-                                      const char *url,
-                                      GtkWidget *window);
-static void nautilus_window_real_request_location_change (NautilusWindow *window,
-							  Nautilus_NavigationRequestInfo *loc,
-							  GtkWidget *requesting_view);
-static void nautilus_window_real_request_selection_change(NautilusWindow *window,
-							  Nautilus_SelectionRequestInfo *loc,
-							  GtkWidget *requesting_view);
-static void nautilus_window_real_request_status_change(NautilusWindow *window,
-                                                       Nautilus_StatusRequestInfo *loc,
-                                                       GtkWidget *requesting_view);
+static void nautilus_window_goto_url_cb (GtkWidget *widget,
+                                         const char *url,
+                                         GtkWidget *window);
 
 #define CONTENTS_AS_HBOX
 /* milliseconds */
@@ -224,7 +216,7 @@ nautilus_window_clear_status(NautilusWindow *window)
   return FALSE;
 }
 
-static void
+void
 nautilus_window_set_status(NautilusWindow *window, const char *txt)
 {
   if(window->statusbar_clear_id)
@@ -240,10 +232,8 @@ nautilus_window_set_status(NautilusWindow *window, const char *txt)
     window->statusbar_clear_id = 0;
 }
 
-static void
-nautilus_window_goto_url (GtkWidget *widget,
-                          const char *url,
-                          GtkWidget *window)
+void
+nautilus_window_goto_url(NautilusWindow *window, const char *url)
 {
   Nautilus_NavigationRequestInfo navinfo;
 
@@ -254,6 +244,14 @@ nautilus_window_goto_url (GtkWidget *widget,
 
   nautilus_window_request_location_change(NAUTILUS_WINDOW(window), &navinfo,
                                           NULL);
+}
+
+static void
+nautilus_window_goto_url_cb (GtkWidget *widget,
+                          const char *url,
+                          GtkWidget *window)
+{
+  nautilus_window_goto_url(window, url);
 }
 
 static void
@@ -428,7 +426,7 @@ nautilus_window_set_arg (GtkObject      *object,
 {
   GnomeApp *app = (GnomeApp *) object;
   char *old_app_name;
-  GtkWidget *new_cv;
+  NautilusView *new_cv;
   NautilusWindow *window = (NautilusWindow *) object;
 
   switch(arg_id) {
@@ -446,21 +444,21 @@ nautilus_window_set_arg (GtkObject      *object,
       nautilus_window_constructed(NAUTILUS_WINDOW(object));
     break;
   case ARG_CONTENT_VIEW:
-    new_cv = GTK_WIDGET(GTK_VALUE_OBJECT(*arg));
+    new_cv = NAUTILUS_VIEW(GTK_VALUE_OBJECT(*arg));
     if(window->content_view)
       {
 	gtk_widget_ref(GTK_WIDGET(window->content_view));
 	gtk_container_remove(GTK_CONTAINER(window->content_hbox), GTK_WIDGET(window->content_view));
 #ifdef CONTENTS_AS_HBOX
-	gtk_box_pack_start(GTK_BOX(window->content_hbox), new_cv, TRUE, TRUE, GNOME_PAD);
+	gtk_box_pack_start(GTK_BOX(window->content_hbox), GTK_WIDGET(new_cv), TRUE, TRUE, GNOME_PAD);
 #else
-	gtk_paned_pack1(GTK_PANED(window->content_hbox), new_cv, TRUE, FALSE);
+	gtk_paned_pack1(GTK_PANED(window->content_hbox), GTK_WIDGET(new_cv), TRUE, FALSE);
 #endif
 	gtk_widget_unref(GTK_WIDGET(window->content_view));
       }
     else
 #ifdef CONTENTS_AS_HBOX
-      gtk_box_pack_start(GTK_BOX(window->content_hbox), new_cv, TRUE, TRUE, GNOME_PAD);
+      gtk_box_pack_start(GTK_BOX(window->content_hbox), GTK_WIDGET(new_cv), TRUE, TRUE, GNOME_PAD);
 #else
       gtk_paned_pack1(GTK_PANED(window->content_hbox), new_cv, TRUE, FALSE);
 #endif
@@ -496,9 +494,8 @@ nautilus_window_init (NautilusWindow *window)
 static void nautilus_window_destroy (NautilusWindow *window)
 {
   g_slist_free(window->meta_views);
-  g_free(window->current_uri);
-  g_free(window->actual_current_uri);
-  g_free(window->current_content_type);
+  CORBA_free(window->ni);
+  CORBA_free(window->si);
   g_slist_foreach(window->uris_prev, (GFunc)g_free, NULL);
   g_slist_foreach(window->uris_next, (GFunc)g_free, NULL);
   g_slist_free(window->uris_prev);
@@ -514,13 +511,6 @@ nautilus_window_new(const char *app_id)
   return GTK_WIDGET (gtk_object_new (nautilus_window_get_type(), "app_id", app_id, NULL));
 }
 
-void
-nautilus_window_set_content_view(NautilusWindow *window, NautilusView *content_view)
-{
-  gtk_object_set(GTK_OBJECT(window), "content_view", content_view, NULL);
-  gtk_widget_show(GTK_WIDGET(content_view));
-}
-
 static gboolean
 nautilus_window_send_show_properties(GtkWidget *dockitem, GdkEventButton *event, NautilusView *meta_view)
 {
@@ -532,6 +522,13 @@ nautilus_window_send_show_properties(GtkWidget *dockitem, GdkEventButton *event,
   gtk_signal_emit_by_name(GTK_OBJECT(meta_view), "show_properties");
 
   return TRUE;
+}
+
+void
+nautilus_window_set_content_view(NautilusWindow *window, NautilusView *content_view)
+{
+  gtk_object_set(GTK_OBJECT(window), "content_view", content_view, NULL);
+  gtk_widget_show(GTK_WIDGET(content_view));
 }
 
 void
@@ -574,357 +571,6 @@ nautilus_window_remove_meta_view(NautilusWindow *window, NautilusView *meta_view
   g_return_if_fail(pagenum >= 0);
 
   gtk_notebook_remove_page(GTK_NOTEBOOK(window->meta_notebook), pagenum);
-}
-
-void
-nautilus_window_request_status_change(NautilusWindow *window,
-                                      Nautilus_StatusRequestInfo *loc,
-                                      GtkWidget *requesting_view)
-{
-  NautilusWindowClass *klass;
-  GtkObject *obj;
-
-  obj = GTK_OBJECT(window);
-
-  klass = NAUTILUS_WINDOW_CLASS(obj->klass);
-  gtk_signal_emit(obj, klass->window_signals[2], loc, requesting_view);
-}
-
-void
-nautilus_window_request_selection_change(NautilusWindow *window,
-					 Nautilus_SelectionRequestInfo *loc,
-					 GtkWidget *requesting_view)
-{
-  NautilusWindowClass *klass;
-  GtkObject *obj;
-
-  obj = GTK_OBJECT(window);
-
-  klass = NAUTILUS_WINDOW_CLASS(obj->klass);
-  gtk_signal_emit(obj, klass->window_signals[1], loc, requesting_view);
-}
-
-void
-nautilus_window_request_location_change(NautilusWindow *window,
-					Nautilus_NavigationRequestInfo *loc,
-					GtkWidget *requesting_view)
-{
-  NautilusWindowClass *klass;
-  GtkObject *obj;
-
-  obj = GTK_OBJECT(window);
-
-  klass = NAUTILUS_WINDOW_CLASS(obj->klass);
-  gtk_signal_emit(obj, klass->window_signals[0], loc, requesting_view);
-}
-
-static void
-nautilus_window_change_location(NautilusWindow *window,
-				Nautilus_NavigationRequestInfo *loc,
-				GtkWidget *requesting_view,
-				gboolean is_back)
-{
-  guint signum;
-  GSList *cur;
-  GSList *discard_views, *keep_views, *notfound_views;
-
-  NautilusNavigationInfo loci_spot, *loci;
-
-  loci = nautilus_navinfo_new(&loci_spot, loc, window->current_uri, window->actual_current_uri, window->current_content_type,
-			      requesting_view);
-
-  if(!loci)
-    {
-      char cbuf[1024];
-      g_snprintf(cbuf, sizeof(cbuf), _("Cannot load %s"), loc->requested_uri);
-      nautilus_window_set_status(window, cbuf);
-      return;
-    }
-
-  /* Update history */
-  if(is_back)
-    {
-      window->uris_next = g_slist_prepend(window->uris_next, window->uris_prev->data);
-      window->uris_prev = g_slist_remove(window->uris_prev, window->uris_prev->data);
-    }
-  else
-    {
-      char *append_val;
-      if(window->uris_next && !strcmp(loc->requested_uri, window->uris_next->data))
-	{
-	  append_val = window->uris_next->data;
-	  window->uris_next = g_slist_remove(window->uris_next, window->uris_next->data);
-	}
-      else
-	{
-	  append_val = g_strdup(loc->requested_uri);
-	  g_slist_foreach(window->uris_next, (GFunc)g_free, NULL);
-	  g_slist_free(window->uris_next); window->uris_next = NULL;
-	}
-      if(append_val)
-        window->uris_prev = g_slist_prepend(window->uris_prev, append_val);
-    }
-  gtk_widget_set_sensitive(window->btn_back, window->uris_prev?TRUE:FALSE);
-  gtk_widget_set_sensitive(window->btn_fwd, window->uris_next?TRUE:FALSE);
-
-  explorer_location_bar_set_uri_string(EXPLORER_LOCATION_BAR(window->ent_url),
-                                       loci->navinfo.requested_uri);
-  signum = gtk_signal_lookup("notify_location_change", nautilus_view_get_type());
-
-  /* If we need to load a different IID, do that before sending the location change request */
-  if(!window->content_view || strcmp(NAUTILUS_VIEW(window->content_view)->iid, loci->content_iid)) {
-    NautilusView *new_view;
-
-    if(requesting_view == window->content_view)
-      requesting_view = NULL;
-
-    new_view = NAUTILUS_VIEW(gtk_widget_new(nautilus_content_view_get_type(), "main_window", window, NULL));
-    nautilus_view_load_client(new_view, loci->content_iid);
-    nautilus_window_set_content_view(window, new_view);
-  }
-
-  loci->navinfo.content_view = NAUTILUS_VIEW(window->content_view)->view_client;
-
-  loci->navinfo.self_originated = (requesting_view == window->content_view);
-  gtk_signal_emit(GTK_OBJECT(window->content_view), signum, loci);
-
-  notfound_views = keep_views = discard_views = NULL;
-  for(cur = window->meta_views; cur; cur = cur->next)
-    {
-      NautilusView *view = cur->data;
-
-      if(g_slist_find_custom(loci->meta_iids, view->iid, (GCompareFunc)strcmp))
-	{
-          loci->navinfo.self_originated = (requesting_view == ((GtkWidget *)view));
-          gtk_signal_emit(GTK_OBJECT(view), signum, loci);
-	}
-      else
-	{
-	  if(((GtkWidget *)view) == requesting_view)
-	    requesting_view = NULL;
-	  discard_views = g_slist_prepend(discard_views, view);
-	}
-    }
-  loci->navinfo.self_originated = FALSE;
-  for(cur = loci->meta_iids; cur; cur = cur->next)
-    {
-      GSList *curview;
-      for(curview = window->meta_views; curview; curview = curview->next)
-	{
-	  if(!strcmp(NAUTILUS_VIEW(curview->data)->iid, cur->data))
-	    break;
-	}
-      if(!curview)
-	{
-	  NautilusView *view;
-	  view = NAUTILUS_VIEW(gtk_widget_new(nautilus_meta_view_get_type(), "main_window", window, NULL));
-	  nautilus_view_load_client(view, cur->data);
-	  nautilus_window_add_meta_view(window, view);
-	  gtk_signal_emit(GTK_OBJECT(view), signum, loci, window->content_view);
-	}
-    }
-  for(cur = discard_views; cur; cur = cur->next)
-    nautilus_window_remove_meta_view(window, cur->data);
-  g_slist_free(discard_views);
-
-  g_free(window->current_content_type);
-  window->current_content_type = g_strdup(loci->navinfo.content_type);
-  g_free(window->current_uri);
-  window->current_uri = g_strdup(loci->navinfo.requested_uri);
-  g_free(window->actual_current_uri);
-  window->actual_current_uri = g_strdup(loci->navinfo.actual_uri);
-
-  nautilus_navinfo_free(loci);
-}
-
-static void nautilus_window_real_request_selection_change(NautilusWindow *window,
-							  Nautilus_SelectionRequestInfo *loc,
-							  GtkWidget *requesting_view)
-{
-  GSList *cur;
-  guint signum;
-  Nautilus_SelectionInfo selinfo;
-
-  signum = gtk_signal_lookup("notify_selection_change", nautilus_view_get_type());
-
-  selinfo.selected_uri = loc->selected_uri;
-  selinfo.content_view = NAUTILUS_VIEW(window->content_view)->view_client;
-
-  selinfo.self_originated = (((GtkWidget *)window->content_view) == requesting_view);
-    gtk_signal_emit(GTK_OBJECT(window->content_view), signum, &selinfo);
-
-  for(cur = window->meta_views; cur; cur = cur->next)
-    {
-      selinfo.self_originated = (cur->data == requesting_view);
-      gtk_signal_emit(GTK_OBJECT(window->content_view), signum, &selinfo);
-    }
-}
-
-static void
-nautilus_window_real_request_status_change(NautilusWindow *window,
-                                           Nautilus_StatusRequestInfo *loc,
-                                           GtkWidget *requesting_view)
-{
-  nautilus_window_set_status(window, loc->status_string);
-}
-
-static void
-nautilus_window_real_request_location_change (NautilusWindow *window,
-					      Nautilus_NavigationRequestInfo *loc,
-					      GtkWidget *requesting_view)
-{
-  nautilus_window_change_location(window, loc, requesting_view, FALSE);
-}
-
-void
-nautilus_window_save_state(NautilusWindow *window, const char *config_path)
-{
-  GSList *cur;
-  int n;
-  guint signum;
-  char cbuf[1024];
-
-  gnome_config_push_prefix(config_path);
-  if(window->content_view)
-    {
-      gnome_config_set_string("content_view_type", NAUTILUS_VIEW(window->content_view)->iid);
-      g_snprintf(cbuf, sizeof(cbuf), "%s/Content_View/", config_path);
-
-      gnome_config_push_prefix(cbuf);
-
-      gtk_signal_emit(GTK_OBJECT(window->content_view), signum, cbuf);
-
-      gnome_config_pop_prefix();
-    }
-  else
-    gnome_config_set_string("content_view_type", "NONE");
-
-
-  n = g_slist_length(window->meta_views);
-  signum = gtk_signal_lookup("save_state", nautilus_view_get_type());
-  for(n = 0, cur = window->meta_views; cur; cur = cur->next, n++)
-    {
-      if(!NAUTILUS_VIEW(cur->data)->iid)
-	{
-	  continue;
-	  n--;
-	}
-
-      g_snprintf(cbuf, sizeof(cbuf), "meta_view_%d_type=0", n);
-
-      gnome_config_set_string(cbuf, NAUTILUS_VIEW(cur->data)->iid);
-
-      g_snprintf(cbuf, sizeof(cbuf), "%s/Meta_View_%d/", config_path, n);
-
-      gnome_config_push_prefix(cbuf);
-
-      gtk_signal_emit(GTK_OBJECT(cur->data), signum, cbuf);
-
-      gnome_config_pop_prefix();
-    }
-  gnome_config_set_int("num_meta_views", n);
-
-  gnome_config_pop_prefix();
-}
-
-void
-nautilus_window_set_initial_state(NautilusWindow *window)
-{
-  nautilus_window_goto_url(NULL, "file://localhost/", (GtkWidget *)window);
-
-#if 0
-  GSList *cur;
-  GtkRequisition sreq;
-  GdkGeometry geo;
-  NautilusView *view;
-
-  /* Remove old stuff */
-  for(cur = window->meta_views; cur; cur = cur->next)
-    nautilus_window_remove_meta_view(window, NAUTILUS_VIEW(cur->data));
-
-  view = NAUTILUS_VIEW(gtk_widget_new(nautilus_content_view_get_type(), "main_window", window, NULL));
-  nautilus_view_load_client(view, "control:clock");
-  nautilus_window_set_content_view(window, view);
-
-  view = NAUTILUS_VIEW(gtk_widget_new(nautilus_meta_view_get_type(), "main_window", window, NULL));
-  nautilus_view_load_client(view, "control:clock");
-  nautilus_window_add_meta_view(window, view);
-
-  gtk_widget_size_request(GTK_WIDGET(window), &sreq);
-  gtk_widget_size_request(GTK_WIDGET(window->content_hbox), &sreq);
-  gtk_widget_size_request(GTK_WIDGET(window->meta_notebook), &sreq);
-  geo.min_width = window->meta_notebook->requisition.width + MAX(400, GTK_WIDGET(window->content_view)->requisition.width);
-  geo.min_height = window->meta_notebook->requisition.height + MAX(200, GTK_WIDGET(window->content_view)->requisition.height);
-  geo.base_width = geo.min_width;
-  geo.base_height = geo.min_height;
-  gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geo,
-				GDK_HINT_BASE_SIZE|GDK_HINT_MIN_SIZE);
-  gtk_window_set_default_size(GTK_WINDOW(window), geo.min_width, geo.min_height);
-
-#ifndef CONTENTS_AS_HBOX
-  gtk_paned_set_position(GTK_PANED(window->content_hbox), MAX(400, GTK_WIDGET(window->content_view)->requisition.width));
-#endif
-#endif
-}
-
-void
-nautilus_window_load_state(NautilusWindow *window, const char *config_path)
-{
-  char *vtype;
-  GSList *cur;
-  int i, n;
-  guint signum;
-  char cbuf[1024];
-
-  /* Remove old stuff */
-  for(cur = window->meta_views; cur; cur = cur->next)
-    nautilus_window_remove_meta_view(window, NAUTILUS_VIEW(cur->data));
-  nautilus_window_set_content_view(window, NULL);
-
-  /* Load new stuff */
-  gnome_config_push_prefix(config_path);
-
-  vtype = gnome_config_get_string("content_view_type=NONE");
-  signum = gtk_signal_lookup("load_state", nautilus_view_get_type());
-
-  if(vtype && strcmp(vtype, "NONE")) /* Create new content view */
-    {
-      GtkWidget *w;
-
-      w = gtk_widget_new(nautilus_content_view_get_type(), "main_window", window, NULL);
-      nautilus_view_load_client(NAUTILUS_VIEW(w), vtype);
-      nautilus_window_set_content_view(window, NAUTILUS_VIEW(w));
-
-      g_snprintf(cbuf, sizeof(cbuf), "%s/Content_View/", config_path);
-      gnome_config_push_prefix(cbuf);
-      gtk_signal_emit(GTK_OBJECT(w), signum, cbuf);
-      gnome_config_pop_prefix();
-
-      gtk_widget_show(w);
-    }
-  g_free(vtype);
-
-  n = gnome_config_get_int("num_meta_views=0");
-  for(i = 0; i < n; n++)
-    {
-      GtkWidget *nvw;
-
-      g_snprintf(cbuf, sizeof(cbuf), "%s/meta_view_%d_type=0", config_path, i);
-      vtype = gnome_config_get_string(cbuf);
-
-      nvw = gtk_widget_new(nautilus_meta_view_get_type(), "main_window", window, NULL);
-      nautilus_view_load_client(NAUTILUS_VIEW(nvw), vtype);
-
-      g_snprintf(cbuf, sizeof(cbuf), "%s/Meta_View_%d/", config_path, i);
-
-      gnome_config_push_prefix(cbuf);
-      gtk_signal_emit(GTK_OBJECT(cur->data), signum, cbuf);
-      gnome_config_pop_prefix();
-
-      nautilus_window_add_meta_view(window, NAUTILUS_VIEW(nvw));
-    }
-
-  gnome_config_pop_prefix();
 }
 
 static void

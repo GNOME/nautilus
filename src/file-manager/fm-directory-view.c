@@ -874,6 +874,11 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 
 	fm_directory_view_stop (view);
 
+	if(view_has_icon_container(view))
+		gnome_icon_container_clear(get_icon_container(view));
+	if(view_has_flist(view))
+		gtk_clist_clear(GTK_CLIST(get_flist(view)));
+
 	if (view->uri != NULL)
 		gnome_vfs_uri_unref (view->uri);
 	view->uri = gnome_vfs_uri_new (uri);
@@ -895,6 +900,7 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 		 directory_load_cb,	 		/* callback */
 		 view);		 			/* callback_data */
 
+	g_return_if_fail(result == GNOME_VFS_OK);
 	/*
 	if (result != GNOME_VFS_OK)
 		gtk_signal_emit (GTK_OBJECT (view), signals[OPEN_FAILED],

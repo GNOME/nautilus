@@ -36,7 +36,7 @@ typedef char *NautilusLocationReference;
 typedef struct {
   Nautilus_NavigationInfo navinfo;
 
-  GtkWidget *requesting_view;
+  gpointer requesting_view;
 
   GnomeVFSFileInfo *vfs_fileinfo;
 

@@ -28,8 +28,7 @@
 
 #include <gtk/gtksignal.h>
 #include <gtk/gtk.h>
-#include "ntl-view.h"
-#include "ntl-window.h"
+#include "nautilus.h"
 
 enum {
   NOTIFY_LOCATION_CHANGE,
@@ -517,6 +516,7 @@ nautilus_view_show_properties(NautilusView *view)
 {
   CORBA_Environment ev;
   CORBA_exception_init(&ev);
+
   g_return_if_fail(!CORBA_Object_is_nil(view->view_client, &ev));
 
   Nautilus_View_show_properties(view->view_client, &ev);
@@ -524,3 +524,14 @@ nautilus_view_show_properties(NautilusView *view)
   CORBA_exception_free(&ev);
 }
 
+const char *
+nautilus_view_get_iid(NautilusView *view)
+{
+  return view->iid;
+}
+
+CORBA_Object
+nautilus_view_get_client_objref(NautilusView *view)
+{
+  return view->view_client;
+}

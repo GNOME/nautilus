@@ -16,14 +16,14 @@ module Nautilus {
   };
 
   struct SelectionInfo {
-    string selected_uri;
+    sequence<string> selected_uris;
 
     Object content_view;
     boolean self_originated;
   };
 
   struct SelectionRequestInfo {
-    string selected_uri;
+    sequence<string> selected_uris;
   };
 
   struct StatusRequestInfo {

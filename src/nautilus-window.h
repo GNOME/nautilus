@@ -46,13 +46,13 @@ typedef struct {
 
   void (* request_location_change)(NautilusWindow *window,
 				   Nautilus_NavigationRequestInfo *loc,
-				   GtkWidget *requesting_view);
+				   NautilusView *requesting_view);
   void (* request_selection_change)(NautilusWindow *window,
 				    Nautilus_SelectionRequestInfo *loc,
-				    GtkWidget *requesting_view);
+				    NautilusView *requesting_view);
   void (* request_status_change)   (NautilusWindow *window,
                                     Nautilus_StatusRequestInfo *loc,
-                                    GtkWidget *requesting_view);
+                                    NautilusView *requesting_view);
 
   guint window_signals[3];
 } NautilusWindowClass;
@@ -60,39 +60,33 @@ typedef struct {
 struct _NautilusWindow {
   GnomeApp parent_object;
 
-  GtkWidget *content_view;
+  /* Views stuff */
+  NautilusView *content_view;
   GSList *meta_views;
 
+  /* UI stuff */
   GtkWidget *meta_notebook, *content_hbox, *btn_back, *btn_fwd;
   GtkWidget *option_cvtype, *menu_cvtype, *ent_url;
 
-  NautilusLocationReference current_uri, actual_current_uri;
-  char *current_content_type;
-
-  GSList *uris_prev, *uris_next;
-
   guint statusbar_ctx, statusbar_clear_id;
 
+  /* History stuff */
+  GSList *uris_prev, *uris_next;
+
+  /* CORBA stuff */
   GnomeObject *ntl_viewwindow;
   GnomeUIHandler *uih;
+
+  /* Information about current location/selection */
+  Nautilus_NavigationInfo *ni;
+  Nautilus_SelectionInfo *si;
 };
 
 GtkType nautilus_window_get_type(void);
 GtkWidget *nautilus_window_new(const char *app_id);
-void nautilus_window_request_location_change(NautilusWindow *window,
-					     Nautilus_NavigationRequestInfo *loc,
-					     GtkWidget *requesting_view);
-void nautilus_window_request_selection_change(NautilusWindow *window,
-					      Nautilus_SelectionRequestInfo *loc,
-					      GtkWidget *requesting_view);
-void nautilus_window_request_status_change(NautilusWindow *window,
-                                           Nautilus_StatusRequestInfo *loc,
-                                           GtkWidget *requesting_view);
-void nautilus_window_save_state(NautilusWindow *window, const char *config_path);
-void nautilus_window_load_state(NautilusWindow *window, const char *config_path);
-void nautilus_window_set_initial_state(NautilusWindow *window);
 void nautilus_window_set_content_view(NautilusWindow *window, NautilusView *content_view);
 void nautilus_window_add_meta_view(NautilusWindow *window, NautilusView *meta_view);
 void nautilus_window_remove_meta_view(NautilusWindow *window, NautilusView *meta_view);
+void nautilus_window_goto_url(NautilusWindow *window, const char *url);
 
 #endif

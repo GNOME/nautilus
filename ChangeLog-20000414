@@ -1,3 +1,10 @@
+1999-12-14  Elliot Lee  <sopwith@redhat.com>
+
+	* src/*.c: Restructure the whole NautilusWindow code for sanity's sake.
+	* src/ntl-uri-map.[ch]: Instead of just passing in various pieces of information about the old URL,
+	  pass in the Nautilus_NavigationInfo that has to be kept around anyways.
+	* idl/nautilus.idl: Allow a selection to be multiple URI's.
+
 1999-12-14  Darin Adler  <darin@eazel.com>
 
 	* src/ntl-window.c: (nautilus-window-constructed): Forward-button signal
