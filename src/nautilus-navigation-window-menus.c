@@ -94,6 +94,7 @@
 #define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_BOOKMARKS	"/Bookmarks/Separator before Bookmarks"
 
 #define NAUTILUS_MENU_PATH_ABOUT_ITEM			"/Help/About Nautilus"
+#define NAUTILUS_MENU_PATH_NAUTILUS_FEEDBACK		"/Help/Nautilus Feedback"
 
 static GtkWindow *bookmarks_window = NULL;
 
@@ -664,6 +665,14 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
 	}
 	
 	nautilus_gtk_window_present (GTK_WINDOW (about));
+}
+
+static void
+help_menu_nautilus_feedback_callback (BonoboUIHandler *ui_handler, 
+		       		      gpointer user_data,
+		      		      const char *path)
+{
+	nautilus_window_goto_uri (NAUTILUS_WINDOW (user_data), "http://www.eazel.com/feedback.html");
 }
 
 /* utility routine to return an image corresponding to the passed-in user level */
@@ -1769,6 +1778,18 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 GDK_CONTROL_MASK,
         				 help_menu_about_nautilus_callback,
         				 NULL);
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_NAUTILUS_FEEDBACK,
+        				 _("_Nautilus Feedback"),
+        				 _("Shows a page from which you can send feedback about Nautilus to its creators"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 0,
+        				 0,
+        				 help_menu_nautilus_feedback_callback,
+        				 window);
 
         /* Desensitize the items that aren't implemented at this level.
          * Some (hopefully all) will be overridden by implementations by the

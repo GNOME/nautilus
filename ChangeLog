@@ -1,5 +1,16 @@
 2000-10-03  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 3155 (need feedback item in Help menu)
+
+	Bud & co. decided this should be there all the time.
+
+	* src/nautilus-window-menus.c:
+	(help_menu_nautilus_feedback_callback),
+	(nautilus_window_initialize_menus): Added menu item
+	that opens a feedback web page.
+
+2000-10-03  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 3379 (crash leaving web page)
 	
 	* libnautilus-extensions/nautilus-directory-async.c:
