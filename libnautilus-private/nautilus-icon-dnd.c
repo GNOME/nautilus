@@ -795,34 +795,6 @@ nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
 	return nautilus_icon_container_get_icon_drop_target_uri (container, drop_target_icon);
 }
 
-/* FIXME bugzilla.gnome.org 42485: This belongs in FMDirectoryView, not here. */
-static gboolean
-selection_includes_special_link (GList *selection_list)
-{
-	GList *node;
-	char *uri, *local_path;
-	gboolean link_in_selection;
-
-	link_in_selection = FALSE;
-
-	for (node = selection_list; node != NULL; node = node->next) {
-		uri = ((NautilusDragSelectionItem *) node->data)->uri;
-
-		/* FIXME bugzilla.gnome.org 43020: This does sync. I/O and works only locally. */
-		local_path = gnome_vfs_get_local_path_from_uri (uri);
-		link_in_selection = local_path != NULL
-			&& (nautilus_link_local_is_trash_link (local_path) || nautilus_link_local_is_home_link (local_path) ||
-			nautilus_link_local_is_volume_link (local_path));
-		g_free (local_path);
-		
-		if (link_in_selection) {
-			break;
-		}
-	}
-	
-	return link_in_selection;
-}
-
 static gboolean
 selection_is_image_file (GList *selection_list)
 {
@@ -870,7 +842,7 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 	if (context->action == GDK_ACTION_ASK) {
 		/* FIXME bugzilla.gnome.org 42485: This belongs in FMDirectoryView, not here. */
 		/* Check for special case items in selection list */
-		if (selection_includes_special_link (container->details->dnd_info->drag_info.selection_list)) {
+		if (nautilus_drag_selection_includes_special_link (container->details->dnd_info->drag_info.selection_list)) {
 			/* We only want to move the trash */
 			action = GDK_ACTION_MOVE;
 		} else {
@@ -1111,14 +1083,7 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	*/
 	canvas = GNOME_CANVAS (container);
 	dnd_info->drag_info.start_x = event->x - gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (canvas)));
-	dnd_info->drag_info.start_y = event->y - gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (canvas)));
-	
-	/* start the drag */
-	context = gtk_drag_begin (GTK_WIDGET (container),
-				  dnd_info->drag_info.target_list,
-				  actions,
-				  button,
-				  (GdkEvent *) event);
+	dnd_info->drag_info.start_y = event->y - gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (canvas)));	
 
         /* create a pixmap and mask to drag with */
         pixbuf = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item);
@@ -1134,8 +1099,17 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
         x_offset = dnd_info->drag_info.start_x - widget_rect.x0;
         y_offset = dnd_info->drag_info.start_y - widget_rect.y0;
         
-        /* set the icon for dragging */
-        gtk_drag_set_icon_pixbuf (context, pixbuf, x_offset, y_offset);
+	/* start the drag */
+	context = gtk_drag_begin (GTK_WIDGET (container),
+				  dnd_info->drag_info.target_list,
+				  actions,
+				  button,
+				  (GdkEvent *) event);
+
+	if (context) {
+		/* set the icon for dragging */
+		gtk_drag_set_icon_pixbuf (context, pixbuf, x_offset, y_offset);
+	}
 }
 
 static gboolean

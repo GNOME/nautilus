@@ -44,8 +44,10 @@
 #include <gtk/gtktreeview.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
+#include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
+#include <libnautilus-private/nautilus-tree-view-drag-dest.h>
 #include <libnautilus-private/nautilus-multihead-hacks.h>
 
 #define NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE "tree-sidebar-panel/expansion_state"
@@ -58,6 +60,8 @@ struct NautilusTreeViewDetails {
 
 	NautilusFile *activation_file;
 	GHashTable   *expanded_uris;
+
+	NautilusTreeViewDragDest *drag_dest;
 };
 
 typedef struct {
@@ -346,6 +350,52 @@ compare_rows (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer call
 	return result;
 }
 
+
+static char *
+get_root_uri_callback (NautilusTreeViewDragDest *dest,
+		       gpointer user_data)
+{
+	NautilusTreeView *view;
+	
+	view = NAUTILUS_TREE_VIEW (user_data);
+
+	return g_strdup ("file:///");
+}
+
+static NautilusFile *
+get_file_for_path_callback (NautilusTreeViewDragDest *dest,
+			    GtkTreePath *path,
+			    gpointer user_data)
+{
+	NautilusTreeView *view;
+	
+	view = NAUTILUS_TREE_VIEW (user_data);
+
+	return sort_model_path_to_file (view, path);
+}
+
+static void
+move_copy_items_callback (NautilusTreeViewDragDest *dest,
+			  const GList *item_uris,
+			  const char *target_uri,
+			  guint action,
+			  int x,
+			  int y,
+			  gpointer user_data)
+{
+	NautilusTreeView *view;
+
+	view = NAUTILUS_TREE_VIEW (user_data);
+
+	nautilus_file_operations_copy_move
+		(item_uris,
+		 NULL,
+		 target_uri,
+		 action,
+		 GTK_WIDGET (view->details->tree_widget),
+		 NULL, NULL);
+}
+
 static void
 create_tree (NautilusTreeView *view)
 {
@@ -372,6 +422,21 @@ create_tree (NautilusTreeView *view)
 
 	g_signal_connect_object (view->details->tree_widget, "destroy",
 				 G_CALLBACK (save_expansion_state_callback), view, 0);
+
+	view->details->drag_dest = 
+		nautilus_tree_view_drag_dest_new (view->details->tree_widget);
+	g_signal_connect_object (view->details->drag_dest, 
+				 "get_root_uri",
+				 G_CALLBACK (get_root_uri_callback),
+				 view, 0);
+	g_signal_connect_object (view->details->drag_dest, 
+				 "get_file_for_path",
+				 G_CALLBACK (get_file_for_path_callback),
+				 view, 0);
+	g_signal_connect_object (view->details->drag_dest,
+				 "move_copy_items",
+				 G_CALLBACK (move_copy_items_callback),
+				 view, 0);
 
 	/* Create column */
 	column = gtk_tree_view_column_new ();
@@ -472,6 +537,19 @@ nautilus_tree_view_instance_init (NautilusTreeView *view)
 }
 
 static void
+nautilus_tree_view_dispose (GObject *object)
+{
+	NautilusTreeView *view;
+	
+	view = NAUTILUS_TREE_VIEW (object);
+	
+	if (view->details->drag_dest) {
+		g_object_unref (view->details->drag_dest);
+		view->details->drag_dest = NULL;
+	}
+}
+
+static void
 nautilus_tree_view_finalize (GObject *object)
 {
 	NautilusTreeView *view;
@@ -495,5 +573,6 @@ nautilus_tree_view_finalize (GObject *object)
 static void
 nautilus_tree_view_class_init (NautilusTreeViewClass *class)
 {
+	G_OBJECT_CLASS (class)->dispose = nautilus_tree_view_dispose;
 	G_OBJECT_CLASS (class)->finalize = nautilus_tree_view_finalize;
 }

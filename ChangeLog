@@ -1,3 +1,55 @@
+2002-08-05  Dave Camp  <dave@ximian.com>
+
+	* NEWS: updated.
+	* configure.in: 2.0.3
+
+2002-08-02  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-factory.c
+	(path_represents_svg_image): don't do a synchronous mime
+	sniff on every icon we load.
+
+2002-08-02  Thomas Meeks  <thomas@imaginator.com>
+
+	* libnautilus-private/nautilus-icon-factory.c
+	(nautilus_gdk_pixbuf_supported): impl. we need
+	this to detect small, local image files that gdk-pixbuf
+	can't render.
+	(nautilus_icon_factory_get_icon_for_file): fix logic
+	bug, so that we do get_thumbnail_uri for small, local
+	images that may be tractable to 'convert'.
+
+2002-08-01  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(start_rubberbanding): Get the selection color from the gtk theme
+	if none is specified in the nautilus theme. 
+	(realize): Use gtk_widget_modify_bg() to set the background color.
+	(style_set): Call nautilus_icon_container_theme_changed(), as
+	changes to the style can now affect the theme.
+
+2002-07-31  Frank Worsley  <fworsley@shaw.ca>
+
+	* libnautilus-private/nautilus-program-choosing.c:
+	(nautilus_launch_desktop_file):
+	be smarter about appending local paths or uris to command
+
+2002-07-31  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(motion_notify_event): Use gtk_drag_check_threshold() to check for
+	drag distance.
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_begin_drag): Handle a gtk_drag_begin() that
+	returns NULL.
+
+2002-07-31  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-file-operations.c
+	(build_error_string): fall back to the other routines if
+	source_name is NULL [ eg. permission failure moving a
+	whole directory not a single file ] #87686
+
 2002-07-27  Mark McLoughlin  <mark@skynet.ie>
 
 	* libnautilus-private/nautilus-directory-background.c:
@@ -6,6 +58,109 @@
 	fix bogus use of the default root window.
 	(image_loading_done_callback): update.
 
+2002-07-27  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-icon-factory.c
+	(icon_theme_changed_callback): Fixed a problem where shortcutting
+	|| was preventing the fallback theme from being set. Fixes
+	#89178.
+
+2002-07-27  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-sidebar.c:
+	(background_settings_changed_callback): Update the
+	current_background_color, the current_background_image, and
+	is_default_background.
+
+2002-07-27  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/eggtreemultidnd.c: (stop_drag_check),
+	(egg_tree_multi_drag_button_release_event),
+	(egg_tree_multi_drag_button_press_event):  Save the events to be
+	propagated in order.  (fixes #89214)
+
+2002-07-26  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/Makefile.am: Added eggtreemultidnd.[ch].
+	* libnautilus-private/eggtreemultidnd.c:
+	* libnautilus-private/eggtreemultidnd.h: New files.
+	* src/file-manager/fm-list-model.c:
+	(fm_list_model_multi_row_draggable),
+	(fm_list_model_file_for_path),
+	(each_path_get_data_binder), (fm_list_model_multi_drag_data_get),
+	(fm_list_model_multi_drag_data_delete),
+	(fm_list_model_set_drag_view), (fm_list_model_get_drag_types),
+	(fm_list_model_multi_drag_source_init), (fm_list_model_get_type):
+	Implemented the multi drag source.
+	* src/file-manager/fm-list-model.h:
+	* src/file-manager/fm-list-view.c: (event_after_callback): Moved 
+	the context menu out of here...
+	(button_release_callback): to here.
+	(button_press_callback): Pass the current view and the position
+	to the model.
+	(create_and_set_up_tree_view): Enable drag source on the view.
+
+2002-07-25  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-factory.c
+	(icon_theme_changed_callback): upd.
+	(nautilus_icon_factory_init): upd.
+	(is_theme_in_user_directory): move from here.
+	(set_theme_name): kill.
+	(nautilus_icon_factory_init, cache_icon_new),
+	(cache_icon_ref, cache_icon_unref): only do the
+	cache_icons thing when debugging is turned on.
+
+	* libnautilus-private/nautilus-find-icon-image.c
+	(is_theme_in_user_directory): move to here.
+	(nautilus_icon_theme_set_names),
+	(nautilus_icon_theme_destroy),
+	(nautilus_icon_theme_new): impl.
+	(choose_theme): upd.
+	(get_themed_icon_file_path): don't do the XML parse of
+	i-regular.xml twice, just pass scalable_details in to
+	read_details.
+	(details_from_doc_node): split from
+	(read_details): upd.
+
+2002-07-25  Dave Camp  <dave@ximian.com>
+
+	* components/tree/nautilus-tree-view.c: (get_root_uri_callback),
+	(get_file_for_path_callback), (move_copy_items_callback): New
+	functions.
+	(create_tree): Create a NautilusTreeViewDragDest.
+	(nautilus_tree_view_dispose): Unref the DragDest object.
+	(nautilus_tree_view_class_init): initialize dispose.
+	* libnautilus-private/Makefile.am: Build
+	nautilus-tree-view-drag-dest.[ch].
+	* libnautilus-tree-view-drag-dest.c:
+	* libnautilus-tree-view-drag-dest.h: New files.
+	* libnautilus-private/nautilus-dnd.c: 
+	(nautilus_drag_selection_includes_special_link): Moved here
+	from nautilus-icon-dnd.c.
+	* libnautilus-private/nautilus-dnd.h: Prototype for
+	nautilus_drag_selection_includes_special_link.
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_drop_target_uri): Moved here from
+	fm-directory-view.
+	* libnautilus-private/nautilus-file.h:
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(nautilus_icon_container_receive_dropped_icons): Call
+	nautilus_drag_selection_includes_special_link().
+	* libnautilus-private/nautilus-marshal.list: New marshallers.
+	* src/file-manager/fm-icon-view.c:
+	(get_icon_drop_target_uri_callback): Use
+	nautilus_file_get_drop_target_uri().
+	* src/file-manager/fm-list-view.c: (get_root_uri_callback),
+	(get_file_for_path_callback), (move_copy_items_callback): New
+	functions.
+	(create_and_set_up_tree_view): Create a NautilusViewDragDest
+	object. 
+	(fm_list_view_dispose): Unref the DragDest object.
+
+=== nautilus 2.0.2 ===
+
+>>>>>>> 1.5470
 2002-07-25  Dave Camp  <dave@ximian.com>
 
 	* NEWS: Add news items.

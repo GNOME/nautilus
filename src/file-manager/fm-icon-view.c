@@ -1933,27 +1933,11 @@ get_icon_drop_target_uri_callback (NautilusIconContainer *container,
 		       		   NautilusFile *file,
 		       		   FMIconView *icon_view)
 {
-	char *uri, *target_uri;
-	
-	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (FM_IS_ICON_VIEW (icon_view));
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+	g_return_val_if_fail (FM_IS_ICON_VIEW (icon_view), NULL);
 
-	uri = nautilus_file_get_uri (file);
-
-	/* Check for Nautilus link */
-	if (nautilus_file_is_nautilus_link (file)) {
-		/* FIXME bugzilla.gnome.org 43020: This does sync. I/O and works only locally. */
-		if (!eel_vfs_has_capability (uri, EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW)) {
-			target_uri = nautilus_link_local_get_link_uri (uri);
-			if (target_uri != NULL) {
-				g_free (uri);
-				uri = target_uri;
-			}
-		}
-	}
-
-	return uri;
+	return nautilus_file_get_drop_target_uri (file);
 }
 
 /* Preferences changed callbacks */

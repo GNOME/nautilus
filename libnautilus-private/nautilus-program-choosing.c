@@ -647,6 +647,7 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 {
 	GError *error;
 	GnomeDesktopItem *ditem;
+	GnomeDesktopItemLaunchFlags flags;
 	const char *command_string;
 	char *local_path, *message;
 	const GList *p;
@@ -690,23 +691,23 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 		return;
 	}
 	
+	/* count the number of uris with local paths */
+	count = 0;
+	total = g_list_length ((GList *) parameter_uris);
+	for (p = parameter_uris; p != NULL; p = p->next) {
+		local_path = gnome_vfs_get_local_path_from_uri ((const char *) p->data);
+		if (local_path != NULL) {
+			g_free (local_path);
+			count++;
+		}
+	}
+
 	/* check if this app only supports local files */
 	command_string = gnome_desktop_item_get_string (ditem, GNOME_DESKTOP_ITEM_EXEC);
 	if ((strstr (command_string, "%F") || strstr (command_string, "%f"))
 		&& !(strstr (command_string, "%U") || strstr (command_string, "%u"))
 		&& parameter_uris != NULL) {
 	
-		/* count the number of uris with local paths */
-		count = 0;
-		total = g_list_length ((GList *) parameter_uris);
-		for (p = parameter_uris; p != NULL; p = p->next) {
-			local_path = gnome_vfs_get_local_path_from_uri ((const char *) p->data);
-			if (local_path != NULL) {
-				g_free (local_path);
-				count++;
-			}
-		}
-
 		if (count == 0) {
 			/* all files are non-local */
 			eel_show_error_dialog
@@ -732,11 +733,16 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 
 	envp = egg_screen_exec_environment (screen);
 	
+	/* we append local paths only if all parameters are local */
+	if (count == total) {
+		flags = GNOME_DESKTOP_ITEM_LAUNCH_APPEND_PATHS;
+	} else {
+		flags = GNOME_DESKTOP_ITEM_LAUNCH_APPEND_URIS;
+	}
+
 	error = NULL;
-	gnome_desktop_item_launch_with_env (ditem,
-					    (GList *) parameter_uris,
-					    GNOME_DESKTOP_ITEM_LAUNCH_APPEND_URIS,
-					    envp,
+	gnome_desktop_item_launch_with_env (ditem, (GList *) parameter_uris,
+					    flags, envp,
 					    &error);
 	if (error != NULL) {
 		message = g_strconcat (_("There was an error launching the application.\n\n"

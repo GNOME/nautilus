@@ -574,8 +574,7 @@ build_error_string (const char *source_name, const char *target_name,
 			break;
 		}
 		
-		if (error_string != NULL) {
-			g_assert (source_name != NULL);
+		if (error_string != NULL && source_name != NULL) {
 			result = g_strdup_printf (error_string, source_name);
 		}
 
@@ -608,8 +607,7 @@ build_error_string (const char *source_name, const char *target_name,
 			break;
 		}
 
-		if (error_string != NULL) {
-			g_assert (source_name != NULL);
+		if (error_string != NULL && source_name != NULL) {
 			result = g_strdup_printf (error_string, source_name);
 		}
 
@@ -632,8 +630,7 @@ build_error_string (const char *source_name, const char *target_name,
 			break;
 		}
 
-		if (error_string != NULL) {
-			g_assert (source_name != NULL);
+		if (error_string != NULL && source_name != NULL) {
 			result = g_strdup_printf (error_string, source_name);
 		}
 
@@ -699,8 +696,7 @@ build_error_string (const char *source_name, const char *target_name,
 				break;
 			}
 		}
-		if (error_string != NULL) {
-			g_assert (target_name != NULL);
+		if (error_string != NULL && target_name != NULL) {
 			result = g_strdup_printf (error_string, target_name);
 		}
 	}

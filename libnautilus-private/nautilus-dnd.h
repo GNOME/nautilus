@@ -135,5 +135,6 @@ void                        nautilus_drag_autoscroll_start              (Nautilu
 									 gpointer                              user_data);
 void                        nautilus_drag_autoscroll_stop               (NautilusDragInfo                     *drag_info);
 
+gboolean                    nautilus_drag_selection_includes_special_link (GList                              *selection_list);
 
 #endif

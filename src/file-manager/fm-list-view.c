@@ -38,10 +38,15 @@
 #include <gtk/gtktreeview.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-macros.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
+#include <libnautilus-private/eggtreemultidnd.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-dnd.h>
+#include <libnautilus-private/nautilus-file-dnd.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-icon-dnd.h>
 #include <libnautilus-private/nautilus-metadata.h>
+#include <libnautilus-private/nautilus-tree-view-drag-dest.h>
 
 struct FMListViewDetails {
 	GtkTreeView *tree_view;
@@ -56,12 +61,8 @@ struct FMListViewDetails {
 	GtkCellRendererText   *date_modified_cell;
 
 	NautilusZoomLevel zoom_level;
-};
 
-static GtkTargetEntry drag_types [] = {
-	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
-	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
-	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL }
+	NautilusTreeViewDragDest *drag_dest;
 };
 
 /*
@@ -140,31 +141,27 @@ event_after_callback (GtkWidget *widget, GdkEventAny *event, gpointer callback_d
 		fm_directory_view_activate_files (view, file_list);
 		nautilus_file_list_free (file_list);
 	}
-
-	if (event->type == GDK_BUTTON_PRESS
-	    && event->window == gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget))
-	    && (((GdkEventButton *) event)->button == 3)) {
-		/* Put up the right kind of menu if we right click in the tree view. */
-		if (tree_view_has_selection (GTK_TREE_VIEW (widget))) {
-			fm_directory_view_pop_up_selection_context_menu (view, (GdkEventButton *) event);
-		} else {
-			fm_directory_view_pop_up_background_context_menu (view, (GdkEventButton *) event);
-		}
-	}
 }
 
 static gboolean
 button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callback_data)
 {
+	FMListView *view;
 	GtkTreeView *tree_view;
 	GtkTreePath *path;
 	gboolean result;
 
+	view = FM_LIST_VIEW (callback_data);
 	tree_view = GTK_TREE_VIEW (widget);
 
 	if (event->window != gtk_tree_view_get_bin_window (tree_view)) {
 		return FALSE;
 	}
+
+	fm_list_model_set_drag_view
+		(FM_LIST_MODEL (gtk_tree_view_get_model (tree_view)),
+		 tree_view,
+		 event->x, event->y);
 
 	result = FALSE;
 
@@ -204,6 +201,16 @@ button_release_callback (GtkWidget *widget, GdkEventButton *event, gpointer call
 		file_list = fm_list_view_get_selection (view);
 		fm_directory_view_activate_files (view, file_list);
 		nautilus_file_list_free (file_list);
+	}
+
+	if (event->window == gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget))
+	    && (event->button == 3)) {
+		/* Put up the right kind of menu if we right click in the tree view. */
+		if (tree_view_has_selection (GTK_TREE_VIEW (widget))) {
+			fm_directory_view_pop_up_selection_context_menu (FM_DIRECTORY_VIEW (view), (GdkEventButton *) event);
+		} else {
+			fm_directory_view_pop_up_background_context_menu (FM_DIRECTORY_VIEW (view), (GdkEventButton *) event);
+		}
 	}
 
 	return FALSE;
@@ -287,13 +294,96 @@ cell_renderer_edited (GtkCellRendererText *cell,
 	nautilus_file_unref (file);
 }
 
+static char *
+get_root_uri_callback (NautilusTreeViewDragDest *dest,
+		       gpointer user_data)
+{
+	FMListView *view;
+	
+	view = FM_LIST_VIEW (user_data);
+
+	return fm_directory_view_get_uri (FM_DIRECTORY_VIEW (view));
+}
+
+static NautilusFile *
+get_file_for_path_callback (NautilusTreeViewDragDest *dest,
+			    GtkTreePath *path,
+			    gpointer user_data)
+{
+	FMListView *view;
+	GtkTreeIter iter;
+	NautilusFile *file;
+	
+	view = FM_LIST_VIEW (user_data);
+
+	file = NULL;
+
+	if (gtk_tree_model_get_iter (GTK_TREE_MODEL (view->details->model),
+				     &iter, path)) {
+		gtk_tree_model_get (GTK_TREE_MODEL (view->details->model),
+				    &iter,
+				    FM_LIST_MODEL_FILE_COLUMN,
+				    &file,
+				    -1);
+	}
+
+	return file;
+}
+
+static void
+move_copy_items_callback (NautilusTreeViewDragDest *dest,
+			  const GList *item_uris,
+			  const char *target_uri,
+			  guint action,
+			  int x, 
+			  int y,
+			  gpointer user_data)
+
+{
+	fm_directory_view_move_copy_items (item_uris,
+					   NULL,
+					   target_uri,
+					   action,
+					   x, y,
+					   FM_DIRECTORY_VIEW (user_data));
+}
+
 static void
 create_and_set_up_tree_view (FMListView *view)
 {
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *column;
-	
+	GtkTargetEntry *drag_types;
+	int num_drag_types;	
+
 	view->details->tree_view = GTK_TREE_VIEW (gtk_tree_view_new ());
+
+	fm_list_model_get_drag_types (&drag_types, &num_drag_types);
+
+	egg_tree_multi_drag_add_drag_support (view->details->tree_view);
+
+	gtk_tree_view_enable_model_drag_source
+		(view->details->tree_view,
+		 GDK_BUTTON1_MASK | GDK_BUTTON3_MASK,
+		 drag_types,
+		 num_drag_types,
+		 GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK);
+
+	view->details->drag_dest = 
+		nautilus_tree_view_drag_dest_new (view->details->tree_view);
+
+	g_signal_connect_object (view->details->drag_dest,
+				 "get_root_uri",
+				 G_CALLBACK (get_root_uri_callback),
+				 view, 0);
+	g_signal_connect_object (view->details->drag_dest,
+				 "get_file_for_path",
+				 G_CALLBACK (get_file_for_path_callback),
+				 view, 0);
+	g_signal_connect_object (view->details->drag_dest,
+				 "move_copy_items",
+				 G_CALLBACK (move_copy_items_callback),
+				 view, 0);
 
 	g_signal_connect_object (gtk_tree_view_get_selection (view->details->tree_view),
 				 "changed",
@@ -316,10 +406,6 @@ create_and_set_up_tree_view (FMListView *view)
 
 	gtk_tree_selection_set_mode (gtk_tree_view_get_selection (view->details->tree_view), GTK_SELECTION_MULTIPLE);
 	gtk_tree_view_set_rules_hint (view->details->tree_view, TRUE);
-
-	gtk_tree_view_enable_model_drag_source (view->details->tree_view, 0,
-						drag_types, G_N_ELEMENTS (drag_types),
-						GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
 
 	/* Create the file name column */
 	cell = gtk_cell_renderer_pixbuf_new ();
@@ -819,6 +905,11 @@ fm_list_view_dispose (GObject *object)
 	if (list_view->details->model) {
 		g_object_unref (list_view->details->model);
 		list_view->details->model = NULL;
+	}
+
+	if (list_view->details->drag_dest) {
+		g_object_unref (list_view->details->drag_dest);
+		list_view->details->drag_dest = NULL;
 	}
 
 	G_OBJECT_CLASS (parent_class)->dispose (object);

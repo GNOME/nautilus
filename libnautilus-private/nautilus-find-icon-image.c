@@ -125,33 +125,17 @@ parse_attach_points (NautilusEmblemAttachPoints *attach_points,
 }
 
 static void
-read_details (const char *path,
-	      guint icon_size,
-	      NautilusIconDetails *details)
+details_from_doc_node (xmlDocPtr doc,
+		       const char *size_as_string,
+		       NautilusIconDetails *details)
 {
-	xmlDocPtr doc;
 	xmlNodePtr node;
-	char *size_as_string, *property;
+	char c, *property;
 	ArtIRect parsed_rect;
-	char c;
 
-	memset (&details->text_rect, 0, sizeof (details->text_rect));
-	
-	if (path == NULL) {
-		return;
-	}
-
-	doc = xmlParseFile (path);
-
-	if (icon_size == 0) {
-		size_as_string = g_strdup ("*");
-	} else {
-		size_as_string = g_strdup_printf ("%u", icon_size);
-	}
 	node = eel_xml_get_root_child_by_name_and_property
 		(doc, "icon", "size", size_as_string);
-	g_free (size_as_string);
-	
+
 	property = xmlGetProp (node, "embedded_text_rectangle");
 	
 	if (property != NULL) {
@@ -168,10 +152,39 @@ read_details (const char *path,
 	}
 	
 	property = xmlGetProp (node, "attach_points");
-	
 	parse_attach_points (&details->attach_points, property);	
 	xmlFree (property);
+}
+
+static void
+read_details (const char *path,
+	      guint icon_size,
+	      NautilusIconDetails *details,
+	      NautilusIconDetails *opt_scalable_details)
+{
+	xmlDocPtr doc;
+	char *size_as_string;
 	
+	memset (&details->text_rect, 0, sizeof (details->text_rect));
+	if (opt_scalable_details) {
+		memset (&opt_scalable_details->text_rect, 0,
+			sizeof (opt_scalable_details->text_rect));
+	}
+
+	if (path == NULL) {
+		return;
+	}
+
+	doc = xmlParseFile (path);
+
+	size_as_string = g_strdup_printf ("%u", icon_size);
+	details_from_doc_node (doc, size_as_string, details);
+	g_free (size_as_string);
+
+	if (opt_scalable_details) {
+		details_from_doc_node (doc, "*", opt_scalable_details);
+	}
+
 	xmlFreeDoc (doc);
 }
 
@@ -240,10 +253,7 @@ get_themed_icon_file_path (const NautilusIconTheme *icon_theme,
 						".xml",
 						in_user_directory,
 						document_type_icon);
-		read_details (xml_path, icon_size, details);
-		if (scalable_details) {
-			read_details (xml_path, 0, scalable_details);
-		}
+		read_details (xml_path, icon_size, details, scalable_details);
 		g_free (xml_path);
 	}
 
@@ -282,12 +292,12 @@ choose_theme (const NautilusIconThemeSpecifications *theme_specs,
 		return NULL;
 	}
 
-	if (theme_has_icon (&theme_specs->current, name)) {
-		return &theme_specs->current;
+	if (theme_has_icon (theme_specs->current, name)) {
+		return theme_specs->current;
 	}
 
-	if (theme_has_icon (&theme_specs->fallback, name)) {
-		return &theme_specs->fallback;
+	if (theme_has_icon (theme_specs->fallback, name)) {
+		return theme_specs->fallback;
 	}
 
 	return NULL;
@@ -394,3 +404,59 @@ nautilus_remove_icon_file_name_suffix (const char *icon_name)
 	}
 	return g_strdup (icon_name);
 }
+
+NautilusIconTheme *
+nautilus_icon_theme_new (void)
+{
+	return g_new0 (NautilusIconTheme, 1);
+}
+
+/* utility to check if a theme is in user directory or not */
+static gboolean
+is_theme_in_user_directory (const char *theme_name)
+{
+	char *user_directory, *themes_directory, *this_theme_directory;
+	gboolean result;
+	
+	if (theme_name == NULL) {
+		return FALSE;
+	}
+	
+	user_directory = nautilus_get_user_directory ();
+	themes_directory = g_build_filename (user_directory, "themes", NULL);
+	this_theme_directory = g_build_filename (themes_directory, theme_name, NULL);
+	
+	result = g_file_test (this_theme_directory, G_FILE_TEST_EXISTS);
+	
+	g_free (user_directory);
+	g_free (themes_directory);
+	g_free (this_theme_directory);
+
+	return result;
+}
+
+gboolean
+nautilus_icon_theme_set_names (NautilusIconTheme *icon_theme,
+			       const char        *new_name)
+{
+	g_return_val_if_fail (icon_theme != NULL, FALSE);
+
+	if (eel_strcmp (new_name, icon_theme->name)) {
+		g_free (icon_theme->name);
+		icon_theme->name = g_strdup (new_name);
+		icon_theme->is_in_user_directory = is_theme_in_user_directory (new_name);
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+void
+nautilus_icon_theme_destroy (NautilusIconTheme *icon_theme)
+{
+	if (icon_theme) {
+		g_free (icon_theme->name);
+		g_free (icon_theme);
+	}
+}
+

@@ -144,16 +144,19 @@ typedef struct {
 	 */
 	GHashTable *scalable_icons;
 
+#ifdef IMAGE_CACHE_DEBUG
 	/* A hash table so we can find a cached icon's data structure
-	 * from the pixbuf.
+	 * from the pixbuf - used for debugging only [!]
 	 */
 	GHashTable *cache_icons;
+#endif
 
 	/* A hash table that contains the icons. A circular list of
 	 * the most recently used icons is kept around, and we don't
 	 * let them go when we sweep the cache.
 	 */
 	GHashTable *icon_cache;
+
 	CircularList recently_used_dummy_head;
 	guint recently_used_count;
         guint sweep_timer;
@@ -206,7 +209,7 @@ typedef struct {
 	guint maximum_height;
 } IconSizeRequest;
 
-/* The key to a hash table that holds the scaled icons as pixbufs. */
+/* The key to a hash table that holds CacheIcons. */
 typedef struct {
 	NautilusScalableIcon *scalable_icon;
 	IconSizeRequest size;
@@ -397,13 +400,18 @@ nautilus_icon_factory_init (NautilusIconFactory *factory)
 {
 	factory->scalable_icons = g_hash_table_new (nautilus_scalable_icon_hash,
 						    nautilus_scalable_icon_equal);
+#ifdef IMAGE_CACHE_DEBUG
 	factory->cache_icons = g_hash_table_new (NULL, NULL);
+#endif
         factory->icon_cache = g_hash_table_new (cache_key_hash,
 						cache_key_equal);
 	
 	/* Empty out the recently-used list. */
 	factory->recently_used_dummy_head.next = &factory->recently_used_dummy_head;
 	factory->recently_used_dummy_head.prev = &factory->recently_used_dummy_head;
+
+	factory->theme.current = nautilus_icon_theme_new ();
+	factory->theme.fallback = nautilus_icon_theme_new ();
 
 	load_thumbnail_frame (factory);
 }
@@ -476,9 +484,6 @@ cache_icon_new (GdkPixbuf *pixbuf,
 
 	factory = get_icon_factory ();
 
-	/* Just a check to see this is not reusing a pixbuf. */
-	g_assert (g_hash_table_lookup (factory->cache_icons, pixbuf) == NULL);
-
 	/* Grab the pixbuf since we are keeping it. */
 	g_object_ref (pixbuf);
 
@@ -495,14 +500,16 @@ cache_icon_new (GdkPixbuf *pixbuf,
 	}
 
 #ifdef IMAGE_CACHE_DEBUG
+	/* Just a check to see this is not reusing a pixbuf. */
+	g_assert (g_hash_table_lookup (factory->cache_icons, pixbuf) == NULL);
+	/* Put it into the hash table. */
+	g_hash_table_insert (factory->cache_icons, pixbuf, icon);
+
 	icon->image = eel_labeled_image_new (
 		"cache image", icon->pixbuf);
 	gtk_widget_show (icon->image);
 	gtk_container_add (get_image_cache_view (), icon->image);
 #endif
-
-	/* Put it into the hash table. */
-	g_hash_table_insert (factory->cache_icons, pixbuf, icon);
 
 	return icon;
 }
@@ -517,7 +524,9 @@ cache_icon_ref (CacheIcon *icon)
 	g_assert (icon != NULL);
 	g_assert (icon->internal_ref_count >= 1
 		  || (icon->internal_ref_count == 0 && icon == fallback_icon));
+#ifdef IMAGE_CACHE_DEBUG
 	g_assert (g_hash_table_lookup (factory->cache_icons, icon->pixbuf) == icon);
+#endif
 
 	icon->internal_ref_count++;
 }
@@ -532,7 +541,9 @@ cache_icon_unref (CacheIcon *icon)
 
 	g_assert (icon != NULL);
 	g_assert (icon->internal_ref_count >= 1);
+#ifdef IMAGE_CACHE_DEBUG
 	g_assert (g_hash_table_lookup (factory->cache_icons, icon->pixbuf) == icon);
+#endif
 
 	if (icon->internal_ref_count > 1) {
 		icon->internal_ref_count--;
@@ -568,14 +579,13 @@ cache_icon_unref (CacheIcon *icon)
 		return;
 	}
 
+#ifdef IMAGE_CACHE_DEBUG
 	/* Remove from the cache icons table. */
 	g_hash_table_remove (factory->cache_icons, icon->pixbuf);
-
-	g_object_unref (icon->pixbuf);
-
-#ifdef IMAGE_CACHE_DEBUG
 	gtk_widget_destroy (icon->image);
 #endif
+
+	g_object_unref (icon->pixbuf);
 
 	g_free (icon);
 }
@@ -636,8 +646,8 @@ nautilus_icon_factory_destroy (GtkObject *object)
 		g_object_unref (factory->thumbnail_frame);
 	}
 
-        g_free (factory->theme.current.name);
-        g_free (factory->theme.fallback.name);
+	nautilus_icon_theme_destroy (factory->theme.current);
+	nautilus_icon_theme_destroy (factory->theme.fallback);
 	
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -738,32 +748,6 @@ nautilus_icon_factory_remove_by_uri (const char *image_uri)
 				     nautilus_icon_factory_remove_if_uri_matches,
 				     (gpointer) image_uri);
 }
-
-/* utility to check if a theme is in user directory or not */
-static gboolean
-is_theme_in_user_directory (const char *theme_name)
-{
-	char *user_directory, *themes_directory, *this_theme_directory;
-	gboolean result;
-	
-	if (theme_name == NULL) {
-		return FALSE;
-	}
-	
-	user_directory = nautilus_get_user_directory ();
-	themes_directory = g_build_filename (user_directory, "themes", NULL);
-	this_theme_directory = g_build_filename (themes_directory, theme_name, NULL);
-	
-	result = g_file_test (this_theme_directory, G_FILE_TEST_EXISTS);
-	
-	g_free (user_directory);
-	g_free (themes_directory);
-	g_free (this_theme_directory);
-
-	return result;
-}
-
-/* Change the theme. */
 
 static char *
 get_mime_type_icon_without_suffix (const char *mime_type)
@@ -870,18 +854,11 @@ get_icon_name_for_file (NautilusFile *file)
 }
 
 static void
-set_theme_name (NautilusIconTheme *theme, const char *name)
-{
-        g_free (theme->name);
-        theme->name = g_strdup (name);
-	theme->is_in_user_directory = is_theme_in_user_directory (name);
-}
-
-static void
 icon_theme_changed_callback (gpointer user_data)
 {
 	char *icon_theme, *icon_fallback_theme;
 	NautilusIconFactory *factory;
+	gboolean changed;
 
 	icon_theme = nautilus_theme_get_theme_data ("icons", "icon_theme");
 	if (icon_theme == NULL) {
@@ -895,13 +872,10 @@ icon_theme_changed_callback (gpointer user_data)
 
 	factory = get_icon_factory ();
 
-	if (eel_strcmp (icon_theme, factory->theme.current.name) != 0
-	    || eel_strcmp (icon_fallback_theme, factory->theme.fallback.name) != 0) {
+	changed = nautilus_icon_theme_set_names (factory->theme.current, icon_theme);
+	changed |= nautilus_icon_theme_set_names (factory->theme.fallback, icon_fallback_theme);
 
-		/* Switch themes. */
-		set_theme_name (&factory->theme.current, icon_theme);
-		set_theme_name (&factory->theme.fallback, icon_fallback_theme);
-		
+	if (changed) {
 		nautilus_icon_factory_clear ();
 		load_thumbnail_frame (factory);
 		g_signal_emit (factory,
@@ -1180,6 +1154,31 @@ image_uri_to_name_or_uri (const char *image_uri,
 		*icon_name = nautilus_remove_icon_file_name_suffix (image_uri);
 	}
 }
+static gboolean
+nautilus_gdk_pixbuf_supported (char *mime_type)
+{
+	guint i;
+	static GHashTable *formats = NULL;
+	static const char *types [] = {
+		"image/x-bmp", "image/x-ico", "image/jpeg",
+		"image/png", "image/pnm", "image/ras", "image/tga",
+		"image/tiff", "image/wbmp", "image/x-xbitmap",
+		"image/x-xpixmap"
+	};
+
+	formats = eel_g_hash_table_new_free_at_exit (
+		g_str_hash, g_str_equal, "nautilus-icon-factory.c: formats");
+
+	for (i = 0; i < G_N_ELEMENTS (types); i++)
+		g_hash_table_insert (formats,
+				     (gpointer) types [i],
+				     GUINT_TO_POINTER (1));	
+
+	if (g_hash_table_lookup (formats, mime_type))
+		return TRUE;
+
+	return FALSE;
+}
 
 /* key routine to get the scalable icon for a file */
 NautilusScalableIcon *
@@ -1217,10 +1216,11 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 		if (eel_istr_has_prefix (mime_type, "image/")
 		    && is_supported_mime_type (mime_type)
 		    && should_display_image_file_as_itself (file)) {
-			if (file_size < SELF_THUMBNAIL_SIZE_THRESHOLD && is_local) {
+			if (file_size < SELF_THUMBNAIL_SIZE_THRESHOLD && is_local
+			    && nautilus_gdk_pixbuf_supported (mime_type))
 				uri = nautilus_file_get_uri (file);
-			} else if (strstr (file_uri, "/.thumbnails/") == NULL
-				   && file_size < cached_thumbnail_limit) {
+			if (uri == NULL && strstr (file_uri, "/.thumbnails/") == NULL
+			    && file_size < cached_thumbnail_limit) {
 				uri = nautilus_get_thumbnail_uri (file);
 				if (uri == NULL) {
 					icon_name = g_strdup (ICON_NAME_THUMBNAIL_LOADING);
@@ -1242,7 +1242,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 	}
 
 	top_left_text = nautilus_file_get_top_left_text (file);
-	
+
 	/* Create the icon or find it in the cache if it's already there. */
 	scalable_icon = nautilus_scalable_icon_new_from_text_pieces 
 		(uri, mime_type, icon_name, modifier, top_left_text);
@@ -1525,25 +1525,12 @@ load_pixbuf_svg (const char *path, guint size_in_pixels, guint max_size_in_pixel
 static gboolean
 path_represents_svg_image (const char *path) 
 {
-	char *uri;
-	GnomeVFSFileInfo *file_info;
-	gboolean is_svg;
-
-	/* Sync. file I/O is OK here because this is used only for installed
-	 * icons, not for the general case which could include icons on devices
-	 * other than the local hard disk.
+	/* Synchronous mime sniffing is a really bad idea here
+	 * since it's only useful for people adding custom icons,
+	 * and if they're doing that, they can behave themselves
+	 * and use a .svg extension.
 	 */
-
-	uri = gnome_vfs_get_uri_from_local_path (path);
-	file_info = gnome_vfs_file_info_new ();
-	gnome_vfs_get_file_info (uri, file_info,
-				 GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-				 | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-	g_free (uri);
-	is_svg = eel_strcmp (file_info->mime_type, "image/svg") == 0;
-	gnome_vfs_file_info_unref (file_info);
-
-	return is_svg;
+	return path != NULL && strstr (path, ".svg") != NULL;
 }
 
 /* Returns GNOME_VFS_ERROR_NOT_SUPPORTED for icons that are not files. */
@@ -1613,7 +1600,7 @@ load_icon_from_path (const char *path,
 	if (strstr (path, "/.nautilus/thumbnails/") != NULL) {
 		return nautilus_thumbnail_load_framed_image (path);
 	}
-	
+
 	return gdk_pixbuf_new_from_file (path, NULL);
 }
 
@@ -1629,10 +1616,11 @@ load_named_icon (const char *name,
 	NautilusIconDetails scalable_details;
 
 	memset (&scalable_details, 0, sizeof (scalable_details));
+
 	path = nautilus_get_icon_file_name (&get_icon_factory ()->theme,
 					    name, modifier, size_in_pixels,
 					    details, &scalable_details);
-	
+
 	pixbuf = load_icon_from_path (path, size_in_pixels, max_size_in_pixels, FALSE,
 				      eel_str_has_prefix (name, NAUTILUS_EMBLEM_NAME_PREFIX),
 				      details, &scalable_details);
@@ -1664,7 +1652,7 @@ load_specific_icon (NautilusScalableIcon *scalable_icon,
 	NautilusIconDetails details;
 	GdkPixbuf *pixbuf;
 	char *mime_type_icon_name, *path;
-	const char *first_choice_name, *second_choice_name;
+	const char *first_choice_name, *second_choice_name, *real_name;
 	CacheIcon *icon;
 
 	memset (&details, 0, sizeof (details));
@@ -1672,6 +1660,8 @@ load_specific_icon (NautilusScalableIcon *scalable_icon,
 
 	/* Get the path. */
 	if (type == REQUEST_PICKY_CUSTOM_ONLY) {
+		if (scalable_icon->uri == NULL)
+			return NULL;
 		/* We don't support custom icons that are not local here. */
 		path = gnome_vfs_get_local_path_from_uri (scalable_icon->uri);
 		pixbuf = load_icon_from_path (path, size_in_pixels, max_size_in_pixels, TRUE, FALSE, NULL, NULL);
@@ -1688,9 +1678,12 @@ load_specific_icon (NautilusScalableIcon *scalable_icon,
 			first_choice_name = scalable_icon->name;
 			second_choice_name = mime_type_icon_name;
 		}
+
+		real_name = (type == REQUEST_PICKY_BY_NAME_FIRST_CHOICE
+			     ? first_choice_name : second_choice_name);
+
 		pixbuf = load_named_icon
-			((type == REQUEST_PICKY_BY_NAME_FIRST_CHOICE)
-			 ? first_choice_name : second_choice_name,
+			(real_name,
 			 scalable_icon->modifier,
 			 size_in_pixels, max_size_in_pixels,
 			 &details);

@@ -79,9 +79,6 @@
  */
 #define MAX_CLICK_TIME 1500
 
-/* Distance you have to move before it becomes a drag. */
-#define SNAP_RESISTANCE 2 /* GMC has this set to 3, but it's too much for Ettore's taste. */
-
 /* Button assignments. */
 #define DRAG_BUTTON 1
 #define RUBBERBAND_BUTTON 1
@@ -1588,7 +1585,7 @@ start_rubberbanding (NautilusIconContainer *container,
 	 */
 	fill_color_str = nautilus_theme_get_theme_data ("directory", "selection_box_color_rgba");
 	if (fill_color_str == NULL) {
-		fill_color = 0x77BBDD40;
+		fill_color = eel_gdk_color_to_rgb (&GTK_WIDGET (container)->style->base[GTK_STATE_SELECTED]) << 8 | 0x40;
 	} else {
 		fill_color = strtoul (fill_color_str, NULL, 0);
 		/* FIXME: Need error handling here. */
@@ -2387,17 +2384,13 @@ size_allocate (GtkWidget *widget,
 static void
 realize (GtkWidget *widget)
 {
-	GtkStyle *style;
 	GtkWindow *window;
 	GdkBitmap *stipple;
 
 	GTK_WIDGET_CLASS (parent_class)->realize (widget);
 
-	style = gtk_style_copy (gtk_widget_get_style (widget));
-	style->bg[GTK_STATE_NORMAL] = style->base[GTK_STATE_NORMAL];
-	gtk_widget_set_style (widget, style);
-	g_object_unref (style);
-
+	gtk_widget_modify_bg (widget, GTK_STATE_NORMAL,
+			      &widget->style->base[GTK_STATE_NORMAL]);
 	gdk_window_set_background
 		(GTK_LAYOUT (widget)->bin_window,
 		 &widget->style->bg[GTK_STATE_NORMAL]);
@@ -2443,6 +2436,8 @@ style_set (GtkWidget *widget,
 	   GtkStyle  *previous_style)
 {
 	NautilusIconContainer *container;
+
+	nautilus_icon_container_theme_changed (NAUTILUS_ICON_CONTAINER (widget));
 
 	if (GTK_WIDGET_REALIZED (widget)) {
 		container = NAUTILUS_ICON_CONTAINER (widget);
@@ -2850,9 +2845,13 @@ motion_notify_event (GtkWidget *widget,
 			gnome_canvas_window_to_world
 				(GNOME_CANVAS (container), event->x, event->y, &world_x, &world_y);
 			
-			if (abs (details->drag_x - world_x) >= SNAP_RESISTANCE
-			    || abs (details->drag_y - world_y) >= SNAP_RESISTANCE) {
+			if (gtk_drag_check_threshold (widget, 
+						      details->drag_x,
+						      details->drag_y,
+						      world_x,
+						      world_y)) {
 				details->drag_started = TRUE;
+				details->drag_state = DRAG_STATE_MOVE_OR_COPY;
 
 				end_renaming_mode (container, TRUE);
 			
@@ -2865,7 +2864,6 @@ motion_notify_event (GtkWidget *widget,
 							      : GDK_ACTION_ASK,
 							      details->drag_button,
 							      event);
-				details->drag_state = DRAG_STATE_MOVE_OR_COPY;
 			}
 			break;
 		case DRAG_STATE_STRETCH:
