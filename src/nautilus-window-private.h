@@ -57,9 +57,6 @@ struct NautilusWindowDetails
         GtkActionGroup *main_action_group; /* owned by ui_manager */
         guint help_message_cid;
 
-        /* Startup ID; for startup notification shutoff */
-        char *startup_id;
-        
         /* Menus. */
         guint extensions_menu_merge_id;
         GtkActionGroup *extensions_menu_action_group;

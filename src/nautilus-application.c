@@ -945,10 +945,6 @@ create_window (NautilusApplication *application,
 	/* Must be called after construction finished */
 	nautilus_window_constructed (window);
 
-	if (startup_id != NULL) {
-		window->details->startup_id = g_strdup (startup_id);
-	}
-
 	g_signal_connect_data (window, "delete_event",
 			       G_CALLBACK (nautilus_window_delete_event_callback), NULL, NULL,
 			       G_CONNECT_AFTER);
