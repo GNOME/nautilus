@@ -89,8 +89,7 @@ static void     receive_dropped_uri_list                          (NautilusIconC
 static void     nautilus_icon_container_free_drag_data           (NautilusIconContainer *container);
 static void     set_drop_target                                  (NautilusIconContainer *container,
 								  NautilusIcon *icon);
-
-
+								  
 static GtkTargetEntry drag_types [] = {
 	{ EEL_ICON_DND_GNOME_ICON_LIST_TYPE, 0, EEL_ICON_DND_GNOME_ICON_LIST },
 	{ EEL_ICON_DND_URI_LIST_TYPE, 0, EEL_ICON_DND_URI_LIST },
@@ -98,17 +97,22 @@ static GtkTargetEntry drag_types [] = {
 	{ EEL_ICON_DND_TEXT_TYPE, 0, EEL_ICON_DND_TEXT }
 };
 
+/* this constant is logically part of the EEL_ICON_DND enumeration; it must be bigger
+ * than the last one defined there
+ */
+#define NAUTILUS_RESET_BACKGROUND_ENUM 10
+
 static GtkTargetEntry drop_types [] = {
 	{ EEL_ICON_DND_GNOME_ICON_LIST_TYPE, 0, EEL_ICON_DND_GNOME_ICON_LIST },
 	{ EEL_ICON_DND_URI_LIST_TYPE, 0, EEL_ICON_DND_URI_LIST },
 	{ EEL_ICON_DND_URL_TYPE, 0, EEL_ICON_DND_URL },
 	{ EEL_ICON_DND_COLOR_TYPE, 0, EEL_ICON_DND_COLOR },
 	{ EEL_ICON_DND_BGIMAGE_TYPE, 0, EEL_ICON_DND_BGIMAGE },
-	{ EEL_ICON_DND_KEYWORD_TYPE, 0, EEL_ICON_DND_KEYWORD }
+	{ EEL_ICON_DND_KEYWORD_TYPE, 0, EEL_ICON_DND_KEYWORD },
+	{ "x-special/gnome-reset-background",  0, NAUTILUS_RESET_BACKGROUND_ENUM }
 };
 
 static GtkTargetList *drop_types_list = NULL;
-
 
 static GnomeCanvasItem *
 create_selection_shadow (NautilusIconContainer *container,
@@ -388,6 +392,7 @@ drag_data_received_callback (GtkWidget *widget,
 			     gpointer user_data)
 {
     	EelDragInfo *drag_info;
+	EelBackground *background;
 	
 	drag_info = &(NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info->drag_info);
 
@@ -402,11 +407,12 @@ drag_data_received_callback (GtkWidget *widget,
 	case EEL_ICON_DND_BGIMAGE:	
 	case EEL_ICON_DND_KEYWORD:
 	case EEL_ICON_DND_URI_LIST:
+	case NAUTILUS_RESET_BACKGROUND_ENUM:
 		/* Save the data so we can do the actual work on drop. */
 		g_assert (drag_info->selection_data == NULL);
 		drag_info->selection_data = eel_gtk_selection_data_copy_deep (data);
 		break;
-		
+
 	/* Netscape keeps sending us the data, even though we accept the first drag */
 	case EEL_ICON_DND_URL:
 		if (drag_info->selection_data != NULL) {
@@ -458,6 +464,14 @@ drag_data_received_callback (GtkWidget *widget,
 				 (char*) data->data, x, y);
 			gtk_drag_finish (context, TRUE, FALSE, time);
 			break;
+
+		case NAUTILUS_RESET_BACKGROUND_ENUM:
+			background = eel_get_widget_background (widget);
+			if (background != NULL) {
+				eel_background_reset (background);
+			}
+			gtk_drag_finish (context, FALSE, FALSE, time);			
+			break;	
 
 		default:
 			gtk_drag_finish (context, FALSE, FALSE, time);
@@ -1067,6 +1081,7 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 	/* handle colors and backgrounds by setting the action if we're over the background */		
 	case EEL_ICON_DND_COLOR:
 	case EEL_ICON_DND_BGIMAGE:
+	case NAUTILUS_RESET_BACKGROUND_ENUM:
 		if (icon == NULL) {
 			*default_action = context->suggested_action;
 			*non_default_action = context->suggested_action;
@@ -1335,7 +1350,6 @@ drag_drop_callback (GtkWidget *widget,
 	NautilusIconDndInfo *dnd_info;
 
 	dnd_info = NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info;
-
 
 	/* tell the drag_data_received callback that
 	   the drop occured and that it can actually

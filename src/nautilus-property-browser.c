@@ -1503,9 +1503,8 @@ element_clicked_callback (GtkWidget *image_table,
 	drag_types[0].target = property_browser->details->drag_type;
 	
 	/* treat the reset property in the colors section specially */	
-	if (strcmp (property_browser->details->drag_type, "application/x-color") == 0 &&
-		eel_strcmp (element_name, RESET_IMAGE_NAME) == 0) {
-		drag_types[0].target = "property/bgimage";	
+	if (eel_strcmp (element_name, RESET_IMAGE_NAME) == 0) {
+		drag_types[0].target = "x-special/gnome-reset-background";	
 	}
 	
 	target_list = gtk_target_list_new (drag_types, EEL_N_ELEMENTS (drag_types));	

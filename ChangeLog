@@ -1,3 +1,21 @@
+2001-07-20  Andy Hertzfeld  <andy@differnet.com>
+
+	removed the bad hack of attributing special meaning to the
+	"reset.png" filename; instead, use a newly defined drop type of
+	"x-special/gnome-reset-background".
+	
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(drag_data_received_callback),
+	(nautilus_icon_container_get_drop_action), (drag_drop_callback):
+	make the icon view handle the new drop type.
+	
+	* src/nautilus-property-browser.c: (element_clicked_callback):
+	make the property browser emit the new drop type for the reset property
+	
+	* src/nautilus-sidebar.c: (reset_background_callback),
+	(nautilus_sidebar_drag_data_received):
+	make the sidebar handle the new drop type.
+	
 2001-07-19  Darin Adler  <darin@bentspoon.com>
 
 	More fixes like the one Alex just did.
