@@ -1,8 +1,8 @@
 NULL=
 
-arlotabdir = $(datadir)/pixmaps/nautilus/eazel/sidebar_tab_pieces
+eazeltabdir = $(datadir)/pixmaps/nautilus/eazel/sidebar_tab_pieces
 
-arlotab_DATA = \
+eazeltab_DATA = \
 	fill-active.png				\
 	fill-active-prelight.png		\
 	fill-empty-space.png			\

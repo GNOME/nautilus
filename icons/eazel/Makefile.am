@@ -2,7 +2,7 @@ NULL=
 
 eazeldir = $(datadir)/pixmaps/nautilus/eazel
 
-SUBDIRS =
+SUBDIRS = sidebar_tab_pieces
 
 eazel_DATA =					\
 	Back.png				\
