@@ -31,7 +31,7 @@
 
 #include "nautilus.h"
 
-POA_Nautilus_ViewFrame__vepv impl_Nautilus_ViewFrame_vepv;
+extern POA_Nautilus_ViewFrame__vepv impl_Nautilus_ViewFrame_vepv;
 GnomeObject *impl_Nautilus_ViewFrame__create(NautilusView *view, CORBA_Environment * ev);
 
 
