@@ -4,6 +4,7 @@
  *  Nautilus
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
+ *  Copyright (C) 2000, 2001 Eazel, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
@@ -19,22 +20,21 @@
  *  along with this library; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Author: Elliot Lee <sopwith@redhat.com>
+ *  Authors: Elliot Lee <sopwith@redhat.com>
+ *           Darin Adler <darin@eazel.com>
  *
  */
  
 #include <config.h>
 
-#include <bonobo/bonobo-generic-factory.h>
-#include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <gtk/gtkclist.h>
 #include <gtk/gtkscrolledwindow.h>
-#include <gnome.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus/nautilus-view-component.h>
 #include <libnautilus/nautilus-view-standard-main.h>
 
 #define NAUTILUS_TYPE_HISTORY_VIEW            (nautilus_history_view_get_type ())
@@ -48,6 +48,7 @@ typedef struct {
 	GtkCList *list;
 	gboolean updating_history;
 	int press_row;
+	gboolean *external_destroyed_flag;
 } NautilusHistoryView;
 
 typedef struct {
@@ -80,7 +81,7 @@ get_uri_from_row (GtkCList *list, int row)
 }
 
 static void
-install_icon (GtkCList *list, gint row, GdkPixbuf *pixbuf)
+install_icon (GtkCList *list, int row, GdkPixbuf *pixbuf)
 {
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
@@ -91,7 +92,7 @@ install_icon (GtkCList *list, gint row, GdkPixbuf *pixbuf)
 						   NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 	} else {
 		bookmark = get_bookmark_from_row (list, row);
-		if (!nautilus_bookmark_get_pixmap_and_mask (bookmark, NAUTILUS_ICON_SIZE_SMALLER, 
+		if (!nautilus_bookmark_get_pixmap_and_mask (bookmark, NAUTILUS_ICON_SIZE_SMALLER,
 							    &pixmap, &mask)) {
 			return;
 		}
@@ -116,15 +117,33 @@ update_history (NautilusHistoryView *view,
 	Nautilus_HistoryItem *item;
 	GdkPixbuf *pixbuf;
 	guint i;
+	gboolean destroyed_flag;
 
 	/* FIXME: We'll end up with old history if this happens. */
 	if (view->updating_history) {
 		return;
 	}
 
+	list = view->list;
+
+	if (GTK_OBJECT_DESTROYED (list)) {
+		return;
+	}
+
+	/* Set up a local boolean so we can detect that the view has
+	 * been destroyed. We can't ask the view itself because once
+	 * it's destroyed it's pointer is a pointer to freed storage.
+	 */
+	/* FIXME: We can't just keep an extra ref to the view as we
+	 * normally would because of a bug in Bonobo that means a
+	 * BonoboControl must not outlast its BonoboFrame
+	 * (NautilusHistoryView is a BonoboControl).
+	 */
+	destroyed_flag = FALSE;
+	view->external_destroyed_flag = &destroyed_flag;
+
 	view->updating_history = TRUE;
 
-	list = view->list;
 	gtk_clist_freeze (list);
 
 	gtk_clist_clear (list);
@@ -132,6 +151,18 @@ update_history (NautilusHistoryView *view,
 	for (i = 0; i < history->_length; i++) {
 		item = &history->_buffer[i];
 		bookmark = nautilus_bookmark_new (item->location, item->title);
+
+		/* Through a long line of calls, nautilus_bookmark_new
+		 * can end up calling through to CORBA, so a remote
+		 * unref can come in at this point. In theory, other
+		 * calls could result in a similar problem, so in
+		 * theory we need this check after any call out, but
+		 * in practice, none of the other calls used here have
+		 * that problem.
+		 */
+		if (destroyed_flag) {
+			return;
+		}
 		
 		cols[HISTORY_VIEW_COLUMN_ICON] = NULL;
 		cols[HISTORY_VIEW_COLUMN_NAME] = item->title;
@@ -142,11 +173,9 @@ update_history (NautilusHistoryView *view,
 					     (GtkDestroyNotify) gtk_object_unref);
 
 		pixbuf = bonobo_ui_util_xml_to_pixbuf (item->icon);
+		install_icon (list, new_row, pixbuf);
 		if (pixbuf != NULL) {
-			install_icon (list, new_row, pixbuf);
 			gdk_pixbuf_unref (pixbuf);
-		} else {
-			install_icon (list, new_row, NULL);
 		}
 		
 		gtk_clist_columns_autosize (list);
@@ -161,6 +190,8 @@ update_history (NautilusHistoryView *view,
 	gtk_clist_thaw (list);
 	
   	view->updating_history = FALSE;
+
+	view->external_destroyed_flag = NULL;
 }
 
 static void
@@ -226,6 +257,7 @@ history_changed_callback (NautilusHistoryView *view,
 			  gpointer callback_data)
 {
 	g_assert (view == callback_data);
+
 	update_history (view, list);
 }
 
@@ -262,6 +294,7 @@ nautilus_history_view_initialize (NautilusHistoryView *view)
 	
 	nautilus_view_construct (NAUTILUS_VIEW (view), window);
 
+	gtk_object_ref (GTK_OBJECT (list));
 	view->list = list;
 
 	gtk_signal_connect (GTK_OBJECT (list),
@@ -286,15 +319,19 @@ nautilus_history_view_destroy (GtkObject *object)
 	
 	view = NAUTILUS_HISTORY_VIEW (object);
 
-	gtk_clist_clear (view->list);
-	
+	if (view->external_destroyed_flag != NULL) {
+		*view->external_destroyed_flag = TRUE;
+	}
+
+	gtk_object_unref (GTK_OBJECT (view->list));
+
 	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 int
 main (int argc, char *argv[])
 {
-/* Initialize gettext support */
+	/* Initialize gettext support */
 #ifdef ENABLE_NLS
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
