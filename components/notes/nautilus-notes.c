@@ -204,7 +204,7 @@ notes_load_metainfo (Notes *notes)
         done_with_file (notes);
         notes->file = nautilus_file_get (notes->uri);
 
-	gtk_text_buffer_set_text (notes->text_buffer, NULL, -1);
+	gtk_text_buffer_set_text (notes->text_buffer, "", -1);
 
         if (notes->file == NULL) {
 		return;
@@ -384,11 +384,11 @@ make_notes_view (const char *iid, gpointer callback_data)
         eel_background_set_color (background, NOTES_DEFAULT_BACKGROUND_COLOR);
 
 	g_signal_connect (notes->note_text_field, "focus_out_event",
-      	              	    G_CALLBACK (on_text_field_focus_out_event),
-                            notes);
-	g_signal_connect (notes->note_text_field, "changed",
-      	              	    G_CALLBACK (on_changed),
-                            notes);
+                          G_CALLBACK (on_text_field_focus_out_event),
+                          notes);
+	g_signal_connect (notes->text_buffer, "changed",
+                          G_CALLBACK (on_changed),
+                          notes);
      
         gtk_widget_show_all (vbox);
         

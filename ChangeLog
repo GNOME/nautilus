@@ -1,5 +1,17 @@
 2001-11-22  Michael Meeks  <michael@ximian.com>
 
+	* components/notes/nautilus-notes.c (make_notes_view):
+	listen for changed on the text buffer.
+	(notes_load_metainfo): set buffer to "" not NULL.
+
+	* libnautilus/nautilus-view-standard-main.c
+	(delayed_quit_timeout_callback): do a bonobo_main_quit.
+	(object_destroyed): GObject-ify.
+
+	* components/throbber/main.c (main): upd.
+
+2001-11-22  Michael Meeks  <michael@ximian.com>
+
 	* libnautilus-private/nautilus-icon-container.c
 	(nautilus_icon_container_class_init): fix marshaller.
 

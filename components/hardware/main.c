@@ -115,8 +115,9 @@ int main(int argc, char *argv[])
 	g_free (registration_id);
 #endif
 	
+	bonobo_activate ();
 	do {
-		bonobo_main ();
+		gtk_main ();
 	} while (object_count > 0);
 	
         gnome_vfs_shutdown ();

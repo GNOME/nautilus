@@ -59,21 +59,25 @@ delayed_quit_timeout_callback (gpointer data)
 
 	callback_data = (CallbackData *) data;
 	callback_data->delayed_quit_timeout_id = 0;
-	gtk_main_quit ();
+	bonobo_main_quit ();
+
 	return FALSE;
 }
 
 static void
-object_destroyed (GtkObject     *object,
-		  CallbackData  *callback_data)
+object_destroyed (GObject      *object,
+		  CallbackData *callback_data)
 {
-	g_assert (GTK_IS_OBJECT (object));
+	g_assert (G_IS_OBJECT (object));
 
 	callback_data->object_count--;
-	if (callback_data->object_count <= 0 && callback_data->delayed_quit_timeout_id == 0) {
-		callback_data->delayed_quit_timeout_id = g_timeout_add (N_IDLE_SECONDS_BEFORE_QUIT * 1000,
-		                                                        delayed_quit_timeout_callback,
-		                                                        callback_data);
+
+	if (callback_data->object_count <= 0 &&
+	    callback_data->delayed_quit_timeout_id == 0) {
+		callback_data->delayed_quit_timeout_id = 
+			g_timeout_add (N_IDLE_SECONDS_BEFORE_QUIT * 1000,
+				       delayed_quit_timeout_callback,
+				       callback_data);
 	}
 }
 
@@ -111,7 +115,8 @@ make_object (BonoboGenericFactory *factory,
 		callback_data->delayed_quit_timeout_id = 0;
 	}
 	g_signal_connect (view, "destroy",
-			    G_CALLBACK (object_destroyed), callback_data);
+			  G_CALLBACK (object_destroyed),
+			  callback_data);
 
 	return BONOBO_OBJECT (view);
 }
