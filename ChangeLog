@@ -1,3 +1,17 @@
+2002-04-22  Anders Carlsson  <andersca@gnu.org>
+
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_init), (nautilus_emblem_dialog_new),
+	(nautilus_color_selection_dialog_new), (add_new_pattern),
+	(add_new_color), (nautilus_property_browser_update_contents):
+	Re-add the length limit for color and emblem names. Also fix
+	button ordering to be Add, Remove. Finally, set up focus correctly
+	for entries.
+	
+	* src/nautilus-theme-selector.c: (create_button_with_stock_image),
+	(nautilus_theme_selector_instance_init):
+	Add stock icons to Add and Remove buttons.
+	
 === nautilus 1.1.13 ===
  
 2002-04-21  Alexander Larsson  <alla@lysator.liu.se>

@@ -35,7 +35,9 @@
 #include <gtk/gtkalignment.h>
 #include <gtk/gtkfilesel.h>
 #include <gtk/gtkhbox.h>
+#include <gtk/gtkimage.h>
 #include <gtk/gtkscrolledwindow.h>
+#include <gtk/gtkstock.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-macros.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -479,6 +481,29 @@ nautilus_theme_selector_set_parent_window (NautilusThemeSelector *theme_selector
 	theme_selector->details->parent_window = parent_window;
 }
 
+static GtkWidget *
+create_button_with_stock_image (const char *title, const char *stock_id)
+{
+	GtkWidget *button, *label, *image;
+	GtkWidget *align, *hbox;
+	
+	button = gtk_button_new ();
+	label = gtk_label_new_with_mnemonic (title);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), button);
+
+	image = gtk_image_new_from_stock (stock_id, GTK_ICON_SIZE_BUTTON);
+	hbox = gtk_hbox_new (FALSE, 2);
+	align = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
+
+	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (button), align);
+	gtk_container_add (GTK_CONTAINER (align), hbox);
+	gtk_widget_show_all (align);
+
+	return button;
+}
+
 static void
 nautilus_theme_selector_instance_init (NautilusThemeSelector *theme_selector)
 {
@@ -511,17 +536,21 @@ nautilus_theme_selector_instance_init (NautilusThemeSelector *theme_selector)
 
 	gtk_box_pack_end (GTK_BOX (alignment_box), button_box, FALSE, FALSE, 2);
 
-	theme_selector->details->install_theme_button = gtk_button_new_with_label (_("Add New Theme..."));
+	theme_selector->details->install_theme_button = create_button_with_stock_image (_("Add New Theme..."),
+											GTK_STOCK_ADD);
+	
 	g_signal_connect_object (theme_selector->details->install_theme_button, "clicked",
 				 G_CALLBACK (install_theme_button_clicked_callback),
 				 theme_selector, 0);
 
-	theme_selector->details->remove_theme_button = gtk_button_new_with_label (_("Remove Theme..."));
+	theme_selector->details->remove_theme_button = create_button_with_stock_image (_("Remove Theme..."),
+										       GTK_STOCK_REMOVE);
 	g_signal_connect_object (theme_selector->details->remove_theme_button, "clicked",
 				 G_CALLBACK (remove_theme_button_clicked_callback),
 				 theme_selector, 0);
 
-	theme_selector->details->cancel_remove_button = gtk_button_new_with_label (_("Cancel Remove"));
+	theme_selector->details->cancel_remove_button = create_button_with_stock_image (_("Cancel Remove"),
+											GTK_STOCK_CANCEL);
 	g_signal_connect_object (theme_selector->details->cancel_remove_button, "clicked",
 				 G_CALLBACK (cancel_remove_button_clicked_callback),
 				 theme_selector, 0);
