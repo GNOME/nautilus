@@ -158,12 +158,15 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 {
 	GtkTreeView *tree_view;
 	GtkTreePath *path;
+	gboolean result;
 
 	tree_view = GTK_TREE_VIEW (widget);
 
 	if (event->window != gtk_tree_view_get_bin_window (tree_view)) {
 		return FALSE;
 	}
+
+	result = FALSE;
 
 	if (gtk_tree_view_get_path_at_pos (tree_view, event->x, event->y,
 					   &path, NULL, NULL, NULL)) {
@@ -173,7 +176,7 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 			   are selected it will unselect all but one row; but we
 			   want the right click menu to apply to everything that's
 			   currently selected. */
-			return TRUE;
+			result = TRUE;
 		}
 
 		gtk_tree_path_free (path);
@@ -183,7 +186,7 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 		gtk_tree_selection_unselect_all (gtk_tree_view_get_selection (tree_view));
 	}
 
-	return FALSE;
+	return result;
 }
 
 static gboolean
