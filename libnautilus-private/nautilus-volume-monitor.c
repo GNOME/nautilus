@@ -776,6 +776,7 @@ mount_volume_get_name (NautilusVolume *volume)
 		break;
 
 	case NAUTILUS_VOLUME_AFFS:
+	case NAUTILUS_VOLUME_AUTO:
 	case NAUTILUS_VOLUME_HPFS:
 	case NAUTILUS_VOLUME_MINIX:
 	case NAUTILUS_VOLUME_SMB:
@@ -1232,6 +1233,21 @@ static gboolean
 mount_volume_affs_add (NautilusVolume *volume)
 {
 	volume->type = NAUTILUS_VOLUME_AFFS;
+	return TRUE;
+}
+
+/* This is intended mainly for adding removable volumes from /etc/fstab.
+ * The auto type will not show up in /proc/mounts. The NAUTILUS_VOLUME_AUTO
+ * type is just a practical placeholder.
+ */
+static gboolean
+mount_volume_auto_add (NautilusVolume *volume)
+{
+	if (strcmp (volume->mount_path, "/mnt/floppy") == 0) {
+		volume->type = NAUTILUS_VOLUME_FLOPPY;
+	} else {
+		volume->type = NAUTILUS_VOLUME_AUTO;
+	}
 	return TRUE;
 }
 
@@ -1882,53 +1898,55 @@ load_additional_mount_list_info (GList *volume_list)
 static GList *
 mount_volume_add_filesystem (NautilusVolume *volume, GList *volume_list)
 {
-	gboolean mounted = FALSE;
+	gboolean added = FALSE;
 	
 	if (eel_str_has_prefix (volume->device_path, floppy_device_path_prefix)) {		
-		mounted = mount_volume_floppy_add (volume);
+		added = mount_volume_floppy_add (volume);
 	} else if (strcmp (volume->filesystem, "affs") == 0) {		
-		mounted = mount_volume_affs_add (volume);
+		added = mount_volume_affs_add (volume);
+	} else if (strcmp (volume->filesystem, "auto") == 0) {		
+		added = mount_volume_auto_add (volume);
 	} else if (strcmp (volume->filesystem, "cdda") == 0) {		
-		mounted = mount_volume_cdda_add (volume);
+		added = mount_volume_cdda_add (volume);
 	} else if (strcmp (volume->filesystem, "hsfs") == 0) {	
-		mounted = mount_volume_hsfs_add (volume);
+		added = mount_volume_hsfs_add (volume);
 	} else if (strcmp (volume->filesystem, "ext2") == 0) {		
-		mounted = mount_volume_ext2_add (volume);
+		added = mount_volume_ext2_add (volume);
 	} else if (strcmp (volume->filesystem, "fat") == 0) {		
-		mounted = mount_volume_fat_add (volume);
+		added = mount_volume_fat_add (volume);
 	} else if (strcmp (volume->filesystem, "hpfs") == 0) {		
-		mounted = mount_volume_hpfs_add (volume);
+		added = mount_volume_hpfs_add (volume);
 	} else if (strcmp (volume->filesystem, "iso9660") == 0) {		    		
-		mounted = mount_volume_iso9660_add (volume);
+		added = mount_volume_iso9660_add (volume);
 	} else if (strcmp (volume->filesystem, "minix") == 0) {		    		
-		mounted = mount_volume_minix_add (volume);
+		added = mount_volume_minix_add (volume);
 	} else if (strcmp (volume->filesystem, "msdos") == 0) {		
-		mounted = mount_volume_msdos_add (volume);
+		added = mount_volume_msdos_add (volume);
 	} else if (strcmp (volume->filesystem, "nfs") == 0) {		
-		mounted = mount_volume_nfs_add (volume);
+		added = mount_volume_nfs_add (volume);
 	} else if (strcmp (volume->filesystem, "proc") == 0) {		
-		mounted = mount_volume_proc_add (volume);
+		added = mount_volume_proc_add (volume);
 	} else if (strcmp (volume->filesystem, "reiserfs") == 0) {
-		mounted = mount_volume_reiserfs_add (volume);
+		added = mount_volume_reiserfs_add (volume);
 	} else if (strcmp (volume->filesystem, "ufs") == 0) {
-		mounted = mount_volume_ufs_add (volume);
+		added = mount_volume_ufs_add (volume);
 	} else if (strcmp (volume->filesystem, "smb") == 0) {		
-		mounted = mount_volume_smb_add (volume);
+		added = mount_volume_smb_add (volume);
 	} else if (strcmp (volume->filesystem, "udf") == 0) {		
-		mounted = mount_volume_udf_add (volume);
+		added = mount_volume_udf_add (volume);
 	} else if (strcmp (volume->filesystem, "ufs") == 0) {		
-		mounted = mount_volume_udf_add (volume);
+		added = mount_volume_udf_add (volume);
 	} else if (strcmp (volume->filesystem, "unsdos") == 0) {		
-		mounted = mount_volume_unsdos_add (volume);
+		added = mount_volume_unsdos_add (volume);
 	} else if (strcmp (volume->filesystem, "vfat") == 0) {		
-		mounted = mount_volume_vfat_add (volume);
+		added = mount_volume_vfat_add (volume);
 	} else if (strcmp (volume->filesystem, "xenix") == 0) {		
-		mounted = mount_volume_xenix_add (volume);
+		added = mount_volume_xenix_add (volume);
 	} else if (strcmp (volume->filesystem, "xiafs") == 0) {
-		mounted = mount_volume_xiafs_add (volume);
+		added = mount_volume_xiafs_add (volume);
 	}
 	
-	if (mounted) {
+	if (added) {
 		volume_list = g_list_append (volume_list, volume);
 	} else {
 		nautilus_volume_monitor_free_volume (volume);	

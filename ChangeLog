@@ -1,5 +1,22 @@
 2001-04-18  Gene Z. Ragan  <gzr@eazel.com>
 
+	Fixed bug 7999, "Disks" desktop submenu lacks "Floppy" item
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(mount_volume_get_name), (mount_volume_auto_add),
+	(mount_volume_add_filesystem):
+	Handle "auto" types by using a placeholder volume
+	type.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	Add a new type NAUTILUS_VOLUME_AUTO to handle
+	auto fstab entries.  This is really a placeholder
+	type to be used by the code that creates the removable
+	volume list.  When the volume is actually mounted, the
+	file system type is loaded from /proc/mounts.
+	
+2001-04-18  Gene Z. Ragan  <gzr@eazel.com>
+
 	Fix bug 8102, with Nautilus running, CDs get ejected
 	(wrong and makes the kernel unhappy)
 	
