@@ -51,7 +51,6 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSampleContentView, nautilus_sample_co
      
 static void sample_notify_location_change_callback        (NautilusContentViewFrame  *view_frame, 
 							   Nautilus_NavigationInfo   *navinfo, 
-							   const char 		     *initial_title,
 							   NautilusSampleContentView *view);
 static void sample_merge_bonobo_items_callback 		  (BonoboObject 	     *control, 
 							   gboolean 		      state, 
@@ -146,7 +145,6 @@ nautilus_sample_content_view_load_uri (NautilusSampleContentView *view,
 static void
 sample_notify_location_change_callback (NautilusContentViewFrame  *view_frame, 
 				  	Nautilus_NavigationInfo   *navinfo, 
-				  	const char		  *initial_title,
 				  	NautilusSampleContentView *view)
 {
 	Nautilus_ProgressRequestInfo pri;

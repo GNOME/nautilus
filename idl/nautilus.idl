@@ -42,11 +42,9 @@ module Nautilus {
 	interface View : ::Bonobo::Unknown {
 		void save_state (in string config_path);
 		void load_state (in string config_path);
-		oneway void notify_location_change (in NavigationInfo navinfo, 
-						    in string initial_title);
+		oneway void notify_location_change (in NavigationInfo navinfo);
 		oneway void stop_location_change ();
 		oneway void notify_selection_change (in SelectionInfo selinfo);
-		oneway void notify_title_change (in string new_title);		
 		
 		oneway void show_properties (); // Requests that the client show its properties
 	};

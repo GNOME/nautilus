@@ -1,5 +1,34 @@
 2000-03-28  John Sullivan <sullivan@eazel.com>
 
+	Maciej, Darin and I discussed the notify_title_change
+	design and decided that we didn't need it now and that
+	we should keep the API simpler by removing it, along
+	with the initial_title parameter I added to
+	notify_location_change. So out they come.
+
+	* components/help/hyperbola-nav-tree.c,
+	* components/history/ntl-history-view.c,
+	* components/html/ntl-web-browser.c,
+	* components/music/nautilus-music-view.c,
+	* components/notes/ntl-notes.c,
+	* components/sample/nautilus-sample-content-view.c,
+	* components/websearch/ntl-web-search.c,
+	* idl/nautilus.idl,
+	* libnautilus/ntl-view-frame.c,
+	* libnautilus/ntl-view-frame.h,
+	* src/ntl-view-bonobo-control.c,
+	* src/ntl-view-bonobo-subdoc.c,
+	* src/ntl-view-nautilus.c,
+	* src/ntl-view-private.h,
+	* src/ntl-view.c,
+	* src/ntl-view.h,
+	* src/ntl-window-msgs.c,
+	* src/file-manager/fm-directory-view.c: Removed notify_title_change
+	and the initial_title parameter to notify_location_change wherever
+	they reared their ugly heads.
+
+2000-03-28  John Sullivan <sullivan@eazel.com>
+
 	* libnautilus/nautilus-icon-container.c:
 	(keyboard_move_to): The behavior of the Control key got
 	accidentally reversed in a recent cleanup.

@@ -19,7 +19,6 @@ static void hyperbola_navigation_tree_select_row(GtkCTree *ctree,
 						 HyperbolaNavigationTree *view);
 static void hyperbola_navigation_tree_notify_location_change (NautilusViewFrame *view_frame,
 							      Nautilus_NavigationInfo *navi,
-							      const char *initial_title,
 							      HyperbolaNavigationTree *hview);
 
 typedef struct {
@@ -103,7 +102,6 @@ hyperbola_navigation_tree_new(void)
 static void
 hyperbola_navigation_tree_notify_location_change (NautilusViewFrame *view_frame,
 						  Nautilus_NavigationInfo *navi,
-						  const char *initial_title,
 						  HyperbolaNavigationTree *hview)
 {
   HyperbolaTreeNode *tnode;

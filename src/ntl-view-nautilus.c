@@ -109,11 +109,11 @@ nv_load_state(NautilusView *view, const char *config_path, CORBA_Environment *ev
 }
 
 static void
-nv_notify_location_change(NautilusView *view, Nautilus_NavigationInfo *nav_ctx, const char *initial_title, CORBA_Environment *ev)
+nv_notify_location_change(NautilusView *view, Nautilus_NavigationInfo *nav_ctx, CORBA_Environment *ev)
 {
   NautilusViewInfo *nvi = view->component_data;
 
-  Nautilus_View_notify_location_change(nvi->view_client, nav_ctx, initial_title, ev);
+  Nautilus_View_notify_location_change(nvi->view_client, nav_ctx, ev);
   if(ev->_major != CORBA_NO_EXCEPTION)
     gtk_object_destroy(GTK_OBJECT(view));
 }
@@ -124,16 +124,6 @@ nv_notify_selection_change(NautilusView *view, Nautilus_SelectionInfo *nav_ctx, 
   NautilusViewInfo *nvi = view->component_data;
 
   Nautilus_View_notify_selection_change(nvi->view_client, nav_ctx, ev);
-  if(ev->_major != CORBA_NO_EXCEPTION)
-    gtk_object_destroy(GTK_OBJECT(view));
-}
-
-static void
-nv_notify_title_change(NautilusView *view, const char *new_title, CORBA_Environment *ev)
-{
-  NautilusViewInfo *nvi = view->component_data;
-
-  Nautilus_View_notify_title_change(nvi->view_client, new_title, ev);
   if(ev->_major != CORBA_NO_EXCEPTION)
     gtk_object_destroy(GTK_OBJECT(view));
 }
@@ -187,7 +177,6 @@ NautilusViewComponentType nautilus_view_component_type = {
   &nv_notify_location_change, /* notify_location_change */
   &nv_stop_location_change, /*stop_location_change */
   &nv_notify_selection_change, /* notify_selection_change */
-  &nv_notify_title_change, /* notify_title_change */
   &nv_show_properties, /* show_properties */
   &nv_get_label /* get_label */
 };

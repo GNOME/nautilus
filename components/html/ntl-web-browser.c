@@ -557,7 +557,6 @@ browser_submit(GtkWidget *htmlw, const char *method, const char *url, const char
 static void
 browser_notify_location_change(NautilusViewFrame *view_frame, 
 			       Nautilus_NavigationInfo *ni, 
-			       const char *initial_title,
 			       BrowserInfo *bi)
 {
   if(ni->self_originated)

@@ -101,7 +101,6 @@ static void notes_save_metainfo(NotesView *hview)
 static void
 notes_notify_location_change (NautilusViewFrame *view,
                                 Nautilus_NavigationInfo *loci,
-                                const char *initial_title,
                                 NotesView *hview)
 { 
   if (strcmp(hview->current_uri, loci->requested_uri))

@@ -131,7 +131,6 @@ static void           stop_location_change_cb                                   
 										   FMDirectoryView         *directory_view);
 static void           notify_location_change_cb                                   (NautilusViewFrame       *view_frame,
 										   Nautilus_NavigationInfo *nav_context,
-										   const char 		   *initial_title,
 										   FMDirectoryView         *directory_view);
 static void           open_cb                                                     (GtkMenuItem             *item,
 										   GList                   *files);
@@ -642,7 +641,6 @@ fm_directory_view_send_selection_change (FMDirectoryView *view)
 static void
 notify_location_change_cb (NautilusViewFrame *view_frame,
 			   Nautilus_NavigationInfo *navigation_context,
-			   const char *initial_title,
 			   FMDirectoryView *directory_view)
 {
 	fm_directory_view_load_uri (directory_view, navigation_context->requested_uri);

@@ -99,7 +99,6 @@ history_view_update_icons (GtkCList *clist)
 static void
 hyperbola_navigation_history_notify_location_change (NautilusViewFrame *view,
 						     Nautilus_NavigationInfo *loci,
-						     const char *initial_title,
 						     HistoryView *hview)
 {
   char *cols[HISTORY_VIEW_COLUMN_COUNT];

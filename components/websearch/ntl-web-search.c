@@ -55,7 +55,6 @@ static int object_count = 0;
 static void
 web_search_notify_location_change (NautilusViewFrame *view,
                                 Nautilus_NavigationInfo *loci,
-                                const char *initial_title,
                                 WebSearchView *hview)
 {
 }

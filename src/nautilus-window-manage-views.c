@@ -276,36 +276,11 @@ nautilus_window_request_title_change(NautilusWindow *window,
                                      const char *new_title,
                                      NautilusContentView *requesting_view)
 {
-  GSList *cur;
-
   g_return_if_fail (new_title != NULL);
 
   g_free (window->requested_title);
   window->requested_title = g_strdup (new_title);
 
-  /* 
-   * Tell the requesting content view also, to keep the code parallel. 
-   * Don't tell the view in window->content_view because it might be 
-   * the old one that's about to be removed.
-   */
-  nautilus_view_notify_title_change (NAUTILUS_VIEW (requesting_view), new_title);
-
-  for(cur = window->meta_views; cur; cur = cur->next)
-    {
-#if 0
-      /*
-       * This should tell metaviews of the new title, but
-       * something about it isn't right. If the metaview connects
-       * to the notify_title_change signal, its callback doesn't
-       * get called. And ORBit warns for each metaview about some
-       * unhandled message of type 1 (REPLY). Right now no metaviews
-       * use this anyway, but we need to fix it.
-       */
-      nautilus_view_notify_title_change (NAUTILUS_VIEW (cur->data), new_title);
-#endif
-    }
-
-  /* Now change the stuff that doesn't use the NautilusView API */
   nautilus_window_update_title_internal (window, new_title);
 }
 
@@ -470,16 +445,12 @@ nautilus_window_update_view(NautilusWindow *window,
 			    NautilusView *content_view)
 {
   CORBA_Environment environment;
-  char *current_title;
   
   g_return_if_fail(view);
   
   loci->self_originated = (view == requesting_view);
 
-  current_title = nautilus_window_get_current_location_title (window);
-  g_assert (current_title != NULL);
-  nautilus_view_notify_location_change (view, loci, current_title);
-  g_free (current_title);
+  nautilus_view_notify_location_change (view, loci);
 
   if(seli)
     {
