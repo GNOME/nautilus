@@ -151,10 +151,14 @@ drag_data_received_callback (GtkWidget *widget,
 	 */
 	name_count = g_list_length (names);
 	if (name_count > 1) {
-		prompt = g_strdup_printf (_("Do you want to view %d locations?"), 
-					          name_count);	  
-		detail = g_strdup_printf (_("This will open %d separate windows."),
-		                                    name_count);			  
+		prompt = g_strdup_printf (ngettext("Do you want to view %d location?",
+						   "Do you want to view %d locations?",
+						   name_count), 
+					  name_count);
+		detail = g_strdup_printf (ngettext("This will open %d separate window.",
+						   "This will open %d separate windows.",
+						   name_count),
+					  name_count);			  
 		/* eel_run_simple_dialog should really take in pairs
 		 * like gtk_dialog_new_with_buttons() does. */
 		new_windows_for_extras = eel_run_simple_dialog 

@@ -558,22 +558,16 @@ compute_reveal_item_name_and_sensitivity (GList *selected_files,
 	g_assert (return_sensitivity != NULL);
 
 	count = g_list_length (selected_files);
-	if (count <= 1) {
-		/* "Reveal in New Window" means open the parent folder for the
-		 * selected item in a new window, select the item in that window,
-		 * and scroll as necessary to make that item visible (this comment
-		 * is to inform translators of this tricky concept).
-		 */
-		name_with_underscore = g_strdup (_("_Reveal in New Window"));
-	} else {
-		/* "Reveal in n New Windows" means open the parent folder for each
-		 * selected item in a separate new window, select each selected
-		 * item in its new window, and scroll as necessary to make those 
-		 * items visible (this comment is to inform translators of this 
-		 * tricky concept).
-		 */
-		name_with_underscore = g_strdup_printf (_("Reveal in %d _New Windows"), count);
-	}
+	/* "Reveal in n New Windows" means open the parent folder for each
+	 * selected item in a separate new window, select each selected
+	 * item in its new window, and scroll as necessary to make those 
+	 * items visible (this comment is to inform translators of this 
+	 * tricky concept).
+	 */
+	name_with_underscore = g_strdup_printf (ngettext("_Reveal in New Window",
+							 "Reveal in %d _New Windows",
+							 count),
+						count);
 
 	*return_sensitivity = selected_files != NULL;
 	

@@ -4234,19 +4234,11 @@ format_item_count_for_display (guint item_count,
 {
 	g_return_val_if_fail (includes_directories || includes_files, NULL);
 
-	if (item_count == 0) {
-		return g_strdup (includes_directories
-			? (includes_files ? _("0 items") : _("0 folders"))
-			: _("0 files"));
-	}
-	if (item_count == 1) {
-		return g_strdup (includes_directories
-			? (includes_files ? _("1 item") : _("1 folder"))
-			: _("1 file"));
-	}
 	return g_strdup_printf (includes_directories
-		? (includes_files ? _("%u items") : _("%u folders"))
-		: _("%u files"), item_count);
+			? (includes_files 
+			   ? ngettext ("%u item", "%u items", item_count) 
+			   : ngettext ("%u folder", "%u folders", item_count))
+			: ngettext ("%u file", "%u files", item_count), item_count);
 }
 
 /**

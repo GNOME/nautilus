@@ -539,9 +539,10 @@ fm_directory_view_confirm_multiple_windows (FMDirectoryView *view, int count)
 		return TRUE;
 	}
 
-	title = g_strdup_printf (_("Open %d Windows?"), count);
+	title = g_strdup_printf (ngettext("Open %d Window?", "Open %d Windows?", count), count);
 	prompt = _("Are you sure you want to open all files?");
-	detail = g_strdup_printf (_("This will open %d separate windows."), count);
+	detail = g_strdup_printf (ngettext("This will open %d separate window.",
+					   "This will open %d separate windows.", count), count);
 	dialog = eel_show_yes_no_dialog (prompt, detail, title, 
 					 GTK_STOCK_OK, GTK_STOCK_CANCEL,
 					 fm_directory_view_get_containing_window (view));
@@ -900,8 +901,10 @@ confirm_delete_directly (FMDirectoryView *view,
 					  file_name);
 		g_free (file_name);
 	} else {
-		prompt = g_strdup_printf (_("Are you sure you want to permanently delete "
-		  			    "the %d selected items?"), uri_count);
+		prompt = g_strdup_printf (ngettext("Are you sure you want to permanently delete "
+						   "the %d selected item?",
+						   "Are you sure you want to permanently delete "
+						   "the %d selected items?", uri_count), uri_count);
 	}
 
 	dialog = eel_show_yes_no_dialog
@@ -1743,36 +1746,34 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 	 */
 
 	if (folder_count != 0) {
-		if (folder_count == 1) {
-			if (non_folder_count == 0) {
-				folder_count_str = g_strdup_printf (_("\"%s\" selected"), first_item_name);
-			} else {
-				folder_count_str = g_strdup (_("1 folder selected"));
-			}
+		if (folder_count == 1 && non_folder_count == 0) {
+			folder_count_str = g_strdup_printf (_("\"%s\" selected"), first_item_name);
 		} else {
-			folder_count_str = g_strdup_printf (_("%d folders selected"), folder_count);
+			folder_count_str = g_strdup_printf (ngettext("%d folder selected", 
+								     "%d folders selected", 
+								     folder_count), 
+							    folder_count);
 		}
 
 		if (folder_count == 1) {
 			if (!folder_item_count_known) {
 				folder_item_count_str = g_strdup ("");
-			} else if (folder_item_count == 0) {
-				folder_item_count_str = g_strdup (_(" (containing 0 items)"));
-			} else if (folder_item_count == 1) {
-				folder_item_count_str = g_strdup (_(" (containing 1 item)"));
 			} else {
-				folder_item_count_str = g_strdup_printf (_(" (containing %d items)"), folder_item_count);
+				folder_item_count_str = g_strdup_printf (ngettext(" (containing %d item)",
+										  " (containing %d items)",
+										  folder_item_count), 
+									 folder_item_count);
 			}
 		}
 		else {
 			if (!folder_item_count_known) {
 				folder_item_count_str = g_strdup ("");
-			} else if (folder_item_count == 0) {
-				folder_item_count_str = g_strdup (_(" (containing a total of 0 items)"));
-			} else if (folder_item_count == 1) {
-				folder_item_count_str = g_strdup (_(" (containing a total of 1 item)"));
 			} else {
-				folder_item_count_str = g_strdup_printf (_(" (containing a total of %d items)"), folder_item_count);
+				/* translators: this is preceded with a string of form 'N folders' (N more than 1) */
+				folder_item_count_str = g_strdup_printf (ngettext(" (containing a total of %d item)",
+										  " (containing a total of %d items)",
+										  folder_item_count), 
+									 folder_item_count);
 			}
 			
 		}
@@ -1789,20 +1790,19 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 								  first_item_name,
 								  size_string);
 			} else {
-				non_folder_str = g_strdup_printf (_("%d items selected (%s)"), 
+				non_folder_str = g_strdup_printf (ngettext("%d item selected (%s)",
+									   "%d items selected (%s)",
+									   non_folder_count), 
 								  non_folder_count, 
 								  size_string);
 			}
 		} else {
 			/* Folders selected also, use "other" terminology */
-			if (non_folder_count == 1) {
-				non_folder_str = g_strdup_printf (_("1 other item selected (%s)"), 
-								  size_string);
-			} else {
-				non_folder_str = g_strdup_printf (_("%d other items selected (%s)"), 
-								  non_folder_count, 
-								  size_string);
-			}
+			non_folder_str = g_strdup_printf (ngettext("%d other item selected (%s)",
+								   "%d other items selected (%s)",
+								   non_folder_count), 
+							  non_folder_count, 
+							  size_string);
 		}
 
 		g_free (size_string);
@@ -3295,8 +3295,12 @@ confirm_delete_from_trash (FMDirectoryView *view, GList *uris)
 					    "from the trash?"), file_name);
 		g_free (file_name);
 	} else {
-		prompt = g_strdup_printf (_("Are you sure you want to permanently delete "
-		  			    "the %d selected items from the trash?"), uri_count);
+		prompt = g_strdup_printf (ngettext("Are you sure you want to permanently delete "
+						   "the %d selected item from the trash?",
+						   "Are you sure you want to permanently delete "
+						   "the %d selected items from the trash?",
+						   uri_count), 
+					  uri_count);
 	}
 
 	dialog = eel_show_yes_no_dialog (
@@ -4741,12 +4745,18 @@ copy_or_cut_files (FMDirectoryView *view,
 		g_free (name);
 	} else {
 		if (cut) {
-			status_string = g_strdup_printf (_("The %d selected items will be moved "
-							   "if you select the Paste Files command"),
+			status_string = g_strdup_printf (ngettext("The %d selected item will be moved "
+								  "if you select the Paste Files command",
+								  "The %d selected items will be moved "
+								  "if you select the Paste Files command",
+								  count),
 							 count);
 		} else {
-			status_string = g_strdup_printf (_("The %d selected items will be copied "
-							   "if you select the Paste Files command"),
+			status_string = g_strdup_printf (ngettext("The %d selected item will be copied "
+								  "if you select the Paste Files command",
+								  "The %d selected items will be copied "
+								  "if you select the Paste Files command",
+								  count),
 							 count);
 		}
 	}
@@ -5295,11 +5305,10 @@ real_update_menus (FMDirectoryView *view)
 	
 	if (nautilus_view_get_window_type (view->details->nautilus_view) == Nautilus_WINDOW_NAVIGATION) {
 		show_open_alternate = TRUE;
-		if (selection_count <= 1) {
-			label_with_underscore = g_strdup (_("Open in New Window"));
-		} else {
-			label_with_underscore = g_strdup_printf (_("Open in %d New Windows"), selection_count);
-		}
+		label_with_underscore = g_strdup_printf (ngettext("Open in New Window",
+								  "Open in %d New Windows",
+								  selection_count), 
+							 selection_count);
 	} else {
 		show_open_alternate = file_list_all_can_use_components (selection);
 		if (selection_count <= 1) {

@@ -219,7 +219,9 @@ load_finished (NautilusImagePropertiesView *view)
 	
 		name = gdk_pixbuf_format_get_name (format);
 		desc = gdk_pixbuf_format_get_description (format);
-		g_string_append_printf (str, _("<b>Image Type:</b> %s (%s)\n<b>Resolution:</b> %dx%d pixels\n"),
+		g_string_append_printf (str, ngettext ("<b>Image Type:</b> %s (%s)\n<b>Resolution:</b> %dx%d pixels\n",
+						       "<b>Image Type:</b> %s (%s)\n<b>Resolution:</b> %dx%d pixels\n",
+						       view->details->height),
 					name, desc, view->details->width, view->details->height);
 		g_free (name);
 		g_free (desc);

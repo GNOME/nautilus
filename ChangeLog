@@ -1,3 +1,29 @@
+2004-01-13  Danilo Šegan  <dsegan@gmx.net>
+ 
+	* src/nautilus-location-bar.c (drag_data_received_callback): 
+
+	* src/file-manager/fm-search-list-view.c
+	(compute_reveal_item_name_and_sensitivity): 
+
+	* src/file-manager/fm-properties-window.c
+	(directory_contents_value_field_update): 
+
+	* src/file-manager/fm-directory-view.c
+	(fm_directory_view_confirm_multiple_windows): 
+	(confirm_delete_directly)
+	(fm_directory_view_display_selection_info)
+	(confirm_delete_from_trash, copy_or_cut_files)
+	(real_update_menus): 
+
+	* libnautilus-private/nautilus-file.c
+	(format_item_count_for_display): 
+
+	* components/image_properties/nautilus-image-properties-view.c
+	(load_finished): 
+
+	Use ngettext (fixes bug #106702), based on the patch by 
+	Christian Neumair <chris@gnome-de.org>.
+
 === nautilus 2.5.5 ===
 
 2004-01-12  Dave Camp  <dave@ximian.com>

@@ -1756,13 +1756,10 @@ directory_contents_value_field_update (FMPropertiesWindow *window)
 	} else {
 		char *size_str;
 		size_str = gnome_vfs_format_file_size_for_display (total_size);
-		if (total_count == 1) {
-			text = g_strdup_printf (_("1 item, with size %s"),
-						size_str);
-		} else {
-			text = g_strdup_printf (_("%d items, totalling %s"),
-						total_count, size_str);
-		}
+		text = g_strdup_printf (ngettext("%d item, with size %s",
+						 "%d items, totalling %s",
+						 total_count),
+					total_count, size_str);
 		g_free (size_str);
 
 		if (unreadable_directory_count != 0) {
