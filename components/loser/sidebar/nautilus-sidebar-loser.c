@@ -92,7 +92,7 @@ nautilus_sidebar_loser_initialize (NautilusSidebarLoser *view)
 	 * can merge menu & toolbar items into Nautilus's UI.
 	 */
         gtk_signal_connect (GTK_OBJECT (nautilus_view_get_bonobo_control
-					(NAUTILUS_VIEW (view->details->nautilus_view))),
+					(view->details->nautilus_view)),
                             "activate",
                             loser_merge_bonobo_items_callback,
                             view);
@@ -174,7 +174,7 @@ loser_notify_location_change_callback (NautilusView  *nautilus_view,
 	
 	request.type = Nautilus_PROGRESS_UNDERWAY;
 	request.amount = 0.0;
-	nautilus_view_request_progress_change (NAUTILUS_VIEW (nautilus_view), &request);
+	nautilus_view_request_progress_change (nautilus_view, &request);
 	
 	nautilus_sidebar_loser_maybe_fail ("pre-load");
 
@@ -195,7 +195,7 @@ loser_notify_location_change_callback (NautilusView  *nautilus_view,
 
 	request.type = Nautilus_PROGRESS_DONE_OK;
 	request.amount = 100.0;
-	nautilus_view_request_progress_change (NAUTILUS_VIEW (nautilus_view), &request);
+	nautilus_view_request_progress_change (nautilus_view, &request);
 
 	nautilus_sidebar_loser_maybe_fail ("post-done");
 }

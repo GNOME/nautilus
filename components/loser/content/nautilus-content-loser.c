@@ -40,7 +40,7 @@
 
 struct NautilusContentLoserDetails {
 	char *uri;
-	NautilusContentView *nautilus_view;
+	NautilusView *nautilus_view;
 };
 
 static void nautilus_content_loser_initialize_class (NautilusContentLoserClass *klass);
@@ -49,7 +49,7 @@ static void nautilus_content_loser_destroy          (GtkObject                 *
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusContentLoser, nautilus_content_loser, GTK_TYPE_LABEL)
      
-static void loser_notify_location_change_callback (NautilusContentView     *nautilus_view,
+static void loser_notify_location_change_callback (NautilusView            *nautilus_view,
 						   Nautilus_NavigationInfo *navinfo,
 						   NautilusContentLoser    *view);
 static void loser_merge_bonobo_items_callback     (BonoboObject            *control,
@@ -75,7 +75,7 @@ nautilus_content_loser_initialize (NautilusContentLoser *view)
 	
 	gtk_label_set_text (GTK_LABEL (view), g_strdup ("(none)"));
 	
-	view->details->nautilus_view = nautilus_content_view_new (GTK_WIDGET (view));
+	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 	
 	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
 			    "notify_location_change",
@@ -86,7 +86,7 @@ nautilus_content_loser_initialize (NautilusContentLoser *view)
 	 * can merge menu & toolbar items into Nautilus's UI.
 	 */
         gtk_signal_connect (GTK_OBJECT (nautilus_view_get_bonobo_control
-					(NAUTILUS_VIEW (view->details->nautilus_view))),
+					(view->details->nautilus_view)),
                             "activate",
                             loser_merge_bonobo_items_callback,
                             view);
@@ -117,7 +117,7 @@ nautilus_content_loser_destroy (GtkObject *object)
  * @view: NautilusContentLoser to get the nautilus_view from..
  * 
  **/
-NautilusContentView *
+NautilusView *
 nautilus_content_loser_get_nautilus_view (NautilusContentLoser *view)
 {
 	return view->details->nautilus_view;
@@ -145,9 +145,9 @@ nautilus_content_loser_load_uri (NautilusContentLoser *view,
 }
 
 static void
-loser_notify_location_change_callback (NautilusContentView  *nautilus_view, 
-				  	Nautilus_NavigationInfo   *navinfo, 
-				  	NautilusContentLoser *view)
+loser_notify_location_change_callback (NautilusView *nautilus_view, 
+				       Nautilus_NavigationInfo   *navinfo, 
+				       NautilusContentLoser *view)
 {
 	Nautilus_ProgressRequestInfo request;
 
@@ -167,7 +167,7 @@ loser_notify_location_change_callback (NautilusContentView  *nautilus_view,
 	
 	request.type = Nautilus_PROGRESS_UNDERWAY;
 	request.amount = 0.0;
-	nautilus_view_request_progress_change (NAUTILUS_VIEW (nautilus_view), &request);
+	nautilus_view_request_progress_change (nautilus_view, &request);
 	
 	nautilus_content_loser_maybe_fail ("pre-load");
 
@@ -187,7 +187,7 @@ loser_notify_location_change_callback (NautilusContentView  *nautilus_view,
 	
 	request.type = Nautilus_PROGRESS_DONE_OK;
 	request.amount = 100.0;
-	nautilus_view_request_progress_change (NAUTILUS_VIEW (nautilus_view), &request);
+	nautilus_view_request_progress_change (nautilus_view, &request);
 	
 	nautilus_content_loser_maybe_fail ("post-done");
 }

@@ -288,14 +288,14 @@ make_oaf_query_with_known_mime_type (NautilusNavigationInfo *navinfo)
         result = g_strdup_printf 
                 (
                  /* Check if the component has the interfaces we need.
-                  * We can work with either a Nautilus ContentView, or
+                  * We can work with either a Nautilus View, or
                   * with a Bonobo Control or Embeddable that supports
                   * one of the three persistence interfaces:
                   * PersistStream, ProgressiveDataSink, or
                   * PersistFile.
                   */
                  "((repo_ids.has_all(['IDL:Bonobo/Control:1.0',"
-                                    "'IDL:Nautilus/ContentView:1.0'])"
+                                     "'IDL:Nautilus/View:1.0'])"
                   "OR (repo_ids.has_one(['IDL:Bonobo/Control:1.0',"
                                         "'IDL:Bonobo/Embeddable:1.0'])"
                       "AND repo_ids.has_one(['IDL:Bonobo/PersistStream:1.0',"
@@ -368,12 +368,12 @@ make_oaf_query_with_uri_scheme_only (NautilusNavigationInfo *navinfo)
         result = g_strdup_printf 
                 (
                  /* Check if the component has the interfaces we need.
-                  * We can work with either a Nautilus ContentView, or
+                  * We can work with either a Nautilus tView, or
                   * with a Bonobo Control or Embeddable that works on
                   * a file, which is indicated by Bonobo PersistFile.
                   */
                   "((repo_ids.has_all(['IDL:Bonobo/Control:1.0',"
-                                     "'IDL:Nautilus/ContentView:1.0'])"
+                                      "'IDL:Nautilus/View:1.0'])"
                    "OR (repo_ids.has_one(['IDL:Bonobo/Control:1.0',"
                                          "'IDL:Bonobo/Embeddable:1.0'])"
                        "AND repo_ids.has('IDL:Bonobo/PersistFile:1.0')))"

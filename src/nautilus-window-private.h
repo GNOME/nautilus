@@ -2,7 +2,6 @@
 #define NTL_WINDOW_PRIVATE_H
 
 #include "ntl-window.h"
-#include "ntl-content-view.h"
 #include <libnautilus/libnautilus.h>
 #include <libnautilus/nautilus-undo-manager.h>
 #include <gtk/gtk.h>
@@ -50,7 +49,7 @@ NautilusViewFrame *nautilus_window_load_content_view(NautilusWindow *window,
                                   Nautilus_NavigationInfo *navinfo,
                                   NautilusViewFrame **requesting_view);
 void nautilus_window_connect_content_view (NautilusWindow *window, 
-				           NautilusContentViewFrame *view);
+				           NautilusViewFrame *view);
 void nautilus_window_connect_view (NautilusWindow *window, 
 				   NautilusViewFrame *view);
 void nautilus_window_view_destroyed(NautilusViewFrame *view, NautilusWindow *window);

@@ -61,7 +61,7 @@ services_make_object (BonoboGenericFactory* factory,
 
 	gtk_signal_connect (GTK_OBJECT (view), "destroy", services_object_destroyed, NULL);
 
-	nautilus_view = NAUTILUS_VIEW (nautilus_service_startup_view_get_nautilus_view (view));
+	nautilus_view = nautilus_service_startup_view_get_nautilus_view (view);
 	
 	printf ("Returning new object %p\n", nautilus_view);
 

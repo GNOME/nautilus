@@ -134,7 +134,7 @@ impl_Nautilus_Application_create_object (impl_POA_Nautilus_Application *servant,
 					 CORBA_Environment * ev)
 {
 	FMDirectoryView *dir_view;
-	NautilusContentView *view;
+	NautilusView *view;
 
 	if (!impl_Nautilus_Application_supports (servant, obj_iid, ev)) {
 		return CORBA_OBJECT_NIL;

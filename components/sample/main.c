@@ -62,7 +62,7 @@ sample_make_object (BonoboGenericFactory *factory,
 
 	object_count++;
 
-	nautilus_view = NAUTILUS_VIEW (nautilus_sample_content_view_get_nautilus_view (view));
+	nautilus_view = nautilus_sample_content_view_get_nautilus_view (view);
 
 	gtk_signal_connect (GTK_OBJECT (nautilus_view), "destroy", sample_object_destroyed, NULL);
 

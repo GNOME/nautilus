@@ -62,8 +62,6 @@ nautilus_SOURCES =\
 	nautilus.h			\
 	ntl-app.c			\
 	ntl-app.h			\
-	ntl-content-view.c		\
-	ntl-content-view.h		\
 	ntl-index-panel.c		\
 	ntl-index-panel.h		\
 	ntl-main.c 			\

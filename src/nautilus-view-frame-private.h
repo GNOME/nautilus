@@ -38,24 +38,25 @@ typedef struct {
         NautilusViewFrame *view;
 } impl_POA_Nautilus_ViewFrame;
 
-
 extern POA_Nautilus_ViewFrame__vepv impl_Nautilus_ViewFrame_vepv;
 extern POA_Nautilus_ZoomableFrame__vepv impl_Nautilus_ZoomableFrame_vepv;
 
-BonoboObject *impl_Nautilus_ViewFrame__create              (NautilusViewFrame              *view,
-                                                            CORBA_Environment              *ev);
-BonoboObject *impl_Nautilus_ZoomableFrame__create          (NautilusViewFrame              *view,
-                                                            CORBA_Environment              *ev);
-void          nautilus_view_frame_request_location_change  (NautilusViewFrame              *view,
-                                                            Nautilus_NavigationRequestInfo *loc);
-void          nautilus_view_frame_request_selection_change (NautilusViewFrame              *view,
-                                                            Nautilus_SelectionRequestInfo  *loc);
-void          nautilus_view_frame_request_status_change    (NautilusViewFrame              *view,
-                                                            Nautilus_StatusRequestInfo     *loc);
-void          nautilus_view_frame_request_progress_change  (NautilusViewFrame              *view,
-                                                            Nautilus_ProgressRequestInfo   *loc);
-void          nautilus_view_frame_notify_zoom_level        (NautilusViewFrame              *view,
-                                                            double                          level);
+BonoboObject *impl_Nautilus_ViewFrame__create              (NautilusViewFrame                    *view,
+                                                            CORBA_Environment                    *ev);
+BonoboObject *impl_Nautilus_ZoomableFrame__create          (NautilusViewFrame                    *view,
+                                                            CORBA_Environment                    *ev);
+void          nautilus_view_frame_request_location_change  (NautilusViewFrame                    *view,
+                                                            const Nautilus_NavigationRequestInfo *loc);
+void          nautilus_view_frame_request_selection_change (NautilusViewFrame                    *view,
+                                                            const Nautilus_SelectionRequestInfo  *loc);
+void          nautilus_view_frame_request_status_change    (NautilusViewFrame                    *view,
+                                                            const Nautilus_StatusRequestInfo     *loc);
+void          nautilus_view_frame_request_progress_change  (NautilusViewFrame                    *view,
+                                                            const Nautilus_ProgressRequestInfo   *loc);
+void          nautilus_view_frame_request_title_change     (NautilusViewFrame                    *view,
+                                                            const char                           *title);
+void          nautilus_view_frame_notify_zoom_level        (NautilusViewFrame                    *view,
+                                                            double                                level);
 
 struct NautilusViewComponentType {
         const char *primary_repoid;

@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_MUSIC_VIEW_H
 #define NAUTILUS_MUSIC_VIEW_H
 
-#include <libnautilus/nautilus-content-view-frame.h>
+#include <libnautilus/nautilus-view-frame.h>
 #include <gtk/gtkeventbox.h>
 
 
@@ -52,13 +52,13 @@ struct _NautilusMusicViewClass {
 
 
 /* GtkObject support */
-GtkType              nautilus_music_view_get_type          (void);
+GtkType       nautilus_music_view_get_type          (void);
 
 /* Component embedding support */
-NautilusContentView *nautilus_music_view_get_nautilus_view (NautilusMusicView *view);
+NautilusView *nautilus_music_view_get_nautilus_view (NautilusMusicView *view);
 
 /* URI handling */
-void                 nautilus_music_view_load_uri          (NautilusMusicView *view,
-							    const char        *uri);
+void          nautilus_music_view_load_uri          (NautilusMusicView *view,
+						     const char        *uri);
 
 #endif /* NAUTILUS_MUSIC_VIEW_H */

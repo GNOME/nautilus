@@ -243,7 +243,7 @@ hyperbola_navigation_index_select_row(GtkWidget *clist, gint row, gint column, G
   memset(&loc, 0, sizeof(loc));
   loc.requested_uri = ii->uri;
   loc.new_window_requested = FALSE;
-  nautilus_view_request_location_change(NAUTILUS_VIEW(hni->view_frame), &loc);
+  nautilus_view_request_location_change(hni->view_frame, &loc);
 }
 
 typedef struct {

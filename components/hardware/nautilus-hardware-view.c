@@ -51,7 +51,7 @@
 
 struct _NautilusHardwareViewDetails {
         char *uri;
-        NautilusContentView *nautilus_view;
+        NautilusView *nautilus_view;
         
         GtkWidget *form;
 };
@@ -69,21 +69,19 @@ static GtkTargetEntry hardware_dnd_target_table[] = {
 	{ "special/x-gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
 };
 
-static void nautilus_hardware_view_drag_data_received	(GtkWidget	*widget,
-                                                     	GdkDragContext 	*context,
-                                                        int		x,
-                                                        int		y,
-                                                        GtkSelectionData *selection_data,
-                                                        guint		info,
-                                                        guint		time);
-
-static void nautilus_hardware_view_initialize_class     (NautilusHardwareViewClass	*klass);
-static void nautilus_hardware_view_initialize           (NautilusHardwareView		*view);
-static void nautilus_hardware_view_destroy              (GtkObject                	*object);
-
-static void hardware_view_notify_location_change_callback (NautilusContentView 	*view,
-                                                        Nautilus_NavigationInfo  	*navinfo,
-                                                        NautilusHardwareView        	*hardware_view);
+static void nautilus_hardware_view_drag_data_received     (GtkWidget                 *widget,
+                                                           GdkDragContext            *context,
+                                                           int                        x,
+                                                           int                        y,
+                                                           GtkSelectionData          *selection_data,
+                                                           guint                      info,
+                                                           guint                      time);
+static void nautilus_hardware_view_initialize_class       (NautilusHardwareViewClass *klass);
+static void nautilus_hardware_view_initialize             (NautilusHardwareView      *view);
+static void nautilus_hardware_view_destroy                (GtkObject                 *object);
+static void hardware_view_notify_location_change_callback (NautilusView              *view,
+                                                           Nautilus_NavigationInfo   *navinfo,
+                                                           NautilusHardwareView      *hardware_view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusHardwareView, nautilus_hardware_view, GTK_TYPE_EVENT_BOX)
 
@@ -110,7 +108,7 @@ nautilus_hardware_view_initialize (NautilusHardwareView *hardware_view)
   	NautilusBackground *background;
 	hardware_view->details = g_new0 (NautilusHardwareViewDetails, 1);
 
-	hardware_view->details->nautilus_view = nautilus_content_view_new (GTK_WIDGET (hardware_view));
+	hardware_view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (hardware_view));
 
 	gtk_signal_connect (GTK_OBJECT (hardware_view->details->nautilus_view), 
 			    "notify_location_change",
@@ -144,7 +142,7 @@ nautilus_hardware_view_destroy (GtkObject *object)
 }
 
 /* Component embedding support */
-NautilusContentView *
+NautilusView *
 nautilus_hardware_view_get_nautilus_view (NautilusHardwareView *hardware_view)
 {
 	return hardware_view->details->nautilus_view;
@@ -446,9 +444,9 @@ nautilus_hardware_view_load_uri (NautilusHardwareView *view, const char *uri)
 }
 
 static void
-hardware_view_notify_location_change_callback (NautilusContentView *view, 
-                                            Nautilus_NavigationInfo *navinfo, 
-                                            NautilusHardwareView *hardware_view)
+hardware_view_notify_location_change_callback (NautilusView *view, 
+                                               Nautilus_NavigationInfo *navinfo, 
+                                               NautilusHardwareView *hardware_view)
 {
 	Nautilus_ProgressRequestInfo progress;
 
@@ -458,7 +456,7 @@ hardware_view_notify_location_change_callback (NautilusContentView *view,
   
 	progress.type = Nautilus_PROGRESS_UNDERWAY;
 	progress.amount = 0.0;
-	nautilus_view_request_progress_change (NAUTILUS_VIEW (hardware_view->details->nautilus_view), &progress);
+	nautilus_view_request_progress_change (hardware_view->details->nautilus_view, &progress);
 
 	/* do the actual work here */
 	nautilus_hardware_view_load_uri (hardware_view, navinfo->actual_uri);
@@ -466,7 +464,7 @@ hardware_view_notify_location_change_callback (NautilusContentView *view,
 	/* send the required PROGRESS_DONE signal */
 	progress.type = Nautilus_PROGRESS_DONE_OK;
 	progress.amount = 100.0;
-	nautilus_view_request_progress_change (NAUTILUS_VIEW (hardware_view->details->nautilus_view), &progress);
+	nautilus_view_request_progress_change (hardware_view->details->nautilus_view, &progress);
 }
 
 /* handle drag and drop */

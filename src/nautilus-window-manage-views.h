@@ -28,7 +28,6 @@
 #define NTL_WINDOW_MSGS_H
 
 #include "ntl-window.h"
-#include "ntl-content-view.h"
 
 void nautilus_window_request_location_change  (NautilusWindow                 *window,
                                                Nautilus_NavigationRequestInfo *loc,
@@ -44,6 +43,6 @@ void nautilus_window_request_progress_change  (NautilusWindow                 *w
                                                NautilusViewFrame              *requesting_view);
 void nautilus_window_request_title_change     (NautilusWindow                 *window,
                                                const char                     *new_title,
-                                               NautilusContentViewFrame       *requesting_view);
+                                               NautilusViewFrame              *requesting_view);
 
 #endif /* NTL_WINDOW_MSGS_H */

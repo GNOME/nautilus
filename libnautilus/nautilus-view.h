@@ -83,6 +83,8 @@ void           nautilus_view_request_status_change    (NautilusView             
 						       Nautilus_StatusRequestInfo     *loc);
 void           nautilus_view_request_progress_change  (NautilusView                   *view,
 						       Nautilus_ProgressRequestInfo   *loc);
+void           nautilus_view_request_title_change     (NautilusView                   *view,
+						       const char                     *title);
 BonoboControl *nautilus_view_get_bonobo_control       (NautilusView                   *view);
 CORBA_Object   nautilus_view_get_main_window          (NautilusView                   *view);
 

@@ -210,8 +210,7 @@ compute_default_title (const char *text_uri)
         return g_strdup(_("Nautilus"));
 }
 
-/*
- * nautilus_window_get_current_location_title:
+/* nautilus_window_get_current_location_title:
  * 
  * Get a newly allocated copy of the user-displayable title for the current
  * location. Note that the window title is related to this but might not
@@ -228,8 +227,7 @@ nautilus_window_get_current_location_title (NautilusWindow *window)
                 : g_strdup (window->default_title);
 }
 
-/*
- * nautilus_window_update_title_internal:
+/* nautilus_window_update_title_internal:
  * 
  * Update the non-NautilusViewFrame objects that use the location's user-displayable
  * title in some way. Called when the location or title has changed.
@@ -257,14 +255,12 @@ nautilus_window_update_title_internal (NautilusWindow *window, const char *title
         nautilus_send_history_list_changed ();
 }
 
-/*
- * nautilus_window_reset_title_internal:
+/* nautilus_window_reset_title_internal:
  * 
  * Update the non-NautilusViewFrame objects that use the location's user-displayable
  * title in some way. Called when the location or title has changed.
  * @window: The NautilusWindow in question.
  * @title: The new user-displayable title.
- * 
  */
 static void
 nautilus_window_reset_title_internal (NautilusWindow *window, const char *uri)
@@ -288,11 +284,18 @@ nautilus_window_reset_title_internal (NautilusWindow *window, const char *uri)
 }
 
 void
-nautilus_window_request_title_change(NautilusWindow *window,
-                                     const char *new_title,
-                                     NautilusContentViewFrame *requesting_view)
+nautilus_window_request_title_change (NautilusWindow *window,
+                                      const char *new_title,
+                                      NautilusViewFrame *requesting_view)
 {
+        g_return_if_fail (NAUTILUS_IS_WINDOW (widnow));
         g_return_if_fail (new_title != NULL);
+        g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (requesting_view));
+
+        /* Only the content view can change the window title. */
+        if (requesting_view != window->content_view) {
+                return;
+        }
         
         g_free (window->requested_title);
         window->requested_title = g_strdup (new_title);
@@ -568,9 +571,9 @@ nautilus_window_free_load_info (NautilusWindow *window)
 
 /* Meta view handling */
 static NautilusViewFrame *
-nautilus_window_load_meta_view(NautilusWindow *window,
-                               const char *iid,
-                               NautilusViewFrame *requesting_view)
+nautilus_window_load_meta_view (NautilusWindow *window,
+                                const char *iid,
+                                NautilusViewFrame *requesting_view)
 {
         NautilusViewFrame *meta_view;
         GList *p;
@@ -638,7 +641,7 @@ nautilus_window_request_location_change (NautilusWindow *window,
 {  
         NautilusWindow *new_window;
 
-	loc->requested_uri = gnome_vfs_unescape_string(loc->requested_uri);
+	loc->requested_uri = gnome_vfs_unescape_string (loc->requested_uri);
 
         if (handle_unreadable_location (window, loc->requested_uri)) {
 		return;
@@ -655,10 +658,10 @@ nautilus_window_request_location_change (NautilusWindow *window,
 }
 
 NautilusViewFrame *
-nautilus_window_load_content_view(NautilusWindow *window,
-                                  const char *iid,
-                                  Nautilus_NavigationInfo *navinfo,
-                                  NautilusViewFrame **requesting_view)
+nautilus_window_load_content_view (NautilusWindow *window,
+                                   const char *iid,
+                                   Nautilus_NavigationInfo *navinfo,
+                                   NautilusViewFrame **requesting_view)
 {
         NautilusViewFrame *content_view = window->content_view;
         NautilusViewFrame *new_view;
@@ -678,10 +681,10 @@ nautilus_window_load_content_view(NautilusWindow *window,
                         *requesting_view = NULL;
                 }
                 
-                new_view = NAUTILUS_VIEW_FRAME (gtk_widget_new (nautilus_content_view_frame_get_type(),
-                                                          "main_window", window, NULL));
+                new_view = NAUTILUS_VIEW_FRAME (gtk_widget_new (nautilus_view_frame_get_type(),
+                                                                "main_window", window, NULL));
                 
-                nautilus_window_connect_content_view (window, NAUTILUS_CONTENT_VIEW_FRAME (new_view));
+                nautilus_window_connect_content_view (window, new_view);
                 
                 if (!nautilus_view_frame_load_client (new_view, iid)) {
                         gtk_widget_unref(GTK_WIDGET(new_view));

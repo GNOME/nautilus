@@ -28,7 +28,7 @@
 #ifndef NAUTILUS_SERVICE_STARTUP_VIEW_H
 #define NAUTILUS_SERVICE_STARTUP_VIEW_H
 
-#include <libnautilus/nautilus-content-view-frame.h>
+#include <libnautilus/nautilus-view-frame.h>
 #include <gtk/gtk.h>
 
 typedef struct _NautilusServicesContentView NautilusServicesContentView;
@@ -52,13 +52,13 @@ struct _NautilusServicesContentViewClass {
 };
 
 /* GtkObject support */
-GtkType              nautilus_service_startup_view_get_type          (void);
+GtkType       nautilus_service_startup_view_get_type          (void);
 
 /* Component embedding support */
-NautilusContentView *nautilus_service_startup_view_get_nautilus_view (NautilusServicesContentView *view);
+NautilusView *nautilus_service_startup_view_get_nautilus_view (NautilusServicesContentView *view);
 
 /* URI handling */
-void                 nautilus_service_startup_view_load_uri          (NautilusServicesContentView *view,
-								      const char                  *uri);
+void          nautilus_service_startup_view_load_uri          (NautilusServicesContentView *view,
+							       const char                  *uri);
 
 #endif /* NAUTILUS_SERVICE_STARTUP_VIEW_H */

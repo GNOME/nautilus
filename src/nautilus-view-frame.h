@@ -62,6 +62,8 @@ struct NautilusViewFrameClass {
                                           Nautilus_StatusRequestInfo *loc);
         void (*request_progress_change)  (NautilusViewFrame *view,
                                           Nautilus_ProgressRequestInfo *loc);
+        void (*request_title_change)     (NautilusViewFrame *view,
+                                          const char *title);
 
         /* Part of Nautilus::ZoomableFrame CORBA interface. */
         void (*notify_zoom_level)        (NautilusViewFrame *view,
@@ -138,6 +140,7 @@ void          nautilus_view_frame_zoom_to_fit             (NautilusViewFrame    
 char *        nautilus_view_frame_get_label               (NautilusViewFrame       *view);
 void          nautilus_view_frame_set_label               (NautilusViewFrame       *view,
                                                            const char              *label);
+void          nautilus_view_frame_activate                (NautilusViewFrame       *view);
 
 /* This is a "protected" operation */
 void          nautilus_view_frame_construct_arg_set       (NautilusViewFrame       *view);

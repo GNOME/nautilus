@@ -60,7 +60,7 @@ music_view_make_object (BonoboGenericFactory *factory,
 
 	gtk_signal_connect (GTK_OBJECT (music_view), "destroy", music_view_object_destroyed, NULL);
 
-	nautilus_view = NAUTILUS_VIEW (nautilus_music_view_get_nautilus_view (music_view));
+	nautilus_view = nautilus_music_view_get_nautilus_view (music_view);
 	return BONOBO_OBJECT (nautilus_view);
 }
 

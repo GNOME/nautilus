@@ -50,9 +50,9 @@
 #include <libgnorba/gnorba.h>
 #include <limits.h>
 
-struct _NautilusRPMViewDetails {
+struct NautilusRPMViewDetails {
         char *current_uri;
-        NautilusContentView *nautilus_view;
+        NautilusView *nautilus_view;
         
         GtkWidget *package_image;
         GtkWidget *package_title;
@@ -106,7 +106,7 @@ static void nautilus_rpm_view_drag_data_received     (GtkWidget                *
 static void nautilus_rpm_view_initialize_class       (NautilusRPMViewClass   *klass);
 static void nautilus_rpm_view_initialize             (NautilusRPMView        *view);
 static void nautilus_rpm_view_destroy                (GtkObject                *object);
-static void rpm_view_notify_location_change_callback (NautilusContentView *view,
+static void rpm_view_notify_location_change_callback (NautilusView *view,
                                                         Nautilus_NavigationInfo  *navinfo,
                                                         NautilusRPMView        *rpm_view);
 static gint check_installed			     (gchar *package_name, gchar *package_version, gchar *package_release);
@@ -139,7 +139,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	
 	rpm_view->details = g_new0 (NautilusRPMViewDetails, 1);
 
-	rpm_view->details->nautilus_view = nautilus_content_view_new (GTK_WIDGET (rpm_view));
+	rpm_view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (rpm_view));
 
 	gtk_signal_connect (GTK_OBJECT (rpm_view->details->nautilus_view), 
 			    "notify_location_change",
@@ -357,7 +357,7 @@ nautilus_rpm_view_destroy (GtkObject *object)
 }
 
 /* Component embedding support */
-NautilusContentView *
+NautilusView *
 nautilus_rpm_view_get_nautilus_view (NautilusRPMView *rpm_view)
 {
 	return rpm_view->details->nautilus_view;
@@ -593,7 +593,7 @@ nautilus_rpm_view_load_uri (NautilusRPMView *rpm_view, const char *uri)
 }
 
 static void
-rpm_view_notify_location_change_callback (NautilusContentView *view, 
+rpm_view_notify_location_change_callback (NautilusView *view, 
                                           Nautilus_NavigationInfo *navinfo, 
                                           NautilusRPMView *rpm_view)
 {
@@ -605,7 +605,7 @@ rpm_view_notify_location_change_callback (NautilusContentView *view,
   
 	progress.type = Nautilus_PROGRESS_UNDERWAY;
 	progress.amount = 0.0;
-	nautilus_view_request_progress_change (NAUTILUS_VIEW (rpm_view->details->nautilus_view), &progress);
+	nautilus_view_request_progress_change (rpm_view->details->nautilus_view, &progress);
 
 	/* do the actual work here */
 	nautilus_rpm_view_load_uri (rpm_view, navinfo->actual_uri);
@@ -613,7 +613,7 @@ rpm_view_notify_location_change_callback (NautilusContentView *view,
 	/* send the required PROGRESS_DONE signal */
 	progress.type = Nautilus_PROGRESS_DONE_OK;
 	progress.amount = 100.0;
-	nautilus_view_request_progress_change (NAUTILUS_VIEW (rpm_view->details->nautilus_view), &progress);
+	nautilus_view_request_progress_change (rpm_view->details->nautilus_view, &progress);
 }
 
 /* handle drag and drop */

@@ -30,7 +30,6 @@
 #include <config.h>
 
 #include "ntl-view-private.h"
-#include "ntl-content-view.h"
 #include "ntl-window.h"
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <gtk/gtksignal.h>
@@ -43,6 +42,7 @@ enum {
   REQUEST_SELECTION_CHANGE,
   REQUEST_STATUS_CHANGE,
   REQUEST_PROGRESS_CHANGE,
+  REQUEST_TITLE_CHANGE,
   NOTIFY_ZOOM_LEVEL,
   LAST_SIGNAL
 };
@@ -92,28 +92,6 @@ nautilus_view_frame_get_type (void)
   return view_type;
 }
 
-#if 0
-typedef void (*GtkSignal_NONE__BOXED_OBJECT_BOXED) (GtkObject * object,
-						    gpointer arg1,
-						    GtkObject *arg2,
-						    gpointer arg3,
-						    gpointer user_data);
-static void
-gtk_marshal_NONE__BOXED_OBJECT_BOXED (GtkObject * object,
-				      GtkSignalFunc func,
-				      gpointer func_data,
-				      GtkArg * args)
-{
-  GtkSignal_NONE__BOXED_OBJECT_BOXED rfunc;
-  rfunc = (GtkSignal_NONE__BOXED_OBJECT_BOXED) func;
-  (*rfunc) (object,
-            GTK_VALUE_BOXED (args[0]),
-            GTK_VALUE_OBJECT (args[1]),
-            GTK_VALUE_BOXED (args[2]),
-            func_data);
-}
-#endif
-
 static void
 nautilus_view_frame_class_init (NautilusViewFrameClass *klass)
 {
@@ -144,57 +122,70 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *klass)
   /* klass->request_progress_change = NULL; */
   klass->view_constructed = nautilus_view_frame_constructed;
 
-  signals[REQUEST_LOCATION_CHANGE] = gtk_signal_new("request_location_change",
-                                                                  GTK_RUN_LAST,
-                                                                  object_class->type,
-                                                                  GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
-                                                                                     request_location_change),
-                                                                  gtk_marshal_NONE__BOXED,
-                                                                  GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
-  signals[REQUEST_SELECTION_CHANGE] = gtk_signal_new("request_selection_change",
-                                                                   GTK_RUN_LAST,
-                                                                   object_class->type,
-                                                                   GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
-                                                                                      request_selection_change),
-                                                                   gtk_marshal_NONE__BOXED,
-                                                                   GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
-  signals[REQUEST_STATUS_CHANGE] = gtk_signal_new("request_status_change",
-                                                                GTK_RUN_LAST,
-                                                                object_class->type,
-                                                                GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
-                                                                                   request_status_change),
-                                                                gtk_marshal_NONE__BOXED,
-                                                                GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
-  signals[REQUEST_PROGRESS_CHANGE] = gtk_signal_new("request_progress_change",
-                                                                   GTK_RUN_LAST,
-                                                                   object_class->type,
-                                                                   GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
-                                                                                      request_progress_change),
-                                                                   gtk_marshal_NONE__BOXED,
-                                                                   GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
-
-  signals[NOTIFY_ZOOM_LEVEL] = gtk_signal_new("notify_zoom_level",
-                                                            GTK_RUN_LAST,
-                                                            object_class->type,
-                                                            GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
-                                                                               notify_zoom_level),
-                                                            nautilus_gtk_marshal_NONE__DOUBLE,
-                                                            GTK_TYPE_NONE, 1, GTK_TYPE_DOUBLE);
-
-  gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+  signals[REQUEST_LOCATION_CHANGE] =
+    gtk_signal_new ("request_location_change",
+                    GTK_RUN_LAST,
+                    object_class->type,
+                    GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
+                                       request_location_change),
+                    gtk_marshal_NONE__BOXED,
+                    GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
+  signals[REQUEST_SELECTION_CHANGE] =
+    gtk_signal_new ("request_selection_change",
+                    GTK_RUN_LAST,
+                    object_class->type,
+                    GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
+                                       request_selection_change),
+                    gtk_marshal_NONE__BOXED,
+                    GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
+  signals[REQUEST_STATUS_CHANGE] =
+    gtk_signal_new ("request_status_change",
+                    GTK_RUN_LAST,
+                    object_class->type,
+                    GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
+                                       request_status_change),
+                    gtk_marshal_NONE__BOXED,
+                    GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
+  signals[REQUEST_PROGRESS_CHANGE] =
+    gtk_signal_new ("request_progress_change",
+                    GTK_RUN_LAST,
+                    object_class->type,
+                    GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
+                                       request_progress_change),
+                    gtk_marshal_NONE__STRING,
+                    GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
+  signals[REQUEST_TITLE_CHANGE] =
+    gtk_signal_new ("request_title_change",
+                    GTK_RUN_LAST,
+                    object_class->type,
+                    GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
+                                       request_title_change),
+                    gtk_marshal_NONE__BOXED,
+                    GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
   
-
+  signals[NOTIFY_ZOOM_LEVEL] =
+    gtk_signal_new ("notify_zoom_level",
+                    GTK_RUN_LAST,
+                    object_class->type,
+                    GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
+                                       notify_zoom_level),
+                    nautilus_gtk_marshal_NONE__DOUBLE,
+                    GTK_TYPE_NONE, 1, GTK_TYPE_DOUBLE);
+  
+  gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+    
   gtk_object_add_arg_type ("NautilusViewFrame::main_window",
 			   GTK_TYPE_OBJECT,
 			   GTK_ARG_READWRITE,
 			   ARG_MAIN_WINDOW);
+
   klass->num_construct_args++;
 }
 
 static void
 nautilus_view_frame_set_arg (GtkObject      *object,
-		       GtkArg         *arg,
-		       guint	       arg_id)
+                             GtkArg         *arg,
+                             guint	       arg_id)
 {
   NautilusViewFrame *view;
 
@@ -209,8 +200,8 @@ nautilus_view_frame_set_arg (GtkObject      *object,
 
 static void
 nautilus_view_frame_get_arg (GtkObject      *object,
-		       GtkArg         *arg,
-		       guint	        arg_id)
+                             GtkArg         *arg,
+                             guint	        arg_id)
 {
   switch(arg_id) {
   case ARG_MAIN_WINDOW:
@@ -758,7 +749,7 @@ nautilus_view_frame_get_objref(NautilusViewFrame *view)
 
 void
 nautilus_view_frame_request_location_change(NautilusViewFrame *view,
-                                            Nautilus_NavigationRequestInfo *loc)
+                                            const Nautilus_NavigationRequestInfo *loc)
 {
   g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
   gtk_signal_emit(GTK_OBJECT(view), signals[REQUEST_LOCATION_CHANGE], loc);
@@ -766,7 +757,7 @@ nautilus_view_frame_request_location_change(NautilusViewFrame *view,
 
 void
 nautilus_view_frame_request_selection_change (NautilusViewFrame              *view,
-                                              Nautilus_SelectionRequestInfo *loc)
+                                              const Nautilus_SelectionRequestInfo *loc)
 {
   g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
   gtk_signal_emit(GTK_OBJECT(view), signals[REQUEST_SELECTION_CHANGE], loc);
@@ -774,7 +765,7 @@ nautilus_view_frame_request_selection_change (NautilusViewFrame              *vi
 
 void
 nautilus_view_frame_request_status_change    (NautilusViewFrame              *view,
-                                              Nautilus_StatusRequestInfo *loc)
+                                              const Nautilus_StatusRequestInfo *loc)
 {
   g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
   gtk_signal_emit(GTK_OBJECT(view), signals[REQUEST_STATUS_CHANGE], loc);
@@ -782,10 +773,18 @@ nautilus_view_frame_request_status_change    (NautilusViewFrame              *vi
 
 void
 nautilus_view_frame_request_progress_change(NautilusViewFrame              *view,
-                                            Nautilus_ProgressRequestInfo *loc)
+                                            const Nautilus_ProgressRequestInfo *loc)
 {
   g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
   gtk_signal_emit(GTK_OBJECT(view), signals[REQUEST_PROGRESS_CHANGE], loc);
+}
+
+void
+nautilus_view_frame_request_title_change (NautilusViewFrame *view,
+                                          const char *title)
+{
+  g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+  gtk_signal_emit (GTK_OBJECT (view), signals[REQUEST_TITLE_CHANGE], title);
 }
 
 void
@@ -854,4 +853,16 @@ nautilus_view_frame_set_label (NautilusViewFrame *view,
   g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
   g_free (view->label);
   view->label = g_strdup (label);
+}
+
+/* Calls activate on the underlying control frame. */
+void
+nautilus_view_frame_activate (NautilusViewFrame *view)
+{
+  BonoboControlFrame *control_frame;
+
+  control_frame = BONOBO_CONTROL_FRAME (bonobo_object_query_local_interface 
+                                        (view->view_frame, "IDL:Bonobo/ControlFrame:1.0"));
+  bonobo_control_frame_control_activate (control_frame);
+  bonobo_object_unref (BONOBO_OBJECT (control_frame));
 }

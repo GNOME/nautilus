@@ -41,21 +41,20 @@
 /* A NautilusContentView's private information. */
 struct NautilusSampleContentViewDetails {
 	char *uri;
-	NautilusContentView *nautilus_view;
+	NautilusView *nautilus_view;
 };
 
 static void nautilus_sample_content_view_initialize_class (NautilusSampleContentViewClass *klass);
 static void nautilus_sample_content_view_initialize       (NautilusSampleContentView      *view);
 static void nautilus_sample_content_view_destroy          (GtkObject                      *object);
+static void sample_notify_location_change_callback        (NautilusView                   *nautilus_view,
+							   Nautilus_NavigationInfo        *navinfo,
+							   NautilusSampleContentView      *view);
+static void sample_merge_bonobo_items_callback            (BonoboObject                   *control,
+							   gboolean                        state,
+							   gpointer                        user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSampleContentView, nautilus_sample_content_view, GTK_TYPE_LABEL)
-     
-static void sample_notify_location_change_callback        (NautilusContentView  *nautilus_view, 
-							   Nautilus_NavigationInfo   *navinfo, 
-							   NautilusSampleContentView *view);
-static void sample_merge_bonobo_items_callback 		  (BonoboObject 	     *control, 
-							   gboolean 		      state, 
-							   gpointer 		      user_data);
      
 static void
 nautilus_sample_content_view_initialize_class (NautilusSampleContentViewClass *klass)
@@ -74,7 +73,7 @@ nautilus_sample_content_view_initialize (NautilusSampleContentView *view)
 	
 	gtk_label_set_text (GTK_LABEL (view), g_strdup ("(none)"));
 	
-	view->details->nautilus_view = nautilus_content_view_new (GTK_WIDGET (view));
+	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 	
 	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
 			    "notify_location_change",
@@ -86,7 +85,7 @@ nautilus_sample_content_view_initialize (NautilusSampleContentView *view)
 	 * can merge menu & toolbar items into Nautilus's UI.
 	 */
         gtk_signal_connect (GTK_OBJECT (nautilus_view_get_bonobo_control
-					(NAUTILUS_VIEW (view->details->nautilus_view))),
+					(view->details->nautilus_view)),
                             "activate",
                             sample_merge_bonobo_items_callback,
                             view);
@@ -117,7 +116,7 @@ nautilus_sample_content_view_destroy (GtkObject *object)
  * @view: NautilusSampleContentView to get the nautilus_view from..
  * 
  **/
-NautilusContentView *
+NautilusView *
 nautilus_sample_content_view_get_nautilus_view (NautilusSampleContentView *view)
 {
 	return view->details->nautilus_view;
@@ -144,8 +143,8 @@ nautilus_sample_content_view_load_uri (NautilusSampleContentView *view,
 }
 
 static void
-sample_notify_location_change_callback (NautilusContentView  *nautilus_view, 
-				  	Nautilus_NavigationInfo   *navinfo, 
+sample_notify_location_change_callback (NautilusView *nautilus_view, 
+				  	Nautilus_NavigationInfo *navinfo, 
 				  	NautilusSampleContentView *view)
 {
 	Nautilus_ProgressRequestInfo request;
@@ -165,7 +164,7 @@ sample_notify_location_change_callback (NautilusContentView  *nautilus_view,
 	
 	request.type = Nautilus_PROGRESS_UNDERWAY;
 	request.amount = 0.0;
-	nautilus_view_request_progress_change (NAUTILUS_VIEW (nautilus_view), &request);
+	nautilus_view_request_progress_change (nautilus_view, &request);
 	
 	/* Do the actual load. */
 	nautilus_sample_content_view_load_uri (view, navinfo->actual_uri);
@@ -182,7 +181,7 @@ sample_notify_location_change_callback (NautilusContentView  *nautilus_view,
 
 	request.type = Nautilus_PROGRESS_DONE_OK;
 	request.amount = 100.0;
-	nautilus_view_request_progress_change (NAUTILUS_VIEW (nautilus_view), &request);
+	nautilus_view_request_progress_change (nautilus_view, &request);
 }
 
 static void

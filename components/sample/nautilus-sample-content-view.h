@@ -29,7 +29,7 @@
 #ifndef NAUTILUS_SAMPLE_CONTENT_VIEW_H
 #define NAUTILUS_SAMPLE_CONTENT_VIEW_H
 
-#include <libnautilus/nautilus-content-view-frame.h>
+#include <libnautilus/nautilus-view-frame.h>
 #include <gtk/gtklabel.h>
 
 typedef struct NautilusSampleContentView NautilusSampleContentView;
@@ -53,13 +53,13 @@ struct NautilusSampleContentViewClass {
 };
 
 /* GtkObject support */
-GtkType              nautilus_sample_content_view_get_type          (void);
+GtkType       nautilus_sample_content_view_get_type          (void);
 
 /* Component embedding support */
-NautilusContentView *nautilus_sample_content_view_get_nautilus_view (NautilusSampleContentView *view);
+NautilusView *nautilus_sample_content_view_get_nautilus_view (NautilusSampleContentView *view);
 
 /* URI handling */
-void                 nautilus_sample_content_view_load_uri          (NautilusSampleContentView *view,
-								     const char                *uri);
+void          nautilus_sample_content_view_load_uri          (NautilusSampleContentView *view,
+							      const char                *uri);
 
 #endif /* NAUTILUS_SAMPLE_CONTENT_VIEW_H */

@@ -1088,7 +1088,7 @@ nautilus_window_request_progress_change_cb (NautilusViewFrame *view,
 }
 
 static void
-nautilus_window_request_title_change_callback (NautilusContentViewFrame *view,
+nautilus_window_request_title_change_callback (NautilusViewFrame *view,
                                                const char *new_title,
                                                NautilusWindow *window)
 {
@@ -1124,7 +1124,7 @@ nautilus_window_connect_view(NautilusWindow *window, NautilusViewFrame *view)
 }
 
 void
-nautilus_window_connect_content_view(NautilusWindow *window, NautilusContentViewFrame *view)
+nautilus_window_connect_content_view (NautilusWindow *window, NautilusViewFrame *view)
 {
   GtkObject *view_object;
 
@@ -1133,10 +1133,10 @@ nautilus_window_connect_content_view(NautilusWindow *window, NautilusContentView
 
   /* Now connect with NautilusContentViewFrame signals. */
   view_object = GTK_OBJECT(view);
-  gtk_signal_connect(view_object,
-                     "request_title_change", 
-                     nautilus_window_request_title_change_callback, 
-                     window);
+  gtk_signal_connect (view_object,
+                      "request_title_change", 
+                      nautilus_window_request_title_change_callback, 
+                      window);
 }
 
 void
@@ -1174,9 +1174,9 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusViewFrame
 
       gtk_widget_show (GTK_WIDGET (new_view));
 
-      nautilus_content_view_frame_set_active (NAUTILUS_CONTENT_VIEW_FRAME (new_view)); 
+      nautilus_view_frame_activate (new_view); 
 
-      gtk_paned_pack2(GTK_PANED(window->content_hbox), GTK_WIDGET (new_view), TRUE, FALSE);
+      gtk_paned_pack2 (GTK_PANED(window->content_hbox), GTK_WIDGET (new_view), TRUE, FALSE);
     }
       
   gtk_widget_queue_resize(window->content_hbox);

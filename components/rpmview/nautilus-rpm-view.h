@@ -25,12 +25,12 @@
 #ifndef NAUTILUS_RPM_VIEW_H
 #define NAUTILUS_RPM_VIEW_H
 
-#include <libnautilus/nautilus-content-view-frame.h>
+#include <libnautilus/nautilus-view-frame.h>
 #include <gtk/gtkeventbox.h>
 
 
-typedef struct _NautilusRPMView      NautilusRPMView;
-typedef struct _NautilusRPMViewClass NautilusRPMViewClass;
+typedef struct NautilusRPMView      NautilusRPMView;
+typedef struct NautilusRPMViewClass NautilusRPMViewClass;
 
 #define NAUTILUS_TYPE_RPM_VIEW	(nautilus_rpm_view_get_type ())
 #define NAUTILUS_RPM_VIEW(obj)	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_RPM_VIEW, NautilusRPMView))
@@ -38,26 +38,25 @@ typedef struct _NautilusRPMViewClass NautilusRPMViewClass;
 #define NAUTILUS_IS_RPM_VIEW(obj)	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_RPM_VIEW))
 #define NAUTILUS_IS_RPM_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_RPM_VIEW))
 
-typedef struct _NautilusRPMViewDetails NautilusRPMViewDetails;
+typedef struct NautilusRPMViewDetails NautilusRPMViewDetails;
 
-struct _NautilusRPMView {
+struct NautilusRPMView {
 	GtkEventBox parent;
 	NautilusRPMViewDetails *details;
 };
 
-struct _NautilusRPMViewClass {
+struct NautilusRPMViewClass {
 	GtkEventBoxClass parent_class;
 };
 
-
 /* GtkObject support */
-GtkType              nautilus_rpm_view_get_type          (void);
+GtkType       nautilus_rpm_view_get_type          (void);
 
 /* Component embedding support */
-NautilusContentView *nautilus_rpm_view_get_nautilus_view (NautilusRPMView *view);
+NautilusView *nautilus_rpm_view_get_nautilus_view (NautilusRPMView *view);
 
 /* URI handling */
-void                 nautilus_rpm_view_load_uri          (NautilusRPMView *view,
-							  const char      *uri);
+void          nautilus_rpm_view_load_uri          (NautilusRPMView *view,
+						   const char      *uri);
 
 #endif /* NAUTILUS_RPM_VIEW_H */

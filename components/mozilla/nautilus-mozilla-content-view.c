@@ -40,18 +40,17 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
 
-/* A NautilusContentView's private information. */
 struct NautilusMozillaContentViewDetails {
 	char				 *uri;
 	GtkWidget			 *mozilla;
-	NautilusContentView	         *nautilus_view;
+	NautilusView	                 *nautilus_view;
 	GdkCursor			 *busy_cursor;
 };
 
 static void  nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass *klass);
 static void  nautilus_mozilla_content_view_initialize       (NautilusMozillaContentView      *view);
 static void  nautilus_mozilla_content_view_destroy          (GtkObject                       *object);
-static void  mozilla_notify_location_change_callback        (NautilusContentView             *nautilus_view,
+static void  mozilla_notify_location_change_callback        (NautilusView                    *nautilus_view,
 							     Nautilus_NavigationInfo         *navinfo,
 							     NautilusMozillaContentView      *view);
 static void  mozilla_merge_bonobo_items_callback            (BonoboObject                    *control,
@@ -161,7 +160,7 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 
 	gtk_widget_show (view->details->mozilla);
 	
-	view->details->nautilus_view = nautilus_content_view_new (GTK_WIDGET (view));
+	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 	
 	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
 			    "notify_location_change",
@@ -173,7 +172,7 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 	 * can merge menu & toolbar items into Nautilus's UI.
 	 */
         gtk_signal_connect (GTK_OBJECT (nautilus_view_get_bonobo_control
-					(NAUTILUS_VIEW (view->details->nautilus_view))),
+					(view->details->nautilus_view)),
                             "activate",
                             mozilla_merge_bonobo_items_callback,
                             view);
@@ -212,7 +211,7 @@ nautilus_mozilla_content_view_destroy (GtkObject *object)
  * @view: NautilusMozillaContentView to get the nautilus_view from..
  * 
  **/
-NautilusContentView *
+NautilusView *
 nautilus_mozilla_content_view_get_nautilus_view (NautilusMozillaContentView *view)
 {
 	return view->details->nautilus_view;
@@ -278,8 +277,8 @@ mozilla_content_view_request_progress_change (NautilusMozillaContentView	*view,
 	progress_request.type = progress_type;
 	progress_request.amount = progress_amount;
 
-	nautilus_view_request_progress_change (NAUTILUS_VIEW (view->details->nautilus_view),
-						     &progress_request);
+	nautilus_view_request_progress_change (view->details->nautilus_view,
+					       &progress_request);
 }
 
 static void
@@ -301,8 +300,8 @@ mozilla_content_view_request_location_change (NautilusMozillaContentView	*view,
 	
 	navigation_request.requested_uri = hacked_uri;
 	
-	nautilus_view_request_location_change (NAUTILUS_VIEW (view->details->nautilus_view), 
-						     &navigation_request);
+	nautilus_view_request_location_change (view->details->nautilus_view, 
+					       &navigation_request);
 
 	g_free (hacked_uri);
 }
@@ -351,7 +350,7 @@ mozilla_content_view_clear_busy_cursor (NautilusMozillaContentView *view)
 }
 
 static void
-mozilla_notify_location_change_callback (NautilusContentView     	*nautilus_view, 
+mozilla_notify_location_change_callback (NautilusView     	        *nautilus_view, 
 					 Nautilus_NavigationInfo	*navinfo, 
 					 NautilusMozillaContentView	*view)
 {
@@ -495,8 +494,8 @@ mozilla_title_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 	new_title = gtk_moz_embed_get_title (GTK_MOZ_EMBED (view->details->mozilla));
 
-	nautilus_content_view_request_title_change (NAUTILUS_CONTENT_VIEW (view->details->nautilus_view),
-							  new_title);
+	nautilus_view_request_title_change (view->details->nautilus_view,
+					    new_title);
 	
 	g_free (new_title);
 }
@@ -650,7 +649,7 @@ mozilla_link_message_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 	status_request.status_string = link_message;
 	
-	nautilus_view_request_status_change (NAUTILUS_VIEW (view->details->nautilus_view),
+	nautilus_view_request_status_change (view->details->nautilus_view,
 					     &status_request);
 	g_free (link_message);
 }

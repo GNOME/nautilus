@@ -28,7 +28,7 @@
 #ifndef NAUTILUS_CONTENT_LOSER_H
 #define NAUTILUS_CONTENT_LOSER_H
 
-#include <libnautilus/nautilus-content-view-frame.h>
+#include <libnautilus/nautilus-view-frame.h>
 #include <gtk/gtklabel.h>
 
 typedef struct NautilusContentLoser      NautilusContentLoser;
@@ -52,17 +52,17 @@ struct NautilusContentLoserClass {
 };
 
 /* GtkObject support */
-GtkType              nautilus_content_loser_get_type          (void);
+GtkType       nautilus_content_loser_get_type          (void);
 
 /* Component embedding support */
-NautilusContentView *nautilus_content_loser_get_nautilus_view (NautilusContentLoser *view);
+NautilusView *nautilus_content_loser_get_nautilus_view (NautilusContentLoser *view);
 
 /* URI handling */
-void                 nautilus_content_loser_load_uri          (NautilusContentLoser *view,
-							       const char           *uri);
+void          nautilus_content_loser_load_uri          (NautilusContentLoser *view,
+							const char           *uri);
 
 /* Failing on command. */
-void                 nautilus_content_loser_maybe_fail        (const char           *location);
+void          nautilus_content_loser_maybe_fail        (const char           *location);
 
 #endif /* NAUTILUS_CONTENT_LOSER_H */
 

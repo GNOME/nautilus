@@ -1,3 +1,125 @@
+2000-05-24  Darin Adler  <darin@eazel.com>
+
+	Eliminated ContentView and ContentViewFrame.
+
+	* components/hardware/nautilus-hardware-view.c:
+	(nautilus_hardware_view_initialize),
+	(hardware_view_notify_location_change_callback):
+	* components/hardware/nautilus-hardware-view.h:
+	* components/help/hyperbola-nav-index.c:
+	(hyperbola_navigation_index_select_row):
+	* components/help/hyperbola-nav-search.c:
+	(hyperbola_navigation_search_select_row),
+	(hyperbola_navigation_search_new):
+	* components/html/ntl-web-browser.c: (browser_url_load_done),
+	(browser_vfs_callback), (browser_goto_url_real),
+	(browser_goto_url), (browser_select_url), (browser_title_changed),
+	(browser_notify_location_change), (make_obj):
+	* components/loser/content/main.c: (loser_make_object):
+	* components/loser/content/nautilus-content-loser.c:
+	(nautilus_content_loser_initialize),
+	(loser_notify_location_change_callback):
+	* components/loser/content/nautilus-content-loser.h:
+	* components/loser/sidebar/main.c: (loser_make_object):
+	* components/loser/sidebar/nautilus-sidebar-loser.c:
+	(nautilus_sidebar_loser_initialize),
+	(loser_notify_location_change_callback):
+	* components/mozilla/main.c: (mozilla_make_object):
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize),
+	(mozilla_content_view_request_progress_change),
+	(mozilla_content_view_request_location_change),
+	(mozilla_notify_location_change_callback),
+	(mozilla_title_changed_callback), (mozilla_link_message_callback):
+	* components/mozilla/nautilus-mozilla-content-view.h:
+	* components/music/main.c: (music_view_make_object):
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (click_column_callback),
+	(music_view_notify_location_change_callback),
+	(nautilus_music_view_drag_data_received):
+	* components/music/nautilus-music-view.h:
+	* components/rpmview/main.c: (rpm_view_make_object):
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_initialize),
+	(rpm_view_notify_location_change_callback):
+	* components/rpmview/nautilus-rpm-view.h:
+	* components/sample/main.c: (sample_make_object):
+	* components/sample/nautilus-sample-content-view.c:
+	(nautilus_sample_content_view_initialize),
+	(sample_notify_location_change_callback):
+	* components/sample/nautilus-sample-content-view.h:
+	* components/services/startup/nautilus-view/main.c:
+	(services_make_object):
+	* components/services/startup/nautilus-view/nautilus-service-startup-view.c:
+	(go_to_uri), (nautilus_service_startup_view_initialize),
+	(service_main_notify_location_change_cb):
+	* components/services/startup/nautilus-view/nautilus-service-startup-view.h:
+	* libnautilus/Makefile.am:
+	* libnautilus/libnautilus.h:
+	* libnautilus/nautilus-content-view-frame.c: [removed]
+	* libnautilus/nautilus-content-view-frame.h: [removed]
+	* libnautilus/nautilus-view-component.idl:
+	* libnautilus/nautilus-view-frame-private.h:
+	* libnautilus/nautilus-view-frame.c:
+	(impl_Nautilus_View_save_state), (impl_Nautilus_View_load_state),
+	(impl_Nautilus_View_notify_location_change),
+	(impl_Nautilus_View_show_properties),
+	(impl_Nautilus_View_notify_selection_change),
+	(impl_Nautilus_View_stop_location_change),
+	(impl_Nautilus_View__destroy), (impl_Nautilus_View__create),
+	(nautilus_view_initialize_class), (nautilus_view_initialize),
+	(nautilus_view_new), (nautilus_view_new_from_bonobo_control),
+	(get_view_frame), (nautilus_view_request_location_change),
+	(nautilus_view_request_selection_change),
+	(nautilus_view_request_status_change),
+	(nautilus_view_request_progress_change),
+	(nautilus_view_request_title_change),
+	(nautilus_view_get_bonobo_control),
+	(nautilus_view_get_main_window):
+	* libnautilus/nautilus-view-frame.h:
+	* src/Makefile.am:
+	* src/file-manager/fm-directory-view.c: (get_bonobo_control),
+	(fm_directory_view_initialize), (display_selection_info),
+	(fm_directory_view_send_selection_change),
+	(notify_location_change_callback), (stop_location_change_callback),
+	(done_loading), (fm_directory_view_activate_file_internal),
+	(finish_loading_uri):
+	* src/file-manager/fm-directory-view.h:
+	* src/ntl-app.c: (impl_Nautilus_Application_create_object):
+	* src/ntl-content-view.c: [removed]
+	* src/ntl-content-view.h: [removed]
+	* src/ntl-uri-map.c: (make_oaf_query_with_known_mime_type),
+	(make_oaf_query_with_uri_scheme_only):
+	* src/ntl-view-frame-svr.c: (impl_Nautilus_ViewFrame__destroy),
+	(impl_Nautilus_ViewFrame__create),
+	(impl_Nautilus_ViewFrame__get_main_window),
+	(impl_Nautilus_ViewFrame_request_location_change),
+	(impl_Nautilus_ViewFrame_request_selection_change),
+	(impl_Nautilus_ViewFrame_request_status_change),
+	(impl_Nautilus_ViewFrame_request_progress_change),
+	(impl_Nautilus_ViewFrame_request_title_change):
+	* src/ntl-view-private.h:
+	* src/ntl-view.c: (nautilus_view_frame_class_init),
+	(nautilus_view_frame_set_arg), (nautilus_view_frame_get_arg),
+	(nautilus_view_frame_request_location_change),
+	(nautilus_view_frame_request_selection_change),
+	(nautilus_view_frame_request_status_change),
+	(nautilus_view_frame_request_progress_change),
+	(nautilus_view_frame_request_title_change),
+	(nautilus_view_frame_set_label), (nautilus_view_frame_activate):
+	* src/ntl-view.h:
+	* src/ntl-window-msgs.c: (nautilus_window_request_title_change),
+	(nautilus_window_load_meta_view),
+	(nautilus_window_request_location_change),
+	(nautilus_window_load_content_view):
+	* src/ntl-window-msgs.h:
+	* src/ntl-window-private.h:
+	* src/ntl-window.c:
+	(nautilus_window_request_title_change_callback),
+	(nautilus_window_connect_content_view),
+	(nautilus_window_real_set_content_view):
+	Got rid of ContentView and ContentViewFrame.
+
 2000-05-24  John Sullivan  <sullivan@eazel.com>
 
 	* src/ntl-app.c: (display_caveat): Made the startup caveat
