@@ -35,8 +35,6 @@ struct NautilusHorizontalSplitterDetails {
 	int saved_size;
 };
 
-/* Bar width currently hardcoded to 7 */
-#define BAR_WIDTH 7
 #define CLOSED_THRESHOLD 4
 #define NOMINAL_SIZE 148
 #define SPLITTER_CLICK_SLOP 1

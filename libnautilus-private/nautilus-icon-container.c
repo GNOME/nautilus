@@ -2293,7 +2293,6 @@ static void
 destroy (GtkObject *object)
 {
 	NautilusIconContainer *container;
-	guint i;
 
 	container = NAUTILUS_ICON_CONTAINER (object);
 
@@ -2302,10 +2301,7 @@ destroy (GtkObject *object)
 
 	if (container->details->rubberband_info.timer_id != 0) {
 		gtk_timeout_remove (container->details->rubberband_info.timer_id);
-	}
-	if (container->details->rubberband_info.selection_rectangle != NULL) {
-		/* Destroy this canvas item; the parent will unref it. */
-		gtk_object_destroy (GTK_OBJECT (container->details->rubberband_info.selection_rectangle));
+		container->details->rubberband_info.timer_id = 0;
 	}
 
         if (container->details->idle_id != 0) {
@@ -2316,38 +2312,45 @@ destroy (GtkObject *object)
 		gtk_idle_remove (container->details->stretch_idle_id);
 	}
        
-        for (i = 0; i < G_N_ELEMENTS (container->details->label_font); i++) {
-       		if (container->details->label_font[i] != NULL)
-        		gdk_font_unref (container->details->label_font[i]);
-	}
-
-	if (container->details->smooth_label_font != NULL) {
-		g_object_unref (G_OBJECT (container->details->smooth_label_font));
-	}
-
-	if (container->details->highlight_frame != NULL) {
-		g_object_unref (G_OBJECT (container->details->highlight_frame));
-	}
-
-	if (container->details->rename_widget != NULL) {
-		gtk_object_destroy (GTK_OBJECT (container->details->rename_widget));
-	}
-
 	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
 	 * The NautilusIconContainer class should simply provide calls to set the colors.
 	 */
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-					      nautilus_icon_container_theme_changed,
-					      container);
+					 nautilus_icon_container_theme_changed,
+					 container);
 	
 	nautilus_icon_container_flush_typeselect_state (container);
 
-	g_hash_table_destroy (container->details->icon_set);
-	container->details->icon_set = NULL;
-	
-	g_free (container->details);
-
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+static void
+finalize (GObject *object)
+{
+	NautilusIconContainerDetails *details;
+	guint i;
+
+	details = NAUTILUS_ICON_CONTAINER (object)->details;
+
+        for (i = 0; i < G_N_ELEMENTS (details->label_font); i++) {
+       		if (details->label_font[i] != NULL)
+        		gdk_font_unref (details->label_font[i]);
+	}
+
+	if (details->smooth_label_font != NULL) {
+		g_object_unref (G_OBJECT (details->smooth_label_font));
+	}
+
+	if (details->highlight_frame != NULL) {
+		g_object_unref (G_OBJECT (details->highlight_frame));
+	}
+
+	g_hash_table_destroy (details->icon_set);
+	details->icon_set = NULL;
+	
+	g_free (details);
+
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 /* GtkWidget methods.  */
@@ -3035,23 +3038,16 @@ key_press_event (GtkWidget *widget,
 static void
 nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 {
-	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 
-	/* NautilusIconContainer class.  */
-
-	class->button_press = NULL;
-
-	/* GtkObject class.  */
-
-	object_class = GTK_OBJECT_CLASS (class);
-	object_class->destroy = destroy;
+	G_OBJECT_CLASS (class)->finalize = finalize;
+	GTK_OBJECT_CLASS (class)->destroy = destroy;
 
 	/* Signals.  */
 
 	signals[SELECTION_CHANGED]
 		= g_signal_new ("selection_changed",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 selection_changed),
@@ -3060,7 +3056,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_TYPE_NONE, 0);
 	signals[BUTTON_PRESS]
 		= g_signal_new ("button_press",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 button_press),
@@ -3070,7 +3066,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				GDK_TYPE_EVENT);
 	signals[ACTIVATE]
 		= g_signal_new ("activate",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 activate),
@@ -3080,7 +3076,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				  G_TYPE_POINTER);
 	signals[CONTEXT_CLICK_SELECTION]
 		= g_signal_new ("context_click_selection",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 context_click_selection),
@@ -3090,7 +3086,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				  G_TYPE_POINTER);
 	signals[CONTEXT_CLICK_BACKGROUND]
 		= g_signal_new ("context_click_background",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 context_click_background),
@@ -3100,7 +3096,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				G_TYPE_POINTER);
 	signals[MIDDLE_CLICK]
 		= g_signal_new ("middle_click",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 middle_click),
@@ -3110,7 +3106,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				G_TYPE_POINTER);
 	signals[ICON_POSITION_CHANGED]
 		= g_signal_new ("icon_position_changed",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 icon_position_changed),
@@ -3121,7 +3117,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				G_TYPE_POINTER);
 	signals[ICON_TEXT_CHANGED]
 		= g_signal_new ("icon_text_changed",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 icon_text_changed),
@@ -3132,7 +3128,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				G_TYPE_STRING);
 	signals[ICON_STRETCH_STARTED]
 		= g_signal_new ("icon_stretch_started",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 icon_stretch_started),
@@ -3142,7 +3138,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				G_TYPE_POINTER);
 	signals[ICON_STRETCH_ENDED]
 		= g_signal_new ("icon_stretch_ended",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     icon_stretch_ended),
@@ -3152,7 +3148,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				G_TYPE_POINTER);
 	signals[RENAMING_ICON]
 		= g_signal_new ("renaming_icon",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 renaming_icon),
@@ -3162,7 +3158,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				G_TYPE_POINTER);
 	signals[GET_ICON_IMAGES]
 		= g_signal_new ("get_icon_images",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 get_icon_images),
@@ -3174,7 +3170,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				G_TYPE_POINTER);
 	signals[GET_ICON_TEXT]
 		= g_signal_new ("get_icon_text",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 get_icon_text),
@@ -3186,7 +3182,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				G_TYPE_POINTER);
 	signals[GET_ICON_URI]
 		= g_signal_new ("get_icon_uri",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 get_icon_uri),
@@ -3196,7 +3192,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				G_TYPE_POINTER);
 	signals[GET_ICON_DROP_TARGET_URI]
 		= g_signal_new ("get_icon_drop_target_uri",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 get_icon_drop_target_uri),
@@ -3206,7 +3202,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				G_TYPE_POINTER);
 	signals[COMPARE_ICONS]
 		= g_signal_new ("compare_icons",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 compare_icons),
@@ -3217,7 +3213,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				G_TYPE_POINTER);
 	signals[COMPARE_ICONS_BY_NAME]
 		= g_signal_new ("compare_icons_by_name",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 compare_icons_by_name),
@@ -3228,7 +3224,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				G_TYPE_POINTER);
 	signals[MOVE_COPY_ITEMS] 
 		= g_signal_new ("move_copy_items",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
 						 move_copy_items),
@@ -3243,7 +3239,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				G_TYPE_INT);
 	signals[HANDLE_URI_LIST] 
 		= g_signal_new ("handle_uri_list",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
 						     handle_uri_list),
@@ -3257,7 +3253,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 
 	signals[GET_CONTAINER_URI] 
 		= g_signal_new ("get_container_uri",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
 						 get_container_uri),
@@ -3266,7 +3262,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_TYPE_STRING, 0);
 	signals[CAN_ACCEPT_ITEM] 
 		= g_signal_new ("can_accept_item",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
 						 can_accept_item),
@@ -3277,7 +3273,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				G_TYPE_STRING);
 	signals[GET_STORED_ICON_POSITION]
 		= g_signal_new ("get_stored_icon_position",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 get_stored_icon_position),
@@ -3288,7 +3284,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				G_TYPE_POINTER);
 	signals[LAYOUT_CHANGED]
 		= g_signal_new ("layout_changed",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 layout_changed),
@@ -3297,7 +3293,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_TYPE_NONE, 0);
 	signals[PREVIEW]
 		= g_signal_new ("preview",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 preview),
@@ -3308,7 +3304,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				G_TYPE_BOOLEAN);
 	signals[BAND_SELECT_STARTED]
 		= g_signal_new ("band_select_started",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 band_select_started),
@@ -3317,7 +3313,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_TYPE_NONE, 0);
 	signals[BAND_SELECT_ENDED]
 		= g_signal_new ("band_select_ended",
-		                G_TYPE_FROM_CLASS (object_class),
+		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     band_select_ended),
@@ -3342,7 +3338,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 	stipple = gdk_bitmap_create_from_data (NULL, stipple_bits, 2, 2);
 
 	eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					       &click_policy_auto_value);
+					  &click_policy_auto_value);
 }
 
 static void
@@ -5162,7 +5158,7 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 	
 	/* load the highlight frame */		
 	text_frame_path = nautilus_theme_get_image_path ("text-selection-frame-aa.png");
-	if (container->details->highlight_frame) {
+	if (container->details->highlight_frame != NULL) {
 		g_object_unref (G_OBJECT (container->details->highlight_frame));
 	}
 	

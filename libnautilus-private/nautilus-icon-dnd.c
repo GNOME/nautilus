@@ -1254,14 +1254,9 @@ nautilus_icon_dnd_fini (NautilusIconContainer *container)
 {
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
-	stop_auto_scroll (container);
-	if (container->details->dnd_info->shadow != NULL) {
-		/* FIXME bugzilla.gnome.org 42484: 
-		 * Is a destroy really sufficient here? Who does the unref? */
-		gtk_object_destroy (GTK_OBJECT (container->details->dnd_info->shadow));
-	}
-
 	if (container->details->dnd_info != NULL) {
+		stop_auto_scroll (container);
+
 		eel_drag_finalize (&container->details->dnd_info->drag_info);
 		container->details->dnd_info = NULL;
 	}

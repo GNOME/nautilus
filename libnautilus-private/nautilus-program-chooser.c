@@ -1262,9 +1262,9 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
 	g_free (file_name);
 	
 	window = gtk_dialog_new_with_buttons (title, NULL, 0,
-					      _("Choose"), RESPONSE_CHOOSE,
+					      _("Choose"), GTK_RESPONSE_OK,
 					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-					      _("Done"), GTK_RESPONSE_OK,
+					      _("Done"), GTK_RESPONSE_CANCEL,
 					      NULL);
 
 	nautilus_program_chooser_set_is_cancellable (GTK_DIALOG (window), TRUE);

@@ -1,3 +1,20 @@
+2001-11-09  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-horizontal-splitter.c:
+	Remove unused stuff.
+
+	* libnautilus-private/nautilus-icon-container.c: (destroy),
+	(finalize), (nautilus_icon_container_class_init): Fix the
+	destroy and finalize code for the new object lifetime rules.
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_fini): Fix another multiple-invocation
+	issue.
+	* libnautilus-private/nautilus-program-chooser.c:
+	(nautilus_program_chooser_new): Change response codes to
+	match the way this worked under GnomeDialog.
+
+	* libnautilus-private/README: Update wording a bit.
+
 2001-11-09  Michael Meeks  <michael@ximian.com>
 
 	* src/nautilus-main.c (main): return bonobo_debug_shutdown,
