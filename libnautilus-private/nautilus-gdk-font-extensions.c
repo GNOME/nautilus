@@ -635,6 +635,10 @@ GdkFont *
 nautilus_gdk_font_get_fixed (void)
 {
 	if (fixed_font == NULL) {
+		/* Note to localizers: This is the name of the font used
+		 * when no other font can be found. It must be guaranteed
+		 * to exist, * even in the most limited user environment
+		 */
 		fixed_font = gdk_fontset_load (_("fixed"));
 		g_assert (fixed_font != NULL);
 		g_atexit (unref_fixed_font);

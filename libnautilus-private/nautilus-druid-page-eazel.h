@@ -86,6 +86,8 @@ void       nautilus_druid_page_eazel_set_text          (NautilusDruidPageEazel *
 							const gchar        *text);
 void       nautilus_druid_page_eazel_set_title         (NautilusDruidPageEazel *druid_page_eazel,
 							const gchar        *title);
+void	   nautilus_druid_page_eazel_set_title_label   (NautilusDruidPageEazel *druid_page_eazel,
+							GtkLabel	       *label);
 void       nautilus_druid_page_eazel_set_title_image   (NautilusDruidPageEazel *druid_page_eazel,
 							GdkPixbuf          *title_image);
 void       nautilus_druid_page_eazel_set_sidebar_image (NautilusDruidPageEazel *druid_page_eazel,

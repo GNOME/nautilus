@@ -1,3 +1,87 @@
+2001-02-22  John Harper  <jsh@eazel.com>
+
+	reviewed by: George Lebl <jirka@5z.com>
+
+	Mostly fixed bug 1796 (Design a better First Time Walkthrough)
+	by implementing Arlo's new design:
+
+	* libnautilus-extensions/nautilus-druid-page-eazel.c: changed a
+	lot of the Druid text
+
+	(new_title_label, new_body_label): functions for creating the
+	two types of labels used in the druid. Title labels are always
+	anti-aliased in a hardcoded font, while body labels use the
+	user's font choice and are never anti-aliased
+
+	(set_up_service_signup_page): this page has been removed
+
+	(make_title_page_icon_box): function to create an hbox
+	containing the four icons displayed on the start page
+
+
+	Fixed bugs 5625 (Bottom line of "Select User Level" dialog is
+	out of view), 5901 (First-Time Druid dimensions hard-coded,
+	text can be truncated) and 6496 (First-time Druid window clips
+	some contents (with 100 dpi fonts)):
+
+	* libnautilus-extensions/nautilus-druid-page-eazel.c: hacked
+	this widget to scale correctly, the main change is _not_
+	setting the width and height of the canvas widget item, to
+	allow the normal size allocation mechanisms to work properly
+
+	[ there are still a few minor things to tweak, but this is the
+	bulk of the redesign done ]
+
+
+	Fixed bug 6412 (Add option to disable medusa in the first time
+	druid)
+	
+	* src/nautilus-first-time-druid.c: added `Launch Medusa' page,
+	which is only displayed if the NAUTILUS_PREFERENCES_MEDUSA_BLOCKED
+	option isn't set.
+
+
+	Fix bug 6379 (Nautilus assumes http proxy is needed if
+	updates.tgz doesn't exist)
+
+	* src/nautilus-first-time-druid.c (download_callback): if
+	result is GNOME_VFS_ERROR_NOT_FOUND, just print a message that
+	there are no updates available, then continue as normal
+
+	(instead of assuming a proxy error, and going into the proxy
+	setup pane)
+
+
+	Fixed bug 6528 (More explanation needed for GMC transistion
+	stuff in the druid):
+
+	* src/nautilus-first-time-druid.c (set_up_gmc_transition_page):
+	added Vera's new text for this page of the druid
+
+
+	Fixed illogical behaviour of show-desktop option in druid (the
+	user's choice wasn't actually being applied, the saved value
+	was always being used):
+
+	* src/nautilus-first-time-druid.c (druid_finished): set
+	NAUTILUS_PREFERENCE_SHOW_DESKTOP from the `draw_desktop'
+	variable, not from `save_manage_desktop'
+
+	* src/nautilus-first-time-druid.c (set_up_gmc_transition_page):
+	don't default the `draw desktop' setting to true; instead set
+	it to the `save_manage_desktop' value. Also, only display the
+	`draw desktop' option when not in `beginner' mode
+
+
+	Fixed bug 3060 (Font names marked for translation need
+	comments):
+
+	* libnautilus-extensions/nautilus-icon-factory.c,
+	libnautilus-extensions/nautilus-gdk-font-extensions.c,
+	libnautilus-extensions/nautilus-druid-page-eazel.c,
+	src/nautilus-zoom-control.c, src/nautilus-first-time-druid.c:
+	added comments before localized fonts and font components
+
 2001-02-22  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/text/services/google.xml:

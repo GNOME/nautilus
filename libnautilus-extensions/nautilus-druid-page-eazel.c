@@ -48,6 +48,8 @@ struct NautilusDruidPageEazelDetails
 	int               topbar_image_width;
 	GnomeCanvasItem  *topbar_image_stretch_item;
 	GnomeCanvasItem  *title_item;
+	GtkWidget	 *title_label;
+	guint		  title_label_signal_id;
 	GnomeCanvasItem  *text_item;
 	GnomeCanvasItem  *sidebar_image_item;
 	GnomeCanvasItem  *title_image_item;
@@ -70,12 +72,13 @@ static void nautilus_druid_page_eazel_prepare       (GnomeDruidPage *page,
 						     GtkWidget      *druid,
 						     gpointer 	    *data);
 
-#define TITLE_X 34.0
+#define TITLE_X 60.0
 #define TITLE_Y 60.0
 #define CONTENT_PADDING 15.0
 #define DEFAULT_CONTENT_X 34.0
-#define DRUID_PAGE_HEIGHT 322
-#define DRUID_PAGE_WIDTH 516
+#define DRUID_PAGE_MIN_HEIGHT 322
+#define DRUID_PAGE_MIN_WIDTH 516
+#define DRUID_PAGE_BORDER 24
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDruidPageEazel, nautilus_druid_page_eazel, GNOME_TYPE_DRUID_PAGE)
 
@@ -109,11 +112,11 @@ nautilus_druid_page_eazel_initialize (NautilusDruidPageEazel *druid_page_eazel)
 	druid_page_eazel->canvas = gnome_canvas_new_aa ();
 	gtk_widget_pop_visual ();
 	gtk_widget_pop_colormap ();
-	gtk_widget_set_usize (druid_page_eazel->canvas, DRUID_PAGE_WIDTH, DRUID_PAGE_HEIGHT);
 	gtk_widget_show (druid_page_eazel->canvas);
-	gnome_canvas_set_scroll_region (GNOME_CANVAS (druid_page_eazel->canvas), 0.0, 0.0, DRUID_PAGE_WIDTH, DRUID_PAGE_HEIGHT);
 	gtk_container_add (GTK_CONTAINER (druid_page_eazel), druid_page_eazel->canvas);
-
+	nautilus_druid_page_eazel_configure_size (druid_page_eazel,
+						  DRUID_PAGE_MIN_WIDTH,
+						  DRUID_PAGE_MIN_HEIGHT);
 }
 
 static void
@@ -177,10 +180,9 @@ get_content_xy (NautilusDruidPageEazel *druid_page_eazel,
 	}
 
 	title_height = 0.0;
-	if (druid_page_eazel->title != NULL
-	    && druid_page_eazel->title[0] != '\0') {
+	if (druid_page_eazel->title && druid_page_eazel->title[0] != '\0') {
 		gtk_object_get (GTK_OBJECT (druid_page_eazel->details->title_item),
-				"text_height", &title_height,
+				"height", &title_height,
 				NULL);
 		title_height += CONTENT_PADDING;
 	}
@@ -200,33 +202,40 @@ nautilus_druid_page_eazel_configure_size (NautilusDruidPageEazel *druid_page_eaz
 	g_return_if_fail (druid_page_eazel != NULL);
 	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_EAZEL (druid_page_eazel));
 
-	gnome_canvas_item_set (druid_page_eazel->details->background_item,
-			       "x1", 0.0,
-			       "y1", 0.0,
-			       "x2", (gfloat) width,
-			       "y2", (gfloat) height,
-			       NULL);
-
-	gnome_canvas_item_set (druid_page_eazel->details->topbar_image_stretch_item,
-			       "width", (double) (width - druid_page_eazel->details->topbar_image_width),
-			       NULL);
-
 	get_content_xy (druid_page_eazel, &content_x, &content_y);
 
-	if (druid_page_eazel->details->widget_item != NULL)
+	gnome_canvas_set_scroll_region (GNOME_CANVAS (druid_page_eazel->canvas),
+					0.0, 0.0, width, height);
+
+	if (druid_page_eazel->details->background_item != NULL) {
+		gnome_canvas_item_set (druid_page_eazel->details->background_item,
+				       "x1", 0.0,
+				       "y1", 0.0,
+				       "x2", (gfloat) width,
+				       "y2", (gfloat) height,
+				       NULL);
+	}
+
+	if (druid_page_eazel->details->topbar_image_stretch_item != NULL) {
+		gnome_canvas_item_set (druid_page_eazel->details->topbar_image_stretch_item,
+				       "width", (double) (width - druid_page_eazel->details->topbar_image_width),
+				       "width_set", TRUE,
+				       NULL);
+	}
+
+	if (druid_page_eazel->details->widget_item != NULL) {
 		gnome_canvas_item_set (druid_page_eazel->details->widget_item,
 				       "x", content_x,
 				       "y", content_y,
-				       "width", width - content_x,
-				       "height", height - content_y,
 				       NULL);
+	}
 
-	gnome_canvas_item_set (druid_page_eazel->details->text_item,
-			       "x", content_x,
-			       "y", content_y,
-			       NULL);
-
-
+	if (druid_page_eazel->details->text_item != NULL) {
+		gnome_canvas_item_set (druid_page_eazel->details->text_item,
+				       "x", content_x,
+				       "y", content_y,
+				       NULL);
+	}
 }
 
 static void
@@ -256,6 +265,18 @@ set_image (GnomeCanvasItem *item, const char *file,
 		g_free (fullname);
 	}
 }
+
+static void
+title_label_size_allocated (GtkWidget *widget, GtkAllocation *allocation, gpointer data)
+{
+	NautilusDruidPageEazel *druid_page_eazel = NAUTILUS_DRUID_PAGE_EAZEL (data);
+	gnome_canvas_item_set (druid_page_eazel->details->title_item,
+			       "size_pixels", TRUE,
+			       "height", (double) allocation->height,
+			       "width",  (double) allocation->width,
+			       NULL);
+}
+
 
 static void
 nautilus_druid_page_eazel_construct (NautilusDruidPageEazel *druid_page_eazel)
@@ -312,8 +333,6 @@ nautilus_druid_page_eazel_construct (NautilusDruidPageEazel *druid_page_eazel)
 				       gnome_canvas_pixbuf_get_type (),
 				       "x", (double)druid_page_eazel->details->topbar_image_width,
 				       "y", 0.0,
-				       "width", (double)(DRUID_PAGE_WIDTH - druid_page_eazel->details->topbar_image_width),
-				       "width_set", TRUE,
 				       "x_in_pixels", TRUE,
 				       "y_in_pixels", TRUE,
 				       NULL);
@@ -335,25 +354,22 @@ nautilus_druid_page_eazel_construct (NautilusDruidPageEazel *druid_page_eazel)
 
 	druid_page_eazel->details->title_item =
 		gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (druid_page_eazel->canvas)),
-				       gnome_canvas_text_get_type (),
+				       gnome_canvas_widget_get_type (),
 				       "x", TITLE_X,
 				       "y", TITLE_Y,
-				       "text", druid_page_eazel->title,
-				       "fill_color", "black",
-				       "fontset", _("-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"),
-				       "anchor", GTK_ANCHOR_NW,
 				       NULL);
-
+						   
 	druid_page_eazel->details->text_item =
 		gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (druid_page_eazel->canvas)),
 				       gnome_canvas_text_get_type (),
 				       "text", druid_page_eazel->text,
 				       "fill_color", "black",
+				       /* Note to localizers: this font is used for text items in Druid pages */
 				       "fontset", _("-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"),
 				       "anchor", GTK_ANCHOR_NW,
 				       NULL);
 
-	nautilus_druid_page_eazel_configure_size (druid_page_eazel, DRUID_PAGE_WIDTH, DRUID_PAGE_HEIGHT);
+	nautilus_druid_page_eazel_configure_size (druid_page_eazel, DRUID_PAGE_MIN_WIDTH, DRUID_PAGE_MIN_HEIGHT);
 	gtk_signal_connect (GTK_OBJECT (druid_page_eazel),
 			    "prepare",
 			    nautilus_druid_page_eazel_prepare,
@@ -396,6 +412,7 @@ nautilus_druid_page_eazel_size_allocate(GtkWidget               *widget,
 					0.0, 0.0,
 					allocation->width,
 					allocation->height);
+
 	nautilus_druid_page_eazel_configure_size (NAUTILUS_DRUID_PAGE_EAZEL (widget),
 						  allocation->width,
 						  allocation->height);
@@ -418,21 +435,17 @@ nautilus_druid_page_eazel_size_request(GtkWidget           *widget,
 
 		g_assert (druid_page_eazel->details->widget_item != NULL);
 
-		gtk_object_get (GTK_OBJECT (druid_page_eazel->details->widget_item),
-				"x", &x,
-				"y", &y,
-				NULL);
+		get_content_xy (druid_page_eazel, &x, &y);
 
 		gtk_widget_get_child_requisition (druid_page_eazel->widget,
 						  &child_requisition);
 
 		if (child_requisition.width + x > requisition->width) {
-			requisition->width = child_requisition.width + x;
+			requisition->width = child_requisition.width + x + DRUID_PAGE_BORDER;
 		}
 		if (child_requisition.height + y > requisition->height) {
-			requisition->height = child_requisition.height + y;
+			requisition->height = child_requisition.height + y + DRUID_PAGE_BORDER;
 		}
-
 	}
 }
 
@@ -520,19 +533,78 @@ nautilus_druid_page_eazel_set_text (NautilusDruidPageEazel *druid_page_eazel,
 			       "text", druid_page_eazel->text,
 			       NULL);
 }
+
+static GtkWidget *
+make_title_label (const char *text)
+{
+	GtkWidget *label;
+        GtkStyle *new_style;
+	GdkFont *font;
+
+	label = gtk_label_new (text);
+
+	/* Note to localizers: this font is used for page titles in Druid pages */
+	font = gdk_fontset_load (_("-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"));
+	if (font != NULL) {
+		new_style = gtk_style_copy (gtk_widget_get_style (label));
+		gdk_font_unref (new_style->font);
+		new_style->font = font;
+		gtk_widget_set_style (label, new_style);
+		gtk_style_unref (new_style);
+	}
+
+	return label;
+}
+
 void
 nautilus_druid_page_eazel_set_title (NautilusDruidPageEazel *druid_page_eazel,
 				     const gchar *title)
 {
+	GtkWidget *label;
+
 	g_return_if_fail (druid_page_eazel != NULL);
 	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_EAZEL (druid_page_eazel));
 
 	g_free (druid_page_eazel->title);
 	druid_page_eazel->title = g_strdup (title ? title : "");
-	gnome_canvas_item_set (druid_page_eazel->details->title_item,
-			       "text", druid_page_eazel->title,
-			       NULL);
+
+	if (druid_page_eazel->details->title_label == NULL) {
+		label = make_title_label (druid_page_eazel->title);
+		nautilus_druid_page_eazel_set_title_label (druid_page_eazel, GTK_LABEL (label));
+	} else {
+		gtk_label_set_text (GTK_LABEL (druid_page_eazel->details->title_label), druid_page_eazel->title);
+	}
 }
+
+void
+nautilus_druid_page_eazel_set_title_label (NautilusDruidPageEazel *druid_page_eazel,
+					   GtkLabel *label)
+{
+	g_return_if_fail (druid_page_eazel != NULL);
+	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_EAZEL (druid_page_eazel));
+	g_return_if_fail (GTK_IS_LABEL (label));
+
+	if (druid_page_eazel->details->title_label != NULL) {
+		gtk_signal_disconnect (GTK_OBJECT (druid_page_eazel->details->title_label),
+				       druid_page_eazel->details->title_label_signal_id);
+	}
+
+	gtk_widget_show (GTK_WIDGET (label));
+	gnome_canvas_item_set (druid_page_eazel->details->title_item,
+			       "widget", label,
+			       NULL);
+	druid_page_eazel->details->title_label = GTK_WIDGET (label);
+	druid_page_eazel->details->title_label_signal_id =
+		gtk_signal_connect (GTK_OBJECT (label), "size_allocate",
+				    title_label_size_allocated,
+				    druid_page_eazel);
+
+	if (druid_page_eazel->title != NULL) {
+		g_free (druid_page_eazel->title);
+	}
+	druid_page_eazel->title = g_strdup (label->label);
+}
+
 void
 nautilus_druid_page_eazel_set_title_image (NautilusDruidPageEazel *druid_page_eazel,
 					   GdkPixbuf *title_image)
@@ -588,18 +660,16 @@ void
 nautilus_druid_page_eazel_put_widget (NautilusDruidPageEazel *druid_page_eazel,
 				      GtkWidget *widget)
 {
-	double content_x;
-	double content_y;
-
 	g_return_if_fail (druid_page_eazel != NULL);
 	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_EAZEL (druid_page_eazel));
 
-	get_content_xy (druid_page_eazel, &content_x, &content_y);
-
-	if (druid_page_eazel->details->widget_item != NULL)
+	if (druid_page_eazel->details->widget_item != NULL) {
 		gtk_object_destroy (GTK_OBJECT (druid_page_eazel->details->widget_item));
-	if (druid_page_eazel->widget != NULL)
+	}
+	if (druid_page_eazel->widget != NULL) {
 		gtk_widget_unref (druid_page_eazel->widget);
+	}
+
 	druid_page_eazel->widget = widget;
 	if (widget != NULL)
 		gtk_widget_ref (widget);
@@ -607,10 +677,6 @@ nautilus_druid_page_eazel_put_widget (NautilusDruidPageEazel *druid_page_eazel,
 	druid_page_eazel->details->widget_item =
 		gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (druid_page_eazel->canvas)),
 				       gnome_canvas_widget_get_type (),
-				       "x", content_x,
-				       "y", content_y,
-				       "width", DRUID_PAGE_WIDTH - content_x,
-				       "height", DRUID_PAGE_HEIGHT - content_y,
 				       "widget", widget,
 				       NULL);
 

@@ -66,7 +66,7 @@
 enum {
 	USER_LEVEL_PAGE = 0,
 	GMC_TRANSITION_PAGE,
-	SERVICE_SIGNUP_PAGE,
+	LAUNCH_MEDUSA_PAGE,
 	OFFER_UPDATE_PAGE,
 	UPDATE_FEEDBACK_PAGE,
 	PROXY_CONFIGURATION_PAGE,
@@ -92,9 +92,8 @@ enum {
 
 #define NETSCAPE_PREFS_PATH "/.netscape/preferences.js"
 
-#define EAZEL_SERVICES_LEARN_MORE_URL "http://services.eazel.com/services"
-#define EAZEL_SERVICES_SIGN_UP_URL "http://services.eazel.com/account/register/form"
-#define EAZEL_SERVICES_LOG_IN_URL "eazel:"
+/* FIXME: this needs to use a custom URL */
+#define EAZEL_SERVICES_URL "http://services.eazel.com/services"
 
 
 /* globals */
@@ -107,7 +106,6 @@ static GtkWidget *pages[NUMBER_OF_STANDARD_PAGES];
 
 static GtkWidget *download_label;
 
-static int last_signup_choice = 0;
 static int last_update_choice = 0;
 static int last_proxy_choice = 1;
 
@@ -135,6 +133,11 @@ static pid_t child_pid;
 static gboolean draw_desktop = TRUE;
 static gboolean add_to_session = TRUE;
 static gboolean transfer_gmc_icons = TRUE;
+static GtkWidget *draw_desktop_checkbox_widget;
+
+/* `Launch Medusa' globals */
+static gboolean medusa_is_blocked;
+static gboolean launch_medusa = TRUE;
 
 static void     initiate_file_download           (GnomeDruid 	*druid);
 static gboolean set_http_proxy                   (const char 	*proxy_url);
@@ -187,7 +190,7 @@ static void
 druid_finished (GtkWidget *druid_page)
 {
 	char *user_main_directory, *desktop_path;
-	const char *signup_uris[2];
+	const char *signup_uris[3];
 	
 	
 	/* Hide druid so we don't have a blocked dialog visible while we process the startup tasks. */
@@ -209,31 +212,22 @@ druid_finished (GtkWidget *druid_page)
 	/* FIXME bugzilla.eazel.com 5051: Perhaps we can fix the underlying problem instead of
 	 * having this hack here to guess whether the network is broken.
 	 */
-	if (Untested == network_status
-	    && (last_signup_choice == 0 || last_signup_choice == 1)) {
+	if (Untested == network_status) {
 		check_network_connectivity ();
 	}
-	if (Fail == network_status) {
-		last_signup_choice = 3;
+
+	signup_uris[0] = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
+
+	if (Success == network_status) {
+		/* FIXME: even if the DNS resolution check didn't hang,
+		 * we still may not be able to load the services URL.
+		 * For example, we may not have a network connection!
+		 */
+		signup_uris[1] = EAZEL_SERVICES_URL;
+		signup_uris[2] = NULL;
+	} else {
+		signup_uris[1] = NULL;
 	}
-	
-	/* Choose the URL based on the signup choice. */
-	switch (last_signup_choice) {
-	case 0:
-		signup_uris[0] = EAZEL_SERVICES_LEARN_MORE_URL;
-		break;
-	case 1:
-		signup_uris[0] = EAZEL_SERVICES_SIGN_UP_URL;
-		break;
-	case 2:
-		signup_uris[0] = EAZEL_SERVICES_LOG_IN_URL;
-		break;
-	case 3:
-	default:
-		signup_uris[0]	= NULL;	
-		break;
-	}
-	signup_uris[1] = NULL;
 	
 	
 	/* Do the GMC to Nautilus Transition */
@@ -242,6 +236,9 @@ druid_finished (GtkWidget *druid_page)
 	if (transfer_gmc_icons) {
 		convert_gmc_desktop_icons ();
 	}
+
+	/* Do the Medusa config */
+	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_USE_FAST_SEARCH, launch_medusa);
 	
 	/* Create default services icon on the desktop */
 	desktop_path = nautilus_get_desktop_directory ();
@@ -250,7 +247,7 @@ druid_finished (GtkWidget *druid_page)
 	g_free (desktop_path);
 	
 	/* Time to start. Hooray! */
-	nautilus_application_startup (save_application, FALSE, FALSE, save_manage_desktop, 
+	nautilus_application_startup (save_application, FALSE, FALSE, draw_desktop, 
 				      FALSE, FALSE, NULL, (signup_uris[0] != NULL) ? signup_uris : NULL);
 	
 	/* Destroy druid last because it may be the only thing keeping the main event loop alive. */
@@ -277,6 +274,16 @@ set_up_background (NautilusDruidPageEazel *page, const char *background_color)
 	return event_box;
 }
 
+static void
+update_draw_desktop_checkbox_state (int user_level)
+{
+	if (user_level == NAUTILUS_USER_LEVEL_NOVICE) {
+		gtk_widget_hide (draw_desktop_checkbox_widget);
+	} else {
+		gtk_widget_show (draw_desktop_checkbox_widget);
+	}
+}
+
 /* handler for user level buttons changing */
 static void
 user_level_selection_changed (GtkWidget *radio_button, gpointer user_data)
@@ -286,15 +293,11 @@ user_level_selection_changed (GtkWidget *radio_button, gpointer user_data)
 	if (GTK_TOGGLE_BUTTON (radio_button)->active) {
 		nautilus_preferences_set_user_level (user_level);
 	}
+
+	update_draw_desktop_checkbox_state (user_level);
 }
 
 /* handler for signup buttons changing */
-static void
-signup_selection_changed (GtkWidget *radio_buttons, gpointer user_data)
-{
-	last_signup_choice = nautilus_radio_button_group_get_active_index (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons));
-}
-
 static void
 update_selection_changed (GtkWidget *radio_buttons, gpointer user_data)
 {
@@ -308,7 +311,8 @@ proxy_selection_changed (GtkWidget *radio_buttons, gpointer user_data)
 }
 
 
-/* utility to allocate an anti-aliased description label */
+/* Utility to allocate a non anti-aliased description label. Used for
+ * body text in the druid pages. */
 
 static GtkWidget*
 label_new_left_justified (const char *text)
@@ -317,6 +321,39 @@ label_new_left_justified (const char *text)
 	
 	label = nautilus_label_new (text);
 	nautilus_label_set_justify (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
+	nautilus_label_set_is_smooth (NAUTILUS_LABEL (label), FALSE);
+
+	return label;
+}
+
+static GtkWidget *
+new_title_label (const char *text)
+{
+	GtkWidget *label;
+	NautilusScalableFont *font;
+
+	label = label_new_left_justified (text);
+
+	/* Note to localizers: this font is used for title text in
+	 * the first time druid */
+	font = nautilus_scalable_font_new (_("helvetica"), _("medium"), NULL, NULL);
+	nautilus_label_set_is_smooth (NAUTILUS_LABEL (label), TRUE);
+	nautilus_label_set_smooth_font (NAUTILUS_LABEL (label), font);
+	nautilus_label_make_larger (NAUTILUS_LABEL (label), 10);
+	nautilus_label_set_smooth_drop_shadow_offset (NAUTILUS_LABEL (label), 2);
+	nautilus_label_set_smooth_drop_shadow_color (NAUTILUS_LABEL (label),
+						     NAUTILUS_RGBA_COLOR_PACK
+						     (191, 191, 191, 255));
+	return label;
+}
+
+static GtkWidget *
+new_body_label (const char *text)
+{
+	GtkWidget *label;
+
+	label = gtk_label_new (text);
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 
 	return label;
 }
@@ -356,11 +393,6 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 
 	user_level_name = nautilus_preferences_get_user_level_name_for_display (index);
 
-	/* Add an "indent" */
-	alignment = gtk_alignment_new (1.0, 1.0, 1.0, 1.0);
-	gtk_widget_set_usize (alignment, 50, -1);
-	gtk_box_pack_start (GTK_BOX (hbox), alignment, FALSE, FALSE, 0);
-
 	/* make new box for radiobutton/comment */
 	comment_vbox = gtk_vbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), comment_vbox, FALSE, FALSE, 0);
@@ -383,11 +415,9 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 		nautilus_image_set_pixbuf (NAUTILUS_IMAGE (icon), icon_pixbuf);
 	}
 	gtk_box_pack_start (GTK_BOX (label_box), icon, FALSE, FALSE, 0);
-	label = label_new_left_justified (user_level_name);
+	label = new_body_label (user_level_name);
+	nautilus_gtk_label_make_bold (GTK_LABEL (label));
 	g_free (user_level_name);
-
-	nautilus_label_make_bold (NAUTILUS_LABEL (label));
-	SIZE_BODY_LABEL (label);
 
 	/* extra vbox to help with alignment */
 	vbox = gtk_vbox_new (FALSE, 0);
@@ -410,8 +440,7 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 	gtk_box_pack_start (GTK_BOX (comment_hbox), alignment, FALSE, FALSE, 0);
 
 	/* Make comment label */
-	label = label_new_left_justified (comment);
-	SIZE_BODY_LABEL (label);
+	label = new_body_label (comment);
 
 	gtk_box_pack_start (GTK_BOX (comment_hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show_all (hbox);
@@ -436,11 +465,9 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
 
-	label = label_new_left_justified (_("User levels provide a way to adjust the software to your\n"
-					   "level of technical expertise. Pick an initial level that you\n"
-					   "feel comfortable with; you can always change it later."));
-
-	SIZE_BODY_LABEL (label);
+	label = new_body_label (_("Your user level adjusts Nautilus to your degree of experience\n"
+				  "using GNOME and Linux. Choose a level that's comfortable for\n"
+				  "you - you can always change it later."));
 
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
@@ -449,21 +476,20 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 	 * array */
 	hbox = make_hbox_user_level_radio_button
 		(NAUTILUS_USER_LEVEL_NOVICE, radio_buttons, "novice.png",
-		 _("For beginner users that are not yet\n"
-		   "familiar with the working of "
-		   "GNOME and Linux."),
+		 _("For users who have no previous experience with GNOME\n"
+		   "and Linux."),
 		 NULL);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 2);
 	hbox = make_hbox_user_level_radio_button
 		(NAUTILUS_USER_LEVEL_INTERMEDIATE, radio_buttons, "intermediate.png",
-		 _("For non-technical users that are comfortable with\n"
-		   "their GNOME and Linux environment."),
-				       NULL);
+		 _("For users who are comfortable with GNOME and Linux,\n"
+		   "but don't describe themselves as ``technical.''"),
+		 NULL);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 2);
 	hbox = make_hbox_user_level_radio_button
 		(NAUTILUS_USER_LEVEL_ADVANCED, radio_buttons, "expert.png",
-		 _("For users that have the need to be exposed\n"
-		   "to every detail of their operating system."),
+		 _("For users who have GNOME and Linux experience, and\n"
+		   "like to see every detail of the operating system."),
 		 NULL);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 2);
 
@@ -482,65 +508,12 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 	gtk_widget_show_all (main_box);
 }
 
-/* set up the user level page */
-static void
-set_up_service_signup_page (NautilusDruidPageEazel *page)
-{
-	GtkWidget *radio_buttons, *frame, *label;
-	GtkWidget *container, *main_box;
-
-	container = set_up_background (page, "rgb:ffff/ffff/ffff:h");
-
-	/* allocate a vbox to hold the description and the widgets */
-	main_box = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (main_box);
-	gtk_container_add (GTK_CONTAINER (container), main_box);
-	
-	/* allocate a descriptive label */
-	label = label_new_left_justified (_("Eazel offers a growing number of services to help you\n"
-					   "install and maintain new software and manage your files\n"
-					   "across the network.  Choose an option below, and the\n"
-					   "information will be presented in Nautilus after you've\n"
-					   "finished setting up."));
-
-	SIZE_BODY_LABEL (label);
-
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
-	
-	frame = gtk_frame_new (_("Eazel Services"));
-	gtk_widget_show (frame);
-	gtk_container_set_border_width (GTK_CONTAINER (frame), 8);
-
-	radio_buttons = nautilus_radio_button_group_new (FALSE);
-	gtk_container_add (GTK_CONTAINER (frame),
-					radio_buttons);
-
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons),
-					    _("I want to learn more about Eazel services."));
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons),
-					    _("I want to sign up for Eazel services now."));	
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons),
-					    _("I've already signed up and want to login now."));
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons),
-					    _("I don't want to learn about Eazel services at this time."));
-
-	gtk_signal_connect (GTK_OBJECT (radio_buttons),
-			    "changed",
-			    GTK_SIGNAL_FUNC (signup_selection_changed),
-			    (gpointer) NULL);
-
-	gtk_box_pack_start (GTK_BOX (main_box), frame, FALSE, FALSE, 2);
-	gtk_widget_show (radio_buttons);
-
-}
-
 /* set up the "Nautilus Update" page */
 static void
 set_up_update_page (NautilusDruidPageEazel *page)
 {
-	GtkWidget *radio_buttons, *frame, *label;
-	GtkWidget *container, *main_box;
+	GtkWidget *radio_buttons, *label;
+	GtkWidget *container, *main_box, *hbox;
 
 	container = set_up_background (page, "rgb:ffff/ffff/ffff:h");
 
@@ -550,31 +523,34 @@ set_up_update_page (NautilusDruidPageEazel *page)
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* allocate a descriptive label */
-	label = label_new_left_justified (_("Nautilus will now contact Eazel services to quickly verify \nyour web connection and download the latest updates. \n\nIf you know your computer uses a proxy connection, \nclick Yes and Nautilus will use it. \n\nClick the Next button to continue."));
-	SIZE_BODY_LABEL (label);
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
+
+	label = new_body_label (_("To verify your Internet connection and make sure you have\n"
+				  "the latest Nautilus updates, Nautilus will now connect to\n"
+				  "Eazel's web site. This will take seconds if your copy of\n"
+				  "Nautilus is recent; longer (but no more than a minute or two)\n"
+				  "if you need an update.\n\n"
+				  "If you know your computer uses a proxy connection, click\n"
+				  "Verify and Nautilus will use it."));
 
 	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	
-	frame = gtk_frame_new (_("Updating Nautilus"));
-	gtk_widget_show (frame);
-	gtk_container_set_border_width (GTK_CONTAINER (frame), 8);
-
 	radio_buttons = nautilus_radio_button_group_new (FALSE);
-	gtk_container_add (GTK_CONTAINER (frame),
-					radio_buttons);
+	gtk_box_pack_start (GTK_BOX (main_box), radio_buttons, FALSE, FALSE, 0);
 
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Yes, verify my connection and update Nautilus now."));
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("No, don't contact Eazel services at this time."));	
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Verify my connection and check for updates"));
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Don't verify my connection or check for updates"));	
 
 	gtk_signal_connect (GTK_OBJECT (radio_buttons),
 			    "changed",
 			    GTK_SIGNAL_FUNC (update_selection_changed),
 			    (gpointer) NULL);
 
-	gtk_box_pack_start (GTK_BOX (main_box), frame, FALSE, FALSE, 2);
 	gtk_widget_show (radio_buttons);
 
+	gtk_widget_show_all (main_box);
 }
 
 
@@ -613,7 +589,7 @@ static void
 set_up_proxy_config_page (NautilusDruidPageEazel *page)
 {
 	GtkWidget *radio_buttons;
-	GtkWidget *frame, *label;
+	GtkWidget *label;
 	GtkWidget *container, *main_box;
 	GtkWidget *vbox, *hbox;
 	GtkWidget *alignment;
@@ -627,20 +603,18 @@ set_up_proxy_config_page (NautilusDruidPageEazel *page)
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* allocate a descriptive label */
-	label = label_new_left_justified (_("We are having troubles making an external web connection.  \nSometimes, firewalls require you to specify a web proxy server.  \n Fill in the name of port of your proxy server, if any, below."));
-	SIZE_BODY_LABEL (label);
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
-	
-	frame = gtk_frame_new (_("HTTP Proxy Configuration"));
-	gtk_widget_show (frame);
-	gtk_container_set_border_width (GTK_CONTAINER (frame), 12);
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
 
+	label = new_body_label (_("We are having trouble making an external web connection.\n"
+				  "Sometimes, firewalls require you to specify a web proxy server.\n"
+				  "Fill in the name or port of your proxy server, if any, below."));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	
 	/* allocate a pair of radio buttons */
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox);
-	gtk_container_add (GTK_CONTAINER (frame),
-					vbox);
 
 	radio_buttons = nautilus_radio_button_group_new (FALSE);
 
@@ -700,7 +674,7 @@ set_up_proxy_config_page (NautilusDruidPageEazel *page)
 	gtk_box_pack_start (GTK_BOX (hbox), port_number_entry, FALSE, FALSE, 2);
 	
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 2);
-	gtk_box_pack_start (GTK_BOX (main_box), frame, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (main_box), vbox, FALSE, FALSE, 2);
 
 
 	/* Slam it so that the <tab> in "Proxy Address" goes to "Port"
@@ -729,15 +703,13 @@ set_up_update_feedback_page (NautilusDruidPageEazel *page)
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* allocate a descriptive label */
-	label = label_new_left_justified (_("We are now contacting the Eazel service to test your \nweb connection and update Nautilus."));
-	SIZE_BODY_LABEL (label);
+	label = new_body_label (_("Verifying your Internet connection and checking for updates..."));
 	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
+	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 0);
 		
 		
-	download_label = nautilus_label_new (_("Downloading Nautilus updates..."));
-	nautilus_label_make_larger (NAUTILUS_LABEL (download_label), 4);
-	
+	download_label = new_body_label (_("Downloading Nautilus updates..."));
+
 	gtk_widget_show (download_label);
 	
 	gtk_box_pack_start (GTK_BOX (main_box), download_label, FALSE, FALSE, 2);
@@ -863,7 +835,7 @@ static gboolean
 transition_value_changed (GtkWidget *checkbox, gboolean *value)
 {	
 	*value = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (checkbox));
-	
+
 	return TRUE;
 }
 
@@ -871,8 +843,12 @@ transition_value_changed (GtkWidget *checkbox, gboolean *value)
 static void
 set_up_gmc_transition_page (NautilusDruidPageEazel *page)
 {
-	GtkWidget *checkbox;
-	GtkWidget *container, *main_box;
+	GtkWidget *checkbox, *label;
+	GtkWidget *container, *main_box, *hbox;
+
+	draw_desktop = save_manage_desktop;
+	add_to_session = TRUE;
+	transfer_gmc_icons = TRUE;
 
 	container = set_up_background (page, "rgb:ffff/ffff/ffff:h");
 
@@ -881,24 +857,77 @@ set_up_gmc_transition_page (NautilusDruidPageEazel *page)
 	gtk_widget_show (main_box);
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
-	checkbox = gtk_check_button_new_with_label (_("Use Nautilus to draw desktop."));
-	gtk_box_pack_start (GTK_BOX (main_box), checkbox, FALSE, FALSE, 0);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), TRUE);	
-	gtk_signal_connect (GTK_OBJECT (checkbox), "toggled", GTK_SIGNAL_FUNC (transition_value_changed), &draw_desktop);
+	/* allocate a descriptive label */
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
 
-	checkbox = gtk_check_button_new_with_label (_("Transfer GMC desktop icons to Nautilus desktop."));
+	label = new_body_label (_("If you have been using the GNOME Midnight Commander\n"
+				  "these settings move your desktop icons to Nautilus and\n"
+				  "make Nautilus the default desktop.\n"));
+
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
+	checkbox = gtk_check_button_new_with_label (_("Use Nautilus to draw the desktop."));
 	gtk_box_pack_start (GTK_BOX (main_box), checkbox, FALSE, FALSE, 0);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), TRUE);	
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), draw_desktop);
+	gtk_signal_connect (GTK_OBJECT (checkbox), "toggled", GTK_SIGNAL_FUNC (transition_value_changed), &draw_desktop);
+	draw_desktop_checkbox_widget = checkbox;
+
+	checkbox = gtk_check_button_new_with_label (_("Move existing desktop icons to the Nautilus desktop."));
+	gtk_box_pack_start (GTK_BOX (main_box), checkbox, FALSE, FALSE, 0);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), transfer_gmc_icons);	
 	gtk_signal_connect (GTK_OBJECT (checkbox), "toggled", GTK_SIGNAL_FUNC (transition_value_changed), &transfer_gmc_icons);
 
-	checkbox = gtk_check_button_new_with_label (_("Launch Nautilus at Gnome session startup."));
+	checkbox = gtk_check_button_new_with_label (_("Launch Nautilus when GNOME starts up."));
 	gtk_box_pack_start (GTK_BOX (main_box), checkbox, FALSE, FALSE, 0);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), TRUE);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), add_to_session);
 	gtk_signal_connect (GTK_OBJECT (checkbox), "toggled", GTK_SIGNAL_FUNC (transition_value_changed), &add_to_session);
 	
-	draw_desktop = TRUE;
-	add_to_session = TRUE;
-	transfer_gmc_icons = TRUE;
+	gtk_widget_show_all (main_box);
+}
+
+
+static gboolean
+medusa_value_changed (GtkWidget *checkbox, gboolean *value)
+{	
+	*value = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (checkbox));
+	
+	return TRUE;
+}
+
+/* set up the "Launch Medusa" page */
+static void
+set_up_medusa_page (NautilusDruidPageEazel *page)
+{
+	GtkWidget *checkbox, *label;
+	GtkWidget *container, *main_box, *hbox;
+
+	container = set_up_background (page, "rgb:ffff/ffff/ffff:h");
+
+	/* allocate a vbox to hold the description and the widgets */
+	main_box = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (main_box);
+	gtk_container_add (GTK_CONTAINER (container), main_box);
+	
+	/* allocate a descriptive label */
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
+
+	label = new_body_label (_("The Medusa daemon indexes all the items on your hard\n"
+				  "disk and mounted volumes, so you can quickly search\n"
+				  "by name, date, and other attributes as well as by content.\n"
+				  "Without Medusa, searching is slower.\n"));
+
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
+	checkbox = gtk_check_button_new_with_label (_("Launch medusa."));
+	gtk_box_pack_start (GTK_BOX (main_box), checkbox, FALSE, FALSE, 0);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), TRUE);	
+	gtk_signal_connect (GTK_OBJECT (checkbox), "toggled", GTK_SIGNAL_FUNC (medusa_value_changed), &launch_medusa);
+	
+	launch_medusa = TRUE;
 
 	gtk_widget_show_all (main_box);
 }
@@ -927,6 +956,48 @@ set_page_sidebar (NautilusDruidPageEazel *page)
 	}
 }
 
+static void
+set_page_title (NautilusDruidPageEazel *page, const char *title)
+{
+	GtkWidget *label;
+
+	label = new_title_label (title);
+	nautilus_druid_page_eazel_set_title_label (page, GTK_LABEL (label));
+}
+
+static GtkWidget *
+make_title_page_icon_box (void)
+{
+	const char *names[4] = {
+		"temp-home.png",
+		"big_services_icon.png",
+		"arlo/i-directory-aa.png",
+		"trash-full.png"
+	};
+	int i;
+	char *filename;
+	GtkWidget *image;
+	GtkWidget *hbox;
+
+	hbox = gtk_hbox_new (TRUE, 0);
+
+	for (i = 0; i < 4; i++) {
+		filename = nautilus_pixmap_file (names[i]);
+		if (filename != NULL) {
+			image = nautilus_image_new (filename);
+			g_free (filename);
+			if (image != NULL) {
+				nautilus_image_set_is_smooth (NAUTILUS_IMAGE (image), TRUE);
+				nautilus_image_set_pixbuf_opacity (NAUTILUS_IMAGE (image), 128);
+				gtk_box_pack_start (GTK_BOX (hbox), image, TRUE, TRUE, 0);
+			}
+		}
+	}
+
+	gtk_widget_show_all (hbox);
+	return hbox;
+}
+
 GtkWidget *
 nautilus_first_time_druid_show (NautilusApplication *application, gboolean manage_desktop, const char *urls[])
 {	
@@ -938,7 +1009,9 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 	/* remember parameters for later window invocation */
 	save_application = application;
 	save_manage_desktop = manage_desktop;
-	
+
+	medusa_is_blocked = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDUSA_BLOCKED);
+
 	dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (dialog),
 			      _("Nautilus First Time Setup"));
@@ -964,60 +1037,56 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 		
 	/* set up the initial page */
 
-	/* allocate the description using a nautilus_label to get anti-aliased text */
 	container = set_up_background (NAUTILUS_DRUID_PAGE_EAZEL (start_page), "rgb:ffff/ffff/ffff:h");
 	main_box = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (main_box);
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* make the title label */
-	label = label_new_left_justified ( _("Welcome to Nautilus!"));
-	nautilus_label_make_larger (NAUTILUS_LABEL (label), 4);
-	nautilus_label_set_smooth_drop_shadow_offset (NAUTILUS_LABEL (label), 2);
-	nautilus_label_set_smooth_drop_shadow_color (NAUTILUS_LABEL (label), NAUTILUS_RGBA_COLOR_PACK (191, 191, 191, 255));
+	set_page_title (NAUTILUS_DRUID_PAGE_EAZEL (start_page),
+			_("Welcome to Nautilus"));
 	
+	label = new_body_label ( _("Nautilus is part of your GNOME desktop environment.\n"
+				   "It helps you manage your files and folders (directories),\n"
+				   "view documents, connect to the Internet, and do many\n"
+				   "other tasks.\n\n"
+				   "The next four screens ask about your level of Linux\n"
+				   "experience, and check your Internet connection. Click\n"
+				   "Next to continue."));
 	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, TRUE, 16);
-	
-	label = label_new_left_justified ( _("Since this is the first time that you've launched\nNautilus, we'd like to ask you a few questions\nto help personalize it for your use."));
-	nautilus_label_make_larger (NAUTILUS_LABEL (label), 4);
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
-	
-	label = label_new_left_justified ( _("Press the next button to continue."));
-	nautilus_label_make_larger (NAUTILUS_LABEL (label), 4);
+	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (main_box), make_title_page_icon_box (), TRUE, TRUE, 32);
 
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 16);
-	nautilus_label_set_justify (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
-	
 	/* set up the final page */
-	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (finish_page), _("Finished"));
+	set_page_title (NAUTILUS_DRUID_PAGE_EAZEL (finish_page), _("Finished"));
 
 	container = set_up_background (NAUTILUS_DRUID_PAGE_EAZEL (finish_page), "rgb:ffff/ffff/ffff:h");
 	main_box = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (main_box);
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
-	label = label_new_left_justified ( _("Click the finish button to launch Nautilus.\nWe hope that you enjoy using it!"));
-	nautilus_label_make_larger (NAUTILUS_LABEL (label), 4);
+	label = new_body_label ( _("Click Finish to launch Nautilus. You'll start with two\n"
+				   "Nautilus windows: one shows your home directory, and the\n"
+				   "other tells you about Eazel's services that make the life\n"
+				   "of a Linux user easier.\n\n"
+				   "We hope you enjoy Nautilus!"));
 	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
+	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 0);
 		
 	/* set up the user level page */
-	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[USER_LEVEL_PAGE]), _("Select A User Level"));
+	set_page_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[USER_LEVEL_PAGE]), _("Choose Your User Level"));
 	set_up_user_level_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[USER_LEVEL_PAGE]));
 				
 	/* set up the GMC transition page */
-	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[GMC_TRANSITION_PAGE]), _("GMC to Nautilus Transition"));
+	set_page_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[GMC_TRANSITION_PAGE]), _("GMC to Nautilus Transition"));
 	set_up_gmc_transition_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[GMC_TRANSITION_PAGE]));
 
-	/* set up the service sign-up page */
-	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[SERVICE_SIGNUP_PAGE]), _("Sign Up for Eazel Services"));
-	set_up_service_signup_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[SERVICE_SIGNUP_PAGE]));
+	/* set up the `Launch Medusa' page */
+	set_page_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[LAUNCH_MEDUSA_PAGE]), _("Launch Medusa"));
+	set_up_medusa_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[LAUNCH_MEDUSA_PAGE]));
 
 	/* set up the update page */
-	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[OFFER_UPDATE_PAGE]), _("Nautilus Update"));
+	set_page_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[OFFER_UPDATE_PAGE]), _("Checking Your Internet Connection"));
 	set_up_update_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[OFFER_UPDATE_PAGE]));
 
 	gtk_signal_connect (GTK_OBJECT (pages[OFFER_UPDATE_PAGE]), "next",
@@ -1025,7 +1094,7 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 			    druid);
 
 	/* set up the update feedback page */
-	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[UPDATE_FEEDBACK_PAGE]), _("Updating Nautilus..."));
+	set_page_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[UPDATE_FEEDBACK_PAGE]), _("Updating Nautilus..."));
 	set_up_update_feedback_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[UPDATE_FEEDBACK_PAGE]));
 
 	gtk_signal_connect (GTK_OBJECT (pages[UPDATE_FEEDBACK_PAGE]), "next",
@@ -1033,7 +1102,7 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 			    druid);
 
 	/* set up the (optional) proxy configuration page */
-	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[PROXY_CONFIGURATION_PAGE]), _("Web Proxy Configuration"));
+	set_page_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[PROXY_CONFIGURATION_PAGE]), _("Web Proxy Configuration"));
 	set_up_proxy_config_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[PROXY_CONFIGURATION_PAGE]));
 
 	gtk_signal_connect (GTK_OBJECT (pages[PROXY_CONFIGURATION_PAGE]), "next",
@@ -1052,7 +1121,9 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 	/* append all of the pages to the druid */
 	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (start_page));	
 	for (index = 0; index < NUMBER_OF_STANDARD_PAGES; index++) {
-		gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (pages[index]));
+		if (index != LAUNCH_MEDUSA_PAGE || !medusa_is_blocked) {
+			gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (pages[index]));
+		}
 	}
 	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (finish_page));
 		
@@ -1068,6 +1139,7 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 
 	gtk_widget_show_all (druid);
 
+	update_draw_desktop_checkbox_state (nautilus_preferences_get_user_level ());
 	gtk_widget_show (GTK_WIDGET (dialog));
 	return druid;
 }
@@ -1105,7 +1177,7 @@ download_callback (GnomeVFSResult result,
 		g_free (file_contents);
 
 		/* change the message to expanding file */
-		nautilus_label_set_text (NAUTILUS_LABEL (download_label), _("Decoding Update..."));
+		gtk_label_set_text (GTK_LABEL (download_label), _("Decoding Update..."));
 		
 		/* expand the directory into the proper place */
 		/* first, formulate the command string */
@@ -1122,11 +1194,21 @@ download_callback (GnomeVFSResult result,
 		/* Remove the temporary file */
 		expand_result = system (remove_command);
 
-		nautilus_label_set_text (NAUTILUS_LABEL (download_label), _("Update Completed... Press Next to Continue."));
+		gtk_label_set_text (GTK_LABEL (download_label), _("Update Complete. Click Next to Continue."));
 			
 		g_free (user_directory_path);
 		g_free (untar_command);
 		g_free (remove_command);
+
+		/* now that we're done, reenable the buttons */
+		gtk_widget_set_sensitive (druid->next, TRUE);
+		gtk_widget_set_sensitive (druid->back, TRUE);
+	} else if (result == GNOME_VFS_ERROR_NOT_FOUND) {
+		/* The update file couldn't be loaded because it
+		 * doesn't exist. Arlo and I (jsh) and decided that the
+		 * best thing to do is silently fail
+		 */
+		gtk_label_set_text (GTK_LABEL (download_label), _("No Update Available... Press Next to Continue."));
 
 		/* now that we're done, reenable the buttons */
 		gtk_widget_set_sensitive (druid->next, TRUE);

@@ -525,6 +525,9 @@ nautilus_zoom_control_load_images (NautilusZoomControl *zoom_control)
 	zoom_control->details->number_strip = load_themed_image ("number_strip.png");
 	
 	if (zoom_control->details->number_strip == NULL) {
+		/* Note to localizers: this font is used for the number in the
+		 * zoom control widget.
+		 */
 		zoom_control->details->label_font = gdk_fontset_load (_("-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"));
 	}
 

@@ -130,7 +130,9 @@ static const char *icon_file_name_suffixes[] =
 /* FIXME bugzilla.eazel.com 1102: Embedded text should use preferences
  * to determine what font it uses instead of this set of constants.
  */
+/* Note to localizers: this font is used for text embedded in file icons */
 static const char untranslated_embedded_text_font_family[] = N_("helvetica");
+/* Note to localizers: this font is used for text embedded in file icons */
 static const char untranslated_embedded_text_font_weight[] = N_("medium");
 #define EMBEDDED_TEXT_FONT_FAMILY       _(untranslated_embedded_text_font_family)
 #define EMBEDDED_TEXT_FONT_WEIGHT       _(untranslated_embedded_text_font_weight)
