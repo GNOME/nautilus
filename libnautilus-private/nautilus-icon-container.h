@@ -166,7 +166,8 @@ gboolean   nautilus_icon_container_is_renaming                   (NautilusIconCo
 
 
 /* label color for items to use */
-guint32    nautilus_icon_container_get_label_color		 (NautilusIconContainer *container);
+guint32    nautilus_icon_container_get_label_color		 (NautilusIconContainer *container,
+								  gboolean first_line);
 
 /* options */
 int        nautilus_icon_container_get_zoom_level                (NautilusIconContainer *view);

@@ -164,7 +164,8 @@ struct NautilusIconContainerDetails {
 
 	/* color for text labels */
 	guint32 label_color;
-		
+	guint32 label_info_color;
+	
 	/* State used so arrow keys don't wander if icons aren't lined up.
 	 * Keeps track of last axis arrow key was used on.
 	 */

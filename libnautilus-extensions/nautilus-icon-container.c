@@ -3786,10 +3786,15 @@ nautilus_icon_container_set_single_click_mode (NautilusIconContainer *container,
 /* update the label color when the background changes */
 
 guint32
-nautilus_icon_container_get_label_color (NautilusIconContainer *container)
+nautilus_icon_container_get_label_color (NautilusIconContainer *container, gboolean is_name)
 {
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), 0);
-	return container->details->label_color;
+	if (is_name) {
+		return container->details->label_color;
+	} else {
+		return container->details->label_info_color;
+	}
+	
 }
 
 static void
@@ -3800,9 +3805,11 @@ update_label_color (NautilusBackground *background,
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	
 	if (nautilus_background_is_dark (background)) {
-		container->details->label_color = 0xEEEEEE;
+		container->details->label_color = 0xEFEFEF;
+		container->details->label_info_color = 0xAAAAEF;
 	} else {
-		container->details->label_color = 0x000000;
+		container->details->label_color = 000000;
+		container->details->label_info_color = 0x00007F;
 	}
 }
 

@@ -3070,28 +3070,28 @@ nautilus_file_get_emblem_names (NautilusFile *file)
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
 	names = nautilus_file_get_keywords (file);
-	
-	if (!nautilus_file_can_read (file)) {
-		names = g_list_prepend 
-			(names, g_strdup (EMBLEM_NAME_CANT_READ));
-
-	}
-
-	if (!nautilus_file_can_write (file)) {
-		names = g_list_prepend 
-			(names, g_strdup (EMBLEM_NAME_CANT_WRITE));
-
-	}
 						    					    
+	if (nautilus_file_is_search_result (file)
+	    && nautilus_file_is_in_trash (file)) {
+		names = g_list_append 
+			(names, g_strdup (EMBLEM_NAME_TRASH));
+	}
+
 	if (nautilus_file_is_symbolic_link (file)) {
-		names = g_list_prepend 
+		names = g_list_append 
 			(names, g_strdup (EMBLEM_NAME_SYMBOLIC_LINK));
 	}
 	
-	if (nautilus_file_is_search_result (file)
-	    && nautilus_file_is_in_trash (file)) {
-		names = g_list_prepend 
-			(names, g_strdup (EMBLEM_NAME_TRASH));
+	if (!nautilus_file_can_write (file)) {
+		names = g_list_append 
+			(names, g_strdup (EMBLEM_NAME_CANT_WRITE));
+
+	}
+
+	if (!nautilus_file_can_read (file)) {
+		names = g_list_append 
+			(names, g_strdup (EMBLEM_NAME_CANT_READ));
+
 	}
 	
 	return names;

@@ -1,3 +1,24 @@
+2000-08-06  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_emblem_names):
+	make intrinsic emblems appear in the list after the assigned ones because
+	the assigned ones are more important to the user.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_initialize_class),
+	(draw_or_measure_label_text):
+	At Bud's suggestion, distinguish the additional info from the file name by
+	drawing it in a different color
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_get_label_color), (update_label_color):
+	set up the file name color and the additional info color separately
+	return one or the other based on parameter passed in to get_label_color
+	* libnautilus-extensions/nautilus-icon-container.h:
+	added an additional parameter to get_label_color to select which color to return
+	* libnautilus-extensions/nautilus-icon-private.h:
+	added a new field for the additional info color
+
 2000-08-05  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed embedded icon text clarity (we were using helvetica 9, which wasn't installed
