@@ -3066,6 +3066,8 @@ msgid ""
 "%sTo start %s, click the Launch button below, or to create a shortcut, drag "
 "the icon on the right to the GNOME panel or your desktop."
 msgstr ""
+"%sЩоб запустити %s, клацн╕ть на кнопку запуску нижче, або щоб створити ярлик, "
+"перетягн╕ть п╕ктограму праворуч на панель GNOME чи на ваш робочий ст╕л."
 
 #. couldn't find an icon
 #: components/services/install-view/nautilus-service-install-view.c:706
@@ -3472,7 +3474,7 @@ msgstr "Серв╕си"
 
 #: components/services/summary/nautilus-summary-view.c:752
 msgid "Featured Downloads"
-msgstr ""
+msgstr "Головн╕ звантаження"
 
 #: components/services/summary/nautilus-summary-view.c:883
 msgid ""
@@ -4096,7 +4098,7 @@ msgstr "См╕тник"
 
 #: data/linksets/home.xml.h:1
 msgid "Computer"
-msgstr "Крмп'ютер"
+msgstr "Комп'ютер"
 
 #: data/linksets/home.xml.h:2
 msgid "Home Directory"
@@ -4812,6 +4814,10 @@ msgid ""
 "\n"
 "If you still want to move \"%s\", rename it and try again."
 msgstr ""
+"\"%s\" не може бути перенесено у нове м╕сце тому, що ця назва вже "
+"використову╓ться для особливого елементу, якого не можа перенести чи видалити.\n"
+"\n"
+"Якщо ви все ж таки хочете перенести \"%s\", перейменуйте ╕ спробуйте знову."
 
 #: libnautilus-extensions/nautilus-file-operations.c:1063
 #, c-format
@@ -4821,6 +4827,10 @@ msgid ""
 "\n"
 "If you still want to copy \"%s\", rename it and try again."
 msgstr ""
+"\"%s\" не може бути скоп╕йовано у нове м╕сце тому, що ця назва вже "
+"використову╓ться для особливого елементу, якого не можа перенести чи видалити.\n"
+"\n"
+"Якщо ви все ж таки хочете скоп╕ювати \"%s\", перейменуйте ╕ спробуйте знову."
 
 #: libnautilus-extensions/nautilus-file-operations.c:1071
 msgid "Unable to replace file."
@@ -5596,7 +5606,7 @@ msgstr "Використовувати Наут╕лус для малювання робочого столу"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:183
 msgid "Enable fast search (indexes your hard drive)"
-msgstr "Ув╕мкнути швидкий пошук (╕ндексу╓ ваш жорсткий диск)"
+msgstr "Дозволити швидкий пошук (╕ндексу╓ ваш жорсткий диск)"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:186
 msgid "search type to do by default"
@@ -5766,6 +5776,9 @@ msgid ""
 "tasks on your computer, is turned off. To make sure fast searches can be "
 "done, turn crond on."
 msgstr ""
+"╤ндексац╕ю ╕ швидкий пошук ув╕мкнено, але ╕ндексац╕ю неможна зд╕йснити тому, "
+"що демон cron, який викону╓ пер╕одичн╕ запланован╕ завдання на вашому "
+"комп'ютер╕, вимкнено. Щоб можна було робити швидк╕ пошуки, ув╕мкн╕ть cron."
 
 #: libnautilus-extensions/nautilus-global-preferences.c:1152
 #: libnautilus-extensions/nautilus-global-preferences.c:1170
@@ -5795,6 +5808,11 @@ msgid ""
 "check to make sure that crond is turned on.\n"
 "\n"
 msgstr ""
+"╤ндексац╕ю ╕ швидкий пошук ув╕мкнено, але ╕ндексац╕ю неможна зд╕йснити тому, "
+"що демон cron, який викону╓ пер╕одичн╕ запланован╕ завдання на вашому "
+"комп'ютер╕, напевно вимкнено. Щоб можна було робити швидк╕ пошуки, переконайтесь, "
+"що cron ув╕мкнено.\n"
+"\n"
 
 #: libnautilus-extensions/nautilus-gnome-extensions.c:640
 msgid "No image was selected.  You must click on an image to select it."
@@ -6840,7 +6858,7 @@ msgstr "З╕псоване посилання"
 
 #: src/file-manager/fm-directory-view.c:3459
 msgid "Throw Away"
-msgstr ""
+msgstr "Викинути"
 
 #: src/file-manager/fm-directory-view.c:3512
 #, c-format
@@ -7235,7 +7253,7 @@ msgstr "Встановити ╕дентиф╕катор групи"
 
 #: src/file-manager/fm-properties-window.c:1883
 msgid "Sticky"
-msgstr ""
+msgstr "Липк╕сть"
 
 #: src/file-manager/fm-properties-window.c:1909
 msgid "Permissions"
@@ -7410,6 +7428,9 @@ msgid ""
 "index requests, isn't running.  To start this program, log in as root and "
 "enter this command at the command line: medusa-searchd"
 msgstr ""
+"Ваш╕ ╕ндексн╕ файли доступн╕, але демона пошуку Medusa, що оперу╓ ╕ндексними "
+"запитами, не запущено.  Для запуску ц╕╓╖ програми, заре╓струйтесь користучем "
+"root ╕ введ╕ть цю команду в командному рядку: medusa-searchd"
 
 #: src/file-manager/fm-search-list-view.c:274
 msgid ""
@@ -7419,6 +7440,10 @@ msgid ""
 "index? Creating an index will be done while you are not actively using your "
 "computer."
 msgstr ""
+"Для зд╕йснення швидкого пошку потр╕бний ╕ндекс файл╕в у ваш╕й систем╕. "
+"Ваш комп'ютер не ма╓ зараз ╕ндексу. Через те, що пошук не використову╓ "
+"╕ндексу, це може зайняти дек╕лька хвилин. Хочете створити ╕ндекс? Створення "
+"╕ндексу в╕дбудеться коли ви не будете активно використовувати ваш комп'ютер. "
 
 #: src/file-manager/fm-search-list-view.c:283
 msgid ""
@@ -7427,6 +7452,9 @@ msgid ""
 "index?  Creating an index will be done while you are not actively using your "
 "computer."
 msgstr ""
+"Для зд╕йснення пошуку вм╕сту потр╕бний ╕ндекс файл╕в у ваш╕й систем╕. Ваш "
+"комп'ютер не ма╓ ╕ндексу зараз. Хочете створити ╕ндекс? Створення "
+"╕ндексу в╕дбудеться коли ви не будете активно використовувати ваш комп'ютер. "
 
 #: src/file-manager/fm-search-list-view.c:290
 #: src/file-manager/fm-search-list-view.c:318
@@ -7448,6 +7476,9 @@ msgid ""
 "Your computer is currently creating that index.   Because Find cannot use an "
 "index, this search may take several minutes."
 msgstr ""
+"Для зд╕йснення швидкого пошку потр╕бний ╕ндекс файл╕в у ваш╕й систем╕. "
+"Ваш комп'ютер не ма╓ зараз ╕ндексу. Через те, що пошук не використову╓ "
+"╕ндексу, це може зайняти дек╕лька хвилин."
 
 #: src/file-manager/fm-search-list-view.c:312
 msgid ""
@@ -7455,6 +7486,9 @@ msgid ""
 " Your computer is currently creating that index.  Content searches will be "
 "available when the index is complete."
 msgstr ""
+"Для зд╕йснення пошуку вм╕сту потр╕бний ╕ндекс файл╕в у ваш╕й систем╕. Ваш "
+"комп'ютер зараз створю╓ цей ╕ндекс. Пошук вм╕сту стане доступним, коли "
+"╕ндекс буде зроблено. "
 
 #: src/file-manager/fm-search-list-view.c:326
 msgid ""
@@ -7462,18 +7496,26 @@ msgid ""
 "index can't be created right now. When an index is not available, searches "
 "will take several minutes."
 msgstr ""
+"Для зд╕йснення швидкого пошку потр╕бний ╕ндекс файл╕в у ваш╕й систем╕. "
+"Створення ╕ндексу не можливе зараз. Коли ╕ндекс не доступний, пошук може "
+"зайняти дек╕лька хвилин."
 
 #: src/file-manager/fm-search-list-view.c:332
 msgid ""
 "To do a content search, Find requires an index of the content on your system. "
 " An index can't be created right now."
 msgstr ""
+"Для зд╕йснення пошуку вм╕сту потр╕бний ╕ндекс файл╕в у ваш╕й систем╕. "
+"Створення ╕ндексу не можливе зараз."
 
 #: src/file-manager/fm-search-list-view.c:341
 msgid ""
 "The program that creates an index is not set up correctly.  You can create an "
 "index by hand by running \"medusa-indexd\" as root on the command line."
 msgstr ""
+"Програму, що створю╓ ╕ндекс встановлено не коректно.  Ви можете створити "
+"╕ндекс вручну запуском в командному рядку \"medusa-indexd\" в╕д ╕мен╕ "
+"користувача root."
 
 #. It is not necessary to translate this text just yet; it has not been
 #. edited yet, and will be replaced by a final copy in a few days.
@@ -7484,6 +7526,9 @@ msgid ""
 "system administrator has disabled fast search on your computer, so no index "
 "is available."
 msgstr ""
+"Для зд╕йснення пошуку вм╕сту потр╕бний ╕ндекс файл╕в у ваш╕й систем╕. Ваш "
+"системний адм╕н╕стратор заборонив швидкий пошук на вашому комп'ютер╕, то ж"
+"╕ндекс не доступний."
 
 #: src/file-manager/fm-search-list-view.c:364
 msgid "Fast searches are not available on your computer"
@@ -7495,6 +7540,8 @@ msgid ""
 "To do a fast search, Find requires an index of the files on your system. Fast "
 "search is disabled in your Search preferences, so no index is available."
 msgstr ""
+"Для зд╕йснення швидкого пошуку потр╕бний ╕ндекс файл╕в у ваш╕й систем╕. Швидкий "
+"пошук заборонено у ваших параметрах пошуку, то ж ╕ндекс не доступний."
 
 #: src/file-manager/fm-search-list-view.c:376
 #: src/file-manager/nautilus-indexing-info.c:345
@@ -7510,6 +7557,10 @@ msgid ""
 "checkbox. An index will be generated while your computer is idle, so your "
 "index won't be available immediately."
 msgstr ""
+"Щоб дозволити швидкий пошук, в╕дкрийте меню Параметри ╕ вибер╕ть Параметри. "
+"Пот╕м вибер╕ть параметри пошуку ╕ поставте позначку у пол╕ Ув╕мкнути швидкий пошук. "
+"╤ндекс буде з╜енеровано у час простою вашого комп'ютера, то ж ваш ╕ндекс "
+"не буде створено негайно."
 
 #: src/file-manager/fm-search-list-view.c:551
 msgid "Where"
@@ -8261,7 +8312,7 @@ msgstr ""
 
 #: src/nautilus-first-time-druid.c:973
 msgid "Enable fast search"
-msgstr "Ув╕мкнути швидкий пошук"
+msgstr "Дозволити швидкий пошук"
 
 #: src/nautilus-first-time-druid.c:974
 msgid "Turn fast search on when cron is enabled"
@@ -8280,6 +8331,16 @@ msgid ""
 "/sbin/chkconfig --level 345 crond on\n"
 "/etc/rc.d/init.d/cron start\n"
 msgstr ""
+"╤ндексац╕ю ув╕мкнено, дозволя╓ться швидкий пошук. Але ╕ндексац╕я зараз не\n"
+"можна зд╕йснити тому, що демона crond, який викону╓ пер╕одичн╕ запланован╕\n"
+"завдання у вашому комп'ютер╕, вимкнено. Для зд╕йснення швидких пошук╕в, \n"
+"запуст╕ть crond.\n"
+"\n"
+"Якщо ви використову╓те Linux, ви можете заре╓струватись користувачем root ╕"
+"ввести так╕ команди для запуску crond:\n"
+"\n"
+"/sbin/chkconfig --level 345 crond on\n"
+"/etc/rc.d/init.d/cron start\n"
 
 #: src/nautilus-first-time-druid.c:1028
 msgid ""
@@ -8294,6 +8355,16 @@ msgid ""
 "/sbin/chkconfig --level 345 crond on\n"
 "/etc/rc.d/init.d/cron start\n"
 msgstr ""
+"╤ндексац╕ю ув╕мкнено, дозволя╓ться швидкий пошук. Але ╕ндексац╕я зараз не\n"
+"можна зд╕йснити тому, що демона crond, який викону╓ пер╕одичн╕ запланован╕\n"
+"завдання у вашому комп'ютер╕, зда╓ться вимкнено. Для зд╕йснення швидких пошук╕в, \n"
+"переконайтесь, що crond запущено.\n"
+"\n"
+"Якщо ви використову╓те Linux, ви можете заре╓струватись користувачем root ╕"
+"ввести так╕ команди для запуску crond:\n"
+"\n"
+"/sbin/chkconfig --level 345 crond on\n"
+"/etc/rc.d/init.d/cron start\n"
 
 #: src/nautilus-first-time-druid.c:1128
 msgid "Nautilus First Time Setup"
@@ -8314,6 +8385,14 @@ msgid ""
 "experience, and check your Internet connection. Click Next\n"
 "to continue."
 msgstr ""
+"Наут╕лус ╓ частиною вашого середовища робочого столу GNOME.\n"
+"В╕н допомага╓ вам керувати файлами ╕ теками (каталогами),\n"
+"в╕дображати документи, зд╕йснювати з'╓днання в ╤нтернет ╕\n"
+"виконувати багато ╕нших завдань.\n"
+"\n"
+"Наступн╕ чотири екрани запитають вас про ваш р╕вень користувача\n"
+"Linux та перев╕рять вше з'╓днання з ╤нтернетом. Клацн╕ть \"Дал╕\"\n"
+"для продовження."
 
 #. set up the final page
 #: src/nautilus-first-time-druid.c:1172
@@ -8329,6 +8408,12 @@ msgid ""
 "\n"
 "We hope you enjoy Nautilus!"
 msgstr ""
+"Клацн╕ть \"Завершити\" для запуску Наут╕луса. На початку у\n"
+"вас буде два в╕кна Наут╕луса: одне показуватиме домашню теку,\n"
+"а ╕нше розкаже вам про послуги Eazel, як╕ спростять ваше життя\n"
+"користувача Linux.\n"
+"\n"
+"Ми спод╕ва╓мося, вам буде при╓мно працювати в Наут╕лус╕!"
 
 #. set up the user level page
 #: src/nautilus-first-time-druid.c:1188
@@ -8348,7 +8433,7 @@ msgstr "Швидк╕ пошуки"
 #. set up optional page to tell the user how to run cron
 #: src/nautilus-first-time-druid.c:1204
 msgid "The Cron Daemon"
-msgstr "Демн cron"
+msgstr "Демон cron"
 
 #. set up the update page
 #: src/nautilus-first-time-druid.c:1209
@@ -8808,7 +8893,7 @@ msgstr "Перейти в каталог програмного забезпечення Eazel"
 
 #: src/nautilus-service-ui.xml.h:3
 msgid "Go to your online storage repository"
-msgstr ""
+msgstr "Перейти у ваш репозитор╕й в мереж╕"
 
 #: src/nautilus-service-ui.xml.h:5
 msgid "Software _Catalog"
