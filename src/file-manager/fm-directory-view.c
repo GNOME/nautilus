@@ -288,6 +288,9 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selection);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, select_all);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, set_selection);
+
+	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+
 }
 
 typedef struct {
