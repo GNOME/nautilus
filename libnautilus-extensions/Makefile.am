@@ -61,7 +61,6 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-icon-container.c		\
 	nautilus-icon-dnd.c			\
 	nautilus-icon-factory.c			\
-	nautilus-icon-grid.c			\
 	nautilus-icon-text-item.c		\
 	nautilus-keep-last-vertical-box.c	\
 	nautilus-lib-self-check-functions.c	\
@@ -136,7 +135,6 @@ noinst_HEADERS =				\
 	nautilus-icon-container.h		\
 	nautilus-icon-dnd.h			\
 	nautilus-icon-factory.h			\
-	nautilus-icon-grid.h			\
 	nautilus-icon-private.h			\
 	nautilus-icon-text-item.h		\
 	nautilus-keep-last-vertical-box.h	\

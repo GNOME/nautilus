@@ -104,8 +104,6 @@ nautilus_sidebar_loser_destroy (GtkObject *object)
 	
 	view = NAUTILUS_SIDEBAR_LOSER (object);
 	
-	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
-	
 	g_free (view->details->uri);
 	g_free (view->details);
 	

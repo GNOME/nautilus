@@ -46,7 +46,6 @@
 #include "nautilus-font-factory.h"
 #include "nautilus-lib-self-check-functions.h"
 
-#include "nautilus-icon-grid.h"
 #include "nautilus-icon-private.h"
 
 /* Interval for updating the rubberband selection, in milliseconds.  */
@@ -102,13 +101,11 @@ static void          end_renaming_mode                        (NautilusIconConta
 							       gboolean                    commit);
 static void          hide_rename_widget                       (NautilusIconContainer      *container,
 							       NautilusIcon               *icon);
-static void	     anti_aliased_preferences_changed	      (gpointer 		   user_data);
+static void          anti_aliased_preferences_changed         (gpointer                    user_data);
 static void          click_policy_changed_callback            (gpointer                    user_data);
-
+static void          finish_adding_new_icons                  (NautilusIconContainer      *container);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer, nautilus_icon_container, GNOME_TYPE_CANVAS)
-
-
 
 /* The NautilusIconContainer signals.  */
 enum {
@@ -270,8 +267,6 @@ icon_get_bounding_box (NautilusIcon *icon,
 	*y2_return = y2;
 }
 
-
-
 /* Utility functions for NautilusIconContainer.  */
 
 static void
@@ -323,8 +318,6 @@ keyboard_icon_reveal_timeout_callback (gpointer data)
 	NautilusIconContainer *container;
 	NautilusIcon *icon;
 
-	GDK_THREADS_ENTER ();
-
 	container = NAUTILUS_ICON_CONTAINER (data);
 	icon = container->details->keyboard_icon_to_reveal;
 
@@ -341,8 +334,6 @@ keyboard_icon_reveal_timeout_callback (gpointer data)
 		reveal_icon (container, icon);
 	}
 	container->details->keyboard_icon_reveal_timer_id = 0;
-
-	GDK_THREADS_LEAVE ();
 
 	return FALSE;
 }
@@ -408,20 +399,27 @@ set_keyboard_focus (NautilusIconContainer *container,
 			       NULL);
 }
 
-
-
-/* Idle operation handler.  */
+static void
+get_all_icon_bounds (NautilusIconContainer *container,
+		     double *x1, double *y1,
+		     double *x2, double *y2)
+{
+	/* FIXME: Do we have to do something about the rubberband
+	 * here? Any other non-icon items?
+	 */
+	gnome_canvas_item_get_bounds
+		(GNOME_CANVAS (container)->root,
+		 x1, y1, x2, y2);
+}
 
 static void
-set_scroll_region (NautilusIconContainer *container)
+update_scroll_region (NautilusIconContainer *container)
 {
 	double x1, y1, x2, y2;
 	GtkAdjustment *hadj, *vadj;
 	float step_increment;
 
-	gnome_canvas_item_get_bounds
-		(GNOME_CANVAS (container)->root,
-		 &x1, &y1, &x2, &y2);
+	get_all_icon_bounds (container, &x1, &y1, &x2, &y2);
 	nautilus_gnome_canvas_set_scroll_region_left_justify
 		(GNOME_CANVAS (container),
 		 x1 - CONTAINER_PAD_LEFT,
@@ -472,24 +470,11 @@ compare_icons (gconstpointer a, gconstpointer b)
 }
 
 static void
-resort_and_clear (NautilusIconContainer *container)
+resort (NautilusIconContainer *container)
 {
 	sort_hack_container = container;
 	container->details->icons = g_list_sort
 		(container->details->icons, compare_icons);
-
-	nautilus_icon_grid_clear (container->details->grid);
-}
-
-static void
-auto_position_icon (NautilusIconContainer *container,
-		    NautilusIcon *icon)
-{
-	ArtPoint position;
-
-	nautilus_icon_grid_get_position (container->details->grid,
-					 icon, &position);
-	icon_set_position (icon, position.x, position.y);
 }
 
 /* Given an icon's bounds, compute the width of the space it should be
@@ -611,23 +596,16 @@ lay_down_icons (NautilusIconContainer *container,
 	if (line_start != NULL) {
 		lay_down_one_line (container, line_start, NULL, &y);
 	}
-
-	/* Add all the icons back into the grid. */
-	for (p = icons; p != NULL; p = p->next) {
-		icon = p->data;
-
-		nautilus_icon_grid_add (container->details->grid, icon);
-	}
 }
 
 static void
 relayout (NautilusIconContainer *container)
 {
+	finish_adding_new_icons (container);
+
 	if (!container->details->auto_layout) {
 		return;
 	}
-
-	resort_and_clear (container);
 
 	/* An icon currently being stretched must be left in place.
 	 * That's "drag_icon". This doesn't come up for cases where
@@ -644,6 +622,7 @@ relayout (NautilusIconContainer *container)
 		return;
 	}
 
+	resort (container);
 	lay_down_icons (container, container->details->icons, 0);
 }
 
@@ -659,7 +638,7 @@ reload_icon_positions (NautilusIconContainer *container)
 
 	g_assert (!container->details->auto_layout);
 
-	resort_and_clear (container);
+	resort (container);
 
 	no_position_icons = NULL;
 
@@ -676,8 +655,6 @@ reload_icon_positions (NautilusIconContainer *container)
 				 &have_stored_position);
 		if (have_stored_position) {
 			icon_set_position (icon, position.x, position.y);
-			nautilus_icon_grid_add (container->details->grid, icon);
-
 			nautilus_gnome_canvas_item_get_world_bounds
 				(GNOME_CANVAS_ITEM (icon->item), &bounds);
 			if (bounds.y1 > bottom) {
@@ -694,39 +671,6 @@ reload_icon_positions (NautilusIconContainer *container)
 
 	g_list_free (no_position_icons);
 }
-
-static gboolean
-idle_handler (gpointer data)
-{
-	NautilusIconContainer *container;
-	NautilusIconContainerDetails *details;
-
-	GDK_THREADS_ENTER ();
-
-	container = NAUTILUS_ICON_CONTAINER (data);
-	details = container->details;
-
-	set_scroll_region (container);
-	relayout (container);
-
-	details->idle_id = 0;
-
-	GDK_THREADS_LEAVE ();
-
-	return FALSE;
-}
-
-static void
-request_idle (NautilusIconContainer *container)
-{
-	if (container->details->idle_id != 0) {
-		return;
-	}
-
-	container->details->idle_id = gtk_idle_add (idle_handler, container);
-}
-
-
 
 /* Container-level icon handling functions.  */
 
@@ -814,20 +758,13 @@ rubberband_select (NautilusIconContainer *container,
 		   const ArtDRect *previous_rect,
 		   const ArtDRect *current_rect)
 {
-	ArtDRect both_rects;
-	GList *icons, *p;
-	gboolean selection_changed;
+	GList *p;
+	gboolean selection_changed, is_in;
 	NautilusIcon *icon;
-	gboolean is_in;
 		
 	selection_changed = FALSE;
 
-	/* As an optimization, ask the grid which icons intersect the rectangles. */
-	art_drect_union (&both_rects, previous_rect, current_rect);
-	icons = nautilus_icon_grid_get_intersecting_icons
-		(container->details->grid, &both_rects);
-	
-	for (p = icons; p != NULL; p = p->next) {
+	for (p = container->details->icons; p != NULL; p = p->next) {
 		icon = p->data;
 		
 		is_in = nautilus_icon_canvas_item_hit_test_rectangle
@@ -839,8 +776,6 @@ rubberband_select (NautilusIconContainer *container,
 			(container, icon,
 			 is_in ^ icon->was_selected_before_rubberband);
 	}
-
-	g_list_free (icons);
 
 	if (selection_changed) {
 		gtk_signal_emit (GTK_OBJECT (container),
@@ -859,8 +794,6 @@ rubberband_timeout_callback (gpointer data)
 	double world_x, world_y;
 	int x_scroll, y_scroll;
 	ArtDRect selection_rect;
-
-	GDK_THREADS_ENTER ();
 
 	widget = GTK_WIDGET (data);
 	container = NAUTILUS_ICON_CONTAINER (data);
@@ -893,7 +826,6 @@ rubberband_timeout_callback (gpointer data)
 
 	if (y_scroll == 0 && x_scroll == 0
 	    && band_info->prev_x == x && band_info->prev_y == y) {
-		GDK_THREADS_LEAVE ();
 		return TRUE;
 	}
 
@@ -937,8 +869,6 @@ rubberband_timeout_callback (gpointer data)
 	band_info->prev_y = y;
 
 	band_info->prev_rect = selection_rect;
-
-	GDK_THREADS_LEAVE ();
 
 	return TRUE;
 }
@@ -1032,8 +962,6 @@ stop_rubberbanding (NautilusIconContainer *container,
 	gtk_object_destroy (GTK_OBJECT (band_info->selection_rectangle));
 	band_info->selection_rectangle = NULL;
 }
-
-
 
 /* Keyboard navigation.  */
 
@@ -1697,7 +1625,6 @@ destroy (GtkObject *object)
 	nautilus_icon_dnd_fini (container);
         nautilus_icon_container_clear (container);
 
-	nautilus_icon_grid_destroy (container->details->grid);
 	unschedule_keyboard_icon_reveal (container);
 	
 	if (container->details->rubberband_info.timer_id != 0) {
@@ -1730,8 +1657,6 @@ destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
-
-
 /* GtkWidget methods.  */
 
 static void
@@ -1745,19 +1670,8 @@ size_request (GtkWidget *widget,
 static void
 world_width_changed (NautilusIconContainer *container, int new_width)
 {
-	NautilusIconGrid *grid;
-	double world_width;
-
-	grid = container->details->grid;
-
-	gnome_canvas_c2w (GNOME_CANVAS (container),
-			  new_width, 0,
-			  &world_width, NULL);
-
-	nautilus_icon_grid_set_visible_width (grid, world_width);
-
 	relayout (container);
-	set_scroll_region (container);
+	update_scroll_region (container);
 }
 
 static void
@@ -2252,7 +2166,6 @@ key_press_event (GtkWidget *widget,
 	return handled;
 }
 
-
 /* Initialization.  */
 
 static void
@@ -2491,8 +2404,6 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 
 	details = g_new0 (NautilusIconContainerDetails, 1);
 
-	details->grid = nautilus_icon_grid_new ();
-
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
  
 	/* FIXME: Fonts should be supplied by the caller and not
@@ -2511,9 +2422,6 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 
 	/* Set up DnD.  */
 	nautilus_icon_dnd_init (container, stipple);
-
-	/* Request update.  */
-	request_idle (container);
 
 	/* Make sure that we find out if the theme changes. */
 	gtk_signal_connect_object_while_alive
@@ -2548,7 +2456,6 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 					   container);
 }
 
-
 /* NautilusIcon event handling.  */
 
 /* Conceptually, pressing button 1 together with CTRL or SHIFT toggles
@@ -2686,8 +2593,7 @@ nautilus_icon_container_new (void)
 	return new;
 }
 
-/* clear all of the icons in the container */
-
+/* Clear all of the icons in the container. */
 void
 nautilus_icon_container_clear (NautilusIconContainer *container)
 {
@@ -2698,7 +2604,7 @@ nautilus_icon_container_clear (NautilusIconContainer *container)
 
 	details = container->details;
 
-	end_renaming_mode(container, TRUE);
+	end_renaming_mode (container, TRUE);
 	
 	clear_keyboard_focus (container);
 	details->stretch_icon = NULL;
@@ -2711,7 +2617,7 @@ nautilus_icon_container_clear (NautilusIconContainer *container)
 	g_list_free (details->new_icons);
 	details->new_icons = NULL;
 
-	nautilus_icon_grid_clear (details->grid);
+	update_scroll_region (container);
 }
 
 /* utility routine to remove a single icon from the container */
@@ -2739,8 +2645,6 @@ icon_destroy (NautilusIconContainer *container,
 		details->drop_target = NULL;
 	}
 
-	nautilus_icon_grid_remove (details->grid, icon);
-	
 	icon_free (icon);
 
 	if (was_selected) {
@@ -2748,7 +2652,6 @@ icon_destroy (NautilusIconContainer *container,
 				 signals[SELECTION_CHANGED]);
 	}
 }
-
 
 /* activate any selected items in the container */
 static void
@@ -2761,27 +2664,10 @@ activate_selected_items (NautilusIconContainer *container)
 	selection = nautilus_icon_container_get_selection (container);
 	if (selection != NULL) {
 	  	gtk_signal_emit (GTK_OBJECT (container),
-				signals[ACTIVATE],
-				selection);
+				 signals[ACTIVATE],
+				 selection);
 	}
-
 	g_list_free (selection);
-}
-
-static void
-bounds_changed_callback (NautilusIconCanvasItem *item,
-			 NautilusIconContainer *container)
-{
-	NautilusIcon *icon;
-
-	g_assert (NAUTILUS_IS_ICON_CANVAS_ITEM (item));
-	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
-
-	icon = item->user_data;
-	g_assert (icon != NULL);
-
-	nautilus_icon_grid_remove (container->details->grid, icon);
-	nautilus_icon_grid_add (container->details->grid, icon);
 }
 
 void 
@@ -2875,6 +2761,97 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	g_free (additional_text);
 }
 
+static gboolean
+assign_icon_position (NautilusIconContainer *container,
+		      NautilusIcon *icon)
+{
+	gboolean have_stored_position;
+	NautilusIconPosition position;
+
+	/* Get the stored position. */
+	have_stored_position = FALSE;
+	position.scale_x = 1.0;
+	position.scale_y = 1.0;
+	gtk_signal_emit (GTK_OBJECT (container),
+			 signals[GET_STORED_ICON_POSITION],
+			 icon->data,
+			 &position,
+			 &have_stored_position);
+	icon->scale_x = position.scale_x;
+	icon->scale_y = position.scale_y;
+	if (!container->details->auto_layout) {
+		if (have_stored_position) {
+			icon_set_position (icon, position.x, position.y);
+		} else {
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+
+static void
+finish_adding_icon (NautilusIconContainer *container,
+		    NautilusIcon *icon)
+{
+	nautilus_icon_container_update_icon (container, icon);
+	gnome_canvas_item_show (GNOME_CANVAS_ITEM (icon->item));
+
+	gtk_signal_connect (GTK_OBJECT (icon->item), "event",
+			    GTK_SIGNAL_FUNC (item_event_callback), container);
+}
+
+static void
+finish_adding_new_icons (NautilusIconContainer *container)
+{
+	GList *p, *new_icons, *no_position_icons;
+	NautilusIcon *icon;
+	double bottom;
+
+	new_icons = container->details->new_icons;
+	if (new_icons == NULL) {
+		return;
+	}
+	container->details->new_icons = NULL;
+
+	/* Position most icons (not unpositioned manual-layout icons). */
+	new_icons = g_list_reverse (new_icons);
+	no_position_icons = NULL;
+	for (p = new_icons; p != NULL; p = p->next) {
+		icon = p->data;
+		if (!assign_icon_position (container, icon)) {
+			no_position_icons = g_list_prepend (no_position_icons, icon);
+		}
+		finish_adding_icon (container, icon);
+	}
+	g_list_free (new_icons);
+
+	/* Position the unpositioned manual layout icons. */
+	if (no_position_icons != NULL) {
+		g_assert (!container->details->auto_layout);
+		
+		no_position_icons = g_list_reverse (no_position_icons);
+		get_all_icon_bounds (container, NULL, NULL, NULL, &bottom);
+		lay_down_icons (container, no_position_icons, bottom + ICON_PAD_BOTTOM);
+		g_list_free (no_position_icons);
+	}
+
+	/* Now the rest of the housekeeping. */
+	relayout (container);
+	update_scroll_region (container);
+}
+
+static gboolean
+finish_adding_new_icons_callback (gpointer data)
+{
+	NautilusIconContainer *container;
+
+	container = NAUTILUS_ICON_CONTAINER (data);
+	finish_adding_new_icons (container);
+	container->details->idle_id = 0;
+
+	return FALSE;
+}
+
 /**
  * nautilus_icon_container_add:
  * @container: A NautilusIconContainer
@@ -2890,8 +2867,6 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 	NautilusIconContainerDetails *details;
 	GList *p;
 	NautilusIcon *icon;
-	gboolean have_stored_position;
-	NautilusIconPosition position;
 
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
 	g_return_val_if_fail (data != NULL, FALSE);
@@ -2908,49 +2883,27 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 		}
 	}
 
-	have_stored_position = FALSE;
-	position.scale_x = 1.0;
-	position.scale_y = 1.0;
-	gtk_signal_emit (GTK_OBJECT (container),
-			 signals[GET_STORED_ICON_POSITION],
-			 data,
-			 &position,
-			 &have_stored_position);
-
+	/* Creat the new icon, including the canvas item. */
 	icon = g_new0 (NautilusIcon, 1);
-	
-	icon->scale_x = position.scale_x;
-	icon->scale_y = position.scale_y;
-
 	icon->data = data;
-
+	icon->scale_x = 1.0;
+	icon->scale_y = 1.0;
  	icon->item = NAUTILUS_ICON_CANVAS_ITEM
 		(gnome_canvas_item_new (GNOME_CANVAS_GROUP (GNOME_CANVAS (container)->root),
 					nautilus_icon_canvas_item_get_type (),
 					NULL));
+	gnome_canvas_item_hide (GNOME_CANVAS_ITEM (icon->item));
 	icon->item->user_data = icon;
 
+	/* Put it on both lists. */
 	details->icons = g_list_prepend (details->icons, icon);
 	details->new_icons = g_list_prepend (details->new_icons, icon);
 
-	if (!details->auto_layout && have_stored_position) {
-		icon_set_position (icon, position.x, position.y);
-	} else {
-		auto_position_icon (container, icon);
+	/* Run an idle function to add the icons. */
+	if (container->details->idle_id == 0) {
+		container->details->idle_id = gtk_idle_add
+			(finish_adding_new_icons_callback, container);
 	}
-
-	nautilus_icon_container_update_icon (container, icon);
-	gnome_canvas_item_show (GNOME_CANVAS_ITEM (icon->item));
-
-	/* Must connect the bounds_changed signal after adding the icon to the
-	 * grid, because it will try to remove/add the icon too.
-	 */
-	gtk_signal_connect (GTK_OBJECT (icon->item), "event",
-			    GTK_SIGNAL_FUNC (item_event_callback), container);
-	gtk_signal_connect (GTK_OBJECT (icon->item), "bounds_changed",
-			    GTK_SIGNAL_FUNC (bounds_changed_callback), container);
-
-	request_idle (container);
 
 	return TRUE;
 }
@@ -3553,7 +3506,6 @@ nautilus_icon_container_is_auto_layout (NautilusIconContainer *container)
  * 
  * Returns true if container is in renaming mode
  **/
- 
 gboolean
 nautilus_icon_container_is_renaming (NautilusIconContainer *container)
 {

@@ -113,11 +113,16 @@ struct NautilusBackgroundClass
 {
 	GtkObjectClass parent_class;
 
-	/* This signal is emitted when the background image is
-	   finished loading. This allows a window to draw with a
-	   color background if the image takes a lot time to load.
-	*/
-	void (* changed) (NautilusBackground *);
+	/* This signal is emitted whenever the background settings are
+	 * changed.
+	 */
+	void (* settings_changed) (NautilusBackground *);
+
+	/* This signal is emitted whenever the appearance of the
+	 * background has changed, like when the background settings are
+	 * altered or when an image is loaded.
+	 */
+	void (* appearance_changed) (NautilusBackground *);
 };
 
 #endif /* NAUTILUS_BACKGROUND_H */

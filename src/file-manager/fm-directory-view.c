@@ -2670,7 +2670,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 		 (BonoboUIHandlerCallback) remove_custom_icons_callback, view);
 
 	gtk_signal_connect_object (GTK_OBJECT (fm_directory_view_get_background (view)),
-			    	   "changed",
+			    	   "settings_changed",
 			    	   fm_directory_view_update_menus,
 			    	   GTK_OBJECT (view));
 

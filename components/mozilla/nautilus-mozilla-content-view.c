@@ -166,20 +166,17 @@ nautilus_mozilla_content_view_destroy (GtkObject *object)
 	
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (object);
 	
-	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
+	g_free (view->details->uri);
 
-	if (view->details->uri) {
-		g_free (view->details->uri);
-	}
-
-	if (view->details->busy_cursor) {
+	if (view->details->busy_cursor != NULL) {
 		gdk_cursor_destroy (view->details->busy_cursor);
 	}
 
 	g_free (view->details);
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
+	if (GTK_OBJECT_CLASS (parent_class)->destroy) {
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	}
 }
 
 /**

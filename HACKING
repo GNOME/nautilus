@@ -39,31 +39,31 @@ Helix Gnome ) also modern version of RedHat come with a new popt,
 Nautilus currently requires the following modules from GNOME CVS
 (built in the given order):
 
-	module             branch              configure options	Distro
-	------             ------              -----------------	-------
-	popt:              <need 1.5, but not from GNOME CVS, see below>RH6.2
-	glib:		   glib-1-2					H1.2
-	gtk+:		   gtk-1-2					H1.2
-	imlib:		   HEAD 					H1.2
-	gnome-xml:	   LIB_XML_1_X					H1.2
-	ORBit:		   orbit-stable-0-5
-	gnome-libs:	   gnome-libs-1-0    --enable-prefer-db1	H1.2
-	gnome-http:        HEAD
-	oaf:               HEAD
-	gconf:             HEAD
-	gdk-pixbuf:	   HEAD               --enable-canvas-pixbuf
-	gnome-print:	   HEAD
-	control-center	   control-center-1-0
-	gnome-vfs:	   HEAD               --enable-oaf=yes
-	bonobo:		   HEAD               --enable-oaf=yes
-	gtkhtml:	   HEAD
-	eog:               HEAD               --enable-oaf=yes
-	xpdf:              HEAD
-	medusa:            HEAD
-	nautilus:          HEAD
+    module             branch             configure options      dist.
+    ------             ------             -----------------      -----
+    popt:              <1.5, but not from GNOME CVS, see below>  RH6.2
+    glib:              glib-1-2                                  HC1.2
+    gtk+:              gtk-1-2                                   HC1.2
+    imlib:             HEAD                                      HC1.2
+    gnome-xml:         LIB_XML_1_X                               HC1.2
+    ORBit:             orbit-stable-0-5
+    gnome-libs:        gnome-libs-1-0     --enable-prefer-db1    HC1.2
+    gnome-http:        HEAD
+    oaf:               HEAD
+    gconf:             HEAD
+    gdk-pixbuf:        HEAD               --enable-canvas-pixbuf
+    gnome-print:       HEAD
+    control-center     control-center-1-0
+    gnome-vfs:         HEAD               --enable-oaf=yes
+    bonobo:            HEAD               --enable-oaf=yes
+    gtkhtml:           HEAD
+    eog:               HEAD               --enable-oaf=yes
+    xpdf:              HEAD
+    medusa:            HEAD
+    nautilus:          HEAD
 
 RH6.2 == Version from Red Hat 6.2 OK
-H1.2 == Version from Helix Gnome 1.2 OK
+HC1.2 == Version from Helix Code Gnome 1.2 OK
 
 =============================
 3: Distribution Specfic Notes
@@ -112,7 +112,6 @@ If you need to get a copy of popt from source:
 4: m4 macro and aclocal issues
 ==============================
 
-
 m4 macros have issues.  Trying to install multiple versions of them on you system can be very tricky.
 While building these libraries you will place following m4 macros into "your prefix"/share/aclocal
 directory.  Note you will generally get errors with -I
@@ -160,7 +159,6 @@ in any module changed.
 
 * All patches should go through nautilus-list@lists.eazel.com.
 
-
 ===============================
 6: Using the leak checker
 ===============================
@@ -172,4 +170,3 @@ bourne-compatible shell, like bash, you can run nautilus this way to
 run with leak checking:
 
 LD_PRELOAD=/gnome/libs/libleakcheck.so /gnome/bin/nautilus
-

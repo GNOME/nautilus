@@ -1,4 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /* 
  * Copyright (C) 2000 Eazel, Inc
  *
@@ -34,7 +35,7 @@
 static int object_count = 0;
 
 static void
-tree_object_destroyed(GtkObject *obj)
+tree_object_destroyed (GtkObject *object)
 {
 	object_count--;
 	if (object_count <= 0) {
@@ -50,47 +51,37 @@ tree_make_object (BonoboGenericFactory *factory,
 	NautilusTreeView *view;
 	NautilusView *nautilus_view;
 
-	puts ("Checking IID!");
-
 	if (strcmp (iid, "OAFIID:nautilus_tree_view:2d826a6e-1669-4a45-94b8-23d65d22802d")) {
 		return NULL;
 	}
 
-	puts ("Trying to make object!");
-	
 	view = NAUTILUS_TREE_VIEW (gtk_object_new (NAUTILUS_TYPE_TREE_VIEW, NULL));
 
 	object_count++;
 
 	nautilus_view = nautilus_tree_view_get_nautilus_view (view);
 
-	gtk_signal_connect (GTK_OBJECT (nautilus_view), "destroy", tree_object_destroyed, NULL);
+	gtk_signal_connect (GTK_OBJECT (view), "destroy", tree_object_destroyed, NULL);
 
 	return BONOBO_OBJECT (nautilus_view);
 }
 
-int main(int argc, char *argv[])
+int
+main (int argc, char *argv[])
 {
-	BonoboGenericFactory *factory;
 	CORBA_ORB orb;
-	CORBA_Environment ev;
+	BonoboGenericFactory *factory;
 
-	CORBA_exception_init(&ev);
-
-        puts ("XXX: In tree component.");        
-	
-        gnome_init_with_popt_table("nautilus-tree-view", VERSION, 
-				   argc, argv,
-				   oaf_popt_options, 0, NULL); 
-
+        gnome_init_with_popt_table ("nautilus-tree-view", VERSION, 
+				    argc, argv,
+				    oaf_popt_options, 0, NULL); 
 	orb = oaf_init (argc, argv);
-	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
-	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_tree_view_factory:79f93d13-d404-4ef6-8de2-b8a0045a96ab", tree_make_object, NULL);
+	factory = bonobo_generic_factory_new_multi
+		("OAFIID:nautilus_tree_view_factory:79f93d13-d404-4ef6-8de2-b8a0045a96ab",
+		 tree_make_object, NULL);
 		
-	puts ("XXX: About to do main tree loop.");        
-
 	do {
 		bonobo_main ();
 	} while (object_count > 0);

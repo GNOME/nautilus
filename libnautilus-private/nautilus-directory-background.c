@@ -164,7 +164,7 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
         /* Connect new signal handlers. */
         if (directory != NULL) {
                 gtk_signal_connect (GTK_OBJECT (background),
-                                    "changed",
+                                    "settings_changed",
                                     GTK_SIGNAL_FUNC (background_changed_callback),
                                     directory);
                 gtk_signal_connect (GTK_OBJECT (background),

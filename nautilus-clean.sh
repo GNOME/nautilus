@@ -35,7 +35,7 @@ then
 fi
 
 
-hack_echo ()
+echo_unless_quiet ()
 {
     if [ "$quiet" != "yes" ]
     then
@@ -59,6 +59,7 @@ nautilus-rpm-view \
 nautilus-sample-content-view \
 nautilus-service-startup-view \
 nautilus-sidebar-loser \
+nautilus-tree=voew \
 ntl-history-view \
 ntl-notes \
 ntl-web-search \
@@ -73,17 +74,15 @@ fi
 unset FOUND_ANY
 
 for NAME in $AUX_PROGS; do
-
     EGREP_PATTERN=`echo $NAME | sed -e 's/\(.\)\(.*\)/[\1]\2/' | sed -e 's/\[\\\^\]/\[\\^\]/'`
-
     COUNT=`ps auxww | egrep $EGREP_PATTERN | grep -v emacs | wc -l`
 
     if [ $COUNT -gt 0 ]; then
 	if [ -z $FOUND_ANY ]; then
-	    hack_echo "Stale Processes Found"
+	    echo_unless_quiet "nautilus-clean: Stale processes found."
 	    FOUND_ANY=true
 	fi
-	hack_echo "$NAME: $COUNT"
+	echo_unless_quiet "$NAME: $COUNT"
 
 	if [ "$quiet" != "yes" ]
 	then
@@ -96,9 +95,5 @@ done
 
 
 if [ -z $FOUND_ANY ]; then
-    hack_echo "No Stale Processes Found"
-    exit 0
+    echo_unless_quiet "nautilus-clean: No stale processes found."
 fi
-
-exit 0
-

@@ -365,8 +365,6 @@ nautilus_rpm_view_destroy (GtkObject *object)
 {
 	NautilusRPMView *rpm_view = NAUTILUS_RPM_VIEW (object);
 
-        bonobo_object_unref (BONOBO_OBJECT (rpm_view->details->nautilus_view));
-
 	g_free (rpm_view->details->current_uri);
 	g_free (rpm_view->details);
 

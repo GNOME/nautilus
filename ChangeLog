@@ -1,11 +1,100 @@
+2000-06-26  Darin Adler  <darin@eazel.com>
+
+	* components/hardware/nautilus-hardware-view.c:
+	(nautilus_hardware_view_destroy):
+	* components/loser/content/nautilus-content-loser.c:
+	(nautilus_content_loser_destroy):
+	* components/loser/sidebar/nautilus-sidebar-loser.c:
+	(nautilus_sidebar_loser_destroy):
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_destroy):
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_destroy):
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_destroy):
+	* components/sample/nautilus-sample-content-view.c:
+	(nautilus_sample_content_view_destroy):
+	* components/services/time/nautilus-view/trilobite-eazel-time-view.c:
+	(trilobite_eazel_time_view_destroy):
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_destroy):
+	Removed a bunch of incorrect calls to bonobo_object_unref.
+	An error in the sample can be an insidious thing.
+	
+	* components/tree/main.c: (tree_object_destroyed),
+	(tree_make_object), (main): Removed some stray debugging stuff.
+	
+	* libnautilus-extensions/Makefile.am: Got rid of the grid
+	* libnautilus-extensions/nautilus-icon-private.h: Got rid of the
+	grid.
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(keyboard_icon_reveal_timeout_callback): Took out unneeded use of
+	thread locking macros. Maybe someday I'll regret this, but we can
+	add them back then.
+	(get_all_icon_bounds): Added shared function.
+	(update_scroll_region): Renamed set_scroll_region and made it use
+	the shared function. Also got rid of grid code.
+	(resort): Got rid of grid code.
+	(lay_down_icons): Got rid of grid code.
+	(relayout): Made it lay down new icons before doing any layout
+	work. Also made sure it doesn't do the resort while stretching.
+	(reload_icon_positions): Got rid of grid code.
+	(rubberband_select): Got rid of grid code. This was the one place
+	that it might have made things a little faster but probably not
+	due to the complexity of what it was doing.
+	(rubberband_timeout_callback): Took out unneeded use of thread
+	locking macros. Maybe someday I'll regret this, but we can add
+	them back then.
+	(destroy): Got rid of grid code.
+	(world_width_changed): Got rid of grid code.
+	(nautilus_icon_container_initialize): Got rid of grid code and
+	an extra idle cycle that wasn't needed.
+	(nautilus_icon_container_clear): Got rid of grid code and added
+	code to update the scroll region on clear.
+	(icon_destroy): Got rid of grid code.
+	(assign_icon_position), (finish_adding_icon),
+	(finish_adding_new_icons), (finish_adding_new_icons_callback),
+	(nautilus_icon_container_add): Replaced old idle code with
+	something specific to adding new icons. This does the proper
+	layout for manual as well as automatic layout cases.
+	
+	* libnautilus-extensions/nautilus-background.h:
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_initialize_class): Made two signals instead
+	of one. One for when the background's settings change and another
+	for when the appearance changes.
+	(nautilus_background_set_color): Emit both signals.
+	(load_image_callback): Emit only the appearance change signal.
+	(nautilus_background_set_tile_image_uri): Emit both signals.
+	(nautilus_get_widget_background): Connect to the
+	appearance_changed signal.
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(nautilus_connect_background_to_directory_metadata):
+	Connect to the settings_changed signal.
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_real_merge_menus): Connect to the
+	settings_changed signal.
+	* src/nautilus-sidebar.c: (nautilus_sidebar_update_info): Connect
+	to the appearance_changed signal.
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_set_up_background): Connect to the
+	settings_changed signal.
+	
+	* HACKING: Gratuitious reformatting.
+	* RENAMING: Added notes about how we do renaming, at the request
+	of one of the hackers.
+	
+	* nautilus-clean.sh: Added nautilus-tree-view to the things that
+	are killed, and made gratuitous changes to the script.
+
 Mon Jun 26 15:50:57 2000  George Lebl <jirka@5z.com>
 
 	* components/hardware/Makefile.am, components/help/Makefile.am,
 	  components/history/Makefile.am, components/html/Makefile.am,
 	  components/music/Makefile.am, components/notes/Makefile.am,
 	  components/rpmview/Makefile.am, src/file-manager/Makefile.am: 
-	  Add $(VFS_CFLAGS) to the includes as it is neccessary for
-	  gnome-vfs
+	Add $(VFS_CFLAGS) to the includes as it is necessary for
+	gnome-vfs
 
 2000-06-26  Andy Hertzfeld  <andy@eazel.com>
 

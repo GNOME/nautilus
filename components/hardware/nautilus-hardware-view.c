@@ -134,8 +134,6 @@ nautilus_hardware_view_destroy (GtkObject *object)
 {
 	NautilusHardwareView *hardware_view = NAUTILUS_HARDWARE_VIEW (object);
 
-        bonobo_object_unref (BONOBO_OBJECT (hardware_view->details->nautilus_view));
-
 	g_free (hardware_view->details->uri);
 	g_free (hardware_view->details);
 

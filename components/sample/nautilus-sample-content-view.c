@@ -100,8 +100,6 @@ nautilus_sample_content_view_destroy (GtkObject *object)
 	
 	view = NAUTILUS_SAMPLE_CONTENT_VIEW (object);
 	
-	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
-	
 	g_free (view->details->uri);
 	g_free (view->details);
 	

@@ -59,7 +59,8 @@ static void nautilus_background_draw_flat_box    (GtkStyle           *style,
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBackground, nautilus_background, GTK_TYPE_OBJECT)
 
 enum {
-	CHANGED,
+	APPEARANCE_CHANGED,
+	SETTINGS_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -67,8 +68,7 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-struct NautilusBackgroundDetails
-{
+struct NautilusBackgroundDetails {
 	char *color;
 	char *tile_image_uri;
 	GdkPixmap *tile_pixmap;
@@ -83,11 +83,21 @@ nautilus_background_initialize_class (gpointer klass)
 
 	object_class = GTK_OBJECT_CLASS (klass);
 
-	signals[CHANGED] =
-		gtk_signal_new ("changed",
+	signals[APPEARANCE_CHANGED] =
+		gtk_signal_new ("appearance_changed",
 				GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusBackgroundClass, changed),
+				GTK_SIGNAL_OFFSET (NautilusBackgroundClass,
+						   appearance_changed),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE,
+				0);
+	signals[SETTINGS_CHANGED] =
+		gtk_signal_new ("settings_changed",
+				GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusBackgroundClass,
+						   settings_changed),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE,
 				0);
@@ -311,7 +321,10 @@ nautilus_background_set_color (NautilusBackground *background,
 	g_free (background->details->color);
 	background->details->color = g_strdup (color);
 
-	gtk_signal_emit (GTK_OBJECT (background), signals[CHANGED]);
+	gtk_signal_emit (GTK_OBJECT (background),
+			 signals[SETTINGS_CHANGED]);
+	gtk_signal_emit (GTK_OBJECT (background),
+			 signals[APPEARANCE_CHANGED]);
 }
 
 static void
@@ -336,7 +349,8 @@ load_image_callback (GnomeVFSResult error,
 	gdk_pixbuf_ref (pixbuf);
 	background->details->tile_image = pixbuf;
 
-	gtk_signal_emit (GTK_OBJECT (background), signals[CHANGED]);
+	gtk_signal_emit (GTK_OBJECT (background),
+			 signals[APPEARANCE_CHANGED]);
 }
 
 static void
@@ -380,7 +394,10 @@ nautilus_background_set_tile_image_uri (NautilusBackground *background,
 	background->details->tile_image_uri = g_strdup (image_uri);
 	start_loading_tile_image (background);
 
-	gtk_signal_emit (GTK_OBJECT (background), signals[CHANGED]);
+	gtk_signal_emit (GTK_OBJECT (background),
+			 signals[SETTINGS_CHANGED]);
+	gtk_signal_emit (GTK_OBJECT (background),
+			 signals[APPEARANCE_CHANGED]);
 }
 
 static GtkStyleClass *
@@ -612,7 +629,8 @@ nautilus_get_widget_background (GtkWidget *widget)
 	gtk_object_sink (GTK_OBJECT (background));
 
 	/* Arrange to get the signal whenever the background changes. */
-	gtk_signal_connect_object_while_alive (GTK_OBJECT (background), "changed",
+	gtk_signal_connect_object_while_alive (GTK_OBJECT (background),
+					       "appearance_changed",
 					       nautilus_widget_background_changed,
 					       GTK_OBJECT (widget));
 	nautilus_widget_background_changed (widget, background);

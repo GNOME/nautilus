@@ -291,8 +291,6 @@ nautilus_music_view_destroy (GtkObject *object)
 {
 	NautilusMusicView *music_view = NAUTILUS_MUSIC_VIEW (object);
 
-        bonobo_object_unref (BONOBO_OBJECT (music_view->details->nautilus_view));
-
 	g_free (music_view->details->uri);
 	g_free (music_view->details);
 
@@ -711,12 +709,13 @@ nautilus_music_view_set_up_background (NautilusMusicView *music_view, const char
 	
 	directory = nautilus_directory_get (music_view->details->uri);
 	
+        /* FIXME: Use nautilus-directory-background calls. */
 	/* Connect the background changed signal to code that writes the color. */
 	background = nautilus_get_widget_background (GTK_WIDGET (music_view));
         if (music_view->details->background_connection == 0) {
 		music_view->details->background_connection =
 			gtk_signal_connect_object (GTK_OBJECT (background),
-						   "changed",
+						   "settings_changed",
 						   nautilus_music_view_background_changed,
 						   GTK_OBJECT (music_view));
 	}

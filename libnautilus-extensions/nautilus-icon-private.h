@@ -52,9 +52,6 @@ typedef struct {
 
 	/* Whether this item was selected before rubberbanding. */
 	nautilus_boolean_bit was_selected_before_rubberband : 1;
-
-	/* Grid space occupied by this icon. */
-	ArtIRect grid_rectangle;
 } NautilusIcon;
 
 
@@ -99,15 +96,10 @@ typedef struct {
 	guint64 last_typeselect_time;
 } TypeSelectState;
 
-typedef struct NautilusIconGrid NautilusIconGrid;
-
 struct NautilusIconContainerDetails {
 	/* List of icons. */
 	GList *icons;
 	GList *new_icons;
-
-	/* The grid. */
-	NautilusIconGrid *grid;
 
 	/* Current icon for keyboard navigation. */
 	NautilusIcon *keyboard_focus;

@@ -48,13 +48,12 @@ struct NautilusTreeViewDetails {
 
 static void nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass);
 static void nautilus_tree_view_initialize       (NautilusTreeView      *view);
-static void nautilus_tree_view_destroy          (GtkObject                      *object);
-static void tree_load_location_callback                 (NautilusView                   *nautilus_view,
-							   const char                     *location,
-							   NautilusTreeView      *view);
-static void nautilus_tree_view_load_uri                   (NautilusTreeView               *view,
-							   const char                     *uri);
-
+static void nautilus_tree_view_destroy          (GtkObject             *object);
+static void tree_load_location_callback         (NautilusView          *nautilus_view,
+						 const char            *location,
+						 NautilusTreeView      *view);
+static void nautilus_tree_view_load_uri         (NautilusTreeView      *view,
+						 const char            *uri);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTreeView, nautilus_tree_view, GTK_TYPE_CTREE)
      
@@ -97,7 +96,6 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 			    GTK_SIGNAL_FUNC (tree_load_location_callback), 
 			    view);
 
-
 	gtk_widget_show (GTK_WIDGET (view));
 }
 
@@ -108,14 +106,10 @@ nautilus_tree_view_destroy (GtkObject *object)
 	
 	view = NAUTILUS_TREE_VIEW (object);
 	
-	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
-	
 	g_free (view->details);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
-
-
 
 /**
  * nautilus_tree_view_get_nautilus_view:

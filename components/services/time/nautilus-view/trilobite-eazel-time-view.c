@@ -365,8 +365,6 @@ trilobite_eazel_time_view_destroy (GtkObject *object)
 	
 	view = TRILOBITE_EAZEL_TIME_VIEW (object);
 	
-	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
-
 	g_free (view->details->server_url);
 	g_free (view->details->max_time_diff);
 

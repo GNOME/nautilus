@@ -1194,7 +1194,7 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
         if (sidebar->details->background_connection == 0) {
 		sidebar->details->background_connection =
 			gtk_signal_connect_object (GTK_OBJECT (background),
-						   "changed",
+						   "settings_changed",
 						   nautilus_sidebar_background_changed,
 						   GTK_OBJECT (sidebar));
 	}
