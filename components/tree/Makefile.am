@@ -26,6 +26,9 @@ TREE_VIEW_COMMON_SOURCES = 	        \
 	nautilus-tree-view-iids.h       \
 	nautilus-tree-view.c            \
 	nautilus-tree-view.h            \
+	nautilus-tree-view-private.h    \
+	nautilus-tree-view-dnd.c        \
+	nautilus-tree-view-dnd.h        \
 	$(NULL)
 
 
@@ -45,7 +48,7 @@ else
 
 OAFINFO_FILE = nautilus-tree-view.oafinfo.shlib
 
-lib_LTLIBRARIES =				\
+lib_LTLIBRARIES =			\
 	libnautilus-tree-view.la
 
 libnautilus_tree_view_la_SOURCES =         \
@@ -58,14 +61,14 @@ endif
 
 
 
-nautilus_tree_view_LDADD =			\
+nautilus_tree_view_LDADD =				\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
 	$(GNOMEUI_LIBS)					\
 	$(BONOBO_LIBS)					\
-	$(GCONF_LIBS) \
+	$(GCONF_LIBS) 					\
 	$(VFS_LIBS)					\
-	$(OAF_LIBS)                                      \
+	$(OAF_LIBS)                                     \
 	$(NULL)
 
 EXTRA_DIST = nautilus-tree-view.oafinfo.shlib nautilus-tree-view.oafinfo.exe

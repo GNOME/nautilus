@@ -1,3 +1,57 @@
+2000-11-13  Mathieu Lacage  <mathieu@eazel.com>
+
+	Make maciej happy and split the dnd code in a new file.
+	
+	* components/tree/Makefile.am: add new files.
+	* components/tree/nautilus-tree-view-dnd.c: new file for dnd code.
+	(tree_view_realize_callback), (nautilus_tree_view_init_dnd),
+	(nautilus_tree_view_drag_begin), (nautilus_tree_view_drag_end),
+	(collapse_time_callback), (nautilus_tree_view_drag_leave),
+	(nautilus_tree_view_drag_motion), (nautilus_tree_view_drag_drop),
+	(nautilus_tree_view_drag_data_received),
+	(nautilus_tree_view_drag_data_get),
+	(nautilus_tree_view_button_press),
+	(nautilus_tree_view_button_release),
+	(nautilus_tree_view_motion_notify),
+	(nautilus_tree_view_make_prelight_if_file_operation),
+	(nautilus_tree_view_expand_node),
+	(nautilus_tree_view_collapse_node),
+	(nautilus_tree_view_is_tree_node_expanded),
+	(nautilus_tree_view_expand_or_collapse_row),
+	(nautilus_tree_view_move_copy_files),
+	(nautilus_tree_view_find_drop_target),
+	(nautilus_tree_view_is_tree_node_directory),
+	(nautilus_tree_view_tree_node_at), (nautilus_tree_view_item_at),
+	(nautilus_tree_view_get_drag_uri),
+	(nautilus_tree_view_ensure_drag_data), (nautilus_dump_info),
+	(expand_hack_unref), (expand_hack_new), (expand_time_callback),
+	(nautilus_tree_view_expand_maybe_later),
+	(auto_scroll_timeout_callback),
+	(nautilus_tree_view_start_auto_scroll),
+	(nautilus_tree_view_stop_auto_scroll),
+	(nautilus_tree_view_real_scroll),
+	(nautilus_tree_view_get_drop_action),
+	(nautilus_tree_view_collapse_all),
+	(nautilus_tree_view_receive_dropped_icons),
+	(nautilus_tree_view_prelight_stop),
+	(nautilus_tree_view_drag_destroy),
+	(nautilus_tree_view_drag_destroy_real):
+	* components/tree/nautilus-tree-view-dnd.h: header.
+	* components/tree/nautilus-tree-view-private.h: shared stuff between
+	TreeView and dnd code.
+	
+	* components/tree/nautilus-tree-view.c: remove all those functions.
+	(nautilus_tree_view_insert_model_node), (forget_view_node),
+	(nautilus_tree_view_remove_model_node),
+	(nautilus_tree_view_update_model_node),
+	(nautilus_tree_view_initialize),
+	(nautilus_tree_view_model_node_to_view_node),
+	(nautilus_tree_view_node_to_model_node),
+	(nautilus_tree_view_node_to_file), (tree_expand_callback),
+	(tree_collapse_callback), (tree_select_row_callback),
+	(nautilus_tree_view_find_parent_node):
+	* components/tree/nautilus-tree-view.h:
+
 2000-11-13  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

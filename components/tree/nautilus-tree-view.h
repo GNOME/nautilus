@@ -21,10 +21,8 @@
  * Author: Maciej Stachowiak <mjs@eazel.com>
  */
 
-/* nautilus-tree-view.h - sample content view
-   component. This component just displays a simple label of the URI
-   and does nothing else. It should be a good basis for writing
-   out-of-proc content views.*/
+/* nautilus-tree-view.h - tree view. */
+
 
 #ifndef NAUTILUS_TREE_VIEW_H
 #define NAUTILUS_TREE_VIEW_H
