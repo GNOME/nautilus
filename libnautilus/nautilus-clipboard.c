@@ -84,7 +84,7 @@ add_menu_item (BonoboUIHandler *ui_handler,
 	       const char *path,
 	       const char *title,
 	       const char *description,
-	       BonoboUIHandlerCallbackFunc callback,
+	       BonoboUIHandlerCallback callback,
 	       gpointer callback_data)
 {
 	bonobo_ui_handler_menu_new_item

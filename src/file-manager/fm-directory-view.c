@@ -289,12 +289,7 @@ application_launch_parameters_new (GnomeVFSMimeApplication *application,
 
 	result = g_new0 (ApplicationLaunchParameters, 1);
 	result->application = gnome_vfs_mime_application_copy (application);
-	/* FIXME bugzilla.eazel.com 1072: 
-	 * It would be cleaner to ref the directory view here and
-	 * unref it in application_launch_parameters_free, but until bug 1072
-	 * is fixed this would leak the FMDirectoryView object, which
-	 * would be very bad.
-	 */
+	gtk_widget_ref (GTK_WIDGET (directory_view));
 	result->directory_view = directory_view;
 	result->uri = g_strdup (uri);
 
@@ -305,6 +300,7 @@ static void
 application_launch_parameters_free (ApplicationLaunchParameters *parameters)
 {
 	gnome_vfs_mime_application_free (parameters->application);
+	gtk_widget_unref (GTK_WIDGET (parameters->directory_view));
 	g_free (parameters->uri);
 	g_free (parameters);
 }			      
@@ -318,12 +314,7 @@ viewer_launch_parameters_new (NautilusViewIdentifier *identifier,
 
 	result = g_new0 (ViewerLaunchParameters, 1);
 	result->identifier = nautilus_view_identifier_copy (identifier);
-	/* FIXME bugzilla.eazel.com 1072: 
-	 * It would be cleaner to ref the directory view here and
-	 * unref it in viewer_launch_parameters_free, but until bug 1072
-	 * is fixed this would leak the FMDirectoryView object, which
-	 * would be very bad.
-	 */
+	gtk_widget_ref (GTK_WIDGET (directory_view));
 	result->directory_view = directory_view;
 	result->uri = g_strdup (uri);
 
@@ -334,6 +325,7 @@ static void
 viewer_launch_parameters_free (ViewerLaunchParameters *parameters)
 {
 	nautilus_view_identifier_free (parameters->identifier);
+	gtk_widget_unref (GTK_WIDGET (parameters->directory_view));
 	g_free (parameters->uri);
 	g_free (parameters);
 }			      
@@ -2178,7 +2170,7 @@ insert_bonobo_menu_item (BonoboUIHandler *ui_handler,
                          int position,
 			 guint accelerator_key, 
 			 GdkModifierType ac_mods,
-                         BonoboUIHandlerCallbackFunc callback,
+                         BonoboUIHandlerCallback callback,
                          gpointer callback_data)
 {
         char *label;
@@ -2224,8 +2216,9 @@ insert_bonobo_menu_subtree (BonoboUIHandler *ui_handler,
 static void
 add_open_with_bonobo_menu_item (BonoboUIHandler *ui_handler,
 				const char *label,
-				BonoboUIHandlerCallbackFunc callback,
-				gpointer callback_data)
+				BonoboUIHandlerCallback callback,
+				gpointer callback_data,
+				GDestroyNotify destroy_notify)
 {
 	char *path;
 	char *escaped_label;
@@ -2239,7 +2232,10 @@ add_open_with_bonobo_menu_item (BonoboUIHandler *ui_handler,
 		(ui_handler, path, escaped_label, NULL,
 		 -1, BONOBO_UI_HANDLER_PIXMAP_NONE, NULL,
 		 0, 0,
-		 callback, callback_data);
+		 NULL, NULL);
+	bonobo_ui_handler_menu_set_callback
+		(ui_handler, path, callback,
+		 callback_data, destroy_notify);
 	g_free (escaped_label);
 	g_free (path);
 }
@@ -2267,17 +2263,14 @@ add_application_to_bonobo_menu (BonoboUIHandler *ui_handler,
 {
 	ApplicationLaunchParameters *launch_parameters;
 
-	/* FIXME bugzilla.eazel.com 1072: This struct is never freed; 
-	 * need a version of Bonobo menu item setup that takes a 
-	 * DestroyNotify type function.
-	 */
 	launch_parameters = application_launch_parameters_new 
 		(application, uri, directory_view);
 	
 	add_open_with_bonobo_menu_item (ui_handler, 
 					application->name,
 					bonobo_launch_application_callback,
-					launch_parameters);
+					launch_parameters,
+					(GDestroyNotify) application_launch_parameters_free);
 }
 
 static void
@@ -2305,11 +2298,6 @@ add_component_to_bonobo_menu (BonoboUIHandler *ui_handler,
 	char *label;
 
 	identifier = nautilus_view_identifier_new_from_content_view (content_view);
-
-	/* FIXME bugzilla.eazel.com 1072: This struct is never freed; 
-	 * need a version of Bonobo menu item setup that takes a 
-	 * DestroyNotify type function.
-	 */
 	launch_parameters = viewer_launch_parameters_new
 		(identifier, uri, directory_view);
 	nautilus_view_identifier_free (identifier);
@@ -2319,7 +2307,8 @@ add_component_to_bonobo_menu (BonoboUIHandler *ui_handler,
 	add_open_with_bonobo_menu_item (ui_handler, 
 					label, 
 					bonobo_open_location_with_viewer_callback, 
-					launch_parameters);
+					launch_parameters,
+					(GDestroyNotify) viewer_launch_parameters_free);
 	g_free (label);
 }
 
@@ -2429,7 +2418,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 		 _("Create a new folder in this window"),
 		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM) + 1,
 		  0, 0,	/* Accelerator will be inherited */
-		 (BonoboUIHandlerCallbackFunc) bonobo_menu_new_folder_callback, view);
+		 (BonoboUIHandlerCallback) bonobo_menu_new_folder_callback, view);
 	insert_bonobo_menu_item 
 		(ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_OPEN,
@@ -2494,7 +2483,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 		 _("Remove the custom image from each selected icon"),
 		 -1,
 		  0, 0,	/* Accelerator will be inherited */
-		 (BonoboUIHandlerCallbackFunc) remove_custom_icons_callback, view);
+		 (BonoboUIHandlerCallback) remove_custom_icons_callback, view);
 
         nautilus_file_list_free (selection);
 }

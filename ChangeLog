@@ -1,3 +1,42 @@
+2000-06-07  Darin Adler  <darin@eazel.com>
+
+	Updated code affected by destroy-notify addition to bonobo.
+	Requires new bonobo.
+	
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_ui_handler_menu_set_toggle_appearance):
+	Save and restore the destroy notify function as well as the
+	callback. This requires using the new function
+	bonobo_ui_handler_menu_remove_callback_no_notify to do right.
+	
+	* src/file-manager/fm-directory-view.c:
+	(application_launch_parameters_new),
+	(application_launch_parameters_free): Ref and unref the directory
+	view object now that we correctly free this as needed.
+	(viewer_launch_parameters_new), (viewer_launch_parameters_free):
+	Ref and unref the directory view object now that we correctly free
+	this as needed.
+	(add_open_with_bonobo_menu_item): Add a destroy-notify function
+	parameters and apply it using bonobo_ui_handler_menu_set_callback.
+	(add_application_to_bonobo_menu): Free the launch parmaeters using
+	a destroy-notify function.
+	(add_component_to_bonobo_menu): Free the launch parmaeters using
+	a destroy-notify function.
+	
+	* src/nautilus-window-menus.c: (append_bookmark_to_menu): Use a
+	destroy-notify function to destroy the bookmark holder.
+	(clear_appended_bookmark_items): Get rid of the code that gets
+	the callback data and destroys it explicitly.
+
+	* libnautilus/nautilus-clipboard.c: (add_menu_item):
+	* src/file-manager/fm-directory-view.c: (insert_bonobo_menu_item),
+	(fm_directory_view_real_merge_menus):
+	* src/file-manager/fm-icon-view.c: (append_bonobo_menu_item),
+	(fm_icon_view_merge_menus):
+	Rename BonoboUIHandlerCallbackFunc -> BonoboUIHandlerCallback.
+	
+	* HACKING: Some reformatting.
+
 2000-06-07  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-gtk-extensions.h,

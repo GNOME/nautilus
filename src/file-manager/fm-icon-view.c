@@ -811,7 +811,7 @@ append_bonobo_menu_item (FMIconView *view,
                          GList *selection,
                          const char *path,
                          const char *hint,
-                         BonoboUIHandlerCallbackFunc callback,
+                         BonoboUIHandlerCallback callback,
                          gpointer callback_data)
 {
         char *label;
@@ -931,12 +931,12 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 		(icon_view, ui_handler, selection,
 		 MENU_PATH_STRETCH_ICON,
 		 _("Make the selected icon stretchable"),
-		 (BonoboUIHandlerCallbackFunc) show_stretch_handles_callback, view);
+		 (BonoboUIHandlerCallback) show_stretch_handles_callback, view);
         append_bonobo_menu_item
 		(icon_view, ui_handler, selection,
 		 MENU_PATH_UNSTRETCH_ICONS,
 		 _("Restore each selected icon to its original size"),
-		 (BonoboUIHandlerCallbackFunc) unstretch_icons_callback, view);
+		 (BonoboUIHandlerCallback) unstretch_icons_callback, view);
         bonobo_ui_handler_menu_new_separator
 		(ui_handler,
 		 MENU_PATH_AFTER_STRETCH_SEPARATOR,
@@ -945,7 +945,7 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 		(icon_view, ui_handler, selection,
 		 MENU_PATH_CUSTOMIZE_ICON_TEXT,
 		 _("Choose which information appears beneath each icon's name"),
-		 (BonoboUIHandlerCallbackFunc) customize_icon_text_callback, view);
+		 (BonoboUIHandlerCallback) customize_icon_text_callback, view);
 
 	/* Layout menu. */
 	/* Put it just after the Settings menu, which is just before
@@ -1015,7 +1015,7 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 		 position,
 		 BONOBO_UI_HANDLER_PIXMAP_NONE,
 		 NULL, 0, 0,
-		 (BonoboUIHandlerCallbackFunc) rename_icon_callback, view);
+		 (BonoboUIHandlerCallback) rename_icon_callback, view);
 
         nautilus_file_list_free (selection);
 

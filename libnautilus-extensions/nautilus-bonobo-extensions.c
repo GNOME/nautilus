@@ -27,7 +27,6 @@
 #include <config.h>
 #include "nautilus-bonobo-extensions.h"
 
-
 /**
  * nautilus_bonobo_ui_handler_menu_toggle_appearance
  * 
@@ -43,14 +42,17 @@ nautilus_bonobo_ui_handler_menu_set_toggle_appearance (BonoboUIHandler *uih,
 				      	   		    const char *path,
 				      	   		    gboolean new_value)
 {
-	BonoboUIHandlerCallbackFunc saved_callback;
+	BonoboUIHandlerCallback saved_callback;
 	gpointer saved_callback_data;
+	GDestroyNotify saved_destroy_notify;
 
 	/* Temporarily clear out callback and data so when we
 	 * set the toggle state the callback isn't called. 
 	 */
-	bonobo_ui_handler_menu_get_callback (uih, path, &saved_callback, &saved_callback_data);
-	bonobo_ui_handler_menu_set_callback (uih, path, NULL, NULL);
+	bonobo_ui_handler_menu_get_callback (uih, path, &saved_callback,
+					     &saved_callback_data, &saved_destroy_notify);
+	bonobo_ui_handler_menu_remove_callback_no_notify (uih, path);
         bonobo_ui_handler_menu_set_toggle_state (uih, path, new_value);
-	bonobo_ui_handler_menu_set_callback (uih, path, saved_callback, saved_callback_data);		
+	bonobo_ui_handler_menu_set_callback (uih, path, saved_callback,
+					     saved_callback_data, saved_destroy_notify);		
 }

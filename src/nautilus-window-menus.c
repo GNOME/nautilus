@@ -378,9 +378,15 @@ append_bookmark_to_menu (NautilusWindow *window,
 					 pixbuf,
 					 0,
 					 0,
-					 activate_bookmark_in_menu_item,
-					 bookmark_holder);
+					 NULL,
+					 NULL);
 	g_free (name);
+
+	/* We must use "set_callback" since we have a destroy-notify function. */
+	bonobo_ui_handler_menu_set_callback
+		(window->uih, menu_item_path,
+		 activate_bookmark_in_menu_item,
+		 bookmark_holder, (GDestroyNotify) g_free);
 }
 
 /**
@@ -408,17 +414,8 @@ clear_appended_bookmark_items (NautilusWindow *window,
 
 	for (p = children; p != NULL; p = p->next) {
                 if (found_dynamic_items) {
-                        BookmarkHolder *holder;
-                        BonoboUIHandlerCallbackFunc func;
-
-                        bonobo_ui_handler_menu_get_callback (window->uih,
-                                                             p->data,
-                                                             &func,
-                                                             (gpointer *)&holder);
-                        g_free (holder);
                         bonobo_ui_handler_menu_remove (window->uih, p->data);
-		}
-		else if (strcmp ((const char *) p->data, last_static_item_path) == 0) {
+		} else if (strcmp ((const char *) p->data, last_static_item_path) == 0) {
 			found_dynamic_items = TRUE;
 		}
 	}
