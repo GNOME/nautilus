@@ -6,5 +6,6 @@ SUBDIRS =					\
 
 EXTRA_DIST=                                     \
 	sgmldocs.make				\
+	xmldocs.make				\
 	htmldocs.make
 
