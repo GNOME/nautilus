@@ -1,5 +1,22 @@
 2001-02-15  Robey Pointer  <robey@eazel.com>
 
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagedatastruct_fill_from_packagedata),
+	(corba_packagedatastruct_fill_deps),
+	(packagedata_tree_from_corba_packagedatastructlist):
+
+	Re-add 'provides' to the IDL so the install view can poke around
+	for .desktop files.
+
+	* nautilus-installer/src/installer.c:
+	(get_detailed_errors_foreach), (get_detailed_errors):
+
+	Speed up error checking by avoiding pieces of the graph we've
+	already visited.
+
+2001-02-15  Robey Pointer  <robey@eazel.com>
+
 	* components/services/install/lib/eazel-install-logic2.c:
 	(check_dependencies_foreach),
 	(check_no_two_packages_has_same_file),

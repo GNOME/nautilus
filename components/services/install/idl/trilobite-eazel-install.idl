@@ -143,8 +143,7 @@ module Trilobite {
 			sequence <PackageDependencyStruct> depends;
 			sequence <PackageBreaksStruct> breaks;
 			sequence <string> modifies;	/* MD5 identifiers */
-
-			/* sequence <string> provides;  -- nothing uses this */
+			sequence <string> provides;	/* file list */
 		};		
 		typedef sequence <PackageDataStruct> PackageDataStructList;
 

@@ -153,6 +153,8 @@ corba_packagedatastruct_fill_from_packagedata (GNOME_Trilobite_Eazel_PackageData
 	corbapack->breaks._buffer = NULL;
 	corbapack->modifies._length = 0;
 	corbapack->modifies._buffer = NULL;
+	corbapack->provides._length = 0;
+	corbapack->provides._buffer = NULL;
 }
 
 GNOME_Trilobite_Eazel_PackageDataStruct *
@@ -305,6 +307,10 @@ corba_packagedatastruct_fill_deps (GNOME_Trilobite_Eazel_PackageDataStruct *corb
 			subpack = PACKAGEDATA (iter->data);
 			corbapack->modifies._buffer[i] = CORBA_string_dup (subpack->md5);
 		}
+	}
+
+	if (pack->provides != NULL) {
+		g_list_to_corba_string_sequence (&(corbapack->provides), pack->provides);
 	}
 }
 
@@ -557,6 +563,8 @@ packagedata_tree_from_corba_packagedatastructlist (const GNOME_Trilobite_Eazel_P
 			}
 		}
 		pack->modifies = g_list_reverse (pack->modifies);
+
+		pack->provides = corba_string_sequence_to_glist (&(corbapack->provides));
 	}
 
 	/* now make a list of JUST the toplevel packages */

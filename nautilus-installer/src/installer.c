@@ -60,6 +60,7 @@
 typedef struct {
 	EazelInstaller *installer;
 	GList *path;
+	GList *touched;
 } GetErrorsForEachData;
 
 /* this means the services have to keep an insecure version running, that has enough stuff for ppl
@@ -960,6 +961,13 @@ get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 		}
 	}
 
+	if (data->touched != NULL) {
+		if (g_list_find (data->touched, pack) != NULL) {
+			/* revisiting a part of the tree we've already seen */
+			return;
+		}
+	}
+
 	log_debug ("pack->name = %s, pack->status = %d", pack->name, pack->status);
 
 	/* is this the right place for this check anymore? */
@@ -1001,6 +1009,7 @@ get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 
 	/* Create the path list */
 	data->path = g_list_prepend (data->path, pack);
+	data->touched = g_list_prepend (data->touched, pack);
 
 	g_list_foreach (pack->depends, (GFunc)get_detailed_errors_foreach_dep, data);
 	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, data);
@@ -1028,6 +1037,7 @@ get_detailed_errors (const PackageData *pack, EazelInstaller *installer)
 
 	data.installer = installer;
 	data.path = NULL;
+	data.touched = NULL;
 	log_debug ("copying package");
 	non_const_pack = PACKAGEDATA (pack);
 	gtk_object_ref (GTK_OBJECT (non_const_pack));
@@ -1036,6 +1046,7 @@ get_detailed_errors (const PackageData *pack, EazelInstaller *installer)
 	get_detailed_errors_foreach (non_const_pack, &data);
 	log_debug ("destroying copy");
 	gtk_object_unref (GTK_OBJECT (non_const_pack));
+	g_list_free (data.touched);
 }
 
 
