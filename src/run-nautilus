@@ -1,0 +1,10 @@
+#!/bin/sh
+
+nautilus-clean.sh -q
+
+killall oafd > /dev/null 2>&1
+killall gconfd > /dev/null 2>&1
+
+nautilus
+
+nautilus-clean.sh -q

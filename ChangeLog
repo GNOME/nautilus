@@ -1,4 +1,19 @@
 2000-04-27  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Add gnome panel .desktop file and logo.
+
+	* nautilus.desktop: New panel .desktop file.
+	* nautilus.png: New panel nautilus icon.
+	* Makefile.am: Install the above 2.  Also install the
+	  nautilus-clean.sh script.
+	
+	* src/run-nautilus: Add dumb script to run nautilus while we work
+	  on the rogue process bugs.
+
+	* src/Makefile.am: Install the above script.
+	
+2000-04-27  Ramiro Estrugo  <ramiro@eazel.com>
+
 	More 'make dist' fixes.  Let automake know about private headers
 	so that the dist tarball will contain them.
 

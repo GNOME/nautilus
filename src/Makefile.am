@@ -90,4 +90,13 @@ oafdir = $(datadir)/oaf
 oaf_DATA =					\
 	nautilus.oafinfo
 
-EXTRA_DIST = $(oaf_DATA)
+EXTRA_DIST = $(oaf_DATA) run-nautilus
+
+install-data-hook: run-nautilus
+	$(mkinstalldirs) $(DESTDIR)/$(prefix)/bin
+	@list='run-nautilus'; for p in $$list; do\
+	  if test -f $(srcdir)/$$p; then \
+	    echo "  $(INSTALL_PROGRAM) $(srcdir)/$$p $(DESTDIR)/$(prefix)/bin/$$p"; \
+	    $(INSTALL_PROGRAM) $(srcdir)/$$p $(DESTDIR)/$(prefix)/bin/$$p; \
+	  else :; fi; \
+	done
