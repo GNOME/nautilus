@@ -26,6 +26,7 @@
  */
 
 #include <config.h>
+#include <gnome.h>
 #include "nautilus-music-view.h"
 #include <libnautilus/nautilus-view-standard-main.h>
 
@@ -37,6 +38,12 @@
 int
 main (int argc, char *argv[])
 {
+/* Initialize gettext support */
+#ifdef ENABLE_NLS
+	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+	textdomain (PACKAGE);
+#endif
+
 	return nautilus_view_standard_main (EXECUTABLE_NAME, VERSION,
 					    argc, argv,
 					    FACTORY_IID, VIEW_IID,

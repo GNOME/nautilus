@@ -836,6 +836,12 @@ init_server_factory (int argc, char **argv)
 int
 main (int argc, char *argv [])
 {
+	/* Initialize gettext support */
+#ifdef ENABLE_NLS
+	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+	textdomain (PACKAGE);
+#endif
+
 	init_server_factory (argc, argv);
 
 	init_bonobo_image_generic_factory ();

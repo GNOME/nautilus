@@ -1,3 +1,14 @@
+2001-02-23  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* components/image-viewer/nautilus-image-view.c: (main):
+	* components/music/main.c: (create_function), (main):
+	* components/text/main.c: (create_function), (main):
+	Fix bug 6922 - Make sure components setup gettext bindings.  These
+	3 components had localized strings in them but did not setup
+	gettext.
+	
 2001-02-23  Seth Nickell  <snickell@stanford.edu> 
 	    
 	reviewed by: Pavel Císler <pavel@eazel.com>
