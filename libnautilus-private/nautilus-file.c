@@ -40,6 +40,7 @@
 #include "nautilus-trash-directory.h"
 #include "nautilus-trash-file.h"
 #include "nautilus-vfs-file.h"
+#include "nautilus-volume-monitor.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-vfs-extensions.h>
@@ -4126,7 +4127,7 @@ nautilus_file_get_deep_directory_count_as_string (NautilusFile *file)
  * set includes "name", "type", "mime_type", "size", "deep_size", "deep_directory_count",
  * "deep_file_count", "deep_total_count", "date_modified", "date_changed", "date_accessed", 
  * "date_permissions", "owner", "group", "permissions", "octal_permissions", "uri", "where",
- * "link_target".
+ * "link_target", "volume", "free_space".
  * 
  * Returns: Newly allocated string ready to display to the user, or NULL
  * if the value is unknown or @attribute_name is not supported.
@@ -4200,7 +4201,12 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 	if (strcmp (attribute_name, "link_target") == 0) {
 		return nautilus_file_get_symbolic_link_target_path (file);
 	}
-
+	if (strcmp (attribute_name, "volume") == 0) {
+		return nautilus_file_get_volume_name (file);
+	}
+	if (strcmp (attribute_name, "free_space") == 0) {
+		return nautilus_file_get_volume_free_space (file);
+	}
 	return NULL;
 }
 
@@ -4565,6 +4571,73 @@ nautilus_file_is_broken_symbolic_link (NautilusFile *file)
 
 	/* Non-broken symbolic links return the target's type for get_file_type. */
 	return nautilus_file_get_file_type (file) == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK;
+}
+
+/**
+ * nautilus_file_get_volume_free_space
+ * Get a nicely formatted char with free space on the file's volume
+ * @file: NautilusFile representing the file in question.
+ *
+ * Returns: newly-allocated copy of file size in a formatted string
+ */
+char *
+nautilus_file_get_volume_free_space (NautilusFile *file)
+{
+	char * file_uri;
+	GnomeVFSFileSize free_space;
+	GnomeVFSResult result;
+	GnomeVFSURI * vfs_uri;
+
+	file_uri = nautilus_file_get_uri (file);
+
+	if (file_uri == NULL) {
+		return NULL;
+	}
+
+	vfs_uri = gnome_vfs_uri_new (file_uri);
+	result = gnome_vfs_get_volume_free_space (vfs_uri, &free_space);
+	g_free (file_uri);
+	gnome_vfs_uri_unref (vfs_uri);
+
+	if (result == GNOME_VFS_OK) {
+		return gnome_vfs_format_file_size_for_display (free_space);
+	} else {
+		return NULL;
+	}
+}
+
+/**
+ * nautilus_file_get_volume_name
+ * Get the path of the volume the file resides on
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: newly-allocated copy of the volume name of the target file, 
+ * if the volume name isn't set, it returns the mount path of the volume
+ */ 
+char *
+nautilus_file_get_volume_name (NautilusFile *file)
+{
+	char *local_path;
+	char *file_uri;
+	char *volume_name;
+	NautilusVolume *volume;
+	file_uri = nautilus_file_get_uri (file);
+	
+	local_path = gnome_vfs_get_local_path_from_uri (file_uri);
+	volume = nautilus_volume_monitor_get_volume_for_path (nautilus_volume_monitor_get (), local_path);
+	
+	g_free (file_uri);
+	g_free (local_path);
+
+	if (volume != NULL) {
+		volume_name = nautilus_volume_get_name (volume);
+		if (volume_name == NULL) {
+			return g_strdup (nautilus_volume_get_mount_path (volume));
+		}
+		return volume_name;
+	} else {
+		return NULL;
+	}
 }
 
 /**
