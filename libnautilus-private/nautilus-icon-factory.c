@@ -505,6 +505,8 @@ cache_icon_unref (CacheIcon *icon)
 	check_recently_used_list ();
 	
 	g_object_unref (icon->pixbuf);
+	
+	g_free (icon->display_name);
 	g_free (icon->embedded_text_rect);
 	g_free (icon->attach_points);
 
