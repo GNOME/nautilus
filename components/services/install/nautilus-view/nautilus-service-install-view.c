@@ -485,7 +485,7 @@ current_progress_bar_complete (NautilusServiceInstallView *view)
 
 	right = (GtkWidget *) g_list_nth_data (view->details->message_right, STATUS_ROWS-1);
 	view->details->message_right = g_list_remove (view->details->message_right, right);
-	/* FIXME bugzilla.eazel.com 2585: this is an awful way to do it!  isn't there a better way? */
+	/* apparently there is no better way to do this :( */
 	width = right->allocation.width;
 	height = right->allocation.height;
 	gtk_container_remove (GTK_CONTAINER (view->details->message_box), right);
@@ -585,7 +585,7 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, int total_by
 	if (total_packages == 1) {
 		out = g_strdup (_("Preparing to install 1 package"));
 	} else {
-		out = g_strdup_printf (_("Preparing to install %d packagess"), total_packages);
+		out = g_strdup_printf (_("Preparing to install %d packages"), total_packages);
 	}
 	show_overall_feedback (view, out);
 	g_free (out);
@@ -660,8 +660,32 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 }
 
 static void
+show_dialog_and_run_away (NautilusServiceInstallView *view, const char *message)
+{
+	GtkWidget *dialog;
+	GtkWidget *toplevel;
+
+#if 0
+	toplevel = gtk_widget_get_ancestor (view->details->message_box, GTK_TYPE_WINDOW);
+#else
+	toplevel = gtk_widget_get_toplevel (view->details->message_box);
+#endif
+	if (GTK_IS_WINDOW (toplevel)) {
+		dialog = gnome_ok_dialog_parented (message, GTK_WINDOW (toplevel));
+	} else {
+		dialog = gnome_ok_dialog (message);
+	}
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+	go_to_uri (view->details->nautilus_view, NEXT_SERVICE_VIEW);
+}
+
+static void
 nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, NautilusServiceInstallView *view)
 {
+	char *message;
+
 	if (view->details->failure) {
 		success = FALSE;
 		view->details->failure = FALSE;
@@ -672,29 +696,35 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 	turn_cylon_off (view, success ? 1.0 : 0.0);
 
 	if (success) {
-		show_overall_feedback (view, _("Installation complete!"));
+		message = _("Installation complete!");
 	} else {
-		show_overall_feedback (view, _("Installation failed!  :("));
+		message = _("Installation failed!");
 	}
+	show_overall_feedback (view, message);
+	show_dialog_and_run_away (view, message);
 }
 
 /* FIXME bugzilla.eazel.com 2587:  need to show whole dep tree here */
 static void
 nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pack, NautilusServiceInstallView *view)
 {
+	char *message;
+
 	turn_cylon_off (view, 0.0);
 
 	/* override the "success" result for install_done signal */
 	view->details->failure = TRUE;
 
 	if (pack->status == PACKAGE_ALREADY_INSTALLED) {
-		show_overall_feedback (view, _("This package has already been installed."));
+		message = _("This package has already been installed.");
+		show_overall_feedback (view, message);
+		show_dialog_and_run_away (view, message);
 		return;
 	}
 
-	show_overall_feedback (view, _("Installation failed!! :( :( :("));
-	g_message ("I am sad.");
-
+	message = _("Installation failed!\n(Probably a dependency issue.)");
+	show_overall_feedback (view, message);
+	show_dialog_and_run_away (view, message);
 }
 
 

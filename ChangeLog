@@ -1,3 +1,14 @@
+2000-08-29  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (current_progress_bar_complete),
+	(nautilus_service_install_preflight_check),
+	(show_dialog_and_run_away), (nautilus_service_install_done),
+	(nautilus_service_install_failed):
+
+	Restore code to jump to the summary widget after an install (for
+	demo), and make a dialog popup before then.
+
 2000-08-29  Michael Engber  <engber@eazel.com>
 
 	Fixed warning caused by passing NULL for a directory - bug 2079.
