@@ -174,7 +174,7 @@ static TestCtx *new_test_window (const char *fn, int width, int height)
 	return ctx;
 }
 
-void set_text (TestCtx *ctx, const char *fn) {
+static void set_text (TestCtx *ctx, const char *fn) {
 	FILE *f;
 	char line[256];
 	int n_lines;
