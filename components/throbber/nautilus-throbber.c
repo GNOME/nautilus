@@ -251,7 +251,6 @@ get_throbber_dimensions (NautilusThrobber *throbber, int *throbber_width, int* t
 static void
 nautilus_throbber_initialize (NautilusThrobber *throbber)
 {
-	GtkWidget *box;
 	char *delay_str;
 	GtkWidget *widget = GTK_WIDGET (throbber);
 	
@@ -267,12 +266,6 @@ nautilus_throbber_initialize (NautilusThrobber *throbber)
 	/* set up the instance variables to appropriate defaults */
 	throbber->details->timer_task = -1;
 
-	/* put it in a box to add some margin */
-	box = gtk_hbox_new (FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (box), 4);
-	gtk_widget_show (box);
-	gtk_container_add (GTK_CONTAINER (box), widget);
-
 	/* set up the delay from the theme */
 	delay_str = nautilus_theme_get_theme_data ("throbber", "delay");
 	
@@ -284,7 +277,7 @@ nautilus_throbber_initialize (NautilusThrobber *throbber)
 	}
 	
 	/* make the bonobo control */
-	throbber->details->control = (BonoboObject*) bonobo_control_new (box);
+	throbber->details->control = (BonoboObject*) bonobo_control_new (widget);
 	
 	/* attach a property bag with the configure property */
 	throbber->details->property_bag = bonobo_property_bag_new (get_bonobo_properties, 
@@ -364,15 +357,28 @@ draw_throbber_image (GtkWidget *widget, GdkRectangle *box)
 {
 	NautilusThrobber *throbber;
 	GdkPixbuf *pixbuf;
+	int window_width, window_height;
+	int x_offset, y_offset;
 		
 	throbber = NAUTILUS_THROBBER (widget);
 	if (!throbber->details->ready) {
 		return;
 	}
-	
+		
+	/* clear the entire gdk window to avoid messing up gradient themes due to bonobo bug  */
+	gdk_window_get_size (widget->window, &window_width, &window_height);
+	gdk_window_clear_area (widget->window,
+			       0,
+			       0,
+			       window_width,
+			       window_height);
+
 	pixbuf = select_throbber_image (throbber);
-	
-	draw_pixbuf (pixbuf, widget->window, box->x, box->y);
+
+	/* center the throbber image in the gdk window */	
+	x_offset = (window_width - gdk_pixbuf_get_width (pixbuf)) / 2;
+	y_offset = (window_height - gdk_pixbuf_get_height (pixbuf)) / 2;		
+	draw_pixbuf (pixbuf, widget->window, box->x + x_offset, box->y + y_offset);
 }
 
 static void
@@ -621,7 +627,8 @@ nautilus_throbber_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 
 	get_throbber_dimensions (throbber, &throbber_width, &throbber_height);
 	
-	widget->allocation.width = throbber_width;
+	/* allocate some extra margin so we don't butt up against toolbar edges */	
+	widget->allocation.width = throbber_width + 8;
    	widget->allocation.height = throbber_height;	
 }
 
@@ -634,6 +641,7 @@ nautilus_throbber_size_request (GtkWidget *widget, GtkRequisition *requisition)
 
 	get_throbber_dimensions (throbber, &throbber_width, &throbber_height);
 	
-	requisition->width = throbber_width;
+	/* allocate some extra margin so we don't butt up against toolbar edges */
+	requisition->width = throbber_width + 8;
    	requisition->height = throbber_height;	
 }

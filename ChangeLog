@@ -1,3 +1,14 @@
+2001-03-05  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/throbber/nautilus-throbber.c:
+	(nautilus_throbber_initialize), (draw_throbber_image),
+	(nautilus_throbber_size_allocate),
+	(nautilus_throbber_size_request):
+
+	fixed bug 5640, toolbar area below throbber drawn different from theme
+	for some gtk themes.  Fixed by having the throbber clear its 
+	entire gdk window to the background.
+	
 2001-03-05  Eric Fischer  <eric@eazel.com>
 
 	reviewed by: Robin * Slomkowski <rslomkow@eazel.com>
@@ -42,7 +53,6 @@
 	Add share/pixmaps/nautilus/crux_eggplant/throbber/*.png
 	to the list of files to be put in the RPM (Bug 7383).
 
->>>>>>> 1.4166
 2001-03-05  John Harper  <jsh@eazel.com>
 
 	Fixed bug 7402 (Fonts that don't define ` ' cause assertions
