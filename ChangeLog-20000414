@@ -1,5 +1,19 @@
 2000-04-03  Andy Hertzfeld <andy@eazel.com>
 
+	more work on the service component
+	
+	* components.services/startup/nautilus-service-startup-view.h:
+	changed it to inherit from eventbox so it can have a background
+	* components.services/startup/nautilus-service-startup-view.c:
+	restructured code for displaying multiple forms
+	made it use a Nautilus background
+	added test form, registration form and configuration form placeholders
+	added most of configuration form
+	* icons/eazel-logo.gif: added Eazel logo image
+	* icons/Makefile.am: added Eazel logo to Makefile
+
+2000-04-03  Andy Hertzfeld <andy@eazel.com>
+
 	added configuration inventory to nascent service component.  This only
 	builds if --enable-eazel-services is set
 	
@@ -16,7 +30,7 @@
 	made it invoke the service component for uri's starting with "eazel:";
 	also, fixed a bug where an uninitialized variable was being freed.
 	* nautilus-clean.sh:
-	added the rpm view to the list of cleaned packages.
+	added the rpm view to the list of cleaned components.
 		
 2000-04-03  Darin Adler  <darin@eazel.com>
 

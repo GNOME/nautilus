@@ -17,20 +17,21 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Author: Ramiro Estrugo
+ * Authors: Ramiro Estrugo <ramiro@eazel.com>
+ 		    Andy Hertzfeld <andy@eazel.com>
  */
 
 /* nautilus-services-content-view.c - services content view
-   component. This component just displays a simple label of the URI
-   and does nothing else. It should be a good basis for writing
-   out-of-proc content views.*/
-
+   component. This component supplies some UI for the service and
+   invokes other functions like configuration upload */
+   
 #include <config.h>
 
 #include "nautilus-service-startup-view.h"
 #include "eazel-register.h"
 
 #include <gnome-xml/tree.h>
+#include <libnautilus/nautilus-background.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-glib-extensions.h>
 #include <libnautilus/nautilus-file-utilities.h>
@@ -40,15 +41,17 @@
 struct _NautilusServicesContentViewDetails {
 	gchar                     *uri;
 	NautilusContentViewFrame  *view_frame;
-	GtkWidget		  *title_label;
+	GtkWidget		  *form;
 };
+
+#define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR  "rgb:BBBB/DDDD/FFFF"
 
 static void nautilus_service_startup_view_initialize_class (NautilusServicesContentViewClass *klass);
 static void nautilus_service_startup_view_initialize       (NautilusServicesContentView *view);
 static void nautilus_service_startup_view_destroy          (GtkObject *object);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusServicesContentView, nautilus_service_startup_view, 
-				   GTK_TYPE_VBOX)
+				   GTK_TYPE_EVENT_BOX)
      
 static void service_main_notify_location_change_cb              (NautilusContentViewFrame  *view, 
 							   Nautilus_NavigationInfo   *navinfo, 
@@ -66,41 +69,27 @@ config_button_cb (GtkWidget *button, char *data)
   		g_free(temp_str);
 	}
 }
-   
-static void
-nautilus_service_startup_view_initialize_class (NautilusServicesContentViewClass *klass)
-{
-	GtkObjectClass *object_class;
-	
-	object_class = GTK_OBJECT_CLASS (klass);
 
- 	parent_class = gtk_type_class (gtk_vbox_get_type ());
-	
-	object_class->destroy = nautilus_service_startup_view_destroy;
-}
+/* this creates the simple test form (just temporary) */
 
-static void
-nautilus_service_startup_view_initialize (NautilusServicesContentView *view)
+static void setup_test_form(NautilusServicesContentView *view)
 {
+	GtkWidget *temp_widget;
 	GtkWidget *config_button;
 	GtkWidget *config_label;
 	GtkWidget *temp_box;
-	
-	view->details = g_new0 (NautilusServicesContentViewDetails, 1);
-	
-	view->details->view_frame = nautilus_content_view_frame_new (GTK_WIDGET (view));
-	
-	gtk_signal_connect (GTK_OBJECT (view->details->view_frame), 
-			    "notify_location_change",
-			    GTK_SIGNAL_FUNC (service_main_notify_location_change_cb), 
-			    view);
 
+	/* allocate a box to hold everything */	
+	view->details->form = gtk_vbox_new(FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (view), view->details->form);	
+	gtk_widget_show(view->details->form);
+	
 	/* put a label here as a placeholder just to show something */
-	view->details->title_label = gtk_label_new ("Service View");
-	gtk_box_pack_start (GTK_BOX (view), view->details->title_label, 0, 0, 0);	
-	gtk_widget_show (view->details->title_label);
+	temp_widget = gtk_label_new ("Service View");
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_widget, 0, 0, 0);	
+	gtk_widget_show (temp_widget);
 
-	/* add a temporary, placeholder button to create the configuration file */
+	/* add a button to create the configuration file */
 
 	config_button = gtk_button_new ();		    
 	config_label = gtk_label_new ("Create Configuration Inventory");
@@ -111,12 +100,94 @@ nautilus_service_startup_view_initialize (NautilusServicesContentView *view)
 	temp_box = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(temp_box);
 	gtk_box_pack_start (GTK_BOX (temp_box), config_button, FALSE, FALSE, 16);
-	gtk_box_pack_start (GTK_BOX (view), temp_box, FALSE, FALSE, 16);
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 16);
 	
 	gtk_signal_connect (GTK_OBJECT (config_button), "clicked",
 			    GTK_SIGNAL_FUNC (config_button_cb), NULL);	
 	gtk_widget_show (config_button);
+}
+
+/* create the signup form */
+
+static void setup_signup_form(NautilusServicesContentView *view)
+{
+	/* put a label here as a placeholder just to show something */
+	view->details->form = gtk_label_new ("Signup Form");
+	gtk_container_add (GTK_CONTAINER (view), view->details->form);	
+	gtk_widget_show (view->details->form);
+}
+
+/* create the config form */
+
+static void setup_config_form(NautilusServicesContentView *view)
+{
+	gchar *file_name;
+	GtkWidget *temp_widget, *temp_container;
+	gchar *message;
+	/* allocate a vbox as the container */	
+	view->details->form = gtk_vbox_new(FALSE,0);
+	gtk_container_add (GTK_CONTAINER (view), view->details->form);	
+	gtk_widget_show(view->details->form);
+
+	/* build the title in an hbox */	
 	
+	temp_container = gtk_hbox_new(FALSE,0);
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_container, 0, 0, 4);	
+	gtk_widget_show(temp_container);
+	
+ 	file_name = gnome_pixmap_file ("nautilus/eazel-logo.gif");
+  	temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
+	gtk_box_pack_start(GTK_BOX(temp_container), temp_widget, 0, 0, 8);		
+  	gtk_widget_show(temp_widget);
+  	g_free (file_name);
+
+	temp_widget = gtk_label_new ("Eazel Service Configuration Gathering");
+	gtk_box_pack_start(GTK_BOX(temp_container), temp_widget, 0, 0, 0);			
+ 	gtk_widget_show (temp_widget);
+	
+	/* make label containing text about uploading the configuration data */
+	/* FIXME: It should get this text from a file or from the service */
+	message = "With your permission, the Eazel service will gather data about the hardware and software configuration of your system so it can provide you a customized software catalog with one-click installation.  Your configuration data will be kept strictly confidential and will not be used for any other purpose.  Click the button below to begin gathering the data.";
+	temp_widget = gtk_label_new (message);
+ 	gtk_label_set_line_wrap(GTK_LABEL(temp_widget), TRUE);
+	
+	gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);			
+ 	gtk_widget_show (temp_widget);
+
+	/* add buttons for accepting and declining */	
+}
+
+static void
+nautilus_service_startup_view_initialize_class (NautilusServicesContentViewClass *klass)
+{
+	GtkObjectClass *object_class;
+	
+	object_class = GTK_OBJECT_CLASS (klass);
+
+ 	parent_class = gtk_type_class (gtk_event_box_get_type ());
+	
+	object_class->destroy = nautilus_service_startup_view_destroy;
+}
+
+static void
+nautilus_service_startup_view_initialize (NautilusServicesContentView *view)
+{	
+  	NautilusBackground *background;
+
+	view->details = g_new0 (NautilusServicesContentViewDetails, 1);
+	
+	view->details->view_frame = nautilus_content_view_frame_new (GTK_WIDGET (view));
+	
+	gtk_signal_connect (GTK_OBJECT (view->details->view_frame), 
+			    "notify_location_change",
+			    GTK_SIGNAL_FUNC (service_main_notify_location_change_cb), 
+			    view);
+
+	view->details->form = NULL;
+
+  	background = nautilus_get_widget_background (GTK_WIDGET (view));
+  	nautilus_background_set_color (background, SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
+  		
 	gtk_widget_show_all (GTK_WIDGET (view));
 }
 
@@ -146,8 +217,30 @@ void
 nautilus_service_startup_view_load_uri (NautilusServicesContentView *view,
 				       const gchar               *uri)
 {
+	gchar *document_name;
+	
+	/* dispose of the old uri and copy the new one */
 	g_free (view->details->uri);
 	view->details->uri = g_strdup (uri);
+
+	/* dispose of any old form that was installed */
+	if (view->details->form != NULL) {
+		gtk_widget_destroy(view->details->form);
+		view->details->form = NULL;	
+	}
+		
+	/* extract the document part of the uri */
+	document_name = strchr(uri, ':');
+	
+	/* load the appropriate form, based on the uri and the registration state */
+	if (document_name && !strncmp(document_name + 1, "signup", 6)) {
+		setup_signup_form(view);
+	}
+	else if (document_name && !strncmp(document_name + 1, "config", 5)) {
+		setup_config_form(view);
+	}	
+	else
+		setup_test_form(view);
 }
 
 static void

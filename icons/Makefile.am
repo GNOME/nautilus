@@ -3,6 +3,7 @@ SUBDIRS = eazel
 icondir = $(datadir)/pixmaps/nautilus
 
 icon_DATA =					\
+	eazel-logo.gif				\
 	emblem-certified.gif			\
 	emblem-changed.gif			\
 	emblem-confidential.gif			\

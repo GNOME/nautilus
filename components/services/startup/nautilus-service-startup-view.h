@@ -31,7 +31,6 @@
 #include <libnautilus/ntl-content-view-frame.h>
 #include <gtk/gtk.h>
 
-
 typedef struct _NautilusServicesContentView      NautilusServicesContentView;
 typedef struct _NautilusServicesContentViewClass NautilusServicesContentViewClass;
 
@@ -44,7 +43,7 @@ typedef struct _NautilusServicesContentViewClass NautilusServicesContentViewClas
 typedef struct _NautilusServicesContentViewDetails NautilusServicesContentViewDetails;
 
 struct _NautilusServicesContentView {
-	GtkVBox parent;
+	GtkEventBox parent;
 	NautilusServicesContentViewDetails *details;
 };
 
