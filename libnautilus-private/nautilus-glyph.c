@@ -33,8 +33,13 @@
 
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_affine.h>
-
+#include <libart_lgpl/art_rgb.h>
+#include <librsvg/art_rgba.h>
 #include <librsvg/rsvg-ft.h>
+
+static gboolean glyph_is_valid             (const NautilusGlyph *glyph);
+static int      glyph_get_width_space_safe (const NautilusGlyph *glyph);
+static int      glyph_get_height_space_safe (const NautilusGlyph *glyph);
 
 /* Detail member struct */
 struct NautilusGlyph
@@ -54,16 +59,17 @@ struct NautilusGlyph
  */
 NautilusGlyph *
 nautilus_glyph_new (const NautilusScalableFont *font,
-		    guint font_size,
+		    int font_size,
 		    const char *text,
-		    guint text_length)
+		    int text_length)
 {
 	NautilusGlyph *glyph;
 	RsvgFTGlyph *rsvg_glyph;
 	const double affine[6] = { 1, 0, 0, 1, 0, 0 };
 	int glyph_xy[2];
-
+	
 	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (font), NULL);
+	g_return_val_if_fail (font_size > 0, NULL);
 	g_return_val_if_fail (text != NULL, NULL);
 	g_return_val_if_fail (text[0] != '\0', NULL);
 
@@ -75,11 +81,9 @@ nautilus_glyph_new (const NautilusScalableFont *font,
 					    font_size,
 					    affine,
 					    glyph_xy);
-
 	g_return_val_if_fail (rsvg_glyph != NULL, NULL);
-	
-	glyph = g_new0 (NautilusGlyph, 1);
 
+	glyph = g_new0 (NautilusGlyph, 1);
 	glyph->rsvg_glyph = rsvg_glyph;
 	glyph->glyph_xy[0] = glyph_xy[0];
 	glyph->glyph_xy[1] = glyph_xy[1];
@@ -102,6 +106,34 @@ nautilus_glyph_free (NautilusGlyph *glyph)
 	g_free (glyph);
 }
 
+static int
+glyph_get_width_space_safe (const NautilusGlyph *glyph)
+{
+	g_return_val_if_fail (glyph != NULL, 0);
+	g_return_val_if_fail (glyph->rsvg_glyph != NULL, 0);
+
+	/* Check for the case when we have only spaces. */
+	if (glyph->rsvg_glyph->width == 0 && glyph->rsvg_glyph->xpen > 0.0) {
+		return (int) glyph->rsvg_glyph->xpen;
+	}
+
+	return glyph->rsvg_glyph->width;
+}
+
+static int
+glyph_get_height_space_safe (const NautilusGlyph *glyph)
+{
+	g_return_val_if_fail (glyph != NULL, 0);
+	g_return_val_if_fail (glyph->rsvg_glyph != NULL, 0);
+
+	/* Check for the case when we have only spaces. */
+	if (glyph->rsvg_glyph->width == 0 && glyph->rsvg_glyph->xpen > 0.0) {
+		return 1;
+	}
+
+	return glyph->rsvg_glyph->height;
+}
+
 /**
  * nautilus_glyph_get_width:
  * @glyph: A NautilusGlyph.
@@ -111,10 +143,9 @@ nautilus_glyph_free (NautilusGlyph *glyph)
 int
 nautilus_glyph_get_width (const NautilusGlyph *glyph)
 {
-	g_return_val_if_fail (glyph != NULL, 0);
-	g_return_val_if_fail (glyph->rsvg_glyph != NULL, 0);
-
-	return glyph->rsvg_glyph->width;
+	g_return_val_if_fail (glyph_is_valid (glyph), 0);
+	
+	return glyph_get_width_space_safe (glyph);
 }
 
 /**
@@ -126,10 +157,9 @@ nautilus_glyph_get_width (const NautilusGlyph *glyph)
 int
 nautilus_glyph_get_height (const NautilusGlyph *glyph)
 {
-	g_return_val_if_fail (glyph != NULL, 0);
-	g_return_val_if_fail (glyph->rsvg_glyph != NULL, 0);
+	g_return_val_if_fail (glyph_is_valid (glyph), 0);
 
-	return glyph->rsvg_glyph->height;
+	return glyph_get_height_space_safe (glyph);
 }
 
 /**
@@ -144,44 +174,22 @@ nautilus_glyph_get_dimensions (const NautilusGlyph *glyph)
 	NautilusDimensions glyph_dimensions;
 
 	g_return_val_if_fail (glyph != NULL, NAUTILUS_DIMENSIONS_EMPTY);
-	g_return_val_if_fail (glyph->rsvg_glyph != NULL, NAUTILUS_DIMENSIONS_EMPTY);
+	g_return_val_if_fail (glyph_is_valid (glyph), NAUTILUS_DIMENSIONS_EMPTY);
 
-	glyph_dimensions.width = glyph->rsvg_glyph->width;
-	glyph_dimensions.height = glyph->rsvg_glyph->height;
+	glyph_dimensions.width = glyph_get_width_space_safe (glyph);
+	glyph_dimensions.height = glyph_get_height_space_safe (glyph);
 
 	return glyph_dimensions;
 }
 
-/* FIXME bugzilla.eazel.com xxxx: We should really use libart
- * over here to do the alpha compositing.  The reason why
- * im not doing so is because of the currently confusing 
- * location of libart stable/HEAD headers for some rgba functions.
- * It not hard to figure that out, Ill do so soon.  For now this
- * code works, even if not super optimized like the libart blending
- * code.
- */
-static void
-color_blend_with_opacity (guchar background_r,
-			  guchar background_g,
-			  guchar background_b,
-			  guchar foreground_r,
-			  guchar foreground_g,
-			  guchar foreground_b,
-			  int opacity,
-			  guchar *blend_r_out,
-			  guchar *blend_g_out,
-			  guchar *blend_b_out)
+/* A glyph is valid if IT and the RsvgGlyph it wraps area not NULL */
+static gboolean
+glyph_is_valid (const NautilusGlyph *glyph)
 {
-	g_return_if_fail (opacity > NAUTILUS_OPACITY_FULLY_TRANSPARENT);
-	g_return_if_fail (opacity < NAUTILUS_OPACITY_FULLY_OPAQUE);
-	g_return_if_fail (blend_r_out != NULL);
-	g_return_if_fail (blend_g_out != NULL);
-	g_return_if_fail (blend_b_out != NULL);
-
-	/* This blending operation is the same as that in libart */
-	*blend_r_out = background_r + (((foreground_r - background_r) * opacity + 0x80) >> 8);
-	*blend_g_out = background_g + (((foreground_g - background_g) * opacity + 0x80) >> 8);
-	*blend_b_out = background_b + (((foreground_b - background_b) * opacity + 0x80) >> 8);
+	return glyph != NULL
+		&& glyph->rsvg_glyph != NULL
+		&& glyph_get_width_space_safe (glyph) > 0
+		&& glyph_get_height_space_safe (glyph) > 0;
 }
 
 /**
@@ -229,26 +237,28 @@ nautilus_glyph_draw_to_pixbuf (const NautilusGlyph *glyph,
 	const guchar foreground_g = NAUTILUS_RGBA_COLOR_GET_G (color);
 	const guchar foreground_b = NAUTILUS_RGBA_COLOR_GET_B (color);
 
-	g_return_if_fail (glyph != NULL);
-	g_return_if_fail (glyph->rsvg_glyph != NULL);
-	g_return_if_fail (glyph->rsvg_glyph->buf != NULL);
-	g_return_if_fail (glyph->rsvg_glyph->width > 0);
-	g_return_if_fail (glyph->rsvg_glyph->height > 0);
-	g_return_if_fail (glyph->rsvg_glyph->rowstride > 0);
 	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (pixbuf));
-	g_return_if_fail (destination_x >= 0 && destination_x < gdk_pixbuf_get_width (pixbuf));
-	g_return_if_fail (destination_y >= 0 && destination_y < gdk_pixbuf_get_height (pixbuf));
+	g_return_if_fail (glyph_is_valid (glyph));
+
 	/* FIXME bugzilla.eazel.com xxxx: We currently dont handle opacities
 	 * other than 0xFF.
 	 */
 	g_return_if_fail (opacity == NAUTILUS_OPACITY_FULLY_OPAQUE);
+
+	/* Check for just spaces */
+	if (glyph->rsvg_glyph->buf == NULL || glyph->rsvg_glyph->rowstride <= 0) {
+		return;
+	}
 
 	/* Clip the pixbuf to the clip area; bail if no work  */
 	target = nautilus_gdk_pixbuf_intersect (pixbuf, 0, 0, clip_area);
 	if (art_irect_empty (&target)) {
 		return;
 	}
-		
+
+	g_return_if_fail (glyph->rsvg_glyph->buf != NULL);
+	g_return_if_fail (glyph->rsvg_glyph->rowstride > 0);
+	
 	glyph_dimensions = nautilus_glyph_get_dimensions (glyph);
 	glyph_rowstride = glyph->rsvg_glyph->rowstride;
 	glyph_buffer = glyph->rsvg_glyph->buf;
@@ -274,37 +284,6 @@ nautilus_glyph_draw_to_pixbuf (const NautilusGlyph *glyph,
 	if (art_irect_empty (&render_area)) {
  		return;
  	}
-
-	/* Debug code to be yanked real soon */
-	if (0) nautilus_debug_pixbuf_draw_rectangle_inset (pixbuf,
-							   FALSE,
-							   target.x0,
-							   target.y0,
-							   target.x1,
-							   target.y1,
-							   NAUTILUS_RGBA_COLOR_OPAQUE_GREEN,
-							   NAUTILUS_OPACITY_FULLY_OPAQUE,
-							   0);
-
-	if (0) nautilus_debug_pixbuf_draw_rectangle_inset (pixbuf,
-							   FALSE,
-							   glyph_bounds.x0,
-							   glyph_bounds.y0,
-							   glyph_bounds.x1,
-							   glyph_bounds.y1,
-							   NAUTILUS_RGBA_COLOR_OPAQUE_BLUE,
-							   NAUTILUS_OPACITY_FULLY_OPAQUE,
-							   0);
-
-	if (0) nautilus_debug_pixbuf_draw_rectangle_inset (pixbuf,
-							   FALSE,
-							   render_area.x0,
-							   render_area.y0,
-							   render_area.x1,
-							   render_area.y1,
-							   NAUTILUS_RGBA_COLOR_OPAQUE_RED,
-							   NAUTILUS_OPACITY_FULLY_OPAQUE,
-							   -1);
 
 	/* Compute the offset into the pixbuf where we want to render. */
 	pixbuf_y_offset = 
@@ -336,6 +315,7 @@ nautilus_glyph_draw_to_pixbuf (const NautilusGlyph *glyph,
 		+ (glyph_top_skip * glyph_rowstride)
 		+ glyph_left_skip;
 
+
 	/* Thanks to the careful clipping above, the iterations below
 	 * should always be within the bounds of both the pixbuf's pixels
 	 * and the glyph's buffer.
@@ -361,39 +341,21 @@ nautilus_glyph_draw_to_pixbuf (const NautilusGlyph *glyph,
 			/* If the opacity is not fully opaque or fully transparent,
 			 * we need to to alpha blending.
 			 */
-
-			/* FIXME bugzilla.eazel.com xxxx: We should really use libart
-			 * over here to do the alpha compositing.  The reason why
-			 * im not doing so is because of the currently confusing 
-			 * location of libart stable/HEAD headers for some rgba functions.
-			 * It not hard to figure that out, Ill do so soon.  For now this
-			 * code works, even if not super optimized like the libart blending
-			 * code.
-			 */
 			} else if (point_opacity != NAUTILUS_OPACITY_FULLY_TRANSPARENT) {
-				const guchar background_r = *(pixbuf_x_offset + 0);
-				const guchar background_g = *(pixbuf_x_offset + 1);
-				const guchar background_b = *(pixbuf_x_offset + 2);
-				guchar blend_r;
-				guchar blend_g;
-				guchar blend_b;
-
-				color_blend_with_opacity (background_r,
-							  background_g,
-							  background_b,
-							  foreground_r,
-							  foreground_g,
-							  foreground_b,
-							  point_opacity,
-							  &blend_r,
-							  &blend_g,
-							  &blend_b);
-
-				*(pixbuf_x_offset + 0) = blend_r;
-				*(pixbuf_x_offset + 1) = blend_g;
-				*(pixbuf_x_offset + 2) = blend_b;
 				if (pixbuf_has_alpha) {
-					*(pixbuf_x_offset + 3) = NAUTILUS_OPACITY_FULLY_OPAQUE;
+					art_rgba_run_alpha (pixbuf_x_offset,
+							    foreground_r,
+							    foreground_g,
+							    foreground_b,
+							    point_opacity,
+							    1);
+				} else {
+					art_rgb_run_alpha (pixbuf_x_offset,
+							   foreground_r,
+							   foreground_g,
+							   foreground_b,
+							   point_opacity,
+							   1);
 				}
 			}
 
@@ -411,3 +373,37 @@ nautilus_glyph_draw_to_pixbuf (const NautilusGlyph *glyph,
 		glyph_y_offset += glyph_rowstride;
 	}
 }
+
+ArtIRect
+nautilus_glyph_intersect (const NautilusGlyph *glyph,
+			  int glyph_x,
+			  int glyph_y,
+			  const ArtIRect *rectangle)
+{
+	ArtIRect intersection;
+	ArtIRect bounds;
+	NautilusDimensions dimensions;
+
+	g_return_val_if_fail (glyph_is_valid (glyph), NAUTILUS_ART_IRECT_EMPTY);
+	
+	dimensions = nautilus_glyph_get_dimensions (glyph);
+	bounds = nautilus_art_irect_assign_dimensions (glyph_x, glyph_y, &dimensions);
+
+	if (rectangle == NULL) {
+		return bounds;
+	}
+
+	art_irect_intersect (&intersection, rectangle, &bounds);
+
+	/* In theory, this is not needed because a rectangle is empty
+	 * regardless of how MUCH negative the dimensions are.  
+	 * However, to make debugging and self checks simpler, we
+	 * consistenly return a standard empty rectangle.
+	 */
+	if (art_irect_empty (&intersection)) {
+		return NAUTILUS_ART_IRECT_EMPTY;
+	}
+
+	return intersection;
+}
+

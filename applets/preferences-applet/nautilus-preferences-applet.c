@@ -131,7 +131,7 @@ boolean_toggle_button_new (const char *preference_name,
 }
 
 static void
-quit_button_clicked_callback (GtkWidget *button,
+quit_nautilus_button_clicked_callback (GtkWidget *button,
 			      gpointer callback_data)
 {
 	g_return_if_fail (GTK_IS_BUTTON (button));
@@ -140,7 +140,7 @@ quit_button_clicked_callback (GtkWidget *button,
 }
 
 static void
-start_button_clicked_callback (GtkWidget *button,
+start_nautilus_button_clicked_callback (GtkWidget *button,
 			      gpointer callback_data)
 {
 	g_return_if_fail (GTK_IS_BUTTON (button));
@@ -149,12 +149,21 @@ start_button_clicked_callback (GtkWidget *button,
 }
 
 static void
-restart_button_clicked_callback (GtkWidget *button,
+restart_nautilus_button_clicked_callback (GtkWidget *button,
 			      gpointer callback_data)
 {
 	g_return_if_fail (GTK_IS_BUTTON (button));
 	
 	nautilus_gnome_shell_execute ("nautilus --restart");
+}
+
+static void
+exit_button_clicked_callback (GtkWidget *button,
+			      gpointer callback_data)
+{
+	g_return_if_fail (GTK_IS_BUTTON (button));
+	
+	gtk_main_quit ();
 }
 
 static void
@@ -178,6 +187,7 @@ main (int argc, char **argv)
 	GtkWidget *quit_button;
 	GtkWidget *start_button;
 	GtkWidget *restart_button;
+	GtkWidget *exit_button;
 
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
@@ -235,7 +245,7 @@ main (int argc, char **argv)
 	gtk_box_pack_start (GTK_BOX (command_hbox), quit_button, TRUE, TRUE, 1);
 	gtk_signal_connect (GTK_OBJECT (quit_button),
 			    "clicked",
-			    GTK_SIGNAL_FUNC (quit_button_clicked_callback),
+			    GTK_SIGNAL_FUNC (quit_nautilus_button_clicked_callback),
 			    NULL);
 
 	start_button = gtk_button_new_with_label ("Start");
@@ -243,7 +253,7 @@ main (int argc, char **argv)
 	gtk_box_pack_start (GTK_BOX (command_hbox), start_button, TRUE, TRUE, 1);
 	gtk_signal_connect (GTK_OBJECT (start_button),
 			    "clicked",
-			    GTK_SIGNAL_FUNC (start_button_clicked_callback),
+			    GTK_SIGNAL_FUNC (start_nautilus_button_clicked_callback),
 			    NULL);
 
 	restart_button = gtk_button_new_with_label ("Restart");
@@ -251,7 +261,15 @@ main (int argc, char **argv)
 	gtk_box_pack_start (GTK_BOX (command_hbox), restart_button, TRUE, TRUE, 1);
 	gtk_signal_connect (GTK_OBJECT (restart_button),
 			    "clicked",
-			    GTK_SIGNAL_FUNC (restart_button_clicked_callback),
+			    GTK_SIGNAL_FUNC (restart_nautilus_button_clicked_callback),
+			    NULL);
+
+	exit_button = gtk_button_new_with_label ("[x]");
+	nautilus_gtk_label_make_smaller (GTK_LABEL (GTK_BIN (exit_button)->child), 4);
+	gtk_box_pack_start (GTK_BOX (command_hbox), exit_button, TRUE, TRUE, 1);
+	gtk_signal_connect (GTK_OBJECT (exit_button),
+			    "clicked",
+			    GTK_SIGNAL_FUNC (exit_button_clicked_callback),
 			    NULL);
 
 	gtk_container_add (GTK_CONTAINER (applet), main_hbox);

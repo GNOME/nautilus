@@ -353,8 +353,8 @@ test_pixbuf_draw_rectangle_tiled (GdkPixbuf *pixbuf,
 						  &area,
 						  gdk_pixbuf_get_width (tile_pixbuf),
 						  gdk_pixbuf_get_height (tile_pixbuf),
-						  x0,
-						  y0,
+						  0,
+						  0,
 						  opacity,
 						  GDK_INTERP_NEAREST);
 

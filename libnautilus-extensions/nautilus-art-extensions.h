@@ -58,6 +58,7 @@ gboolean nautilus_art_irect_contains_irect    (const ArtIRect           *outer_r
 gboolean nautilus_art_irect_contains_point    (const ArtIRect           *outer_rect,
 					       int                       x,
 					       int                       y);
+gboolean nautilus_art_irect_is_valid          (const ArtIRect           *rect);
 void     nautilus_art_irect_assign            (ArtIRect                 *rect,
 					       int                       x,
 					       int                       y,

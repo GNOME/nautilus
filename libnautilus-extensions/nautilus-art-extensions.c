@@ -109,6 +109,12 @@ nautilus_art_drect_equal (const ArtDRect *rect_a,
 		&& rect_a->y1 == rect_b->y1;
 }
 
+gboolean
+nautilus_art_irect_is_valid (const ArtIRect *rect)
+{
+	return rect && !art_irect_empty (rect);
+}
+
 void
 nautilus_art_irect_assign (ArtIRect *rect,
 			   int x,
@@ -270,6 +276,14 @@ nautilus_self_check_art_extensions (void)
 	/* nautilus_art_irect_equal */
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_equal (&one, &two), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_equal (&one, &empty_rect), FALSE);
+
+	/* nautilus_art_irect_is_valid */
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_is_valid (NULL), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_is_valid (&empty_rect), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_is_valid (&one), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_is_valid (&two), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_is_valid (&inside), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_is_valid (&outside), TRUE);
 
 	/* nautilus_art_irect_hits_irect */
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_art_irect_hits_irect (&one, &two), TRUE);

@@ -1,3 +1,50 @@
+2001-02-22  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/mozilla/nautilus-mozilla-encoding-tables.c:
+	No need to have 2 strings.  Use an array of just one string.
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_view_create_charset_encoding_submenu):
+	Replace assertion with a more robust check for NULL.
+
+	
+	reviewed by: Seth Nickell <seth@eazel.com>
+
+	* applets/preferences-applet/nautilus-preferences-applet.c:
+	(quit_nautilus_button_clicked_callback),
+	(start_nautilus_button_clicked_callback),
+	(restart_nautilus_button_clicked_callback),
+	(exit_button_clicked_callback), (main):
+	Add a exit button for the applet itself.  Renamed nautilus remote
+	callbacks to be clearer.
+	
+	* libnautilus-extensions/nautilus-art-extensions.h:
+	* libnautilus-extensions/nautilus-art-extensions.c:
+	(nautilus_art_irect_is_valid),
+	(nautilus_self_check_art_extensions): New functions and tests for
+	checking whether a rectangle is valid.
+
+	* libnautilus-extensions/nautilus-glyph.h: Use int instead
+	of guint everywhere.
+	* libnautilus-extensions/nautilus-glyph.c: (nautilus_glyph_new),
+	(nautilus_glyph_free), (glyph_get_width_space_safe): New functions
+	to get dimensions that work with glyphs that are just empty space.
+	(glyph_get_height_space_safe), (nautilus_glyph_get_width),
+	(nautilus_glyph_get_height), (nautilus_glyph_get_dimensions): Make
+	these work with empty spaces.
+	(glyph_is_valid), (nautilus_glyph_draw_to_pixbuf): Use libart rgba
+	functions instead of doing our own alpha blending.  Allow for
+	rendering glyphs with just blank spaces (noop).  Remove debug code.
+	(nautilus_glyph_intersect): New function to intersect a glyph at
+	some coordinates with a rectangle.
+
+	* test/test-nautilus-glyph-simple.c: (main):
+	* test/test-nautilus-glyph.c: (glyph_new), (main):
+	* test/test.c: (test_pixbuf_draw_rectangle_tiled):
+	More glyph tests.
+
 2001-02-22  Dan Mueth  <dan@eazel.com>
 
 	reviewed by: Ramiro Estrugo  <ramiro@eazel.com>

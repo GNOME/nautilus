@@ -33,6 +33,7 @@ main (int argc, char* argv[])
 	GdkPixbuf *pixbuf;
 	NautilusScalableFont *font;
 	ArtIRect clip_area;
+	ArtIRect dest_area;
 	NautilusGlyph *glyph;
 	const guint font_size = 60;
 	const int opacity = NAUTILUS_OPACITY_FULLY_OPAQUE;
@@ -73,8 +74,22 @@ main (int argc, char* argv[])
 						     NAUTILUS_OPACITY_FULLY_OPAQUE);
 	
 	glyph = glyph_new (text, font_size);
-	
+
+	nautilus_art_irect_assign (&dest_area,
+				   50,
+				   200,
+				   1000,
+				   1000);
+
 	nautilus_glyph_draw_to_pixbuf (glyph,
+				       pixbuf,
+				       100,
+				       0,
+				       &dest_area,
+				       NAUTILUS_RGBA_COLOR_OPAQUE_BLUE,
+				       opacity);
+	
+	if (0) nautilus_glyph_draw_to_pixbuf (glyph,
 				       pixbuf,
 				       30,
 				       40,

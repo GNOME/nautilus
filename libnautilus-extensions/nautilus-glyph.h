@@ -36,9 +36,9 @@ BEGIN_GNOME_DECLS
 typedef struct NautilusGlyph NautilusGlyph;
 
 NautilusGlyph *    nautilus_glyph_new            (const NautilusScalableFont *font,
-						  guint                       font_size,
+						  int                         font_size,
 						  const char                 *text,
-						  guint                       text_length);
+						  int                         text_length);
 void               nautilus_glyph_free           (NautilusGlyph              *glyph);
 int                nautilus_glyph_get_width      (const NautilusGlyph        *glyph);
 int                nautilus_glyph_get_height     (const NautilusGlyph        *glyph);
@@ -50,6 +50,10 @@ void               nautilus_glyph_draw_to_pixbuf (const NautilusGlyph        *gl
 						  const ArtIRect             *clip_area,
 						  guint32                     color,
 						  int                         opacity);
+ArtIRect           nautilus_glyph_intersect      (const NautilusGlyph        *glyph,
+						  int                         glyph_x,
+						  int                         glyph_y,
+						  const ArtIRect             *rectangle);
 
 END_GNOME_DECLS
 

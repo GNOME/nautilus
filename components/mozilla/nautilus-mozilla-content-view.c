@@ -582,7 +582,9 @@ mozilla_view_create_charset_encoding_submenu (NautilusMozillaContentView *mozill
 
 		translated_encoding_group = mozilla_charset_encoding_group_get_translated (mozilla,
 											   encoding_group);
-		g_assert (translated_encoding_group != NULL);
+		if (translated_encoding_group == NULL) {
+			translated_encoding_group = g_strdup (encoding_group);
+		}
 		escaped_encoding_group = bonobo_ui_util_encode_str (encoding_group);
 		
 		/* HACK: From now onwards we use the groups list to store indeces of items */
