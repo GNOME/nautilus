@@ -33,7 +33,7 @@
 
 typedef void (*NautilusComponentChoiceCallback)   (NautilusViewIdentifier 	 *identifier,
 						   gpointer		 	  callback_data);
-typedef void (*NautilusApplicationChoiceCallback) (char 			 *command_string,
+typedef void (*NautilusApplicationChoiceCallback) (const char 			 *command_string,
 						   gpointer			  callback_data);						 
 
 void nautilus_choose_application_for_file (NautilusFile 		     *file,

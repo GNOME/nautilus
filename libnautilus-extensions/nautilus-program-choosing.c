@@ -143,7 +143,10 @@ nautilus_choose_application_for_file (NautilusFile *file,
 	if (gnome_dialog_run (dialog) == GNOME_OK) {
 		/* FIXME: Need to extract result from dialog! */
 #ifdef TESTING_LAUNCH
-		command_string = g_strdup ("gnotepad");
+		/* FIXME: investigate why passing wrong text here ("gnotepad")
+		 * causes an X error.
+		 */
+		command_string = "gnp";
 #else		
 		command_string = NULL;
 #endif		
@@ -152,7 +155,6 @@ nautilus_choose_application_for_file (NautilusFile *file,
 	}
 
 	gtk_widget_destroy (GTK_WIDGET (dialog));
-
 	/* Call callback even if identifier is NULL, so caller can
 	 * free callback_data if necessary and present some cancel
 	 * UI if desired.

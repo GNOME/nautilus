@@ -698,7 +698,7 @@ command_button_callback (GtkWidget *button, char *command_str)
 }
 
 static void
-nautilus_index_panel_chose_application_callback (char *command_string,
+nautilus_index_panel_chose_application_callback (const char *command_string,
 						 gpointer callback_data)
 {
 	g_assert (NAUTILUS_IS_INDEX_PANEL (callback_data));
@@ -708,8 +708,6 @@ nautilus_index_panel_chose_application_callback (char *command_string,
 			(command_string, 
 			 NAUTILUS_INDEX_PANEL (callback_data)->details->uri);
 	}
-
-	g_free (command_string);
 }						 
 
 static void
@@ -728,7 +726,8 @@ open_with_callback (GtkWidget *button, gpointer ignored)
 		 GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (index_panel))),
 		 nautilus_index_panel_chose_application_callback,
 		 index_panel);
-	
+
+	nautilus_file_unref (file);
 }
 
 /* utility routine that allocates the command buttons from the command list */
@@ -772,12 +771,12 @@ add_command_buttons (NautilusIndexPanel *index_panel, GList *command_list)
 
 	/* Catch-all button after all the others. */
 	temp_button = gtk_button_new_with_label (_("Open with ..."));
-	nautilus_gtk_signal_connect_free_data 
+	gtk_signal_connect 
 		(GTK_OBJECT (temp_button), 
 		 "clicked",
 		 open_with_callback, 
 		 NULL);
-                 gtk_object_set_user_data (GTK_OBJECT (temp_button), index_panel);
+        gtk_object_set_user_data (GTK_OBJECT (temp_button), index_panel);
 	gtk_widget_show (temp_button);
 	gtk_box_pack_start (GTK_BOX (index_panel->details->button_box),
 			    temp_button,

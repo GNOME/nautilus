@@ -313,7 +313,7 @@ bonobo_menu_open_in_new_window_callback (BonoboUIHandler *ui_handler, gpointer u
 }
 
 static void
-fm_directory_view_chose_application_callback (char *command_string, 
+fm_directory_view_chose_application_callback (const char *command_string, 
 					      gpointer callback_data)
 {
 	NautilusFile *file;
@@ -330,7 +330,6 @@ fm_directory_view_chose_application_callback (char *command_string,
 	}
 
 	nautilus_file_unref (file);
-	g_free (command_string);
 }
 
 static void
