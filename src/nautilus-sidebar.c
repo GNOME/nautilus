@@ -89,37 +89,35 @@ struct NautilusSidebarDetails {
 /* button assignments */
 #define CONTEXTUAL_MENU_BUTTON 3
 
-static void     nautilus_sidebar_initialize_class   (GtkObjectClass   *object_klass);
-static void     nautilus_sidebar_initialize         (GtkObject        *object);
-static void	nautilus_sidebar_deactivate_panel   (NautilusSidebar *sidebar);
-
-static gboolean nautilus_sidebar_press_event        (GtkWidget        *widget,
-						     GdkEventButton   *event);
-static gboolean nautilus_sidebar_release_event      (GtkWidget        *widget,
-						     GdkEventButton   *event);
-static gboolean nautilus_sidebar_leave_event        (GtkWidget        *widget,
-						     GdkEventCrossing *event);
-static gboolean nautilus_sidebar_motion_event       (GtkWidget        *widget,
-						     GdkEventMotion   *event);
-static void     nautilus_sidebar_destroy            (GtkObject        *object);
-static void     nautilus_sidebar_drag_data_received (GtkWidget        *widget,
-						     GdkDragContext   *context,
-						     int               x,
-						     int               y,
-						     GtkSelectionData *selection_data,
-						     guint             info,
-						     guint             time);
-static void	nautilus_sidebar_read_theme	    (NautilusSidebar *sidebar);
-
-static void     nautilus_sidebar_size_allocate      (GtkWidget        *widget,
-						     GtkAllocation    *allocation);
-static void	nautilus_sidebar_theme_changed	    (gpointer user_data);
-static void     nautilus_sidebar_update_appearance  (NautilusSidebar  *sidebar);
-static void     nautilus_sidebar_update_buttons     (NautilusSidebar  *sidebar);
-static void     add_command_buttons                 (NautilusSidebar  *sidebar,
-						     GList            *application_list);
-
-static void	background_metadata_changed_callback	    (NautilusSidebar  *sidebar);
+static void     nautilus_sidebar_initialize_class    (GtkObjectClass   *object_klass);
+static void     nautilus_sidebar_initialize          (GtkObject        *object);
+static void     nautilus_sidebar_deactivate_panel    (NautilusSidebar  *sidebar);
+static gboolean nautilus_sidebar_press_event         (GtkWidget        *widget,
+						      GdkEventButton   *event);
+static gboolean nautilus_sidebar_release_event       (GtkWidget        *widget,
+						      GdkEventButton   *event);
+static gboolean nautilus_sidebar_leave_event         (GtkWidget        *widget,
+						      GdkEventCrossing *event);
+static gboolean nautilus_sidebar_motion_event        (GtkWidget        *widget,
+						      GdkEventMotion   *event);
+static void     nautilus_sidebar_destroy             (GtkObject        *object);
+static void     nautilus_sidebar_drag_data_received  (GtkWidget        *widget,
+						      GdkDragContext   *context,
+						      int               x,
+						      int               y,
+						      GtkSelectionData *selection_data,
+						      guint             info,
+						      guint             time);
+static void     nautilus_sidebar_read_theme          (NautilusSidebar  *sidebar);
+static void     nautilus_sidebar_size_allocate       (GtkWidget        *widget,
+						      GtkAllocation    *allocation);
+static void     nautilus_sidebar_realize             (GtkWidget        *widget);
+static void     nautilus_sidebar_theme_changed       (gpointer          user_data);
+static void     nautilus_sidebar_update_appearance   (NautilusSidebar  *sidebar);
+static void     nautilus_sidebar_update_buttons      (NautilusSidebar  *sidebar);
+static void     add_command_buttons                  (NautilusSidebar  *sidebar,
+						      GList            *application_list);
+static void     background_metadata_changed_callback (NautilusSidebar  *sidebar);
 
 #define DEFAULT_TAB_COLOR "rgb:9999/9999/9999"
 
@@ -182,6 +180,7 @@ nautilus_sidebar_initialize_class (GtkObjectClass *object_klass)
 	widget_class->button_press_event  = nautilus_sidebar_press_event;
 	widget_class->button_release_event  = nautilus_sidebar_release_event;
 	widget_class->size_allocate = nautilus_sidebar_size_allocate;
+	widget_class->realize = nautilus_sidebar_realize;
 
 	/* add the "location changed" signal */
 	signals[LOCATION_CHANGED] = gtk_signal_new
@@ -1548,4 +1547,16 @@ nautilus_sidebar_size_allocate (GtkWidget *widget,
  		nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
 					      widget->allocation.width);
 	}	
+}
+
+static void
+nautilus_sidebar_realize (GtkWidget *widget)
+{
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR (widget));
+	
+	/* Superclass does the actual realize */
+	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
+	
+	/* Tell X not to erase the window contents when resizing */
+	gdk_window_set_static_gravities (widget->window, TRUE);
 }

@@ -1,3 +1,13 @@
+2001-02-06  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Michael Engber  <engber@eazel.com>
+
+	* src/nautilus-sidebar.c: (nautilus_sidebar_initialize_class),
+	(nautilus_sidebar_size_allocate), (nautilus_sidebar_realize):
+	Tell X not to clear the window contents when the sidebar is
+	resized.  Since we double buffer its contents, this will reduce
+	(but not eliminate) flicker in the sidebar.
+	
 2001-02-06  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Laszlo Kovacs  <laszlo.kovacs@sun.com>
