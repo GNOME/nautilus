@@ -22,19 +22,17 @@
    Authors: John Sullivan <sullivan@eazel.com>
 */
 
-#include <gnome.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <fcntl.h>
-#include <unistd.h>
-
-
 #include "nautilus-file-utilities.h"
 
-const char* const nautilus_user_directory_name = ".gnomad";
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-util.h>
+#include <sys/stat.h>
+
+const char* const nautilus_user_directory_name = ".nautilus";
 const unsigned default_nautilus_directory_mode = 0755;
 
 
+
 /**
  * nautilus_make_path:
  * 
@@ -43,24 +41,21 @@ const unsigned default_nautilus_directory_mode = 0755;
  *
  * Return value: the combined path name.
  **/
-gchar * 
-nautilus_make_path(const gchar *path, const gchar* name)
+char * 
+nautilus_make_path(const char *path, const char* name)
 {
     	gboolean insert_separator;
     	gint     path_length;
-	gchar	*result;
+	char	*result;
 
-	path_length = strlen(path);
+	path_length = strlen (path);
     	insert_separator = path_length > 0 && 
-    			   strlen(name) > 0 && 
+    			   name[0] != '\0' > 0 && 
     			   path[path_length - 1] != G_DIR_SEPARATOR;
 
-    	if (insert_separator)
-    	{
+    	if (insert_separator) {
     		result = g_strconcat(path, G_DIR_SEPARATOR_S, name, NULL);
-    	} 
-    	else
-    	{
+    	} else {
     		result = g_strconcat(path, name, NULL);
     	}
 
@@ -76,27 +71,27 @@ nautilus_make_path(const gchar *path, const gchar* name)
  *
  * Return value: the directory path.
  **/
-const gchar *
+const char *
 nautilus_user_directory()
 {
-	static gchar *user_directory = NULL;
+	static char *user_directory;
 
 	if (user_directory == NULL)
 	{
-		user_directory = nautilus_make_path(g_get_home_dir(),
-						    nautilus_user_directory_name);
+		user_directory = nautilus_make_path (g_get_home_dir(),
+						     nautilus_user_directory_name);
 
-		if (!g_file_exists(user_directory))
+		if (!g_file_exists (user_directory))
 		{
-			mkdir(user_directory, default_nautilus_directory_mode);
+			mkdir (user_directory, default_nautilus_directory_mode);
 		}
 
 	}
 
-	if (!g_file_test(user_directory, G_FILE_TEST_ISDIR))
+	if (!g_file_test (user_directory, G_FILE_TEST_ISDIR))
 	{
 		/* Bad news, directory still isn't there.
-		 * Report this to user somehow. 
+		 * FIXME: Report this to user somehow. 
 		 */
 		g_assert_not_reached();
 	}

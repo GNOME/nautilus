@@ -414,47 +414,6 @@ nautilus_icon_factory_get_icon_name_for_file (NautilusFile *file)
         }
 }
 
-/* Given the icon name, load the pixbuf. */
-static GdkPixbuf *
-nautilus_icon_factory_load_file (const char *name)
-{
- 	NautilusIconFactory *factory;
-	char *file_name;
-	char *partial_path;
-        GdkPixbuf *image;
-	
- 	factory = nautilus_get_current_icon_factory ();
-	
-	if (name[0] == '/')
-		file_name = g_strdup (name);
-	else {
-		/* Get theme version of icon. */
-		file_name = NULL;
-                if (factory->theme_name != NULL) {
-                        partial_path = g_strdup_printf ("nautilus/%s/%s",
-							factory->theme_name, name);
-                        file_name = gnome_pixmap_file (partial_path);
-			g_free (partial_path);
-                }
-                
-		/* Get non-theme version of icon. */
-                if (file_name == NULL) {
-                        partial_path = g_strdup_printf ("nautilus/%s", name);
-                        file_name = gnome_pixmap_file (partial_path);
-			g_free (partial_path);
-                }
-
-		/* Can't find icon. Don't try to read it with a partial path. */
-		if (file_name == NULL)
-			return NULL;
-        }
-        
-	/* Load the image. */
-        image = gdk_pixbuf_new_from_file (file_name);
-        g_free (file_name);
-        return image;
-}
-
 /* Remove the suffix, add a size, and re-add the suffix. */
 static char *
 add_size_to_image_name (const char *name, guint size)
@@ -463,14 +422,88 @@ add_size_to_image_name (const char *name, guint size)
 	char *name_without_suffix;
 	char *name_with_size;
 
-	suffix = strrchr (name, '.');
-	if (suffix == NULL)
-		return g_strdup_printf ("%s-%u", name, size);
+	/* Standard size doesn't get a size added. */
+	if (size == NAUTILUS_ICON_SIZE_STANDARD) {
+		return g_strdup (name);
+	}
 
+	/* Find the suffix. */
+	suffix = strrchr (name, '.');
+	if (suffix == NULL) {
+		/* No suffix is not a common case, so we handle it in a simple
+		 * way that falls into the normal code.
+		 */
+		suffix = name + strlen (name);
+	}
+
+	/* Put the size between the name and the suffix. */
 	name_without_suffix = g_strndup (name, suffix - name);
 	name_with_size = g_strdup_printf ("%s-%u%s", name_without_suffix, size, suffix);
 	g_free (name_without_suffix);
 	return name_with_size;
+}
+
+/* Choose the file name to load, taking into account theme vs. non-theme icons. */
+static char *
+get_icon_file_path (const char *name, guint size_in_pixels)
+{
+	gboolean use_theme_icon;
+	char *theme_name, *name_with_size, *partial_path, *path;
+
+	use_theme_icon = FALSE;
+ 	theme_name = nautilus_get_current_icon_factory ()->theme_name;
+	
+	/* Check and see if there is a theme icon to use.
+	 * This decision must be based on whether there's a non-size-
+	 * specific theme icon.
+	 */
+	if (theme_name != NULL && name[0] != G_DIR_SEPARATOR) {
+		partial_path = g_strdup_printf ("nautilus/%s/%s",
+						theme_name, name);
+		path = gnome_pixmap_file (partial_path);
+		g_free (partial_path);
+		
+		if (path != NULL) {
+			use_theme_icon = g_file_exists (path);
+			g_free (path);
+		}
+	}
+	
+	/* Check for the full-path case. */
+	name_with_size = add_size_to_image_name (name, size_in_pixels);
+	if (name_with_size[0] == G_DIR_SEPARATOR)
+		return name_with_size;
+	
+	/* Use gnome_pixmap_file for the partial-path case. */
+	if (use_theme_icon)
+		partial_path = g_strdup_printf ("nautilus/%s/%s",
+					        theme_name,
+						name_with_size);
+	else
+		partial_path = g_strdup_printf ("nautilus/%s",
+						name_with_size);
+	g_free (name_with_size);
+	
+	path = gnome_pixmap_file (partial_path);
+	g_free (partial_path);
+
+	return path;
+}
+
+/* Given the icon name, load the pixbuf. */
+static GdkPixbuf *
+nautilus_icon_factory_load_file (const char *name, guint size_in_pixels)
+{
+	char *path;
+	GdkPixbuf *image;
+	
+	path = get_icon_file_path (name, size_in_pixels);
+	if (path == NULL) {
+		return NULL;
+	}
+        image = gdk_pixbuf_new_from_file (path);
+        g_free (path);
+        return image;
 }
 
 /* Splats one on top of the other, putting the src image
@@ -493,13 +526,13 @@ nautilus_gdk_pixbuf_composite_corner (GdkPixbuf *dest, GdkPixbuf *src)
  * icon if necessary. Also composite the symbolic link symbol as needed.
  */
 static GdkPixbuf *
-nautilus_icon_factory_load_icon (const char *name, gboolean is_symbolic_link)
+nautilus_icon_factory_load_icon (const char *name, guint size_in_pixels, gboolean is_symbolic_link)
 {
         GdkPixbuf *image;
 	NautilusIconFactory *factory;
 
 	/* Load the image. */
-	image = nautilus_icon_factory_load_file (name);
+	image = nautilus_icon_factory_load_file (name, size_in_pixels);
 	if (image == NULL)
 		return NULL;
 
@@ -508,7 +541,7 @@ nautilus_icon_factory_load_icon (const char *name, gboolean is_symbolic_link)
 		factory = nautilus_get_current_icon_factory ();
 		if (factory->symbolic_link_overlay == NULL)
 			factory->symbolic_link_overlay = nautilus_icon_factory_load_file
-				(ICON_NAME_SYMBOLIC_LINK_OVERLAY);
+				(ICON_NAME_SYMBOLIC_LINK_OVERLAY, size_in_pixels);
 		if (factory->symbolic_link_overlay != NULL)
 			nautilus_gdk_pixbuf_composite_corner
 				(image, factory->symbolic_link_overlay);
@@ -735,37 +768,23 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 		     gboolean custom)
 {
 	if (custom) {
-		/* Custom image. */
-		if (size_in_pixels != NAUTILUS_ICON_SIZE_STANDARD) {
-			return NULL;
-		}
+		/* Custom icon. */
 
 		/* FIXME: This works only with file:// images, because there's
 		 * no convenience function for loading an image with gnome-vfs
 		 * and gdk-pixbuf.
 		 */
-		if (!nautilus_has_prefix (scalable_icon->uri, "file://")) {
-			return NULL;
+		if (size_in_pixels == NAUTILUS_ICON_SIZE_STANDARD
+		    && nautilus_has_prefix (scalable_icon->uri, "file://")) {
+			return gdk_pixbuf_new_from_file (scalable_icon->uri + 7);
 		}
 
-		return gdk_pixbuf_new_from_file (scalable_icon->uri + 7);
+		return NULL;
 	} else {
-		char *name;
-		GdkPixbuf *image;
-
-		/* Standard image at a particular size. */
-		name = add_size_to_image_name (scalable_icon->name, size_in_pixels);
-		image = nautilus_icon_factory_load_icon
-			(name, scalable_icon->is_symbolic_link);
-		if (image != NULL)
-			return image;
-
-		/* Standard image at standard size. */
-		if (size_in_pixels != NAUTILUS_ICON_SIZE_STANDARD) {
-			return NULL;
-		}
-		return nautilus_icon_factory_load_icon
-			(scalable_icon->name, scalable_icon->is_symbolic_link);
+		/* Standard icon. */
+		return nautilus_icon_factory_load_icon	(scalable_icon->name,
+							 size_in_pixels,
+							 scalable_icon->is_symbolic_link);
 	}
 }
 

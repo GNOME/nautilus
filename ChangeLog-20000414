@@ -1,26 +1,51 @@
+2000-02-22  Darin Adler  <darin@eazel.com>
+
+	Fixed bug where the Eazel-theme icon for the document reverts to
+	the non-theme icon when you are zoomed in all the way.
+
+	* nautilus-icon-factory.c: (nautilus_icon_factory_load_file),
+	(add_size_to_image_name), (get_icon_file_path),
+	(nautilus_icon_factory_load_file),
+	(nautilus_icon_factory_load_icon), (load_specific_image): Changed
+	logic so the decision about whether to use a theme icon or the
+	default icon for each icon is decided based on the presence of the
+	non-sized version of the icon rather than the presence of the icon
+	for a particular size.
+
+	* nautilus-file-utilities.h, nautilus-file-utilities.c:
+	Cleaned up header and includes and changed ".gnomad" to
+	".nautilus".  (At first I had added a nautilus_file_exists
+	function, but then I remembered the g_file_exists function in
+	gnome-utils.h.)
+
 2000-02-22  Andy Hertzfeld <andy@eazel.com>
 
-	* icons/i-folder-192,96,72.png
-	hi-res versions of the standard gnome folder icon, contributed by Kenneth Christiansen
+	* icons/i-folder-192.png, icons/i-folder-96.png, icons/i-folder-72.png
+	Hi-res versions of the standard gnome folder icon,
+	contributed by Kenneth Christiansen.
 	* icons/Makefile.am
-	include Kenneth's icons
+	Include Kenneth's icons.
 
 2000-02-21  Andy Hertzfeld <andy@eazel.com>
 
-	* icons/i-regular-192,96,72.png
-	hi-res versions of the standard gnome generic document icon, contributed by Kenneth Christiansen
+	* icons/i-regular-192.png, icons/i-regular-96.png,
+	icons/i-regular-72.png
+	Hi-res versions of the standard gnome generic document icon,
+	contributed by Kenneth Christiansen
 	* icons/Makefile.am
 	include Kenneth's icons
-	* libnautilus/nautilus-icons-controller.c,.h:
+	* libnautilus/nautilus-icons-controller.c,
+	* libnautilus/nautilus-icons-controller.h:
 	added a new method to get string properties
 	* libnautilus/nautilus-icons-view-icon-item.c:
-	draw the contents of a text file into the icon itself in a small font, if the
-	text_source property is set
+	Draw the contents of a text file into the icon itself in a small
+	font, if the text_source property is set.
 	* src/file-manager/fm-icons-controller.c:
-	routine to determine whether to draw into icons.  Since our mime-type detection is
-	inadequate now, we throw caution to the winds and assume an unknown type is a text file
-	it only enables this for eazel themes now, we have to figure out a better way to tell if
-	the icon can contain it
+	Routine to determine whether to draw into icons.  Since our
+	mime-type detection is inadequate now, we throw caution to the
+	winds and assume an unknown type is a text file it only enables
+	this for eazel themes now, we have to figure out a better way to
+	tell if the icon can contain it.
     
 2000-02-21  Maciej Stachowiak  <mjs@eazel.com>
 
@@ -33,10 +58,11 @@
 
     added document icons to eazel icons theme in 4 sizes
     
-    * icons/eazel/i-regular.png, i-regular-36.png, i-regular-72.png,  i-regular-96.png:
-    added Susan's document icons at 4 zoom levels
-    * icons/eazel/Makefile.am:
-    added to Makefile so they get installed
+	* icons/eazel/i-regular.png, i-regular-36.png, i-regular-72.png,
+	  i-regular-96.png:
+	Added Susan's document icons at 4 zoom levels.
+	* icons/eazel/Makefile.am:
+	Added to Makefile so they get installed.
     
 2000-02-21  John Sullivan  <sullivan@eazel.com>
 

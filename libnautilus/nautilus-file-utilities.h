@@ -23,10 +23,10 @@
 */
 
 #ifndef NAUTILUS_FILE_UTILITIES_H
-#define NAUTILUS_FILE_UTILITIES_H 1
+#define NAUTILUS_FILE_UTILITIES_H
 
-gchar		   *nautilus_make_path		(const gchar *path, const gchar* name);
-const gchar	   *nautilus_user_directory	(void);
-
+char *      nautilus_make_path      (const char *path,
+				     const char *name);
+const char *nautilus_user_directory (void);
 
 #endif /* NAUTILUS_FILE_UTILITIES_H */
