@@ -39,6 +39,7 @@
 #include <libart_lgpl/art_svp_vpath.h>
 #include <libart_lgpl/art_rgb_svp.h>
 
+#include "nautilus-annotation.h"
 #include "nautilus-canvas-note-item.h"
 #include "nautilus-font-factory.h"
 #include "nautilus-gdk-extensions.h"
@@ -89,9 +90,6 @@ static void nautilus_canvas_note_item_draw	  (GnomeCanvasItem *item, GdkDrawable
 static void nautilus_canvas_note_item_render      (GnomeCanvasItem *item, GnomeCanvasBuf *buf);
 static void nautilus_canvas_note_item_update      (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags);
 static double nautilus_canvas_note_item_point	  (GnomeCanvasItem *item, double x, double y, int cx, int cy, GnomeCanvasItem **actual_item);
-
-static char * get_display_text 			  (const char *note_text);
-
 
 static GnomeCanvasItemClass *note_item_parent_class;
 
@@ -321,7 +319,7 @@ nautilus_canvas_note_item_set_note_text (NautilusCanvasNoteItem *note_item, cons
 
 	/* set the width and height based on the display text */
 	/* this will get more sophisticated as we get fancier */
-	display_text = get_display_text (new_text);	
+	display_text = nautilus_annotation_get_display_text (new_text);	
 	
 	total_width = 8 * strlen (display_text);
 	height = 16 * (1 + (total_width / ANNOTATION_WIDTH));
@@ -658,38 +656,6 @@ nautilus_canvas_note_item_bounds (GnomeCanvasItem *item, double *x1, double *y1,
 /* for now this is pretty naive and only handles free-form text, just returning
  * the first suitable annotation it can find
  */
-static char *
-get_display_text (const char *note_text)
-{
-	char *display_text, *temp_text;
-	xmlChar *xml_text;
-	xmlDocPtr annotations;
-	xmlNodePtr next_annotation;	
-	
-	/* if its an xml file, parse it to extract the display text */
-	if (nautilus_istr_has_prefix (note_text, "<?xml")) {
-		display_text = NULL;
-		annotations = xmlParseMemory ((char*) note_text, strlen (note_text));
-		if (annotations != NULL) {
-			next_annotation = xmlDocGetRootElement (annotations)->childs;
-			while (next_annotation != NULL) {
-				if (nautilus_strcmp (next_annotation->name, "annotation") == 0) {
-					xml_text = xmlNodeGetContent (next_annotation);
-					temp_text = (char*) xml_text;
-					while (*temp_text && *temp_text < ' ') temp_text++;
-					display_text = g_strdup (temp_text);
-					xmlFree (xml_text);
-					break;
-				}
-				next_annotation = next_annotation->next;
-			}
-			xmlFreeDoc (annotations);
-		}
-	} else {
-		display_text = g_strdup (note_text);
-	}	
-	return display_text;
-}
 
 /* utility routine to draw a text string into the passed-in item */
 static void
@@ -755,7 +721,7 @@ nautilus_canvas_note_item_render (GnomeCanvasItem *item,
 
 	/* draw the annotation text, if necessary */
 	if (note_item->note_text) {
-		display_text = get_display_text (note_item->note_text);
+		display_text = nautilus_annotation_get_display_text (note_item->note_text);
 		if (display_text && strlen (display_text)) {
 			draw_item_aa_text (buf, item, display_text);
 		}
@@ -813,7 +779,7 @@ nautilus_canvas_note_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable, in
 	/* draw the annotation text */
 	if (note_item->note_text) {
 		font = nautilus_font_factory_get_font_from_preferences (12);		
-		display_text = get_display_text (note_item->note_text);
+		display_text = nautilus_annotation_get_display_text (note_item->note_text);
 
 		text_info = gnome_icon_layout_text
 			(font, display_text,

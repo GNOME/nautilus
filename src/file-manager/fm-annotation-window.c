@@ -44,6 +44,7 @@
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libnautilus-extensions/nautilus-annotation.h>
 #include <libnautilus-extensions/nautilus-customization-data.h>
 #include <libnautilus-extensions/nautilus-ellipsizing-label.h>
 #include <libnautilus-extensions/nautilus-entry.h>
@@ -268,6 +269,8 @@ create_annotation_window (NautilusFile *file,  FMDirectoryView *directory_view)
 	GtkWidget *table;
 	char *file_name, *title;
 	GdkFont *font;
+	int position;
+	char *annotation_text;
 	
 	window = FM_ANNOTATION_WINDOW (gtk_widget_new (fm_annotation_window_get_type (), NULL));
 
@@ -316,6 +319,18 @@ create_annotation_window (NautilusFile *file,  FMDirectoryView *directory_view)
 
         gtk_text_set_editable (GTK_TEXT (window->details->text_field), TRUE);	
         gtk_box_pack_start (GTK_BOX (content_box), window->details->text_field, TRUE, TRUE, 0);	
+
+	/* set up the annotation field with the initial text, if any */
+	annotation_text = nautilus_annotation_get_annotation_for_display (window->details->file);
+	position = 0;
+	if (annotation_text) {
+        	gtk_editable_insert_text (GTK_EDITABLE (window->details->text_field),
+                                  annotation_text,
+                                  strlen (annotation_text),
+                                  &position);
+
+		g_free (annotation_text);
+	}
 	
 	update_annotation_window_title (GTK_WINDOW (window), window->details->file);
 

@@ -1,5 +1,21 @@
 2001-03-28  Andy Hertzfeld  <andy@eazel.com>
 
+	made the annotation edit field display existing annotation text,
+	if any.  Moved some routines around to help implement this
+	
+	* libnautilus-extensions/nautilus-annotation.c:
+	(nautilus_annotation_get_display_text),
+	(nautilus_annotation_get_annotation_for_display):
+	* libnautilus-extensions/nautilus-annotation.h:
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(nautilus_canvas_note_item_set_note_text),
+	(nautilus_canvas_note_item_render),
+	(nautilus_canvas_note_item_draw):
+	* src/file-manager/fm-annotation-window.c:
+	(create_annotation_window):
+
+2001-03-28  Andy Hertzfeld  <andy@eazel.com>
+
 	* libnautilus-extensions/nautilus-canvas-note-item.c:
 	(draw_item_aa_text):
 	adjusted aa text position

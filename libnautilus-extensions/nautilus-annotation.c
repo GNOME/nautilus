@@ -940,6 +940,60 @@ char	*nautilus_annotation_get_annotation (NautilusFile *file)
 	return NULL;	
 }
 
+/* utility routine to map raw annotation text into text to be displayed 
+ * for now this is pretty naive and only handles free-form text, just returning
+ * the first suitable annotation it can find.
+ */
+char *
+nautilus_annotation_get_display_text (const char *note_text)
+{
+	char *display_text, *temp_text;
+	xmlChar *xml_text;
+	xmlDocPtr annotations;
+	xmlNodePtr next_annotation;	
+	
+	/* if its an xml file, parse it to extract the display text */
+	if (nautilus_istr_has_prefix (note_text, "<?xml")) {
+		display_text = NULL;
+		annotations = xmlParseMemory ((char*) note_text, strlen (note_text));
+		if (annotations != NULL) {
+			next_annotation = xmlDocGetRootElement (annotations)->childs;
+			while (next_annotation != NULL) {
+				if (nautilus_strcmp (next_annotation->name, "annotation") == 0) {
+					xml_text = xmlNodeGetContent (next_annotation);
+					temp_text = (char*) xml_text;
+					while (*temp_text && *temp_text < ' ') temp_text++;
+					display_text = g_strdup (temp_text);
+					xmlFree (xml_text);
+					break;
+				}
+				next_annotation = next_annotation->next;
+			}
+			xmlFreeDoc (annotations);
+		}
+	} else {
+		display_text = g_strdup (note_text);
+	}	
+	return display_text;
+}
+
+/* convenience routine to return the display text of an annotation associated
+ * with a file
+ */
+char *
+nautilus_annotation_get_annotation_for_display (NautilusFile *file)
+{
+	char *raw_text, *display_text;
+	
+	raw_text = nautilus_annotation_get_annotation (file);
+	if (raw_text != NULL) {
+		display_text = nautilus_annotation_get_display_text (raw_text);
+		g_free (raw_text);
+		return display_text;
+	}
+	return NULL;
+}
+
 /* return the number of annotations associated with the passed in file.  If we don't know,
  * return 0, but queue a request like above
  */
