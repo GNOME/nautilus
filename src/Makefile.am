@@ -46,6 +46,7 @@ noinst_HEADERS = \
 	nautilus-applicable-views.h		\
 	nautilus-application.h			\
 	nautilus-bookmark-list.h		\
+	nautilus-bookmark-parsing.h		\
 	nautilus-bookmarks-window.h		\
 	nautilus-complex-search-bar.h		\
 	nautilus-desktop-window.h		\
@@ -80,6 +81,7 @@ nautilus_SOURCES = \
 	nautilus-applicable-views.c		\
 	nautilus-application.c			\
 	nautilus-bookmark-list.c		\
+	nautilus-bookmark-parsing.c		\
 	nautilus-bookmarks-window.c		\
 	nautilus-complex-search-bar.c		\
 	nautilus-desktop-window.c		\

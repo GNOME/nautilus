@@ -4,6 +4,7 @@ infodir = $(datadir)/nautilus
 
 info_DATA = \
 	browser.xml \
+	static_bookmarks.xml \
 	$(NULL)
 
 EXTRA_DIST = $(info_DATA)

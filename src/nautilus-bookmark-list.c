@@ -25,6 +25,8 @@
 #include <config.h>
 #include "nautilus-bookmark-list.h"
 
+#include "nautilus-bookmark-parsing.h"
+
 #include <stdlib.h>
 
 #include <gtk/gtksignal.h>
@@ -395,38 +397,6 @@ nautilus_bookmark_list_length (NautilusBookmarkList *bookmarks)
 	return g_list_length (bookmarks->list);
 }
 
-static NautilusBookmark *
-make_bookmark_from_node (xmlNodePtr node)
-{
-	xmlChar *xml_name;
-	xmlChar *xml_uri;
-	xmlChar *xml_icon_uri;
-	xmlChar *xml_icon_name;
-	NautilusScalableIcon *icon;
-	NautilusBookmark *new_bookmark;
-
-	/* Maybe should only accept bookmarks with both a name and uri? */
-	xml_name = xmlGetProp (node, "name");
-	xml_uri = xmlGetProp (node, "uri");
-	xml_icon_uri = xmlGetProp (node, "icon_uri");
-	xml_icon_name = xmlGetProp (node, "icon_name");
-
-	if (xml_icon_uri == NULL && xml_icon_name == NULL) {
-		icon = NULL;
-	} else {
-		icon = nautilus_scalable_icon_new_from_text_pieces
-			(xml_icon_uri, xml_icon_name, NULL, NULL, FALSE);
-	}
-	new_bookmark = nautilus_bookmark_new_with_icon (xml_uri, xml_name, icon);
-
-	xmlFree (xml_name);
-	xmlFree (xml_uri);
-	xmlFree (xml_icon_uri);
-	xmlFree (xml_icon_name);
-
-	return new_bookmark;
-}
-
 /**
  * nautilus_bookmark_list_load_file:
  * 
@@ -453,7 +423,7 @@ nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 
 		if (strcmp (node->name, "bookmark") == 0) {
 			insert_bookmark_internal (bookmarks, 
-						  make_bookmark_from_node (node), 
+						  nautilus_bookmark_new_from_node (node), 
 						  -1);
 		} else if (strcmp (node->name, "window") == 0) {
 			xmlChar *geometry_string;

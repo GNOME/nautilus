@@ -27,10 +27,12 @@
 
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
+#include "nautilus-bookmark-parsing.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-property-browser.h"
 #include "nautilus-signaller.h"
 #include "nautilus-window-private.h"
+
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-debug.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
@@ -43,7 +45,16 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <libnautilus-extensions/nautilus-user-level-manager.h>
+#include <libnautilus-extensions/nautilus-xml-extensions.h>
+
 #include <libnautilus/nautilus-bonobo-ui.h>
+
+/* gnome-XML headers */
+#include <parser.h>
+#include <xmlmemory.h>
+
+
+#define STATIC_BOOKMARKS_FILE_NAME	"static_bookmarks.xml"
 
 /*
 #define WINDOW_ITEMS_TEST
@@ -83,13 +94,13 @@ static void		     update_preferences_dialog_title		    (void);
 typedef struct {
         NautilusBookmark *bookmark;
         NautilusWindow *window;
-        gboolean in_bookmarks_menu;
+        gboolean prompt_for_removal;
 } BookmarkHolder;
 
 static BookmarkHolder *
 bookmark_holder_new (NautilusBookmark *bookmark, 
 		     NautilusWindow *window,
-		     gboolean in_bookmarks_menu)
+		     gboolean prompt_for_removal)
 {
 	BookmarkHolder *new_bookmark_holder;
 
@@ -100,7 +111,7 @@ bookmark_holder_new (NautilusBookmark *bookmark,
 	 * we're holding onto it (not an issue for window).
 	 */
 	gtk_object_ref (GTK_OBJECT (bookmark));
-	new_bookmark_holder->in_bookmarks_menu = in_bookmarks_menu;
+	new_bookmark_holder->prompt_for_removal = prompt_for_removal;
 
 	return new_bookmark_holder;
 }
@@ -127,8 +138,10 @@ bookmark_holder_free (BookmarkHolder *bookmark_holder)
 #define NAUTILUS_MENU_PATH_AFTER_USER_LEVEL_SEPARATOR		"/UserLevel/After User Level Separator"
 #define NAUTILUS_MENU_PATH_USER_LEVEL_CUSTOMIZE			"/UserLevel/User Level Customize"
 
+#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_CANNED_BOOKMARKS	"/Bookmarks/Before Canned Separator"
+
 #ifdef WINDOW_ITEMS_TEST
-#define NAUTILUS_MENU_PATH_AFTER_CURSTOMIZE_SEPARATOR		"/Settings/After Curstomize Separator"
+#define NAUTILUS_MENU_PATH_AFTER_CUSTOMIZE_SEPARATOR		"/Settings/After Customize Separator"
 #define NAUTILUS_MENU_PATH_TOOLBAR_ITEM				"/Settings/Toolbar"
 #define NAUTILUS_MENU_PATH_LOCATIONBAR_ITEM			"/Settings/Locationbar"
 #define NAUTILUS_MENU_PATH_STATUSBAR_ITEM			"/Settings/Statusbar"
@@ -526,7 +539,7 @@ show_bogus_bookmark_window (BookmarkHolder *holder)
 
 	uri = nautilus_bookmark_get_uri (holder->bookmark);
 
-	if (holder->in_bookmarks_menu) {
+	if (holder->prompt_for_removal) {
 		prompt = g_strdup_printf (_("The location \"%s\" does not exist. Do you "
 					    "want to remove any bookmarks with this "
 					    "location from your list?"), uri);
@@ -570,6 +583,14 @@ activate_bookmark_in_menu_item (BonoboUIHandler *uih, gpointer user_data, const 
 	        nautilus_window_goto_uri (holder->window, uri);
 	        g_free (uri);
         }
+}
+
+static void
+append_separator (NautilusWindow *window, const char *separator_path)
+{
+        bonobo_ui_handler_menu_new_separator (window->ui_handler,
+                                              separator_path,
+                                              -1);
 }
 
 static void
@@ -628,6 +649,115 @@ append_bookmark_to_menu (NautilusWindow *window,
 			    		? schedule_refresh_bookmarks_menu
 			    		: schedule_refresh_go_menu,
 			    	   GTK_OBJECT (window));
+}
+
+static char *
+get_static_bookmarks_file_path (void)
+{
+	char *xml_file_path;
+	
+	/* For now at least, the static bookmarks file is kept in the standard shared data directory. */
+	/* FIXME: The service might want to overwrite this file. Can it do so in this
+	 * location?
+	 */
+
+	xml_file_path = nautilus_make_path (NAUTILUS_DATADIR, STATIC_BOOKMARKS_FILE_NAME);
+	if (g_file_exists (xml_file_path)) {
+		return xml_file_path;
+	}
+	g_free (xml_file_path);
+
+	return NULL;
+}
+
+static char *
+create_menu_item_from_node (NautilusWindow *window,
+			     xmlNodePtr node, 
+			     const char *menu_path,
+			     int index)
+{
+	NautilusBookmark *bookmark;
+	xmlChar *xml_folder_name;
+	int sub_index;
+	char *index_as_string;
+	char *item_path;
+	char *sub_item_path;
+	
+	index_as_string = g_strdup_printf ("item_%d", index);
+	item_path = bonobo_ui_handler_build_path (menu_path, index_as_string, NULL);
+	g_free (index_as_string);
+
+	if (strcmp (node->name, "bookmark") == 0) {
+		bookmark = nautilus_bookmark_new_from_node (node);
+		append_bookmark_to_menu (window, bookmark, item_path, TRUE);
+		gtk_object_unref (GTK_OBJECT (bookmark));
+	} else if (strcmp (node->name, "separator") == 0) {
+		append_separator (window, item_path);
+	} else if (strcmp (node->name, "folder") == 0) {
+		xml_folder_name = xmlGetProp (node, "name");
+	 	bonobo_ui_handler_menu_new_subtree (window->ui_handler,
+						    item_path,
+						    xml_folder_name,
+						    NULL,
+						    -1,
+						    BONOBO_UI_HANDLER_PIXMAP_NONE,
+						    NULL,
+						    0,
+						    0);
+		for (node = nautilus_xml_get_children (node), sub_index = 0;
+		     node != NULL;
+		     node = node->next, ++sub_index) {
+			sub_item_path = create_menu_item_from_node (window, node, item_path, sub_index);
+			g_free (sub_item_path);
+		}
+		xmlFree (xml_folder_name);
+	} else {
+		g_message ("found unknown node '%s', ignoring", node->name);
+	}
+
+	return item_path;
+}
+
+static void
+append_static_bookmarks (NautilusWindow *window, const char *menu_path)
+{
+	xmlDocPtr doc;
+	xmlNodePtr node;
+	char *file_path;
+	char *item_path;
+	int index;
+
+	/* Walk through XML tree creating bookmarks, folders, and separators. */
+	file_path = get_static_bookmarks_file_path ();
+
+	if (file_path == NULL) {
+		return;
+	}
+	
+	doc = xmlParseFile (file_path);
+	g_free (file_path);
+
+	node = nautilus_xml_get_root_children (doc);
+	index = 0;
+	
+	if (node != NULL) {
+		append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_CANNED_BOOKMARKS);
+	}
+
+	for (index = 0; node != NULL; node = node->next, ++index) {
+		item_path = create_menu_item_from_node 
+			(window, node, menu_path, index);
+		if (node->next == NULL) {
+			/* Stash away path of last canned bookmark to use when
+			 * refreshing menu.
+			 */
+			window->details->last_static_bookmark_path = item_path;
+		} else {
+			g_free (item_path);
+		}
+	}
+	
+	xmlFreeDoc(doc);
 }
 
 /**
@@ -755,7 +885,10 @@ edit_bookmarks (NautilusWindow *window)
 static void 
 nautilus_window_initialize_bookmarks_menu (NautilusWindow *window)
 {
-        /* Add current set of bookmarks */
+	/* Add canned bookmarks */
+	append_static_bookmarks (window, NAUTILUS_MENU_PATH_BOOKMARKS_MENU);
+
+        /* Add current set of user's dynamic bookmarks */
         refresh_bookmarks_menu (window);
 
 	/* Recreate bookmarks part of menu if bookmark list changes
@@ -770,7 +903,6 @@ nautilus_window_initialize_bookmarks_menu (NautilusWindow *window)
 					       "icons_changed",
 					       schedule_refresh_bookmarks_menu,
 					       GTK_OBJECT (window));
-
 }
 
 /**
@@ -794,14 +926,6 @@ nautilus_window_initialize_go_menu (NautilusWindow *window)
 					       schedule_refresh_go_menu,
 					       GTK_OBJECT (window));
 
-}
-
-static void
-append_separator (NautilusWindow *window, const char *separator_path)
-{
-        bonobo_ui_handler_menu_new_separator (window->ui_handler,
-                                              separator_path,
-                                              -1);
 }
 
 static void
@@ -1291,6 +1415,7 @@ refresh_bookmarks_menu (NautilusWindow *window)
         NautilusBookmarkList *bookmarks;
 	guint 	bookmark_count;
 	guint	index;
+	char *last_static_item;
 	
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
@@ -1300,9 +1425,13 @@ refresh_bookmarks_menu (NautilusWindow *window)
 	bookmarks = get_bookmark_list ();
 
 	/* Remove old set of bookmarks. */
+	last_static_item = window->details->last_static_bookmark_path;
+	if (last_static_item == NULL) {
+		last_static_item = NAUTILUS_MENU_PATH_EDIT_BOOKMARKS_ITEM;
+	}
 	clear_dynamic_bookmark_items (window, 
 				       NAUTILUS_MENU_PATH_BOOKMARKS_MENU, 
-				       NAUTILUS_MENU_PATH_EDIT_BOOKMARKS_ITEM);
+				       last_static_item);
 
 	bookmark_count = nautilus_bookmark_list_length (bookmarks);
 

@@ -1,3 +1,45 @@
+2000-07-28  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 1793 (Display hierarchical pre-canned set of bookmarks)
+
+	There's now a "static_bookmarks.xml" file that gets installed into
+	the Nautilus data directory. Its contents are parsed into menu items
+	that appear above the user's dynamic items. The static items can
+	include hierarchy and separators. I put in silly content; someone
+	else will have to figure out what content we want to ship.
+
+	* data/static_bookmarks.xml: New file, tree of bookmarks to display.
+	* data/Makefile.am: Install the bookmarks file into data directory.
+	
+	* src/nautilus-bookmark-parsing.h,
+	* src/nautilus-bookmark-parsing.c: New files, contain xml-bookmark-
+	parsing code that's used by both the static and dynamic bookmarks.
+	* src/Makefile.am: tell build about new files.
+	
+	* src/nautilus-bookmark-list.c: 
+	(make_bookmark_from_node): Moved and renamed this into new file.
+	(nautilus_bookmark_list_load_file): Call renamed function.
+	
+	* src/nautilus-window-menus.c: 
+	Renamed BookmarkHolder "in_bookmarks_menu" field to "prompt_for_removal"
+	to clarify its use.
+	(bookmark_holder_new), (show_bogus_bookmark_window): Accounted for
+	name changes.
+	(append_separator): Just moved this function.
+	(get_static_bookmarks_file_path): New function, returns path for
+	static bookmarks file if found.
+	(create_menu_item_from_node): New function, creates a menu item
+	from an xml node, recursing into folders.
+	(append_static_bookmarks): New function, reads xml document and
+	starts the menu-item-creation recursion.
+	(nautilus_window_initialize_bookmarks_menu): Now calls
+	append_static_bookmarks before handling the dynamic ones.
+
+	* src/nautilus-window-private.h: New last_static_bookmark_path field
+	in Details struct.
+	* src/nautilus-window.c: (nautilus_window_destroy): free
+	last_static_bookmark_path field.
+
 2000-07-28  Andy Hertzfeld  <andy@eazel.com>
 
 	* icons/arlo/sidebar_tab_pieces/Makefile.am:
