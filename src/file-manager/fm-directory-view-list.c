@@ -29,29 +29,41 @@
 #include "fm-directory-view-list.h"
 
 #include "fm-icon-cache.h"
+#include <gtk/gtkhbox.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-pixmap.h>
+#include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/gtkflist.h>
 #include <libnautilus/nautilus-background.h>
 
 struct _FMDirectoryViewListDetails
 {
-	FMDirectoryViewSortType sort_type;
+	gint sort_column;
 	gboolean sort_reversed;
 	guint icon_size;
 };
 
 #define DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
 
+#define LIST_VIEW_COLUMN_NONE		-1
+
+#define LIST_VIEW_COLUMN_ICON		0
+#define LIST_VIEW_COLUMN_NAME		1
+#define LIST_VIEW_COLUMN_SIZE		2
+#define LIST_VIEW_COLUMN_MIME_TYPE	3
+#define LIST_VIEW_COLUMN_DATE_MODIFIED	4
+#define LIST_VIEW_COLUMN_COUNT		5
+
 
 /* forward declarations */
 static void add_to_flist 			    (FMDirectoryViewList *list_view,
 		   		 		     NautilusFile *file);
-static void column_clicked_cb 			    (GtkCList *ignored,
+static void column_clicked_cb 			    (GtkCList *clist,
 			       	 		     gint column,
 			       	 		     gpointer user_data);
 static GtkFList *create_flist 			    (FMDirectoryViewList *list_view);
-static void flist_activate_cb 			    (GtkFList *ignored,
+static void flist_activate_cb 			    (GtkFList *flist,
 			       	 		     gpointer entry_data,
 			       	 		     gpointer data);
 static void flist_selection_changed_cb 	  	    (GtkFList *flist, gpointer data);
@@ -70,10 +82,38 @@ static void fm_directory_view_list_destroy 	    (GtkObject *object);
 static void fm_directory_view_list_done_adding_entries 
 						    (FMDirectoryView *view);
 static GtkFList *get_flist 			    (FMDirectoryViewList *list_view);
+static GtkWidget *get_sort_indicator 		    (GtkFList *flist, 
+						     gint column, 
+						     gboolean reverse);
+static void hide_sort_indicator 		    (GtkFList *flist, gint column);
 static void install_icon 			    (FMDirectoryViewList *list_view, 
 						     NautilusFile *file,
 						     guint row,
 						     guint column);
+static void show_sort_indicator 		    (GtkFList *flist, 
+						     gint column, 
+						     gboolean sort_reversed);
+
+static char * down_xpm[] = {
+"6 5 2 1",
+" 	c None",
+".	c #000000",
+"......",
+"      ",
+" .... ",
+"      ",
+"  ..  "};
+
+static char * up_xpm[] = {
+"6 5 2 1",
+" 	c None",
+".	c #000000",
+"  ..  ",
+"      ",
+" .... ",
+"      ",
+"......"};
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryViewList, fm_directory_view_list, FM_TYPE_DIRECTORY_VIEW);
 
@@ -110,7 +150,7 @@ fm_directory_view_list_initialize (gpointer object, gpointer klass)
 	list_view = FM_DIRECTORY_VIEW_LIST (object);
 
 	list_view->details = g_new0 (FMDirectoryViewListDetails, 1);
-	list_view->details->sort_type = FM_DIRECTORY_VIEW_SORT_NONE;
+	list_view->details->sort_column = LIST_VIEW_COLUMN_NONE;
 	list_view->details->sort_reversed = FALSE;
 	list_view->details->icon_size = NAUTILUS_ICON_SIZE_SMALLER;
 	
@@ -125,24 +165,20 @@ fm_directory_view_list_destroy (GtkObject *object)
 
 
 
-#define LIST_VIEW_COLUMN_ICON		0
-#define LIST_VIEW_COLUMN_NAME		1
-#define LIST_VIEW_COLUMN_SIZE		2
-#define LIST_VIEW_COLUMN_MIME_TYPE	3
-#define LIST_VIEW_COLUMN_DATE_MODIFIED	4
-#define LIST_VIEW_COLUMN_COUNT		5
-
-
 static void 
-column_clicked_cb (GtkCList *ignored, gint column, gpointer user_data)
+column_clicked_cb (GtkCList *clist, gint column, gpointer user_data)
 {
 	FMDirectoryViewList *list_view;
 	FMDirectoryViewSortType sort_type;
+	GtkFList *flist;
 
+	g_return_if_fail (GTK_IS_FLIST (clist));
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (user_data));
+	g_return_if_fail (get_flist (FM_DIRECTORY_VIEW_LIST (user_data)) == GTK_FLIST (clist));
 
 	list_view = FM_DIRECTORY_VIEW_LIST (user_data);
 	sort_type = FM_DIRECTORY_VIEW_SORT_NONE;
+	flist = GTK_FLIST (clist);
 	
 	switch (column)
 	{
@@ -164,17 +200,24 @@ column_clicked_cb (GtkCList *ignored, gint column, gpointer user_data)
 		default: g_assert_not_reached();
 	}
 
-	if (sort_type == list_view->details->sort_type)
-		list_view->details->sort_reversed = !list_view->details->sort_reversed;
-	else
-		list_view->details->sort_reversed = FALSE;
+	hide_sort_indicator (flist, list_view->details->sort_column);
 
-	list_view->details->sort_type = sort_type;
+	if (column == list_view->details->sort_column)
+	{
+		list_view->details->sort_reversed = !list_view->details->sort_reversed;
+	}
+	else
+	{
+		list_view->details->sort_reversed = FALSE;
+		list_view->details->sort_column = column;
+	}
+
+	show_sort_indicator (flist, column, list_view->details->sort_reversed);
+
 	
 	fm_directory_view_sort (FM_DIRECTORY_VIEW (list_view), 
-				list_view->details->sort_type,
-				list_view->details->sort_reversed
-				);
+				sort_type,
+				list_view->details->sort_reversed);
 }
 
 static GtkFList *
@@ -203,12 +246,45 @@ create_flist (FMDirectoryViewList *list_view)
 
 	for (i = 0; i < LIST_VIEW_COLUMN_COUNT; ++i)
 	{
-		gtk_clist_set_column_width (GTK_CLIST (flist), i, widths[i]);
-	}
+		GtkWidget *hbox;
+		GtkWidget *label;
+		GtkWidget *sort_up_indicator;
+		GtkWidget *sort_down_indicator;
+		gboolean right_justified;
 
-	gtk_clist_set_column_justification (GTK_CLIST (flist), 
-					    LIST_VIEW_COLUMN_SIZE, 
-					    GTK_JUSTIFY_RIGHT);
+		right_justified = (i == LIST_VIEW_COLUMN_SIZE);
+	
+		gtk_clist_set_column_width (GTK_CLIST (flist), i, widths[i]);
+
+		/* Column header button contains three views, a title,
+		 * a "sort downward" indicator, and a "sort upward" indicator. 
+		 * Only one sort indicator (for all columns) is shown at once.
+		 */
+		hbox = gtk_hbox_new (FALSE, GNOME_PAD_SMALL);
+		gtk_widget_show (GTK_WIDGET (hbox));
+		label = gtk_label_new (titles[i]);
+		gtk_widget_show (GTK_WIDGET (label));
+
+		/* sort indicators are initially hidden */
+		sort_up_indicator = gnome_pixmap_new_from_xpm_d (up_xpm);
+		sort_down_indicator = gnome_pixmap_new_from_xpm_d (down_xpm);
+
+		if (!right_justified)
+		{
+			gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+		}
+
+		gtk_box_pack_end (GTK_BOX (hbox), sort_up_indicator, FALSE, FALSE, GNOME_PAD);
+		gtk_box_pack_end (GTK_BOX (hbox), sort_down_indicator, FALSE, FALSE, GNOME_PAD);
+
+		if (right_justified)
+		{
+			gtk_box_pack_end (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+			gtk_clist_set_column_justification (GTK_CLIST (flist), i, GTK_JUSTIFY_RIGHT);
+		}
+		
+		gtk_clist_set_column_widget (GTK_CLIST (flist), i, hbox);
+	}
 
 	/* Make height tall enough for icons to look good */
 	gtk_clist_set_row_height (GTK_CLIST (flist), list_view->details->icon_size);
@@ -243,10 +319,11 @@ create_flist (FMDirectoryViewList *list_view)
 }
 
 static void
-flist_activate_cb (GtkFList *ignored,
+flist_activate_cb (GtkFList *flist,
 		   gpointer entry_data,
 		   gpointer data)
 {
+	g_return_if_fail (GTK_IS_FLIST (flist));
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (data));
 	g_return_if_fail (entry_data != NULL);
 
@@ -391,6 +468,39 @@ fm_directory_view_list_background_changed_cb (NautilusBackground *background,
 	g_free (color_spec);
 }
 
+static GtkWidget *
+get_sort_indicator (GtkFList *flist, gint column, gboolean reverse)
+{
+	GtkWidget *column_widget;
+	GtkWidget *result;
+	GList *children;
+
+	g_return_val_if_fail (GTK_IS_FLIST (flist), NULL);
+	g_return_val_if_fail (column >= 0, NULL);
+
+	column_widget = gtk_clist_get_column_widget (GTK_CLIST (flist), column);
+	g_assert (GTK_IS_HBOX (column_widget));
+
+	children = gtk_container_children (GTK_CONTAINER (column_widget));
+	result = GTK_WIDGET (g_list_nth_data (children, reverse ? 1 : 2));
+	g_list_free (children);
+
+	return result;
+}
+
+static void
+hide_sort_indicator (GtkFList *flist, gint column)
+{
+	g_return_if_fail (GTK_IS_FLIST (flist));
+
+	if (column == LIST_VIEW_COLUMN_NONE)
+		return;
+
+	gtk_widget_hide (get_sort_indicator (flist, column, FALSE));
+	gtk_widget_hide (get_sort_indicator (flist, column, TRUE));
+}
+
+
 /**
  * install_icon:
  *
@@ -424,3 +534,15 @@ install_icon (FMDirectoryViewList *list_view,
 
 	gdk_pixbuf_unref (pixbuf);
 }
+
+static void
+show_sort_indicator (GtkFList *flist, gint column, gboolean sort_reversed)
+{
+	g_return_if_fail (GTK_IS_FLIST (flist));
+
+	if (column == LIST_VIEW_COLUMN_NONE)
+		return;
+
+	gtk_widget_show (get_sort_indicator (flist, column, sort_reversed));
+}
+

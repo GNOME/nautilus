@@ -1,3 +1,23 @@
+2000-01-24  John Sullivan <sullivan@eazel.com>
+
+	Added sort indicators to list view column titles
+
+	* src/file-manager/fm-directory-view-list.c: 
+	Added #define LIST_VIEW_COLUMN_NONE
+	Added tiny in-line XPMs for up & down sort indicators.
+	(struct _FMDirectoryViewListDetails): Replaced
+	sort_type field with sort_column field.
+	(fm_directory_view_initalize): initialize details->sort_column
+	to LIST_VIEW_COLUMN_NONE
+	(get_sort_indicator), (hide_sort_indicator), (show_sort_indicator):
+	New functions for setting the sort indicators' states.
+	(column_clicked_cb): update details->sort_column and call
+	hide_sort_indicator and show_sort_indicator
+	(create_flist): Add sort indicator widgets to column titles,
+	initially hidden
+	(flist_activate_cb): Renamed "ignored" parameter and tested its
+	value, to make mjs happy.
+
 2000-01-24  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus/gtkflist.c, libnautilus/gtkflist.h: Rename
@@ -10,7 +30,7 @@
 	that gets right-clicked. It was inconsistent with the icon view
 	and most of the known universe.
 
-2000-01-21  Darin Adler  <darin@eazel.com>
+2000-01-24  Darin Adler  <darin@eazel.com>
 
 	Added a controller object that lets GnomeIconContainer
 	ask questions and perform actions, even though only the
