@@ -95,8 +95,14 @@ fi
 
 %defattr(0555, bin, bin)
 %doc AUTHORS COPYING COPYING.LIB ChangeLog NEWS README
+# directories
+%{prefix}/bin
+%{prefix}/lib
+%{prefix}/share
+%config /etc/vfs
+# files
 %{prefix}/bin/*
-%{prefix}/lib/lib*.so.*
+%{prefix}/lib/lib*.so*
 
 %defattr (0444, bin, bin)
 %{prefix}/share/*
@@ -105,7 +111,10 @@ fi
 %files devel
 
 %defattr(0555, bin, bin)
-%{prefix}/lib/*.la
+%{prefix}/lib
+%{prefix}/include
+%{prefix}/idl
+%{prefix}/lib/*a
 
 %defattr(0444, bin, bin)
 %{prefix}/include/*
