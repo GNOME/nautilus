@@ -33,7 +33,9 @@
 
 void nautilus_run_self_checks()
 {
+#if 0
 	nautilus_self_check_fm_directory();
+#endif
 }
 
 #endif /* ! NAUTILUS_OMIT_SELF_CHECK */

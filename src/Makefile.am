@@ -10,8 +10,7 @@ INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	-DVERSION="\"$(VERSION)\"" \
 	$(WERROR)
 
-LDADD=	file-manager/libntl-file-manager.la \
-	../libnautilus/libnautilus.la \
+LDADD=	../libnautilus/libnautilus.la \
 	$(BONOBO_LIBS) \
 	$(GNORBA_LIBS) \
 	$(GNOMEUI_LIBS) \
@@ -62,9 +61,5 @@ nautilus_SOURCES=			\
 	ntl-window-private.h		\
 	ntl-window-state.c		\
 	ntl-window-state.h
-
-goaddir=$(sysconfdir)/CORBA/servers
-goad_DATA=nautilus.goad
-EXTRA_DIST=$(goad_DATA)
 
 TESTS=check-nautilus

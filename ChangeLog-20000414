@@ -1,5 +1,26 @@
 2000-01-10  Maciej Stachowiak  <mjs@eazel.com>
 
+	Made file manager view a CORBA server that lives in a separate
+	executable:
+	
+	* src/file-manager/fm-main.c: New file which includes main()
+	function and basic framework to make the file manager an
+	executable CORBA server.
+	* src/file-manager/ntl-file-manager.goad: gnorba activation file
+	for the file manager.
+	* src/file-manager/Makefile.am: Build ntl-file-manager as an
+	executable rather than a library. Add fm-main.c to build. Install
+	ntl-file-manager.goad. Link in appropriate libraries.
+	* src/ntl-app.c: Remove nautilus_make_object() and other vestiges
+	of the attempt to be a CORBA server for file manager view objects.
+	* src/nautilus.gnorba: Removed.
+	* nautilus-self-check-functions.c: Remove call to test of
+	functions now in the separate ntl-file-manager executable.
+	* src/Makefile.am: Don't try to link in file manager. Don't try to
+	install nautilus.goad.
+
+2000-01-10  Maciej Stachowiak  <mjs@eazel.com>
+
 	* src/ntl-main.c (main): Added missing CORBA_exception_init() call.
 
 2000-01-09  Maciej Stachowiak  <mjs@eazel.com>

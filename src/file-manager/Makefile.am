@@ -1,4 +1,6 @@
-noinst_LTLIBRARIES=libntl-file-manager.la
+# FIXME should be a shared library component or compiled in.
+
+bin_PROGRAMS = ntl-file-manager
 
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(BONOBO_CFLAGS) $(GNORBA_CFLAGS) \
@@ -6,13 +8,25 @@ INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(GDK_PIXBUF_CFLAGS)				\
 	$(WERROR)
 
+LDADD=	../../libnautilus/libnautilus.la \
+	$(BONOBO_LIBS) \
+	$(GNORBA_LIBS) \
+	$(GNOMEUI_LIBS) \
+	$(GDK_PIXBUF_LIBS) \
+	$(VFS_LIBS) \
+	$(XML_LIBS)
+
+gnorbadir = $(sysconfdir)/CORBA/servers
+gnorba_DATA =					\
+	ntl-file-manager.goad
+
 dfos_corba_srcs=					\
 	GNOME_Desktop_FileOperationService.h		\
 	GNOME_Desktop_FileOperationService-stubs.c	\
 	GNOME_Desktop_FileOperationService-skels.c	\
 	GNOME_Desktop_FileOperationService-common.c
 
-libntl_file_manager_la_SOURCES=		\
+ntl_file_manager_SOURCES=		\
 	fm-icon-cache.c			\
 	fm-icon-cache.h			\
 	dfos-corba.c			\
@@ -29,7 +43,8 @@ libntl_file_manager_la_SOURCES=		\
 	fm-directory.h			\
 	fm-directory.c			\
 	fm-vfs-directory.h		\
-	fm-vfs-directory.c
+	fm-vfs-directory.c              \
+	fm-main.c
 
 # noinst_PROGRAMS=gnome-desktop
 
@@ -69,3 +84,4 @@ BUILT_SOURCES=$(dfos_corba_srcs)
 
 CLEAN_FILES=$(dfos_corba_srcs) dfos_corba_stamp
 
+EXTRA_DIST = ntl-file-manager.goad

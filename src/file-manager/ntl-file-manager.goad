@@ -1,0 +1,11 @@
+[ntl_file_manager_factory]
+type=exe
+repo_id=IDL:GNOME/GenericFactory:1.0
+description=File manager component's factory
+location_info=ntl-file-manager
+
+[ntl_file_manager]
+type=factory
+repo_id=IDL:GNOME/Control:1.0 IDL:Nautilus/ContentView:1.0 IDL:Nautilus/View:1.0
+description=File manager component
+location_info=ntl_file_manager_factory
