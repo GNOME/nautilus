@@ -17,5 +17,23 @@ prefix.
 
 * Build and install nautilus into your selected prefix.
 
+Nautilus currently requires the following modules (built in the given order):
+
+glib:		   glib-1-2
+gtk+:		   gtk-1-2
+gnome-libs:	   gnome-libs-1-0
+
+libglade:	   HEAD
+gnome-xml:	   HEAD
+ORBit:		   HEAD
+gnome-vfs:	   HEAD
+bonobo:		   HEAD
+gdk-pixbuf:	   HEAD
+gtkhtml:	   HEAD
+gnome-print:	   HEAD
+
+ORBit requires you to install popt-1.5, which can be fetched from:
+
+ftp://ftp.valinux.com/pub/mirrors/redhat/rawhide/i386/RedHat/RPMS/popt-1.5-0.36.i386.rpm
 
 All patches should go through nautilus-maint@gnome.org
