@@ -8,6 +8,7 @@ INCLUDES = \
 	-DSTANDALONE		\
 	-DTRILOBITE_VERSION=\"0.1.0\" \
 	-I$(srcdir)		\
+	-I.			\
 	-I$(top_srcdir)		\
 	-I$(top_builddir)	\
 	-I/usr/include/rpm	\

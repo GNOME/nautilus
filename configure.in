@@ -95,22 +95,33 @@ _found_freetype2_lib="no"
 _found_freetype2_header="no"
 _found_freetype2="no"
 
-AC_ARG_WITH(freetype2, 
-[  --with-freetype2-lib-prefix=PREFIX		freetype2 library path],
-freetype2_lib_prefix=$withval,
-freetype2_lib_prefix="/usr/lib")
+AC_ARG_WITH(freetype2-libraries, 
+[  --with-freetype2-libraries=PATH		freetype2 library path],
+freetype2_lib_prefix=$withval)
 
-AC_ARG_WITH(freetype2, 
-[  --with-freetype2-include-prefix=PREFIX	freetype2 include path],
-freetype2_include_prefix=$withval,
-freetype2_include_prefix="/usr/include/freetype2")
+AC_ARG_WITH(freetype2-includes, 
+[  --with-freetype2-includes=PATH	freetype2 include path],
+freetype2_include_prefix=$withval)
 
+AC_ARG_WITH(freetype2-prefix,
+[  --with-freetype2-prefix=PATH		freetype2 installation prefix],
+freetype2_prefix=$withval, freetype2_prefix="/usr")
+
+if test -z "$freetype2_include_prefix"; then
+	freetype2_include_prefix="${freetype2_prefix}/include/freetype2"
+fi
+if test -z "$freetype2_lib_prefix"; then
+	freetype2_lib_prefix="${freetype2_prefix}/lib"
+fi
 
 _save_cpp="$CPP"
+_save_ldflags="$LDFLAGS"
 CPP="$_save_cpp -I$freetype2_include_prefix"
+LDFLAGS="$_save_ldflags -L$freetype2_lib_prefix"
 AC_CHECK_HEADER(freetype/freetype.h, _found_freetype2_header="yes")
 AC_CHECK_LIB(freetype, FT_Init_FreeType, [_found_freetype2_lib="yes"])
 CPP="$_save_cpp"
+LDFLAGS="$_save_ldflags"
 
 if test "x$_found_freetype2_lib" = "xyes" -a \
 	"x$_found_freetype2_header" = "xyes"

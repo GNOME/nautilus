@@ -5,6 +5,7 @@ INCLUDES = -I. -I$(srcdir) \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
 	-I$(includedir) \
+	$(GNOME_CFLAGS) \
 	$(APPLETS_CFLAGS) \
 	-DDATADIR=\""$(datadir)"\" \
 	-DBINDIR=\""$(bindir)"\" \
