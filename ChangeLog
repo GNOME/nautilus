@@ -1,3 +1,35 @@
+2000-04-28  Darin Adler  <darin@eazel.com>
+
+	Some cleanup inspired by Maciej's check-in.
+	
+	* libnautilus-extensions/nautilus-directory-async.c
+	(ready_callback_call),
+	(nautilus_directory_call_when_ready_internal),
+	(call_ready_callbacks):
+	Made the fix so that call_when_ready works properly when a NULL
+	directory is passed in.
+	
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-file.c
+	(nautilus_file_call_when_ready): Fix for call_when_ready with
+	a NULL file.
+	(nautilus_file_ref), (nautilus_file_list_ref),
+	(nautilus_file_list_copy): Filled out the operations on lists.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c
+	(nautilus_gtk_object_list_ref), (nautilus_gtk_object_list_copy):
+	Filled out the operations on lists.
+	
+	* src/ntl-uri-map.c (got_metadata_callback): Factored out the
+	call to async get_file_info to simplify the logic.
+	(nautilus_navigation_info_new): Took out the check for NULL that
+	Maciej mentioned in his notes below now that call_when_ready can
+	handle things.
+	(nautilus_navigation_info_cancel),
+	(nautilus_navigation_info_free): Took out some excessive NULL
+	checks when calling routines that work with NULL.
+
 2000-04-28  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/ntl-content-view.c (nautilus_content_view_set_active): Fix a

@@ -224,16 +224,17 @@ destroy (GtkObject *object)
 	nautilus_directory_unref (file->details->directory);
 }
 
-void
+NautilusFile *
 nautilus_file_ref (NautilusFile *file)
 {
 	if (file == NULL) {
-		return;
+		return NULL;
 	}
 
-	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
 	gtk_object_ref (GTK_OBJECT (file));
+	return file;
 }
 
 void
@@ -1742,9 +1743,15 @@ nautilus_file_call_when_ready (NautilusFile *file,
 			       NautilusFileCallback callback,
 			       gpointer callback_data)
 {
-	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (file_metadata_keys != NULL);
 	g_return_if_fail (callback != NULL);
+
+	if (file == NULL) {
+		(* callback) (file, callback_data);
+		return;
+	}
+
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
 	nautilus_directory_call_when_ready_internal
 		(file->details->directory,
@@ -1784,10 +1791,10 @@ nautilus_file_cancel_callback (NautilusFile *file,
  * Ref all the files in a list.
  * @list: GList of files.
  **/
-void
+GList *
 nautilus_file_list_ref (GList *list)
 {
-	nautilus_gtk_object_list_ref (list);
+	return nautilus_gtk_object_list_ref (list);
 }
 
 /**
@@ -1812,6 +1819,18 @@ void
 nautilus_file_list_free (GList *list)
 {
 	nautilus_gtk_object_list_free (list);
+}
+
+/**
+ * nautilus_file_list_copy
+ *
+ * Copy the list of files, making a new ref of each,
+ * @list: GList of files.
+ **/
+GList *
+nautilus_file_list_copy (GList *list)
+{
+	return nautilus_gtk_object_list_copy (list);
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

@@ -49,9 +49,13 @@
 #include "ntl-types.h"
 
 /* forward declarations */
-
-static void add_components_from_metadata        (NautilusNavigationInfo *navinfo);
-static void add_meta_view_iids_from_preferences (NautilusNavigationInfo *navinfo);
+static void add_components_from_metadata        (NautilusNavigationInfo            *navinfo);
+static void add_meta_view_iids_from_preferences (NautilusNavigationInfo            *navinfo);
+static void async_get_file_info_text            (GnomeVFSAsyncHandle              **handle,
+                                                 const char                        *text_uri,
+                                                 GnomeVFSFileInfoOptions            options,
+                                                 GnomeVFSAsyncGetFileInfoCallback   callback,
+                                                 gpointer                           callback_data);
 
 /* Nautilus View Identifiers associate a component name with a user displayable name */
 
@@ -573,99 +577,68 @@ got_metadata_callback (NautilusDirectory *directory,
                        gpointer callback_data)
 {
         NautilusNavigationInfo *info;
-        GnomeVFSURI *vfs_uri;
-        GList uri_list;
-        GList result_list;
-        GnomeVFSGetFileInfoResult result_item;
 
         info = callback_data;
         g_assert (info->directory == directory);
         
-        info->files = g_list_copy (files);
-
-        nautilus_file_list_ref (info->files);
-
-        vfs_uri = gnome_vfs_uri_new (info->navinfo.requested_uri);
-        if (vfs_uri == NULL) {
-                /* Report the error. */
-
-                result_item.uri = NULL;
-                result_item.result = GNOME_VFS_ERROR_INVALIDURI;
-                result_item.file_info = NULL;
-
-                result_list.data = &result_item;
-                result_list.next = NULL;
-
-                got_file_info_callback (NULL, &result_list, info);
-
-                return;
-        }
-
-        uri_list.data = vfs_uri;
-        uri_list.next = NULL;
-        gnome_vfs_async_get_file_info (&info->ah,
-                                       &uri_list,
-                                       (GNOME_VFS_FILE_INFO_GETMIMETYPE
-                                        | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
-                                       NULL,
-                                       got_file_info_callback,
-                                       info);
-
-        gnome_vfs_uri_unref (vfs_uri);
+        info->files = nautilus_file_list_copy (files);
+        async_get_file_info_text (&info->ah,
+                                  info->navinfo.requested_uri,
+                                  (GNOME_VFS_FILE_INFO_GETMIMETYPE
+                                   | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
+                                  got_file_info_callback,
+                                  info);
 }
 
 /* NautilusNavigationInfo */
 
 NautilusNavigationInfo *
 nautilus_navigation_info_new (Nautilus_NavigationRequestInfo *nri,
-                              Nautilus_NavigationInfo *old_navinfo,
+                              Nautilus_NavigationInfo *old_info,
                               NautilusNavigationCallback notify_when_ready,
                               gpointer notify_data,
                               const char *referring_iid)
 {
-        NautilusNavigationInfo *navinfo;
+        NautilusNavigationInfo *info;
         GList *keys;
         GList *attributes;
 
-        navinfo = g_new0 (NautilusNavigationInfo, 1);
+        info = g_new0 (NautilusNavigationInfo, 1);
         
-        navinfo->callback = notify_when_ready;
-        navinfo->callback_data = notify_data;
+        info->callback = notify_when_ready;
+        info->callback_data = notify_data;
         
-        if (old_navinfo != NULL) {
-                navinfo->navinfo.referring_uri = old_navinfo->requested_uri;
-                navinfo->navinfo.actual_referring_uri = old_navinfo->actual_uri;
-                navinfo->navinfo.referring_content_type = old_navinfo->content_type;
+        if (old_info != NULL) {
+                info->navinfo.referring_uri = old_info->requested_uri;
+                info->navinfo.actual_referring_uri = old_info->actual_uri;
+                info->navinfo.referring_content_type = old_info->content_type;
         }
 
-        navinfo->referring_iid = g_strdup (referring_iid);
-        navinfo->navinfo.requested_uri = g_strdup (nri->requested_uri);
+        info->referring_iid = g_strdup (referring_iid);
+        info->navinfo.requested_uri = g_strdup (nri->requested_uri);
 
-        navinfo->directory = nautilus_directory_get (nri->requested_uri);
+        info->directory = nautilus_directory_get (nri->requested_uri);
 
-        if (navinfo->directory != NULL) {
-                /* Arrange for all the metadata we will need. */
-                keys = NULL;
-                keys = g_list_prepend (keys, NAUTILUS_METADATA_KEY_CONTENT_VIEWS);
-                keys = g_list_prepend (keys, NAUTILUS_METADATA_KEY_INITIAL_VIEW);
+        /* Arrange for all the (directory) metadata we will need. */
+        keys = NULL;
+        keys = g_list_prepend (keys, NAUTILUS_METADATA_KEY_CONTENT_VIEWS);
+        keys = g_list_prepend (keys, NAUTILUS_METADATA_KEY_INITIAL_VIEW);
+        
+        /* Arrange for all the file attributes we will need. */
+        attributes = NULL;
+        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE);
+        
+        nautilus_directory_call_when_ready (info->directory,
+                                            keys,
+                                            attributes,
+                                            NULL,
+                                            got_metadata_callback,
+                                            info);
 
-                /* Arrange for all the file attributes we will need. */
-                attributes = NULL;
-                attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE);
-
-                nautilus_directory_call_when_ready (navinfo->directory,
-                                                    keys,
-                                                    attributes,
-                                                    NULL,
-                                                    got_metadata_callback,
-                                                    navinfo);
-                g_list_free (keys);
-                g_list_free (attributes);
-        } else {
-                got_metadata_callback (NULL, NULL, navinfo);
-        }
-
-        return navinfo;
+        g_list_free (keys);
+        g_list_free (attributes);
+        
+        return info;
 }
 
 void
@@ -678,36 +651,78 @@ nautilus_navigation_info_cancel (NautilusNavigationInfo *info)
                 info->ah = NULL;
         }
 
-        if (info->directory) {
-                nautilus_directory_cancel_callback
-                        (info->directory, got_metadata_callback, info);
-        }
+        nautilus_directory_cancel_callback
+                (info->directory,
+                 got_metadata_callback,
+                 info);
 }
 
 void
-nautilus_navigation_info_free (NautilusNavigationInfo *navinfo)
+nautilus_navigation_info_free (NautilusNavigationInfo *info)
 {
-        g_return_if_fail (navinfo != NULL);
+        g_return_if_fail (info != NULL);
         
-        nautilus_navigation_info_cancel (navinfo);
+        nautilus_navigation_info_cancel (info);
 
-        g_slist_foreach (navinfo->content_identifiers, (GFunc) nautilus_view_identifier_free, NULL);
-        g_slist_free (navinfo->content_identifiers);
-        g_slist_foreach (navinfo->meta_iids, (GFunc) g_free, NULL);
-        g_slist_free (navinfo->meta_iids);
-        g_free (navinfo->referring_iid);
-        g_free (navinfo->initial_content_iid);
-        g_free (navinfo->navinfo.requested_uri);
-        g_free (navinfo->navinfo.actual_uri);
-        g_free (navinfo->navinfo.content_type);
+        g_slist_foreach (info->content_identifiers,
+                         (GFunc) nautilus_view_identifier_free,
+                         NULL);
+        g_slist_free (info->content_identifiers);
 
-        if (navinfo->directory != NULL) {
-                nautilus_directory_unref (navinfo->directory);
+        g_slist_foreach (info->meta_iids, (GFunc) g_free, NULL);
+        g_slist_free (info->meta_iids);
+
+        g_free (info->referring_iid);
+        g_free (info->initial_content_iid);
+        g_free (info->navinfo.requested_uri);
+        g_free (info->navinfo.actual_uri);
+        g_free (info->navinfo.content_type);
+
+        nautilus_directory_unref (info->directory);
+        nautilus_file_list_free (info->files);
+
+        g_free (info);
+}
+
+/* Cover for getting file info for one file. */
+static void
+async_get_file_info_text (GnomeVFSAsyncHandle **handle,
+                          const char *text_uri,
+                          GnomeVFSFileInfoOptions options,
+                          GnomeVFSAsyncGetFileInfoCallback callback,
+                          gpointer callback_data)
+{
+        GnomeVFSURI *vfs_uri;
+        GList uri_list;
+        GList result_list;
+        GnomeVFSGetFileInfoResult result_item;
+        
+        vfs_uri = gnome_vfs_uri_new (text_uri);
+        if (vfs_uri == NULL) {
+                /* Report the error. */
+                
+                result_item.uri = NULL;
+                result_item.result = GNOME_VFS_ERROR_INVALIDURI;
+                result_item.file_info = NULL;
+                
+                result_list.data = &result_item;
+                result_list.next = NULL;
+                
+                (* callback) (NULL, &result_list, callback_data);
+                
+                return;
         }
 
-        if (navinfo->files != NULL) {
-                nautilus_file_list_free (navinfo->files);
-        }
+        /* Construct a simple URI list. */
+        uri_list.data = vfs_uri;
+        uri_list.next = NULL;
 
-        g_free (navinfo);
+        gnome_vfs_async_get_file_info (handle,
+                                       &uri_list,
+                                       options,
+                                       NULL,
+                                       callback,
+                                       callback_data);
+        
+        gnome_vfs_uri_unref (vfs_uri);
 }

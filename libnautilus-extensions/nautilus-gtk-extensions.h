@@ -39,9 +39,10 @@ guint             nautilus_gtk_signal_connect_free_data (GtkObject              
 							 gpointer                data);
 
 /* list of GtkObject */
-void              nautilus_gtk_object_list_ref          (GList                  *list);
+GList *           nautilus_gtk_object_list_ref          (GList                  *list);
 void              nautilus_gtk_object_list_unref        (GList                  *list);
 void              nautilus_gtk_object_list_free         (GList                  *list);
+GList *           nautilus_gtk_object_list_copy         (GList                  *list);
 
 /* GtkWidget */
 gboolean          nautilus_point_in_allocation          (const GtkAllocation    *allocation,

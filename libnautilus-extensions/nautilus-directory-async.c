@@ -827,6 +827,30 @@ ready_callback_key_compare (gconstpointer a, gconstpointer b)
 	return 0;
 }
 
+static void
+ready_callback_call (NautilusDirectory *directory,
+		     const ReadyCallback *callback)
+{
+	GList *file_list;
+
+	/* Call the callback. */
+	if (callback->file != NULL) {
+		(* callback->callback.file) (callback->file,
+					     callback->callback_data);
+	} else {
+		if (directory == NULL || !callback->wait_for_file_list) {
+			file_list = NULL;
+		} else {
+			file_list = directory->details->files;
+		}
+
+		/* Pass back the file list if the user was waiting for it. */
+		(* callback->callback.directory) (directory,
+						  file_list,
+						  callback->callback_data);
+	}
+}
+
 void
 nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 					     NautilusFile *file,
@@ -865,6 +889,12 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
 		 nautilus_str_compare) != NULL;
+	
+	/* Handle the NULL case. */
+	if (directory == NULL) {
+		ready_callback_call (NULL, &callback);
+		return;
+	}
 
 	/* Check if the callback is already there. */
 	if (g_list_find_custom (directory->details->call_when_ready_list,
@@ -1136,19 +1166,7 @@ call_ready_callbacks (NautilusDirectory *directory)
 		remove_callback_link_keep_data (directory, p);
 		
 		/* Call the callback. */
-		if (callback->file != NULL) {
-			g_assert (callback->file->details->directory == directory);
-			(* callback->callback.file) (callback->file,
-						     callback->callback_data);
-		} else {
-			/* Pass back the file list if the user was waiting for it. */
-			(* callback->callback.directory) (directory,
-							  callback->wait_for_file_list
-							  ? directory->details->files
-							  : NULL,
-							  callback->callback_data);
-		}
-		
+		ready_callback_call (directory, callback);
 		g_free (callback);
 	}
 }

@@ -387,20 +387,21 @@ nautilus_point_in_widget (GtkWidget *widget,
 /**
  * nautilus_gtk_object_list_ref
  *
- * Ref all the files in a list.
- * @list: GList of files.
+ * Ref all the objects in a list.
+ * @list: GList of objects.
  **/
-void
+GList *
 nautilus_gtk_object_list_ref (GList *list)
 {
 	g_list_foreach (list, (GFunc) gtk_object_ref, NULL);
+	return list;
 }
 
 /**
  * nautilus_gtk_object_list_unref
  *
- * Unref all the files in a list.
- * @list: GList of files.
+ * Unref all the objects in a list.
+ * @list: GList of objects.
  **/
 void
 nautilus_gtk_object_list_unref (GList *list)
@@ -411,14 +412,26 @@ nautilus_gtk_object_list_unref (GList *list)
 /**
  * nautilus_gtk_object_list_free
  *
- * Free a list of files after unrefing them.
- * @list: GList of files.
+ * Free a list of objects after unrefing them.
+ * @list: GList of objects.
  **/
 void
 nautilus_gtk_object_list_free (GList *list)
 {
 	nautilus_gtk_object_list_unref (list);
 	g_list_free (list);
+}
+
+/**
+ * nautilus_gtk_object_list_copy
+ *
+ * Copy the list of objects, ref'ing each one.
+ * @list: GList of objects.
+ **/
+GList *
+nautilus_gtk_object_list_copy (GList *list)
+{
+	return g_list_copy (nautilus_gtk_object_list_ref (list));
 }
 
 /**
