@@ -23,6 +23,8 @@
 */
 
 #include <config.h>
+#include <string.h>
+
 #include "nautilus-preferences.h"
 
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -59,8 +61,8 @@ typedef struct {
 	int				gconf_connection;
 } PrefCallbackInfo;
 
-static GHashTable	*preference_hash_table = NULL;
-static GConfClient	*preference_gconf_client = NULL;
+static GHashTable	  *preference_hash_table = NULL;
+static GConfClient	  *preference_gconf_client = NULL;
 
 /* PrefHashNode functions */
 static PrefHashNode *    pref_hash_node_alloc                         (char                        *name,
@@ -205,13 +207,22 @@ pref_hash_node_add_callback (PrefHashNode			*pref_hash_node,
 	
 	g_assert (name != NULL);
 
+	/*
+	 * Ref the preference here, cause we use for the gconf callback data.
+	 * See pref_hash_node_remove_callback() to make sure the ref is balanced.
+	 */
+	g_assert (pref_hash_node->preference != NULL);
+	gtk_object_ref (GTK_OBJECT (pref_hash_node->preference));
+	
 	pref_callback_info->gconf_connection = 
 		gconf_client_notify_add (preference_gconf_client,
 					 name,
 					 preferences_gconf_callback,
-					 NULL,
+					 pref_hash_node->preference,
 					 NULL,
 					 NULL);
+
+	g_free (name);
 }
 
 /**
@@ -251,6 +262,13 @@ pref_hash_node_remove_callback (PrefHashNode			*pref_hash_node,
 			
 			gconf_client_notify_remove  (preference_gconf_client,
 						     callback_info->gconf_connection);
+
+			/*
+			 * Unref the preference here to balance the ref added in 
+			 * pref_hash_node_add_callback().
+			 */
+			g_assert (pref_hash_node->preference != NULL);
+			gtk_object_unref (GTK_OBJECT (pref_hash_node->preference));
 			
 			pref_hash_node->callback_list = 
 				g_list_remove (pref_hash_node->callback_list, 
@@ -592,30 +610,69 @@ prefs_hash_lookup_with_implicit_registration (const char		*name,
 
 static void
 preferences_gconf_callback (GConfClient	*client, 
-			    guint	cnxn_id, 
+			    guint	connection_id, 
 			    const gchar	*key, 
 			    GConfValue	*value, 
 			    gboolean	is_default, 
 			    gpointer	user_data)
 {
-	PrefHashNode * pref_hash_node;
+	PrefHashNode		*pref_hash_node;
+	NautilusPreference	*expected_preference;
+	char			*expected_key;
 
 	g_assert (nautilus_preferences_is_initialized ());
 	g_assert (key != NULL);
 
+	g_assert (user_data != NULL);
+	g_assert (NAUTILUS_IS_PREFERENCE (user_data));
+
+	expected_preference = NAUTILUS_PREFERENCE (user_data);
+
+	/* 
+	 * This gconf notification was installed with an expected key in mind.
+	 * The expected is not always the key passed into this function.
+	 *
+	 * This happens when the expected key is a namespace, and the key
+	 * that changes is actually beneath that namespace.
+	 *
+	 * For example:
+	 *
+	 * 1. Tell me when "foo/bar" changes.
+	 * 2. "foo/bar/x" or "foo/bar/y" or "foo/bar/z" changes
+	 * 3. I get notified that "foo/bar/{x,y,z}" changed - not "foo/bar"
+	 *
+	 * This makes sense, since it is "foo/bar/{x,y,z}" that indeed changed.
+	 *
+	 * So we can use this mechanism to keep track of changes within a whole
+	 * namespace by comparing the expected_key to the given key.
+	 */
+	expected_key = nautilus_preference_get_name (expected_preference);
+	
+	g_assert (expected_key != NULL);
+	
+	if (strcmp (key, expected_key) != 0) {
+		/* The prefix should be the same */
+		g_assert (strncmp (key, expected_key, strlen (expected_key)) == 0);
+		key = expected_key;
+	}
+	
+	g_assert (key != NULL);
+	
 	pref_hash_node = prefs_hash_lookup (key);
 	
 	g_assert (pref_hash_node != NULL);
 	g_assert (pref_hash_node->preference != NULL);
 
 	gconf_client_suggest_sync (preference_gconf_client, NULL);
-	
+
 	/* Invoke callbacks for this node */
 	if (pref_hash_node->callback_list) {
 		g_list_foreach (pref_hash_node->callback_list,
 				pref_callback_info_invoke_func,
 				(gpointer) NULL);
 	}
+
+	g_free (expected_key);
 }
 
 gboolean

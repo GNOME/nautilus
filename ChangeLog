@@ -1,4 +1,21 @@
-2000-05-26  Eskil Heyn Olsen  <set EMAIL_ADDRESS environment variable>
+2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* nautilus-widgets/nautilus-preferences.c:
+	(pref_hash_node_add_callback), (pref_hash_node_remove_callback),
+	(preferences_gconf_callback):
+
+	Add support for keeping track of changes within a whole preference
+	namespace.  
+
+	Pass in the expected preference to the gconf callback.  Do this so
+	that we can compare the expected prefrence name with the one that
+	gconf reports.  If they dont match, then we have something that
+	changed within a namespace and not an individual key.
+	
+	Also fix some memory leaks.  Was forgetting to free a couple of
+	returned preference names.
+	
+2000-05-26  Eskil Heyn Olsen  <chief_wanker@eazel.com>
 
 	* components/services/install/command-line/Makefile.am:
 	* components/services/install/command-line/eazel-alt-install.c:
@@ -66,7 +83,7 @@
 	* src/ntl-window.c: (nautilus_window_constructed):
 	Removed obsolete enable undo code.
 
-2000-05-25  Eskil Heyn Olsen  <set EMAIL_ADDRESS environment variable>
+2000-05-25  Eskil Heyn Olsen  <chief_wanker@eazel.com>
 
 	* components/services/install/command-line/Makefile.am:
 	* components/services/install/command-line/eazel-alt-install.c:
