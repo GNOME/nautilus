@@ -49,6 +49,7 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-label.h>
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtksignal.h>
@@ -351,7 +352,8 @@ music_view_set_selected_song_title (NautilusMusicView *music_view, int row)
 	g_free(label_text);
         
         gtk_clist_get_text (GTK_CLIST(music_view->details->song_list), row, 5, &temp_str);
-	gtk_label_set(GTK_LABEL(music_view->details->total_track_time), temp_str);
+	nautilus_label_set_text(NAUTILUS_LABEL(music_view->details->total_track_time), temp_str);
+	nautilus_label_set_font_size(NAUTILUS_LABEL (music_view->details->total_track_time), 14);
 }
 
 
@@ -741,7 +743,8 @@ reset_playtime (NautilusMusicView *music_view)
 	gtk_adjustment_set_value(GTK_ADJUSTMENT(music_view->details->playtime_adjustment), 0.0);
  	gtk_range_set_adjustment(GTK_RANGE(music_view->details->playtime_bar), GTK_ADJUSTMENT(music_view->details->playtime_adjustment));	
 	gtk_widget_set_sensitive(music_view->details->playtime_bar, FALSE);	
-	gtk_label_set(GTK_LABEL(music_view->details->playtime), "--:--");	
+	nautilus_label_set_text (NAUTILUS_LABEL(music_view->details->playtime), "--:--");	
+	nautilus_label_set_font_size (NAUTILUS_LABEL (music_view->details->playtime), 14);
 }
 
 /* status display timer task */
@@ -794,7 +797,8 @@ play_status_display (NautilusMusicView *music_view)
  			gtk_range_set_adjustment(GTK_RANGE(music_view->details->playtime_bar), GTK_ADJUSTMENT(music_view->details->playtime_adjustment));	
 
 			if (!music_view->details->slider_dragging)
-		 		gtk_label_set(GTK_LABEL(music_view->details->playtime), play_time_str);	
+		 		nautilus_label_set_text (NAUTILUS_LABEL(music_view->details->playtime), play_time_str);	
+				nautilus_label_set_font_size (NAUTILUS_LABEL (music_view->details->playtime), 14);
 
 		}
 		
@@ -965,7 +969,8 @@ slider_moved_callback(GtkWidget *bar, GdkEvent *event, NautilusMusicView *music_
 		minutes = seconds / 60;
 		seconds = seconds % 60;
 		sprintf(temp_str, "%02d:%02d", minutes, seconds);
-		gtk_label_set(GTK_LABEL(music_view->details->playtime), temp_str);
+		nautilus_label_set_text (NAUTILUS_LABEL(music_view->details->playtime), temp_str);
+		nautilus_label_set_font_size (NAUTILUS_LABEL (music_view->details->playtime), 14);
 	}
 }
 	
@@ -1097,7 +1102,7 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_table_attach(GTK_TABLE(table), hbox2, 0, 6, 0, 1, 0, 0, 0, 0);
 	gtk_widget_show(hbox2);
 	
-	music_view->details->playtime = gtk_label_new("--:--");
+	music_view->details->playtime = nautilus_label_new("--:--");
 	gtk_widget_show(music_view->details->playtime);
 	gtk_box_pack_start(GTK_BOX(hbox2), music_view->details->playtime, FALSE, FALSE, 0);
 
@@ -1118,7 +1123,7 @@ add_play_controls (NautilusMusicView *music_view)
 	
 	/* total label */
 
-	music_view->details->total_track_time = gtk_label_new("--:--");
+	music_view->details->total_track_time = nautilus_label_new("--:--");
 	gtk_widget_show(music_view->details->total_track_time);
 	gtk_box_pack_start(GTK_BOX(hbox2), music_view->details->total_track_time, FALSE, FALSE, 0);
 
