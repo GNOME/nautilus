@@ -1,5 +1,21 @@
 2000-02-10  John Sullivan <sullivan@eazel.com>
 
+	Used directory item count hack when comparing by size, so
+	the item counts are sorted correctly. This is horribly
+	inefficient, but isn't actually horribly slow in most cases.
+	This will be fixed when we switch the item count calculation
+	to use the deferred-result architecture.
+
+	* libnautilus/nautilus-directory.c:
+	(nautilus_file_compare_by_size_with_directories): New function,
+	uses item count hack, as well as putting directories before 
+	non-directories.
+	(nautilus_file_compare_for_sort_internal): Uses
+	nautilus_file_compare_by_size_with_directories to handle
+	directories, falls through to GnomeVFS rules for other cases.
+
+2000-02-10  John Sullivan <sullivan@eazel.com>
+
 	Put in quick hack for showing directory item counts under icons
 	since "--" looks so awful. It's a hack because it blocks the
 	display until all directories inside this one have been

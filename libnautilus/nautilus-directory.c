@@ -77,6 +77,10 @@ enum
 	LAST_SIGNAL
 };
 
+/* FIXME: This hack needs to die eventually. See comments with function */
+static int get_directory_item_count_hack (NautilusFile *file, gboolean ignore_invisible_items);
+
+
 static guint nautilus_directory_signals[LAST_SIGNAL];
 
 static void nautilus_directory_initialize_class (gpointer klass);
@@ -1183,6 +1187,45 @@ nautilus_file_detach (NautilusFile *file)
 }
 
 static int
+nautilus_file_compare_by_size_with_directories (NautilusFile *file_1, NautilusFile *file_2)
+{
+	gboolean is_directory_1;
+	gboolean is_directory_2;
+	int item_count_1;
+	int item_count_2;
+
+	is_directory_1 = file_1->info->type == GNOME_VFS_FILE_TYPE_DIRECTORY;
+	is_directory_2 = file_2->info->type == GNOME_VFS_FILE_TYPE_DIRECTORY;
+
+	if (is_directory_1 && !is_directory_2)
+		return -1;
+
+	if (is_directory_2 && !is_directory_1)
+		return +1;
+
+	if (!is_directory_1 && !is_directory_2)
+		return 0;
+
+	/* Both are directories, compare by item count. */
+	/* FIXME: get_directory_item_count_hack is slow, and calling
+	 * it for every pairwise comparison here is nasty. Need to
+	 * change this to (not-yet-existent) architecture where the
+	 * item count can be calculated once in a deferred way, and
+	 * then stored or cached.
+	 */
+	item_count_1 = get_directory_item_count_hack (file_1, FALSE);
+	item_count_2 = get_directory_item_count_hack (file_2, FALSE);
+
+	if (item_count_1 < item_count_2)
+		return -1;
+
+	if (item_count_2 < item_count_1)
+		return +1;
+
+	return 0;
+}
+
+static int
 nautilus_file_compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
 {
 	gboolean is_directory_1;
@@ -1248,11 +1291,20 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 		rules[1] = GNOME_VFS_DIRECTORY_SORT_NONE;
 		break;
 	case NAUTILUS_FILE_SORT_BY_SIZE:
-		rules = ALLOC_RULES (4);
-		rules[0] = GNOME_VFS_DIRECTORY_SORT_DIRECTORYFIRST;
-		rules[1] = GNOME_VFS_DIRECTORY_SORT_BYSIZE;
-		rules[2] = GNOME_VFS_DIRECTORY_SORT_BYNAME_IGNORECASE;
-		rules[3] = GNOME_VFS_DIRECTORY_SORT_NONE;
+		/* Compare directory sizes ourselves, then if necessary
+		 * use GnomeVFS to compare file sizes.
+		 */
+		{
+		int size_compare;
+
+		size_compare = nautilus_file_compare_by_size_with_directories (file_1, file_2);
+		if (size_compare != 0)
+			return size_compare;
+		}
+		rules = ALLOC_RULES (3);
+		rules[0] = GNOME_VFS_DIRECTORY_SORT_BYSIZE;
+		rules[1] = GNOME_VFS_DIRECTORY_SORT_BYNAME_IGNORECASE;
+		rules[2] = GNOME_VFS_DIRECTORY_SORT_NONE;
 		break;
 	case NAUTILUS_FILE_SORT_BY_TYPE:
 		/* GnomeVFS doesn't know about our special text for certain
