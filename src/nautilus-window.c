@@ -470,7 +470,7 @@ nautilus_window_add_meta_view(NautilusWindow *window, NautilusView *meta_view)
   g_return_if_fail(!g_slist_find(window->meta_views, meta_view));
   g_return_if_fail(NAUTILUS_IS_META_VIEW(meta_view));
 
-  desc = nautilus_meta_view_get_description(NAUTILUS_META_VIEW(meta_view));
+  desc = nautilus_meta_view_get_label(NAUTILUS_META_VIEW(meta_view));
   if(!desc)
     {
       desc = cbuf;

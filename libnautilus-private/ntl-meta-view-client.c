@@ -100,3 +100,16 @@ nautilus_meta_view_client_class_init (NautilusMetaViewClientClass *klass)
   view_class->servant_destroy_func = POA_Nautilus_MetaView__fini;
   view_class->vepv = &impl_Nautilus_MetaView_vepv;
 }
+
+void
+nautilus_meta_view_set_label(NautilusMetaViewClient *mvc, const char *label)
+{
+  GnomeObject *ctl;
+
+  ctl = nautilus_view_client_get_gnome_object(NAUTILUS_VIEW_CLIENT(client));
+  /* set description */
+  bag = gnome_control_get_property_bag(GNOME_CONTROL(ctl));
+  gnome_property_bag_add(bag, "label", "string", label, label, _("Label"),
+			 GNOME_PROPERTY_READ_ONLY);
+}
+

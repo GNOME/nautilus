@@ -49,6 +49,6 @@ struct _NautilusMetaView {
 
 GtkType nautilus_meta_view_get_type(void);
 NautilusMetaView *nautilus_meta_view_new(void);
-const char *nautilus_meta_view_get_description(NautilusMetaView *nview);
+const char *nautilus_meta_view_get_label(NautilusMetaView *nview);
 
 #endif

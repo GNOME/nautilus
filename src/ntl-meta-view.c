@@ -93,7 +93,7 @@ nautilus_meta_view_new(void)
 }
 
 const char *
-nautilus_meta_view_get_description(NautilusMetaView *nview)
+nautilus_meta_view_get_label(NautilusMetaView *nview)
 {
   NautilusView *view = NAUTILUS_VIEW(nview);
   GnomePropertyBagClient *bc;
@@ -107,7 +107,7 @@ nautilus_meta_view_get_description(NautilusMetaView *nview)
   bc = gnome_control_frame_get_control_property_bag(gnome_bonobo_widget_get_control_frame(GNOME_BONOBO_WIDGET(view->client)));
   g_return_val_if_fail(bc, NULL);
 
-  prop = gnome_property_bag_client_get_property(bc, "description");
+  prop = gnome_property_bag_client_get_property(bc, "label");
   CORBA_exception_init(&ev);
 
   if(CORBA_Object_is_nil(prop, &ev))

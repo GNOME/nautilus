@@ -47,5 +47,7 @@ struct _NautilusMetaViewClient {
 };
 
 GtkType nautilus_meta_view_client_get_type (void);
+void nautilus_meta_view_set_label(NautilusMetaViewClient *mvc,
+				  const char *label);
 
 #endif
