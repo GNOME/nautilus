@@ -587,3 +587,10 @@ eazel_install_callback_revert_transaction (EazelInstallCallback *service,
 	g_free (mem);
 	xmlFreeDoc (doc);
 }
+
+void
+eazel_install_callback_delete_files (EazelInstallCallback *service,
+				     CORBA_Environment *ev)
+{
+	Trilobite_Eazel_Install_delete_files (service->installservice_corba, ev);
+}

@@ -207,6 +207,9 @@ module Trilobite {
 
 			/* Cancel an ongoing download. */
 			void stop ();
+
+		        /* Delete the temp dir and its contents, after an operation. */
+		        oneway void delete_files ();
                 };
 	};
 };

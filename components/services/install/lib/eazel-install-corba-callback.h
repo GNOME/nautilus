@@ -132,6 +132,9 @@ void eazel_install_callback_revert_transaction (EazelInstallCallback *service,
 						const char *root,
 						CORBA_Environment *ev);
 
+void eazel_install_callback_delete_files (EazelInstallCallback *service,
+					  CORBA_Environment *ev);
+
 /* Stuff */
 GtkType                                   eazel_install_callback_get_type   (void);
 POA_Trilobite_Eazel_InstallCallback__epv *eazel_install_callback_get_epv (void);

@@ -1,3 +1,40 @@
+2000-10-29  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(eazel_install_callback_delete_files):
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install_delete_files), (eazel_install_get_epv):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_class_initialize), (create_temporary_directory),
+	(eazel_install_delete_downloads), (eazel_install_install_packages),
+	(eazel_install_revert_transaction_from_xmlstring),
+	(eazel_install_emit_dependency_check_default):
+	* components/services/install/lib/eazel-install-public.h:
+
+	Change delete_files from a signal to an explicit API call.  Also
+	be sure to erase the temp dir even if it has no files in it.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_done),
+	(nautilus_service_install_failed),
+	(nautilus_service_install_view_update_from_uri):
+	* components/services/install/server/Makefile.am:
+
+	Make the install view use the new explicit delete_files call, and
+	condense those into a single dialog box.
+
+	* nautilus-installer/src/callbacks.c: (begin_install),
+	(druid_finish):
+	* nautilus-installer/src/installer.c: (install_done),
+	(eazel_installer_do_install), (eazel_installer_initialize):
+	* nautilus-installer/src/installer.h:
+
+	Fix the bootstrap installer for the delete_files call, and don't
+	forget to delete the package list too.  Also, set forced-downgrade
+	to TRUE until a post-PR2 bug is fixed.
+	
 2000-10-29  Mike Fleming  <mfleming@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

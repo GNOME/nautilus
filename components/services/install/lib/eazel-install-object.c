@@ -61,7 +61,6 @@ enum {
 	INSTALL_FAILED,
 	UNINSTALL_FAILED,
 	DEPENDENCY_CHECK,
-	DELETE_FILES,
 	DONE,	
 	LAST_SIGNAL
 };
@@ -129,7 +128,6 @@ void eazel_install_emit_uninstall_failed_default (EazelInstall *service,
 void eazel_install_emit_dependency_check_default (EazelInstall *service,
 						  const PackageData *pack,
 						  const PackageData *needs);
-gboolean eazel_install_emit_delete_files_default (EazelInstall *service);
 void eazel_install_emit_done_default (EazelInstall *service, 
 				      gboolean result);
 
@@ -422,13 +420,6 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				GTK_SIGNAL_OFFSET (EazelInstallClass, dependency_check),
 				gtk_marshal_NONE__POINTER_POINTER,
 				GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
-	signals[DELETE_FILES] =
-		gtk_signal_new ("delete_files",
-				GTK_RUN_LAST, 
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EazelInstallClass, delete_files),
-				gtk_marshal_BOOL__NONE,
-				GTK_TYPE_BOOL, 0);
 	signals[DONE] = 
 		gtk_signal_new ("done",
 				GTK_RUN_LAST,
@@ -446,7 +437,6 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 	klass->install_failed = NULL;
 	klass->uninstall_failed = NULL;
 	klass->dependency_check = NULL;
-	klass->delete_files = NULL;
 	klass->preflight_check = NULL;
 #else
 	klass->install_progress = eazel_install_emit_install_progress_default;
@@ -456,7 +446,6 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 	klass->install_failed = eazel_install_emit_install_failed_default;
 	klass->uninstall_failed = eazel_install_emit_uninstall_failed_default;
 	klass->dependency_check = eazel_install_emit_dependency_check_default;
-	klass->delete_files = eazel_install_emit_delete_files_default;
 	klass->preflight_check = eazel_install_emit_preflight_check_default;
 #endif
 	klass->done = eazel_install_emit_done_default;
@@ -703,7 +692,7 @@ create_temporary_directory (EazelInstall *service)
 		trilobite_debug ("No tmpdir set, creating...");
 		srand (time (NULL));
 		for (tries = 0; tries < 50; tries++) {
-			tmpdir = g_strdup_printf ("/tmp/eazel-installer.%c%c%c%c%c%c%d",
+			tmpdir = g_strdup_printf ("/tmp/nautilus-installer.%c%c%c%c%c%c%d",
 						  RANDCHAR, RANDCHAR, RANDCHAR, RANDCHAR,
 						  RANDCHAR, RANDCHAR, (rand () % 1000));
 			if (g_file_test (tmpdir, G_FILE_TEST_ISDIR)==0) {
@@ -866,28 +855,33 @@ eazel_install_unlock_tmp_dir (EazelInstall *service)
 	return eazel_install_alter_mode_on_temp (service, 0600);
 }
 
-static void
+void
 eazel_install_delete_downloads (EazelInstall *service)
 {
+	GList *iterator;
+	char *filename;
+
 	SANITY (service);
 
-	if (service->private->downloaded_files && eazel_install_emit_delete_files (service)) {
-		GList *iterator;
-		
+	if (service->private->downloaded_files) {
 		trilobite_debug ("*** deleting the package files");
-		for (iterator = g_list_first (service->private->downloaded_files); iterator;
+		for (iterator = g_list_first (service->private->downloaded_files); iterator != NULL;
 		     iterator = g_list_next (iterator)) {
-			char *filename = (char*)iterator->data;
+			filename = (char*)iterator->data;
 			trilobite_debug ("*** file '%s'", filename);
 			if (unlink (filename) != 0) {
 				g_warning ("unable to delete file %s !", filename);
 			}
-			
 		}
-		if (rmdir (eazel_install_get_tmp_dir (service)) != 0) {
-				g_warning ("unable to delete directory %s !", 
-					   eazel_install_get_tmp_dir (service));
-		}
+
+		/* don't try to delete them again later */
+		g_list_foreach (service->private->downloaded_files, (GFunc)g_free, NULL);
+		g_list_free (service->private->downloaded_files);
+		service->private->downloaded_files = NULL;
+	}
+	if (rmdir (eazel_install_get_tmp_dir (service)) != 0) {
+		g_warning ("unable to delete directory %s !", 
+			   eazel_install_get_tmp_dir (service));
 	}
 }
 
@@ -931,7 +925,6 @@ eazel_install_install_packages (EazelInstall *service,
 		eazel_install_unlock_tmp_dir (service);
 		trilobite_debug ("service->private->downloaded_files = 0x%x", 
 				 (unsigned int)service->private->downloaded_files);
-		eazel_install_delete_downloads (service);
 		
 		g_free (service->private->cur_root);
 		service->private->cur_root = NULL;
@@ -995,7 +988,6 @@ eazel_install_revert_transaction_from_xmlstring (EazelInstall *service,
 		result = revert_transaction (service, packages);
 		
 		eazel_install_unlock_tmp_dir (service);
-		eazel_install_delete_downloads (service);
 	} else {
 		result = EAZEL_INSTALL_NOTHING;
 	} 
@@ -1336,40 +1328,6 @@ eazel_install_emit_dependency_check_default (EazelInstall *service,
 	CORBA_exception_free (&ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
 } 
-
-gboolean
-eazel_install_emit_delete_files (EazelInstall *service)
-{
-	gboolean result;
-
-	SANITY_VAL(service, FALSE);
-	gtk_signal_emit (GTK_OBJECT (service), signals[DELETE_FILES], &result);
-	return result;
-}
-
-gboolean
-eazel_install_emit_delete_files_default (EazelInstall *service)
-{
-#ifndef EAZEL_INSTALL_NO_CORBA
-	CORBA_Environment ev;
-	CORBA_boolean result = FALSE;
-
-	SANITY_VAL (service, TRUE);
-
-	CORBA_exception_init (&ev);
-	if (service->callback != CORBA_OBJECT_NIL) {
-		result = Trilobite_Eazel_InstallCallback_delete_files (service->callback, &ev);
-		if (ev._major != CORBA_NO_EXCEPTION) {
-			/* on corba failure, delete files */
-			result = TRUE;
-		}
-	}
-	CORBA_exception_free (&ev);
-	return (gboolean)result;
-#else
-	return TRUE;
-#endif
-}
 
 void 
 eazel_install_emit_done (EazelInstall *service, gboolean result)

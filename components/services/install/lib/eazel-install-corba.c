@@ -129,6 +129,13 @@ impl_Eazel_Install_stop (impl_POA_Trilobite_Eazel_Install *servant,
 }
 
 static void
+impl_Eazel_Install_delete_files (impl_POA_Trilobite_Eazel_Install *servant,
+				 CORBA_Environment * ev)
+{
+	eazel_install_delete_downloads (servant->object);
+}
+
+static void
 impl_Eazel_Install_revert_transaction (impl_POA_Trilobite_Eazel_Install *servant,
 				       const CORBA_char *xml, 
 				       const CORBA_char *root,
@@ -406,6 +413,7 @@ eazel_install_get_epv ()
 	epv->install            = (gpointer)&impl_Eazel_Install_install;
 	epv->uninstall          = (gpointer)&impl_Eazel_Install_uninstall;
 	epv->stop		= (gpointer)&impl_Eazel_Install_stop;
+	epv->delete_files       = (gpointer)&impl_Eazel_Install_delete_files;
 	epv->install_packages   = (gpointer)&impl_Eazel_Install_install_packages;
 	epv->uninstall_packages = (gpointer)&impl_Eazel_Install_uninstall_packages;
 	epv->revert_transaction = (gpointer)&impl_Eazel_Install_revert_transaction;
