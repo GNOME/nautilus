@@ -45,7 +45,7 @@ static guint signals[LAST_SIGNAL];
 
 
 struct NautilusTreeModelDetails {
-	GHashTable       *uri_to_node_map;
+	GHashTable       *file_to_node_map;
 
 	GList            *monitor_clients;
 
@@ -83,8 +83,6 @@ static void  report_node_removed                               (NautilusTreeMode
 								NautilusTreeNode  *node);
 static void  report_done_loading                               (NautilusTreeModel *model,
 								NautilusTreeNode  *node);
-
-static void  nautilus_tree_stop_monitoring_internal            (NautilusTreeModel *model);
 
 
 /* signal/monitoring callbacks */
@@ -158,8 +156,8 @@ nautilus_tree_model_initialize (gpointer object, gpointer klass)
 
 	model->details = g_new0 (NautilusTreeModelDetails, 1);
 
-	model->details->uri_to_node_map = g_hash_table_new (g_str_hash, 
-							    g_str_equal);
+	model->details->file_to_node_map = g_hash_table_new (g_direct_hash, 
+							     g_direct_equal);
 }
 
 static void       
@@ -169,17 +167,11 @@ nautilus_tree_model_destroy (GtkObject *object)
 
 	model = (NautilusTreeModel *) object;
 
-	nautilus_tree_stop_monitoring_internal (model);
-
 	remove_all_nodes (model);
 
 	g_list_free (model->details->monitor_clients);
 
-	/* FIXME bugzilla.eazel.com 2411: 
-	 * Free all the key strings and unref all the value nodes in
-           the uri_to_node_map */
-
-	g_hash_table_destroy (model->details->uri_to_node_map);
+	g_hash_table_destroy (model->details->file_to_node_map);
 
 	g_free (model->details);
 	
@@ -245,8 +237,8 @@ nautilus_tree_model_for_each_postorder (NautilusTreeModel  *model,
 				reporting_queue = g_list_remove_link (reporting_queue, reporting_queue);
 				
 #ifdef DEBUG_TREE
-				printf ("XXX unrefing: %s\n", nautilus_file_get_uri
-					(nautilus_tree_node_get_file (current_node)));
+				printf ("XXX unrefing: %s\n", nautilus_tree_node_get_uri
+					(current_node));
 #endif
 
 				tmp = current_node->details->directory;
@@ -258,8 +250,8 @@ nautilus_tree_model_for_each_postorder (NautilusTreeModel  *model,
 #endif
 			} else {
 #ifdef DEBUG_TREE
-				printf ("XXX adding children of: %s\n", nautilus_file_get_uri
-					(nautilus_tree_node_get_file (current_node)));
+				printf ("XXX adding children of: %s\n", nautilus_tree_node_get_uri
+					(current_node));
 #endif
 				reporting_queue = g_list_concat (g_list_copy (nautilus_tree_node_get_children (current_node)),
 								 reporting_queue);
@@ -358,9 +350,6 @@ nautilus_tree_model_monitor_remove (NautilusTreeModel         *model,
 
 
 	if (model->details->monitor_clients == NULL) {
-		/* FIXME bugzilla.eazel.com 2412: 
-		 * stop monitoring root node file, dunno what else */
-
 		if (model->details->root_node_reported) {
 			nautilus_file_monitor_remove (nautilus_tree_node_get_file 
 						      (model->details->root_node),
@@ -474,7 +463,20 @@ NautilusTreeNode *
 nautilus_tree_model_get_node (NautilusTreeModel *model,
 			      const char *uri)
 {
-	return g_hash_table_lookup (model->details->uri_to_node_map, uri);
+	NautilusFile *file;
+	NautilusTreeNode *node;
+
+	file = nautilus_file_get (uri);
+	
+	if (file == NULL) {
+		return NULL;
+	}
+
+	node = g_hash_table_lookup (model->details->file_to_node_map, file);
+
+	nautilus_file_unref (file);
+
+	return node;
 }
 
 
@@ -520,17 +522,18 @@ report_node_added (NautilusTreeModel *model,
 	char *parent_uri;
 	NautilusTreeNode *parent_node;
 
-	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
+	uri = nautilus_tree_node_get_uri (node);
 
 	if (node->details->directory == NULL && nautilus_file_is_directory (node->details->file)) {
 		node->details->directory = nautilus_directory_get (uri);
 	}
 
-	if (g_hash_table_lookup (model->details->uri_to_node_map, uri) == NULL) {
+	if (g_hash_table_lookup (model->details->file_to_node_map, 
+				 nautilus_tree_node_get_file (node)) == NULL) {
 		parent_uri = uri_get_parent_text (uri);
 
 		if (parent_uri != NULL) {
-			parent_node = g_hash_table_lookup (model->details->uri_to_node_map, parent_uri);
+			parent_node =nautilus_tree_model_get_node (model, parent_uri);
 			
 			if (parent_node != NULL) {
 				nautilus_tree_node_set_parent (node,
@@ -541,9 +544,10 @@ report_node_added (NautilusTreeModel *model,
 		}
 
 
-		g_hash_table_insert (model->details->uri_to_node_map, 
-				     g_strdup (nautilus_file_get_uri (nautilus_tree_node_get_file (node))),
+		g_hash_table_insert (model->details->file_to_node_map, 
+				     nautilus_tree_node_get_file (node),
 				     node);
+
 
 		gtk_signal_emit (GTK_OBJECT (model),
 				 signals[NODE_ADDED],
@@ -551,6 +555,7 @@ report_node_added (NautilusTreeModel *model,
 	} else {
 		/* FIXME bugzilla.eazel.com 2413: 
 		 * reconstruct internals and report that it changed?? */
+		g_warning ("Added known node.");
 	}
 }
 
@@ -559,14 +564,15 @@ static void
 report_node_changed (NautilusTreeModel *model,
 		     NautilusTreeNode  *node)
 {
-	char *uri;
 	char *parent_uri;
 	NautilusTreeNode *parent_node;
+	char *node_uri;
+	char *file_uri;
 
-	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
+	node_uri = nautilus_tree_node_get_uri (node);
 
 	if (node->details->directory == NULL && nautilus_file_is_directory (node->details->file)) {
-		node->details->directory = nautilus_directory_get (uri);
+		node->details->directory = nautilus_directory_get (node_uri);
 	}
 
 	/* FIXME bugzilla.eazel.com 2414: 
@@ -574,13 +580,14 @@ report_node_changed (NautilusTreeModel *model,
            disconnect from it's NautilusDirectory and unref it; need
            to figure out how to do this safely) */
 	
-	if (g_hash_table_lookup (model->details->uri_to_node_map, uri) == NULL) {
+	if (g_hash_table_lookup (model->details->file_to_node_map, 
+				 nautilus_tree_node_get_file (node)) == NULL) {
 		/* Actually added, go figure */
 		
-		parent_uri = uri_get_parent_text (uri);
+		parent_uri = uri_get_parent_text (node_uri);
 
 		if (parent_uri != NULL) {
-			parent_node = g_hash_table_lookup (model->details->uri_to_node_map, parent_uri);
+			parent_node = nautilus_tree_model_get_node (model, parent_uri);
 			
 			if (parent_node != NULL) {
 				nautilus_tree_node_set_parent (node,
@@ -590,9 +597,8 @@ report_node_changed (NautilusTreeModel *model,
 			g_free (parent_uri);
 		}
 
-
-		g_hash_table_insert (model->details->uri_to_node_map, 
-				     g_strdup (nautilus_file_get_uri (nautilus_tree_node_get_file (node))),
+		g_hash_table_insert (model->details->file_to_node_map, 
+				     nautilus_tree_node_get_file (node),
 				     node);
 
 		gtk_signal_emit (GTK_OBJECT (model),
@@ -600,12 +606,31 @@ report_node_changed (NautilusTreeModel *model,
 				 node);
 	} else {
 		/* really changed */
-		gtk_signal_emit (GTK_OBJECT (model),
-				 signals[NODE_CHANGED],
-				 node);
+
+		file_uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
+
+		if (strcmp (file_uri, node_uri) == 0) {
+			/* A normal change */
+			gtk_signal_emit (GTK_OBJECT (model),
+					 signals[NODE_CHANGED],
+					 node);
+			g_free (file_uri);
+		} else {
+			/* A move or rename - model it as a remove followed by an add */
+
+			/* ref the node because remove is going to unref it */
+			gtk_object_ref (GTK_OBJECT (node));
+
+			report_node_removed (model, node);
+			
+			g_free (node->details->uri);
+			node->details->uri = file_uri;
+
+			report_node_added (model, node);
+		}
 	}
 	
-	g_free (uri);
+	g_free (node_uri);
 }
 
 static void
@@ -613,42 +638,25 @@ report_node_removed_internal (NautilusTreeModel *model,
 			      NautilusTreeNode  *node,
 			      gboolean signal)
 {
-	char *uri;
-	gpointer orig_key;
-	gpointer dummy;
-	char *parent_uri;
 	NautilusTreeNode *parent_node;
 
 	if (node == NULL) {
 		return;
 	}
 
-	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
-	
-	if (g_hash_table_lookup (model->details->uri_to_node_map, uri) != NULL) {
-		parent_uri = uri_get_parent_text (uri);
+	if (g_hash_table_lookup (model->details->file_to_node_map, 
+				 nautilus_tree_node_get_file (node)) != NULL) {
 
-		if (parent_uri != NULL) {
-			parent_node = g_hash_table_lookup (model->details->uri_to_node_map, parent_uri);
+		parent_node = nautilus_tree_node_get_parent (node);
 			
-			if (parent_node != NULL) {
-				nautilus_tree_node_remove_from_parent (node);
-			}
-
-			g_free (parent_uri);
+		if (parent_node != NULL) {
+			nautilus_tree_node_remove_from_parent (node);
 		}
 
+		g_hash_table_remove (model->details->file_to_node_map, 
+				     nautilus_tree_node_get_file (node));
+	
 
-		g_hash_table_lookup_extended (model->details->uri_to_node_map, 
-					      nautilus_file_get_uri (nautilus_tree_node_get_file (node)),
-					      &orig_key,
-					      &dummy);
-
-		g_hash_table_remove (model->details->uri_to_node_map, 
-				     nautilus_file_get_uri (nautilus_tree_node_get_file (node)));
-		
-		g_free (orig_key);
-				     
 		if (signal) {
 			gtk_signal_emit (GTK_OBJECT (model),
 					 signals[NODE_REMOVED],
@@ -658,10 +666,6 @@ report_node_removed_internal (NautilusTreeModel *model,
 
 		gtk_object_unref (GTK_OBJECT (node));
 	} 
-
-	g_free (uri);
-
-	
 }
 
 static void
@@ -682,15 +686,6 @@ report_done_loading (NautilusTreeModel *model,
 }
 
 
-static void
-nautilus_tree_stop_monitoring_internal (NautilusTreeModel *model)
-{
-	/* FIXME bugzilla.eazel.com 2415: 
-	 * stop monitoring everything; we should probably
-           forget everything in the hash table too. */
-
-}
-
 /* signal/monitoring callbacks */
 
 static void
@@ -708,7 +703,7 @@ nautilus_tree_model_root_node_file_monitor (NautilusFile      *file,
 
 static void
 nautilus_tree_model_directory_files_changed_callback (NautilusDirectory        *directory,
-						      GList                    *added_files,
+						      GList                    *changed_files,
 						      NautilusTreeModel        *model)
 {
 	GList *p;
@@ -716,17 +711,22 @@ nautilus_tree_model_directory_files_changed_callback (NautilusDirectory        *
 	NautilusTreeNode *node;
 	char *uri;
 
-	for (p = added_files; p != NULL; p = p->next) {
+	for (p = changed_files; p != NULL; p = p->next) {
 		file = (NautilusFile *) p->data;
 		
 		uri = nautilus_file_get_uri (file);
 		node = nautilus_tree_model_get_node (model, uri);
-		g_free (uri);
 
-		if (!nautilus_directory_contains_file (directory, file)) {
-			report_node_removed (model, node);
-		} else {			
-			report_node_changed (model, node);
+		if (node == NULL) {
+			printf ("ANOMALY: %s\n", uri);
+			g_free (uri);
+		} else {
+			g_free (uri);
+			if (!nautilus_directory_contains_file (directory, file)) {
+				report_node_removed (model, node);
+			} else {			
+				report_node_changed (model, node);
+			}
 		}
 	} 
 }

@@ -34,6 +34,8 @@ struct NautilusTreeNodeDetails {
 	NautilusFile *file;
 	NautilusDirectory *directory;
 	
+	char *uri;
+
 	guint files_added_id;
 	guint files_changed_id;
 	guint done_loading_id;
@@ -42,7 +44,6 @@ struct NautilusTreeNodeDetails {
 
 	NautilusTreeNode *parent;
 	GList *children;
-	GList *provisional_children;
 };
 
 NautilusTreeNode *nautilus_tree_node_new (NautilusFile *file);

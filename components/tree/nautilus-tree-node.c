@@ -81,6 +81,8 @@ nautilus_tree_node_destroy (GtkObject *object)
 
 	g_list_free (node->details->children);
 
+	g_free (node->details->uri);
+
 	g_free (node->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -94,7 +96,8 @@ nautilus_tree_node_new (NautilusFile *file)
 	node = NAUTILUS_TREE_NODE (gtk_type_new (NAUTILUS_TYPE_TREE_NODE));
 
 	node->details = g_new0 (NautilusTreeNodeDetails, 1);
-	node->details->file      = nautilus_file_ref (file);
+	node->details->file = nautilus_file_ref (file);
+	node->details->uri = nautilus_file_get_uri (file);
 
 	return node;
 }
@@ -118,6 +121,13 @@ nautilus_tree_node_get_file      (NautilusTreeNode   *node)
 {
 	return node->details->file;
 }
+
+char *
+nautilus_tree_node_get_uri      (NautilusTreeNode   *node)
+{
+	return g_strdup (node->details->uri);
+}
+
 
 NautilusDirectory *
 nautilus_tree_node_get_directory (NautilusTreeNode   *node)

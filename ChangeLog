@@ -1,3 +1,27 @@
+2000-09-04  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_initialize), (nautilus_tree_model_destroy),
+	(nautilus_tree_model_for_each_postorder),
+	(nautilus_tree_model_monitor_remove),
+	(nautilus_tree_model_get_node), (report_node_added),
+	(report_node_changed), (report_node_removed_internal),
+	(nautilus_tree_model_directory_files_changed_callback):
+	* components/tree/nautilus-tree-node-private.h:
+	* components/tree/nautilus-tree-node.c:
+	(nautilus_tree_node_destroy), (nautilus_tree_node_new),
+	(nautilus_tree_node_get_uri):
+	* components/tree/nautilus-tree-node.h:
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_insert_model_node):
+
+	Architecture changes to properly handle the case where a
+	NautilusFile object changes name or location. In brief, the tree
+	model keeps a hash keyed on NautilusFiles instead of on uris, and
+	tries to remember the URI of a node to detect when the URI
+	changes. When the URI changes, it gives a remove notification
+	followed by an add notification.
+	
 2000-09-03  Andy Hertzfeld  <andy@eazel.com>
 
 	made the arlo sidebar tabs use the official anti-aliased text machinery,

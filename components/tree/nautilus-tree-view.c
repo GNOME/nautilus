@@ -389,7 +389,7 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 		return;
 	}
 
-	uri = nautilus_file_get_uri (file);
+	uri = nautilus_tree_node_get_uri (node);
 	
 #ifdef DEBUG_TREE
 	printf ("Inserting URI into tree: %s\n", uri);
@@ -461,7 +461,9 @@ nautilus_tree_view_remove_model_node (NautilusTreeView *view, NautilusTreeNode *
 	GtkCTreeNode *view_node;
 	char *uri;
 
-	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
+	nautilus_tree_model_stop_monitoring_node (view->details->model, node, view);
+
+	uri = nautilus_tree_node_get_uri (node);
 	
 	view_node = model_node_to_view_node (view, node); 
 	
@@ -515,7 +517,7 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 	
 	file = nautilus_tree_node_get_file (node);
 
-	uri = nautilus_file_get_uri (file);
+	uri = nautilus_tree_node_get_uri (node);
 
 	view_node = model_node_to_view_node (view, node);
 
@@ -611,7 +613,7 @@ notify_node_seen (NautilusTreeView *view,
 		}
 	}
 
-	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
+	uri = nautilus_tree_node_get_uri (node);
 	
 	if (nautilus_strcmp (uri, view->details->wait_uri) == 0) {
 		callback = view->details->uri_loaded_or_parent_done_loading;
@@ -656,7 +658,7 @@ nautilus_tree_view_model_node_changed_callback (NautilusTreeModel *model,
 	NautilusTreeView *view;
 	char *uri;
 
-	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
+	uri = nautilus_tree_node_get_uri (node);
 
 #ifdef DEBUG_TREE
 	printf ("XXX: changed %s\n", uri);
@@ -701,7 +703,7 @@ nautilus_tree_view_model_done_loading_callback (NautilusTreeModel *model,
 
 	view = NAUTILUS_TREE_VIEW (callback_data);
 
-	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
+	uri = nautilus_tree_node_get_uri (node);
 
 	remove_hack_node (view, uri);
 
@@ -1009,7 +1011,7 @@ model_node_to_view_node (NautilusTreeView *view,
 		return NULL;
 	}
 
-	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
+	uri = nautilus_tree_node_get_uri (node);
 	view_node = uri_to_view_node (view, uri);
 	g_free (uri);
 

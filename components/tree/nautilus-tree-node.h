@@ -57,6 +57,7 @@ GtkType            nautilus_tree_node_get_type      (void);
 NautilusTreeNode  *nautilus_tree_node_get_parent    (NautilusTreeNode   *node);
 GList             *nautilus_tree_node_get_children  (NautilusTreeNode   *node);
 NautilusFile      *nautilus_tree_node_get_file      (NautilusTreeNode   *node);
+char              *nautilus_tree_node_get_uri       (NautilusTreeNode   *node);
 NautilusDirectory *nautilus_tree_node_get_directory (NautilusTreeNode   *node);
 
 void              nautilus_tree_node_set_user_data (NautilusTreeNode   *node,
