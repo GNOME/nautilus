@@ -41,13 +41,26 @@
 #include <liboaf/liboaf.h>
 #include <stdlib.h>
 
+#define N_IDLE_SECONDS_BEFORE_QUIT  5
+
 typedef struct {
 	int                          object_count;
 	GList                       *view_iids;
 	NautilusViewCreateFunction   create_function;
 	void                        *user_data;
+	guint                        delayed_quit_timeout_id;
 } CallbackData;
 
+static gboolean
+delayed_quit_timeout_callback (gpointer data)
+{
+	CallbackData *callback_data;
+
+	callback_data = (CallbackData *) data;
+	callback_data->delayed_quit_timeout_id = 0;
+	gtk_main_quit ();
+	return FALSE;
+}
 
 static void
 object_destroyed (GtkObject     *object,
@@ -56,8 +69,10 @@ object_destroyed (GtkObject     *object,
 	g_assert (GTK_IS_OBJECT (object));
 
 	callback_data->object_count--;
-	if (callback_data->object_count <= 0) {
-		gtk_main_quit ();
+	if (callback_data->object_count <= 0 && callback_data->delayed_quit_timeout_id == 0) {
+		callback_data->delayed_quit_timeout_id = g_timeout_add (N_IDLE_SECONDS_BEFORE_QUIT * 1000,
+		                                                        delayed_quit_timeout_callback,
+		                                                        callback_data);
 	}
 }
 
@@ -90,6 +105,10 @@ make_object (BonoboGenericFactory *factory,
          * when there are no more objects outstanding.
 	 */
 	callback_data->object_count++;
+	if (callback_data->delayed_quit_timeout_id != 0) {
+		g_source_remove (callback_data->delayed_quit_timeout_id);
+		callback_data->delayed_quit_timeout_id = 0;
+	}
 	gtk_signal_connect (GTK_OBJECT (view), "destroy",
 			    object_destroyed, callback_data);
 
@@ -188,6 +207,7 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	callback_data.view_iids = view_iids;
 	callback_data.create_function = create_function;
 	callback_data.user_data = user_data;
+	callback_data.delayed_quit_timeout_id = 0;
 
 	/* Create the factory. */
         registration_id = oaf_make_registration_id (factory_iid, g_getenv ("DISPLAY"));
@@ -199,7 +219,7 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	/* Loop until we have no more objects. */
 	do {
 		bonobo_main ();
-	} while (callback_data.object_count > 0);
+	} while (callback_data.object_count > 0 || callback_data.delayed_quit_timeout_id != 0);
 
 	/* Let the factory go. */
 	bonobo_object_unref (BONOBO_OBJECT (factory));
