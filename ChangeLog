@@ -1,3 +1,17 @@
+2003-09-25  Ettore Perazzoli  <ettore@ximian.com>
+
+	* src/file-manager/fm-directory-view.c
+	(struct FMDirectoryViewDetails): Removed member
+	display_pending_timeout_id.
+	(schedule_timeout_display_of_pending_files): Removed.
+	(unschedule_timeout_display_of_pending_files): Removed.
+	(display_pending_timeout_callback): Removed.
+	(unschedule_display_of_pending_files): Don't call
+	unschedule_timeout_display_of_pending_files() since it's gone.
+	(queue_pending_files): Schedule an idle display only if we are not
+	loading, or if all the files have been seen.
+	(finish_loading): Don't schedule a timeout display.
+
 2003-09-19  Alexander Larsson  <alexl@redhat.com>
 
 	* Merge from HEAD:

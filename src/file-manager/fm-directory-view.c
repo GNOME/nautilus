@@ -205,7 +205,6 @@ struct FMDirectoryViewDetails
 	guint display_selection_idle_id;
 	guint update_menus_timeout_id;
 	
-	guint display_pending_timeout_id;
 	guint display_pending_idle_id;
 	
 	guint files_added_handler_id;
@@ -331,9 +330,6 @@ static void     schedule_update_menus_callback                 (gpointer        
 static void     remove_update_menus_timeout_callback           (FMDirectoryView      *view);
 static void     schedule_idle_display_of_pending_files         (FMDirectoryView      *view);
 static void     unschedule_idle_display_of_pending_files       (FMDirectoryView      *view);
-static void     schedule_timeout_display_of_pending_files      (FMDirectoryView      *view,
-								gboolean              first);
-static void     unschedule_timeout_display_of_pending_files    (FMDirectoryView      *view);
 static void     unschedule_display_of_pending_files            (FMDirectoryView      *view);
 static void     disconnect_model_handlers                      (FMDirectoryView      *view);
 static void     filtering_changed_callback                     (gpointer              callback_data);
@@ -2330,30 +2326,6 @@ display_pending_idle_callback (gpointer data)
 	return ret;
 }
 
-static gboolean
-display_pending_timeout_callback (gpointer data)
-{
-	FMDirectoryView *view;
-
-	view = FM_DIRECTORY_VIEW (data);
-
-	g_object_ref (G_OBJECT (view));
-
-	view->details->display_pending_timeout_id = 0;
-
-	/* If we have more files to do, use an idle, not another timeout. */
-	if (display_pending_files (view)) {
-		schedule_idle_display_of_pending_files (view);
-	}
-
-	g_signal_emit (view,
-		       signals[FLUSH_ADDED_FILES], 0);
-
-	g_object_unref (G_OBJECT (view));
-
-	return FALSE;
-}
-
 static void
 schedule_idle_display_of_pending_files (FMDirectoryView *view)
 {
@@ -2371,30 +2343,6 @@ schedule_idle_display_of_pending_files (FMDirectoryView *view)
 }
 
 static void
-schedule_timeout_display_of_pending_files (FMDirectoryView *view, gboolean first)
-{
-	/* No need to schedule a timeout if there's already one pending. */
-	if (view->details->display_pending_timeout_id != 0) {
-		return;
-	}
-
-	/* An idle takes precedence over a timeout. */
-	if (view->details->display_pending_idle_id != 0) {
-		return;
-	}
-
-	if (first) {
-		view->details->display_pending_timeout_id =
-			g_timeout_add (DISPLAY_TIMEOUT_FIRST_MSECS,
-				       display_pending_timeout_callback, view);
-	} else {
-		view->details->display_pending_timeout_id =
-			g_timeout_add (DISPLAY_TIMEOUT_INTERVAL_MSECS,
-				       display_pending_timeout_callback, view);
-	}
-}
-
-static void
 unschedule_idle_display_of_pending_files (FMDirectoryView *view)
 {
 	/* Get rid of idle if it's active. */
@@ -2405,20 +2353,9 @@ unschedule_idle_display_of_pending_files (FMDirectoryView *view)
 }
 
 static void
-unschedule_timeout_display_of_pending_files (FMDirectoryView *view)
-{
-	/* Get rid of timeout if it's active. */
-	if (view->details->display_pending_timeout_id != 0) {
-		g_source_remove (view->details->display_pending_timeout_id);
-		view->details->display_pending_timeout_id = 0;
-	}
-}
-
-static void
 unschedule_display_of_pending_files (FMDirectoryView *view)
 {
 	unschedule_idle_display_of_pending_files (view);
-	unschedule_timeout_display_of_pending_files (view);
 }
 
 static void
@@ -2433,10 +2370,7 @@ queue_pending_files (FMDirectoryView *view,
 	*pending_list = g_list_concat (*pending_list,
 				       nautilus_file_list_copy (files));
 
-	if (view->details->loading) {
-		schedule_idle_display_of_pending_files (view);
-		schedule_timeout_display_of_pending_files (view, FALSE);
-	} else {
+	if (! view->details->loading || nautilus_directory_are_all_files_seen (view->details->model)) {
 		schedule_idle_display_of_pending_files (view);
 	}
 }
@@ -5555,8 +5489,6 @@ finish_loading (FMDirectoryView *view)
 
 	if (nautilus_directory_are_all_files_seen (view->details->model)) {
 		schedule_idle_display_of_pending_files (view);		
-	} else {
-		schedule_timeout_display_of_pending_files (view, TRUE);
 	}
 	
 	view->details->loading = TRUE;
