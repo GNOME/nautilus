@@ -135,6 +135,9 @@ impl_Trilobite_Eazel_Sample_list_it(impl_POA_Sample_Service *service,
 	tmp = g_new0 (char, 1024);
 	while (!feof (f)) {
 		fgets (tmp, 1023, f);
+		if (feof (f)) {
+			break;
+		}
 		fprintf (stdout, "GNE: %s", tmp);
 	}
 	fclose (f);

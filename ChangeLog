@@ -1,3 +1,17 @@
+2000-07-13  Robey Pointer  <robey@eazel.com>
+
+	*
+	components/services/trilobite/libtrilobite/trilobite-root-client.c:
+	(trilobite_root_client_destroy):
+	* components/services/trilobite/sample/command-line/main.c: (main):
+	*
+	components/services/trilobite/sample/service/sample-service-impl.c:
+	(impl_Trilobite_Eazel_Sample_list_it):
+
+	Fix a few places where corba objects weren't released, so that the
+	sample service test demonstrates freeing the root client *and* the
+	root helper.
+	
 2000-07-13  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: added arlo them

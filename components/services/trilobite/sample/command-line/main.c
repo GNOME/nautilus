@@ -128,6 +128,8 @@ int main(int argc, char *argv[]) {
 			if (ev._major != CORBA_NO_EXCEPTION) {
 				g_warning ("set-query-client got exception :(");
 			}
+			Trilobite_PasswordQuery_unref (trilobite_password, &ev);
+			CORBA_Object_release (trilobite_password, &ev);
 		} else {
 			g_warning ("Never set client!");
 		}

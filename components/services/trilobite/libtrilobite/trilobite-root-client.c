@@ -148,7 +148,16 @@ trilobite_root_client_destroy (GtkObject *object)
 	root_client = TRILOBITE_ROOT_CLIENT (object);
 
 	/* anything that needs to be freed? */
-	g_free (root_client->private);
+	if (root_client->private) {
+		if (root_client->private->pq_client != CORBA_OBJECT_NIL) {
+			CORBA_Environment ev;
+
+			CORBA_exception_init (&ev);
+			CORBA_Object_release (root_client->private->pq_client, &ev);
+			CORBA_exception_free (&ev);
+		}
+		g_free (root_client->private);
+	}
 
 	/* call parent destructor */
 	if (GTK_OBJECT_CLASS (parent_class)->destroy) {
