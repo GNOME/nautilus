@@ -75,7 +75,8 @@ char    *arg_server,
 	*arg_package_list,
 	*arg_tmp_dir,
 	*arg_username,
-	*arg_root;
+	*arg_root,
+	*arg_batch;
 
 /* Yeahyeah, but this was initially a test tool,
    so stop whining... */
@@ -85,7 +86,8 @@ int cli_result = 0;
 GList *cases = NULL;
 
 static const struct poptOption options[] = {
-	{"debug", '0', POPT_ARG_NONE, &arg_debug, 0 , N_("Show debug output"), NULL},
+	{"batch", '\0', POPT_ARG_STRING, &arg_batch, 0, N_("Set the default answer to continue, also default delete to Yes"), NULL},
+	{"debug", '\0', POPT_ARG_NONE, &arg_debug, 0 , N_("Show debug output"), NULL},
 	{"delay", '\0', POPT_ARG_NONE, &arg_delay, 0 , N_("10 sec delay after starting service"), NULL},
 	{"downgrade", 'd', POPT_ARG_NONE, &arg_downgrade, 0, N_("Allow downgrades"), NULL},
 	{"erase", 'e', POPT_ARG_NONE, &arg_erase, 0, N_("Erase packages"), NULL},
@@ -412,7 +414,7 @@ install_failed (EazelInstallCallback *service,
 		if (stuff) {
 			GList *it;
 			for (it = stuff; it; it = g_list_next (it)) {
-				fprintf (stdout, "%s\n", (char*)(it->data));
+				fprintf (stdout, "PRoblem : %s\n", (char*)(it->data));
 			}
 		}
 		
@@ -542,54 +544,56 @@ create_package (char *name)
 	return pack;
 }
 
-static gboolean
+static void
 delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 {
 	char answer[128];
-	gboolean ask_delete = FALSE;
+	gboolean ask_delete = TRUE;
 
 	if (cases) {
 		printf ("continue? (y/n) ");
 		fflush (stdout);
-		
-		fgets (answer, 10, stdin);
+		if (arg_batch) {			
+			fprintf (stdout, "%s\n", arg_batch);
+			strcpy (answer, arg_batch);
+		} else {
+			fgets (answer, 10, stdin);
+		}
 		if (answer[0] == 'y' || answer[0] == 'Y') {
-			printf ("you said: YES\n");
 			fflush (stdout);
 			eazel_install_problem_handle_cases (problem, service, &cases, arg_root);
+			ask_delete = FALSE;
 		} else {
 			eazel_install_problem_case_list_destroy (cases);
 			cases = NULL;
-			printf ("you said: NO\n");
-			fflush (stdout);
-			ask_delete = TRUE;
 		}		
 	} 
 
 	if (ask_delete) {
 		printf ("should i delete the RPM files? (y/n) ");
 		fflush (stdout);
-		
-		fgets (answer, 10, stdin);
-		if (answer[0] == 'y' || answer[0] == 'Y') {
-			printf ("you said: YES\n");
-			fflush (stdout);
-			return TRUE;
+		if (arg_batch) {			
+			fprintf (stdout, "yes\n");
+			strcpy (answer, "yes");
 		} else {
-			printf ("you said: NO\n");
-			fflush (stdout);
+			fgets (answer, 10, stdin);
 		}
+		
+		if (answer[0] == 'y' || answer[0] == 'Y') {
+			fflush (stdout);
+			eazel_install_callback_delete_files (service, &ev);			
+		} 
 	}
-	return FALSE;
 }
 
 static void
 done (EazelInstallCallback *service,
       gboolean result,
-      gpointer unused)
+      EazelInstallProblem *problem)
 {
 	fprintf (stderr, "Operation %s\n", result ? "ok" : "failed");
 	cli_result = result ? 0 : 1;
+	delete_files (service, problem);
 	if (cases == NULL) {
 		gtk_main_quit ();
 	}
@@ -653,7 +657,7 @@ int main(int argc, char *argv[]) {
 	gnomelib_register_popt_table (options, "Eazel Install");
 	ctxt = gnomelib_parse_args (argc, argv, 0);
 #endif
-	
+
 	packages = NULL;
 	categories = NULL;
 	/* If there are more args, get them and parse them as packages */
@@ -721,12 +725,9 @@ int main(int argc, char *argv[]) {
 	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", 
 			    GTK_SIGNAL_FUNC (dep_check), 
 			    NULL);
-	gtk_signal_connect (GTK_OBJECT (cb), "delete_files", 
-			    GTK_SIGNAL_FUNC (delete_files), 
-			    problem);
 	gtk_signal_connect (GTK_OBJECT (cb), "done", 
 			    GTK_SIGNAL_FUNC (done), 
-			    NULL);
+			    problem);
 
 	if (arg_erase + arg_query + arg_downgrade + arg_upgrade + arg_revert > 1) {
 		g_error ("Only one operation at a time please.");
@@ -734,7 +735,7 @@ int main(int argc, char *argv[]) {
 
 	if (arg_erase) {
 		if (categories == NULL) {
-			fprintf (stderr, "%s: -h for usage\n", argv[0]);
+			fprintf (stderr, "%s: --help for usage\n", argv[0]);
 			cli_result = 1;
 		} else {
 			eazel_install_callback_uninstall_packages (cb, categories, arg_root, &ev);
@@ -742,7 +743,7 @@ int main(int argc, char *argv[]) {
 	} else if (arg_query) {
 		GList *iterator;
 		if (strs == NULL) {
-			fprintf (stderr, "%s: -h for usage\n", argv[0]);
+			fprintf (stderr, "%s: --help for usage\n", argv[0]);
 			cli_result = 1;
 		} else for (iterator = strs; iterator; iterator = iterator->next) {
 			GList *matched_packages;
@@ -786,14 +787,14 @@ int main(int argc, char *argv[]) {
 	} else if (arg_revert) {
 		GList *iterator;
 		if (strs == NULL) {
-			fprintf (stderr, "%s: -h for usage\n", argv[0]);
+			fprintf (stderr, "%s: --help for usage\n", argv[0]);
 			cli_result = 1;
 		} else for (iterator = strs; iterator; iterator = iterator->next) {
 			eazel_install_callback_revert_transaction (cb, (char*)iterator->data, arg_root, &ev);
 		}
 	} else {
 		if (categories == NULL) {
-			fprintf (stderr, "%s: -h for usage\n", argv[0]);
+			fprintf (stderr, "%s: --help for usage\n", argv[0]);
 			cli_result = 1;
 		} else {
 			eazel_install_callback_install_packages (cb, categories, arg_root, &ev);

@@ -873,6 +873,7 @@ nautilus_install_service_locate_menu_entries (NautilusServiceInstallView *view)
 								    dentry->name);
 				}
 			} else {			       
+				addition = NULL;
 				/*
 				addition = g_strdup_printf (_(" \xB7 %s in somewhere...\n"), 
 							    dentry->name);

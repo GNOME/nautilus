@@ -377,7 +377,6 @@ get_detailed_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
 {
 	/* GList **errors = &(data->errors); */
 	PackageData *previous_pack = NULL;
-	PackageData *top_pack = NULL;
 
 #ifdef EIP_DEBUG
 	g_message ("get_detailed_cases_foreach (data->path = 0x%x)", (int)(data->path));
@@ -387,10 +386,6 @@ get_detailed_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
 
 	if (data->path) {
 		previous_pack = (PackageData*)(data->path->data);
-		top_pack = (PackageData*)(g_list_last (data->path)->data);
-		if (top_pack == previous_pack) {
-			previous_pack = NULL;
-		}
 	}
 
 	switch (pack->status) {
@@ -399,7 +394,7 @@ get_detailed_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
 		break;
 	case PACKAGE_FILE_CONFLICT:
-		if ((pack->name!= NULL) && (strcmp (pack->name, previous_pack->name) != 0)) {
+		if ((pack->name!= NULL) && previous_pack && (strcmp (pack->name, previous_pack->name) != 0)) {
 			add_update_case (data->problem, pack, &(data->errors)); 
 		} else {
 			g_warning ("%s:%d : oops", __FILE__,__LINE__);
@@ -408,7 +403,7 @@ get_detailed_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
 	case PACKAGE_DEPENDENCY_FAIL:
 		if (pack->soft_depends || pack->hard_depends) {
 		} else {
-			if (previous_pack->status == PACKAGE_BREAKS_DEPENDENCY) {
+			if (previous_pack && previous_pack->status == PACKAGE_BREAKS_DEPENDENCY) {
 				add_update_case (data->problem, pack, &(data->errors)); 
 			} else {
 				g_warning ("%s:%d : oops", __FILE__,__LINE__);
@@ -426,7 +421,7 @@ get_detailed_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
 	case PACKAGE_ALREADY_INSTALLED:
 		break;
 	case PACKAGE_CIRCULAR_DEPENDENCY: 
-		if (previous_pack->status == PACKAGE_CIRCULAR_DEPENDENCY) {
+		if (previous_pack && previous_pack->status == PACKAGE_CIRCULAR_DEPENDENCY) {
 			add_force_install_both_case (data->problem, pack, previous_pack, &(data->errors));
 		} else {
 			g_warning ("%s:%d : oops", __FILE__,__LINE__);

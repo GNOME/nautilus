@@ -1,6 +1,23 @@
 2000-11-01  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (delete_files), (done), (main):
+	Now has a --batch command to it doens't need userinteraction
+	--batch=yes|no to set the default answer to continue ?
+	questions. Using --batch defaults the answer to delete to yes. Now
+	delete works again (after Great Delete Change)
+	
+	* components/services/install/lib/eazel-install-problem.c:
+	(get_detailed_cases_foreach):
+	Fixed potiental sigsegvs.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_install_service_locate_menu_entries):
+	Fixed a compiler warning that broke build.
+
+2000-11-01  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.
 	c: (main):
 	Fixed 4331.
 	* components/services/install/lib/eazel-install-logic.c:
