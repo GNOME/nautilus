@@ -170,6 +170,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 {
 	GtkWidget *label;
 	GtkWidget *table;
+	char *text;
 	
 	dialog->details = g_new0 (NautilusConnectServerDialogDetails, 1);
 
@@ -179,7 +180,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
 	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
 
-	table = gtk_table_new (2, 2, FALSE);
+	table = gtk_table_new (3, 2, FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (table), 5);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
 			    table, TRUE, TRUE, 0);
@@ -187,7 +188,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	gtk_table_set_col_spacings (GTK_TABLE (table), 12);
 	gtk_widget_show (table);
 	
-	label = gtk_label_new_with_mnemonic (_("_Name:"));
+	label = gtk_label_new_with_mnemonic (_("Link _Name:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
 	gtk_table_attach (GTK_TABLE (table), label,
@@ -206,7 +207,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			  0, 0);
 
 	
-	label = gtk_label_new_with_mnemonic (_("_Location:"));
+	label = gtk_label_new_with_mnemonic (_("_Location (URL):"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
 	gtk_table_attach (GTK_TABLE (table), label,
@@ -227,6 +228,18 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			  1, 2,
 			  GTK_FILL | GTK_EXPAND, GTK_FILL,
 			  0, 0);
+	text = g_strdup_printf ("<small><i><b>%s </b>ftp://ftp.gnome.org</i></small>", _("Example:"));
+	label = gtk_label_new (text);
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_widget_show (label);
+	g_free (text);
+	gtk_table_attach (GTK_TABLE (table), label,
+			  1, 2,
+			  2, 3,
+			  GTK_FILL | GTK_EXPAND, GTK_FILL,
+			  0, 0);
+	/*	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+		label, TRUE, TRUE, 0);*/
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
 			       GTK_STOCK_CANCEL,
