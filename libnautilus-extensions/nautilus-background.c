@@ -534,9 +534,9 @@ fill_drawable_from_gradient_buffer (GdkDrawable *drawable, GdkGC *gc,
  */
 static void
 update_drawable_with_pixbuf (GdkDrawable *dst, GdkGC *gc,
-							 int dst_x0, int dst_y0, int dst_x1, int dst_y1,
-							 GdkPixbuf *src,
-							 int src_x0, int src_y0, int src_x1, int src_y1)
+			     int dst_x0, int dst_y0, int dst_x1, int dst_y1,
+			     GdkPixbuf *src,
+			     int src_x0, int src_y0, int src_x1, int src_y1)
 {
 	if (src_x1 > dst_x0 && src_y1 > dst_y0 && src_x0 < dst_x1  && src_y0 < dst_y1) {
 		int src_offset_x;
@@ -739,9 +739,9 @@ nautilus_background_pre_draw (NautilusBackground *background, int entire_width, 
  */
 void
 nautilus_background_draw (NautilusBackground *background,
-						  GdkDrawable *drawable, GdkGC *gc,
-						  int drawable_x, int drawable_y,
-						  int drawable_width, int drawable_height)
+			  GdkDrawable *drawable, GdkGC *gc,
+			  int drawable_x, int drawable_y,
+			  int drawable_width, int drawable_height)
 {
 	int drawable_right;
 	int drawable_bottom;
@@ -806,11 +806,11 @@ nautilus_background_draw (NautilusBackground *background,
 			/* Since the image has already been scaled, all these cases can be treated identically.
 			 */
 			update_drawable_with_pixbuf (drawable, gc,
-										 drawable_x, drawable_y,
-										 drawable_right, drawable_bottom,
-							 			 background->details->image,
-							 			 background->details->image_rect_x, background->details->image_rect_y,
-							 			 image_rect_right, image_rect_bottom);
+						     drawable_x, drawable_y,
+						     drawable_right, drawable_bottom,
+						     background->details->image,
+						     background->details->image_rect_x, background->details->image_rect_y,
+						     image_rect_right, image_rect_bottom);
 			break;
 		}
 	}
@@ -818,10 +818,10 @@ nautilus_background_draw (NautilusBackground *background,
 
 void
 nautilus_background_draw_to_drawable (NautilusBackground *background,
-						 			  GdkDrawable *drawable, GdkGC *gc,
-									  int drawable_x, int drawable_y,
-									  int drawable_width, int drawable_height,
-									  int entire_width, int entire_height)
+				      GdkDrawable *drawable, GdkGC *gc,
+				      int drawable_x, int drawable_y,
+				      int drawable_width, int drawable_height,
+				      int entire_width, int entire_height)
 {
 	nautilus_background_pre_draw (background, entire_width, entire_height);
 	nautilus_background_draw (background, drawable, gc, drawable_x, drawable_y, drawable_width, drawable_height);
@@ -893,9 +893,9 @@ nautilus_background_draw_aa (NautilusBackground *background, GnomeCanvasBuf *buf
 			 * can be treated identically.
 			 */
 			nautilus_gnome_canvas_draw_pixbuf (buffer,
-											   background->details->image,
-											   background->details->image_rect_x,
-											   background->details->image_rect_y);
+							   background->details->image,
+							   background->details->image_rect_x,
+							   background->details->image_rect_y);
 			break;
 		}
 	}
@@ -906,9 +906,9 @@ nautilus_background_draw_aa (NautilusBackground *background, GnomeCanvasBuf *buf
 
 void
 nautilus_background_draw_to_canvas (NautilusBackground *background,
-								    GnomeCanvasBuf *buffer,
-									int entire_width,
-									int entire_height)
+				    GnomeCanvasBuf *buffer,
+				    int entire_width,
+				    int entire_height)
 {
 	nautilus_background_pre_draw (background, entire_width, entire_height);
 	nautilus_background_draw_aa (background, buffer);
@@ -960,8 +960,8 @@ nautilus_background_set_color (NautilusBackground *background,
 
 static void
 nautilus_background_load_image_callback (GnomeVFSResult error,
-										 GdkPixbuf *pixbuf,
-										 gpointer callback_data)
+					 GdkPixbuf *pixbuf,
+					 gpointer callback_data)
 {
 	NautilusBackground *background;
 
@@ -1004,8 +1004,8 @@ nautilus_background_start_loading_image (NautilusBackground *background)
 {
 	if (background->details->image_uri != NULL) {
 		background->details->load_image_handle = nautilus_gdk_pixbuf_load_async (background->details->image_uri,
-																				 nautilus_background_load_image_callback,
-																				 background);
+											 nautilus_background_load_image_callback,
+											 background);
 	} else {
 		nautilus_background_load_image_callback (0, NULL, background);
 	}
@@ -1037,24 +1037,15 @@ nautilus_background_set_image_uri_no_emit (NautilusBackground *background,
 	return TRUE;
 }
 
-static gboolean
-nautilus_background_set_image_uri_helper (NautilusBackground *background, const char *image_uri)
+void
+nautilus_background_set_image_uri (NautilusBackground *background, const char *image_uri)
 {
 	if (nautilus_background_set_image_uri_no_emit (background, image_uri)) {
 		/* The APPEARANCE_CHANGED is emitted when the image is done loading,
 		 * in nautilus_background_load_image_callback. 
 		 */
 		gtk_signal_emit (GTK_OBJECT (background), signals[SETTINGS_CHANGED]);
-		return TRUE;
-	} else {
-		return FALSE;
 	}
-}
-
-void
-nautilus_background_set_image_uri (NautilusBackground *background, const char *image_uri)
-{
-	nautilus_background_set_image_uri_helper (background, image_uri);
 }
 
 
@@ -1062,6 +1053,10 @@ static void
 set_image_and_color_image_loading_done_callback (NautilusBackground *background, gboolean successful_load, const char *color)
 {
 	gtk_signal_disconnect_by_func (GTK_OBJECT (background), GTK_SIGNAL_FUNC (set_image_and_color_image_loading_done_callback), (gpointer) color);
+	/* Note that the image loading done will have already emitted APPEARANCE_CHANGED
+	 * and that this set color may cause another APPEARANCE_CHANGED (as well as a
+	 * SETTINGS_CHANGED)
+	 */
 	nautilus_background_set_color (background, color);
 }
 
@@ -1073,10 +1068,10 @@ static void
 nautilus_background_set_image_uri_and_color (NautilusBackground *background, const char *image_uri, const char *color)
 {
 	gtk_signal_connect (GTK_OBJECT (background),
-						"image_loading_done",
-						GTK_SIGNAL_FUNC (set_image_and_color_image_loading_done_callback),
-						(gpointer) color);
-	if (!nautilus_background_set_image_uri_helper (background, image_uri)) {
+			    "image_loading_done",
+			    GTK_SIGNAL_FUNC (set_image_and_color_image_loading_done_callback),
+			    (gpointer) color);
+	if (!nautilus_background_set_image_uri_no_emit (background, image_uri)) {
 		/* If the image loading was a no-op, then we have to manually call
 		 * set_image_and_color_image_loading_done_callback. 
 		 */

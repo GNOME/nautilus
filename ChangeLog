@@ -1,3 +1,23 @@
+2000-11-14  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(nautilus_file_background_event_filter), (set_root_pixmap):
+	Nautilus no longer responds to PropertyChange events on
+	the root window that it originates (bug 3038)
+
+	* libnautilus-extensions/nautilus-background.c:
+	(update_drawable_with_pixbuf), (nautilus_background_draw),
+	(nautilus_background_draw_to_drawable),
+	(nautilus_background_draw_aa),
+	(nautilus_background_draw_to_canvas),
+	(nautilus_background_load_image_callback),
+	(nautilus_background_start_loading_image),
+	(nautilus_background_set_image_uri),
+	(set_image_and_color_image_loading_done_callback),
+	(nautilus_background_set_image_uri_and_color):
+	nautilus_background_set_image_uri_and_color used to generate
+	an extra SETTINGS_CHANGED + reformatted a bunch of code.
+
 2000-11-14  Darin Adler  <darin@eazel.com>
 
 	* src/nautilus-property-browser.c: Some small stuff that got

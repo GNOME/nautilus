@@ -339,6 +339,17 @@ call_settings_changed (NautilusBackground *background)
 	return FALSE;
 }
 
+/* We don't want to respond to our own changes to the root pixmap.
+ * Since there's no way to determine the origin of the x-event (or mark it)
+ * we use this variable determine if we think the next PropertyNotify is
+ * due to us.
+ * 
+ * It's not an infalible soln, another app changing this property at the
+ * same would mess it up, but this is unlikely because it's not a setting
+ * that's widely used.
+ */
+static int set_root_pixmap_count = 0;
+
 static GdkFilterReturn
 nautilus_file_background_event_filter (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
 {
@@ -348,6 +359,14 @@ nautilus_file_background_event_filter (GdkXEvent *gdk_xevent, GdkEvent *event, g
 	xevent = (XEvent *) gdk_xevent;
 
 	if (xevent->type == PropertyNotify && xevent->xproperty.atom == gdk_atom_intern("ESETROOT_PMAP_ID", TRUE)) {
+
+		/* ignore if nautilus caused it.
+		 */
+		if (set_root_pixmap_count > 0) {
+			--set_root_pixmap_count;
+			return GDK_FILTER_CONTINUE;
+		}
+		
 	    	background = NAUTILUS_BACKGROUND (data);
 	    	/* FIXME bugzilla.eazel.com 2220:
 	    	 * We'd like to call saved_settings_changed_callback right here, directly.
@@ -465,6 +484,8 @@ set_root_pixmap (GdkPixmap *pixmap)
 
 		XFree (data_esetroot);
 	}
+
+	++set_root_pixmap_count;
 
 	XChangeProperty (GDK_DISPLAY(), GDK_ROOT_WINDOW(),
 			 gdk_atom_intern("ESETROOT_PMAP_ID", FALSE), XA_PIXMAP,
