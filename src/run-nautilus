@@ -32,11 +32,16 @@ then
   ##
   nautilus-clean.sh -q -x
 else
-  ##
+  ## If no arguments give, open a new new home window
+  if [ $# -eq 0 ]
+  then
+    nautilus ~
+    RETURN=$?
   ## Run Nautilus with optional command line arguments
-  ## This should open a new window on the currently running Nautilus
-  nautilus ${1+"$@"}
-  RETURN=$?
+  else
+    nautilus ${1+"$@"}
+    RETURN=$?
+  fi
 fi
 
 exit $RETURN

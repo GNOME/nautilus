@@ -1,3 +1,23 @@
+2000-11-01  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* applets/launcher/nautilus-launcher-applet.c: (image_enter_event),
+	(window_set_cursor_for_state), (set_is_launching),
+	(get_is_launching), (image_button_press_event),
+	(image_button_release_event), (event_filter),
+	(root_listen_for_property_changes), (main):
+	Keep track of NautilusWindow realization events.  Do this by
+	monitoring a property on the root window.  Use this flag in order
+	to give the user feedback about the launching state of new
+	Nautilus windows.  Fixes bug 4300.
+	
+	* src/nautilus-window.c: (nautilus_window_update_launcher),
+	(nautilus_window_realize):
+	Notify the launcher when a NautilusWindow get realized.
+	
+	* src/run-nautilus:
+	If no arguments are given, then open a window pointed to the
+	user's home directory.
+	
 2000-11-01  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-utilities.c:

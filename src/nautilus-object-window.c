@@ -72,6 +72,9 @@
 #include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus/nautilus-undo.h>
 #include <math.h>
+#include <sys/time.h>
+#include <X11/Xatom.h>
+#include <gdk/gdkx.h>
 
 /* FIXME bugzilla.eazel.com 1243: 
  * We should use inheritance instead of these special cases
@@ -674,6 +677,25 @@ nautilus_window_filter (GdkXEvent *xev, GdkEvent *event, gpointer data)
 #endif
 
 static void
+nautilus_window_update_launcher (GdkWindow *window)
+{
+	struct timeval tmp;
+	
+	gettimeofday (&tmp, NULL);
+
+	/* Set a property on the root window to the time of day in seconds.
+	 * The launcher will monitor the root window for this property change
+	 * to update its launching state */
+	gdk_property_change (GDK_ROOT_PARENT (),
+			     gdk_atom_intern ("_NAUTILUS_LAST_WINDOW_REALIZE_TIME", FALSE),
+			     XA_CARDINAL,
+			     32,
+			     PropModeReplace,
+			     (guchar *) &tmp.tv_sec,
+			     1);
+}
+
+static void
 nautilus_window_realize (GtkWidget *widget)
 {
         char *filename;
@@ -715,6 +737,9 @@ nautilus_window_realize (GtkWidget *widget)
 		}
         	g_free (filename);
 	}
+
+	/* Notify the launcher that our window has been realized */
+	nautilus_window_update_launcher (widget->window);
 }
 
 static void
