@@ -2979,6 +2979,18 @@ handle_typeahead (NautilusIconContainer *container, const char *key_string)
 	return TRUE;
 }
 
+static gboolean
+handle_popups (NautilusIconContainer *container,
+	       GdkEventKey           *event,
+	       const char            *signal)
+{
+	GdkEventButton button_event = { 0 };
+
+	g_signal_emit_by_name (container, signal, &button_event);
+
+	return TRUE;
+}
+
 static int
 key_press_event (GtkWidget *widget,
 		 GdkEventKey *event)
@@ -3052,6 +3064,15 @@ key_press_event (GtkWidget *widget,
 		case GDK_Escape:
 			undo_stretching (container);
 			handled = TRUE;
+			break;
+		case GDK_F10:
+			if (event->state & GDK_CONTROL_MASK) {
+				handled = handle_popups (container, event,
+							 "context_click_background");
+			} else if (event->state & GDK_SHIFT_MASK) {
+				handled = handle_popups (container, event,
+							 "context_click_selection");
+			}
 			break;
 		default:
 			/* Don't use Control or Alt keys for type-selecting, because they
