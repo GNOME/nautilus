@@ -1,3 +1,19 @@
+2000-03-08  Andy Hertzfeld <andy@eazel.com>
+
+	* libnautilus/nautilus-icons-view-icon-item.c:
+	implemented pre-lighting for icons by overriding the event method
+	to maintain the pre-lit boolean, and then using the boolean to
+	decide when to lighten the icon by using a new "lighten" routine
+	that manipulates the pixbuf.
+	
+	* libnautilus/gnome-icon-container-dnd.c:
+	only use semi-transparent dragging for relatively small icons, due
+	to X performance limitations.
+	
+	* libnautilus/gnome-icon-container.c:
+	change the ICON_MAXIMUM_SIZE used as a threshold for scaling from
+	80 to 96, to step around bug of scaling too much for thumbnails.
+	
 2000-03-08  Darin Adler  <darin@eazel.com>
 
 	You can now use Set Properties to attach keywords to a file,

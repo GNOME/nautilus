@@ -69,7 +69,7 @@
 #define CONTEXTUAL_MENU_BUTTON 3
 
 /* maximum size allowed for icons at the time they are installed - the user can still stretch them further */
-#define MAXIMUM_INITIAL_ICON_SIZE  80
+#define MAXIMUM_INITIAL_ICON_SIZE  96
 
 static void  gnome_icon_container_activate_selected_items (GnomeIconContainer      *container);
 static void  gnome_icon_container_initialize_class        (GnomeIconContainerClass *class);

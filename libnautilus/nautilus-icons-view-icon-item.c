@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2000 Eazel, Inc
  *
- * Authors: Andy Hertzfeld <andy@eazel.com>, Darin Adler <darin@eazel.com>
+ * Author: Andy Hertzfeld <andy@eazel.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -59,6 +59,7 @@ struct NautilusIconsViewIconItemDetails {
 	guint is_highlighted_for_keyboard_selection: 1;
    	guint is_highlighted_for_drop : 1;
 	guint show_stretch_handles : 1;
+	guint is_prelit : 1;
 };
 
 /* Object argument IDs. */
@@ -101,6 +102,8 @@ static GdkFont *mini_text_font;
 static void     nautilus_icons_view_icon_item_initialize_class          (NautilusIconsViewIconItemClass  *class);
 static void     nautilus_icons_view_icon_item_initialize                (NautilusIconsViewIconItem       *item);
 static void     nautilus_icons_view_icon_item_destroy                   (GtkObject                       *object);
+static gint	nautilus_icons_view_icon_item_event			(GnomeCanvasItem *item, 
+									 GdkEvent* event); 
 static void     nautilus_icons_view_icon_item_set_arg                   (GtkObject                       *object,
 									 GtkArg                          *arg,
 									 guint                            arg_id);
@@ -190,7 +193,8 @@ nautilus_icons_view_icon_item_initialize_class (NautilusIconsViewIconItemClass *
 	item_class->draw = nautilus_icons_view_icon_item_draw;
 	item_class->point = nautilus_icons_view_icon_item_point;
 	item_class->bounds = nautilus_icons_view_icon_item_bounds;
-
+	item_class->event = nautilus_icons_view_icon_item_event;
+	
 	stipple = gdk_bitmap_create_from_data (NULL, stipple_bits, 2, 2);
         /* FIXME: the font shouldn't be hard-wired like this */
         mini_text_font = gdk_font_load("-bitstream-charter-medium-r-normal-*-9-*-*-*-*-*-*-*");
@@ -454,7 +458,6 @@ nautilus_icons_view_icon_item_update (GnomeCanvasItem *item, double *affine, Art
 	NAUTILUS_CALL_PARENT_CLASS (GNOME_CANVAS_ITEM_CLASS, update, (item, affine, clip_path, flags));
 }
 
-
 
 /* Rendering */
 
@@ -745,8 +748,8 @@ emblem_layout_next (EmblemLayout *layout,
 		}
 		
 		/* Check to see if emblem fits in current side. */
-		if (x >= layout->icon_rect.x0 && x <= layout->icon_rect.x1
-		    && y >= layout->icon_rect.y0 && y <= layout->icon_rect.y1) {
+		if (x >= layout->icon_rect.x0 || x <= layout->icon_rect.x1
+		    || y < layout->icon_rect.y0 || y > layout->icon_rect.y1) {
 
 			/* It fits. */
 
@@ -803,6 +806,65 @@ draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 
 }
 
+/* graphics routine to lighten a pixbuf */
+/* FIXME: should be in a graphics library somewhere */
+
+static guchar
+lighten_component(guchar cur_value)
+{
+	gint new_value = cur_value;
+	new_value += 32 + (new_value >> 3);
+	if (new_value > 255)
+		new_value = 255;
+	return (guchar) new_value;
+}
+
+static void
+do_lighten (GdkPixbuf *dest, GdkPixbuf *src)
+{
+	gint i, j;
+	gint width, height, has_alpha, rowstride;
+	guchar *target_pixels;
+	guchar *original_pixels;
+	guchar *pixsrc;
+	guchar *pixdest;
+	
+	has_alpha = gdk_pixbuf_get_has_alpha (src);
+	width = gdk_pixbuf_get_width (src);
+	height = gdk_pixbuf_get_height (src);
+	rowstride = gdk_pixbuf_get_rowstride (src);
+	target_pixels = gdk_pixbuf_get_pixels (dest);
+	original_pixels = gdk_pixbuf_get_pixels (src);
+
+	for (i = 0; i < height; i++) {
+		pixdest = target_pixels + i*rowstride;
+		pixsrc = original_pixels + i*rowstride;
+		for (j = 0; j < width; j++) {		
+			*(pixdest++) = lighten_component(*(pixsrc++));
+			*(pixdest++) = lighten_component(*(pixsrc++));
+			*(pixdest++) = lighten_component(*(pixsrc++));
+			if (has_alpha)
+				*(pixdest++) = *(pixsrc++);
+		}
+	}
+}
+#undef INTENSITY
+
+/* utility routine to lighten a pixbuf for pre-lighting */
+
+static GdkPixbuf*
+spotlight_pixbuf(GdkPixbuf* source_pixbuf)
+{
+	GdkPixbuf *new = gdk_pixbuf_new(gdk_pixbuf_get_format(source_pixbuf),
+			     gdk_pixbuf_get_has_alpha(source_pixbuf),
+			     gdk_pixbuf_get_bits_per_sample(source_pixbuf),
+			     gdk_pixbuf_get_width(source_pixbuf),
+			     gdk_pixbuf_get_height(source_pixbuf));
+	do_lighten (new, source_pixbuf);
+
+	return new;
+}
+
 /* Draw the icon item. */
 static void
 nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
@@ -829,9 +891,16 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 	icon_rect.y0 -= y;
 	icon_rect.x1 -= x;
 	icon_rect.y1 -= y;
+
+	/* if the pre-lit flag is set, make a pre-lit pixbuf and draw that instead */
 	
-	/* Draw the icon's pixbuf. */
-	draw_pixbuf (details->pixbuf, drawable, icon_rect.x0, icon_rect.y0);
+	if (details->is_prelit) {
+		GdkPixbuf *prelit_pixbuf = spotlight_pixbuf(details->pixbuf);
+		draw_pixbuf (prelit_pixbuf , drawable, icon_rect.x0, icon_rect.y0);
+		gdk_pixbuf_unref(prelit_pixbuf);		
+	}
+	else	
+		draw_pixbuf (details->pixbuf, drawable, icon_rect.x0, icon_rect.y0);
 
 	/* Draw the emblem pixbufs. */
 	emblem_layout_reset (&emblem_layout, icon_item, &icon_rect);
@@ -853,7 +922,33 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 	nautilus_icons_view_draw_text_box (item, drawable, icon_rect.x0, icon_rect.y1);
 }
 
-
+/* handle events */
+
+static gint
+nautilus_icons_view_icon_item_event(GnomeCanvasItem *item, GdkEvent* event)
+{
+	NautilusIconsViewIconItem *icon_item = NAUTILUS_ICONS_VIEW_ICON_ITEM(item);
+	switch (event->type) {
+		case GDK_ENTER_NOTIFY:
+			if (!icon_item->details->is_prelit) {
+				icon_item->details->is_prelit = TRUE;
+				gnome_canvas_item_request_update(item);
+			}
+			break;
+			
+		case GDK_LEAVE_NOTIFY:
+			if (icon_item->details->is_prelit) {
+				icon_item->details->is_prelit = FALSE;
+				gnome_canvas_item_request_update(item);
+			}
+			break;
+		
+		default:
+			break;
+	}	
+	return TRUE; /* eat up the event */	
+}
+
 
 static gboolean
 hit_test_pixbuf (GdkPixbuf *pixbuf, int pixbuf_x, int pixbuf_y, int probe_x, int probe_y)
@@ -970,7 +1065,7 @@ nautilus_icons_view_icon_item_bounds (GnomeCanvasItem *item, double *x1, double 
 	text_rect.x0 = icon_rect.x1 / 2 - details->text_width / 2;
 	text_rect.y0 = icon_rect.y1;
 	text_rect.x1 = text_rect.x0 + details->text_width;
-	text_rect.y1 = text_rect.y0 + details->text_height;
+	text_rect.y1 = text_rect.y1 + details->text_height;
 
 	/* Compute total rectangle, adding in emblem rectangles. */
 	art_irect_union (&total_rect, &icon_rect, &text_rect);

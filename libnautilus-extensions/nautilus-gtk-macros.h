@@ -76,7 +76,7 @@ class_name_in_function_format##_get_type (void) \
 \
 (parent_class_cast_macro (parent_class)->signal == NULL) \
 	? 0 \
-	: (* parent_class_cast_macro (parent_class)->signal) parameters
+	: ((* parent_class_cast_macro (parent_class)->signal) parameters)
 
 
 
