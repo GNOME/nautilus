@@ -41,9 +41,9 @@ do_destroy(GtkObject *obj)
     gtk_main_quit();
 }
 
-static GnomeObject * make_obj(GnomeGenericFactory *Factory, const char *goad_id, gpointer closure)
+static GnomeObject *make_obj(GnomeGenericFactory *Factory, const char *goad_id, gpointer closure)
 {
-  GtkObject *dir_view;
+  FMDirectoryView *dir_view;
   GnomeObject *ctl;
   
   g_return_val_if_fail(strcmp(goad_id, "ntl_file_manager_icon_view") == 0 ||
@@ -51,25 +51,28 @@ static GnomeObject * make_obj(GnomeGenericFactory *Factory, const char *goad_id,
 
   if (strcmp (goad_id, "ntl_file_manager_icon_view") == 0)
   {
-    dir_view = gtk_object_new(fm_directory_view_icons_get_type(), NULL);
+    dir_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_directory_view_icons_get_type(), NULL));
   }
   else
   {
-    dir_view = gtk_object_new(fm_directory_view_list_get_type(), NULL);
+    dir_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_directory_view_list_get_type(), NULL));
   }
 
   g_return_val_if_fail(dir_view, NULL);
-  
-  if(GNOME_IS_OBJECT(dir_view))
-    return GNOME_OBJECT(dir_view);
 
-  gtk_signal_connect(GTK_OBJECT(dir_view), "destroy", do_destroy, NULL);
+  if(GNOME_IS_OBJECT(dir_view->view_frame))
+    return GNOME_OBJECT(dir_view->view_frame);
 
-  gtk_widget_show(GTK_WIDGET(dir_view));
+  gtk_signal_connect(GTK_OBJECT(dir_view->view_frame), "destroy", do_destroy, NULL);
 
-  ctl = nautilus_view_frame_get_gnome_object(NAUTILUS_VIEW_FRAME(dir_view));
+  gtk_widget_show(GTK_WIDGET(dir_view->view_frame));
+
+  ctl = nautilus_view_frame_get_gnome_object(NAUTILUS_VIEW_FRAME(dir_view->view_frame));
+
   object_count++;
 
+  printf("%x\n", (unsigned) ctl);
+  
   return ctl;
 }
 

@@ -1,5 +1,10 @@
 2000-01-10  Maciej Stachowiak  <mjs@eazel.com>
 
+	* src/file-manager/fm-main.c,
+	src/file-manager/fm-directory-view.c,
+	src/file-manager/fm-directory-view.h: Changed FMDirectoryView to
+	use a NautilusViewFrame rather than inheriting from one.
+
 	* libnautilus/ntl-view-frame.c (nautilus_view_frame_class_init):
 	Fixed marshall type for "stop_location_change" signal. How could
 	this ever have worked?

@@ -58,11 +58,11 @@ typedef struct _FMDirectoryViewClass FMDirectoryViewClass;
 #define FM_IS_DIRECTORY_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), FM_TYPE_DIRECTORY_VIEW))
 
 struct _FMDirectoryView {
-	NautilusContentViewFrame parent;
+	GtkScrolledWindow scroll_frame;
 
 	FMDirectoryViewMode mode;
 
-	GtkWidget *scroll_frame;
+	NautilusContentViewFrame *view_frame;
 
 	GnomeVFSDirectoryList *directory_list;
 	GnomeVFSDirectoryListPosition current_position;
@@ -82,7 +82,7 @@ struct _FMDirectoryView {
 };
 
 struct _FMDirectoryViewClass {
-	NautilusContentViewFrameClass parent_class;
+	GtkScrolledWindowClass parent_class;
 };
 
 
@@ -112,5 +112,8 @@ void	   fm_directory_view_line_up_icons
 
 void	   fm_directory_view_sort     (FMDirectoryView *view,
 				       FMDirectoryViewSortType sort_type);
+
+NautilusContentViewFrame *
+           fm_directory_view_get_view_frame (FMDirectoryView *view);
 
 #endif /* __FM_DIRECTORY_VIEW_H__ */

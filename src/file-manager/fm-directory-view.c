@@ -42,7 +42,7 @@
 #define DISPLAY_TIMEOUT_INTERVAL 500
 #define ENTRIES_PER_CB 1
 
-static NautilusViewFrameClass *parent_class = NULL;
+static GtkScrolledWindowClass *parent_class = NULL;
 
 /* FIXME this no longer has any reason to be global,
    given fm_get_current_icon_cache()
@@ -72,7 +72,7 @@ display_selection_info (FMDirectoryView *view,
 	if (count == 0) {
 	        memset(&sri, 0, sizeof(sri));
 	        sri.status_string = "";
-	        nautilus_view_frame_request_status_change(NAUTILUS_VIEW_FRAME(view), &sri);
+	        nautilus_view_frame_request_status_change(NAUTILUS_VIEW_FRAME(view->view_frame), &sri);
 		return;
 	}
 
@@ -112,7 +112,7 @@ display_selection_info (FMDirectoryView *view,
 		    count, (count==1)?_("file"):_("files"), size_string);
 	memset(&sri, 0, sizeof(sri));
 	sri.status_string = msg;
-	nautilus_view_frame_request_status_change(NAUTILUS_VIEW_FRAME(view), &sri);
+	nautilus_view_frame_request_status_change(NAUTILUS_VIEW_FRAME(view->view_frame), &sri);
         g_free (msg);
 
 	g_free (size_string);
@@ -141,7 +141,7 @@ get_icon_container (FMDirectoryView *view)
 
 	g_return_val_if_fail (view_has_icon_container (view), NULL);
 
-	bin = GTK_BIN (view->scroll_frame);
+	bin = GTK_BIN (view);
 
 	if (bin->child == NULL)
 		return NULL;	/* Avoid GTK+ complaints.  */
@@ -200,7 +200,7 @@ icon_container_activate_cb (GnomeIconContainer *icon_container,
 	nri.requested_uri = gnome_vfs_uri_to_string(new_uri, 0);
 	nri.new_window_default = nri.new_window_suggested = Nautilus_V_FALSE;
 	nri.new_window_enforced = Nautilus_V_UNKNOWN;
-	nautilus_view_frame_request_location_change(NAUTILUS_VIEW_FRAME(directory_view),
+	nautilus_view_frame_request_location_change(NAUTILUS_VIEW_FRAME(directory_view->view_frame),
 						     &nri);
 	g_free(nri.requested_uri);
 	gnome_vfs_uri_unref (new_uri);
@@ -284,7 +284,7 @@ create_icon_container (FMDirectoryView *view)
 			    GTK_SIGNAL_FUNC (icon_container_selection_changed_cb),
 			    view);
 
-	gtk_container_add (GTK_CONTAINER (view->scroll_frame), GTK_WIDGET (icon_container));
+	gtk_container_add (GTK_CONTAINER (view), GTK_WIDGET (icon_container));
 
 	gtk_widget_show (GTK_WIDGET (icon_container));
 	load_icon_container (view, icon_container);
@@ -303,9 +303,9 @@ setup_icon_container (FMDirectoryView *view,
 	if (! view_has_icon_container (view)) {
 		GtkWidget *child;
 
-		child = GTK_BIN (view->scroll_frame)->child;
+		child = GTK_BIN (view)->child;
 		if (child != NULL)
-			gtk_widget_destroy (GTK_BIN (view->scroll_frame)->child);
+			gtk_widget_destroy (GTK_BIN (view)->child);
 		icon_container = create_icon_container (view);
 	} else {
 		icon_container = get_icon_container (view);
@@ -342,7 +342,7 @@ get_flist (FMDirectoryView *view)
 
 	g_return_val_if_fail (view_has_flist (view), NULL);
 
-	bin = GTK_BIN (view->scroll_frame);
+	bin = GTK_BIN (view);
 
 	if (bin->child == NULL)
 		return NULL;	/* Avoid GTK+ complaints.  */
@@ -399,7 +399,7 @@ flist_activate_cb (GtkFList *flist,
 	nri.requested_uri = gnome_vfs_uri_to_string(new_uri, 0);
 	nri.new_window_default = nri.new_window_suggested = Nautilus_V_FALSE;
 	nri.new_window_enforced = Nautilus_V_UNKNOWN;
-	nautilus_view_frame_request_location_change(NAUTILUS_VIEW_FRAME(directory_view),
+	nautilus_view_frame_request_location_change(NAUTILUS_VIEW_FRAME(directory_view->view_frame),
 						     &nri);
 	g_free(nri.requested_uri);
 	gnome_vfs_uri_unref (new_uri);
@@ -443,7 +443,7 @@ create_flist (FMDirectoryView *view)
 			    GTK_SIGNAL_FUNC (flist_selection_changed_cb),
 			    view);
 
-	gtk_container_add (GTK_CONTAINER (view->scroll_frame), GTK_WIDGET (flist));
+	gtk_container_add (GTK_CONTAINER (view), GTK_WIDGET (flist));
 
 	gtk_widget_show (GTK_WIDGET (flist));
 
@@ -488,28 +488,28 @@ setup_flist (FMDirectoryView *view,
 	if (! view_has_flist (view)) {
 		GtkWidget *child;
 
-		child = GTK_BIN (view->scroll_frame)->child;
+		child = GTK_BIN (view)->child;
 		if (child != NULL)
-			gtk_widget_destroy (GTK_BIN (view->scroll_frame)->child);
+			gtk_widget_destroy (GTK_BIN (view)->child);
 		flist = create_flist (view);
 	}
 }
 
-
-/* Signals.  */
-
 static void
-real_location_change(NautilusViewFrame *directory_view, Nautilus_NavigationInfo *nav_context)
+notify_location_change_cb (NautilusViewFrame *view_frame, Nautilus_NavigationInfo *nav_context, FMDirectoryView *directory_view)
 {
+	puts("******* XXX notify_location_change");
 	g_message("Directory view is loading URL %s", nav_context->requested_uri);
-	fm_directory_view_load_uri(FM_DIRECTORY_VIEW(directory_view), nav_context->requested_uri);
+	fm_directory_view_load_uri(directory_view, nav_context->requested_uri);
 }
 
 static void
-real_stop_location_change(NautilusViewFrame *directory_view)
+stop_location_change_cb (NautilusViewFrame *view_frame, FMDirectoryView *directory_view)
 {
+	printf("*********** B %x\n", (unsigned) directory_view);
+
 	g_message("Directory view is stopping");
-	fm_directory_view_stop(FM_DIRECTORY_VIEW(directory_view));
+	fm_directory_view_stop(directory_view);
 }
 
 /* GtkObject methods.  */
@@ -549,16 +549,11 @@ static void
 class_init (FMDirectoryViewClass *class)
 {
 	GtkObjectClass *object_class;
-	NautilusViewFrameClass *vc;
 
 	object_class = GTK_OBJECT_CLASS (class);
-	vc = NAUTILUS_VIEW_FRAME_CLASS (class);
 
 	parent_class = gtk_type_class (gtk_type_parent(object_class->type));
 	object_class->destroy = destroy;
-
-	vc->notify_location_change = real_location_change;
-	vc->stop_location_change = real_stop_location_change;
 }
 
 static void
@@ -581,21 +576,40 @@ init (FMDirectoryView *directory_view)
 	directory_view->display_selection_idle_id = 0;
 
 #if 0
-	directory_view->scroll_frame = gtk_scroll_frame_new(NULL, NULL);
-	gtk_scroll_frame_set_policy (GTK_SCROLL_FRAME(directory_view->scroll_frame),
+	gtk_scroll_frame_set_policy (GTK_SCROLL_FRAME(directory_view),
 				     GTK_POLICY_AUTOMATIC,
 				     GTK_POLICY_AUTOMATIC);
-	gtk_scroll_frame_set_shadow_type (GTK_SCROLL_FRAME(directory_view->scroll_frame), GTK_SHADOW_IN);
+	gtk_scroll_frame_set_shadow_type (GTK_SCROLL_FRAME(directory_view), GTK_SHADOW_IN);
 #else
-	directory_view->scroll_frame = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW(directory_view->scroll_frame),
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW(directory_view),
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_hadjustment (GTK_SCROLLED_WINDOW(directory_view), NULL);
+	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW(directory_view), NULL);
 
 #endif
-	gtk_widget_show(directory_view->scroll_frame);
 
-	gtk_container_add(GTK_CONTAINER(directory_view), directory_view->scroll_frame);
+	directory_view->view_frame = 
+		NAUTILUS_CONTENT_VIEW_FRAME (gtk_widget_new 
+					     (nautilus_content_view_frame_get_type(), 
+					      NULL));
+	
+	printf("*********** A %x\n", (unsigned) directory_view);
+
+	gtk_signal_connect (GTK_OBJECT(directory_view->view_frame), 
+			    "stop_location_change",
+			    GTK_SIGNAL_FUNC (stop_location_change_cb),
+			    directory_view);
+
+	gtk_signal_connect (GTK_OBJECT(directory_view->view_frame), 
+			    "notify_location_change",
+			    GTK_SIGNAL_FUNC (notify_location_change_cb), 
+			    directory_view);
+
+	gtk_widget_show(GTK_WIDGET(directory_view));
+
+	gtk_container_add(GTK_CONTAINER(directory_view->view_frame),
+			  GTK_WIDGET(directory_view));
 }
 
 
@@ -624,7 +638,7 @@ stop_load (FMDirectoryView *view, gboolean error)
 	pri.amount = 100.0;
 	pri.type = error ? Nautilus_PROGRESS_DONE_ERROR : Nautilus_PROGRESS_DONE_OK;
 	
-	nautilus_view_frame_request_progress_change(NAUTILUS_VIEW_FRAME(view),
+	nautilus_view_frame_request_progress_change(NAUTILUS_VIEW_FRAME(view->view_frame),
 						     &pri);
 }
 
@@ -847,7 +861,7 @@ fm_directory_view_get_type (void)
 		};
 
 		directory_view_type
-			= gtk_type_unique (nautilus_content_view_frame_get_type (),
+			= gtk_type_unique (gtk_scrolled_window_get_type (),
 					   &directory_view_info);
 	}
 
@@ -929,7 +943,7 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 	memset(&pri, 0, sizeof(pri));
 	pri.type = Nautilus_PROGRESS_UNDERWAY;
 	pri.amount = 0;
-	nautilus_view_frame_request_progress_change(NAUTILUS_VIEW_FRAME(view), &pri);
+	nautilus_view_frame_request_progress_change(NAUTILUS_VIEW_FRAME(view->view_frame), &pri);
 
 	result = gnome_vfs_async_load_directory_uri
 		(&view->vfs_async_handle, 		/* handle */
