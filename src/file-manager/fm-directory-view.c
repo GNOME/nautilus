@@ -99,11 +99,6 @@
 /* Number of seconds until cancel dialog shows up */
 #define DELAY_UNTIL_CANCEL_MSECS 5000
 
-/* The list view receives files from the directory model in chunks, to
- * improve responsiveness during loading. This is the number of files
- * we add to the list or change at once.
- */
-#define FILES_TO_PROCESS_AT_ONCE 300
 #define DISPLAY_TIMEOUT_FIRST_MSECS 1000
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 10*1000
 
@@ -2382,25 +2377,6 @@ process_new_files (FMDirectoryView *view)
 	view->details->old_changed_files = old_changed_files;
 }
 
-static GList *
-split_off_first_n (GList **list, int removed_count)
-{
-	GList *first_n_items, *nth_item;
-
-	nth_item = g_list_nth (*list, removed_count);
-	first_n_items = *list;
-
-	if (nth_item == NULL) {
-		*list = NULL;
-	} else {
-		nth_item->prev->next = NULL;
-		nth_item->prev = NULL;
-		*list = nth_item;
-	}
-
-	return first_n_items;
-}
-
 static void
 process_old_files (FMDirectoryView *view)
 {
@@ -2409,8 +2385,8 @@ process_old_files (FMDirectoryView *view)
 	GList *selection;
 	gboolean send_selection_change;
 
-	files_added = split_off_first_n (&view->details->old_added_files, FILES_TO_PROCESS_AT_ONCE);
-	files_changed = split_off_first_n (&view->details->old_changed_files, FILES_TO_PROCESS_AT_ONCE);
+	files_added = view->details->old_added_files;
+	files_changed = view->details->old_changed_files;
 	
 	send_selection_change = FALSE;
 
@@ -2441,8 +2417,11 @@ process_old_files (FMDirectoryView *view)
 			nautilus_file_list_free (selection);
 		}
 
-		nautilus_file_list_free (files_added);
-		nautilus_file_list_free (files_changed);
+		nautilus_file_list_free (view->details->old_added_files);
+		view->details->old_added_files = NULL;
+
+		nautilus_file_list_free (view->details->old_changed_files);
+		view->details->old_changed_files = NULL;
 	}
 
 	if (send_selection_change) {
@@ -2453,25 +2432,17 @@ process_old_files (FMDirectoryView *view)
 	}
 }
 
-/* Return FALSE if there is no work remaining. */
-static gboolean
+static void
 display_pending_files (FMDirectoryView *view)
 {
 	process_new_files (view);
 	process_old_files (view);
-
-	if (view->details->old_added_files != NULL
-	    || view->details->old_changed_files != NULL) {
-		return TRUE;
-	}
 
 	if (view->details->model != NULL
 	    && nautilus_directory_are_all_files_seen (view->details->model)
 	    && g_hash_table_size (view->details->non_ready_files) == 0) {
 		done_loading (view);
 	}
-
-	return FALSE;
 }
 
 static gboolean
@@ -2547,23 +2518,19 @@ update_menus_timeout_callback (gpointer data)
 static gboolean
 display_pending_idle_callback (gpointer data)
 {
-	gboolean ret;
 	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (data);
 
 	g_object_ref (G_OBJECT (view));
 
-	if (display_pending_files (view)) {
-		ret = TRUE;
-	} else {
-		ret = FALSE;
-		view->details->display_pending_idle_id = 0;
-	}
+	display_pending_files (view);
+
+	view->details->display_pending_idle_id = 0;
 
 	g_object_unref (G_OBJECT (view));
 
-	return ret;
+	return FALSE;
 }
 
 static void

@@ -1,3 +1,9 @@
+2004-10-06  Martin Wehner  <martin.wehner@epost.de>
+
+	* src/file-manager/fm-directory-view.c: (split_off_first_n),
+	(display_pending_files), (display_pending_idle_callback):
+	Process unlimited files at once instead of 300 each time.
+
 2004-10-06  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c (draw_or_measure_label_text):
