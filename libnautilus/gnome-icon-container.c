@@ -50,11 +50,6 @@
  */
 #define KBD_ICON_VISIBILITY_TIMEOUT 300
 
-/* Timeout for selecting an icon in "linger-select" mode (i.e. by just placing the
- * pointer over the icon, without pressing any button).
- */
-#define LINGER_SELECTION_MODE_TIMEOUT 800
-
 /* Maximum amount of milliseconds the mouse button is allowed to stay down
  * and still be considered a click.
  */
@@ -79,6 +74,9 @@ static void  update_icon                                  (GnomeIconContainer   
 static void  compute_stretch                              (StretchState            *start,
 							   StretchState            *current);
 static GnomeIconContainerIcon *get_first_selected_icon    (GnomeIconContainer      *container);
+static GnomeIconContainerIcon *get_nth_selected_icon      (GnomeIconContainer      *container, 
+                                                           int                      index);
+static gboolean	has_multiple_selection     		  (GnomeIconContainer      *container);
 static void  icon_destroy                                 (GnomeIconContainer      *container,
 							   GnomeIconContainerIcon  *icon);
 static guint icon_get_actual_size                         (GnomeIconContainerIcon  *icon);
@@ -259,13 +257,6 @@ icon_toggle_selected (GnomeIconContainer *container,
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
 			       "highlighted_for_selection", (gboolean) icon->is_selected,
 			       NULL);
-
-	/* If this is the selected-for-keyboard icon, reset it, so
-	 * it resets whether to draw the gray box or not.
-	 */
-	if (container->details->kbd_current == icon) {
-		set_kbd_current (container, icon, FALSE);
-	}
 
 	/* If the icon is deselected, then get rid of the stretch handles.
 	 * No harm in doing the same if the item is newly selected.
@@ -815,7 +806,7 @@ prepare_for_layout (GnomeIconContainer *container)
 /* Find the "first" icon (in left-to-right, top-to-bottom order) in
    `container'.  */
 static GnomeIconContainerIcon *
-find_first (GnomeIconContainer *container)
+find_first (GnomeIconContainer *container, gboolean selected_only)
 {
 	GnomeIconContainerDetails *details;
 	GnomeIconContainerIconGrid *grid;
@@ -839,6 +830,10 @@ find_first (GnomeIconContainer *container)
 				GnomeIconContainerIcon *icon;
 
 				icon = q->data;
+				if (selected_only && !icon->is_selected) {
+					continue;
+				}
+				
 				if (first == NULL
 				    || icon->y < first->y
 				    || (icon->y == first->y
@@ -854,7 +849,7 @@ find_first (GnomeIconContainer *container)
 }
 
 static GnomeIconContainerIcon *
-find_last (GnomeIconContainer *container)
+find_last (GnomeIconContainer *container, gboolean selected_only)
 {
 	GnomeIconContainerDetails *details;
 	GnomeIconContainerIconGrid *grid;
@@ -880,6 +875,9 @@ find_last (GnomeIconContainer *container)
 				GnomeIconContainerIcon *icon;
 
 				icon = q->data;
+				if (selected_only && !icon->is_selected) {
+					continue;
+				}
 				if (last == NULL
 				    || icon->y > last->y
 				    || (icon->y == last->y
@@ -912,15 +910,9 @@ set_kbd_current (GnomeIconContainer *container,
 	details->kbd_current = icon;
 	
 	if (icon != NULL) {
-		/* Only show the item highlighted for keyboard selection
-		 * if it is not highlighted for regular selection but
-		 * at least one other icon is highlighted for regular selection
-		 */
-		if (!icon->is_selected && get_first_selected_icon (container) != NULL) {
-			gnome_canvas_item_set (GNOME_CANVAS_ITEM (details->kbd_current->item),
-					       "highlighted_for_keyboard_selection", 1,
-					       NULL);
-		}
+		gnome_canvas_item_set (GNOME_CANVAS_ITEM (details->kbd_current->item),
+				       "highlighted_for_keyboard_selection", 1,
+				       NULL);
 		 
 		icon_raise (icon);
 	}
@@ -1038,9 +1030,6 @@ idle_handler (gpointer data)
 	details = container->details;
 
 	set_scroll_region (container);
-
-	if (details->icons != NULL && details->kbd_current == NULL)
-		set_kbd_current (container, find_first (container), FALSE);
 
 	details->idle_id = 0;
 
@@ -1438,7 +1427,6 @@ kbd_move_to (GnomeIconContainer *container,
 	     GdkEventKey *event)
 {
 	/* Control key causes keyboard selection and "selected icon" to move separately.
-	 * This seems like a confusing and bad idea. 
 	 */
 	if (! (event->state & GDK_CONTROL_MASK)) {
 		gboolean selection_changed;
@@ -1461,7 +1449,7 @@ kbd_home (GnomeIconContainer *container,
 {
 	GnomeIconContainerIcon *first;
 
-	first = find_first (container);
+	first = find_first (container, FALSE);
 	if (first != NULL)
 		kbd_move_to (container, first, event);
 }
@@ -1472,9 +1460,28 @@ kbd_end (GnomeIconContainer *container,
 {
 	GnomeIconContainerIcon *last;
 
-	last = find_last (container);
+	last = find_last (container, FALSE);
 	if (last != NULL)
 		kbd_move_to (container, last, event);
+}
+
+static void
+set_kbd_current_to_single_selected_icon (GnomeIconContainer *container)
+{
+        GnomeIconContainerIcon *icon;
+
+        if (container->details->kbd_current != NULL) {
+		return;
+        }
+
+        if (has_multiple_selection (container)) {
+                return;
+        }
+
+        icon = get_first_selected_icon (container);
+        if (icon != NULL) {
+                set_kbd_current (container, icon, FALSE);
+        }
 }
 
 static void
@@ -1492,8 +1499,17 @@ kbd_left (GnomeIconContainer *container,
 	details = container->details;
 	grid = details->grid;
 
-	if (details->kbd_current == NULL)
+	set_kbd_current_to_single_selected_icon (container);
+
+	if (details->kbd_current == NULL) {
+		GnomeIconContainerIcon *first;
+		
+		first = find_first (container, has_multiple_selection (container));
+		if (first != NULL) {
+			kbd_move_to (container, first, event);
+		}
 		return;
+	}
 
 	world_to_grid (container, details->kbd_current->x, details->kbd_current->y,
 		       &grid_x, &grid_y);
@@ -1562,8 +1578,17 @@ kbd_up (GnomeIconContainer *container,
 	details = container->details;
 	grid = details->grid;
 
-	if (details->kbd_current == NULL)
+	set_kbd_current_to_single_selected_icon (container);
+
+	if (details->kbd_current == NULL) {
+		GnomeIconContainerIcon *first;
+		
+		first = find_first (container, has_multiple_selection (container));
+		if (first != NULL) {
+			kbd_move_to (container, first, event);
+		}
 		return;
+	}
 
 	world_to_grid (container, details->kbd_current->x, details->kbd_current->y,
 		       &grid_x, &grid_y);
@@ -1621,8 +1646,17 @@ kbd_right (GnomeIconContainer *container,
 	details = container->details;
 	grid = details->grid;
 
-	if (details->kbd_current == NULL)
+	set_kbd_current_to_single_selected_icon (container);
+
+	if (details->kbd_current == NULL) {
+		GnomeIconContainerIcon *last;
+		
+		last = find_last (container, has_multiple_selection (container));
+		if (last != NULL) {
+			kbd_move_to (container, last, event);
+		}
 		return;
+	}
 
 	world_to_grid (container, details->kbd_current->x, details->kbd_current->y,
 		       &grid_x, &grid_y);
@@ -1685,8 +1719,17 @@ kbd_down (GnomeIconContainer *container,
 	details = container->details;
 	grid = details->grid;
 
-	if (details->kbd_current == NULL)
+	set_kbd_current_to_single_selected_icon (container);
+
+	if (details->kbd_current == NULL) {
+		GnomeIconContainerIcon *last;
+		
+		last = find_last (container, has_multiple_selection (container));
+		if (last != NULL) {
+			kbd_move_to (container, last, event);
+		}
 		return;
+	}
 
 	world_to_grid (container, details->kbd_current->x, details->kbd_current->y,
 		       &grid_x, &grid_y);
@@ -1730,8 +1773,19 @@ static void
 kbd_space (GnomeIconContainer *container,
 	   GdkEventKey *event)
 {
-	if (container->details->kbd_current != NULL) {
-		icon_toggle_selected (container, container->details->kbd_current);
+	GnomeIconContainerDetails *details;
+
+	details = container->details;
+	if (details->icons != NULL && details->kbd_current == NULL) {
+                GnomeIconContainerIcon *icon;
+
+                icon = find_first (container, 
+                		   get_first_selected_icon (container) != NULL);
+		set_kbd_current (container, icon, TRUE);
+	}	
+
+	if (details->kbd_current != NULL) {
+		icon_toggle_selected (container, details->kbd_current);
 		gtk_signal_emit (GTK_OBJECT (container), signals[SELECTION_CHANGED]);
 	}
 }
@@ -1763,9 +1817,6 @@ destroy (GtkObject *object)
 
         if (container->details->idle_id != 0) {
 		gtk_idle_remove (container->details->idle_id);
-	}
-	if (container->details->linger_selection_mode_timer_id != 0) {
-		gtk_timeout_remove (container->details->linger_selection_mode_timer_id);
 	}
         for (i = 0; i < NAUTILUS_N_ELEMENTS (container->details->label_font); i++) {
         	if (container->details->label_font[i] != NULL) {
@@ -1850,6 +1901,9 @@ button_press_event (GtkWidget *widget,
 
 	container = GNOME_ICON_CONTAINER (widget);
         container->details->button_down_time = event->time;
+
+        /* Forget about the old keyboard selection now that we've started mousing. */
+        set_kbd_current (container, NULL, FALSE);
 	
 	/* Invoke the canvas event handler and see if an item picks up the event. */
 	if (NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_press_event, (widget, event)))
@@ -1911,8 +1965,6 @@ gnome_icon_container_almost_drag (GnomeIconContainer *container,
 	
 	if (details->drag_icon != NULL) {
 		int elapsed_time;
-		
-		set_kbd_current (container, details->drag_icon, TRUE);
 		
 		/* If single-click mode, activate the icon, unless modifying
 		 * the selection or pressing for a very long time.
@@ -2296,7 +2348,6 @@ gnome_icon_container_initialize (GnomeIconContainer *container)
         details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = load_font ("-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*");
 
 	/* FIXME: Read these from preferences. */
-	details->linger_selection_mode = FALSE;
 	details->single_click_mode = TRUE;
 
 	container->details = details;
@@ -2316,38 +2367,6 @@ gnome_icon_container_initialize (GnomeIconContainer *container)
 
 
 /* GnomeIconContainerIcon event handling.  */
-
-/* Selection in linger selection mode.  */
-static gboolean
-linger_select_timeout_cb (gpointer data)
-{
-	GnomeIconContainer *container;
-	GnomeIconContainerDetails *details;
-	GnomeIconContainerIcon *icon;
-	gboolean selection_changed;
-
-	GDK_THREADS_ENTER ();
-
-	container = GNOME_ICON_CONTAINER (data);
-	details = container->details;
-	icon = details->linger_selection_mode_icon;
-
-	selection_changed = unselect_all (container);
-	selection_changed |= icon_set_selected (container, icon, TRUE);
-
-	set_kbd_current (container, icon, FALSE);
-	make_icon_visible (container, icon);
-
-	/* FIXME: Am I allowed to do this between `GDK_THREADS_ENTER()' and
-           `GDK_THREADS_LEAVE()'?  */
-	if (selection_changed)
-		gtk_signal_emit (GTK_OBJECT (container),
-				 signals[SELECTION_CHANGED]);
-
-	GDK_THREADS_LEAVE ();
-
-	return FALSE;
-}
 
 /* Conceptually, pressing button 1 together with CTRL or SHIFT toggles
  * selection of a single icon without affecting the other icons;
@@ -2432,46 +2451,6 @@ handle_icon_button_press (GnomeIconContainer *container,
 	return TRUE;
 }
 
-static gboolean
-handle_icon_enter_notify (GnomeIconContainer *container,
-			  GnomeIconContainerIcon *icon,
-			  GdkEventMotion *motion)
-{
-	GnomeIconContainerDetails *details;
-
-	details = container->details;
-	if (! details->linger_selection_mode)
-		return FALSE;
-
-	if (details->linger_selection_mode_timer_id != 0)
-		gtk_timeout_remove (details->linger_selection_mode_timer_id);
-
-	details->linger_selection_mode_timer_id
-		= gtk_timeout_add (LINGER_SELECTION_MODE_TIMEOUT,
-				   linger_select_timeout_cb, container);
-
-	details->linger_selection_mode_icon = icon;
-
-	return TRUE;
-}
-
-static gboolean
-handle_icon_leave_notify (GnomeIconContainer *container,
-			  GnomeIconContainerIcon *icon,
-			  GdkEventMotion *motion)
-{
-	GnomeIconContainerDetails *details;
-
-	details = container->details;
-	if (! details->linger_selection_mode)
-		return FALSE;
-
-	if (details->linger_selection_mode_timer_id != 0)
-		gtk_timeout_remove (details->linger_selection_mode_timer_id);
-
-	return TRUE;
-}
-
 static int
 item_event_cb (GnomeCanvasItem *item,
 	       GdkEvent *event,
@@ -2491,10 +2470,6 @@ item_event_cb (GnomeCanvasItem *item,
 	case GDK_BUTTON_PRESS:
 	case GDK_2BUTTON_PRESS:
 		return handle_icon_button_press (container, icon, &event->button);
-	case GDK_ENTER_NOTIFY:
-		return handle_icon_enter_notify (container, icon, &event->motion);
-	case GDK_LEAVE_NOTIFY:
-		return handle_icon_leave_notify (container, icon, &event->motion);
 	default:
 		return FALSE;
 	}
@@ -3290,20 +3265,38 @@ gnome_icon_container_get_icon_by_uri (GnomeIconContainer *container,
 }
 
 static GnomeIconContainerIcon *
-get_first_selected_icon (GnomeIconContainer *container)
+get_nth_selected_icon (GnomeIconContainer *container, int index)
 {
 	GList *p;
 	GnomeIconContainerIcon *icon;
+	int selection_count;
 
-	/* Find the first selected icon. */
-	icon = NULL;
+	g_return_val_if_fail (index > 0, NULL);
+
+	/* Find the nth selected icon. */
+	selection_count = 0;
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		icon = p->data;
 		if (icon->is_selected) {
-			return icon;
+		        ++selection_count;
+		}
+		if (selection_count == index) {
+                        return icon;
 		}
 	}
 	return NULL;
+}
+
+static GnomeIconContainerIcon *
+get_first_selected_icon (GnomeIconContainer *container)
+{
+        return get_nth_selected_icon (container, 1);
+}
+
+static gboolean
+has_multiple_selection (GnomeIconContainer *container)
+{
+        return get_nth_selected_icon (container, 2) != NULL;
 }
 
 /**

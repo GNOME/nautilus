@@ -954,20 +954,19 @@ nautilus_icons_view_icon_item_event (GnomeCanvasItem *item, GdkEvent *event)
 			icon_item->details->is_prelit = TRUE;
 			gnome_canvas_item_request_update (item);
 		}
-		break;
+		return TRUE;
 		
 	case GDK_LEAVE_NOTIFY:
 		if (icon_item->details->is_prelit) {
 			icon_item->details->is_prelit = FALSE;
 			gnome_canvas_item_request_update (item);
 		}
-		break;
+		return TRUE;
 		
 	default:
-		break;
+		/* Don't eat up other events; icon container might use them. */
+		return FALSE;
 	}
-
-	return TRUE; /* eat up the event */
 }
 
 static void

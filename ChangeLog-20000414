@@ -1,3 +1,51 @@
+2000-03-13  John Sullivan  <sullivan@eazel.com>
+
+	Cleanup of "icon selected for keyboard input" code and
+	behavior. Now it always draws the stippled border around 
+	the keyboard input icon if non-NULL, but it's only non-NULL 
+	after the user has started type-selecting. It chooses a
+	sensible place to start when a key is pressed, depending
+	on the key.
+
+	* libnautilus/gnome-icon-container.c:
+	(find_first), (find_last): Now take boolean for whether to
+	consider only selected items.
+	(kbd_home), (kbd_end): Updated to match API changes.
+	(set_kbd_current): Remove condition guarding highlight change.
+	(icon_toggle_selected): Removed code to reset the
+	current keyboard icon; no longer needed with previous change.
+	(idle_handler): Remove code setting the keyboard-select icon
+	at idle time.
+	(get_nth_selected_icon): New helper function to help avoid
+	walking through all items just to find a certain selected one.
+	(get_first_selected_icon): Rewritten to call get_nth_selected_icon.
+	(has_multiple_selection): New helper function that calls
+	get_nth_selected_icon (2) to determine whether there's at least
+	two items selected.
+	(set_kbd_current_to_single_selected_icon): New helper function
+	to set the keyboard navigation icon to the selected icon, if
+	the former is non-NULL and the latter is unique.
+	(kbd_left), (kbd_up), (kbd_right), (kbd_down): Set keyboard
+	navigation icon if necessary: If a single item is selected, use
+	that as starting point for keyboard navigation. If no items are
+	selected, use find_first/last. If multiple items are selected,
+	use find_first/last but only consider selected items.
+	(kbd_space): Select a keyboard navigation item if necessary
+	using find_first.
+	(button_press_event): Nullify keyboard navigation item since
+	we're now mouse-navigating.
+	(gnome_icon_container_almost_drag): Don't set keyboard navigation
+	item here.
+	(destroy), (gnome_icon_container_icon_initialize), 
+	(linger_select_timeout_cb), (handle_icon_enter_notify),
+	(handle_icon_leave_notify), (item_event_cb): Removed code for
+	obsolete experimental "linger" feature.
+
+	* libnautilus/nautilus-icons-view-icon-item.c: 
+	(nautilus_icons_view_icon_item_event): return TRUE only if the
+	event was actually used; this fixes bug where keyboard navigation
+	wouldn't work if mouse cursor happened to be over an item.
+
 2000-03-13  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/nautilus-directory.c (nautilus_directory_get):
