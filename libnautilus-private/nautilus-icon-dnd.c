@@ -1188,6 +1188,7 @@ drag_leave_callback (GtkWidget *widget,
 	if (dnd_info->shadow != NULL)
 		eel_canvas_item_hide (dnd_info->shadow);
 	
+	set_drop_target (NAUTILUS_ICON_CONTAINER (widget), NULL);
 	stop_auto_scroll (NAUTILUS_ICON_CONTAINER (widget));
 	nautilus_icon_container_free_drag_data(NAUTILUS_ICON_CONTAINER (widget));
 }
