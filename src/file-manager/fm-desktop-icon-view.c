@@ -51,6 +51,7 @@
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-volume-monitor.h>
+#include <src/nautilus-application.h>
 #include <limits.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -363,6 +364,12 @@ change_desktop_background_menu_item_callback (GtkMenuItem *item, FMDirectoryView
 	nautilus_launch_application_from_command ("background-properties-capplet", NULL);
 }
 
+static void
+quit_nautilus_desktop_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
+{
+	nautilus_application_close_desktop ();
+}
+
 static void 
 empty_trash_callback (gpointer ignored, gpointer view)
 {
@@ -528,8 +535,18 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 		(view, menu, 
 		 _("Change Desktop Background"), 
 		 NULL, 
-		 position,
+		 position++,
 		 change_desktop_background_menu_item_callback,
+		 TRUE);
+
+	nautilus_gtk_menu_insert_separator (menu, position++);
+
+	fm_directory_view_insert_context_menu_item 
+		(view, menu, 
+		 _("Quit Nautilus Desktop"), 
+		 NULL, 
+		 position++,
+		 quit_nautilus_desktop_menu_item_callback,
 		 TRUE);
 }
 
