@@ -1,5 +1,14 @@
 2002-09-30  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-directory-view.c (real_update_menus):
+	Make the delete accelerator <Ctrl>t, as otherwise it overrides
+	the one in the rename widget (and others).
+
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Add a keysym "Delete" to the trash accel.
+
+2002-09-30  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-canvas-item.c
 	(nautilus_icon_canvas_item_get_icon_rectangle):
 	Do i2w conversion

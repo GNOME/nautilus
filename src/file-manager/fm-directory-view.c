@@ -4300,12 +4300,12 @@ real_update_menus (FMDirectoryView *view)
 
 	if (all_selected_items_in_trash (view)) {
 		label = _("_Delete from Trash");
-		accelerator = "Delete";
+		accelerator = "*ctl*t";
 		tip = _("Delete all selected items permanently");
 		show_separate_delete_command = FALSE;
 	} else {
 		label = _("Mo_ve to Trash");
-		accelerator = "Delete";
+		accelerator = "*ctl*t";
 		tip = _("Move each selected item to the Trash");
 		show_separate_delete_command = show_delete_command_auto_value;
 	}
