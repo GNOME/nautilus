@@ -237,6 +237,10 @@ nautilus_service_install_download_progress (EazelInstallCallback *cb, const Pack
 		g_free (out);
 	} else if (amount == total) {
 		/* done! */
+                if (view->details->current_rpm == NULL) {
+                        /* redundant 100% signal */
+                        return;
+                }
 		current_progress_bar_complete (view, _("Complete"));
 		gtk_progress_set_percentage (GTK_PROGRESS (im->progress_bar), 1.0);
 		needed_by = g_hash_table_lookup (view->details->deps, pack->name);
