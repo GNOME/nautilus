@@ -60,6 +60,7 @@
 
 #define HOSTNAME "testmachine.eazel.com"
 #define PORT_NUMBER 80
+#define CGI_PATH "/catalog/find"
 #define TMP_DIR "/tmp/eazel-install"
 #define RPMRC "/usr/lib/rpm/rpmrc"
 #define REMOTE_RPM_DIR "/RPMS"
@@ -73,6 +74,7 @@ int installer_local = 0;
 int installer_no_helix = 0;
 char *installer_server =NULL;
 int installer_server_port = 0;
+char *installer_cgi_path = NULL;
 
 
 static GtkObjectClass *eazel_installer_parent_class;
@@ -988,7 +990,6 @@ eazel_installer_do_install (EazelInstaller *installer,
 			fprintf (stdout, "ERROR :\n%s", installer->failure_info->str);
 		}
 		gnome_error_dialog_parented (installer->failure_info->str, GTK_WINDOW (installer->window));
-	} else {
 	}
 }
 
@@ -1244,6 +1245,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 					       "package_list", package_destination, 
 					       "package_list_storage_path", "package-list.xml",
 					       "transaction_dir", "/tmp",
+					       "cgi_path", installer_cgi_path ? installer_cgi_path : CGI_PATH,
 					       NULL));
 
 	

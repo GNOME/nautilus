@@ -1249,7 +1249,7 @@ eazel_install_emit_delete_files_default (EazelInstall *service)
 	CORBA_exception_free (&ev);
 	return (gboolean)result;
 #else
-	return FALSE;
+	return TRUE;
 #endif
 }
 

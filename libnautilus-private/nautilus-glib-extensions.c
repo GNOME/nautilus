@@ -74,7 +74,7 @@ nautilus_setenv (const char *name, const char *value, gboolean overwrite)
 	 * settings. It would be fairly easy to fix this by keeping
 	 * our own parallel array or hash table.
 	 */
-	string = g_strconcat (name, '=', value, NULL);
+	string = g_strconcat (name, "=", value, NULL);
 	return putenv (string);
 #endif
 }

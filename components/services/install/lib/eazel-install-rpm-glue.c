@@ -244,8 +244,8 @@ eazel_install_download_packages (EazelInstall *service,
 			   - after download, when we for sure have access to the version, check again
 			*/
 			int inst_status = eazel_install_check_existing_packages (service, package);
-			if (inst_status == -1 && eazel_install_get_downgrade) {
-				g_message (_("Will download %s"), package->name);
+			if (inst_status == -1 && eazel_install_get_downgrade (service)) {
+				trilobite_debug (_("Will download %s"), package->name);
 				/* must download... */
 			} else if (inst_status <= 0) {
 				/* Nuke the modifies list again, since we don't want to see them */
@@ -646,13 +646,13 @@ eazel_install_start_transaction_make_rpm_argument_list (EazelInstall *service,
 		g_warning ("Force install mode!");
 		(*args) = g_list_prepend (*args, g_strdup ("--force"));
 		(*args) = g_list_prepend (*args, g_strdup ("--nodeps"));
-	} 
+	}
+	if (eazel_install_get_downgrade (service)) {
+		(*args) = g_list_prepend (*args, g_strdup ("--oldpackage"));
+	}
 	if (eazel_install_get_uninstall (service)) {
 		(*args) = g_list_prepend (*args, g_strdup ("-e"));
-	} else 	if (eazel_install_get_update (service)) {
-		(*args) = g_list_prepend (*args, g_strdup ("-Uvh"));
-	} else if (eazel_install_get_downgrade (service)) {
-		(*args) = g_list_prepend (*args, g_strdup ("--oldpackage"));
+	} else if (eazel_install_get_update (service) || eazel_install_get_downgrade (service)) {
 		(*args) = g_list_prepend (*args, g_strdup ("-Uvh"));
 	} else {
 		(*args) = g_list_prepend (*args, g_strdup ("-ivh"));

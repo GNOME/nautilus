@@ -39,6 +39,7 @@ extern int installer_no_helix;
 extern char *installer_server;
 extern int installer_server_port;
 extern char* installer_local;
+extern char* installer_cgi_path;
 
 static const struct poptOption options[] = {
 	{"debug", 'd', POPT_ARG_NONE, &installer_debug, 0 , N_("Show confusing debug output"), NULL},
@@ -49,6 +50,7 @@ static const struct poptOption options[] = {
 	{"server", '\0', POPT_ARG_STRING, &installer_server, 0, N_("Specify server"), NULL},
 	{"nohelix", '\0', POPT_ARG_NONE, &installer_no_helix, 0, N_("Assume no-helix"), NULL},
 	{"port", '\0', POPT_ARG_INT, &installer_server_port, 0 , N_("Set port numer (80)"), NULL},
+	{"cgi-path", '\0', POPT_ARG_STRING, &installer_cgi_path, 0, N_("Specify CGI path"), NULL},
 	{NULL, '\0', 0, NULL, 0}
 };
 

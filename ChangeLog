@@ -1,3 +1,35 @@
+2000-09-19  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_emit_delete_files_default):
+
+	Since the default delete_files signal is the last called in the
+	bootstrap installer (which kinda sucks), it should always return
+	TRUE.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_download_packages),
+	(eazel_install_start_transaction_make_rpm_argument_list):
+
+	Don't always assume we're downgrading.  Make sure "--oldpackage"
+	flag is passed to RPM when we are.
+	
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_setenv):
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_setenv):
+
+	Fix "=" bug in setenv.
+	
+	* nautilus-installer/src/installer.c: (eazel_installer_do_install),
+	(eazel_installer_initialize):
+	* nautilus-installer/src/main.c:
+	* nautilus-installer/src/prescript:
+
+	Set default CGI path for remote services (in the bootstrap
+	installer) and make a command-line option for setting it.  Remove
+	outdated /var stuff from the prescript.
+	
 2000-09-19  Mathieu Lacage  <mathieu@eazel.com>
 
 	* src/file-manager/fm-list-view.c: (fm_list_receive_dropped_icons):
