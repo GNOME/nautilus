@@ -11,14 +11,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
-"POT-Creation-Date: 2003-06-10 16:17-0400\n"
-"PO-Revision-Date: 2003-06-06 00:24+0900\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-06-14 10:57+0900\n"
+"PO-Revision-Date: 2003-06-14 10:42+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -389,11 +389,11 @@ msgstr "Nautilus ツリー・ビュー"
 msgid "Tree"
 msgstr "ツリー"
 
-#: components/tree/nautilus-tree-model.c:1065
+#: components/tree/nautilus-tree-model.c:1067
 msgid "(Empty)"
 msgstr "(空)"
 
-#: components/tree/nautilus-tree-model.c:1065
+#: components/tree/nautilus-tree-model.c:1067
 msgid "Loading..."
 msgstr "読み込み中..."
 
@@ -1310,7 +1310,7 @@ msgstr "TRUE にすると、デフォルトでアイコンが小さく配置さ�
 msgid ""
 "If true, labels will be placed beside icons icons rather than underneath "
 "them."
-msgstr ""
+msgstr "TRUE にすると、アイコンの下ではなく横にラベルを配置します。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid "If true, new windows will use manual layout by default."
@@ -1368,7 +1368,7 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid "Put labels beside icons"
-msgstr ""
+msgstr "アイコンの横にラベルを配置する"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid "Reverse sort order in new windows"
@@ -3271,47 +3271,47 @@ msgstr "なし"
 msgid "%s's Home"
 msgstr "%s のホーム"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2092
+#: libnautilus-private/nautilus-icon-canvas-item.c:2108
 msgid "file icon"
 msgstr "ファイルのアイコン"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2465
+#: libnautilus-private/nautilus-icon-canvas-item.c:2481
 msgid "editable text"
 msgstr "編集可能なテキスト"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2466
+#: libnautilus-private/nautilus-icon-canvas-item.c:2482
 msgid "the editable label"
 msgstr "編集可能なラベル"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2473
+#: libnautilus-private/nautilus-icon-canvas-item.c:2489
 msgid "additional text"
 msgstr "追加のテキスト"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2474
+#: libnautilus-private/nautilus-icon-canvas-item.c:2490
 msgid "some more text"
 msgstr "追加のテキスト"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2481
+#: libnautilus-private/nautilus-icon-canvas-item.c:2497
 msgid "highlighted for selection"
 msgstr "選択範囲の強調表示"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2482
+#: libnautilus-private/nautilus-icon-canvas-item.c:2498
 msgid "whether we are highlighted for a selection"
 msgstr "選択した部分を強調表示するかどうかを設定します"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2489
+#: libnautilus-private/nautilus-icon-canvas-item.c:2505
 msgid "highlighted as keyboard focus"
 msgstr "キーボード・フォーカスの強調表示"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2490
+#: libnautilus-private/nautilus-icon-canvas-item.c:2506
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "キーボード・フォーカスを与えた部分を強調表示するかどうかを設定します"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2498
+#: libnautilus-private/nautilus-icon-canvas-item.c:2514
 msgid "highlighted for drop"
 msgstr "ドロップの強調表示"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2499
+#: libnautilus-private/nautilus-icon-canvas-item.c:2515
 msgid "whether we are highlighted for a D&D drop"
 msgstr "ドラッグ＆ドロップした部分を強調表示するかどうかを設定します"
 
@@ -3700,7 +3700,7 @@ msgstr ""
 msgid "Associate Action"
 msgstr "動作の関連づけ"
 
-#: libnautilus-private/nautilus-program-choosing.c:495
+#: libnautilus-private/nautilus-program-choosing.c:504
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -3709,7 +3709,7 @@ msgstr ""
 "\"%s\" は \"%s\" を開けません。なぜなら \"%s\" は \"%s\" にあるファイルにアク"
 "セスできないからです。他のアプリケーションを選択しますか？"
 
-#: libnautilus-private/nautilus-program-choosing.c:500
+#: libnautilus-private/nautilus-program-choosing.c:509
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
@@ -3718,12 +3718,12 @@ msgstr ""
 "デフォルトの動作では \"%s\" を開けません。なぜなら場所 \"%s\" にあるファイル"
 "にアクセスできないからです。別の動作を選択しますか？"
 
-#: libnautilus-private/nautilus-program-choosing.c:506
-#: libnautilus-private/nautilus-program-choosing.c:537
+#: libnautilus-private/nautilus-program-choosing.c:515
+#: libnautilus-private/nautilus-program-choosing.c:546
 msgid "Can't Open Location"
 msgstr "場所を開けません"
 
-#: libnautilus-private/nautilus-program-choosing.c:525
+#: libnautilus-private/nautilus-program-choosing.c:534
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -3735,7 +3735,7 @@ msgstr ""
 "このファイルを参照できるアプリケーションがありません。このファイルをローカル"
 "にコピーすると、開けるかもしれません。"
 
-#: libnautilus-private/nautilus-program-choosing.c:531
+#: libnautilus-private/nautilus-program-choosing.c:540
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
@@ -3747,7 +3747,13 @@ msgstr ""
 "このファイルを表示することが可能な動作がありません。このファイルをローカルに"
 "コピーすると、開けるかもしれません。"
 
-#: libnautilus-private/nautilus-program-choosing.c:801
+#: libnautilus-private/nautilus-program-choosing.c:800
+#: libnautilus-private/nautilus-program-choosing.c:1017
+#, c-format
+msgid "Opening %s"
+msgstr "%s のオープン中"
+
+#: libnautilus-private/nautilus-program-choosing.c:1161
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -3755,12 +3761,12 @@ msgstr ""
 "セキュリティ上の関係でリモート・サイトにあるコマンドを実行することはできませ"
 "ん。"
 
-#: libnautilus-private/nautilus-program-choosing.c:803
+#: libnautilus-private/nautilus-program-choosing.c:1163
 msgid "Can't execute remote links"
 msgstr "リモート・リンクを実行することができません"
 
-#: libnautilus-private/nautilus-program-choosing.c:813
-#: libnautilus-private/nautilus-program-choosing.c:879
+#: libnautilus-private/nautilus-program-choosing.c:1173
+#: libnautilus-private/nautilus-program-choosing.c:1239
 msgid ""
 "There was an error launching the application.\n"
 "\n"
@@ -3770,12 +3776,12 @@ msgstr ""
 "\n"
 "詳細: "
 
-#: libnautilus-private/nautilus-program-choosing.c:817
-#: libnautilus-private/nautilus-program-choosing.c:883
+#: libnautilus-private/nautilus-program-choosing.c:1177
+#: libnautilus-private/nautilus-program-choosing.c:1243
 msgid "Error launching application"
 msgstr "アプリケーションの起動エラー"
 
-#: libnautilus-private/nautilus-program-choosing.c:845
+#: libnautilus-private/nautilus-program-choosing.c:1205
 msgid ""
 "This drop target only supports local files.\n"
 "\n"
@@ -3785,12 +3791,12 @@ msgstr ""
 "ローカル以外のファイルを開く場合は、\n"
 "そのファイルを一度ローカルフォルダにコピーしてから再ドロップして下さい。"
 
-#: libnautilus-private/nautilus-program-choosing.c:848
-#: libnautilus-private/nautilus-program-choosing.c:860
+#: libnautilus-private/nautilus-program-choosing.c:1208
+#: libnautilus-private/nautilus-program-choosing.c:1220
 msgid "Drop target only supports local files"
 msgstr "ドロップの対象はローカル・ファイルのみサポート"
 
-#: libnautilus-private/nautilus-program-choosing.c:857
+#: libnautilus-private/nautilus-program-choosing.c:1217
 msgid ""
 "This drop target only supports local files.\n"
 "\n"
@@ -4946,21 +4952,21 @@ msgstr "ドラッグ＆ドロップのエラー"
 msgid "An invalid drag type was used."
 msgstr "使用したドラッグの種類は無効です。"
 
-#: src/file-manager/fm-list-view.c:729
+#: src/file-manager/fm-list-view.c:731
 msgid "File name"
 msgstr "ファイル名"
 
-#: src/file-manager/fm-list-view.c:753
+#: src/file-manager/fm-list-view.c:755
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "サイズ"
 
-#: src/file-manager/fm-list-view.c:764
+#: src/file-manager/fm-list-view.c:766
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "種類"
 
-#: src/file-manager/fm-list-view.c:775
+#: src/file-manager/fm-list-view.c:777
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "更新日時"
@@ -5008,9 +5014,8 @@ msgid "Images Only"
 msgstr "画像のみ"
 
 #: src/file-manager/fm-properties-window.c:893
-#, fuzzy
 msgid "Properties"
-msgstr "プロパティ(_P)"
+msgstr "プロパティ"
 
 #: src/file-manager/fm-properties-window.c:896
 #, c-format
@@ -5069,7 +5074,6 @@ msgid "Basic"
 msgstr "基本"
 
 #: src/file-manager/fm-properties-window.c:2157
-#, fuzzy
 msgid "_Names:"
 msgstr "名前(_N):"
 
@@ -5096,7 +5100,7 @@ msgstr "種類:"
 #: src/file-manager/fm-properties-window.c:2929
 #: src/file-manager/fm-properties-window.c:2933
 msgid "--"
-msgstr ""
+msgstr "--"
 
 #: src/file-manager/fm-properties-window.c:2222
 msgid "Size:"
@@ -5217,9 +5221,8 @@ msgid "The permissions of \"%s\" could not be determined."
 msgstr "\"%s\" のアクセス権が確定できませんでした。"
 
 #: src/file-manager/fm-properties-window.c:2941
-#, fuzzy
 msgid "The permissions of the selected file could not be determined."
-msgstr "\"%s\" のアクセス権が確定できませんでした。"
+msgstr "指定したファイルのアクセス権を決定できませんでした。"
 
 #: src/file-manager/fm-properties-window.c:3257
 #: src/nautilus-bookmarks-window.c:146
@@ -5245,7 +5248,7 @@ msgstr "プロパティ・ウィンドウの表示をキャンセルしますか
 msgid "Creating Properties window"
 msgstr "プロパティ・ウィンドウの作成中"
 
-#: src/file-manager/fm-properties-window.c:3716
+#: src/file-manager/fm-properties-window.c:3717
 msgid "Select an icon"
 msgstr "アイコンの選択"
 
@@ -6200,7 +6203,7 @@ msgstr "シングル・クリックでアイテムを起動する(_S)"
 
 #: src/nautilus-file-management-properties.glade.h:74
 msgid "_Text beside icons"
-msgstr ""
+msgstr "アイコンの横にラベルを配置する(_T)"
 
 #: src/nautilus-file-management-properties.glade.h:75
 msgid "_Use compact layout"
