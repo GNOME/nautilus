@@ -63,6 +63,7 @@
 #include <gnome-xml/xmlmemory.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libtrilobite/libammonite.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1105,6 +1106,33 @@ http_post_simple (const char *uri, const char *name, const char *value) {
 	return TRUE;
 }
 
+/* utility to count the number of annotations in the passed-in xml document */
+static int
+count_annotations (xmlDocPtr xml_document)
+{
+	xmlNodePtr next_annotation;
+	int annotation_count;
+	
+	annotation_count = 0;		
+	next_annotation = xmlDocGetRootElement (xml_document)->childs;
+	
+	while (next_annotation != NULL) {
+		if (eel_strcmp (next_annotation->name, "annotation") == 0) {
+			annotation_count += 1;
+		}
+		next_annotation = next_annotation->next;
+	}
+	return annotation_count;
+}
+
+/*
+ * get_ammonite_get_default_user_username
+ *
+ * Returns username of the currently logged-in default Eazel Service User
+ * or NULL if there isn't one
+ */
+
+
 /* send the local annotations associated with the passed-in digest to the server */
 static void
 nautilus_annotation_send_to_server (const char *digest, 
@@ -1118,8 +1146,13 @@ nautilus_annotation_send_to_server (const char *digest,
 	xmlNodePtr root_node, annotation_node;
 	int request_size;
 	
-	/* for now, assume the userid is "andy"; soon, fetch it from ammonite */
-	user_id = g_strdup ("andy");
+	/* get the user name */
+	user_id = ammonite_get_default_user_username ();
+	
+	/* if the user wasn't logged in, prompt for it (coming soon, for now, just use anonymous */
+	if (user_id == NULL) {
+		user_id = g_strdup ("anonymous");
+	}
 	
 	/* create an xml document to hold the annotation posting */
 	xml_document = xmlNewDoc ("1.0");
@@ -1163,6 +1196,7 @@ nautilus_annotation_add_annotation (NautilusFile *file,
 	char *annotations;
 	char *info_str, *date_str;
 	char *annotation_path;
+	int annotation_count;
 	time_t date_stamp;
 	xmlDocPtr xml_document;
 	xmlNodePtr root_node, node;
@@ -1251,8 +1285,8 @@ nautilus_annotation_add_annotation (NautilusFile *file,
 	save_local_annotations (xml_document, digest);
 	
 	/* update the metadata date and count */
-
-	info_str = g_strdup_printf ("%lu:%d", date_stamp, 1); /* FIXME: hardwired to 1 for now */
+	annotation_count = count_annotations (xml_document);
+	info_str = g_strdup_printf ("%lu:%d", date_stamp, annotation_count);
 					
 	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_NOTES_INFO, NULL, info_str);
 	g_free (info_str);

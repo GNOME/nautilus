@@ -38,6 +38,7 @@ endif
 
 libnautilus_extensions_la_LDFLAGS =	\
 	$(dependency_static_libs)	\
+	$(AMMONITE_LIBS)		\
 	$(BONOBO_PRINT_LIBS) 		\
 	$(BONOBOX_LIBS) 		\
 	$(ESD_LIBS)			\

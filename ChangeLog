@@ -1,3 +1,13 @@
+2001-04-09  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/Makefile.am:
+	linked with ammonite so we can get the user name
+	* libnautilus-extensions/nautilus-annotation.c:
+	(count_annotations), (nautilus_annotation_send_to_server),
+	(nautilus_annotation_add_annotation):
+	made it maintain the annotation count properly when a new annotation
+	is added; also, use the real username fetched from ammonite.
+	
 2001-04-08  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-annotation.c:
