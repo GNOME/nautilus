@@ -28,6 +28,7 @@
 #include <config.h>
 
 #include <bonobo/bonobo-ui-util.h>
+#include <eel/eel-debug.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <gtk/gtkclist.h>
@@ -333,6 +334,13 @@ nautilus_history_view_destroy (GtkObject *object)
 int
 main (int argc, char *argv[])
 {
+	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
+	 * Unfortunately, this has to be done explicitly for each domain.
+	 */
+	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
+		eel_make_warnings_and_criticals_stop_in_debugger (G_LOG_DOMAIN, NULL);
+	}
+
 	return nautilus_view_standard_main ("nautilus_history-view",
 					    VERSION,
 					    PACKAGE,

@@ -1,3 +1,18 @@
+2001-04-19  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* components/hardware/main.c: (main):
+	* components/help/hyperbola-main.c: (main):
+	* components/history/nautilus-history-view.c: (main):
+	* components/image-viewer/nautilus-image-view.c: (main):
+	* components/music/main.c: (main):
+	* components/notes/Makefile.am:
+	* components/notes/nautilus-notes.c: (main):
+	* components/text/main.c: (main):
+	* components/throbber/main.c: (main):
+	Make all standard components call the eel function to stop in the
+	debugger after warnings and criticals.  This also makes then spew
+	nicer messages that include the process id and program name.
+	
 2001-04-19  Seth Nickell  <snickell@stanford.edu>
 
 	reviewed by: Darin Adler <darin@eazel.com>

@@ -31,6 +31,7 @@
 
 #include <bonobo.h>
 
+#include <eel/eel-debug.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk-pixbuf/gdk-pixbuf-loader.h>
 #include <libart_lgpl/art_misc.h>
@@ -843,6 +844,13 @@ main (int argc, char *argv [])
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
 #endif
+
+	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
+	 * Unfortunately, this has to be done explicitly for each domain.
+	 */
+	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
+		eel_make_warnings_and_criticals_stop_in_debugger (G_LOG_DOMAIN, NULL);
+	}
 
 	init_server_factory (argc, argv);
 

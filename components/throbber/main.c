@@ -31,6 +31,7 @@
 #include <eel/eel-debug.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <liboaf/liboaf.h>
+#include <eel/eel-debug.h>
 
 static int object_count = 0;
 
@@ -72,26 +73,11 @@ main (int argc, char *argv[])
 	CORBA_ORB orb;
 	char *registration_id;
 
-	/* Make criticals and warnings stop in the debugger if
-	 * NAUTILUS_DEBUG is set. Unfortunately, this has to be done
-	 * explicitly for each domain.
+	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
+	 * Unfortunately, this has to be done explicitly for each domain.
 	 */
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
-		eel_make_warnings_and_criticals_stop_in_debugger
-			(G_LOG_DOMAIN, g_log_domain_glib,
-			 "Bonobo",
-			 "Gdk",
-			 "GnomeUI",
-			 "GnomeVFS",
-			 "GnomeVFS-CORBA",
-			 "GnomeVFS-pthread",
-			 "Gtk",
-			 "Gdk-Pixbuf",
-			 "Nautilus",
-			 "Nautilus-Authenticate",
-			 "Nautilus-Tree",
-			 "ORBit",
-			 NULL);
+		eel_make_warnings_and_criticals_stop_in_debugger (G_LOG_DOMAIN, NULL);
 	}
 
 	/* Disable session manager connection */

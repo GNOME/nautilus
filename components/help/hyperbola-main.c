@@ -23,9 +23,10 @@
 #include <config.h>
 
 #include <bonobo.h>
+#include <eel/eel-debug.h>
 #include <gnome.h>
-#include <liboaf/liboaf.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <liboaf/liboaf.h>
 
 #include "hyperbola-nav.h"
 
@@ -82,6 +83,13 @@ main (int argc, char *argv[])
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
 #endif
+
+	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
+	 * Unfortunately, this has to be done explicitly for each domain.
+	 */
+	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
+		eel_make_warnings_and_criticals_stop_in_debugger (G_LOG_DOMAIN, NULL);
+	}
 
 	/* Disable session manager connection */
 	gnome_client_disable_master_connection ();

@@ -26,10 +26,11 @@
 
 #include "nautilus-hardware-view.h"
 
+#include <bonobo.h>
+#include <eel/eel-debug.h>
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <liboaf/liboaf.h>
-#include <bonobo.h>
 
 static int object_count = 0;
 
@@ -75,6 +76,13 @@ int main(int argc, char *argv[])
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
 #endif
+
+	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
+	 * Unfortunately, this has to be done explicitly for each domain.
+	 */
+	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
+		eel_make_warnings_and_criticals_stop_in_debugger (G_LOG_DOMAIN, NULL);
+	}
 	
 	CORBA_exception_init(&ev);
 	

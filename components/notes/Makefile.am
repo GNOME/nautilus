@@ -3,6 +3,7 @@ NULL =
 bin_PROGRAMS=nautilus-notes
 
 INCLUDES=\
+	-DG_LOG_DOMAIN=\"Nautilus-Notes\" \
 	-I$(top_srcdir)		\
 	-I$(top_builddir)	\
 	-I$(top_builddir)/libnautilus	\
