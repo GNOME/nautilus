@@ -116,7 +116,6 @@ nautilus_view_class_init (NautilusViewClass *klass)
 {
   GtkObjectClass *object_class;
   GtkWidgetClass *widget_class;
-  int i;
 
   object_class = (GtkObjectClass*) klass;
   object_class->destroy = nautilus_view_destroy;

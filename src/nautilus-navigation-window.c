@@ -298,6 +298,7 @@ nautilus_window_get_type(void)
   return window_type;
 }
 
+#if 0
 typedef void (*GtkSignal_NONE__BOXED_OBJECT) (GtkObject * object,
                                               gpointer arg1,
                                               GtkObject *arg2,
@@ -315,6 +316,7 @@ gtk_marshal_NONE__BOXED_OBJECT (GtkObject * object,
 	    GTK_VALUE_OBJECT (args[1]),
 	    func_data);
 }
+#endif
 
 enum {
   ARG_0,
@@ -400,21 +402,10 @@ nautilus_window_goto_uri(NautilusWindow *window, const char *uri)
 
 static void
 nautilus_window_goto_uri_cb (GtkWidget *widget,
-                          const char *uri,
-                          GtkWidget *window)
+                             const char *uri,
+                             GtkWidget *window)
 {
-  if (nautilus_path_known_not_to_exist(uri))
-    {
-      gchar *message;
-
-      message = g_strdup_printf(_("no such location: %s"), uri);
-      nautilus_window_set_status(NAUTILUS_WINDOW(window), message);
-      g_free(message);
-    }
-  else
-    {
-      nautilus_window_goto_uri(NAUTILUS_WINDOW(window), uri);
-    }
+  nautilus_window_goto_uri(NAUTILUS_WINDOW(window), uri);
 }
 
 static void

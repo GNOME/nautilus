@@ -206,11 +206,11 @@ nautilus_window_load_content_view(NautilusWindow *window,
     }
   else
     {
-      NautilusView *dummy_view;
+      /* NautilusView *dummy_view; */
 
       /* FIXME - should be another view type - Commenting because set_content_view() would break */
-      // dummy_view = (NautilusView *)gtk_label_new(_("The component needed to display this file was not found."));
-      // nautilus_window_set_content_view(window, dummy_view);
+      /* dummy_view = (NautilusView *)gtk_label_new(_("The component needed to display this file was not found.")); */
+      /* nautilus_window_set_content_view(window, dummy_view); */
       nautilus_window_set_content_view(window, NULL);
     }
 }
