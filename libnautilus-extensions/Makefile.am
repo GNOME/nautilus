@@ -106,7 +106,6 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-preferences.c			\
 	nautilus-program-chooser.c		\
 	nautilus-program-choosing.c		\
-	nautilus-queue.c			\
 	nautilus-radio-button-group.c		\
 	nautilus-scalable-font.c		\
 	nautilus-search-uri.c			\
@@ -203,7 +202,6 @@ noinst_HEADERS =				\
 	nautilus-preferences-private.h		\
 	nautilus-program-chooser.h		\
 	nautilus-program-choosing.h		\
-	nautilus-queue.h			\
 	nautilus-radio-button-group.h		\
 	nautilus-scalable-font.h		\
 	nautilus-search-uri.h			\

@@ -52,7 +52,6 @@
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-queue.h>
 #include <libnautilus-extensions/nautilus-drag.h>
 #include <libnautilus-extensions/nautilus-file-operations.h>
 #include <libgnomevfs/gnome-vfs.h>
@@ -78,12 +77,18 @@ struct _NautilusTreeViewDndDetails {
 	NautilusDragInfo *drag_info;
 
 	/* data setup by button_press signal for dragging */
-	int press_x, press_y;
-	gboolean pressed_hot_spot;
-	gboolean drag_pending;
-	guint pressed_button;
 
-	GtkTargetList *target_list;
+	/* coordinates of the begening of a drag/press event */
+	int press_x, press_y;
+	/* used to remember between press/release that we pressed 
+	   a hot spot. */
+	gboolean pressed_hot_spot;
+	/* used to remember between motion events that we are 
+	   tracking a drag. */
+	gboolean drag_pending;
+	/* used to remmeber in motion_notify events which buton 
+	   was pressed. */
+	guint pressed_button;
 
 	/* data used by the drag_motion code */
 	GSList *expanded_nodes;
@@ -92,8 +97,6 @@ struct _NautilusTreeViewDndDetails {
 	NautilusCTreeNode *current_prelighted_node;
 	GtkStyle *normal_style;
 	GtkStyle *highlight_style;
-	/* queue of motion event's y coordinates */
-        NautilusQueue *motion_queue;
 };
 
 
@@ -820,10 +823,7 @@ static void
 nautilus_tree_view_init_dnd (NautilusTreeView *view)
 {
 	view->details->dnd = g_new0 (NautilusTreeViewDndDetails, 1);
-	view->details->dnd->motion_queue = nautilus_queue_new ();
 	view->details->dnd->expanded_nodes = NULL;
-	view->details->dnd->target_list = gtk_target_list_new (nautilus_tree_view_dnd_target_table, 
-							       NAUTILUS_N_ELEMENTS (nautilus_tree_view_dnd_target_table));
 
 	view->details->dnd->drag_info = g_new0 (NautilusDragInfo, 1);
 	nautilus_drag_init (view->details->dnd->drag_info,
@@ -896,7 +896,6 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 	/* set up expansion state */
 	view->details->expansion_state = nautilus_tree_expansion_state_new ();
 	
-
 	/* set up ctree */
 	view->details->tree = nautilus_ctree_new (1, 0);
 
@@ -945,7 +944,6 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 
 
 	/* init dnd */
-
 	nautilus_tree_view_init_dnd (view);
 
 	/* set up view */
@@ -1002,7 +1000,6 @@ nautilus_tree_view_destroy (GtkObject *object)
 		gtk_style_unref(view->details->dnd->highlight_style);
 	}
 	nautilus_drag_finalize (view->details->dnd->drag_info);
-	gtk_target_list_unref (view->details->dnd->target_list);
 	g_free (view->details->dnd);
 	/* FIXME bugzilla.eazel.com 2422: destroy drag_info */
 
@@ -1449,7 +1446,6 @@ nautilus_tree_view_drag_leave (GtkWidget *widget,
 
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
 				      "drag_leave");
-	
 	/* reinit for next dnd */
 	dnd->drag_info->got_drop_data_type = FALSE;
 
@@ -1554,29 +1550,28 @@ nautilus_tree_view_drag_data_received (GtkWidget *widget,
 	dnd = tree_view->details->dnd;
 	drag_info = dnd->drag_info;
 
-	drag_info->data_type = info;
-	drag_info->got_drop_data_type = TRUE;
+	if (drag_info->got_drop_data_type ==  FALSE) {
+		drag_info->data_type = info;
+		drag_info->got_drop_data_type = TRUE;
 
 
-	/* save operation for drag motion events */
-	switch (info) {
-	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-		drag_info->selection_list = nautilus_drag_build_selection_list (data);
-		break;
-	case NAUTILUS_ICON_DND_URI_LIST:
-		drag_info->selection_list = nautilus_drag_build_selection_list (data);
-		break;
-	case NAUTILUS_ICON_DND_COLOR:
-	case NAUTILUS_ICON_DND_BGIMAGE:	
-	case NAUTILUS_ICON_DND_KEYWORD:	
-	default:
-		/* we do not want to support any of the above */
-		break;
-	}
-
-
-	/* drop occured: do actual operations on the data */
-	if (drag_info->drop_occured == TRUE) {
+		/* save operation for drag motion events */
+		switch (info) {
+		case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+			drag_info->selection_list = nautilus_drag_build_selection_list (data);
+			break;
+		case NAUTILUS_ICON_DND_URI_LIST:
+			drag_info->selection_list = nautilus_drag_build_selection_list (data);
+			break;
+		case NAUTILUS_ICON_DND_COLOR:
+		case NAUTILUS_ICON_DND_BGIMAGE:	
+		case NAUTILUS_ICON_DND_KEYWORD:	
+		default:
+			/* we do not want to support any of the 3 above */
+			break;
+		}
+	} else if (drag_info->drop_occured == TRUE) {
+		/* drop occured: do actual operations on the data */
 		switch (info) {
 		case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
 		case NAUTILUS_ICON_DND_URI_LIST:
@@ -1832,7 +1827,7 @@ nautilus_tree_view_motion_notify (GtkWidget *widget, GdkEventButton *event)
 				action = GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_ASK;
 			}
 			gtk_drag_begin (tree_view->details->tree, 
-					tree_view->details->dnd->target_list, 
+					tree_view->details->dnd->drag_info->target_list, 
 					action,
 					tree_view->details->dnd->pressed_button,
 					(GdkEvent *) event);
