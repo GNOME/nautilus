@@ -181,6 +181,7 @@ nautilus_drag_build_selection_list (GtkSelectionData *data)
 	return result;
 }
 
+
 gboolean
 nautilus_drag_items_local (const char *target_uri_string, const GList *selection_list)
 {

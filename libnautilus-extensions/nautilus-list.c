@@ -2728,6 +2728,8 @@ nautilus_list_drag_start (GtkWidget *widget, GdkEventMotion *event)
 
 	list->details->drag_started = TRUE;
 	list->details->dnd_select_pending = FALSE;
+	/* reinit from last dnd if there was one */
+	list->details->drag_info->got_drop_data_type = FALSE;
 	
 	context = gtk_drag_begin (widget, list->details->drag_info->target_list,
 				  list->details->dnd_press_button == CONTEXTUAL_MENU_BUTTON
@@ -2866,10 +2868,7 @@ nautilus_list_drag_leave (GtkWidget *widget, GdkDragContext *context, guint time
 	list = NAUTILUS_LIST (widget);
 	drag_info = list->details->drag_info;
 
-	drag_info->got_drop_data_type = FALSE;
-
 	nautilus_list_stop_auto_scroll (NAUTILUS_LIST (list));
-
 }
 
 gboolean

@@ -548,7 +548,7 @@ fm_list_receive_dropped_icons (NautilusList *list,
 		action = nautilus_drag_drop_action_ask 
 			(GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
 	}
-	
+
 	if (action > 0) {
 		/* find the item we hit and figure out if it will take the dropped items */
 		target_item = fm_list_nautilus_file_at (list, x, y);
@@ -558,10 +558,13 @@ fm_list_receive_dropped_icons (NautilusList *list,
 		}
 
 		list_view_uri = fm_directory_view_get_uri (directory_view);
-		if (target_item != NULL 
-		    && !nautilus_drag_items_local (list_view_uri, drop_data)) {
-			
-				/* build a list of URIs to copy */
+
+		if (target_item != NULL) {
+
+			/* figure out the uri of the destination */
+			target_item_uri = nautilus_file_get_uri (target_item);
+
+			/* build a list of URIs to copy */
 			for (p = drop_data; p != NULL; p = p->next) {
 				/* do a shallow copy of all the uri strings of the copied files */
 				source_uris = g_list_prepend (source_uris, 
@@ -569,10 +572,8 @@ fm_list_receive_dropped_icons (NautilusList *list,
 			}
 			source_uris = g_list_reverse (source_uris);
 			
-				/* figure out the uri of the destination */
-			target_item_uri = nautilus_file_get_uri (target_item);
 			
-				/* start the copy */
+			/* start the copy */
 			fm_directory_view_move_copy_items (source_uris, NULL,
 							   target_item_uri, action, x, y, directory_view);
 		}
