@@ -91,7 +91,7 @@ pdsink_start (BonoboProgressiveDataSink *pdsink,
 			      embeddable_data->html_stream,
 			      GTK_HTML_STREAM_OK);
 
-	/* FIXME URL */
+	/* FIXME bugzilla.eazel.com 718: Need the URL here. */
 	embeddable_data->html_stream = gtk_html_begin (embeddable_data->html,
 						       "Unknown name");
 	gtk_html_parse (embeddable_data->html);
@@ -270,7 +270,7 @@ url_requested_cb (GtkHTML *html,
 
 	CORBA_exception_init (&ev);
 
-	/* FIXME cache the result.  */
+	/* FIXME bugzilla.eazel.com 716: cache the result.  */
 
 	g_warning ("query_interface on the ClientSite.");
 	loader = Bonobo_Unknown_query_interface
@@ -363,7 +363,7 @@ view_size_query_cb (BonoboView *view,
 
 	html = view_data->embeddable_data->html;
 
-	/* FIXME this is *bogus*!  */
+	/* FIXME bugzilla.eazel.com 717: this is *bogus*!  */
 	*desired_width  = html->engine->width;
 	*desired_height = html->engine->height;
 }

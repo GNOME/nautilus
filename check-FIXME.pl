@@ -50,7 +50,7 @@ if (!@ARGV)
   }
 
 # locate all of the target lines
-my $no_bug_lines;
+my $no_bug_lines = "";
 my %bug_lines;
 foreach my $file (@ARGV)
   {
@@ -74,7 +74,7 @@ foreach my $file (@ARGV)
   }
 
 # list the ones without bug numbers
-if ($no_bug_lines ne '')
+if ($no_bug_lines ne "")
   {
     my @no_bug_list = sort split /\n/, $no_bug_lines;
     print "\n", scalar(@no_bug_list), " FIXMEs don't have bug reports:\n\n";

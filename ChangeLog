@@ -1,3 +1,32 @@
+2000-04-27  Darin Adler  <darin@eazel.com>
+
+	More FIXME-to-bug work.
+	
+	* check-FIXME.pl: Fixed bug that happens when there are no
+	outstanding FIXMEs (hooray!).
+	
+	* components/hardware/nautilus-hardware-view.c
+	(get_RAM_description):
+	* components/help/help-method.c (convert_file_to_uri),
+	(transform_absolute_file):
+	* components/history/ntl-history-view.c
+	(hyperbola_navigation_history_select_row), (make_obj), (int):
+	* components/html/Makefile.am:
+	* components/html/main.c (pdsink_start), (url_requested_cb),
+	(view_size_query_cb):
+	* components/mozilla/nautilus-mozilla-content-view.c
+	(nautilus_mozilla_content_view_load_uri):
+	* components/music/nautilus-music-view.c
+	(nautilus_music_view_initialize), (nautilus_music_view_destroy),
+	(is_mp3_file), (fetch_song_info), (determine_attribute):
+	* components/rpmview/nautilus-rpm-view.c
+	(nautilus_rpm_view_initialize), (check_installed):
+	* components/services/install/eazel-install-rpm-glue.c
+	(install_new_packages):
+	* components/services/install/eazel-install-types.h:
+	* components/services/startup/eazel-register.c (xmlDoc):
+	Added bug numbers to FIXMEs, writing bug reports as needed.
+
 2000-04-27  John Sullivan  <sullivan@eazel.com>
 
 	More FIXME-to-bug work.
@@ -16,7 +45,7 @@
 2000-04-27  Joe Shaw <joe@helixcode.com>
 
         * components/rpmview/nautilus-rpm-view.c
-        (nautilus_rpm_view_update_from_uri): Changed call of fdValid
+        (nautilus_rpm_view_update_from_uri): Changed call of fdValidb
         to checking to ensure that file_descriptor != NULL. fdValid was
         removed from RPM 3.0.4 and this bit of code provides the same
         functionality. It'll build on 3.0.4-based systems now (like Red   

@@ -17,7 +17,8 @@
  * write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-/* FIXME: This prolly doesn't handle escaping correctly.  This needs some thought.
+
+/* FIXME bugzilla.eazel.com 698: This prolly doesn't handle escaping correctly.  This needs some thought.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -39,7 +40,7 @@
 #include <libgnomevfs/gnome-vfs-module.h>
 #include <libgnomevfs/gnome-vfs-module-shared.h>
 
-/* FIXME: temporary var, until we get i18n involved */
+/* FIXME bugzilla.eazel.com 696: temporary var, until we get i18n involved */
 #define TOPHELPDIR "/usr/share/gnome/help2/"
 
 static gboolean already_initialized = FALSE;
@@ -148,7 +149,7 @@ convert_file_to_uri (HelpURI *help_uri, gchar *file)
 		help_uri->type = HTML_FILE;
 	else if (!strncmp (mime_type, "application/x-troff-man", strlen ("application/x-troff-man")))
 		help_uri->type = MAN_FILE;
-	/* FIXME: test for info pages! */
+	/* FIXME bugzilla.eazel.com 695: test for info pages! */
 
 	return TRUE;
 }	
@@ -182,7 +183,7 @@ transform_absolute_file (const gchar *file)
 	}
 
 	/* First we try the file directly */
-	/* FIXME: we need to deal with locale, too */
+	/* FIXME bugzilla.eazel.com 696: we need to deal with locale, too */
 	temp_file = g_concat_dir_and_file (TOPHELPDIR, temp_file_base);
 	if (convert_file_to_uri (help_uri, temp_file)) {
 		g_free (temp_file_base);

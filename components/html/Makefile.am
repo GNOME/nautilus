@@ -1,5 +1,5 @@
-# FIXME I want the HTML component to be a shared library component, not an exe
-# one.
+# FIXME bugzilla.eazel.com 714: I (Elliot) want the HTML component to be a
+# shared library component, not an exe one.
 
 CPPFLAGS =					\
 	-DPREFIX=\"$(prefix)\"

@@ -182,14 +182,15 @@ hyperbola_navigation_history_select_row(GtkCList *clist, gint row, gint column, 
   if (row == 0)
       return;
 
-  /* FIXME: There are bugs here if you drag up & down */
+  /* FIXME bugzilla.eazel.com 702: There are bugs here if you drag up & down */
 
   gtk_clist_freeze(clist);
 
   if(gtk_clist_row_is_visible(clist, row) != GTK_VISIBILITY_FULL)
     gtk_clist_moveto(clist, row, -1, 0.5, 0.0);
 
-  /* FIXME: gotta cast away const because requested_uri isn't defined correctly */
+  /* FIXME bugzilla.eazel.com 706:
+   * gotta cast away const because requested_uri isn't defined correctly */
   reqi.requested_uri = (char *)get_uri_from_row (clist, row);
   reqi.new_window_requested = FALSE;
 
@@ -260,6 +261,7 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 
 int main(int argc, char *argv[])
 {
+  gboolean preferences_succeeded;
   BonoboGenericFactory *factory;
   CORBA_ORB orb;
 
@@ -268,9 +270,12 @@ int main(int argc, char *argv[])
                              oaf_popt_options, 0, NULL); 
   orb = oaf_init (argc, argv);
 
-  /* FIXME: Need better error reporting if this fails.  BUT, is it too
-   * early to post a dialog here ? */
-  g_assert (nautilus_preferences_initialize (argc, argv));
+  /* FIXME bugzilla.eazel.com 672: Need better error reporting if this
+   * fails. But is it too early to post a dialog here? Does every user
+   * of NautilusPreferences have to deal with this;
+   */
+  preferences_succeeded = nautilus_preferences_initialize (argc, argv);
+  g_assert (preferences_succeeded);
         
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
   gnome_vfs_init ();

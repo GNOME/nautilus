@@ -55,7 +55,9 @@ install_new_packages (InstallOptions* iopts) {
 		rpmSetVerbosity (RPMMESS_NORMAL);
 	}
 
-	/* FIXME This needs to be setup as an option.  Forcing everything right now. */
+	/* FIXME bugzilla.eazel.com 730:
+	 * This needs to be setup as an option.  Forcing everything right now.
+	 */
 	probFilter |= RPMPROB_FILTER_REPLACEPKG |
 				  RPMPROB_FILTER_REPLACEOLDFILES |
 				  RPMPROB_FILTER_REPLACENEWFILES |

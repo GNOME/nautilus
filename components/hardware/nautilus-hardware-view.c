@@ -272,7 +272,8 @@ get_RAM_description()
 
 /* shared utility to allocate a title for a form */
 
-static void setup_form_title(NautilusHardwareView *view, const char* image_name, const char* title_text)
+static void
+setup_form_title (NautilusHardwareView *view, const char* image_name, const char* title_text)
 {
 	GtkWidget *temp_widget;
 	char *file_name;	
@@ -290,7 +291,7 @@ static void setup_form_title(NautilusHardwareView *view, const char* image_name,
 	}
 	
  	temp_widget = gtk_label_new (title_text);
-	/* FIXME: don't use hardwired font like this */
+	/* FIXME bugzilla.eazel.com 667: don't use hardwired font like this */
 	nautilus_gtk_widget_set_font_by_name (temp_widget,
 					      "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); ;
 	gtk_box_pack_start (GTK_BOX (temp_container), temp_widget, 0, 0, 8);			 	

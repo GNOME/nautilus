@@ -176,7 +176,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	/* allocate the name field */
 	
 	rpm_view->details->package_title = gtk_label_new ("Package Title");
-        /* FIXME: don't use hardwired font like this */
+        /* FIXME bugzilla.eazel.com 667: don't use hardwired font like this */
 	nautilus_gtk_widget_set_font_by_name (rpm_view->details->package_title,
 					      "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*");
 	gtk_box_pack_start (GTK_BOX (temp_title_box), rpm_view->details->package_title, 0, 0, 0);	
@@ -417,7 +417,7 @@ check_installed(gchar *package_name, gchar *package_version, gchar *package_rele
 
 /* here's where we do most of the real work of populating the view with info from the package */
 /* open the package and copy the information, and then set up the appropriate views with it */
-/* FIXME: use gnome-vfs to open the package */
+/* FIXME bugzilla.eazel.com 725: use gnome-vfs to open the package */
 
 static void 
 nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)

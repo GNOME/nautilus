@@ -51,8 +51,8 @@ struct _InstallOptions {
 	gboolean mode_debug;		/* Internal testing mode for debugging */
 	gboolean mode_test;			/* dry run mode */
 	gboolean mode_verbose;		/* print extra information */
-	gboolean mode_silent;		/* FIXME print all information to a logfile */
-	gboolean mode_depend;		/* FIXME print all dependancies */
+	gboolean mode_silent;		/* FIXME bugzilla.eazel.com 731: print all information to a logfile */
+	gboolean mode_depend;		/* FIXME bugzilla.eazel.com 731: print all dependancies */
 	gboolean mode_uninstall;	/* Uninstall the package list */
 	gboolean mode_update;		/* If package is already installed, update it */
 	guint port_number;			/* Connection port */

@@ -142,7 +142,7 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	/* allocate a widget for the album title */
 	
 	music_view->details->album_title = gtk_label_new ("Album Title");
-        /* FIXME: don't use hardwired font like this */
+        /* FIXME bugzilla.eazel.com 667: don't use hardwired font like this */
 	nautilus_gtk_widget_set_font_by_name (music_view->details->album_title,
                                               "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); ;
 	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->album_title, 0, 0, 0);	
@@ -205,7 +205,7 @@ nautilus_music_view_destroy (GtkObject *object)
 }
 
 /* handle a row being selected in the list view by playing the corresponding song */
-/* FIXME: xmms shouldn't be hardwired */
+/* FIXME bugzilla.eazel.com 721: xmms shouldn't be hardwired */
 static void 
 selection_callback(GtkCList * clist, int row, int column, GdkEventButton * event)
 {
@@ -266,7 +266,7 @@ is_mp3_file(const char *song_path)
 }
 
 /* read the id3 tag of the file if present */
-/* FIXME: need to use gnome vfs for this */
+/* FIXME bugzilla.eazel.com 722: need to use gnome vfs for this */
 
 static gboolean
 read_id_tag (const char *song_path, SongInfo *song_info)
@@ -347,7 +347,7 @@ fetch_song_info (const char *song_path, int file_order)
 }
 
 /* format_play_time takes the pathname to a file and returns the play time formated as mm:ss */
-/* FIXME: assumes 128k bits/second.  Must read header and factor in bitrate */
+/* FIXME bugzilla.eazel.com 723: assumes 128k bits/second.  Must read header and factor in bitrate */
 
 static char *
 format_play_time (const char *song_path_name)
@@ -397,7 +397,7 @@ determine_attribute (GList *song_list, gboolean is_artist)
 }
 
 /* here's where we do most of the real work of populating the view with info from the new uri */
-/* FIXME: need to use gnome-vfs for iterating the directory */
+/* FIXME bugzilla.eazel.com 722: need to use gnome-vfs for iterating the directory */
 
 static void
 nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *uri)

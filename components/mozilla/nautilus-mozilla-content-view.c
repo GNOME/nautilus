@@ -153,7 +153,7 @@ nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 	if (view->detail->uri)
 		g_free (view->detail->uri);
 
-	/* FIXME: This is a temporary dumbass hack */
+	/* FIXME bugzilla.eazel.com 522: This is a temporary dumbass hack */
 	if (strncmp (uri, "moz:", strlen ("moz:")) == 0)
 	{
 		view->detail->uri = g_strdup_printf ("http:%s", uri + strlen ("moz:"));
