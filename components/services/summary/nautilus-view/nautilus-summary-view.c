@@ -135,10 +135,9 @@ generate_summary_form (NautilusSummaryView	*view)
 	parent = GTK_TABLE (gtk_table_new (3, 2, FALSE));
 
 	/* Create the Services Listing Frame */
-	frame = gtk_frame_new ("Services Placeholder");
+	frame = gtk_frame_new ("");
 	gtk_widget_show (frame);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_OUT);
-	gtk_frame_set_label_align (GTK_FRAME (frame), 0.5, 0);
+	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_NONE);
 	gtk_table_attach (GTK_TABLE (parent), frame,
 			  0, 1,
 			  0, 1,
@@ -176,7 +175,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_box_pack_start (GTK_BOX (temp_hbox), temp_button, FALSE, FALSE, 13);
 	gtk_signal_connect (GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (goto_vault_cb), view);
 	gtk_widget_show (temp_button);
-	gtk_table_attach (services_table, temp_hbox, 2, 3, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_table_attach (services_table, temp_hbox, 2, 3, 0, 1, 0, 0, 0, 0);
 	gtk_widget_show (temp_hbox);
 
 	/* draw parent vbox and connect it to the login frame */
@@ -186,10 +185,9 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_container_add (GTK_CONTAINER (frame), temp_box);
 
 	/* Create the Login Frame */
-	frame = gtk_frame_new ("Login Placeholder");
+	frame = gtk_frame_new ("");
 	gtk_widget_show (frame);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_OUT);
-	gtk_frame_set_label_align (GTK_FRAME (frame), 0.5, 0);
+	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_NONE);
 	gtk_table_attach (GTK_TABLE (parent), frame,
 			  1, 2,
 			  0, 1,
@@ -278,10 +276,9 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_container_add (GTK_CONTAINER (frame), temp_box);
 
 	/* Create the Service News Frame */
-	frame = gtk_frame_new ("Service News Placeholder");
+	frame = gtk_frame_new ("");
 	gtk_widget_show (frame);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_OUT);
-	gtk_frame_set_label_align (GTK_FRAME (frame), 0.5, 0);
+	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_NONE);
 	gtk_table_attach (GTK_TABLE (parent), frame,
 			  0, 2,
 			  1, 2,
@@ -317,10 +314,9 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_container_add (GTK_CONTAINER (frame), temp_box);
 
 	/* Create the Update News Frame */
-	frame = gtk_frame_new ("Update News Placeholder");
+	frame = gtk_frame_new ("");
 	gtk_widget_show (frame);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_OUT);
-	gtk_frame_set_label_align (GTK_FRAME (frame), 0.5, 0);
+	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_NONE);
 	gtk_table_attach (GTK_TABLE (parent), frame,
 			  0, 2,
 			  2, 3,
@@ -358,7 +354,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_box_pack_start (GTK_BOX (temp_hbox), temp_button, FALSE, FALSE, 13);
 	gtk_signal_connect (GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (update_netscape_cb), view);
 	gtk_widget_show (temp_button);
-	gtk_table_attach (updates_table, temp_hbox, 2, 3, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_table_attach (updates_table, temp_hbox, 2, 3, 0, 1, 0, 0, 0, 0);
 	gtk_widget_show (temp_hbox);
 
 	/* draw parent vbox and connect it to the login frame */
