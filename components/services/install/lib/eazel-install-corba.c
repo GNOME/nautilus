@@ -73,38 +73,13 @@ impl_Eazel_Install_install_packages(impl_POA_Trilobite_Eazel_Install *servant,
 				    CORBA_Environment * ev) 
 {
 	GList *categories;
-	int i,j;
 
 	servant->object->callback = cb;
 	categories = NULL;
 
-	for (i = 0; i < corbacategories->_length; i++) {
-		CategoryData *category;
-		GList *packages;
-		Trilobite_Eazel_CategoryStruct corbacategory;
-		Trilobite_Eazel_PackageStructList packagelist;
-
-		packages = NULL;
-		corbacategory = corbacategories->_buffer [i];
-		packagelist = corbacategory.packages;
-
-		for (j = 0; j < packagelist._length; j++) {
-			PackageData *pack;
-			Trilobite_Eazel_PackageStruct corbapack;
-			
-			corbapack = packagelist._buffer [j];
-			pack = packagedata_from_corba_packagestruct (&corbapack);
-			
-			packages = g_list_prepend (packages, pack);
-		}
-		category = g_new0 (CategoryData, 1);
-		category->name = strlen (corbacategory.name)>0 ? g_strdup (corbacategory.name) : NULL;
-		category->packages = packages;
-		categories = g_list_prepend (categories, category);
-	}
 
 	servant->object->callback = cb;
-
+	categories = categorydata_list_from_corba_categorystructlist (*corbacategories);
 	eazel_install_install_packages (servant->object, categories);
 	
 	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
@@ -115,11 +90,22 @@ impl_Eazel_Install_install_packages(impl_POA_Trilobite_Eazel_Install *servant,
 
 static void 
 impl_Eazel_Install_uninstall_packages(impl_POA_Trilobite_Eazel_Install *servant,
-				      const Trilobite_Eazel_PackageStructList *packages,
+				    const Trilobite_Eazel_CategoryStructList *corbacategories,
 				      const Trilobite_Eazel_InstallCallback cb,
 			     CORBA_Environment * ev) 
 {
+	GList *categories;
+
 	servant->object->callback = cb;
+	categories = NULL;
+
+
+	servant->object->callback = cb;
+	categories = categorydata_list_from_corba_categorystructlist (*corbacategories);
+	eazel_install_uninstall_packages (servant->object, categories);
+	
+	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
+	g_list_free (categories);
 
 	return;
 }

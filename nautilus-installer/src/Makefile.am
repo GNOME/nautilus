@@ -14,6 +14,8 @@ INCLUDES = \
 	-DG_LOG_DOMAIN=\"Nautilus-Installer\"			\
 	$(NULL)
 
+CPPFLAGS = -DEAZEL_INSTALL_NO_CORBA
+
 CFLAGS = -g $(WERROR)
 ##LDFLAGS = -static
 

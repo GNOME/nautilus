@@ -53,36 +53,7 @@
 #include <libgnorba/gnorba.h>
 #include <limits.h>
 
-struct NautilusRPMViewDetails {
-        char *current_uri;
-        NautilusView *nautilus_view;
-        
-        GtkWidget *package_image;
-        GtkWidget *package_title;
-        GtkWidget *package_release;
-        GtkWidget *package_summary;
-        GtkWidget *package_size;
-        GtkWidget *package_idate;
-        GtkWidget *package_license;
-        GtkWidget *package_bdate;
-        GtkWidget *package_distribution;
-        GtkWidget *package_vendor;      
-        GtkWidget *package_description;    
-        
-	GtkWidget *package_installed_message;
-	GtkWidget *package_install_button;
-	GtkWidget *package_update_button;
-	GtkWidget *package_uninstall_button;
-	
-	GtkVBox   *package_container;
-	GtkWidget *go_to_button;
-	
-	GtkWidget *package_file_list;
-        gboolean  package_installed;
-	int background_connection;
-	int selected_file;
-};
-
+#include <libeazelinstall.h>
 
 #define RPM_VIEW_DEFAULT_BACKGROUND_COLOR  "rgb:DDDD/DDDD/BBBB"
 
@@ -314,6 +285,10 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_uninstall_button,
 				 FALSE, FALSE, 2);		
 	gtk_widget_show(rpm_view->details->package_uninstall_button);
+        gtk_signal_connect (GTK_OBJECT (rpm_view->details->package_uninstall_button), 
+                            "clicked", 
+                            GTK_SIGNAL_FUNC (nautilus_rpm_view_uninstall_package_callback), 
+                            rpm_view);
 	
 	/* add the list of files contained in the package */
 
@@ -469,6 +444,7 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	gboolean is_installed;
 	FD_t file_descriptor;
 	gint *integer_ptr;
+        PackageData *pack;
   	
 	gchar **path = NULL;
 	gchar **links = NULL;	
@@ -613,7 +589,20 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	g_free(path);
   	g_free(links);
   	gtk_clist_thaw(GTK_CLIST(rpm_view->details->package_file_list));
-
+        
+        /* NOTE: This adds a libeazelinstall packagedata object to the rpm_view */
+        pack = (PackageData*)gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
+        if (pack != NULL) {
+                /* Destroy the old */
+                packagedata_destroy (pack);
+        } 
+        pack = packagedata_new ();
+        pack->name = g_strdup (package_name);
+        pack->version = g_strdup (temp_version);
+        pack->minor = g_strdup (temp_release);
+        gtk_object_set_data (GTK_OBJECT (rpm_view), "packagedata", pack);
+        /* */
+        
 	if (package_name)
 		g_free(package_name);
 	if (temp_version)

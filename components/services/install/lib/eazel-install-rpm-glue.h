@@ -33,6 +33,6 @@
 #include "eazel-install-public.h"
 
 gboolean install_new_packages (EazelInstall *service, GList *categories);
-gboolean uninstall_packages (EazelInstall *service);
+gboolean uninstall_packages (EazelInstall *service, GList *categories);
 
 #endif /* EAZEL_INSTALL_RPM_GLUE_H */

@@ -27,5 +27,7 @@
 
 void  nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 						  NautilusRPMView *rpm_view);
+void  nautilus_rpm_view_uninstall_package_callback (GtkWidget *widget,
+						    NautilusRPMView *rpm_view);
 
 #endif /* NAUTILUS_RPM_VIEW_INSTALL_H */

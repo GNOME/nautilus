@@ -5,9 +5,6 @@ CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"eazel-install\"	\
 	$(NULL)
 
-#       -DEAZEL_INSTALL_NO_CORBA                \
-
-
 INCLUDES = \
 	-I$(top_srcdir)						\
 	-I$(top_builddir)					\
@@ -21,8 +18,6 @@ INCLUDES = \
 	$(NULL)
 
 lib_LTLIBRARIES = libeazelinstall.la
-lib_LIBRARIES = libeazelinstall_minimal.a
-# noinst_LIBRARIES = libinstall_base.a libinstall_gtk.a hest
 
 noinst_HEADERS = \
 	trilobite-eazel-install.h		\
@@ -39,29 +34,10 @@ noinst_HEADERS = \
 	eazel-install-corba-callback.h		\
 	$(NULL)
 
-libinstall_base_a_SOURCES =		       	\
-	eazel-install-types.c	 		\
-	eazel-install-metadata.c		\
-	eazel-install-protocols.c		\
-	eazel-install-rpm-glue.c		\
-	eazel-install-query.c			\
-	eazel-install-tests.c			\
-	eazel-install-xml-package-list.c	\
+libeazelinstallincludedir=$(includedir)/eazel-install
+
+libeazelinstall_HEADERS = \
 	eazel-install-public.h			\
-	$(NULL)
-
-libinstall_gtk_a_SOURCES =			\
-	eazel-install-object.c			\
-	$(NULL)
-
-libeazelinstall_minimal_a_CPPFLAGS = 	\
-	eraser				\
-	-DEAZEL_INSTALL_NO_CORBA 	\
-	$(CORBA)
-
-libeazelinstall_minimal_a_SOURCES = \
-	$(libinstall_base_a_SOURCES)	\
-	$(libinstall_gtk_a_SOURCES)	\
 	$(NULL)
 
 libeazelinstall_la_SOURCES = \
@@ -69,8 +45,14 @@ libeazelinstall_la_SOURCES = \
 	eazel-install-corba.c		\
 	eazel-install-corba-types.c	\
 	eazel-install-corba-callback.c	\
-	$(libinstall_base_a_SOURCES)	\
-	$(libinstall_gtk_a_SOURCES)	\
+	eazel-install-types.c	 		\
+	eazel-install-metadata.c		\
+	eazel-install-protocols.c		\
+	eazel-install-rpm-glue.c		\
+	eazel-install-query.c			\
+	eazel-install-tests.c			\
+	eazel-install-xml-package-list.c	\
+	eazel-install-object.c			\
 	$(NULL)
 
 EXTRA_DIST = eazel-install-query-lex.l hest
@@ -79,8 +61,6 @@ eazel-install-query-lex.c: $(srcdir)/eazel-install-query-lex.l eazel-install-que
 	@rm -f $@
 	$(LEX) -t $(srcdir)/eazel-install-query-lex.l >$@
 
-eraser: 
-	rm -rf eazel-install-object.*o
 
 ## CORBA magic
 
@@ -98,7 +78,7 @@ $(libinstall_base_a_SOURCES) $(CORBA_GENERATED): trilobite-eazel-install.h
 trilobite-eazel-install.h: $(IDL)
 	$(ORBIT_IDL) $(IDL_CFLAGS) -I$(IDLDIR) $(IDL)
 
-CLEANFILES+=$(CORBA_GENERATED) trilobite-eazel-install.h
+CLEANFILES+=$(CORBA_GENERATED) trilobite-eazel-install.h lessevil.c evil.c moreevil.c
 
 ##
 

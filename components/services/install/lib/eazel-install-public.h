@@ -30,6 +30,8 @@
 #ifndef EAZEL_INSTALL_PUBLIC_H
 #define EAZEL_INSTALL_PUBLIC_H
 
+#include "evil.h"
+
 #include <libgnome/gnome-defs.h>
 #ifndef EAZEL_INSTALL_NO_CORBA
 #include "bonobo.h"
@@ -126,13 +128,13 @@ void eazel_install_emit_uninstall_failed          (EazelInstall *service,
 						   const PackageData *pd);
 void eazel_install_emit_dependency_check          (EazelInstall *service, 
 						   const PackageData *package, 
-						   const PackageData *needed );
+						   const PackageData *needed);
 void eazel_install_emit_done                      (EazelInstall *service);
 
 /* This is in flux */
 void eazel_install_fetch_pockage_list (EazelInstall *service);
 void eazel_install_install_packages (EazelInstall *service, GList *categories);
-void eazel_install_uninstall (EazelInstall *service);
+void eazel_install_uninstall_packages (EazelInstall *service, GList *categories);
 
 GList* eazel_install_query_package_system (EazelInstall *service,
 					   const char *query, 

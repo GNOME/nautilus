@@ -267,3 +267,39 @@ corba_category_list_from_categorydata_list (GList *categories)
 	}
 	return corbacats;
 }
+
+GList*
+categorydata_list_from_corba_categorystructlist (const Trilobite_Eazel_CategoryStructList corbacategories)
+{
+	GList *categories;
+	int i,j;
+
+	categories = NULL;
+
+	for (i = 0; i < corbacategories._length; i++) {
+		CategoryData *category;
+		GList *packages;
+		Trilobite_Eazel_CategoryStruct corbacategory;
+		Trilobite_Eazel_PackageStructList packagelist;
+
+		packages = NULL;
+		corbacategory = corbacategories._buffer [i];
+		packagelist = corbacategory.packages;
+
+		for (j = 0; j < packagelist._length; j++) {
+			PackageData *pack;
+			Trilobite_Eazel_PackageStruct corbapack;
+			
+			corbapack = packagelist._buffer [j];
+			pack = packagedata_from_corba_packagestruct (&corbapack);
+			
+			packages = g_list_prepend (packages, pack);
+		}
+		category = g_new0 (CategoryData, 1);
+		category->name = strlen (corbacategory.name)>0 ? g_strdup (corbacategory.name) : NULL;
+		category->packages = packages;
+		categories = g_list_prepend (categories, category);
+	}
+
+	return categories;
+}

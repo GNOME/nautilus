@@ -64,14 +64,6 @@ static void* rpm_show_progress (const Header h,
                                 const unsigned long total,
                                 const void* pkgKey,
                                 void* service);
-/*
-static int rpm_install (EazelInstall *service,
-			char* root_dir,
-                        char* file_name,
-                        char* location,
-                        rpm_install_cb callback,
-                        void* user_data);
-*/
 
 static int rpm_uninstall (EazelInstall *service, 
 			  char* root_dir,
@@ -242,12 +234,12 @@ install_all_packages (EazelInstall *service,
 
 
 gboolean 
-uninstall_packages (EazelInstall *service) {
-	GList* categories;
+uninstall_packages (EazelInstall *service,
+		    GList* categories) 
+{
 	gboolean rv;
 	int uninstall_flags, interface_flags, problem_filters;
 	
-	categories = NULL;
 	uninstall_flags = 0;
 	interface_flags = 0;
 	problem_filters = 0;
@@ -265,9 +257,6 @@ uninstall_packages (EazelInstall *service) {
 	rpmSetVerbosity (RPMMESS_DEBUG);
 
 	rpmReadConfigFiles (eazel_install_get_rpmrc_file (service), NULL);
-
-	g_message (_("Reading the uninstall package list ..."));
-	categories = parse_local_xml_package_list (eazel_install_get_package_list (service));
 
 	while (categories) {
 		CategoryData* cat = categories->data;
@@ -304,39 +293,25 @@ uninstall_a_package (EazelInstall *service,
                      int uninstall_flags,
                      int problem_filters,
                      int interface_flags) {
-	char* pkg; 
 	int retval;
 	gboolean rv;
 
 	retval = 0;
 
-	pkg = g_strdup_printf ("%s-%s-%s",
-                               package->name,
-                               package->version,
-                               package->minor);
-
-	rv = TRUE;
-	if (g_strcasecmp (package->archtype, "src") != 0) {
-
-		g_message (_("Uninstalling %s"), pkg);
-		retval = rpm_uninstall (service,
-					"/",
-                                        pkg,
-                                        uninstall_flags,
-                                        problem_filters,
-                                        interface_flags);
-		g_free (pkg);
-		if (retval == 0) {
-			g_message ("Package uninstall successful!");
-		} else {
-			g_message (_("Package uninstall failed !"));
-			rv = FALSE;
-		}
+	g_message (_("Uninstalling %s"), package->name);
+	retval = rpm_uninstall (service,
+				"/",
+				package->name,
+				uninstall_flags,
+				problem_filters,
+				interface_flags);
+	if (retval == 0) {
+		g_message ("Package uninstall successful!");
+		rv = TRUE;
 	} else {
-  		g_message (_("%s seems to be a source package.  Skipping ..."), pkg);
-		g_free (pkg);
+		g_message (_("Package uninstall failed !"));
 		rv = FALSE;
-  	}
+	}
 
 	return rv;
 

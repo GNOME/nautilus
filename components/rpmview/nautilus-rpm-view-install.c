@@ -26,11 +26,6 @@
 
 #define OAF_ID "OAFIID:trilobite_eazel_install_service:8ff6e815-1992-437c-9771-d932db3b4a17"
 
-struct NautilusRPMViewDetails {
-        char *current_uri;
-        NautilusView *nautilus_view;
-};
-
 static void 
 nautilus_rpm_view_download_progress_signal (EazelInstallCallback *service, 
 					    const char *name,
@@ -144,7 +139,11 @@ static void
 nautilus_rpm_view_install_done (EazelInstallCallback *service,
 				NautilusRPMView *rpm_view)
 {
+	char *tmp;
 	eazel_install_callback_destroy (GTK_OBJECT (service));
+	tmp = g_strdup (rpm_view->details->current_uri);
+	nautilus_rpm_view_load_uri (rpm_view, tmp);
+	g_free (tmp);
 }
 
 void 
@@ -165,7 +164,8 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 		char *ptr;
 		CategoryData *category;
 		PackageData *pack;
-		/* I need a clean way to get the filename... */
+		/* FIXME: bugzilla.eazel.com 1492
+		   I need a clean way to get the filename... */
 		ptr = rpm_view->details->current_uri + strlen (rpm_view->details->current_uri) - 1;
 		while (ptr != rpm_view->details->current_uri && *ptr!='/') { ptr--; };
 		ptr++;
@@ -203,6 +203,59 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 	gtk_signal_connect (GTK_OBJECT (cb), "done", nautilus_rpm_view_install_done, rpm_view);
 	
 	eazel_install_callback_install_packages (cb, categories, &ev);
+	
+	CORBA_exception_free (&ev);               
+}
+
+void 
+nautilus_rpm_view_uninstall_package_callback (GtkWidget *widget,
+					      NautilusRPMView *rpm_view)
+{
+	GList *packages;
+	GList *categories;
+	CORBA_Environment ev;
+	EazelInstallCallback *cb;		
+
+	CORBA_exception_init (&ev);
+
+	packages = NULL;
+	categories = NULL;
+
+	{
+		CategoryData *category;
+		PackageData *pack;
+		pack = gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
+		
+		category = g_new0 (CategoryData, 1);
+		category->packages = g_list_prepend (NULL, pack);
+		categories = g_list_prepend (NULL, category);
+	}
+
+	/* Check that we're on a redhat system */
+	if (check_for_redhat () == FALSE) {
+		fprintf (stderr, "*** This tool can only be used on RedHat.\n");
+	}
+
+	cb = eazel_install_callback_new ();
+	
+	Trilobite_Eazel_Install__set_protocol (eazel_install_callback_corba_objref (cb), Trilobite_Eazel_PROTOCOL_HTTP, &ev);
+	if (check_for_root_user() == FALSE) {
+		fprintf (stderr, "*** This tool requires root access, switching to test mode\n");
+		Trilobite_Eazel_Install__set_test_mode (eazel_install_callback_corba_objref (cb), TRUE, &ev); 
+	} else {
+		Trilobite_Eazel_Install__set_test_mode (eazel_install_callback_corba_objref (cb), FALSE, &ev); 
+	}
+	Trilobite_Eazel_Install__set_tmp_dir (eazel_install_callback_corba_objref (cb), "/tmp/eazel-install", &ev);
+	Trilobite_Eazel_Install__set_server (eazel_install_callback_corba_objref (cb), "testmachine.eazel.com", &ev);
+	Trilobite_Eazel_Install__set_server_port (eazel_install_callback_corba_objref (cb), 80, &ev);
+
+	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", nautilus_rpm_view_download_progress_signal, rpm_view);
+	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_progress", nautilus_rpm_view_install_progress_signal, rpm_view);
+	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_failed", nautilus_rpm_view_install_failed, rpm_view);
+	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", nautilus_rpm_view_dependency_check, rpm_view);
+	gtk_signal_connect (GTK_OBJECT (cb), "done", nautilus_rpm_view_install_done, rpm_view);
+	
+	eazel_install_callback_uninstall_packages (cb, categories, &ev);
 	
 	CORBA_exception_free (&ev);               
 }

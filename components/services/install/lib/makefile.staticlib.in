@@ -1,0 +1,37 @@
+OBJS=\
+	eazel-install-types.o	 		\
+	eazel-install-metadata.o		\
+	eazel-install-protocols.o		\
+	eazel-install-rpm-glue.o		\
+	eazel-install-query.o			\
+	eazel-install-tests.o			\
+	eazel-install-xml-package-list.o	\
+	eazel-install-object.o
+
+DEFINES=-DEAZEL_INSTALL_NO_CORBA
+INCLUDES=\
+	-I.							\
+	-I@top_srcdir@						\
+	-I/usr/include/rpm					\
+        -I@top_srcdir@/components/services/trilobite		\
+	@GNOME_CFLAGS@						\
+	@GCONF_CFLAGS@						\
+	@XML_CFLAGS@						\
+	@GHTTP_CFLAGS@						\
+	@WERROR@						\
+	$(NULL)
+
+LIB=libeazelinstall_minimal.a
+
+CC=gcc
+CPPFLAGS=$(INCLUDES) $(DEFINES)
+CFLAGS=-O -Werror
+
+all: $(LIB)
+
+$(LIB): $(OBJS)
+	$(AR) $(ARFLAGS) libeazelinstall_minimal.a $(OBJS)
+
+clean:
+	rm -f $(OBJS)
+	rm -f $(LIB)

@@ -1,3 +1,56 @@
+2000-06-27  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(nautilus_rpm_view_install_done),
+	(nautilus_rpm_view_install_package_callback),
+	(nautilus_rpm_view_uninstall_package_callback):
+	* components/rpmview/nautilus-rpm-view-install.h:
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_initialize),
+	(nautilus_rpm_view_update_from_uri):
+	* components/rpmview/nautilus-rpm-view.h:
+	Hooked up the uninstall button, and made the install's done
+	callback signal update the view.
+	
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(eazel_install_callback_uninstall_packages):
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(categorydata_list_from_corba_categorystructlist):
+	* components/services/install/lib/eazel-install-corba-types.h:
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install_install_packages),
+	(impl_Eazel_Install_uninstall_packages):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_uninstall_packages):
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(uninstall_packages), (uninstall_a_package):
+	* components/services/install/lib/eazel-install-rpm-glue.h:
+	Made the uninstall work, still missing all the dep stuff
+	(bugzilla.eazel.com 1478)	
+	
+	* components/services/install/lib/Makefile.am:
+	* components/services/install/lib/makefile.staticlib.in:
+	I decided the other makefile.am I had made was too evil, so now I
+	just have a standard makefile to generate the static lib for the
+	nautilus bootstrapper.
+	
+	* configure.in:
+	Generate the components/services/install/lib/makefile.staticlib
+	
+	* nautilus-installer/src/HACKING:
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/Makefile.am:
+	* nautilus-installer/src/installer.c: (installer):
+	* nautilus-installer/src/interface.c: (create_window):
+	* nautilus-installer/src/link.sh:
+	* nautilus-installer/src/main.c: (main):
+	Preparing for Bud's request about being able to install a "stable"
+	nautilus and a set of rpm's from HEAD.
+	Also made link.sh recompile libeazelinstall_minimal using the
+	makefile.staticlib.
+
 2000-06-27  Robin * Slomkowski <rslomkow@eazel.com>
 
 	* nautilus-clean.sh: nautilus-tree=voew changed to

@@ -113,9 +113,9 @@ LN_S = ln -s
 MAINT = 
 MAKEINFO = makeinfo
 MKINSTALLDIRS = ./mkinstalldirs
-MOZILLA_COMPONENT_CFLAGS = 
-MOZILLA_COMPONENT_LDFLAGS = 
-MOZILLA_COMPONENT_LIBS = 
+MOZILLA_COMPONENT_CFLAGS = -I/usr/include/mozilla
+MOZILLA_COMPONENT_LDFLAGS = -L/usr/lib/mozilla
+MOZILLA_COMPONENT_LIBS = -lgtkembedmoz 				-lgtksuperwin 				-lxpcom 				-lnspr4 				-lplc4 				-lplds4
 NM = /usr/bin/nm -B
 OAF_CFLAGS = -I/gnome/include -I/gnome/lib/glib/include
 OAF_CONFIG = /gnome/bin/oaf-config
@@ -150,6 +150,8 @@ NULL =
 INCLUDES =  	-I$(top_srcdir)/components/services/install/lib 		-I$(top_srcdir)/components/services/trilobite			-I/usr/include/rpm						$(GNOMEUI_CFLAGS)						$(XML_CFLAGS)							$(GHTTP_CFLAGS)							$(GNOME_INCLUDEDIR)						-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 			-DG_LOG_DOMAIN=\"Nautilus-Installer\"				$(NULL)
 
 
+CPPFLAGS = -DEAZEL_INSTALL_NO_CORBA
+
 CFLAGS = -g $(WERROR)
 
 bin_PROGRAMS = nautilus-installer
@@ -168,7 +170,6 @@ PROGRAMS =  $(bin_PROGRAMS)
 
 
 DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir) -I../..
-CPPFLAGS = 
 LDFLAGS = 
 LIBS = 
 nautilus_installer_OBJECTS =  main.o support.o interface.o callbacks.o \

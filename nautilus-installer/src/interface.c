@@ -138,7 +138,7 @@ create_window (void)
   gtk_widget_show (fixed3);
   gtk_box_pack_start (GTK_BOX (vbox3), fixed3, TRUE, TRUE, 0);
 
-  fullbutton = gtk_radio_button_new_with_label (fixed3_group, _("Full install"));
+  fullbutton = gtk_radio_button_new_with_label (fixed3_group, _("Most recent build"));
   fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (fullbutton));
   gtk_widget_set_name (fullbutton, "fullbutton");
   gtk_widget_ref (fullbutton);
@@ -149,7 +149,7 @@ create_window (void)
   gtk_widget_set_uposition (fullbutton, 72, 24);
   gtk_widget_set_usize (fullbutton, 0, 0);
 
-  nautilus_only_button = gtk_radio_button_new_with_label (fixed3_group, _("Nautilus only"));
+  nautilus_only_button = gtk_radio_button_new_with_label (fixed3_group, _("Stable Nautilus"));
   fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (nautilus_only_button));
   gtk_widget_set_name (nautilus_only_button, "nautilus_only_button");
   gtk_widget_ref (nautilus_only_button);
@@ -160,7 +160,7 @@ create_window (void)
   gtk_widget_set_uposition (nautilus_only_button, 72, 56);
   gtk_widget_set_usize (nautilus_only_button, 0, 0);
 
-  services_only_button = gtk_radio_button_new_with_label (fixed3_group, _("Services only"));
+  services_only_button = gtk_radio_button_new_with_label (fixed3_group, _("*"));
   fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (services_only_button));
   gtk_widget_set_name (services_only_button, "services_only_button");
   gtk_widget_ref (services_only_button);
@@ -170,8 +170,9 @@ create_window (void)
   gtk_fixed_put (GTK_FIXED (fixed3), services_only_button, 72, 88);
   gtk_widget_set_uposition (services_only_button, 72, 88);
   gtk_widget_set_usize (services_only_button, 0, 0);
+  gtk_widget_set_sensitive (GTK_WIDGET (services_only_button), FALSE);
 
-  upgrade_button = gtk_radio_button_new_with_label (fixed3_group, _("Upgrade installation"));
+  upgrade_button = gtk_radio_button_new_with_label (fixed3_group, _("*"));
   fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (upgrade_button));
   gtk_widget_set_name (upgrade_button, "upgrade_button");
   gtk_widget_ref (upgrade_button);
@@ -181,6 +182,7 @@ create_window (void)
   gtk_fixed_put (GTK_FIXED (fixed3), upgrade_button, 72, 120);
   gtk_widget_set_uposition (upgrade_button, 72, 120);
   gtk_widget_set_usize (upgrade_button, 0, 0);
+  gtk_widget_set_sensitive (GTK_WIDGET (upgrade_button), FALSE);
 
   uninstall_button = gtk_radio_button_new_with_label (fixed3_group, _("Uninstall"));
   fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (uninstall_button));
@@ -192,6 +194,7 @@ create_window (void)
   gtk_fixed_put (GTK_FIXED (fixed3), uninstall_button, 72, 152);
   gtk_widget_set_uposition (uninstall_button, 72, 152);
   gtk_widget_set_usize (uninstall_button, 0, 0);
+  gtk_widget_set_sensitive (GTK_WIDGET (uninstall_button), FALSE);
 
   install_page = gnome_druid_page_standard_new_with_vals ("", NULL);
   set_white_stuff (GTK_WIDGET (install_page));

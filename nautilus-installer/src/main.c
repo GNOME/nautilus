@@ -37,10 +37,11 @@ main (int argc, char *argv[])
   if (check_for_root_user ()==FALSE) {
 	  GnomeDialog *d;
 	  d = GNOME_DIALOG (gnome_error_dialog_parented ("I'll bring my axe and ore and beat you...\n"
-							 "This means you should run this as root", 
+							 "This means you should run this as root.\n\n"
+							 "But we're reasonable, so you get to continue,\n"
+							 "but the test flag will be enabled",
 							 GTK_WINDOW (window)));
 	  gnome_dialog_run_and_close (d);
-	  return 0;
   }  
 
   gtk_widget_show (window);

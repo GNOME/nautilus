@@ -43,14 +43,11 @@
 enum {
 	DOWNLOAD_PROGRESS,
 	INSTALL_PROGRESS,
-
 	DOWNLOAD_FAILED,
 	INSTALL_FAILED,
 	UNINSTALL_FAILED,
-
 	DEPENDENCY_CHECK,
-	DONE,
-	
+	DONE,	
 	LAST_SIGNAL
 };
 
@@ -585,23 +582,27 @@ eazel_install_install_packages (EazelInstall *service, GList *categories)
 }
 
 void 
-eazel_install_uninstall (EazelInstall *service)
+eazel_install_uninstall_packages (EazelInstall *service, GList *categories)
 {
 	SANITY (service);
 
-	switch (service->private->iopts->protocol) {
-	case PROTOCOL_HTTP:
-		eazel_install_fetch_remote_package_list (service);
-		break;
-	case PROTOCOL_FTP:
-		g_error (_("ftp install not supported"));
-		break;
-	case PROTOCOL_LOCAL:
-		break;
+	if (categories == NULL && eazel_install_get_package_list (service) == NULL) {
+		eazel_install_set_package_list (service, "/var/eazel/services/package-list.xml");
+		switch (service->private->iopts->protocol) {
+		case PROTOCOL_HTTP:
+			eazel_install_fetch_remote_package_list (service);
+			break;
+		case PROTOCOL_FTP:
+			g_error (_("ftp install not supported"));
+			break;
+		case PROTOCOL_LOCAL:
+			break;
+		}
 	}
-	if (uninstall_packages (service)==FALSE) {
-		g_warning (_("*** Uninstall failed"));
+	if (uninstall_packages (service, categories)==FALSE) {
+		g_warning (_("Uninstall failed"));
 	} 
+	eazel_install_emit_done (service);
 }
 
 /************************************************

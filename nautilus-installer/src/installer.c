@@ -18,7 +18,7 @@
 
 static char *package_list[LAST] = {
 	"/package-list.xml",
-	"/nautilus-only-list.xml",
+	"/package-list-stable.xml",
 	"/services-only-list.xml",
 	"/package-list.xml",
 	"/package-uninstall-list.xml",
@@ -183,7 +183,7 @@ void installer (GtkWidget *window,
 						 "verbose", TRUE,
 						 "silent", FALSE,
 						 "debug", TRUE,
-						 "test", FALSE,
+						 "test", check_for_root_user () ? FALSE : TRUE,
 						 "force", FALSE,
 						 "depend", FALSE,
 						 "update", method==UPGRADE ? TRUE : FALSE,

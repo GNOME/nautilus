@@ -378,6 +378,19 @@ eazel_install_callback_install_packages (EazelInstallCallback *service,
 						  ev);
 }
 
+void 
+eazel_install_callback_uninstall_packages (EazelInstallCallback *service, 
+					   GList *categories,
+					   CORBA_Environment *ev)
+{
+	Trilobite_Eazel_CategoryStructList *corbacats;
+	corbacats = corba_category_list_from_categorydata_list (categories);
+	Trilobite_Eazel_Install_uninstall_packages (service->installservice_corba, 
+						    corbacats, 
+						    service->cb, 
+						    ev);
+}
+
 GList*
 eazel_install_callback_query (EazelInstallCallback *service, 
 			      char *query,

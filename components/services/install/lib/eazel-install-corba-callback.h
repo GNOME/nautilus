@@ -94,6 +94,11 @@ void eazel_install_callback_install_packages (EazelInstallCallback *service,
 					      GList *categories,
 					      CORBA_Environment *ev);
 
+/* Request the uninstallation of a set of packages */
+void eazel_install_callback_uninstall_packages (EazelInstallCallback *service, 
+						  GList *categories,
+						  CORBA_Environment *ev);
+
 GList* eazel_install_callback_query (EazelInstallCallback *service, 
 				     char *query,
 				     CORBA_Environment *ev);
