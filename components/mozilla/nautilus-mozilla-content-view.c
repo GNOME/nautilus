@@ -127,12 +127,12 @@ static void     mozilla_content_view_set_busy_cursor           (NautilusMozillaC
 static void     mozilla_content_view_clear_busy_cursor         (NautilusMozillaContentView      *view);
 static gboolean mozilla_is_uri_handled_by_nautilus             (const char                      *uri);
 static gboolean mozilla_is_uri_handled_by_mozilla              (const char                      *uri);
+
 static char *   mozilla_translate_uri_if_needed                (NautilusMozillaContentView      *view,
 								const char                      *uri);
 
-#if 0
-static char *   mozilla_untranslate_uri_if_needed              (const char                      *uri);
-#endif
+static char *   mozilla_untranslate_uri_if_needed              (NautilusMozillaContentView	*view,
+								const char                      *uri);
 
 #if (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES
 
@@ -144,6 +144,10 @@ static char *
 eazel_services_scheme_translate	(NautilusMozillaContentView	*view,
 				 const char			*uri,
 				 gboolean			is_retry);
+
+static char *
+eazel_services_scheme_untranslate (NautilusMozillaContentView	*view, 
+				   const char			*uri);
 
 #ifdef EAZEL_SERVICES_MOZILLA_MODAL_LOGIN
 typedef struct  {
@@ -949,11 +953,19 @@ mozilla_open_uri_callback (GtkMozEmbed *mozilla,
 	} else if (view->details->got_called_by_nautilus == TRUE) {
 		view->details->got_called_by_nautilus = FALSE;
 	} else {
+		char *untranslated_uri;
+
 		/* set it so that we load next time we are called. */
 	        do_nothing = TRUE;
 		abort_uri_open = TRUE;
+
 		bonobo_object_ref (BONOBO_OBJECT (view->details->nautilus_view));
-		nautilus_view_open_location (view->details->nautilus_view, uri);
+
+		/*do untranslate here*/
+		untranslated_uri = mozilla_untranslate_uri_if_needed (view, uri);
+		nautilus_view_open_location (view->details->nautilus_view, untranslated_uri);
+		g_free (untranslated_uri);
+
 		bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 	}
 
@@ -964,6 +976,69 @@ mozilla_open_uri_callback (GtkMozEmbed *mozilla,
  * For M18, we peek dom events to deal with eazel: uris (and all other special uris)
  */
 #if (MOZILLA_MILESTONE >= 18)
+
+static gboolean
+is_uri_partial (const char *uri)
+{
+	const char *current;
+
+	for (current = uri ; 
+		*current
+		&& 	((*current >= 'a' && *current <= 'z')
+			 || (*current >= 'A' && *current <= 'Z')
+			 || (*current >= '0' && *current <= '9')
+			 || ('-' == *current)) ;
+	     current++);
+
+	return  !(':' == *current);
+}
+
+
+static char *
+make_full_uri_from_partial (const char *base_uri, const char *uri)
+{
+	char *result = NULL;
+
+	if (is_uri_partial (uri)) {
+		char *mutable_base_uri;
+		const char *uri_current;
+		size_t base_uri_length;
+
+		mutable_base_uri = g_strdup (base_uri);
+		uri_current = uri;
+
+		/* Handle the ".." convention for relative uri's */
+
+		/* trim trailing '/' */
+		base_uri_length = strlen (mutable_base_uri);
+		if ('/' == mutable_base_uri[base_uri_length-1]) {
+			mutable_base_uri[base_uri_length-1] = 0;
+		}
+
+		while (0 == strncmp ("../", uri_current, 3)) {
+			char *seperator;
+
+			uri_current += 3;
+			seperator = strrchr (mutable_base_uri, '/');
+			if (seperator) {
+				*seperator = '\0';
+			} else {
+				/* <shrug> */
+				break;
+			}
+		} 
+		result = g_strconcat (mutable_base_uri, "/", uri_current, NULL);
+		g_free (mutable_base_uri); 
+#ifdef DEBUG_mfleming
+		g_print ("Relative URI converted base '%s' uri '%s' to '%s'", base_uri, uri, result);
+#endif
+	} else {
+		result = g_strdup (uri);
+	}
+	
+	return result;
+}
+
 static gint
 mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 				  gpointer	dom_event,
@@ -998,6 +1073,7 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 		 */
 		view->details->got_called_by_nautilus = TRUE;
 	} else {
+		
 		href = mozilla_events_get_href_for_mouse_event (dom_event);
 
 		/* 
@@ -1008,7 +1084,15 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 		 * Need to look at the gtkmozembed.cpp code more carefully.
 		 */
 
-		if (href && mozilla_is_uri_handled_by_nautilus (href)) {
+		if (href) {
+			char * href_full = NULL;
+
+			href_full = make_full_uri_from_partial (view->details->uri, href);
+
+			g_free (href);
+			href = href_full;
+			href_full = NULL;
+
 #ifdef DEBUG_ramiro
 			g_print ("%s() href = %s\n", __FUNCTION__, href);
 #endif
@@ -1097,22 +1181,6 @@ mozilla_is_uri_handled_by_mozilla (const char *uri)
 						uri) != STRING_LIST_NOT_FOUND;
 }
 
-#if 0
-/*
- * And yet another protocol hack.
- */
-static const char *from_uri_list[] =
-{
-	"eazel-services://",
-	//"http://www.yahoo.com"
-};
-
-static const char *to_uri_list[] =
-{
-	"http://localhost:11600",
-	"http://localhost:80"
-};
-#endif /* 0 */
 
 /* A NULL return from this function must trigger a nautilus load error */
 static char *
@@ -1138,37 +1206,19 @@ mozilla_translate_uri_if_needed (NautilusMozillaContentView *view, const char *u
 		ret = g_strdup (uri);
 	}
 
-#if 0
-	i = string_list_get_index_of_string (from_uri_list, NUM_ELEMENTS_IN_ARRAY (from_uri_list), uri);
-
-	if (i == STRING_LIST_NOT_FOUND) {
-		return g_strdup (uri);
-	}
-
-	return g_strdup_printf ("%s%s", to_uri_list[i], uri + strlen (from_uri_list[i]));
-#endif
-
 	return ret;
 
 }
 
-#if 0
 static char *
-mozilla_untranslate_uri_if_needed (const char *uri)
+mozilla_untranslate_uri_if_needed (NautilusMozillaContentView *view, const char *uri)
 {
-	gint i;
-
-	g_return_val_if_fail (uri != NULL, NULL);
-
-	i = string_list_get_index_of_string (to_uri_list, NUM_ELEMENTS_IN_ARRAY (to_uri_list), uri);
-
-	if (i == STRING_LIST_NOT_FOUND) {
-		return g_strdup (uri);
-	}
-
-	return g_strdup_printf ("%s%s", from_uri_list[i], uri + strlen (to_uri_list[i]));
+#if (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES
+	return eazel_services_scheme_untranslate (view, uri);
+#else
+	return g_strdup (uri);
+#endif /* (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES */
 }
-#endif
 
 GtkType
 nautilus_mozilla_content_view_get_type (void)
@@ -1260,6 +1310,43 @@ eazel_services_scheme_translate	(NautilusMozillaContentView	*view,
 		ret = NULL;
 	break;
 	
+	}
+
+	return ret;
+}
+
+static char *
+eazel_services_scheme_untranslate (NautilusMozillaContentView	*view, 
+				   const char			*uri)
+{
+	size_t uri_prefix_len;
+	static const char * uri_prefix = "http://localhost:";
+	char * ret;
+
+	uri_prefix_len = strlen (uri_prefix);
+
+	if (0 == strncmp (uri, uri_prefix, uri_prefix_len) ) {
+		char *port_end;
+		unsigned long port;
+
+		/* FIXME mfleming -- rather than asking eazel-proxy what port is in use,
+		 * I just automatically convert ports >than 11600, which is where eazel-proxy
+		 * starts looking.
+		 */
+
+		port = strtoul (uri + uri_prefix_len, &port_end, 10);
+		if (port_end && port >= 11600) {
+			ret = g_strconcat ("eazel-services://", port_end, NULL);
+
+#ifdef DEBUG_mfleming
+			g_message ("Mozilla: untranslated uri '%s' to '%s'", uri, ret );
+#endif
+
+		} else {
+			ret = g_strdup (uri);
+		}
+	} else {
+		ret = g_strdup (uri);
 	}
 
 	return ret;

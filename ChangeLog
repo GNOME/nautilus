@@ -1,3 +1,17 @@
+2000-10-10  Mike Fleming  <mfleming@eazel.com>
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_open_uri_callback), (is_uri_partial),
+	(make_full_uri_from_partial), (mozilla_dom_mouse_click_callback),
+	(mozilla_translate_uri_if_needed),
+	(mozilla_untranslate_uri_if_needed),
+	(eazel_services_scheme_translate),
+	(eazel_services_scheme_untranslate):
+
+	Added "unconvert" for the eazel-services: scheme hack
+	Added partial URI support for gnome-vfs uri schemes (so help: works, at
+	least in theory)
+
 2000-10-10  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: OK added requirement of gnome-vfs 0.3.1
