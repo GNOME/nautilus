@@ -54,8 +54,8 @@
 
 static void     notify_node_seen                     (NautilusTreeView      *view,
 						      NautilusTreeNode      *node);
-static gboolean ctree_is_node_expanded               (NautilusCTree         *ctree,
-						      NautilusCTreeNode     *node);
+static gboolean ctree_is_node_expanded               (EelCTree         *ctree,
+						      EelCTreeNode     *node);
 static void     nautilus_tree_view_remove_model_node (NautilusTreeView      *view,
 						      NautilusTreeNode      *node);
 static void     reload_model_node                    (NautilusTreeView      *view,
@@ -66,17 +66,17 @@ static void     reload_whole_tree                    (NautilusTreeView      *vie
 static void     tree_load_location_callback          (NautilusView          *nautilus_view,
 						      const char            *location,
 						      NautilusTreeView      *view);
-static void     tree_expand_callback                 (NautilusCTree         *tree,
-						      NautilusCTreeNode     *node,
+static void     tree_expand_callback                 (EelCTree         *tree,
+						      EelCTreeNode     *node,
 						      NautilusTreeView      *view);
-static void     tree_collapse_callback               (NautilusCTree         *tree,
-						      NautilusCTreeNode     *node,
+static void     tree_collapse_callback               (EelCTree         *tree,
+						      EelCTreeNode     *node,
 						      NautilusTreeView      *view);
-static void     tree_select_row_callback             (NautilusCTree         *tree,
-						      NautilusCTreeNode     *node,
+static void     tree_select_row_callback             (EelCTree         *tree,
+						      EelCTreeNode     *node,
 						      gint                   column,
 						      NautilusTreeView      *view);
-static void     size_allocate_callback               (NautilusCTree         *tree,
+static void     size_allocate_callback               (EelCTree         *tree,
 						      GtkAllocation         *allocation,
 						      gpointer               data);
 static void     nautilus_tree_view_update_all_icons  (NautilusTreeView      *view);
@@ -100,7 +100,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusTreeView,
 
 static void
 unlink_view_node_from_uri (NautilusTreeView *view,
-			   NautilusCTreeNode *view_node)
+			   EelCTreeNode *view_node)
 {
 	gpointer orig_key, value;
 
@@ -114,7 +114,7 @@ unlink_view_node_from_uri (NautilusTreeView *view,
 /* URI will be g_free'd eventually */
 static void
 link_view_node_with_uri (NautilusTreeView *view,
-			 NautilusCTreeNode *view_node,
+			 EelCTreeNode *view_node,
 			 const char *uri)
 {
 	unlink_view_node_from_uri (view, view_node);
@@ -125,7 +125,7 @@ link_view_node_with_uri (NautilusTreeView *view,
 /* Returned string is only valid until next link or unlink of VIEW-NODE */
 static const char *
 map_view_node_to_uri (NautilusTreeView *view,
-		      NautilusCTreeNode *view_node)
+		      EelCTreeNode *view_node)
 {
 	gpointer value = g_hash_table_lookup (view->details->view_node_to_uri_map,
 					      view_node);
@@ -197,8 +197,8 @@ static void
 nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *node)
 {
 	NautilusTreeNode *parent_node;
-	NautilusCTreeNode *parent_view_node;
- 	NautilusCTreeNode *view_node;
+	EelCTreeNode *parent_view_node;
+ 	EelCTreeNode *view_node;
 	NautilusFile *file;
 	char *text[2];
 	GdkPixbuf *closed_pixbuf;
@@ -244,9 +244,9 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 				 is_anti_aliased (view));
 
 			view->details->inserting_node = TRUE;
-			NAUTILUS_CLIST_UNSET_FLAG (NAUTILUS_CLIST (view->details->tree),
+			EEL_CLIST_UNSET_FLAG (EEL_CLIST (view->details->tree),
 						   CLIST_AUTO_SORT);
-			view_node = nautilus_ctree_insert_node (NAUTILUS_CTREE (view->details->tree),
+			view_node = eel_ctree_insert_node (EEL_CTREE (view->details->tree),
 								parent_view_node, 
 								NULL,
 								text,
@@ -254,7 +254,7 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 								closed_pixbuf, open_pixbuf,
 								! nautilus_file_is_directory (file),
 								FALSE);
-			NAUTILUS_CLIST_SET_FLAG (NAUTILUS_CLIST (view->details->tree),
+			EEL_CLIST_SET_FLAG (EEL_CLIST (view->details->tree),
 						 CLIST_AUTO_SORT);
 			view->details->inserting_node = FALSE;
 
@@ -262,7 +262,7 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 			gdk_pixbuf_unref (open_pixbuf);
 
 
-			nautilus_ctree_node_set_row_data (NAUTILUS_CTREE (view->details->tree),
+			eel_ctree_node_set_row_data (EEL_CTREE (view->details->tree),
 							  view_node,
 							  node);
 
@@ -276,21 +276,21 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 			if (nautilus_file_is_directory (nautilus_tree_node_get_file (node))) {
 				if (nautilus_tree_expansion_state_is_node_expanded (view->details->expansion_state, uri)) {
-					if (!ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree),
+					if (!ctree_is_node_expanded (EEL_CTREE (view->details->tree),
 								     view_node)) {
-						nautilus_ctree_expand (NAUTILUS_CTREE (view->details->tree),
+						eel_ctree_expand (EEL_CTREE (view->details->tree),
 								       view_node);
 					} 
 				} else {
-					if (ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree),
+					if (ctree_is_node_expanded (EEL_CTREE (view->details->tree),
 								    view_node)) {
-						nautilus_ctree_collapse (NAUTILUS_CTREE (view->details->tree),
+						eel_ctree_collapse (EEL_CTREE (view->details->tree),
 									 view_node);
 					}
 				}
 			}
 
-			nautilus_ctree_sort_single_node (NAUTILUS_CTREE (view->details->tree), view_node);
+			eel_ctree_sort_single_node (EEL_CTREE (view->details->tree), view_node);
 
 			insert_unparented_nodes (view, node);
 		} else {
@@ -304,7 +304,7 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 static void
 forget_view_node (NautilusTreeView *view,
-		  NautilusCTreeNode *view_node)
+		  EelCTreeNode *view_node)
 {
 	NautilusFile *file;
 	NautilusTreeNode *node;
@@ -316,7 +316,7 @@ forget_view_node (NautilusTreeView *view,
 
 	forget_unparented_node (view, node);
 
-	nautilus_ctree_node_set_row_data (NAUTILUS_CTREE (view->details->tree),
+	eel_ctree_node_set_row_data (EEL_CTREE (view->details->tree),
 					  view_node, NULL);
 
 	g_hash_table_remove (view->details->file_to_node_map, file);
@@ -327,13 +327,13 @@ forget_view_node (NautilusTreeView *view,
 
 static void
 forget_view_node_and_children (NautilusTreeView *view,
-			       NautilusCTreeNode *view_node)
+			       EelCTreeNode *view_node)
 {
-	NautilusCTreeNode *child;
+	EelCTreeNode *child;
 
-	for (child = NAUTILUS_CTREE_ROW (view_node)->children;
+	for (child = EEL_CTREE_ROW (view_node)->children;
 	     child != NULL;
-	     child = NAUTILUS_CTREE_ROW (child)->sibling) {
+	     child = EEL_CTREE_ROW (child)->sibling) {
 		forget_view_node_and_children (view, child);
 	}
 
@@ -343,7 +343,7 @@ forget_view_node_and_children (NautilusTreeView *view,
 static void
 nautilus_tree_view_remove_model_node (NautilusTreeView *view, NautilusTreeNode *node)
 {
-	NautilusCTreeNode *view_node;
+	EelCTreeNode *view_node;
 	NautilusFile *file;
 	const char *uri;
 
@@ -371,7 +371,7 @@ nautilus_tree_view_remove_model_node (NautilusTreeView *view, NautilusTreeNode *
 		 nautilus_tree_expansion_state_remove_node (view->details->expansion_state, uri);
 
 		forget_view_node_and_children (view, view_node);
- 		nautilus_ctree_remove_node (NAUTILUS_CTREE (view->details->tree),
+ 		eel_ctree_remove_node (EEL_CTREE (view->details->tree),
  					    view_node);
  	}
 
@@ -383,8 +383,8 @@ nautilus_tree_view_remove_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 
 static gboolean
-ctree_is_node_expanded (NautilusCTree     *ctree,
-			NautilusCTreeNode *node)
+ctree_is_node_expanded (EelCTree     *ctree,
+			EelCTreeNode *node)
 {
 	gchar     *text;
 	guint8     spacing;
@@ -393,7 +393,7 @@ ctree_is_node_expanded (NautilusCTree     *ctree,
 	gboolean   is_leaf;
 	gboolean   expanded;
 
-	nautilus_ctree_get_node_info (ctree, node,
+	eel_ctree_get_node_info (ctree, node,
 				 &text, &spacing,
 				 &pixbuf_closed,
 				 &pixbuf_opened,
@@ -404,7 +404,7 @@ ctree_is_node_expanded (NautilusCTree     *ctree,
 static void
 nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *node)
 {
-	NautilusCTreeNode *view_node;
+	EelCTreeNode *view_node;
 	NautilusFile *file;
 	char *uri;
 	char *name;
@@ -439,14 +439,14 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 		name = nautilus_file_get_name (file);
 	
-		nautilus_ctree_set_node_info (NAUTILUS_CTREE (view->details->tree),
+		eel_ctree_set_node_info (EEL_CTREE (view->details->tree),
 					      view_node,
 					      name,
 					      TREE_SPACING,
 					      closed_pixbuf,
 					      open_pixbuf,
 					      ! nautilus_file_is_directory (file),
-					      ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree),
+					      ctree_is_node_expanded (EEL_CTREE (view->details->tree),
 								      view_node));
 
 		g_free (name);
@@ -460,15 +460,15 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 			uri = nautilus_file_get_uri (file);
 
 			if (nautilus_tree_expansion_state_is_node_expanded (view->details->expansion_state, uri)) {
-				if (!ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree),
+				if (!ctree_is_node_expanded (EEL_CTREE (view->details->tree),
 							     view_node)) {
-					nautilus_ctree_expand (NAUTILUS_CTREE (view->details->tree),
+					eel_ctree_expand (EEL_CTREE (view->details->tree),
 							       view_node);
 				} 
 			} else {
-				if (ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree),
+				if (ctree_is_node_expanded (EEL_CTREE (view->details->tree),
 							    view_node)) {
-					nautilus_ctree_collapse (NAUTILUS_CTREE (view->details->tree),
+					eel_ctree_collapse (EEL_CTREE (view->details->tree),
 								 view_node);
 				}
 			}
@@ -582,12 +582,12 @@ notify_node_seen (NautilusTreeView *view,
 }
 
 static int
-get_selected_row (NautilusCTree *ctree)
+get_selected_row (EelCTree *ctree)
 {
-	NautilusCList *clist;
-	NautilusCTreeNode *node;
+	EelCList *clist;
+	EelCTreeNode *node;
 
-	clist = NAUTILUS_CLIST (ctree);
+	clist = EEL_CLIST (ctree);
 	if (clist->selection == NULL) {
 		return -1;
 	}
@@ -596,18 +596,18 @@ get_selected_row (NautilusCTree *ctree)
 }
 
 static int
-get_selected_row_position (NautilusCTree *ctree)
+get_selected_row_position (EelCTree *ctree)
 {
-	NautilusCList *clist;
+	EelCList *clist;
 	int selected_row, top_row, column;
 
-	clist = NAUTILUS_CLIST (ctree);
+	clist = EEL_CLIST (ctree);
 	selected_row = get_selected_row (ctree);
-	if (nautilus_clist_row_is_visible (clist,
+	if (eel_clist_row_is_visible (clist,
 					   selected_row) == GTK_VISIBILITY_NONE) {
 		return -1;
 	}
-	if (!nautilus_clist_get_selection_info (clist, 0, 0,
+	if (!eel_clist_get_selection_info (clist, 0, 0,
 						&top_row, &column)) {
 		return -1;
 	}
@@ -615,7 +615,7 @@ get_selected_row_position (NautilusCTree *ctree)
 }
 
 static void
-set_selected_row_position (NautilusCTree *ctree,
+set_selected_row_position (EelCTree *ctree,
 			   int position)
 {
 	int current_position, top_row;
@@ -631,7 +631,7 @@ set_selected_row_position (NautilusCTree *ctree,
 	if (top_row < 0) {
 		top_row = 0;
 	}
-	nautilus_clist_moveto (NAUTILUS_CLIST (ctree), top_row, -1, 0, 0);
+	eel_clist_moveto (EEL_CLIST (ctree), top_row, -1, 0, 0);
 }
 
 static gboolean
@@ -646,9 +646,9 @@ dequeue_pending_idle_callback (gpointer data)
 	view = NAUTILUS_TREE_VIEW (data);
 	done_early = FALSE;
 
-	nautilus_clist_freeze (NAUTILUS_CLIST (view->details->tree));
+	eel_clist_freeze (EEL_CLIST (view->details->tree));
 
-	position = get_selected_row_position (NAUTILUS_CTREE (view->details->tree));
+	position = get_selected_row_position (EEL_CTREE (view->details->tree));
 
 	for (i = 0; i < NAUTILUS_TREE_VIEW_MAX_CHANGE_BATCH; i++) {
 		change = nautilus_tree_change_queue_dequeue 
@@ -673,10 +673,10 @@ dequeue_pending_idle_callback (gpointer data)
 		nautilus_tree_change_free (change);
 	}
 
-	set_selected_row_position (NAUTILUS_CTREE (view->details->tree),
+	set_selected_row_position (EEL_CTREE (view->details->tree),
 				   position);
 
-	nautilus_clist_thaw (NAUTILUS_CLIST (view->details->tree));
+	eel_clist_thaw (EEL_CLIST (view->details->tree));
 
 	if (done_early) {
 		view->details->pending_idle_id = 0;
@@ -837,7 +837,7 @@ update_smooth_graphics_mode (NautilusTreeView *view)
 		old_aa_mode = is_anti_aliased (view);
 
 		if (old_aa_mode != aa_mode) {
-			nautilus_list_set_anti_aliased_mode (NAUTILUS_LIST (view->details->tree), aa_mode);
+			eel_list_set_anti_aliased_mode (EEL_LIST (view->details->tree), aa_mode);
 
 			/* FIXME: refetch icons using correct aa mode... */
 		}
@@ -857,13 +857,13 @@ smooth_graphics_mode_changed_callback (gpointer callback_data)
 static gboolean
 is_anti_aliased (NautilusTreeView *view)
 {
-	return nautilus_list_is_anti_aliased (NAUTILUS_LIST (view->details->tree));
+	return eel_list_is_anti_aliased (EEL_LIST (view->details->tree));
 }
 
 static gpointer compare_cached_key, compare_cached_value;
 
 static gint
-ctree_compare_rows (NautilusCList *clist,
+ctree_compare_rows (EelCList *clist,
 		    gconstpointer  ptr1,
 		    gconstpointer  ptr2)
 {
@@ -893,8 +893,8 @@ ctree_compare_rows (NautilusCList *clist,
 	g_assert (view != NULL);
 
 	if (!view->details->inserting_node) {
-		node1 = ((NautilusCTreeRow *) ptr1)->row.data;
-		node2 = ((NautilusCTreeRow *) ptr2)->row.data;
+		node1 = ((EelCTreeRow *) ptr1)->row.data;
+		node2 = ((EelCTreeRow *) ptr2)->row.data;
 
 		file1 = node1 ? nautilus_tree_node_get_file (node1) : NULL;
 		file2 = node2 ? nautilus_tree_node_get_file (node2) : NULL;
@@ -917,14 +917,14 @@ create_tree (NautilusTreeView *view)
 	view->details->change_queue = nautilus_tree_change_queue_new ();
 
 	/* set up ctree */
-	view->details->tree = nautilus_ctree_new (1, 0);
+	view->details->tree = eel_ctree_new (1, 0);
 
 	gtk_object_set_data (GTK_OBJECT (view->details->tree), "tree_view", (gpointer) view);
 	gtk_widget_add_events (GTK_WIDGET (view->details->tree), GDK_POINTER_MOTION_MASK);
 	
-        nautilus_clist_set_selection_mode (NAUTILUS_CLIST (view->details->tree), GTK_SELECTION_SINGLE);
-	nautilus_clist_set_auto_sort (NAUTILUS_CLIST (view->details->tree), TRUE);
-	nautilus_clist_set_sort_type (NAUTILUS_CLIST (view->details->tree), GTK_SORT_ASCENDING);
+        eel_clist_set_selection_mode (EEL_CLIST (view->details->tree), GTK_SELECTION_SINGLE);
+	eel_clist_set_auto_sort (EEL_CLIST (view->details->tree), TRUE);
+	eel_clist_set_sort_type (EEL_CLIST (view->details->tree), GTK_SORT_ASCENDING);
 
 	update_smooth_graphics_mode (view);
 
@@ -934,17 +934,17 @@ create_tree (NautilusTreeView *view)
 	 * 1000s of files). So to fix bug 6988 we're reverting back
 	 * to using the standard clist comparison function (a strcmp)
 	 */
-	nautilus_clist_set_compare_func (NAUTILUS_CLIST (view->details->tree),
+	eel_clist_set_compare_func (EEL_CLIST (view->details->tree),
 					 ctree_compare_rows);
 
-	nautilus_clist_set_column_auto_resize (NAUTILUS_CLIST (view->details->tree), 0, TRUE);
-	nautilus_clist_columns_autosize (NAUTILUS_CLIST (view->details->tree));
-	nautilus_clist_set_reorderable (NAUTILUS_CLIST (view->details->tree), FALSE);
-	nautilus_clist_set_row_height (NAUTILUS_CLIST (view->details->tree),
+	eel_clist_set_column_auto_resize (EEL_CLIST (view->details->tree), 0, TRUE);
+	eel_clist_columns_autosize (EEL_CLIST (view->details->tree));
+	eel_clist_set_reorderable (EEL_CLIST (view->details->tree), FALSE);
+	eel_clist_set_row_height (EEL_CLIST (view->details->tree),
 				       MAX (NAUTILUS_ICON_SIZE_FOR_MENUS,
 					    view->details->tree->style->font->ascent
 					    + view->details->tree->style->font->descent));
-        nautilus_ctree_set_indent (NAUTILUS_CTREE (view->details->tree), 12);
+        eel_ctree_set_indent (EEL_CTREE (view->details->tree), 12);
 
 	gtk_signal_connect (GTK_OBJECT (view->details->tree),
 			    "tree_expand",
@@ -1160,7 +1160,7 @@ nautilus_tree_view_destroy (GtkObject *object)
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
-static NautilusCTreeNode *
+static EelCTreeNode *
 file_to_view_node (NautilusTreeView *view,
 		   NautilusFile     *file)
 {
@@ -1168,11 +1168,11 @@ file_to_view_node (NautilusTreeView *view,
 }
 
 
-NautilusCTreeNode *
+EelCTreeNode *
 nautilus_tree_view_model_node_to_view_node (NautilusTreeView *view,
 			 NautilusTreeNode *node)
 {
-	NautilusCTreeNode *view_node;
+	EelCTreeNode *view_node;
 	NautilusFile *file;
 
 	if (node == NULL) {
@@ -1187,11 +1187,11 @@ nautilus_tree_view_model_node_to_view_node (NautilusTreeView *view,
 
 NautilusTreeNode *
 nautilus_tree_view_node_to_model_node (NautilusTreeView *view,
-				       NautilusCTreeNode *node)
+				       EelCTreeNode *node)
 {
 	NautilusTreeNode *tree_node;
 
-	tree_node = (NautilusTreeNode *) nautilus_ctree_node_get_row_data (NAUTILUS_CTREE (view->details->tree),
+	tree_node = (NautilusTreeNode *) eel_ctree_node_get_row_data (EEL_CTREE (view->details->tree),
 									   node);
 
 	return tree_node;
@@ -1199,7 +1199,7 @@ nautilus_tree_view_node_to_model_node (NautilusTreeView *view,
 
 NautilusFile *
 nautilus_tree_view_node_to_file (NautilusTreeView *view,
-				 NautilusCTreeNode *node)
+				 EelCTreeNode *node)
 {
 	NautilusTreeNode *tree_node;
 
@@ -1274,8 +1274,8 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 	const char *uri;
 	GList *p;
 	GList *old_sequence;
-	NautilusCTreeNode *view_node;
-	NautilusCTreeNode *last_valid_view_node;
+	EelCTreeNode *view_node;
+	EelCTreeNode *last_valid_view_node;
 	NautilusFile *file;
 	NautilusTreeNode *node;
 
@@ -1308,14 +1308,14 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 			 * don't want.
 			 */
 
-			if (!ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree), view_node)) {
-				nautilus_ctree_expand (NAUTILUS_CTREE (view->details->tree),
+			if (!ctree_is_node_expanded (EEL_CTREE (view->details->tree), view_node)) {
+				eel_ctree_expand (EEL_CTREE (view->details->tree),
 						       view_node);
 			}
 		} else {
 			g_free (view->details->selected_uri);
 			view->details->selected_uri = g_strdup (uri);
-			nautilus_ctree_select (NAUTILUS_CTREE (view->details->tree),
+			eel_ctree_select (EEL_CTREE (view->details->tree),
 					       view_node);
 		}
 	}
@@ -1473,8 +1473,8 @@ expand_node_for_file (NautilusTreeView *view,
 }
 
 static void
-tree_expand_callback (NautilusCTree         *ctree,
-		      NautilusCTreeNode     *node,
+tree_expand_callback (EelCTree         *ctree,
+		      EelCTreeNode     *node,
 		      NautilusTreeView      *view)
 {
 	NautilusFile *file;
@@ -1487,8 +1487,8 @@ tree_expand_callback (NautilusCTree         *ctree,
 
 
 static void
-tree_collapse_callback (NautilusCTree         *ctree,
-			NautilusCTreeNode     *node,
+tree_collapse_callback (EelCTree         *ctree,
+			EelCTreeNode     *node,
 			NautilusTreeView      *view)
 {
 	char *uri;
@@ -1504,13 +1504,13 @@ tree_collapse_callback (NautilusCTree         *ctree,
 }
 
 static void
-ctree_show_node (NautilusCTree *tree,
-		 NautilusCTreeNode *node)
+ctree_show_node (EelCTree *tree,
+		 EelCTreeNode *node)
 {
-	if (nautilus_ctree_node_is_visible (tree, node) != GTK_VISIBILITY_FULL) {
-		nautilus_ctree_node_moveto (tree, node, 0, 0.5, 0);
-		if (nautilus_ctree_node_is_visible (tree, node) != GTK_VISIBILITY_FULL) {
-			nautilus_ctree_node_moveto (tree, node, 0, 0.5, 0.5);
+	if (eel_ctree_node_is_visible (tree, node) != GTK_VISIBILITY_FULL) {
+		eel_ctree_node_moveto (tree, node, 0, 0.5, 0);
+		if (eel_ctree_node_is_visible (tree, node) != GTK_VISIBILITY_FULL) {
+			eel_ctree_node_moveto (tree, node, 0, 0.5, 0.5);
 		}
 	}
 }
@@ -1536,7 +1536,7 @@ got_activation_uri_callback (NautilusFile *file,
 			view->details->selected_uri = g_strdup (uri);
 		}
 		
-		ctree_show_node (NAUTILUS_CTREE (view->details->tree), 
+		ctree_show_node (EEL_CTREE (view->details->tree), 
 				 file_to_view_node (view, file));
 		
 		g_free (uri);
@@ -1561,8 +1561,8 @@ cancel_possible_activation (NautilusTreeView *view)
 }
 
 static void
-tree_select_row_callback (NautilusCTree              *tree,
-			  NautilusCTreeNode          *node,
+tree_select_row_callback (EelCTree              *tree,
+			  EelCTreeNode          *node,
 			  gint                        column,
 			  NautilusTreeView           *view)
 {
@@ -1583,18 +1583,18 @@ tree_select_row_callback (NautilusCTree              *tree,
  
 }
 
-static NautilusCTreeNode *
-ctree_get_first_selected_node (NautilusCTree *tree)
+static EelCTreeNode *
+ctree_get_first_selected_node (EelCTree *tree)
 {
-	if (NAUTILUS_CLIST (tree)->selection == NULL) {
+	if (EEL_CLIST (tree)->selection == NULL) {
 		return NULL;
 	}
 
-	return NAUTILUS_CTREE_NODE (NAUTILUS_CLIST (tree)->selection->data);
+	return EEL_CTREE_NODE (EEL_CLIST (tree)->selection->data);
 }
 
 static void
-size_allocate_callback (NautilusCTree  *tree,
+size_allocate_callback (EelCTree  *tree,
 			GtkAllocation  *allocation,
 			gpointer        data)
 {

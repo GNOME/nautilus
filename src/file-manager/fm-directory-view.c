@@ -60,8 +60,8 @@
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
-#include <libnautilus-extensions/nautilus-drag.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
+#include <libnautilus-extensions/nautilus-file-dnd.h>
 #include <libnautilus-extensions/nautilus-file-operations.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>

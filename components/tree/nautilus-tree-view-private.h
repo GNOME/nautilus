@@ -30,7 +30,7 @@
 #include "nautilus-tree-expansion-state.h"
 #include "nautilus-tree-model.h"
 
-#include <libnautilus-extensions/nautilus-ctree.h>
+#include <eel/eel-ctree.h>
 #include <libnautilus/nautilus-view.h>
 
 typedef struct NautilusTreeViewDndDetails NautilusTreeViewDndDetails;
@@ -81,10 +81,10 @@ struct NautilusTreeViewDetails {
 };
 
 NautilusTreeNode  *nautilus_tree_view_node_to_model_node      (NautilusTreeView  *view,
-							       NautilusCTreeNode *node);
+							       EelCTreeNode *node);
 NautilusFile      *nautilus_tree_view_node_to_file            (NautilusTreeView  *view,
-							       NautilusCTreeNode *node);
-NautilusCTreeNode *nautilus_tree_view_model_node_to_view_node (NautilusTreeView  *view,
+							       EelCTreeNode *node);
+EelCTreeNode *nautilus_tree_view_model_node_to_view_node (NautilusTreeView  *view,
 							       NautilusTreeNode  *node);
 void               nautilus_tree_view_init_dnd                (NautilusTreeView *view);
 void               nautilus_tree_view_free_dnd                (NautilusTreeView *view);

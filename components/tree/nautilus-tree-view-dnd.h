@@ -25,12 +25,12 @@
 #ifndef NAUTILUS_TREE_VIEW_DND_H
 #define NAUTILUS_TREE_VIEW_DND_H
 
-#include <libnautilus-extensions/nautilus-drag.h>
+#include <eel/eel-dnd.h>
 #include "nautilus-tree-view-private.h"
 
 struct NautilusTreeViewDndDetails {
 
-	NautilusDragInfo *drag_info;
+	EelDragInfo *drag_info;
 
 	/* data setup by button_press signal for dragging */
 
@@ -50,7 +50,7 @@ struct NautilusTreeViewDndDetails {
 	GSList *expanded_nodes;
 
 	/* row being highlighted */
-	NautilusCTreeNode *current_prelighted_node;
+	EelCTreeNode *current_prelighted_node;
 	GtkStyle *normal_style;
 	GtkStyle *highlight_style;
 };

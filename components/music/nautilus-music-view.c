@@ -1092,7 +1092,7 @@ play_status_display (NautilusMusicView *music_view)
 }
 
 
-/* The following are copied from gtkclist.c and nautilusclist.c */ 
+/* The following are copied from gtkclist.c and eel-clist.c */ 
 #define CELL_SPACING 1
 
 /* gives the top pixel of the given row in context of

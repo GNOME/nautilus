@@ -54,7 +54,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-directory.h>
-#include <libnautilus-extensions/nautilus-drag.h>
+#include <libnautilus-extensions/nautilus-file-dnd.h>
 #include <libnautilus-extensions/nautilus-file-operations.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>

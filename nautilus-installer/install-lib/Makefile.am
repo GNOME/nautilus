@@ -48,7 +48,6 @@ TRILOBITE_HDRS =  \
 	trilobite-core-messaging.h \
 	trilobite-core-network.h \
 	trilobite-core-utils.h \
-	trilobite-file-utilities.h \
 	trilobite-i18n.h \
 	trilobite-md5-tools.h \
 	trilobite-redirect.h \

@@ -28,22 +28,19 @@
 #include <config.h>
 #include "nautilus-rpm-verify-window.h"
 
-#include <libgnome/gnome-defs.h>
-
-#include <math.h>
-#include <gnome.h>
-#include <gdk/gdk.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-label.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gdk/gdk.h>
+#include <gnome.h>
 #include <gtk/gtksignal.h>
+#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-pixmap.h>
-#include <eel/eel-gdk-extensions.h>
-#include <eel/eel-gtk-macros.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-label.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-theme.h>
+#include <math.h>
 
 struct NautilusRPMVerifyWindowDetails {
 	GtkWidget *package_name;

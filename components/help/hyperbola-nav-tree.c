@@ -1,12 +1,12 @@
 #include <config.h>
-#include <libnautilus/libnautilus.h>
+
 #include "hyperbola-filefmt.h"
 #include <gtk/gtk.h>
+#include <gtk/gtkctree.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#include <libnautilus-extensions/nautilus-ctree.h>
 #include <libnautilus-extensions/nautilus-theme.h>
-#include <eel/eel-gdk-font-extensions.h>
+#include <libnautilus/libnautilus.h>
 
 #include "hyperbola-nav.h"
 

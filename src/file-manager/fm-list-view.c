@@ -27,25 +27,26 @@
 
 #include "fm-list-view-private.h"
 #include "fm-properties-window.h"
+#include <eel/eel-art-extensions.h>
+#include <eel/eel-art-gtk-extensions.h>
+#include <eel/eel-dnd.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-list.h>
+#include <eel/eel-string.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <eel/eel-art-gtk-extensions.h>
-#include <eel/eel-art-extensions.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
-#include <libnautilus-extensions/nautilus-drag.h>
+#include <libnautilus-extensions/nautilus-file-dnd.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
-#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-list.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
-#include <eel/eel-string.h>
 
 struct FMListViewDetails {
 	int sort_column;
@@ -99,10 +100,10 @@ struct FMListViewDetails {
 #define DOWN_INDICATOR_VALUE		2
 
 /* forward declarations */
-static void                 list_activate_callback                    (NautilusList       *list,
+static void                 list_activate_callback                    (EelList       *list,
 								       GList              *file_list,
 								       gpointer            data);
-static void                 list_selection_changed_callback           (NautilusList       *list,
+static void                 list_selection_changed_callback           (EelList       *list,
 								       gpointer            data);
 static void                 fm_list_view_add_file                     (FMDirectoryView    *view,
 								       NautilusFile       *file);
@@ -158,7 +159,7 @@ static int                  get_column_from_attribute                 (FMListVie
 								       const char         *attribute);
 static int                  get_sort_column_from_attribute            (FMListView         *list_view,
 								       const char         *attribute);
-static NautilusList *       get_list                                  (FMListView         *list_view);
+static EelList *       get_list                                  (FMListView         *list_view);
 static void                 update_icons                              (FMListView         *list_view);
 static int                  get_number_of_columns                     (FMListView         *list_view);
 static int                  get_link_column                           (FMListView         *list_view);
@@ -277,7 +278,7 @@ fm_list_view_initialize (gpointer object, gpointer klass)
 						       list_view,
 						       GTK_OBJECT (list_view));
 	
-	/* It's important to not create the NautilusList (with a call
+	/* It's important to not create the EelList (with a call
 	 * to create_list) until later, when the function pointers
 	 * have been initialized by the subclass.
 	 */
@@ -298,14 +299,14 @@ fm_list_view_destroy (GtkObject *object)
 }
 
 static void 
-column_clicked_callback (NautilusCList *clist, int column, gpointer user_data)
+column_clicked_callback (EelCList *clist, int column, gpointer user_data)
 {
 	FMListView *list_view;
 	gboolean reversed;
 
-	g_return_if_fail (NAUTILUS_IS_LIST (clist));
+	g_return_if_fail (EEL_IS_LIST (clist));
 	g_return_if_fail (FM_IS_LIST_VIEW (user_data));
-	g_return_if_fail (get_list (FM_LIST_VIEW (user_data)) == NAUTILUS_LIST (clist));
+	g_return_if_fail (get_list (FM_LIST_VIEW (user_data)) == EEL_LIST (clist));
 
 	list_view = FM_LIST_VIEW (user_data);
 
@@ -348,21 +349,21 @@ list_view_compare_files_for_sort (gconstpointer a, gconstpointer b, gpointer cal
 
 /* CList-style compare function */
 static int
-fm_list_view_compare_rows (NautilusCList *clist,
+fm_list_view_compare_rows (EelCList *clist,
 			   gconstpointer ptr1,
 			   gconstpointer ptr2)
 {
-	NautilusCListRow *row1;
-	NautilusCListRow *row2;
+	EelCListRow *row1;
+	EelCListRow *row2;
 	NautilusFile *file1;
 	NautilusFile *file2;
 	FMListView *list_view;
   
-	g_return_val_if_fail (NAUTILUS_IS_LIST (clist), 0);
+	g_return_val_if_fail (EEL_IS_LIST (clist), 0);
 	g_return_val_if_fail (clist->sort_column != LIST_VIEW_COLUMN_NONE, 0);
 
-	row1 = (NautilusCListRow *) ptr1;
-	row2 = (NautilusCListRow *) ptr2;
+	row1 = (EelCListRow *) ptr1;
+	row2 = (EelCListRow *) ptr2;
 
 	/* All of our rows have a NautilusFile in the row data. Therefore if
 	 * the row data is NULL it must be a row that's being added, and hasn't
@@ -393,13 +394,13 @@ fm_list_view_compare_rows (NautilusCList *clist,
 static int
 compare_rows_by_name (gconstpointer a, gconstpointer b, void *callback_data)
 {
-	NautilusCListRow *row1;
-	NautilusCListRow *row2;
+	EelCListRow *row1;
+	EelCListRow *row2;
 
 	g_assert (callback_data == NULL);
 
-	row1 = (NautilusCListRow *) a;
-	row2 = (NautilusCListRow *) b;
+	row1 = (EelCListRow *) a;
+	row2 = (EelCListRow *) b;
 
 	return nautilus_file_compare_for_sort
 		(NAUTILUS_FILE (row1->data),
@@ -411,10 +412,10 @@ compare_rows_by_name (gconstpointer a, gconstpointer b, void *callback_data)
 static int
 match_row_name (gconstpointer a, void *callback_data)
 {
-	NautilusCListRow *row;
+	EelCListRow *row;
 	const char *pattern;
 	
-	row = (NautilusCListRow *) a;
+	row = (EelCListRow *) a;
 	pattern = (const char *) callback_data;
 
 	return nautilus_file_compare_name
@@ -422,11 +423,11 @@ match_row_name (gconstpointer a, void *callback_data)
 }
 
 static void 
-context_click_selection_callback (NautilusCList *clist, 
+context_click_selection_callback (EelCList *clist, 
 				  GdkEventButton *event,
 				  FMListView *list_view)
 {
-	g_assert (NAUTILUS_IS_CLIST (clist));
+	g_assert (EEL_IS_CLIST (clist));
 	g_assert (FM_IS_LIST_VIEW (list_view));
 
 	fm_directory_view_pop_up_selection_context_menu 
@@ -434,7 +435,7 @@ context_click_selection_callback (NautilusCList *clist,
 }
 
 static void 
-context_click_background_callback (NautilusCList *clist,
+context_click_background_callback (EelCList *clist,
 				   GdkEventButton *event,
 				   FMListView *list_view)
 {
@@ -449,12 +450,12 @@ make_sorted_row_array (GtkWidget *widget)
 {
 	GPtrArray *array;
 
-	if (NAUTILUS_CLIST (widget)->rows == 0)
+	if (EEL_CLIST (widget)->rows == 0)
 		/* empty list, no work */
 		return NULL;
 		
 	/* build an array of rows */
-	array = eel_g_ptr_array_new_from_list (NAUTILUS_CLIST (widget)->row_list);
+	array = eel_g_ptr_array_new_from_list (EEL_CLIST (widget)->row_list);
 
 	/* sort the array by the names of the NautilusFile objects */
 	eel_g_ptr_array_sort (array, compare_rows_by_name, NULL);
@@ -465,7 +466,7 @@ make_sorted_row_array (GtkWidget *widget)
 static void
 select_row_common (GtkWidget *widget, const GPtrArray *array, guint array_row_index)
 {
-	NautilusCListRow *row;
+	EelCListRow *row;
 	int list_row_index;
 
 	if (array_row_index >= array->len) {
@@ -477,12 +478,12 @@ select_row_common (GtkWidget *widget, const GPtrArray *array, guint array_row_in
 
 	g_assert (row != NULL);
 
-	list_row_index = g_list_index (NAUTILUS_CLIST (widget)->row_list, row);
+	list_row_index = g_list_index (EEL_CLIST (widget)->row_list, row);
 	g_assert (list_row_index >= 0);
-	g_assert (list_row_index < NAUTILUS_CLIST (widget)->rows);
+	g_assert (list_row_index < EEL_CLIST (widget)->rows);
 
 	/* select the matching row */
-	nautilus_list_select_row (NAUTILUS_LIST (widget), list_row_index);
+	eel_list_select_row (EEL_LIST (widget), list_row_index);
 }
 
 static void
@@ -491,7 +492,7 @@ select_matching_name_callback (GtkWidget *widget, const char *pattern, FMListVie
 	GPtrArray *array;
 	int array_row_index;
 
-	g_assert (NAUTILUS_IS_LIST (widget));
+	g_assert (EEL_IS_LIST (widget));
 	g_assert (gtk_object_get_data (GTK_OBJECT (widget), PENDING_USER_DATA_KEY) == NULL);
 		
 	/* build an array of rows, sorted by name */
@@ -520,7 +521,7 @@ select_previous_next_common (GtkWidget *widget, FMListView *list_view, gboolean 
 	int first_selected_row;
 	int last_selected_row;
 
-	g_assert (NAUTILUS_IS_LIST (widget));
+	g_assert (EEL_IS_LIST (widget));
 	g_assert (gtk_object_get_data (GTK_OBJECT (widget), PENDING_USER_DATA_KEY) == NULL);
 
 	/* build an array of rows */
@@ -535,7 +536,7 @@ select_previous_next_common (GtkWidget *widget, FMListView *list_view, gboolean 
 	first_selected_row = -1;
 	last_selected_row = -1;
 	for (index = 0; index < array->len; index++) {
-		if (((NautilusCListRow *) g_ptr_array_index (array, index))->state == GTK_STATE_SELECTED) {
+		if (((EelCListRow *) g_ptr_array_index (array, index))->state == GTK_STATE_SELECTED) {
 			if (first_selected_row < 0) {
 				first_selected_row = index;
 			}
@@ -592,11 +593,11 @@ select_next_name_callback (GtkWidget *widget, FMListView *list_view)
 }
 
 static NautilusFile *
-fm_list_nautilus_file_at (NautilusList *list, int x, int y)
+fm_list_nautilus_file_at (EelList *list, int x, int y)
 {
-	NautilusCListRow *row;
+	EelCListRow *row;
 
-	row = nautilus_list_row_at (list, y);
+	row = eel_list_row_at (list, y);
 	if (row == NULL) {
 		return NULL;
 	}
@@ -604,7 +605,7 @@ fm_list_nautilus_file_at (NautilusList *list, int x, int y)
 }
 
 static void
-fm_list_receive_dropped_icons (NautilusList *list, 
+fm_list_receive_dropped_icons (EelList *list, 
 			       int x, 
 			       int y,
 			       int action,
@@ -622,7 +623,7 @@ fm_list_receive_dropped_icons (NautilusList *list,
 	directory_view = FM_DIRECTORY_VIEW (list_view);
 
 	if (action == GDK_ACTION_ASK) {
-		action = nautilus_drag_drop_action_ask 
+		action = eel_drag_drop_action_ask 
 			(GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
 	}
 
@@ -644,7 +645,7 @@ fm_list_receive_dropped_icons (NautilusList *list,
 		if (target_item_uri != NULL
 			&& (action != GDK_ACTION_MOVE
 				/* don't actually move the items if they are in the same directory */
-				|| !nautilus_drag_items_local (target_item_uri, drop_data))) {
+				|| !eel_drag_items_local (target_item_uri, drop_data))) {
 			/* build a list of URIs to copy */
 			for (p = drop_data; p != NULL; p = p->next) {
 				/* do a shallow copy of all the uri strings of the copied files */
@@ -669,7 +670,7 @@ fm_list_receive_dropped_icons (NautilusList *list,
 }
 
 static void
-fm_list_receive_dropped_keyword (NautilusList *list, char* keyword, int x, int y)
+fm_list_receive_dropped_keyword (EelList *list, char* keyword, int x, int y)
 {
 	NautilusFile *file;
 	
@@ -682,7 +683,7 @@ fm_list_receive_dropped_keyword (NautilusList *list, char* keyword, int x, int y
 
 
 static gboolean
-fm_list_handle_dragged_items (NautilusList *list,
+fm_list_handle_dragged_items (EelList *list,
 			      int action,
 			      GList *drop_data,
 			      int x, int y, guint info,
@@ -692,8 +693,8 @@ fm_list_handle_dragged_items (NautilusList *list,
 	NautilusFile *target_item;
 
 	switch (info) {
-	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-	case NAUTILUS_ICON_DND_URI_LIST:
+	case EEL_ICON_DND_GNOME_ICON_LIST:
+	case EEL_ICON_DND_URI_LIST:
 		/* Find the item we dragged over and determine if it can accept dropped items */
 		target_item = fm_list_nautilus_file_at (list, x, y);
 		if (target_item != NULL && nautilus_drag_can_accept_items (target_item, drop_data)) {
@@ -703,11 +704,11 @@ fm_list_handle_dragged_items (NautilusList *list,
 		}
 		
 		break;
-	case NAUTILUS_ICON_DND_KEYWORD:	
+	case EEL_ICON_DND_KEYWORD:	
 		ret_val = TRUE;
 		break;
-	case NAUTILUS_ICON_DND_COLOR:
-	case NAUTILUS_ICON_DND_BGIMAGE:	
+	case EEL_ICON_DND_COLOR:
+	case EEL_ICON_DND_BGIMAGE:	
 	default:
 		ret_val = FALSE;
 		break;
@@ -718,7 +719,7 @@ fm_list_handle_dragged_items (NautilusList *list,
 
 
 static char *
-nautilus_list_find_icon_list_drop_target (NautilusList *list,
+eel_list_find_icon_list_drop_target (EelList *list,
 					  int x, int y,
 					  GList *selection_list,
 					  FMListView *list_view)
@@ -726,11 +727,11 @@ nautilus_list_find_icon_list_drop_target (NautilusList *list,
 	NautilusFile *file;
 	char *uri;
 
-	if (nautilus_list_rejects_dropped_icons (list)) {
+	if (eel_list_rejects_dropped_icons (list)) {
 		return NULL;
 	}
 
-	file = fm_list_nautilus_file_at (NAUTILUS_LIST (list), x, y);
+	file = fm_list_nautilus_file_at (EEL_LIST (list), x, y);
 	if (file == NULL) {
 		uri = fm_directory_view_get_uri (FM_DIRECTORY_VIEW (list_view));
 		return uri;
@@ -750,7 +751,7 @@ nautilus_list_find_icon_list_drop_target (NautilusList *list,
 
 
 static void
-fm_list_get_default_action (NautilusList *list,
+fm_list_get_default_action (EelList *list,
 			    int *default_action,
 			    int *non_default_action,
 			    GdkDragContext *context,
@@ -760,19 +761,19 @@ fm_list_get_default_action (NautilusList *list,
 {
 	char *drop_target;
 
-	g_assert (NAUTILUS_IS_LIST (list));
+	g_assert (EEL_IS_LIST (list));
 
 	/* FIXME bugzilla.eazel.com 2569: Too much code copied from nautilus-icon-dnd.c. Need to share more. */
 
 	switch (info) {
-	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+	case EEL_ICON_DND_GNOME_ICON_LIST:
 		if (drop_data == NULL) {
 			*default_action = 0;
 			*non_default_action = 0;
 			return;
 		}
 
-		drop_target = nautilus_list_find_icon_list_drop_target (list, x, y,
+		drop_target = eel_list_find_icon_list_drop_target (list, x, y,
 									drop_data,
 									list_view);
 		if (drop_target == NULL) {
@@ -781,18 +782,18 @@ fm_list_get_default_action (NautilusList *list,
 			return;
 		}
 
-		nautilus_drag_default_drop_action_for_icons (context, drop_target, 
+		eel_drag_default_drop_action_for_icons (context, drop_target, 
 							     drop_data, 
 							     default_action, non_default_action);
 		break;
 		
-	case NAUTILUS_ICON_DND_COLOR:
-	case NAUTILUS_ICON_DND_BGIMAGE:
+	case EEL_ICON_DND_COLOR:
+	case EEL_ICON_DND_BGIMAGE:
 		*default_action = context->suggested_action;
 		*non_default_action = context->suggested_action;
 		break;
 		
-	case NAUTILUS_ICON_DND_KEYWORD:
+	case EEL_ICON_DND_KEYWORD:
 		*default_action = context->suggested_action;
 		*non_default_action = context->suggested_action;
 		break;
@@ -801,7 +802,7 @@ fm_list_get_default_action (NautilusList *list,
 
 
 static void
-fm_list_handle_dropped_items (NautilusList *list,
+fm_list_handle_dropped_items (EelList *list,
 			      int action,
 			      GList *drop_data,
 			      int x, int y, guint info,
@@ -812,18 +813,18 @@ fm_list_handle_dropped_items (NautilusList *list,
 	 */ 
 
 	switch (info) {
-	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-	case NAUTILUS_ICON_DND_URI_LIST:
+	case EEL_ICON_DND_GNOME_ICON_LIST:
+	case EEL_ICON_DND_URI_LIST:
 		fm_list_receive_dropped_icons (list, x, y, 
 					       action,
 					       drop_data,
 					       list_view);
 		break;
-	case NAUTILUS_ICON_DND_COLOR:
+	case EEL_ICON_DND_COLOR:
 		break;
-	case NAUTILUS_ICON_DND_BGIMAGE:	
+	case EEL_ICON_DND_BGIMAGE:	
 		break;
-	case NAUTILUS_ICON_DND_KEYWORD:	
+	case EEL_ICON_DND_KEYWORD:	
 		fm_list_receive_dropped_keyword (list, (char *)drop_data->data, x, y);
 		break;
 	default:
@@ -835,13 +836,13 @@ fm_list_handle_dropped_items (NautilusList *list,
 
 /* iteration glue struct */
 typedef struct {
-	NautilusDragEachSelectedItemDataGet iteratee;
-	NautilusList *list;
+	EelDragEachSelectedItemDataGet iteratee;
+	EelList *list;
 	gpointer iteratee_data;
 } RowGetDataBinderContext;
 
 static gboolean
-row_get_data_binder (NautilusCListRow *row, int row_index, gpointer data)
+row_get_data_binder (EelCListRow *row, int row_index, gpointer data)
 {
 	RowGetDataBinderContext *context;
 	char *uri;
@@ -858,9 +859,9 @@ row_get_data_binder (NautilusCListRow *row, int row_index, gpointer data)
 		return TRUE;
 	}
 
-	nautilus_list_get_cell_rectangle (context->list, row_index, 0, &cell_rectangle);
+	eel_list_get_cell_rectangle (context->list, row_index, 0, &cell_rectangle);
 	
-	nautilus_list_get_initial_drag_offset (context->list, &drag_offset_x, &drag_offset_y);
+	eel_list_get_initial_drag_offset (context->list, &drag_offset_x, &drag_offset_y);
 
 	/* adjust the icons to be vertically relative to the initial mouse click position */
 	icon_rect = eel_art_irect_offset_by (eel_gdk_rectangle_to_art_irect (&cell_rectangle),
@@ -893,17 +894,17 @@ row_get_data_binder (NautilusCListRow *row, int row_index, gpointer data)
  * values to the iteratee
  */
 static void
-each_icon_get_data_binder (NautilusDragEachSelectedItemDataGet iteratee, 
+each_icon_get_data_binder (EelDragEachSelectedItemDataGet iteratee, 
 	gpointer iterator_context, gpointer data)
 {
 	RowGetDataBinderContext context;
 
-	g_assert (NAUTILUS_IS_LIST (iterator_context));
+	g_assert (EEL_IS_LIST (iterator_context));
 
 	context.iteratee = iteratee;
-	context.list = NAUTILUS_LIST (iterator_context);
+	context.list = EEL_LIST (iterator_context);
 	context.iteratee_data = data;
-	nautilus_list_each_selected_row (NAUTILUS_LIST (iterator_context), 
+	eel_list_each_selected_row (EEL_LIST (iterator_context), 
 		row_get_data_binder, &context);
 }
 
@@ -913,14 +914,14 @@ fm_list_drag_data_get (GtkWidget *widget, GdkDragContext *context,
 		       FMListView *list_view)
 {
 	g_assert (widget != NULL);
-	g_assert (NAUTILUS_IS_LIST (widget));
+	g_assert (EEL_IS_LIST (widget));
 	g_return_if_fail (context != NULL);
 
 	/* Call common function from nautilus-drag that set's up
 	 * the selection data in the right format. Pass it means to
 	 * iterate all the selected icons.
 	 */
-	nautilus_drag_drag_data_get (widget, context, selection_data,
+	eel_drag_drag_data_get (widget, context, selection_data,
 		info, time, widget, each_icon_get_data_binder);
 }
 
@@ -929,7 +930,7 @@ fm_list_get_drag_pixbuf (GtkWidget *widget, int row_index, FMListView *list_view
 {
 	g_assert (FM_IS_LIST_VIEW (list_view));
 
-	return nautilus_list_get_pixbuf (NAUTILUS_LIST (widget),
+	return eel_list_get_pixbuf (EEL_LIST (widget),
 					 row_index,
 					 LIST_VIEW_COLUMN_ICON);
 }
@@ -937,7 +938,7 @@ fm_list_get_drag_pixbuf (GtkWidget *widget, int row_index, FMListView *list_view
 static int
 fm_list_get_sort_column_index (GtkWidget *widget, FMListView *list_view)
 {
-	g_assert (NAUTILUS_IS_LIST (widget));
+	g_assert (EEL_IS_LIST (widget));
 
 	return FM_LIST_VIEW (list_view)->details->sort_column;
 }
@@ -945,7 +946,7 @@ fm_list_get_sort_column_index (GtkWidget *widget, FMListView *list_view)
 static void
 fm_list_view_update_smooth_graphics_mode (FMDirectoryView *directory_view)
 {
-	NautilusList *list;
+	EelList *list;
 	gboolean smooth_graphics_mode, old_smooth_graphics_mode;
 
 	g_assert (FM_IS_LIST_VIEW (directory_view));
@@ -953,11 +954,11 @@ fm_list_view_update_smooth_graphics_mode (FMDirectoryView *directory_view)
 	list = get_list (FM_LIST_VIEW (directory_view));
 	g_assert (list != NULL);
 
-	old_smooth_graphics_mode = nautilus_list_is_anti_aliased (list);
+	old_smooth_graphics_mode = eel_list_is_anti_aliased (list);
 	smooth_graphics_mode = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
 
 	if (old_smooth_graphics_mode != smooth_graphics_mode) {
-		nautilus_list_set_anti_aliased_mode (list, smooth_graphics_mode);
+		eel_list_set_anti_aliased_mode (list, smooth_graphics_mode);
 		update_icons (FM_LIST_VIEW (directory_view));
 	}
 }
@@ -965,7 +966,7 @@ fm_list_view_update_smooth_graphics_mode (FMDirectoryView *directory_view)
 static void
 real_sort_directories_first_changed (FMDirectoryView *directory_view)
 {
-	nautilus_clist_sort (NAUTILUS_CLIST (get_list (FM_LIST_VIEW (directory_view))));
+	eel_clist_sort (EEL_CLIST (get_list (FM_LIST_VIEW (directory_view))));
 }
 
 static void
@@ -973,8 +974,8 @@ create_list (FMListView *list_view)
 {
 	int number_of_columns;
 	const char **titles;
-	NautilusList *list;
-	NautilusCList *clist;
+	EelList *list;
+	EelCList *clist;
 	int i;
 	FMListViewColumn column;
 
@@ -987,43 +988,43 @@ create_list (FMListView *list_view)
 
 	number_of_columns = get_number_of_columns (list_view);
 	titles = get_column_titles (list_view);
-	list = NAUTILUS_LIST (nautilus_list_new_with_titles (get_number_of_columns (list_view),
+	list = EEL_LIST (eel_list_new_with_titles (get_number_of_columns (list_view),
 							     titles));
-	nautilus_list_initialize_dnd (list);
+	eel_list_initialize_dnd (list);
 	g_free (titles);
 
-	clist = NAUTILUS_CLIST (list);
+	clist = EEL_CLIST (list);
 
-	NAUTILUS_CLIST_SET_FLAG (clist, CLIST_SHOW_TITLES);
+	EEL_CLIST_SET_FLAG (clist, CLIST_SHOW_TITLES);
 
 	for (i = 0; i < number_of_columns; ++i) {
 		get_column_specification (list_view, i, &column);
 
 		/* FIXME bugzilla.eazel.com 2532: Make a cover to do this trick. */
-		nautilus_clist_set_column_max_width (clist, i, column.maximum_width);
-		nautilus_clist_set_column_min_width (clist, i, column.minimum_width);
-		/* work around broken NautilusCList that pins the max_width to be no less than
+		eel_clist_set_column_max_width (clist, i, column.maximum_width);
+		eel_clist_set_column_min_width (clist, i, column.minimum_width);
+		/* work around broken EelCList that pins the max_width to be no less than
 		 * the min_width instead of bumping min_width down too
 		 */
-		nautilus_clist_set_column_max_width (clist, i, column.maximum_width);
-		nautilus_clist_set_column_width (clist, i, column.default_width);
+		eel_clist_set_column_max_width (clist, i, column.maximum_width);
+		eel_clist_set_column_width (clist, i, column.default_width);
 		
 		if (column.right_justified) {
-			/* Hack around a problem where nautilus_clist_set_column_justification
+			/* Hack around a problem where eel_clist_set_column_justification
 			 * crashes if there is a column title but no
 			 * column button (it should really be checking if it has a button instead)
 			 * this is an easy, dirty fix for now, will get straightened out
-			 * with a replacement list view (alternatively, we'd fix this in NautilusCList)
+			 * with a replacement list view (alternatively, we'd fix this in EelCList)
 			 */
 			char *saved_title = clist->column[i].title;
 			clist->column[i].title = NULL;
-			nautilus_clist_set_column_justification (clist, i, GTK_JUSTIFY_RIGHT);
+			eel_clist_set_column_justification (clist, i, GTK_JUSTIFY_RIGHT);
 			clist->column[i].title = saved_title;
 		}
 
 	}
-	nautilus_clist_set_auto_sort (clist, TRUE);
-	nautilus_clist_set_compare_func (clist, fm_list_view_compare_rows);
+	eel_clist_set_auto_sort (clist, TRUE);
+	eel_clist_set_compare_func (clist, fm_list_view_compare_rows);
 
 	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (list));
 	
@@ -1070,7 +1071,7 @@ font_or_font_size_changed_callback (gpointer callback_data)
 void
 set_up_list (FMListView *list_view)
 {
-	NautilusList *list;
+	EelList *list;
 	
 	g_return_if_fail (FM_IS_LIST_VIEW (list_view));
 	
@@ -1137,7 +1138,7 @@ set_up_list (FMListView *list_view)
 
 	/* Make height tall enough for icons to look good.
 	 * This must be done after the list widget is realized, due to
-	 * a bug/design flaw in nautilus_clist_set_row_height. Connecting to
+	 * a bug/design flaw in eel_clist_set_row_height. Connecting to
 	 * the "realize" signal is slightly too early, so we connect to
 	 * "map".
 	 */
@@ -1154,7 +1155,7 @@ set_up_list (FMListView *list_view)
 	 * This is used only for views in which accepting file-drops is never
 	 * allowed, such as the search results view.
 	 */
-	nautilus_list_set_rejects_dropped_icons 
+	eel_list_set_rejects_dropped_icons 
 		(list, 
 		 !fm_directory_view_accepts_dragged_files 
 		 	(FM_DIRECTORY_VIEW (list_view)));
@@ -1163,11 +1164,11 @@ set_up_list (FMListView *list_view)
 }
 
 static void
-list_activate_callback (NautilusList *list,
+list_activate_callback (EelList *list,
 			GList *file_list,
 			gpointer data)
 {
-	g_return_if_fail (NAUTILUS_IS_LIST (list));
+	g_return_if_fail (EEL_IS_LIST (list));
 	g_return_if_fail (FM_IS_LIST_VIEW (data));
 	g_return_if_fail (file_list != NULL);
 
@@ -1175,7 +1176,7 @@ list_activate_callback (NautilusList *list,
 }
 
 static void
-list_selection_changed_callback (NautilusList *list,
+list_selection_changed_callback (EelList *list,
 				 gpointer data)
 {
 	g_return_if_fail (FM_IS_LIST_VIEW (data));
@@ -1187,8 +1188,8 @@ list_selection_changed_callback (NautilusList *list,
 static int
 add_to_list (FMListView *list_view, NautilusFile *file)
 {
-	NautilusList *list;
-	NautilusCList *clist;
+	EelList *list;
+	EelCList *clist;
 	char **text;
 	int number_of_columns;
 	int new_row;
@@ -1212,20 +1213,20 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 	}
 
 	list = get_list (list_view);
-	clist = NAUTILUS_CLIST (list);
+	clist = EEL_CLIST (list);
 
 	/* Temporarily set user data value as hack for the problem
 	 * that compare_rows is called before the row data can be set.
 	 */
 	gtk_object_set_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY, file);
 	/* Note that since list is auto-sorted new_row isn't necessarily last row. */
-	new_row = nautilus_clist_append (clist, text);
+	new_row = eel_clist_append (clist, text);
 
-	nautilus_clist_set_row_data (clist, new_row, file);
+	eel_clist_set_row_data (clist, new_row, file);
 	gtk_object_set_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY, NULL);
 
 	/* Mark one column as a link. */
-	nautilus_list_mark_cell_as_link (list, new_row, get_link_column (list_view));
+	eel_list_mark_cell_as_link (list, new_row, get_link_column (list_view));
 
 	install_row_images (list_view, new_row);
 
@@ -1238,7 +1239,7 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 	return new_row;
 }
 
-static NautilusList *
+static EelList *
 get_list_if_exists (FMListView *list_view)
 {
 	GtkWidget *child;
@@ -1250,10 +1251,10 @@ get_list_if_exists (FMListView *list_view)
 		return NULL;
 	}
 	
-	return NAUTILUS_LIST (child);
+	return EEL_LIST (child);
 }
 
-static NautilusList *
+static EelList *
 get_list (FMListView *list_view)
 {
 	GtkWidget *child;
@@ -1266,7 +1267,7 @@ get_list (FMListView *list_view)
 		child = GTK_BIN (list_view)->child;
 	}
 	
-	return NAUTILUS_LIST (child);
+	return EEL_LIST (child);
 }
 
 static void
@@ -1346,8 +1347,8 @@ fm_list_view_get_background_widget (FMDirectoryView *view)
 static void
 fm_list_view_clear (FMDirectoryView *view)
 {
-	NautilusList *list;
-	NautilusCList *clist;
+	EelList *list;
+	EelCList *clist;
 	int row;
 
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
@@ -1358,12 +1359,12 @@ fm_list_view_clear (FMDirectoryView *view)
 	}
 
 	/* Clear away the existing list items. */
-	clist = NAUTILUS_CLIST (list);
+	clist = EEL_CLIST (list);
 	for (row = 0; row < clist->rows; ++row) {
 		fm_list_view_removing_file
-			(FM_LIST_VIEW (view), NAUTILUS_FILE (nautilus_clist_get_row_data (clist, row)));
+			(FM_LIST_VIEW (view), NAUTILUS_FILE (eel_clist_get_row_data (clist, row)));
 	}
-	nautilus_clist_clear (clist);
+	eel_clist_clear (clist);
 }
 
 static void
@@ -1371,7 +1372,7 @@ fm_list_view_begin_adding_files (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
-	nautilus_clist_freeze (NAUTILUS_CLIST (get_list (FM_LIST_VIEW (view))));
+	eel_clist_freeze (EEL_CLIST (get_list (FM_LIST_VIEW (view))));
 }
 
 static void
@@ -1417,7 +1418,7 @@ fm_list_view_add_file (FMDirectoryView *view, NautilusFile *file)
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
 	/* We are allowed to get the same icon twice, so don't re-add it. */
-	if (nautilus_clist_find_row_from_data (NAUTILUS_CLIST (get_list (FM_LIST_VIEW (view))), file) < 0) {
+	if (eel_clist_find_row_from_data (EEL_CLIST (get_list (FM_LIST_VIEW (view))), file) < 0) {
 		add_to_list (FM_LIST_VIEW (view), file);
 	}
 }
@@ -1428,14 +1429,14 @@ remove_from_list (FMListView *list_view,
 		  gboolean *was_in_list, 
 		  gboolean *was_selected)
 {
-	NautilusList *list;
+	EelList *list;
 	int old_row;
 
 	g_assert (was_in_list != NULL);
 	g_assert (was_selected != NULL);
 
 	list = get_list (list_view);
-	old_row = nautilus_clist_find_row_from_data (NAUTILUS_CLIST (list), file);
+	old_row = eel_clist_find_row_from_data (EEL_CLIST (list), file);
 
 	/* Sometimes this might be called on files that are no longer in
 	 * the list. This happens when a NautilusFile has file_changed called
@@ -1453,9 +1454,9 @@ remove_from_list (FMListView *list_view,
 	}
 	
 	*was_in_list = TRUE;
-	*was_selected = nautilus_list_is_row_selected (list, old_row);
+	*was_selected = eel_list_is_row_selected (list, old_row);
 
-	nautilus_clist_remove (NAUTILUS_CLIST (list), old_row);
+	eel_clist_remove (EEL_CLIST (list), old_row);
 	fm_list_view_removing_file (list_view, file);
 }
 
@@ -1504,7 +1505,7 @@ static void
 fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 {
 	FMListView *list_view;
-	NautilusCList *clist;
+	EelCList *clist;
 	int new_row;
 	gboolean was_in_list;
 	gboolean was_selected;
@@ -1515,14 +1516,14 @@ fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 	 * existing file going away.
 	 */
 	list_view = FM_LIST_VIEW (view);
-	clist = NAUTILUS_CLIST (get_list (list_view));
+	clist = EEL_CLIST (get_list (list_view));
 
 	/* Ref it here so it doesn't go away entirely after we remove it
 	 * but before we reinsert it.
 	 */
 	nautilus_file_ref (file);
 	
-	nautilus_clist_freeze (clist);
+	eel_clist_freeze (clist);
 
 	remove_from_list (list_view, file, &was_in_list, &was_selected);
 
@@ -1530,11 +1531,11 @@ fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 		new_row = add_to_list (list_view, file);
 
 		if (was_selected) {
-			nautilus_clist_select_row (clist, new_row, -1);
+			eel_clist_select_row (clist, new_row, -1);
 		}
 	}
 
-	nautilus_clist_thaw (clist);
+	eel_clist_thaw (clist);
 
 	/* Unref to match our keep-it-alive-for-this-function ref. */
 	nautilus_file_unref (file);
@@ -1545,7 +1546,7 @@ fm_list_view_done_adding_files (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
-	nautilus_clist_thaw (NAUTILUS_CLIST (get_list (FM_LIST_VIEW (view))));
+	eel_clist_thaw (EEL_CLIST (get_list (FM_LIST_VIEW (view))));
 }
 
 static guint
@@ -1562,7 +1563,7 @@ real_is_empty (FMDirectoryView *view)
 {
 	g_assert (FM_IS_LIST_VIEW (view));
 
-	return NAUTILUS_CLIST (get_list (FM_LIST_VIEW (view)))->rows == 0;
+	return EEL_CLIST (get_list (FM_LIST_VIEW (view)))->rows == 0;
 }
 
 static void
@@ -1585,7 +1586,7 @@ fm_list_view_get_selection (FMDirectoryView *view)
 
 	g_return_val_if_fail (FM_IS_LIST_VIEW (view), NULL);
 
-	list = nautilus_list_get_selection (get_list (FM_LIST_VIEW (view)));
+	list = eel_list_get_selection (get_list (FM_LIST_VIEW (view)));
 	nautilus_file_list_ref (list);
 	return list;
 }
@@ -1604,7 +1605,7 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 			     NautilusZoomLevel new_level,
 			     gboolean always_set_level)
 {
-	NautilusCList *clist;
+	EelCList *clist;
 	int new_width;
 
 	g_return_if_fail (FM_IS_LIST_VIEW (list_view));
@@ -1635,35 +1636,35 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 
 	fm_list_view_update_font (list_view);
 
-	clist = NAUTILUS_CLIST (get_list (list_view));
+	clist = EEL_CLIST (get_list (list_view));
 	
-	nautilus_clist_freeze (clist);
+	eel_clist_freeze (clist);
 
 	fm_list_view_reset_row_height (list_view);
 
 	new_width = fm_list_view_get_icon_size (list_view);
 	
-	/* This little dance is necessary due to bugs in NautilusCList.
+	/* This little dance is necessary due to bugs in EelCList.
 	 * Must set min, then max, then min, then actual width.
 	 */
 	/* FIXME bugzilla.eazel.com 2532: Make a cover to do this
-	 * trick, or fix NautilusCList now that we have a copy of the
+	 * trick, or fix EelCList now that we have a copy of the
 	 * code here in Nautilus.
 	 */
-	nautilus_clist_set_column_min_width (clist, LIST_VIEW_COLUMN_ICON, new_width);
-	nautilus_clist_set_column_max_width (clist, LIST_VIEW_COLUMN_ICON, new_width);
-	nautilus_clist_set_column_min_width (clist, LIST_VIEW_COLUMN_ICON, new_width);
-	nautilus_clist_set_column_width (clist, LIST_VIEW_COLUMN_ICON, new_width);
+	eel_clist_set_column_min_width (clist, LIST_VIEW_COLUMN_ICON, new_width);
+	eel_clist_set_column_max_width (clist, LIST_VIEW_COLUMN_ICON, new_width);
+	eel_clist_set_column_min_width (clist, LIST_VIEW_COLUMN_ICON, new_width);
+	eel_clist_set_column_width (clist, LIST_VIEW_COLUMN_ICON, new_width);
 	
 	update_icons (list_view);
 
-	nautilus_clist_thaw (clist);
+	eel_clist_thaw (clist);
 }
 
 static void
 fm_list_view_reset_row_height (FMListView *list_view)
 {
-	nautilus_clist_set_row_height (NAUTILUS_CLIST (get_list (list_view)), 
+	eel_clist_set_row_height (EEL_CLIST (get_list (list_view)), 
 				  MAX (fm_list_view_get_icon_size (list_view),
 				       LIST_VIEW_MINIMUM_ROW_HEIGHT));
 }
@@ -1672,29 +1673,29 @@ fm_list_view_reset_row_height (FMListView *list_view)
 static void
 fm_list_view_select_all (FMDirectoryView *view)
 {
-	NautilusCList *clist;
+	EelCList *clist;
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 	
-        clist = NAUTILUS_CLIST (get_list (FM_LIST_VIEW (view)));
-        nautilus_clist_select_all (clist);
+        clist = EEL_CLIST (get_list (FM_LIST_VIEW (view)));
+        eel_clist_select_all (clist);
 }
 
 /* select items in the view */
 static void
 fm_list_view_set_selection (FMDirectoryView *view, GList *selection)
 {
-	NautilusList *nlist;
+	EelList *nlist;
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 	
-        nlist = NAUTILUS_LIST (get_list (FM_LIST_VIEW(view)));
+        nlist = EEL_LIST (get_list (FM_LIST_VIEW(view)));
 
-        nautilus_list_set_selection (nlist, selection);
+        eel_list_set_selection (nlist, selection);
 }
 
 static void
 fm_list_view_reveal_selection (FMDirectoryView *view)
 {
-	NautilusList *nlist;
+	EelList *nlist;
 	GList *selection;
 
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
@@ -1702,9 +1703,9 @@ fm_list_view_reveal_selection (FMDirectoryView *view)
 	selection = fm_directory_view_get_selection (view);
 	/* Make sure at least one of the selected items is scrolled into view */
         if (selection != NULL) {
-	        nlist = NAUTILUS_LIST (get_list (FM_LIST_VIEW(view)));
-	        nautilus_list_reveal_row 
-	        	(nlist, nautilus_list_get_first_selected_row (nlist));
+	        nlist = EEL_LIST (get_list (FM_LIST_VIEW(view)));
+	        eel_list_reveal_row 
+	        	(nlist, eel_list_get_first_selected_row (nlist));
         }
 
         nautilus_file_list_free (selection);
@@ -1739,7 +1740,7 @@ fm_list_view_display_pending_files (FMDirectoryView *view,
 {
 	GList *files_added, *files_changed, *node;
 	NautilusFile *file;
-	NautilusCList *clist;
+	EelCList *clist;
 	GList *selection;
 	gboolean send_selection_change;
 	NautilusFileSortType sort_criterion;
@@ -1748,7 +1749,7 @@ fm_list_view_display_pending_files (FMDirectoryView *view,
 	
 	send_selection_change = FALSE;
 
-        clist = NAUTILUS_CLIST (get_list (FM_LIST_VIEW (view)));	
+        clist = EEL_CLIST (get_list (FM_LIST_VIEW (view)));	
 	sort_criterion = get_column_sort_criterion (FM_LIST_VIEW (view), clist->sort_column);
 
 	/* Sort the added items before displaying them, so that they'll be added in order,
@@ -1823,13 +1824,13 @@ fm_list_view_sort_items (FMListView *list_view,
 			 int column, 
 			 gboolean reversed)
 {
-	NautilusList *list;
-	NautilusCList *clist;
+	EelList *list;
+	EelCList *clist;
 	NautilusFile *file;
 	
 	g_return_if_fail (FM_IS_LIST_VIEW (list_view));
 	g_return_if_fail (column >= 0);
-	g_return_if_fail (column < NAUTILUS_CLIST (get_list (list_view))->columns);
+	g_return_if_fail (column < EEL_CLIST (get_list (list_view))->columns);
 
 	if (column == list_view->details->sort_column &&
 	    reversed == list_view->details->sort_reversed) {
@@ -1849,7 +1850,7 @@ fm_list_view_sort_items (FMListView *list_view,
 		 reversed);
 
 	list = get_list (list_view);
-	clist = NAUTILUS_CLIST (list);
+	clist = EEL_CLIST (list);
 
 	list_view->details->sort_column = column;
 
@@ -1859,14 +1860,14 @@ fm_list_view_sort_items (FMListView *list_view,
 		 * games with the sort order in list_view_compare_files_for_sort
 		 * to make up for this.
 		 */
-		nautilus_clist_set_sort_type (clist, reversed
+		eel_clist_set_sort_type (clist, reversed
 					      ? GTK_SORT_DESCENDING
 					      : GTK_SORT_ASCENDING);
 		list_view->details->sort_reversed = reversed;
 	}
 	
-	nautilus_clist_set_sort_column (clist, column);
-	nautilus_clist_sort (clist);
+	eel_clist_set_sort_column (clist, column);
+	eel_clist_sort (clist);
 }
 
 /**
@@ -1930,7 +1931,7 @@ fm_list_view_get_emblem_pixbufs_for_file (FMListView *list_view,
 	EelStringList *emblems_to_ignore;
 	gboolean anti_aliased;
 
-	anti_aliased = nautilus_list_is_anti_aliased (get_list (list_view));
+	anti_aliased = eel_list_is_anti_aliased (get_list (list_view));
 
 	emblems_to_ignore =  fm_directory_view_get_emblem_names_to_exclude 
 		(FM_DIRECTORY_VIEW (list_view));
@@ -1969,39 +1970,39 @@ fm_list_view_get_emblem_pixbufs_for_file (FMListView *list_view,
 void
 install_row_images (FMListView *list_view, guint row)
 {
-	NautilusList *list;
-	NautilusCList *clist;
+	EelList *list;
+	EelCList *clist;
 	NautilusFile *file;
 	GdkPixbuf *icon;
 
 	g_return_if_fail (FM_IS_LIST_VIEW (list_view));
 
 	list = get_list (list_view);
-	clist = NAUTILUS_CLIST (list);
-	file = nautilus_clist_get_row_data (clist, row);
+	clist = EEL_CLIST (list);
+	file = eel_clist_get_row_data (clist, row);
 
 	g_return_if_fail (file != NULL);
 
 	/* Install the icon for this file. */
 	icon = (nautilus_icon_factory_get_pixbuf_for_file
 		(file, NULL, fm_list_view_get_icon_size (list_view),
-		 nautilus_list_is_anti_aliased (list)));
-	nautilus_list_set_pixbuf (list, row, LIST_VIEW_COLUMN_ICON, icon);
+		 eel_list_is_anti_aliased (list)));
+	eel_list_set_pixbuf (list, row, LIST_VIEW_COLUMN_ICON, icon);
 
 	/* Install any emblems for this file. */
-	nautilus_list_set_pixbuf_list (list, row, LIST_VIEW_COLUMN_EMBLEMS, 
+	eel_list_set_pixbuf_list (list, row, LIST_VIEW_COLUMN_EMBLEMS, 
 				       fm_list_view_get_emblem_pixbufs_for_file (list_view, file));
 }
 
 static void 
 update_icons (FMListView *list_view)
 {
-	NautilusList *list;
+	EelList *list;
 	int row;
 
 	list = get_list (list_view);
 
-	for (row = 0; row < NAUTILUS_CLIST (list)->rows; ++row) {
+	for (row = 0; row < EEL_CLIST (list)->rows; ++row) {
 		install_row_images (list_view, row);	
 	}
 }
@@ -2016,7 +2017,7 @@ fm_list_view_update_click_mode (FMDirectoryView *view)
 
 	click_mode = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_CLICK_POLICY);
 
-	nautilus_list_set_single_click_mode (get_list (FM_LIST_VIEW (view)), 
+	eel_list_set_single_click_mode (get_list (FM_LIST_VIEW (view)), 
 		click_mode == NAUTILUS_CLICK_POLICY_SINGLE);
 }
 

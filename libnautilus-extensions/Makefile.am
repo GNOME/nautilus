@@ -27,7 +27,6 @@ INCLUDES = 						\
 
 dependency_static_libs = \
 	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
-	$(top_builddir)/cut-n-paste-code/widgets/nautilusclist/libnautilusclist.la \
 	$(top_builddir)/cut-n-paste-code/widgets/gimphwrapbox/libgtkhwrapbox.la \
 	$(NULL)
 
@@ -67,7 +66,6 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-audio-player.c \
 	nautilus-bonobo-extensions.c \
 	nautilus-bookmark.c \
-	nautilus-ctree.c \
 	nautilus-customization-data.c \
 	nautilus-dateedit-extensions.c \
 	nautilus-default-file-icon.c \
@@ -77,11 +75,11 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-directory-metafile.c \
 	nautilus-directory.c \
 	nautilus-drag-window.c \
-	nautilus-drag.c \
 	nautilus-druid-page-eazel.c \
 	nautilus-druid.c \
 	nautilus-entry.c \
 	nautilus-file-changes-queue.c \
+	nautilus-file-dnd.c \
 	nautilus-file-operations-progress.c \
 	nautilus-file-operations.c \
 	nautilus-file-utilities.c \
@@ -100,8 +98,6 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-lib-self-check-functions.c \
 	nautilus-link-set.c \
 	nautilus-link.c \
-	nautilus-list-column-title.c \
-	nautilus-list.c \
 	nautilus-medusa-support.c \
 	nautilus-merged-directory.c \
 	nautilus-metafile-factory.c \
@@ -139,7 +135,6 @@ noinst_HEADERS = \
 	nautilus-bonobo-extensions.h \
 	nautilus-bookmark.h \
 	nautilus-cdrom-extensions.h \
-	nautilus-ctree.h \
 	nautilus-customization-data.h \
 	nautilus-dateedit-extensions.h \
 	nautilus-default-file-icon.h \
@@ -150,12 +145,12 @@ noinst_HEADERS = \
 	nautilus-directory-private.h \
 	nautilus-directory.h \
 	nautilus-drag-window.h \
-	nautilus-drag.h \
 	nautilus-druid-page-eazel.h \
 	nautilus-druid.h \
 	nautilus-entry.h \
 	nautilus-file-attributes.h \
 	nautilus-file-changes-queue.h \
+	nautilus-file-dnd.h \
 	nautilus-file-operations-progress.h \
 	nautilus-file-operations.h \
 	nautilus-file-private.h \
@@ -178,8 +173,6 @@ noinst_HEADERS = \
 	nautilus-lib-self-check-functions.h \
 	nautilus-link-set.h \
 	nautilus-link.h \
-	nautilus-list-column-title.h \
-	nautilus-list.h \
 	nautilus-medusa-support.h \
 	nautilus-merged-directory.h \
 	nautilus-metadata.h \

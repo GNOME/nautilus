@@ -1,5 +1,57 @@
 2001-04-04  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* configure.in:
+	Remove nautilusclist cut-n-paste code.
+	
+	* cut-n-paste-code/widgets/Makefile.am:
+	* cut-n-paste-code/widgets/nautilusclist/.cvsignore:
+	* cut-n-paste-code/widgets/nautilusclist/Makefile.am:
+	* cut-n-paste-code/widgets/nautilusclist/nautilusclist.c:
+	* cut-n-paste-code/widgets/nautilusclist/nautilusclist.h:
+	Remove nautilusclist cut-n-paste code.
+
+	* libnautilus-extensions/nautilus-file-dnd.h:
+	* libnautilus-extensions/nautilus-file-dnd.c:
+	New file with Drag and Drop code that operated on NautilusFile
+	objects.
+	
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-list-column-title.c:
+	* libnautilus-extensions/nautilus-list-column-title.h:
+	* libnautilus-extensions/nautilus-list.c:
+	* libnautilus-extensions/nautilus-list.h:
+	* libnautilus-extensions/nautilus-ctree.c:
+	* libnautilus-extensions/nautilus-ctree.h:
+	* libnautilus-extensions/nautilus-drag.c:
+	* libnautilus-extensions/nautilus-drag.h:
+	Move these widget into eel.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.h:
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	Update for eel dnd code move.
+	
+	* nautilus-installer/install-lib/Makefile.am:
+	* nautilus-installer/libtrilobite/Makefile.am:
+	Remove some voodoo that was needed for cut-n-paste code in
+	trilobite that no longer is among us.
+	
+	* components/help/hyperbola-nav-tree.c:
+	* components/music/nautilus-music-view.c:
+	* components/rpmview/nautilus-rpm-verify-window.c:
+	* components/rpmview/nautilus-rpm-view-private.h:
+	* components/rpmview/nautilus-rpm-view.c:
+	* components/tree/nautilus-tree-view-dnd.c:
+	* components/tree/nautilus-tree-view-dnd.h:
+	* components/tree/nautilus-tree-view-private.h:
+	* components/tree/nautilus-tree-view.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-list-view.c: (fm_list_view_initialize),
+	* src/nautilus-sidebar.c:
+	Update for clist, ctree, list and dnd code that now lives in eel.
+	Also do more #include cleanup.
+	
+2001-04-04  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/mozilla/Makefile.am:
 	* components/mozilla/nautilus-mozilla-content-view.c:
 	* components/services/clone/Makefile.am:

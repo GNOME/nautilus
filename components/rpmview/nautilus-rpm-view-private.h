@@ -28,7 +28,7 @@
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
-#include <libnautilus-extensions/nautilus-ctree.h>
+#include <eel/eel-ctree.h>
 
 #ifdef EAZEL_SERVICES
 #include "libeazelinstall.h"
@@ -67,7 +67,7 @@ struct NautilusRPMViewDetails {
 	
 	GtkWidget *package_file_tree;
 	GNode *filename_tree;
-	NautilusCTreeNode *selected_file;
+	EelCTreeNode *selected_file;
 	gboolean  package_installed;
 	
 	int background_connection;
