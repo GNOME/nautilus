@@ -227,6 +227,7 @@ create_mount_link (const NautilusVolume *volume)
 	 * bug 2174, but apparently the decision was made that
 	 * it should stay here 
 	 */
+	 	 	 
 	/* Make a link only for the root partition for now. */
 	if (volume->type == NAUTILUS_VOLUME_EXT2
 	    && strcmp (volume->mount_path, "/") != 0) {
@@ -468,7 +469,7 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor,
 	if (volume_name == NULL) {
 		return;
 	}
-	
+
 	link_path = nautilus_make_path (desktop_path, volume_name);
 	link_uri = gnome_vfs_get_uri_from_local_path (link_path);
 	if (link_uri == NULL) {
@@ -1035,7 +1036,7 @@ update_disks_menu (FMDesktopIconView *view)
 		nautilus_bonobo_set_toggle_state
 			(view->details->ui,
 			 command_path,
-			 nautilus_volume_monitor_volume_is_mounted (volume));
+			nautilus_volume_monitor_volume_is_mounted (nautilus_volume_monitor_get (), volume));
 		g_free (command_path);
 
 		bonobo_ui_component_add_listener_full
@@ -1044,8 +1045,9 @@ update_disks_menu (FMDesktopIconView *view)
 			 mount_or_unmount_removable_volume,
 			 mount_parameters_new (view, volume->mount_path),
 			 mount_parameters_free_wrapper);
-
 		g_free (command_name);
+		
+		nautilus_volume_monitor_free_volume (volume);
 	}
 	g_list_free (disk_list);
 }

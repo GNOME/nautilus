@@ -53,13 +53,6 @@ struct NautilusVolumeMonitorClass {
 				   const NautilusVolume      	 *volume);
 };
 
-typedef enum { 
-	NAUTILUS_VOLUME_ACTIVE, 
-	NAUTILUS_VOLUME_INACTIVE, 
-	NAUTILUS_VOLUME_EMPTY, 
-	NAUTILUS_VOLUME_NUMBER_OF_STATES
-} NautilusVolumeState;
-
 typedef enum {
 	NAUTILUS_VOLUME_AFFS,
 	NAUTILUS_VOLUME_CDROM, 	
@@ -70,7 +63,6 @@ typedef enum {
 	NAUTILUS_VOLUME_MINIX,
 	NAUTILUS_VOLUME_MSDOS,
 	NAUTILUS_VOLUME_NFS,
-	NAUTILUS_VOLUME_PROC,
 	NAUTILUS_VOLUME_SMB,
 	NAUTILUS_VOLUME_UDF,
 	NAUTILUS_VOLUME_UFS,
@@ -83,14 +75,12 @@ typedef enum {
 
 struct NautilusVolume {
 	NautilusVolumeType type;
-	NautilusVolumeState state;
 	
-	char *fsname;
+	char *device_path;
 	char *mount_path;
 	char *volume_name;
+	char *filesystem;
 	
-	gboolean is_mounted;
-	gboolean did_mount;
 	gboolean is_removable;
 	
 	gboolean is_read_only;
@@ -102,20 +92,22 @@ GtkType                	nautilus_volume_monitor_get_type                   	(voi
 NautilusVolumeMonitor  	*nautilus_volume_monitor_get                        	(void);
 char 			*nautilus_volume_monitor_get_volume_name 		(const NautilusVolume 		*volume);
 
-gboolean               	nautilus_volume_monitor_volume_is_mounted          	(const NautilusVolume 		*volume);
-gboolean               	nautilus_volume_monitor_mount_unmount_removable    	(NautilusVolumeMonitor 		*monitor,
+void               	nautilus_volume_monitor_mount_unmount_removable    	(NautilusVolumeMonitor 		*monitor,
 									   	 const char            		*mount_point,
 									   	 gboolean			 should_mount);
+gboolean		nautilus_volume_monitor_volume_is_mounted 		(NautilusVolumeMonitor 		*monitor,
+					   					const NautilusVolume 		*mount_point);
 gboolean		nautilus_volume_monitor_volume_is_removable		(NautilusVolume 		*volume);
 gboolean               	nautilus_volume_monitor_is_volume_link             	(const char            		*path);
-void                   	nautilus_volume_monitor_each_volume                	(NautilusVolumeMonitor 		*monitor,
-									   	 NautilusEachVolumeFunction  	function,
-									   	 gpointer               	context);
+
 gboolean		nautilus_volume_monitor_should_integrate_trash		(const NautilusVolume 		*volume);
 const char		*nautilus_volume_monitor_get_volume_mount_uri 		(const NautilusVolume 		*volume);
 void                   	nautilus_volume_monitor_each_mounted_volume        	(NautilusVolumeMonitor 		*monitor,
 									  	 NautilusEachVolumeFunction   	function,
 									   	 gpointer               	context);
 GList			*nautilus_volume_monitor_get_removable_volumes 		(NautilusVolumeMonitor 		*monitor);
+
+void			nautilus_volume_monitor_free_volume             	(NautilusVolume             	*volume);
+
 
 #endif /* NAUTILUS_VOLUME_MONITOR_H */

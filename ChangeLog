@@ -1,3 +1,42 @@
+2000-12-15  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 2400, LABEL=/ lines in /etc/fstab (used in Red Hat Beta 7)
+	prevents trash from working
+
+	Fixed bug 4586, Nautilus does not properly detect zip drives as removable 			media
+	
+	Rearchitected the way the volume monitor works. It now examines /proc/mounts
+	to determine what file systems are mounted. This solves several problems such 			as the use of LABEL and auto in fstab. By using /proc/mounts we do not have to 			worry about permissions and disk access.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	(nautilus_volume_monitor_initialize),
+	(nautilus_volume_monitor_destroy), (floppy_sort),
+	(nautilus_volume_monitor_get_removable_volumes),
+	(nautilus_volume_monitor_get_volume_name),
+	(mount_volume_get_cdrom_name), (mount_volume_activate_cdrom),
+	(mount_volume_activate_floppy), (mount_volume_activate_ext2),
+	(mount_volume_activate_msdos), (mount_volume_activate_generic),
+	(mount_volume_get_name), (mount_volume_activate), (eject_cdrom),
+	(free_mount_list), (create_differed_list),
+	(get_current_mount_list), (verify_current_mount_state),
+	(mount_volumes_check_status), (mount_volume_floppy_add),
+	(mount_volume_ext2_add), (mount_volume_udf_add),
+	(mount_volume_vfat_add), (mount_volume_msdos_add),
+	(cdrom_ioctl_get_info), (mount_volume_iso9660_add),
+	(mount_volume_proc_add), (find_volumes),
+	(nautilus_volume_monitor_each_volume),
+	(nautilus_volume_monitor_each_mounted_volume),
+	(nautilus_volume_monitor_volume_is_mounted),
+	(nautilus_volume_monitor_mount_unmount_removable), (copy_volume),
+	(nautilus_volume_monitor_free_volume), (get_msdos_volume_name),
+	(get_floppy_volume_name), (mount_volume_add_filesystem):
+	
+	* src/file-manager/fm-desktop-icon-view.c: (create_mount_link),
+	(volume_unmounted_callback), (update_disks_menu):
+
 2000-12-15  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: nobody, but Darin knew exactly what I was
