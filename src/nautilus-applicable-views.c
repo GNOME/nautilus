@@ -306,7 +306,9 @@ void
 nautilus_navinfo_free(NautilusNavigationInfo *navinfo)
 {
   if(navinfo->notify_tag)
-    /* XXX remove_notification */ ;
+    {
+    /* XXX remove_notification */
+    }
 
   g_slist_foreach(navinfo->meta_iids, (GFunc)g_free, NULL);
   g_slist_free(navinfo->meta_iids);
