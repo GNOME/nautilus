@@ -1,3 +1,22 @@
+2000-08-11  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-tabs.c:
+	(nautilus_sidebar_tabs_load_theme_data),
+	(nautilus_sidebar_tabs_hit_test), (measure_total_height),
+	(recalculate_size), (nautilus_sidebar_tabs_size_request),
+	(draw_one_tab_plain), (draw_tab_piece_aa), (draw_one_tab_themed),
+	(get_tab_width), (draw_pixbuf_tiled_aa), (allocate_cleared_pixbuf),
+	(draw_or_layout_all_tabs), (nautilus_sidebar_tabs_expose):
+	added anti-aliased, shadowed labels for themed sidebar tabs, as
+	well as off-screen drawing to minimize flashing, fetching the
+	font from the theme and improved layout.
+	* icons/arlo/arlo.xml:
+	added a font for the labels
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_draw_text):
+	added a check for too small a box to draw in to fix a case for
+	the sidebar tabs
+	
 2000-08-11  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:

@@ -473,6 +473,10 @@ nautilus_gdk_pixbuf_draw_text (GdkPixbuf	*pixbuf,
 	width = dest_width / font_scale;
 	height = dest_height / font_scale;
 	
+	/* cut out if it's too small for comfort */
+	if (width <= 8 || height <= 8)
+		return;
+		
 	pixmap = gdk_pixmap_new (NULL, width, height, visual->depth);
 	gc = gdk_gc_new (pixmap);
 
