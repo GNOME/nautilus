@@ -27,7 +27,6 @@
 #include <config.h>
 #include "nautilus-sidebar-title.h"
 
-#include "nautilus-sidebar.h"
 #include "nautilus-window.h"
 
 #include <bonobo/bonobo-exception.h>
