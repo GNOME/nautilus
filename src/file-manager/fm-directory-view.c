@@ -985,6 +985,7 @@ select_pattern (FMDirectoryView *view)
 {
 	GtkWidget *dialog;
 	GtkWidget *box;
+	GtkWidget *label;
 	GtkWidget *entry;
 	GList *ret;
 
@@ -1000,14 +1001,17 @@ select_pattern (FMDirectoryView *view)
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog),
 					 GTK_RESPONSE_OK);
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
 
-	box = gtk_hbox_new (FALSE, 6);
-	gtk_container_set_border_width (GTK_CONTAINER (box), 6);
+	box = gtk_hbox_new (FALSE, 12);
+	gtk_container_set_border_width (GTK_CONTAINER (box), 5);
+	label = gtk_label_new_with_mnemonic (_("_Pattern:"));
 	entry = gtk_entry_new ();
 	gtk_entry_set_activates_default (GTK_ENTRY (entry), TRUE);
-	gtk_box_pack_start_defaults (GTK_BOX (box),
-				     gtk_label_new (_("Pattern:")));
+	gtk_box_pack_start_defaults (GTK_BOX (box), label);
 	gtk_box_pack_start_defaults (GTK_BOX (box), entry);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
 	gtk_widget_show_all (box);
 	gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), box);
 	g_object_set_data (G_OBJECT (dialog), "entry", entry);
