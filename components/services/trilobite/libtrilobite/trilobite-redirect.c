@@ -59,15 +59,15 @@ trilobite_redirect_done (void)
 static void
 check_gconf_init (void)
 {
-	GConfError *error = NULL;
+	GError *error = NULL;
 
 	if (! gconf_is_initialized ()) {
 		char *argv[] = { "trilobite", NULL };
 
 		if (! gconf_init (1, argv, &error)) {
 			g_assert (error != NULL);
-			g_warning ("gconf init error: %s", error->str);
-			gconf_error_destroy (error);
+			g_warning ("gconf init error: %s", error->message);
+			g_error_free (error);
 		}
 
 	}
@@ -83,28 +83,28 @@ static void
 wipe_redirect_table (void)
 {
 	GSList *list, *iter;
-	GConfError *error = NULL;
+	GError *error = NULL;
 	GConfEntry *entry;
 	char *doomed_key;
 
 	check_gconf_init ();
-	list = gconf_all_entries (conf_engine, REDIRECT_GCONF_PATH, &error);
+	list = gconf_engine_all_entries (conf_engine, REDIRECT_GCONF_PATH, &error);
 	if (error != NULL) {
-		g_warning ("gconf wipe error: %s", error->str);
-		gconf_error_destroy (error);
+		g_warning ("gconf wipe error: %s", error->message);
+		g_error_free (error);
 		return;
 	}
 
 	for (iter = list; iter; iter = g_slist_next (iter)) {
 		entry = (GConfEntry *) (iter->data);
-		doomed_key = g_strdup_printf ("%s/%s", REDIRECT_GCONF_PATH, gconf_entry_key (entry));
-		gconf_unset (conf_engine, doomed_key, &error);
+		doomed_key = g_strdup_printf ("%s/%s", REDIRECT_GCONF_PATH, gconf_entry_get_key (entry));
+		gconf_engine_unset (conf_engine, doomed_key, &error);
 		if (error != NULL) {
-			g_warning ("trilobite redirect: gconf couldn't delete key '%s': %s", doomed_key, error->str);
-			gconf_error_destroy (error);
+			g_warning ("trilobite redirect: gconf couldn't delete key '%s': %s", doomed_key, error->message);
+			g_error_free (error);
 		}
 		g_free (doomed_key);
-		gconf_entry_destroy (entry);
+		gconf_entry_free (entry);
 	}
 	g_slist_free (list);
 }
@@ -112,7 +112,7 @@ wipe_redirect_table (void)
 static void
 add_redirect (const char *key, const char *value)
 {
-	GConfError *error = NULL;
+	GError *error = NULL;
 	char *full_key, *p;
 
 	check_gconf_init ();
@@ -123,10 +123,10 @@ add_redirect (const char *key, const char *value)
 		*p = '-';
 	}
 
-	gconf_set_string (conf_engine, full_key, value, &error);
+	gconf_engine_set_string (conf_engine, full_key, value, &error);
 	if (error != NULL) {
-		g_warning ("trilobite redirect: gconf can't add key '%s': %s", full_key, error->str);
-		gconf_error_destroy (error);
+		g_warning ("trilobite redirect: gconf can't add key '%s': %s", full_key, error->message);
+		g_error_free (error);
 	}
 	g_free (full_key);
 }
@@ -228,7 +228,7 @@ trilobite_redirect_fetch_table (const char *url)
 char *
 trilobite_redirect_lookup (const char *key)
 {
-	GConfError *error = NULL;
+	GError *error = NULL;
 	char *full_key, *p;
 	char *value;
 
@@ -240,10 +240,10 @@ trilobite_redirect_lookup (const char *key)
 		*p = '-';
 	}
 
-	value = gconf_get_string (conf_engine, full_key, &error);
+	value = gconf_engine_get_string (conf_engine, full_key, &error);
 	if (error != NULL) {
-		g_warning ("trilobite redirect: gconf can't find key '%s': %s", full_key, error->str);
-		gconf_error_destroy (error);
+		g_warning ("trilobite redirect: gconf can't find key '%s': %s", full_key, error->message);
+		g_error_free (error);
 	}
 
 	g_free (full_key);
@@ -254,14 +254,14 @@ trilobite_redirect_lookup (const char *key)
 const char *
 trilobite_get_services_address (void)
 {
-	GConfError *error = NULL;
+	GError *error = NULL;
 	char *value;
 
 	check_gconf_init ();
-	value = gconf_get_string (conf_engine, SERVICES_GCONF_PATH, &error);
+	value = gconf_engine_get_string (conf_engine, SERVICES_GCONF_PATH, &error);
 	if (error != NULL) {
 		g_warning ("trilobite: no gconf key for %s", SERVICES_GCONF_PATH);
-		gconf_error_destroy (error);
+		g_error_free (error);
 
 		value = SERVICES_DEFAULT_HOST;
 	}

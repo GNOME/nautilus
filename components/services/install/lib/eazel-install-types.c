@@ -65,7 +65,7 @@ protocol_as_string (URLType protocol)
 }
 
 CategoryData*
-categorydata_new ()
+categorydata_new (void)
 {
 	CategoryData *result;
 

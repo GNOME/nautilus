@@ -356,7 +356,7 @@ dnl Make USING_OAF be defined
 
 AC_DEFINE(USING_OAF)
 
-AM_PATH_GCONF(0.5.0,,,gconf-gtk)
+AM_PATH_GCONF(0.9.0,,,gconf-gtk)
 
 AC_PATH_PROG(XML_CONFIG,xml-config,no)
 if test x$XML_CONFIG = xno; then

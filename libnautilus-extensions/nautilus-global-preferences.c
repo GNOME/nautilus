@@ -355,6 +355,7 @@ global_preferences_get_sidebar_panel_view_identifiers (void)
 	oaf_result = oaf_query (query, NULL, &ev);
 		
 	view_identifiers = NULL;
+
         if (ev._major == CORBA_NO_EXCEPTION && oaf_result != NULL) {
 		for (i = 0; i < oaf_result->_length; i++) {
 			id = nautilus_view_identifier_new_from_sidebar_panel
@@ -696,7 +697,7 @@ register_proxy_preferences (void)
 	gboolean use_proxy;
 	char *proxy_string, *port, *proxy;
 	GConfClient *gconf_client;
-  	GConfError *error;
+  	GError *error;
 	
 	use_proxy = FALSE;
 	proxy = NULL;

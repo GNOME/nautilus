@@ -109,9 +109,7 @@ static void                      user_level_set_default_if_needed             (N
 /* Gconf callbacks */
 static void                      gconf_user_level_changed_callback            (GConfClient                   *client,
 									       guint                          cnxn_id,
-									       const gchar                   *key,
-									       GConfValue                    *value,
-									       gboolean                       is_default,
+									       GConfEntry                    *entry,
 									       gpointer                       user_data);
 
 
@@ -121,7 +119,7 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusUserLevelManager, nautilus_user_level
 static NautilusUserLevelManager *
 user_level_manager_new (void)
 {
-	GConfError	  	 *error = NULL;
+	GError			*error = NULL;
         NautilusUserLevelManager *manager;
         guint			 i;
 
@@ -146,10 +144,11 @@ user_level_manager_new (void)
 	/* Let gconf know about ~/.gconf/apps/nautilus */
 	gconf_client_add_dir (manager->gconf_client,
 			      USER_LEVEL_PATH,
-			      GCONF_CLIENT_PRELOAD_RECURSIVE,
+			      GCONF_CLIENT_PRELOAD_NONE,
 			      &error);
+
 	nautilus_preferences_handle_error (&error);
-	
+
 	manager->num_user_levels = DEFAULT_NUM_USER_LEVELS;
 	manager->user_level_names_for_storage = nautilus_string_list_new (TRUE);
 	manager->user_level_names_for_display = nautilus_string_list_new (TRUE);
@@ -246,7 +245,7 @@ user_level_manager_ensure_global_manager (void)
 static void
 user_level_set_default_if_needed (NautilusUserLevelManager *manager)
 {
-	GConfError *error = NULL;
+	GError *error = NULL;
 	GConfValue *value;
 
 	g_assert (manager != NULL);
@@ -255,7 +254,7 @@ user_level_set_default_if_needed (NautilusUserLevelManager *manager)
 	value = gconf_client_get_without_default (manager->gconf_client, USER_LEVEL_KEY, &error);
 	if (nautilus_preferences_handle_error (&error)) {
 		if (value != NULL) {
-			gconf_value_destroy (value);
+			gconf_value_free (value);
 			value = NULL;
 		}
 	}
@@ -274,15 +273,13 @@ user_level_set_default_if_needed (NautilusUserLevelManager *manager)
 
 	g_assert (value != NULL);
 
-	gconf_value_destroy (value);
+	gconf_value_free (value);
 }
 
 static void
 gconf_user_level_changed_callback (GConfClient	*client, 
 				   guint	connection_id, 
-				   const gchar	*key, 
-				   GConfValue	*value, 
-				   gboolean	is_default, 
+				   GConfEntry	*entry, 
 				   gpointer	user_data)
 {
 	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
@@ -305,7 +302,7 @@ nautilus_user_level_manager_get (void)
 void
 nautilus_user_level_manager_set_user_level (guint user_level)
 {
-	GConfError		 *error = NULL;
+	GError		 *error = NULL;
 	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
 	char			 *user_level_string;
 	guint			 old_user_level;
@@ -409,7 +406,7 @@ nautilus_user_level_manager_make_current_gconf_key (const char *preference_name)
 static char *
 user_level_manager_get_user_level_as_string (void)
 {
-	GConfError		 *error = NULL;
+	GError		 *error = NULL;
 	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
 	char			 *user_level_string = NULL;
 
@@ -450,7 +447,7 @@ nautilus_user_level_manager_set_default_value_if_needed (const char		*preference
 							 gconstpointer		default_value)
 {
 	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
-	GConfError      *error = NULL;
+	GError      *error = NULL;
 	GConfValue	*value = NULL;
 	char		*key;
 
@@ -463,7 +460,7 @@ nautilus_user_level_manager_set_default_value_if_needed (const char		*preference
 	value = gconf_client_get_without_default (manager->gconf_client, key, &error);
 	if (nautilus_preferences_handle_error (&error)) {
 		if (value != NULL) {
-			gconf_value_destroy (value);
+			gconf_value_free (value);
 			value = NULL;
 		}
 	}
@@ -496,7 +493,7 @@ nautilus_user_level_manager_set_default_value_if_needed (const char		*preference
 	}
 	
 	if (value) {
-		gconf_value_destroy (value);
+		gconf_value_free (value);
 	}
 
 	g_free (key);
@@ -513,7 +510,7 @@ nautilus_user_level_manager_compare_preference_between_user_levels (const char *
 	char		*key_b;
 	GConfValue	*value_a;
 	GConfValue	*value_b;
-	GConfError	*error = NULL;
+	GError	*error = NULL;
 
 	g_return_val_if_fail (preference_name != NULL, FALSE);
 
@@ -526,14 +523,14 @@ nautilus_user_level_manager_compare_preference_between_user_levels (const char *
 	value_a = gconf_client_get (manager->gconf_client, key_a, &error);
 	if (nautilus_preferences_handle_error (&error)) {
 		if (value_a != NULL) {
-			gconf_value_destroy (value_a);
+			gconf_value_free (value_a);
 			value_a = NULL;
 		}
 	}
 	value_b = gconf_client_get (manager->gconf_client, key_b, &error);
 	if (nautilus_preferences_handle_error (&error)) {
 		if (value_b != NULL) {
-			gconf_value_destroy (value_b);
+			gconf_value_free (value_b);
 			value_b = NULL;
 		}
 	}
@@ -548,17 +545,17 @@ nautilus_user_level_manager_compare_preference_between_user_levels (const char *
 		switch (value_a->type)
 		{
 		case GCONF_VALUE_STRING:
-			result = (gconf_value_string (value_a)
-				  && gconf_value_string (value_b)
-				  && (strcmp (gconf_value_string (value_a), gconf_value_string (value_b)) == 0));
+			result = (gconf_value_get_string (value_a)
+				  && gconf_value_get_string (value_b)
+				  && (strcmp (gconf_value_get_string (value_a), gconf_value_get_string (value_b)) == 0));
 			break;
 			
 		case GCONF_VALUE_INT:
-			result = (gconf_value_int (value_a) == gconf_value_int (value_b));
+			result = (gconf_value_get_int (value_a) == gconf_value_get_int (value_b));
 			break;
 			
 		case GCONF_VALUE_BOOL:
-			result = (gconf_value_bool (value_a) == gconf_value_bool (value_b));
+			result = (gconf_value_get_bool (value_a) == gconf_value_get_bool (value_b));
 			break;
 
 		default:
@@ -571,11 +568,11 @@ nautilus_user_level_manager_compare_preference_between_user_levels (const char *
 	}
 
 	if (value_a) {
-		gconf_value_destroy (value_a);
+		gconf_value_free (value_a);
 	}
 
 	if (value_b) {
-		gconf_value_destroy (value_b);
+		gconf_value_free (value_b);
 	}
 
 	return result;

@@ -134,7 +134,7 @@ static void
 nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 {
 	GConfClient *gconf_client;
-  	GConfError *error = NULL;
+  	GError *error = NULL;
   	char *argv[] = { "nautilus-mozilla-component", NULL };
   	char *proxy_string = NULL;
   	

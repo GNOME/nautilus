@@ -58,15 +58,15 @@ static void
 check_gconf_init (void)
 {
 #ifndef EAZEL_INSTALL_SLIM
-	GConfError *error = NULL;
+	GError *error = NULL;
 
 	if (! gconf_is_initialized ()) {
 		char *argv[] = { "trilobite", NULL };
 
 		if (! gconf_init (1, argv, &error)) {
 			g_assert (error != NULL);
-			g_warning ("gconf init error: %s", error->str);
-			gconf_error_destroy (error);
+			g_warning ("gconf init error: %s", error->message);
+			g_error_free (error);
 		}
 	}
 
@@ -85,11 +85,11 @@ get_conf_string (const char *key, const char *default_value)
 	char *value;
 
 	full_key = g_strdup_printf ("%s/%s", INSTALL_GCONF_PATH, key);
-	value = gconf_get_string (conf_engine, full_key, NULL);
+	value = gconf_engine_get_string (conf_engine, full_key, NULL);
 	if ((value == NULL) && (default_value != NULL)) {
 		value = g_strdup (default_value);
 		/* write default value to gconf */
-		gconf_set_string (conf_engine, full_key, default_value, NULL);
+		gconf_engine_set_string (conf_engine, full_key, default_value, NULL);
 	}
 	g_free (full_key);
 	return value;
@@ -107,17 +107,17 @@ get_conf_int (const char *key, int default_value)
 	int out;
 
 	full_key = g_strdup_printf ("%s/%s", INSTALL_GCONF_PATH, key);
-	value = gconf_get (conf_engine, full_key, NULL);
+	value = gconf_engine_get (conf_engine, full_key, NULL);
 	if (value && (value->type == GCONF_VALUE_INT)) {
-		out = gconf_value_int (value);
-		gconf_value_destroy (value);
+		out = gconf_value_get_int (value);
+		gconf_value_free (value);
 	} else {
 		if (value) {
-			gconf_value_destroy (value);
+			gconf_value_free (value);
 		}
 		out = default_value;
 		/* write default value to gconf */
-		gconf_set_int (conf_engine, full_key, default_value, NULL);
+		gconf_engine_set_int (conf_engine, full_key, default_value, NULL);
 	}
 
 	g_free (full_key);
@@ -137,17 +137,17 @@ get_conf_boolean (const char *key, gboolean default_value)
 
 	full_key = g_strdup_printf ("%s/%s", INSTALL_GCONF_PATH, key);
 	/* gconf API is so crappy that we can't use gconf_get_bool or anything nice */
-	value = gconf_get (conf_engine, full_key, NULL);
+	value = gconf_engine_get (conf_engine, full_key, NULL);
 	if (value && (value->type == GCONF_VALUE_BOOL)) {
-		out = gconf_value_bool (value);
-		gconf_value_destroy (value);
+		out = gconf_value_get_bool (value);
+		gconf_value_free (value);
 	} else {
 		if (value) {
-			gconf_value_destroy (value);
+			gconf_value_free (value);
 		}
 		out = default_value;
 		/* write default value to gconf */
-		gconf_set_bool (conf_engine, full_key, default_value, NULL);
+		gconf_engine_set_bool (conf_engine, full_key, default_value, NULL);
 	}
 
 	g_free (full_key);

@@ -127,15 +127,11 @@ static char *                   preferences_make_make_gconf_key                 
 /* GConf callbacks */
 static void                     preferences_gconf_by_user_level_callback          (GConfClient                 *client,
 										   guint                        cnxn_id,
-										   const gchar                 *key,
-										   GConfValue                  *value,
-										   gboolean                     is_default,
+										   GConfEntry                  *value,
 										   gpointer                     user_data);
 static void                     preferences_gconf_callback                        (GConfClient                 *client,
 										   guint                        cnxn_id,
-										   const gchar                 *key,
-										   GConfValue                  *value,
-										   gboolean                     is_default,
+										   GConfEntry                  *value,
 										   gpointer                     user_data);
 
 /**
@@ -241,7 +237,7 @@ preferences_hash_node_add_by_user_level_callbacks (PreferencesHashNode		*node,
 	{
 		if (node->gconf_connections[i] == 0) {
 			char *key;
-			GConfError *error = NULL;
+			GError *error = NULL;
 
 			g_assert (node->name != NULL);
 			g_assert (node->gconf_connections[i] == 0);
@@ -298,11 +294,11 @@ preferences_hash_node_add_callback (PreferencesHashNode		*node,
 	 * per registered callback.
 	 */
 	if (node->gconf_connections[0] == 0) {
-		GConfError *error = NULL;
+		GError *error = NULL;
 
 		g_assert (node->name != NULL);
 		g_assert (node->gconf_connections[0] == 0);
-		
+
 		node->gconf_connections[0] = gconf_client_notify_add (GLOBAL.gconf_client,
 								      node->name,
 								      preferences_gconf_callback,
@@ -522,17 +518,8 @@ static char *
 preferences_make_make_gconf_key (const char *preference_name)
 {
 	if (nautilus_str_has_prefix (preference_name, "/")) {
-		//g_print ("key for %s is %s\n", preference_name, preference_name);
 		return g_strdup (preference_name);
 	}
-
-#if 0
-	{
-		char *foo = nautilus_user_level_manager_make_current_gconf_key (preference_name);
-		g_print ("key for %s is %s\n", preference_name, foo);
-		g_free (foo);
-	}
-#endif
 
 	return nautilus_user_level_manager_make_current_gconf_key (preference_name);
 }
@@ -575,17 +562,20 @@ preferences_hash_node_lookup (const char *name)
 static void
 preferences_gconf_by_user_level_callback (GConfClient	*client, 
 					  guint		connection_id, 
-					  const gchar	*key, 
-					  GConfValue	*value, 
-					  gboolean	is_default, 
+					  GConfEntry	*entry, 
 					  gpointer	user_data)
 {
 	PreferencesHashNode	*node;
 	const char		*expected_name;
 	char			*expected_key;
-	GConfError		*error = NULL;
+	GError			*error = NULL;
+	const char		*key;
 
 	g_return_if_fail (user_data != NULL);
+	g_return_if_fail (entry != NULL);
+	g_return_if_fail (entry->key != NULL);
+
+	key = entry->key;
 
 	node = (PreferencesHashNode *) user_data;
 
@@ -615,7 +605,7 @@ preferences_gconf_by_user_level_callback (GConfClient	*client,
 	if (strcmp (key, expected_key) != 0) {
 
 		/* The prefix should be the same */
-		if (strncmp (key, expected_key, strlen (expected_key)) != 0) {
+		if (strncmp (entry->key, expected_key, strlen (expected_key)) != 0) {
 
 			/* FIXME bugzilla.eazel.com 1272: This is triggering the first time the beast runs
 			 * without an existing ~/.gconf directory.
@@ -652,20 +642,23 @@ preferences_gconf_by_user_level_callback (GConfClient	*client,
 static void
 preferences_gconf_callback (GConfClient	*client, 
 			    guint	connection_id, 
-			    const gchar	*key, 
-			    GConfValue	*value, 
-			    gboolean	is_default, 
+			    GConfEntry	*entry, 
 			    gpointer	user_data)
 {
 	PreferencesHashNode	*node;
-	GConfError		*error = NULL;
+	GError			*error = NULL;
+	const char	        *key;
 
 	g_return_if_fail (user_data != NULL);
+	g_return_if_fail (entry != NULL);
+	g_return_if_fail (entry->key != NULL);
 	
 	node = (PreferencesHashNode *) user_data;
 	g_assert (node != NULL);
+
+	key = entry->key;
 	
-	g_assert (nautilus_str_is_equal ( node->name, key));
+	g_assert (nautilus_str_is_equal (node->name, key));
 
 	gconf_client_suggest_sync (GLOBAL.gconf_client, &error);
 	nautilus_preferences_handle_error (&error);
@@ -696,7 +689,7 @@ user_level_changed_callback (GtkObject	*user_level_manager,
 static gboolean
 preferences_initialize_if_needed (void)
 {
-	GConfError	  *error = NULL;
+	GError	  *error = NULL;
 
 	if (GLOBAL.preference_table != NULL && GLOBAL.gconf_client != NULL) {
 		return TRUE;
@@ -728,7 +721,7 @@ preferences_initialize_if_needed (void)
 	/* Let gconf know about ~/.gconf/nautilus */
 	gconf_client_add_dir (GLOBAL.gconf_client,
 			      PREFERENCES_GCONF_PATH,
-			      GCONF_CLIENT_PRELOAD_RECURSIVE,
+			      GCONF_CLIENT_PRELOAD_NONE,
 			      &error);
 	nautilus_preferences_handle_error (&error);
 
@@ -811,7 +804,7 @@ void
 nautilus_preferences_set_boolean (const char	*name,
 				  gboolean	boolean_value)
 {
-	GConfError      *error = NULL;
+	GError      *error = NULL;
 	char		*key;
 	gboolean	 old_value;
 
@@ -844,7 +837,7 @@ gboolean
 nautilus_preferences_get_boolean (const char	*name,
 				  gboolean	default_value)
 {
-	GConfError      *error = NULL;
+	GError      *error = NULL;
 	gboolean         result;
 	char		*key;
 
@@ -870,7 +863,7 @@ void
 nautilus_preferences_set_string_list (const char	*name,
 				      GSList            *string_list_value)
 {
-	GConfError      *error = NULL;
+	GError      *error = NULL;
 	char		*key;
 
 	g_return_if_fail (name != NULL);
@@ -898,7 +891,7 @@ nautilus_preferences_set_string_list (const char	*name,
 GSList *
 nautilus_preferences_get_string_list (const char	*name)
 {
-	GConfError      *error = NULL;
+	GError      *error = NULL;
 	GSList          *result;
 	char            *key;
 
@@ -923,7 +916,7 @@ void
 nautilus_preferences_set_enum (const char    *name,
 			       int           enum_value)
 {
-	GConfError      *error = NULL;
+	GError      *error = NULL;
 	int		 old_value;
 	char		*key;
 
@@ -956,7 +949,7 @@ int
 nautilus_preferences_get_enum (const char	*name,
 			       int		default_value)
 {
-	GConfError      *error = NULL;
+	GError      *error = NULL;
 	int              result;
 	char		*key;
 
@@ -981,7 +974,7 @@ void
 nautilus_preferences_set (const char *name, 
 			  const char *value)
 {
-	GConfError      *error = NULL;
+	GError      *error = NULL;
 	char		*key;
 
 	g_return_if_fail (name != NULL);
@@ -1026,7 +1019,7 @@ char *
 nautilus_preferences_get (const char	*name,
 			  const char	*default_value)
 {
-	GConfError	*error = NULL;
+	GError	*error = NULL;
 	gchar		*value = NULL;
 	char		*key;
 
@@ -1083,14 +1076,14 @@ preferences_shutdown (void)
 }
 
 gboolean
-nautilus_preferences_handle_error (GConfError **error)
+nautilus_preferences_handle_error (GError **error)
 {
 	static gboolean shown_dialog = FALSE;
 
 	g_return_val_if_fail (error != NULL, FALSE);
 
 	if (*error != NULL) {
-		g_warning (_("GConf error:\n  %s"), (*error)->str);
+		g_warning (_("GConf error:\n  %s"), (*error)->message);
 		if ( ! shown_dialog) {
 			char *message;
 			GtkWidget *dialog;
@@ -1100,11 +1093,11 @@ nautilus_preferences_handle_error (GConfError **error)
 			message = g_strdup_printf (_("GConf error:\n  %s\n"
 						     "All further errors shown "
 						     "only on terminal"),
-						   (*error)->str);
+						   (*error)->message);
 
 			dialog = gnome_error_dialog (message);
 		}
-		gconf_error_destroy(*error);
+		g_error_free (*error);
 		*error = NULL;
 
 		return TRUE;

@@ -1,3 +1,45 @@
+2000-10-03  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* README:
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize):
+	* components/services/install/lib/eazel-install-metadata.c:
+	(check_gconf_init), (get_conf_string), (get_conf_int),
+	(get_conf_boolean):
+	* components/services/install/lib/eazel-install-types.c:
+	(categorydata_new):
+	* components/services/nautilus-dependent-shared/Makefile.am:
+	* components/services/trilobite/libtrilobite/trilobite-redirect.c:
+	(check_gconf_init), (wipe_redirect_table), (add_redirect),
+	(trilobite_redirect_lookup), (trilobite_get_services_address):
+	* configure.in:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_get_sidebar_panel_view_identifiers),
+	(register_proxy_preferences):
+	* libnautilus-extensions/nautilus-preferences-private.h:
+	* libnautilus-extensions/nautilus-preferences.c:
+	(preferences_hash_node_add_by_user_level_callbacks),
+	(preferences_hash_node_add_callback),
+	(preferences_make_make_gconf_key),
+	(preferences_gconf_by_user_level_callback),
+	(preferences_gconf_callback), (preferences_initialize_if_needed),
+	(nautilus_preferences_set_boolean),
+	(nautilus_preferences_get_boolean),
+	(nautilus_preferences_set_string_list),
+	(nautilus_preferences_get_string_list),
+	(nautilus_preferences_set_enum), (nautilus_preferences_get_enum),
+	(nautilus_preferences_set), (nautilus_preferences_get),
+	(nautilus_preferences_handle_error):
+	* libnautilus-extensions/nautilus-user-level-manager.c:
+	(user_level_manager_new), (user_level_set_default_if_needed),
+	(gconf_user_level_changed_callback),
+	(nautilus_user_level_manager_set_user_level),
+	(user_level_manager_get_user_level_as_string),
+	(nautilus_user_level_manager_set_default_value_if_needed),
+	(nautilus_user_level_manager_compare_preference_between_user_levels
+	):
+	Update for GConf HEAD (0.9)
+	
 2000-10-03  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/mpg123_handler.c: (get_play_status),

@@ -31,7 +31,7 @@
 BEGIN_GNOME_DECLS
 
 /* returns FALSE if no error, and TRUE if an error was handeled */ 
-gboolean    nautilus_preferences_handle_error      (GConfError      **error);
+gboolean    nautilus_preferences_handle_error      (GError      **error);
 
 
 END_GNOME_DECLS
