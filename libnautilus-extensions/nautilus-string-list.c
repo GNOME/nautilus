@@ -23,12 +23,14 @@
 */
 
 #include <config.h>
-#include <libnautilus/nautilus-string-list.h>
-#include "nautilus-lib-self-check-functions.h"
+#include "nautilus-string-list.h"
 
 #include <string.h>
+#include "nautilus-lib-self-check-functions.h"
 
-struct _NautilusStringList
+static gboolean supress_out_of_bounds_warning;
+
+struct NautilusStringList
 {
 	GList *strings;
 };
@@ -41,7 +43,7 @@ struct _NautilusStringList
  * Returns the string list.
  */
 NautilusStringList *
-nautilus_string_list_new ()
+nautilus_string_list_new (void)
 {
 	NautilusStringList * string_list;
 
@@ -60,11 +62,11 @@ nautilus_string_list_new ()
  * Returns the string list.
  */
 NautilusStringList *
-nautilus_string_list_new_from_string (const gchar *string)
+nautilus_string_list_new_from_string (const char *string)
 {
 	NautilusStringList * string_list;
 
-	g_assert (string != NULL);
+	g_return_val_if_fail (string != NULL, NULL);
 
 	string_list = nautilus_string_list_new ();
 
@@ -83,18 +85,19 @@ nautilus_string_list_new_from_string (const gchar *string)
 NautilusStringList *
 nautilus_string_list_new_from_string_list (const NautilusStringList *other)
 {
-	NautilusStringList * string_list;
+	NautilusStringList *string_list;
 	GList *other_iterator;
+	const char *other_string;
 
-	g_assert (other != NULL);
+	g_return_val_if_fail (other != NULL, NULL);
 
 	string_list = nautilus_string_list_new ();
 
 	for (other_iterator = other->strings; 
 	     other_iterator != NULL; 
-	     other_iterator = other_iterator->next) 
-	{
-		const gchar * other_string = (const gchar *) other_iterator->data;
+	     other_iterator = other_iterator->next) {
+
+		other_string = (const char *) other_iterator->data;
 
 		g_assert (other_string != NULL);
 
@@ -104,26 +107,24 @@ nautilus_string_list_new_from_string_list (const NautilusStringList *other)
 	return string_list;
 }
 
-/* Construct a string list from tokens delimted by the given string and delimeter */
+/* Construct a string list from tokens delimited by the given string and delimiter */
 NautilusStringList *
-nautilus_string_list_new_from_tokens (const gchar               *string,
-				      const gchar               *delimeter)
+nautilus_string_list_new_from_tokens (const char *string,
+				      const char *delimiter)
 {
 	NautilusStringList *string_list;
-	gchar		   **string_array;
+	char		   **string_array;
 	guint		   i;
 
-	g_assert (string != NULL);
-	g_assert (delimeter != NULL);
+	g_return_val_if_fail (string != NULL, NULL);
+	g_return_val_if_fail (delimiter != NULL, NULL);
 
 	string_list = nautilus_string_list_new ();
 
-	string_array = g_strsplit (string, delimeter, -1);
+	string_array = g_strsplit (string, delimiter, -1);
 
-	if (string_array)
-	{
-		for (i = 0; string_array[i]; i++) 
-		{
+	if (string_array) {
+		for (i = 0; string_array[i]; i++) {
 			nautilus_string_list_insert (string_list, string_array[i]);
 		}
 		
@@ -136,43 +137,36 @@ nautilus_string_list_new_from_tokens (const gchar               *string,
 void
 nautilus_string_list_free (NautilusStringList *string_list)
 {
-	g_assert (string_list != NULL);
+	g_return_if_fail (string_list != NULL);
 
 	nautilus_string_list_clear (string_list);
-
 	g_free (string_list);
 }
 
 void
 nautilus_string_list_insert (NautilusStringList *string_list,
-			     const gchar	 *string)
+			     const char	 *string)
 {
-	g_assert (string_list != NULL);
-	g_assert (string != NULL);
+	g_return_if_fail (string_list != NULL);
+	g_return_if_fail (string != NULL);
 
 	string_list->strings = g_list_append (string_list->strings,
 					      (gpointer) g_strdup (string));
 }
 
-gchar *
+char *
 nautilus_string_list_nth (const NautilusStringList *string_list, guint n)
 {
-	g_assert (string_list != NULL);
+	g_return_val_if_fail (string_list != NULL, NULL);
 
-	if (string_list->strings)
-	{
-		if (n  < g_list_length (string_list->strings))
-		{
-			const gchar * s = (const gchar *) g_list_nth_data (string_list->strings, n);
-			
-			g_assert (s != NULL);
-
-			return g_strdup (s);
-		}
-		else
-		{
-			g_warning ("nautilus_string_list_nth (n = %d) is out of bounds.", n);
-		}
+	if (n  < g_list_length (string_list->strings)) {
+		const char * s = (const char *) g_list_nth_data (string_list->strings, n);
+		
+		g_assert (s != NULL);
+		
+		return g_strdup (s);
+	} else if (!supress_out_of_bounds_warning) {
+		g_warning ("nautilus_string_list_nth (n = %d) is out of bounds.", n);
 	}
 	
 	return NULL;
@@ -180,36 +174,33 @@ nautilus_string_list_nth (const NautilusStringList *string_list, guint n)
 
 gboolean
 nautilus_string_list_contains (const NautilusStringList *string_list,
-			       const gchar	  *string)
+			       const char	  *string)
 {
 	GList *find;
 
-	g_assert (string_list != NULL);
-	g_assert (string != NULL);
+	g_return_val_if_fail (string_list != NULL, FALSE);
+	g_return_val_if_fail (string != NULL, FALSE);
 
 	find = g_list_find_custom (string_list->strings, (gpointer) string, (GCompareFunc) strcmp);
 
-	return find ? TRUE : FALSE;
+	return find == NULL ? FALSE : TRUE;
 }
 
 guint
 nautilus_string_list_get_length (const NautilusStringList *string_list)
 {
-	g_assert (string_list != NULL);
+	g_return_val_if_fail (string_list != NULL, 0);
 
-	return (string_list->strings ? g_list_length (string_list->strings) : 0);
+	return g_list_length (string_list->strings);
 }
 
 void
 nautilus_string_list_clear (NautilusStringList *string_list)
 {
-	g_assert (string_list != NULL);
+	g_return_if_fail (string_list != NULL);
 
-	if (string_list->strings)
-	{
-		g_list_foreach (string_list->strings, (GFunc) g_free, NULL);
-		g_list_free (string_list->strings);
-	}
+	g_list_foreach (string_list->strings, (GFunc) g_free, NULL);
+	g_list_free (string_list->strings);
 
 	string_list->strings = NULL;
 }
@@ -220,48 +211,42 @@ nautilus_string_list_equals (const NautilusStringList *a,
 {
 	GList *a_iterator;
 	GList *b_iterator;
+	const char * a_string;
+	const char * b_string;
 
-	g_assert (a != NULL);
-	g_assert (b != NULL);
+	g_return_val_if_fail (a != NULL, FALSE);
+	g_return_val_if_fail (b != NULL, FALSE);
 
-	if (nautilus_string_list_get_length (a) != nautilus_string_list_get_length (b))
-	{
-		return FALSE;
-	}
-		
 	for (a_iterator = a->strings, b_iterator = b->strings; 
-	     (a_iterator != NULL) && (b_iterator != NULL);
-	     a_iterator = a_iterator->next,b_iterator = b_iterator->next) 
-	{
-		const gchar * a_string = (const gchar *) a_iterator->data;
-		const gchar * b_string = (const gchar *) b_iterator->data;
+	     a_iterator != NULL && b_iterator != NULL;
+	     a_iterator = a_iterator->next, b_iterator = b_iterator->next) {
 
-		if (strcmp (a_string, b_string) != 0)
-		{
+		a_string = (const char *) a_iterator->data;
+		b_string = (const char *) b_iterator->data;
+
+		if (strcmp (a_string, b_string) != 0) {
 			return FALSE;
 		}
 	}
 
-	return TRUE;
+	return a_iterator == NULL && b_iterator == NULL;
 }
 
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
-#include <stdio.h>
-
 void
 nautilus_self_check_string_list (void)
 {
-	NautilusStringList * fruits;
-	NautilusStringList * cities;
-	NautilusStringList * cities_copy;
-	NautilusStringList * empty;
-	NautilusStringList * tokens;
-	NautilusStringList * single;
+	NautilusStringList *fruits;
+	NautilusStringList *cities;
+	NautilusStringList *cities_copy;
+	NautilusStringList *empty;
+	NautilusStringList *tokens;
+	NautilusStringList *single;
 
-	const gchar *token_string = "london:paris:rome";
-	const gchar *token_string_thick = "london####paris####rome";
+	const char token_string[] = "london:paris:rome";
+	const char token_string_thick[] = "london####paris####rome";
 
 	empty = nautilus_string_list_new ();
 
@@ -286,6 +271,8 @@ nautilus_self_check_string_list (void)
 
  	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_equals (cities, cities_copy), TRUE);
 
+	nautilus_string_list_free (cities_copy);
+
 	/********/
 
 	fruits = nautilus_string_list_new ();
@@ -305,9 +292,9 @@ nautilus_self_check_string_list (void)
  	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (fruits, 2), "strawberry");
  	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (fruits, 3), "cherry");
  	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (fruits, 5), "watermelon");
+	supress_out_of_bounds_warning = TRUE;
  	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (fruits, 6), NULL);
-
-	printf ("You should see an out of bounds warning.  Its ok!\n");
+	supress_out_of_bounds_warning = FALSE;
 
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (fruits), 6);
 
@@ -322,6 +309,9 @@ nautilus_self_check_string_list (void)
  	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_contains (fruits, "orange"), FALSE);
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (fruits), 0);
 	
+	nautilus_string_list_free (fruits);
+	nautilus_string_list_free (empty);
+
 	/********/
 
 	tokens = nautilus_string_list_new_from_tokens (token_string, ":");
@@ -334,17 +324,16 @@ nautilus_self_check_string_list (void)
 
  	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_equals (cities, tokens), TRUE);
 
+	nautilus_string_list_free (cities);
+	nautilus_string_list_free (tokens);
+
 	/********/
+
 	single = nautilus_string_list_new_from_string ("something");
 
  	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_contains (single, "something"), TRUE);
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (single), 1);
 
-	nautilus_string_list_free (fruits);
-	nautilus_string_list_free (cities);
-	nautilus_string_list_free (cities_copy);
-	nautilus_string_list_free (empty);
-	nautilus_string_list_free (tokens);
 	nautilus_string_list_free (single);
 }
 

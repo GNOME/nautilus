@@ -28,20 +28,21 @@
 #include <glib.h>
 
 /* Opaque type declaration. */
-typedef struct _NautilusStringList NautilusStringList;
+typedef struct NautilusStringList NautilusStringList;
 
 /* Construct an empty string list. */
 NautilusStringList *nautilus_string_list_new                  (void);
 
 /* Construct a string list with a single element */
-NautilusStringList *nautilus_string_list_new_from_string      (const gchar              *string);
+NautilusStringList *nautilus_string_list_new_from_string      (const char               *string);
 
 /* Construct a string list that is a copy of another string list */
 NautilusStringList *nautilus_string_list_new_from_string_list (const NautilusStringList *other);
 
-/* Construct a string list from tokens delimted by the given string and delimeter */
-NautilusStringList *nautilus_string_list_new_from_tokens      (const gchar              *string,
-							       const gchar              *delimeter);
+/* Construct a string list from tokens delimited by the given string and delimeter */
+NautilusStringList *nautilus_string_list_new_from_tokens      (const char               *string,
+							       const char               *delimiter);
+
 /* Free a string list */
 void                nautilus_string_list_free                 (NautilusStringList       *string_list);
 
@@ -52,18 +53,18 @@ void                nautilus_string_list_insert               (NautilusStringLis
 void                nautilus_string_list_clear                (NautilusStringList       *string_list);
 
 /* Access the nth string in the collection.  Returns an strduped string. */
-gchar *             nautilus_string_list_nth                  (const NautilusStringList       *string_list,
+gchar *             nautilus_string_list_nth                  (const NautilusStringList *string_list,
 							       guint                     n);
 
 /* Does the string list contain the given string ? */
-gboolean            nautilus_string_list_contains             (const NautilusStringList       *string_list,
-							       const gchar              *string);
+gboolean            nautilus_string_list_contains             (const NautilusStringList *string_list,
+							       const char               *string);
 
 /* How many strings are currently in the collection ? */
-guint               nautilus_string_list_get_length           (const NautilusStringList       *string_list);
+guint               nautilus_string_list_get_length           (const NautilusStringList *string_list);
 
 /* Does the string list a equal string list b ? */
-gboolean            nautilus_string_list_equals               (const NautilusStringList       *a,
-							       const NautilusStringList       *b);
+gboolean            nautilus_string_list_equals               (const NautilusStringList *a,
+							       const NautilusStringList *b);
 
 #endif /* NAUTILUS_STRING_LIST_H */
