@@ -12,7 +12,7 @@ LDADD = \
 
 bin_PROGRAMS = gnome-info2html
 
-gnome_info2html_SOURCES = main.c parse.c utils.c html.c
+gnome_info2html_SOURCES = main.c parse.c utils.c html.c data.h html.h parse.h utils.h version.h
 
 CFLAGS += -Wall
 
