@@ -49,6 +49,7 @@ struct _NautilusServicesContentViewDetails {
 	NautilusContentViewFrame  *view_frame;
 	GtkWidget		  *form;
 	
+	GtkWidget		  *form_title;
 	GtkWidget		  *account_name;
 	GtkWidget		  *account_password;
 	GtkWidget		  *confirm_password;
@@ -64,6 +65,7 @@ struct _NautilusServicesContentViewDetails {
 static void nautilus_service_startup_view_initialize_class (NautilusServicesContentViewClass *klass);
 static void nautilus_service_startup_view_initialize       (NautilusServicesContentView *view);
 static void nautilus_service_startup_view_destroy          (GtkObject *object);
+static void nautilus_service_startup_view_realize          (GtkWidget *widget);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusServicesContentView, nautilus_service_startup_view, 
 				   GTK_TYPE_EVENT_BOX)
@@ -71,6 +73,8 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusServicesContentView, nautilus_service
 static void service_main_notify_location_change_cb (NautilusContentViewFrame  *view, 
 							Nautilus_NavigationInfo   *navinfo, 
 							NautilusServicesContentView *services);
+static gboolean is_location(char *document_str, const char *place_str);
+
 /* utility routine to go to another uri */
 
 static void
@@ -420,15 +424,30 @@ static void setup_test_form(NautilusServicesContentView *view)
 	gtk_widget_show (config_button);
 }
 
+/* utility routine to set up the font for the title, called after we're realized */
+static void
+setup_title_font(NautilusServicesContentView *view)
+{
+	GtkStyle *temp_style;
+	
+	if (view->details->form_title->window == NULL)
+		return;
+        temp_style = gtk_style_new();
+
+	temp_style->font = gdk_font_load ("-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); ;
+	gtk_widget_set_style (view->details->form_title,
+                              gtk_style_attach (temp_style, view->details->form_title->window));
+}
+
 /* shared utility to allocate a title for a form */
 
-static void setup_form_title(GtkBox *container, const gchar* title_text)
+static void setup_form_title(NautilusServicesContentView *view, const gchar* title_text)
 {
 	GtkWidget *temp_widget;
 	gchar *file_name;	
 	GtkWidget *temp_container = gtk_hbox_new(FALSE, 0);
 	
-	gtk_box_pack_start (GTK_BOX (container), temp_container, 0, 0, 4);	
+	gtk_box_pack_start (GTK_BOX(view->details->form), temp_container, 0, 0, 4);	
 	gtk_widget_show(temp_container);
 	
  	file_name = gnome_pixmap_file ("nautilus/eazel-logo.gif");
@@ -437,9 +456,9 @@ static void setup_form_title(GtkBox *container, const gchar* title_text)
   	gtk_widget_show(temp_widget);
   	g_free (file_name);
 
-	temp_widget = gtk_label_new (title_text);
-	gtk_box_pack_start(GTK_BOX(temp_container), temp_widget, 0, 0, 8);			
- 	gtk_widget_show (temp_widget);
+ 	view->details->form_title = gtk_label_new (title_text);
+	gtk_box_pack_start(GTK_BOX(temp_container), view->details->form_title, 0, 0, 8);			 	
+	gtk_widget_show (view->details->form_title);
 }
 
 /* create the signup form */
@@ -457,7 +476,7 @@ static void setup_signup_form(NautilusServicesContentView *view)
 	gtk_widget_show(view->details->form);
 
 	/* set up the title */	
-	setup_form_title(GTK_BOX(view->details->form), "Eazel Service Registration Form");
+	setup_form_title(view, "Eazel Service Registration Form");
 	
 	/* display an image and a descriptive message */
 	/* FIXME: get the text from a file or from the service */
@@ -570,7 +589,7 @@ static void setup_config_form(NautilusServicesContentView *view)
 	gtk_widget_show(view->details->form);
 
 	/* set up the title */	
-	setup_form_title(GTK_BOX(view->details->form), "Eazel Service Configuration Gathering");
+	setup_form_title(view, "Eazel Service Configuration Gathering");
 
 	/* if we came from signup, add a congrats message */
 	/* FIXME: get the text from a file or from the service */
@@ -651,7 +670,7 @@ static void setup_overview_form(NautilusServicesContentView *view)
 	gtk_widget_show(view->details->form);
 
 	/* set up the title */	
-	setup_form_title(GTK_BOX(view->details->form), "Eazel Service Overview");
+	setup_form_title(view, "Eazel Service Overview");
 
 	/* if we came from signup, add a congrats message */
 	/* FIXME: get the text from a file or from the service */
@@ -678,16 +697,33 @@ static void setup_overview_form(NautilusServicesContentView *view)
 
 }
 
+/* create the services summary form */
+
+
+static void setup_summary_form(NautilusServicesContentView *view)
+{	
+	/* allocate a vbox as the container */	
+	view->details->form = gtk_vbox_new(FALSE,0);
+	gtk_container_add (GTK_CONTAINER (view), view->details->form);	
+	gtk_widget_show(view->details->form);
+
+	/* set up the title */	
+	setup_form_title(view, "Services");
+}
+
 static void
 nautilus_service_startup_view_initialize_class (NautilusServicesContentViewClass *klass)
 {
 	GtkObjectClass *object_class;
+	GtkWidgetClass *widget_class;
 	
 	object_class = GTK_OBJECT_CLASS (klass);
+	widget_class = GTK_WIDGET_CLASS (klass);
 
  	parent_class = gtk_type_class (gtk_event_box_get_type ());
 	
 	object_class->destroy = nautilus_service_startup_view_destroy;
+	widget_class->realize = nautilus_service_startup_view_realize;	
 }
 
 static void
@@ -727,12 +763,30 @@ nautilus_service_startup_view_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
+/* set up fonts, colors, etc after we're realized */
+void
+nautilus_service_startup_view_realize(GtkWidget *widget)
+{
+	NautilusServicesContentView *view;
+ 
+ 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
+	
+ 	view = NAUTILUS_SERVICE_STARTUP_VIEW (widget);
+	setup_title_font (view);
+}
+
 
 /* Component embedding support */
 NautilusContentViewFrame *
 nautilus_service_startup_view_get_view_frame (NautilusServicesContentView *view)
 {
 	return view->details->view_frame;
+}
+
+/* utility for checking uri */
+static gboolean is_location(char *document_str, const char *place_str)
+{
+	return document_str && !strncmp(document_str + 1, place_str, strlen(place_str));
 }
 
 /* URI handling */
@@ -756,14 +810,18 @@ nautilus_service_startup_view_load_uri (NautilusServicesContentView *view,
 	document_name = strchr(uri, ':');
 	
 	/* load the appropriate form, based on the uri and the registration state */
-	if (document_name && !strncmp(document_name + 1, "signup", 6))
+	if (is_location(document_name, "signup"))
 		setup_signup_form(view);
-	else if (document_name && !strncmp(document_name + 1, "config", 6))
+	else if (is_location(document_name, "config"))
 		setup_config_form(view);
-	else if (document_name && !strncmp(document_name + 1, "overview", 8))
+	else if (is_location(document_name, "overview"))
 		setup_overview_form(view);
+	else if (is_location(document_name, "summary"))
+		setup_summary_form(view);
 	else
 		setup_test_form(view); /* eventually, this should be setup_bad_location_form */
+	
+	setup_title_font(view);
 }
 
 static void
