@@ -35,8 +35,8 @@ nautilus_view_component_idl_sources =		\
 
 BUILT_SOURCES =  \
 		$(nautilus_undo_manager_component_idl_sources)  \
-		$(nautilus_view_component_idl_sources)
-		
+		$(nautilus_view_component_idl_sources) 		\
+		$(NULL)
 
 libnautilusincludedir=$(includedir)/libnautilus
 

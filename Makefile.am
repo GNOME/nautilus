@@ -1,9 +1,7 @@
 NULL=
 
 SUBDIRS =\
-	components \
 	data \
-	helper-utilities \
 	icons \
 	idl \
 	intl \
@@ -11,6 +9,8 @@ SUBDIRS =\
 	libnautilus-extensions \
 	librsvg \
 	nautilus-widgets \
+	helper-utilities \
+	components \
 	po \
 	src \
 	$(NULL)
