@@ -1,5 +1,12 @@
 1999-12-30  John Sullivan  <sullivan@eazel.com>
 
+	* src/nautilus_bookmarklist.c: (nautilus_bookmarklist_get_file_path):
+	  Create directory that contains bookmarks file if it's not already
+	  there. Saving bookmarks would have failed (silently) for anyone
+	  who didn't already have a ~/.gnomad directory without this change.
+
+1999-12-30  John Sullivan  <sullivan@eazel.com>
+
 	Made NautilusBookmark use gchar * instead of GString
 	since it wasn't using any special GString features.
 

@@ -47,6 +47,8 @@ static void 	    nautilus_bookmarklist_save_file 	(NautilusBookmarklist *bookmar
 static GtkObjectClass *parent_class = NULL;
 static guint bookmarklist_signals[LAST_SIGNAL] = { 0 };
 
+const unsigned default_gnomad_directory_mode = 0755;
+
 
 /* GtkObject methods.  */
 
@@ -246,12 +248,15 @@ nautilus_bookmarklist_get_file_path (NautilusBookmarklist *bookmarks)
 	static gchar *file_path = NULL;
 	if (file_path == NULL)
 	{
-		/* FIXME: directory shouldn't be hardwired here; 
-		 * file name is debatable. 
-		 */   
-		file_path = g_strconcat(g_get_home_dir(), 
-				        G_DIR_SEPARATOR_S,
-				        ".gnomad",
+		file_path = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, ".gnomad", NULL);
+
+		/* FIXME: make and use covers for these file-manipulation routines */
+		if (access(file_path, R_OK) != 0)
+		{
+			mkdir(file_path, default_gnomad_directory_mode);
+		}
+	
+		file_path = g_strconcat(file_path,
 				        G_DIR_SEPARATOR_S,
 				        "bookmarks.xml", 
 				        NULL);
