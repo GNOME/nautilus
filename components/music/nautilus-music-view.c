@@ -46,6 +46,7 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-string.h>
@@ -837,6 +838,16 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 		return;
 	}
 	song_filename = gnome_vfs_get_local_path_from_uri(song_uri);
+
+	/* for now, we can only play local files, so apologize to the user and give up */	
+	if (song_filename == NULL) {
+			nautilus_error_dialog (
+				_("Sorry, but the music view can't play non-local files yet! "),
+				_("Nautilus: Can't play non-local files"),
+				NULL);
+
+		return;
+	}
 	
 	/* set up the current bitrate and file size so we can give progress feedback */
         

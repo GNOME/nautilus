@@ -530,7 +530,7 @@ ensure_uri_is_image(const char *uri)
 		(uri, file_info,
 		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE
 		 | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-        is_image = nautilus_istr_has_prefix (file_info->mime_type, "image/");
+        is_image = nautilus_istr_has_prefix (file_info->mime_type, "image/") && (nautilus_strcmp (file_info->mime_type, "image/svg") != 0);
 	gnome_vfs_file_info_unref (file_info);
 	return is_image;
 }
@@ -843,7 +843,7 @@ emblem_image_file_changed (GtkWidget *entry, NautilusPropertyBrowser *property_b
 	new_uri = gnome_vfs_get_uri_from_local_path (gtk_entry_get_text (GTK_ENTRY(entry)));
 	if (!ensure_uri_is_image (new_uri)) {
 		char *message = g_strdup_printf
-			(_("Sorry, but '%s' is not an image file!"),
+			(_("Sorry, but '%s' is not a usable image file!"),
 			 gtk_entry_get_text(GTK_ENTRY(entry)));
 		nautilus_error_dialog (message, _("Nautilus: Not an image"), GTK_WINDOW (property_browser));
 		g_free (message);
@@ -938,8 +938,8 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 	g_free(path_uri);	
 	
 	if (!is_image) {
-		char *message = g_strdup_printf (_("Sorry, but '%s' is not an image file!"), path_name);
-		nautilus_error_dialog (message, _("Nautilus: Not an image"), GTK_WINDOW (property_browser));
+		char *message = g_strdup_printf (_("Sorry, but '%s' is not a usable image file!"), path_name);
+		nautilus_error_dialog (message, _("Nautilus: Not an image"), NULL);
 		g_free (message);
 		g_free (path_name);
 		g_free (path_uri);	
