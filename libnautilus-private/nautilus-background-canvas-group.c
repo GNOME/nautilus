@@ -31,6 +31,7 @@
 #include <libart_lgpl/art_rgb_rgba_affine.h>
 
 #include "nautilus-background.h"
+#include "nautilus-gdk-extensions.h"
 #include "nautilus-gtk-macros.h"
 
 static void nautilus_background_canvas_group_initialize_class (gpointer klass);
@@ -86,7 +87,8 @@ nautilus_background_canvas_group_draw (GnomeCanvasItem *item, GdkDrawable *drawa
 
 	/* Draw the background. */
 	background = nautilus_get_widget_background(GTK_WIDGET (item->canvas));
-	if (background != NULL) {
+
+	if (background != NULL && nautilus_background_is_too_complex_for_gtk_style (background)) {
 		GdkGC *gc;
 		GdkRectangle rectangle;
 
