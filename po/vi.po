@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus v- 2.x.x\n"
-"POT-Creation-Date: 2003-01-22 18:31-0500\n"
-"PO-Revision-Date: 2002-12-14 22:39+0700\n"
+"POT-Creation-Date: 2003-01-19 05:04+0100\n"
+"PO-Revision-Date: 2003-01-19 21:04+0700\n"
 "Last-Translator: Trinh Minh Thanh <tmthanh@linuxmail.org>\n"
 "Language-Team: Gnome-Vi Team <Gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -58,7 +58,7 @@ msgstr "Khung xem biểu tượng của Nautilus"
 msgid ""
 "Couldn't remove emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one you added yourself."
-msgstr ""
+msgstr "Không thể bỏ biểu tượng tên '%s'. Có lẽ là đây là biểu tượng vĩnh viễn, và không được thêm vào bởi bạn."
 
 #: components/emblem/nautilus-emblem-view.c:203
 msgid "Couldn't remove emblem"
@@ -69,7 +69,7 @@ msgstr "Không thể gỡ bỏ biểu tượng"
 msgid ""
 "Couldn't rename emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one that you added yourself."
-msgstr ""
+msgstr "Không thể đổi tên biểu tượng tên '%s'. Có lẽ vì đây là biểu tượng vĩnh viễn, va không được thêm vào bởi bạn."
 
 #: components/emblem/nautilus-emblem-view.c:238
 msgid "Couldn't rename emblem"
@@ -95,19 +95,19 @@ msgstr "Thêm biểu tượng..."
 msgid ""
 "Enter a descriptive name next to each emblem.  This name will be used in "
 "other places to identify the emblem."
-msgstr ""
+msgstr "Nhập tên mô tả cho mỗi biểu tượng. Tên này sẽ được dùng ở những nơi khác để xác định biểu tượng."
 
 #: components/emblem/nautilus-emblem-view.c:515
 msgid ""
 "Enter a descriptive name next to the emblem.  This name will be used in "
 "other places to identify the emblem."
-msgstr ""
+msgstr "Nhập tên mô tả cho biểu tượng. Tên này sẽ được dùng để xác định đối tượng."
 
 #: components/emblem/nautilus-emblem-view.c:718
 msgid ""
 "Some of the files could not be added as emblems because they did not appear "
 "to be valid images."
-msgstr ""
+msgstr "Không thể thêm vài tập tin vì chúng có vẻ không phải là ảnh hợp lệ."
 
 #: components/emblem/nautilus-emblem-view.c:718
 #: components/emblem/nautilus-emblem-view.c:720
@@ -118,7 +118,7 @@ msgstr "Không thể thêm biểu tượng"
 msgid ""
 "None of the files could be added as emblems because they did not appear to "
 "be valid images."
-msgstr ""
+msgstr "Không có tập tin nào được thêm để làm biểu tượng vì chúng có vẻ không phải là ảnh hợp lệ."
 
 #: components/emblem/nautilus-emblem-view.c:741
 msgid "The dragged text was not a valid file location."
@@ -138,7 +138,7 @@ msgstr "Tập tin '%s' không phải là ảnh hợp lệ."
 
 #: components/emblem/nautilus-emblem-view.c:763
 msgid "The dragged file does not appear to be a valid image."
-msgstr ""
+msgstr "Tập tin được kéo có vẻ không phải là ảnh hợp lệ."
 
 #: components/emblem/nautilus-emblem-view.c:878 data/browser.xml.h:35
 msgid "Erase"
@@ -285,7 +285,6 @@ msgid "Notes side pane"
 msgstr "Panel vạch lề của ghi chú"
 
 #: components/notes/Nautilus_View_notes.server.in.in.h:3
-#, fuzzy
 msgid "Notes side pane for Nautilus"
 msgstr "Ô vạch lề của ghi chú cho Nautilus"
 
@@ -1230,12 +1229,10 @@ msgid "Cancel"
 msgstr "Hủy bỏ"
 
 #: libnautilus-private/nautilus-dnd.c:628
-#, fuzzy
 msgid "Set as background for _all folders"
-msgstr "Đặt làm nền cho mọi thư mục"
+msgstr "Đặt làm nền cho _mọi thư mục"
 
 #: libnautilus-private/nautilus-dnd.c:633
-#, fuzzy
 msgid "Set as background for _this folder"
 msgstr "Đặt làm nền cho thư mục n_ày"
 
@@ -1341,7 +1338,7 @@ msgstr ""
 "thư mục mẹ của nó."
 
 #: libnautilus-private/nautilus-file-operations.c:595
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Error while moving.\n"
 "\n"
@@ -1350,7 +1347,7 @@ msgid ""
 msgstr ""
 "Lỗi trong khi chuyển.\n"
 "\n"
-"\"%s\" không thể chuyển được vì nó ở một đĩa chỉ có thể đọc."
+"\"%s\" không thể chuyển được vì hoặc cha nó nằm trong đích đến."
 
 #: libnautilus-private/nautilus-file-operations.c:605
 #, c-format
@@ -1654,7 +1651,7 @@ msgstr "Thay thế tất cả"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1136
-#: libnautilus-private/nautilus-file.c:4285
+#: libnautilus-private/nautilus-file.c:4280
 #, c-format
 msgid "link to %s"
 msgstr "Liên kết tới %s"
@@ -2282,64 +2279,64 @@ msgstr "foo (bản sao thứ 124).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2529
+#: libnautilus-private/nautilus-file.c:2524
 msgid "today at 00:00:00 PM"
 msgstr "hôm nay vào 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2530
+#: libnautilus-private/nautilus-file.c:2525
 msgid "today at %-I:%M:%S %p"
 msgstr "hôm nay vào lúc %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2532
+#: libnautilus-private/nautilus-file.c:2527
 msgid "today at 00:00 PM"
 msgstr "hôm nay vào 00:00"
 
-#: libnautilus-private/nautilus-file.c:2533
+#: libnautilus-private/nautilus-file.c:2528
 msgid "today at %-I:%M %p"
 msgstr "hôm nay vào lúc %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2535
+#: libnautilus-private/nautilus-file.c:2530
 msgid "today, 00:00 PM"
 msgstr "hôm nay, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2536
+#: libnautilus-private/nautilus-file.c:2531
 msgid "today, %-I:%M %p"
 msgstr "hôm nay, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2538
-#: libnautilus-private/nautilus-file.c:2539
+#: libnautilus-private/nautilus-file.c:2533
+#: libnautilus-private/nautilus-file.c:2534
 msgid "today"
 msgstr "hôm nay"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2548
+#: libnautilus-private/nautilus-file.c:2543
 msgid "yesterday at 00:00:00 PM"
 msgstr "hôm qua vào 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2549
+#: libnautilus-private/nautilus-file.c:2544
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "hôm qua vào lúc %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2551
+#: libnautilus-private/nautilus-file.c:2546
 msgid "yesterday at 00:00 PM"
 msgstr "hôm qua vào 00:00"
 
-#: libnautilus-private/nautilus-file.c:2552
+#: libnautilus-private/nautilus-file.c:2547
 msgid "yesterday at %-I:%M %p"
 msgstr "hôm qua vào lúc %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2554
+#: libnautilus-private/nautilus-file.c:2549
 msgid "yesterday, 00:00 PM"
 msgstr "hôm qua, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2555
+#: libnautilus-private/nautilus-file.c:2550
 msgid "yesterday, %-I:%M %p"
 msgstr "hôm qua, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2557
-#: libnautilus-private/nautilus-file.c:2558
+#: libnautilus-private/nautilus-file.c:2552
+#: libnautilus-private/nautilus-file.c:2553
 msgid "yesterday"
 msgstr "hôm qua"
 
@@ -2348,132 +2345,132 @@ msgstr "hôm qua"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2569
+#: libnautilus-private/nautilus-file.c:2564
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Thứ tư, 00 tháng chín 0000 vào 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2570
+#: libnautilus-private/nautilus-file.c:2565
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %-d %B %Y vào lúc %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2572
+#: libnautilus-private/nautilus-file.c:2567
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Thứ hai, 00 T10 0000 vào 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2573
+#: libnautilus-private/nautilus-file.c:2568
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %-d %b %Y vào lúc %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2575
+#: libnautilus-private/nautilus-file.c:2570
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Thứ hai, 00 T10 0000 vào 00:00"
 
-#: libnautilus-private/nautilus-file.c:2576
+#: libnautilus-private/nautilus-file.c:2571
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %-d %b %Y vào lúc %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2578
+#: libnautilus-private/nautilus-file.c:2573
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00 T10 0000 vào 00:00"
 
-#: libnautilus-private/nautilus-file.c:2579
+#: libnautilus-private/nautilus-file.c:2574
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y vào lúc %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2581
+#: libnautilus-private/nautilus-file.c:2576
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00 T10 0000, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2582
+#: libnautilus-private/nautilus-file.c:2577
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2584
+#: libnautilus-private/nautilus-file.c:2579
 msgid "00/00/00, 00:00 PM"
 msgstr "00.00.00, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2585
+#: libnautilus-private/nautilus-file.c:2580
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d.%m.%y, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2587
+#: libnautilus-private/nautilus-file.c:2582
 msgid "00/00/00"
 msgstr "00.00.00"
 
-#: libnautilus-private/nautilus-file.c:2588
+#: libnautilus-private/nautilus-file.c:2583
 msgid "%m/%d/%y"
 msgstr "%d.%m.%y"
 
-#: libnautilus-private/nautilus-file.c:3870
+#: libnautilus-private/nautilus-file.c:3865
 msgid "0 items"
 msgstr "0 mục"
 
-#: libnautilus-private/nautilus-file.c:3870
+#: libnautilus-private/nautilus-file.c:3865
 msgid "0 folders"
 msgstr "0 thư mục"
 
-#: libnautilus-private/nautilus-file.c:3871
+#: libnautilus-private/nautilus-file.c:3866
 msgid "0 files"
 msgstr "0 tập tin"
 
-#: libnautilus-private/nautilus-file.c:3875
+#: libnautilus-private/nautilus-file.c:3870
 msgid "1 item"
 msgstr "1 mục"
 
-#: libnautilus-private/nautilus-file.c:3875
+#: libnautilus-private/nautilus-file.c:3870
 msgid "1 folder"
 msgstr "1 thư mục"
 
-#: libnautilus-private/nautilus-file.c:3876
+#: libnautilus-private/nautilus-file.c:3871
 msgid "1 file"
 msgstr "1 tập tin"
 
-#: libnautilus-private/nautilus-file.c:3879
+#: libnautilus-private/nautilus-file.c:3874
 #, c-format
 msgid "%u items"
 msgstr "%u mục"
 
-#: libnautilus-private/nautilus-file.c:3879
+#: libnautilus-private/nautilus-file.c:3874
 #, c-format
 msgid "%u folders"
 msgstr "%u thư mục"
 
-#: libnautilus-private/nautilus-file.c:3880
+#: libnautilus-private/nautilus-file.c:3875
 #, c-format
 msgid "%u files"
 msgstr "%u tập tin"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4187
-#: libnautilus-private/nautilus-file.c:4203
+#: libnautilus-private/nautilus-file.c:4182
+#: libnautilus-private/nautilus-file.c:4198
 msgid "? items"
 msgstr "? mục"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4193
+#: libnautilus-private/nautilus-file.c:4188
 msgid "? bytes"
 msgstr "? bytes"
 
-#: libnautilus-private/nautilus-file.c:4208
+#: libnautilus-private/nautilus-file.c:4203
 msgid "unknown type"
 msgstr "dạng không rõ"
 
-#: libnautilus-private/nautilus-file.c:4211
+#: libnautilus-private/nautilus-file.c:4206
 msgid "unknown MIME type"
 msgstr "dạng MIME không rõ"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4217
+#: libnautilus-private/nautilus-file.c:4212
 msgid "unknown"
 msgstr "không rõ"
 
-#: libnautilus-private/nautilus-file.c:4249
+#: libnautilus-private/nautilus-file.c:4244
 msgid "program"
 msgstr "chương trình"
 
-#: libnautilus-private/nautilus-file.c:4261
+#: libnautilus-private/nautilus-file.c:4256
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2483,7 +2480,7 @@ msgstr ""
 "do tập tin gnome-vfs.keys của bạn nằm ở vùng không đúng hoặc vì một lý do "
 "nào đó mà không thể tìm thấy được."
 
-#: libnautilus-private/nautilus-file.c:4265
+#: libnautilus-private/nautilus-file.c:4260
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2492,15 +2489,15 @@ msgstr ""
 "Không tìm thấy mô tả cho \"%s\" dạng mime (tập tin là \"%s\"), xin hãy thông "
 "báo cho gnome-vfs mailing list."
 
-#: libnautilus-private/nautilus-file.c:4279
+#: libnautilus-private/nautilus-file.c:4274
 msgid "link"
 msgstr "liên kết"
 
-#: libnautilus-private/nautilus-file.c:4299
+#: libnautilus-private/nautilus-file.c:4294
 msgid "link (broken)"
 msgstr "liên kết (vỡ)"
 
-#: libnautilus-private/nautilus-file.c:5366
+#: libnautilus-private/nautilus-file.c:5361
 #: libnautilus-private/nautilus-trash-directory.c:383
 #: src/file-manager/fm-desktop-icon-view.c:71
 msgid "Trash"
@@ -2826,7 +2823,7 @@ msgstr "Alpha hộp chọn"
 
 #: libnautilus-private/nautilus-icon-container.c:3517
 msgid "Opacity of the selection box"
-msgstr ""
+msgstr "Độ đục của ô chọn"
 
 #: libnautilus-private/nautilus-icon-container.c:3524
 msgid "Highlight Alpha"
@@ -2834,7 +2831,7 @@ msgstr "Alpha điểm sáng"
 
 #: libnautilus-private/nautilus-icon-container.c:3525
 msgid "Opacity of the highlight for selected icons"
-msgstr ""
+msgstr "Độ đục của tô sáng biểu tượng được chọn"
 
 #: libnautilus-private/nautilus-icon-container.c:3531
 msgid "Light Info Color"
@@ -2842,7 +2839,7 @@ msgstr "Màu thông tin nhạt"
 
 #: libnautilus-private/nautilus-icon-container.c:3532
 msgid "Color used for information text against a dark background"
-msgstr ""
+msgstr "Màu dùng cho chuỗi thông tin trên nền tối"
 
 #: libnautilus-private/nautilus-icon-container.c:3537
 msgid "Dark Info Color"
@@ -2850,7 +2847,7 @@ msgstr "Màu thông tin đậm"
 
 #: libnautilus-private/nautilus-icon-container.c:3538
 msgid "Color used for information text against a light background"
-msgstr ""
+msgstr "Màu dùng cho chuỗi thông tin trên nền sáng"
 
 #: libnautilus-private/nautilus-icon-dnd.c:726
 msgid ""
@@ -2929,7 +2926,7 @@ msgid ""
 "at ftp://ftp.gnome.org)\n"
 "If you are using a packaged version of Nautilus, fast searching is not "
 "available.\n"
-msgstr ""
+msgstr "Không thể tìm thấy Medusa, ứng dụng thực hiện tìm kiếm, trên hệ thống. Nếu bạn tự biên dịch Nautilus, bạn cần cài đặt Medusa và biên dịch lại Nautilus. (Medusa có tại ftp://ftp.gnome.org)\n"
 
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
@@ -3722,14 +3719,12 @@ msgid "Search List"
 msgstr "Tìm danh sách"
 
 #: src/Nautilus_shell.server.in.h:20
-#, fuzzy
 msgid "View as Icons"
-msgstr "Xem theo Biểu t_ượng"
+msgstr "Xem theo Biểu tượng"
 
 #: src/Nautilus_shell.server.in.h:21
-#, fuzzy
 msgid "View as List"
-msgstr "Xem theo Danh s_ách"
+msgstr "Xem theo Danh sách"
 
 #: src/Nautilus_shell.server.in.h:22
 msgid "View as _Icons"
@@ -3955,21 +3950,21 @@ msgstr "Bộ quan sát khác..."
 msgid "A _Viewer..."
 msgstr "Một bộ quan sát..."
 
-#: src/file-manager/fm-directory-view.c:3573
+#: src/file-manager/fm-directory-view.c:3572
 #, c-format
 msgid "Could not complete specified action:  %s"
 msgstr "Không thể hoàn thành hàng động chỉ định:  %s"
 
-#: src/file-manager/fm-directory-view.c:3597
+#: src/file-manager/fm-directory-view.c:3595
 msgid "Could not complete specified action."
 msgstr "Không thể hoàn thành hàng động chỉ định."
 
-#: src/file-manager/fm-directory-view.c:4042
+#: src/file-manager/fm-directory-view.c:4040
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Thực hiện \"%s\" trên tất cả các mục đã chọn"
 
-#: src/file-manager/fm-directory-view.c:4252
+#: src/file-manager/fm-directory-view.c:4250
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
@@ -3979,11 +3974,11 @@ msgstr ""
 "Script. Khi chọn một script trong các thực đơn này, script này sẽ thực thi "
 "với tất cả các mục được chọn theo tư cách của nhập"
 
-#: src/file-manager/fm-directory-view.c:4255
+#: src/file-manager/fm-directory-view.c:4253
 msgid "About Scripts"
 msgstr "Về Scripts"
 
-#: src/file-manager/fm-directory-view.c:4256
+#: src/file-manager/fm-directory-view.c:4254
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4005,104 +4000,104 @@ msgid ""
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4369
+#: src/file-manager/fm-directory-view.c:4367
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
-msgstr "\"%s\" sẽ được chuyển đi nếu bạn dùng lệnh »ghép tập tin«"
+msgstr "\"%s\" sẽ được chuyển đi nếu bạn dùng lệnh \"ghép tập tin\""
 
-#: src/file-manager/fm-directory-view.c:4373
+#: src/file-manager/fm-directory-view.c:4371
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
-msgstr "\"%s\" sẽ được sao nếu bạn dùng lệnh »ghép tập tin«"
+msgstr "\"%s\" sẽ được sao nếu bạn dùng lệnh \"ghép tập tin\""
 
-#: src/file-manager/fm-directory-view.c:4380
+#: src/file-manager/fm-directory-view.c:4378
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
 msgstr ""
-"%d các mục đưọc chọn sẽ được chuyển đi nếu bạn dùng lệnh »ghép tập tin«"
+"%d các mục đưọc chọn sẽ được chuyển đi nếu bạn dùng lệnh \"ghép tập tin\""
 
-#: src/file-manager/fm-directory-view.c:4384
+#: src/file-manager/fm-directory-view.c:4382
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr "%d các mục đưọc chọn sẽ được sao nếu bạn dùng lệnh »ghép tập tin«"
+msgstr "%d các mục đưọc chọn sẽ được sao nếu bạn dùng lệnh \"ghép tập tin\""
 
-#: src/file-manager/fm-directory-view.c:4469
+#: src/file-manager/fm-directory-view.c:4467
 msgid "There is nothing on the clipboard to paste."
 msgstr "Không có gì trong bảng trích giữ để ghép được."
 
-#: src/file-manager/fm-directory-view.c:4648
+#: src/file-manager/fm-directory-view.c:4646
 msgid "Open _in This Window"
 msgstr "Mở trong cửa sổ này"
 
-#: src/file-manager/fm-directory-view.c:4651
+#: src/file-manager/fm-directory-view.c:4649
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Open _in New Window"
 msgstr "Mở trong của sổ mới"
 
-#: src/file-manager/fm-directory-view.c:4653
+#: src/file-manager/fm-directory-view.c:4651
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "Mở trong %d cửa sổ mới"
 
-#: src/file-manager/fm-directory-view.c:4671
+#: src/file-manager/fm-directory-view.c:4669
 msgid "_Delete from Trash"
 msgstr "Xóa khỏi sọt rác"
 
-#: src/file-manager/fm-directory-view.c:4673
+#: src/file-manager/fm-directory-view.c:4671
 msgid "Delete all selected items permanently"
 msgstr "Xóa vĩnh viễn mọi mục được chọn"
 
-#: src/file-manager/fm-directory-view.c:4676
-#: src/file-manager/fm-directory-view.c:4951
+#: src/file-manager/fm-directory-view.c:4674
+#: src/file-manager/fm-directory-view.c:4949
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
 msgid "Mo_ve to Trash"
 msgstr "Chuyển vào sọt rác"
 
-#: src/file-manager/fm-directory-view.c:4678
+#: src/file-manager/fm-directory-view.c:4676
 #: src/file-manager/nautilus-directory-view-ui.xml.h:16
 msgid "Move each selected item to the Trash"
 msgstr "Di chuyển các mục được chọn vào Thùng rác"
 
-#: src/file-manager/fm-directory-view.c:4702
+#: src/file-manager/fm-directory-view.c:4700
 #: src/file-manager/nautilus-directory-view-ui.xml.h:38
 msgid "_Delete"
 msgstr "Xóa"
 
-#: src/file-manager/fm-directory-view.c:4722
+#: src/file-manager/fm-directory-view.c:4720
 msgid "Ma_ke Links"
 msgstr "Thiết lập các liên kết"
 
-#: src/file-manager/fm-directory-view.c:4723
+#: src/file-manager/fm-directory-view.c:4721
 #: src/file-manager/nautilus-directory-view-ui.xml.h:14
 msgid "Ma_ke Link"
 msgstr "Thiết đặt liên kết"
 
-#: src/file-manager/fm-directory-view.c:4736
+#: src/file-manager/fm-directory-view.c:4734
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "_Empty Trash"
 msgstr "Đổ sọt rác"
 
-#: src/file-manager/fm-directory-view.c:4749
+#: src/file-manager/fm-directory-view.c:4747
 msgid "Cu_t File"
 msgstr "Cắt tập tin"
 
-#: src/file-manager/fm-directory-view.c:4750
+#: src/file-manager/fm-directory-view.c:4748
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "Cắt tập tin"
 
-#: src/file-manager/fm-directory-view.c:4759
+#: src/file-manager/fm-directory-view.c:4757
 msgid "_Copy File"
 msgstr "Sao tập tin"
 
-#: src/file-manager/fm-directory-view.c:4760
+#: src/file-manager/fm-directory-view.c:4758
 #: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "_Copy Files"
 msgstr "_Sao chép Tập tin"
 
-#: src/file-manager/fm-directory-view.c:4942
+#: src/file-manager/fm-directory-view.c:4940
 msgid ""
 "This link can't be used, because it has no target. Do you want to move this "
 "link to the Trash?"
@@ -4110,7 +4105,7 @@ msgstr ""
 "Không thể dùng liên kết này vì nó không có đích. Bạn có muốn xóa nó vào sọt "
 "rác không?"
 
-#: src/file-manager/fm-directory-view.c:4945
+#: src/file-manager/fm-directory-view.c:4943
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -4119,11 +4114,11 @@ msgstr ""
 "Không thể dùng liên kết này vì đối tượng liên kết của nó là \"%s\" không tồn "
 "tại. Bạn muốn xóa nó vào sọt rác không?"
 
-#: src/file-manager/fm-directory-view.c:4951
+#: src/file-manager/fm-directory-view.c:4949
 msgid "Broken Link"
 msgstr "Liên kết bị phá vỡ"
 
-#: src/file-manager/fm-directory-view.c:5008
+#: src/file-manager/fm-directory-view.c:5006
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -4132,28 +4127,28 @@ msgstr ""
 "\"%s\" là tập tin text có thể thực thi. Bạn có muốn thực thi nó, hay hiển "
 "thị nội dung của nó?"
 
-#: src/file-manager/fm-directory-view.c:5014
+#: src/file-manager/fm-directory-view.c:5012
 msgid "Run or Display?"
 msgstr "Thực thi hoặc hiển thị?"
 
-#: src/file-manager/fm-directory-view.c:5015
+#: src/file-manager/fm-directory-view.c:5013
 msgid "_Display"
 msgstr "Hiển thị"
 
-#: src/file-manager/fm-directory-view.c:5016
+#: src/file-manager/fm-directory-view.c:5014
 msgid "Run in _Terminal"
 msgstr "Thực hiện trên thiết bị đầu cuối mới"
 
-#: src/file-manager/fm-directory-view.c:5019
+#: src/file-manager/fm-directory-view.c:5017
 msgid "_Run"
 msgstr "Thực thi"
 
-#: src/file-manager/fm-directory-view.c:5201
+#: src/file-manager/fm-directory-view.c:5199
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Đang mở \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5207
+#: src/file-manager/fm-directory-view.c:5205
 msgid "Cancel Open?"
 msgstr "Có hủy mở không?"
 
@@ -4354,21 +4349,21 @@ msgstr "Lỗi kéo và thả"
 msgid "An invalid drag type was used."
 msgstr "Đã dùng một dạng kéo không hợp lệ"
 
-#: src/file-manager/fm-list-view.c:408
+#: src/file-manager/fm-list-view.c:412
 msgid "File name"
 msgstr "Tên tập tin"
 
-#: src/file-manager/fm-list-view.c:432
+#: src/file-manager/fm-list-view.c:436
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Kích thước"
 
-#: src/file-manager/fm-list-view.c:443
+#: src/file-manager/fm-list-view.c:447
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Dạng"
 
-#: src/file-manager/fm-list-view.c:454
+#: src/file-manager/fm-list-view.c:458
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Ngày được sửa đổi"
@@ -4591,9 +4586,8 @@ msgid "The permissions of \"%s\" could not be determined."
 msgstr "Không thể xác định quyền truy cập của \"%s\"."
 
 #: src/file-manager/fm-properties-window.c:2357
-#: src/nautilus-bookmarks-window.c:138
-#: src/nautilus-file-management-properties.c:237
-#: src/nautilus-property-browser.c:1438 src/nautilus-window-menus.c:714
+#: src/nautilus-bookmarks-window.c:138 src/nautilus-property-browser.c:1438
+#: src/nautilus-window-menus.c:710
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -5296,14 +5290,12 @@ msgid "    "
 msgstr "    "
 
 #: src/nautilus-file-management-properties.glade.h:4
-#, fuzzy
 msgid "100 KB"
-msgstr "100 K"
+msgstr "100 KB"
 
 #: src/nautilus-file-management-properties.glade.h:20
-#, fuzzy
 msgid "500 KB"
-msgstr "500 K"
+msgstr "500 KB"
 
 #: src/nautilus-file-management-properties.glade.h:23
 msgid "<span weight=\"bold\">Behaviour</span>"
@@ -5362,9 +5354,8 @@ msgid "Ask before _emptying the Trash or deleting files"
 msgstr "Hỏi trước khi đ_ổ rác hoặc xóa tập tin"
 
 #: src/nautilus-file-management-properties.glade.h:37
-#, fuzzy
 msgid "Behavior"
-msgstr "Hoạt động của sọt rác"
+msgstr "Hành vi"
 
 #: src/nautilus-file-management-properties.glade.h:43
 msgid ""
@@ -5375,9 +5366,8 @@ msgstr ""
 "hơn khi phóng to trong closer."
 
 #: src/nautilus-file-management-properties.glade.h:44
-#, fuzzy
 msgid "Count _number of items:"
-msgstr "Hiển thị s_ố các mục:"
+msgstr "Đếm s_ố mục:"
 
 #: src/nautilus-file-management-properties.glade.h:45
 msgid "Default _zoom level:"
@@ -5460,14 +5450,12 @@ msgid "_Only for files smaller than:"
 msgstr "Ch_ỉ cho tập tin nhỏ hơn:"
 
 #: src/nautilus-file-management-properties.glade.h:70
-#, fuzzy
 msgid "_Open activated item in a new window"
-msgstr "Mở mỗi mục đã chọn trong một cửa sổ mới"
+msgstr "_Mở mục được kích hoạt trong một cửa sổ mới"
 
 #: src/nautilus-file-management-properties.glade.h:71
-#, fuzzy
 msgid "_Run executable text files when they are clicked"
-msgstr "Thực thi các tập tin khi chúng được ấn"
+msgstr "_Thực thi các tập tin văn bản chạy được khi chúng được ấn"
 
 #: src/nautilus-file-management-properties.glade.h:72
 msgid "_Single click to activate items"
@@ -5478,9 +5466,8 @@ msgid "_Use compact layout"
 msgstr "D_ùng cách trình bày gọn"
 
 #: src/nautilus-file-management-properties.glade.h:74
-#, fuzzy
 msgid "_View executable text files when they are clicked"
-msgstr "Thực thi các tập tin khi chúng được ấn"
+msgstr "_Xem các tập tin văn bản chạy được khi chúng được nhấn"
 
 #: src/nautilus-first-time-druid.c:40
 msgid ""
@@ -5502,9 +5489,8 @@ msgstr "Mở với..."
 
 #. FIXME: We don't use spaces to pad labels!
 #: src/nautilus-information-panel.c:1018
-#, fuzzy
 msgid "Empty _Trash"
-msgstr "Đổ rác"
+msgstr "Đổ _rác"
 
 #: src/nautilus-location-bar.c:62
 msgid "Go To:"
@@ -5552,7 +5538,7 @@ msgstr "Khởi động lại Nautilus"
 
 #. Set initial window title
 #: src/nautilus-main.c:184 src/nautilus-window-manage-views.c:231
-#: src/nautilus-window-menus.c:674 src/nautilus-window.c:181
+#: src/nautilus-window-menus.c:670 src/nautilus-window.c:181
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -6474,7 +6460,7 @@ msgstr "Xóa biên sử"
 #. * symbol characters -- do not translate the company
 #. * name, please.
 #.
-#: src/nautilus-window-menus.c:664
+#: src/nautilus-window-menus.c:660
 msgid "Copyright (C) 1999-2001 Eazel, Inc."
 msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 
@@ -6482,14 +6468,14 @@ msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window-menus.c:671 src/nautilus-window-menus.c:672
+#: src/nautilus-window-menus.c:667 src/nautilus-window-menus.c:668
 msgid "Translator Credits"
 msgstr ""
 "Hoàng Ngọc Tú\n"
 "Jörn von Kattchée\n"
 "Nguyễn Thái Ngọc Duy"
 
-#: src/nautilus-window-menus.c:677
+#: src/nautilus-window-menus.c:673
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
@@ -6497,7 +6483,7 @@ msgstr ""
 "Nautilus là một vỏ đồ họa cho GNOME và vỏ này giúp nó quản lý dễ dàng các "
 "tập tin và phần còn lại của hệ thống của bạn."
 
-#: src/nautilus-window-menus.c:754
+#: src/nautilus-window-menus.c:750
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -6506,24 +6492,24 @@ msgstr ""
 "Không tồn tại địa điểm \"%s\". Bạn có muốn bỏ bất kỳ đánh dấu nào liên quan "
 "với vị trí này ra khỏi danh sách của bạn không?"
 
-#: src/nautilus-window-menus.c:758
+#: src/nautilus-window-menus.c:754
 msgid "Bookmark for Nonexistent Location"
 msgstr "Đánh Dấu cho Vị Trí Không Tồn Tại"
 
-#: src/nautilus-window-menus.c:759
+#: src/nautilus-window-menus.c:755
 msgid "Remove"
 msgstr "Loại bỏ"
 
-#: src/nautilus-window-menus.c:770
+#: src/nautilus-window-menus.c:766
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Địa điểm \"%s\" không còn tồn tại."
 
-#: src/nautilus-window-menus.c:771
+#: src/nautilus-window-menus.c:767
 msgid "Go to Nonexistent Location"
 msgstr "Đi tới địa điểm không tồn tại"
 
-#: src/nautilus-window-menus.c:840
+#: src/nautilus-window-menus.c:836
 msgid "Go to the location specified by this bookmark"
 msgstr "Đi đến vị trí được chỉ ra bởi Đánh Dấu này"
 
@@ -7449,8 +7435,8 @@ msgstr "Xem máy chủ mạng trong trình quản lý tập tin của Nautilus"
 #~ "the Control Center is turned off."
 #~ msgstr ""
 #~ "Xin lỗi, nhưng bộ xem âm nhạc không thể chơi lại âm thanh lúc này. Nguyên "
-#~ "nhân là do trong môđun »Âm thanh« lựa chọn khởi động »Bật server âm "
-#~ "thanh« của trung tâm điều khiển bị tắt."
+#~ "nhân là do trong môđun \"Âm thanh\" lựa chọn khởi động \"Bật server âm "
+#~ "thanh\" của trung tâm điều khiển bị tắt."
 
 #~ msgid "Unable to Play File"
 #~ msgstr "Tập tin không thể chơi được"
