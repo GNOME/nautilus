@@ -1,3 +1,23 @@
+2001-04-27  Andy Hertzfeld  andy@eazel.com>
+
+	added preferences for the maximum numder of items per site and
+	the update interval.  It's not quite finished, as the news
+	view isn't watching the update interval preference yet.
+	
+	* components/news/nautilus-news.c: (do_destroy), (draw_rss_items),
+	(nautilus_news_make_new_channel), (max_items_changed),
+	(make_news_view):
+	use the preference for max items and update interval
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	define defaults for news panel preferences
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	define news panel preferences
+	
+	* src/nautilus-preferences-dialog.c:
+	add a news panel pane to the preferences dialog
+	
 2001-04-26  Andy Hertzfeld  <andy@eazel.com>
 
 	changed the news panel not to display any sites by default, since

@@ -131,11 +131,17 @@ enum
 #define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE	"list-view/default_zoom_level_font_size"
 #define NAUTILUS_PREFERENCES_LIST_VIEW_FONT				"list-view/font"
 
+/* News panel */
+#define NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS				"news/max_items"
+#define NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL			"news/update_interval"
+
 /* File Indexing */
-#define NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE			"preferences/search_bar_type"
+#define NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE				"preferences/search_bar_type"
 
 /* searching */
-#define NAUTILUS_PREFERENCES_SEARCH_WEB_URI			"preferences/search_web_uri"			
+#define NAUTILUS_PREFERENCES_SEARCH_WEB_URI				"preferences/search_web_uri"			
+
+
 
 enum
 {

@@ -392,6 +392,22 @@ static NautilusPreferencesItemDescription sidebar_items[] = {
 	{ NULL }
 };
 
+static NautilusPreferencesItemDescription news_panel_items[] = {
+	{ N_("Maximum items per site"),
+	  NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS,
+	  N_("Maximum number of items displayed per site"),
+	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_INTEGER
+	},
+	{ N_("Update Minutes"),
+	  NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL,
+	  N_("Update frequency in minutes"),
+	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_INTEGER
+
+	},
+	{ NULL }
+};
+
+
 static NautilusPreferencesPaneDescription panes[] = {
 	{ N_("View Preferences"),	  view_preferences_items },
 	{ N_("Appearance"),		  appearance_items },
@@ -402,6 +418,7 @@ static NautilusPreferencesPaneDescription panes[] = {
 	{ N_("Search"),			  search_items },
 	{ N_("Navigation"),		  navigation_items },
 	{ N_("Speed Tradeoffs"),	  tradeoffs_items },
+	{ N_("News Panel"),		  news_panel_items },
 	{ NULL }
 };
 

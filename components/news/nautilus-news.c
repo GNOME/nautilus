@@ -115,6 +115,8 @@ typedef struct {
 	int remove_selection_index;
 	
 	int line_width;
+	int max_item_count;
+	uint update_interval;
 	
 	EelScalableFont *font;	
 	EelScalableFont *bold_font;	
@@ -148,7 +150,7 @@ typedef struct {
 	GdkPixbuf *logo_image;	
 	
 	GList *items;
-
+	
 	EelReadFileHandle *load_file_handle;
 	EelPixbufLoadHandle *load_image_handle;
 	
@@ -187,7 +189,6 @@ typedef struct {
 #define TITLE_FONT_SIZE 18
 #define MINIMUM_DRAW_SIZE 16
 #define EMPTY_MESSAGE_WIDTH 100
-#define MAX_ITEM_COUNT 6
 #define NEWS_BACKGROUND_RGBA 0xFFFFFFFF
 
 /* special prelight values for logo and triangle */
@@ -203,6 +204,7 @@ static int check_for_updates (gpointer callback_data);
 static RSSChannelData* get_channel_from_name (News *news_data, const char *channel_name);
 static void nautilus_news_clear_changed_flags (News* news_data);
 static void set_views_for_mode (News *news);
+static void max_items_changed (gpointer user_data);
 
 static void add_channel_entry (News *news_data, const char *channel_name,
 			       int index, gboolean is_showing);
@@ -329,6 +331,10 @@ do_destroy (GtkObject *obj, News *news)
 	
 	/* free all the channel data */
 	nautilus_news_free_channel_list (news);
+
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS,
+					      max_items_changed,
+					      news);
 	
         g_free (news);
 }
@@ -597,7 +603,7 @@ draw_rss_items (RSSChannelData *channel_data,
 		current_item = current_item->next;
 
 		/* only allow a fixed number of items, max */
-		if (item_index >= MAX_ITEM_COUNT) {
+		if (item_index >= channel_data->owner->max_item_count) {
 			break;
 		}
 	}
@@ -1343,7 +1349,7 @@ nautilus_news_make_new_channel (News *news_data,
  	channel_data->name = g_strdup (name);
 	channel_data->uri = g_strdup (channel_uri);
  	channel_data->owner = news_data;
- 	channel_data->update_interval = 300;
+ 	channel_data->update_interval = news_data->update_interval;
  	channel_data->prelight_index = -1;
 	channel_data->is_open = is_open;
 	channel_data->is_showing = is_showing;
@@ -1523,6 +1529,21 @@ nautilus_news_load_images (News *news_data)
 		news_data->bullet = gdk_pixbuf_new_from_file (news_bullet_path);
 		g_free (news_bullet_path);
 	}
+}
+
+/* handle preference changes */
+static void
+max_items_changed (gpointer user_data)
+{
+	News *news;
+	
+	news = (News*) user_data;
+	
+	news->max_item_count = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS);
+	if (news->max_item_count <= 0) {
+		news->max_item_count = 2;		
+	}
+	update_size_and_redraw (news);
 }
 
 /* utility to count the visible channels */
@@ -2151,6 +2172,18 @@ make_news_view (const char *iid, gpointer callback_data)
  	news->font = eel_scalable_font_get_default_font ();
  	news->bold_font = eel_scalable_font_get_default_bold_font ();
        	
+	/* get preferences and sanity check them */
+	news->max_item_count = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS);
+	news->update_interval = 60 * nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS);	
+	
+	if (news->max_item_count <= 0) {
+		news->max_item_count = 2;		
+	}
+	if (news->update_interval < 60) {
+		news->update_interval = 60;		
+	}
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS, max_items_changed, news);	
+	
 	/* load some images */
 	nautilus_news_load_images (news);
 
