@@ -1,3 +1,41 @@
+2000-08-09  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.c:
+	* libnautilus-extensions/nautilus-file.h:
+	(nautilus_file_is_nautilus_link):
+	Added new API to identify file as nautilus link.
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(start_getting_activation_uris):
+	Call nautilus_file_is_nautilus_link and remove obsolete
+	call to nautilus_link_is_link_file.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file):
+	Call nautilus_file_is_nautilus_link and remove obsolete
+	call to nautilus_link_is_link_file.
+
+	* libnautilus-extensions/nautilus-link.c:
+	* libnautilus-extensions/nautilus-link.h:
+	(nautilus_link_get_link_type):
+	New function that returns the type of link that the
+	link represents.  Examples are home, trash and mount point.
+		
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(mount_device_mount), (mount_device_activate_cdrom), (eject_cdrom),
+	(mount_device_check_change), (add_mount_device),
+	(nautilus_volume_monitor_find_mount_devices), (remove_mount_link),
+	(nautilus_volume_monitor_is_volume_link):
+	Remove annoying debug code.
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(remove_old_mount_links):
+	Fixed link celanup code to use new API.
+	
+	* src/file-manager/fm-icon-view.c: (get_icon_text_callback):
+	Call nautilus_file_is_nautilus_link and remove obsolete
+	call to nautilus_link_is_link_file.
+
 2000-08-09  Rebecca Schulman  <rebecka@eazel.com>
 	Fixed bug 1843, so that search results are activated
 	as themselves.

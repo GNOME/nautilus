@@ -1027,7 +1027,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	
 	/* Handle nautilus link xml files, which may specify their own image */	
 	icon_name = NULL;
-	if (nautilus_link_is_link_file (file)) {
+	if (nautilus_file_is_nautilus_link (file)) {
 		/* FIXME: This does sync. I/O. */
 		image_uri = nautilus_link_get_image_uri (file_uri);
 		if (image_uri != NULL) {

@@ -2352,7 +2352,7 @@ start_getting_activation_uris (NautilusDirectory *directory)
 	mime_type = nautilus_file_get_mime_type (file);
 	gmc_style_link = nautilus_strcasecmp (mime_type, "application/x-gmc-link") == 0;
 	g_free (mime_type);
-	nautilus_style_link = nautilus_link_is_link_file (file);
+	nautilus_style_link = nautilus_file_is_nautilus_link (file);
 
 	/* If it's not a link we are done. If it is, we need to read it. */
 	if (!(gmc_style_link || nautilus_style_link)) {

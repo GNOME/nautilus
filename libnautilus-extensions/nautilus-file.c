@@ -3321,6 +3321,22 @@ nautilus_file_is_symbolic_link (NautilusFile *file)
 }
 
 /**
+ * nautilus_file_is_nautilus_link
+ * 
+ * Check if this file is a nautilus link.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: True if the file is a nautilus link.
+ * 
+ **/
+gboolean
+nautilus_file_is_nautilus_link (NautilusFile *file)
+{
+	return nautilus_file_is_mime_type (file, "application/x-nautilus-link");
+}
+
+
+/**
  * nautilus_file_is_directory
  * 
  * Check if this file is a directory.

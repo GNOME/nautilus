@@ -35,12 +35,6 @@
 #define NAUTILUS_LINK_MOUNT 	"Mount Link"
 #define NAUTILUS_LINK_HOME 	"Home Link"
 
-/* Given a uri, returns TRUE if it's a link file. Works only if the
- * MIME type is loaded in the NautilusFile (due to a monitor or
- * call_when_ready).
- */
-gboolean nautilus_link_is_link_file                	(NautilusFile *file);
-
 /* Create a new link file. Takes a path, works locally, and uses sync. I/O.
  * Returns TRUE if it succeeds, FALSE if it fails.
  */
@@ -76,6 +70,12 @@ char *   nautilus_link_get_additional_text              (const char *link_file_u
  * and caches if the image is remote.
  */
 char *   nautilus_link_get_image_uri                    (const char *link_file_uri);
+
+/* Returns the link type of a link file.
+ * Works only if the file is local and does sync. I/O
+ */
+char * 	nautilus_link_get_link_type 			(const char *path);
+
 
 /* Returns the link uri associated with a link file. The first version
  * works only if the file is local and does sync. I/O, despite the

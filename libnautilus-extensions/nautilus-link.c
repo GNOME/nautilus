@@ -101,13 +101,6 @@ nautilus_link_create (const char *directory_path,
 	return TRUE;
 }
 
-/* Given a NautilusFile, returns TRUE if it's known to be a link file. */
-gboolean
-nautilus_link_is_link_file (NautilusFile *file)
-{
-	return nautilus_file_is_mime_type (file, "application/x-nautilus-link");
-}
-
 /* Set the icon for a link file. This can only be called on local
  * paths, and only on files known to be link files.
  */
@@ -350,6 +343,15 @@ nautilus_link_get_link_uri (const char *link_file_uri)
 	/* FIXME: This interface requires sync. I/O. */
 	return nautilus_link_get_root_property
 		(link_file_uri, "LINK");
+}
+
+/* Returns the link type of the link file. */
+char *
+nautilus_link_get_link_type (const char *path)
+{
+	/* FIXME: This interface requires sync. I/O. */
+	return nautilus_link_get_root_property
+		(path, NAUTILUS_LINK);
 }
 
 /* FIXME: Caller has to know to pass in a file with a NUL character at

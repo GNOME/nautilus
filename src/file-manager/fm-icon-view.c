@@ -1519,7 +1519,7 @@ get_icon_text_callback (NautilusIconContainer *container,
 	
 	/* Handle link files specially. */
 	actual_uri = nautilus_file_get_uri (file);
-	if (nautilus_link_is_link_file (file)) {
+	if (nautilus_file_is_nautilus_link (file)) {
 		/* FIXME: Does sync. I/O. */
 		*additional_text = nautilus_link_get_additional_text (actual_uri);
 		g_free (actual_uri);

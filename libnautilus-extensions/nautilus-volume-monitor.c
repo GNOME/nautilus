@@ -49,9 +49,6 @@
 #include <xmlmemory.h>
 
 
-/* FIXME: Remove messages when this code is done. */
-#define MESSAGE g_message
-
 NautilusVolumeMonitor *global_volume_monitor = NULL;
 
 const char * const state_names[] = { 
@@ -392,8 +389,6 @@ mount_device_mount (NautilusVolumeMonitor *view, DeviceInfo *device)
 		/* Identify this as a mount link */
 		nautilus_link_set_type (device->link_uri, NAUTILUS_LINK_MOUNT);
 		
-	} else {
-		MESSAGE ("Unable to create mount link");
 	}
 	
 	g_free (desktop_path);
@@ -427,8 +422,7 @@ mount_device_activate_cdrom (NautilusVolumeMonitor *monitor, DeviceInfo *device)
 			mount_device_mount (monitor, device);
 			break;
 
-		default:
-			MESSAGE ("Unknown CDROM type");
+		default:			
     			break;
   	}
 
@@ -497,7 +491,6 @@ eject_cdrom (DeviceInfo *device)
 		return;
 	}
 
-	g_message ("Trying to eject");
 	ioctl (device->device_fd, CDROMEJECT, 0);
 
 	close (device->device_fd);
@@ -567,11 +560,7 @@ mount_device_check_change (gpointer data, gpointer callback_data)
   	mount_device_set_state (device, monitor);
 
   	if (old_state != device->state) {
-    		f = state_transitions[device->state][old_state];
-
-    		MESSAGE ("State on %s changed from %s to %s, running %p",
-			   device->fsname, state_names[old_state], state_names[device->state], f);
-			
+    		f = state_transitions[device->state][old_state];			
 		(* f) (monitor, device);
   	}
 }
@@ -774,15 +763,11 @@ add_mount_device (NautilusVolumeMonitor *monitor, struct mntent *ent)
 		mounted = mount_device_floppy_add (monitor, newdev);
 	} else if (strcmp (ent->mnt_type, MOUNT_TYPE_EXT2) == 0) {		
 		mounted = mount_device_ext2_add (newdev);
-	} else {
-		/* FIXME: Is this a reasonable way to report this error? */
-		MESSAGE ("Unknown file system: %s", ent->mnt_type);
 	}
 	
 	if (mounted) {
 		monitor->details->devices = g_list_append (monitor->details->devices, newdev);
 		mount_device_add_aliases (monitor, newdev->fsname, newdev);		
-		MESSAGE ("Device %s came through (type %s)", newdev->fsname, type_names[newdev->type]);
 	} else {
 		close (newdev->device_fd);
 		g_free (newdev->fsname);
@@ -838,8 +823,6 @@ nautilus_volume_monitor_find_mount_devices (NautilusVolumeMonitor *monitor)
 	g_return_if_fail (mef);
 
 	while ((ent = getmntent (mef))) {
-		MESSAGE ("Checking device %s", ent->mnt_fsname);
-
 #if 0
 		/* Think some more about these checks */
 		/* Check for removable device */
@@ -924,7 +907,6 @@ remove_mount_link (DeviceInfo *device)
 		result = gnome_vfs_unlink (device->link_uri);
 		if (result != GNOME_VFS_OK) {
 			/* FIXME: Is a message to the console acceptable here? */
-			MESSAGE ("Unable to remove mount link: %s", gnome_vfs_result_to_string (result));
 		}
 		g_free (device->link_uri);
 		device->link_uri = NULL;
@@ -1000,27 +982,19 @@ get_floppy_volume_name (DeviceInfo *device)
 gboolean
 nautilus_volume_monitor_is_volume_link (const char *path)
 {
-	xmlDocPtr document;
-	char *property;
 	gboolean retval;
-
+	char *link_type;
+	
 	retval = FALSE;
-	
-	document = xmlParseFile (path);
-	if (document == NULL) {
-		return FALSE;
-	}
-
-	property = xmlGetProp (xmlDocGetRootElement (document), NAUTILUS_LINK);
-	if (property != NULL) {
-		/* Check and see if it is a volume link */
-		if (strcmp (NAUTILUS_LINK, property) == 0) {
+	link_type = nautilus_link_get_link_type (path);
+	if (link_type != NULL) {
+		if (strcmp (link_type, NAUTILUS_LINK_MOUNT) == 0) {
 			retval = TRUE;
+		} else {
+			retval = FALSE;
 		}
-		xmlFree (property);
+		g_free (link_type);
 	}
 	
-	xmlFreeDoc (document);
-			
 	return retval;
 }

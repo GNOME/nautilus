@@ -431,11 +431,11 @@ remove_old_mount_links (void)
 			/* Ignore directories.  Mount links are at the top level */
 			if (!S_ISDIR (status.st_mode)) {
 				/* Check and see if this is a link */
-				if (nautilus_volume_monitor_is_volume_link (this_entry->d_name)) {
-					link_path = nautilus_make_path (desktop_path, this_entry->d_name);
-					unlink (this_entry->d_name);
-					g_free (link_path);
+				link_path = nautilus_make_path (desktop_path, this_entry->d_name);
+				if (nautilus_volume_monitor_is_volume_link (link_path)) {					
+					unlink (this_entry->d_name);					
 				}
+				g_free (link_path);
 			}
 		}
 	}
