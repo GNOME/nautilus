@@ -147,6 +147,7 @@ typedef struct _Context Context;
 struct _Context {
 	ElementInfo *elements;
 	gchar *base_file;
+	gchar *base_path;
 	gchar *target_section;
 	GList *stack;
 	gpointer data;

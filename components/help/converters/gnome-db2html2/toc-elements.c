@@ -282,7 +282,7 @@ toc_artheader_end_element (Context *context, const gchar *name)
 
 	g_print ("<BODY BGCOLOR=\"#FFFFFF\" TEXT=\"#000000\" LINK=\"#0000FF\" VLINK=\"#840084\" ALINK=\"#0000FF\">\n");
 	g_print ("<TABLE><TR><TD VALIGN=\"TOP\">\n");
-	g_print ("<IMG SRC=\"/usr/share/pixmaps/gnome-logo-icon.png\" BORDER=\"0\" ALT=\"GNOME\">\n");
+	g_print ("<IMG SRC=\"file:///usr/share/pixmaps/gnome-logo-icon.png\" BORDER=\"0\" ALT=\"GNOME\">\n");
 	g_print ("</TD><TD VALIGN=\"BOTTOM\">\n");
 	if (header->title)
 		g_print ("<H1>%s</H1>\n", header->title);

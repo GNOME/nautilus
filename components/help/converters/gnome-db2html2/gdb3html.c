@@ -680,10 +680,11 @@ sect_footer (Context *context, const char *section)
 }
 
 static void
-parse_file (gchar *filename, gchar *section)
+parse_file (gchar *filename, gchar *section, char *arg)
 {
 	GList *temp_list;
 	Context *context = g_new0 (Context, 1);
+	char *dirpointer;
 	
 	context->ParserCtxt = xmlNewParserCtxt ();
 	xmlInitParserCtxt (context->ParserCtxt);
@@ -695,6 +696,18 @@ parse_file (gchar *filename, gchar *section)
 	context->ParserCtxt->version = xmlStrdup ("1.0"); 
 	context->ParserCtxt->myDoc = xml_parse_document (filename);
 	xmlSubstituteEntitiesDefault (1);
+
+	dirpointer = strrchr (arg, '/');
+	if (dirpointer != NULL) {
+		dirpointer++;
+		if (*dirpointer == '\0') {
+			context->base_path = g_strdup ("/");
+		} else {
+			context->base_path = g_strndup (arg, dirpointer - arg);
+		}
+	} else {
+		context->base_path = g_strconcat (g_getenv("PWD"), "/", NULL );
+	}
 
 	if (section) {
 		context->target_section = g_strdup (section);
@@ -726,6 +739,8 @@ parse_file (gchar *filename, gchar *section)
 			g_free (temp_uri);
 		}
 	}
+
+	g_free (context->base_path);
 }
 
 int
@@ -754,7 +769,7 @@ main (int argc, char *argv[])
 			break;
 		}
 	}
-	parse_file (ptr, section);
+	parse_file (ptr, section, argv[1]);
 
 	return 0;
 }

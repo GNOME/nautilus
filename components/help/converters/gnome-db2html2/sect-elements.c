@@ -1030,7 +1030,8 @@ sect_figure_end_element (Context *context,
  		if (sect_context->figure->id)
 			sect_print (context, "</A>");
 		sect_print (context, "</B><P>");
-		sect_print (context, "<IMG SRC=\"%s\" ALT=\"%s\"><P>",
+		sect_print (context, "<IMG SRC=\"file://%s%s\" ALT=\"%s\"><P>",
+			    context->base_path,
 			    sect_context->figure->img,
 			    (sect_context->figure->alt) ? sect_context->figure->alt : "IMAGE");
 	}
@@ -1080,19 +1081,19 @@ sect_inlinegraphic_start_element (Context *context,
 	/* FIXME: Should we put an 'ALT' tag here? */	
 	if (format == NULL) {
 		/* Default is PNG */
-		sect_print (context, "<IMG SRC=\"%s.png\">", fileref);
+		sect_print (context, "<IMG SRC=\"file://%s%s.png\">", context->base_path, fileref);
 	} else 	if (g_strcasecmp (format, "gif") == 0) {
-		sect_print (context, "<IMG SRC=\"%s.gif\">", fileref);
+		sect_print (context, "<IMG SRC=\"file://%s%s.gif\">", context->base_path, fileref);
 	} else if ((g_strcasecmp (format, "jpg") == 0) ||
 		   (g_strcasecmp (format, "jpeg") == 0)) {
 		/* Some people decide to use .jpg, others use .jpeg */
 		lowcaseformat = g_strdup (format);
 		g_strdown (lowcaseformat);
-		sect_print (context, "<IMG SRC=\"%s.%s\">", fileref, lowcaseformat);
+		sect_print (context, "<IMG SRC=\"file://%s%s.%s\">", context->base_path, fileref, lowcaseformat);
 		g_free (lowcaseformat);
 	} else {
 		/* Unknown file format */
-		sect_print (context, "<IMG SRC=\"%s.%s\">", fileref, format);
+		sect_print (context, "<IMG SRC=\"file://%s%s.%s\">", context->base_path, fileref, format);
 	} 
 }
 
@@ -1468,7 +1469,7 @@ sect_infobox_start_element (Context *context,
 
 	sect_print (context, "<TABLE BORDER=\"0\"  WIDTH=\"100%%\">\n<tr><TD WIDTH=\"25%%\" ALIGN=\"CENTER\" VALIGN=\"TOP\">");
 	if (logo != NULL)
-		sect_print (context, "<IMG ALT=\"%s\" SRC=\"%s\">", name, logo);
+		sect_print (context, "<IMG ALT=\"%s\" SRC=\"file://%s\">", name, logo);
 	else
 		sect_print (context, "%s", name);
 	sect_print (context, "<TH ALIGN=\"LEFT\" VALIGN=\"CENTER\"></TD>\n");

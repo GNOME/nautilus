@@ -1,3 +1,20 @@
+2000-10-27  Ali Abdin  <aliabdin@aucegypt.edu>
+
+        * components/help/converters/gnome-db2html2/gdb3html.[ch]:
+        Added a 'base_path' to the Context struct
+        (parse_file): Do some minimal parsing to get the base path from the
+        provided filename on the command line.
+
+        * components/help/converters/gnome-db2html2/sect-elements.c:
+        * components/help/converters/gnome-db2html2/toc-elements.c:
+        (sect_figure_end_element),
+        (sect_inlinegraphic_start_element),
+        (sect_infobox_start_element),
+        (toc_artheader_end_element):
+        Use 'file://' URIs on images (using base_path to get the path of the
+        image). This means images should now work within SGML files. Should
+        fix bug #3938
+
 2000-10-27  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Final bits of arlification for the install view.  Make the fonts
