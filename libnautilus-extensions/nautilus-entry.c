@@ -37,6 +37,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
+#include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
 
 #include <orb/orbit.h>
@@ -113,9 +114,17 @@ nautilus_entry_initialize_class (NautilusEntryClass *class)
 static void
 nautilus_entry_initialize (NautilusEntry *entry)
 {
+	GtkWidget *widget;
+
+	widget = GTK_WIDGET (entry);
+	
 	entry->user_edit = TRUE;
 	entry->special_tab_handling = FALSE;
-	
+	entry->cursor_obscured = FALSE;
+
+	/* Allow pointer motion events so we can expose an obscured cursor if necessary */
+	gtk_widget_set_events (widget, gtk_widget_get_events (widget) | GDK_POINTER_MOTION_MASK);
+
 	nautilus_undo_set_up_nautilus_entry_for_undo (entry);
 }
 
@@ -135,6 +144,19 @@ nautilus_entry_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
+
+static void
+obscure_cursor (NautilusEntry *entry)
+{
+	if (entry->cursor_obscured) {
+		return;
+	}
+	
+	entry->cursor_obscured = TRUE;	
+	nautilus_gdk_window_set_invisible_cursor (GTK_ENTRY (entry)->text_area);
+}
+
+
 static gint 
 nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 {
@@ -149,6 +171,7 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 	if (!editable->editable) {
 		return FALSE;
 	}
+
 	switch (event->keyval) {
 	case GDK_Tab:
 		/* The location bar entry wants TAB to work kind of
@@ -177,6 +200,8 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 		break;
 	}
 
+	obscure_cursor (entry);
+
 	return_code = NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS,
 						  key_press_event,
 						  (widget, event));
@@ -187,22 +212,35 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 }
 
 static gint
-nautilus_entry_motion_notify (GtkWidget *widget,
-			      GdkEventMotion *event)
+nautilus_entry_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 {
 	gint return_code;
 	guint old_start_pos, old_end_pos;
+	GdkCursor *cursor;
+	NautilusEntry *entry;
+
+	/* Reset cursor to I-Beam */
+	entry = NAUTILUS_ENTRY (widget);
+	if (entry->cursor_obscured) {
+		cursor = gdk_cursor_new (GDK_XTERM);
+		gdk_window_set_cursor (GTK_ENTRY (entry)->text_area, cursor);
+		gdk_cursor_destroy (cursor);
+		entry->cursor_obscured = FALSE;
+	}
+
+	if (GTK_ENTRY (widget)->button == 0) {
+    	return FALSE;
+    }
 
 	old_start_pos = GTK_EDITABLE (widget)->selection_start_pos;
 	old_end_pos = GTK_EDITABLE (widget)->selection_end_pos;
 
-	return_code = NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS,
-						  motion_notify_event,
-						  (widget, event));
+	return_code = NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, motion_notify_event, (widget, event));
 	if (GTK_EDITABLE (widget)->selection_start_pos != old_start_pos ||
 	    GTK_EDITABLE (widget)->selection_end_pos != old_end_pos) {
 		gtk_signal_emit (GTK_OBJECT (widget), signals[SELECTION_CHANGED]);
 	}
+
 	return return_code;
 }
 

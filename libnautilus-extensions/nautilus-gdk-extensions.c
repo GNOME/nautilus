@@ -854,6 +854,43 @@ nautilus_gdk_window_set_wm_hints_input (GdkWindow *window, gboolean status)
 	XFree (wm_hints);
 }
 
+void
+nautilus_gdk_window_set_invisible_cursor (GdkWindow *window)
+{
+	XColor foreColor, backColor;
+	GdkWindowPrivate *window_private;
+	Pixmap sourcePixmap, maskPixmap;
+	Cursor xcursor;
+
+	char invisible_cursor_bits[]      = {0x0};
+	char invisible_cursor_mask_bits[] = {0x0};
+
+	foreColor.pixel = 0L;
+	foreColor.red = foreColor.green = foreColor.blue = 0;
+	foreColor.flags = DoRed | DoGreen | DoBlue;
+
+	backColor.pixel = 255L;
+	backColor.red = backColor.green = backColor.blue = 65535;
+	backColor.flags = DoRed | DoGreen | DoBlue;
+
+	window_private = (GdkWindowPrivate *) window;
+  
+	sourcePixmap = XCreateBitmapFromData (window_private->xdisplay, window_private->xwindow,
+					            		  invisible_cursor_bits, 1, 1);
+	g_assert (sourcePixmap != 0);
+
+	maskPixmap = XCreateBitmapFromData (window_private->xdisplay, window_private->xwindow,
+					          			invisible_cursor_mask_bits, 1, 1);
+	g_assert (maskPixmap != 0);
+
+	xcursor = XCreatePixmapCursor (window_private->xdisplay, sourcePixmap, maskPixmap,
+					      		   &foreColor, &backColor, 0, 0);
+
+	XFreePixmap (window_private->xdisplay, sourcePixmap);
+	XFreePixmap (window_private->xdisplay, maskPixmap);
+
+	XDefineCursor (window_private->xdisplay, window_private->xwindow, xcursor);
+}
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
 

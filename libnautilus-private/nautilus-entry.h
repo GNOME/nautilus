@@ -51,6 +51,7 @@ struct NautilusEntry {
 		
 	gboolean user_edit;
 	gboolean special_tab_handling;
+	gboolean cursor_obscured;
 };
 
 struct NautilusEntryClass {

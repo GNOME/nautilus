@@ -1,3 +1,29 @@
+2000-11-28  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_initialize):
+	Set cursor_obscured flag to false and update event mask
+	to allow pointer moved events.
+	
+	(nautilus_entry_motion_notify):
+	Display the cursor if it was previouslly hidden.
+
+	(obscure_cursor):
+	New function that hides the cursor when the user begins typing.
+
+	(nautilus_entry_key_press):
+	Call obscure_cursor function.
+	
+	* libnautilus-extensions/nautilus-entry.h:
+	Added cursor_obscured flag to entry class.
+	
+	* libnautilus-extensions/nautilus-gdk-extensions.c:	
+	* libnautilus-extensions/nautilus-gdk-extensions.h:
+	(nautilus_gdk_window_set_invisible_cursor):
+	New function to hide the cursor of the widget passed in.
+	
 2000-11-27  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/text/Makefile.am: Added definition of NULL to shut up
