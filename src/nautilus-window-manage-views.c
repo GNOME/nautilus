@@ -557,14 +557,15 @@ nautilus_window_view_failed (NautilusWindow *window, NautilusViewFrame *view)
 static void
 nautilus_window_has_really_changed (NautilusWindow *window)
 {
-        GList *discard_views;
-        GList *p;
+        //GList *discard_views;
+        //GList *p;
         GList *new_sidebar_panels;
-        NautilusViewFrame *view;
+        //NautilusViewFrame *view;
         
         new_sidebar_panels = window->new_sidebar_panels;
         window->new_sidebar_panels = NULL;
-
+	
+	
         /* Switch to the new content view. */
         if (window->new_content_view != NULL) {
                 if (GTK_WIDGET (window->new_content_view)->parent == NULL) {
@@ -584,7 +585,9 @@ nautilus_window_has_really_changed (NautilusWindow *window)
                 }
         
                 /* Remove sidebar views that aren't going to be kept. */
-                discard_views = NULL;
+             	
+		#if 0
+		discard_views = NULL;
                 for (p = window->sidebar_panels; p != NULL; p = p->next) {
                         view = NAUTILUS_VIEW_FRAME (p->data);
                         
@@ -601,18 +604,23 @@ nautilus_window_has_really_changed (NautilusWindow *window)
                 g_list_free (discard_views);
                 
                 /* Add any new views */
-                for (p = new_sidebar_panels; p != NULL; p = p->next) {
+              
+		for (p = new_sidebar_panels; p != NULL; p = p->next) {
                         view = NAUTILUS_VIEW_FRAME (p->data);
                         
                         if (!GTK_OBJECT_DESTROYED (GTK_OBJECT (view))
                             && GTK_WIDGET (view)->parent == NULL) {
                                 nautilus_window_add_sidebar_panel (window, view);
                         }
+ 		
                 }
-        }
+        	#endif
+	}
 
-        nautilus_gtk_object_list_free (new_sidebar_panels);
 
+        // nautilus_gtk_object_list_free (new_sidebar_panels);
+
+	
         /* Tell the window we are finished. */
         if (window->pending_ni != NULL) {
                 nautilus_window_update_internals (window);
