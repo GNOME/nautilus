@@ -13,8 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.1\n"
-"POT-Creation-Date: 2000-09-03 03:35+0200\n"
-"PO-Revision-Date: 2000-09-03 03:36+0200\n"
+"POT-Creation-Date: 2000-09-03 15:30+0200\n"
+"PO-Revision-Date: 2000-09-03 15:32+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1368,8 +1368,8 @@ msgid "Pause"
 msgstr "Pausa"
 
 #: components/music/nautilus-music-view.c:1170
-#: libnautilus-extensions/nautilus-file-operations.c:333
-#: libnautilus-extensions/nautilus-file-operations.c:353
+#: libnautilus-extensions/nautilus-file-operations.c:335
+#: libnautilus-extensions/nautilus-file-operations.c:355
 #: src/nautilus-window-toolbars.c:145
 msgid "Stop"
 msgstr "Stopp"
@@ -1378,90 +1378,104 @@ msgstr "Stopp"
 msgid "Next"
 msgstr "Nästa"
 
-#: components/rpmview/nautilus-rpm-view.c:172
+#: components/rpmview/nautilus-rpm-view.c:180
 msgid "Package Contents"
 msgstr "Paketinnehåll"
 
 #. allocate the name field
-#: components/rpmview/nautilus-rpm-view.c:215
+#: components/rpmview/nautilus-rpm-view.c:223
 msgid "Package Title"
 msgstr "Pakettitel"
 
-#: components/rpmview/nautilus-rpm-view.c:238
+#: components/rpmview/nautilus-rpm-view.c:246
 msgid "Size: "
 msgstr "Storlek: "
 
-#: components/rpmview/nautilus-rpm-view.c:244
+#: components/rpmview/nautilus-rpm-view.c:252
 msgid "<size>"
 msgstr "<storlek>"
 
-#: components/rpmview/nautilus-rpm-view.c:250
+#: components/rpmview/nautilus-rpm-view.c:258
 msgid "Install Date: "
 msgstr "Installationsdatum: "
 
-#: components/rpmview/nautilus-rpm-view.c:256
-#: components/rpmview/nautilus-rpm-view.c:268
-#: components/rpmview/nautilus-rpm-view.c:280
-#: components/rpmview/nautilus-rpm-view.c:292
-#: components/rpmview/nautilus-rpm-view.c:304
+#: components/rpmview/nautilus-rpm-view.c:264
+#: components/rpmview/nautilus-rpm-view.c:276
+#: components/rpmview/nautilus-rpm-view.c:288
+#: components/rpmview/nautilus-rpm-view.c:300
+#: components/rpmview/nautilus-rpm-view.c:312
 msgid "<unknown>"
 msgstr "<okänt>"
 
-#: components/rpmview/nautilus-rpm-view.c:262
+#: components/rpmview/nautilus-rpm-view.c:270
 msgid "License: "
 msgstr "Licens: "
 
-#: components/rpmview/nautilus-rpm-view.c:274
+#: components/rpmview/nautilus-rpm-view.c:282
 msgid "Build Date: "
 msgstr "Byggdatum: "
 
-#: components/rpmview/nautilus-rpm-view.c:286
+#: components/rpmview/nautilus-rpm-view.c:294
 msgid "Distribution: "
 msgstr "Distribution: "
 
-#: components/rpmview/nautilus-rpm-view.c:298
+#: components/rpmview/nautilus-rpm-view.c:306
 msgid "Vendor: "
 msgstr "Återförsäljare: "
 
-#: components/rpmview/nautilus-rpm-view.c:331
+#: components/rpmview/nautilus-rpm-view.c:339
 msgid "Install"
 msgstr "Installera"
 
-#: components/rpmview/nautilus-rpm-view.c:347
+#: components/rpmview/nautilus-rpm-view.c:355
 msgid "Update"
 msgstr "Uppdatera"
 
-#: components/rpmview/nautilus-rpm-view.c:356
+#: components/rpmview/nautilus-rpm-view.c:364
 msgid "Uninstall"
 msgstr "Avinstallera"
 
-#: components/rpmview/nautilus-rpm-view.c:372
+#: components/rpmview/nautilus-rpm-view.c:380
 msgid "Verify"
 msgstr "Verifiera"
 
-#: components/rpmview/nautilus-rpm-view.c:408
+#: components/rpmview/nautilus-rpm-view.c:416
 msgid "Go to selected file"
 msgstr "Gå till markerad fil"
 
 #. add the description
-#: components/rpmview/nautilus-rpm-view.c:419
+#: components/rpmview/nautilus-rpm-view.c:427
 msgid "Description"
 msgstr "Beskrivning"
 
-#: components/rpmview/nautilus-rpm-view.c:592
+#: components/rpmview/nautilus-rpm-view.c:607
 #, c-format
 msgid "Package \"%s\" "
 msgstr "Paket \"%s\" "
 
-#: components/rpmview/nautilus-rpm-view.c:657
+#: components/rpmview/nautilus-rpm-view.c:672
 #, c-format
 msgid "version %s-%s"
 msgstr "version %s-%s"
 
-#: components/rpmview/nautilus-rpm-view.c:721
+#: components/rpmview/nautilus-rpm-view.c:751
 #, c-format
 msgid "Package Contents: %d files"
 msgstr "Paketinnehåll: %d filer"
+
+#: components/rpmview/nautilus-rpm-view.c:876
+#, c-format
+msgid "checking %s..."
+msgstr "kontrollerar %s..."
+
+#: components/rpmview/nautilus-rpm-view.c:878
+#, c-format
+msgid "file %s has an error!"
+msgstr "filen %s har ett fel!"
+
+#: components/rpmview/nautilus-rpm-view.c:896
+msgid "Verification completed."
+msgstr "Verifieringen färdig!"
 
 #: components/sample/nautilus-sample-content-view.c:86
 msgid "(none)"
@@ -2693,15 +2707,15 @@ msgstr "_Rensa"
 msgid "Clear the current selection"
 msgstr "Rensar den aktuella markeringen"
 
-#: libnautilus-extensions/nautilus-file-operations.c:155
+#: libnautilus-extensions/nautilus-file-operations.c:156
 msgid "From:"
 msgstr "Från:"
 
-#: libnautilus-extensions/nautilus-file-operations.c:169
+#: libnautilus-extensions/nautilus-file-operations.c:170
 msgid "To:"
 msgstr "Till:"
 
-#: libnautilus-extensions/nautilus-file-operations.c:323
+#: libnautilus-extensions/nautilus-file-operations.c:325
 #, c-format
 msgid ""
 "Error while %s \"%s\".\n"
@@ -2710,19 +2724,19 @@ msgstr ""
 "Fel vid %s \"%s\".\n"
 "%s. Vill du fortsätta?"
 
-#: libnautilus-extensions/nautilus-file-operations.c:332
-#: libnautilus-extensions/nautilus-file-operations.c:352
+#: libnautilus-extensions/nautilus-file-operations.c:334
+#: libnautilus-extensions/nautilus-file-operations.c:354
 msgid "File copy error"
 msgstr "Filkopieringsfel"
 
-#: libnautilus-extensions/nautilus-file-operations.c:333
-#: libnautilus-extensions/nautilus-file-operations.c:353
-#: libnautilus-extensions/nautilus-file-operations.c:400
-#: libnautilus-extensions/nautilus-file-operations.c:411
+#: libnautilus-extensions/nautilus-file-operations.c:335
+#: libnautilus-extensions/nautilus-file-operations.c:355
+#: libnautilus-extensions/nautilus-file-operations.c:402
+#: libnautilus-extensions/nautilus-file-operations.c:413
 msgid "Skip"
 msgstr "Hoppa över"
 
-#: libnautilus-extensions/nautilus-file-operations.c:345
+#: libnautilus-extensions/nautilus-file-operations.c:347
 #, c-format
 msgid ""
 "Error \"%s\" copying file %s.\n"
@@ -2731,11 +2745,11 @@ msgstr ""
 "Fel \"%s\" vid kopiering av filen %s.\n"
 "Vill du fortsätta?"
 
-#: libnautilus-extensions/nautilus-file-operations.c:353
+#: libnautilus-extensions/nautilus-file-operations.c:355
 msgid "Retry"
 msgstr "Försök igen"
 
-#: libnautilus-extensions/nautilus-file-operations.c:388
+#: libnautilus-extensions/nautilus-file-operations.c:390
 #, c-format
 msgid ""
 "File %s already exists.\n"
@@ -2744,245 +2758,245 @@ msgstr ""
 "Filen %s finns redan.\n"
 "Vill du ersätta den?"
 
-#: libnautilus-extensions/nautilus-file-operations.c:399
-#: libnautilus-extensions/nautilus-file-operations.c:410
+#: libnautilus-extensions/nautilus-file-operations.c:401
+#: libnautilus-extensions/nautilus-file-operations.c:412
 msgid "File copy conflict"
 msgstr "Filkopieringskonflikt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:400
-#: libnautilus-extensions/nautilus-file-operations.c:411
+#: libnautilus-extensions/nautilus-file-operations.c:402
+#: libnautilus-extensions/nautilus-file-operations.c:413
 msgid "Replace"
 msgstr "Ersätt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:411
+#: libnautilus-extensions/nautilus-file-operations.c:413
 msgid "Replace All"
 msgstr "Ersätt alla"
 
-#: libnautilus-extensions/nautilus-file-operations.c:446
+#: libnautilus-extensions/nautilus-file-operations.c:448
 #, c-format
 msgid "link to %s"
 msgstr "länk till %s"
 
-#: libnautilus-extensions/nautilus-file-operations.c:448
+#: libnautilus-extensions/nautilus-file-operations.c:450
 #, c-format
 msgid "another link to %s"
 msgstr "ytterligare en länk till %s"
 
-#: libnautilus-extensions/nautilus-file-operations.c:457
+#: libnautilus-extensions/nautilus-file-operations.c:459
 #, c-format
 msgid "%dst link to %s"
 msgstr "länk nummer %d till %s"
 
-#: libnautilus-extensions/nautilus-file-operations.c:459
+#: libnautilus-extensions/nautilus-file-operations.c:461
 #, c-format
 msgid "%dnd link to %s"
 msgstr "länk nummer %d till %s"
 
-#: libnautilus-extensions/nautilus-file-operations.c:461
+#: libnautilus-extensions/nautilus-file-operations.c:463
 #, c-format
 msgid "%drd link to %s"
 msgstr "länk nummer %d till %s"
 
 #. The general case.
-#: libnautilus-extensions/nautilus-file-operations.c:465
+#: libnautilus-extensions/nautilus-file-operations.c:467
 #, c-format
 msgid "%dth link to %s"
 msgstr "länk nummer %d till %s"
 
-#: libnautilus-extensions/nautilus-file-operations.c:483
+#: libnautilus-extensions/nautilus-file-operations.c:485
 #, c-format
 msgid "%s (copy)"
 msgstr "%s (kopia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:485
+#: libnautilus-extensions/nautilus-file-operations.c:487
 #, c-format
 msgid "%s (another copy)"
 msgstr "%s (ytterligare en kopia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:494
+#: libnautilus-extensions/nautilus-file-operations.c:496
 #, c-format
 msgid "%s (%dst copy)"
 msgstr "%s (kopia nummer %d)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:496
+#: libnautilus-extensions/nautilus-file-operations.c:498
 #, c-format
 msgid "%s (%dnd copy)"
 msgstr "%s (kopia nummer %d)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:498
+#: libnautilus-extensions/nautilus-file-operations.c:500
 #, c-format
 msgid "%s (%drd copy)"
 msgstr "%s (kopia nummer %d)"
 
 #. The general case.
-#: libnautilus-extensions/nautilus-file-operations.c:502
+#: libnautilus-extensions/nautilus-file-operations.c:504
 #, c-format
 msgid "%s (%dth copy)"
 msgstr "%s (kopia nummer %d)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:550
-#: libnautilus-extensions/nautilus-file-operations.c:843
+#: libnautilus-extensions/nautilus-file-operations.c:556
+#: libnautilus-extensions/nautilus-file-operations.c:862
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Okänt GnomeVFSXferProgressStatus %d"
 
-#: libnautilus-extensions/nautilus-file-operations.c:695
+#: libnautilus-extensions/nautilus-file-operations.c:714
 msgid "Moving files"
 msgstr "Flyttar filer"
 
-#: libnautilus-extensions/nautilus-file-operations.c:696
+#: libnautilus-extensions/nautilus-file-operations.c:715
 msgid "moved"
 msgstr "flyttad"
 
-#: libnautilus-extensions/nautilus-file-operations.c:697
-#: libnautilus-extensions/nautilus-file-operations.c:966
+#: libnautilus-extensions/nautilus-file-operations.c:716
+#: libnautilus-extensions/nautilus-file-operations.c:985
 msgid "Moving"
 msgstr "Flyttar"
 
-#: libnautilus-extensions/nautilus-file-operations.c:698
+#: libnautilus-extensions/nautilus-file-operations.c:717
 msgid "Preparing To Move..."
 msgstr "Förbereder flyttning..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:699
+#: libnautilus-extensions/nautilus-file-operations.c:718
 msgid "Finishing Move..."
 msgstr "Slutför flyttning..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:708
+#: libnautilus-extensions/nautilus-file-operations.c:727
 msgid "Creating links to files"
 msgstr "Skapar länkar till filer"
 
-#: libnautilus-extensions/nautilus-file-operations.c:709
+#: libnautilus-extensions/nautilus-file-operations.c:728
 msgid "linked"
 msgstr "länkad"
 
-#: libnautilus-extensions/nautilus-file-operations.c:710
+#: libnautilus-extensions/nautilus-file-operations.c:729
 msgid "Linking"
 msgstr "Länkar"
 
-#: libnautilus-extensions/nautilus-file-operations.c:711
+#: libnautilus-extensions/nautilus-file-operations.c:730
 msgid "Preparing to Create Links..."
 msgstr "Förbereder skapande av länkar..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:712
+#: libnautilus-extensions/nautilus-file-operations.c:731
 msgid "Finishing Creating Links..."
 msgstr "Slutför skapande av länkar..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:718
+#: libnautilus-extensions/nautilus-file-operations.c:737
 msgid "Copying files"
 msgstr "Kopierar filer"
 
-#: libnautilus-extensions/nautilus-file-operations.c:719
+#: libnautilus-extensions/nautilus-file-operations.c:738
 msgid "copied"
 msgstr "kopierad"
 
-#: libnautilus-extensions/nautilus-file-operations.c:720
+#: libnautilus-extensions/nautilus-file-operations.c:739
 msgid "Copying"
 msgstr "Kopierar"
 
-#: libnautilus-extensions/nautilus-file-operations.c:721
+#: libnautilus-extensions/nautilus-file-operations.c:740
 msgid "Preparing To Copy..."
 msgstr "Förbereder kopiering..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:738
+#: libnautilus-extensions/nautilus-file-operations.c:757
 msgid "You cannot copy items into the Trash."
 msgstr "Du kan inte kopiera objekt till papperskorgen."
 
-#: libnautilus-extensions/nautilus-file-operations.c:739
+#: libnautilus-extensions/nautilus-file-operations.c:758
 msgid "Error copying"
 msgstr "Fel vid kopiering"
 
-#: libnautilus-extensions/nautilus-file-operations.c:740
-#: libnautilus-extensions/nautilus-file-operations.c:756
-#: libnautilus-extensions/nautilus-file-operations.c:774
-#: libnautilus-extensions/nautilus-file-operations.c:927
-#: libnautilus-extensions/nautilus-file-operations.c:937
+#: libnautilus-extensions/nautilus-file-operations.c:759
+#: libnautilus-extensions/nautilus-file-operations.c:775
+#: libnautilus-extensions/nautilus-file-operations.c:793
+#: libnautilus-extensions/nautilus-file-operations.c:946
+#: libnautilus-extensions/nautilus-file-operations.c:956
 msgid "OK"
 msgstr "OK"
 
-#: libnautilus-extensions/nautilus-file-operations.c:753
+#: libnautilus-extensions/nautilus-file-operations.c:772
 msgid "You cannot move the Trash."
 msgstr "Du kan inte flytta papperskorgen."
 
-#: libnautilus-extensions/nautilus-file-operations.c:754
+#: libnautilus-extensions/nautilus-file-operations.c:773
 msgid "You cannot copy the Trash."
 msgstr "Du kan inte kopiera papperskorgen."
 
-#: libnautilus-extensions/nautilus-file-operations.c:755
-#: libnautilus-extensions/nautilus-file-operations.c:773
-#: libnautilus-extensions/nautilus-file-operations.c:926
-#: libnautilus-extensions/nautilus-file-operations.c:936
+#: libnautilus-extensions/nautilus-file-operations.c:774
+#: libnautilus-extensions/nautilus-file-operations.c:792
+#: libnautilus-extensions/nautilus-file-operations.c:945
+#: libnautilus-extensions/nautilus-file-operations.c:955
 msgid "Error moving to Trash"
 msgstr "Fel vid flyttning till papperskorgen"
 
-#: libnautilus-extensions/nautilus-file-operations.c:771
+#: libnautilus-extensions/nautilus-file-operations.c:790
 msgid "You cannot move an item into itself."
 msgstr "Du kan inte flytta ett objekt till sig själv."
 
-#: libnautilus-extensions/nautilus-file-operations.c:772
+#: libnautilus-extensions/nautilus-file-operations.c:791
 msgid "You cannot copy an item into itself."
 msgstr "Du kan inte kopiera ett objekt till sig själv."
 
-#: libnautilus-extensions/nautilus-file-operations.c:866
+#: libnautilus-extensions/nautilus-file-operations.c:885
 msgid "untitled folder"
 msgstr "namnlös mapp"
 
-#: libnautilus-extensions/nautilus-file-operations.c:925
+#: libnautilus-extensions/nautilus-file-operations.c:944
 msgid "You cannot throw away the Trash."
 msgstr "Du kan inte kasta papperskorgen."
 
-#: libnautilus-extensions/nautilus-file-operations.c:932
+#: libnautilus-extensions/nautilus-file-operations.c:951
 #, c-format
 msgid "You cannot throw \"%s\" into the Trash."
 msgstr "Du kan inte kasta \"%s\" i papperskorgen."
 
-#: libnautilus-extensions/nautilus-file-operations.c:964
+#: libnautilus-extensions/nautilus-file-operations.c:983
 msgid "Moving files to the Trash"
 msgstr "Flyttar filer till papperskorgen"
 
-#: libnautilus-extensions/nautilus-file-operations.c:965
+#: libnautilus-extensions/nautilus-file-operations.c:984
 msgid "thrown out"
 msgstr "kastad"
 
-#: libnautilus-extensions/nautilus-file-operations.c:967
+#: libnautilus-extensions/nautilus-file-operations.c:986
 msgid "Preparing to Move to Trash..."
 msgstr "Förbereder flyttning till papperskorgen..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1008
+#: libnautilus-extensions/nautilus-file-operations.c:1027
 msgid "Deleting files"
 msgstr "Tar bort filer"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1009
-#: libnautilus-extensions/nautilus-file-operations.c:1056
+#: libnautilus-extensions/nautilus-file-operations.c:1028
+#: libnautilus-extensions/nautilus-file-operations.c:1075
 msgid "deleted"
 msgstr "borttagen"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1010
-#: libnautilus-extensions/nautilus-file-operations.c:1057
+#: libnautilus-extensions/nautilus-file-operations.c:1029
+#: libnautilus-extensions/nautilus-file-operations.c:1076
 msgid "Deleting"
 msgstr "Ta bort"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1011
+#: libnautilus-extensions/nautilus-file-operations.c:1030
 msgid "Preparing to Delete files..."
 msgstr "Förbereder borttagning av filer..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1055
+#: libnautilus-extensions/nautilus-file-operations.c:1074
 msgid "Emptying the Trash"
 msgstr "Tömmer papperskorgen"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1058
+#: libnautilus-extensions/nautilus-file-operations.c:1077
 msgid "Preparing to Empty the Trash..."
 msgstr "Förbereder tömning av papperskorgen..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1087
+#: libnautilus-extensions/nautilus-file-operations.c:1106
 msgid ""
 "Are you sure you want to permanently delete all of the items in the trash?"
 msgstr "Är du säker att du vill ta bort alla objekt i papperskorgen permanent?"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1089
+#: libnautilus-extensions/nautilus-file-operations.c:1108
 msgid "Nautilus: Delete trash contents?"
 msgstr "Nautilus: Ta bort innehållet i papperskorgen?"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1090
+#: libnautilus-extensions/nautilus-file-operations.c:1109
 msgid "Empty"
 msgstr "Töm"
 
