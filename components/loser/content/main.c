@@ -30,6 +30,7 @@
 #include <gnome.h>
 #include <bonobo-activation/bonobo-activation.h>
 #include <bonobo.h>
+#include <eel/eel-gnome-extensions.h>
 
 static int object_count = 0;
 
@@ -80,8 +81,8 @@ int main(int argc, char *argv[])
 
 	nautilus_content_loser_maybe_fail ("post-init");
 
-        registration_id = bonobo_activation_make_registration_id ("OAFIID:nautilus_content_loser_factory:adf30e75-3b63-4360-8784-a8e239390a69",
-								  gdk_get_display ());
+        registration_id = eel_bonobo_make_registration_id
+		("OAFIID:nautilus_content_loser_factory:adf30e75-3b63-4360-8784-a8e239390a69");
 	factory = bonobo_generic_factory_new (registration_id,
 					      loser_make_object,
 					      NULL);

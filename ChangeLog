@@ -1,3 +1,19 @@
+2002-03-11  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-bonobo-extensions.c
+	(nautilus_bonobo_activation_register_for_display): re-instate
+	the making of per display iids.
+
+	* components/loser/sidebar/main.c (main): use
+	eel_bonobo_make_registration_id.
+
+	* components/loser/content/main.c (main): ditto.
+
+	* components/adapter/main.c (main): ditto.
+
+	* libnautilus/nautilus-view-standard-main.c
+	(nautilus_view_standard_main_multi): ditto.
+
 2002-03-13  Alexander Larsson  <alla@lysator.liu.se>
 
 	* libnautilus-private/filesystem-attributes.xml:

@@ -37,6 +37,7 @@
 #include <libgnome/gnome-init.h>
 #include <libgnomeui/gnome-client.h>
 #include <libgnomevfs/gnome-vfs-init.h>
+#include <eel/eel-gnome-extensions.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -105,7 +106,7 @@ main (int argc, char *argv[])
 
 	/* Create the factory. */
 
-	registration_id = bonobo_activation_make_registration_id (META_FACTORY_IID, gdk_get_display ());
+	registration_id = eel_bonobo_make_registration_id (META_FACTORY_IID);
 
 	factory = bonobo_generic_factory_new (registration_id, adapter_factory_make_object, NULL);
 

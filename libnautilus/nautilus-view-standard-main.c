@@ -41,6 +41,7 @@
 #include <libgnomeui/gnome-client.h>
 #include <libgnomeui/gnome-ui-init.h>
 #include <libgnomevfs/gnome-vfs-init.h>
+#include <eel/eel-gnome-extensions.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -215,8 +216,7 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	callback_data.delayed_quit_timeout_id = 0;
 
 	/* Create the factory. */
-        registration_id = bonobo_activation_make_registration_id
-		(factory_iid, gdk_get_display ());
+        registration_id = eel_bonobo_make_registration_id (factory_iid);
 	factory = bonobo_generic_factory_new (registration_id, 
 					      make_object,
 					      &callback_data);
