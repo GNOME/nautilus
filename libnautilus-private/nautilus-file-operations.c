@@ -601,7 +601,7 @@ build_error_string (const char *source_name, const char *target_name,
 						  "permissions to change it or its parent folder.");
 				break;
 			case ERROR_SOURCE_IN_TARGET:
-				*error_string = g_strdup (_("Error while moving. "));
+				*error_string = g_strdup (_("Error while moving."));
 				detail_format = _("Cannot move \"%s\" because it or its parent folder "
 						  "are contained in the destination.");
 				break;
