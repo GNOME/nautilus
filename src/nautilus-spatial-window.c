@@ -90,6 +90,7 @@ struct _NautilusSpatialWindowDetails {
 	
 	GtkWidget *content_box;
 	GtkWidget *location_button;
+	GtkWidget *location_label;
 	GtkWidget *location_statusbar;
 
 	GnomeVFSURI *location;
@@ -505,13 +506,13 @@ nautilus_spatial_window_set_location_button  (NautilusSpatialWindow *window,
 	}
 	if (uri != NULL) {
 		name = nautilus_get_uri_shortname_for_display (uri);
-		gtk_button_set_label (GTK_BUTTON (window->details->location_button),
-				      name);
+		gtk_label_set_label (GTK_LABEL (window->details->location_label),
+				     name);
 		g_free (name);
 		gtk_widget_set_sensitive (window->details->location_button, TRUE);
 	} else {
-		gtk_button_set_label (GTK_BUTTON (window->details->location_button),
-				      "");
+		gtk_label_set_label (GTK_LABEL (window->details->location_label),
+				     "");
 		gtk_widget_set_sensitive (window->details->location_button, FALSE);
 	}
 
@@ -527,6 +528,8 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 	GtkShadowType shadow_type;
 	GtkWidget *frame;
 	GtkRcStyle *rc_style;
+	GtkWidget *arrow;
+	GtkWidget *hbox;
 
 	window->details = g_new0 (NautilusSpatialWindowDetails, 1);
 	window->affect_spatial_window_on_next_location_change = TRUE;
@@ -543,7 +546,7 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 	gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (window->details->location_statusbar), 
 					   FALSE);
 
-	window->details->location_button = gtk_button_new_with_label ("");
+	window->details->location_button = gtk_button_new ();
 	gtk_button_set_relief (GTK_BUTTON (window->details->location_button),
 			       GTK_RELIEF_NONE);
 	rc_style = gtk_widget_get_modifier_style (window->details->location_button);
@@ -553,6 +556,20 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 				 rc_style);
 
 	gtk_widget_show (window->details->location_button);
+
+	hbox = gtk_hbox_new (FALSE, 3);
+	gtk_container_add (GTK_CONTAINER (window->details->location_button), 
+			   hbox);
+	gtk_widget_show (hbox);
+	
+	window->details->location_label = gtk_label_new ("");
+	gtk_box_pack_start (GTK_BOX (hbox), window->details->location_label,
+			    FALSE, FALSE, 0);
+	gtk_widget_show (window->details->location_label);
+	
+	arrow = gtk_arrow_new (GTK_ARROW_DOWN, GTK_SHADOW_NONE);
+	gtk_box_pack_start (GTK_BOX (hbox), arrow, FALSE, FALSE, 0);
+	gtk_widget_show (arrow);
 
 	frame = gtk_frame_new (NULL);
 	gtk_widget_style_get (GTK_WIDGET (window->details->location_statusbar), 
