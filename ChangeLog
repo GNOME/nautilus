@@ -1,3 +1,142 @@
+2000-06-06  Darin Adler  <darin@eazel.com>
+
+	The main change here is revamping the undo manager.
+	To get a complete check-out you might have to delete
+	the file named libnautilus/nautilus-undo.h that used
+	to be a generated file and is now checked-in.
+
+	* components/help/help-method.c: (vfs_module_transform):
+	Removed a bogus extraneous FIXME.
+	
+	* libnautilus-extensions/Makefile.am:
+	Moved the undo manager into libnautilus-extensions
+	since it's not needed by Nautilus components.
+	
+	* libnautilus-extensions/nautilus-entry.c:
+	* libnautilus-extensions/nautilus-icon-text-item.c:
+	* libnautilus/nautilus-view.c:
+	* src/nautilus-application.c:
+	* src/nautilus-bookmarks-window.c: (create_bookmarks_window):
+	* src/nautilus-view-frame.c:
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.c:
+	Updated includes and a few small function name changes.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(alive_disconnecter),
+	(nautilus_gtk_signal_connect_full_while_alive):
+	Added a new function that combines the features of
+	gtk_signal_connect_full with gtk_signal_connect_while_alive.
+	
+	* libnautilus/nautilus-undo-context.h: [removed]
+	* libnautilus/nautilus-undo-context.c: [removed]
+	* libnautilus-extensions/nautilus-undo-context.h:
+	* libnautilus-extensions/nautilus-undo-context.c:
+	(impl_Nautilus_Undo_Context__destroy),
+	(impl_Nautilus_Undo_Context__create),
+	(impl_Nautilus_Undo_Context__get_undo_manager),
+	(nautilus_undo_context_new), (destroy),
+	(nautilus_undo_context_initialize_class):
+	Rewrote this class to simplify it (after moving it here).
+	
+	* libnautilus/nautilus-undo-manager.h: [removed]
+	* libnautilus/nautilus-undo-manager.c: [removed]
+	* libnautilus/nautilus-undo-manager-private.h: [removed]
+	* libnautilus-extensions/nautilus-undo-manager.h:
+	* libnautilus-extensions/nautilus-undo-manager.c:
+	(impl_Nautilus_Undo_Manager__destroy),
+	(impl_Nautilus_Undo_Manager__create),
+	(impl_Nautilus_Undo_Manager__append),
+	(impl_Nautilus_Undo_Manager__forget),
+	(nautilus_undo_manager_initialize),
+	(nautilus_undo_manager_initialize_class),
+	(nautilus_undo_manager_undo),
+	(nautilus_undo_manager_add_transaction),
+	(nautilus_undo_manager_forget_transaction),
+	(nautilus_undo_manager_set_queue_depth),
+	(nautilus_undo_manager_attach),
+	(nautilus_undo_manager_add_interface), (update_undo_menu_item),
+	(undo_menu_handler_connection_free),
+	(undo_menu_handler_connection_free_cover),
+	(nautilus_undo_manager_set_up_bonobo_ui_handler_undo_item):
+	Rewrote this class to simplify it. Got rid of many old
+	interfaces and added some new ones.
+	
+	* libnautilus/.cvsignore:
+	* libnautilus/Makefile.am:
+	Renamed the old nautilus-undo.idl to
+	nautilus-distributed-undo.idl.  The IDL is only about the internal
+	part of the undo framework.  Clients use calls that are in
+	nautilus-undo.h. The part that's public needs the prettier name.
+	
+	* libnautilus/nautilus-undo.idl: [removed]
+	* libnautilus/nautilus-distributed-undo.idl:
+	Updated the names of menu-item-related things to better match the
+	standard terminology.
+	
+	* libnautilus/nautilus-undo-private.h:
+	Added this new header for things needed by the undo manager that
+	are in libnautilus. Maybe we can eliminate this later.
+
+	* libnautilus/nautilus-undo-transaction.h:
+	* libnautilus/nautilus-undo-transaction.c:
+	(impl_Nautilus_Undo_Transaction__destroy),
+	(impl_Nautilus_Undo_Transaction__create),
+	(impl_Nautilus_Undo_Transaction__get_undo_menu_item),
+	(impl_Nautilus_Undo_Transaction__get_redo_menu_item),
+	(impl_Nautilus_Undo_Transaction__get_operation_name),
+	(impl_Nautilus_Undo_Transaction__undo),
+	(nautilus_undo_transaction_new),
+	(nautilus_undo_transaction_initialize),
+	(remove_transaction_from_object),
+	(nautilus_undo_transaction_destroy),
+	(nautilus_undo_transaction_initialize_class),
+	(nautilus_undo_transaction_add_atom),
+	(nautilus_undo_transaction_undo),
+	(nautilus_undo_transaction_add_to_undo_manager), (remove_atoms),
+	(remove_atoms_cover),
+	(nautilus_undo_transaction_unregister_object), (undo_atom_free),
+	(undo_atom_undo_and_free), (undo_atom_free_cover),
+	(undo_atom_undo_and_free_cover), (undo_atom_list_free),
+	(undo_atom_list_undo_and_free):
+	Rewrote and simplified this class and got rid of all uses of
+	NautilusUndoable.
+	
+	* libnautilus/nautilus-undoable.h: [removed]
+	* libnautilus/nautilus-undoable.c: [removed]
+	* libnautilus/nautilus-undo.h:
+	* libnautilus/nautilus-undo.c: (nautilus_undo_register),
+	(nautilus_undo_register_full), (nautilus_undo_unregister),
+	(nautilus_undo), (nautilus_undo_get_undo_manager),
+	(undo_manager_ref), (undo_manager_unref),
+	(undo_manager_unref_cover), (nautilus_undo_attach_undo_manager),
+	(nautilus_undo_share_undo_manager), (set_up_bonobo_control),
+	(nautilus_undo_set_up_bonobo_control):
+	Added this new file with the public interface of the undo code and
+	most of the basic implementation. Most of this was previously in
+	nautilus-undoable.c.
+	
+	* nautilus-widgets/nautilus-preferences.c:
+	(preferences_hash_node_free), (preferences_hash_node_add_callback),
+	(preferences_hash_node_remove_callback),
+	(preferences_hash_node_check_changes_func),
+	(preferences_callback_node_alloc),
+	(preferences_callback_node_free),
+	(preferences_callback_node_free_func),
+	(preferences_callback_node_invoke_func),
+	(preferences_gconf_callback):
+	Fixed a repeated spelling error in this file.
+	
+	* src/nautilus-application.c: (nautilus_app_init):
+	* src/nautilus-view-frame.c: (nautilus_view_frame_load_client):
+	* src/nautilus-window-menus.c: (edit_menu_undo_callback),
+	(nautilus_window_initialize_menus):
+	* src/nautilus-window.c: (nautilus_window_constructed):
+	Changed to use public parts of the undo API instead of the old
+	stuff that used private secret stuff. Many places use nice new
+	convenient calls that do a lot of the work for you.
+
 2000-06-06  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c:

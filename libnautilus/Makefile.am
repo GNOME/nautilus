@@ -27,15 +27,15 @@ nautilus_view_component_idl_sources =		\
 	nautilus-view-component.h		\
 	nautilus-view-component-common.c
 
-nautilus_undo_idl_sources =	\
-	nautilus-undo-stubs.c	\
-	nautilus-undo-skels.c	\
-	nautilus-undo.h		\
-	nautilus-undo-common.c
+nautilus_distributed_undo_idl_sources =	\
+	nautilus-distributed-undo-stubs.c	\
+	nautilus-distributed-undo-skels.c	\
+	nautilus-distributed-undo.h		\
+	nautilus-distributed-undo-common.c
 
 BUILT_SOURCES = \
 	$(nautilus_view_component_idl_sources)	\
-	$(nautilus_undo_idl_sources)
+	$(nautilus_distributed_undo_idl_sources)
 
 libnautilusincludedir=$(includedir)/libnautilus
 
@@ -43,25 +43,22 @@ libnautilusinclude_HEADERS=			\
 	libnautilus.h				\
 	nautilus-bonobo-ui.h			\
 	nautilus-clipboard.h			\
+	nautilus-distributed-undo.h		\
 	nautilus-view-component.h		\
 	nautilus-view.h				\
-	nautilus-undo-context.h			\
-	nautilus-undo-manager.h			\
-	nautilus-undo-transaction.h		\
-	nautilus-undoable.h			\
+	nautilus-undo.h				\
+	nautilus-undo-private.h			\
 	nautilus-zoomable.h			\
 	$(NULL)
 
 libnautilus_la_SOURCES=					\
-	nautilus-undo-manager-private.h			\
 	$(nautilus_view_component_idl_sources)		\
-	$(nautilus_undo_idl_sources)			\
+	$(nautilus_distributed_undo_idl_sources)	\
 	nautilus-clipboard.c				\
-	nautilus-view.c					\
-	nautilus-undo-context.c				\
-	nautilus-undo-manager.c				\
 	nautilus-undo-transaction.c			\
-	nautilus-undoable.c				\
+	nautilus-undo-transaction.h			\
+	nautilus-undo.c					\
+	nautilus-view.c					\
 	nautilus-zoomable.c				\
 	$(NULL)
 
@@ -70,17 +67,19 @@ nautilus_view_component_idl_stamp: nautilus-view-component.idl
 	$(ORBIT_IDL) -I${datadir}/idl -I/opt/gnome/share/idl $(srcdir)/nautilus-view-component.idl
 	touch nautilus_view_component_idl_stamp
 
-$(nautilus_undo_idl_sources): nautilus_undo_idl_stamp
-nautilus_undo_idl_stamp: nautilus-undo.idl
-	$(ORBIT_IDL) -I${datadir}/idl -I/opt/gnome/share/idl $(srcdir)/nautilus-undo.idl
-	touch nautilus_undo_idl_stamp
+$(nautilus_distributed_undo_idl_sources): nautilus_distributed_undo_idl_stamp
+nautilus_distributed_undo_idl_stamp: nautilus-distributed-undo.idl
+	$(ORBIT_IDL) -I${datadir}/idl -I/opt/gnome/share/idl $(srcdir)/nautilus-distributed-undo.idl
+	touch nautilus_distributed_undo_idl_stamp
 
 CLEANFILES = \
-	$(nautilus_view_component_idl_sources)	\
-	nautilus_view_component_idl_stamp	\
-	$(nautilus_undo_idl_sources)		\
-	nautilus_undo_idl_stamp
+	$(nautilus_view_component_idl_sources)		\
+	nautilus_view_component_idl_stamp		\
+	$(nautilus_distributed_undo_idl_sources)	\
+	nautilus_distributed_undo_idl_stamp
 
 EXTRA_DIST = \
 	nautilus-view-component.idl	\
-	nautilus-undo.idl
+	nautilus-distributed-undo.idl	\
+	$(NULL)
+

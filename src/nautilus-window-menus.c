@@ -32,7 +32,7 @@
 #include "nautilus-window-private.h"
 #include "nautilus-property-browser.h"
 
-#include <libnautilus/nautilus-undo-manager.h>
+#include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -56,7 +56,6 @@ static void                  clear_appended_bookmark_items                  (Nau
 static NautilusBookmarkList *get_bookmark_list                              (void);
 static void                  refresh_bookmarks_in_go_menu                   (NautilusWindow         *window);
 static void                  refresh_bookmarks_in_bookmarks_menu            (NautilusWindow         *window);
-static void                  update_undo_menu_item                          (NautilusWindow         *window);
 static void                  edit_bookmarks                                 (NautilusWindow         *window);
 
 
@@ -134,18 +133,8 @@ edit_menu_undo_callback (BonoboUIHandler *ui_handler,
 		  	 gpointer user_data, 
 		  	 const char *path) 
 {
-	Nautilus_Undo_Manager undo_manager;
-	CORBA_Environment ev;
-
-	CORBA_exception_init(&ev);
-
-	g_assert (NAUTILUS_IS_WINDOW (user_data));
-	
-	/* Locate undo manager */
-	undo_manager = nautilus_get_undo_manager (GTK_OBJECT (user_data));
-	Nautilus_Undo_Manager_undo (undo_manager, &ev);
-
-	CORBA_exception_free(&ev);
+	nautilus_undo_manager_undo
+		(NAUTILUS_UNDO_MANAGER (NAUTILUS_APP (NAUTILUS_WINDOW (user_data)->app)->undo_manager));
 }
 
 static void
@@ -155,9 +144,7 @@ edit_menu_cut_callback (BonoboUIHandler *ui_handler,
 {
 	GtkWindow *main_window;
 
-	g_assert (GTK_IS_WINDOW (user_data));
-	main_window=GTK_WINDOW (user_data);
-	
+	main_window = GTK_WINDOW (user_data);
 	if (GTK_IS_EDITABLE (main_window->focus_widget)) {
 		gtk_editable_cut_clipboard (GTK_EDITABLE (main_window->focus_widget));
 	}
@@ -171,9 +158,7 @@ edit_menu_copy_callback (BonoboUIHandler *ui_handler,
 {
 	GtkWindow *main_window;
 
-	g_assert (GTK_IS_WINDOW (user_data));
-	main_window=GTK_WINDOW (user_data);
-
+	main_window = GTK_WINDOW (user_data);
 	if (GTK_IS_EDITABLE (main_window->focus_widget)) {
 		gtk_editable_copy_clipboard (GTK_EDITABLE (main_window->focus_widget));
 	}
@@ -188,7 +173,7 @@ edit_menu_paste_callback (BonoboUIHandler *ui_handler,
 {
 	GtkWindow *main_window;
 
-	main_window=GTK_WINDOW (user_data);
+	main_window = GTK_WINDOW (user_data);
 	if (GTK_IS_EDITABLE (main_window->focus_widget)) {
 		gtk_editable_paste_clipboard (GTK_EDITABLE (main_window->focus_widget));
 	}
@@ -202,7 +187,8 @@ edit_menu_clear_callback (BonoboUIHandler *ui_handler,
 		    	  const char *path) 
 {
 	GtkWindow *main_window;
-	main_window=GTK_WINDOW (user_data);
+
+	main_window = GTK_WINDOW (user_data);
 	if (GTK_IS_EDITABLE (main_window->focus_widget)) {
 		/* A negative index deletes until the end of the string */
 		gtk_editable_delete_text (GTK_EDITABLE (main_window->focus_widget),0, -1);
@@ -215,7 +201,6 @@ go_menu_back_callback (BonoboUIHandler *ui_handler,
 		       gpointer user_data,
 		       const char *path) 
 {
-	g_assert (NAUTILUS_IS_WINDOW (user_data));
 	nautilus_window_go_back (NAUTILUS_WINDOW (user_data));
 }
 
@@ -224,7 +209,6 @@ go_menu_forward_callback (BonoboUIHandler *ui_handler,
 		       	  gpointer user_data,
 		          const char *path) 
 {
-	g_assert (NAUTILUS_IS_WINDOW (user_data));
 	nautilus_window_go_forward (NAUTILUS_WINDOW (user_data));
 }
 
@@ -233,7 +217,6 @@ go_menu_up_callback (BonoboUIHandler *ui_handler,
 		     gpointer user_data,
 		     const char *path) 
 {
-	g_assert (NAUTILUS_IS_WINDOW (user_data));
 	nautilus_window_go_up (NAUTILUS_WINDOW (user_data));
 }
 
@@ -242,7 +225,6 @@ go_menu_home_callback (BonoboUIHandler *ui_handler,
 		       gpointer user_data,
 		       const char *path) 
 {
-	g_assert (NAUTILUS_IS_WINDOW (user_data));
 	nautilus_window_go_home (NAUTILUS_WINDOW (user_data));
 }
 
@@ -251,8 +233,6 @@ bookmarks_menu_add_bookmark_callback (BonoboUIHandler *ui_handler,
 		       		      gpointer user_data,
 		      		      const char *path)
 {
-	g_return_if_fail (NAUTILUS_IS_WINDOW (user_data));
-
         nautilus_window_add_bookmark_for_current_location (NAUTILUS_WINDOW (user_data));
 }
 
@@ -261,8 +241,6 @@ bookmarks_menu_edit_bookmarks_callback (BonoboUIHandler *ui_handler,
 		       		      	gpointer user_data,
 		      		      	const char *path)
 {
-        g_return_if_fail (NAUTILUS_IS_WINDOW (user_data));
-
         edit_bookmarks (NAUTILUS_WINDOW (user_data));
 }
 
@@ -275,9 +253,7 @@ settings_menu_user_level_radio_group_callback (BonoboUIHandler	*ui_handler,
  	guint		old_user_level;
  	guint		new_user_level;
 
-        g_return_if_fail (user_data != NULL);
-        g_return_if_fail (NAUTILUS_IS_WINDOW (user_data));
-        g_return_if_fail (path != NULL);
+        g_assert (path != NULL);
 
 	window = NAUTILUS_WINDOW (user_data);
 
@@ -608,7 +584,6 @@ void
 nautilus_window_initialize_menus (NautilusWindow *window)
 {
         BonoboUIHandler *ui_handler;
-        NautilusUndoManager *undo_manager;
 
         ui_handler = window->uih;
         g_assert (ui_handler != NULL);
@@ -913,14 +888,11 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				        NAUTILUS_MENU_PATH_SELECT_ALL_ITEM, 
 						FALSE);
 
-        /* Set inital state of undo menu */
-	update_undo_menu_item (window);
-        
-	/* Connect to UndoManager so that we are notified when an undo transcation has occurred */
-	undo_manager = NAUTILUS_UNDO_MANAGER (NAUTILUS_APP (window->app)->undo_manager);
-	gtk_signal_connect_object_while_alive
-		(GTK_OBJECT (undo_manager), "undo_transaction_occurred",
-		 update_undo_menu_item, GTK_OBJECT (window));	
+	/* Connect to undo manager so it will handle the menu item. */
+	nautilus_undo_manager_set_up_bonobo_ui_handler_undo_item
+		(NAUTILUS_UNDO_MANAGER (NAUTILUS_APP (window->app)->undo_manager),
+		 ui_handler, NAUTILUS_MENU_PATH_UNDO_ITEM,
+		 _("_Undo"), _("Undo the last text change"));
 	
         nautilus_window_initialize_bookmarks_menu (window);
         nautilus_window_initialize_go_menu (window);
@@ -1000,47 +972,6 @@ refresh_bookmarks_in_go_menu (NautilusWindow *window)
 
                 ++index;
 	}	
-}
-
-/* Toggle sensitivity based on undo manager state */
-static void 
-update_undo_menu_item (NautilusWindow *window)
-{
-	NautilusUndoManager *local_manager;
-	Nautilus_Undo_Manager undo_transaction;
-	Nautilus_Undo_MenuItem *menu_item;
-	gboolean update;
-	CORBA_Environment ev;
-	
-        g_assert (NAUTILUS_IS_WINDOW (window));
-
-	local_manager = NAUTILUS_UNDO_MANAGER (NAUTILUS_APP (window->app)->undo_manager);	
-	if (local_manager != NULL) {
-		update = nautilus_undo_manager_can_undo (local_manager);
-		
-		bonobo_ui_handler_menu_set_sensitivity(window->uih, NAUTILUS_MENU_PATH_UNDO_ITEM, update);
-
-		if (update) {
-			/* Get undo transaction name */
-			CORBA_exception_init(&ev);
-						
-			undo_transaction = nautilus_undo_manager_get_current_undo_transaction (local_manager);
-			menu_item = Nautilus_Undo_Transaction__get_undo_description (undo_transaction, &ev);
-			
-			bonobo_ui_handler_menu_set_label (window->uih, NAUTILUS_MENU_PATH_UNDO_ITEM, menu_item->name);
-
-			CORBA_free (menu_item);
-			
-			CORBA_exception_free(&ev);
-		}
-		else {
-			bonobo_ui_handler_menu_set_label (window->uih, NAUTILUS_MENU_PATH_UNDO_ITEM, _("Undo"));
-		}
-		
-	} else {
-		bonobo_ui_handler_menu_set_sensitivity(window->uih, NAUTILUS_MENU_PATH_UNDO_ITEM, 
-        				      	       FALSE);
-	}
 }
 
 static void

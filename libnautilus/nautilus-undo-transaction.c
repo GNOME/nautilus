@@ -1,6 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* NautilusUndoTransaction - An object for an undoable transcation.
+/* NautilusUndoTransaction - An object for an undoable transaction.
+ *                           Used internally by undo machinery.
+ *                           Not public.
  *
  * Copyright (C) 2000 Eazel, Inc.
  *
@@ -23,330 +25,398 @@
  */
 
 #include <config.h>
-
-#include <string.h>
-#include <glib.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkmain.h>
-#include <bonobo/bonobo-main.h>
-#include <bonobo/bonobo-control.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-
 #include "nautilus-undo-transaction.h"
 
-typedef struct {
-  POA_Nautilus_Undo_Transaction servant;
-  gpointer bonobo_object;
+#include <bonobo/bonobo-main.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include "nautilus-undo-private.h"
 
-  NautilusUndoTransaction *undo_transaction;
+#define NAUTILUS_UNDO_TRANSACTION_LIST_DATA "Nautilus undo transaction list"
+
+typedef struct {
+	POA_Nautilus_Undo_Transaction servant;
+	NautilusUndoTransaction *bonobo_object;
 } impl_POA_Nautilus_Undo_Transaction;
 
-/* GtkObject */
-static void     nautilus_undo_transaction_initialize_class  	(NautilusUndoTransactionClass  *class);
-static void     nautilus_undo_transaction_initialize        	(NautilusUndoTransaction       *item);
-static void	nautilus_undo_transaction_destroy 	    	(GtkObject *object);
-static void 	nautilus_undo_transaction_undo 		  	(NautilusUndoTransaction *transaction);
-
+static void                    nautilus_undo_transaction_initialize_class         (NautilusUndoTransactionClass *class);
+static void                    nautilus_undo_transaction_initialize               (NautilusUndoTransaction      *item);
+static void                    nautilus_undo_transaction_destroy                  (GtkObject                    *object);
+static void                    nautilus_undo_transaction_undo                     (NautilusUndoTransaction      *transaction);
 
 /* CORBA/Bonobo */
-static Nautilus_Undo_MenuItem *impl_Nautilus_Undo_Transaction__get_undo_description 	(impl_POA_Nautilus_Undo_Transaction  *servant,
-							 					 CORBA_Environment *ev);
-static Nautilus_Undo_MenuItem *impl_Nautilus_Undo_Transaction__get_redo_description 	(impl_POA_Nautilus_Undo_Transaction  *servant,
-							 					 CORBA_Environment *ev);
-static CORBA_char *impl_Nautilus_Undo_Transaction__get_operation_name 			(impl_POA_Nautilus_Undo_Transaction  *servant,
-							 					 CORBA_Environment *ev);
-static void impl_Nautilus_Undo_Transaction__undo 						(impl_POA_Nautilus_Undo_Transaction  *servant,
-							 					 CORBA_Environment *ev);
-							 					 
+static Nautilus_Undo_MenuItem *impl_Nautilus_Undo_Transaction__get_undo_menu_item (PortableServer_Servant        servant,
+										   CORBA_Environment            *ev);
+static Nautilus_Undo_MenuItem *impl_Nautilus_Undo_Transaction__get_redo_menu_item (PortableServer_Servant        servant,
+										   CORBA_Environment            *ev);
+static CORBA_char *            impl_Nautilus_Undo_Transaction__get_operation_name (PortableServer_Servant        servant,
+										   CORBA_Environment            *ev);
+static void                    impl_Nautilus_Undo_Transaction__undo               (PortableServer_Servant        servant,
+										   CORBA_Environment            *ev);
+
+/* undo atoms */
+static void                    undo_atom_list_free                                (GList                        *list);
+static void                    undo_atom_list_undo_and_free                       (GList                        *list);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusUndoTransaction, nautilus_undo_transaction, BONOBO_OBJECT_TYPE)
 
 POA_Nautilus_Undo_Transaction__epv libnautilus_Nautilus_Undo_Transaction_epv =
 {
-	NULL,			/* _private */
-
-	(gpointer) &impl_Nautilus_Undo_Transaction__get_undo_description,
-	(gpointer) &impl_Nautilus_Undo_Transaction__get_redo_description,
-	(gpointer) &impl_Nautilus_Undo_Transaction__get_operation_name,
-	(gpointer) &impl_Nautilus_Undo_Transaction__undo
+	NULL,
+	&impl_Nautilus_Undo_Transaction__get_undo_menu_item,
+	&impl_Nautilus_Undo_Transaction__get_redo_menu_item,
+	&impl_Nautilus_Undo_Transaction__get_operation_name,
+	&impl_Nautilus_Undo_Transaction__undo
 };
 
-static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
-
-static POA_Nautilus_Undo_Transaction__vepv impl_Nautilus_Undo_Transaction_vepv =
+static PortableServer_ServantBase__epv base_epv;
+static POA_Nautilus_Undo_Transaction__vepv vepv =
 {
 	&base_epv,
 	NULL,
 	&libnautilus_Nautilus_Undo_Transaction_epv
 };
 
-
 static void
-impl_Nautilus_Undo_Transaction__destroy(BonoboObject *obj, impl_POA_Nautilus_Undo_Transaction *servant)
+impl_Nautilus_Undo_Transaction__destroy (BonoboObject *object,
+					 PortableServer_Servant servant)
 {
-	PortableServer_ObjectId *objid;
+	PortableServer_ObjectId *object_id;
 	CORBA_Environment ev;
-	void (*servant_destroy_func) (PortableServer_Servant servant, CORBA_Environment *ev);
 
   	CORBA_exception_init (&ev);
 
-  	servant_destroy_func = NAUTILUS_UNDO_TRANSACTION_CLASS (GTK_OBJECT (servant->undo_transaction)->klass)->servant_destroy_func;
-  	objid = PortableServer_POA_servant_to_id (bonobo_poa (), servant, &ev);
-  	PortableServer_POA_deactivate_object (bonobo_poa (), objid, &ev);
-  	CORBA_free (objid);
-  	obj->servant = NULL;
+  	object_id = PortableServer_POA_servant_to_id (bonobo_poa (), servant, &ev);
+  	PortableServer_POA_deactivate_object (bonobo_poa (), object_id, &ev);
+  	CORBA_free (object_id);
+  	object->servant = NULL;
 
-  	servant_destroy_func ((PortableServer_Servant) servant, &ev);
+  	POA_Nautilus_Undo_Transaction__fini (servant, &ev);
   	g_free (servant);
-  	CORBA_exception_free(&ev);
-}
 
+  	CORBA_exception_free (&ev);
+}
 
 static Nautilus_Undo_Transaction
-impl_Nautilus_Undo_Transaction__create (NautilusUndoTransaction *transaction, CORBA_Environment *ev)
+impl_Nautilus_Undo_Transaction__create (NautilusUndoTransaction *bonobo_object,
+					CORBA_Environment *ev)
 {
-	Nautilus_Undo_Transaction retval;
 	impl_POA_Nautilus_Undo_Transaction *servant;
-	void (*servant_init_func) (PortableServer_Servant servant, CORBA_Environment *ev);
 
-	NautilusUndoTransactionClass *transaction_class = NAUTILUS_UNDO_TRANSACTION_CLASS (GTK_OBJECT (transaction)->klass);
-
-	servant_init_func = transaction_class->servant_init_func;
 	servant = g_new0 (impl_POA_Nautilus_Undo_Transaction, 1);
-	servant->servant.vepv = transaction_class->vepv;
-	if (!servant->servant.vepv->Bonobo_Unknown_epv)
-		servant->servant.vepv->Bonobo_Unknown_epv = bonobo_object_get_epv ();
-  	servant_init_func ((PortableServer_Servant) servant, ev);
 
-  	servant->undo_transaction = transaction;
+	vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
+	servant->servant.vepv = &vepv;
+  	POA_Nautilus_Undo_Transaction__init ((PortableServer_Servant) servant, ev);
 
-  	retval = bonobo_object_activate_servant (BONOBO_OBJECT (transaction), servant);
+  	gtk_signal_connect (GTK_OBJECT (bonobo_object), "destroy",
+			    GTK_SIGNAL_FUNC (impl_Nautilus_Undo_Transaction__destroy),
+			    servant);
 
-  	gtk_signal_connect (GTK_OBJECT (transaction), "destroy", GTK_SIGNAL_FUNC (impl_Nautilus_Undo_Transaction__destroy), servant);
-
-  	return retval;
+  	servant->bonobo_object = bonobo_object;
+  	return bonobo_object_activate_servant (BONOBO_OBJECT (bonobo_object), servant);
 }
 
-
 static Nautilus_Undo_MenuItem *
-impl_Nautilus_Undo_Transaction__get_undo_description 	(impl_POA_Nautilus_Undo_Transaction  *servant,
-							 					 CORBA_Environment *ev)
+impl_Nautilus_Undo_Transaction__get_undo_menu_item (PortableServer_Servant servant,
+						    CORBA_Environment *ev)
 {
-	Nautilus_Undo_MenuItem *item;
 	NautilusUndoTransaction *transaction;
+	Nautilus_Undo_MenuItem *item;
 
-	CORBA_exception_init(ev);
-
-	transaction = servant->undo_transaction;
+	transaction = ((impl_POA_Nautilus_Undo_Transaction *) servant)->bonobo_object;
 	
-	item = ORBit_alloc (sizeof (Nautilus_Undo_MenuItem), NULL, NULL);
-
-     	item->name = ORBit_alloc (strlen (transaction->undo_menu_item_name) * sizeof (CORBA_char), NULL, NULL);
-	strcpy (item->name, transaction->undo_menu_item_name);
-
-     	item->description = ORBit_alloc (strlen (transaction->undo_menu_item_description) * sizeof (CORBA_char), NULL, NULL);
-	strcpy (item->description, transaction->undo_menu_item_description);
-     	
-	CORBA_exception_free(ev);
+	item = Nautilus_Undo_MenuItem__alloc ();
+     	item->label = CORBA_string_dup (transaction->undo_menu_item_label);
+     	item->hint = CORBA_string_dup (transaction->undo_menu_item_hint);
 	
 	return item;
 }
 							 				
 static Nautilus_Undo_MenuItem *
-impl_Nautilus_Undo_Transaction__get_redo_description 	(impl_POA_Nautilus_Undo_Transaction  *servant,
-							 					 CORBA_Environment *ev)
+impl_Nautilus_Undo_Transaction__get_redo_menu_item (PortableServer_Servant servant,
+						    CORBA_Environment *ev)
 {
-	Nautilus_Undo_MenuItem *item;
 	NautilusUndoTransaction *transaction;
+	Nautilus_Undo_MenuItem *item;
 
-	CORBA_exception_init(ev);
-
-	transaction = servant->undo_transaction;
+	transaction = ((impl_POA_Nautilus_Undo_Transaction *) servant)->bonobo_object;
 	
-	item = ORBit_alloc (sizeof (Nautilus_Undo_MenuItem), NULL, NULL);
-
-     	item->name = ORBit_alloc (strlen (transaction->redo_menu_item_name) * sizeof (CORBA_char), NULL, NULL);
-	strcpy (item->name, transaction->redo_menu_item_name);
-
-     	item->description = ORBit_alloc (strlen (transaction->redo_menu_item_description) * sizeof (CORBA_char), NULL, NULL);
-	strcpy (item->description, transaction->redo_menu_item_description);
-     	
-	CORBA_exception_free(ev);
+	item = Nautilus_Undo_MenuItem__alloc ();
+     	item->label = CORBA_string_dup (transaction->redo_menu_item_label);
+     	item->hint = CORBA_string_dup (transaction->redo_menu_item_hint);
 	
 	return item;
-
 }
-							 					 
+
 static CORBA_char *
-impl_Nautilus_Undo_Transaction__get_operation_name (impl_POA_Nautilus_Undo_Transaction  *servant,
-							 		 CORBA_Environment *ev)
+impl_Nautilus_Undo_Transaction__get_operation_name (PortableServer_Servant servant,
+						    CORBA_Environment *ev)
 {
 	NautilusUndoTransaction *transaction;
-	CORBA_char *operation_name;
 	
-	CORBA_exception_init(ev);
-
-	transaction = servant->undo_transaction;
-	
-    	operation_name = ORBit_alloc (strlen (transaction->operation_name) * sizeof (CORBA_char), NULL, NULL);
-	strcpy (operation_name, transaction->operation_name);
-     	
-	CORBA_exception_free(ev);
-	
-	return operation_name;
+	transaction = ((impl_POA_Nautilus_Undo_Transaction *) servant)->bonobo_object;
+	return CORBA_string_dup (transaction->operation_name);
 }
-							 					 
-static void 
-impl_Nautilus_Undo_Transaction__undo (impl_POA_Nautilus_Undo_Transaction  *servant, CORBA_Environment *ev)
-{
-	nautilus_undo_transaction_undo (servant->undo_transaction);
-}							 					 
 
-/* nautilus_undo_transaction_new */
+static void
+impl_Nautilus_Undo_Transaction__undo (PortableServer_Servant servant,
+				      CORBA_Environment *ev)
+{
+	NautilusUndoTransaction *transaction;
+	
+	transaction = ((impl_POA_Nautilus_Undo_Transaction *) servant)->bonobo_object;
+	nautilus_undo_transaction_undo (transaction);
+}
+
 NautilusUndoTransaction *
-nautilus_undo_transaction_new (const char *operation_name, const char *undo_menu_item_name,
-			       const char *undo_menu_item_description, const char *redo_menu_item_name,
-			       const char *redo_menu_item_description)
+nautilus_undo_transaction_new (const char *operation_name,
+			       const char *undo_menu_item_label,
+			       const char *undo_menu_item_hint,
+			       const char *redo_menu_item_label,
+			       const char *redo_menu_item_hint)
 {
 	NautilusUndoTransaction *transaction;
 
 	transaction = gtk_type_new (nautilus_undo_transaction_get_type ());
 	
 	transaction->operation_name = g_strdup (operation_name);
-	transaction->undo_menu_item_name = g_strdup (undo_menu_item_name);
-	transaction->undo_menu_item_description = g_strdup (undo_menu_item_description);
-	transaction->redo_menu_item_name = g_strdup (redo_menu_item_name);
-	transaction->redo_menu_item_description = g_strdup (redo_menu_item_description);
+	transaction->undo_menu_item_label = g_strdup (undo_menu_item_label);
+	transaction->undo_menu_item_hint = g_strdup (undo_menu_item_hint);
+	transaction->redo_menu_item_label = g_strdup (redo_menu_item_label);
+	transaction->redo_menu_item_hint = g_strdup (redo_menu_item_hint);
 
 	return transaction;
 }
 
-
-/* Object initialization function for NautilusUndoTransaction */
 static void 
 nautilus_undo_transaction_initialize (NautilusUndoTransaction *transaction)
 {
 	CORBA_Environment ev;	
-	CORBA_exception_init(&ev);
 
-	/* Create empty lists */
-	transaction->transaction_list = NULL;
-
+	CORBA_exception_init (&ev);
 	bonobo_object_construct (BONOBO_OBJECT (transaction), 
 				 impl_Nautilus_Undo_Transaction__create (transaction, &ev));
-
-  	CORBA_exception_free(&ev);
+  	CORBA_exception_free (&ev);
 }
 
-/* nautilus_undo_transaction_destroy */
+static void
+remove_transaction_from_object (gpointer list_data, gpointer callback_data)
+{
+	NautilusUndoAtom *atom;
+	NautilusUndoTransaction *transaction;
+	GList *list;
+	
+	g_assert (list_data != NULL);
+	atom = list_data;
+	transaction = NAUTILUS_UNDO_TRANSACTION (callback_data);
+
+	/* Remove the transaction from the list on the atom. */
+	list = gtk_object_get_data (atom->target, NAUTILUS_UNDO_TRANSACTION_LIST_DATA);
+	list = g_list_remove (list, transaction);
+	gtk_object_set_data (atom->target, NAUTILUS_UNDO_TRANSACTION_LIST_DATA, list);
+}
+
 static void
 nautilus_undo_transaction_destroy (GtkObject *object)
 {
 	NautilusUndoTransaction *transaction;
-
-	g_return_if_fail (NAUTILUS_IS_UNDO_TRANSACTION (object));
+	CORBA_Environment ev;
 
 	transaction = NAUTILUS_UNDO_TRANSACTION (object);
 	
-	/* Empty list */
-	g_list_free(transaction->transaction_list);
+	g_list_foreach (transaction->atom_list,
+			remove_transaction_from_object,
+			transaction);
+	undo_atom_list_free (transaction->atom_list);
 
-	g_free(transaction->operation_name);
-	g_free(transaction->undo_menu_item_name);
-	g_free(transaction->undo_menu_item_description);
-	g_free(transaction->redo_menu_item_name);
-	g_free(transaction->redo_menu_item_description);
+	g_free (transaction->operation_name);
+	g_free (transaction->undo_menu_item_label);
+	g_free (transaction->undo_menu_item_hint);
+	g_free (transaction->redo_menu_item_label);
+	g_free (transaction->redo_menu_item_hint);
+
+	CORBA_exception_init (&ev);
+	CORBA_Object_release (transaction->owner, &ev);
+	CORBA_exception_free (&ev);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
-/* Class initialization function for the NautilusUndoable item. */
 static void
 nautilus_undo_transaction_initialize_class (NautilusUndoTransactionClass *klass)
 {
-	GtkObjectClass *object_class;
-
-	object_class = GTK_OBJECT_CLASS (klass);
-
-	object_class->destroy = nautilus_undo_transaction_destroy;
-
-	klass->servant_init_func = POA_Nautilus_Undo_Transaction__init;
-	klass->servant_destroy_func = POA_Nautilus_Undo_Transaction__fini;
-	klass->vepv = &impl_Nautilus_Undo_Transaction_vepv;
+	GTK_OBJECT_CLASS (klass)->destroy = nautilus_undo_transaction_destroy;
 }
 
-/* nautilus_undo_transaction_add_undoable */
-gboolean 
-nautilus_undo_transaction_add_undoable	(NautilusUndoTransaction *transaction, 
-						 NautilusUndoable *undoable)
-{	
-	if (transaction == NULL) {
-		g_warning ("Cannot add undoable to a NULL transaction");
-		return FALSE;
-	}
-
-	if (undoable == NULL) {
-		g_warning ("Cannot add a NULL undoable to a transaction");
-		return FALSE;
-	}
-
-	transaction->transaction_list = g_list_append (transaction->transaction_list, undoable);
+void
+nautilus_undo_transaction_add_atom (NautilusUndoTransaction *transaction, 
+				    const NautilusUndoAtom *atom)
+{
+	GList *list;
 	
-	return TRUE;
+	g_return_if_fail (NAUTILUS_IS_UNDO_TRANSACTION (transaction));
+	g_return_if_fail (atom != NULL);
+	g_return_if_fail (GTK_IS_OBJECT (atom->target));
+
+	/* Add the atom to the atom list in the transaction. */
+	transaction->atom_list = g_list_append
+		(transaction->atom_list, g_memdup (atom, sizeof (*atom)));
+
+	/* Add the transaction to the list on the atom. */
+	list = gtk_object_get_data (atom->target, NAUTILUS_UNDO_TRANSACTION_LIST_DATA);
+	if (g_list_find (list, transaction) != NULL) {
+		return;
+	}
+
+	/* If it's not already on that atom, this object is new. */
+	list = g_list_prepend (list, transaction);
+	gtk_object_set_data (atom->target, NAUTILUS_UNDO_TRANSACTION_LIST_DATA, list);
+	
+	/* Connect a signal handler to the atom so it will unregister
+	 * itself when it's destroyed.
+	 */
+	gtk_signal_connect (atom->target, "destroy",
+			    GTK_SIGNAL_FUNC (nautilus_undo_transaction_unregister_object),
+			    NULL);
 }
-
-
-
-/* nautilus_undo_transaction_undo
- * Parse transaction and send undo signals to undoable objects stored in transaction 
- */
 
 void 
 nautilus_undo_transaction_undo (NautilusUndoTransaction *transaction)
 {
-	NautilusUndoable *undoable;
-	guint index;
-	
-	if (transaction == NULL) {
-		return;
-	}
+	g_return_if_fail (NAUTILUS_IS_UNDO_TRANSACTION (transaction));
 
-	for ( index = 0; index < g_list_length (transaction->transaction_list); index++) {
-
-		/* Get pointer to undoable */
-		undoable = g_list_nth_data (transaction->transaction_list, index);
-
-		/* Send object restore from undo signal */
-		if (undoable != NULL) {
-			nautilus_undoable_restore_from_undo_snapshot (undoable);
-		}
-	}
+	undo_atom_list_undo_and_free (transaction->atom_list);
+	transaction->atom_list = NULL;
 }
 
-
-/* nautilus_undo_transaction_contains_object 
- * 
- * Return TRUE if object is contained by transaction
- */
-gboolean		
-nautilus_undo_transaction_contains_object (NautilusUndoTransaction *transaction, 
-					   GtkObject *object)
+void
+nautilus_undo_transaction_add_to_undo_manager (NautilusUndoTransaction *transaction,
+					       Nautilus_Undo_Manager manager)
 {
-	NautilusUndoable *undoable;
-	gint index;
+	CORBA_Environment ev;
 
-	g_return_val_if_fail(transaction != NULL, FALSE);
-		
-	for ( index = 0; index < g_list_length(transaction->transaction_list); index++) {
+	g_return_if_fail (NAUTILUS_IS_UNDO_TRANSACTION (transaction));
+	g_return_if_fail (transaction->owner == CORBA_OBJECT_NIL);
 
-		/* Get pointer to undoable */
-		undoable = g_list_nth_data(transaction->transaction_list, index);
-		
-		/* Check and see if we have a target object match */
-		if (undoable != NULL && undoable->undo_target_class == object) {
-			return TRUE;
+	CORBA_exception_init (&ev);
+
+	if (!CORBA_Object_is_nil (manager, &ev)) {
+		Nautilus_Undo_Manager_append
+			(manager,
+			 bonobo_object_corba_objref (BONOBO_OBJECT (transaction)),
+			 &ev);
+		transaction->owner = CORBA_Object_duplicate (manager, &ev);
+	}
+
+	CORBA_exception_free (&ev);
+}
+
+static void
+remove_atoms (NautilusUndoTransaction *transaction,
+	      GtkObject *object)
+{
+	CORBA_Environment ev;
+	GList *p, *next;
+	NautilusUndoAtom *atom;
+
+	g_assert (NAUTILUS_IS_UNDO_TRANSACTION (transaction));
+	g_assert (GTK_IS_OBJECT (object));
+
+	CORBA_exception_init (&ev);
+
+	/* Destroy any atoms for this object. */
+	for (p = transaction->atom_list; p != NULL; p = next) {
+		atom = p->data;
+		next = p->next;
+
+		if (atom->target == object) {
+			transaction->atom_list = g_list_remove_link
+				(transaction->atom_list, p);
+			undo_atom_list_free (p);
 		}
 	}
 
-	return FALSE;
+	/* If all the atoms are gone, forget this transaction.
+	 * This may end up freeing the transaction.
+	 */
+	if (transaction->atom_list == NULL) {
+		Nautilus_Undo_Manager_forget
+			(transaction->owner,
+			 bonobo_object_corba_objref (BONOBO_OBJECT (transaction)),
+			 &ev);
+	}
+
+	CORBA_exception_free (&ev);
+}
+
+static void
+remove_atoms_cover (gpointer list_data, gpointer callback_data)
+{
+	remove_atoms (NAUTILUS_UNDO_TRANSACTION (list_data), GTK_OBJECT (callback_data));
+}
+
+void
+nautilus_undo_transaction_unregister_object (GtkObject *object)
+{
+	GList *list;
+
+	g_return_if_fail (GTK_IS_OBJECT (object));
+
+	/* Remove atoms from each transaction on the list. */
+	list = gtk_object_get_data (object, NAUTILUS_UNDO_TRANSACTION_LIST_DATA);
+	g_list_foreach (list, remove_atoms_cover, object);	
+	g_list_free (list);
+	gtk_object_remove_data (object, NAUTILUS_UNDO_TRANSACTION_LIST_DATA);
+}
+
+static void
+undo_atom_free (NautilusUndoAtom *atom)
+{
+	/* Call the destroy-notify function if it's present. */
+	if (atom->callback_data_destroy_notify != NULL) {
+		(* atom->callback_data_destroy_notify) (atom->callback_data);
+	}
+
+	/* Free the atom storage. */
+	g_free (atom);
+}
+
+static void
+undo_atom_undo_and_free (NautilusUndoAtom *atom)
+{
+	/* Call the function that does the actual undo. */
+	(* atom->callback) (atom->target, atom->callback_data);
+
+	/* Get rid of the atom now that it's spent. */
+	undo_atom_free (atom);
+}
+
+static void
+undo_atom_free_cover (gpointer atom, gpointer callback_data)
+{
+	g_assert (atom != NULL);
+	g_assert (callback_data == NULL);
+	undo_atom_free (atom);
+}
+
+static void
+undo_atom_undo_and_free_cover (gpointer atom, gpointer callback_data)
+{
+	g_assert (atom != NULL);
+	g_assert (callback_data == NULL);
+	undo_atom_undo_and_free (atom);
+}
+
+static void
+undo_atom_list_free (GList *list)
+{
+	g_list_foreach (list, undo_atom_free_cover, NULL);
+	g_list_free (list);
+}
+
+static void
+undo_atom_list_undo_and_free (GList *list)
+{
+	g_list_foreach (list, undo_atom_undo_and_free_cover, NULL);
+	g_list_free (list);
 }

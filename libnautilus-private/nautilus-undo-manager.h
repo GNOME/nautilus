@@ -1,6 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* NautilusUndoManager - Manages undo and redo transactions.
+ *                       This is the public interface used by the application.                      
  *
  * Copyright (C) 2000 Eazel, Inc.
  *
@@ -25,10 +26,7 @@
 #ifndef NAUTILUS_UNDO_MANAGER_H
 #define NAUTILUS_UNDO_MANAGER_H
 
-#include <bonobo/bonobo-control.h>
-
-#include "nautilus-undo-transaction.h"
-#include "nautilus-undo.h"
+#include <bonobo/bonobo-ui-handler.h>
 
 #define NAUTILUS_TYPE_UNDO_MANAGER \
 	(nautilus_undo_manager_get_type ())
@@ -41,46 +39,36 @@
 #define NAUTILUS_IS_UNDO_MANAGER_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass),	NAUTILUS_TYPE_UNDO_MANAGER))
 	
-typedef struct NautilusUndoManagerClass NautilusUndoManagerClass;
 typedef struct NautilusUndoManagerDetails NautilusUndoManagerDetails;
 
-struct NautilusUndoManager {
+typedef struct {
 	BonoboObject parent;
 	NautilusUndoManagerDetails *details;
-};
+} NautilusUndoManager;
 
-struct NautilusUndoManagerClass {
-	BonoboObjectClass parent_class;	
-	void (* undo_transaction_occurred) (GtkObject *object, gpointer data);
-	gpointer servant_init_func, servant_destroy_func, vepv;
-};
+typedef struct {
+	BonoboObjectClass parent_slot;
+	void (* changed) (GtkObject *object, gpointer data);
+} NautilusUndoManagerClass;
 
+GtkType              nautilus_undo_manager_get_type                           (void);
+NautilusUndoManager *nautilus_undo_manager_new                                (void);
 
-/* GtkObject */
-GtkType               nautilus_undo_manager_get_type          (void);
-NautilusUndoManager 	*nautilus_undo_manager_new            (void);
+/* Undo operations. */
+void                 nautilus_undo_manager_undo                               (NautilusUndoManager *undo_manager);
 
-/* Prototypes */
-gboolean              nautilus_undo_manager_can_undo          (NautilusUndoManager   *manager);
-gboolean              nautilus_undo_manager_can_redo          (NautilusUndoManager   *manager);
-void                  nautilus_undo_manager_enable_redo       (NautilusUndoManager   *manager,
-							       gboolean               value);
-void                  nautilus_undo_manager_set_queue_depth   (NautilusUndoManager   *manager,
-							       gint                   depth);
-							       
-void                  nautilus_attach_undo_manager            (GtkObject             *object,
-							       Nautilus_Undo_Manager  manager);
-void                  nautilus_share_undo_manager             (GtkObject             *destination_object,
-							       GtkObject             *source_object);
-void                  nautilus_undo_set_up_bonobo_control     (BonoboControl         *control);
-Nautilus_Undo_Manager nautilus_get_undo_manager               (GtkObject             *start_object);
+/* Connect the manager to a particular menu item. */
+void                 nautilus_undo_manager_set_up_bonobo_ui_handler_undo_item (NautilusUndoManager *manager,
+									       BonoboUIHandler     *handler,
+									       const char          *path,
+									       const char          *no_undo_menu_item_label,
+									       const char          *no_undo_menu_item_hint);
 
-void		      nautilus_undo_manager_stash_global_undo (Nautilus_Undo_Manager undo_manager);
-Nautilus_Undo_Manager nautilus_undo_manager_get_global_undo   (void);
+/* Attach the undo manager to a Gtk object so that object and the widgets inside it can participate in undo. */
+void                 nautilus_undo_manager_attach                             (NautilusUndoManager *manager,
+									       GtkObject           *object);
+/* Attach the undo manager to a Bonobo object so another component can find it. */
+void                 nautilus_undo_manager_add_interface                      (NautilusUndoManager *manager,
+									       BonoboObject        *object);
 
-
-Nautilus_Undo_Transaction nautilus_undo_manager_get_current_undo_transaction   (NautilusUndoManager   *manager);
-
-
-
-#endif
+#endif /* NAUTILUS_UNDO_MANAGER_H */

@@ -291,7 +291,7 @@ vfs_module_transform (const char *method_name, const char *args)
 {
 	init_help_module ();
 #ifdef ALI_DEBUG
-	g_print ("Loading libvfs-help.so...\n"); /* FIXME: Remove me */
+	g_print ("Loading libvfs-help.so...\n");
 #endif
 	return &transform;
 }

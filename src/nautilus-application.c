@@ -37,7 +37,7 @@
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-string-list.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
-#include <libnautilus/nautilus-undo-manager.h>
+#include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <liboaf/liboaf.h>
 #include "nautilus-desktop-window.h"
 
@@ -222,7 +222,6 @@ nautilus_app_init (NautilusApp *app)
 {
 	CORBA_Environment ev;
 	CORBA_Object objref;
-	Nautilus_Undo_Manager undo_manager;
 	
 	CORBA_exception_init (&ev);
 
@@ -231,15 +230,12 @@ nautilus_app_init (NautilusApp *app)
 				    objref);
 	bonobo_object_construct (BONOBO_OBJECT(app), objref);
 
-	/* Init undo manager */
+	/* Create an undo manager */
 	app->undo_manager = BONOBO_OBJECT (nautilus_undo_manager_new ());
-	undo_manager = bonobo_object_corba_objref (BONOBO_OBJECT (app->undo_manager));
 
-	/* Stash a global reference to the object */
-	nautilus_undo_manager_stash_global_undo (undo_manager);
-
-	/* Add it to the application object */
-	nautilus_attach_undo_manager (GTK_OBJECT (app), undo_manager);
+	/* Attach undo manager to application so windows can use share_undo_manager. */
+	nautilus_undo_manager_attach (NAUTILUS_UNDO_MANAGER (app->undo_manager),
+				      GTK_OBJECT (app));
 
 	CORBA_exception_free (&ev);
 }

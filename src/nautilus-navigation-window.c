@@ -53,7 +53,7 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-mini-icon.h>
 #include <libnautilus-extensions/nautilus-generous-bin.h>
-#include <libnautilus/nautilus-undo-manager.h>
+#include <libnautilus/nautilus-undo.h>
 #include "nautilus-zoom-control.h"
 #include <ctype.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
@@ -349,8 +349,6 @@ nautilus_window_constructed (NautilusWindow *window)
   	GtkWidget *temp_frame;
   	GnomeDockItemBehavior behavior;
   	int sidebar_width;
-	NautilusUndoManager *app_undo_manager;
-  	Nautilus_Undo_Manager undo_manager;
 
   	app = GNOME_APP(window);
 
@@ -465,10 +463,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	nautilus_window_allow_stop (window, FALSE);
 
 	/* Set up undo manager */
-	app_undo_manager = NAUTILUS_UNDO_MANAGER (NAUTILUS_APP (window->app)->undo_manager);	
-	g_assert (app_undo_manager != NULL);
-	undo_manager = bonobo_object_corba_objref (BONOBO_OBJECT (app_undo_manager));
-	nautilus_attach_undo_manager (GTK_OBJECT (window), undo_manager);
+	nautilus_undo_share_undo_manager (GTK_OBJECT (window), GTK_OBJECT (window->app));
 }
 
 static void

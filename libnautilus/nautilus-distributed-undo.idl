@@ -33,8 +33,8 @@ module Nautilus {
 
 		/* The specifications for a menu item. */
 		struct MenuItem {
-			string name;
-			string description;
+			string label;
+			string hint;
 		};
 
 		/* A single undoable operation is represented by a
@@ -42,14 +42,14 @@ module Nautilus {
 		 * must supply for use by an undo manager.
 		 */
 		interface Transaction : ::Bonobo::Unknown {
-			/* These descriptions are used to display undo
+			/* These menu items are used to display undo
 			 * or redo menu items for this transaction.
-			 * The base description is for lists of undoable
+			 * The operation name is for lists of undoable
 			 * operations that are listed somewhere other
 			 * than an undo or redo object.
 			 */
-			readonly attribute MenuItem undo_description;
-			readonly attribute MenuItem redo_description;
+			readonly attribute MenuItem undo_menu_item;
+			readonly attribute MenuItem redo_menu_item;
 			readonly attribute string operation_name;
 
 			/* Here's how you actually perform an undo.

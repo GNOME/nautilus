@@ -30,13 +30,13 @@
 #include <config.h>
 #include "nautilus-view-frame-private.h"
 
+#include "nautilus-application.h"
 #include "nautilus-window.h"
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtk.h>
-#include <libnautilus/nautilus-undo-manager.h>
-#include <libnautilus/nautilus-undo-context.h>
+#include <libnautilus-extensions/nautilus-undo-manager.h>
 
 enum {
   REQUEST_LOCATION_CHANGE,
@@ -288,8 +288,6 @@ nautilus_view_frame_load_client(NautilusViewFrame *view, const char *iid)
 {
 	CORBA_Object obj;
 	CORBA_Object zoomable;
-	Nautilus_Undo_Manager undo_manager;
-	NautilusUndoContext *undo_context;
 	CORBA_Environment ev;
   	int i;
   	
@@ -317,10 +315,9 @@ nautilus_view_frame_load_client(NautilusViewFrame *view, const char *iid)
 	view->zoomable_frame = impl_Nautilus_ZoomableFrame__create(view, &ev);
 
 	/* Add undo manager to component */
-	undo_manager = nautilus_undo_manager_get_global_undo ();
-	g_assert (undo_manager);
-	undo_context = nautilus_undo_context_new (undo_manager);
-	bonobo_object_add_interface (BONOBO_OBJECT (view->view_frame), BONOBO_OBJECT (undo_context));
+	nautilus_undo_manager_add_interface
+        	(NAUTILUS_UNDO_MANAGER (NAUTILUS_APP (NAUTILUS_WINDOW (view->main_window)->app)->undo_manager),
+                 BONOBO_OBJECT (view->view_frame));
 
 	/* Now figure out which type of embedded object it is: */
 	for(i = 0; component_types[i] && !view->component_class; i++)

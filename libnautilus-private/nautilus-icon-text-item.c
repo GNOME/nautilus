@@ -14,7 +14,7 @@
 #include "nautilus-icon-text-item.h"
 
 #include "nautilus-entry.h"
-#include <libnautilus/nautilus-undoable.h>
+#include <libnautilus/nautilus-undo.h>
 
 #include <math.h>
 #include <stdio.h>

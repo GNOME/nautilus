@@ -34,56 +34,64 @@
 #define NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT 2
 
 /* GtkCList */
-int		  nautilus_gtk_clist_get_first_selected_row (GtkCList *list);
-int		  nautilus_gtk_clist_get_last_selected_row  (GtkCList *list);
+int               nautilus_gtk_clist_get_first_selected_row    (GtkCList               *list);
+int               nautilus_gtk_clist_get_last_selected_row     (GtkCList               *list);
 
 /* signals */
-guint             nautilus_gtk_signal_connect_free_data (GtkObject              *object,
-							 const gchar            *name,
-							 GtkSignalFunc           func,
-							 gpointer                data);
-
+guint             nautilus_gtk_signal_connect_free_data        (GtkObject              *object,
+								const gchar            *name,
+								GtkSignalFunc           func,
+								gpointer                data);
 guint             nautilus_gtk_signal_connect_free_data_custom (GtkObject              *object,
-							 	const gchar            *name,
-							 	GtkSignalFunc           func,
-							 	gpointer                data,
-							 	GtkDestroyNotify        destroy_func);
+								const gchar            *name,
+								GtkSignalFunc           func,
+								gpointer                data,
+								GtkDestroyNotify        destroy_func);
+void              nautilus_gtk_signal_connect_full_while_alive (GtkObject              *object,
+								const gchar            *name,
+								GtkSignalFunc           func,
+								GtkCallbackMarshal      marshal,
+								gpointer                data,
+								GtkDestroyNotify        destroy_func,
+								gboolean                object_signal,
+								gboolean                after,
+								GtkObject              *alive_object);
 
 /* list of GtkObject */
-GList *           nautilus_gtk_object_list_ref          (GList                  *list);
-void              nautilus_gtk_object_list_unref        (GList                  *list);
-void              nautilus_gtk_object_list_free         (GList                  *list);
-GList *           nautilus_gtk_object_list_copy         (GList                  *list);
+GList *           nautilus_gtk_object_list_ref                 (GList                  *list);
+void              nautilus_gtk_object_list_unref               (GList                  *list);
+void              nautilus_gtk_object_list_free                (GList                  *list);
+GList *           nautilus_gtk_object_list_copy                (GList                  *list);
 
 /* GtkWidget */
-gboolean          nautilus_point_in_allocation          (const GtkAllocation    *allocation,
-							 int                     x,
-							 int                     y);
-void              nautilus_gtk_widget_set_font          (GtkWidget              *widget,
-							 GdkFont                *font);
-void              nautilus_gtk_widget_set_font_by_name  (GtkWidget              *widget,
-							 const char             *font_name);
-gboolean          nautilus_point_in_widget              (GtkWidget              *widget,
-							 int                     x,
-							 int                     y);
+gboolean          nautilus_point_in_allocation                 (const GtkAllocation    *allocation,
+								int                     x,
+								int                     y);
+void              nautilus_gtk_widget_set_font                 (GtkWidget              *widget,
+								GdkFont                *font);
+void              nautilus_gtk_widget_set_font_by_name         (GtkWidget              *widget,
+								const char             *font_name);
+gboolean          nautilus_point_in_widget                     (GtkWidget              *widget,
+								int                     x,
+								int                     y);
 
 /* GtkWindow */
-void              nautilus_gtk_window_present           (GtkWindow              *window);
+void              nautilus_gtk_window_present                  (GtkWindow              *window);
 
 /* selection data */
-GtkSelectionData *nautilus_gtk_selection_data_copy_deep (const GtkSelectionData *selection_data);
-void              nautilus_gtk_selection_data_free_deep (GtkSelectionData       *selection_data);
+GtkSelectionData *nautilus_gtk_selection_data_copy_deep        (const GtkSelectionData *selection_data);
+void              nautilus_gtk_selection_data_free_deep        (GtkSelectionData       *selection_data);
 
 /* GtkMenu */
-void              nautilus_pop_up_context_menu          (GtkMenu                *menu,
-							 gint16                  offset_x,
-							 gint16                  offset_y);
+void              nautilus_pop_up_context_menu                 (GtkMenu                *menu,
+								gint16                  offset_x,
+								gint16                  offset_y);
 
 /* GtkStyle */
-void              nautilus_gtk_style_set_font           (GtkStyle               *style,
-							 GdkFont                *font);
-void              nautilus_gtk_style_set_font_by_name   (GtkStyle               *style,
-							 const char             *font_name);
+void              nautilus_gtk_style_set_font                  (GtkStyle               *style,
+								GdkFont                *font);
+void              nautilus_gtk_style_set_font_by_name          (GtkStyle               *style,
+								const char             *font_name);
 
 /* marshals */
 

@@ -3,7 +3,7 @@
 
 #include "nautilus-window.h"
 #include <libnautilus/libnautilus.h>
-#include <libnautilus/nautilus-undo-manager.h>
+#include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <gtk/gtk.h>
 
 typedef enum {

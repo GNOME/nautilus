@@ -93,13 +93,13 @@ static void                     preferences_hash_node_check_changes_func       (
 
 
 /* PreferencesCallbackNode functions */
-static PreferencesCallbackNode *preferneces_callback_node_alloc                (NautilusPreferencesCallback  callback_proc,
+static PreferencesCallbackNode *preferences_callback_node_alloc                (NautilusPreferencesCallback  callback_proc,
 										gpointer                     callback_data,
 										const PreferencesHashNode   *hash_node);
-static void                     preferneces_callback_node_free                 (PreferencesCallbackNode     *node);
-static void                     preferneces_callback_node_free_func            (gpointer                     data,
+static void                     preferences_callback_node_free                 (PreferencesCallbackNode     *node);
+static void                     preferences_callback_node_free_func            (gpointer                     data,
 										gpointer                     callback_data);
-static void                     preferneces_callback_node_invoke_func          (gpointer                     data,
+static void                     preferences_callback_node_invoke_func          (gpointer                     data,
 										gpointer                     callback_data);
 static void                     preferences_hash_node_add_callback             (PreferencesHashNode         *node,
 										NautilusPreferencesCallback  callback_proc,
@@ -177,7 +177,7 @@ preferences_hash_node_free (PreferencesHashNode *node)
 	}
 
 	nautilus_g_list_free_deep_custom (node->callback_list,
-					  preferneces_callback_node_free_func,
+					  preferences_callback_node_free_func,
 					  NULL);
 	
 	node->callback_list = NULL;
@@ -201,21 +201,21 @@ preferences_hash_node_add_callback (PreferencesHashNode		*node,
 				    NautilusPreferencesCallback	callback_proc,
 				    gpointer			callback_data)
 {
-	PreferencesCallbackNode	*preferneces_callback_node;
+	PreferencesCallbackNode	*preferences_callback_node;
 	guint i;
 
 	g_assert (node != NULL);
 
 	g_assert (callback_proc != NULL);
 
-	preferneces_callback_node = preferneces_callback_node_alloc (callback_proc, 
+	preferences_callback_node = preferences_callback_node_alloc (callback_proc, 
 								     callback_data,
 								     node);
 	
-	g_assert (preferneces_callback_node != NULL);
+	g_assert (preferences_callback_node != NULL);
 	
 	node->callback_list = g_list_append (node->callback_list, 
-					     (gpointer) preferneces_callback_node);
+					     (gpointer) preferences_callback_node);
 
 	/*
 	 * We install only one gconf notification for each preference node.
@@ -279,7 +279,7 @@ preferences_hash_node_remove_callback (PreferencesHashNode		*node,
 			node->callback_list = g_list_remove (node->callback_list, 
 							     (gpointer) callback_info);
 			
-			preferneces_callback_node_free (callback_info);
+			preferences_callback_node_free (callback_info);
 		}
 	}
 	
@@ -345,14 +345,14 @@ preferences_hash_node_check_changes_func (gpointer key,
 		/* Invoke callbacks for this node */
 		if (node->callback_list) {
 			g_list_foreach (node->callback_list,
-					preferneces_callback_node_invoke_func,
+					preferences_callback_node_invoke_func,
 					(gpointer) NULL);
 		}
 	}
 }
 
 /**
- * preferneces_callback_node_alloc
+ * preferences_callback_node_alloc
  *
  * Allocate a callback info struct from the given values.  PreferencesCallbackNode
  * structures are used as nodes for the callbac_list member of pref hash table
@@ -364,7 +364,7 @@ preferences_hash_node_check_changes_func (gpointer key,
  * Return value: A newly allocated node.
  **/
 static PreferencesCallbackNode *
-preferneces_callback_node_alloc (NautilusPreferencesCallback	callback_proc,
+preferences_callback_node_alloc (NautilusPreferencesCallback	callback_proc,
 				 gpointer			callback_data,
 				 const PreferencesHashNode	*hash_node)
 {
@@ -382,13 +382,13 @@ preferneces_callback_node_alloc (NautilusPreferencesCallback	callback_proc,
 }
 
 /**
- * preferneces_callback_node_free
+ * preferences_callback_node_free
  *
  * Free a callback info struct.
- * @preferneces_callback_node: The struct to free.
+ * @preferences_callback_node: The struct to free.
  **/
 static void
-preferneces_callback_node_free (PreferencesCallbackNode *callback_node)
+preferences_callback_node_free (PreferencesCallbackNode *callback_node)
 {
 	g_assert (callback_node != NULL);
 
@@ -399,7 +399,7 @@ preferneces_callback_node_free (PreferencesCallbackNode *callback_node)
 }
 
 /**
- * preferneces_callback_node_free_func
+ * preferences_callback_node_free_func
  *
  * A function that frees a callback info struct.  It is meant to be fed to 
  * g_list_foreach ()
@@ -407,16 +407,16 @@ preferneces_callback_node_free (PreferencesCallbackNode *callback_node)
  * @callback_data: The callback_data privately maintained by the GList.
  **/
 static void
-preferneces_callback_node_free_func (gpointer	data,
+preferences_callback_node_free_func (gpointer	data,
 				     gpointer	callback_data)
 {
 	g_assert (data != NULL);
 
-	preferneces_callback_node_free ((PreferencesCallbackNode *) data);
+	preferences_callback_node_free ((PreferencesCallbackNode *) data);
 }
 
 /**
- * preferneces_callback_node_invoke_func
+ * preferences_callback_node_invoke_func
  *
  * A function that invokes a callback from the given struct.  It is meant to be fed to 
  * g_list_foreach ()
@@ -424,7 +424,7 @@ preferneces_callback_node_free_func (gpointer	data,
  * @callback_data: The callback_data privately maintained by the GList.
  **/
 static void
-preferneces_callback_node_invoke_func (gpointer	data,
+preferences_callback_node_invoke_func (gpointer	data,
 				       gpointer	callback_data)
 {
 	PreferencesCallbackNode	*callback_node;
@@ -562,7 +562,7 @@ preferences_gconf_callback (GConfClient	*client,
 	/* Invoke callbacks for this node */
 	if (node->callback_list) {
 		g_list_foreach (node->callback_list,
-				preferneces_callback_node_invoke_func,
+				preferences_callback_node_invoke_func,
 				(gpointer) NULL);
 	}
 

@@ -663,3 +663,84 @@ nautilus_gtk_widget_set_font_by_name (GtkWidget *widget, const char *font_name)
 	nautilus_gtk_widget_set_font (widget, font);
 	gdk_font_unref (font);
 }
+
+/* This stuff is stolen from Gtk. */
+
+typedef struct DisconnectInfo {
+	GtkObject *object1;
+	guint disconnect_handler1;
+	guint signal_handler;
+	GtkObject *object2;
+	guint disconnect_handler2;
+} DisconnectInfo;
+
+static guint
+alive_disconnecter (GtkObject *object, DisconnectInfo *info)
+{
+	g_assert (info != NULL);
+	g_assert (GTK_IS_OBJECT (info->object1));
+	g_assert (info->disconnect_handler1 != 0);
+	g_assert (info->signal_handler != 0);
+	g_assert (GTK_IS_OBJECT (info->object2));
+	g_assert (info->disconnect_handler2 != 0);
+	g_assert (object == info->object1 || object == info->object2);
+	
+	gtk_signal_disconnect (info->object1, info->disconnect_handler1);
+	gtk_signal_disconnect (info->object1, info->signal_handler);
+	gtk_signal_disconnect (info->object2, info->disconnect_handler2);
+	
+	g_free (info);
+	
+	return 0;
+}
+
+/**
+ * nautilus_gtk_signal_connect_full_while_alive
+ *
+ * Like gtk_signal_connect_while_alive, but works with full parameters.
+ **/
+void
+nautilus_gtk_signal_connect_full_while_alive (GtkObject *object,
+					      const gchar *name,
+					      GtkSignalFunc func,
+					      GtkCallbackMarshal marshal,
+					      gpointer data,
+					      GtkDestroyNotify destroy_func,
+					      gboolean object_signal,
+					      gboolean after,
+					      GtkObject *alive_object)
+{
+	DisconnectInfo *info;
+	
+	g_return_if_fail (GTK_IS_OBJECT (object));
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (func != NULL);
+	g_return_if_fail (object_signal == FALSE || object_signal == TRUE);
+	g_return_if_fail (after == FALSE || after == TRUE);
+	g_return_if_fail (GTK_IS_OBJECT (alive_object));
+	
+	info = g_new (DisconnectInfo, 1);
+	info->object1 = object;
+	info->object2 = alive_object;
+	
+	info->signal_handler =
+		gtk_signal_connect_full (object,
+					 name,
+					 func,
+					 marshal,
+					 data,
+					 destroy_func,
+					 object_signal,
+					 after);
+
+	info->disconnect_handler1 =
+		gtk_signal_connect (object,
+				    "destroy",
+				    GTK_SIGNAL_FUNC (alive_disconnecter),
+				    info);
+	info->disconnect_handler2 =
+		gtk_signal_connect (alive_object,
+				    "destroy",
+				    GTK_SIGNAL_FUNC (alive_disconnecter),
+				    info);
+}

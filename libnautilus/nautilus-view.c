@@ -34,8 +34,7 @@
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-control.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus/nautilus-undo-context.h>
-#include <libnautilus/nautilus-undo-manager.h>
+#include "nautilus-undo.h"
 
 enum {
 	NOTIFY_LOCATION_CHANGE,

@@ -1,6 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* NautilusUndoContext
+/* NautilusUndoContext - Used internally by undo machinery.
+ *                       Not public.
  *
  * Copyright (C) 2000 Eazel, Inc.
  *
@@ -25,7 +26,8 @@
 #ifndef NAUTILUS_UNDO_CONTEXT_H
 #define NAUTILUS_UNDO_CONTEXT_H
 
-#include "nautilus-undo.h"
+#include <bonobo/bonobo-object.h>
+#include <libnautilus/nautilus-distributed-undo.h>
 
 #define NAUTILUS_TYPE_UNDO_CONTEXT \
 	(nautilus_undo_context_get_type ())
@@ -38,25 +40,16 @@
 #define NAUTILUS_IS_UNDO_CONTEXT_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass),	NAUTILUS_TYPE_UNDO_CONTEXT))
 
-typedef struct NautilusUndoContext NautilusUndoContext;
-typedef struct NautilusUndoContextClass NautilusUndoContextClass;
-
-struct NautilusUndoContext {
-	BonoboObject parent;
+typedef struct {
+	BonoboObject parent_slot;
 	Nautilus_Undo_Manager undo_manager;
-};
+} NautilusUndoContext;
 
-struct NautilusUndoContextClass {
-	BonoboObjectClass parent_class;
-	gpointer servant_init_func, servant_destroy_func, vepv;
-};
+typedef struct {
+	BonoboObjectClass parent_slot;
+} NautilusUndoContextClass;
 
-
-/* GtkObject */
-GtkType			nautilus_undo_context_get_type	(void);
-NautilusUndoContext 	*nautilus_undo_context_new 	(Nautilus_Undo_Manager undo_manager);
-
-/* Prototypes */
-
+GtkType              nautilus_undo_context_get_type (void);
+NautilusUndoContext *nautilus_undo_context_new      (Nautilus_Undo_Manager undo_manager);
 
 #endif /* NAUTILUS_UNDO_CONTEXT_H */

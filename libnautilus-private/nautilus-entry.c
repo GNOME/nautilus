@@ -36,8 +36,6 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
-#include <libnautilus/nautilus-undo-manager.h>
-#include <libnautilus/nautilus-undoable.h>
 #include <libnautilus/nautilus-undo.h>
 
 #include <orb/orbit.h>

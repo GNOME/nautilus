@@ -1,5 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* nautulus-undo-manager-private.h
+
+/* xxx
  *
  * Copyright (C) 2000 Eazel, Inc.
  *
@@ -21,22 +22,14 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifndef NAUTILUS_UNDO_PRIVATE_H
+#define NAUTILUS_UNDO_PRIVATE_H
 
-#ifndef NAUTILUS_UNDO_MANAGER_PRIVATE_H
-#define NAUTILUS_UNDO_MANAGER_PRIVATE_H
+#include "nautilus-distributed-undo.h"
+#include <gtk/gtkobject.h>
 
-#include <glib.h>
-#include <bonobo.h>
+Nautilus_Undo_Manager nautilus_undo_get_undo_manager                (GtkObject             *attached_object);
+void                  nautilus_undo_attach_undo_manager             (GtkObject             *object,
+								     Nautilus_Undo_Manager  manager);
 
-#include "nautilus-undo-transaction.h"
-
-/* Private data */
-
-struct NautilusUndoManagerDetails {
-	GList *undo_list;
-	GList *redo_list;
-	gboolean enable_redo;
-	gint queue_depth;
-};
-
-#endif /* NAUTILUS_UNDO_MANAGER_PRIVATE_H */
+#endif /* NAUTILUS_UNDO_PRIVATE_H */

@@ -72,6 +72,7 @@ libnautilus_extensionsinclude_HEADERS=		\
 	nautilus-self-checks.h			\
 	nautilus-string-list.h			\
 	nautilus-string.h			\
+	nautilus-undo-manager.h			\
 	nautilus-view-identifier.h		\
 	nautilus-xml-extensions.h		\
 	$(NULL)
@@ -82,6 +83,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-directory-private.h		\
 	nautilus-directory-metafile.h		\
 	nautilus-lib-self-check-functions.h	\
+	nautilus-undo-context.h			\
 	bonobo-stream-vfs.c			\
 	nautilus-background-canvas-group.c	\
 	nautilus-background.c			\
@@ -127,6 +129,8 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-self-checks.c			\
 	nautilus-string-list.c			\
 	nautilus-string.c			\
+	nautilus-undo-context.c			\
+	nautilus-undo-manager.c			\
 	nautilus-view-identifier.c		\
 	nautilus-xml-extensions.c		\
 	$(NULL)

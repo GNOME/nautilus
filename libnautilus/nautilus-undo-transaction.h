@@ -1,6 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* NautilusUndoTransaction - An object for an undoable transcation.
+/* NautilusUndoTransaction - An object for an undoable transaction.
+ *                           Used internally by undo machinery.
+ *                           Not public.
  *
  * Copyright (C) 2000 Eazel, Inc.
  *
@@ -25,10 +27,8 @@
 #ifndef NAUTILUS_UNDO_TRANSACTION_H
 #define NAUTILUS_UNDO_TRANSACTION_H
 
-#include <glib.h>
-#include <bonobo/bonobo-object.h>
-#include "nautilus-undoable.h"
 #include "nautilus-undo.h"
+#include "nautilus-distributed-undo.h"
 
 #define NAUTILUS_TYPE_UNDO_TRANSACTION \
 	(nautilus_undo_transaction_get_type ())
@@ -41,32 +41,33 @@
 #define NAUTILUS_IS_UNDO_TRANSACTION_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass),	NAUTILUS_TYPE_UNDO_TRANSACTION))
 
-typedef struct NautilusUndoTransactionClass NautilusUndoTransactionClass;
+typedef struct {
+	BonoboObject parent_slot;
 
-	
-struct NautilusUndoTransaction {
-	BonoboObject parent;
 	char *operation_name;
-	char *undo_menu_item_name;
-	char *undo_menu_item_description;
-	char *redo_menu_item_name;
-	char *redo_menu_item_description;
-	GList *transaction_list;
-};
+	char *undo_menu_item_label;
+	char *undo_menu_item_hint;
+	char *redo_menu_item_label;
+	char *redo_menu_item_hint;
+	GList *atom_list;
 
-struct NautilusUndoTransactionClass {
-	BonoboObjectClass parent_class;	
-	gpointer servant_init_func, servant_destroy_func, vepv;
-};
+	Nautilus_Undo_Manager owner;
+} NautilusUndoTransaction;
 
-GtkType			nautilus_undo_transaction_get_type 	  (void);
-NautilusUndoTransaction *nautilus_undo_transaction_new 		  (const char *operation_name, 
-								   const char *undo_menu_item_name,
-			       					   const char *undo_menu_item_description, 
-			       					   const char *redo_menu_item_name,
-			       					   const char *redo_menu_item_description);
-gboolean		nautilus_undo_transaction_add_undoable	  (NautilusUndoTransaction *transaction, 
-								   NautilusUndoable *undoable);
-gboolean		nautilus_undo_transaction_contains_object (NautilusUndoTransaction *transaction,
-								   GtkObject *object);
-#endif
+typedef struct {
+	BonoboObjectClass parent_slot;
+} NautilusUndoTransactionClass;
+
+GtkType                  nautilus_undo_transaction_get_type            (void);
+NautilusUndoTransaction *nautilus_undo_transaction_new                 (const char              *operation_name,
+									const char              *undo_menu_item_label,
+									const char              *undo_menu_item_hint,
+									const char              *redo_menu_item_label,
+									const char              *redo_menu_item_hint);
+void                     nautilus_undo_transaction_add_atom            (NautilusUndoTransaction *transaction,
+									const NautilusUndoAtom  *atom);
+void                     nautilus_undo_transaction_add_to_undo_manager (NautilusUndoTransaction *transaction,
+									Nautilus_Undo_Manager    manager);
+void                     nautilus_undo_transaction_unregister_object   (GtkObject               *atom_target);
+
+#endif /* NAUTILUS_UNDO_TRANSACTION_H */
