@@ -191,15 +191,6 @@ static EelEnumerationEntry default_icon_view_sort_order_enum_entries[] = {
 	{ NULL }
 };
 
-static EelEnumerationEntry default_list_view_sort_order_enum_entries[] = {
-	{ "name",	       N_("By Name"),		    NAUTILUS_FILE_SORT_BY_DISPLAY_NAME },
-	{ "size",	       N_("By Size"),		    NAUTILUS_FILE_SORT_BY_SIZE },
-	{ "type",	       N_("By Type"),		    NAUTILUS_FILE_SORT_BY_TYPE },
-	{ "modification_date", N_("By Modification Date"),  NAUTILUS_FILE_SORT_BY_MTIME }, 
-	{ "emblems",	       N_("By Emblems"),	    NAUTILUS_FILE_SORT_BY_EMBLEMS },
-	{ NULL }
-};
-
 static EelEnumerationEntry standard_font_size_entries[] = {
 	{ "8",		   N_("8"),	8 },
 	{ "10",		   N_("10"),	10 },
@@ -221,7 +212,6 @@ static EelEnumerationInfo enumerations[] = {
 	{ "click_policy",		   click_policy_enum_entries },
 	{ "default_folder_viewer",	   default_folder_viewer_enum_entries },
 	{ "default_icon_view_sort_order",  default_icon_view_sort_order_enum_entries },
-	{ "default_list_view_sort_order",  default_list_view_sort_order_enum_entries },
 	{ "default_zoom_level",		   default_zoom_level_enum_entries },
 	{ "executable_text_activation",	   executable_text_activation_enum_entries },
 	{ "file_size",			   file_size_enum_entries },
@@ -382,7 +372,7 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_STRING_LIST,
 	  "size,date_modified,type",
 	  NULL, NULL,
-	  "icon_captions"
+	  NULL
 	},
 	{ NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
 	  PREFERENCE_BOOLEAN,
@@ -457,7 +447,7 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_STRING,
 	  "name",
 	  NULL, NULL,
-	  "default_list_view_sort_order"
+	  NULL,
 	},
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
 	  PREFERENCE_BOOLEAN,
