@@ -245,7 +245,7 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 			     "so a slower search will be performed that "
 			     "doesn't use the index.") 
 			: N_("To do a content search, Find requires an index "
-			     "of thie files on your system.  "
+			     "of the files on your system.  "
 			     "Find can't access your index right now. ");
 		title_string = backup_search_is_available 
 			?  N_("Fast searches are not available")
