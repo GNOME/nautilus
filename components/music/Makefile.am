@@ -20,21 +20,23 @@ INCLUDES =					\
 bin_PROGRAMS =					\
 	nautilus-music-view
 
-nautilus_music_view_SOURCES =		        \
+nautilus_music_view_SOURCES =			\
 	esd-audio.h				\
 	getbits.h				\
 	huffman.h				\
 	mp3head.c				\
 	mp3head.h				\
+	nautilus-music-model.c			\
+	nautilus-music-model.h			\
 	nautilus-music-view.c			\
 	nautilus-music-view.h			\
 	main.c					\
 	tabinit.c				\
 	decode_2to1.c				\
-	decode_4to1.c  				\
-	decode_ntom.c  				\
-	dxhead.c  				\
-	dxhead.h  				\
+	decode_4to1.c				\
+	decode_ntom.c				\
+	dxhead.c				\
+	dxhead.h				\
 	mpg123.c				\
 	mpg123.h				\
 	common.c				\
@@ -42,18 +44,18 @@ nautilus_music_view_SOURCES =		        \
 	layer2.c				\
 	layer3.c				\
 	l2tables.h				\
-	id3.c		   			\
+	id3.c					\
 	id3.h					\
 	id3_header.h				\
-	id3_frame.c	   			\
-	id3_frame_content.c  			\
+	id3_frame.c				\
+	id3_frame_content.c			\
 	id3_frame_text.c			\
-	id3_frame_url.c	   			\
+	id3_frame_url.c				\
 	id3_tag.c				\
 	esd-audio.c				\
 	esd-mixer.c				\
 	pixmaps.h				\
-	$(dct64_source)	 	  		\
+	$(dct64_source)				\
 	$(decode_source)
 
 nautilus_music_view_LDADD =			\

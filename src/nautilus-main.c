@@ -49,6 +49,8 @@
 #include <eel/eel-self-checks.h>
 #include <libnautilus-private/nautilus-directory-metafile.h>
 #include <liboaf/liboaf.h>
+#include <gdk/gdkx.h>
+#include <X11/Xlib.h>
 #include <popt.h>
 #include <stdlib.h>
 
@@ -198,12 +200,12 @@ main (int argc, char *argv[])
 
 	gnomelib_register_popt_table (oaf_popt_options, 
 				      oaf_get_popt_table_name ());
-	orb = oaf_init (argc, argv);
-
-        gnome_init_with_popt_table ("nautilus", VERSION,
+	gnome_init_with_popt_table ("nautilus", VERSION,
 				    argc, argv, options, 0,
 				    &popt_context);
-	gdk_rgb_init ();
+	eel_setenv ("DISPLAY", DisplayString (GDK_DISPLAY ()), TRUE);
+	orb = oaf_init (argc, argv);
+        gdk_rgb_init ();
 
 	/* Check for argument consistency. */
 	args = poptGetArgs (popt_context);

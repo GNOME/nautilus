@@ -1,3 +1,15 @@
+2001-08-13  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (get_song_text), (sort_list),
+	(click_column_callback), (ensure_uri_is_image),
+	(nautilus_music_view_update): A bunch of code cleanup; stop using
+	hidden columns in the list view and try to pave the way for better
+	model/view separation.
+
+	* src/nautilus-main.c (main): set DISPLAY variable to
+	canonicalized version; this is needed to make
+ 
 2001-08-14  Seth Nickell  <snickell@stanford.edu>
 
 	Load filesystems from an XML file rather than hardcoding
@@ -112,7 +124,6 @@
 	Make "FAM not found" warning a little more serious and
 	informative. We particularly want to encourage distributors
 	to enable FAM support.
-
 
 2001-08-11  Seth Nickell  <snickell@stanford.edu>
 
