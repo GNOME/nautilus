@@ -3469,7 +3469,7 @@
   </para>
 
   <para>
-   Eazel Services include
+   Eazel Services include:
   </para>
 
   <itemizedlist>
@@ -3515,6 +3515,86 @@
   <para>
    If you have not already registered, click the Services button to
    see a registration screen. Follow the steps for registering.
+  </para>
+
+ </chapter>
+
+ <!-- CHAPTER 8: Data Files -->
+ <chapter id="chapter8">
+  <title>Data Files</title>
+
+  <para>
+   This chapter presents some basic information about configuration
+   and data files.  It is meant for advanced users only.
+  </para>
+
+  <para>
+   Nautilus installs various data files on your system which it uses
+   to store your preferences and data such as image thumbnails, notes,
+   icon positions, and news sources.  If you are an advanced user, you
+   may wish to know a little more about these files or to modify them
+   by hand in order to reset your configuration to the default.  This
+   is especially helpful if you have installed unofficial releases of
+   Nautilus in the past which may be incompatible with the latest
+   official release.
+  </para>
+
+  <para>
+   <emphasis role="bold">Nautilus Preferences Files</emphasis>
+  </para>
+
+  <para>
+   Your global Nautilus preferences are stored in files in the
+   .nautilus folder in your home folder.  For example, your bookmarks
+   are in your bookmarks.xml file and the list of your news sources
+   and whether each one is displayed is stored in your
+   news_channels.xml file.  These files are installed when you run
+   Nautilus if they are not present.  If you would like to set them
+   back to their initial default state, simply quit Nautilus, delete
+   the file you would like to reset, and then start Nautilus.
+  </para>
+
+  <para>
+   <emphasis role="bold">Nautilus Metadata Files</emphasis>
+  </para>
+
+  <para>
+   For each folder you browse, Nautilus stores metadata such as
+   thumbnails of the images in the folder and custom configuration the
+   user does to the folder.  This may include custom backgrounds,
+   icons, icon positions, and notes.  If you have write permission
+   to the folder, the thumbnails are stored in the folder in a hidden
+   folder called .thumbnails and any custom configuration information
+   is stored in a hidden file called .nautilus-metafile.xml.  If you
+   do not have write permission to the folder, this information is
+   stored in the .nautilus folder inside your home folder.
+  </para>
+
+  <para>
+   <emphasis role="bold">Updating Your News</emphasis>
+  </para>
+
+  <para>
+   New versions of Nautilus often update their default News list.
+   However, it will not change your news file if you have one already
+   installed.  To remove your current news file so that Nautilus will
+   replace it with the default News sidebar configuration, simply quit
+   Nautilus, delete the .nautilus/news_channel.xml file, then start
+   Nautilus. 
+  </para>
+
+  <para>
+   <emphasis role="bold">Updating Your Metadata From Preview Releases</emphasis>
+  </para>
+
+  <para>
+   Nautilus versions prior to 1.0 used metadata files which do not
+   work properly with Nautilus versions 1.0 and later.  To update the
+   metadata file in a given directory, use the command
+   nautilus-xml-update <emphasis>directory</emphasis>.  For more
+   details, see the <ulink type="help"
+   url="gnome-help:nautilus-release-notes"><citetitle>Nautilus Release
+   Notes</citetitle></ulink>.
   </para>
 
  </chapter>
