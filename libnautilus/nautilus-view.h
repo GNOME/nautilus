@@ -4,6 +4,7 @@
  *  libnautilus: A library for nautilus view implementations.
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
+ *  Copyright (C) 2000 Eazel, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public

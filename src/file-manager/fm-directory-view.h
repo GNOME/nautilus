@@ -2,6 +2,7 @@
 /* fm-directory-view.h
  *
  * Copyright (C) 1999, 2000  Free Software Foundaton
+ * Copyright (C) 2000  Eazel, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
