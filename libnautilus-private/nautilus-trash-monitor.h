@@ -29,6 +29,8 @@
 #include <gtk/gtkobject.h>
 #include <libgnomevfs/gnome-vfs.h>
 
+#include "nautilus-volume-monitor.h"
+
 typedef struct NautilusTrashMonitor NautilusTrashMonitor;
 typedef struct NautilusTrashMonitorClass NautilusTrashMonitorClass;
 typedef struct NautilusTrashMonitorDetails NautilusTrashMonitorDetails;
@@ -52,8 +54,10 @@ struct NautilusTrashMonitor {
 struct NautilusTrashMonitorClass {
 	GtkObjectClass parent_class;
 
-	void (* trash_state_changed) (NautilusTrashMonitor 	*trash_monitor,
-				      gboolean 			 new_state);
+	void (* trash_state_changed)		(NautilusTrashMonitor 	*trash_monitor,
+				      		 gboolean 		 new_state);
+	void (* check_trash_directory_added)	(NautilusTrashMonitor 	*trash_monitor,
+						 NautilusVolume		*volume);
 };
 
 GtkType			nautilus_trash_monitor_get_type				(void);
@@ -61,5 +65,6 @@ GtkType			nautilus_trash_monitor_get_type				(void);
 NautilusTrashMonitor   *nautilus_trash_monitor_get 				(void);
 gboolean		nautilus_trash_monitor_is_empty 			(void);
 GList *			nautilus_trash_monitor_get_trash_directories 		(void);
+void			nautilus_trash_monitor_add_new_trash_directories	(void);
 
 #endif

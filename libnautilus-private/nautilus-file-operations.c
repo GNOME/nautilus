@@ -1740,7 +1740,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		if (target_dir != NULL) {
 			if (target_is_trash) {
 				gnome_vfs_find_directory (source_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-							  &target_dir_uri, FALSE, FALSE, 0777);
+							  &target_dir_uri, FALSE, FALSE, 0777);			
 			}
 			if (target_dir_uri != NULL) {
 				target_uri = append_basename (target_dir_uri, source_uri);
@@ -1770,6 +1770,11 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 			}
 		}
 		gnome_vfs_uri_unref (source_dir_uri);
+	}
+
+	if (target_is_trash) {
+		/* Make sure new trash directories that we don't show yet get integrated. */
+		nautilus_trash_monitor_add_new_trash_directories ();
 	}
 
 	move_options = GNOME_VFS_XFER_RECURSIVE;

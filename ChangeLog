@@ -1,3 +1,51 @@
+2001-04-30  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed 4964 (Files dragged to Trash from floppy don't
+		    appear in Trash Can)
+	Fixed 7406 (Trash doesn't work until first restart of Nautilus)
+	Fixed 7976 (some files that you can't leave in the Trash just
+		    silently go away instead of showing the dialog as
+		    they should)
+
+	New trash directories are created lazily, when someone tries to
+	delete an item on the respective disk for the first time. The
+	problem was that these new trash directories do not get integrated
+	into the unified trash directory. Added logic to do that.
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(nautilus_file_operations_copy_move):
+	
+	Before a move to trash operation is started check for any new
+	trash directories and integrate them if needed.
+	
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(check_trash_created), (check_trash_directory_added_callback),
+	(volume_mounted_callback)
+
+	Add calls to allow adding a new physical trash directory to the
+	unified trash.
+
+	* libnautilus-extensions/nautilus-trash-directory.h:
+	* libnautilus-extensions/nautilus-trash-monitor.c:
+	(nautilus_trash_monitor_initialize_class),
+	(nautilus_trash_monitor_get),
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(nautilus_trash_directory_initialize),
+	(nautilus_trash_directory_finish_initializing):
+	
+	Rearrange to allow initializing the nautilus trash directory and
+	nautilus trash monitor properly, dodging a cyclic dependency.
+	
+	* libnautilus-extensions/nautilus-trash-monitor.c:
+	* libnautilus-extensions/nautilus-trash-monitor.h:
+	(nautilus_trash_monitor_get_trash_directories),
+	(add_one_trash_directory_if_needed),
+	(nautilus_trash_monitor_add_new_trash_directories):
+	Add a new signal to allow clients get notified when a new
+	trash directory might get added to the unified trash.
+
 2001-04-30  Dan Mueth  <dan@eazel.com>
 
 	Updating screenshots for Nautilus User Manual for Nautilus 1.0.3.
@@ -82,6 +130,7 @@
 
 2001-04-30  Andy Hertzfeld  <andy@eazel.com>
 
+>>>>>>> 1.4538
 	* components/news/nautilus-news.c: (extract_items),
 	(has_matching_uri), (rss_read_error), (extract_rss_title),
 	(extract_scripting_news_title), (extract_rss_image),

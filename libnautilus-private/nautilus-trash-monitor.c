@@ -29,7 +29,7 @@
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory.h"
 #include "nautilus-file-attributes.h"
-#include "nautilus-volume-monitor.h"
+#include "nautilus-trash-directory.h"
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtksignal.h>
@@ -44,6 +44,7 @@ struct NautilusTrashMonitorDetails {
 
 enum {
 	TRASH_STATE_CHANGED,
+	CHECK_TRASH_DIRECTORY_ADDED,
 	LAST_SIGNAL
 };
 
@@ -74,6 +75,15 @@ nautilus_trash_monitor_initialize_class (NautilusTrashMonitorClass *klass)
 		 gtk_marshal_NONE__BOOL,
 		 GTK_TYPE_NONE, 1,
 		 GTK_TYPE_BOOL);
+
+	signals[CHECK_TRASH_DIRECTORY_ADDED] = gtk_signal_new
+		("check_trash_directory_added",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusTrashMonitorClass, check_trash_directory_added),
+		 gtk_marshal_NONE__POINTER,
+		 GTK_TYPE_NONE, 1,
+		 GTK_TYPE_POINTER);
 
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }
@@ -170,13 +180,23 @@ unref_trash_monitor (void)
 NautilusTrashMonitor *
 nautilus_trash_monitor_get (void)
 {
+	NautilusDirectory *trash_directory;
+
 	if (nautilus_trash_monitor == NULL) {
 		/* not running yet, start it up */
+
+		/* the trash directory object will get created by this */
+		trash_directory = nautilus_directory_get (EEL_TRASH_URI);
+		
 		nautilus_trash_monitor = NAUTILUS_TRASH_MONITOR
 			(gtk_object_new (NAUTILUS_TYPE_TRASH_MONITOR, NULL));
 		gtk_object_ref (GTK_OBJECT (nautilus_trash_monitor));
 		gtk_object_sink (GTK_OBJECT (nautilus_trash_monitor));
 		g_atexit (unref_trash_monitor);
+		
+		/* make sure we get signalled when trash directories get added */
+		nautilus_trash_directory_finish_initializing
+			(NAUTILUS_TRASH_DIRECTORY (trash_directory));
 	}
 
 	return nautilus_trash_monitor;
@@ -239,5 +259,30 @@ nautilus_trash_monitor_get_trash_directories (void)
 		(nautilus_volume_monitor_get (), add_one_volume_trash, &result);
 	
 	return result;
+}
+
+static gboolean
+add_one_trash_directory_if_needed (const NautilusVolume *volume,
+				   gpointer callback_data)
+{
+	NautilusTrashMonitor *trash_monitor;
+
+	trash_monitor = NAUTILUS_TRASH_MONITOR (callback_data);
+	gtk_signal_emit (GTK_OBJECT (trash_monitor),
+			 signals[CHECK_TRASH_DIRECTORY_ADDED],
+			 volume);
+	
+	return FALSE;
+}
+
+void 
+nautilus_trash_monitor_add_new_trash_directories (void)
+{
+	NautilusTrashMonitor *trash_monitor;
+
+	trash_monitor = nautilus_trash_monitor_get ();
+	nautilus_volume_monitor_each_mounted_volume
+		(nautilus_volume_monitor_get (), add_one_trash_directory_if_needed,
+		trash_monitor);
 }
 

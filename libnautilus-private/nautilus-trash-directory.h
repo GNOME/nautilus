@@ -51,5 +51,6 @@ typedef struct {
 } NautilusTrashDirectoryClass;
 
 GtkType nautilus_trash_directory_get_type (void);
+void	nautilus_trash_directory_finish_initializing (NautilusTrashDirectory *trash);
 
 #endif /* NAUTILUS_TRASH_DIRECTORY_H */
