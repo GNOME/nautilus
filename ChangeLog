@@ -1,3 +1,14 @@
+2000-06-13  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/file-manager/fm-icon-view.c:
+	(icon_container_preview_callback):
+	made it display an icon's file name in the status bar at low zoom levels
+	* src/file-manager/fm-directory-view.c,h:
+	(fm_directory_view_display_selection_info),
+	(display_selection_info_idle_callback):
+	exposed display_selection_info routine externally, so the file name
+	previewing can restore the selection info
+	
 2000-06-13  Pavel Cisler  <pavel@eazel.com>
 
 	* test/Makefile.am:

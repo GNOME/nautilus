@@ -216,6 +216,7 @@ char *             fm_directory_view_get_uri		            (FMDirectoryView      
 gboolean           fm_directory_view_can_accept_item                (NautilusFile          *target_item,
 								     const char            *item_uri,
 								     FMDirectoryView       *view);
+void		   fm_directory_view_display_selection_info	    (FMDirectoryView	   *view);
 GList *            fm_directory_view_get_selection                  (FMDirectoryView       *view);
 void               fm_directory_view_stop                           (FMDirectoryView       *view);
 gboolean           fm_directory_view_can_zoom_in                    (FMDirectoryView       *view);
