@@ -577,7 +577,7 @@ nautilus_view_frame_load_location (NautilusViewFrame *view,
 	Nautilus_View_load_location (bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object)),
 				     (Nautilus_URI) location, &ev);
 	if (ev._major != CORBA_NO_EXCEPTION) {
-		/* FIXME: Self-destruct may not be the best way to indicate an error here. */
+		/* FIXME bugzilla.eazel.com 3454: Self-destruct may not be the best way to indicate an error here. */
 		gtk_object_destroy (GTK_OBJECT (view));
 	}
 	CORBA_exception_free (&ev);
@@ -594,7 +594,7 @@ nautilus_view_frame_stop_loading (NautilusViewFrame *view)
 	Nautilus_View_stop_loading (bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object)),
 				    &ev);
 	if (ev._major != CORBA_NO_EXCEPTION) {
-		/* FIXME: Self-destruct may not be the best way to indicate an error here. */
+		/* FIXME bugzilla.eazel.com 3454: Self-destruct may not be the best way to indicate an error here. */
 		gtk_object_destroy (GTK_OBJECT (view));
 	}
 	CORBA_exception_free (&ev);
@@ -616,7 +616,7 @@ nautilus_view_frame_selection_changed (NautilusViewFrame *view,
 	Nautilus_View_selection_changed (bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object)),
 					 uri_list, &ev);
 	if (ev._major != CORBA_NO_EXCEPTION) {
-		/* FIXME: Self-destruct may not be the best way to indicate an error here. */
+		/* FIXME bugzilla.eazel.com 3454: Self-destruct may not be the best way to indicate an error here. */
 		gtk_object_destroy (GTK_OBJECT (view));
 	}
 	CORBA_exception_free (&ev);
@@ -637,7 +637,7 @@ nautilus_view_frame_title_changed (NautilusViewFrame *view,
 				     title,
 				     &ev);
 	if (ev._major != CORBA_NO_EXCEPTION) {
-		/* FIXME: Self-destruct may not be the best way to indicate an error here. */
+		/* FIXME bugzilla.eazel.com 3454: Self-destruct may not be the best way to indicate an error here. */
 		gtk_object_destroy (GTK_OBJECT (view));
 	}
 	CORBA_exception_free (&ev);

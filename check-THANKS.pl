@@ -101,7 +101,7 @@ LOOP: while (<CHANGELOGS>) {
             s/^.*2000[ \t\n\r]*//;
 
         } else { 
-            # FIXME: we should try to extract names & addresses from 
+            # FIXME bugzilla.eazel.com 3452: we should try to extract names & addresses from 
             # entry body text.
 
             next LOOP; # ignore unknown lines for now
@@ -201,7 +201,7 @@ if (@double_credited) {
     }
 }
 
-# FIXME: we should also make sure that AUTHORS matches the contents of
+# FIXME bugzilla.eazel.com 3453: we should also make sure that AUTHORS matches the contents of
 # the About dialog.
 
 print "\n";

@@ -173,9 +173,10 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 
 	CORBA_exception_init (&ev);
 
-	/* FIXME: this code is stupid and loads the component in a way
-           that blocks the nautilus adapter component, which is
-           pointless/stupid; it should be async. */
+	/* FIXME bugzilla.eazel.com 3455: this code is stupid and
+           loads the component in a way that blocks the nautilus
+           adapter component, which is pointless/stupid; it should be
+           async. */
 
 	if (gnome_vfs_open (&handle, uri, GNOME_VFS_OPEN_READ) != GNOME_VFS_OK) {
 		nautilus_adapter_load_strategy_report_load_failed (abstract_strategy);

@@ -167,5 +167,5 @@ nautilus_adapter_stream_load_strategy_stop_loading  (NautilusAdapterLoadStrategy
 {
 	g_return_if_fail (NAUTILUS_IS_ADAPTER_STREAM_LOAD_STRATEGY (strategy));
 
-	/* FIXME: is there anything we can do? */
+	/* FIXME bugzilla.eazel.com 3456: is there anything we can do? */
 }
