@@ -30,7 +30,7 @@
 #define LIBNAUTILUS_EXTENSIONS_H
 
 #include <bonobo.h>
-#include <libnautilus/nautilus-alloc.h>
-#include <libnautilus/nautilus-directory.h>
+#include <libnautilus-extensions/nautilus-alloc.h>
+#include <libnautilus-extensions/nautilus-directory.h>
 
 #endif /* LIBNAUTILUS_EXTENSIONS_H */
