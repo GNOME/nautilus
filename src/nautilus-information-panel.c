@@ -42,7 +42,7 @@
 struct _NautilusIndexPanelDetails {
 	GtkWidget *index_container;
 	GtkWidget *per_uri_container;
-	GtkWidget *meta_tabs;
+	GtkWidget *notebook;
 	GtkWidget *index_tabs;
 	char *uri;
 	gint selected_index;
@@ -150,14 +150,14 @@ nautilus_index_panel_initialize (GtkObject *object)
 	  
 	/* allocate and install the meta-tabs */
   
-	index_panel->details->meta_tabs = gtk_notebook_new ();
-	gtk_widget_set_usize (index_panel->details->meta_tabs, INDEX_PANEL_WIDTH, 200);
+	index_panel->details->notebook = gtk_notebook_new ();
+	gtk_widget_set_usize (index_panel->details->notebook, INDEX_PANEL_WIDTH, 200);
 	if (USE_NEW_TABS)
-	    gtk_notebook_set_show_tabs(GTK_NOTEBOOK(index_panel->details->meta_tabs), FALSE);
+	    gtk_notebook_set_show_tabs(GTK_NOTEBOOK(index_panel->details->notebook), FALSE);
 	else
 	  {
-	    gtk_widget_show (index_panel->details->meta_tabs);
-	    gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->meta_tabs, FALSE, FALSE, 0);
+	    gtk_widget_show (index_panel->details->notebook);
+	    gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->notebook, FALSE, FALSE, 0);
  	  }
 	  
 	/* prepare ourselves to receive dropped objects */
@@ -254,8 +254,8 @@ nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, NautilusVie
   label = gtk_label_new (description);
   gtk_widget_show (label);
 
-  gtk_notebook_prepend_page (GTK_NOTEBOOK (index_panel->details->meta_tabs), GTK_WIDGET (meta_view), label);
-  page_num = gtk_notebook_page_num (GTK_NOTEBOOK (index_panel->details->meta_tabs), GTK_WIDGET (meta_view));
+  gtk_notebook_append_page (GTK_NOTEBOOK (index_panel->details->notebook), GTK_WIDGET (meta_view), label);
+  page_num = gtk_notebook_page_num (GTK_NOTEBOOK (index_panel->details->notebook), GTK_WIDGET (meta_view));
   
   /* tell the index tabs about it */
   nautilus_index_tabs_add_view(NAUTILUS_INDEX_TABS(index_panel->details->index_tabs),
@@ -270,15 +270,23 @@ nautilus_index_panel_remove_meta_view (NautilusIndexPanel *index_panel, Nautilus
 {
   gint page_num;
 
-  page_num = gtk_notebook_page_num (GTK_NOTEBOOK (index_panel->details->meta_tabs), GTK_WIDGET (meta_view));
+  page_num = gtk_notebook_page_num (GTK_NOTEBOOK (index_panel->details->notebook), GTK_WIDGET (meta_view));
   g_return_if_fail (page_num >= 0);
-  gtk_notebook_remove_page (GTK_NOTEBOOK (index_panel->details->meta_tabs), page_num);
+  gtk_notebook_remove_page (GTK_NOTEBOOK (index_panel->details->notebook), page_num);
 }
 
 /* utility to activate the metaview corresponding to the passed in index  */
 static void
 nautilus_index_panel_activate_meta_view(NautilusIndexPanel *index_panel, gint which_view)
 {
+  GtkNotebook *notebook = GTK_NOTEBOOK(index_panel->details->notebook);
+  if (index_panel->details->selected_index < 0)
+    {
+      gtk_widget_show (index_panel->details->notebook);
+      gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->notebook, FALSE, FALSE, 0);
+    }
+  index_panel->details->selected_index = which_view;
+  gtk_notebook_set_page(notebook, which_view);
 }
 
 /* hit-test the index tabs and activate if necessary */
