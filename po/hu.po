@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus CVS-HEAD\n"
-"POT-Creation-Date: 2003-01-13 17:08+0100\n"
-"PO-Revision-Date: 2003-01-07 22:26+0100\n"
+"POT-Creation-Date: 2003-01-15 09:30+0100\n"
+"PO-Revision-Date: 2003-01-15 09:32+0100\n"
 "Last-Translator: Emese Kovacs <emese@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -4162,13 +4162,13 @@ msgstr "A visszavont szerkesztés újravégrahajtása"
 
 # libnautilus-private/nautilus-program-chooser.c:189
 # src/nautilus-window.c:903
-#: libnautilus-private/nautilus-view-identifier.c:60
+#: libnautilus-private/nautilus-view-identifier.c:62
 #, c-format
 msgid "View as %s"
 msgstr "%sként"
 
 # src/file-manager/fm-directory-view.c:2959
-#: libnautilus-private/nautilus-view-identifier.c:63
+#: libnautilus-private/nautilus-view-identifier.c:68
 #, c-format
 msgid "%s Viewer"
 msgstr "%s megjelenítő"
@@ -4453,14 +4453,26 @@ msgstr "Keresési lista"
 # libnautilus-private/nautilus-program-chooser.c:189
 # src/nautilus-window.c:903
 #: src/Nautilus_shell.server.in.h:20
-msgid "View as _Icons"
+msgid "View as Icons"
 msgstr "Ikonnézet"
 
 # libnautilus-private/nautilus-program-chooser.c:189
 # src/nautilus-window.c:903
 #: src/Nautilus_shell.server.in.h:21
-msgid "View as _List"
+msgid "View as List"
 msgstr "Listanézet"
+
+# libnautilus-private/nautilus-program-chooser.c:189
+# src/nautilus-window.c:903
+#: src/Nautilus_shell.server.in.h:22
+msgid "View as _Icons"
+msgstr "_Ikonnézet"
+
+# libnautilus-private/nautilus-program-chooser.c:189
+# src/nautilus-window.c:903
+#: src/Nautilus_shell.server.in.h:23
+msgid "View as _List"
+msgstr "_Listanézet"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:30
 # src/nautilus-sidebar.c:490
@@ -4502,7 +4514,7 @@ msgstr "%s mappája"
 #: src/file-manager/fm-directory-view.c:486
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
-msgstr "Ez %d ablakot fog megnyitni. Biztos, hogy ezt akarod?"
+msgstr "Ez %d ablakot fog megnyitni. Biztosan ezt akarod?"
 
 # src/file-manager/fm-directory-view.c:468
 #: src/file-manager/fm-directory-view.c:488
@@ -5203,31 +5215,31 @@ msgid "Keep icons sorted by emblems in rows"
 msgstr "Ikonok maradjanak a matricák szerint rendezve"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:28
-#: src/file-manager/fm-icon-view.c:1437
+#: src/file-manager/fm-icon-view.c:1439
 #: src/file-manager/nautilus-icon-view-ui.xml.h:19
 msgid "Restore Icons' Original Si_zes"
 msgstr "Ikonok eredeti méretének viss_zaállítása"
 
 # src/file-manager/fm-icon-view.c:1226
-#: src/file-manager/fm-icon-view.c:1438
+#: src/file-manager/fm-icon-view.c:1440
 msgid "Restore Icon's Original Si_ze"
 msgstr "Ikon eredeti méretének viss_zaállítása"
 
 # src/file-manager/fm-icon-view.c:1440
-#: src/file-manager/fm-icon-view.c:1773
+#: src/file-manager/fm-icon-view.c:1775
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "erre mutat: \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2299
+#: src/file-manager/fm-icon-view.c:2303
 msgid "Drag and drop is only supported to local file systems."
 msgstr "A Drag'n'Drop csak helyi fájlrendszereken támogatott."
 
-#: src/file-manager/fm-icon-view.c:2300 src/file-manager/fm-icon-view.c:2318
+#: src/file-manager/fm-icon-view.c:2304 src/file-manager/fm-icon-view.c:2322
 msgid "Drag and Drop error"
 msgstr "Drag'n'Drop hiba"
 
-#: src/file-manager/fm-icon-view.c:2317
+#: src/file-manager/fm-icon-view.c:2321
 msgid "An invalid drag type was used."
 msgstr "Érvénytelen elhúzott típus."
 
