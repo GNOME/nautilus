@@ -94,6 +94,9 @@ static int last_proxy_choice = 1;
 static GtkWidget *port_number_entry;
 static GtkWidget *proxy_address_entry;
 
+/* FIXME -- for the download callback if it returns after the druid has exited */
+static gboolean has_druid_exited = FALSE;
+
 /* Set by set_http_proxy; used by check_network_connectivity */
 /* NULL indicates no HTTP proxy */
 static char *http_proxy_host = NULL;
@@ -194,6 +197,8 @@ druid_finished (GtkWidget *druid_page)
 			signup_uris[0]	= NULL;	
 			break;
 	}
+
+	has_druid_exited = TRUE;
 	
 	nautilus_application_startup(save_application, FALSE, FALSE, save_manage_desktop, 
 					     FALSE, (signup_uris[0] != NULL) ? &signup_uris[0] : NULL);
@@ -864,23 +869,32 @@ download_callback (GnomeVFSResult result,
 	GnomeDruid *druid;
 	char *temporary_file;
 	char *remove_command;
-	
-	druid = GNOME_DRUID (callback_data);
+
+	/* FIXME this is a cheap work-around to the problem
+	 * that the user can get beyond the download
+	 * page and leave the druid before the download is complete
+	 */
+	if (!has_druid_exited) {
+		druid = GNOME_DRUID (callback_data);
+	} else {
+		druid = NULL;
+	}
 	
 	/* check for errors */
 	if (result == GNOME_VFS_OK) {
 		/* there was no error, so write out the file into the /tmp directory */
 		temporary_file = nautilus_unique_temporary_file_name ();
 		g_assert (temporary_file != NULL);
-
 		size = file_size;
 		outfile = fopen (temporary_file, "wb");	 	
 		write_result = fwrite (file_contents, size, 1, outfile);
 		fclose (outfile);
 		g_free (file_contents);
-		
-		/* change the message to expanding file */
-		nautilus_label_set_text (NAUTILUS_LABEL (download_label), _("Decoding Update..."));
+
+		if (!has_druid_exited) {
+			/* change the message to expanding file */
+			nautilus_label_set_text (NAUTILUS_LABEL (download_label), _("Decoding Update..."));
+		}
 		
 		/* expand the directory into the proper place */
 		/* first, formulate the command string */
@@ -896,15 +910,22 @@ download_callback (GnomeVFSResult result,
 
 		/* Remove the temporary file */
 		expand_result = system (remove_command);
-		nautilus_label_set_text (NAUTILUS_LABEL (download_label), _("Update Completed... Press Next to Continue."));
-		
+
+		if (!has_druid_exited) {
+			nautilus_label_set_text (NAUTILUS_LABEL (download_label), _("Update Completed... Press Next to Continue."));
+		}
+			
 		g_free (user_directory_path);
 		g_free (untar_command);
 		g_free (remove_command);
-	
-		/* now that we're done, reenable the buttons */
-		gtk_widget_set_sensitive (druid->next, TRUE);
-		gtk_widget_set_sensitive (druid->back, TRUE);
+
+		if (!has_druid_exited) {
+			/* now that we're done, reenable the buttons */
+			gtk_widget_set_sensitive (druid->next, TRUE);
+			gtk_widget_set_sensitive (druid->back, TRUE);
+		}
+	} else if (has_druid_exited) {
+		return;
 	} else {
 		/* there was an error; see if we can't find some HTTP proxy config info */
 		/* note that attempt_http_proxy_autoconfigure() returns FALSE if its already been tried */ 

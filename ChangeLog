@@ -1,3 +1,12 @@
+2000-11-07  Mike Fleming  <mfleming@eazel.com>
+
+	* src/nautilus-first-time-druid.c: (druid_finished),
+	(download_callback):
+
+	Ugly fix to 4568 -- If io completes after druid is finished,
+	then unpack the file but don't try to update the (now non-existant)
+	GUI components
+
 2000-11-06  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-utilities.c:
