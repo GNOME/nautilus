@@ -142,22 +142,22 @@ dnl = --disable-mozilla-component can be used to disable building of the
 dnl = mozilla component even if the mozilla development libraries are 
 dnl = detected.
 dnl ====================================
-mozilla_component_disabled="no"
+mozilla_component_enabled="yes"
 
 AC_ARG_ENABLE(mozilla-component,
-              [  --disable-mozilla-component=       Disable the mozilla component],
-              mozilla_component_disabled="yes")
+              [  --disable-mozilla-component       Disable the mozilla component],
+              mozilla_component_enabled="$enableval")
 
 dnl Dont build the mozilla component for profiled builds cause the c++ compiler
 dnl used for mozilla rpms is not binary compatible with the one used for profiling.
 if test "x$ENABLE_PROFILER" = "x1"
 then
-	mozilla_component_disabled="yes"
+	mozilla_component_enabled="no"
 fi
 
 found_mozilla=false
 
-if test "x$mozilla_component_disabled" = "xno"
+if test "x$mozilla_component_enabled" = "xyes"
 then 
 BUILD_MOZILLA_COMPONENT=
 MOZILLA_COMPONENT_CFLAGS=
