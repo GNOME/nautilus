@@ -64,7 +64,8 @@ static void
 generate_summary_form (NautilusSummaryView	*view)
 {
 
-	GtkWidget	*temp_widget;
+	GtkWidget	*frame;
+	GtkTable	*parent;
 	GtkWidget	*title;
 
 	/* allocate the parent box to hold everything */
@@ -77,11 +78,58 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
 	gtk_widget_show (title);
 
-	/* put a mystery label here as a placeholder. */
-	temp_widget = gtk_label_new ("I am just a view.  One day I will be gone.");
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_widget, 0, 0, 0);
-	gtk_widget_show (temp_widget);
+	/* Create the Parent Table to hold the 4 frames */
+	parent = GTK_TABLE (gtk_table_new (3, 2, TRUE));
 
+	/* Create the Services Listing Frame */
+	frame = gtk_frame_new ("Services Placeholder");
+	gtk_widget_show (frame);
+	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_OUT);
+	gtk_frame_set_label_align (GTK_FRAME (frame), 0.5, 0);
+	gtk_table_attach (GTK_TABLE (parent), frame,
+			  0, 1,
+			  0, 1,
+			  GTK_FILL | GTK_EXPAND,
+			  GTK_FILL | GTK_EXPAND,
+			  7, 0);
+
+	/* Create the Login Frame */
+	frame = gtk_frame_new ("Login Placeholder");
+	gtk_widget_show (frame);
+	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_OUT);
+	gtk_frame_set_label_align (GTK_FRAME (frame), 0.5, 0);
+	gtk_table_attach (GTK_TABLE (parent), frame,
+			  1, 2,
+			  0, 1,
+			  GTK_FILL | GTK_EXPAND,
+			  GTK_FILL | GTK_EXPAND,
+			  7, 0);
+
+	/* Create the Login Frame */
+	frame = gtk_frame_new ("Service News Placeholder");
+	gtk_widget_show (frame);
+	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_OUT);
+	gtk_frame_set_label_align (GTK_FRAME (frame), 0.5, 0);
+	gtk_table_attach (GTK_TABLE (parent), frame,
+			  0, 2,
+			  1, 2,
+			  GTK_FILL | GTK_EXPAND,
+			  GTK_FILL | GTK_EXPAND,
+			  7, 0);
+
+	/* Create the Login Frame */
+	frame = gtk_frame_new ("Update News Placeholder");
+	gtk_widget_show (frame);
+	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_OUT);
+	gtk_frame_set_label_align (GTK_FRAME (frame), 0.5, 0);
+	gtk_table_attach (GTK_TABLE (parent), frame,
+			  0, 2,
+			  2, 3,
+			  GTK_FILL | GTK_EXPAND,
+			  GTK_FILL | GTK_EXPAND,
+			  7, 0);
+	gtk_box_pack_start (GTK_BOX (view->details->form), GTK_WIDGET (parent), 0, 0, 4);
+	gtk_widget_show (GTK_WIDGET (parent));
 }
 
 static void
