@@ -207,6 +207,15 @@ struct FMDirectoryViewClass {
          */
         void    (* update_menus)         	(FMDirectoryView *view);
 
+	/* display_pending_files is a function pointer that subclasses can override
+	   to have files delivered in different sized "chunks" when they arrive from
+	   the directory model.  The default directory view method will deliver
+	   all available files at once.  The list of pending files added and changed
+	   may be modified by the subclass, to remove files that are no longer pending. */
+	gboolean (* display_pending_files)      (FMDirectoryView *view,
+						 GList           **pending_files_added,
+						 GList           **pending_files_changed);
+
 	/* get_emblem_names_to_exclude is a function pointer that subclasses
 	 * may override to specify a set of emblem names that should not
 	 * be displayed with each file. By default, all emblems returned by
@@ -355,6 +364,7 @@ void                fm_directory_view_pop_up_background_context_menu   (FMDirect
 									GdkEventButton   *event);
 void                fm_directory_view_pop_up_selection_context_menu    (FMDirectoryView  *view,
 									GdkEventButton   *event); 
+void                fm_directory_view_send_selection_change            (FMDirectoryView *view);
 gboolean            fm_directory_view_should_show_file                 (FMDirectoryView  *view,
 									NautilusFile     *file);
 void                fm_directory_view_update_menus                     (FMDirectoryView  *view);

@@ -500,6 +500,144 @@ nautilus_g_list_safe_for_each (GList *list, GFunc function, gpointer user_data)
 	}
 }
 
+static GList *
+nautilus_g_list_sort_merge (GList       *list_1, 
+			    GList       *list_2,
+			    NautilusCompareFunction compare_func,
+			    gpointer user_data)
+{
+  GList list_buffer, *list, *previous_node;
+
+  list = &list_buffer; 
+  previous_node = NULL;
+
+  while (list_1 != NULL && 
+	 list_2 != NULL) {
+	  if (compare_func (list_1->data, list_2->data, user_data) < 0) {
+		  list->next = list_1;
+		  list = list->next;
+		  list->prev = previous_node; 
+		  previous_node = list;
+		  list_1 = list_1->next;
+	  } 
+	  else {
+		  list->next = list_2;
+		  list = list->next;
+		  list->prev = previous_node; 
+		  previous_node = list;
+		  list_2 = list_2->next;
+	  }
+  }
+
+  list->next = list_1 ? list_1 : list_2;
+  list->next->prev = list;
+
+  return list_buffer.next;
+}
+
+
+static gboolean
+nautilus_g_list_is_already_sorted (GList *list,
+				   NautilusCompareFunction compare_func,
+				   gpointer user_data)
+{
+	if (list == NULL) {
+		return TRUE;
+	}
+
+	while (list->next != NULL) {
+		if (compare_func (list->data, list->next->data, user_data) > 0) {
+			return FALSE;
+		}
+		list = list->next;
+		
+	}
+
+	return TRUE;
+}
+
+GList *
+nautilus_g_list_sort_custom (GList *list,
+			     NautilusCompareFunction compare_func,
+			     gpointer user_data)
+{
+	GList *list_1, *list_2;
+  
+	if (nautilus_g_list_is_already_sorted (list, compare_func, user_data)) {
+		return list;
+	}
+
+	list_1 = list; 
+	list_2 = list->next;
+
+	/* Split the two lists half way down the middle */
+	while (TRUE) {
+		list_2 = list_2->next;
+		if (list_2 == NULL) {
+			break;
+		}
+		list_2 = list_2->next;
+		if (list_2 == NULL) {
+			break;
+		}
+		list_1 = list_1->next;
+	}
+	
+	list_2 = list_1->next; 
+	list_1->next = NULL; 
+
+	return nautilus_g_list_sort_merge (nautilus_g_list_sort_custom (list, compare_func, user_data),
+					   nautilus_g_list_sort_custom (list_2, compare_func, user_data),
+					   compare_func,
+					   user_data);
+
+}
+
+static int
+compare_pointers (gconstpointer pointer_1, gconstpointer pointer_2)
+{
+	if ((const char *) pointer_1 < (const char *) pointer_2) {
+		return -1;
+	}
+	if ((const char *) pointer_1 > (const char *) pointer_2) {
+		return +1;
+	}
+	return 0;
+}
+
+
+
+gboolean
+nautilus_g_lists_sort_and_check_for_intersection (GList **list_1,
+						  GList **list_2) 
+
+{
+	GList *node_1, *node_2;
+	int compare_result;
+	
+	*list_1 = g_list_sort (*list_1, compare_pointers);
+	*list_2 = g_list_sort (*list_2, compare_pointers);
+
+	node_1 = *list_1;
+	node_2 = *list_2;
+
+	while (node_1 != NULL && node_2 != NULL) {
+		compare_result = compare_pointers (node_1->data, node_2->data);
+		if (compare_result == 0) {
+			return TRUE;
+		}
+		if (compare_result <= 0) {
+			node_1 = node_1->next;
+		}
+		if (compare_result >= 0) {
+			node_2 = node_2->next;
+		}
+	}
+
+	return FALSE;
+}
+
+
 /**
  * nautilus_g_list_partition
  * 

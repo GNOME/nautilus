@@ -1,3 +1,44 @@
+ 2001-02-22  Rebecca Schulman  <rebecka@eazel.com>
+ 	Fix bugzilla.eazel.com bug 6290, that loading
+ 	a large directory in the list view hangs nautilus.
+ 	I've improved this aspect of performance, by 
+ 	sending the files to the list view in small chunks,
+ 	rather than as a whole, so that the ui can
+ 	be responsive between the times we are updating the
+ 	entries, rather than having to wait for the whole thing
+ 	to load.  I've avoided the problem of entries moving during
+ 	loading, by giving the list view the first 100 entries to
+ 	appear in the list, so the list fills up from top to bottom.
+ 
+ 	reviewed by: Pavel Cisler <pavel@eazel.com>
+ 
+ 	* src/file-manager/fm-directory-view.c:
+ 	(fm_directory_view_initialize_class),
+ 	(finish_displaying_pending_files), (display_pending_files),
+ 	(real_display_pending_files), (display_pending_timeout_callback),
+ 	(fm_directory_view_get_directory):
+ 	* src/file-manager/fm-directory-view.h:
+ 	Add display_pending_files as a method to the directory view.
+ 	Call it the method, and so the list view can override the
+ 	basic "give me all the files you have at once method" being
+ 	used in the directory view.
+ 	* src/file-manager/fm-list-view.c: (fm_list_view_initialize_class),
+ 	(fm_list_view_compare_rows), (fm_list_view_reveal_selection),
+ 	(g_list_split_off_first_n),
+ 	(fm_list_view_display_pending_files):
+ 	Add a display pending files method here that only sends the
+ 	first 100 items, and sorts the larger list.
+ 	* libnautilus-extensions/nautilus-glib-extensions.c:
+ 	(nautilus_g_list_sort_merge), (nautilus_g_list_is_already_sorted),
+ 	(nautilus_g_list_sort_custom), (compare_pointers),
+ 	(nautilus_g_lists_sort_and_check_for_intersection):
+ 	* libnautilus-extensions/nautilus-glib-extensions.h:
+ 	Add new sorting functions used by my changes, include
+ 	nautilus_g_list_sort_custom, which sorts a list using
+ 	a compare function that can also take data. This sort also
+ 	checks whether the list is sorted before beginning a merge
+ 	sort, which is a win for cases where you expect the list will
+
 2001-02-22  Arlo Rose  <arlo@eazel.com>
 
 	* nautilus-installer/src/error-symbol.xpm:
@@ -761,7 +802,6 @@ Thu Feb 22 21:22:58 2001  George Lebl <jirka@5z.com>
 	(help_name_to_local_path), (transform_file), (help_do_transform):
 	* components/help/test-help-method.c: (test_failed),
 	(strcmp_tolerate_nulls), (test_uri_transform), (main):
-
 
 2001-02-22  Robey Pointer  <robey@eazel.com>
 

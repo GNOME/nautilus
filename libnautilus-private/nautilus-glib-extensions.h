@@ -71,6 +71,11 @@ GList *     nautilus_g_list_copy                      (GList                    
 void        nautilus_g_list_safe_for_each             (GList                      *list,
 						       GFunc                       function,
 						       gpointer                    user_data);
+GList *     nautilus_g_list_sort_custom               (GList                      *list,
+						       NautilusCompareFunction     compare,
+						       gpointer                    user_data);
+gboolean    nautilus_g_lists_sort_and_check_for_intersection (GList **list_a,
+					 	              GList **list_b);
 GList *     nautilus_g_list_partition                 (GList                      *list,
 						       NautilusPredicateFunction   predicate,
 						       gpointer                    user_data,

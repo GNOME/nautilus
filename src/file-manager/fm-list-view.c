@@ -56,6 +56,12 @@ struct FMListViewDetails {
 	NautilusZoomLevel default_zoom_level;
 };
 
+/* The list view receives files from the directory model
+   in chunks, to improve responsiveness during loading.
+   This is the number of files we add to the list, or change
+   at once. */
+#define LIST_VIEW_DISPLAY_PENDING_FILES_GROUP_SIZE 100
+
 /* 
  * Emblems should never get so small that they're illegible,
  * so we semi-arbitrarily choose a minimum size.
@@ -69,6 +75,7 @@ struct FMListViewDetails {
  */
 #define LIST_VIEW_MINIMUM_ROW_HEIGHT	20
 
+
 /* We hard-code that first column must contain an icon and the second
  * must contain emblems. The rest can be controlled by the subclass. 
  * Also, many details of these columns are controlled by the subclass; 
@@ -79,6 +86,8 @@ struct FMListViewDetails {
 #define LIST_VIEW_COLUMN_EMBLEMS	1
 
 #define LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE "name"
+
+
 
 /* special values for get_data and set_data */
 #define PENDING_USER_DATA_KEY		"pending user data"
@@ -100,7 +109,10 @@ static void                 fm_list_view_file_changed                 (FMDirecto
 static void		    fm_list_view_adding_file 	      	      (FMListView 	 *view, 
 								       NautilusFile 	 *file);
 static void		    fm_list_view_removing_file		      (FMListView	 *view,
-								       NautilusFile	 *file);								       
+								       NautilusFile	 *file);
+static gboolean             fm_list_view_display_pending_files        (FMDirectoryView   *view,
+								       GList             **pending_files_added,
+								       GList             **pending_files_changed);
 static gboolean		    fm_list_view_file_still_belongs 	      (FMListView 	 *view, 
 								       NautilusFile 	 *file);
 static void                 fm_list_view_begin_adding_files           (FMDirectoryView   *view);
@@ -209,6 +221,7 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_directory_view_class->select_all = fm_list_view_select_all;
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
 	fm_directory_view_class->reveal_selection = fm_list_view_reveal_selection;
+	fm_directory_view_class->display_pending_files = fm_list_view_display_pending_files;
 	fm_directory_view_class->start_renaming_item = real_start_renaming_item;
 	fm_directory_view_class->get_selected_icon_locations = fm_list_view_get_selected_icon_locations;
         fm_directory_view_class->click_policy_changed = fm_list_view_update_click_mode;
@@ -329,6 +342,7 @@ fm_list_view_compare_rows (NautilusCList *clist,
 	g_assert (file1 != NULL && file2 != NULL);
 	
 	list_view = FM_LIST_VIEW (GTK_WIDGET (clist)->parent);
+
 	sort_criterion = get_column_sort_criterion (list_view, clist->sort_column);
 	return nautilus_file_compare_for_sort (file1, file2, sort_criterion);
 }
@@ -1597,7 +1611,7 @@ fm_list_view_select_all (FMDirectoryView *view)
 	NautilusCList *clist;
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 	
-        clist = NAUTILUS_CLIST (get_list (FM_LIST_VIEW(view)));
+        clist = NAUTILUS_CLIST (get_list (FM_LIST_VIEW (view)));
         nautilus_clist_select_all (clist);
 }
 
@@ -1630,6 +1644,110 @@ fm_list_view_reveal_selection (FMDirectoryView *view)
         }
 
         nautilus_file_list_free (selection);
+}
+
+static GList *
+g_list_split_off_first_n (GList **list,
+			  int removed_count)
+{
+	GList *first_n_items, *nth_item;
+
+	nth_item = g_list_nth (*list, removed_count);
+	first_n_items = *list;
+
+	if (nth_item == NULL) {
+		*list = NULL;
+	}
+	else {
+		nth_item->prev->next = NULL;
+		nth_item->prev = NULL;
+		*list = nth_item;
+	}
+
+	return first_n_items;
+}
+
+
+static gboolean
+fm_list_view_display_pending_files (FMDirectoryView *view,
+				    GList **pending_files_added,
+				    GList **pending_files_changed)
+{
+	GList *files_added, *files_changed, *node;
+	NautilusFile *file;
+	NautilusCList *clist;
+	GList *selection;
+	gboolean send_selection_change;
+	NautilusFileSortType sort_criterion;
+	
+	g_return_val_if_fail (FM_IS_LIST_VIEW (view), FALSE);
+	
+	send_selection_change = FALSE;
+
+        clist = NAUTILUS_CLIST (get_list (FM_LIST_VIEW (view)));	
+	sort_criterion = get_column_sort_criterion (FM_LIST_VIEW (view), clist->sort_column);
+
+	/* Sort the added items before displaying them, so that they'll be added in order,
+	   and items won't move around.  */
+	if (FM_LIST_VIEW (view)->details->sort_reversed) {
+		*pending_files_added = nautilus_g_list_sort_custom (*pending_files_added,
+								    (NautilusCompareFunction) nautilus_file_compare_for_sort_reversed,
+								    GINT_TO_POINTER (sort_criterion));
+	}
+	else {
+		*pending_files_added = nautilus_g_list_sort_custom (*pending_files_added,
+								    (NautilusCompareFunction) nautilus_file_compare_for_sort,
+								    GINT_TO_POINTER (sort_criterion));
+	}
+
+	files_added = g_list_split_off_first_n (pending_files_added,
+						       LIST_VIEW_DISPLAY_PENDING_FILES_GROUP_SIZE);
+	files_changed = g_list_split_off_first_n (pending_files_changed,
+							LIST_VIEW_DISPLAY_PENDING_FILES_GROUP_SIZE);
+
+	if (files_added != NULL || files_changed != NULL) {
+		gtk_signal_emit_by_name (GTK_OBJECT (view), "begin_adding_files");
+		
+		for (node = files_added; node != NULL; node = node->next) {
+			file = NAUTILUS_FILE (node->data);
+			
+			if (nautilus_directory_contains_file (fm_directory_view_get_model (view), file)) {
+				gtk_signal_emit_by_name (GTK_OBJECT (view),
+							 "add_file",
+							 file);
+			}
+		}
+		
+		for (node = files_changed; node != NULL; node = node->next) {
+			file = NAUTILUS_FILE (node->data);
+			
+			gtk_signal_emit_by_name (GTK_OBJECT (view),
+						 "file_changed",
+						 file);
+		}
+		
+		gtk_signal_emit_by_name (GTK_OBJECT (view), "done_adding_files");
+
+		if (files_changed != NULL) {
+			selection = fm_directory_view_get_selection (view);
+			send_selection_change = nautilus_g_lists_sort_and_check_for_intersection
+				(&files_changed, &selection);
+			nautilus_file_list_free (selection);
+		}
+
+		nautilus_file_list_free (files_added);
+		nautilus_file_list_free (files_changed);
+	}
+
+
+	if (send_selection_change) {
+		/* Send a selection change since some file names could
+		 * have changed.
+		 */
+		fm_directory_view_send_selection_change (view);
+	}
+
+	return (*pending_files_added == NULL || *pending_files_changed != NULL);
 }
 
 static GArray *
@@ -1680,11 +1798,11 @@ fm_list_view_sort_items (FMListView *list_view,
 
 	if (reversed != list_view->details->sort_reversed) {
 		nautilus_clist_set_sort_type (clist, reversed
-					 ? GTK_SORT_DESCENDING
-					 : GTK_SORT_ASCENDING);
+					      ? GTK_SORT_DESCENDING
+					      : GTK_SORT_ASCENDING);
 		list_view->details->sort_reversed = reversed;
 	}
-
+	
 	nautilus_clist_set_sort_column (clist, column);
 	nautilus_clist_sort (clist);
 }
@@ -1713,7 +1831,7 @@ get_column_from_attribute (FMListView *list_view, const char *value)
 			return i;
 		}
 	}
-
+	
 	return LIST_VIEW_COLUMN_NONE;
 }
 

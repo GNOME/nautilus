@@ -72,7 +72,7 @@
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <math.h>
 
-#define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
+#define DISPLAY_TIMEOUT_INTERVAL_MSECS 700
 #define SILENT_WINDOW_OPEN_LIMIT	5
 
 #define DUPLICATE_HORIZONTAL_ICON_OFFSET 70
@@ -200,6 +200,9 @@ static void                load_directory                                       
 										   NautilusDirectory    *directory);
 static void                fm_directory_view_merge_menus                          (FMDirectoryView      *view);
 static void                real_file_limit_reached                                (FMDirectoryView      *view);
+static gboolean            real_display_pending_files                             (FMDirectoryView      *view,
+										   GList                **pending_files_added,
+										   GList                **pending_files_changed);
 static void		   real_load_error					  (FMDirectoryView 	*view,
 										   GnomeVFSResult	 result);
 static void                real_merge_menus                                       (FMDirectoryView      *view);
@@ -343,6 +346,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 
         klass->merge_menus = real_merge_menus;
         klass->update_menus = real_update_menus;
+	klass->display_pending_files = real_display_pending_files;
 	klass->get_emblem_names_to_exclude = real_get_emblem_names_to_exclude;
 	klass->start_renaming_item = start_renaming_item;
 	klass->is_read_only = real_is_read_only;
@@ -1277,7 +1281,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 	g_free (status_string);
 }
 
-static void
+void
 fm_directory_view_send_selection_change (FMDirectoryView *view)
 {
 	GList *selection, *uris, *p;
@@ -1674,48 +1678,38 @@ copy_move_done_callback (GHashTable *debuting_uris, gpointer data)
 	copy_move_done_data_free (copy_move_done_data);
 }
 
-static int
-compare_pointers (gconstpointer pointer_1, gconstpointer pointer_2)
+
+static void
+finish_displaying_pending_files (FMDirectoryView *view)
 {
-	if ((const char *) pointer_1 < (const char *) pointer_2) {
-		return -1;
+	if (view->details->model != NULL
+		    && nautilus_directory_are_all_files_seen (view->details->model)) {
+		done_loading (view);
 	}
-	if ((const char *) pointer_1 > (const char *) pointer_2) {
-		return +1;
-	}
-	return 0;
-}
-
-static gboolean
-sort_and_check_for_intersection (GList **list_1, GList **list_2)
-{
-	GList *node_1, *node_2;
-	int compare_result;
-
-	*list_1 = g_list_sort (*list_1, compare_pointers);
-	*list_2 = g_list_sort (*list_2, compare_pointers);
-
-	node_1 = *list_1;
-	node_2 = *list_2;
-
-	while (node_1 != NULL && node_2 != NULL) {
-		compare_result = compare_pointers (node_1->data, node_2->data);
-		if (compare_result == 0) {
-			return TRUE;
-		}
-		if (compare_result <= 0) {
-			node_1 = node_1->next;
-		}
-		if (compare_result >= 0) {
-			node_2 = node_2->next;
-		}
-	}
-
-	return FALSE;
 }
 
 static gboolean
 display_pending_files (FMDirectoryView *view)
+{
+	gboolean call_timeout_again;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	call_timeout_again = NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 display_pending_files, 
+		 (view, &view->details->pending_files_added, 
+		  &view->details->pending_files_changed));
+
+	finish_displaying_pending_files (view);
+
+	return call_timeout_again;
+}
+
+static gboolean
+real_display_pending_files (FMDirectoryView *view,
+			    GList **pending_files_added,
+			    GList **pending_files_changed)
 {
 	GList *files_added, *files_changed, *node;
 	NautilusFile *file;
@@ -1724,13 +1718,17 @@ display_pending_files (FMDirectoryView *view)
 
 	send_selection_change = FALSE;
 
-	files_added = view->details->pending_files_added;
-	files_changed = view->details->pending_files_changed;
+	g_assert (*pending_files_added == view->details->pending_files_added);
+	g_assert (*pending_files_changed == view->details->pending_files_changed);
+	
+	/* Deliver all available files right now */
+	files_added = *pending_files_added;
+	files_changed = *pending_files_changed;
 
 	if (files_added != NULL || files_changed != NULL) {
-		view->details->pending_files_added = NULL;
-		view->details->pending_files_changed = NULL;
-		
+		*pending_files_added = NULL;
+		*pending_files_changed = NULL;
+
 		gtk_signal_emit (GTK_OBJECT (view), signals[BEGIN_ADDING_FILES]);
 		
 		for (node = files_added; node != NULL; node = node->next) {
@@ -1755,18 +1753,13 @@ display_pending_files (FMDirectoryView *view)
 
 		if (files_changed != NULL) {
 			selection = fm_directory_view_get_selection (view);
-			send_selection_change = sort_and_check_for_intersection
+			send_selection_change = nautilus_g_lists_sort_and_check_for_intersection
 				(&files_changed, &selection);
 			nautilus_file_list_free (selection);
 		}
 
 		nautilus_file_list_free (files_added);
 		nautilus_file_list_free (files_changed);
-	}
-
-	if (view->details->model != NULL
-	    && nautilus_directory_are_all_files_seen (view->details->model)) {
-		done_loading (view);
 	}
 
 	if (send_selection_change) {
@@ -1847,20 +1840,20 @@ static gboolean
 display_pending_timeout_callback (gpointer data)
 {
 	FMDirectoryView *view;
-	gboolean displayed_some;
+	gboolean no_files_are_left;
 
 	view = FM_DIRECTORY_VIEW (data);
 
 	/* Do another timeout if we displayed some files. Once we get
 	 * all the files, we'll start using idle instead.
 	 */
+	no_files_are_left = display_pending_files (view);
 
-	displayed_some = display_pending_files (view);
-	if (!displayed_some) {
+	if (no_files_are_left) {
 		view->details->display_pending_timeout_id = 0;
 	}
 
-	return displayed_some;
+	return !no_files_are_left;
 }
 
 static void
@@ -4109,6 +4102,10 @@ fm_directory_view_stop (FMDirectoryView *view)
 
 	unschedule_display_of_pending_files (view);
 	display_pending_files (view);
+	/* Free extra undisplayed files */
+	nautilus_file_list_free (view->details->pending_files_added);
+	nautilus_file_list_free (view->details->pending_files_changed);
+
 	if (view->details->model != NULL) {
 		nautilus_directory_file_monitor_remove (view->details->model, view);
 	}
