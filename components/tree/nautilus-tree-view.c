@@ -18,7 +18,9 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Author: Maciej Stachowiak <mjs@eazel.com>
+ * Authors: 
+ *       Maciej Stachowiak <mjs@eazel.com>
+ *       Mathieu Lacage <mathieu@eazel.com> (dnd code)
  */
 
 /* nautilus-tree-view.c - tree content view
@@ -57,6 +59,10 @@
 
 
 #include <stdio.h>
+
+/* timeout for the automatic expand in tree view */
+#define EXPAND_TIMEOUT 200
+
 
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
 
@@ -238,15 +244,18 @@ static char    *nautilus_tree_view_find_drop_target   (NautilusTreeView         
 						       GdkDragContext           *context,
 						       int                       x, 
 						       int                       y);
-static char    *nautilus_tree_view_get_drag_uri       (NautilusTreeView         *tree_view);
+static char    *nautilus_tree_view_get_drag_uri           (NautilusTreeView      *tree_view);
 
-static void     nautilus_tree_view_expand_or_collapse_row (GtkCTree *tree, 
-							   int row);
+static void     nautilus_tree_view_expand_or_collapse_row (GtkCTree              *tree, 
+							   int                    row);
+static void     nautilus_tree_view_expand_row             (GtkCTree              *tree, 
+							   int                    row);
+static gboolean nautilus_tree_view_is_tree_node_directory (NautilusTreeView      *tree_view,
+							   GtkCTreeNode          *node);
+static GtkCTreeNode *nautilus_tree_view_tree_node_at      (NautilusTreeView      *tree_view,
+							   int                    x, 
+							   int                    y);
 
-static gboolean nautilus_tree_view_is_tree_node_directory (NautilusTreeView *tree_view,
-							   GtkCTreeNode *node);
-static GtkCTreeNode *nautilus_tree_view_tree_node_at (NautilusTreeView *tree_view,
-						      int x, int y);
 
 
 static void nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass);
@@ -1365,23 +1374,6 @@ nautilus_tree_view_find_parent_node (NautilusTreeView *view,
 	return model_node_to_view_node (view, nautilus_tree_node_get_parent (node));
 }
 
-#if 0
-static gboolean
-nautilus_tree_view_is_row_selected (NautilusTreeView *tree_view, int x, int y)
-{
-	char *uri, *canonical_uri;
-
-	uri = nautilus_tree_view_item_at (tree_view, x, y);
-	canonical_uri = nautilus_make_uri_canonical (uri);
-
-	if (nautilus_strcmp (canonical_uri, tree_view->details->selected_uri) == 0) {
-		return TRUE;
-	}
-
-	return FALSE;
-}
-#endif
-
 static void     
 nautilus_tree_view_drag_begin (GtkWidget *widget, GdkDragContext *context,
 			       gpointer user_data)
@@ -1425,45 +1417,30 @@ nautilus_tree_view_drag_leave (GtkWidget *widget,
 	dnd->current_prelighted_node = NULL;
 }
 
-
-/* this function is used to detect when you spend some time 
-   over a row so that we can expand it 
-   FIXME bugzilla.eazel.com 2416:
-   The actual expanding code is disabled because expanding the tree
-   makes it crash... Needs to be fixed eventually so that Arlo is 
-   happy.
-*/
 static int motion_time_callback (gpointer data);
 
 static gint 
 motion_time_callback (gpointer data)
 {
-	NautilusTreeView *tree;
+	NautilusTreeView *tree_view;
 	NautilusQueue *motion_queue;
 	int first_y;
 
-	tree = NAUTILUS_TREE_VIEW (data);
+	tree_view = NAUTILUS_TREE_VIEW (data);
 
-	motion_queue = tree->details->dnd->motion_queue;
+	motion_queue = tree_view->details->dnd->motion_queue;
 
 	first_y = GPOINTER_TO_INT (nautilus_queue_remove (motion_queue));
 	
-	if (abs (first_y - tree->details->dnd->current_y) <= 10) {
+	if (abs (first_y - tree_view->details->dnd->current_y) <= 10) {
 		int row, column;
-#if 0
-		GtkCTreeNode *tree_node;
-#endif
 		/* we have almost not moved. so we can say we want to 
 		 expand the place we are in. */
-		gtk_clist_get_selection_info (GTK_CLIST (tree->details->tree), 
-					      tree->details->dnd->current_x, 
-					      tree->details->dnd->current_y, 
+		gtk_clist_get_selection_info (GTK_CLIST (tree_view->details->tree), 
+					      tree_view->details->dnd->current_x, 
+					      tree_view->details->dnd->current_y, 
 					      &row, &column);
-#if 0
-		tree_node = gtk_ctree_node_nth (GTK_CTREE (tree->details->tree),
-						row);
-		gtk_ctree_expand (GTK_CTREE (tree->details->tree), tree_node);
-#endif
+		nautilus_tree_view_expand_row (GTK_CTREE (tree_view->details->tree), row);
 	}
 
 	/* never be called again for this "y" value so return FALSE */
@@ -1491,7 +1468,7 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 	/* add the current move to the list of moves to be tested by our
 	   timeout handler later */
 	nautilus_queue_add (dnd->motion_queue, GINT_TO_POINTER(y));
-	g_timeout_add (200, motion_time_callback, user_data);
+	g_timeout_add (EXPAND_TIMEOUT, motion_time_callback, user_data);
 
 
 
@@ -1864,6 +1841,33 @@ nautilus_tree_view_motion_notify (GtkWidget *widget, GdkEventButton *event)
    helper functions
    -----------------------------------------------------------------------
 */
+
+static void
+nautilus_tree_view_expand_row (GtkCTree *tree, int row)
+{
+	GtkCTreeNode *node;
+	char *node_text;
+	guint8 node_spacing;
+	GdkPixmap *pixmap_closed;
+	GdkBitmap *mask_closed;
+	GdkPixmap *pixmap_opened;
+	GdkBitmap *mask_opened;
+	gboolean is_leaf;
+	gboolean is_expanded;
+
+	node = gtk_ctree_node_nth (GTK_CTREE(tree), row);
+	gtk_ctree_get_node_info (GTK_CTREE(tree), 
+				 node, &node_text,
+				 &node_spacing, &pixmap_closed, &mask_closed,
+				 &pixmap_opened, &mask_opened, 
+				 &is_leaf, &is_expanded);
+	if (is_expanded == FALSE) {
+				/* expand */
+		gtk_ctree_expand (GTK_CTREE(tree),
+				  node);
+	}
+
+}
 
 
 static void
