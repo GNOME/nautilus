@@ -1,3 +1,14 @@
+2000-06-23  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-horizontal-splitter.c:
+	(nautilus_horizontal_splitter_initialize),
+	(toggle_splitter_position),
+	(nautilus_horizontal_splitter_button_release):
+	fixed recently introduced bug that Carbamide found, where clicking in the
+	list view titles would toggle the sidebar.  Fixed by making the splitter
+	toggle only if it's the splitters window.  Also, made it open properly when
+	you quit the program in the closed state.
+	
 2000-06-23  Darin Adler  <darin@eazel.com>
 
 	Some icon layout fixes.

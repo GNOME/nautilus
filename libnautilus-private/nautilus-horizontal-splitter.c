@@ -37,6 +37,7 @@ struct _NautilusHorizontalSplitterDetail
 /* Bar width currently hardcoded to 7 */
 #define BAR_WIDTH 7
 #define CLOSED_THRESHOLD 4
+#define NOMINAL_SIZE 148
 
 /* NautilusHorizontalSplitterClass methods */
 static void nautilus_horizontal_splitter_initialize_class (NautilusHorizontalSplitterClass *horizontal_splitter_class);
@@ -81,7 +82,7 @@ static void
 nautilus_horizontal_splitter_initialize (NautilusHorizontalSplitter *horizontal_splitter)
 {
 	horizontal_splitter->details = g_new (NautilusHorizontalSplitterDetail, 1);
-
+	horizontal_splitter->details->saved_size = 0;
 	e_paned_set_handle_size (E_PANED (horizontal_splitter), BAR_WIDTH);
 }
 
@@ -270,12 +271,13 @@ toggle_splitter_position(NautilusHorizontalSplitter *splitter)
 	int current_size;
 	gboolean grow_flag;
 
-
 	current_size = e_paned_get_position (E_PANED(splitter));
 	grow_flag = current_size < CLOSED_THRESHOLD;
 	if (!grow_flag)
 		splitter->details->saved_size = current_size;
-		
+	else if (splitter->details->saved_size < CLOSED_THRESHOLD)
+		splitter->details->saved_size = NOMINAL_SIZE;
+			
 	e_paned_set_position (E_PANED (splitter), grow_flag ? splitter->details->saved_size : 0);				
 }
 
@@ -306,15 +308,21 @@ static gboolean nautilus_horizontal_splitter_button_press   (GtkWidget *widget, 
 static gboolean nautilus_horizontal_splitter_button_release (GtkWidget *widget, GdkEventButton *event)
 {
 	NautilusHorizontalSplitter *splitter;
+	EPaned *paned;
 	int delta, delta_time;
 	
 	splitter = NAUTILUS_HORIZONTAL_SPLITTER(widget);
-	delta = abs (event->x - splitter->details->down_position);
-	delta_time = abs (splitter->details->down_time - event->time);
-	if (delta < 3 && delta_time < 2000)  {
-		toggle_splitter_position(splitter);
+
+ 	paned = E_PANED (widget);
+	if (event->window == paned->handle) {
+
+		delta = abs (event->x - splitter->details->down_position);
+		delta_time = abs (splitter->details->down_time - event->time);
+		if (delta < 3 && delta_time < 1500)  {
+			toggle_splitter_position(splitter);
+		}
 	}
-	
 	return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_release_event, (widget, event));
+
 }
 
