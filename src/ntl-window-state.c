@@ -42,7 +42,7 @@ nautilus_window_set_initial_state (NautilusWindow *window, const char *initial_u
 		path_name = g_string_new ("file://");
 
 		user_level = nautilus_preferences_get_enum (nautilus_preferences_get_global_preferences (),
-							    NAUTILUS_GLOBAL_PREFERENCES_USER_LEVEL);
+							    NAUTILUS_PREFERENCES_USER_LEVEL);
 
 		switch (user_level)
 		{
