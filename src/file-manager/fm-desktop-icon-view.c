@@ -120,7 +120,7 @@ static void     fm_desktop_icon_view_set_directory_auto_layout   (FMIconView *ic
 
 static void		find_mount_devices 			 (FMDesktopIconView 	*icon_view, 
 								  const char 		*fstab_path);
-static GnomeVFSResult	make_desktop_link 			 (const char 		*uri, 
+static GnomeVFSResult	make_home_link 			 	 (const char 		*uri, 
 								  const char 		*target_uri);
 static void		remove_mount_link 			 (DeviceInfo 		*device);								  
 static void		get_iso9660_volume_name 		 (DeviceInfo 		*device);
@@ -130,7 +130,10 @@ static void		remove_mount_symlinks 			 (DeviceInfo 		*device,
 static void		free_device_info 			 (DeviceInfo 		*device, 
 								  FMDesktopIconView 	*icon_view);
 static void		place_home_directory 			 (FMDesktopIconView 	*icon_view);
-
+static GnomeVFSResult	create_mount_link 			 (const char 		*directory_path, 
+								  const char 		*name, 
+								  const char 		*image, 
+								  const char 		*uri);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView, fm_desktop_icon_view, FM_TYPE_ICON_VIEW);
 
@@ -376,7 +379,7 @@ typedef gboolean (*ChangeFunc)(FMDesktopIconView *view, DeviceInfo *device);
 static void
 mount_device_mount (FMDesktopIconView *view, DeviceInfo *device)
 {
-	char *target_uri, *desktop_uri;
+	char *target_uri, *desktop_uri, *icon_name;
 	NautilusIconContainer *container;
 	GnomeVFSResult result;
 	int index;
@@ -415,17 +418,23 @@ mount_device_mount (FMDesktopIconView *view, DeviceInfo *device)
 	 * we double check to be sure. */
 	remove_mount_link (device);
 
+	/* Get icon type */
+	if (strcmp (device->mount_type, "cdrom") == 0) {
+		icon_name = g_strdup ("i-cdrom.png");
+	} else if (strcmp (device->mount_type, "floppy") == 0) {
+		icon_name = g_strdup ("i-floppy.png");
+	} else {
+		icon_name = g_strdup ("i-blockdev.png");
+	}
+	
 	/* Create link */
 	device->link_uri = g_strdup_printf ("%s/%s", desktop_uri, device->volume_name);
 
-	result = make_desktop_link (device->link_uri, target_uri);
+	result = create_mount_link (desktop_uri, device->volume_name, icon_name, target_uri);
 	if (result == GNOME_VFS_OK) {
 		new_files_list = g_list_prepend (new_files_list, device->link_uri);
 		nautilus_directory_notify_files_added (new_files_list);
 		g_list_free (new_files_list);
-		//device->file = nautilus_file_get (device->link_uri);
-		//gtk_object_set_data (GTK_OBJECT (device->file), "mount_type", device->mount_type);	
-		//nautilus_icon_container_add (container, NAUTILUS_ICON_CONTAINER_ICON_DATA (device->file));
 	} else {
 		g_message ("Unable to create mount link: %s", gnome_vfs_result_to_string (result));
 		g_free (device->link_uri);
@@ -434,6 +443,7 @@ mount_device_mount (FMDesktopIconView *view, DeviceInfo *device)
 	
 	g_free (desktop_uri);
 	g_free (target_uri);
+	g_free (icon_name);
 	
 	device->did_mount = TRUE;
 }
@@ -861,7 +871,7 @@ find_mount_devices (FMDesktopIconView *icon_view, const char *fstab_path)
 
 
 static GnomeVFSResult
-make_desktop_link (const char *uri, const char *target_uri)
+make_home_link (const char *uri, const char *target_uri)
 {
 	GnomeVFSURI *real_uri, *real_uri_target;
 	GnomeVFSResult result;
@@ -978,19 +988,57 @@ place_home_directory (FMDesktopIconView *icon_view)
 	GnomeVFSResult result;
 	GnomeVFSFileInfo info;
 	
-	user_path = g_get_home_dir ();
-	desktop_uri = g_strdup ("/home/gzr/.desktop");
-	user_homelink_uri = g_strdup_printf ("%s/%s", desktop_uri, "Happy World");
+	user_path = g_strdup_printf ("%s/", g_get_home_dir ());
+	desktop_uri = nautilus_get_desktop_directory ();
+	user_homelink_uri = g_strdup_printf ("%s/%s", desktop_uri, "Home");
 	
 	result = gnome_vfs_get_file_info (user_homelink_uri, &info, 0);
 	if (result != GNOME_VFS_OK) {
 		/* There was no link file.  Create it and add it to the desktop view */
-		result = make_desktop_link (user_homelink_uri, user_path);
+		g_message ("user_homelink_uri: %s", user_homelink_uri);
+		g_message ("user_path: %s", user_path);
+
+		result = make_home_link (user_homelink_uri, user_path);
 		if (result != GNOME_VFS_OK) {
 			g_message ("Unable to create user home link: %s", gnome_vfs_result_to_string (result));
 		}
 	}
 	
 	g_free (desktop_uri);
+	g_free (user_path);
 	g_free (user_homelink_uri);
+}
+
+
+static GnomeVFSResult
+create_mount_link (const char *directory_path, const char *name, const char *image, const char *uri)
+{
+	xmlDocPtr output_document;
+	xmlNodePtr root_node;
+	char *file_name;
+	int result;
+	
+	/* create a new xml document */
+	output_document = xmlNewDoc ("1.0");
+	
+	/* add the root node to the output document */
+	root_node = xmlNewDocNode (output_document, NULL, "NAUTILUS_OBJECT", NULL);
+	xmlDocSetRootElement (output_document, root_node);
+
+	/* Add mime magic string so that the mime sniffer can recognize us.
+	 * Note: The value of the tag has no meaning.  */
+	xmlSetProp (root_node, "NAUTILUS_LINK", "Nautilus Link");
+
+	/* Add link and custom icon tags */
+	xmlSetProp (root_node, "CUSTOM_ICON", image);
+	xmlSetProp (root_node, "LINK", uri);
+	
+	/* all done, so save the xml document as a link file */
+	file_name = g_strdup_printf ("%s/%s", directory_path, name);
+	result = xmlSaveFile (file_name, output_document);
+	g_free (file_name);
+	
+	xmlFreeDoc (output_document);
+
+	return GNOME_VFS_OK;
 }
