@@ -1,6 +1,11 @@
 #include "gdb3html.h"
 #include "toc-elements.h"
 #include "sect-elements.h"
+#include "gnome.h"
+
+#if 0
+#define ERROR_OUTPUT
+#endif
 
 /* Generic functions.  Used by both elements and toc_elements */
 void
@@ -265,7 +270,8 @@ characters (Context *context,
 {
 	ElementInfo *element;
 
-
+	if (context->stack == NULL)
+		return;
 	element = ((StackElement *)context->stack->data)->info;
 
 	if (element && element->characters_func)
@@ -362,11 +368,6 @@ parse_file (gchar *filename, gchar *section)
 	if (xmlSAXUserParseFile (&parser, context, context->base_file) < 0) {
 		g_print ("error\n");
 	};
-
-	if (section) {
-		/* WHY IS THIS NECESSARY???? */
-		sect_article_end_element (context, "article");
-	}
 }
 
 int
@@ -375,8 +376,10 @@ main (int argc, char *argv[])
 	gchar *section = NULL;
 	gchar *ptr;
 
+//	gnome_init ("gnome-db2html2", "0.1", argc, argv);
+
 	if (argc != 2) {
-		g_print ("Usage:  gdb2html FILE[#SECTIONID]\n\n");
+		g_print ("Usage:  gnome-db2html2 FILE[#SECTIONID]\n\n");
 		return 0;
 	}
 

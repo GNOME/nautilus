@@ -44,19 +44,7 @@ ElementInfo toc_elements[] = {
 	{ HOLDER, "holder", NULL, NULL, (charactersSAXFunc) toc_copyright_characters},
 	{ TITLE, "title", (startElementSAXFunc) toc_title_start_element, (endElementSAXFunc) toc_title_end_element, (charactersSAXFunc) toc_title_characters },
 	{ SUBTITLE, "subtitle", (startElementSAXFunc) toc_title_start_element, (endElementSAXFunc) toc_title_end_element, (charactersSAXFunc) toc_title_characters },
-	{ ULINK, "ulink", NULL, NULL, NULL}, //(startElementSAXFunc) toc_ulink_start_element, (endElementSAXFunc) toc_ulink_end_element, (charactersSAXFunc) write_characters},
-	{ XREF, "xref", NULL, NULL, NULL},
-	{ FOOTNOTE, "footnote", NULL, NULL, NULL},
-	{ FIGURE, "figure", NULL, NULL, NULL},
-	{ GRAPHIC, "graphic", NULL, NULL, NULL},
-	{ CITETITLE, "citetitle", (startElementSAXFunc) html_em_start_element, (endElementSAXFunc) html_em_end_element, (charactersSAXFunc) write_characters},
-	{ APPLICATION, "application", (startElementSAXFunc) html_tt_start_element, (endElementSAXFunc) html_tt_end_element, (charactersSAXFunc) write_characters},
-	{ FILENAME, "filename", NULL, NULL, NULL},
-	{ ITEMIZED_LIST, "itemized_list", NULL, NULL, NULL},
-	{ LISTITEM, "listitem", NULL, NULL, NULL},
-	{ PROGRAMLISTING, "programlisting", NULL, NULL, NULL},
-	{ SGMLTAG, "sgmltag", NULL, NULL, NULL},
-	{ EMPHASIS, "emphasis", NULL, NULL, NULL},
+	/* We don't need the rest. */
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 

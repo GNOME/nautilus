@@ -40,12 +40,17 @@ typedef enum ElementIndex {
 	CITETITLE, /* 30 */
 	APPLICATION,
 	FILENAME,
-	ITEMIZED_LIST,
+	ITEMIZEDLIST,
 	LISTITEM,
 	PROGRAMLISTING, /* 35 */
 	SGMLTAG,
 	EMPHASIS,
-	UNDEFINED /* 33 */
+	TIP,
+	WARNING,
+	IMPORTANT, /* 40 */
+	NOTE,
+	CDATA,
+	UNDEFINED /* 43 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;
