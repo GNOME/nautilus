@@ -78,6 +78,7 @@
 #define RUBBERBAND_BUTTON 1
 #define MIDDLE_BUTTON 2
 #define CONTEXTUAL_MENU_BUTTON 3
+#define DRAG_MENU_BUTTON 2
 
 /* Maximum size (pixels) allowed for icons at the standard zoom level. */
 #define MINIMUM_IMAGE_SIZE 24
@@ -3618,52 +3619,6 @@ typedef struct {
 	GdkEventButton	      *event;
 } ContextMenuParameters;
 
-static ContextMenuParameters *
-context_menu_parameters_new (NautilusIconContainer *container,
-			     GdkEventButton *event)
-{
-	ContextMenuParameters *parameters;
-
-	parameters = g_new (ContextMenuParameters, 1);
-	parameters->container = container;
-	parameters->event = (GdkEventButton *)(gdk_event_copy ((GdkEvent *)event));
-
-	return parameters;
-}			     
-
-static void
-context_menu_parameters_free (ContextMenuParameters *parameters)
-{
-	gdk_event_free ((GdkEvent *)parameters->event);
-	g_free (parameters);
-}
-
-static gboolean
-show_context_menu_callback (void *cast_to_parameters)
-{
-	ContextMenuParameters *parameters;
-
-	parameters = (ContextMenuParameters *)cast_to_parameters;
-
-	g_assert (NAUTILUS_IS_ICON_CONTAINER (parameters->container));
-
-	if (parameters->container->details->drag_state == DRAG_STATE_MOVE_COPY_OR_MENU) {
-		clear_drag_state (parameters->container);
-
-		/* Context menu applies to all selected items. The only
-		 * odd case is if this click deselected the icon under
-		 * the mouse, but at least the behavior is consistent.
-		 */
-		g_signal_emit (parameters->container,
-				 signals[CONTEXT_CLICK_SELECTION], 0,
-				 parameters->event);
-	}
-
-	context_menu_parameters_free (parameters);
-
-	return TRUE;
-}
-
 /* NautilusIcon event handling.  */
 
 /* Conceptually, pressing button 1 together with CTRL or SHIFT toggles
@@ -3683,14 +3638,15 @@ handle_icon_button_press (NautilusIconContainer *container,
 	NautilusIconContainerDetails *details;
 	
 	if (event->button != DRAG_BUTTON
-	    && event->button != CONTEXTUAL_MENU_BUTTON) {
+	    && event->button != CONTEXTUAL_MENU_BUTTON
+	    && event->button != DRAG_MENU_BUTTON) {
 		return TRUE;
 	}
 
 	details = container->details;
 
 	if (event->button == DRAG_BUTTON
-	    || event->button == CONTEXTUAL_MENU_BUTTON) {
+	    || event->button == DRAG_MENU_BUTTON) {
 		details->drag_button = event->button;
 		details->drag_icon = icon;
 		details->drag_x = event->x;
@@ -3707,18 +3663,11 @@ handle_icon_button_press (NautilusIconContainer *container,
 				return TRUE;
 			}
 		}
-
-		if (event->button == CONTEXTUAL_MENU_BUTTON) {
-			/* after a timeout we will decide if this is a
-			 * context menu click or a drag start.
-			 */
-			if (details->context_menu_timeout_id == 0) {
-				details->context_menu_timeout_id = gtk_timeout_add
-					(CONTEXT_MENU_TIMEOUT_INTERVAL, 
-					 show_context_menu_callback, 
-					 context_menu_parameters_new (container, event));
-			}
-		}
+	}
+	else if (event->button == CONTEXTUAL_MENU_BUTTON) {
+		g_signal_emit (container,
+			       signals[CONTEXT_CLICK_SELECTION], 0,
+			       event);
 	}
 
 	/* Modify the selection as appropriate. Selection is modified

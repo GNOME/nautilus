@@ -1,3 +1,13 @@
+2002-11-28  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/apps_nautilus_preferences.schemas:
+	Make show_special_flags default to TRUE, since we removed
+	the prefs from the ui.
+
+	* libnautilus-private/nautilus-icon-container.c:
+	query-drag with middle button. Open context menus faster. (#46276)
+	Patch by Marco Pesenti Gritti.
+
 2002-11-26  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-file-operations.c:
