@@ -186,7 +186,6 @@ scrollkeeper-update
 %{_bindir}/run-nautilus
 %{_bindir}/nautilus-launcher-applet
 %{_bindir}/nautilus-xml-migrate
-#%{prefix}/idl/*.idl
 %{_libdir}/libnautilus-adapter.so.0
 %{_libdir}/libnautilus-adapter.so.0.0.0
 %{_libdir}/libnautilus-private.so.0
@@ -264,6 +263,11 @@ scrollkeeper-update
 %{_datadir}/oaf/Nautilus_shell.oaf
 %{_datadir}/oaf/Nautilus_Control_throbber.oaf
 
+# We put the idl files in the main package, not the devel package
+# because the perl corba bindings can use the .idl files at run time.
+%{_datadir}/idl/nautilus-view-component.idl
+%{_datadir}/idl/nautilus-distributed-undo.idl
+
 %defattr (-, root, root)
 %{_datadir}/gnome/help
 %{_datadir}/omf/nautilus
@@ -278,8 +282,6 @@ scrollkeeper-update
 
 %defattr(0444, bin, bin)
 %{_includedir}/libnautilus/*.h
-%{_datadir}/idl/nautilus-view-component.idl
-%{_datadir}/idl/nautilus-distributed-undo.idl
 
 %files mozilla
 

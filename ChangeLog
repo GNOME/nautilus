@@ -1,3 +1,11 @@
+2001-06-18  Ramiro Estrugo  <ramiro@fateware.com>
+
+	* nautilus.spec.in:
+	Put the idl files in the main package, not the devel package
+	because the perl corba bindings can use the .idl files at run
+	time.  Thanks to jacob berkman <jacob@ximian.com> for pointing
+	this out.
+	
 2001-06-17  Maciej Stachowiak  <mjs@noisehavoc.org>
 
 	* components/tree/nautilus-tree-view.c (select_current_location):
