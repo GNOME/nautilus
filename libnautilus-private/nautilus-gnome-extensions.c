@@ -408,6 +408,44 @@ show_ok_box (const char *message,
 	return box;
 }
 
+static GtkWidget *
+show_yes_no_box (const char *message,
+	     	 const char *type,
+	     	 const char *yes_label,
+	     	 const char *no_label,
+	     	 GtkWindow *parent)
+{  
+	GtkWidget *box;
+
+	box = gnome_message_box_new
+		(message, type, yes_label, no_label, NULL);
+	
+	/* A bit of a hack. We want to use gnome_message_box_new,
+	 * but we want the message to be wrapped. So, we search
+	 * for the label with this message so we can mark it.
+	 */
+	turn_on_line_wrap_flag (box, message);
+
+	if (parent != NULL) {
+		gnome_dialog_set_parent (GNOME_DIALOG(box), parent);
+	}
+	gtk_widget_show (box);
+	return box;
+}
+
+GtkWidget *
+nautilus_info_dialog (const char *info)
+{
+	return show_ok_box (info, GNOME_MESSAGE_BOX_INFO, NULL);
+}
+
+GtkWidget *
+nautilus_info_dialog_parented (const char *info,
+			       GtkWindow *parent)
+{
+	return show_ok_box (info, GNOME_MESSAGE_BOX_INFO, parent);
+}
+
 GtkWidget *
 nautilus_warning_dialog (const char *warning)
 {
@@ -432,6 +470,52 @@ nautilus_error_dialog_parented (const char *error,
 				GtkWindow *parent)
 {
 	return show_ok_box (error, GNOME_MESSAGE_BOX_ERROR, parent);
+}
+
+/**
+ * nautilus_yes_no_dialog:
+ * 
+ * Create a dialog asking a question with two choices.
+ * The caller needs to set up any necessary callbacks 
+ * for the buttons.
+ * @question: The text of the question.
+ * @yes_label: The label of the "yes" button.
+ * @no_label: The label of the "no" button.
+ */
+GtkWidget *
+nautilus_yes_no_dialog (const char *question, 
+			const char *yes_label,
+			const char *no_label)
+{
+	return show_yes_no_box (question, 
+			        GNOME_MESSAGE_BOX_QUESTION,
+			        yes_label,
+			        no_label,
+			        NULL);
+}
+
+/**
+ * nautilus_yes_no_dialog_parented:
+ * 
+ * Create a parented dialog asking a question with two choices.
+ * The caller needs to set up any necessary callbacks 
+ * for the buttons.
+ * @question: The text of the question.
+ * @yes_label: The label of the "yes" button.
+ * @no_label: The label of the "no" button.
+ * @parent: The parent window for this dialog.
+ */
+GtkWidget *
+nautilus_yes_no_dialog_parented (const char *question, 
+			     	 const char *yes_label,
+			    	 const char *no_label,
+			    	 GtkWindow *parent)
+{
+	return show_yes_no_box (question, 
+			        GNOME_MESSAGE_BOX_QUESTION,
+			        yes_label,
+			        no_label,
+			        parent);
 }
 
 GtkButton *

@@ -1,3 +1,43 @@
+2000-06-12  John Sullivan  <sullivan@eazel.com>
+
+	Fixed  bug 692 (Bookmarks for deleted files don't do
+	sensible things)
+
+	* libnautilus-extensions/nautilus-gnome-extensions.h,
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	(nautilus_info_dialog),
+	(nautilus_info_dialog_parented): New functions for showing
+	a one-button informational dialog.
+	(nautilus_yes_no_dialog),
+	(nautilus_yes_no_dialog_parented): New functions for
+	showing a two-button question dialog.
+	(show_yes_no_box): Helper function used to implement
+	yes_no_dialog routines.
+	
+	* src/nautilus-bookmark-list.h,
+	* src/nautilus-bookmark-list.c:
+	(nautilus_bookmark_list_delete_items_with_uri):
+	New function for deleting all bookmarks with a given uri.
+	
+	* src/nautilus-window-menus.c: 
+	(bookmark_holder_new), (bookmark_holder_free): New helper
+	functions for dealing with BookmarkHolder structs.
+	(remove_bookmarks_for_uri),
+	(show_bogus_bookmark_window), 
+	(uri_known_not_to_exist): New helper functions for dealing
+	with bookmarks for missing (local) files. In the Go menu
+	case, the user is just told that the location doesn't exist;
+	in the Bookmarks menu case, the user has the option of
+	removing bookmarks with this URI from their list.
+	(activate_bookmark_in_menu_item): Added a parameter to
+	distinguish Go menu case from Bookmarks menu case.
+	(append_bookmark_to_menu): Added this parameter here also,
+	where it's stored in a BookmarkHolder; deploy 
+	bookmark_holder_new and	_free.
+	(refresh_bookmarks_in_bookmarks_menu),
+	(refresh_bookmarks_in_go_menu): Pass the new parameter to
+	append_bookmark_to_menu.
+
 2000-06-11  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-link-set.c,h: (link_set_path_name),

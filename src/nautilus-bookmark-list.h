@@ -60,6 +60,8 @@ gboolean                nautilus_bookmark_list_contains            (NautilusBook
 void                    nautilus_bookmark_list_contents_changed    (NautilusBookmarkList   *bookmarks);
 void                    nautilus_bookmark_list_delete_item_at      (NautilusBookmarkList   *bookmarks,
 								    guint                   index);
+void                    nautilus_bookmark_list_delete_items_with_uri (NautilusBookmarkList *bookmarks,
+								    const char		   *uri);
 void                    nautilus_bookmark_list_insert_item         (NautilusBookmarkList   *bookmarks,
 								    const NautilusBookmark *bookmark,
 								    guint                   index);

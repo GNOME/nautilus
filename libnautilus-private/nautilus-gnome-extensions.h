@@ -88,12 +88,23 @@ int        nautilus_simple_dialog                               (GtkWidget      
 								 ...);
 
 /* Variations on gnome dialogs that use text with line-wrapping turned on. */
+GtkWidget *nautilus_info_dialog                              	(const char      *info);
+GtkWidget *nautilus_info_dialog_parented                     	(const char      *info,
+								 GtkWindow       *parent);
 GtkWidget *nautilus_warning_dialog                              (const char      *warning);
 GtkWidget *nautilus_warning_dialog_parented                     (const char      *warning,
 								 GtkWindow       *parent);
 GtkWidget *nautilus_error_dialog                                (const char      *error);
 GtkWidget *nautilus_error_dialog_parented                       (const char      *error,
 								 GtkWindow       *parent);
+
+GtkWidget *nautilus_yes_no_dialog				(const char	 *question,
+								 const char	 *yes_label,
+								 const char 	 *no_label);
+GtkWidget *nautilus_yes_no_dialog_parented			(const char	 *question,
+								 const char	 *yes_label,
+								 const char 	 *no_label,
+								 GtkWindow	 *parent);
 
 /* More functions for GnomeDialog */
 GtkButton *nautilus_gnome_dialog_get_button_by_index 		(GnomeDialog 	 *dialog, 

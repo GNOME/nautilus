@@ -36,6 +36,7 @@
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-string.h>
@@ -49,7 +50,8 @@ static void                  activate_bookmark_in_menu_item                 (Bon
 									     const char             *path);
 static void                  append_bookmark_to_menu                        (NautilusWindow         *window,
 									     const NautilusBookmark *bookmark,
-									     const char             *menu_item_path);
+									     const char             *menu_item_path,
+									     gboolean		     is_in_bookmarks_menu);
 static void                  clear_appended_bookmark_items                  (NautilusWindow         *window,
 									     const char             *menu_path,
 									     const char             *last_static_item_path);
@@ -75,7 +77,34 @@ static void		     update_preferences_dialog_title		    (void);
 typedef struct {
         const NautilusBookmark *bookmark;
         NautilusWindow *window;
+        gboolean in_bookmarks_menu;
 } BookmarkHolder;
+
+static BookmarkHolder *
+bookmark_holder_new (const NautilusBookmark *bookmark, 
+		     NautilusWindow *window,
+		     gboolean in_bookmarks_menu)
+{
+	BookmarkHolder *new_bookmark_holder;
+
+	new_bookmark_holder = g_new (BookmarkHolder, 1);
+	new_bookmark_holder->window = window;
+	new_bookmark_holder->bookmark = bookmark;
+	new_bookmark_holder->in_bookmarks_menu = in_bookmarks_menu;
+
+	return new_bookmark_holder;
+}
+
+static void
+bookmark_holder_free (BookmarkHolder *bookmark_holder)
+{
+	/* The bookmark and window are just passed around unreffed,
+	 * so all we need to do is free the struct. If this turns out
+	 * to be inadequate we can change bookmark_holder_new
+	 * and _free later.
+	 */
+	g_free (bookmark_holder);
+}
 
 /* Private menu definitions; others are in <libnautilus/nautilus-bonobo-ui.h>.
  * These are not part of the published set, either because they are
@@ -330,25 +359,108 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
 }
 
 static void
+remove_bookmarks_for_uri (GtkWidget *button, gpointer callback_data)
+{
+	const char *uri;
+
+	g_assert (GTK_IS_WIDGET (button));
+	g_assert (callback_data != NULL);
+
+	uri = (const char *)callback_data;
+
+	nautilus_bookmark_list_delete_items_with_uri (get_bookmark_list (), uri);
+}
+
+static void
+show_bogus_bookmark_window (BookmarkHolder *holder)
+{
+	GtkWidget *dialog;
+	const char *uri;
+	char *prompt;
+
+	uri = nautilus_bookmark_get_uri (holder->bookmark);
+
+	if (holder->in_bookmarks_menu) {
+		prompt = g_strdup_printf (_("The location \"%s\" does not exist. Do you "
+					    "want to remove any bookmarks with this "
+					    "location from your list?"), uri);
+		dialog = nautilus_yes_no_dialog_parented (prompt,
+					   	          _("Remove"),
+					   	          GNOME_STOCK_BUTTON_CANCEL,
+					   	          GTK_WINDOW (holder->window));
+
+		nautilus_gtk_signal_connect_free_data
+			(GTK_OBJECT (nautilus_gnome_dialog_get_button_by_index 
+					(GNOME_DIALOG (dialog), GNOME_OK)),
+			 "clicked",
+			 remove_bookmarks_for_uri,
+			 g_strdup (uri));
+
+		gtk_window_set_title (GTK_WINDOW (dialog), _("Bookmark for Bad Location"));			 
+		gnome_dialog_set_default (GNOME_DIALOG (dialog), GNOME_CANCEL);
+	} else {
+		prompt = g_strdup_printf (_("The location \"%s\" no longer exists. "
+					    "It was probably moved, deleted, or renamed."), uri);
+		dialog = nautilus_info_dialog_parented (prompt, GTK_WINDOW (holder->window));
+		gtk_window_set_title (GTK_WINDOW (dialog), _("Go To Bad Location"));
+	}
+	
+	g_free (prompt);
+}
+
+static gboolean
+uri_known_not_to_exist (const char *uri) 
+{
+	NautilusFile *file;
+
+	/* Don't assume anything about schemes other than "file://" */
+	if (!nautilus_str_has_prefix (uri, "file://")) {
+		return FALSE;
+	}
+	
+	file = nautilus_file_get (uri);
+
+	/* Couldn't make a NautilusFile, so uri must have been bogus. */
+	if (file == NULL) {
+		return TRUE;
+	}
+
+	nautilus_file_unref (file);
+
+	return FALSE;
+}
+
+static void
 activate_bookmark_in_menu_item (BonoboUIHandler *uih, gpointer user_data, const char *path)
 {
-        BookmarkHolder *holder = (BookmarkHolder *)user_data;
-	
-        nautilus_window_goto_uri (holder->window, 
-                                  nautilus_bookmark_get_uri (holder->bookmark));
+        BookmarkHolder *holder;
+
+        holder = (BookmarkHolder *)user_data;
+
+	if (uri_known_not_to_exist (nautilus_bookmark_get_uri (holder->bookmark))) {
+		show_bogus_bookmark_window (holder);
+	} else {
+	        nautilus_window_goto_uri (holder->window, 
+	        			  nautilus_bookmark_get_uri (holder->bookmark));
+        }	
 }
 
 static void
 append_bookmark_to_menu (NautilusWindow *window, 
                          const NautilusBookmark *bookmark, 
-                         const char *menu_item_path)
+                         const char *menu_item_path,
+                         gboolean is_bookmarks_menu)
 {
 	BookmarkHolder *bookmark_holder;	
 	GdkPixbuf *pixbuf;
 	BonoboUIHandlerPixmapType pixmap_type;
 	char *name;
 
-	/* Attempt to retrieve icon and mask for bookmark */
+	/* FIXME bugzilla.eazel.com 705:
+	 * This can make remote calls to try to get the icon. We
+	 * need to save the icon in some way that it isn't retrieved each
+	 * time, at least for remote ones.
+	 */
 	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS);
 
 	/* Set up pixmap type based on result of function.  If we fail, set pixmap type to none */
@@ -357,10 +469,8 @@ append_bookmark_to_menu (NautilusWindow *window,
 	} else {
 		pixmap_type = BONOBO_UI_HANDLER_PIXMAP_NONE;
 	}
-	
-	bookmark_holder = g_new (BookmarkHolder, 1);
-	bookmark_holder->window = window;
-	bookmark_holder->bookmark = bookmark;
+
+	bookmark_holder = bookmark_holder_new (bookmark, window, is_bookmarks_menu);
 
 	/* We double the underscores here to escape them so Bonobo will know they are
 	 * not keyboard accelerator character prefixes. If we ever find we need to
@@ -386,7 +496,7 @@ append_bookmark_to_menu (NautilusWindow *window,
 	bonobo_ui_handler_menu_set_callback
 		(window->uih, menu_item_path,
 		 activate_bookmark_in_menu_item,
-		 bookmark_holder, (GDestroyNotify) g_free);
+		 bookmark_holder, (GDestroyNotify) bookmark_holder_free);
 }
 
 /**
@@ -932,7 +1042,8 @@ refresh_bookmarks_in_bookmarks_menu (NautilusWindow *window)
 		path = g_strdup_printf ("/Bookmarks/Bookmark%d", index);
 		append_bookmark_to_menu (window, 
 		                         nautilus_bookmark_list_item_at (bookmarks, index), 
-		                         path); 
+		                         path,
+		                         TRUE); 
                 g_free (path);
 	}	
 }
@@ -964,7 +1075,8 @@ refresh_bookmarks_in_go_menu (NautilusWindow *window)
 		path = g_strdup_printf ("/Go/History%d", index); 
                 append_bookmark_to_menu (window,
                                          NAUTILUS_BOOKMARK (p->data),
-                                         path);
+                                         path,
+                                         FALSE);
                 g_free (path);
 
                 ++index;
