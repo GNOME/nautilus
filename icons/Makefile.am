@@ -1,6 +1,6 @@
 NULL=
 
-SUBDIRS = ardmore arlo gnome sidebar_tab_pieces villanova throbber
+SUBDIRS = ardmore arlo crux_eggplant gnome sidebar_tab_pieces villanova throbber
 
 icondir = $(datadir)/pixmaps/nautilus
 
