@@ -41,6 +41,7 @@ libnautilus_extensions_la_LDFLAGS =	\
 	$(BONOBO_PRINT_LIBS) 		\
 	$(BONOBOX_LIBS) 		\
 	$(ESD_LIBS)			\
+	$(FAM_LIBS)			\
 	$(FREETYPE2_LIBS)		\
 	$(GCONF_LIBS)			\
 	$(GHTTP_LIBS) 			\
@@ -103,6 +104,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-metafile-factory.c \
 	nautilus-metafile.c \
 	nautilus-mime-actions.c \
+	nautilus-monitor.c \
 	nautilus-preferences-box.c \
 	nautilus-preferences-dialog.c \
 	nautilus-preferences-group.c \

@@ -1,3 +1,28 @@
+2001-04-12  Seth Nickell  <snickell@stanford.edu>
+
+	Add some initial code to deal with file notification and
+	monitoring. This isn't hooked in yet, but provides interfaces
+	for Nautilus code to use.
+
+	* configure.in:
+	Add configure checks for FAM.
+	
+	* libnautilus-extensions/Makefile.am:
+	Include FAM libraries if they exist.
+	
+	* libnautilus-extensions/nautilus-monitor.c:
+	(nautilus_monitor_establish_connection),
+	(nautilus_monitor_get_fam),
+	(nautilus_monitor_find_path_from_request),
+	(nautilus_monitor_find_request_from_path),
+	(nautilus_monitor_delete_first_request_found),
+	(nautilus_monitor_get_uri),
+	(nautilus_monitor_process_fam_notifications),
+	(nautilus_monitor_add_file), (nautilus_monitor_add_directory),
+	(nautilus_monitor_remove):
+	* libnautilus-extensions/nautilus-monitor.h:
+	The code that actually communicates w/ FAM.
+	
 2001-04-12  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-operations-progress.c:

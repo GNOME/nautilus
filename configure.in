@@ -171,6 +171,10 @@ dnl ====================================
 
 AC_CHECK_FUNCS( setenv unsetenv putenv )
 
+dnl Check for fam (/imon) support
+AC_CHECK_HEADERS(fam.h)
+AC_CHECK_LIB(fam, FAMOpen, [FAM_LIBS="-lfam"])
+AC_SUBST(FAM_LIBS)
 
 dnl ====================================
 dnl = Use x86 optimized music routines?
