@@ -75,7 +75,7 @@ nautilus_entry_initialize_class (NautilusEntryClass *class)
 	editable_class = GTK_EDITABLE_CLASS (class);
 		
 	widget_class->key_press_event = nautilus_entry_key_press;
-
+	
 	object_class->destroy = nautilus_entry_destroy;
 	
 	editable_class->insert_text = nautilus_entry_insert_text;

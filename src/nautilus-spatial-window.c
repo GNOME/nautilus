@@ -136,7 +136,7 @@ nautilus_window_initialize_class (NautilusWindowClass *klass)
 				 ARG_CONTENT_VIEW);
 	
 	widget_class->realize = nautilus_window_realize;
-	widget_class->size_request = nautilus_window_size_request;
+	widget_class->size_request = nautilus_window_size_request;	
 }
 
 static void

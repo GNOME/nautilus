@@ -451,7 +451,7 @@ static void
 eject_cdrom (NautilusVolume *volume)
 {
 	/* FIXME bugzilla.eazel.com 2446: We need to turn on this code, or get rid of it. */
-#if 0
+#if 1
 	int fd;
 
 	fd = open (volume->fsname, O_RDONLY|O_NONBLOCK);

@@ -1,3 +1,14 @@
+2000-08-30  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-volume-monitor.c: (eject_cdrom):
+	Fixed bug 2446, need to implement CDROM ejection.
+	It's in there.  Let's see what breaks.
+			
+	* src/nautilus-window.c: (nautilus_window_initialize_class):	
+	(realize):
+	Added a new hint for sawfish and removed a focus flag at the
+	reccomendation of John Harper.
+	
 2000-08-30  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 2393 (need cleaner way for directory view subclasses

@@ -101,6 +101,10 @@ nautilus_desktop_window_new (NautilusApplication *application)
 				 "app_id", "nautilus",
 				 NULL));
 
+
+	/* Special sawmill setting*/
+	gtk_window_set_wmclass (GTK_WINDOW (window), "desktop_window", "Nautilus");
+	
 	desktop_directory_path = nautilus_get_desktop_directory ();
 	
 	/* Point window at the desktop folder.
@@ -193,8 +197,7 @@ realize (GtkWidget *widget)
 	 * skip the window.
 	 */
 	gnome_win_hints_set_hints (widget,
-				   WIN_HINTS_SKIP_FOCUS
-				   | WIN_HINTS_SKIP_WINLIST
+				   WIN_HINTS_SKIP_WINLIST
 				   | WIN_HINTS_SKIP_TASKBAR);
 
 	/* FIXME bugzilla.eazel.com 1255: 

@@ -195,7 +195,7 @@ drag_data_get_callback (GtkWidget *widget,
 
 /* utility routine to determine the string to expand to.  If we don't have anything yet, accept
    the whole string, otherwise accept the largest part common to both */
-   
+
 static char *
 accumulate_name(char *full_name, char *candidate_name)
 {
