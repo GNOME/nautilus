@@ -123,6 +123,8 @@ struct FMPropertiesWindowDetails {
 
 	guint total_count;
 	GnomeVFSFileSize total_size;
+
+	guint long_operation_underway;
 };
 
 enum {
@@ -2436,7 +2438,14 @@ create_emblems_page (FMPropertiesWindow *window)
 static void
 permission_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
 {
-	g_assert (callback_data == NULL);
+	g_assert (callback_data != NULL);
+
+	FMPropertiesWindow *window = (FMPropertiesWindow *)callback_data;
+	if (window->details->long_operation_underway == 1) {
+		/* finished !! */
+		gdk_window_set_cursor (GTK_WIDGET (window)->window, NULL);
+	}
+	window->details->long_operation_underway--;
 	
 	/* Report the error if it's an error. */
 	fm_report_error_setting_permissions (file, result, NULL);
@@ -2514,6 +2523,14 @@ permission_button_toggled (GtkToggleButton *button,
 					   G_CALLBACK (permission_button_toggled),
 					   window);
 
+	if (window->details->long_operation_underway == 0) {
+		/* start long operation */
+		GdkCursor * cursor = gdk_cursor_new (GDK_WATCH);
+		gdk_window_set_cursor (GTK_WIDGET (window)->window, cursor);
+	}
+	window->details->long_operation_underway += g_list_length (files_on);
+	window->details->long_operation_underway += g_list_length (files_off);
+
 	for (l = files_on; l != NULL; l = l->next) {
 		NautilusFile *file;
 		
@@ -2527,7 +2544,7 @@ permission_button_toggled (GtkToggleButton *button,
 			nautilus_file_set_permissions
 				(file, permissions,
 				 permission_change_callback,
-				 NULL);
+				 window);
 		}
 		
 	}
@@ -2546,7 +2563,7 @@ permission_button_toggled (GtkToggleButton *button,
 			nautilus_file_set_permissions
 				(file, permissions,
 				 permission_change_callback,
-				 NULL);
+				 window);
 		}
 	}	
 
