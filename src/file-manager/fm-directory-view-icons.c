@@ -130,6 +130,7 @@ fm_directory_view_icons_initialize (FMDirectoryViewIcons *icon_view)
 
 	icon_view->details->background_context_menu = 
 		create_background_context_menu (icon_view);
+	
 
 	icon_container = create_icon_container (icon_view);
 }
@@ -143,6 +144,8 @@ fm_directory_view_icons_destroy (GtkObject *object)
 
 	g_list_free (icon_view->details->icons_not_positioned);
 	icon_view->details->icons_not_positioned = NULL;
+
+	gtk_object_unref(GTK_OBJECT(icon_view->details->background_context_menu));
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -171,6 +174,8 @@ create_background_context_menu (FMDirectoryViewIcons *icon_view)
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
+	gtk_object_ref(GTK_OBJECT(menu));
+	gtk_object_sink(GTK_OBJECT(menu));
 	return menu;
 }
 
@@ -184,12 +189,12 @@ create_item_context_menu (FMDirectoryViewIcons *icon_view,
 	menu = GTK_MENU (gtk_menu_new ());
 
 	menu_item = gtk_menu_item_new_with_label ("Open");
-	gtk_widget_set_sensitive (menu_item, FALSE);
+	//gtk_widget_set_sensitive (menu_item, FALSE);
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
 	menu_item = gtk_menu_item_new_with_label ("Delete");
-	gtk_widget_set_sensitive (menu_item, FALSE);
+	//gtk_widget_set_sensitive (menu_item, FALSE);
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
@@ -213,11 +218,16 @@ create_icon_container (FMDirectoryViewIcons *icon_view)
 			    GTK_SIGNAL_FUNC (icon_container_activate_cb),
 			    icon_view);
 
+	puts ("A");
+	icon_view = FM_DIRECTORY_VIEW_ICONS(icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "context_click_icon",
 			    GTK_SIGNAL_FUNC (icon_container_context_click_icon_cb),
 			    icon_view);
-	
+	puts ("B");
+	icon_view = FM_DIRECTORY_VIEW_ICONS(icon_view);
+	puts ("C");	
+
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "context_click_background",
 			    GTK_SIGNAL_FUNC (icon_container_context_click_background_cb),
@@ -398,9 +408,17 @@ icon_container_context_click_icon_cb (GnomeIconContainer *container,
 				      NautilusFile *file,
 				      FMDirectoryViewIcons *icon_view)
 {
+	GtkMenu *menu;
 	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
 
-	popup_context_menu (create_item_context_menu (icon_view, file));
+	menu = create_item_context_menu (icon_view, file);
+
+	gtk_object_ref (GTK_OBJECT(menu));
+	gtk_object_sink (GTK_OBJECT(menu));
+
+	popup_context_menu (menu);
+
+	gtk_object_unref (GTK_OBJECT(menu));
 }
 
 static void
