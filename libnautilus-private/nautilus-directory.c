@@ -194,6 +194,43 @@ nautilus_directory_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
+static char *
+make_uri_canonical (const char *uri)
+{
+	size_t length;
+	char *canonical_uri, *old_uri, *with_slashes;
+
+	/* FIXME bugzilla.eazel.com 648: 
+	 * This currently ignores the issue of two uris that are not identical but point
+	 * to the same data except for the specific cases of trailing '/' characters
+	 * and file:/ and file:///.
+	 */
+	canonical_uri = nautilus_str_strip_trailing_chr (uri, '/');
+	if (strcmp (canonical_uri, uri) != 0) {
+		/* If some trailing '/' were stripped, there's the possibility,
+		 * that we stripped away all the '/' from a uri that has only
+		 * '/' characters. If you change this code, check to make sure
+		 * that "file:///" still works as a URI.
+		 */
+		length = strlen (canonical_uri);
+		if (length == 0 || canonical_uri[length - 1] == ':') {
+			with_slashes = g_strconcat (canonical_uri, "///", NULL);
+			g_free (canonical_uri);
+			canonical_uri = with_slashes;
+		}
+	}
+
+	/* Convert file:/ to file:/// */
+	if (nautilus_str_has_prefix (canonical_uri, "file:/")
+	    && !nautilus_str_has_prefix (canonical_uri, "file:///")) {
+		old_uri = canonical_uri;
+		canonical_uri = g_strconcat ("file://", old_uri + 5, NULL);
+		g_free (old_uri);
+	}
+
+	return canonical_uri;
+}
+
 #ifndef G_DISABLE_ASSERT
 
 static gboolean
@@ -206,6 +243,10 @@ is_canonical_uri (const char *uri)
 		if (nautilus_str_has_suffix (uri, ":///")) {
 			return TRUE;
 		}
+		return FALSE;
+	}
+	if (nautilus_str_has_prefix (uri, "file:/")
+	    && !nautilus_str_has_prefix (uri, "file:///")) {
 		return FALSE;
 	}
 	return TRUE;
@@ -225,31 +266,12 @@ is_canonical_uri (const char *uri)
 NautilusDirectory *
 nautilus_directory_get (const char *uri)
 {
-	char *canonical_uri, *with_slashes;
-	size_t length;
+	char *canonical_uri;
 	NautilusDirectory *directory;
 
 	g_return_val_if_fail (uri != NULL, NULL);
 
-	/* FIXME bugzilla.eazel.com 648: 
-	 * This currently ignores the issue of two uris that are not identical but point
-	 * to the same data except for the specific case of trailing '/' characters.
-	 */
-	canonical_uri = nautilus_str_strip_trailing_chr (uri, '/');
-	if (strcmp (canonical_uri, uri) != 0) {
-		/* If some trailing '/' were stripped, there's the possibility,
-		 * that we stripped away all the '/' from a uri that has only
-		 * '/' characters. If you change this code, check to make sure
-		 * that "file:///" still works as a URI.
-		 */
-		length = strlen (canonical_uri);
-		if (length == 0 || canonical_uri[length - 1] == ':') {
-			with_slashes = g_strconcat (canonical_uri, "///", NULL);
-			g_free (canonical_uri);
-			canonical_uri = with_slashes;
-		}
-	}
-	g_assert (is_canonical_uri (canonical_uri));
+	canonical_uri = make_uri_canonical (uri);
 
 	/* Create the hash table first time through. */
 	if (directory_objects == NULL) {
@@ -257,6 +279,7 @@ nautilus_directory_get (const char *uri)
 	}
 
 	/* If the object is already in the hash table, look it up. */
+	g_assert (is_canonical_uri (canonical_uri));
 	directory = g_hash_table_lookup (directory_objects,
 					 canonical_uri);
 	if (directory != NULL) {
@@ -815,20 +838,23 @@ get_parent_directory (const char *uri)
 static NautilusDirectory *
 get_parent_directory_if_exists (const char *uri)
 {
-	char *directory_uri;
+	char *directory_uri, *canonical_uri;
 	NautilusDirectory *directory;
 
 	/* Make text version of directory URI. */
 	directory_uri = uri_get_directory_part (uri);
-	g_assert (is_canonical_uri (directory_uri));
+	canonical_uri = make_uri_canonical (directory_uri);
+	g_free (directory_uri);
 
 	/* Get directory from hash table. */
 	if (directory_objects == NULL) {
 		directory = NULL;
 	} else {
-		directory = g_hash_table_lookup (directory_objects, directory_uri);
+		g_assert (is_canonical_uri (canonical_uri));
+		directory = g_hash_table_lookup (directory_objects,
+						 canonical_uri);
 	}
-	g_free (directory_uri);
+	g_free (canonical_uri);
 	return directory;
 }
 
@@ -1209,6 +1235,11 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("a%a"), "a%25a");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("%25"), "%2525");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_escape_slashes ("%2F"), "%252F");
+
+	/* make_uri_canonical */
+	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical (""), "");
+	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("file:/"), "file:///");
+	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("file:///"), "file:///");
 
 	g_list_free (list);
 }

@@ -875,7 +875,7 @@ display_pending_files (FMDirectoryView *view)
 	for (p = files_changed; p != NULL; p = p->next) {
 		file = p->data;
 		
-		/* FIXME bugzilla.eazel.com 659: 
+		/* FIXME bugzilla.eazel.com 440: 
 		 * what does files_changed mean, do I need to
 		 * modify the files_by_uri hash table here? -mjs
 		 * Yes, the file's name could have been changed.

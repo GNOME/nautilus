@@ -1,5 +1,17 @@
 2000-04-26  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-directory.c
+	(make_uri_canonical), (is_canonical_uri),
+	(nautilus_directory_get), (get_parent_directory_if_exists),
+	(nautilus_self_check_directory):
+	Added hack for handling "file:/" vs. "file:///" and put a little
+	framework in place to help us deal with caonical URIs later.
+	
+	* src/file-manager/fm-directory-view.c (display_pending_files):
+	Fixed a FIXME bug #.
+
+2000-04-26  Darin Adler  <darin@eazel.com>
+
 	* libnautilus-extensions/nautilus-directory-async.c
 	(nautilus_directory_schedule_dequeue_pending_idle),
 	(new_files_callback), (nautilus_directory_get_info_for_new_files):
