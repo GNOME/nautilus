@@ -1,3 +1,13 @@
+2001-04-08  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-annotation.c:
+	(annotation_is_stale), (nautilus_annotation_get_annotation),
+	(nautilus_annotation_has_annotation),
+	(nautilus_annotation_send_to_server),
+	(nautilus_annotation_add_annotation):
+	made annotation upload work; added "date" property to distinguish
+	multiple annotations/file; refetch annotations periodically
+	
 2001-04-06  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-annotation.c:

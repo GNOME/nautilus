@@ -92,6 +92,7 @@ struct NautilusDigestFileHandle {
 #define MAX_DIGESTS_IN_PROGRESS 16
 #define SERVER_URI_TEMPLATE		"http://dellbert.differnet.com/get_notes.cgi?ids=%s"
 #define SERVER_POST_URI			"http://dellbert.differnet.com/set_notes.cgi"
+#define NOTES_LOOKUP_INTERVAL	3600
 
 static int open_count = 0;
 static int close_count = 0;
@@ -908,6 +909,25 @@ got_file_digest (NautilusFile *file, const char *file_digest)
 	return;	
 }
 
+/* utility routine that takes a passed-in notes-info string and returns true if the
+ * encoded date is old enough to require a new look-up
+ */
+static gboolean
+annotation_is_stale (const char *notes_info)
+{
+	time_t info_date, date_stamp;
+	
+	if (notes_info == NULL) {
+		return TRUE;
+	}
+	
+	info_date = strtoul (notes_info, NULL, 10);
+	time (&date_stamp);
+
+	/* eventually, the lookup interval should be a preference, not a constant  */
+	return (date_stamp - info_date) > NOTES_LOOKUP_INTERVAL;
+}
+
 /* return the annotation associated with a file. If we haven't inspected this file yet,
  * return NULL but queue a request for an annotation lookup, which will be processed
  * asynchronously and issue a "file_changed" signal if any is found.
@@ -933,7 +953,14 @@ char	*nautilus_annotation_get_annotation (NautilusFile *file)
 		queue_file_digest_request (file);
 		return NULL;
 	}
-	
+
+	/* if we haven't update the info in a while, initiate a lookup */
+	digest_info = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_NOTES_INFO, NULL);
+	if (annotation_is_stale (digest_info)) {
+		get_annotation_from_server (file, digest);
+	}
+	g_free (digest_info);
+		
 	/* there's a digest, so we if we have the annotations for the file cached locally */
 	annotations = look_up_local_annotation (file, digest);
 	if (annotations != NULL) {
@@ -941,16 +968,6 @@ char	*nautilus_annotation_get_annotation (NautilusFile *file)
 		return annotations;
 	}
 		
-	/* we don't have a local annotation, so queue a request from the server, if we haven't already tried */
-	/* soon, we'll inspect the time stamp, and look it up anyway if it's too old */
-	
-	digest_info = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_NOTES_INFO, NULL);
-	if (digest_info == NULL) {
-		get_annotation_from_server (file, digest);
-	} else {
-		g_free (digest_info);
-	}
-	
 	g_free (digest);
 	return NULL;	
 }
@@ -1015,7 +1032,7 @@ nautilus_annotation_get_annotation_for_display (NautilusFile *file)
 int nautilus_annotation_has_annotation (NautilusFile *file)
 {
 	char *digest_info, *digits, *temp_str;
-	int count;
+	int count = 0;
 	
 	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_ANNOTATIONS)) {
 		return 0;
@@ -1027,6 +1044,12 @@ int nautilus_annotation_has_annotation (NautilusFile *file)
 		digits = strrchr (digest_info, ':');
 		count = atoi (digits + 1);
 		g_free (digest_info);
+		
+		/* if the date is stale, launch a new lookup */
+		if (annotation_is_stale (digest_info)) {
+			temp_str = nautilus_annotation_get_annotation (file);
+			g_free (temp_str);
+		}
 		return count;
 	} else {
 		/* initiate fetching the annotations from the server */
@@ -1086,7 +1109,8 @@ http_post_simple (const char *uri, const char *name, const char *value) {
 static void
 nautilus_annotation_send_to_server (const char *digest, 
 				    const char *annotation_type,
-				    const char *annotation_text)
+				    const char *annotation_text,
+				    const char *date_str)
 {
 	char *user_id;
 	xmlChar *request_text;
@@ -1108,17 +1132,17 @@ nautilus_annotation_send_to_server (const char *digest,
 	
 	/* set up the annotation payload */
 	annotation_node = xmlNewChild (root_node, NULL, "annotation", NULL);
-	xmlSetProp (annotation_node, "type", annotation_type);	
+	xmlSetProp (annotation_node, "type", annotation_type);		
+	xmlSetProp (annotation_node, "date", date_str);
+	
 	xmlNodeSetContent (annotation_node, annotation_text);
 		
 	/* post the annotation request to the server using ghttp */
 	xmlDocDumpMemory (xml_document, &request_text, &request_size);
 	
-	if (TRUE) {
-		g_message ("sending annotations for %s to server", digest);
-		g_message ("posted request is %s", request_text);
-	} else {
-		http_post_simple (SERVER_POST_URI, "note", request_text);	
+	g_message ("posted request is %s", request_text);
+	if (!http_post_simple (SERVER_POST_URI, "note", request_text)) {
+		g_message ("post request failed");
 	}
 	
 	/* clean up and we're done */
@@ -1129,14 +1153,15 @@ nautilus_annotation_send_to_server (const char *digest,
 }
 
 /* add an annotation to a file */
-void	nautilus_annotation_add_annotation (NautilusFile *file,
+void
+nautilus_annotation_add_annotation (NautilusFile *file,
 					    const char *annotation_type,
 					    const char *annotation_text,
 					    const char *access)
 {
 	char *digest;
 	char *annotations;
-	char *info_str;
+	char *info_str, *date_str;
 	char *annotation_path;
 	time_t date_stamp;
 	xmlDocPtr xml_document;
@@ -1189,7 +1214,7 @@ void	nautilus_annotation_add_annotation (NautilusFile *file,
 		return;
 	}
 	
-	/* there is a new annotation, bu tno current annotation exists, so create the
+	/* there is a new annotation, but no current annotation exists, so create the
 	 * initial xml document from scratch
 	 */
 	if (!has_annotation) {
@@ -1203,6 +1228,9 @@ void	nautilus_annotation_add_annotation (NautilusFile *file,
 		xml_document = xmlParseMemory (annotations, strlen (annotations));
 		root_node = xmlDocGetRootElement (xml_document);
 	}
+
+	time (&date_stamp);
+	date_str = g_strdup_printf ("%lu", date_stamp);
 	
 	/* add the new entry.  For now, we only support one entry per file, so we replace the old
 	 * one, if it exists, but this will change soon as we support multiple notes per file
@@ -1210,6 +1238,9 @@ void	nautilus_annotation_add_annotation (NautilusFile *file,
 	if (root_node->childs == NULL) {
 		node = xmlNewChild (root_node, NULL, "annotation", NULL);
 		xmlSetProp (node, "type", annotation_type);
+		
+		date_str = g_strdup_printf ("%lu", date_stamp);
+		xmlSetProp (node, "date", date_str);
 	} else {
 		node = root_node->childs;
 	}
@@ -1221,7 +1252,6 @@ void	nautilus_annotation_add_annotation (NautilusFile *file,
 	
 	/* update the metadata date and count */
 
-	time (&date_stamp);
 	info_str = g_strdup_printf ("%lu:%d", date_stamp, 1); /* FIXME: hardwired to 1 for now */
 					
 	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_NOTES_INFO, NULL, info_str);
@@ -1232,11 +1262,12 @@ void	nautilus_annotation_add_annotation (NautilusFile *file,
 	
 	/* if the access is global, send it to the server */
 	if (eel_strcmp (access, "global") == 0) {
-		nautilus_annotation_send_to_server (digest, annotation_type, annotation_text);
+		nautilus_annotation_send_to_server (digest, annotation_type, annotation_text, date_str);
 	}
 	
 	/* clean up and we're done */
 	xmlFreeDoc (xml_document);
+	g_free (date_str);
 	g_free (digest);
 	g_free (annotations);	 
 }
