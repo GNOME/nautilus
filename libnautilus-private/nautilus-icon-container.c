@@ -5018,12 +5018,20 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	} 
 
 	icon_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
-
+	eel_canvas_w2c_d (EEL_CANVAS_ITEM (icon->item)->canvas,
+			  icon_rect.x0,
+			  icon_rect.y0,
+			  &icon_rect.x0,
+			  &icon_rect.y0);
+	eel_canvas_w2c_d (EEL_CANVAS_ITEM (icon->item)->canvas,
+			  icon_rect.x1,
+			  icon_rect.y1,
+			  &icon_rect.x1,
+			  &icon_rect.y1);
+	
 	width = nautilus_icon_canvas_item_get_max_text_width (icon->item);
-
-	/* FIXME: Dividing the width by pixels_per_unit makes everything work
-	 * here, but I don't understand why.  Need to look into this. */
-	x = eel_round((icon_rect.x0 + icon_rect.x1) / 2) - (eel_round (width / EEL_CANVAS_ITEM (icon->item)->canvas->pixels_per_unit / 2));
+	
+	x = eel_round((icon_rect.x0 + icon_rect.x1) / 2) - (eel_round (width / 2));
 
 	gtk_widget_show (details->rename_widget);
 	gtk_layout_move (GTK_LAYOUT (container),
@@ -5035,12 +5043,9 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 				     editable_text);
 	gtk_widget_grab_focus (details->rename_widget);
 	
-#if 0
-	/* ALEX: TODO: handle this with EelEditableLabel */
 	g_signal_emit (container,
 		       signals[RENAMING_ICON], 0,
-		       gnome_icon_text_item_get_editable (details->rename_widget));
-#endif
+		       GTK_EDITABLE (details->rename_widget));
 	
 	nautilus_icon_container_update_icon (container, icon);
 	

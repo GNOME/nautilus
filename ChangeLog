@@ -1,5 +1,12 @@
 2002-09-30  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_start_renaming_selected_item):
+	* src/file-manager/fm-icon-view.c: (renaming_icon_callback):
+	Correctly do the rename ui op merging
+
+2002-09-30  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-canvas-item.c (compute_text_rectangle):
 	Fix text rect zoom handling. Fixes redraw issues at 75%.
 

@@ -1741,7 +1741,7 @@ renaming_icon_callback (NautilusIconContainer *container,
 	nautilus_clipboard_set_up_editable_in_control
 		(GTK_EDITABLE (widget),
 		 fm_directory_view_get_bonobo_control (directory_view),
-		 TRUE);
+		 FALSE);
 }
 
 int
