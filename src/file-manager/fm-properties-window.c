@@ -3065,7 +3065,7 @@ append_extension_pages (FMPropertiesWindow *window)
 			gtk_notebook_append_page (window->details->notebook, 
 						  page_widget, label);
 
-			g_object_set_data (G_OBJECT (page), 
+			g_object_set_data (G_OBJECT (page_widget), 
 					   "is-extension-page",
 					   page);
 
