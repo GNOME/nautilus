@@ -2795,6 +2795,8 @@ keyboard_space (NautilusIconContainer *container,
 			}
 			set_keyboard_focus (container, icon);
 		}
+	} else if ((event->state & GDK_SHIFT_MASK) != 0) {
+		activate_selected_items_alternate (container, NULL);
 	} else {
 		activate_selected_items (container);
 	}
@@ -3790,7 +3792,12 @@ key_press_event (GtkWidget *widget,
 #endif
 		case GDK_Return:
 		case GDK_KP_Enter:
-			activate_selected_items (container);
+			if ((event->state & GDK_SHIFT_MASK) != 0) {
+				activate_selected_items_alternate (container, NULL);
+			} else {
+				activate_selected_items (container);
+			}
+			
 			handled = TRUE;
 			break;
 		case GDK_Escape:

@@ -1,5 +1,11 @@
 2004-04-01  Dave Camp  <dave@ximian.com>
 
+	* libnautilus-private/nautilus-icon-container.c: (keyboard_space),
+	(key_press_event): Make Shift+Enter and Shift+Space close window 
+	behind.
+
+2004-04-01  Dave Camp  <dave@ximian.com>
+
 	* src/nautilus-window.c: (nautilus_window_set_viewed_file):
 	Monitor NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE.
 	
