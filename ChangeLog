@@ -1,3 +1,17 @@
+2001-02-07  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Rebecca Schulman  <rebecka@eazel.com>
+
+	This change is needed to enable the bonobo-level fix to Nautilus
+	bug 6023 (throbber and proxy processes still around after Nautilus
+	is quit). The throbber was unreffing itself on destroy, which is
+	wrong. However, Bonobo was leaking a reference to any toolbar
+	control item, so the two bugs were masking each other.
+	
+	* components/throbber/nautilus-throbber.c
+	(nautilus_throbber_destroy): Remove incorrect unref.
+	(nautilus_throbber_initialize): Formatting tweaks
+
 2001-02-08  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-gnome-extensions.c:

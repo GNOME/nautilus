@@ -200,11 +200,6 @@ nautilus_throbber_destroy (GtkObject *object)
 		bonobo_object_unref (BONOBO_OBJECT (throbber->details->property_bag));
 	}
 	
-	if (throbber->details->control) {
-		bonobo_object_unref (BONOBO_OBJECT (throbber->details->control));
-	}
-
-
 	g_free (throbber->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -292,8 +287,10 @@ nautilus_throbber_initialize (NautilusThrobber *throbber)
 	throbber->details->control = (BonoboObject*) bonobo_control_new (box);
 	
 	/* attach a property bag with the configure property */
-	throbber->details->property_bag = bonobo_property_bag_new (get_bonobo_properties, set_bonobo_properties, throbber);
-	bonobo_control_set_properties (BONOBO_CONTROL(throbber->details->control), throbber->details->property_bag);
+	throbber->details->property_bag = bonobo_property_bag_new (get_bonobo_properties, 
+								   set_bonobo_properties, throbber);
+	bonobo_control_set_properties (BONOBO_CONTROL (throbber->details->control), 
+				       throbber->details->property_bag);
 	
 	bonobo_property_bag_add (throbber->details->property_bag, "throbbing", THROBBING, BONOBO_ARG_BOOLEAN, NULL,
 				 "Throbber active", 0);
