@@ -409,6 +409,6 @@ corba_restart (PortableServer_Servant servant,
 	save_window_states ();
 
 	nautilus_main_event_loop_quit ();
-	nautilus_g_setenv ("_NAUTILUS_RESTART", "yes", 1);
+	nautilus_setenv ("_NAUTILUS_RESTART", "yes", 1);
 
 }

@@ -557,10 +557,10 @@ nautilus_window_view_failed (NautilusWindow *window, NautilusViewFrame *view)
 static void
 nautilus_window_has_really_changed (NautilusWindow *window)
 {
-        //GList *discard_views;
-        //GList *p;
+        GList *discard_views;
+        GList *p;
         GList *new_sidebar_panels;
-        //NautilusViewFrame *view;
+        NautilusViewFrame *view;
         
         new_sidebar_panels = window->new_sidebar_panels;
         window->new_sidebar_panels = NULL;
@@ -586,7 +586,6 @@ nautilus_window_has_really_changed (NautilusWindow *window)
         
                 /* Remove sidebar views that aren't going to be kept. */
              	
-		#if 0
 		discard_views = NULL;
                 for (p = window->sidebar_panels; p != NULL; p = p->next) {
                         view = NAUTILUS_VIEW_FRAME (p->data);
@@ -614,12 +613,10 @@ nautilus_window_has_really_changed (NautilusWindow *window)
                         }
  		
                 }
-        	#endif
 	}
 
 
-        // nautilus_gtk_object_list_free (new_sidebar_panels);
-
+        nautilus_gtk_object_list_free (new_sidebar_panels);
 	
         /* Tell the window we are finished. */
         if (window->pending_ni != NULL) {
@@ -934,11 +931,14 @@ report_sidebar_panel_failure_to_user (NautilusWindow *window, NautilusViewFrame 
 
 	name = nautilus_view_frame_get_label (panel);
         if (name == NULL) {
-                message = g_strdup ("One of the sidebar panels encountered an error and can't continue. Unfortunately I couldn't tell which one. ");
+                message = g_strdup
+                        (_("One of the sidebar panels encountered an error and can't continue. "
+                           "Unfortunately I couldn't tell which one."));
         } else {
-	message = g_strdup_printf ("The %s sidebar panel encountered an error and can't continue. "
-			           "If this keeps happening, you might want to turn this panel off.",
-			           name);
+                message = g_strdup_printf
+                        (_("The %s sidebar panel encountered an error and can't continue. "
+                           "If this keeps happening, you might want to turn this panel off."),
+                         name);
         }
 
 	g_free (name);
@@ -1053,10 +1053,7 @@ nautilus_window_update_state (gpointer data)
                 if (window->new_content_view != NULL) {
                         gtk_widget_unref (GTK_WIDGET (window->new_content_view));
                 }
-                for (p = window->new_sidebar_panels; p != NULL; p = p->next) {
-                        gtk_widget_unref (GTK_WIDGET (p->data));
-                }
-                g_list_free (window->new_sidebar_panels);
+                nautilus_gtk_object_list_free (window->new_sidebar_panels);
                 
                 nautilus_window_free_load_info (window);
                 

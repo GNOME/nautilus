@@ -45,68 +45,66 @@ typedef struct {
 
 GList *hash_tables_to_free_at_exit;
 
+/* We will need this for nautilus_unsetenv if there is no unsetenv. */
+#if !defined (HAVE_SETENV)
+extern char **environ;
+#endif
+
 /**
- * nautilus_g_setenv:
+ * nautilus_setenv:
  * 
  * Adds "*name=*value" to the environment
  *
  * Returns: see "putenv" - 
  * 
  **/
-gint
-nautilus_g_setenv (const gchar *name, const gchar *value, gboolean overwrite)
+int
+nautilus_setenv (const char *name, const char *value, gboolean overwrite)
 {
-#if defined(HAVE_SETENV)
+#if defined (HAVE_SETENV)
 	return setenv (name, value, overwrite);
 #else
-	gchar *string;
+	char *string;
 	
-	if ( ! overwrite && g_getenv (name) != NULL)
+	if (! overwrite && g_getenv (name) != NULL) {
 		return 0;
+	}
 	
-	/* A leak.  But there is absolutely no apparent
-	 * way to get around this other then an incredible
-	 * mess with the environ variable */
+	/* This results in a leak when you overwrite existing
+	 * settings. It would be fairly easy to fix this by keeping
+	 * our own parallel array or hash table.
+	 */
 	string = g_strconcat (name, '=', value, NULL);
 	return putenv (string);
 #endif
 }
 
-/* We will need this for unsetenv if there
- * is no unsetenv */
-#if !defined(HAVE_SETENV)
-extern gchar **environ;
-#endif
-
-
 /**
- * nautilus_g_unsetenv:
+ * nautilus_unsetenv:
  * 
  * Removes *name from the environment
  * 
  **/
 void
-nautilus_g_unsetenv (const gchar *name)
+nautilus_unsetenv (const char *name)
 {
-#if defined(HAVE_SETENV)
+#if defined (HAVE_SETENV)
 	unsetenv (name);
 #else
-	gint i;
-	gint len;
+	int i, len;
 
 	len = strlen (name);
 	
-	/* Mess directly with the environ array, apparently
-	 * this seems to be the only portable way to do this */
-	for (i = 0; environ[i] != NULL; i++)
-	{
-		if (strncmp (environ[i], name, len) == 0 &&
-		    environ[i][len + 1] == '=')
+	/* Mess directly with the environ array.
+	 * This seems to be the only portable way to do this.
+	 */
+	for (i = 0; environ[i] != NULL; i++) {
+		if (strncmp (environ[i], name, len) == 0
+		    && environ[i][len + 1] == '=') {
 			break;
+		}
 	}
-	
-	while (environ[i] != NULL)
-	{
+	while (environ[i] != NULL) {
 		environ[i] = environ[i + 1];
 		i++;
 	}

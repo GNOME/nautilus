@@ -64,7 +64,7 @@
 #define GNOME_VFS_PREFERENCES_HTTP_PROXY "/system/gnome-vfs/http-proxy"
 
 static void     initiate_file_download           (GnomeDruid *druid);
-static gboolean set_http_proxy                   (char       *proxy_url);
+static gboolean set_http_proxy                   (const char *proxy_url);
 static gboolean attempt_http_proxy_autoconfigure (void);
 
 /* globals */
@@ -624,8 +624,6 @@ next_proxy_configuration_page_callback (GtkWidget *button, GnomeDruid *druid)
 {
 	char *proxy_string;
 
-	g_message ("proxy server name is %s, port is %s", gtk_entry_get_text (GTK_ENTRY(proxy_address_entry)), gtk_entry_get_text (GTK_ENTRY(port_number_entry))); 
-
 	proxy_string = g_strdup_printf ("http://%s:%s", gtk_entry_get_text (GTK_ENTRY(proxy_address_entry)), gtk_entry_get_text (GTK_ENTRY(port_number_entry)));
 	set_http_proxy (proxy_string);
 	g_free (proxy_string);
@@ -891,45 +889,39 @@ initiate_file_download (GnomeDruid *druid)
  * also sets "http_proxy" environment variable
  */
 static gboolean
-set_http_proxy (char *proxy_url)
+set_http_proxy (const char *proxy_url)
 {
+	const char *proxy_url_port_part;
 	size_t proxy_len;
-	char * proxy_host_port = NULL;
-	gboolean success = FALSE;
+	char *proxy_host_port;
 
 	/* set the "http_proxy" environment variable */
 
-	nautilus_g_setenv ("http_proxy", proxy_url, TRUE);
+	nautilus_setenv ("http_proxy", proxy_url, TRUE);
 
 	/* The variable is expected to be in the form host:port */
-	if ( 0 != strncmp (proxy_url, "http://", strlen ("http://"))) {
+	if (0 != strncmp (proxy_url, "http://", strlen ("http://"))) {
 		return FALSE;
 	}
 
 	/* Chew off a leading http:// */
-	proxy_host_port  = g_strdup ( strlen ("http://") + proxy_url );
-
-	proxy_len = strlen (proxy_host_port);
-
+	proxy_url_port_part = strlen ("http://") + proxy_url;
+	proxy_len = strlen (proxy_url_port_part);
 	if (0 == proxy_len) {
-		goto error;
+		return FALSE;
 	}
 
 	/* chew off trailing / */
-	if ( '/' == proxy_host_port[proxy_len - 1] ) {
+	proxy_host_port = g_strdup (proxy_url_port_part);
+	if ('/' == proxy_host_port[proxy_len - 1]) {
 		proxy_host_port[proxy_len - 1] = 0;
 	}
 
-	g_message ("Setting http proxy to '%s'", proxy_host_port);
-
 	nautilus_preferences_set (GNOME_VFS_PREFERENCES_HTTP_PROXY, proxy_host_port);
 
-	success = TRUE;
-
-error:
 	g_free (proxy_host_port);
 
-	return success;
+	return TRUE;
 }
 
 /**
@@ -1087,8 +1079,7 @@ attempt_http_proxy_autoconfigure (void)
 	/* Note that g_getenv returns a pointer to a static buffer */
 	proxy_url = g_getenv ("http_proxy");
 
-	if ( NULL != proxy_url ) {
-		g_message ("Found proxy setting in enviroment variable");
+	if (NULL != proxy_url) {
 		success = TRUE;
 		set_http_proxy (proxy_url);
 		g_free (proxy_url);
@@ -1099,8 +1090,7 @@ attempt_http_proxy_autoconfigure (void)
 
 	proxy_url = load_nscp_proxy_settings ();
 
-	if ( NULL != proxy_url ) {
-		g_message ("Found proxy setting in Netscape 4.x settings");
+	if (NULL != proxy_url) {
 		success = TRUE;
 		set_http_proxy (proxy_url);
 		g_free (proxy_url);

@@ -927,6 +927,8 @@ nautilus_window_add_sidebar_panel (NautilusWindow *window,
 	g_return_if_fail (g_list_find (window->sidebar_panels, sidebar_panel) == NULL);
 	
 	nautilus_sidebar_add_panel (window->sidebar, sidebar_panel);
+
+	gtk_widget_ref (GTK_WIDGET (sidebar_panel));
 	window->sidebar_panels = g_list_prepend (window->sidebar_panels, sidebar_panel);
 }
 
@@ -942,6 +944,7 @@ nautilus_window_remove_sidebar_panel (NautilusWindow *window, NautilusViewFrame 
 	
 	nautilus_sidebar_remove_panel (window->sidebar, sidebar_panel);
 	window->sidebar_panels = g_list_remove (window->sidebar_panels, sidebar_panel);
+	gtk_widget_unref (GTK_WIDGET (sidebar_panel));
 }
 
 void
@@ -1606,13 +1609,9 @@ window_update_sidebar_panels_from_preferences (NautilusWindow *window)
 			
 			/* Make sure the load_client succeeded */
 			if (load_result) {
-				gtk_object_ref (GTK_OBJECT (sidebar_panel));
-				
 				nautilus_view_frame_set_label (sidebar_panel, identifier->name);
-				
 				nautilus_window_add_sidebar_panel (window, sidebar_panel);
-			}
-			else {
+			} else {
 				g_warning ("sidebar_panels_changed_callback: Failed to load_client for '%s' meta view.", 
 					   identifier->iid);
 				
@@ -1620,8 +1619,7 @@ window_update_sidebar_panels_from_preferences (NautilusWindow *window)
 				
 				sidebar_panel = NULL;
 			}
-		}
-		else {
+		} else {
 			gtk_widget_unref (GTK_WIDGET (sidebar_panel));
 		}
 	}

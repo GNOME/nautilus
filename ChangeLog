@@ -1,3 +1,41 @@
+2000-09-13  Darin Adler  <darin@eazel.com>
+
+	Fixed the ref. count problem that was causing crash on startup
+	with sidebar panels on. Sorry, I was a bit careless with my
+	earlier check-in.
+
+	* src/nautilus-window.c: (nautilus_window_add_sidebar_panel),
+	(nautilus_window_remove_sidebar_panel): Keep a reference to a sidebar
+	panel as long as it's in the sidebar panel list.
+	(window_update_sidebar_panels_from_preferences): Got rid of an extra
+	ref in this code that's no longer needed.
+
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_has_really_changed): Turned sidebars back on.
+	(report_sidebar_panel_failure_to_user): Added _() around some strings
+	that require translation.
+	(nautilus_window_update_state): Used nautilus_gtk_object_list_free to
+	save some code.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(get_id_from_digit_string): Made this function simpler by using
+	a local variable instead of g_new.
+	
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_setenv), (nautilus_unsetenv): Renamed to get rid of the
+	gratuitous g prefix. Also fixed some comments to be more accurate.
+	Added a prototype for a shell escape function -- haven't written
+	the function yet, but I will shortly.
+	
+	* src/nautilus-first-time-druid.c:
+	(next_proxy_configuration_page_callback), (set_http_proxy),
+	(attempt_http_proxy_autoconfigure): Take out some g_message calls
+	and use the nautilus_setenv call by its new name.
+	* src/nautilus-main.c: (main): Use nautilus_unsetenv by the new name.
+	* src/nautilus-shell.c: (corba_restart): Use nautilus_setenv by
+	the new name.
+	
 2000-09-13  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-zoom-control.c: (draw_number):

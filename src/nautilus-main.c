@@ -212,9 +212,8 @@ main (int argc, char *argv[])
 	 */
 
 	if (getenv ("_NAUTILUS_RESTART") != NULL) {
+		nautilus_unsetenv ("_NAUTILUS_RESTART");
 		
-		nautilus_g_unsetenv ("_NAUTILUS_RESTART");
-
 		/* Might eventually want to copy all the parameters
 		 * from argv into the new exec. For now, though, that
 		 * would just interfere with the re-creation of
@@ -223,7 +222,7 @@ main (int argc, char *argv[])
 		 */
 		argv_copy = g_new0 (char *, 2);
 		argv_copy[0] = argv[0];
-
+		
 		execvp (argv[0], argv_copy);
 	}
 
