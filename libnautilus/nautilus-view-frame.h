@@ -30,9 +30,9 @@
 #ifndef NTL_VIEW_FRAME_H
 #define NTL_VIEW_FRAME_H
 
-#include <gtk/gtkbin.h>
 #include <libnautilus/nautilus.h>
 #include <bonobo/bonobo-object.h>
+#include <gtk/gtkwidget.h>
 
 #ifdef __cplusplus
 extern "C" {
