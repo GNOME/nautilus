@@ -14,6 +14,8 @@ icon_DATA =					\
 	emblem-generic.png			\
 	emblem-important.gif			\
 	emblem-new.gif				\
+	emblem-noread.png			\
+	emblem-nowrite.png			\
 	emblem-personal.gif			\
 	emblem-remote.gif			\
 	emblem-symbolic-link.png		\

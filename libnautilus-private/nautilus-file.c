@@ -58,6 +58,8 @@ typedef enum {
 } NautilusDateType;
 
 #define EMBLEM_NAME_SYMBOLIC_LINK "symbolic-link"
+#define EMBLEM_NAME_CANT_READ "noread"
+#define EMBLEM_NAME_CANT_WRITE "nowrite"
 
 enum {
 	CHANGED,
@@ -1790,6 +1792,19 @@ nautilus_file_get_emblem_names (NautilusFile *file)
 	GList *names;
 
 	names = nautilus_file_get_keywords (file);
+	
+	if (!nautilus_file_can_read (file)) {
+		names = g_list_prepend 
+			(names, g_strdup (EMBLEM_NAME_CANT_READ));
+
+	}
+
+	if (!nautilus_file_can_write (file)) {
+		names = g_list_prepend 
+			(names, g_strdup (EMBLEM_NAME_CANT_WRITE));
+
+	}
+						    					    
 	if (nautilus_file_is_symbolic_link (file)) {
 		names = g_list_prepend 
 			(names, g_strdup (EMBLEM_NAME_SYMBOLIC_LINK));

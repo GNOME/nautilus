@@ -1,3 +1,17 @@
+2000-05-22  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed task 514, show file/folder permissions with emblems.
+	
+	* icons/Makefile.am:
+	* icons/emblem-noread.png:
+	* icons/emblem-nowrite.png:
+	added Susan's emblems for "cant read" and "cant write"
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_emblem_names):
+	made get_emblem_names return appropriate keywords when we can't
+	read the file or we can't write it.
+	
 2000-05-22  John Sullivan  <sullivan@eazel.com>
 
 	* src/ntl-app.c: (display_prototype_caveat): Tweaked
