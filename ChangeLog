@@ -1,3 +1,12 @@
+2000-05-25  J Shane Culpepper  <pepper@eazel.com>
+
+	* nautilus-installer/Makefile:
+	* nautilus-installer/nautilus-installer.c:
+	(create_temporary_directory), (fetch_remote_package_list), (main):
+
+	Fixed nautilus-installer so that it uses the async ghttp fetch of the
+	package-list.xml.  My changes to eazel-install broke it last night.
+
 2000-05-25  Ali Abdin  <aliabdin@aucegypt.edu
 
 	* components/help/help-methods.c:

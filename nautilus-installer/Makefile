@@ -1,6 +1,6 @@
 CC=gcc
 
-TRILOBITE_CFLAGS=-I../components/services/trilobite/lib
+TRILOBITE_CFLAGS=-I../components/services/trilobite/libtrilobite
 EAZEL_CFLAGS=-I../components/services/install/lib
 EAZEL_LIBS=../components/services/install/lib/libinstall.a
 GNET_CFLAGS=`gnet-config --cflags`

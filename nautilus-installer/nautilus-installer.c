@@ -39,7 +39,7 @@
  * installer locally.
  */
 
-#define REMOTE_SERVER_NAME "10.1.1.5"
+#define REMOTE_SERVER_NAME "vorlon.eazel.com"
 #define REMOTE_PKG_LIST_PATH "/package-list.xml"
 #define REMOTE_RPM_DIR "/RPMS"
 #define PATH_TO_RPMRC "/usr/lib/rpm/rpmrc"
@@ -48,13 +48,12 @@
 	
 /* Forward Function Declarations */
 
-/* THe following 4 functions are a stupid copy of a few functions from
+/* The following 3 functions are a stupid copy of a few functions from
  * components/services/trilobite/libtrilobite.  These should be statically
  * in at some point.
  */
 
 char* xml_get_value (xmlNode* node, const char* name);
-xmlDocPtr prune_xml (char* xmlbuf);
 gboolean check_for_root_user (void);
 gboolean check_for_redhat (void);
 
@@ -111,7 +110,7 @@ show_license (int exitcode, char* error) {
 
 } /* end show_license */
 
-/* The following 4 functions are a stupid copy of a few functions from
+/* The following 3 functions are a stupid copy of a few functions from
  * components/services/trilobite/libtrilobite.  These should be statically
  * in at some point.
  */
@@ -138,35 +137,6 @@ xml_get_value (xmlNode* node, const char* name)
         }
         return NULL;
 } /* end xml_get_value */
-
-xmlDocPtr
-prune_xml (char* xmlbuf)
-{
-        xmlDocPtr doc;
-        char* newbuf;
-        int length;
-        int i;
-
-        newbuf = strstr(xmlbuf, "<?xml");
-        if (!newbuf) {
-                return NULL;
-        }
-        length = strlen (newbuf);
-        for (i = 0; i < length; i++) {
-                if (newbuf[i] == '\0') {
-                        newbuf[i] = ' ';
-                }
-        }
-        newbuf[length] = '\0';
-        doc = xmlParseMemory (newbuf, length);
-
-        if (!doc) {
-                fprintf(stderr, "***Could not prune package file !***\n");
-                return NULL;
-        }
-
-        return doc;
-} /* end prune_xml */
 
 gboolean
 check_for_root_user (void)
@@ -244,12 +214,12 @@ create_temporary_directory (const char* tmpdir) {
 
 	int retval;
 
-	g_print("Creating temporary download directory ...\n");
+	g_print (_("Creating temporary download directory ...\n"));
 
 	retval = mkdir (tmpdir, 0755);
 	if (retval < 0) {
 		if (errno != EEXIST) {
-			g_error ("*** Could not create temporary directory ! ***\n");
+			g_error (_("*** Could not create temporary directory! ***\n"));
 		}
 	}
 } /* end create_temporary_directory */
@@ -261,16 +231,20 @@ static void
 fetch_remote_package_list (const char* pkg_list, TransferOptions* topts) {
 
 	gboolean retval;
+	char* url;
 
-	g_print ("Getting package-list.xml from remote server ...\n");
+	g_print (_("Getting package-list.xml from remote server ...\n"));
 
-	retval = http_fetch_xml_package_list (topts->hostname,
-                                              topts->port_number,
-                                              topts->pkg_list_storage_path,
-                                              pkg_list);
+	url = g_strdup_printf ("http://%s%s", topts->hostname,
+                               topts->pkg_list_storage_path);
+
+	retval = http_fetch_remote_file (url, pkg_list);
+
 	if (retval == FALSE) {
+		g_free (url);
 		g_error ("*** Unable to retrieve package-list.xml! ***\n");
 	}
+	g_free (url);
 } /* end fetch_remote_package_list */
 
 int
@@ -333,19 +307,19 @@ main (int argc, char* argv[]) {
 	/* This is the for internal usage only warning.  It will be removed once
          * we are ready for primetime.
          */
-	g_print ("WARNING: The nautilus bootstrap installer is for internal\n"
+	g_print (_("WARNING: The nautilus bootstrap installer is for internal\n"
                  "use at Eazel, Inc. only.  It should not be redistributed\n"
                  "until we are ready to release Nautilus 1.0.  This installer\n"
-                 "is by no means complete in it's current form so be prepared\n"                 "for unpredictable behavior.\n");
+                 "is by no means complete in it's current form so be prepared\n"                 "for unpredictable behavior.\n"));
 
 	retval = check_for_root_user ();
 	if (retval == FALSE) {
-		g_error ("*** You must run nautilus-installer as root! ***\n");
+		g_error (_("*** You must run nautilus-installer as root! ***\n"));
 	}
 
 	retval = check_for_redhat ();
 	if (retval == FALSE) {
-		g_error ("*** nautilus-installer can only be used on RedHat! ***\n");
+		g_error (_("*** nautilus-installer can only be used on RedHat! ***\n"));
 	}
 
 	/* Populate iopts and topts with eazel defaults */
@@ -374,10 +348,10 @@ main (int argc, char* argv[]) {
 
 	retval = install_new_packages (iopts, topts);
 	if (retval == FALSE) {
-		g_error ("*** The install failed! ***\n");
+		g_error (_("*** The install failed! ***\n"));
 	}
 
-	g_print ("Install completed normally...\n");
+	g_print (_("Install completed normally...\n"));
 	g_free (iopts);
 	g_free (topts);
 	exit (0);
