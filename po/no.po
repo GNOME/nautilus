@@ -11,8 +11,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.1\n"
-"POT-Creation-Date: 2000-12-09 10:09+0100\n"
-"PO-Revision-Date: 2000-12-09 10:32+01:00\n"
+"POT-Creation-Date: 2000-12-11 15:41+0100\n"
+"PO-Revision-Date: 2000-12-11 15:42+01:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -259,6 +259,7 @@ msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Beklager, men '%s' er ikke en brukbar bildefil."
 
 #: components/music/nautilus-music-view.c:492
+#: src/file-manager/fm-properties-window.c:2065
 #: src/nautilus-property-browser.c:993 src/nautilus-property-browser.c:1129
 msgid "Not an Image"
 msgstr "Ikke et bilde"
@@ -330,10 +331,22 @@ msgid "%s by %s"
 msgstr "%s for %s"
 
 #. set up the window title
-#: components/rpmview/nautilus-rpm-verify-window.c:182
+#: components/rpmview/nautilus-rpm-verify-window.c:185
 #, c-format
 msgid "Verifying %s..."
 msgstr "Verifiserer %s..."
+
+#: components/rpmview/nautilus-rpm-verify-window.c:209
+#, c-format
+msgid "Failed on \"%s\""
+msgstr "Feilet på \"%s\""
+
+#. TRANSLATORS: this is printed while verifying files from packages,
+#. %s is the filename, %d/%d is filenumber of total-number-of-files
+#: components/rpmview/nautilus-rpm-verify-window.c:213
+#, c-format
+msgid "Checking \"%s\" (%d/%d)"
+msgstr "Sjekker \"%s\" (%d/%d)"
 
 #: components/rpmview/nautilus-rpm-view-install.c:107
 #, c-format
@@ -391,104 +404,85 @@ msgstr "Installasjon feilet"
 msgid "Incorrect password."
 msgstr "Ugyldig passord."
 
-#: components/rpmview/nautilus-rpm-view.c:139
+#: components/rpmview/nautilus-rpm-view.c:126
 msgid "Package Contents"
 msgstr "Pakkeinnhold"
 
 #. allocate the name field
-#: components/rpmview/nautilus-rpm-view.c:182
+#: components/rpmview/nautilus-rpm-view.c:173
 msgid "Package Title"
 msgstr "Pakketittel"
 
-#: components/rpmview/nautilus-rpm-view.c:205
+#: components/rpmview/nautilus-rpm-view.c:196
 msgid "Size: "
 msgstr "Størrelse: "
 
-#: components/rpmview/nautilus-rpm-view.c:211
+#: components/rpmview/nautilus-rpm-view.c:202
 msgid "<size>"
 msgstr "<størrelse>"
 
-#: components/rpmview/nautilus-rpm-view.c:217
+#: components/rpmview/nautilus-rpm-view.c:208
 msgid "Install Date: "
 msgstr "Installasjonsdato: "
 
-#: components/rpmview/nautilus-rpm-view.c:223
-#: components/rpmview/nautilus-rpm-view.c:235
-#: components/rpmview/nautilus-rpm-view.c:247
-#: components/rpmview/nautilus-rpm-view.c:259
-#: components/rpmview/nautilus-rpm-view.c:271
+#: components/rpmview/nautilus-rpm-view.c:214
+#: components/rpmview/nautilus-rpm-view.c:226
+#: components/rpmview/nautilus-rpm-view.c:238
+#: components/rpmview/nautilus-rpm-view.c:250
+#: components/rpmview/nautilus-rpm-view.c:262
 msgid "<unknown>"
 msgstr "<ukjent>"
 
-#: components/rpmview/nautilus-rpm-view.c:229
+#: components/rpmview/nautilus-rpm-view.c:220
 msgid "License: "
 msgstr "Lisens: "
 
-#: components/rpmview/nautilus-rpm-view.c:241
+#: components/rpmview/nautilus-rpm-view.c:232
 msgid "Build Date: "
 msgstr "Byggedato: "
 
-#: components/rpmview/nautilus-rpm-view.c:253
+#: components/rpmview/nautilus-rpm-view.c:244
 msgid "Distribution: "
 msgstr "Distribusjon: "
 
-#: components/rpmview/nautilus-rpm-view.c:265
+#: components/rpmview/nautilus-rpm-view.c:256
 msgid "Vendor: "
 msgstr "Forhandler: "
 
-#: components/rpmview/nautilus-rpm-view.c:298
+#: components/rpmview/nautilus-rpm-view.c:289
 msgid "Install"
 msgstr "Installer"
 
-#: components/rpmview/nautilus-rpm-view.c:314
+#: components/rpmview/nautilus-rpm-view.c:305
 msgid "Update"
 msgstr "Oppdater"
 
-#: components/rpmview/nautilus-rpm-view.c:323
+#: components/rpmview/nautilus-rpm-view.c:314
 msgid "Uninstall"
 msgstr "Avinstalller"
 
-#: components/rpmview/nautilus-rpm-view.c:339
+#: components/rpmview/nautilus-rpm-view.c:330
 msgid "Verify"
 msgstr "Verifisér"
 
-#: components/rpmview/nautilus-rpm-view.c:375
+#: components/rpmview/nautilus-rpm-view.c:366
 msgid "Go to selected file"
 msgstr "Gå til valgt fil"
 
 #. add the description
-#: components/rpmview/nautilus-rpm-view.c:386
+#: components/rpmview/nautilus-rpm-view.c:377
 msgid "Description"
 msgstr "Beskrivelse"
 
-#: components/rpmview/nautilus-rpm-view.c:624
+#: components/rpmview/nautilus-rpm-view.c:491
 #, c-format
 msgid "Package Contents: %d files"
 msgstr "Pakkeinnhold: %d filer"
 
-#: components/rpmview/nautilus-rpm-view.c:636
+#: components/rpmview/nautilus-rpm-view.c:498
 #, c-format
 msgid "Package \"%s\" "
 msgstr "Pakke \"%s\""
-
-#: components/rpmview/nautilus-rpm-view.c:701
-#, c-format
-msgid "version %s-%s"
-msgstr "versjon %s-%s"
-
-#: components/rpmview/nautilus-rpm-view.c:858
-#, c-format
-msgid "checking %s..."
-msgstr "sjekker %s..."
-
-#: components/rpmview/nautilus-rpm-view.c:860
-#, c-format
-msgid "file %s has an error!"
-msgstr "fil %s har en feil!"
-
-#: components/rpmview/nautilus-rpm-view.c:878
-msgid "Verification completed."
-msgstr "Verifisering fullført."
 
 #: po/tmp/nautilus-sample-content-view-ui.xml.h:1
 msgid "Sample"
@@ -682,52 +676,52 @@ msgstr "Kunne ikke låse nedlastingsfilen"
 msgid "MD5 mismatch, package %s may be compromised"
 msgstr "MD5-feil, pakke %s kan være tuklet med"
 
-#: components/services/install/lib/eazel-install-logic.c:1060
+#: components/services/install/lib/eazel-install-logic.c:1081
 #, c-format
 msgid "Removing package %s (0x%p) %s"
 msgstr "Fjerner pakke %s (0x%p) %s"
 
-#: components/services/install/lib/eazel-install-logic.c:1259
+#: components/services/install/lib/eazel-install-logic.c:1280
 #, c-format
 msgid "%s-%s version %s-%s already installed"
 msgstr "%s-%s versjon %s-%s er allerede installert"
 
-#: components/services/install/lib/eazel-install-logic.c:1263
+#: components/services/install/lib/eazel-install-logic.c:1284
 #, c-format
 msgid "%s version %s already installed"
 msgstr "%s versjon %s er allerede installert"
 
-#: components/services/install/lib/eazel-install-logic.c:1272
-#: components/services/install/lib/eazel-install-logic.c:1277
+#: components/services/install/lib/eazel-install-logic.c:1293
+#: components/services/install/lib/eazel-install-logic.c:1298
 #, c-format
 msgid "%s upgrades from version %s-%s to %s-%s"
 msgstr "%s oppgraderinger fra versjon %s-%s til %s-%s"
 
-#: components/services/install/lib/eazel-install-logic.c:1286
+#: components/services/install/lib/eazel-install-logic.c:1307
 #, c-format
 msgid "%s downgrades from version %s-%s to %s-%s"
 msgstr "%s nedgraderinger fra versjon %s-%s til %s-%s"
 
-#: components/services/install/lib/eazel-install-logic.c:1291
+#: components/services/install/lib/eazel-install-logic.c:1312
 #, c-format
 msgid "%s downgrades from version %s to %s"
 msgstr "%s nedgraderinger fra versjon %s til %s"
 
-#: components/services/install/lib/eazel-install-logic.c:1316
+#: components/services/install/lib/eazel-install-logic.c:1337
 #, c-format
 msgid "%s installs version %s-%s"
 msgstr "%s installerer versjon %s-%s"
 
-#: components/services/install/lib/eazel-install-logic.c:1321
+#: components/services/install/lib/eazel-install-logic.c:1342
 #, c-format
 msgid "%s installs version %s"
 msgstr "%s installerer versjon %s"
 
-#: components/services/install/lib/eazel-install-logic.c:1926
+#: components/services/install/lib/eazel-install-logic.c:1947
 msgid "Dependencies appear ok"
 msgstr "Avhengigheter ser ok ut"
 
-#: components/services/install/lib/eazel-install-logic.c:1929
+#: components/services/install/lib/eazel-install-logic.c:1950
 msgid "But there are file conflicts"
 msgstr "Men det finnes filkonflikter"
 
@@ -822,67 +816,67 @@ msgstr "Fikk ikke forspørselens kropp!"
 msgid "FTP not supported yet"
 msgstr "FTP er ikke støttet ennå"
 
-#: components/services/install/lib/eazel-install-protocols.c:415
+#: components/services/install/lib/eazel-install-protocols.c:416
 #, c-format
 msgid "Checking local file %s..."
 msgstr "Sjekker lokal fil %s..."
 
-#: components/services/install/lib/eazel-install-protocols.c:476
+#: components/services/install/lib/eazel-install-protocols.c:477
 #, c-format
 msgid "Failed to retrieve %s!"
 msgstr "Klarte ikke å hente %s!"
 
-#: components/services/install/lib/eazel-install-protocols.c:539
+#: components/services/install/lib/eazel-install-protocols.c:540
 #, c-format
 msgid "Could not get an URL for %s"
 msgstr "Fant ikke en URL for %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:554
+#: components/services/install/lib/eazel-install-protocols.c:555
 msgid "Downloaded package does not have the correct name"
 msgstr "Nedlastet pakke har ikke korrekt navn"
 
-#: components/services/install/lib/eazel-install-protocols.c:555
+#: components/services/install/lib/eazel-install-protocols.c:556
 #, c-format
 msgid "Package %s should have had name %s"
 msgstr "Pakke %s skulle hatt navn %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:562
+#: components/services/install/lib/eazel-install-protocols.c:563
 msgid "Downloaded package does not have the correct version"
 msgstr "Nedlastet pakke har ikke korrekt versjon"
 
-#: components/services/install/lib/eazel-install-protocols.c:563
+#: components/services/install/lib/eazel-install-protocols.c:564
 #, c-format
 msgid "Package %s had version %s and not %s"
 msgstr "Pakke %s hadde versjon %s og ikke %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:581
+#: components/services/install/lib/eazel-install-protocols.c:582
 msgid "File download failed"
 msgstr "Nedlasting av fil feilet"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:267
+#: components/services/install/lib/eazel-install-rpm-glue.c:268
 #, c-format
 msgid "Processing dep for %s, requires library %s"
 msgstr "Prosesserer avhengighet for %s, trenger bibliotek %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:274
+#: components/services/install/lib/eazel-install-rpm-glue.c:275
 #, c-format
 msgid "Processing dep for %s, requires package %s"
 msgstr "Prosesserer avhengighet for %s, trenger pakke %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:300
+#: components/services/install/lib/eazel-install-rpm-glue.c:301
 #, c-format
 msgid "package %s is already in requirements, whew!"
 msgstr "pakke %s er allerede listet som nødvendig, puh!"
 
 #. Possibly the implest case, we're installing package A, which requires
 #. B that is not installed.
-#: components/services/install/lib/eazel-install-rpm-glue.c:312
+#: components/services/install/lib/eazel-install-rpm-glue.c:313
 #, c-format
 msgid "%s requires %s"
 msgstr "%s er avhengig av %s"
 
 #. If we end here, it's a conflict is going to break something
-#: components/services/install/lib/eazel-install-rpm-glue.c:448
+#: components/services/install/lib/eazel-install-rpm-glue.c:449
 #, c-format
 msgid "Package %s conflicts with %s-%s"
 msgstr "Pakke %s er i konflikt med %s-%s"
@@ -993,27 +987,27 @@ msgstr "*** Hopper ut av osd tolking! ***\n"
 msgid "Could not parse the xml (length %d)"
 msgstr "Kunne ikke tolke xml (lengde %d)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:390
+#: components/services/install/lib/eazel-package-system-rpm3.c:412
 #, c-format
 msgid "Opened packages database in %s"
 msgstr "Åpnet pakkedatabasen i %s"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:395
+#: components/services/install/lib/eazel-package-system-rpm3.c:417
 #, c-format
 msgid "Opening packages database in %s failed"
 msgstr "Åpning av pakkedatabasen i %s feilet"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:418
+#: components/services/install/lib/eazel-package-system-rpm3.c:440
 #, c-format
 msgid "Closing db for %s (open)"
 msgstr "Lukker db for %s (åpen)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:423
+#: components/services/install/lib/eazel-package-system-rpm3.c:445
 #, c-format
 msgid "Closing db for %s (not open)"
 msgstr "Lukker db for %s (ikke åpen)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:580
+#: components/services/install/lib/eazel-package-system-rpm3.c:609
 #, c-format
 msgid "Cannot open %s"
 msgstr "Kan ikke åpne %s"
@@ -1318,52 +1312,52 @@ msgstr "_Logg ut fra Eazel-tjenester"
 msgid "_Register for Eazel Services"
 msgstr "Registrér deg for Eazel tjenester"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:283
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:101
 msgid "Register"
 msgstr "Registrér"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:284
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:102
 msgid "Login"
 msgstr "Logg inn"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:285
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:293
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:103
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:111
 msgid "Terms of Use"
 msgstr "Bruksbetingelser"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:286
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:294
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:104
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:112
 msgid "Privacy Statement"
 msgstr "Erklæring om konfidensialitet"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:291
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:109
 msgid "Account Preferences"
 msgstr "Brukervalg for konto"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:292
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:110
 msgid "Logout"
 msgstr "Logg ut"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:346
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:164
 #, c-format
 msgid "Welcome Back %s!"
 msgstr "Velkommen tilbake %s!"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:352
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:170
 msgid "You are not logged in!"
 msgstr "Du er ikke logget inn!"
 
 #. add the tab
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:444
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:262
 msgid "Your Services"
 msgstr "Dine tjenester"
 
 #. create the Additional Services pane
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:508
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:326
 msgid "Additional Services"
 msgstr "Tillegstjenester"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:528
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:346
 msgid ""
 "\n"
 "Check back here for new system management\n"
@@ -1374,59 +1368,16 @@ msgstr ""
 "tjenester som vil gjøre Linux enklere å bruke."
 
 #. add the tab
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:567
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:385
 msgid "Current Updates"
 msgstr "Tilgjengelige oppdateringer"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:600
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:418
 #, c-format
 msgid "Version %s"
 msgstr "Versjon %s"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1210
-msgid "Service Error"
-msgstr "Feil i tjeneste"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1246
-msgid "Register Now"
-msgstr "Registrér deg nå"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1248
-msgid "Help"
-msgstr "Hjelp"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1251
-msgid "Services Login"
-msgstr "Innlogging til tjenester"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1263
-msgid "Username:"
-msgstr "Brukernavn:"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1270
-msgid "Password:"
-msgstr "Passord:"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1278
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1290
-msgid "Please log in to Eazel services"
-msgstr "Vennligst logg inn til Eazel-tjenester"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1282
-msgid ""
-"Your user name or password were not correct, or you have not activated your "
-"account.  Please try again, or check your email for an account activation "
-"notice."
-msgstr ""
-"Ditt brukernavn og passord var ikke korrekt, eller du har ikke aktivert din "
-"konto. Vennligst prøv igjen, eller sjekk din e-post for en melding om "
-"aktivering av konto."
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1286
-msgid "We're sorry, but your name and password are still not recognized."
-msgstr "Beklager, men navn og passord ble fremdeles ikke gjenkjent."
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1486
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:891
 msgid ""
 "Unable to connect to Eazel's server. The server might be unavailable right "
 "now, or your computer might be configured incorrectly.You could try again "
@@ -1436,7 +1387,7 @@ msgstr ""
 "nå, eller kanskje din datamaskin ikke er riktig konfigurert. Du kan prøve "
 "igjen senere."
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1504
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:909
 msgid ""
 "Found problem with data on Eazel servers. Please contact support@eazel.com."
 msgstr ""
@@ -1577,7 +1528,7 @@ msgstr "Dra et emblem til et objekt for å legge det til objektet"
 msgid "Eclipse"
 msgstr "Eklipse"
 
-#: po/tmp/browser.xml.h:16 src/file-manager/fm-properties-window.c:1357
+#: po/tmp/browser.xml.h:16 src/file-manager/fm-properties-window.c:1390
 msgid "Emblems"
 msgstr "Emblemer"
 
@@ -3518,7 +3469,9 @@ msgstr "Oppføringer som har \"stuff\" i navnet og er vanlige filer"
 msgid ""
 "Items with \"stuff\" in the name, are regular files and smaller than 2000 "
 "bytes"
-msgstr "Oppføringer som har \"stuff i navnet, er vanlige filer og som er mindre enn 2000 bytes"
+msgstr ""
+"Oppføringer som har \"stuff i navnet, er vanlige filer og som er mindre enn "
+"2000 bytes"
 
 #: libnautilus-extensions/nautilus-search-uri.c:696
 msgid "Items with \"medusa\" in the name and are folders"
@@ -3718,8 +3671,10 @@ msgid ""
 "This is a temporary limitation in this Preview Release of Nautilus, and will "
 "not be present in the final version."
 msgstr ""
-"Beklager, men katalogen du viser har flere filer enn vi kan vise. Som et resultat kan vi kun vise de første 4000 filene den inneholder.\n"
-"Dette er en midlertidig begrensning i denne testversjonen av Nautilus, og vil ikke være tilstede i den ferdige versjonen."
+"Beklager, men katalogen du viser har flere filer enn vi kan vise. Som et "
+"resultat kan vi kun vise de første 4000 filene den inneholder.\n"
+"Dette er en midlertidig begrensning i denne testversjonen av Nautilus, og "
+"vil ikke være tilstede i den ferdige versjonen."
 
 #: src/file-manager/fm-directory-view.c:1366
 msgid "Too many Files"
@@ -3886,13 +3841,17 @@ msgstr "Kunne ikke kjøre eksterne lenker"
 #, c-format
 msgid ""
 "The name \"%s\" is already used in this folder. Please use a different name."
-msgstr "Navnet \"%s\" er allerede i bruk i denne mappen. Vennligst bruk et annet navn."
+msgstr ""
+"Navnet \"%s\" er allerede i bruk i denne mappen. Vennligst bruk et annet "
+"navn."
 
 #: src/file-manager/fm-error-reporting.c:60
 #, c-format
 msgid ""
 "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
-msgstr "\"%s\" finnes ikke i denne mappen. Kanskje den er flyttet eller slettet nylig?"
+msgstr ""
+"\"%s\" finnes ikke i denne mappen. Kanskje den er flyttet eller slettet "
+"nylig?"
 
 #: src/file-manager/fm-error-reporting.c:65
 #, c-format
@@ -3904,7 +3863,9 @@ msgstr "Du har ikke nødvendige rettigheter til å endre navn på \"%s\"."
 msgid ""
 "The name \"%s\" is not valid because it contains the character \"/\". Please "
 "use a different name."
-msgstr "Navnet \"%s\" er ikke gyldig fordi det inneholder tegnet \"/\". Vennligst bruk et annet navn."
+msgstr ""
+"Navnet \"%s\" er ikke gyldig fordi det inneholder tegnet \"/\". Vennligst "
+"bruk et annet navn."
 
 #: src/file-manager/fm-error-reporting.c:74
 #, c-format
@@ -4089,46 +4050,46 @@ msgstr "Type"
 msgid "Date Modified"
 msgstr "Dato endret"
 
-#: src/file-manager/fm-properties-window.c:501
+#: src/file-manager/fm-properties-window.c:508
 #, c-format
 msgid "%s Properties"
 msgstr "Egenskaper for %s"
 
-#: src/file-manager/fm-properties-window.c:628
+#: src/file-manager/fm-properties-window.c:635
 msgid "Cancel Group Change?"
 msgstr "Avbryt endring av gruppe?"
 
-#: src/file-manager/fm-properties-window.c:629
+#: src/file-manager/fm-properties-window.c:636
 msgid "Changing group"
 msgstr "Endrer gruppe"
 
-#: src/file-manager/fm-properties-window.c:788
+#: src/file-manager/fm-properties-window.c:795
 msgid "Cancel Owner Change?"
 msgstr "Avbryt endring av eier?"
 
-#: src/file-manager/fm-properties-window.c:789
+#: src/file-manager/fm-properties-window.c:796
 msgid "Changing owner"
 msgstr "Endrer eier"
 
-#: src/file-manager/fm-properties-window.c:948
+#: src/file-manager/fm-properties-window.c:955
 msgid "nothing"
 msgstr "ingenting"
 
-#: src/file-manager/fm-properties-window.c:950
+#: src/file-manager/fm-properties-window.c:957
 msgid "unreadable"
 msgstr "ulesbar"
 
-#: src/file-manager/fm-properties-window.c:959
+#: src/file-manager/fm-properties-window.c:966
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 oppføring, med størrelse %s"
 
-#: src/file-manager/fm-properties-window.c:961
+#: src/file-manager/fm-properties-window.c:968
 #, c-format
 msgid "%d items, totalling %s"
 msgstr "%d oppføringer, totalt %s"
 
-#: src/file-manager/fm-properties-window.c:967
+#: src/file-manager/fm-properties-window.c:974
 msgid "(some contents unreadable)"
 msgstr "(noe innhold ikke lesbart)"
 
@@ -4137,110 +4098,128 @@ msgstr "(noe innhold ikke lesbart)"
 #. * "Contents:" title to line up with the first line of the 2-line value.
 #. * Maybe there's a better way to do this, but I couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:981
+#: src/file-manager/fm-properties-window.c:988
 msgid "Contents:"
 msgstr "Innhold:"
 
-#: src/file-manager/fm-properties-window.c:1123
+#: src/file-manager/fm-properties-window.c:1132
 msgid "Basic"
 msgstr "Grunnleggende"
 
-#: src/file-manager/fm-properties-window.c:1200
+#: src/file-manager/fm-properties-window.c:1209
 msgid "Where:"
 msgstr "Hvor:"
 
-#: src/file-manager/fm-properties-window.c:1202
+#: src/file-manager/fm-properties-window.c:1211
 msgid "Type:"
 msgstr "Type:"
 
-#: src/file-manager/fm-properties-window.c:1208
+#: src/file-manager/fm-properties-window.c:1217
 msgid "Size:"
 msgstr "Størrelse:"
 
-#: src/file-manager/fm-properties-window.c:1215
+#: src/file-manager/fm-properties-window.c:1224
 msgid "Modified:"
 msgstr "Endret:"
 
-#: src/file-manager/fm-properties-window.c:1217
+#: src/file-manager/fm-properties-window.c:1226
 msgid "Accessed:"
 msgstr "Aksessert:"
 
-#: src/file-manager/fm-properties-window.c:1220
+#: src/file-manager/fm-properties-window.c:1229
 msgid "MIME type:"
 msgstr "MIME-type:"
 
-#: src/file-manager/fm-properties-window.c:1589
+#: src/file-manager/fm-properties-window.c:1237
+msgid "Select Custom Icon..."
+msgstr "Velg egendefinert ikon..."
+
+#: src/file-manager/fm-properties-window.c:1243
+msgid "Remove Custom Icon"
+msgstr "Fjern egendefinert ikon"
+
+#: src/file-manager/fm-properties-window.c:1622
 msgid "Special Flags:"
 msgstr "Spesielle flagg:"
 
-#: src/file-manager/fm-properties-window.c:1593
+#: src/file-manager/fm-properties-window.c:1626
 msgid "Set User ID"
 msgstr "Sett bruker-ID"
 
-#: src/file-manager/fm-properties-window.c:1597
+#: src/file-manager/fm-properties-window.c:1630
 msgid "Set Group ID"
 msgstr "Sett gruppe-ID"
 
-#: src/file-manager/fm-properties-window.c:1601
+#: src/file-manager/fm-properties-window.c:1634
 msgid "Sticky"
 msgstr "Klebrig"
 
-#: src/file-manager/fm-properties-window.c:1630
+#: src/file-manager/fm-properties-window.c:1663
 msgid "Permissions"
 msgstr "Rettigheter"
 
-#: src/file-manager/fm-properties-window.c:1636
+#: src/file-manager/fm-properties-window.c:1669
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Du er ikke eieren, du kan derfor ikke ender disse rettighetene."
 
-#: src/file-manager/fm-properties-window.c:1670
+#: src/file-manager/fm-properties-window.c:1703
 msgid "File Owner:"
 msgstr "Fileier:"
 
-#: src/file-manager/fm-properties-window.c:1685
+#: src/file-manager/fm-properties-window.c:1718
 msgid "File Group:"
 msgstr "Filgruppe:"
 
-#: src/file-manager/fm-properties-window.c:1712
+#: src/file-manager/fm-properties-window.c:1745
 msgid "Owner:"
 msgstr "Eier:"
 
-#: src/file-manager/fm-properties-window.c:1716
+#: src/file-manager/fm-properties-window.c:1749
 msgid "Group:"
 msgstr "Gruppe:"
 
-#: src/file-manager/fm-properties-window.c:1720
+#: src/file-manager/fm-properties-window.c:1753
 msgid "Others:"
 msgstr "Andre:"
 
-#: src/file-manager/fm-properties-window.c:1727
+#: src/file-manager/fm-properties-window.c:1760
 msgid "Text View:"
 msgstr "Tekstvisning:"
 
-#: src/file-manager/fm-properties-window.c:1731
+#: src/file-manager/fm-properties-window.c:1764
 msgid "Number View:"
 msgstr "Tallvisning:"
 
-#: src/file-manager/fm-properties-window.c:1735
+#: src/file-manager/fm-properties-window.c:1768
 msgid "Last Changed:"
 msgstr "Sist endret:"
 
-#: src/file-manager/fm-properties-window.c:1739
+#: src/file-manager/fm-properties-window.c:1772
 msgid "Read"
 msgstr "Lese"
 
-#: src/file-manager/fm-properties-window.c:1743
+#: src/file-manager/fm-properties-window.c:1776
 msgid "Write"
 msgstr "Skrive"
 
-#: src/file-manager/fm-properties-window.c:1747
+#: src/file-manager/fm-properties-window.c:1780
 msgid "Execute"
 msgstr "Kjøre"
 
-#: src/file-manager/fm-properties-window.c:1804
+#: src/file-manager/fm-properties-window.c:1837
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Rettighetene for \"%s\" kunne ikke bestemmes."
+
+#: src/file-manager/fm-properties-window.c:2064
+#: src/nautilus-property-browser.c:991 src/nautilus-property-browser.c:1128
+#, c-format
+msgid "Sorry, but '%s' is not a usable image file!"
+msgstr "Beklager, men '%s' er ikke en brukbar bildefil!"
+
+#: src/file-manager/fm-properties-window.c:2094
+msgid "Select an image to represent the file:"
+msgstr "Velg et bilde som skal representere filen:"
 
 #. FIXME bugzilla.eazel.com 5058: Should be two messages, one for each of whether
 #. "slow complete search" turned on or not
@@ -4270,7 +4249,10 @@ msgid ""
 "Every indexed file on your computer matches the criteria you selected. You "
 "can check the spelling on your selections or add more criteria to narrow "
 "your results."
-msgstr "Alle indekserte filer på din datamaskin er lik kriteriet du valgte. Du kan sjekke stavemåten for utvalgene eller legge til flere kriterier for å gjøre søket smalere."
+msgstr ""
+"Alle indekserte filer på din datamaskin er lik kriteriet du valgte. Du kan "
+"sjekke stavemåten for utvalgene eller legge til flere kriterier for å gjøre "
+"søket smalere."
 
 #: src/file-manager/fm-search-list-view.c:160
 #, c-format
@@ -5072,7 +5054,8 @@ msgstr "Start Nautilus på nytt."
 
 #: src/nautilus-main.c:144
 msgid "Only create Nautilus windows for explicity specified URIs."
-msgstr "Kun opprett Nautilus-vinduer for URIer som blir skrevet inn eksplisitt."
+msgstr ""
+"Kun opprett Nautilus-vinduer for URIer som blir skrevet inn eksplisitt."
 
 #: src/nautilus-main.c:195
 msgid "nautilus: --check cannot be used with URIs.\n"
@@ -5121,11 +5104,6 @@ msgstr "Kunne ikke slette bakgrunn"
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "Beklager, men emblem %s kunne ikke slettes."
-
-#: src/nautilus-property-browser.c:991 src/nautilus-property-browser.c:1128
-#, c-format
-msgid "Sorry, but '%s' is not a usable image file!"
-msgstr "Beklager, men '%s' er ikke en brukbar bildefil!"
 
 #: src/nautilus-property-browser.c:1018
 msgid "Create a New Emblem:"
@@ -5199,7 +5177,9 @@ msgstr ""
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
 "for it."
-msgstr "Beklager, men \"%s\" er et eksisterende nøkkelord. Vennligst velg et annet navn for det."
+msgstr ""
+"Beklager, men \"%s\" er et eksisterende nøkkelord. Vennligst velg et annet "
+"navn for det."
 
 #: src/nautilus-property-browser.c:1426
 #, c-format
@@ -5922,7 +5902,9 @@ msgstr "Legg til nytt tema"
 msgid ""
 "Sorry, but you can't remove the current theme. Please change to another "
 "theme before removing this one."
-msgstr "Beklager, men du kan ikke fjerne aktivt tema. Vennligst bytt til et annet tema før du fjerner dette."
+msgstr ""
+"Beklager, men du kan ikke fjerne aktivt tema. Vennligst bytt til et annet "
+"tema før du fjerner dette."
 
 #: src/nautilus-theme-selector.c:570
 msgid "Can't delete current theme"
@@ -5992,7 +5974,8 @@ msgstr ""
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
 "it is."
-msgstr "Kunne ikke vise \"%s\" fordi Nautilus ikke fant ut hvilken filtype det er."
+msgstr ""
+"Kunne ikke vise \"%s\" fordi Nautilus ikke fant ut hvilken filtype det er."
 
 #: src/nautilus-window-manage-views.c:1213
 #, c-format
@@ -6217,3 +6200,48 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 #: src/nautilus-zoom-control.c:579
 msgid "%.0f%%"
 msgstr "%.0f%%"
+
+#~ msgid "version %s-%s"
+#~ msgstr "versjon %s-%s"
+
+#~ msgid "checking %s..."
+#~ msgstr "sjekker %s..."
+
+#~ msgid "file %s has an error!"
+#~ msgstr "fil %s har en feil!"
+
+#~ msgid "Verification completed."
+#~ msgstr "Verifisering fullført."
+
+#~ msgid "Service Error"
+#~ msgstr "Feil i tjeneste"
+
+#~ msgid "Register Now"
+#~ msgstr "Registrér deg nå"
+
+#~ msgid "Help"
+#~ msgstr "Hjelp"
+
+#~ msgid "Services Login"
+#~ msgstr "Innlogging til tjenester"
+
+#~ msgid "Username:"
+#~ msgstr "Brukernavn:"
+
+#~ msgid "Password:"
+#~ msgstr "Passord:"
+
+#~ msgid "Please log in to Eazel services"
+#~ msgstr "Vennligst logg inn til Eazel-tjenester"
+
+#~ msgid ""
+#~ "Your user name or password were not correct, or you have not activated your "
+#~ "account.  Please try again, or check your email for an account activation "
+#~ "notice."
+#~ msgstr ""
+#~ "Ditt brukernavn og passord var ikke korrekt, eller du har ikke aktivert din "
+#~ "konto. Vennligst prøv igjen, eller sjekk din e-post for en melding om "
+#~ "aktivering av konto."
+
+#~ msgid "We're sorry, but your name and password are still not recognized."
+#~ msgstr "Beklager, men navn og passord ble fremdeles ikke gjenkjent."
