@@ -6,14 +6,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.4.0\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-12-20 20:37+0100\n"
+"POT-Creation-Date: 2003-12-29 12:11+0100\n"
 "PO-Revision-Date: 2003-12-22 03:49-0200\n"
 "Last-Translator: Gustavo Noronha Silva <kov@debian.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -62,7 +62,9 @@ msgstr "Não foi possível remover o emblema com nome '%s'"
 msgid ""
 "This is probably because the emblem is a permanent one, and not one you "
 "added yourself."
-msgstr "Isto provavelmente aconteceu porque o emblema é permanente e não foi adicionado por você."
+msgstr ""
+"Isto provavelmente aconteceu porque o emblema é permanente e não foi "
+"adicionado por você."
 
 #: components/emblem/nautilus-emblem-view.c:205
 msgid "Couldn't Remove Emblem"
@@ -77,7 +79,9 @@ msgstr "Não foi possível renomear o emblema com nome '%s'."
 msgid ""
 "This is probably because the emblem is a permanent one, and not one that you "
 "added yourself."
-msgstr "Isto provavelmente aconteceu porque o emblema é permanente e não foi adicionado por você."
+msgstr ""
+"Isto provavelmente aconteceu porque o emblema é permanente e não foi "
+"adicionado por você."
 
 #: components/emblem/nautilus-emblem-view.c:241
 msgid "Couldn't Rename Emblem"
@@ -1123,7 +1127,9 @@ msgstr "Habilitar opções 'especiais' no diálogo de preferências"
 msgid ""
 "Filename for the default folder background. Only used if background_set is "
 "true."
-msgstr "Nome de arquivo para o fundo de tela padrão. Usado apenas se background_set for verdadeiro."
+msgstr ""
+"Nome de arquivo para o fundo de tela padrão. Usado apenas se background_set "
+"for verdadeiro."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid ""
@@ -1139,7 +1145,11 @@ msgid ""
 "this is to avoid unintentionally blowing the heap and killing Nautilus on "
 "massive folders. A negative value denotes no limit. The limit is approximate "
 "due to the reading of folders chunk-wise."
-msgstr "Pastas com tamanhos acima desse serão truncadas para um tamanho aproximado a esse. O propósito disso é evitar que se exceda o heap sem intenção e que o Nautilus morra em pastas grandes demais. Um valor negativo significa não ter limite. O limite é aproximado porque a leitura das pastas é feita em blocos."
+msgstr ""
+"Pastas com tamanhos acima desse serão truncadas para um tamanho aproximado a "
+"esse. O propósito disso é evitar que se exceda o heap sem intenção e que o "
+"Nautilus morra em pastas grandes demais. Um valor negativo significa não ter "
+"limite. O limite é aproximado porque a leitura das pastas é feita em blocos."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
 msgid "Hide default bookmarks in the bookmark menu"
@@ -1153,7 +1163,9 @@ msgstr "Ícone de Diretório Pessoal (home) visível na área de trabalho"
 msgid ""
 "If set to true, Nautilus will only show folders in the tree side pane. "
 "Otherwise it will show both folders and files."
-msgstr "Se verdadeiro, o Nautilus irá mostrar apenas pastas na árvore do painel lateral. Caso contrário mostrará tanto pastas quanto arquivos."
+msgstr ""
+"Se verdadeiro, o Nautilus irá mostrar apenas pastas na árvore do painel "
+"lateral. Caso contrário mostrará tanto pastas quanto arquivos."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
 msgid ""
@@ -1186,7 +1198,9 @@ msgstr ""
 msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
-msgstr "Se verdadeiro, o Nautilus irá mostrar as pastas antes dos arquivos nas visualizações de ícones e lista."
+msgstr ""
+"Se verdadeiro, o Nautilus irá mostrar as pastas antes dos arquivos nas "
+"visualizações de ícones e lista."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
 msgid ""
@@ -1230,7 +1244,9 @@ msgstr ""
 msgid ""
 "If set to true, then Nautilus will use the user's home folder as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
-msgstr "Se verdadeiro, o Nautilus usará a pasta pessoal (home) do usuário como área de trabalho. Se falso, usará a pasta ~/Desktop."
+msgstr ""
+"Se verdadeiro, o Nautilus usará a pasta pessoal (home) do usuário como área "
+"de trabalho. Se falso, usará a pasta ~/Desktop."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
 msgid ""
@@ -1245,7 +1261,10 @@ msgstr ""
 msgid ""
 "If set to true, then hidden files are shown in the file manager. Hidden "
 "files are either dotfiles or are listed in the folder's .hidden file."
-msgstr "Se verdadeiro, arquivos ocultos são mostrados no gerenciador de arquivos. Arquivos ocultos são iniciados por um . ou estão listados no arquivo .hidden da pasta."
+msgstr ""
+"Se verdadeiro, arquivos ocultos são mostrados no gerenciador de arquivos. "
+"Arquivos ocultos são iniciados por um . ou estão listados no arquivo .hidden "
+"da pasta."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
@@ -1259,13 +1278,17 @@ msgstr ""
 msgid ""
 "If this is set to true, an icon linking to the computer location will be put "
 "on the desktop."
-msgstr "Se verdadeiro, um ícone apontando para a localização computador será colocado na área de trabalho."
+msgstr ""
+"Se verdadeiro, um ícone apontando para a localização computador será "
+"colocado na área de trabalho."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
-msgstr "Se verdadeiro, um ícone apontando para a pasta pessoal (home) será colocado na área de trabalho."
+msgstr ""
+"Se verdadeiro, um ícone apontando para a pasta pessoal (home) será colocado "
+"na área de trabalho."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
 msgid ""
@@ -1299,7 +1322,9 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid "If true, icons will be laid out tighter by default in new windows."
-msgstr "Se verdadeiro os ícones serão dispostos mais próximos uns dos outros por padrão em novas janelas"
+msgstr ""
+"Se verdadeiro os ícones serão dispostos mais próximos uns dos outros por "
+"padrão em novas janelas"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
@@ -1414,7 +1439,12 @@ msgid ""
 "folder is on a remote server. If set to \"local_only\" then only show "
 "previews for local filesystems. If set to \"never\" then never bother to "
 "read preview data."
-msgstr "Perda de desempenho para quando mostrar uma pré-visualização de arquivos de texto. Se for \"always\" então sempre mostrar pré-visualização, mesmo se o arquivo estiver em um servidor remoto. Se \"local_only\" mostrar previsões apenas para sistemas de arquivo locais. Se definido como \"never\" nunca criar a pre-visualização."
+msgstr ""
+"Perda de desempenho para quando mostrar uma pré-visualização de arquivos de "
+"texto. Se for \"always\" então sempre mostrar pré-visualização, mesmo se o "
+"arquivo estiver em um servidor remoto. Se \"local_only\" mostrar previsões "
+"apenas para sistemas de arquivo locais. Se definido como \"never\" nunca "
+"criar a pre-visualização."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid ""
@@ -1423,7 +1453,12 @@ msgid ""
 "If set to \"local_only\" then only show thumbnails for local filesystems. If "
 "set to \"never\" then never bother to thumbnail images, just use a generic "
 "icon."
-msgstr "Perda de desempenho para quando mostrar imagens como miniaturas. Se for \"always\" então sempre mostrar miniatura, mesmo se o arquivo estiver em um servidor remoto. Se \"local_only\" mostrar miniaturas apenas para sistemas de arquivo locais. Se definido como \"never\" nunca gerar miniatura, mostrar apenas um ícone genérico."
+msgstr ""
+"Perda de desempenho para quando mostrar imagens como miniaturas. Se for "
+"\"always\" então sempre mostrar miniatura, mesmo se o arquivo estiver em um "
+"servidor remoto. Se \"local_only\" mostrar miniaturas apenas para sistemas "
+"de arquivo locais. Se definido como \"never\" nunca gerar miniatura, mostrar "
+"apenas um ícone genérico."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid ""
@@ -1431,19 +1466,29 @@ msgid ""
 "\"always\" then always show item counts, even if the folder is on a remote "
 "server. If set to \"local_only\" then only show counts for local "
 "filesystems. If set to \"never\" then never bother to compute item counts."
-msgstr "Perda de desempenho para quando contar o número de itens de uma pasta. Se for \"always\" então sempre contar os itens, mesmo se o arquivo estiver em um servidor remoto. Se \"local_only\" contar apenas para sistemas de arquivo locais. Se definido como \"never\" nunca contar o número de itens."
+msgstr ""
+"Perda de desempenho para quando contar o número de itens de uma pasta. Se "
+"for \"always\" então sempre contar os itens, mesmo se o arquivo estiver em "
+"um servidor remoto. Se \"local_only\" contar apenas para sistemas de arquivo "
+"locais. Se definido como \"never\" nunca contar o número de itens."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
-msgstr "A sequência de ordenações padrão para itens na visualizão de ícones. Valores possíveis são \"name\" (nome), \"size\" (tamanho), \"type\" (tipo), \"modification_date\" (data da última modificação) e \"emblems\" (emblemas)."
+msgstr ""
+"A sequência de ordenações padrão para itens na visualizão de ícones. Valores "
+"possíveis são \"name\" (nome), \"size\" (tamanho), \"type\" (tipo), "
+"\"modification_date\" (data da última modificação) e \"emblems\" (emblemas)."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid ""
 "The default sort-order for the items in the list view. Possible values are "
 "\"name\", \"size\", \"type\", and \"modification_date\"."
-msgstr "A sequência de ordenações padrão para a visualização em Lista. Valores possíveis são \"name\" (nome), \"size\" (tamanho), \"type\" (tipo) e \"modification_date\" (data de modificação)."
+msgstr ""
+"A sequência de ordenações padrão para a visualização em Lista. Valores "
+"possíveis são \"name\" (nome), \"size\" (tamanho), \"type\" (tipo) e "
+"\"modification_date\" (data de modificação)."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "The default width of the side pane in new windows."
@@ -1462,16 +1507,16 @@ msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
 msgstr ""
-"Este nome pode ser definido se você quer um nome personalizado para o ícone do "
-"Diretório Pessoal (home) da área de trabalho."
+"Este nome pode ser definido se você quer um nome personalizado para o ícone "
+"do Diretório Pessoal (home) da área de trabalho."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
 msgstr ""
-"Este nome pode ser definido se você quer um nome personalizado para o ícone da "
-"Lixeira na área de trabalho."
+"Este nome pode ser definido se você quer um nome personalizado para o ícone "
+"da Lixeira na área de trabalho."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
 msgid "Trash icon visible on desktop"
@@ -1693,7 +1738,9 @@ msgstr "Você não pode excluir um ícone de volume."
 msgid ""
 "If you want to eject the volume, please use Eject in the right-click menu of "
 "the volume."
-msgstr "Se você quer ejetar o volume, por favor use o item Ejetar no menu de contexto do volume, que é acionado com o botão direito."
+msgstr ""
+"Se você quer ejetar o volume, por favor use o item Ejetar no menu de "
+"contexto do volume, que é acionado com o botão direito."
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:108
 msgid "Can't Delete Volume"
@@ -1811,7 +1858,8 @@ msgstr "Erro ao mover."
 #: libnautilus-private/nautilus-file-operations.c:550
 #, c-format
 msgid "\"%s\" cannot be moved because it is on a read-only disk."
-msgstr "\"%s\" não pode ser movido porque ele está em um disco somente para leitura."
+msgstr ""
+"\"%s\" não pode ser movido porque ele está em um disco somente para leitura."
 
 #: libnautilus-private/nautilus-file-operations.c:560
 #: libnautilus-private/nautilus-file-operations.c:566
@@ -1823,19 +1871,25 @@ msgstr "Erro ao excluir."
 msgid ""
 "\"%s\" cannot be deleted because you do not have permissions to modify its "
 "parent folder."
-msgstr "\"%s\" não pode ser excluído porque você não possui as permissões para modificar sua pasta pai."
+msgstr ""
+"\"%s\" não pode ser excluído porque você não possui as permissões para "
+"modificar sua pasta pai."
 
 #: libnautilus-private/nautilus-file-operations.c:567
 #, c-format
 msgid "\"%s\" cannot be deleted because it is on a read-only disk."
-msgstr "\"%s\" não pode ser excluído porque ele está em um disco somente para leitura."
+msgstr ""
+"\"%s\" não pode ser excluído porque ele está em um disco somente para "
+"leitura."
 
 #: libnautilus-private/nautilus-file-operations.c:598
 #, c-format
 msgid ""
 "\"%s\" cannot be moved because you do not have permissions to change it or "
 "its parent folder."
-msgstr "\"%s\" não pode ser movido porque você não possui permissões para modificá-lo ou modificar a sua pasta pai."
+msgstr ""
+"\"%s\" não pode ser movido porque você não possui permissões para modificá-"
+"lo ou modificar a sua pasta pai."
 
 #: libnautilus-private/nautilus-file-operations.c:602
 msgid "Error while moving. "
@@ -1846,14 +1900,18 @@ msgstr "Erro ao mover."
 msgid ""
 "Cannot move \"%s\" because it or its parent folder are contained in the "
 "destination."
-msgstr "Não foi possível mover \"%s\" porque ele ou sua pasta pai estão contidos no destino."
+msgstr ""
+"Não foi possível mover \"%s\" porque ele ou sua pasta pai estão contidos no "
+"destino."
 
 #: libnautilus-private/nautilus-file-operations.c:613
 #, c-format
 msgid ""
 "Cannot move \"%s\" to the trash because you do not have permissions to "
 "change it or its parent folder."
-msgstr "Não foi possível mover \"%s\" para a lixeira porque você não tem permissões para modificá-lo ou sua pasta pai."
+msgstr ""
+"Não foi possível mover \"%s\" para a lixeira porque você não tem permissões "
+"para modificá-lo ou sua pasta pai."
 
 #: libnautilus-private/nautilus-file-operations.c:635
 msgid "Error while copying."
@@ -1862,7 +1920,8 @@ msgstr "Erro ao copiar."
 #: libnautilus-private/nautilus-file-operations.c:636
 #, c-format
 msgid "\"%s\" cannot be copied because you do not have permissions to read it."
-msgstr "\"%s\" não pode ser copiado porque você não possui permissões para lê-lo."
+msgstr ""
+"\"%s\" não pode ser copiado porque você não possui permissões para lê-lo."
 
 #: libnautilus-private/nautilus-file-operations.c:656
 #: libnautilus-private/nautilus-file-operations.c:677
@@ -1998,7 +2057,10 @@ msgstr "Não foi possível mover \"%s\" para a nova localização."
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to move the item, rename it and try again."
-msgstr "O nome já está em uso para um item especial que não pode ser removido ou substituído. Se você ainda quer mover o item, troque seu nome e tente de novo."
+msgstr ""
+"O nome já está em uso para um item especial que não pode ser removido ou "
+"substituído. Se você ainda quer mover o item, troque seu nome e tente de "
+"novo."
 
 #: libnautilus-private/nautilus-file-operations.c:1032
 #, c-format
@@ -2009,7 +2071,10 @@ msgstr "Não foi possível copiar \"%s\" para a nova localização."
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
-msgstr "O nome já está em uso para um item especial que não pode ser removido ou substituído. Se você ainda quer copiar o item troque seu nome e tente novamente."
+msgstr ""
+"O nome já está em uso para um item especial que não pode ser removido ou "
+"substituído. Se você ainda quer copiar o item troque seu nome e tente "
+"novamente."
 
 #: libnautilus-private/nautilus-file-operations.c:1041
 msgid "Unable to Replace File"
@@ -2023,7 +2088,8 @@ msgstr "O arquivo \"%s\" já existe. Você deseja substituí-lo?"
 #: libnautilus-private/nautilus-file-operations.c:1067
 #: libnautilus-private/nautilus-file-operations.c:1086
 msgid "If you replace an existing file, its contents will be overwritten."
-msgstr "Se você substituir um arquivo existente o seu conteúdo será sobrescrito."
+msgstr ""
+"Se você substituir um arquivo existente o seu conteúdo será sobrescrito."
 
 #: libnautilus-private/nautilus-file-operations.c:1068
 #: libnautilus-private/nautilus-file-operations.c:1087
@@ -2273,7 +2339,8 @@ msgstr "Não é possível copiar esta pasta da lixeira."
 
 #: libnautilus-private/nautilus-file-operations.c:1954
 msgid "A trash folder is used for storing items moved to the trash."
-msgstr "Uma pasta de lixeira é usada para guardar itens movidos para a lixeira."
+msgstr ""
+"Uma pasta de lixeira é usada para guardar itens movidos para a lixeira."
 
 #: libnautilus-private/nautilus-file-operations.c:1956
 msgid "Can't Change Trash Location"
@@ -2392,7 +2459,9 @@ msgstr "Preparando para esvaziar a lixeira..."
 
 #: libnautilus-private/nautilus-file-operations.c:2517
 msgid "Are you sure you want to empty all of the items from the trash?"
-msgstr "Você tem certeza que deseja excluir permanentemente todos os itens da lixeira?"
+msgstr ""
+"Você tem certeza que deseja excluir permanentemente todos os itens da "
+"lixeira?"
 
 #: libnautilus-private/nautilus-file-operations.c:2531
 msgid "If you empty the trash, items will be permanently deleted."
@@ -3266,7 +3335,9 @@ msgstr "Cor usada para texto informativo em fundo claro"
 msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it? This will clobber the stored manual layout."
-msgstr "Você quer usar layout manual e deixar esse item onde você o colocou? Isso irá sobrepor o layout manual armanezado."
+msgstr ""
+"Você quer usar layout manual e deixar esse item onde você o colocou? Isso "
+"irá sobrepor o layout manual armanezado."
 
 #: libnautilus-private/nautilus-icon-dnd.c:734
 #: libnautilus-private/nautilus-icon-dnd.c:738
@@ -3279,7 +3350,9 @@ msgstr "Essa pasta usa layout automático."
 msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them? This will clobber the stored manual layout."
-msgstr "Você quer usar aparência manual e deixar esses itens onde você os colocou? Isso irá sobrepor o layout manual armazenado."
+msgstr ""
+"Você quer usar aparência manual e deixar esses itens onde você os colocou? "
+"Isso irá sobrepor o layout manual armazenado."
 
 #: libnautilus-private/nautilus-icon-dnd.c:742
 msgid ""
@@ -3291,7 +3364,8 @@ msgstr "Você quer usar layout manual e deixar esse item onde você o colocou?"
 msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them?"
-msgstr "Você quer usar layout manual e deixar esses itens onde você os colocou?"
+msgstr ""
+"Você quer usar layout manual e deixar esses itens onde você os colocou?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:751
 msgid "Switch to Manual Layout?"
@@ -3533,7 +3607,9 @@ msgstr "Nenhuma Ação Associada"
 msgid ""
 "You can configure GNOME to associate applications with file types. Do you "
 "want to associate an application with this file type now?"
-msgstr "Você pode configurar o GNOME para associar aplicações a tipos de arquivos. Deseja associar uma aplicação a este tipo de arquivo agora?"
+msgstr ""
+"Você pode configurar o GNOME para associar aplicações a tipos de arquivos. "
+"Deseja associar uma aplicação a este tipo de arquivo agora?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1610
 msgid "_Associate Application"
@@ -3571,7 +3647,10 @@ msgid ""
 "You can configure GNOME to associate a different application or viewer with "
 "this file type. Do you want to associate an application or viewer with this "
 "file type now?"
-msgstr "Você pode configurar o GNOME para associar uma aplicação ou visualizador diferente a este tipo de arquivo. Deseja associar uma aplicação ou visualizador com este tipo de arquivo agora?"
+msgstr ""
+"Você pode configurar o GNOME para associar uma aplicação ou visualizador "
+"diferente a este tipo de arquivo. Deseja associar uma aplicação ou "
+"visualizador com este tipo de arquivo agora?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1654
 msgid "_Associate Action"
@@ -3586,7 +3665,9 @@ msgstr "Falha ao abrir, você quer escolher outra aplicação?"
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations."
-msgstr "\"%s\" não pode abrir \"%s\" porque \"%s\" não pode acessar arquivos em locais \"%s\"."
+msgstr ""
+"\"%s\" não pode abrir \"%s\" porque \"%s\" não pode acessar arquivos em "
+"locais \"%s\"."
 
 #: libnautilus-private/nautilus-program-choosing.c:511
 msgid "Open Failed, would you like to choose another action?"
@@ -3597,7 +3678,9 @@ msgstr "Falha ao abrir, você gostaria de escolher outra ação?"
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations."
-msgstr "A ação padrão não pode abrir \"%s\" porque não pode acessar arquivos em locais \"%s\"."
+msgstr ""
+"A ação padrão não pode abrir \"%s\" porque não pode acessar arquivos em "
+"locais \"%s\"."
 
 #: libnautilus-private/nautilus-program-choosing.c:519
 #: libnautilus-private/nautilus-program-choosing.c:552
@@ -3609,26 +3692,34 @@ msgstr "Não foi possível abrir localização"
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
 "locations."
-msgstr "\"%s\" não pode abrir \"%s\" porque \"%s\" não pode acessar arquivos em locais \"%s\"."
+msgstr ""
+"\"%s\" não pode abrir \"%s\" porque \"%s\" não pode acessar arquivos em "
+"locais \"%s\"."
 
 #: libnautilus-private/nautilus-program-choosing.c:541
 msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
-msgstr "Nenhuma outra aplicação está disponível para ver esse arquivo. Se você copiar este arquivo para o seu computador, você pode ser capaz de abri-lo."
+msgstr ""
+"Nenhuma outra aplicação está disponível para ver esse arquivo. Se você "
+"copiar este arquivo para o seu computador, você pode ser capaz de abri-lo."
 
 #: libnautilus-private/nautilus-program-choosing.c:545
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\"."
 "locations."
-msgstr "A ação padrão não pode abrir \"%s\" porque não pode acessar arquivos em locais \"%s\"."
+msgstr ""
+"A ação padrão não pode abrir \"%s\" porque não pode acessar arquivos em "
+"locais \"%s\"."
 
 #: libnautilus-private/nautilus-program-choosing.c:547
 msgid ""
 "No other actions are available to view this file.  If you copy this file "
 "onto your computer, you may be able to open it."
-msgstr "Nenhuma outra ação está disponível para ver este arquivo. Se você copiar este arquivo para o seu computador, você pode ser capaz de abri-lo."
+msgstr ""
+"Nenhuma outra ação está disponível para ver este arquivo. Se você copiar "
+"este arquivo para o seu computador, você pode ser capaz de abri-lo."
 
 #: libnautilus-private/nautilus-program-choosing.c:806
 #: libnautilus-private/nautilus-program-choosing.c:1023
@@ -3638,7 +3729,9 @@ msgstr "Abrindo %s"
 
 #: libnautilus-private/nautilus-program-choosing.c:1167
 msgid "Sorry, but you can't execute commands from a remote site."
-msgstr "Desculpe, mas não é possível executar comandos a partir de uma localização remota."
+msgstr ""
+"Desculpe, mas não é possível executar comandos a partir de uma localização "
+"remota."
 
 #: libnautilus-private/nautilus-program-choosing.c:1169
 msgid "This is disabled due to security considerations."
@@ -3671,7 +3764,9 @@ msgstr "Esse alvo só suporta arquivos locais."
 #: libnautilus-private/nautilus-program-choosing.c:1213
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
-msgstr "Para abrir arquivos externos copie-os para uma pasta local e arraste-os novamente."
+msgstr ""
+"Para abrir arquivos externos copie-os para uma pasta local e arraste-os "
+"novamente."
 
 #: libnautilus-private/nautilus-program-choosing.c:1215
 #: libnautilus-private/nautilus-program-choosing.c:1227
@@ -3682,7 +3777,9 @@ msgstr "O alvo só suporta arquivos locais"
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
-msgstr "Para abrir arquivos externos copie-os para uma pasta local e arraste-os novamente. Os arquivos locais que você arrastou já foram abertos."
+msgstr ""
+"Para abrir arquivos externos copie-os para uma pasta local e arraste-os "
+"novamente. Os arquivos locais que você arrastou já foram abertos."
 
 #. Human readable description for a criterion in a search for
 #. files. Bracketed items are context, and are message
@@ -4267,7 +4364,8 @@ msgstr "Arquivos demais"
 
 #: src/file-manager/fm-directory-view.c:3212
 msgid "Cannot move file to trash, do you want to delete immediately?"
-msgstr "Não é possível mover o arquivo para a lixeira, quer deletá-lo imediatamente?"
+msgstr ""
+"Não é possível mover o arquivo para a lixeira, quer deletá-lo imediatamente?"
 
 #: src/file-manager/fm-directory-view.c:3213
 #, c-format
@@ -4276,12 +4374,15 @@ msgstr "O arquivo \"%s\" não pode ser movido para a lixeira."
 
 #: src/file-manager/fm-directory-view.c:3217
 msgid "Cannot move items to trash, do you want to delete them immediately?"
-msgstr "Não é possível mover os itens para a lixeira, quer excluí-los imediatamente?"
+msgstr ""
+"Não é possível mover os itens para a lixeira, quer excluí-los imediatamente?"
 
 #: src/file-manager/fm-directory-view.c:3220
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
-msgstr "Não foi possível mover alguns itens para a lixeira, você quer excluir esses itens permanentemente?"
+msgstr ""
+"Não foi possível mover alguns itens para a lixeira, você quer excluir esses "
+"itens permanentemente?"
 
 #: src/file-manager/fm-directory-view.c:3227
 msgid "Delete Immediately?"
@@ -4360,7 +4461,9 @@ msgstr "Todos os arquivos executáveis desta pasta aparecerão no menu Scripts."
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
-msgstr "Ao escolher um script no menu, este será executado com os itens selecionados como entrada."
+msgstr ""
+"Ao escolher um script no menu, este será executado com os itens selecionados "
+"como entrada."
 
 #: src/file-manager/fm-directory-view.c:4832
 msgid "About Scripts"
@@ -4387,15 +4490,22 @@ msgid ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
-"Todos os arquivos executáveis nesta pasta aparecerão no meno Scripts. Ao escolher um script no menu, este será executado.\n"
+"Todos os arquivos executáveis nesta pasta aparecerão no meno Scripts. Ao "
+"escolher um script no menu, este será executado.\n"
 "\n"
-"Quando executados a partir de uma pasta local, os scripts serão informados dos nomes de arquivos selecionados. Quando executados a partir de uma pasta remota (por exemplo, uma pasta mostrando conteúdo web ou FTP), não será passado nenhum parâmetro aos scripts.\n"
+"Quando executados a partir de uma pasta local, os scripts serão informados "
+"dos nomes de arquivos selecionados. Quando executados a partir de uma pasta "
+"remota (por exemplo, uma pasta mostrando conteúdo web ou FTP), não será "
+"passado nenhum parâmetro aos scripts.\n"
 "\n"
-"Em todos os casos, os scripts poderão usar as seguintes variáveis de sistema definidas pelo Nautilus:\n"
+"Em todos os casos, os scripts poderão usar as seguintes variáveis de sistema "
+"definidas pelo Nautilus:\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: caminhos delimitados por fim-de-linha para os arquivos selecionados (apenas se locais)\n"
+"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: caminhos delimitados por fim-de-linha "
+"para os arquivos selecionados (apenas se locais)\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_URIS: URIs delimitadas por fim-de-linha para os arquivos selecionados\n"
+"NAUTILUS_SCRIPT_SELECTED_URIS: URIs delimitadas por fim-de-linha para os "
+"arquivos selecionados\n"
 "\n"
 "NAUTILUS_SCRIPT_CURRENT_URI: URI para a localização atual\n"
 "\n"
@@ -4834,7 +4944,8 @@ msgstr "Você não pode atribuir mais de um ícone personalizado de uma vez!"
 #: src/file-manager/fm-properties-window.c:483
 #: src/nautilus-information-panel.c:507
 msgid "Please drag just one image to set a custom icon."
-msgstr "Por favor arraste apenas uma imagem para definir um ícone personalizado."
+msgstr ""
+"Por favor arraste apenas uma imagem para definir um ícone personalizado."
 
 #: src/file-manager/fm-properties-window.c:484
 #: src/nautilus-information-panel.c:508
@@ -5134,14 +5245,18 @@ msgstr "Serviço de busca não está disponível"
 msgid ""
 "The search you have selected is newer than the index on your system.  The "
 "search will return no results right now."
-msgstr "A busca que você selecionou é mais nova que o índice no seu sistema. A busca não retornará resultados neste momento."
+msgstr ""
+"A busca que você selecionou é mais nova que o índice no seu sistema. A busca "
+"não retornará resultados neste momento."
 
 #: src/file-manager/fm-search-list-view.c:194
 #: src/file-manager/fm-search-list-view.c:213
 msgid ""
 "You can create a new index by running \"medusa-indexd\" as root on the "
 "command line."
-msgstr "Você pode criar um índice manualmente executando \"medusa-indexd\" como root em uma linha de comando."
+msgstr ""
+"Você pode criar um índice manualmente executando \"medusa-indexd\" como root "
+"em uma linha de comando."
 
 #: src/file-manager/fm-search-list-view.c:197
 msgid "Search For Items That Are Too New"
@@ -5149,13 +5264,17 @@ msgstr "Buscar por itens que são novos demais"
 
 #: src/file-manager/fm-search-list-view.c:201
 msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr "Todos os arquivos indexados em seu computador correspondem ao critério selecionado."
+msgstr ""
+"Todos os arquivos indexados em seu computador correspondem ao critério "
+"selecionado."
 
 #: src/file-manager/fm-search-list-view.c:203
 msgid ""
 "You can check the spelling on your selections or add more criteria to narrow "
 "your results."
-msgstr "Você pode verificar a ortografia de suas seleções ou adicionar mais critérios para estreitar a busca."
+msgstr ""
+"Você pode verificar a ortografia de suas seleções ou adicionar mais "
+"critérios para estreitar a busca."
 
 #: src/file-manager/fm-search-list-view.c:205
 #: src/file-manager/fm-search-list-view.c:223
@@ -5168,7 +5287,9 @@ msgstr "Erro durante a busca"
 msgid ""
 "Find cannot open your file system index.  Your index may be missing or "
 "corrupt."
-msgstr "A busca não pôde abrir seu arquivo de índice. Seu índice pode estar faltando ou corrompido."
+msgstr ""
+"A busca não pôde abrir seu arquivo de índice. Seu índice pode estar faltando "
+"ou corrompido."
 
 #: src/file-manager/fm-search-list-view.c:215
 msgid "Error Reading File Index"
@@ -5181,18 +5302,24 @@ msgstr "Um erro aconteceu ao carregar o conteúdo dessa busca."
 #: src/file-manager/fm-search-list-view.c:240
 msgid ""
 "To do a fast search, Find requires an index of the files on your system."
-msgstr "Para executar uma busca rápida é necessário um índice dos arquivos do seu sistema."
+msgstr ""
+"Para executar uma busca rápida é necessário um índice dos arquivos do seu "
+"sistema."
 
 #: src/file-manager/fm-search-list-view.c:242
 msgid ""
 "To do a content search, Find requires an index of the files on your system."
-msgstr "Para executar uma busca por conteúdo é necessário um índice de arquivos do seu sistema."
+msgstr ""
+"Para executar uma busca por conteúdo é necessário um índice de arquivos do "
+"seu sistema."
 
 #: src/file-manager/fm-search-list-view.c:245
 msgid ""
 "Find can't access your index right now so a slower search will be performed "
 "that doesn't use the index."
-msgstr "A busca não pôde acessar seu índice agora então uma pesquisa mais lenta será executada sem usar o índice."
+msgstr ""
+"A busca não pôde acessar seu índice agora então uma pesquisa mais lenta será "
+"executada sem usar o índice."
 
 #: src/file-manager/fm-search-list-view.c:248
 msgid "Find can't access your index right now."
@@ -5226,21 +5353,27 @@ msgstr ""
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  "
 "Your computer is currently creating that index."
-msgstr "Para executar uma busca rápida é necessário um índice de arquivos do seu sistema. Seu computador está criando o índice nesse instante."
+msgstr ""
+"Para executar uma busca rápida é necessário um índice de arquivos do seu "
+"sistema. Seu computador está criando o índice nesse instante."
 
 #: src/file-manager/fm-search-list-view.c:273
 msgid ""
 "To do a content search, Find requires an index of the content on your "
 "system.  Your computer is currently creating that index."
-msgstr "Para executar uma busca por conteúdo é necessário um íńdice do conteúdo do seu sistema. Seu computador está criando o índice nesse instante."
+msgstr ""
+"Para executar uma busca por conteúdo é necessário um íńdice do conteúdo do "
+"seu sistema. Seu computador está criando o índice nesse instante."
 
 #: src/file-manager/fm-search-list-view.c:278
 msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr "Já que a busca não pode usar um índice essa busca pode levar vários minutos."
+msgstr ""
+"Já que a busca não pode usar um índice essa busca pode levar vários minutos."
 
 #: src/file-manager/fm-search-list-view.c:281
 msgid "Content searches will be available when the index is complete."
-msgstr "Buscas por conteúdo só estarão disponíveis quando o índice for completo."
+msgstr ""
+"Buscas por conteúdo só estarão disponíveis quando o índice for completo."
 
 #: src/file-manager/fm-search-list-view.c:284
 #: src/file-manager/fm-search-list-view.c:311
@@ -5251,27 +5384,37 @@ msgstr "Buscas indexadas não estão disponíveis"
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  No "
 "index is available right now."
-msgstr "Para executar uma busca rápida é necessário um índice de arquivos do seu sistema. Não há um índice disponível agora."
+msgstr ""
+"Para executar uma busca rápida é necessário um índice de arquivos do seu "
+"sistema. Não há um índice disponível agora."
 
 #: src/file-manager/fm-search-list-view.c:296
 msgid ""
 "To do a content search, Find requires an index of the content on your "
 "system.  No index is available right now."
-msgstr "Para executar uma busca por conteúdo é necessário um índice de conteúdo do seu sistema. Não há índice disponível agora."
+msgstr ""
+"Para executar uma busca por conteúdo é necessário um índice de conteúdo do "
+"seu sistema. Não há índice disponível agora."
 
 #: src/file-manager/fm-search-list-view.c:300
 msgid ""
 "You can create an index by running \"medusa-indexd\" as root on the command "
 "line.  Until a complete index is available, searches will take several "
 "minutes."
-msgstr "Você pode criar um índice executando \"medusa-indexd\" como root na linha de comando. Até que um índice completo esteja disponível as buscas levarão vários minutos."
+msgstr ""
+"Você pode criar um índice executando \"medusa-indexd\" como root na linha de "
+"comando. Até que um índice completo esteja disponível as buscas levarão "
+"vários minutos."
 
 #: src/file-manager/fm-search-list-view.c:305
 msgid ""
 "You can create an index by running \"medusa-indexd\" as root on the command "
 "line.  Until a complete index is available, content searches cannot be "
 "performed."
-msgstr "Você pode criar um índice executando \\\"medusa-indexd\\\" como root na linha de comando. Até que um índice completo esteja disponível buscas de conteúdo não poderão ser executadas."
+msgstr ""
+"Você pode criar um índice executando \\\"medusa-indexd\\\" como root na "
+"linha de comando. Até que um índice completo esteja disponível buscas de "
+"conteúdo não poderão ser executadas."
 
 #: src/file-manager/fm-search-list-view.c:329
 msgid "Fast searches are not enabled on your computer."
@@ -5697,7 +5840,9 @@ msgstr "Seus arquivos estão sendo indexados no momento."
 #: src/file-manager/nautilus-indexing-info.c:198
 msgid ""
 "Once a day your files and text content are indexed so your searches are fast."
-msgstr "Uma vez por dia seus arquivos e conteúdo de texto são indexados para que suas buscas sejam rápidas. "
+msgstr ""
+"Uma vez por dia seus arquivos e conteúdo de texto são indexados para que "
+"suas buscas sejam rápidas. "
 
 #: src/file-manager/nautilus-indexing-info.c:257
 msgid "There is no index of your files right now."
@@ -5756,13 +5901,16 @@ msgstr "Não foi possível criar pasta necessária"
 #: src/nautilus-application.c:257
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
-msgstr "O Nautilus não pôde criar a pasta \"%s\", necessária ao seu funcionamento."
+msgstr ""
+"O Nautilus não pôde criar a pasta \"%s\", necessária ao seu funcionamento."
 
 #: src/nautilus-application.c:259
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
-msgstr "Antes de executar o Nautilus, por favor crie a pasta a seguir ou configure as permissões de forma que o Nautilus possa criá-la."
+msgstr ""
+"Antes de executar o Nautilus, por favor crie a pasta a seguir ou configure "
+"as permissões de forma que o Nautilus possa criá-la."
 
 #: src/nautilus-application.c:262
 msgid "Couldn't Create Required Folders"
@@ -5777,7 +5925,9 @@ msgstr "O Nautilus não pôde criar as pastas requeridas a seguir: %s."
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
-msgstr "Antes de executar o Nautilus, por favor crie essas pastas ou configure as permissões de forma que o Nautilus possa criá-las."
+msgstr ""
+"Antes de executar o Nautilus, por favor crie essas pastas ou configure as "
+"permissões de forma que o Nautilus possa criá-las."
 
 #: src/nautilus-application.c:333
 msgid "Link To Old Desktop"
@@ -5785,13 +5935,17 @@ msgstr "Ligação para a Área de Trabalho antiga"
 
 #: src/nautilus-application.c:349
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
-msgstr "Uma ligação chamada \"Ligação para a Área de Trabalho Antiga\" foi criado na área de trabalho."
+msgstr ""
+"Uma ligação chamada \"Ligação para a Área de Trabalho Antiga\" foi criado na "
+"área de trabalho."
 
 #: src/nautilus-application.c:350
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
-msgstr "A localização da pasta da área de trabalho mudou no GNOME 2.4. Você pode abrir a ligação e mover os arquivos que quiser, e então excluir a ligação."
+msgstr ""
+"A localização da pasta da área de trabalho mudou no GNOME 2.4. Você pode "
+"abrir a ligação e mover os arquivos que quiser, e então excluir a ligação."
 
 #: src/nautilus-application.c:352
 msgid "Migrated Old Desktop"
@@ -5843,8 +5997,8 @@ msgstr ""
 "reiniciar o computador ou reinstalar o Nautilus.\n"
 "\n"
 "Bonobo não pôde localizar o arquivo Nautilus_shell.server. Uma causa disto "
-"aparenta ser um LD_LIBRARY_PATH que não inclui a pasta de biblioteca "
-"bonobo-activation. Outra possibilidade seria uma instalação defeituosa sem o "
+"aparenta ser um LD_LIBRARY_PATH que não inclui a pasta de biblioteca bonobo-"
+"activation. Outra possibilidade seria uma instalação defeituosa sem o "
 "arquivo Nautilus_Shell.server.\n"
 "\n"
 "Executar \"bonobo-slay\" terminará todos os processos do Bonobo Activation e "
@@ -6312,7 +6466,8 @@ msgstr "Você tem certeza que deseja limpar a lista de locais que você visitou?
 
 #: src/nautilus-navigation-window-menus.c:192
 msgid "If you clear the list of locations, they will be permanently deleted."
-msgstr "Se você limpar a lista de localizações elas serão permanentemente excluídas."
+msgstr ""
+"Se você limpar a lista de localizações elas serão permanentemente excluídas."
 
 #: src/nautilus-navigation-window-menus.c:198
 msgid "Clear History"
@@ -6322,7 +6477,9 @@ msgstr "Limpar Histórico?"
 msgid ""
 "Do you want to remove any bookmarks with the non-existing location from your "
 "list?"
-msgstr "Você quer remover quaisquer marcadores com localizações não-existentes da sua lista?"
+msgstr ""
+"Você quer remover quaisquer marcadores com localizações não-existentes da "
+"sua lista?"
 
 #: src/nautilus-navigation-window-menus.c:429
 #, c-format
@@ -6516,7 +6673,8 @@ msgstr "Gerenciador de Arquivos: %s"
 
 #: src/nautilus-navigation-window.c:1105
 msgid "One of the side panels encountered an error and can't continue."
-msgstr "Um dos painéis da barra lateral encontrou um erro e não pode continuar."
+msgstr ""
+"Um dos painéis da barra lateral encontrou um erro e não pode continuar."
 
 #: src/nautilus-navigation-window.c:1106
 msgid "Unfortunately I couldn't tell which one."
@@ -6946,7 +7104,9 @@ msgstr "_Conectar"
 
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
-msgstr "Inclui um marcador para a localização atual neste menu, ou modifica o conjunto de visualizações"
+msgstr ""
+"Inclui um marcador para a localização atual neste menu, ou modifica o "
+"conjunto de visualizações"
 
 #: src/nautilus-shell-ui.xml.h:3
 msgid "Close this window"
@@ -7233,7 +7393,8 @@ msgstr "O Nautilus não pôde determinar que tipo de arquivo é esse."
 
 #: src/nautilus-window-manage-views.c:1279
 msgid "Nautilus has no installed viewer capable of displaying the file."
-msgstr "O Nautilus não possui um visualizador capaz de exibir o arquivo instalado."
+msgstr ""
+"O Nautilus não possui um visualizador capaz de exibir o arquivo instalado."
 
 #: src/nautilus-window-manage-views.c:1292
 #, c-format
@@ -7259,7 +7420,9 @@ msgstr "Não foi possível exibir \"%s\" pois não foi encontrado um host \"%s\"
 #: src/nautilus-window-manage-views.c:1319
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
-msgstr "Verifique que a grafia está correta e que suas configurações de proxy estão corretas."
+msgstr ""
+"Verifique que a grafia está correta e que suas configurações de proxy estão "
+"corretas."
 
 #: src/nautilus-window-manage-views.c:1326
 msgid "Check that your proxy settings are correct."
@@ -7270,7 +7433,9 @@ msgstr "Verifique que suas configurações de proxy estão corretas."
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
 "browser."
-msgstr "Não foi possível exibir \"%s\" porque o Nautilus não pôde contactar o navegador mestre SMB."
+msgstr ""
+"Não foi possível exibir \"%s\" porque o Nautilus não pôde contactar o "
+"navegador mestre SMB."
 
 #: src/nautilus-window-manage-views.c:1334
 msgid "Check that an SMB server is running in the local network."
@@ -7280,13 +7445,17 @@ msgstr "Verifique se há um servidor SMB rodando na rede local."
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running."
-msgstr "A busca não está disponível no momento ou porque você não possui um índice ou porque o serviço de busca não está sendo executado."
+msgstr ""
+"A busca não está disponível no momento ou porque você não possui um índice "
+"ou porque o serviço de busca não está sendo executado."
 
 #: src/nautilus-window-manage-views.c:1347
 msgid ""
 "Be sure that you have started the Medusa search service, and if you don't "
 "have an index, that the Medusa indexer is running."
-msgstr "Verifique se você iniciou o serviço de busca Medusa e, caso não possua um índice, que o indexador do Medusa esteja sendo executado."
+msgstr ""
+"Verifique se você iniciou o serviço de busca Medusa e, caso não possua um "
+"índice, que o indexador do Medusa esteja sendo executado."
 
 #: src/nautilus-window-manage-views.c:1349
 msgid "Searching Unavailable"

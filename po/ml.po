@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version:nautilus.HEAD\n"
-"POT-Creation-Date: 2003-12-08 12:14+0100\n"
+"POT-Creation-Date: 2003-12-29 12:11+0100\n"
 "PO-Revision-Date: 2003-07-05 10:29+0530\n"
 "Last-Translator: FSF-India <locale@gnu.org.in>\n"
 "Language-Team: Malayalam <locale@gnu.org.in>\n"
@@ -38,7 +38,7 @@ msgstr ""
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2408
-#: src/file-manager/fm-search-list-view.c:500
+#: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "ചിഹ്നങ്ങള്"
 
@@ -51,180 +51,117 @@ msgid "Nautilus Emblem view"
 msgstr "നോട്ടിലസ് ചിഹ്ന കാഴ്ച"
 
 #: components/emblem/nautilus-emblem-view.c:203
-#, c-format
-msgid ""
-"Couldn't remove emblem with name '%s'.  This is probably because the emblem "
-"is a permanent one, and not one you added yourself."
-msgstr ""
-
-#: components/emblem/nautilus-emblem-view.c:204
-msgid "Couldn't remove emblem"
+#, fuzzy, c-format
+msgid "Couldn't remove emblem with name '%s'."
 msgstr "ചിഹ്നം നീക്കം ചെയ്യാന് കഴിയുന്നില്ല."
 
-#: components/emblem/nautilus-emblem-view.c:238
-#, c-format
+#: components/emblem/nautilus-emblem-view.c:204
 msgid ""
-"Couldn't rename emblem with name '%s'.  This is probably because the emblem "
-"is a permanent one, and not one that you added yourself."
+"This is probably because the emblem is a permanent one, and not one you "
+"added yourself."
 msgstr ""
 
+#: components/emblem/nautilus-emblem-view.c:205
+#, fuzzy
+msgid "Couldn't Remove Emblem"
+msgstr "ചിഹ്നം നീക്കം ചെയ്യാന് കഴിയുന്നില്ല."
+
 #: components/emblem/nautilus-emblem-view.c:239
-msgid "Couldn't rename emblem"
+#, fuzzy, c-format
+msgid "Couldn't rename emblem with name '%s'."
 msgstr "ചിഹ്നത്തിന്റെ പേര‍് മാറ്റാന് കഴിയുന്നില്ല"
 
-#: components/emblem/nautilus-emblem-view.c:258
+#: components/emblem/nautilus-emblem-view.c:240
+msgid ""
+"This is probably because the emblem is a permanent one, and not one that you "
+"added yourself."
+msgstr ""
+
+#: components/emblem/nautilus-emblem-view.c:241
+#, fuzzy
+msgid "Couldn't Rename Emblem"
+msgstr "ചിഹ്നത്തിന്റെ പേര‍് മാറ്റാന് കഴിയുന്നില്ല"
+
+#: components/emblem/nautilus-emblem-view.c:260
 msgid "Rename Emblem"
 msgstr "ചിഹ്നത്തിന്റെ പേര‍് മാറ്റുക"
 
-#: components/emblem/nautilus-emblem-view.c:277
+#: components/emblem/nautilus-emblem-view.c:279
 msgid "Enter a new name for the displayed emblem:"
 msgstr "പ്രദ‍ര്ശിപ്പിച്ചിരിക്കുന്ന ചിഹ്നത്തിന‍് പുതിയ പേര‍് കൊടുക്കുക:"
 
-#: components/emblem/nautilus-emblem-view.c:331
+#: components/emblem/nautilus-emblem-view.c:333
 msgid "Rename"
 msgstr "പേര‍‍് മാറ്റല്"
 
-#: components/emblem/nautilus-emblem-view.c:503
+#: components/emblem/nautilus-emblem-view.c:505
 msgid "Add Emblems..."
 msgstr "ചിഹ്നങ്ങള് ചേ‍ര്ക്കുക..."
 
-#: components/emblem/nautilus-emblem-view.c:519
+#: components/emblem/nautilus-emblem-view.c:521
 msgid ""
 "Enter a descriptive name next to each emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
 
-#: components/emblem/nautilus-emblem-view.c:521
+#: components/emblem/nautilus-emblem-view.c:523
 msgid ""
 "Enter a descriptive name next to the emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
 
-#: components/emblem/nautilus-emblem-view.c:740
-msgid ""
-"Some of the files could not be added as emblems because they did not appear "
-"to be valid images."
-msgstr ""
-
-#: components/emblem/nautilus-emblem-view.c:740
 #: components/emblem/nautilus-emblem-view.c:742
-msgid "Couldn't add emblems"
+#, fuzzy
+msgid "Some of the files could not be added as emblems."
+msgstr "%s ന്റെ അനുവാദങ്ങള് മനസ്സിലാക്കാന് കഴിയില്ല."
+
+#: components/emblem/nautilus-emblem-view.c:742
+#: components/emblem/nautilus-emblem-view.c:744
+#, fuzzy
+msgid "The emblems do not appear to be valid images."
+msgstr "രചന %s സാധുതയുള്ള ഛായാചിത്രമായി പ്രത്യക്ഷപ്പെടുന്നില്ല"
+
+#: components/emblem/nautilus-emblem-view.c:742
+#: components/emblem/nautilus-emblem-view.c:744
+#, fuzzy
+msgid "Couldn't Add Emblems"
 msgstr "ചിഹ്നങ്ങള് കൂട്ടിച്ചേര്ക്കാന് കഴിയുന്നില്ല"
 
-#: components/emblem/nautilus-emblem-view.c:742
-msgid ""
-"None of the files could be added as emblems because they did not appear to "
-"be valid images."
+#: components/emblem/nautilus-emblem-view.c:744
+msgid "None of the files could be added as emblems."
 msgstr ""
 
-#: components/emblem/nautilus-emblem-view.c:763
+#: components/emblem/nautilus-emblem-view.c:765
+#: components/emblem/nautilus-emblem-view.c:790
+#: components/emblem/nautilus-emblem-view.c:840
+msgid "The emblem cannot be added."
+msgstr ""
+
+#: components/emblem/nautilus-emblem-view.c:765
 msgid "The dragged text was not a valid file location."
 msgstr "വലിച്ചിട്ട വാചകം അനുവദനീയമായ സ്ഥാനത്തല്ല."
 
-#: components/emblem/nautilus-emblem-view.c:763
-#: components/emblem/nautilus-emblem-view.c:788
-#: components/emblem/nautilus-emblem-view.c:838
-msgid "Couldn't add emblem"
+#: components/emblem/nautilus-emblem-view.c:765
+#: components/emblem/nautilus-emblem-view.c:790
+#: components/emblem/nautilus-emblem-view.c:840
+#, fuzzy
+msgid "Couldn't Add Emblem"
 msgstr "ചിഹ്നം കൂട്ടിച്ചേര്ക്കാന് കഴിയുന്നില്ല"
 
-#: components/emblem/nautilus-emblem-view.c:783
-#: components/emblem/nautilus-emblem-view.c:837
+#: components/emblem/nautilus-emblem-view.c:785
+#: components/emblem/nautilus-emblem-view.c:839
 #, c-format
 msgid "The file '%s' does not appear to be a valid image."
 msgstr "രചന %s സാധുതയുള്ള ഛായാചിത്രമായി പ്രത്യക്ഷപ്പെടുന്നില്ല"
 
-#: components/emblem/nautilus-emblem-view.c:786
+#: components/emblem/nautilus-emblem-view.c:788
 msgid "The dragged file does not appear to be a valid image."
 msgstr "വലിച്ചുകൊണ്ട് പോയ രചന സാധുതയുള്ള ചിത്രമായി കാണുന്നില്ല"
 
-#: components/emblem/nautilus-emblem-view.c:902 data/browser.xml.h:35
-#: src/nautilus-property-browser.c:1731
+#: components/emblem/nautilus-emblem-view.c:904 data/browser.xml.h:35
+#: src/nautilus-property-browser.c:1740
 msgid "Erase"
 msgstr "മായ്‍ക്കുക"
-
-#: components/hardware/Nautilus_View_hardware.server.in.in.h:1
-msgid "Factory for hardware view"
-msgstr "ഖരസാമഗ്രി ദൃശ്യമാക്കുന്നതിനുള്ള ശാല"
-
-#: components/hardware/Nautilus_View_hardware.server.in.in.h:2
-#: components/hardware/nautilus-hardware-view.c:754
-#: data/static_bookmarks.xml.h:15
-msgid "Hardware"
-msgstr "ഖരസാമഗ്രി"
-
-#: components/hardware/Nautilus_View_hardware.server.in.in.h:3
-msgid "Hardware Viewer"
-msgstr "ഖരസാമഗ്രി ദ‍ര്ശിനി"
-
-#: components/hardware/Nautilus_View_hardware.server.in.in.h:4
-msgid "Hardware view"
-msgstr "ഖരസാമഗ്രി കാഴ്ച"
-
-#: components/hardware/Nautilus_View_hardware.server.in.in.h:5
-msgid "View as Hardware"
-msgstr "ഖരസാമഗ്രിയായ് കാണുക"
-
-#: components/hardware/Nautilus_View_hardware.server.in.in.h:6
-msgid "hardware view"
-msgstr "ഖരസാമഗ്രി കാഴ്ച"
-
-#: components/hardware/nautilus-hardware-view.c:172
-msgid "name of icon for the hardware view"
-msgstr "ഖരസാമഗ്രി കാഴ്ചയുടെ ചിഹ്ന നാമം"
-
-#: components/hardware/nautilus-hardware-view.c:174
-msgid "summary of hardware info"
-msgstr "ഖരസാമഗ്രി ദൃശ്യമാക്കുന്നതിനുള്ള നിര്മ്മാണ ശാല"
-
-#: components/hardware/nautilus-hardware-view.c:306
-#, c-format
-msgid ""
-"%s CPU\n"
-"%s MHz\n"
-"%s K cache size"
-msgstr ""
-
-#: components/hardware/nautilus-hardware-view.c:341
-#, c-format
-msgid "%lu GB RAM"
-msgstr ""
-
-#: components/hardware/nautilus-hardware-view.c:343
-#, c-format
-msgid "%lu MB RAM"
-msgstr ""
-
-#: components/hardware/nautilus-hardware-view.c:401
-#, c-format
-msgid "%lu GB"
-msgstr ""
-
-#: components/hardware/nautilus-hardware-view.c:403
-#, c-format
-msgid "%lu MB"
-msgstr "%lu MB"
-
-#: components/hardware/nautilus-hardware-view.c:483
-#, c-format
-msgid "Uptime is %d days, %d hours, %d minutes"
-msgstr ""
-
-#. set up the title
-#: components/hardware/nautilus-hardware-view.c:509
-msgid "Hardware Overview"
-msgstr "ഖരസാമഗ്രി  അവലോകനം"
-
-#: components/hardware/nautilus-hardware-view.c:632
-msgid "This is a placeholder for the CPU page."
-msgstr ""
-
-#: components/hardware/nautilus-hardware-view.c:657
-msgid "This is a placeholder for the RAM page."
-msgstr ""
-
-#: components/hardware/nautilus-hardware-view.c:682
-msgid "This is a placeholder for the IDE page."
-msgstr ""
 
 #: components/history/Nautilus_View_history.server.in.in.h:1
 msgid "History"
@@ -889,6 +826,10 @@ msgstr "ജിനോം.ഓ‌ര്ഗ്"
 msgid "GNU.org"
 msgstr "ജിനൂ.ഓ‌ര്ഗ്"
 
+#: data/static_bookmarks.xml.h:15
+msgid "Hardware"
+msgstr "ഖരസാമഗ്രി"
+
 #: data/static_bookmarks.xml.h:16
 msgid "International"
 msgstr "അന്തര്‌രാഷ്ട്രം"
@@ -1166,27 +1107,27 @@ msgid "Desktop trash icon name"
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
-msgid ""
-"Directories over this size will be truncated to around this size. The "
-"purpose of this is to avoid unintentionally blowing the heap and killing "
-"Nautilus on massive directories. A negative value denotes no limit. The "
-"limit is approximate due to the reading of directories chunk-wise."
+msgid "Enable 'special' flags in file preferences dialog"
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
-msgid "Enable 'special' flags in file preferences dialog"
+msgid ""
+"Filename for the default folder background. Only used if background_set is "
+"true."
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid ""
-"Filename for the default directory background. Only used if background_set "
-"is true."
+"Filename for the default side pane background. Only used if "
+"side_pane_background_set is true."
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
 msgid ""
-"Filename for the default side pane background. Only used if "
-"side_pane_background_set is true."
+"Folders over this size will be truncated to around this size. The purpose of "
+"this is to avoid unintentionally blowing the heap and killing Nautilus on "
+"massive folders. A negative value denotes no limit. The limit is approximate "
+"due to the reading of folders chunk-wise."
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
@@ -1199,8 +1140,8 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid ""
-"If set to true, Nautilus will only show directories in the tree side pane. "
-"Otherwise it will show both directories and files."
+"If set to true, Nautilus will only show folders in the tree side pane. "
+"Otherwise it will show both folders and files."
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
@@ -1228,8 +1169,8 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
 msgid ""
-"If set to true, then Nautilus shows directories prior to showing files in "
-"the icon and list views."
+"If set to true, then Nautilus shows folders prior to showing files in the "
+"icon and list views."
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
@@ -1263,7 +1204,7 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
-"If set to true, then Nautilus will use the user's home directory as the "
+"If set to true, then Nautilus will use the user's home folder as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
 msgstr ""
 
@@ -1277,7 +1218,7 @@ msgstr ""
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid ""
 "If set to true, then hidden files are shown in the file manager. Hidden "
-"files are either dotfiles or are listed in the directory's .hidden file."
+"files are either dotfiles or are listed in the folder's .hidden file."
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
@@ -1294,7 +1235,7 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
-"If this is set to true, an icon linking to the home directory will be put on "
+"If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
 msgstr ""
 
@@ -1344,7 +1285,7 @@ msgid "List of possible captions on icons"
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
-msgid "Maximum handled files in a directory"
+msgid "Maximum handled files in a folder"
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
@@ -1362,11 +1303,11 @@ msgid "Nautilus handles drawing the desktop"
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
-msgid "Nautilus uses the users home directory as the desktop"
+msgid "Nautilus uses the users home folder as the desktop"
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
-msgid "Only show directories in the tree sidebar"
+msgid "Only show folders in the tree sidebar"
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
@@ -1384,8 +1325,9 @@ msgid "Reverse sort order in new windows"
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
-msgid "Show directories first in windows"
-msgstr ""
+#, fuzzy
+msgid "Show folders first in windows"
+msgstr "ജാലകത്തിന്  യോജിപ്പിക്കാന്‌ ശ്രമിക്കുക"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
 msgid "Show location bar in new windows"
@@ -1419,7 +1361,7 @@ msgstr ""
 msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
 "file's icon. If set to \"always\" then always show previews, even if the "
-"directory is on a remote server. If set to \"local_only\" then only show "
+"folder is on a remote server. If set to \"local_only\" then only show "
 "previews for local filesystems. If set to \"never\" then never bother to "
 "read preview data."
 msgstr ""
@@ -1427,17 +1369,17 @@ msgstr ""
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
-"\"always\" then always thumbnail, even if the directory is on a remote "
-"server. If set to \"local_only\" then only show thumbnails for local "
-"filesystems. If set to \"never\" then never bother to thumbnail images, just "
-"use a generic icon."
+"\"always\" then always thumbnail, even if the folder is on a remote server. "
+"If set to \"local_only\" then only show thumbnails for local filesystems. If "
+"set to \"never\" then never bother to thumbnail images, just use a generic "
+"icon."
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid ""
-"Speed tradeoff for when to show the number of items in a directory. If set "
-"to \"always\" then always show item counts, even if the directory is on a "
-"remote server. If set to \"local_only\" then only show counts for local "
+"Speed tradeoff for when to show the number of items in a folder. If set to "
+"\"always\" then always show item counts, even if the folder is on a remote "
+"server. If set to \"local_only\" then only show counts for local "
 "filesystems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
 
@@ -1515,7 +1457,7 @@ msgid ""
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
-msgid "When to show number of items in a directory"
+msgid "When to show number of items in a folder"
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
@@ -1527,7 +1469,7 @@ msgid "When to show thumbnails of image files"
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
-msgid "Whether a custom default directory background has been set."
+msgid "Whether a custom default folder background has been set."
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
@@ -1685,65 +1627,78 @@ msgstr "പുനഃസ്ഥാപിക്കുക"
 msgid "on the desktop"
 msgstr "പണിയിടത്തില്‌"
 
-#: libnautilus-private/nautilus-desktop-link-monitor.c:110
+#: libnautilus-private/nautilus-desktop-link-monitor.c:105
+#, fuzzy
+msgid "You cannot delete a volume icon."
+msgstr "കൂടിനുള്ളിലേക്ക് അതേ കൂട് ഇടാനാവില്ല."
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:106
 msgid ""
-"You cannot delete a volume icon. If you want to eject the volume, please use "
-"Eject in the right-click menu of the volume."
+"If you want to eject the volume, please use Eject in the right-click menu of "
+"the volume."
 msgstr ""
 
-#: libnautilus-private/nautilus-desktop-link-monitor.c:113
-msgid "Can't delete volume"
-msgstr ""
+#: libnautilus-private/nautilus-desktop-link-monitor.c:108
+#, fuzzy
+msgid "Can't Delete Volume"
+msgstr "തെരഞ്ഞെടുത്ത ലക്കം വിടുവിക്കുക"
 
 #: libnautilus-private/nautilus-desktop-link.c:169
-#: libnautilus-private/nautilus-file.c:5720
+#: libnautilus-private/nautilus-file.c:5739
 #: libnautilus-private/nautilus-global-preferences.c:555
-#: libnautilus-private/nautilus-trash-directory.c:376
+#: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
 msgstr "ചവറ്റുകുട്ട‌"
 
-#: libnautilus-private/nautilus-dnd.c:617
+#: libnautilus-private/nautilus-dnd.c:615
 msgid "_Move here"
 msgstr "ഇങ്ങോട്ട് മാറ്റുക"
 
-#: libnautilus-private/nautilus-dnd.c:622
+#: libnautilus-private/nautilus-dnd.c:620
 msgid "_Copy here"
 msgstr "ഇവിടെ പക‍ര്‌ത്തുക"
 
-#: libnautilus-private/nautilus-dnd.c:627
+#: libnautilus-private/nautilus-dnd.c:625
 msgid "_Link here"
 msgstr "ഇവിടെ ബന്ധിപ്പിക്കുക"
 
-#: libnautilus-private/nautilus-dnd.c:632
+#: libnautilus-private/nautilus-dnd.c:630
 msgid "Set as _Background"
 msgstr "ഇതിനെ പശ്ചാത്തലമാക്കുക"
 
-#: libnautilus-private/nautilus-dnd.c:641
-#: libnautilus-private/nautilus-dnd.c:696
+#: libnautilus-private/nautilus-dnd.c:639
+#: libnautilus-private/nautilus-dnd.c:694
 msgid "Cancel"
 msgstr "റദ്ദാക്കുക"
 
-#: libnautilus-private/nautilus-dnd.c:682
+#: libnautilus-private/nautilus-dnd.c:680
 msgid "Set as background for _all folders"
 msgstr "ഇതിനെ എല്ലാ കൂടുകളുടേയും പശ്ചാത്തലമാക്കുക"
 
-#: libnautilus-private/nautilus-dnd.c:687
+#: libnautilus-private/nautilus-dnd.c:685
 msgid "Set as background for _this folder"
 msgstr "ഇതിനെ ഈ കൂടിന്റെ പശ്ചാത്തലമാക്കുക"
 
 #: libnautilus-private/nautilus-emblem-utils.c:197
-msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
+#: libnautilus-private/nautilus-emblem-utils.c:202
+#: libnautilus-private/nautilus-emblem-utils.c:257
+#: libnautilus-private/nautilus-emblem-utils.c:274
+msgid "The emblem cannot be installed."
 msgstr ""
 
 #: libnautilus-private/nautilus-emblem-utils.c:198
-#: libnautilus-private/nautilus-emblem-utils.c:202
-#: libnautilus-private/nautilus-emblem-utils.c:213
-#: libnautilus-private/nautilus-emblem-utils.c:256
-#: libnautilus-private/nautilus-emblem-utils.c:271
-msgid "Couldn't install emblem"
+msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
+msgstr ""
+
+#: libnautilus-private/nautilus-emblem-utils.c:199
+#: libnautilus-private/nautilus-emblem-utils.c:204
+#: libnautilus-private/nautilus-emblem-utils.c:259
+#: libnautilus-private/nautilus-emblem-utils.c:276
+#, fuzzy
+msgid "Couldn't Install Emblem"
 msgstr "ചിഹ്നം സംസ്ഥാപിക്കാന്‌ കഴിഞ്ഞില്ല"
 
-#: libnautilus-private/nautilus-emblem-utils.c:201
+#: libnautilus-private/nautilus-emblem-utils.c:203
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
@@ -1752,18 +1707,24 @@ msgstr ""
 #. * what a keyword is, and people should be passing a unique
 #. * keyword to us anyway
 #.
-#: libnautilus-private/nautilus-emblem-utils.c:211
-#, c-format
-msgid ""
-"Sorry, but there is already an emblem named \"%s\".  Please choose a "
-"different name for it."
+#: libnautilus-private/nautilus-emblem-utils.c:213
+#, fuzzy, c-format
+msgid "Sorry, but there is already an emblem named \"%s\"."
+msgstr "ക്ഷമിക്കൂ, ഇഷ്ടപ്പെട്ട ചിഹ്നനാമം സംരക്ഷിക്കാന്‌ കഴിഞ്ഞില്ല"
+
+#: libnautilus-private/nautilus-emblem-utils.c:214
+msgid "Please choose a different emblem name."
 msgstr ""
 
-#: libnautilus-private/nautilus-emblem-utils.c:255
+#: libnautilus-private/nautilus-emblem-utils.c:215
+msgid "Couldn't install emblem"
+msgstr "ചിഹ്നം സംസ്ഥാപിക്കാന്‌ കഴിഞ്ഞില്ല"
+
+#: libnautilus-private/nautilus-emblem-utils.c:258
 msgid "Sorry, unable to save custom emblem."
 msgstr "ക്ഷമിക്കൂ, ഇഷ്ടപ്പെട്ട ചിഹ്നം സംരക്ഷിക്കാന്‌ കഴിഞ്ഞില്ല "
 
-#: libnautilus-private/nautilus-emblem-utils.c:270
+#: libnautilus-private/nautilus-emblem-utils.c:275
 msgid "Sorry, unable to save custom emblem name."
 msgstr "ക്ഷമിക്കൂ, ഇഷ്ടപ്പെട്ട ചിഹ്നനാമം സംരക്ഷിക്കാന്‌ കഴിഞ്ഞില്ല"
 
@@ -1782,294 +1743,270 @@ msgstr "ഇവിടെ:‌"
 msgid "To:"
 msgstr "വരെ:"
 
-#: libnautilus-private/nautilus-file-operations.c:545
-#, c-format
-msgid ""
-"Error while moving.\n"
-"\n"
-"\"%s\" cannot be moved because it is on a read-only disk."
+#: libnautilus-private/nautilus-file-operations.c:549
+#: libnautilus-private/nautilus-file-operations.c:597
+#: libnautilus-private/nautilus-file-operations.c:612
+msgid "Error while moving."
+msgstr "ചലിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു"
+
+#: libnautilus-private/nautilus-file-operations.c:550
+#, fuzzy, c-format
+msgid "\"%s\" cannot be moved because it is on a read-only disk."
 msgstr "വായിക്കാന്‌ മാത്രം കഴിയുന്ന ഡിസ്ക്കായതുകൊണ്ട് %sനെ മാറ്റുമ്പോള്‌ പിശക് സംഭവിക്കുന്നു"
 
-#: libnautilus-private/nautilus-file-operations.c:556
-#, c-format
+#: libnautilus-private/nautilus-file-operations.c:560
+#: libnautilus-private/nautilus-file-operations.c:566
+msgid "Error while deleting."
+msgstr "ഒഴിവാക്കുമ്പോള്‌ തെറ്റുന്നു"
+
+#: libnautilus-private/nautilus-file-operations.c:561
+#, fuzzy, c-format
 msgid ""
-"Error while deleting.\n"
-"\n"
 "\"%s\" cannot be deleted because you do not have permissions to modify its "
 "parent folder."
 msgstr "വായിക്കാന്‌ മാത്രം കഴിയുന്ന ഡിസ്ക്കായതുകൊണ്ട് %sനെ നീക്കം ചെയ്യ‍ുമ്പോള്‌ പിശക് സംഭവിക്കുന്നു"
 
-#: libnautilus-private/nautilus-file-operations.c:562
-#, c-format
-msgid ""
-"Error while deleting.\n"
-"\n"
-"\"%s\" cannot be deleted because it is on a read-only disk."
+#: libnautilus-private/nautilus-file-operations.c:567
+#, fuzzy, c-format
+msgid "\"%s\" cannot be deleted because it is on a read-only disk."
 msgstr "വായിക്കാന്‌ മാത്രം കഴിയുന്ന ഡിസ്ക്കായതുകൊണ്ട് %sനെ നശിപ്പിക്കുന്പോള്‌ പിശക് സംഭവിക്കുന്നു"
 
-#: libnautilus-private/nautilus-file-operations.c:593
-#, c-format
+#: libnautilus-private/nautilus-file-operations.c:598
+#, fuzzy, c-format
 msgid ""
-"Error while moving.\n"
-"\n"
 "\"%s\" cannot be moved because you do not have permissions to change it or "
 "its parent folder."
 msgstr "ഈ കൂട്ടില് എഴുതുവാന്‌ താങ്കള്‌ക്ക് അനുവാദമില്ലാത്തതിനാല് %s മാറ്റുമ്പോള്‌ തെറ്റുന്നു."
 
-#: libnautilus-private/nautilus-file-operations.c:598
-#, c-format
+#: libnautilus-private/nautilus-file-operations.c:602
+#, fuzzy
+msgid "Error while moving. "
+msgstr "ചലിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു"
+
+#: libnautilus-private/nautilus-file-operations.c:603
+#, fuzzy, c-format
 msgid ""
-"Error while moving.\n"
-"\n"
-"\"%s\" cannot be moved because it or its parent folder are contained in the "
+"Cannot move \"%s\" because it or its parent folder are contained in the "
 "destination."
 msgstr "വായിക്കാന്‌ മാത്രം കഴിയുന്ന ഡിസ്ക്കായതുകൊണ്ട് %sനെ മാറ്റുമ്പോള്‌ പിശക് സംഭവിക്കുന്നു"
 
-#: libnautilus-private/nautilus-file-operations.c:608
-#, c-format
+#: libnautilus-private/nautilus-file-operations.c:613
+#, fuzzy, c-format
 msgid ""
-"Error while moving.\n"
-"\n"
-"\"%s\" cannot be moved to the Trash because you do not have permissions to "
+"Cannot move \"%s\" to the trash because you do not have permissions to "
 "change it or its parent folder."
 msgstr "ഈ കൂട്ടില് എഴുതുവാന്‌ താങ്കള്‌ക്ക് അനുവാദമില്ലാത്തതിനാല് %s മാറ്റുമ്പോള്‌ തെറ്റുന്നു."
 
-#: libnautilus-private/nautilus-file-operations.c:631
-#, c-format
-msgid ""
-"Error while copying.\n"
-"\n"
-"\"%s\" cannot be copied because you do not have permissions to read it."
+#: libnautilus-private/nautilus-file-operations.c:635
+msgid "Error while copying."
+msgstr "പക‍ര്‌ത്തുമ്പോള്‌ തെറ്റുന്നു"
+
+#: libnautilus-private/nautilus-file-operations.c:636
+#, fuzzy, c-format
+msgid "\"%s\" cannot be copied because you do not have permissions to read it."
 msgstr "ഈ കൂട്ടില് എഴുതുവാന്‌ താങ്കള്‌ക്ക് അനുവാദമില്ലാത്തതിനാല് %s മാറ്റുമ്പോള്‌ തെറ്റുന്നു."
 
-#: libnautilus-private/nautilus-file-operations.c:652
-#, c-format
-msgid ""
-"Error while copying to \"%s\".\n"
-"\n"
-"There is not enough space on the destination."
-msgstr "ലക്ഷ്യസ്ഥാനത്ത് ആവശ്യത്തിന‍് സ്ഥലമില്ല.  %s പക‍ര്‌ത്തുമ്പോള്‌ തെറ്റുന്നു."
+#: libnautilus-private/nautilus-file-operations.c:656
+#: libnautilus-private/nautilus-file-operations.c:677
+#: libnautilus-private/nautilus-file-operations.c:681
+#, fuzzy, c-format
+msgid "Error while copying to \"%s\"."
+msgstr "പക‍ര്‌ത്തുമ്പോള്‌ തെറ്റുന്നു"
 
 #: libnautilus-private/nautilus-file-operations.c:657
-#, c-format
-msgid ""
-"Error while moving to \"%s\".\n"
-"\n"
-"There is not enough space on the destination."
+#: libnautilus-private/nautilus-file-operations.c:662
+#: libnautilus-private/nautilus-file-operations.c:666
+#, fuzzy
+msgid "There is not enough space on the destination."
 msgstr "ലക്ഷ്യസ്ഥാനത്ത് ആവശ്യത്തിന‍് സ്ഥലമില്ല.  %s മാറ്റുമ്പോള്‌ ‌ തെറ്റുന്നു."
 
 #: libnautilus-private/nautilus-file-operations.c:661
-#, c-format
-msgid ""
-"Error while creating link in \"%s\".\n"
-"\n"
-"There is not enough space on the destination."
-msgstr "ലക്ഷ്യസ്ഥാനത്ത് ആവശ്യത്തിന‌് സ്ഥലമില്ല.  %s ബന്ധിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു."
+#, fuzzy, c-format
+msgid "Error while moving to \"%s\"."
+msgstr "ചലിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു"
 
-#: libnautilus-private/nautilus-file-operations.c:673
-#, c-format
-msgid ""
-"Error while copying to \"%s\".\n"
-"\n"
-"You do not have permissions to write to this folder."
+#: libnautilus-private/nautilus-file-operations.c:665
+#, fuzzy, c-format
+msgid "Error while creating link in \"%s\"."
+msgstr "ബന്ധിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു"
+
+#: libnautilus-private/nautilus-file-operations.c:678
+#: libnautilus-private/nautilus-file-operations.c:689
+#: libnautilus-private/nautilus-file-operations.c:700
+#, fuzzy
+msgid "You do not have permissions to write to this folder."
 msgstr "ഈ കൂട്യില്‌ എഴുതുവാന്‌ താങ്കള്‌ക്ക് അനുവാദമില്ല..  %s പക‍ര്‌ത്തുമ്പോള്‌ തെറ്റുന്നു."
 
-#: libnautilus-private/nautilus-file-operations.c:677
-#, c-format
-msgid ""
-"Error while copying to \"%s\".\n"
-"\n"
-"The destination disk is read-only."
+#: libnautilus-private/nautilus-file-operations.c:682
+#: libnautilus-private/nautilus-file-operations.c:693
+#: libnautilus-private/nautilus-file-operations.c:704
+#, fuzzy
+msgid "The destination disk is read-only."
 msgstr "ലക്ഷ്യസ്ഥാന ഡിസ്ക് വായിക്കാന്‌ മാത്രം..  %s പക‍ര്‌ത്തുമ്പോള്‌ തെറ്റുന്നു."
 
-#: libnautilus-private/nautilus-file-operations.c:684
-#, c-format
-msgid ""
-"Error while moving items to \"%s\".\n"
-"\n"
-"You do not have permissions to write to this folder."
-msgstr "ഈ കൂട്യില്‌ എഴുതുവാന്‌ താങ്കള്‌ക്ക് അനുവാദമില്ല..  %s നീക്കുമ്പോള്‌ തെറ്റുന്നു."
-
 #: libnautilus-private/nautilus-file-operations.c:688
-#, c-format
-msgid ""
-"Error while moving items to \"%s\".\n"
-"\n"
-"The destination disk is read-only."
-msgstr "ലക്ഷ്യസ്ഥാന ഡിസ്ക് വായിക്കാന്‌ മാത്രം..  %s ചലിപ്പിക്കുന്പോള്‌‌ തെറ്റുന്നു."
-
-#: libnautilus-private/nautilus-file-operations.c:695
-#, c-format
-msgid ""
-"Error while creating links in \"%s\".\n"
-"\n"
-"You do not have permissions to write to this folder."
-msgstr "ഈ കൂട്ടില്‌ എഴുതുവാന്‌ താങ്കള്‌ക്ക് അനുവാദമില്ല..  %s ബന്ധിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു."
+#: libnautilus-private/nautilus-file-operations.c:692
+#, fuzzy, c-format
+msgid "Error while moving items to \"%s\"."
+msgstr "ചലിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു"
 
 #: libnautilus-private/nautilus-file-operations.c:699
-#, c-format
-msgid ""
-"Error while creating links in \"%s\".\n"
-"\n"
-"The destination disk is read-only."
-msgstr "ലക്ഷ്യസ്ഥാന ഡിസ്ക് വായിക്കാന്‌ മാത്രം..  %s ബന്ധിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു."
-
-#: libnautilus-private/nautilus-file-operations.c:727
-#, c-format
-msgid ""
-"Error \"%s\" while copying \"%s\".\n"
-"\n"
-"Would you like to continue?"
-msgstr ""
-"%s പക‍ര്ത്തുമ്പോള്‌‌ തെറ്റുന്നു.%s\n"
-"\n"
-"താങ്കള്‌ തുടരുവാന്‌ ആഗ്രഹിക്കുന്നോ?"
+#: libnautilus-private/nautilus-file-operations.c:703
+#, fuzzy, c-format
+msgid "Error while creating links in \"%s\"."
+msgstr "ബന്ധിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു"
 
 #: libnautilus-private/nautilus-file-operations.c:731
-#, c-format
-msgid ""
-"Error \"%s\" while moving \"%s\".\n"
-"\n"
-"Would you like to continue?"
-msgstr ""
-"%s ചലിപ്പിക്കുമ്പോള്‌‌‌ തെറ്റുന്നു. %s\n"
-"\n"
-"താങ്കള്‌ തുടരുവാന്‌ ആഗ്രഹിക്കുന്നോ?"
+#, fuzzy, c-format
+msgid "Error \"%s\" while copying \"%s\"."
+msgstr "പക‍ര്‌ത്തുമ്പോള്‌ തെറ്റുന്നു"
+
+#: libnautilus-private/nautilus-file-operations.c:732
+#: libnautilus-private/nautilus-file-operations.c:736
+#: libnautilus-private/nautilus-file-operations.c:740
+#: libnautilus-private/nautilus-file-operations.c:746
+#: libnautilus-private/nautilus-file-operations.c:761
+#: libnautilus-private/nautilus-file-operations.c:765
+#: libnautilus-private/nautilus-file-operations.c:769
+#: libnautilus-private/nautilus-file-operations.c:775
+#, fuzzy
+msgid "Would you like to continue?"
+msgstr "താങ്കള്‌ തുടരുവാന്‌ ആഗ്രഹിക്കുന്നോ. %s ചലിപ്പിക്കുമ്പോള്‌‌‌ തെറ്റുന്നു."
 
 #: libnautilus-private/nautilus-file-operations.c:735
-#, c-format
-msgid ""
-"Error \"%s\" while creating a link to \"%s\".\n"
-"\n"
-"Would you like to continue?"
+#, fuzzy, c-format
+msgid "Error \"%s\" while moving \"%s\"."
+msgstr "ചലിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു"
+
+#: libnautilus-private/nautilus-file-operations.c:739
+#, fuzzy, c-format
+msgid "Error \"%s\" while creating a link to \"%s\"."
 msgstr ""
 "%s നോട് ബന്ധിപ്പിക്കുമ്പോള്‌‌‌ തെറ്റുന്നു. %s\n"
 "\n"
 "താങ്കള്‌ തുടരുവാന്‌ ആഗ്രഹിക്കുന്നോ?"
 
-#: libnautilus-private/nautilus-file-operations.c:741
-#, c-format
-msgid ""
-"Error \"%s\" while deleting \"%s\".\n"
-"\n"
-"Would you like to continue?"
-msgstr ""
-"%s ഒഴിവാക്കുമ്പോള്‌ തെറ്റുന്നു %s.\n"
-"\n"
-"താങ്കള്‌ തുടരുവാന്‌ ആഗ്രഹിക്കുന്നുണ്ടോ?"
-
-#: libnautilus-private/nautilus-file-operations.c:756
-#, c-format
-msgid ""
-"Error \"%s\" while copying.\n"
-"\n"
-"Would you like to continue?"
-msgstr "താങ്കള്‌ തുടരുവാന്‌ ആഗ്രഹിക്കുന്നോ. %s പക‍ര്ത്തുമ്പോള്‌‌‌ തെറ്റുന്നു."
-
-#: libnautilus-private/nautilus-file-operations.c:760
-#, c-format
-msgid ""
-"Error \"%s\" while moving.\n"
-"\n"
-"Would you like to continue?"
-msgstr "താങ്കള്‌ തുടരുവാന്‌ ആഗ്രഹിക്കുന്നോ. %s ചലിപ്പിക്കുമ്പോള്‌‌‌ തെറ്റുന്നു."
-
-#: libnautilus-private/nautilus-file-operations.c:764
-#, c-format
-msgid ""
-"Error \"%s\" while linking.\n"
-"\n"
-"Would you like to continue?"
-msgstr "താങ്കള്‌ തുടരുവാന്‌ ആഗ്രഹിക്കുന്നോ. %s ബന്ധിപ്പിക്കുമ്പോള്‌‌‌ തെറ്റുന്നു."
-
-#: libnautilus-private/nautilus-file-operations.c:770
-#, c-format
-msgid ""
-"Error \"%s\" while deleting.\n"
-"\n"
-"Would you like to continue?"
-msgstr "താങ്കള്‌ തുടരുവാന്‌ ആഗ്രഹിക്കുന്നോ. %s ഒഴിവാക്കുമ്പോള്‌‌‌ തെറ്റുന്നു."
-
-#: libnautilus-private/nautilus-file-operations.c:895
-msgid "Error while copying."
-msgstr "പക‍ര്‌ത്തുമ്പോള്‌ തെറ്റുന്നു"
-
-#: libnautilus-private/nautilus-file-operations.c:898
-msgid "Error while moving."
-msgstr "ചലിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു"
-
-#: libnautilus-private/nautilus-file-operations.c:901
-msgid "Error while linking."
-msgstr "ബന്ധിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു"
-
-#: libnautilus-private/nautilus-file-operations.c:906
-msgid "Error while deleting."
+#: libnautilus-private/nautilus-file-operations.c:745
+#, fuzzy, c-format
+msgid "Error \"%s\" while deleting \"%s\"."
 msgstr "ഒഴിവാക്കുമ്പോള്‌ തെറ്റുന്നു"
 
-#: libnautilus-private/nautilus-file-operations.c:932
-#: libnautilus-private/nautilus-file-operations.c:952
-#: libnautilus-private/nautilus-file-operations.c:1056
-#: libnautilus-private/nautilus-file-operations.c:1074
-msgid "Skip"
+#: libnautilus-private/nautilus-file-operations.c:760
+#, fuzzy, c-format
+msgid "Error \"%s\" while copying."
+msgstr "പക‍ര്‌ത്തുമ്പോള്‌ തെറ്റുന്നു"
+
+#: libnautilus-private/nautilus-file-operations.c:764
+#, fuzzy, c-format
+msgid "Error \"%s\" while moving."
+msgstr "ചലിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു"
+
+#: libnautilus-private/nautilus-file-operations.c:768
+#, fuzzy, c-format
+msgid "Error \"%s\" while linking."
+msgstr "ബന്ധിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു"
+
+#: libnautilus-private/nautilus-file-operations.c:774
+#, fuzzy, c-format
+msgid "Error \"%s\" while deleting."
+msgstr "ഒഴിവാക്കുമ്പോള്‌ തെറ്റുന്നു"
+
+#: libnautilus-private/nautilus-file-operations.c:900
+#, fuzzy
+msgid "Error While Copying"
+msgstr "പക‍ര്‌ത്തുമ്പോള്‌ തെറ്റുന്നു"
+
+#: libnautilus-private/nautilus-file-operations.c:903
+#, fuzzy
+msgid "Error While Moving"
+msgstr "ചലിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു"
+
+#: libnautilus-private/nautilus-file-operations.c:906
+#, fuzzy
+msgid "Error While Linking"
+msgstr "ബന്ധിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു"
+
+#: libnautilus-private/nautilus-file-operations.c:911
+#, fuzzy
+msgid "Error While Deleting"
+msgstr "ഒഴിവാക്കുമ്പോള്‌ തെറ്റുന്നു"
+
+#: libnautilus-private/nautilus-file-operations.c:938
+#: libnautilus-private/nautilus-file-operations.c:959
+#: libnautilus-private/nautilus-file-operations.c:1069
+#: libnautilus-private/nautilus-file-operations.c:1088
+#, fuzzy
+msgid "_Skip"
 msgstr "വഴുതുക"
 
-#: libnautilus-private/nautilus-file-operations.c:952
-msgid "Retry"
+#: libnautilus-private/nautilus-file-operations.c:959
+#, fuzzy
+msgid "_Retry"
 msgstr "വീണ്ടും ശ്രമിക്കുക"
 
-#: libnautilus-private/nautilus-file-operations.c:1017
-#, c-format
+#: libnautilus-private/nautilus-file-operations.c:1025
+#, fuzzy, c-format
+msgid "Could not move \"%s\" to the new location."
+msgstr "നിര്‍ദ്ദേശിച്ച പ്രവ‍ര്ത്തനം മുഴുനനാക്കാനായില്ല."
+
+#: libnautilus-private/nautilus-file-operations.c:1028
 msgid ""
-"\"%s\" could not be moved to the new location, because its name is already "
-"used for a special item that cannot be removed or replaced.\n"
-"\n"
-"If you still want to move \"%s\", rename it and try again."
+"The name is already used for a special item that cannot be removed or "
+"replaced.  If you still want to move the item, rename it and try again."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:1023
-#, c-format
+#: libnautilus-private/nautilus-file-operations.c:1032
+#, fuzzy, c-format
+msgid "Could not copy \"%s\" to the new location."
+msgstr "നിര്‍ദ്ദേശിച്ച പ്രവ‍ര്ത്തനം മുഴുനനാക്കാനായില്ല."
+
+#: libnautilus-private/nautilus-file-operations.c:1035
 msgid ""
-"\"%s\" could not be copied to the new location, because its name is already "
-"used for a special item that cannot be removed or replaced.\n"
-"\n"
-"If you still want to copy \"%s\", rename it and try again."
+"The name is already used for a special item that cannot be removed or "
+"replaced.  If you still want to copy the item, rename it and try again."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:1031
-msgid "Unable to replace file."
+#: libnautilus-private/nautilus-file-operations.c:1041
+#, fuzzy
+msgid "Unable to Replace File"
 msgstr "രചന മാറ്റി സ്ഥാപിക്കാന്‌ കഴിയില്ല."
 
-#: libnautilus-private/nautilus-file-operations.c:1044
-#, c-format
-msgid ""
-"File \"%s\" already exists.\n"
-"\n"
-"Would you like to replace it?"
+#: libnautilus-private/nautilus-file-operations.c:1054
+#, fuzzy, c-format
+msgid "The file \"%s\" already exists.  Would you like to replace it?"
 msgstr "രചന %s നിലവിലുണ്ട്.  താങ്കള്‌ അത് മാറ്റി സ്ഥാപിക്കണോ"
 
-#: libnautilus-private/nautilus-file-operations.c:1055
-#: libnautilus-private/nautilus-file-operations.c:1073
-msgid "Conflict while copying"
+#: libnautilus-private/nautilus-file-operations.c:1067
+#: libnautilus-private/nautilus-file-operations.c:1086
+msgid "If you replace an existing file, its contents will be overwritten."
+msgstr ""
+
+#: libnautilus-private/nautilus-file-operations.c:1068
+#: libnautilus-private/nautilus-file-operations.c:1087
+#, fuzzy
+msgid "Conflict While Copying"
 msgstr "പക‍ര്ത്തുമ്പോള്‌ വൈരുദ്ധ്യം"
 
-#: libnautilus-private/nautilus-file-operations.c:1056
-#: libnautilus-private/nautilus-file-operations.c:1074
-msgid "Replace"
+#: libnautilus-private/nautilus-file-operations.c:1069
+#: libnautilus-private/nautilus-file-operations.c:1088
+#, fuzzy
+msgid "_Replace"
 msgstr "മാറ്റി എഴുതുക"
 
-#: libnautilus-private/nautilus-file-operations.c:1074
-msgid "Replace All"
+#: libnautilus-private/nautilus-file-operations.c:1088
+#, fuzzy
+msgid "Replace _All"
 msgstr "എല്ലാം മാറ്റി എഴുതുക"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1132
-#: libnautilus-private/nautilus-file.c:4541
+#: libnautilus-private/nautilus-file-operations.c:1146
+#: libnautilus-private/nautilus-file.c:4539
 #, c-format
 msgid "link to %s"
 msgstr "%s ല്‌ ബന്ധിപ്പിക്കുക"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1136
+#: libnautilus-private/nautilus-file-operations.c:1150
 #, c-format
 msgid "another link to %s"
 msgstr "%s ല്‌ മറ്റൊരു ബന്ധം"
@@ -2078,25 +2015,25 @@ msgstr "%s ല്‌ മറ്റൊരു ബന്ധം"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: libnautilus-private/nautilus-file-operations.c:1152
+#: libnautilus-private/nautilus-file-operations.c:1166
 #, c-format
 msgid "%dst link to %s"
 msgstr "%d %sല് ബന്ധിപ്പിക്കുക"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1156
+#: libnautilus-private/nautilus-file-operations.c:1170
 #, c-format
 msgid "%dnd link to %s"
 msgstr "%dമത് %sല്‌ ബന്ധിപ്പിക്കുക"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1160
+#: libnautilus-private/nautilus-file-operations.c:1174
 #, c-format
 msgid "%drd link to %s"
 msgstr "%dമത് %sല് ബന്ധിപ്പിക്കുക"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1164
+#: libnautilus-private/nautilus-file-operations.c:1178
 #, c-format
 msgid "%dth link to %s"
 msgstr "%d ാമത് ബന്ധനം %s ലേക്ക്"
@@ -2106,555 +2043,594 @@ msgstr "%d ാമത് ബന്ധനം %s ലേക്ക്"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1185
-#: libnautilus-private/nautilus-file-operations.c:2365
+#: libnautilus-private/nautilus-file-operations.c:1199
+#: libnautilus-private/nautilus-file-operations.c:2589
 msgid " (copy)"
 msgstr "(പക‌ര്പ്പ്)"
 
 #. localizers: tag used to detect the second copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1187
-#: libnautilus-private/nautilus-file-operations.c:2365
+#: libnautilus-private/nautilus-file-operations.c:1201
+#: libnautilus-private/nautilus-file-operations.c:2589
 msgid " (another copy)"
 msgstr "(മറ്റൊരു പക‌ര്പ്പ്)"
 
 #. localizers: tag used to detect the x11th copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1190
-#: libnautilus-private/nautilus-file-operations.c:1192
-#: libnautilus-private/nautilus-file-operations.c:1194
 #: libnautilus-private/nautilus-file-operations.c:1204
+#: libnautilus-private/nautilus-file-operations.c:1206
+#: libnautilus-private/nautilus-file-operations.c:1208
+#: libnautilus-private/nautilus-file-operations.c:1218
 msgid "th copy)"
 msgstr "മത് പക‍ര്പ്പ്)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1197
+#: libnautilus-private/nautilus-file-operations.c:1211
 msgid "st copy)"
 msgstr "മത് പക‍ര്പ്പ്)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1199
+#: libnautilus-private/nautilus-file-operations.c:1213
 msgid "nd copy)"
 msgstr "മത് പക‍ര്പ്പ്)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1201
+#: libnautilus-private/nautilus-file-operations.c:1215
 msgid "rd copy)"
 msgstr "മത് പക‍ര്പ്പ്)"
 
 #. localizers: appended to first file copy
-#: libnautilus-private/nautilus-file-operations.c:1218
+#: libnautilus-private/nautilus-file-operations.c:1232
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (പക‍ര്പ്പ്)%s"
 
 #. localizers: appended to second file copy
-#: libnautilus-private/nautilus-file-operations.c:1220
+#: libnautilus-private/nautilus-file-operations.c:1234
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (മറ്റൊരു പക‍ര്പ്പ്)%s"
 
 #. localizers: appended to x11th file copy
-#: libnautilus-private/nautilus-file-operations.c:1223
-#: libnautilus-private/nautilus-file-operations.c:1225
-#: libnautilus-private/nautilus-file-operations.c:1227
-#: libnautilus-private/nautilus-file-operations.c:1236
+#: libnautilus-private/nautilus-file-operations.c:1237
+#: libnautilus-private/nautilus-file-operations.c:1239
+#: libnautilus-private/nautilus-file-operations.c:1241
+#: libnautilus-private/nautilus-file-operations.c:1250
 #, c-format
 msgid "%s (%dth copy)%s"
 msgstr "%s (%dമത് പക‍ര്പ്പ്)%s"
 
 #. localizers: appended to x1st file copy
-#: libnautilus-private/nautilus-file-operations.c:1230
+#: libnautilus-private/nautilus-file-operations.c:1244
 #, c-format
 msgid "%s (%dst copy)%s"
 msgstr "%s (%dമത് പക‍ര്പ്പ്)%s"
 
 #. localizers: appended to x2nd file copy
-#: libnautilus-private/nautilus-file-operations.c:1232
+#: libnautilus-private/nautilus-file-operations.c:1246
 #, c-format
 msgid "%s (%dnd copy)%s"
 msgstr "%s (%dമത് പക‍ര്പ്പ്)%s"
 
 #. localizers: appended to x3rd file copy
-#: libnautilus-private/nautilus-file-operations.c:1234
+#: libnautilus-private/nautilus-file-operations.c:1248
 #, c-format
 msgid "%s (%drd copy)%s"
 msgstr "%s (%dമത് പക‍ര്പ്പ്)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: libnautilus-private/nautilus-file-operations.c:1334
+#: libnautilus-private/nautilus-file-operations.c:1348
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: libnautilus-private/nautilus-file-operations.c:1342
+#: libnautilus-private/nautilus-file-operations.c:1356
 #, c-format
 msgid " (%d"
 msgstr "(%d"
 
-#: libnautilus-private/nautilus-file-operations.c:1527
-#: libnautilus-private/nautilus-file-operations.c:2102
+#: libnautilus-private/nautilus-file-operations.c:1541
+#: libnautilus-private/nautilus-file-operations.c:2123
+#: libnautilus-private/nautilus-file-operations.c:2284
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr ""
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1854
+#: libnautilus-private/nautilus-file-operations.c:1868
 msgid "Moving files to the Trash"
 msgstr "രചനകള്‌ ചവറ്റുകുട്ടയിലേക്ക് നീങ്ങുന്നു"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1856
+#: libnautilus-private/nautilus-file-operations.c:1870
 msgid "Files thrown out:"
 msgstr "രചനകള്‌‌ പുറത്തു കളഞ്ഞു:"
 
 #. localizers: label prepended to the name of the current file moved
-#: libnautilus-private/nautilus-file-operations.c:1858
-#: libnautilus-private/nautilus-file-operations.c:1869
+#: libnautilus-private/nautilus-file-operations.c:1872
+#: libnautilus-private/nautilus-file-operations.c:1883
 msgid "Moving"
 msgstr "നീങ്ങുന്നു"
 
-#: libnautilus-private/nautilus-file-operations.c:1859
+#: libnautilus-private/nautilus-file-operations.c:1873
 msgid "Preparing to Move to Trash..."
 msgstr "ചവറ്റുകുട്ടയിലേക്ക് പോകാന്‌ തയ്യാറാകുന്നു..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1865
+#: libnautilus-private/nautilus-file-operations.c:1879
 msgid "Moving files"
 msgstr "രചനകള്‌‌ നീങ്ങുന്നു"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1867
+#: libnautilus-private/nautilus-file-operations.c:1881
 msgid "Files moved:"
 msgstr "നീങ്ങിയ രചനകള്:"
 
-#: libnautilus-private/nautilus-file-operations.c:1870
+#: libnautilus-private/nautilus-file-operations.c:1884
 msgid "Preparing To Move..."
 msgstr "നീങ്ങാന്‌ തയ്യാറെടുക്കുന്നു..."
 
-#: libnautilus-private/nautilus-file-operations.c:1871
+#: libnautilus-private/nautilus-file-operations.c:1885
 msgid "Finishing Move..."
 msgstr "നീങ്ങുന്നത്‌ അവസാനിക്കുന്നു..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1879
+#: libnautilus-private/nautilus-file-operations.c:1893
 msgid "Creating links to files"
 msgstr "രചനയിലേക്ക് ബന്ധങ്ങളുണ്ടാക്കുന്നു"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1881
+#: libnautilus-private/nautilus-file-operations.c:1895
 msgid "Files linked:"
 msgstr "ബന്ധിപ്പിച്ച രചനകള്:‌‌"
 
 #. localizers: label prepended to the name of the current file linked
-#: libnautilus-private/nautilus-file-operations.c:1883
+#: libnautilus-private/nautilus-file-operations.c:1897
 msgid "Linking"
 msgstr "ബന്ധിപ്പിക്കല്‌"
 
-#: libnautilus-private/nautilus-file-operations.c:1884
+#: libnautilus-private/nautilus-file-operations.c:1898
 msgid "Preparing to Create Links..."
 msgstr "ബന്ധിപ്പിക്കാന്‌ തയ്യാറെടുക്കുന്നു..."
 
-#: libnautilus-private/nautilus-file-operations.c:1885
+#: libnautilus-private/nautilus-file-operations.c:1899
 msgid "Finishing Creating Links..."
 msgstr "ബന്ധിപ്പിക്കല്‌ അവസാനിക്കുന്നു..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1891
+#: libnautilus-private/nautilus-file-operations.c:1905
 msgid "Copying files"
 msgstr "രചന പക‍ര്ത്തല്‌"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1893
+#: libnautilus-private/nautilus-file-operations.c:1907
 msgid "Files copied:"
 msgstr "പക‍ര്ത്തിയ രചനകള്:‌‌"
 
 #. localizers: label prepended to the name of the current file copied
-#: libnautilus-private/nautilus-file-operations.c:1895
+#: libnautilus-private/nautilus-file-operations.c:1909
 msgid "Copying"
 msgstr "പക‍ര്ത്തുന്നു‌"
 
-#: libnautilus-private/nautilus-file-operations.c:1896
+#: libnautilus-private/nautilus-file-operations.c:1910
 msgid "Preparing To Copy..."
 msgstr "പക‍ര്‌ത്താന്‌ തയ്യാറെടുക്കുന്നു..."
 
-#: libnautilus-private/nautilus-file-operations.c:1912
-msgid "You cannot copy items into the Trash."
+#: libnautilus-private/nautilus-file-operations.c:1927
+#, fuzzy
+msgid "You cannot copy items into the trash."
 msgstr "താങ്കള്‌ക്ക് ചവറ്റുകുട്ടയിലേക്ക് ഇനങ്ങള്‌ പക‍ര്ത്താന്‌ കഴിയില്ല."
 
-#: libnautilus-private/nautilus-file-operations.c:1913
-msgid "Can't Copy to Trash"
-msgstr "ചവറ്റുകുട്ടയിലേക്ക് പക‍ര്ത്താന്‌ കഴിയില്ല"
+#: libnautilus-private/nautilus-file-operations.c:1928
+msgid "Files and folders can only be moved into the trash."
+msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:1935
+#: libnautilus-private/nautilus-file-operations.c:1952
 msgid "You cannot move this trash folder."
 msgstr "താങ്കള്‌ക്ക് ഈ ചവറ്റുകുട്ട ചലിപ്പിക്കാന്‌ കഴിയില്ല."
 
-#: libnautilus-private/nautilus-file-operations.c:1936
+#: libnautilus-private/nautilus-file-operations.c:1953
 msgid "You cannot copy this trash folder."
 msgstr "താങ്കള്‌ക്ക് ഈ ചവറ്റുകുട്ട പക‍ര്ത്താന്‌ കഴിയില്ല."
 
-#: libnautilus-private/nautilus-file-operations.c:1938
+#: libnautilus-private/nautilus-file-operations.c:1954
+msgid "A trash folder is used for storing items moved to the trash."
+msgstr ""
+
+#: libnautilus-private/nautilus-file-operations.c:1956
 msgid "Can't Change Trash Location"
 msgstr "ചവറ്റുകുട്ട സ്ഥാനം മാറ്റാന്‌ കഴിയില്ല"
 
-#: libnautilus-private/nautilus-file-operations.c:1939
+#: libnautilus-private/nautilus-file-operations.c:1957
 msgid "Can't Copy Trash"
 msgstr "ചവറ്റുകുട്ട പക‍ര്ത്താന്‌ കഴിയില്ല"
 
-#: libnautilus-private/nautilus-file-operations.c:1962
+#: libnautilus-private/nautilus-file-operations.c:1981
 msgid "You cannot move a folder into itself."
 msgstr "കൂടിനുള്ളിലേക്ക് അതേ കൂട് ഇടാനാവില്ല."
 
-#: libnautilus-private/nautilus-file-operations.c:1963
+#: libnautilus-private/nautilus-file-operations.c:1982
 msgid "You cannot copy a folder into itself."
 msgstr "താങ്കള്‌ക്ക് ഒരു കൂട് സ്വയം പക‍ര്ത്താനാവില്ല."
 
-#: libnautilus-private/nautilus-file-operations.c:1965
+#: libnautilus-private/nautilus-file-operations.c:1983
+#, fuzzy
+msgid "The destination folder is inside the source folder."
+msgstr "ഈ കൂടിനുള്ളില് ഒരു പുതിയ കൂട് ഉണ്ടാക്കുക"
+
+#: libnautilus-private/nautilus-file-operations.c:1985
 msgid "Can't Move Into Self"
 msgstr "തന്നുള്ളിലേക്ക് നീക്കാനാവില്ല"
 
-#: libnautilus-private/nautilus-file-operations.c:1966
+#: libnautilus-private/nautilus-file-operations.c:1986
 msgid "Can't Copy Into Self"
 msgstr "തന്നുള്ളിലേക്ക് പക‍ര്ത്താനാവില്ല"
 
-#: libnautilus-private/nautilus-file-operations.c:1978
+#: libnautilus-private/nautilus-file-operations.c:1999
 msgid "You cannot copy a file over itself."
 msgstr "ഒരു രചന മേല് അതേ രചന പക‍ര്ത്താനാവില്ല."
 
-#: libnautilus-private/nautilus-file-operations.c:1979
+#: libnautilus-private/nautilus-file-operations.c:2000
+msgid "The destination and source are the same file."
+msgstr ""
+
+#: libnautilus-private/nautilus-file-operations.c:2001
 msgid "Can't Copy Over Self"
 msgstr "തന്മേലേക്ക് പക‍ര്ത്താനാവില്ല"
 
-#: libnautilus-private/nautilus-file-operations.c:2031
-msgid ""
-"Error creating new folder.\n"
-"\n"
-"You do not have permissions to write to the destination."
+#: libnautilus-private/nautilus-file-operations.c:2053
+#: libnautilus-private/nautilus-file-operations.c:2187
+#, fuzzy
+msgid "You do not have permissions to write to the destination."
 msgstr "പുതിയ കൂട നിറ്മ്മിക്കുന്പോള്‌ തെറ്റുന്നു.  ലക്ഷ്യസ്ഥാനത്ത് എഴുതുവാന്‌ താങ്കള്‌ക്ക് അനുവാദമില്ല"
 
-#: libnautilus-private/nautilus-file-operations.c:2034
-msgid ""
-"Error creating new folder.\n"
-"\n"
-"There is no space on the destination."
+#: libnautilus-private/nautilus-file-operations.c:2055
+#: libnautilus-private/nautilus-file-operations.c:2189
+#, fuzzy
+msgid "There is no space on the destination."
 msgstr "പുതിയ കൂട ഉണ്ടാക്കുമ്പോള്‌ തെറ്റുന്നു.  ലക്ഷ്യസ്ഥാനത്ത് സ്ഥലമില്ല"
 
-#: libnautilus-private/nautilus-file-operations.c:2037
+#: libnautilus-private/nautilus-file-operations.c:2057
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "%s പുതിയ കൂട ഉണ്ടാക്കുമ്പോള്‌‌ തെറ്റുന്നു."
 
-#: libnautilus-private/nautilus-file-operations.c:2041
-msgid "Error creating new folder"
+#: libnautilus-private/nautilus-file-operations.c:2062
+#, fuzzy
+msgid "Error creating new folder."
+msgstr "പുതിയ കൂട ഉണ്ടാക്കുമ്പോള്‌ തെറ്റുന്നു"
+
+#: libnautilus-private/nautilus-file-operations.c:2062
+#, fuzzy
+msgid "Error Creating New Folder"
 msgstr "പുതിയ കൂട ഉണ്ടാക്കുമ്പോള്‌ തെറ്റുന്നു"
 
 #. localizers: the initial name of a new folder
-#: libnautilus-private/nautilus-file-operations.c:2130
+#: libnautilus-private/nautilus-file-operations.c:2151
 msgid "untitled folder"
 msgstr "തലക്കെട്ടില്ലാത്ത കൂട"
 
-#. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:2191
+#, fuzzy, c-format
+msgid "Error \"%s\" creating new document."
+msgstr "%s പുതിയ കൂട ഉണ്ടാക്കുമ്പോള്‌‌ തെറ്റുന്നു."
+
+#: libnautilus-private/nautilus-file-operations.c:2196
+#, fuzzy
+msgid "Error creating new document."
+msgstr "പുതിയ കൂട ഉണ്ടാക്കുമ്പോള്‌ തെറ്റുന്നു"
+
+#: libnautilus-private/nautilus-file-operations.c:2196
+#, fuzzy
+msgid "Error Creating New Document"
+msgstr "പുതിയ കൂട ഉണ്ടാക്കുമ്പോള്‌ തെറ്റുന്നു"
+
+#: libnautilus-private/nautilus-file-operations.c:2342
+#, fuzzy
+msgid "new file"
+msgstr "1 രചന"
+
+#. localizers: progress dialog title
+#: libnautilus-private/nautilus-file-operations.c:2414
 msgid "Deleting files"
 msgstr "രചനകള്‌‌ നീക്കിക്കളയുന്നു"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2193
-#: libnautilus-private/nautilus-file-operations.c:2228
+#: libnautilus-private/nautilus-file-operations.c:2416
+#: libnautilus-private/nautilus-file-operations.c:2451
 msgid "Files deleted:"
 msgstr "നീക്കിക്കളഞ്ഞ രചനകള്:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-private/nautilus-file-operations.c:2195
-#: libnautilus-private/nautilus-file-operations.c:2230
+#: libnautilus-private/nautilus-file-operations.c:2418
+#: libnautilus-private/nautilus-file-operations.c:2453
 msgid "Deleting"
 msgstr "നീക്കിക്കളയുന്നു"
 
-#: libnautilus-private/nautilus-file-operations.c:2196
+#: libnautilus-private/nautilus-file-operations.c:2419
 msgid "Preparing to Delete files..."
 msgstr "രചനകള്‌‌ മായ്‍ക്കാന്‌ തയ്യാറെടുക്കുന്നു..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2226
+#: libnautilus-private/nautilus-file-operations.c:2449
 msgid "Emptying the Trash"
 msgstr "ചവറുകള്‌ ഒഴിപ്പിക്കുന്നു"
 
-#: libnautilus-private/nautilus-file-operations.c:2231
+#: libnautilus-private/nautilus-file-operations.c:2454
 msgid "Preparing to Empty the Trash..."
 msgstr "ചവറുകള്‌ ഒഴിപ്പിക്കാന്‌ തയ്യാറെടുക്കുന്നു..."
 
-#: libnautilus-private/nautilus-file-operations.c:2293
+#: libnautilus-private/nautilus-file-operations.c:2517
 #, fuzzy
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr "താങ്കള്‌ സന്ദ‍ര്ശിച്ച സ്ഥാന-പ്പട്ടിക കളയേണ്ടതുണ്ടോ?"
 
-#: libnautilus-private/nautilus-file-operations.c:2307
+#: libnautilus-private/nautilus-file-operations.c:2531
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:2319
+#: libnautilus-private/nautilus-file-operations.c:2543
 msgid "_Empty"
 msgstr "കളയുക"
 
-#: libnautilus-private/nautilus-file-operations.c:2366
+#: libnautilus-private/nautilus-file-operations.c:2590
 msgid "foo"
 msgstr "foo"
 
-#: libnautilus-private/nautilus-file-operations.c:2366
-#: libnautilus-private/nautilus-file-operations.c:2376
+#: libnautilus-private/nautilus-file-operations.c:2590
+#: libnautilus-private/nautilus-file-operations.c:2600
 msgid "foo (copy)"
 msgstr "foo (പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2367
+#: libnautilus-private/nautilus-file-operations.c:2591
 msgid ".bashrc"
 msgstr ".bashrc"
 
-#: libnautilus-private/nautilus-file-operations.c:2367
+#: libnautilus-private/nautilus-file-operations.c:2591
 msgid ".bashrc (copy)"
 msgstr ".bashrc (പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2368
+#: libnautilus-private/nautilus-file-operations.c:2592
 msgid ".foo.txt"
 msgstr ".foo.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2368
+#: libnautilus-private/nautilus-file-operations.c:2592
 msgid ".foo (copy).txt"
 msgstr ".foo (പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2369
+#: libnautilus-private/nautilus-file-operations.c:2593
 msgid "foo foo"
 msgstr "foo foo"
 
-#: libnautilus-private/nautilus-file-operations.c:2369
+#: libnautilus-private/nautilus-file-operations.c:2593
 msgid "foo foo (copy)"
 msgstr "foo foo(പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2370
+#: libnautilus-private/nautilus-file-operations.c:2594
 msgid "foo.txt"
 msgstr "foo.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2370
-#: libnautilus-private/nautilus-file-operations.c:2377
+#: libnautilus-private/nautilus-file-operations.c:2594
+#: libnautilus-private/nautilus-file-operations.c:2601
 msgid "foo (copy).txt"
 msgstr "foo (പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2371
+#: libnautilus-private/nautilus-file-operations.c:2595
 msgid "foo foo.txt"
 msgstr "foo foo.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2371
-#: libnautilus-private/nautilus-file-operations.c:2393
+#: libnautilus-private/nautilus-file-operations.c:2595
+#: libnautilus-private/nautilus-file-operations.c:2617
 msgid "foo foo (copy).txt"
 msgstr "foo foo (പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2372
+#: libnautilus-private/nautilus-file-operations.c:2596
 msgid "foo foo.txt txt"
 msgstr "foo foo.txt txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2372
+#: libnautilus-private/nautilus-file-operations.c:2596
 msgid "foo foo (copy).txt txt"
 msgstr "foo foo (പക‍ര്പ്പ്).txt txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2373
+#: libnautilus-private/nautilus-file-operations.c:2597
 msgid "foo...txt"
 msgstr "foo...txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2373
+#: libnautilus-private/nautilus-file-operations.c:2597
 msgid "foo.. (copy).txt"
 msgstr "foo.. (പക‌ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2374
+#: libnautilus-private/nautilus-file-operations.c:2598
 msgid "foo..."
 msgstr "foo..."
 
-#: libnautilus-private/nautilus-file-operations.c:2374
+#: libnautilus-private/nautilus-file-operations.c:2598
 msgid "foo... (copy)"
 msgstr "foo...(പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2375
+#: libnautilus-private/nautilus-file-operations.c:2599
 msgid "foo. (copy)"
 msgstr "foo.(പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2375
+#: libnautilus-private/nautilus-file-operations.c:2599
 msgid "foo. (another copy)"
 msgstr "foo. (മറ്റൊരു പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2376
-#: libnautilus-private/nautilus-file-operations.c:2378
+#: libnautilus-private/nautilus-file-operations.c:2600
+#: libnautilus-private/nautilus-file-operations.c:2602
 msgid "foo (another copy)"
 msgstr "foo (മറ്റൊരു പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2377
-#: libnautilus-private/nautilus-file-operations.c:2379
+#: libnautilus-private/nautilus-file-operations.c:2601
+#: libnautilus-private/nautilus-file-operations.c:2603
 msgid "foo (another copy).txt"
 msgstr "foo (മറ്റൊരു പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2378
+#: libnautilus-private/nautilus-file-operations.c:2602
 msgid "foo (3rd copy)"
 msgstr "foo (3മത് പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2379
+#: libnautilus-private/nautilus-file-operations.c:2603
 msgid "foo (3rd copy).txt"
 msgstr "foo (3മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2380
+#: libnautilus-private/nautilus-file-operations.c:2604
 msgid "foo foo (another copy).txt"
 msgstr "foo foo (മറ്റൊരു പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2380
+#: libnautilus-private/nautilus-file-operations.c:2604
 msgid "foo foo (3rd copy).txt"
 msgstr "foo foo (3മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2381
-#: libnautilus-private/nautilus-file-operations.c:2398
+#: libnautilus-private/nautilus-file-operations.c:2605
+#: libnautilus-private/nautilus-file-operations.c:2622
 msgid "foo (13th copy)"
 msgstr "foo (13മത് പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2381
+#: libnautilus-private/nautilus-file-operations.c:2605
 msgid "foo (14th copy)"
 msgstr "foo (14മത് പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2382
-#: libnautilus-private/nautilus-file-operations.c:2399
+#: libnautilus-private/nautilus-file-operations.c:2606
+#: libnautilus-private/nautilus-file-operations.c:2623
 msgid "foo (13th copy).txt"
 msgstr "foo (13മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2382
+#: libnautilus-private/nautilus-file-operations.c:2606
 msgid "foo (14th copy).txt"
 msgstr "foo (14മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2383
+#: libnautilus-private/nautilus-file-operations.c:2607
 msgid "foo (21st copy)"
 msgstr "foo (21മത് പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2383
-#: libnautilus-private/nautilus-file-operations.c:2385
+#: libnautilus-private/nautilus-file-operations.c:2607
+#: libnautilus-private/nautilus-file-operations.c:2609
 msgid "foo (22nd copy)"
 msgstr "foo (22മത് പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2384
+#: libnautilus-private/nautilus-file-operations.c:2608
 msgid "foo (21st copy).txt"
 msgstr "foo (21മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2384
-#: libnautilus-private/nautilus-file-operations.c:2386
+#: libnautilus-private/nautilus-file-operations.c:2608
+#: libnautilus-private/nautilus-file-operations.c:2610
 msgid "foo (22nd copy).txt"
 msgstr "foo (22മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2385
-#: libnautilus-private/nautilus-file-operations.c:2387
+#: libnautilus-private/nautilus-file-operations.c:2609
+#: libnautilus-private/nautilus-file-operations.c:2611
 msgid "foo (23rd copy)"
 msgstr "foo (23മത് പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2386
-#: libnautilus-private/nautilus-file-operations.c:2388
+#: libnautilus-private/nautilus-file-operations.c:2610
+#: libnautilus-private/nautilus-file-operations.c:2612
 msgid "foo (23rd copy).txt"
 msgstr "foo (23മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2387
-#: libnautilus-private/nautilus-file-operations.c:2389
+#: libnautilus-private/nautilus-file-operations.c:2611
+#: libnautilus-private/nautilus-file-operations.c:2613
 msgid "foo (24th copy)"
 msgstr "foo (24മത് പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2388
-#: libnautilus-private/nautilus-file-operations.c:2390
+#: libnautilus-private/nautilus-file-operations.c:2612
+#: libnautilus-private/nautilus-file-operations.c:2614
 msgid "foo (24th copy).txt"
 msgstr "foo (24മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2389
+#: libnautilus-private/nautilus-file-operations.c:2613
 msgid "foo (25th copy)"
 msgstr "foo (മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2390
+#: libnautilus-private/nautilus-file-operations.c:2614
 msgid "foo (25th copy).txt"
 msgstr "foo (25മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2391
+#: libnautilus-private/nautilus-file-operations.c:2615
 msgid "foo foo (24th copy)"
 msgstr "foo foo (24മത് പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2391
+#: libnautilus-private/nautilus-file-operations.c:2615
 msgid "foo foo (25th copy)"
 msgstr "foo foo (25മത് പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2392
+#: libnautilus-private/nautilus-file-operations.c:2616
 msgid "foo foo (24th copy).txt"
 msgstr "foo foo (24മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2392
+#: libnautilus-private/nautilus-file-operations.c:2616
 msgid "foo foo (25th copy).txt"
 msgstr "foo foo (25മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2393
+#: libnautilus-private/nautilus-file-operations.c:2617
 msgid "foo foo (100000000000000th copy).txt"
 msgstr "foo foo (100000000000000മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2394
+#: libnautilus-private/nautilus-file-operations.c:2618
 msgid "foo (10th copy)"
 msgstr "foo (10മത് പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2394
-#: libnautilus-private/nautilus-file-operations.c:2396
+#: libnautilus-private/nautilus-file-operations.c:2618
+#: libnautilus-private/nautilus-file-operations.c:2620
 msgid "foo (11th copy)"
 msgstr "foo (11മത് പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2395
+#: libnautilus-private/nautilus-file-operations.c:2619
 msgid "foo (10th copy).txt"
 msgstr "foo (10മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2395
-#: libnautilus-private/nautilus-file-operations.c:2397
+#: libnautilus-private/nautilus-file-operations.c:2619
+#: libnautilus-private/nautilus-file-operations.c:2621
 msgid "foo (11th copy).txt"
 msgstr "foo (11മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2396
-#: libnautilus-private/nautilus-file-operations.c:2398
+#: libnautilus-private/nautilus-file-operations.c:2620
+#: libnautilus-private/nautilus-file-operations.c:2622
 msgid "foo (12th copy)"
 msgstr "foo (12മത് പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2397
-#: libnautilus-private/nautilus-file-operations.c:2399
+#: libnautilus-private/nautilus-file-operations.c:2621
+#: libnautilus-private/nautilus-file-operations.c:2623
 msgid "foo (12th copy).txt"
 msgstr "foo (12മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2400
+#: libnautilus-private/nautilus-file-operations.c:2624
 msgid "foo (110th copy)"
 msgstr "foo (110മത് പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2400
+#: libnautilus-private/nautilus-file-operations.c:2624
 msgid "foo (111th copy)"
 msgstr "foo (111മത് പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2401
+#: libnautilus-private/nautilus-file-operations.c:2625
 msgid "foo (110th copy).txt"
 msgstr "foo (110മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2401
+#: libnautilus-private/nautilus-file-operations.c:2625
 msgid "foo (111th copy).txt"
 msgstr "foo (111മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2402
+#: libnautilus-private/nautilus-file-operations.c:2626
 msgid "foo (122nd copy)"
 msgstr "foo (122മത് പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2402
-#: libnautilus-private/nautilus-file-operations.c:2404
+#: libnautilus-private/nautilus-file-operations.c:2626
+#: libnautilus-private/nautilus-file-operations.c:2628
 msgid "foo (123rd copy)"
 msgstr "foo (123മത് പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2403
+#: libnautilus-private/nautilus-file-operations.c:2627
 msgid "foo (122nd copy).txt"
 msgstr "foo (122മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2403
-#: libnautilus-private/nautilus-file-operations.c:2405
+#: libnautilus-private/nautilus-file-operations.c:2627
+#: libnautilus-private/nautilus-file-operations.c:2629
 msgid "foo (123rd copy).txt"
 msgstr "foo (123മത് പക‍ര്പ്പ്).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2404
+#: libnautilus-private/nautilus-file-operations.c:2628
 msgid "foo (124th copy)"
 msgstr "foo (124മത് പക‍ര്പ്പ്)"
 
-#: libnautilus-private/nautilus-file-operations.c:2405
+#: libnautilus-private/nautilus-file-operations.c:2629
 msgid "foo (124th copy).txt"
 msgstr "foo (124മത് പക‍ര്പ്പ്).txt"
 
@@ -2673,64 +2649,64 @@ msgstr "foo (124മത് പക‍ര്പ്പ്).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2767
+#: libnautilus-private/nautilus-file.c:2765
 msgid "today at 00:00:00 PM"
 msgstr "ഇന്ന് 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2768
+#: libnautilus-private/nautilus-file.c:2766
 msgid "today at %-I:%M:%S %p"
 msgstr "ഇന്ന് %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2770
+#: libnautilus-private/nautilus-file.c:2768
 msgid "today at 00:00 PM"
 msgstr "ഇന്ന് 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2771
+#: libnautilus-private/nautilus-file.c:2769
 msgid "today at %-I:%M %p"
 msgstr "ഇന്ന് %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2773
+#: libnautilus-private/nautilus-file.c:2771
 msgid "today, 00:00 PM"
 msgstr "ഇന്ന്, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2774
+#: libnautilus-private/nautilus-file.c:2772
 msgid "today, %-I:%M %p"
 msgstr "ഇന്ന്, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2776
-#: libnautilus-private/nautilus-file.c:2777
+#: libnautilus-private/nautilus-file.c:2774
+#: libnautilus-private/nautilus-file.c:2775
 msgid "today"
 msgstr "ഇന്ന്"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2786
+#: libnautilus-private/nautilus-file.c:2784
 msgid "yesterday at 00:00:00 PM"
 msgstr "ഇന്നലെ 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2787
+#: libnautilus-private/nautilus-file.c:2785
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "ഇന്നലെ %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2789
+#: libnautilus-private/nautilus-file.c:2787
 msgid "yesterday at 00:00 PM"
 msgstr "ഇന്നലെ 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2790
+#: libnautilus-private/nautilus-file.c:2788
 msgid "yesterday at %-I:%M %p"
 msgstr "ഇന്നലെ %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2792
+#: libnautilus-private/nautilus-file.c:2790
 msgid "yesterday, 00:00 PM"
 msgstr "ഇന്നലെ, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2793
+#: libnautilus-private/nautilus-file.c:2791
 msgid "yesterday, %-I:%M %p"
 msgstr "ഇന്നലെ, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2795
-#: libnautilus-private/nautilus-file.c:2796
+#: libnautilus-private/nautilus-file.c:2793
+#: libnautilus-private/nautilus-file.c:2794
 msgid "yesterday"
 msgstr "ഇന്നലെ"
 
@@ -2739,151 +2715,151 @@ msgstr "ഇന്നലെ"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2807
+#: libnautilus-private/nautilus-file.c:2805
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "ബുധനാഴ്ച, സെപ്തംബ‍ര് 00 0000 at 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2808
+#: libnautilus-private/nautilus-file.c:2806
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %B %-d %Y at %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2810
+#: libnautilus-private/nautilus-file.c:2808
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "തിങ്കള്, ഒക്‍ടോബ‍ര് 00 0000 at 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2811
+#: libnautilus-private/nautilus-file.c:2809
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %b %-d %Y at %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2813
+#: libnautilus-private/nautilus-file.c:2811
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "ബുധനാഴ്ച, ഒക്‍ടോബ‍ര് 00 0000 at 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2814
+#: libnautilus-private/nautilus-file.c:2812
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %b %-d %Y at %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2816
+#: libnautilus-private/nautilus-file.c:2814
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "ഒക്‍ടോബ‍ര് 00 0000 at 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2817
+#: libnautilus-private/nautilus-file.c:2815
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%b %-d %Y at %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2819
+#: libnautilus-private/nautilus-file.c:2817
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "ഒക്‍ടോബ‍ര് 00 0000, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2820
+#: libnautilus-private/nautilus-file.c:2818
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b %-d %Y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2822
+#: libnautilus-private/nautilus-file.c:2820
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2823
+#: libnautilus-private/nautilus-file.c:2821
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%m/%-d/%y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2825
+#: libnautilus-private/nautilus-file.c:2823
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2826
+#: libnautilus-private/nautilus-file.c:2824
 msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
-#: libnautilus-private/nautilus-file.c:4121
+#: libnautilus-private/nautilus-file.c:4119
 msgid "0 items"
 msgstr "0 ഇനങ്ങള്‌"
 
-#: libnautilus-private/nautilus-file.c:4121
+#: libnautilus-private/nautilus-file.c:4119
 msgid "0 folders"
 msgstr "0 കൂടുകള്‌"
 
-#: libnautilus-private/nautilus-file.c:4122
+#: libnautilus-private/nautilus-file.c:4120
 msgid "0 files"
 msgstr "0 രചനകള്‌"
 
-#: libnautilus-private/nautilus-file.c:4126
+#: libnautilus-private/nautilus-file.c:4124
 msgid "1 item"
 msgstr "1 ഇനം"
 
-#: libnautilus-private/nautilus-file.c:4126
+#: libnautilus-private/nautilus-file.c:4124
 msgid "1 folder"
 msgstr "1 കൂട്"
 
-#: libnautilus-private/nautilus-file.c:4127
+#: libnautilus-private/nautilus-file.c:4125
 msgid "1 file"
 msgstr "1 രചന"
 
-#: libnautilus-private/nautilus-file.c:4130
+#: libnautilus-private/nautilus-file.c:4128
 #, c-format
 msgid "%u items"
 msgstr "%u ഇനങ്ങള്‌"
 
-#: libnautilus-private/nautilus-file.c:4130
+#: libnautilus-private/nautilus-file.c:4128
 #, c-format
 msgid "%u folders"
 msgstr "%u കൂടുകള്‌"
 
-#: libnautilus-private/nautilus-file.c:4131
+#: libnautilus-private/nautilus-file.c:4129
 #, c-format
 msgid "%u files"
 msgstr "%u രചനകള്‌‌"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4443
-#: libnautilus-private/nautilus-file.c:4459
+#: libnautilus-private/nautilus-file.c:4441
+#: libnautilus-private/nautilus-file.c:4457
 msgid "? items"
 msgstr "? ഇനങ്ങള്‌"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4449
+#: libnautilus-private/nautilus-file.c:4447
 msgid "? bytes"
 msgstr "? ബൈറ്റ്സ്"
 
-#: libnautilus-private/nautilus-file.c:4464
+#: libnautilus-private/nautilus-file.c:4462
 msgid "unknown type"
 msgstr "അറിയാത്ത ഇനം"
 
-#: libnautilus-private/nautilus-file.c:4467
+#: libnautilus-private/nautilus-file.c:4465
 msgid "unknown MIME type"
 msgstr "അറിയാത്ത MIME ഇനം"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4473
+#: libnautilus-private/nautilus-file.c:4471
 #: src/file-manager/fm-properties-window.c:1152
 msgid "unknown"
 msgstr "അറിയാത്ത"
 
-#: libnautilus-private/nautilus-file.c:4505
+#: libnautilus-private/nautilus-file.c:4503
 msgid "program"
 msgstr "പ്രയോഗം"
 
-#: libnautilus-private/nautilus-file.c:4517
+#: libnautilus-private/nautilus-file.c:4515
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
 "some other reason."
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:4521
+#: libnautilus-private/nautilus-file.c:4519
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
 "gnome-vfs mailing list."
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:4535
+#: libnautilus-private/nautilus-file.c:4533
 msgid "link"
 msgstr "ബന്ധം"
 
-#: libnautilus-private/nautilus-file.c:4555
+#: libnautilus-private/nautilus-file.c:4553
 msgid "link (broken)"
 msgstr "ബന്ധം (പൊട്ടിയ)"
 
@@ -3004,12 +2980,13 @@ msgid "Search for files by file name and file properties"
 msgstr "രചനാനാമമനുസരിച്ചും ഗുണഗണങ്ങളനുസരിച്ചും രചനകള്‌‌ തെരയുക"
 
 #: libnautilus-private/nautilus-global-preferences.c:178
-#: src/file-manager/fm-icon-container.c:496
+#: src/file-manager/fm-icon-container.c:499
 #: src/nautilus-file-management-properties.glade.h:50
 msgid "Icon View"
 msgstr "സൂചക ദൃശ്യം"
 
 #: libnautilus-private/nautilus-global-preferences.c:179
+#: src/file-manager/fm-list-view.c:866
 #: src/nautilus-file-management-properties.glade.h:51
 msgid "List View"
 msgstr "നാമാവലി കാഴ്ച"
@@ -3153,7 +3130,7 @@ msgstr "%s's ആസ്ഥാനം"
 
 #: libnautilus-private/nautilus-global-preferences.c:549
 #: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:9
-#: src/nautilus-window.c:1173
+#: src/nautilus-window.c:1176
 #, fuzzy
 msgid "Computer"
 msgstr "CNET Computers.കോം"
@@ -3198,89 +3175,94 @@ msgstr ""
 msgid "whether we are highlighted for a D&D drop"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:2025
+#: libnautilus-private/nautilus-icon-container.c:2071
 msgid "The selection rectangle"
 msgstr "തെരഞ്ഞെടുക്കല് ചതുരം"
 
-#: libnautilus-private/nautilus-icon-container.c:4100
+#: libnautilus-private/nautilus-icon-container.c:4165
 msgid "Frame Text"
 msgstr "വാചക അറ"
 
-#: libnautilus-private/nautilus-icon-container.c:4101
+#: libnautilus-private/nautilus-icon-container.c:4166
 msgid "Draw a frame around unselected text"
 msgstr "തെരഞ്ഞെടുക്കാത്ത വാചകത്തിന‍് ചുറ്റും ചട്ടക്കുട് വരയ്‍ക്കുക"
 
-#: libnautilus-private/nautilus-icon-container.c:4107
+#: libnautilus-private/nautilus-icon-container.c:4172
 msgid "Selection Box Color"
 msgstr "തെരഞ്ഞെടുക്കല്‌ പെട്ടി നിറം"
 
-#: libnautilus-private/nautilus-icon-container.c:4108
+#: libnautilus-private/nautilus-icon-container.c:4173
 msgid "Color of the selection box"
 msgstr "തെരഞ്ഞെടുക്കല്‌ പെട്ടിയുടെ നിറം"
 
-#: libnautilus-private/nautilus-icon-container.c:4113
+#: libnautilus-private/nautilus-icon-container.c:4178
 msgid "Selection Box Alpha"
 msgstr "തെരഞ്ഞെടുക്കല്‌ പെട്ടി ആല്‌ഫ"
 
-#: libnautilus-private/nautilus-icon-container.c:4114
+#: libnautilus-private/nautilus-icon-container.c:4179
 msgid "Opacity of the selection box"
 msgstr "തെരഞ്ഞെടുക്കല്‌ പെട്ടിയുടെ സുതാര്യത"
 
-#: libnautilus-private/nautilus-icon-container.c:4121
+#: libnautilus-private/nautilus-icon-container.c:4186
 msgid "Highlight Alpha"
 msgstr "പ്രസ്ഫുരണ ആല്‌ഫ"
 
-#: libnautilus-private/nautilus-icon-container.c:4122
+#: libnautilus-private/nautilus-icon-container.c:4187
 msgid "Opacity of the highlight for selected icons"
 msgstr "തിരഞ്ഞെടുത്ത ചിഹ്നത്തിന് വേണ്ടിയുള്ള പ്രസ്ഫുരണത്തിന്റെ അതാര്യത"
 
-#: libnautilus-private/nautilus-icon-container.c:4128
+#: libnautilus-private/nautilus-icon-container.c:4193
 msgid "Light Info Color"
 msgstr "ഇരുണ്ട നിറം"
 
-#: libnautilus-private/nautilus-icon-container.c:4129
+#: libnautilus-private/nautilus-icon-container.c:4194
 msgid "Color used for information text against a dark background"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:4134
+#: libnautilus-private/nautilus-icon-container.c:4199
 msgid "Dark Info Color"
 msgstr "തെളിഞ്ഞ നിറം"
 
-#: libnautilus-private/nautilus-icon-container.c:4135
+#: libnautilus-private/nautilus-icon-container.c:4200
 msgid "Color used for information text against a light background"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-dnd.c:731
+#: libnautilus-private/nautilus-icon-dnd.c:732
 msgid ""
-"This folder uses automatic layout. Do you want to switch to manual layout "
-"and leave this item where you dropped it? This will clobber the stored "
-"manual layout."
+"Do you want to switch to manual layout and leave this item where you dropped "
+"it? This will clobber the stored manual layout."
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-dnd.c:735
-msgid ""
-"This folder uses automatic layout. Do you want to switch to manual layout "
-"and leave these items where you dropped them? This will clobber the stored "
-"manual layout."
+#: libnautilus-private/nautilus-icon-dnd.c:734
+#: libnautilus-private/nautilus-icon-dnd.c:738
+#: libnautilus-private/nautilus-icon-dnd.c:743
+#: libnautilus-private/nautilus-icon-dnd.c:746
+msgid "This folder uses automatic layout."
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-dnd.c:741
+#: libnautilus-private/nautilus-icon-dnd.c:736
 msgid ""
-"This folder uses automatic layout. Do you want to switch to manual layout "
-"and leave this item where you dropped it?"
+"Do you want to switch to manual layout and leave these items where you "
+"dropped them? This will clobber the stored manual layout."
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-dnd.c:744
+#: libnautilus-private/nautilus-icon-dnd.c:742
 msgid ""
-"This folder uses automatic layout. Do you want to switch to manual layout "
-"and leave these items where you dropped them?"
+"Do you want to switch to manual layout and leave this item where you dropped "
+"it?"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-dnd.c:749
+#: libnautilus-private/nautilus-icon-dnd.c:745
+msgid ""
+"Do you want to switch to manual layout and leave these items where you "
+"dropped them?"
+msgstr ""
+
+#: libnautilus-private/nautilus-icon-dnd.c:751
 msgid "Switch to Manual Layout?"
 msgstr "നേരിട്ട് ചെയ്‍ത രീതിയില്?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:750
+#: libnautilus-private/nautilus-icon-dnd.c:752
 msgid "Switch"
 msgstr "വൈദ്യുതപ്രാവഹനിയമാകം"
 
@@ -3373,119 +3355,119 @@ msgstr "\"%s\" ന‍് വേണ്ടിയുള്ള മെനുവില
 msgid "Is the default for all \"%s\" items."
 msgstr "\"%s\" ന‍് വേണ്ടിയുള്ള മെനുവില്.‌"
 
-#: libnautilus-private/nautilus-program-chooser.c:1041
+#: libnautilus-private/nautilus-program-chooser.c:1030
 #, c-format
 msgid "Modify \"%s\""
 msgstr "\"%s\" പരിഷ്കരിച്ച"
 
 #. Radio button for adding to short list for file type.
-#: libnautilus-private/nautilus-program-chooser.c:1067
+#: libnautilus-private/nautilus-program-chooser.c:1056
 #, c-format
 msgid "Include in the menu for \"%s\" items"
 msgstr "\"%s\" ന‍് വേണ്ടിയുള്ള മെനുവില്.‌"
 
 #. Radio button for setting default for file type.
-#: libnautilus-private/nautilus-program-chooser.c:1074
+#: libnautilus-private/nautilus-program-chooser.c:1063
 #, c-format
 msgid "Use as default for \"%s\" items"
 msgstr "\"%s\"വേണ്ടിയുള്ള സ്വതേ"
 
 #. Radio button for adding to short list for specific file.
-#: libnautilus-private/nautilus-program-chooser.c:1081
+#: libnautilus-private/nautilus-program-chooser.c:1070
 #, c-format
 msgid "Include in the menu for \"%s\" only"
 msgstr "\"%s\" ന‍് വേണ്ടിയുള്ള മെനുവില്.‌"
 
 #. Radio button for setting default for specific file.
-#: libnautilus-private/nautilus-program-chooser.c:1087
+#: libnautilus-private/nautilus-program-chooser.c:1076
 #, c-format
 msgid "Use as default for \"%s\" only"
 msgstr "\"%s\"വേണ്ടിയുള്ള സ്വതേ"
 
 #. Radio button for not including program in short list for type or file.
-#: libnautilus-private/nautilus-program-chooser.c:1094
+#: libnautilus-private/nautilus-program-chooser.c:1083
 #, c-format
 msgid "Don't include in the menu for \"%s\" items"
 msgstr "\"%s\" ന‍് വേണ്ടിയുള്ള മെനുവില്.‌"
 
-#: libnautilus-private/nautilus-program-chooser.c:1252
-#: src/file-manager/fm-search-list-view.c:494
+#: libnautilus-private/nautilus-program-chooser.c:1241
+#: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "പേര‍്"
 
-#: libnautilus-private/nautilus-program-chooser.c:1261
+#: libnautilus-private/nautilus-program-chooser.c:1250
 msgid "Status"
 msgstr "അവസ്ഥ"
 
-#: libnautilus-private/nautilus-program-chooser.c:1352
+#: libnautilus-private/nautilus-program-chooser.c:1341
 msgid "C_hoose"
 msgstr "തെരഞ്ഞെടുക്കുക"
 
-#: libnautilus-private/nautilus-program-chooser.c:1355
+#: libnautilus-private/nautilus-program-chooser.c:1344
 msgid "Done"
 msgstr "ചെയ്യ‍ുക"
 
-#: libnautilus-private/nautilus-program-chooser.c:1429
+#: libnautilus-private/nautilus-program-chooser.c:1418
 msgid "_Modify..."
 msgstr "പരിഷ്കരിക്കുക..."
 
 #. Framed area with button to launch mime type editing capplet.
-#: libnautilus-private/nautilus-program-chooser.c:1439
+#: libnautilus-private/nautilus-program-chooser.c:1428
 msgid "File Types and Programs"
 msgstr "രചനാ തരങ്ങളും നിര്‍ദ്ദേശ-സംഹിതകളും"
 
-#: libnautilus-private/nautilus-program-chooser.c:1451
+#: libnautilus-private/nautilus-program-chooser.c:1440
 msgid "_Go There"
 msgstr "അവിടെ പോകുക"
 
-#: libnautilus-private/nautilus-program-chooser.c:1458
+#: libnautilus-private/nautilus-program-chooser.c:1447
 msgid ""
 "You can configure which programs are offered for which file types in the "
 "File Types and Programs dialog."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:1493
+#: libnautilus-private/nautilus-program-chooser.c:1482
 msgid "Open with Other Application"
 msgstr "മറ്റ് അനുപ്രയോഗങ്ങളും കൂടി തുറക്കുക"
 
-#: libnautilus-private/nautilus-program-chooser.c:1494
+#: libnautilus-private/nautilus-program-chooser.c:1483
 #, c-format
 msgid "Choose an application with which to open \"%s\":"
 msgstr "പട്ടികയില് നിന്നും ഒരു പ്രയോഗം പ്രവ‍ര്ത്തിക്കാനായി തിരഞ്ഞെടുക്കുക \"%s\":"
 
-#: libnautilus-private/nautilus-program-chooser.c:1498
+#: libnautilus-private/nautilus-program-chooser.c:1487
 msgid "Open with Other Viewer"
 msgstr "മറ്റ് പ്രയോഗങ്ങളും കൂടി തുറക്കുക"
 
-#: libnautilus-private/nautilus-program-chooser.c:1499
+#: libnautilus-private/nautilus-program-chooser.c:1488
 #, c-format
 msgid "Choose a view for \"%s\":"
 msgstr "\"%s\": നുവേണ്ടിയുള്ള ഒരു ദൃശ്യം തെരഞ്ഞെടുക്കുക"
 
-#: libnautilus-private/nautilus-program-chooser.c:1601
+#: libnautilus-private/nautilus-program-chooser.c:1591
 #, c-format
 msgid "No viewers are available for \"%s\"."
 msgstr "\"%s\" ക്ക് വേണ്ടി ദ‌ര്ശിനികള്‌ ലഭ്യമല്ല."
 
-#: libnautilus-private/nautilus-program-chooser.c:1602
+#: libnautilus-private/nautilus-program-chooser.c:1592
 msgid "No Viewers Available"
 msgstr "ദ‌ര്ശിനികള്‌ ലഭ്യമല്ല"
 
-#: libnautilus-private/nautilus-program-chooser.c:1604
+#: libnautilus-private/nautilus-program-chooser.c:1594
 #, c-format
 msgid "There is no application associated with \"%s\"."
 msgstr "\"%s\" മായ് ബന്ധപ്പെട്ട ഒരു പ്രയോഗവും ഇല്ല."
 
-#: libnautilus-private/nautilus-program-chooser.c:1605
+#: libnautilus-private/nautilus-program-chooser.c:1595
 msgid "No Application Associated"
 msgstr "ബന്ധപ്പെട്ട അനുപ്രയോഗങ്ങളില്ല"
 
-#: libnautilus-private/nautilus-program-chooser.c:1607
+#: libnautilus-private/nautilus-program-chooser.c:1597
 #, c-format
 msgid "There is no action associated with \"%s\"."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:1608
+#: libnautilus-private/nautilus-program-chooser.c:1598
 msgid "No Action Associated"
 msgstr ""
 
@@ -3493,143 +3475,172 @@ msgstr ""
 #. * user can't add components to the complete list even from the capplet.
 #. * (They can add applications though.)
 #.
-#: libnautilus-private/nautilus-program-chooser.c:1615
-#, c-format
+#: libnautilus-private/nautilus-program-chooser.c:1605
 msgid ""
-"%s\n"
-"\n"
 "You can configure GNOME to associate applications with file types. Do you "
 "want to associate an application with this file type now?"
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:1622
-msgid "Associate Application"
+#: libnautilus-private/nautilus-program-chooser.c:1610
+#, fuzzy
+msgid "_Associate Application"
 msgstr "ബന്ധപ്പെട്ട അനുപ്രയോഗം"
 
-#: libnautilus-private/nautilus-program-chooser.c:1648
+#: libnautilus-private/nautilus-program-chooser.c:1639
 #, c-format
 msgid "The viewer associated with \"%s\" is invalid."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:1649
+#: libnautilus-private/nautilus-program-chooser.c:1640
 msgid "Invalid Viewer Associated"
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:1651
+#: libnautilus-private/nautilus-program-chooser.c:1642
 #, c-format
 msgid "The application associated with \"%s\" is invalid."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:1652
+#: libnautilus-private/nautilus-program-chooser.c:1643
 msgid "Invalid Application Associated"
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:1654
+#: libnautilus-private/nautilus-program-chooser.c:1645
 #, c-format
 msgid "The action associated with \"%s\" is invalid."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:1655
+#: libnautilus-private/nautilus-program-chooser.c:1646
 msgid "Invalid Action Associated"
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:1658
-#, c-format
+#: libnautilus-private/nautilus-program-chooser.c:1649
 msgid ""
-"%s\n"
-"\n"
 "You can configure GNOME to associate a different application or viewer with "
 "this file type. Do you want to associate an application or viewer with this "
 "file type now?"
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:1665
-msgid "Associate Action"
+#: libnautilus-private/nautilus-program-chooser.c:1654
+#, fuzzy
+msgid "_Associate Action"
+msgstr "ബന്ധപ്പെട്ട അനുപ്രയോഗം"
+
+#: libnautilus-private/nautilus-program-choosing.c:505
+msgid "Open Failed, would you like to choose another application?"
 msgstr ""
 
-#: libnautilus-private/nautilus-program-choosing.c:504
-#, c-format
+#: libnautilus-private/nautilus-program-choosing.c:506
+#, fuzzy, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
-"locations.  Would you like to choose another application?"
+"locations."
+msgstr ""
+" നോട്ടിലസിന‌്   %s സ്ഥാനങ്ങള്‌ കൈകാര്യം ചെയ്യാന്‌ കഴിയാത്തതുകൊണ്ട് \"%s\", പ്രദ‍ര്ശിപ്പിക്കാന്‌ "
+"കഴിഞ്ഞില്ല"
+
+#: libnautilus-private/nautilus-program-choosing.c:511
+msgid "Open Failed, would you like to choose another action?"
 msgstr ""
 
-#: libnautilus-private/nautilus-program-choosing.c:509
+#: libnautilus-private/nautilus-program-choosing.c:512
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
-"locations.  Would you like to choose another action?"
+"locations."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-choosing.c:515
-#: libnautilus-private/nautilus-program-choosing.c:546
+#: libnautilus-private/nautilus-program-choosing.c:519
+#: libnautilus-private/nautilus-program-choosing.c:552
 msgid "Can't Open Location"
 msgstr "സ്ഥാനം തുറക്കാന്‌ കഴിയില്ല"
 
-#: libnautilus-private/nautilus-program-choosing.c:534
-#, c-format
+#: libnautilus-private/nautilus-program-choosing.c:538
+#, fuzzy, c-format
 msgid ""
-"\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
-"locations.  No other applications are available to view this file.  If you "
-"copy this file onto your computer, you may be able to open it."
+"\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
+"locations."
+msgstr ""
+" നോട്ടിലസിന‌്   %s സ്ഥാനങ്ങള്‌ കൈകാര്യം ചെയ്യാന്‌ കഴിയാത്തതുകൊണ്ട് \"%s\", പ്രദ‍ര്ശിപ്പിക്കാന്‌ "
+"കഴിഞ്ഞില്ല"
+
+#: libnautilus-private/nautilus-program-choosing.c:541
+msgid ""
+"No other applications are available to view this file.  If you copy this "
+"file onto your computer, you may be able to open it."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-choosing.c:540
+#: libnautilus-private/nautilus-program-choosing.c:545
 #, c-format
 msgid ""
-"The default action can't open \"%s\" because it can't access files at \"%s\" "
-"locations.  No other actions are available to view this file.  If you copy "
-"this file onto your computer, you may be able to open it."
+"The default action can't open \"%s\" because it can't access files at \"%s\"."
+"locations."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-choosing.c:800
-#: libnautilus-private/nautilus-program-choosing.c:1017
+#: libnautilus-private/nautilus-program-choosing.c:547
+msgid ""
+"No other actions are available to view this file.  If you copy this file "
+"onto your computer, you may be able to open it."
+msgstr ""
+
+#: libnautilus-private/nautilus-program-choosing.c:806
+#: libnautilus-private/nautilus-program-choosing.c:1023
 #, fuzzy, c-format
 msgid "Opening %s"
 msgstr "\"%s\" തുറക്കുന്നു"
 
-#: libnautilus-private/nautilus-program-choosing.c:1161
-msgid ""
-"Sorry, but you can't execute commands from a remote site due to security "
-"considerations."
+#: libnautilus-private/nautilus-program-choosing.c:1167
+#, fuzzy
+msgid "Sorry, but you can't execute commands from a remote site."
+msgstr "ക്ഷമിക്കൂ, പുനഃക്രമീകരിച്ച ചിത്രം മാറ്റാന്‌ താങ്കള്ക്ക് കഴിയില്ല."
+
+#: libnautilus-private/nautilus-program-choosing.c:1169
+msgid "This is disabled due to security considerations."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-choosing.c:1163
-msgid "Can't execute remote links"
+#: libnautilus-private/nautilus-program-choosing.c:1170
+#, fuzzy
+msgid "Can't Execute Remote Links"
 msgstr "വിദൂര കണ്ണികള് പ്രവ‌ര്ത്തിപ്പിക്കാനാകുന്നില്ല"
 
-#: libnautilus-private/nautilus-program-choosing.c:1173
-#: libnautilus-private/nautilus-program-choosing.c:1239
-msgid ""
-"There was an error launching the application.\n"
-"\n"
-"Details: "
+#: libnautilus-private/nautilus-program-choosing.c:1180
+#: libnautilus-private/nautilus-program-choosing.c:1246
+msgid "Details: "
+msgstr ""
+
+#: libnautilus-private/nautilus-program-choosing.c:1182
+#: libnautilus-private/nautilus-program-choosing.c:1248
+#, fuzzy
+msgid "There was an error launching the application."
 msgstr ""
 "പ്രയോഗം ലഭ്യമാക്കുന്നതില് തകരാറ്.\n"
 "\n"
 "വിശദാംശങ്ങള്: "
 
-#: libnautilus-private/nautilus-program-choosing.c:1177
-#: libnautilus-private/nautilus-program-choosing.c:1243
-msgid "Error launching application"
+#: libnautilus-private/nautilus-program-choosing.c:1184
+#: libnautilus-private/nautilus-program-choosing.c:1250
+#, fuzzy
+msgid "Error Launching Application"
 msgstr "അനുക്രമ സമാരംഭിക്കലില്‌ തെറ്റ്"
 
-#: libnautilus-private/nautilus-program-choosing.c:1205
+#: libnautilus-private/nautilus-program-choosing.c:1212
+#: libnautilus-private/nautilus-program-choosing.c:1224
+#, fuzzy
+msgid "This drop target only supports local files."
+msgstr "വലിക്കുന്നതും ഇടുന്നതും പ്രാദേശിക രചനകള്ക്ക് മാത്രമാണ‍്"
+
+#: libnautilus-private/nautilus-program-choosing.c:1213
 msgid ""
-"This drop target only supports local files.\n"
-"\n"
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-choosing.c:1208
-#: libnautilus-private/nautilus-program-choosing.c:1220
-msgid "Drop target only supports local files"
+#: libnautilus-private/nautilus-program-choosing.c:1215
+#: libnautilus-private/nautilus-program-choosing.c:1227
+#, fuzzy
+msgid "Drop Target Only Supports Local Files"
 msgstr "വലിക്കുന്നതും ഇടുന്നതും പ്രാദേശിക രചനകള്ക്ക് മാത്രമാണ‍്"
 
-#: libnautilus-private/nautilus-program-choosing.c:1217
+#: libnautilus-private/nautilus-program-choosing.c:1225
 msgid ""
-"This drop target only supports local files.\n"
-"\n"
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
 msgstr ""
@@ -3875,14 +3886,6 @@ msgstr ""
 msgid "Items containing \"medusa\" in their names and that are folders"
 msgstr ""
 
-#: libnautilus-private/nautilus-trash-directory.c:69
-msgid "Searching Disks"
-msgstr "വിവരത്തട്ട് അന്വേഷണം"
-
-#: libnautilus-private/nautilus-trash-directory.c:70
-msgid "Nautilus is searching your disks for trash folders."
-msgstr ""
-
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "സംവിധാനം"
@@ -4079,96 +4082,106 @@ msgstr "പശ്ചാത്തലം"
 msgid "Empty Trash"
 msgstr "ചവറ് കളയുക"
 
-#: src/file-manager/fm-directory-view.c:497
-#, c-format
-msgid "This will open %d separate windows. Are you sure you want to do this?"
-msgstr ""
-
-#: src/file-manager/fm-directory-view.c:499
+#: src/file-manager/fm-directory-view.c:541
 #, c-format
 msgid "Open %d Windows?"
 msgstr "%d ജാലകം തുറക്കണോ?"
 
-#: src/file-manager/fm-directory-view.c:836
+#: src/file-manager/fm-directory-view.c:542
+#, fuzzy
+msgid "Are you sure you want to open all files?"
+msgstr "താങ്കള്‌ക്ക് എന്നെന്നേക്കുമായ് നീക്കം ചെയ്യണം എന്ന് ഉറപ്പുണ്ടോ \"%s\"?"
+
+#: src/file-manager/fm-directory-view.c:543 src/nautilus-location-bar.c:157
+#, c-format
+msgid "This will open %d separate windows."
+msgstr ""
+
+#: src/file-manager/fm-directory-view.c:898
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "താങ്കള്‌ക്ക് എന്നെന്നേക്കുമായ് നീക്കം ചെയ്യണം എന്ന് ഉറപ്പുണ്ടോ \"%s\"?"
 
-#: src/file-manager/fm-directory-view.c:840
+#: src/file-manager/fm-directory-view.c:902
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected items?"
 msgstr "താങ്കള്‌ക്ക് %d തെരെഞ്ഞെടുത്ത ഇനങ്ങള് എന്നെന്നേക്കുമായ് നീക്കം ചെയ്യണം എന്ന് ഉറപ്പുണ്ടോ?"
 
-#: src/file-manager/fm-directory-view.c:846
+#: src/file-manager/fm-directory-view.c:908
+#, fuzzy
+msgid "If you delete an item, it is permanently lost."
+msgstr "തെറഞ്ഞെടുത്ത് എല്ലാ ഇനങ്ങളും സ്ഥായിയായി നീക്കം ചെയ്യ‍ുക"
+
+#: src/file-manager/fm-directory-view.c:909
 msgid "Delete?"
 msgstr "നീക്കം ചെയ്യണോ?"
 
-#: src/file-manager/fm-directory-view.c:985
+#: src/file-manager/fm-directory-view.c:1048
 #, fuzzy
 msgid "Select Pattern"
 msgstr "മാതൃകകള്"
 
-#: src/file-manager/fm-directory-view.c:1001
+#: src/file-manager/fm-directory-view.c:1064
 #, fuzzy
 msgid "_Pattern:"
 msgstr "മാതൃകകള്"
 
-#: src/file-manager/fm-directory-view.c:1598
+#: src/file-manager/fm-directory-view.c:1746
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" തെരഞ്ഞെടുത്തൂ"
 
-#: src/file-manager/fm-directory-view.c:1600
+#: src/file-manager/fm-directory-view.c:1748
 msgid "1 folder selected"
 msgstr "1 കൂട് തെരഞ്ഞെടുത്തൂ"
 
-#: src/file-manager/fm-directory-view.c:1603
+#: src/file-manager/fm-directory-view.c:1751
 #, c-format
 msgid "%d folders selected"
 msgstr "%d കൂടുകള്‌ തെരഞ്ഞെടുത്തൂ"
 
-#: src/file-manager/fm-directory-view.c:1610
+#: src/file-manager/fm-directory-view.c:1758
 msgid " (containing 0 items)"
 msgstr " (0 ഇനങ്ങള്‌ ഉള്‌ക്കൊള്ളുന്നു)"
 
-#: src/file-manager/fm-directory-view.c:1612
+#: src/file-manager/fm-directory-view.c:1760
 msgid " (containing 1 item)"
 msgstr " (1 ഇനം ഉള്‌ക്കൊള്ളുന്നു)"
 
-#: src/file-manager/fm-directory-view.c:1614
+#: src/file-manager/fm-directory-view.c:1762
 #, c-format
 msgid " (containing %d items)"
 msgstr " (%d ഇനങ്ങള്‌ ഉള്ക്കൊള്ളുന്നു)"
 
-#: src/file-manager/fm-directory-view.c:1621
+#: src/file-manager/fm-directory-view.c:1769
 msgid " (containing a total of 0 items)"
 msgstr " (ആകെ 0 ഇനങ്ങള്‌ ഉള്‌ക്കൊള്ളുന്നു)"
 
-#: src/file-manager/fm-directory-view.c:1623
+#: src/file-manager/fm-directory-view.c:1771
 msgid " (containing a total of 1 item)"
 msgstr " (ആകെ 1 ഇനം ഉള്‌ക്കൊള്ളുന്നു)"
 
-#: src/file-manager/fm-directory-view.c:1625
+#: src/file-manager/fm-directory-view.c:1773
 #, c-format
 msgid " (containing a total of %d items)"
 msgstr " (ആകെ %d ഇനങ്ങള്‌ ഉള്ക്കൊള്ളുന്നു)"
 
-#: src/file-manager/fm-directory-view.c:1638
+#: src/file-manager/fm-directory-view.c:1786
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" തെരഞ്ഞെടുത്തൂ (%s)"
 
-#: src/file-manager/fm-directory-view.c:1642
+#: src/file-manager/fm-directory-view.c:1790
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d ഇനങ്ങള്‌ തെരഞ്ഞെടുത്തൂ(%s)"
 
-#: src/file-manager/fm-directory-view.c:1649
+#: src/file-manager/fm-directory-view.c:1797
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 മറ്റ് ഇനങ്ങള് തെരഞ്ഞെടുത്തൂ(%s)"
 
-#: src/file-manager/fm-directory-view.c:1652
+#: src/file-manager/fm-directory-view.c:1800
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d മറ്റ് ഇനങ്ങള് തെരഞ്ഞെടുത്തൂ(%s)"
@@ -4180,7 +4193,7 @@ msgstr "%d മറ്റ് ഇനങ്ങള് തെരഞ്ഞെടുത�
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1681
+#: src/file-manager/fm-directory-view.c:1829
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4189,108 +4202,125 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1806
+#: src/file-manager/fm-directory-view.c:1954
 #, c-format
-msgid ""
-"The folder \"%s\" contains more files than Nautilus can handle. Some files "
-"will not be displayed."
+msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:1813
+#: src/file-manager/fm-directory-view.c:1960
+msgid "Some files will not be displayed."
+msgstr ""
+
+#: src/file-manager/fm-directory-view.c:1961
 msgid "Too Many Files"
 msgstr "ധാരാളം രചനകള്‌‌"
 
-#: src/file-manager/fm-directory-view.c:3058
-#, c-format
-msgid ""
-"\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
-msgstr ""
-
-#: src/file-manager/fm-directory-view.c:3063
-#, c-format
-msgid ""
-"The %d selected items cannot be moved to the Trash. Do you want to delete "
-"them immediately?"
+#: src/file-manager/fm-directory-view.c:3212
+#, fuzzy
+msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr ""
 "തെരെഞ്ഞെടുത്ത %d ഇനങ്ങള് ചവറ്റുകുട്ടയിലിടാന് കഴിയില്ല. അവയെ പൂര്ണ്ണമായും നീക്കം ചെയ്യട്ടേ?"
 
-#: src/file-manager/fm-directory-view.c:3067
+#: src/file-manager/fm-directory-view.c:3213
 #, c-format
-msgid ""
-"%d of the selected items cannot be moved to the Trash. Do you want to delete "
-"those %d items immediately?"
+msgid "The file \"%s\" cannot be moved to the trash."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3075
+#: src/file-manager/fm-directory-view.c:3217
+#, fuzzy
+msgid "Cannot move items to trash, do you want to delete them immediately?"
+msgstr ""
+"തെരെഞ്ഞെടുത്ത %d ഇനങ്ങള് ചവറ്റുകുട്ടയിലിടാന് കഴിയില്ല. അവയെ പൂര്ണ്ണമായും നീക്കം ചെയ്യട്ടേ?"
+
+#: src/file-manager/fm-directory-view.c:3220
+#, fuzzy
+msgid ""
+"Cannot move some items to trash, do you want to delete these immediately?"
+msgstr ""
+"തെരെഞ്ഞെടുത്ത %d ഇനങ്ങള് ചവറ്റുകുട്ടയിലിടാന് കഴിയില്ല. അവയെ പൂര്ണ്ണമായും നീക്കം ചെയ്യട്ടേ?"
+
+#: src/file-manager/fm-directory-view.c:3227
 msgid "Delete Immediately?"
 msgstr "ഉടനെ നീക്കം ചെയ്യണോ?"
 
-#: src/file-manager/fm-directory-view.c:3107
-#, c-format
-msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
+#: src/file-manager/fm-directory-view.c:3259
+#, fuzzy, c-format
+msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "താങ്കള്‌ക്ക് ചവറ്റ്കുട്ടയില് നിന്നും \"%s\" എന്നെന്നേക്കുമായ് നീക്കം ചെയ്യണം എന്ന് ഉറപ്പുണ്ടോ?"
 
-#: src/file-manager/fm-directory-view.c:3111
-#, c-format
+#: src/file-manager/fm-directory-view.c:3263
+#, fuzzy, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
-"Trash?"
+"trash?"
 msgstr "താങ്കള്‌ക്ക് %d തെരെഞ്ഞെടുത്ത ഇനങ്ങള് എന്നെന്നേക്കുമായ് നീക്കം ചെയ്യണം എന്ന് ഉറപ്പുണ്ടോ?"
 
-#: src/file-manager/fm-directory-view.c:3117
+#: src/file-manager/fm-directory-view.c:3268
+msgid "If you delete an item, it will be permanently lost."
+msgstr ""
+
+#: src/file-manager/fm-directory-view.c:3269
 msgid "Delete From Trash?"
 msgstr "ചവറ്റുകുട്ടയില്‌ നിന്ന് നീക്കം ചെയ്യണോ?"
 
-#: src/file-manager/fm-directory-view.c:3396
-#: src/file-manager/fm-directory-view.c:3438
+#: src/file-manager/fm-directory-view.c:3644
+#: src/file-manager/fm-directory-view.c:3686
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "തെരഞ്ഞെടുത്ത ഇനങ്ങള്‌ തുറക്കാന്‌ \"%s\" ഉപയോഗിക്കുക"
 
-#: src/file-manager/fm-directory-view.c:3514
-#: src/file-manager/nautilus-directory-view-ui.xml.h:28
+#: src/file-manager/fm-directory-view.c:3762
+#: src/file-manager/nautilus-directory-view-ui.xml.h:31
 msgid "Other _Application..."
 msgstr "മറ്റ് അനുപ്രയോഗങ്ങള്‌"
 
-#: src/file-manager/fm-directory-view.c:3514
+#: src/file-manager/fm-directory-view.c:3762
 msgid "An _Application..."
 msgstr "അനുപ്രയോഗങ്ങള്‌"
 
-#: src/file-manager/fm-directory-view.c:3536
-#: src/file-manager/nautilus-directory-view-ui.xml.h:29
+#: src/file-manager/fm-directory-view.c:3784
+#: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Other _Viewer..."
 msgstr "മറ്റ് ദ‍ര്ശിനി..."
 
-#: src/file-manager/fm-directory-view.c:3536
+#: src/file-manager/fm-directory-view.c:3784
 msgid "A _Viewer..."
 msgstr "ഒരു ദ‍ര്ശിനി"
 
-#: src/file-manager/fm-directory-view.c:3629
+#: src/file-manager/fm-directory-view.c:3877
 #, c-format
 msgid "Could not complete specified action:  %s"
 msgstr "നിര്‍ദ്ദേശിച്ച പ്രവ‍ര്ത്തനം മുഴുനനാക്കാനായില്ല: %s"
 
-#: src/file-manager/fm-directory-view.c:3653
+#: src/file-manager/fm-directory-view.c:3901
 msgid "Could not complete specified action."
 msgstr "നിര്‍ദ്ദേശിച്ച പ്രവ‍ര്ത്തനം മുഴുനനാക്കാനായില്ല."
 
-#: src/file-manager/fm-directory-view.c:4162
+#: src/file-manager/fm-directory-view.c:4410
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "\"%s\" തെരഞ്ഞെടുത്ത ഇനങ്ങളില് പ്രവ‍ര്ത്തിക്കുക"
 
-#: src/file-manager/fm-directory-view.c:4379
+#: src/file-manager/fm-directory-view.c:4644
+#, c-format
+msgid "Create Document from template \"%s\""
+msgstr ""
+
+#: src/file-manager/fm-directory-view.c:4828
+msgid "All executable files in this folder will appear in the Scripts menu."
+msgstr ""
+
+#: src/file-manager/fm-directory-view.c:4830
 msgid ""
-"All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4382
+#: src/file-manager/fm-directory-view.c:4832
 msgid "About Scripts"
 msgstr "നിര്‍ദ്ദേശ-സംഹിത‌കളെപ്പറ്റി"
 
-#: src/file-manager/fm-directory-view.c:4383
+#: src/file-manager/fm-directory-view.c:4833
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4312,18 +4342,18 @@ msgid ""
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4513
+#: src/file-manager/fm-directory-view.c:4963
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr ""
 "\"%s\" മാറ്റി സ്ഥാപിക്കപ്പെടും, നിങ്ങള് ഒട്ടിപ്പ് എന്ന നിര്‍ദ്ദേശം തെരഞ്ഞെടുക്കുകയാണെങ്കില്"
 
-#: src/file-manager/fm-directory-view.c:4517
+#: src/file-manager/fm-directory-view.c:4967
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" പക‍ര്ത്തപ്പെടും, നിങ്ങള് ഒട്ടിപ്പ് എന്ന നിര്‍ദ്ദേശം തെരഞ്ഞെടുക്കുകയാണെങ്കില്"
 
-#: src/file-manager/fm-directory-view.c:4524
+#: src/file-manager/fm-directory-view.c:4974
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
@@ -4331,162 +4361,166 @@ msgstr ""
 "%d തെരെഞ്ഞെടുത്ത ഇനങ്ങള് മാറ്റി സ്ഥാപിക്കപ്പെടും, നിങ്ങള് ഒട്ടിപ്പ് എന്ന നിര്‍ദ്ദേശം "
 "തെരഞ്ഞെടുക്കുകയാണെങ്കില്"
 
-#: src/file-manager/fm-directory-view.c:4528
+#: src/file-manager/fm-directory-view.c:4978
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
 msgstr ""
 "%d തെരെഞ്ഞെടുത്ത ഇനങ്ങള് പക‍ര്ത്തപ്പെടും, നിങ്ങള് ഒട്ടിപ്പ് എന്ന നിര്‍ദ്ദേശം തെരഞ്ഞെടുക്കുകയാണെങ്കില്"
 
-#: src/file-manager/fm-directory-view.c:4607
+#: src/file-manager/fm-directory-view.c:5057
 msgid "There is nothing on the clipboard to paste."
 msgstr "ഒട്ടുവലകയില്‌ ഒട്ടിക്കാന്‌ അവിടെ ഒന്നുമില്ല"
 
-#: src/file-manager/fm-directory-view.c:4708
-#: src/file-manager/fm-directory-view.c:5594
+#: src/file-manager/fm-directory-view.c:5159
+#: src/file-manager/fm-directory-view.c:6063
 msgid "Mount Error"
 msgstr "സംസ്ഥാപിക്കുന്നതിലുള്ള തെറ്റ്"
 
-#: src/file-manager/fm-directory-view.c:4769
+#: src/file-manager/fm-directory-view.c:5221
 msgid "Unmount Error"
 msgstr "സംസ്ഥാപിക്കുന്നതിലുള്ള തെറ്റ്"
 
-#: src/file-manager/fm-directory-view.c:4771
+#: src/file-manager/fm-directory-view.c:5224
 #, fuzzy
 msgid "Eject Error"
 msgstr "സംസ്ഥാപിക്കുന്നതിലുള്ള തെറ്റ്"
 
-#: src/file-manager/fm-directory-view.c:4993
+#: src/file-manager/fm-directory-view.c:5449
 msgid "E_ject"
 msgstr "നിഷ്കാസനം"
 
-#: src/file-manager/fm-directory-view.c:4993
-#: src/file-manager/nautilus-directory-view-ui.xml.h:60
+#: src/file-manager/fm-directory-view.c:5449
+#: src/file-manager/nautilus-directory-view-ui.xml.h:64
 msgid "_Unmount Volume"
 msgstr "വാല്യം അണ്‌മൌണ്ട് ചെയ്യുക"
 
-#: src/file-manager/fm-directory-view.c:5073
+#: src/file-manager/fm-directory-view.c:5529
 #, fuzzy
 msgid "Open in New Window"
 msgstr "പുതിയ ജാലകത്തില് തുറക്കുക"
 
-#: src/file-manager/fm-directory-view.c:5075
+#: src/file-manager/fm-directory-view.c:5531
 #, fuzzy, c-format
 msgid "Open in %d New Windows"
 msgstr "%d പുതിയ ജാലകത്തില് തുറക്കൂ"
 
-#: src/file-manager/fm-directory-view.c:5080
+#: src/file-manager/fm-directory-view.c:5536
 #, fuzzy
 msgid "Browse Folder"
 msgstr "ആസ്ഥാന-കൂട്"
 
-#: src/file-manager/fm-directory-view.c:5082
+#: src/file-manager/fm-directory-view.c:5538
 #, fuzzy
 msgid "Browse Folders"
 msgstr "ആസ്ഥാന-കൂട്"
 
-#: src/file-manager/fm-directory-view.c:5105
+#: src/file-manager/fm-directory-view.c:5561
 msgid "_Delete from Trash"
 msgstr "ചവറ്റുകുട്ടയില്‌ നിന്ന് നീക്കം ചെയ്യ‍ുക"
 
-#: src/file-manager/fm-directory-view.c:5107
+#: src/file-manager/fm-directory-view.c:5563
 msgid "Delete all selected items permanently"
 msgstr "തെറഞ്ഞെടുത്ത് എല്ലാ ഇനങ്ങളും സ്ഥായിയായി നീക്കം ചെയ്യ‍ുക"
 
-#: src/file-manager/fm-directory-view.c:5110
-#: src/file-manager/fm-directory-view.c:5398
-#: src/file-manager/nautilus-directory-view-ui.xml.h:19
+#: src/file-manager/fm-directory-view.c:5566
+#: src/file-manager/fm-directory-view.c:5857
+#: src/file-manager/nautilus-directory-view-ui.xml.h:21
 msgid "Mo_ve to Trash"
 msgstr "ചവറ്റുകുട്ടയിലേക്ക് നീക്കുക"
 
-#: src/file-manager/fm-directory-view.c:5112
-#: src/file-manager/nautilus-directory-view-ui.xml.h:21
+#: src/file-manager/fm-directory-view.c:5568
+#: src/file-manager/nautilus-directory-view-ui.xml.h:23
 msgid "Move each selected item to the Trash"
 msgstr "തെരഞ്ഞെടുത്ത ഓരോ ഇനങ്ങളും ചവറ്റുകുട്ടയിലേക്ക് നീക്കുക"
 
-#: src/file-manager/fm-directory-view.c:5136
-#: src/file-manager/nautilus-directory-view-ui.xml.h:49
+#: src/file-manager/fm-directory-view.c:5592
+#: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Delete"
 msgstr "നീക്കം ചെയ്യ‍ുക"
 
-#: src/file-manager/fm-directory-view.c:5156
+#: src/file-manager/fm-directory-view.c:5612
 msgid "Ma_ke Links"
 msgstr "ബന്ധം സ്ഥാപിക്കുക"
 
-#: src/file-manager/fm-directory-view.c:5157
-#: src/file-manager/nautilus-directory-view-ui.xml.h:17
+#: src/file-manager/fm-directory-view.c:5613
+#: src/file-manager/nautilus-directory-view-ui.xml.h:19
 msgid "Ma_ke Link"
 msgstr "ബന്ധം സ്ഥാപിക്കുക"
 
-#: src/file-manager/fm-directory-view.c:5170
-#: src/file-manager/nautilus-directory-view-ui.xml.h:50
+#: src/file-manager/fm-directory-view.c:5626
+#: src/file-manager/nautilus-directory-view-ui.xml.h:54
 msgid "_Empty Trash"
 msgstr "ചവറ് കളയുക"
 
-#: src/file-manager/fm-directory-view.c:5186
+#: src/file-manager/fm-directory-view.c:5642
 msgid "Cu_t File"
 msgstr "മുറിപ്പ്"
 
-#: src/file-manager/fm-directory-view.c:5187
-#: src/file-manager/nautilus-directory-view-ui.xml.h:9
+#: src/file-manager/fm-directory-view.c:5643
+#: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "Cu_t Files"
 msgstr "മുറിപ്പ്"
 
-#: src/file-manager/fm-directory-view.c:5196
+#: src/file-manager/fm-directory-view.c:5652
 msgid "_Copy File"
 msgstr "പക‍ര്പ്പ്"
 
-#: src/file-manager/fm-directory-view.c:5197
-#: src/file-manager/nautilus-directory-view-ui.xml.h:48
+#: src/file-manager/fm-directory-view.c:5653
+#: src/file-manager/nautilus-directory-view-ui.xml.h:51
 msgid "_Copy Files"
 msgstr "പക‍ര്പ്പ്"
 
-#: src/file-manager/fm-directory-view.c:5389
-msgid ""
-"This link can't be used, because it has no target. Do you want to move this "
-"link to the Trash?"
+#: src/file-manager/fm-directory-view.c:5848
+#, fuzzy
+msgid "The link is borken, do you want to move it to the Trash?"
+msgstr "താങ്കള്‌ സന്ദ‍ര്ശിച്ച സ്ഥാന-പ്പട്ടിക കളയേണ്ടതുണ്ടോ?"
+
+#: src/file-manager/fm-directory-view.c:5850
+msgid "This link can't be used, because it has no target."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:5392
+#: src/file-manager/fm-directory-view.c:5852
 #, c-format
-msgid ""
-"This link can't be used, because its target \"%s\" doesn't exist. Do you "
-"want to move this link to the Trash?"
+msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:5398
+#: src/file-manager/fm-directory-view.c:5857
 msgid "Broken Link"
 msgstr "പൊട്ടിയ കണ്ണി"
 
-#: src/file-manager/fm-directory-view.c:5455
+#: src/file-manager/fm-directory-view.c:5915
 #, c-format
-msgid ""
-"\"%s\" is an executable text file. Do you want to run it, or display its "
-"contents?"
+msgid "Do you want to run \"%s\", or display its contents?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:5461
+#: src/file-manager/fm-directory-view.c:5917
+#, c-format
+msgid "\"%s\" is an executable text file."
+msgstr ""
+
+#: src/file-manager/fm-directory-view.c:5923
 msgid "Run or Display?"
 msgstr "സഞ്ചരണം അല്ലെങ്കില്‌ പ്രദ‍ര്ശനം?"
 
-#: src/file-manager/fm-directory-view.c:5462
-msgid "_Display"
-msgstr "പ്രദ‍ര്ശനം"
-
-#: src/file-manager/fm-directory-view.c:5463
+#: src/file-manager/fm-directory-view.c:5924
 msgid "Run in _Terminal"
 msgstr "കല്പ്പനാസ്ഥാനത്ത് പ്രവ‍ര്ത്തിക്കുക"
 
-#: src/file-manager/fm-directory-view.c:5466
+#: src/file-manager/fm-directory-view.c:5925
+msgid "_Display"
+msgstr "പ്രദ‍ര്ശനം"
+
+#: src/file-manager/fm-directory-view.c:5928
 msgid "_Run"
 msgstr "നടപ്പിലാക്കുക"
 
-#: src/file-manager/fm-directory-view.c:5725
-#, c-format
-msgid "Opening \"%s\""
+#: src/file-manager/fm-directory-view.c:6196
+#, fuzzy, c-format
+msgid "Opening \"%s\"."
 msgstr "\"%s\" തുറക്കുന്നു"
 
-#: src/file-manager/fm-directory-view.c:5731
+#: src/file-manager/fm-directory-view.c:6202
 msgid "Cancel Open?"
 msgstr "തുറക്കുന്നത് റദ്ദാക്കണോ?"
 
@@ -4507,108 +4541,133 @@ msgid "Sorry, couldn't display all the contents of \"%s\"."
 msgstr "ക്ഷമിക്കൂ, \"%s\". എല്ലാ ഉള്ളടക്കങ്ങളും പ്രദറ്ശിപ്പിക്കാന്‌ കഴിയ"
 
 #: src/file-manager/fm-error-reporting.c:71
+#, fuzzy
+msgid "The folder contents could not be displayed."
+msgstr "%s ന്റെ അനുവാദങ്ങള് മനസ്സിലാക്കാന് കഴിയില്ല."
+
+#: src/file-manager/fm-error-reporting.c:72
 msgid "Error Displaying Folder"
 msgstr "കൂട് പ്രദ‍ര്ശിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു."
 
-#: src/file-manager/fm-error-reporting.c:102
+#: src/file-manager/fm-error-reporting.c:103
 #, c-format
 msgid ""
 "The name \"%s\" is already used in this folder. Please use a different name."
 msgstr ""
 
-#: src/file-manager/fm-error-reporting.c:107
+#: src/file-manager/fm-error-reporting.c:108
 #, c-format
 msgid ""
 "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
 msgstr ""
 
-#: src/file-manager/fm-error-reporting.c:112
+#: src/file-manager/fm-error-reporting.c:113
 #, c-format
 msgid "You do not have the permissions necessary to rename \"%s\"."
 msgstr "നിങ്ങള്ക്ക് \"%s\" ന്റെ പേര‍് മാറ്റാന് അനുവാദമില്ല."
 
-#: src/file-manager/fm-error-reporting.c:117
+#: src/file-manager/fm-error-reporting.c:118
 #, c-format
 msgid ""
 "The name \"%s\" is not valid because it contains the character \"/\". Please "
 "use a different name."
 msgstr ""
 
-#: src/file-manager/fm-error-reporting.c:121
+#: src/file-manager/fm-error-reporting.c:122
 #, c-format
 msgid "The name \"%s\" is not valid. Please use a different name."
 msgstr ""
 
-#: src/file-manager/fm-error-reporting.c:127
+#: src/file-manager/fm-error-reporting.c:128
 #, c-format
 msgid "Couldn't change the name of \"%s\" because it is on a read-only disk"
 msgstr "\"%s\" ന്റെ പേര‍് മാറ്റാന് കഴിയില്ല കാരണം ഇത് വായിക്കാന് മാത്രം പറ്റുന്ന തട്ടിലാണ്"
 
-#: src/file-manager/fm-error-reporting.c:136
+#: src/file-manager/fm-error-reporting.c:137
 #, c-format
 msgid "Sorry, couldn't rename \"%s\" to \"%s\"."
 msgstr "ക്ഷമിക്കൂ, \"%s\" നെ \"%s\".ലേക്ക് പുനറ്‌നാമകരണം ചെയ്യാന്‌ കഴിയില്ല"
 
-#: src/file-manager/fm-error-reporting.c:143
+#: src/file-manager/fm-error-reporting.c:144
+#, fuzzy
+msgid "The item could not be renamed."
+msgstr "%s ന്റെ അനുവാദങ്ങള് മനസ്സിലാക്കാന് കഴിയില്ല."
+
+#: src/file-manager/fm-error-reporting.c:145
 msgid "Renaming Error"
 msgstr "പുനര്നാമകരണ െതറ്റ്"
 
-#: src/file-manager/fm-error-reporting.c:163
+#: src/file-manager/fm-error-reporting.c:165
 #, c-format
 msgid ""
 "You do not have the permissions necessary to change the group of \"%s\"."
 msgstr "നിങ്ങള്ക്ക് \"%s\" ന്റെ പേര‍് മാറ്റാന് അനുവാദമില്ല."
 
-#: src/file-manager/fm-error-reporting.c:167
+#: src/file-manager/fm-error-reporting.c:169
 #, c-format
 msgid "Couldn't change the group of \"%s\" because it is on a read-only disk"
 msgstr "\"%s\" ന്റെ കൂട്ടത്തെ മാറ്റാന് കഴിയില്ല കാരണം ഇത് വായിക്കാന് മാത്രം പറ്റുന്ന തട്ടിലാണ്"
 
-#: src/file-manager/fm-error-reporting.c:175
+#: src/file-manager/fm-error-reporting.c:177
 #, c-format
 msgid "Sorry, couldn't change the group of \"%s\"."
 msgstr "ക്ഷമിക്കു, \"%s\". കൂട്ടത്തെ മാറ്റാന്‌ കഴിയില്ല"
 
-#: src/file-manager/fm-error-reporting.c:179
+#: src/file-manager/fm-error-reporting.c:181
+#, fuzzy
+msgid "The group could not be changed."
+msgstr "%s ന്റെ അനുവാദങ്ങള് മനസ്സിലാക്കാന് കഴിയില്ല."
+
+#: src/file-manager/fm-error-reporting.c:181
 msgid "Error Setting Group"
 msgstr "ഉകൂട്ടത്തെ സജ്ജീകരിക്കുന്നതില്‌ തകരാറ്"
 
-#: src/file-manager/fm-error-reporting.c:201
+#: src/file-manager/fm-error-reporting.c:203
 #, c-format
 msgid "Couldn't change the owner of \"%s\" because it is on a read-only disk"
 msgstr "\"%s\" ന്റെ ഉടമയെ മാറ്റാന് കഴിയില്ല കാരണം ഇത് വായിക്കാന് മാത്രം പറ്റുന്ന തട്ടിലാണ്"
 
-#: src/file-manager/fm-error-reporting.c:208
+#: src/file-manager/fm-error-reporting.c:210
 #, c-format
 msgid "Sorry, couldn't change the owner of \"%s\"."
 msgstr "ക്ഷമിക്കൂ, \"%s\". ഉടമയെ മാറ്റാന്‌ കഴിയില്ല"
 
-#: src/file-manager/fm-error-reporting.c:211
+#: src/file-manager/fm-error-reporting.c:213
+#, fuzzy
+msgid "The owner could not be changed."
+msgstr "%s ന്റെ അനുവാദങ്ങള് മനസ്സിലാക്കാന് കഴിയില്ല."
+
+#: src/file-manager/fm-error-reporting.c:213
 msgid "Error Setting Owner"
 msgstr "ഉടമയെ നിശ്ചയിക്കുമ്പോള്‌ തെറ്റുന്നു"
 
-#: src/file-manager/fm-error-reporting.c:233
+#: src/file-manager/fm-error-reporting.c:235
 #, c-format
 msgid ""
 "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
 msgstr ""
 "\"%s\" ന്റെ അനുവാദങ്ങള് മാറ്റാന് കഴിയില്ല കാരണം ഇത് വായിക്കാന് മാത്രം പറ്റുന്ന തട്ടിലാണ്"
 
-#: src/file-manager/fm-error-reporting.c:240
+#: src/file-manager/fm-error-reporting.c:242
 #, c-format
 msgid "Sorry, couldn't change the permissions of \"%s\"."
 msgstr "ക്ഷമിക്കു, \"%s\". അനുവാദങ്ങള് മാറ്റാന്‌ കഴിയില്ല."
 
-#: src/file-manager/fm-error-reporting.c:243
+#: src/file-manager/fm-error-reporting.c:245
+#, fuzzy
+msgid "The permissions could not be changed."
+msgstr "%s ന്റെ അനുവാദങ്ങള് മനസ്സിലാക്കാന് കഴിയില്ല."
+
+#: src/file-manager/fm-error-reporting.c:246
 msgid "Error Setting Permissions"
 msgstr "അനുവാദങ്ങള്‌ നിശ്ചയിക്കുന്നതില് തെറ്റുന്നു"
 
-#: src/file-manager/fm-error-reporting.c:309
+#: src/file-manager/fm-error-reporting.c:312
 #, c-format
 msgid "Renaming \"%s\" to \"%s\"."
 msgstr "\"%s\" നെ \"%s\". ലേക്ക് പുനര്നാമകരണം ചെയ്യല്‌"
 
-#: src/file-manager/fm-error-reporting.c:314
+#: src/file-manager/fm-error-reporting.c:317
 msgid "Cancel Rename?"
 msgstr "പുനറ്മാനകരണം റദ്ദാക്കണോ?"
 
@@ -4666,47 +4725,56 @@ msgstr "ചിഹ്നംങ്ങളുടെ യഥാര്ത്ഥ വല�
 msgid "Restore Icon's Original Si_ze"
 msgstr "ചിഹ്നം യഥാര്ത്ഥ വലിപ്പത്തില് കൊണ്ടു വരിക"
 
-#: src/file-manager/fm-icon-view.c:1961
+#: src/file-manager/fm-icon-view.c:1962
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "\"%s\" ല് ചൂണ്ടി കാണിച്ചിരിക്കുന്നു"
 
-#: src/file-manager/fm-icon-view.c:2544
-msgid "Drag and drop is only supported to local file systems."
+#: src/file-manager/fm-icon-view.c:2545 src/file-manager/fm-icon-view.c:2569
+#, fuzzy
+msgid "Drag and drop is not supported."
 msgstr "വലിക്കുന്നതും ഇടുന്നതും പ്രാദേശിക രചനകള്ക്ക് മാത്രമാണ‍്"
 
-#: src/file-manager/fm-icon-view.c:2545 src/file-manager/fm-icon-view.c:2568
-msgid "Drag and Drop error"
+#: src/file-manager/fm-icon-view.c:2546
+#, fuzzy
+msgid "Drag and drop is only supported on local file systems."
+msgstr "വലിക്കുന്നതും ഇടുന്നതും പ്രാദേശിക രചനകള്ക്ക് മാത്രമാണ‍്"
+
+#: src/file-manager/fm-icon-view.c:2547 src/file-manager/fm-icon-view.c:2571
+#, fuzzy
+msgid "Drag and Drop Error"
 msgstr "വലിക്കുന്നതും ഇടുന്നതും തകരാറ്"
 
-#: src/file-manager/fm-icon-view.c:2567
+#: src/file-manager/fm-icon-view.c:2570
 msgid "An invalid drag type was used."
 msgstr "ഒരു തെറ്റായ തരമാണ‍് ഉപയോഗിച്ചത്."
 
-#: src/file-manager/fm-list-view.c:764
+#: src/file-manager/fm-list-view.c:808
 msgid "File name"
 msgstr "രചനാനാമം"
 
-#: src/file-manager/fm-list-view.c:788
-#: src/file-manager/fm-search-list-view.c:512
+#: src/file-manager/fm-list-view.c:832
+#: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "വലിപ്പം"
 
-#: src/file-manager/fm-list-view.c:799
-#: src/file-manager/fm-search-list-view.c:518
+#: src/file-manager/fm-list-view.c:843
+#: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "തരം"
 
-#: src/file-manager/fm-list-view.c:810
-#: src/file-manager/fm-search-list-view.c:524
+#: src/file-manager/fm-list-view.c:854
+#: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "തീയതി പരിഷ്കരിച്ചു"
 
 #: src/file-manager/fm-properties-window.c:482
-#: src/nautilus-information-panel.c:506
-msgid ""
-"You can't assign more than one custom icon at a time! Please drag just one "
-"image to set a custom icon."
+msgid "You can't assign more than one custom icon at a time!"
+msgstr ""
+
+#: src/file-manager/fm-properties-window.c:483
+#: src/nautilus-information-panel.c:507
+msgid "Please drag just one image to set a custom icon."
 msgstr ""
 
 #: src/file-manager/fm-properties-window.c:484
@@ -4716,9 +4784,13 @@ msgstr "ഒന്നില്‌ക്കൂടുതല്‌ ചിത്ര�
 
 #: src/file-manager/fm-properties-window.c:493
 #: src/nautilus-information-panel.c:527
-msgid ""
-"The file that you dropped is not local.  You can only use local images as "
-"custom icons."
+msgid "The file that you dropped is not local."
+msgstr ""
+
+#: src/file-manager/fm-properties-window.c:494
+#: src/file-manager/fm-properties-window.c:501
+#: src/nautilus-information-panel.c:528
+msgid "You can only use local images as custom icons."
 msgstr ""
 
 #: src/file-manager/fm-properties-window.c:495
@@ -4728,9 +4800,7 @@ msgstr "പ്രാദേശിക ചിത്രങ്ങള്‌ മാത�
 
 #: src/file-manager/fm-properties-window.c:500
 #: src/nautilus-information-panel.c:534
-msgid ""
-"The file that you dropped is not an image.  You can only use local images as "
-"custom icons."
+msgid "The file that you dropped is not an image."
 msgstr ""
 
 #: src/file-manager/fm-properties-window.c:502
@@ -4753,7 +4823,8 @@ msgid "Cancel Group Change?"
 msgstr "കൂട്ടാളി മാറ്റം റദ്ദാക്കണോ?"
 
 #: src/file-manager/fm-properties-window.c:1384
-msgid "Changing group"
+#, fuzzy
+msgid "Changing group."
 msgstr "കൂട്ടാളി മാറ്റുന്നു‌"
 
 #: src/file-manager/fm-properties-window.c:1545
@@ -4761,7 +4832,8 @@ msgid "Cancel Owner Change?"
 msgstr "ഉടമ മാറ്റം റദ്ദാക്കണോ?"
 
 #: src/file-manager/fm-properties-window.c:1546
-msgid "Changing owner"
+#, fuzzy
+msgid "Changing owner."
 msgstr "ഉടമ മാറ്റുന്നു‌"
 
 #: src/file-manager/fm-properties-window.c:1752
@@ -4806,7 +4878,7 @@ msgid "_Names:"
 msgstr "പേര‍്:"
 
 #: src/file-manager/fm-properties-window.c:2214
-#: src/nautilus-connect-server-dialog.c:185
+#: src/nautilus-connect-server-dialog.c:187
 msgid "_Name:"
 msgstr "പേര‍്:"
 
@@ -4836,7 +4908,7 @@ msgid "Size:"
 msgstr "വലിപ്പം:"
 
 #: src/file-manager/fm-properties-window.c:2279 src/nautilus-location-bar.c:61
-#: src/nautilus-location-dialog.c:145
+#: src/nautilus-location-dialog.c:144
 msgid "Location:"
 msgstr "സ്ഥാനം:"
 
@@ -4959,31 +5031,26 @@ msgstr "%s ന്റെ അനുവാദങ്ങള് മനസ്സില�
 msgid "The permissions of the selected file could not be determined."
 msgstr "%s ന്റെ അനുവാദങ്ങള് മനസ്സിലാക്കാന് കഴിയില്ല."
 
-#: src/file-manager/fm-properties-window.c:3349
-#: src/nautilus-bookmarks-window.c:146
-#: src/nautilus-file-management-properties.c:237
-#: src/nautilus-property-browser.c:1446 src/nautilus-window-menus.c:629
-#, c-format
-msgid ""
-"There was an error displaying help: \n"
-"%s"
-msgstr ""
-"സഹായം ലഭിക്കുന്നതില് തകരാറ്: \n"
-"%s"
+#: src/file-manager/fm-properties-window.c:3348
+#, fuzzy
+msgid "There was an error displaying help."
+msgstr "സഹായം ലഭിക്കുന്നതില് തകരാറ്: %s"
 
-#: src/file-manager/fm-properties-window.c:3351
-msgid "Couldn't show help"
+#: src/file-manager/fm-properties-window.c:3348
+#, fuzzy
+msgid "Couldn't Show Help"
 msgstr "സഹായം കാണിക്കാന്‌ കഴിഞ്ഞില്ല"
 
-#: src/file-manager/fm-properties-window.c:3688
+#: src/file-manager/fm-properties-window.c:3684
 msgid "Cancel Showing Properties Window?"
 msgstr "ഗുണഗണങ്ങളുടെ കാഴ്ച റദ്ദാക്കണോ?"
 
-#: src/file-manager/fm-properties-window.c:3689
-msgid "Creating Properties window"
+#: src/file-manager/fm-properties-window.c:3685
+#, fuzzy
+msgid "Creating Properties window."
 msgstr "ഗുണഗണ ജാലകം ഉണ്ടാക്കുക"
 
-#: src/file-manager/fm-properties-window.c:3815
+#: src/file-manager/fm-properties-window.c:3811
 msgid "Select an icon"
 msgstr ""
 
@@ -4999,81 +5066,104 @@ msgid "Search Results"
 msgstr "അന്വേഷണ ഫലങ്ങള്‌"
 
 #: src/file-manager/fm-search-list-view.c:166
-msgid ""
-"Sorry, but the Medusa search service is not available because it is not "
-"installed."
-msgstr ""
+#, fuzzy
+msgid "Sorry, but the Medusa search service is not available."
+msgstr "മെഡുസ തിരച്ചില് സേവനം ലഭ്യമല്ല."
 
 #: src/file-manager/fm-search-list-view.c:167
-#: src/file-manager/nautilus-indexing-info.c:303
+msgid "Medusa is not installed."
+msgstr ""
+
+#: src/file-manager/fm-search-list-view.c:168
+#: src/file-manager/nautilus-indexing-info.c:301
 msgid "Search Service Not Available"
 msgstr "അന്വേഷണ-സേവനം ലഭ്യമല്ല"
 
 #: src/file-manager/fm-search-list-view.c:190
 msgid ""
 "The search you have selected is newer than the index on your system.  The "
-"search will return no results right now.  You can create a new  index by "
-"running \"medusa-indexd\" as root on the command line."
+"search will return no results right now."
 msgstr ""
 
-#: src/file-manager/fm-search-list-view.c:196
-msgid "Search for items that are too new"
+#: src/file-manager/fm-search-list-view.c:194
+#: src/file-manager/fm-search-list-view.c:213
+msgid ""
+"You can create a new index by running \"medusa-indexd\" as root on the "
+"command line."
+msgstr ""
+
+#: src/file-manager/fm-search-list-view.c:197
+#, fuzzy
+msgid "Search For Items That Are Too New"
 msgstr "ഏറ്റവും പുതിയി ഇനങ്ങള്‌ക്കുവേണ്ടിയുള്ള തെരയുക‌"
 
-#: src/file-manager/fm-search-list-view.c:200
+#: src/file-manager/fm-search-list-view.c:201
+msgid "Every indexed file on your computer matches the criteria you selected. "
+msgstr ""
+
+#: src/file-manager/fm-search-list-view.c:203
 msgid ""
-"Every indexed file on your computer matches the criteria you selected. You "
-"can check the spelling on your selections or add more criteria to narrow "
+"You can check the spelling on your selections or add more criteria to narrow "
 "your results."
 msgstr ""
 
-#: src/file-manager/fm-search-list-view.c:204
-#: src/file-manager/fm-search-list-view.c:225
-msgid "Error during search"
+#: src/file-manager/fm-search-list-view.c:205
+#: src/file-manager/fm-search-list-view.c:223
+#, fuzzy
+msgid "Error During Search"
 msgstr "തെരച്ചിലിനിടയില്‌ തെറ്റ്"
 
 #. FIXME: This dialog does not get shown because a slow search
 #. will be performed and will not return an error.
-#: src/file-manager/fm-search-list-view.c:210
+#: src/file-manager/fm-search-list-view.c:211
 msgid ""
 "Find cannot open your file system index.  Your index may be missing or "
-"corrupt.  You can create a new index by running \"medusa-indexd\" as root on "
-"the command line."
+"corrupt."
 msgstr ""
 
-#: src/file-manager/fm-search-list-view.c:214
-msgid "Error reading file index"
+#: src/file-manager/fm-search-list-view.c:215
+#, fuzzy
+msgid "Error Reading File Index"
 msgstr "രചനാ സൂചിക വായിക്കുന്നതില്‌ പരാജയം"
 
-#: src/file-manager/fm-search-list-view.c:220
-#, c-format
-msgid "An error occurred while loading this search's contents: %s"
+#: src/file-manager/fm-search-list-view.c:221
+#, fuzzy
+msgid "An error occurred while loading this search's contents."
 msgstr "കണ്ടെത്തിയ ഈ രചനകളുടെ ഉള്ളടക്കം കൊണ്ടുവരന്നതില് തകരാറ് : %s"
 
-#: src/file-manager/fm-search-list-view.c:244
+#: src/file-manager/fm-search-list-view.c:240
 msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
+"To do a fast search, Find requires an index of the files on your system."
+msgstr ""
+
+#: src/file-manager/fm-search-list-view.c:242
+msgid ""
+"To do a content search, Find requires an index of the files on your system."
+msgstr ""
+
+#: src/file-manager/fm-search-list-view.c:245
+msgid ""
 "Find can't access your index right now so a slower search will be performed "
 "that doesn't use the index."
 msgstr ""
 
-#: src/file-manager/fm-search-list-view.c:249
-msgid ""
-"To do a content search, Find requires an index of the files on your system.  "
-"Find can't access your index right now. "
+#: src/file-manager/fm-search-list-view.c:248
+msgid "Find can't access your index right now."
 msgstr ""
 
-#: src/file-manager/fm-search-list-view.c:253
-msgid "Fast searches are not available"
+#: src/file-manager/fm-search-list-view.c:250
+#, fuzzy
+msgid "Fast Searches Are Not Available"
 msgstr "അതിവേഗത്തിലുള്ള തെരച്ചില്‌ ലഭ്യമല്ല"
 
-#: src/file-manager/fm-search-list-view.c:254
-#: src/file-manager/fm-search-list-view.c:284
-#: src/file-manager/fm-search-list-view.c:307
-msgid "Content searches are not available"
+#: src/file-manager/fm-search-list-view.c:251
+#: src/file-manager/fm-search-list-view.c:285
+#: src/file-manager/fm-search-list-view.c:312
+#, fuzzy
+msgid "Content Searches Are Not Available"
 msgstr "ഉള്ളടക്ക അന്വേഷണം ലഭ്യമല്ല"
 
-#: src/file-manager/fm-search-list-view.c:257
+#: src/file-manager/fm-search-list-view.c:255
 msgid ""
 "Your index files are available but the Medusa search daemon, which handles "
 "index requests, isn't running.  To start this program, log in as root and "
@@ -5082,53 +5172,76 @@ msgid ""
 "medusa-searchd"
 msgstr ""
 
-#: src/file-manager/fm-search-list-view.c:271
+#: src/file-manager/fm-search-list-view.c:269
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  "
-"Your computer is currently creating that index.   Because Find cannot use an "
-"index, this search may take several minutes."
+"Your computer is currently creating that index."
 msgstr ""
 
-#: src/file-manager/fm-search-list-view.c:277
+#: src/file-manager/fm-search-list-view.c:273
 msgid ""
 "To do a content search, Find requires an index of the content on your "
-"system.  Your computer is currently creating that index.  Content searches "
-"will be available when the index is complete."
+"system.  Your computer is currently creating that index."
 msgstr ""
 
-#: src/file-manager/fm-search-list-view.c:283
-#: src/file-manager/fm-search-list-view.c:306
-msgid "Indexed searches are not available"
+#: src/file-manager/fm-search-list-view.c:278
+msgid "Because Find cannot use an index, this search may take several minutes."
+msgstr ""
+
+#: src/file-manager/fm-search-list-view.c:281
+msgid "Content searches will be available when the index is complete."
+msgstr ""
+
+#: src/file-manager/fm-search-list-view.c:284
+#: src/file-manager/fm-search-list-view.c:311
+#, fuzzy
+msgid "Indexed Searches Are Not Available"
 msgstr "സൂചിത-ഉള്ളടക്ക അന്വേഷണം ലഭ്യമല്ല"
 
-#: src/file-manager/fm-search-list-view.c:291
+#: src/file-manager/fm-search-list-view.c:293
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now. You can create an index by running \"medusa-"
-"indexd\" as root on the command line.  Until a complete index is available, "
-"searches will take several minutes."
+"index is available right now."
 msgstr ""
 
-#: src/file-manager/fm-search-list-view.c:298
+#: src/file-manager/fm-search-list-view.c:296
 msgid ""
 "To do a content search, Find requires an index of the content on your "
-"system.  No index is available right now.  You can create an index by "
-"running \"medusa-indexd\" as root on the command line.  Until a complete "
-"index is available, content searches cannot be performed."
+"system.  No index is available right now."
 msgstr ""
 
-#: src/file-manager/fm-search-list-view.c:323
+#: src/file-manager/fm-search-list-view.c:300
+msgid ""
+"You can create an index by running \"medusa-indexd\" as root on the command "
+"line.  Until a complete index is available, searches will take several "
+"minutes."
+msgstr ""
+
+#: src/file-manager/fm-search-list-view.c:305
+msgid ""
+"You can create an index by running \"medusa-indexd\" as root on the command "
+"line.  Until a complete index is available, content searches cannot be "
+"performed."
+msgstr ""
+
+#: src/file-manager/fm-search-list-view.c:329
+#, fuzzy
+msgid "Fast searches are not enabled on your computer."
+msgstr "അതിവേഗ തെരച്ചില്‌ താങ്കളുടെ കംപ്യ‍ൂട്ടറില്‌ സജ്ജീകരിച്ചിട്ടല്ല"
+
+#: src/file-manager/fm-search-list-view.c:330
 msgid ""
 "To do a fast search, Find requires an index of the files on your system. "
 "Your system administrator has disabled fast search on your computer, so no "
 "index is available."
 msgstr ""
 
-#: src/file-manager/fm-search-list-view.c:327
-msgid "Fast searches are not enabled on your computer"
-msgstr "അതിവേഗ തെരച്ചില്‌ താങ്കളുടെ കംപ്യ‍ൂട്ടറില്‌ സജ്ജീകരിച്ചിട്ടല്ല"
+#: src/file-manager/fm-search-list-view.c:334
+#, fuzzy
+msgid "Fast Searches Not Enabled"
+msgstr "അതിവേഗത്തിലുള്ള തെരച്ചില്‌ ലഭ്യമല്ല"
 
-#: src/file-manager/fm-search-list-view.c:506
+#: src/file-manager/fm-search-list-view.c:513
 msgid "Where"
 msgstr "എവിടെ"
 
@@ -5137,7 +5250,7 @@ msgstr "എവിടെ"
 #. * and scroll as necessary to make that item visible (this comment
 #. * is to inform translators of this tricky concept).
 #.
-#: src/file-manager/fm-search-list-view.c:560
+#: src/file-manager/fm-search-list-view.c:567
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:6
 msgid "_Reveal in New Window"
 msgstr "പുതിയ ജാലകത്തില്‌ തുറന്നുകാണിക്കുക"
@@ -5148,7 +5261,7 @@ msgstr "പുതിയ ജാലകത്തില്‌ തുറന്നു�
 #. * items visible (this comment is to inform translators of this
 #. * tricky concept).
 #.
-#: src/file-manager/fm-search-list-view.c:568
+#: src/file-manager/fm-search-list-view.c:575
 #, c-format
 msgid "Reveal in %d _New Windows"
 msgstr "%d പുതിയ ജാലകങ്ങളില് തുറന്നുകാണിക്കുക"
@@ -5157,13 +5270,16 @@ msgstr "%d പുതിയ ജാലകങ്ങളില് തുറന്ന�
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-search-list-view.c:684
-msgid ""
-"Nautilus found more search results than it can display. Some matching items "
-"will not be displayed. "
+#: src/file-manager/fm-search-list-view.c:691
+#, fuzzy
+msgid "Nautilus found more search results than it can display."
+msgstr "നോട്ടിലസ് രചനാനിര്‍വ്വാഹകന് തെരച്ചില് ഫല നാമാവലി കാഴ്ച"
+
+#: src/file-manager/fm-search-list-view.c:692
+msgid "Some matching items will not be displayed. "
 msgstr ""
 
-#: src/file-manager/fm-search-list-view.c:686
+#: src/file-manager/fm-search-list-view.c:693
 msgid "Too Many Matches"
 msgstr "വളരയെധികം ചേ‍ര്ച്ചകള്‌"
 
@@ -5178,12 +5294,12 @@ msgid "Create L_auncher"
 msgstr "പുതിയ വലിപ്പ്"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:3
-#: src/file-manager/nautilus-directory-view-ui.xml.h:7
+#: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "Create a new launcher"
 msgstr "ഒരു പുതിയ വലിപ്പ്‌ നിര്മ്മിക്കുക"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
-#: src/file-manager/nautilus-directory-view-ui.xml.h:11
+#: src/file-manager/nautilus-directory-view-ui.xml.h:13
 msgid "Delete all items in the Trash"
 msgstr "ചവറ്റുകുട്ടയിലുള്ള എല്ലാ ഇനങ്ങളും നശിപ്പിക്കുക"
 
@@ -5203,7 +5319,7 @@ msgstr ""
 
 #. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
-#: src/file-manager/nautilus-directory-view-ui.xml.h:45
+#: src/file-manager/nautilus-directory-view-ui.xml.h:48
 #: src/nautilus-information-panel.c:349
 msgid "Use _Default Background"
 msgstr "സ്വതേയുള്ള പശ്ചാത്തലം ഉപയോഗിക്കുക"
@@ -5226,184 +5342,203 @@ msgstr "തിരഞ്ഞെടുത്ത ഇനം കാണാനായി 
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:5
 #, fuzzy
-msgid "Create _Folder"
+msgid "Create _Document"
 msgstr "ആസ്ഥാന-കൂട്"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:6
-msgid "Create a new empty folder inside this folder"
+#, fuzzy
+msgid "Create _Folder"
+msgstr "ആസ്ഥാന-കൂട്"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:7
+#, fuzzy
+msgid "Create a new empty file inside this folder"
 msgstr "ഈ കൂടിനുള്ളില് ഒരു പുതിയ കൂട് ഉണ്ടാക്കുക"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:8
+msgid "Create a new empty folder inside this folder"
+msgstr "ഈ കൂടിനുള്ളില് ഒരു പുതിയ കൂട് ഉണ്ടാക്കുക"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Create a symbolic link for each selected item"
 msgstr "ഓരോ തെരഞ്ഞടുത്ത ഇനത്തിനും പ്രതീകാത്മകബന്ധം ഉണ്ടാക്കുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:10
+#: src/file-manager/nautilus-directory-view-ui.xml.h:12
 msgid "D_uplicate"
 msgstr "തനിപ്പക‍ര്പ്പ്"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:12
+#: src/file-manager/nautilus-directory-view-ui.xml.h:14
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "തെരഞ്ഞെടുത്ത ഇനങ്ങള്‌ ചവറ്റുകുട്ടയിലേക്ക് മാറ്റാതെ നശിപ്പിക്കുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:13
+#: src/file-manager/nautilus-directory-view-ui.xml.h:15
 msgid "Duplicate each selected item"
 msgstr "തെരഞ്ഞെടുത്ത എല്ലാ ഇനങ്ങളേയും ഇരട്ടിപ്പിക്കുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:14
+#: src/file-manager/nautilus-directory-view-ui.xml.h:16
 msgid "Edit Launcher"
 msgstr "വലിപ്പ്‌ ചിട്ടപ്പെടുത്തുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:15
+#: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Edit the launcher information"
 msgstr "വലിപ്പ്-വിവരങ്ങള് ചിട്ടപ്പെടുത്തുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:16
+#: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Format the selected volume"
 msgstr "തെരഞ്ഞെടുത്ത വ്യാപ്തം "
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:18
+#: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Medi_a Properties"
 msgstr "മാധ്യമ ഗുണഗണങ്ങള്‌"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:20
+#: src/file-manager/nautilus-directory-view-ui.xml.h:22
 #, fuzzy
 msgid "Mount the selected volume"
 msgstr "തെരഞ്ഞെടുത്ത ലക്കം വിടുവിക്കുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:22
+#: src/file-manager/nautilus-directory-view-ui.xml.h:24
 msgid ""
 "Move or copy files previously selected by a Cut Files or Copy Files command"
 msgstr ""
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:23
+#: src/file-manager/nautilus-directory-view-ui.xml.h:25
 msgid ""
 "Move or copy files previously selected by a Cut Files or Copy Files command "
 "into the selected folder"
 msgstr ""
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:24
+#: src/file-manager/nautilus-directory-view-ui.xml.h:26
+msgid "No templates Installed"
+msgstr ""
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:27
 msgid "Open Wit_h"
 msgstr "തുറക്കുന്നതിനായി"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:25
+#: src/file-manager/nautilus-directory-view-ui.xml.h:28
 #, fuzzy
 msgid "Open each selected item in a navigation window"
 msgstr "ഓരോ തെരഞ്ഞെടുത്ത ഇനവും പുതിയ ജാലകത്തില്‌ തുറക്കുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:26
+#: src/file-manager/nautilus-directory-view-ui.xml.h:29
 #, fuzzy
 msgid "Open in Navigation Window"
 msgstr "പുതിയ ജാലകത്തില് തുറക്കുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:27
+#: src/file-manager/nautilus-directory-view-ui.xml.h:30
 msgid "Open the selected item in this window"
 msgstr "തെരഞ്ഞെടുത്ത ഇനം ഈ ജാലകത്തില്‌ തുറക്കുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:30
+#: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Prepare the selected files to be copied with a Paste Files command"
 msgstr ""
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:31
+#: src/file-manager/nautilus-directory-view-ui.xml.h:34
 msgid "Prepare the selected files to be moved with a Paste Files command"
 msgstr ""
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:32
+#: src/file-manager/nautilus-directory-view-ui.xml.h:35
 msgid "Prot_ect"
 msgstr "സുരക്ഷിത മാക്കുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:33
+#: src/file-manager/nautilus-directory-view-ui.xml.h:36
 msgid "Protect the selected volume"
 msgstr "തെരഞ്ഞെടുത്ത ലക്കം സുരക്ഷിത മാക്കുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:34
+#: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "Rename selected item"
 msgstr "തെരഞ്ഞെടുത്ത ഇനത്തിന്റെ പേര‍് മാറ്റുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:35
+#: src/file-manager/nautilus-directory-view-ui.xml.h:38
 msgid "Reset View to _Defaults"
 msgstr "സ്വതേ അവസ്ഥയിലേക്ക്"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:36
+#: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "ക്രമീകരണ രീതിയും വലിപ്പവും മുന്ഗണന അനുസരിരിച്ചാക്കുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:37
+#: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "Run or manage scripts from ~/Nautilus/scripts"
 msgstr "നിര്‍ദ്ദേശ സംഹിതകള് പ്രവ‍ര്ത്തിപ്പിക്കുക/കൈകാര്യം ചെയ്യ‍ുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:38
+#: src/file-manager/nautilus-directory-view-ui.xml.h:41
 msgid "Select _All Files"
 msgstr "എല്ലാം തെരഞ്ഞെടുക്കുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:39
+#: src/file-manager/nautilus-directory-view-ui.xml.h:42
 #, fuzzy
 msgid "Select _Pattern"
 msgstr "മാതൃകകള്"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:40
+#: src/file-manager/nautilus-directory-view-ui.xml.h:43
 msgid "Select all items in this window"
 msgstr "ഈ ജാലകത്തിലെ‌ ഇനങ്ങള് എല്ലാം തെരഞ്ഞടുക്കുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:41
+#: src/file-manager/nautilus-directory-view-ui.xml.h:44
 #, fuzzy
 msgid "Select items in this window matching a given pattern"
 msgstr "ഈ ജാലകത്തിലെ‌ ഇനങ്ങള് എല്ലാം തെരഞ്ഞടുക്കുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:42
+#: src/file-manager/nautilus-directory-view-ui.xml.h:45
 msgid "Show media properties for the selected volume"
 msgstr "തെരഞ്ഞെടുത്ത ലക്കത്തിന്റെ മാധ്യമഗുണഗണങ്ങള്‌ കാണിക്കുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:43
+#: src/file-manager/nautilus-directory-view-ui.xml.h:46
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr ""
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:44
+#: src/file-manager/nautilus-directory-view-ui.xml.h:47
 msgid "Unmount the selected volume"
 msgstr "തെരഞ്ഞെടുത്ത ലക്കം വിടുവിക്കുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:46
+#: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "Use the default background for this location"
 msgstr "ഈ സ്ഥാനത്തിന്റെ സ്വതേ പശ്ചാത്തലം ഉപയോഗിക്കുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:47
+#: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "View or modify the properties of each selected item"
 msgstr "തിരഞ്ഞെടുത്തവയുടെ ഗുണഗണങ്ങള് കാണുക/മാറ്റുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:51
+#: src/file-manager/nautilus-directory-view-ui.xml.h:53
+#, fuzzy
+msgid "_Empty File"
+msgstr "പക‍ര്പ്പ്"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:55
 msgid "_Format"
 msgstr "അടുക്കിയൊതുക്കുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:52
+#: src/file-manager/nautilus-directory-view-ui.xml.h:56
 #, fuzzy
 msgid "_Mount Volume"
 msgstr "വാല്യം അണ്‌മൌണ്ട് ചെയ്യുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:53
+#: src/file-manager/nautilus-directory-view-ui.xml.h:57
 msgid "_Open"
 msgstr "തുറക്കുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:54
+#: src/file-manager/nautilus-directory-view-ui.xml.h:58
 msgid "_Open Scripts Folder"
 msgstr "നിര്‍ദ്ദേശ-സംഹിത-കൂട് തുറക്കുക"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:55
+#: src/file-manager/nautilus-directory-view-ui.xml.h:59
 msgid "_Paste Files"
 msgstr "ഒട്ടിപ്പ്‌"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:56
+#: src/file-manager/nautilus-directory-view-ui.xml.h:60
 #, fuzzy
 msgid "_Paste Files Into Folder"
 msgstr "ഒട്ടിപ്പ്‌"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:57
+#: src/file-manager/nautilus-directory-view-ui.xml.h:61
 msgid "_Properties"
 msgstr "ഗുണഗണങ്ങള്‌"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:58
+#: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "_Rename..."
 msgstr "പേര‍് മാറ്റുക..."
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:59
+#: src/file-manager/nautilus-directory-view-ui.xml.h:63
 msgid "_Scripts"
 msgstr "നിര്‍ദ്ദേശ-സംഹിത‌"
 
@@ -5488,44 +5623,55 @@ msgstr "നേരിട്ട് ചെയ്യ‍ുക"
 msgid "Indexing is %d%% complete."
 msgstr ""
 
-#: src/file-manager/nautilus-indexing-info.c:164
+#: src/file-manager/nautilus-indexing-info.c:165
+#, c-format
+msgid "Your files were last indexed at %s."
+msgstr ""
+
+#: src/file-manager/nautilus-indexing-info.c:170
 msgid ""
 "Once a day your files and text content are indexed so your searches are "
 "fast. "
 msgstr ""
 
-#: src/file-manager/nautilus-indexing-info.c:166
-#: src/file-manager/nautilus-indexing-info.c:204
+#: src/file-manager/nautilus-indexing-info.c:172
+#: src/file-manager/nautilus-indexing-info.c:200
 msgid "Indexing Status"
 msgstr "സൂചികാ അവസ്ഥ"
 
-#: src/file-manager/nautilus-indexing-info.c:171
-#, c-format
-msgid "Your files were last indexed at %s"
+#: src/file-manager/nautilus-indexing-info.c:197
+msgid "Your files are currently being indexed."
 msgstr ""
 
-#: src/file-manager/nautilus-indexing-info.c:202
+#: src/file-manager/nautilus-indexing-info.c:198
 msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast.  Your files are currently being indexed."
+"Once a day your files and text content are indexed so your searches are fast."
 msgstr ""
 
-#: src/file-manager/nautilus-indexing-info.c:261
+#: src/file-manager/nautilus-indexing-info.c:257
+msgid "There is no index of your files right now."
+msgstr "നിങ്ങളുടെ രചനക്ക് ഇപ്പോള് സൂചികയില്ല."
+
+#: src/file-manager/nautilus-indexing-info.c:258
 msgid ""
 "When Fast Search is enabled, Find creates an index to speed up searches.  "
 "Fast searching is not enabled on your computer, so you do not have an index "
 "right now."
 msgstr ""
 
-#: src/file-manager/nautilus-indexing-info.c:265
-msgid "There is no index of your files right now."
-msgstr "നിങ്ങളുടെ രചനക്ക് ഇപ്പോള് സൂചികയില്ല."
+#: src/file-manager/nautilus-indexing-info.c:262
+msgid "No Index of Files"
+msgstr ""
 
-#: src/file-manager/nautilus-indexing-info.c:302
+#: src/file-manager/nautilus-indexing-info.c:299
 msgid "Sorry, but the medusa search service is not available."
 msgstr "മെഡുസ തിരച്ചില് സേവനം ലഭ്യമല്ല."
 
-#: src/file-manager/nautilus-indexing-info.c:317
+#: src/file-manager/nautilus-indexing-info.c:300
+msgid "Please verify medusa has been setup correctly."
+msgstr ""
+
+#: src/file-manager/nautilus-indexing-info.c:315
 msgid "%I:%M %p, %x"
 msgstr "%I:%M %p, %x"
 
@@ -5549,46 +5695,52 @@ msgstr "സൂചികാ അവസ്ഥ കാണിക്കുക"
 msgid "Show status of indexing used when searching"
 msgstr "തെരയുമ്പോള് സൂചികാ അവസ്ഥ ഉപയോഗിച്ചത് കാണിക്കുക"
 
-#: src/nautilus-application.c:255
+#: src/nautilus-application.c:256
 msgid "Couldn't Create Required Folder"
 msgstr "ആവശ്യമുള്ള കൂട് ഉണ്ടാക്കാന് കഴിയുന്നില്ല"
 
-#: src/nautilus-application.c:256
-#, c-format
+#: src/nautilus-application.c:257
+#, fuzzy, c-format
+msgid "Nautilus could not create the required folder \"%s\"."
+msgstr "ആവശ്യമുള്ള കൂടുകള് ഉണ്ടാക്കാന് കഴിയുന്നില്ല"
+
+#: src/nautilus-application.c:259
 msgid ""
-"Nautilus could not create the required folder \"%s\". Before running "
-"Nautilus, please create this folder, or set permissions such that Nautilus "
-"can create it."
+"Before running Nautilus, please create the following folder, or set "
+"permissions such that Nautilus can create it."
 msgstr ""
 
-#: src/nautilus-application.c:261
+#: src/nautilus-application.c:262
 msgid "Couldn't Create Required Folders"
 msgstr "ആവശ്യമുള്ള കൂടുകള് ഉണ്ടാക്കാന് കഴിയുന്നില്ല"
 
-#: src/nautilus-application.c:262
+#: src/nautilus-application.c:263
 #, c-format
+msgid "Nautilus could not create the following required folders: %s."
+msgstr ""
+
+#: src/nautilus-application.c:265
 msgid ""
-"Nautilus could not create the following required folders:\n"
-"\n"
-"%s\n"
-"\n"
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
 msgstr ""
 
-#: src/nautilus-application.c:334
+#: src/nautilus-application.c:333
 msgid "Link To Old Desktop"
+msgstr ""
+
+#: src/nautilus-application.c:349
+msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr ""
 
 #: src/nautilus-application.c:350
 msgid ""
-"The location of the desktop directory has changed in GNOME 2.4. A link "
-"called \"Link To Old Desktop\" has been created on the desktop. You can open "
-"this to move over the files you want, then delete the link."
+"The location of the desktop directory has changed in GNOME 2.4. You can open "
+"the link and move over the files you want, then delete the link."
 msgstr ""
 
-#: src/nautilus-application.c:353
-msgid "Migrated old desktop"
+#: src/nautilus-application.c:352
+msgid "Migrated Old Desktop"
 msgstr ""
 
 #. Can't register myself due to trouble locating the
@@ -5601,7 +5753,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:522
+#: src/nautilus-application.c:521
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5609,7 +5761,7 @@ msgid ""
 msgstr ""
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:528
+#: src/nautilus-application.c:527
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5638,30 +5790,41 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:558 src/nautilus-application.c:576
-#: src/nautilus-application.c:583
+#: src/nautilus-application.c:557 src/nautilus-application.c:575
+#: src/nautilus-application.c:582
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr ""
 
-#: src/nautilus-application.c:559
+#: src/nautilus-application.c:558
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
 msgstr ""
 
-#: src/nautilus-application.c:577
+#: src/nautilus-application.c:576
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
 
-#: src/nautilus-application.c:584
+#: src/nautilus-application.c:583
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
+
+#: src/nautilus-bookmarks-window.c:146
+#: src/nautilus-file-management-properties.c:237
+#: src/nautilus-property-browser.c:1455 src/nautilus-window-menus.c:643
+#, c-format
+msgid ""
+"There was an error displaying help: \n"
+"%s"
+msgstr ""
+"സഹായം ലഭിക്കുന്നതില് തകരാറ്: \n"
+"%s"
 
 #: src/nautilus-bookmarks-window.c:180
 msgid "No bookmarks defined"
@@ -5696,36 +5859,46 @@ msgstr "കുറച്ച് ബദലുകള്‌"
 msgid "Find Them!"
 msgstr "അവയെ കണ്ടുപിടിക്കു!"
 
-#: src/nautilus-connect-server-dialog.c:87
-msgid "You must enter a name for the server"
+#: src/nautilus-connect-server-dialog.c:86
+msgid "You must enter a name for the server."
 msgstr ""
 
 #: src/nautilus-connect-server-dialog.c:87
-#: src/nautilus-connect-server-dialog.c:102
+msgid "Please enter a name and try again."
+msgstr ""
+
+#: src/nautilus-connect-server-dialog.c:88
+#: src/nautilus-connect-server-dialog.c:104
 #, fuzzy
-msgid "Can't connect to server"
+msgid "Can't Connect to Server"
 msgstr "തന്നുള്ളിലേക്ക് നീക്കാനാവില്ല"
 
-#: src/nautilus-connect-server-dialog.c:100
-#: src/nautilus-window-manage-views.c:1246
-#, c-format
-msgid ""
-"\"%s\" is not a valid location. Please check the spelling and try again."
-msgstr ""
-"%s സാധുതയില്ലാത്ത ഒരു സ്ഥാനമാകുന്നു.  ദയവായി അക്ഷരവിന്യാസം ശരിയാണോ എന്ന് പരിശോധിച്ച് വീണ്ടും "
-"ശ്രമിക്കുക"
+#: src/nautilus-connect-server-dialog.c:101
+#: src/nautilus-window-manage-views.c:1250
+#, fuzzy, c-format
+msgid "\"%s\" is not a valid location."
+msgstr "ക്ഷമിക്കൂ, പക്ഷേ \"%s\" സാധുതതയുള്ള ഒരു രചനാനാമമല്ല."
 
-#: src/nautilus-connect-server-dialog.c:174
+#: src/nautilus-connect-server-dialog.c:103
+#: src/nautilus-property-browser.c:1105
+#: src/nautilus-window-manage-views.c:1245
+#: src/nautilus-window-manage-views.c:1253
+#, fuzzy
+msgid "Please check the spelling and try again."
+msgstr ""
+"%s കണ്ടെത്താന്‌ കഴിഞ്ഞില്ല.  ദയവായി അക്ഷരവിന്യാസം ശരിയാണോ എന്ന് പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക"
+
+#: src/nautilus-connect-server-dialog.c:176
 #, fuzzy
 msgid "Connect to Server"
 msgstr "ശൃംഖലാ സേവനം"
 
-#: src/nautilus-connect-server-dialog.c:203
+#: src/nautilus-connect-server-dialog.c:205
 #, fuzzy
 msgid "_Location:"
 msgstr "സ്ഥാനം:"
 
-#: src/nautilus-connect-server-dialog.c:228
+#: src/nautilus-connect-server-dialog.c:230
 #, fuzzy
 msgid "Connect"
 msgstr "സംബന്ധിതം"
@@ -5920,6 +6093,14 @@ msgid ""
 "You can manually erase this file to present the druid again.\n"
 msgstr ""
 
+#: src/nautilus-information-panel.c:506
+msgid "You can't assign more than one custom icon at a time."
+msgstr ""
+
+#: src/nautilus-information-panel.c:535
+msgid "You can only use images as custom icons."
+msgstr ""
+
 #: src/nautilus-information-panel.c:882
 #, c-format
 msgid "Open with %s"
@@ -5930,24 +6111,22 @@ msgstr "%s തുറക്കുന്നതിനായി"
 msgid "Open with..."
 msgstr "തുറക്കുന്നതിനായി..."
 
-#: src/nautilus-information-panel.c:994 src/nautilus-window.c:485
-#, c-format
-msgid ""
-"Unable to launch the cd burner application:\n"
-"%s"
+#: src/nautilus-information-panel.c:993 src/nautilus-window.c:485
+msgid "Unable to launch the cd burner application."
 msgstr ""
 
-#: src/nautilus-information-panel.c:996 src/nautilus-window.c:487
-msgid "Can't launch cd burner"
-msgstr ""
+#: src/nautilus-information-panel.c:994 src/nautilus-window.c:486
+#, fuzzy
+msgid "Can't Launch CD Burner"
+msgstr "പുതിയ വലിപ്പ്"
 
 #. FIXME: We don't use spaces to pad labels!
-#: src/nautilus-information-panel.c:1042
+#: src/nautilus-information-panel.c:1039
 msgid "Empty _Trash"
 msgstr "ചവറ് കളയുക"
 
 #. FIXME: We don't use spaces to pad labels!
-#: src/nautilus-information-panel.c:1058
+#: src/nautilus-information-panel.c:1055
 msgid "_Write contents to CD"
 msgstr ""
 
@@ -5955,114 +6134,126 @@ msgstr ""
 msgid "Go To:"
 msgstr "പോകൂ:"
 
-#: src/nautilus-location-bar.c:154
-#, c-format
-msgid "Do you want to view these %d locations in separate windows?"
-msgstr ""
+#: src/nautilus-location-bar.c:155
+#, fuzzy, c-format
+msgid "Do you want to view %d locations?"
+msgstr "സന്ദ‍ര്ശിച്ചവയില്‌ അടുത്ത സ്ഥാനത്തേക്കു പോകുക"
 
-#: src/nautilus-location-bar.c:163
+#: src/nautilus-location-bar.c:167
 msgid "View in Multiple Windows?"
 msgstr "വിവിധ ജാലകങ്ങളില് കാണിക്കുക?"
 
-#: src/nautilus-location-dialog.c:138
+#: src/nautilus-location-dialog.c:137
 #, fuzzy
 msgid "Open Location"
 msgstr "സ്ഥാനം തുറക്കാന്‌ കഴിയില്ല"
 
-#: src/nautilus-main.c:187
+#: src/nautilus-main.c:188
 msgid "Perform a quick set of self-check tests."
 msgstr ""
 
-#: src/nautilus-main.c:190
+#: src/nautilus-main.c:191
 msgid "Create the initial window with the given geometry."
 msgstr "തന്നിരിക്കുന്ന ജ്യാമിതിയനുസരിച്ച് അദ്യ ജാലകം ഉണ്ടാക്കുക"
 
-#: src/nautilus-main.c:190
+#: src/nautilus-main.c:191
 msgid "GEOMETRY"
 msgstr "ജ്യാമിതി"
 
-#: src/nautilus-main.c:192
+#: src/nautilus-main.c:193
 msgid "Only create windows for explicitly specified URIs."
 msgstr ""
 
-#: src/nautilus-main.c:194
+#: src/nautilus-main.c:195
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
 msgstr ""
 
-#: src/nautilus-main.c:196
+#: src/nautilus-main.c:197
 msgid "open a browser window."
 msgstr ""
 
-#: src/nautilus-main.c:198
+#: src/nautilus-main.c:199
 msgid "Quit Nautilus."
 msgstr "നോട്ടിലസ് വിടുക."
 
-#: src/nautilus-main.c:200
+#: src/nautilus-main.c:201
 msgid "Restart Nautilus."
 msgstr "നോട്ടിലസ് പുനരാരംഭിക്കുക."
 
-#: src/nautilus-main.c:233
+#: src/nautilus-main.c:234
 msgid "File Manager"
 msgstr ""
 
 #. Set initial window title
-#: src/nautilus-main.c:239 src/nautilus-spatial-window.c:263
-#: src/nautilus-window-menus.c:589 src/nautilus-window.c:173
+#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:272
+#: src/nautilus-window-menus.c:603 src/nautilus-window.c:174
 msgid "Nautilus"
 msgstr "നോട്ടിലസ്"
 
-#: src/nautilus-main.c:258
+#: src/nautilus-main.c:259
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "നോട്ടിലസ്:-- URL ഉപയോഗിച്ച് വിടാന്‌ കഴിയില്ല.\n"
 
-#: src/nautilus-main.c:262
+#: src/nautilus-main.c:263
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "നോട്ടിലസ്:-- URL ഉപയോഗിച്ച് വിടാന്‌ കഴിയില്ല.\n"
 
-#: src/nautilus-main.c:266
+#: src/nautilus-main.c:267
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "നോട്ടിലസ്:-- URL ഉപയോഗിച്ച് വിടാന്‌ കഴിയില്ല.\n"
 
-#: src/nautilus-main.c:270
+#: src/nautilus-main.c:271
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "നോട്ടിലസ്:-- URL ഉപയോഗിച്ച് പുനരാരംഭിക്കാന്‌ കഴിയില്ല.\n"
 
-#: src/nautilus-main.c:274
+#: src/nautilus-main.c:275
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "നോട്ടിലസ്:-- ഒന്നില്‌ക്കൂടുതല്‌ URL ലേക്ക് ജ്യാമിതി ഉപയോഗിക്കാന്‌ കഴിയില്ല.\n"
 
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-navigation-window-menus.c:186
-msgid ""
-"Are you sure you want to forget history? If you do, you will be doomed to "
-"repeat it."
+#: src/nautilus-navigation-window-menus.c:187
+#, fuzzy
+msgid "Are you sure you want to forget history?"
+msgstr "താങ്കള്‌ക്ക് എന്നെന്നേക്കുമായ് നീക്കം ചെയ്യണം എന്ന് ഉറപ്പുണ്ടോ \"%s\"?"
+
+#: src/nautilus-navigation-window-menus.c:188
+#, fuzzy
+msgid "If you do, you will be doomed to repeat it."
 msgstr ""
 " താങ്കള്‌ക്ക്  ചരിത്രം മറക്കേണ്ടതുണ്ടോ, അങ്ങനെയെങ്കില്‌ താങ്കള്‌ക്ക് വീണ്ടും നിര്ഭാഗ്യമായിരിക്കും"
 
-#: src/nautilus-navigation-window-menus.c:189
+#: src/nautilus-navigation-window-menus.c:190
 msgid "Are you sure you want to clear the list of locations you have visited?"
 msgstr "താങ്കള്‌ സന്ദ‍ര്ശിച്ച സ്ഥാന-പ്പട്ടിക കളയേണ്ടതുണ്ടോ?"
 
-#: src/nautilus-navigation-window-menus.c:194
+#: src/nautilus-navigation-window-menus.c:192
+msgid "If you clear the list of locations, they will be permanently deleted."
+msgstr ""
+
+#: src/nautilus-navigation-window-menus.c:198
 msgid "Clear History"
 msgstr "ചരിത്രം മായ്‍ക്കുക"
 
-#: src/nautilus-navigation-window-menus.c:424
-#, c-format
+#: src/nautilus-navigation-window-menus.c:427
 msgid ""
-"The location \"%s\" does not exist. Do you want to remove any bookmarks with "
-"this location from your list?"
+"Do you want to remove any bookmarks with the non-existing location from your "
+"list?"
 msgstr ""
 
-#: src/nautilus-navigation-window-menus.c:428
+#: src/nautilus-navigation-window-menus.c:429
+#, fuzzy, c-format
+msgid "The location \"%s\" does not exist."
+msgstr "%s എന്ന സ്ഥാനം ഇപ്പോള് മുതല് നിലനില്ക്കുന്നില്ല."
+
+#: src/nautilus-navigation-window-menus.c:432
 msgid "Bookmark for Nonexistent Location"
 msgstr "നിലവിലില്ലാത്ത് സ്ഥാനത്തിനുവേണ്ടിയുള്ള സ്ഥാനസൂചി"
 
-#: src/nautilus-navigation-window-menus.c:429
+#: src/nautilus-navigation-window-menus.c:433
 msgid "Remove"
 msgstr "നീക്കം ചെയ്യ‍ുക"
 
@@ -6117,107 +6308,118 @@ msgid "Forward"
 msgstr "മുന്നോട്ട്"
 
 #: src/nautilus-navigation-window-ui.xml.h:14
+#: src/nautilus-spatial-window-ui.xml.h:6
+#, fuzzy
+msgid "Go to templates folder"
+msgstr "ചവറ്റുകുട്ടയിലേക്ക് പോകുക"
+
+#: src/nautilus-navigation-window-ui.xml.h:15
 msgid "Go to the next visited location"
 msgstr "സന്ദ‍ര്ശിച്ചവയില്‌ അടുത്ത സ്ഥാനത്തേക്കു പോകുക"
 
-#: src/nautilus-navigation-window-ui.xml.h:15
+#: src/nautilus-navigation-window-ui.xml.h:16
 msgid "Go to the previous visited location"
 msgstr "മുന്പ് സന്ദ‍ര്ശിച്ച സ്ഥാനത്തേക്ക് പോകുക"
 
-#: src/nautilus-navigation-window-ui.xml.h:16
-#: src/nautilus-spatial-window-ui.xml.h:7
+#: src/nautilus-navigation-window-ui.xml.h:17
+#: src/nautilus-spatial-window-ui.xml.h:8
 msgid "Go to the trash folder"
 msgstr "ചവറ്റുകുട്ടയിലേക്ക് പോകുക"
 
-#: src/nautilus-navigation-window-ui.xml.h:17
+#: src/nautilus-navigation-window-ui.xml.h:18
 msgid "Home"
 msgstr "ആസ്ഥാനം"
 
-#: src/nautilus-navigation-window-ui.xml.h:18
+#: src/nautilus-navigation-window-ui.xml.h:19
 msgid "Location _Bar"
 msgstr "സ്ഥാനപ്പട്ട"
 
-#: src/nautilus-navigation-window-ui.xml.h:19
+#: src/nautilus-navigation-window-ui.xml.h:20
 msgid "Reload"
 msgstr "പുതുക്കുക"
 
-#: src/nautilus-navigation-window-ui.xml.h:20 src/nautilus-shell-ui.xml.h:18
+#: src/nautilus-navigation-window-ui.xml.h:21 src/nautilus-shell-ui.xml.h:18
 msgid "Search this computer for files"
 msgstr "രചനയ്‍ക്ക് വേണ്ടി ഈ കംപ്യ‍ൂട്ടറില്‌ തിരയുക"
 
-#: src/nautilus-navigation-window-ui.xml.h:21
+#: src/nautilus-navigation-window-ui.xml.h:22
 msgid "St_atusbar"
 msgstr "അവസ്ഥാപ്പട്ട"
 
-#: src/nautilus-navigation-window-ui.xml.h:22
+#: src/nautilus-navigation-window-ui.xml.h:23
 msgid "Stop"
 msgstr "നിര്‌ത്തുക"
 
-#: src/nautilus-navigation-window-ui.xml.h:23
+#: src/nautilus-navigation-window-ui.xml.h:24
 msgid "Up"
 msgstr "മുകളിേലക്ക്"
 
-#: src/nautilus-navigation-window-ui.xml.h:24
+#: src/nautilus-navigation-window-ui.xml.h:25
 msgid "Write to CD"
 msgstr ""
 
-#: src/nautilus-navigation-window-ui.xml.h:25
+#: src/nautilus-navigation-window-ui.xml.h:26
 msgid "_Add Bookmark"
 msgstr "അടയാളപ്പെടുത്തുക"
 
-#: src/nautilus-navigation-window-ui.xml.h:26
+#: src/nautilus-navigation-window-ui.xml.h:27
 msgid "_Back"
 msgstr "പുറകില്‌"
 
-#: src/nautilus-navigation-window-ui.xml.h:27
+#: src/nautilus-navigation-window-ui.xml.h:28
 msgid "_Bookmarks"
 msgstr "അടയാളം"
 
-#: src/nautilus-navigation-window-ui.xml.h:28
+#: src/nautilus-navigation-window-ui.xml.h:29
 msgid "_Clear History"
 msgstr "ചരിത്രം മായ്‍ക്കുക"
 
-#: src/nautilus-navigation-window-ui.xml.h:29
-#: src/nautilus-spatial-window-ui.xml.h:11
+#: src/nautilus-navigation-window-ui.xml.h:30
+#: src/nautilus-spatial-window-ui.xml.h:12
 #, fuzzy
 msgid "_Computer"
 msgstr "ഇവിടെ പക‍ര്‌ത്തുക"
 
-#: src/nautilus-navigation-window-ui.xml.h:30
+#: src/nautilus-navigation-window-ui.xml.h:31
 msgid "_Edit Bookmarks"
 msgstr "അടയാളം ചിട്ടപ്പെടുത്തുക"
 
-#: src/nautilus-navigation-window-ui.xml.h:31
+#: src/nautilus-navigation-window-ui.xml.h:32
 msgid "_Forward"
 msgstr "മുന്നോട്ട്"
 
-#: src/nautilus-navigation-window-ui.xml.h:32
+#: src/nautilus-navigation-window-ui.xml.h:33
 msgid "_Go"
 msgstr "പോകുക"
 
-#: src/nautilus-navigation-window-ui.xml.h:33
-#: src/nautilus-spatial-window-ui.xml.h:12
+#: src/nautilus-navigation-window-ui.xml.h:34
+#: src/nautilus-spatial-window-ui.xml.h:13
 msgid "_Home"
 msgstr "ആസ്ഥാനം"
 
-#: src/nautilus-navigation-window-ui.xml.h:34
+#: src/nautilus-navigation-window-ui.xml.h:35
 msgid "_Location..."
 msgstr "സ്ഥാനം..."
 
-#: src/nautilus-navigation-window-ui.xml.h:35
+#: src/nautilus-navigation-window-ui.xml.h:36
 msgid "_Side Pane"
 msgstr "പാര്ശ്വ-തലം"
 
-#: src/nautilus-navigation-window-ui.xml.h:36
-#: src/nautilus-spatial-window-ui.xml.h:14
+#: src/nautilus-navigation-window-ui.xml.h:37
+#: src/nautilus-spatial-window-ui.xml.h:15
+msgid "_Templates"
+msgstr ""
+
+#: src/nautilus-navigation-window-ui.xml.h:38
+#: src/nautilus-spatial-window-ui.xml.h:16
 msgid "_Trash"
 msgstr "ചവറ്റുകുട്ട"
 
-#: src/nautilus-navigation-window-ui.xml.h:37
+#: src/nautilus-navigation-window-ui.xml.h:39
 msgid "_Up"
 msgstr "മുകളില്‌"
 
-#: src/nautilus-navigation-window-ui.xml.h:38 src/nautilus-shell-ui.xml.h:49
+#: src/nautilus-navigation-window-ui.xml.h:40 src/nautilus-shell-ui.xml.h:49
 msgid "_View"
 msgstr "കാഴ്ച"
 
@@ -6235,17 +6437,22 @@ msgstr "മറ്റൊരു രീതിയില്‌ കാണിക്ക�
 msgid "File Browser: %s"
 msgstr "രചന ഉടമ:"
 
-#: src/nautilus-navigation-window.c:1104
-msgid ""
-"One of the side panels encountered an error and can't continue. "
-"Unfortunately I couldn't tell which one."
+#: src/nautilus-navigation-window.c:1105
+#, fuzzy
+msgid "One of the side panels encountered an error and can't continue."
+msgstr " %s ദൃശ്യം പ്രാരംഭത്തില്‌  തെറ്റുന്നു"
+
+#: src/nautilus-navigation-window.c:1106
+msgid "Unfortunately I couldn't tell which one."
 msgstr ""
 
-#: src/nautilus-navigation-window.c:1108
-#, c-format
-msgid ""
-"The %s side panel encountered an error and can't continue. If this keeps "
-"happening, you might want to turn this panel off."
+#: src/nautilus-navigation-window.c:1109
+#, fuzzy, c-format
+msgid "The %s side panel encountered an error and can't continue."
+msgstr " %s ദൃശ്യം പ്രാരംഭത്തില്‌  തെറ്റുന്നു"
+
+#: src/nautilus-navigation-window.c:1110
+msgid "If this keeps happening, you might want to turn this panel off."
 msgstr ""
 
 #: src/nautilus-navigation-window.c:1113
@@ -6291,147 +6498,180 @@ msgstr "പുതിയവ ചേ‍ര്ക്കുക..."
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "ക്ഷമിക്കൂ, ഘടന %s  മായ്‍ക്കാന്‌ കഴിയില്ല"
 
-#: src/nautilus-property-browser.c:914 src/nautilus-property-browser.c:943
-msgid "Couldn't delete pattern"
+#: src/nautilus-property-browser.c:914
+msgid "Check that you have permission to delete the pattern."
+msgstr ""
+
+#: src/nautilus-property-browser.c:915
+#, fuzzy
+msgid "Couldn't Delete Pattern"
 msgstr "ഘടന മായ്‍ക്കാന്‌ കഴിയില്ല"
 
-#: src/nautilus-property-browser.c:942
+#: src/nautilus-property-browser.c:943
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "ക്ഷമിക്കൂ, %s ചിഹ്നം മായ്‍ക്കാന്‌ കഴിയില്ല"
 
-#: src/nautilus-property-browser.c:981
+#: src/nautilus-property-browser.c:944
+msgid "Check that you have permission to delete the emblem."
+msgstr ""
+
+#: src/nautilus-property-browser.c:945
+#, fuzzy
+msgid "Couldn't Delete Emblem"
+msgstr "ചിഹ്നം നീക്കം ചെയ്യാന് കഴിയുന്നില്ല."
+
+#: src/nautilus-property-browser.c:983
 msgid "Create a New Emblem:"
 msgstr "ഒരു പുതിയ ചിഹ്നം നിര്മ്മിക്കുക"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:994
+#: src/nautilus-property-browser.c:996
 msgid "_Keyword:"
 msgstr "മൂലപദം"
 
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:1012
+#: src/nautilus-property-browser.c:1014
 msgid "_Image:"
 msgstr "ഛായാചിത്രം"
 
-#: src/nautilus-property-browser.c:1016
+#: src/nautilus-property-browser.c:1018
 msgid "Select an image file for the new emblem:"
 msgstr "പുതിയ ചിഹ്നത്തിന‍് വേണ്ടി ഒരു ചിത്രം തെരഞ്ഞെടുക്കുക"
 
-#: src/nautilus-property-browser.c:1040
+#: src/nautilus-property-browser.c:1042
 msgid "Create a New Color:"
 msgstr "ഒരു പുതിയ നിറം സൃഷ്ടിക്കുക:"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:1054
+#: src/nautilus-property-browser.c:1056
 msgid "Color _name:"
 msgstr "വറ്ണ നാമം:"
 
-#: src/nautilus-property-browser.c:1070
+#: src/nautilus-property-browser.c:1072
 msgid "Color _value:"
 msgstr "നിറ മൂല്യം:"
 
-#: src/nautilus-property-browser.c:1101
+#: src/nautilus-property-browser.c:1104
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "ക്ഷമിക്കൂ, പക്ഷേ \"%s\" സാധുതതയുള്ള ഒരു രചനാനാമമല്ല."
 
-#: src/nautilus-property-browser.c:1103
+#: src/nautilus-property-browser.c:1107
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "ക്ഷമിക്കൂ, പക്ഷേ താങ്കള്‌ നല്‌കിയത് സാധുതതയുള്ള ഒരു രചനാനാമമല്ല."
 
-#: src/nautilus-property-browser.c:1105 src/nautilus-property-browser.c:1148
-msgid "Couldn't install pattern"
+#: src/nautilus-property-browser.c:1108
+msgid "Please try again."
+msgstr ""
+
+#: src/nautilus-property-browser.c:1110 src/nautilus-property-browser.c:1155
+#, fuzzy
+msgid "Couldn't Install Pattern"
 msgstr "മാതൃക സംസ്ഥാപിക്കാന്‌ കഴിഞ്ഞില്ല"
 
-#: src/nautilus-property-browser.c:1116
+#: src/nautilus-property-browser.c:1121
 msgid "Sorry, but you can't replace the reset image."
 msgstr "ക്ഷമിക്കൂ, പുനഃക്രമീകരിച്ച ചിത്രം മാറ്റാന്‌ താങ്കള്ക്ക് കഴിയില്ല."
 
-#: src/nautilus-property-browser.c:1116 src/nautilus-property-browser.c:1319
-#: src/nautilus-property-browser.c:1335
+#: src/nautilus-property-browser.c:1122
+msgid "Reset is a special image that cannot be deleted."
+msgstr ""
+
+#: src/nautilus-property-browser.c:1123 src/nautilus-property-browser.c:1327
+#: src/nautilus-property-browser.c:1343
 msgid "Not an Image"
 msgstr "ഒരു ചിത്രമല്ല"
 
-#: src/nautilus-property-browser.c:1147
+#: src/nautilus-property-browser.c:1154
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "ക്ഷമിക്കൂ, മാതൃക %s സംസ്ഥാപിക്കാന്‌ കഴിഞ്ഞില്ല."
 
-#: src/nautilus-property-browser.c:1167
+#: src/nautilus-property-browser.c:1174
 msgid "Select an image file to add as a pattern"
 msgstr "മാതൃകയായ് ചേ‍ര്ക്കാന് ഒരു ചിത്രം തിരഞ്ഞെടുക്കുക"
 
-#: src/nautilus-property-browser.c:1228
+#: src/nautilus-property-browser.c:1235
+msgid "The color cannot be installed."
+msgstr ""
+
+#: src/nautilus-property-browser.c:1236
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr ""
 
-#: src/nautilus-property-browser.c:1229
-msgid "Couldn't install color"
+#: src/nautilus-property-browser.c:1237
+#, fuzzy
+msgid "Couldn't Install Color"
 msgstr "നിറം സംസ്ഥാപിക്കാന്‌ കഴിയുന്നില്ല"
 
-#: src/nautilus-property-browser.c:1281
+#: src/nautilus-property-browser.c:1289
 msgid "Select a color to add"
 msgstr "കൂട്ടിച്ചേ‍ര്‌ക്കാന്‌ ഒരു നിറം തെരഞ്ഞെടുക്കുക"
 
-#: src/nautilus-property-browser.c:1318 src/nautilus-property-browser.c:1334
-#, c-format
-msgid "Sorry, but '%s' is not a usable image file!"
+#: src/nautilus-property-browser.c:1326 src/nautilus-property-browser.c:1342
+#, fuzzy, c-format
+msgid "Sorry, but \"%s\" is not a usable image file."
 msgstr "ക്ഷമിക്കൂ, പക്ഷേ %s ഒരു ഉപയോഗപ്രദമായ ചിത്രമല്ല!"
 
-#: src/nautilus-property-browser.c:2041
+#: src/nautilus-property-browser.c:1327 src/nautilus-property-browser.c:1343
+#, fuzzy
+msgid "The file is not an image."
+msgstr "രചന %s സാധുതയുള്ള ഛായാചിത്രമായി പ്രത്യക്ഷപ്പെടുന്നില്ല"
+
+#: src/nautilus-property-browser.c:2050
 msgid "Select a Category:"
 msgstr ""
 
-#: src/nautilus-property-browser.c:2050
+#: src/nautilus-property-browser.c:2059
 msgid "C_ancel Remove"
 msgstr "റദ്ദാക്കല്‌ മാറ്റുക"
 
-#: src/nautilus-property-browser.c:2056
+#: src/nautilus-property-browser.c:2065
 msgid "_Add a New Pattern..."
 msgstr "ഒരു പുതിയ മാതൃക കൂട്ടിച്ച്രേ‌ക്കുക..."
 
-#: src/nautilus-property-browser.c:2059
+#: src/nautilus-property-browser.c:2068
 msgid "_Add a New Color..."
 msgstr "ഒരു പുതിയ നിറം കൂട്ടിച്ച്രേ‌ക്കുക..."
 
-#: src/nautilus-property-browser.c:2062
+#: src/nautilus-property-browser.c:2071
 msgid "_Add a New Emblem..."
 msgstr "ഒരു പുതിയ ചിഹ്നം കൂട്ടിച്ച്രേ‌ക്കുക..."
 
-#: src/nautilus-property-browser.c:2085
+#: src/nautilus-property-browser.c:2094
 msgid "Click on a pattern to remove it"
 msgstr "മാറ്റേണ്ട മാതൃകയില്‌‌ ക്ളിക്ക് ചെയ്യ‍ുക"
 
-#: src/nautilus-property-browser.c:2088
+#: src/nautilus-property-browser.c:2097
 msgid "Click on a color to remove it"
 msgstr "മാറ്റേണ്ട നിറത്തില്‌ ക്ളിക്ക് ചെയ്യ‍ുക"
 
-#: src/nautilus-property-browser.c:2091
+#: src/nautilus-property-browser.c:2100
 msgid "Click on an emblem to remove it"
 msgstr "നീക്കം ചെയ്യേണ്ട ചിഹ്നത്തില്‌ ക്ളിക്ക് ചെയ്യ‍ുക"
 
-#: src/nautilus-property-browser.c:2100
+#: src/nautilus-property-browser.c:2109
 msgid "Patterns:"
 msgstr "മാതൃകകള്‌:"
 
-#: src/nautilus-property-browser.c:2103
+#: src/nautilus-property-browser.c:2112
 msgid "Colors:"
 msgstr "നിറങ്ങള്:‌"
 
-#: src/nautilus-property-browser.c:2106
+#: src/nautilus-property-browser.c:2115
 msgid "Emblems:"
 msgstr "ചിഹ്നങ്ങള്:"
 
-#: src/nautilus-property-browser.c:2126
+#: src/nautilus-property-browser.c:2135
 msgid "_Remove a Pattern..."
 msgstr "മാതൃക മാറ്റുക..."
 
-#: src/nautilus-property-browser.c:2129
+#: src/nautilus-property-browser.c:2138
 msgid "_Remove a Color..."
 msgstr "നിറം മായ്‍ക്കുക..."
 
-#: src/nautilus-property-browser.c:2132
+#: src/nautilus-property-browser.c:2141
 msgid "_Remove an Emblem..."
 msgstr "ചിഹ്നം മായ്‍ക്കുക"
 
@@ -6826,26 +7066,26 @@ msgstr "പാര്ശ്വ-തലം അടയ്‍ക്കുക"
 msgid "Go to Computer"
 msgstr ""
 
-#: src/nautilus-spatial-window-ui.xml.h:6
+#: src/nautilus-spatial-window-ui.xml.h:7
 #, fuzzy
 msgid "Go to the CD Creator"
 msgstr "ചവറ്റുകുട്ടയിലേക്ക് പോകുക"
 
-#: src/nautilus-spatial-window-ui.xml.h:8
+#: src/nautilus-spatial-window-ui.xml.h:9
 #, fuzzy
 msgid "Open _Location..."
 msgstr "സ്ഥാനം..."
 
-#: src/nautilus-spatial-window-ui.xml.h:9
+#: src/nautilus-spatial-window-ui.xml.h:10
 msgid "Open _Pa_rent"
 msgstr ""
 
-#: src/nautilus-spatial-window-ui.xml.h:10
+#: src/nautilus-spatial-window-ui.xml.h:11
 #, fuzzy
 msgid "Open the parent folder"
 msgstr "[ആ ഇനങ്ങള്]കൂടുകളാണ‌്"
 
-#: src/nautilus-spatial-window-ui.xml.h:13
+#: src/nautilus-spatial-window-ui.xml.h:14
 #, fuzzy
 msgid "_Places"
 msgstr "മാതൃകകള്"
@@ -6875,10 +7115,12 @@ msgid "View Failed"
 msgstr "കാഴ്ച പരാജയപ്പെട്ടു"
 
 #: src/nautilus-window-manage-views.c:828
-#, c-format
-msgid ""
-"The %s view encountered an error and can't continue. You can choose another "
-"view or go to a different location."
+#, fuzzy, c-format
+msgid "The %s view encountered an error and can't continue."
+msgstr " %s ദൃശ്യം പ്രാരംഭത്തില്‌  തെറ്റുന്നു"
+
+#: src/nautilus-window-manage-views.c:829
+msgid "You can choose another view or go to a different location."
 msgstr ""
 
 #: src/nautilus-window-manage-views.c:839
@@ -6886,95 +7128,123 @@ msgstr ""
 msgid "The %s view encountered an error while starting up."
 msgstr " %s ദൃശ്യം പ്രാരംഭത്തില്‌  തെറ്റുന്നു"
 
-#: src/nautilus-window-manage-views.c:986
+#: src/nautilus-window-manage-views.c:840
+#, fuzzy
+msgid "The location cannot be displayed with this viewer."
+msgstr "നോട്ടിലസ് പ്രയോഗം ഈ ജാലകവുമായി ബന്ധപ്പെട്ടിരിക്കുന്നു"
+
+#: src/nautilus-window-manage-views.c:987
 msgid "Content View"
 msgstr "ഉള്ളടക്ക കാഴ്ച"
 
-#: src/nautilus-window-manage-views.c:987
+#: src/nautilus-window-manage-views.c:988
 msgid "View of the current file or folder"
 msgstr "ഇപ്പോഴുള്ള രചനയുടെ അല്ലെങ്കില്‌ കൂടിന്റെ കാഴ്ച"
 
-#: src/nautilus-window-manage-views.c:1240
-#, c-format
-msgid "Couldn't find \"%s\". Please check the spelling and try again."
-msgstr ""
-"%s കണ്ടെത്താന്‌ കഴിഞ്ഞില്ല.  ദയവായി അക്ഷരവിന്യാസം ശരിയാണോ എന്ന് പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക"
+#: src/nautilus-window-manage-views.c:1242
+#, fuzzy, c-format
+msgid "Couldn't find \"%s\"."
+msgstr "ചിഹ്നങ്ങള് കൂട്ടിച്ചേര്ക്കാന് കഴിയുന്നില്ല"
 
-#: src/nautilus-window-manage-views.c:1260
-#, c-format
-msgid ""
-"Couldn't display \"%s\", because Nautilus cannot determine what type of file "
-"it is."
+#. Shouldn't have gotten this error unless there's a : separator.
+#: src/nautilus-window-manage-views.c:1266
+#: src/nautilus-window-manage-views.c:1276
+#: src/nautilus-window-manage-views.c:1290
+#: src/nautilus-window-manage-views.c:1298
+#: src/nautilus-window-manage-views.c:1304
+#: src/nautilus-window-manage-views.c:1324
+#, fuzzy, c-format
+msgid "Couldn't display \"%s\"."
+msgstr "നോട്ടിലസില് %s പ്രദ‌ര്ശിപ്പിക്കാന്‌ കഴിയില്ല"
+
+#: src/nautilus-window-manage-views.c:1269
+#, fuzzy
+msgid "Nautilus cannot determine what type of file it is."
 msgstr ""
 "%s പ്രദ‍ര്ശിപ്പിക്കാന്‌ കഴിയുന്നില്ല.  കാരണം ഇത് ഏത് തരത്തിലുള്ള രചനയാണെന്ന് നിര്ണ്ണയിക്കാന്‌ "
 "നോട്ടിലസിന് കഴിഞ്ഞില്ല"
 
-#: src/nautilus-window-manage-views.c:1268
-#, c-format
-msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
+#: src/nautilus-window-manage-views.c:1279
+#, fuzzy
+msgid "Nautilus has no installed viewer capable of displaying the file."
 msgstr "നോട്ടിലസിന‌് \"%s\" പ്രദ‍ര്ശിപ്പിക്കാവുന്ന സ്ഥാപിത ദ‍ര്ശിനിയില്ല."
 
-#. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1280
-#, c-format
-msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
+#: src/nautilus-window-manage-views.c:1292
+#, fuzzy, c-format
+msgid "Nautilus cannot handle %s: locations."
 msgstr ""
 " നോട്ടിലസിന‌്   %s സ്ഥാനങ്ങള്‌ കൈകാര്യം ചെയ്യാന്‌ കഴിയാത്തതുകൊണ്ട് \"%s\", പ്രദ‍ര്ശിപ്പിക്കാന്‌ "
 "കഴിഞ്ഞില്ല"
 
-#: src/nautilus-window-manage-views.c:1286
-#, c-format
-msgid "Couldn't display \"%s\", because the attempt to log in failed."
+#: src/nautilus-window-manage-views.c:1300
+#, fuzzy
+msgid "The attempt to log in failed."
 msgstr "ഉള്‌ച്ചേര്ക്കുന്നതില്‌ പരാജയം. \"%s\" പ്രദ‍ര്ശിപ്പിക്കാന്‌ കഴിയില്ല"
 
-#: src/nautilus-window-manage-views.c:1291
-#, c-format
-msgid "Couldn't display \"%s\", because access was denied."
+#: src/nautilus-window-manage-views.c:1306
+msgid "Access was denied."
+msgstr ""
+
+#: src/nautilus-window-manage-views.c:1316
+#, fuzzy, c-format
+msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr "\"%s\" രചന തുറക്കാന്‌ കഴിയുന്നില്ല.കാരണം ഇതിന്റെ പ്രവേശനം നിഷേധിച്ചിരക്കുന്നു"
 
-#: src/nautilus-window-manage-views.c:1302
-#, c-format
+#: src/nautilus-window-manage-views.c:1319
+#, fuzzy
 msgid ""
-"Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
-"the spelling is correct and that your proxy settings are correct."
+"Check that the spelling is correct and that your proxy settings are correct."
 msgstr ""
 "\"%s\" രചന തുറക്കാനാവുന്നില്ല.  കാരണം അതിന്റെ തലവനെ \"%s\"കണ്ടെത്താനായില്ല.ദയവായി "
 "താങ്കള്‌ കൊടുത്ത സ്ഥാനം ശരിയാണൊ എന്ന് പ്രോക്സി സജ്ജീകരണത്തില്‌ പരിശോധിച്ച്ശരിയാക്കിയതിനുശേഷം "
 "വീണ്ടും ശ്രമിക്കുക."
 
-#: src/nautilus-window-manage-views.c:1310
-#, fuzzy, c-format
-msgid "Couldn't display \"%s\". Check that your proxy settings are correct."
+#: src/nautilus-window-manage-views.c:1326
+#, fuzzy
+msgid "Check that your proxy settings are correct."
 msgstr ""
 "%s രചന തുറക്കാനാവുന്നില്ല.  കാരണം അതിന്റെ തലവനാമം ശൂന്യമാണ്.   ദയവായി താങ്കളുടെ പ്രോക്സീ "
 "സജ്ജീകരണം പരിശോധിച്ച് ശരിയാക്കിയതിനുശേഷം വീണ്ടും ശ്രമിക്കുക."
 
-#: src/nautilus-window-manage-views.c:1317
-#, c-format
+#: src/nautilus-window-manage-views.c:1331
+#, fuzzy, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
-"browser.\n"
-"Check that an SMB server is running in the local network."
+"browser."
+msgstr ""
+" നോട്ടിലസിന‌്   %s സ്ഥാനങ്ങള്‌ കൈകാര്യം ചെയ്യാന്‌ കഴിയാത്തതുകൊണ്ട് \"%s\", പ്രദ‍ര്ശിപ്പിക്കാന്‌ "
+"കഴിഞ്ഞില്ല"
+
+#: src/nautilus-window-manage-views.c:1334
+msgid "Check that an SMB server is running in the local network."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1329
+#: src/nautilus-window-manage-views.c:1344
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
-"search service isn't running. Be sure that you have started the Medusa "
-"search service, and if you don't have an index, that the Medusa indexer is "
-"running."
+"search service isn't running."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1333
+#: src/nautilus-window-manage-views.c:1347
+msgid ""
+"Be sure that you have started the Medusa search service, and if you don't "
+"have an index, that the Medusa indexer is running."
+msgstr ""
+
+#: src/nautilus-window-manage-views.c:1349
 msgid "Searching Unavailable"
 msgstr "അന്വേഷണം ലഭ്യമല്ല"
 
-#: src/nautilus-window-manage-views.c:1338
+#: src/nautilus-window-manage-views.c:1354
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "നോട്ടിലസില് %s പ്രദ‌ര്ശിപ്പിക്കാന്‌ കഴിയില്ല"
 
-#: src/nautilus-window-manage-views.c:1343
+#: src/nautilus-window-manage-views.c:1356
+msgid "Please select another viewer and try again."
+msgstr ""
+
+#: src/nautilus-window-manage-views.c:1360
 msgid "Can't Display Location"
 msgstr "സ്ഥാനം പ്രദ‍ര്ശിപ്പിക്കാന്‌ കഴിയില്ല"
 
@@ -6986,7 +7256,7 @@ msgstr "ഈ അടയാളം ചൂണ്ടിക്കാട്ടിയ സ
 #. * symbol characters -- do not translate the company
 #. * name, please.
 #.
-#: src/nautilus-window-menus.c:579
+#: src/nautilus-window-menus.c:593
 msgid "Copyright (C) 1999-2001 Eazel, Inc."
 msgstr "പക‍ര്‌പ്പവകാശം(C) 1999-2001 Eazel, Inc."
 
@@ -6994,11 +7264,11 @@ msgstr "പക‍ര്‌പ്പവകാശം(C) 1999-2001 Eazel, Inc."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window-menus.c:586 src/nautilus-window-menus.c:587
+#: src/nautilus-window-menus.c:600 src/nautilus-window-menus.c:601
 msgid "Translator Credits"
 msgstr "എഫ്.എസ്.എഫ് - ഇന്ത്യ <gnu@gnu.org.in>"
 
-#: src/nautilus-window-menus.c:592
+#: src/nautilus-window-menus.c:606
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
@@ -7012,39 +7282,43 @@ msgstr "വളരെ കുറച്ചു താളുകള്‌ പുറക
 msgid "Go forward a number of pages"
 msgstr "ധാരാളം താളുകള്‌ മുന്നോട്ടുപോകുക"
 
-#: src/nautilus-window.c:906
+#: src/nautilus-window.c:907
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "\"%s\"-ല് സ്ഥാനം കാണിക്കുക"
 
-#: src/nautilus-window.c:1176
+#: src/nautilus-window.c:1178
 #, fuzzy
 msgid "Network"
 msgstr "ചെമന്ന് തൊപ്പിശൃംഖല"
 
-#: src/nautilus-window.c:1179
+#: src/nautilus-window.c:1180
 #, fuzzy
 msgid "Fonts"
 msgstr "ബിന്ദു‌"
 
 #: src/nautilus-window.c:1182
+msgid "Themes"
+msgstr ""
+
+#: src/nautilus-window.c:1184
 #, fuzzy
 msgid "CD Creator"
 msgstr "ചവറ്റുകുട്ടയിലേക്ക് പോകുക"
 
-#: src/nautilus-window.c:1614
+#: src/nautilus-window.c:1624
 msgid "Application ID"
 msgstr "പ്രയോഗ ഐ.ഡി"
 
-#: src/nautilus-window.c:1615
+#: src/nautilus-window.c:1625
 msgid "The application ID of the window."
 msgstr "ജാലകത്തിന്റെ പ്രയോഗ ഐ.ഡി."
 
-#: src/nautilus-window.c:1621
+#: src/nautilus-window.c:1631
 msgid "Application"
 msgstr "പ്രയോഗം"
 
-#: src/nautilus-window.c:1622
+#: src/nautilus-window.c:1632
 msgid "The NautilusApplication associated with this window."
 msgstr "നോട്ടിലസ് പ്രയോഗം ഈ ജാലകവുമായി ബന്ധപ്പെട്ടിരിക്കുന്നു"
 
@@ -7079,6 +7353,126 @@ msgstr "ശൃംഖലാ സേവനം"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr ""
+
+#~ msgid "Factory for hardware view"
+#~ msgstr "ഖരസാമഗ്രി ദൃശ്യമാക്കുന്നതിനുള്ള ശാല"
+
+#~ msgid "Hardware Viewer"
+#~ msgstr "ഖരസാമഗ്രി ദ‍ര്ശിനി"
+
+#~ msgid "Hardware view"
+#~ msgstr "ഖരസാമഗ്രി കാഴ്ച"
+
+#~ msgid "View as Hardware"
+#~ msgstr "ഖരസാമഗ്രിയായ് കാണുക"
+
+#~ msgid "hardware view"
+#~ msgstr "ഖരസാമഗ്രി കാഴ്ച"
+
+#~ msgid "name of icon for the hardware view"
+#~ msgstr "ഖരസാമഗ്രി കാഴ്ചയുടെ ചിഹ്ന നാമം"
+
+#~ msgid "summary of hardware info"
+#~ msgstr "ഖരസാമഗ്രി ദൃശ്യമാക്കുന്നതിനുള്ള നിര്മ്മാണ ശാല"
+
+#~ msgid "%lu MB"
+#~ msgstr "%lu MB"
+
+#~ msgid "Hardware Overview"
+#~ msgstr "ഖരസാമഗ്രി  അവലോകനം"
+
+#~ msgid ""
+#~ "Error while copying to \"%s\".\n"
+#~ "\n"
+#~ "There is not enough space on the destination."
+#~ msgstr "ലക്ഷ്യസ്ഥാനത്ത് ആവശ്യത്തിന‍് സ്ഥലമില്ല.  %s പക‍ര്‌ത്തുമ്പോള്‌ തെറ്റുന്നു."
+
+#~ msgid ""
+#~ "Error while creating link in \"%s\".\n"
+#~ "\n"
+#~ "There is not enough space on the destination."
+#~ msgstr "ലക്ഷ്യസ്ഥാനത്ത് ആവശ്യത്തിന‌് സ്ഥലമില്ല.  %s ബന്ധിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു."
+
+#~ msgid ""
+#~ "Error while moving items to \"%s\".\n"
+#~ "\n"
+#~ "You do not have permissions to write to this folder."
+#~ msgstr "ഈ കൂട്യില്‌ എഴുതുവാന്‌ താങ്കള്‌ക്ക് അനുവാദമില്ല..  %s നീക്കുമ്പോള്‌ തെറ്റുന്നു."
+
+#~ msgid ""
+#~ "Error while moving items to \"%s\".\n"
+#~ "\n"
+#~ "The destination disk is read-only."
+#~ msgstr "ലക്ഷ്യസ്ഥാന ഡിസ്ക് വായിക്കാന്‌ മാത്രം..  %s ചലിപ്പിക്കുന്പോള്‌‌ തെറ്റുന്നു."
+
+#~ msgid ""
+#~ "Error while creating links in \"%s\".\n"
+#~ "\n"
+#~ "You do not have permissions to write to this folder."
+#~ msgstr "ഈ കൂട്ടില്‌ എഴുതുവാന്‌ താങ്കള്‌ക്ക് അനുവാദമില്ല..  %s ബന്ധിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു."
+
+#~ msgid ""
+#~ "Error while creating links in \"%s\".\n"
+#~ "\n"
+#~ "The destination disk is read-only."
+#~ msgstr "ലക്ഷ്യസ്ഥാന ഡിസ്ക് വായിക്കാന്‌ മാത്രം..  %s ബന്ധിപ്പിക്കുമ്പോള്‌ തെറ്റുന്നു."
+
+#~ msgid ""
+#~ "Error \"%s\" while copying \"%s\".\n"
+#~ "\n"
+#~ "Would you like to continue?"
+#~ msgstr ""
+#~ "%s പക‍ര്ത്തുമ്പോള്‌‌ തെറ്റുന്നു.%s\n"
+#~ "\n"
+#~ "താങ്കള്‌ തുടരുവാന്‌ ആഗ്രഹിക്കുന്നോ?"
+
+#~ msgid ""
+#~ "Error \"%s\" while moving \"%s\".\n"
+#~ "\n"
+#~ "Would you like to continue?"
+#~ msgstr ""
+#~ "%s ചലിപ്പിക്കുമ്പോള്‌‌‌ തെറ്റുന്നു. %s\n"
+#~ "\n"
+#~ "താങ്കള്‌ തുടരുവാന്‌ ആഗ്രഹിക്കുന്നോ?"
+
+#~ msgid ""
+#~ "Error \"%s\" while deleting \"%s\".\n"
+#~ "\n"
+#~ "Would you like to continue?"
+#~ msgstr ""
+#~ "%s ഒഴിവാക്കുമ്പോള്‌ തെറ്റുന്നു %s.\n"
+#~ "\n"
+#~ "താങ്കള്‌ തുടരുവാന്‌ ആഗ്രഹിക്കുന്നുണ്ടോ?"
+
+#~ msgid ""
+#~ "Error \"%s\" while copying.\n"
+#~ "\n"
+#~ "Would you like to continue?"
+#~ msgstr "താങ്കള്‌ തുടരുവാന്‌ ആഗ്രഹിക്കുന്നോ. %s പക‍ര്ത്തുമ്പോള്‌‌‌ തെറ്റുന്നു."
+
+#~ msgid ""
+#~ "Error \"%s\" while linking.\n"
+#~ "\n"
+#~ "Would you like to continue?"
+#~ msgstr "താങ്കള്‌ തുടരുവാന്‌ ആഗ്രഹിക്കുന്നോ. %s ബന്ധിപ്പിക്കുമ്പോള്‌‌‌ തെറ്റുന്നു."
+
+#~ msgid ""
+#~ "Error \"%s\" while deleting.\n"
+#~ "\n"
+#~ "Would you like to continue?"
+#~ msgstr "താങ്കള്‌ തുടരുവാന്‌ ആഗ്രഹിക്കുന്നോ. %s ഒഴിവാക്കുമ്പോള്‌‌‌ തെറ്റുന്നു."
+
+#~ msgid "Can't Copy to Trash"
+#~ msgstr "ചവറ്റുകുട്ടയിലേക്ക് പക‍ര്ത്താന്‌ കഴിയില്ല"
+
+#~ msgid "Searching Disks"
+#~ msgstr "വിവരത്തട്ട് അന്വേഷണം"
+
+#~ msgid ""
+#~ "\"%s\" is not a valid location. Please check the spelling and try again."
+#~ msgstr ""
+#~ "%s സാധുതയില്ലാത്ത ഒരു സ്ഥാനമാകുന്നു.  ദയവായി അക്ഷരവിന്യാസം ശരിയാണോ എന്ന് പരിശോധിച്ച് "
+#~ "വീണ്ടും ശ്രമിക്കുക"
 
 #~ msgid "file icon"
 #~ msgstr "രചനാ ചിഹ്നം"
@@ -7152,9 +7546,6 @@ msgstr ""
 
 #~ msgid "_Toolbar"
 #~ msgstr "ഉപകരണപ്പട്ട"
-
-#~ msgid "The location \"%s\" no longer exists."
-#~ msgstr "%s എന്ന സ്ഥാനം ഇപ്പോള് മുതല് നിലനില്ക്കുന്നില്ല."
 
 #~ msgid "Go to Nonexistent Location"
 #~ msgstr "നിലവിലില്ലാത്ത സ്ഥാനത്ത് പോകുക"

@@ -11,14 +11,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-12-18 00:05+0900\n"
+"POT-Creation-Date: 2003-12-29 12:11+0100\n"
 "PO-Revision-Date: 2003-12-18 00:04+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -1735,7 +1735,7 @@ msgid "Can't Delete Volume"
 msgstr "ボリュームは削除できません"
 
 #: libnautilus-private/nautilus-desktop-link.c:169
-#: libnautilus-private/nautilus-file.c:5720
+#: libnautilus-private/nautilus-file.c:5739
 #: libnautilus-private/nautilus-global-preferences.c:555
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
@@ -2078,12 +2078,8 @@ msgid "Replace _All"
 msgstr "全て置き換える(_A)"
 
 #. appended to new link file
-#. Note to localizers: convert file type string for file
-#. * (e.g. "folder", "plain text") to file type for symbolic link
-#. * to that kind of file (e.g. "link to folder").
-#.
 #: libnautilus-private/nautilus-file-operations.c:1146
-#: libnautilus-private/nautilus-file.c:4541
+#: libnautilus-private/nautilus-file.c:4539
 #, c-format
 msgid "link to %s"
 msgstr "%s へのリンク"
@@ -2126,7 +2122,6 @@ msgstr "%d 番目の %s へのリンク"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#. test the next duplicate name generator
 #: libnautilus-private/nautilus-file-operations.c:1199
 #: libnautilus-private/nautilus-file-operations.c:2589
 msgid " (copy)"
@@ -2139,9 +2134,6 @@ msgid " (another copy)"
 msgstr " (別のコピー)"
 
 #. localizers: tag used to detect the x11th copy of a file
-#. localizers: tag used to detect the x12th copy of a file
-#. localizers: tag used to detect the x13th copy of a file
-#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1204
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
@@ -2177,9 +2169,6 @@ msgid "%s (another copy)%s"
 msgstr "%s (別のコピー)%s"
 
 #. localizers: appended to x11th file copy
-#. localizers: appended to x12th file copy
-#. localizers: appended to x13th file copy
-#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1237
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
@@ -2729,64 +2718,64 @@ msgstr "foo (124番目のコピー).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2767
+#: libnautilus-private/nautilus-file.c:2765
 msgid "today at 00:00:00 PM"
 msgstr "今日の 午後 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2768
+#: libnautilus-private/nautilus-file.c:2766
 msgid "today at %-I:%M:%S %p"
 msgstr "今日の %p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2770
+#: libnautilus-private/nautilus-file.c:2768
 msgid "today at 00:00 PM"
 msgstr "今日の 午後 00:00"
 
-#: libnautilus-private/nautilus-file.c:2771
+#: libnautilus-private/nautilus-file.c:2769
 msgid "today at %-I:%M %p"
 msgstr "今日の %p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2773
+#: libnautilus-private/nautilus-file.c:2771
 msgid "today, 00:00 PM"
 msgstr "今日の 午後 00:00"
 
-#: libnautilus-private/nautilus-file.c:2774
+#: libnautilus-private/nautilus-file.c:2772
 msgid "today, %-I:%M %p"
 msgstr "今日の %p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2776
-#: libnautilus-private/nautilus-file.c:2777
+#: libnautilus-private/nautilus-file.c:2774
+#: libnautilus-private/nautilus-file.c:2775
 msgid "today"
 msgstr "今日"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2786
+#: libnautilus-private/nautilus-file.c:2784
 msgid "yesterday at 00:00:00 PM"
 msgstr "昨日の 午後 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2787
+#: libnautilus-private/nautilus-file.c:2785
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "昨日の %p %-I:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2789
+#: libnautilus-private/nautilus-file.c:2787
 msgid "yesterday at 00:00 PM"
 msgstr "昨日の 午後 00:00"
 
-#: libnautilus-private/nautilus-file.c:2790
+#: libnautilus-private/nautilus-file.c:2788
 msgid "yesterday at %-I:%M %p"
 msgstr "昨日の %p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2792
+#: libnautilus-private/nautilus-file.c:2790
 msgid "yesterday, 00:00 PM"
 msgstr "昨日の 午後 00:00"
 
-#: libnautilus-private/nautilus-file.c:2793
+#: libnautilus-private/nautilus-file.c:2791
 msgid "yesterday, %-I:%M %p"
 msgstr "昨日の %p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2795
-#: libnautilus-private/nautilus-file.c:2796
+#: libnautilus-private/nautilus-file.c:2793
+#: libnautilus-private/nautilus-file.c:2794
 msgid "yesterday"
 msgstr "昨日"
 
@@ -2795,133 +2784,133 @@ msgstr "昨日"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2807
+#: libnautilus-private/nautilus-file.c:2805
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "0000年 9月00日 水曜日 午後 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2808
+#: libnautilus-private/nautilus-file.c:2806
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%Y年%-m月%-d日 %A %p %-I:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2810
+#: libnautilus-private/nautilus-file.c:2808
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "0000/10/00 (月) 午後 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2811
+#: libnautilus-private/nautilus-file.c:2809
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%Y/%-m/%-d (%a) %p %-I:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2813
+#: libnautilus-private/nautilus-file.c:2811
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "0000/10/00 (月) 午後 00:00"
 
-#: libnautilus-private/nautilus-file.c:2814
+#: libnautilus-private/nautilus-file.c:2812
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%Y/%-m/%-d (%a) %p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2816
+#: libnautilus-private/nautilus-file.c:2814
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "0000/10/00 午後 00:00"
 
-#: libnautilus-private/nautilus-file.c:2817
+#: libnautilus-private/nautilus-file.c:2815
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%Y/%-m/%-d %p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2819
+#: libnautilus-private/nautilus-file.c:2817
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "0000/10/00 午後 00:00"
 
-#: libnautilus-private/nautilus-file.c:2820
+#: libnautilus-private/nautilus-file.c:2818
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%Y/%-m/%-d %p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2822
+#: libnautilus-private/nautilus-file.c:2820
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00 午後 00:00"
 
-#: libnautilus-private/nautilus-file.c:2823
+#: libnautilus-private/nautilus-file.c:2821
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%y/%-m/%-d %p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2825
+#: libnautilus-private/nautilus-file.c:2823
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2826
+#: libnautilus-private/nautilus-file.c:2824
 msgid "%m/%d/%y"
 msgstr "%y/%m/%d"
 
-#: libnautilus-private/nautilus-file.c:4121
+#: libnautilus-private/nautilus-file.c:4119
 msgid "0 items"
 msgstr "0 個のアイテム"
 
-#: libnautilus-private/nautilus-file.c:4121
+#: libnautilus-private/nautilus-file.c:4119
 msgid "0 folders"
 msgstr "0 個のフォルダ"
 
-#: libnautilus-private/nautilus-file.c:4122
+#: libnautilus-private/nautilus-file.c:4120
 msgid "0 files"
 msgstr "0 個のファイル"
 
-#: libnautilus-private/nautilus-file.c:4126
+#: libnautilus-private/nautilus-file.c:4124
 msgid "1 item"
 msgstr "1 個のアイテム"
 
-#: libnautilus-private/nautilus-file.c:4126
+#: libnautilus-private/nautilus-file.c:4124
 msgid "1 folder"
 msgstr "1 個のフォルダ"
 
-#: libnautilus-private/nautilus-file.c:4127
+#: libnautilus-private/nautilus-file.c:4125
 msgid "1 file"
 msgstr "1 個のファイル"
 
-#: libnautilus-private/nautilus-file.c:4130
+#: libnautilus-private/nautilus-file.c:4128
 #, c-format
 msgid "%u items"
 msgstr "%u 個のアイテム"
 
-#: libnautilus-private/nautilus-file.c:4130
+#: libnautilus-private/nautilus-file.c:4128
 #, c-format
 msgid "%u folders"
 msgstr "%u 個のフォルダ"
 
-#: libnautilus-private/nautilus-file.c:4131
+#: libnautilus-private/nautilus-file.c:4129
 #, c-format
 msgid "%u files"
 msgstr "%u 個のファイル"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4443
-#: libnautilus-private/nautilus-file.c:4459
+#: libnautilus-private/nautilus-file.c:4441
+#: libnautilus-private/nautilus-file.c:4457
 msgid "? items"
 msgstr "? アイテム"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4449
+#: libnautilus-private/nautilus-file.c:4447
 msgid "? bytes"
 msgstr "? バイト"
 
-#: libnautilus-private/nautilus-file.c:4464
+#: libnautilus-private/nautilus-file.c:4462
 msgid "unknown type"
 msgstr "不明な種類"
 
-#: libnautilus-private/nautilus-file.c:4467
+#: libnautilus-private/nautilus-file.c:4465
 msgid "unknown MIME type"
 msgstr "不明な MIME 型"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4473
+#: libnautilus-private/nautilus-file.c:4471
 #: src/file-manager/fm-properties-window.c:1152
 msgid "unknown"
 msgstr "不明"
 
-#: libnautilus-private/nautilus-file.c:4505
+#: libnautilus-private/nautilus-file.c:4503
 msgid "program"
 msgstr "プログラム"
 
-#: libnautilus-private/nautilus-file.c:4517
+#: libnautilus-private/nautilus-file.c:4515
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2931,7 +2920,7 @@ msgstr ""
 "イルが間違った場所にあるか、あるいは何か他の理由で見つけられない可能性があり"
 "ます。"
 
-#: libnautilus-private/nautilus-file.c:4521
+#: libnautilus-private/nautilus-file.c:4519
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2940,11 +2929,11 @@ msgstr ""
 "MIME型 \"%s\" (ファイルは \"%s\") の説明が見つかりません。gnome-vfs メーリン"
 "グ・リストにお知らせ下さい。"
 
-#: libnautilus-private/nautilus-file.c:4535
+#: libnautilus-private/nautilus-file.c:4533
 msgid "link"
 msgstr "リンク"
 
-#: libnautilus-private/nautilus-file.c:4555
+#: libnautilus-private/nautilus-file.c:4553
 msgid "link (broken)"
 msgstr "リンク切れ"
 
@@ -3065,13 +3054,13 @@ msgid "Search for files by file name and file properties"
 msgstr "ファイル名と属性でファイルを検索します"
 
 #: libnautilus-private/nautilus-global-preferences.c:178
-#: src/file-manager/fm-icon-container.c:496
+#: src/file-manager/fm-icon-container.c:499
 #: src/nautilus-file-management-properties.glade.h:50
 msgid "Icon View"
 msgstr "アイコン表示"
 
 #: libnautilus-private/nautilus-global-preferences.c:179
-#: src/file-manager/fm-list-view.c:863
+#: src/file-manager/fm-list-view.c:866
 #: src/nautilus-file-management-properties.glade.h:51
 msgid "List View"
 msgstr "リスト表示"
@@ -3580,6 +3569,10 @@ msgstr "\"%s\" に関連づけられたアクションはありません。"
 msgid "No Action Associated"
 msgstr "関連づけられたアクションがありません"
 
+#. Note: This might be misleading in the components case, since the
+#. * user can't add components to the complete list even from the capplet.
+#. * (They can add applications though.)
+#.
 #: libnautilus-private/nautilus-program-chooser.c:1605
 msgid ""
 "You can configure GNOME to associate applications with file types. Do you "
@@ -4315,6 +4308,10 @@ msgstr "他に %d 個のアイテムを選択しました (%s)"
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
 
+#. Note that the number of items actually displayed varies somewhat due
+#. * to the way files are collected in batches. So you can't assume that
+#. * no more than the constant limit are displayed.
+#.
 #: src/file-manager/fm-directory-view.c:1954
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
@@ -4411,18 +4408,18 @@ msgstr "指定したアクションを完了できませんでした。"
 msgid "Run \"%s\" on any selected items"
 msgstr "選択したアイテムを \"%s\" で実行します"
 
-#: src/file-manager/fm-directory-view.c:4642
+#: src/file-manager/fm-directory-view.c:4644
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "テンプレート \"%s\" からドキュメントを生成する"
 
-#: src/file-manager/fm-directory-view.c:4820
+#: src/file-manager/fm-directory-view.c:4828
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "このフォルダにある実行可能な全てのファイルが [スクリプト] メニューに表示され"
 "ます。"
 
-#: src/file-manager/fm-directory-view.c:4822
+#: src/file-manager/fm-directory-view.c:4830
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -4430,11 +4427,11 @@ msgstr ""
 "メニューからスクリプトを選択すると、選択したアイテムを入力値としてスクリプト"
 "を実行します。"
 
-#: src/file-manager/fm-directory-view.c:4824
+#: src/file-manager/fm-directory-view.c:4832
 msgid "About Scripts"
 msgstr "スクリプトについて"
 
-#: src/file-manager/fm-directory-view.c:4825
+#: src/file-manager/fm-directory-view.c:4833
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4476,178 +4473,178 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: ウィンドウの現在位置とサイズ"
 
-#: src/file-manager/fm-directory-view.c:4955
+#: src/file-manager/fm-directory-view.c:4963
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"ファイルの貼り付け\" コマンドを選択すると \"%s\" を移動します"
 
-#: src/file-manager/fm-directory-view.c:4959
+#: src/file-manager/fm-directory-view.c:4967
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"ファイルの貼り付け\" コマンドを選択すると \"%s\" をコピーします"
 
-#: src/file-manager/fm-directory-view.c:4966
+#: src/file-manager/fm-directory-view.c:4974
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
 msgstr ""
 "\"ファイルの貼り付け\" コマンドを選択すると %d 個 のファイルを移動します"
 
-#: src/file-manager/fm-directory-view.c:4970
+#: src/file-manager/fm-directory-view.c:4978
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
 msgstr ""
 "\"ファイルの貼り付け\" コマンドを選択すると %d 個のファイルをコピーします"
 
-#: src/file-manager/fm-directory-view.c:5049
+#: src/file-manager/fm-directory-view.c:5057
 msgid "There is nothing on the clipboard to paste."
 msgstr "貼り付けるものがクリップボードにはありません。"
 
-#: src/file-manager/fm-directory-view.c:5151
-#: src/file-manager/fm-directory-view.c:6055
+#: src/file-manager/fm-directory-view.c:5159
+#: src/file-manager/fm-directory-view.c:6063
 msgid "Mount Error"
 msgstr "マウント・エラー"
 
-#: src/file-manager/fm-directory-view.c:5213
+#: src/file-manager/fm-directory-view.c:5221
 msgid "Unmount Error"
 msgstr "アンマウント・エラー"
 
-#: src/file-manager/fm-directory-view.c:5216
+#: src/file-manager/fm-directory-view.c:5224
 msgid "Eject Error"
 msgstr "取り出しエラー"
 
-#: src/file-manager/fm-directory-view.c:5441
+#: src/file-manager/fm-directory-view.c:5449
 msgid "E_ject"
 msgstr "取り出し(_J)"
 
-#: src/file-manager/fm-directory-view.c:5441
+#: src/file-manager/fm-directory-view.c:5449
 #: src/file-manager/nautilus-directory-view-ui.xml.h:64
 msgid "_Unmount Volume"
 msgstr "アンマウント(_U)"
 
-#: src/file-manager/fm-directory-view.c:5521
+#: src/file-manager/fm-directory-view.c:5529
 msgid "Open in New Window"
 msgstr "新しいウィンドウで開く"
 
-#: src/file-manager/fm-directory-view.c:5523
+#: src/file-manager/fm-directory-view.c:5531
 #, c-format
 msgid "Open in %d New Windows"
 msgstr "%d 個の新しいウィンドウで開く"
 
-#: src/file-manager/fm-directory-view.c:5528
+#: src/file-manager/fm-directory-view.c:5536
 msgid "Browse Folder"
 msgstr "フォルダの閲覧"
 
-#: src/file-manager/fm-directory-view.c:5530
+#: src/file-manager/fm-directory-view.c:5538
 msgid "Browse Folders"
 msgstr "フォルダの閲覧"
 
-#: src/file-manager/fm-directory-view.c:5553
+#: src/file-manager/fm-directory-view.c:5561
 msgid "_Delete from Trash"
 msgstr "ゴミ箱を空にする(_D)"
 
-#: src/file-manager/fm-directory-view.c:5555
+#: src/file-manager/fm-directory-view.c:5563
 msgid "Delete all selected items permanently"
 msgstr "選択した全てのアイテムを完全に削除します"
 
-#: src/file-manager/fm-directory-view.c:5558
-#: src/file-manager/fm-directory-view.c:5849
+#: src/file-manager/fm-directory-view.c:5566
+#: src/file-manager/fm-directory-view.c:5857
 #: src/file-manager/nautilus-directory-view-ui.xml.h:21
 msgid "Mo_ve to Trash"
 msgstr "ゴミ箱へ移動する(_V)"
 
-#: src/file-manager/fm-directory-view.c:5560
+#: src/file-manager/fm-directory-view.c:5568
 #: src/file-manager/nautilus-directory-view-ui.xml.h:23
 msgid "Move each selected item to the Trash"
 msgstr "選択したアイテムをゴミ箱へ移動します"
 
-#: src/file-manager/fm-directory-view.c:5584
+#: src/file-manager/fm-directory-view.c:5592
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Delete"
 msgstr "削除(_D)"
 
-#: src/file-manager/fm-directory-view.c:5604
+#: src/file-manager/fm-directory-view.c:5612
 msgid "Ma_ke Links"
 msgstr "リンクの作成(_K)"
 
-#: src/file-manager/fm-directory-view.c:5605
+#: src/file-manager/fm-directory-view.c:5613
 #: src/file-manager/nautilus-directory-view-ui.xml.h:19
 msgid "Ma_ke Link"
 msgstr "リンクの作成(_K)"
 
-#: src/file-manager/fm-directory-view.c:5618
+#: src/file-manager/fm-directory-view.c:5626
 #: src/file-manager/nautilus-directory-view-ui.xml.h:54
 msgid "_Empty Trash"
 msgstr "ゴミ箱を空にする(_E)"
 
-#: src/file-manager/fm-directory-view.c:5634
+#: src/file-manager/fm-directory-view.c:5642
 msgid "Cu_t File"
 msgstr "ファイルの切り取り(_T)"
 
-#: src/file-manager/fm-directory-view.c:5635
+#: src/file-manager/fm-directory-view.c:5643
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "Cu_t Files"
 msgstr "ファイルの切り取り(_T)"
 
-#: src/file-manager/fm-directory-view.c:5644
+#: src/file-manager/fm-directory-view.c:5652
 msgid "_Copy File"
 msgstr "ファイルのコピー(_C)"
 
-#: src/file-manager/fm-directory-view.c:5645
+#: src/file-manager/fm-directory-view.c:5653
 #: src/file-manager/nautilus-directory-view-ui.xml.h:51
 msgid "_Copy Files"
 msgstr "ファイルのコピー(_C)"
 
-#: src/file-manager/fm-directory-view.c:5840
+#: src/file-manager/fm-directory-view.c:5848
 msgid "The link is borken, do you want to move it to the Trash?"
 msgstr "リンク先が存在しません。ごみ箱に移動しますか？"
 
-#: src/file-manager/fm-directory-view.c:5842
+#: src/file-manager/fm-directory-view.c:5850
 msgid "This link can't be used, because it has no target."
 msgstr "このリンクはリンク先が存在しないので使用できません。"
 
-#: src/file-manager/fm-directory-view.c:5844
+#: src/file-manager/fm-directory-view.c:5852
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "このリンクはリンク先 \"%s\" が存在しないので使用できません。"
 
-#: src/file-manager/fm-directory-view.c:5849
+#: src/file-manager/fm-directory-view.c:5857
 msgid "Broken Link"
 msgstr "リンク切れ"
 
-#: src/file-manager/fm-directory-view.c:5907
+#: src/file-manager/fm-directory-view.c:5915
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "\"%s\" を実行しますか？ それとも内容を表示しますか？"
 
-#: src/file-manager/fm-directory-view.c:5909
+#: src/file-manager/fm-directory-view.c:5917
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" は実行可能なテキストファイルです。"
 
-#: src/file-manager/fm-directory-view.c:5915
+#: src/file-manager/fm-directory-view.c:5923
 msgid "Run or Display?"
 msgstr "実行する or 表示する？"
 
-#: src/file-manager/fm-directory-view.c:5916
+#: src/file-manager/fm-directory-view.c:5924
 msgid "Run in _Terminal"
 msgstr "端末内で実行する(_T)"
 
-#: src/file-manager/fm-directory-view.c:5917
+#: src/file-manager/fm-directory-view.c:5925
 msgid "_Display"
 msgstr "表示する(_D)"
 
-#: src/file-manager/fm-directory-view.c:5920
+#: src/file-manager/fm-directory-view.c:5928
 msgid "_Run"
 msgstr "実行する(_R)"
 
-#: src/file-manager/fm-directory-view.c:6188
+#: src/file-manager/fm-directory-view.c:6196
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" を開いています。"
 
-#: src/file-manager/fm-directory-view.c:6194
+#: src/file-manager/fm-directory-view.c:6202
 msgid "Cancel Open?"
 msgstr "キャンセルしますか？"
 
@@ -4872,21 +4869,21 @@ msgstr "ドラッグ＆ドロップのエラー"
 msgid "An invalid drag type was used."
 msgstr "使用したドラッグの種類は無効です。"
 
-#: src/file-manager/fm-list-view.c:805
+#: src/file-manager/fm-list-view.c:808
 msgid "File name"
 msgstr "ファイル名"
 
-#: src/file-manager/fm-list-view.c:829
+#: src/file-manager/fm-list-view.c:832
 #: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "サイズ"
 
-#: src/file-manager/fm-list-view.c:840
+#: src/file-manager/fm-list-view.c:843
 #: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "種類"
 
-#: src/file-manager/fm-list-view.c:851
+#: src/file-manager/fm-list-view.c:854
 #: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "更新日時"
@@ -5235,6 +5232,8 @@ msgstr ""
 msgid "Error During Search"
 msgstr "検索エラー"
 
+#. FIXME: This dialog does not get shown because a slow search
+#. will be performed and will not return an error.
 #: src/file-manager/fm-search-list-view.c:211
 msgid ""
 "Find cannot open your file system index.  Your index may be missing or "
@@ -5892,6 +5891,16 @@ msgstr ""
 msgid "Migrated Old Desktop"
 msgstr "古いデスクトップの移行"
 
+#. Can't register myself due to trouble locating the
+#. * Nautilus_Shell.server file. This has happened when you
+#. * launch Nautilus with an LD_LIBRARY_PATH that
+#. * doesn't include the directory containing the oaf
+#. * library. It could also happen if the
+#. * Nautilus_Shell.server file was not present for some
+#. * reason. Sometimes killing oafd and gconfd fixes
+#. * this problem but we don't exactly understand why,
+#. * since neither of the above causes explain it.
+#.
 #: src/nautilus-application.c:521
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -5902,6 +5911,7 @@ msgstr ""
 "\"bonobo-slay\" コマンドを実行して下さい。あるいは、コンピュータの再起動また"
 "は Nautilus の再インストールを試みて下さい。"
 
+#. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:527
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -5949,7 +5959,6 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:557 src/nautilus-application.c:575
 #: src/nautilus-application.c:582
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -6041,15 +6050,15 @@ msgid "Can't Connect to Server"
 msgstr "サーバへ接続不可"
 
 #: src/nautilus-connect-server-dialog.c:101
-#: src/nautilus-window-manage-views.c:1258
+#: src/nautilus-window-manage-views.c:1250
 #, c-format
 msgid "\"%s\" is not a valid location."
 msgstr "\"%s\" は正しい場所ではありません。"
 
 #: src/nautilus-connect-server-dialog.c:103
 #: src/nautilus-property-browser.c:1105
+#: src/nautilus-window-manage-views.c:1245
 #: src/nautilus-window-manage-views.c:1253
-#: src/nautilus-window-manage-views.c:1261
 msgid "Please check the spelling and try again."
 msgstr "スペルを確認して再試行して下さい。"
 
@@ -6314,72 +6323,67 @@ msgstr "複数のウィンドウで表示しますか？"
 msgid "Open Location"
 msgstr "場所を開く"
 
-#: src/nautilus-main.c:187
+#: src/nautilus-main.c:188
 msgid "Perform a quick set of self-check tests."
 msgstr "簡易自己診断テストセットを実行する"
 
-#: src/nautilus-main.c:190
+#: src/nautilus-main.c:191
 msgid "Create the initial window with the given geometry."
 msgstr "指定した大きさでウィンドウを起動する"
 
-#: src/nautilus-main.c:190
+#: src/nautilus-main.c:191
 msgid "GEOMETRY"
 msgstr "GEOMETRY"
 
-#: src/nautilus-main.c:192
+#: src/nautilus-main.c:193
 msgid "Only create windows for explicitly specified URIs."
 msgstr "明示的に指定された URL のウィンドウだけを起動する"
 
-#: src/nautilus-main.c:194
+#: src/nautilus-main.c:195
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
 msgstr "デスクトップを管理しない (設定ダイアログの設定を無視します)"
 
-#: src/nautilus-main.c:196
+#: src/nautilus-main.c:197
 msgid "open a browser window."
 msgstr "ブラウザ・ウィンドウを開く"
 
-#: src/nautilus-main.c:198
+#: src/nautilus-main.c:199
 msgid "Quit Nautilus."
 msgstr "Nautilus を強制終了する"
 
-#: src/nautilus-main.c:200
+#: src/nautilus-main.c:201
 msgid "Restart Nautilus."
 msgstr "Nautilus を再起動する"
 
-#: src/nautilus-main.c:233
+#: src/nautilus-main.c:234
 msgid "File Manager"
 msgstr "ファイル・マネージャ"
 
 #. Set initial window title
-#: src/nautilus-main.c:239 src/nautilus-spatial-window.c:272
+#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:272
 #: src/nautilus-window-menus.c:603 src/nautilus-window.c:174
 msgid "Nautilus"
 msgstr "Nautilus"
 
-#: src/nautilus-main.c:258
-#, c-format
+#: src/nautilus-main.c:259
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check オプションには URI を指定できません。\n"
 
-#: src/nautilus-main.c:262
-#, c-format
+#: src/nautilus-main.c:263
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check オプションには他のオプションを指定できません。\n"
 
-#: src/nautilus-main.c:266
-#, c-format
+#: src/nautilus-main.c:267
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit オプションには URI を指定できません。\n"
 
-#: src/nautilus-main.c:270
-#, c-format
+#: src/nautilus-main.c:271
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart オプションには URI を指定できません。\n"
 
-#: src/nautilus-main.c:274
-#, c-format
+#: src/nautilus-main.c:275
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry オプションには複数の URI を指定できません。\n"
 
@@ -7266,100 +7270,100 @@ msgstr "現在の選択"
 msgid "the type of window the view is embedded in"
 msgstr "ビューが組み込まれているウィンドウのタイプ"
 
-#: src/nautilus-window-manage-views.c:825
+#: src/nautilus-window-manage-views.c:817
 msgid "View Failed"
 msgstr "表示に失敗しました"
 
-#: src/nautilus-window-manage-views.c:836
+#: src/nautilus-window-manage-views.c:828
 #, c-format
 msgid "The %s view encountered an error and can't continue."
 msgstr "%s 表示する際にエラーが発生したため続行できません。"
 
-#: src/nautilus-window-manage-views.c:837
+#: src/nautilus-window-manage-views.c:829
 msgid "You can choose another view or go to a different location."
 msgstr "他の表示方法を選択するか、別の場所に移動して下さい。"
 
-#: src/nautilus-window-manage-views.c:847
+#: src/nautilus-window-manage-views.c:839
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "起動する際にに %s 表示でエラー発生しました。"
 
-#: src/nautilus-window-manage-views.c:848
+#: src/nautilus-window-manage-views.c:840
 msgid "The location cannot be displayed with this viewer."
 msgstr "その場所はこのビューアで表示できません。"
 
-#: src/nautilus-window-manage-views.c:995
+#: src/nautilus-window-manage-views.c:987
 msgid "Content View"
 msgstr "内容表示"
 
-#: src/nautilus-window-manage-views.c:996
+#: src/nautilus-window-manage-views.c:988
 msgid "View of the current file or folder"
 msgstr "このファイルまたはフォルダを表示します"
 
-#: src/nautilus-window-manage-views.c:1250
+#: src/nautilus-window-manage-views.c:1242
 #, c-format
 msgid "Couldn't find \"%s\"."
 msgstr "\"%s\" を見つけられませんでした。"
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1274
-#: src/nautilus-window-manage-views.c:1284
+#: src/nautilus-window-manage-views.c:1266
+#: src/nautilus-window-manage-views.c:1276
+#: src/nautilus-window-manage-views.c:1290
 #: src/nautilus-window-manage-views.c:1298
-#: src/nautilus-window-manage-views.c:1306
-#: src/nautilus-window-manage-views.c:1312
-#: src/nautilus-window-manage-views.c:1332
+#: src/nautilus-window-manage-views.c:1304
+#: src/nautilus-window-manage-views.c:1324
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "\"%s\" を表示できませんでした。"
 
-#: src/nautilus-window-manage-views.c:1277
+#: src/nautilus-window-manage-views.c:1269
 msgid "Nautilus cannot determine what type of file it is."
 msgstr "そのファイルの種類を認識できません。"
 
-#: src/nautilus-window-manage-views.c:1287
+#: src/nautilus-window-manage-views.c:1279
 msgid "Nautilus has no installed viewer capable of displaying the file."
 msgstr ""
 "Nautilus でそのファイルを表示するためのビューアがインストールされていません。"
 
-#: src/nautilus-window-manage-views.c:1300
+#: src/nautilus-window-manage-views.c:1292
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "Nautilus は %s: の場所を扱うことができません。"
 
-#: src/nautilus-window-manage-views.c:1308
+#: src/nautilus-window-manage-views.c:1300
 msgid "The attempt to log in failed."
 msgstr "ログインは失敗しました。"
 
-#: src/nautilus-window-manage-views.c:1314
+#: src/nautilus-window-manage-views.c:1306
 msgid "Access was denied."
 msgstr "アクセスが拒否されました。"
 
-#: src/nautilus-window-manage-views.c:1324
+#: src/nautilus-window-manage-views.c:1316
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr "\"%s\" を表示できませんでした。ホスト \"%s\" が見つかりませんでした。"
 
-#: src/nautilus-window-manage-views.c:1327
+#: src/nautilus-window-manage-views.c:1319
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr "スペルとプロキシの設定が正しいか確認して下さい。"
 
-#: src/nautilus-window-manage-views.c:1334
+#: src/nautilus-window-manage-views.c:1326
 msgid "Check that your proxy settings are correct."
 msgstr "プロキシの設定が正しいか確認して下さい。"
 
-#: src/nautilus-window-manage-views.c:1339
+#: src/nautilus-window-manage-views.c:1331
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
 "browser."
 msgstr "\"%s\" を表示できませんでした。SMB マスタ・ブラウザに接続できません。"
 
-#: src/nautilus-window-manage-views.c:1342
+#: src/nautilus-window-manage-views.c:1334
 msgid "Check that an SMB server is running in the local network."
 msgstr "SMB サーバがローカル・ネットワーク上で動作しているか確認して下さい。"
 
-#: src/nautilus-window-manage-views.c:1352
+#: src/nautilus-window-manage-views.c:1344
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running."
@@ -7367,7 +7371,7 @@ msgstr ""
 "現在、検索用のインデックスがないかまたは検索サービスが起動されていないため、"
 "検索は利用できません。"
 
-#: src/nautilus-window-manage-views.c:1355
+#: src/nautilus-window-manage-views.c:1347
 msgid ""
 "Be sure that you have started the Medusa search service, and if you don't "
 "have an index, that the Medusa indexer is running."
@@ -7375,20 +7379,20 @@ msgstr ""
 "Medusa 検索サービスが起動していることを確認して、インデックスがない場合は "
 "medusa-indexd を起動して下さい。"
 
-#: src/nautilus-window-manage-views.c:1357
+#: src/nautilus-window-manage-views.c:1349
 msgid "Searching Unavailable"
 msgstr "検索は利用できません"
 
-#: src/nautilus-window-manage-views.c:1362
+#: src/nautilus-window-manage-views.c:1354
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus は \"%s\" を表示できません。"
 
-#: src/nautilus-window-manage-views.c:1364
+#: src/nautilus-window-manage-views.c:1356
 msgid "Please select another viewer and try again."
 msgstr "別のビューアを選択して再試行して下さい。"
 
-#: src/nautilus-window-manage-views.c:1368
+#: src/nautilus-window-manage-views.c:1360
 msgid "Can't Display Location"
 msgstr "場所を表示できません"
 
@@ -7456,19 +7460,19 @@ msgstr "テーマ"
 msgid "CD Creator"
 msgstr "CD の作成"
 
-#: src/nautilus-window.c:1617
+#: src/nautilus-window.c:1624
 msgid "Application ID"
 msgstr "アプリケーションID"
 
-#: src/nautilus-window.c:1618
+#: src/nautilus-window.c:1625
 msgid "The application ID of the window."
 msgstr "ウィンドウのアプリケーション ID です。"
 
-#: src/nautilus-window.c:1624
+#: src/nautilus-window.c:1631
 msgid "Application"
 msgstr "アプリケーション"
 
-#: src/nautilus-window.c:1625
+#: src/nautilus-window.c:1632
 msgid "The NautilusApplication associated with this window."
 msgstr "このウィンドウに関連づけられた NautilusApplication です。"
 
