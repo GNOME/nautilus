@@ -600,6 +600,19 @@ AC_SUBST(XML_LIBS)
 AC_SUBST(XML_CFLAGS)
 
 dnl ====================================
+dnl = Begin tests for scrollkeeper
+dnl ====================================
+
+AC_PATH_PROG(SCROLLKEEPER_CONFIG, scrollkeeper-config,no)
+if test x$SCROLLKEEPER_CONFIG = xno; then
+  AC_MSG_ERROR(Couldn't find scrollkeeper-config, please install the scrollkeeper packaga)
+fi
+
+dnl =======================
+dnl = End tests for scrollkeeper
+dnl =======================
+
+dnl ====================================
 dnl = begin gnome-http checks
 dnl ====================================
 AC_MSG_CHECKING(for gnome-http)

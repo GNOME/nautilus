@@ -1,3 +1,24 @@
+2001-02-28  Arik Devens  <arik@eazel.com>
+
+	reviewed by: Robin * Slomkowski  <rslomkow@rslomkow.org>
+
+	Fixed bug 6836, Add scrollkeeper as a dependency of Nautilus in
+	configure.in.
+	
+	* configure.in: Added checking for scrollkeeper install.
+	* ChangeLog: Forgot to commit ChangeLog for last checkin. Sorry to
+	all about that.
+
+2001-02-28  Arik Devens  <arik@eazel.com>
+
+	reviewed by: Robin * Slomkowski  <rslomkow@rslomkow.org>
+
+	Fixed bug 7161, change both configure.in and RPM to require gtk
+	1.2.9 or newer.
+	
+	* configure.in: Updated our GTK+ dep to 1.2.9.
+	* nautilus.spec.in: Updated our GTK+ dep to 1.2.9.
+
 2001-02-28  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
@@ -46,6 +67,7 @@
 	(nautilus_preferences_dialog_construct): Use stock button instead of
 	hard-coded OK for translation purposes.
 
+>>>>>>> 1.4068
 2001-02-28  Michael Engber  <engber@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>
