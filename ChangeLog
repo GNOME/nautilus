@@ -1,3 +1,22 @@
+2001-03-05  John Harper  <jsh@eazel.com>
+
+	Fixed bug 7402 (Fonts that don't define ` ' cause assertions
+	and squash words together):
+
+	* librsvg/rsvg-ft.c (rsvg_ft_measure_or_render_string): force
+	the width of the returned glyph to be at least one pixel
+
+	* librsvg/rsvg-ft.c (rsvg_ft_get_glyph_cached): added extra
+	arg `cache_ix'. Used when accessing the glyph cache. The old
+	`glyph_ix' arg is only used when accessing the physical font
+	(this allows a cached glyph to be created from a different
+	physical glyph)
+
+	(rsvg_ft_measure_or_render_string): if the character is a ` '
+	and has a glyph index but doesn't have an actual glyph
+	definition, create one by caching the glyph for `-' as ` ' and
+	zeroing its pixel buffer
+
 2001-03-05  Robey Pointer  <robey@eazel.com>
 
 	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>

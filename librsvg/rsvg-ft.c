@@ -712,7 +712,8 @@ rsvg_ft_get_glyph (RsvgFTFont *font, FT_UInt glyph_ix, double sx, double sy,
  * rsvg_ft_get_glyph_cached: Get a rendered glyph, trying the cache.
  * @ctx: The RsvgFT context.
  * @fh: Font handle for the font.
- * @glyph_ix: Glyph index.
+ * @cache_ix: Glyph index to use in the cache.
+ * @glyph_ix: Glyph index to use in the font.
  * @sx: Width of em in pixels.
  * @sy: Height of em in pixels.
  * @affine: Affine transformation.
@@ -725,7 +726,8 @@ rsvg_ft_get_glyph (RsvgFTFont *font, FT_UInt glyph_ix, double sx, double sy,
  **/
 static RsvgFTGlyph *
 rsvg_ft_get_glyph_cached (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
-			  FT_UInt glyph_ix, double sx, double sy,
+			  FT_UInt cache_ix, FT_UInt glyph_ix,
+			  double sx, double sy,
 			  const double affine[6], int xy[2])
 {
 	RsvgFTGlyphDesc desc;
@@ -740,7 +742,7 @@ rsvg_ft_get_glyph_cached (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 	desc.fh = fh;
 	desc.char_width = floor (sx * 64 + 0.5);
 	desc.char_height = floor (sy * 64 + 0.5);
-	desc.glyph_index = glyph_ix;
+	desc.glyph_index = cache_ix;
 	x_sp = floor (SUBPIXEL_FRACTION * (affine[4] - floor (affine[4])));
 	desc.x_subpixel = x_sp;
 	desc.y_subpixel = 0;
@@ -811,11 +813,11 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 	int rowstride;
 	guchar *buf;
 	double glyph_affine[6];
-	FT_UInt glyph_index;
+	FT_UInt glyph_index, cache_index;
 	FT_UInt last_glyph = 0; /* for kerning */
 	guint n_glyphs;
 	double init_x, init_y;
-	int pixel_height, pixel_baseline;
+	int pixel_width, pixel_height, pixel_baseline;
 	int pixel_underline_position, pixel_underline_thickness;
 	int wclength;
 	wchar_t *wcstr;
@@ -920,8 +922,33 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 			last_glyph = glyph_index;
 
 			glyph = rsvg_ft_get_glyph_cached (ctx, fh, glyph_index,
+							  glyph_index,
 							  sx, sy, glyph_affine,
 							  glyph_xy + n_glyphs * 2);
+
+			/* Evil hack to handle fonts that don't define glyphs
+			 * for ` ' characters. Ask for `-', zero the pixels, then
+			 * enter it in the cache under the glyph index of ` '
+			 *
+			 * (The reason that this is needed is that at least some
+			 * microsoft TrueType fonts give ` ' an index, but don't
+			 * give it an actual glyph definition. Presumably they
+			 * just use some kind of metric when spacing)
+			 */
+			if (glyph == NULL && wcstr[i] == ' ') {
+				cache_index = glyph_index;
+				glyph_index = FT_Get_Char_Index (font->face, '-');
+				if (glyph_index != 0) {
+					glyph = rsvg_ft_get_glyph_cached (ctx, fh, cache_index,
+									  glyph_index, sx, sy,
+									  glyph_affine,
+									  glyph_xy + n_glyphs * 2);
+					if (glyph != NULL) {
+						memset (glyph->buf, 0, glyph->height * glyph->rowstride);
+					}
+				}
+			}
+
 			if (glyph != NULL) {
 				glyphs[n_glyphs] = glyph;
 
@@ -953,7 +980,13 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 	xy[0] = bbox.x0;
 	xy[1] = bbox.y0;
 
-	dimensions[0] = (bbox.x1 - bbox.x0);
+	/* Some callers of this function expect to get something with
+	 * non-zero width and height. So force the returned glyph to
+	 * be at least one pixel wide
+	 */
+	pixel_width = MAX (1, bbox.x1 - bbox.x0);
+
+	dimensions[0] = pixel_width;
 	dimensions[1] = pixel_height;
 
 	g_free (wcstr);
@@ -970,12 +1003,12 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 		return NULL;
 	}
 
-	rowstride = (bbox.x1 - bbox.x0 + 3) & -4;
+	rowstride = (pixel_width + 3) & -4;
 	buf = g_malloc0 (rowstride * pixel_height);
 
 	result = g_new (RsvgFTGlyph, 1);
 	result->refcnt = 1;
-	result->width = bbox.x1 - bbox.x0;
+	result->width = pixel_width;
 	result->height = pixel_height;
 	result->xpen = glyph_affine[4] - init_x;
 	result->ypen = glyph_affine[5] - init_y;
