@@ -27,6 +27,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <sys/stat.h>
+#include <string.h>
 
 const char* const nautilus_user_directory_name = ".nautilus";
 const unsigned default_nautilus_directory_mode = 0755;
