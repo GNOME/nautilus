@@ -345,13 +345,15 @@ int main(int argc, char **argv)
 	const char *const *args;
 	int i;
 
-#if 0
+	RsvgFTCtx *ctx;
+	RsvgFTFontHandle fh;
+
+#if 1
 	const double affine[6] = { .707, -.707, .707, .707, 10, 150 };
 #else
  	double affine[6];
+	art_affine_identity (affine);
 #endif
-	RsvgFTCtx *ctx;
-	RsvgFTFontHandle fh;
 
 	optCtx =
 	    poptGetContext("test-ft", argc, (const char **) argv,
@@ -372,7 +374,6 @@ int main(int argc, char **argv)
 		RsvgFTGlyph *glyph;
 		int glyph_xy[2];
 
-		art_affine_identity (affine);
 
 		glyph = rsvg_ft_render_string (ctx, fh, 
 					       "graphic(s)", 
@@ -381,8 +382,11 @@ int main(int argc, char **argv)
 					       affine, 
 					       glyph_xy);
 
+/* 		fprintf (stderr, "xpen, ypen = (%f, %f)\n", glyph->xpen, glyph->ypen); */
+/* 		fprintf (stderr, "glyph_xy = (%d, %d)\n", glyph_xy[0], glyph_xy[1]); */
 
- 		glyph_xy[1] += glyph->ypen;
+ 		glyph_xy[0] = 0; /* += glyph->xpen; */
+ 		glyph_xy[1] = 0; /* += glyph->ypen; */
 
 		pixbuf = glyph_render_test (glyph, glyph_xy);
 
