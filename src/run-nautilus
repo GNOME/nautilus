@@ -6,5 +6,8 @@ LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/mozilla ; export LD_LIBRARY_PATH
 nautilus-clean.sh -q -x
 
 nautilus ${1+"$@"}
+RETURN=$?
 
 nautilus-clean.sh -q -x
+
+exit $RETURN
