@@ -5,14 +5,14 @@ bin_PROGRAMS = ntl-file-manager
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(BONOBO_CFLAGS) $(GNORBA_CFLAGS) \
 	$(GNOMEUI_CFLAGS) -DVERSION="\"$(VERSION)\"" \
-	$(GDK_PIXBUF_CFLAGS)				\
+	$(GNOMECANVASPIXBUF_INCLUDEDIR)				\
 	$(WERROR)
 
 LDADD=	../../libnautilus/libnautilus.la \
 	$(BONOBO_LIBS) \
 	$(GNORBA_LIBS) \
 	$(GNOMEUI_LIBS) \
-	$(GDK_PIXBUF_LIBS) \
+	$(GNOMECANVASPIXBUF_LIBS) \
 	$(VFS_LIBS) \
 	$(XML_LIBS)
 

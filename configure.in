@@ -45,9 +45,9 @@ AC_MSG_ERROR([
 *** is always available from ftp://ftp.gtk.org/.]))
 
 AM_PATH_GNOME(1.0.0,,AC_MSG_ERROR([*** GNOME 1.0.0 or better is
-required.]), gdk_pixbuf gnorba bonobo vfs)
-AC_SUBST(GDK_PIXBUF_CFLAGS)
-AC_SUBST(GDK_PIXBUF_LIBS)
+required.]), gnomecanvaspixbuf gnorba bonobo vfs)
+AC_SUBST(GNOMECANVASPIXBUF_LIBS)
+AC_SUBST(GNOMECANVASPIXBUF_INCLUDEDIR)
 AC_SUBST(GNORBA_CFLAGS)
 AC_SUBST(GNORBA_LIBS)
 AC_SUBST(BONOBO_CFLAGS)
