@@ -31,7 +31,7 @@ msgstr ""
 "Project-Id-Version: mk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-08-03 20:49+0200\n"
-"PO-Revision-Date: 2004-08-03 23:21+0200\n"
+"PO-Revision-Date: 2004-08-05 18:43+0200\n"
 "Last-Translator: Tomislav Markovski <herrera@users.sourceforge.net>\n"
 "Language-Team: Macedonian <ossm-members@hedona.on.net.mk>\n"
 "MIME-Version: 1.0\n"
@@ -46,11 +46,11 @@ msgstr "bonobo_ui_init() неуспешно."
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
-msgstr "Фабрика за Nautilus компоненти адаптерски фабрики"
+msgstr "Фабрика за Наутилус компоненти адаптерски фабрики"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:2
 msgid "Factory for Nautilus component adapter factories "
-msgstr "Фабрика за Nautilus компонентни адаптерски фабрики "
+msgstr "Фабрика за Наутилус компонентни адаптерски фабрики "
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:3
 msgid ""
@@ -58,11 +58,11 @@ msgid ""
 "look like Nautilus Views"
 msgstr ""
 "Фабрика за објекти кои ги обвиткуваат вообичаените Bonobo контроли или "
-"Embeddables за да изгледаат како Nautilus погледи"
+"Embeddables за да изгледаат како Наутилус погледи"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:4
 msgid "Nautilus component adapter factory"
-msgstr "Nautilus фабрика за адаптери за компоненти "
+msgstr "Наутилус фабрика за адаптери за компоненти "
 
 #: components/emblem/nautilus-emblem-view.c:203
 #, c-format
@@ -186,11 +186,11 @@ msgstr "Амблеми"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:2
 msgid "Nautilus Emblem side pane"
-msgstr "Nautilus странична-лента панел на емблем"
+msgstr "Наутилус странична-лента панел на емблем"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:3
 msgid "Nautilus Emblem view"
-msgstr "Nautilus поглед на амблеми"
+msgstr "Наутилус поглед на амблеми"
 
 #: components/history/Nautilus_View_history.server.in.in.h:1
 msgid "History"
@@ -202,7 +202,7 @@ msgstr "Историја странична-лента панел"
 
 #: components/history/Nautilus_View_history.server.in.in.h:3
 msgid "History side pane for Nautilus"
-msgstr "Историја странична-лента за Nautilus"
+msgstr "Историја странична-лента за Наутилус"
 
 #: components/image_properties/nautilus-image-properties-view.c:192
 msgid "Camera Brand"
@@ -218,7 +218,7 @@ msgstr "Датум"
 
 #: components/image_properties/nautilus-image-properties-view.c:195
 msgid "Exposure Time"
-msgstr ""
+msgstr "Траење на експозитура"
 
 #: components/image_properties/nautilus-image-properties-view.c:196
 msgid "Exposure Program"
@@ -1009,7 +1009,7 @@ msgstr "Назив кој е прикажан на корисникот"
 
 #: libnautilus-extension/nautilus-menu-item.c:220
 msgid "Tip"
-msgstr ""
+msgstr "Совет"
 
 #: libnautilus-extension/nautilus-menu-item.c:221
 msgid "Tooltip for the menu item"
@@ -1146,9 +1146,8 @@ msgid "Custom Side Pane Background Set"
 msgstr "Форма на различна позадина"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:10
-#, fuzzy
 msgid "Date Format"
-msgstr "_Формат"
+msgstr "Формат на датумот"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:11
 msgid "Default Background Color"
@@ -1187,9 +1186,8 @@ msgid "Default list of columns visible in the list view"
 msgstr "Стандардна листа на колони кои се видливи во погледот."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:20
-#, fuzzy
 msgid "Default list of columns visible in the list view."
-msgstr "Стандардно ниво на зум кое го користи од прегледникот на листи"
+msgstr "Стандардна листа на колони кои се видливи при погледот како листа."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:21
 msgid "Default list zoom level"
@@ -1246,16 +1244,12 @@ msgstr ""
 "доколку background_set is true."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
-#, fuzzy
 msgid ""
 "Folders over this size will be truncated to around this size. The purpose of "
 "this is to avoid unintentionally blowing the heap and killing Nautilus on "
 "massive folders. A negative value denotes no limit. The limit is approximate "
 "due to the reading of folders chunk-wise."
 msgstr ""
-"Повеќето од директориумите кои ја надминуваат големината ќе бидат намалени "
-"приближно на граничната големина. Намерата на ова е да се одбегне губење на "
-"податоци. Негативните вредности означуваат без граница."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
 msgid "Hide default bookmarks in the bookmark menu"
@@ -1352,13 +1346,11 @@ msgstr ""
 "покажува само обележувачите на корисникот."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus will use the user's home folder as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
 msgstr ""
-"Ако е подесено на true, тогаш Nautilus ќе го користи директориумот на "
-"корисникот како десктоп. Ако е false, тогаш ќе го користи ~/Desktop како "
+"Ако е подесено на true, тогаш Nautilus ќе го користи домашниот директориум на корисникот како десктоп. Ако е false, тогаш ќе го користи ~/Desktop како "
 "десктоп."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
@@ -1382,14 +1374,13 @@ msgstr ""
 "сметаат за сигурносни датотеки"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
-#, fuzzy
 msgid ""
 "If set to true, then hidden files are shown in the file manager. Hidden "
 "files are either dotfiles or are listed in the folder's .hidden file."
 msgstr ""
 "Ако е подесено на true, тогаш скриените датотеки се прикажани во менаџерот "
 "на датотеки. Скриените датотеки се или датотеки со точка од напред или се "
-"излистани во .hidden датотеката на директориумот"
+"излистани во .hidden датотеката во тој директориум."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
@@ -1401,22 +1392,16 @@ msgstr ""
 "логирате."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
-#, fuzzy
 msgid ""
 "If this is set to true, an icon linking to the computer location will be put "
 "on the desktop."
-msgstr ""
-"Ако ова е подесено на true,тогаш на десктопот ќе биде ставена икона со линк "
-"на директориумот Ѓубре"
+msgstr "Ако ова е подесено на true,тогаш на десктопот ќе биде ставена икона со врска до локацијата на Компјутер."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
-#, fuzzy
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
-msgstr ""
-"Ако ова е подесено на true,тогаш на десктопот ќе биде ставена икона со линк "
-"на домашен директориум"
+msgstr "Ако ова е подесено на true,тогаш на десктопот ќе биде ставена икона со врска до домашниот директориум."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid ""
@@ -1458,11 +1443,8 @@ msgstr ""
 "големина, наместо во растечки ќе бидат во опаѓачки редослед "
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
-#, fuzzy
 msgid "If true, icons will be laid out tighter by default in new windows."
-msgstr ""
-"Ако е подесено на true,тогаш иконите ќе бидат прикажани позбиени во новите "
-"прозорци"
+msgstr "Ако е подесено на true,тогаш иконите ќе бидат прикажани позбиени во новите прозорци."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid "If true, labels will be placed beside icons rather than underneath them."
@@ -1489,9 +1471,8 @@ msgid "List of possible captions on icons"
 msgstr "Листа на можни изгледи на икони."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
-#, fuzzy
 msgid "Maximum handled files in a folder"
-msgstr "Максимален број на датотеки во директориум."
+msgstr "Максимален број на датотеки во директориум"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
 msgid "Maximum image size for thumbnailing"
@@ -1510,14 +1491,12 @@ msgid "Nautilus handles drawing the desktop"
 msgstr "Nautilus може да црта на десктопот"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
-#, fuzzy
 msgid "Nautilus uses the users home folder as the desktop"
-msgstr "Користи ја твојота домашна папка како десктоп"
+msgstr "Nautilus го користи домашниот директориум како десктоп"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
-#, fuzzy
 msgid "Only show folders in the tree sidebar"
-msgstr "Покажи само директориуми во страничната лента."
+msgstr "Покажи ги директориумите само во страничната лента"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid ""
@@ -1536,18 +1515,16 @@ msgid "Reverse sort order in new windows"
 msgstr "Прикажи по обратен редослед во новите прозорци."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
-#, fuzzy
 msgid "Show folders first in windows"
-msgstr "Покажи директориуми прво во прозорците"
+msgstr "Покажи ги прво директориумите во прозорците"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid "Show location bar in new windows"
 msgstr "Покажи локациона лента во нови прозорци"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
-#, fuzzy
 msgid "Show mounted volumes on the desktop"
-msgstr "Иконата Дома е видлива на десктоп"
+msgstr "Покажи ги монтираните уреди на работната околина"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "Show side pane in new windows"
@@ -1623,14 +1600,10 @@ msgstr ""
 "е поставено на \"never\",тогаш никогаш не прикажувај број.  "
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
-#, fuzzy
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
-msgstr ""
-"Стандардниот редослед на подредување на објекти при прегледот со икони. "
-"Можни вредности се \"име\", \"големина\", \"тип\", \"дата на модификација\" "
-"и \"амблеми\"."
+msgstr "Стандардниот редослед на подредување на објектите при погледот како икони. Можни вредности се \"име\", \"големина\", \"тип\", \"датум на промена\" и \"амблеми\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 #, fuzzy
@@ -2776,7 +2749,7 @@ msgstr "Не можеш да ја копираш папка самата врз 
 
 #: libnautilus-private/nautilus-file-operations.c:2037
 msgid "The destination folder is inside the source folder."
-msgstr ""
+msgstr "Целниот директориум се наоѓа во изворниот директориум."
 
 #: libnautilus-private/nautilus-file-operations.c:2039
 msgid "Can't Move Into Self"
@@ -2888,12 +2861,12 @@ msgstr "Испразни"
 #: libnautilus-private/nautilus-file-operations-progress.c:395
 #, c-format
 msgid "(%d:%02d:%d Remaining)"
-msgstr ""
+msgstr "(Преостанато %d:%02d:%d)"
 
 #: libnautilus-private/nautilus-file-operations-progress.c:399
 #, c-format
 msgid "(%d:%02d Remaining)"
-msgstr ""
+msgstr "(Преостанато %d:%02d)"
 
 #: libnautilus-private/nautilus-file-operations-progress.c:512
 #, c-format
@@ -3606,7 +3579,7 @@ msgstr "Имаше грешка при извршувањето на аплик�
 #: libnautilus-private/nautilus-program-choosing.c:601
 #: src/nautilus-window-manage-views.c:1391
 msgid "The attempt to log in failed."
-msgstr ""
+msgstr "Не успеав да се најавам."
 
 #: libnautilus-private/nautilus-program-choosing.c:606
 #: src/nautilus-window-manage-views.c:1397
@@ -4135,7 +4108,7 @@ msgstr "Mount Грешка"
 
 #: src/file-manager/fm-directory-view.c:5324
 msgid "Eject Error"
-msgstr ""
+msgstr "Грешка при вадењето"
 
 #: src/file-manager/fm-directory-view.c:5327
 msgid "Unmount Error"
@@ -4283,7 +4256,7 @@ msgstr "Covalent"
 
 #: src/file-manager/fm-ditem-page.c:343
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: src/file-manager/fm-ditem-page.c:347
 #, fuzzy
@@ -4972,7 +4945,7 @@ msgstr "Форматирај ја избраната јачина"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Make a permanent connection to this server"
-msgstr ""
+msgstr "Направи постојана врска до овој сервер"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:21
 msgid "Medi_a Properties"
@@ -5088,7 +5061,7 @@ msgstr "Покажи ја папката што ги содржи скрипти
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:47
 msgid "Toggles the display of hidden files in the current window"
-msgstr ""
+msgstr "Го променува покажувањето на скриени датотеки во тековниот прозорец"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:48
 msgid "Unmount the selected volume"
@@ -5230,23 +5203,19 @@ msgid "Couldn't Create Required Folder"
 msgstr "Не можам да ја Создадам бараната Папка"
 
 #: src/nautilus-application.c:268
-#, fuzzy, c-format
+#, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
-msgstr "Не можам да ги Создадам бараните Папки"
+msgstr "Наутилус не може да го креира бараниот директориум \"%s\"."
 
 #: src/nautilus-application.c:270
-#, fuzzy
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
 msgstr ""
-"Nautilus could not create the required folder \"%s\". Before running "
-"Nautilus, please create this folder, or set permissions such that Nautilus "
-"can create it."
 
 #: src/nautilus-application.c:273
 msgid "Couldn't Create Required Folders"
-msgstr "Не можам да ги Создадам бараните Папки"
+msgstr "Не можам да ги креирам бараните директориуми"
 
 #: src/nautilus-application.c:274
 #, c-format
@@ -5254,17 +5223,10 @@ msgid "Nautilus could not create the following required folders: %s."
 msgstr "Наутилус не може да ги направи следните задолжителни папки: %s."
 
 #: src/nautilus-application.c:276
-#, fuzzy
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
-msgstr ""
-"Nautilus could not create the following required folders:\n"
-"\n"
-"%s\n"
-"\n"
-"Before running Nautilus, please create these folders, or set permissions "
-"such that Nautilus can create them."
+msgstr "Пред да го отворите Наутилус, Ве молам креирајте ги овие директориуми или променете ги пермисиите за да може Наутилус да ги креира."
 
 #: src/nautilus-application.c:344
 msgid "Link To Old Desktop"
@@ -5277,20 +5239,16 @@ msgstr ""
 "работна површина."
 
 #: src/nautilus-application.c:361
-#, fuzzy
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
 msgstr ""
-"Локацијата на директориумот на работната површина е сменета во GNOME 2.4. "
-"Врската која се вика \"врска до старaта работна површина\" е создадена на "
-"работната површина. Можете да ја отворите за да ги поместите саканите "
-"датотеките, а потоа да ја избришете врската."
+"Локацијата на директориумот на работната околина е сменета во GNOME 2.4. "
+"Можете да ја отворите врската за да ги поместите саканите датотеките, а потоа да ја избришете."
 
 #: src/nautilus-application.c:363
-#, fuzzy
 msgid "Migrated Old Desktop"
-msgstr "Migrated old desktop"
+msgstr "Старата работна околина е мигрирана"
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.server file. This has happened when you
@@ -5308,9 +5266,8 @@ msgid ""
 "console may fix the problem. If not, you can try rebooting the computer or "
 "installing Nautilus again."
 msgstr ""
-"Nautilus неможе да се користи во моментов. Со извршување на командата "
-"\"bonobo-slay\" од конзолата можеби ќе се поправи проблемот. Ако не можеш да "
-"го рестатираш компјутерот или да го инсталираш Nautilus повторно."
+"Наутилус не може да се користи во моментов. Со извршување на командата "
+"\"bonobo-slay\" од конзолата можеби ќе се поправи проблемот. Ако и тоа не успее, обидете се да го рестартирате компјутерот или повторно да го инсталирате Наутилус."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:512
@@ -5333,14 +5290,14 @@ msgid ""
 "We have also seen this error when a faulty version of bonobo-activation was "
 "installed."
 msgstr ""
-"Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
+"Наутилус can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
-"installing Nautilus again.\n"
+"installing Наутилус again.\n"
 "\n"
-"Bonobo couldn't locate the Nautilus_shell.server file. One cause of this "
+"Bonobo couldn't locate the Наутилус_shell.server file. One cause of this "
 "seems to be an LD_LIBRARY_PATH that does not include the bonobo-activation "
 "library's directory. Another possible cause would be bad install with a "
-"missing Nautilus_Shell.server file.\n"
+"missing Наутилус_Shell.server file.\n"
 "\n"
 "Running \"bonobo-slay\" will kill all Bonobo Activation and GConf processes, "
 "which may be needed by other applications.\n"
@@ -5363,14 +5320,14 @@ msgstr ""
 #: src/nautilus-application.c:542 src/nautilus-application.c:560
 #: src/nautilus-application.c:567
 msgid "Nautilus can't be used now, due to an unexpected error."
-msgstr "Nautilus неможе да се користи во моментов, поради неочекувана грешка."
+msgstr "Наутилус неможе да се користи во моментов, поради неочекувана грешка."
 
 #: src/nautilus-application.c:543
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
 msgstr ""
-"Nautilus не може да биде користен во моментот поради неочекувана грешка од "
+"Наутилус не може да биде користен во моментот поради неочекувана грешка од "
 "Bonobo кога пробал да го регистрира серверот на менаџерот на датотеки."
 
 #: src/nautilus-application.c:561
@@ -5378,7 +5335,7 @@ msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
-msgstr ""
+msgstr "Наутилус не може да се користи поради грешка од Bonobo при обидот за лоцирање на фабриката. Обидете се да го суспендирате процесот bonobo-activation-server и повторно да го отворите Наутилус."
 
 #: src/nautilus-application.c:568
 msgid ""
@@ -5386,9 +5343,9 @@ msgid ""
 "attempting to locate the shell object. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
-"Nautilus неможе да се користи во моментов поради неочекувана грешка од "
+"Наутилус неможе да се користи во моментов поради неочекувана грешка од "
 "Bonobo. Пробај да го убиеш bonob-activation-server и да го рестартираш "
-"Nautilus."
+"Наутилус."
 
 #: src/nautilus-bookmarks-window.c:150
 #: src/nautilus-file-management-properties.c:229
@@ -5475,14 +5432,12 @@ msgid "500 KB"
 msgstr "500 kB"
 
 #: src/nautilus-file-management-properties.glade.h:24
-#, fuzzy
 msgid "<span weight=\"bold\">Behavior</span>"
 msgstr "<span weight=\"bold\">Однесување</span>"
 
 #: src/nautilus-file-management-properties.glade.h:25
-#, fuzzy
 msgid "<span weight=\"bold\">Date</span>"
-msgstr "<span weight=\"bold\">Ѓубре</span>"
+msgstr "<span weight=\"bold\">Датум</span>"
 
 #: src/nautilus-file-management-properties.glade.h:26
 msgid "<span weight=\"bold\">Default View</span>"
@@ -5505,9 +5460,8 @@ msgid "<span weight=\"bold\">Icon View Defaults</span>"
 msgstr "<span weight=\"bold\">Стандарден поглед на икони</span>"
 
 #: src/nautilus-file-management-properties.glade.h:31
-#, fuzzy
 msgid "<span weight=\"bold\">List Columns</span>"
-msgstr "<span weight=\"bold\">Директориуми</span>"
+msgstr "<span weight=\"bold\">Колони</span>"
 
 #: src/nautilus-file-management-properties.glade.h:32
 msgid "<span weight=\"bold\">List View Defaults</span>"
@@ -5538,9 +5492,8 @@ msgid "Always"
 msgstr "Секогаш"
 
 #: src/nautilus-file-management-properties.glade.h:39
-#, fuzzy
 msgid "Always open in _browser windows"
-msgstr "отвори разгледувач."
+msgstr "Секогаш отворај во прозорецот на _разгледувачот"
 
 #: src/nautilus-file-management-properties.glade.h:40
 msgid "Ask before _emptying the Trash or deleting files"
@@ -5572,9 +5525,8 @@ msgid "Default _zoom level:"
 msgstr "Стандардно _ниво на зум:"
 
 #: src/nautilus-file-management-properties.glade.h:51
-#, fuzzy
 msgid "Display"
-msgstr "_Прикажи"
+msgstr "Прикажи"
 
 #: src/nautilus-file-management-properties.glade.h:52
 msgid "File Management Preferences"
@@ -5649,9 +5601,8 @@ msgid "_Double click to activate items"
 msgstr "Двојно кликнете за да го активирате елеметнтот"
 
 #: src/nautilus-file-management-properties.glade.h:73
-#, fuzzy
 msgid "_Format:"
-msgstr "_Формат"
+msgstr "_Формат:"
 
 #: src/nautilus-file-management-properties.glade.h:74
 msgid "_Only for files smaller than:"
@@ -5690,19 +5641,16 @@ msgid "group"
 msgstr "група"
 
 #: src/nautilus-file-management-properties.glade.h:83
-#, fuzzy
 msgid "informal"
-msgstr "Информација"
+msgstr "неформално"
 
 #: src/nautilus-file-management-properties.glade.h:84
-#, fuzzy
 msgid "iso"
-msgstr "Историја"
+msgstr "исо"
 
 #: src/nautilus-file-management-properties.glade.h:85
-#, fuzzy
 msgid "locale"
-msgstr "Floral"
+msgstr "локале"
 
 #: src/nautilus-file-management-properties.glade.h:86
 msgid "none"
@@ -5735,7 +5683,7 @@ msgid ""
 "\n"
 "You can manually erase this file to present the druid again.\n"
 msgstr ""
-"Existence of this file indicates that the Nautilus configuration druid\n"
+"Existence of this file indicates that the Наутилус configuration druid\n"
 "has been presented.\n"
 "\n"
 "You can manually erase this file to present the druid again.\n"
@@ -5847,9 +5795,9 @@ msgstr "Наутилус"
 
 #. translators: %s is an option (e.g. --check)
 #: src/nautilus-main.c:260 src/nautilus-main.c:269 src/nautilus-main.c:274
-#, fuzzy, c-format
+#, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
-msgstr "nautilus: --откажувањето неможе да се користи со URL-a.\n"
+msgstr "наутилус: %s не може да се користи со URI-а.\n"
 
 #: src/nautilus-main.c:265
 #, c-format
@@ -5871,32 +5819,25 @@ msgid "File Browser: %s"
 msgstr "Разгледувач: %s"
 
 #: src/nautilus-navigation-window.c:1070
-#, fuzzy
 msgid "One of the side panels encountered an error and can't continue."
-msgstr ""
-"Една од страничните-ленти панели дојде до грешка и не може да продолжи. За "
-"несреќа Не можам да кажам која."
+msgstr "Една од страничните ленти-панели наиде на грешка и не може да продолжи."
 
 #: src/nautilus-navigation-window.c:1071
 msgid "Unfortunately I couldn't tell which one."
 msgstr "За жал, на можам да одредам кој."
 
 #: src/nautilus-navigation-window.c:1074
-#, fuzzy, c-format
+#, c-format
 msgid "The %s side panel encountered an error and can't continue."
-msgstr "Погледот %s наиде на грешка додека се стартуваше."
+msgstr "Страничниот панел %s наиде на грешка и не може да продолжи."
 
 #: src/nautilus-navigation-window.c:1075
-#, fuzzy
 msgid "If this keeps happening, you might want to turn this panel off."
-msgstr ""
-"Страничната %s -линија панел наиде на грешка и не може да продолжи. Ако "
-"продолжи да се случува ова, пробај да го исклучиш панелот."
+msgstr "Ако продолжи да се случува ова, пробајте да го исклучите панелот."
 
 #: src/nautilus-navigation-window.c:1078
-#, fuzzy
 msgid "Side Panel Failed"
-msgstr "Странично линискиот Панел Не успеа"
+msgstr "Странично панел не успеа"
 
 #: src/nautilus-navigation-window.c:1209
 msgid "Side Pane"
@@ -6013,9 +5954,8 @@ msgstr "Оди до папката за мостри"
 
 #: src/nautilus-navigation-window-ui.xml.h:16
 #: src/nautilus-spatial-window-ui.xml.h:9
-#, fuzzy
 msgid "Go to the CD/DVD Creator"
-msgstr "Оди до Креаторот на ЦД-иња"
+msgstr "Оди до Креаторот на CD/DVD"
 
 #: src/nautilus-navigation-window-ui.xml.h:17
 msgid "Go to the next visited location"
@@ -6157,7 +6097,6 @@ msgid "Check that you have permission to delete the pattern."
 msgstr "Проверете дали имате дозвола за бришење на шарата."
 
 #: src/nautilus-property-browser.c:916
-#, fuzzy
 msgid "Couldn't Delete Pattern"
 msgstr "Не можам да ја избришам шарата"
 
@@ -6171,7 +6110,6 @@ msgid "Check that you have permission to delete the emblem."
 msgstr "Проверете дали имате дозвола за пришење на амблемот."
 
 #: src/nautilus-property-browser.c:946
-#, fuzzy
 msgid "Couldn't Delete Emblem"
 msgstr "Не можам да го отстранам амблемот"
 
@@ -6220,9 +6158,8 @@ msgid "Please try again."
 msgstr "Обидете се повторно."
 
 #: src/nautilus-property-browser.c:1111 src/nautilus-property-browser.c:1156
-#, fuzzy
 msgid "Couldn't Install Pattern"
-msgstr "Не можам да инсталирам шара"
+msgstr "Не можам да ја инсталирам шарата"
 
 #: src/nautilus-property-browser.c:1122
 msgid "Sorry, but you can't replace the reset image."
@@ -6255,7 +6192,6 @@ msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Извини, но мораш да специфицираш име за новата боја."
 
 #: src/nautilus-property-browser.c:1238
-#, fuzzy
 msgid "Couldn't Install Color"
 msgstr "Не можам да ја инсталирам бојата"
 
@@ -6264,14 +6200,13 @@ msgid "Select a color to add"
 msgstr "Избери боја за да ја додадеш"
 
 #: src/nautilus-property-browser.c:1327 src/nautilus-property-browser.c:1343
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, but \"%s\" is not a usable image file."
-msgstr "Извини, но '%s' не е искористлива слика датотека."
+msgstr "Извинете, но \"%s\" не е употреблива датотека за слика."
 
 #: src/nautilus-property-browser.c:1328 src/nautilus-property-browser.c:1344
-#, fuzzy
 msgid "The file is not an image."
-msgstr "датотеката '%s' не е валидна слика"
+msgstr "Датотеката не е слика."
 
 #: src/nautilus-property-browser.c:2051
 msgid "Select a Category:"
@@ -6448,9 +6383,8 @@ msgid "View as _List"
 msgstr "Преглед како листа"
 
 #: src/nautilus-shell-ui.xml.h:2
-#, fuzzy
 msgid "Close this folder"
-msgstr "Забелешки странична-линија панел"
+msgstr "Затвори го овој директориум"
 
 #: src/nautilus-shell-ui.xml.h:4
 msgid "Display Nautilus help"
@@ -6547,9 +6481,8 @@ msgid "_Backgrounds and Emblems..."
 msgstr "_Позадини и Емблеми..."
 
 #: src/nautilus-shell-ui.xml.h:30
-#, fuzzy
 msgid "_CD/DVD Creator"
-msgstr "Креатор на _ЦД"
+msgstr "_Креатор на CD/DVD"
 
 #: src/nautilus-shell-ui.xml.h:31
 msgid "_Close"
@@ -6613,18 +6546,16 @@ msgid "Show %s"
 msgstr "Покажи %s"
 
 #: src/nautilus-spatial-window-ui.xml.h:2
-#, fuzzy
 msgid "Clos_e All Folders"
-msgstr "Затвори ги сите _матични прозорци"
+msgstr "Затвори ги сите _директориуми"
 
 #: src/nautilus-spatial-window-ui.xml.h:3
 msgid "Close P_arent Folders"
 msgstr "Затвори ги сите _матични прозорци"
 
 #: src/nautilus-spatial-window-ui.xml.h:4
-#, fuzzy
 msgid "Close all folder windows"
-msgstr "Затвори ги сите прозорци за навигација"
+msgstr "Затвори ги сите прозорци"
 
 #: src/nautilus-spatial-window-ui.xml.h:5
 msgid "Close this folder's parents"
@@ -6667,9 +6598,8 @@ msgid "the type of window the view is embedded in"
 msgstr "типот на прозорец во кој е вгнезден погледот"
 
 #: src/nautilus-view-frame.c:641
-#, fuzzy
 msgid "whether to show hidden files in the view"
-msgstr "Дали да ги покаже скриените датотеки"
+msgstr "дали да се покажуваат скриените датотеки"
 
 #: src/nautilus-window.c:885
 #, c-format
@@ -6677,9 +6607,9 @@ msgid "Display this location with \"%s\""
 msgstr "Прикажи ја оваа локација со \"%s\""
 
 #: src/nautilus-window.c:1118
-#, fuzzy, c-format
+#, c-format
 msgid "%s on %s"
-msgstr "%s (копирај)%s"
+msgstr "%s на %s"
 
 #: src/nautilus-window.c:1558
 msgid "Application ID"
@@ -6758,15 +6688,12 @@ msgid "Check that an SMB server is running in the local network."
 msgstr "Проверете дали постои SMB сервер кој е активен во локалната мрежа."
 
 #: src/nautilus-window-manage-views.c:1436
-#, fuzzy
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running."
 msgstr ""
 "Барањето е недостапно во моментов поради тоа што немате индекс или пак "
-"ребарувачките сервиси не се стартувани. Осигурајте се дека го имате "
-"тартувано Medusa пребарувачкиот сервис, и дека имате индекс, стартуван во "
-"Medusa индексерот."
+"сервисите за пребарување не се подигнати."
 
 #: src/nautilus-window-manage-views.c:1439
 msgid ""
