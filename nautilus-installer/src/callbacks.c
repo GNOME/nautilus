@@ -69,7 +69,10 @@ begin_install (EazelInstaller  *installer)
 	}
 
 	if (install_categories) {
-		eazel_installer_do_install (installer, install_categories);
+		if (eazel_installer_do_install (installer, install_categories)) {
+			/* still more to do... */
+			return FALSE;
+		}
 	}
 
 	gnome_druid_set_buttons_sensitive(druid, FALSE, TRUE, TRUE);
@@ -99,5 +102,13 @@ prep_finish (GnomeDruidPage  *gnomedruidpage,
 	     GtkWidget *druid,
 	     EazelInstaller  *installer)
 {
-	gnome_druid_set_buttons_sensitive(GNOME_DRUID (druid), FALSE, TRUE, FALSE);
+	gnome_druid_set_buttons_sensitive (GNOME_DRUID (druid), FALSE, TRUE, FALSE);
+}
+
+void
+prep_lock (GnomeDruidPage *gnomedruidpage,
+	   GtkWidget *druid,
+	   EazelInstaller *installer)
+{
+	gnome_druid_set_buttons_sensitive (GNOME_DRUID (druid), FALSE, FALSE, TRUE);
 }

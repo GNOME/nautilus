@@ -90,6 +90,12 @@
 #define ERROR_LABEL	_("The installer was not able to complete the installation of the\n" \
 			  "Nautilus file manager.  Here's why:")
 #define ERROR_TITLE	_("An error has occurred")
+#define RETRY_LABEL	_("The installer was not able to complete the installation of the\n" \
+			  "Nautilus file manager.  This might be because some of the packages\n" \
+			  "on your system need to be upgraded at the same time as Nautilus.\n" \
+			  "The following packages would be broken by Nautilus:")
+#define RETRY_LABEL_2	_("Would you like to try to upgrade these packages, too?")
+#define RETRY_TITLE	_("Bogus things are going down")
 
 #define NAUTILUS_INSTALLER_RELEASE
 
@@ -458,6 +464,128 @@ jump_to_error_page (EazelInstaller *installer, GList *bullets, char *text)
 	gnome_druid_set_page (installer->druid, GNOME_DRUID_PAGE (error_page));
 }
 
+static void
+start_over (GtkWidget *button, EazelInstaller *installer)
+{
+	GtkWidget *install_page;
+
+	printf ("JES-- start over\n");
+	install_page = gtk_object_get_data (GTK_OBJECT (installer->window), "install_page");
+	gnome_druid_set_page (installer->druid, GNOME_DRUID_PAGE (install_page));
+}
+
+static void
+dont_start_over (GtkWidget *button, EazelInstaller *installer)
+{
+	printf ("NE-- dont start over\n");
+	jump_to_error_page (installer, installer->failure_info, ERROR_LABEL);
+}
+
+/* give the user an opportunity to retry the install, with new info */
+static void
+jump_to_retry_page (EazelInstaller *installer)
+{
+	GtkWidget *retry_page;
+	GtkWidget *vbox;
+	GtkWidget *hbox;
+	GtkWidget *pixmap;
+	GtkWidget *title;
+	GtkWidget *label;
+	GtkWidget *button;
+	GList *iter;
+	char *temp;
+
+	retry_page = nautilus_druid_page_eazel_new_with_vals (NAUTILUS_DRUID_PAGE_EAZEL_OTHER,
+							      "", "", NULL, NULL,
+							      create_pixmap (GTK_WIDGET (installer->window),
+									     bootstrap_background));
+	gtk_widget_show (retry_page);
+	gnome_druid_append_page (GNOME_DRUID (installer->druid), GNOME_DRUID_PAGE (retry_page));
+
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_set_uposition (vbox, ERROR_SYMBOL_X, ERROR_SYMBOL_Y);
+	gtk_widget_show (vbox);
+	nautilus_druid_page_eazel_put_widget (NAUTILUS_DRUID_PAGE_EAZEL (retry_page), vbox);
+
+	title = gtk_label_new_with_font (RETRY_TITLE, FONT_TITLE);
+	gtk_label_set_justify (GTK_LABEL (title), GTK_JUSTIFY_LEFT);
+	gtk_widget_show (title);
+	pixmap = create_pixmap_widget (retry_page, error_symbol);
+	gtk_widget_show (pixmap);
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), pixmap, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), title, FALSE, FALSE, 0);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+
+	add_padding_to_box (vbox, 0, 20);
+
+	label = gtk_label_new (RETRY_LABEL);
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+	gtk_label_set_line_wrap (GTK_LABEL (label), FALSE);
+	gtk_widget_show (label);
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 30);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+
+	add_padding_to_box (vbox, 0, 15);
+
+	for (iter = g_list_first (installer->additional_packages); iter != NULL; iter = g_list_next (iter)) {
+		temp = g_strdup_printf ("\xB7 %s", (char *)(iter->data));
+		label = gtk_label_new_with_font (temp, FONT_NORM_BOLD);
+		g_free (temp);
+		gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+		gtk_widget_show (label);
+		hbox = gtk_hbox_new (FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 45);
+		gtk_widget_show (hbox);
+		gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+	}
+
+	add_padding_to_box (vbox, 0, 15);
+
+	label = gtk_label_new (RETRY_LABEL_2);
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+	gtk_label_set_line_wrap (GTK_LABEL (label), FALSE);
+	gtk_widget_show (label);
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 30);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+
+	add_padding_to_box (vbox, 0, 15);
+
+	hbox = gtk_hbox_new (FALSE, 0);
+	button = gtk_button_new_with_label ("Jes!");
+	gtk_widget_show (button);
+	gtk_signal_connect (GTK_OBJECT (button), "clicked", GTK_SIGNAL_FUNC (start_over), installer);
+	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 5);
+	button = gtk_button_new_with_label ("Ne!");
+	gtk_widget_show (button);
+	gtk_signal_connect (GTK_OBJECT (button), "clicked", GTK_SIGNAL_FUNC (dont_start_over), installer);
+	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 5);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+
+	gtk_signal_connect (GTK_OBJECT (retry_page), "prepare",
+			    GTK_SIGNAL_FUNC (prep_lock),
+			    installer);
+	gnome_druid_set_page (installer->druid, GNOME_DRUID_PAGE (retry_page));
+}
+
+#if 0
+			while (installer->additional_packages) {
+				installer->failure_info = g_list_prepend (installer->failure_info,
+									  installer->additional_packages->data);
+				installer->additional_packages = g_list_remove (installer->additional_packages,
+										installer->additional_packages->data);
+			}
+#endif
+
+
+
+
 
 GtkWidget*
 create_finish_page_good (GtkWidget *druid, 
@@ -707,6 +835,8 @@ get_detailed_errors_foreach (const PackageData *pack, EazelInstaller *installer)
 
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
+		/* assume unknown status is caused by another package's breakage */
+		recoverable_error = TRUE;
 		break;
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
 		break;
@@ -742,6 +872,7 @@ get_detailed_errors_foreach (const PackageData *pack, EazelInstaller *installer)
 		message = g_strdup_printf (_("%s causes a circular dependency problem"), required);
 		break;
 	case PACKAGE_RESOLVED:
+		recoverable_error = TRUE;	/* duh. */
 		break;
 	}
 
@@ -750,7 +881,7 @@ get_detailed_errors_foreach (const PackageData *pack, EazelInstaller *installer)
 	if (! recoverable_error) {
 		installer->all_errors_are_recoverable = FALSE;
 	}
-	
+
 	if (message != NULL) {
 		installer->failure_info = g_list_append (installer->failure_info, message);
 	}
@@ -1156,7 +1287,8 @@ revert_nautilus_install (EazelInstall *service)
 }
 #endif 
 
-void 
+/* returns TRUE if it's got more stuff to do */
+gboolean
 eazel_installer_do_install (EazelInstaller *installer, GList *install_categories)
 {
        	GList *iter;
@@ -1174,21 +1306,14 @@ eazel_installer_do_install (EazelInstaller *installer, GList *install_categories
 				LOG_DEBUG (("ERROR : %s\n", (char *)(iter->data)));
 			}
 		}
-		if (installer->all_errors_are_recoverable) {
-			/* FIXME robey */
-			installer->failure_info = g_list_prepend (installer->failure_info,
-								  "Hey, I think we could recover from these errors!");
-			while (installer->additional_packages) {
-				installer->failure_info = g_list_prepend (installer->failure_info,
-									  installer->additional_packages->data);
-				installer->additional_packages = g_list_remove (installer->additional_packages,
-										installer->additional_packages->data);
-			}
-			installer->failure_info = g_list_prepend (installer->failure_info,
-								  "Hey, I think we could recover from these errors!");
+		if (installer->all_errors_are_recoverable && (installer->additional_packages != NULL)) {
+			jump_to_retry_page (installer);
+			return TRUE;
+		} else {
+			jump_to_error_page (installer, installer->failure_info, ERROR_LABEL);
 		}
-		jump_to_error_page (installer, installer->failure_info, ERROR_LABEL);
 	}
+	return FALSE;
 }
 
 

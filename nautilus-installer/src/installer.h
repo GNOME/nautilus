@@ -82,7 +82,7 @@ struct _EazelInstaller
 GtkType            eazel_installer_get_type(void);
 EazelInstaller    *eazel_installer_new   (void);
 void               eazel_installer_unref (GtkObject *object);
-void               eazel_installer_do_install (EazelInstaller *installer,
+gboolean           eazel_installer_do_install (EazelInstaller *installer,
 					       GList *categories);
 
 #define DEBUG

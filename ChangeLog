@@ -1,3 +1,17 @@
+2000-10-12  Robey Pointer  <robey@eazel.com>
+
+	* nautilus-installer/src/callbacks.c: (begin_install),
+	(prep_finish), (prep_lock):
+	* nautilus-installer/src/callbacks.h:
+	* nautilus-installer/src/installer.c: (start_over),
+	(dont_start_over), (jump_to_retry_page), (while),
+	(get_detailed_errors_foreach), (eazel_installer_do_install):
+	* nautilus-installer/src/installer.h:
+
+	First swing at making the bootstrap installer able to recover from
+	file conflict errors by attempting to download upgraded versions
+	of what we'd break.
+
 2000-10-12  Andy Hertzfeld  <andy@eazel>
 
 	* src/nautilus-shell-ui.xml:
