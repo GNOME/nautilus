@@ -333,9 +333,8 @@ nautilus_about_draw_info (NautilusAbout	*about,
 	int xpos, ypos, total_height;
 	int index;
 
-	/* FIXME bugzilla.eazel.com 5056: Hard-coded font here. */
-	plain_font = nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL);
-	bold_font  = nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL);
+	plain_font = nautilus_scalable_font_get_default_font ();
+	bold_font  = nautilus_scalable_font_make_bold (plain_font);
 
 	pixbuf = about->details->background_pixbuf;
 	total_height = gdk_pixbuf_get_height (pixbuf);
@@ -409,7 +408,7 @@ nautilus_about_update_authors (NautilusAbout *about)
 	randomize_authors (about);
 	
 	/* redraw the authors */
-	plain_font = nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL);
+	plain_font = nautilus_scalable_font_get_default_font ();
 	draw_author_list (about, about->details->background_pixbuf, plain_font);
 	gtk_object_unref (GTK_OBJECT(plain_font));
 	
