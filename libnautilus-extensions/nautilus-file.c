@@ -44,6 +44,7 @@
 #include <libgnome/gnome-mime.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-info.h>
+#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <parser.h>
 #include <pwd.h>
 #include <stdlib.h>
