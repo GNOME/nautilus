@@ -32,6 +32,7 @@
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <nautilus-directory-private.h>
 #include <libmedusa/medusa-search-service.h>
+#include <libmedusa/medusa-search-service-private.h>
 #include <glib.h>
 
 #include "nautilus-search-async.h"
