@@ -47,6 +47,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
+#include <libnautilus-extensions/nautilus-drag.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -718,32 +719,9 @@ receive_dropped_keyword (NautilusSidebar *sidebar,
 			 GtkSelectionData *selection_data)
 {
 	NautilusFile *file;
-	GList *keywords, *word;
 
-	/* FIXME bugzilla.eazel.com 2509: This is a cut and paste copy of code that's in the icon dnd code. */
-			
-	/* OK, now we've got the keyword, so add it to the metadata */
-
-	/* FIXME bugzilla.eazel.com 866: Can't expect to read the
-	 * keywords list instantly here. We might need to read the
-	 * metafile first.
-	 */
 	file = nautilus_file_get (sidebar->details->uri);
-	if (file == NULL)
-		return;
-
-	/* Check and see if it's already there. */
-	keywords = nautilus_file_get_keywords (file);
-	word = g_list_find_custom (keywords, selection_data->data, (GCompareFunc) strcmp);
-	if (word == NULL) {
-		keywords = g_list_append (keywords, g_strdup (selection_data->data));
-	} else {
-		keywords = g_list_remove_link (keywords, word);
-		g_free (word->data);
-		g_list_free_1 (word);
-	}
-
-	nautilus_file_set_keywords (file, keywords);
+	nautilus_drag_file_receive_dropped_keyword (file, selection_data->data);
 	nautilus_file_unref (file);
 	
 	/* regenerate the display */
@@ -775,7 +753,7 @@ nautilus_sidebar_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 			receive_dropped_uri_list (sidebar, x, y, selection_data);
 		break;	
 	case TARGET_KEYWORD:
-		receive_dropped_keyword(sidebar, x, y, selection_data);
+		receive_dropped_keyword (sidebar, x, y, selection_data);
 		break;
 	default:
 		g_warning ("unknown drop type");

@@ -1,3 +1,11 @@
+2000-10-10  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar.c: (receive_dropped_keyword),
+	(nautilus_sidebar_drag_data_received):
+	fixed bug where the eraser didn't work on the sidebar, and in the
+	process fixed bug 2509, sidebar should share emblem code, by
+	doing with work with nautilus_drag_file_receive_dropped_keyword.
+	
 2000-10-10  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: left a stray :
