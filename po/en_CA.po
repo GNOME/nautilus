@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-05-25 13:48-0700\n"
-"PO-Revision-Date: 2004-05-25 13:49-0700\n"
+"POT-Creation-Date: 2004-05-27 20:30-0400\n"
+"PO-Revision-Date: 2004-05-27 21:49-0700\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: English/Canada <adamw@FreeBSD.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -247,11 +247,13 @@ msgstr "Software"
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
+msgid_plural ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
-msgstr ""
+msgstr[0] ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
+msgstr[1] ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
 
@@ -3788,7 +3790,8 @@ msgstr "Are you sure you want to permanently delete \"%s\"?"
 #: src/file-manager/fm-directory-view.c:897
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
-msgid_plural "Are you sure you want to permanently delete the %d selected items?"
+msgid_plural ""
+"Are you sure you want to permanently delete the %d selected items?"
 msgstr[0] "Are you sure you want to permanently delete the %d selected item?"
 msgstr[1] "Are you sure you want to permanently delete the %d selected items?"
 
@@ -3918,11 +3921,13 @@ msgstr "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
+msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr ""
+msgstr[0]
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
+msgstr[1]
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
 
@@ -4056,18 +4061,22 @@ msgstr "\"%s\" will be copied if you select the Paste Files command"
 #, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
+msgid_plural ""
 "The %d selected items will be moved if you select the Paste Files command"
-msgstr ""
+msgstr[0]
 "The %d selected item will be moved if you select the Paste Files command"
+msgstr[1]
 "The %d selected items will be moved if you select the Paste Files command"
 
 #: src/file-manager/fm-directory-view.c:4865
 #, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
+msgid_plural ""
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr ""
+msgstr[0]
 "The %d selected item will be copied if you select the Paste Files command"
+msgstr[1]
 "The %d selected items will be copied if you select the Paste Files command"
 
 #: src/file-manager/fm-directory-view.c:4947
@@ -5678,7 +5687,7 @@ msgid "File Manager"
 msgstr "File Manager"
 
 #. Set initial window title
-#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:307
+#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:315
 #: src/nautilus-window-menus.c:601 src/nautilus-window.c:173
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -5790,7 +5799,7 @@ msgid "Close all Navigation windows"
 msgstr "Close all Navigation windows"
 
 #: src/nautilus-navigation-window-ui.xml.h:11
-#: src/nautilus-spatial-window-ui.xml.h:4
+#: src/nautilus-spatial-window-ui.xml.h:6
 msgid "Connect to _Server..."
 msgstr "Connect to _Server..."
 
@@ -5807,12 +5816,12 @@ msgid "Forward"
 msgstr "Forward"
 
 #: src/nautilus-navigation-window-ui.xml.h:15
-#: src/nautilus-spatial-window-ui.xml.h:6
+#: src/nautilus-spatial-window-ui.xml.h:8
 msgid "Go to templates folder"
 msgstr "Go to templates folder"
 
 #: src/nautilus-navigation-window-ui.xml.h:16
-#: src/nautilus-spatial-window-ui.xml.h:7
+#: src/nautilus-spatial-window-ui.xml.h:9
 msgid "Go to the CD Creator"
 msgstr "Go to the CD Creator"
 
@@ -5825,7 +5834,7 @@ msgid "Go to the previous visited location"
 msgstr "Go to the previous visited location"
 
 #: src/nautilus-navigation-window-ui.xml.h:19
-#: src/nautilus-spatial-window-ui.xml.h:8
+#: src/nautilus-spatial-window-ui.xml.h:10
 msgid "Go to the trash folder"
 msgstr "Go to the trash folder"
 
@@ -5874,7 +5883,7 @@ msgid "_Clear History"
 msgstr "_Clear History"
 
 #: src/nautilus-navigation-window-ui.xml.h:31
-#: src/nautilus-spatial-window-ui.xml.h:12
+#: src/nautilus-spatial-window-ui.xml.h:14
 msgid "_Computer"
 msgstr "_Computer"
 
@@ -5891,7 +5900,7 @@ msgid "_Go"
 msgstr "_Go"
 
 #: src/nautilus-navigation-window-ui.xml.h:35
-#: src/nautilus-spatial-window-ui.xml.h:13
+#: src/nautilus-spatial-window-ui.xml.h:15
 msgid "_Home"
 msgstr "_Home"
 
@@ -5904,12 +5913,12 @@ msgid "_Side Pane"
 msgstr "_Side Pane"
 
 #: src/nautilus-navigation-window-ui.xml.h:38
-#: src/nautilus-spatial-window-ui.xml.h:15
+#: src/nautilus-spatial-window-ui.xml.h:17
 msgid "_Templates"
 msgstr "_Templates"
 
 #: src/nautilus-navigation-window-ui.xml.h:39
-#: src/nautilus-spatial-window-ui.xml.h:16
+#: src/nautilus-spatial-window-ui.xml.h:18
 msgid "_Trash"
 msgstr "_Trash"
 
@@ -6340,30 +6349,38 @@ msgid "Show %s"
 msgstr "Show %s"
 
 #: src/nautilus-spatial-window-ui.xml.h:2
+msgid "Clos_e All Folders"
+msgstr "Clos_e All Folders"
+
+#: src/nautilus-spatial-window-ui.xml.h:3
 msgid "Close P_arent Folders"
 msgstr "Close P_arent Folders"
 
-#: src/nautilus-spatial-window-ui.xml.h:3
+#: src/nautilus-spatial-window-ui.xml.h:4
+msgid "Close all folder windows"
+msgstr "Close all folder windows"
+
+#: src/nautilus-spatial-window-ui.xml.h:5
 msgid "Close this folder's parents"
 msgstr "Close this folder's parents"
 
-#: src/nautilus-spatial-window-ui.xml.h:5
+#: src/nautilus-spatial-window-ui.xml.h:7
 msgid "Go to Computer"
 msgstr "Go to Computer"
 
-#: src/nautilus-spatial-window-ui.xml.h:9
+#: src/nautilus-spatial-window-ui.xml.h:11
 msgid "Open _Location..."
 msgstr "Open _Location..."
 
-#: src/nautilus-spatial-window-ui.xml.h:10
+#: src/nautilus-spatial-window-ui.xml.h:12
 msgid "Open _Parent"
 msgstr "Open _Parent"
 
-#: src/nautilus-spatial-window-ui.xml.h:11
+#: src/nautilus-spatial-window-ui.xml.h:13
 msgid "Open the parent folder"
 msgstr "Open the parent folder"
 
-#: src/nautilus-spatial-window-ui.xml.h:14
+#: src/nautilus-spatial-window-ui.xml.h:16
 msgid "_Places"
 msgstr "_Places"
 
