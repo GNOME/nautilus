@@ -335,7 +335,9 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
 
                 CORBA_exception_init (&ev);
 
+#ifdef DEBUG_mjs
                 printf ("query: \"%s\"\n", query);
+#endif
 
                 oaf_result = oaf_query (query, nautilus_sort_criteria, &ev);
                 
@@ -386,7 +388,9 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
         if (navinfo->content_identifiers) {
                 fallback_iid = ((NautilusViewIdentifier *)
                                 (navinfo->content_identifiers->data))->iid;
+#ifdef DEBUG_mjs
                 printf ("XXX - fallback_iid: %s\n", fallback_iid);
+#endif
         }
   
         add_components_from_metadata (navinfo);
