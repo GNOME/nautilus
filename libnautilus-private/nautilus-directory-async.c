@@ -2875,6 +2875,8 @@ make_dot_directory_uri (const char *uri)
 		return NULL;
 	}
 
+	dot_dir_vfs_uri = gnome_vfs_uri_append_file_name (vfs_uri, ".directory");
+
 	/* This does sync I/O but is allowed here since otherwise nautilus won't start showing the
 	 * directory's contents before all the scheduled calls of "look for .directory file" have been
 	 * finished. 
