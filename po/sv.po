@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2002-07-12 02:42+0200\n"
-"PO-Revision-Date: 2002-07-12 02:42+0200\n"
+"POT-Creation-Date: 2002-07-13 22:28+0200\n"
+"PO-Revision-Date: 2002-07-13 22:30+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2578,13 +2578,13 @@ msgstr "%d:e länken till %s"
 #.
 #. localizers: tag used to detect the first copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1161
-#: libnautilus-private/nautilus-file-operations.c:2264
+#: libnautilus-private/nautilus-file-operations.c:2293
 msgid " (copy)"
 msgstr " (kopia)"
 
 #. localizers: tag used to detect the second copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1163
-#: libnautilus-private/nautilus-file-operations.c:2264
+#: libnautilus-private/nautilus-file-operations.c:2293
 msgid " (another copy)"
 msgstr " (ytterligare en kopia)"
 
@@ -2867,279 +2867,281 @@ msgstr "Tömmer papperskorgen"
 msgid "Preparing to Empty the Trash..."
 msgstr "Förbereder tömning av papperskorgen..."
 
-#: libnautilus-private/nautilus-file-operations.c:2220
+#: libnautilus-private/nautilus-file-operations.c:2221
+#: src/file-manager/fm-desktop-icon-view.c:1355
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
+msgid "Empty Trash"
+msgstr "Töm papperskorgen"
+
+#: libnautilus-private/nautilus-file-operations.c:2237
 msgid ""
 "Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr "Är du säker att du vill ta bort alla objekt i papperskorgen permanent?"
 
-#: libnautilus-private/nautilus-file-operations.c:2222
-msgid "Empty Trash?"
-msgstr "Tömma papperskorgen?"
+#: libnautilus-private/nautilus-file-operations.c:2247
+msgid "_Empty"
+msgstr "_Töm"
 
-#: libnautilus-private/nautilus-file-operations.c:2223
-msgid "Empty"
-msgstr "Töm"
-
-#: libnautilus-private/nautilus-file-operations.c:2265
+#: libnautilus-private/nautilus-file-operations.c:2294
 msgid "foo"
 msgstr "apa"
 
-#: libnautilus-private/nautilus-file-operations.c:2265
-#: libnautilus-private/nautilus-file-operations.c:2275
+#: libnautilus-private/nautilus-file-operations.c:2294
+#: libnautilus-private/nautilus-file-operations.c:2304
 msgid "foo (copy)"
 msgstr "apa (kopia)"
 
-#: libnautilus-private/nautilus-file-operations.c:2266
+#: libnautilus-private/nautilus-file-operations.c:2295
 msgid ".bashrc"
 msgstr ".bashrc"
 
-#: libnautilus-private/nautilus-file-operations.c:2266
+#: libnautilus-private/nautilus-file-operations.c:2295
 msgid ".bashrc (copy)"
 msgstr ".bashrc (kopia)"
 
-#: libnautilus-private/nautilus-file-operations.c:2267
+#: libnautilus-private/nautilus-file-operations.c:2296
 msgid ".foo.txt"
 msgstr ".apa.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2267
+#: libnautilus-private/nautilus-file-operations.c:2296
 msgid ".foo (copy).txt"
 msgstr ".apa (kopia).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2268
+#: libnautilus-private/nautilus-file-operations.c:2297
 msgid "foo foo"
 msgstr "apa apa"
 
-#: libnautilus-private/nautilus-file-operations.c:2268
+#: libnautilus-private/nautilus-file-operations.c:2297
 msgid "foo foo (copy)"
 msgstr "apa apa (kopia)"
 
-#: libnautilus-private/nautilus-file-operations.c:2269
+#: libnautilus-private/nautilus-file-operations.c:2298
 msgid "foo.txt"
 msgstr "apa.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2269
-#: libnautilus-private/nautilus-file-operations.c:2276
+#: libnautilus-private/nautilus-file-operations.c:2298
+#: libnautilus-private/nautilus-file-operations.c:2305
 msgid "foo (copy).txt"
 msgstr "apa (kopia).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2270
+#: libnautilus-private/nautilus-file-operations.c:2299
 msgid "foo foo.txt"
 msgstr "apa apa.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2270
-#: libnautilus-private/nautilus-file-operations.c:2292
+#: libnautilus-private/nautilus-file-operations.c:2299
+#: libnautilus-private/nautilus-file-operations.c:2321
 msgid "foo foo (copy).txt"
 msgstr "apa apa (kopia).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2271
+#: libnautilus-private/nautilus-file-operations.c:2300
 msgid "foo foo.txt txt"
 msgstr "apa apa.txt txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2271
+#: libnautilus-private/nautilus-file-operations.c:2300
 msgid "foo foo (copy).txt txt"
 msgstr "apa apa (kopia).txt txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2272
+#: libnautilus-private/nautilus-file-operations.c:2301
 msgid "foo...txt"
 msgstr "apa...txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2272
+#: libnautilus-private/nautilus-file-operations.c:2301
 msgid "foo.. (copy).txt"
 msgstr "apa.. (kopia).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2273
+#: libnautilus-private/nautilus-file-operations.c:2302
 msgid "foo..."
 msgstr "apa..."
 
-#: libnautilus-private/nautilus-file-operations.c:2273
+#: libnautilus-private/nautilus-file-operations.c:2302
 msgid "foo... (copy)"
 msgstr "apa... (kopia)"
 
-#: libnautilus-private/nautilus-file-operations.c:2274
+#: libnautilus-private/nautilus-file-operations.c:2303
 msgid "foo. (copy)"
 msgstr "apa. (kopia)"
 
-#: libnautilus-private/nautilus-file-operations.c:2274
+#: libnautilus-private/nautilus-file-operations.c:2303
 msgid "foo. (another copy)"
 msgstr "apa. (ytterligare en kopia)"
 
-#: libnautilus-private/nautilus-file-operations.c:2275
-#: libnautilus-private/nautilus-file-operations.c:2277
+#: libnautilus-private/nautilus-file-operations.c:2304
+#: libnautilus-private/nautilus-file-operations.c:2306
 msgid "foo (another copy)"
 msgstr "apa (ytterligare en kopia)"
 
-#: libnautilus-private/nautilus-file-operations.c:2276
-#: libnautilus-private/nautilus-file-operations.c:2278
+#: libnautilus-private/nautilus-file-operations.c:2305
+#: libnautilus-private/nautilus-file-operations.c:2307
 msgid "foo (another copy).txt"
 msgstr "apa (ytterligare en kopia).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2277
+#: libnautilus-private/nautilus-file-operations.c:2306
 msgid "foo (3rd copy)"
 msgstr "apa (tredje kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2278
+#: libnautilus-private/nautilus-file-operations.c:2307
 msgid "foo (3rd copy).txt"
 msgstr "apa (tredje kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2279
+#: libnautilus-private/nautilus-file-operations.c:2308
 msgid "foo foo (another copy).txt"
 msgstr "apa apa (ytterligare en kopia).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2279
+#: libnautilus-private/nautilus-file-operations.c:2308
 msgid "foo foo (3rd copy).txt"
 msgstr "apa apa (tredje kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2280
-#: libnautilus-private/nautilus-file-operations.c:2297
+#: libnautilus-private/nautilus-file-operations.c:2309
+#: libnautilus-private/nautilus-file-operations.c:2326
 msgid "foo (13th copy)"
 msgstr "apa (13:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2280
+#: libnautilus-private/nautilus-file-operations.c:2309
 msgid "foo (14th copy)"
 msgstr "apa (14:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2281
-#: libnautilus-private/nautilus-file-operations.c:2298
+#: libnautilus-private/nautilus-file-operations.c:2310
+#: libnautilus-private/nautilus-file-operations.c:2327
 msgid "foo (13th copy).txt"
 msgstr "apa (13:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2281
+#: libnautilus-private/nautilus-file-operations.c:2310
 msgid "foo (14th copy).txt"
 msgstr "apa (14:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2282
+#: libnautilus-private/nautilus-file-operations.c:2311
 msgid "foo (21st copy)"
 msgstr "apa (21:a kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2282
-#: libnautilus-private/nautilus-file-operations.c:2284
+#: libnautilus-private/nautilus-file-operations.c:2311
+#: libnautilus-private/nautilus-file-operations.c:2313
 msgid "foo (22nd copy)"
 msgstr "apa (22:a kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2283
+#: libnautilus-private/nautilus-file-operations.c:2312
 msgid "foo (21st copy).txt"
 msgstr "apa (21:a kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2283
-#: libnautilus-private/nautilus-file-operations.c:2285
+#: libnautilus-private/nautilus-file-operations.c:2312
+#: libnautilus-private/nautilus-file-operations.c:2314
 msgid "foo (22nd copy).txt"
 msgstr "apa (22:a kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2284
-#: libnautilus-private/nautilus-file-operations.c:2286
+#: libnautilus-private/nautilus-file-operations.c:2313
+#: libnautilus-private/nautilus-file-operations.c:2315
 msgid "foo (23rd copy)"
 msgstr "apa (23:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2285
-#: libnautilus-private/nautilus-file-operations.c:2287
+#: libnautilus-private/nautilus-file-operations.c:2314
+#: libnautilus-private/nautilus-file-operations.c:2316
 msgid "foo (23rd copy).txt"
 msgstr "apa (23:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2286
-#: libnautilus-private/nautilus-file-operations.c:2288
+#: libnautilus-private/nautilus-file-operations.c:2315
+#: libnautilus-private/nautilus-file-operations.c:2317
 msgid "foo (24th copy)"
 msgstr "apa (24:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2287
-#: libnautilus-private/nautilus-file-operations.c:2289
+#: libnautilus-private/nautilus-file-operations.c:2316
+#: libnautilus-private/nautilus-file-operations.c:2318
 msgid "foo (24th copy).txt"
 msgstr "apa (24:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2288
+#: libnautilus-private/nautilus-file-operations.c:2317
 msgid "foo (25th copy)"
 msgstr "apa (25:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2289
+#: libnautilus-private/nautilus-file-operations.c:2318
 msgid "foo (25th copy).txt"
 msgstr "apa (25:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2290
+#: libnautilus-private/nautilus-file-operations.c:2319
 msgid "foo foo (24th copy)"
 msgstr "apa apa (24:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2290
+#: libnautilus-private/nautilus-file-operations.c:2319
 msgid "foo foo (25th copy)"
 msgstr "apa apa (25:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2291
+#: libnautilus-private/nautilus-file-operations.c:2320
 msgid "foo foo (24th copy).txt"
 msgstr "apa apa (24:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2291
+#: libnautilus-private/nautilus-file-operations.c:2320
 msgid "foo foo (25th copy).txt"
 msgstr "apa apa (25:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2292
+#: libnautilus-private/nautilus-file-operations.c:2321
 msgid "foo foo (100000000000000th copy).txt"
 msgstr "apa apa (100000000000000:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2293
+#: libnautilus-private/nautilus-file-operations.c:2322
 msgid "foo (10th copy)"
 msgstr "apa (10:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2293
-#: libnautilus-private/nautilus-file-operations.c:2295
+#: libnautilus-private/nautilus-file-operations.c:2322
+#: libnautilus-private/nautilus-file-operations.c:2324
 msgid "foo (11th copy)"
 msgstr "apa (11:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2294
+#: libnautilus-private/nautilus-file-operations.c:2323
 msgid "foo (10th copy).txt"
 msgstr "apa (10:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2294
-#: libnautilus-private/nautilus-file-operations.c:2296
+#: libnautilus-private/nautilus-file-operations.c:2323
+#: libnautilus-private/nautilus-file-operations.c:2325
 msgid "foo (11th copy).txt"
 msgstr "apa (11:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2295
-#: libnautilus-private/nautilus-file-operations.c:2297
+#: libnautilus-private/nautilus-file-operations.c:2324
+#: libnautilus-private/nautilus-file-operations.c:2326
 msgid "foo (12th copy)"
 msgstr "apa (12:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2296
-#: libnautilus-private/nautilus-file-operations.c:2298
+#: libnautilus-private/nautilus-file-operations.c:2325
+#: libnautilus-private/nautilus-file-operations.c:2327
 msgid "foo (12th copy).txt"
 msgstr "apa (12:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2299
+#: libnautilus-private/nautilus-file-operations.c:2328
 msgid "foo (110th copy)"
 msgstr "apa (110:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2299
+#: libnautilus-private/nautilus-file-operations.c:2328
 msgid "foo (111th copy)"
 msgstr "apa (111:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2300
+#: libnautilus-private/nautilus-file-operations.c:2329
 msgid "foo (110th copy).txt"
 msgstr "apa (110:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2300
+#: libnautilus-private/nautilus-file-operations.c:2329
 msgid "foo (111th copy).txt"
 msgstr "apa (111:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2301
+#: libnautilus-private/nautilus-file-operations.c:2330
 msgid "foo (122nd copy)"
 msgstr "apa (122:a kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2301
-#: libnautilus-private/nautilus-file-operations.c:2303
+#: libnautilus-private/nautilus-file-operations.c:2330
+#: libnautilus-private/nautilus-file-operations.c:2332
 msgid "foo (123rd copy)"
 msgstr "apa (123:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2302
+#: libnautilus-private/nautilus-file-operations.c:2331
 msgid "foo (122nd copy).txt"
 msgstr "apa (122:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2302
-#: libnautilus-private/nautilus-file-operations.c:2304
+#: libnautilus-private/nautilus-file-operations.c:2331
+#: libnautilus-private/nautilus-file-operations.c:2333
 msgid "foo (123rd copy).txt"
 msgstr "apa (123:e kopian).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2303
+#: libnautilus-private/nautilus-file-operations.c:2332
 msgid "foo (124th copy)"
 msgstr "apa (124:e kopian)"
 
-#: libnautilus-private/nautilus-file-operations.c:2304
+#: libnautilus-private/nautilus-file-operations.c:2333
 msgid "foo (124th copy).txt"
 msgstr "apa (124:e kopian).txt"
 
@@ -3735,131 +3737,136 @@ msgstr ""
 "Om du använder en paketerad version av Nautilus är snabbsökning inte "
 "tillgänglig.\n"
 
-#: libnautilus-private/nautilus-program-chooser.c:290
+#: libnautilus-private/nautilus-program-chooser.c:195
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr "Det inträffade ett fel vid visande av hjälp: %s"
+
+#: libnautilus-private/nautilus-program-chooser.c:335
 msgid "not in menu"
 msgstr "inte i menyn"
 
-#: libnautilus-private/nautilus-program-chooser.c:293
+#: libnautilus-private/nautilus-program-chooser.c:338
 msgid "in menu for this file"
 msgstr "i menyn för denna fil"
 
-#: libnautilus-private/nautilus-program-chooser.c:296
-#: libnautilus-private/nautilus-program-chooser.c:299
+#: libnautilus-private/nautilus-program-chooser.c:341
+#: libnautilus-private/nautilus-program-chooser.c:344
 #, c-format
 msgid "in menu for \"%s\""
 msgstr "i menyn för \"%s\""
 
-#: libnautilus-private/nautilus-program-chooser.c:302
+#: libnautilus-private/nautilus-program-chooser.c:347
 msgid "default for this file"
 msgstr "standard för denna fil"
 
-#: libnautilus-private/nautilus-program-chooser.c:305
-#: libnautilus-private/nautilus-program-chooser.c:308
+#: libnautilus-private/nautilus-program-chooser.c:350
+#: libnautilus-private/nautilus-program-chooser.c:353
 #, c-format
 msgid "default for \"%s\""
 msgstr "standard för \"%s\""
 
-#: libnautilus-private/nautilus-program-chooser.c:353
+#: libnautilus-private/nautilus-program-chooser.c:398
 #, c-format
 msgid "Is not in the menu for \"%s\" items."
 msgstr "Är inte i menyn för \"%s\"-objekt."
 
-#: libnautilus-private/nautilus-program-chooser.c:356
+#: libnautilus-private/nautilus-program-chooser.c:401
 #, c-format
 msgid "Is in the menu for \"%s\"."
 msgstr "Är i menyn för \"%s\"."
 
-#: libnautilus-private/nautilus-program-chooser.c:359
+#: libnautilus-private/nautilus-program-chooser.c:404
 #, c-format
 msgid "Is in the menu for \"%s\" items."
 msgstr "Är i menyn för \"%s\"-objekt."
 
-#: libnautilus-private/nautilus-program-chooser.c:362
+#: libnautilus-private/nautilus-program-chooser.c:407
 #, c-format
 msgid "Is in the menu for all \"%s\" items."
 msgstr "Är i menyn för alla \"%s\"-objekt."
 
-#: libnautilus-private/nautilus-program-chooser.c:365
+#: libnautilus-private/nautilus-program-chooser.c:410
 #, c-format
 msgid "Is the default for \"%s\"."
 msgstr "Är standard för \"%s\"."
 
-#: libnautilus-private/nautilus-program-chooser.c:368
+#: libnautilus-private/nautilus-program-chooser.c:413
 #, c-format
 msgid "Is the default for \"%s\" items."
 msgstr "Är standard för \"%s\"-objekt."
 
-#: libnautilus-private/nautilus-program-chooser.c:371
+#: libnautilus-private/nautilus-program-chooser.c:416
 #, c-format
 msgid "Is the default for all \"%s\" items."
 msgstr "Är standard för alla \"%s\"-objekt."
 
-#: libnautilus-private/nautilus-program-chooser.c:989
+#: libnautilus-private/nautilus-program-chooser.c:1034
 #, c-format
 msgid "Modify \"%s\""
 msgstr "Ändra \"%s\""
 
 #. Radio button for adding to short list for file type.
-#: libnautilus-private/nautilus-program-chooser.c:1015
+#: libnautilus-private/nautilus-program-chooser.c:1060
 #, c-format
 msgid "Include in the menu for \"%s\" items"
 msgstr "Inkludera i menyn för \"%s\"-objekt"
 
 #. Radio button for setting default for file type.
-#: libnautilus-private/nautilus-program-chooser.c:1022
+#: libnautilus-private/nautilus-program-chooser.c:1067
 #, c-format
 msgid "Use as default for \"%s\" items"
 msgstr "Använd som standard för \"%s\"-objekt"
 
 #. Radio button for adding to short list for specific file.
-#: libnautilus-private/nautilus-program-chooser.c:1029
+#: libnautilus-private/nautilus-program-chooser.c:1074
 #, c-format
 msgid "Include in the menu for \"%s\" only"
 msgstr "Inkludera endast i menyn för \"%s\""
 
 #. Radio button for setting default for specific file.
-#: libnautilus-private/nautilus-program-chooser.c:1035
+#: libnautilus-private/nautilus-program-chooser.c:1080
 #, c-format
 msgid "Use as default for \"%s\" only"
 msgstr "Använd som standard endast för \"%s\""
 
 #. Radio button for not including program in short list for type or file.
-#: libnautilus-private/nautilus-program-chooser.c:1042
+#: libnautilus-private/nautilus-program-chooser.c:1087
 #, c-format
 msgid "Don't include in the menu for \"%s\" items"
 msgstr "Inkludera inte i menyn för \"%s\"-objekt"
 
-#: libnautilus-private/nautilus-program-chooser.c:1200
+#: libnautilus-private/nautilus-program-chooser.c:1245
 #: src/file-manager/fm-search-list-view.c:494
 msgid "Name"
 msgstr "Namn"
 
-#: libnautilus-private/nautilus-program-chooser.c:1209
+#: libnautilus-private/nautilus-program-chooser.c:1254
 msgid "Status"
 msgstr "Status"
 
-#: libnautilus-private/nautilus-program-chooser.c:1287
+#: libnautilus-private/nautilus-program-chooser.c:1345
 msgid "C_hoose"
 msgstr "_Välj"
 
-#: libnautilus-private/nautilus-program-chooser.c:1290
+#: libnautilus-private/nautilus-program-chooser.c:1348
 msgid "Done"
 msgstr "Klar"
 
-#: libnautilus-private/nautilus-program-chooser.c:1363
+#: libnautilus-private/nautilus-program-chooser.c:1421
 msgid "_Modify..."
 msgstr "_Ändra..."
 
 #. Framed area with button to launch mime type editing capplet.
-#: libnautilus-private/nautilus-program-chooser.c:1372
+#: libnautilus-private/nautilus-program-chooser.c:1430
 msgid "File Types and Programs"
 msgstr "Filtyper och program"
 
-#: libnautilus-private/nautilus-program-chooser.c:1384
+#: libnautilus-private/nautilus-program-chooser.c:1442
 msgid "_Go There"
 msgstr "_Gå dit"
 
-#: libnautilus-private/nautilus-program-chooser.c:1391
+#: libnautilus-private/nautilus-program-chooser.c:1449
 msgid ""
 "You can configure which programs are offered for which file types in the "
 "File Types and Programs dialog."
@@ -3867,39 +3874,39 @@ msgstr ""
 "Du kan konfigurera vilka program som erbjuds för vilka filtyper i dialogen "
 "Filtyper och program."
 
-#: libnautilus-private/nautilus-program-chooser.c:1422
+#: libnautilus-private/nautilus-program-chooser.c:1483
 msgid "Open with Other Application"
 msgstr "Öppna med annat program"
 
-#: libnautilus-private/nautilus-program-chooser.c:1423
+#: libnautilus-private/nautilus-program-chooser.c:1484
 #, c-format
 msgid "Choose an application with which to open \"%s\":"
 msgstr "Välj ett program att öppna \"%s\" med:"
 
-#: libnautilus-private/nautilus-program-chooser.c:1427
+#: libnautilus-private/nautilus-program-chooser.c:1488
 msgid "Open with Other Viewer"
 msgstr "Öppna med annan visare"
 
-#: libnautilus-private/nautilus-program-chooser.c:1428
+#: libnautilus-private/nautilus-program-chooser.c:1489
 #, c-format
 msgid "Choose a view for \"%s\":"
 msgstr "Välj en vy för \"%s\":"
 
-#: libnautilus-private/nautilus-program-chooser.c:1530
+#: libnautilus-private/nautilus-program-chooser.c:1591
 #, c-format
 msgid "No viewers are available for \"%s\"."
 msgstr "Inga visare är tillgängliga för \"%s\"."
 
-#: libnautilus-private/nautilus-program-chooser.c:1531
+#: libnautilus-private/nautilus-program-chooser.c:1592
 msgid "No Viewers Available"
 msgstr "Inga visare är tillgängliga"
 
-#: libnautilus-private/nautilus-program-chooser.c:1534
+#: libnautilus-private/nautilus-program-chooser.c:1595
 #, c-format
 msgid "There is no application associated with \"%s\"."
 msgstr "Det finns inget program som är associerad med \"%s\"."
 
-#: libnautilus-private/nautilus-program-chooser.c:1535
+#: libnautilus-private/nautilus-program-chooser.c:1596
 msgid "No Application Associated"
 msgstr "Inget program är associerat"
 
@@ -3907,7 +3914,7 @@ msgstr "Inget program är associerat"
 #. * user can't add components to the complete list even from the capplet.
 #. * (They can add applications though.)
 #.
-#: libnautilus-private/nautilus-program-chooser.c:1542
+#: libnautilus-private/nautilus-program-chooser.c:1603
 #, c-format
 msgid ""
 "%s\n"
@@ -3920,7 +3927,7 @@ msgstr ""
 "Du kan konfigurera GNOME att associera program med filtyper. Vill du "
 "associera ett program med denna filtyp nu?"
 
-#: libnautilus-private/nautilus-program-chooser.c:1548
+#: libnautilus-private/nautilus-program-chooser.c:1609
 msgid "Associate Application"
 msgstr "Associera program"
 
@@ -4565,11 +4572,6 @@ msgstr "%.0sHem"
 #: src/file-manager/fm-desktop-icon-view.c:1353
 msgid "Empty Trash..."
 msgstr "Töm papperskorgen..."
-
-#: src/file-manager/fm-desktop-icon-view.c:1355
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
-msgid "Empty Trash"
-msgstr "Töm papperskorgen"
 
 #: src/file-manager/fm-directory-view.c:476
 #, c-format
@@ -7605,6 +7607,9 @@ msgstr "Zooma"
 msgid "Set the zoom level of the current view"
 msgstr "Ställ in zoomnivån på den aktuella vyn"
 
+#~ msgid "Empty Trash?"
+#~ msgstr "Tömma papperskorgen?"
+
 #~ msgid "MIME Type:"
 #~ msgstr "MIME-typ:"
 
@@ -7812,9 +7817,6 @@ msgstr "Ställ in zoomnivån på den aktuella vyn"
 
 #~ msgid "Solaris Volume"
 #~ msgstr "Solaris-volym"
-
-#~ msgid "There was an error displaying help: %s"
-#~ msgstr "Det inträffade ett fel vid visande av hjälp: %s"
 
 #~ msgid "Clear"
 #~ msgstr "Töm"
