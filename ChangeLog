@@ -1,3 +1,20 @@
+2000-07-17  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_name_for_regular_file):
+	added code to make sure that we use the generic document icon for
+	text files so that the text-in-icons feature works, even if the
+	more specific gnome ones are installed.
+	
+	* icons/eazel/i-regular.png:
+	* icons/eazel/i-regular-12.png:
+	* icons/eazel/i-regular-24.png:
+	* icons/eazel/i-regular-36.png:
+	* icons/eazel/i-regular-72.png:
+	* icons/eazel/i-regular-96.png:
+	new icons from Susan for the non-anti-aliased case that are
+	consistent with the anti-aliased one.
+		
 2000-07-17  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-list.c:

@@ -499,9 +499,12 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 {
         char *mime_type;
         const char *icon_name;
-
+	gboolean is_text_file;
+	
         mime_type = nautilus_file_get_mime_type (file);
-        if (mime_type != NULL) {
+        is_text_file = mime_type != NULL && nautilus_str_has_prefix (mime_type, "text/");
+	
+	if (mime_type != NULL && !is_text_file) {
                 icon_name = gnome_vfs_mime_get_value (mime_type, "icon-filename");
 		g_free (mime_type);
 		if (icon_name != NULL) {
@@ -512,7 +515,7 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 	/* gnome_vfs_mime didn't give us an icon name, so we have to
          * fall back on default icons.
 	 */
-	if (nautilus_file_is_executable (file)) {
+	if (nautilus_file_is_executable (file) & !is_text_file) {
 		return ICON_NAME_EXECUTABLE;
 	}
 	return ICON_NAME_REGULAR;
