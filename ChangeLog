@@ -1,3 +1,10 @@
+2001-04-23  John Harper  <jsh@eazel.com>
+
+	* components/news/nautilus-news.c (set_up_edit_widgets): when
+	packing the remove list into its container, use `TRUE, TRUE'
+	instead of `FALSE, FALSE'. This makes the `Remove a site' list
+	expand properly
+
 2001-04-23  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-preferences-box.c:

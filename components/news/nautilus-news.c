@@ -1865,7 +1865,7 @@ set_up_edit_widgets (News *news, GtkWidget *container)
 	
 	/* allocate the remove widgets */
 	make_remove_widgets (news, temp_vbox);
-	gtk_box_pack_start (GTK_BOX (expand_box), temp_vbox, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (expand_box), temp_vbox, TRUE, TRUE, 0);
 	
 	/* add the button box at the bottom with a cancel button */
 	button_box = add_command_buttons (news, _("Cancel"), FALSE);
