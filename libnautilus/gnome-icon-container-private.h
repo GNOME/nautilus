@@ -21,8 +21,8 @@
    Author: Ettore Perazzoli <ettore@gnu.org>
 */
 
-#ifndef _GNOME_ICON_CONTAINER_PRIVATE_H
-#define _GNOME_ICON_CONTAINER_PRIVATE_H
+#ifndef GNOME_ICON_CONTAINER_PRIVATE_H
+#define GNOME_ICON_CONTAINER_PRIVATE_H
 
 #include "gnome-icon-container.h"
 #include "gnome-icon-container-dnd.h"
@@ -106,7 +106,7 @@ struct _GnomeIconContainerRubberbandInfo {
 };
 typedef struct _GnomeIconContainerRubberbandInfo GnomeIconContainerRubberbandInfo;
 
-struct _GnomeIconContainerPrivate {
+struct _GnomeIconContainerDetails {
 	/* Base URI for Drag & Drop.  */
 	gchar *base_uri;
 
@@ -200,24 +200,24 @@ typedef struct _GnomeIconContainerIconModeInfo GnomeIconContainerIconModeInfo;
 extern GnomeIconContainerIconModeInfo gnome_icon_container_icon_mode_info[];
 
 #define GNOME_ICON_CONTAINER_ICON_WIDTH(container) \
-	gnome_icon_container_icon_mode_info[container->priv->icon_mode].icon_width
+	gnome_icon_container_icon_mode_info[container->details->icon_mode].icon_width
 
 #define GNOME_ICON_CONTAINER_ICON_HEIGHT(container) \
-	gnome_icon_container_icon_mode_info[container->priv->icon_mode].icon_height
+	gnome_icon_container_icon_mode_info[container->details->icon_mode].icon_height
 
 #define GNOME_ICON_CONTAINER_CELL_WIDTH(container) \
-	gnome_icon_container_icon_mode_info[container->priv->icon_mode].cell_width
+	gnome_icon_container_icon_mode_info[container->details->icon_mode].cell_width
 
 #define GNOME_ICON_CONTAINER_CELL_HEIGHT(container) \
-	gnome_icon_container_icon_mode_info[container->priv->icon_mode].cell_height
+	gnome_icon_container_icon_mode_info[container->details->icon_mode].cell_height
 
 #define GNOME_ICON_CONTAINER_CELL_SPACING(container) \
-	gnome_icon_container_icon_mode_info[container->priv->icon_mode].cell_spacing
+	gnome_icon_container_icon_mode_info[container->details->icon_mode].cell_spacing
 
 #define GNOME_ICON_CONTAINER_ICON_XOFFSET(container) \
-	gnome_icon_container_icon_mode_info[container->priv->icon_mode].icon_xoffset
+	gnome_icon_container_icon_mode_info[container->details->icon_mode].icon_xoffset
 
 #define GNOME_ICON_CONTAINER_ICON_YOFFSET(container) \
-	gnome_icon_container_icon_mode_info[container->priv->icon_mode].icon_yoffset
+	gnome_icon_container_icon_mode_info[container->details->icon_mode].icon_yoffset
 
-#endif /*  _GNOME_ICON_CONTAINER_PRIVATE_H */
+#endif /* GNOME_ICON_CONTAINER_PRIVATE_H */

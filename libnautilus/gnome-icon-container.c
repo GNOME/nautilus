@@ -33,8 +33,7 @@
 
 #include <gdk-pixbuf/gnome-canvas-pixbuf.h>
 
-
-static GnomeCanvasClass *parent_class;
+#include "nautilus-gtk-macros.h"
 
 /* Interval for updating the rubberband selection, in milliseconds.  */
 #define RUBBERBAND_TIMEOUT_INTERVAL 10
@@ -50,6 +49,11 @@ static GnomeCanvasClass *parent_class;
 
 /* maximum amount of milliseconds the mouse button is allowed to stay down and still be considered a click */
 #define MAX_CLICK_TIME 1500
+
+static void gnome_icon_container_initialize_class (GnomeIconContainerClass *class);
+static void gnome_icon_container_initialize (GnomeIconContainer *container);
+
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (GnomeIconContainer, gnome_icon_container, GNOME_TYPE_CANVAS)
 
 
 /* WARNING: Keep this in sync with the `GnomeIconContainerIconMode' enum in
@@ -93,7 +97,7 @@ static void
 icon_configure (GnomeIconContainerIcon *icon,
 		GnomeIconContainer *container)
 {
-	switch (container->priv->icon_mode) {
+	switch (container->details->icon_mode) {
 	case GNOME_ICON_CONTAINER_NORMAL_ICONS:
 		gnome_icon_text_item_configure
 			(icon->text_item,
@@ -121,7 +125,7 @@ icon_configure (GnomeIconContainerIcon *icon,
 			 TRUE);
 		break;
 	default:
-		g_warning ("Unknown icon mode %d.", container->priv->icon_mode);
+		g_warning ("Unknown icon mode %d.", container->details->icon_mode);
 	}
 
 	gnome_canvas_item_set
@@ -137,11 +141,11 @@ icon_new (GnomeIconContainer *container,
 	  gpointer data)
 {
 	GnomeCanvas *canvas;
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GnomeIconContainerIcon *new;
 
 	canvas = GNOME_CANVAS (container);
-	priv = container->priv;
+	details = container->details;
 
 	new = g_new (GnomeIconContainerIcon, 1);
 
@@ -178,10 +182,10 @@ icon_new_pixbuf (GnomeIconContainer *container,
 		const gchar *text,
 		gpointer data)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GnomeIconContainerIcon *new;
 
-	priv = container->priv;
+	details = container->details;
 
 	new = icon_new (container, text, data);
 
@@ -210,9 +214,9 @@ icon_position (GnomeIconContainerIcon *icon,
 	       GnomeIconContainer *container,
 	       gdouble x, gdouble y)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 
-	priv = container->priv;
+	details = container->details;
 
 	icon->x = x;
 	icon->y = y;
@@ -220,7 +224,7 @@ icon_position (GnomeIconContainerIcon *icon,
 	/* ???  Canvas bug ???  It should be enough to do this once in
            `icon-configure()', but it does not work.  */
 
-	switch (container->priv->icon_mode) {
+	switch (container->details->icon_mode) {
 	case GNOME_ICON_CONTAINER_NORMAL_ICONS:
 		gnome_icon_text_item_setxy
 			(icon->text_item,
@@ -236,7 +240,7 @@ icon_position (GnomeIconContainerIcon *icon,
 			 GNOME_ICON_CONTAINER_CELL_SPACING (container));
 		break;
 	default:
-		g_warning ("Unknown icon mode %d.", container->priv->icon_mode);
+		g_warning ("Unknown icon mode %d.", container->details->icon_mode);
 	}
 	
 	gnome_canvas_item_set
@@ -681,9 +685,9 @@ world_to_grid (GnomeIconContainer *container,
 	       gint world_x, gint world_y,
 	       guint *grid_x_return, guint *grid_y_return)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 
-	priv = container->priv;
+	details = container->details;
 
 	if (grid_x_return != NULL) {
 		if (world_x < 0)
@@ -705,9 +709,9 @@ grid_to_world (GnomeIconContainer *container,
 	       guint grid_x, guint grid_y,
 	       gint *world_x_return, gint *world_y_return)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 
-	priv = container->priv;
+	details = container->details;
 
 	if (world_x_return != NULL)
 		*world_x_return
@@ -725,26 +729,26 @@ static void
 scroll (GnomeIconContainer *container,
 	gint delta_x, gint delta_y)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GtkAdjustment *hadj, *vadj;
 	GtkAllocation *allocation;
 	gfloat vnew, hnew;
 	gfloat hmax, vmax;
 
-	priv = container->priv;
+	details = container->details;
 
 	hadj = GTK_LAYOUT (container)->hadjustment;
 	vadj = GTK_LAYOUT (container)->vadjustment;
 
 	allocation = &GTK_WIDGET (container)->allocation;
 
-	if (container->priv->width > allocation->width)
-		hmax = (gfloat) (container->priv->width - allocation->width);
+	if (container->details->width > allocation->width)
+		hmax = (gfloat) (container->details->width - allocation->width);
 	else
 		hmax = 0.0;
 
-	if (container->priv->height > allocation->height)
-		vmax = (gfloat) (container->priv->height - allocation->height);
+	if (container->details->height > allocation->height)
+		vmax = (gfloat) (container->details->height - allocation->height);
 	else
 		vmax = 0.0;
 
@@ -765,16 +769,16 @@ static void
 make_icon_visible (GnomeIconContainer *container,
 		   GnomeIconContainerIcon *icon)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GtkAllocation *allocation;
 	GtkAdjustment *hadj, *vadj;
 	gint x1, y1, x2, y2;
 
-	priv = container->priv;
+	details = container->details;
 	allocation = &GTK_WIDGET (container)->allocation;
 
-	if (priv->height < allocation->height
-	    && priv->width < allocation->width)
+	if (details->height < allocation->height
+	    && details->width < allocation->width)
 		return;
 
 	hadj = GTK_LAYOUT (container)->hadjustment;
@@ -802,9 +806,9 @@ kbd_icon_visibility_timeout_cb (gpointer data)
 
 	container = GNOME_ICON_CONTAINER (data);
 
-	if (container->priv->kbd_current != NULL)
-		make_icon_visible (container, container->priv->kbd_current);
-	container->priv->kbd_icon_visibility_timer_tag = -1;
+	if (container->details->kbd_current != NULL)
+		make_icon_visible (container, container->details->kbd_current);
+	container->details->kbd_icon_visibility_timer_tag = -1;
 
 	GDK_THREADS_LEAVE ();
 
@@ -814,24 +818,24 @@ kbd_icon_visibility_timeout_cb (gpointer data)
 static void
 unschedule_kbd_icon_visibility (GnomeIconContainer *container)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 
-	priv = container->priv;
+	details = container->details;
 
-	if (priv->kbd_icon_visibility_timer_tag != -1)
-		gtk_timeout_remove (priv->kbd_icon_visibility_timer_tag);
+	if (details->kbd_icon_visibility_timer_tag != -1)
+		gtk_timeout_remove (details->kbd_icon_visibility_timer_tag);
 }
 
 static void
 schedule_kbd_icon_visibility (GnomeIconContainer *container)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 
-	priv = container->priv;
+	details = container->details;
 
 	unschedule_kbd_icon_visibility (container);
 
-	priv->kbd_icon_visibility_timer_tag
+	details->kbd_icon_visibility_timer_tag
 		= gtk_timeout_add (KBD_ICON_VISIBILITY_TIMEOUT,
 				   kbd_icon_visibility_timeout_cb,
 				   container);
@@ -840,12 +844,12 @@ schedule_kbd_icon_visibility (GnomeIconContainer *container)
 static void
 prepare_for_layout (GnomeIconContainer *container)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GList *p;
 
-	priv = container->priv;
+	details = container->details;
 
-	for (p = priv->icons; p != NULL; p = p->next) {
+	for (p = details->icons; p != NULL; p = p->next) {
 		GnomeIconContainerIcon *icon;
 
 		icon = p->data;
@@ -858,14 +862,14 @@ prepare_for_layout (GnomeIconContainer *container)
 static GnomeIconContainerIcon *
 find_first (GnomeIconContainer *container)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GnomeIconContainerIconGrid *grid;
 	GnomeIconContainerIcon *first;
 	GList **p;
 	guint i, j;
 
-	priv = container->priv;
-	grid = priv->grid;
+	details = container->details;
+	grid = details->grid;
 
 	if (grid->width == 0 || grid->height == 0)
 		return NULL;
@@ -897,14 +901,14 @@ find_first (GnomeIconContainer *container)
 static GnomeIconContainerIcon *
 find_last (GnomeIconContainer *container)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GnomeIconContainerIconGrid *grid;
 	GnomeIconContainerIcon *last;
 	GList **p;
 	gint i, j;
 
-	priv = container->priv;
-	grid = priv->grid;
+	details = container->details;
+	grid = details->grid;
 
 	last = NULL;
 
@@ -941,28 +945,28 @@ set_kbd_current (GnomeIconContainer *container,
 		 GnomeIconContainerIcon *icon,
 		 gboolean schedule_visibility)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	gint x1, y1, x2, y2;
 
-	priv = container->priv;
+	details = container->details;
 
-	priv->kbd_current = icon;
+	details->kbd_current = icon;
 
-	if (priv->kbd_current == NULL)
+	if (details->kbd_current == NULL)
 		return;
 	
 	icon_get_text_bounding_box (icon, &x1, &y1, &x2, &y2);
 
-	gnome_canvas_item_set (priv->kbd_navigation_rectangle,
+	gnome_canvas_item_set (details->kbd_navigation_rectangle,
 			       "x1", (gdouble) x1 - 1,
 			       "y1", (gdouble) y1 - 1,
 			       "x2", (gdouble) x2,
 			       "y2", (gdouble) y2,
 			       NULL);
-	gnome_canvas_item_show (priv->kbd_navigation_rectangle);
+	gnome_canvas_item_show (details->kbd_navigation_rectangle);
 
 	icon_raise (icon);
-	gnome_canvas_item_raise_to_top (priv->kbd_navigation_rectangle);
+	gnome_canvas_item_raise_to_top (details->kbd_navigation_rectangle);
 
 	if (schedule_visibility)
 		schedule_kbd_icon_visibility (container);
@@ -973,12 +977,12 @@ set_kbd_current (GnomeIconContainer *container,
 static void
 unset_kbd_current (GnomeIconContainer *container)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 
-	priv = container->priv;
+	details = container->details;
 
-	priv->kbd_current = NULL;
-	gnome_canvas_item_hide (priv->kbd_navigation_rectangle);
+	details->kbd_current = NULL;
+	gnome_canvas_item_hide (details->kbd_navigation_rectangle);
 
 	unschedule_kbd_icon_visibility (container);
 }
@@ -989,15 +993,15 @@ unset_kbd_current (GnomeIconContainer *container)
 static void
 set_scroll_region (GnomeIconContainer *container)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GnomeIconContainerIconGrid *grid;
 	GtkAllocation *allocation;
 	GtkAdjustment *vadj, *hadj;
 	gdouble x1, y1, x2, y2;
 	guint scroll_width, scroll_height;
 
-	priv = container->priv;
-	grid = priv->grid;
+	details = container->details;
+	grid = details->grid;
 	allocation = &(GTK_WIDGET (container)->allocation);
 	hadj = GTK_LAYOUT (container)->hadjustment;
 	vadj = GTK_LAYOUT (container)->vadjustment;
@@ -1006,11 +1010,11 @@ set_scroll_region (GnomeIconContainer *container)
 	gnome_canvas_item_get_bounds (GNOME_CANVAS (container)->root,
 				      &x1, &y1, &x2, &y2);
 
-	priv->width = x2 + GNOME_ICON_CONTAINER_CELL_SPACING (container);
-	priv->height = y2 + GNOME_ICON_CONTAINER_CELL_SPACING (container);
+	details->width = x2 + GNOME_ICON_CONTAINER_CELL_SPACING (container);
+	details->height = y2 + GNOME_ICON_CONTAINER_CELL_SPACING (container);
 
-	scroll_width = MAX (priv->width, allocation->width);
-	scroll_height = MAX (priv->height, allocation->height);
+	scroll_width = MAX (details->width, allocation->width);
+	scroll_height = MAX (details->height, allocation->height);
 
 	scroll_width--;
 	scroll_height--;
@@ -1020,9 +1024,9 @@ set_scroll_region (GnomeIconContainer *container)
 					(gdouble) scroll_width,
 					(gdouble) scroll_height);
 
-	if (priv->width <= allocation->width)
+	if (details->width <= allocation->width)
 		gtk_adjustment_set_value (hadj, 0.0);
-	if (priv->height <= allocation->height)
+	if (details->height <= allocation->height)
 		gtk_adjustment_set_value (vadj, 0.0);
 }
 
@@ -1030,19 +1034,19 @@ static gint
 idle_handler (gpointer data)
 {
 	GnomeIconContainer *container;
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 
 	GDK_THREADS_ENTER ();
 
 	container = GNOME_ICON_CONTAINER (data);
-	priv = container->priv;
+	details = container->details;
 
 	set_scroll_region (container);
 
-	if (priv->icons != NULL && priv->kbd_current == NULL)
+	if (details->icons != NULL && details->kbd_current == NULL)
 		set_kbd_current (container, find_first (container), FALSE);
 
-	container->priv->idle_id = 0;
+	container->details->idle_id = 0;
 
 	GDK_THREADS_LEAVE ();
 
@@ -1052,10 +1056,10 @@ idle_handler (gpointer data)
 static void
 add_idle (GnomeIconContainer *container)
 {
-	if (container->priv->idle_id != 0)
+	if (container->details->idle_id != 0)
 		return;
 
-	container->priv->idle_id = gtk_idle_add (idle_handler, container);
+	container->details->idle_id = gtk_idle_add (idle_handler, container);
 }
 
 
@@ -1067,10 +1071,10 @@ select_icon (GnomeIconContainer *container,
 	     GnomeIconContainerIcon *icon,
 	     gboolean sel)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	gboolean was_selected;
 
-	priv = container->priv;
+	details = container->details;
 
 	was_selected = icon->is_selected;
 	icon_select (icon, sel);
@@ -1092,14 +1096,14 @@ static gboolean
 unselect_all_but_one (GnomeIconContainer *container,
 		      GnomeIconContainerIcon *icon_to_avoid)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GList *p;
 	gboolean selection_changed;
 
-	priv = container->priv;
+	details = container->details;
 	selection_changed = FALSE;
 
-	for (p = priv->icons; p != NULL; p = p->next) {
+	for (p = details->icons; p != NULL; p = p->next) {
 		GnomeIconContainerIcon *icon;
 
 		icon = p->data;
@@ -1124,14 +1128,14 @@ move_icon (GnomeIconContainer *container,
 	   GnomeIconContainerIcon *icon,
 	   gint x, gint y)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	gint old_x, old_y;
 	guint old_grid_x, old_grid_y;
 	gint old_x_offset, old_y_offset;
 	guint new_grid_x, new_grid_y;
 	gint new_x_offset, new_y_offset;
 
-	priv = container->priv;
+	details = container->details;
 
 	old_x = icon->x;
 	old_y = icon->y;
@@ -1144,24 +1148,24 @@ move_icon (GnomeIconContainer *container,
 	new_x_offset = x % GNOME_ICON_CONTAINER_CELL_WIDTH (container);
 	new_y_offset = y % GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
 
-	icon_grid_remove (priv->grid, icon, old_grid_x, old_grid_y);
+	icon_grid_remove (details->grid, icon, old_grid_x, old_grid_y);
 	if (old_x_offset > 0)
-		icon_grid_remove (priv->grid, icon,
+		icon_grid_remove (details->grid, icon,
 				  old_grid_x + 1, old_grid_y);
 	if (old_y_offset > 0)
-		icon_grid_remove (priv->grid, icon,
+		icon_grid_remove (details->grid, icon,
 				  old_grid_x, old_grid_y + 1);
 	if (old_x_offset > 0 && old_y_offset > 0)
-		icon_grid_remove (priv->grid, icon,
+		icon_grid_remove (details->grid, icon,
 				  old_grid_x + 1, old_grid_y + 1);
 
-	icon_grid_add (priv->grid, icon, new_grid_x, new_grid_y);
+	icon_grid_add (details->grid, icon, new_grid_x, new_grid_y);
 	if (new_x_offset > 0)
-		icon_grid_add (priv->grid, icon, new_grid_x + 1, new_grid_y);
+		icon_grid_add (details->grid, icon, new_grid_x + 1, new_grid_y);
 	if (new_y_offset > 0)
-		icon_grid_add (priv->grid, icon, new_grid_x, new_grid_y + 1);
+		icon_grid_add (details->grid, icon, new_grid_x, new_grid_y + 1);
 	if (new_x_offset > 0 && new_y_offset > 0)
-		icon_grid_add (priv->grid, icon, new_grid_x + 1, new_grid_y + 1);
+		icon_grid_add (details->grid, icon, new_grid_x + 1, new_grid_y + 1);
 
 	icon_position (icon, container, x, y);
 
@@ -1175,25 +1179,25 @@ change_icon_mode (GnomeIconContainer *container,
 {
 	GnomeIconContainerIconModeInfo *old_mode_info;
 	GnomeIconContainerIconModeInfo *new_mode_info;
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GList *p;
 	gdouble x_factor, y_factor;
 	
-	priv = container->priv;
-	if (mode == priv->icon_mode)
+	details = container->details;
+	if (mode == details->icon_mode)
 		return;
 
-	old_mode_info = gnome_icon_container_icon_mode_info + priv->icon_mode;
+	old_mode_info = gnome_icon_container_icon_mode_info + details->icon_mode;
 	new_mode_info = gnome_icon_container_icon_mode_info + mode;
 
-	priv->icon_mode = mode;
+	details->icon_mode = mode;
 
 	x_factor = ((gdouble) new_mode_info->cell_width
 		    / (gdouble) old_mode_info->cell_width);
 	y_factor = ((gdouble) new_mode_info->cell_height
 		    / (gdouble) old_mode_info->cell_height);
 
-	for (p = priv->icons; p != NULL; p = p->next) {
+	for (p = details->icons; p != NULL; p = p->next) {
 		GnomeIconContainerIcon *icon;
 
 		icon = p->data;
@@ -1205,8 +1209,8 @@ change_icon_mode (GnomeIconContainer *container,
 
 	add_idle (container);
 
-	if (priv->kbd_current != NULL)
-		set_kbd_current (container, priv->kbd_current, TRUE);
+	if (details->kbd_current != NULL)
+		set_kbd_current (container, details->kbd_current, TRUE);
 }
 
 
@@ -1287,7 +1291,7 @@ rubberband_select (GnomeIconContainer *container,
 	guint i, j;
 	gboolean selection_changed;
 
-	grid = container->priv->grid;
+	grid = container->details->grid;
 
 	world_to_grid (container, curr_x1, curr_y1, &curr_grid_x1, &curr_grid_y1);
 	world_to_grid (container, curr_x2, curr_y2, &curr_grid_x2, &curr_grid_y2);
@@ -1335,7 +1339,7 @@ rubberband_timeout_cb (gpointer data)
 
 	widget = GTK_WIDGET (data);
 	container = GNOME_ICON_CONTAINER (data);
-	rinfo = &container->priv->rubberband_info;
+	rinfo = &container->details->rubberband_info;
 
 	gdk_window_get_pointer (widget->window, &x, &y, NULL);
 
@@ -1414,14 +1418,14 @@ static void
 start_rubberbanding (GnomeIconContainer *container,
 		     GdkEventButton *event)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GnomeIconContainerRubberbandInfo *rinfo;
 	GList *p;
 
-	priv = container->priv;
-	rinfo = &priv->rubberband_info;
+	details = container->details;
+	rinfo = &details->rubberband_info;
 
-	for (p = priv->icons; p != NULL; p = p->next) {
+	for (p = details->icons; p != NULL; p = p->next) {
 		GnomeIconContainerIcon *icon;
 
 		icon = p->data;
@@ -1466,7 +1470,7 @@ stop_rubberbanding (GnomeIconContainer *container,
 {
 	GnomeIconContainerRubberbandInfo *rinfo;
 
-	rinfo = &container->priv->rubberband_info;
+	rinfo = &container->details->rubberband_info;
 
 	gtk_timeout_remove (rinfo->timer_tag);
 	rinfo->active = FALSE;
@@ -1524,7 +1528,7 @@ static void
 kbd_left (GnomeIconContainer *container,
 	  GdkEventKey *event)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GnomeIconContainerIconGrid *grid;
 	GnomeIconContainerIcon *nearmost;
 	GList **e;
@@ -1532,20 +1536,20 @@ kbd_left (GnomeIconContainer *container,
 	gint x, y;
 	gint max_x;
 
-	priv = container->priv;
-	grid = priv->grid;
+	details = container->details;
+	grid = details->grid;
 
-	if (priv->kbd_current == NULL)
+	if (details->kbd_current == NULL)
 		return;
 
-	world_to_grid (container, priv->kbd_current->x, priv->kbd_current->y,
+	world_to_grid (container, details->kbd_current->x, details->kbd_current->y,
 		       &grid_x, &grid_y);
 	grid_to_world (container, grid_x, grid_y, &x, &y);
 
 	e = icon_grid_get_element_ptr (grid, 0, grid_y);
 	nearmost = NULL;
 
-	max_x = priv->kbd_current->x;
+	max_x = details->kbd_current->x;
 
 	while (1) {
 		while (1) {
@@ -1555,7 +1559,7 @@ kbd_left (GnomeIconContainer *container,
 				GnomeIconContainerIcon *icon;
 
 				icon = p->data;
-				if (icon == priv->kbd_current
+				if (icon == details->kbd_current
 				    || icon->x < x
 				    || icon->y < y)
 					continue;
@@ -1595,20 +1599,20 @@ static void
 kbd_up (GnomeIconContainer *container,
 	GdkEventKey *event)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GnomeIconContainerIconGrid *grid;
 	GnomeIconContainerIcon *nearmost;
 	GList **e;
 	guint grid_x, grid_y;
 	gint x, y;
 
-	priv = container->priv;
-	grid = priv->grid;
+	details = container->details;
+	grid = details->grid;
 
-	if (priv->kbd_current == NULL)
+	if (details->kbd_current == NULL)
 		return;
 
-	world_to_grid (container, priv->kbd_current->x, priv->kbd_current->y,
+	world_to_grid (container, details->kbd_current->x, details->kbd_current->y,
 		       &grid_x, &grid_y);
 	grid_to_world (container, grid_x, grid_y, &x, &y);
 
@@ -1624,12 +1628,12 @@ kbd_up (GnomeIconContainer *container,
 			GnomeIconContainerIcon *icon;
 
 			icon = p->data;
-			if (icon == priv->kbd_current
+			if (icon == details->kbd_current
 			    || icon->x < x
 			    || icon->y < y)
 				continue;
 
-			if (icon->y <= priv->kbd_current->y
+			if (icon->y <= details->kbd_current->y
 			    && (nearmost == NULL || icon->y > nearmost->y))
 				nearmost = icon;
 		}
@@ -1653,7 +1657,7 @@ static void
 kbd_right (GnomeIconContainer *container,
 	   GdkEventKey *event)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GnomeIconContainerIconGrid *grid;
 	GnomeIconContainerIcon *nearmost;
 	GList **e;
@@ -1661,20 +1665,20 @@ kbd_right (GnomeIconContainer *container,
 	gint x, y;
 	gint min_x;
 
-	priv = container->priv;
-	grid = priv->grid;
+	details = container->details;
+	grid = details->grid;
 
-	if (priv->kbd_current == NULL)
+	if (details->kbd_current == NULL)
 		return;
 
-	world_to_grid (container, priv->kbd_current->x, priv->kbd_current->y,
+	world_to_grid (container, details->kbd_current->x, details->kbd_current->y,
 		       &grid_x, &grid_y);
 	grid_to_world (container, grid_x, grid_y, &x, &y);
 
 	e = icon_grid_get_element_ptr (grid, 0, grid_y);
 	nearmost = NULL;
 
-	min_x = priv->kbd_current->x;
+	min_x = details->kbd_current->x;
 
 	while (grid_y < grid->height) {
 		while (grid_x < grid->width) {
@@ -1684,7 +1688,7 @@ kbd_right (GnomeIconContainer *container,
 				GnomeIconContainerIcon *icon;
 
 				icon = p->data;
-				if (icon == priv->kbd_current
+				if (icon == details->kbd_current
 				    || icon->x < x
 				    || icon->y < y)
 					continue;
@@ -1718,20 +1722,20 @@ static void
 kbd_down (GnomeIconContainer *container,
 	  GdkEventKey *event)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GnomeIconContainerIconGrid *grid;
 	GnomeIconContainerIcon *nearmost;
 	GList **e;
 	guint grid_x, grid_y;
 	gint x, y;
 
-	priv = container->priv;
-	grid = priv->grid;
+	details = container->details;
+	grid = details->grid;
 
-	if (priv->kbd_current == NULL)
+	if (details->kbd_current == NULL)
 		return;
 
-	world_to_grid (container, priv->kbd_current->x, priv->kbd_current->y,
+	world_to_grid (container, details->kbd_current->x, details->kbd_current->y,
 		       &grid_x, &grid_y);
 	grid_to_world (container, grid_x, grid_y, &x, &y);
 
@@ -1747,12 +1751,12 @@ kbd_down (GnomeIconContainer *container,
 			GnomeIconContainerIcon *icon;
 
 			icon = p->data;
-			if (icon == priv->kbd_current
+			if (icon == details->kbd_current
 			    || icon->x < x
 			    || icon->y < y)
 				continue;
 
-			if (icon->y >= priv->kbd_current->y
+			if (icon->y >= details->kbd_current->y
 			    && (nearmost == NULL || icon->y < nearmost->y))
 				nearmost = icon;
 		}
@@ -1773,8 +1777,8 @@ static void
 kbd_space (GnomeIconContainer *container,
 	   GdkEventKey *event)
 {
-	if (container->priv->kbd_current != NULL) {
-		if (select_icon (container, container->priv->kbd_current, TRUE))
+	if (container->details->kbd_current != NULL) {
+		if (select_icon (container, container->details->kbd_current, TRUE))
 			gtk_signal_emit (GTK_OBJECT (container),
 					 signals[SELECTION_CHANGED]);
 	}
@@ -1790,15 +1794,15 @@ destroy (GtkObject *object)
 
 	container = GNOME_ICON_CONTAINER (object);
 
-	icon_grid_destroy (container->priv->grid);
+	icon_grid_destroy (container->details->grid);
 
 	gnome_icon_container_dnd_fini (container);
 
-	g_free (container->priv->base_uri);
+	g_free (container->details->base_uri);
 
-	g_hash_table_destroy (container->priv->canvas_item_to_icon);
+	g_hash_table_destroy (container->details->canvas_item_to_icon);
 
-	g_free (container->priv);
+	g_free (container->details);
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -1828,7 +1832,7 @@ size_allocate (GtkWidget *widget,
 			(widget, allocation);
 
 	container = GNOME_ICON_CONTAINER (widget);
-	grid = container->priv->grid;
+	grid = container->details->grid;
 
 	world_to_grid (container,
 		       allocation->width, 0,
@@ -1879,7 +1883,7 @@ button_press_event (GtkWidget *widget,
 	gboolean return_value;
 	GnomeIconContainer *container = GNOME_ICON_CONTAINER (widget);
         
-        container->priv->button_down_time = event->time;
+        container->details->button_down_time = event->time;
 
 	/* Invoke the canvas event handler and see if an item picks up the
            event.  */
@@ -1917,51 +1921,51 @@ button_release_event (GtkWidget *widget,
 		      GdkEventButton *event)
 {
 	GnomeIconContainer *container;
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 
 	container = GNOME_ICON_CONTAINER (widget);
-	priv = container->priv;
+	details = container->details;
 
-	if (event->button == 1 && priv->rubberband_info.active) {
+	if (event->button == 1 && details->rubberband_info.active) {
 		stop_rubberbanding (container, event);
 		return TRUE;
 	}
 
-	if (event->button == priv->drag_button) {
-		priv->drag_button = 0;
-	        if (! priv->doing_drag
+	if (event->button == details->drag_button) {
+		details->drag_button = 0;
+	        if (! details->doing_drag
 		    && ! (event->state & GDK_CONTROL_MASK)) {
 			gboolean selection_changed;
 
 			selection_changed
 				= unselect_all_but_one (container,
-							priv->drag_icon);
+							details->drag_icon);
 
 			if (selection_changed)
 				gtk_signal_emit (GTK_OBJECT (container),
 						 signals[SELECTION_CHANGED]);
 		}
 
-		if ((priv->drag_icon != NULL) && (!priv->doing_drag)) {
-			gint elapsed_time = event->time - priv->button_down_time;
-                        set_kbd_current (container, priv->drag_icon, TRUE);
+		if ((details->drag_icon != NULL) && (!details->doing_drag)) {
+			gint elapsed_time = event->time - details->button_down_time;
+                        set_kbd_current (container, details->drag_icon, TRUE);
 
 			/* if single-click mode, activate the icon */
-			if (priv->single_click_mode && (elapsed_time < MAX_CLICK_TIME)) {
+			if (details->single_click_mode && (elapsed_time < MAX_CLICK_TIME)) {
 			
 			    gtk_signal_emit (GTK_OBJECT (container),
 				 				signals[ACTIVATE],
-				 				priv->drag_icon->text, priv->drag_icon->data);
+				 				details->drag_icon->text, details->drag_icon->data);
 			}
 			
-			priv->drag_icon = NULL;
+			details->drag_icon = NULL;
 			return TRUE;		
 		}
 
-		if (priv->doing_drag)
+		if (details->doing_drag)
 			gnome_icon_container_dnd_end_drag (container);
 
-		priv->doing_drag = FALSE;
+		details->doing_drag = FALSE;
 		return TRUE;
 	}
 
@@ -1977,11 +1981,11 @@ motion_notify_event (GtkWidget *widget,
 		     GdkEventMotion *motion)
 {
 	GnomeIconContainer *container;
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	double world_x, world_y;
 
 	container = GNOME_ICON_CONTAINER (widget);
-	priv = container->priv;
+	details = container->details;
 
 	gnome_canvas_window_to_world (GNOME_CANVAS (container),
 				      motion->x, motion->y,
@@ -1989,19 +1993,19 @@ motion_notify_event (GtkWidget *widget,
 
 #define SNAP_RESISTANCE 2	/* GMC has this set to 3, but it's too much for
                                    my taste.  */
-	if (priv->drag_button != 0
-	    && abs (priv->drag_x - world_x) >= SNAP_RESISTANCE
-	    && abs (priv->drag_y - world_y) >= SNAP_RESISTANCE) {
-		priv->doing_drag = TRUE;
+	if (details->drag_button != 0
+	    && abs (details->drag_x - world_x) >= SNAP_RESISTANCE
+	    && abs (details->drag_y - world_y) >= SNAP_RESISTANCE) {
+		details->doing_drag = TRUE;
 
 		/* KLUDGE ALERT: Poke the starting values into the motion
                    structure so that dragging behaves as expected.  */
-		motion->x = priv->drag_x;
-		motion->y = priv->drag_y;
+		motion->x = details->drag_x;
+		motion->y = details->drag_y;
 
 		gnome_icon_container_dnd_begin_drag (container,
 						     GDK_ACTION_MOVE,
-						     priv->drag_button,
+						     details->drag_button,
 						     motion);
 		return TRUE;
 	}
@@ -2058,7 +2062,7 @@ key_press_event (GtkWidget *widget,
 /* Initialization.  */
 
 static void
-class_init (GnomeIconContainerClass *class)
+gnome_icon_container_initialize_class (GnomeIconContainerClass *class)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
@@ -2155,53 +2159,53 @@ class_init (GnomeIconContainerClass *class)
 }
 
 static void
-init (GnomeIconContainer *container)
+gnome_icon_container_initialize (GnomeIconContainer *container)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 
-	priv = g_new (GnomeIconContainerPrivate, 1);
+	details = g_new (GnomeIconContainerDetails, 1);
 
-	priv->base_uri = NULL;
+	details->base_uri = NULL;
 
-	priv->width = priv->height = 0;
+	details->width = details->height = 0;
 
-	priv->icons = NULL;
-	priv->num_icons = 0;
+	details->icons = NULL;
+	details->num_icons = 0;
 
-	priv->icon_mode = GNOME_ICON_CONTAINER_NORMAL_ICONS;
+	details->icon_mode = GNOME_ICON_CONTAINER_NORMAL_ICONS;
 
-	priv->grid = icon_grid_new ();
+	details->grid = icon_grid_new ();
 
-	priv->canvas_item_to_icon = g_hash_table_new (g_direct_hash,
+	details->canvas_item_to_icon = g_hash_table_new (g_direct_hash,
 						      g_direct_equal);
 
-	priv->kbd_navigation_rectangle 
+	details->kbd_navigation_rectangle 
 		= gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (container)),
 					 gnome_canvas_rect_get_type (),
 					 "outline_color", "black",
 					 "outline_stipple", stipple,
 					 "width_pixels", 1,
 					 NULL);
-	gnome_canvas_item_hide (priv->kbd_navigation_rectangle);
+	gnome_canvas_item_hide (details->kbd_navigation_rectangle);
 
-	priv->kbd_current = NULL;
-	priv->rubberband_info.active = FALSE;
-	priv->kbd_icon_visibility_timer_tag = -1;
-	priv->idle_id = 0;
+	details->kbd_current = NULL;
+	details->rubberband_info.active = FALSE;
+	details->kbd_icon_visibility_timer_tag = -1;
+	details->idle_id = 0;
 
-	priv->drag_button = 0;
-	priv->drag_icon = NULL;
-	priv->drag_x = priv->drag_y = 0;
-	priv->doing_drag = FALSE;
+	details->drag_button = 0;
+	details->drag_icon = NULL;
+	details->drag_x = details->drag_y = 0;
+	details->doing_drag = FALSE;
 
 	/* read these from preferences soon */
-	priv->browser_mode = FALSE;
-	priv->single_click_mode = TRUE;
+	details->browser_mode = FALSE;
+	details->single_click_mode = TRUE;
 	
-	priv->browser_mode_selection_timer_tag = -1;
-	priv->browser_mode_selection_icon = NULL;
+	details->browser_mode_selection_timer_tag = -1;
+	details->browser_mode_selection_icon = NULL;
 
-	container->priv = priv;
+	container->details = details;
 
 	/* Set up DnD.  */
 	gnome_icon_container_dnd_init (container, stipple);
@@ -2218,15 +2222,15 @@ static gint
 browser_select_timeout_cb (gpointer data)
 {
 	GnomeIconContainer *container;
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GnomeIconContainerIcon *icon;
 	gboolean selection_changed;
 
 	GDK_THREADS_ENTER ();
 
 	container = GNOME_ICON_CONTAINER (data);
-	priv = container->priv;
-	icon = priv->browser_mode_selection_icon;
+	details = container->details;
+	icon = details->browser_mode_selection_icon;
 
 	selection_changed = unselect_all (container);
 	selection_changed |= select_icon (container, icon, TRUE);
@@ -2256,17 +2260,17 @@ handle_icon_button_press (GnomeIconContainer *container,
 			  GnomeIconContainerIcon *icon,
 			  GdkEventButton *event)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	gdouble world_x, world_y;
 
-	priv = container->priv;
+	details = container->details;
 
 	if (event->button == 3) {
 		/* FIXME this means you cannot drag with right click.  Instead,
                    we should setup a timeout and emit this signal if the
                    timeout expires without movement.  */
-		priv->drag_button = 0;
-		priv->drag_icon = NULL;
+		details->drag_button = 0;
+		details->drag_icon = NULL;
 
 		gtk_signal_emit (GTK_OBJECT (container),
 				 signals[CONTEXT_CLICK_ICON],
@@ -2294,8 +2298,8 @@ handle_icon_button_press (GnomeIconContainer *container,
                  * We must clear this out before emitting the signal, because
 		 * handling the activate signal might invalidate the drag_icon pointer.
                  */
-		priv->drag_button = 0;
-		priv->drag_icon = NULL;
+		details->drag_button = 0;
+		details->drag_icon = NULL;
 
 		gtk_signal_emit (GTK_OBJECT (container),
 				 signals[ACTIVATE],
@@ -2304,15 +2308,15 @@ handle_icon_button_press (GnomeIconContainer *container,
 		return TRUE;
 	}
 
-	priv->drag_button = event->button;
-	priv->drag_icon = icon;
-	priv->drag_x = event->x;
-	priv->drag_y = event->y;
+	details->drag_button = event->button;
+	details->drag_icon = icon;
+	details->drag_x = event->x;
+	details->drag_y = event->y;
 
 	gnome_canvas_window_to_world (GNOME_CANVAS (container), event->x, event->y,
 				      &world_x, &world_y);
-	priv->drag_x_offset = (gint) world_x - icon->x;
-	priv->drag_y_offset = (gint) world_y - icon->y;
+	details->drag_x_offset = (gint) world_x - icon->x;
+	details->drag_y_offset = (gint) world_y - icon->y;
 
 	return TRUE;
 }
@@ -2322,20 +2326,20 @@ handle_icon_enter_notify (GnomeIconContainer *container,
 			  GnomeIconContainerIcon *icon,
 			  GdkEventMotion *motion)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 
-	priv = container->priv;
-	if (! priv->browser_mode)
+	details = container->details;
+	if (! details->browser_mode)
 		return FALSE;
 
-	if (priv->browser_mode_selection_timer_tag != -1)
-		gtk_timeout_remove (priv->browser_mode_selection_timer_tag);
+	if (details->browser_mode_selection_timer_tag != -1)
+		gtk_timeout_remove (details->browser_mode_selection_timer_tag);
 
-	priv->browser_mode_selection_timer_tag
+	details->browser_mode_selection_timer_tag
 		= gtk_timeout_add (BROWSER_MODE_SELECTION_TIMEOUT,
 				   browser_select_timeout_cb, container);
 
-	priv->browser_mode_selection_icon = icon;
+	details->browser_mode_selection_icon = icon;
 
 	return TRUE;
 }
@@ -2345,14 +2349,14 @@ handle_icon_leave_notify (GnomeIconContainer *container,
 			  GnomeIconContainerIcon *icon,
 			  GdkEventMotion *motion)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 
-	priv = container->priv;
-	if (! priv->browser_mode)
+	details = container->details;
+	if (! details->browser_mode)
 		return FALSE;
 
-	if (priv->browser_mode_selection_timer_tag != -1)
-		gtk_timeout_remove (priv->browser_mode_selection_timer_tag);
+	if (details->browser_mode_selection_timer_tag != -1)
+		gtk_timeout_remove (details->browser_mode_selection_timer_tag);
 
 	return TRUE;
 }
@@ -2363,13 +2367,13 @@ item_event_cb (GnomeCanvasItem *item,
 	       gpointer data)
 {
 	GnomeIconContainer *container;
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GnomeIconContainerIcon *icon;
 
 	container = GNOME_ICON_CONTAINER (data);
-	priv = container->priv;
+	details = container->details;
 
-	icon = g_hash_table_lookup (priv->canvas_item_to_icon, item);
+	icon = g_hash_table_lookup (details->canvas_item_to_icon, item);
 	g_return_val_if_fail (icon != NULL, FALSE);
 
 	switch (event->type) {
@@ -2399,47 +2403,25 @@ gnome_icon_container_new (void)
 	gtk_widget_pop_colormap ();
 
 	return new;
-}
-guint
-gnome_icon_container_get_type (void)
-{
-	static guint type = 0;
-
-	if (type == 0) {
-		GtkTypeInfo type_info = {
-			"GnomeIconContainer",
-			sizeof (GnomeIconContainer),
-			sizeof (GnomeIconContainerClass),
-			(GtkClassInitFunc) class_init,
-			(GtkObjectInitFunc) init,
-			NULL,
-			NULL,
-			NULL
-		};
-
-		type = gtk_type_unique (gnome_canvas_get_type (), &type_info);
-	}
-
-	return type;
 }
 
 void
 gnome_icon_container_clear (GnomeIconContainer *container)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GList *p;
 
 	g_return_if_fail (container != NULL);
 
-	priv = container->priv;
+	details = container->details;
 
-	for (p = priv->icons; p != NULL; p = p->next)
+	for (p = details->icons; p != NULL; p = p->next)
 		icon_destroy (p->data);
-	g_list_free (priv->icons);
-	priv->icons = NULL;
-	priv->num_icons = 0;
+	g_list_free (details->icons);
+	details->icons = NULL;
+	details->num_icons = 0;
 
-	icon_grid_clear (priv->grid);
+	icon_grid_clear (details->grid);
 
 	unset_kbd_current (container);
 }
@@ -2464,7 +2446,7 @@ gnome_icon_container_get_icon_mode (GnomeIconContainer *container)
 {
 	g_return_val_if_fail (container != NULL, GNOME_ICON_CONTAINER_NORMAL_ICONS);
 
-	return container->priv->icon_mode;
+	return container->details->icon_mode;
 }
 
 
@@ -2472,14 +2454,14 @@ static void
 setup_icon_in_container (GnomeIconContainer *container,
 			 GnomeIconContainerIcon *icon)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 
-	priv = container->priv;
+	details = container->details;
 
-	priv->icons = g_list_prepend (priv->icons, icon);
-	priv->num_icons++;
+	details->icons = g_list_prepend (details->icons, icon);
+	details->num_icons++;
 
-	g_hash_table_insert (priv->canvas_item_to_icon, icon->item, icon);
+	g_hash_table_insert (details->canvas_item_to_icon, icon->item, icon);
 	icon_show (icon);
 
 	gtk_signal_connect (GTK_OBJECT (icon->item), "event",
@@ -2488,34 +2470,34 @@ setup_icon_in_container (GnomeIconContainer *container,
 
 void
 gnome_icon_container_add_pixbuf (GnomeIconContainer *container,
-				GdkPixbuf *image,
-				const gchar *text,
-				gint x, gint y,
-				gpointer data)
+				 GdkPixbuf *image,
+				 const gchar *text,
+				 gint x, gint y,
+				 gpointer data)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GnomeIconContainerIcon *new_icon;
 	guint grid_x, grid_y;
 
-	g_return_if_fail (container != NULL);
+	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
 	g_return_if_fail (image != NULL);
 	g_return_if_fail (text != NULL);
 
-	priv = container->priv;
+	details = container->details;
 
 	new_icon = icon_new_pixbuf (container, image, text, data);
 	icon_position (new_icon, container, x, y);
 
 	world_to_grid (container, x, y, &grid_x, &grid_y);
-	icon_grid_add (container->priv->grid, new_icon, grid_x, grid_y);
+	icon_grid_add (container->details->grid, new_icon, grid_x, grid_y);
 
 	if (x % GNOME_ICON_CONTAINER_CELL_WIDTH (container) > 0)
-		icon_grid_add (priv->grid, new_icon, grid_x + 1, grid_y);
+		icon_grid_add (details->grid, new_icon, grid_x + 1, grid_y);
 	if (y % GNOME_ICON_CONTAINER_CELL_HEIGHT (container) > 0)
-		icon_grid_add (priv->grid, new_icon, grid_x, grid_y + 1);
+		icon_grid_add (details->grid, new_icon, grid_x, grid_y + 1);
 	if (x % GNOME_ICON_CONTAINER_CELL_WIDTH (container) > 0
 	    && y % GNOME_ICON_CONTAINER_CELL_HEIGHT (container) > 0)
-		icon_grid_add (priv->grid, new_icon, grid_x + 1, grid_y + 1);
+		icon_grid_add (details->grid, new_icon, grid_x + 1, grid_y + 1);
 
 	setup_icon_in_container (container, new_icon);
 
@@ -2534,65 +2516,28 @@ gnome_icon_container_add_pixbuf (GnomeIconContainer *container,
  **/
 void
 gnome_icon_container_add_pixbuf_auto (GnomeIconContainer *container,
-				     GdkPixbuf *image,
-				     const gchar *text,
-				     gpointer data)
+				      GdkPixbuf *image,
+				      const gchar *text,
+				      gpointer data)
 {
 	GnomeIconContainerIcon *new_icon;
 	guint grid_x, grid_y;
 	gint x, y;
 
-	g_return_if_fail (container != NULL);
+	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
 	g_return_if_fail (image != NULL);
 	g_return_if_fail (text != NULL);
 
 	new_icon = icon_new_pixbuf (container, image, text, data);
 
-	icon_grid_add_auto (container->priv->grid, new_icon, &grid_x, &grid_y);
-
+	icon_grid_add_auto (container->details->grid, new_icon, &grid_x, &grid_y);
 	grid_to_world (container, grid_x, grid_y, &x, &y);
+
 	icon_position (new_icon, container, x, y);
 
 	setup_icon_in_container (container, new_icon);
 
 	add_idle (container);
-}
-
-/**
- * gnome_icon_container_add_pixbuf_with_layout:
- * @container: A GnomeIconContainer
- * @image: Image of the icon to add
- * @text: Caption
- * @data: Icon-specific data
- * @layout: Layout information
- * 
- * Add @image with the caption @text to @container using @layout, and attach
- * @data to it.
- * 
- * Return value: %FALSE if @text is not in @layout (and, consequently, the icon
- * has not been added); %TRUE otherwise.
- **/
-gboolean
-gnome_icon_container_add_pixbuf_with_layout (GnomeIconContainer *container,
-					    GdkPixbuf *image,
-					    const gchar *text,
-					    gpointer data,
-					    const GnomeIconContainerLayout *layout)
-{
-	gint x, y;
-
-	g_return_val_if_fail (container != NULL, FALSE);
-	g_return_val_if_fail (image != NULL, FALSE);
-	g_return_val_if_fail (text != NULL, FALSE);
-	g_return_val_if_fail (layout != NULL, FALSE);
-
-	if (gnome_icon_container_layout_get_position (layout, text, &x, &y)) {
-		gnome_icon_container_add_pixbuf (container, image,
-						text, x, y, data);
-		return TRUE;
-	} else {
-		return FALSE;
-	}
 }
 
 
@@ -2608,7 +2553,7 @@ gnome_icon_container_add_pixbuf_with_layout (GnomeIconContainer *container,
 void
 gnome_icon_container_relayout (GnomeIconContainer *container)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GnomeIconContainerIconGrid *old_grid, *new_grid;
 	GList **sp, **dp;
 	guint i, j;
@@ -2619,8 +2564,8 @@ gnome_icon_container_relayout (GnomeIconContainer *container)
 
 	g_return_if_fail (container != NULL);
 
-	priv = container->priv;
-	old_grid = priv->grid;
+	details = container->details;
+	old_grid = details->grid;
 
 	g_return_if_fail (old_grid->visible_width > 0);
 
@@ -2628,15 +2573,15 @@ gnome_icon_container_relayout (GnomeIconContainer *container)
 
 	new_grid = icon_grid_new ();
 
-	if (priv->num_icons % old_grid->visible_width != 0)
+	if (details->num_icons % old_grid->visible_width != 0)
 		icon_grid_resize (new_grid,
 				  old_grid->visible_width,
-				  (priv->num_icons
+				  (details->num_icons
 				   / old_grid->visible_width) + 1);
 	else
 		icon_grid_resize (new_grid,
 				  old_grid->visible_width,
-				  priv->num_icons / old_grid->visible_width);
+				  details->num_icons / old_grid->visible_width);
 
 	icon_grid_set_visible_width (new_grid, old_grid->visible_width);
 
@@ -2700,11 +2645,11 @@ gnome_icon_container_relayout (GnomeIconContainer *container)
 		new_grid->first_free_y = -1;
 	}
 
-	icon_grid_destroy (priv->grid);
-	priv->grid = new_grid;
+	icon_grid_destroy (details->grid);
+	details->grid = new_grid;
 
-	if (priv->kbd_current != NULL)
-		set_kbd_current (container, priv->kbd_current, FALSE);
+	if (details->kbd_current != NULL)
+		set_kbd_current (container, details->kbd_current, FALSE);
 
 	add_idle (container);
 }
@@ -2719,7 +2664,7 @@ gnome_icon_container_relayout (GnomeIconContainer *container)
 void
 gnome_icon_container_line_up (GnomeIconContainer *container)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GnomeIconContainerIconGrid *grid;
 	GnomeIconContainerIconGrid *new_grid;
 	GList **p, **q;
@@ -2729,8 +2674,8 @@ gnome_icon_container_line_up (GnomeIconContainer *container)
 
 	g_return_if_fail (container != NULL);
 
-	priv = container->priv;
-	grid = priv->grid;
+	details = container->details;
+	grid = details->grid;
 
 	/* Mark all icons as "not moved yet".  */
 
@@ -2850,12 +2795,12 @@ gnome_icon_container_line_up (GnomeIconContainer *container)
 
 	/* Done: use the new grid.  */
 
-	icon_grid_destroy (priv->grid);
-	priv->grid = new_grid;
+	icon_grid_destroy (details->grid);
+	details->grid = new_grid;
 
 	/* Update the keyboard selection indicator.  */
-	if (priv->kbd_current != NULL)
-		set_kbd_current (container, priv->kbd_current, FALSE);
+	if (details->kbd_current != NULL)
+		set_kbd_current (container, details->kbd_current, FALSE);
 
 	add_idle (container);
 }
@@ -2874,15 +2819,15 @@ gnome_icon_container_line_up (GnomeIconContainer *container)
 GList *
 gnome_icon_container_get_selection (GnomeIconContainer *container)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GList *list, *p;
 
 	g_return_val_if_fail (container != NULL, FALSE);
 
-	priv = container->priv;
+	details = container->details;
 
 	list = NULL;
-	for (p = priv->icons; p != NULL; p = p->next) {
+	for (p = details->icons; p != NULL; p = p->next) {
 		GnomeIconContainerIcon *icon;
 
 		icon = p->data;
@@ -2902,7 +2847,7 @@ gnome_icon_container_get_selection (GnomeIconContainer *container)
 void
 gnome_icon_container_select_all (GnomeIconContainer *container)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GnomeIconContainerIconGrid *grid;
 	GList **p, *q;
 	guint i, j;
@@ -2910,8 +2855,8 @@ gnome_icon_container_select_all (GnomeIconContainer *container)
 
 	g_return_if_fail (container != NULL);
 
-	priv = container->priv;
-	grid = priv->grid;
+	details = container->details;
+	grid = details->grid;
 
 	selection_changed = FALSE;
 	p = grid->elems;
@@ -2940,16 +2885,16 @@ gnome_icon_container_select_all (GnomeIconContainer *container)
 void
 gnome_icon_container_unselect_all (GnomeIconContainer *container)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	gboolean selection_changed;
 	GList *p;
 
 	g_return_if_fail (container != NULL);
 
-	priv = container->priv;
+	details = container->details;
 
 	selection_changed = FALSE;
-	for (p = priv->icons; p != NULL; p = p->next) {
+	for (p = details->icons; p != NULL; p = p->next) {
 		GnomeIconContainerIcon *icon;
 
 		icon = p->data;
@@ -2973,15 +2918,14 @@ void
 gnome_icon_container_set_base_uri (GnomeIconContainer *container,
 				   const gchar *base_uri)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 
-	g_return_if_fail (container != NULL);
 	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
 
-	priv = container->priv;
+	details = container->details;
 
-	g_free (priv->base_uri);
-	priv->base_uri = g_strdup (base_uri);
+	g_free (details->base_uri);
+	details->base_uri = g_strdup (base_uri);
 }
 
 /**
@@ -3001,18 +2945,17 @@ gnome_icon_container_xlate_selected (GnomeIconContainer *container,
 				     gint amount_y,
 				     gboolean raise)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GList *p;
 
-	g_return_if_fail (container != NULL);
 	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
 
 	if (amount_x == 0 && amount_y == 0)
 		return;
 
-	priv = container->priv;
+	details = container->details;
 
-	for (p = priv->icons; p != NULL; p = p->next) {
+	for (p = details->icons; p != NULL; p = p->next) {
 		GnomeIconContainerIcon *icon;
 
 		icon = p->data;
@@ -3024,28 +2967,5 @@ gnome_icon_container_xlate_selected (GnomeIconContainer *container,
 		}
 	}
 
-	set_kbd_current (container, priv->kbd_current, FALSE);
-}
-
-
-GnomeIconContainerLayout *
-gnome_icon_container_get_layout (GnomeIconContainer *container)
-{
-	GnomeIconContainerLayout *layout;
-	GList *p;
-
-	g_return_val_if_fail (container != NULL, NULL);
-	g_return_val_if_fail (GNOME_IS_ICON_CONTAINER (container), NULL);
-
-	layout = gnome_icon_container_layout_new ();
-
-	for (p = container->priv->icons; p != NULL; p = p->next) {
-		GnomeIconContainerIcon *icon;
-
-		icon = p->data;
-		gnome_icon_container_layout_add (layout, icon->text,
-						 icon->x, icon->y);
-	}
-
-	return layout;
+	set_kbd_current (container, details->kbd_current, FALSE);
 }

@@ -40,13 +40,12 @@
 
 
 /* forward declarations */
-static void add_to_icon_container 		 (FMDirectoryViewIcons *icon_view,
-		       				  FMIconCache *icon_manager,
-		       				  GnomeIconContainer *icon_container,
-		       				  NautilusFile *file,
-		       				  gboolean with_layout);
+static void add_icon_at_free_position		 (FMDirectoryViewIcons *icon_view,
+		       				  NautilusFile *file);
+static void add_icon_if_already_positioned	 (FMDirectoryViewIcons *icon_view,
+		       				  NautilusFile *file);
 static GnomeIconContainer *create_icon_container (FMDirectoryViewIcons *icon_view);
-static void display_icons_not_in_layout 	 (FMDirectoryViewIcons *icon_view);
+static void display_icons_not_already_positioned (FMDirectoryViewIcons *icon_view);
 static void fm_directory_view_icons_icon_moved_cb (GnomeIconContainer *container,
 						   const char *icon_name,
 						   NautilusFile *icon_data,
@@ -59,6 +58,7 @@ static void fm_directory_view_icons_background_changed_cb (NautilusBackground *b
 static void fm_directory_view_icons_begin_loading
 				          	 (FMDirectoryView *view);
 static void fm_directory_view_icons_clear 	 (FMDirectoryView *view);
+static void fm_directory_view_icons_destroy      (GtkObject *view);
 static void fm_directory_view_icons_done_adding_entries 
 				          	 (FMDirectoryView *view);
 static NautilusFileList * fm_directory_view_icons_get_selection
@@ -80,28 +80,12 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryViewIcons, fm_directory_view_icons
 
 struct _FMDirectoryViewIconsDetails
 {
-	const GnomeIconContainerLayout *icon_layout;
-	GList *icons_not_in_layout;
+	NautilusFileList *icons_not_positioned;
 };
 
 
 /* GtkObject methods.  */
 
-static void
-fm_directory_view_icons_destroy (GtkObject *object)
-{
-	FMDirectoryViewIcons *icon_view;
-
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (object));
-
-	icon_view = FM_DIRECTORY_VIEW_ICONS (object);
-	g_list_free (icon_view->details->icons_not_in_layout);
-	icon_view->details->icons_not_in_layout = NULL;
-
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
-}
-
-
 static void
 fm_directory_view_icons_initialize_class (FMDirectoryViewIconsClass *klass)
 {
@@ -137,6 +121,19 @@ fm_directory_view_icons_initialize (FMDirectoryViewIcons *directory_view_icons)
 	icon_container = create_icon_container (directory_view_icons);
 	gnome_icon_container_set_icon_mode
 		(icon_container, GNOME_ICON_CONTAINER_NORMAL_ICONS);
+}
+
+static void
+fm_directory_view_icons_destroy (GtkObject *object)
+{
+	FMDirectoryViewIcons *icon_view;
+
+	icon_view = FM_DIRECTORY_VIEW_ICONS (object);
+
+	g_list_free (icon_view->details->icons_not_positioned);
+	icon_view->details->icons_not_positioned = NULL;
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 
@@ -176,32 +173,6 @@ create_icon_container (FMDirectoryViewIcons *icon_view)
 	return icon_container;
 }
 
-static void
-display_icons_not_in_layout (FMDirectoryViewIcons *view)
-{
-	FMIconCache *icon_manager;
-	GnomeIconContainer *icon_container;
-	GList *p;
-
-	if (view->details->icons_not_in_layout == NULL)
-		return;
-
-	icon_manager = fm_get_current_icon_cache();
-
-	icon_container = get_icon_container (view);
-	g_return_if_fail (icon_container != NULL);
-
-	/* FIXME: This will block if there are many files.  */
-
-	for (p = view->details->icons_not_in_layout; p != NULL; p = p->next)
-		add_to_icon_container (view, icon_manager,
-				       icon_container, p->data, FALSE);
-
-	g_list_free (view->details->icons_not_in_layout);
-	view->details->icons_not_in_layout = NULL;
-}
-
-
 static GnomeIconContainer *
 get_icon_container (FMDirectoryViewIcons *icon_view)
 {
@@ -212,11 +183,8 @@ get_icon_container (FMDirectoryViewIcons *icon_view)
 }
 
 static void
-add_to_icon_container (FMDirectoryViewIcons *icon_view,
-		       FMIconCache *icon_manager,
-		       GnomeIconContainer *icon_container,
-		       NautilusFile *file,
-		       gboolean with_layout)
+add_icon_if_already_positioned (FMDirectoryViewIcons *icon_view,
+				NautilusFile *file)
 {
 	NautilusDirectory *directory;
 	char *position_string;
@@ -225,36 +193,54 @@ add_to_icon_container (FMDirectoryViewIcons *icon_view,
 	GdkPixbuf *image;
 	char *name;
 
-	g_return_if_fail (file);
-
 	/* Get the current position of this icon from the metadata. */
 	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
 	position_string = nautilus_file_get_metadata (file, "ICON_POSITION", "");
 	position_good = sscanf (position_string, " %d , %d %*s", &x, &y) == 2;
 	g_free (position_string);
 
-	/* Get the appropriate image for this icon. */
-	image = fm_icon_cache_get_icon (icon_manager, nautilus_file_get_info (file));
-
-	/* Add the icon to the appropriate place in the container. */
-	name = nautilus_file_get_name (file);
-	if (position_good)
-		gnome_icon_container_add_pixbuf (icon_container,
-						 image, name, x, y, file);
-	else if (! with_layout || icon_view->details->icon_layout == NULL)
-		gnome_icon_container_add_pixbuf_auto (icon_container,
-						      image, name, file);
-	else {
-		gboolean result;
-
-		result = gnome_icon_container_add_pixbuf_with_layout
-			(icon_container, image, name, file,
-			 icon_view->details->icon_layout);
-		if (! result)
-			icon_view->details->icons_not_in_layout = g_list_prepend
-				(icon_view->details->icons_not_in_layout, file);
+	if (!position_good) {
+		icon_view->details->icons_not_positioned =
+			g_list_prepend (icon_view->details->icons_not_positioned, file);
+		return;
 	}
+
+	/* Get the appropriate image and name for the file. */
+	image = fm_icon_cache_get_icon (fm_get_current_icon_cache (),
+					nautilus_file_get_info (file));
+	name = nautilus_file_get_name (file);
+	gnome_icon_container_add_pixbuf (get_icon_container (icon_view),
+					 image, name, x, y, file);
 	g_free (name);
+}
+
+static void
+add_icon_at_free_position (FMDirectoryViewIcons *icon_view,
+			   NautilusFile *file)
+{
+	GdkPixbuf *image;
+	char *name;
+
+	/* Get the appropriate image and name for the file. */
+	image = fm_icon_cache_get_icon (fm_get_current_icon_cache (),
+					nautilus_file_get_info (file));
+	name = nautilus_file_get_name (file);
+	gnome_icon_container_add_pixbuf_auto (get_icon_container (icon_view),
+					      image, name, file);
+	g_free (name);
+}
+
+static void
+display_icons_not_already_positioned (FMDirectoryViewIcons *view)
+{
+	GList *p;
+
+	/* FIXME: This will block if there are many files.  */
+	for (p = view->details->icons_not_positioned; p != NULL; p = p->next)
+		add_icon_at_free_position (view, p->data);
+
+	g_list_free (view->details->icons_not_positioned);
+	view->details->icons_not_positioned = NULL;
 }
 
 /* Set up the base URI for Drag & Drop operations.  */
@@ -300,100 +286,29 @@ fm_directory_view_icons_clear (FMDirectoryView *view)
 static void
 fm_directory_view_icons_add_entry (FMDirectoryView *view, NautilusFile *file)
 {
-	FMDirectoryViewIcons *icon_view;
-
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
-
-	icon_view = FM_DIRECTORY_VIEW_ICONS (view);
-
-	add_to_icon_container (icon_view, 
-			       fm_get_current_icon_cache(), 
-			       get_icon_container (icon_view), 
-			       file, 
-			       TRUE);
+	add_icon_if_already_positioned (FM_DIRECTORY_VIEW_ICONS (view), file);
 }
 
 static void
 fm_directory_view_icons_done_adding_entries (FMDirectoryView *view)
 {
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
-
-	display_icons_not_in_layout (FM_DIRECTORY_VIEW_ICONS (view));
+	display_icons_not_already_positioned (FM_DIRECTORY_VIEW_ICONS (view));
 }
 
 static void
 fm_directory_view_icons_begin_loading (FMDirectoryView *view)
 {
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
-
 	set_up_base_uri (FM_DIRECTORY_VIEW_ICONS (view));
 }
 
 static GList *
 fm_directory_view_icons_get_selection (FMDirectoryView *view)
 {
-	FMDirectoryViewIcons *icon_view;
-
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view), NULL);
-
-	icon_view = FM_DIRECTORY_VIEW_ICONS (view);
-	return gnome_icon_container_get_selection (get_icon_container (icon_view));
+	return gnome_icon_container_get_selection
+		(get_icon_container (FM_DIRECTORY_VIEW_ICONS (view)));
 }
 
 
-/* WARNING WARNING WARNING
-
-   These two functions actually do completely different things, although they
-   have similiar name.  (Actually, maybe I should change these names: FIXME.)
-
-   The `get' function retrieves the current *actual* layout from the icon
-   container.  The `set' function, instead, specifies the layout that will be
-   used when adding new files to the view.  
-
-   These two functions might become entirely obsolete. They are currently unused.
-*/
-
-/**
- * fm_directory_view_get_icon_layout:
- *
- * Get a GnomeIconContainerLayout representing how icons are 
- * currently positioned in this view. The caller is responsible for destroying
- * this object.
- * @view: FMDirectoryViewIcons in question.
- * 
- * Return value: A newly-allocated GnomeIconContainerLayout object specifying
- * positions for the currently-displayed set of icons.
- * 
- **/
-GnomeIconContainerLayout *
-fm_directory_view_icons_get_icon_layout (FMDirectoryViewIcons *view)
-{
-	GnomeIconContainer *icon_container;
-
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view), NULL);
-
-	icon_container = get_icon_container (view);
-	return gnome_icon_container_get_layout (icon_container);
-}
-
-/**
- * fm_directory_view_set_icon_layout:
- *
- * Supply a GnomeIconContainerLayout object to use for positioning
- * icons that are added to this view in the future.
- * @view: FMDirectoryViewIcons in question.
- * @layout: GnomeIconContainerLayout to use in future.
- * 
- **/
-void
-fm_directory_view_icons_set_icon_layout (FMDirectoryViewIcons *view,
-					 const GnomeIconContainerLayout *layout)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
-
-	view->details->icon_layout = layout;
-}
-
 /**
  * fm_directory_view_icons_line_up_icons:
  *
@@ -405,7 +320,6 @@ void
 fm_directory_view_icons_line_up_icons (FMDirectoryViewIcons *icon_view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
-	g_return_if_fail (get_icon_container (icon_view) != NULL);
 
 	gnome_icon_container_line_up (get_icon_container (icon_view));
 }

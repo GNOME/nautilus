@@ -76,7 +76,7 @@ create_selection_shadow (GnomeIconContainer *container,
 	if (list == NULL)
 	    return NULL;
 
-	stipple = container->priv->dnd_info->stipple;
+	stipple = container->details->dnd_info->stipple;
 	g_return_val_if_fail (stipple != NULL, NULL);
 
 	icon_width = GNOME_ICON_CONTAINER_ICON_WIDTH (container);
@@ -199,13 +199,13 @@ static void
 set_gnome_icon_list_selection (GnomeIconContainer *container,
 			       GtkSelectionData *selection_data)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GList *p;
 	GString *data;
 	gdouble x_offset, y_offset;
 
-	priv = container->priv;
-	if (priv->icons == NULL) {
+	details = container->details;
+	if (details->icons == NULL) {
 		/* FIXME?  Actually this probably shouldn't happen.  */
 		gtk_selection_data_set (selection_data,
 					selection_data->target,
@@ -213,11 +213,11 @@ set_gnome_icon_list_selection (GnomeIconContainer *container,
 		return;
 	}
 
-	x_offset = container->priv->dnd_info->start_x;
-	y_offset = container->priv->dnd_info->start_y;
+	x_offset = container->details->dnd_info->start_x;
+	y_offset = container->details->dnd_info->start_y;
 
 	data = g_string_new (NULL);
-	for (p = priv->icons; p != NULL; p = p->next) {
+	for (p = details->icons; p != NULL; p = p->next) {
 		GnomeIconContainerIcon *icon;
 		gchar *s;
 		gint x, y;
@@ -234,9 +234,9 @@ set_gnome_icon_list_selection (GnomeIconContainer *container,
 		y += (GNOME_ICON_CONTAINER_ICON_YOFFSET (container)
 		      - GNOME_ICON_CONTAINER_ICON_HEIGHT (container) / 2);
 
-		if (priv->base_uri != NULL)
+		if (details->base_uri != NULL)
 			s = g_strdup_printf ("%s/%s\r%d:%d\r\n",
-					     priv->base_uri, icon->text,
+					     details->base_uri, icon->text,
 					     x, y);
 		else
 			s = g_strdup_printf ("%s\r%d:%d\r\n",
@@ -258,13 +258,13 @@ static void
 set_uri_list_selection (GnomeIconContainer *container,
 			GtkSelectionData *selection_data)
 {
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 	GList *p;
 	gchar *temp_data;
 	GString *data;
 
-	priv = container->priv;
-	if (priv->icons == NULL) {
+	details = container->details;
+	if (details->icons == NULL) {
 		/* FIXME?  Actually this probably shouldn't happen.  */
 		gtk_selection_data_set (selection_data,
 					selection_data->target,
@@ -274,14 +274,14 @@ set_uri_list_selection (GnomeIconContainer *container,
 
 	data = g_string_new (NULL);
 
-	for (p = priv->icons; p != NULL; p = p->next) {
+	for (p = details->icons; p != NULL; p = p->next) {
 		GnomeIconContainerIcon *icon;
 
 		icon = p->data;
 		if (! icon->is_selected)
 			continue;
 
-		temp_data = g_strdup_printf ("%s/%s\r\n", priv->base_uri, icon->text);
+		temp_data = g_strdup_printf ("%s/%s\r\n", details->base_uri, icon->text);
 		g_string_append(data, temp_data);
 		g_free(temp_data);
 	}
@@ -332,7 +332,7 @@ get_gnome_icon_list_selection (GnomeIconContainer *container,
 	const guchar *p, *oldp;
 	gint size;
 
-	dnd_info = container->priv->dnd_info;
+	dnd_info = container->details->dnd_info;
 
 	oldp = data->data;
 	size = data->length;
@@ -410,7 +410,7 @@ gnome_icon_container_position_shadow (GnomeIconContainer *container,
 	GnomeCanvasItem *shadow;
 	double world_x, world_y;
 
-	shadow = container->priv->dnd_info->shadow;
+	shadow = container->details->dnd_info->shadow;
 	if (shadow == NULL)
 		return;
 
@@ -431,7 +431,7 @@ gnome_icon_container_dropped_icon_feedback (GtkWidget *widget,
 	double world_x, world_y;
 
 	container = GNOME_ICON_CONTAINER (widget);
-	dnd_info = container->priv->dnd_info;
+	dnd_info = container->details->dnd_info;
 
 	/* delete old selection list if any */
 
@@ -472,7 +472,7 @@ drag_data_received_cb (GtkWidget *widget,
 {
     	GnomeIconContainerDndInfo *dnd_info;
 
-	dnd_info = GNOME_ICON_CONTAINER (widget)->priv->dnd_info;
+	dnd_info = GNOME_ICON_CONTAINER (widget)->details->dnd_info;
 
 	dnd_info->got_data_type = TRUE;
 	dnd_info->data_type = info;
@@ -497,7 +497,7 @@ gnome_icon_container_ensure_drag_data (GnomeIconContainer *container,
 {
 	GnomeIconContainerDndInfo *dnd_info;
 
-	dnd_info = container->priv->dnd_info;
+	dnd_info = container->details->dnd_info;
 
 	if (!dnd_info->got_data_type)
 		gtk_drag_get_data (GTK_WIDGET (container), context,
@@ -528,7 +528,7 @@ drag_end_cb (GtkWidget *widget,
 	GnomeIconContainerDndInfo *dnd_info;
 
 	container = GNOME_ICON_CONTAINER (widget);
-	dnd_info = container->priv->dnd_info;
+	dnd_info = container->details->dnd_info;
 
 	destroy_selection_list (dnd_info->selection_list);
 	dnd_info->selection_list = NULL;
@@ -564,7 +564,7 @@ gnome_icon_container_receive_dropped_icons (GnomeIconContainer *container,
 	DndSelectionItem *item;
 	char *item_directory_uri;
 
-	dnd_info = container->priv->dnd_info;
+	dnd_info = container->details->dnd_info;
 	
 	if (dnd_info->selection_list == NULL)
 		return;
@@ -572,7 +572,7 @@ gnome_icon_container_receive_dropped_icons (GnomeIconContainer *container,
 	item = dnd_info->selection_list->data;
 	item_directory_uri = extract_directory(item->uri);
 	
-	if (strcmp(item_directory_uri, container->priv->base_uri) != 0) {
+	if (strcmp(item_directory_uri, container->details->base_uri) != 0) {
 		g_warning ("not implemented: drop from other directory: %s", item_directory_uri);
 	} else {
 		/* copy files in same directory */
@@ -601,7 +601,7 @@ gnome_icon_container_free_drag_data (GnomeIconContainer *container)
 {
 	GnomeIconContainerDndInfo *dnd_info;
 	
-	dnd_info = container->priv->dnd_info;
+	dnd_info = container->details->dnd_info;
 	
 	dnd_info->got_data_type = FALSE;
 	
@@ -626,7 +626,7 @@ drag_drop_cb (GtkWidget *widget,
 {
 	GnomeIconContainerDndInfo *dnd_info;
 
-	dnd_info = GNOME_ICON_CONTAINER (widget)->priv->dnd_info;
+	dnd_info = GNOME_ICON_CONTAINER (widget)->details->dnd_info;
 
 	gnome_icon_container_ensure_drag_data (GNOME_ICON_CONTAINER (widget), context, time);
 
@@ -704,7 +704,7 @@ gnome_icon_container_dnd_init (GnomeIconContainer *container,
 	gtk_signal_connect (GTK_OBJECT (container), "drag_leave",
 			    GTK_SIGNAL_FUNC (drag_leave_cb), NULL);
 
-	container->priv->dnd_info = dnd_info;
+	container->details->dnd_info = dnd_info;
 }
 
 void
@@ -715,7 +715,7 @@ gnome_icon_container_dnd_fini (GnomeIconContainer *container)
 	g_return_if_fail (container != NULL);
 	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
 
-	dnd_info = container->priv->dnd_info;
+	dnd_info = container->details->dnd_info;
 	g_return_if_fail (dnd_info != NULL);
 
 	gtk_target_list_unref (dnd_info->target_list);
@@ -747,7 +747,7 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
 	g_return_if_fail (event != NULL);
 
-	dnd_info = container->priv->dnd_info;
+	dnd_info = container->details->dnd_info;
 	g_return_if_fail (dnd_info != NULL);
 
 	/* Notice that the event is already in world coordinates, because of
@@ -762,7 +762,7 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 				  (GdkEvent *) event);
 	
         /* create a pixmap and mask to drag with */
-        pixbuf_item = GNOME_CANVAS_ITEM (container->priv->drag_icon->image_item);
+        pixbuf_item = GNOME_CANVAS_ITEM (container->details->drag_icon->image_item);
         pixbuf_args[0].name = "GnomeCanvasPixbuf::pixbuf";
         gtk_object_getv (GTK_OBJECT (pixbuf_item), 1, pixbuf_args);
         temp_pixbuf = (GdkPixbuf *) GTK_VALUE_OBJECT (pixbuf_args[0]);
@@ -782,6 +782,6 @@ gnome_icon_container_dnd_end_drag (GnomeIconContainer *container)
 	g_return_if_fail (container != NULL);
 	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
 
-	dnd_info = container->priv->dnd_info;
+	dnd_info = container->details->dnd_info;
 	g_return_if_fail (dnd_info != NULL);
 }

@@ -33,17 +33,9 @@ enum _GnomeIconContainerIconMode {
 };
 typedef enum _GnomeIconContainerIconMode GnomeIconContainerIconMode;
 
-enum _GnomeIconContainerLayoutMode {
-	GNOME_ICON_LAYOUT_MANUAL,
-	GNOME_ICON_LAYOUT_AUTO
-};
-typedef enum _GnomeIconContainerLayoutMode GnomeIconContainerLayoutMode;
-
 typedef struct _GnomeIconContainer GnomeIconContainer;
 typedef struct _GnomeIconContainerClass GnomeIconContainerClass;
-typedef struct _GnomeIconContainerPrivate GnomeIconContainerPrivate;
-
-#include "gnome-icon-container-layout.h"
+typedef struct _GnomeIconContainerDetails GnomeIconContainerDetails;
 
 
 #define GNOME_ICON_CONTAINER(obj) \
@@ -62,7 +54,7 @@ typedef gint (* GnomeIconContainerSortFunc) (const gchar *name_a,
 
 struct _GnomeIconContainer {
 	GnomeCanvas canvas;
-	GnomeIconContainerPrivate *priv;
+	GnomeIconContainerDetails *details;
 };
 
 struct _GnomeIconContainerClass {
@@ -119,14 +111,6 @@ void		 gnome_icon_container_add_pixbuf_auto
 						  GdkPixbuf *image,
 						  const gchar *text,
 						  gpointer data);
-gboolean	 gnome_icon_container_add_pixbuf_with_layout
-						 (GnomeIconContainer
-						  *container,
-						  GdkPixbuf *image,
-						  const gchar *text,
-						  gpointer data,
-						  const GnomeIconContainerLayout
-						  *layout);
  
 gpointer	 gnome_icon_container_get_icon_data
 						 (GnomeIconContainer *view,
@@ -155,7 +139,4 @@ void		 gnome_icon_container_xlate_selected
 						 gint amount_y,
 						 gboolean raise);
 
-GnomeIconContainerLayout *
-		 gnome_icon_container_get_layout
-						(GnomeIconContainer *container);
 #endif

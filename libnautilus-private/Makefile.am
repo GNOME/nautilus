@@ -23,7 +23,6 @@ libnautilusincludedir=$(includedir)/libnautilus
 libnautilusinclude_HEADERS=			\
 	gdk-extensions.h			\
 	gnome-icon-container-dnd.h		\
-	gnome-icon-container-layout.h		\
 	gnome-icon-container-private.h		\
 	gnome-icon-container.h			\
 	gnome-progressive-loader.c		\
@@ -46,7 +45,6 @@ libnautilusinclude_HEADERS=			\
 libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	gdk-extensions.c			\
 	gnome-icon-container-dnd.c		\
-	gnome-icon-container-layout.c		\
 	gnome-icon-container.c			\
 	gtkflist.c				\
 	gtkscrollframe.c			\

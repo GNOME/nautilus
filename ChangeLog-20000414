@@ -1,3 +1,30 @@
+2000-01-21  Darin Adler  <darin@eazel.com>
+
+	Started some cleanup of the icon view.
+
+	* libnautilus/Makefile.am:
+	libnautilus/gnome-icon-container-layout.c:
+	libnautilus/gnome-icon-container-layout.h:
+	libnautilus/gnome-icon-container.c:
+	libnautilus/gnome-icon-container.h:
+	src/file-manager/fm-directory-view-icons.c:
+	src/file-manager/fm-directory-view-icons.h:
+	Got rid of the GnomeIconContainerLayout.
+	This was the old mechanism for saving and loading
+	icon positions and we have a better signal-based one.
+	Also made the new mechanism work more the way that
+	Ettore had intended to make the layout work, where
+	all the icons that have preassigned positions get
+	positioned first, then the ones that are auto positioned.
+	In the long run, we'll need something a bit fancier.
+
+	* libnautilus/gnome-icon-container-dnd.c:
+	libnautilus/gnome-icon-container.c:
+	libnautilus/gnome-icon-container.h:
+	libnautilus/gnome-icon-container-private.h:
+	Change the priv pointer to be named details to match
+	what we use in other places in Nautilus.
+
 2000-01-21  John Sullivan <sullivan@eazel.com>
 
 	Made list view activation work on single click, like icon view.
@@ -16,13 +43,13 @@
 	is true, selection isn't being extended, mouse hasn't moved to a different 
 	row, and not too much time has passed.
 	(gtk_flist_motion): Deploy button_down_row name change.
-	
 
 2000-01-20  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus/gnome-icon-container.c:
-	disabled the pernicious call to relayout in size_allocate.  We will want to do automatic layout
-	when the window size changes, but this is the wrong level for it, it happens too frequently
+	Disabled the pernicious call to relayout in size_allocate.  We
+	will want to do automatic layout when the window size changes, but
+	this is the wrong level for it, it happens too frequently
 	
 2000-01-20  Elliot Lee  <sopwith@redhat.com>
 
@@ -372,10 +399,11 @@
 2000-01-18  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus/gnome-icon-container.c
-	made icon centered in cell by setting "x_set" pixbuf property so it listens to our offset
-	also, adjusted x_offset constant
+	made icon centered in cell by setting "x_set" pixbuf property so
+	it listens to our offset also, adjusted x_offset constant
 	* libnautilus/gnome-icon-container-dnd.c
-	made shadow be centered properly by taking difference between cellwidth and iconwidth into account
+	made shadow be centered properly by taking difference between
+	cellwidth and iconwidth into account
 	
 2000-01-18  Ettore Perazzoli  <ettore@helixcode.com>
 
@@ -598,7 +626,8 @@
 	added "single_click_mode" boolean
 	
 	*libnautilus/gnome-icon-container.h
-	made single-click open optionally work by adding code in button_release_event to activate the icon if appropriate
+	made single-click open optionally work by adding code in
+	button_release_event to activate the icon if appropriate
 	enabled single-click mode by default
 	
 	*libnautilus/gnome-icon-container-dnd.c
