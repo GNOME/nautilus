@@ -413,13 +413,13 @@ static GtkLabel *
 attach_label (GtkTable *table,
 	      int row,
 	      int column,
-	      const char *initial_text)
+	      const char *initial_text,
+	      gboolean right_aligned)
 {
 	GtkWidget *label_field;
 
 	label_field = gtk_label_new (initial_text);
-	/* Move widget to left edge (justifying text not the right thing here). */
-	gtk_misc_set_alignment (GTK_MISC (label_field), 0, 0.5);
+	gtk_misc_set_alignment (GTK_MISC (label_field), right_aligned ? 1 : 0, 0.5);
 	gtk_widget_show (label_field);
 	gtk_table_attach (table, label_field,
 			  column, column + 1,
@@ -430,6 +430,24 @@ attach_label (GtkTable *table,
 	return GTK_LABEL (label_field);
 }	      
 
+static GtkLabel *
+attach_left_aligned_label (GtkTable *table,
+	      		    int row,
+	      		    int column,
+	      		    const char *initial_text)
+{
+	return attach_label (table, row, column, initial_text, FALSE);
+}
+
+static GtkLabel *
+attach_right_aligned_label (GtkTable *table,
+	      		    int row,
+	      		    int column,
+	      		    const char *initial_text)
+{
+	return attach_label (table, row, column, initial_text, TRUE);
+}
+
 static void
 attach_value_field (GtkTable *table,
 		    int row,
@@ -439,7 +457,7 @@ attach_value_field (GtkTable *table,
 {
 	GtkLabel *value_field;
 
-	value_field = attach_label (table, row, column, "");
+	value_field = attach_left_aligned_label (table, row, column, "");
 
 	/* Stash a copy of the file attribute name in this field for the callback's sake. */
 	gtk_object_set_data_full (GTK_OBJECT (value_field),
@@ -544,7 +562,7 @@ attach_directory_contents_value_field (GtkTable *table,
 {
 	GtkLabel *value_field;
 
-	value_field = attach_label (table, row, VALUE_COLUMN, "");
+	value_field = attach_left_aligned_label (table, row, VALUE_COLUMN, "");
 	gtk_label_set_line_wrap (value_field, TRUE);
 
 	/* Bit of a hack; store a reference to the title field in
@@ -572,7 +590,7 @@ attach_title_field (GtkTable *table,
 		     int row,
 		     const char *title)
 {
-	return attach_label (table, row, TITLE_COLUMN, title);
+	return attach_right_aligned_label (table, row, TITLE_COLUMN, title);
 }		      
 
 static void

@@ -1,5 +1,14 @@
 2000-06-22  John Sullivan  <sullivan@eazel.com>
 
+	* src/file-manager/fm-properties-window.c: (attach_label),
+	(attach_left_aligned_label), (attach_right_aligned_label),
+	(attach_value_field), (attach_directory_contents_value_field),
+	(attach_title_field): Oops, some refactoring in my previous
+	checkin left all the labels left-aligned, when the title
+	ones are supposed to be right-aligned. Fixed that up.
+
+2000-06-22  John Sullivan  <sullivan@eazel.com>
+
 	Finished task 970 (Properties window should show deep
 	directory sizes)
 
