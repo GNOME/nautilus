@@ -3571,57 +3571,6 @@ reset_scripts_menu_callback (NautilusDirectory *directory,
 	reset_scripts_menu (view, files);
 }
 
-static gboolean
-any_valid_scripts (GList *files)
-{
-	GList *node;
-
-	for (node = files; node != NULL; node = node->next) {
-		if (file_is_launchable (NAUTILUS_FILE (node->data))) {
-			return TRUE;
-		}
-	}
-
-	return FALSE;
-}
-
-static void
-notify_user_if_no_scripts_callback (NautilusDirectory *directory,
-			     	    GList *files,
-			     	    gpointer callback_data)
-{
-	FMDirectoryView *view;
-
-	view = callback_data;
-
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	g_assert (view->details->scripts_directory == directory);
-
-	if (any_valid_scripts (files)) {
-		return;
-	}
-
-	eel_show_info_dialog_with_details 
-		(_("All executable files in this folder will appear in the "
-		   "Scripts menu. Choosing a script from the menu will run "
-		   "that script with any selected items as input."), 
-		 _("About Scripts"),
-		 _("All executable files in this folder will appear in the "
-		   "Scripts menu. Choosing a script from the menu will run "
-		   "that script.\n\n"
-		   "When executed from a local folder, scripts will be passed "
-		   "the selected file names. When executed from a remote folder "
-		   "(e.g. a folder showing web or ftp content), scripts will "
-		   "be passed no parameters.\n\n"
-		   "In all cases, the following environment variables will be "
-		   "set by Nautilus, which the scripts may use:\n\n"
-		   "NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: newline-delimited paths for selected files (only if local)\n\n"
-		   "NAUTILUS_SCRIPT_SELECTED_URIS: newline-delimited URIs for selected files\n\n"
-		   "NAUTILUS_SCRIPT_CURRENT_URI: URI for current location\n\n"
-		   "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"),
-		 fm_directory_view_get_containing_window (view));
-}
-
 static void
 call_when_ready_on_scripts_directory (FMDirectoryView *view,
 				      NautilusDirectoryCallback scripts_directory_callback)
@@ -3668,7 +3617,25 @@ open_scripts_folder_callback (BonoboUIComponent *component,
 		open_location (view, uri, RESPECT_PREFERENCE);
 		g_free (uri);
 
-		call_when_ready_on_scripts_directory (view, notify_user_if_no_scripts_callback);
+		eel_show_info_dialog_with_details 
+			(_("All executable files in this folder will appear in the "
+			   "Scripts menu. Choosing a script from the menu will run "
+			   "that script with any selected items as input."), 
+			 _("About Scripts"),
+			 _("All executable files in this folder will appear in the "
+			   "Scripts menu. Choosing a script from the menu will run "
+			   "that script.\n\n"
+			   "When executed from a local folder, scripts will be passed "
+			   "the selected file names. When executed from a remote folder "
+			   "(e.g. a folder showing web or ftp content), scripts will "
+			   "be passed no parameters.\n\n"
+			   "In all cases, the following environment variables will be "
+			   "set by Nautilus, which the scripts may use:\n\n"
+			   "NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: newline-delimited paths for selected files (only if local)\n\n"
+			   "NAUTILUS_SCRIPT_SELECTED_URIS: newline-delimited URIs for selected files\n\n"
+			   "NAUTILUS_SCRIPT_CURRENT_URI: URI for current location\n\n"
+			   "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"),
+			 fm_directory_view_get_containing_window (view));
 	} else {
 		/* This shouldn't happen. If it does, get_scripts_directory was unable to
 		 * mkdir the scripts directory, and this case should be debugged.
@@ -4927,10 +4894,6 @@ disconnect_script_handlers (FMDirectoryView *view)
 
 	nautilus_directory_cancel_callback (view->details->scripts_directory,
 					    reset_scripts_menu_callback,
-					    view);
-
-	nautilus_directory_cancel_callback (view->details->scripts_directory,
-					    notify_user_if_no_scripts_callback,
 					    view);
 }
 
