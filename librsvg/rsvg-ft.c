@@ -208,37 +208,41 @@ rsvg_ft_glyph_bytes (RsvgFTGlyph *glyph)
 static void
 rsvg_ft_glyph_evict (RsvgFTCtx *ctx, int amount_to_evict)
 {
-	RsvgFTGlyphCacheEntry *victim;
+	RsvgFTGlyphCacheEntry *victim, *prev;
 	RsvgFTGlyph *glyph;
-	int evicted_so_far = 0;
+	int glyph_bytes, evicted_so_far;
 
-	for (victim = ctx->glyph_last; victim != NULL; victim = victim->prev) {
-		if (victim->glyph->refcnt == 1) {
-			evicted_so_far += rsvg_ft_glyph_bytes (victim->glyph);
-			
-			if (victim->prev != NULL) {
-				victim->prev->next = victim->next;
-			}
-			else {
-				ctx->glyph_first = victim->next;
-			}
-			if (victim->next != NULL) {
-				victim->next->prev = victim->prev;
-			} else {
-				ctx->glyph_last = victim->prev;
-			}
-			
-			glyph = victim->glyph;
-			ctx->glyph_bytes -= rsvg_ft_glyph_bytes (glyph);
-			rsvg_ft_glyph_unref (glyph);
-			
-			g_hash_table_remove (ctx->glyph_hash_table, victim->desc);
-			g_free (victim->desc);
-			g_free (victim);
+	evicted_so_far = 0;
+	for (victim = ctx->glyph_last; victim != NULL; victim = prev) {
+		prev = victim->prev;
+		glyph = victim->glyph;
 
-			if (evicted_so_far >= amount_to_evict) {
-				break;
-			}
+		if (glyph->refcnt != 1) {
+			continue;
+		}
+
+		if (victim->prev != NULL) {
+			victim->prev->next = victim->next;
+		} else {
+			ctx->glyph_first = victim->next;
+		}
+		if (victim->next != NULL) {
+			victim->next->prev = victim->prev;
+		} else {
+			ctx->glyph_last = victim->prev;
+		}
+		
+		glyph_bytes = rsvg_ft_glyph_bytes (glyph);
+		ctx->glyph_bytes -= glyph_bytes;
+		rsvg_ft_glyph_unref (glyph);
+		
+		g_hash_table_remove (ctx->glyph_hash_table, victim->desc);
+		g_free (victim->desc);
+		g_free (victim);
+		
+		evicted_so_far += glyph_bytes;
+		if (evicted_so_far >= amount_to_evict) {
+			break;
 		}
 	}
 }

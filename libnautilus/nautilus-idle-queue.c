@@ -31,6 +31,8 @@
 struct NautilusIdleQueue {
 	GList *functions;
 	guint idle_id;
+	gboolean in_idle;
+	gboolean destroy;
 };
 
 typedef struct {
@@ -52,6 +54,7 @@ execute_queued_functions (gpointer callback_data)
 	/* We could receive more incoming functions while dispatching
 	 * these, so keep going until the queue is empty.
 	 */
+	queue->in_idle = TRUE;
 	while (queue->functions != NULL) {
 		functions = g_list_reverse (queue->functions);
 		queue->functions = NULL;
@@ -67,8 +70,14 @@ execute_queued_functions (gpointer callback_data)
 
 		g_list_free (functions);
 	}
+	queue->in_idle = FALSE;
 
 	queue->idle_id = 0;
+
+	if (queue->destroy) {
+		nautilus_idle_queue_destroy (queue);
+	}
+
 	return FALSE;
 }
 
@@ -105,6 +114,11 @@ nautilus_idle_queue_destroy (NautilusIdleQueue *queue)
 {
 	GList *node;
 	QueuedFunction *function;
+
+	if (queue->in_idle) {
+		queue->destroy = TRUE;
+		return;
+	}
 
 	for (node = queue->functions; node != NULL; node = node->next) {
 		function = node->data;

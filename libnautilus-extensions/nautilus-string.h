@@ -76,8 +76,6 @@ gboolean nautilus_str_has_suffix                (const char    *target,
 						 const char    *suffix);
 gboolean nautilus_istr_has_suffix               (const char    *target,
 						 const char    *suffix);
-char *   nautilus_str_get_prefix                (const char    *source,
-						 const char    *delimiter);
 char *   nautilus_str_strip_chr                 (const char    *str,
 						 char           remove_this);
 char *   nautilus_str_strip_trailing_chr        (const char    *str,

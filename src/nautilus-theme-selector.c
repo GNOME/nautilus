@@ -735,6 +735,7 @@ render_theme_name_and_description (GtkWidget *widget, const char *theme_name, co
 	visual = gdk_visual_get_system ();
 
 	/* allocate the fonts and measure the text so we know how big a pixmap to allocate */
+	gtk_widget_realize (widget);
 	style = widget->style;
 	big_font = nautilus_gdk_font_get_larger (style->font, 6);
 	small_font = nautilus_gdk_font_get_smaller (style->font, 3);

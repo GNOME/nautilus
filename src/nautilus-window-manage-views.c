@@ -663,6 +663,8 @@ open_location (NautilusWindow *window,
                 target_window = get_topmost_nautilus_window ();
                 if (target_window == window) {
                         create_new_window = TRUE;
+                } else {
+                        nautilus_gtk_window_present (GTK_WINDOW (target_window));
                 }
         }
 

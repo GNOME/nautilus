@@ -1,3 +1,50 @@
+2001-02-13  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix bug 6408 (nautilus_view_report_load_failed causes Nautilus to
+	segfault in an idle callback):
+
+	* libnautilus/nautilus-idle-queue.c: (execute_queued_functions),
+	(nautilus_idle_queue_destroy): Changed the idle queue so it can
+	handle being destroyed while inside one of the queued functions.
+
+	Fix bug 6402 (Click desktop icon -> Nautilus window not moved to
+	front):
+	
+	* src/nautilus-window-manage-views.c: (open_location): Bring the
+	existing window up when it's reused in the "open icon on desktop"
+	in single-window mode.
+
+	Other changes:
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(is_theme_in_user_directory): Rename from "check_local_theme"
+	and changed it to use a normal function result instead of taking
+	a gboolean pointer.
+	(set_theme): Use new function and booleans by their new names.
+	"in_user_directory" instead of "local".
+	(make_full_icon_path): Just the name change.
+	(get_themed_icon_file_path): Take a boolean parameter instead of
+	trying to figure out if the theme is in the user directory, because
+	the old way would get it wrong for the default theme.
+	(get_icon_file_path): Pass in the boolean to say if the theme is
+	in the user directory or not.
+
+	* libnautilus-extensions/nautilus-string.h: Remove repeated
+	declaration for nautilus_str_get_prefix.
+
+	(These not reviewed:)
+	
+	* librsvg/rsvg-ft.c: (rsvg_ft_glyph_evict): Fix code that was
+	looking at the "prev" pointer of a victim after freeing it. Also
+	made some other code simplifications.
+
+	* src/nautilus-theme-selector.c:
+	(render_theme_name_and_description): Added an explicit call to
+	gtk_widget_realize before grabbing the style field and expecting
+	it to have gc's in it. Not sure why no one ran into this before.
+
 2001-02-13  Eric Fischer <eric@eazel.com>
 
 	* configure.in:
@@ -494,10 +541,10 @@
 	reviewed by: Ali Abdin <aliabdin@aucegypt.edu>
 
 	* components/help/converters/gnome-db2html2/gdb3html.h
-	* /components/help/converters/gnome-db2html2/sect-elements.c
-	* /components/help/converters/gnome-db2html2/sect-elements.h
-	* /components/help/converters/gnome-db2html2/sect-preparse.c
-	* /components/help/converters/gnome-db2html2/toc-elements.c
+	* components/help/converters/gnome-db2html2/sect-elements.c
+	* components/help/converters/gnome-db2html2/sect-elements.h
+	* components/help/converters/gnome-db2html2/sect-preparse.c
+	* components/help/converters/gnome-db2html2/toc-elements.c
 	add support for <bridgehead> tag in DocBook, fix bug #6492
 
 2001-02-11  Rebecca Schulman  <rebecka@eazel.com>
@@ -671,7 +718,7 @@
 	* components/rpmview/nautilus-rpm-view.c:
 	(nautilus_rpm_view_initialize),
 	(nautilus_rpm_view_update_from_uri):
-	made it us nautilus_image so the package image is anti-aliased
+	made it use nautilus_image so the package image is anti-aliased
 
 2001-02-09  John Sullivan  <sullivan@eazel.com>
 
@@ -1205,7 +1252,7 @@
 	at the DOM event level, notification to Nautilus of navigation is done
 	as a result of the "location" signal
 
-	Introduces/aggrevates these bugs:
+	Introduces/aggravates these bugs:
 
 	6435	No history recorded when using report_location_change
 	6436	Throbber doesn't throb when using report_location_change
@@ -1240,8 +1287,8 @@
 2001-02-08  Fatih Demir	<kabalak@kabalak.net>
 
 	* components/services/install/lib/eazel-package-system-rpm3.c:
-		Include locale.h as you use localeconv() without including
-		 it -- bad on debian...
+	Include locale.h as you use localeconv() without including
+	it -- bad on debian...
 
 2001-02-08  John Sullivan  <sullivan@eazel.com>
 
@@ -1277,30 +1324,27 @@
 	true in this case.)
 	
 2001-02-08  Laszlo Kovacs  <laszlo.kovacs@sun.com>
-	* components/help/Makefile.am:
 
+	* components/help/Makefile.am:
 	Man page map file moved to new hyperbola data
 	directory.
 
         * components/help/hyperbola-filefmt.c:
-
 	Compiler warnings fixed
 
 2001-02-08  Laszlo Kovacs  <laszlo.kovacs@sun.com>
-	* components/help/hyperbola-filefmt.c:
 
+	* components/help/hyperbola-filefmt.c:
 	Toplevel document support added. Docs specified in
 	$(prefix)/share/nautilus/components/hyperbola/topleveldocs.xml
 	will be added to the toplevel section of the help tree if
 	Scrollkeeper is enabled
 	
 	* components/help/Makefile.am:
-
 	topleveldocs.xml installed and hyperbola data directory
 	changed to $(prefix)/share/nautilus/components/hyperbola
 
 	* components/help/topleveldocs.xml:
-
 	new xml file holding the docs that go into the toplevel
 	section of the help tree
 
