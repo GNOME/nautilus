@@ -130,6 +130,7 @@ struct FMDirectoryViewDetails
 	GList *pending_files_changed;
 	GList *pending_uris_selected;
 
+	gboolean force_reload;
 	gboolean loading;
 	gboolean menus_merged;
 	gboolean menu_states_untrustworthy;
@@ -143,81 +144,81 @@ struct FMDirectoryViewDetails
 
 /* forward declarations */
 
-static int            display_selection_info_idle_callback                        (gpointer                  data);
-static gboolean	      file_is_launchable 					  (NautilusFile 	    *file);
-static void           fm_directory_view_initialize_class                          (FMDirectoryViewClass     *klass);
-static void           fm_directory_view_initialize                                (FMDirectoryView          *view);
-static void           fm_directory_view_duplicate_selection                       (FMDirectoryView          *view,
-										   GList                    *files);
-static void           fm_directory_view_create_links_for_files 			  (FMDirectoryView 	    *view, 
-										   GList		    *files);
-static void           fm_directory_view_trash_or_delete_files                 	  (FMDirectoryView          *view,
-										   GList                    *files);
-static void           fm_directory_view_destroy                                   (GtkObject                *object);
-static void           fm_directory_view_activate_file	                          (FMDirectoryView          *view,
-										   NautilusFile             *file,
-										   gboolean                  use_new_window);
-static void           fm_directory_view_create_background_context_menu_items      (FMDirectoryView          *view,
-										   GtkMenu                  *menu);
-static void	      fm_directory_view_load_uri 				  (FMDirectoryView 	    *view,
-			    							   const char 		    *uri);
-static void           fm_directory_view_merge_menus                               (FMDirectoryView          *view);
-static void           fm_directory_view_real_create_background_context_menu_items (FMDirectoryView          *view,
-										   GtkMenu                  *menu);
-static void           fm_directory_view_real_create_selection_context_menu_items  (FMDirectoryView          *view,
-										   GtkMenu                  *menu,
-										   GList                    *files);
-static void           fm_directory_view_real_merge_menus                          (FMDirectoryView          *view);
-static void           fm_directory_view_real_update_menus                         (FMDirectoryView          *view);
-static gboolean	      fm_directory_view_real_is_read_only	 		  (FMDirectoryView 	    *view);
-static gboolean	      fm_directory_view_real_supports_creating_files		  (FMDirectoryView 	    *view);
-static gboolean	      fm_directory_view_real_accepts_dragged_files		  (FMDirectoryView 	    *view);
-static gboolean	      fm_directory_view_real_supports_zooming	 		  (FMDirectoryView 	    *view);
-static gboolean	      fm_directory_view_real_supports_properties 		  (FMDirectoryView 	    *view);
-static GtkMenu *      create_selection_context_menu                               (FMDirectoryView          *view);
-static GtkMenu *      create_background_context_menu                              (FMDirectoryView          *view);
-static BonoboControl *get_bonobo_control                                          (FMDirectoryView          *view);
-static void           stop_loading_callback                                       (NautilusView          *nautilus_view,
-										   FMDirectoryView       *directory_view);
-static void           load_location_callback                                      (NautilusView          *nautilus_view,
-										   const char            *location,
-										   FMDirectoryView       *directory_view);
-static void           selection_changed_callback                                  (NautilusView          *nautilus_view,
-										   GList                 *selection,
-										   FMDirectoryView       *directory_view);
-static void           open_one_in_new_window                                      (gpointer                  data,
-										   gpointer                  callback_data);
-static void           open_one_properties_window                                  (gpointer                  data,
-										   gpointer                  callback_data);
-static void	      zoomable_set_zoom_level_callback				  (NautilusZoomable *zoomable,
-										   double level,
-										   FMDirectoryView *view);
-static void           zoomable_zoom_in_callback                                   (NautilusZoomable         *zoomable,
-										   FMDirectoryView          *directory_view);
-static void           zoomable_zoom_out_callback                                  (NautilusZoomable         *zoomable,
-										   FMDirectoryView          *directory_view);
-static void           zoomable_zoom_to_fit_callback                               (NautilusZoomable         *zoomable,
-										   FMDirectoryView          *directory_view);
-static void	      schedule_update_menus 					  (FMDirectoryView 	    *view);
-static void	      schedule_update_menus_callback				  (gpointer		     callback_data);
-static void           schedule_idle_display_of_pending_files                      (FMDirectoryView          *view);
-static void           unschedule_idle_display_of_pending_files                    (FMDirectoryView          *view);
-static void           schedule_timeout_display_of_pending_files                   (FMDirectoryView          *view);
-static void           unschedule_timeout_display_of_pending_files                 (FMDirectoryView          *view);
-static void           unschedule_display_of_pending_files                         (FMDirectoryView          *view);
-static void           disconnect_model_handlers                                   (FMDirectoryView          *view);
-static void           filtering_changed_callback                          	  (gpointer                  callback_data);
-static NautilusStringList * real_get_emblem_names_to_exclude                      (FMDirectoryView          *view);
-static void           start_renaming_item                   	                  (FMDirectoryView          *view,
-										   const char 		    *uri);
-static void           metadata_ready_callback                                     (NautilusFile             *file,
-										   gpointer                  callback_data);
-static void	      fm_directory_view_trash_state_changed_callback		  (NautilusTrashMonitor     *trash,
-										   gboolean 		     state,
-										   gpointer		     callback_data);
-static void	      fm_directory_view_select_file				  (FMDirectoryView	    *view,
-										   NautilusFile		    *file);
-
+static int                 display_selection_info_idle_callback                   (gpointer              data);
+static gboolean            file_is_launchable                                     (NautilusFile         *file);
+static void                fm_directory_view_initialize_class                     (FMDirectoryViewClass *klass);
+static void                fm_directory_view_initialize                           (FMDirectoryView      *view);
+static void                fm_directory_view_duplicate_selection                  (FMDirectoryView      *view,
+										   GList                *files);
+static void                fm_directory_view_create_links_for_files               (FMDirectoryView      *view,
+										   GList                *files);
+static void                fm_directory_view_trash_or_delete_files                (FMDirectoryView      *view,
+										   GList                *files);
+static void                fm_directory_view_destroy                              (GtkObject            *object);
+static void                fm_directory_view_activate_file                        (FMDirectoryView      *view,
+										   NautilusFile         *file,
+										   gboolean              use_new_window);
+static void                fm_directory_view_create_background_context_menu_items (FMDirectoryView      *view,
+										   GtkMenu              *menu);
+static void                load_directory                                         (FMDirectoryView      *view,
+										   NautilusDirectory    *directory,
+										   gboolean              force_reload);
+static void                fm_directory_view_merge_menus                          (FMDirectoryView      *view);
+static void                real_create_background_context_menu_items              (FMDirectoryView      *view,
+										   GtkMenu              *menu);
+static void                real_create_selection_context_menu_items               (FMDirectoryView      *view,
+										   GtkMenu              *menu,
+										   GList                *files);
+static void                real_merge_menus                                       (FMDirectoryView      *view);
+static void                real_update_menus                                      (FMDirectoryView      *view);
+static gboolean            real_is_read_only                                      (FMDirectoryView      *view);
+static gboolean            real_supports_creating_files                           (FMDirectoryView      *view);
+static gboolean            real_accepts_dragged_files                             (FMDirectoryView      *view);
+static gboolean            real_supports_zooming                                  (FMDirectoryView      *view);
+static gboolean            real_supports_properties                               (FMDirectoryView      *view);
+static GtkMenu *           create_selection_context_menu                          (FMDirectoryView      *view);
+static GtkMenu *           create_background_context_menu                         (FMDirectoryView      *view);
+static BonoboControl *     get_bonobo_control                                     (FMDirectoryView      *view);
+static void                stop_loading_callback                                  (NautilusView         *nautilus_view,
+										   FMDirectoryView      *directory_view);
+static void                load_location_callback                                 (NautilusView         *nautilus_view,
+										   const char           *location,
+										   FMDirectoryView      *directory_view);
+static void                selection_changed_callback                             (NautilusView         *nautilus_view,
+										   GList                *selection,
+										   FMDirectoryView      *directory_view);
+static void                open_one_in_new_window                                 (gpointer              data,
+										   gpointer              callback_data);
+static void                open_one_properties_window                             (gpointer              data,
+										   gpointer              callback_data);
+static void                zoomable_set_zoom_level_callback                       (NautilusZoomable     *zoomable,
+										   double                level,
+										   FMDirectoryView      *view);
+static void                zoomable_zoom_in_callback                              (NautilusZoomable     *zoomable,
+										   FMDirectoryView      *directory_view);
+static void                zoomable_zoom_out_callback                             (NautilusZoomable     *zoomable,
+										   FMDirectoryView      *directory_view);
+static void                zoomable_zoom_to_fit_callback                          (NautilusZoomable     *zoomable,
+										   FMDirectoryView      *directory_view);
+static void                schedule_update_menus                                  (FMDirectoryView      *view);
+static void                schedule_update_menus_callback                         (gpointer              callback_data);
+static void                schedule_idle_display_of_pending_files                 (FMDirectoryView      *view);
+static void                unschedule_idle_display_of_pending_files               (FMDirectoryView      *view);
+static void                schedule_timeout_display_of_pending_files              (FMDirectoryView      *view);
+static void                unschedule_timeout_display_of_pending_files            (FMDirectoryView      *view);
+static void                unschedule_display_of_pending_files                    (FMDirectoryView      *view);
+static void                disconnect_model_handlers                              (FMDirectoryView      *view);
+static void                filtering_changed_callback                             (gpointer              callback_data);
+static NautilusStringList *real_get_emblem_names_to_exclude                       (FMDirectoryView      *view);
+static void                start_renaming_item                                    (FMDirectoryView      *view,
+										   const char           *uri);
+static void                metadata_ready_callback                                (NautilusFile         *file,
+										   gpointer              callback_data);
+static void                fm_directory_view_trash_state_changed_callback         (NautilusTrashMonitor *trash,
+										   gboolean              state,
+										   gpointer              callback_data);
+static void                fm_directory_view_select_file                          (FMDirectoryView      *view,
+										   NautilusFile         *file);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_file)
@@ -300,17 +301,17 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 		    		gtk_marshal_NONE__BOXED,
 		    		GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
 
-	klass->create_selection_context_menu_items = fm_directory_view_real_create_selection_context_menu_items;
-	klass->create_background_context_menu_items = fm_directory_view_real_create_background_context_menu_items;
-        klass->merge_menus = fm_directory_view_real_merge_menus;
-        klass->update_menus = fm_directory_view_real_update_menus;
+	klass->create_selection_context_menu_items = real_create_selection_context_menu_items;
+	klass->create_background_context_menu_items = real_create_background_context_menu_items;
+        klass->merge_menus = real_merge_menus;
+        klass->update_menus = real_update_menus;
 	klass->get_emblem_names_to_exclude = real_get_emblem_names_to_exclude;
 	klass->start_renaming_item = start_renaming_item;
-	klass->is_read_only = fm_directory_view_real_is_read_only;
-	klass->supports_creating_files = fm_directory_view_real_supports_creating_files;
-	klass->accepts_dragged_files = fm_directory_view_real_accepts_dragged_files;
-	klass->supports_zooming = fm_directory_view_real_supports_zooming;
-	klass->supports_properties = fm_directory_view_real_supports_properties;
+	klass->is_read_only = real_is_read_only;
+	klass->supports_creating_files = real_supports_creating_files;
+	klass->accepts_dragged_files = real_accepts_dragged_files;
+	klass->supports_zooming = real_supports_zooming;
+	klass->supports_properties = real_supports_properties;
 	klass->reveal_selection = NULL;
 
 	/* Function pointers that subclasses must override */
@@ -1297,7 +1298,16 @@ load_location_callback (NautilusView *nautilus_view,
 			const char *location,
 			FMDirectoryView *directory_view)
 {
-	fm_directory_view_load_uri (directory_view, location);
+	NautilusDirectory *directory;
+	gboolean force_reload;
+
+	directory = nautilus_directory_get (location);
+	/* An additional load of the same directory is how the
+	 * framework tells us to reload.
+	 */
+	force_reload = directory == directory_view->details->model;
+	load_directory (directory_view, directory, force_reload);
+	nautilus_directory_unref (directory);
 }
 
 static GList *
@@ -2992,7 +3002,7 @@ create_background_context_menu_zoom_items (FMDirectoryView *view,
 }
 
 static void
-fm_directory_view_real_create_background_context_menu_items (FMDirectoryView *view, 
+real_create_background_context_menu_items (FMDirectoryView *view, 
 							     GtkMenu *menu)
 
 {
@@ -3167,7 +3177,7 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 }
 
 static void
-fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *view,
+real_create_selection_context_menu_items (FMDirectoryView *view,
 							    GtkMenu *menu,
 						       	    GList *files)
 {
@@ -3236,7 +3246,7 @@ bonobo_open_location_with_viewer_callback (BonoboUIComponent *component, gpointe
 {
 	ViewerLaunchParameters *launch_parameters;
 
-	launch_parameters = (ViewerLaunchParameters *)callback_data;
+	launch_parameters = (ViewerLaunchParameters *) callback_data;
 
 	switch_location_and_view (launch_parameters->identifier,
 				  launch_parameters->uri,
@@ -3245,11 +3255,11 @@ bonobo_open_location_with_viewer_callback (BonoboUIComponent *component, gpointe
 
 static void
 add_open_with_app_bonobo_menu_item (BonoboUIComponent *ui,
-				const char *label,
-				int index,
-				gpointer callback,
-				gpointer callback_data,
-				GDestroyNotify destroy_notify)
+				    const char *label,
+				    int index,
+				    gpointer callback,
+				    gpointer callback_data,
+				    GDestroyNotify destroy_notify)
 {
 	char *escaped_label, *verb_name;
 	char *item_id;
@@ -3271,11 +3281,11 @@ add_open_with_app_bonobo_menu_item (BonoboUIComponent *ui,
 
 static void
 add_open_with_viewer_bonobo_menu_item (BonoboUIComponent *ui,
-				const char *label,
-				int index,
-				gpointer callback,
-				gpointer callback_data,
-				GDestroyNotify destroy_notify)
+				       const char *label,
+				       int index,
+				       gpointer callback,
+				       gpointer callback_data,
+				       GDestroyNotify destroy_notify)
 {
 	char *escaped_label, *verb_name, *item_id;
 	
@@ -3306,11 +3316,11 @@ add_application_to_bonobo_menu (FMDirectoryView *directory_view,
 		(application, uri, directory_view);
 
 	add_open_with_app_bonobo_menu_item (directory_view->details->ui, 
-					application->name,
-					index,
-					bonobo_launch_application_callback,
-					launch_parameters,
-					(GDestroyNotify) application_launch_parameters_free);
+					    application->name,
+					    index,
+					    bonobo_launch_application_callback,
+					    launch_parameters,
+					    (GDestroyNotify) application_launch_parameters_free);
 }
 
 static void
@@ -3331,11 +3341,11 @@ add_component_to_bonobo_menu (FMDirectoryView *directory_view,
 				 launch_parameters->identifier->name);
 
 	add_open_with_viewer_bonobo_menu_item (directory_view->details->ui, 
-					label,
-					index, 
-					bonobo_open_location_with_viewer_callback, 
-					launch_parameters,
-					(GDestroyNotify) viewer_launch_parameters_free);
+					       label,
+					       index, 
+					       bonobo_open_location_with_viewer_callback, 
+					       launch_parameters,
+					       (GDestroyNotify) viewer_launch_parameters_free);
 	g_free (label);
 }
 
@@ -3348,11 +3358,12 @@ update_one_menu_item (FMDirectoryView *view,
 {
 	char *label_string;
 	gboolean sensitive;
+
         compute_menu_item_info (view, menu_path, selection, TRUE, &label_string, &sensitive);
 
 	nautilus_bonobo_set_sensitive (view->details->ui, verb_path, sensitive);
-	
 	nautilus_bonobo_set_label (view->details->ui, menu_path, label_string);
+
 	g_free (label_string);
 }
 
@@ -3372,9 +3383,9 @@ reset_bonobo_trash_delete_menu (FMDirectoryView *view, GList *selection)
 						 _("Move all selected items to the Trash"));
 		nautilus_bonobo_set_accelerator (view->details->ui, 
 						 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
-						 "*Control*t");
+						 _("*Control*t"));
 	}
-
+	
 	update_one_menu_item (view, selection, 
 			      FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
 			      FM_DIRECTORY_VIEW_COMMAND_TRASH);
@@ -3397,23 +3408,19 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 	/* This menu is only displayed when there's one selected item. */
 	if (nautilus_g_list_exactly_one_item (selection)) {
 		uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
-
+		
 		nautilus_mime_actions_wait_for_required_file_attributes (NAUTILUS_FILE (selection->data));
-
+		
 		applications = nautilus_mime_get_short_list_applications_for_file (NAUTILUS_FILE (selection->data));
-
 		for (node = applications, index = 0; node != NULL; node = node->next, index++) {
 			add_application_to_bonobo_menu (view, node->data, uri, index);
 		}
-
 		gnome_vfs_mime_application_list_free (applications); 
-
+		
 		components = nautilus_mime_get_short_list_components_for_file (NAUTILUS_FILE (selection->data));
-
 		for (node = components, index = 0; node != NULL; node = node->next, index++) {
 			add_component_to_bonobo_menu (view, node->data, uri, index);
 		}
-
 		gnome_vfs_mime_component_list_free (components); 
 
 		g_free (uri);
@@ -3425,7 +3432,7 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 }
 
 static void
-fm_directory_view_real_merge_menus (FMDirectoryView *view)
+real_merge_menus (FMDirectoryView *view)
 {
 
 	BonoboUIVerb verbs [] = {
@@ -3462,7 +3469,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 }
 
 static void
-fm_directory_view_real_update_menus (FMDirectoryView *view)
+real_update_menus (FMDirectoryView *view)
 {
 	GList *selection;
 	
@@ -3479,7 +3486,6 @@ fm_directory_view_real_update_menus (FMDirectoryView *view)
 			      FM_DIRECTORY_VIEW_COMMAND_OPEN_IN_NEW_WINDOW);
 
 	reset_bonobo_open_with_menu (view, selection);
-	
 	reset_bonobo_trash_delete_menu (view, selection);
 
 	update_one_menu_item (view, selection,
@@ -3901,7 +3907,7 @@ fm_directory_view_activate_files (FMDirectoryView *view,
 }
 
 /**
- * fm_directory_view_load_uri:
+ * load_directory:
  * 
  * Switch the displayed location to a new uri. If the uri is not valid,
  * the location will not be switched; user feedback will be provided instead.
@@ -3910,15 +3916,16 @@ fm_directory_view_activate_files (FMDirectoryView *view,
  * 
  **/
 static void
-fm_directory_view_load_uri (FMDirectoryView *view,
-			    const char *uri)
+load_directory (FMDirectoryView *view,
+		NautilusDirectory *directory,
+		gboolean force_reload)
 {
-	NautilusDirectory *old_model;
+	NautilusDirectory *old_directory;
 	NautilusFile *old_file;
 	GList *attributes;
 
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-	g_return_if_fail (uri != NULL);
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
 	fm_directory_view_stop (view);
 	fm_directory_view_clear (view);
@@ -3931,25 +3938,27 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 
 	disconnect_model_handlers (view);
 
-	old_model = view->details->model;
-	view->details->model = nautilus_directory_get (uri);
-	nautilus_directory_unref (old_model);
+	old_directory = view->details->model;
+	nautilus_directory_ref (directory);
+	view->details->model = directory;
+	nautilus_directory_unref (old_directory);
 
 	old_file = view->details->directory_as_file;
-	view->details->directory_as_file = nautilus_directory_get_corresponding_file 
-		(fm_directory_view_get_model (view));
+	view->details->directory_as_file =
+		nautilus_directory_get_corresponding_file (directory);
 	nautilus_file_unref (old_file);
 
+	view->details->force_reload = force_reload;
+
+	/* FIXME: In theory, we also need to monitor here (as well as
+         * doing a call when ready), in case external forces change
+         * the directory's file metadata.
+	 */
 	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
-
-	/* FIXME: we also need to monitor here, in case external
-           forces change the directory's file metadata */
-
 	nautilus_file_call_when_ready
 		(view->details->directory_as_file,
 		 attributes,
 		 metadata_ready_callback, view);
-
 	g_list_free (attributes);
 }
 
@@ -3970,6 +3979,18 @@ finish_loading_uri (FMDirectoryView *view)
 
 	/* Start loading. */
 
+	/* Connect handlers to see files as they are added. */
+    	view->details->files_added_handler_id = gtk_signal_connect
+		(GTK_OBJECT (view->details->model),
+		 "files_added",
+		 files_added_callback,
+		 view);
+	view->details->files_changed_handler_id = gtk_signal_connect
+		(GTK_OBJECT (view->details->model), 
+		 "files_changed",
+		 files_changed_callback,
+		 view);
+
 	/* Monitor the things needed to get the right
 	 * icon. Also monitor a directory's item count because
 	 * the "size" attribute is based on that, and the file's metadata.
@@ -3982,25 +4003,13 @@ finish_loading_uri (FMDirectoryView *view)
 	attributes = g_list_prepend (attributes, 
 				     NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
 
-	nautilus_directory_file_monitor_add (view->details->model, view,
-					     attributes, TRUE);
-	g_list_free (attributes);
+	nautilus_directory_file_monitor_add (view->details->model,
+					     view,
+					     attributes,
+					     view->details->force_reload);
+	view->details->force_reload = FALSE;
 
-	/* Attach a handler to get any further files that show up as we
-	 * load and sychronize. We won't miss any files because this
-	 * signal is emitted from an idle routine and so we will be
-	 * connected before the next time it is emitted.
-	 */
-    	view->details->files_added_handler_id = gtk_signal_connect
-		(GTK_OBJECT (view->details->model),
-		 "files_added",
-		 files_added_callback,
-		 view);
-	view->details->files_changed_handler_id = gtk_signal_connect
-		(GTK_OBJECT (view->details->model), 
-		 "files_changed",
-		 files_changed_callback,
-		 view);
+	g_list_free (attributes);
 }
 
 static void
@@ -4176,7 +4185,7 @@ fm_directory_view_is_empty (FMDirectoryView *view)
 }
 
 static gboolean
-fm_directory_view_real_is_read_only (FMDirectoryView *view)
+real_is_read_only (FMDirectoryView *view)
 {
 	return !nautilus_file_can_write (fm_directory_view_get_directory_as_file (view));
 }
@@ -4208,7 +4217,7 @@ showing_trash_directory (FMDirectoryView *view)
 }
 
 static gboolean
-fm_directory_view_real_supports_creating_files (FMDirectoryView *view)
+real_supports_creating_files (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
@@ -4216,7 +4225,7 @@ fm_directory_view_real_supports_creating_files (FMDirectoryView *view)
 }
 
 static gboolean
-fm_directory_view_real_accepts_dragged_files (FMDirectoryView *view)
+real_accepts_dragged_files (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
@@ -4234,7 +4243,7 @@ fm_directory_view_supports_properties (FMDirectoryView *view)
 }
 
 static gboolean
-fm_directory_view_real_supports_properties (FMDirectoryView *view)
+real_supports_properties (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
@@ -4252,7 +4261,7 @@ fm_directory_view_supports_zooming (FMDirectoryView *view)
 }
 
 static gboolean
-fm_directory_view_real_supports_zooming (FMDirectoryView *view)
+real_supports_zooming (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
@@ -4287,7 +4296,6 @@ static void
 filtering_changed_callback (gpointer callback_data)
 {
 	FMDirectoryView	*directory_view;
-	char *same_uri;
 
 	directory_view = FM_DIRECTORY_VIEW (callback_data);
 
@@ -4306,10 +4314,9 @@ filtering_changed_callback (gpointer callback_data)
 
 	/* Reload the current uri so that the filtering changes take place. */
 	if (directory_view->details->model != NULL) {
-		same_uri = nautilus_directory_get_uri (directory_view->details->model);
-		g_assert (same_uri != NULL);
-		fm_directory_view_load_uri (directory_view, same_uri);
-		g_free (same_uri);
+		load_directory (directory_view,
+				directory_view->details->model,
+				FALSE);
 	}
 }
 

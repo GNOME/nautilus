@@ -177,8 +177,8 @@ main (int argc, char *argv[])
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
 #endif
-	/* disable bug-buddy */
-	putenv("GNOME_DISABLE_CRASH_DIALOG=1");
+	/* Disable bug-buddy for now. */
+	nautilus_setenv ("GNOME_DISABLE_CRASH_DIALOG", "1", TRUE);
 
 	/* Get parameters. */
 	kill_shell = FALSE;

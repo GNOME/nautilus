@@ -52,92 +52,92 @@ typedef gboolean (* NautilusPredicateFunction) (gpointer data,
 						gpointer callback_data);
 
 /* Date & time functions. */
-GDate *     nautilus_g_date_new_tm                    (struct tm                        *time_pieces);
-char *      nautilus_strdup_strftime                  (const char                       *format,
-						       struct tm                        *time_pieces);
+GDate *     nautilus_g_date_new_tm                    (struct tm                  *time_pieces);
+char *      nautilus_strdup_strftime                  (const char                 *format,
+						       struct tm                  *time_pieces);
 
 /* environment manipulation functions */
-int         nautilus_setenv                           (const char                       *name,
-						       const char                       *value,
-						       gboolean                          overwrite);
-void        nautilus_unsetenv                         (const                      char  *name);
+int         nautilus_setenv                           (const char                 *name,
+						       const char                 *value,
+						       gboolean                    overwrite);
+void        nautilus_unsetenv                         (const char                 *name);
 
 /* GList functions. */
-gboolean    nautilus_g_list_exactly_one_item          (GList                            *list);
-gboolean    nautilus_g_list_more_than_one_item        (GList                            *list);
-gboolean    nautilus_g_list_equal                     (GList                            *list_a,
-						       GList                            *list_b);
-GList *     nautilus_g_list_copy                      (GList                            *list);
-void        nautilus_g_list_safe_for_each             (GList                            *list,
-						       GFunc                             function,
-						       gpointer                          user_data);
-GList *     nautilus_g_list_partition                 (GList                            *list,
-						       NautilusPredicateFunction         predicate,
-						       gpointer                          user_data,
-						       GList                           **removed);
-void        nautilus_g_list_free_deep_custom          (GList                            *list,
-						       GFunc                             element_free_func,
-						       gpointer                          user_data);
+gboolean    nautilus_g_list_exactly_one_item          (GList                      *list);
+gboolean    nautilus_g_list_more_than_one_item        (GList                      *list);
+gboolean    nautilus_g_list_equal                     (GList                      *list_a,
+						       GList                      *list_b);
+GList *     nautilus_g_list_copy                      (GList                      *list);
+void        nautilus_g_list_safe_for_each             (GList                      *list,
+						       GFunc                       function,
+						       gpointer                    user_data);
+GList *     nautilus_g_list_partition                 (GList                      *list,
+						       NautilusPredicateFunction   predicate,
+						       gpointer                    user_data,
+						       GList                     **removed);
+void        nautilus_g_list_free_deep_custom          (GList                      *list,
+						       GFunc                       element_free_func,
+						       gpointer                    user_data);
 
 /* List functions for lists of g_free'able objects. */
-void        nautilus_g_list_free_deep                 (GList                            *list);
-void        nautilus_g_slist_free_deep_custom         (GSList                           *list,
-						       GFunc                             element_free_func,
-						       gpointer                          user_data);
+void        nautilus_g_list_free_deep                 (GList                      *list);
+void        nautilus_g_slist_free_deep_custom         (GSList                     *list,
+						       GFunc                       element_free_func,
+						       gpointer                    user_data);
 
 /* List functions for slists of g_free'able objects. */
-void        nautilus_g_slist_free_deep                (GSList                           *list);
+void        nautilus_g_slist_free_deep                (GSList                     *list);
 
 
 /* List functions for lists of C strings. */
-gboolean    nautilus_g_str_list_equal                 (GList                            *str_list_a,
-						       GList                            *str_list_b);
-GList *     nautilus_g_str_list_copy                  (GList                            *str_list);
-GList *     nautilus_g_str_list_sort                  (GList                            *str_list);
-GList *     nautilus_g_str_list_sort_case_insensitive (GList                            *str_list);
+gboolean    nautilus_g_str_list_equal                 (GList                      *str_list_a,
+						       GList                      *str_list_b);
+GList *     nautilus_g_str_list_copy                  (GList                      *str_list);
+GList *     nautilus_g_str_list_sort                  (GList                      *str_list);
+GList *     nautilus_g_str_list_sort_case_insensitive (GList                      *str_list);
 
 /* GString functions */
-void        nautilus_g_string_append_len              (GString                          *string,
-						       const char                       *characters,
-						       int                               length);
+void        nautilus_g_string_append_len              (GString                    *string,
+						       const char                 *characters,
+						       int                         length);
 
 /* GHashTable functions */
-GHashTable *nautilus_g_hash_table_new_free_at_exit    (GHashFunc                         hash_function,
-						       GCompareFunc                      key_compare_function,
-						       const char                       *display_name);
-void        nautilus_g_hash_table_safe_for_each       (GHashTable                       *hash_table,
-						       GHFunc                            callback,
-						       gpointer                          callback_data);
-gboolean    nautilus_g_hash_table_remove_deep_custom  (GHashTable			*hash_table,
-						       gconstpointer			 key,
-						       GFreeFunc			 key_free,
-						       GFreeFunc			 data_free);
-gboolean    nautilus_g_hash_table_remove_deep	      (GHashTable			*hash_table,
-						       gconstpointer			 key);
-void	    nautilus_g_hash_table_free_deep_custom    (GHashTable			*hash_table,
-						       GFreeFunc			 key_free,
-						       GFreeFunc			 data_free);
-void	    nautilus_g_hash_table_free_deep	      (GHashTable			*hash_table);
+GHashTable *nautilus_g_hash_table_new_free_at_exit    (GHashFunc                   hash_function,
+						       GCompareFunc                key_compare_function,
+						       const char                 *display_name);
+void        nautilus_g_hash_table_safe_for_each       (GHashTable                 *hash_table,
+						       GHFunc                      callback,
+						       gpointer                    callback_data);
+gboolean    nautilus_g_hash_table_remove_deep_custom  (GHashTable                 *hash_table,
+						       gconstpointer               key,
+						       GFreeFunc                   key_free,
+						       GFreeFunc                   data_free);
+gboolean    nautilus_g_hash_table_remove_deep         (GHashTable                 *hash_table,
+						       gconstpointer               key);
+void        nautilus_g_hash_table_free_deep_custom    (GHashTable                 *hash_table,
+						       GFreeFunc                   key_free,
+						       GFreeFunc                   data_free);
+void        nautilus_g_hash_table_free_deep           (GHashTable                 *hash_table);
 
 
 /* GPtrArray functions */
-GPtrArray * nautilus_g_ptr_array_new_from_list        (GList                            *list);
-void        nautilus_g_ptr_array_sort                 (GPtrArray                        *array,
-						       NautilusCompareFunction           compare_callback,
-						       gpointer                          callback_data);
-int         nautilus_g_ptr_array_search               (GPtrArray                        *array,
-						       NautilusSearchFunction            search_callback,
-						       gpointer                          callback_data,
-						       gboolean                          match_only);
+GPtrArray * nautilus_g_ptr_array_new_from_list        (GList                      *list);
+void        nautilus_g_ptr_array_sort                 (GPtrArray                  *array,
+						       NautilusCompareFunction     compare_callback,
+						       gpointer                    callback_data);
+int         nautilus_g_ptr_array_search               (GPtrArray                  *array,
+						       NautilusSearchFunction      search_callback,
+						       gpointer                    callback_data,
+						       gboolean                    match_only);
 
 /* NULL terminated string arrays (strv). */
-int         nautilus_g_strv_find                      (char                            **strv,
-						       const char                       *find_me);
+int         nautilus_g_strv_find                      (char                      **strv,
+						       const char                 *find_me);
 
 /* return the time in microseconds since the machine was started */
 gint64      nautilus_get_system_time                  (void);
 
 /* shell */
-char *      nautilus_shell_quote                      (const char                       *string);
+char *      nautilus_shell_quote                      (const char                 *string);
 
 #endif /* NAUTILUS_GLIB_EXTENSIONS_H */

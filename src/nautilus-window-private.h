@@ -32,16 +32,6 @@
 #include <bonobo/bonobo-ui-container.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 
-typedef enum {
-        CV_PROGRESS_INITIAL = 1,
-        CV_PROGRESS_DONE,
-        CV_PROGRESS_ERROR,
-        VIEW_ERROR,
-        RESET_TO_IDLE, /* Not a real item - a command */
-        NAVINFO_RECEIVED,
-        NEW_CONTENT_VIEW_ACTIVATED,
-} NautilusWindowStateItem;
-
 /* FIXME bugzilla.eazel.com 2575: Need to migrate window fields into here. */
 struct NautilusWindowDetails
 {
@@ -95,12 +85,6 @@ void                 nautilus_window_back_or_forward                   (Nautilus
                                                                         guint                       distance);
 void                 nautilus_window_load_content_view_menu            (NautilusWindow             *window);
 void                 nautilus_window_synch_content_view_menu           (NautilusWindow             *window);
-void                 nautilus_window_connect_view                      (NautilusWindow             *window,
-                                                                        NautilusViewFrame          *view);
-void                 nautilus_window_disconnect_view                   (NautilusWindow             *window,
-                                                                        NautilusViewFrame          *view);
-void                 nautilus_window_view_failed                       (NautilusWindow             *window,
-                                                                        NautilusViewFrame          *view);
 void                 nautilus_send_history_list_changed                (void);
 void                 nautilus_add_to_history_list                      (NautilusBookmark           *bookmark);
 GList *              nautilus_get_history_list                         (void);
@@ -113,10 +97,6 @@ void                 nautilus_window_go_up                             (Nautilus
 void                 nautilus_window_update_find_menu_item             (NautilusWindow             *window);
 void                 nautilus_window_toolbar_remove_theme_callback     (NautilusWindow             *window);
 NautilusUndoManager *nautilus_window_get_undo_manager                  (NautilusWindow             *window);
-void                 nautilus_window_begin_location_change             (NautilusWindow             *window,
-                                                                        const char                 *location,
-                                                                        NautilusLocationChangeType  type,
-                                                                        guint                       distance);
 void                 nautilus_window_remove_bookmarks_menu_callback    (NautilusWindow             *window);
 void                 nautilus_window_remove_go_menu_callback           (NautilusWindow             *window);
 void                 nautilus_window_remove_bookmarks_menu_items       (NautilusWindow             *window);

@@ -54,7 +54,6 @@
 #include <libnautilus-extensions/nautilus-search-uri.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
-#include <stdarg.h>
 
 /* FIXME bugzilla.eazel.com 1243: 
  * We should use inheritance instead of these special cases
@@ -62,37 +61,26 @@
  */
 #include "nautilus-desktop-window.h"
 
-/*#define EXTREME_DEBUGGING*/
-
-#ifdef EXTREME_DEBUGGING
-#define x_message(parameters) g_message parameters
-#else
-#define x_message(parameters)
-#endif
-
-/* This number controls a maximum character count for a Nautilus window title
- * (not counting the prefix 'Nautilus:')
- * 
- * Without limiting the window title, the window manager makes the window wide
- * enough to able to display the whole title.  When this happens, the Nautilus
- * window in question becomes unusable.
- *
- * This is a very common thing to happen, especially with generated web content,
- * such as bugzilla queries, which generate very long urls.
- *
- * I found the number experimentally.  To properly compute it, we would need 
- * window manager support to access the character metrics for the window title.
+/* This number controls a maximum character count for a Nautilus
+ * window title. Without limiting the window title, most window
+ * managers make the window wide enough to able to display the whole
+ * title. When this happens, the Nautilus window in question becomes
+ * unusable. This is a very common thing to happen, especially with
+ * generated web content, such as bugzilla queries, which generate
+ * very long urls. I found the number experimentally. To properly
+ * compute it, we would need window manager support to access the
+ * character metrics for the window title.
  */
 #define MAX_TITLE_LENGTH 180
 
-/* This number controls a maximum character count for a URL that is displayed
- * as part of a dialog. It's fairly arbitrary -- big enough to allow most
- * "normal" URIs to display in full, but small enough to prevent the dialog
- * from getting insanely wide.
+/* This number controls a maximum character count for a URL that is
+ * displayed as part of a dialog. It's fairly arbitrary -- big enough
+ * to allow most "normal" URIs to display in full, but small enough to
+ * prevent the dialog from getting insanely wide.
  */
 #define MAX_URI_IN_DIALOG_LENGTH 60
 
-static void nautilus_window_set_state_info (NautilusWindow *window, ...);
+static void connect_view (NautilusWindow *window, NautilusViewFrame *view);
 
 static void
 change_selection (NautilusWindow *window,
@@ -249,7 +237,7 @@ update_title (NautilusWindow *window)
         }
 }
 
-/* nautilus_window_set_displayed_location:
+/* set_displayed_location:
  * 
  * Update the non-NautilusViewFrame objects that use the location's user-displayable
  * title in some way. Called when the location or title has changed.
@@ -257,7 +245,7 @@ update_title (NautilusWindow *window)
  * @title: The new user-displayable title.
  */
 static void
-nautilus_window_set_displayed_location (NautilusWindow *window, const char *uri)
+set_displayed_location (NautilusWindow *window, const char *uri)
 {
         char *bookmark_uri;
         gboolean recreate;
@@ -384,7 +372,7 @@ handle_go_elsewhere (NautilusWindow *window, const char *location)
                                 
         if (window->location != NULL) {
                 /* If we're returning to the same uri somehow, don't put this uri on back list. 
-                 * This also avoids a problem where nautilus_window_set_displayed_location
+                 * This also avoids a problem where set_displayed_location
                  * didn't update last_location_bookmark since the uri didn't change.
                  */
                 if (!nautilus_uris_match (window->location, location)) {
@@ -431,7 +419,7 @@ viewed_file_changed_callback (NautilusWindow *window)
 
 /* Handle the changes for the NautilusWindow itself. */
 static void
-nautilus_window_update_for_new_location (NautilusWindow *window)
+update_for_new_location (NautilusWindow *window)
 {
         char *new_location;
         
@@ -506,18 +494,9 @@ update_view (NautilusViewFrame *view,
         nautilus_view_frame_selection_changed (view, new_selection);
 }
 
-void
-nautilus_window_view_failed (NautilusWindow *window, NautilusViewFrame *view)
-{
-        nautilus_window_set_state_info
-                (window,
-                 (NautilusWindowStateItem) VIEW_ERROR, view,
-                 (NautilusWindowStateItem) 0);
-}
-
 /* This is called when we have decided we can actually change to the new view/location situation. */
 static void
-nautilus_window_has_really_changed (NautilusWindow *window)
+location_has_really_changed (NautilusWindow *window)
 {
         /* Switch to the new content view. */
         if (window->new_content_view != NULL) {
@@ -541,7 +520,7 @@ nautilus_window_has_really_changed (NautilusWindow *window)
 
         /* Tell the window we are finished. */
         if (window->pending_ni != NULL) {
-                nautilus_window_update_for_new_location (window);
+                update_for_new_location (window);
                 nautilus_navigation_info_free (window->pending_ni);
                 if (window->pending_ni == window->cancel_tag) {
                         window->cancel_tag = NULL;
@@ -556,8 +535,6 @@ nautilus_window_has_really_changed (NautilusWindow *window)
 static void
 nautilus_window_free_load_info (NautilusWindow *window)
 {
-        x_message (("-> FREE_LOAD_INFO <-"));
-        
         if (window->pending_ni != NULL) {
                 nautilus_navigation_info_free (window->pending_ni);
                 window->pending_ni = NULL;
@@ -726,7 +703,7 @@ load_content_view (NautilusWindow *window,
 
                 new_view = nautilus_view_frame_new (window->details->ui_container,
                                                     window->application->undo_manager);
-                nautilus_window_connect_view (window, new_view);
+                connect_view (window, new_view);
                 if (!nautilus_view_frame_load_client (new_view, iid)) {
                         gtk_widget_unref (GTK_WIDGET(new_view));
                         new_view = NULL;
@@ -818,7 +795,7 @@ cancel_location_change (NautilusWindow *window)
         }
         
         if (window->pending_ni != NULL) {
-                nautilus_window_set_displayed_location
+                set_displayed_location
                         (window, window->location == NULL ? "" : window->location);
                 
                 /* Tell previously-notified views to go back to the old page */
@@ -866,9 +843,7 @@ set_view_location_and_selection (NautilusWindow *window)
                 selection = window->selection;
         }
         
-        nautilus_window_set_displayed_location (window, location);
-        
-        x_message (("!!! Sending update_view"));
+        set_displayed_location (window, location);
         
         if (window->new_content_view != NULL) {
                 update_view (window->new_content_view, location, selection);
@@ -888,7 +863,7 @@ set_view_location_and_selection (NautilusWindow *window)
 }
 
 static gboolean
-nautilus_window_update_state (gpointer data)
+update_state (gpointer data)
 {
         NautilusWindow *window;
         GList *p;
@@ -897,24 +872,11 @@ nautilus_window_update_state (gpointer data)
         window = data;
 
         if (window->making_changes) {
-                x_message (("In the middle of making changes %d - RETURNING",
-                            window->making_changes));
                 return FALSE;
         }
         
         made_changes = FALSE;
         window->making_changes++;
-        
-#ifdef EXTREME_DEBUGGING
-        g_message (">>> nautilus_window_update_state:");
-        g_print ("making_changes %d\n", window->making_changes);
-        g_print ("location_change_type %d, views_shown %d, view_bombed_out %d, view_activation_complete %d\n",
-                 window->location_change_type, window->views_shown,
-                 window->view_bombed_out, window->view_activation_complete);
-        g_print ("sent_update_view %d, cv_progress_initial %d, cv_progress_done %d, cv_progress_error %d, reset_to_idle %d\n",
-                 window->sent_update_view, window->cv_progress_initial, window->cv_progress_done, window->cv_progress_error,
-                 window->reset_to_idle);
-#endif
         
         /* Now make any needed state changes based on available information */
 
@@ -942,16 +904,12 @@ nautilus_window_update_state (gpointer data)
         }
         
         if (window->reset_to_idle) {
-                x_message (("Reset to idle!"));
-
                 window->reset_to_idle = FALSE;
                 
                 cancel_location_change (window);
 
                 made_changes = TRUE;
         }
-        
-        x_message (("Changes pending"));
         
         if (window->pending_ni != NULL
             && window->new_content_view == NULL
@@ -978,7 +936,7 @@ nautilus_window_update_state (gpointer data)
             && window->cv_progress_initial
             && !window->views_shown) {
                 
-                nautilus_window_has_really_changed (window);
+                location_has_really_changed (window);
                 
                 window->views_shown = TRUE;
                 made_changes = TRUE;
@@ -992,98 +950,83 @@ nautilus_window_update_state (gpointer data)
         
         window->making_changes--;
         
-        x_message(("update_state done (making_changes is %d) <<<",
-                   window->making_changes));
-        
         return made_changes;
 }
 
+typedef enum {
+        INITIAL_VIEW_SELECTED,
+        LOAD_DONE,
+        LOAD_UNDERWAY,
+        NEW_CONTENT_VIEW_READY,
+        STOP,
+        VIEW_FAILED,
+} Stimulus;
+
 static void
-nautilus_window_set_state_info (NautilusWindow *window, ...)
+change_state (NautilusWindow *window,
+              Stimulus stimulus,
+              NautilusNavigationInfo *info,
+              NautilusViewFrame *new_view)
 {
-        va_list args;
-        NautilusWindowStateItem item_type;
-        NautilusViewFrame *new_view;
-
         /* Ensure that changes happen in-order */
-        while (nautilus_window_update_state (window)) {
-        }
+        while (update_state (window)) { }
         
-        va_start (args, window);
-        
-        while ((item_type = va_arg (args, NautilusWindowStateItem)) != 0) {
-                switch (item_type) {
-                case NAVINFO_RECEIVED: /* The information needed for a location change to continue has been received */
-                        x_message (("NAVINFO_RECEIVED"));
-                        window->pending_ni = va_arg(args, NautilusNavigationInfo *);
-                        window->cancel_tag = NULL;
-                        break;
-
-                case VIEW_ERROR:
-                        new_view = va_arg (args, NautilusViewFrame*);
-                        x_message (("VIEW_ERROR on %p", new_view));
-                        g_warning ("A view failed. The UI will handle this with a dialog but this should be debugged.");
-                        window->view_bombed_out = TRUE;
-                        /* Get label now, since view frame may be destroyed later. */
-                        /* FIXME: We're only saving the name of the first error_view
-			 * here. The rest of this code is structured to handle multiple
-			 * error_views. I didn't go to the extra effort of saving a 
-			 * name with teach error_view since (A) we only see one at a
-			 * time in practice, and (B) all this code is likely to be
-			 * rewritten soon.
-			 */
-                        if (window->details->dead_view_name == NULL) {
-	                        window->details->dead_view_name = nautilus_view_frame_get_label (new_view);
-                        }
-                        gtk_object_ref (GTK_OBJECT (new_view));
-                        window->error_views = g_list_prepend (window->error_views, new_view);
-                        break;
-
-                case NEW_CONTENT_VIEW_ACTIVATED:
-                        x_message (("NEW_CONTENT_VIEW_ACTIVATED"));
-                        g_return_if_fail (window->new_content_view == NULL);
-                        new_view = va_arg (args, NautilusViewFrame*);
-                        /* Don't ref here, reference is held by widget hierarchy. */
-                        window->new_content_view = new_view;
-                        /* We only come here in cases where the location does not change,
-                         * so the sidebar panels don't change either.
-                         */
-                        if (window->pending_ni == NULL) {
-                                window->view_activation_complete = TRUE;
-                        }
-                        window->views_shown = FALSE;
-                        break;
-
-                case CV_PROGRESS_INITIAL: /* We have received an "I am loading" indication from the content view */
-                        x_message (("CV_PROGRESS_INITIAL"));
-                        window->cv_progress_initial = TRUE;
-                        break;
-
-                case CV_PROGRESS_ERROR: /* We have received a load error from the content view */
-                        x_message (("CV_PROGRESS_ERROR"));
-                        window->cv_progress_error = TRUE;
-                        break;
-
-                case CV_PROGRESS_DONE: /* The content view is done loading */
-                        x_message (("CV_PROGRESS_DONE"));
-                        window->cv_progress_initial = TRUE;
-                        window->cv_progress_done = TRUE;
-                        break;
-
-                case RESET_TO_IDLE: /* Someone pressed the stop button or something */
-                        x_message (("RESET_TO_IDLE"));
-                        window->reset_to_idle = TRUE;
-                        break;
-
-                default:
-                        break;
+        switch (stimulus) {
+        case INITIAL_VIEW_SELECTED: /* The information needed for a location change to continue has been received */
+                window->pending_ni = info;
+                window->cancel_tag = NULL;
+                break;
+                
+        case VIEW_FAILED:
+                g_warning ("A view failed. The UI will handle this with a dialog but this should be debugged.");
+                window->view_bombed_out = TRUE;
+                /* Get label now, since view frame may be destroyed later. */
+                /* FIXME: We're only saving the name of the first error_view
+                 * here. The rest of this code is structured to handle multiple
+                 * error_views. I didn't go to the extra effort of saving a 
+                 * name with teach error_view since (A) we only see one at a
+                 * time in practice, and (B) all this code is likely to be
+                 * rewritten soon.
+                 */
+                if (window->details->dead_view_name == NULL) {
+                        window->details->dead_view_name = nautilus_view_frame_get_label (new_view);
                 }
+                gtk_object_ref (GTK_OBJECT (new_view));
+                window->error_views = g_list_prepend (window->error_views, new_view);
+                break;
+                
+        case NEW_CONTENT_VIEW_READY:
+                g_return_if_fail (window->new_content_view == NULL);
+                /* Don't ref here, reference is held by widget hierarchy. */
+                window->new_content_view = new_view;
+                /* We only come here in cases where the location does not change,
+                 * so the sidebar panels don't change either.
+                 */
+                if (window->pending_ni == NULL) {
+                        window->view_activation_complete = TRUE;
+                }
+                window->views_shown = FALSE;
+                break;
+                
+        case LOAD_UNDERWAY: /* We have received an "I am loading" indication from the content view */
+                window->cv_progress_initial = TRUE;
+                break;
+                
+        case LOAD_DONE: /* The content view is done loading */
+                window->cv_progress_initial = TRUE;
+                window->cv_progress_done = TRUE;
+                break;
+                
+        case STOP: /* Someone pressed the stop button or something */
+                window->reset_to_idle = TRUE;
+                break;
+                
+        default:
+                g_assert_not_reached ();
+                break;
         }
         
-        va_end (args);
-        
-        while (nautilus_window_update_state (window)) {
-        }
+        while (update_state (window)) { }
 }
 
 static void
@@ -1159,10 +1102,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                         g_free (location);
                 }
                 
-                nautilus_window_set_state_info
-                        (window, 
-                         (NautilusWindowStateItem) NAVINFO_RECEIVED, navigation_info, 
-                         (NautilusWindowStateItem) 0);
+                change_state (window, INITIAL_VIEW_SELECTED, navigation_info, NULL);
                 return;
         }
         
@@ -1337,10 +1277,7 @@ nautilus_window_begin_location_change (NautilusWindow *window,
                   || type == NAUTILUS_LOCATION_CHANGE_FORWARD
                   || distance == 0);
         
-        nautilus_window_set_state_info
-                (window,
-                 (NautilusWindowStateItem) RESET_TO_IDLE,
-                 (NautilusWindowStateItem) 0);
+        change_state (window, STOP, NULL, NULL);
         
         window->location_change_type = type;
         window->location_change_distance = distance;
@@ -1384,7 +1321,7 @@ nautilus_window_stop_loading (NautilusWindow *window)
         stop_loading (window->content_view);
         stop_loading (window->new_content_view);
         g_list_foreach (window->sidebar_panels, stop_loading_cover, NULL);
-        nautilus_window_set_state_info (window, RESET_TO_IDLE, 0);
+        change_state (window, STOP, NULL, NULL);
 }
 
 void
@@ -1405,10 +1342,7 @@ nautilus_window_set_content_view (NautilusWindow *window, NautilusViewIdentifier
         nautilus_window_allow_stop (window, TRUE);
         
         view = load_content_view (window, id);
-        nautilus_window_set_state_info
-		(window,
-		 (NautilusWindowStateItem) NEW_CONTENT_VIEW_ACTIVATED, view,
-		 (NautilusWindowStateItem) 0);
+        change_state (window, NEW_CONTENT_VIEW_READY, NULL, view);
 }
 
 static int
@@ -1468,7 +1402,7 @@ nautilus_window_set_sidebar_panels (NautilusWindow *window,
 		sidebar_panel = nautilus_view_frame_new (window->details->ui_container,
                                                          window->application->undo_manager);
 		nautilus_view_frame_set_label (sidebar_panel, identifier->name);
-		nautilus_window_connect_view (window, sidebar_panel);
+		connect_view (window, sidebar_panel);
 		load_succeeded = nautilus_view_frame_load_client (sidebar_panel, identifier->iid);
 		
 		/* If the load failed, tell the user. */
@@ -1590,7 +1524,7 @@ failed_callback (NautilusViewFrame *view,
 {
         g_assert (NAUTILUS_IS_WINDOW (window));
 
-        nautilus_window_view_failed (window, view);
+        change_state (window, VIEW_FAILED, NULL, view);
 }
 
 static void
@@ -1603,10 +1537,7 @@ load_underway_callback (NautilusViewFrame *view,
         /* FIXME bugzilla.eazel.com 2461: Is progress from either old or new really equally interesting? */
         if (view == window->new_content_view
             || view == window->content_view) {
-               nautilus_window_set_state_info
-                       (window,
-                        (NautilusWindowStateItem) CV_PROGRESS_INITIAL,
-                        (NautilusWindowStateItem) 0);
+                change_state (window, LOAD_UNDERWAY, NULL, NULL);
         }
 }
 
@@ -1620,10 +1551,7 @@ load_complete_callback (NautilusViewFrame *view,
         /* FIXME bugzilla.eazel.com 2461: Is progress from either old or new really equally interesting? */
         if (view == window->new_content_view
             || view == window->content_view) {
-               nautilus_window_set_state_info
-                       (window,
-                        (NautilusWindowStateItem) CV_PROGRESS_DONE,
-                        (NautilusWindowStateItem) 0);
+                change_state (window, LOAD_DONE, NULL, NULL);
         }
 }
 
@@ -1669,8 +1597,8 @@ title_changed_callback (NautilusViewFrame *view,
 	macro (title_changed)			\
 	macro (zoom_level_changed)
 
-void
-nautilus_window_connect_view (NautilusWindow *window, NautilusViewFrame *view)
+static void
+connect_view (NautilusWindow *window, NautilusViewFrame *view)
 {
 	GtkObject *view_object;
 	

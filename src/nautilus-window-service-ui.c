@@ -27,6 +27,7 @@
 
 #include <bonobo/bonobo-ui-util.h>
 #include "nautilus-window-private.h"
+#include <gtk/gtksignal.h>
 
 static void
 goto_services_summary (BonoboUIComponent *component, 
@@ -56,11 +57,12 @@ goto_software_catalog (BonoboUIComponent *component,
 }
 
 static void
-detach_service_ui (gpointer data)
+detach_service_ui (GtkObject *object,
+		   gpointer callback_data)
 {
 	BonoboUIComponent *service_ui;
 
-	service_ui = BONOBO_UI_COMPONENT (data);
+	service_ui = BONOBO_UI_COMPONENT (callback_data);
 	bonobo_ui_component_unset_container (service_ui);
 	bonobo_object_unref (BONOBO_OBJECT (service_ui));
 }
@@ -90,9 +92,9 @@ nautilus_window_install_service_ui (NautilusWindow *window)
 			       "nautilus");
 	bonobo_ui_component_thaw (service_ui, NULL);
 
-	/* Attach the UI to the window. */
-	gtk_object_set_data_full (GTK_OBJECT (window),
-				  "service UI",
-				  service_ui,
-				  detach_service_ui);
+	/* Get rid of the UI when the window goes away. */
+	gtk_signal_connect (GTK_OBJECT (window),
+			    "destroy",
+			    detach_service_ui,
+			    service_ui);
 }

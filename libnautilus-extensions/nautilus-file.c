@@ -247,10 +247,7 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
 	nautilus_directory_ref (directory);
 	file->details->directory = directory;
 
-	/* We don't know how the mime type in the file info has
-	   been gotten, so it's safest to assume it was the default
-	   mime type */
-	nautilus_file_update_info (file, info, FALSE);
+	nautilus_file_update_info (file, info);
 	return file;
 }
 
@@ -396,8 +393,6 @@ destroy (GtkObject *object)
 	} else {
 		gnome_vfs_file_info_unref (file->details->info);
 	}
-	g_free (file->details->default_mime_type);
-	g_free (file->details->slow_mime_type);
 	g_free (file->details->top_left_text);
 	g_free (file->details->activation_uri);
 
@@ -1088,8 +1083,7 @@ update_links_if_target (NautilusFile *target_file)
 }
 
 gboolean
-nautilus_file_update_info (NautilusFile *file, GnomeVFSFileInfo *info,
-			   gboolean got_slow_mime_type)
+nautilus_file_update_info (NautilusFile *file, GnomeVFSFileInfo *info)
 {
 	GList *node;
 
@@ -1103,8 +1097,7 @@ nautilus_file_update_info (NautilusFile *file, GnomeVFSFileInfo *info,
 	}
 
 	if (file->details->info != NULL
-	    && gnome_vfs_file_info_matches (file->details->info, info) 
-	    && !got_slow_mime_type) {
+	    && gnome_vfs_file_info_matches (file->details->info, info)) {
 		return FALSE;
 	}
 
@@ -1119,13 +1112,6 @@ nautilus_file_update_info (NautilusFile *file, GnomeVFSFileInfo *info,
 		gnome_vfs_file_info_unref (file->details->info);
 	}
 	file->details->info = info;
-	if (got_slow_mime_type) {
-		g_free (file->details->slow_mime_type);
-		file->details->slow_mime_type = g_strdup (info->mime_type);
-	} else {
-		g_free (file->details->default_mime_type);
-		file->details->default_mime_type = g_strdup (info->mime_type);
-	}
 	file->details->name = info->name;
 	nautilus_directory_end_file_name_change (file->details->directory,
 						 file, node);
@@ -1166,10 +1152,7 @@ nautilus_file_update_name (NautilusFile *file, const char *name)
 		gnome_vfs_file_info_copy (info, file->details->info);
 		g_free (info->name);
 		info->name = g_strdup (name);
-		/* FIXME: Perhaps we want to keep track of how we got
-		   the mime type the last time and pass that in here
-		   instead of FALSE */
-		nautilus_file_update_info (file, info, FALSE);
+		nautilus_file_update_info (file, info);
 		gnome_vfs_file_info_unref (info);
 	}
 
@@ -1368,18 +1351,6 @@ nautilus_file_compare_by_emblems (NautilusFile *file_1, NautilusFile *file_2)
 	return compare_result;	
 }
 
-static const char *
-get_either_mime_type (NautilusFile *file)
-{
-	/* Always prefer the non-slow type since that's updated more
-         * often. This doesn't sound quite right, but I guess it's OK.
-	 */
-	if (file->details->default_mime_type != NULL) {
-		return file->details->default_mime_type;
-	}
-	return file->details->slow_mime_type;
-}
-
 static int
 nautilus_file_compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
 {
@@ -1411,8 +1382,8 @@ nautilus_file_compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
 
 	if (file_1->details->info != NULL
 	    && file_2->details->info != NULL
-	    && nautilus_strcmp (get_either_mime_type (file_1),
-				get_either_mime_type (file_2)) == 0) {
+	    && nautilus_strcmp (file_1->details->info->mime_type,
+				file_2->details->info->mime_type) == 0) {
 		return 0;
 	}
 
@@ -3207,9 +3178,6 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 	if (strcmp (attribute_name, "mime_type") == 0) {
 		return nautilus_file_get_mime_type (file);
 	}
-	if (strcmp (attribute_name, "slow_mime_type") == 0) {
-		return nautilus_file_get_slow_mime_type (file);
-	}
 	if (strcmp (attribute_name, "size") == 0) {
 		return nautilus_file_get_size_as_string (file);
 	}
@@ -3333,21 +3301,6 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 	return result;
 }
 
-static char *
-type_as_string_considering_link (NautilusFile *file, const char *string)
-{
-	if (nautilus_file_is_symbolic_link (file)) {
-		g_assert (!nautilus_file_is_broken_symbolic_link (file));
-		/* Note to localizers: convert file type string for file 
-		 * (e.g. "folder", "plain text") to file type for symbolic link 
-		 * to that kind of file (e.g. "link to folder").
-		 */
-		return g_strdup_printf (_("link to %s"), string);
-	}
-
-	return g_strdup (string);
-}
-
 /**
  * nautilus_file_get_type_as_string:
  * 
@@ -3358,38 +3311,47 @@ type_as_string_considering_link (NautilusFile *file, const char *string)
  * Returns: Newly allocated string ready to display to the user.
  * 
  **/
-static char *
-nautilus_file_get_type_as_string (NautilusFile *file)
+
+static const char *
+get_description (NautilusFile *file)
 {
-	const char *mime_type;
-	const char *description;
+	const char *mime_type, *description;
 
-	if (file == NULL) {
-		return NULL;
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	if (file->details->info == NULL) {
+		mime_type = NULL;
+	} else {
+		mime_type = file->details->info->mime_type;
 	}
 
-	if (nautilus_file_is_broken_symbolic_link (file)) {
-		return g_strdup (_("link (broken)"));
-	}
-
-	mime_type = get_either_mime_type (file);
-
+	/* FIXME: When this code was originally written, unknown types
+	 * were represented by NULL, but now they are represented by
+	 * "application/octet-string". Perhaps we want to check for
+	 * that here, so "program" will appear more often.
+	 */
 	if (nautilus_strlen (mime_type) == 0) {
-		/* No mime type, anything else interesting we can say about this? */
-		/* if it's a directory, call it that before looking at executable */
+		/* No MIME type, anything else interesting we can say about this? */
+		/* FIXME: Maybe we should always return NULL when the
+		 * MIME type is unknown.
+		 */
+		/* If it's a directory, call it "folder" before
+		 * looking at the executable bit, since the executable
+		 * bit means something else for directories.
+		 */
 		if (nautilus_file_is_directory (file)) {
-			return type_as_string_considering_link (file, _("folder"));
+			return _("folder");
 		}
 		if (nautilus_file_is_executable (file)) {
-			return type_as_string_considering_link (file, _("program"));
+			return _("program");
 		}
 
-		return type_as_string_considering_link (file, NULL);
+		return NULL;
 	}
 
 	description = gnome_vfs_mime_get_description (mime_type);
 	if (nautilus_strlen (description) > 0) {
-		return type_as_string_considering_link (file, description);
+		return description;
 	}
 
 	/* We want to update gnome-vfs/data/mime/gnome-vfs.keys to include 
@@ -3401,10 +3363,42 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 			   "or isn't being found for some other reason.");
 	} else {
 		g_warning ("No description found for mime type \"%s\" (file is \"%s\"), tell sullivan@eazel.com", 
-			    mime_type,
-			    file->details->name);
+			   mime_type,
+			   file->details->name);
 	}
-	return type_as_string_considering_link (file, mime_type);
+	return mime_type;
+}
+
+static char *
+update_description_for_link (NautilusFile *file, const char *string)
+{
+	if (nautilus_file_is_symbolic_link (file)) {
+		g_assert (!nautilus_file_is_broken_symbolic_link (file));
+		if (string == NULL) {
+			return g_strdup (_("link"));
+		}
+		/* Note to localizers: convert file type string for file 
+		 * (e.g. "folder", "plain text") to file type for symbolic link 
+		 * to that kind of file (e.g. "link to folder").
+		 */
+		return g_strdup_printf (_("link to %s"), string);
+	}
+
+	return g_strdup (string);
+}
+
+static char *
+nautilus_file_get_type_as_string (NautilusFile *file)
+{
+	if (file == NULL) {
+		return NULL;
+	}
+
+	if (nautilus_file_is_broken_symbolic_link (file)) {
+		return g_strdup (_("link (broken)"));
+	}
+	
+	return update_description_for_link (file, get_description (file));
 }
 
 /**
@@ -3424,33 +3418,9 @@ nautilus_file_get_file_type (NautilusFile *file)
 }
 
 /**
- * nautilus_file_get_slow_mime_type
- * 
- * Return this file's mime type, gotten by forcing a 
- * slow mime check
- * @file: NautilusFile representing the file in question.
- * 
- * Returns: The mime type.
- * 
- **/
-char *
-nautilus_file_get_slow_mime_type (NautilusFile *file)
-{
-	if (file != NULL) {
-		g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-		if (file->details->slow_mime_type != NULL) {
-			return g_strdup (file->details->slow_mime_type);
-		}
-	}
-	return g_strdup ("application/octet-stream");
-}
-
-
-/**
  * nautilus_file_get_mime_type
  * 
- * Return this file's default mime type, or the slow
- * mime type if that is all the information we have
+ * Return this file's default mime type.
  * @file: NautilusFile representing the file in question.
  * 
  * Returns: The mime type.
@@ -3459,18 +3429,15 @@ nautilus_file_get_slow_mime_type (NautilusFile *file)
 char *
 nautilus_file_get_mime_type (NautilusFile *file)
 {
-	const char *mime_type;
-
 	if (file != NULL) {
 		g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-		mime_type = get_either_mime_type (file);
-		if (mime_type != NULL) {
-			return g_strdup (mime_type);
+		if (file->details->info != NULL
+		    && file->details->info->mime_type != NULL) {
+			return g_strdup (file->details->info->mime_type);
 		}
 	}
 	return g_strdup ("application/octet-stream");
 }
-
 
 /**
  * nautilus_file_is_mime_type
@@ -3486,16 +3453,14 @@ nautilus_file_get_mime_type (NautilusFile *file)
 gboolean
 nautilus_file_is_mime_type (NautilusFile *file, const char *mime_type)
 {
-	const char *file_mime_type;
-
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 	g_return_val_if_fail (mime_type != NULL, FALSE);
 	
-	file_mime_type = get_either_mime_type (file);
-	if (file_mime_type != NULL) {
-		return nautilus_strcasecmp (file_mime_type, mime_type) == 0;
+	if (file->details->info == NULL) {
+		return FALSE;
 	}
-	return FALSE;
+	return nautilus_strcasecmp (file->details->info->mime_type,
+				    mime_type) == 0;
 }
 
 /**
@@ -3666,7 +3631,6 @@ nautilus_file_is_nautilus_link (NautilusFile *file)
 	return nautilus_file_is_mime_type (file, "application/x-nautilus-link");
 }
 
-
 /**
  * nautilus_file_is_directory
  * 
@@ -3697,7 +3661,6 @@ nautilus_file_is_directory (NautilusFile *file)
  * Returns: TRUE if @file is in a trash.
  * 
  **/
-
 gboolean
 nautilus_file_is_in_trash (NautilusFile *file)
 {
@@ -3988,7 +3951,6 @@ nautilus_file_check_if_ready (NautilusFile *file,
 		 file,
 		 file_attributes);
 }			      
-
 
 void
 nautilus_file_call_when_ready (NautilusFile *file,

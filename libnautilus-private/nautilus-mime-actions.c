@@ -119,7 +119,7 @@ nautilus_mime_actions_get_required_file_attributes ()
 
 	attributes = NULL;
 	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_METADATA);
-	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE);
+	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
 	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES);
 
 	return attributes;
@@ -153,7 +153,7 @@ nautilus_mime_get_default_action_type_for_file (NautilusFile *file)
 		(file, NAUTILUS_METADATA_KEY_DEFAULT_ACTION_TYPE, NULL);
 
 	if (action_type_string == NULL) {
-		mime_type = nautilus_file_get_slow_mime_type (file);
+		mime_type = nautilus_file_get_mime_type (file);
 		action_type = gnome_vfs_mime_get_default_action_type (mime_type);
 		g_free (mime_type);
 		return action_type;
@@ -226,7 +226,7 @@ nautilus_mime_get_default_application_for_file_internal (NautilusFile      *file
 		(file, NAUTILUS_METADATA_KEY_DEFAULT_APPLICATION, NULL);
 
 	if (default_application_string == NULL) {
-		mime_type = nautilus_file_get_slow_mime_type (file);
+		mime_type = nautilus_file_get_mime_type (file);
 		result = gnome_vfs_mime_get_default_application (mime_type);
 		g_free (mime_type);
 		used_user_chosen_info = FALSE;
@@ -295,7 +295,7 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile      *file,
 
 	CORBA_exception_init (&ev);
 
-	mime_type = nautilus_file_get_slow_mime_type (file);
+	mime_type = nautilus_file_get_mime_type (file);
 
 	uri_scheme = nautilus_file_get_uri_scheme (file);
 
@@ -462,7 +462,7 @@ nautilus_mime_get_short_list_applications_for_file (NautilusFile      *file)
 		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_REMOVE,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
 
-	mime_type = nautilus_file_get_slow_mime_type (file);
+	mime_type = nautilus_file_get_mime_type (file);
 	result = gnome_vfs_mime_get_short_list_applications (mime_type);
 	g_free (mime_type);
 
@@ -529,7 +529,7 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile      *file)
 		 NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_REMOVE,
 		 NAUTILUS_METADATA_SUBKEY_COMPONENT_IID);
 
-	mime_type = nautilus_file_get_slow_mime_type (file);
+	mime_type = nautilus_file_get_mime_type (file);
 	servers = gnome_vfs_mime_get_short_list_components (mime_type);
 	iids = NULL;
 
@@ -597,7 +597,7 @@ nautilus_mime_get_short_list_methods_for_file (NautilusFile      *file)
 	g_return_val_if_fail (nautilus_mime_actions_check_if_required_attributes_ready (file), 
 			      NULL);
 
-	mime_type = nautilus_file_get_slow_mime_type (file);
+	mime_type = nautilus_file_get_mime_type (file);
 	method = gnome_vfs_mime_get_value (mime_type, "vfs-method");
 	g_free (mime_type);
 	return g_strdup (method);
@@ -620,7 +620,7 @@ nautilus_mime_get_all_applications_for_file (NautilusFile      *file)
 		 NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
 
-	mime_type = nautilus_file_get_slow_mime_type (file);
+	mime_type = nautilus_file_get_mime_type (file);
 
 	result = gnome_vfs_mime_get_all_applications (mime_type);
 
@@ -670,7 +670,7 @@ nautilus_mime_get_all_components_for_file (NautilusFile      *file)
 
 	uri_scheme = nautilus_file_get_uri_scheme (file);
 
-	mime_type = nautilus_file_get_slow_mime_type (file);
+	mime_type = nautilus_file_get_mime_type (file);
 	explicit_iids = get_explicit_content_view_iids_from_metafile (file); 
 	nautilus_file_get_directory_item_mime_types (file, &item_mime_types);
 
@@ -774,7 +774,7 @@ nautilus_mime_set_short_list_applications_for_file (NautilusFile      *file,
 
 	/* get per-mime short list */
 
-	mime_type = nautilus_file_get_slow_mime_type (file);
+	mime_type = nautilus_file_get_mime_type (file);
 	normal_short_list = gnome_vfs_mime_get_short_list_applications (mime_type);
 	g_free (mime_type);
 
@@ -821,7 +821,7 @@ nautilus_mime_set_short_list_components_for_file (NautilusFile      *file,
 			      GNOME_VFS_ERROR_GENERIC);
 
 	/* get per-mime short list */
-	mime_type = nautilus_file_get_slow_mime_type (file);
+	mime_type = nautilus_file_get_mime_type (file);
 	normal_short_list = gnome_vfs_mime_get_short_list_components (mime_type);
 	g_free (mime_type);
 	

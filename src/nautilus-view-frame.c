@@ -30,7 +30,6 @@
 #include <config.h>
 #include "nautilus-view-frame-private.h"
 
-
 #include "nautilus-application.h"
 #include "nautilus-component-adapter-factory.h"
 #include "nautilus-history-frame.h"
@@ -256,11 +255,9 @@ nautilus_view_frame_destroy (GtkObject *object)
 	
 	nautilus_view_frame_destroy_client (frame);
 
-	bonobo_object_unref (BONOBO_OBJECT (frame->details->ui_container));
 	g_free (frame->details->title);
 	g_free (frame->details->label);
 	g_free (frame->details);
-	frame->details = NULL;
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }

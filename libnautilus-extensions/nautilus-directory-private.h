@@ -95,7 +95,6 @@ struct NautilusDirectoryDetails
 
 	GnomeVFSAsyncHandle *get_info_in_progress;
 	NautilusFile *get_info_file;
-	gboolean get_slow_mime_type_for_file;
 
 	TopLeftTextReadState *top_left_read_state;
 	ActivationURIReadState *activation_uri_read_state;

@@ -55,6 +55,7 @@ struct NautilusNavigationInfo {
 	NautilusNavigationCallback callback;
 	gpointer callback_data;
         NautilusFile *file;
+        NautilusDirectory *directory;
 	NautilusViewIdentifier *initial_content_id;
 	GnomeVFSAsyncHandle *handle;
 };
@@ -184,15 +185,21 @@ nautilus_navigation_info_new (const char *location,
         info->callback_data = notify_data;
         
         info->file = nautilus_file_get (location);
+        info->directory = nautilus_directory_get (location);
 
+        /* We start monitoring files here so we get a single load of
+         * the directory instead of multiple ones. The concept is that
+         * our load of the directory is shared both with the
+         * call_when_ready below and with other stuff needed by
+         * components.
+         */
+        nautilus_directory_file_monitor_add (info->directory, info,
+                                             NULL, FALSE);
+        
         /* Arrange for all the file attributes we will need. */
         attributes = nautilus_mime_actions_get_required_file_attributes ();
-        
-        nautilus_file_call_when_ready
-                (info->file,
-                 attributes,
-                 got_file_info_callback, info);
-        
+        nautilus_file_call_when_ready (info->file, attributes,
+                                       got_file_info_callback, info);
         g_list_free (attributes);
         
         return info;
@@ -209,9 +216,10 @@ nautilus_navigation_info_cancel (NautilusNavigationInfo *info)
         }
 
         nautilus_file_cancel_call_when_ready
-                (info->file,
-                 got_file_info_callback,
-                 info);
+                (info->file, got_file_info_callback, info);
+
+        nautilus_directory_file_monitor_remove
+                (info->directory, info);
 }
 
 void
@@ -222,6 +230,7 @@ nautilus_navigation_info_free (NautilusNavigationInfo *info)
         nautilus_navigation_info_cancel (info);
 
         nautilus_file_unref (info->file);
+        nautilus_directory_unref (info->directory);
         nautilus_view_identifier_free (info->initial_content_id);
 
         g_free (info);

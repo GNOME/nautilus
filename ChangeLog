@@ -1,3 +1,86 @@
+2000-10-24  Darin Adler  <darin@eazel.com>
+
+	Some work towards reducing load_directory calls.
+
+	Also fixed bug 3978 (Many Bonobo warnings/errors on quit).
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(set_up_request_by_file_attributes),
+	(update_file_info_in_list_if_needed),
+	(dequeue_pending_idle_callback), (request_is_satisfied),
+	(get_info_callback), (file_info_start):
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-file-attributes.h:
+	* libnautilus-extensions/nautilus-file-private.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_new_from_info), (destroy),
+	(nautilus_file_update_info), (nautilus_file_update_name),
+	(nautilus_file_compare_by_type),
+	(nautilus_file_get_string_attribute), (get_description),
+	(update_description_for_link), (nautilus_file_get_type_as_string),
+	(nautilus_file_get_mime_type), (nautilus_file_is_mime_type),
+	(nautilus_file_check_if_ready):
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_actions_get_required_file_attributes),
+	(nautilus_mime_get_default_action_type_for_file),
+	(nautilus_mime_get_default_application_for_file_internal),
+	(nautilus_mime_get_default_component_for_file_internal),
+	(nautilus_mime_get_short_list_applications_for_file),
+	(nautilus_mime_get_short_list_components_for_file),
+	(nautilus_mime_get_short_list_methods_for_file),
+	(nautilus_mime_get_all_applications_for_file),
+	(nautilus_mime_get_all_components_for_file),
+	(nautilus_mime_set_short_list_applications_for_file),
+	(nautilus_mime_set_short_list_components_for_file):
+	Get rid of the distinction between slow and default MIME type once
+	again. We (Pavel, Maciej, John, and I) decided it's better not to
+	have multiple opinions on the MIME type, despite our original idea
+	that we needed the slow MIME type for some things, even on remote
+	file systems.
+	
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	Fixed the formatting in this file.
+	
+	* src/file-manager/fm-directory-view.c: (load_location_callback):
+	Only force a reload if we are reloading the same directory. This
+	is needed to take advantage of the loading already done for us by
+	the framework.
+	(load_directory): Take a NautilusDirectory instead of a URI string.
+	Also take a boolean parameter to control if we force a reload.
+	(finish_loading_uri): Respect the boolean parameter that tells us
+	whether to force a reload.
+	(filtering_changed_callback): Use the new load_directory.
+	
+	* src/nautilus-applicable-views.c: (nautilus_navigation_info_new),
+	(nautilus_navigation_info_cancel), (nautilus_navigation_info_free):
+	Monitor the directory while we are loading the component. We
+	already need to load the directory to get the MIME types, so this
+	does no additional harm, and it prepares us to consolidate the
+	loading done for different reasons.
+	
+	* src/nautilus-main.c: (main): Use nautilus_setenv instead of
+	putenv, since it's more portable.
+	
+	* src/nautilus-window-manage-views.c: Quick simplification pass on
+	state machine. Got rid of the use of varargs and renamed a bunch
+	of things.
+	
+	* src/nautilus-window-manage-views.h:
+	* src/nautilus-window-private.h:
+	Moved external functions from nautilus-window-manage-views.c to
+	all be in nautilus-window-manager-views.h. This is one step in
+	reducing the number of clients that need access to private stuff
+	in NautilusWindow.
+	
+	* src/nautilus-window-service-ui.c: (detach_service_ui),
+	(nautilus_window_install_service_ui): Detach the service UI on
+	"destroy" rather that using set_data_full, because finalize time
+	is too late.
+
+	* src/nautilus-view-frame.c: (nautilus_view_frame_destroy):
+	Got rid of extra unref that was messing things up here.
+	
 2000-10-24  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/mozilla/nautilus-mozilla-content-view.c:

@@ -29,15 +29,21 @@
 
 #include "nautilus-window.h"
 
-void               nautilus_window_open_location               (NautilusWindow         *window,
-                                                                const char             *location);
-void               nautilus_window_open_location_in_new_window (NautilusWindow         *window,
-                                                                const char             *location,
-                                                                GList                  *selection);
-void               nautilus_window_stop_loading                (NautilusWindow         *window);
-void               nautilus_window_set_content_view            (NautilusWindow         *window,
-                                                                NautilusViewIdentifier *id);
-void               nautilus_window_set_sidebar_panels          (NautilusWindow         *window,
-                                                                GList                  *view_identifier_list);
+void nautilus_window_open_location               (NautilusWindow             *window,
+                                                  const char                 *location);
+void nautilus_window_open_location_in_new_window (NautilusWindow             *window,
+                                                  const char                 *location,
+                                                  GList                      *selection);
+void nautilus_window_stop_loading                (NautilusWindow             *window);
+void nautilus_window_set_content_view            (NautilusWindow             *window,
+                                                  NautilusViewIdentifier     *id);
+void nautilus_window_set_sidebar_panels          (NautilusWindow             *window,
+                                                  GList                      *view_identifier_list);
+void nautilus_window_begin_location_change       (NautilusWindow             *window,
+                                                  const char                 *location,
+                                                  NautilusLocationChangeType  type,
+                                                  guint                       distance);
+void nautilus_window_disconnect_view             (NautilusWindow             *window,
+                                                  NautilusViewFrame          *view);
 
 #endif /* NAUTILUS_WINDOW_MANAGE_VIEWS_H */

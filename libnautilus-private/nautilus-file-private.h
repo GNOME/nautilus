@@ -37,13 +37,6 @@ struct NautilusFileDetails
 	gboolean get_info_failed;
 	GnomeVFSResult get_info_error;
 
-	/* Since the file info doesn't remember what kind of mime type
-	 * it got, we'll just keep them here, where it is clear what
-	 * kind of mime type they are.
-	 */
-	char *default_mime_type;
-	char *slow_mime_type;
-
 	gboolean got_directory_count;
 	gboolean directory_count_failed;
 	guint directory_count;
@@ -92,8 +85,7 @@ gboolean      nautilus_file_contains_text            (NautilusFile      *file);
  * new state.
  */
 gboolean      nautilus_file_update_info              (NautilusFile      *file,
-						      GnomeVFSFileInfo  *info,
-						      gboolean got_slow_mime_type);
+						      GnomeVFSFileInfo  *info);
 gboolean      nautilus_file_update_name              (NautilusFile      *file,
 						      const char        *name);
 

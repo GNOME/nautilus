@@ -25,8 +25,8 @@
 #ifndef NAUTILUS_FILE_ATTRIBUTES_H
 #define NAUTILUS_FILE_ATTRIBUTES_H
 
-/* Names for NautilusFile attributes. These are used when registering interest
- * in changes to the attributes.
+/* Names for NautilusFile attributes. These are used when registering
+ * interest in changes to the attributes or when waiting for them.
  */
 
 #define NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI             "activation URI"
@@ -34,7 +34,6 @@
 #define NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS                "deep counts"
 #define NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT       "directory item count"
 #define NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE                  "MIME type"
-#define NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE             "MIME type"
 #define NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT              "top left text"
 #define NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY               "is directory"
 #define NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE                  "file type"
@@ -42,5 +41,3 @@
 #define NAUTILUS_FILE_ATTRIBUTE_METADATA                   "metadata"
 
 #endif /* NAUTILUS_FILE_ATTRIBUTES_H */
-
-
