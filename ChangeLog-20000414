@@ -1,3 +1,17 @@
+2000-02-10  John Sullivan <sullivan@eazel.com>
+
+	Put in quick hack for showing directory item counts under icons
+	since "--" looks so awful. It's a hack because it blocks the
+	display until all directories inside this one have been
+	iterated. We'll change that after we've got a deferred-result
+	architecture in NautilusDirectory.
+
+	* libnautilus/nautilus-directory.c:
+	(get_directory_item_count_hack): New function to count items
+	in a directory. Will go away with time.
+	(nautilus_file_get_size_as_string): uses new hack instead of
+	returning "--" for directory sizes.
+
 2000-02-09  Andy Hertzfeld <andy@eazel.com>
 
     completed hit-testing and activation for the index tabs.  They're

@@ -1475,6 +1475,48 @@ nautilus_file_get_size (NautilusFile *file)
 	return file->info->size;
 }
 
+/* This #include is part of the following hack, and should be removed with it */
+#include <dirent.h>
+
+static int
+get_directory_item_count_hack (NautilusFile *file, gboolean ignore_invisible_items)
+{
+ 	/* Code borrowed from Gnomad and hacked into here for now */
+
+	char * uri;
+	char * path;
+    DIR* directory;
+    int count;
+    struct dirent * entry;
+
+	g_assert (file->info->type == GNOME_VFS_FILE_TYPE_DIRECTORY);
+
+	uri = nautilus_file_get_uri (file);
+	if (nautilus_has_prefix (uri, "file://"))
+		path = uri + 7;
+	else
+		path = uri;
+
+	directory = opendir (path);
+
+	g_free (uri);
+    
+    if (!directory)
+        return 0;
+        
+    count = 0;
+    
+    while ((entry = readdir(directory)) != NULL)
+        // Only count invisible items if requested.
+        if (!ignore_invisible_items || entry->d_name[0] != '.')
+            count += 1;
+            
+    closedir(directory);
+    
+    return count;
+
+}
+
 /**
  * nautilus_file_get_size_as_string:
  * 
@@ -1492,12 +1534,20 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 
 	if (file->info->type == GNOME_VFS_FILE_TYPE_DIRECTORY)
 	{
-		/* FIXME: We want this to display the item count, but
-		 * it might be slow to compute an item count so we're
-		 * postponing that until we've got an architecture for
-		 * getting slow info from NautilusFile.
+		/* FIXME: Since computing the item count is slow, we
+		 * want to do it in a deferred way. However, that
+		 * architecture doesn't exist yet, so we're hacking
+		 * it in for now.
 		 */
-		return g_strdup (_("--"));
+		int item_count;
+
+		item_count = get_directory_item_count_hack (file, FALSE);
+		if (item_count == 0)
+			return g_strdup ("empty");
+		else if (item_count == 1)
+			return g_strdup ("1 item");
+		else
+			return g_strdup_printf ("%d items", item_count);
 	}
 
 	return gnome_vfs_file_size_to_string (file->info->size);
