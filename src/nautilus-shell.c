@@ -178,18 +178,25 @@ display_caveat (GtkWindow *parent_window)
 	gtk_container_add (GTK_CONTAINER (frame), pixmap);
 
   	text = gtk_label_new
-		(_("The Nautilus shell is under development; it's not "
-  		   "ready for daily use. Many features, including some "
-  		   "of the best ones, are not yet done, partly done, or "
-  		   "unstable. The program doesn't look or act the way "
-  		   "it will in version 1.0."
+		(_("Welcome to Nautilus Preview Release 1"
 		   "\n\n"
-		   "If you do decide to test this version of Nautilus, "
-		   "beware. The program could do something "
-		   "unpredictable and may even delete or overwrite "
-		   "files on your computer."
+		   "Thanks for your interest in using the Nautilus Preview Release 1.  As "
+		   "a user of the Preview Release, you will have the ability to try out "
+		   "and provide feedback on an early version of Eazel's powerful new desktop "
+		   "manager, Nautilus."
 		   "\n\n"
-		   "For more information, visit http://nautilus.eazel.com."));
+		   "Important information on Nautilus Preview Release 1"
+		   "\n\n"
+		   "As with any preview release software, users should exercise caution "
+		   "when running this software on their system.  Eazel provides no guarantees "
+		   "the software will work according to the desire of the user."
+		   "\n\n"
+		   "The software is provided as a courtesy of Eazel to the general public, "
+		   "with this stipulation: Please use at your own risk.  Eazel assumes no "
+		   "liability for issues relating to the installation, running, or removal "
+		   "of Nautilus, or any software distributed in this preview release."
+		   "\n\n"
+		   "For more information, please go to http://www.eazel.com."));
     	gtk_label_set_line_wrap (GTK_LABEL (text), TRUE);
 	gtk_widget_show (text);
   	gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
