@@ -98,6 +98,16 @@ nautilus_switchable_search_bar_initialize (NautilusSwitchableSearchBar *bar)
 	gtk_box_pack_start (GTK_BOX (hbox), event_box, FALSE, TRUE, GNOME_PAD_SMALL);	
 	bar->complex_search_bar = nautilus_complex_search_bar_new ();
 	bar->simple_search_bar = nautilus_simple_search_bar_new ();
+
+	gtk_signal_connect_object (GTK_OBJECT (bar->complex_search_bar),
+				   "location_changed",
+				   nautilus_navigation_bar_location_changed,
+				   GTK_OBJECT (bar));
+	gtk_signal_connect_object (GTK_OBJECT (bar->simple_search_bar),
+				   "location_changed",
+				   nautilus_navigation_bar_location_changed,
+				   GTK_OBJECT (bar));
+
 	
 	gtk_box_pack_start  (GTK_BOX (hbox), bar->complex_search_bar, TRUE, TRUE,
 			     0);
