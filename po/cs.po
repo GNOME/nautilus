@@ -1,16 +1,16 @@
 # Czech translation of Nautilus
 # Copyright (C) 2001,2003 Free Software Foundation, Inc.
-# Copyright (C) 2004 Miloslav Trmac <mitr@volny.cz>
+# Copyright (C) 2004, 2005 Miloslav Trmac <mitr@volny.cz>
 # George Lebl <jirka@5z.com>, 2001.
-# Miloslav Trmac <mitr@volny.cz>, 2002, 2003, 2004.
+# Miloslav Trmac <mitr@volny.cz>, 2002, 2003, 2004, 2005.
 # Minor fixes by Michal Bukovjan <bukm@centrum.cz>, 2002,2003.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-11 09:55+0100\n"
-"PO-Revision-Date: 2004-11-24 13:06+0100\n"
+"POT-Creation-Date: 2005-01-20 12:30+0100\n"
+"PO-Revision-Date: 2005-01-20 20:15+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -624,7 +624,7 @@ msgstr "Toto téma používá fotorealistické adresáře."
 #: libnautilus-extension/nautilus-menu-item.c:206
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
-#: src/file-manager/fm-list-view.c:1085
+#: src/file-manager/fm-list-view.c:1107
 msgid "Name"
 msgstr "Název"
 
@@ -1397,23 +1397,23 @@ msgstr "Vybr_at vše"
 msgid "Select all the text in a text field"
 msgstr "Vybrat všechen text v textovém poli"
 
-#: libnautilus-private/nautilus-column-chooser.c:365
+#: libnautilus-private/nautilus-column-chooser.c:394
 msgid "Move _Up"
 msgstr "Posunout na_horu"
 
-#: libnautilus-private/nautilus-column-chooser.c:374
+#: libnautilus-private/nautilus-column-chooser.c:404
 msgid "Move _Down"
 msgstr "Posunout _dolů"
 
-#: libnautilus-private/nautilus-column-chooser.c:383
+#: libnautilus-private/nautilus-column-chooser.c:413
 msgid "_Show"
 msgstr "Z_obrazit"
 
-#: libnautilus-private/nautilus-column-chooser.c:393
+#: libnautilus-private/nautilus-column-chooser.c:423
 msgid "_Hide"
 msgstr "_Skrýt"
 
-#: libnautilus-private/nautilus-column-chooser.c:406
+#: libnautilus-private/nautilus-column-chooser.c:436
 msgid "_Use Default"
 msgstr "_Používat implicitní"
 
@@ -1520,32 +1520,32 @@ msgstr ""
 msgid "Can't Delete Volume"
 msgstr "Nemohu odstranit svazek"
 
-#: libnautilus-private/nautilus-dnd.c:615
+#: libnautilus-private/nautilus-dnd.c:631
 msgid "_Move here"
 msgstr "_Přesunout sem"
 
-#: libnautilus-private/nautilus-dnd.c:620
+#: libnautilus-private/nautilus-dnd.c:636
 msgid "_Copy here"
 msgstr "_Kopírovat sem"
 
-#: libnautilus-private/nautilus-dnd.c:625
+#: libnautilus-private/nautilus-dnd.c:641
 msgid "_Link here"
 msgstr "_Odkaz sem"
 
-#: libnautilus-private/nautilus-dnd.c:630
+#: libnautilus-private/nautilus-dnd.c:646
 msgid "Set as _Background"
 msgstr "_Nastavit jako pozadí"
 
-#: libnautilus-private/nautilus-dnd.c:639
-#: libnautilus-private/nautilus-dnd.c:694
+#: libnautilus-private/nautilus-dnd.c:655
+#: libnautilus-private/nautilus-dnd.c:710
 msgid "Cancel"
 msgstr "Zrušit"
 
-#: libnautilus-private/nautilus-dnd.c:680
+#: libnautilus-private/nautilus-dnd.c:696
 msgid "Set as background for _all folders"
 msgstr "Nastavit jako pozadí pro _všechny adresáře"
 
-#: libnautilus-private/nautilus-dnd.c:685
+#: libnautilus-private/nautilus-dnd.c:701
 msgid "Set as background for _this folder"
 msgstr "Nastavit jako pozadí pro _tento adresář"
 
@@ -1891,6 +1891,7 @@ msgstr "Nahradit _vše"
 #.
 #: libnautilus-private/nautilus-file-operations.c:1194
 #: libnautilus-private/nautilus-file.c:4746
+#: src/file-manager/fm-directory-view.c:7890
 #, c-format
 msgid "link to %s"
 msgstr "odkaz na %s"
@@ -2022,270 +2023,270 @@ msgid " (%d"
 msgstr " (%d"
 
 #: libnautilus-private/nautilus-file-operations.c:1600
-#: libnautilus-private/nautilus-file-operations.c:2190
-#: libnautilus-private/nautilus-file-operations.c:2352
+#: libnautilus-private/nautilus-file-operations.c:2193
+#: libnautilus-private/nautilus-file-operations.c:2355
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Neznámý GnomeVFSXferProgressStatus %d"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1927
+#: libnautilus-private/nautilus-file-operations.c:1930
 msgid "Moving files to the Trash"
 msgstr "Přesouvám soubory do koše"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1929
+#: libnautilus-private/nautilus-file-operations.c:1932
 msgid "Files thrown out:"
 msgstr "Vyhozené soubory:"
 
 #. localizers: label prepended to the name of the current file moved
-#: libnautilus-private/nautilus-file-operations.c:1931
-#: libnautilus-private/nautilus-file-operations.c:1942
+#: libnautilus-private/nautilus-file-operations.c:1934
+#: libnautilus-private/nautilus-file-operations.c:1945
 msgid "Moving"
 msgstr "Přesouvám"
 
-#: libnautilus-private/nautilus-file-operations.c:1932
+#: libnautilus-private/nautilus-file-operations.c:1935
 msgid "Preparing to Move to Trash..."
 msgstr "Připravuji přesun do koše..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1938
+#: libnautilus-private/nautilus-file-operations.c:1941
 msgid "Moving files"
 msgstr "Přesouvám soubory"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1940
+#: libnautilus-private/nautilus-file-operations.c:1943
 msgid "Files moved:"
 msgstr "Přesunuté soubory:"
 
-#: libnautilus-private/nautilus-file-operations.c:1943
+#: libnautilus-private/nautilus-file-operations.c:1946
 msgid "Preparing To Move..."
 msgstr "Připravuji přesun..."
 
-#: libnautilus-private/nautilus-file-operations.c:1944
+#: libnautilus-private/nautilus-file-operations.c:1947
 msgid "Finishing Move..."
 msgstr "Ukončuji přesun..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1952
+#: libnautilus-private/nautilus-file-operations.c:1955
 msgid "Creating links to files"
 msgstr "Vytvářím odkazy k souborům"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1954
+#: libnautilus-private/nautilus-file-operations.c:1957
 msgid "Files linked:"
 msgstr "Vytvořené odkazy:"
 
 #. localizers: label prepended to the name of the current file linked
-#: libnautilus-private/nautilus-file-operations.c:1956
+#: libnautilus-private/nautilus-file-operations.c:1959
 msgid "Linking"
 msgstr "Vytvářím odkaz k"
 
-#: libnautilus-private/nautilus-file-operations.c:1957
+#: libnautilus-private/nautilus-file-operations.c:1960
 msgid "Preparing to Create Links..."
 msgstr "Připravuji vytváření odkazů..."
 
-#: libnautilus-private/nautilus-file-operations.c:1958
+#: libnautilus-private/nautilus-file-operations.c:1961
 msgid "Finishing Creating Links..."
 msgstr "Ukončuji vytváření odkazů..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1964
+#: libnautilus-private/nautilus-file-operations.c:1967
 msgid "Copying files"
 msgstr "Kopíruji soubory"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1966
+#: libnautilus-private/nautilus-file-operations.c:1969
 msgid "Files copied:"
 msgstr "Zkopírované soubory:"
 
 #. localizers: label prepended to the name of the current file copied
-#: libnautilus-private/nautilus-file-operations.c:1968
+#: libnautilus-private/nautilus-file-operations.c:1971
 msgid "Copying"
 msgstr "Kopíruji"
 
-#: libnautilus-private/nautilus-file-operations.c:1969
+#: libnautilus-private/nautilus-file-operations.c:1972
 msgid "Preparing To Copy..."
 msgstr "Připravuji kopírování..."
 
-#: libnautilus-private/nautilus-file-operations.c:1987
+#: libnautilus-private/nautilus-file-operations.c:1990
 msgid "You cannot copy items into the trash."
 msgstr "Nemůžete kopírovat položky do koše."
 
-#: libnautilus-private/nautilus-file-operations.c:1988
+#: libnautilus-private/nautilus-file-operations.c:1991
 msgid "You cannot create links inside the trash."
 msgstr "Nemůžete vytvářet odkazy v koši."
 
-#: libnautilus-private/nautilus-file-operations.c:1989
+#: libnautilus-private/nautilus-file-operations.c:1992
 msgid "Files and folders can only be moved into the trash."
 msgstr "Soubory a adresáře mohou být přesunuty jen do koše."
 
-#: libnautilus-private/nautilus-file-operations.c:2013
+#: libnautilus-private/nautilus-file-operations.c:2016
 msgid "You cannot move this trash folder."
 msgstr "Tento adresář koše nemůžete přesunout."
 
-#: libnautilus-private/nautilus-file-operations.c:2014
+#: libnautilus-private/nautilus-file-operations.c:2017
 msgid "You cannot copy this trash folder."
 msgstr "Nemůžete kopírovat tento adresář koše."
 
-#: libnautilus-private/nautilus-file-operations.c:2015
+#: libnautilus-private/nautilus-file-operations.c:2018
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr "Adresář koše se používá pro ukládání položek přesunutých do koše."
 
-#: libnautilus-private/nautilus-file-operations.c:2017
+#: libnautilus-private/nautilus-file-operations.c:2020
 msgid "Can't Change Trash Location"
 msgstr "Nemohu změnit umístění koše"
 
-#: libnautilus-private/nautilus-file-operations.c:2018
+#: libnautilus-private/nautilus-file-operations.c:2021
 msgid "Can't Copy Trash"
 msgstr "Nemohu kopírovat koš"
 
-#: libnautilus-private/nautilus-file-operations.c:2042
+#: libnautilus-private/nautilus-file-operations.c:2045
 msgid "You cannot move a folder into itself."
 msgstr "Nemůžete přesunout adresář do sebe."
 
-#: libnautilus-private/nautilus-file-operations.c:2043
+#: libnautilus-private/nautilus-file-operations.c:2046
 msgid "You cannot copy a folder into itself."
 msgstr "Nemůžete zkopírovat adresář do sebe."
 
-#: libnautilus-private/nautilus-file-operations.c:2044
+#: libnautilus-private/nautilus-file-operations.c:2047
 msgid "The destination folder is inside the source folder."
 msgstr "Cílový adresář je uvnitř zdrojového adresáře."
 
-#: libnautilus-private/nautilus-file-operations.c:2046
+#: libnautilus-private/nautilus-file-operations.c:2049
 msgid "Can't Move Into Self"
 msgstr "Nemohu přesunout do sebe"
 
-#: libnautilus-private/nautilus-file-operations.c:2047
+#: libnautilus-private/nautilus-file-operations.c:2050
 msgid "Can't Copy Into Self"
 msgstr "Nemohu zkopírovat do sebe"
 
-#: libnautilus-private/nautilus-file-operations.c:2060
+#: libnautilus-private/nautilus-file-operations.c:2063
 msgid "You cannot copy a file over itself."
 msgstr "Nemůžete zkopírovat soubor přes sebe."
 
-#: libnautilus-private/nautilus-file-operations.c:2061
+#: libnautilus-private/nautilus-file-operations.c:2064
 msgid "The destination and source are the same file."
 msgstr "Cíl a zdroj jsou tentýž soubor."
 
-#: libnautilus-private/nautilus-file-operations.c:2062
+#: libnautilus-private/nautilus-file-operations.c:2065
 msgid "Can't Copy Over Self"
 msgstr "Nemohu kopírovat přes sebe"
 
-#: libnautilus-private/nautilus-file-operations.c:2114
-#: libnautilus-private/nautilus-file-operations.c:2254
+#: libnautilus-private/nautilus-file-operations.c:2117
+#: libnautilus-private/nautilus-file-operations.c:2257
 msgid "You do not have permissions to write to the destination."
 msgstr "Nemáte oprávnění zapisovat do cíle."
 
-#: libnautilus-private/nautilus-file-operations.c:2116
-#: libnautilus-private/nautilus-file-operations.c:2256
+#: libnautilus-private/nautilus-file-operations.c:2119
+#: libnautilus-private/nautilus-file-operations.c:2259
 msgid "There is no space on the destination."
 msgstr "V cíli není místo."
 
-#: libnautilus-private/nautilus-file-operations.c:2118
+#: libnautilus-private/nautilus-file-operations.c:2121
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Chyba \"%s\" při vytváření nového adresáře."
 
-#: libnautilus-private/nautilus-file-operations.c:2123
+#: libnautilus-private/nautilus-file-operations.c:2126
 msgid "Error creating new folder."
 msgstr "Chyba při vytváření nového adresáře."
 
-#: libnautilus-private/nautilus-file-operations.c:2123
+#: libnautilus-private/nautilus-file-operations.c:2126
 msgid "Error Creating New Folder"
 msgstr "Chyba při vytváření nového adresáře"
 
 #. localizers: the initial name of a new folder
-#: libnautilus-private/nautilus-file-operations.c:2218
+#: libnautilus-private/nautilus-file-operations.c:2221
 msgid "untitled folder"
 msgstr "nepojmenovaný adresář"
 
-#: libnautilus-private/nautilus-file-operations.c:2258
+#: libnautilus-private/nautilus-file-operations.c:2261
 #, c-format
 msgid "Error \"%s\" creating new document."
 msgstr "Chyba \"%s\" při vytváření nového dokumentu."
 
-#: libnautilus-private/nautilus-file-operations.c:2263
+#: libnautilus-private/nautilus-file-operations.c:2266
 msgid "Error creating new document."
 msgstr "Chyba při vytváření nového dokumentu."
 
-#: libnautilus-private/nautilus-file-operations.c:2263
+#: libnautilus-private/nautilus-file-operations.c:2266
 msgid "Error Creating New Document"
 msgstr "Chyba při vytváření nového dokumentu"
 
-#: libnautilus-private/nautilus-file-operations.c:2410
+#: libnautilus-private/nautilus-file-operations.c:2413
 msgid "new file"
 msgstr "nový soubor"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2482
+#: libnautilus-private/nautilus-file-operations.c:2485
 msgid "Deleting files"
 msgstr "Odstraňuji soubory"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2484
-#: libnautilus-private/nautilus-file-operations.c:2519
+#: libnautilus-private/nautilus-file-operations.c:2487
+#: libnautilus-private/nautilus-file-operations.c:2522
 msgid "Files deleted:"
 msgstr "Odstraněné soubory:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-private/nautilus-file-operations.c:2486
-#: libnautilus-private/nautilus-file-operations.c:2521
+#: libnautilus-private/nautilus-file-operations.c:2489
+#: libnautilus-private/nautilus-file-operations.c:2524
 msgid "Deleting"
 msgstr "Odstraňuji"
 
-#: libnautilus-private/nautilus-file-operations.c:2487
+#: libnautilus-private/nautilus-file-operations.c:2490
 msgid "Preparing to Delete files..."
 msgstr "Příprava k odstranění souborů..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2517
+#: libnautilus-private/nautilus-file-operations.c:2520
 msgid "Emptying the Trash"
 msgstr "Vyprazdňuji koš"
 
-#: libnautilus-private/nautilus-file-operations.c:2522
+#: libnautilus-private/nautilus-file-operations.c:2525
 msgid "Preparing to Empty the Trash..."
 msgstr "Připravuji vyprázdnění koše..."
 
-#: libnautilus-private/nautilus-file-operations.c:2591
+#: libnautilus-private/nautilus-file-operations.c:2594
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr "Jste si jisti, že chcete odstranit všechny položky z koše?"
 
-#: libnautilus-private/nautilus-file-operations.c:2605
+#: libnautilus-private/nautilus-file-operations.c:2608
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr "Pokud vyprázdníte koš, budou položky natrvalo odstraněny."
 
-#: libnautilus-private/nautilus-file-operations.c:2617
+#: libnautilus-private/nautilus-file-operations.c:2620
 msgid "_Empty"
 msgstr "_Vyprázdnit"
 
-#: libnautilus-private/nautilus-file-utilities.c:393
+#: libnautilus-private/nautilus-file-utilities.c:442
 #: libnautilus-private/nautilus-global-preferences.c:534
 #: nautilus-computer.desktop.in.h:1
 msgid "Computer"
 msgstr "Počítač"
 
-#: libnautilus-private/nautilus-file-utilities.c:395
+#: libnautilus-private/nautilus-file-utilities.c:444
 msgid "Network"
 msgstr "Síť"
 
-#: libnautilus-private/nautilus-file-utilities.c:397
+#: libnautilus-private/nautilus-file-utilities.c:446
 msgid "Fonts"
 msgstr "Písma"
 
-#: libnautilus-private/nautilus-file-utilities.c:399
+#: libnautilus-private/nautilus-file-utilities.c:448
 msgid "Themes"
 msgstr "Témata"
 
-#: libnautilus-private/nautilus-file-utilities.c:401
+#: libnautilus-private/nautilus-file-utilities.c:450
 msgid "CD/DVD Creator"
 msgstr "Tvůrce CD/DVD"
 
-#: libnautilus-private/nautilus-file-utilities.c:403
+#: libnautilus-private/nautilus-file-utilities.c:452
 msgid "Windows Network"
 msgstr "Síť Windows"
 
-#: libnautilus-private/nautilus-file-utilities.c:405
+#: libnautilus-private/nautilus-file-utilities.c:454
 msgid "Services in"
 msgstr "Služby v"
 
@@ -2428,7 +2429,7 @@ msgid "%m/%d/%y"
 msgstr "%d.%m.%y"
 
 #: libnautilus-private/nautilus-file.c:4312
-#: src/file-manager/fm-directory-view.c:1858
+#: src/file-manager/fm-directory-view.c:1861
 #, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -2639,7 +2640,7 @@ msgid "Icon View"
 msgstr "Ikonový pohled"
 
 #: libnautilus-private/nautilus-global-preferences.c:177
-#: src/file-manager/fm-list-view.c:1138
+#: src/file-manager/fm-list-view.c:1160
 #: src/nautilus-file-management-properties.glade.h:56
 msgid "List View"
 msgstr "Seznamový pohled"
@@ -2762,59 +2763,59 @@ msgstr "zvýrazněno pro puštění"
 msgid "whether we are highlighted for a D&D drop"
 msgstr "jestli jsme zvýrazněni pro D&D puštění"
 
-#: libnautilus-private/nautilus-icon-container.c:2106
+#: libnautilus-private/nautilus-icon-container.c:2107
 msgid "The selection rectangle"
 msgstr "Výběrový obdélník"
 
-#: libnautilus-private/nautilus-icon-container.c:4240
+#: libnautilus-private/nautilus-icon-container.c:4254
 msgid "Frame Text"
 msgstr "Rámec textu"
 
-#: libnautilus-private/nautilus-icon-container.c:4241
+#: libnautilus-private/nautilus-icon-container.c:4255
 msgid "Draw a frame around unselected text"
 msgstr "Kreslit rámec kolem nevybraného textu"
 
-#: libnautilus-private/nautilus-icon-container.c:4247
+#: libnautilus-private/nautilus-icon-container.c:4261
 msgid "Selection Box Color"
 msgstr "Barva výběrového rámečku"
 
-#: libnautilus-private/nautilus-icon-container.c:4248
+#: libnautilus-private/nautilus-icon-container.c:4262
 msgid "Color of the selection box"
 msgstr "Barva výběrového rámečku"
 
-#: libnautilus-private/nautilus-icon-container.c:4253
+#: libnautilus-private/nautilus-icon-container.c:4267
 msgid "Selection Box Alpha"
 msgstr "Alfa výběrového rámečku"
 
-#: libnautilus-private/nautilus-icon-container.c:4254
+#: libnautilus-private/nautilus-icon-container.c:4268
 msgid "Opacity of the selection box"
 msgstr "Průhlednost výběrového rámečku"
 
-#: libnautilus-private/nautilus-icon-container.c:4261
+#: libnautilus-private/nautilus-icon-container.c:4275
 msgid "Highlight Alpha"
 msgstr "Alfa zvýraznění"
 
-#: libnautilus-private/nautilus-icon-container.c:4262
+#: libnautilus-private/nautilus-icon-container.c:4276
 msgid "Opacity of the highlight for selected icons"
 msgstr "Průhlednost zvýraznění vybraných ikon"
 
-#: libnautilus-private/nautilus-icon-container.c:4268
+#: libnautilus-private/nautilus-icon-container.c:4282
 msgid "Light Info Color"
 msgstr "Světlá barva informací"
 
-#: libnautilus-private/nautilus-icon-container.c:4269
+#: libnautilus-private/nautilus-icon-container.c:4283
 msgid "Color used for information text against a dark background"
 msgstr "Barva používaná pro informační text na tmavém pozadí"
 
-#: libnautilus-private/nautilus-icon-container.c:4274
+#: libnautilus-private/nautilus-icon-container.c:4288
 msgid "Dark Info Color"
 msgstr "Tmavá barva informací"
 
-#: libnautilus-private/nautilus-icon-container.c:4275
+#: libnautilus-private/nautilus-icon-container.c:4289
 msgid "Color used for information text against a light background"
 msgstr "Barva používaná pro informační text na světlém pozadí"
 
-#: libnautilus-private/nautilus-icon-dnd.c:740
+#: libnautilus-private/nautilus-icon-dnd.c:754
 msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it? This will clobber the stored manual layout."
@@ -2822,14 +2823,14 @@ msgstr ""
 "Chcete přepnout na ruční rozložení a nechat tuto položku tam, kde jste ji "
 "pustili? Tím změníte uložené ruční rozložení."
 
-#: libnautilus-private/nautilus-icon-dnd.c:742
-#: libnautilus-private/nautilus-icon-dnd.c:746
-#: libnautilus-private/nautilus-icon-dnd.c:751
-#: libnautilus-private/nautilus-icon-dnd.c:754
+#: libnautilus-private/nautilus-icon-dnd.c:756
+#: libnautilus-private/nautilus-icon-dnd.c:760
+#: libnautilus-private/nautilus-icon-dnd.c:765
+#: libnautilus-private/nautilus-icon-dnd.c:768
 msgid "This folder uses automatic layout."
 msgstr "Tento adresář používá automatické rozložení."
 
-#: libnautilus-private/nautilus-icon-dnd.c:744
+#: libnautilus-private/nautilus-icon-dnd.c:758
 msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them? This will clobber the stored manual layout."
@@ -2837,7 +2838,7 @@ msgstr ""
 "Chcete přepnout na ruční rozložení a nechat tyto položky tam, kde jste je "
 "pustili? Tím změníte uložené ruční rozložení."
 
-#: libnautilus-private/nautilus-icon-dnd.c:750
+#: libnautilus-private/nautilus-icon-dnd.c:764
 msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it?"
@@ -2845,7 +2846,7 @@ msgstr ""
 "Chcete přepnout na ruční rozložení a nechat tuto položku tam, kde jste ji "
 "pustili?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:753
+#: libnautilus-private/nautilus-icon-dnd.c:767
 msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them?"
@@ -2853,11 +2854,11 @@ msgstr ""
 "Chcete přepnout na ruční rozložení a nechat tyto položky tam, kde jste je "
 "pustili?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:759
+#: libnautilus-private/nautilus-icon-dnd.c:773
 msgid "Switch to Manual Layout?"
 msgstr "Přepnout do manuálního rozložení"
 
-#: libnautilus-private/nautilus-icon-dnd.c:760
+#: libnautilus-private/nautilus-icon-dnd.c:774
 msgid "Switch"
 msgstr "Přepnout"
 
@@ -2979,7 +2980,7 @@ msgid ""
 msgstr " Zkontrolujte překlepy a vaše nastavení proxy."
 
 #: libnautilus-private/nautilus-program-choosing.c:622
-#: src/nautilus-connect-server-dialog.c:137
+#: src/nautilus-connect-server-dialog.c:140
 #: src/nautilus-window-manage-views.c:1366
 #, c-format
 msgid "\"%s\" is not a valid location."
@@ -2987,7 +2988,7 @@ msgstr "\"%s\" není platné umístění."
 
 #: libnautilus-private/nautilus-program-choosing.c:625
 #: libnautilus-private/nautilus-program-choosing.c:632
-#: src/nautilus-connect-server-dialog.c:139
+#: src/nautilus-connect-server-dialog.c:142
 #: src/nautilus-property-browser.c:1097
 #: src/nautilus-window-manage-views.c:1361
 #: src/nautilus-window-manage-views.c:1369
@@ -3002,6 +3003,7 @@ msgstr "Nemohu najít \"%s\"."
 
 #: libnautilus-private/nautilus-program-choosing.c:647
 #: src/nautilus-window-manage-views.c:1434
+#: src/nautilus-connect-server-dialog-main.c:71
 msgid "Can't Display Location"
 msgstr "Nemohu zobrazit umístění"
 
@@ -3105,7 +3107,7 @@ msgstr "Prohlížeč souborů"
 msgid "Factory for Nautilus shell and file manager"
 msgstr "Generátor pro správce souborů a shell Nautilus"
 
-#: src/Nautilus_shell.server.in.h:2 src/file-manager/fm-icon-view.c:2841
+#: src/Nautilus_shell.server.in.h:2 src/file-manager/fm-icon-view.c:2673
 msgid "Icons"
 msgstr "Ikony"
 
@@ -3113,7 +3115,7 @@ msgstr "Ikony"
 msgid "Icons Viewer"
 msgstr "Prohlížeč obrázků"
 
-#: src/Nautilus_shell.server.in.h:4 src/file-manager/fm-list-view.c:2279
+#: src/Nautilus_shell.server.in.h:4 src/file-manager/fm-list-view.c:2301
 msgid "List"
 msgstr "Seznam"
 
@@ -3236,13 +3238,13 @@ msgstr "Otevřít nové okno terminálu GNOME"
 
 #. name, stock id
 #: src/file-manager/fm-desktop-icon-view.c:662
-#: src/file-manager/fm-directory-view.c:5714
+#: src/file-manager/fm-directory-view.c:5750
 msgid "Create L_auncher"
 msgstr "Vytvořit s_pouštěč"
 
 #. label, accelerator
 #: src/file-manager/fm-desktop-icon-view.c:663
-#: src/file-manager/fm-directory-view.c:5715
+#: src/file-manager/fm-directory-view.c:5751
 msgid "Create a new launcher"
 msgstr "Vytvořit nový spouštěč"
 
@@ -3261,7 +3263,7 @@ msgstr ""
 
 #. label, accelerator
 #: src/file-manager/fm-desktop-icon-view.c:671
-#: src/file-manager/fm-directory-view.c:5743
+#: src/file-manager/fm-directory-view.c:5779
 msgid "Delete all items in the Trash"
 msgstr "Odstranit všechny položky z koše"
 
@@ -3274,7 +3276,7 @@ msgstr "Pracovní plocha"
 msgid "_Desktop"
 msgstr "_Pracovní plocha"
 
-#: src/file-manager/fm-directory-view.c:509
+#: src/file-manager/fm-directory-view.c:512
 #, c-format
 msgid "Open %d Window?"
 msgid_plural "Open %d Windows?"
@@ -3282,11 +3284,11 @@ msgstr[0] "Otevřít %d okno?"
 msgstr[1] "Otevřít %d okna?"
 msgstr[2] "Otevřít %d oken?"
 
-#: src/file-manager/fm-directory-view.c:510
+#: src/file-manager/fm-directory-view.c:513
 msgid "Are you sure you want to open all files?"
 msgstr "Jste si jisti, že chcete otevřít všechny soubory?"
 
-#: src/file-manager/fm-directory-view.c:511 src/nautilus-location-bar.c:158
+#: src/file-manager/fm-directory-view.c:514 src/nautilus-location-bar.c:158
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
@@ -3294,12 +3296,12 @@ msgstr[0] "Toto otevře %d samostatné okno."
 msgstr[1] "Toto otevře %d samostatná okna."
 msgstr[2] "Toto otevře %d samostatných oken."
 
-#: src/file-manager/fm-directory-view.c:812
+#: src/file-manager/fm-directory-view.c:815
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Jste si jisti, že chcete natrvalo odstranit \"%s\"?"
 
-#: src/file-manager/fm-directory-view.c:816
+#: src/file-manager/fm-directory-view.c:819
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
@@ -3308,28 +3310,28 @@ msgstr[0] "Jste si jisti, že chcete natrvalo odstranit vybranou %d položku?"
 msgstr[1] "Jste si jisti, že chcete natrvalo odstranit vybrané %d položky?"
 msgstr[2] "Jste si jisti, že chcete natrvalo odstranit vybraných %d položek?"
 
-#: src/file-manager/fm-directory-view.c:824
+#: src/file-manager/fm-directory-view.c:827
 msgid "If you delete an item, it is permanently lost."
 msgstr "Pokud odstraníte položku, bude natrvalo ztracena."
 
-#: src/file-manager/fm-directory-view.c:825
+#: src/file-manager/fm-directory-view.c:828
 msgid "Delete?"
 msgstr "Odstranit?"
 
-#: src/file-manager/fm-directory-view.c:976
+#: src/file-manager/fm-directory-view.c:979
 msgid "Select Pattern"
 msgstr "Zvolte vzorek"
 
-#: src/file-manager/fm-directory-view.c:992
+#: src/file-manager/fm-directory-view.c:995
 msgid "_Pattern:"
 msgstr "_Vzorek:"
 
-#: src/file-manager/fm-directory-view.c:1790
+#: src/file-manager/fm-directory-view.c:1793
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" vybrán"
 
-#: src/file-manager/fm-directory-view.c:1792
+#: src/file-manager/fm-directory-view.c:1795
 #, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
@@ -3337,7 +3339,7 @@ msgstr[0] "Vybrán %d adresář"
 msgstr[1] "Vybrány %d adresáře"
 msgstr[2] "Vybráno %d adresářů"
 
-#: src/file-manager/fm-directory-view.c:1802
+#: src/file-manager/fm-directory-view.c:1805
 #, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -3346,7 +3348,7 @@ msgstr[1] " (obsahuje %d položky)"
 msgstr[2] " (obsahuje %d položek)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:1813
+#: src/file-manager/fm-directory-view.c:1816
 #, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
@@ -3354,12 +3356,12 @@ msgstr[0] " (obsahují celkem %d položku)"
 msgstr[1] " (obsahují celkem %d položky)"
 msgstr[2] " (obsahují celkem %d položek)"
 
-#: src/file-manager/fm-directory-view.c:1829
+#: src/file-manager/fm-directory-view.c:1832
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" vybrán (%s)"
 
-#: src/file-manager/fm-directory-view.c:1833
+#: src/file-manager/fm-directory-view.c:1836
 #, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -3368,7 +3370,7 @@ msgstr[1] "Vybrány %d položky (%s)"
 msgstr[2] "Vybráno %d položek (%s)"
 
 #. Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:1841
+#: src/file-manager/fm-directory-view.c:1844
 #, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
@@ -3376,7 +3378,7 @@ msgstr[0] "vybrána %d jiná položka (%s)"
 msgstr[1] "vybrány %d jiné položky (%s)"
 msgstr[2] "vybráno %d jiných položek (%s)"
 
-#: src/file-manager/fm-directory-view.c:1862
+#: src/file-manager/fm-directory-view.c:1865
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, Volné místo: %s"
@@ -3388,7 +3390,7 @@ msgstr "%s, Volné místo: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1887
+#: src/file-manager/fm-directory-view.c:1890
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -3397,47 +3399,47 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1957
+#: src/file-manager/fm-directory-view.c:1960
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr "Adresář \"%s\" obsahuje více souborů, než může Nautilus zvládnout."
 
-#: src/file-manager/fm-directory-view.c:1963
+#: src/file-manager/fm-directory-view.c:1966
 msgid "Some files will not be displayed."
 msgstr "Některé soubory nebudou zobrazeny."
 
-#: src/file-manager/fm-directory-view.c:1964
+#: src/file-manager/fm-directory-view.c:1967
 msgid "Too Many Files"
 msgstr "Příliš mnoho souborů"
 
-#: src/file-manager/fm-directory-view.c:3123
+#: src/file-manager/fm-directory-view.c:3126
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "Nemohu přesunout soubor do koše, chcete jej odstranit ihned?"
 
-#: src/file-manager/fm-directory-view.c:3124
+#: src/file-manager/fm-directory-view.c:3127
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "Soubor \"%s\" nemůže být přesunut do koše."
 
-#: src/file-manager/fm-directory-view.c:3128
+#: src/file-manager/fm-directory-view.c:3131
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr "Nemohu přesunout položky do koše, Chcete je odstranit ihned?"
 
-#: src/file-manager/fm-directory-view.c:3131
+#: src/file-manager/fm-directory-view.c:3134
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr "Nemohu přesunout některé položky do koše, chcete je odstranit ihned?"
 
-#: src/file-manager/fm-directory-view.c:3138
+#: src/file-manager/fm-directory-view.c:3141
 msgid "Delete Immediately?"
 msgstr "Odstranit ihned?"
 
-#: src/file-manager/fm-directory-view.c:3170
+#: src/file-manager/fm-directory-view.c:3173
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Jste si jisti, že chcete z koše natrvalo odstranit \"%s\"?"
 
-#: src/file-manager/fm-directory-view.c:3174
+#: src/file-manager/fm-directory-view.c:3177
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -3452,56 +3454,56 @@ msgstr[1] ""
 msgstr[2] ""
 "Jste si jisti, že chcete z koše natrvalo odstranit %d vybraných položek?"
 
-#: src/file-manager/fm-directory-view.c:3183
+#: src/file-manager/fm-directory-view.c:3186
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Pokud odstraníte položku, bude natrvalo ztracena."
 
-#: src/file-manager/fm-directory-view.c:3184
+#: src/file-manager/fm-directory-view.c:3187
 msgid "Delete From Trash?"
 msgstr "Odstranit z koše?"
 
-#: src/file-manager/fm-directory-view.c:3668
+#: src/file-manager/fm-directory-view.c:3671
 #, c-format
 msgid "Open with \"%s\""
 msgstr "Otevřít s \"%s\""
 
-#: src/file-manager/fm-directory-view.c:3669
+#: src/file-manager/fm-directory-view.c:3672
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Použít \"%s\" k otevření vybrané položky"
 
-#: src/file-manager/fm-directory-view.c:3758
+#: src/file-manager/fm-directory-view.c:3761
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Chcete spustit \"%s\" nebo zobrazit jeho obsah?"
 
-#: src/file-manager/fm-directory-view.c:3760
+#: src/file-manager/fm-directory-view.c:3763
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" je spustitelný textový soubor."
 
-#: src/file-manager/fm-directory-view.c:3766
+#: src/file-manager/fm-directory-view.c:3769
 msgid "Run or Display?"
 msgstr "Spustit nebo zobrazit?"
 
-#: src/file-manager/fm-directory-view.c:3767
+#: src/file-manager/fm-directory-view.c:3770
 msgid "Run in _Terminal"
 msgstr "Spustit v _terminálu"
 
-#: src/file-manager/fm-directory-view.c:3768
+#: src/file-manager/fm-directory-view.c:3771
 msgid "_Display"
 msgstr "_Zobrazit"
 
-#: src/file-manager/fm-directory-view.c:3771
+#: src/file-manager/fm-directory-view.c:3774
 msgid "_Run"
 msgstr "_Spustit"
 
-#: src/file-manager/fm-directory-view.c:4155
+#: src/file-manager/fm-directory-view.c:4158
 #, c-format
 msgid "Cannot open %s"
 msgstr "Nemohu otevřít %s"
 
-#: src/file-manager/fm-directory-view.c:4158
+#: src/file-manager/fm-directory-view.c:4161
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -3522,33 +3524,33 @@ msgstr ""
 "aby používal správnou příponu pro \"%s\", a pak jej normálně otevřete. Nebo "
 "můžete pomocí menu Otevřít s zvolit pro daný soubor konkrétní aplikaci. "
 
-#: src/file-manager/fm-directory-view.c:4579
+#: src/file-manager/fm-directory-view.c:4582
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Spustit \"%s\" na vybraných souborech"
 
-#: src/file-manager/fm-directory-view.c:4828
+#: src/file-manager/fm-directory-view.c:4831
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Vytvořit dokument ze šablony \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5034
+#: src/file-manager/fm-directory-view.c:5037
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "Všechny spustitelné soubory z tohoto adresáře se objeví v menu skriptů."
 
-#: src/file-manager/fm-directory-view.c:5036
+#: src/file-manager/fm-directory-view.c:5039
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr ""
 "Výběr skriptu z tohoto menu skript spustí s vybranými položkami jako vstup."
 
-#: src/file-manager/fm-directory-view.c:5038
+#: src/file-manager/fm-directory-view.c:5041
 msgid "About Scripts"
 msgstr "O skriptech"
 
-#: src/file-manager/fm-directory-view.c:5039
+#: src/file-manager/fm-directory-view.c:5042
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3588,19 +3590,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: pozice a velikost aktuálního okna"
 
-#: src/file-manager/fm-directory-view.c:5202
+#: src/file-manager/fm-directory-view.c:5205
 #: src/file-manager/fm-tree-view.c:895
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" bude přesunut, pokud vyberete příkaz Vložit soubory"
 
-#: src/file-manager/fm-directory-view.c:5206
+#: src/file-manager/fm-directory-view.c:5209
 #: src/file-manager/fm-tree-view.c:899
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" bude zkopírován, pokud vyberete příkaz Vložit soubory"
 
-#: src/file-manager/fm-directory-view.c:5213
+#: src/file-manager/fm-directory-view.c:5216
 #, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -3613,7 +3615,7 @@ msgstr[1] ""
 msgstr[2] ""
 "%d vybraných položek bude přesunuto, pokud vyberete příkaz Vložit soubory"
 
-#: src/file-manager/fm-directory-view.c:5220
+#: src/file-manager/fm-directory-view.c:5223
 #, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -3626,175 +3628,175 @@ msgstr[1] ""
 msgstr[2] ""
 "%d vybraných položek bude zkopírováno, pokud vyberete příkaz Vložit soubory"
 
-#: src/file-manager/fm-directory-view.c:5301
+#: src/file-manager/fm-directory-view.c:5304
 #: src/file-manager/fm-tree-view.c:975
 msgid "There is nothing on the clipboard to paste."
 msgstr "Ve schránce není nic ke vložení"
 
-#: src/file-manager/fm-directory-view.c:5408
-#: src/file-manager/fm-directory-view.c:6723
+#: src/file-manager/fm-directory-view.c:5411
+#: src/file-manager/fm-directory-view.c:6766
 msgid "Mount Error"
 msgstr "Chyba při připojení"
 
-#: src/file-manager/fm-directory-view.c:5469
-#: src/file-manager/fm-tree-view.c:1057
-msgid "Eject Error"
-msgstr "Chyba při vysouvání"
-
-#: src/file-manager/fm-directory-view.c:5472
+#: src/file-manager/fm-directory-view.c:5468
 #: src/file-manager/fm-tree-view.c:1060
 msgid "Unmount Error"
 msgstr "Chyba při odpojení"
 
-#: src/file-manager/fm-directory-view.c:5594
+#: src/file-manager/fm-directory-view.c:5481
+#: src/file-manager/fm-tree-view.c:1057
+msgid "Eject Error"
+msgstr "Chyba při vysouvání"
+
+#: src/file-manager/fm-directory-view.c:5630
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Připojit se k serveru %s"
 
-#: src/file-manager/fm-directory-view.c:5599
+#: src/file-manager/fm-directory-view.c:5635
 msgid "_Connect"
 msgstr "_Připojit"
 
-#: src/file-manager/fm-directory-view.c:5613
+#: src/file-manager/fm-directory-view.c:5649
 msgid "Link _name:"
 msgstr "_Název odkazu:"
 
-#: src/file-manager/fm-directory-view.c:5691
+#: src/file-manager/fm-directory-view.c:5727
 msgid "Create _Document"
 msgstr "Vytvořit _dokument"
 
 #. name, stock id, label
-#: src/file-manager/fm-directory-view.c:5692
+#: src/file-manager/fm-directory-view.c:5728
 msgid "Open Wit_h"
 msgstr "Otevřít _s"
 
 #. name, stock id, label
-#: src/file-manager/fm-directory-view.c:5693
+#: src/file-manager/fm-directory-view.c:5729
 msgid "Choose a program with which to open the selected item"
 msgstr "Vyberte program, se kterým otevřít vybranou položku"
 
-#: src/file-manager/fm-directory-view.c:5694
+#: src/file-manager/fm-directory-view.c:5730
 msgid "_Scripts"
 msgstr "_Skripty"
 
 #. name, stock id, label
-#: src/file-manager/fm-directory-view.c:5695
+#: src/file-manager/fm-directory-view.c:5731
 msgid "Run or manage scripts from ~/.gnome2/nautilus-scripts"
 msgstr "Spustit nebo spravovat skripty z ~/gnome2/nautilus-scripts"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5697
+#: src/file-manager/fm-directory-view.c:5733
 msgid "_Properties"
 msgstr "_Vlastnosti"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5698
+#: src/file-manager/fm-directory-view.c:5734
 msgid "View or modify the properties of each selected item"
 msgstr "Prohlížet nebo modifikovat vlastnosti každé vybrané položky"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5705
+#: src/file-manager/fm-directory-view.c:5741
 msgid "Create _Folder"
 msgstr "Vytvořit _adresář"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5706
+#: src/file-manager/fm-directory-view.c:5742
 msgid "Create a new empty folder inside this folder"
 msgstr "Vytvořit nový prázdný adresář uvnitř tohoto adresáře"
 
-#: src/file-manager/fm-directory-view.c:5708
+#: src/file-manager/fm-directory-view.c:5744
 msgid "No templates Installed"
 msgstr "Nenainstalovány žádné šablony"
 
 #. name, stock id, label
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5710
+#: src/file-manager/fm-directory-view.c:5746
 msgid "_Empty File"
 msgstr "_Prázdný soubor"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5711
+#: src/file-manager/fm-directory-view.c:5747
 msgid "Create a new empty file inside this folder"
 msgstr "Vytvořit nový prázdný soubor uvnitř tohoto adresáře"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5718
-#: src/file-manager/fm-directory-view.c:6187
+#: src/file-manager/fm-directory-view.c:5754
+#: src/file-manager/fm-directory-view.c:6230
 msgid "_Open"
 msgstr "_Otevřít"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5719
+#: src/file-manager/fm-directory-view.c:5755
 msgid "Open the selected item in this window"
 msgstr "Otevřít vybranou položku v tomto okně"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5726
+#: src/file-manager/fm-directory-view.c:5762
 msgid "Open in Navigation Window"
 msgstr "Otevřít v navigačním okně"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5727
+#: src/file-manager/fm-directory-view.c:5763
 msgid "Open each selected item in a navigation window"
 msgstr "Otevřít každou vybranou položku v navigačním okně"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5730
-#: src/file-manager/fm-directory-view.c:5734
+#: src/file-manager/fm-directory-view.c:5766
+#: src/file-manager/fm-directory-view.c:5770
 msgid "Open with Other _Application..."
 msgstr "Otevřít jinou _aplikací..."
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5731
-#: src/file-manager/fm-directory-view.c:5735
+#: src/file-manager/fm-directory-view.c:5767
+#: src/file-manager/fm-directory-view.c:5771
 msgid "Choose another application with which to open the selected item"
 msgstr "Vyberte jinou aplikaci, se kterou otevřít vybranou položku"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5738
+#: src/file-manager/fm-directory-view.c:5774
 msgid "_Open Scripts Folder"
 msgstr "_Otevřít adresář skriptů"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5739
+#: src/file-manager/fm-directory-view.c:5775
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Zobrazit adresář, ve kterém jsou skripty z tohoto menu"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5742
-#: src/file-manager/fm-directory-view.c:6288
+#: src/file-manager/fm-directory-view.c:5778
+#: src/file-manager/fm-directory-view.c:6331
 msgid "_Empty Trash"
 msgstr "_Vyprázdnit koš"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5746
-#: src/file-manager/fm-directory-view.c:6302
+#: src/file-manager/fm-directory-view.c:5782
+#: src/file-manager/fm-directory-view.c:6345
 msgid "Cu_t Files"
 msgstr "_Vyjmout soubory"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5747
+#: src/file-manager/fm-directory-view.c:5783
 msgid "Prepare the selected files to be moved with a Paste Files command"
 msgstr "Připravit vybrané soubory k přesunutí příkazem Vložit soubory"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5750
-#: src/file-manager/fm-directory-view.c:6311
+#: src/file-manager/fm-directory-view.c:5786
+#: src/file-manager/fm-directory-view.c:6354
 msgid "_Copy Files"
 msgstr "_Kopírovat soubory"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5751
+#: src/file-manager/fm-directory-view.c:5787
 msgid "Prepare the selected files to be copied with a Paste Files command"
 msgstr "Připravit vybrané soubory ke kopírování příkazem Vložit soubory"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5754
+#: src/file-manager/fm-directory-view.c:5790
 msgid "_Paste Files"
 msgstr "Vl_ožit soubory"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5755
+#: src/file-manager/fm-directory-view.c:5791
 msgid ""
 "Move or copy files previously selected by a Cut Files or Copy Files command"
 msgstr ""
@@ -3804,12 +3806,12 @@ msgstr ""
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5760
+#: src/file-manager/fm-directory-view.c:5796
 msgid "_Paste Files Into Folder"
 msgstr "Vl_ožit soubory do adresáře"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5761
+#: src/file-manager/fm-directory-view.c:5797
 msgid ""
 "Move or copy files previously selected by a Cut Files or Copy Files command "
 "into the selected folder"
@@ -3818,163 +3820,167 @@ msgstr ""
 "nebo Kopírovat soubory do vybraného adresáře"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5764
+#: src/file-manager/fm-directory-view.c:5800
 msgid "Select _All Files"
 msgstr "Vybr_at všechny soubory"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5765
+#: src/file-manager/fm-directory-view.c:5801
 msgid "Select all items in this window"
 msgstr "Vybrat všechny položky v tomto okně"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5768
+#: src/file-manager/fm-directory-view.c:5804
 msgid "Select _Pattern"
 msgstr "Zvolit _vzorek"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5769
+#: src/file-manager/fm-directory-view.c:5805
 msgid "Select items in this window matching a given pattern"
 msgstr "Vybrat položky v tomto okně odpovídající zadanému vzorku"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5772
+#: src/file-manager/fm-directory-view.c:5808
 msgid "D_uplicate"
 msgstr "D_uplikovat"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5773
+#: src/file-manager/fm-directory-view.c:5809
 msgid "Duplicate each selected item"
 msgstr "Duplikovat každou vybranou položku"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5776
-#: src/file-manager/fm-directory-view.c:6271
+#: src/file-manager/fm-directory-view.c:5812
+#: src/file-manager/fm-directory-view.c:6314
 msgid "Ma_ke Link"
 msgstr "V_ytvořit odkaz"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5777
+#: src/file-manager/fm-directory-view.c:5813
 msgid "Create a symbolic link for each selected item"
 msgstr "Vytvořit symbolický odkaz na každou vybranou položku"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5780
+#: src/file-manager/fm-directory-view.c:5816
 msgid "_Rename..."
 msgstr "_Přejmenovat..."
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5781
+#: src/file-manager/fm-directory-view.c:5817
 msgid "Rename selected item"
 msgstr "Přejmenovat vybranou položku"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5784
-#: src/file-manager/fm-directory-view.c:6230
-#: src/file-manager/fm-directory-view.c:6555
+#: src/file-manager/fm-directory-view.c:5820
+#: src/file-manager/fm-directory-view.c:6273
+#: src/file-manager/fm-directory-view.c:6598
 msgid "Mo_ve to Trash"
 msgstr "Pře_sunout do koše"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5785
-#: src/file-manager/fm-directory-view.c:6231
+#: src/file-manager/fm-directory-view.c:5821
+#: src/file-manager/fm-directory-view.c:6274
 msgid "Move each selected item to the Trash"
 msgstr "Přesunout všechny vybrané položky do koše"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5788
-#: src/file-manager/fm-directory-view.c:6249
+#: src/file-manager/fm-directory-view.c:5824
+#: src/file-manager/fm-directory-view.c:6292
 msgid "_Delete"
 msgstr "_Odstranit"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5789
+#: src/file-manager/fm-directory-view.c:5825
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Odstranit každou vybranou položku bez přesunu do koše"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5792
+#: src/file-manager/fm-directory-view.c:5828
 msgid "Reset View to _Defaults"
 msgstr "Obnovit pohled na _implicitní"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5793
+#: src/file-manager/fm-directory-view.c:5829
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 "Obnovit pořadí třídění a úroveň zvětšení podle nastavení pro tento pohled"
 
 #. name, stock id
 #. add the reset background item, possibly disabled
-#: src/file-manager/fm-directory-view.c:5796
+#: src/file-manager/fm-directory-view.c:5832
 #: src/nautilus-information-panel.c:397
 msgid "Use _Default Background"
 msgstr "Použít _implicitní pozadí"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5797
+#: src/file-manager/fm-directory-view.c:5833
 msgid "Use the default background for this location"
 msgstr "Použít implicitní pozadí pro toto umístění"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5800
+#: src/file-manager/fm-directory-view.c:5836
 msgid "Connect To This Server"
 msgstr "Připojit se k tomuto serveru"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5801
+#: src/file-manager/fm-directory-view.c:5837
 msgid "Make a permanent connection to this server"
 msgstr "Vytvořit trvalé spojení k tomuto serveru"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5804
+#: src/file-manager/fm-directory-view.c:5840
 msgid "_Mount Volume"
 msgstr "_Připojit svazek"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5805
+#: src/file-manager/fm-directory-view.c:5841
 msgid "Mount the selected volume"
 msgstr "Připojit vybraný svazek"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5808
-#: src/file-manager/fm-directory-view.c:6045
+#: src/file-manager/fm-directory-view.c:5844
 #: src/file-manager/fm-tree-view.c:745
 msgid "_Unmount Volume"
 msgstr "_Odpojit svazek"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5809
+#: src/file-manager/fm-directory-view.c:5845
 msgid "Unmount the selected volume"
 msgstr "Odpojit vybraný svazek"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5812
+#: src/file-manager/fm-directory-view.c:5848
+msgid "_Eject"
+msgstr "V_ysunout"
+
+#. label, accelerator
+#: src/file-manager/fm-directory-view.c:5849
+msgid "Eject the selected volume"
+msgstr "Vysounout vybraný svazek"
+
+#. name, stock id
+#: src/file-manager/fm-directory-view.c:5852
 msgid "Open File and Close window"
 msgstr "Otevřít soubor a zavřít okno"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5819
+#: src/file-manager/fm-directory-view.c:5859
 msgid "Show _Hidden Files"
 msgstr "Zobrazovat _skryté soubory"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5820
+#: src/file-manager/fm-directory-view.c:5860
 msgid "Toggles the display of hidden files in the current window"
 msgstr "Přepne zobrazování skrytých souborů v aktuálním okně"
 
-#: src/file-manager/fm-directory-view.c:6045
-#: src/file-manager/fm-tree-view.c:745
-msgid "E_ject"
-msgstr "V_ysunout"
-
-#: src/file-manager/fm-directory-view.c:6176
+#: src/file-manager/fm-directory-view.c:6219
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_Otevřít s \"%s\""
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:6196
-#: src/file-manager/fm-directory-view.c:6198
+#: src/file-manager/fm-directory-view.c:6239
+#: src/file-manager/fm-directory-view.c:6241
 #: src/file-manager/fm-tree-view.c:1110
 #, c-format
 msgid "Open in New Window"
@@ -3983,59 +3989,97 @@ msgstr[0] "Otevřít v novém okně"
 msgstr[1] "Otevřít v %d nových oknech"
 msgstr[2] "Otevřít v %d nových oknech"
 
-#: src/file-manager/fm-directory-view.c:6205
+#: src/file-manager/fm-directory-view.c:6248
 msgid "Browse Folder"
 msgstr "Procházet adresář"
 
-#: src/file-manager/fm-directory-view.c:6207
+#: src/file-manager/fm-directory-view.c:6250
 msgid "Browse Folders"
 msgstr "Procházet adresáře"
 
-#: src/file-manager/fm-directory-view.c:6226
+#: src/file-manager/fm-directory-view.c:6269
 msgid "_Delete from Trash"
 msgstr "Odstranit z _koše"
 
-#: src/file-manager/fm-directory-view.c:6227
+#: src/file-manager/fm-directory-view.c:6270
 msgid "Delete all selected items permanently"
 msgstr "Natrvalo odstranit všechny vybrané položky"
 
-#: src/file-manager/fm-directory-view.c:6270
+#: src/file-manager/fm-directory-view.c:6313
 msgid "Ma_ke Links"
 msgstr "V_ytvořit odkazy"
 
-#: src/file-manager/fm-directory-view.c:6301
+#: src/file-manager/fm-directory-view.c:6344
 msgid "Cu_t File"
 msgstr "_Vyjmout soubor"
 
-#: src/file-manager/fm-directory-view.c:6310
+#: src/file-manager/fm-directory-view.c:6353
 msgid "_Copy File"
 msgstr "_Kopírovat soubor"
 
-#: src/file-manager/fm-directory-view.c:6546
+#: src/file-manager/fm-directory-view.c:6589
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "Tento odkaz je přerušen, chcete jej přesunout do koše?"
 
-#: src/file-manager/fm-directory-view.c:6548
+#: src/file-manager/fm-directory-view.c:6591
 msgid "This link can't be used, because it has no target."
 msgstr "Tento odkaz nelze použít, protože nemá cíl."
 
-#: src/file-manager/fm-directory-view.c:6550
+#: src/file-manager/fm-directory-view.c:6593
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "Tento odkaz nelze použít, protože jeho cíl \"%s\" neexistuje."
 
-#: src/file-manager/fm-directory-view.c:6555
+#: src/file-manager/fm-directory-view.c:6598
 msgid "Broken Link"
 msgstr "Neplatný odkaz"
 
-#: src/file-manager/fm-directory-view.c:6859
+#: src/file-manager/fm-directory-view.c:6902
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Otevírám \"%s\"."
 
-#: src/file-manager/fm-directory-view.c:6866
+#: src/file-manager/fm-directory-view.c:6909
 msgid "Cancel Open?"
 msgstr "Zrušit otevření?"
+
+#: src/file-manager/fm-directory-view.c:7783
+msgid "Download location?"
+msgstr "Umístění stahování?"
+
+#: src/file-manager/fm-directory-view.c:7784
+msgid "You can download it or make a link to it."
+msgstr "Můžete jej stáhnout nebo na něj vytvořit odkaz."
+
+#. as per HIG
+#: src/file-manager/fm-directory-view.c:7786
+msgid "Make a _Link"
+msgstr "Vytvořit _odkaz"
+
+#: src/file-manager/fm-directory-view.c:7788
+msgid "_Download"
+msgstr "_Stáhnout"
+
+#: src/file-manager/fm-directory-view.c:7836
+#: src/file-manager/fm-directory-view.c:7858
+#: src/file-manager/fm-directory-view.c:7972
+msgid "Drag and drop is not supported."
+msgstr "Přetažení objektů není podporováno."
+
+#: src/file-manager/fm-directory-view.c:7837
+msgid "Drag and drop is only supported on local file systems."
+msgstr "Přetažení objektů je podporováno jen na místních systémech souborů."
+
+#: src/file-manager/fm-directory-view.c:7838
+#: src/file-manager/fm-directory-view.c:7860
+#: src/file-manager/fm-directory-view.c:7974
+msgid "Drag and Drop Error"
+msgstr "Chyba přetažení objektů"
+
+#: src/file-manager/fm-directory-view.c:7859
+#: src/file-manager/fm-directory-view.c:7973
+msgid "An invalid drag type was used."
+msgstr "Byl použit neplatný typ přetažení."
 
 #: src/file-manager/fm-ditem-page.c:337 src/file-manager/fm-ditem-page.c:348
 msgid "Comment"
@@ -4205,43 +4249,43 @@ msgstr "Přejmenovávám \"%s\" na \"%s\"."
 msgid "Cancel Rename?"
 msgstr "Zrušit přejmenování?"
 
-#: src/file-manager/fm-icon-view.c:133
+#: src/file-manager/fm-icon-view.c:134
 msgid "by _Name"
 msgstr "dle _názvu"
 
-#: src/file-manager/fm-icon-view.c:134 src/file-manager/fm-icon-view.c:1431
+#: src/file-manager/fm-icon-view.c:135 src/file-manager/fm-icon-view.c:1431
 msgid "Keep icons sorted by name in rows"
 msgstr "Udržovat ikony seřazené podle názvu v řádkách"
 
-#: src/file-manager/fm-icon-view.c:140
+#: src/file-manager/fm-icon-view.c:141
 msgid "by _Size"
 msgstr "dle _velikosti"
 
-#: src/file-manager/fm-icon-view.c:141 src/file-manager/fm-icon-view.c:1435
+#: src/file-manager/fm-icon-view.c:142 src/file-manager/fm-icon-view.c:1435
 msgid "Keep icons sorted by size in rows"
 msgstr "Udržovat ikony seřazené podle velikosti v řádkách"
 
-#: src/file-manager/fm-icon-view.c:147
+#: src/file-manager/fm-icon-view.c:148
 msgid "by _Type"
 msgstr "dle _typu"
 
-#: src/file-manager/fm-icon-view.c:148 src/file-manager/fm-icon-view.c:1439
+#: src/file-manager/fm-icon-view.c:149 src/file-manager/fm-icon-view.c:1439
 msgid "Keep icons sorted by type in rows"
 msgstr "Udržovat ikony seřazené podle typu v řádkách"
 
-#: src/file-manager/fm-icon-view.c:154
+#: src/file-manager/fm-icon-view.c:155
 msgid "by Modification _Date"
 msgstr "dle _data změny"
 
-#: src/file-manager/fm-icon-view.c:155 src/file-manager/fm-icon-view.c:1443
+#: src/file-manager/fm-icon-view.c:156 src/file-manager/fm-icon-view.c:1443
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Udržovat ikony seřazené podle data změny v řádkách"
 
-#: src/file-manager/fm-icon-view.c:161
+#: src/file-manager/fm-icon-view.c:162
 msgid "by _Emblems"
 msgstr "dle _emblémů"
 
-#: src/file-manager/fm-icon-view.c:162 src/file-manager/fm-icon-view.c:1447
+#: src/file-manager/fm-icon-view.c:163 src/file-manager/fm-icon-view.c:1447
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Udržovat ikony seřazené podle emblémů v řádkách"
 
@@ -4275,10 +4319,9 @@ msgstr "Obnovit původní velikost všech vybraných ikon"
 msgid "Clean _Up by Name"
 msgstr "Vyčistit podle názv_u"
 
-# FIXME: "avoaction"?
 #. label, accelerator
 #: src/file-manager/fm-icon-view.c:1402
-msgid "Reposition icons to better fit in the window and avoaction overlapping"
+msgid "Reposition icons to better fit in the window and avoid overlapping"
 msgstr "Přemístit ikony, aby se lépe vešly do okna a nepřekrývaly se"
 
 #. name, stock id
@@ -4348,46 +4391,30 @@ msgstr "Obnovit původní _velikost ikony"
 msgid "pointing at \"%s\""
 msgstr "ukazující na \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2492 src/file-manager/fm-icon-view.c:2516
-msgid "Drag and drop is not supported."
-msgstr "Přetažení objektů není podporováno."
-
-#: src/file-manager/fm-icon-view.c:2493
-msgid "Drag and drop is only supported on local file systems."
-msgstr "Přetažení objektů je podporováno jen na místních systémech souborů."
-
-#: src/file-manager/fm-icon-view.c:2494 src/file-manager/fm-icon-view.c:2518
-msgid "Drag and Drop Error"
-msgstr "Chyba přetažení objektů"
-
-#: src/file-manager/fm-icon-view.c:2517
-msgid "An invalid drag type was used."
-msgstr "Byl použit neplatný typ přetažení."
-
-#: src/file-manager/fm-icon-view.c:2842
+#: src/file-manager/fm-icon-view.c:2674
 msgid "_Icons"
 msgstr "_Ikony"
 
-#: src/file-manager/fm-list-view.c:1571
+#: src/file-manager/fm-list-view.c:1593
 #, c-format
 msgid "%s Visible Columns"
 msgstr "Viditelné sloupce %s"
 
-#: src/file-manager/fm-list-view.c:1590
+#: src/file-manager/fm-list-view.c:1612
 msgid "Choose the order of information to appear in this folder."
 msgstr "Zvolte pořadí informací, které se objeví v tomto adresáři."
 
 #. name, stock id
-#: src/file-manager/fm-list-view.c:1632
+#: src/file-manager/fm-list-view.c:1654
 msgid "Visible _Columns..."
 msgstr "Viditelné _sloupce..."
 
 #. label, accelerator
-#: src/file-manager/fm-list-view.c:1633
+#: src/file-manager/fm-list-view.c:1655
 msgid "Select the columns visible in this folder"
 msgstr "Vyberte sloupce viditelné v tomto adresáři"
 
-#: src/file-manager/fm-list-view.c:2280
+#: src/file-manager/fm-list-view.c:2302
 msgid "_List"
 msgstr "_Seznam"
 
@@ -4678,6 +4705,10 @@ msgstr "(Prázdné)"
 msgid "Loading..."
 msgstr "Načítám..."
 
+#: src/file-manager/fm-tree-view.c:745
+msgid "E_ject"
+msgstr "V_ysunout"
+
 #: src/file-manager/fm-tree-view.c:1099
 msgid "Open"
 msgstr "Otevřít"
@@ -4868,7 +4899,7 @@ msgstr ""
 
 #: src/nautilus-bookmarks-window.c:154
 #: src/nautilus-file-management-properties.c:229
-#: src/nautilus-property-browser.c:1446 src/nautilus-window-menus.c:484
+#: src/nautilus-property-browser.c:1446 src/nautilus-window-menus.c:474
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -4897,97 +4928,97 @@ msgstr "<b>_Název</b>"
 msgid "Edit Bookmarks"
 msgstr "Upravit záložky"
 
-#: src/nautilus-connect-server-dialog.c:140
-#: src/nautilus-connect-server-dialog.c:155
+#: src/nautilus-connect-server-dialog.c:143
+#: src/nautilus-connect-server-dialog.c:158
 msgid "Can't Connect to Server"
 msgstr "Nemohu se připojit k serveru"
 
-#: src/nautilus-connect-server-dialog.c:153
+#: src/nautilus-connect-server-dialog.c:156
 msgid "You must enter a name for the server."
 msgstr "Musíte zadat název serveru."
 
-#: src/nautilus-connect-server-dialog.c:154
+#: src/nautilus-connect-server-dialog.c:157
 msgid "Please enter a name and try again."
 msgstr "Zadejte prosím název a zkuste to znovu."
 
-#: src/nautilus-connect-server-dialog.c:266 src/nautilus-window.c:990
+#: src/nautilus-connect-server-dialog.c:269 src/nautilus-window.c:959
 #, c-format
 msgid "%s on %s"
 msgstr "%s na %s"
 
-#: src/nautilus-connect-server-dialog.c:394
+#: src/nautilus-connect-server-dialog.c:388
 msgid "_Location (URI):"
 msgstr "_Umístění (URI):"
 
-#: src/nautilus-connect-server-dialog.c:438
+#: src/nautilus-connect-server-dialog.c:432
 msgid "_Server:"
 msgstr "_Server:"
 
-#: src/nautilus-connect-server-dialog.c:457
+#: src/nautilus-connect-server-dialog.c:451
 msgid "Optional information:"
 msgstr "Nepovinné informace:"
 
-#: src/nautilus-connect-server-dialog.c:469
+#: src/nautilus-connect-server-dialog.c:463
 msgid "_Share:"
 msgstr "_Sdílený svazek:"
 
-#: src/nautilus-connect-server-dialog.c:490
+#: src/nautilus-connect-server-dialog.c:484
 msgid "_Port:"
 msgstr "_Port:"
 
-#: src/nautilus-connect-server-dialog.c:510
+#: src/nautilus-connect-server-dialog.c:504
 msgid "_Folder:"
 msgstr "_Adresář:"
 
-#: src/nautilus-connect-server-dialog.c:530
+#: src/nautilus-connect-server-dialog.c:524
 msgid "_User Name:"
 msgstr "_Jméno uživatele:"
 
-#: src/nautilus-connect-server-dialog.c:553
+#: src/nautilus-connect-server-dialog.c:547
 msgid "_Name to use for connection:"
 msgstr "_Název, který pro spojení používat:"
 
-#: src/nautilus-connect-server-dialog.c:611
+#: src/nautilus-connect-server-dialog.c:605
 msgid "Connect to Server"
 msgstr "Připojit se k serveru"
 
-#: src/nautilus-connect-server-dialog.c:628
+#: src/nautilus-connect-server-dialog.c:622
 msgid "Service _type:"
 msgstr "_Typ služby:"
 
-#: src/nautilus-connect-server-dialog.c:637
+#: src/nautilus-connect-server-dialog.c:631
 msgid "SSH"
 msgstr "SSH"
 
-#: src/nautilus-connect-server-dialog.c:639
+#: src/nautilus-connect-server-dialog.c:633
 msgid "Public FTP"
 msgstr "Veřejné FTP"
 
-#: src/nautilus-connect-server-dialog.c:641
+#: src/nautilus-connect-server-dialog.c:635
 msgid "FTP (with login)"
 msgstr "FTP (s přihlášením)"
 
-#: src/nautilus-connect-server-dialog.c:643
+#: src/nautilus-connect-server-dialog.c:637
 msgid "Windows share"
 msgstr "Sdílený svazek Windows"
 
-#: src/nautilus-connect-server-dialog.c:645
+#: src/nautilus-connect-server-dialog.c:639
 msgid "WebDAV (HTTP)"
 msgstr "WebDAV (HTTP)"
 
-#: src/nautilus-connect-server-dialog.c:647
+#: src/nautilus-connect-server-dialog.c:641
 msgid "Secure WebDAV (HTTPS)"
 msgstr "Zabezpečené WebDAV (HTTP)"
 
-#: src/nautilus-connect-server-dialog.c:649
+#: src/nautilus-connect-server-dialog.c:643
 msgid "Custom Location"
 msgstr "Vlastní umístění"
 
-#: src/nautilus-connect-server-dialog.c:699
+#: src/nautilus-connect-server-dialog.c:693
 msgid "Browse _Network"
 msgstr "Procházet _síť"
 
-#: src/nautilus-connect-server-dialog.c:705
+#: src/nautilus-connect-server-dialog.c:699
 msgid "C_onnect"
 msgstr "_Připojit"
 
@@ -5505,62 +5536,62 @@ msgstr "Otevřít umístění"
 msgid "_Location:"
 msgstr "_Umístění:"
 
-#: src/nautilus-main.c:187
+#: src/nautilus-main.c:210
 msgid "Perform a quick set of self-check tests."
 msgstr "Provést rychlou sadu kontrol sebe sama."
 
-#: src/nautilus-main.c:190
+#: src/nautilus-main.c:213
 msgid "Create the initial window with the given geometry."
 msgstr "Vytvořit první okno se zadanou geometrií"
 
-#: src/nautilus-main.c:190
+#: src/nautilus-main.c:213
 msgid "GEOMETRY"
 msgstr "GEOMETRIE"
 
-#: src/nautilus-main.c:192
+#: src/nautilus-main.c:215
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Vytvořit jen okna pro výslovně zadaná URI."
 
-#: src/nautilus-main.c:194
+#: src/nautilus-main.c:217
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
 msgstr "Nespravovat pracovní plochy (ignorovat volbu v dialogu Nastavení)"
 
-#: src/nautilus-main.c:196
+#: src/nautilus-main.c:219
 msgid "open a browser window."
 msgstr "otevřít okno prohlížeče."
 
-#: src/nautilus-main.c:198
+#: src/nautilus-main.c:221
 msgid "Quit Nautilus."
 msgstr "Skončit Nautilus."
 
-#: src/nautilus-main.c:200
+#: src/nautilus-main.c:223
 msgid "Restart Nautilus."
 msgstr "Restartovat Nautilus."
 
-#: src/nautilus-main.c:233
+#: src/nautilus-main.c:256
 msgid "File Manager"
 msgstr "Správce souborů"
 
 #. Set initial window title
-#: src/nautilus-main.c:239 src/nautilus-spatial-window.c:330
-#: src/nautilus-window-menus.c:432 src/nautilus-window.c:178
+#: src/nautilus-main.c:262 src/nautilus-spatial-window.c:330
+#: src/nautilus-window-menus.c:417 src/nautilus-window.c:147
 msgid "Nautilus"
 msgstr "Nautilus"
 
 #. translators: %s is an option (e.g. --check)
-#: src/nautilus-main.c:259 src/nautilus-main.c:268 src/nautilus-main.c:273
+#: src/nautilus-main.c:285 src/nautilus-main.c:294 src/nautilus-main.c:299
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "nautilus: %s nemůže být použito s URI.\n"
 
-#: src/nautilus-main.c:264
+#: src/nautilus-main.c:290
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check nemůže být použito s jinými volbami.\n"
 
-#: src/nautilus-main.c:278
+#: src/nautilus-main.c:304
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry nemůže být použito s více než jedním URI.\n"
@@ -5646,8 +5677,8 @@ msgid "Specify a location to open"
 msgstr "Určete umístění, které otevřít"
 
 #: src/nautilus-navigation-window-menus.c:550
-msgid "_Clear History"
-msgstr "Vymazat _historii"
+msgid "Clea_r History"
+msgstr "Vy_mazat historii"
 
 #. name, stock id, label
 #: src/nautilus-navigation-window-menus.c:551
@@ -5720,15 +5751,15 @@ msgstr "_Vpřed"
 msgid "Go to the next visited location"
 msgstr "Jít na následující navštívené umístění"
 
-#: src/nautilus-navigation-window.c:613 src/nautilus-window.c:683
+#: src/nautilus-navigation-window.c:613 src/nautilus-window.c:652
 #, c-format
 msgid "View as %s"
 msgstr "Zobrazit jako %s"
 
 #: src/nautilus-navigation-window.c:689
 #, c-format
-msgid "File Browser: %s"
-msgstr "Prohlížeč souborů: %s"
+msgid "%s - File Browser"
+msgstr "%s - Prohlížeč souborů"
 
 #: src/nautilus-notes-viewer.c:388 src/nautilus-notes-viewer.c:495
 msgid "Notes"
@@ -6042,26 +6073,7 @@ msgstr "Vyberte prosím jiný prohlížeč a zkuste to znovu."
 msgid "Go to the location specified by this bookmark"
 msgstr "Jdi na umístění definované touto záložkou"
 
-#. Localize to deal with issues in the copyright
-#. * symbol characters -- do not translate the company
-#. * name, please.
-#.
-#: src/nautilus-window-menus.c:422
-msgid "Copyright (C) 1999-2001 Eazel, Inc."
-msgstr "Copyright © 1999-2001 Eazel, Inc."
-
-#. Translators should localize the following string
-#. * which will be displayed at the bottom of the about
-#. * box to give credit to the translator(s).
-#.
-#: src/nautilus-window-menus.c:429 src/nautilus-window-menus.c:430
-msgid "Translator Credits"
-msgstr ""
-"Do češtiny Nautilus přeložil Jirka\n"
-"Michal Bukovjan <bukm@centrum.cz>\n"
-"Miloslav Trmač <mitr@volny.cz>"
-
-#: src/nautilus-window-menus.c:435
+#: src/nautilus-window-menus.c:419
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
@@ -6069,41 +6081,60 @@ msgstr ""
 "Nautilus je grafické prostředí pro GNOME, které zjednodušuje správu vašich "
 "souborů a celého vašeho systému."
 
-#: src/nautilus-window-menus.c:572
+#: src/nautilus-window-menus.c:423
+msgid ""
+"Copyright © 2002-2005 Red Hat, Inc\n"
+"Copyright © 2002-2004 Novell, Inc\n"
+"Copyright © 1999-2001 Eazel, Inc.\n"
+"And all the other authors"
+msgstr ""
+"Copyright © 2002-2005 Red Hat, Inc\n"
+"Copyright © 2002-2004 Novell, Inc\n"
+"Copyright © 1999-2001 Eazel, Inc.\n"
+"A všichni ostatní autoři"
+
+#: src/nautilus-window-menus.c:429
+msgid "translator-credits"
+msgstr ""
+"Do češtiny Nautilus přeložil Jirka\n"
+"Michal Bukovjan <bukm@centrum.cz>\n"
+"Miloslav Trmač <mitr@volny.cz>"
+
+#: src/nautilus-window-menus.c:562
 msgid "_File"
 msgstr "_Soubor"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:573
+#: src/nautilus-window-menus.c:563
 msgid "_Edit"
 msgstr "_Upravit"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:574
+#: src/nautilus-window-menus.c:564
 msgid "_View"
 msgstr "_Zobrazit"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:575
+#: src/nautilus-window-menus.c:565
 msgid "_Help"
 msgstr "_Nápověda"
 
 #. name, stock id, label
 #. name, stock id
-#: src/nautilus-window-menus.c:577
+#: src/nautilus-window-menus.c:567
 msgid "_Close"
 msgstr "_Zavřít"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:578
+#: src/nautilus-window-menus.c:568
 msgid "Close this folder"
 msgstr "Zavřít tento adresář"
 
-#: src/nautilus-window-menus.c:581
+#: src/nautilus-window-menus.c:571
 msgid "_Backgrounds and Emblems..."
 msgstr "_Pozadí a emblémy..."
 
-#: src/nautilus-window-menus.c:582
+#: src/nautilus-window-menus.c:572
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
@@ -6111,166 +6142,166 @@ msgstr ""
 "Zobrazit vzorky, barvy a emblémy, které mohou být použity pro upravení "
 "vzhledu"
 
-#: src/nautilus-window-menus.c:585
+#: src/nautilus-window-menus.c:575
 msgid "Prefere_nces"
 msgstr "_Nastavení"
 
-#: src/nautilus-window-menus.c:586
+#: src/nautilus-window-menus.c:576
 msgid "Edit Nautilus preferences"
 msgstr "Upravit nastavení Nautilu"
 
-#: src/nautilus-window-menus.c:588
+#: src/nautilus-window-menus.c:578
 msgid "_Undo"
 msgstr "Akce _zpět"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:589
+#: src/nautilus-window-menus.c:579
 msgid "Undo the last text change"
 msgstr "Vrátit zpět poslední změnu textu"
 
-#: src/nautilus-window-menus.c:591
+#: src/nautilus-window-menus.c:581
 msgid "Open _Parent"
 msgstr "Otevřít _rodiče"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:592
+#: src/nautilus-window-menus.c:582
 msgid "Open the parent folder"
 msgstr "Otevřít rodičovský adresář"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:598
+#: src/nautilus-window-menus.c:588
 msgid "_Stop"
 msgstr "Za_stavit"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:602
+#: src/nautilus-window-menus.c:592
 msgid "_Reload"
 msgstr "_Obnovit"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:606
+#: src/nautilus-window-menus.c:596
 msgid "_Contents"
 msgstr "_Obsah"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:607
+#: src/nautilus-window-menus.c:597
 msgid "Display Nautilus help"
 msgstr "Zobrazit nápovědu Nautilu"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:610
+#: src/nautilus-window-menus.c:600
 msgid "_About"
 msgstr "O _aplikaci"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:611
+#: src/nautilus-window-menus.c:601
 msgid "Display credits for the creators of Nautilus"
 msgstr "Zobrazit kredity pro tvůrce Nautilu"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:614
+#: src/nautilus-window-menus.c:604
 msgid "Zoom _In"
 msgstr "Z_většit"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:615 src/nautilus-zoom-control.c:97
+#: src/nautilus-window-menus.c:605 src/nautilus-zoom-control.c:97
 msgid "Show the contents in more detail"
 msgstr "Zobrazovat obsah detailněji"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:618
+#: src/nautilus-window-menus.c:608
 msgid "Zoom _Out"
 msgstr "Z_menšit"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:619 src/nautilus-zoom-control.c:98
+#: src/nautilus-window-menus.c:609 src/nautilus-zoom-control.c:98
 msgid "Show the contents in less detail"
 msgstr "Zobrazovat obsah méně detailně"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:622
+#: src/nautilus-window-menus.c:612
 msgid "Normal Si_ze"
 msgstr "Normální _velikost"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:623
+#: src/nautilus-window-menus.c:613
 msgid "Show the contents at the normal size"
 msgstr "Zobrazovat obsah v normální velikosti"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:626
+#: src/nautilus-window-menus.c:616
 msgid "Connect to _Server..."
 msgstr "Připojit se k _serveru..."
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:627
+#: src/nautilus-window-menus.c:617
 msgid "Set up a connection to a network server"
 msgstr "Nastavit připojení k serveru v síti"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:630
+#: src/nautilus-window-menus.c:620
 msgid "_Home"
 msgstr "_Domů"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:631
+#: src/nautilus-window-menus.c:621
 msgid "Go to the home folder"
 msgstr "Jít do domovského adresáře"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:634
+#: src/nautilus-window-menus.c:624
 msgid "_Computer"
 msgstr "_Počítač"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:635
+#: src/nautilus-window-menus.c:625
 msgid "Go to the computer location"
 msgstr "Jít na umístění počítače"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:638
+#: src/nautilus-window-menus.c:628
 msgid "T_emplates"
 msgstr "_Šablony"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:639
+#: src/nautilus-window-menus.c:629
 msgid "Go to the templates folder"
 msgstr "Jít do adresáře šablon"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:642
+#: src/nautilus-window-menus.c:632
 msgid "_Trash"
 msgstr "_Koš"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:643
+#: src/nautilus-window-menus.c:633
 msgid "Go to the trash folder"
 msgstr "Jít do adresáře koše"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:646
-msgid "CD _Creator"
-msgstr "Tvůrce _CD"
+#: src/nautilus-window-menus.c:636
+msgid "CD/_DVD Creator"
+msgstr "Tvůrce CD/_DVD"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:647
+#: src/nautilus-window-menus.c:637
 msgid "Go to the CD/DVD Creator"
 msgstr "Jít do tvůrce CD/DVD"
 
-#: src/nautilus-window-menus.c:673
+#: src/nautilus-window-menus.c:663
 msgid "_Up"
 msgstr "_Nahoru"
 
-#: src/nautilus-window.c:684
+#: src/nautilus-window.c:653
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Zobrazit toto umístění s \"%s\""
 
-#: src/nautilus-window.c:1481
+#: src/nautilus-window.c:1450
 msgid "Application"
 msgstr "Aplikace"
 
-#: src/nautilus-window.c:1482
+#: src/nautilus-window.c:1451
 msgid "The NautilusApplication associated with this window."
 msgstr "NautilusApplication asociovaná s oknem"
 
@@ -6305,6 +6336,14 @@ msgstr "Síťové servery"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Zobrazit vaše síťové servery ve správci souborů Nautilus"
+
+#: src/nautilus-connect-server-dialog-main.c:66
+#, c-format
+msgid "Can't display location \"%s\""
+msgstr "Nemohu zobrazit umístění \"%s\""
+
+#~ msgid "CD _Creator"
+#~ msgstr "Tvůrce _CD"
 
 #~ msgid "Open with..."
 #~ msgstr "Otevřít s..."
