@@ -15,6 +15,8 @@ arlo_DATA =	\
 	decrement.png		\
 	decrement-i.png		\
 	emblem-nowrite.png	\
+	emblem-nowrite-72.png      \
+	emblem-nowrite-96.png	\
 	i-directory-aa.png	\
 	i-directory-72-aa.png	\
 	i-directory-96-aa.png	\
