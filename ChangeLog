@@ -1,3 +1,14 @@
+2000-08-04  Andy Hertzfeld  <andy@eazel.com>
+
+	made it default to using the anti-aliased canvas
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_register):
+	changed defaults for all 3 user levels to use the aa-canvas
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_update_anti_aliased_mode):
+	set the default to TRUE
+	
 Fri Aug 04 20:43:15 2000  George Lebl <jirka@5z.com>
 
 	* src/nautilus-window-manage-views.c (open_location): ignore

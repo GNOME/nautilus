@@ -666,9 +666,9 @@ global_preferences_register (void)
 	/* Appearance options */
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
 							   _("Use smoother (but slower) graphics"),
-							   FALSE,
-							   FALSE,
-							   FALSE);
+							   TRUE,
+							   TRUE,
+							   TRUE);
 
 	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_THEME,
 							  _("current theme"),

@@ -1746,7 +1746,7 @@ fm_icon_view_update_anti_aliased_mode (FMIconView *icon_view)
 	g_assert (icon_container != NULL);
 
 	anti_aliased_mode = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
-							      FALSE);
+							      TRUE);
 
 	nautilus_icon_container_set_anti_aliased_mode (icon_container, anti_aliased_mode);
 }
