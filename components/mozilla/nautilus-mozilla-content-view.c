@@ -884,7 +884,9 @@ static char *handled_by_nautilus[] =
 {
 	"ftp",
 	"eazel",
-	"eazel",
+	"eazel-install",
+	"eazel-pw",
+	"eazel-services",
 	"man",
 	"info",
 	"help"
