@@ -1,5 +1,10 @@
 2000-01-05  John Sullivan  <sullivan@eazel.com>
 
+	* src/nautilus-bookmarks-window.c: (create_bookmarks_window):
+	Remove horizontal scroll bar from list via set_policy.
+
+2000-01-05  John Sullivan  <sullivan@eazel.com>
+
 	* src/nautilus-bookmarks-menu.c: (nautilus_bookmarks_menu_fill):
 	Stopped using GNOMEUIINFO_ITEM_DATA macro, because it doesn't work
 	right (on some machines) when there's no pixmap for the item.

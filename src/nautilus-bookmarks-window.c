@@ -122,7 +122,7 @@ create_bookmarks_window(NautilusBookmarklist *list)
 	gtk_widget_ref (list_scroller);
 	gtk_widget_show (list_scroller);
 	gtk_box_pack_start (GTK_BOX (content_area), list_scroller, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (list_scroller), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (list_scroller), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
 	bookmark_list_widget = gtk_clist_new (1);
 	gtk_widget_ref (bookmark_list_widget);
