@@ -28,6 +28,8 @@
 #define BUILD_DATE "unknown"
 #endif
 
+#include <unistd.h>
+#include <sys/stat.h>
 #include <pwd.h>
 #include <sys/types.h>
 #include <sys/vfs.h>
@@ -36,7 +38,7 @@
 #include "installer.h"
 #include "support.h"
 #include "callbacks.h"
-#include <libtrilobite/helixcode-utils.h>
+#include <libtrilobite/trilobite-core-network.h>
 
 extern int installer_debug;
 extern int installer_spam;

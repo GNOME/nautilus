@@ -33,6 +33,7 @@
 #include <nautilus-druid.h>
 #include <nautilus-druid-page-eazel.h>
 #include "installer.h"
+#include "package-tree.h"
 
 /* pixmaps */
 #include "bootstrap-background.xpm"
@@ -44,10 +45,7 @@
 #define RGB_RED		0xFF0000
 #define FONT_TITLE	_("-adobe-helvetica-bold-r-normal-*-14-*-*-*-p-*-*-*,*-r-*")
 
-typedef struct _packageinfo PackageInfo;
-typedef struct _packagecustomizer PackageCustomizer;
 
-/* private */
 typedef enum {
         INSTALL_GROUP = 1,
         UPGRADE_GROUP,
@@ -55,7 +53,7 @@ typedef enum {
 } PackageGroup;
 
 /* item in package list */
-struct _packageinfo {
+typedef struct {
         PackageData *package;
         PackageCustomizer *table;
         GtkWidget *checkbox;
@@ -66,12 +64,11 @@ struct _packageinfo {
         gboolean show_bong;
         PackageGroup group;
         char *version;		/* upgraded or downgraded from */
-};
+} PackageInfo;
 
-struct _packagecustomizer {
+struct _PackageCustomizerPrivate {
         GList *packages;	/* GList<PackageInfo *> */
         GList *package_tree;	/* original package tree */
-        GtkWidget *druid_page;
         GtkWidget *hbox_install;
         GtkWidget *hbox_upgrade;
         GtkWidget *hbox_downgrade;
@@ -83,6 +80,112 @@ struct _packagecustomizer {
 };
 
 
+static GtkWidget *category_hbox_new (void);
+
+
+/**********   GTK object crap   **********/
+
+/* This is the parent class pointer */
+static GtkObjectClass *package_customizer_parent_class;
+
+static void
+package_customizer_finalize (GtkObject *object)
+{
+        PackageCustomizerPrivate *private;
+
+        g_return_if_fail (object != NULL);
+        g_return_if_fail (IS_PACKAGE_CUSTOMIZER (object));
+
+        private = PACKAGE_CUSTOMIZER (object)->private;
+
+        g_list_free (private->packages);
+
+        /* hbox's are owned by the top vbox, so that's all that needs to be dropped */
+        gtk_widget_unref (private->vbox);
+
+        g_free (private);
+        PACKAGE_CUSTOMIZER (object)->private = NULL;
+
+        if (GTK_OBJECT_CLASS (package_customizer_parent_class)->finalize) {
+                GTK_OBJECT_CLASS (package_customizer_parent_class)->finalize (object);
+        }
+        log_debug ("<= package customizer finalize");
+}
+
+void
+package_customizer_unref (GtkObject *object)
+{
+        g_return_if_fail (object != NULL);
+        g_return_if_fail (IS_PACKAGE_CUSTOMIZER (object));
+        gtk_object_unref (object);
+}
+
+static void
+package_customizer_class_initialize (PackageCustomizerClass *klass)
+{
+        GtkObjectClass *object_class;
+
+        object_class = (GtkObjectClass *)klass;
+
+        package_customizer_parent_class = gtk_type_class (gtk_object_get_type ());
+
+        object_class->finalize = package_customizer_finalize;
+}
+
+static void
+package_customizer_initialize (PackageCustomizer *object)
+{
+        g_assert (object != NULL);
+        g_assert (IS_PACKAGE_CUSTOMIZER (object));
+
+        log_debug ("=> package customizer create");
+
+        object->private = g_new0 (PackageCustomizerPrivate, 1);
+
+        /* setup widgets */
+        object->private->hbox_install = category_hbox_new ();
+        object->private->hbox_upgrade = category_hbox_new ();
+        object->private->hbox_downgrade = category_hbox_new ();
+        object->private->vbox = gtk_vbox_new (FALSE, 0);
+}
+
+PackageCustomizer *
+package_customizer_new (void)
+{
+        PackageCustomizer *object;
+
+        object = PACKAGE_CUSTOMIZER (gtk_object_new (TYPE_PACKAGE_CUSTOMIZER, NULL));
+        gtk_object_ref (GTK_OBJECT (object));
+        gtk_object_sink (GTK_OBJECT (object));
+
+        return object;
+}
+
+GtkType
+package_customizer_get_type (void)
+{
+        static GtkType my_type = 0;
+
+        if (my_type == 0) {
+                static const GtkTypeInfo my_info = {
+                        "PackageCustomizer",
+                        sizeof (PackageCustomizer),
+                        sizeof (PackageCustomizerClass),
+                        (GtkClassInitFunc) package_customizer_class_initialize,
+                        (GtkObjectInitFunc) package_customizer_initialize,
+                        NULL,
+                        NULL,
+                        (GtkClassInitFunc) NULL,
+                };
+
+                my_type = gtk_type_unique (gtk_object_get_type (), &my_info);
+        }
+
+        return my_type;
+}
+
+
+/**********   helper functions   **********/
 
 /* figure out what group this package belongs to -- if version is non-NULL, the previous version is filled in */
 static PackageGroup
@@ -140,7 +243,7 @@ find_package_parents (PackageData *package, GList *packlist, GList *sofar)
 }
 
 static int
-package_customizer_compare (PackageInfo *info, PackageData *package)
+package_info_compare (PackageInfo *info, PackageData *package)
 {
         return (info->package == package) ? 0 : 1;
 }
@@ -150,7 +253,8 @@ package_customizer_find_package (PackageCustomizer *table, PackageData *package)
 {
         GList *item;
 
-        item = g_list_find_custom (table->packages, package, (GCompareFunc)package_customizer_compare);
+        item = g_list_find_custom (table->private->packages,
+                                   package, (GCompareFunc)package_info_compare);
         if (item != NULL) {
                 return (PackageInfo *)(item->data);
         } else {
@@ -201,14 +305,14 @@ popup_package_dialog (PackageInfo *info)
 
         title = g_strdup_printf (_("Package info: %s"), info->package->name);
         dialog = gnome_dialog_new (title, GNOME_STOCK_BUTTON_OK, NULL);
-        toplevel = gtk_widget_get_toplevel (info->table->druid_page);
+        toplevel = gtk_widget_get_toplevel (info->table->private->vbox);
         if (GTK_IS_WINDOW (toplevel)) {
                 gnome_dialog_set_parent (GNOME_DIALOG (dialog), GTK_WINDOW (toplevel));
         }
         gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
         g_free (title);
 
-        icon = create_gtk_pixmap (info->table->druid_page, rpm_xpm);
+        icon = create_gtk_pixmap (info->table->private->vbox, rpm_xpm);
         gtk_widget_show (icon);
         gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), icon, FALSE, FALSE, 0);
 
@@ -260,7 +364,7 @@ popup_package_dialog (PackageInfo *info)
                         g_free (pack_name);
                 }
                 hbox = gtk_hbox_new (FALSE, 0);
-                bong = create_gtk_pixmap (info->table->druid_page, bong_xpm);
+                bong = create_gtk_pixmap (info->table->private->vbox, bong_xpm);
                 gtk_widget_show (bong);
                 gtk_box_pack_start (GTK_BOX (hbox), bong, FALSE, FALSE, 0);
                 gtk_box_add_padding (hbox, 5, 0);
@@ -289,34 +393,34 @@ package_info_click (GtkButton *button, PackageInfo *info)
 
 /* figure out which packages should have bongs, and display them */
 static void
-package_customizer_recompute_bongs (PackageCustomizer *table)
+package_customizer_recompute_bongs (PackageCustomizerPrivate *private)
 {
         GList *iter, *iter2;
         GList *parents, *sub_parents;
         PackageInfo *info, *info2;
 
         /* reset bongs */
-        for (iter = g_list_first (table->packages); iter != NULL; iter = g_list_next (iter)) {
+        for (iter = g_list_first (private->packages); iter != NULL; iter = g_list_next (iter)) {
                 info = (PackageInfo *)(iter->data);
                 info->show_bong = FALSE;
                 gtk_label_set_color (info->desc, RGB_BLACK);
         }
 
         /* find unchecked boxes, trace them up and flip bongs on for the parents */
-        for (iter = g_list_first (table->packages); iter != NULL; iter = g_list_next (iter)) {
+        for (iter = g_list_first (private->packages); iter != NULL; iter = g_list_next (iter)) {
                 info = (PackageInfo *)(iter->data);
                 if (! gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (info->checkbox))) {
-                        parents = find_package_parents (info->package, table->package_tree, NULL);
+                        parents = find_package_parents (info->package, private->package_tree, NULL);
                         while (parents != NULL) {
                                 sub_parents = NULL;
                                 for (iter2 = g_list_first (parents); iter2 != NULL; iter2 = g_list_next (iter2)) {
-                                        info2 = package_customizer_find_package (table, (PackageData *)(iter2->data));
+                                        info2 = package_customizer_find_package (info->table, (PackageData *)(iter2->data));
                                         g_assert (info2 != NULL);
                                         if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (info2->checkbox))) {
                                                 info2->show_bong = TRUE;
                                                 gtk_label_set_color (info->desc, RGB_RED);
                                         }
-                                        sub_parents = find_package_parents (info2->package, table->package_tree, sub_parents);
+                                        sub_parents = find_package_parents (info2->package, private->package_tree, sub_parents);
                                 }
                                 g_list_free (parents);
                                 parents = sub_parents;
@@ -325,7 +429,7 @@ package_customizer_recompute_bongs (PackageCustomizer *table)
         }
 
         /* now show the bong icons on packages with show_bong set */
-        for (iter = g_list_first (table->packages); iter != NULL; iter = g_list_next (iter)) {
+        for (iter = g_list_first (private->packages); iter != NULL; iter = g_list_next (iter)) {
                 info = (PackageInfo *)(iter->data);
                 if (info->show_bong) {
                         gtk_widget_show (info->bong);
@@ -340,12 +444,13 @@ package_customizer_recompute_bongs (PackageCustomizer *table)
 static void
 package_toggled (GtkToggleButton *button, PackageInfo *info)
 {
-        package_customizer_recompute_bongs (info->table);
+        package_customizer_recompute_bongs (info->table->private);
 }
 
 static void
 package_customizer_fill (PackageData *package, PackageCustomizer *table)
 {
+        PackageCustomizerPrivate *private;
         PackageInfo *info;
         GtkWidget *info_pixmap;
         GtkWidget *hbox;
@@ -355,6 +460,10 @@ package_customizer_fill (PackageData *package, PackageCustomizer *table)
         char *pack_name;
         int width, height;
         int desc_width;
+
+        g_assert (table != NULL);
+        g_assert (IS_PACKAGE_CUSTOMIZER (table));
+        private = table->private;
 
         if (package_customizer_find_package (table, package) != NULL) {
                 return;
@@ -371,13 +480,13 @@ package_customizer_fill (PackageData *package, PackageCustomizer *table)
 
         info->info_button = gtk_button_new ();
         gtk_button_set_relief (GTK_BUTTON (info->info_button), GTK_RELIEF_NONE);
-        info_pixmap = create_gtk_pixmap (table->druid_page, info_xpm);
+        info_pixmap = create_gtk_pixmap (table->private->vbox, info_xpm);
         gtk_widget_show (info_pixmap);
         gtk_container_add (GTK_CONTAINER (info->info_button), info_pixmap);
         gtk_signal_connect (GTK_OBJECT (info->info_button), "clicked", GTK_SIGNAL_FUNC (package_info_click), info);
         gtk_widget_show (info->info_button);
 
-        info->bong = create_gtk_pixmap (table->druid_page, bong_xpm);
+        info->bong = create_gtk_pixmap (table->private->vbox, bong_xpm);
         gtk_widget_hide (info->bong);
         info->no_bong = gtk_label_new ("");
         gtk_widget_show (info->no_bong);
@@ -392,18 +501,18 @@ package_customizer_fill (PackageData *package, PackageCustomizer *table)
         switch (info->group) {
         case INSTALL_GROUP:
                 desc = g_strdup (pack_name);
-                hbox_group = table->hbox_install;
-                table->installs++;
+                hbox_group = private->hbox_install;
+                private->installs++;
                 break;
         case UPGRADE_GROUP:
                 desc = g_strdup_printf (_("%s (from v%s)"), pack_name, info->version);
-                hbox_group = table->hbox_upgrade;
-                table->upgrades++;
+                hbox_group = private->hbox_upgrade;
+                private->upgrades++;
                 break;
         case DOWNGRADE_GROUP:
                 desc = g_strdup_printf (_("%s (from v%s)"), pack_name, info->version);
-                hbox_group = table->hbox_downgrade;
-                table->downgrades++;
+                hbox_group = private->hbox_downgrade;
+                private->downgrades++;
                 break;
         default:
                 g_assert_not_reached ();
@@ -416,13 +525,13 @@ package_customizer_fill (PackageData *package, PackageCustomizer *table)
         gtk_label_set_color (info->desc, RGB_BLACK);
         gtk_label_set_justify (GTK_LABEL (info->desc), GTK_JUSTIFY_LEFT);
         desc_width = gdk_string_width (info->desc->style->font, desc);
-        if (desc_width > table->largest_desc_width) {
-                table->largest_desc_width = desc_width;
+        if (desc_width > private->largest_desc_width) {
+                private->largest_desc_width = desc_width;
         }
         g_free (desc);
         gtk_widget_show (info->desc);
 
-        table->packages = g_list_prepend (table->packages, info);
+        private->packages = g_list_prepend (private->packages, info);
 
         hbox = gtk_hbox_new (FALSE, 0);
         gtk_box_pack_start (GTK_BOX (hbox), info->desc, FALSE, FALSE, 0);
@@ -472,52 +581,60 @@ normalize_labels (PackageCustomizer *table, GtkWidget *hbox_group)
         vbox_desc = gtk_box_nth (hbox_group, 1);
         top_label = gtk_box_nth (vbox_desc, 0);
         /* -2 : magic gtk number meaning "don't change" */
-        gtk_widget_set_usize (top_label, table->largest_desc_width, -2);
+        gtk_widget_set_usize (top_label, table->private->largest_desc_width, -2);
 }
 
-static PackageCustomizer *
-package_customizer_new (GtkWidget *page, GList *packages)
+void
+package_customizer_set_package_list (PackageCustomizer *table, GList *package_tree)
 {
-        PackageCustomizer *table = g_new0 (PackageCustomizer, 1);
+        PackageCustomizerPrivate *private;
         GtkWidget *label;
         GList *iter;
 
-        table->hbox_install = category_hbox_new ();
-        table->hbox_upgrade = category_hbox_new ();
-        table->hbox_downgrade = category_hbox_new ();
-        table->druid_page = page;
-        table->packages = NULL;
-        table->package_tree = packages;
+        g_return_if_fail (table != NULL);
+        g_return_if_fail (IS_PACKAGE_CUSTOMIZER (table));
+        private = table->private;
 
-        for (iter = g_list_first (packages); iter != NULL; iter = g_list_next (iter)) {
+        g_list_free (private->packages);
+        private->packages = NULL;
+        private->package_tree = package_tree;
+
+        for (iter = g_list_first (package_tree); iter != NULL; iter = g_list_next (iter)) {
                 package_customizer_fill ((PackageData *)(iter->data), table);
         }
 
-        table->vbox = gtk_vbox_new (FALSE, 0);
-        if (table->installs > 0) {
+        if (private->installs > 0) {
                 label = gtk_label_new_with_font (_("Packages to install"), FONT_TITLE);
                 gtk_widget_show (label);
-                gtk_box_pack_start (GTK_BOX (table->vbox), gtk_label_as_hbox (label), FALSE, FALSE, 5);
-                normalize_labels (table, table->hbox_install);
-                gtk_box_pack_start (GTK_BOX (table->vbox), table->hbox_install, FALSE, FALSE, 0);
+                gtk_box_pack_start (GTK_BOX (private->vbox), gtk_label_as_hbox (label), FALSE, FALSE, 5);
+                normalize_labels (table, private->hbox_install);
+                gtk_box_pack_start (GTK_BOX (private->vbox), private->hbox_install, FALSE, FALSE, 0);
         }
-        if (table->upgrades > 0) {
+        if (private->upgrades > 0) {
                 label = gtk_label_new_with_font (_("Packages to upgrade"), FONT_TITLE);
                 gtk_widget_show (label);
-                gtk_box_pack_start (GTK_BOX (table->vbox), gtk_label_as_hbox (label), FALSE, FALSE, 5);
-                normalize_labels (table, table->hbox_upgrade);
-                gtk_box_pack_start (GTK_BOX (table->vbox), table->hbox_upgrade, FALSE, FALSE, 0);
+                gtk_box_pack_start (GTK_BOX (private->vbox), gtk_label_as_hbox (label), FALSE, FALSE, 5);
+                normalize_labels (table, private->hbox_upgrade);
+                gtk_box_pack_start (GTK_BOX (private->vbox), private->hbox_upgrade, FALSE, FALSE, 0);
         }
-        if (table->downgrades > 0) {
+        if (private->downgrades > 0) {
                 label = gtk_label_new_with_font (_("Packages to downgrade"), FONT_TITLE);
                 gtk_widget_show (label);
-                gtk_box_pack_start (GTK_BOX (table->vbox), gtk_label_as_hbox (label), FALSE, FALSE, 5);
-                normalize_labels (table, table->hbox_downgrade);
-                gtk_box_pack_start (GTK_BOX (table->vbox), table->hbox_downgrade, FALSE, FALSE, 0);
+                gtk_box_pack_start (GTK_BOX (private->vbox), gtk_label_as_hbox (label), FALSE, FALSE, 5);
+                normalize_labels (table, private->hbox_downgrade);
+                gtk_box_pack_start (GTK_BOX (private->vbox), private->hbox_downgrade, FALSE, FALSE, 0);
         }
-        gtk_widget_show (table->vbox);
 
-        return table;
+        gtk_widget_show (private->vbox);
+}
+
+GtkWidget *
+package_customizer_get_widget (PackageCustomizer *table)
+{
+        g_return_val_if_fail (table != NULL, NULL);
+        g_return_val_if_fail (IS_PACKAGE_CUSTOMIZER (table), NULL);
+
+        return table->private->vbox;
 }
 
 void
@@ -527,17 +644,21 @@ jump_to_package_tree_page (EazelInstaller *installer, GList *packages)
         GtkWidget *page;
         GtkWidget *pane;
         GtkWidget *hbox;
+        GtkWidget *table_widget;
 
         page = nautilus_druid_page_eazel_new_with_vals (NAUTILUS_DRUID_PAGE_EAZEL_OTHER,
                                                         NULL, NULL, NULL, NULL,
                                                         create_pixmap (GTK_WIDGET (installer->window),
                                                                        bootstrap_background));
 
-        table = package_customizer_new (page, packages);
+        table = package_customizer_new ();
+        package_customizer_set_package_list (table, packages);
+        table_widget = package_customizer_get_widget (table);
 
         hbox = gtk_hbox_new (FALSE, 0);
         gtk_box_add_padding (hbox, 10, 0);
-        gtk_box_pack_start (GTK_BOX (hbox), table->vbox, FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX (hbox), table_widget, FALSE, FALSE, 0);
+        gtk_widget_show (table_widget);
         gtk_widget_show (hbox);
 
         pane = gtk_scrolled_window_new (NULL, NULL);

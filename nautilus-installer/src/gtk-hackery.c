@@ -32,10 +32,26 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <unistd.h>
 #include <gnome.h>
 #include "installer.h"
 
+
+extern int installer_debug;
+
+/* better than a macro, and uses our nice logging system */
+void
+log_debug (const gchar *format, ...)
+{
+	va_list args;
+
+	if (installer_debug) {
+		va_start (args, format);
+		g_logv (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, format, args);
+		va_end (args);
+	}
+}
 
 void
 get_pixmap_width_height (char **xpmdata, int *width, int *height)
@@ -159,4 +175,11 @@ gtk_box_nth (GtkWidget *box, int n)
 
         child = (GtkBoxChild *)(g_list_nth (GTK_BOX (box)->children, n)->data);
         return GTK_WIDGET (child->widget);
+}
+
+/* do what gnome ought to do automatically */
+void
+gnome_reply_callback (int reply, gboolean *answer)
+{
+	*answer = (reply == 0);
 }

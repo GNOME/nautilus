@@ -98,10 +98,8 @@ void               eazel_installer_do_install (EazelInstaller *installer,
 					       gboolean remove);
 void               eazel_installer_post_install (EazelInstaller *installer);
 
-/* package-tree.c */
-void jump_to_package_tree_page (EazelInstaller *installer, GList *packages);
-
 /* gtk-hackery.c */
+void log_debug (const gchar *format, ...);
 void get_pixmap_width_height (char **xpmdata, int *width, int *height);
 GdkPixbuf *create_pixmap (GtkWidget *widget, char **xpmdata);
 GtkWidget *create_gtk_pixmap (GtkWidget *widget, char **xpmdata);
@@ -110,6 +108,7 @@ void gtk_label_set_color (GtkWidget *label, guint32 rgb);
 void gtk_box_add_padding (GtkWidget *box, int pad_x, int pad_y);
 GtkWidget *gtk_label_as_hbox (GtkWidget *label);
 GtkWidget *gtk_box_nth (GtkWidget *box, int n);
+void gnome_reply_callback (int reply, gboolean *answer);
 
 #ifdef __cplusplus
 }

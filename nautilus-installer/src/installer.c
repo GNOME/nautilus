@@ -31,8 +31,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
-#include <libtrilobite/helixcode-utils.h>
-#include <libtrilobite/trilobite-core-utils.h>
+#include <libtrilobite/trilobite-core-network.h>
 #include <eazel-install-xml-package-list.h>
 #include <eazel-install-protocols.h>
 #include <eazel-install-query.h>
@@ -50,6 +49,7 @@
 #include <nautilus-druid-page-eazel.h>
 
 #include "installer.h"
+#include "package-tree.h"
 #include "callbacks.h"
 #include "support.h"
 #include "proxy.h"
@@ -184,20 +184,6 @@ static void check_if_next_okay (GnomeDruidPage *page, void *unused, EazelInstall
 static void jump_to_retry_page (EazelInstaller *installer);
 static void jump_to_error_page (EazelInstaller *installer, GList *bullets, char *text, char *text2);
 static GtkObjectClass *eazel_installer_parent_class;
-
-
-/* better than a macro, and uses our nice logging system */
-static void
-log_debug (const gchar *format, ...)
-{
-	va_list args;
-
-	if (installer_debug) {
-		va_start (args, format);
-		g_logv (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, format, args);
-		va_end (args);
-	}
-}
 
 
 static void
@@ -904,7 +890,7 @@ get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 			cat = (CategoryData *)iter->data;
 			for (iter2 = cat->packages; iter2 ; iter2 = g_list_next (iter2)) {
 				pack_in = (PackageData *)iter2->data;
-				trilobite_debug ("pack->name = %s, pack_in->name = %s", pack->name, pack_in->name);
+				log_debug ("pack->name = %s, pack_in->name = %s", pack->name, pack_in->name);
 				if (strcmp (pack->name, pack_in->name) == 0) {
 					g_message ("bad mojo: cannot open package %s", pack->name);
 					distro = trilobite_get_distribution_name (trilobite_get_distribution (),

@@ -25,33 +25,11 @@
 #endif
 
 #include <gnome.h>
-
 #include "callbacks.h"
 #include "support.h"
 #include "installer.h"
 
 
-extern int installer_debug;
-
-/* better than a macro, and uses our nice logging system */
-static void
-log_debug (const gchar *format, ...)
-{
-	va_list args;
-
-	if (installer_debug) {
-		va_start (args, format);
-		g_logv (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, format, args);
-		va_end (args);
-	}
-}
-
-/* do what gnome ought to do automatically */
-static void
-reply_callback (int reply, gboolean *answer)
-{
-	*answer = (reply == 0);
-}
 
 static void
 ask_to_delete_rpms (EazelInstaller *installer)
@@ -66,10 +44,10 @@ ask_to_delete_rpms (EazelInstaller *installer)
 				     "The package files are stored in %s"), installer->tmpdir);
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (installer->druid));
 	if (GTK_IS_WINDOW (toplevel)) {
-		dialog = gnome_question_dialog_parented (message, (GnomeReplyCallback)reply_callback,
+		dialog = gnome_question_dialog_parented (message, (GnomeReplyCallback)gnome_reply_callback,
 							 &answer, GTK_WINDOW (toplevel));
 	} else {
-		dialog = gnome_question_dialog (message, (GnomeReplyCallback)reply_callback, &answer);
+		dialog = gnome_question_dialog (message, (GnomeReplyCallback)gnome_reply_callback, &answer);
 	}
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
@@ -93,10 +71,10 @@ ask_are_you_sure (EazelInstaller *installer)
 	message = _("Cancel the installation:\nAre you sure?");
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (installer->druid));
 	if (GTK_IS_WINDOW (toplevel)) {
-		dialog = gnome_question_dialog_parented (message, (GnomeReplyCallback)reply_callback,
+		dialog = gnome_question_dialog_parented (message, (GnomeReplyCallback)gnome_reply_callback,
 							 &answer, GTK_WINDOW (toplevel));
 	} else {
-		dialog = gnome_question_dialog (message, (GnomeReplyCallback)reply_callback, &answer);
+		dialog = gnome_question_dialog (message, (GnomeReplyCallback)gnome_reply_callback, &answer);
 	}
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
