@@ -30,11 +30,13 @@
 
 #include "nautilus-desktop-window.h"
 #include "nautilus-main.h"
+#include "nautilus-window-private.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
@@ -123,7 +125,37 @@ static void
 open_window (NautilusShell *shell, const char *uri, const char *geometry)
 {
 	NautilusWindow *window;
+	NautilusWindow *existing_window;
+	GList *node;
+	const char *existing_location;
+	gboolean prefer_existing_window;
 
+	prefer_existing_window = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW);
+
+
+        /* If the user's preference is always_open_in_new_window
+	 * we raise an existing window for the location if it already exists.
+	 */
+	if (prefer_existing_window)
+	{
+        	for (node = nautilus_application_get_window_list ();
+             	     node != NULL; node = node->next) {
+               	     
+			existing_window = NAUTILUS_WINDOW (node->data);
+                     	existing_location = existing_window->details->pending_location;
+                
+			if (existing_location == NULL) {
+                        	existing_location = existing_window->details->location;
+                	}
+
+                	if (eel_uris_match (existing_location, uri)) {
+                        	gtk_window_present (GTK_WINDOW (existing_window));
+                        	return;
+                	}
+		}
+        }
+
+        /* Otherwise, open a new window. */
 	window = nautilus_application_create_window (shell->details->application,
 						     gdk_screen_get_default ());
 
