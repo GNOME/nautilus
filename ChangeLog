@@ -1,5 +1,12 @@
 2002-07-27  Dave Camp  <dave@ximian.com>
 
+	* libnautilus-private/nautilus-icon-factory.c
+	(icon_theme_changed_callback): Fixed a problem where shortcutting
+	|| was preventing the fallback theme from being set. Fixes
+	#89178.
+
+2002-07-27  Dave Camp  <dave@ximian.com>
+
 	* src/nautilus-sidebar.c:
 	(background_settings_changed_callback): Update the
 	current_background_color, the current_background_image, and

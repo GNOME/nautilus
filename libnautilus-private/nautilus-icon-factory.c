@@ -858,6 +858,7 @@ icon_theme_changed_callback (gpointer user_data)
 {
 	char *icon_theme, *icon_fallback_theme;
 	NautilusIconFactory *factory;
+	gboolean changed;
 
 	icon_theme = nautilus_theme_get_theme_data ("icons", "icon_theme");
 	if (icon_theme == NULL) {
@@ -871,9 +872,10 @@ icon_theme_changed_callback (gpointer user_data)
 
 	factory = get_icon_factory ();
 
-	if (nautilus_icon_theme_set_names (factory->theme.current, icon_theme) ||
-	    nautilus_icon_theme_set_names (factory->theme.fallback, icon_fallback_theme)) {
-		
+	changed = nautilus_icon_theme_set_names (factory->theme.current, icon_theme);
+	changed |= nautilus_icon_theme_set_names (factory->theme.fallback, icon_fallback_theme);
+
+	if (changed) {
 		nautilus_icon_factory_clear ();
 		load_thumbnail_frame (factory);
 		g_signal_emit (factory,
