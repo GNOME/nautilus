@@ -287,14 +287,15 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 	}
 	
 	gnome_vfs_connect_to_server (uri, name, icon);
-	gtk_widget_destroy (GTK_WIDGET (dialog));
-
+	gtk_widget_hide (GTK_WIDGET (dialog));
 
 	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 		nautilus_connect_server_dialog_present_uri (dialog->details->application,
 							    uri,
 							    GTK_WIDGET (dialog));
 	}
+
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 
 	g_free (uri);
 	g_free (name);
