@@ -1,3 +1,14 @@
+2000-09-29  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c: (cache_icon_ref),
+	(cache_icon_unref): Add special cases to handle fallback icon.
+	(destroy_fallback_icon): Use unref to free the fallback icon.
+	(load_icon_for_scaling): Handle the fallback icon more like other
+	icons.
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_text_layout_new): Simplify the logic a bit by using
+	g_strndup.
+
 2000-09-29  Mathieu Lacage  <mathieu@eazel.com>
 
 	Fix bug 3074: local html files not displayed by mozilla.

@@ -435,7 +435,8 @@ cache_icon_ref (CacheIcon *icon)
 	factory = get_icon_factory ();
 
 	g_assert (icon != NULL);
-	g_assert (icon->internal_ref_count >= 1);
+	g_assert (icon->internal_ref_count >= 1
+		  || (icon->internal_ref_count == 0 && icon == fallback_icon));
 	g_assert (g_hash_table_lookup (factory->cache_icons, icon->pixbuf) == icon);
 
 	icon->internal_ref_count++;
@@ -457,6 +458,7 @@ cache_icon_unref (CacheIcon *icon)
 		icon->internal_ref_count--;
 		return;
 	}
+	icon->internal_ref_count = 0;
 
 	check_recently_used_list ();
 
@@ -477,8 +479,12 @@ cache_icon_unref (CacheIcon *icon)
 	}
 
 	check_recently_used_list ();
-
 	
+	/* The fallback icon has life after death. */
+	if (icon == fallback_icon) {
+		return;
+	}
+
 	/* Remove from the cache icons table. */
 	g_hash_table_remove (factory->cache_icons, icon->pixbuf);
 
@@ -1563,7 +1569,13 @@ load_specific_icon (NautilusScalableIcon *scalable_icon,
 static void
 destroy_fallback_icon (void)
 {
-	cache_icon_unref (fallback_icon);
+	CacheIcon *icon;
+
+	icon = fallback_icon;
+	g_assert (icon->internal_ref_count == 0);
+	cache_icon_ref (icon);
+	fallback_icon = NULL;
+	cache_icon_unref (icon);
 }
 
 /* This load function is not allowed to return NULL. */
@@ -1609,7 +1621,9 @@ load_icon_for_scaling (NautilusScalableIcon *scalable_icon,
 	}
 
 	/* Finally, fall back on the hard-coded image. */
-	if (fallback_icon == NULL) {
+	if (fallback_icon != NULL) {
+		cache_icon_ref (fallback_icon);
+	} else {
 		pixbuf = gdk_pixbuf_new_from_data
 			(nautilus_default_file_icon,
 			 GDK_COLORSPACE_RGB,
@@ -1623,7 +1637,6 @@ load_icon_for_scaling (NautilusScalableIcon *scalable_icon,
 		fallback_icon = cache_icon_new (pixbuf, FALSE, FALSE, NULL);
 		g_atexit (destroy_fallback_icon);
 	}
-	cache_icon_ref (fallback_icon);
 
 	*actual_size_result = NAUTILUS_ICON_SIZE_STANDARD;
         return fallback_icon;

@@ -1555,9 +1555,7 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 
 						/* Create sub-row with the chars that fit */
 
-						sub_text = g_new (char, i);
-						memcpy (sub_text, word_start, (i - 1) * sizeof (char));
-						sub_text[i - 1] = 0;
+						sub_text = g_strndup (word_start, i - 1);
 						
 						row = g_new (NautilusTextLayoutRow, 1);
 						row->text = sub_text;
@@ -1565,9 +1563,6 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 						row->width = nautilus_scalable_font_text_width (font, font_size, font_size, 
 												sub_text, 
 												strlen (sub_text));
-						if (row->text == NULL) {
-							row->text = g_strdup("");
-						}
 
 						text_layout->rows = g_list_append (text_layout->rows, row);
 
@@ -1612,17 +1607,12 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 			int sub_len;
 			sub_len = word_end - text_iter;
 
-			sub_text = g_new (char, sub_len + 1);
-			memcpy (sub_text, text_iter, sub_len * sizeof (char));
-			sub_text[sub_len] = 0;
+			sub_text = g_strndup (text_iter, sub_len);
 
 			row = g_new (NautilusTextLayoutRow, 1);
 			row->text = sub_text;
 			row->text_length = sub_len;
 			row->width = nautilus_scalable_font_text_width (font, font_size, font_size, sub_text, sub_len);
-			if (row->text == NULL) {
-				row->text = g_strdup("");
-			}
 
 			text_layout->rows = g_list_append (text_layout->rows, row);
 
