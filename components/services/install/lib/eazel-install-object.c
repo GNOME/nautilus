@@ -219,15 +219,33 @@ eazel_install_finalize (GtkObject *object)
 	}
 #endif
 
+	trilobite_debug ("into eazel_install_finalize");
+
 	g_hash_table_destroy (service->private->name_to_package_hash);
 	g_free (service->private->logfilename);
+	g_list_foreach (service->private->downloaded_files, (GFunc)g_free, NULL);
+	g_list_free (service->private->downloaded_files);
+	g_list_foreach (service->private->root_dirs, (GFunc)g_free, NULL);
+	g_list_free (service->private->root_dirs);
+
+	g_list_free (service->private->transaction);
+	
+	g_free (service->private->transaction_dir);
+	g_free (service->private->cur_root);
 
 	transferoptions_destroy (service->private->topts);
 	installoptions_destroy (service->private->iopts);
 
+	switch (service->private->package_system) {
+	case EAZEL_INSTALL_USE_RPM:
+		g_hash_table_destroy (service->private->packsys.rpm.dbs);
+		break;
+	}
+
 	if (GTK_OBJECT_CLASS (eazel_install_parent_class)->finalize) {
 		GTK_OBJECT_CLASS (eazel_install_parent_class)->finalize (object);
 	}
+	trilobite_debug ("out eazel_install_finalize");
 }
 
 void eazel_install_unref (GtkObject *object) 
