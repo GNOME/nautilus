@@ -1,3 +1,37 @@
+2000-06-23  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 1007 (Should show program "match quality" in
+	"View as Other" dialog). There's now a "status" column that
+	you can sort by. It would be better if it showed some 
+	supertype info but I'm putting that off (with a bug report).
+
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(program_file_pair_compute_status), (program_file_pair_set_file),
+	(program_file_pair_new_from_content_view),
+	(program_file_pair_new_from_application), (program_file_pair_free),
+	(program_file_pair_get_program_name_for_display),
+	(get_supertype_from_file),
+	(program_file_pair_get_short_status_text),
+	(program_file_pair_get_long_status_text),
+	(repopulate_program_list),
+	(program_file_pair_is_default_for_file_type),
+	(program_file_pair_is_default_for_file),
+	(program_file_pair_is_in_short_list_for_file_type),
+	(program_file_pair_is_in_short_list_for_file),
+	(get_program_file_pair_from_row_data),
+	(get_selected_program_file_pair), (update_selected_item_details),
+	(update_all_status), (add_to_short_list_for_file),
+	(remove_from_short_list_for_file), (add_to_short_list_for_type),
+	(remove_from_short_list_for_type), (remove_default_for_type),
+	(remove_default_for_item), (set_default_for_type),
+	(set_default_for_item), (run_program_configurator_callback),
+	(compare_program_file_pairs), (switch_sort_column),
+	(create_program_clist), (nautilus_program_chooser_new),
+	(nautilus_program_chooser_get_application),
+	(nautilus_program_chooser_get_component): Did vast quantities of
+	renaming and refactoring in here while adding this feature. Believe
+	me, it's not worth the time to explain in great detail.
+
 2000-06-23  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-horizontal-splitter.c:
