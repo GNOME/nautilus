@@ -28,12 +28,12 @@
 #define TRILOBITE_SERVICE_PRIVATE_H
 
 struct _TrilobiteServicePrivate {	
-	char *name;
-	char *version;
-	char *vendor_name;
-	char *vendor_url;
-	char *url;
-	char *icon_uri;
+	char *service_name;
+	char *service_version;
+	char *service_vendor_name;
+	char *service_vendor_url;
+	char *service_url;
+	char *service_icon_uri;
 	     
 };
 

@@ -65,13 +65,14 @@ typedef struct _TrilobiteServicePrivate TrilobiteServicePrivate;
 
 struct _TrilobiteService
 {
-	POA_Trilobite_Service    poa;
+	POA_Trilobite_Service    service_poa;
+	Trilobite_Service        corba_object;
 	GtkObject                parent;
 	TrilobiteServicePrivate *private;
 };
 
 GtkType            trilobite_service_get_type            (void);
-TrilobiteService*  trilobite_service_new                 (void);
+TrilobiteService*  trilobite_service_new                 (char *oaf_id);
 char*              trilobite_service_get_name            (TrilobiteService *trilobite);
 char*              trilobite_service_get_version         (TrilobiteService *trilobite);
 char*              trilobite_service_get_vendor_name     (TrilobiteService *trilobite);
