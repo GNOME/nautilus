@@ -257,6 +257,13 @@ nautilus_text_view_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
+/* here's a callback for the async close, which does nothing */
+static void
+file_close_callback (GnomeVFSAsyncHandle *handle,
+			  GnomeVFSResult result,
+			  gpointer callback_data)
+{
+}
 
 /* this routine is called when we're finished reading to deallocate the buffer and
  * put up an error message if necessary
@@ -267,6 +274,12 @@ done_file_read (NautilusTextView *text_view, gboolean succeeded)
 	if (text_view->details->buffer != NULL) {
 		g_free (text_view->details->buffer);
 		text_view->details->buffer = NULL;		
+	}
+	
+	if (text_view->details->file_handle != NULL) {
+		gnome_vfs_async_close (text_view->details->file_handle,
+				       file_close_callback,
+				       NULL);
 	}
 }
  

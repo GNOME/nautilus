@@ -1,3 +1,10 @@
+2001-02-20  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/text/nautilus-text-view.c: (file_close_callback),
+	(done_file_read):
+	fixed bug 6732, can't unmount volumes after viewing text files;
+	fixed by closing the file in done_file_read.
+	
 2001-02-20  Rebecca Schulman  <rebecka@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
