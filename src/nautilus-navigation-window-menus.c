@@ -1465,6 +1465,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 		BONOBO_UI_VERB (SWITCH_TO_BEGINNER_VERB, user_level_menu_item_callback),
 		BONOBO_UI_VERB (SWITCH_TO_INTERMEDIATE_VERB, user_level_menu_item_callback),
 		BONOBO_UI_VERB (SWITCH_TO_ADVANCED_VERB, user_level_menu_item_callback),
+
 		BONOBO_UI_VERB ("User Level Customization", user_level_customize_callback),
 		BONOBO_UI_VERB_END
 	};

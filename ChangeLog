@@ -1,3 +1,42 @@
+2000-10-09  John Sullivan  <sullivan@eazel.com>
+
+	Various bonobo-related cleanups
+
+	* components/loser/sidebar/nautilus-sidebar-loser-ui.xml:
+	* components/loser/sidebar/nautilus-sidebar-loser.c:
+	(bonobo_loser_callback), (loser_merge_bonobo_items_callback):
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(bonobo_mozilla_callback), (mozilla_merge_bonobo_items_callback):
+	* components/mozilla/nautilus-mozilla-ui.xml:
+	* components/sample/nautilus-sample-content-view-ui.xml:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_real_merge_menus):
+	Modernized Bonobo use in these three components. There is a
+	crashing bug when leaving a component that installs a tool bar
+	button, so I did not install a tool bar button into Mozilla yet.
+	Also, some of the callbacks don't work, so I haven't marked the 
+	relevant bugs FIXED yet. I wanted to check in what I had so far;
+	I'll get back to this a little later today.
+	
+	* src/nautilus-shell-ui.xml:
+	Removed "Menu_" from pixnames, to match new bonobo API; replaced
+	<menuitem/> and <toolitem/> with <separator/>; added a placeholder
+	into which components should install extra toolbar buttons; defined
+	the services button here again (in this placeholder) -- it's before
+	the throbber again.
+	
+	* src/nautilus-window-menus.c: (nautilus_window_initialize_menus):
+	Added clarifying white space.
+	
+	* src/nautilus-window-toolbars.c: 
+	removed toolbar_services_callback, which is handled elsewhere.
+	(set_up_button): Made this take button path instead of just name,
+	so it can work with buttons in placeholders (like the Services button).
+	(set_up_toolbar_images): Pass whole paths instead of just names.
+	(nautilus_window_initialize_toolbars): Set hidden attribute on
+	Services button as appropriate, rather than creating it here from raw
+	XML in the opposite case.
+
 2000-10-08  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bug 3549, services button disappeared due to UI handler

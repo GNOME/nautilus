@@ -485,24 +485,29 @@ mozilla_load_location_callback (NautilusView *nautilus_view,
 	nautilus_mozilla_content_view_load_uri (view, location);
 }
 
-#ifdef UIH
-
 static void
-bonobo_mozilla_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
+bonobo_mozilla_callback (BonoboUIComponent *ui, gpointer user_data, const char *verb)
 {
  	NautilusMozillaContentView *view;
-	char *label_text;
+
+	g_assert (BONOBO_IS_UI_COMPONENT (ui));
+        g_assert (verb != NULL);
+
+	g_message ("called bonobo_mozilla_callback");
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
-	if (strcmp (path, "/File/Mozilla") == 0) {
-		label_text = g_strdup_printf ("%s\n\nYou selected the Mozilla menu item.", view->details->uri);
+	/* FIXME bugzilla.eazel.com 2281:
+	 * All this code is just here as a sample placeholder, and needs to
+	 * go soon. The following code in particular does nothing at all. It
+	 * started life as a copy/paste remnant from nautilus-sample-view.
+	 */
+	if (strcmp (verb, "Mozilla Test Menu Item") == 0) {
+		g_message ("%s\n\nYou selected the Mozilla menu item.", view->details->uri);
 	} else {
-		g_assert (strcmp (path, "/Main/Mozilla") == 0);
-		label_text = g_strdup_printf ("%s\n\nYou clicked the Mozilla toolbar button.", view->details->uri);
+		g_assert (strcmp (verb, "Mozilla Test Dock Item") == 0);
+		g_message ("%s\n\nYou clicked the Mozilla toolbar button.", view->details->uri);
 	}
-	
-	g_free (label_text);
 
 #if 0
 	/*
@@ -542,13 +547,16 @@ bonobo_mozilla_callback (BonoboUIHandler *ui_handler, gpointer user_data, const 
 
 }
 
-#endif
-
 static void
 mozilla_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpointer user_data)
 {
  	NautilusMozillaContentView *view;
         BonoboUIComponent *ui_component;
+	BonoboUIVerb verbs [] = {
+		BONOBO_UI_VERB ("Mozilla Test Menu Item", bonobo_mozilla_callback),
+		BONOBO_UI_VERB ("Mozilla Test Dock Item", bonobo_mozilla_callback),
+		BONOBO_UI_VERB_END
+	};
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
@@ -559,44 +567,7 @@ mozilla_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoi
 							"nautilus-mozilla-ui.xml",
 							"nautilus-mozilla");
 
-#ifdef UIH
-                /* 
-                 * Create our mozilla menu item.
-                 *
-                 * Note that it's sorta bogus that we know Nautilus has a menu whose
-                 * path is "/File", and also that we know a sensible position to use within
-                 * that menu. Nautilus should publish this information somehow.
-                 */ 
-	        bonobo_ui_handler_menu_new_item (local_ui_handler,				/* BonoboUIHandler */
-	        				 "/File/Mozilla",				/* menu item path, must start with /some-existing-menu-path and be otherwise unique */
-	                                         _("_Mozilla"),					/* menu item user-displayed label */
-	                                         _("This is a mozilla merged menu item"),	/* hint that appears in status bar */
-	                                         1,						/* position within menu; -1 means last */
-	                                         BONOBO_UI_HANDLER_PIXMAP_NONE,			/* pixmap type */
-	                                         NULL,						/* pixmap data */
-	                                         'M',						/* accelerator key, couldn't bear the thought of using Control-S for anything except Save */
-	                                         GDK_CONTROL_MASK,				/* accelerator key modifiers */
-	                                         bonobo_mozilla_callback,			/* callback function */
-	                                         view);                				/* callback function data */
-
-                /* 
-                 * Create our mozilla toolbar button.
-                 *
-                 * Note that it's sorta bogus that we know Nautilus has a toolbar whose
-                 * path is "/Main". Nautilus should publish this information somehow.
-                 */ 
-	        bonobo_ui_handler_toolbar_new_item (local_ui_handler,				/* BonoboUIHandler */
-	        				    "/Main/Mozilla",				/* button path, must start with /Main/ and be otherwise unique */
-	        				    _("Mozilla"),					/* button user-displayed label */
-	        				    _("This is a mozilla merged toolbar button"),/* hint that appears in status bar */
-	        				    -1,						/* position, -1 means last */
-	        				    BONOBO_UI_HANDLER_PIXMAP_STOCK,		/* pixmap type */
-	        				    GNOME_STOCK_PIXMAP_BOOK_BLUE,		/* pixmap data */
-	        				    0,						/* accelerator key */
-	        				    0,						/* accelerator key modifiers */
-	        				    bonobo_mozilla_callback,			/* callback function */
-	        				    view);					/* callback function's data */
-#endif
+		bonobo_ui_component_add_verb_list_with_data (ui_component, verbs, view);
 	} else {
 		/* Do nothing. */
 	}

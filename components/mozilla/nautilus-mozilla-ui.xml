@@ -1,1 +1,26 @@
-<Root/>
+<Root>
+<menu>
+	<submenu name="File" _label="_File">
+		<placeholder name="File Items Placeholder">
+			<menuitem name="Mozilla Test Menu Item" 
+				  _label="_Mozilla Test" 
+				  _descr="This is a Mozilla merged menu item"
+			          pixtype="stock" pixname="About"
+				  verb=""/>
+		</placeholder>
+	</submenu>
+</menu>
+<!-- The following is probably correct, but reveals a nasty bug
+      when leaving View as Web Page, so I'm temporarily commenting
+      it out.
+<dockitem name="Tool Bar">
+	<placeholder name="Extra Buttons Placeholder">
+		<toolitem name="Mozilla Test Dock Item"
+			  _label="Mozilla Test"
+			  _descr="This is a Mozilla merged tool bar button"
+		          pixtype="stock" pixname="About"
+		          verb=""/>
+	</placeholder>
+</dockitem>
+-->
+</Root>

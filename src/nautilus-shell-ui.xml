@@ -9,7 +9,7 @@
 			<menuitem name="New Window"
 				  _label="_New Window"
 				  _descr="Open another Nautilus window for the displayed location"
-				  pixtype="stock" pixname="Menu_New"
+				  pixtype="stock" pixname="New"
 				  verb=""/>
 		</placeholder>
 		<placeholder name="Open Placeholder" delimit="top"/>
@@ -17,7 +17,7 @@
 		<menuitem name="Close"
 			  _label="_Close Window"
 			  _descr="Close this window"
-			  pixtype="stock" pixname="Menu_Close"
+			  pixtype="stock" pixname="Close"
 			  accel="*Control*w"
 			  verb=""/>
 		<menuitem name="Close All Windows"
@@ -29,7 +29,7 @@
 		<placeholder name="General Status Placeholder" delimit="top"/>
 		<placeholder name="File Items Placeholder" delimit="top"/>
 
-		<menuitem/>
+		<separator/>
 
 		<menuitem name="Toggle Find Mode"
 			  _label="_Find"
@@ -49,28 +49,28 @@
 		<menuitem name="Undo" 
 			  _label="_Undo" 
 			  _descr="Undo the last text change"
-			  pixtype="stock" pixname="Menu_Undo" 
+			  pixtype="stock" pixname="Undo" 
 			  accel="*Control*z"
 			  verb=""/>
 
-		<menuitem/>
+		<separator/>
 
 		<menuitem name="Cut" 
 			  _label="Cut _Text" 
 			  _descr="Cut the selected text to the clipboard"
-			  pixtype="stock" pixname="Menu_Cut" 
+			  pixtype="stock" pixname="Cut" 
 			  accel="*Control*x"
 			  verb=""/>
 		<menuitem name="Copy" 
 			  _label="_Copy Text" 
 			  _descr="Copy the selected text to the clipboard"
-			  pixtype="stock" pixname="Menu_Copy" 
+			  pixtype="stock" pixname="Copy" 
 			  accel="*Control*c"
 			  verb=""/>
 		<menuitem name="Paste" 
 			  _label="_Paste Text" 
 			  _descr="Paste the text stored on the clipboard"
-			  pixtype="stock" pixname="Menu_Paste" 
+			  pixtype="stock" pixname="Paste" 
 			  accel="*Control*v"
 			  verb=""/>
 		<menuitem name="Clear"
@@ -78,7 +78,7 @@
 			  _descr="Removes the selected text without putting it on the clipboard"
 			  verb=""/>
 
-		<menuitem/>
+		<separator/>
 
 		<menuitem name="Select All"
 			  _label="_Select All" 
@@ -86,7 +86,7 @@
 			  verb=""
 			  sensitive="0"/>
 		
-		<menuitem/>
+		<separator/>
 
 		<menuitem name="Customize" 
 			  _label="Custo_mization..." 
@@ -169,7 +169,7 @@
 			  accel="*Control*h"
 			  verb=""/>
 
-		<menuitem/>
+		<separator/>
 
 		<menuitem name="Forget History" 
 			  _label="For_get History" 
@@ -219,7 +219,7 @@
 				  _descr="Use Advanced settings"
 				  type="radio" group="user levels group"/>
 		</placeholder>
-		<menuitem/>
+		<separator/>
 		<menuitem name="User Level Customization" 
 			  _label="Edit Settings..." 
 			  _descr="Edit settings for the current user level"
@@ -250,7 +250,7 @@
 	          pixtype="stock" pixname="Refresh"
 		  verb=""/>
 
-	<toolitem type="separator"/>
+	<separator/>
 
 	<toolitem name="Home"
 		  _label="Home"
@@ -269,13 +269,22 @@
 	          pixtype="stock" pixname="Search"
 		  verb=""/>
 
-	<toolitem type="separator"/>
+	<separator/>
 
 	<toolitem name="Stop"
 		  _label="Stop"
 		  _descr="Stop loading this location"
 	          pixtype="stock" pixname="Stop"
 	          verb=""/>	
+
+	<placeholder name="Extra Buttons Placeholder" delimit="top">
+		<toolitem name="Services"
+			  _label="Services"
+			  _descr="Go to Eazel Services"
+		          pixtype="stock" pixname="Services"
+		          verb=""/>	
+	</placeholder>
+	
 	<control name="ThrobberWrapper"/>
 </dockitem>
 

@@ -3276,7 +3276,9 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB_END
 	};
 
-	/* FIXME: Need to ref this? Or unref it on destroy? */
+	/* This BonoboUIComponent is made automatically, and its lifetime is
+	 * controlled automatically. We don't need to explicitly ref or unref it.
+	 */
 	view->details->ui = nautilus_view_set_up_ui (view->details->nautilus_view,
 						     NAUTILUS_DATADIR,
 						     "nautilus-directory-view-ui.xml",

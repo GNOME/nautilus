@@ -183,44 +183,24 @@ loser_load_location_callback (NautilusView  *nautilus_view,
 	nautilus_sidebar_loser_maybe_fail ("post-done");
 }
 
-#ifdef UIH
 static void
-bonobo_loser_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
+bonobo_loser_callback (BonoboUIComponent *ui, gpointer user_data, const char *verb)
 {
- 	NautilusSidebarLoser *view;
-	char *label_text;
-
         g_assert (NAUTILUS_IS_SIDEBAR_LOSER (user_data));
 
-	view = NAUTILUS_SIDEBAR_LOSER (user_data);
-
-	if (strcmp (path, "/File/Kill Sidebar View") == 0) {
-		label_text = g_strdup_printf ("%s\n\nYou selected the Kill Sidebar View menu item.", view->details->uri);
-		nautilus_sidebar_loser_fail ();
-
-	} else {
-		g_assert (strcmp (path, "/Main/Kill Sidebar View") == 0);
-		label_text = g_strdup_printf (_("%s\n\nYou clicked the Kill Sidebar View toolbar button."), view->details->uri);
-
-		nautilus_sidebar_loser_fail ();
-
-	}
-	
-	gtk_label_set_text (GTK_LABEL (view), label_text);
-	g_free (label_text);
+	nautilus_sidebar_loser_fail ();
+	gtk_label_set_text (GTK_LABEL (user_data), _("You have killed the Sidebar Loser"));
 }
-#endif
 
 static void
 loser_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpointer user_data)
 {
  	NautilusSidebarLoser *view;
 	BonoboUIComponent *ui_component;
-	GdkPixbuf *pixbuf;
-#ifdef UIH
-	BonoboUIHandlerPixmapType pixmap_type;
-	char *path;
-#endif
+	BonoboUIVerb verbs [] = {
+		BONOBO_UI_VERB ("Kill Sidebar Loser", bonobo_loser_callback),
+		BONOBO_UI_VERB_END
+	};
 	
 	nautilus_sidebar_loser_maybe_fail ("pre-merge");
 
@@ -234,55 +214,7 @@ loser_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoint
 							"nautilus-sidebar-loser-ui.xml",
 							"nautilus-sidebar-loser");
 
-		/* Load test pixbuf */
-		pixbuf = gdk_pixbuf_new_from_file (ICON_DIR "/i-directory-24.png");		
-#ifdef UIH
-		if (pixbuf != NULL)
-			pixmap_type = BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA;
-		else
-			pixmap_type = BONOBO_UI_HANDLER_PIXMAP_NONE;
-
-	       /* Create our loser menu item. */ 
-		path = bonobo_ui_handler_build_path (NULL,
-						     "File", 
-						     "Kill Sidebar View",
-						     NULL);
-		bonobo_ui_handler_menu_new_item 
-			(local_ui_handler,					/* BonoboUIHandler */
-	        	 path,							/* menu item path, must start with /some-existing-menu-path and be otherwise unique */
-	                 _("_Kill Sidebar View"),						/* menu item user-displayed label */
-	                 _("Kill the Loser sidebar view"),		/* hint that appears in status bar */
-	                 bonobo_ui_handler_menu_get_pos 
-	                 	(local_ui_handler, 
-	                         NAUTILUS_MENU_PATH_NEW_ITEMS_PLACEHOLDER) + 1,	/* position within menu; -1 means last */
-	                 pixmap_type,						/* pixmap type */
-	                 pixbuf,						/* pixmap data */
-	                 'M',							/* accelerator key, couldn't bear the thought of using Control-S for anything except Save */
-	                 GDK_CONTROL_MASK,					/* accelerator key modifiers */
-	                 bonobo_loser_callback,				        /* callback function */
-	                 view);                					/* callback function data */
-		g_free (path);
-
-                /* Create our loser toolbar button. */ 
-                path = bonobo_ui_handler_build_path (NAUTILUS_TOOLBAR_PATH_MAIN_TOOLBAR, 
-                				     "Kill Sidebar View",
-                				     NULL);
-	        bonobo_ui_handler_toolbar_new_item 
-	        	(local_ui_handler,				/* BonoboUIHandler */
-	        	 path,						/* button path, must start with /some-existing-toolbar-path and be otherwise unique */
-	        	 _("Loser"),					/* button user-displayed label */
-	        	 _("Kill the Loser sidebar view."),	        /* hint that appears in status bar */
-	        	 -1,						/* position, -1 means last */
-	        	 pixmap_type,					/* pixmap type */
-	        	 pixbuf,					/* pixmap data */
-	        	 0,						/* accelerator key */
-	        	 0,						/* accelerator key modifiers */
-	        	 bonobo_loser_callback,			        /* callback function */
-	        	 view);						/* callback function's data */
-	        g_free (path);
-#endif
-		
-		gdk_pixbuf_unref (pixbuf);
+		bonobo_ui_component_add_verb_list_with_data (ui_component, verbs, view);
 	} else {
 		/* Do nothing. */
 	}

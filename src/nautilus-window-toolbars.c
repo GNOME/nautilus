@@ -40,6 +40,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-app.h>
 #include <libgnomeui/gnome-app-helper.h>
+#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
@@ -49,11 +50,6 @@
 #include <libnautilus-extensions/nautilus-theme.h>
 
 /* forward declarations */
-#ifdef EAZEL_SERVICES
-/*
-static void toolbar_services_callback (GtkWidget *widget, NautilusWindow *window);
-*/
-#endif
 
 #define GNOME_STOCK_PIXMAP_WEBSEARCH "SearchWeb"
 
@@ -150,9 +146,9 @@ back_or_forward_button_clicked_callback (GtkWidget *widget,
 /* set up the toolbar info based on the current theme selection from preferences */
 
 static void
-set_up_button (NautilusWindow *window, const char *item_name, const char* icon_name)
+set_up_button (NautilusWindow *window, const char *item_path, const char* icon_name)
 {
-	char *full_name, *icon_theme, *path_name, *bonobo_path;
+	char *full_name, *icon_theme, *path_name;
 
 	/* look in the theme to see if there's a redirection found */
 	icon_theme = nautilus_theme_get_theme_data ("toolbar", "ICON_THEME");
@@ -165,27 +161,24 @@ set_up_button (NautilusWindow *window, const char *item_name, const char* icon_n
 		full_name = nautilus_theme_get_image_path (icon_name);
 	}
 		
-	bonobo_path = g_strdup_printf ("/Tool Bar/%s", item_name);	
-
 	/* set up the toolbar component with the new image */
 
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 		
 	bonobo_ui_component_set_prop (window->details->shell_ui, 
-				      bonobo_path,
+				      item_path,
 				      "pixtype",
 				      full_name == NULL ? "stock" : "filename",
 			      	      NULL);
 	
 	bonobo_ui_component_set_prop (window->details->shell_ui, 
-				      bonobo_path,
+				      item_path,
 				      "pixname",
 				      full_name == NULL ? icon_name : full_name,
 			      	      NULL);
 	
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 
-	g_free (bonobo_path);
 	g_free (full_name);
 }
 
@@ -193,18 +186,15 @@ set_up_button (NautilusWindow *window, const char *item_name, const char* icon_n
 static void
 set_up_toolbar_images (NautilusWindow *window)
 {
-	set_up_button (window, "Back", "Back");
-	set_up_button (window, "Forward", "Forward");
-	set_up_button (window, "Up", "Up");
-	set_up_button (window, "Home", "Home");
-	set_up_button (window, "Reload", "Refresh");
-	set_up_button (window, "Toggle Find Mode", "Search");
-	set_up_button (window, "Go to Web Search", "SearchWeb");
-	set_up_button (window, "Stop", "Stop");
-
-#ifdef EAZEL_SERVICES
-	set_up_button (window, "Services", "Services");
-#endif	
+	set_up_button (window, "/Tool Bar/Back", "Back");
+	set_up_button (window, "/Tool Bar/Forward", "Forward");
+	set_up_button (window, "/Tool Bar/Up", "Up");
+	set_up_button (window, "/Tool Bar/Home", "Home");
+	set_up_button (window, "/Tool Bar/Reload", "Refresh");
+	set_up_button (window, "/Tool Bar/Toggle Find Mode", "Search");
+	set_up_button (window, "/Tool Bar/Go to Web Search", "SearchWeb");
+	set_up_button (window, "/Tool Bar/Stop", "Stop");
+	set_up_button (window, "/Tool Bar/Extra Buttons Placeholder/Services", "Services");
 }
 
 static GtkWidget *
@@ -269,9 +259,9 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 	GtkWidget *frame;
 	BonoboControl *throbber_wrapper;
 
-/* add the services button if necessary */
-#ifdef EAZEL_SERVICES
-	bonobo_ui_component_set (window->details->shell_ui, "/Tool Bar/", _("<toolitem type=\"std\" name=\"Services\" label=\"Services\" descr=\"Go To Eazel Services\" verb=\"\"/>"), NULL);
+/* Hide the services button if necessary */
+#ifndef EAZEL_SERVICES
+	nautilus_bonobo_set_hidden (window->details->shell_ui, "/Tool Bar/Extra Buttons Placeholder/Services", TRUE);
 #endif
 	
 	set_up_toolbar_images (window);
@@ -316,14 +306,3 @@ nautilus_window_toolbar_remove_theme_callback (NautilusWindow *window)
 		 theme_changed_callback,
 		 window);
 }
-
-
-#ifdef EAZEL_SERVICES
-/*
-static void
-toolbar_services_callback (GtkWidget *widget, NautilusWindow *window)
-{
-	nautilus_window_goto_uri (window, "eazel:");
-}
-*/
-#endif

@@ -1,1 +1,21 @@
-<Root/>
+<Root>
+<menu>
+	<submenu name="File" _label="_File">
+		<placeholder name="File Items Placeholder">
+			<menuitem name="Kill Sidebar Loser" 
+				  _label="_Kill Sidebar Loser" 
+				  _descr="Kill the Loser sidebar panel"
+				  verb=""/>
+		</placeholder>
+	</submenu>
+</menu>
+<dockitem name="Tool Bar">
+	<placeholder name="Extra Buttons Placeholder">
+		<toolitem name="Kill Sidebar Loser"
+			  _label="Kill Sidebar Loser"
+			  _descr="Kill the Loser sidebar panel"
+		          pixtype="stock" pixname="Cut"
+		          verb=""/>
+	</placeholder>
+</dockitem>
+</Root>
