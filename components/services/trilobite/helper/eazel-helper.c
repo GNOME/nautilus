@@ -161,6 +161,10 @@ main (int argc, char **argv)
 		do_command ("ls", args);
 	}
 
+	if (g_strncasecmp (buffer, "start-medusa", 12) == 0) {
+		do_command ("start-medusa", 0);
+	}
+
 	printf ("* What?\n");
 	exit (1);
 }

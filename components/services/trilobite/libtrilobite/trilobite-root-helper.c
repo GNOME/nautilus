@@ -588,13 +588,16 @@ TrilobiteRootHelperStatus
 trilobite_root_helper_run (TrilobiteRootHelper *root_helper, TrilobiteRootHelperCommand command, GList *argv, int *fd)
 {
 	g_return_val_if_fail (root_helper != NULL, TRILOBITE_ROOT_HELPER_BAD_ARGS);
-	g_return_val_if_fail (argv != NULL, TRILOBITE_ROOT_HELPER_BAD_ARGS);
+	/* g_return_val_if_fail (argv != NULL, TRILOBITE_ROOT_HELPER_BAD_ARGS); */
 	g_return_val_if_fail (TRILOBITE_IS_ROOT_HELPER (root_helper), TRILOBITE_ROOT_HELPER_BAD_ARGS);
 	g_return_val_if_fail (TRILOBITE_ROOT_HELPER_IS_CONNECTED (root_helper), TRILOBITE_ROOT_HELPER_BAD_ARGS);
 
 	switch (command) {
 	case TRILOBITE_ROOT_HELPER_RUN_RPM:
 		return trilobite_root_helper_run_program (root_helper, "rpm", argv, fd);
+	case TRILOBITE_ROOT_HELPER_RUN_START_MEDUSA: 
+		return trilobite_root_helper_run_program (root_helper, "start-medusa",
+							  NULL, fd);
 	case TRILOBITE_ROOT_HELPER_RUN_SET_TIME:
 		return trilobite_root_helper_set_time (root_helper, argv, fd);
 	case TRILOBITE_ROOT_HELPER_RUN_LS:

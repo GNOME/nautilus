@@ -1,3 +1,28 @@
+2001-03-30  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	reviewed by: the toad that lives under my table
+
+	* components/services/trilobite/Makefile.am:
+	Build utils/
+	
+	* components/services/trilobite/helper/eazel-helper.c: (main):
+	Added ability to launch a start-medusa script.
+	
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.
+	h:
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.
+	c: (trilobite_root_helper_run):
+	Added a enum for a start-medusa command.
+	
+	* components/services/trilobite/utils/Makefile.am:
+	* components/services/trilobite/utils/eazel-helper-test.c:
+	(get_password_dude), (main):
+	Added a program to test root helper, for educational reasons
+	mostly.
+	
+	* configure.in:
+	Added components/services/trilobite/utils/Makefile
+
 2001-03-30  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>

@@ -1,1 +1,1 @@
-SUBDIRS = helper idl libtrilobite sample
+SUBDIRS = helper idl libtrilobite sample utils

@@ -64,7 +64,8 @@ typedef enum {
 /* commands that can be sent to the root helper, once it's running */
 typedef enum {
 	TRILOBITE_ROOT_HELPER_RUN_RPM = 1,	/* argv: args to rpm -- fd: pipe from rpm */
-	TRILOBITE_ROOT_HELPER_RUN_SET_TIME,	/* argv: list of 1 string containing a time_t -- fd: unused */
+	TRILOBITE_ROOT_HELPER_RUN_SET_TIME = 2,	/* argv: list of 1 string containing a time_t -- fd: unused */
+	TRILOBITE_ROOT_HELPER_RUN_START_MEDUSA = 3, /* No args */
 	TRILOBITE_ROOT_HELPER_RUN_LS = 23	/* argv: args to ls -- fd: pipe from ls  [DEMO] */
 } TrilobiteRootHelperCommand;
 
