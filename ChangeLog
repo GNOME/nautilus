@@ -1,3 +1,22 @@
+2001-01-03  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Pavel Cisler<pavel@eazel.com>
+
+	Fix bugs 4677, 3031.
+	
+	* configure.in:
+	* components/mozilla/Makefile.am:
+	Use the right RPATH flags depending on where mozilla was found.
+	This fixed the problem of trying to use mozilla built by
+	eazel-hacking instead of from RPMS.
+	
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize_class),
+	(mozilla_content_view_one_time_happenings),
+	(mozilla_content_view_setup_profile_directory):
+	Add support for setting up a Mozilla profile so that cookies and
+	cache work.
+
 2001-01-02  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* configure.in:

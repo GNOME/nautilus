@@ -110,6 +110,7 @@ static char *   mozilla_translate_uri_if_needed                (NautilusMozillaC
 static char *   mozilla_untranslate_uri_if_needed              (NautilusMozillaContentView      *view,
 								const char                      *uri);
 static void     mozilla_content_view_one_time_happenings       (void);
+static void     mozilla_content_view_setup_profile_directory   (void);
 
 
 #ifdef EAZEL_SERVICES
@@ -156,6 +157,8 @@ nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass 
 	parent_class = gtk_type_class (GTK_TYPE_VBOX);
 	
 	object_class->destroy = nautilus_mozilla_content_view_destroy;
+
+	mozilla_content_view_setup_profile_directory ();
 }
 
 static void
@@ -1454,5 +1457,25 @@ mozilla_content_view_one_time_happenings (void)
 	/* Setup routing of proxy preferences from gconf to mozilla */
 	mozilla_gconf_listen_for_proxy_changes ();
 
+}
+
+/* The "Mozilla Profile" directory is the place where mozilal stores 
+ * things like cookies and cache.  Here we tell the mozilla embedding
+ * widget to use ~/.nautilus/MozillaProfile for this purpose.
+ *
+ * We need mozilla M19 to support this feature.
+ */
+static void
+mozilla_content_view_setup_profile_directory (void)
+{
+#if (MOZILLA_MILESTONE >= 19)
+	const char *profile_name = "MozillaProfile";
+	char *profile_dir;
+	
+	profile_dir = g_strdup_printf ("%s/.nautilus", g_get_home_dir ());
+
+	/* Its a bug in mozilla embedding that we need to cast the const away */
+	gtk_moz_embed_set_profile_path (profile_dir, (char *) profile_name);
+#endif
 }
 

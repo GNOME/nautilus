@@ -286,6 +286,7 @@ then
 	AC_PROG_CXX
 	found_mozilla=true
 
+	MOZILLA_COMPONENT_RPATH_FLAGS=-Wl,-rpath=$_mozilla_lib_place
 	MOZILLA_COMPONENT_CFLAGS="-I$_mozilla_include_place -fno-rtti -fno-exceptions"
 	MOZILLA_COMPONENT_LDFLAGS=-L$_mozilla_lib_place
 	MOZILLA_COMPONENT_LIBS="$_mozilla_gtk_moz_embed_libs \
@@ -294,6 +295,7 @@ then
 				$_mozilla_nspr_libs \
 				$_mozilla_plc_libs \
 				$_mozilla_plds_libs"
+	AC_SUBST(MOZILLA_COMPONENT_RPATH_FLAGS)
 	AC_SUBST(MOZILLA_COMPONENT_CFLAGS)
 	AC_SUBST(MOZILLA_COMPONENT_LDFLAGS)
 	AC_SUBST(MOZILLA_COMPONENT_LIBS)
@@ -867,6 +869,7 @@ Mozilla component	: YES
    mozilla libraries              : $_mozilla_lib_place
    mozilla includes               : $_mozilla_include_place
    MOZILLA_MILESTONE              : $MOZILLA_MILESTONE
+   MOZILLA_COMPONENT_RPATH_FLAGS  : $MOZILLA_COMPONENT_RPATH_FLAGS
    MOZILLA_COMPONENT_DEBUG_FLAGS  : $MOZILLA_COMPONENT_DEBUG_FLAGS"
 ;;
 *)

@@ -47,7 +47,7 @@ nautilus_mozilla_content_view_LDADD = \
 	$(NULL)
 
 nautilus_mozilla_content_view_LDFLAGS = \
-	-Wl,-rpath=/usr/lib/mozilla \
+	$(MOZILLA_COMPONENT_RPATH_FLAGS) \
 	$(NULL)
 
 oafdir = $(datadir)/oaf
