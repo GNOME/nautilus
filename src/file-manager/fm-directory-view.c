@@ -2245,7 +2245,7 @@ finish_loading_uri (FMDirectoryView *view)
 	attributes = g_list_prepend (attributes,
 				     NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
 	nautilus_directory_file_monitor_add (view->details->model, view,
-					     attributes, FALSE,
+					     attributes, FALSE, TRUE,
 					     files_added_callback, view);
 	g_list_free (attributes);
 

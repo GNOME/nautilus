@@ -169,9 +169,6 @@ destroy (GtkObject *object)
 
 	bar = NAUTILUS_LOCATION_BAR (object);
 
-	/* Remove object transactions from undo manager */
-	nautilus_undo_manager_unregister_object(GTK_OBJECT(bar->entry));
-
 	gtk_widget_destroy (GTK_WIDGET (bar->label));
 	gtk_widget_destroy (GTK_WIDGET (bar->entry));
 

@@ -41,8 +41,6 @@
 #define NAUTILUS_IS_UNDO_MANAGER_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass),	NAUTILUS_TYPE_UNDO_MANAGER))
 	
-#define NAUTILUS_UNDO_MANAGER_NAME "NautilusUndoManager"
-
 typedef struct NautilusUndoManagerClass NautilusUndoManagerClass;
 typedef struct NautilusUndoManagerDetails NautilusUndoManagerDetails;
 

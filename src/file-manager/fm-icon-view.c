@@ -1195,6 +1195,7 @@ icon_position_changed_callback (NautilusIconContainer *container,
 		nautilus_file_set_metadata
 			(file, NAUTILUS_METADATA_KEY_ICON_POSITION, 
 			 NULL, position_string);
+		g_free (position_string);
 	}
 
 	/* FIXME bugzilla.eazel.com 662: 
@@ -1214,8 +1215,6 @@ icon_position_changed_callback (NautilusIconContainer *container,
 	nautilus_file_set_metadata
 		(file, NAUTILUS_METADATA_KEY_ICON_SCALE,
 		 "1.00", scale_string);
-
-	g_free (position_string);
 	g_free (scale_string);
 
 	setlocale (LC_NUMERIC, locale);

@@ -156,3 +156,177 @@ nautilus_undoable_restore_from_undo_snapshot (NautilusUndoable *undoable)
 		 signals[RESTORE_FROM_UNDO_SNAPSHOT],
 		 undoable);
 }
+
+/* Register a simple undo action by calling nautilus_undo_register_full. */
+void
+nautilus_undo_register (GtkObject *target,
+			NautilusUndoCallback callback,
+			gpointer callback_data,
+			GDestroyNotify callback_data_destroy_notify,
+			const char *operation_name,
+			const char *undo_menu_item_name,
+			const char *undo_menu_item_description,
+			const char *redo_menu_item_name,
+			const char *redo_menu_item_description)
+{
+	NautilusUndoAtom atom;
+	GList single_atom_list;
+
+	g_return_if_fail (GTK_IS_OBJECT (target));
+	g_return_if_fail (callback != NULL);
+
+	/* Make an atom. */
+	atom.target = target;
+	atom.callback = callback;
+	atom.callback_data = callback_data;
+	atom.callback_data_destroy_notify = callback_data_destroy_notify;
+
+	/* Make a single-atom list. */
+	single_atom_list.data = &atom;
+	single_atom_list.next = NULL;
+	single_atom_list.prev = NULL;
+
+	/* Call the full version of the registration function,
+	 * using the undo target as the place to search for the
+	 * undo manager.
+	 */
+	nautilus_undo_register_full (&single_atom_list,
+				     target,
+				     operation_name,
+				     undo_menu_item_name,
+				     undo_menu_item_description,
+				     redo_menu_item_name,
+				     redo_menu_item_description);
+}
+
+static void
+undo_atom_destroy (NautilusUndoAtom *atom)
+{
+	if (atom->callback_data_destroy_notify != NULL) {
+		(* atom->callback_data_destroy_notify) (atom->callback_data);
+	}
+	g_free (atom);
+}
+
+static void
+undo_atom_destroy_notify_cover (gpointer data)
+{
+	undo_atom_destroy (data);
+}
+
+static void
+undo_atom_destroy_g_func_cover (gpointer data, gpointer callback_data)
+{
+	undo_atom_destroy (data);
+}
+
+/* This is a temporary hack to make things work with NautilusUndoable. */
+static NautilusUndoAtom *atom_global_hack;
+
+/* The saving has already been done.
+ * We just use the save callback as a way to connect the atom to the
+ * undoable object that's created.
+ */
+static void
+save_callback (NautilusUndoable *undoable)
+{
+	gtk_object_set_data_full (GTK_OBJECT (undoable),
+				  "Nautilus undo atom",
+				  atom_global_hack,
+				  undo_atom_destroy_notify_cover);
+}
+
+static void
+restore_callback (NautilusUndoable *undoable)
+{
+	NautilusUndoAtom *atom;
+
+	atom = gtk_object_get_data (GTK_OBJECT (undoable),
+				    "Nautilus undo atom");
+	(* atom->callback) (atom->target, atom->callback_data);
+}
+
+/* Register an undo action. */
+void
+nautilus_undo_register_full (GList *atoms,
+			     GtkObject *undo_manager_search_start_object,
+			     const char *operation_name,
+			     const char *undo_menu_item_name,
+			     const char *undo_menu_item_description,
+			     const char *redo_menu_item_name,
+			     const char *redo_menu_item_description)
+{
+	NautilusUndoManager *manager;
+	NautilusUndoTransaction *transaction;
+	NautilusUndoAtom *atom;
+	GList *p;
+
+	g_return_if_fail (atoms != NULL);
+	g_return_if_fail (GTK_IS_OBJECT (undo_manager_search_start_object));
+
+	/* Note that this is just a hack in terms of the existing stuff.
+	 * A lot of things could be simplified and we can probably get rid of
+	 * NautilusUndoable entirely (maybe replace it with NautilusUndoAtom).
+	 */
+
+	manager = nautilus_get_undo_manager (undo_manager_search_start_object);
+	if (manager == NULL) {
+		g_list_foreach (atoms, undo_atom_destroy_g_func_cover, NULL);
+		return;
+	}
+
+	transaction = nautilus_undo_manager_begin_transaction
+		(manager, operation_name);
+	for (p = atoms; p != NULL; p = p->next) {
+		atom = p->data;
+
+		atom_global_hack = g_memdup (atom, sizeof (*atom));
+		nautilus_undoable_save_undo_snapshot
+			(transaction, atom->target,
+			 GTK_SIGNAL_FUNC (save_callback),
+			 GTK_SIGNAL_FUNC (restore_callback));
+
+		/* Connect a signal handler so this object will unregister
+		 * itself when it's destroyed.
+		 */
+		gtk_signal_connect
+			(atom->target, "destroy",
+			 GTK_SIGNAL_FUNC (nautilus_undo_unregister), NULL);
+	}
+	nautilus_undo_manager_end_transaction (manager, transaction);
+}
+
+/* Cover for forgetting about all undo relating to a particular target. */
+void
+nautilus_undo_unregister (GtkObject *target)
+{
+	g_return_if_fail (GTK_IS_OBJECT (target));
+
+	/* Right now we just call the "real" code over in the undo manager.
+	 * FIXME: We will have to figure out which transactions this affects
+	 * and remove ourselves from them. It's not clear how to do that.
+	 */
+	nautilus_undo_manager_unregister_object (target);
+
+	/* Perhaps this should also unregister all children if called on a
+	 * GtkContainer? That might be handy.
+	 */
+}
+
+void
+nautilus_undo (GtkObject *undo_manager_search_start_object)
+{
+	NautilusUndoManager *manager;
+
+	g_return_if_fail (GTK_IS_OBJECT (undo_manager_search_start_object));
+
+	/* FIXME: This has to use the CORBA undo so it can work even
+	 * if it's in a different process from the undo manager. That
+	 * will be clear anyway, since the undo manager returned by
+	 * nautilus_get_undo_manager will have to be a CORBA one.
+	 */
+	manager = nautilus_get_undo_manager (undo_manager_search_start_object);
+	if (manager != NULL) {
+		nautilus_undo_manager_undo (manager);
+	}
+}

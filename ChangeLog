@@ -1,3 +1,45 @@
+2000-05-19  Darin Adler  <darin@eazel.com>
+
+	* components/services/trilobite/sample/command-line/.cvsignore:
+	* components/services/trilobite/sample/service/.cvsignore:
+	File name changes.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_file_monitor_add),
+	(nautilus_self_check_directory):
+	* libnautilus-extensions/nautilus-directory.h:
+	* src/file-manager/fm-directory-view.c: (finish_loading_uri):
+	Added reload interface.
+	
+	* libnautilus/nautilus-undoable.c: (nautilus_undo_register),
+	(undo_atom_destroy), (undo_atom_destroy_notify_cover),
+	(undo_atom_destroy_g_func_cover), (save_callback),
+	(restore_callback), (nautilus_undo_register_full),
+	(nautilus_undo_unregister), (nautilus_undo):
+	* libnautilus/nautilus-undoable.h:
+	Implemented new simplified Undo API.
+	
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_initialize), (nautilus_entry_destroy),
+	(nautilus_entry_key_press), (nautilus_entry_changed),
+	(register_edit_undo), (update_undo_text),
+	(restore_from_undo_snapshot_callback),
+	(nautilus_entry_enable_undo):
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(hide_rename_widget):
+	* libnautilus-extensions/nautilus-icon-text-item.c: (iti_event),
+	(register_rename_undo), (restore_from_undo_snapshot_callback):
+	* src/nautilus-bookmarks-window.c: (on_window_delete_event):
+	* src/nautilus-location-bar.c: (destroy):
+	Use new simplified Undo API.
+	
+	* libnautilus/nautilus-undo-manager.h:
+	Remove UNDO_MANAGER_NAME, which is no longer used.
+	
+	* src/file-manager/fm-icon-view.c:
+	(icon_position_changed_callback): Fixed a bad g_free that was
+	cause seg faults when you resized an icon.
+	
 2000-05-19  John Sullivan  <sullivan@eazel.com>
 
 	Finished task 174 (make "Open in new window" preference
@@ -99,7 +141,7 @@
 
 	* components/services/trilobite/sample/command-line/Makefile.am:
 	* components/services/trilobite/sample/command-line/main.c: 
-	Did some nautilus to trilobte renaming.
+	Did some nautilus to trilobite renaming.
 
 	* components/services/time/service/trilobite-eazel-time-service.oafinfo: 
 	* components/services/time/service/main.c: 
@@ -113,7 +155,7 @@
 	* components/services/trilobite/src/trilobite-service.c: 
 	removed some g_messages
 
-	* components/services/trilobite/sample/service/sample-service-public.h (struct _SampleService): 
+	* components/services/trilobite/sample/service/sample-service-public.h (struct _SampleService):
 	removed superflous element servant;
 
 	* components/services/trilobite/sample/service/sample-service-impl.c: 
@@ -121,10 +163,10 @@
 	the parent class pointer to be of type BonoboObjectClass.
 
 	* components/services/trilobite/sample/service/main.c: 
-	Did some nautilus to trilobte renaming.
+	Did some nautilus to trilobite renaming.
 
 	* components/services/trilobite/sample/service/Makefile.am:
-	Did some nautilus to trilobte renaming.
+	Did some nautilus to trilobite renaming.
 
 2000-05-19  Yukihiro Nakai <nakai@gnome.gr.jp>
 

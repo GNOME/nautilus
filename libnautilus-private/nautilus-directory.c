@@ -850,6 +850,7 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 				     gconstpointer client,
 				     GList *file_attributes,
 				     gboolean monitor_metadata,
+				     gboolean force_reload,
 				     NautilusDirectoryCallback callback,
 				     gpointer callback_data)
 {
@@ -931,7 +932,7 @@ nautilus_self_check_directory (void)
 	file_count = 0;
 	nautilus_directory_file_monitor_add
 		(directory, &file_count,
-		 NULL, FALSE,
+		 NULL, FALSE, FALSE,
 		 get_files_callback, &data_dummy);
 
 	got_metadata_flag = FALSE;

@@ -36,7 +36,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
-#include <libnautilus/nautilus-undo-manager.h>
+#include <libnautilus/nautilus-undoable.h>
 
 static void nautilus_entry_initialize 	    (NautilusEntry 	*entry);
 static void nautilus_entry_initialize_class (NautilusEntryClass *class);
@@ -46,8 +46,8 @@ static gint nautilus_entry_key_press 	    (GtkWidget   	*widget,
 		     		      	     GdkEventKey 	*event);
 
 /* Undo callbacks */
-static void save_undo_snapshot_callback (NautilusUndoable *object);
-static void restore_from_undo_snapshot_callback (NautilusUndoable *object);
+static void register_edit_undo (NautilusEntry *entry);
+static void restore_from_undo_snapshot_callback (GtkObject *target, gpointer callback_data);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusEntry, nautilus_entry, GTK_TYPE_ENTRY)
@@ -72,10 +72,6 @@ nautilus_entry_initialize_class (NautilusEntryClass *class)
 static void
 nautilus_entry_initialize (NautilusEntry *entry)
 {
-	entry->undo_text = NULL;
-	entry->undo_registered = TRUE;
-	entry->use_undo = FALSE;
-	entry->handle_undo_key = FALSE;
 }
 
 GtkWidget*
@@ -90,9 +86,7 @@ nautilus_entry_destroy (GtkObject *object)
 	NautilusEntry *entry;
 
 	entry = NAUTILUS_ENTRY (object);
-	if (entry->undo_text != NULL) {
-		g_free (entry->undo_text);
-	}
+	g_free (entry->undo_text);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -120,9 +114,10 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 
 		/* Undo */
 		case 'z':
-			if (event->state & GDK_CONTROL_MASK && entry->use_undo == TRUE
-			    && entry->handle_undo_key == TRUE) {
-				nautilus_undo_manager_undo (nautilus_get_undo_manager (GTK_OBJECT (widget)));
+			if ((event->state & GDK_CONTROL_MASK) != 0
+			    && entry->use_undo
+			    && entry->handle_undo_key) {
+				nautilus_undo (GTK_OBJECT (widget));
 				return FALSE;
 			}
 			break;
@@ -185,13 +180,10 @@ nautilus_entry_select_all_at_idle (NautilusEntry *entry)
  *
  * @entry: A NautilusEntry
  **/
-
 static void
 nautilus_entry_changed (GtkEditable *editable)
 {
 	NautilusEntry *entry;
-	NautilusUndoTransaction *transaction;
-	NautilusUndoManager *manager;
 	
 	g_assert (GTK_IS_EDITABLE (editable));
 	g_assert (NAUTILUS_IS_ENTRY (editable));
@@ -199,15 +191,8 @@ nautilus_entry_changed (GtkEditable *editable)
 	entry = NAUTILUS_ENTRY(editable);
 
 	/* Register undo transaction */	
-	if (!entry->undo_registered && entry->use_undo) {
-
-		manager = nautilus_get_undo_manager (GTK_OBJECT (entry));
-		g_assert (manager);
-		transaction = nautilus_undo_manager_begin_transaction (manager, _("Edit"));
-		nautilus_undoable_save_undo_snapshot (transaction, GTK_OBJECT(entry), save_undo_snapshot_callback,
-					      	      restore_from_undo_snapshot_callback);
-		nautilus_undo_manager_end_transaction (manager, transaction);
-
+	if (entry->use_undo && !entry->undo_registered) {
+		register_edit_undo (entry);
 		entry->undo_registered = TRUE;
 	}
 	
@@ -220,55 +205,53 @@ nautilus_entry_changed (GtkEditable *editable)
  * string with a key of "undo_text".
  */
 static void
-save_undo_snapshot_callback (NautilusUndoable *undoable)
+register_edit_undo (NautilusEntry *entry)
 {
-	NautilusEntry *target;
-		
-	target = NAUTILUS_ENTRY (undoable->undo_target_class);
-
-	if (!target->use_undo)
+	if (!entry->use_undo) {
 		return;
-	
-	/* Add our undo data to the data list */
-	g_datalist_set_data(&undoable->undo_data, "undo_text", g_strdup(target->undo_text));
+	}
+
+	nautilus_undo_register
+		(GTK_OBJECT (entry),
+		 restore_from_undo_snapshot_callback,
+		 g_strdup (entry->undo_text),
+		 (GDestroyNotify) g_free,
+		 _("Edit"),
+		 _("Undo Edit"),
+		 _("Undo the edit"),
+		 _("Redo Edit"),
+		 _("Redo the edit"));
 }
 
 
+static void
+update_undo_text (NautilusEntry *entry)
+{
+	g_free (entry->undo_text);
+	entry->undo_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
+}
+
 /* restore_from_undo_snapshot_callback
  * 
- * Restore edited text to data stored in undoable.  Data is stored as 
- * a string with a key of "undo_text".
+ * Restore edited text.
  */
 static void
-restore_from_undo_snapshot_callback (NautilusUndoable *undoable)
-{		
-	char *undo_text;
+restore_from_undo_snapshot_callback (GtkObject *target, gpointer callback_data)
+{
 	NautilusEntry *entry;
 
-	entry = NAUTILUS_ENTRY (undoable->undo_target_class);
+	entry = NAUTILUS_ENTRY (target);
 
-	if (!entry->use_undo)
-		return;
-
-	/* Get copy of entry text */
-	entry->undo_registered = FALSE;
-	if (entry->undo_text != NULL) {
-		g_free (entry->undo_text);
-	}
-	entry->undo_text = g_strdup (gtk_entry_get_text (GTK_ENTRY(entry)));
+	/* Register a new undo transaction for redo. */
+	update_undo_text (entry);
+	register_edit_undo (entry);
 	
-	
-	undo_text = g_datalist_get_data (&undoable->undo_data, "undo_text");
-	if (undo_text != NULL) {
-		gtk_entry_set_text(GTK_ENTRY(entry), undo_text);
-	}
+	/* Restore the text. */
+	gtk_entry_set_text (GTK_ENTRY(entry), callback_data);
+	update_undo_text (entry);
 
-	/* Get copy of entry text */
+	/* Reset the registered flag so we get a new item for future editing. */
 	entry->undo_registered = FALSE;
-	if (entry->undo_text != NULL) {
-		g_free (entry->undo_text);
-	}
-	entry->undo_text = g_strdup (gtk_entry_get_text (GTK_ENTRY(entry)));
 }
 
 /* nautilus_entry_enable_undo
@@ -278,22 +261,22 @@ restore_from_undo_snapshot_callback (NautilusUndoable *undoable)
 void 
 nautilus_entry_enable_undo (NautilusEntry *entry, gboolean value)
 {
-	g_assert (entry);
-	g_assert (NAUTILUS_IS_ENTRY (entry));
+	g_return_if_fail (NAUTILUS_IS_ENTRY (entry));
 
-	entry->undo_registered = !value;
 	entry->use_undo = value;
 
-	if (!entry->undo_registered) {		
-		/* Get copy of entry text */
-		g_free (entry->undo_text);
-		entry->undo_text = g_strdup (gtk_entry_get_text (GTK_ENTRY(entry)));
+	if (value) {
+		if (!entry->undo_registered) {		
+			update_undo_text (entry);
+		}
+	} else {
+		nautilus_undo_unregister (GTK_OBJECT (entry));
 	}
 }
 
 /* nautilus_entry_enable_undo_key
  *
- * Allow the use od ctl-z from within widget.  This should only be 
+ * Allow the use of ctrl-z from within widget.  This should only be 
  * set if there is no menu bar to use to undo the widget.
  */
 void 

@@ -40,9 +40,10 @@
 #define NAUTILUS_IS_UNDOABLE_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass),	NAUTILUS_TYPE_UNDOABLE))
 
-typedef struct NautilusUndoableClass NautilusUndoableClass;
-typedef struct NautilusUndoManager NautilusUndoManager;
 typedef struct NautilusUndoable NautilusUndoable;
+typedef struct NautilusUndoableClass NautilusUndoableClass;
+
+typedef struct NautilusUndoManager NautilusUndoManager;
 typedef struct NautilusUndoTransaction NautilusUndoTransaction;
 
 struct NautilusUndoable {	
@@ -55,16 +56,61 @@ struct NautilusUndoable {
 struct NautilusUndoableClass {
 	GtkObjectClass parent_class;
 	
-	void (* save_undo_snapshot) (GtkObject *object, gpointer data);
-	void (* restore_from_undo_snapshot) (GtkObject *object, gpointer data);
+	void (* save_undo_snapshot) (GtkObject *object,
+				     gpointer data);
+	void (* restore_from_undo_snapshot) (GtkObject *object,
+					     gpointer data);
+
+	void (* obsoleted) (NautilusUndoable *object,
+			    gpointer user_data);
 };
 
 /* GtkObject */
-GtkType	nautilus_undoable_get_type 				(void);
+GtkType    nautilus_undoable_get_type                   (void);
+GtkObject *nautilus_undoable_new                        (void);
 
-GtkObject 	*nautilus_undoable_new 				(void);
-void		nautilus_undoable_save_undo_snapshot		(NautilusUndoTransaction *transaction, GtkObject *target, 
-								 GtkSignalFunc save_func, GtkSignalFunc restore_func);
-void		nautilus_undoable_restore_from_undo_snapshot	(NautilusUndoable *undoable);
+/* Basic operations. */
+void       nautilus_undoable_save_undo_snapshot         (NautilusUndoTransaction *transaction,
+							 GtkObject               *target,
+							 GtkSignalFunc            save_function,
+							 GtkSignalFunc            restore_function);
+void       nautilus_undoable_restore_from_undo_snapshot (NautilusUndoable        *undoable);
+
+/* A change that makes this atom no longer apply. */
+void       nautilus_undoable_mark_obsolete              (NautilusUndoable        *undoable);
+
+typedef void (* NautilusUndoCallback) (GtkObject *target, gpointer callback_data);
+
+/* Recipe for undo of a bit of work on an object. */
+typedef struct {
+	GtkObject *target;
+	NautilusUndoCallback callback;
+	gpointer callback_data;
+	GDestroyNotify callback_data_destroy_notify;
+} NautilusUndoAtom;
+
+/* Registering something that can be undone. */
+void nautilus_undo_register      (GtkObject            *target,
+				  NautilusUndoCallback  callback,
+				  gpointer              callback_data,
+				  GDestroyNotify        callback_data_destroy_notify,
+				  const char           *operation_name,
+				  const char           *undo_menu_item_name,
+				  const char           *undo_menu_item_description,
+				  const char           *redo_menu_item_name,
+				  const char           *redo_menu_item_description);
+void nautilus_undo_register_full (GList                *atoms,
+				  GtkObject            *undo_manager_search_start_object,
+				  const char           *operation_name,
+				  const char           *undo_menu_item_name,
+				  const char           *undo_menu_item_description,
+				  const char           *redo_menu_item_name,
+				  const char           *redo_menu_item_description);
+void nautilus_undo_unregister    (GtkObject            *target);
+
+/* Performing an undo explicitly. Only for use by objects "out in the field".
+ * The menu bar itself uses a richer API in the undo manager.
+ */
+void nautilus_undo               (GtkObject            *undo_manager_search_start_object);
 
 #endif

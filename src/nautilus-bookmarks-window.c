@@ -570,14 +570,10 @@ on_window_delete_event (GtkWidget *widget,
 	/* Hide but don't destroy */
 	gtk_widget_hide (widget);
 
-	/* Disable undo for entry widgets*/
+	/* Disable undo for entry widgets */
 	nautilus_entry_enable_undo (NAUTILUS_ENTRY (name_field), FALSE);
 	nautilus_entry_enable_undo (NAUTILUS_ENTRY (uri_field), FALSE);
 
-	/* Remove object transactions from undo manager */
-	nautilus_undo_manager_unregister_object (GTK_OBJECT (name_field));
-	nautilus_undo_manager_unregister_object (GTK_OBJECT (uri_field));
-	
 	/* Seems odd to restore the geometry just after saving it,
 	 * and when the window is hidden, but this insures that
 	 * the next time the window is shown it will have the

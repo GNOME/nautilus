@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /* nautilus-icon-text-item:  an editable text block with word wrapping for the
  * GNOME canvas.
  *
@@ -12,7 +14,7 @@
 #include "nautilus-icon-text-item.h"
 
 #include "nautilus-entry.h"
-#include <libnautilus/nautilus-undo-manager.h>
+#include <libnautilus/nautilus-undoable.h>
 
 #include <math.h>
 #include <stdio.h>
@@ -41,8 +43,8 @@
 typedef NautilusIconTextItem Iti;
 
 /* Signal callbacks */
-static void	save_undo_snapshot_callback (NautilusUndoable *object);
-static void	restore_from_undo_snapshot_callback (NautilusUndoable *object);
+static void register_rename_undo (NautilusIconTextItem *item);
+static void restore_from_undo_snapshot_callback (GtkObject *target, gpointer callback_data);
 
 
 /* Private part of the NautilusIconTextItem structure */
@@ -792,7 +794,6 @@ iti_handle_arrow_key_event (NautilusIconTextItem *iti, GdkEvent *event)
 
 }
 
-
 /* Event handler for icon text items */
 static gint
 iti_event (GnomeCanvasItem *item, GdkEvent *event)
@@ -802,8 +803,6 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 	int idx;
 	double x, y;
 	int cx, cy;
-	NautilusUndoTransaction *transaction;
-	NautilusUndoManager *manager;
 	
 	iti = ITI (item);
 	priv = iti->priv;
@@ -837,12 +836,7 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 			/* Register undo transaction if neccessary */	
 			if (!priv->undo_registered) {
 				priv->undo_registered = TRUE;
-
-				manager = gtk_object_get_data (GTK_OBJECT (iti), NAUTILUS_UNDO_MANAGER_NAME);
-				transaction = nautilus_undo_manager_begin_transaction ( manager, "Rename");
-				nautilus_undoable_save_undo_snapshot (transaction, GTK_OBJECT(iti),
-								      save_undo_snapshot_callback, restore_from_undo_snapshot_callback);
-				nautilus_undo_manager_end_transaction (manager, transaction);
+				register_rename_undo (iti);
 			}
 
 			/* Handle any events that reach us */
@@ -1339,24 +1333,27 @@ nautilus_icon_text_item_get_margins (int *x, int *y)
 }
 
 
-/* save_undo_snapshot_callback
+/* register_undo
  * 
  * Get text at start of edit operation and store in undo data as 
  * string with a key of "undo_text".
  */
 static void
-save_undo_snapshot_callback(NautilusUndoable *undoable)
+register_rename_undo (NautilusIconTextItem *item)
 {
-	char *undo_text;
-	NautilusIconTextItem *iti;
 	ItiPrivate *priv;
-	
-	iti = NAUTILUS_ICON_TEXT_ITEM(undoable->undo_target_class);
-	priv = iti->priv;
 
-	/* Add undo data to the data list */
-	undo_text = g_strdup(gtk_entry_get_text (GTK_ENTRY(priv->entry)));
-	g_datalist_set_data(&undoable->undo_data, "undo_text", undo_text);
+	priv = item->priv;
+	nautilus_undo_register
+		(GTK_OBJECT (item),
+		 restore_from_undo_snapshot_callback,
+		 g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->entry))),
+		 (GDestroyNotify) g_free,
+		 _("Rename"),
+		 _("Undo Rename"),
+		 _("Restore the old name"),
+		 _("Redo Rename"),
+		 _("Restore the changed name"));
 }
 
 
@@ -1366,31 +1363,20 @@ save_undo_snapshot_callback(NautilusUndoable *undoable)
  * a string with a key of "undo_text".
  */
 static void
-restore_from_undo_snapshot_callback(NautilusUndoable *undoable)
+restore_from_undo_snapshot_callback (GtkObject *target, gpointer callback_data)
 {
-	char *undo_text;
-	NautilusIconTextItem *iti;
+	NautilusIconTextItem *item;
 	ItiPrivate *priv;
-	NautilusUndoTransaction *transaction;
-	NautilusUndoManager *manager;
+
+	item = NAUTILUS_ICON_TEXT_ITEM (target);
+	priv = item->priv;
 	
-	iti = NAUTILUS_ICON_TEXT_ITEM(undoable->undo_target_class);
-	priv = iti->priv;
-
-	/* Register undo transaction */
-	manager = gtk_object_get_data (GTK_OBJECT (iti), NAUTILUS_UNDO_MANAGER_NAME);
-	transaction = nautilus_undo_manager_begin_transaction (manager, _("Rename"));
-	nautilus_undoable_save_undo_snapshot (transaction, GTK_OBJECT(iti), 
-					      save_undo_snapshot_callback, restore_from_undo_snapshot_callback);
-	nautilus_undo_manager_end_transaction (manager, transaction);
+	/* Register a new undo transaction for redo. */
+	register_rename_undo (item);
 		
-	undo_text = g_datalist_get_data(&undoable->undo_data, "undo_text");
-	if (undo_text != NULL) {
-		/* Restore to undo text */
-		nautilus_icon_text_item_set_text (iti, undo_text);
+	/* Restore the text. */
+	nautilus_icon_text_item_set_text (item, callback_data);
 
-	}
-
+	/* Reset the registered flag so we get a new item for future editing. */
 	priv->undo_registered = FALSE;
 }
-
