@@ -1311,6 +1311,7 @@ static void
 fm_icon_view_merge_menus (FMDirectoryView *view)
 {
 	FMIconView *icon_view;
+	Bonobo_UIContainer ui_container;
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("Rename", rename_icon_callback),
 		BONOBO_UI_VERB ("Stretch", show_stretch_handles_callback),
@@ -1328,9 +1329,10 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	icon_view->details->ui = bonobo_ui_component_new ("Icon View");
 	g_signal_connect (icon_view->details->ui,
 			    "ui_event", G_CALLBACK (handle_ui_event), icon_view);
+	ui_container = fm_directory_view_get_bonobo_ui_container (view);
 	bonobo_ui_component_set_container (icon_view->details->ui,
-					   fm_directory_view_get_bonobo_ui_container (view),
-					   NULL);
+					   ui_container, NULL);
+	bonobo_object_release_unref (ui_container, NULL);
 	bonobo_ui_util_set_ui (icon_view->details->ui,
 			       DATADIR,
 			       "nautilus-icon-view-ui.xml",

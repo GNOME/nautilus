@@ -1,5 +1,17 @@
 2001-12-12  Michael Meeks  <michael@ximian.com>
 
+	* src/file-manager/fm-icon-view.c
+	(fm_icon_view_merge_menus): fix container ref leak.
+
+	* src/file-manager/fm-search-list-view.c
+	(real_merge_menus): ditto.
+
+	* src/file-manager/fm-desktop-icon-view.c
+	(fm_desktop_icon_view_destroy): more guards.
+	(real_merge_menus): fix container ref leak.
+
+2001-12-12  Michael Meeks  <michael@ximian.com>
+
 	* src/nautilus-window.c (nautilus_window_destroy):
 	protect vs. double destroy.
 

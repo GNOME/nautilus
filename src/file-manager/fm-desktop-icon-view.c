@@ -258,6 +258,7 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 	if (icon_view->details->ui != NULL) {
 		bonobo_ui_component_unset_container (icon_view->details->ui, NULL);
 		bonobo_object_unref (BONOBO_OBJECT (icon_view->details->ui));
+		icon_view->details->ui = NULL;
 	}
 	
 	free_volume_black_list (icon_view);
@@ -1236,6 +1237,7 @@ static void
 real_merge_menus (FMDirectoryView *view)
 {
 	FMDesktopIconView *desktop_view;
+	Bonobo_UIContainer ui_container;
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("Change Background", change_background_callback),
 		BONOBO_UI_VERB ("Empty Trash Conditional", empty_trash_callback),
@@ -1250,9 +1252,11 @@ real_merge_menus (FMDirectoryView *view)
 	desktop_view = FM_DESKTOP_ICON_VIEW (view);
 
 	desktop_view->details->ui = bonobo_ui_component_new ("Desktop Icon View");
+
+	ui_container = fm_directory_view_get_bonobo_ui_container (view);
 	bonobo_ui_component_set_container (desktop_view->details->ui,
-					   fm_directory_view_get_bonobo_ui_container (view),
-					   NULL);
+					   ui_container, NULL);
+	bonobo_object_release_unref (ui_container, NULL);
 	bonobo_ui_util_set_ui (desktop_view->details->ui,
 			       DATADIR,
 			       "nautilus-desktop-icon-view-ui.xml",

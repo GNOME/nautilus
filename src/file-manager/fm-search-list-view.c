@@ -713,6 +713,7 @@ static void
 real_merge_menus (FMDirectoryView *view)
 {
 	FMSearchListView *search_view;
+	Bonobo_UIContainer ui_container;
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("Indexing Info", indexing_info_callback),
 		BONOBO_UI_VERB ("Reveal", reveal_selected_items_callback),
@@ -724,9 +725,10 @@ real_merge_menus (FMDirectoryView *view)
 	search_view = FM_SEARCH_LIST_VIEW (view);
 
 	search_view->details->ui = bonobo_ui_component_new ("Search List View");
+	ui_container = fm_directory_view_get_bonobo_ui_container (view);
 	bonobo_ui_component_set_container (search_view->details->ui,
-					   fm_directory_view_get_bonobo_ui_container (view),
-					   NULL);
+					   ui_container, NULL);
+	bonobo_object_release_unref (ui_container, NULL);
 	bonobo_ui_util_set_ui (search_view->details->ui,
 			       DATADIR,
 			       "nautilus-search-list-view-ui.xml",
