@@ -148,12 +148,15 @@ load_location_callback (NautilusView *nautilus_view, char *location)
    best way to communicate an error code to
    a view */
 static void
-load_error_callback (FMDirectoryView *nautilus_view, 
-		     GnomeVFSResult result,
-		     gpointer callback_data)
+real_load_error (FMDirectoryView *nautilus_view, 
+		 GnomeVFSResult result)
 {
 	GnomeDialog *load_error_dialog;
 	char *error_string;
+
+	/* Do not call parent's function; we handle all search errors
+	 * here and don't want fm-directory-view's default handling.
+	 */
 	
 	switch (result) {
 	case GNOME_VFS_ERROR_SERVICE_OBSOLETE:
@@ -353,6 +356,7 @@ fm_search_list_view_initialize_class (gpointer klass)
 	fm_directory_view_class->supports_properties = 
 		real_supports_properties;
   	fm_directory_view_class->update_menus =	real_update_menus;
+  	fm_directory_view_class->load_error = real_load_error;
 
 	fm_list_view_class->adding_file = real_adding_file;
 	fm_list_view_class->removing_file = real_removing_file;
@@ -383,10 +387,6 @@ fm_search_list_view_initialize (gpointer object,
 	gtk_signal_connect (GTK_OBJECT (nautilus_view),
 			    "load_location",
 			    GTK_SIGNAL_FUNC (load_location_callback),
-			    NULL);
-	gtk_signal_connect (GTK_OBJECT (directory_view),
-			    "load_error",
-			    GTK_SIGNAL_FUNC (load_error_callback),
 			    NULL);
 }
 

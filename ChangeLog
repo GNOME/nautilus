@@ -1,5 +1,18 @@
 2001-02-09  John Sullivan  <sullivan@eazel.com>
 
+	Fixed part of bug 6462 (two error messages after doing search
+	in Red Hat 7). Now you should only get one error message.
+	Rebecca gets to figure out that one.
+
+	* src/file-manager/fm-search-list-view.c: (real_load_error),
+	(fm_search_list_view_initialize_class),
+	(fm_search_list_view_initialize): Now replaces function
+	pointer for load_error instead of attaching to signal, to
+	avoid triggering fm-directory-view's error-handling code
+	(which I recently added).
+
+2001-02-09  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 6343 (timed-wait dialog is too narrow, often
 	clipping dialog title)
 
