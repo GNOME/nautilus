@@ -1,3 +1,11 @@
+2000-05-05  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-debug.c,
+	libnautilus-extensions/nautilus-debug.h:
+	(nautilus_print_available_file_descriptor_count):
+
+	Added a debugging call to help locate file descriptor leaks.
+	
 2000-05-05  Darin Adler  <darin@eazel.com>
 
 	Fix up the code for cancelling so we don't leave files open and

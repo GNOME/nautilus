@@ -27,5 +27,6 @@
 
 void nautilus_stop_in_debugger (void);
 void nautilus_make_warnings_and_criticals_stop_in_debugger (const char *first_domain, ...);
+void nautilus_print_available_file_descriptor_count (const char *);
 
 #endif /* NAUTILUS_DEBUG_H */
