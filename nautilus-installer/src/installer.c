@@ -88,12 +88,14 @@ typedef struct {
 				  "If you know you have a web proxy, you can try again by setting\n" \
 				  "the environment variable \"http_proxy\" to the URL of your proxy\n" \
  				  "server, and then restarting Eazel Installer.")
-#define WAIT_LABEL	_("Please wait while we download and install the files needed for\n" \
-		     	  "the installation type you selected...")
+#define WAIT_LABEL	_("Please wait while we download and install the files selected.")
 #define WAIT_LABEL_2	_("Now starting the install process.  This will take some time, so\n" \
 			  "please be patient.")
 #define ERROR_LABEL	_("The installer was not able to complete the installation of the\n" \
-			  "Nautilus file manager.  Here's why:")
+			  "selected files.  Here's why:")
+#define ERROR_LABEL_2	_("Look for possible solutions to this problem at:\n" \
+ 			  "        http://nautilus.eazel.com/faq.html\n" \
+			  "Once you have resolved the problem, please restart the installer.")
 #define ERROR_TITLE	_("An error has occurred")
 #define RETRY_LABEL	_("The installer was not able to complete the installation of the\n" \
 			  "Nautilus file manager.  This might be because some of the packages\n" \
@@ -101,6 +103,7 @@ typedef struct {
 			  "The following packages would be broken by Nautilus:")
 #define RETRY_LABEL_2	_("Would you like to try to upgrade these packages, too?")
 #define RETRY_TITLE	_("Bogus things are going down")
+#define FINISHED_TITLE	_("Congratulations!")
 
 #define NAUTILUS_INSTALLER_RELEASE
 
@@ -401,7 +404,7 @@ create_pixmap_widget (GtkWidget *widget, char **xpmdata)
 }
 
 static void
-jump_to_error_page (EazelInstaller *installer, GList *bullets, char *text)
+jump_to_error_page (EazelInstaller *installer, GList *bullets, char *text, char *text2)
 {
 	GtkWidget *error_page;
 	GtkWidget *vbox;
@@ -460,6 +463,17 @@ jump_to_error_page (EazelInstaller *installer, GList *bullets, char *text)
 		gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 	}
 
+	add_padding_to_box (vbox, 0, 15);
+
+	label = gtk_label_new (text2);
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+	gtk_label_set_line_wrap (GTK_LABEL (label), FALSE);
+	gtk_widget_show (label);
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 30);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+
 	gtk_signal_connect (GTK_OBJECT (error_page), "prepare",
 			    GTK_SIGNAL_FUNC (prep_finish),
 			    installer);
@@ -473,8 +487,62 @@ static void
 start_over (GtkWidget *button, EazelInstaller *installer)
 {
 	GtkWidget *install_page;
+	CategoryData *category;
+	PackageData *package;
+	char *arch;
+	DistributionInfo distro;
+	GList *iter, *iter2;
 
 	printf ("JES-- start over\n");
+
+	/* figure out current arch */
+	arch = NULL;
+	distro.name = DISTRO_UNKNOWN;
+	for (iter = g_list_first (installer->categories); iter != NULL; iter = g_list_next (iter)) {
+		category = (CategoryData *)(iter->data);
+		for (iter2 = g_list_first (category->packages); iter2 != NULL; iter2 = g_list_next (iter2)) {
+			package = (PackageData *)(iter2->data);
+			if (package && package->archtype) {
+				arch = package->archtype;
+			}
+			if (package && (package->distribution.name != DISTRO_UNKNOWN)) {
+				distro = package->distribution;
+			}
+			if ((arch != NULL) && (distro.name != DISTRO_UNKNOWN)) {
+				/* done. */
+				iter2 = iter = NULL;
+			}
+		}
+	}
+
+	category = categorydata_new ();
+	category->name = g_strdup ("Fake extra category");
+
+	while (installer->additional_packages) {
+		package = packagedata_new ();
+		package->name = installer->additional_packages->data;	/* it's already a copy */
+		package->archtype = g_strdup (arch);
+		package->distribution = distro;
+		package->toplevel = TRUE;
+		category->packages = g_list_prepend (category->packages, package);
+		installer->additional_packages = g_list_remove (installer->additional_packages,
+								installer->additional_packages->data);
+	}
+
+	installer->categories = g_list_prepend (installer->categories, category);
+
+	/* clear out failure info */
+	g_list_foreach (installer->failure_info, (GFunc) g_free, NULL);
+	g_list_free (installer->failure_info);
+	installer->failure_info = NULL;
+
+	printf ("##########  NEW PACKAGE LIST  ##########\n");
+	for (iter = g_list_first (installer->categories); iter != NULL; iter = g_list_next (iter)) {
+		category = (CategoryData *)(iter->data);
+		printf ("<<< CATEGORY: %s >>>\n", category->name);
+		dump_packages (category->packages);
+	}
+	printf ("##########  END OF LIST  ##########\n");
 	install_page = gtk_object_get_data (GTK_OBJECT (installer->window), "install_page");
 	gnome_druid_set_page (installer->druid, GNOME_DRUID_PAGE (install_page));
 }
@@ -483,7 +551,7 @@ static void
 dont_start_over (GtkWidget *button, EazelInstaller *installer)
 {
 	printf ("NE-- dont start over\n");
-	jump_to_error_page (installer, installer->failure_info, ERROR_LABEL);
+	jump_to_error_page (installer, installer->failure_info, ERROR_LABEL, ERROR_LABEL_2);
 }
 
 /* give the user an opportunity to retry the install, with new info */
@@ -579,19 +647,6 @@ jump_to_retry_page (EazelInstaller *installer)
 	gnome_druid_set_page (installer->druid, GNOME_DRUID_PAGE (retry_page));
 }
 
-#if 0
-			while (installer->additional_packages) {
-				installer->failure_info = g_list_prepend (installer->failure_info,
-									  installer->additional_packages->data);
-				installer->additional_packages = g_list_remove (installer->additional_packages,
-										installer->additional_packages->data);
-			}
-#endif
-
-
-
-
-
 GtkWidget*
 create_finish_page_good (GtkWidget *druid, 
 			 GtkWidget *window,
@@ -618,7 +673,7 @@ create_finish_page_good (GtkWidget *druid,
 	gtk_widget_show (vbox);
 	nautilus_druid_page_eazel_put_widget (NAUTILUS_DRUID_PAGE_EAZEL (finish_page), vbox);
 
-	title = gtk_label_new_with_font (_("Finished!"), FONT_TITLE);
+	title = gtk_label_new_with_font (FINISHED_TITLE, FONT_TITLE);
 	gtk_label_set_justify (GTK_LABEL (title), GTK_JUSTIFY_LEFT);
 	gtk_widget_show (title);
 	hbox = gtk_hbox_new (FALSE, 0);
@@ -820,22 +875,29 @@ eazel_download_progress (EazelInstall *service,
 	}
 }
 
-static const char*
+static char *
 get_required_name (const PackageData *pack)
 {
-	static char *result = NULL;
-
-	g_free (result);
-	result = NULL;
+	char *result = NULL;
+	char *temp, *temp2;
 
 	if (pack==NULL) {
 		result = NULL;
 	} else if (pack->name && pack->version) {
-		result = g_strdup_printf ("%s v. %s", pack->name, pack->version);
+		if (strstr (pack->version, "EazelSourceSnapshot") != NULL) {
+			/* this crap is too long to display ! */
+			temp = g_strdup (pack->version);
+			temp2 = strstr (temp, "EazelSourceSnapshot");
+			strcpy (temp2, "ESS");
+			result = g_strdup_printf ("%s v%s", pack->name, temp);
+			g_free (temp);
+		} else {
+			result = g_strdup_printf ("%s v%s", pack->name, pack->version);
+		}
 	} else if (pack->name) {
 		result = g_strdup_printf ("%s", pack->name);
 	} else if (pack->eazel_id != NULL) {
-		result = g_strdup (pack->eazel_id);
+		result = g_strdup_printf ("Eazel package %s", pack->eazel_id);
 	} else if (pack->provides->data != NULL) {
 		result = g_strdup (pack->provides->data);
 	} else {
@@ -859,8 +921,10 @@ get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 	if (data->path) {
 		previous_pack = (PackageData*)(data->path->data);
 	}
-	required = g_strdup (get_required_name (pack));
-	required_by = g_strdup (get_required_name (previous_pack));
+	required = get_required_name (pack);
+	required_by = get_required_name (previous_pack);
+
+	LOG_DEBUG (("traversing error tree: package (%s) status (%d)\n", required, pack->status));
 
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
@@ -870,10 +934,11 @@ get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
 		break;
 	case PACKAGE_FILE_CONFLICT:
-		message = g_strdup_printf (_("%s had a file conflict"), required);
-		if (pack->name != NULL) {
+		message = g_strdup_printf (_("%s had a file conflict with %s"), required, required_by);
+		if ((pack->name != NULL) && (strcmp (pack->name, previous_pack->name) != 0)) {
 			recoverable_error = TRUE;
-			installer->additional_packages = g_list_prepend (installer->additional_packages, pack->name);
+			installer->additional_packages = g_list_prepend (installer->additional_packages,
+									 g_strdup (pack->name));
 		}
 		g_warning ("%s file nuked %s", 
 			   required_by,
@@ -947,6 +1012,7 @@ get_detailed_errors (const PackageData *pack, EazelInstaller *installer)
 	GetErrorsForEachData data;
 	PackageData *non_const_pack;
 
+	LOG_DEBUG (("error tree traversal begins.\n"));
 	installer->all_errors_are_recoverable = TRUE;
 	installer->additional_packages = NULL;
 
@@ -972,6 +1038,7 @@ install_failed (EazelInstall *service,
 		const PackageData *pd,
 		EazelInstaller *installer)
 {
+	LOG_DEBUG (("INSTALL FAILED.\n"));
 	get_detailed_errors (pd, installer);
 
 	while (gtk_events_pending ()) {
@@ -1053,7 +1120,7 @@ eazel_install_dep_check (EazelInstall *service,
 {
 	GtkWidget *label_overall;
 	char *temp;
-	const char *required = get_required_name (needs);
+	char *required = get_required_name (needs);
 
 	label_overall = gtk_object_get_data (GTK_OBJECT (installer->window), "label_overall");
 	/* careful: this needs->name is not always a package name (sometimes it's a filename) */
@@ -1063,6 +1130,7 @@ eazel_install_dep_check (EazelInstall *service,
 	LOG_DEBUG (("DEP CHECK : %s\n", temp));
 
 	g_free (temp);
+	g_free (required);
 
 	while (gtk_events_pending ()) {
 		gtk_main_iteration ();
@@ -1074,7 +1142,11 @@ eazel_install_delete_files (EazelInstall *service,
 			    EazelInstaller *installer) 
 {
 	LOG_DEBUG (("Deleting rpm's\n"));
-	return TRUE ;
+	if (installer->successful) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
 }
 
 static void
@@ -1084,6 +1156,7 @@ install_done (EazelInstall *service,
 {
 	char *temp;
 
+	installer->successful = result;
 	LOG_DEBUG (("Done, result is %s\n", result ? "good" : "evil"));
 	if (result) {
 		gnome_druid_set_page (installer->druid, installer->finish_good);
@@ -1134,9 +1207,14 @@ static void
 toggle_button_lock (EazelInstaller *installer, char *name, gboolean lock) 
 {
 	GtkWidget *button;
+	GtkWidget *label;
+	char *temp;
 	
-	button = lookup_widget (installer->window, 
-				name);
+	button = lookup_widget (installer->window, name);
+	temp = g_strdup_printf ("%s/label", gtk_widget_get_name (GTK_WIDGET (button)));
+	label = gtk_object_get_data (GTK_OBJECT (installer->window), name);
+	g_free (temp);
+
 	if (button) {
 		if (lock) {
 			gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);		
@@ -1206,6 +1284,13 @@ eazel_installer_add_category (EazelInstaller *installer,
 	gtk_widget_ref (button);
 	gtk_object_set_data_full (GTK_OBJECT (installer->window), category->name, button,
 				  (GtkDestroyNotify) gtk_widget_unref);
+
+	temp = g_strdup_printf ("%s/label", category->name);
+	gtk_widget_set_name (button_name, temp);
+	gtk_widget_ref (button_name);
+	gtk_object_set_data_full (GTK_OBJECT (installer->window), temp, button_name,
+				  (GtkDestroyNotify) gtk_widget_unref);
+	g_free (temp);
 
 	label = gtk_label_new (category->description ? category->description : "");
 	gtk_label_set_line_wrap (GTK_LABEL (label), FALSE);
@@ -1308,7 +1393,7 @@ check_system (EazelInstaller *installer)
 		} else {
 			jump_to_error_page (installer, NULL,
 					    _("Sorry, but this preview installer only works for RPM-based\n"
-					      "systems.  You will have to download the source youself."));
+					      "systems.  You will have to download the source youself."), "");
 			return FALSE;
 		}
 	}
@@ -1317,7 +1402,7 @@ check_system (EazelInstaller *installer)
 		jump_to_error_page (installer, NULL,
 				    _("No, you've got the eazel-hacking environment.\n"
 				      "You definitely do not want to run the installer\n"
-				      "as it will screw up your system."));
+				      "as it will screw up your system."), "");
 		return FALSE;
 	}
 
@@ -1347,8 +1432,12 @@ gboolean
 eazel_installer_do_install (EazelInstaller *installer, GList *install_categories)
 {
        	GList *iter;
+	GList *categories_copy;
 
-	eazel_install_install_packages (installer->service, install_categories, NULL);
+	categories_copy = categorydata_list_copy (install_categories);
+	eazel_install_install_packages (installer->service, categories_copy, NULL);
+	/* now free this copy */
+	categorydata_list_destroy (categories_copy);
 
 /*
   FIXME: bugzilla.eazel.com 2604
@@ -1365,7 +1454,7 @@ eazel_installer_do_install (EazelInstaller *installer, GList *install_categories
 			jump_to_retry_page (installer);
 			return TRUE;
 		} else {
-			jump_to_error_page (installer, installer->failure_info, ERROR_LABEL);
+			jump_to_error_page (installer, installer->failure_info, ERROR_LABEL, ERROR_LABEL_2);
 		}
 	}
 	return FALSE;
@@ -1439,7 +1528,7 @@ eazel_install_get_depends (EazelInstaller *installer, const char *dest_dir)
 		unlink (destination);
 		if (! attempt_http_proxy_autoconfigure () ||
 		    ! eazel_install_fetch_file (installer->service, url, "package list", destination)) {
-			jump_to_error_page (installer, NULL, ERROR_NEED_TO_SET_PROXY);
+			jump_to_error_page (installer, NULL, ERROR_NEED_TO_SET_PROXY, "");
 			rmdir (installer->tmpdir);
 			return FALSE;
 		}

@@ -77,6 +77,8 @@ struct _EazelInstaller
 	 */
 	gboolean all_errors_are_recoverable;
 	GList *additional_packages;
+
+	gboolean successful;
 };
 
 GtkType            eazel_installer_get_type(void);

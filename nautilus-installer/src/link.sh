@@ -57,8 +57,8 @@ cat prescript >> eazel-installer.sh
 tail +3 hest >> eazel-installer.sh
 rm hest
 
-if test "$1" = "push"; then
-    echo "Copying installer to /h/public/robey ..."
+if test "$1" = "push" -a $? = 0; then
+    echo "Copying installer to /h/public/bin ..."
     if test "$USER" = "robey"; then
         cp eazel-installer.sh /h/public/bin/
     else
@@ -66,4 +66,10 @@ if test "$1" = "push"; then
         scp ./eazel-installer.sh odin:/h/public/bin/
     fi
 fi
+
+if test "$1" = "push-test" -a $? = 0; then
+    echo "Copying installer to /h/public/robey ..."
+    cp eazel-installer.sh /h/public/robey/
+fi
+
 echo 'Done!'

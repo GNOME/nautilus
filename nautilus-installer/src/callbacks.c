@@ -60,10 +60,10 @@ begin_install (EazelInstaller  *installer)
 
 	for (iterator = installer->categories; iterator; iterator = iterator->next) {
 		CategoryData *category = (CategoryData*)iterator->data;
-		GtkWidget *widget = GTK_WIDGET (gtk_object_get_data (GTK_OBJECT (window), 
-								     category->name));
-		
-		if (GTK_TOGGLE_BUTTON (widget)->active) {
+		GtkWidget *widget = gtk_object_get_data (GTK_OBJECT (window), category->name);
+
+		/* widget will be NULL for made-up categories created by a 2nd attempt */
+		if ((widget == NULL) || GTK_TOGGLE_BUTTON (widget)->active) {
 			install_categories = g_list_append (install_categories, category);
 		}
 	}
