@@ -551,12 +551,20 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 	GdkPixbuf *pixbuf;
 
 	/* FIXME bugzilla.eazel.com 2500: We could defer showing emblems until the icon is ready. */
-
+	/* exit if we don't have the file yet */
+	if (sidebar_title->details->file == NULL) {
+		return;
+	}
+	
 	/* First, deallocate any existing ones */
 	gtk_container_foreach (GTK_CONTAINER (sidebar_title->details->emblem_box),
 			       (GtkCallback) gtk_widget_destroy,
 			       NULL);
 
+	/* make sure we have the file */
+	if (sidebar_title->details->file) {
+	}
+	
 	/* fetch the emblem icons from metadata */
 	icons = nautilus_icon_factory_get_emblem_icons_for_file (sidebar_title->details->file, FALSE, NULL);
 

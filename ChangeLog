@@ -1,3 +1,10 @@
+2000-12-08  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-title.c: (update_emblems):
+	fixed crash at launch revealed by recent changes by not trying to
+	update the emblems in the sidebar if we don't have a
+	file object yet.
+	
 2000-12-08  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
