@@ -32,6 +32,8 @@
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-file-attributes.h>
+#include <libnautilus-extensions/nautilus-file.h>
 
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
@@ -235,6 +237,131 @@ uri_string_get_scheme (const char *uri_string)
 }
 
 
+static char *
+make_oaf_query_with_known_mime_type (NautilusNavigationInfo *navinfo)
+{
+        const char *mime_type;
+        char *mime_supertype;
+        char *uri_scheme;
+        char *retval;
+
+        mime_type = navinfo->navinfo.content_type;
+        mime_supertype = mime_type_get_supertype (mime_type);
+        uri_scheme = uri_string_get_scheme (navinfo->navinfo.requested_uri);
+
+        retval = g_strdup_printf 
+                ("(repo_ids.has_all (['IDL:Bonobo/Control:1.0','IDL:Nautilus/ContentView:1.0'])"
+                 " OR (repo_ids.has_one (['IDL:Bonobo/Control:1.0','IDL:Bonobo/Embeddable:1.0'])"
+                 " AND repo_ids.has_one(['IDL:Bonobo/PersistStream:1.0', 'IDL:Bonobo/ProgressiveDataSink:1.0',"
+                 " 'IDL:Bonobo/PersistFile:1.0']))) AND (bonobo:supported_mime_types.defined()"
+                 " OR bonobo:supported_uri_schemes.defined ()) AND (NOT bonobo:supported_mime_types.defined()"
+                 " OR bonobo:supported_mime_types.has('%s') OR bonobo:supported_mime_types.has('%s') OR"
+                 " bonobo:supported_mime_types.has('*/*')) AND (NOT bonobo:supported_uri_schemes.defined()"
+                 " OR bonobo:supported_uri_schemes.has('%s') OR bonobo:supported_uri_schemes.has('*')) "
+                 " AND nautilus:view_as_name.defined()"
+                 , mime_type, mime_supertype, uri_scheme);
+
+                 /* FIXME bugzilla.eazel.com 701: hack until music view is handled right. */
+
+        g_free (mime_supertype);
+        g_free (uri_scheme);
+
+        return retval;
+}
+
+static char *
+make_oaf_query_with_uri_scheme_only (NautilusNavigationInfo *navinfo)
+{
+        char *uri_scheme;
+        char *retval;
+        
+        uri_scheme = uri_string_get_scheme (navinfo->navinfo.requested_uri);
+
+        retval = g_strdup_printf 
+                ("(repo_ids.has_all(['IDL:Bonobo/Control:1.0','IDL:Nautilus/ContentView:1.0'])"
+                 " OR (repo_ids.has_one(['IDL:Bonobo/Control:1.0','IDL:Bonobo/Embeddable:1.0'])"
+                 " AND repo_ids.has('IDL:Bonobo/PersistFile:1.0'))) AND (bonobo:supported_uri_schemes.has('%s')"
+                 " OR bonobo:supported_uri_schemes.has('*')) AND (NOT bonobo:supported_mime_types.defined())"
+                 " AND nautilus:view_as_name.defined()", uri_scheme);
+        g_free (uri_scheme);
+        
+        return retval;
+}
+
+
+static GHashTable *
+file_list_to_mime_type_hash_table (GList *files)
+{
+        GHashTable *retval;
+        GList *p;
+        char *mime_type;
+
+        retval = g_hash_table_new (g_str_hash, g_str_equal);
+
+        for (p = files; p != NULL; p = p->next) {
+                if (p->data != NULL) {
+                        mime_type = (char *) nautilus_file_get_mime_type ((NautilusFile *) p->data);
+                        
+                        if (NULL != mime_type) {
+                                if (g_hash_table_lookup (retval, mime_type) == NULL) {
+#if DEBUG_MJS
+                                        printf ("XXX content mime type: %s\n", mime_type);
+#endif
+                                        g_hash_table_insert (retval, mime_type, mime_type);
+                                }
+                        }
+                }
+        }
+
+        return retval;
+}
+
+
+static gboolean
+server_matches_content_requirements (OAF_ServerInfo *server, GHashTable *type_table)
+{
+        OAF_Attribute *attr;
+        GNOME_stringlist types;
+        int i;
+
+        attr = oaf_server_info_attr_find (server, "nautilus:required_directory_content_mime_types");
+
+        if (attr == NULL || attr->v._d != OAF_A_STRINGV) {
+                return TRUE;
+        } else {
+                types = attr->v._u.value_stringv;
+
+                for (i = 0; i < types._length; i++) {
+                        if (g_hash_table_lookup (type_table, types._buffer[i]) != NULL) {
+                                return TRUE;
+                        }
+                }
+        }
+
+        return FALSE;
+}
+
+
+static NautilusViewIdentifier *
+nautilus_view_identifier_new_from_oaf_server_info (OAF_ServerInfo *server)
+{
+        const char *view_as_name;
+        
+        /* FIXME bugzilla.eazel.com 694: need to pass proper set of languages as 
+           the last arg for i18 purposes */
+        view_as_name = oaf_server_info_attr_lookup (server, "nautilus:view_as_name", NULL);
+
+        if (view_as_name == NULL) {
+                view_as_name = oaf_server_info_attr_lookup (server, "name", NULL);
+        }
+
+        if (view_as_name == NULL) {
+                view_as_name = server->iid;
+        }
+       
+        return nautilus_view_identifier_new (server->iid, view_as_name);
+}
+
 static void
 got_file_info_callback (GnomeVFSAsyncHandle *ah,
                         GList *result_list,
@@ -247,11 +374,9 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
         gpointer notify_ready_data;
         NautilusNavigationResult result_code;
         const char *fallback_iid;
-        const char *mime_type;
-        char *mime_supertype;
-        char *uri_scheme;
         const char *query;
         OAF_ServerInfoList *oaf_result;
+        CORBA_Environment ev;
 
         g_assert (result_list != NULL);
         g_assert (result_list->data != NULL);
@@ -287,94 +412,59 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
                    hack for lack of good type descriptions. Can
                    we remove this now? */
 
-
                 if (navinfo->navinfo.content_type == NULL) {
                         navinfo->navinfo.content_type = g_strdup ("text/plain");
                 }
 
-
                 /* activate by scheme and mime type */
 
-                mime_type = navinfo->navinfo.content_type;
-                mime_supertype = mime_type_get_supertype (mime_type);
-                uri_scheme = uri_string_get_scheme (navinfo->navinfo.requested_uri);
-                query = g_strdup_printf 
-                        ("(repo_ids.has_all (['IDL:Bonobo/Control:1.0','IDL:Nautilus/ContentView:1.0'])"
-                         " OR (repo_ids.has_one (['IDL:Bonobo/Control:1.0','IDL:Bonobo/Embeddable:1.0'])"
-                         " AND repo_ids.has_one(['IDL:Bonobo/PersistStream:1.0', 'IDL:Bonobo/ProgressiveDataSink:1.0',"
-                         " 'IDL:Bonobo/PersistFile:1.0']))) AND (bonobo:supported_mime_types.defined()"
-                         " OR bonobo:supported_uri_schemes.defined ()) AND (NOT bonobo:supported_mime_types.defined()"
-                         " OR bonobo:supported_mime_types.has('%s') OR bonobo:supported_mime_types.has('%s') OR"
-                         " bonobo:supported_mime_types.has('*/*')) AND (NOT bonobo:supported_uri_schemes.defined()"
-                         " OR bonobo:supported_uri_schemes.has('%s') OR bonobo:supported_uri_schemes.has('*')) "
-                         " AND nautilus:view_as_name.defined()"
-                         /* FIXME bugzilla.eazel.com 701: hack until music view is handled right. */
-                         " AND iid != 'OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391'"
-                         , mime_type, mime_supertype, uri_scheme);
-
-                g_free (mime_supertype);
-                g_free (uri_scheme);
-                
+                query = make_oaf_query_with_known_mime_type (navinfo);
         } else if (vfs_result_code == GNOME_VFS_ERROR_NOTSUPPORTED
                    || vfs_result_code == GNOME_VFS_ERROR_INVALIDURI) {
                 /* Activate by scheme only */
 
-                uri_scheme = uri_string_get_scheme (navinfo->navinfo.requested_uri);
+                query = make_oaf_query_with_uri_scheme_only (navinfo);
+        } else {
+                goto out;
+        }
 
-                query = g_strdup_printf 
-                        ("(repo_ids.has_all(['IDL:Bonobo/Control:1.0','IDL:Nautilus/ContentView:1.0'])"
-                         " OR (repo_ids.has_one(['IDL:Bonobo/Control:1.0','IDL:Bonobo/Embeddable:1.0'])"
-                         " AND repo_ids.has('IDL:Bonobo/PersistFile:1.0'))) AND (bonobo:supported_uri_schemes.has('%s')"
-                         " OR bonobo:supported_uri_schemes.has('*')) AND (NOT bonobo:supported_mime_types.defined())"
-                         " AND nautilus:view_as_name.defined()", uri_scheme);
-                g_free (uri_scheme);
-        } 
-
-        if (query != NULL) {
-                CORBA_Environment ev;
-
-                CORBA_exception_init (&ev);
+        CORBA_exception_init (&ev);
 
 #ifdef DEBUG_MJS
-                printf ("query: \"%s\"\n", query);
+        printf ("query: \"%s\"\n", query);
 #endif
 
-                oaf_result = oaf_query (query, nautilus_sort_criteria, &ev);
+        oaf_result = oaf_query (query, nautilus_sort_criteria, &ev);
+        
+        if (ev._major == CORBA_NO_EXCEPTION && oaf_result != NULL && oaf_result->_length > 0) {
+                GHashTable *content_types;
+                int i;
                 
-                if (ev._major == CORBA_NO_EXCEPTION && oaf_result != NULL && oaf_result->_length > 0) {
-                        int i;
+                content_types = file_list_to_mime_type_hash_table (navinfo->files);
+                
+                CORBA_exception_free (&ev);
+                
+                vfs_result_code = GNOME_VFS_OK;
+                
+                for (i = 0; i < oaf_result->_length; i++) {
                         OAF_ServerInfo *server;
-                        const char *iid = NULL;
-                        const char *view_as_name = NULL;
 
-                        CORBA_exception_free (&ev);
-                        
-                        vfs_result_code = GNOME_VFS_OK;
-                        
-                        for (i = 0; i < oaf_result->_length; i++) {
-                                server = &oaf_result->_buffer[i];
-                                iid = server->iid;
+                        server = &oaf_result->_buffer[i];
 
-                                /* FIXME bugzilla.eazel.com 694: need to pass proper set of languages as 
-                                   the last arg for i18 purposes */
-                                view_as_name = oaf_server_info_attr_lookup (server, "nautilus:view_as_name", NULL);
-                                if (view_as_name == NULL) {
-                                        view_as_name = oaf_server_info_attr_lookup (server, "name", NULL);
-                                }
-                                if (view_as_name == NULL) {
-                                        view_as_name = iid;
-                                }
-                                
+                        if (server_matches_content_requirements (server, content_types)) {
                                 navinfo->content_identifiers = g_slist_append
                                         (navinfo->content_identifiers, 
-                                         nautilus_view_identifier_new (iid, view_as_name));
+                                         nautilus_view_identifier_new_from_oaf_server_info (server));
                         }
-                } else {
-                        result_code = NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE;
-                        CORBA_exception_free (&ev);
-                        goto out;
                 }
+
+                g_hash_table_destroy (content_types);
+        } else {
+                CORBA_exception_free (&ev);
+                result_code = NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE;
+                goto out;
         }
+
 
         /* Map GnomeVFSResult to one of the types that Nautilus knows how to handle. */
         result_code = get_nautilus_navigation_result_from_gnome_vfs_result (vfs_result_code);
@@ -491,6 +581,10 @@ got_metadata_callback (NautilusDirectory *directory,
         info = callback_data;
         g_assert (info->directory == directory);
         
+        info->files = g_list_copy (files);
+
+        nautilus_file_list_ref (info->files);
+
         vfs_uri = gnome_vfs_uri_new (info->navinfo.requested_uri);
         if (vfs_uri == NULL) {
                 /* Report the error. */
@@ -531,7 +625,8 @@ nautilus_navigation_info_new (Nautilus_NavigationRequestInfo *nri,
 {
         NautilusNavigationInfo *navinfo;
         GList *keys;
-        
+        GList *attributes;
+
         navinfo = g_new0 (NautilusNavigationInfo, 1);
         
         navinfo->callback = notify_when_ready;
@@ -548,18 +643,24 @@ nautilus_navigation_info_new (Nautilus_NavigationRequestInfo *nri,
 
         navinfo->directory = nautilus_directory_get (nri->requested_uri);
 
-        if (NULL != navinfo->directory) {
+        if (navinfo->directory != NULL) {
                 /* Arrange for all the metadata we will need. */
                 keys = NULL;
                 keys = g_list_prepend (keys, NAUTILUS_METADATA_KEY_CONTENT_VIEWS);
                 keys = g_list_prepend (keys, NAUTILUS_METADATA_KEY_INITIAL_VIEW);
+
+                /* Arrange for all the file attributes we will need. */
+                attributes = NULL;
+                attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE);
+
                 nautilus_directory_call_when_ready (navinfo->directory,
                                                     keys,
-                                                    NULL,
+                                                    attributes,
                                                     NULL,
                                                     got_metadata_callback,
                                                     navinfo);
                 g_list_free (keys);
+                g_list_free (attributes);
         } else {
                 got_metadata_callback (NULL, NULL, navinfo);
         }
@@ -577,8 +678,10 @@ nautilus_navigation_info_cancel (NautilusNavigationInfo *info)
                 info->ah = NULL;
         }
 
-        nautilus_directory_cancel_callback
-                (info->directory, got_metadata_callback, info);
+        if (info->directory) {
+                nautilus_directory_cancel_callback
+                        (info->directory, got_metadata_callback, info);
+        }
 }
 
 void
@@ -597,6 +700,14 @@ nautilus_navigation_info_free (NautilusNavigationInfo *navinfo)
         g_free (navinfo->navinfo.requested_uri);
         g_free (navinfo->navinfo.actual_uri);
         g_free (navinfo->navinfo.content_type);
-        nautilus_directory_unref (navinfo->directory);
+
+        if (navinfo->directory != NULL) {
+                nautilus_directory_unref (navinfo->directory);
+        }
+
+        if (navinfo->files != NULL) {
+                nautilus_file_list_free (navinfo->files);
+        }
+
         g_free (navinfo);
 }

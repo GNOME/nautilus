@@ -61,6 +61,7 @@ struct NautilusNavigationInfo {
 	char *initial_content_iid;	/* iid to use for content view that we're going to display */
 	GSList *content_identifiers;	/* list of NautilusViewIdentifiers */
 	GSList *meta_iids;	        /* list of iid strings */
+        GList *files;                   /* NautilusFile's for files in the dir, if it is one. */
 
 	/* internal usage */
 	NautilusNavigationCallback callback;
