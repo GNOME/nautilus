@@ -198,7 +198,7 @@ _save_ldflags="$LDFLAGS"
 _save_cc="$CC"
 
 dnl Hack flags to find the mozilla stuff
-CFLAGS="$_save_cflags -I$_mozilla_include_place"
+CFLAGS="$_save_cflags -I$_mozilla_include_place -I$_mozilla_include_place/nspr"
 LDFLAGS="$_save_ldflags -L$_mozilla_lib_place"
 
 dnl Check for nspr and friends
@@ -258,7 +258,9 @@ then
 	found_mozilla=true
 
 	MOZILLA_COMPONENT_RPATH_FLAGS=-Wl,-rpath=$_mozilla_lib_place
-	MOZILLA_COMPONENT_CFLAGS="-I$_mozilla_include_place -fno-rtti -fno-exceptions"
+	dnl The '-I$_mozilla_include_place/nspr' is needed for Mozilla 0.9.x
+	dnl and is not used (yet harmless) by Mozilla 0.8.x
+	MOZILLA_COMPONENT_CFLAGS="-I$_mozilla_include_place -I$_mozilla_include_place/nspr -fno-rtti -fno-exceptions"
 	MOZILLA_COMPONENT_LDFLAGS=-L$_mozilla_lib_place
 	MOZILLA_COMPONENT_LIBS="$_mozilla_gtk_moz_embed_libs \
 				$_mozilla_gtk_super_win_libs \
@@ -304,7 +306,7 @@ dnl EVIL1:
 
 	if test $? -eq 0
 	then
-		MOZILLA_MILESTONE=VERSION_0_8
+		MOZILLA_VERSION=MOZILLA_0_8_OR_HIGHER
 		MOZILLA_PROFILES_CFLAGS="-DMOZILLA_HAVE_PROFILES_SUPPORT"
 
 		AC_SUBST(MOZILLA_PROFILES_CFLAGS)
@@ -313,13 +315,11 @@ dnl EVIL1:
 
 		if test $? -eq 0
 		then
-			MOZILLA_MILESTONE=VERSION_0_7
+			MOZILLA_VERSION=MOZILLA_0_7
 		else
-			MOZILLA_MILESTONE=MILESTONE_17
+			MOZILLA_VERSION=MOZILLA_PRE_0_7
 		fi
 	fi
-
-	AC_SUBST(MOZILLA_MILESTONE)
 
 dnl EVIL2:
 	_xpcom_lib=$_mozilla_lib_place/libxpcom.so
@@ -338,7 +338,7 @@ dnl EVIL2:
 
 	AC_SUBST(MOZILLA_COMPONENT_DEBUG_FLAGS)
 
-	if test "$MOZILLA_MILESTONE" != "VERSION_0_8"
+	if test "$MOZILLA_VERSION" != "MOZILLA_0_8_OR_HIGHER"
 	then
 
 	AC_MSG_ERROR([
@@ -877,7 +877,7 @@ case $found_mozilla in
 	echo "Mozilla component                 : YES"
 	echo "   mozilla libraries              : $_mozilla_lib_place"
 	echo "   mozilla includes               : $_mozilla_include_place"
-	echo "   MOZILLA_MILESTONE              : $MOZILLA_MILESTONE"
+	echo "   MOZILLA_VERSION                : $MOZILLA_VERSION"
 	echo "   MOZILLA_PROFILES_CFLAGS        : $MOZILLA_PROFILES_CFLAGS"
 	echo "   MOZILLA_COMPONENT_RPATH_FLAGS  : $MOZILLA_COMPONENT_RPATH_FLAGS"
 	echo "   MOZILLA_COMPONENT_DEBUG_FLAGS  : $MOZILLA_COMPONENT_DEBUG_FLAGS"
