@@ -36,7 +36,6 @@
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-preferences-dialog.h"
 #include "nautilus-property-browser.h"
-#include "nautilus-services.h"
 #include "nautilus-signaller.h"
 #include "nautilus-switchable-navigation-bar.h"
 #include "nautilus-window-manage-views.h"
@@ -293,17 +292,6 @@ stop_button_callback (BonoboUIComponent *component,
 			       const char *verb)
 {
 	nautilus_window_stop_loading (NAUTILUS_WINDOW (user_data));
-}
-
-static void
-services_button_callback (BonoboUIComponent *component, 
-			       gpointer user_data, 
-			       const char *verb)
-{
-	char *summary_uri;
-	summary_uri = nautilus_services_get_summary_uri ();
-	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), summary_uri);
-	g_free (summary_uri);
 }
 
 static void
@@ -1314,20 +1302,11 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB_END
 	};
 
-	BonoboUIVerb services_verbs [] = {
-		BONOBO_UI_VERB ("Services", services_button_callback),
-		BONOBO_UI_VERB_END
-	};
-
 	nautilus_window_ui_freeze (window);
 
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 
 	bonobo_ui_component_add_verb_list_with_data (window->details->shell_ui, verbs, window);
-
-	if (nautilus_services_are_enabled ()) {
-		bonobo_ui_component_add_verb_list_with_data (window->details->shell_ui, services_verbs, window);
-	}
 
         nautilus_window_update_show_hide_menu_items (window);
 

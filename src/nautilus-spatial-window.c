@@ -33,12 +33,10 @@
 #include "nautilus-application.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-main.h"
-#include "nautilus-services.h"
 #include "nautilus-sidebar.h"
 #include "nautilus-signaller.h"
 #include "nautilus-switchable-navigation-bar.h"
 #include "nautilus-window-manage-views.h"
-#include "nautilus-window-service-ui.h"
 #include "nautilus-zoom-control.h"
 #include <X11/Xatom.h>
 #include <bonobo/bonobo-exception.h>
@@ -683,11 +681,6 @@ nautilus_window_constructed (NautilusWindow *window)
 			       "nautilus");
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 	
-	/* Load the services part of the user interface too if desired. */
-	if (nautilus_services_are_enabled ()) {
-		nautilus_window_install_service_ui (window);
-	}
-
 	/* set up location bar */
 	location_bar_box = gtk_hbox_new (FALSE, GNOME_PAD);
 	gtk_container_set_border_width (GTK_CONTAINER (location_bar_box), GNOME_PAD_SMALL);

@@ -58,7 +58,6 @@ noinst_HEADERS = \
 	nautilus-search-bar-private.h		\
 	nautilus-search-bar.h			\
 	nautilus-self-check-functions.h 	\
-	nautilus-services.h			\
 	nautilus-shell.h			\
 	nautilus-sidebar-tabs.h			\
 	nautilus-sidebar-title.h		\
@@ -72,7 +71,6 @@ noinst_HEADERS = \
 	nautilus-view-frame.h			\
 	nautilus-window-manage-views.h		\
 	nautilus-window-private.h		\
-	nautilus-window-service-ui.h		\
 	nautilus-window.h			\
 	nautilus-zoom-control.h			\
 	$(profiler_headers)			\
@@ -99,7 +97,6 @@ nautilus_SOURCES = \
 	nautilus-search-bar-criterion.c		\
 	nautilus-search-bar.c			\
 	nautilus-self-check-functions.c 	\
-	nautilus-services.c			\
 	nautilus-shell.c			\
 	nautilus-sidebar-tabs.c			\
 	nautilus-sidebar-title.c		\
@@ -113,7 +110,6 @@ nautilus_SOURCES = \
 	nautilus-view-frame.c			\
 	nautilus-window-manage-views.c		\
 	nautilus-window-menus.c         	\
-	nautilus-window-service-ui.c		\
 	nautilus-window-toolbars.c      	\
 	nautilus-window.c			\
 	nautilus-zoom-control.c			\
@@ -137,7 +133,6 @@ oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 
 uidir = $(datadir)/gnome/ui
 ui_DATA = 					\
-	nautilus-service-ui.xml			\
 	nautilus-shell-ui.xml			\
 	$(NULL)
 

@@ -29,7 +29,6 @@
 #include <config.h>
 
 #include "nautilus-application.h"
-#include "nautilus-services.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window.h"
@@ -314,12 +313,6 @@ set_up_toolbar_images (NautilusWindow *window)
 	set_up_standard_bonobo_button (window, "/Toolbar/Toggle Find Mode", "Search", FALSE);
 	set_up_standard_bonobo_button (window, "/Toolbar/Go to Web Search", "SearchWeb", TRUE);
 	set_up_standard_bonobo_button (window, "/Toolbar/Stop", "Stop", FALSE);
-
-	/* Set up the services toolbar button if needed */
-	if (nautilus_services_are_enabled ()) {
-		set_up_standard_bonobo_button (window, "/Toolbar/Extra Buttons Placeholder/Services",
-					       "Services", TRUE);
-	}
 
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 

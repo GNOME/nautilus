@@ -1,5 +1,25 @@
 2001-08-22  Christian Meyer  <chrisime@gnome.org>
 
+	* src/nautilus-window.c: Removes header includes for eazel services.
+	(nautilus_window_constructed): Services part removed.
+
+	* src/nautilus-window-menus.c: Removed header includes for eazel
+	services.
+	(services_button_callback): Removed.
+	(nautilus_window_initialize_menus_part_1): Removed eazel services.
+
+	* src/nautilus-window­toolbars.c: Rmoved header includes for eazel
+	services.
+	(set_up_toolbar_images): Services removed.
+
+	* src/Makefile.am: Removal of: nautilus-services.[ch],
+	nautilus-window-services-ui.[ch], nautilus-servics-ui.xml
+
+	* src/nautilus-services.[ch], src/nautilus-window-services-ui.[ch],
+	nautilus-services-ui.xml: Removed, since they aren't necessary anymore.
+
+2001-08-22  Christian Meyer  <chrisime@gnome.org>
+
 	* data/static_bookmarks.xml: Removed Eazel related bookmarks and ad's.
 	Added SuSE and Ximian.
 
