@@ -39,6 +39,7 @@
 #include <libart_lgpl/art_svp_vpath_stroke.h>
 #include <libart_lgpl/art_svp_vpath.h>
 #include <libart_lgpl/art_svp_wind.h>
+#include <libart_lgpl/art_rgba.h>
 
 #include "art_render.h"
 #include "art_render_gradient.h"
@@ -87,8 +88,10 @@ struct _RsvgCtx {
 struct _RsvgState {
   double affine[6];
 
+  gint opacity; /* 0..255 */
+
   RsvgPaintServer *fill;
-  gint fill_opacity; /* 0...255 */
+  gint fill_opacity; /* 0..255 */
 
   RsvgPaintServer *stroke;
   gint stroke_opacity; /* 0..255 */
@@ -103,6 +106,8 @@ struct _RsvgState {
   gint stop_opacity; /* 0..255 */
 
   gboolean in_defs;
+
+  GdkPixbuf *save_pixbuf;
 };
 
 struct _RsvgSaxHandler {
@@ -136,6 +141,7 @@ rsvg_state_init (RsvgState *state)
 {
   art_affine_identity (state->affine);
 
+  state->opacity = 0xff;
   state->fill = rsvg_paint_server_parse (NULL, "#000");
   state->fill_opacity = 0xff;
   state->stroke = NULL;
@@ -147,6 +153,7 @@ rsvg_state_init (RsvgState *state)
   state->stop_opacity = 0xff;
 
   state->in_defs = FALSE;
+  state->save_pixbuf = NULL;
 }
 
 static void
@@ -155,6 +162,7 @@ rsvg_state_clone (RsvgState *dst, const RsvgState *src)
   *dst = *src;
   rsvg_paint_server_ref (dst->fill);
   rsvg_paint_server_ref (dst->stroke);
+  dst->save_pixbuf = NULL;
 }
 
 static void
@@ -266,7 +274,7 @@ rsvg_parse_style_arg (RsvgCtx *ctx, RsvgState *state, const char *str)
   arg_off = rsvg_css_param_arg_offset (str);
   if (rsvg_css_param_match (str, "opacity"))
     {
-      /* state->opacity = rsvg_css_parse_opacity (str + arg_off); */
+      state->opacity = rsvg_css_parse_opacity (str + arg_off);
     }
   else if (rsvg_css_param_match (str, "fill"))
     {
@@ -329,7 +337,6 @@ rsvg_parse_style_arg (RsvgCtx *ctx, RsvgState *state, const char *str)
     {
       state->stop_opacity = rsvg_css_parse_opacity (str + arg_off);
     }
-
 }
 
 /* Split a CSS2 style into individual style arguments, setting attributes
@@ -539,10 +546,129 @@ rsvg_parse_style_attrs (RsvgCtx *ctx, const xmlChar **atts)
     }
 }
 
+/**
+ * rsvg_push_opacity_group: Begin a new transparency group.
+ * @ctx: Context in which to push.
+ *
+ * Pushes a new transparency group onto the stack. The top of the stack
+ * is stored in the context, while the "saved" value is in the state
+ * stack.
+ **/
+static void
+rsvg_push_opacity_group (RsvgCtx *ctx)
+{
+  RsvgState *state;
+  GdkPixbuf *pixbuf;
+  art_u8 *pixels;
+  int width, height, rowstride;
+
+  state = &ctx->state[ctx->n_state - 1];
+  pixbuf = ctx->pixbuf;
+
+  if (!gdk_pixbuf_get_has_alpha (pixbuf))
+    {
+      g_warning ("push/pop transparency group on non-alpha buffer nyi");
+      return;
+    }
+
+  state->save_pixbuf = pixbuf;
+
+  width = gdk_pixbuf_get_width (pixbuf);
+  height = gdk_pixbuf_get_height (pixbuf);
+  rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+  pixels = g_new (art_u8, rowstride * height);
+  memset (pixels, 0, rowstride * height);
+
+  pixbuf = gdk_pixbuf_new_from_data (pixels,
+				     GDK_COLORSPACE_RGB,
+				     TRUE,
+				     gdk_pixbuf_get_bits_per_sample (pixbuf),
+				     width,
+				     height,
+				     rowstride,
+				     rsvg_pixmap_destroy,
+				     NULL);
+  ctx->pixbuf = pixbuf;
+}
+
+/**
+ * rsvg_pop_opacity_group: End a transparency group.
+ * @ctx: Context in which to push.
+ * @opacity: Opacity for blending (0..255).
+ *
+ * Pops a new transparency group from the stack, recompositing with the
+ * next on stack.
+ **/
+static void
+rsvg_pop_opacity_group (RsvgCtx *ctx, int opacity)
+{
+  RsvgState *state = &ctx->state[ctx->n_state - 1];
+  GdkPixbuf *tos, *nos;
+  art_u8 *tos_pixels, *nos_pixels;
+  int width;
+  int height;
+  int rowstride;
+  int x, y;
+  int tmp;
+
+  tos = ctx->pixbuf;
+  nos = state->save_pixbuf;
+
+  if (!gdk_pixbuf_get_has_alpha (nos))
+    {
+      g_warning ("push/pop transparency group on non-alpha buffer nyi");
+      return;
+    }
+
+  width = gdk_pixbuf_get_width (tos);
+  height = gdk_pixbuf_get_height (tos);
+  rowstride = gdk_pixbuf_get_rowstride (tos);
+
+  tos_pixels = gdk_pixbuf_get_pixels (tos);
+  nos_pixels = gdk_pixbuf_get_pixels (nos);
+
+  for (y = 0; y < height; y++)
+    {
+      for (x = 0; x < width; x++)
+	{
+	  art_u8 r, g, b, a;
+	  a = tos_pixels[4 * x + 3];
+	  if (a)
+	    {
+	      r = tos_pixels[4 * x];
+	      g = tos_pixels[4 * x + 1];
+	      b = tos_pixels[4 * x + 2];
+	      tmp = a * opacity + 0x80;
+	      a = (tmp + (tmp >> 8)) >> 8;
+	      art_rgba_run_alpha (nos_pixels + 4 * x, r, g, b, a, 1);
+	    }
+	}
+      tos_pixels += rowstride;
+      nos_pixels += rowstride;
+    }
+
+  gdk_pixbuf_unref (tos);
+  ctx->pixbuf = nos;
+}
+
 static void
 rsvg_start_g (RsvgCtx *ctx, const xmlChar **atts)
 {
+  RsvgState *state = &ctx->state[ctx->n_state - 1];
+
   rsvg_parse_style_attrs (ctx, atts);
+
+  if (state->opacity != 0xff)
+    rsvg_push_opacity_group (ctx);
+}
+
+static void
+rsvg_end_g (RsvgCtx *ctx)
+{
+  RsvgState *state = &ctx->state[ctx->n_state - 1];
+
+  if (state->opacity != 0xff)
+    rsvg_pop_opacity_group (ctx, state->opacity);
 }
 
 /**
@@ -652,6 +778,9 @@ rsvg_render_bpath (RsvgCtx *ctx, const ArtBpath *bpath)
   ArtVpath *vpath;
   ArtSVP *svp;
   GdkPixbuf *pixbuf;
+  gboolean need_tmpbuf;
+  int opacity;
+  int tmp;
 
   state = &ctx->state[ctx->n_state - 1];
   pixbuf = ctx->pixbuf;
@@ -660,6 +789,12 @@ rsvg_render_bpath (RsvgCtx *ctx, const ArtBpath *bpath)
 	
   vpath = art_bez_path_to_vec (affine_bpath, 0.25);
   art_free (affine_bpath);
+
+  need_tmpbuf = (state->fill != NULL) && (state->stroke != NULL) &&
+    state->opacity != 0xff;
+
+  if (need_tmpbuf)
+    rsvg_push_opacity_group (ctx);
 
   if (state->fill != NULL)
     {
@@ -679,7 +814,13 @@ rsvg_render_bpath (RsvgCtx *ctx, const ArtBpath *bpath)
       svp = art_svp_rewind_uncrossed (tmp_svp, art_wind);
       art_svp_free (tmp_svp);
 
-      rsvg_render_svp (ctx, svp, state->fill, state->fill_opacity);
+      opacity = state->fill_opacity;
+      if (!need_tmpbuf && state->opacity != 0xff)
+	{
+	  tmp = opacity * state->opacity + 0x80;
+	  opacity = (tmp + (tmp >> 8)) >> 8;
+	}
+      rsvg_render_svp (ctx, svp, state->fill, opacity);
       art_svp_free (svp);
     }
 
@@ -694,9 +835,19 @@ rsvg_render_bpath (RsvgCtx *ctx, const ArtBpath *bpath)
 
       svp = art_svp_vpath_stroke (vpath, state->join, state->cap,
 				  stroke_width, 4, 0.25);
-      rsvg_render_svp (ctx, svp, state->stroke, state->stroke_opacity);
+      opacity = state->stroke_opacity;
+      if (!need_tmpbuf && state->opacity != 0xff)
+	{
+	  tmp = opacity * state->opacity + 0x80;
+	  opacity = (tmp + (tmp >> 8)) >> 8;
+	}
+      rsvg_render_svp (ctx, svp, state->stroke, opacity);
       art_svp_free (svp);
     }
+
+  if (need_tmpbuf)
+    rsvg_pop_opacity_group (ctx, state->opacity);
+
   art_free (vpath);
 }
 
@@ -823,11 +974,12 @@ rsvg_text_handler_characters (RsvgSaxHandler *self, const xmlChar *ch, int len)
 				     state->affine, glyph_xy);
 
       rsvg_render_paint_server (render, state->fill, NULL); /* todo: paint server ctx */
-      opacity = state->fill_opacity;
+      opacity = state->fill_opacity * state->opacity;
+      opacity = opacity + (opacity >> 7) + (opacity >> 14);
 #ifdef VERBOSE
       fprintf (stderr, "opacity = %d\n", opacity);
 #endif
-      art_render_mask_solid (render, (opacity << 8) + opacity + (opacity >> 7));
+      art_render_mask_solid (render, opacity);
       art_render_mask (render,
 		       glyph_xy[0], glyph_xy[1],
 		       glyph_xy[0] + glyph->width, glyph_xy[1] + glyph->height,
@@ -1153,6 +1305,9 @@ rsvg_end_element (void *data, const xmlChar *name)
 	  ctx->handler = NULL;
 	}
       
+      if (!strcmp ((char *)name, "g"))
+	rsvg_end_g (ctx);
+
       /* pop the state stack */
       ctx->n_state--;
       rsvg_state_finalize (&ctx->state[ctx->n_state]);

@@ -1,3 +1,11 @@
+2000-10-24  Raph Levien  <raph@acm.org>
+
+	* librsvg/rsvg.c: Implemented the "opacity" property for objects
+	and groups. This makes rsvg render more SVG files exported from
+	Adobe Illustrator 9 correctly and should make Arlo happy.
+
+	* librsvg/opacity.svg: New test file including opacity examples.
+
 2000-10-24  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c
