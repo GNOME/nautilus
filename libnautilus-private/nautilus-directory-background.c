@@ -52,7 +52,7 @@ static void saved_settings_changed_callback (NautilusFile       *file,
                                          
 static void nautilus_file_background_receive_root_window_changes (NautilusBackground *background);
 
-static const char *default_theme_source = "file";
+static const char *default_theme_source = "directory";
 static const char *desktop_theme_source = "desktop";
                        
 void
