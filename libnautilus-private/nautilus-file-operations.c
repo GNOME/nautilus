@@ -1103,14 +1103,20 @@ get_link_name (char *name, int count)
 {
 	char *result;
 	char *unescaped_name;
+	char *unescaped_tmp_name;
 	char *unescaped_result;
+	char *new_file;
 
 	const char *format;
 	
 	g_assert (name != NULL);
 
-	unescaped_name = gnome_vfs_unescape_string (name, "/");
+	unescaped_tmp_name = gnome_vfs_unescape_string (name, "/");
 	g_free (name);
+
+	unescaped_name = g_filename_to_utf8 (unescaped_tmp_name, -1,
+					     NULL, NULL, NULL);
+	g_free (unescaped_tmp_name);
 
 	if (count < 1) {
 		g_warning ("bad count in get_link_name");
@@ -1164,11 +1170,12 @@ get_link_name (char *name, int count)
 		}
 		unescaped_result = g_strdup_printf (format, count, unescaped_name);
 	}
-
-	result = gnome_vfs_escape_path_string (unescaped_result);
+	new_file = g_filename_from_utf8 (unescaped_result, -1, NULL, NULL, NULL);
+	result = gnome_vfs_escape_path_string (new_file);
 	
 	g_free (unescaped_name);
 	g_free (unescaped_result);
+	g_free (new_file);
 
 	return result;
 }
@@ -1455,18 +1462,25 @@ static char *
 get_next_duplicate_name (char *name, int count_increment)
 {
 	char *unescaped_name;
+	char *unescaped_tmp_name;
 	char *unescaped_result;
 	char *result;
+	char *new_file;
 
-	unescaped_name = gnome_vfs_unescape_string (name, "/");
+	unescaped_tmp_name = gnome_vfs_unescape_string (name, "/");
 	g_free (name);
+
+	unescaped_name = g_filename_to_utf8 (unescaped_tmp_name, -1,
+					     NULL, NULL, NULL);
+	g_free (unescaped_tmp_name);
 
 	unescaped_result = get_duplicate_name (unescaped_name, count_increment);
 	g_free (unescaped_name);
 
-	result = gnome_vfs_escape_path_string (unescaped_result);
+	new_file = g_filename_from_utf8 (unescaped_result, -1, NULL, NULL, NULL);
+	result = gnome_vfs_escape_path_string (new_file);
 	g_free (unescaped_result);
-	
+	g_free (new_file);
 	return result;
 }
 
