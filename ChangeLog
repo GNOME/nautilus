@@ -1,3 +1,20 @@
+2000-08-28  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-first-time-druid.c: (make_anti_aliased_label),
+	(make_hbox_user_level_radio_button), (set_up_user_level_page),
+	(set_up_service_signup_page), (set_up_update_page),
+	(set_up_update_feedback_page), (nautilus_first_time_druid_show),
+	(download_callback), (initiate_file_download):
+
+	used anti-aliased text, via nautilus_label, throughout the first time druid
+	
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize),
+	(music_view_set_selected_song_title), (add_play_controls),
+	(nautilus_music_view_update_from_uri):
+
+	used anti-aliased text via nautilus_label, for title and other labels
+	
 2000-08-27  J Shane Culpepper  <pepper@eazel.com>
 
 	components/services/summary/nautilus-view/nautilus-summary-view.c:

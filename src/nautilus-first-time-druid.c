@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+ /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /*
  * Nautilus
@@ -31,6 +31,7 @@
 
 #include <gnome.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <libgnomevfs/gnome-vfs.h>
 
 #include <widgets/nautilus-druid/nautilus-druid.h>
 #include <widgets/nautilus-druid/nautilus-druid-page-eazel.h>
@@ -41,6 +42,7 @@
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-image.h>
+#include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-radio-button-group.h>
 #include <libnautilus-extensions/nautilus-user-level-manager.h>
 
@@ -60,7 +62,7 @@ static GtkWidget *start_page;
 static GtkWidget *finish_page;
 static GtkWidget *pages[NUMBER_OF_STANDARD_PAGES];
 
-static GtkWidget *download_progress;
+static GtkWidget *download_label;
 
 static int last_signup_choice = 0;
 static int last_update_choice = 0;
@@ -190,6 +192,23 @@ update_selection_changed (GtkWidget *radio_buttons, gpointer user_data)
 }
 
 
+/* utility to allocate an anti-aliased description label */
+
+static GtkWidget*
+make_anti_aliased_label (const char *description)
+{
+	GtkWidget *label;
+	
+	label = nautilus_label_new ();
+	nautilus_label_set_font (NAUTILUS_LABEL (label),
+					 NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL)));
+	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 14);
+	nautilus_label_set_text_justification (NAUTILUS_LABEL (label),
+			       GTK_JUSTIFY_LEFT);
+
+	nautilus_label_set_text (NAUTILUS_LABEL (label), description);
+	return label;
+}
 
 static GdkPixbuf*
 create_named_pixbuf (const char *name) 
@@ -207,18 +226,6 @@ create_named_pixbuf (const char *name)
 	g_assert (pixbuf != NULL);
 
 	return pixbuf;
-}
-
-static void
-make_label_bold (GtkWidget *label)
-{
-	GdkFont *bold_font;
-
-	bold_font = nautilus_gdk_font_get_bold (label->style->font);
-
-	if (bold_font != NULL) {
-		nautilus_gtk_widget_set_font (label, bold_font);
-	}
 }
 
 static GtkWidget *
@@ -258,8 +265,10 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 	icon = nautilus_image_new ();
 	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (icon), icon_pixbuf);
 	gtk_box_pack_start (GTK_BOX (label_box), icon, FALSE, FALSE, 0);
-	label = gtk_label_new (text);
-	make_label_bold (label);
+	label = make_anti_aliased_label (text);
+	nautilus_label_set_font (NAUTILUS_LABEL (label),
+					 NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL)));
+
 	gtk_box_pack_start (GTK_BOX (label_box), label, FALSE, FALSE, 0);
 
 	/* add label to radio button */
@@ -276,11 +285,10 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 	gtk_box_pack_start (GTK_BOX (comment_hbox), alignment, FALSE, FALSE, 0);
 
 	/* Make comment label */
-	label = gtk_label_new (comment);
-	gtk_box_pack_start (GTK_BOX (comment_hbox), label, FALSE, FALSE, 0);
-	gtk_label_set_justify (GTK_LABEL (label),
-			       GTK_JUSTIFY_LEFT);
+	label = make_anti_aliased_label (comment);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 
+	gtk_box_pack_start (GTK_BOX (comment_hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show_all (hbox);
 	return hbox;
 }
@@ -303,12 +311,10 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
 
-	label = gtk_label_new (NULL);
-	gtk_label_set (GTK_LABEL (label),
-			    _("User levels provide a way to adjust the software to\nyour level of technical expertise.  Pick an initial level that you\nfeel comfortable with; you can always change it later."));
-	gtk_label_set_justify (GTK_LABEL (label),
-			       GTK_JUSTIFY_LEFT);
+	label = make_anti_aliased_label (_("User levels provide a way to adjust the software to\nyour level of technical expertise.  Pick an initial level that you\nfeel comfortable with; you can always change it later."));
+	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 
+	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
 	/* Make the user level radio buttons and fill the radio_buttons
@@ -366,9 +372,7 @@ set_up_service_signup_page (NautilusDruidPageEazel *page)
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* allocate a descriptive label */
-	label = gtk_label_new (_("Eazel offers a growing number of services to help you install and maintain new software and manage your files across the network.  If you want to find out more about Eazel services, just press the 'Next' button. "));
-	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
-
+	label = make_anti_aliased_label (_("Eazel offers a growing number of services to \nhelp you install and maintain new software and manage \nyour files across the network.  If you want to find out more \nabout Eazel services, just press the 'Next' button. "));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
 	
@@ -410,9 +414,7 @@ set_up_update_page (NautilusDruidPageEazel *page)
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* allocate a descriptive label */
-	label = gtk_label_new (_("Nautilus will now contact Eazel services to verify your web connection and download the latest updates.  Click the Next button to continue."));
-	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
-
+	label = make_anti_aliased_label (_("Nautilus will now contact Eazel services to verify your \nweb connection and download the latest updates.  \nClick the Next button to continue."));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
 	
@@ -441,10 +443,9 @@ set_up_update_page (NautilusDruidPageEazel *page)
 static void
 set_up_update_feedback_page (NautilusDruidPageEazel *page)
 {
-	GtkWidget *frame, *label;
+	GtkWidget *label;
 	GtkWidget *container, *main_box;
-	GtkWidget *progress_box, *temp_box;
-	
+
 	container = set_up_background (page, "rgb:ffff/ffff/ffff:h");
 
 	/* allocate a vbox to hold the description and the widgets */
@@ -453,39 +454,20 @@ set_up_update_feedback_page (NautilusDruidPageEazel *page)
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* allocate a descriptive label */
-	label = gtk_label_new (_("We are now contacting the Eazel service to verify your web connection and update Nautilus.  We will advance to the next page automatically when updating is complete."));
-	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
-
+	label = make_anti_aliased_label (_("We are now contacting the Eazel service to test your \nweb connection and update Nautilus."));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
 		
-	frame = gtk_frame_new (_("Nautilus Update Progress"));
-	gtk_widget_show (frame);
-	gtk_container_set_border_width (GTK_CONTAINER (frame), 8);
-
-	progress_box = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (progress_box);
-	
-	download_progress = gtk_progress_bar_new ();
-	gtk_progress_set_show_text (GTK_PROGRESS (download_progress), TRUE);		  
-	
-	/* put it in an hbox to restrict it's size */
-	temp_box = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (temp_box);
-	gtk_box_pack_start (GTK_BOX(temp_box), download_progress, FALSE, FALSE, 168);
 		
-	gtk_widget_show (download_progress);
-	gtk_box_pack_start (GTK_BOX (progress_box), temp_box, FALSE, FALSE, 2);
+	download_label = nautilus_label_new ();
+	nautilus_label_set_font (NAUTILUS_LABEL (download_label),
+					 NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL)));
+	nautilus_label_set_font_size (NAUTILUS_LABEL (download_label), 18);
+	nautilus_label_set_text (NAUTILUS_LABEL (download_label), _("Downloading Nautilus updates..."));
 	
-	label = gtk_label_new (_("Downloading Nautilus updates..."));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (progress_box), label, FALSE, FALSE, 2);
-
-	gtk_container_add (GTK_CONTAINER (frame), progress_box);
+	gtk_widget_show (download_label);
 	
-	/* allocate update progess widgets */
-	
-	gtk_box_pack_start (GTK_BOX (main_box), frame, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (main_box), download_label, FALSE, FALSE, 2);
 }
 
 /* handle the "next" signal for the update page based on the user's choice */
@@ -541,7 +523,7 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 	GtkWidget *druid;
 	char *file;
 	int i;
-
+	GtkWidget *container, *main_box, *label;
 	GdkPixbuf *pixbuf;
 	
 	/* remember parameters for later window invocation */
@@ -583,12 +565,42 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 		nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (start_page), _("Welcome to Nautilus!"));
 	}
 
-	nautilus_druid_page_eazel_set_text (NAUTILUS_DRUID_PAGE_EAZEL(start_page), _("Welcome to Nautilus!\n\nSince this is the first time that you've launched\nNautilus, we'd like to ask you a few questions\nto help personalize it for your use.\n\nPress the next button to continue."));
+	/* allocate the description using a nautilus_label to get anti-aliased text */
+	container = set_up_background (NAUTILUS_DRUID_PAGE_EAZEL (start_page), "rgb:ffff/ffff/ffff:h");
+	main_box = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (main_box);
+	gtk_container_add (GTK_CONTAINER (container), main_box);
+	
+	label = make_anti_aliased_label ( _("Since this is the first time that you've launched\nNautilus, we'd like to ask you a few questions\nto help personalize it for your use."));
+	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 18);
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
+	
+	label = make_anti_aliased_label ( _("Press the next button to continue."));
+	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 18);
+
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 16);
+	nautilus_label_set_text_justification (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
 	
 	/* set up the final page */
 	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (finish_page), _("Finished"));
-	nautilus_druid_page_eazel_set_text (NAUTILUS_DRUID_PAGE_EAZEL(finish_page), _("Click to finish button to launch Nautilus.\n\nWe hope that you enjoying using it!"));
 
+	container = set_up_background (NAUTILUS_DRUID_PAGE_EAZEL (finish_page), "rgb:ffff/ffff/ffff:h");
+	main_box = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (main_box);
+	gtk_container_add (GTK_CONTAINER (container), main_box);
+	
+	label = make_anti_aliased_label ( _("Click the finish button to launch Nautilus.\nWe hope that you enjoy using it!"));
+	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 18);
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
+	
+	/*	
+	nautilus_druid_page_eazel_set_text (NAUTILUS_DRUID_PAGE_EAZEL(finish_page), _("Click to finish button to launch Nautilus.\n\nWe hope that you enjoying using it!"));
+	*/
+	
+	
 	/* set up the user level page */
 	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[0]), _("Select A User Level"));
 	set_up_user_level_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[0]));
@@ -664,6 +676,9 @@ download_callback (GnomeVFSResult result,
 		fclose (outfile);
 		g_free (file_contents);
 		
+		/* change the message to expanding file */
+		nautilus_label_set_text (NAUTILUS_LABEL (download_label), _("Decoding Update..."));
+		
 		/* expand the directory into the proper place */
 		/* first, formulate the command string */
 		user_directory_path = nautilus_get_user_directory ();
@@ -671,14 +686,20 @@ download_callback (GnomeVFSResult result,
 		
 		/* execute the command to make the updates folder */
 		expand_result = system (command_str);
+		nautilus_label_set_text (NAUTILUS_LABEL (download_label), _("Update Completed... Press Next to Continue."));
 		
 		g_free (user_directory_path);
 		g_free (command_str);	
 	
-		/* advance to the next page */
-		nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (finish_page));	
+		/* now that we're done, reenable the buttons */
+		gtk_widget_set_sensitive (druid->next, TRUE);
+		gtk_widget_set_sensitive (druid->back, TRUE);
 	}
 }
+
+/* here's the timer task that provides the feedback */
+
+/* handle the get file info callback by remembering the length and initiating the file read */
 
 /* initiate downloading of the welcome package from the service */
 
@@ -686,13 +707,15 @@ static void
 initiate_file_download (NautilusDruid *druid)
 {
 	NautilusReadFileHandle *file_handle;
+
 	/* for testing */
 	const char *file_uri = "http://dellbert.differnet.com/eazel-services/updates.tgz";
-	
-	 /* initiate the file transfer */
-	file_handle = nautilus_read_entire_file_async (file_uri, download_callback, druid);
-	
-	/* launch a timer task to provide feedback */
 
+	/* disable the next and previous buttons during the  file loading process */
+	gtk_widget_set_sensitive (druid->next, FALSE);
+	gtk_widget_set_sensitive (druid->back, FALSE);
+			
+	/* initiate the file transfer */
+	file_handle = nautilus_read_entire_file_async (file_uri, download_callback, druid);
 }
 
