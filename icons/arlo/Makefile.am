@@ -11,9 +11,10 @@ arlo_DATA =	\
 	i-directory-192-aa.png	\
 	i-directory.png	\
 	i-directory.xml	\
+	i-regular-72-aa.png	\
 	i-regular-96-aa.png	\
 	i-regular-192-aa.png	\
-	i-regular.png	\
+	i-regular-aa.png	\
 	i-regular.xml	\
 	increment.png	\
 	increment-i.png	\
