@@ -1071,7 +1071,11 @@ nautilus_window_key_press_event (GtkWidget *widget,
 
 	window = NAUTILUS_WINDOW (widget);
 
-	handled = FALSE;
+	handled = EEL_CALL_PARENT_WITH_RETURN_VALUE
+		(GTK_WIDGET_CLASS, key_press_event, (widget, event));
+	if (handled) {
+		return TRUE;
+	}
 
 	/* Make Control-= an alternate shortcut for Zoom, since on U.S. keyboards
 	 * (at least) Control-+ requires typing the shift key, which is annoying.
@@ -1084,11 +1088,6 @@ nautilus_window_key_press_event (GtkWidget *widget,
 			nautilus_window_zoom_in (window);
 			handled = TRUE;
 		}
-	}
-
-	if (!handled) {
-		handled = EEL_CALL_PARENT_WITH_RETURN_VALUE
-			(GTK_WIDGET_CLASS, key_press_event, (widget, event));
 	}
 
 	return handled;

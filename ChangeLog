@@ -1,5 +1,21 @@
 2001-05-16  Darin Adler  <darin@eazel.com>
 
+	* configure.in: Up version to 1.0.3.1 so we don't confuse cvs
+	builds with the release.
+	
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_fit_date_as_string): Fix i18n problem by calling
+	_() on strings before using.
+	
+	* src/file-manager/fm-directory-view.c: (key_press_event_callback),
+	(bonobo_control_activate_callback), (fm_directory_view_destroy):
+	* src/nautilus-window.c: (nautilus_window_key_press_event):
+	Change key press event callbacks to run only after the parent
+	class. This makes keys go to the focused text field first, so
+	hitting delete while editing a file name doesn't delete the file.
+
+2001-05-16  Darin Adler  <darin@eazel.com>
+
 	* src/file-manager/fm-directory-view.c:
 	(fm_directory_view_destroy), (activate_callback),
 	(cancel_activate_callback), (fm_directory_view_activate_file),

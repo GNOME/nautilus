@@ -2535,7 +2535,7 @@ nautilus_file_fit_date_as_string (NautilusFile *file,
 	format = NULL;
 	
 	for (i = 0; ; i += 2) {
-		width_template = formats [i];
+		width_template = _(formats [i]);
 		if (width_template == NULL) {
 			/* no more formats left */
 			g_assert (format != NULL);
@@ -2555,7 +2555,7 @@ nautilus_file_fit_date_as_string (NautilusFile *file,
 			return result;
 		}
 		
-		format = formats [i + 1];
+		format = _(formats [i + 1]);
 
 		if (measure_callback == NULL) {
 			/* don't care about fitting the width */

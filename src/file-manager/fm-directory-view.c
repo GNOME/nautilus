@@ -181,6 +181,9 @@ struct FMDirectoryViewDetails
 	guint load_error_handler_id;
 	guint done_loading_handler_id;
 	guint file_changed_handler_id;
+
+	GtkObject *key_press_handler_object;
+	guint key_press_handler_id;
 	
 	GList *pending_files_added;
 	GList *pending_files_changed;
@@ -948,15 +951,24 @@ all_selected_items_in_trash (FMDirectoryView *view)
 	return result;
 }
 
-static gboolean
-key_press_event_callback (GtkWidget *widget,
-			  GdkEventKey *event,
-			  gpointer callback_data)
+static void
+key_press_event_callback (GtkObject *object,
+			  gpointer callback_data,
+			  guint n_args,
+			  GtkArg *args)
 {
 	FMDirectoryView *view;
+	GdkEventKey *event;
+	gboolean *return_value_location;
 	gboolean handled;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
+	event = GTK_VALUE_POINTER (args[0]);
+	return_value_location = GTK_RETLOC_BOOL (args[1]);
+
+	if (*return_value_location) {
+		return;
+	}
 
 	handled = FALSE;
 
@@ -983,10 +995,10 @@ key_press_event_callback (GtkWidget *widget,
 	}
 
 	if (handled) {
-		gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
+		gtk_signal_emit_stop_by_name (object,
 					      "key_press_event");
+		*return_value_location = TRUE;
 	}
-	return handled;
 }
 
 static void
@@ -1006,11 +1018,22 @@ bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointe
                 fm_directory_view_update_menus (view);
 
 		/* Handle some additional keyboard commands. */
-		gtk_signal_connect_while_alive
-			(GTK_OBJECT (gtk_widget_get_toplevel (GTK_WIDGET (view))),
-			 "key_press_event",
-			 GTK_SIGNAL_FUNC (key_press_event_callback), view,
-			 GTK_OBJECT (view));
+		/* Can't use eel_gtk_signal_connect_full_while_alive
+		 * yet because it had a bad return_if_fail in it and
+		 * we don't want to depend on a new eel. Later we can
+		 * simplify this code by using that.
+		 */
+		if (view->details->key_press_handler_id == 0) {
+			view->details->key_press_handler_object =
+				GTK_OBJECT (gtk_widget_get_toplevel (GTK_WIDGET (view)));
+			eel_nullify_when_destroyed (&view->details->key_press_handler_object);
+			view->details->key_press_handler_id = gtk_signal_connect_full
+				(view->details->key_press_handler_object,
+				 "key_press_event",
+				 NULL, key_press_event_callback,
+				 view, NULL,
+				 FALSE, TRUE);
+		}
         }
 
         /* 
@@ -1320,34 +1343,42 @@ fm_directory_view_destroy (GtkObject *object)
 		gtk_idle_remove (view->details->display_selection_idle_id);
 	}
 
+	if (view->details->key_press_handler_object != NULL) {
+		if (view->details->key_press_handler_id != 0) {
+			gtk_signal_disconnect (view->details->key_press_handler_object,
+					       view->details->key_press_handler_id);
+		}
+		eel_nullify_cancel (&view->details->key_press_handler_object);
+	}
+
 	remove_update_menus_timeout_callback (view);
 
 	fm_directory_view_ignore_hidden_file_preferences (view);
 
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-					      schedule_update_menus_callback,
-					      view);
+					 schedule_update_menus_callback,
+					 view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-					      schedule_update_menus_callback,
-					      view);
+					 schedule_update_menus_callback,
+					 view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
-					      schedule_update_menus_callback,
-					      view);
+					 schedule_update_menus_callback,
+					 view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-					      text_attribute_names_changed_callback,
-					      view);
+					 text_attribute_names_changed_callback,
+					 view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
-					      image_display_policy_changed_callback,
-					      view);
+					 image_display_policy_changed_callback,
+					 view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					      click_policy_changed_callback,
-					      view);
+					 click_policy_changed_callback,
+					 view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-					      smooth_graphics_mode_changed_callback,
-					      view);
+					 smooth_graphics_mode_changed_callback,
+					 view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
-					      sort_directories_first_changed_callback,
-					      view);
+					 sort_directories_first_changed_callback,
+					 view);
 
 	forget_clipboard_contents (view);
 
