@@ -1,5 +1,29 @@
 2000-09-07  Ramiro Estrugo  <ramiro@eazel.com>
 
+	Turn on smooth fonts in the icon view.  This is controlled by the
+	SMOOTH_GRAPHICS preference.  I tried to cause a minimum amount of
+	disruption to the icon-canvas-item beast.  For this reason, there
+	are some serious preformance problems.  I plan to attack those
+	next.
+
+	In case of emergency, i left a life boat in there.  Just comment
+	out the SMOOTH_FONTS define in the top of the file.  I expect to
+	yank this out in the next day or so.
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text), Teach it about the smooth fonts
+	case.  (measure_label_text),  Same here.
+	(draw_label_text), Here too.  (draw_or_measure_label_text_aa), New
+	function to do the drawing or measuring using NautilusScalableFont
+	instead of GdkFont.
+	(draw_label_text_aa): New function that draws the smooth text into
+	a pixbuf so what we can continue to use the old rendering
+	machinery.  This is the reason for at least on of the performance
+	problems.  We should be able to render directly into the canvas
+	item's buffer.  
+	
+2000-09-07  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:
 	(nautilus_icon_canvas_item_initialize_class),
 	(draw_or_measure_label_text):
