@@ -1,3 +1,22 @@
+2001-02-14  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: JP Rosevear <jpr@ximian.com>
+
+	* libnautilus-extensions/nautilus-viewport.c:
+	(nautilus_viewport_initialize), (nautilus_viewport_realize),
+	(nautilus_viewport_set_is_smooth),
+	(nautilus_viewport_get_is_smooth),
+	(nautilus_viewport_set_never_smooth):
+	Make sure the "never_smooth" and "is_smooth" attributes work as
+	advertised.  Make the "never_smooth" attribute default to TRUE,
+	since that makes it work with more gtk widgets.
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize),
+	(nautilus_property_browser_update_contents):
+	Set the "never_smooth" attribute of the viewports to FALSE so that
+	the can be smooth.
+	
 2001-02-13  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* test/test-nautilus-glyph.c: (main):

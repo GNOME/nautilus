@@ -275,7 +275,8 @@ nautilus_property_browser_initialize (GtkObject *object)
 	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->category_container), 0);
  	property_browser->details->category_position = -1;	
  	
- 	viewport = nautilus_viewport_new(NULL, NULL);	
+ 	viewport = nautilus_viewport_new (NULL, NULL);	
+	nautilus_viewport_set_never_smooth (NAUTILUS_VIEWPORT (viewport), FALSE);
 	gtk_widget_show (viewport);
 	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
 
@@ -1894,6 +1895,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	property_browser->details->content_frame = gtk_scrolled_window_new (NULL, NULL);
 	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->content_frame), 0);				
  	viewport = nautilus_viewport_new (NULL, NULL);
+	nautilus_viewport_set_never_smooth (NAUTILUS_VIEWPORT (viewport), FALSE);
 	gtk_widget_show(viewport);
 	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_IN);
 	background = nautilus_get_widget_background (viewport);
