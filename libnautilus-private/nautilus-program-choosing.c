@@ -220,20 +220,20 @@ nautilus_choose_application_for_file (NautilusFile *file,
 }				    
 
 /**
- * nautilus_launch_application_parented:
+ * nautilus_launch_application:
  * 
  * Fork off a process to launch an application with a given uri as
  * a parameter. Provide a parent window for error dialogs.
  * 
  * @application: The application to be launched.
  * @uri: Passed as a parameter to the application.
- * @parent: A window to use as the parent for any error dialogs.
+ * @parent_window: A window to use as the parent for any error dialogs.
  * 
  */
 void
-nautilus_launch_application_parented (GnomeVFSMimeApplication *application, 
-				      const char *uri, 
-				      GtkWindow *parent)
+nautilus_launch_application (GnomeVFSMimeApplication *application, 
+			     const char *uri, 
+			     GtkWindow *parent_window)
 {
 	GnomeDialog *dialog;
 	char *command_string;
@@ -260,7 +260,7 @@ nautilus_launch_application_parented (GnomeVFSMimeApplication *application,
 						    "\"%s\" is remote. If you want to open it "
 						    "with %s, make a local copy first."), 
 						  application->name, uri, application->name);
-			dialog = nautilus_error_dialog (prompt, _("Can't open remote file"), parent);
+			dialog = nautilus_error_dialog (prompt, _("Can't open remote file"), parent_window);
 			g_free (prompt);
 			return;
 		}
@@ -276,21 +276,6 @@ nautilus_launch_application_parented (GnomeVFSMimeApplication *application,
 	
 	g_free (parameter);
 	g_free (command_string);
-}
-
-/**
- * nautilus_launch_application:
- * 
- * Fork off a process to launch an application with a given uri as
- * a parameter.
- * 
- * @application: The application to be launched.
- * @uri: Passed as a parameter to the application.
- */
-void
-nautilus_launch_application (GnomeVFSMimeApplication *application, const char *uri)
-{
-	nautilus_launch_application_parented (application, uri, NULL);
 }
 
 /**

@@ -1,3 +1,25 @@
+2000-10-17  John Sullivan  <sullivan@eazel.com>
+
+	Made "this application can only handle local files"
+	dialog be parented on the NautilusWindow from whence
+	it came.
+
+	* libnautilus-extensions/nautilus-program-choosing.h:
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_launch_application_parented): Removed this function
+	(nautilus_launch_application): Made this function take a
+	parent (can be NULL, but better not to be).
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_launch_application): Remove "_parented"
+	
+	* src/nautilus-sidebar.c: 
+	(nautilus_sidebar_get_window): New helper function to get
+	enclosing window.
+	(command_button_callback),
+	(nautilus_sidebar_chose_application_callback): Pass parent
+	window to nautilus_launch_application.
+
 2000-10-17  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-window.c: (nautilus_window_constructed),

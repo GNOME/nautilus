@@ -1078,6 +1078,16 @@ background_reset_callback (NautilusBackground *background, NautilusSidebar *side
 				      "reset");
 }
 
+static GtkWindow *
+nautilus_sidebar_get_window (NautilusSidebar *sidebar)
+{
+	GtkWidget *result;
+
+	result = gtk_widget_get_ancestor (GTK_WIDGET (sidebar), GTK_TYPE_WINDOW);
+
+	return result == NULL ? NULL : GTK_WINDOW (result);
+}
+
 static void
 command_button_callback (GtkWidget *button, char *id_str)
 {
@@ -1089,7 +1099,8 @@ command_button_callback (GtkWidget *button, char *id_str)
 	application = gnome_vfs_application_registry_get_mime_application (id_str);
 
 	if (application != NULL) {
-		nautilus_launch_application (application, sidebar->details->uri);	
+		nautilus_launch_application (application, sidebar->details->uri,
+					     nautilus_sidebar_get_window (sidebar));	
 
 		gnome_vfs_mime_application_free (application);
 	}
@@ -1120,12 +1131,15 @@ static void
 nautilus_sidebar_chose_application_callback (GnomeVFSMimeApplication *application,
 					     gpointer callback_data)
 {
-	g_assert (NAUTILUS_IS_SIDEBAR (callback_data));
+	NautilusSidebar *sidebar;
+
+	sidebar = NAUTILUS_SIDEBAR (callback_data);
 
 	if (application != NULL) {
-		nautilus_launch_application 
+		nautilus_launch_application
 			(application, 
-			 NAUTILUS_SIDEBAR (callback_data)->details->uri);
+			 sidebar->details->uri,
+			 nautilus_sidebar_get_window (sidebar));
 	}
 }
 

@@ -517,7 +517,7 @@ fm_directory_view_launch_application (GnomeVFSMimeApplication *application,
 	g_assert (uri != NULL);
 	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
 
-	nautilus_launch_application_parented
+	nautilus_launch_application
 		(application, uri, get_containing_window (directory_view));
 	
 }				      
