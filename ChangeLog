@@ -1,3 +1,13 @@
+2000-05-10  John Sullivan  <set EMAIL_ADDRESS environment variable>
+
+	* libnautilus/nautilus-bonobo-ui.h: Added #define for path of
+	Nautilus's toolbar so components can use Bonobo merging without
+	secret inside information.
+	* components/sample/nautilus-sample-content-view.c:
+	(sample_merge_bonobo_items_callback): Replaced secret inside
+	information about menu & toolbar paths & positions with use of
+	#defines in nautilus-bonobo-ui.h.
+
 2000-05-10  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-file.h:

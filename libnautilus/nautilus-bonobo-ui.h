@@ -76,4 +76,13 @@
 #define NAUTILUS_MENU_PATH_HELP_MENU			"/Help"
 #define NAUTILUS_MENU_PATH_ABOUT_ITEM			"/Help/About Nautilus"
 
+/* Components can use these paths with BonoboUIHandler calls to
+ * locate toolbars and toolbar items for the purpose of merging.
+ * Note: Not all Nautilus toolbars or toolbar items are necessarily published
+ * here; these are the ones whose existence components can count on.
+ */
+
+/* Main toolbar */
+#define NAUTILUS_TOOLBAR_PATH_MAIN_TOOLBAR		"/Main"
+
 #endif /* NAUTILUS_BONOBO_UI_H */

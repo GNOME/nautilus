@@ -35,6 +35,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
+#include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 /* A NautilusContentViewFrame's private information. */
@@ -213,6 +214,7 @@ sample_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoin
 	BonoboUIHandler *local_ui_handler;
 	GdkPixbuf		*pixbuf;
 	BonoboUIHandlerPixmapType pixmap_type;
+	char *path;
 	
 	g_assert (NAUTILUS_IS_SAMPLE_CONTENT_VIEW (user_data));
 
@@ -231,42 +233,44 @@ sample_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoin
 		else
 			pixmap_type = BONOBO_UI_HANDLER_PIXMAP_NONE;
 
-		/* 
-		* Create our sample menu item.
-		*
-		* Note that it's sorta bogus that we know Nautilus has a menu whose
-		* path is "/File", and also that we know a sensible position to use within
-		* that menu. Nautilus should publish this information somehow.
-		*/ 
-		bonobo_ui_handler_menu_new_item (local_ui_handler,				/* BonoboUIHandler */
-	        				 "/File/Sample",				/* menu item path, must start with /some-existing-menu-path and be otherwise unique */
-	                                         _("_Sample"),					/* menu item user-displayed label */
-	                                         _("This is a sample merged menu item"),	/* hint that appears in status bar */
-	                                         1,							/* position within menu; -1 means last */
-	                                         pixmap_type,				/* pixmap type */
-	                                         pixbuf,					/* pixmap data */
-	                                         'M',						/* accelerator key, couldn't bear the thought of using Control-S for anything except Save */
-	                                         GDK_CONTROL_MASK,			/* accelerator key modifiers */
-	                                         bonobo_sample_callback,	/* callback function */
-	                                         view);                				/* callback function data */
+	       /* Create our sample menu item. */ 
+		path = bonobo_ui_handler_build_path (NULL,
+						     "File", 
+						     "Sample",
+						     NULL);
+		bonobo_ui_handler_menu_new_item 
+			(local_ui_handler,					/* BonoboUIHandler */
+	        	 path,							/* menu item path, must start with /some-existing-menu-path and be otherwise unique */
+	                 _("_Sample"),						/* menu item user-displayed label */
+	                 _("This is a sample merged menu item"),		/* hint that appears in status bar */
+	                 bonobo_ui_handler_menu_get_pos 
+	                 	(local_ui_handler, 
+	                         NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM) + 1, 	/* position within menu; -1 means last */
+	                 pixmap_type,						/* pixmap type */
+	                 pixbuf,						/* pixmap data */
+	                 'M',							/* accelerator key, couldn't bear the thought of using Control-S for anything except Save */
+	                 GDK_CONTROL_MASK,					/* accelerator key modifiers */
+	                 bonobo_sample_callback,				/* callback function */
+	                 view);                					/* callback function data */
+		g_free (path);
 
-                /* 
-                 * Create our sample toolbar button.
-                 *
-                 * Note that it's sorta bogus that we know Nautilus has a toolbar whose
-                 * path is "/Main". Nautilus should publish this information somehow.
-                 */ 
-	        bonobo_ui_handler_toolbar_new_item (local_ui_handler,				/* BonoboUIHandler */
-	        				    "/Main/Sample",				/* button path, must start with /Main/ and be otherwise unique */
-	        				    _("Sample"),					/* button user-displayed label */
-	        				    _("This is a sample merged toolbar button"),/* hint that appears in status bar */
-	        				    -1,						/* position, -1 means last */
-	        				    pixmap_type,			/* pixmap type */
-	        				    pixbuf,					/* pixmap data */
-	        				    0,						/* accelerator key */
-	        				    0,						/* accelerator key modifiers */
-	        				    bonobo_sample_callback,			/* callback function */
-	        				    view);					/* callback function's data */
+                /* Create our sample toolbar button. */ 
+                path = bonobo_ui_handler_build_path (NAUTILUS_TOOLBAR_PATH_MAIN_TOOLBAR, 
+                				     "Sample",
+                				     NULL);
+	        bonobo_ui_handler_toolbar_new_item 
+	        	(local_ui_handler,				/* BonoboUIHandler */
+	        	 path,						/* button path, must start with /some-existing-toolbar-path and be otherwise unique */
+	        	 _("Sample"),					/* button user-displayed label */
+	        	 _("This is a sample merged toolbar button"),	/* hint that appears in status bar */
+	        	 -1,						/* position, -1 means last */
+	        	 pixmap_type,					/* pixmap type */
+	        	 pixbuf,					/* pixmap data */
+	        	 0,						/* accelerator key */
+	        	 0,						/* accelerator key modifiers */
+	        	 bonobo_sample_callback,			/* callback function */
+	        	 view);						/* callback function's data */
+	        g_free (path);
 	} else {
 		/* Do nothing. */
 	}
