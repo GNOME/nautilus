@@ -1579,8 +1579,10 @@ get_automatic_emblems_as_integer (NautilusFile *file)
 	integer |= !nautilus_file_can_read (file);
 	integer <<= 1;
 	integer |= has_unwriteable_emblem (file);
+#ifdef WE_DONT_NEED_TRASH_EMBLEMS_BECAUSE_WE_DONT_RUN_MEDUSA
 	integer <<= 1;
 	integer |= nautilus_file_is_in_trash (file);
+#endif
 
 	return integer;
 }
@@ -1591,10 +1593,12 @@ prepend_automatic_emblem_names (NautilusFile *file,
 {
 	/* Prepend in reverse order. */
 
+#ifdef WE_DONT_NEED_TRASH_EMBLEMS_BECAUSE_WE_DONT_RUN_MEDUSA
 	if (nautilus_file_is_in_trash (file)) {
 		names = g_list_prepend
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_TRASH));
 	}
+#endif
 	if (has_unwriteable_emblem (file)) {
 		names = g_list_prepend
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE));
