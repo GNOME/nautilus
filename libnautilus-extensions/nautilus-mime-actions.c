@@ -338,7 +338,7 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 		g_assert (info_list == NULL);  /* or else we are leaking it */
 		server = NULL;
 		
-		/* FIXME bugzilla.eazel.com 1156: replace this
+		/* FIXME bugzilla.eazel.com 1158: replace this
                    assertion with proper reporting of the error, once
                    the API supports error handling. */
 
