@@ -40,14 +40,12 @@ typedef struct {
 } BrowserInfo;
 
 typedef struct {
-  GtkHTMLStreamHandle sh;
+  GtkHTMLStream *sh;
   BrowserInfo *bi;
   char *url;
   HTStream *stream;
 } VFSHandle;
 
-extern GtkHTMLStreamHandle gtk_html_stream_ref(GtkHTMLStreamHandle handle);
-extern void gtk_html_stream_unref(GtkHTMLStreamHandle handle);
 static void do_vfs_load(VFSHandle *handle);
 
 static char *
@@ -193,7 +191,7 @@ browser_url_load_done(GtkWidget *htmlw, BrowserInfo *bi)
 struct _HTStream {
   const HTStreamClass *	isa;
   BrowserInfo *bi;
-  GtkHTMLStreamHandle handle;
+  GtkHTMLStream *handle;
 };
 
 static int netin_stream_write (HTStream * me, const char * s, int l)
@@ -250,7 +248,7 @@ static const HTStreamClass netin_stream_class =
 }; 
 
 static HTStream *
-netin_stream_new (BrowserInfo *bi, GtkHTMLStreamHandle handle)
+netin_stream_new (BrowserInfo *bi, GtkHTMLStream *handle)
 {
   HTStream *retval;
 
@@ -386,7 +384,7 @@ do_vfs_load(VFSHandle *vfsh)
 }
 
 static void
-browser_url_requested(GtkWidget *htmlw, const char *url, GtkHTMLStreamHandle handle, BrowserInfo *bi)
+browser_url_requested(GtkWidget *htmlw, const char *url, GtkHTMLStream *handle, BrowserInfo *bi)
 {
   char *real_url;
   HTRequest *request;
@@ -449,6 +447,7 @@ static void
 browser_goto_url_real(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
 {
   Nautilus_ProgressRequestInfo pri;
+  GtkHTMLStream *stream;
 
   pri.type = Nautilus_PROGRESS_UNDERWAY;
   pri.amount = 0.0;
@@ -468,7 +467,10 @@ browser_goto_url_real(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
       bi->base_target_url = g_dirname(url);
     }
 
-  gtk_html_begin(GTK_HTML(bi->htmlw), url);
+  stream = gtk_html_begin(GTK_HTML(bi->htmlw));
+
+  browser_url_requested(GTK_HTML(bi->htmlw), url, stream, bi);
+
   nautilus_view_frame_request_progress_change(bi->view_frame, &pri);
 }
 

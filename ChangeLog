@@ -1,3 +1,17 @@
+2000-05-21  Ettore Perazzoli  <ettore@helixcode.com>
+
+	* components/html/ntl-web-browser.c: Updated for latest GtkHTML
+	API that uses `GtkHTMLStream *' instead of `GtkHTMLStreamHandle'.
+	(browser_goto_url_real): No need to pass the url to
+	`gtk_html_begin()' anymore.  Also, call the
+	`browser_url_requested()' signal explicitly because
+	"url_requested" is not emitted by `gtk_html_begin()' anymore.
+
+2000-05-21  Ettore Perazzoli  <ettore@helixcode.com>
+
+	* components/notes/Makefile.am (INCLUDES): Add
+	`-I$(top_builddir)/libnautilus'.
+
 2000-05-20  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/mpg123_handler.c: (sigchld_handler),

@@ -3,6 +3,7 @@ bin_PROGRAMS=ntl-notes
 INCLUDES=\
 	-I$(top_srcdir)		\
 	-I$(top_builddir)	\
+	-I$(top_builddir)/libnautilus	\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	$(GNOMEUI_CFLAGS)	\
 	$(GCONF_CFLAGS)		\
