@@ -21,6 +21,7 @@ ElementInfo sect_preparse[] = {
 	{ BOOKINFO, "bookinfo", NULL, NULL, NULL},
 	{ ARTHEADER, "artheader", NULL, NULL, NULL},
 	{ ARTICLEINFO, "articleinfo", NULL, NULL, NULL},
+	{ GLOSSARYINFO, "glossaryinfo", NULL, NULL, NULL},
 	{ AUTHORGROUP, "authorgroup", NULL, NULL, NULL},
 	{ AUTHOR, "author", NULL, NULL, NULL},
 	{ FIRSTNAME, "firstname", NULL, NULL, NULL},

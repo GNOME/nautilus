@@ -17,6 +17,7 @@ ElementInfo sect_elements[] = {
 	{ BOOKINFO, "bookinfo", NULL, NULL, NULL},
 	{ ARTHEADER, "artheader", NULL, NULL, NULL}, //(startElementSAXFunc) artheader_start_element, (endElementSAXFunc) sect_artheader_end_element, NULL},
 	{ ARTICLEINFO, "articleinfo", NULL, NULL, NULL},
+	{ GLOSSARYINFO, "glossaryinfo", NULL, NULL, NULL},
 	{ AUTHORGROUP, "authorgroup", NULL, NULL, NULL},
 	{ AUTHOR, "author", (startElementSAXFunc) sect_author_start_element, NULL, NULL},
 	{ FIRSTNAME, "firstname", NULL, NULL, (charactersSAXFunc) sect_author_characters },
@@ -199,6 +200,10 @@ sect_write_characters (Context *context,
 	GSList *list = NULL;
 	ElementIndex index;
 
+	if (!IS_IN_SECT (context))
+		return;
+		
+
 	list = g_slist_prepend (list, GINT_TO_POINTER (ENTRY));
 	index = find_first_parent (context, list);
 	g_slist_free (list);
@@ -212,11 +217,13 @@ sect_write_characters (Context *context,
 			} else {
 				temp = g_strndup (chars, len);
 			}
-			break;
+			break; 
 		default:
 			temp = g_strndup (chars, len);
 			break;
 	}
+
+
 	sect_print (context, temp);
 	g_free (temp);
 }
@@ -749,7 +756,6 @@ sect_title_characters (Context *context,
 	case TABLE:
 		sect_print (context, temp);
 		g_free (temp);
-//		((SectContext *) context->data)->table->title = temp;
 		break;
 	default:
 		g_free (temp);

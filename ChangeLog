@@ -1,3 +1,28 @@
+2000-08-11  Ali Abdin  <aliabdin@aucegypt.edu>
+
+        * components/help/converters/gnome-db2html2/gdb3html.h:
+        * components/help/converters/gnome-db2html2/sect-elements.c:
+        * components/help/converters/gnome-db2html2/sect-preparse.c:
+        * components/help/converters/gnome-db2html2/toc-elements.c:
+        Added glossaryinfo tag (to act like articleinfo/bookinfo)
+
+        * components/help/converters/gnome-db2html2/toc-elements.c:
+        (toc_title_start_element),
+        (toc_title_end_element):
+        I tried the GDP Hanbook - Didn't like how the table of contents came
+        out. So I tweaked it to further indent the sect3's and give them a
+        different HTML tag (H4)
+
+        * components/help/converters/gnome-db2html2/TODO:
+        Updated
+
+        * components/help/converters/gnome-db2html2/sect-elements.c:
+        (sect_write_characters) An aspect of this function got accidently
+        removed causing things to be output when they shouldn't. It took me
+        approximately half an hour to find this elusive problem (I may never
+        have found it had it not been for an old copy of gnome-db2html2 lying
+        around)
+
 2000-08-11  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/nautilus-applicable-views.c,

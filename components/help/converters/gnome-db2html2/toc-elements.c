@@ -33,6 +33,7 @@ ElementInfo toc_elements[] = {
 	{ BOOKINFO, "bookinfo", (startElementSAXFunc) artheader_start_element, (endElementSAXFunc) toc_artheader_end_element, NULL},
 	{ ARTHEADER, "artheader", (startElementSAXFunc) artheader_start_element, (endElementSAXFunc) toc_artheader_end_element, NULL},
 	{ ARTICLEINFO, "articleinfo", (startElementSAXFunc) artheader_start_element, (endElementSAXFunc) toc_artheader_end_element, NULL},
+	{ GLOSSARYINFO, "glossaryinfo", (startElementSAXFunc) artheader_start_element, (endElementSAXFunc) toc_artheader_end_element, NULL},
 	{ AUTHORGROUP, "authorgroup", NULL, NULL, NULL},
 	{ AUTHOR, "author", (startElementSAXFunc) toc_author_start_element, NULL, NULL},
 	{ FIRSTNAME, "firstname", NULL, NULL, (charactersSAXFunc) toc_author_characters },
@@ -354,10 +355,13 @@ toc_title_start_element (Context *context,
 	case SECT4:
 	case SECT5:
 	case SECTION:
-		if (context->sect2 == 0)
+		if (context->sect2 == 0) {
 			g_print ("<H2>");
-		else
+		} else if (context->sect3 == 0) {
 			g_print ("<H3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		} else {
+			g_print ("<H4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		}
 		if (context->sect1 > 0) g_print ("%d", context->sect1);
 		if (context->sect2 > 0) g_print (".%d", context->sect2);
 		if (context->sect3 > 0) g_print (".%d", context->sect3);
@@ -412,10 +416,11 @@ toc_title_end_element (Context *context,
 		g_print ("</A></H2>\n");
 		break;
 	case SECT2:
+		g_print ("</A></H3>\n");
 	case SECT3:
 	case SECT4:
 	case SECT5:
-		g_print ("</A></H3>\n");
+		g_print ("</A></H4>\n");
 		break;
 	default:
 		break;
