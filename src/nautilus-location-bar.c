@@ -572,16 +572,13 @@ editable_event_after_callback (GtkEntry *entry,
 	bar = NAUTILUS_LOCATION_BAR (user_data);
 
 	/* After typing the right arrow key we move the selection to
-	 * the end.
+	 * the end, if we have a valid selection - since this is most
+	 * likely an auto-completion. We ignore shift / control since
+	 * they can validly be used to extend the selection.
 	 */
-	/* FIXME: Why do this? This breaks key combinations like
-	 * Ctrl-Right to move a word at a time and Shift-Right to
-	 * extend the selection by a single character, and also means
-	 * you can't move through the text a character at a
-	 * time. Seems like a bad idea.
-	 */
-	if ((keyevent->keyval == GDK_Right || keyevent->keyval == GDK_End)
-	    && gtk_editable_get_selection_bounds (editable, NULL, NULL)) {
+	if ((keyevent->keyval == GDK_Right || keyevent->keyval == GDK_End) &&
+	    !(keyevent->state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK)) && 
+	    gtk_editable_get_selection_bounds (editable, NULL, NULL)) {
 		set_position_and_selection_to_end (editable);
 	}
 

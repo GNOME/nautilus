@@ -1,9 +1,20 @@
+2002-07-08  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-zoom-control.c
+	(nautilus_zoom_control_set_parameters): add pre-condition.
+
+	* src/nautilus-location-bar.c
+	(editable_event_after_callback): if shift or control are
+	down, don't pop to the end of the field to help
+	auto-completers.
+
 2002-07-08  Alexander Larsson  <alexl@redhat.com>
 
 	* icons/default/desktop-home.png:
 	Use the normal gnome home icon by tigert.
 	
 2002-07-08  Gregory Merchan  <merchan@phys.lsu.edu>
+
 	* components/music/nautilus-music-view.c
 	* components/news/nautilus-news.c
 	* libnautilus-private/nautilus-customization-data.c
