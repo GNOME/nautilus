@@ -1137,6 +1137,7 @@ fmt_scrollkeeper_parse_document (HyperbolaDocTree * tree, char **ancestors,
 	FILE *pipe;
 	int i;
 	int bytes_read;
+	int result;
 
 
 	char *doc_uri;
@@ -1201,13 +1202,14 @@ fmt_scrollkeeper_parse_document (HyperbolaDocTree * tree, char **ancestors,
 
                 pipe = popen (toc_location, "r");
                 bytes_read = fread ((void *) toc_location, sizeof (char), 1024, pipe);
+                result = pclose (pipe);
 
                 if (bytes_read > 0) {
                         toc_location[bytes_read - 1] = '\0';
 
 
                         /* Exit code of 0 indicates ScrollKeeper returned a TOC file path */
-                        if (!pclose (pipe)) {
+                        if (!result) {
                                 fmt_scrollkeeper_parse_doc_toc (tree, section,
                                                                 toc_location,
                                                                 doc_uri);
@@ -1223,11 +1225,12 @@ fmt_scrollkeeper_parse_document (HyperbolaDocTree * tree, char **ancestors,
 			    "scrollkeeper-get-index-from-docpath %s", doc_data[1]);
 		pipe = popen (index_location, "r");
 		bytes_read = fread ((void *) index_location, sizeof (char), 1024, pipe);
+		result = pclose (pipe);
 
 		if (bytes_read > 0) {
 			index_location[bytes_read - 1] = '\0';
 			/* Exit code of 0 indicates ScrollKeeper returned an index file */
-			if (!pclose (pipe)) {
+			if (!result) {
 				char *key, *index;
 				key = g_strdup(doc_uri);
 				index = g_strdup(index_location);
