@@ -31,7 +31,7 @@ ElementInfo sect_preparse[] = {
 	{ YEAR, "year", NULL, NULL, NULL},
 	{ HOLDER, "holder", NULL, NULL, NULL},
 	{ TITLE, "title", NULL, NULL, (charactersSAXFunc) sect_preparse_title_characters},
-	/* We don't need the rest. */
+
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
