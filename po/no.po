@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.1\n"
-"POT-Creation-Date: 2000-05-13 21:20+0200\n"
-"PO-Revision-Date: 2000-05-13 21:25+02:00\n"
+"POT-Creation-Date: 2000-05-18 01:06+0200\n"
+"PO-Revision-Date: 2000-05-18 01:08+02:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr "Nautilus: Bokmerker"
 
 #. Icon
 #. Emblems
-#: src/file-manager/fm-list-view.c:309 src/nautilus-bookmarks-window.c:163
+#: src/file-manager/fm-list-view.c:490 src/nautilus-bookmarks-window.c:163
 msgid "Name"
 msgstr "Navn"
 
@@ -31,7 +31,7 @@ msgstr "Plassering"
 msgid "Remove"
 msgstr "Fjern"
 
-#: src/file-manager/fm-properties-window.c:598 src/nautilus-location-bar.c:212
+#: src/file-manager/fm-properties-window.c:590 src/nautilus-location-bar.c:212
 msgid "Location:"
 msgstr "Plassering:"
 
@@ -122,7 +122,7 @@ msgstr "F_jern tekst"
 msgid "Removes the selected text without putting it on the clipboard"
 msgstr "Fjerner den valgte teksten uten å plassere den på utklippstavlen"
 
-#: src/file-manager/fm-directory-view.c:1556 src/nautilus-window-menus.c:684
+#: src/file-manager/fm-directory-view.c:1536 src/nautilus-window-menus.c:684
 msgid "_Select All"
 msgstr "_Velg alt"
 
@@ -306,25 +306,31 @@ msgstr "Kunne ikke finne \"%s\". Vennligst sjekk stavingen og forsøk igjen."
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
-msgstr "\"%s\" er ikke en gyldig lokasjon. Vennligst sjekk stavingen og forsøk igjen."
+msgstr ""
+"\"%s\" er ikke en gyldig lokasjon. Vennligst sjekk stavingen og forsøk igjen."
 
 #: src/ntl-window-msgs.c:1101
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot handle items of type \"%s\"."
-msgstr "Kunne ikke vise \"%s\", fordi Nautilus ikke kan håndtere oppføringer av type \"%s\"."
+msgstr ""
+"Kunne ikke vise \"%s\", fordi Nautilus ikke kan håndtere oppføringer av type "
+"\"%s\"."
 
 #: src/ntl-window-msgs.c:1105
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot handle items of this type."
-msgstr "Kunne ikke vise \"%s\", fordi Nautilus ikke kan håndtere oppføringer av denne typen."
+msgstr ""
+"Kunne ikke vise \"%s\", fordi Nautilus ikke kan håndtere oppføringer av "
+"denne typen."
 
 #. Shouldn't have gotten this error unless there's a : separator.
 #: src/ntl-window-msgs.c:1115
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
-msgstr "Kunne ikke vise \"%s\", fordi Nautilus ikke kan håndtere %s: lokasjoner."
+msgstr ""
+"Kunne ikke vise \"%s\", fordi Nautilus ikke kan håndtere %s: lokasjoner."
 
 #. It is so sad that we can't say anything more useful than this.
 #. * When this comes up, we should figure out what's really happening
@@ -464,59 +470,59 @@ msgstr "Tømmer søppelkurven"
 msgid "Preparing to Empty the Trash..."
 msgstr "Forbereder tømming av søppelkurven..."
 
-#: src/file-manager/fm-directory-view.c:596
+#: src/file-manager/fm-directory-view.c:595
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" valgt"
 
-#: src/file-manager/fm-directory-view.c:598
+#: src/file-manager/fm-directory-view.c:597
 msgid "1 directory selected"
 msgstr "1 katalog valgt"
 
-#: src/file-manager/fm-directory-view.c:601
+#: src/file-manager/fm-directory-view.c:600
 #, c-format
 msgid "%d directories selected"
 msgstr "%d kataloger valgt"
 
-#: src/file-manager/fm-directory-view.c:607
+#: src/file-manager/fm-directory-view.c:606
 msgid " (containing 0 items)"
 msgstr " (inneholdende 0 oppføringer)"
 
-#: src/file-manager/fm-directory-view.c:609
+#: src/file-manager/fm-directory-view.c:608
 msgid " (containing 1 item)"
 msgstr " (inneholdende 1 oppføring)"
 
-#: src/file-manager/fm-directory-view.c:611
+#: src/file-manager/fm-directory-view.c:610
 #, c-format
 msgid " (containing %d items)"
 msgstr " (inneholdende %d oppføringer)"
 
-#: src/file-manager/fm-directory-view.c:622
+#: src/file-manager/fm-directory-view.c:621
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" valgt (%s)"
 
-#: src/file-manager/fm-directory-view.c:626
+#: src/file-manager/fm-directory-view.c:625
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d oppføringer valgt (%s)"
 
-#: src/file-manager/fm-directory-view.c:633
+#: src/file-manager/fm-directory-view.c:632
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 annen oppføring valgt (%s)"
 
-#: src/file-manager/fm-directory-view.c:636
+#: src/file-manager/fm-directory-view.c:635
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d andre oppføringer valgt (%s)"
 
-#: src/file-manager/fm-directory-view.c:650
+#: src/file-manager/fm-directory-view.c:649
 #, c-format
 msgid "%s%s"
 msgstr "%s%s"
 
-#: src/file-manager/fm-directory-view.c:654
+#: src/file-manager/fm-directory-view.c:653
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -524,114 +530,150 @@ msgstr "%s%s, %s"
 #. Don't use GNOME_STOCK_BUTTON_CANCEL because the
 #. * red X is confusing in this context.
 #.
-#: src/file-manager/fm-directory-view.c:1259
+#: src/file-manager/fm-directory-view.c:1256
 msgid "Delete Selection"
 msgstr "Slett utvalg"
 
-#: src/file-manager/fm-directory-view.c:1260
+#: src/file-manager/fm-directory-view.c:1257
 msgid "Delete"
 msgstr "Slett"
 
-#: src/file-manager/fm-directory-view.c:1261
+#: src/file-manager/fm-directory-view.c:1258
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: src/file-manager/fm-directory-view.c:1280
+#: src/file-manager/fm-directory-view.c:1277
 #, c-format
 msgid "Are you sure you want to delete \"%s\"?"
 msgstr "Er du sikker på at du vil slette \"%s\"?"
 
-#: src/file-manager/fm-directory-view.c:1283
+#: src/file-manager/fm-directory-view.c:1280
 #, c-format
 msgid "Are you sure you want to delete the %d selected items?"
 msgstr "Er du sikker på at du vil slette de %d valgte oppføringene?"
 
-#: src/file-manager/fm-directory-view.c:1506
-msgid "Select All"
-msgstr "Velg alt"
-
-#: src/file-manager/fm-directory-view.c:1507
-msgid "Zoom In"
-msgstr "Zoom inn"
-
-#: src/file-manager/fm-directory-view.c:1509
-msgid "Zoom Out"
-msgstr "Zoom ut"
-
-#: src/file-manager/fm-directory-view.c:1524
+#: src/file-manager/fm-directory-view.c:1495
 msgid "_Open"
 msgstr "_Åpne"
 
-#: src/file-manager/fm-directory-view.c:1529
+#: src/file-manager/fm-directory-view.c:1498
+msgid "Open With"
+msgstr "Åpne med"
+
+#: src/file-manager/fm-directory-view.c:1501
+msgid "Other Application..."
+msgstr "Annen applikasjon..."
+
+#: src/file-manager/fm-directory-view.c:1504
+msgid "Other Viewer..."
+msgstr "Annet visningsprogram..."
+
+#: src/file-manager/fm-directory-view.c:1509
 msgid "Open in _New Window"
 msgstr "Åpne i et _nytt vindu"
 
-#: src/file-manager/fm-directory-view.c:1531
+#: src/file-manager/fm-directory-view.c:1511
 #, c-format
 msgid "Open in %d _New Windows"
 msgstr "Åpne i %d _nye vinduer"
 
-#: src/file-manager/fm-directory-view.c:1539
+#: src/file-manager/fm-directory-view.c:1519
 msgid "_Delete..."
 msgstr "_Slett..."
 
-#: src/file-manager/fm-directory-view.c:1543
+#: src/file-manager/fm-directory-view.c:1523
 msgid "_Move to Trash"
 msgstr "_Flytt til søppelkurv"
 
-#: src/file-manager/fm-directory-view.c:1546
+#: src/file-manager/fm-directory-view.c:1526
 msgid "_Duplicate"
 msgstr "_Dupliser"
 
-#: src/file-manager/fm-directory-view.c:1549
+#: src/file-manager/fm-directory-view.c:1529
 msgid "Show _Properties"
 msgstr "Sett egenska_per"
 
-#: src/file-manager/fm-directory-view.c:1552
+#: src/file-manager/fm-directory-view.c:1532
 msgid "_Empty Trash"
 msgstr "_Tøm søppelkurv"
 
-#: src/file-manager/fm-directory-view.c:1560
+#: src/file-manager/fm-directory-view.c:1540
 msgid "R_emove Custom Images"
 msgstr "Fje_rn egendefinerte bilder"
 
-#: src/file-manager/fm-directory-view.c:1562
+#: src/file-manager/fm-directory-view.c:1542
 msgid "R_emove Custom Image"
 msgstr "Fj_ern egendefinert bilde"
 
-#: src/file-manager/fm-directory-view.c:1675
+#. FIXME: Need to think clearly about what items to include here.
+#. * We want the list to be pretty short, but not degenerately short.
+#. * Zoom In and Out don't really seem to belong. Maybe "Show Properties"
+#. * (for the current location, not selection -- but would have to not
+#. * include this item when there's a selection)? Add Bookmark? (same issue).
+#.
+#: src/file-manager/fm-directory-view.c:1644
+msgid "Zoom In"
+msgstr "Zoom inn"
+
+#: src/file-manager/fm-directory-view.c:1646
+msgid "Zoom Out"
+msgstr "Zoom ut"
+
+#: src/file-manager/fm-directory-view.c:1676
+#, c-format
+msgid "Application %d"
+msgstr "Applikasjon %d"
+
+#: src/file-manager/fm-directory-view.c:1688
+#, c-format
+msgid "Viewer %d"
+msgstr "Visningsprogram %d"
+
+#: src/file-manager/fm-directory-view.c:1812
+msgid "Choose a program with which to open the selected item"
+msgstr "Velg et program du vil åpne valgte oppføring med"
+
+#: src/file-manager/fm-directory-view.c:1825
+msgid "Choose another application with which to open the selected item"
+msgstr "Velg en annen applikasjon som du vil åpne valgte oppføring med"
+
+#: src/file-manager/fm-directory-view.c:1844
+msgid "Choose another viewer with which to view the selected item"
+msgstr "Velg et annet visningsprogram du vil vise valgt oppføring med"
+
+#: src/file-manager/fm-directory-view.c:1863
 msgid "Open the selected item in this window"
 msgstr "Åpne valgt oppføring i dette vinduet"
 
-#: src/file-manager/fm-directory-view.c:1682
+#: src/file-manager/fm-directory-view.c:1870
 msgid "Open each selected item in a new window"
 msgstr "Åpne hver valgt oppføring i et nytt vindu"
 
-#: src/file-manager/fm-directory-view.c:1695
+#: src/file-manager/fm-directory-view.c:1885
 msgid "View or modify the properties of the selected items"
 msgstr "Vis eller modifiser egenskapene for de valgte oppføringene"
 
-#: src/file-manager/fm-directory-view.c:1706
+#: src/file-manager/fm-directory-view.c:1896
 msgid "Delete all selected items"
 msgstr "Slett alle valgte oppføringer"
 
-#: src/file-manager/fm-directory-view.c:1714
+#: src/file-manager/fm-directory-view.c:1904
 msgid "Move all selected items to the Trash"
 msgstr "Flytt alle valgte oppføringer til søppelkurven"
 
-#: src/file-manager/fm-directory-view.c:1721
+#: src/file-manager/fm-directory-view.c:1911
 msgid "Duplicate all selected items"
 msgstr "Dupliser alle valgte oppføringer"
 
-#: src/file-manager/fm-directory-view.c:1728
+#: src/file-manager/fm-directory-view.c:1918
 msgid "Delete all items in the trash"
 msgstr "Slett alle oppføringer i søppelkurven"
 
-#: src/file-manager/fm-directory-view.c:1735
+#: src/file-manager/fm-directory-view.c:1925
 msgid "Select all items in this window"
 msgstr "Velg alle oppføringer i dette vinduet"
 
-#: src/file-manager/fm-directory-view.c:1748
+#: src/file-manager/fm-directory-view.c:1938
 msgid "Remove the custom image from each selected icon"
 msgstr "Fjern det egendefinerte bildet fra hvert valgte ikon"
 
@@ -776,95 +818,95 @@ msgstr "Gi nytt navn"
 msgid "Rename selected item"
 msgstr "Gi nytt navn til valgt oppføring"
 
-#: src/file-manager/fm-list-view.c:310
+#: src/file-manager/fm-list-view.c:491
 msgid "Size"
 msgstr "Størrelse"
 
-#: src/file-manager/fm-list-view.c:311
+#: src/file-manager/fm-list-view.c:492
 msgid "Type"
 msgstr "Type"
 
-#: src/file-manager/fm-list-view.c:312
+#: src/file-manager/fm-list-view.c:493
 msgid "Date Modified"
 msgstr "Dato endret"
 
-#: src/file-manager/fm-properties-window.c:378
+#: src/file-manager/fm-properties-window.c:370
 #, c-format
 msgid "Nautilus: %s Properties"
 msgstr "Nautilus: egenskaper for %s"
 
-#: src/file-manager/fm-properties-window.c:537
+#: src/file-manager/fm-properties-window.c:529
 msgid "Basic"
 msgstr "Grunnleggende"
 
-#: src/file-manager/fm-properties-window.c:600
+#: src/file-manager/fm-properties-window.c:592
 msgid "Type:"
 msgstr "Type:"
 
-#: src/file-manager/fm-properties-window.c:602
+#: src/file-manager/fm-properties-window.c:594
 msgid "Size:"
 msgstr "Størrelse:"
 
-#: src/file-manager/fm-properties-window.c:604
+#: src/file-manager/fm-properties-window.c:596
 msgid "Date Modified:"
 msgstr "Dato endret:"
 
-#: src/file-manager/fm-properties-window.c:671
+#: src/file-manager/fm-properties-window.c:721
 msgid "Emblems"
 msgstr "Emblemer"
 
-#: src/file-manager/fm-properties-window.c:949
+#: src/file-manager/fm-properties-window.c:1004
 msgid "Permissions"
 msgstr "Rettigheter"
 
-#: src/file-manager/fm-properties-window.c:955
+#: src/file-manager/fm-properties-window.c:1010
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Du er ikke eieren, du kan derfor ikke ender disse rettighetene."
 
-#: src/file-manager/fm-properties-window.c:986
+#: src/file-manager/fm-properties-window.c:1041
 #, c-format
 msgid "owner (%s):"
 msgstr "eier (%s):"
 
-#: src/file-manager/fm-properties-window.c:989
+#: src/file-manager/fm-properties-window.c:1044
 #, c-format
 msgid "group (%s):"
 msgstr "gruppe (%s):"
 
-#: src/file-manager/fm-properties-window.c:992
+#: src/file-manager/fm-properties-window.c:1047
 msgid "others:"
 msgstr "andre:"
 
-#: src/file-manager/fm-properties-window.c:996
+#: src/file-manager/fm-properties-window.c:1051
 msgid "standard format:"
 msgstr "standardformat:"
 
-#: src/file-manager/fm-properties-window.c:1000
+#: src/file-manager/fm-properties-window.c:1055
 msgid "read"
 msgstr "lese"
 
-#: src/file-manager/fm-properties-window.c:1004
+#: src/file-manager/fm-properties-window.c:1059
 msgid "write"
 msgstr "skrive"
 
-#: src/file-manager/fm-properties-window.c:1008
+#: src/file-manager/fm-properties-window.c:1063
 msgid "execute"
 msgstr "kjør"
 
-#: src/file-manager/fm-properties-window.c:1062
+#: src/file-manager/fm-properties-window.c:1117
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Rettighetene for \"%s\" kunne ikke bestemmes."
 
-#: src/file-manager/fm-properties-window.c:1076
+#: src/file-manager/fm-properties-window.c:1131
 msgid "More"
 msgstr "Mer"
 
-#: src/file-manager/fm-properties-window.c:1082
+#: src/file-manager/fm-properties-window.c:1137
 msgid "MIME type:"
 msgstr "MIME-type:"
 
-#: src/file-manager/fm-properties-window.c:1086
+#: src/file-manager/fm-properties-window.c:1141
 msgid "Tell sullivan@eazel.com all your good ideas for what should go here."
 msgstr ""
 "Fortell sullivan@eazel.com om alle dine gode ideer om hva som skal være her."
@@ -874,66 +916,66 @@ msgid "Prefs Box"
 msgstr "Brukervalg-boks"
 
 #. today, use special word
-#: libnautilus-extensions/nautilus-file.c:1213
+#: libnautilus-extensions/nautilus-file.c:1242
 msgid "today %-I:%M %p"
 msgstr "i dag %-I:%M %p"
 
 #. yesterday, use special word
-#: libnautilus-extensions/nautilus-file.c:1216
+#: libnautilus-extensions/nautilus-file.c:1245
 msgid "yesterday %-I:%M %p"
 msgstr "i går %-I:%M %p"
 
 #. current week, include day of week
-#: libnautilus-extensions/nautilus-file.c:1219
+#: libnautilus-extensions/nautilus-file.c:1248
 msgid "%A %-m/%-d/%y %-I:%M %p"
 msgstr "%A %-m/%-d/%y %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:1221
+#: libnautilus-extensions/nautilus-file.c:1250
 msgid "%-m/%-d/%y %-I:%M %p"
 msgstr "%-m/%-d/%y %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:1464
+#: libnautilus-extensions/nautilus-file.c:1493
 msgid "unknown owner"
 msgstr "ukjent eier"
 
-#: libnautilus-extensions/nautilus-file.c:1495
+#: libnautilus-extensions/nautilus-file.c:1524
 msgid "unknown group"
 msgstr "ukjent gruppe"
 
-#: libnautilus-extensions/nautilus-file.c:1524
+#: libnautilus-extensions/nautilus-file.c:1553
 msgid "unknown MIME type"
 msgstr "ukjent MIME-type"
 
-#: libnautilus-extensions/nautilus-file.c:1548
+#: libnautilus-extensions/nautilus-file.c:1577
 msgid "xxx"
 msgstr "xxx"
 
-#: libnautilus-extensions/nautilus-file.c:1548
+#: libnautilus-extensions/nautilus-file.c:1577
 msgid "--"
 msgstr "--"
 
-#: libnautilus-extensions/nautilus-file.c:1551
+#: libnautilus-extensions/nautilus-file.c:1580
 msgid "0 items"
 msgstr "0 oppføringer"
 
-#: libnautilus-extensions/nautilus-file.c:1554
+#: libnautilus-extensions/nautilus-file.c:1583
 msgid "1 item"
 msgstr "1 oppføring"
 
-#: libnautilus-extensions/nautilus-file.c:1556
+#: libnautilus-extensions/nautilus-file.c:1585
 #, c-format
 msgid "%u items"
 msgstr "%u oppføringer"
 
-#: libnautilus-extensions/nautilus-file.c:1665
+#: libnautilus-extensions/nautilus-file.c:1694
 msgid "program"
 msgstr "program"
 
-#: libnautilus-extensions/nautilus-file.c:1668
+#: libnautilus-extensions/nautilus-file.c:1697
 msgid "unknown type"
 msgstr "ukjent type"
 
-#: libnautilus-extensions/nautilus-file.c:1994
+#: libnautilus-extensions/nautilus-file.c:1974
 msgid " --"
 msgstr " --"
 
@@ -1142,28 +1184,28 @@ msgstr "Skriv inn tekst"
 msgid "Enter Password"
 msgstr "Skriv inn passord"
 
-#: components/music/nautilus-music-view.c:125
-msgid "Track"
-msgstr "Spor"
+#: components/music/nautilus-music-view.c:152
+msgid "#"
+msgstr "#"
 
-#: components/music/nautilus-music-view.c:125
+#: components/music/nautilus-music-view.c:152
 msgid "Title"
 msgstr "Tittel"
 
-#: components/music/nautilus-music-view.c:125
+#: components/music/nautilus-music-view.c:152
 msgid "Artist"
 msgstr "Artist"
 
-#: components/music/nautilus-music-view.c:125
+#: components/music/nautilus-music-view.c:152
 msgid "Time"
 msgstr "Tid"
 
 #. allocate a widget for the album title
-#: components/music/nautilus-music-view.c:144
+#: components/music/nautilus-music-view.c:174
 msgid "Album Title"
 msgstr "Albumtittel"
 
-#: components/notes/ntl-notes.c:184 components/notes/ntl-notes.c:193
+#: components/notes/ntl-notes.c:180 components/notes/ntl-notes.c:189
 msgid "Notes"
 msgstr "Notater"
 
