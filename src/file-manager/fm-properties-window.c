@@ -76,40 +76,6 @@ struct FMPropertiesWindowDetails {
 };
 
 enum {
-	BASIC_PAGE_ICON_AND_NAME_ROW,
-	BASIC_PAGE_TYPE_ROW,
-	BASIC_PAGE_SIZE_ROW,
-	BASIC_PAGE_LOCATION_ROW,
-	BASIC_PAGE_MIME_TYPE_ROW,
-	BASIC_PAGE_EMPTY_ROW,
-	BASIC_PAGE_ACCESSED_DATE_ROW,
-	BASIC_PAGE_MODIFIED_DATE_ROW,
-	BASIC_PAGE_ROW_COUNT
-};
-
-enum {
-	PERMISSIONS_PAGE_OWNER_ROW,
-	PERMISSIONS_PAGE_GROUP_ROW,
-	PERMISSIONS_PAGE_SEPARATOR_AFTER_GROUP_ROW,
-	PERMISSIONS_PAGE_TITLE_ROW,
-	PERMISSIONS_PAGE_OWNER_CHECKBOX_ROW,
-	PERMISSIONS_PAGE_GROUP_CHECKBOX_ROW,
-	PERMISSIONS_PAGE_OTHERS_CHECKBOX_ROW,
-	PERMISSIONS_PAGE_SEPARATOR_AFTER_OTHERS_ROW,
-	PERMISSIONS_PAGE_SUID_ROW,
-	PERMISSIONS_PAGE_SGID_ROW,
-	PERMISSIONS_PAGE_STICKY_ROW,
-	PERMISSIONS_PAGE_SEPARATOR_AFTER_SPECIALS_ROW,
-	PERMISSIONS_PAGE_FULL_STRING_ROW,
-	PERMISSIONS_PAGE_FULL_OCTAL_ROW,
-	PERMISSIONS_PAGE_DATE_ROW,
-	PERMISSIONS_PAGE_ROW_COUNT
-};
-
-#define PERMISSIONS_PAGE_FIRST_SPECIAL_FLAGS_ROW	PERMISSIONS_PAGE_SUID_ROW
-#define PERMISSIONS_PAGE_LAST_SPECIAL_FLAGS_ROW 	PERMISSIONS_PAGE_SEPARATOR_AFTER_SPECIALS_ROW
-
-enum {
 	PERMISSIONS_CHECKBOXES_TITLE_ROW,
 	PERMISSIONS_CHECKBOXES_OWNER_ROW,
 	PERMISSIONS_CHECKBOXES_GROUP_ROW,
@@ -914,16 +880,32 @@ attach_owner_menu (GtkTable *table,
 					       GTK_OBJECT (option_menu));	
 }
 
-static void
-attach_separator (GtkTable *table, int row)
+static guint
+append_row (GtkTable *table)
+{
+	guint new_row_count;
+
+	new_row_count = table->nrows + 1;
+
+	gtk_table_resize (table, new_row_count, table->ncols);
+	gtk_table_set_row_spacing (table, new_row_count - 1, GNOME_PAD);
+
+	return new_row_count - 1;
+}
+
+static guint
+append_separator (GtkTable *table)
 {
 	GtkWidget *separator;
+	guint last_row;
 
+	last_row = append_row (table);
 	separator = gtk_hseparator_new ();
 	gtk_widget_show (separator);
 	gtk_table_attach_defaults (table, separator,
 				   TITLE_COLUMN, COLUMN_COUNT,
-				   row, row+1);				   
+				   last_row, last_row+1);
+	return last_row;				   
 }		  	
  
 static void
@@ -1043,28 +1025,46 @@ attach_title_field (GtkTable *table,
 	return attach_label (table, row, TITLE_COLUMN, title, TRUE, TRUE);
 }		      
 
-static void
-attach_title_value_pair (GtkTable *table, 
-			  int row, 
-			  const char *title, 
-			  NautilusFile *file, 
-			  const char *file_attribute_name)
+static guint
+append_title_field (GtkTable *table, const char *title)
 {
-	attach_title_field (table, row, title);
-	attach_value_field (table, row, VALUE_COLUMN, file, file_attribute_name); 
+	guint last_row;
+
+	last_row = append_row (table);
+	attach_title_field (table, last_row, title);
+
+	return last_row;
 }
 
-static void
-attach_directory_contents_fields (GtkTable *table,
-				  int row,
+static guint
+append_title_value_pair (GtkTable *table, 
+			 const char *title, 
+			 NautilusFile *file, 
+			 const char *file_attribute_name)
+{
+	guint last_row;
+
+	last_row = append_title_field (table, title);
+	attach_value_field (table, last_row, VALUE_COLUMN, file, file_attribute_name); 
+
+	return last_row;
+}
+
+static guint
+append_directory_contents_fields (GtkTable *table,
 				  NautilusFile *file)
 {
 	GtkLabel *title_field;
+	guint last_row;
 
-	title_field = attach_title_field (table, row, "");
+	last_row = append_row (table);
+
+	title_field = attach_title_field (table, last_row, "");
 	gtk_label_set_line_wrap (title_field, TRUE);
 
-	attach_directory_contents_value_field (table, row, file, title_field);
+	attach_directory_contents_value_field (table, last_row, file, title_field);
+
+	return last_row;
 }
 
 static GtkWidget *
@@ -1108,7 +1108,7 @@ static void
 create_page_with_table_in_vbox (GtkNotebook *notebook, 
 				const char *title, 
 				int row_count, 
-				GtkWidget **return_table, 
+				GtkTable **return_table, 
 				GtkWidget **return_vbox)
 {
 	GtkWidget *table;
@@ -1118,7 +1118,7 @@ create_page_with_table_in_vbox (GtkNotebook *notebook,
 	table = create_attribute_value_table (GTK_VBOX (vbox), row_count);
 
 	if (return_table != NULL) {
-		*return_table = table;
+		*return_table = GTK_TABLE (table);
 	}
 
 	if (return_vbox != NULL) {
@@ -1155,6 +1155,17 @@ should_show_custom_icon_buttons (FMPropertiesWindow *window)
 }
 
 static gboolean
+should_show_file_type (FMPropertiesWindow *window) 
+{
+	/* The trash on the desktop is one-of-a-kind */
+	if (is_merged_trash_directory (window->details->file)) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
 should_show_mime_type (FMPropertiesWindow *window) 
 {
 	/* FIXME bugzilla.eazel.com 5652:
@@ -1172,7 +1183,8 @@ should_show_mime_type (FMPropertiesWindow *window)
 static void
 create_basic_page (FMPropertiesWindow *window)
 {
-	GtkWidget *table, *container;
+	GtkTable *table;
+	GtkWidget *container;
 	GtkWidget *icon_pixmap_widget, *icon_aligner, *name_field;
 	GtkWidget *button_box, *temp_button;
 	char *image_uri;
@@ -1182,10 +1194,9 @@ create_basic_page (FMPropertiesWindow *window)
 
 	create_page_with_table_in_vbox (window->details->notebook, 
 					_("Basic"), 
-					should_show_mime_type (window) ? BASIC_PAGE_ROW_COUNT : BASIC_PAGE_ROW_COUNT - 1, 
+					1,
 					&table, 
 					&container);
-
 	/* Icon pixmap */
 	icon_pixmap_widget = create_image_widget_for_file (file);
 	gtk_widget_show (icon_pixmap_widget);
@@ -1194,23 +1205,21 @@ create_basic_page (FMPropertiesWindow *window)
 	gtk_widget_show (icon_aligner);
 
 	gtk_container_add (GTK_CONTAINER (icon_aligner), icon_pixmap_widget);
-	gtk_table_attach_defaults (GTK_TABLE (table),
+	gtk_table_attach_defaults (table,
 			  	   icon_aligner,
 			  	   TITLE_COLUMN, 
 			  	   TITLE_COLUMN + 1,
-			  	   BASIC_PAGE_ICON_AND_NAME_ROW, 
-			  	   BASIC_PAGE_ICON_AND_NAME_ROW + 1);
+			  	   0, 1);
 
 	/* Name field */
 	name_field = nautilus_entry_new ();
 	window->details->name_field = NAUTILUS_ENTRY (name_field);
 	gtk_widget_show (name_field);
-	gtk_table_attach_defaults (GTK_TABLE (table),
+	gtk_table_attach_defaults (table,
 				   name_field,
 				   VALUE_COLUMN, 
 				   VALUE_COLUMN + 1,
-				   BASIC_PAGE_ICON_AND_NAME_ROW, 
-				   BASIC_PAGE_ICON_AND_NAME_ROW + 1);
+			  	   0, 1);
 				   
 	/* Attach parameters and signal handler. */
 	nautilus_file_ref (file);
@@ -1256,29 +1265,24 @@ create_basic_page (FMPropertiesWindow *window)
 					       name_field_update_to_match_file,
 					       GTK_OBJECT (name_field));
 
-	attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_LOCATION_ROW,
-				  _("Where:"), file, "parent_uri");
-	attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_TYPE_ROW,
-				  _("Type:"), file, "type");
-	if (nautilus_file_is_directory (file)) {
-		attach_directory_contents_fields
-			(GTK_TABLE (table), BASIC_PAGE_SIZE_ROW, file);
-	} else {
-		attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_SIZE_ROW,
-					  _("Size:"), file, "size");
+	if (should_show_file_type (window)) {
+		append_title_value_pair (table, _("Type:"), file, "type");
 	}
+	if (nautilus_file_is_directory (file)) {
+		append_directory_contents_fields (table, file);
+	} else {
+		append_title_value_pair (table, _("Size:"), file, "size");
+	}
+	append_title_value_pair (table, _("Where:"), file, "parent_uri");
+	if (should_show_mime_type (window)) {
+		append_title_value_pair (table, _("MIME type:"), file, "mime_type");
+	}				  
 	
 	/* Blank title ensures standard row height */
-	attach_title_field (GTK_TABLE (table), BASIC_PAGE_EMPTY_ROW, "");			    
+	append_title_field (table, "");
 	
-	attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_MODIFIED_DATE_ROW,
-				  _("Modified:"), file, "date_modified");
-	attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_ACCESSED_DATE_ROW,
-				  _("Accessed:"), file, "date_accessed");
-	if (should_show_mime_type (window)) {
-		attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_MIME_TYPE_ROW,
-					  _("MIME type:"), file, "mime_type");
-	}				  
+	append_title_value_pair (table, _("Modified:"), file, "date_modified");
+	append_title_value_pair (table, _("Accessed:"), file, "date_accessed");
 
 	if (should_show_custom_icon_buttons (window)) {
 		/* add command buttons for setting and clearing custom icons */
@@ -1580,63 +1584,44 @@ add_permissions_checkbox (GtkTable *table,
 	set_up_permissions_checkbox (check_button, file, permission_to_check);
 }
 
-static void
-add_special_execution_checkbox (GtkTable *table,
-				NautilusFile *file, 
-				int row,
-				const char *label_text,
-				GnomeVFSFilePermissions permission_to_check)
+static guint
+append_special_execution_checkbox (GtkTable *table,
+				   NautilusFile *file, 
+				   const char *label_text,
+				   GnomeVFSFilePermissions permission_to_check)
 {
 	GtkWidget *check_button;
+	guint last_row;
+
+	last_row = append_row (table);
 
 	check_button = gtk_check_button_new_with_label (label_text);
 	gtk_widget_show (check_button);
 
 	gtk_table_attach (table, check_button,
 			  VALUE_COLUMN, VALUE_COLUMN + 1,
-			  row, row + 1,
+			  last_row, last_row + 1,
 			  GTK_FILL | GTK_EXPAND, 0,
 			  0, 0);
 
 	set_up_permissions_checkbox (check_button, file, permission_to_check);
+
+	return last_row;
 }
 
 static void
-add_special_execution_flags (GtkTable *table, 
+append_special_execution_flags (GtkTable *table, 
 			     NautilusFile *file)
 {
-	attach_title_field (table, PERMISSIONS_PAGE_SUID_ROW,
-				   _("Special Flags:"));
+	guint label_row;
 
-	add_special_execution_checkbox (table, file,
-					PERMISSIONS_PAGE_SUID_ROW, 
-					_("Set User ID"), 
-					GNOME_VFS_PERM_SUID);
-	add_special_execution_checkbox (table, file, 
-					PERMISSIONS_PAGE_SGID_ROW, 
-					_("Set Group ID"), 
-					GNOME_VFS_PERM_SGID);
-	add_special_execution_checkbox (table, file, 
-					PERMISSIONS_PAGE_STICKY_ROW, 
-					_("Sticky"), 
-					GNOME_VFS_PERM_STICKY);
-	attach_separator (table, 
-			  PERMISSIONS_PAGE_SEPARATOR_AFTER_SPECIALS_ROW);
-}
+	label_row = append_special_execution_checkbox (table, file, _("Set User ID"), GNOME_VFS_PERM_SUID);
+	attach_title_field (table, label_row, _("Special Flags:"));
 
-static int
-get_adjusted_permissions_row (int permissions_row, gboolean show_special_flags)
-{
-	if (show_special_flags) {
-		return permissions_row;
-	}
-
-	if (permissions_row < PERMISSIONS_PAGE_FIRST_SPECIAL_FLAGS_ROW) {
-		return permissions_row;
-	}
-
-	return permissions_row - 
-		(PERMISSIONS_PAGE_LAST_SPECIAL_FLAGS_ROW - PERMISSIONS_PAGE_FIRST_SPECIAL_FLAGS_ROW + 1);
+	append_special_execution_checkbox (table, file, _("Set Group ID"), GNOME_VFS_PERM_SGID);
+	append_special_execution_checkbox (table, file, _("Sticky"), GNOME_VFS_PERM_STICKY);
+	
+	append_separator (table);
 }
 
 static void
@@ -1647,6 +1632,8 @@ create_permissions_page (FMPropertiesWindow *window)
 	char *file_name, *prompt_text;
 	gboolean show_special_flags;
 	NautilusFile *file;
+	guint last_row;
+	guint checkbox_titles_row;
 
 	file = window->details->file;
 
@@ -1662,15 +1649,45 @@ create_permissions_page (FMPropertiesWindow *window)
 		show_special_flags = nautilus_preferences_get_boolean 
 			(NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS, FALSE);
 
-		page_table = GTK_TABLE (gtk_table_new 
-			(get_adjusted_permissions_row (PERMISSIONS_PAGE_ROW_COUNT, show_special_flags),
-			 COLUMN_COUNT, FALSE));
+		page_table = GTK_TABLE (gtk_table_new (1, COLUMN_COUNT, FALSE));
 		apply_standard_table_padding (page_table);
+		last_row = 0;
 		gtk_widget_show (GTK_WIDGET (page_table));
 		gtk_box_pack_start (GTK_BOX (vbox), 
 				    GTK_WIDGET (page_table), 
 				    TRUE, TRUE, 0);
 
+		attach_title_field (page_table, last_row, _("File Owner:"));
+		if (nautilus_file_can_set_owner (file)) {
+			/* Option menu in this case. */
+			attach_owner_menu (page_table, last_row, file);
+		} else {
+			/* Static text in this case. */
+			attach_value_field (page_table, last_row, VALUE_COLUMN, file, "owner"); 
+		}
+
+		last_row = append_title_field (page_table, _("File Group:"));
+		if (nautilus_file_can_set_group (file)) {
+			/* Option menu in this case. */
+			attach_group_menu (page_table, last_row, file);
+		} else {
+			/* Static text in this case. */
+			attach_value_field (page_table, last_row, VALUE_COLUMN, file, "group"); 
+		}
+
+		append_separator (page_table);
+
+		/* This next empty label is a hack to make the title row
+		 * in the main table the same height as the title row in
+		 * the checkboxes sub-table so the other row titles will
+		 * line up horizontally with the checkbox rows.
+		 */
+		checkbox_titles_row = append_title_field (page_table, "");
+
+		append_title_field (page_table, _("Owner:"));
+		append_title_field (page_table, _("Group:"));
+		append_title_field (page_table, _("Others:"));
+		
 		/* Make separate table for grid of checkboxes so it can be
 		 * homogeneous; we don't want overall table to be homogeneous though.
 		 */
@@ -1681,82 +1698,11 @@ create_permissions_page (FMPropertiesWindow *window)
 		apply_standard_table_padding (check_button_table);
 		gtk_widget_show (GTK_WIDGET (check_button_table));
 		gtk_table_attach (page_table, GTK_WIDGET (check_button_table),
-				  VALUE_COLUMN, VALUE_COLUMN + 1,
-				  get_adjusted_permissions_row (PERMISSIONS_PAGE_TITLE_ROW, show_special_flags),
-				  get_adjusted_permissions_row (PERMISSIONS_PAGE_TITLE_ROW, show_special_flags) 
-				  	+ PERMISSIONS_CHECKBOXES_ROW_COUNT,
+				  VALUE_COLUMN, VALUE_COLUMN + 1, 
+				  checkbox_titles_row, checkbox_titles_row + PERMISSIONS_CHECKBOXES_ROW_COUNT,
 				  0, 0,
 				  0, 0);
 
-		attach_title_field (page_table, 
-				    get_adjusted_permissions_row (PERMISSIONS_PAGE_OWNER_ROW, show_special_flags), 
-				    _("File Owner:"));
-		if (nautilus_file_can_set_owner (file)) {
-			/* Option menu in this case. */
-			attach_owner_menu (page_table, 
-					   get_adjusted_permissions_row (PERMISSIONS_PAGE_OWNER_ROW, show_special_flags), 
-					   file);
-		} else {
-			/* Static text in this case. */
-			attach_value_field (page_table, 
-					    get_adjusted_permissions_row (PERMISSIONS_PAGE_OWNER_ROW, show_special_flags), 
-					    VALUE_COLUMN, 
-					    file, 
-					    "owner"); 
-		}
-
-		attach_title_field (page_table, PERMISSIONS_PAGE_GROUP_ROW, _("File Group:"));
-		if (nautilus_file_can_set_group (file)) {
-			/* Option menu in this case. */
-			attach_group_menu (page_table, 
-					   get_adjusted_permissions_row (PERMISSIONS_PAGE_GROUP_ROW, show_special_flags), 
-					   file);
-		} else {
-			/* Static text in this case. */
-			attach_value_field (page_table, 
-					    get_adjusted_permissions_row (PERMISSIONS_PAGE_GROUP_ROW, show_special_flags), 
-					    VALUE_COLUMN, file, "group"); 
-		}
-
-		attach_separator (page_table,
-				  get_adjusted_permissions_row (PERMISSIONS_PAGE_SEPARATOR_AFTER_GROUP_ROW, show_special_flags));
-
-		/* This next empty label is a hack to make the title row
-		 * in the main table the same height as the title row in
-		 * the checkboxes sub-table so the other row titles will
-		 * line up horizontally with the checkbox rows.
-		 */
-		attach_title_field (page_table, 
-				    get_adjusted_permissions_row (PERMISSIONS_PAGE_TITLE_ROW, show_special_flags),
-				    "");
-
-		attach_title_field (page_table, 
-				    get_adjusted_permissions_row (PERMISSIONS_PAGE_OWNER_CHECKBOX_ROW, show_special_flags), 
-				    _("Owner:"));
-
-		attach_title_field (page_table, 
-				    get_adjusted_permissions_row (PERMISSIONS_PAGE_GROUP_CHECKBOX_ROW, show_special_flags), 
-				    _("Group:"));
-
-		attach_title_field (page_table, 
-				    get_adjusted_permissions_row (PERMISSIONS_PAGE_OTHERS_CHECKBOX_ROW, show_special_flags), 
-				    _("Others:"));
-		
-		attach_separator (page_table, 
-				  get_adjusted_permissions_row (PERMISSIONS_PAGE_SEPARATOR_AFTER_OTHERS_ROW, show_special_flags));
-
-		attach_title_value_pair (page_table, 
-					 get_adjusted_permissions_row (PERMISSIONS_PAGE_FULL_STRING_ROW, show_special_flags),
-					 _("Text View:"), file, "permissions");
-		
-		attach_title_value_pair (page_table,
-					 get_adjusted_permissions_row (PERMISSIONS_PAGE_FULL_OCTAL_ROW, show_special_flags),
-					 _("Number View:"), file, "octal_permissions");
-		
-		attach_title_value_pair (page_table,
-					 get_adjusted_permissions_row (PERMISSIONS_PAGE_DATE_ROW, show_special_flags),
-					 _("Last Changed:"), file, "date_permissions");
-		
 		add_permissions_column_label (check_button_table, 
 					      PERMISSIONS_CHECKBOXES_READ_COLUMN,
 					      _("Read"));
@@ -1770,58 +1716,64 @@ create_permissions_page (FMPropertiesWindow *window)
 					      _("Execute"));
 
 		add_permissions_checkbox (check_button_table, file, 
-					  get_adjusted_permissions_row (PERMISSIONS_CHECKBOXES_OWNER_ROW, show_special_flags),
+					  PERMISSIONS_CHECKBOXES_OWNER_ROW,
 					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
 					  GNOME_VFS_PERM_USER_READ);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  get_adjusted_permissions_row (PERMISSIONS_CHECKBOXES_OWNER_ROW, show_special_flags),
+					  PERMISSIONS_CHECKBOXES_OWNER_ROW,
 					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
 					  GNOME_VFS_PERM_USER_WRITE);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  get_adjusted_permissions_row (PERMISSIONS_CHECKBOXES_OWNER_ROW, show_special_flags),
+					  PERMISSIONS_CHECKBOXES_OWNER_ROW,
 					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
 					  GNOME_VFS_PERM_USER_EXEC);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  get_adjusted_permissions_row (PERMISSIONS_CHECKBOXES_GROUP_ROW, show_special_flags),
+					  PERMISSIONS_CHECKBOXES_GROUP_ROW,
 					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
 					  GNOME_VFS_PERM_GROUP_READ);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  get_adjusted_permissions_row (PERMISSIONS_CHECKBOXES_GROUP_ROW, show_special_flags),
+					  PERMISSIONS_CHECKBOXES_GROUP_ROW,
 					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
 					  GNOME_VFS_PERM_GROUP_WRITE);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  get_adjusted_permissions_row (PERMISSIONS_CHECKBOXES_GROUP_ROW, show_special_flags),
+					  PERMISSIONS_CHECKBOXES_GROUP_ROW,
 					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
 					  GNOME_VFS_PERM_GROUP_EXEC);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  get_adjusted_permissions_row (PERMISSIONS_CHECKBOXES_OTHERS_ROW, show_special_flags),
+					  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
 					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
 					  GNOME_VFS_PERM_OTHER_READ);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  get_adjusted_permissions_row (PERMISSIONS_CHECKBOXES_OTHERS_ROW, show_special_flags),
+					  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
 					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
 					  GNOME_VFS_PERM_OTHER_WRITE);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  get_adjusted_permissions_row (PERMISSIONS_CHECKBOXES_OTHERS_ROW, show_special_flags),
+					  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
 					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
 					  GNOME_VFS_PERM_OTHER_EXEC);
+
+		append_separator (page_table);
 
 		/* FIXME bugzilla.eazel.com 2396: 
 		 * Would be better to show/hide this info dynamically, so if the
 		 * preference is changed while the window is open it would react.
 		 */
 		if (show_special_flags) {
-			add_special_execution_flags (page_table, file);					  
+			append_special_execution_flags (page_table, file);					  
 		}
 
+		append_title_value_pair (page_table, _("Text View:"), file, "permissions");		
+		append_title_value_pair (page_table, _("Number View:"), file, "octal_permissions");
+		append_title_value_pair (page_table, _("Last Changed:"), file, "date_permissions");
+		
 	} else {
 		file_name = nautilus_file_get_name (file);
 		prompt_text = g_strdup_printf (_("The permissions of \"%s\" could not be determined."), file_name);

@@ -1,3 +1,33 @@
+2001-01-16  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	More work on bug 2146 (Properties window for desktop Trash icon
+	should show Trash properties). Mostly this was clean-up of the
+	properties window code to make future changes easier. The only
+	substantive change is to remove the "Type" field for the trash.
+
+	* src/file-manager/fm-properties-window.c: 
+	Removed enums for basic page and permissions page row numbers.
+	The rows are now added (and table sized) as needed.
+	(append_row): New helper function, appends one row to a GtkTable
+	and returns the index of the new last row.
+	(append_title_field): New function, like attach_title_field
+	but appends row instead of taking a row parameter.
+	(append_separator), (append_directory_contents_fields),
+	(append_title_value_pair), (append_special_execution_checkbox),
+	(append_special_execution_flags): Renamed from attach_xxx, now 
+	append a row instead of taking a row parameter.
+	(create_page_with_table_in_vbox): Now returns GtkTable * instead
+	of GtkWidget *, for callers' convenience.
+	(get_adjusted_permissions_row): Removed this somewhat hacky function.
+	(should_show_file_type): New function, returns FALSE for
+	special trash location but TRUE for everything else.
+	(create_basic_page): Check should_show_file_type; use new
+	append_xxx calls instead of using predefined row numbers.
+	(create_permissions_page): use new append_xxx calls instead of
+	using predefined row numbers.
+
 2001-01-16  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed mistake in asserting on a NULL value. Assert if the
