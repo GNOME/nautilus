@@ -694,7 +694,7 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 		gtk_progress_set_percentage (GTK_PROGRESS (im->progress_bar), 0.0);
 		out = g_strdup_printf (_("0K of %dK"), total/1024);
 		nautilus_label_set_text (NAUTILUS_LABEL (im->progress_label), out);
-		gtk_widget_queue_resize (view->details->message_box);
+		//gtk_widget_queue_resize (view->details->message_box);
 		g_free (out);
 		view->details->last_k = 0;
 
@@ -731,7 +731,7 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 			if ((amount/1024) >= view->details->last_k + 10) {
 				out = g_strdup_printf (_("%dK of %dK"), amount/1024, total/1024);
 				nautilus_label_set_text (NAUTILUS_LABEL (im->progress_label), out);
-				gtk_widget_queue_resize (view->details->message_box);
+				//gtk_widget_queue_resize (view->details->message_box);
 				g_free (out);
 				view->details->last_k = (amount/1024);
 			}

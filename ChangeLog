@@ -1,3 +1,22 @@
+2001-01-12  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Arik Devens  <arik@gnome.org>
+
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_expose_event),
+	(nautilus_label_set_background_mode), (nautilus_label_set_text),
+	(nautilus_label_get_text):
+	* libnautilus-extensions/nautilus-label.h:
+	Change the get_text() prototype to use a const object.  Add a
+	workaround for bug 5608 while I debug the problem.
+
+	reviewed by: Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/nautilus-view/nautilus-service-install-view.c:
+	(nautilus_service_install_downloading):
+	Remove queue_resize() workarounds for improperly displaying
+	labels.  I checked in a workaround in NautilusLabel instead.
+	
 2001-01-12  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bug 5198, removing an active sidebar panel messes up the 

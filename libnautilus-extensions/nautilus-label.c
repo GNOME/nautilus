@@ -164,7 +164,7 @@ static void     label_draw_text_to_pixbuf                   (NautilusLabel      
 							     int                  x,
 							     int                  y);
 static guint    label_get_default_line_wrap_width           (const NautilusLabel *label);
-static void     label_solid_cache_pixbuf_clear              (NautilusLabel *label);
+static void     label_solid_cache_pixbuf_clear              (NautilusLabel       *label);
 static gboolean label_can_cache_contents                    (const NautilusLabel *label);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusLabel, nautilus_label, GTK_TYPE_LABEL)
@@ -666,7 +666,7 @@ nautilus_label_expose_event (GtkWidget *widget,
 	ArtIRect dirty_area;
 	ArtIRect screen_dirty_area;
 	ArtIRect smooth_text_bounds;
-	ArtIRect text_bounds;
+	ArtIRect widget_bounds;
 	ArtIRect tile_bounds;
 
 	g_return_val_if_fail (NAUTILUS_IS_LABEL (widget), TRUE);
@@ -687,7 +687,7 @@ nautilus_label_expose_event (GtkWidget *widget,
 	 * expose event so that we feed the exact exposure area
 	 * to GtkLabel's expose_event.
 	 */
-	text_bounds = nautilus_irect_gtk_widget_get_bounds (widget);
+	widget_bounds = nautilus_irect_gtk_widget_get_bounds (widget);
 	smooth_text_bounds = label_get_text_bounds (label);
 	tile_bounds = nautilus_smooth_widget_get_tile_bounds (widget,
 							      label->detail->tile_pixbuf,
@@ -699,13 +699,19 @@ nautilus_label_expose_event (GtkWidget *widget,
 		return TRUE;
 	}
 
-// 	g_print ("%s(%p): background_mode = %d\n",
-// 		 __FUNCTION__,
-// 		 widget,
-// 		 label->detail->background_mode);
+	/* FIXME bugzilla.eazel.com 5608: 
+	 * The is a clipping problem in label_composite_pixbuf_callback that 
+	 * causes garbage to be displayed sometimes when drawing the label
+	 * background.  Im currently debugging that.  In the mean time a
+	 * workaround is to expose the whole widget area.
+	 */
 
 	/* Clip the dirty area to the screen */
+#if 0
 	dirty_area = nautilus_irect_assign_gdk_rectangle (&event->area);
+#else
+	dirty_area = widget_bounds;
+#endif
 	screen_dirty_area = nautilus_irect_gdk_window_clip_dirty_area_to_screen (event->window,
 										 &dirty_area);
 	/* Make sure the area is screen visible before painting */
@@ -720,18 +726,13 @@ nautilus_label_expose_event (GtkWidget *widget,
 					      label->detail->tile_opacity,
 					      label->detail->tile_mode_vertical,
 					      label->detail->tile_mode_horizontal,
-					      label->detail->is_smooth ? &smooth_text_bounds : &text_bounds,
+					      label->detail->is_smooth ? &smooth_text_bounds : &widget_bounds,
 					      label->detail->text_opacity,
 					      &screen_dirty_area,
 					      label_paint_pixbuf_callback,
 					      label_composite_pixbuf_callback,
 					      event);
 	}
-
-	if (0) nautilus_debug_draw_rectangle_and_cross (event->window,
-							&screen_dirty_area,
-							0x00FF00,
-							TRUE);
 
 	return TRUE;
 }
@@ -1406,8 +1407,6 @@ nautilus_label_set_background_mode (NautilusLabel *label,
 	g_return_if_fail (background_mode >= NAUTILUS_SMOOTH_BACKGROUND_GTK);
 	g_return_if_fail (background_mode <= NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);
 
-// 	background_mode = NAUTILUS_SMOOTH_BACKGROUND_GTK;
-		
 	if (label->detail->background_mode == background_mode) {
 		return;
 	}
@@ -1626,7 +1625,7 @@ nautilus_label_get_text_justify (const NautilusLabel *label)
 
 void
 nautilus_label_set_text (NautilusLabel *label,
-			 const gchar *text)
+			 const char *text)
 {
 	GtkLabel *gtk_label;
 
@@ -1645,8 +1644,8 @@ nautilus_label_set_text (NautilusLabel *label,
 	gtk_widget_queue_resize (GTK_WIDGET (label));
 }
 
-gchar*
-nautilus_label_get_text (NautilusLabel *label)
+char*
+nautilus_label_get_text (const NautilusLabel *label)
 {
 	GtkLabel *gtk_label;
 

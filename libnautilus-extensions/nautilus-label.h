@@ -92,7 +92,7 @@ void                         nautilus_label_set_smooth_line_wrap_width     (Naut
 guint                        nautilus_label_get_smooth_line_wrap_width     (const NautilusLabel          *label);
 void                         nautilus_label_set_text                       (NautilusLabel                *label,
 									    const char                   *text);
-char*                        nautilus_label_get_text                       (NautilusLabel                *label);
+char*                        nautilus_label_get_text                       (const NautilusLabel          *label);
 void                         nautilus_label_set_justify                    (NautilusLabel                *label,
 									    GtkJustification              justification);
 GtkJustification             nautilus_label_get_text_justify               (const NautilusLabel          *label);
