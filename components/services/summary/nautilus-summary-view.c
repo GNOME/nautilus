@@ -53,7 +53,7 @@
 #define DEFAULT_SUMMARY_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
 
 /* #define	SUMMARY_XML_HOME			"http://localhost/summary-configuration.xml" */
-#define	SUMMARY_XML_HOME			"eazel-services://anonymous/servicer"
+#define	SUMMARY_XML_HOME			"eazel-services://anonymous/services"
 #define	SUMMARY_XML_HOME_2			"eazel-services:/services"
 #define	URL_REDIRECT_TABLE_HOME			"eazel-services://anonymous/services/urls"
 #define	URL_REDIRECT_TABLE_HOME_2		"eazel-services:/services/urls"
