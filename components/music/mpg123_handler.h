@@ -25,6 +25,15 @@
 
 /* header file for the mpg123 handler for playing mp3 files */
 
-void start_playing_file (gchar* filename, gboolean start_from_beginning);
-void stop_playing_file (void);
-void pause_playing_file (void);
+#define	STATUS_STOP 0
+#define	STATUS_PAUSE 1
+#define	STATUS_PLAY 2
+#define	STATUS_NEXT 3
+
+void	start_playing_file (gchar* filename, gboolean start_from_beginning);
+void	stop_playing_file (void);
+void	pause_playing_file (void);
+int	get_play_status(void);
+int	get_current_frame(void);
+void	set_current_frame(int new_frame);
+	

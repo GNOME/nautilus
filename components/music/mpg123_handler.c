@@ -36,10 +36,6 @@
 
 #include "mpg123_handler.h"
 
-#define	STATUS_STOP 0
-#define	STATUS_PAUSE 1
-#define	STATUS_PLAY 2
-#define	STATUS_NEXT 3
 
 #define		MPG123_DOWNSAMPLE_AUTO 0
 #define		MPG123_DOWNSAMPLE_22 1
@@ -94,7 +90,7 @@ gchar	*mpg123_device = NULL;
 
 gint debug_mode = 0;
 gint new_song = 0;
-gint mpg123_status;
+gint mpg123_status = STATUS_STOP;
 
 static gint mp3_pid;
 static void sigchld_handler(int);
@@ -116,6 +112,26 @@ static gint parse_pipe_buffer();
 static gint check_pipe_for_data(gint fd);
 static gint read_data();
 
+/* cover routines for accessing globals */
+
+int get_play_status ()
+{
+	return mpg123_status;
+
+}
+
+int get_current_frame ()
+{
+	return frames;
+
+}
+void set_current_frame (int new_frame)
+{
+	frames = new_frame;
+
+}
+
+/* process signal handler, for notification if mpg123 dies */
 static void sigchld_handler(int sig)
 {
 	pid_t child;
@@ -128,7 +144,7 @@ static void sigchld_handler(int sig)
 }
 
 
-static void parse_header_info()
+static void parse_header_info ()
 {
 	gchar s[128];
 	gchar *ptr;

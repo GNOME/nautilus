@@ -1,3 +1,22 @@
+2000-05-20  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/mpg123_handler.c: (get_play_status),
+	(get_current_frame), (set_current_frame), (parse_header_info):
+	* components/music/mpg123_handler.h:
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (get_song_text),
+	(music_view_set_selected_song_title), (play_status_display),
+	(play_current_file), (stop_if_playing), (go_to_next_track),
+	(go_to_previous_track), (play_button_callback),
+	(prev_button_callback), (next_button_callback),
+	(slider_press_callback), (slider_moved_callback),
+	(slider_release_callback), (add_play_controls),
+	(nautilus_music_view_update_from_uri):
+	
+	made all of the play command buttons in the music view work correctly, although
+	they still don't give play state feedback by hilighting properly.  Also, added a
+	timeout task, removed the volume slider and made the play time slider work.
+	
 2000-05-19  Ettore Perazzoli  <ettore@helixcode.com>
 
 	* libnautilus/Makefile.am (INCLUDES): Add `-I.' so that it works
