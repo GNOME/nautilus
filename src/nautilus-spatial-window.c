@@ -186,22 +186,23 @@ impl_Nautilus_ViewWindow__create(NautilusWindow *window)
    return retval;
 }
 
-static void nautilus_window_class_init (NautilusWindowClass *klass);
-static void nautilus_window_init (NautilusWindow *window);
-static void nautilus_window_destroy (NautilusWindow *window);
-static void nautilus_window_set_arg (GtkObject      *object,
-                                     GtkArg         *arg,
-                                     guint	      arg_id);
-static void nautilus_window_get_arg (GtkObject      *object,
-                                     GtkArg         *arg,
-                                     guint	      arg_id);
-static void nautilus_window_goto_uri_callback (GtkWidget *widget,
-                                         const char *uri,
-                                         GtkWidget *window);
-static void zoom_in_callback  (NautilusZoomControl *zoom_control,
-                         NautilusWindow      *window);
-static void zoom_out_callback (NautilusZoomControl *zoom_control,
-                         NautilusWindow      *window);
+static void nautilus_window_class_init        (NautilusWindowClass *klass);
+static void nautilus_window_init              (NautilusWindow      *window);
+static void nautilus_window_destroy           (NautilusWindow      *window);
+static void nautilus_window_set_arg           (GtkObject           *object,
+					       GtkArg              *arg,
+					       guint                arg_id);
+static void nautilus_window_get_arg           (GtkObject           *object,
+					       GtkArg              *arg,
+					       guint                arg_id);
+static void nautilus_window_goto_uri_callback (GtkWidget           *widget,
+					       const char          *uri,
+					       GtkWidget           *window);
+static void zoom_in_callback                  (NautilusZoomControl *zoom_control,
+					       NautilusWindow      *window);
+static void zoom_out_callback                 (NautilusZoomControl *zoom_control,
+					       NautilusWindow      *window);
+static void sidebar_panels_changed_callback   (gpointer             user_data);
 
 /* milliseconds */
 #define STATUSBAR_CLEAR_TIMEOUT 5000
@@ -297,6 +298,11 @@ static void
 nautilus_window_init (NautilusWindow *window)
 {
   gtk_quit_add_destroy (1, GTK_OBJECT (window));
+
+  /* Keep track of sidebar panel changes */
+  nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE,
+				     sidebar_panels_changed_callback,
+				     window);
 }
 
 static gboolean
@@ -524,6 +530,11 @@ static void
 nautilus_window_destroy (NautilusWindow *window)
 {
   NautilusWindowClass *klass = NAUTILUS_WINDOW_CLASS(GTK_OBJECT(window)->klass);
+
+  /* Dont keep track of sidebar panel changes no more */
+  nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE,
+					sidebar_panels_changed_callback,
+					NULL);
 
   g_list_free (window->meta_views);
 
@@ -1180,4 +1191,17 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusViewFrame
       
   gtk_widget_queue_resize(window->content_hbox);
   window->content_view = new_view;
+}
+
+static void
+sidebar_panels_changed_callback (gpointer user_data)
+{
+	NautilusWindow *window;
+	
+	g_assert (user_data != NULL);
+	g_assert (NAUTILUS_IS_WINDOW (user_data));
+
+	window = NAUTILUS_WINDOW (user_data);
+
+	/* lots of excitement coming here soon */
 }

@@ -1,5 +1,14 @@
 2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* src/ntl-window.c: (nautilus_window_init),
+	(nautilus_window_destroy), (nautilus_window_real_set_content_view),
+	(sidebar_panels_changed_callback):
+
+	Keep track of sidebar panel enabled/disabled toggling.  Currently
+	the callback doesnt do nothing.  Soon it will.
+	
+2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/services/install/command-line/.cvsignore:
 	* components/services/install/lib/.cvsignore:
 	Ignore generated files.
