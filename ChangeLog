@@ -1,3 +1,14 @@
+2000-10-26  Robey Pointer  <robey@eazel.com>
+
+	* components/services/login/nautilus-view/nautilus-change-password-
+	view.c: (run_away_timer), (authn_succeeded), (authn_failed):
+
+	Tidy up the password-change view a bit to try to make it more
+	stable, and use more of the info from ammonite.  If ammonite
+	throws away the current login (which happens whenever the server
+	responds oddly), switch back to the summary view to force a
+	re-login instead of drifting away.
+
 2000-10-26  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c: (destroy),

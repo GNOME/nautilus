@@ -124,6 +124,14 @@ user_logged_in (NautilusChangePasswordView *view)
 	return username;
 }
 
+/* meant to be called from a timeout */
+static gboolean
+run_away_timer (NautilusChangePasswordView *view)
+{
+	nautilus_view_open_location (view->details->nautilus_view, SERVICE_SUMMARY_LOCATION);
+	return FALSE;	/* don't run this timer again */
+}
+
 static void
 generate_change_password_form (NautilusChangePasswordView	*view) 
 {
@@ -296,11 +304,8 @@ authn_succeeded (const EazelProxy_User *user, gpointer state, CORBA_Environment 
 	ammonite_auth_callback_wrapper_free (bonobo_poa (), view->details->authn_callback);
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 
-#if 0
-	if (registered_ok) {
-		nautilus_view_open_location (view->details->nautilus_view, SERVICE_SUMMARY_LOCATION);
-	}
-#endif
+	show_feedback (view->details->feedback_text, _("Password changed!"));
+	gtk_timeout_add (3000, (GtkFunction)run_away_timer, view);
 }
 
 static void
@@ -315,14 +320,22 @@ authn_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *info,
 	view->details->pending = PENDING_NONE;
 	gtk_widget_set_sensitive (view->details->change_password_button, TRUE);
 
-	show_feedback (view->details->feedback_text, _("Incorrect current password.  Please try again."));
-	gtk_entry_set_text (GTK_ENTRY (view->details->account_old_password), "");
+	show_feedback (view->details->feedback_text, info->http_result);
+	gtk_entry_set_text (GTK_ENTRY (view->details->account_old_password),
+			    gtk_entry_get_text (GTK_ENTRY (view->details->account_old_password)));
+	gtk_entry_set_text (GTK_ENTRY (view->details->account_new_password), "");
+	gtk_entry_set_text (GTK_ENTRY (view->details->account_repeat_password), "");
 
 	g_warning ("ChangePassword failed: code = %ld, result = '%s'", (long)info->code, info->http_result);
 	/* more? */
 
 	ammonite_auth_callback_wrapper_free (bonobo_poa (), view->details->authn_callback);
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
+
+	if (info->code == EAZELPROXY_AUTHN_FAIL_SERVER) {
+		/* not sure what to do here.  apparently there's no way to start over. */
+		nautilus_view_open_location (view->details->nautilus_view, SERVICE_SUMMARY_LOCATION);
+	}
 }
 
 
