@@ -366,13 +366,17 @@ draw_throbber_image (GtkWidget *widget, GdkRectangle *box)
 	}
 		
 	/* clear the entire gdk window to avoid messing up gradient themes due to bonobo bug  */
+	/* only do this once per cycle to minimize flashing */
 	gdk_window_get_size (widget->window, &window_width, &window_height);
-	gdk_window_clear_area (widget->window,
+	
+	if (throbber->details->current_frame == 0) {
+		gdk_window_clear_area (widget->window,
 			       0,
 			       0,
 			       window_width,
 			       window_height);
-
+	}
+	
 	pixbuf = select_throbber_image (throbber);
 
 	/* center the throbber image in the gdk window */	
