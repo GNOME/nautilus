@@ -172,13 +172,9 @@ set_metadata_string_in_metafile (NautilusDirectory *directory,
 	xmlAttr *property_node;
 
 	/* If the data in the metafile is already correct, do nothing. */
-	if (file_name == NULL) {
-		old_metadata = nautilus_directory_get_metadata
-			(directory, key, default_metadata);		
-	} else {
-		old_metadata = nautilus_directory_get_file_metadata
-			(directory, file_name, key, default_metadata);
-	}
+	old_metadata = nautilus_directory_get_file_metadata
+		(directory, file_name, key, default_metadata);
+
 	old_metadata_matches = nautilus_strcmp (old_metadata, metadata) == 0;
 	g_free (old_metadata);
 	if (old_metadata_matches) {
@@ -536,29 +532,6 @@ nautilus_directory_metafile_destroy (NautilusDirectory *directory)
 	destroy_metadata_changes_hash_table (directory->details->metadata_changes);
 }
 
-char *
-nautilus_directory_get_metadata (NautilusDirectory *directory,
-				 const char *key,
-				 const char *default_metadata)
-{
-	g_return_val_if_fail (key != NULL, g_strdup (default_metadata));
-	g_return_val_if_fail (key[0] != '\0', g_strdup (default_metadata));
-
-	/* It's legal to call this on a NULL directory. */
-	if (directory == NULL) {
-		return g_strdup (default_metadata);
-	}
-
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), g_strdup (default_metadata));
-
-	if (directory->details->metafile_read) {
-		return get_metadata_string_from_metafile
-			(directory, NULL, key, default_metadata);
-	} else {
-		return get_metadata_string_from_table
-			(directory, NULL, key, default_metadata);
-	}
-}
 
 char *
 nautilus_directory_get_file_metadata (NautilusDirectory *directory,
@@ -582,31 +555,6 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 }
 
 
-GList *
-nautilus_directory_get_metadata_list (NautilusDirectory *directory,
-				      const char *list_key,
-				      const char *list_subkey)
-{
-	g_return_val_if_fail (list_key != NULL, NULL);
-	g_return_val_if_fail (list_key[0] != '\0', NULL);
-	g_return_val_if_fail (list_subkey != NULL, NULL);
-	g_return_val_if_fail (list_subkey[0] != '\0', NULL);
-
-	/* It's legal to call this on a NULL directory. */
-	if (directory == NULL) {
-		return NULL;
-	}
-
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
-
-	if (directory->details->metafile_read) {
-		return get_metadata_list_from_metafile
-			(directory, NULL, list_key, list_subkey);
-	} else {
-		return get_metadata_list_from_table
-			(directory, NULL, list_key, list_subkey);
-	}
-}
 
 GList *
 nautilus_directory_get_file_metadata_list (NautilusDirectory *directory,
@@ -631,58 +579,6 @@ nautilus_directory_get_file_metadata_list (NautilusDirectory *directory,
 	}
 }
 
-void
-nautilus_directory_set_metadata (NautilusDirectory *directory,
-				 const char *key,
-				 const char *default_metadata,
-				 const char *metadata)
-{
-	MetadataValue *value;
-
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
-	g_return_if_fail (key != NULL);
-	g_return_if_fail (key[0] != '\0');
-
-	if (directory->details->metafile_read) {
-		if (set_metadata_string_in_metafile (directory, NULL, key,
-						     default_metadata, metadata)) {
-			nautilus_directory_emit_metadata_changed (directory);
-		}
-	} else {
-		value = metadata_value_new (default_metadata, metadata);
-		if (set_metadata_eat_value (directory, NULL, key, NULL, value)) {
-			nautilus_directory_emit_metadata_changed (directory);
-		}
-	}
-}
-
-void
-nautilus_directory_set_metadata_list (NautilusDirectory *directory,
-				      const char *list_key,
-				      const char *list_subkey,
-				      GList *list)
-{
-	MetadataValue *value;
-
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
-	g_return_if_fail (list_key != NULL);
-	g_return_if_fail (list_key[0] != '\0');
-	g_return_if_fail (list_subkey != NULL);
-	g_return_if_fail (list_subkey[0] != '\0');
-
-	if (directory->details->metafile_read) {
-		if (set_metadata_list_in_metafile (directory, NULL,
-						   list_key, list_subkey, list)) {
-			nautilus_directory_emit_metadata_changed (directory);
-		}
-	} else {
-		value = metadata_value_new_list (list);
-		if (set_metadata_eat_value (directory, NULL,
-					    list_key, list_subkey, value)) {
-			nautilus_directory_emit_metadata_changed (directory);
-		}
-	}
-}
 
 gboolean
 nautilus_directory_set_file_metadata (NautilusDirectory *directory,
@@ -831,16 +727,19 @@ nautilus_directory_metafile_apply_pending_changes (NautilusDirectory *directory)
 	directory->details->metadata_changes = NULL;
 }
 
+
+
 gboolean 
-nautilus_directory_get_boolean_metadata (NautilusDirectory *directory,
-					 const char *key,
-					 gboolean default_metadata)
+nautilus_directory_get_boolean_file_metadata (NautilusDirectory *directory,
+					      const char *file_name,
+					      const char *key,
+					      gboolean default_metadata)
 {
 	char *result_as_string;
 	gboolean result;
 
-	result_as_string = nautilus_directory_get_metadata
-		(directory, key,
+	result_as_string = nautilus_directory_get_file_metadata
+		(directory, file_name, key,
 		 default_metadata ? "true" : "false");
 	
 	g_strdown (result_as_string);
@@ -859,30 +758,32 @@ nautilus_directory_get_boolean_metadata (NautilusDirectory *directory,
 	return result;
 }
 
-void
-nautilus_directory_set_boolean_metadata (NautilusDirectory *directory,
-					 const char *key,
-					 gboolean default_metadata,
-					 gboolean metadata)
+gboolean
+nautilus_directory_set_boolean_file_metadata (NautilusDirectory *directory,
+					      const char *file_name,
+					      const char *key,
+					      gboolean default_metadata,
+					      gboolean metadata)
 {
-	nautilus_directory_set_metadata
-		(directory, key,
+	return nautilus_directory_set_file_metadata
+		(directory, file_name, key,
 		 default_metadata ? "true" : "false",
 		 metadata ? "true" : "false");
 }
 
 int 
-nautilus_directory_get_integer_metadata (NautilusDirectory *directory,
-					 const char *key,
-					 int default_metadata)
+nautilus_directory_get_integer_file_metadata (NautilusDirectory *directory,
+					      const char *file_name,
+					      const char *key,
+					      int default_metadata)
 {
 	char *result_as_string;
 	char *default_as_string;
 	int result;
 
 	default_as_string = g_strdup_printf ("%d", default_metadata);
-	result_as_string = nautilus_directory_get_metadata
-		(directory, key, default_as_string);
+	result_as_string = nautilus_directory_get_file_metadata
+		(directory, file_name, key, default_as_string);
 	
 	/* Handle oddball case of non-existent directory */
 	if (result_as_string == NULL) {
@@ -897,11 +798,12 @@ nautilus_directory_get_integer_metadata (NautilusDirectory *directory,
 
 }
 
-void               
-nautilus_directory_set_integer_metadata (NautilusDirectory *directory,
-					 const char *key,
-					 int default_metadata,
-					 int metadata)
+gboolean
+nautilus_directory_set_integer_file_metadata (NautilusDirectory *directory,
+					      const char *file_name,
+					      const char *key,
+					      int default_metadata,
+					      int metadata)
 {
 	char *value_as_string;
 	char *default_as_string;
@@ -909,13 +811,15 @@ nautilus_directory_set_integer_metadata (NautilusDirectory *directory,
 	value_as_string = g_strdup_printf ("%d", metadata);
 	default_as_string = g_strdup_printf ("%d", default_metadata);
 
-	nautilus_directory_set_metadata
-		(directory, key,
+	return nautilus_directory_set_file_metadata
+		(directory, file_name, key,
 		 default_as_string, value_as_string);
 
 	g_free (value_as_string);
 	g_free (default_as_string);
 }
+
+
 
 static void
 copy_file_metadata_for_key (NautilusDirectory *source_directory,

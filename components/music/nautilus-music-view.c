@@ -1275,7 +1275,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	image_count = 0;
 	
 	/* connect the music view background to directory metadata */	
-	nautilus_connect_background_to_directory_metadata_by_uri (GTK_WIDGET (music_view), uri);
+	nautilus_connect_background_to_file_metadata_by_uri (GTK_WIDGET (music_view), uri);
 			
 	/* iterate through the directory, collecting mp3 files and extracting id3 data if present */
 

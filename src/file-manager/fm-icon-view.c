@@ -93,7 +93,7 @@ static void     create_icon_container                     (FMIconView        *ic
 static void     fm_icon_view_initialize                   (FMIconView        *icon_view);
 static void     fm_icon_view_initialize_class             (FMIconViewClass   *klass);
 static void     fm_icon_view_set_directory_sort_by        (FMIconView        *icon_view,
-							   NautilusDirectory *directory,
+							   NautilusFile      *file,
 							   const char        *sort_by);
 static void     fm_icon_view_set_zoom_level               (FMIconView        *view,
 							   NautilusZoomLevel  new_level,
@@ -103,9 +103,9 @@ static void     fm_icon_view_update_icon_container_fonts  (FMIconView        *ic
 static void     fm_icon_view_update_click_mode            (FMIconView        *icon_view);
 static void     fm_icon_view_update_smooth_graphics_mode  (FMIconView        *icon_view);
 static gboolean fm_icon_view_get_directory_tighter_layout (FMIconView        *icon_view,
-							   NautilusDirectory *directory);
+							   NautilusFile      *file);
 static void     fm_icon_view_set_directory_tighter_layout (FMIconView        *icon_view,
-							   NautilusDirectory *directory,
+							   NautilusFile      *file,
 							   gboolean           tighter_layout);
 static gboolean real_supports_auto_layout                 (FMIconView        *view);
 static void     set_sort_criterion_by_id                  (FMIconView        *icon_view,
@@ -304,7 +304,7 @@ set_sort_criterion (FMIconView *icon_view, const SortCriterion *sort)
 
 	/* Store the new sort setting. */
 	fm_icon_view_set_directory_sort_by (icon_view,
-					    fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)),
+					    fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (icon_view)),
 					    sort->metadata_text);
 	
 	/* Update the layout menus to match the new sort setting. */
@@ -386,7 +386,7 @@ static void
 tighter_layout_callback (gpointer ignored, gpointer view)
 {
 	NautilusIconContainer *icon_container;
-	NautilusDirectory *directory;
+	NautilusFile *file;
 	gboolean is_tighter_layout;
 	
 	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo/GTK menu bug. */
@@ -394,10 +394,10 @@ tighter_layout_callback (gpointer ignored, gpointer view)
 		return;
 	
 	icon_container = get_icon_container (FM_ICON_VIEW (view));
-	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (view));
-	is_tighter_layout = fm_icon_view_get_directory_tighter_layout (FM_ICON_VIEW (view), directory);
+	file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (view));
+	is_tighter_layout = fm_icon_view_get_directory_tighter_layout (FM_ICON_VIEW (view), file);
 	
-	fm_icon_view_set_directory_tighter_layout (FM_ICON_VIEW (view), directory, !is_tighter_layout);
+	fm_icon_view_set_directory_tighter_layout (FM_ICON_VIEW (view), file, !is_tighter_layout);
 	nautilus_icon_container_set_tighter_layout (icon_container, !is_tighter_layout);
 }
 
@@ -901,70 +901,72 @@ update_layout_menus (FMIconView *view)
 
 static char *
 fm_icon_view_get_directory_sort_by (FMIconView *icon_view,
-				    NautilusDirectory *directory)
+				    NautilusFile *file)
 {
 	if (!fm_icon_view_supports_auto_layout (icon_view)) {
 		return g_strdup ("name");
 	}
 
 	return NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
-				      get_directory_sort_by, (icon_view, directory));
+				      get_directory_sort_by, (icon_view, file));
 }
 
 static char *
 fm_icon_view_real_get_directory_sort_by (FMIconView *icon_view,
-					 NautilusDirectory *directory)
+					 NautilusFile *file)
 {
-	return nautilus_directory_get_metadata
-		(directory, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
+	return nautilus_file_get_metadata
+		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
 		 sort_criteria[0].metadata_text);
 }
 
 static void
-fm_icon_view_set_directory_sort_by (FMIconView *icon_view, NautilusDirectory *directory, const char *sort_by)
+fm_icon_view_set_directory_sort_by (FMIconView *icon_view, 
+				    NautilusFile *file, 
+				    const char *sort_by)
 {
 	if (!fm_icon_view_supports_auto_layout (icon_view)) {
 		return;
 	}
 
 	NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
-			       set_directory_sort_by, (icon_view, directory, sort_by));
+			       set_directory_sort_by, (icon_view, file, sort_by));
 }
 
 static void
 fm_icon_view_real_set_directory_sort_by (FMIconView *icon_view,
-					 NautilusDirectory *directory,
+					 NautilusFile *file,
 					 const char *sort_by)
 {
-	nautilus_directory_set_metadata
-		(directory, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
+	nautilus_file_set_metadata
+		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
 		 sort_criteria[0].metadata_text,
 		 sort_by);
 }
 
 static gboolean
 fm_icon_view_get_directory_sort_reversed (FMIconView *icon_view,
-					  NautilusDirectory *directory)
+					  NautilusFile *file)
 {
 	if (!fm_icon_view_supports_auto_layout (icon_view)) {
 		return FALSE;
 	}
 
 	return NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
-				      get_directory_sort_reversed, (icon_view, directory));
+				      get_directory_sort_reversed, (icon_view, file));
 }
 
 static gboolean
 fm_icon_view_real_get_directory_sort_reversed (FMIconView *icon_view,
-					       NautilusDirectory *directory)
+					       NautilusFile *file)
 {
-	return  nautilus_directory_get_boolean_metadata
-		(directory, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED, FALSE);
+	return  nautilus_file_get_boolean_metadata
+		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED, FALSE);
 }
 
 static void
 fm_icon_view_set_directory_sort_reversed (FMIconView *icon_view,
-					  NautilusDirectory *directory,
+					  NautilusFile *file,
 					  gboolean sort_reversed)
 {
 	if (!fm_icon_view_supports_auto_layout (icon_view)) {
@@ -973,16 +975,16 @@ fm_icon_view_set_directory_sort_reversed (FMIconView *icon_view,
 
 	NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
 			       set_directory_sort_reversed,
-			       (icon_view, directory, sort_reversed));
+			       (icon_view, file, sort_reversed));
 }
 
 static void
 fm_icon_view_real_set_directory_sort_reversed (FMIconView *icon_view,
-					       NautilusDirectory *directory,
+					       NautilusFile *file,
 					       gboolean sort_reversed)
 {
-	nautilus_directory_set_boolean_metadata
-		(directory, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED, FALSE,
+	nautilus_file_set_boolean_metadata
+		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED, FALSE,
 		 sort_reversed);
 }
 
@@ -990,27 +992,27 @@ fm_icon_view_real_set_directory_sort_reversed (FMIconView *icon_view,
 
 static gboolean
 fm_icon_view_get_directory_auto_layout (FMIconView *icon_view,
-					NautilusDirectory *directory)
+					NautilusFile *file)
 {
 	if (!fm_icon_view_supports_auto_layout (icon_view)) {
 		return FALSE;
 	}
 
 	return NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
-				      get_directory_auto_layout, (icon_view, directory));
+				      get_directory_auto_layout, (icon_view, file));
 }
 
 static gboolean
 fm_icon_view_real_get_directory_auto_layout (FMIconView *icon_view,
-					     NautilusDirectory *directory)
+					     NautilusFile *file)
 {
-	return nautilus_directory_get_boolean_metadata
-		(directory, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT, TRUE);
+	return nautilus_file_get_boolean_metadata
+		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT, TRUE);
 }
 
 static void
 fm_icon_view_set_directory_auto_layout (FMIconView *icon_view,
-					NautilusDirectory *directory,
+					NautilusFile *file,
 					gboolean auto_layout)
 {
 	if (!fm_icon_view_supports_auto_layout (icon_view)) {
@@ -1018,52 +1020,52 @@ fm_icon_view_set_directory_auto_layout (FMIconView *icon_view,
 	}
 
 	NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
-			       set_directory_auto_layout, (icon_view, directory, auto_layout));
+			       set_directory_auto_layout, (icon_view, file, auto_layout));
 }
 
 static void
 fm_icon_view_real_set_directory_auto_layout (FMIconView *icon_view,
-					     NautilusDirectory *directory,
+					     NautilusFile *file,
 					     gboolean auto_layout)
 {
-	nautilus_directory_set_boolean_metadata
-		(directory, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT, TRUE,
+	nautilus_file_set_boolean_metadata
+		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT, TRUE,
 		 auto_layout);
 }
 /* maintainence of tighter layout boolean */
 
 static gboolean
 fm_icon_view_get_directory_tighter_layout (FMIconView *icon_view,
-					NautilusDirectory *directory)
+					   NautilusFile *file)
 {
 	return NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
-				      get_directory_tighter_layout, (icon_view, directory));
+				      get_directory_tighter_layout, (icon_view, file));
 }
 
 static gboolean
 fm_icon_view_real_get_directory_tighter_layout (FMIconView *icon_view,
-					     NautilusDirectory *directory)
+						NautilusFile *file)
 {
-	return nautilus_directory_get_boolean_metadata
-		(directory, NAUTILUS_METADATA_KEY_ICON_VIEW_TIGHTER_LAYOUT, FALSE);
+	return nautilus_file_get_boolean_metadata
+		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_TIGHTER_LAYOUT, FALSE);
 }
 
 static void
 fm_icon_view_set_directory_tighter_layout (FMIconView *icon_view,
-					NautilusDirectory *directory,
-					gboolean tighter_layout)
+					   NautilusFile *file,
+					   gboolean tighter_layout)
 {
 	NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
-			       set_directory_tighter_layout, (icon_view, directory, tighter_layout));
+			       set_directory_tighter_layout, (icon_view, file, tighter_layout));
 }
 
 static void
 fm_icon_view_real_set_directory_tighter_layout (FMIconView *icon_view,
-					     NautilusDirectory *directory,
-					     gboolean tighter_layout)
+						NautilusFile *file,
+						gboolean tighter_layout)
 {
-	nautilus_directory_set_boolean_metadata
-		(directory, NAUTILUS_METADATA_KEY_ICON_VIEW_TIGHTER_LAYOUT, FALSE,
+	nautilus_file_set_boolean_metadata
+		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_TIGHTER_LAYOUT, FALSE,
 		 tighter_layout);
 }
 
@@ -1094,7 +1096,7 @@ set_sort_reversed (FMIconView *icon_view, gboolean new_value)
 	icon_view->details->sort_reversed = new_value;
 
 	/* Store the new sort setting. */
-	fm_icon_view_set_directory_sort_reversed (icon_view, fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)), new_value);
+	fm_icon_view_set_directory_sort_reversed (icon_view, fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (icon_view)), new_value);
 	
 	/* Update the layout menus to match the new sort-order setting. */
 	update_layout_menus (icon_view);
@@ -1135,28 +1137,31 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 {
 	FMIconView *icon_view;
 	GtkWidget *icon_container;
-	NautilusDirectory *directory;
+	NautilusFile *file;
 	int level;
 	char *sort_name;
 	
 	g_return_if_fail (FM_IS_ICON_VIEW (view));
 
 	icon_view = FM_ICON_VIEW (view);
-	directory = fm_directory_view_get_model (view);
+	file = fm_directory_view_get_directory_as_file (view);
 	icon_container = GTK_WIDGET (get_icon_container (icon_view));
 
 	/* kill any sound preview process that is ongoing */
 	preview_sound (NULL, FALSE);
 	
+	/* FIXME: this should be done with a virtual function, not
+           hardcoding knowledge about a subclass into the parent class. */
+
 	if (FM_IS_DESKTOP_ICON_VIEW (view)) {
-		nautilus_connect_desktop_background_to_directory_metadata (icon_container, directory);
+		nautilus_connect_desktop_background_to_file_metadata (icon_container, file);
 	} else {
-		nautilus_connect_background_to_directory_metadata (icon_container, directory);
+		nautilus_connect_background_to_file_metadata (icon_container, file);
 	}
 	
 	/* Set up the zoom level from the metadata. */
-	level = nautilus_directory_get_integer_metadata
-		(directory, 
+	level = nautilus_file_get_integer_metadata
+		(file, 
 		 NAUTILUS_METADATA_KEY_ICON_VIEW_ZOOM_LEVEL, 
 		 icon_view->details->default_zoom_level);
 	fm_icon_view_set_zoom_level (icon_view, level, TRUE);
@@ -1165,12 +1170,12 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	 * It's OK not to resort the icons because the
 	 * container doesn't have any icons at this point.
 	 */
-	sort_name = fm_icon_view_get_directory_sort_by (icon_view, directory);
+	sort_name = fm_icon_view_get_directory_sort_by (icon_view, file);
 	set_sort_criterion (icon_view, get_sort_criterion_by_metadata_text (sort_name));
 	g_free (sort_name);
 
 	/* Set the sort direction from the metadata. */
-	set_sort_reversed (icon_view, fm_icon_view_get_directory_sort_reversed (icon_view, directory));
+	set_sort_reversed (icon_view, fm_icon_view_get_directory_sort_reversed (icon_view, file));
 
 	/* Set the layout modes.
 	 * We must do this after getting the sort mode,
@@ -1179,10 +1184,10 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	 */
 	nautilus_icon_container_set_auto_layout
 		(get_icon_container (icon_view), 
-		 fm_icon_view_get_directory_auto_layout (icon_view, directory));
+		 fm_icon_view_get_directory_auto_layout (icon_view, file));
 	nautilus_icon_container_set_tighter_layout
 		(get_icon_container (icon_view), 
-		 fm_icon_view_get_directory_tighter_layout (icon_view, directory));
+		 fm_icon_view_get_directory_tighter_layout (icon_view, file));
 
 }
 
@@ -1212,8 +1217,8 @@ fm_icon_view_set_zoom_level (FMIconView *view,
 		return;
 	}
 
-	nautilus_directory_set_integer_metadata
-		(fm_directory_view_get_model (FM_DIRECTORY_VIEW (view)), 
+	nautilus_file_set_integer_metadata
+		(fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (view)), 
 		 NAUTILUS_METADATA_KEY_ICON_VIEW_ZOOM_LEVEL, 
 		 view->details->default_zoom_level,
 		 new_level);
@@ -1388,7 +1393,7 @@ sort_direction_callback (gpointer ignored, gpointer user_data)
 	set_sort_reversed (icon_view, 
 			   !fm_icon_view_get_directory_sort_reversed 
 			   	(icon_view, 
-			   	 fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view))));
+			   	 fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (icon_view))));
 	nautilus_icon_container_sort (get_icon_container (icon_view));
 }
 
@@ -1404,21 +1409,21 @@ static void
 layout_changed_callback (NautilusIconContainer *container,
 			 FMIconView *icon_view)
 {
-	NautilusDirectory *directory;
+	NautilusFile *file;
 
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 	g_assert (container == get_icon_container (icon_view));
 
-	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
+	file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (icon_view));
 
-	if (directory != NULL) {
+	if (file != NULL) {
 		fm_icon_view_set_directory_auto_layout
 			(icon_view,
-			 directory,
+			 file,
 			 fm_icon_view_using_auto_layout (icon_view));
 		fm_icon_view_set_directory_tighter_layout
 			(icon_view,
-			 directory,
+			 file,
 			 fm_icon_view_using_tighter_layout (icon_view));
 	}
 
@@ -1677,7 +1682,7 @@ icon_container_preview_callback (NautilusIconContainer *container,
 	
 	/* preview files based on the mime_type. */
 	/* at first, we just handle sounds */
-	mime_type = nautilus_file_get_mime_type(file);
+	mime_type = nautilus_file_get_mime_type (file);
 	if (nautilus_istr_has_prefix (mime_type, "audio/")) {   	
 		if (nautilus_sound_can_play_sound ()) {
 			result = 1;
@@ -1782,7 +1787,6 @@ icon_position_changed_callback (NautilusIconContainer *container,
 				const NautilusIconPosition *position,
 				FMIconView *icon_view)
 {
-	NautilusDirectory *directory;
 	char *position_string;
 	char *scale_string, *scale_string_x, *scale_string_y;
 	char *locale;
@@ -1813,7 +1817,6 @@ icon_position_changed_callback (NautilusIconContainer *container,
 	}
 
 	/* Store the new position of the icon in the metadata. */
-	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
 	if (!fm_icon_view_using_auto_layout (icon_view)) {
 		position_string = g_strdup_printf
 			("%d,%d", position->x, position->y);

@@ -204,15 +204,6 @@ struct FMDirectoryViewClass {
          */
         void    (* update_menus)         	(FMDirectoryView *view);
 
-	/* get_required_metadata_keys is a function pointer that subclasses
-	 * may override to request additional metadata to be read before showing
-	 * the directory view. If overridden, subclasses must all parent class's
-	 * function.
-	 */
-	void    (* get_required_metadata_keys)	(FMDirectoryView *view,
-					  	 GList           **directory_metadata_keys,
-					  	 GList           **file_metadata_keys);
-
 	/* get_emblem_names_to_exclude is a function pointer that subclasses
 	 * may override to specify a set of emblem names that should not
 	 * be displayed with each file. By default, all emblems returned by
@@ -344,6 +335,7 @@ void               fm_directory_view_notify_selection_changed       (FMDirectory
 Bonobo_UIContainer fm_directory_view_get_bonobo_ui_container        (FMDirectoryView       *view);
 NautilusStringList *fm_directory_view_get_emblem_names_to_exclude   (FMDirectoryView	   *view);
 NautilusDirectory  *fm_directory_view_get_model                     (FMDirectoryView       *view);
+NautilusFile       *fm_directory_view_get_directory_as_file         (FMDirectoryView       *view);
 NautilusBackground *fm_directory_view_get_background		    (FMDirectoryView 	   *view);
 void               fm_directory_view_pop_up_background_context_menu (FMDirectoryView       *view);
 void               fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView       *view); 

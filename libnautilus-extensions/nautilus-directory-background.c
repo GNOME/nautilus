@@ -2,7 +2,7 @@
 
 /*
    nautilus-directory-background.c: Helper for the background of a widget
-                                    that is viewing a particular directory.
+                                    that is viewing a particular location.
  
    Copyright (C) 2000 Eazel, Inc.
   
@@ -42,32 +42,35 @@
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
-static void background_changed_callback     (NautilusBackground *background, NautilusDirectory  *directory);
-static void background_reset_callback       (NautilusBackground *background, NautilusDirectory  *directory);
+static void background_changed_callback     (NautilusBackground *background, 
+                                             NautilusFile       *file);
+static void background_reset_callback       (NautilusBackground *background, 
+                                             NautilusFile       *file);
 
-static void saved_settings_changed_callback (NautilusDirectory  *directory, NautilusBackground *background);
+static void saved_settings_changed_callback (NautilusFile       *file, 
+                                             NautilusBackground *background);
                                          
-static void nautilus_directory_background_receive_root_window_changes (NautilusBackground *background);
+static void nautilus_file_background_receive_root_window_changes (NautilusBackground *background);
 
-static const char *default_theme_source = "directory";
+static const char *default_theme_source = "file";
 static const char *desktop_theme_source = "desktop";
                        
 void
-static nautilus_directory_background_set_desktop (NautilusBackground *background)
+static nautilus_file_background_set_desktop (NautilusBackground *background)
 {
 	gtk_object_set_data (GTK_OBJECT (background), "theme_source", (gpointer) desktop_theme_source);
-	nautilus_directory_background_receive_root_window_changes (background); 
+	nautilus_file_background_receive_root_window_changes (background); 
 }
 
 static gboolean
-nautilus_directory_background_is_desktop (NautilusBackground *background)
+nautilus_file_background_is_desktop (NautilusBackground *background)
 {
 	/* == works because we're carful to always use the same string.
 	 */
 	return gtk_object_get_data (GTK_OBJECT (background), "theme_source") == desktop_theme_source;
 }
 
-static const char *nautilus_directory_background_peek_theme_source (NautilusBackground *background)
+static const char *nautilus_file_background_peek_theme_source (NautilusBackground *background)
 {
 	char *theme_source;
 
@@ -110,20 +113,20 @@ theme_image_path_to_uri (char *image_file)
  */
  
 static void
-nautilus_directory_background_get_default_settings (const char* theme_source,
-						    char **color,
-						    char **image,
-						    NautilusBackgroundImagePlacement *placement,
-						    gboolean *combine)
+nautilus_file_background_get_default_settings (const char* theme_source,
+                                               char **color,
+                                               char **image,
+                                               NautilusBackgroundImagePlacement *placement,
+                                               gboolean *combine)
 {
 	char *combine_str;
 	char *image_local_path;
 
 	*placement = NAUTILUS_BACKGROUND_TILED;
 	
-	*color = nautilus_theme_get_theme_data (theme_source, NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR);
+	*color = nautilus_theme_get_theme_data (theme_source, NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR);
 
-	image_local_path = nautilus_theme_get_theme_data (theme_source, NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE);
+	image_local_path = nautilus_theme_get_theme_data (theme_source, NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_IMAGE);
 	*image = theme_image_path_to_uri (image_local_path);
 	g_free (image_local_path);
 
@@ -153,10 +156,10 @@ enum {
 };
 
 static void
-nautilus_directory_background_read_desktop_settings (char **color,
-						     char **image,
-						     NautilusBackgroundImagePlacement *placement,
-						     gboolean *combine)
+nautilus_file_background_read_desktop_settings (char **color,
+                                                char **image,
+                                                NautilusBackgroundImagePlacement *placement,
+                                                gboolean *combine)
 {
 	int	 image_alignment;
 	char*	 image_local_path;
@@ -172,7 +175,7 @@ nautilus_directory_background_read_desktop_settings (char **color,
 	gboolean no_start_color;
 	gboolean no_end_color;
 
-	nautilus_directory_background_get_default_settings (desktop_theme_source, &default_color, &default_image_file, &default_placement, combine);
+	nautilus_file_background_get_default_settings (desktop_theme_source, &default_color, &default_image_file, &default_placement, combine);
 	/* note - value of combine comes from the theme, not currently setable in gnome_config */
 
 	image_local_path = gnome_config_get_string ("/Background/Default/wallpaper=none");
@@ -233,7 +236,7 @@ nautilus_directory_background_read_desktop_settings (char **color,
 }
 
 static void
-nautilus_directory_background_write_desktop_settings (char *color, char *image, NautilusBackgroundImagePlacement placement, gboolean combine)
+nautilus_file_background_write_desktop_settings (char *color, char *image, NautilusBackgroundImagePlacement placement, gboolean combine)
 {
 	char *end_color;
 	char *start_color;
@@ -315,29 +318,29 @@ nautilus_directory_background_write_desktop_settings (char *color, char *image, 
 }
 
 static void
-nautilus_directory_background_write_desktop_default_settings ()
+nautilus_file_background_write_desktop_default_settings ()
 {
 	char *color;
 	char *image;
 	gboolean combine;
 	NautilusBackgroundImagePlacement placement;
-	nautilus_directory_background_get_default_settings (desktop_theme_source, &color, &image, &placement, &combine);
-	nautilus_directory_background_write_desktop_settings (color, image, placement, combine);
+	nautilus_file_background_get_default_settings (desktop_theme_source, &color, &image, &placement, &combine);
+	nautilus_file_background_write_desktop_settings (color, image, placement, combine);
 }
 
 static int
 call_settings_changed (NautilusBackground *background)
 {
-	NautilusDirectory *directory;
-	directory = gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_directory");
-	if (directory) {
-		saved_settings_changed_callback (directory, background);
+	NautilusFile *file;
+	file = gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_file");
+	if (file) {
+		saved_settings_changed_callback (file, background);
 	}
 	return FALSE;
 }
 
 static GdkFilterReturn
-nautilus_directory_background_event_filter (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
+nautilus_file_background_event_filter (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
 {
 	XEvent *xevent;
 	NautilusBackground *background;
@@ -366,16 +369,16 @@ nautilus_directory_background_event_filter (GdkXEvent *gdk_xevent, GdkEvent *eve
 static void
 desktop_background_destroyed_callback (NautilusBackground *background, void *georgeWBush)
 {
-	gdk_window_remove_filter (GDK_ROOT_PARENT(), nautilus_directory_background_event_filter, background);
+	gdk_window_remove_filter (GDK_ROOT_PARENT(), nautilus_file_background_event_filter, background);
 }
 
 static void
-nautilus_directory_background_receive_root_window_changes (NautilusBackground *background)
+nautilus_file_background_receive_root_window_changes (NautilusBackground *background)
 {
 	XWindowAttributes attribs = { 0 };
 
 	/* set up a filter on the root window to get notified about property changes */
-	gdk_window_add_filter (GDK_ROOT_PARENT(), nautilus_directory_background_event_filter, background);
+	gdk_window_add_filter (GDK_ROOT_PARENT(), nautilus_file_background_event_filter, background);
 
 	gdk_error_trap_push ();
 
@@ -514,7 +517,7 @@ image_loading_done_callback (NautilusBackground *background, gboolean successful
 }
 
 static void
-nautilus_directory_update_root_window (NautilusBackground *background)
+nautilus_file_update_root_window (NautilusBackground *background)
 {
 	if (nautilus_background_is_loaded (background)) {
 		image_loading_done_callback (background, TRUE, GINT_TO_POINTER (FALSE));
@@ -528,7 +531,7 @@ nautilus_directory_update_root_window (NautilusBackground *background)
 
 /* return true if the background is not in the default state */
 gboolean
-nautilus_directory_background_is_set (NautilusBackground *background)
+nautilus_file_background_is_set (NautilusBackground *background)
 {
 	char *color;
 	char *image;
@@ -547,8 +550,8 @@ nautilus_directory_background_is_set (NautilusBackground *background)
 	combine = nautilus_background_get_combine_mode (background);
 	placement = nautilus_background_get_image_placement (background);
 	
-	nautilus_directory_background_get_default_settings (
-		nautilus_directory_background_peek_theme_source (background),
+	nautilus_file_background_get_default_settings (
+		nautilus_file_background_peek_theme_source (background),
 		&default_color, &default_image, &default_placement, &default_combine);
 
 	is_set = (default_color != NULL && nautilus_strcmp (color, default_color) != 0) ||
@@ -567,41 +570,41 @@ nautilus_directory_background_is_set (NautilusBackground *background)
 /* handle the background changed signal */
 static void
 background_changed_callback (NautilusBackground *background,
-                             NautilusDirectory *directory)
+                             NautilusFile       *file)
 {
   	char *color, *image;
         
         g_assert (NAUTILUS_IS_BACKGROUND (background));
-        g_assert (NAUTILUS_IS_DIRECTORY (directory));
-        g_assert (gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_directory")
-                  == directory);
+        g_assert (NAUTILUS_IS_FILE (file));
+        g_assert (gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_file")
+                  == file);
         
 
 	color = nautilus_background_get_color (background);
 	image = nautilus_background_get_image_uri (background);
 
-	if (nautilus_directory_background_is_desktop (background)) {
-		nautilus_directory_background_write_desktop_settings (color, image, nautilus_background_get_image_placement (background), nautilus_background_get_combine_mode (background));
+	if (nautilus_file_background_is_desktop (background)) {
+		nautilus_file_background_write_desktop_settings (color, image, nautilus_background_get_image_placement (background), nautilus_background_get_combine_mode (background));
 	} else {
 	        /* Block the other handler while we are writing metadata so it doesn't
 	         * try to change the background.
 	         */
-	        gtk_signal_handler_block_by_func (GTK_OBJECT (directory),
+	        gtk_signal_handler_block_by_func (GTK_OBJECT (file),
 	                                          saved_settings_changed_callback,
 	                                          background);
 
-		nautilus_directory_set_metadata (directory,
-						 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR,
-						 NULL,
-						 color);
+		nautilus_file_set_metadata (file,
+                                            NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR,
+                                            NULL,
+                                            color);
 
-		nautilus_directory_set_metadata (directory,
-						 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE,
-						 NULL,
-						 image);
+		nautilus_file_set_metadata (file,
+                                            NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_IMAGE,
+                                            NULL,
+                                            image);
 						 
 	        /* Unblock the handler. */
-	        gtk_signal_handler_unblock_by_func (GTK_OBJECT (directory),
+	        gtk_signal_handler_unblock_by_func (GTK_OBJECT (file),
 	                                            saved_settings_changed_callback,
 	                                            background);
 	}
@@ -609,43 +612,43 @@ background_changed_callback (NautilusBackground *background,
 	g_free (color);
 	g_free (image);
 	
-	if (nautilus_directory_background_is_desktop (background)) {
-		nautilus_directory_update_root_window (background);
+	if (nautilus_file_background_is_desktop (background)) {
+		nautilus_file_update_root_window (background);
 	}
 }
 
-/* handle the directory changed signal */
+/* handle the file changed signal */
 static void
-saved_settings_changed_callback (NautilusDirectory *directory,
-                            NautilusBackground *background)
+saved_settings_changed_callback (NautilusFile *file,
+                                 NautilusBackground *background)
 {
         char *color;
         char *image;
 	gboolean combine;
 	NautilusBackgroundImagePlacement placement;
 	
-        g_assert (NAUTILUS_IS_DIRECTORY (directory));
+        g_assert (NAUTILUS_IS_FILE (file));
         g_assert (NAUTILUS_IS_BACKGROUND (background));
-        g_assert (gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_directory")
-                  == directory);
+        g_assert (gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_file")
+                  == file);
 
-	if (nautilus_directory_background_is_desktop (background)) {
-		nautilus_directory_background_read_desktop_settings (&color, &image, &placement, &combine);
+	if (nautilus_file_background_is_desktop (background)) {
+		nautilus_file_background_read_desktop_settings (&color, &image, &placement, &combine);
 	} else {
-		color = nautilus_directory_get_metadata (directory,
-	                                                 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR,
-	                                                 NULL);
-		image = nautilus_directory_get_metadata (directory,
-	                                                 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE,
-	                                                 NULL);
+		color = nautilus_file_get_metadata (file,
+                                                    NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR,
+                                                    NULL);
+		image = nautilus_file_get_metadata (file,
+                                                    NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_IMAGE,
+                                                    NULL);
 	        placement = NAUTILUS_BACKGROUND_TILED; /* non-tiled only avail for desktop, at least for now */
 		combine = FALSE; /* only from theme, at least for now */
 
 		/* if there's none, read the default from the theme */
 		if (color == NULL && image == NULL) {
-			nautilus_directory_background_get_default_settings (
-				nautilus_directory_background_peek_theme_source (background),
-				&color, &image, &placement, &combine);	
+			nautilus_file_background_get_default_settings 
+                                (nautilus_file_background_peek_theme_source (background),
+                                 &color, &image, &placement, &combine);	
 		}
 	}
 
@@ -654,7 +657,7 @@ saved_settings_changed_callback (NautilusDirectory *directory,
          */
         gtk_signal_handler_block_by_func (GTK_OBJECT (background),
                                           background_changed_callback,
-                                          directory);
+                                          file);
 
 		nautilus_background_set_color (background, color);     
 		nautilus_background_set_image_uri (background, image);
@@ -663,8 +666,8 @@ saved_settings_changed_callback (NautilusDirectory *directory,
 	
 	/* Unblock the handler. */
 	gtk_signal_handler_unblock_by_func (GTK_OBJECT (background),
-                                        background_changed_callback,
-                                        directory);
+                                            background_changed_callback,
+                                            file);
 	
 	g_free (color);
 	g_free (image);
@@ -672,190 +675,180 @@ saved_settings_changed_callback (NautilusDirectory *directory,
 
 /* handle the theme changing */
 static void
-nautilus_directory_background_theme_changed (gpointer user_data)
+nautilus_file_background_theme_changed (gpointer user_data)
 {
-	NautilusDirectory *directory;
+	NautilusFile *file;
 	NautilusBackground *background;
 
 	background = NAUTILUS_BACKGROUND (user_data);
-	directory = gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_directory");
-	if (directory) {
-		saved_settings_changed_callback (directory, background);
+	file = gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_file");
+	if (file) {
+		saved_settings_changed_callback (file, background);
 	}
 }
 
 /* handle the background reset signal by setting values from the current theme */
 static void
 background_reset_callback (NautilusBackground *background,
-                           NautilusDirectory *directory)
+                           NautilusFile       *file)
 {
-	if (nautilus_directory_background_is_desktop (background)) {
-		nautilus_directory_background_write_desktop_default_settings ();
+	if (nautilus_file_background_is_desktop (background)) {
+		nautilus_file_background_write_desktop_default_settings ();
 	} else {
 	        /* Block the other handler while we are writing metadata so it doesn't
 	         * try to change the background.
 	         */
-	        gtk_signal_handler_block_by_func (GTK_OBJECT (directory),
+	        gtk_signal_handler_block_by_func (GTK_OBJECT (file),
 	                                          saved_settings_changed_callback,
 	                                          background);
 
 		/* reset the metadata */
-		nautilus_directory_set_metadata (directory,
-						 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR,
-						 NULL,
-						 NULL);
+		nautilus_file_set_metadata (file,
+                                            NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR,
+                                            NULL,
+                                            NULL);
 
-		nautilus_directory_set_metadata (directory,
-						 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE,
-						 NULL,
-						 NULL);
+		nautilus_file_set_metadata (file,
+                                            NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_IMAGE,
+                                            NULL,
+                                            NULL);
 	        /* Unblock the handler. */
-	        gtk_signal_handler_unblock_by_func (GTK_OBJECT (directory),
+	        gtk_signal_handler_unblock_by_func (GTK_OBJECT (file),
 	                                            saved_settings_changed_callback,
 	                                            background);
 	}
 
-	saved_settings_changed_callback (directory, background);
+	saved_settings_changed_callback (file, background);
 
 	/* We don't want the default reset handler running.
 	 * It will set color and image_uri  to NULL.
 	 */
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (background), "reset");
 
-	if (nautilus_directory_background_is_desktop (background)) {
-		nautilus_directory_update_root_window (background);
+	if (nautilus_file_background_is_desktop (background)) {
+		nautilus_file_update_root_window (background);
 	}
 }
 
 /* handle the background destroyed signal */
 static void
 background_destroyed_callback (NautilusBackground *background,
-                               NautilusDirectory *directory)
+                               NautilusFile       *file)
 {
-        gtk_signal_disconnect_by_func (GTK_OBJECT (directory),
+        gtk_signal_disconnect_by_func (GTK_OBJECT (file),
                                        GTK_SIGNAL_FUNC (saved_settings_changed_callback),
                                        background);
-        nautilus_directory_file_monitor_remove (directory, background);
+        nautilus_file_monitor_remove (file, background);
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-					      nautilus_directory_background_theme_changed,
+					      nautilus_file_background_theme_changed,
 					      background);
 }
 
-/* key routine that hooks up a background and directory */
+/* key routine that hooks up a background and location */
 void
-nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
-                                                   NautilusDirectory *directory)
+nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
+                                              NautilusFile *file)
 {
 	NautilusBackground *background;
-	gpointer old_directory;
+	gpointer old_file;
         GList *attributes;
 
 	/* Get at the background object we'll be connecting. */
 	background = nautilus_get_widget_background (widget);
 
-
 	/* Check if it is already connected. */
-	old_directory = gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_directory");
-	if (old_directory == directory) {
+	old_file = gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_file");
+	if (old_file == file) {
 		return;
 	}
 
 	/* Disconnect old signal handlers. */
-	if (old_directory != NULL) {
-		g_assert (NAUTILUS_IS_DIRECTORY (old_directory));
+	if (old_file != NULL) {
+		g_assert (NAUTILUS_IS_FILE (old_file));
 		gtk_signal_disconnect_by_func (GTK_OBJECT (background),
                                                GTK_SIGNAL_FUNC (background_changed_callback),
-                                               old_directory);
+                                               old_file);
 		gtk_signal_disconnect_by_func (GTK_OBJECT (background),
                                                GTK_SIGNAL_FUNC (background_destroyed_callback),
-                                               old_directory);
+                                               old_file);
 		gtk_signal_disconnect_by_func (GTK_OBJECT (background),
                                                GTK_SIGNAL_FUNC (background_reset_callback),
-                                               old_directory);
-		gtk_signal_disconnect_by_func (GTK_OBJECT (old_directory),
+                                               old_file);
+		gtk_signal_disconnect_by_func (GTK_OBJECT (old_file),
                                                GTK_SIGNAL_FUNC (saved_settings_changed_callback),
                                                background);
-		nautilus_directory_file_monitor_remove (old_directory, background);
+		nautilus_file_monitor_remove (old_file, background);
 		nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-					      nautilus_directory_background_theme_changed,
-					      background);
+                                                      nautilus_file_background_theme_changed,
+                                                      background);
 
 	}
 
         /* Attach the new directory. */
-        nautilus_directory_ref (directory);
+        nautilus_file_ref (file);
         gtk_object_set_data_full (GTK_OBJECT (background),
-                                  "nautilus_background_directory",
-                                  directory,
-                                  (GtkDestroyNotify) nautilus_directory_unref);
+                                  "nautilus_background_file",
+                                  file,
+                                  (GtkDestroyNotify) nautilus_file_unref);
 
         /* Connect new signal handlers. */
-        if (directory != NULL) {
+        if (file != NULL) {
                 gtk_signal_connect (GTK_OBJECT (background),
                                     "settings_changed",
                                     GTK_SIGNAL_FUNC (background_changed_callback),
-                                    directory);
+                                    file);
                 gtk_signal_connect (GTK_OBJECT (background),
                                     "destroy",
                                     GTK_SIGNAL_FUNC (background_destroyed_callback),
-                                    directory);
+                                    file);
                 gtk_signal_connect (GTK_OBJECT (background),
 				    "reset",
 				    GTK_SIGNAL_FUNC (background_reset_callback),
-				    directory);
-		gtk_signal_connect (GTK_OBJECT (directory),
-                                    "metadata_changed",
+				    file);
+		gtk_signal_connect (GTK_OBJECT (file),
+                                    "changed",
                                     GTK_SIGNAL_FUNC (saved_settings_changed_callback),
                                     background);
         	
-		/* arrange to receive directory metadata */
-                /* FIXME bugzilla.eazel.com 2551: 
-                 * This says we want to monitor the file
-                 * metadata, and it has the side effect of monitoring
-                 * the file list. We want to monitor the directory
-                 * metadata, which would not mean monitoring the file
-                 * list.  This may require a change to the
-                 * NautilusDirectory API.
-                 */
-
+		/* arrange to receive file metadata */
                 attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
-		nautilus_directory_file_monitor_add (directory,
-						     background,
-						     attributes, FALSE);					     
+		nautilus_file_monitor_add (file,
+                                           background,
+                                           attributes);					     
 		g_list_free (attributes);
 
 		/* arrange for notification when the theme changes */
 		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
-                                                   nautilus_directory_background_theme_changed, background);	
+                                                   nautilus_file_background_theme_changed, background);	
 
 	}
 
-        /* Update the background based on the directory metadata. */
-        saved_settings_changed_callback (directory, background);
+        /* Update the background based on the file metadata. */
+        saved_settings_changed_callback (file, background);
 }
 
 void
-nautilus_connect_desktop_background_to_directory_metadata (GtkWidget *widget,
-                                                   NautilusDirectory *directory)
+nautilus_connect_desktop_background_to_file_metadata (GtkWidget *widget,
+                                                      NautilusFile *file)
 {
-	nautilus_directory_background_set_desktop (nautilus_get_widget_background (widget));
+	nautilus_file_background_set_desktop (nautilus_get_widget_background (widget));
 
 	/* Strictly speaking, we don't need to know about metadata changes, since
 	 * the desktop setting aren't stored there. But, hooking up to metadata
 	 * changes is actually a small part of what this fn does, and we do need
 	 * the other stuff (hooked up to background & theme changes). Being notified
-	 * of metadata changes on the directory is a waste, but won't hurt, so I don't
+	 * of metadata changes on the file is a waste, but won't hurt, so I don't
 	 * think it's worth refactoring the fn at this point.
 	 */
-	nautilus_connect_background_to_directory_metadata (widget, directory);
+	nautilus_connect_background_to_file_metadata (widget, file);
 }
 
 void
-nautilus_connect_background_to_directory_metadata_by_uri (GtkWidget *widget,
-                                                          const char *uri)
+nautilus_connect_background_to_file_metadata_by_uri (GtkWidget *widget,
+                                                     const char *uri)
 {
-        NautilusDirectory *directory;
-        directory = nautilus_directory_get (uri);
-        nautilus_connect_background_to_directory_metadata (widget, directory);
-        nautilus_directory_unref (directory);
+        NautilusFile *file;
+        file = nautilus_file_get (uri);
+        nautilus_connect_background_to_file_metadata (widget, file);
+        nautilus_file_unref (file);
 }

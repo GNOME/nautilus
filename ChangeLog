@@ -1,3 +1,137 @@
+2000-10-12  Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-metafile.h,
+	libnautilus-extensions/nautilus-directory-metafile.c
+	(nautilus_directory_get_metadata, nautilus_directory_set_metadata,
+	nautilus_directory_get_metadata_list,
+	nautilus_directory_set_metadata_list,
+	nautilus_directory_get_boolean_metadata,
+	nautilus_directory_set_boolean_metadata,
+	nautilus_directory_get_integer_metadata,
+	nautilus_directory_set_integer__metadata): Bye bye to directory
+	metadata.
+	(set_metadata_string_in_metafile): don't worry about the directory
+	metadata case any more.
+	(nautilus_directory_get_boolean_file_metadata,
+	nautilus_directory_set_boolean_file_metadata,
+	nautilus_directory_get_integer_file_metadata,
+	nautilus_directory_set_integer_file_metadata): Helper functions
+	for implementing NautilusFile metadata convenience wrappers.
+
+	* libnautilus-extensions/nautilus-file.h,
+	libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_boolean_metadata,
+	nautilus_file_get_integer_metadata,
+	nautilus_file_set_boolean_metadata,
+	nautilus_file_set_integer_metadata): Convenience wrappers for
+	boolean or integer file metadata.
+	
+	* libnautilus-extensions/nautilus-directory.h,
+	libnautilus-extensions/nautilus-directory.c
+	(nautilus_directory_initialize_class,
+	nautilus_directory_emit_metadata_changed): removed
+	"metadata_changed" signal.
+	(got_metadata_callback): Don't assert the file list is NULL.
+	(nautilus_self_check_directory): Use file metadata API.
+
+	* libnautilus-extensions/nautilus-metadata.h: No more
+	per-directory metadata, it's all per file now.
+
+	* libnautilus-extensions/nautilus-directory-background.h,
+	libnautilus-extensions/nautilus-directory-background.c
+	(nautilus_file_background_set_desktop,
+	nautilus_file_background_is_desktop,
+	nautilus_file_background_peek_theme_source,
+	nautilus_file_background_get_default_settings,
+	nautilus_file_background_read_desktop_settings,
+	nautilus_file_background_write_desktop_settings,
+	nautilus_file_background_write_desktop_default_settings,
+	call_settings_changed, nautilus_file_background_event_filter,
+	desktop_background_destroyed_callback,
+	nautilus_file_background_receive_root_window_changes,
+	nautilus_file_update_root_window, nautilus_file_background_is_set,
+	background_changed_callback, saved_settings_changed_callback,
+	nautilus_file_background_theme_changed, background_reset_callback,
+	background_destroyed_callback,
+	nautilus_connect_background_to_file_metadata,
+	nautilus_connect_desktop_background_to_file_metadata,
+	nautilus_connect_background_to_file_metadata_by_uri): Work off of
+	file metadata, not directory metadata, and thus take a
+	NautilusFile not a NautilusDirectory.
+
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_file_wait_for_metadata,
+	nautilus_mime_get_default_action_type_for_uri,
+	nautilus_mime_get_default_application_for_uri_internal,
+	nautilus_mime_get_default_component_for_uri_internal,
+	nautilus_mime_get_short_list_applications_for_uri,
+	nautilus_mime_get_short_list_components_for_uri,
+	nautilus_mime_get_all_applications_for_uri,
+	nautilus_mime_get_all_components_for_uri,
+	nautilus_mime_set_default_action_type_for_uri,
+	nautilus_mime_set_default_application_for_uri,
+	nautilus_mime_set_default_component_for_uri,
+	nautilus_mime_set_short_list_applications_for_uri,
+	nautilus_mime_set_short_list_components_for_uri,
+	nautilus_mime_extend_all_applications_for_uri,
+	nautilus_mime_remove_from_all_applications_for_uri,
+	get_explicit_content_view_iids_from_metafile): Use file metadata,
+	not directory metadata.
+
+	* src/file-manager/fm-directory-view.h,
+	src/file-manager/fm-directory-view.c
+	(fm_directory_view_get_directory_as_file): Function to access the
+	NautilusFile we now keep around that represents the directory
+	itself.
+	(fm_directory_view_initialize_class, files_have_any_custom_images,
+	compute_menu_item_info, fm_directory_view_activate_file,
+	fm_directory_view_load_uri, metadata_ready_callback,
+	disconnect_model_handlers, fm_directory_view_real_is_read_only,
+	showing_trash_directory): Use file metadata, not directory
+	metadata, and use the new `directory_as_file' field where
+	appropriate.
+	(finish_loading_uri): Monitor more files attributes (the ones
+	needed to get an icon, plus ones we might actually display in a
+	directory view.
+	
+	* src/file-manager/fm-desktop-icon-view.c
+	(fm_desktop_icon_view_create_background_context_menu_items): Use
+	file metadata not directory metadata.
+
+	* src/file-manager/fm-icon-view.h,
+	src/file-manager/fm-icon-view.c: (set_sort_criterion,
+	tighter_layout_callback, fm_icon_view_get_directory_sort_by,
+	fm_icon_view_real_get_directory_sort_by,
+	fm_icon_view_set_directory_sort_by,
+	fm_icon_view_real_set_directory_sort_by,
+	fm_icon_view_get_directory_sort_reversed,
+	fm_icon_view_real_get_directory_sort_reversed,
+	fm_icon_view_set_directory_sort_reversed,
+	fm_icon_view_real_set_directory_sort_reversed,
+	fm_icon_view_get_directory_auto_layout,
+	fm_icon_view_real_get_directory_auto_layout,
+	fm_icon_view_set_directory_auto_layout,
+	fm_icon_view_real_set_directory_auto_layout,
+	fm_icon_view_get_directory_tighter_layout,
+	fm_icon_view_real_get_directory_tighter_layout,
+	fm_icon_view_set_directory_tighter_layout,
+	fm_icon_view_real_set_directory_tighter_layout, set_sort_reversed,
+	fm_icon_view_begin_loading, fm_icon_view_set_zoom_level,
+	sort_direction_callback, layout_changed_callback,
+	icon_container_preview_callback, icon_position_changed_callback):
+	Use file metadata not directory metadata.
+
+	* src/file-manager/fm-list-view.c: (fm_list_view_begin_loading,
+	fm_list_view_set_zoom_level, fm_list_view_sort_items): Use file
+	metadata not directory metadata.
+
+	* src/file-manager/fm-search-list-view.c (real_adding_file): Tweak
+	the code that monitors file attributes.
+
+	* components/music/nautilus-music-view.c
+	(nautilus_music_view_update_from_uri): Use the new
+	nautilus_file_background API.
+
 2000-10-12  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:

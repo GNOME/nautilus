@@ -46,7 +46,6 @@
 enum {
 	FILES_ADDED,
 	FILES_CHANGED,
-	METADATA_CHANGED,
 	DONE_LOADING,
 	LAST_SIGNAL
 };
@@ -99,13 +98,6 @@ nautilus_directory_initialize_class (NautilusDirectoryClass *klass)
 				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, files_changed),
 				gtk_marshal_NONE__POINTER,
 				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
-	signals[METADATA_CHANGED] =
-		gtk_signal_new ("metadata_changed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, metadata_changed),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
 	signals[DONE_LOADING] =
 		gtk_signal_new ("done_loading",
 				GTK_RUN_LAST,
@@ -659,10 +651,6 @@ nautilus_directory_emit_change_signals_deep (NautilusDirectory *directory,
 void
 nautilus_directory_emit_metadata_changed (NautilusDirectory *directory)
 {
-	/* Tell that the directory metadata has changed. */
-	gtk_signal_emit (GTK_OBJECT (directory),
-			 signals[METADATA_CHANGED]);
-
 	/* Say that all the files have changed.
 	 * We could optimize this to only mention files that
 	 * have metadata, but this is a fine rough cut for now.
@@ -1284,7 +1272,6 @@ static void
 got_metadata_callback (NautilusDirectory *directory, GList *files, gpointer callback_data)
 {
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-	g_assert (files == NULL);
 	g_assert (callback_data == &data_dummy);
 
 	got_metadata_flag = TRUE;
@@ -1311,9 +1298,11 @@ void
 nautilus_self_check_directory (void)
 {
 	NautilusDirectory *directory;
+	NautilusFile *file;
 	GList *attributes;
 
 	directory = nautilus_directory_get ("file:///etc");
+	file = nautilus_file_get ("file:///etc/passwd");
 
 	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 1);
 
@@ -1332,23 +1321,23 @@ nautilus_self_check_directory (void)
 		gtk_main_iteration ();
 	}
 
-	nautilus_directory_set_metadata (directory, "TEST", "default", "value");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_get_metadata (directory, "TEST", "default"), "value");
+	nautilus_file_set_metadata (file, "TEST", "default", "value");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_metadata (file, "TEST", "default"), "value");
 
-	nautilus_directory_set_boolean_metadata (directory, "TEST_BOOLEAN", TRUE, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_directory_get_boolean_metadata (directory, "TEST_BOOLEAN", TRUE), TRUE);
-	nautilus_directory_set_boolean_metadata (directory, "TEST_BOOLEAN", TRUE, FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_directory_get_boolean_metadata (directory, "TEST_BOOLEAN", TRUE), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_directory_get_boolean_metadata (NULL, "TEST_BOOLEAN", TRUE), TRUE);
+	nautilus_file_set_boolean_metadata (file, "TEST_BOOLEAN", TRUE, TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (file, "TEST_BOOLEAN", TRUE), TRUE);
+	nautilus_file_set_boolean_metadata (file, "TEST_BOOLEAN", TRUE, FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (file, "TEST_BOOLEAN", TRUE), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (NULL, "TEST_BOOLEAN", TRUE), TRUE);
 
-	nautilus_directory_set_integer_metadata (directory, "TEST_INTEGER", 0, 17);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_get_integer_metadata (directory, "TEST_INTEGER", 0), 17);
-	nautilus_directory_set_integer_metadata (directory, "TEST_INTEGER", 0, -1);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_get_integer_metadata (directory, "TEST_INTEGER", 0), -1);
-	nautilus_directory_set_integer_metadata (directory, "TEST_INTEGER", 42, 42);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_get_integer_metadata (directory, "TEST_INTEGER", 42), 42);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_get_integer_metadata (NULL, "TEST_INTEGER", 42), 42);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_get_integer_metadata (directory, "NONEXISTENT_KEY", 42), 42);
+	nautilus_file_set_integer_metadata (file, "TEST_INTEGER", 0, 17);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "TEST_INTEGER", 0), 17);
+	nautilus_file_set_integer_metadata (file, "TEST_INTEGER", 0, -1);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "TEST_INTEGER", 0), -1);
+	nautilus_file_set_integer_metadata (file, "TEST_INTEGER", 42, 42);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "TEST_INTEGER", 42), 42);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (NULL, "TEST_INTEGER", 42), 42);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "NONEXISTENT_KEY", 42), 42);
 
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_directory_get ("file:///etc") == directory, TRUE);
 	nautilus_directory_unref (directory);
@@ -1358,6 +1347,8 @@ nautilus_self_check_directory (void)
 
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_directory_get ("file:///etc////") == directory, TRUE);
 	nautilus_directory_unref (directory);
+
+	nautilus_file_unref (file);
 
 	nautilus_directory_file_monitor_remove (directory, &data_dummy);
 
@@ -1399,7 +1390,11 @@ nautilus_self_check_directory (void)
 
 	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 1);
 
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_get_metadata (directory, "TEST", "default"), "value");
+	file = nautilus_file_get ("file:///etc/passwd");
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_metadata (file, "TEST", "default"), "value");
+	
+	nautilus_file_unref (file);
 
 	nautilus_directory_unref (directory);
 

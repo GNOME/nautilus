@@ -25,14 +25,14 @@
 */
 
 #include <gtk/gtkwidget.h>
-#include "nautilus-directory.h"
+#include "nautilus-file.h"
 #include "nautilus-background.h"
 
-void nautilus_connect_background_to_directory_metadata         (GtkWidget         *widget,
-                                                                NautilusDirectory *directory);
-void nautilus_connect_desktop_background_to_directory_metadata (GtkWidget         *widget,
-                                                                NautilusDirectory *directory);
-void nautilus_connect_background_to_directory_metadata_by_uri  (GtkWidget         *widget,
-                                                                const char        *uri);
-gboolean nautilus_directory_background_is_set		       (NautilusBackground *background);
+void nautilus_connect_background_to_file_metadata         (GtkWidget         *widget,
+                                                           NautilusFile      *file);
+void nautilus_connect_desktop_background_to_file_metadata (GtkWidget         *widget,
+                                                           NautilusFile      *file);
+void nautilus_connect_background_to_file_metadata_by_uri  (GtkWidget         *widget,
+                                                           const char        *uri);
+gboolean nautilus_file_background_is_set		  (NautilusBackground *background);
 

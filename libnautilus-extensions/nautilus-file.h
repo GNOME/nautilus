@@ -213,6 +213,23 @@ void                    nautilus_file_set_metadata_list         (NautilusFile   
 								 const char                    *list_subkey,
 								 GList                         *list);
 
+/* Covers for common data types. */
+gboolean           nautilus_file_get_boolean_metadata (NautilusFile              *file,
+						       const char                *key,
+						       gboolean                   default_metadata);
+void               nautilus_file_set_boolean_metadata (NautilusFile              *file,
+						       const char                *key,
+						       gboolean                   default_metadata,
+						       gboolean                   metadata);
+int                nautilus_file_get_integer_metadata (NautilusFile              *file,
+						       const char                *key,
+						       int                        default_metadata);
+void               nautilus_file_set_integer_metadata (NautilusFile              *file,
+						       const char                *key,
+						       int                        default_metadata,
+						       int                        metadata);
+
+
 /* Attributes for file objects as user-displayable strings. */
 char *                  nautilus_file_get_string_attribute      (NautilusFile                  *file,
 								 const char                    *attribute_name);

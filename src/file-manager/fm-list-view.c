@@ -1095,23 +1095,23 @@ fm_list_view_begin_adding_files (FMDirectoryView *view)
 static void
 fm_list_view_begin_loading (FMDirectoryView *view)
 {
-	NautilusDirectory *directory;
+	NautilusFile *file;
 	FMListView *list_view;
 	char *default_sort_attribute;
 
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
-	directory = fm_directory_view_get_model (view);
+	file = fm_directory_view_get_directory_as_file (view);
 	list_view = FM_LIST_VIEW (view);
 
 	/* Set up the background color from the metadata. */
-	nautilus_connect_background_to_directory_metadata (GTK_WIDGET (get_list (list_view)),
-							   directory);
+	nautilus_connect_background_to_file_metadata (GTK_WIDGET (get_list (list_view)),
+						      file);
 
 	fm_list_view_set_zoom_level (
 		list_view,
-		nautilus_directory_get_integer_metadata (
-			directory, 
+		nautilus_file_get_integer_metadata (
+			file, 
 			NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
 			list_view->details->default_zoom_level),
 		TRUE);
@@ -1120,13 +1120,12 @@ fm_list_view_begin_loading (FMDirectoryView *view)
 	fm_list_view_sort_items (
 		list_view,
 		get_sort_column_from_attribute (list_view,
-						nautilus_directory_get_metadata (directory,
-										 NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN,
-										 default_sort_attribute)),
-		nautilus_directory_get_boolean_metadata (
-			directory,
-			NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
-			FALSE));
+						nautilus_file_get_metadata (file,
+									    NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN,
+									    default_sort_attribute)),
+		nautilus_file_get_boolean_metadata (file,
+						    NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
+						    FALSE));
 	g_free (default_sort_attribute);
 }
 
@@ -1324,8 +1323,8 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 	}
 	
 	list_view->details->zoom_level = new_level;
-	nautilus_directory_set_integer_metadata
-		(fm_directory_view_get_model (FM_DIRECTORY_VIEW (list_view)), 
+	nautilus_file_set_integer_metadata
+		(fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (list_view)), 
 		 NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
 		 list_view->details->default_zoom_level,
 		 new_level);
@@ -1426,7 +1425,7 @@ fm_list_view_sort_items (FMListView *list_view,
 {
 	NautilusList *list;
 	NautilusCList *clist;
-	NautilusDirectory *directory;
+	NautilusFile *file;
 	
 	g_return_if_fail (FM_IS_LIST_VIEW (list_view));
 	g_return_if_fail (column >= 0);
@@ -1438,14 +1437,14 @@ fm_list_view_sort_items (FMListView *list_view,
 		return;
 	}
 
-	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (list_view));
-	nautilus_directory_set_metadata
-		(directory,
+	file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (list_view));
+	nautilus_file_set_metadata
+		(file,
 		 NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN,
 		 LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE,
 		 get_column_attribute (list_view, column));
-	nautilus_directory_set_boolean_metadata
-		(directory,
+	nautilus_file_set_boolean_metadata
+		(file,
 		 NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
 		 FALSE,
 		 reversed);

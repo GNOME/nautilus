@@ -1661,6 +1661,87 @@ nautilus_file_set_metadata_list (NautilusFile *file,
 	}
 }
 
+
+gboolean
+nautilus_file_get_boolean_metadata (NautilusFile *file,
+				    const char   *key,
+				    gboolean      default_metadata)
+{
+	g_return_val_if_fail (key != NULL, default_metadata);
+	g_return_val_if_fail (key[0] != '\0', default_metadata);
+	if (file == NULL) {
+		return default_metadata;
+	}
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), default_metadata);
+
+	return nautilus_directory_get_boolean_file_metadata
+		(file->details->directory,
+		 file->details->name,
+		 key,
+		 default_metadata);
+}
+
+int
+nautilus_file_get_integer_metadata (NautilusFile *file,
+				    const char   *key,
+				    int           default_metadata)
+{
+	g_return_val_if_fail (key != NULL, default_metadata);
+	g_return_val_if_fail (key[0] != '\0', default_metadata);
+	if (file == NULL) {
+		return default_metadata;
+	}
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), default_metadata);
+
+	return nautilus_directory_get_integer_file_metadata
+		(file->details->directory,
+		 file->details->name,
+		 key,
+		 default_metadata);
+}
+
+
+void
+nautilus_file_set_boolean_metadata (NautilusFile *file,
+				    const char   *key,
+				    gboolean      default_metadata,
+				    gboolean      metadata)
+{
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	g_return_if_fail (key != NULL);
+	g_return_if_fail (key[0] != '\0');
+
+	if (nautilus_directory_set_boolean_file_metadata (file->details->directory,
+							  file->details->name,
+							  key,
+							  default_metadata,
+							  metadata)) {
+		nautilus_file_changed (file);
+	}
+}
+
+void
+nautilus_file_set_integer_metadata (NautilusFile *file,
+				    const char   *key,
+				    int           default_metadata,
+				    int           metadata)
+{
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	g_return_if_fail (key != NULL);
+	g_return_if_fail (key[0] != '\0');
+
+	if (nautilus_directory_set_integer_file_metadata (file->details->directory,
+							  file->details->name,
+							  key,
+							  default_metadata,
+							  metadata)) {
+		nautilus_file_changed (file);
+	}
+}
+
+
+
+
 char *
 nautilus_file_get_name (NautilusFile *file)
 {

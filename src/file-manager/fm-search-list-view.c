@@ -421,19 +421,25 @@ real_adding_file (FMListView *view, NautilusFile *file)
 
 	NAUTILUS_CALL_PARENT_CLASS (FM_LIST_VIEW_CLASS, adding_file, (view, file));
 
+	/* FIXME: this implies that positioning, custom icon, icon
+	 * stretching, etc, will be based on the real directory the file is in,
+	 * and won't be specific to the search directory. Is that OK? 
+	 */
+
 	gtk_signal_connect_object (GTK_OBJECT (file),
 				   "changed",
 				   fm_directory_view_queue_file_change,
 				   GTK_OBJECT (view));
 	/* Monitor the things needed to get the right
 	 * icon. Also monitor a directory's item count because
-	 * the "size" attribute is based on that.
-	 */
+	 * the "size" attribute is based on that, and the file's metadata.  */
 	attributes = nautilus_icon_factory_get_required_file_attributes ();		
 	attributes = g_list_prepend (attributes,
 				     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
 	attributes = g_list_prepend (attributes,
 				     NAUTILUS_FILE_ATTRIBUTE_METADATA);
+	attributes = g_list_prepend (attributes, 
+				     NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
 	nautilus_file_monitor_add (file, view, attributes);
 	g_list_free (attributes);
 }

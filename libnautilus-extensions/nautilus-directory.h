@@ -93,12 +93,6 @@ typedef struct
 	void     (* files_changed)       (NautilusDirectory         *directory,
 					  GList                     *changed_files);
 
-	/* The metadata_changed signal is emitted when changes to the metadata
-	 * for the directory itself are made. Changes to file metadata just
-	 * result in calls to files_changed.
-	 */
-	void     (* metadata_changed)    (NautilusDirectory         *directory);
-
 	/* The done_loading signal is emitted when a directory load
 	 * request completes. This is needed because, at least in the
 	 * case where the directory is empty, the caller will receive
@@ -169,37 +163,6 @@ void               nautilus_directory_cancel_callback      (NautilusDirectory   
 							    NautilusDirectoryCallback  callback,
 							    gpointer                   callback_data);
 
-/* Getting and setting metadata. */
-char *             nautilus_directory_get_metadata         (NautilusDirectory         *directory,
-							    const char                *key,
-							    const char                *default_metadata);
-GList             *nautilus_directory_get_metadata_list    (NautilusDirectory         *directory,
-							    const char                *list_key,
-							    const char                *list_subkey);
-void               nautilus_directory_set_metadata         (NautilusDirectory         *directory,
-							    const char                *key,
-							    const char                *default_metadata,
-							    const char                *metadata);
-void               nautilus_directory_set_metadata_list    (NautilusDirectory         *directory,
-							    const char                *list_key,
-							    const char                *list_subkey,
-							    GList                     *list);
-
-/* Covers for common data types. */
-gboolean           nautilus_directory_get_boolean_metadata (NautilusDirectory         *directory,
-							    const char                *key,
-							    gboolean                   default_metadata);
-void               nautilus_directory_set_boolean_metadata (NautilusDirectory         *directory,
-							    const char                *key,
-							    gboolean                   default_metadata,
-							    gboolean                   metadata);
-int                nautilus_directory_get_integer_metadata (NautilusDirectory         *directory,
-							    const char                *key,
-							    int                        default_metadata);
-void               nautilus_directory_set_integer_metadata (NautilusDirectory         *directory,
-							    const char                *key,
-							    int                        default_metadata,
-							    int                        metadata);
 
 /* Monitor the files in a directory. */
 void               nautilus_directory_file_monitor_add     (NautilusDirectory         *directory,

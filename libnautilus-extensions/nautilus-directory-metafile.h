@@ -34,6 +34,15 @@ GList *  nautilus_directory_get_file_metadata_list         (NautilusDirectory *d
 							    const char        *file_name,
 							    const char        *list_key,
 							    const char        *list_subkey);
+gboolean nautilus_directory_get_boolean_file_metadata      (NautilusDirectory *directory,
+							    const char        *file_name,
+							    const char        *key,
+							    gboolean           default_metadata);
+int      nautilus_directory_get_integer_file_metadata      (NautilusDirectory *directory,
+							    const char        *file_name,
+							    const char        *key,
+							    int                default_metadata);
+
 gboolean nautilus_directory_set_file_metadata              (NautilusDirectory *directory,
 							    const char        *file_name,
 							    const char        *key,
@@ -44,6 +53,17 @@ gboolean nautilus_directory_set_file_metadata_list         (NautilusDirectory *d
 							    const char        *list_key,
 							    const char        *list_subkey,
 							    GList             *list);
+gboolean nautilus_directory_set_boolean_file_metadata      (NautilusDirectory *directory,
+							    const char        *file_name,
+							    const char        *key,
+							    gboolean           default_metadata,
+							    gboolean           metadata);
+gboolean nautilus_directory_set_integer_file_metadata      (NautilusDirectory *directory,
+							    const char        *file_name,
+							    const char        *key,
+							    int                default_metadata,
+							    int                metadata);
+
 void     nautilus_directory_copy_file_metadata             (NautilusDirectory *source_directory,
 							    const char        *source_file_name,
 							    NautilusDirectory *destination_directory,

@@ -51,17 +51,29 @@ struct FMIconViewClass {
 	 
 	/* Note: get_directory_sort_by must return a string that can/will be g_freed.
 	 */
-	char *	 (* get_directory_sort_by)       (FMIconView *icon_view, NautilusDirectory *directory);
-	void     (* set_directory_sort_by)       (FMIconView *icon_view, NautilusDirectory *directory, const char* sort_by);
+	char *	 (* get_directory_sort_by)       (FMIconView *icon_view, 
+						  NautilusFile *file);
+	void     (* set_directory_sort_by)       (FMIconView *icon_view, 
+						  NautilusFile *file, 
+						  const char* sort_by);
 
-	gboolean (* get_directory_sort_reversed) (FMIconView *icon_view, NautilusDirectory *directory);
-	void     (* set_directory_sort_reversed) (FMIconView *icon_view, NautilusDirectory *directory, gboolean sort_reversed);
+	gboolean (* get_directory_sort_reversed) (FMIconView *icon_view, 
+						  NautilusFile *file);
+	void     (* set_directory_sort_reversed) (FMIconView *icon_view, 
+						  NautilusFile *file, 
+						  gboolean sort_reversed);
 
-	gboolean (* get_directory_auto_layout)   (FMIconView *icon_view, NautilusDirectory *directory);
-	void     (* set_directory_auto_layout)   (FMIconView *icon_view, NautilusDirectory *directory, gboolean auto_layout);
+	gboolean (* get_directory_auto_layout)   (FMIconView *icon_view, 
+						  NautilusFile *file);
+	void     (* set_directory_auto_layout)   (FMIconView *icon_view, 
+						  NautilusFile *file, 
+						  gboolean auto_layout);
 	
-	gboolean (* get_directory_tighter_layout) (FMIconView *icon_view, NautilusDirectory *directory);
-	void     (* set_directory_tighter_layout)   (FMIconView *icon_view, NautilusDirectory *directory, gboolean tighter_layout);
+	gboolean (* get_directory_tighter_layout) (FMIconView *icon_view, 
+						   NautilusFile *file);
+	void     (* set_directory_tighter_layout)   (FMIconView *icon_view, 
+						     NautilusFile *file, 
+						     gboolean tighter_layout);
 
 	/* Override "clean_up" if your subclass has its own notion of where icons should be positioned */
 	void	 (* clean_up)			 (FMIconView *icon_view);

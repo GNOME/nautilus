@@ -53,7 +53,7 @@ static char       *extract_prefix_add_suffix                     (const char    
 								  const char              *suffix);
 static char       *mime_type_get_supertype                       (const char              *mime_type);
 static char       *uri_string_get_scheme                         (const char              *uri_string);
-static GList      *get_explicit_content_view_iids_from_metafile  (NautilusDirectory       *directory);
+static GList      *get_explicit_content_view_iids_from_metafile  (NautilusFile            *file);
 static char       *make_oaf_query_for_explicit_content_view_iids (GList                   *view_iids);
 static char       *make_oaf_query_with_known_mime_type           (const char              *mime_type, 
 								  const char              *uri_scheme, 
@@ -99,9 +99,8 @@ is_known_mime_type (const char *mime_type)
 }
 
 static void
-nautilus_directory_wait_for_metadata (NautilusDirectory *directory)
+nautilus_file_wait_for_metadata (NautilusFile *file)
 {
-	GList *file_list;
 	GList *attributes;
 
 	/* When nautilus_directory_wait_until_ready is called this way, it
@@ -111,9 +110,8 @@ nautilus_directory_wait_for_metadata (NautilusDirectory *directory)
 	 */
 
 	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
-	file_list = nautilus_directory_wait_until_ready (directory, attributes);
+	nautilus_file_wait_until_ready (file, attributes);
 	g_list_free (attributes);
-	nautilus_file_list_free (file_list);
 }
 
 GnomeVFSMimeActionType
@@ -124,9 +122,10 @@ nautilus_mime_get_default_action_type_for_uri (NautilusDirectory *directory,
 	char *action_type_string;
 	GnomeVFSMimeActionType action_type;
 
-	nautilus_directory_wait_for_metadata (directory);
-	action_type_string = nautilus_directory_get_metadata
-		(directory, NAUTILUS_METADATA_KEY_DEFAULT_ACTION_TYPE, NULL);
+	nautilus_file_wait_for_metadata (file);
+
+	action_type_string = nautilus_file_get_metadata
+		(file, NAUTILUS_METADATA_KEY_DEFAULT_ACTION_TYPE, NULL);
 
 	if (action_type_string == NULL) {
 		mime_type = get_mime_type_from_file (file);
@@ -194,9 +193,9 @@ nautilus_mime_get_default_application_for_uri_internal (NautilusDirectory *direc
 
 	used_user_chosen_info = TRUE;
 
-	nautilus_directory_wait_for_metadata (directory);
-	default_application_string = nautilus_directory_get_metadata 
-		(directory, NAUTILUS_METADATA_KEY_DEFAULT_APPLICATION, NULL);
+	nautilus_file_wait_for_metadata (file);
+	default_application_string = nautilus_file_get_metadata 
+		(file, NAUTILUS_METADATA_KEY_DEFAULT_APPLICATION, NULL);
 
 	if (default_application_string == NULL) {
 		mime_type = get_mime_type_from_file (file);
@@ -278,16 +277,17 @@ nautilus_mime_get_default_component_for_uri_internal (NautilusDirectory *directo
 
 	g_free (uri);
 
+	nautilus_file_wait_for_metadata (file);
+	explicit_iids = get_explicit_content_view_iids_from_metafile (file); 
+
         /* Arrange for all the file attributes we will need. */
         attributes = NULL;
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
-	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
-
 	files = nautilus_directory_wait_until_ready (directory, attributes);
-	default_component_string = nautilus_directory_get_metadata 
-		(directory, NAUTILUS_METADATA_KEY_DEFAULT_COMPONENT, NULL);
-	explicit_iids = get_explicit_content_view_iids_from_metafile (directory); 
 	g_list_free (attributes);
+
+	default_component_string = nautilus_file_get_metadata 
+		(file, NAUTILUS_METADATA_KEY_DEFAULT_COMPONENT, NULL);
 
     	if (default_component_string == NULL && is_known_mime_type (mime_type)) {
 		mime_default = gnome_vfs_mime_get_default_component (mime_type);
@@ -438,13 +438,13 @@ nautilus_mime_get_short_list_applications_for_uri (NautilusDirectory *directory,
 
 	CORBA_exception_init (&ev);
 
-	nautilus_directory_wait_for_metadata (directory);
-	metadata_application_add_ids = nautilus_directory_get_metadata_list 
-		(directory,
+	nautilus_file_wait_for_metadata (file);
+	metadata_application_add_ids = nautilus_file_get_metadata_list 
+		(file,
 		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_ADD,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
-	metadata_application_remove_ids = nautilus_directory_get_metadata_list 
-		(directory,
+	metadata_application_remove_ids = nautilus_file_get_metadata_list 
+		(file,
 		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_REMOVE,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
 
@@ -507,21 +507,22 @@ nautilus_mime_get_short_list_components_for_uri (NautilusDirectory *directory,
 
 	g_free (uri);
 
+	nautilus_file_wait_for_metadata (file);
+	explicit_iids = get_explicit_content_view_iids_from_metafile (file); 
+
         /* Arrange for all the file attributes we will need. */
         attributes = NULL;
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
-	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
-
 	files = nautilus_directory_wait_until_ready (directory, attributes);
-	explicit_iids = get_explicit_content_view_iids_from_metafile (directory); 
 	g_list_free (attributes);
 
-	metadata_component_add_ids = nautilus_directory_get_metadata_list 
-		(directory,
+
+	metadata_component_add_ids = nautilus_file_get_metadata_list 
+		(file,
 		 NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_ADD,
 		 NAUTILUS_METADATA_SUBKEY_COMPONENT_IID);
-	metadata_component_remove_ids = nautilus_directory_get_metadata_list 
-		(directory,
+	metadata_component_remove_ids = nautilus_file_get_metadata_list 
+		(file,
 		 NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_REMOVE,
 		 NAUTILUS_METADATA_SUBKEY_COMPONENT_IID);
 
@@ -608,9 +609,9 @@ nautilus_mime_get_all_applications_for_uri (NautilusDirectory *directory,
 	GList *p;
 	GnomeVFSMimeApplication *application;
 
-	nautilus_directory_wait_for_metadata (directory);
-	metadata_application_ids = nautilus_directory_get_metadata_list 
-		(directory,
+	nautilus_file_wait_for_metadata (file);
+	metadata_application_ids = nautilus_file_get_metadata_list 
+		(file,
 		 NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
 
@@ -668,14 +669,15 @@ nautilus_mime_get_all_components_for_uri (NautilusDirectory *directory,
 	uri = nautilus_file_get_uri (file);
 	uri_scheme = uri_string_get_scheme (uri);
 	g_free (uri);
+
+	nautilus_file_wait_for_metadata (file);
+	explicit_iids = get_explicit_content_view_iids_from_metafile (file); 
 	
         /* Arrange for all the file attributes we will need. */
         attributes = NULL;
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
-	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 
 	files = nautilus_directory_wait_until_ready (directory, attributes);
-	explicit_iids = get_explicit_content_view_iids_from_metafile (directory); 
 	g_list_free (attributes);
 
 	info_list = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, NULL, NULL, &ev);
@@ -721,9 +723,9 @@ nautilus_mime_set_default_action_type_for_uri (NautilusDirectory      *directory
 		action_string = "none";
 	}
 
-	nautilus_directory_wait_for_metadata (directory);
-	nautilus_directory_set_metadata 
-		(directory, NAUTILUS_METADATA_KEY_DEFAULT_ACTION_TYPE, NULL, action_string);
+	nautilus_file_wait_for_metadata (file);
+	nautilus_file_set_metadata 
+		(file, NAUTILUS_METADATA_KEY_DEFAULT_ACTION_TYPE, NULL, action_string);
 
 	return GNOME_VFS_OK;
 }
@@ -733,9 +735,9 @@ nautilus_mime_set_default_application_for_uri (NautilusDirectory *directory,
 					       NautilusFile      *file,
 					       const char        *application_id)
 {
-	nautilus_directory_wait_for_metadata (directory);
-	nautilus_directory_set_metadata 
-		(directory, NAUTILUS_METADATA_KEY_DEFAULT_APPLICATION, NULL, application_id);
+	nautilus_file_wait_for_metadata (file);
+	nautilus_file_set_metadata 
+		(file, NAUTILUS_METADATA_KEY_DEFAULT_APPLICATION, NULL, application_id);
 
 	/* If there's no default action type, set it to match this. */
 	if (application_id != NULL && 
@@ -751,9 +753,9 @@ nautilus_mime_set_default_component_for_uri (NautilusDirectory *directory,
 					     NautilusFile      *file,
 					     const char        *component_iid)
 {
-	nautilus_directory_wait_for_metadata (directory);
-	nautilus_directory_set_metadata 
-		(directory, NAUTILUS_METADATA_KEY_DEFAULT_COMPONENT, NULL, component_iid);
+	nautilus_file_wait_for_metadata (file);
+	nautilus_file_set_metadata 
+		(file, NAUTILUS_METADATA_KEY_DEFAULT_COMPONENT, NULL, component_iid);
 
 	/* If there's no default action type, set it to match this. */
 	if (component_iid != NULL && 
@@ -792,14 +794,14 @@ nautilus_mime_set_short_list_applications_for_uri (NautilusDirectory *directory,
 	add_list = str_list_difference (applications, normal_short_list_ids);
 	remove_list = str_list_difference (normal_short_list_ids, applications);
 
-	nautilus_directory_wait_for_metadata (directory);
-	nautilus_directory_set_metadata_list 
-		(directory,
+	nautilus_file_wait_for_metadata (file);
+	nautilus_file_set_metadata_list 
+		(file,
 		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_ADD,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID,
 		 add_list);
-	nautilus_directory_set_metadata_list 
-		(directory,
+	nautilus_file_set_metadata_list 
+		(file,
 		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_REMOVE,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID,
 		 remove_list);
@@ -839,14 +841,14 @@ nautilus_mime_set_short_list_components_for_uri (NautilusDirectory *directory,
 	add_list = str_list_difference (components, normal_short_list_ids);
 	remove_list = str_list_difference (normal_short_list_ids, components);
 
-	nautilus_directory_wait_for_metadata (directory);
-	nautilus_directory_set_metadata_list 
-		(directory,
+	nautilus_file_wait_for_metadata (file);
+	nautilus_file_set_metadata_list 
+		(file,
 		 NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_ADD,
 		 NAUTILUS_METADATA_SUBKEY_COMPONENT_IID,
 		 add_list);
-	nautilus_directory_set_metadata_list 
-		(directory,
+	nautilus_file_set_metadata_list 
+		(file,
 		 NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_REMOVE,
 		 NAUTILUS_METADATA_SUBKEY_COMPONENT_IID,
 		 remove_list);
@@ -967,10 +969,10 @@ nautilus_mime_extend_all_applications_for_uri (NautilusDirectory *directory,
 	GList *extras;
 	GList *final_applications;
 
-	nautilus_directory_wait_for_metadata (directory);
+	nautilus_file_wait_for_metadata (file);
 
-	metadata_application_ids = nautilus_directory_get_metadata_list 
-		(directory,
+	metadata_application_ids = nautilus_file_get_metadata_list 
+		(file,
 		 NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
 
@@ -978,8 +980,8 @@ nautilus_mime_extend_all_applications_for_uri (NautilusDirectory *directory,
 
 	final_applications = g_list_concat (g_list_copy (metadata_application_ids), extras);
 
-	nautilus_directory_set_metadata_list 
-		(directory,
+	nautilus_file_set_metadata_list 
+		(file,
 		 NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID,
 		 final_applications);
@@ -995,21 +997,21 @@ nautilus_mime_remove_from_all_applications_for_uri (NautilusDirectory *directory
 	GList *metadata_application_ids;
 	GList *final_applications;
 
-	nautilus_directory_wait_for_metadata (directory);
+	nautilus_file_wait_for_metadata (file);
 
-	metadata_application_ids = nautilus_directory_get_metadata_list 
-		(directory,
+	metadata_application_ids = nautilus_file_get_metadata_list 
+		(file,
 		 NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
-
+	
 	final_applications = str_list_difference (metadata_application_ids, applications);
-
-	nautilus_directory_set_metadata_list 
-		(directory,
+	
+	nautilus_file_set_metadata_list 
+		(file,
 		 NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID,
 		 final_applications);
-
+	
 	return GNOME_VFS_OK;
 }
 
@@ -1091,11 +1093,11 @@ uri_string_get_scheme (const char *uri_string)
  */
 
 static GList *
-get_explicit_content_view_iids_from_metafile (NautilusDirectory *directory)
+get_explicit_content_view_iids_from_metafile (NautilusFile *file)
 {
-        if (directory != NULL) {
-                return nautilus_directory_get_metadata_list 
-                        (directory,
+        if (file != NULL) {
+                return nautilus_file_get_metadata_list 
+                        (file,
 			 NAUTILUS_METADATA_KEY_EXPLICIT_COMPONENT,
 			 NAUTILUS_METADATA_SUBKEY_COMPONENT_IID);
         } else {

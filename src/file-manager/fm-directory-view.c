@@ -206,14 +206,10 @@ static void           unschedule_timeout_display_of_pending_files               
 static void           unschedule_display_of_pending_files                         (FMDirectoryView          *view);
 static void           disconnect_model_handlers                                   (FMDirectoryView          *view);
 static void           filtering_changed_callback                          	  (gpointer                  callback_data);
-static void           get_required_metadata_keys                                  (FMDirectoryView          *view,
-										   GList                   **directory_keys_result,
-										   GList                   **file_keys_result);
 static NautilusStringList * real_get_emblem_names_to_exclude                      (FMDirectoryView          *view);
 static void           start_renaming_item                   	                  (FMDirectoryView          *view,
 										   const char 		    *uri);
-static void           metadata_ready_callback                                     (NautilusDirectory        *directory,
-										   GList                    *files,
+static void           metadata_ready_callback                                     (NautilusFile             *file,
 										   gpointer                  callback_data);
 static void	      fm_directory_view_trash_state_changed_callback		  (NautilusTrashMonitor     *trash,
 										   gboolean 		     state,
@@ -304,7 +300,6 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	klass->create_background_context_menu_items = fm_directory_view_real_create_background_context_menu_items;
         klass->merge_menus = fm_directory_view_real_merge_menus;
         klass->update_menus = fm_directory_view_real_update_menus;
-	klass->get_required_metadata_keys = get_required_metadata_keys;
 	klass->get_emblem_names_to_exclude = real_get_emblem_names_to_exclude;
 	klass->start_renaming_item = start_renaming_item;
 	klass->is_read_only = fm_directory_view_real_is_read_only;
@@ -2485,13 +2480,12 @@ remove_custom_icon (gpointer file, gpointer callback_data)
 				    NULL, NULL);
 }
 
-static NautilusFile *
-get_directory_as_file (FMDirectoryView *view)
+NautilusFile *
+fm_directory_view_get_directory_as_file (FMDirectoryView *view)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-	return nautilus_directory_get_corresponding_file 
-		(fm_directory_view_get_model (view));
+	return view->details->directory_as_file; 
 }
 
 static gboolean
@@ -2502,8 +2496,8 @@ files_have_any_custom_images (GList *files)
 
 	for (p = files; p != NULL; p = p->next) {
 		uri = nautilus_file_get_metadata (NAUTILUS_FILE (p->data),
-						    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
-						    NULL);
+						  NAUTILUS_METADATA_KEY_CUSTOM_ICON,
+						  NULL);
 		if (uri != NULL) {
 			g_free (uri);
 			return TRUE;
@@ -2635,7 +2629,7 @@ compute_menu_item_info (FMDirectoryView *directory_view,
         	*return_sensitivity = files_have_any_custom_images (selection);
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_RESET_BACKGROUND) == 0) {
                 name = g_strdup (_("Reset _Background"));
-        	*return_sensitivity = nautilus_directory_background_is_set 
+        	*return_sensitivity = nautilus_file_background_is_set 
         		(fm_directory_view_get_background (directory_view));
         } else {
         	name = "";
@@ -3645,6 +3639,7 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	parameters->view = view;
 	parameters->file = file;
 	parameters->use_new_window = use_new_window;
+
 	nautilus_file_call_when_ready
 		(file, attributes, activate_callback, parameters);
 
@@ -3706,6 +3701,7 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 			    const char *uri)
 {
 	NautilusDirectory *old_model;
+	NautilusFile *old_file;
 	GList *attributes;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
@@ -3726,10 +3722,18 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 	view->details->model = nautilus_directory_get (uri);
 	nautilus_directory_unref (old_model);
 
+	old_file = view->details->directory_as_file;
+	view->details->directory_as_file = nautilus_directory_get_corresponding_file 
+		(fm_directory_view_get_model (view));
+	nautilus_file_unref (old_file);
+
 	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 
-	nautilus_directory_call_when_ready
-		(view->details->model,
+	/* FIXME: we also need to monitor here, in case external
+           forces change the directory's file metadata */
+
+	nautilus_file_call_when_ready
+		(view->details->directory_as_file,
 		 attributes,
 		 metadata_ready_callback, view);
 
@@ -3752,10 +3756,19 @@ finish_loading_uri (FMDirectoryView *view)
 	view->details->loading = TRUE;
 
 	/* Start loading. */
-	attributes = g_list_prepend (NULL,
-				     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
+
+	/* Monitor the things needed to get the right
+	 * icon. Also monitor a directory's item count because
+	 * the "size" attribute is based on that, and the file's metadata.
+	 */
+	attributes = nautilus_icon_factory_get_required_file_attributes ();
 	attributes = g_list_prepend (attributes,
-				     NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
+				     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
+	attributes = g_list_prepend (attributes, 
+				     NAUTILUS_FILE_ATTRIBUTE_METADATA);
+	attributes = g_list_prepend (attributes, 
+				     NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
+
 	nautilus_directory_file_monitor_add (view->details->model, view,
 					     attributes, TRUE);
 	g_list_free (attributes);
@@ -3778,8 +3791,7 @@ finish_loading_uri (FMDirectoryView *view)
 }
 
 static void
-metadata_ready_callback (NautilusDirectory *directory,
-			 GList *files,
+metadata_ready_callback (NautilusFile *file,
 			 gpointer callback_data)
 {
 	FMDirectoryView *view;
@@ -3787,35 +3799,9 @@ metadata_ready_callback (NautilusDirectory *directory,
 	view = callback_data;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	g_assert (view->details->model == directory);
+	g_assert (view->details->directory_as_file == file);
 
 	finish_loading_uri (view);
-}
-
-static void
-get_required_metadata_keys (FMDirectoryView *view,
-			    GList **directory_keys_result,
-			    GList **file_keys_result)
-{
-	GList *directory_keys;
-
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	g_assert (directory_keys_result != NULL);
-	g_assert (file_keys_result != NULL);
-
-	directory_keys = NULL;
-
-	/* This needs to be a list of all the metadata needed.
-	 * For now, it's kinda hard-coded. Later we might want
-	 * to gather this info from various sources.
-	 */
-	directory_keys = g_list_prepend (directory_keys,
-					 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR);
-	directory_keys = g_list_prepend (directory_keys,
-					 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE);
-
-	*directory_keys_result = directory_keys;
-	*file_keys_result = NULL;
 }
 
 NautilusStringList *
@@ -3873,9 +3859,9 @@ disconnect_model_handlers (FMDirectoryView *view)
 	disconnect_handler (view, &view->details->files_changed_handler_id);
 	if (view->details->model != NULL) {
 		nautilus_directory_file_monitor_remove (view->details->model, view);
-		nautilus_directory_cancel_callback (view->details->model,
-						    metadata_ready_callback,
-						    view);
+		nautilus_file_cancel_call_when_ready (view->details->directory_as_file,
+						      metadata_ready_callback,
+						      view);
 	}
 }
 
@@ -3970,16 +3956,7 @@ fm_directory_view_is_empty (FMDirectoryView *view)
 static gboolean
 fm_directory_view_real_is_read_only (FMDirectoryView *view)
 {
-	NautilusFile *directory_as_file;
-	gboolean result;
-
-	directory_as_file = get_directory_as_file (view);
-
-	result = !nautilus_file_can_write (directory_as_file);
-	
-	nautilus_file_unref (directory_as_file);
-
-	return result;
+	return !nautilus_file_can_write (fm_directory_view_get_directory_as_file (view));
 }
 
 gboolean
@@ -4005,16 +3982,7 @@ fm_directory_view_accepts_dragged_files (FMDirectoryView *view)
 static gboolean
 showing_trash_directory (FMDirectoryView *view)
 {
-	NautilusFile *directory_as_file;
-	gboolean result;
-
-	directory_as_file = get_directory_as_file (view);
-
-	result = nautilus_file_is_in_trash (directory_as_file);
-	
-	nautilus_file_unref (directory_as_file);
-
-	return result;
+	return nautilus_file_is_in_trash (fm_directory_view_get_directory_as_file (view));
 }
 
 static gboolean

@@ -521,7 +521,7 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 		 NULL, 
 		 position++,
 		 reset_desktop_background_menu_item_callback,
-		 nautilus_directory_background_is_set (fm_directory_view_get_background (view)));
+		 nautilus_file_background_is_set (fm_directory_view_get_background (view)));
 
 	fm_directory_view_insert_context_menu_item 
 		(view, menu, 
