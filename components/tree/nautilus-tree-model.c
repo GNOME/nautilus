@@ -555,7 +555,9 @@ report_node_added (NautilusTreeModel *model,
 	} else {
 		/* FIXME bugzilla.eazel.com 2413: 
 		 * reconstruct internals and report that it changed?? */
+#ifdef DEBUG_TREE
 		g_warning ("Added known node.");
+#endif
 	}
 }
 
