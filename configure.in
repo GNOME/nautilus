@@ -36,17 +36,16 @@ AC_ARG_ENABLE(profiler,
 ENABLE_PROFILER=1
 AC_DEFINE(ENABLE_PROFILER))
 
-AC_SUBST(ENABLE_PROFILER)
-AM_CONDITIONAL(ENABLE_PROFILER, test "x$ENABLE_PROFILER" = "x1")
-
 if test "x$ENABLE_PROFILER" = "x1"
 then
 	CFLAGS="-g -O -gdwarf-2 -finstrument-functions -D__NO_STRING_INLINES"
 	LDFLAGS="/gnome/PROFILE/lib/libprofiler.so -lpthread"
 fi
 
+AC_SUBST(ENABLE_PROFILER)
+AM_CONDITIONAL(ENABLE_PROFILER, test "x$ENABLE_PROFILER" = "x1")
 dnl ====================================
-dnl = end authenticate helper
+dnl = Profiling support
 dnl ====================================
 
 
@@ -728,5 +727,6 @@ dnl <= CFLAGS and LDFLAGS =>
 echo "
 CFLAGS                  : $CFLAGS
 LDFLAGS                 : $LDFLAGS"
+echo
 
 dnl <= End of configuration summary =>
