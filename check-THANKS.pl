@@ -57,7 +57,8 @@ my %email_map =
   (
    'alla@lysator.liu.se' => 'alexl@redhat.com',
    'almer1@dds.nl' => 'almer@gnome.org',
-   'andersca@codefactory.se' => 'andersca@gnu.org',
+   'andersca@codefactory.se' => 'andersca@gnome.org',
+   'andersca@gnu.org' => 'andersca@gnome.org',
    'andy@eazel.com' => 'andy@differnet.com',
    'arik@gnome.org' => 'arik@eazel.com',
    'at@ue-spacy.com' => 'tagoh@gnome.gr.jp',

@@ -1,3 +1,29 @@
+2001-07-24  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-directory-background.c:
+	(background_is_desktop): Remove eel_ prefix from name.
+	(background_get_desktop_background_window): Remove eel_ prefix
+	from name.
+
+	* libnautilus-private/nautilus-icon-factory.c:
+	(should_display_image_file_as_itself),
+	(nautilus_icon_factory_get_icon_for_file), (load_icon_from_path):
+	* libnautilus-private/nautilus-thumbnails.h:
+	* libnautilus-private/nautilus-thumbnails.c: (make_thumbnail_uri),
+	(nautilus_thumbnail_has_invalid_thumbnail),
+	(nautilus_get_thumbnail_uri),
+	(nautilus_update_thumbnail_file_renamed),
+	(nautilus_remove_thumbnail_for_file), (check_for_thumbnails),
+	(make_thumbnails), (nautilus_thumbnail_load_framed_image):
+	Remove anti-aliased parameter from most functions, since the
+	thumbnails are now the same either way.
+
+	* THANKS:
+	* check-THANKS.pl:
+	Some more THANKS updates.
+
+	* RPMs-README: No need for this any more.
+
 2001-07-24  Jens Finke <jens@gnome.org>
 	
 	* components/news/news_channels.xml: Updated KDE rdf location.

@@ -152,7 +152,7 @@ obfuscate_password (const char *escaped_uri)
 
 static char *
 make_thumbnail_uri (const char *image_uri, gboolean directory_only, gboolean use_local_directory,
-		    gboolean anti_aliased, gboolean create_parents_if_needed)
+		    gboolean create_parents_if_needed)
 {
 	char *thumbnail_uri, *thumbnail_path;
 	char *directory_name = g_strdup (image_uri);
@@ -253,7 +253,6 @@ first_file_more_recent (const char* file_uri, const char* other_file_uri)
 typedef struct {
 	char *thumbnail_uri;
 	gboolean is_local;
-	gboolean anti_aliased;
 	pid_t thumbnail_task;
 } NautilusThumbnailInfo;
 
@@ -289,8 +288,8 @@ make_invalid_thumbnail_uri (const char *thumbnail_uri)
  * file, which indicates that a previous thumbnailing attempt failed and
  * we should use the mime-type icon instead
  */
-gboolean nautilus_thumbnail_has_invalid_thumbnail (NautilusFile *file,
-						   gboolean anti_aliased)
+gboolean
+nautilus_thumbnail_has_invalid_thumbnail (NautilusFile *file)
 {
 	char *file_uri, *thumbnail_uri, *invalid_thumbnail_uri;
 	gboolean is_invalid;
@@ -298,7 +297,7 @@ gboolean nautilus_thumbnail_has_invalid_thumbnail (NautilusFile *file,
 	file_uri = nautilus_file_get_uri (file);
 	
 	
-	thumbnail_uri = make_thumbnail_uri (file_uri, FALSE, uri_is_local (file_uri), anti_aliased, TRUE);
+	thumbnail_uri = make_thumbnail_uri (file_uri, FALSE, uri_is_local (file_uri), TRUE);
 	invalid_thumbnail_uri = make_invalid_thumbnail_uri (thumbnail_uri);
 	
 	is_invalid = vfs_file_exists (invalid_thumbnail_uri);
@@ -316,7 +315,7 @@ gboolean nautilus_thumbnail_has_invalid_thumbnail (NautilusFile *file,
  */
 
 char *
-nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
+nautilus_get_thumbnail_uri (NautilusFile *file)
 {
 	GnomeVFSResult result;
 	char *thumbnail_uri;
@@ -328,7 +327,7 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 	
 	file_uri = nautilus_file_get_uri (file);
 		
-	thumbnail_uri = make_thumbnail_uri (file_uri, FALSE, uri_is_local (file_uri), anti_aliased, TRUE);
+	thumbnail_uri = make_thumbnail_uri (file_uri, FALSE, uri_is_local (file_uri), TRUE);
 		
 	/* if the thumbnail file already exists locally, simply return the uri */
 	
@@ -354,7 +353,7 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 	/* now try it globally */
 	if (!remake_thumbnail) {
 		g_free (thumbnail_uri);
-		thumbnail_uri = make_thumbnail_uri (file_uri, FALSE, FALSE, anti_aliased, TRUE);
+		thumbnail_uri = make_thumbnail_uri (file_uri, FALSE, FALSE, TRUE);
 		
 		/* if the thumbnail file already exists in the common area,  return that uri, */
 		/* the uri is guaranteed to be local */
@@ -379,7 +378,7 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
         /* make the thumbnail directory if necessary, at first try it locally */
 	g_free (thumbnail_uri);
 	local_flag = TRUE;
-	thumbnail_uri = make_thumbnail_uri (file_uri, TRUE, local_flag, anti_aliased, TRUE);
+	thumbnail_uri = make_thumbnail_uri (file_uri, TRUE, local_flag, TRUE);
 				
 	/* FIXME bugzilla.eazel.com 3137: more potentially losing
 	   synch I/O - this could be remote */
@@ -398,7 +397,7 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 	if (!can_write || (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILE_EXISTS)) {	
 		g_free (thumbnail_uri);
 		local_flag = FALSE;
-		thumbnail_uri = make_thumbnail_uri (file_uri, TRUE, local_flag, anti_aliased, TRUE);
+		thumbnail_uri = make_thumbnail_uri (file_uri, TRUE, local_flag, TRUE);
 		/* this is guaranteed to be local, so synch I/O can be tolerated here */
 		result = gnome_vfs_make_directory (thumbnail_uri, THUMBNAIL_DIR_PERMISSIONS);	
 	}
@@ -411,7 +410,6 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 		NautilusThumbnailInfo *info = g_new0 (NautilusThumbnailInfo, 1);
 		info->thumbnail_uri = file_uri;
 		info->is_local = local_flag;
-		info->anti_aliased = anti_aliased;
 		
 		if (g_list_find_custom (thumbnails, info, compare_thumbnail_info) == NULL) {
 			thumbnails = g_list_append (thumbnails, info);
@@ -429,18 +427,17 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 	return NULL;
 }
 
-static void 
-nautilus_update_thumbnail_file_renamed_one (const char *old_file_uri, const char *new_file_uri,
-	gboolean anti_aliased)
+void
+nautilus_update_thumbnail_file_renamed (const char *old_file_uri, const char *new_file_uri)
 {
 	gboolean is_local;
 	char *old_thumbnail_uri, *new_thumbnail_uri;
 	
 	is_local = uri_is_local (old_file_uri);
 	
-	old_thumbnail_uri = make_thumbnail_uri (old_file_uri, FALSE, is_local, anti_aliased, FALSE);
+	old_thumbnail_uri = make_thumbnail_uri (old_file_uri, FALSE, is_local, FALSE);
 	if (old_thumbnail_uri != NULL && vfs_file_exists (old_thumbnail_uri)) {
-		new_thumbnail_uri = make_thumbnail_uri (new_file_uri, FALSE, is_local, anti_aliased, FALSE);
+		new_thumbnail_uri = make_thumbnail_uri (new_file_uri, FALSE, is_local, FALSE);
 
 		g_assert (new_thumbnail_uri != NULL);
 
@@ -452,35 +449,17 @@ nautilus_update_thumbnail_file_renamed_one (const char *old_file_uri, const char
 	g_free (old_thumbnail_uri);
 }
 
-/* update the thumbnail after the thumbnailed file got renamed */
 void 
-nautilus_update_thumbnail_file_renamed (const char *old_file_uri, const char *new_file_uri)
-{
-	/* rename both the AA and non-AA thumbnails, if they exist */
-	nautilus_update_thumbnail_file_renamed_one (old_file_uri, new_file_uri, FALSE);
-	nautilus_update_thumbnail_file_renamed_one (old_file_uri, new_file_uri, TRUE);
-}
-
-static void 
-nautilus_remove_thumbnail_for_file_one (const char *old_file_uri, gboolean anti_aliased)
+nautilus_remove_thumbnail_for_file (const char *old_file_uri)
 {
 	char *thumbnail_uri;
 	
-	thumbnail_uri = make_thumbnail_uri (old_file_uri, FALSE, uri_is_local (old_file_uri), anti_aliased, FALSE);
+	thumbnail_uri = make_thumbnail_uri (old_file_uri, FALSE, uri_is_local (old_file_uri), FALSE);
 	if (thumbnail_uri != NULL && vfs_file_exists (thumbnail_uri)) {
 		gnome_vfs_unlink (thumbnail_uri);
 	}
 
 	g_free (thumbnail_uri);
-}
-
-/* remove the thumbnail after the thumbnailed file got deleted */
-void 
-nautilus_remove_thumbnail_for_file (const char *old_file_uri)
-{
-	/* remove both the AA and non-AA thumbnails, if they exist */
-	nautilus_remove_thumbnail_for_file_one (old_file_uri, FALSE);
-	nautilus_remove_thumbnail_for_file_one (old_file_uri, TRUE);
 }
 
 /* check_for_thumbnails is a utility that checks to see if the current thumbnail task has terminated.
@@ -507,8 +486,7 @@ check_for_thumbnails (void)
 		/* the thumbnail task has completed, so update the current entry from the list */
 		file = nautilus_file_get (info->thumbnail_uri);
 
-		current_thumbnail = make_thumbnail_uri (info->thumbnail_uri, FALSE, info->is_local,
-			info->anti_aliased, TRUE);
+		current_thumbnail = make_thumbnail_uri (info->thumbnail_uri, FALSE, info->is_local, TRUE);
 		
 		/* if a thumbnail wasn't successfully made, create a placeholder to flag that we tried */
 		need_update = TRUE;
@@ -576,8 +554,7 @@ make_thumbnails (gpointer data)
 			
 		/* First, compute the path name of the target thumbnail */
 		g_free (new_thumbnail_uri);
-		new_thumbnail_uri = make_thumbnail_uri (info->thumbnail_uri, FALSE, info->is_local,
-							 info->anti_aliased, TRUE);
+		new_thumbnail_uri = make_thumbnail_uri (info->thumbnail_uri, FALSE, info->is_local, TRUE);
 		
 		/* fork a task to make the thumbnail, using gdk-pixbuf to do the scaling */
 		if (!(info->thumbnail_task = fork())) {
@@ -711,7 +688,8 @@ pixbuf_is_framed (GdkPixbuf *pixbuf)
 /* routine to load an image from the passed-in path, and then embed it in
  * a frame if necessary
  */
-GdkPixbuf * nautilus_thumbnail_load_framed_image (const char *path, gboolean anti_aliased)
+GdkPixbuf *
+nautilus_thumbnail_load_framed_image (const char *path, gboolean anti_aliased_frame)
 {
 	GdkPixbuf *pixbuf, *framed_image, *thumbnail_image_frame;
 	char *frame_offset_str;
@@ -724,7 +702,7 @@ GdkPixbuf * nautilus_thumbnail_load_framed_image (const char *path, gboolean ant
 	
 	/* the pixbuf isn't framed (i.e., it was made with newer code), so we must embed it in it's frame now */
 	
-	thumbnail_image_frame = nautilus_icon_factory_get_thumbnail_frame (anti_aliased);
+	thumbnail_image_frame = nautilus_icon_factory_get_thumbnail_frame (anti_aliased_frame);
 	
 	frame_offset_str = nautilus_theme_get_theme_data ("thumbnails", "FRAME_OFFSETS");
 	if (frame_offset_str != NULL) {
@@ -743,4 +721,3 @@ GdkPixbuf * nautilus_thumbnail_load_framed_image (const char *path, gboolean ant
 	gdk_pixbuf_unref (pixbuf);	
 	return framed_image;
 }
- 

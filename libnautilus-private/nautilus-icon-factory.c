@@ -1422,7 +1422,7 @@ should_display_image_file_as_itself (NautilusFile *file, gboolean optimized_for_
 	/* see if there's a proxy thumbnail to indicate that thumbnailing
 	 * failed, in which case we shouldn't use the thumbnail.
 	 */
-	if (nautilus_thumbnail_has_invalid_thumbnail (file, optimized_for_aa)) {
+	if (nautilus_thumbnail_has_invalid_thumbnail (file)) {
 		return FALSE;
 	}
 	
@@ -1529,7 +1529,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 				uri = nautilus_file_get_uri (file);
 			} else if (strstr (file_uri, "/.thumbnails/") == NULL
 				   && file_size < cached_thumbnail_limit) {
-				uri = nautilus_get_thumbnail_uri (file, TRUE);
+				uri = nautilus_get_thumbnail_uri (file);
 				if (uri == NULL) {
 					icon_name = g_strdup (ICON_NAME_THUMBNAIL_LOADING);
 				}
@@ -1893,7 +1893,7 @@ load_icon_from_path (const char *path,
 	}
 	
 	/* if it's a thumbnail, frame it if necessary */
-	if (strstr (path, ".thumbnails") != NULL) {
+	if (strstr (path, "/.thumbnails/") != NULL) {
 		return nautilus_thumbnail_load_framed_image (path, optimized_for_aa);
 	}
 	

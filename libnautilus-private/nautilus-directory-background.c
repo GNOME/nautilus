@@ -114,7 +114,7 @@ nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *ico
 }
 
 static gboolean
-eel_background_is_desktop (EelBackground *background)
+background_is_desktop (EelBackground *background)
 {
 	/* == works because we're carful to always use the same string.
 	 */
@@ -131,7 +131,7 @@ static const char *nautilus_file_background_peek_theme_source (EelBackground *ba
 }
 
 static GdkWindow *
-eel_background_get_desktop_background_window (EelBackground *background)
+background_get_desktop_background_window (EelBackground *background)
 {
 	gpointer layout;
 
@@ -672,7 +672,7 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
 
 	set_root_pixmap (pixmap);
 
-	background_window = eel_background_get_desktop_background_window (background);
+	background_window = background_get_desktop_background_window (background);
 	if (background_window != NULL) {
 		gdk_window_set_back_pixmap (background_window, pixmap, FALSE);
 	}
@@ -769,7 +769,7 @@ background_changed_callback (EelBackground *background,
 	color = eel_background_get_color (background);
 	image = eel_background_get_image_uri (background);
 
-	if (eel_background_is_desktop (background)) {
+	if (background_is_desktop (background)) {
 		nautilus_file_background_write_desktop_settings (color, image, eel_background_get_image_placement (background));
 	} else {
 	        /* Block the other handler while we are writing metadata so it doesn't
@@ -798,7 +798,7 @@ background_changed_callback (EelBackground *background,
 	g_free (color);
 	g_free (image);
 	
-	if (eel_background_is_desktop (background)) {
+	if (background_is_desktop (background)) {
 		nautilus_file_update_desktop_pixmaps (background);
 	}
 }
@@ -816,7 +816,7 @@ initialize_background_from_settings (NautilusFile *file,
         g_assert (gtk_object_get_data (GTK_OBJECT (background), "eel_background_file")
                   == file);
 
-	if (eel_background_is_desktop (background)) {
+	if (background_is_desktop (background)) {
 		nautilus_file_background_read_desktop_settings (&color, &image, &placement);
 	} else {
 		color = nautilus_file_get_metadata (file,
@@ -862,7 +862,7 @@ saved_settings_changed_callback (NautilusFile *file,
 {
 	initialize_background_from_settings (file, background);
 	
-	if (eel_background_is_desktop (background)) {
+	if (background_is_desktop (background)) {
 		nautilus_file_update_desktop_pixmaps (background);
 	}
 }
@@ -886,7 +886,7 @@ static void
 background_reset_callback (EelBackground *background,
                            NautilusFile       *file)
 {
-	if (eel_background_is_desktop (background)) {
+	if (background_is_desktop (background)) {
 		nautilus_file_background_write_desktop_default_settings ();
 	} else {
 	        /* Block the other handler while we are writing metadata so it doesn't
