@@ -42,6 +42,7 @@ kill_sound_if_necessary (void)
 	
 	/* fetch the sound state */
 	sound_process = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE);
+	
 	/* if there was a sound playing, kill it */
 	if (sound_process > 0) {
 		kill (-sound_process, SIGTERM);
@@ -54,7 +55,22 @@ kill_sound_if_necessary (void)
 void
 nautilus_sound_initialize (void)
 {
+ 	int open_result;
+ 	
  	nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE, 0);
+ 	
+ 	/* Check and see if the system itself can play sound. We do this by attmepting
+ 	 * to open esd. Save the result of this as a preference.  This value only
+ 	 * means that the system has audio out capabilities and should not be used as
+ 	 * a way to check the current audio output state.
+ 	 */
+	open_result = esd_audio_open ();
+	if (open_result < 0) {
+ 		nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_HAS_AUDIO_OUT, 0);
+	} else {
+		nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_HAS_AUDIO_OUT, 1);
+		esd_audio_close ();
+	}
 }
 
 /* if there is a sound registered, kill it, and register the empty sound */
@@ -79,23 +95,22 @@ nautilus_sound_register_sound (pid_t sound_process)
 	nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE, sound_process);
 }
 
+/* This function does two things. First it checks to see a sound is currently playing.  If it is,
+ * it returns the process id of the external application playing the sound. If no sound is playing,
+ * it return the value set in nautilus_sound_initialize() when system audio output capabilites
+ * were queried.
+ */
 gboolean
 nautilus_sound_can_play_sound (void)
 {
-	int open_result, sound_process;
-
+	int sound_process;
+	
 	/* first see if there's already one in progress; if so, return true */
 	sound_process = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE);
 	if (sound_process > 0) {
 		return TRUE;
 	}
 	
-	open_result = esd_audio_open ();
-	if (open_result < 0) {
-		return FALSE;
-	}
-	
-	esd_audio_close ();
-	return TRUE;
+	/* Now check and see if system has audio out capabilites */
+	return nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_HAS_AUDIO_OUT);
 }
-

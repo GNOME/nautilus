@@ -35,8 +35,11 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_ICON_CAPTIONS			"icon_view/captions"
 /* How wide the sidebar is (or how wide it will be when expanded) */
 #define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"preferences/sidebar_width"
+
 /* Keep track of the sound playing process */
 #define NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE		"preferences/sound_state"
+/* Does the system have audio output capability */
+#define NAUTILUS_PREFERENCES_HAS_AUDIO_OUT			"preferences/audio_out"
 
 /* Window options */
 #define NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW			"preferences/window_always_new"

@@ -1327,7 +1327,6 @@ band_select_ended_callback (NautilusIconContainer *container,
 
 /* here's the timer task that actually plays the file using mpg123. */
 /* FIXME bugzilla.eazel.com 1258: we should get the application from our mime-type stuff */
-
 static int
 play_file (gpointer callback_data)
 {
@@ -1376,7 +1375,7 @@ play_file (gpointer callback_data)
 /* this routine is invoked from the preview signal handler to preview a sound file.  We
    want to wait a suitable delay until we actually do it, so set up a timer task to actually
    start playing.  If we move out before the task files, we remove it. */
-   
+
 static void
 preview_sound (NautilusFile *file, gboolean start_flag)
 {		
@@ -1391,7 +1390,6 @@ preview_sound (NautilusFile *file, gboolean start_flag)
 	}
 }
 
-
 static gboolean
 should_preview_sound (NautilusFile *file) {
 	int preview_mode;
@@ -1401,7 +1399,7 @@ should_preview_sound (NautilusFile *file) {
 	if (preview_mode == NAUTILUS_SPEED_TRADEOFF_NEVER) {
 		return FALSE;
 	}
-	/* the followinf is disabled until we can preview remote sounds, which we currently can't do */
+	/* the following is disabled until we can preview remote sounds, which we currently can't do */
 	/*
 	if (preview_mode == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
 		return TRUE;

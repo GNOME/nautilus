@@ -1,5 +1,29 @@
 2001-02-24  Gene Z. Ragan  <gzr@eazel.com>
 
+	reviewed by: George Lebl <jirka@5z.com>
+
+	Fixed bug 3546, Nautilus fails if MP3 previews in rapid succession
+	
+	Fixed bug 5105, Preview sound file during MP3 playback
+	-> "/dev/dsp: Device or resource busy"
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Add a preference that that tracks the result of an intial
+	audio output capability check during nautilus_sound_initialize().
+	
+	* libnautilus-extensions/nautilus-sound.c:
+	(nautilus_sound_initialize):
+	Check audio output capability and save the result of the check in
+	a preference.
+	
+	(nautilus_sound_can_play_sound):
+	Check saved preference instead of opening and closing esd as a
+	way to check if sound output is available.  The constant opening
+	and closing creating a latency problem withing esd and was
+	affecting the audio preview mechanism.
+	
+2001-02-24  Gene Z. Ragan  <gzr@eazel.com>
+
 	reviewed by: Seth Nickell  <seth@eazel.com>
 	
 	Fixed bug 6944, "Move here"/"Copy here"/"Link here" popup
