@@ -1146,17 +1146,24 @@ static void
 layout_changed_callback (NautilusIconContainer *container,
 			 FMIconView *icon_view)
 {
+	NautilusDirectory *directory;
+
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 	g_assert (container == get_icon_container (icon_view));
 
-	fm_icon_view_set_directory_auto_layout
-		(icon_view,
-		 fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)),
-		 nautilus_icon_container_is_auto_layout (container));
-	fm_icon_view_set_directory_tighter_layout
-		(icon_view,
-		 fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)),
-		 nautilus_icon_container_is_tighter_layout (container));
+
+	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
+
+	if (directory != NULL) {
+		fm_icon_view_set_directory_auto_layout
+			(icon_view,
+			 directory,
+			 nautilus_icon_container_is_auto_layout (container));
+		fm_icon_view_set_directory_tighter_layout
+			(icon_view,
+			 directory,
+			 nautilus_icon_container_is_tighter_layout (container));
+	}
 
 	update_layout_menus (icon_view);
 }
