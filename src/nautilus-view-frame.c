@@ -249,7 +249,11 @@ nautilus_view_destroy_client(NautilusView *view)
     view->component_class->destroy(view, &ev);
   }
 
-  bonobo_object_unref (view->view_frame); view->view_frame = NULL;
+  /* FIXME: This should be bonobo_object_unref, but there is a circular
+   * reference that prevents it from working.
+   */
+  bonobo_object_destroy (view->view_frame);
+  view->view_frame = NULL;
 
   view->component_class = NULL;
   view->component_data = NULL;

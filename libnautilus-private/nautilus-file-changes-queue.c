@@ -35,8 +35,6 @@
 #define MUTEX_UNLOCK(a)
 #endif
 
-static NautilusFileChangesQueue *file_changes_queue;
-
 static void
 nautilus_file_change_free (NautilusFileChange *change)
 {
@@ -59,6 +57,8 @@ nautilus_file_changes_queue_new (void)
 static NautilusFileChangesQueue *
 nautilus_file_changes_queue_get (void)
 {
+	static NautilusFileChangesQueue *file_changes_queue;
+
 	if (file_changes_queue == NULL)
 		file_changes_queue = nautilus_file_changes_queue_new();
 
@@ -230,7 +230,7 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 	 * arrived.
 	 */
 	for (chunk_count = 0; ; chunk_count++) {
-		change = nautilus_file_changes_queue_get_change (file_changes_queue);
+		change = nautilus_file_changes_queue_get_change (queue);
 
 		if (change == NULL
 			/* no changes left */

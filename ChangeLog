@@ -1,3 +1,26 @@
+2000-04-28  Darin Adler  <darin@eazel.com>
+
+	This little check-in fixes the last April bug and maybe one or
+	two leaks in Nautilus.
+
+	* src/ntl-view.c (nautilus_view_destroy_client): To work around
+	the circular reference problem in Bonobo, change a call to
+	bonobo_object_unref to bonobo_object_destroy. This fixes the leak
+	of the entire viewer each time.
+
+	* src/file-manager/fm-directory-view.c (fm_directory_view_destroy):
+	The FMDirectoryView does not own its view_frame. This is confusing
+	and needs some reorganization, but it should not unref. It's actually
+	the view_frame that owns the directory view despite the fact that
+	it's created by the directory view and the directory view holds a
+	reference to it! This bug prevented Maciej from doing the workaround
+	the last time he tried it.
+
+	* libnautilus-extensions/nautilus-file-changes-queue.c
+	(nautilus_file_changes_queue_get),
+	(nautilus_file_changes_consume_changes):
+	A small cleanup. The global variable was getting in the way.
+	
 2000-04-27  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/ntl-main.c (main): Fix a dumbass mistake.  Take out some

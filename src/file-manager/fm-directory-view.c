@@ -535,8 +535,6 @@ fm_directory_view_destroy (GtkObject *object)
 
 	free_file_by_uri_map (view);
 
-	bonobo_object_unref (BONOBO_OBJECT (view->details->view_frame));
-
 	g_free (view->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
