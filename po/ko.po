@@ -3,10 +3,10 @@
 # Young-Ho, Cha <ganadist@chollian.net>, 2000, 2001, 2002
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 2.1.5\n"
-"POT-Creation-Date: 2003-01-22 18:31-0500\n"
-"PO-Revision-Date: 2003-01-05 17:28+0900\n"
-"Last-Translator: Young-Ho, Cha <ganadist@mizi.com>\n"
+"Project-Id-Version: nautilus 2.2.0.1\n"
+"POT-Creation-Date: 2003-01-25 23:48+0900\n"
+"PO-Revision-Date: 2003-01-25 14:51+0900\n"
+"Last-Translator: Young-Ho, Cha <ganadist@chollian.net>\n"
 "Language-Team: GTP Korean <gnome-kr-translation@gnome.or.kr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -90,7 +90,7 @@ msgstr "이름 바꾸기"
 
 #: components/emblem/nautilus-emblem-view.c:497
 msgid "Add Emblems..."
-msgstr "새 꼬리표 더함..."
+msgstr "새 꼬리표 더하기..."
 
 #: components/emblem/nautilus-emblem-view.c:513
 msgid ""
@@ -243,11 +243,11 @@ msgstr "방문기록"
 
 #: components/history/Nautilus_View_history.server.in.in.h:2
 msgid "History side pane"
-msgstr "방문기록 가장자리막대 패널"
+msgstr "방문기록 가장자리 창"
 
 #: components/history/Nautilus_View_history.server.in.in.h:3
 msgid "History side pane for Nautilus"
-msgstr "노틸러스의 방문기록 가장자리막대 패널"
+msgstr "노틸러스의 방문기록 가장자리 창"
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:1
 msgid "Image"
@@ -288,12 +288,11 @@ msgstr "수첩"
 
 #: components/notes/Nautilus_View_notes.server.in.in.h:2
 msgid "Notes side pane"
-msgstr "수첩 가장자리 패널"
+msgstr "수첩 가장자리 창"
 
 #: components/notes/Nautilus_View_notes.server.in.in.h:3
-#, fuzzy
 msgid "Notes side pane for Nautilus"
-msgstr "노틸러스용 수첩 가장자리막대 패널"
+msgstr "노틸러스 가장자리 창"
 
 #: components/text/Nautilus_View_text.server.in.in.h:1
 msgid "Factory for text view"
@@ -415,7 +414,7 @@ msgstr "그래픽 상태 보기"
 
 #: components/tree/Nautilus_View_tree.server.in.in.h:1
 msgid "Nautilus Tree side pane"
-msgstr "노틸러스 트리 가장자리 패널"
+msgstr "노틸러스 트리 가장자리 창"
 
 #: components/tree/Nautilus_View_tree.server.in.in.h:2
 msgid "Nautilus Tree view"
@@ -1224,7 +1223,7 @@ msgstr "여기로 복사(_C)"
 
 #: libnautilus-private/nautilus-dnd.c:575
 msgid "_Link here"
-msgstr "여기로 링크(_L)"
+msgstr "여기로 연결(_L)"
 
 #: libnautilus-private/nautilus-dnd.c:580
 msgid "Set as _Background"
@@ -1411,7 +1410,7 @@ msgid ""
 "\n"
 "There is not enough space on the destination."
 msgstr ""
-"\"%s\"을(를) 링크 하는동안 오류.\n"
+"\"%s\"을(를) 연결하는동안 오류.\n"
 "\n"
 "목표에 남은 공간이 없습니다."
 
@@ -1466,7 +1465,7 @@ msgid ""
 "\n"
 "You do not have permissions to write to this folder."
 msgstr ""
-"\"%s\"에 링크를 만드는 중 오류.\n"
+"\"%s\"에 연결을 만드는 중 오류.\n"
 "\n"
 "이 폴더에 쓸 수 있는 허가권을 가지고 있지 않습니다."
 
@@ -1477,7 +1476,7 @@ msgid ""
 "\n"
 "The destination disk is read-only."
 msgstr ""
-"\"%s\"에 링크를 만드는동안 오류.\n"
+"\"%s\"에 연결을 만드는동안 오류.\n"
 "\n"
 "목표디스크가 읽기 전용입니다."
 
@@ -1510,7 +1509,7 @@ msgid ""
 "\n"
 "Would you like to continue?"
 msgstr ""
-"\"%2$s\"에 링크를 만드는 중 \"%1$s\"오류.\n"
+"\"%2$s\"에 연결을 만드는 중 \"%1$s\"오류.\n"
 "\n"
 "계속 진행 하겠습니까?"
 
@@ -1554,7 +1553,7 @@ msgid ""
 "\n"
 "Would you like to continue?"
 msgstr ""
-"링크 하는동안 \"%s\"오류.\n"
+"연결하는 동안 \"%s\"오류.\n"
 "\n"
 "계속 진행 하겠습니까?"
 
@@ -1579,7 +1578,7 @@ msgstr "옮기는 중 오류"
 
 #: libnautilus-private/nautilus-file-operations.c:898
 msgid "Error while linking."
-msgstr "링크중 오류"
+msgstr "연결하는 중 오류"
 
 #: libnautilus-private/nautilus-file-operations.c:903
 msgid "Error while deleting."
@@ -1663,13 +1662,13 @@ msgstr "모두 바꾸기"
 #: libnautilus-private/nautilus-file.c:4285
 #, c-format
 msgid "link to %s"
-msgstr "%s(으)로 링크"
+msgstr "%s(으)로 연결"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1140
 #, c-format
 msgid "another link to %s"
-msgstr "%s(으)로 다른 링크"
+msgstr "%s(으)로 다른 연결"
 
 #. Localizers: Feel free to leave out the "st" suffix
 #. * if there's no way to do that nicely for a
@@ -1834,25 +1833,25 @@ msgstr "옮김 완료"
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:1897
 msgid "Creating links to files"
-msgstr "파일 링크 작성중"
+msgstr "파일 연결 작성중"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1899
 msgid "Files linked:"
-msgstr "파일 링크됨:"
+msgstr "파일 연결됨:"
 
 #. localizers: label prepended to the name of the current file linked
 #: libnautilus-private/nautilus-file-operations.c:1901
 msgid "Linking"
-msgstr "링크하는 중"
+msgstr "연결하는 중"
 
 #: libnautilus-private/nautilus-file-operations.c:1902
 msgid "Preparing to Create Links..."
-msgstr "링크 만들 준비 중"
+msgstr "연결할 준비 중"
 
 #: libnautilus-private/nautilus-file-operations.c:1903
 msgid "Finishing Creating Links..."
-msgstr "링크 만들 완료"
+msgstr "연결을 만들 완료"
 
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:1909
@@ -2497,11 +2496,11 @@ msgstr ""
 
 #: libnautilus-private/nautilus-file.c:4279
 msgid "link"
-msgstr "링크"
+msgstr "연결"
 
 #: libnautilus-private/nautilus-file.c:4299
 msgid "link (broken)"
-msgstr "링크 (깨어짐)"
+msgstr "연결 (깨어짐)"
 
 #: libnautilus-private/nautilus-file.c:5366
 #: libnautilus-private/nautilus-trash-directory.c:383
@@ -2979,12 +2978,12 @@ msgstr "\"%s\"용 메뉴"
 #: libnautilus-private/nautilus-program-chooser.c:402
 #, c-format
 msgid "Is in the menu for \"%s\" items."
-msgstr "\"%s\" 항목을 위한 메뉴."
+msgstr "\"%s\" 항목의 메뉴."
 
 #: libnautilus-private/nautilus-program-chooser.c:405
 #, c-format
 msgid "Is in the menu for all \"%s\" items."
-msgstr "모든 \"%s\" 항목을 위한 메뉴."
+msgstr "모든 \"%s\" 항목의 메뉴."
 
 #: libnautilus-private/nautilus-program-chooser.c:408
 #, c-format
@@ -3724,14 +3723,12 @@ msgid "Search List"
 msgstr "찾기 목록"
 
 #: src/Nautilus_shell.server.in.h:20
-#, fuzzy
 msgid "View as Icons"
-msgstr "아이콘으로 보기(_I)"
+msgstr "아이콘으로 보기"
 
 #: src/Nautilus_shell.server.in.h:21
-#, fuzzy
 msgid "View as List"
-msgstr "목록으로 보기(_L)"
+msgstr "목록으로 보기"
 
 #: src/Nautilus_shell.server.in.h:22
 msgid "View as _Icons"
@@ -4085,12 +4082,12 @@ msgstr "지움(_D)"
 
 #: src/file-manager/fm-directory-view.c:4722
 msgid "Ma_ke Links"
-msgstr "링크 만들기(_K)"
+msgstr "연결하기(_K)"
 
 #: src/file-manager/fm-directory-view.c:4723
 #: src/file-manager/nautilus-directory-view-ui.xml.h:14
 msgid "Ma_ke Link"
-msgstr "링크 만들기(_K)"
+msgstr "연결하기(_K)"
 
 #: src/file-manager/fm-directory-view.c:4736
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
@@ -4944,7 +4941,7 @@ msgstr "이 폴더안에 새로운 빈 폴더를 만듭니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:6
 msgid "Create a symbolic link for each selected item"
-msgstr "각각 선택한 항목에 대한 심벌릭 링크를 만듭니다"
+msgstr "각각 선택한 항목을 다른 파일로 연결합니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:8
 msgid "D_uplicate"
@@ -5566,9 +5563,8 @@ msgstr "다른 프로그램으로 열기"
 
 #. FIXME: We don't use spaces to pad labels!
 #: src/nautilus-information-panel.c:1018
-#, fuzzy
 msgid "Empty _Trash"
-msgstr "휴지통 비우기"
+msgstr "휴지통 비우기(_T)"
 
 #: src/nautilus-location-bar.c:62
 msgid "Go To:"
@@ -5664,7 +5660,7 @@ msgstr "지우기(_R)..."
 
 #: src/nautilus-property-browser.c:407
 msgid "_Add new..."
-msgstr "새 것 더함(_A)..."
+msgstr "새 것 더하기(_A)..."
 
 #: src/nautilus-property-browser.c:907
 #, c-format
@@ -5769,15 +5765,15 @@ msgstr "지우기 취소(_A)"
 
 #: src/nautilus-property-browser.c:2050
 msgid "_Add a New Pattern..."
-msgstr "새 무늬 더함(_A)..."
+msgstr "새 무늬 더하기(_A)..."
 
 #: src/nautilus-property-browser.c:2053
 msgid "_Add a New Color..."
-msgstr "새 색상 더함(_A)..."
+msgstr "새 색상 더하기(_A)..."
 
 #: src/nautilus-property-browser.c:2056
 msgid "_Add a New Emblem..."
-msgstr "새 꼬리표 더함(_A)..."
+msgstr "새 꼬리표 더하기(_A)..."
 
 #: src/nautilus-property-browser.c:2079
 msgid "Click on a pattern to remove it"
@@ -6031,7 +6027,7 @@ msgstr "창의 상태막대의 보기여부를 바꿉니다"
 
 #: src/nautilus-shell-ui.xml.h:7
 msgid "Change the visibility of this window's toolbar"
-msgstr "창의 도구막대의 보기여부를 바꿉니다"
+msgstr "창의 도구모음의 보기여부를 바꿉니다"
 
 #: src/nautilus-shell-ui.xml.h:8
 msgid "Choose a view for the current location, or modify the set of views"
@@ -6207,7 +6203,7 @@ msgstr "정보(_A)"
 
 #: src/nautilus-shell-ui.xml.h:53
 msgid "_Add Bookmark"
-msgstr "책갈피 더함(_A)"
+msgstr "책갈피 더하기(_A)"
 
 #: src/nautilus-shell-ui.xml.h:54
 msgid "_Back"
@@ -6283,7 +6279,7 @@ msgstr "프로파일 리셋(_R)"
 
 #: src/nautilus-shell-ui.xml.h:75
 msgid "_Side Pane"
-msgstr "가장자리막대 패널(_S)"
+msgstr "가장자리 창(_S)"
 
 #: src/nautilus-shell-ui.xml.h:76
 msgid "_Start Here"
@@ -6303,7 +6299,7 @@ msgstr "프로파일 마침(_S)"
 
 #: src/nautilus-shell-ui.xml.h:80
 msgid "_Toolbar"
-msgstr "도구막대(_T)"
+msgstr "도구모음(_T)"
 
 #: src/nautilus-shell-ui.xml.h:81
 msgid "_Trash"
@@ -6386,8 +6382,8 @@ msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
 msgstr ""
-"가장자리막대 패널중 하나가 오류를 발생하여 계속할 수 없습니다. 불행하게도 어"
-"느것인지 알 수 없습니다."
+"가장자리 창중 하나가 오류를 발생하여 계속할 수 없습니다. 불행하게도 어느것인"
+"지 알 수 없습니다."
 
 #: src/nautilus-window-manage-views.c:1056
 #, c-format
@@ -6395,12 +6391,12 @@ msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
 "happening, you might want to turn this panel off."
 msgstr ""
-"%s 가장자리막대 패널이 오류를 발생하여 계속할 수 없습니다. 계속 발생된다면 "
-"이 패널을 꺼두는 편이 좋습니다."
+"%s 가장자리 창이 오류를 발생하여 계속할 수 없습니다. 계속 발생된다면 이 패널"
+"을 꺼두는 편이 좋습니다."
 
 #: src/nautilus-window-manage-views.c:1061
 msgid "Sidebar Panel Failed"
-msgstr "가장자리막대 패널 실패"
+msgstr "가장자리 창 실패"
 
 #: src/nautilus-window-manage-views.c:1304
 #, c-format
