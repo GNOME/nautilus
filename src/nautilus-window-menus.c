@@ -1139,9 +1139,10 @@ nautilus_window_initialize_bookmarks_menu (NautilusWindow *window)
 	/* Recreate static & dynamic part of menu if preference about
 	 * showing static bookmarks changes.
 	 */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
-					   nautilus_window_bookmarks_preference_changed_callback,
-					   window);
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
+						       nautilus_window_bookmarks_preference_changed_callback,
+						       window,
+						       GTK_OBJECT (window));
 		
 	/* Recreate dynamic part of menu if bookmark list changes */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (get_bookmark_list ()),
@@ -1179,33 +1180,51 @@ nautilus_window_initialize_go_menu (NautilusWindow *window)
 }
 
 static void
-add_user_level_menu_item (NautilusWindow *window, 
-			  const char *menu_path, 
-			  guint user_level)
+update_user_level_menu_item (NautilusWindow *window, 
+			     const char *menu_path, 
+			     guint item_user_level)
 {
-
+	
         guint current_user_level;
         char *icon_name;
-
+	
 	if (window->details->shell_ui == NULL) {
 		return;
 	}
-
+	
 	current_user_level = nautilus_preferences_get_user_level ();
 
-	icon_name = get_user_level_icon_name (user_level, current_user_level == user_level);
-
+	icon_name = get_user_level_icon_name (item_user_level, current_user_level == item_user_level);
 
 	nautilus_window_ui_freeze (window);
 
 	nautilus_bonobo_set_icon (window->details->shell_ui,
 				  menu_path,
 				  icon_name);
-	
 
 	g_free (icon_name);
 
 	nautilus_window_ui_thaw (window);
+}
+
+static void
+user_level_changed_callback (gpointer callback_data)
+{
+	NautilusWindow *window;
+
+	g_return_if_fail (NAUTILUS_IS_WINDOW (callback_data));
+
+	window = NAUTILUS_WINDOW (callback_data);
+
+	update_user_level_menu_item (window,
+				     NAUTILUS_MENU_PATH_NOVICE_ITEM, 
+				     NAUTILUS_USER_LEVEL_NOVICE);
+	update_user_level_menu_item (window,
+				     NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM, 
+				     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+	update_user_level_menu_item (window,
+				     NAUTILUS_MENU_PATH_EXPERT_ITEM, 
+				     NAUTILUS_USER_LEVEL_ADVANCED);
 }
 
 /**
@@ -1280,14 +1299,16 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 
         nautilus_window_update_show_hide_menu_items (window);
 
-	add_user_level_menu_item (window, NAUTILUS_MENU_PATH_NOVICE_ITEM, 
-				  NAUTILUS_USER_LEVEL_NOVICE);
-	add_user_level_menu_item (window, NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM, 
-				  NAUTILUS_USER_LEVEL_INTERMEDIATE);
-	add_user_level_menu_item (window, NAUTILUS_MENU_PATH_EXPERT_ITEM, 
-				  NAUTILUS_USER_LEVEL_ADVANCED);
-	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
+	/* Keep track of user level changes to update the user level menu item icons */
+	nautilus_preferences_add_callback_while_alive ("user_level",
+						       user_level_changed_callback,
+						       window,
+						       GTK_OBJECT (window));
+	/* Update the user level menu items for the first time */
+	user_level_changed_callback (window);
 
+	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
+	
 #ifndef ENABLE_PROFILER
 	nautilus_bonobo_set_hidden (window->details->shell_ui, NAUTILUS_MENU_PATH_PROFILER, TRUE);
 #endif

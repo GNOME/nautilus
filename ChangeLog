@@ -1,5 +1,21 @@
 2001-03-31  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* src/nautilus-window-menus.c:
+	(nautilus_window_initialize_bookmarks_menu): Use _while_alive
+	for the preferences callback to avoid potential problem.
+	(update_user_level_menu_item), (user_level_changed_callback),
+	(nautilus_window_initialize_menus_part_1):
+	Fix bug 6615 - Holding open Preferences menu blocks user-level
+	menu item changes.
+
+	The user level menu items where getting out of whack if more that
+	1 NautilusWindow existed at the time of a user level change.  The
+	fix was to keep track of user level changes and update the menu
+	items when needed.  Also a tiny function renaming to make its
+	function clearer.
+	
+2001-03-31  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* configure.in:
 	Fix bug 7952 - configure.in reference to mozilla source is wrong.
 	Update the Url to reflect reality.
