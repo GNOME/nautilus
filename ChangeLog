@@ -1,3 +1,18 @@
+2001-01-19  John Sullivan  <sullivan@eazel.com>
+
+	Ramiro sent me this patch, which I tweaked slightly.
+
+	Fix for bug 5792 (Sidebar panel choices visible at beginner
+	user level, but shouldn't be)
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	add visible_user_level field to known_sidebar_panels struct.
+	Set this field appropriately for each of the 4 known sidebar
+	panels. Remove the 5th known sidebar panel since it was an
+	accidental duplication of the 2nd one.
+	(global_preferences_install_sidebar_panel_defaults): Set the
+	visible user level when installing default values.
+
 2001-01-19  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Ramiro Estrugo <ramiro@eazel.com>
