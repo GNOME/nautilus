@@ -1,3 +1,21 @@
+2000-08-28  John Sullivan  <sullivan@eazel.com>
+
+	Added more bug numbers to FIXMEs. 187 to go. This time I
+	didn't check in until I was sure I hadn't broken the build.
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(allow_metafile), (set_up_request_by_file_attributes),
+	(activation_uri_nautilus_link_read_callback),
+	(activation_uri_gmc_link_read_callback):
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	* libnautilus-extensions/nautilus-file.c: (nautilus_file_rename),
+	(nautilus_file_compare_for_sort), (nautilus_file_can_get_owner),
+	(nautilus_file_set_owner), (nautilus_file_can_get_group),
+	(nautilus_file_get_group_name), (nautilus_file_set_group),
+	(nautilus_file_get_owner_as_string), (nautilus_file_is_in_trash),
+	(nautilus_file_mark_gone), (nautilus_file_dump):
+
 2000-08-28  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/file-manager/fm-properties-window.c: (attach_owner_menu):

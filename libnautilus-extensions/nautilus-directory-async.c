@@ -412,7 +412,8 @@ allow_metafile (NautilusDirectory *directory)
 	 * hardcode the schemes that are good for metadata instead of
 	 * the schemes that are bad for it.
 	 */
-	/* FIXME: We need to handle this in a better way. Perhaps a
+	/* FIXME bugzilla.eazel.com 2434: 
+	 * We need to handle this in a better way. Perhaps a
 	 * better way can wait until we have support for metadata
 	 * access inside gnome-vfs.
 	 */
@@ -744,7 +745,7 @@ set_up_request_by_file_attributes (Request *request,
 		request->activation_uri = TRUE;
 	}
 
-	/* FIXME:
+	/* FIXME bugzilla.eazel.com 2435:
 	 * Some file attributes are really pieces of metadata.
 	 * This is a confusing/broken design, since other metadata
 	 * pieces are handled separately from file attributes. There
@@ -2280,7 +2281,7 @@ activation_uri_nautilus_link_read_callback (GnomeVFSResult result,
 
 	/* Handle the case where we read the Nautilus link. */
 	if (result != GNOME_VFS_OK) {
-		/* FIXME: We should report this error to the user. */
+		/* FIXME bugzilla.eazel.com 2433: We should report this error to the user. */
 		g_free (file_contents);
 		uri = NULL;
 	} else {
@@ -2308,7 +2309,7 @@ activation_uri_gmc_link_read_callback (GnomeVFSResult result,
 
 	/* Handle the case where we read the GMC link. */
 	if (result != GNOME_VFS_OK || !nautilus_str_has_prefix (file_contents, "URL: ")) {
-		/* FIXME: We should report this error to the user. */
+		/* FIXME bugzilla.eazel.com 2433: We should report this error to the user. */
 		uri = NULL;
 	} else {
 		/* Make sure we don't run off the end of the buffer. */

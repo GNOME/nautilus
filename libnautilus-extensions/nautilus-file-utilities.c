@@ -421,7 +421,8 @@ nautilus_is_remote_uri (const char *uri)
 }
 
 
-/* FIXME: Callers just use this and dereference so we core dump if
+/* FIXME bugzilla.eazel.com 2423: 
+ * Callers just use this and dereference so we core dump if
  * pixmaps are missing. That is lame.
  */
 char *

@@ -880,7 +880,8 @@ nautilus_file_rename (NautilusFile *file,
 	op = operation_new (file, callback, callback_data);
 	op->new_name = g_strdup (new_name);
 
-	/* FIXME: This call could use gnome_vfs_async_set_file_info
+	/* FIXME bugzilla.eazel.com 2432: 
+	 * This call could use gnome_vfs_async_set_file_info
 	 * instead and it might be simpler.
 	 */
 	directory_uri = nautilus_directory_get_uri (file->details->directory);
@@ -1420,14 +1421,16 @@ nautilus_file_compare_for_sort (NautilusFile *file_1,
 			compare = g_strcasecmp (file_1->details->name,
 						file_2->details->name);
 		} else {
-			/* FIXME: We do have a name for file 2 to
+			/* FIXME bugzilla.eazel.com 2426: 
+			 * We do have a name for file 2 to
                          * compare with, so we can probably do better
                          * than this for all cases.
 			 */
 			compare = -1;
 		}
 	} else if (file_2->details->info == NULL) {
-		/* FIXME: We do have a name for file 1 to compare
+		/* FIXME bugzilla.eazel.com 2426: 
+		 * We do have a name for file 1 to compare
                  * with, so we can probably do better than this for
 		 * all cases.
 		 */
@@ -2134,7 +2137,7 @@ nautilus_file_can_get_owner (NautilusFile *file)
 	 * Can we trust the uid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
-	return !info_missing (file, 0 /* FIXME: GNOME_VFS_FILE_INFO_FIELDS_UID */);
+	return !info_missing (file, 0 /* FIXME bugzilla.eazel.com 644: GNOME_VFS_FILE_INFO_FIELDS_UID */);
 }
 
 /**
@@ -2289,7 +2292,8 @@ nautilus_file_set_owner (NautilusFile *file,
 		return;
 	}
 
-	/* FIXME: We can't assume that the gid is already good/read,
+	/* FIXME bugzilla.eazel.com 2427: 
+	 * We can't assume that the gid is already good/read,
 	 * can we? Maybe we have to precede the set_file_info with a
 	 * get_file_info to fix this?
 	 */
@@ -2350,7 +2354,7 @@ nautilus_file_can_get_group (NautilusFile *file)
 	 * Can we trust the gid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
-	return !info_missing (file, 0 /* FIXME: GNOME_VFS_FILE_INFO_FIELDS_GID */);
+	return !info_missing (file, 0 /* FIXME bugzilla.eazel.com 644: GNOME_VFS_FILE_INFO_FIELDS_GID */);
 }
 
 /**
@@ -2370,7 +2374,7 @@ nautilus_file_get_group_name (NautilusFile *file)
 	struct group *group_info;
 
 	/* Before we have info on a file, the owner is unknown. */
-	if (info_missing (file, 0 /* FIXME: GNOME_VFS_FILE_INFO_FIELDS_GID */)) {
+	if (info_missing (file, 0 /* FIXME bugzilla.eazel.com 644: GNOME_VFS_FILE_INFO_FIELDS_GID */)) {
 		return NULL;
 	}
 
@@ -2589,7 +2593,7 @@ nautilus_file_set_group (NautilusFile *file,
 		return;
 	}
 
-	/* FIXME: We can't assume that the gid is already good/read,
+	/* FIXME bugzilla.eazel.com 2427: We can't assume that the gid is already good/read,
 	 * can we? Maybe we have to precede the set_file_info with a
 	 * get_file_info to fix this?
 	 */
@@ -2699,7 +2703,7 @@ nautilus_file_get_owner_as_string (NautilusFile *file, gboolean include_real_nam
 	 * Can we trust the uid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
-	if (info_missing (file, 0 /* FIXME: GNOME_VFS_FILE_INFO_FIELDS_UID */)) {
+	if (info_missing (file, 0 /* FIXME bugzilla.eazel.com 644: GNOME_VFS_FILE_INFO_FIELDS_UID */)) {
 		return NULL;
 	}
 
@@ -3401,7 +3405,8 @@ nautilus_file_is_in_trash (NautilusFile *file)
 		return FALSE;
 	}
 
-	/* FIXME: Is it OK to do I/O here? Don't we need to keep a
+	/* FIXME bugzilla.eazel.com 2428: 
+	 * Is it OK to do I/O here? Don't we need to keep a
 	 * cached list of trash directories somewhere to guarantee we
 	 * don't do sync. I/O in this case?
 	 */
@@ -3518,7 +3523,8 @@ nautilus_file_mark_gone (NautilusFile *file)
 	update_links_if_target (file);
 	
 	/* Drop away all the old file information, but keep the name. */
-	/* FIXME: Maybe we can get rid of the name too eventually, but
+	/* FIXME bugzilla.eazel.com 2429: 
+	 * Maybe we can get rid of the name too eventually, but
 	 * for now that would probably require too many if statements
 	 * everywhere anyone deals with the name. Maybe we can give it
 	 * a hard-coded "<deleted>" name or something.
@@ -3739,9 +3745,9 @@ nautilus_file_dump (NautilusFile *file)
 		g_print("kind: %s \n", file_kind);
 		if (file->details->info->type == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK) {
 			g_print("link to %s \n", file->details->info->symlink_name);
-			/* FIXME: add following of symlinks here */
+			/* FIXME bugzilla.eazel.com 2430: add following of symlinks here */
 		}
-		/* FIXME: add permissions and other useful stuff here */
+		/* FIXME bugzilla.eazel.com 2431: add permissions and other useful stuff here */
 	}
 	g_free (uri);
 }

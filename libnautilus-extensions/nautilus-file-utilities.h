@@ -41,7 +41,8 @@ char *                  nautilus_make_uri_from_input        (const char         
 char *                  nautilus_make_uri_canonical         (const char                *uri);
 
 
-/* FIXME: This is the same as gnome-libs g_concat_dir_and_file except
+/* FIXME bugzilla.eazel.com 2424: 
+ * This is the same as gnome-libs g_concat_dir_and_file except
  * for handling path == NULL.
  */
 char *                  nautilus_make_path                  (const char                *path,
@@ -67,7 +68,8 @@ gboolean                nautilus_is_remote_uri              (const char         
  * Otherwise similar to gnome_pixmap_file in that it checks to see if the file
  * exists and returns NULL if it doesn't.
  */
-/* FIXME: We might not need this once we get on gnome-libs 2.0 which handles
+/* FIXME bugzilla.eazel.com 2425: 
+ * We might not need this once we get on gnome-libs 2.0 which handles
  * gnome_pixmap_file better, using GNOME_PATH.
  */
 char *                  nautilus_pixmap_file                (const char                *partial_path);
