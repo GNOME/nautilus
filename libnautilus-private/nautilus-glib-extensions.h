@@ -110,18 +110,18 @@ void        nautilus_g_hash_table_safe_for_each       (GHashTable	*hash_table,
 						       gpointer		 callback_data);
 gboolean    nautilus_g_hash_table_remove_deep_custom  (GHashTable	*hash_table,
 						       gconstpointer	 key,
-						       GFreeFunc	 key_free_func,
+						       GFunc		 key_free_func,
 						       gpointer		 key_free_data,
-						       GFreeFunc	 value_free_func,
+						       GFunc		 value_free_func,
 						       gpointer		 value_free_data);
 gboolean    nautilus_g_hash_table_remove_deep	      (GHashTable	*hash_table,
 						       gconstpointer	 key);
-void	    nautilus_g_hash_table_free_deep_custom    (GHashTable	*hash_table,
-						       GFreeFunc	 key_free_func,
+void	    nautilus_g_hash_table_destroy_deep_custom (GHashTable	*hash_table,
+						       GFunc		 key_free_func,
 						       gpointer		 key_free_data,
-						       GFreeFunc	 value_free_func,
+						       GFunc		 value_free_func,
 						       gpointer		 value_free_data);
-void	    nautilus_g_hash_table_free_deep	      (GHashTable	*hash_table);
+void	    nautilus_g_hash_table_destroy_deep	      (GHashTable	*hash_table);
 
 
 /* GPtrArray functions */

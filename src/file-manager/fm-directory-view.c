@@ -1489,7 +1489,7 @@ static void
 debuting_uri_data_free (DebutingUriData *data)
 {
 	if (data != NULL) {
-		nautilus_g_hash_table_free_deep (data->debuting_uris);
+		nautilus_g_hash_table_destroy_deep (data->debuting_uris);
 		nautilus_g_list_free_deep_custom (data->added_files, (GFunc) gtk_object_unref, NULL);
 		g_free (data);
 	}

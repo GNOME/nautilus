@@ -1,5 +1,19 @@
 2000-10-24  Michael Engber  <engber@eazel.com>
 
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(handle_xfer_ok):
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_g_hash_table_remove_deep_custom),
+	(nautilus_g_hash_table_remove_deep),
+	(nautilus_g_hash_table_destroy_deep_helper),
+	(nautilus_g_hash_table_destroy_deep_custom),
+	(nautilus_g_hash_table_destroy_deep):
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	* src/file-manager/fm-directory-view.c: (debuting_uri_data_free):
+	Fix embarrassing check-in sloppiness
+
+2000-10-24  Michael Engber  <engber@eazel.com>
+
 	* libnautilus-extensions/nautilus-glib-extensions.c:
 	(nautilus_g_hash_table_remove_deep_custom),
 	(nautilus_g_hash_table_remove_deep),

@@ -334,7 +334,9 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 			/* done_callback now owns (will free) debuting_uris
 			 */
 		} else {
-			nautilus_g_hash_table_free_deep (xfer_info->debuting_uris);
+			if (xfer_info->debuting_uris != NULL) {
+				nautilus_g_hash_table_destroy_deep (xfer_info->debuting_uris);
+			}
 		}
 		g_free (xfer_info);
 		return TRUE;
