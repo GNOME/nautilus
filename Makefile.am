@@ -30,7 +30,8 @@ Applications_DATA = nautilus.desktop
 dist-hook: nautilus.spec
 	cp nautilus.spec $(distdir)
 
-EXTRA_DIST=nautilus-clean.sh nautilus.desktop nautilus.png
+EXTRA_DIST=nautilus-clean.sh nautilus.desktop nautilus.png \
+		ChangeLog-20000414 ChangeLog-20000625 
 
 install-data-hook: nautilus-clean.sh
 	$(mkinstalldirs) $(DESTDIR)/$(prefix)/bin

@@ -23,6 +23,7 @@
 #ifndef NAUTILUS_AUTHENTICATE_H
 #define NAUTILUS_AUTHENTICATE_H
 
+#include <stdlib.h>
 #include <glib.h>
 
 gboolean nautilus_authenticate_fork         (const char *command,

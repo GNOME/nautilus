@@ -233,11 +233,12 @@ AC_SUBST(VFS_CFLAGS)
 AC_SUBST(VFS_LIBS)
 AC_SUBST(IDL_CFLAGS)
 
+AM_PATH_OAF(0.3.0)
+
 dnl GnomeVFS can compile without OAF support, Nautilus depends on OAF.
 dnl Make USING_OAF be defined
- 
+
 AC_DEFINE(USING_OAF)
-AM_PATH_OAF(0.3.0)
 
 AM_PATH_GCONF(0.5.0,,,gconf-gtk)
 
@@ -289,9 +290,7 @@ AC_SUBST(LIBWWW_CFLAGS)
 AC_CHECK_LIB(z, gzopen, [Z_LIBS=-lz
 AC_SUBST(Z_LIBS)], AC_MSG_ERROR([*** zlib is required]))
 
-dnl GtkHTML checking
-dnl Currently we cannot do any version check as GtkHTML has not
-dnl been released yet.
+dnl <= check for GtkHTML =>
 AC_MSG_CHECKING(for GtkHTML)
 if gnome-config --libs gtkhtml > /dev/null 2>&1; then
     AC_MSG_RESULT(yes)
@@ -449,3 +448,39 @@ po/Makefile.in
 intl/Makefile
 test/Makefile
 ])
+
+echo "<= Nautilus configuration summary : =>"
+dnl <= Rpm-view integrated? =>
+grep -sq HAVE_RPM config.h
+case $? in
+0)
+echo "
+RPMview component	: YES"
+;;
+*)
+echo "
+RPMview component	: NO"
+;;
+esac
+dnl <= Mozilla component integrated? =>
+case $found_mozilla in
+t*)
+echo "
+Mozilla component	: YES"
+;;
+*)
+echo "
+Mozilla component	: NO"
+;;
+esac
+case "X$EAZEL_SERVICES" in
+X1)
+echo "
+Eazel services		: YES"
+;;
+*)
+echo "
+Eazel services          : NO"
+;;
+esac
+echo "<=                                  =>"
