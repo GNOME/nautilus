@@ -1,5 +1,12 @@
 2000-09-05  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-icon-factory.c: (embed_text):
+	Fix a bug I just introduced drawing embedded text in the non
+	smooth case.  We need to make sure the pixbuf we feed to the text
+	rendering code has an alpha channel.
+	
+2000-09-05  Ramiro Estrugo  <ramiro@eazel.com>
+
 	More work on task 1588.
 
 	* libnautilus-extensions/nautilus-icon-factory.c: (embed_text):
