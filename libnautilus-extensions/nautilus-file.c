@@ -32,6 +32,7 @@
 #include <libgnome/gnome-i18n.h>
 
 #include "nautilus-glib-extensions.h"
+#include "nautilus-lib-self-check-functions.h"
 #include "nautilus-string.h"
 #include "nautilus-directory-private.h"
 
@@ -158,10 +159,10 @@ nautilus_file_unref (NautilusFile *file)
 	}
 
 	/* No references left, so it's time to release our hold on the directory. */
-	gtk_object_unref (GTK_OBJECT (file->directory));
 	if (file->is_gone) {
 		nautilus_file_free (file);
 	}
+	gtk_object_unref (GTK_OBJECT (file->directory));
 }
 
 void
@@ -1086,7 +1087,7 @@ nautilus_file_list_ref (GList *file_list)
 void
 nautilus_file_list_unref (GList *file_list)
 {
-	g_list_foreach (file_list, (GFunc) nautilus_file_ref, NULL);
+	g_list_foreach (file_list, (GFunc) nautilus_file_unref, NULL);
 }
 
 /**
@@ -1101,3 +1102,80 @@ nautilus_file_list_free (GList *file_list)
 	nautilus_file_list_unref (file_list);
 	g_list_free (file_list);
 }
+
+#if !defined (NAUTILUS_OMIT_SELF_CHECK)
+
+void
+nautilus_self_check_file (void)
+{
+	NautilusFile *file_1;
+	NautilusFile *file_2;
+	GList *list;
+
+        /* refcount checks */
+
+        NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_number_outstanding (), 0);
+
+	file_1 = nautilus_file_get ("file:///home/");
+
+	NAUTILUS_CHECK_INTEGER_RESULT (file_1->ref_count, 1);
+	NAUTILUS_CHECK_INTEGER_RESULT (GTK_OBJECT (file_1->directory)->ref_count, 1);
+        NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_number_outstanding (), 1);
+
+	nautilus_file_unref (file_1);
+
+        NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_number_outstanding (), 0);
+	
+	file_1 = nautilus_file_get ("file:///etc");
+	file_2 = nautilus_file_get ("file:///usr");
+
+        list = NULL;    /* let's be explicit here */
+        list = g_list_append (list, file_1);
+        list = g_list_append (list, file_2);
+
+        nautilus_file_list_ref (list);
+        
+	NAUTILUS_CHECK_INTEGER_RESULT (file_1->ref_count, 2);
+	NAUTILUS_CHECK_INTEGER_RESULT (file_2->ref_count, 2);
+
+	nautilus_file_list_unref (list);
+        
+	NAUTILUS_CHECK_INTEGER_RESULT (file_1->ref_count, 1);
+	NAUTILUS_CHECK_INTEGER_RESULT (file_2->ref_count, 1);
+
+	nautilus_file_list_free (list);
+
+        NAUTILUS_CHECK_INTEGER_RESULT (nautilus_directory_number_outstanding (), 0);
+	
+
+        /* name checks */
+	file_1 = nautilus_file_get ("file:///home/");
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "home");
+
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get ("file:///home/") == file_1, TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get ("file:///home") == file_1, TRUE);
+
+	nautilus_file_unref (file_1);
+	nautilus_file_unref (file_1);
+
+	file_1 = nautilus_file_get ("file:///home");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "home");
+	nautilus_file_unref (file_1);
+
+	/* sorting */
+	file_1 = nautilus_file_get ("file:///etc");
+	file_2 = nautilus_file_get ("file:///usr");
+
+	NAUTILUS_CHECK_INTEGER_RESULT (file_1->ref_count, 1);
+	NAUTILUS_CHECK_INTEGER_RESULT (file_2->ref_count, 1);
+
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_2, NAUTILUS_FILE_SORT_BY_NAME) < 0, TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort_reversed (file_1, file_2, NAUTILUS_FILE_SORT_BY_NAME) > 0, TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME) == 0, TRUE);
+
+	nautilus_file_unref (file_1);
+	nautilus_file_unref (file_2);
+}
+
+#endif /* !NAUTILUS_OMIT_SELF_CHECK */

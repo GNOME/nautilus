@@ -76,3 +76,6 @@ void          nautilus_directory_files_changed          (NautilusDirectory *dire
 void          nautilus_directory_files_removed          (NautilusDirectory *directory,
 							 GList             *removed_files);
 void          nautilus_directory_request_write_metafile (NautilusDirectory *directory);
+
+/* debugging functions */
+int           nautilus_directory_number_outstanding     (void);

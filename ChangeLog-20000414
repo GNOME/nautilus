@@ -1,3 +1,25 @@
+2000-03-09  John Sullivan <sullivan@eazel.com>
+
+        * libnautilus/nautilus-directory-private.h:
+        (nautilus_directory_number_outstanding): Added prototype for this
+        debugging function.
+        * libnautilus/nautilus-directory.c:
+        (nautilus_directory_number_outstanding): New debugging function,
+        used in NautilusFile self-checks.
+        (nautilus_self_check_directory): Pulled out the NautilusFile tests
+        to move them to nautilus-file.c.
+        * libnautilus/nautilus-file.c:
+        (nautilus_file_unref): Move gtk_object_unref after
+        nautilus_file_free call. Darin noticed this bug while reading
+        the code with me.
+        (nautilus_file_list_unref): Made this unref instead of ref. Oops!
+        This was causing NautilusDirectory objects never to go away after
+        visiting a directory; now they're destroyed when you leave.
+        (nautilus_self_check_file): New function, some of this was moved
+        over from nautilus-directory.c, and I added some ref-count checks.
+        * libnautilus/nautilus-lib-self-check-functions.h:
+        Included nautilus_self_check_file in list of self-check functions.
+
 2000-03-09  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus/nautilus-icons-view-icon-item.c:
