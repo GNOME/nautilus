@@ -96,7 +96,6 @@ static gboolean fm_icon_view_get_directory_tighter_layout (FMIconView *icon_view
 static void	fm_icon_view_set_directory_tighter_layout(FMIconView *icon_view,
 							  NautilusDirectory *directory,
 							  gboolean tighter_layout);
-
 static gboolean	real_supports_auto_layout 		 (FMIconView 	    *view);
 static void	set_sort_criterion_by_path 		 (FMIconView 	    *icon_view, 
 							  const char 	    *path);
@@ -106,6 +105,7 @@ static void	sort_direction_callback 		 (gpointer 	     ignored,
 							  gpointer 	     user_data);
 static void	manual_layout_callback 		 	 (gpointer 	     ignored, 
 							  gpointer 	     user_data);
+static void	preview_sound 				 (NautilusFile *file, gboolean start_flag);
 static void	update_layout_menus 			 (FMIconView 	    *view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconView, fm_icon_view, FM_TYPE_DIRECTORY_VIEW);
@@ -197,6 +197,9 @@ fm_icon_view_destroy (GtkObject *object)
         if (icon_view->details->react_to_icon_change_idle_id != 0) {
                 gtk_idle_remove (icon_view->details->react_to_icon_change_idle_id);
         }
+
+	/* kill any sound preview process that is ongoing */
+	preview_sound (NULL, FALSE);
 
 	nautilus_file_list_free (icon_view->details->icons_not_positioned);
 	g_free (icon_view->details);
@@ -1118,6 +1121,9 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	directory = fm_directory_view_get_model (view);
 	icon_container = GTK_WIDGET (get_icon_container (icon_view));
 
+	/* kill any sound preview process that is ongoing */
+	preview_sound (NULL, FALSE);
+	
 	if (FM_IS_DESKTOP_ICON_VIEW (view)) {
 		nautilus_connect_desktop_background_to_directory_metadata (icon_container, directory);
 	} else {

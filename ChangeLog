@@ -1,3 +1,11 @@
+2000-09-22  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_destroy),
+	(fm_icon_view_begin_loading):
+	fixed bug 1038, sound file being previewed doesn't stop playing
+	when the view switches, by explicitly terminating the sound process
+	when the icon view is destroyed or a new directory is loaded.
+	
 2000-09-22  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/login/nautilus-view/nautilus-login-view.oafin
