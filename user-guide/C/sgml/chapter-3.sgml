@@ -39,7 +39,7 @@
 	There are several ways to access Eazel Services. 
 	When starting Nautilus for the first time, the user 
 	is asked if they wish to learn about, sign up, or 
-	login to Services (Figure 1). 
+	log on to Services (Figure 1). 
 	</para>
 
 
@@ -57,38 +57,57 @@
 	On a routine basis, Services can be reached by 
 	simply clicking the Services icon on the Nautilus 
 	toolbar. Alternatively, they can be reached 
-	through any web browser.
+	through any web browser, from www.eazel.com.
 	</para>
 
 	</sect1>
 
 	<sect1 id="ch3-registration">
-	<title>Registration</title>
+	<title>Registration and Login</title>
 
 	<para>
-	Registration is not required for all services, but is 
-	for some. In this preview release, registration is 
-	not required to use the software catalog; users 
-	may even download RPMs without registering. 
-	However, registration is required to use the Eazel 
-	Software Installer (which has added function-
-	ality), and for Eazel Online Storage.
+	Registration--for this preview release--is not required for the software catalog, but is for online storage.
+	</para
+
+	<para>
+	Registration is the same from Nautilus or from any browser.  The screen is divided into three sections: the required fields to open an account (Figure 2); the optional personal profile section, and the optional computing environment section.
+	</para>
+
+	<figure>
+	<title>Required Account Information in Registration</title>
+	<graphic fileref="ch3-account-info.png" scale="50"></graphic>
+	</figure>
+
+
+	<para>
+	The user completes the process by activating their account with the instructions sent in a validation e-mail.  The instructions are sent almost instantaneously.
 	</para>
 
 	<para>
-	Beside the ability to use the Installer, registration 
-	also brings the benefit of being able to download 
-	the latest version of Nautilus. Other advantages 
-	will follow.
+	Logging in can be accomplished either from the greeting page which follows account validation, from clicking services in Nautilus, or from the Eazel website, www.eazel.com.
 	</para>
 
 	<para>
-	Registration is a relatively painless procedure, but 
-	the user must complete the process by activating 
-	their account with the instructions sent in a 
-	validation e-mail. The instructions are sent almost 
-	instantaneously.
+	The Welcome screen, Figure 3, is organized into three basic sections.  The top section has links for reaching the Eazel support page, for changing user preferences, and for logging out.
 	</para>
+
+	<para>
+	The support page has a number of FAQs and other help features.  The preferences link allows the user to change or update personal and computer preferences, and even passwords.
+	<figure>
+	<title>The Welcome Screen, Showing Online Storage and Software Catalog</title>
+	<graphic fileref="ch3-welcome-screen.png" scale="50"></graphic>
+	</figure>
+	
+
+	<para>
+	The second section down is devoted to Online Storage, and has links to the user’s private and public storage folder.
+	</para>
+
+	<para>
+	The third section allows the user to either browse or search the Eazel software catalog.
+	</para>
+
+
 
 	</sect1>
 
@@ -98,9 +117,9 @@
 	<para>
 	The Software Catalog is an on-line catalog of 
 	Linux software, both Open Source and 
-	commercial, that have made it through Eazel's 
-	quality assurance process, and are guaranteed to 
-	install and work properly on your system.
+	commercial, that have made it through Eazel’s 
+	quality assurance process, and that is guaranteed to 
+	install and work properly--in this preview release--on a Redhat 6.0 to 6.2 system.
 	</para>
 
 	<para>
@@ -108,29 +127,34 @@
 	</para>
 
 	<para>
-	The user is able to select software in a variety of 
-	ways, from functional categories, from special 
-	Eazel recommendations, or from distributions. In 
-	addition, there is a search feature, and a sort 
-	feature for easier browsing.
+	The user is able to select software by either browsing the online catalog by category, or by searching for a specific package with a keyword.  Both catalog browsing and searching can be further refined by specifying a Redhat distribution version.
 	</para>
 
 	<para>
-	Each selected software package has three 
-	available views, each providing more detail than 
-	the last. The default view will be determined by 
-	the user setting (basic, intermediate, or hacker)
-	which the user selected during registration or 
-	within Nautilus.
+	When browsing, the user is presented with thirteen different categories, from Communications to Text Editors.  Selecting the first, for example, opens a separate screen dedicated to communications software (Figure 4), with a list of package titles and short summaries.
 	</para>
 	
+	<figure>
+	<title>Package Titles and Summaries</title>
+	<graphic fileref="ch3-package-titles.png" scale="50"></graphic>
+	</figure>
+
+
+	<para>
+	Selecting the package title takes the user to a further screen, giving more complete information, including the version and release number, the source and vendor, a more complete description, package size, etc.
+	</para>
+
+	<para>
+	Pressing the download button sets up a download of the selected package--in RPM format--to the user’s home directory.
+	</para>
+
 	</sect1>
 
 	<sect1 id="ch3-installer">
 	<title>Eazel Software Installer</title>
 
 	<para>
-	The Installer takes into account your distribution, 
+	The Software Installer, which functions when accessing Services through Nautilus, takes into account your distribution, 
 	version, and current system, and installs not only 
 	the chosen programs, but also automatically 
 	installs the necessary dependencies.
@@ -138,7 +162,7 @@
 	
 	<para>
 	This is all accomplished with the help of a client-
-	side inventory program built into Nautilus,
+	side inventory program built into Nautilus--
 	making Nautilus an integral part of Eazel 
 	Services.
 	</para>
@@ -149,32 +173,31 @@
 	<title>Eazel Online Storage</title>
 
 	<para>
-	This service provides remote backup. Files are 
-	backed up and saved on Eazel's servers, but 
-	management is exactly the same as if the backup 
-	were on the users own local drive.
-	</para>
-	
-	<para>
-	Initially, Online Storage will offer each user a 
-	free 25MB of storage space, to grow as the system 
-	matures.
+	Each user is provided initially with 25MB of free storage space, in two folders, private and public.
 	</para>
 
 	<para>
 	Online Storage is more than just a one-directory 
-	file repository. Users can create online folders:
+	file repository. Users can create online folders--
 	even entire directory trees. They can upload and 
 	download files, and Nautilus users can copy or 
 	move entire folders from their own system to 
-	Eazel Online-Line Storage, and back again.
+	Eazel Online Storage, and back again.
 	</para>
 	
 	<para>
-	There is also provision for sharing stored files 
-	with other users.
+	Clicking on either the Private or Public folder icon takes the user to the Online Storage screen (Figure 5).
 	</para>
 	
+	<figure>
+	<title>The Online Storage Screen</title>
+	<graphic fileref="ch3-online-storage.png" scale="50"></graphic>
+	</figure>
+
+	<para>
+	From here, the user can see immediately which files they have in storage, and how much space they have left available.  They may also choose to create a sub-folder, to upload or download files, or to copy, move, or delete selected items.
+
+
 	</sect1>
 	
 
