@@ -121,7 +121,7 @@ encoding_entry_list_peek_nth_entry (guint n)
 		return NULL;
 	}
 
-	return static_cast<const Entry *>(g_list_nth_data (encoding_entry_list, n));
+	return static_cast<const Entry *>(static_cast<Entry *>(g_list_nth_data (encoding_entry_list, n)));
 }
 
 static guint
