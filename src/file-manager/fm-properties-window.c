@@ -277,7 +277,6 @@ get_target_file_for_original_file (NautilusFile *file)
 			target_file = nautilus_file_get (uri_to_display);
 			g_free (uri_to_display);
 		}
-		gnome_vfs_volume_unref (volume);
 	} else if (nautilus_file_has_drive (file)) {
 		drive = nautilus_file_get_drive (file);
 		if (drive != NULL) {
@@ -285,7 +284,6 @@ get_target_file_for_original_file (NautilusFile *file)
 			target_file = nautilus_file_get (uri_to_display);
 			g_free (uri_to_display);
 		}
-		gnome_vfs_drive_unref (drive);
 	} else if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
 		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
 		
