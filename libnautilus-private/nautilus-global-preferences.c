@@ -310,6 +310,12 @@ global_preferences_register_for_ui ()
 				       "Help Search",
 				       NAUTILUS_PREFERENCE_BOOLEAN,
 				       (gconstpointer) FALSE);
+	/* miscellaneous */
+	
+	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME,
+				       "Show entire file file",
+				       NAUTILUS_PREFERENCE_BOOLEAN,
+				       (gconstpointer) FALSE);	
 }
 
 static void
@@ -320,7 +326,8 @@ user_level_changed_callback (gpointer user_data)
 
 	gboolean		show_hidden_files = FALSE;
 	gboolean		use_real_home = TRUE;
-
+	gboolean		show_real_file_name = FALSE;
+	
 	const char		*user_main_directory;
 
 	user_level = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_USER_LEVEL,
@@ -331,22 +338,28 @@ user_level_changed_callback (gpointer user_data)
 	case NAUTILUS_USER_LEVEL_NOVICE:
 		show_hidden_files = FALSE;
 		use_real_home = FALSE;
+		show_real_file_name = FALSE;
 		break;
 
 	case NAUTILUS_USER_LEVEL_INTERMEDIATE: 
 		show_hidden_files = FALSE;
 		use_real_home = TRUE;
+		show_real_file_name = FALSE;
 		break;
 		
 	case NAUTILUS_USER_LEVEL_HACKER:
 	default:
 		show_hidden_files = TRUE;
 		use_real_home = TRUE;
+		show_real_file_name = TRUE;
 		break;
 	}
 
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 					  show_hidden_files);
+	
+	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME,
+					  show_real_file_name);
 
 	/* FIXME: This call needs to be spanked to conform.  Should return a strduped string */
 	user_main_directory = nautilus_user_main_directory ();

@@ -31,6 +31,8 @@
 #include "nautilus-metadata.h"
 #include "nautilus-string.h"
 #include "nautilus-xml-extensions.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-widgets/nautilus-preferences.h"
 
 /* given a uri, returns TRUE if it's a link file */
 
@@ -106,10 +108,12 @@ nautilus_link_get_link_uri(const char *link_file_uri)
 }
 
 /* strips the suffix from the passed in string if it's a link file */
-/* FIXME bugzilla.eazel.com 683: don't do this at expert user levels */
 char*
 nautilus_link_get_display_name(char* link_file_name)
 {
+	if (nautilus_preferences_get_boolean(NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME, FALSE))
+		return link_file_name;
+		
 	if (link_file_name && nautilus_str_has_suffix(link_file_name, LINK_SUFFIX)) {
 		char *suffix_pos = strstr(link_file_name, LINK_SUFFIX);
 		if (suffix_pos)

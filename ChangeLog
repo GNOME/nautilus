@@ -1,3 +1,14 @@
+2000-04-26  Andy Hertzfeld <andy@eazel.com>
+
+	fixed bug #683, experts shouldn't get suffix stripped from link file
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	added preference for show_real_file_names
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	made the user level code set show_real_file_names appropriately
+	* libnautilus-extensions/nautilus-link.c:
+	use the above preference to control suffix stripping
+	 
 2000-04-26  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory.c
