@@ -5,10 +5,12 @@
 # Mendel Mobach <mendel@mobach.nl>, 2000.
 # Almer S. Tigelaar <almer1@dds.nl>, 2000. (I only did a little correcting here and there)
 # Ludootje <ludootje@linux.be>, 2001.
+#: libnautilus-private/nautilus-authn-manager.c:70
+#: libnautilus-private/nautilus-authn-manager.c:71
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2001-12-28 06:16-0500\n"
+"POT-Creation-Date: 2002-01-24 06:18-0500\n"
 "PO-Revision-Date: 2001-12-28 18:38+0100\n"
 "Last-Translator: Ludootje <ludootje@linux.be>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -22,7 +24,7 @@ msgstr "Kan nautilus-launcher-applet niet creëren!"
 
 #: applets/preferences-applet/nautilus-preferences-applet.c:211
 msgid "Can't create nautilus-preferences-applet!"
-msgstr "Kan nautilus-preferences-applet niet creëren!"
+msgstr "Kan nautilus-voorkeuren-applet niet creëren!"
 
 #: applets/preferences-applet/nautilus-preferences-applet.c:226
 msgid "Show Desktop"
@@ -55,8 +57,8 @@ msgstr "Fabriek voor Nautilus component-adaptor-fabrieken"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:3
 msgid ""
-"Factory for objects that wrap ordinary Bonobo Controls or Embeddables to look "
-"like Nautilus Views"
+"Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
+"look like Nautilus Views"
 msgstr ""
 "Fabriek voor objecten die gewone Bonobo Controls of Embeddables er uit laten "
 "zien als een Nautilus Venster"
@@ -693,15 +695,15 @@ msgstr ""
 "  %s\n"
 "Alle volgende worden alleen in een terminal weergegeven"
 
-#: components/mozilla/nautilus-mozilla-content-view.c:402
+#: components/mozilla/nautilus-mozilla-content-view.c:399
 msgid "name of icon for the mozilla view"
 msgstr "naam van het pictogram voor het mozilla zicht"
 
-#: components/mozilla/nautilus-mozilla-content-view.c:404
+#: components/mozilla/nautilus-mozilla-content-view.c:401
 msgid "mozilla summary info"
 msgstr "mozilla overzicht info"
 
-#: components/mozilla/nautilus-mozilla-content-view.c:899
+#: components/mozilla/nautilus-mozilla-content-view.c:896
 msgid ""
 "A JavaScript function (small software program) on this page tried to open a "
 "new window, but Nautilus does not support the opening new windows by "
@@ -715,7 +717,7 @@ msgstr ""
 "\n"
 "Probeer de pagina te bekijken in een andere webbladeraar, zoals Galeon."
 
-#: components/mozilla/nautilus-mozilla-content-view.c:903
+#: components/mozilla/nautilus-mozilla-content-view.c:900
 msgid "Nautilus JavaScript Warning"
 msgstr "Nautilus JavaScript Waarschuwing"
 
@@ -1719,9 +1721,10 @@ msgid ""
 "because the Enable sound server startup setting in the Sound section of the "
 "Control Center is turned off."
 msgstr ""
-"Sorry, maar het muziekvenster is niet in staat om geluid voort te brengen. Uw "
-"geluidskaart is niet goed geconfigureerd, of wordt geblokkeerd door een ander "
-"programma. Probeer programma's af te sluiten die de geluidskaart blokkeren."
+"Sorry, maar het muziekvenster is niet in staat om geluid voort te brengen. "
+"Uw geluidskaart is niet goed geconfigureerd, of wordt geblokkeerd door een "
+"ander programma. Probeer programma's af te sluiten die de geluidskaart "
+"blokkeren."
 
 #: components/music/nautilus-music-view.c:1271
 #: components/music/nautilus-music-view.c:1283
@@ -1735,9 +1738,10 @@ msgid ""
 "not configured properly. Try quitting any applications that may be blocking "
 "use of the sound card."
 msgstr ""
-"Sorry, maar het muziekvenster is niet in staat om geluid voort te brengen. Uw "
-"geluidskaart is niet goed geconfigureerd, of wordt geblokkeerd door een ander "
-"programma. Probeer programma's af te sluiten die de geluidskaart blokkeren."
+"Sorry, maar het muziekvenster is niet in staat om geluid voort te brengen. "
+"Uw geluidskaart is niet goed geconfigureerd, of wordt geblokkeerd door een "
+"ander programma. Probeer programma's af te sluiten die de geluidskaart "
+"blokkeren."
 
 #: components/music/nautilus-music-view.c:1304
 msgid "Sorry, but the music view can't play non-local files yet."
@@ -1883,8 +1887,8 @@ msgstr "Voltooid"
 #. add the empty message
 #: components/news/nautilus-news.c:2418
 msgid ""
-"The News panel displays current headlines from your favorite websites.  Click "
-"the 'Select Sites' button to select the sites to display."
+"The News panel displays current headlines from your favorite websites.  "
+"Click the 'Select Sites' button to select the sites to display."
 msgstr ""
 "Het Nieuws paneel toont de momentele hoofdpunten van uw favoriete websites. "
 "Klik de 'Selecteer Sites' knop om de sites te selecteren en weer te geven. "
@@ -1976,6 +1980,10 @@ msgstr ""
 "%s\n"
 "\n"
 "U klikte op de voorbeeld-gereedschapsbalkknop."
+
+#: components/shell/shell.c:68
+msgid "Could not initialize Bonobo"
+msgstr "Kon Bonobo niet starten"
 
 #: components/text/Nautilus_View_text.oaf.in.h:1
 msgid "Factory for text view"
@@ -2718,13 +2726,45 @@ msgstr "Verander instellingen voor het gehele systeem (voor alle gebruikers)"
 msgid "System Settings"
 msgstr "Systeemvoorkeuren"
 
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:147
+msgid "Error"
+msgstr "Fout"
+
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:170
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:206
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:207
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:213
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:214
+msgid "Question"
+msgstr "Vraag"
+
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:187
+msgid "Message."
+msgstr "Bericht."
+
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:188
+msgid "Title."
+msgstr "Titel."
+
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:189
+msgid "Button one label."
+msgstr "Knop 1 label."
+
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:190
+msgid "Button two label."
+msgstr "Knop 2 label."
+
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:208
+msgid "Ok"
+msgstr "Ok"
+
 #: icons/crux_eggplant/crux_eggplant.xml.h:1
-msgid "An Eggplant variation of the Crux theme."
-msgstr "Een Eggplant variantie van de Crux thema."
+msgid "An Aubergine variation of the Crux theme."
+msgstr "Een Aubergine variant van de Crux thema."
 
 #: icons/crux_eggplant/crux_eggplant.xml.h:2
-msgid "Crux-Eggplant"
-msgstr "Crux-Eggplant"
+msgid "Crux-Aubergine"
+msgstr "Crux-Aubergine"
 
 #: icons/crux_teal/crux_teal.xml.h:1
 msgid "A Teal variation of the Crux theme."
@@ -2744,7 +2784,7 @@ msgstr "Dit is het standaardthema voor Nautilus"
 
 #: icons/gnome/gnome.xml.h:1
 msgid "A theme designed to fit well with the classic GNOME environment."
-msgstr "Een thema gemaakt om goed te passen bij de GNOME environment."
+msgstr "Een thema gemaakt om goed te passen bij de GNOME omgeving."
 
 #: icons/sierra/sierra.xml.h:1
 msgid "Sierra"
@@ -2858,6 +2898,32 @@ msgstr "XIAFS Volume"
 msgid "Xenix Volume"
 msgstr "Xenix Volume"
 
+#: libnautilus-private/nautilus-authn-manager.c:60
+msgid "Your HTTP Proxy requires you to log in.\n"
+msgstr "Uw HTTP Proxy vereist aanmelden.\n"
+
+#: libnautilus-private/nautilus-authn-manager.c:61
+#, c-format
+msgid ""
+"You must log in to access \"%s\".\n"
+"\n"
+"%s"
+msgstr "U moet u aanmelden om \"%s\" te benaderen.\n"
+"\n"
+"%s"
+
+#: libnautilus-private/nautilus-authn-manager.c:64
+msgid "Your password will be transmitted unencrypted."
+msgstr "Uw wachtwoord zal ongecodeerd worden verstuurd."
+
+#: libnautilus-private/nautilus-authn-manager.c:65
+msgid "Your password will be transmitted encrypted."
+msgstr "Uw wachtwoord zal gecodeerd worden verstuurd."
+
+#: libnautilus-private/nautilus-authn-manager.c:68
+msgid "Authentication Required"
+msgstr "Identificatie verplicht"
+
 #: libnautilus-private/nautilus-customization-data.c:356
 msgid "reset"
 msgstr "herladen"
@@ -2896,8 +2962,8 @@ msgid ""
 msgstr ""
 "Fout bij verplaatsen.\n"
 "\n"
-"\"%s\" kan niet verplaatst worden, want het item bevindt zich op een "
-"alleen-lezen schijf."
+"\"%s\" kan niet verplaatst worden, want het item bevindt zich op een alleen-"
+"lezen schijf."
 
 #: libnautilus-private/nautilus-file-operations.c:619
 #, c-format
@@ -2909,8 +2975,8 @@ msgid ""
 msgstr ""
 "Fout bij verwijderen.\n"
 "\n"
-"\"%s\" kan niet verwijderd worden, want u heeft geen rechten om de bevattende "
-"map te wijzigen."
+"\"%s\" kan niet verwijderd worden, want u heeft geen rechten om de "
+"bevattende map te wijzigen."
 
 #: libnautilus-private/nautilus-file-operations.c:625
 #, c-format
@@ -4058,8 +4124,8 @@ msgid ""
 "some other reason."
 msgstr ""
 "Kan zelfs geen omschrijving vinden voor \"x-directory/normal\". Dit betekent "
-"waarschijnlijk dat uw gnome-vfs.keys bestand op de verkeerde plaats staat, of "
-"niet gevonden kon worden vanwege een andere reden."
+"waarschijnlijk dat uw gnome-vfs.keys bestand op de verkeerde plaats staat, "
+"of niet gevonden kon worden vanwege een andere reden."
 
 #: libnautilus-private/nautilus-file.c:4179
 #, c-format
@@ -4067,8 +4133,8 @@ msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
 "gnome-vfs mailing list."
 msgstr ""
-"Geen beschrijving gevonden voor MIME-type \"%s\" (bestand is \"%s\"), gelieve "
-"dit door te geven aan de gnome-vfs mailing lijst."
+"Geen beschrijving gevonden voor MIME-type \"%s\" (bestand is \"%s\"), "
+"gelieve dit door te geven aan de gnome-vfs mailing lijst."
 
 #: libnautilus-private/nautilus-file.c:4193
 msgid "link"
@@ -4319,39 +4385,39 @@ msgstr " -_,;.?/&"
 
 #: libnautilus-private/nautilus-icon-dnd.c:771
 msgid ""
-"This folder uses automatic layout. Do you want to switch to manual layout and "
-"leave this item where you dropped it? This will clobber the stored manual "
-"layout."
+"This folder uses automatic layout. Do you want to switch to manual layout "
+"and leave this item where you dropped it? This will clobber the stored "
+"manual layout."
 msgstr ""
-"Deze map maakt gebruik van een automatische plaatsing. Wilt u dit wijzigen in "
-"handmatige plaatsing en dit item laten staan waar u het neergezet hebt? Dit "
-"kan de opgeslagen handmatige plaatsing rommelig maken."
+"Deze map maakt gebruik van een automatische plaatsing. Wilt u dit wijzigen "
+"in handmatige plaatsing en dit item laten staan waar u het neergezet hebt? "
+"Dit kan de opgeslagen handmatige plaatsing rommelig maken."
 
 #: libnautilus-private/nautilus-icon-dnd.c:775
 msgid ""
-"This folder uses automatic layout. Do you want to switch to manual layout and "
-"leave these items where you dropped them? This will clobber the stored manual "
-"layout."
+"This folder uses automatic layout. Do you want to switch to manual layout "
+"and leave these items where you dropped them? This will clobber the stored "
+"manual layout."
 msgstr ""
 "Deze map maakt gebruik van automatische plaatsing. Wilt u dit wijzigen in "
-"handmatige plaatsing  en deze items laten staan waar u ze neergezet hebt? Dit "
-"kan de opgeslagen handmatige plaatsing rommelig maken."
+"handmatige plaatsing  en deze items laten staan waar u ze neergezet hebt? "
+"Dit kan de opgeslagen handmatige plaatsing rommelig maken."
 
 #: libnautilus-private/nautilus-icon-dnd.c:781
 msgid ""
-"This folder uses automatic layout. Do you want to switch to manual layout and "
-"leave this item where you dropped it?"
+"This folder uses automatic layout. Do you want to switch to manual layout "
+"and leave this item where you dropped it?"
 msgstr ""
-"Deze map maakt gebruik van een automatische plaatsing. Wilt u dit wijzigen in "
-"handmatige opmaak en dit item laten staan waar u het neergezet hebt?"
+"Deze map maakt gebruik van een automatische plaatsing. Wilt u dit wijzigen "
+"in handmatige opmaak en dit item laten staan waar u het neergezet hebt?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:784
 msgid ""
-"This folder uses automatic layout. Do you want to switch to manual layout and "
-"leave these items where you dropped them?"
+"This folder uses automatic layout. Do you want to switch to manual layout "
+"and leave these items where you dropped them?"
 msgstr ""
-"Deze map maakt gebruik van een automatische plaatsing. Wilt u dit wijzigen in "
-"handmatige plaatsing en deze items laten staan waar u ze neergezet hebt?"
+"Deze map maakt gebruik van een automatische plaatsing. Wilt u dit wijzigen "
+"in handmatige plaatsing en deze items laten staan waar u ze neergezet hebt?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:789
 msgid "Switch to Manual Layout?"
@@ -4411,8 +4477,8 @@ msgstr ""
 msgid ""
 "Medusa, the application that performs searches, cannot be found on your "
 "system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available at "
-"ftp://ftp.gnome.org)\n"
+"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
+"at ftp://ftp.gnome.org)\n"
 "If you are using a packaged version of Nautilus, fast searching is not "
 "available.\n"
 msgstr ""
@@ -4599,8 +4665,8 @@ msgid ""
 "%s\n"
 "\n"
 "You can configure which programs are offered for which file types with the "
-"\"File Types and Programs\" part of the GNOME Control Center. Do you want to go "
-"there now?"
+"\"File Types and Programs\" part of the GNOME Control Center. Do you want to "
+"go there now?"
 msgstr ""
 "%s\n"
 "\n"
@@ -4867,8 +4933,8 @@ msgstr "Items die \"bla\" in hun naam hebben en normale bestanden zijn."
 
 #: libnautilus-private/nautilus-search-uri.c:710
 msgid ""
-"Items containing \"stuff\" in their names, that are regular files and smaller "
-"than 2000 bytes"
+"Items containing \"stuff\" in their names, that are regular files and "
+"smaller than 2000 bytes"
 msgstr ""
 "Items die \"bla\" in de naam hebben, normale bestanden zijn en kleiner zijn "
 "dan 2000 bytes."
@@ -4957,8 +5023,8 @@ msgstr "Ontkoppelingsfout"
 #. Handle floppy case
 #: libnautilus-private/nautilus-volume-monitor.c:1506
 msgid ""
-"Nautilus was unable to mount the floppy drive. There is probably no floppy in "
-"the drive."
+"Nautilus was unable to mount the floppy drive. There is probably no floppy "
+"in the drive."
 msgstr ""
 "Nautilus kon het diskettestation niet aankoppelen. Waarschijnlijk zit erg "
 "geen diskette in het station."
@@ -4982,8 +5048,8 @@ msgstr ""
 
 #: libnautilus-private/nautilus-volume-monitor.c:1519
 msgid ""
-"Nautilus was unable to mount the selected volume. The volume is probably in a "
-"format that cannot be mounted."
+"Nautilus was unable to mount the selected volume. The volume is probably in "
+"a format that cannot be mounted."
 msgstr ""
 "Nautilus was niet instaat in het geselecteerde volume aan te koppelen. Het "
 "volume heeft waarschijnlijk een niet-ondersteund formaat."
@@ -5065,6 +5131,10 @@ msgstr "_Kopieer text"
 msgid "_Paste Text"
 msgstr "_Plak Tekst"
 
+#: nautilus-help.desktop.in.h:1
+msgid "Documentation"
+msgstr "Documentatie"
+
 #: nautilus.desktop.in.h:1 src/nautilus-window-manage-views.c:256
 #: src/nautilus-window-menus.c:645
 msgid "Nautilus"
@@ -5073,10 +5143,6 @@ msgstr "Nautilus"
 #: nautilus.desktop.in.h:2
 msgid "Nautilus File Manager and Graphic Shell"
 msgstr "Nautilus Bestandsbeheer en Grafische Schil"
-
-#: nautilus-help.desktop.in.h:1
-msgid "Documentation"
-msgstr "Documentatie"
 
 #: src/Nautilus_shell.oaf.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -5115,8 +5181,7 @@ msgstr ""
 "zoekresultaten"
 
 #: src/Nautilus_shell.oaf.in.h:9
-msgid ""
-"Nautilus file manager component that shows a two-dimensional icon space"
+msgid "Nautilus file manager component that shows a two-dimensional icon space"
 msgstr "Nautilus-bestandsbeheercomponent dat een pictogrammenvlak toont"
 
 #: src/Nautilus_shell.oaf.in.h:10
@@ -5329,8 +5394,8 @@ msgstr "Teveel Bestanden"
 msgid ""
 "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr ""
-"\"%s\" kan niet naar de Prullenbak verplaatst worden. Wilt u het rechtstreeks "
-"verwijderen?"
+"\"%s\" kan niet naar de Prullenbak verplaatst worden. Wilt u het "
+"rechtstreeks verwijderen?"
 
 #: src/file-manager/fm-directory-view.c:2949
 #, c-format
@@ -5402,12 +5467,13 @@ msgstr "Voer \"%s\" uit op ieder geselecteerde item"
 
 #: src/file-manager/fm-directory-view.c:3859
 msgid ""
-"All executable files in this folder will appear in the Scripts menu. Choosing "
-"a script from the menu will run that script with any selected items as input."
+"All executable files in this folder will appear in the Scripts menu. "
+"Choosing a script from the menu will run that script with any selected items "
+"as input."
 msgstr ""
-"Alle uitvoerbare bestanden in deze map zullen getoond worden in het "
-"Scripts-menu. Door een script te kiezen uit het menu wordt het script "
-"uitgevoerd met de geselecteerde items als invoer."
+"Alle uitvoerbare bestanden in deze map zullen getoond worden in het Scripts-"
+"menu. Door een script te kiezen uit het menu wordt het script uitgevoerd met "
+"de geselecteerde items als invoer."
 
 #: src/file-manager/fm-directory-view.c:3862
 msgid "About Scripts"
@@ -5415,8 +5481,8 @@ msgstr "Over Scripts"
 
 #: src/file-manager/fm-directory-view.c:3863
 msgid ""
-"All executable files in this folder will appear in the Scripts menu. Choosing "
-"a script from the menu will run that script.\n"
+"All executable files in this folder will appear in the Scripts menu. "
+"Choosing a script from the menu will run that script.\n"
 "\n"
 "When executed from a local folder, scripts will be passed the selected file "
 "names. When executed from a remote folder (e.g. a folder showing web or ftp "
@@ -5438,9 +5504,9 @@ msgstr ""
 "Door een script te kiezen uit het menu wordt het script uitgevoerd.\n"
 "\n"
 "Wanneer dit wordt gedaan in een lokale map, dan worden de geselecteerde "
-"bestandsnamen doorgegeven aan het script. Wanneer dit wordt gedaan vanuit een "
-"non-lokale map (bijv. een map op een www- of ftp-server), dan worden geen "
-"parameters doorgegeven aan het script.\n"
+"bestandsnamen doorgegeven aan het script. Wanneer dit wordt gedaan vanuit "
+"een non-lokale map (bijv. een map op een www- of ftp-server), dan worden "
+"geen parameters doorgegeven aan het script.\n"
 "\n"
 "In alle gevallen worden de volgende omgevingsvariabelen gezet door Nautilus, "
 "die gebruikt kunnen worden door de scripts:\n"
@@ -5580,14 +5646,14 @@ msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
 msgstr ""
-"Deze verwijzing kan niet opgelost worden, omdat het doel ontbreekt. Wilt u de "
-"verwijzing in de Prullenbak gooien?"
+"Deze verwijzing kan niet opgelost worden, omdat het doel ontbreekt. Wilt u "
+"de verwijzing in de Prullenbak gooien?"
 
 #: src/file-manager/fm-directory-view.c:4509
 #, c-format
 msgid ""
-"This link can't be used, because its target \"%s\" doesn't exist. Do you want "
-"to put this link in the Trash?"
+"This link can't be used, because its target \"%s\" doesn't exist. Do you "
+"want to put this link in the Trash?"
 msgstr ""
 "Deze verwijzing kan niet opgelost worden, omdat haar doel \"%s\"ontbreekt. "
 "Wilt u de verwijzing in de Prullenbak gooien?"
@@ -5772,74 +5838,74 @@ msgstr "Hernoemen van \"%s\" naar \"%s\"."
 msgid "Cancel Rename?"
 msgstr "Hernoemen afbreken?"
 
-#: src/file-manager/fm-icon-view.c:186
+#: src/file-manager/fm-icon-view.c:187
 msgid "by _Name"
 msgstr "op _Naam"
 
-#: src/file-manager/fm-icon-view.c:187
+#: src/file-manager/fm-icon-view.c:188
 #: src/file-manager/nautilus-icon-view-ui.xml.h:15
 msgid "Keep icons sorted by name in rows"
 msgstr "Pictogrammen gesorteerd op naam in rijen"
 
-#: src/file-manager/fm-icon-view.c:193
+#: src/file-manager/fm-icon-view.c:194
 msgid "by _Size"
 msgstr "op _Grootte"
 
-#: src/file-manager/fm-icon-view.c:194
+#: src/file-manager/fm-icon-view.c:195
 #: src/file-manager/nautilus-icon-view-ui.xml.h:16
 msgid "Keep icons sorted by size in rows"
 msgstr "Pictogrammen gesorteerd op grootte in rijen"
 
-#: src/file-manager/fm-icon-view.c:200
+#: src/file-manager/fm-icon-view.c:201
 msgid "by _Type"
 msgstr "op _Type"
 
-#: src/file-manager/fm-icon-view.c:201
+#: src/file-manager/fm-icon-view.c:202
 #: src/file-manager/nautilus-icon-view-ui.xml.h:17
 msgid "Keep icons sorted by type in rows"
 msgstr "Pictogrammen gesorteerd op type in rijen"
 
-#: src/file-manager/fm-icon-view.c:207
+#: src/file-manager/fm-icon-view.c:208
 msgid "by Modification _Date"
 msgstr "op Wijzigingsdatum"
 
-#: src/file-manager/fm-icon-view.c:208
+#: src/file-manager/fm-icon-view.c:209
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Pictogrammen gesorteerd op wijzigingsdatum in regels"
 
-#: src/file-manager/fm-icon-view.c:214
+#: src/file-manager/fm-icon-view.c:215
 msgid "by _Emblems"
 msgstr "op _Emblemen"
 
-#: src/file-manager/fm-icon-view.c:215
+#: src/file-manager/fm-icon-view.c:216
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Pictogrammen gesorteerd op emblemen in regels"
 
-#: src/file-manager/fm-icon-view.c:1395
+#: src/file-manager/fm-icon-view.c:1396
 #: src/file-manager/nautilus-icon-view-ui.xml.h:37
 msgid "_Restore Icons' Original Sizes"
 msgstr "He_rstel de oorspronkelijke Pictogramafmetingen"
 
-#: src/file-manager/fm-icon-view.c:1396
+#: src/file-manager/fm-icon-view.c:1397
 msgid "_Restore Icon's Original Size"
 msgstr "Herstel de oorspronkelijke afmetingen van Pictogrammen"
 
-#: src/file-manager/fm-icon-view.c:1688
+#: src/file-manager/fm-icon-view.c:1738
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "wijst naar \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2578
+#: src/file-manager/fm-icon-view.c:2628
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Slepen en neerzetten wordt alleen ondersteund op locale systemen."
 
-#: src/file-manager/fm-icon-view.c:2579 src/file-manager/fm-icon-view.c:2598
+#: src/file-manager/fm-icon-view.c:2629 src/file-manager/fm-icon-view.c:2648
 msgid "Drag and Drop error"
 msgstr "Slepen en neerzetten fout"
 
-#: src/file-manager/fm-icon-view.c:2597
+#: src/file-manager/fm-icon-view.c:2647
 msgid "An invalid drag type was used."
 msgstr "Een ongeldig DRAG type was gebruikt."
 
@@ -6078,8 +6144,8 @@ msgid ""
 "Search results may not include items modified after %s, when your drive was "
 "last indexed."
 msgstr ""
-"De zoekresultaten bevatten wellicht geen items niet veranderd zijn na %s,toen "
-"uw schijf voor het laatst geïndiceerd is."
+"De zoekresultaten bevatten wellicht geen items niet veranderd zijn na %s,"
+"toen uw schijf voor het laatst geïndiceerd is."
 
 #: src/file-manager/fm-search-list-view.c:143
 msgid "Search Results"
@@ -6115,8 +6181,8 @@ msgstr "Zoek naar items die te nieuw zijn"
 #: src/file-manager/fm-search-list-view.c:199
 msgid ""
 "Every indexed file on your computer matches the criteria you selected. You "
-"can check the spelling on your selections or add more criteria to narrow your "
-"results."
+"can check the spelling on your selections or add more criteria to narrow "
+"your results."
 msgstr ""
 "Elk geïndiceerd bestand op uw systeem past op u zoekcriteria. U kunt de "
 "spelling controleren, of criteria toevoegen om uw resultaten te verfijnen."
@@ -6202,13 +6268,13 @@ msgstr ""
 
 #: src/file-manager/fm-search-list-view.c:276
 msgid ""
-"To do a content search, Find requires an index of the content on your system. "
-" Your computer is currently creating that index.  Content searches will be "
-"available when the index is complete."
+"To do a content search, Find requires an index of the content on your "
+"system.  Your computer is currently creating that index.  Content searches "
+"will be available when the index is complete."
 msgstr ""
 "Om te kunnen zoeken op inhoud, heeft de Zoekdienst een index nodig van de "
-"inhoud van uw systeem. Uw computer is op dit moment bezig die index te maken. "
-"Zoeken op inhoud is mogelijk zodra de index voltooid is."
+"inhoud van uw systeem. Uw computer is op dit moment bezig die index te "
+"maken. Zoeken op inhoud is mogelijk zodra de index voltooid is."
 
 #: src/file-manager/fm-search-list-view.c:282
 #: src/file-manager/fm-search-list-view.c:305
@@ -6218,9 +6284,9 @@ msgstr "Zoeken via een index is niet mogelijk"
 #: src/file-manager/fm-search-list-view.c:290
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now. You can create an index by running "
-"\"medusa-indexd\" as root on the command line.  Until a complete index is "
-"available, searches will take several minutes."
+"index is available right now. You can create an index by running \"medusa-"
+"indexd\" as root on the command line.  Until a complete index is available, "
+"searches will take several minutes."
 msgstr ""
 "Om te kunnen snelzoeken heeft de Zoekdienst een index nodig van de bestanden "
 "op uw systeem. Op dit moment is er geen index beschikbaar. U kunt een index "
@@ -6230,10 +6296,10 @@ msgstr ""
 
 #: src/file-manager/fm-search-list-view.c:297
 msgid ""
-"To do a content search, Find requires an index of the content on your system. "
-" No index is available right now.  You can create an index by running "
-"\"medusa-indexd\" as root on the command line.  Until a complete index is "
-"available, content searches cannot be performed."
+"To do a content search, Find requires an index of the content on your "
+"system.  No index is available right now.  You can create an index by "
+"running \"medusa-indexd\" as root on the command line.  Until a complete "
+"index is available, content searches cannot be performed."
 msgstr ""
 "Om te kunnen zoeken op inhoed, is er een index nodig van de inhoud van de "
 "bestanden op uw systeem. Uw computer heeft op dit moment geen index. Wilt u "
@@ -6242,13 +6308,13 @@ msgstr ""
 
 #: src/file-manager/fm-search-list-view.c:322
 msgid ""
-"To do a fast search, Find requires an index of the files on your system. Your "
-"system administrator has disabled fast search on your computer, so no index "
-"is available."
+"To do a fast search, Find requires an index of the files on your system. "
+"Your system administrator has disabled fast search on your computer, so no "
+"index is available."
 msgstr ""
-"Om te kunnen snelzoeken, heeft de Zoekdienst een index nodig van de bestanden "
-"op uw systeem. Uw systeembeheerder heeft het snelzoeken op uw systeem echter "
-"uitgeschakeld, en er is geen index beschikbaar."
+"Om te kunnen snelzoeken, heeft de Zoekdienst een index nodig van de "
+"bestanden op uw systeem. Uw systeembeheerder heeft het snelzoeken op uw "
+"systeem echter uitgeschakeld, en er is geen index beschikbaar."
 
 #: src/file-manager/fm-search-list-view.c:326
 msgid "Fast searches are not enabled on your computer"
@@ -6456,8 +6522,7 @@ msgid "Remove any custom images from selected icons"
 msgstr "Verwijder aangepaste afbeeldingen van de geselecteerde pictogrammen"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:40
-msgid ""
-"Remove any custom pattern or color from the background of this location"
+msgid "Remove any custom pattern or color from the background of this location"
 msgstr ""
 "Verwijder aangepaste patronen of kleuren van achtergrond van de huidige "
 "lokatie"
@@ -6663,8 +6728,8 @@ msgstr "Indiceren is voor %d%% voltooid."
 
 #: src/file-manager/nautilus-indexing-info.c:158
 msgid ""
-"Once a day your files and text content are indexed so your searches are fast. "
-""
+"Once a day your files and text content are indexed so your searches are "
+"fast. "
 msgstr ""
 "Eenmaal daags worden u bestanden en tekstinhoud geïndiceerd zodat uw "
 "zoekopdrachten snel verlopen."
@@ -6681,8 +6746,8 @@ msgstr "Uw bestanden zijn voor het laatst geindiceerd op %s"
 
 #: src/file-manager/nautilus-indexing-info.c:197
 msgid ""
-"Once a day your files and text content are indexed so your searches are fast. "
-" Your files are currently being indexed."
+"Once a day your files and text content are indexed so your searches are "
+"fast.  Your files are currently being indexed."
 msgstr ""
 "Eenmaal daags worden u bestanden en tekstinhoud geïndiceerd zodat uw "
 "zoekopdrachten snel verlopen. Uw bestanden worden op dit moment geïndiceerd."
@@ -6694,8 +6759,8 @@ msgid ""
 "right now."
 msgstr ""
 "Wanneer snelzoeken aanstaat, maakt het zoekprogramma een lijst van de "
-"bestande op uw systeem om het zoeken te versnellen. Snelzoeken staat niet aan "
-"op uw computer, u hebt momenteel dus geen bestandenlijst."
+"bestande op uw systeem om het zoeken te versnellen. Snelzoeken staat niet "
+"aan op uw computer, u hebt momenteel dus geen bestandenlijst."
 
 #: src/file-manager/nautilus-indexing-info.c:263
 msgid "There is no index of your files right now."
@@ -6764,8 +6829,8 @@ msgid ""
 "\n"
 "%s\n"
 "\n"
-"Before running Nautilus, please create these folders, or set permissions such "
-"that Nautilus can create them."
+"Before running Nautilus, please create these folders, or set permissions "
+"such that Nautilus can create them."
 msgstr ""
 "Nautilus kan de volgende vereiste foldere niet creëren:\n"
 "\n"
@@ -6786,29 +6851,29 @@ msgstr ""
 #.
 #: src/nautilus-application.c:533
 msgid ""
-"Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" from "
-"the console may fix the problem. If not, you can try rebooting the computer "
-"or installing Nautilus again."
+"Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
+"from the console may fix the problem. If not, you can try rebooting the "
+"computer or installing Nautilus again."
 msgstr ""
 "Nautilus kan nu niet gebruikt worden. Het uitvoeren van de opdracht "
 "\"nautilus-clean.sh -x\" vanaf de commandoregel zou het probleem kunnen "
-"oplossen. Zoniet dan kunt u proberen uw systeem te herstarten, of om Nautilus "
-"te herinstalleren."
+"oplossen. Zoniet dan kunt u proberen uw systeem te herstarten, of om "
+"Nautilus te herinstalleren."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:539
 msgid ""
-"Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" from "
-"the console may fix the problem. If not, you can try rebooting the computer "
-"or installing Nautilus again.\n"
+"Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
+"from the console may fix the problem. If not, you can try rebooting the "
+"computer or installing Nautilus again.\n"
 "\n"
 "OAF couldn't locate the Nautilus_shell.oaf file. One cause of this seems to "
 "be an LD_LIBRARY_PATH that does not include the oaf library's directory. "
-"Another possible cause would be bad install with a missing Nautilus_Shell.oaf "
-"file.\n"
+"Another possible cause would be bad install with a missing Nautilus_Shell."
+"oaf file.\n"
 "\n"
-"Running \"nautilus-clean.sh -x\" will kill all OAF and GConf processes, which "
-"may be needed by other applications.\n"
+"Running \"nautilus-clean.sh -x\" will kill all OAF and GConf processes, "
+"which may be needed by other applications.\n"
 "\n"
 "Sometimes killing oafd and gconfd fixes the problem, but we don't know why.\n"
 "\n"
@@ -6816,8 +6881,8 @@ msgid ""
 msgstr ""
 "Nautilus kan nu niet gebruikt worden. Het uitvoeren van de opdracht "
 "\"nautilus-clean.sh -x\" vanaf de commandoregel zou het probleem kunnen "
-"oplossen. Zoniet dan kunt u proberen uw systeem te herstarten, of om Nautilus "
-"te herinstalleren.\n"
+"oplossen. Zoniet dan kunt u proberen uw systeem te herstarten, of om "
+"Nautilus te herinstalleren.\n"
 "\n"
 "OAF kon 'Nautilus_shell.oaf' niet vinden. Een mogelijke oorzaak is dat dat "
 "LD_LIBRARY_PATH het pad naar de OAF-bibliotheek niet bevat. Een andere "
@@ -6827,8 +6892,8 @@ msgstr ""
 "Het uitvoeren van \"nautilus-clean.sh -x\" zal alle OAF- en GConf-processen "
 "beeindigen, die wellicht nodig zijn voor andere programma's.\n"
 "\n"
-"Soms verhelpt het stoppen van oafd en gconfd het probleem, maar we weten niet "
-"waarom.\n"
+"Soms verhelpt het stoppen van oafd en gconfd het probleem, maar we weten "
+"niet waarom.\n"
 "\n"
 "Ditzelfde probleem is gezien bij gebrekkige versies van OAF."
 
@@ -6913,17 +6978,18 @@ msgstr "Zoek Ze!"
 
 #: src/nautilus-first-time-druid.c:173
 msgid ""
-"Existence of this file indicates that the Nautilus configuration "
-"druid\nhas been presented.\n"
+"Existence of this file indicates that the Nautilus configuration druid\n"
+"has been presented.\n"
 "\n"
 "You can manually erase this file to present the druid again.\n"
 msgstr ""
-"De aanwezigheid van dit bestand wijst er op dat de "
-"Nautilus-configuratiedruïde\n"
+"De aanwezigheid van dit bestand wijst er op dat de Nautilus-"
+"configuratiedruïde\n"
 "reeds is uitgevoerd.\n"
 "\n"
 "U kunt dit bestand handmatig verwijderen om de druïde nogmaals uit te "
-"voeren.\n\n"
+"voeren.\n"
+"\n"
 
 #: src/nautilus-first-time-druid.c:465
 #, c-format
@@ -7541,6 +7607,18 @@ msgstr "Nieuws paneel"
 msgid "Display %s tab in sidebar"
 msgstr "Toon %s tabbladen in de zijbalk"
 
+#: src/nautilus-profiler.c:198
+msgid "Print"
+msgstr "Afdrukken"
+
+#: src/nautilus-profiler.c:199
+msgid "Save"
+msgstr "Opslaan"
+
+#: src/nautilus-profiler.c:239
+msgid "Profile Dump"
+msgstr "Profieldump"
+
 #. set the title and standard close accelerator
 #: src/nautilus-property-browser.c:265
 msgid "Backgrounds and Emblems"
@@ -7663,8 +7741,8 @@ msgstr ""
 #: src/nautilus-property-browser.c:1306
 #, c-format
 msgid ""
-"Sorry, but \"%s\" is an existing keyword.  Please choose a different name for "
-"it."
+"Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
+"for it."
 msgstr ""
 "Sorry, maar \"%s\" is een bestaand trefwoord. Gelieve een andere naam te "
 "kiezen."
@@ -8272,7 +8350,8 @@ msgid ""
 " \n"
 "As with any software under development, you should exercise caution when "
 "using Nautilus. We do not provide any guarantee that it will work properly, "
-"or assume any liability for your use of it.  Please use it at your own risk.\n"
+"or assume any liability for your use of it.  Please use it at your own "
+"risk.\n"
 "\n"
 "Please write a mail to <nautilus-list@eazel.com> to provide feedback, "
 "comments, and suggestions."
@@ -8280,8 +8359,8 @@ msgstr ""
 "Dank u voor uw belangstelling voor Nautilus.\n"
 "\n"
 "Zoals bij alle software in ontwikkeling, moet u voorzichtig zijn bij het "
-"gebruiken van Nautilus. Eazel biedt geen garantie dat Nautilus correct werkt, "
-"of aansprakelijkheid accepteren. Gebruik Nautilus op eigen risico\n"
+"gebruiken van Nautilus. Eazel biedt geen garantie dat Nautilus correct "
+"werkt, of aansprakelijkheid accepteren. Gebruik Nautilus op eigen risico\n"
 "\n"
 "Gelieve te mailen naar <nautilus-list@eazel.com> voor opmerkingen, vragen en "
 "suggesties."
@@ -8340,8 +8419,8 @@ msgstr "Kies een thema-map om als nieuw thema toe te voegen:"
 
 #: src/nautilus-theme-selector.c:474
 msgid ""
-"Sorry, but you can't remove the current theme. Please change to another theme "
-"before removing this one."
+"Sorry, but you can't remove the current theme. Please change to another "
+"theme before removing this one."
 msgstr ""
 "Sorry, maar u kunt het huidige thema niet verwijderen. Kies een ander thema "
 "voordat u dit thema verwijdert."
@@ -8471,12 +8550,13 @@ msgstr ""
 #: src/nautilus-window-manage-views.c:1300
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
-"search service isn't running. Be sure that you have started the Medusa search "
-"service, and if you don't have an index, that the Medusa indexer is running."
+"search service isn't running. Be sure that you have started the Medusa "
+"search service, and if you don't have an index, that the Medusa indexer is "
+"running."
 msgstr ""
-"Zoeken is niet beschikbaar op dit moment, omdat u geen index hebt of omdat de "
-"zoekdienst niet draait. Controleer dat u de Medusa-zoekdienst heeft gestart "
-"en als u geen index hebt, dat de Medusa-Indiceerder draait."
+"Zoeken is niet beschikbaar op dit moment, omdat u geen index hebt of omdat "
+"de zoekdienst niet draait. Controleer dat u de Medusa-zoekdienst heeft "
+"gestart en als u geen index hebt, dat de Medusa-Indiceerder draait."
 
 #: src/nautilus-window-manage-views.c:1304
 msgid "Searching Unavailable"
@@ -8566,8 +8646,8 @@ msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
 "this location from your list?"
 msgstr ""
-"Lokatie \"%s\" bestaat niet. Wilt deze lokatie verwijderen uit uw bladwijzers "
-"en van uw lokatielijst?"
+"Lokatie \"%s\" bestaat niet. Wilt deze lokatie verwijderen uit uw "
+"bladwijzers en van uw lokatielijst?"
 
 #: src/nautilus-window-menus.c:806
 msgid "Bookmark for Nonexistent Location"
@@ -8615,1798 +8695,3 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 msgid "%d%%"
 msgstr "%d%%"
 
-#, fuzzy
-#~ msgid "Help Index"
-#~ msgstr "Index"
-
-#, fuzzy
-#~ msgid "Help Index sidebar panel"
-#~ msgstr "Help-zijpaneel"
-
-#, fuzzy
-#~ msgid "Help Search"
-#~ msgstr "Doorzoek het WWW"
-
-#, fuzzy
-#~ msgid "Help Search sidebar panel"
-#~ msgstr "Help-zijpaneel"
-
-#, fuzzy
-#~ msgid "Year"
-#~ msgstr "Zoeken"
-
-#~ msgid "Album"
-#~ msgstr "Album"
-
-#, fuzzy
-#~ msgid "Comment"
-#~ msgstr "Covalent"
-
-#, fuzzy
-#~ msgid "Channels"
-#~ msgstr "Annuleren"
-
-#, fuzzy
-#~ msgid "Sample Rate"
-#~ msgstr "Voorbeeld"
-
-#, fuzzy
-#~ msgid "Stereo"
-#~ msgstr "Satire"
-
-#, fuzzy
-#~ msgid "Mono"
-#~ msgstr "Mango"
-
-#, fuzzy
-#~ msgid "Eazel"
-#~ msgstr "Verwijderen"
-
-#, fuzzy
-#~ msgid "foo (11st copy)"
-#~ msgstr "foo (21e kopie)"
-
-#, fuzzy
-#~ msgid "foo (11st copy).txt"
-#~ msgstr "foo (11e kopie).txt"
-
-#, fuzzy
-#~ msgid "foo (12nd copy)"
-#~ msgstr "foo (122e kopie)"
-
-#, fuzzy
-#~ msgid "foo (13rd copy)"
-#~ msgstr "foo (123e kopie)"
-
-#~ msgid "is write-protected, mounting read-only"
-#~ msgstr "is schrijf-beveiligd. wordt aangekoppeld in alleen-lezen modus"
-
-#~ msgid "is not a valid block device"
-#~ msgstr "is geen geldig blok-apparaat"
-
-#~ msgid "No medium found"
-#~ msgstr "Geen medium gevonden"
-
-#~ msgid "wrong fs type, bad option, bad superblock on"
-#~ msgstr "fout bestandssysteemtype, foute optie, fout superblok op"
-
-#~ msgid "Root"
-#~ msgstr "Root"
-
-#, fuzzy
-#~ msgid "scripts"
-#~ msgstr "Scripts"
-
-#, fuzzy
-#~ msgid "Nautilus was unable to create the directory %s."
-#~ msgstr "Nautilus kan het geselecteerde volume niet aankoppelen."
-
-#, fuzzy
-#~ msgid "No Scripts Folder"
-#~ msgstr "Open de Scriptsmap"
-
-#, fuzzy
-#~ msgid "Move all selected items to the Trash"
-#~ msgstr "Verplaats alle geselecteerde items naar de Prullenbak"
-
-#, fuzzy
-#~ msgid "Eazel Services"
-#~ msgstr "Webdiensten"
-
-#~ msgid "Go to the Eazel Services Summary Page"
-#~ msgstr "Ga naar de Eazel-Diensten Samenvattingspagina"
-
-#~ msgid "Go to the Eazel Software Catalog"
-#~ msgstr "Ga naar de Eazel Softwarecatalogus"
-
-#~ msgid "Go to your online storage repository"
-#~ msgstr "Ga naar uw online opslagarchief"
-
-#, fuzzy
-#~ msgid "Software _Catalog"
-#~ msgstr "Software"
-
-#, fuzzy
-#~ msgid "_Eazel Services Home"
-#~ msgstr "Webdiensten"
-
-#~ msgid "_Online Storage"
-#~ msgstr "_Online-Opslag"
-
-#, fuzzy
-#~ msgid "_Services"
-#~ msgstr "Diensten"
-
-#~ msgid "Display support information for Nautilus and Eazel Services"
-#~ msgstr "Toon ondersteuningsinformatie voor Nautilus en Eazel-Diensten"
-
-#, fuzzy
-#~ msgid "Go to Eazel Services"
-#~ msgstr "Webdiensten"
-
-#, fuzzy
-#~ msgid "_Community Support"
-#~ msgstr "_Klantondersteuning"
-
-#, fuzzy
-#~ msgid "GConf Error"
-#~ msgstr "Aankoppelingsfout"
-
-#, fuzzy
-#~ msgid "Beginner"
-#~ msgstr "_Beginner"
-
-#, fuzzy
-#~ msgid "Intermediate"
-#~ msgstr "_Gemiddeld"
-
-#, fuzzy
-#~ msgid "Advanced"
-#~ msgstr "_Uitgebreid"
-
-#, fuzzy
-#~ msgid "Create a new index"
-#~ msgstr "Creëer een Nieuw Embleem:"
-
-#~ msgid "Don't create index"
-#~ msgstr "Creëer geen nieuwe index"
-
-#, fuzzy
-#~ msgid ""
-#~ "To do a fast search, Find requires an index of the files on your system.  "
-#~ "Your computer does not have an index right now.  Because Find cannot use "
-#~ "an index, this search may take several minutes.  Would you like to create "
-#~ "an index? Creating an index will be done while you are not actively using "
-#~ "your computer."
-#~ msgstr ""
-#~ "Om te kunnen snelzoeken heeft de Zoekdienst een index nodig van de "
-#~ "bestanden op uw systeem. Uw computer is op dit moment bezig die index te "
-#~ "maken. Omdat er nog geen index is, kan het zoeken meerdere minuten kosten."
-
-#, fuzzy
-#~ msgid ""
-#~ "To do a content search, Find requires an index of the content on your "
-#~ "system.  Your computer does not have an index right now.  Would you like "
-#~ "to create an index?  Creating an index will be done while you are not "
-#~ "actively using your computer."
-#~ msgstr ""
-#~ "Om te kunnen zoeken op inhoud, heeft de Zoekdienst een index nodig van de "
-#~ "inhoud van uw systeem. Uw computer is op dit moment bezig die index te "
-#~ "maken. Zoeken op inhoud is mogelijk zodra de index voltooid is."
-
-#~ msgid "Create an Index"
-#~ msgstr "Creëer een Index"
-
-#~ msgid "Don't Create an Index Now"
-#~ msgstr "Creëer nu geen Index"
-
-#, fuzzy
-#~ msgid "_Tighter Layout"
-#~ msgstr "_Strakkere opmaak"
-
-#~ msgid "The indexer is currently busy."
-#~ msgstr "De indiceerder is op dat moment bezig."
-
-#~ msgid ""
-#~ "An indexer is not running, or is not responding to requests to reindex "
-#~ "your computer."
-#~ msgstr ""
-#~ "Er draait geen indiceerder, of deze reageert niet op verzoeken om uw "
-#~ "computer te herindiceren."
-
-#~ msgid ""
-#~ "An attempt to reindex, caused an Internal Indexer Error.  Tell "
-#~ "rebecka@eazel.com"
-#~ msgstr ""
-#~ "Een poging tot herindiceren leidde tot een Interne Indiceerfout. "
-#~ "Waarschuw rebecka@eazel.com"
-
-#, fuzzy
-#~ msgid "Reindexing Failed"
-#~ msgstr "Tonen is Mislukt"
-
-#, fuzzy
-#~ msgid ""
-#~ "Once a day your files and text content are indexed so your searches are "
-#~ "fast. If you need to update your index now, click on the \"Update Now\" "
-#~ "button."
-#~ msgstr ""
-#~ "Eenmaal daags worden u bestanden en tekstinhoud geïndiceerd zodat uw "
-#~ "zoekopdrachten snel verlopen. Uw bestanden worden op dit moment "
-#~ "geïndiceerd."
-
-#~ msgid "Update Now"
-#~ msgstr "Nu Opwaarderen"
-
-#~ msgid "Font for elsewhere in Nautilus:"
-#~ msgstr "Lettertype voor elders in Nautilus:"
-
-#~ msgid "Display the set of available appearance themes"
-#~ msgstr "Toon de verzameling thema's"
-
-#, fuzzy
-#~ msgid "_Nautilus Themes..."
-#~ msgstr "Nautilus Thema's"
-
-#, fuzzy
-#~ msgid "Nautilus Theme Selector"
-#~ msgstr "Nautilus Thema's"
-
-#~ msgid "Set the default answer to continue, also default delete to Yes"
-#~ msgstr ""
-#~ "Stel het standaardantwoord in om verder te gaan, zet ook de "
-#~ "standaardwaarde voor 'verwijderen' naar 'Ja' "
-
-#~ msgid "Specify search cgi"
-#~ msgstr "Specificeer zoek-cgi"
-
-#~ msgid "Show debug output"
-#~ msgstr "Toon debug-uitvoer"
-
-#~ msgid "10 sec delay after starting service"
-#~ msgstr "10 seconden wachten na het starten van de dienst"
-
-#~ msgid "Allow downgrades"
-#~ msgstr "Sta installeren oudere versies toe"
-
-#~ msgid "Erase packages"
-#~ msgstr "Verwijder pakketten"
-
-#~ msgid "enable ei2"
-#~ msgstr "Sta ei2 toe"
-
-#~ msgid "RPM args are filename"
-#~ msgstr "RPM-argumenten zijn een bestandsnaam"
-
-#~ msgid "Use ftp"
-#~ msgstr "Gebruik ftp"
-
-#~ msgid "Use local"
-#~ msgstr "Gebruik lokaal"
-
-#~ msgid "Use http"
-#~ msgstr "Gebruik http"
-
-#~ msgid "RPM args are Eazel Ids"
-#~ msgstr "RPM-argumenten zijn Eazel-Ids"
-
-#~ msgid "machine readable output"
-#~ msgstr "machine-leesbare uitvoer"
-
-#~ msgid "Don't print fancy percent output"
-#~ msgstr "Print geen uitgebreide percentages"
-
-#~ msgid "don't use eazel auth stuff"
-#~ msgstr "gebruik geen Eazel-aanmelding"
-
-#~ msgid "Specify package file"
-#~ msgstr "Specificeer een pakketbestand"
-
-#~ msgid "RPM args are needed files"
-#~ msgstr "RPM-argumenten zijn benodigde bestanden"
-
-#~ msgid "Run Query"
-#~ msgstr "Start een zoekopdracht"
-
-#, fuzzy
-#~ msgid "Revert"
-#~ msgstr "Nooit"
-
-#, fuzzy
-#~ msgid "Set root"
-#~ msgstr "Start"
-
-#~ msgid "Specify server"
-#~ msgstr "Specificeer server"
-
-#~ msgid "Dont print too much, just problems and download"
-#~ msgstr "Print niet teveel, alleen problemen en download"
-
-#~ msgid "Perform ssl renaming"
-#~ msgstr "Voer SSL-hernoeming uit"
-
-#~ msgid "argument is a suite id"
-#~ msgstr "argument is een suite-id"
-
-#, fuzzy
-#~ msgid "Test run"
-#~ msgstr "Westers"
-
-#, fuzzy
-#~ msgid "Allow username"
-#~ msgstr "Gebruikersnaam:"
-
-#~ msgid "Allow upgrades"
-#~ msgstr "Sta installeren nieuwe versies toe"
-
-#~ msgid "Verbose output"
-#~ msgstr "Uitgebreide uitvoer"
-
-#~ msgid "Install a specific package version"
-#~ msgstr "Installeer een specifieke pakketversie"
-
-#~ msgid "*** You cannot specify more then one protocol type.\n"
-#~ msgstr "*** U kunt niet meer dan één protocoltype opgegeven.\n"
-
-#~ msgid "*** Erase and revert ?  Somebody set up us the bomb!\n"
-#~ msgstr "*** Wissen en terugdraaien? Er ging iets grondig verkeerd!\n"
-
-#~ msgid "File conflict checking %s...\n"
-#~ msgstr "Aan het controleren op bestandsconflicten %s...\n"
-
-#~ msgid "File uniqueness checking %s...\n"
-#~ msgstr "Uniciteit van bestanden aan het controleren %s...\n"
-
-#~ msgid "Feature consistency checking %s...\n"
-#~ msgstr "Featureconsistentie aan het controleren %s...\n"
-
-#, fuzzy
-#~ msgid "Downloading %s..."
-#~ msgstr "Ophalen nieuwe versies van Nautilus-onderdelen..."
-
-#~ msgid "Downloading %s... (%d/%d) = %d%% %.1f KB/s"
-#~ msgstr "Aan het ophalen %s... (%d/%d) = %d%% %.1f KB/s"
-
-#~ msgid "Downloading %s... (%d/%d) = %d%%"
-#~ msgstr "Aan het ophalen %s... (%d/%d) = %d%%"
-
-#~ msgid "Downloading %s... (%d/%d) %.1f KB/s Done      \n"
-#~ msgstr "Ophalen %s... (%d/%d) %.1f KB/s Gereed      \n"
-
-#~ msgid "Downloading %s... %3.1f KB/s Done\n"
-#~ msgstr "Ophalen %s... %3.1f KB/s Gereed\n"
-
-#~ msgid "Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
-#~ msgstr "Aan het installeren %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
-
-#~ msgid "Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
-#~ msgstr "Aan het de-installeren %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
-
-#~ msgid "Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
-#~ msgstr "Installeren %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Gereed\n"
-
-#~ msgid "Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
-#~ msgstr "De-installeren %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Gereed\n"
-
-#, fuzzy
-#~ msgid "Done\n"
-#~ msgstr "Voltooid"
-
-#~ msgid "Download of %s FAILED\n"
-#~ msgstr "Ophalen van %s MISLUKT\n"
-
-#~ msgid "Package %s failed to uninstall.\n"
-#~ msgstr "De-installeren van pakket %s is mislukt.\n"
-
-#~ msgid "Package %s failed to install.\n"
-#~ msgstr "Installeren van pakket %s mislukt.\n"
-
-#~ msgid "\t· Problem : %s\n"
-#~ msgstr "\t· Probleem : %s\n"
-
-#~ msgid "\t· Action : %s\n"
-#~ msgstr "\t· Actie : %s\n"
-
-#, fuzzy
-#~ msgid "Cancelling operation\n"
-#~ msgstr "Annuleer het Eigenschappenvenster?"
-
-#~ msgid "About to install a total of %d packages, %dKB\n"
-#~ msgstr ""
-#~ "Sta op het punt om een totaal van %d pakket(ten) (%dKB) te installeren\n"
-
-#~ msgid "About to uninstall a total of %d packages, %dKB\n"
-#~ msgstr ""
-#~ "Een totaal van %d pakket(ten) (%dKB) zullen worden gede-installeerd\n"
-
-#~ msgid "About to revert a total of %d packages, %d KB\n"
-#~ msgstr ""
-#~ "Sta op het punt om een totaal van %d pakket(ten) (%dKB) terug te draaien\n"
-
-#~ msgid "\t· %s and it's dependencies\n"
-#~ msgstr "\t· %s en zijn afhankelijkheden\n"
-
-#~ msgid "\t· %s\n"
-#~ msgstr "\t· %s\n"
-
-#~ msgid "Save transaction report ? (y/n) "
-#~ msgstr "Bewaar transactierapport? (j/n) "
-
-#, fuzzy
-#~ msgid "y"
-#~ msgstr "by"
-
-#~ msgid "Dependency : %s needs %s\n"
-#~ msgstr "Afhankelijkheid: pakket %s heeft %s nodig\n"
-
-#~ msgid "Package %s failed md5 check!\n"
-#~ msgstr "MD5-controle van pakket %s mislukt!\n"
-
-#~ msgid "\t· server MD5 checksum is %s\n"
-#~ msgstr "\t· server MD5-checksum is %s\n"
-
-#~ msgid "\t· actual MD5 checksum is %s\n"
-#~ msgstr "\t· geconstateerde MD5-checksum is %s\n"
-
-#~ msgid "Continue? (j/n) "
-#~ msgstr "Doorgaan? (j/n) "
-
-#~ msgid "Should I delete the RPM files? (y/n) "
-#~ msgstr "Moet ik de RPM-bestanden verwijderen? (j/n) "
-
-#, fuzzy
-#~ msgid "Operation ok\n"
-#~ msgstr "National Folk"
-
-#, fuzzy
-#~ msgid "Operation failed\n"
-#~ msgstr "Gecertificeerd"
-
-#, fuzzy
-#~ msgid "Installing"
-#~ msgstr "Industrial"
-
-#~ msgid "Uninstalling"
-#~ msgstr "Aan het de-installeren"
-
-#~ msgid "Only one operation at a time please."
-#~ msgstr "Één operatie tegelijkertijd graag."
-
-#~ msgid "%s: --help for usage\n"
-#~ msgstr "%s: --help voor gebruiksaanwijzing\n"
-
-#~ msgid "Name         : %s\n"
-#~ msgstr "Naam         %s\n"
-
-#~ msgid "Version      : %s\n"
-#~ msgstr "Versie       : %s\n"
-
-#~ msgid "Minor        : %s\n"
-#~ msgstr "Sub-versie   : %s\n"
-
-#~ msgid "Size         : %d\n"
-#~ msgstr "Grootte      : %d\n"
-
-#~ msgid "Arch         : %s\n"
-#~ msgstr "Arch        :  %s\n"
-
-#~ msgid "Distribution : %s\n"
-#~ msgstr "Distributie  : %s\n"
-
-#~ msgid "Description  : %s\n"
-#~ msgstr "Omschrijving : %s\n"
-
-#~ msgid "Install root : %s\n"
-#~ msgstr "Installatiepad : %s\n"
-
-#~ msgid "Provides     : \n"
-#~ msgstr "Biedt        : \n"
-
-#~ msgid "exit code %d\n"
-#~ msgstr "exitcode %d\n"
-
-#~ msgid "Specify package list to use (/var/eazel/service/package-list.xml)"
-#~ msgstr ""
-#~ "Specificeer de te gebruiken pakkettenlijst (/usr/eazel/service/package-"
-#~ "list.xml)"
-
-#~ msgid ""
-#~ "Use specified file to generate a package list, requires --packagelist"
-#~ msgstr ""
-#~ "Gebruik opgegeven bestand om een pakkettenlijst te maken vereist de --"
-#~ "packagelist optie"
-
-#~ msgid "Softcat server to connect to"
-#~ msgstr "Softcat-server om mee te verbinden"
-
-#~ msgid "Use alternate CGI path"
-#~ msgstr "Gebruik ander CGI-pad"
-
-#~ msgid "Connect as a softcat user through ammonite"
-#~ msgstr "Verbind als een softcat-gebruiker via Ammonite"
-
-#~ msgid "Number of times to try the request"
-#~ msgstr "Aantal pogingen voor verzoek"
-
-#~ msgid "Delay between request retries, in usec"
-#~ msgstr "Pauze tussen verzoekpogingen, in usec"
-
-#~ msgid "Lookup by Eazel package id"
-#~ msgstr "Zoek op Eazel pakket-id"
-
-#~ msgid "Lookup package that features a feature/file"
-#~ msgstr "Zoek pakket dat een bepaalde feature/bestand biedt"
-
-#~ msgid "Lookup package with a specific version"
-#~ msgstr "Zoek pakket met bepaalde versie"
-
-#~ msgid "(with --version) Use >= comparison"
-#~ msgstr "(met --version) Gebruik >= vergelijking"
-
-#~ msgid "use check function (for debugging)"
-#~ msgstr "gebruik controlefunctie (voor debuggen)"
-
-#~ msgid "Show detailed sub-package info"
-#~ msgstr "Toon gedetailleerde sub-pakket-informatie"
-
-#~ msgid "enable funk parser"
-#~ msgstr "inschakelen funkparser"
-
-#~ msgid "Failed to lock the downloaded file"
-#~ msgstr "Vergrendelen van opgehaald bestand is mislukt"
-
-#~ msgid "MD5 mismatch, package %s may be compromised"
-#~ msgstr "MD5 klopt niet, pakket %s is misschien gecompromiteerd"
-
-#, fuzzy
-#~ msgid "No MD5 available for %s"
-#~ msgstr "Geen bekijker beschikbaar voor \"%s\"."
-
-#~ msgid "%s is ok"
-#~ msgstr "%s is correct"
-
-#~ msgid "%s-%s version %s-%s already installed"
-#~ msgstr "%s-%s versie %s-%s al geïnstalleerd"
-
-#~ msgid "%s version %s already installed"
-#~ msgstr "%s versie %s al geïnstalleerd"
-
-#~ msgid "%s upgrades from version %s-%s to %s-%s"
-#~ msgstr "%s opwaarderingen van versie %s-%s naar %s-%s"
-
-#~ msgid "%s downgrades from version %s-%s to %s-%s"
-#~ msgstr "%s wordt afgewaardeerd van versie %s-%s naar %s-%s"
-
-#~ msgid "%s downgrades from version %s to %s"
-#~ msgstr "%s wordt afgewaardeerd van versie %s naar %s"
-
-#~ msgid "%s installs version %s-%s"
-#~ msgstr "%s installeert versie %s-%s"
-
-#~ msgid "%s installs version %s"
-#~ msgstr "%s installeert versie %s"
-
-#~ msgid "Loading package info from file %s"
-#~ msgstr "Ophalen pakketinformatie uit bestand %s"
-
-#, fuzzy
-#~ msgid "ok"
-#~ msgstr "Kurk"
-
-#~ msgid "not ok"
-#~ msgstr "incorrect"
-
-#~ msgid "Checking dependencies for %s"
-#~ msgstr "Afhankelijkheden aan het controleren voor %s"
-
-#, fuzzy
-#~ msgid "%s is related to %s"
-#~ msgstr "\"%s\" geselecteerd (%s)"
-
-#~ msgid "updating %s to version %s-%s solves conflict"
-#~ msgstr "opwaarderen van %s naar versie %s-%s lost het conflict op"
-
-#~ msgid "available update to %s (%s-%s) does not solves conflict"
-#~ msgstr "beschikbare opwaardering naar %s (%s-%s) lost het conflict niet op"
-
-#, fuzzy
-#~ msgid "could not revive %s"
-#~ msgstr "Kon het thema niet verwijderen"
-
-#~ msgid "file uniqueness checking %s"
-#~ msgstr "controleren op bestandsuniciteit van %s"
-
-#~ msgid "Duplicate file : %s occurs in %s and %s"
-#~ msgstr "Duplicaatbestand: %s komt voor in %s en %s"
-
-#~ msgid "... but it's ok, the packages are related"
-#~ msgstr "... maar dat is geen probleem, de pakketten zijn gerelateerd"
-
-#~ msgid "(there were %d other conflicts)"
-#~ msgstr "(er waren %d andere conflicten)"
-
-#~ msgid "file conflict checking %s"
-#~ msgstr "controleren op bestandsconflicten %s"
-
-#~ msgid ""
-#~ "file conflict : package %s already provides file %s also provided by %s"
-#~ msgstr "bestandsconflict: pakket %s biedt bestand %s, maar %s doet dat ook"
-
-#~ msgid "...but it is okay, we're upgrading %s and it ditched that file"
-#~ msgstr ""
-#~ "...maar dat is geen probleem, we zijn %s aan het opwaarderen en we "
-#~ "verwijderen dat bestand"
-
-#~ msgid "checking feature consistency of %s"
-#~ msgstr "controleren van featureconsistentie van %s"
-
-#~ msgid ""
-#~ "feature missing : %s breaks if %s is installed (feature %s would be lost"
-#~ msgstr ""
-#~ "feature ontbreekt: %s breekt als %s is geïnstalleerd (feature %s zou "
-#~ "verloren gaan)"
-
-#~ msgid "downloading %d packages"
-#~ msgstr "%d pakketten aan het ophalen"
-
-#~ msgid "will upgrade %s"
-#~ msgstr "ga %s opwaarderen"
-
-#~ msgid "will downgrade %s"
-#~ msgstr "ga %s afwaarderen"
-
-#~ msgid "will install %s"
-#~ msgstr "ga installeren %s"
-
-#~ msgid "will uninstall %s"
-#~ msgstr "ga de-installeren %s"
-
-#~ msgid "%s requires %s"
-#~ msgstr "%s vereist %s"
-
-#, fuzzy
-#~ msgid "failed %s"
-#~ msgstr "0 bestanden"
-
-#~ msgid "Could not set URLType from config file!"
-#~ msgstr "Kan het URL-type niet zetten uit het configuratiebestand!"
-
-#~ msgid "Transactions are not stored, could not find home dir"
-#~ msgstr "Transacties worden niet opgeslagen, kon homedirectory niet vinden"
-
-#, fuzzy
-#~ msgid "Transactions are stored in %s"
-#~ msgstr "Vertalers"
-
-#~ msgid "Getting package list from remote server ...\n"
-#~ msgstr "Bezig met ophalen pakkettenlijst van de server ...\n"
-
-#, fuzzy
-#~ msgid "Unable to retrieve package-list.xml!\n"
-#~ msgstr "Vervangen van bestand mislukt."
-
-#~ msgid "Cannot write to file %s, using default log handler"
-#~ msgstr "Kan niet naar bestand %s schrijven, gebruik standaard log"
-
-#~ msgid "Install failed"
-#~ msgstr "Installatie mislukt"
-
-#~ msgid "Uninstall failed"
-#~ msgstr "De-installatie mislukt"
-
-#~ msgid "Could not create transaction directory (%s)! ***\n"
-#~ msgstr "Kon geen transactiemap maken (%s)! ***\n"
-
-#~ msgid "Writing transaction to %s"
-#~ msgstr "Schrijf transactie naar %s"
-
-#~ msgid "%s was cancelled"
-#~ msgstr "%s werd afgebroken"
-
-#~ msgid "%s is a source package, which is not yet supported"
-#~ msgstr "%s is een broncodepakket, hetgeen nog niet wordt ondersteund"
-
-#~ msgid "%s would break other packages"
-#~ msgstr "%s zou andere pakketten breken"
-
-#~ msgid "%s would break"
-#~ msgstr "%s zou breken"
-
-#~ msgid "%s would break %s"
-#~ msgstr "%s zou %s breken"
-
-#~ msgid "%s is damaged"
-#~ msgstr "%s is beschadigd"
-
-#~ msgid "%s requires %s, which could not be found on the server"
-#~ msgstr ""
-#~ "%s vereist pakket %s, maar dat kon niet op de server gevonden worden"
-
-#~ msgid "%s for %s could not be found on the server"
-#~ msgstr "%s voor %s kon niet op de server gevonden worden"
-
-#~ msgid "%s is already installed"
-#~ msgstr "%s is reeds geïnstalleerd"
-
-#~ msgid "%s, which is newer, needs downgrade and downgrade is not enabled"
-#~ msgstr ""
-#~ "pakket %s, dat recenter is, vereist een afwaardering, en dat is niet "
-#~ "toegestaan"
-
-#~ msgid "%s, which is older, needs upgrade and upgrade is not enabled"
-#~ msgstr ""
-#~ "pakket %s, dat ouder is, vereist een opwaardering, en dat is niet "
-#~ "toegestaan"
-
-#~ msgid "%s is not installed and could not be found on server"
-#~ msgstr "%s is niet geïnstalleerd, en kon niet gevonden worden op de server"
-
-#~ msgid "Check for a new version of %s"
-#~ msgstr "Controleer of er een nieuwe versie van %s is"
-
-#~ msgid "Install both %s and %s"
-#~ msgstr "Installeer %s en %s"
-
-#~ msgid "Remove %s from your system"
-#~ msgstr "Verwijder %s van uw systeem"
-
-#~ msgid "Force the removal of %s from your system"
-#~ msgstr "Forceer de verwijdering van %s van uw systeem"
-
-#~ msgid "Package database has an inconsistency"
-#~ msgstr "De pakkettendatabase bevat een inconsistentie"
-
-#~ msgid "Continue with force"
-#~ msgstr "Forceer"
-
-#~ msgid "Allow downgrade"
-#~ msgstr "Sta afwaarderingen toe"
-
-#~ msgid "Could not open target file %s"
-#~ msgstr "Kon doelbestand %s niet openen"
-
-#~ msgid "Could not create an http request !"
-#~ msgstr "Kon geen http-verzoek creëren!"
-
-#~ msgid "Proxy: Invalid uri !"
-#~ msgstr "Proxy: Ongeldige uri!"
-
-#~ msgid "Could not prepare http request !"
-#~ msgstr "Kon geen http-verzoek voorbereiden!"
-
-#, fuzzy
-#~ msgid "Couldn't get async mode "
-#~ msgstr "Kon het thema niet verwijderen"
-
-#~ msgid "DISK FULL: could not write %s"
-#~ msgstr "SCHIJF VOL: kon %s niet schrijven"
-
-#, fuzzy
-#~ msgid "Could not get request body!"
-#~ msgstr "Kon Vereiste Mappen Niet Creëren"
-
-#, fuzzy
-#~ msgid "HTTP error: %d %s"
-#~ msgstr ""
-#~ "GConf fout:\n"
-#~ "  %s"
-
-#~ msgid "FTP not supported yet"
-#~ msgstr "FTP wordt nog niet ondersteund"
-
-#, fuzzy
-#~ msgid "Checking local file %s..."
-#~ msgstr "Verwijderen van bestanden aan het voorbereiden..."
-
-#~ msgid "Failed to retrieve %s!"
-#~ msgstr "Ontvangen van %s mislukt!"
-
-#~ msgid "Could not get an URL for %s"
-#~ msgstr "Kon geen URL krijgen voor %s"
-
-#~ msgid "Downloaded package does not have the correct name"
-#~ msgstr "Opgehaald pakket heeft een verkeerde naam"
-
-#~ msgid "Package %s should have had name %s"
-#~ msgstr "Pakket %s zou de naam %s moeten hebben"
-
-#~ msgid "File download failed"
-#~ msgstr "Bestand ophalen mislukt"
-
-#~ msgid "*** Begin pkg dump ***\n"
-#~ msgstr "*** begin pkg-dump ***\n"
-
-#~ msgid "*** End pkg dump ***\n"
-#~ msgstr "*** einde pkg-dump ***\n"
-
-#~ msgid "*** No package nodes! (cat has no children) ***"
-#~ msgstr "*** Geen pakketnodes! (cat heeft geen kinderen) ***"
-
-#~ msgid "*** Bailing from package parse! ***"
-#~ msgstr "*** Gestopt met pakketinterpretatie! ***"
-
-#~ msgid "*** No package nodes! ***"
-#~ msgstr "*** Geen pakketnodes! ***"
-
-#~ msgid "*** Malformed package node!"
-#~ msgstr "*** Foute pakketnode!"
-
-#~ msgid "*** No depends nodes! ***"
-#~ msgstr "*** Geen afhankelijkheidsnodes! ***"
-
-#~ msgid "*** Malformed depends node!"
-#~ msgstr "*** Foute afhankelijkheidsnode!"
-
-#~ msgid "*** Unknown node type '%s'"
-#~ msgstr "*** Onbekend node type '%s'"
-
-#~ msgid "*** The pkg list file contains no data! ***\n"
-#~ msgstr "*** Het pkg-lijstbestand bevat geen gegevens! ***\n"
-
-#~ msgid "*** Cannot find the CATEGORIES xmlnode! ***\n"
-#~ msgstr "*** Kan de CATEGORIES-xmlnode niet vinden ! ***\n"
-
-#~ msgid "*** Bailing from categories parse! ***\n"
-#~ msgstr "*** Gestopt met categorie-interpretatie! ***\n"
-
-#~ msgid "*** No Categories! ***\n"
-#~ msgstr "*** Geen Categorieën! ***\n"
-
-#~ msgid "*** Bailing from category parse! ***\n"
-#~ msgstr "*** Gestopt met categorie-intepretatie! ***\n"
-
-#~ msgid "*** Cannot find the TRANSACTION xmlnode! ***\n"
-#~ msgstr "*** Kan de xmlnode TRANSACTION niet vinden! ***\n"
-
-#~ msgid "*** Bailing from transaction parse! ***\n"
-#~ msgstr "*** Gestopt met transactie-interpretatie! ***\n"
-
-#~ msgid "*** No packages! ***\n"
-#~ msgstr "*** Geen pakketten! ***\n"
-
-#~ msgid "*** No category nodes! ***"
-#~ msgstr "*** Geen categorienodes! ***"
-
-#~ msgid "*** Cannot find the CATEGORIES xmlnode! ***"
-#~ msgstr "*** Kan de CATEGORIES xmlnode niet vinden ! ***"
-
-#~ msgid "*** Unknown node %s"
-#~ msgstr "*** Onbekende node '%s'"
-
-#~ msgid "*** Error generating xml package list! ***\n"
-#~ msgstr "*** Fout bij het generen van de xml-pakkettenlijst! ***\n"
-
-#~ msgid "*** Error reading package list! ***\n"
-#~ msgstr "*** Fout bij het lezen van pakkettenlijst! ***\n"
-
-#~ msgid "*** The osd xml contains no data! ***\n"
-#~ msgstr "*** The osd xml bevat geen gegevens! ***\n"
-
-#~ msgid "*** Bailing from osd parse! ***\n"
-#~ msgstr "*** Gestopt met osd-interpretatie! ***\n"
-
-#~ msgid "Could not parse the xml (length %d)"
-#~ msgstr "Kon de xml niet interpreteren (lengte %d)"
-
-#~ msgid "Opened packages database in %s"
-#~ msgstr "Openen pakkettendatabase in %s"
-
-#~ msgid "Opening packages database in %s failed"
-#~ msgstr "Openen van pakkettendatabase in %s faalde"
-
-#~ msgid "Closing db for %s (open)"
-#~ msgstr "Sluit de database voor %s (open)"
-
-#~ msgid "Closing db for %s (not open)"
-#~ msgstr "Sluit de database voor %s (niet open)"
-
-#, fuzzy
-#~ msgid "Cannot open %s"
-#~ msgstr "U kunt de prullenbak niet kopiëren"
-
-#~ msgid "Getting package information ..."
-#~ msgstr "Bezig met ophalen pakketteninformatie..."
-
-#~ msgid "Checking \"%s\" for conflicts..."
-#~ msgstr "\"%s\" aan het controleren op conflicten..."
-
-#~ msgid "Downloading 1 package (%s)"
-#~ msgstr "Één pakket aan het ophalen (%s)"
-
-#~ msgid "Downloading %d packages (%s)"
-#~ msgstr "%d pakketten aan het ophalen (%s)"
-
-#, fuzzy
-#~ msgid "0K of %dK"
-#~ msgstr "%ld van %ld"
-
-#~ msgid ""
-#~ "The package \"%s\" requires \"%s\" to run.\n"
-#~ "Downloading \"%s\" now."
-#~ msgstr ""
-#~ "Pakket \"%s\" vereist \"%s\"\n"
-#~ "\"%s\" aan het ophalen."
-
-#~ msgid "Attempting to download package \"%s\"."
-#~ msgstr "Aan het ophalen pakket \"%s\"."
-
-#, fuzzy
-#~ msgid "Complete"
-#~ msgstr "Computer"
-
-#~ msgid ""
-#~ "The package \"%s\" requires \"%s\" to run.\n"
-#~ "\"%s\" has been successfully downloaded."
-#~ msgstr ""
-#~ "Pakket \"%s\" vereist \"%s\"\n"
-#~ "Ophalen van \"%s\" is geslaagd."
-
-#~ msgid "The package \"%s\" has been successfully downloaded."
-#~ msgstr "Het pakket \"%s\" is met succes opgehaald"
-
-#, fuzzy
-#~ msgid "%dK of %dK"
-#~ msgstr "%ld van %ld"
-
-#~ msgid "Download of package \"%s\" failed!"
-#~ msgstr "Ophalen van pakket \"%s\" mislukt!"
-
-#~ msgid ""
-#~ "The package \"%s\" requires \"%s\" to run.\n"
-#~ "\"%s\" has been successfully downloaded and installed."
-#~ msgstr ""
-#~ "Pakket \"%s\" vereist \"%s\".\n"
-#~ "\"%s\" is met succes opgehaald en geïnstalleerd."
-
-#~ msgid "\"%s\" has been successfully downloaded and installed."
-#~ msgstr "\"%s\" is met succes opgehaald en geïnstalleerd."
-
-#~ msgid "Installing package %d of %d"
-#~ msgstr "Aan het installeren: pakket %d van %d"
-
-#~ msgid ""
-#~ "The package \"%s\" requires \"%s\" to run.\n"
-#~ "\"%s\" is now being installed."
-#~ msgstr ""
-#~ "Het pakket \"%s\" vereist \"%s\" to run.\n"
-#~ "\"%s\" wordt nu geïnstalleerd."
-
-#, fuzzy
-#~ msgid "Now installing package \"%s\"."
-#~ msgstr "wijst naar \"%s\""
-
-#, fuzzy
-#~ msgid "Installing \"%s\""
-#~ msgstr "Aan het openenen: \"%s\""
-
-#~ msgid "Installation failed on %s"
-#~ msgstr "Installatie mislukt op %s"
-
-#~ msgid "I ran into problems while installing."
-#~ msgstr "Er waren problemen tijdens de installatie."
-
-#~ msgid "I'd like to try the following :"
-#~ msgstr "Ik zou het volgende willen proberen: "
-
-#~ msgid "Is this ok ?"
-#~ msgstr "Is dat goed?"
-
-#~ msgid "Installation cancelled."
-#~ msgstr "Installatie afgebroken."
-
-#~ msgid "This package has already been installed."
-#~ msgstr "Dit pakket is reeds geïnstalleerd."
-
-#~ msgid "Installation complete."
-#~ msgstr "Installatie voltooid."
-
-#, fuzzy
-#~ msgid "Installation failed."
-#~ msgstr "Internationaal"
-
-#~ msgid "Some packages installed successfully:"
-#~ msgstr "Een aantal pakketten is succesvol geïnstalleerd:"
-
-#~ msgid ""
-#~ "\n"
-#~ "Some packages failed:"
-#~ msgstr ""
-#~ "\n"
-#~ "Een aantal is mislukt:"
-
-#~ msgid "Erase the RPM files?"
-#~ msgstr "De RPM-bestanden verwijderen?"
-
-#~ msgid "Erase the leftover RPM files?"
-#~ msgstr "De overgebleven RPM-bestanden verwijderen?"
-
-#~ msgid "Ok"
-#~ msgstr "Ok"
-
-#~ msgid ""
-#~ "A core package of Nautilus has been\n"
-#~ "updated.  You should restart Nautilus.\n"
-#~ "\n"
-#~ "Do you wish to do that now?"
-#~ msgstr ""
-#~ "Een kernpakket van Nautilus is opgewaardeerd. U wordt\n"
-#~ "geadviseerd Nautilus te herstarten.\n"
-#~ "\n"
-#~ "Wilt u dat nu doen?"
-
-#~ msgid "Easy Install"
-#~ msgstr "Eenvoudige Installatie"
-
-#~ msgid "Messages"
-#~ msgstr "Berichten"
-
-#, fuzzy
-#~ msgid "Version: %s"
-#~ msgstr "Rechten"
-
-#~ msgid "These packages are ready to be downloaded and installed:"
-#~ msgstr ""
-#~ "Deze pakketten staan gereed om opgehaald en geïnstalleerd te worden."
-
-#~ msgid "If you wish to download and install these packages, click Continue."
-#~ msgstr ""
-#~ "Indien u deze pakketten wilt ophalen en installeren, klik dan op "
-#~ "'Doorgaan'"
-
-#~ msgid "These packages are ready to be uninstalled:"
-#~ msgstr "Deze pakketten staan klaar om gede-installeerd te worden:"
-
-#~ msgid "If you wish to uninstall these packages, click Continue."
-#~ msgstr "Indien u deze pakketten wilt de-installeren, klik dan op 'Doorgaan'"
-
-#~ msgid "These packages are ready to be reverted:"
-#~ msgstr "Deze pakketten staan klaar om teruggedraaid te worden:"
-
-#~ msgid "If you wish to revert these packages, click Continue."
-#~ msgstr "Indien u deze pakketten wilt terugdraaien, klik dan op 'Doorgaan'"
-
-#~ msgid "for a total of %ld MB."
-#~ msgstr "voor een totaal van %ld MB."
-
-#~ msgid "for a total of %ld KB."
-#~ msgstr "voor een totaal van %ld KB."
-
-#, fuzzy
-#~ msgid "Continue"
-#~ msgstr "Afspraken"
-
-#~ msgid "%s is in GNOME (footprint) > %s"
-#~ msgstr "%s is in GNOME (voetafdruk) > %s"
-
-#~ msgid "%s is in the GNOME (footprint) menu.\n"
-#~ msgstr "%s is in het GNOME-menu (voetafdruk).\n"
-
-#~ msgid "%s is in the KDE menu.\n"
-#~ msgstr "%s is in het KDE-menu.\n"
-
-#~ msgid "Installation Complete"
-#~ msgstr "Installatie Voltooid"
-
-#~ msgid ""
-#~ "%sTo start %s, click the Launch button below, or to create a shortcut, "
-#~ "drag the icon on the right to the GNOME panel or your desktop."
-#~ msgstr ""
-#~ "%sOm %s te starten, klik op de startknop hieronder of sleep het pictogram "
-#~ "aan de rechterkant naar het GNOME-paneel of uw Bureaublad, om een "
-#~ "snelkoppeling te creëren."
-
-#~ msgid "%sTo start %s, click the Launch button below."
-#~ msgstr "%sOm %s te starten, klik op de startknop hieronder"
-
-#~ msgid "Incorrect password."
-#~ msgstr "Verkeerd wachtwoord."
-
-#~ msgid "Authenticate as root"
-#~ msgstr "Meldt u aan als root-gebruiker"
-
-#~ msgid "Installing packages"
-#~ msgstr "Pakketten aan het installeren"
-
-#~ msgid "Installing remote package"
-#~ msgstr "Ophalen van pakket-op-afstand"
-
-#~ msgid "Installing some package"
-#~ msgstr "Een pakket aan het installeren"
-
-#~ msgid ""
-#~ "The Eazel install service is missing:\n"
-#~ "Installs will not work."
-#~ msgstr ""
-#~ "De Eazel Installatiedienst ontbreekt:\n"
-#~ "Installatie zijn niet mogelijk."
-
-#~ msgid "Contacting the Eazel Software Catalog ..."
-#~ msgstr "Aan het verbinden met de Eazel Softwarecatalogus..."
-
-#~ msgid "Checking for authorization..."
-#~ msgstr "Aan het controleren op aanmelding..."
-
-#~ msgid "Aborting package downloads (please wait) ..."
-#~ msgstr "Annuleren van het ophalen van pakketten (even geduld a.u.b.)..."
-
-#~ msgid "Package download aborted."
-#~ msgstr "Ophalen van pakket afgebroken."
-
-#~ msgid "Aborted"
-#~ msgstr "Afgebroken."
-
-#, fuzzy
-#~ msgid "Install"
-#~ msgstr "Industrial"
-
-#, fuzzy
-#~ msgid "Install Viewer"
-#~ msgstr "Pictogrammenbekijker"
-
-#, fuzzy
-#~ msgid "Nautilus Service Install View"
-#~ msgstr "Nautilus Voorbeeldvenster"
-
-#, fuzzy
-#~ msgid "Nautilus Service Install View Factory"
-#~ msgstr "Nautilus Voorbeeldvensterfabriek"
-
-#, fuzzy
-#~ msgid "Service Install View Component"
-#~ msgstr "Voorbeeld inhoudsbekijkvenster-component"
-
-#, fuzzy
-#~ msgid "Service Install View Component's Factory"
-#~ msgstr "Voorbeeld inhoudsbekijkvenster-componentfabriek"
-
-#, fuzzy
-#~ msgid "View as Install"
-#~ msgstr "Toen als Pictogrammen"
-
-#, fuzzy
-#~ msgid "Factory for the install service"
-#~ msgstr "Fabriek voor het tekstvenster"
-
-#~ msgid "Enable inventory upload."
-#~ msgstr "Inschakelen externe-inventarisopslag"
-
-#~ msgid "Disable inventory upload."
-#~ msgstr "Uitschakelen externe-inventarisopslag"
-
-#~ msgid "Display information about current inventory settings."
-#~ msgstr "Toon informatie zien over de huidige inventarisinstellingen"
-
-#~ msgid "Upload inventory now, if not up to date."
-#~ msgstr "Sla het inventaris nu op, indien het niet actueel is."
-
-#, fuzzy
-#~ msgid "Factory for the inventory service"
-#~ msgstr "Fabriek voor historieweergave"
-
-#, fuzzy
-#~ msgid "Inventory"
-#~ msgstr "Afspraken"
-
-#, fuzzy
-#~ msgid "Nautilus Inventory view"
-#~ msgstr "Nautilus Boomvenster"
-
-#, fuzzy
-#~ msgid "Nautilus Inventory view factory"
-#~ msgstr "Nautilus Afbeeldingsbekijkerfabriek"
-
-#, fuzzy
-#~ msgid "Nautilus System Inventory component's component's factory"
-#~ msgstr "Nautilus Inhoudsbekijker-componentfabriek"
-
-#~ msgid "System Inventory"
-#~ msgstr "Systeeminventaris"
-
-#, fuzzy
-#~ msgid "System Inventory Viewer"
-#~ msgstr "Inhoudsbekijker"
-
-#, fuzzy
-#~ msgid "System inventory view component"
-#~ msgstr "Voorbeeld inhoudsbekijkvenster-component"
-
-#, fuzzy
-#~ msgid "View as System Inventory"
-#~ msgstr "Toon als Inhoudsbekijker"
-
-#~ msgid "Please Change Your Eazel Password"
-#~ msgstr "Verander a.u.b. uw Eazel-wachtwoord..."
-
-#, fuzzy
-#~ msgid "Current Password:"
-#~ msgstr "Wachtwoord:"
-
-#, fuzzy
-#~ msgid "New Password:"
-#~ msgstr "Wachtwoord:"
-
-#, fuzzy
-#~ msgid "Confirm New Password:"
-#~ msgstr "Wachtwoord:"
-
-#~ msgid "Change my password"
-#~ msgstr "Verander mijn wachtwoord "
-
-#~ msgid "I need assistance"
-#~ msgstr "Ik heb hulp nodig"
-
-#~ msgid "Your password has been changed!"
-#~ msgstr "Uw wachtwoord is veranderd!"
-
-#~ msgid ""
-#~ "I'm sorry, but that password\n"
-#~ "is incorrect.  Please try again."
-#~ msgstr ""
-#~ "Het spijt me, maar dat wachtwoord\n"
-#~ "is niet correct. Probeert u het nogmaals."
-
-#~ msgid ""
-#~ "I'm sorry, but your new password\n"
-#~ "must be at least six (6) characters long.\n"
-#~ "Please try another one."
-#~ msgstr ""
-#~ "Het spijt me, maar uw nieuwe wachtwoord\n"
-#~ "moet minstens zes (6) tekens lang zijn.\n"
-#~ "Probeert u een ander wachtwoord."
-
-#~ msgid ""
-#~ "I'm sorry, but your new password\n"
-#~ "can't be ridiculously long.\n"
-#~ "Please try another one."
-#~ msgstr ""
-#~ "Het spijt, maar uw nieuwe wachtwoord\n"
-#~ "kan niet belachelijk lang zijn.\n"
-#~ "Probeert u een ander wachtwoord."
-
-#~ msgid ""
-#~ "I'm sorry, but your new password must\n"
-#~ "contain letters along with at least one\n"
-#~ "number or symbol. Please try another one."
-#~ msgstr ""
-#~ "Het spijt me, maar uw nieuwe wachtwoord\n"
-#~ "moet naast letter minstens één cijfer of\n"
-#~ "symbool bevatten. Probeert u het nogmaals."
-
-#~ msgid ""
-#~ "I'm sorry, but I hit an unexpected\n"
-#~ "error. Please try again, with\n"
-#~ "different passwords."
-#~ msgstr ""
-#~ "Het spijt me, maar er trad een onverwachte fout op. Probeert u het "
-#~ "nogmaals, met\n"
-#~ "een ander wachtwoord."
-
-#~ msgid ""
-#~ "I'm sorry, but I got an unexpected\n"
-#~ "error.  Please try again."
-#~ msgstr ""
-#~ "Het spijt me, er trad een onverwachte fout op. Probeert u het nogmaals."
-
-#~ msgid ""
-#~ "I'm sorry, but your new password\n"
-#~ "wasn't typed the same way twice.\n"
-#~ "Please try again."
-#~ msgstr ""
-#~ "Het spijt me, maar uw nieuwe wachtwoord\n"
-#~ "is niet tweemaal identiek ingevoerd.\n"
-#~ "Probeert u het nogmaals."
-
-#, fuzzy
-#~ msgid "Change Password"
-#~ msgstr "Wachtwoord:"
-
-#, fuzzy
-#~ msgid "Change Password Viewer"
-#~ msgstr "Inhoudsbekijker"
-
-#~ msgid "Eazel Change Password View"
-#~ msgstr "Eazel Wachtwoord-verander-venster"
-
-#, fuzzy
-#~ msgid "Eazel Change Password view component"
-#~ msgstr "Voorbeeld inhoudsbekijkvenster-component"
-
-#, fuzzy
-#~ msgid "Nautilus Service Login View Factory"
-#~ msgstr "Nautilus Voorbeeldvensterfabriek"
-
-#, fuzzy
-#~ msgid "Service Login View Component's Factory"
-#~ msgstr "Voorbeeld inhoudsbekijkvenster-componentfabriek"
-
-#, fuzzy
-#~ msgid "View as Change Password"
-#~ msgstr "Toon als Inhoudsbekijker"
-
-#, fuzzy
-#~ msgid "Unknown Date"
-#~ msgstr "onbekend type"
-
-#~ msgid "%A, %B %d"
-#~ msgstr "%A, %B %d"
-
-#~ msgid ""
-#~ "Sorry, network problems are preventing you from connecting to Eazel "
-#~ "Services."
-#~ msgstr ""
-#~ "Het spijt me, netwerk problemen maken het onmogelijk om verbinding te "
-#~ "maken met Eazel-Diensten"
-
-#~ msgid ""
-#~ "Your Eazel Services account has not yet been activated.  You can't log "
-#~ "into Eazel Services until you activate your account.\n"
-#~ "\n"
-#~ "Please check your email for activation instructions."
-#~ msgstr ""
-#~ "Uw Eazel-Diensten-account is nog niet geactiveerd. U kunt zich niet bij "
-#~ "Eazel-Diensten aanmelden voordat u uw account geactiveerd heeft.\n"
-#~ "\n"
-#~ "Zie uw e-mail om te zien hoe dat moet."
-
-#~ msgid ""
-#~ "Your Eazel Service User Account has been temporarily disabled.\n"
-#~ "\n"
-#~ "Please try again in a few minutes, or contact Eazel support if this "
-#~ "problem continues."
-#~ msgstr ""
-#~ "Uw Eazel-Diensten-account is tijdelijk op non-actief gesteld.\n"
-#~ "\n"
-#~ "Probeert u het nog eens over enkele minuten, of neem contact op met Eazel-"
-#~ "ondersteuning als dit probleem aanhoudt."
-
-#~ msgid "We're sorry, but your name and password are still not recognized."
-#~ msgstr ""
-#~ "Het spijt ons, maar uw naam en wachtwoord worden nog steeds niet herkend."
-
-#~ msgid "Eazel Service Login Error"
-#~ msgstr "Eazel-Diensten Aanmeldfout"
-
-#, fuzzy
-#~ msgid "Service Error"
-#~ msgstr "Diensten"
-
-#~ msgid "Register Now"
-#~ msgstr "Registreer Nu"
-
-#, fuzzy
-#~ msgid "Services Login"
-#~ msgstr "Diensten"
-
-#~ msgid "Please log in to Eazel Services"
-#~ msgstr "Log in op Eazel-Diensten"
-
-#~ msgid "Your user name or password were not correct.  Please try again."
-#~ msgstr ""
-#~ "Uw gebruikersnaam of wachtwoord waren niet correct. Probeert u het nog "
-#~ "eens."
-
-#, fuzzy
-#~ msgid "More Info"
-#~ msgstr "Informatie"
-
-#, fuzzy
-#~ msgid "Account Preferences"
-#~ msgstr "Voorkeuren"
-
-#~ msgid "Logout"
-#~ msgstr "Afmelden"
-
-#~ msgid "Terms of Use"
-#~ msgstr "Gebruiksvoorwaarden"
-
-#~ msgid "Privacy Statement"
-#~ msgstr "Privacy-informatie"
-
-#, fuzzy
-#~ msgid "Register"
-#~ msgstr "Westers"
-
-#, fuzzy
-#~ msgid "Login"
-#~ msgstr "Lokatie"
-
-#~ msgid "Eazel Services - Welcome, %s!"
-#~ msgstr "Eazel-Diensten - Welkom, %s!"
-
-#~ msgid "Eazel Services - You are not logged in"
-#~ msgstr "Eazel-Diensten - U bent niet aangemeld"
-
-#~ msgid "Connecting to Eazel Services..."
-#~ msgstr "Aan het verbinden met Eazel-Diensten..."
-
-#~ msgid "Featured Downloads"
-#~ msgstr "Beschikbare pakketten"
-
-#~ msgid ""
-#~ "Unable to get services data from Eazel's server. The server might be "
-#~ "unavailable right now, or your computer might be configured incorrectly. "
-#~ "Please contact support@eazel.com."
-#~ msgstr ""
-#~ "Verkrijgen van dienstengegeven van Eazel mislukt. De server is wellicht "
-#~ "tijdelijk niet beschikbaar, of uw computer is niet goed geconfigureerd. "
-#~ "Neem contact op met support@eazel.com."
-
-#~ msgid ""
-#~ "Found a problem with services data on Eazel servers. Please contact "
-#~ "support@eazel.com."
-#~ msgstr ""
-#~ "Er is een probleem ontdekt met de gegevens op de Eazel-servers. Neem "
-#~ "contact op met support@eazel.com."
-
-#~ msgid ""
-#~ "Information is missing from the redirect data on Eazel servers. Please "
-#~ "contact support@eazel.com."
-#~ msgstr ""
-#~ "Informatie ontbreekt in de doorstuurgegevens op de Eazel-servers. Neem "
-#~ "contact op met support@eazel.com."
-
-#~ msgid ""
-#~ "Unable to connect to Eazel's server. The server might be unavailable "
-#~ "right now, or your computer might be configured incorrectly. You could "
-#~ "try again later."
-#~ msgstr ""
-#~ "Verbinding met de Eazel-server mislukt. De server is wellicht tijdelijk "
-#~ "niet beschikbaar, of uw computer is niet goed geconfigureerd. Neem "
-#~ "contact op met support@eazel.com."
-
-#~ msgid ""
-#~ "Found a problem with redirect data on Eazel servers. Please contact "
-#~ "support@eazel.com."
-#~ msgstr ""
-#~ "Er is een probleem ontdekt met de doorstuurgegevens op de Eazel-servers. "
-#~ "Neem contact op met support@eazel.com."
-
-#~ msgid "Failed to upload system inventory."
-#~ msgstr "Opslag van Systeeminventaris mislukt"
-
-#~ msgid "Configure your service preferences"
-#~ msgstr "Configureer uw dienstenvoorkeuren"
-
-#, fuzzy
-#~ msgid "Go to the Eazel Services Registration Form"
-#~ msgstr "Ga naar de volgende bezochte lokatie"
-
-#~ msgid "Log out from Eazel Services"
-#~ msgstr "Afmelden bij Eazel-Diensten"
-
-#~ msgid "Show the log-in dialog box"
-#~ msgstr "Toon het aanmeldvenster"
-
-#~ msgid "_Log in to Eazel Services"
-#~ msgstr "_Aanmelden bij Eazel-Diensten"
-
-#~ msgid "_Log out from Eazel Services"
-#~ msgstr "A_fmelden bij Eazel-Diensten"
-
-#~ msgid "_Register for Eazel Services"
-#~ msgstr "_Registratie voor Eazel-Diensten"
-
-#, fuzzy
-#~ msgid "Nautilus Service Summary View Factory"
-#~ msgstr "Nautilus Voorbeeldvensterfabriek"
-
-#, fuzzy
-#~ msgid "Nautilus Summary View"
-#~ msgstr "Nautilus Afbeeldingsbekijker"
-
-#, fuzzy
-#~ msgid "Service Summary View Component's Factory"
-#~ msgstr "Voorbeeld inhoudsbekijkvenster-componentfabriek"
-
-#, fuzzy
-#~ msgid "Service Summary view component"
-#~ msgstr "Voorbeeld inhoudsbekijkvenster-component"
-
-#~ msgid "Summary"
-#~ msgstr "Overzicht"
-
-#, fuzzy
-#~ msgid "Summary Viewer"
-#~ msgstr "Afbeeldingsbekijker"
-
-#, fuzzy
-#~ msgid "View as Summary"
-#~ msgstr "Toon als Afbeelding"
-
-#~ msgid "HTTP error %d \"%s\" on uri %s"
-#~ msgstr "HTTP-fout: %d \"%s\" bij uri %s"
-
-#, fuzzy
-#~ msgid "Could not initialize Bonobo"
-#~ msgstr "Kon Bonobo niet initialiseren"
-
-#~ msgid "Can't write logfile %s -- using default log handler"
-#~ msgstr "Kan niet naar logbestand %s schrijven - gebruik de standaardlog"
-
-#, fuzzy
-#~ msgid "Nautilus eazel sample service view component"
-#~ msgstr "Voorbeeld inhoudsbekijkvenster-component"
-
-#, fuzzy
-#~ msgid "Nautilus services startup view factory"
-#~ msgstr "Nautilus Voorbeeldvensterfabriek"
-
-#, fuzzy
-#~ msgid "Service"
-#~ msgstr "Diensten"
-
-#, fuzzy
-#~ msgid "Service Viewer"
-#~ msgstr "Generieke Afbeeldingsbekijker"
-
-#, fuzzy
-#~ msgid "Services startup view factory"
-#~ msgstr "Tekstvenster-fabriek"
-
-#, fuzzy
-#~ msgid "View as Service"
-#~ msgstr "Toon als Muziek"
-
-#~ msgid "eazel sample service view"
-#~ msgstr "eazel voorbeelddienstvenster"
-
-#, fuzzy
-#~ msgid "Factory for the sample service"
-#~ msgstr "Fabriek voor het nieuwsvenster"
-
-#, fuzzy
-#~ msgid "_Move here"
-#~ msgstr "Ga daarheen"
-
-#, fuzzy
-#~ msgid "_Copy here"
-#~ msgstr "_Kopieer Bestand"
-
-#, fuzzy
-#~ msgid "_Link here"
-#~ msgstr "Verwijzingsdoel:"
-
-#, fuzzy
-#~ msgid "Nautilus Preferences"
-#~ msgstr "Nautilus _Snelhulp"
-
-#, fuzzy
-#~ msgid "always"
-#~ msgstr "Altijd"
-
-#, fuzzy
-#~ msgid "local only"
-#~ msgstr "Alleen Lokale Bestanden"
-
-#, fuzzy
-#~ msgid "never"
-#~ msgstr "Nooit"
-
-#, fuzzy
-#~ msgid "Font for Icon view:"
-#~ msgstr "Fabriek voor het nieuwsvenster"
-
-#~ msgid "Font size for Icon view at 100% zoom:"
-#~ msgstr "Lettergrootte voor Pictogrammenvenster bij 100%-zoom"
-
-#, fuzzy
-#~ msgid "Font for List view:"
-#~ msgstr "Fabriek voor historieweergave"
-
-#, fuzzy
-#~ msgid "single"
-#~ msgstr "Jungle"
-
-#, fuzzy
-#~ msgid "double"
-#~ msgstr "Soul"
-
-#~ msgid "launch"
-#~ msgstr "start"
-
-#, fuzzy
-#~ msgid "display"
-#~ msgstr "Bekijken"
-
-#~ msgid "ask"
-#~ msgstr "vraag"
-
-#, fuzzy
-#~ msgid "Fast Search"
-#~ msgstr "Zoeken"
-
-#~ msgid "Enable fast search (indexes your hard drive)"
-#~ msgstr "Activeer Snelzoeken (indiceert uw harde schijf)"
-
-#~ msgid ""
-#~ "Indexing is turned on, enabling the fast search feature. However, "
-#~ "indexing currently can't be performed because the program crond, which "
-#~ "does nightly tasks on your computer, is turned off. To make sure fast "
-#~ "searches can be done, turn crond on."
-#~ msgstr ""
-#~ "Indiceren staat aan, zodat snelzoeken mogelijk is. Echter, indiceren kan "
-#~ "momenteel niet plaatsvinden, aangezien het programma crond, dat 's nachts "
-#~ "taken uitvoert op uw computer, niet aanstaat. Om er zeker van te zijn dat "
-#~ "snelzoeken werkt, moet u crond aanzetten."
-
-#~ msgid "Files May Not Be Indexed"
-#~ msgstr "Bestand Zijn Wellicht Niet Geïndiceerd"
-
-#~ msgid ""
-#~ "If you are running Linux, you can log in as root and type these commands "
-#~ "to start cron:\n"
-#~ "\n"
-#~ "/sbin/chkconfig --level 345 crond on\n"
-#~ "/etc/rc.d/init.d/cron start\n"
-#~ msgstr ""
-#~ "Als u GNU/Linux gebruikt, kunt u als root inloggen, en de volgende "
-#~ "commando's typen om crond te starten:\n"
-#~ "\n"
-#~ "/sbin/chkconfig --level 345 crond on\n"
-#~ "/etc/rc.d/init.d/cron start\n"
-
-#~ msgid ""
-#~ "Indexing is turned on, enabling the fast search feature. However, "
-#~ "indexing may not be performed because the program crond, which does "
-#~ "nightly tasks on your computer, may be turned off. To make sure fast "
-#~ "searches can be done, check to make sure that crond is turned on.\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Indiceren staat aan, zodat snelzoeken mogelijk is. Echter, indiceren zal "
-#~ "misschien niet plaatsvinden, aangezien het programma crond, dat 's nachts "
-#~ "taken uitvoert op uw computer uit zou kunnen staan. Om er zeker van te "
-#~ "zijn dat snelzoeken werkt, moet u crond aanzetten.\n"
-
-#~ msgid "Prefs Box"
-#~ msgstr "Voorkeurendialoog"
-
-#, fuzzy
-#~ msgid ""
-#~ "To do a content search, Find requires an index of the content on your "
-#~ "system.  An index can't be created right now."
-#~ msgstr ""
-#~ "Om een snelle zoekopdracht uit te voeren heeft het zoekprograma een lijst "
-#~ "nodig van de bestanden op uw systeem. Het zoekprogramma kan momenteel "
-#~ "niet over deze lijst beschikken."
-
-#, fuzzy
-#~ msgid ""
-#~ "To do a fast search, Find requires an index of the files on your system. "
-#~ "Fast search is disabled in your Search preferences, so no index is "
-#~ "available."
-#~ msgstr ""
-#~ "Om te kunnen snelzoeken, heeft de Zoekdienst een index nodig van de "
-#~ "bestanden op uw systeem. Uw systeembeheerder heeft het snelzoeken op uw "
-#~ "systeem echter uitgeschakeld, en er is geen index beschikbaar."
-
-#, fuzzy
-#~ msgid "Fast searches are not available on your computer."
-#~ msgstr "Snelzoeken is niet beschikbaar op uw computer"
-
-#~ msgid ""
-#~ "To enable fast search, open the Preferences menu and choose Preferences. "
-#~ "Then select Search preferences and put a checkmark in the Enable Fast "
-#~ "Search checkbox. An index will be generated while your computer is idle, "
-#~ "so your index won't be available immediately."
-#~ msgstr ""
-#~ "Om snelzoeken mogelijk te maken: open het 'Voorkeuren'-menu en kies "
-#~ "'Voorkeuren'. Kies dan 'Zoekvoorkeuren', en zet een vinkje bij "
-#~ "'Snelzoeken'. De index wordt op de achtergrond gegenereerd, en is dus "
-#~ "niet meteen beschikbaar."
-
-#~ msgid "Choose which information appears beneath each icon's name"
-#~ msgstr "Kies de informatie die onder een pictogramtitel verschijnt"
-
-#, fuzzy
-#~ msgid "Icon Captions..."
-#~ msgstr "Pictogramtitels"
-
-#, fuzzy
-#~ msgid "_Icon Captions..."
-#~ msgstr "Pictogramtitels"
-
-#~ msgid ""
-#~ "The fast search feature indexes all the items on your hard disk.\n"
-#~ "It speeds up searching and allows you to search by file content\n"
-#~ "as well as filename, date, and other file properties.  The indexing\n"
-#~ "takes time but is performed only when your computer is idle.\n"
-#~ "Fast search requires that the cron daemon on your system be running.\n"
-#~ msgstr ""
-#~ "De snelzoekfaciliteit indiceert alle items op uw harde schijf.\n"
-#~ "Het versnelt het zoeken en laat u zoeken op bestandsinhoud\n"
-#~ "en bestandsnaam, datum en andere eigenschappen. Het indiceren\n"
-#~ "kost enige tijd, maar wordt alleen gedaan als uw computer niets\n"
-#~ "anders te doen heeft.\n"
-#~ "Snelzoeken vereist dat de cron-daemon draait op uw systeem.\n"
-
-#~ msgid ""
-#~ "The fast search feature indexes all the items on your hard disk.\n"
-#~ "It speeds up searching and allows you to search by file content\n"
-#~ "as well as filename, date, and other file properties. The indexing\n"
-#~ "takes time but is performed only when your computer is idle.\n"
-#~ msgstr ""
-#~ "De snelzoekfaciliteit indiceert alle items op uw harde schijf.\n"
-#~ "Het versnelt het zoeken en laat u zoeken op bestandsinhoud\n"
-#~ "en bestandsnaam, datum en andere eigenschappen. Het indiceren\n"
-#~ "kost enige tijd, maar wordt alleen gedaan als uw computer niets\n"
-#~ "anders te doen heeft.\n"
-
-#~ msgid "Enable fast search"
-#~ msgstr "Inschakelen Snelzoeken"
-
-#~ msgid "Turn fast search on when cron is enabled"
-#~ msgstr "Inschakel van Snelzoeken als 'cron' draait."
-
-#~ msgid ""
-#~ "Indexing is turned on, enabling the fast search feature. However, "
-#~ "indexing\n"
-#~ "currently can't be performed because the program crond, which does\n"
-#~ "nightly tasks on your computer, is turned off. To make sure fast "
-#~ "searches\n"
-#~ "can be done, turn crond on.\n"
-#~ "\n"
-#~ "If you are running Linux, you can log in as root and type these "
-#~ "commands \n"
-#~ "to start cron:\n"
-#~ "\n"
-#~ "/sbin/chkconfig --level 345 crond on\n"
-#~ "/etc/rc.d/init.d/cron start\n"
-#~ msgstr ""
-#~ "Indiceren staat aan, zodat snelzoeken mogelijk wordt. Het is echter \n"
-#~ "momenteel niet mogelijk omdat het programma crond, dat nachtelijke \n"
-#~ "taken op uw computer uitvoert, niet aanstaat. Om snelzoeken mogelijk \n"
-#~ "te maken, moet u crond aanzetten.\n"
-#~ "\n"
-#~ "Als u Linux gebruikt, log in als root-gebruiker, en type de volgende \n"
-#~ "opdrachten om cron te starten:\n"
-#~ "\n"
-#~ "/sbin/chkconfig --level 345 crond on\n"
-#~ "/etc/rc.d/init.d/cron start\n"
-
-#~ msgid ""
-#~ "Indexing is turned on, enabling the fast search feature. However, "
-#~ "indexing\n"
-#~ "may not be performed because the program crond, which does nightly tasks\n"
-#~ "on your computer, may be turned off. To make sure fast searches can be\n"
-#~ "done, check to make sure that crond is turned on.\n"
-#~ "\n"
-#~ "If you are running Linux, you can log in as root and type these commands\n"
-#~ "to start cron:\n"
-#~ "\n"
-#~ "/sbin/chkconfig --level 345 crond on\n"
-#~ "/etc/rc.d/init.d/cron start\n"
-#~ msgstr ""
-#~ "Indiceren staat aan, zodat snelzoeken mogelijk wordt. Het is echter \n"
-#~ "momenteel niet mogelijk omdat het programma crond, dat nachtelijke \n"
-#~ "taken op uw computer uitvoert, misschien niet aanstaat. Om snelzoeken "
-#~ "mogelijk \n"
-#~ "te maken, moet u crond aanzetten.\n"
-#~ "\n"
-#~ "Als u Linux gebruikt, log in als root-gebruiker, en type de volgende \n"
-#~ "opdrachten om cron te starten:\n"
-#~ "\n"
-#~ "/sbin/chkconfig --level 345 crond on\n"
-#~ "/etc/rc.d/init.d/cron start\n"
-
-#, fuzzy
-#~ msgid "Fast Searches"
-#~ msgstr "Zoeken"
-
-#~ msgid "The Cron Daemon"
-#~ msgstr "De Cron-daemon"
-
-#, fuzzy
-#~ msgid "  Done  "
-#~ msgstr "Voltooid"
-
-#, fuzzy
-#~ msgid "  Empty Trash  "
-#~ msgstr "Leeg de Prullenbak"
-
-#, fuzzy
-#~ msgid "  Add New Theme  "
-#~ msgstr "Voeg Nieuw Thema Toe..."
-
-#, fuzzy
-#~ msgid "View as Other..."
-#~ msgstr "Toon als Anders"
