@@ -1,3 +1,16 @@
+2000-08-09  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-tabs.c: (nautilus_sidebar_tabs_hit_test),
+	(recalculate_size), (nautilus_sidebar_tabs_size_allocate),
+	(nautilus_sidebar_tabs_size_request), (draw_one_tab_plain),
+	(draw_one_tab_themed), (draw_or_layout_all_tabs),
+	(nautilus_sidebar_tabs_expose):
+	
+	revamped how hit-testing works for the sidebar tabs; now that tabItem
+	structure contains a rectangle maintained by the drawing routines.
+	This fixed a number of sidebar tab bugs, especially in the
+	themed tabs.	
+	
 2000-08-09  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Make Nautilus tolerant to window titles and component geometries
