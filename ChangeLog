@@ -1,5 +1,22 @@
 2001-03-31  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(nautilus_preferences_item_set_constrained_integer_values):  When
+	the constrained interger values are change, we need to update the
+	displayed value as well, otherwise the very first time the
+	preferences dialogs shows, the selected entry will be wrong.
+
+	* libnautilus-extensions/nautilus-preferences.c:
+	(preferences_key_make_for_getter):
+	Fix for bug 7939 - preference value not set at Intermediate level
+	when defined at Novice and visible at Advanced.
+	The problem was that when a preference is not visible and it does
+	not have a default for the current user_level, then the default
+	value was 0.  The fix was to do is to find the closest
+	(lowest) user_level with a good default and use that.
+	
+2001-03-31  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/Makefile.am:
 	* libnautilus-extensions/nautilus-sidebar-functions.h:
 	* libnautilus-extensions/nautilus-sidebar-functions.c:

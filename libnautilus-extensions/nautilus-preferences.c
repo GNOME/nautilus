@@ -439,12 +439,12 @@ preferences_key_make_for_getter (const char *name)
 
 	g_return_val_if_fail (name != NULL, NULL);
 
-	if (preferences_preference_is_default (name)) {
+	if (preferences_preference_is_default (name) || !nautilus_preferences_is_visible (name)) {
 		key = preferences_key_make_for_default_getter (name, nautilus_preferences_get_user_level ());
 	} else {
 		key = preferences_make_user_level_filtered_key (name);
 	}
-
+	
 	return key;
 }
 

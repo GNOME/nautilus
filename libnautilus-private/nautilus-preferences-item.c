@@ -511,11 +511,11 @@ preferences_item_update_constrained_integer (NautilusPreferencesItem *item)
 	}
 
 	current_value = nautilus_preferences_get_integer (item->details->preference_name);
-
+	
 	position = nautilus_enumeration_get_value_position (item->details->constrained_integer_values,
 							    current_value);
 	g_return_if_fail (position != NAUTILUS_STRING_LIST_NOT_FOUND);
-	
+
 	current_label = nautilus_enumeration_get_nth_entry (item->details->constrained_integer_values,
 							    position);
 
@@ -1051,6 +1051,8 @@ nautilus_preferences_item_set_constrained_integer_values (NautilusPreferencesIte
 						entry_list);
 
 	nautilus_string_list_free (entry_list);
+
+	preferences_item_update_displayed_value (item);
 }
 
 gboolean
