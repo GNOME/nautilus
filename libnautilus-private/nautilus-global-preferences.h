@@ -59,6 +59,14 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"/desktop/gnome/file_views/show_hidden_files"
 #define NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES  		"/desktop/gnome/file_views/show_backup_files"
 #define NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS			"preferences/show_special_flags"
+#define NAUTILUS_PREFERENCES_DATE_FORMAT			"preferences/date_format"
+
+typedef enum
+{
+	NAUTILUS_DATE_FORMAT_LOCALE,
+	NAUTILUS_DATE_FORMAT_ISO,
+	NAUTILUS_DATE_FORMAT_INFORMAL
+} NautilusDateFormat;
 
 /* Sidebar panels  */
 #define NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES         "sidebar_panels/tree/show_only_directories"

@@ -204,6 +204,14 @@ static EelEnumerationEntry standard_font_size_entries[] = {
 	{ NULL }
 };
 
+/* These are not translated, because the text is not used in the ui */
+static EelEnumerationEntry date_format_entries[] = {
+	{ "locale",	   "Locale Default",	NAUTILUS_DATE_FORMAT_LOCALE },
+	{ "iso",	   "ISO Format",	NAUTILUS_DATE_FORMAT_ISO },
+	{ "informal",	   "Informal",		NAUTILUS_DATE_FORMAT_INFORMAL },
+	{ NULL }
+};
+
 /* These enumerations are used in the preferences dialog to 
  * populate widgets and route preferences changes between the
  * storage (GConf) and the displayed values.
@@ -218,6 +226,7 @@ static EelEnumerationInfo enumerations[] = {
 	{ "search_bar_type",		   search_bar_type_enum_entries },
 	{ "speed_tradeoff",		   speed_tradeoff_enum_entries },
 	{ "standard_font_size",		   standard_font_size_entries },
+	{ "date_format",		   date_format_entries },
 	{ NULL }
 };
 
@@ -402,6 +411,12 @@ static const PreferenceDefault preference_defaults[] = {
 	{ NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 	  PREFERENCE_BOOLEAN,
 	  GINT_TO_POINTER (TRUE)
+	},
+	{ NAUTILUS_PREFERENCES_DATE_FORMAT,
+	  PREFERENCE_STRING,
+	  "locale",
+	  NULL, NULL,
+	  "date_format"
 	},
 
 	/* Home URI */

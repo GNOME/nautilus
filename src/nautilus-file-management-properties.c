@@ -27,6 +27,7 @@
 #include "nautilus-file-management-properties.h"
 
 #include <string.h>
+#include <time.h>
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
@@ -55,6 +56,7 @@
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_ZOOM_WIDGET "iconview_zoom_optionmenu"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LIST_VIEW_ZOOM_WIDGET "listview_zoom_optionmenu"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET "sort_order_optionmenu"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DATE_FORMAT_WIDGET "date_format_optionmenu"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_TEXT_WIDGET "preview_text_optionmenu"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_IMAGE_WIDGET "preview_image_optionmenu"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_SOUND_WIDGET "preview_sound_optionmenu"
@@ -97,6 +99,13 @@ static const char *sort_order_values[] = {
 	"type",
 	"modification_date",
 	"emblems",
+	NULL
+};
+
+static const char *date_format_values[] = {
+	"locale",
+	"iso",
+	"informal",
 	NULL
 };
 
@@ -454,6 +463,43 @@ nautilus_file_management_properties_dialog_setup_icon_caption_page (GladeXML *xm
 }
 
 static void
+create_date_format_menu (GladeXML *xml_dialog)
+{
+	GtkWidget *option_menu;
+	GtkWidget *menu;
+	GtkWidget *menu_item;
+	gchar *date_string;
+	time_t now_raw;
+	struct tm* now;
+	option_menu = glade_xml_get_widget (xml_dialog,
+					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DATE_FORMAT_WIDGET);
+	menu = gtk_menu_new ();
+
+	now_raw = time (NULL);
+	now = localtime (&now_raw);
+
+	date_string = eel_strdup_strftime ("%c", now);
+	menu_item = gtk_menu_item_new_with_label (date_string);
+	g_free (date_string);
+	gtk_widget_show (menu_item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+
+	date_string = eel_strdup_strftime ("%Y-%m-%d %H:%M:%S", now);
+	menu_item = gtk_menu_item_new_with_label (date_string);
+	g_free (date_string);
+	gtk_widget_show (menu_item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+
+	date_string = eel_strdup_strftime (_("today at %-I:%M:%S %p"), now);
+	menu_item = gtk_menu_item_new_with_label (date_string);
+	g_free (date_string);
+	gtk_widget_show (menu_item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (option_menu), menu);
+}
+
+static void
 set_columns_from_gconf (NautilusColumnChooser *chooser)
 {
 	GList *visible_columns;
@@ -525,6 +571,7 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 	nautilus_file_management_properties_size_group_create (xml_dialog,
 							       "preview_label",
 							       5);
+	create_date_format_menu (xml_dialog);
 
 	/* setup preferences */
 	eel_preferences_glade_connect_bool (xml_dialog,
@@ -590,6 +637,10 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_FOLDER_WIDGET,
 							       NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
 							       preview_values);
+	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
+							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DATE_FORMAT_WIDGET,
+							       NAUTILUS_PREFERENCES_DATE_FORMAT,
+							       date_format_values);
 
 	eel_preferences_glade_connect_string_enum_radio_button (xml_dialog,
 								click_behavior_components,

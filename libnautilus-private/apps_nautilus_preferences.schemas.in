@@ -629,6 +629,21 @@
     </schema>
 
     <schema>
+      <key>/schemas/apps/nautilus/preferences/date_format</key>
+      <applyto>/apps/nautilus/preferences/date_format</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>locale</default>
+      <locale name="C">
+         <short>Date Format</short>
+         <long>
+             The format of file dates. Possible values are "locale",
+             "iso", and "informal".
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
       <key>/schemas/apps/nautilus/preferences/hide_built_in_bookmarks</key>
       <applyto>/apps/nautilus/preferences/hide_built_in_bookmarks</applyto>
       <owner>nautilus</owner>

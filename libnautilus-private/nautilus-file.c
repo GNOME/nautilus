@@ -111,6 +111,8 @@ enum {
 	LAST_SIGNAL
 };
 
+static int date_format_pref;
+
 static guint signals[LAST_SIGNAL];
 
 static GObjectClass *parent_class = NULL;
@@ -3018,6 +3020,13 @@ nautilus_file_fit_date_as_string (NautilusFile *file,
 	}
 
 	file_time = localtime (&file_time_raw);
+
+	if (date_format_pref == NAUTILUS_DATE_FORMAT_LOCALE) {
+		return eel_strdup_strftime ("%c", file_time);
+	} else if (date_format_pref == NAUTILUS_DATE_FORMAT_ISO) {
+		return eel_strdup_strftime ("%Y-%m-%d %H:%M:%S", file_time);
+	}
+	
 	file_date = eel_g_date_new_tm (file_time);
 	
 	today = g_date_new ();
@@ -6014,6 +6023,10 @@ nautilus_file_class_init (NautilusFileClass *class)
 		              G_TYPE_NONE, 0);
 	
 	g_type_class_add_private (class, sizeof (NautilusFileDetails));
+
+
+	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_DATE_FORMAT,
+				       &date_format_pref);
 }
 
 static GnomeVFSFileInfo *

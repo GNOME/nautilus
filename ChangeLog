@@ -1,3 +1,17 @@
+2004-07-15  Jürg Billeter  <j@bitron.ch>
+ 
+ 	* libnautilus-private/apps_nautilus_preferences.schemas.in:
+ 	* libnautilus-private/nautilus-directory.c: (add_preferences_callbacks):
+ 	* libnautilus-private/nautilus-file.c: (date_format_changed_callback),
+ 	(nautilus_file_fit_date_as_string):
+ 	* libnautilus-private/nautilus-global-preferences.c:
+ 	* libnautilus-private/nautilus-global-preferences.h:
+ 	* src/nautilus-file-management-properties.c: (create_date_format_menu),
+ 	(nautilus_file_management_properties_dialog_setup):
+ 	* src/nautilus-file-management-properties.glade:
+ 	Add preference to choose date format. Set default date format to '%c',
+ 	'the preferred representation for the current locale'.
+ 
 2004-07-09  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-directory-view.c (activate_check_mime_types):
