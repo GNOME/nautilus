@@ -823,7 +823,7 @@ volume_ops_callback (BonoboUIComponent *component, gpointer data, const char *ve
 	GList *selection;
 	char *command;
 	const char *device_path;
-	char *rawdevice_path;
+	char *rawdevice_path, *quoted_path;
 	char *program;
 	NautilusVolume *volume;
 	gboolean status;
@@ -874,6 +874,10 @@ volume_ops_callback (BonoboUIComponent *component, gpointer data, const char *ve
 	} else {
 		rawdevice_path = g_strdup (device_path);
 	}
+	
+	quoted_path = g_shell_quote (rawdevice_path);  
+	g_free (rawdevice_path);
+	rawdevice_path = quoted_path;
 		
 	if (strcmp (verb, "Unmount Volume Conditional") == 0) {
 		nautilus_volume_monitor_mount_unmount_removable (nautilus_volume_monitor_get (),
