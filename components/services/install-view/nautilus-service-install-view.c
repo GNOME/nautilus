@@ -49,25 +49,28 @@
 
 #define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
 #define SERVICE_DOMAIN_NAME			"testmachine.eazel.com"
+#define NEXT_VIEW				"http://eazel1.eazel.com/services/control2.html"
 
-static void       nautilus_service_install_view_initialize_class (NautilusServiceInstallViewClass *klass);
-static void       nautilus_service_install_view_initialize       (NautilusServiceInstallView      *view);
-static void       nautilus_service_install_view_destroy          (GtkObject                       *object);
-static void       service_install_load_location_callback         (NautilusView                    *nautilus_view,
-								  const char                      *location,
-								  NautilusServiceInstallView      *view);
-static void       generate_install_form                          (NautilusServiceInstallView      *view);
-static void       fake_overall_install_progress                  (NautilusServiceInstallView      *view);
-static void       generate_current_progress                      (NautilusServiceInstallView      *view,
-								  char                            *progress_message);
-static void       nautilus_service_install_view_update_from_uri  (NautilusServiceInstallView      *view,
-								  const char                      *uri);
-static void       show_overall_feedback                          (NautilusServiceInstallView      *view,
-								  char                            *progress_message);
-static GtkWidget* create_title_widget                            (const char                      *title_text);
-static GtkWidget* create_graphic_widget                          (const char                      *icon_name,
-								  const char                      *background_color_spec,
-								  NautilusGraphicPlacementType     placement);
+static void       nautilus_service_install_view_initialize_class (NautilusServiceInstallViewClass	*klass);
+static void       nautilus_service_install_view_initialize       (NautilusServiceInstallView		*view);
+static void       nautilus_service_install_view_destroy          (GtkObject				*object);
+static void       service_install_load_location_callback         (NautilusView				*nautilus_view,
+								  const char				*location,
+								  NautilusServiceInstallView		*view);
+static void       generate_install_form                          (NautilusServiceInstallView		*view);
+static void       fake_overall_install_progress                  (NautilusServiceInstallView		*view);
+static void       generate_current_progress                      (NautilusServiceInstallView		*view,
+								  char					*progress_message);
+static void       nautilus_service_install_view_update_from_uri  (NautilusServiceInstallView		*view,
+								  const char				*uri);
+static void       show_overall_feedback                          (NautilusServiceInstallView		*view,
+								  char					*progress_message);
+static GtkWidget* create_title_widget                            (const char				*title_text);
+static GtkWidget* create_graphic_widget                          (const char				*icon_name,
+								  const char				*background_color_spec,
+								  NautilusGraphicPlacementType		placement);
+static void	go_to_uri					(NautilusServiceInstallView		*view,
+								 char					*uri);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusServiceInstallView, nautilus_service_install_view, GTK_TYPE_EVENT_BOX)
 
@@ -85,7 +88,6 @@ generate_install_form (NautilusServiceInstallView	*view) {
 
 	/* Setup the title */
 	title = create_title_widget ("Easy Install");
-
         gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
         gtk_widget_show (title);
 
@@ -95,7 +97,7 @@ generate_install_form (NautilusServiceInstallView	*view) {
 	temp_box = gtk_alignment_new (0.1, 0.1, 0, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
 	gtk_widget_show (temp_box);
-	view->details->package_name = gtk_label_new (_("Installing \"foo-bar-deluxe\""));
+	view->details->package_name = gtk_label_new (_("Installing \"The Gimp\""));
 	gtk_container_add (GTK_CONTAINER (temp_box), view->details->package_name);
 	font = nautilus_font_factory_get_font_from_preferences (20);
 	nautilus_gtk_widget_set_font (view->details->package_name, font);
@@ -103,26 +105,13 @@ generate_install_form (NautilusServiceInstallView	*view) {
 	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_name, FALSE, FALSE, 2);
 	gtk_widget_show (view->details->package_name);
 
-	/* Package Summary */
-	temp_box = gtk_alignment_new (0.1, 0.1, 0, 1);
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
-	gtk_widget_show (temp_box);
-	view->details->package_summary = gtk_label_new ("Summary: This is a fake package that does nothing");
-	gtk_container_add (GTK_CONTAINER (temp_box), view->details->package_summary);
-	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_summary, FALSE, FALSE, 2);
-	font = nautilus_font_factory_get_font_from_preferences (14);
-	nautilus_gtk_widget_set_font (view->details->package_summary, font);
-	gdk_font_unref (font);
-	gtk_label_set_line_wrap (GTK_LABEL (view->details->package_summary), TRUE);
-	gtk_widget_show (view->details->package_summary);
-
 	/* Package Description */
-	temp_box = gtk_alignment_new (0.1, 0.1, 0, 1);
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
+	temp_box = gtk_alignment_new (0.1, 0.9, 0, 0);
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 0);
 	gtk_widget_show (temp_box);
-	view->details->package_details = gtk_label_new ("Description: No really this is completely fake.  This package does absolutely nothing.");
+	view->details->package_details = gtk_label_new ("Description: The GIMP is the GNU Image Manipulation Program.  It is a freely distributed piece of software suitable for such tasks as photo retouching, image composition, and image authoring.");
 	gtk_container_add (GTK_CONTAINER (temp_box), view->details->package_details);
-	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_details, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_details, FALSE, FALSE, 0);
 	font = nautilus_font_factory_get_font_from_preferences (14);
 	nautilus_gtk_widget_set_font (view->details->package_details, font);
 	gdk_font_unref (font);
@@ -133,7 +122,7 @@ generate_install_form (NautilusServiceInstallView	*view) {
 	temp_box = gtk_alignment_new (0.1, 0.1, 0, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
 	gtk_widget_show (temp_box);
-	view->details->package_version = gtk_label_new ("Version 0.0.0-1");
+	view->details->package_version = gtk_label_new ("Version 1.0.4-1");
 	gtk_container_add (GTK_CONTAINER (temp_box), view->details->package_version);
 	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_version, FALSE, FALSE, 2);
 	font = nautilus_font_factory_get_font_from_preferences (14);
@@ -297,7 +286,7 @@ generate_current_progress (NautilusServiceInstallView	*view, char	*progress_mess
 	int		counter;
      
 	temp_container = gtk_hbox_new (TRUE, 0);
-	gtk_box_pack_end (GTK_BOX (view->details->message_box), temp_container, 0, 0, 4);
+	gtk_box_pack_start (GTK_BOX (view->details->message_box), temp_container, 0, 0, 4);
 	gtk_widget_show (temp_container);
 
 	/* add a label for progress messages, but don't show it until there's a message */
@@ -305,6 +294,7 @@ generate_current_progress (NautilusServiceInstallView	*view, char	*progress_mess
 	font = nautilus_font_factory_get_font_from_preferences (16);
 	nautilus_gtk_widget_set_font (view->details->current_feedback_text, font);
 	gtk_box_pack_start (GTK_BOX (temp_container), view->details->current_feedback_text, 0, 0, 8);
+	gtk_label_set_line_wrap (GTK_LABEL (view->details->current_feedback_text), TRUE);
 
 	/* Create a center alignment object */
 	temp_box = gtk_alignment_new (0.5, 0.5, 0, 0);
@@ -348,6 +338,16 @@ show_overall_feedback (NautilusServiceInstallView	*view, char	*progress_message)
 	gtk_widget_show (view->details->overall_feedback_text);
 
 }
+
+/* utility routine to go to another uri */
+
+static void
+go_to_uri (NautilusServiceInstallView	*view, char	*uri) {
+
+	nautilus_view_open_location (view->details->nautilus_view, uri);
+
+}
+
 
 static void
 nautilus_service_install_view_initialize_class (NautilusServiceInstallViewClass *klass) {
@@ -521,12 +521,20 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView	*view,
 	}
 
 	/* Ad hock crap to fake a full install */
+	show_overall_feedback (view, "Checking Dependancies");
 	show_overall_feedback (view, "Waiting for downloads");
-	generate_current_progress (view, "Downloading foo.rpm");
-	generate_current_progress (view, "Downloading bar.rpm");		
-	generate_current_progress (view, "Downloading baz.rpm");		
-	generate_current_progress (view, "Downloading bam.rpm");		
+	generate_current_progress (view, "Downloading png image libraries ...");
+	show_overall_feedback (view, "Checking Dependancies");
+	show_overall_feedback (view, "Waiting for downloads");
+	generate_current_progress (view, "Downloading gnome core libraries ...");		
+	show_overall_feedback (view, "Checking Dependancies");
+	show_overall_feedback (view, "Waiting for downloads");
+	generate_current_progress (view, "Downloading gtk+ libraries ...");
+	show_overall_feedback (view, "Checking Dependancies");
+	show_overall_feedback (view, "Waiting for downloads");
+	generate_current_progress (view, "Downloading glib libraries ...");		
 	fake_overall_install_progress (view);
+	go_to_uri (view, NEXT_VIEW);
 
 }
 

@@ -155,7 +155,7 @@ generate_startup_form (NautilusServiceStartupView	*view) {
 			show_feedback (view, "Retreiving services list ...");
 		}
 		if (counter == 20000) {
-			go_to_uri (view, "eazel:summary");
+			go_to_uri (view, "eazel-login:");
 		}
 		else {
 			gtk_progress_bar_update (GTK_PROGRESS_BAR (view->details->progress_bar), value);
