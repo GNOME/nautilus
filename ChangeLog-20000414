@@ -1,3 +1,22 @@
+1999-12-19  Havoc Pennington  <hp@pobox.com>
+
+	* src/file-manager/desktop-layout.c: don't do an arrangement
+	on every change
+
+	* src/file-manager/desktop-canvas.c
+	(desktop_canvas_load_desktop_icons): connect to finished_load and
+	arrange the icons when we get it. This is a temporary hack,
+	because the DesktopLayout engine isn't progressive yet.
+
+	* src/file-manager/fm-directory-list.c
+	(fm_directory_list_class_init): add a finished_load signal
+
+	* src/file-manager/desktop-window.c (desktop_window_init): for
+	now, don't fill the whole screen so we can see gdb.
+
+	* src/file-manager/desktop-item.c: Move user data accessors into
+	the .c file, these are private.	
+
 1999-12-17  Havoc Pennington  <hp@redhat.com>
 
         * src/file-manager/desktop-item.h: New module, for items 
