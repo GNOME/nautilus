@@ -137,7 +137,8 @@ typedef enum ElementIndex {
 	QANDAENTRY,
 	QANDASET,
 	BRIDGEHEAD,
-	UNDEFINED /* 125 */
+	RELEASEINFO, /* 125 */
+	UNDEFINED /* 126 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;
@@ -210,6 +211,7 @@ typedef struct HeaderInfo {
 	gchar *subtitle;
 	gchar *copyright_year;
 	gchar *copyright_holder;
+	gchar *releaseinfo;
 	GSList *authors;
 } HeaderInfo;
 

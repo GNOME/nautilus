@@ -29,6 +29,7 @@ static void toc_glossentry_end_element (Context *context, const gchar *name);
 static void toc_glossterm_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void toc_glossterm_end_element (Context *context, const gchar *name);
 static void toc_tag_characters (Context *context, const gchar *chars, int len);
+static void toc_releaseinfo_characters (Context *context, const gchar *chars, int len);
 
 ElementInfo toc_elements[] = {
 	{ ARTICLE, "article", (startElementSAXFunc) article_start_element, NULL, NULL},
@@ -159,6 +160,7 @@ ElementInfo toc_elements[] = {
 	{ QANDAENTRY, "qandaentry", NULL, NULL, NULL, },
 	{ QANDASET, "qandaset", NULL, NULL, NULL, },
 	{ BRIDGEHEAD, "bridgehead", NULL, NULL, NULL, },
+	{ RELEASEINFO, "releaseinfo", NULL, NULL, (charactersSAXFunc) toc_releaseinfo_characters, },
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -316,7 +318,7 @@ toc_artheader_end_element (Context *context, const gchar *name)
 	HeaderInfo *header = ((TocContext *) context->data)->header;
 	if (artheader_printed == TRUE) return;
 
-	if (header->title)
+		if (header->title)
 		g_print ("<TITLE>%s</TITLE>\n</HEAD>\n", header->title);
 	else
 		g_print ("<TITLE>%s</TITLE>\n</HEAD>\n", _("GNOME Documentation"));
@@ -352,6 +354,8 @@ toc_artheader_end_element (Context *context, const gchar *name)
 		g_print ("<A HREF=\"gnome-help:%s?legalnotice\">%s</A> &copy; %s %s %s",
 			 context->base_file, _("Copyright"), header->copyright_year, _("by"),header->copyright_holder);
 	}
+	if (header->releaseinfo) 
+		g_print ("<P><FONT SIZE=\"-1\"<I>%s</I></FONT></P>", header->releaseinfo);
 	g_print ("<HR>\n<H2>%s</H2>\n\n", _("Table of Contents"));
 	g_print ("<P>\n");
 	artheader_printed = TRUE;
@@ -448,9 +452,12 @@ toc_copyright_characters (Context *context,
 	switch (index) {
 	case COPYRIGHT:
 		if (((StackElement *) context->stack->data)->info->index == YEAR)
-			((TocContext *)context->data)->header->copyright_year = temp;
-		else if (((StackElement *) context->stack->data)->info->index == HOLDER)
-			((TocContext *)context->data)->header->copyright_holder = temp;
+			((TocContext *) context->data)->header->copyright_year = temp;
+		else if (((StackElement *) context->stack->data)->info->index == HOLDER) {
+			if (((TocContext *) context->data)->header->copyright_holder == NULL)
+				  ((TocContext *)context->data)->header->copyright_holder = temp;
+			else ((TocContext *)context->data)->header->copyright_holder = g_strconcat (((TocContext *)context->data)->header->copyright_holder, ", ", temp, NULL);
+		}
 		break;
 	default:
 		g_free (temp);
@@ -854,4 +861,13 @@ toc_tag_characters (Context *context, const gchar *chars, int len)
 
 	g_slist_free (element_list);
 
+}
+
+static void
+toc_releaseinfo_characters (Context *context, const gchar *chars, int len)
+{
+	char *temp;
+	temp = g_strndup (chars, len);
+	((TocContext *) context->data)->header->releaseinfo = temp;
+	
 }
