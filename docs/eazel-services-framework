@@ -1,3 +1,7 @@
+Nautilus Services Framework thoughts
+Eskil Olsen (eskil@eazel.com)
+May 2000
+
 Nautilus Services packaging :
 
 Packages
@@ -48,10 +52,97 @@ even small parts, lack of ability to only install the parts you want.
 The upside is, fewer packages to confuse the user.
 
 
+
+
 Nautilus Services source directory structure :
 
 eazel-services
 --------------
-/			the standard autmake hell
+/			the standard automake hell
 /idl			the idl for the toplevel eazel service object
 /libnautilusservices	the shared lib with some common methods (like prompting for root access)
+
+eazel-service-time
+------------------
+/			the standard automake hell
+/idl			the idl for the service
+/src			the corba object and the cli tool
+
+nautilus-eazel-service-time-view
+--------------------------------
+/			the standard automake hell
+/src			the nautilus view component
+
+
+
+Naming :
+
+the idl files
+-------------
+
+to avoid the impending namespace conflict that the $prefix/gnome/idl
+system will cause, the idl files should be named uniquely:
+
+	top idl file		nautilus-service.idl
+	service specific idl 	nautilus-<company>-<name>-service.idl
+			eg. nautilus-eazel-time-service.idl
+
+IDL interfaces && modules
+-------------------------
+
+There is already a module Nautilus, in which we could place the
+Service interface (note, this does not have to be done in the same
+file as the existing Nautilus module is defined). This could also be
+encapsulated as a module within the Nautilus module.
+
+Alternatively, we could make a module specifically for the
+services. This would cut down on the long variablenames.
+
+So something like this for the toplevel
+
+module Nautilus {
+	interface Service {
+		... toplevel calls ...
+	};	
+};
+
+The time service (nautilus-eazel-time-service.idl) :
+
+module Nautilus {
+	module Eazel {
+		interface Time : Service {
+			...
+		};
+};
+
+The time service (nautilus-eazel-install-service.idl) :
+
+module Nautilus {
+	Module Eazel {
+		interface Installer : Nautilus::Service {	
+			...
+		};
+	};
+};
+
+So the scheme for service IDL's would be 
+
+module Nautilus {
+	module <CompanyName> {
+		interface <ServiceName> : Nautilus::Service {
+		};
+	};
+};
+
+
+
+The Shared Library :
+
+
+Contents
+--------
+
+The shared library should contain methods that many of the services
+will need. This is quite unspecified currently, but eg call to check
+for distribution type, root access, query/cache for root password and
+such should go here.
