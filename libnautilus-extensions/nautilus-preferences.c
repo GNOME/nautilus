@@ -396,11 +396,11 @@ prefs_set_pref (NautilusPreferences     *prefs,
 	switch (pref_hash_info->pref_info.pref_type)
 	{
 	case NAUTILUS_PREFERENCE_BOOLEAN:
-		gnome_config_set_bool (pref_name, (gboolean) pref_hash_info->pref_value);
+		gnome_config_set_bool (pref_name, (gboolean) GPOINTER_TO_INT(pref_hash_info->pref_value));
 		break;
 
 	case NAUTILUS_PREFERENCE_ENUM:
-		gnome_config_set_int (pref_name, (gint) pref_hash_info->pref_value);
+		gnome_config_set_int (pref_name, (gint) GPOINTER_TO_INT(pref_hash_info->pref_value));
 		break;
 	}
 
@@ -498,11 +498,11 @@ nautilus_preferences_register_from_info (NautilusPreferences		*prefs,
 	switch (pref_hash_info->pref_info.pref_type)
 	{
 	case NAUTILUS_PREFERENCE_BOOLEAN:
-		pref_hash_info->pref_value = (gpointer) gnome_config_get_bool (gnome_config_string);
+		pref_hash_info->pref_value = (gpointer) GINT_TO_POINTER(gnome_config_get_bool (gnome_config_string));
 		break;
 
 	case NAUTILUS_PREFERENCE_ENUM:
-		pref_hash_info->pref_value = (gpointer) gnome_config_get_int (gnome_config_string);
+		pref_hash_info->pref_value = (gpointer) GINT_TO_POINTER(gnome_config_get_int (gnome_config_string));
 		break;
 	}
 
@@ -527,7 +527,7 @@ nautilus_preferences_make_gnome_config_string (const NautilusPreferencesInfo *pr
 	switch (pref_info->pref_type)
 	{
 	case NAUTILUS_PREFERENCE_BOOLEAN:
-		if ((gboolean) pref_info->pref_default_value)
+		if ((gboolean) GPOINTER_TO_INT(pref_info->pref_default_value))
 		{
 			g_string_append (tmp, "true");
 		}
@@ -539,7 +539,7 @@ nautilus_preferences_make_gnome_config_string (const NautilusPreferencesInfo *pr
 
 	case NAUTILUS_PREFERENCE_ENUM:
 
-		g_string_sprintfa  (tmp, "%d", (gint) pref_info->pref_default_value);
+		g_string_sprintfa  (tmp, "%d", (gint) GPOINTER_TO_INT(pref_info->pref_default_value));
 
 		break;
 	}
@@ -681,7 +681,7 @@ nautilus_preferences_set_boolean (NautilusPreferences     *prefs,
 	g_return_if_fail (NAUTILUS_IS_PREFS (prefs));
 	g_return_if_fail (pref_name != NULL);
 
-	rv = prefs_set_pref (prefs, pref_name, (gpointer) boolean_value);
+	rv = prefs_set_pref (prefs, pref_name, GINT_TO_POINTER(boolean_value));
 
 	g_assert (rv);
 }
@@ -709,7 +709,7 @@ nautilus_preferences_get_boolean (NautilusPreferences  *prefs,
 
 	g_assert (pref_type == NAUTILUS_PREFERENCE_BOOLEAN);
 
-	return (gboolean) value;
+	return (gboolean) GPOINTER_TO_INT(value);
 }
 
 void
@@ -723,7 +723,7 @@ nautilus_preferences_set_enum (NautilusPreferences	*prefs,
 	g_return_if_fail (NAUTILUS_IS_PREFS (prefs));
 	g_return_if_fail (pref_name != NULL);
 
-	rv = prefs_set_pref (prefs, pref_name, (gpointer) enum_value);
+	rv = prefs_set_pref (prefs, pref_name, GINT_TO_POINTER(enum_value));
 
 	g_assert (rv);
 }
@@ -751,7 +751,7 @@ nautilus_preferences_get_enum (NautilusPreferences  *prefs,
 
 	g_assert (pref_type == NAUTILUS_PREFERENCE_ENUM);
 
-	return (gint) value;
+	return GPOINTER_TO_INT(value);
 }
 
 NautilusPreferences *

@@ -1776,7 +1776,7 @@ user_level_changed_callback (const GtkObject         *prefs,
 	g_assert (prefs != NULL);
 	g_assert (pref_name != NULL);
 
-	directory_view->details->user_level = (gint) pref_value;
+	directory_view->details->user_level = GPOINTER_TO_INT(pref_value);
 
 	/* Reload the current uri so that the filtering changes take place */
 	if (directory_view->details->model != NULL)
