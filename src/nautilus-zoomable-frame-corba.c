@@ -39,14 +39,21 @@ typedef struct {
 	NautilusViewFrame *view;
 } impl_POA_Nautilus_ZoomableFrame;
 
-static void impl_Nautilus_ZoomableFrame_zoom_level_changed (PortableServer_Servant  servant,
+static void impl_Nautilus_ZoomableFrame_report_zoom_level_changed (PortableServer_Servant  servant,
 							    CORBA_double            level,
 							    CORBA_Environment      *ev);
+
+static void impl_Nautilus_ZoomableFrame_report_zoom_parameters_changed (PortableServer_Servant  servant,
+							    		CORBA_double            level,
+							    		CORBA_double            min,
+							   		CORBA_double            max,
+							   		CORBA_Environment      *ev);
 
 POA_Nautilus_ZoomableFrame__epv impl_Nautilus_ZoomableFrame_epv =
 {
    NULL,
-   &impl_Nautilus_ZoomableFrame_zoom_level_changed,
+   impl_Nautilus_ZoomableFrame_report_zoom_level_changed,
+   impl_Nautilus_ZoomableFrame_report_zoom_parameters_changed,
 };
 
 static PortableServer_ServantBase__epv base_epv;
@@ -107,11 +114,22 @@ impl_Nautilus_ZoomableFrame__create (NautilusViewFrame *view,
 }
 
 static void
-impl_Nautilus_ZoomableFrame_zoom_level_changed (PortableServer_Servant servant,
-						CORBA_double level,
-						CORBA_Environment *ev)
+impl_Nautilus_ZoomableFrame_report_zoom_level_changed (PortableServer_Servant servant,
+						       CORBA_double level,
+						       CORBA_Environment *ev)
 {
 	nautilus_view_frame_zoom_level_changed
 		(((impl_POA_Nautilus_ZoomableFrame *) servant)->view,
 		 level);
+}
+
+static void
+impl_Nautilus_ZoomableFrame_report_zoom_parameters_changed (PortableServer_Servant servant,
+							    CORBA_double level,
+							    CORBA_double min,
+							    CORBA_double max,
+							    CORBA_Environment *ev)
+{
+	nautilus_view_frame_zoom_parameters_changed
+		(((impl_POA_Nautilus_ZoomableFrame *) servant)->view, level, min, max);
 }

@@ -1,3 +1,56 @@
+2000-06-26  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_marshal_NONE__DOUBLE_DOUBLE_DOUBLE):
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus/nautilus-view-component.idl:
+	* libnautilus/nautilus-zoomable.c:
+	(nautilus_zoomable_set_parameters),
+	(nautilus_zoomable_set_zoom_level):
+	* libnautilus/nautilus-zoomable.h:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_set_zoom_level),
+	(fm_directory_view_set_zoom_parameters):
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_begin_loading),
+	(fm_icon_view_set_zoom_level), (fm_icon_view_init_zoom_params),
+	(fm_icon_view_bump_zoom_level), (fm_icon_view_zoom_to_level),
+	(fm_icon_view_restore_default_zoom_level):
+	* src/file-manager/fm-list-view.c: (fm_list_view_bump_zoom_level),
+	(fm_list_view_zoom_to_level),
+	(fm_list_view_restore_default_zoom_level),
+	(fm_list_view_begin_loading), (fm_list_view_set_zoom_level),
+	(fm_list_view_init_zoom_params):
+	* src/nautilus-view-frame-private.h:
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_initialize_class),
+	(nautilus_view_frame_zoom_parameters_changed):
+	* src/nautilus-view-frame.h:
+	* src/nautilus-window.c:
+	(nautilus_window_zoom_level_changed_callback),
+	(nautilus_window_zoom_parameters_changed_callback),
+	(nautilus_window_connect_view):
+	* src/nautilus-zoom-control.c: (nautilus_zoom_control_initialize),
+	(draw_number_and_disable_arrows), (zoom_menu_callback),
+	(create_zoom_menu_item),
+	(nautilus_zoom_control_button_press_event),
+	(nautilus_zoom_control_set_zoom_level),
+	(nautilus_zoom_control_set_min_zoom_level),
+	(nautilus_zoom_control_set_max_zoom_level),
+	(nautilus_zoom_control_get_zoom_level),
+	(nautilus_zoom_control_get_min_zoom_level),
+	(nautilus_zoom_control_get_max_zoom_level):
+	* src/nautilus-zoom-control.h:
+	* src/nautilus-zoomable-frame-corba.c:
+	(impl_Nautilus_ZoomableFrame_report_zoom_level_changed),
+	(impl_Nautilus_ZoomableFrame_report_zoom_parameters_changed):
+	Added report_zoom_parameters_changed to the zoomable
+	interface. This allows the zoom control to get min/max
+	from the zoomable (as opposed to hard coding in values)
+	Also fixed the zoom control to now use just doubles.
+	Renamed the zoom_level_changed message to be report_zoom_level_changed
+	in accordance with convention.
+
 2000-06-26  John Sullivan  <sullivan@eazel.com>
 
 	Finished task 876 (owner and group should be changeable

@@ -59,8 +59,6 @@ static int     nautilus_zoom_control_expose 		 (GtkWidget *widget,
 							  GdkEventExpose *event);
 static gboolean nautilus_zoom_control_button_press_event (GtkWidget *widget, 
 							  GdkEventButton *event);
-static void     set_zoom_level                           (NautilusZoomControl *zoom_control, 
-							  int new_level);
 void            draw_number_and_disable_arrows           (GtkWidget *widget, 
 							  GdkRectangle *box);
 
@@ -156,10 +154,9 @@ nautilus_zoom_control_initialize (NautilusZoomControl *zoom_control)
 	char *file_name;
 	GtkWidget *pix_widget;
 	
-	zoom_control->current_zoom = NAUTILUS_ZOOM_LEVEL_STANDARD;
-	zoom_control->min_zoom = NAUTILUS_ZOOM_LEVEL_SMALLEST;
-	zoom_control->max_zoom = NAUTILUS_ZOOM_LEVEL_LARGEST;
-	zoom_control->zoom_factor = 1.0;
+	zoom_control->zoom_level = 1.0;
+	zoom_control->min_zoom_level = 0.0;
+	zoom_control->max_zoom_level = 4.0;
 	
 	/* allocate the pixmap that holds the image */
 	
@@ -190,7 +187,7 @@ void draw_number_and_disable_arrows(GtkWidget *widget, GdkRectangle *box)
 	label_font = gdk_font_load("-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*");
 	temp_gc = gdk_gc_new(widget->window);
 	
-	percent = floor((100.0 * zoom_control->zoom_factor) + .5);
+	percent = floor((100.0 * zoom_control->zoom_level) + .5);
 	g_snprintf(buffer, 8, "%d", percent);
 	
 	x = (box->width - gdk_string_width(label_font, buffer)) >> 1;  
@@ -201,9 +198,9 @@ void draw_number_and_disable_arrows(GtkWidget *widget, GdkRectangle *box)
 	
 	/* clear the arrows if necessary */
 	
-	if (zoom_control->current_zoom == zoom_control->min_zoom)
+	if (zoom_control->zoom_level <= zoom_control->min_zoom_level)
 		gdk_draw_rectangle (widget->window, widget->style->bg_gc[0], TRUE, 0, 0, box->width / 4, box->height);
-	else if (zoom_control->current_zoom == zoom_control->max_zoom)
+	else if (zoom_control->zoom_level >= zoom_control->max_zoom_level)
 		gdk_draw_rectangle (widget->window, widget->style->bg_gc[0], TRUE, box->width - (box->width / 4), 0, box->width / 4, box->height);
 	
 	gdk_gc_unref(temp_gc);
@@ -256,16 +253,10 @@ zoom_menu_callback (GtkMenuItem *item, gpointer callback_data)
 	zoom_control = NAUTILUS_ZOOM_CONTROL (callback_data);
 	
 	/* Check to see if we can zoom out */
-	if ((zoom_level < zoom_control->current_zoom && zoom_level >= zoom_control->min_zoom) ||
-	    (zoom_level > zoom_control->current_zoom && zoom_level <= zoom_control->max_zoom)) {
+	if ((zoom_control->min_zoom_level <= zoom_level && zoom_level <  zoom_control->zoom_level) ||
+	    (zoom_control->zoom_level     < zoom_level && zoom_level  <= zoom_control->max_zoom_level)) {
 		gtk_signal_emit (GTK_OBJECT (zoom_control), signals[ZOOM_TO_LEVEL], zoom_level);
 	}
-}
-
-static void
-zoom_menu_item_free_zoom_level (gpointer zoom_level_ptr)
-{
-	g_free (zoom_level_ptr);
 }
 
 static void
@@ -280,7 +271,7 @@ create_zoom_menu_item (GtkMenu *menu, GtkWidget *zoom_control,
 	zoom_level_ptr = g_new (double, 1);
 	*zoom_level_ptr = zoom_level;
 
-	gtk_object_set_data_full (GTK_OBJECT (menu_item), "zoom_level", zoom_level_ptr, zoom_menu_item_free_zoom_level);
+	gtk_object_set_data_full (GTK_OBJECT (menu_item), "zoom_level", zoom_level_ptr, g_free);
 	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
 			    GTK_SIGNAL_FUNC (zoom_menu_callback),
 			    zoom_control);
@@ -305,15 +296,6 @@ create_zoom_menu(GtkWidget *zoom_control)
 	return menu;  
 }
   
-static void
-set_zoom_level(NautilusZoomControl *zoom_control, int new_level)
-{
-	gtk_widget_queue_draw (GTK_WIDGET (zoom_control));	
-	zoom_control->current_zoom = new_level;
-	zoom_control->zoom_factor = (double) nautilus_get_icon_size_for_zoom_level
-		(zoom_control->current_zoom) / NAUTILUS_ICON_SIZE_STANDARD;    
-}	
-
 /* handle button presses */
 
 static gboolean
@@ -335,9 +317,9 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
 		return TRUE;	  
  	}
 	
-	if (event->x < (width / 3) && (zoom_control->current_zoom > zoom_control->min_zoom)) {
+	if (event->x < (width / 3) && (zoom_control->zoom_level > zoom_control->min_zoom_level)) {
 		gtk_signal_emit (GTK_OBJECT (widget), signals[ZOOM_OUT]);			
-	} else if ((event->x > ((2 * width) / 3)) && (zoom_control->current_zoom < zoom_control->max_zoom)) {
+	} else if ((event->x > ((2 * width) / 3)) && (zoom_control->zoom_level < zoom_control->max_zoom_level)) {
 		gtk_signal_emit (GTK_OBJECT (widget), signals[ZOOM_IN]);			
 	} else if ((event->x >= (center - (width >> 3))) && (event->x <= (center + (width >> 3)))) {
 		gtk_signal_emit (GTK_OBJECT (widget), signals[ZOOM_DEFAULT]);			
@@ -352,12 +334,6 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
 	 */	  
   
 	return TRUE;
-}
-
-void
-nautilus_zoom_control_reset_zoom_level (NautilusZoomControl *zoom_control)
-{
-	set_zoom_level (zoom_control, NAUTILUS_ZOOM_LEVEL_STANDARD);
 }
 
 /*
@@ -380,33 +356,44 @@ nautilus_zoom_control_reset_zoom_level (NautilusZoomControl *zoom_control)
  * doubles.
  */
  
-static NautilusZoomLevel
-nautilus_zoom_level_from_double(double zoom_level)
-{
-	int icon_size = floor(zoom_level * NAUTILUS_ICON_SIZE_STANDARD + 0.5);
-	
-	if (icon_size <= NAUTILUS_ICON_SIZE_SMALLEST) {
-		return NAUTILUS_ZOOM_LEVEL_SMALLEST;
-	} else if (icon_size <= NAUTILUS_ICON_SIZE_SMALLER) {
-		return NAUTILUS_ZOOM_LEVEL_SMALLER;
-	} else if (icon_size <= NAUTILUS_ICON_SIZE_SMALL) {
-		return NAUTILUS_ZOOM_LEVEL_SMALL;
-	} else if (icon_size <= NAUTILUS_ICON_SIZE_STANDARD) {
-		return NAUTILUS_ZOOM_LEVEL_STANDARD;
-	} else if (icon_size <= NAUTILUS_ICON_SIZE_LARGE) {
-		return NAUTILUS_ZOOM_LEVEL_LARGE;
-	} else if (icon_size <= NAUTILUS_ICON_SIZE_LARGER) {
-		return NAUTILUS_ZOOM_LEVEL_LARGER;
-	} else {
-		return NAUTILUS_ZOOM_LEVEL_LARGEST;
-	}
-}
 
-/*
- * Changes the zoom controls setting to the nearest corresponding
- */
 void
 nautilus_zoom_control_set_zoom_level (NautilusZoomControl *zoom_control, double zoom_level)
 {
-	set_zoom_level (zoom_control, nautilus_zoom_level_from_double(zoom_level));
+	zoom_control->zoom_level = zoom_level;
+	gtk_widget_queue_draw (GTK_WIDGET (zoom_control));
 }
+
+void
+nautilus_zoom_control_set_min_zoom_level (NautilusZoomControl *zoom_control, double  zoom_level)
+{
+	zoom_control->min_zoom_level = zoom_level;
+	gtk_widget_queue_draw (GTK_WIDGET (zoom_control));
+}
+
+void
+nautilus_zoom_control_set_max_zoom_level (NautilusZoomControl *zoom_control, double zoom_level)
+{
+	zoom_control->max_zoom_level = zoom_level;
+	gtk_widget_queue_draw (GTK_WIDGET (zoom_control));
+}
+
+double
+nautilus_zoom_control_get_zoom_level (NautilusZoomControl *zoom_control)
+{
+	return zoom_control->zoom_level;
+}
+
+double
+nautilus_zoom_control_get_min_zoom_level (NautilusZoomControl *zoom_control)
+{
+	return zoom_control->min_zoom_level;
+}
+
+double
+nautilus_zoom_control_get_max_zoom_level (NautilusZoomControl *zoom_control)
+{
+	return zoom_control->max_zoom_level;
+}
+
+

@@ -45,10 +45,9 @@ typedef struct NautilusZoomControlClass NautilusZoomControlClass;
 struct NautilusZoomControl {
 	GtkEventBox parent;
 	
-	int current_zoom;
-	int min_zoom;	 
-	int max_zoom;
-	double zoom_factor;
+	double zoom_level;
+	double min_zoom_level;	 
+	double max_zoom_level;
 };
 
 struct NautilusZoomControlClass {
@@ -73,8 +72,6 @@ void       nautilus_zoom_control_set_max_zoom_level (NautilusZoomControl *zoom_c
 double     nautilus_zoom_control_get_zoom_level     (NautilusZoomControl *zoom_control);
 double     nautilus_zoom_control_get_min_zoom_level (NautilusZoomControl *zoom_control);
 double     nautilus_zoom_control_get_max_zoom_level (NautilusZoomControl *zoom_control);
-
-void       nautilus_zoom_control_reset_zoom_level   (NautilusZoomControl *zoom_control);
 
 #ifdef __cplusplus
 }

@@ -515,6 +515,20 @@ nautilus_gtk_marshal_NONE__DOUBLE (GtkObject *object,
 }
 
 void
+nautilus_gtk_marshal_NONE__DOUBLE_DOUBLE_DOUBLE (GtkObject *object,
+				   GtkSignalFunc func,
+				   gpointer func_data,
+				   GtkArg *args)
+{
+	(* (void (*)(GtkObject *, double, double, double, gpointer)) func)
+		(object,
+		 GTK_VALUE_DOUBLE (args[0]),
+		 GTK_VALUE_DOUBLE (args[1]),
+		 GTK_VALUE_DOUBLE (args[2]),
+		 func_data);
+}
+
+void
 nautilus_gtk_marshal_POINTER__NONE (GtkObject *object,
 				    GtkSignalFunc func,
 				    gpointer func_data,

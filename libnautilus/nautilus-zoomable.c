@@ -458,6 +458,37 @@ nautilus_zoomable_ensure_zoomable_frame (NautilusZoomable *view)
 }
 
 void
+nautilus_zoomable_set_parameters (NautilusZoomable *view,
+				  double zoom_level,
+				  double min_zoom_level,
+				  double max_zoom_level)
+{
+	CORBA_Environment ev;
+	
+	g_return_if_fail (NAUTILUS_IS_ZOOMABLE (view));
+	
+	CORBA_exception_init (&ev);
+
+	view->details->zoom_level     = zoom_level;
+	view->details->min_zoom_level = min_zoom_level;
+	view->details->max_zoom_level = max_zoom_level;
+
+	if (nautilus_zoomable_ensure_zoomable_frame (view)) {
+		Nautilus_ZoomableFrame_report_zoom_parameters_changed (view->details->zoomable_frame,
+		                                                  view->details->zoom_level,
+		                                                  view->details->min_zoom_level,
+		                                                  view->details->max_zoom_level,
+		                                                  &ev);
+		if (ev._major != CORBA_NO_EXCEPTION) {
+			CORBA_Object_release (view->details->zoomable_frame, &ev);
+			view->details->zoomable_frame = CORBA_OBJECT_NIL;
+		}
+	}
+	
+	CORBA_exception_free (&ev);
+}
+
+void
 nautilus_zoomable_set_zoom_level (NautilusZoomable *view,
 				  double zoom_level)
 {
@@ -470,7 +501,7 @@ nautilus_zoomable_set_zoom_level (NautilusZoomable *view,
 	view->details->zoom_level = zoom_level;
 	
 	if (nautilus_zoomable_ensure_zoomable_frame (view)) {
-		Nautilus_ZoomableFrame_zoom_level_changed (view->details->zoomable_frame, zoom_level, &ev);
+		Nautilus_ZoomableFrame_report_zoom_level_changed (view->details->zoomable_frame, zoom_level, &ev);
 		if (ev._major != CORBA_NO_EXCEPTION) {
 			CORBA_Object_release (view->details->zoomable_frame, &ev);
 			view->details->zoomable_frame = CORBA_OBJECT_NIL;

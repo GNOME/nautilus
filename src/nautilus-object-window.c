@@ -1135,8 +1135,25 @@ nautilus_window_zoom_level_changed_callback (NautilusViewFrame *view,
 	nautilus_zoom_control_set_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control), zoom_level);
 
 	/* We rely on the initial zoom_level_change signal to inform us that the
-	 * view-frame is showing something zoombale (i.e. we need a zoom control).
-	 */
+	* view-frame is showing a new zoomable.
+	*/
+	gtk_widget_show (window->zoom_control);
+}
+
+static void
+nautilus_window_zoom_parameters_changed_callback (NautilusViewFrame *view,
+                                    	     	  double zoom_level,
+                                    	     	  double min_zoom_level,
+                                    	     	  double max_zoom_level,
+                                    	    	  NautilusWindow *window)
+{
+	nautilus_zoom_control_set_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control), zoom_level);
+	nautilus_zoom_control_set_min_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control), min_zoom_level);
+	nautilus_zoom_control_set_max_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control), max_zoom_level);
+
+	/* We rely on the initial zoom_level_change signal to inform us that the
+	* view-frame is showing a new zoomable.
+	*/
 	gtk_widget_show (window->zoom_control);
 }
 
@@ -1160,6 +1177,7 @@ nautilus_window_connect_view (NautilusWindow *window, NautilusViewFrame *view)
 	CONNECT (report_load_failed);
 	CONNECT (set_title);
 	CONNECT (zoom_level_changed);
+	CONNECT (zoom_parameters_changed);
 
 	#undef CONNECT
 

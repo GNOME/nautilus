@@ -1425,11 +1425,24 @@ fm_directory_view_zoom_to_level (FMDirectoryView *view, int zoom_level)
 
 
 void
-fm_directory_view_report_zoom_level_changed (FMDirectoryView *view, int zoom_level)
+fm_directory_view_set_zoom_level (FMDirectoryView *view, int zoom_level)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	nautilus_zoomable_set_zoom_level (view->details->zoomable,
 					 (double) nautilus_get_icon_size_for_zoom_level (zoom_level) / NAUTILUS_ICON_SIZE_STANDARD);
+}
+
+void
+fm_directory_view_set_zoom_parameters (FMDirectoryView *view,
+				       int zoom_level,
+				       int min_zoom_level,
+				       int max_zoom_level)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+	nautilus_zoomable_set_parameters (view->details->zoomable,
+					 (double) nautilus_get_icon_size_for_zoom_level (zoom_level) / NAUTILUS_ICON_SIZE_STANDARD,
+					 (double) nautilus_get_icon_size_for_zoom_level (min_zoom_level) / NAUTILUS_ICON_SIZE_STANDARD,
+					 (double) nautilus_get_icon_size_for_zoom_level (max_zoom_level) / NAUTILUS_ICON_SIZE_STANDARD);
 }
 
 /**

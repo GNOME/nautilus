@@ -51,6 +51,7 @@ enum {
   REPORT_LOAD_FAILED,
   SET_TITLE,
   ZOOM_LEVEL_CHANGED,
+  ZOOM_PARAMETERS_CHANGED,
   CLIENT_GONE,
   LAST_SIGNAL
 };
@@ -160,6 +161,15 @@ nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
                                        zoom_level_changed),
                     nautilus_gtk_marshal_NONE__DOUBLE,
                     GTK_TYPE_NONE, 1, GTK_TYPE_DOUBLE);
+
+  signals[ZOOM_PARAMETERS_CHANGED] =
+    gtk_signal_new ("zoom_parameters_changed",
+                    GTK_RUN_LAST,
+                    object_class->type,
+                    GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
+                                       zoom_parameters_changed),
+                    nautilus_gtk_marshal_NONE__DOUBLE_DOUBLE_DOUBLE,
+                    GTK_TYPE_NONE, 3, GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE);
 
   signals[CLIENT_GONE] =
     gtk_signal_new ("client_gone",
@@ -708,6 +718,15 @@ nautilus_view_frame_zoom_level_changed (NautilusViewFrame *view,
   gtk_signal_emit (GTK_OBJECT (view), signals[ZOOM_LEVEL_CHANGED], level);
 }
 
+void
+nautilus_view_frame_zoom_parameters_changed (NautilusViewFrame *view,
+					     double level,
+					     double min,
+					     double max)
+{
+  g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+  gtk_signal_emit (GTK_OBJECT (view), signals[ZOOM_PARAMETERS_CHANGED], level, min, max);
+}
 
 static gboolean
 check_object(NautilusViewFrame *view)

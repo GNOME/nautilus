@@ -67,7 +67,11 @@ void          nautilus_view_frame_set_title                   (NautilusViewFrame
 
 /* Zoomable */
 void          nautilus_view_frame_zoom_level_changed          (NautilusViewFrame *view,
-                                                               double             level);
+                                                               double             zoom_level);
+void          nautilus_view_frame_zoom_parameters_changed     (NautilusViewFrame *view,
+                                                               double             zoom_level,
+                                                               double             min_zoom_level,
+                                                               double             max_zoom_level);
 
 struct NautilusViewComponentType {
         const char *primary_repoid;

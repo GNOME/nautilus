@@ -124,8 +124,12 @@ module Nautilus {
 	 * zoom_level_changed whenever it changes the zoom level (on
 	 * its own or due to calls from the zoomable interface).
 	 */
+	 
 	interface ZoomableFrame : ::Bonobo::Unknown {
-		oneway void zoom_level_changed (in double zoom_level);
+		oneway void report_zoom_level_changed (in double zoom_level);
+		oneway void report_zoom_parameters_changed (in double zoom_level,
+						       	    in double min_zoom_level,
+						       	    in double max_zoom_level);
 	};
 };
 
