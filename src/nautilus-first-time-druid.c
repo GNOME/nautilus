@@ -229,7 +229,7 @@ make_anti_aliased_label (const char *text)
 	label = nautilus_label_new (text);
 
 	nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", "medium", NULL, NULL);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 14);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 	nautilus_label_set_text_justification (NAUTILUS_LABEL (label),
 			       GTK_JUSTIFY_LEFT);
 
