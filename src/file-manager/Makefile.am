@@ -40,7 +40,7 @@ dfos-corba.h: GNOME_Desktop_FileOperationService.h
 
 $(dfos_corba_srcs): dfos_corba_stamp
 dfos_corba_stamp: $(top_srcdir)/idl/GNOME_Desktop_FileOperationService.idl
-	$(prefix)/bin/orbit-idl -I${datadir}/idl $(top_srcdir)/idl/GNOME_Desktop_FileOperationService.idl
+	$(ORBIT_IDL) -I${datadir}/idl $(top_srcdir)/idl/GNOME_Desktop_FileOperationService.idl
 	touch dfos_corba_stamp
 
 BUILT_SOURCES=$(dfos_corba_srcs)

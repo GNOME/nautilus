@@ -25,6 +25,10 @@ nautilus_rpm_view_SOURCES =		        \
 	nautilus-rpm-view.c			\
 	main.c
 
+nautilus_rpm_view_LDADD = \
+	$(RPM_LIBS) 
+	
+
 nautilus_rpm_view_LDFLAGS =			\
 	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la \
 	$(top_builddir)/libnautilus/libnautilus.la \
@@ -34,8 +38,8 @@ nautilus_rpm_view_LDFLAGS =			\
 	$(GCONF_LIBS) \
 	$(GNOMEUI_LIBS) \
 	$(OAF_LIBS) \
-	$(RPM_LIBS) \
 	$(VFS_LIBS) \
+	$(RPM_LIBS) \
 	$(NULL)
 
 EXTRA_DIST = $(oaf_DATA)
