@@ -719,7 +719,7 @@ fm_list_model_get_sort_column_id_from_attribute (const char *attribute)
 char *
 fm_list_model_get_attribute_from_sort_column_id (int sort_column_id)
 {
-	int i;
+	guint i;
 
 	for (i = 0; i < G_N_ELEMENTS (attributes); i++) {
 		if (attributes[i].sort_column_id == sort_column_id) {
