@@ -1808,7 +1808,7 @@ mark_all_files_unconfirmed (NautilusDirectory *directory)
 	}
 }
 
-#if GNOME2_CONVERSION_COMPLETE
+#if GNOME2_HAS_MEDUSA
 
 static gboolean
 should_display_file_name (const char *name,

@@ -28,9 +28,11 @@
 
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-chooser.h"
+#include "nautilus-global-preferences.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-stock-dialogs.h>
+#include <eel/eel-preferences.h>
 #include <eel/eel-string.h>
 #include <gtk/gtk.h>
 #include <libgnome/gnome-config.h>
@@ -590,15 +592,29 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 	g_free (parameter);
 }
 
+static void
+concat_option_cb (const char *string,
+		  gpointer    callback_data)
+{
+	char *quoted;
+	GString *s;
+	
+	s = callback_data;
+	quoted = g_shell_quote (string);
+
+	g_string_append (s, quoted);
+	g_string_append_c (s, ' ');
+
+	g_free (quoted);
+}
+
 static char *
 get_xalf_prefix (const char *name)
 {
 	char *xalf_executable;
 	GString *s;
-	int argc, i;
-	char **argv;
 	char *quoted;
-	char *prefix;
+	EelStringList *str_list;
 
 	/* FIXME bugzilla.gnome.org 48206: At time I am writing this,
 	 * xalf is still pretty buggy, and Nautilus uses it a lot more
@@ -611,7 +627,7 @@ get_xalf_prefix (const char *name)
 	if (g_getenv ("NAUTILUS_USE_XALF") == NULL) {
 		return g_strdup ("");
 	}
-	if (!gnome_config_get_bool ("/xalf/settings/enabled=true")) {
+	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_XALF_ENABLED)) {
 		return g_strdup ("");
 	}
 	xalf_executable = g_find_program_in_path ("xalf");
@@ -626,22 +642,13 @@ get_xalf_prefix (const char *name)
 	g_free (quoted);
 	g_string_append_c (s, ' ');
 
-	gnome_config_get_vector ("/xalf/settings/options",
-				 &argc, &argv);
-	for (i = 0; i < argc; i++) {
-		quoted = g_shell_quote (argv[i]);
-		g_free (argv[i]);
-
-		g_string_append (s, quoted);
-		g_string_append_c (s, ' ');
-
-		g_free (quoted);
+	str_list = eel_preferences_get_string_list (NAUTILUS_PREFERENCES_XALF_OPTIONS);
+	if (str_list) {
+		eel_string_list_for_each (str_list, concat_option_cb, s);
+		eel_string_list_free (str_list);
 	}
-	g_free (argv);
 
-	prefix = s->str;
-	g_string_free (s, FALSE);
-	return prefix;
+	return g_string_free (s, FALSE);
 }
 
 /**

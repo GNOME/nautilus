@@ -21,6 +21,35 @@
       </locale>
     </schema>
 
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/xalf/enabled</key>
+      <applyto>/apps/nautilus/preferences/xalf/enabled</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+         <short>Whether to use xalf</short>
+         <long>
+          If set to true, then Xalf will be used to provide
+	  application launch feedback.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/xalf/options</key>
+      <applyto>/apps/nautilus/preferences/xalf/options</applyto>
+      <owner>nautilus</owner>
+      <type>list</type>
+      <locale name="C">
+         <short>xalf options</short>
+         <long>
+	  a set of strings which are passed as options to Xalf if
+	  it is used.
+         </long>
+      </locale>
+    </schema>
+
    <schema>
       <key>/schemas/apps/nautilus/preferences/show_backup_files</key>
       <applyto>/apps/nautilus/preferences/show_backup_files</applyto>

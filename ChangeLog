@@ -1,5 +1,23 @@
 2002-02-27  Michael Meeks  <michael@ximian.com>
 
+	* libnautilus-private/nautilus-program-choosing.c
+	(concat_option_cb): impl.
+	(get_xalf_prefix): use gconf.
+
+	* libnautilus-private/nautilus.schemas: add Xalf bits.
+
+	* libnautilus-private/nautilus-global-preferences.c: ditto.
+
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_start_renaming_selected_item):
+	don't pass a font name, it isn't used anyway.
+
+	* libnautilus-private/nautilus-directory-async.c
+	(should_display_file_name): protect with
+	GNOME2_HAS_MEDUSA instead.
+
+2002-02-27  Michael Meeks  <michael@ximian.com>
+
 	* libnautilus-private/nautilus-file-operations.c
 	(handle_transfer_overwrite, handle_transfer_vfs_error),
 	(handle_transfer_overwrite): pass a widget context to

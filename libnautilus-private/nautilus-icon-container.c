@@ -4811,15 +4811,11 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	gnome_icon_text_item_configure
 		(details->rename_widget,
 		 x,
-		 eel_round (icon_rect.y1),							/* y_top */		
+		 eel_round (icon_rect.y1), /* y_top */		
 		 width,
-#ifdef GNOME2_CONVERSION_COMPLETE
-		 details->label_font[details->zoom_level],			/* font */
-#else
-		 "Helvetica",
-#endif
-		 editable_text,							/* text */
-		 TRUE, FALSE);							/* allocate local copy */
+		 NULL,
+		 editable_text,            /* text */
+		 TRUE, FALSE);             /* allocate local copy */
 
         if (GNOME_CANVAS_ITEM (details->rename_widget)->canvas->focused_item != GNOME_CANVAS_ITEM (details->rename_widget)) {
         	gnome_canvas_item_grab_focus (GNOME_CANVAS_ITEM (details->rename_widget));
