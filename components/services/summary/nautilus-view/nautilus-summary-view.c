@@ -1298,7 +1298,7 @@ generate_login_dialog (NautilusSummaryView	*view)
 	switch (view->details->current_attempt) {
 		case initial:
 			pixmap_name = "big_services_icon.png";
-			message_text = _("Please login to eazel services");
+			message_text = _("Please log in to Eazel services");
 			break;
 		case retry:
 			pixmap_name = "serv_dialog_alert.png";
@@ -1310,7 +1310,7 @@ generate_login_dialog (NautilusSummaryView	*view)
 			break;
 		default:
 			pixmap_name = "serv_dialog_alert.png";
-			message_text = _("Please login to eazel services");
+			message_text = _("Please log in to Eazel services");
 	}
 
 	pixmap = create_image_widget (pixmap_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);
