@@ -1,9 +1,12 @@
-# nautilus hu.po
+# nautilus translation for Hungarian.
+# Copyright (C) 2000 Free Software Foundation, Inc.
+# Szabolcs Ban <shooby@gnome.hu>
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus VERSION\n"
 "POT-Creation-Date: 2000-11-16 17:26+0100\n"
-"PO-Revision-Date: 2000-11-16 17:32+0100\n"
+"PO-Revision-Date: 2000-12-17 00:15+0100\n"
 "Last-Translator: Szabolcs Ban <shooby@gnome.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -245,12 +248,12 @@ msgstr ""
 #: components/rpmview/nautilus-rpm-view-install.c:120
 #, c-format
 msgid "%s was already installed\n"
-msgstr ""
+msgstr "%s már telepítve volt\n"
 
 #: components/rpmview/nautilus-rpm-view-install.c:123
 #, c-format
 msgid "%s causes a circular dependency problem\n"
-msgstr ""
+msgstr "%s körkörös függõségi problémákat okoz\n"
 
 #: components/rpmview/nautilus-rpm-view-install.c:142
 #, c-format
@@ -264,11 +267,11 @@ msgstr ""
 
 #: components/rpmview/nautilus-rpm-view-install.c:241
 msgid "Uninstall failed..."
-msgstr ""
+msgstr "A letelepítés sikertelen..."
 
 #: components/rpmview/nautilus-rpm-view-install.c:242
 msgid "Uninstall Failed"
-msgstr ""
+msgstr "A letelepítés sikertelen"
 
 #: components/rpmview/nautilus-rpm-view-install.c:244
 msgid "Install failed..."
@@ -337,7 +340,7 @@ msgstr "Módosít"
 
 #: components/rpmview/nautilus-rpm-view.c:330
 msgid "Uninstall"
-msgstr ""
+msgstr "Letelepítés"
 
 #: components/rpmview/nautilus-rpm-view.c:346
 msgid "Verify"
@@ -345,7 +348,7 @@ msgstr "Ellenõrzés"
 
 #: components/rpmview/nautilus-rpm-view.c:382
 msgid "Go to selected file"
-msgstr ""
+msgstr "Menj a kiválasztott fájlra"
 
 #: components/rpmview/nautilus-rpm-view.c:393
 msgid "Description"
@@ -354,7 +357,7 @@ msgstr "Leírás"
 #: components/rpmview/nautilus-rpm-view.c:631
 #, c-format
 msgid "Package Contents: %d files"
-msgstr ""
+msgstr "Csomag taralma: %d fájl"
 
 #: components/rpmview/nautilus-rpm-view.c:643
 #, c-format
@@ -374,11 +377,11 @@ msgstr "%s ellenõrzése..."
 #: components/rpmview/nautilus-rpm-view.c:867
 #, c-format
 msgid "file %s has an error!"
-msgstr ""
+msgstr "a %s fájl hibás!"
 
 #: components/rpmview/nautilus-rpm-view.c:885
 msgid "Verification completed."
-msgstr ""
+msgstr "Az ellenõrzés végetért."
 
 #: components/sample/nautilus-sample-content-view.c:83
 msgid "(none)"
@@ -409,14 +412,12 @@ msgid "10 sec delay after starting service"
 msgstr ""
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:94
-#, fuzzy
 msgid "Allow downgrades"
-msgstr "Automatikus letöltés"
+msgstr "Verziócsökkenés engedése"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:95
-#, fuzzy
 msgid "Erase packages"
-msgstr "Változások megntése"
+msgstr "Csomagok törlése"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:96
 msgid "RPM args are filename"
@@ -432,7 +433,7 @@ msgstr "FTP használata"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:99
 msgid "Use local"
-msgstr ""
+msgstr "Helyi készlet használata"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:100
 msgid "Use http"
@@ -444,16 +445,15 @@ msgstr ""
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:102
 msgid "Don't print fancy percent output"
-msgstr ""
+msgstr "Ne írj ki szép százalékos kimenetet"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:103
-#, fuzzy
 msgid "Specify package file"
-msgstr "Válassz ki egy fájlt"
+msgstr "Add meg a csomagot"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:104
 msgid "Set port numer (80)"
-msgstr ""
+msgstr "Add meg a portszámot (80)"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:105
 msgid "RPM args are needed files"
@@ -490,18 +490,16 @@ msgid "Set tmp dir (/tmp)"
 msgstr ""
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:113
-#, fuzzy
 msgid "Allow username"
-msgstr "felhasználó név"
+msgstr "Felhasználó név engedése"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:114
 msgid "Allow upgrades"
 msgstr ""
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:115
-#, fuzzy
 msgid "Verbose output"
-msgstr "Kiíráskor gördül"
+msgstr "Bõbeszédû kimenet"
 
 #: components/services/install/command-line/eazel-gen-xml.c:41
 msgid "Specify package list to use (/var/eazel/service/package-list.xml)"
@@ -522,14 +520,14 @@ msgid "Will download %s"
 msgstr "Automatikus letöltés"
 
 #: components/services/install/lib/eazel-install-logic.c:281
-#, fuzzy, c-format
+#, c-format
 msgid "%s already installed"
-msgstr "a %s tábla már létezik"
+msgstr "%s már telepítve volt"
 
 #: components/services/install/lib/eazel-install-logic.c:472
-#, fuzzy, c-format
+#, c-format
 msgid "Category = %s"
-msgstr "Kategória"
+msgstr "Kategória= %s"
 
 #: components/services/install/lib/eazel-install-logic.c:748
 #, fuzzy, c-format
@@ -685,9 +683,9 @@ msgid "Couldn't get async mode "
 msgstr "Nem tudtam beállítani az acct. menedzsmentet %s részére"
 
 #: components/services/install/lib/eazel-install-protocols.c:197
-#, fuzzy, c-format
+#, c-format
 msgid "HTTP error: %d %s"
-msgstr "A hiba ez volt: %s"
+msgstr "HTTP hiba: %d %s"
 
 #: components/services/install/lib/eazel-install-protocols.c:207
 #: components/services/install/lib/eazel-install-protocols.c:223
@@ -738,9 +736,8 @@ msgid "Package %s had version %s and not %s"
 msgstr ""
 
 #: components/services/install/lib/eazel-install-protocols.c:621
-#, fuzzy
 msgid "File download failed"
-msgstr "Fájl letöltése"
+msgstr "A fájl letöltése sikertelen"
 
 #: components/services/install/lib/eazel-install-protocols.c:768
 #: components/services/install/lib/eazel-install-protocols.c:773
@@ -842,9 +839,9 @@ msgid "*** Malformed depends node!"
 msgstr ""
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:209
-#, fuzzy, c-format
+#, c-format
 msgid "*** Unknown node type '%s'"
-msgstr "Ismeretlen info_type"
+msgstr "*** Ismeretlen node típus: '%s'"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:226
 msgid "*** The pkg list file contains no data! ***\n"
@@ -888,9 +885,9 @@ msgid "*** Cannot find the CATEGORIES xmlnode! ***"
 msgstr ""
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:375
-#, fuzzy, c-format
+#, c-format
 msgid "*** Unknown node %s"
-msgstr "Ismeretlen info_type"
+msgstr "*** Ismeretlen node: %s"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:468
 msgid "*** Error generating xml package list! ***\n"
@@ -1290,9 +1287,8 @@ msgid "HTTP error %d \"%s\" on uri %s"
 msgstr ""
 
 #: components/services/trilobite/libtrilobite/trilobite-core-utils.c:477
-#, fuzzy
 msgid "Could not initialize Bonobo"
-msgstr "Nem tudom a Bonobo-t elindítani\n"
+msgstr "Nem tudom a Bonobo-t indítani"
 
 #: components/services/trilobite/libtrilobite/trilobite-core-utils.c:498
 #, c-format
@@ -1300,19 +1296,16 @@ msgid "Can't write logfile %s -- using default log handler"
 msgstr ""
 
 #: components/services/vault/command-line/main.c:37
-#, fuzzy
 msgid "Enable debugging"
-msgstr "Az elrejtõgomb engedélyezése"
+msgstr "Hibakövetés engedése"
 
 #: components/services/vault/command-line/main.c:38
-#, fuzzy
 msgid "Vault location"
-msgstr "Hely"
+msgstr ""
 
 #: components/services/vault/command-line/main.c:46
-#, fuzzy
 msgid "Valid operations:"
-msgstr "Oaf beállítások"
+msgstr "Engedélyezett mûveletek:"
 
 #: components/services/vault/command-line/main.c:86
 msgid "Error: No operation supplied\n"
@@ -1446,9 +1439,8 @@ msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr ""
 
 #: libnautilus-extensions/nautilus-file-operations.c:1246
-#, fuzzy
 msgid "Moving files"
-msgstr "Hiba a fájl mentése közben!"
+msgstr "Fájlok mozgatása"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1247
 msgid "moved"
@@ -1456,9 +1448,8 @@ msgstr "mozgatva"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1248
 #: libnautilus-extensions/nautilus-file-operations.c:1538
-#, fuzzy
 msgid "Moving"
-msgstr "perc"
+msgstr "Mozgatás alatt"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1249
 msgid "Preparing To Move..."
@@ -1477,9 +1468,8 @@ msgid "linked"
 msgstr "linkelve"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1261
-#, fuzzy
 msgid "Linking"
-msgstr "Kötések"
+msgstr "Kötés alatt"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1262
 msgid "Preparing to Create Links..."
@@ -1490,18 +1480,16 @@ msgid "Finishing Creating Links..."
 msgstr ""
 
 #: libnautilus-extensions/nautilus-file-operations.c:1269
-#, fuzzy
 msgid "Copying files"
-msgstr "Fájl megnyitás"
+msgstr "Fájlok másolása"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1270
 msgid "copied"
 msgstr "másolva"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1271
-#, fuzzy
 msgid "Copying"
-msgstr "_Másol"
+msgstr "Másolás alatt"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1272
 msgid "Preparing To Copy..."
@@ -1577,9 +1565,8 @@ msgid "Preparing to Move to Trash..."
 msgstr ""
 
 #: libnautilus-extensions/nautilus-file-operations.c:1580
-#, fuzzy
 msgid "Deleting files"
-msgstr "Fájl törlése"
+msgstr "Fájlok törlése"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1581
 #: libnautilus-extensions/nautilus-file-operations.c:1628
@@ -1588,9 +1575,8 @@ msgstr "törölve"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1582
 #: libnautilus-extensions/nautilus-file-operations.c:1629
-#, fuzzy
 msgid "Deleting"
-msgstr "Választás"
+msgstr "Törlés alatt"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1583
 msgid "Preparing to Delete files..."
@@ -1897,7 +1883,7 @@ msgstr "Kuka"
 
 #: libnautilus-extensions/nautilus-font-factory.c:321
 msgid "fixed"
-msgstr "javítva"
+msgstr "fixed"
 
 #: libnautilus-extensions/nautilus-font-picker.c:131
 msgid "Font"
@@ -2021,9 +2007,8 @@ msgid "Navigation Settings"
 msgstr "Navigáció beállításai"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:322
-#, fuzzy
 msgid "Home Location"
-msgstr "Hely"
+msgstr "Saját könyvtár"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:329
 #, fuzzy
@@ -2271,9 +2256,8 @@ msgid " -_,;.?/&"
 msgstr " -_,;.?/&"
 
 #: libnautilus-extensions/nautilus-preferences-dialog.c:201
-#, fuzzy
 msgid "Prefs Box"
-msgstr "Beáll"
+msgstr "Beáll. ablak"
 
 #: libnautilus-extensions/nautilus-preferences.c:1086
 #, c-format
@@ -2432,9 +2416,8 @@ msgid "File Types and Programs"
 msgstr ""
 
 #: libnautilus-extensions/nautilus-program-chooser.c:1312
-#, fuzzy
 msgid "Go There"
-msgstr "Mono téma"
+msgstr "Menj ide"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:1321
 msgid "You can configure which programs are offered for which file types in the GNOME Control Center."
@@ -2702,14 +2685,12 @@ msgid "Redo the edit"
 msgstr "A visszavont mûvelet végrehajtása"
 
 #: libnautilus-extensions/nautilus-user-level-manager.c:61
-#, fuzzy
 msgid "Beginner"
-msgstr "Pörgettyû"
+msgstr "Kezdõ"
 
 #: libnautilus-extensions/nautilus-user-level-manager.c:62
-#, fuzzy
 msgid "Intermediate"
-msgstr "Internet"
+msgstr "Középfokú"
 
 #: libnautilus-extensions/nautilus-user-level-manager.c:63
 msgid "Advanced"
@@ -2755,7 +2736,7 @@ msgstr ""
 
 #: src/file-manager/fm-desktop-icon-view.c:619
 msgid "Quit Nautilus Desktop"
-msgstr "Kilépés a Nautilusz munkaasztalból"
+msgstr "Kilépés a Nautilus munkaasztalból"
 
 #: src/file-manager/fm-desktop-icon-view.c:782
 #: src/file-manager/fm-desktop-icon-view.c:787
@@ -3491,7 +3472,7 @@ msgstr ""
 
 #: src/nautilus-about.c:139
 msgid "About Nautilus"
-msgstr "Nautilusz névjegy"
+msgstr "Nautilus névjegy"
 
 #: src/nautilus-about.c:355
 msgid "Authors"
@@ -3605,7 +3586,7 @@ msgstr ""
 
 #: src/nautilus-first-time-druid.c:523
 msgid "Updating Nautilus"
-msgstr "A Nautilusz frissítése"
+msgstr "A Nautilus frissítése"
 
 #: src/nautilus-first-time-druid.c:531
 msgid "Yes, verify my web connection and update Nautilus now."
@@ -3653,7 +3634,7 @@ msgstr ""
 
 #: src/nautilus-first-time-druid.c:788
 msgid "Welcome to Nautilus!"
-msgstr "Üdv a Nautiluszban!"
+msgstr "Üdv a Nautilusban!"
 
 #: src/nautilus-first-time-druid.c:796
 msgid "Since this is the first time that you've launched\nNautilus, we'd like to ask you a few questions\nto help personalize it for your use."
@@ -3682,11 +3663,11 @@ msgstr ""
 
 #: src/nautilus-first-time-druid.c:830
 msgid "Nautilus Update"
-msgstr "Nautilusz Frissítés"
+msgstr "Nautilus Frissítés"
 
 #: src/nautilus-first-time-druid.c:838
 msgid "Updating Nautilus..."
-msgstr "A Nautilusz frissítése..."
+msgstr "A Nautilus frissítése..."
 
 #: src/nautilus-first-time-druid.c:846
 msgid "Web Proxy Configuration"
@@ -3734,7 +3715,7 @@ msgstr ""
 
 #: src/nautilus-main.c:142
 msgid "Quit Nautilus."
-msgstr "Kilépés a Nautiluszból."
+msgstr "Kilépés a Nautilusból."
 
 #: src/nautilus-main.c:143
 #, fuzzy
@@ -4067,9 +4048,8 @@ msgid "is within a month of"
 msgstr ""
 
 #: src/nautilus-shell.c:167
-#, fuzzy
 msgid "Caveat"
-msgstr "Létrehozás"
+msgstr "Fenntartás"
 
 #: src/nautilus-shell.c:203
 msgid "Thank you for your interest in Nautilus.\n \nAs with any software under development, you should exercise caution when using Nautilus.  Eazel does not provide any guarantee that it will work properly, or assume any liability for your use of it.  Please use it at your own risk.\n\nPlease visit http://www.eazel.com/feedback.html to provide feedback, comments, and suggestions."
@@ -4117,9 +4097,8 @@ msgid "Open with..."
 msgstr "Téma _Megnyitása"
 
 #: src/nautilus-simple-search-bar.c:129
-#, fuzzy
 msgid "Find Them!"
-msgstr "Következõ találat"
+msgstr "Találd meg õket!"
 
 #: src/nautilus-switchable-search-bar.c:132
 #, fuzzy
@@ -4128,11 +4107,11 @@ msgstr "Keresés"
 
 #: src/nautilus-theme-selector.c:157
 msgid "Nautilus Theme Selector"
-msgstr "Nautilusz témaválasztó"
+msgstr "Nautilus témaválasztó"
 
 #: src/nautilus-theme-selector.c:191
 msgid "Nautilus Theme:"
-msgstr "Nautilusz téma:"
+msgstr "Nautilus téma:"
 
 #: src/nautilus-theme-selector.c:249
 msgid "Add new theme"
@@ -4201,7 +4180,7 @@ msgstr ""
 #: src/nautilus-window-manage-views.c:214
 #: src/nautilus-window-menus.c:628
 msgid "Nautilus"
-msgstr "Nautilusz"
+msgstr "Nautilus"
 
 #: src/nautilus-window-manage-views.c:579
 #, c-format
@@ -4309,44 +4288,36 @@ msgid "Forget"
 msgstr "Felejtés"
 
 #: src/nautilus-window-menus.c:425
-#, fuzzy
 msgid "Hide Status Bar"
-msgstr "Státuszsor"
+msgstr "Státuszsor elrejtése"
 
 #: src/nautilus-window-menus.c:426
-#, fuzzy
 msgid "Show Status Bar"
 msgstr "Státuszsor mutatása"
 
 #: src/nautilus-window-menus.c:431
-#, fuzzy
 msgid "Hide Sidebar"
-msgstr "Menü elrejtése"
+msgstr "Oldalsáv elrejtése"
 
 #: src/nautilus-window-menus.c:432
-#, fuzzy
 msgid "Show Sidebar"
-msgstr "_Menü megjelenítése"
+msgstr "Oldalsáv mutatása"
 
 #: src/nautilus-window-menus.c:437
-#, fuzzy
 msgid "Hide Tool Bar"
-msgstr "Menü elrejtése"
+msgstr "Eszközsor elrejtése"
 
 #: src/nautilus-window-menus.c:438
-#, fuzzy
 msgid "Show Tool Bar"
-msgstr "Eszköztárak megjelenítési módja"
+msgstr "Eszközsor mutatása"
 
 #: src/nautilus-window-menus.c:443
-#, fuzzy
 msgid "Hide Location Bar"
-msgstr "   Hely: "
+msgstr "Helysáv elrejtése"
 
 #: src/nautilus-window-menus.c:444
-#, fuzzy
 msgid "Show Location Bar"
-msgstr "Kiírja-e a címsáv elé a 'Hely' szót?"
+msgstr "Helysáv mutatása"
 
 #: src/nautilus-window-menus.c:527
 #, c-format
@@ -4356,25 +4327,25 @@ msgstr ""
 #: src/nautilus-window-menus.c:539
 #, c-format
 msgid "Switch to %s Level?"
-msgstr ""
+msgstr "%s szintre kapcsoljak?"
 
 #: src/nautilus-window-menus.c:632
 msgid "Nautilus is a graphical shell \nfor GNOME that makes it \neasy to manage your files \nand the rest of your system."
-msgstr ""
+msgstr "A Nautilus egy grafikus shell \na GNOME-hoz, mely egyszerûvé \nteszi a fájljaid és a rendszered \nkezelését."
 
 #: src/nautilus-window-menus.c:783
 #, c-format
 msgid "The location \"%s\" does not exist. Do you want to remove any bookmarks with this location from your list?"
-msgstr ""
+msgstr "A \"%s\" hely nem létezik. Törölni akarsz egy könyvjelzõt is a listádból, amely ide mutat?"
 
 #: src/nautilus-window-menus.c:787
 msgid "Bookmark for Nonexistent Location"
-msgstr ""
+msgstr "Nem létezõ helyre mutató könyvjelzõ"
 
 #: src/nautilus-window-menus.c:801
 #, c-format
 msgid "The location \"%s\" no longer exists."
-msgstr ""
+msgstr "A \"%s\" hely nem létezik tovább."
 
 #: src/nautilus-window-menus.c:802
 #, fuzzy
@@ -4395,24 +4366,23 @@ msgid "_Find"
 msgstr "_Keresés"
 
 #: src/nautilus-window-menus.c:1540
-#, fuzzy, c-format
+#, c-format
 msgid "Edit %s Settings"
-msgstr "Átlátszóság"
+msgstr "%s beállítások szerkesztése"
 
 #: src/nautilus-window-menus.c:1562
-#, fuzzy, c-format
+#, c-format
 msgid "Edit %s Settings..."
-msgstr "Beállítások..."
+msgstr "%s beállítások szerkesztése..."
 
 #: src/nautilus-window.c:1090
-#, fuzzy, c-format
+#, c-format
 msgid "View as %s..."
-msgstr "Forrás megtekintése..."
+msgstr "Nézet mint %s..."
 
 #: src/nautilus-window.c:1112
-#, fuzzy
 msgid "View as Other..."
-msgstr "Forrás megtekintése..."
+msgstr "Nézet másként..."
 
 #: src/nautilus-window.c:1459
 msgid "Close"
