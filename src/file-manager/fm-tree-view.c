@@ -1285,6 +1285,7 @@ fm_tree_view_finalize (GObject *object)
 					 filtering_changed_callback, view);
 
 	cancel_activation (view);
+	gtk_widget_destroy (view->details->popup);
 
 	if (view->details->selection_location != NULL) {
 		g_free (view->details->selection_location);
