@@ -721,34 +721,66 @@ nautilus_ctree_event (GtkWidget *widget, GdkEvent *event, gpointer user_data)
 	NautilusCTreeNode *node, *old_node;
 	NautilusCTreeRow *ctree_row;
 	GtkCList *clist;
-	
+	gint x, y;
+	GdkModifierType button;
+
+	tree = NAUTILUS_CTREE (widget);
+	clist = GTK_CLIST (widget);
+
+	/* Do prelighting */ 
 	if (event->type == GDK_MOTION_NOTIFY) {
 		motion = (GdkEventMotion *) event;
 
-		tree = NAUTILUS_CTREE (widget);
-		clist = GTK_CLIST (widget);
-		
 		/* Get node that we are over */
 		row = gtk_clist_get_selection_info (clist, motion->x, motion->y, &press_row, &press_column);
 		ctree_row = ROW_ELEMENT (clist, press_row)->data;
-		if (ctree_row != NULL) {
-			node = nautilus_ctree_find_node_ptr (tree, ctree_row);
-			if (node != NULL) {
-				if (nautilus_ctree_is_hot_spot (tree, motion->x, motion->y)) {
-					if (node != tree->prelight_node) {
-						/* Redraw old prelit node and save and draw new highlight */
-						old_node = tree->prelight_node;
-						tree->prelight_node = node;
-						nautilus_ctree_draw_node (tree, old_node);
-						nautilus_ctree_draw_node (tree, tree->prelight_node);
-					}				
-				} else if (tree->prelight_node != NULL) {
-					/* End prelighting of last expander */
-					old_node = tree->prelight_node;
-					tree->prelight_node = NULL;
-					nautilus_ctree_draw_node (tree, old_node);
+		if (ctree_row == NULL) {
+			return FALSE;
+		}
+		
+		node = nautilus_ctree_find_node_ptr (tree, ctree_row);
+		if (node == NULL) {
+			return FALSE;
+		}
+
+		/* Cancel prelighting if we have a button pressed */
+		gdk_window_get_pointer (widget->window, &x, &y, &button);
+		if ((button & (GDK_BUTTON1_MASK | GDK_BUTTON2_MASK | GDK_BUTTON3_MASK | GDK_BUTTON4_MASK | GDK_BUTTON5_MASK)) != 0) {
+			if (nautilus_ctree_is_hot_spot (tree, motion->x, motion->y)) {
+				/* Handle moving in and out of hotspot while mouse is down */
+				if (!ctree_row->in_hotspot) {
+					ctree_row->in_hotspot = TRUE;
+					nautilus_ctree_draw_node (tree, node);
+				}
+			} else {
+				if (ctree_row->in_hotspot) {
+					ctree_row->in_hotspot = FALSE;
+					nautilus_ctree_draw_node (tree, node);
 				}
 			}
+
+			/* Remove prelighting */
+			if (tree->prelight_node != NULL) {
+				old_node = tree->prelight_node;
+				tree->prelight_node = NULL;
+				nautilus_ctree_draw_node (tree, old_node);
+			}
+			return FALSE;
+		}
+						
+		if (nautilus_ctree_is_hot_spot (tree, motion->x, motion->y)) {
+			if (node != tree->prelight_node) {
+				/* Redraw old prelit node and save and draw new highlight */
+				old_node = tree->prelight_node;
+				tree->prelight_node = node;
+				nautilus_ctree_draw_node (tree, old_node);
+				nautilus_ctree_draw_node (tree, tree->prelight_node);
+			}				
+		} else if (tree->prelight_node != NULL) {
+			/* End prelighting of last expander */
+			old_node = tree->prelight_node;
+			tree->prelight_node = NULL;
+			nautilus_ctree_draw_node (tree, old_node);
 		}
 	}
 	
@@ -796,8 +828,6 @@ nautilus_ctree_button_press (GtkWidget *widget, GdkEventButton *event)
 	NautilusCTree *ctree;
 	GtkCList *clist;
 	gint button_actions;
-
-	g_message ("nautilus_ctree_button_press");
 	
 	g_return_val_if_fail (widget != NULL, FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_CTREE (widget), FALSE);
@@ -1158,7 +1188,7 @@ nautilus_ctree_draw_expander (NautilusCTree *ctree, NautilusCTreeRow *ctree_row,
 
 	gdk_draw_polygon (clist->clist_window, style->base_gc[GTK_STATE_NORMAL], TRUE, points, 3);
 	if (ctree_row->mouse_down) {
-		gdk_draw_polygon (clist->clist_window, style->fg_gc[GTK_STATE_NORMAL], FALSE, points, 3);
+			gdk_draw_polygon (clist->clist_window, style->fg_gc[GTK_STATE_NORMAL], !ctree_row->in_hotspot, points, 3);
 	} else {
 		node = nautilus_ctree_find_node_ptr (ctree, ctree_row);
 		if (node != NULL) {
@@ -3191,6 +3221,7 @@ row_new (NautilusCTree *ctree)
 	ctree_row->pixmap_opened = NULL;
 	ctree_row->mask_opened   = NULL;
 	ctree_row->mouse_down    = FALSE;
+	ctree_row->in_hotspot    = FALSE;
 	
 	return ctree_row;
 }

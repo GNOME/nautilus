@@ -1727,6 +1727,7 @@ nautilus_tree_view_button_press (GtkWidget *widget, GdkEventButton *event)
 		ctree_row = ROW_ELEMENT (clist, press_row)->data;
 		if (ctree_row != NULL) {
 			ctree_row->mouse_down = TRUE;
+			ctree_row->in_hotspot = TRUE;
 
 			node = nautilus_ctree_find_node_ptr (NAUTILUS_CTREE (widget), ctree_row);
 			if (node != NULL) {
@@ -1785,6 +1786,7 @@ nautilus_tree_view_button_release (GtkWidget *widget, GdkEventButton *event)
 	ctree_row = ROW_ELEMENT (clist, press_row)->data;
 	if (ctree_row != NULL) {
 		ctree_row->mouse_down = FALSE;
+		ctree_row->in_hotspot = FALSE;
 
 		/* Redraw spinner */
 		node = nautilus_ctree_find_node_ptr (NAUTILUS_CTREE (widget), ctree_row);

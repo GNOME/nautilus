@@ -1,3 +1,15 @@
+2000-09-13  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed a glitch with prelighting and mousedown.
+		
+	* libnautilus-extensions/nautilus-ctree.c: (nautilus_ctree_event),
+	(nautilus_ctree_button_press), (nautilus_ctree_draw_expander),
+	(row_new):
+
+	* components/tree/nautilus-tree-view.c:
+	Set the state of the in_hotspot flag on 
+	button press and release.
+
 2000-09-13  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-program-choosing.c:

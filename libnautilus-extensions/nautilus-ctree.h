@@ -158,6 +158,7 @@ struct _NautilusCTreeRow
 	guint expanded : 1;
 
 	gboolean mouse_down;
+	gboolean in_hotspot;
 };
 
 struct _NautilusCTreeNode {
