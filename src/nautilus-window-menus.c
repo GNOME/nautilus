@@ -32,7 +32,7 @@
 #include "ntl-window-private.h"
 #include "nautilus-property-browser.h"
 
-#include "libnautilus-extensions/nautilus-undo-manager.h"
+#include <libnautilus/nautilus-undo-manager.h>
 
 #include <libnautilus/nautilus-bonobo-ui.h>
 

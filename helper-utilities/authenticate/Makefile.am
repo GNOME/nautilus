@@ -26,4 +26,5 @@ nautilus_authenticate_LDFLAGS =	\
 	$(GNOMEUI_LIBS)	\
 	$(GCONF_LIBS) \
 	$(PAM_LIBS) \
+	$(top_builddir)/libnautilus/libnautilus.la \
 	$(NULL)

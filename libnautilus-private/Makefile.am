@@ -19,11 +19,12 @@ libnautilus_extensions_la_LDFLAGS=\
 	$(GNOMECANVASPIXBUF_LIBS) \
 	$(VFS_LIBS) \
 	$(XML_LIBS) \
-	$(LIBPNG)
+	$(LIBPNG) \	
+	$(top_src_dir)/libnautilus/.libs/libnautilus.so
 
 fsextension_idl_sources = 	\
 	fsextension-stubs.c 	\
-	fsextension-skels.c 	\ 
+	fsextension-skels.c 	\
 	fsextension-common.c 	\
 	fsextension.h
 	
@@ -73,7 +74,7 @@ libnautilus_extensionsinclude_HEADERS=		\
 	nautilus-xml-extensions.h		\
 	$(NULL)
 
-libnautilus_extensions_la_SOURCES = \	
+libnautilus_extensions_la_SOURCES = \
 	nautilus-file-changes-queue-private.h	\
 	nautilus-icon-private.h			\
 	nautilus-file-private.h			\
@@ -117,7 +118,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-string-list.c			\
 	nautilus-string.c			\
 	nautilus-xml-extensions.c		\
-	$(fsextension_idl_sources)		\	
+	$(fsextension_idl_sources)		\
 	$(NULL)
 
 $(fsextension_idl_sources): fsextension_idl_stamp

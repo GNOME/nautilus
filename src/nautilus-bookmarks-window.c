@@ -24,7 +24,7 @@
 
 #include <config.h>
 #include "nautilus-bookmarks-window.h"
-#include "libnautilus-extensions/nautilus-undo-manager.h"
+#include <libnautilus/nautilus-undo-manager.h>
 #include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 

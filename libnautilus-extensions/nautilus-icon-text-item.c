@@ -12,7 +12,7 @@
 #include "nautilus-icon-text-item.h"
 
 #include "nautilus-entry.h"
-#include "nautilus-undo-manager.h"
+#include <libnautilus/nautilus-undo-manager.h>
 
 #include <math.h>
 #include <stdio.h>

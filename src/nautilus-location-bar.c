@@ -43,7 +43,7 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-undo-manager.h>
+#include <libnautilus/nautilus-undo-manager.h>
 
 #define NAUTILUS_DND_URI_LIST_TYPE 	  "text/uri-list"
 #define NAUTILUS_DND_TEXT_PLAIN_TYPE 	  "text/plain"

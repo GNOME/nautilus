@@ -2,11 +2,6 @@ NULL=
 
 bin_PROGRAMS = test-nautilus-widgets
 
-test_nautilus_widgets_LDADD =\
-	libnautilus-widgets.la \
-	$(GNOMEUI_LIBS) \
-	$(NULL)
-
 lib_LTLIBRARIES=libnautilus-widgets.la
 
 INCLUDES =\
@@ -19,7 +14,8 @@ INCLUDES =\
 	$(NULL)
 
 libnautilus_widgets_la_LDFLAGS=\
-	$(GNOME_LIBS)
+	$(GNOME_LIBS) \
+	$(top_src_dir)/libnautilus/libnautilus.la
 
 libnautilus_widgetsincludedir=$(includedir)/nautilus-widgets
 
@@ -57,8 +53,10 @@ test_nautilus_widgets_SOURCES =\
 
 test_nautilus_widgets_LDADD =\
 	$(GCONF_LIBS) \
+	$(GNOMEUI_LIBS) \
 	../nautilus-widgets/libnautilus-widgets.la \
 	../libnautilus-extensions/libnautilus-extensions.la \
+	../libnautilus/libnautilus.la	\
 	../librsvg/librsvg.la \
 	$(NULL)
 

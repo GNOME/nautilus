@@ -66,7 +66,7 @@ libnautilus_la_SOURCES=					\
 	nautilus-zoomable.c				\
 	nautilus-undo-manager.c				\
 	nautilus-undo-transaction.c			\
-	nautilus-undoable.c				\	
+	nautilus-undoable.c				\
 	$(NULL)
 
 $(nautilus_undo_manager_component_idl_sources): nautilus_undo_manager_component_idl_stamp
@@ -81,4 +81,4 @@ nautilus_view_component_idl_stamp: nautilus-view-component.idl
 
 CLEANFILES=nautilus_view_component_idl_stamp nautilus_undo_manager_component_idl_stamp
 
-EXTRA_DIST = nautilus-view-component.idl
+EXTRA_DIST = nautilus-undo-manager-component.idl nautilus-view-component.idl

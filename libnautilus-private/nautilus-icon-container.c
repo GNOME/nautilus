@@ -35,6 +35,7 @@
 #include <gtk/gtkmain.h>
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include <gdk-pixbuf/gnome-canvas-pixbuf.h>
+#include <libnautilus/nautilus-undo-manager.h>
 
 #include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-glib-extensions.h"
@@ -44,7 +45,7 @@
 #include "nautilus-gtk-macros.h"
 #include "nautilus-icon-text-item.h"
 #include "nautilus-lib-self-check-functions.h"
-#include "nautilus-undo-manager.h"
+
 
 #include "nautilus-icon-grid.h"
 #include "nautilus-icon-private.h"

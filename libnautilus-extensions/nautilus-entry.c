@@ -28,7 +28,7 @@
 #include "nautilus-entry.h"
 
 #include "nautilus-gtk-macros.h"
-#include "libnautilus-extensions/nautilus-undo-manager.h"
+#include <libnautilus/nautilus-undo-manager.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmain.h>

@@ -32,7 +32,7 @@
 #include "file-manager/fm-list-view.h"
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-undo-manager.h>
+#include <libnautilus/nautilus-undo-manager.h>
 
 typedef struct {
   POA_Nautilus_Application servant;

@@ -1,3 +1,23 @@
+2000-05-11  Gene Z. Ragan  <gzr@eazel.com>
+
+	* helper-utilities/authenticate/Makefile.am:
+	* nautilus-widgets/Makefile.am:
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus/Makefile.am:
+	Change makefiles to link against libnautilus.  This is so calls
+	to the undo manager code resolve.  There is probably a better way to
+	do this.
+	
+	* libnautilus-extensions/nautilus-entry.c:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	* libnautilus-extensions/nautilus-icon-text-item.c:
+	* src/nautilus-bookmarks-window.c:
+	* src/nautilus-location-bar.c:
+	* src/nautilus-window-menus.c:
+	* src/ntl-app.c:
+	Changed to #include <libnautilus-extensions/nautilus-undo-manager.h>
+	to #include <libnautilus/nautilus-undo-manager.h>
+
 2000-05-10  Gene Z. Ragan  <gzr@eazel.com>
 
 	*libnautilus/nautilus-undo-manager-component.idl
@@ -9,7 +29,7 @@
 	*libnautilus/nautilus-undoable.c
 	*libnautilus/nautilus-undoable.h
 
-	Moved files to libnautilus so IDL comiplation would work properly
+	Moved files to libnautilus so IDL compilation would work properly
 	and at the suggestion of mjs.
 
 	*libnautilus-extensions/Makefile.am
