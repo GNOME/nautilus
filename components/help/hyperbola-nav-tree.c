@@ -144,4 +144,3 @@ static void hyperbola_navigation_tree_select_row(GtkCTree *ctree, GtkCTreeNode *
 
   view->notify_count--;
 }
-
