@@ -1,3 +1,16 @@
+2001-03-09  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Rebecca Schulman  <rebecka@eazel.com>
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 7615 (searching for "    " crashes)
+
+	* src/nautilus-simple-search-bar.c:
+	(nautilus_simple_search_criteria_to_search_uri):
+	Change code that counts characters in search URI
+	to use the same logic as the code that appends
+	to string.
+
 2001-03-09  Dan Mueth  <dan@eazel.com>
 
 	Updates to translated docs:
