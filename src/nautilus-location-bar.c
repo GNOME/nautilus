@@ -102,7 +102,8 @@ drag_data_received_callback (GtkWidget *widget,
 		       	     int y,
 		       	     GtkSelectionData *data,
 		             guint info,
-		             guint32 time)
+		             guint32 time,
+			     gpointer callback_data)
 {
 	GList *names, *node;
 	NautilusApplication *application;
@@ -113,6 +114,7 @@ drag_data_received_callback (GtkWidget *widget,
 
 	g_assert (NAUTILUS_IS_LOCATION_BAR (widget));
 	g_assert (data != NULL);
+	g_assert (callback_data == NULL);
 
 	names = gnome_uri_list_extract_uris (data->data);
 
@@ -170,13 +172,16 @@ drag_data_get_callback (GtkWidget *widget,
 		  	GdkDragContext *context,
 		  	GtkSelectionData *selection_data,
 		  	guint info,
-		 	guint32 time)
+		 	guint32 time,
+			gpointer callback_data)
 {
+	NautilusNavigationBar *bar;
 	char *entry_text;
 
 	g_assert (selection_data != NULL);
+	bar = NAUTILUS_NAVIGATION_BAR (callback_data);
 
-	entry_text = nautilus_navigation_bar_get_location (NAUTILUS_NAVIGATION_BAR (widget->parent));
+	entry_text = nautilus_navigation_bar_get_location (bar);
 	
 	switch (info) {
 	case NAUTILUS_DND_URI_LIST:
