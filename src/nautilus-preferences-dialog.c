@@ -406,11 +406,11 @@ dialog_button_response_callback (GtkDialog *dialog,
 			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-56");
 		else if (eel_str_is_equal (active_pane, "Icon Captions"))
 			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-439");
-		else if (eel_str_is_equal (active_pane, "Side pane"))
+		else if (eel_str_is_equal (active_pane, "Side Panes"))
 			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-57");
 		else if (eel_str_is_equal (active_pane,"Navigation"))
 			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-59");
-		else if (eel_str_is_equal (active_pane, "Speed Tradeoffs"))
+		else if (eel_str_is_equal (active_pane, "Performance"))
 			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-60");
 
 		g_free (active_pane);
