@@ -359,9 +359,12 @@ bonobo_control_activate_cb (BonoboObject *control, gboolean state, gpointer user
                 fm_directory_view_merge_menus (view);
 	        /* Set initial sensitivity, wording, toggle state, etc. */       
                 fm_directory_view_update_menus (view);
-        } else {
-                bonobo_ui_handler_unset_container (local_ui_handler);
         }
+
+        /* 
+         * Nothing to do on deactivate case, which never happens because
+         * of the way Nautilus content views are handled.
+         */
 }
 
 static void
@@ -1476,26 +1479,6 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          0,
                                          (BonoboUIHandlerCallbackFunc) select_all_cb,
                                          view);
-
-#if 0
-
-/* This is a sample of merging a toolbar item onto the end of the Nautilus toolbar.
- * This item appears and disappears with this view.
- * Note that aspects of this item such as label & sensitivity could be updated
- * dynamically in the same way as menu items in fm_directory_view_real_update_menus.
- */ 
-        bonobo_ui_handler_toolbar_new_item (ui_handler,						/* Bonobo ui_handler */
-        				    "/Main/Test",					/* button path, must start with /Main/ and be otherwise unique */
-        				    _("Test"),						/* button label */
-        				    _("This text appears in the status bar"),		/* hint text */
-        				    -1,							/* position, -1 means last */
-        				    BONOBO_UI_HANDLER_PIXMAP_STOCK,			/* pixmap type */
-        				    GNOME_STOCK_PIXMAP_BOOK_BLUE,			/* pixmap data */
-        				    0,							/* accelerator key */
-        				    0,							/* accelerator key modifiers */
-        				    (BonoboUIHandlerCallbackFunc) select_all_cb,	/* callback function */
-        				    view);						/* callback function's data */
-#endif
 }
 
 static void

@@ -21,16 +21,20 @@
  */
 
 /* nautilus-sample-content-view.c - sample content view
-   component. This component just displays a simple label of the URI
-   and does nothing else. It should be a good basis for writing
-   out-of-proc content views.*/
+   component. This component displays a simple label of the URI
+   and demonstrates merging menu items & toolbar buttons. 
+   It should be a good basis for writing out-of-proc content views.
+ */
 
 #include <config.h>
 
 #include "nautilus-sample-content-view.h"
 
-#include <libnautilus/nautilus-gtk-macros.h>
+#include <bonobo/bonobo-control.h>
 #include <gtk/gtksignal.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-stock.h>
+#include <libnautilus/nautilus-gtk-macros.h>
 
 /* A NautilusContentViewFrame's private information. */
 struct _NautilusSampleContentViewDetails {
@@ -45,9 +49,12 @@ static void nautilus_sample_content_view_destroy          (GtkObject *object);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSampleContentView, nautilus_sample_content_view, GTK_TYPE_LABEL)
      
-static void sample_notify_location_change_cb              (NautilusContentViewFrame  *view, 
+static void sample_notify_location_change_callback        (NautilusContentViewFrame  *view_frame, 
 							   Nautilus_NavigationInfo   *navinfo, 
-							   NautilusSampleContentView *sample);
+							   NautilusSampleContentView *view);
+static void sample_merge_bonobo_items_callback 		  (BonoboObject 	     *control, 
+							   gboolean 		      state, 
+							   gpointer 		      user_data);
      
      
 static void
@@ -71,8 +78,18 @@ nautilus_sample_content_view_initialize (NautilusSampleContentView *view)
 	
 	gtk_signal_connect (GTK_OBJECT (view->details->view_frame), 
 			    "notify_location_change",
-			    GTK_SIGNAL_FUNC (sample_notify_location_change_cb), 
+			    GTK_SIGNAL_FUNC (sample_notify_location_change_callback), 
 			    view);
+
+	/* 
+	 * Get notified when our bonobo control is activated so we
+	 * can merge menu & toolbar items into Nautilus's UI.
+	 */
+        gtk_signal_connect (GTK_OBJECT (nautilus_view_frame_get_bonobo_control (
+        					NAUTILUS_VIEW_FRAME (view->details->view_frame))),
+                            "activate",
+                            sample_merge_bonobo_items_callback,
+                            view);
 	
 	gtk_widget_show (GTK_WIDGET (view));
 }
@@ -89,7 +106,6 @@ nautilus_sample_content_view_destroy (GtkObject *object)
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
-
 
 /**
  * nautilus_sample_content_view_get_view_frame:
@@ -109,24 +125,31 @@ nautilus_sample_content_view_get_view_frame (NautilusSampleContentView *view)
  * nautilus_sample_content_view_load_uri:
  *
  * Load the resource pointed to by the specified URI.
- * @view: NautilusSampleContentView to get the view_frame from..
+ * @view: NautilusSampleContentView to get the view_frame from.
  * 
  **/
 void
 nautilus_sample_content_view_load_uri (NautilusSampleContentView *view,
 				       const gchar               *uri)
 {
+	gchar *label_text;
+	
 	g_free (view->details->uri);
 	view->details->uri = g_strdup (uri);
-	gtk_label_set_text (GTK_LABEL (view), uri);
+
+	label_text = g_strdup_printf ("%s\n\nThis is a sample Nautilus content view component.", uri);
+	gtk_label_set_text (GTK_LABEL (view), label_text);
+	g_free (label_text);
 }
 
 static void
-sample_notify_location_change_cb (NautilusContentViewFrame  *view, 
-				  Nautilus_NavigationInfo   *navinfo, 
-				  NautilusSampleContentView *sample)
+sample_notify_location_change_callback (NautilusContentViewFrame  *view_frame, 
+				  	Nautilus_NavigationInfo   *navinfo, 
+				  	NautilusSampleContentView *view)
 {
 	Nautilus_ProgressRequestInfo pri;
+
+	g_assert (view_frame == view->details->view_frame);
 	
 	memset(&pri, 0, sizeof(pri));
 	
@@ -141,10 +164,10 @@ sample_notify_location_change_cb (NautilusContentViewFrame  *view,
 	
 	pri.type = Nautilus_PROGRESS_UNDERWAY;
 	pri.amount = 0.0;
-	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (sample->details->view_frame), &pri);
+	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (view_frame), &pri);
 	
 	/* Do the actual load. */
-	nautilus_sample_content_view_load_uri (sample, navinfo->actual_uri);
+	nautilus_sample_content_view_load_uri (view, navinfo->actual_uri);
 	
 	/*
 	 * It's mandatory to send a PROGRESS_DONE_OK message once the
@@ -158,7 +181,93 @@ sample_notify_location_change_cb (NautilusContentViewFrame  *view,
 
 	pri.type = Nautilus_PROGRESS_DONE_OK;
 	pri.amount = 100.0;
-	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (sample->details->view_frame), &pri);
+	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (view_frame), &pri);
 }
+
+static void
+bonobo_sample_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
+{
+ 	NautilusSampleContentView *view;
+        BonoboUIHandler *local_ui_handler;
+	char *label_text;
+
+        g_assert (NAUTILUS_IS_SAMPLE_CONTENT_VIEW (user_data));
+
+	view = NAUTILUS_SAMPLE_CONTENT_VIEW (user_data);
+
+	if (strcmp (path, "/File/Sample") == 0) {
+		label_text = g_strdup_printf ("%s\n\nYou selected the Sample menu item.", view->details->uri);
+	} else {
+		g_assert (strcmp (path, "/Main/Sample") == 0);
+		label_text = g_strdup_printf ("%s\n\nYou clicked the Sample toolbar button.", view->details->uri);
+	}
+	
+	gtk_label_set_text (GTK_LABEL (view), label_text);
+	g_free (label_text);
+}
+
+
+static void
+sample_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpointer user_data)
+{
+ 	NautilusSampleContentView *view;
+        BonoboUIHandler *local_ui_handler;
+
+        g_assert (NAUTILUS_IS_SAMPLE_CONTENT_VIEW (user_data));
+
+	view = NAUTILUS_SAMPLE_CONTENT_VIEW (user_data);
+        local_ui_handler = bonobo_control_get_ui_handler (BONOBO_CONTROL (control));
+
+        if (state) {
+        	/* Tell the Nautilus window to merge our bonobo_ui_handler items with its ones */
+                bonobo_ui_handler_set_container (local_ui_handler, 
+                                                 bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (control)));
+
+                /* 
+                 * Create our sample menu item.
+                 *
+                 * Note that it's sorta bogus that we know Nautilus has a menu whose
+                 * path is "/File", and also that we know a sensible position to use within
+                 * that menu. Nautilus should publish this information somehow.
+                 */ 
+	        bonobo_ui_handler_menu_new_item (local_ui_handler,				/* BonoboUIHandler */
+	        				 "/File/Sample",				/* menu item path, must start with /some-existing-menu-path and be otherwise unique */
+	                                         _("_Sample"),					/* menu item user-displayed label */
+	                                         _("This is a sample merged menu item"),	/* hint that appears in status bar */
+	                                         1,						/* position within menu; -1 means last */
+	                                         BONOBO_UI_HANDLER_PIXMAP_NONE,			/* pixmap type */
+	                                         NULL,						/* pixmap data */
+	                                         'M',						/* accelerator key, couldn't bear the thought of using Control-S for anything except Save */
+	                                         GDK_CONTROL_MASK,				/* accelerator key modifiers */
+	                                         bonobo_sample_callback,			/* callback function */
+	                                         view);                				/* callback function data */
+
+                /* 
+                 * Create our sample toolbar button.
+                 *
+                 * Note that it's sorta bogus that we know Nautilus has a toolbar whose
+                 * path is "/Main". Nautilus should publish this information somehow.
+                 */ 
+	        bonobo_ui_handler_toolbar_new_item (local_ui_handler,				/* BonoboUIHandler */
+	        				    "/Main/Sample",				/* button path, must start with /Main/ and be otherwise unique */
+	        				    _("Sample"),					/* button user-displayed label */
+	        				    _("This is a sample merged toolbar button"),/* hint that appears in status bar */
+	        				    -1,						/* position, -1 means last */
+	        				    BONOBO_UI_HANDLER_PIXMAP_STOCK,		/* pixmap type */
+	        				    GNOME_STOCK_PIXMAP_BOOK_BLUE,		/* pixmap data */
+	        				    0,						/* accelerator key */
+	        				    0,						/* accelerator key modifiers */
+	        				    bonobo_sample_callback,			/* callback function */
+	        				    view);					/* callback function's data */
+         }
+
+        /* 
+         * Note that we do nothing if state is FALSE. Nautilus content views are activated
+         * when installed, but never explicitly deactivated. When the view changes to another,
+         * the content view object is destroyed, which ends up calling bonobo_ui_handler_unset_container,
+         * which removes its merged menu & toolbar items.
+         */
+}
+
 
 

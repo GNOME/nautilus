@@ -1,5 +1,35 @@
 2000-03-23  John Sullivan  <sullivan@eazel.com>
 
+	Put sample merged menu item and merged toolbar item
+	into sample component.
+
+	* components/sample/nautilus_sample_content_view.c:
+	(sample_notify_location_change_cb): Changed name to
+	sample_notify_location_change_callback and changed
+	parameter name "view" to "view_frame" and "sample"
+	to "view" to match other uses; added assert that
+	view's view_frame is the same as parameter view_frame.
+	(nautilus_sample_content_view_initialize): Added signal
+	connection for bonobo control activation.
+	(nautilus_sample_content_view_load_uri): Made the displayed
+	text include an explanatory sentence in addition to the uri,
+	so Nautilus users will be more likely to understand what this
+	thing is.
+	(bonobo_sample_callback): New function, changes the sentence
+	displayed with the uri based on callback caller (menu item or
+	toolbar button).
+	(sample_merge_bonobo_items_callback): New function, creates one
+	sample merged menu item and one sample merged toolbar button,
+	whose callback functions are both bonobo_sample_callback.
+
+	* src/file-manager/fm-directory-view.c:
+	(bonobo_control_activate_cb): Removed never-called "state == FALSE"
+	case, added comment.
+	(fm_directory_view_real_merge_menus): Removed #if 0'ed sample
+	toolbar button, now that there's one in the sample component.
+
+2000-03-23  John Sullivan  <sullivan@eazel.com>
+
 	* src/file-manager/fm-directory-view.c:
 	(fm_directory_view_real_merge_menus): Put in a commented-out
 	sample merged toolbar button, as a starting point for the
