@@ -323,7 +323,11 @@ nautilus_view_handle_client_destroy(GtkWidget *widget, NautilusView *view)
 static void
 nautilus_view_handle_client_destroy_2(GtkObject *object, CORBA_Object cobject, CORBA_Environment *ev, NautilusView *view)
 {
-  gtk_object_destroy(GTK_OBJECT(view));
+  /* ICK! */
+  if(NAUTILUS_IS_META_VIEW(view))
+    nautilus_window_remove_meta_view(NAUTILUS_WINDOW(view->main_window), view);
+  else if(NAUTILUS_IS_CONTENT_VIEW(view))
+    nautilus_window_set_content_view(NAUTILUS_WINDOW(view->main_window), NULL);
 }
 
 gboolean /* returns TRUE if successful */

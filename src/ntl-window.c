@@ -786,7 +786,8 @@ nautilus_window_remove_meta_view_real(NautilusWindow *window, NautilusView *meta
 void
 nautilus_window_remove_meta_view(NautilusWindow *window, NautilusView *meta_view)
 {
-  g_return_if_fail(g_slist_find(window->meta_views, meta_view));
+  if(!g_slist_find(window->meta_views, meta_view))
+    return;
 
   window->meta_views = g_slist_remove(window->meta_views, meta_view);
 

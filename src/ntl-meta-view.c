@@ -97,10 +97,10 @@ nautilus_meta_view_init (NautilusMetaView *view)
 static void
 nautilus_meta_view_destroy (GtkObject *object)
 {
-  GtkObjectClass *klass = object->klass;
+  NautilusViewClass *klass = (NautilusViewClass *)object->klass;
 
-  if(klass->destroy)
-    klass->destroy(object);
+  if(GTK_OBJECT_CLASS(klass->parent_class)->destroy)
+    GTK_OBJECT_CLASS(klass->parent_class)->destroy(object);
 }
 
 const char *

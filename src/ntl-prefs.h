@@ -6,6 +6,8 @@
 typedef struct {
   guchar window_alwaysnew : 1;
   guchar window_search_existing : 1;
+
+  GSList *global_meta_views;
 } NautilusPrefs;
 
 extern NautilusPrefs nautilus_prefs;

@@ -1,3 +1,12 @@
+2000-01-06  Elliot Lee  <sopwith@redhat.com>
+
+	* src/ntl-prefs.c, src/ntl-uri-map.c: Implement preferences for
+	which meta-views to always load with a page. Loading doesn't seem to quite work.
+
+	* src/ntl-window.c, src/ntl-view.c: Try to fix a crash that
+	happens when going to a new page, and a meta view is being
+	destroyed in the process. Still crashes.
+
 2000-01-05  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/ntl-uri-map.c (nautilus_navinfo_free): Fix warning.

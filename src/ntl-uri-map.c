@@ -26,6 +26,8 @@
    change request to a set of views and actual URL to be loaded. */
 
 #include "ntl-uri-map.h"
+#include "ntl-prefs.h"
+
 #include <libgnorba/gnorba.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -192,6 +194,14 @@ nautilus_navinfo_map(NautilusNavigationInfo *navinfo)
   navinfo->navinfo.actual_uri = g_strdup(navinfo->navinfo.requested_uri);
 }
 
+static void
+nautilus_navinfo_append_globals(gpointer value, gpointer data)
+{
+  GSList **target = data;
+
+  *target = g_slist_prepend(*target, g_strdup(value));
+}
+
 guint
 nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
                      Nautilus_NavigationInfo *old_navinfo,
@@ -289,8 +299,7 @@ nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
         }
     }
 
-  navinfo->meta_iids = g_slist_append(navinfo->meta_iids, g_strdup("ntl_history_view"));
-  navinfo->meta_iids = g_slist_append(navinfo->meta_iids, g_strdup("ntl_websearch_view"));
+  g_slist_foreach(nautilus_prefs.global_meta_views, nautilus_navinfo_append_globals, &navinfo->meta_iids);
 
  out:
   if(notify_when_ready)
