@@ -136,7 +136,8 @@ typedef enum ElementIndex {
 	LITERALLAYOUT,
 	QANDAENTRY,
 	QANDASET,
-	UNDEFINED /* 124 */
+	BRIDGEHEAD,
+	UNDEFINED /* 125 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;

@@ -141,4 +141,6 @@ void sect_city_start_element (Context *context, const gchar *name, const xmlChar
 void sect_country_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void sect_literallayout_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void sect_literallayout_end_element (Context *context, const gchar *name);
+void sect_bridgehead_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void sect_bridgehead_end_element (Context *context, const gchar *name);
 #endif

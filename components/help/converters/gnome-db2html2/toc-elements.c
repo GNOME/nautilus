@@ -155,6 +155,7 @@ ElementInfo toc_elements[] = {
 	{ LITERALLAYOUT, "literallayout", NULL, NULL, NULL},
 	{ QANDAENTRY, "qandaentry", NULL, NULL, NULL, },
 	{ QANDASET, "qandaset", NULL, NULL, NULL, },
+	{ BRIDGEHEAD, "bridgehead", NULL, NULL, NULL, },
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 

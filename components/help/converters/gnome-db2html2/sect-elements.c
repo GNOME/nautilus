@@ -131,6 +131,7 @@ ElementInfo sect_elements[] = {
 	{ LITERALLAYOUT, "literallayout", (startElementSAXFunc) sect_literallayout_start_element, (endElementSAXFunc) sect_literallayout_end_element, (charactersSAXFunc) sect_write_characters },
 	{ QANDAENTRY, "qandaentry", NULL, NULL, NULL, },
 	{ QANDASET, "qandaset", NULL, NULL, NULL, },
+	{ BRIDGEHEAD, "bridgehead", (startElementSAXFunc) sect_bridgehead_start_element, (endElementSAXFunc) sect_bridgehead_end_element, (charactersSAXFunc) sect_write_characters },
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -2277,3 +2278,23 @@ sect_literallayout_end_element (Context *context,
 	sect_print (context, "</PRE>");
 }
 
+void
+sect_bridgehead_start_element (Context *context,
+			     	  const gchar *name,
+			     	  const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<H2>");
+}
+
+void
+sect_bridgehead_end_element (Context *context,
+			   	const gchar *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "</H2>");
+}

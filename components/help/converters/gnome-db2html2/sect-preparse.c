@@ -144,6 +144,7 @@ ElementInfo sect_preparse[] = {
 	{ LITERALLAYOUT, "literallayout", NULL, NULL, NULL},
 	{ QANDAENTRY, "quandaentry", NULL, NULL, NULL},
 	{ QANDASET, "quandaset", NULL, NULL, NULL},
+	{ BRIDGEHEAD, "bridgehead", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
