@@ -300,7 +300,7 @@ nautilus_password_dialog_new (const char	*dialog_title,
 			    TRUE,	/* expand */
 			    TRUE,	/* fill */
 			    0);		/* padding */
-
+#if 0 /* disabled fro PR2 */
 	password_dialog->details->remember_button = 
 		gtk_check_button_new_with_label ("Remember this password");
 
@@ -309,7 +309,7 @@ nautilus_password_dialog_new (const char	*dialog_title,
 			  TRUE,	/* expand */
 			  TRUE,	/* fill */
 			  4);		/* padding */
-	
+#endif	
 	/* Configure the table */
  	gtk_container_set_border_width (GTK_CONTAINER(password_dialog->details->table), CAPTION_TABLE_BORDER_WIDTH);
 	
