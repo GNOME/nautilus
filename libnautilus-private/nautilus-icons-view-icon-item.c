@@ -967,7 +967,7 @@ nautilus_icons_view_icon_item_bounds (GnomeCanvasItem *item, double *x1, double 
 	}
 	
 	/* Compute text rectangle. */
-	text_rect.x0 = icon_rect.y1 / 2 - details->text_width / 2;
+	text_rect.x0 = icon_rect.x1 / 2 - details->text_width / 2;
 	text_rect.y0 = icon_rect.y1;
 	text_rect.x1 = text_rect.x0 + details->text_width;
 	text_rect.y1 = text_rect.y1 + details->text_height;
