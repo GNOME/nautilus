@@ -64,6 +64,7 @@ static void
 generate_summary_form (NautilusSummaryView	*view) {
 
 	GtkWidget	*temp_widget;
+	GtkWidget	*title;
 
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -71,7 +72,9 @@ generate_summary_form (NautilusSummaryView	*view) {
 	gtk_widget_show (view->details->form);
 
 	/* setup the title */
-	create_services_title_widget ("Eazel Services Summary");
+	title = create_services_title_widget ("Eazel Services Summary");
+	gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
+	gtk_widget_show (title);
 
 	/* put a mystery label here as a placeholder. */
 	temp_widget = gtk_label_new ("I am just a view.  One day I will be gone.");
