@@ -617,63 +617,65 @@ is_mp3_file (GnomeVFSFileInfo *file_info)
 		&& nautilus_istr_has_suffix (file_info->mime_type, "mp3");
 }
 
-
 /* read the id3 tag of the file if present */
 static gboolean
 read_id_tag (const char *song_uri, SongInfo *song_info)
 {
-	GnomeVFSHandle *mp3_file;
-	GnomeVFSResult result;
-	GnomeVFSFileSize bytes_read;
-	char tag_buffer[129];
-	char temp_str[31];
-
-	result = gnome_vfs_open (&mp3_file, song_uri, GNOME_VFS_OPEN_READ);
-	if (result != GNOME_VFS_OK) {
+	const char *path;
+	GnomeVFSURI *uri;
+	id3_t *id3;
+	struct id3v1tag_t id3v1tag;
+	struct id3tag_t tag;
+	FILE *file;
+	
+	uri = gnome_vfs_uri_new (song_uri);
+	if (uri == NULL) {
 		return FALSE;
-        }
- 
- 	gnome_vfs_seek (mp3_file, GNOME_VFS_SEEK_END, -128);
-  
-	if (gnome_vfs_read (mp3_file, tag_buffer, 128, &bytes_read) != GNOME_VFS_OK) {
-  		gnome_vfs_close (mp3_file);
- 		return FALSE;
 	}
-	gnome_vfs_close (mp3_file);
 	
-	if (tag_buffer[0] != 'T' || tag_buffer[1] != 'A' || tag_buffer[2] != 'G') {
+	if (!gnome_vfs_uri_is_local (uri)) {
+		gnome_vfs_uri_unref (uri);
 		return FALSE;
-        }
+	}
 	
-	temp_str[30] = '\0';
-	strncpy (temp_str, &tag_buffer[3], 30);
-	g_strchomp (temp_str);
-	song_info->title = g_strdup(temp_str);
-  
-	strncpy (temp_str, &tag_buffer[33], 30);
-	g_strchomp (temp_str);
-	song_info->artist = g_strdup(temp_str);
+	path = gnome_vfs_uri_get_path (uri);
+	file = fopen (path, "rb");
+	if (file == NULL) {
+		gnome_vfs_uri_unref (uri);
+		return FALSE;	
+	}
+	
+	/* Try ID3v2 tag first */
+	fseek (file, 0, SEEK_SET);
+	id3 = id3_open_fp (file, O_RDONLY);
+	if (id3 != NULL) {
+		mpg123_get_id3v2 (id3, &tag);
+		id3_close (id3);
+	} else if ((fseek (file, -1 * sizeof (id3v1tag), SEEK_END) == 0) &&
+            (fread (&id3v1tag, 1, sizeof (id3v1tag), file) == sizeof (id3v1tag)) &&
+	    (strncmp (id3v1tag.tag, "TAG", 3) == 0)) {
+		/* Try reading ID3v1 tag. */
+		mpg123_id3v1_to_id3v2 (&id3v1tag, &tag);
+	} else {
+		/* Failed to read any sort of tag */
+		gnome_vfs_uri_unref (uri);
+		fclose (file);
+		return FALSE;
+	}
+	
+	/* Copy data from tag into our info struct */
+	song_info->title = g_strdup(tag.title);
+	song_info->artist = g_strdup(tag.artist);
+	song_info->album = g_strdup(tag.album); 
+	song_info->year = g_strdup(tag.year);
+	song_info->comment = g_strdup(tag.comment);
 
-	strncpy (temp_str, &tag_buffer[63], 30);
-	g_strchomp(temp_str);
-	song_info->album = g_strdup(temp_str); 
-
-	temp_str[4] = '\0';
-	strncpy (temp_str, &tag_buffer[93], 4);
-	song_info->year = g_strdup(temp_str);
-
-	strncpy (temp_str, &tag_buffer[97], 30);
-	g_strchomp (temp_str);
-	song_info->comment = g_strdup(temp_str);
-
-    	if (tag_buffer[97 + 28] == 0) {
-        	song_info->track_number = tag_buffer[97 + 29];
-        } else {
-                song_info->track_number = -1;
-        }
-
+	/* Clean up */
+	fclose (file);
+	gnome_vfs_uri_unref (uri);	
 	return TRUE;
 }
+
 
 /* fetch_play_time takes the pathname to a file and returns the play time in seconds */
 static int

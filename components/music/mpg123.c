@@ -359,7 +359,7 @@ static gchar *eval_id3_format(const char *id3_format, struct id3tag_t *id3,
  *
  */
 
-static void 
+void 
 mpg123_id3v1_to_id3v2 (struct id3v1tag_t *v1, struct id3tag_t *v2)
 {
 	memset(v2,0,sizeof(struct id3tag_t));

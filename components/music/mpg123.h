@@ -277,6 +277,7 @@ double mpg123_compute_tpf(struct frame *fr);
 guint mpg123_strip_spaces(char *src, size_t n);
 void mpg123_get_id3v2(id3_t * id3d, struct id3tag_t *tag);
 gchar *mpg123_format_song_title(struct id3tag_t *tag, gchar *filename);
+void mpg123_id3v1_to_id3v2 (struct id3v1tag_t *v1, struct id3tag_t *v2);
 
 
 

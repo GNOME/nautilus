@@ -1,3 +1,12 @@
+2000-12-11  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 4900, Nautilus doesn't support ID3 v2.x tags
+	
+	* components/music/mpg123.c:
+	* components/music/mpg123.h:
+	* components/music/nautilus-music-view.c: (read_id_tag):
+	Add support for both v1 and v2 ID3 tags.
+
 2000-12-11  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* README:
