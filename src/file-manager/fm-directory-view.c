@@ -4822,8 +4822,9 @@ rename_file_callback (BonoboUIComponent *component, gpointer callback_data, cons
 	if (selection_not_empty_in_menu_callback (view, selection)) {
 		file = NAUTILUS_FILE (selection->data);
 		EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, file));
-		nautilus_file_list_free (selection);
 	}
+
+	nautilus_file_list_free (selection);
 }
 
 static void
