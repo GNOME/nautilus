@@ -27,7 +27,7 @@
 #include <gtk/gtk.h>
 
 #include <libgnome/gnome-i18n.h>
-#include <libnautilus/nautilus-undo.h>
+#include <libnautilus-private/nautilus-undo.h>
 
 #include <eel/eel-gtk-macros.h>
 #include <string.h>
