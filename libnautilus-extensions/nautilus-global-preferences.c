@@ -701,7 +701,7 @@ use_proxy_changed (gpointer user_data)
 	gconf_client = gconf_client_get_default ();
 
 	if (gconf_client != NULL) {
-		use_proxy = gconf_client_set_bool (gconf_client, USE_PROXY_KEY, use_proxy, NULL);
+		gconf_client_set_bool (gconf_client, USE_PROXY_KEY, use_proxy, NULL);
 	}
 
 	if (use_proxy) {
