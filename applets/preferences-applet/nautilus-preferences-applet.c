@@ -29,6 +29,7 @@
 #include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtktogglebutton.h>
@@ -101,6 +102,7 @@ boolean_toggle_button_new (const char *preference_name,
 
 	
 	button = gtk_toggle_button_new_with_label (button_label);
+	nautilus_gtk_label_make_smaller (GTK_LABEL (GTK_BIN (button)->child), 4);
 
 	foo = g_new (Foo, 1);
 	foo->preference_name = g_strdup (preference_name);
@@ -137,6 +139,15 @@ quit_button_clicked_callback (GtkWidget *button,
 	nautilus_gnome_shell_execute ("nautilus --quit");
 }
 
+static void
+start_button_clicked_callback (GtkWidget *button,
+			      gpointer callback_data)
+{
+	g_return_if_fail (GTK_IS_BUTTON (button));
+	
+	nautilus_gnome_shell_execute ("nautilus");
+}
+
 int
 main (int argc, char **argv)
 {
@@ -147,6 +158,7 @@ main (int argc, char **argv)
 	GtkWidget *show_desktop_button;
 	GtkWidget *smooth_graphics_button;
 	GtkWidget *quit_button;
+	GtkWidget *start_button;
 
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
@@ -190,10 +202,19 @@ main (int argc, char **argv)
 	gtk_box_pack_start (GTK_BOX (preference_vbox), smooth_graphics_button, TRUE, TRUE, 1);
 
 	quit_button = gtk_button_new_with_label ("Quit");
+	nautilus_gtk_label_make_smaller (GTK_LABEL (GTK_BIN (quit_button)->child), 4);
 	gtk_box_pack_start (GTK_BOX (command_hbox), quit_button, TRUE, TRUE, 1);
 	gtk_signal_connect (GTK_OBJECT (quit_button),
 			    "clicked",
 			    GTK_SIGNAL_FUNC (quit_button_clicked_callback),
+			    NULL);
+
+	start_button = gtk_button_new_with_label ("Start");
+	nautilus_gtk_label_make_smaller (GTK_LABEL (GTK_BIN (start_button)->child), 4);
+	gtk_box_pack_start (GTK_BOX (command_hbox), start_button, TRUE, TRUE, 1);
+	gtk_signal_connect (GTK_OBJECT (start_button),
+			    "clicked",
+			    GTK_SIGNAL_FUNC (start_button_clicked_callback),
 			    NULL);
 
 	gtk_container_add (GTK_CONTAINER (applet), main_hbox);
