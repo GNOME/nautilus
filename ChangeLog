@@ -1,5 +1,15 @@
 2001-03-01  Eric Fischer  <eric@eazel.com>
 
+	reviewed by: Robin * Slomkowski <rslomkow@eazel.com>
+
+	* nautilus.spec.in:
+	Add dependency for libpng (fixed Bug 7162)
+	Also change dependency for gnome-libs to 1.2.11, because
+	Robin says anything built against that version (as on the
+	build servers) will break if run with an older release.
+
+2001-03-01  Eric Fischer  <eric@eazel.com>
+
 	reviewed by: Laszlo Kovacs <laszlo.kovacs@sun.com>
 
 	Fixes Bug 7128 (Organization of "Manual" in Help sidebar is bizarre)
