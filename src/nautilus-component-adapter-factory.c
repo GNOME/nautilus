@@ -36,7 +36,7 @@
 #include <libgnome/gnome-macros.h>
 #include <libnautilus-adapter/nautilus-adapter-factory.h>
 
-#define NAUTILUS_COMPONENT_ADAPTER_FACTORY_IID "OAFIID:Nautilus_Adaptor_Factory"
+#define NAUTILUS_COMPONENT_ADAPTER_FACTORY_IID "OAFIID:Nautilus_Adapter_Factory"
 
 struct NautilusComponentAdapterFactoryDetails {
 	Nautilus_ComponentAdapterFactory corba_factory;

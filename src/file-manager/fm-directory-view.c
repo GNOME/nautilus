@@ -4197,6 +4197,8 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 				can_paste = TRUE;
 			}
 		}
+
+		g_free (targets);
 	}
 
 	nautilus_bonobo_set_sensitive (view->details->ui,
