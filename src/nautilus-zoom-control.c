@@ -70,7 +70,7 @@ struct NautilusZoomControlDetails {
 
 static guint signals[LAST_SIGNAL];
 
-static void     nautilus_zoom_control_class_initialize 	 (NautilusZoomControlClass *klass);
+static void     nautilus_zoom_control_initialize_class 	 (NautilusZoomControlClass *klass);
 static void     nautilus_zoom_control_initialize       	 (NautilusZoomControl *zoom_control);
 static void	nautilus_zoom_control_destroy		 (GtkObject *object);
 static void     nautilus_zoom_control_draw 	       	 (GtkWidget *widget, 
@@ -88,45 +88,17 @@ static void	nautilus_zoom_control_size_allocate	 (GtkWidget *widget, GtkAllocati
 void            draw_number		                 (GtkWidget *widget, 
 							  GdkRectangle *box);
 
-static GtkEventBoxClass *parent_class;
-
 /* button assignments */
 #define CONTEXTUAL_MENU_BUTTON 3
 
-GtkType
-nautilus_zoom_control_get_type (void)
-{
-	static GtkType zoom_control_type = 0;
-	
-	if (!zoom_control_type) {
-		static const GtkTypeInfo zoom_control_info =
-		{
-			"NautilusZoomControl",
-			sizeof (NautilusZoomControl),
-			sizeof (NautilusZoomControlClass),
-			(GtkClassInitFunc) nautilus_zoom_control_class_initialize,
-			(GtkObjectInitFunc) nautilus_zoom_control_initialize,
-			/* reserved_1 */ NULL,
-			/* reserved_2 */ NULL,
-			(GtkClassInitFunc) NULL,
-		};
-		
-		zoom_control_type = gtk_type_unique (gtk_event_box_get_type(), &zoom_control_info);
-	}
-	
-	return zoom_control_type;
-}
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusZoomControl, nautilus_zoom_control, GTK_TYPE_MISC)
 
 static void
-nautilus_zoom_control_class_initialize (NautilusZoomControlClass *class)
+nautilus_zoom_control_initialize_class (NautilusZoomControlClass *zoom_control_class)
 {
-	GtkObjectClass *object_class;
-	GtkWidgetClass *widget_class;
+	GtkObjectClass *object_class = GTK_OBJECT_CLASS (zoom_control_class);
+	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (zoom_control_class);
 	
-	object_class = (GtkObjectClass*) class;
-	widget_class = (GtkWidgetClass*) class;
-	parent_class = gtk_type_class (gtk_event_box_get_type ());
-
 	object_class->destroy = nautilus_zoom_control_destroy;
 
 	widget_class->draw = nautilus_zoom_control_draw;
@@ -208,7 +180,14 @@ get_zoom_width (NautilusZoomControl *zoom_control)
 static void
 nautilus_zoom_control_initialize (NautilusZoomControl *zoom_control)
 {
-	int zoom_width;
+	GtkWidget *widget = GTK_WIDGET (zoom_control);
+	int	  zoom_width;
+
+	GTK_WIDGET_SET_FLAGS (zoom_control, GTK_CAN_FOCUS);
+	GTK_WIDGET_UNSET_FLAGS (zoom_control, GTK_NO_WINDOW);
+
+	gtk_widget_set_events (widget, 
+			       gtk_widget_get_events (widget) | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
 	
 	zoom_control->details = g_new0 (NautilusZoomControlDetails, 1);
 	
@@ -352,7 +331,13 @@ draw_zoom_control_image (GtkWidget *widget, GdkRectangle *box)
 	} else {
 		width  = gdk_pixbuf_get_width (zoom_control->details->zoom_decrement_image);
 		height = gdk_pixbuf_get_height (zoom_control->details->zoom_decrement_image);		
-		gdk_draw_rectangle (widget->window, widget->style->bg_gc[0], TRUE, box->x, box->y + zoom_control->details->y_offset, width, height);
+		
+		/* Clear the symbol area to get the default widget background */
+		gdk_window_clear_area (widget->window,
+				       box->x,
+				       box->y + zoom_control->details->y_offset,
+				       width,
+				       height);
 	}
 	
 	offset = gdk_pixbuf_get_width (zoom_control->details->zoom_decrement_image) + GAP_WIDTH;
@@ -366,7 +351,13 @@ draw_zoom_control_image (GtkWidget *widget, GdkRectangle *box)
 	} else {
 		width  = gdk_pixbuf_get_width (zoom_control->details->zoom_increment_image);
 		height = gdk_pixbuf_get_height (zoom_control->details->zoom_increment_image);		
-		gdk_draw_rectangle (widget->window, widget->style->bg_gc[0], TRUE, box->x + offset, box->y + zoom_control->details->y_offset, width, height);
+
+		/* Clear the symbol area to get the default widget background */
+		gdk_window_clear_area (widget->window,
+				       box->x + offset,
+				       box->y + zoom_control->details->y_offset,
+				       width,
+				       height);
 	}
 }
 
@@ -375,6 +366,13 @@ nautilus_zoom_control_draw (GtkWidget *widget, GdkRectangle *box)
 { 
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (NAUTILUS_IS_ZOOM_CONTROL (widget));
+
+	/* Clear the widget get the default widget background before drawing our stuff */
+	gdk_window_clear_area (widget->window,
+			       0,
+			       0,
+			       widget->allocation.width,
+			       widget->allocation.height);
 
 	draw_zoom_control_image (widget, box);	
 	draw_number (widget, box);
@@ -392,7 +390,7 @@ nautilus_zoom_control_expose (GtkWidget *widget, GdkEventExpose *event)
 	box.x = 0; box.y = 0;
 	box.width = widget->allocation.width;
 	box.height = widget->allocation.height;
-	
+
 	draw_zoom_control_image (widget, &box);	
 	draw_number (widget, &box);
 	

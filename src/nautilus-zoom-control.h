@@ -27,7 +27,7 @@
 #define NAUTILUS_ZOOM_CONTROL_H
 
 #include <gdk/gdk.h>
-#include <gtk/gtkeventbox.h>
+#include <gtk/gtkmisc.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -44,12 +44,12 @@ typedef struct NautilusZoomControlClass NautilusZoomControlClass;
 typedef struct NautilusZoomControlDetails NautilusZoomControlDetails;
 
 struct NautilusZoomControl {
-	GtkEventBox parent;
+	GtkMisc parent;
 	NautilusZoomControlDetails *details;
 };
 
 struct NautilusZoomControlClass {
-	GtkEventBoxClass parent_class;
+	GtkMiscClass parent_class;
 	
 	void (*zoom_in)		(NautilusZoomControl *control);
 	void (*zoom_out) 	(NautilusZoomControl *control);
