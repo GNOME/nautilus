@@ -1,3 +1,9 @@
+2004-09-20  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_volume_free_space): Plug a possible
+	leak if vfs_uri is NULL. Closes bug #152985.
+
 2004-09-20  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-directory.c (nautilus_directory_schedule_position_set):

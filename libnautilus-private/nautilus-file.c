@@ -5008,12 +5008,13 @@ nautilus_file_get_volume_free_space (NautilusFile *file)
 	}
 
 	vfs_uri = gnome_vfs_uri_new (file_uri);
+	g_free (file_uri);
+
 	if (vfs_uri == NULL) {
 		return NULL;
 	}
 
 	result = gnome_vfs_get_volume_free_space (vfs_uri, &free_space);
-	g_free (file_uri);
 	gnome_vfs_uri_unref (vfs_uri);
 
 	if (result == GNOME_VFS_OK) {
