@@ -24,7 +24,7 @@
   This is based in the distribution stuff from helixcode-utils.c, from
   the HelixCode Installer.
   I had to revamp it because it used some evil float stuff (redhat v. 6.09999)
-  and it's enums were evil.
+  and its enums were evil.
  */
 
 #include <config.h>
@@ -33,7 +33,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
+#include <sys/utsname.h>
 #include <string.h>
 
 #define RHAT "RedHat Linux"
@@ -55,6 +55,10 @@
 #define CORLc "CorelLinux"
 #define MANDc "Mandrake"
 #define UNKWc "unknown"
+
+/* avoid confusing RPM */
+#define ASSUME_ix86_IS_i386
+
 
 /* FIXME bugzilla.eazel.com 908
    need to implement the rest of the determine_FOO_version
@@ -353,4 +357,26 @@ trilobite_get_distribution_enum (const char *name, gboolean compact)
 	} else {
 		return trilobite_get_distribution_enum_verbose (name);
 	}
+}
+
+/* returns something like "i386", we hope */
+char *
+trilobite_get_distribution_arch (void)
+{
+	struct utsname utsbuffer;
+	char *arch;
+
+	uname (&utsbuffer);
+	arch = g_strdup (utsbuffer.machine);
+
+#ifdef ASSUME_ix86_IS_i386
+	/* always assume that "ix86" should be "i386", because otherwise RPM can't figure it out */
+	if ((strlen (arch) == 4) && (arch[0] == 'i') &&
+	    ((arch[1] >= '3') && (arch[1] <= '9')) &&
+	    (arch[2] == '8') && (arch[3] == '6')) {
+		arch[1] = '3';
+	}
+#endif
+
+	return arch;
 }

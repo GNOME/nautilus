@@ -69,5 +69,9 @@ char* trilobite_get_distribution_name (DistributionInfo distinfo,
 
 DistributionName trilobite_get_distribution_enum (const char *name, gboolean compact);
 
-#endif /* EAZEL_SERVICES_DISTRIBUTION_H */
+/* Return an allocated string holding this machine's architecture name
+ * (usually "i386" for now, but who knows what the future holds?)
+ */
+char *trilobite_get_distribution_arch (void);
 
+#endif /* EAZEL_SERVICES_DISTRIBUTION_H */
