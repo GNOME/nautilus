@@ -1368,9 +1368,6 @@ check_tree_helper (EazelInstall *service,
 		return;
 	}
 
-#if EI2_DEBUG & 0x4
-	trilobite_debug ("-> check_tree_for_conflicts_helper");
-#endif
 	if (pack->status == PACKAGE_FILE_CONFLICT) {
 		if (eazel_install_get_upgrade (service)==FALSE) {
 #if EI2_DEBUG & 0x4
@@ -1496,9 +1493,6 @@ check_tree_helper (EazelInstall *service,
 		check_tree_helper (service, dep->package, extra_packages, path);
 		(*path) = g_list_remove (*path, pack);
 	}
-#if EI2_DEBUG & 0x4
-	trilobite_debug ("<- check_tree_for_conflicts_helper");
-#endif
 }
 
 /* 
@@ -1926,6 +1920,8 @@ check_feature_consistency (EazelInstall *service,
 
 #if EI2_DEBUG & 0x4
 	trilobite_debug ("<- check_feature_consistency");
+	trilobite_debug ("POST-FEATURE-CHECK PACKAGE TREE");
+	dump_tree (packages);
 #endif
 }
 

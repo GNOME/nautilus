@@ -105,11 +105,11 @@ static const char untranslated_error_label_2[] =
 	   "Once you have resolved the problem, please restart the installer.");
 
 static const char untranslated_error_title[] = N_("An error has occurred");
-static const char untranslated_splash_title[] = N_("Welcome to the Eazel Installer!");
+static const char untranslated_splash_title[] = N_("Welcome to the Nautilus installer!");
 static const char untranslated_finished_title[] = N_("Congratulations!");
 
 static const char untranslated_what_to_install_label[] = N_("What would you like to install?");
-static const char untranslated_what_to_install_label_single[] = N_("What we'll install...");
+static const char untranslated_what_to_install_label_single[] = N_("What's installed");
 
 static const char untranslated_error_RPM_4_not_supported[] =
 	N_("RPM version 4.x is not supported, sorry.");
@@ -452,8 +452,6 @@ add_bullet_point_to_vbox (GtkWidget *vbox, const char *text)
 	GtkWidget *label;
 	GtkWidget *bullet_label;
 
-	log_debug ("bullet = \"%s\"", text);
-
 	label = gtk_label_new_with_font (text, FONT_NORM_BOLD);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
@@ -788,19 +786,6 @@ eazel_install_progress (EazelInstall *service,
 	progressbar = gtk_object_get_data (GTK_OBJECT (installer->window), "progressbar_single");
 	progress_overall = gtk_object_get_data (GTK_OBJECT (installer->window), "progressbar_overall");
 
-#if 0
-	if (1) {
-		struct timeval now;
-		char *timestamp;
-
-		gettimeofday (&now, NULL);
-		timestamp = g_malloc (40);
-		strftime (timestamp, 40, "%d-%b %H:%M:%S", localtime ((time_t *)&now.tv_sec));
-		sprintf (timestamp + strlen (timestamp), ".%02ld ", now.tv_usec/10000L);
-		log_debug ("%s: progress on %s (%d of %d): %d of %d (total %d of %d)", timestamp, package->name, package_num, num_packages,  amount, total, total_size_completed, total_size);
-		g_free (timestamp);
-	}
-#endif
 	if (amount == 0) {
 		name = packagedata_get_readable_name (package);
 		temp = g_strdup_printf (_("Installing %s"), name);
@@ -864,6 +849,10 @@ eazel_download_progress (EazelInstall *service,
 	char *temp;
 	int amount_KB = (amount+512)/1024;
 	int total_KB = (total+512)/1024;
+
+        if ((total < amount) || (total < 0)) {
+                return;
+        }
 
 	label_overall = gtk_object_get_data (GTK_OBJECT (installer->window), "label_overall");
 	label_single = gtk_object_get_data (GTK_OBJECT (installer->window), "download_label");

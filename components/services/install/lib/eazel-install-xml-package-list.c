@@ -919,8 +919,9 @@ osd_parse_shared (xmlDocPtr doc, char **db_revision)
 				/* empty revision of "" should just be dropped */
 				g_free (*db_revision);
 				*db_revision = NULL;
+			} else {
+				trilobite_debug ("(softcat db revision %s)", *db_revision);
 			}
-			trilobite_debug ("(softcat db revision %s)", *db_revision);
 		} else {
 			trilobite_debug ("child is not a SOFTPKG, but a \"%s\"", child->name);
 		}

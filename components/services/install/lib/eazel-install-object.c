@@ -2047,8 +2047,13 @@ void eazel_install_set_debug (EazelInstall *service, gboolean debug) {
 	service->private->iopts->mode_debug = debug;
 
 	if (debug) {
+#ifdef ESKIL
 		eazel_package_system_set_debug (service->private->package_system, 
 						EAZEL_PACKAGE_SYSTEM_DEBUG_VERBOSE);
+#else
+		eazel_package_system_set_debug (service->private->package_system, 
+						EAZEL_PACKAGE_SYSTEM_DEBUG_FAIL);
+#endif
 	} else {
 		eazel_package_system_set_debug (service->private->package_system, 
 						EAZEL_PACKAGE_SYSTEM_DEBUG_FAIL);

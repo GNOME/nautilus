@@ -64,30 +64,35 @@ static void
 get_detailed_messages_breaks_foreach (PackageBreaks *breakage, GetErrorsForEachData *data)
 {
 	PackageData *previous_pack = NULL;
-	const char *package_broken_name;
+	PackageData *top_pack = NULL;
 	GList **errors = &(data->errors);
+	char *top_name = NULL;
+	char *previous_name = NULL;
+	char *package_broken_name = NULL;;
 
 	if (data->path) {
 		previous_pack = PACKAGEDATA(data->path->data);
+		previous_name = packagedata_get_readable_name (previous_pack);
+		top_pack = PACKAGEDATA(g_list_last (data->path)->data);
+		top_name = packagedata_get_readable_name (top_pack);
 	}
 
-	package_broken_name = packagebreaks_get_package (breakage)->name;
+	package_broken_name = packagedata_get_readable_name (packagebreaks_get_package (breakage));
 
 	if (IS_PACKAGEFILECONFLICT (breakage)) {
-		PackageFileConflict *conflict = PACKAGEFILECONFLICT (breakage);
-		GList *iterator;
 		char *message;
 
-		message = g_strdup_printf ("Conflict between %s and %s", 
-					   previous_pack->name,
-					   package_broken_name);
-		(*errors) = g_list_append (*errors, message);
-
-		for (iterator = conflict->files; iterator; iterator = g_list_next (iterator)) {
-			char *message;
-			message = g_strdup_printf ("file : %s", (char*)iterator->data);
-			(*errors) = g_list_append (*errors, message);
+		if (top_pack != NULL) {
+			message = g_strdup_printf ("Conflict between %s (required by %s) and %s", 
+						   previous_name,
+						   top_name,
+						   package_broken_name);
+		} else {
+			message = g_strdup_printf ("Conflict between %s and %s", 
+						   previous_name,
+						   package_broken_name);
 		}
+		(*errors) = g_list_append (*errors, message);
 	} else if (IS_PACKAGEFEATUREMISSING (breakage)) {
 		PackageFeatureMissing *missing = PACKAGEFEATUREMISSING (breakage);
 		missing = NULL;
@@ -99,6 +104,10 @@ get_detailed_messages_breaks_foreach (PackageBreaks *breakage, GetErrorsForEachD
 					   package_broken_name);
 		(*errors) = g_list_append (*errors, message);
 	}
+
+	g_free (top_name);
+	g_free (previous_name);
+	g_free (package_broken_name);
 }
 
 static void
@@ -152,15 +161,7 @@ get_detailed_messages_foreach (GtkObject *foo, GetErrorsForEachData *data)
 					   required);
 		break;
 	case PACKAGE_FILE_CONFLICT:
-		if (required_by && top_name) {
-			message = g_strdup_printf (_("%s had a file conflict with %s which %s required"), 
-						   required, 
-						   required_by, 
-						   top_name);
-		} else if (top_name) {
-			message = g_strdup_printf (_("%s had a file conflict with %s"), 
-						   required, top_name);
-		}
+		/* this will be reported below, when parsing the PackageBreaks */
 		break;
 	case PACKAGE_DEPENDENCY_FAIL:
 		if (pack->depends) {
@@ -707,7 +708,7 @@ get_detailed_cases_foreach (GtkObject *foo,
 	if (g_list_find (data->handled, pack)) { return; }
 
 	if (data->path) {
-		previous_pack = PACKAGEDATA(data->path->data);
+		previous_pack = PACKAGEDATA (data->path->data);
 	}
 
 	switch (pack->status) {

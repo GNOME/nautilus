@@ -1410,12 +1410,12 @@ display_arguments (EazelPackageSystemRpm3 *system,
 		str = tmp;
 		/* Since there is a max length on g_message output ... */
 		if (strlen (str) > 600) {
-			info (system, "%s", str);
+			fail (system, "%s", str);
 			g_free (str);
 			str = g_strdup ("");
 		}
 	}
-	info (system, "%s", str);
+	fail (system, "%s", str);
 }
 
 static void

@@ -3,10 +3,10 @@
 NULL = 
 
 OG_FLAG = -g -O2 -DDEBUG
-#OGFLAG = -O
 
 WARN_FLAG = -Wall -Werror
-BUILD_DATE = `date +%d%b%y-%H%M`
+#BUILD_DATE = `date +%d%b%y-%H%M`
+BUILD_DATE = $(shell date +%d%b%y-%H%M)
 
 if ENABLE_INSTALLER
 INSTALLER_NOINSTPROGRAMS = eazel-installer

@@ -1,3 +1,45 @@
+2001-02-23  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/idl/trilobite-eazel-install.idl:
+
+	Close dangling parentheses.
+	
+	* components/services/install/lib/eazel-install-logic2.c:
+	(check_tree_helper), (check_feature_consistency):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_set_debug):
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(display_arguments):
+
+	Remove excess logging from the install, but add a final
+	package-tree dump at the end for double-checking logs.
+	
+	* components/services/install/lib/eazel-install-problem.c:
+	(get_detailed_messages_breaks_foreach),
+	(get_detailed_messages_foreach), (get_detailed_cases_foreach):
+
+	Fix logging of file conflict problems.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(osd_parse_shared):
+
+	Don't log softcat db revision when it's not given.
+	
+	* nautilus-installer/install-lib/Makefile.am:
+	* nautilus-installer/libtrilobite/Makefile.am:
+	* nautilus-installer/src/Makefile.am:
+
+	Use softlinks in the bootstrap installer fake directories, so that
+	coders can edit the files and still get clean builds.
+	
+	* nautilus-installer/src/installer.c: (add_bullet_point_to_vbox),
+	(eazel_install_progress), (eazel_download_progress):
+
+	More sanity checks in the download progress, and fix up more text
+	to Vera standards.
+
 2001-02-23  Arik Devens  <arik@eazel.com>
 
 	reviewed by: Maciej Stachowiak  <mjs@eazel.com>

@@ -59,10 +59,10 @@ TRILOBITE_HDRS =  \
 	$(NULL)
 
 $(TRILOBITE_HDRS):
-	rm -f $@; ln $(top_srcdir)/components/services/trilobite/libtrilobite/`basename $@` $@
+	rm -f $@; ln -s $(top_srcdir)/components/services/trilobite/libtrilobite/`basename $@` $@
 
 $(libeazelinstall_minimal_a_SOURCES) eazel-package-system-rpm4.c eazel-package-system-rpm3.c: $(TRILOBITE_HDRS)
-	rm -f $@; ln $(top_srcdir)/components/services/install/lib/`basename $@` $@
+	rm -f $@; ln -s $(top_srcdir)/components/services/install/lib/`basename $@` $@
 
 eazel-package-system-rpm4.o: eazel-package-system-rpm4.c
 eazel-package-system-rpm3.o: eazel-package-system-rpm3.c

@@ -4,6 +4,8 @@ if ENABLE_INSTALLER
 LIBRARY = libtrilobite_minimal.a
 endif
 
+CFLAGS = -Wall -Werror -g -O2
+
 noinst_LIBRARIES = $(LIBRARY)
 
 libtrilobite_minimal_a_SOURCES =	\
@@ -47,7 +49,7 @@ TRILOBITE_HDRS =  \
 	$(NULL)
 
 $(TRILOBITE_HDRS):
-	rm -f $@; ln $(top_srcdir)/components/services/trilobite/libtrilobite/`basename $@` $@
+	rm -f $@; ln -s $(top_srcdir)/components/services/trilobite/libtrilobite/`basename $@` $@
 
 $(libtrilobite_minimal_a_SOURCES): $(TRILOBITE_HDRS)
-	rm -f $@; ln $(top_srcdir)/components/services/trilobite/libtrilobite/`basename $@` $@
+	rm -f $@; ln -s $(top_srcdir)/components/services/trilobite/libtrilobite/`basename $@` $@
