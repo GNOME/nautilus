@@ -72,6 +72,10 @@ guint       nautilus_radio_button_group_insert           (NautilusRadioButtonGro
 /* Get the active item index. By law there always is an active item */
 guint       nautilus_radio_button_group_get_active_index (NautilusRadioButtonGroup *button_group);
 
+/* Set the active item index. */
+void       nautilus_radio_button_group_set_active_index (NautilusRadioButtonGroup *button_group,
+							 guint active_index);
+
 BEGIN_GNOME_DECLS
 
 #endif /* NAUTILUS_RADIO_BUTTON_GROUP_H */

@@ -276,3 +276,22 @@ nautilus_radio_button_group_get_active_index (NautilusRadioButtonGroup *button_g
 
 	return 0;
 }
+
+void
+nautilus_radio_button_group_set_active_index (NautilusRadioButtonGroup *button_group,
+					      guint active_index)
+{
+	GList	*node;
+
+ 	g_return_if_fail (button_group != NULL);
+	g_return_if_fail (NAUTILUS_IS_RADIO_BUTTON_GROUP (button_group));
+
+	node = g_list_nth (button_group->details->buttons, active_index);
+
+	g_assert (node != NULL);
+
+	g_assert (GTK_TOGGLE_BUTTON (node->data));
+
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (node->data), TRUE);
+}
+

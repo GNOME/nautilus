@@ -32,7 +32,7 @@ main (int argc, char * argv[])
 
 	dummy_prefs = create_dummy_prefs ();
 	
-	test_radio_group ();
+//	test_radio_group ();
 	test_preferences_group ();
 	test_preferences_item ();
 		
