@@ -34,7 +34,6 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <gnome.h>
-#include <png.h>
 
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
@@ -2269,119 +2268,9 @@ nautilus_scalable_icon_list_free (GList *icon_list)
 	nautilus_g_list_free_deep_custom (icon_list, (GFunc) nautilus_scalable_icon_unref, NULL);
 }
 
-/* utility routine for saving a pixbuf to a png file.
- * This was adapted from Iain Holmes' code in gnome-iconedit, and probably
- * should be in a utility library, possibly in gdk-pixbuf itself.
- */
-static gboolean
-save_pixbuf_to_file (GdkPixbuf *pixbuf, char *filename)
-{
-	FILE *handle;
-  	char *buffer;
-	gboolean has_alpha;
-	int width, height, depth, rowstride;
-  	guchar *pixels;
-  	png_structp png_ptr;
-  	png_infop info_ptr;
-  	png_text text[2];
-  	int i;
-
-	g_return_val_if_fail (pixbuf != NULL, FALSE);
-	g_return_val_if_fail (filename != NULL, FALSE);
-	g_return_val_if_fail (filename[0] != '\0', FALSE);
-
-        handle = fopen (filename, "wb");
-        if (handle == NULL) {
-        	return FALSE;
-	}
-
-	png_ptr = png_create_write_struct (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-	if (png_ptr == NULL) {
-		fclose (handle);
-		return FALSE;
-	}
-
-	info_ptr = png_create_info_struct (png_ptr);
-	if (info_ptr == NULL) {
-		png_destroy_write_struct (&png_ptr, (png_infopp)NULL);
-		fclose (handle);
-	    	return FALSE;
-	}
-
-	if (setjmp (png_ptr->jmpbuf)) {
-		png_destroy_write_struct (&png_ptr, &info_ptr);
-		fclose (handle);
-		return FALSE;
-	}
-
-	png_init_io (png_ptr, handle);
-
-        has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
-	width = gdk_pixbuf_get_width (pixbuf);
-	height = gdk_pixbuf_get_height (pixbuf);
-	depth = gdk_pixbuf_get_bits_per_sample (pixbuf);
-	pixels = gdk_pixbuf_get_pixels (pixbuf);
-	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
-
-	png_set_IHDR (png_ptr, info_ptr, width, height,
-			depth, PNG_COLOR_TYPE_RGB_ALPHA,
-			PNG_INTERLACE_NONE,
-			PNG_COMPRESSION_TYPE_DEFAULT,
-			PNG_FILTER_TYPE_DEFAULT);
-
-	/* Some text to go with the png image */
-	text[0].key = "Title";
-	text[0].text = filename;
-	text[0].compression = PNG_TEXT_COMPRESSION_NONE;
-	text[1].key = "Software";
-	text[1].text = "Nautilus Thumbnail";
-	text[1].compression = PNG_TEXT_COMPRESSION_NONE;
-	png_set_text (png_ptr, info_ptr, text, 2);
-
-	/* Write header data */
-	png_write_info (png_ptr, info_ptr);
-
-	/* if there is no alpha in the data, allocate buffer to expand into */
-	if (has_alpha) {
-		buffer = NULL;
-	} else {
-		buffer = g_malloc(4 * width);
-	}
-	
-	/* pump the raster data into libpng, one scan line at a time */	
-	for (i = 0; i < height; i++) {
-		if (has_alpha) {
-			png_bytep row_pointer = pixels;
-			png_write_row (png_ptr, row_pointer);
-		} else {
-			/* expand RGB to RGBA using an opaque alpha value */
-			int x;
-			char *buffer_ptr = buffer;
-			char *source_ptr = pixels;
-			for (x = 0; x < width; x++) {
-				*buffer_ptr++ = *source_ptr++;
-				*buffer_ptr++ = *source_ptr++;
-				*buffer_ptr++ = *source_ptr++;
-				*buffer_ptr++ = 255;
-			}
-			png_write_row (png_ptr, (png_bytep) buffer);		
-		}
-		pixels += rowstride;
-	}
-	
-	png_write_end (png_ptr, info_ptr);
-	png_destroy_write_struct (&png_ptr, &info_ptr);
-	
-	g_free (buffer);
-		
-	fclose (handle);
-	return TRUE;
-}
-
 /* check_for_thumbnails is a utility that checks to see if any of the thumbnails in the pending
    list have been created yet.  If it finds one, it removes the elements from the queue and
    returns true, otherwise it returns false */
-
 static gboolean 
 check_for_thumbnails (NautilusIconFactory *factory)
 {
@@ -2509,7 +2398,7 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 				gdk_pixbuf_unref (thumbnail_image_frame);
 				
 				thumbnail_path = nautilus_get_local_path_from_uri (factory->new_thumbnail_path);			
-				if (!save_pixbuf_to_file (framed_image, thumbnail_path)) {
+				if (!nautilus_gdk_pixbuf_save_to_file (framed_image, thumbnail_path)) {
 					g_warning ("error saving thumbnail %s", thumbnail_path);
 				}
 				g_free (thumbnail_path);

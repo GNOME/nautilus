@@ -20,6 +20,7 @@
    Boston, MA 02111-1307, USA.
 
    Authors: Darin Adler <darin@eazel.com>
+            Ramiro Estrugo <ramiro@eazel.com>
 */
 
 #include <config.h>
@@ -33,6 +34,7 @@
 #include <gdk-pixbuf/gdk-pixbuf-loader.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
+#include <png.h>
 
 #define LOAD_BUFFER_SIZE 4096
 
@@ -334,6 +336,99 @@ nautilus_gdk_pixbuf_render_to_drawable_tiled (GdkPixbuf *pixbuf,
 	}
 }
 
+void
+nautilus_gdk_pixbuf_render_to_pixbuf_tiled (GdkPixbuf *source_pixbuf,
+					    GdkPixbuf *destination_pixbuf,
+					    const GdkRectangle *rect,
+					    int x_dither,
+					    int y_dither)
+{
+	int x, y;
+	int start_x, start_y;
+	int end_x, end_y;
+	int tile_x, tile_y;
+	int blit_x, blit_y;
+	int tile_width, tile_height;
+	int blit_width, blit_height;
+	int tile_offset_x, tile_offset_y;
+
+	tile_width = gdk_pixbuf_get_width (source_pixbuf);
+	tile_height = gdk_pixbuf_get_height (source_pixbuf);
+
+	tile_offset_x = (rect->x - x_dither) % tile_width;
+	if (tile_offset_x < 0) {
+		tile_offset_x += tile_width;
+	}
+	g_assert (tile_offset_x >= 0 && tile_offset_x < tile_width);
+
+	tile_offset_y = (rect->y - y_dither) % tile_height;
+	if (tile_offset_y < 0) {
+		tile_offset_y += tile_height;
+	}
+	g_assert (tile_offset_y >= 0 && tile_offset_y < tile_height);
+
+	start_x = rect->x - tile_offset_x;
+	start_y = rect->y - tile_offset_y;
+
+	end_x = rect->x + rect->width;
+	end_y = rect->y + rect->height;
+
+	for (x = start_x; x < end_x; x += tile_width) {
+		blit_x = MAX (x, rect->x);
+		tile_x = blit_x - x;
+		blit_width = MIN (tile_width, end_x - x) - tile_x;
+		
+		for (y = start_y; y < end_y; y += tile_height) {
+			blit_y = MAX (y, rect->y);
+			tile_y = blit_y - y;
+			blit_height = MIN (tile_height, end_y - y) - tile_y;
+			
+// 			gdk_pixbuf_render_to_drawable (pixbuf, drawable, gc,
+// 						       tile_x, tile_y,
+// 						       blit_x, blit_y, blit_width, blit_height,
+// 						       dither, x_dither, y_dither);
+
+// 			gdk_pixbuf_render_to_drawable (pixbuf, drawable, gc,
+// 						       tile_x, tile_y,
+// 						       blit_x, blit_y, blit_width, blit_height,
+// 						       dither, x_dither, y_dither);
+
+			gdk_pixbuf_copy_area (source_pixbuf,
+					      tile_x, 
+					      tile_y,
+					      blit_width,
+					      blit_height,
+					      destination_pixbuf,
+					      blit_x,
+					      blit_y);
+
+// 		/* blit the pixbuf to the drawable */
+// 		gdk_pixbuf_render_to_drawable (pixbuf,
+// 					       drawable,
+// 					       gc,
+// 					       0,
+// 					       0,
+// 					       rectangle->x,
+// 					       rectangle->y,
+// 					       rectangle->width,
+// 					       rectangle->height,
+// 					       GDK_RGB_DITHER_NORMAL,
+// 					       origin_x,
+// 					       origin_y);
+
+// 		gdk_pixbuf_copy_area (pixbuf,
+// 				      0,
+// 				      0,
+// 				      rectangle->width,
+// 				      rectangle->height,
+// 				      destination_pixbuf,
+// 				      rectangle->x,
+// 				      rectangle->y);
+
+		}
+	}
+}
+
 /* return the average value of each component */
 void 
 nautilus_gdk_pixbuf_average_value (GdkPixbuf *pixbuf, GdkColor *color)
@@ -574,4 +669,402 @@ nautilus_gdk_pixbuf_draw_text (GdkPixbuf	*pixbuf,
 			      overall_alpha);
 
 	gdk_pixbuf_unref (text_pixbuf_with_alpha);
+}
+
+/**
+ * nautilus_gdk_pixbuf_fill_rectangle:
+ * @pixbuf: Target pixbuf to fill into.
+ * @rectangle: Rectangle to fill.
+ * @color: The color to use.
+ *
+ * Fill the rectangle with the the given color.
+ * Use the given rectangle if not NULL.
+ * If rectangle is NULL, fill the whole pixbuf.
+ */
+void
+nautilus_gdk_pixbuf_fill_rectangle_with_color (GdkPixbuf		*pixbuf,
+					       const GdkRectangle	*rectangle,
+					       guint32			color)
+{
+	GdkRectangle	area;
+	guchar		red;
+	guchar		green;
+	guchar		blue;
+	guchar		alpha;
+
+	guint		width;
+	guint		height;
+	guchar		*pixels;
+	gboolean	has_alpha;
+	guint		pixel_offset;
+	guint		rowstride;
+
+	int		x;
+	int		y;
+
+	int		x1;
+	int		y1;
+	int		x2;
+	int		y2;
+	guchar		*row_offset;
+
+	g_return_if_fail (pixbuf != NULL);
+
+	width = gdk_pixbuf_get_width (pixbuf);
+	height = gdk_pixbuf_get_height (pixbuf);
+	pixels = gdk_pixbuf_get_pixels (pixbuf);
+	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+	has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
+
+	pixel_offset = has_alpha ? 4 : 3;
+
+	if (rectangle != NULL)
+	{
+		area = *rectangle;
+	}
+	else
+	{
+		area.x = 0;
+		area.y = 0;
+		area.width = width;
+		area.height = height;
+	}
+
+	red = NAUTILUS_RGBA_COLOR_GET_R (color);
+	green = NAUTILUS_RGBA_COLOR_GET_G (color);
+	blue = NAUTILUS_RGBA_COLOR_GET_B (color);
+	alpha = NAUTILUS_RGBA_COLOR_GET_A (color);
+
+	x1 = area.x;
+	y1 = area.y;
+	x2 = area.x + area.width;
+	y2 = area.y + area.height;
+
+	row_offset = pixels + y1 * rowstride;
+
+	for (y = y1; y < y2; y++)
+	{
+		guchar *offset = row_offset + (x1 * pixel_offset);
+		
+		for (x = x1; x < x2; x++)
+		{
+			*(offset++) = red;
+			*(offset++) = green;
+			*(offset++) = blue;
+			
+			if (has_alpha)
+			{
+				*(offset++) = alpha;
+			}
+			
+		}
+
+		row_offset += rowstride;
+	}
+}
+
+void
+nautilus_gdk_pixbuf_render_to_drawable (const GdkPixbuf		*pixbuf,
+					GdkDrawable		*drawable,
+					GdkGC			*gc,
+					const GdkPoint		*source_point,
+					const GdkRectangle	*destination_area,
+					GdkRgbDither		dither)
+{
+	GdkPoint	src;
+	GdkRectangle	dst;
+	GdkPoint	end;
+
+	g_return_if_fail (pixbuf != NULL);
+	g_return_if_fail (drawable != NULL);
+	g_return_if_fail (gc != NULL);
+	g_return_if_fail (source_point != NULL);
+	g_return_if_fail (destination_area != NULL);
+ 	g_return_if_fail (destination_area->width > 0);
+ 	g_return_if_fail (destination_area->height > 0);
+	g_return_if_fail (source_point->x >= 0);
+	g_return_if_fail (source_point->y >= 0);
+
+	g_assert (gdk_pixbuf_get_width (pixbuf) > 0);
+	g_assert (gdk_pixbuf_get_height (pixbuf) > 0);
+
+	src = *source_point;
+	dst = *destination_area;
+
+	/* Clip to the left edge of the drawable */
+	if (dst.x < 0)
+	{
+		src.x += ABS (dst.x);
+		dst.x = 0;
+	}
+
+	/* Clip to the top edge of the drawable */
+	if (dst.y < 0)
+	{
+		src.y += ABS (dst.y);
+		dst.y = 0;
+	}
+	
+	end.x = src.x + dst.width;
+	end.y = src.y + dst.height;
+	
+	if (end.x >= gdk_pixbuf_get_width (pixbuf))
+	{
+		g_assert (dst.width >= (end.x - gdk_pixbuf_get_width (pixbuf)));
+		
+		dst.width -= (end.x - gdk_pixbuf_get_width (pixbuf));
+	}
+
+	if (end.y >= gdk_pixbuf_get_height (pixbuf))
+	{
+		g_assert (dst.height >= (end.y - gdk_pixbuf_get_height (pixbuf)));
+
+		dst.height -= (end.y - gdk_pixbuf_get_height (pixbuf));
+	}
+
+	if (gdk_pixbuf_get_has_alpha (pixbuf)) {
+		gdk_pixbuf_render_to_drawable_alpha ((GdkPixbuf *) pixbuf,
+				       drawable,
+				       src.x,
+				       src.y,
+				       dst.x,
+				       dst.y,
+				       dst.width,
+				       dst.height,
+				       GDK_PIXBUF_ALPHA_FULL,
+				       128,
+				       dither,
+				       0,
+				       0);
+
+	} else {
+		gdk_pixbuf_render_to_drawable ((GdkPixbuf *) pixbuf,
+				       drawable,
+				       gc,
+				       src.x,
+				       src.y,
+				       dst.x,
+				       dst.y,
+				       dst.width,
+				       dst.height,
+				       dither,
+				       0,
+				       0);
+	}
+}
+
+void
+nautilus_gdk_pixbuf_render_to_pixbuf (const GdkPixbuf		*pixbuf,
+				      GdkPixbuf			*destination_pixbuf,
+				      const GdkPoint		*source_point,
+				      const GdkRectangle	*destination_area)
+{
+	GdkPoint	src;
+	GdkRectangle	dst;
+	GdkPoint	end;
+
+	g_return_if_fail (pixbuf != NULL);
+	g_return_if_fail (destination_pixbuf != NULL);
+	g_return_if_fail (source_point != NULL);
+	g_return_if_fail (source_point->x >= 0);
+	g_return_if_fail (source_point->y >= 0);
+	g_return_if_fail (destination_area != NULL);
+	g_return_if_fail (destination_area->width > 0);
+	g_return_if_fail (destination_area->height > 0);
+
+	src = *source_point;
+	dst = *destination_area;
+
+	/* Clip to the left edge of the drawable */
+	if (dst.x < 0)
+	{
+		src.x += ABS (dst.x);
+		dst.x = 0;
+	}
+
+	/* Clip to the top edge of the drawable */
+	if (dst.y < 0)
+	{
+		src.y += ABS (dst.y);
+		dst.y = 0;
+	}
+	
+	end.x = src.x + dst.width;
+	end.y = src.y + dst.height;
+	
+	if (end.x >= gdk_pixbuf_get_width (pixbuf))
+	{
+		g_assert (dst.width >= (end.x - gdk_pixbuf_get_width (pixbuf)));
+
+		dst.width -= (end.x - gdk_pixbuf_get_width (pixbuf));
+	}
+
+	if (end.y >= gdk_pixbuf_get_height (pixbuf))
+	{
+		g_assert (dst.height >= (end.y - gdk_pixbuf_get_height (pixbuf)));
+
+		dst.height -= (end.y - gdk_pixbuf_get_height (pixbuf));
+	}
+
+	gdk_pixbuf_copy_area ((GdkPixbuf *) pixbuf,
+			      src.x,
+			      src.y,
+			      dst.width,
+			      dst.height,
+			      destination_pixbuf,
+			      dst.x,
+			      dst.y);
+}
+
+void
+nautilus_gdk_pixbuf_render_to_pixbuf_alpha (const GdkPixbuf	*pixbuf,
+					    GdkPixbuf		*destination_pixbuf,
+					    const GdkRectangle	*destination_area,
+					    GdkInterpType	interpolation_mode,
+					    guchar		overall_alpha)
+{
+	g_return_if_fail (pixbuf != NULL);
+	g_return_if_fail (destination_pixbuf != NULL);
+	g_return_if_fail (destination_area != NULL);
+	g_return_if_fail (destination_area->width > 0);
+	g_return_if_fail (destination_area->height > 0);
+
+	gdk_pixbuf_composite (pixbuf,
+			      destination_pixbuf,
+			      destination_area->x,
+			      destination_area->y,
+			      destination_area->width,
+			      destination_area->height,
+			      (double) destination_area->x,
+			      (double) destination_area->y,
+			      1.0,
+			      1.0,
+			      interpolation_mode,
+			      overall_alpha);
+}
+
+/* utility routine for saving a pixbuf to a png file.
+ * This was adapted from Iain Holmes' code in gnome-iconedit, and probably
+ * should be in a utility library, possibly in gdk-pixbuf itself.
+ */
+gboolean
+nautilus_gdk_pixbuf_save_to_file (GdkPixbuf                  *pixbuf,
+				  const char                 *file_name)
+{
+	FILE *handle;
+  	char *buffer;
+	gboolean has_alpha;
+	int width, height, depth, rowstride;
+  	guchar *pixels;
+  	png_structp png_ptr;
+  	png_infop info_ptr;
+  	png_text text[2];
+  	int i;
+
+	g_return_val_if_fail (pixbuf != NULL, FALSE);
+	g_return_val_if_fail (file_name != NULL, FALSE);
+	g_return_val_if_fail (file_name[0] != '\0', FALSE);
+
+        handle = fopen (file_name, "wb");
+        if (handle == NULL) {
+        	return FALSE;
+	}
+
+	png_ptr = png_create_write_struct (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	if (png_ptr == NULL) {
+		fclose (handle);
+		return FALSE;
+	}
+
+	info_ptr = png_create_info_struct (png_ptr);
+	if (info_ptr == NULL) {
+		png_destroy_write_struct (&png_ptr, (png_infopp)NULL);
+		fclose (handle);
+	    	return FALSE;
+	}
+
+	if (setjmp (png_ptr->jmpbuf)) {
+		png_destroy_write_struct (&png_ptr, &info_ptr);
+		fclose (handle);
+		return FALSE;
+	}
+
+	png_init_io (png_ptr, handle);
+
+        has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
+	width = gdk_pixbuf_get_width (pixbuf);
+	height = gdk_pixbuf_get_height (pixbuf);
+	depth = gdk_pixbuf_get_bits_per_sample (pixbuf);
+	pixels = gdk_pixbuf_get_pixels (pixbuf);
+	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+
+	png_set_IHDR (png_ptr, info_ptr, width, height,
+			depth, PNG_COLOR_TYPE_RGB_ALPHA,
+			PNG_INTERLACE_NONE,
+			PNG_COMPRESSION_TYPE_DEFAULT,
+			PNG_FILTER_TYPE_DEFAULT);
+
+	/* Some text to go with the png image */
+	text[0].key = "Title";
+	text[0].text = (char *) file_name;
+	text[0].compression = PNG_TEXT_COMPRESSION_NONE;
+	text[1].key = "Software";
+	text[1].text = "Nautilus Thumbnail";
+	text[1].compression = PNG_TEXT_COMPRESSION_NONE;
+	png_set_text (png_ptr, info_ptr, text, 2);
+
+	/* Write header data */
+	png_write_info (png_ptr, info_ptr);
+
+	/* if there is no alpha in the data, allocate buffer to expand into */
+	if (has_alpha) {
+		buffer = NULL;
+	} else {
+		buffer = g_malloc(4 * width);
+	}
+	
+	/* pump the raster data into libpng, one scan line at a time */	
+	for (i = 0; i < height; i++) {
+		if (has_alpha) {
+			png_bytep row_pointer = pixels;
+			png_write_row (png_ptr, row_pointer);
+		} else {
+			/* expand RGB to RGBA using an opaque alpha value */
+			int x;
+			char *buffer_ptr = buffer;
+			char *source_ptr = pixels;
+			for (x = 0; x < width; x++) {
+				*buffer_ptr++ = *source_ptr++;
+				*buffer_ptr++ = *source_ptr++;
+				*buffer_ptr++ = *source_ptr++;
+				*buffer_ptr++ = 255;
+			}
+			png_write_row (png_ptr, (png_bytep) buffer);		
+		}
+		pixels += rowstride;
+	}
+	
+	png_write_end (png_ptr, info_ptr);
+	png_destroy_write_struct (&png_ptr, &info_ptr);
+	
+	g_free (buffer);
+		
+	fclose (handle);
+	return TRUE;
+}
+
+void
+nautilus_gdk_pixbuf_ref_if_not_null (GdkPixbuf *pixbuf_or_null)
+{
+	if (pixbuf_or_null != NULL) {
+		gdk_pixbuf_ref (pixbuf_or_null);
+	}
+}
+
+void
+nautilus_gdk_pixbuf_unref_if_not_null (GdkPixbuf *pixbuf_or_null)
+{
+	if (pixbuf_or_null != NULL) {
+		gdk_pixbuf_unref (pixbuf_or_null);
+	}
 }
