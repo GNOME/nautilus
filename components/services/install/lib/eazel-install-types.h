@@ -154,6 +154,8 @@ struct _PackageData {
 	GList* breaks; 
 
 	char *filename;
+
+	char *install_root;
 	
 	/* 
 	   toplevel = TRUE if this a package the user requested.

@@ -196,9 +196,10 @@ impl_delete_files (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 
 static void 
 impl_done (impl_POA_Trilobite_Eazel_InstallCallback *servant, 
+	   CORBA_boolean result,
 	   CORBA_Environment * ev)
 {
-	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DONE]);
+	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DONE], result);
 }
 
 POA_Trilobite_Eazel_InstallCallback__epv* 
@@ -381,8 +382,8 @@ eazel_install_callback_class_initialize (EazelInstallCallbackClass *klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, done),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+				gtk_marshal_NONE__BOOL,
+				GTK_TYPE_NONE, 1, GTK_TYPE_BOOL);
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }
 
@@ -504,7 +505,7 @@ eazel_install_callback_simple_query (EazelInstallCallback *service,
 {
 	GList *result;
 	Trilobite_Eazel_PackageDataStructList *corbares;
-	
+
 	corbares = Trilobite_Eazel_Install_simple_query (service->installservice_corba,
 							 query,
 							 root ? root : "",

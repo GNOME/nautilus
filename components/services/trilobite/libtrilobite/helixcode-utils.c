@@ -20,6 +20,8 @@
  *
  * Authors: Joe Shaw <joe@helixcode.com>
  *          J. Shane Culpepper <pepper@eazel.com>
+ *          Eskil Heyn Olsen <eskil@eazel.com>        
+ *    
  */
 
 /* Most of this code is taken directly from Joe Shaw's Helix Code install / Updater
@@ -27,6 +29,10 @@
 
 #include <config.h>
 #include "helixcode-utils.h"
+
+/* FIXME: bugzilla.eazel.com 2448
+   Change this into a const char * function, and modify all uses of
+   it to g_strdup / peek */
 
 char*
 xml_get_value (xmlNode* node, const char* name)
@@ -36,14 +42,20 @@ xml_get_value (xmlNode* node, const char* name)
 
 	ret = xmlGetProp (node, name);
 	if (ret) {
-		return ret;
+		char *tmp;
+		tmp = g_strdup (ret);
+		free (ret);
+		return tmp;
 	}
 	child = node->childs;
 	while (child) {
 		if (g_strcasecmp (child->name, name) == 0) {
 			ret = xmlNodeGetContent (child);
 			if (ret) {
-				return ret;
+				char *tmp;
+				tmp = g_strdup (ret);
+				free (ret);
+				return tmp;
 			}
 		}
 		child = child->next;

@@ -34,6 +34,8 @@
 extern int installer_debug;
 extern int installer_test;
 extern int installer_force;
+extern char *server;
+extern int port;
 extern char* installer_local;
 
 static const struct poptOption options[] = {
@@ -41,6 +43,8 @@ static const struct poptOption options[] = {
 	{"test", 't', POPT_ARG_NONE, &installer_test, 0, N_("Test run"), NULL},
 	{"force", 'f', POPT_ARG_NONE, &installer_force, 0, N_("Forced install"), NULL},
 	{"local", '\0', POPT_ARG_STRING, &installer_local, 0, N_("Use local, specify xml file to yse"), NULL},
+	{"server", '\0', POPT_ARG_STRING, &server, 0, N_("Specify server"), NULL},
+	{"port", '\0', POPT_ARG_INT, &port, 0 , N_("Set port numer (80)"), NULL},
 	{NULL, '\0', 0, NULL, 0}
 };
 

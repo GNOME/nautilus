@@ -418,6 +418,9 @@ create_window (void)
 	gtk_signal_connect (GTK_OBJECT (install_page), "finish",
 			    GTK_SIGNAL_FUNC (druid_finish),
 			    NULL);
+	gtk_signal_connect (GTK_OBJECT (what_to_do_page), "prepare",
+			    GTK_SIGNAL_FUNC (setup_what_to_do),
+			    window);
 	gtk_signal_connect (GTK_OBJECT (install_page), "prepare",
 			    GTK_SIGNAL_FUNC (prep_install),
 			    window);

@@ -78,7 +78,7 @@ struct _EazelInstallCallbackClass
 	gboolean (*delete_files) (EazelInstallCallback *service);
 
 	/* Called when the operation is complete */
-	void (*done) ();
+	void (*done) (gboolean result);
 
 	gpointer servant_vepv;
 };

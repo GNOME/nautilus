@@ -56,5 +56,7 @@ gboolean trilobite_init (const char *service_name, const char *version_name, con
 
 const char *trilobite_get_useragent_string (gboolean version, char *suffix);
 
+const char *trilobite_get_config_dir_string (void);
+
 #endif /* TRILOBITE_CORE_UTILS_H */
 

@@ -87,7 +87,7 @@ struct _EazelInstallClass
 
 	gboolean (*delete_files) (EazelInstall *service);
 
-	void (*done) (EazelInstall *service);
+	void (*done) (EazelInstall *service, gboolean result);
 #ifndef EAZEL_INSTALL_NO_CORBA
 	gpointer servant_vepv;
 #endif /* EAZEL_INSTALL_NO_CORBA */
@@ -140,7 +140,8 @@ void eazel_install_emit_uninstall_failed          (EazelInstall *service,
 void eazel_install_emit_dependency_check          (EazelInstall *service, 
 						   const PackageData *package, 
 						   const PackageData *needed);
-void eazel_install_emit_done                      (EazelInstall *service);
+void eazel_install_emit_done                      (EazelInstall *service, 
+						   gboolean result);
 
 /* This is in flux */
 

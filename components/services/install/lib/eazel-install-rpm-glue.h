@@ -32,8 +32,17 @@
 #include "eazel-install-protocols.h"
 #include "eazel-install-public.h"
 
-gboolean install_new_packages (EazelInstall *service, GList *categories);
-gboolean uninstall_packages (EazelInstall *service, GList *categories);
-gboolean revert_transaction (EazelInstall *service, GList *packages);
+typedef enum {
+	EAZEL_INSTALL_NOTHING = 0,
+	EAZEL_INSTALL_DOWNLOADS = 1<<0,
+	EAZEL_INSTALL_INSTALL_OK = 1<<1,
+	EAZEL_INSTALL_UNINSTALL_OK = 1<<2,
+	EAZEL_INSTALL_REVERSION_OK = 1<<4
+} EazelInstallStatus;
+	
+
+EazelInstallStatus install_new_packages (EazelInstall *service, GList *categories);
+EazelInstallStatus uninstall_packages (EazelInstall *service, GList *categories);
+EazelInstallStatus revert_transaction (EazelInstall *service, GList *packages);
 
 #endif /* EAZEL_INSTALL_RPM_GLUE_H */

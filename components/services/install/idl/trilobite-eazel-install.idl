@@ -121,7 +121,7 @@ module Trilobite {
 			boolean delete_files ();
 
 			/* Called when the operation is finished */
-			void done ();
+			void done (in boolean result);
 		};
 
 		interface Install : Bonobo::Unknown {

@@ -91,6 +91,7 @@ packagedata_new ()
 	pack->bytesize = 0;
 	pack->distribution = trilobite_get_distribution ();
 	pack->filename = NULL;
+	pack->install_root = NULL;
 	pack->soft_depends = NULL;
 	pack->hard_depends = NULL;
 	pack->breaks = NULL;
@@ -232,6 +233,8 @@ packagedata_destroy_foreach (PackageData *pack, gpointer unused)
 	pack->bytesize = 0;
 	g_free (pack->filename);
 	pack->filename = NULL;
+	g_free (pack->install_root);
+	pack->install_root = NULL;
 
 	g_list_foreach (pack->soft_depends, (GFunc)packagedata_destroy_foreach, NULL);
 	g_list_foreach (pack->hard_depends, (GFunc)packagedata_destroy_foreach, NULL);

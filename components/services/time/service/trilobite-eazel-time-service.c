@@ -33,6 +33,7 @@
 #include "trilobite-eazel-time-service-public.h"
 #include "trilobite-eazel-time-service-private.h"
 
+#include <gnome-xml/parser.h>
 #include <ghttp.h>
 #include <time.h>
 
@@ -99,9 +100,9 @@ impl_Trilobite_Eazel_Time_Service_check_time  (impl_POA_Trilobite_Eazel_Time_Ser
 	g_message ("Allowed d   : %d", service->object->private->maxd);
 #endif
 	if (server_time == 0) {
-		g_warning ("Unable to get server time");
+		g_warning (_("Unable to get server time"));
 	} else if (abs (server_time - local_time) > service->object->private->maxd) {
-		g_warning ("Time off by %d, max allowed diff is %d",
+		g_warning (_("Time off by %d, max allowed diff is %d"),
 			   abs (server_time - local_time),
 			   service->object->private->maxd);
 	}
@@ -171,11 +172,11 @@ trilobite_eazel_time_service_get_epv ()
   GTK+ object stuff
 *****************************************/
 
-/* This is the object destroyer. It should clean up any
- data allocated by the object, and if possible, call 
-the parent destroyer */
-void
-trilobite_eazel_time_service_destroy (GtkObject *object)
+/* This is the object finalizer. It should clean up any
+   data allocated by the object, and if possible, call 
+   the parent finalize */
+static void
+trilobite_eazel_time_service_finalize (GtkObject *object)
 {
 	TrilobiteEazelTimeService *service;
 
@@ -191,9 +192,21 @@ trilobite_eazel_time_service_destroy (GtkObject *object)
 	g_free (service->private);
 
 	/* Call parents destroy */
-	if (GTK_OBJECT_CLASS (trilobite_eazel_time_service_parent_class)->destroy) {
-		GTK_OBJECT_CLASS (trilobite_eazel_time_service_parent_class)->destroy (object);
+	if (GTK_OBJECT_CLASS (trilobite_eazel_time_service_parent_class)->finalize) {
+		GTK_OBJECT_CLASS (trilobite_eazel_time_service_parent_class)->finalize (object);
 	}
+
+}
+
+/* This is a wrapper for the bonobo object unref.
+ */
+void 
+trilobite_eazel_time_service_unref (GtkObject *object) 
+{
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (TRILOBITE_EAZEL_TIME_SERVICE (object));
+
+	bonobo_object_unref (BONOBO_OBJECT (object));
 }
 
 /*
@@ -207,7 +220,7 @@ trilobite_eazel_time_service_class_initialize (TrilobiteEazelTimeServiceClass *k
 	GtkObjectClass *object_class;
 
 	object_class = (GtkObjectClass*)klass;
-	object_class->destroy = (void(*)(GtkObject*))trilobite_eazel_time_service_destroy;
+	object_class->finalize = (void(*)(GtkObject*))trilobite_eazel_time_service_finalize;
 
 	trilobite_eazel_time_service_parent_class = gtk_type_class (gtk_object_get_type ());
 
@@ -250,6 +263,56 @@ trilobite_eazel_time_service_create_corba_object (BonoboObject *service) {
 	return (Trilobite_Eazel_Time) bonobo_object_activate_servant (service, servant);
 }
 
+/* This function sets the defaults, and then tries to load them from 
+   a xml file */
+
+static void
+trilobite_eazel_time_service_initialize_load_config (TrilobiteEazelTimeService *service) {
+	xmlDocPtr doc;
+	xmlNodePtr base;
+	char *config_file;
+
+	config_file = g_strdup_printf ("%s/eazel/time", trilobite_get_config_dir_string ());
+	doc = xmlParseFile (config_file);
+	
+	service->private->maxd = 180;
+	service->private->time_url = g_strdup ("http://testmachine.eazel.com:8888/examples/time/current");
+	
+	if (!doc) {
+	        g_warning (_("Could not read time-service config from %s"), config_file);
+		g_free (config_file);
+		xmlFreeDoc (doc);
+		return;
+	}
+
+       	base = doc->root;
+	if (!base) {
+	        g_warning ("Could not read time-service config from %s, missing root base", config_file);
+		g_free (config_file);
+		xmlFreeDoc (doc);
+		return;
+	}
+
+	if (g_strcasecmp (base->name, "EAZEL_TIME_SERVICE")) {
+	        g_warning ("Could not read time-service config from %s, missing first tag", config_file);
+		g_free (config_file);
+		xmlFreeDoc (doc);
+		return;
+	}
+	
+	if (xml_get_value (base, "TIME_URL")) {
+		g_free (service->private->time_url);
+		service->private->time_url = g_strdup (xml_get_value (base, "TIME_URL"));
+	}
+	if (xml_get_value (base, "MAXD")) {
+		const char *tmp = xml_get_value (base, "MAXD");
+		service->private->maxd = atoi (tmp);
+	}
+	
+	xmlFreeDoc (doc);
+	g_free (config_file);
+}
+
 /*
   This is the TrilobiteEazelTimeService instance initializer.
   Its responsibility is to create the corba object and 
@@ -269,14 +332,7 @@ trilobite_eazel_time_service_initialize (TrilobiteEazelTimeService *service) {
 
 	service->private = g_new0 (TrilobiteEazelTimeServicePrivate, 1);
 
-	/* FIXME bugzilla.eazel.com 945:
-	   These defaults should probably be read from somewhere */
-
-	/* Default to the eazel test time server */
-	service->private->time_url = g_strdup ("http://testmachine.eazel.com:8888/examples/time/current");
-
-	/* Default to 180 seconds allowed diff */
-	service->private->maxd = 180;
+	trilobite_eazel_time_service_initialize_load_config (service);
 
 	/* This sets the bonobo structures in service using the corba object */
 	if (!bonobo_object_construct (BONOBO_OBJECT (service), corba_service)) {
@@ -384,7 +440,6 @@ trilobite_eazel_time_service_do_http_request (TrilobiteEazelTimeService *service
 		exn = Trilobite_Eazel_Time_CannotGetTime__alloc ();			
 		
 		reason = ghttp_get_error (request);
-		g_message ("setting exn \"%s\" \"%s\"", service->private->time_url, reason);
 		exn->url = CORBA_string_dup (service->private->time_url);
 		exn->reason = reason==NULL ? CORBA_string_dup ("Bad url"): CORBA_string_dup ( reason );
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION, ex_Trilobite_Eazel_Time_CannotGetTime, exn);

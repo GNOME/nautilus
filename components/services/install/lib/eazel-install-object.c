@@ -115,7 +115,8 @@ void eazel_install_emit_dependency_check_default (EazelInstall *service,
 						  const PackageData *pack,
 						  const PackageData *needs);
 gboolean eazel_install_emit_delete_files_default (EazelInstall *service);
-void eazel_install_emit_done_default (EazelInstall *service);
+void eazel_install_emit_done_default (EazelInstall *service, 
+				      gboolean result);
 
 #ifndef EAZEL_INSTALL_NO_CORBA
 
@@ -358,8 +359,8 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallClass, done),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+				gtk_marshal_NONE__BOOL,
+				GTK_TYPE_NONE, 1, GTK_TYPE_BOOL);
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	klass->install_progress = eazel_install_emit_install_progress_default;
@@ -682,6 +683,7 @@ eazel_install_install_packages (EazelInstall *service,
 				GList *categories,
 				const char *root)
 {
+	EazelInstallStatus result;
 	SANITY (service);
 
 	if (!g_file_exists (eazel_install_get_tmp_dir (service))) {
@@ -700,10 +702,11 @@ eazel_install_install_packages (EazelInstall *service,
 	g_free (service->private->cur_root);
 	service->private->cur_root = g_strdup (root?root:DEFAULT_RPM_DB_ROOT);
 
-	if (install_new_packages (service, categories)==FALSE) {
+	result = install_new_packages (service, categories);
+	if (result == EAZEL_INSTALL_NOTHING) {
 		g_warning (_("Install failed"));
-	}
-	if (eazel_install_emit_delete_files (service)) {
+	} 
+	if ((result & EAZEL_INSTALL_DOWNLOADS) && eazel_install_emit_delete_files (service)) {
 		GList *top_item, *sub_item;
 		CategoryData *cd;
 		PackageData *top_pack, *sub_pack;
@@ -738,12 +741,13 @@ eazel_install_install_packages (EazelInstall *service,
 	}
 	g_free (service->private->cur_root);
 
-	eazel_install_emit_done (service);
+	eazel_install_emit_done (service, result | EAZEL_INSTALL_INSTALL_OK);
 }
 
 void 
 eazel_install_uninstall_packages (EazelInstall *service, GList *categories, const char *root)
 {
+	EazelInstallStatus result;
 	SANITY (service);
 
 	g_free (service->private->cur_root);
@@ -754,10 +758,11 @@ eazel_install_uninstall_packages (EazelInstall *service, GList *categories, cons
 		eazel_install_set_package_list (service, "/var/eazel/services/package-list.xml");
 		eazel_install_fetch_remote_package_list (service);
 	}
-	if (uninstall_packages (service, categories)==FALSE) {
+	result = uninstall_packages (service, categories);
+	if (result == EAZEL_INSTALL_NOTHING) {
 		g_warning (_("Uninstall failed"));
 	} 
-	eazel_install_emit_done (service);
+	eazel_install_emit_done (service, result | EAZEL_INSTALL_UNINSTALL_OK);
 }
 
 void 
@@ -767,14 +772,15 @@ eazel_install_revert_transaction_from_xmlstring (EazelInstall *service,
 						 const char *root)
 {
 	GList *packages;
+	EazelInstallStatus result;
 
 	g_free (service->private->cur_root);
 	service->private->cur_root = g_strdup (root?root:DEFAULT_RPM_DB_ROOT);
 
 	packages = parse_memory_transaction_file (xml, size);
-	revert_transaction (service, packages);
+	result = revert_transaction (service, packages);
 
-	eazel_install_emit_done (service);
+	eazel_install_emit_done (service, result | EAZEL_INSTALL_REVERSION_OK);
 }
 
 
@@ -803,7 +809,7 @@ eazel_install_query_package_system (EazelInstall *service,
 	g_message ("eazel_install_query_package_system (...,%s,...)", query);
 
 	g_free (service->private->cur_root);
-	service->private->cur_root = g_strdup (root?root:DEFAULT_RPM_DB_ROOT);
+	service->private->cur_root = g_strdup (root);
 
 	return eazel_install_simple_query (service, query, flags, 0, NULL);
 }
@@ -1045,21 +1051,21 @@ eazel_install_emit_delete_files_default (EazelInstall *service)
 }
 
 void 
-eazel_install_emit_done (EazelInstall *service)
+eazel_install_emit_done (EazelInstall *service, gboolean result)
 {
 	SANITY(service);
-	gtk_signal_emit (GTK_OBJECT (service), signals[DONE]);
+	gtk_signal_emit (GTK_OBJECT (service), signals[DONE], result);
 }
 
 void 
-eazel_install_emit_done_default (EazelInstall *service)
+eazel_install_emit_done_default (EazelInstall *service, gboolean result)
 {
 #ifndef EAZEL_INSTALL_NO_CORBA
 	CORBA_Environment ev;
 	CORBA_exception_init (&ev);
 	SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
-		Trilobite_Eazel_InstallCallback_done (service->callback, &ev);	
+		Trilobite_Eazel_InstallCallback_done (service->callback, result, &ev);	
 	} 
 	CORBA_exception_free (&ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */

@@ -67,7 +67,8 @@ int     arg_dry_run,
 	arg_downgrade,
 	arg_erase,
 	arg_query,
-	arg_revert;
+	arg_revert,
+	arg_verbose;
 char    *arg_server,
 	*arg_config_file,
 	*arg_package_list,
@@ -96,6 +97,7 @@ static const struct poptOption options[] = {
 	{"test", 't', POPT_ARG_NONE, &arg_dry_run, 0, N_("Test run"), NULL},
 	{"tmp", '\0', POPT_ARG_STRING, &arg_tmp_dir, 0, N_("Set tmp dir (/tmp/eazel-install)"), NULL},
 	{"upgrade", 'u', POPT_ARG_NONE, &arg_upgrade, 0, N_("Allow upgrades"), NULL},
+	{"verbose", 'v', POPT_ARG_NONE, &arg_verbose, 0, N_("Verbose output"), NULL},
 	{NULL, '\0', 0, NULL, 0}
 };
 
@@ -357,9 +359,10 @@ delete_files (EazelInstallCallback *service, gpointer unused)
 
 static void
 done (EazelInstallCallback *service,
+      gboolean result,
       gpointer unused)
 {
-	fprintf (stderr, "Installation Done\n");
+	fprintf (stderr, "Operation %s\n", result ? "ok" : "failed");
 	gtk_main_quit ();
 }
 
@@ -488,7 +491,23 @@ int main(int argc, char *argv[]) {
 			for (match_it = matched_packages; match_it; match_it = match_it->next) {
 				PackageData *p;
 				p = (PackageData*)match_it->data;
-				fprintf (stdout, "%s %s %50.50s", p->name, p->version, p->description);
+				if (arg_verbose) {
+					char *tmp;
+					tmp = trilobite_get_distribution_name (p->distribution, TRUE, FALSE);
+					fprintf (stdout, "Name         : %s\n", p->name?p->name:"?"); 
+					fprintf (stdout, "Version      : %s\n", p->version?p->version:"?");
+					fprintf (stdout, "Minor        : %s\n", p->minor?p->minor:"?");
+
+					fprintf (stdout, "Size         : %d\n", p->bytesize);
+					fprintf (stdout, "Arch         : %s\n", p->archtype?p->archtype:"?");
+					fprintf (stdout, "Distribution : %s\n", tmp?tmp:"?");
+					fprintf (stdout, "Description  : %s\n", 
+						 p->description?p->description:"?");
+					fprintf (stdout, "Install root : %s\n", 
+						 p->install_root?p->install_root:"?");
+				} else {
+					fprintf (stdout, "%s %s %50.50s", p->name, p->version, p->description);
+				}
 			}
 		}
 	} else if (arg_revert) {

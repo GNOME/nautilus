@@ -1,3 +1,112 @@
+2000-08-28  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/Makefile.am:
+	Readded eazel-gen-xml
+	 
+	* components/services/install/command-line/eazel-alt-install-corba.c:
+	(done), 
+	Check the result flag
+	(main):
+	Added revert to the commandline options.
+	
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	Added a boolean flag to the done signal
+	
+	* components/services/install/lib/eazel-install-corba-callback.c:	
+	(impl_done), (eazel_install_callback_class_initialize),
+	Added a boolean flag to the done signal
+	(eazel_install_callback_simple_query):
+	Removed a blank line!
+	
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	Added a boolean flag to the done signal
+
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install_simple_query):
+	Corrected the parse of the root argument
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_class_initialize), (eazel_install_install_packages),
+	(eazel_install_uninstall_packages),
+	(eazel_install_revert_transaction_from_xmlstring),
+	(eazel_install_query_package_system), 
+	Uses the enum return status from eazel-install-rpm-glue.c. The
+	delete_files signal now depend on this enum.
+	(eazel_install_emit_done), (eazel_install_emit_done_default):
+	Added a boolean flag to the done signal
+
+	* components/services/install/lib/eazel-install-public.h:
+	Added a boolean flag to the done signal
+
+	* components/services/install/lib/eazel-install-query.c:
+	(eazel_install_simple_rpm_query):
+	Added the root field to the packagedata
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_new_packages), (download_all_packages),
+	(install_packages), (uninstall_all_packages), (uninstall_packages),
+	(hest), (revert_transaction),
+	(eazel_install_start_transaction_make_rpm_argument_list),
+	(eazel_install_do_transaction_save_report),
+	(eazel_install_monitor_rpm_propcess_pipe),
+	(eazel_install_monitor_subcommand_pipe),
+	(eazel_install_start_transaction),
+	(eazel_install_free_rpm_system_close_db_foreach),
+	(eazel_install_prepare_rpm_system),
+	(eazel_install_prepare_package_system),
+	(eazel_install_check_existing_packages), (print_package_list),
+	(eazel_uninstall_upward_traverse),
+	(eazel_uninstall_downward_traverse),
+	(eazel_uninstall_check_for_install), (eazel_uninstall_globber):
+	Uses the enum return status from eazel-install-rpm-glue.c. Also
+	added "D: " to all the debug output, so I can easily remove them
+	in the future.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.h:
+	Redefined the functions to return an enum status instead of bool.
+	
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_new), (packagedata_destroy_foreach):
+	Added the root field to the packagedage (bug 2345)
+	
+	* components/services/time/service/main.c:
+	(trilobite_service_factory_destroy):
+	Fixed the destruction of the factory object
+	 
+	* components/services/time/service/trilobite-eazel-time-service-publi
+	c.h:
+	* components/services/time/service/trilobite-eazel-time-service.c:
+	(impl_Trilobite_Eazel_Time_Service_check_time),
+	(trilobite_eazel_time_service_finalize),
+	(trilobite_eazel_time_service_unref),
+	(trilobite_eazel_time_service_class_initialize),
+	(trilobite_eazel_time_service_initialize_load_config),
+	(trilobite_eazel_time_service_initialize),
+	(trilobite_eazel_time_service_do_http_request):
+	Added "D: " to debug output. The service now reads config from a
+	xml config file (bug 945). Removed the _destroy call and added a
+	unref and finallize instead.
+	
+	* components/services/trilobite/libtrilobite/helixcode-utils.h:
+	* components/services/trilobite/libtrilobite/helixcode-utils.c:
+	(xml_get_value):
+	Returns the string as a g_strdup'ed value instead. Added a bug
+	(2448) reg. making it return const char * instead.
+	 
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.h:
+	*components/services/trilobite/libtrilobite/trilobite-core-utils.c:
+	(trilobite_get_config_dir_string):
+	Added this call, which returns the top dir for	
+	 
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/callbacks.c:
+	* nautilus-installer/src/callbacks.h:
+	* nautilus-installer/src/installer.c: (installer):
+	* nautilus-installer/src/interface.c: (create_window):
+	* nautilus-installer/src/main.c:
+	Begun work on using the categories.
+
 2000-08-28  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/Makefile.am:

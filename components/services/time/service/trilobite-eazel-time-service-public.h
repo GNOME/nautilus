@@ -58,7 +58,7 @@ struct _TrilobiteEazelTimeService
 GtkType                        trilobite_eazel_time_service_get_type   (void);
 TrilobiteEazelTimeService*     trilobite_eazel_time_service_new        (void);
 POA_Trilobite_Eazel_Time__epv* trilobite_eazel_time_service_get_epv    (void);
-void                           trilobite_eazel_time_service_destroy    (GtkObject *object);
+void                           trilobite_eazel_time_service_unref      (GtkObject *object);
 
 
 #ifdef __cplusplus

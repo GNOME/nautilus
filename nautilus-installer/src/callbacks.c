@@ -103,6 +103,12 @@ prep_install                           (GnomeDruidPage  *gnomedruidpage,
 	g_timeout_add (0, (GSourceFunc)begin_install, window);
 }
 
+void 
+setup_what_to_do (GnomeDruidPage *gnomedruidpage, 
+		  gpointer arg1, 
+		  GtkWidget *window);
+
+
 void
 set_images  (GtkWidget *window)
 {

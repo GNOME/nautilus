@@ -361,9 +361,9 @@ impl_Eazel_Install_simple_query (impl_POA_Trilobite_Eazel_Install *servant,
 
 	g_free (servant->object->private->cur_root);
 	if (!root || strcmp (root, "")==0) {
-		servant->object->private->cur_root = g_strdup (root);
-	} else {
 		servant->object->private->cur_root = NULL;
+	} else {
+		servant->object->private->cur_root = g_strdup (root);
 	}
 
 	tmp_result = eazel_install_simple_query (servant->object, 

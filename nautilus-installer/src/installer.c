@@ -60,6 +60,8 @@ int installer_debug = 0;
 int installer_test = 0;
 int installer_force = 0;
 int installer_local = 0;
+static char *server = NULL;
+static int port = 0;
 
 static void 
 eazel_install_progress (EazelInstall *service, 
@@ -495,7 +497,7 @@ void installer (GtkWidget *window,
 	case FULL_INST:
 	case NAUTILUS_ONLY:
 	case SERVICES_ONLY:
-		eazel_install_install_packages (service, NULL);
+		eazel_install_install_packages (service, NULL, NULL);
 		break;
 	case UPGRADE:	
 	{
@@ -509,11 +511,11 @@ void installer (GtkWidget *window,
 		pack->distribution = trilobite_get_distribution ();
 		cat->packages = g_list_prepend (NULL, pack);
 		categories = g_list_prepend (NULL, cat);
-		eazel_install_install_packages (service, categories);
+		eazel_install_install_packages (service, categories, NULL);
 	}
 	break;
 	case UNINSTALL:
-		revert_nautilus_install (service);
+		revert_nautilus_install (service, NULL);
 		break;
 	};
 

@@ -36,6 +36,9 @@
 #include <bonobo.h>
 #include "trilobite-core-utils.h"
 
+#define TRILOBITE_SERVICE_CONFIG_DIR "/etc/trilobite"
+#define TRILOBITE_SERVICE_CONFIG_DIR_ENV "TRILOBITE_CONFIG"
+
 #ifdef OPEN_MAX
 #define LAST_FD OPEN_MAX
 #else
@@ -237,4 +240,22 @@ trilobite_get_useragent_string (gboolean version, char *suffix)
 				  suffix ? "/" : "", 
 				  suffix ? suffix : "");
 	return result;
+}
+
+const char*
+trilobite_get_config_dir_string ()
+{
+	static const char *res = NULL;
+
+	if (res!=NULL) {
+		return res;
+	}
+
+	if (getenv (TRILOBITE_SERVICE_CONFIG_DIR_ENV)) {
+		res = g_strdup (getenv (TRILOBITE_SERVICE_CONFIG_DIR_ENV));
+	} else {
+		res = g_strdup (TRILOBITE_SERVICE_CONFIG_DIR);
+	}
+	
+	return res;
 }
