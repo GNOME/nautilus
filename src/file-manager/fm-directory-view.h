@@ -26,7 +26,6 @@
 #define FM_DIRECTORY_VIEW_H
 
 #include <gtk/gtkscrolledwindow.h>
-#include <libgnomevfs/gnome-vfs-types.h>
 #include <libnautilus/ntl-content-view-frame.h>
 #include <libnautilus/nautilus-directory.h>
 
@@ -77,7 +76,7 @@ struct _FMDirectoryViewClass {
 	 * It must be replaced by each subclass.
 	 */
 	void 	(* add_entry) 		 (FMDirectoryView *view, 
-					  GnomeVFSFileInfo *info);
+					  NautilusFile *file);
 
 	/* The 'done_adding_entries' signal is emitted after a set of entries
 	 * are added to the view. It can be replaced by a subclass to do any 
@@ -96,9 +95,10 @@ struct _FMDirectoryViewClass {
 	/* get_selection is not a signal; it is just a function pointer for
 	 * subclasses to replace (override). Subclasses must replace it
 	 * with a function that returns a newly-allocated GList of
-	 * GnomeVFSFileInfo pointers.
+	 * NautilusFile pointers.
 	 */
-	GList * (* get_selection) 	 (FMDirectoryView *view);
+	NautilusFileList *
+		(* get_selection) 	 (FMDirectoryView *view);
 };
 
 
@@ -112,7 +112,6 @@ NautilusContentViewFrame *fm_directory_view_get_view_frame           (FMDirector
 /* URI handling */
 void                      fm_directory_view_load_uri                 (FMDirectoryView         *view,
 								      const char              *uri);
-GnomeVFSURI *             fm_directory_view_get_uri                  (FMDirectoryView         *view);
 
 /* Functions callable from the user interface and elsewhere. */
 GList *                   fm_directory_view_get_selection            (FMDirectoryView         *view);
@@ -128,7 +127,7 @@ void                      fm_directory_view_sort                     (FMDirector
 void                      fm_directory_view_clear                    (FMDirectoryView         *view);
 void                      fm_directory_view_begin_adding_entries     (FMDirectoryView         *view);
 void                      fm_directory_view_add_entry                (FMDirectoryView         *view,
-								      GnomeVFSFileInfo        *info);
+								      NautilusFile            *file);
 void                      fm_directory_view_done_adding_entries      (FMDirectoryView         *view);
 void                      fm_directory_view_begin_loading            (FMDirectoryView         *view);
 				       			 
@@ -136,16 +135,9 @@ void                      fm_directory_view_begin_loading            (FMDirector
  * FMDirectoryView and its subclasses 
  */
 void                      fm_directory_view_activate_entry           (FMDirectoryView         *view,
-								      GnomeVFSFileInfo        *info);
+								      NautilusFile            *file);
 void                      fm_directory_view_notify_selection_changed (FMDirectoryView         *view);
 void                      fm_directory_view_populate                 (FMDirectoryView         *view);
 NautilusDirectory *       fm_directory_view_get_model                (FMDirectoryView         *view);
-
-/* Utility functions for formatting file-related information.
- * FIXME: Probably these should be moved to some appropriate place in libnautilus.
- */
-gchar *                   nautilus_file_date_as_string               (GnomeVFSFileInfo        *file_info);
-gchar *                   nautilus_file_size_as_string               (GnomeVFSFileInfo        *file_info);
-gchar *                   nautilus_file_type_as_string               (GnomeVFSFileInfo        *file_info);
 
 #endif /* FM_DIRECTORY_VIEW_H */

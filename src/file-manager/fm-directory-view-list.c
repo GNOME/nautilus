@@ -27,6 +27,7 @@
 #endif
 
 #include "fm-directory-view-list.h"
+
 #include "fm-icon-cache.h"
 #include <libgnome/gnome-i18n.h>
 #include <libnautilus/nautilus-gtk-macros.h>
@@ -45,7 +46,7 @@ struct _FMDirectoryViewListDetails
 /* forward declarations */
 static void add_to_flist 			    (FMIconCache *icon_manager,
 		   		 		     GtkFList *flist,
-		   		 		     GnomeVFSFileInfo *info);
+		   		 		     NautilusFile *file);
 static void column_clicked_cb 			    (GtkCList *ignored,
 			       	 		     gint column,
 			       	 		     gpointer user_data);
@@ -55,7 +56,7 @@ static void flist_activate_cb 			    (GtkFList *ignored,
 			       	 		     gpointer data);
 static void flist_selection_changed_cb 	  	    (GtkFList *flist, gpointer data);
 static void fm_directory_view_list_add_entry 	    (FMDirectoryView *view, 
-				 		     GnomeVFSFileInfo *info);
+				 		     NautilusFile *file);
 static void fm_directory_view_list_background_changed_cb
                                                     (NautilusBackground *background,
 						     FMDirectoryViewList *list_view);
@@ -240,8 +241,7 @@ flist_activate_cb (GtkFList *ignored,
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (data));
 	g_return_if_fail (entry_data != NULL);
 
-	fm_directory_view_activate_entry (FM_DIRECTORY_VIEW (data), 
-					  (GnomeVFSFileInfo *) entry_data);
+	fm_directory_view_activate_entry (FM_DIRECTORY_VIEW (data), entry_data);
 }
 
 static void
@@ -257,10 +257,11 @@ flist_selection_changed_cb (GtkFList *flist,
 static void
 add_to_flist (FMIconCache *icon_manager,
 	      GtkFList *flist,
-	      GnomeVFSFileInfo *info)
+	      NautilusFile *file)
 {
 	GtkCList *clist;
 	gchar *text[LIST_VIEW_COLUMN_COUNT];
+	gchar *name;
 	gchar *size_string;
 	gchar *modified_string;
 	gchar *type_string;
@@ -268,21 +269,23 @@ add_to_flist (FMIconCache *icon_manager,
 	/* FIXME: Icon column needs a pixmap */
 	text[LIST_VIEW_COLUMN_ICON] = NULL;
 	
-	text[LIST_VIEW_COLUMN_NAME] = info->name;
+	name = nautilus_file_get_name (file);
+	text[LIST_VIEW_COLUMN_NAME] = name;
 
-	size_string = nautilus_file_size_as_string (info);
+	size_string = nautilus_file_get_size_as_string (file);
 	text[LIST_VIEW_COLUMN_SIZE] = size_string;
 
-	modified_string = nautilus_file_date_as_string (info);
+	modified_string = nautilus_file_get_date_as_string (file);
 	text[LIST_VIEW_COLUMN_DATE_MODIFIED] = modified_string;
 
-	type_string = nautilus_file_type_as_string (info);
+	type_string = nautilus_file_get_type_as_string (file);
 	text[LIST_VIEW_COLUMN_MIME_TYPE] = type_string;
 	
 	clist = GTK_CLIST (flist);
 	gtk_clist_append (clist, text);
-	gtk_clist_set_row_data (clist, clist->rows - 1, info);
+	gtk_clist_set_row_data (clist, clist->rows - 1, file);
 
+	g_free (name);
 	g_free (size_string);
 	g_free (modified_string);
 	g_free (type_string);
@@ -328,11 +331,11 @@ fm_directory_view_list_begin_adding_entries (FMDirectoryView *view)
 }
 
 static void
-fm_directory_view_list_add_entry (FMDirectoryView *view, GnomeVFSFileInfo *info)
+fm_directory_view_list_add_entry (FMDirectoryView *view, NautilusFile *file)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view));
 
-	add_to_flist (fm_get_current_icon_cache(), get_flist (FM_DIRECTORY_VIEW_LIST (view)), info);
+	add_to_flist (fm_get_current_icon_cache(), get_flist (FM_DIRECTORY_VIEW_LIST (view)), file);
 }
 
 static void

@@ -226,11 +226,11 @@ fm_directory_view_destroy (GtkObject *object)
 static void
 display_selection_info (FMDirectoryView *view)
 {
-	GList *selection;
+	NautilusFileList *selection;
 	GnomeVFSFileSize size;
 	guint count;
-	GList *p;
-	gchar *first_item_name;
+	NautilusFileList *p;
+	char *first_item_name;
 	Nautilus_StatusRequestInfo sri;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
@@ -241,13 +241,13 @@ display_selection_info (FMDirectoryView *view)
 	size = 0;
 	first_item_name = NULL;
 	for (p = selection; p != NULL; p = p->next) {
-		GnomeVFSFileInfo *info;
+		NautilusFile *file;
 
-		info = p->data;
+		file = p->data;
 		count++;
-		size += info->size;
+		size += nautilus_file_get_info (file)->size;
 		if (first_item_name == NULL)
-			first_item_name = info->name;
+			first_item_name = nautilus_file_get_name (file);
 	}
 
 	g_list_free (selection);
@@ -260,7 +260,7 @@ display_selection_info (FMDirectoryView *view)
 	}
 	else
 	{
-		gchar *size_string;
+		char *size_string;
 
 		size_string = gnome_vfs_file_size_to_string (size);
 		if (count == 1)
@@ -279,6 +279,8 @@ display_selection_info (FMDirectoryView *view)
 		}
 		g_free (size_string);
 	}
+
+	g_free (first_item_name);
 
 	nautilus_view_frame_request_status_change
 		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &sri);
@@ -357,8 +359,8 @@ fm_directory_view_populate (FMDirectoryView *view)
 			info = gnome_vfs_directory_list_get
 				(view->details->directory_list, position);
 
-			gnome_vfs_file_info_ref (info);
-			fm_directory_view_add_entry (view, info);
+			fm_directory_view_add_entry
+				(view, nautilus_directory_new_file (view->details->model, info));
 
 			position = gnome_vfs_directory_list_position_next
 				(position);
@@ -380,8 +382,7 @@ display_pending_entries (FMDirectoryView *view)
 		info = gnome_vfs_directory_list_get (view->details->directory_list,
 						     view->details->current_position);
 
-		gnome_vfs_file_info_ref (info);
-		fm_directory_view_add_entry (view, info);
+		fm_directory_view_add_entry (view, nautilus_directory_new_file (view->details->model, info));
 
 		view->details->current_position = gnome_vfs_directory_list_position_next
 						       (view->details->current_position);
@@ -506,15 +507,15 @@ fm_directory_view_begin_adding_entries (FMDirectoryView *view)
  * override the signal handler for this signal. This is normally called
  * only by FMDirectoryView.
  * @view: FMDirectoryView to add entry to.
- * @info: GnomeVFSFileInfo describing entry to add.
+ * @file: NautilusFile describing entry to add.
  * 
  **/
 void
-fm_directory_view_add_entry (FMDirectoryView *view, GnomeVFSFileInfo *info)
+fm_directory_view_add_entry (FMDirectoryView *view, NautilusFile *file)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	gtk_signal_emit (GTK_OBJECT (view), fm_directory_view_signals[ADD_ENTRY], info);
+	gtk_signal_emit (GTK_OBJECT (view), fm_directory_view_signals[ADD_ENTRY], file);
 }
 
 /**
@@ -554,13 +555,13 @@ fm_directory_view_begin_loading (FMDirectoryView *view)
 /**
  * fm_directory_view_get_selection:
  *
- * Get a list of GnomeVFSFileInfo pointers that represents the
+ * Get a list of NautilusFile pointers that represents the
  * currently-selected items in this view. Subclasses must override
  * the signal handler for the 'get_selection' signal. Callers are
  * responsible for g_free-ing the list (but not its data).
  * @view: FMDirectoryView whose selected items are of interest.
  * 
- * Return value: GList of GnomeVFSFileInfo pointers representing the selection.
+ * Return value: GList of NautilusFile pointers representing the selection.
  * 
  **/
 GList *
@@ -607,24 +608,6 @@ fm_directory_view_get_model (FMDirectoryView *view)
 }
 
 /**
- * fm_directory_view_get_model:
- * 
- * Get the GnomeVFSURI representing this view's current location.
- * Callers must not modify the returned object.
- * @view: FMDirectoryView of interest.
- * 
- * Return value: uri for this view.
- * 
- **/
-GnomeVFSURI *
-fm_directory_view_get_uri (FMDirectoryView *view)
-{
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
-
-	return view->details->uri;
-}
-
-/**
  * fm_directory_view_notify_selection_changed:
  * 
  * Notify this view that the selection has changed. This is normally
@@ -650,26 +633,34 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
  * location for the current window, or launching an application. This is normally
  * called only by subclasses.
  * @view: FMDirectoryView in question.
- * @info: A GnomeVFSFileInfo representing the entry in this view to activate.
+ * @file: A NautilusFile representing the entry in this view to activate.
  * 
  **/
 void
-fm_directory_view_activate_entry (FMDirectoryView *view, GnomeVFSFileInfo *info)
+fm_directory_view_activate_entry (FMDirectoryView *view, NautilusFile *file)
 {
 	GnomeVFSURI *new_uri;
+	char *name;
+	char *new_uri_text;
 	Nautilus_NavigationRequestInfo nri;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-	g_return_if_fail (info != NULL);
+	g_return_if_fail (file != NULL);
 
-	new_uri = gnome_vfs_uri_append_path (view->details->uri, info->name);
-	nri.requested_uri = gnome_vfs_uri_to_string(new_uri, 0);
+	name = nautilus_file_get_info (file)->name;
+	new_uri = gnome_vfs_uri_append_path(view->details->uri, name);
+	g_free (name);
+
+	new_uri_text = gnome_vfs_uri_to_string (new_uri, GNOME_VFS_URI_HIDE_NONE);
+	gnome_vfs_uri_unref (new_uri);
+
+	nri.requested_uri = new_uri_text;
 	nri.new_window_default = nri.new_window_suggested = Nautilus_V_FALSE;
 	nri.new_window_enforced = Nautilus_V_UNKNOWN;
 	nautilus_view_frame_request_location_change
-		(NAUTILUS_VIEW_FRAME(view->details->view_frame), &nri);
-	g_free(nri.requested_uri);
-	gnome_vfs_uri_unref (new_uri);	
+		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &nri);
+
+	g_free (new_uri_text);
 }
 
 /**
@@ -826,76 +817,4 @@ fm_directory_view_sort (FMDirectoryView *view,
 	fm_directory_view_populate (view);
 
 #undef ALLOC_RULES
-}
-
-/**
- * nautilus_file_date_as_string:
- * 
- * Get a user-displayable string representing a file modification date. 
- * The caller is responsible for g_free-ing this string.
- * @file_info: GnomeVFSFileInfo representing the file in question.
- * 
- * Returns: Newly allocated string ready to display to the user.
- * 
- **/
-gchar *
-nautilus_file_date_as_string (GnomeVFSFileInfo *file_info)
-{
-	/* Note: There's also accessed time and changed time.
-	 * Accessed time doesn't seem worth showing to the user.
-	 * Changed time is only subtly different from modified time
-	 * (changed time includes "metadata" changes like file permissions).
-	 * We should not display both, but we might change our minds as to
-	 * which one is better.
-	 */
-
-	/* Note that ctime is a funky function that returns a
-	 * string that you're not supposed to free.
-	 */
-	return g_strdup (ctime (&file_info->mtime));
-}
-
-/**
- * nautilus_file_size_as_string:
- * 
- * Get a user-displayable string representing a file size. The caller
- * is responsible for g_free-ing this string.
- * @file_info: GnomeVFSFileInfo representing the file in question.
- * 
- * Returns: Newly allocated string ready to display to the user.
- * 
- **/
-gchar *
-nautilus_file_size_as_string (GnomeVFSFileInfo *file_info)
-{
-	if (file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY)
-	{
-		return g_strdup(_("--"));
-	}
-
-	return gnome_vfs_file_size_to_string (file_info->size);
-}
-
-/**
- * nautilus_file_type_as_string:
- * 
- * Get a user-displayable string representing a file type. The caller
- * is responsible for g_free-ing this string.
- * @file_info: GnomeVFSFileInfo representing the file in question.
- * 
- * Returns: Newly allocated string ready to display to the user.
- * 
- **/
-gchar *
-nautilus_file_type_as_string (GnomeVFSFileInfo *file_info)
-{
-	if (file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY)
-	{
-		/* Special-case this so it isn't "special/directory".
-		 * Should this be "folder" instead?
-		 */		
-		return g_strdup(_("directory"));
-	}
-
-	return g_strdup (file_info->mime_type);
 }

@@ -35,6 +35,7 @@
 
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 
@@ -90,6 +91,10 @@ struct _NautilusDirectoryDetails
 
 struct _NautilusFile
 {
+	guint ref_count;
+
+	NautilusDirectory *directory;
+	GnomeVFSFileInfo *info;
 };
 
 static GHashTable* directory_objects;
@@ -122,6 +127,22 @@ nautilus_directory_finalize (GtkObject *object)
 	directory = NAUTILUS_DIRECTORY (object);
 
 	g_hash_table_remove (directory_objects, directory->details->uri_text);
+
+	/* Unref all the files. */
+	while (directory->details->files != NULL) {
+		NautilusFile *file;
+		
+		file = directory->details->files->data;
+
+		/* Detach the file from this directory. */
+		g_assert (file->directory == directory);
+		file->directory = NULL;
+		
+		/* Let the reference go. */
+		nautilus_file_unref (file);
+
+		directory->details->files = g_list_remove_link (directory->details->files, directory->details->files);
+	}
 
 	g_free (directory->details->uri_text);
 	if (directory->details->uri != NULL)
@@ -179,6 +200,14 @@ nautilus_directory_get (const char *uri)
 	}
 
 	return directory;
+}
+
+char *
+nautilus_directory_get_uri (NautilusDirectory *directory)
+{
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
+
+	return g_strdup (directory->details->uri_text);
 }
 
 /* This reads the metafile synchronously. This must go eventually.
@@ -617,7 +646,7 @@ nautilus_directory_set_metadata (NautilusDirectory *directory,
 	nautilus_directory_request_write_metafile (directory);
 }
 
-char *
+static char *
 nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 				      const char *file_name,
 				      const char *tag,
@@ -635,7 +664,7 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 
 	/* The children represent the files.
 	   This linear search is temporary.
-	   Eventually, we'll have a pointer from the FMFile right to
+	   Eventually, we'll have a pointer from the NautilusFile right to
 	   the corresponding XML node, or we won't have the XML tree
 	   in memory at all.
 	*/
@@ -651,7 +680,7 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 		(child, tag, default_metadata);
 }
 
-void
+static void
 nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 				      const char *file_name,
 				      const char *tag,
@@ -690,7 +719,7 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 	
 	/* The children represent the files.
 	   This linear search is temporary.
-	   Eventually, we'll have a pointer from the FMFile right to
+	   Eventually, we'll have a pointer from the NautilusFile right to
 	   the corresponding XML node, or we won't have the XML tree
 	   in memory at all.
 	*/
@@ -713,6 +742,152 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 	
 	/* Since we changed the tree, arrange for it to be written. */
 	nautilus_directory_request_write_metafile (directory);
+}
+
+NautilusFile *
+nautilus_directory_new_file (NautilusDirectory *directory, GnomeVFSFileInfo *info)
+{
+	NautilusFile *file;
+
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
+	g_return_val_if_fail (info != NULL, NULL);
+
+	gnome_vfs_file_info_ref (info);
+
+	file = g_new (NautilusFile, 1);
+	file->ref_count = 1;
+	file->directory = directory;
+	file->info = info;
+
+	directory->details->files = g_list_prepend (directory->details->files, file);
+
+	return file;
+}
+
+void
+nautilus_file_unref (NautilusFile *file)
+{
+	g_return_if_fail (file != NULL);
+	g_return_if_fail (file->ref_count != 0);
+
+	/* Decrement the ref count. */
+	if (--file->ref_count != 0)
+		return;
+
+	/* Destroy the file object. */
+	g_assert (file->directory == NULL);
+	gnome_vfs_file_info_unref (file->info);
+}
+
+char *
+nautilus_file_get_metadata (NautilusFile *file,
+			    const char *tag,
+			    const char *default_metadata)
+{
+	g_return_val_if_fail (file != NULL, NULL);
+
+	return nautilus_directory_get_file_metadata (file->directory, file->info->name, tag, default_metadata);
+}
+
+void
+nautilus_file_set_metadata (NautilusFile *file,
+			    const char *tag,
+			    const char *default_metadata,
+			    const char *metadata)
+{
+	g_return_if_fail (file != NULL);
+
+	nautilus_directory_set_file_metadata (file->directory, file->info->name, tag, default_metadata, metadata);
+}
+
+char *
+nautilus_file_get_name (NautilusFile *file)
+{
+	g_return_val_if_fail (file != NULL, NULL);
+
+	return g_strdup (file->info->name);
+}
+
+GnomeVFSFileInfo *
+nautilus_file_get_info (NautilusFile *file)
+{
+	g_return_val_if_fail (file != NULL, NULL);
+
+	return file->info;
+}
+
+/**
+ * nautilus_file_get_date_as_string:
+ * 
+ * Get a user-displayable string representing a file modification date. 
+ * The caller is responsible for g_free-ing this string.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: Newly allocated string ready to display to the user.
+ * 
+ **/
+gchar *
+nautilus_file_get_date_as_string (NautilusFile *file)
+{
+	/* Note: There's also accessed time and changed time.
+	 * Accessed time doesn't seem worth showing to the user.
+	 * Changed time is only subtly different from modified time
+	 * (changed time includes "metadata" changes like file permissions).
+	 * We should not display both, but we might change our minds as to
+	 * which one is better.
+	 */
+
+	g_return_val_if_fail (file != NULL, NULL);
+
+	/* Note that ctime is a funky function that returns a
+	 * string that you're not supposed to free.
+	 */
+	return g_strdup (ctime (&file->info->mtime));
+}
+
+/**
+ * nautilus_file_get_size_as_string:
+ * 
+ * Get a user-displayable string representing a file size. The caller
+ * is responsible for g_free-ing this string.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: Newly allocated string ready to display to the user.
+ * 
+ **/
+gchar *
+nautilus_file_get_size_as_string (NautilusFile *file)
+{
+	g_return_val_if_fail (file != NULL, NULL);
+
+	if (file->info->type == GNOME_VFS_FILE_TYPE_DIRECTORY)
+		return g_strdup (_("--"));
+
+	return gnome_vfs_file_size_to_string (file->info->size);
+}
+
+/**
+ * nautilus_file_get_type_as_string:
+ * 
+ * Get a user-displayable string representing a file type. The caller
+ * is responsible for g_free-ing this string.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: Newly allocated string ready to display to the user.
+ * 
+ **/
+gchar *
+nautilus_file_get_type_as_string (NautilusFile *file)
+{
+	g_return_val_if_fail (file != NULL, NULL);
+
+	if (file->info->type == GNOME_VFS_FILE_TYPE_DIRECTORY)
+		/* Special-case this so it isn't "special/directory".
+		 * Should this be "folder" instead?
+		 */		
+		return g_strdup (_("directory"));
+
+	return g_strdup (file->info->mime_type);
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

@@ -26,6 +26,7 @@
 #define NAUTILUS_DIRECTORY_H
 
 #include <gtk/gtkobject.h>
+#include <libgnomevfs/gnome-vfs-types.h>
 
 /* NautilusDirectory is a class that manages the model for a directory,
    real or virtual, for Nautilus, mainly the file-manager component. The directory is
@@ -73,20 +74,13 @@ GtkType            nautilus_directory_get_type            (void);
 */
 NautilusDirectory *nautilus_directory_get                 (const char               *uri);
 
+char *             nautilus_directory_get_uri             (NautilusDirectory        *directory);
+
 /* Simple preliminary interface for getting and setting metadata. */
 char *             nautilus_directory_get_metadata        (NautilusDirectory        *directory,
 							   const char               *tag,
 							   const char               *default_metadata);
-char *             nautilus_directory_get_file_metadata   (NautilusDirectory        *directory,
-							   const char               *file_name,
-							   const char               *tag,
-							   const char               *default_metadata);
 void               nautilus_directory_set_metadata        (NautilusDirectory        *directory,
-							   const char               *tag,
-							   const char               *default_metadata,
-							   const char               *metadata);
-void               nautilus_directory_set_file_metadata   (NautilusDirectory        *directory,
-							   const char               *file_name,
 							   const char               *tag,
 							   const char               *default_metadata,
 							   const char               *metadata);
@@ -106,16 +100,37 @@ void               nautilus_directory_get_files           (NautilusDirectory    
 */
 gboolean           nautilus_directory_is_ready_for_layout (NautilusDirectory        *directory);
 
+/* Temporary interface for NautilusFile while we are phasing it in. */
+NautilusFile *     nautilus_directory_new_file            (NautilusDirectory        *directory,
+							   GnomeVFSFileInfo         *info);
+GnomeVFSFileInfo * nautilus_file_get_info                 (NautilusFile             *file);
+
 /* Basic operations on file objects. */
 void               nautilus_file_ref                      (NautilusFile             *file);
 void               nautilus_file_unref                    (NautilusFile             *file);
 char *             nautilus_file_get_name                 (NautilusFile             *file);
+
+/* Utility functions for formatting file-related information.
+ * FIXME: Probably these should be moved to some appropriate place in libnautilus.
+ */
+char *                   nautilus_file_get_date_as_string           (NautilusFile            *file);
+char *                   nautilus_file_get_size_as_string           (NautilusFile            *file);
+char *                   nautilus_file_get_type_as_string           (NautilusFile            *file);
 
 /* Return true if this file has already been deleted.
    This object will be unref'd after sending the files_removed signal,
    but it could hang around longer if someone ref'd it.
 */
 gboolean           nautilus_file_is_gone                  (NautilusFile             *file);
+
+/* Simple preliminary interface for getting and setting metadata. */
+char *             nautilus_file_get_metadata        	  (NautilusFile             *file,
+							   const char               *tag,
+							   const char               *default_metadata);
+void               nautilus_file_set_metadata             (NautilusFile             *file,
+							   const char               *tag,
+							   const char               *default_metadata,
+							   const char               *metadata);
 
 typedef struct _NautilusDirectoryDetails NautilusDirectoryDetails;
 

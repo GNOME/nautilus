@@ -1,3 +1,72 @@
+2000-01-20  Darin Adler  <darin@eazel.com>
+
+	Store icon positions as "x,y" in ICON_POSITION instead of
+	storing ICON_X and ICON_Y.
+
+	Take first step in moving the directory view to use the opaque
+	NautilusDirectory and NautilusFile instead of using gnome-vfs
+	directly. This will separate the controller from the model:
+	FMDirectoryView is a controller and NautilusDirectory a model.
+
+	* src/file-manager/fm-directory-view-icons.c:
+	(add_to_icon_container):
+	(fm_directory_view_icons_icon_moved_cb):
+	Store icons positions as "x,y" in ICON_POSITION instead of storing
+	separate numbers in ICON_X and ICON_Y.
+
+	* libnautilus/nautilus-directory.h:
+	libnautilus/nautilus-directory.c:
+	(nautilus_directory_get_uri):
+	Added a new call needed to replace fm_directory_view_get_uri.
+	(nautilus_directory_get_file_metadata):
+	(nautilus_directory_set_file_metadata):
+	(nautilus_file_get_metadata):
+	(nautilus_file_set_metadata):
+	Moved the calls for getting and setting file metadata into the
+	file objects.
+	(nautilus_directory_new_file):
+	(nautilus_file_get_info):
+	Added temporary interfaces for the current situation where we're
+	dealing with both NautilusFile and GnomeVFSFileInfo objects at
+	once.
+	(nautilus_directory_finalize):
+	Detach and unref all the files when the directory is destroyed.
+	(nautilus_file_unref):
+	(nautilus_file_get_name):
+	Implemented these functions now that we are using them.
+
+	* src/file-manager/fm-directory-view.h:
+	src/file-manager/fm-directory-view.c:
+	(fm_directory_view_add_entry):
+	(fm_directory_view_activate_entry):
+	(display_selection_info):
+	(fm_directory_view_get_selection):
+	src/file-manager/fm-directory-view-icons.c:
+	(add_to_icon_container):
+	(fm_directory_view_icons_icon_moved_cb):
+	(dm_directory_view_icons_add_entry):
+	(fm_directory_view_icons_get_selection):
+	(icon_container_activate_cb):
+	src/file-manager/fm-directory-view-list.c:
+	(add_to_flist):
+	(fm_directory_view_list_add_entry):
+	Change all the code to work with NautilusFile instead of
+	GnomeVFSFileInfo, except for the parts of FMDirectoryView dealing
+	with the directory_list.
+
+	* src/file-manager/fm-directory-view.h:
+	src/file-manager/fm-directory-view.c:
+	(nautilus_file_date_as_string):
+	(nautilus_file_size_as_string):
+	(nautilus_file_type_as_string):
+	libnautilus/nautilus-directory.h:
+	libnautilus/nautilus-directory.c:
+	(nautilus_file_get_date_as_string):
+	(nautilus_file_get_size_as_string):
+	(nautilus_file_get_type_as_string):
+	Moved and renamed these functions and made them work on
+	NautilusFile objects.
+	
 2000-01-20  John Sullivan  <sullivan@eazel.com>
 
 	* src/file-manager/fm-directory-view.c: (display_selection_info):
