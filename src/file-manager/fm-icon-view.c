@@ -46,6 +46,7 @@
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-config.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -72,6 +73,7 @@
 #include <unistd.h>
 
 #define USE_OLD_AUDIO_PREVIEW 1
+#define READ_CHUNK_SIZE 16384
 
 /* Paths to use when creating & referring to Bonobo menu items */
 #define MENU_PATH_RENAME 			"/menu/File/File Items Placeholder/Rename"
@@ -1519,50 +1521,102 @@ band_select_ended_callback (NautilusIconContainer *container,
 
 /* handle the preview signal by inspecting the mime type.  For now, we only preview local sound files. */
 
-/* here's the timer task that actually plays the file using mpg123. */
+/* here's the timer task that actually plays the file using mpg123, ogg123 or play. */
 /* FIXME bugzilla.gnome.org 41258: we should get the application from our mime-type stuff */
 static gboolean
 play_file (gpointer callback_data)
 {
 #if USE_OLD_AUDIO_PREVIEW	
 	NautilusFile *file;
+	FMIconView *icon_view;
+	FILE *sound_process;
 	char *file_uri;
-	char *file_path, *mime_type;
+	char *suffix;
+	char *mime_type;
+	const char *command_str;
 	gboolean is_mp3;
 	gboolean is_ogg;
 	pid_t mp3_pid;
 	
-	file = NAUTILUS_FILE (callback_data);
+	GnomeVFSResult result;
+	GnomeVFSHandle *handle;
+	char *buffer;
+	GnomeVFSFileSize bytes_read;
+
+	icon_view = FM_ICON_VIEW (callback_data);
+	
+	file = icon_view->details->audio_preview_file;
 	file_uri = nautilus_file_get_uri (file);
-	file_path = gnome_vfs_get_local_path_from_uri (file_uri);
 	mime_type = nautilus_file_get_mime_type (file);
 	is_mp3 = eel_strcasecmp (mime_type, "audio/x-mp3") == 0;
 	is_ogg = eel_strcasecmp (mime_type, "application/x-ogg") == 0;
 
-	if (file_path != NULL) {
-		mp3_pid = fork ();
-		if (mp3_pid == (pid_t) 0) {
-			/* Set the group (session) id to this process for future killing. */
-			setsid();
-			if (is_mp3) {
-				execlp ("mpg123", "mpg123", "-y", "-q", file_path, NULL);
-			} else if (is_ogg) {
-				execlp ("ogg123", "ogg123", "-q", file_path, NULL);
-			} else {
-				execlp ("play", "play", file_path, NULL);
-			}
-			
-			_exit (0);
+	mp3_pid = fork ();
+	if (mp3_pid == (pid_t) 0) {
+		/* Set the group (session) id to this process for future killing. */
+		setsid();
+		if (is_mp3) {
+			command_str = "mpg123 -y -q -";
+		} else if (is_ogg) {
+			command_str = "ogg123 -q -";
 		} else {
-			nautilus_sound_register_sound (mp3_pid);
+			suffix = strrchr(file_uri, '.');
+			if (suffix == NULL) {
+				suffix = "wav";
+			} else {
+				suffix += 1; /* skip the period */
+			}
+			command_str = g_strdup_printf("play -t %s -", suffix);
 		}
-	}
+			
+		/* since the uri could be local or remote, we launch the sound player with popen and feed it
+		 * the data by fetching it with gnome_vfs
+		 */
+		sound_process = popen(command_str, "w");
+		if (sound_process == 0) {
+			return FALSE;
+		}
+			
+		/* read the file with gnome-vfs, feeding it to the sound player's standard input */
+		/* First, open the file. */
+		result = gnome_vfs_open (&handle, file_uri, GNOME_VFS_OPEN_READ);
+		if (result != GNOME_VFS_OK) {
+			return FALSE;
+		}
 
-	g_free (file_path);
+		/* allocate a buffer. */
+		buffer = g_malloc(READ_CHUNK_SIZE);
+			
+		/* read and write a chunk at a time, until we're done */
+		do {
+			result = gnome_vfs_read (handle,
+					buffer,
+					READ_CHUNK_SIZE,
+					&bytes_read);
+			if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_EOF) {
+				g_free (buffer);
+				gnome_vfs_close (handle);
+				break;
+			}
+
+			/* pass the data the buffer to the sound process by writing to it */
+			fwrite(buffer, 1, bytes_read, sound_process);
+
+		} while (result == GNOME_VFS_OK);
+
+		/* Close the file. */
+		result = gnome_vfs_close (handle);			
+		g_free(buffer);
+		pclose(sound_process);
+		_exit (0);
+	} else {
+		nautilus_sound_register_sound (mp3_pid);
+	}
+		
 	g_free (file_uri);
 	g_free (mime_type);
 
-	/* FIXME: Need to zero out the timeout. */
+	icon_view->details->audio_preview_timeout = 0;
 #else
 	char *file_path, *file_uri, *mime_type;
 	gboolean is_mp3;
@@ -1619,7 +1673,7 @@ preview_audio (FMIconView *icon_view, NautilusFile *file, gboolean start_flag)
 	if (start_flag) {
 		icon_view->details->audio_preview_file = file;
 #if USE_OLD_AUDIO_PREVIEW			
-		icon_view->details->audio_preview_timeout = gtk_timeout_add (1000, play_file, file);
+		icon_view->details->audio_preview_timeout = gtk_timeout_add (1000, play_file, icon_view);
 #else
 		/* FIXME: Need to kill the existing timeout if there is one? */
 		icon_view->details->audio_preview_timeout = gtk_timeout_add (1000, play_file, icon_view);
@@ -1640,12 +1694,9 @@ should_preview_sound (NautilusFile *file) {
 		return FALSE;
 	}
 		
-	/* the following is disabled until we can preview remote sounds, which we currently can't do */
-	/*
-	if (preview_mode == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
+	if (preview_sound_auto_value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
 		return TRUE;
 	}
-	*/
 	
 	return nautilus_file_is_local (file);
 }

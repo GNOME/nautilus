@@ -1,3 +1,15 @@
+2002-01-03  Andy Hertzfeld  <andy@differnet.com>
+	
+	reviewed by: <darin@bentspoon.com>
+
+	* src/file-manager/fm-icon-view.c: (play_file), (preview_audio),
+	made remote sound previewing work by using gnome-vfs to read from
+	the remote source and feeding the data to the sound player via popen.
+	
+	* (should_preview_sound):
+	removed code that disabled remote sound previewing even if the
+	preference was set
+
 2002-01-03  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-global-preferences.c:
