@@ -227,13 +227,83 @@ nautilus_create_colorized_pixbuf (GdkPixbuf *src,
 }
 
 /* utility to stretch a frame to the desired size */
-/* FIXME: right now it justs does a simple scale - it should do it by replicating the "stretchable" area instead of
-   scaling everything uniformly */
+
+static void
+draw_frame_row (GdkPixbuf *frame_image, int target_width, int source_width, int source_v_position, int dest_v_position, GdkPixbuf *result_pixbuf, int left_offset, int height)
+{
+	int remaining_width, h_offset, slab_width;
+	
+	remaining_width = target_width;
+	h_offset = 0;
+	while (remaining_width > 0) {	
+		slab_width = remaining_width > source_width ? source_width : remaining_width;
+		gdk_pixbuf_copy_area (frame_image, left_offset, source_v_position, slab_width, height, result_pixbuf, left_offset + h_offset, dest_v_position);
+		remaining_width -= slab_width;
+		h_offset += slab_width; 
+	}
+}
+
+static void
+draw_frame_column (GdkPixbuf *frame_image, int target_height, int source_height, int source_h_position, int dest_h_position, GdkPixbuf *result_pixbuf, int top_offset, int width)
+{
+	int remaining_height, v_offset, slab_height;
+	
+	remaining_height = target_height;
+	v_offset = 0;
+	while (remaining_height > 0) {	
+		slab_height = remaining_height > source_height ? source_height : remaining_height;
+		gdk_pixbuf_copy_area (frame_image, source_h_position, top_offset, width, slab_height, result_pixbuf, dest_h_position, top_offset + v_offset);
+		remaining_height -= slab_height;
+		v_offset += slab_height; 
+	}
+}
 
 static GdkPixbuf *
 stretch_frame_image (GdkPixbuf *frame_image, int left_offset, int top_offset, int right_offset, int bottom_offset, int dest_width, int dest_height)
 {
-	return gdk_pixbuf_scale_simple (frame_image, dest_width, dest_height, GDK_INTERP_BILINEAR);
+	GdkPixbuf *result_pixbuf;
+	guchar *pixels_ptr;
+	int frame_width, frame_height;
+	int y, row_stride;
+	int target_width, target_frame_width;
+	int target_height, target_frame_height;
+	
+	frame_width  = gdk_pixbuf_get_width  (frame_image);
+	frame_height = gdk_pixbuf_get_height (frame_image );
+	
+	result_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, dest_width, dest_height);
+	row_stride = gdk_pixbuf_get_rowstride (result_pixbuf);
+	pixels_ptr = gdk_pixbuf_get_pixels (result_pixbuf);
+	
+	/* clear the new pixbuf */
+	for (y = 0; y < dest_height; y++) {
+		art_rgb_run_alpha (pixels_ptr, 255, 255, 255, 255, dest_width);
+		pixels_ptr += row_stride; 
+	}
+	
+	target_width  = dest_width - left_offset - right_offset;
+	target_frame_width = frame_width - left_offset - right_offset;
+	
+	target_height  = dest_height - top_offset - bottom_offset;
+	target_frame_height = frame_height - top_offset - bottom_offset;
+	
+	/* draw the left top corner  and top row */
+	gdk_pixbuf_copy_area (frame_image, 0, 0, left_offset, top_offset, result_pixbuf, 0,  0);
+	draw_frame_row (frame_image, target_width, target_frame_width, 0, 0, result_pixbuf, left_offset, top_offset);
+	
+	/* draw the right top corner and left column */
+	gdk_pixbuf_copy_area (frame_image, frame_width - right_offset, 0, right_offset, top_offset, result_pixbuf, dest_width - right_offset,  0);
+	draw_frame_column (frame_image, target_height, target_frame_height, 0, 0, result_pixbuf, top_offset, left_offset);
+
+	/* draw the bottom right corner and bottom row */
+	gdk_pixbuf_copy_area (frame_image, frame_width - right_offset, frame_height - bottom_offset, right_offset, bottom_offset, result_pixbuf, dest_width - right_offset,  dest_height - bottom_offset);
+	draw_frame_row (frame_image, target_width, target_frame_width, frame_height - bottom_offset, dest_height - bottom_offset, result_pixbuf, left_offset, bottom_offset);
+		
+	/* draw the bottom left corner and the right column */
+	gdk_pixbuf_copy_area (frame_image, 0, frame_height - bottom_offset, left_offset, bottom_offset, result_pixbuf, 0,  dest_height - bottom_offset);
+	draw_frame_column (frame_image, target_height, target_frame_height, frame_width - right_offset, dest_width - right_offset, result_pixbuf, top_offset, right_offset);
+	
+	return result_pixbuf;
 }
 
 

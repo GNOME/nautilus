@@ -2409,7 +2409,7 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 				
 				/* embed the content image in the frame */
 				/* FIXME: the offset numbers are dependent on the frame image - we need to make them adjustable */
-				framed_image = nautilus_embed_image_in_frame (scaled_image, thumbnail_image_frame, 4, 4, 9, 7);
+				framed_image = nautilus_embed_image_in_frame (scaled_image, thumbnail_image_frame, 3, 3, 6, 6);
 				
 				gdk_pixbuf_unref (scaled_image);
 				gdk_pixbuf_unref (thumbnail_image_frame);

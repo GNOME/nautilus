@@ -1,3 +1,17 @@
+2000-08-01  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-graphic-effects.c:
+	(draw_frame_row), (draw_frame_column), (stretch_frame_image):
+	rewrote stretch_frame_image to stretch the frame properly, by repeating the
+	area between the corners, instead of stretching the whole pixmap, which made it
+	blurry and uneven.
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text):
+	(nautilus_icon_factory_make_thumbnails):
+	set the border parameters correctly for the thumbnail frames
+	slight improvement to fix from last check-in
+	* libnautilus-extensions/nautilus-icon-factory.c:
+
 2000-07-31  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:

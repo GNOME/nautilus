@@ -712,9 +712,6 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	}
 	g_strfreev (pieces);
 	
-	if (drawable != NULL)
-		gdk_gc_set_foreground (gc, &save_gc.foreground);
-	
 	if (needs_highlight) {
 		height_so_far += 2; /* extra slop for nicer highlighting */	
 		width_so_far += 4; /* account for emboldening, plus extra to make it look nicer */
@@ -728,6 +725,8 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		 */
 		g_assert (height_so_far == details->text_height);
 		g_assert (width_so_far == details->text_width);
+
+		gdk_gc_set_foreground (gc, &save_gc.foreground);
 	
 		box_left = icon_left + (icon_width - width_so_far) / 2;
 		
