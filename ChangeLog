@@ -1,3 +1,14 @@
+2001-03-02  John Harper  <jsh@eazel.com>
+
+	reviewed by: Gene Z. Ragan <gzr@eazel.com>
+
+	Fixed bug 6740 (GNOME Panel mini-icon is used in Sawfish, large
+	version needs to be there.):
+
+	* src/nautilus-window.c (nautilus_window_realize): call
+	gnome_window_icon_set_from_file () on the window, with the
+	image file whose base is `nautilus-launch-icon.png'
+
 2001-03-02  Pavel Cisler  <pavel@eazel.com>
 
 	Fix 7225 (emblem sorting locks up entire system for extended

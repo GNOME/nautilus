@@ -53,6 +53,7 @@
 #include <libgnomeui/gnome-geometry.h>
 #include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-uidefs.h>
+#include <libgnomeui/gnome-window-icon.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
@@ -993,6 +994,14 @@ nautilus_window_realize (GtkWidget *widget)
 			 */
 		}
         	g_free (filename);
+	}
+
+	/* Set the maxi icon */
+	filename = nautilus_pixmap_file ("nautilus-launch-icon.png");
+	if (filename != NULL) {
+		gnome_window_icon_set_from_file (GTK_WINDOW (widget),
+						 filename);
+		g_free (filename);
 	}
 
 	/* Notify the launcher that our window has been realized */
