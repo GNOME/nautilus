@@ -3,6 +3,7 @@ lib_LTLIBRARIES=libnautilus.la
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) $(GNOME_CFLAGS) $(GNORBA_CFLAGS) $(WERROR)
 
 nautilus_idl_sources=nautilus-stubs.c nautilus-skels.c nautilus.h nautilus-common.c
+fsextension_idl_sources=fsextension-stubs.c fsextension-skels.c fsextension-common.c fsextension.h
 BUILT_SOURCES=$(nautilus_idl_sources)
 
 libnautilusincludedir=$(includedir)/libnautilus
@@ -30,14 +31,20 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	gtkscrollframe.c			\
 	ntl-content-view-client.c		\
 	ntl-meta-view-client.c			\
-	ntl-view-client.c
+	ntl-view-client.c			\
+	$(fsextension_idl_sources)
 
 libnautilus_la_LDFLAGS=$(GNOME_LIBS) $(GNORBA_LIBS) $(GDK_PIXBUF_LIBS)
 
 $(nautilus_idl_sources): nautilus_idl_stamp
+$(fsextension_idl_sources): fsextension_idl_stamp
 
 nautilus_idl_stamp: $(top_srcdir)/idl/nautilus.idl
 	orbit-idl `gnome-config --cflags idl` $(top_srcdir)/idl/nautilus.idl
 	touch nautilus_idl_stamp
 
-CLEANFILES=nautilus_idl_stamp
+fsextension_idl_stamp: $(top_srcdir)/idl/fsextension.idl
+	orbit-idl `gnome-config --cflags idl` $(top_srcdir)/idl/fsextension.idl
+	touch fsextension_idl_stamp
+
+CLEANFILES=nautilus_idl_stamp fsextension_idl_stamp
