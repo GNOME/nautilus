@@ -1,3 +1,29 @@
+2000-09-20  Robey Pointer  <robey@eazel.com>
+
+	* components/services/trilobite/libtrilobite/trilobite-core-distrib
+	ution.c: (determine_turbolinux_version):
+
+	Add code to detect turbolinux version.
+	
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(nautilus_rpm_view_install_package_callback):
+	* components/services/install/lib/eazel-install-protocols.c:
+	(get_url_for_package), (get_search_url_for_package):
+
+	Don't set an RPM server in the RPM view.  Detect no-server in the
+	install lib and don't try to connect.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(uninstall_all_packages), (eazel_install_start_transaction):
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.
+	c: (trilobite_root_helper_destroy), (trilobite_root_helper_start),
+	(trilobite_root_helper_get_exit_code):
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.
+	h:
+
+	Fix result code of uninstall.  Try to check rpm child exitcode
+	(though this won't work under userhelper, thanks userhelper).
+	
 2000-09-20  Maciej Stachowiak  <mjs@eazel.com>
 
 	The following two NautilusDirectory fixes fix bugzilla.eazel.com

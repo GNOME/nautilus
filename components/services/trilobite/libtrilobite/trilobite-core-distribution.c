@@ -62,7 +62,31 @@
 static void
 determine_turbolinux_version (DistributionInfo *distinfo)
 {
-	g_assert_not_reached ();
+	FILE *f;
+	char buf[1024];
+	char *text, *v;
+	int version_major, version_minor;
+
+	/* contents, according to syke:
+	 * "release 6.0 English Server (Coyote)"
+	 */
+	f = fopen ("/etc/turbolinux-release", "rt");
+	g_return_if_fail (f != NULL);
+
+	fread ((char*)buf, 1023, 1, f);
+	fclose (f);
+	buf[1023] = 0;
+
+	text = strstr (buf, "release ");
+	if (text) {
+		text += 8;
+		v = g_strndup (text, 3);
+		sscanf (v, "%d.%d", &version_major, &version_minor);
+		g_free (v);
+		distinfo->version_major = version_major;
+		distinfo->version_minor = version_minor;
+		return;
+	}
 }
 
 static void

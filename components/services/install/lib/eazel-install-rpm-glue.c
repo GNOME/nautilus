@@ -429,7 +429,7 @@ static EazelInstallStatus
 uninstall_all_packages (EazelInstall *service,
 			GList *categories) 
 {
-	EazelInstallStatus result = EAZEL_INSTALL_NOTHING;
+	EazelInstallStatus result = EAZEL_INSTALL_UNINSTALL_OK;
 
 	while (categories) {
 		CategoryData* cat = categories->data;
@@ -440,8 +440,10 @@ uninstall_all_packages (EazelInstall *service,
 		failed = NULL;
 		eazel_uninstall_globber (service, &cat->packages, &failed);
 		eazel_install_free_package_system (service);
-		result |= eazel_install_start_transaction (service, 
-							   cat->packages);
+
+		if (eazel_install_start_transaction (service, cat->packages) != 0) {
+			result = EAZEL_INSTALL_NOTHING;
+		}
 
 		categories = g_list_next (categories);
 	}
@@ -1003,12 +1005,15 @@ int
 eazel_install_start_transaction (EazelInstall *service,
 				 GList* packages) 
 {
-#ifndef EAZEL_INSTALL_SLIM
+#ifdef EAZEL_INSTALL_SLIM
+	int child_pid, child_status;
+#else
 	TrilobiteRootHelper *root_helper;
-#endif /* EAZEL_INSTALL_SLIM */
+#endif
 	GList *args;
 	int fd;
 	int res;
+	int child_exitcode;
 	TrilobiteRootHelperStatus root_helper_stat;
 
 	if (g_list_length (packages) == 0) {
@@ -1069,12 +1074,18 @@ eazel_install_start_transaction (EazelInstall *service,
 			res = service->private->packsys.rpm.num_packages;
 		} 
 		/* start /bin/rpm... */
-		if (res==0 && trilobite_pexec ("/bin/rpm", argv, NULL, &fd, &useless_stderr)==0) {
+		if (res==0 &&
+		    (child_pid = trilobite_pexec ("/bin/rpm", argv, NULL, &fd, &useless_stderr))==0) {
 			g_warning ("Could not start rpm");
 			res = service->private->packsys.rpm.num_packages;
 		} else {
 			g_message (_("rpm running..."));
 		}
+
+		for (i = 0; argv[i]; i++) {
+			g_free (argv[i]);
+		}
+		g_free (argv);
 	}
 #else /* EAZEL_INSTALL_SLIM     */
 	if (res == 0) {
@@ -1092,6 +1103,7 @@ eazel_install_start_transaction (EazelInstall *service,
 		    TRILOBITE_ROOT_HELPER_SUCCESS) {
 			g_warning ("Error in running trilobite_root_helper");
 			res = service->private->packsys.rpm.num_packages;
+			trilobite_root_helper_destroy (GTK_OBJECT (root_helper));
 		}
 	}
 
@@ -1102,6 +1114,34 @@ eazel_install_start_transaction (EazelInstall *service,
 									    fd,
 								 (GIOFunc)eazel_install_monitor_process_pipe);
 		res = g_list_length (packages) - installed_packages;
+#ifdef EAZEL_INSTALL_SLIM
+		waitpid (child_pid, &child_status, 0);
+		if (WIFEXITED (child_status)) {
+			child_exitcode = WEXITSTATUS (child_status);
+		} else {
+			child_exitcode = -1;
+		}
+#else	/* EAZEL_INSTALL_SLIM */
+		/* this REALLY SUCKS -- but the exit code from userhelper is WORTHLESS! */
+		child_exitcode = 0;
+		/*
+		  child_exitcode = trilobite_root_helper_get_exit_code (root_helper);
+		*/
+		trilobite_root_helper_destroy (GTK_OBJECT (root_helper));
+#endif	/* EAZEL_INSTALL_SLIM */
+		trilobite_debug ("child exit code = %d", child_exitcode);
+		/* but first, do a sanity check:
+		 * if rpm returned 0 exit code, and we're uninstalling, it probably did them all.
+		 * (it doesn't tend to give any progress info on that stuff.)
+		 * if we think we succeeded, but rpm returned a non-zero exit code, we probably
+		 * actually failed.
+		 */
+		if (eazel_install_get_uninstall (service) && (child_exitcode == 0)) {
+			res = 0;
+		} else if ((child_exitcode != 0) && (res == 0)) {
+			res = g_list_length (packages);
+		}
+		trilobite_debug ("transaction status = %d", res);
 	}
 
 	g_list_foreach (args, (GFunc)g_free, NULL);

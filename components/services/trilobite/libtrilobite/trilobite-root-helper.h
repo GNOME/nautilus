@@ -88,6 +88,8 @@ struct _TrilobiteRootHelper
 	TrilobiteRootHelperState state;
 	int pipe_stdin;		/* pipe to/from the eazel-helper utility */
 	int pipe_stdout;
+	int pid;
+	int child_status;
 	GList *old_fd_list;	/* part of hack to avoid userhelper bug: fd's to close later */
 };
 
@@ -103,6 +105,8 @@ void trilobite_root_helper_destroy (GtkObject *object);
 TrilobiteRootHelperStatus trilobite_root_helper_start (TrilobiteRootHelper *root_helper);
 TrilobiteRootHelperStatus trilobite_root_helper_run (TrilobiteRootHelper *root_helper,
 						     TrilobiteRootHelperCommand command, GList *argv, int *fd);
+int trilobite_root_helper_get_exit_code (TrilobiteRootHelper *root_helper);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

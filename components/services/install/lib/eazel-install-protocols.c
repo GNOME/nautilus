@@ -686,6 +686,11 @@ get_url_for_package  (EazelInstall *service,
 	int length;
 
 	search_url = get_search_url_for_package (service, entry, data);
+	if (search_url == NULL) {
+		trilobite_debug ("No search URL");
+		return NULL;
+	}
+
 	trilobite_debug ("Search URL: %s", search_url);
 
 	trilobite_setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (FALSE, NULL), TRUE);
@@ -752,6 +757,10 @@ char* get_search_url_for_package (EazelInstall *service,
 {
 	char *url;
 	DistributionInfo dist;
+
+	if (! strlen (eazel_install_get_server (service))) {
+		return NULL;
+	}
 
 	url = g_strdup_printf ("http://%s:%d%s",
 			       eazel_install_get_server (service),

@@ -34,6 +34,8 @@
 #include <fcntl.h>
 #include <sys/poll.h>
 #include <sys/types.h>
+#include <sys/wait.h>
+#include <errno.h>
 #include <signal.h>
 #include <time.h>
 #include <gtk/gtk.h>
@@ -88,6 +90,13 @@ trilobite_root_helper_destroy (GtkObject *object)
 		close ((int)(iter->data));
 	}
 	g_list_free (root_helper->old_fd_list);
+
+	close (root_helper->pipe_stdin);
+	close (root_helper->pipe_stdout);
+	if (root_helper->pid) {
+		waitpid (root_helper->pid, NULL, 0);
+		root_helper->pid = 0;
+	}
 
 	/* call parent destructor */
 	if (GTK_OBJECT_CLASS (parent_class)->destroy) {
@@ -419,8 +428,6 @@ trilobite_root_helper_start (TrilobiteRootHelper *root_helper)
 			if (! try_again) {
 				trilobite_debug ("roothelper: not going to try again.");
 				/* then we fail. */
-				close (root_helper->pipe_stdout);
-				close (root_helper->pipe_stdin);
 				goto failed;
 			} else {
 				g_free (password);
@@ -443,10 +450,15 @@ trilobite_root_helper_start (TrilobiteRootHelper *root_helper)
 connected:
 	g_free (password);
 	root_helper->state = TRILOBITE_ROOT_HELPER_STATE_CONNECTED;
+	root_helper->pid = child_pid;
 	return TRILOBITE_ROOT_HELPER_SUCCESS;
 
 failed:
 	g_free (password);
+	close (root_helper->pipe_stdout);
+	close (root_helper->pipe_stdin);
+	root_helper->pipe_stdin = root_helper->pipe_stdout = -1;
+	waitpid (child_pid, NULL, 0);
 	root_helper->state = TRILOBITE_ROOT_HELPER_STATE_NEW;
 	return err;
 }
@@ -575,3 +587,27 @@ trilobite_root_helper_run (TrilobiteRootHelper *root_helper, TrilobiteRootHelper
 	}
 }
 
+int
+trilobite_root_helper_get_exit_code (TrilobiteRootHelper *root_helper)
+{
+	int status = 0;
+
+	g_return_val_if_fail (root_helper != NULL, -1);
+	g_return_val_if_fail (TRILOBITE_IS_ROOT_HELPER (root_helper), -1);
+
+	if (root_helper->pid) {
+		trilobite_debug (">>> waiting on pid %d", root_helper->pid);
+		while ((waitpid (root_helper->pid, &status, 0) == -1) && (errno == EINTR))
+			;
+		root_helper->pid = 0;
+		trilobite_debug (">>> status = %d", status);
+		if (WIFEXITED (status)) {
+			root_helper->child_status = WEXITSTATUS (status);
+		} else {
+			root_helper->child_status = -1;
+		}
+	}
+
+	trilobite_debug (">>> returning %d", root_helper->child_status);
+	return root_helper->child_status;
+}

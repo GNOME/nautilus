@@ -28,6 +28,10 @@
 #include <libtrilobite/libtrilobite.h>
 #include "nautilus-rpm-view-private.h"
 
+/* don't try to access a remote server for install */
+#define DEFAULT_SERVICES_HOST	""
+#define DEFAULT_SERVICES_PORT	80
+
 #define OAF_ID "OAFIID:trilobite_eazel_install_service:8ff6e815-1992-437c-9771-d932db3b4a17"
 
 static void 
@@ -392,8 +396,8 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 	rpm_view->details->root_client = set_root_client (eazel_install_callback_bonobo (cb), rpm_view);
 	
 	Trilobite_Eazel_Install__set_protocol (eazel_install_callback_corba_objref (cb), Trilobite_Eazel_PROTOCOL_HTTP, &ev);
-	Trilobite_Eazel_Install__set_server (eazel_install_callback_corba_objref (cb), "testmachine.eazel.com", &ev);
-	Trilobite_Eazel_Install__set_server_port (eazel_install_callback_corba_objref (cb), 80, &ev);
+	Trilobite_Eazel_Install__set_server (eazel_install_callback_corba_objref (cb), DEFAULT_SERVICES_HOST, &ev);
+	Trilobite_Eazel_Install__set_server_port (eazel_install_callback_corba_objref (cb), DEFAULT_SERVICES_PORT, &ev);
 	Trilobite_Eazel_Install__set_tmp_dir (eazel_install_callback_corba_objref (cb), "/tmp", &ev);
 
 	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", nautilus_rpm_view_download_progress_signal, rpm_view);
