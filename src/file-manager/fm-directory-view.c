@@ -556,9 +556,27 @@ open_callback (BonoboUIComponent *component, gpointer callback_data, const char 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
 	selection = fm_directory_view_get_selection (view);
-	fm_directory_view_activate_files (view, selection, Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE, 0);
+	fm_directory_view_activate_files (view, selection,
+					  Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE,
+					  0);
 	nautilus_file_list_free (selection);
 }
+
+static void
+open_close_parent_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
+{
+	GList *selection;
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	selection = fm_directory_view_get_selection (view);
+	fm_directory_view_activate_files (view, selection,
+					  Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE,
+					  Nautilus_ViewFrame_OPEN_FLAG_CLOSE_BEHIND);
+	nautilus_file_list_free (selection);
+}
+
 
 static void
 open_alternate_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
@@ -4845,6 +4863,7 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("New Launcher", new_launcher_callback),
 		BONOBO_UI_VERB ("Open Scripts Folder", open_scripts_folder_callback),
 		BONOBO_UI_VERB ("Open", open_callback),
+		BONOBO_UI_VERB ("OpenCloseParent", open_close_parent_callback),
 		BONOBO_UI_VERB ("OpenAlternate", open_alternate_callback),
 		BONOBO_UI_VERB ("OtherApplication", other_application_callback),
 		BONOBO_UI_VERB ("OtherViewer", other_viewer_callback),

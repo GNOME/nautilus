@@ -80,6 +80,7 @@ struct FMListViewDetails {
 	int drag_y;
 
 	gboolean drag_started;
+	gboolean row_selected_on_button_down;
 };
 
 /*
@@ -161,11 +162,18 @@ activate_selected_items (FMListView *view)
 }
 
 static void
-activate_selected_items_alternate (FMListView *view)
+activate_selected_items_alternate (FMListView *view,
+				   NautilusFile *file)
 {
 	GList *file_list;
-	
-	file_list = fm_list_view_get_selection (FM_DIRECTORY_VIEW (view));
+
+
+	if (file != NULL) {
+		nautilus_file_ref (file);
+		file_list = g_list_prepend (NULL, file);
+	} else {
+		file_list = fm_list_view_get_selection (FM_DIRECTORY_VIEW (view));
+	}
 	fm_directory_view_activate_files (FM_DIRECTORY_VIEW (view),
 					  file_list,
 					  Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE,
@@ -193,12 +201,17 @@ fm_list_view_did_not_drag (FMListView *view,
 
 	if (gtk_tree_view_get_path_at_pos (tree_view, event->x, event->y,
 					   &path, NULL, NULL, NULL)) {
-		if((event->button == 1 || event->button == 2)
-		   && (click_policy_auto_value == NAUTILUS_CLICK_POLICY_DOUBLE)
-		   && gtk_tree_selection_path_is_selected (selection, path)
-		   && !button_event_modifies_selection (event)) {
-			gtk_tree_selection_unselect_all (selection);
-			gtk_tree_selection_select_path (selection, path);
+		if ((event->button == 1 || event->button == 2)
+		    && ((event->state & GDK_CONTROL_MASK) != 0 ||
+			(event->state & GDK_SHIFT_MASK) == 0)
+		    && view->details->row_selected_on_button_down
+		    && (click_policy_auto_value == NAUTILUS_CLICK_POLICY_DOUBLE)) {
+			if (!button_event_modifies_selection (event)) {
+				gtk_tree_selection_unselect_all (selection);
+				gtk_tree_selection_select_path (selection, path);
+			} else {
+				gtk_tree_selection_unselect_path (selection, path);
+			}
 		}
 
 		if ((click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE)
@@ -206,7 +219,7 @@ fm_list_view_did_not_drag (FMListView *view,
 			if (event->button == 1) {
 				activate_selected_items (view);
 			} else if (event->button == 2) {
-				activate_selected_items_alternate (view);
+				activate_selected_items_alternate (view, NULL);
 			}
 		}
 		gtk_tree_path_free (path);
@@ -436,6 +449,7 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 		return TRUE;
 	}
 
+	
 	call_parent = TRUE;
 	allow_drag = FALSE;
 	if (gtk_tree_view_get_path_at_pos (tree_view, event->x, event->y,
@@ -448,15 +462,26 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 			view->details->double_click_path[1] = view->details->double_click_path[0];
 			view->details->double_click_path[0] = gtk_tree_path_copy (path);
 		}
-		
 		if (event->type == GDK_2BUTTON_PRESS) {
+			/* Double clicking does not trigger a D&D action. */
+			view->details->drag_button = 0;
+			call_parent = TRUE;
 			if (view->details->double_click_path[1] &&
-			    gtk_tree_path_compare (view->details->double_click_path[0], view->details->double_click_path[1]) == 0
-			    && !button_event_modifies_selection (event)) {
-				if ((event->button == 1 || event->button == 3)) {
-					activate_selected_items (view);
-				} else if (event->button == 2) {
-					activate_selected_items_alternate (view);
+			    gtk_tree_path_compare (view->details->double_click_path[0], view->details->double_click_path[1]) == 0) {
+				if (!button_event_modifies_selection (event)) {
+					if ((event->button == 1 || event->button == 3)) {
+						activate_selected_items (view);
+					} else if (event->button == 2) {
+						activate_selected_items_alternate (view, NULL);
+					}
+				} else if (event->button == 1 &&
+					   (event->state & GDK_SHIFT_MASK) != 0) {
+					NautilusFile *file;
+					file = fm_list_model_file_for_path (view->details->model, path);
+					if (file != NULL) {
+						activate_selected_items_alternate (view, file);
+						nautilus_file_unref (file);
+					}
 				}
 			}
 		}
@@ -471,19 +496,26 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 			call_parent = FALSE;
 		} 
 
-		if(!button_event_modifies_selection (event) &&
-		   (event->button == 1 || event->button == 2) &&
-		   gtk_tree_selection_path_is_selected (selection, path)) {
-			call_parent = FALSE;
+		if ((event->button == 1 || event->button == 2) &&
+		    ((event->state & GDK_CONTROL_MASK) != 0 ||
+		     (event->state & GDK_SHIFT_MASK) == 0)) {
+			view->details->row_selected_on_button_down = gtk_tree_selection_path_is_selected (selection, path);
+			if (view->details->row_selected_on_button_down) {
+				call_parent = FALSE;
+			} else if  ((event->state & GDK_CONTROL_MASK) != 0) {
+				call_parent = FALSE;
+				gtk_tree_selection_select_path (selection, path);
+			}
 		}
 
 		if (call_parent) {
 			tree_view_class->button_press_event (widget, event);
 		} else if (gtk_tree_selection_path_is_selected (selection, path)) {
-			gtk_widget_grab_focus(widget);
+			gtk_widget_grab_focus (widget);
 		}
 
-		if (event->button == 1 || event->button == 2) {
+		if ((event->button == 1 || event->button == 2) &&
+		    event->type == GDK_BUTTON_PRESS) {
 			view->details->drag_started = FALSE;
 			view->details->drag_button = event->button;
 			view->details->drag_x = event->x;
@@ -496,6 +528,14 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 
 		gtk_tree_path_free (path);
 	} else {
+		if ((event->button == 1 || event->button == 2)  && 
+		    event->type == GDK_BUTTON_PRESS) {
+			if (view->details->double_click_path[1]) {
+				gtk_tree_path_free (view->details->double_click_path[1]);
+			}
+			view->details->double_click_path[1] = view->details->double_click_path[0];
+			view->details->double_click_path[0] = NULL;
+		}
 		/* Deselect if people click outside any row. It's OK to
 		   let default code run; it won't reselect anything. */
 		gtk_tree_selection_unselect_all (gtk_tree_view_get_selection (tree_view));

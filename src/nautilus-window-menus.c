@@ -352,7 +352,7 @@ go_menu_up_callback (BonoboUIComponent *component,
 		     gpointer user_data, 
 		     const char *verb) 
 {
-	nautilus_window_go_up (NAUTILUS_WINDOW (user_data));
+	nautilus_window_go_up (NAUTILUS_WINDOW (user_data), FALSE);
 }
 
 static void

@@ -1,3 +1,38 @@
+2003-12-12  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	Range selection
+	Clear last double click icon if you click on background
+	Don't swallow alt-up
+	Ignore tripple clicks
+	Shift-double-click is open-close-parent (of the clicked icon only)
+	
+	* libnautilus-private/nautilus-icon-private.h:
+	Add range_selection_base_icon to icon container
+	
+	* src/file-manager/fm-directory-view.c:
+	handle shift-alt-down
+	
+	* src/file-manager/fm-list-model.c:
+	Implement fm_list_model_file_for_path
+	
+	* src/file-manager/fm-list-view.c:
+	Sync behaviour with icon view.
+	Allow shift-doubleclick
+	
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/nautilus-spatial-window-ui.xml:
+	* src/nautilus-spatial-window.c:
+	Add alt-shift-up keybinding
+	
+	* src/nautilus-window-manage-views.c:
+	* src/nautilus-window-manage-views.h:
+	* src/nautilus-window-menus.c: (go_menu_up_callback):
+	* src/nautilus-window.c: (nautilus_window_go_up):
+	* src/nautilus-window.h:
+	Support for alt-shift-up
+	
+
 2003-12-11  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-dnd.c

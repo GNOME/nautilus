@@ -691,6 +691,23 @@ fm_list_model_clear (FMListModel *model)
 	}
 }
 
+NautilusFile *
+fm_list_model_file_for_path (FMListModel *model, GtkTreePath *path)
+{
+	NautilusFile *file;
+	GtkTreeIter iter;
+
+	file = NULL;
+	if (gtk_tree_model_get_iter (GTK_TREE_MODEL (model), 
+				     &iter, path)) {
+		gtk_tree_model_get (GTK_TREE_MODEL (model), 
+				    &iter, 
+				    FM_LIST_MODEL_FILE_COLUMN, &file,
+				    -1);
+	}
+	return file;
+}
+
 void
 fm_list_model_set_should_sort_directories_first (FMListModel *model, gboolean sort_directories_first)
 {
