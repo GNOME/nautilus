@@ -82,6 +82,7 @@ nautilus-notes \
 nautilus-rpm-view \
 nautilus-sample-content-view \
 nautilus-service-startup-view \
+nautilus-summary-view \
 nautilus-sidebar-loser \
 nautilus-tree-view \
 nautilus-image-view \
