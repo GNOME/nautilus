@@ -313,7 +313,7 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 		
 		if (thumbnails != NULL) {
 			if (g_list_find_custom (thumbnails, info, compare_thumbnail_info) == NULL) {
-				thumbnails = g_list_prepend (thumbnails, info);
+				thumbnails = g_list_append (thumbnails, info);
 			}
 		} else {
 			thumbnails = g_list_alloc ();
@@ -361,8 +361,7 @@ check_for_thumbnails (void)
 		/* if a thumbnail wasn't successfully made, use the "broken image" icon */
 		need_update = TRUE;
 		if (!vfs_file_exists (current_thumbnail)) {
-			/* we don't have a real "broken image" icon yet, so use a generic one for now */
-			image_path = nautilus_theme_get_image_path ("gnome-image-generic");
+			image_path = nautilus_theme_get_image_path ("i-broken-image");
 			broken_image = gdk_pixbuf_new_from_file (image_path);
 			
 			if (broken_image != NULL) {

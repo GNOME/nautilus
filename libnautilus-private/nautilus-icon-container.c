@@ -594,8 +594,11 @@ get_icon_space_width (NautilusIconContainer *container, const ArtDRect *bounds)
 	double world_width;
 
 	world_width = ICON_PAD_LEFT + (bounds->x1 - bounds->x0) + ICON_PAD_RIGHT;
-
-	if (container->details->tighter_layout || world_width > STANDARD_ICON_GRID_WIDTH)
+	if (container->details->tighter_layout) {
+		return world_width + 8; /* 8 pixels extra for fancy selection box */
+	}
+	
+	if (world_width > STANDARD_ICON_GRID_WIDTH)
 		return world_width;
 	
 	return STANDARD_ICON_GRID_WIDTH;

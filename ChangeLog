@@ -1,3 +1,21 @@
+2000-10-04  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(get_icon_space_width):
+	fixed problem Arlo found where tighter layout mode causes the
+	selection boxes of adjacent icons to overlap, by giving a little
+	extra space in tighter layout mode.
+	
+	* libnautilus-extensions/nautilus-thumbnails.c:
+	(nautilus_get_thumbnail_uri), (check_for_thumbnails):
+	`made thumbnails update in raster order, instead of reverse order
+	like it was doing, by using glist_append instead of glist_prepend;
+	also, made it use the real "broken image" icon.
+	
+	* icons/Makefile.am:
+	* icons/i-broken-image.png:
+	added image from Susan to use as "thumbnailing failed" image
+	
 2000-10-04  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-metadata.c:

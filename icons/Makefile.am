@@ -123,6 +123,7 @@ icon_DATA =\
 	i-bookmark.png \
 	i-bookmark-missing-20.png \
 	i-bookmark-missing.png \
+	i-broken-image.png \
 	i-cdrom.png \
 	i-chardev.png \
 	i-core.png \
