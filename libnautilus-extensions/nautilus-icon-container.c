@@ -2548,10 +2548,11 @@ hit_test_item (NautilusIconCanvasItem *icon_item, GdkEventButton *event)
 	HitType hit_type;
 	int emblem_index;
 	
-	world_rect.x0 = event->x;
-	world_rect.y0 = event->y;
+	gnome_canvas_window_to_world (GNOME_CANVAS_ITEM (icon_item)->canvas, event->x, event->y,
+					&world_rect.x0, &world_rect.y0);
 	world_rect.x1 = world_rect.x0 + 1.0;
 	world_rect.y1 = world_rect.y0 + 1.0;
+	
 	eel_gnome_canvas_world_to_canvas_rectangle
 		(GNOME_CANVAS_ITEM (icon_item)->canvas, &world_rect, &canvas_rect);
 	

@@ -68,7 +68,7 @@ enum {
 	ARG_WIDTH_UNITS
 };
 
-#define ANNOTATION_WIDTH 240
+#define ANNOTATION_MAX_WIDTH 240
 #define DEFAULT_FONT_SIZE 12
 #define LINE_BREAK_CHARACTERS " -_,;.?/&"
 
@@ -305,11 +305,13 @@ static void
 nautilus_canvas_note_item_set_note_text (NautilusCanvasNoteItem *note_item, const char *new_text)
 {
 	char *display_text;
-	int total_width, height, width, font_height;
+	int text_width, height, width;
+	int font_height;
 	GnomeCanvasItem *item;
 	EelScalableFont *scalable_font;
 	GdkFont *font;
 	EelDimensions dimensions;
+	EelSmoothTextLayout *smooth_text_layout;
 	
 	item = GNOME_CANVAS_ITEM (note_item);
 	
@@ -326,23 +328,28 @@ nautilus_canvas_note_item_set_note_text (NautilusCanvasNoteItem *note_item, cons
 	
 	if (item->canvas->aa) {
 		scalable_font = eel_scalable_font_get_default_font ();
-		dimensions = eel_scalable_font_measure_text (scalable_font,
-								  DEFAULT_FONT_SIZE, 
-								  display_text, 
-								  strlen (display_text));
-		total_width = dimensions.width + 8;
-		height = dimensions.height * (1 + (total_width / ANNOTATION_WIDTH));
+		
+		
+		smooth_text_layout = eel_smooth_text_layout_new (
+				display_text, strlen(display_text),
+				scalable_font, DEFAULT_FONT_SIZE, TRUE);
+	
+		dimensions = eel_smooth_text_layout_get_dimensions (smooth_text_layout);
+		text_width = dimensions.width + 8;
+		height = dimensions.height + 4;
 		height += ARROW_HEIGHT;
 		gtk_object_unref (GTK_OBJECT (scalable_font));
+		gtk_object_destroy (GTK_OBJECT (smooth_text_layout));
+
 	} else {
 		font = nautilus_font_factory_get_font_from_preferences (DEFAULT_FONT_SIZE);				
-		total_width = 8 + gdk_text_measure (font, display_text, strlen (display_text));
+		text_width = 8 + gdk_text_measure (font, display_text, strlen (display_text));
 		font_height = gdk_text_height (font, display_text, strlen (display_text));
-		height =  font_height * (1 + (total_width / ANNOTATION_WIDTH));
+		height =  font_height * (1 + (text_width / ANNOTATION_MAX_WIDTH));
 		gdk_font_unref (font);
 	}
 	
-	width = (total_width < ANNOTATION_WIDTH) ? total_width : ANNOTATION_WIDTH;
+	width = (text_width < ANNOTATION_MAX_WIDTH) ? text_width : ANNOTATION_MAX_WIDTH;
 	
 	/* add some vertical slop for descenders and incorporate scale factor */
 	note_item->x2 = floor (note_item->x1 + (width / item->canvas->pixels_per_unit) + .5);
