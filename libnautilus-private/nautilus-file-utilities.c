@@ -198,6 +198,8 @@ nautilus_handle_trailing_slashes (const char *uri)
 	gboolean previous_chars_are_slashes_with_column;
 	gboolean is_local_scheme;
 
+	g_assert (uri != NULL);
+
 	uri_copy = g_strdup (uri);
 	if (strlen (uri_copy) <= 2) {
 		return uri_copy;
@@ -257,6 +259,10 @@ char *
 nautilus_make_uri_canonical (const char *uri)
 {
 	char *canonical_uri, *old_uri, *p;
+
+	if (uri == NULL) {
+		return NULL;
+	}
 
 	/* Convert "gnome-trash:<anything>" and "trash:<anything>" to
 	 * "trash:".

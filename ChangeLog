@@ -1,3 +1,14 @@
+2000-10-17  John Sullivan  <sullivan@eazel.com>
+
+	Fixed NULL dereference bug Eli was running into in the
+	location bar.
+
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_handle_trailing_slashes): added assert that
+	parameter is not NULL
+	(nautilus_make_uri_canonical): Handle NULL up front,
+	to avoid dereferencing it later.
+
 2000-10-17  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c: (icon_free),
