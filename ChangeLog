@@ -1,3 +1,15 @@
+2004-10-18  Marco Pesenti Gritti  <marco@gnome.org>
+
+	reviewed by: Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-navigation-window-ui.xml:
+	* src/nautilus-window-toolbars.c:
+	(nautilus_navigation_window_initialize_toolbars):
+
+	Work around pack-ends no more working in libbonoboui
+	by putting an expanded event box before the
+	throbber
+
 2004-10-15  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-program-choosing.c (nautilus_launch_show_file):

@@ -42,7 +42,7 @@
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-string.h>
-#include <gtk/gtkframe.h>
+#include <gtk/gtklabel.h>
 #include <gtk/gtktogglebutton.h>
 #include <gdk/gdkkeysyms.h>
 #include <libgnome/gnome-i18n.h>
@@ -357,6 +357,8 @@ nautilus_navigation_window_activate_throbber (NautilusNavigationWindow *window)
 void
 nautilus_navigation_window_initialize_toolbars (NautilusNavigationWindow *window)
 {
+	GtkWidget *space;
+
 	nautilus_window_ui_freeze (NAUTILUS_WINDOW (window));
 
 	nautilus_navigation_window_activate_throbber (window);
@@ -367,6 +369,13 @@ nautilus_navigation_window_initialize_toolbars (NautilusNavigationWindow *window
 	window->details->forward_button_item = create_back_or_forward_toolbar_item 
 		(window, _("Go forward a number of pages"),
 		 "/Toolbar/ForwardMenu");
+
+	space = gtk_event_box_new ();
+	gtk_event_box_set_visible_window (GTK_EVENT_BOX (space), FALSE);
+	bonobo_ui_component_widget_set (NAUTILUS_WINDOW (window)->details->shell_ui,
+					"/Toolbar/SpaceWrapper",
+					space,
+					NULL);
 
 	nautilus_window_ui_thaw (NAUTILUS_WINDOW (window));
 }
