@@ -828,7 +828,7 @@ write_browser_xml (NautilusPropertyBrowser *property_browser,
 	char *user_directory, *path;
 
 	user_directory = nautilus_get_user_directory ();	
-	path = nautilus_make_path (user_directory, property_browser->details->path);
+	path = g_build_filename (user_directory, property_browser->details->path, NULL);
 	g_free (user_directory);
 	xmlSaveFile (path, document);
 	g_free (path);
@@ -1125,10 +1125,10 @@ add_pattern_to_browser (const char *path_name, gpointer *data)
 	user_directory = nautilus_get_user_directory ();
 		
 	/* copy the image file to the patterns directory */
-	directory_path = nautilus_make_path (user_directory, "patterns");
+	directory_path = g_build_filename (user_directory, "patterns", NULL);
 	g_free (user_directory);
 	source_file_name = strrchr (path_name, '/');
-	destination_name = nautilus_make_path (directory_path, source_file_name + 1);
+	destination_name = g_build_filename (directory_path, source_file_name + 1, NULL);
 
 	/* make the directory if it doesn't exist */
 	if (!g_file_test(directory_path, G_FILE_TEST_EXISTS)) {
@@ -1392,8 +1392,9 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 			user_directory = nautilus_get_user_directory ();
 
 			/* get the path for emblems in the user's home directory */
-			directory_path = nautilus_make_path (user_directory,
-							     "emblems");
+			directory_path = g_build_filename (user_directory,
+							   "emblems",
+							   NULL);
 			g_free (user_directory);
 
 			/* make the directory if it doesn't exist */

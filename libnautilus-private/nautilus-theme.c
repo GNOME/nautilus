@@ -109,7 +109,7 @@ load_theme_document (const char *theme_name)
 	if (theme_path == NULL) {
 		user_themes_directory = nautilus_theme_get_user_themes_directory ();
 		temp_str = g_strdup_printf("%s/%s.xml", theme_name, theme_name);
-		theme_path = nautilus_make_path (user_themes_directory, temp_str);
+		theme_path = g_build_filename (user_themes_directory, temp_str, NULL);
 		
 		g_free (user_themes_directory);
 		g_free (temp_str);
@@ -209,7 +209,7 @@ nautilus_pixmap_file_may_be_local (const char *themed_image)
 	if (image_path == NULL) {
 		user_themes_directory = nautilus_theme_get_user_themes_directory ();
 		
-		image_path = nautilus_make_path (user_themes_directory, themed_image);
+		image_path = g_build_filename (user_themes_directory, themed_image, NULL);
 		if (!g_file_test (image_path, G_FILE_TEST_EXISTS)) {
 			g_free (image_path);
 			image_path = NULL;
@@ -306,7 +306,7 @@ nautilus_theme_make_preview_pixbuf (const char *theme_name)
 	} else {
 		/* try the user directory */
 		user_themes_directory = nautilus_theme_get_user_themes_directory ();
-		pixbuf_file = nautilus_make_path (user_themes_directory, theme_preview_name);
+		pixbuf_file = g_build_filename (user_themes_directory, theme_preview_name, NULL);
 		g_free (user_themes_directory);
 		
 		if (g_file_test (pixbuf_file, G_FILE_TEST_EXISTS)) {
@@ -335,13 +335,13 @@ nautilus_theme_make_preview_pixbuf (const char *theme_name)
 	if (pixbuf_file == NULL) {
 		user_themes_directory = nautilus_theme_get_user_themes_directory ();
 		theme_preview_name = g_strdup_printf ("%s/i-directory.png", theme_name);
-		pixbuf_file = nautilus_make_path (user_themes_directory, theme_preview_name);
+		pixbuf_file = g_build_filename (user_themes_directory, theme_preview_name, NULL);
 		g_free (theme_preview_name);
 		
 		if (!g_file_test (pixbuf_file, G_FILE_TEST_EXISTS)) {
 			g_free (pixbuf_file);
 			theme_preview_name = g_strdup_printf ("%s/i-directory.svg", theme_name);
-			pixbuf_file = nautilus_make_path (user_themes_directory, theme_preview_name);
+			pixbuf_file = g_build_filename (user_themes_directory, theme_preview_name, NULL);
 			g_free (theme_preview_name);
 		
 			if (!g_file_test (pixbuf_file, G_FILE_TEST_EXISTS)) {
@@ -518,7 +518,7 @@ theme_list_prepend (GList *theme_list,
 	
 	attributes = g_new0 (ThemeAttibutes, 1);
 	attributes->name = g_strdup (theme_name);
-	attributes->path = nautilus_make_path (themes_location_uri, theme_name);
+	attributes->path = g_build_filename (themes_location_uri, theme_name, NULL);
 
 	unscaled_preview_pixbuf = nautilus_theme_make_preview_pixbuf (theme_name);
 	attributes->preview_pixbuf = eel_gdk_pixbuf_scale_down_to_fit (unscaled_preview_pixbuf,
@@ -682,7 +682,7 @@ nautilus_theme_get_user_themes_directory (void)
 	char *user_themes_directory;
 
 	user_directory = nautilus_get_user_directory ();
-	user_themes_directory = nautilus_make_path (user_directory, "themes");
+	user_themes_directory = g_build_filename (user_directory, "themes", NULL);
 	g_free (user_directory);
 
 	return user_themes_directory;
@@ -700,7 +700,7 @@ nautilus_theme_remove_user_theme (const char *theme_to_remove_name)
 	g_return_val_if_fail (theme_to_remove_name != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
 
 	user_themes_directory = nautilus_theme_get_user_themes_directory ();
-	theme_to_remove_path = nautilus_make_path (user_themes_directory, theme_to_remove_name);
+	theme_to_remove_path = g_build_filename (user_themes_directory, theme_to_remove_name, NULL);
 	g_free (user_themes_directory);
 	
 	uri_list = g_list_prepend (NULL, gnome_vfs_uri_new (theme_to_remove_path));			
@@ -809,7 +809,7 @@ nautilus_theme_install_user_theme (const char *theme_to_install_path)
 	
 	theme_name = eel_uri_get_basename (theme_to_install_path);
 	g_return_val_if_fail (theme_name != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
-	theme_destination_path = nautilus_make_path (user_themes_directory, theme_name);
+	theme_destination_path = g_build_filename (user_themes_directory, theme_name, NULL);
 	theme_xml_path = g_strdup_printf ("%s/%s.xml",
 					  theme_to_install_path,
 					  theme_name);

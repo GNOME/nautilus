@@ -751,8 +751,8 @@ is_theme_in_user_directory (const char *theme_name)
 	}
 	
 	user_directory = nautilus_get_user_directory ();
-	themes_directory = nautilus_make_path (user_directory, "themes");
-	this_theme_directory = nautilus_make_path (themes_directory, theme_name);
+	themes_directory = g_build_filename (user_directory, "themes", NULL);
+	this_theme_directory = g_build_filename (themes_directory, theme_name, NULL);
 	
 	result = g_file_test (this_theme_directory, G_FILE_TEST_EXISTS);
 	

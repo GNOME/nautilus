@@ -42,7 +42,7 @@ nautilus_set_first_time_file_flag (void)
 		  "You can manually erase this file to present the druid again.\n");
 	
 	user_directory = nautilus_get_user_directory ();
-	druid_flag_file_name = nautilus_make_path (user_directory, "first-time-flag");
+	druid_flag_file_name = g_build_filename (user_directory, "first-time-flag", NULL);
 	g_free (user_directory);
 		
 	stream = fopen (druid_flag_file_name, "w");

@@ -338,8 +338,9 @@ create_starthere_link_callback (gpointer data)
 	
 	/* Create default services icon on the desktop */
 	desktop_path = nautilus_get_desktop_directory ();
-	desktop_link_file = nautilus_make_path (desktop_path,
-						"starthere.desktop");
+	desktop_link_file = g_build_filename (desktop_path,
+					      "starthere.desktop",
+					      NULL);
 
 	cmd = g_strconcat ("/bin/cp ",
 			   NAUTILUS_DATADIR,

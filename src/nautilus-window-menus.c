@@ -843,7 +843,7 @@ get_static_bookmarks_file_path (void)
 	g_free (user_directory_path);
 	
 	/* get the mod date of the built-in static bookmarks file */
-	built_in_xml_file_path = nautilus_make_path (NAUTILUS_DATADIR, STATIC_BOOKMARKS_FILE_NAME);
+	built_in_xml_file_path = g_build_filename (NAUTILUS_DATADIR, STATIC_BOOKMARKS_FILE_NAME, NULL);
 	built_in_exists = g_file_test (built_in_xml_file_path, G_FILE_TEST_EXISTS);
 	
 	/* if we only have one file, return its path as the one to use */

@@ -1032,7 +1032,7 @@ fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor *trash_m
 {
 	char *path;
 
-	path = nautilus_make_path (desktop_directory, TRASH_LINK_NAME);
+	path = g_build_filename (desktop_directory, TRASH_LINK_NAME, NULL);
 
 	nautilus_link_local_set_icon (path, state ? "trash-empty" : "trash-full");
 
@@ -1080,7 +1080,7 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor,
 		return;
 	}
 	
-	link_path = nautilus_make_path (desktop_directory, volume_name);
+	link_path = g_build_filename (desktop_directory, volume_name, NULL);
 	unlink_and_notify (link_path);
 
 	g_free (volume_name);
@@ -1115,7 +1115,7 @@ update_link_and_delete_copies (gboolean (*is_link_function) (const char *path),
 	found_link = FALSE;
 
 	while ((dir_entry = readdir (dir)) != NULL) {
-		link_path = nautilus_make_path (desktop_directory, dir_entry->d_name);
+		link_path = g_build_filename (desktop_directory, dir_entry->d_name, NULL);
 		if ((* is_link_function) (link_path)) {
 			if (!found_link &&
 			     (link_name == NULL || strcmp (dir_entry->d_name, link_name) == 0)) {

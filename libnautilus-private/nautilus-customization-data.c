@@ -295,8 +295,9 @@ get_global_customization_uri (const char *customization_name)
 {
 	char *directory_path, *directory_uri;
 	
-	directory_path = nautilus_make_path (NAUTILUS_DATADIR,
-					     customization_name);
+	directory_path = g_build_filename (NAUTILUS_DATADIR,
+					   customization_name,
+					   NULL);
 	directory_uri = gnome_vfs_get_uri_from_local_path (directory_path);
 	
 	g_free (directory_path);
@@ -320,8 +321,9 @@ get_private_customization_uri (const char *customization_name)
 	char *directory_path, *directory_uri;
 
 	user_directory = nautilus_get_user_directory ();
-	directory_path = nautilus_make_path (user_directory,
-					     customization_name);
+	directory_path = g_build_filename (user_directory,
+					   customization_name,
+					   NULL);
 	g_free (user_directory);
 	directory_uri = gnome_vfs_get_uri_from_local_path (directory_path);
 	g_free (directory_path);
@@ -342,7 +344,7 @@ get_file_path_for_mode (const NautilusCustomizationData *data,
 		directory_uri = get_private_customization_uri (data->customization_name);
 	}
 	
-	uri = nautilus_make_path (directory_uri, file_name);
+	uri = g_build_filename (directory_uri, file_name, NULL);
 	g_free (directory_uri);
 	directory_name = gnome_vfs_get_local_path_from_uri (uri);
 	g_free (uri);
@@ -468,7 +470,7 @@ load_name_map_hash_table (NautilusCustomizationData *data)
 	data->name_map_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	
 	/* build the path name to the browser.xml file and load it */
-	xml_path = nautilus_make_path (NAUTILUS_DATADIR, "browser.xml");
+	xml_path = g_build_filename (NAUTILUS_DATADIR, "browser.xml", NULL);
 	if (xml_path) {
 		browser_data = xmlParseFile (xml_path);
 		g_free (xml_path);

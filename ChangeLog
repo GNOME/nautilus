@@ -1,3 +1,25 @@
+2002-07-08  Gregory Merchan  <merchan@phys.lsu.edu>
+	* components/music/nautilus-music-view.c
+	* components/news/nautilus-news.c
+	* libnautilus-private/nautilus-customization-data.c
+	* libnautilus-private/nautilus-directory-async.c
+	* libnautilus-private/nautilus-file-utilities.c
+	* libnautilus-private/nautilus-file-utilities.h
+	* libnautilus-private/nautilus-find-icon-image.c
+	* libnautilus-private/nautilus-icon-factory.c
+	* libnautilus-private/nautilus-link-historical.c
+	* libnautilus-private/nautilus-theme.c
+	* src/nautilus-application.c
+	* src/nautilus-bookmark-list.c
+	* src/nautilus-first-time-druid.c
+	* src/nautilus-property-browser.c
+	* src/nautilus-window-menus.c
+	* src/file-manager/fm-desktop-icon-view.c
+	Replace nautilus_make_path (dir, file) with
+	 g_build_filename (dir, path, NULL).
+	Remove nautilus_make_path ().
+	Fixes bug #42424.
+
 2002-07-08  Michael Meeks  <michael@ximian.com>
 
 	* src/nautilus-property-browser.c

@@ -1727,7 +1727,7 @@ nautilus_music_view_update (NautilusMusicView *music_view)
                 }
 		
  		escaped_name = gnome_vfs_escape_string (current_file_info->name);
-		path_uri = nautilus_make_path (uri, escaped_name);
+		path_uri = g_build_filename (uri, escaped_name, NULL);
 		g_free (escaped_name);
                 
 		/* fetch info and queue it if it's an mp3 file */

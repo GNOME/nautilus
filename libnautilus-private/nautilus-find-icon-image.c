@@ -63,8 +63,8 @@ make_full_icon_path (const char *path,
 	/* Build a path for this icon, depending on the theme_is_in_user_directory boolean. */
 	if (theme_is_in_user_directory) {
 		user_directory = nautilus_get_user_directory ();
-		themes_directory = nautilus_make_path (user_directory, "themes");
-		full_path = nautilus_make_path (themes_directory, partial_path);
+		themes_directory = g_build_filename (user_directory, "themes", NULL);
+		full_path = g_build_filename (themes_directory, partial_path, NULL);
 		g_free (user_directory);
 		g_free (themes_directory);
 
@@ -73,7 +73,7 @@ make_full_icon_path (const char *path,
 			full_path = NULL;
 		}
 	} else if (document_type_icon) {
-		full_path = nautilus_make_path (DATADIR "/pixmaps/document-icons/", partial_path);
+		full_path = g_build_filename (DATADIR "/pixmaps/document-icons/", partial_path, NULL);
 		if (!g_file_test (full_path, G_FILE_TEST_EXISTS)) {
 			g_free (full_path);
 			full_path = NULL;
