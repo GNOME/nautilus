@@ -58,7 +58,6 @@ struct _NautilusMusicViewDetails {
         char *uri;
 	NautilusView *nautilus_view;
         
-	int background_connection;
 	int sort_mode;
 	int selected_index;
 	int status_timeout;
@@ -66,6 +65,7 @@ struct _NautilusMusicViewDetails {
 	int current_file_size;
 	int current_bitrate;
 	int last_play_status;
+	int current_samprate;
 	
 	gboolean slider_dragging;
 	
@@ -97,7 +97,7 @@ typedef struct {
 	int track_number;
 	int bitrate;
 	int track_time;
-	int ver;          /* 1=MPEG1, 0=MPEG2 */
+	int stereo;
 	int samprate;
 	
 	char *title;
@@ -141,8 +141,6 @@ static GtkTargetEntry music_dnd_target_table[] = {
 	{ "property/bgimage", 0, TARGET_BGIMAGE },
 	{ "x-special/gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
 };
-
-#define DEFAULT_BACKGROUND_COLOR  "rgb:DDDD/DDDD/BBBB"
 
 static void nautilus_music_view_drag_data_received (GtkWidget              *widget,
                                                     GdkDragContext         *context,
@@ -195,7 +193,7 @@ static void
 nautilus_music_view_initialize (NautilusMusicView *music_view)
 {
 	GtkWidget *scrollwindow;
-	char *titles[] = {_("Track "), _("Title"), _("Artist"), _("Year"), _("Bitrate "), _("Time "), _("Album"),  _("Comment"),};
+	char *titles[] = {_("Track "), _("Title"), _("Artist"), _("Year"), _("Bitrate "), _("Time "), _("Album"),  _("Comment"), _("Channels"),  _("Sample Rate"),};
 	GdkFont *font;
 	
 	music_view->details = g_new0 (NautilusMusicViewDetails, 1);
@@ -230,7 +228,7 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	
 	/* allocate a list widget to hold the song list */
 
-	music_view->details->song_list = gtk_clist_new_with_titles (8, titles);
+	music_view->details->song_list = gtk_clist_new_with_titles (10, titles);
 		
 	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 0, 36);		/* track number */
 	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 1, 204);	/* song name */
@@ -242,12 +240,19 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
  	/* we have 2 invisible columns at the end to hold data displayed as the song title */
 	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 6, 0);
 	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 7, 0);
-   
-   	/* default the year, album and comment to hidden */
- 	gtk_clist_set_column_visibility (GTK_CLIST (music_view->details->song_list), 3, FALSE);	 
+
+	 /* two more so we can make correct calculations for all files */
+	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 8, 0);		/* Stereo/Mono */
+	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 9, 0);		/* sample rate */
+	 
+	 /* default the year, album, comment, stereo and samprate to hidden */
+	gtk_clist_set_column_visibility (GTK_CLIST (music_view->details->song_list), 3, FALSE);	 
 	gtk_clist_set_column_visibility (GTK_CLIST (music_view->details->song_list), 6, FALSE);
 	gtk_clist_set_column_visibility (GTK_CLIST (music_view->details->song_list), 7, FALSE);
-   
+	gtk_clist_set_column_visibility (GTK_CLIST (music_view->details->song_list), 8, FALSE);
+	gtk_clist_set_column_visibility (GTK_CLIST (music_view->details->song_list), 9, FALSE);
+
+  
  	/* make some of the columns right justified */
  		
  	gtk_clist_set_column_justification(GTK_CLIST(music_view->details->song_list), 0, GTK_JUSTIFY_RIGHT);
@@ -429,7 +434,7 @@ static void
 strip_trailing_blanks (char *str)
 {
 	int index;
-	for (index = 30; index > 0 && str[index] <= 0x20; str[index--] = '\0');
+	for (index = strlen(str); index > 0 && str[index] <= 0x20; str[index--] = '\0');
 }
 
 /* read the id3 tag of the file if present */
@@ -580,7 +585,7 @@ fetch_song_info (const char *song_uri, GnomeVFSFileInfo *file_info, int file_ord
 		if ((result == GNOME_VFS_OK) && (length_read > 512)) {
 			info->bitrate = get_bitrate (buffer,length_read);
 			info->samprate = get_samprate (buffer,length_read);
-			info->ver = get_mpgver (buffer,length_read);
+			info->stereo = get_stereo (buffer,length_read);
 			info->track_time = fetch_play_time (file_info, info->bitrate);
 		}
 		gnome_vfs_close(mp3_file);
@@ -668,74 +673,6 @@ determine_attribute (GList *song_list, gboolean is_artist)
                 return NULL;
 }
 
-/* handle the "background changed" signal */
-
-static void
-nautilus_music_view_background_changed (NautilusMusicView *music_view)
-{
-	NautilusDirectory *directory;
-	NautilusBackground *background;
-	char *color_spec, *image;
-	
-	directory = nautilus_directory_get (music_view->details->uri);
-	background = nautilus_get_widget_background (GTK_WIDGET (music_view));
-	
-	color_spec = nautilus_background_get_color (background);
-	nautilus_directory_set_metadata (directory,
-					 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR,
-					 DEFAULT_BACKGROUND_COLOR,
-					 color_spec);	
-	g_free (color_spec);
-
-	
-	image = nautilus_background_get_tile_image_uri (background);
-	nautilus_directory_set_metadata (directory,
-					 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE,
-					 NULL,
-					 image);	
-	g_free (image);
-	nautilus_directory_unref(directory);
-}
-
-/* set up the background of the music view from the metadata associated with the uri */
-
-static void
-nautilus_music_view_set_up_background (NautilusMusicView *music_view, const char *uri)
-{
-	NautilusDirectory *directory;
-	NautilusBackground *background;
-	char *background_color;
-	char *background_image;
-	
-	directory = nautilus_directory_get (music_view->details->uri);
-	
-        /* FIXME: Use nautilus-directory-background calls. */
-	/* Connect the background changed signal to code that writes the color. */
-	background = nautilus_get_widget_background (GTK_WIDGET (music_view));
-        if (music_view->details->background_connection == 0) {
-		music_view->details->background_connection =
-			gtk_signal_connect_object (GTK_OBJECT (background),
-						   "settings_changed",
-						   nautilus_music_view_background_changed,
-						   GTK_OBJECT (music_view));
-	}
-
-	/* Set up the background color and image from the metadata. */
-	background_color = nautilus_directory_get_metadata (directory,
-							    NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR,
-							    DEFAULT_BACKGROUND_COLOR);
-	background_image = nautilus_directory_get_metadata (directory,
-							    NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE,
-							    NULL);
-	nautilus_directory_unref(directory);
-	
-	nautilus_background_set_color (background, background_color);	
-	g_free (background_color);
-	
-	nautilus_background_set_tile_image_uri (background, background_image);
-	g_free (background_image);
-}
-
 /* utility routine to sort the song list */
 static GList *
 sort_song_list(NautilusMusicView *music_view, GList* song_list)
@@ -810,6 +747,8 @@ play_status_display (NautilusMusicView *music_view)
 	char play_time_str[256];
 	int frameNo, status;
 	gboolean is_playing;
+	int samps_per_frame;
+	gfloat avgframesize;
 	
 	status = get_play_status();
 	is_playing = (status == STATUS_PLAY) || (status == STATUS_PAUSE);
@@ -829,13 +768,15 @@ play_status_display (NautilusMusicView *music_view)
 	if (is_playing) {			
 		if (!music_view->details->slider_dragging) {
 			frameNo = get_current_frame();	
-			seconds = frameNo * 1152  / 44100;
+			samps_per_frame = (music_view->details->current_samprate >= 32000) ? 1152 : 576;
+			seconds = frameNo * samps_per_frame / music_view->details->current_samprate;
 		
 			minutes = seconds / 60;
 			seconds = seconds % 60;
 			sprintf(play_time_str, "%02d:%02d", minutes, seconds);
-	
-			percentage = (gfloat) frameNo * 419 * music_view->details->current_bitrate / 128 / music_view->details->current_file_size * 100;
+			
+			avgframesize = (gfloat)samps_per_frame * music_view->details->current_bitrate * 125 / music_view->details->current_samprate;
+			percentage = (gfloat) frameNo * avgframesize / music_view->details->current_file_size * 100;
 			gtk_adjustment_set_value(GTK_ADJUSTMENT(music_view->details->playtime_adjustment), percentage);
  			gtk_range_set_adjustment(GTK_RANGE(music_view->details->playtime_bar), GTK_ADJUSTMENT(music_view->details->playtime_adjustment));	
 
@@ -878,6 +819,9 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
         gtk_clist_get_text (GTK_CLIST(music_view->details->song_list),
                             music_view->details->selected_index, 4, &temp_str);
 	music_view->details->current_bitrate = atoi (temp_str);
+        gtk_clist_get_text (GTK_CLIST(music_view->details->song_list),
+                            music_view->details->selected_index, 9, &temp_str);
+	music_view->details->current_samprate = atoi (temp_str);
         result = gnome_vfs_get_file_info (song_uri, &file_info,
                                           GNOME_VFS_FILE_INFO_DEFAULT, NULL);
  	music_view->details->current_file_size =
@@ -984,11 +928,15 @@ static void slider_moved_callback(GtkWidget *bar, GdkEvent *event, NautilusMusic
 	char temp_str[256];
 	int nframe, seconds, minutes;
 	GtkAdjustment *adjustment;
+	int samps_per_frame;
+	gfloat avgframesize;
 		
 	if (music_view->details->slider_dragging) {
 		adjustment = gtk_range_get_adjustment(GTK_RANGE(bar));
-		nframe = adjustment->value / (419.0 * music_view->details->current_bitrate / 128.0 / music_view->details->current_file_size * 100.0);	
-		seconds = nframe * 1152 / 44100;
+		samps_per_frame = (music_view->details->current_samprate >= 32000) ? 1152 : 576;
+		avgframesize = (gfloat)samps_per_frame * music_view->details->current_bitrate * 125 / music_view->details->current_samprate;
+		nframe = adjustment->value / (avgframesize / music_view->details->current_file_size * 100.0);	
+		seconds = nframe * samps_per_frame / music_view->details->current_samprate; 
 		minutes = seconds / 60;
 		seconds = seconds % 60;
 		sprintf(temp_str, "%02d:%02d", minutes, seconds);
@@ -1001,11 +949,15 @@ static void slider_release_callback(GtkWidget *bar, GdkEvent *event, NautilusMus
 {
 	int play_status, nframe;
 	GtkAdjustment *adjustment;
+	int samps_per_frame;
+	gfloat avgframesize;
 	
 	play_status = get_play_status();
 	if (music_view->details->slider_dragging) {
 		adjustment = gtk_range_get_adjustment(GTK_RANGE(bar));
-		nframe = adjustment->value / (419.0 * music_view->details->current_bitrate / 128.0 / music_view->details->current_file_size * 100.0);	
+		samps_per_frame = (music_view->details->current_samprate >= 32000) ? 1152 : 576;
+		avgframesize = (gfloat)samps_per_frame * music_view->details->current_bitrate * 125 / music_view->details->current_samprate;
+		nframe = adjustment->value / (avgframesize / music_view->details->current_file_size * 100.0);	
 		if ((play_status == STATUS_PLAY) || (play_status == STATUS_PAUSE)) {
 			pause_playing_file();
 			set_current_frame(nframe);
@@ -1208,7 +1160,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	GnomeVFSFileInfo *current_file_info;
 	GnomeVFSDirectoryList *list;
 
-	char* clist_entry[8];
+	char* clist_entry[10];
 	GList *p;
 	GdkPixbuf *pixbuf;
 	GdkPixmap *pixmap;
@@ -1225,8 +1177,8 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	file_index = 1;
 	track_index = 0;
 
-	/* set up the background from the metadata */	
-	nautilus_music_view_set_up_background(music_view, uri);
+	/* connect the music view background to directory metadata */	
+	nautilus_connect_background_to_directory_metadata_by_uri (GTK_WIDGET (music_view), uri);
 			
 	/* iterate through the directory, collecting mp3 files and extracting id3 data if present */
 
@@ -1298,6 +1250,8 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 		clist_entry[5] = NULL;
 		clist_entry[6] = NULL;
 		clist_entry[7] = NULL;
+		clist_entry[8] = NULL;
+		clist_entry[9] = NULL;
 		
 		if (info->title)
 			clist_entry[1] = g_strdup(info->title);
@@ -1313,6 +1267,9 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 			clist_entry[6] = g_strdup(info->album);
 		if (info->comment)
 			clist_entry[7] = g_strdup(info->comment);
+			clist_entry[8] = g_strdup(info->stereo ? "Stereo" : "Mono");
+		if (info->samprate > 0)
+			clist_entry[9] = g_strdup_printf("%d", info->samprate);
 			
 		gtk_clist_append(GTK_CLIST(music_view->details->song_list), clist_entry);
 		gtk_clist_set_row_data(GTK_CLIST(music_view->details->song_list),
@@ -1355,7 +1312,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 
                 album_name = determine_attribute (song_list, FALSE);
 		if (album_name == NULL) {
-			album_name = g_strdup (g_basename (uri));
+			album_name = g_strdup (gnome_vfs_unescape_string_for_display(g_basename (uri)));
                 }
 		
 		artist_name = determine_attribute (song_list, TRUE);

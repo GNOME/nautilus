@@ -62,6 +62,7 @@ int get_bitrate(unsigned char *buf,int bufsize)
 {
 	int i=0;
 	int ver,srindex,brindex,xbytes,xframes;
+	float br;
 	
 	while(!is_mphead(buf+i))
 	{
@@ -85,7 +86,8 @@ int get_bitrate(unsigned char *buf,int bufsize)
 	xframes = extractI4(buf+i+8);
 	xbytes = extractI4(buf+i+12);
 
-	return(samprates[ver][srindex]/(576+ver*576)*xbytes/xframes/125);
+	br = (float)samprates[ver][srindex]*xbytes/(576+ver*576)/xframes/125;
+	return(br);
 }
 
 /* return sample rate from MPEG header */
@@ -122,5 +124,22 @@ int get_mpgver(unsigned char *buf,int bufsize)
 	ver = (buf[i+1] & 0x08) >> 3;
 
 	return(ver);
+}
+
+/* return 0=mono, 1=dual ch, 2=joint stereo, 3=stereo */
+int get_stereo(unsigned char *buf,int bufsize)
+{
+	int i=0;
+	int st;
+	
+	while(!is_mphead(buf+i))
+	{
+		i++;
+		if (i>bufsize-4) return(-1);  /* no valid header, give up */
+	}	
+
+	st = (buf[i+3] & 0xC0) >> 6;
+
+	return(3-st);
 }
 

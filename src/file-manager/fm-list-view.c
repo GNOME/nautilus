@@ -48,8 +48,6 @@ struct FMListViewDetails
 	NautilusZoomLevel default_zoom_level;
 };
 
-#define DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
-
 /* 
  * Emblems should never get so small that they're illegible,
  * so we semi-arbitrarily choose a minimum size.

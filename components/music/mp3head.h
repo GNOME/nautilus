@@ -12,3 +12,4 @@
 int get_bitrate(unsigned char *buf,int bufsize);
 int get_samprate(unsigned char *buf,int bufsize);
 int get_mpgver(unsigned char *buf,int bufsize);
+int get_stereo(unsigned char *buf,int bufsize);

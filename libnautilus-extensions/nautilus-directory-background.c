@@ -138,6 +138,15 @@ background_destroyed_callback (NautilusBackground *background,
         gtk_signal_disconnect_by_func (GTK_OBJECT (directory),
                                        GTK_SIGNAL_FUNC (directory_changed_callback),
                                        background);
+        nautilus_directory_file_monitor_remove (directory, background);
+}
+
+/* dummy callback for directory monitoring */
+static void
+dummy_callback (NautilusDirectory *directory,
+		GList             *files,
+		gpointer	  data)
+{
 }
 
 void
@@ -172,7 +181,8 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
                 gtk_signal_disconnect_by_func (GTK_OBJECT (old_directory),
                                                GTK_SIGNAL_FUNC (directory_changed_callback),
                                                background);
-        }
+        	nautilus_directory_file_monitor_remove (old_directory, background);
+	}
 
         /* Attach the new directory. */
         nautilus_directory_ref (directory);
@@ -199,7 +209,14 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
                                     "metadata_changed",
                                     GTK_SIGNAL_FUNC (directory_changed_callback),
                                     background);
-        }
+        	
+		/* arrange to receive directory metadata */
+		nautilus_directory_file_monitor_add (directory,
+						     background,
+						     NULL, TRUE, FALSE,
+						     dummy_callback,
+						     NULL);					     
+	}
 
         /* Update the background based on the directory metadata. */
         directory_changed_callback (directory, background);
@@ -210,7 +227,6 @@ nautilus_connect_background_to_directory_metadata_by_uri (GtkWidget *widget,
                                                           const char *uri)
 {
         NautilusDirectory *directory;
-
         directory = nautilus_directory_get (uri);
         nautilus_connect_background_to_directory_metadata (widget, directory);
         nautilus_directory_unref (directory);

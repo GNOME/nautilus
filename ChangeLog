@@ -1,3 +1,26 @@
+2000-06-28  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/mp3head.c,h: (get_bitrate), (get_mpgver),
+	(get_stereo):
+	integrated Erik Gustavsson's patches to make the slider
+	work correctly at arbitrary bit-rates
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (strip_trailing_blanks),
+	(fetch_song_info), (play_status_display), (play_current_file),
+	(slider_moved_callback), (slider_release_callback),
+	(nautilus_music_view_update_from_uri):
+	more of Erik's patchs, plus made the music view use
+	nautilus_directory_background to save code and to use the same
+	background as the other views.
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(background_destroyed_callback), (dummy_callback),
+	(nautilus_connect_background_to_directory_metadata),
+	(nautilus_connect_background_to_directory_metadata_by_uri):
+	arranged for users of nautilus-directory-background to receive
+	metadata, by call nautilus_directory_file_monitor_add and remove
+	* src/file-manager/fm-list-view.c:
+	removed an unused define for DEFAULT_BACKGROUND_COLOR
+
 2000-06-28  Rebecca Schulman  <rebecka@eazel.com>
 
 	* libnautilus-extensions/nautilus-search-uri.c:
