@@ -203,7 +203,12 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 
 	corba_value = Nautilus_Metafile_get (get_metafile (directory), file_name, key, non_null_default, &ev);
 
-	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
+	if (ev._major != CORBA_NO_EXCEPTION) {
+		g_warning ("Failed to get file metadata.");
+		CORBA_exception_free (&ev);
+		return g_strdup (default_metadata);
+	}
+
 	CORBA_exception_free (&ev);
 
 	if (eel_str_is_empty (corba_value)) {

@@ -1,3 +1,10 @@
+2002-04-26  Damon Chaplin  <damon@ximian.com>
+
+	* libnautilus-private/nautilus-directory-metafile.c
+	(nautilus_directory_get_file_metadata): check the ev for errors.
+	If an error occurs output a warning and return the default value.
+	Fixes bug #73456. (Approved by Alex Larsson)
+
 2002-04-26  Benedikt Roth  <Benedikt.Roth@gmx.net>
 
 	* libnautilus-private/nautilus-program-chooser.c:
