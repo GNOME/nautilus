@@ -242,7 +242,7 @@ create_unique_volume_name (const char *desktop_path, const NautilusVolume *volum
 	GnomeVFSURI *uri;
 	char *uri_path, *new_name;
 	int index;
-	char *volume_name;
+	char *volume_name, *original_volume_name;
 	
 	new_name = NULL;
 
@@ -252,11 +252,11 @@ create_unique_volume_name (const char *desktop_path, const NautilusVolume *volum
 	index = 1;
 			
 	volume_name = nautilus_volume_monitor_get_volume_name (volume);	
-
+	
 	uri_path = g_strdup_printf ("%s/%s",desktop_path, volume_name);		
 	uri = gnome_vfs_uri_new (uri_path);
 	
-	/* Check for exiting filename and create a unique name. */
+	/* Check for existing filename and create a unique name. */
 	while (gnome_vfs_uri_exists (uri)) {
 		gnome_vfs_uri_unref (uri);
 		g_free (uri_path);
@@ -275,10 +275,12 @@ create_unique_volume_name (const char *desktop_path, const NautilusVolume *volum
 		volume_name = new_name;	
 	}
 	
-	if (strcmp (volume_name, volume->volume_name) != 0) {
+	original_volume_name = nautilus_volume_monitor_get_volume_name (volume);
+	if (strcmp (volume_name, original_volume_name) != 0) {
 		nautilus_volume_monitor_set_volume_name (nautilus_volume_monitor_get (),
 							 volume, volume_name);
 	}
+	g_free (original_volume_name);
 
 	gnome_vfs_uri_unref (uri);
 	g_free (uri_path);

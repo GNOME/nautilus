@@ -1,3 +1,16 @@
+2001-02-15  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Mike Engber <engber@eazel.com>
+
+	Fixed bug 6670, Segmentation fault when trying to access mounted
+	removable volume with no media.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(create_unique_volume_name):
+	Use the accessor function to access the volume name instead
+	of accessing the structure directly.  The accessor protects
+	us against NULL data.
+
 2001-02-15  Eric Fischer  <eric@eazel.com>
 
         * nautilus.spec.in:
