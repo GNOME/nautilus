@@ -167,6 +167,50 @@ nautilus_get_desktop_directory_uri_no_create (void)
 }
 
 
+/* These need to be reset to NULL when desktop_is_home_dir changes */
+static char *escaped_desktop_dir = NULL;
+static char *escaped_desktop_file = NULL;
+static gboolean desktop_dir_changed_callback_installed = FALSE;
+
+static void
+desktop_dir_changed_callback (gpointer callback_data)
+{
+	g_free (escaped_desktop_dir);
+	g_free (escaped_desktop_file);
+	escaped_desktop_dir = NULL;
+	escaped_desktop_file = NULL;
+}
+
+gboolean
+nautilus_is_desktop_directory_escaped (char *escaped_dir,
+				       char *escaped_file)
+{
+	char *uri, *path;
+	GnomeVFSURI *vfs_uri;
+
+	if (!desktop_dir_changed_callback_installed) {
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+					      desktop_dir_changed_callback,
+					      NULL);
+		desktop_dir_changed_callback_installed = TRUE;
+	}
+		
+	if (escaped_desktop_dir == NULL) {
+		path = get_desktop_path ();
+		uri = gnome_vfs_get_uri_from_local_path (path);
+		vfs_uri = gnome_vfs_uri_new (uri);
+		g_free (path);
+		g_free (uri);
+		escaped_desktop_file = gnome_vfs_uri_extract_short_path_name (vfs_uri);
+		escaped_desktop_dir = gnome_vfs_uri_extract_dirname (vfs_uri);
+		gnome_vfs_uri_unref (vfs_uri);
+	}
+
+	return (strcmp (escaped_dir, escaped_desktop_dir) == 0 &&
+		strcmp (escaped_file, escaped_desktop_file) == 0);
+}
+
+
 /**
  * nautilus_get_gmc_desktop_directory:
  * 

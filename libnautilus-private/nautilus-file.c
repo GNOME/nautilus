@@ -44,6 +44,7 @@
 #include "nautilus-trash-file.h"
 #include "nautilus-vfs-file.h"
 #include "nautilus-volume-monitor.h"
+#include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-vfs-extensions.h>
@@ -75,7 +76,8 @@ extern void eazel_dump_stack_trace	(const char    *print_prefix,
 #endif
 
 /* Files that start with these characters sort after files that don't. */
-#define SORT_LAST_CHARACTERS ".#"
+#define SORT_LAST_CHAR1 '.'
+#define SORT_LAST_CHAR2 '#'
 
 /* Name to use to tag metadata for the directory itself. */
 #define FILE_NAME_FOR_DIRECTORY_METADATA "."
@@ -171,7 +173,7 @@ nautilus_file_info_missing (NautilusFile *file, GnomeVFSFileInfoFields needed_ma
 	if (file == NULL) {
 		return TRUE;
 	}
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), TRUE);
+	
 	info = file->details->info;
 	if (info == NULL) {
 		return TRUE;
@@ -1660,8 +1662,8 @@ compare_by_display_name (NautilusFile *file_1, NautilusFile *file_2)
 	name_1 = nautilus_file_get_display_name_nocopy (file_1);
 	name_2 = nautilus_file_get_display_name_nocopy (file_2);
 
-	sort_last_1 = strchr (SORT_LAST_CHARACTERS, name_1[0]) != NULL;
-	sort_last_2 = strchr (SORT_LAST_CHARACTERS, name_2[0]) != NULL;
+	sort_last_1 = name_1[0] == SORT_LAST_CHAR1 || name_1[0] == SORT_LAST_CHAR2;
+	sort_last_2 = name_2[0] == SORT_LAST_CHAR1 || name_2[0] == SORT_LAST_CHAR2;
 
 	if (sort_last_1 && !sort_last_2) {
 		compare = +1;
@@ -1670,7 +1672,7 @@ compare_by_display_name (NautilusFile *file_1, NautilusFile *file_2)
 	} else {
 		key_1 = nautilus_file_get_display_name_collation_key (file_1);
 		key_2 = nautilus_file_get_display_name_collation_key (file_2);
-		compare = eel_strcmp (key_1, key_2);
+		compare = strcmp (key_1, key_2);
 	}
 
 	return compare;
@@ -1713,14 +1715,17 @@ file_has_note (NautilusFile *file)
 static gboolean
 file_is_desktop (NautilusFile *file)
 {
-	char *desktop_uri;
-	gboolean res;
+	GnomeVFSURI *dir_vfs_uri;
 
-	desktop_uri = nautilus_get_desktop_directory_uri_no_create ();
-	res = nautilus_file_matches_uri (file, desktop_uri);
-	g_free (desktop_uri);
+	dir_vfs_uri = file->details->directory->details->vfs_uri;
 
-	return res;
+	if (dir_vfs_uri == NULL ||
+	    strcmp (dir_vfs_uri->method_string, "file") != 0) {
+		return FALSE;
+	}
+
+	return nautilus_is_desktop_directory_escaped (dir_vfs_uri->text,
+						      file->details->relative_uri);
 }
 
 static int
@@ -2359,8 +2364,6 @@ nautilus_file_get_display_name_collation_key (NautilusFile *file)
 		return NULL;
 	}
 	
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
 	if (file->details->display_name_collation_key != NULL) {
 		return file->details->display_name_collation_key;
 	}
@@ -2382,8 +2385,6 @@ nautilus_file_get_display_name_nocopy (NautilusFile *file)
 	if (file == NULL) {
 		return NULL;
 	}
-
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
 	if (file->details->cached_display_name != NULL) {
 		return file->details->cached_display_name;
@@ -4451,8 +4452,10 @@ nautilus_file_get_file_type (NautilusFile *file)
 	if (file == NULL) {
 		return GNOME_VFS_FILE_TYPE_UNKNOWN;
 	}
-	return EEL_CALL_METHOD_WITH_RETURN_VALUE
-		(NAUTILUS_FILE_CLASS, file, get_file_type, (file));
+	/* Don't use EEL_CALL_METHOD_WITH_RETURN_VALUE here, because the
+	   typechecking was showing up a lot on the profiles, since this
+	   is called from the sorting code */
+	return ((NautilusFileClass*)G_OBJECT_GET_CLASS (file))->get_file_type (file);
 }
 
 /**

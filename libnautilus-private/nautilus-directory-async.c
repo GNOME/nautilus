@@ -2180,8 +2180,6 @@ is_needy (NautilusFile *file,
 	ReadyCallback *callback;
 	Monitor *monitor;
 
-	g_assert (NAUTILUS_IS_FILE (file));
-
 	if (!(* check_missing) (file)) {
 		return FALSE;
 	}

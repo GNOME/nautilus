@@ -1,5 +1,32 @@
 2003-07-08  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-directory-async.c: (is_needy):
+	Skip assert for commonly run code.
+	
+	* libnautilus-private/nautilus-file-utilities.[ch]:
+	(desktop_dir_changed_callback),
+	(nautilus_is_desktop_directory_escaped):
+	New function nautilus_is_desktop_directory_escaped to handle
+	faster check if file is desktop dir.
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_info_missing), (compare_by_display_name),
+	(file_is_desktop), (nautilus_file_get_display_name_collation_key),
+	(nautilus_file_get_display_name_nocopy),
+	(nautilus_file_get_file_type):
+	Some micro-optimizations. Faster file_is_desktop
+	
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_invalidate_bounds_cache),
+	(nautilus_icon_canvas_item_invalidate_label_size),
+	(nautilus_icon_canvas_item_set_image),
+	(nautilus_icon_canvas_item_set_emblems),
+	(nautilus_icon_canvas_item_set_attach_points),
+	(nautilus_icon_canvas_item_set_embedded_text_rect),
+	(nautilus_icon_canvas_item_bounds):
+	Cache bounds calculation. Invalidate when needed.
+
+2003-07-08  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-factory.c (create_normal_cache_icon):
 
 	Don't leak pixbuf.

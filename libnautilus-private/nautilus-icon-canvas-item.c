@@ -97,7 +97,9 @@ struct NautilusIconCanvasItemDetails {
 	guint rendered_is_focused : 1;
 	
 	guint is_renaming : 1;
-
+	
+	guint bounds_cached : 1;
+	
 	PangoLayout *editable_text_layout;
 	PangoLayout *additional_text_layout;
 	
@@ -109,6 +111,8 @@ struct NautilusIconCanvasItemDetails {
 	ArtIRect text_rect;
 	ArtIRect emblem_rect;
 
+	ArtIRect bounds_cache;
+	
 	/* Accessibility bits */
 	GailTextUtil *text_util;
 };
@@ -272,10 +276,17 @@ pixbuf_is_acceptable (GdkPixbuf *pixbuf)
 		&& gdk_pixbuf_get_bits_per_sample (pixbuf) == 8;
 }
 
+static void
+nautilus_icon_canvas_item_invalidate_bounds_cache (NautilusIconCanvasItem *item)
+{
+	item->details->bounds_cached = FALSE;
+}
+
 /* invalidate the text width and height cached in the item details. */
 void
 nautilus_icon_canvas_item_invalidate_label_size (NautilusIconCanvasItem *item)
 {
+	nautilus_icon_canvas_item_invalidate_bounds_cache (item);
 	item->details->text_width = -1;
 	item->details->text_height = -1;
 	if (item->details->editable_text_layout != NULL) {
@@ -452,6 +463,7 @@ nautilus_icon_canvas_item_set_image (NautilusIconCanvasItem *item,
 
 	details->pixbuf = image;
 			
+	nautilus_icon_canvas_item_invalidate_bounds_cache (item);
 	eel_canvas_item_request_update (EEL_CANVAS_ITEM (item));	
 }
 
@@ -481,6 +493,8 @@ nautilus_icon_canvas_item_set_emblems (NautilusIconCanvasItem *item,
 	eel_gdk_pixbuf_list_ref (emblem_pixbufs);
 	eel_gdk_pixbuf_list_free (item->details->emblem_pixbufs);
 	item->details->emblem_pixbufs = g_list_copy (emblem_pixbufs);
+
+	nautilus_icon_canvas_item_invalidate_bounds_cache (item);
 	eel_canvas_item_request_update (EEL_CANVAS_ITEM (item));
 }
 
@@ -495,6 +509,8 @@ nautilus_icon_canvas_item_set_attach_points (NautilusIconCanvasItem *item,
 		item->details->attach_points = g_new (NautilusEmblemAttachPoints, 1);
 		*item->details->attach_points = *attach_points;
 	}
+	
+	nautilus_icon_canvas_item_invalidate_bounds_cache (item);
 }
 
 void
@@ -503,6 +519,7 @@ nautilus_icon_canvas_item_set_embedded_text_rect (NautilusIconCanvasItem       *
 {
 	item->details->embedded_text_rect = *text_rect;
 
+	nautilus_icon_canvas_item_invalidate_bounds_cache (item);
 	eel_canvas_item_request_update (EEL_CANVAS_ITEM (item));
 }
 
@@ -1728,7 +1745,7 @@ nautilus_icon_canvas_item_bounds (EelCanvasItem *item,
 	double pixels_per_unit;
 	EmblemLayout emblem_layout;
 	GdkPixbuf *emblem_pixbuf;
-	
+
 	g_assert (x1 != NULL);
 	g_assert (y1 != NULL);
 	g_assert (x2 != NULL);
@@ -1737,35 +1754,42 @@ nautilus_icon_canvas_item_bounds (EelCanvasItem *item,
 	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
 	details = icon_item->details;
 
-	measure_label_text (icon_item);
+	if (details->bounds_cached) {
+		total_rect = details->bounds_cache;
+	} else {	
+		measure_label_text (icon_item);
+		
+		/* Compute icon rectangle. */
+		icon_rect.x0 = 0;
+		icon_rect.y0 = 0;
+		if (details->pixbuf == NULL) {
+			icon_rect.x1 = icon_rect.x0;
+			icon_rect.y1 = icon_rect.y0;
+		} else {
+			pixels_per_unit = item->canvas->pixels_per_unit;
+			icon_rect.x1 = icon_rect.x0 + gdk_pixbuf_get_width (details->pixbuf) / pixels_per_unit;
+			icon_rect.y1 = icon_rect.y0 + gdk_pixbuf_get_height (details->pixbuf) / pixels_per_unit;
+		}
+		
+		/* Compute text rectangle. */
+		text_rect = compute_text_rectangle (icon_item, icon_rect, FALSE);
+		
+		/* Compute total rectangle, adding in emblem rectangles. */
+		art_irect_union (&total_rect, &icon_rect, &text_rect);
+		emblem_layout_reset (&emblem_layout, icon_item, icon_rect);
+		while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
+			art_irect_union (&total_rect, &total_rect, &emblem_rect);
+		}
 
-	/* Compute icon rectangle. */
-	icon_rect.x0 = details->x;
-	icon_rect.y0 = details->y;
-	if (details->pixbuf == NULL) {
-		icon_rect.x1 = icon_rect.x0;
-		icon_rect.y1 = icon_rect.y0;
-	} else {
-		pixels_per_unit = item->canvas->pixels_per_unit;
-		icon_rect.x1 = icon_rect.x0 + gdk_pixbuf_get_width (details->pixbuf) / pixels_per_unit;
-		icon_rect.y1 = icon_rect.y0 + gdk_pixbuf_get_height (details->pixbuf) / pixels_per_unit;
-	}
-	
-	/* Compute text rectangle. */
-	text_rect = compute_text_rectangle (icon_item, icon_rect, FALSE);
-
-	/* Compute total rectangle, adding in emblem rectangles. */
-	art_irect_union (&total_rect, &icon_rect, &text_rect);
-	emblem_layout_reset (&emblem_layout, icon_item, icon_rect);
-	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
-		art_irect_union (&total_rect, &total_rect, &emblem_rect);
+		details->bounds_cache = total_rect;
+		details->bounds_cached = TRUE;
 	}
         
 	/* Return the result. */
-	*x1 = floor (total_rect.x0);
-	*y1 = floor (total_rect.y0);
-	*x2 = ceil (total_rect.x1) + 1;
-	*y2 = ceil (total_rect.y1) + 1;
+	*x1 = (int)details->x + total_rect.x0;
+	*y1 = (int)details->y + total_rect.y0;
+	*x2 = (int)details->x + total_rect.x1 + 1;
+	*y2 = (int)details->y + total_rect.y1 + 1;
 }
 
 /* Get the rectangle of the icon only, in world coordinates. */
