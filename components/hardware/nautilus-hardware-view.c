@@ -258,6 +258,7 @@ get_RAM_description (void)
 {
 	char *temp_str, *num_str, *result;
 	char* proc_data;
+        GnomeVFSFileSize ram_size;
 
         proc_data = read_proc_info("meminfo");
 
@@ -270,8 +271,14 @@ get_RAM_description (void)
         /* strip kbyte suffix */
 	temp_str[strlen(temp_str) - 3] = '\0';
 
-        num_str = gnome_vfs_format_file_size_for_display (1024 * atol (temp_str));
-	g_free (temp_str);
+	ram_size = (strtoul (temp_str, NULL, 10) + 500) / 1000;
+	if (ram_size > 1000) {
+		num_str = g_strdup_printf ("%Lu GB", ram_size / 1000);
+	} else {
+		num_str = g_strdup_printf ("%Lu MB", ram_size);
+	}
+
+ 	g_free (temp_str);
 
 	g_free (proc_data);
 
@@ -311,10 +318,31 @@ get_IDE_description (const char *device)
                 temp_str = read_proc_info(proc_file);
                 temp_str[strlen(temp_str) - 1] = '\0';
 
-                /* This converts & calcs the sectors into MB's */
-                capacity = strtoul (temp_str, NULL, 10);
-                num_str = gnome_vfs_format_file_size_for_display (512 * capacity);
-                g_string_append(string_data, "\n");
+                 /* NOTE: this should be 
+		  *  capacity = strtoul (...)
+		  *  num_str = gnome_vfs_format_file_size_for_display (512 * numsectors);   
+		  *               
+		  *  (512 bytes per sector)
+		  *
+		  *  but with large disks we overflow an unsigned long, which is the
+		  *  the type that gnome_vfs uses.  
+		  *
+		  *  ALSO, in keeping with disk manufacturer convention, disk sizes
+		  *  are quoted in powers of 10 (i.e., MB is 10^6, GB is 10^9).
+		  *  (see http://www.maxtor.com/technology/Digi_vs_Deci.html
+		  *  So as to not confuse the user too much, we will follow the
+		  *  same convention.)
+		  *
+		  */
+   
+		capacity = (512 * (strtoul (temp_str, NULL, 10) / 1000)) / 1000;
+		if (capacity > 1000) {
+			num_str = g_strdup_printf ("%Lu GB", capacity / 1000);
+		} else {
+			num_str = g_strdup_printf ("%Lu MB", capacity);
+		}
+             
+		g_string_append(string_data, "\n");
                 g_string_append(string_data, num_str);
                 g_free(temp_str);
                 g_free(proc_file);

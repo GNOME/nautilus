@@ -1,3 +1,103 @@
+2001-01-02  Andy Hertzfeld  <andy@eazel.com>
+
+	first check-in to post-1_0 branch.
+	
+	add ability to embed Bonobo controls in the icon view.
+	created a new bonobo control that fetches and displays rss weblogs
+	plus miscellaneous optimizations and improvements
+	
+	* components/Makefile.am:
+	* configure.in:
+	added new rss-control component
+	
+	* components/hardware/nautilus-hardware-view.c:
+	(get_RAM_description), (get_IDE_description):
+	incorporated Bud's disk size calculation, plus tweaked the
+	RAM size calculation
+	
+	* components/rss-control/.cvsignore:
+	* components/rss-control/Makefile.am:
+	* components/rss-control/nautilus-rss-control.oafinfo:
+	files for the new rss-control component
+	
+	* components/rss-control/main.c: (rss_control_object_destroyed),
+	(rss_control_make_object), (main):
+	factory for the rss-control Bonobo component
+	
+	* components/rss-control/nautilus-rss-control.c,h:
+	(nautilus_rss_control_initialize_class), (get_bonobo_properties),
+	(set_bonobo_properties), (nautilus_rss_control_initialize),
+	(nautilus_rss_control_clear_items), (nautilus_rss_control_destroy),
+	(nautilus_rss_control_get_control),
+	(nautilus_rss_control_set_title), (rss_logo_callback),
+	(rss_read_done_callback), (load_rss_file),
+	(nautilus_rss_control_set_uri), (draw_rss_logo_image),
+	(draw_rss_title), (draw_blue_line), (draw_rss_items),
+	(nautilus_rss_control_draw), (nautilus_rss_control_expose),
+	(nautilus_rss_control_button_press_event):
+	new bonobo control to fetch an rss file and display it.
+	
+	* icons/Makefile.am:
+	* icons/bullet.png:
+	added a "bullet" image used in rss control, but it's generally
+	useful enough that I added it to the main icons
+	
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_user_main_directory):
+	deleted some code that's no longer relevant
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c,h:
+	(nautilus_icon_canvas_item_destroy),
+	(nautilus_icon_canvas_item_get_icon_width),
+	(nautilus_icon_canvas_item_get_icon_height),
+	(nautilus_icon_canvas_item_set_arg), (do_control_destroy),
+	(nautilus_icon_canvas_item_get_arg),
+	(nautilus_icon_canvas_item_get_image), (recompute_bounding_box),
+	(nautilus_icon_canvas_item_update_bounds),
+	(draw_or_measure_label_text), (emblem_layout_next),
+	(draw_pixbuf_aa), (nautilus_icon_canvas_item_draw),
+	(draw_or_measure_label_text_aa),
+	(nautilus_icon_canvas_item_render),
+	(nautilus_icon_canvas_item_bounds),
+	(nautilus_icon_canvas_item_get_icon_rectangle),
+	(get_icon_canvas_rectangle),
+	(nautilus_icon_canvas_item_set_smooth_font),
+	(nautilus_icon_canvas_item_get_control),
+	(nautilus_icon_canvas_item_set_control):
+	added support for widgets embedded in icon canvas items
+	
+	* libnautilus-extensions/nautilus-icon-container.c,h:
+	(nautilus_icon_container_initialize_class),
+	(nautilus_icon_container_update_icon):
+	taught the icon container to ask for the control associated
+	with a file, and configured the canvas item with it if there
+	is one.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_begin_drag):
+	made it unref the image it fetches from the canvas item, so the
+	canvas item can generate custom images for controls.
+	
+	* libnautilus-extensions/nautilus-link.c,h:
+	(nautilus_link_local_get_component_info):
+	fetch the activation and configuration strings associated with
+	a link file for string embedding.
+	
+	* libnautilus-extensions/nautilus-metadata.h:
+	added metadata types for the activation and configuration data
+	
+	* src/file-manager/fm-icon-view.c: (get_icon_control_callback),
+	(create_icon_container):
+	added signal to create a bonobo control associated with a file
+	and configure it, if there is one
+	
+	* src/nautilus-sidebar-tabs.c: (nautilus_sidebar_tabs_hit_test),
+	(nautilus_sidebar_tabs_select_tab):
+	hit test invisible tabs to support the change below.
+	* src/nautilus-sidebar.c: (nautilus_sidebar_release_event):
+	implemented Bud's idea of toggling the visibility of the active
+	view by clicking on the tab again.
+	
 2001-01-02  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

@@ -614,22 +614,7 @@ nautilus_get_user_main_directory (void)
 						    image_uri);
 			nautilus_file_unref (file);
 		}
-		
-		/* now do the same for the about file */
-		temp_str = g_strdup_printf ("%s/About.html", user_main_directory);
-		file_uri = gnome_vfs_get_uri_from_local_path (temp_str);
-		g_free (temp_str);
-		
-		file = nautilus_file_get (file_uri);
-		if (file != NULL) {
-			nautilus_file_set_metadata (file,
-						    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
-						    NULL,
-						    image_uri);
-			nautilus_file_unref (file);
-		}
-		g_free (file_uri);
-		
+				
 		g_free (image_uri);
 		
 		/* install the default link set */

@@ -107,6 +107,10 @@ typedef struct {
 	gboolean     (* get_stored_icon_position) (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   NautilusIconPosition *position);
+	void
+		     (* get_icon_control)	  (NautilusIconContainer *container,
+						   NautilusIconData *data,
+						   GtkWidget **control);
 	NautilusScalableIcon *
 	             (* get_icon_images)          (NautilusIconContainer *container,
 						   NautilusIconData *data,
