@@ -253,6 +253,8 @@ PackageData*
 packagedata_copy (const PackageData *pack, gboolean deep)
 {
 	PackageData *result;
+	const GList *ptr;
+
 	g_assert (pack);
 
 	result = packagedata_new ();
@@ -281,6 +283,11 @@ packagedata_copy (const PackageData *pack, gboolean deep)
 		result->hard_depends = packagedata_list_copy (pack->hard_depends, TRUE);
 		result->modifies = packagedata_list_copy (pack->modifies, TRUE);
 		result->breaks = packagedata_list_copy (pack->breaks, TRUE);
+
+		for (ptr = pack->provides; ptr; ptr = g_list_next (ptr)) {
+			result->provides = g_list_prepend (result->provides, g_strdup (ptr->data));
+		}
+		result->provides = g_list_reverse (result->provides);
 	} /* No need to null if !deep, as packagedata_new does that */
 
 	return result;

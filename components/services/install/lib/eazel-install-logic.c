@@ -1808,6 +1808,8 @@ static void
 dump_one_package (PackageData *pack, char *prefix)
 {
 	char *softprefix, *hardprefix, *modprefix, *breakprefix;
+	GList *iter;
+	int count;
 
 	trilobite_debug ("%s%s-%s-%s (stat %s/%s), 0x%08X", 
 			 prefix, 
@@ -1815,6 +1817,14 @@ dump_one_package (PackageData *pack, char *prefix)
 			 packagedata_status_enum_to_str (pack->status),
 			 packagedata_modstatus_enum_to_str (pack->modify_status),
 			 (unsigned int)pack);
+	for (count = 0, iter = g_list_first (pack->provides); iter; iter = g_list_next (iter), count++) {
+		trilobite_debug ("\t\tprovides %s", (char *)(iter->data));
+		if (count >= 1) {
+			trilobite_debug("\t\t...and others");
+			iter = NULL;
+		}
+	}
+
 	softprefix = g_strdup_printf ("%s (s) ", prefix);
 	hardprefix = g_strdup_printf ("%s (h) ", prefix);
 	breakprefix = g_strdup_printf ("%s (b) ", prefix);

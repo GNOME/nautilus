@@ -1,3 +1,39 @@
+2000-10-30  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic.c:
+	(dump_one_package):
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_copy):
+
+	Show provides-list when dumping packages for debug.  Copy
+	provides-list when doing a deep copy of the package data.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_category):
+
+	Clean up leading/trailing linefeeds on category descriptions.
+	
+	* components/services/install/server/main.c: (main):
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_add_log), (trilobite_init),
+	(trilobite_set_debug_mode):
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.h
+	:
+
+	Use ~/.nautilus/trilobite-install.log for logging install debug
+	messages, and not a file in /tmp.  Timestamp those logs.
+	
+	* nautilus-installer/src/installer.c: (create_install_page),
+	(eazel_download_progress), (get_required_name),
+	(get_detailed_errors_foreach), (install_done),
+	(eazel_installer_add_category), (find_old_tmpdir),
+	(eazel_installer_initialize):
+
+	Make category list display slightly differently when there's only
+	one category (which is how PR2 will be): avoid showing the
+	checkbox, etc.  If there's a suitable /tmp directory leftover from
+	a previous install attempt, reuse it instead of creating a new one.
+	
 2000-10-30  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* nautilus-installer/src/Makefile:
