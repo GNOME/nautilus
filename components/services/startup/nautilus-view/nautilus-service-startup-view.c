@@ -28,6 +28,11 @@
  */
    
 #include <config.h>
+
+#include "nautilus-service-startup-view.h"
+#include "shared-service-widgets.h"
+#include "shared-service-utilities.h"
+
 #include <ghttp.h>
 #include <unistd.h>
 #include <gnome-xml/tree.h>
@@ -46,7 +51,6 @@
 #include <libnautilus-extensions/nautilus-image.h>
 #include <stdio.h>
 
-#include "nautilus-service-startup-view.h"
 
 struct _NautilusServiceStartupViewDetails {
 	char		*uri;
@@ -57,7 +61,7 @@ struct _NautilusServiceStartupViewDetails {
 	GtkWidget	*feedback_text;
 };
 
-#define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR  "rgb:0000/6666/6666"
+#define STARTUP_VIEW_DEFAULT_BACKGROUND_COLOR  "rgb:0000/6666/6666"
 #define SERVICE_DOMAIN_NAME		       "testmachine.eazel.com"
 
 
@@ -73,12 +77,8 @@ static gboolean   is_location                                    (char          
 static void       generate_form_logo                             (NautilusServiceStartupView      *view);
 static void       set_widget_color                               (GtkWidget                       *widget,
 								  const char                      *color_spec);
-static void       go_to_uri                                      (NautilusServiceStartupView      *view,
-								  char                            *uri);
 static void       show_feedback                                  (NautilusServiceStartupView      *view,
 								  char                            *error_message);
-static GtkWidget* create_image_widget                            (const char                      *name,
-								  const char                      *background_color_spec);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusServiceStartupView, nautilus_service_startup_view, GTK_TYPE_EVENT_BOX)
 
@@ -111,7 +111,9 @@ generate_startup_form (NautilusServiceStartupView	*view)
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, 0, 0, 40);
 	gtk_widget_show (temp_box);
 
-	temp_widget = create_image_widget ("service-watch.png", SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
+	temp_widget = create_image_widget ("service-watch.png",
+					   STARTUP_VIEW_DEFAULT_BACKGROUND_COLOR,
+					   NAUTILUS_IMAGE_PLACEMENT_CENTER);
 	g_assert (temp_widget != NULL);
 
 	gtk_box_pack_start (GTK_BOX (temp_box), temp_widget, 0, 0, 8);
@@ -156,7 +158,7 @@ generate_startup_form (NautilusServiceStartupView	*view)
 			show_feedback (view, "Retreiving services list ...");
 		}
 		if (counter == 20000) {
-			go_to_uri (view, "eazel-login:");
+			go_to_uri (view->details->nautilus_view, "eazel-login:");
 		}
 		else {
 			gtk_progress_bar_update (GTK_PROGRESS_BAR (view->details->progress_bar), value);
@@ -165,15 +167,6 @@ generate_startup_form (NautilusServiceStartupView	*view)
 			}
 		}
 	}
-
-}
-
-/* utility routine to go to another uri */
-
-static void
-go_to_uri (NautilusServiceStartupView	*view, char	*uri) {
-
-  	nautilus_view_open_location (view->details->nautilus_view, uri);
 
 }
 
@@ -211,44 +204,6 @@ set_widget_color (GtkWidget *widget, const char* color_spec) {
 
 }
 
-/* shared utility to allocate a title for a form */
-
-static GtkWidget*
-create_image_widget (const char *name, const char *background_color_spec)
-{
-	char		*path;
-	GtkWidget	*image;
-	GdkPixbuf	*pixbuf;
-	guint32		background_rgb;
-
-	g_return_val_if_fail (name != NULL, NULL);
-	g_return_val_if_fail (background_color_spec != NULL, NULL);
-	
-	path = nautilus_pixmap_file (name);
-	
-	pixbuf = gdk_pixbuf_new_from_file (path);
-	g_free (path);
-
-	if (!pixbuf) {
-		return NULL;
-	}
-
-	image = nautilus_image_new();
-	
-	nautilus_image_set_background_type (NAUTILUS_IMAGE (image),
-					    NAUTILUS_IMAGE_BACKGROUND_SOLID);
-	
-	background_rgb = nautilus_parse_rgb_with_white_default (background_color_spec);
-	
-	nautilus_image_set_background_color (NAUTILUS_IMAGE (image),
-					     background_rgb);
-
-	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image), pixbuf);
-	gdk_pixbuf_unref (pixbuf);
-
-	return image;
-}
-
 static void 
 generate_form_logo (NautilusServiceStartupView	*view) {
 
@@ -258,7 +213,10 @@ generate_form_logo (NautilusServiceStartupView	*view) {
 	logo_container = gtk_hbox_new (TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), logo_container, 0, 0, 4);	
 
-	logo_widget = create_image_widget ("startup-logo.png", SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
+	logo_widget = create_image_widget ("startup-logo.png",
+					   STARTUP_VIEW_DEFAULT_BACKGROUND_COLOR,
+					   NAUTILUS_IMAGE_PLACEMENT_CENTER);
+
 	g_assert (logo_widget != NULL);
 
 	gtk_box_pack_start (GTK_BOX(logo_container), logo_widget, 0, 0, 4);
@@ -290,7 +248,7 @@ nautilus_service_startup_view_initialize (NautilusServiceStartupView	*view) {
 			    view);
 
   	background = nautilus_get_widget_background (GTK_WIDGET (view));
-  	nautilus_background_set_color (background, SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
+  	nautilus_background_set_color (background, STARTUP_VIEW_DEFAULT_BACKGROUND_COLOR);
 
 	gtk_widget_show_all (GTK_WIDGET (view));
 }
@@ -349,25 +307,25 @@ nautilus_service_startup_view_load_uri (NautilusServiceStartupView	*view,
 		generate_startup_form (view);
 	}
 	else if (is_location (document_name, "login")) {
-		go_to_uri (view, "eazel-login:");
+		go_to_uri (view->details->nautilus_view, "eazel-login:");
 	}
 	else if (is_location(document_name, "summary")) {
-		go_to_uri (view, "eazel-summary:");
+		go_to_uri (view->details->nautilus_view, "eazel-summary:");
 	}
 	else if (is_location(document_name, "inventory")) {
-		go_to_uri (view, "eazel-inventory:");
+		go_to_uri (view->details->nautilus_view, "eazel-inventory:");
 	}
 	else if (is_location(document_name, "install")) {
-		go_to_uri (view, "eazel-install:");
+		go_to_uri (view->details->nautilus_view, "eazel-install:");
 	}
 	else if (is_location(document_name, "time")) {
-		go_to_uri (view, "eazel-time:");
+		go_to_uri (view->details->nautilus_view, "eazel-time:");
 	}
 	else if (is_location(document_name, "vault")) {
-		go_to_uri (view, "eazel-vault:");
+		go_to_uri (view->details->nautilus_view, "eazel-vault:");
 	}
 	else if (is_location(document_name, "register")) {
-		go_to_uri (view, "http://www.eazel.com");
+		go_to_uri (view->details->nautilus_view, "http://www.eazel.com");
 	}
 	else {
 		generate_startup_form (view); /* eventually, this should be setup_bad_location_form */

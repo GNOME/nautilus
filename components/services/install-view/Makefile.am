@@ -10,6 +10,8 @@ INCLUDES =						\
 	-I$(top_srcdir)/components/services/trilobite	\
 	-I$(top_builddir)/components/services/install/lib \
 	-I$(top_builddir)/components/services/trilobite	\
+	-I$(top_srcdir)/components/services/nautilus-dependant-shared	\
+	-I$(top_builddir)/components/services/install/lib \
 	-I$(top_builddir)				\
 	-I/usr/include/rpm				\
 	$(GCONF_CFLAGS)					\
@@ -39,6 +41,7 @@ nautilus_service_install_view_LDADD =			\
 	$(top_builddir)/librsvg/librsvg.la		\
 	$(top_builddir)/components/services/install/lib/libeazelinstall.la \
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
+	$(top_builddir)/components/services/nautilus-dependant-shared/libnautilusdepshared.a \
 	$(BONOBO_LIBS)					\
 	$(GCONF_LIBS)					\
 	$(GNOMEUI_LIBS)					\

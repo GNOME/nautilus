@@ -1,3 +1,40 @@
+2000-07-18  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/Makefile.am:
+	* components/services/install/nautilus-view/Makefile.am:
+	*
+	components/services/install/nautilus-view/nautilus-service-install-
+	view.c: (generate_install_form),
+	(nautilus_service_install_view_update_from_uri):
+	* components/services/nautilus-dependant-shared/.cvsignore:
+	* components/services/nautilus-dependant-shared/Makefile.am:
+	* components/services/nautilus-dependant-shared/icons/.cvsignore:
+	* components/services/nautilus-dependant-shared/icons/Makefile.am:
+	*
+	components/services/nautilus-dependant-shared/shared-service-utilit
+	ies.c: (go_to_uri):
+	*
+	components/services/nautilus-dependant-shared/shared-service-utilit
+	ies.h:
+	*
+	components/services/nautilus-dependant-shared/shared-service-widget
+	s.c: (create_image_widget), (create_services_title_widget),
+	(create_services_header_widget):
+	*
+	components/services/nautilus-dependant-shared/shared-service-widget
+	s.h:
+	* components/services/startup/nautilus-view/Makefile.am:
+	* components/services/startup/nautilus-view/icons/Makefile.am:
+	*
+	components/services/startup/nautilus-view/nautilus-service-startup-
+	view.c: (generate_startup_form), (generate_form_logo),
+	(nautilus_service_startup_view_initialize),
+	(nautilus_service_startup_view_load_uri):
+	* configure.in:
+
+	First part of the fix for task #1632.  Creating a common repository
+	for duplicated nautilus dependant code that is used in service views.
+
 2000-07-18  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-list.c: (nautilus_list_draw),

@@ -8,7 +8,8 @@ CPPFLAGS =							\
 
 INCLUDES =							\
 	-I$(top_srcdir)						\
-	-I$(top_srcdir)/components/services/trilobite/libtrilobite\
+	-I$(top_srcdir)/components/services/trilobite/libtrilobite \
+	-I$(top_srcdir)/components/services/nautilus-dependant-shared \
 	-I$(top_builddir)					\
 	$(GNOMEUI_CFLAGS)                       		\
 	$(GCONF_CFLAGS) 					\
@@ -34,9 +35,10 @@ nautilus_service_startup_view_SOURCES =		\
 
 nautilus_service_startup_view_LDADD =                                     \
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
+	$(top_builddir)/components/services/nautilus-dependant-shared/libnautilusdepshared.a \
 	$(top_builddir)/libnautilus/libnautilus.la                        \
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la  \
-	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
+	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la   \
+	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la    \
 	$(top_builddir)/librsvg/librsvg.la                                \
 	$(BONOBO_LIBS)                                                    \
 	$(GNOMEUI_LIBS)                                                   \
