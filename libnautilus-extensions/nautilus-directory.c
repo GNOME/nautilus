@@ -77,6 +77,11 @@ static void nautilus_directory_request_write_metafile (NautilusDirectory *direct
 static void nautilus_directory_remove_write_metafile_idle (NautilusDirectory *directory);
 
 static void nautilus_file_detach (NautilusFile *file);
+static int  nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
+					 	     NautilusFile *file_2,
+					 	     NautilusFileSortType sort_type,
+					 	     gboolean reversed);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDirectory, nautilus_directory, GTK_TYPE_OBJECT)
 
@@ -778,14 +783,15 @@ NautilusFile *
 nautilus_file_get (const char *uri)
 {
 	GnomeVFSResult result;
-	GnomeVFSFileInfo file_info;
+	GnomeVFSFileInfo *file_info;
 	GnomeVFSURI *vfs_uri, *directory_vfs_uri;
 	char *directory_uri;
 	NautilusDirectory *directory;
 	NautilusFile *file;
 
 	/* Get info on the file. */
-	result = gnome_vfs_get_file_info (uri, &file_info,
+	file_info = gnome_vfs_file_info_new ();
+	result = gnome_vfs_get_file_info (uri, file_info,
 					  GNOME_VFS_FILE_INFO_FASTMIMETYPE, NULL);
 	if (result != GNOME_VFS_OK)
 		return NULL;
@@ -812,9 +818,30 @@ nautilus_file_get (const char *uri)
 	if (directory == NULL)
 		return NULL;
 
-	file = nautilus_directory_new_file (directory, &file_info);
+	file = nautilus_directory_new_file (directory, file_info);
+
+	gnome_vfs_file_info_unref (file_info);
+	nautilus_file_ref (file);
 	gtk_object_unref (GTK_OBJECT (directory));
+	
 	return file;
+}
+
+void
+nautilus_file_ref (NautilusFile *file)
+{
+	g_return_if_fail (file != NULL);
+
+	g_assert (file->ref_count < UINT_MAX);
+	g_assert (file->directory != NULL);
+
+	/* Increment the ref count. */
+	if (file->ref_count++ != 0)
+		return;
+
+	/* As soon as someone other than the directory holds a ref, 
+	 * we need to hold the directory too. */
+	gtk_object_ref (GTK_OBJECT (file->directory));
 }
 
 void
@@ -840,6 +867,109 @@ nautilus_file_detach (NautilusFile *file)
 
 	/* Destroy the file object. */
 	gnome_vfs_file_info_unref (file->info);
+}
+
+static int
+nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
+					 NautilusFile *file_2,
+					 NautilusFileSortType sort_type,
+					 gboolean reversed)
+{
+	GnomeVFSDirectorySortRule *rules;
+
+	g_return_val_if_fail (file_1 != NULL, 0);
+	g_return_val_if_fail (file_2 != NULL, 0);
+	g_return_val_if_fail (sort_type != NAUTILUS_FILE_SORT_NONE, 0);
+
+#define ALLOC_RULES(n) alloca ((n) * sizeof (GnomeVFSDirectorySortRule))
+
+	switch (sort_type) {
+	case NAUTILUS_FILE_SORT_BY_NAME:
+		rules = ALLOC_RULES (2);
+		/* Note: This used to put directories first. I
+		 * thought that was counterintuitive and removed it,
+		 * but I can imagine discussing this further.
+		 * John Sullivan <sullivan@eazel.com>
+		 */
+		rules[0] = GNOME_VFS_DIRECTORY_SORT_BYNAME;
+		rules[1] = GNOME_VFS_DIRECTORY_SORT_NONE;
+		break;
+	case NAUTILUS_FILE_SORT_BY_SIZE:
+		rules = ALLOC_RULES (4);
+		rules[0] = GNOME_VFS_DIRECTORY_SORT_DIRECTORYFIRST;
+		rules[1] = GNOME_VFS_DIRECTORY_SORT_BYSIZE;
+		rules[2] = GNOME_VFS_DIRECTORY_SORT_BYNAME;
+		rules[3] = GNOME_VFS_DIRECTORY_SORT_NONE;
+		break;
+	case NAUTILUS_FILE_SORT_BY_TYPE:
+		rules = ALLOC_RULES (4);
+		rules[0] = GNOME_VFS_DIRECTORY_SORT_DIRECTORYFIRST;
+		rules[1] = GNOME_VFS_DIRECTORY_SORT_BYMIMETYPE;
+		rules[2] = GNOME_VFS_DIRECTORY_SORT_BYNAME;
+		rules[3] = GNOME_VFS_DIRECTORY_SORT_NONE;
+		break;
+	case NAUTILUS_FILE_SORT_BY_MTIME:
+		rules = ALLOC_RULES (3);
+		rules[0] = GNOME_VFS_DIRECTORY_SORT_BYMTIME;
+		rules[1] = GNOME_VFS_DIRECTORY_SORT_BYNAME;
+		rules[2] = GNOME_VFS_DIRECTORY_SORT_NONE;
+		break;
+	default:
+		g_assert_not_reached ();
+		return 0;
+	}
+
+	if (reversed)
+		return gnome_vfs_file_info_compare_for_sort_reversed (file_1->info,
+								      file_2->info,
+								      rules);
+	else
+		return gnome_vfs_file_info_compare_for_sort (file_1->info,
+							     file_2->info,
+							     rules);
+
+#undef ALLOC_RULES
+}
+
+/**
+ * nautilus_file_compare_for_sort:
+ * @file_1: A file object
+ * @file_2: Another file object
+ * @sort_type: Sort criterion
+ * 
+ * Return value: int < 0 if @file_1 should come before file_2 in a smallest-to-largest
+ * sorted list; int > 0 if @file_2 should come before file_1 in a smallest-to-largest
+ * sorted list; 0 if @file_1 and @file_2 are equal for this sort criterion. Note
+ * that each named sort type may actually break ties several ways, with the name
+ * of the sort criterion being the primary but not only differentiator.
+ **/
+int
+nautilus_file_compare_for_sort (NautilusFile *file_1,
+				NautilusFile *file_2,
+				NautilusFileSortType sort_type)
+{
+	return nautilus_file_compare_for_sort_internal (file_1, file_2, sort_type, FALSE);
+}
+
+/**
+ * nautilus_file_compare_for_sort_reversed:
+ * @file_1: A file object
+ * @file_2: Another file object
+ * @sort_type: Sort criterion
+ * 
+ * Return value: The opposite of nautilus_file_compare_for_sort: int > 0 if @file_1 
+ * should come before file_2 in a smallest-to-largest sorted list; int < 0 if @file_2 
+ * should come before file_1 in a smallest-to-largest sorted list; 0 if @file_1 
+ * and @file_2 are equal for this sort criterion. Note that each named sort type 
+ * may actually break ties several ways, with the name of the sort criterion 
+ * being the primary but not only differentiator.
+ **/
+int
+nautilus_file_compare_for_sort_reversed (NautilusFile *file_1,
+					 NautilusFile *file_2,
+					 NautilusFileSortType sort_type)
+{
+	return nautilus_file_compare_for_sort_internal (file_1, file_2, sort_type, TRUE);
 }
 
 char *
@@ -1113,6 +1243,8 @@ void
 nautilus_self_check_directory (void)
 {
 	NautilusDirectory *directory;
+	NautilusFile *file_1;
+	NautilusFile *file_2;
 
 	directory = nautilus_directory_get ("file:///etc");
 
@@ -1143,6 +1275,17 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("a%a"), "a%25a");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("%25"), "%2525");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("%2F"), "%252F");
+
+	/* sorting */
+	file_1 = nautilus_file_get ("file:///etc");
+	file_2 = nautilus_file_get ("file:///usr");
+
+	NAUTILUS_CHECK_INTEGER_RESULT (file_1->ref_count, 1);
+	NAUTILUS_CHECK_INTEGER_RESULT (file_2->ref_count, 1);
+
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_2, NAUTILUS_FILE_SORT_BY_NAME) < 0, TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort_reversed (file_1, file_2, NAUTILUS_FILE_SORT_BY_NAME) > 0, TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME) == 0, TRUE);
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

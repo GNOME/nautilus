@@ -57,6 +57,15 @@ typedef struct _NautilusDirectoryClass NautilusDirectoryClass;
 #define NAUTILUS_IS_DIRECTORY_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DIRECTORY))
 
+enum _NautilusFileSortType {
+	NAUTILUS_FILE_SORT_NONE,
+	NAUTILUS_FILE_SORT_BY_NAME,
+	NAUTILUS_FILE_SORT_BY_SIZE,
+	NAUTILUS_FILE_SORT_BY_TYPE,
+	NAUTILUS_FILE_SORT_BY_MTIME
+};
+typedef enum _NautilusFileSortType NautilusFileSortType;	
+
 typedef struct _NautilusFile NautilusFile;
 typedef GList NautilusFileList;
 
@@ -130,10 +139,20 @@ void               nautilus_file_set_metadata             (NautilusFile         
 							   const char               *default_metadata,
 							   const char               *metadata);
 
-/* Utility functions for formatting file-related information. */
+/* Attributes for file objects as user-displayable strings. */
 char *             nautilus_file_get_date_as_string       (NautilusFile             *file);
 char *             nautilus_file_get_size_as_string       (NautilusFile             *file);
 char *             nautilus_file_get_type_as_string       (NautilusFile             *file);
+
+/* Comparing two file objects for sorting */
+int		   nautilus_file_compare_for_sort	  (NautilusFile		    *file_1,
+							   NautilusFile		    *file_2,
+							   NautilusFileSortType     sort_type);
+
+int		   nautilus_file_compare_for_sort_reversed (NautilusFile	    *file_1,
+							   NautilusFile		    *file_2,
+							   NautilusFileSortType     sort_type);
+							   
 
 /* Return true if this file has already been deleted.
    This object will be unref'd after sending the files_removed signal,

@@ -827,11 +827,6 @@ void
 fm_directory_view_load_uri (FMDirectoryView *view,
 			    const char *uri)
 {
-	static GnomeVFSDirectorySortRule sort_rules[] = {
-		GNOME_VFS_DIRECTORY_SORT_DIRECTORYFIRST,
-		GNOME_VFS_DIRECTORY_SORT_BYNAME,
-		GNOME_VFS_DIRECTORY_SORT_NONE
-	};			/* FIXME */
 	GnomeVFSResult result;
 	Nautilus_ProgressRequestInfo pri;
 	NautilusDirectory *old_model;
@@ -872,7 +867,7 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 		  | GNOME_VFS_FILE_INFO_FASTMIMETYPE
 		  | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
 		 NULL, 					/* meta_keys */
-		 sort_rules, 				/* sort_rules */
+		 NULL, 					/* sort_rules */
 		 FALSE, 				/* reverse_order */
 		 GNOME_VFS_DIRECTORY_FILTER_NONE, 	/* filter_type */
 		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR  /* filter_options */
@@ -933,7 +928,7 @@ fm_directory_view_sort (FMDirectoryView *view,
 	case FM_DIRECTORY_VIEW_SORT_BYNAME:
 		rules = ALLOC_RULES (2);
 		/* Note: This used to put directories first. I
-		 * thought that was counterproductive and removed it,
+		 * thought that was counterintuitive and removed it,
 		 * but I can imagine discussing this further.
 		 * John Sullivan <sullivan@eazel.com>
 		 */
