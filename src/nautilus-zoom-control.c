@@ -560,6 +560,10 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
 	
 	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
 
+	if (event->type != GDK_BUTTON_PRESS) {
+		return FALSE;
+	}
+	
 	/* check for the context menu button and handle by creating and showing the menu */  
 	if (event->button == CONTEXTUAL_MENU_BUTTON) {
 		eel_pop_up_context_menu (create_zoom_menu (zoom_control), 

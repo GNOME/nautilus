@@ -1,5 +1,9 @@
 2002-04-21  Anders Carlsson  <andersca@gnu.org>
 
+	* src/nautilus-zoom-control.c 
+	(nautilus_zoom_control_button_press_event): 
+	Don't do anything with double-click or triple-click events.
+
 	* components/text/nautilus-text-view.c:
 	(nautilus_text_view_finalize), (nautilus_text_view_class_init):
 	NautilusView is a GObject, not a GtkObject.
