@@ -40,6 +40,8 @@ typedef struct NautilusReadFileHandle NautilusReadFileHandle;
 
 char *                  nautilus_format_uri_for_display       (const char                *uri);
 char *                  nautilus_make_uri_from_input          (const char                *location);
+char *			nautilus_make_uri_from_shell_arg      (const char 		 *location);
+
 gboolean                nautilus_uri_is_trash                 (const char                *uri);
 gboolean		nautilus_uri_is_trash_folder 	      (const char 		 *uri);
 gboolean                nautilus_uri_is_in_trash              (const char                *uri);
@@ -48,6 +50,10 @@ gboolean                nautilus_uris_match                   (const char       
 							       const char                *uri_2);
 char *                  nautilus_uri_get_basename             (const char                *uri);
 char *                  nautilus_uri_get_scheme               (const char                *uri);
+
+char *			nautilus_uri_make_full_from_relative  (const char 		 *base_uri,
+							       const char 		 *uri);
+
 
 /* FIXME bugzilla.eazel.com 2424: 
  * This is the same as gnome-libs g_concat_dir_and_file except

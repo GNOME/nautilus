@@ -307,10 +307,11 @@ nautilus_strv_length (const char * const *strv)
 }
 
 static Nautilus_URIList *
-nautilus_make_uri_list_from_strv (const char * const *strv)
+nautilus_make_uri_list_from_shell_strv (const char * const *strv)
 {
 	int length, i;
 	Nautilus_URIList *uri_list;
+	char *translated_uri;
 
 	length = nautilus_strv_length (strv);
 
@@ -319,7 +320,10 @@ nautilus_make_uri_list_from_strv (const char * const *strv)
 	uri_list->_length = length;
 	uri_list->_buffer = CORBA_sequence_Nautilus_URI_allocbuf (length);
 	for (i = 0; i < length; i++) {
-		uri_list->_buffer[i] = CORBA_string_dup (strv[i]);
+		translated_uri = nautilus_make_uri_from_shell_arg (strv[i]);
+		uri_list->_buffer[i] = CORBA_string_dup (translated_uri);
+		g_free (translated_uri);
+		translated_uri = NULL;
 	}
 	CORBA_sequence_set_release (uri_list, CORBA_TRUE);
 
@@ -490,7 +494,7 @@ nautilus_application_startup (NautilusApplication *application,
 
 	  	/* Create the other windows. */
 		if (urls != NULL) {
-			url_list = nautilus_make_uri_list_from_strv (urls);
+			url_list = nautilus_make_uri_list_from_shell_strv (urls);
 			Nautilus_Shell_open_windows (shell, url_list, corba_geometry, &ev);
 			CORBA_free (url_list);
 		} else if (!no_default_window) {

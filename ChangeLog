@@ -1,3 +1,28 @@
+2001-02-11  Michael K. Fleming  <mfleming@eazel.com>
+
+	reviewed by: <sullivan@eazel.com>
+
+	Bug 5961: Starting nautilus with path to local HTML file
+	causes images not to load.
+
+	The problem here was that any argument specified on the commandline
+	was being passed directly into Nautilus and its components as a
+	valid URI.  Added pre-processing to commandline arguments, including
+	ability to handle relative file pathnames. (so you can do "nautilus ."
+	to open a window on the current directory)
+
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(file_uri_from_local_relative_path),
+	(nautilus_make_uri_from_shell_arg), (is_uri_partial),
+	(remove_internal_relative_components),
+	(nautilus_uri_make_full_from_relative),
+	(nautilus_self_check_file_utilities):
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	* src/nautilus-application.c:
+	(nautilus_make_uri_list_from_shell_strv),
+	(nautilus_application_startup):
+
+
 2001-02-12  Rebecca Schulman  <rebecka@eazel.com>
 	Fix bugzilla.eazel.com bug 4962 that open with
 	mpg123 fails.  The problem was a check for 
