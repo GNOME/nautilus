@@ -1,5 +1,11 @@
 2003-05-16  Padraig O'Briain  <padraig.obriain@sun.com>
 
+        * src/file-manager/fm-list-view.c:
+        Use the signal "popup_menu" to handle Shift+F10 instead of doing
+        it in "key_press_event" signal handler. This fixes bug #103348.
+
+2003-05-16  Padraig O'Briain  <padraig.obriain@sun.com>
+
 	* libnautilus-private/nautilus-program-chooser.c:
 	(nautilus_program_chooser_instance_init): Add calls to 
 	gtk_label_set_mnemonic_widget so that ATK relation label-for and
