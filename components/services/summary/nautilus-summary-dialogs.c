@@ -178,7 +178,6 @@ nautilus_summary_show_login_dialog (NautilusSummaryView *view)
 	/* right justify the caption table box */
 	caption_hbox = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (caption_hbox);
-	gtk_widget_set_usize (view->details->caption_table, 260, -1);
 	gtk_box_pack_end (GTK_BOX (caption_hbox), view->details->caption_table, FALSE, FALSE, 0);
 	
 	gtk_box_pack_start (GTK_BOX (hbox), message, FALSE, FALSE, 0);	

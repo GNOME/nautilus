@@ -1,3 +1,14 @@
+2001-03-05  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: John Harper  <jsh@eazel.com>
+
+	Fix bug 7391 (The logon dialog box for services has input boxes
+	larger that the dialog can contain)
+
+	* components/services/summary/nautilus-summary-dialogs.c
+	(nautilus_summary_show_login_dialog): Remove the line that was
+	setting a hardcoded width.
+
 2001-03-05  Eric Fischer  <eric@eazel.com>
 
 	reviewed by: Don Melton <don@eazel.com>
