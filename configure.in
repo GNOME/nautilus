@@ -211,15 +211,17 @@ dnl exif checking
 
 AC_MSG_CHECKING(for libExif)
 
-PKG_CHECK_MODULES(EXIF, libexif >= exif_minver, have_exif=yes, have_exif=no)
-if test "x$have_exif" = "xyes"; then
-	AC_DEFINE(HAVE_EXIF, 1, [Define to enable EXIF support])
-	AC_SUBST(EXIF_CFLAGS)
-	AC_SUBST(EXIF_LIBS)
-	PKG_CHECK_MODULES(EXIF, libexif = exif_minver, [
-		AC_DEFINE(HAVE_OLD_EXIF, 1, [Define if your EXIF library has old API.])
-	])
-fi
+PKG_CHECK_MODULES(EXIF, libexif > exif_minver, [
+    AC_DEFINE(HAVE_EXIF, 1, [Define to enable EXIF support])
+    AC_SUBST(EXIF_CFLAGS)
+    AC_SUBST(EXIF_LIBS)
+  ], [
+    PKG_CHECK_MODULES(EXIF, libexif = exif_minver, [
+      AC_DEFINE(HAVE_EXIF, 1)
+      AC_DEFINE(HAVE_OLD_EXIF, 1, [Define if your EXIF library has old API.])
+      AC_SUBST(EXIF_CFLAGS)
+      AC_SUBST(EXIF_LIBS)
+])])
 
 dnl ==========================================================================
 
