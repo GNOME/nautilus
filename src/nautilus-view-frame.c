@@ -40,7 +40,9 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <libnautilus/nautilus-view.h>
-#include <libnautilus/nautilus-zoomable.h>
+
+#include <bonobo/bonobo-zoomable-frame.h>
+#include <bonobo/bonobo-zoomable.h>
 
 enum {
 	CHANGE_SELECTION,
@@ -55,6 +57,7 @@ enum {
 	OPEN_LOCATION_IN_NEW_WINDOW,
 	TITLE_CHANGED,
 	ZOOM_LEVEL_CHANGED,
+	ZOOM_PARAMETERS_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -194,6 +197,14 @@ nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
 				    zoom_level_changed),
 		 gtk_marshal_NONE__NONE,
 		 GTK_TYPE_NONE, 0);
+	signals[ZOOM_PARAMETERS_CHANGED] = gtk_signal_new
+		("zoom_parameters_changed",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
+				    zoom_parameters_changed),
+		 gtk_marshal_NONE__NONE,
+		 GTK_TYPE_NONE, 0);
 	
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }
@@ -226,17 +237,12 @@ nautilus_view_frame_destroy_client (NautilusViewFrame *view)
 	gtk_container_remove (GTK_CONTAINER (view), view->client_widget);
 	view->client_widget = NULL;
 
-	if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
-		bonobo_object_release_unref (view->zoomable, &ev);
-	}
-	view->zoomable = CORBA_OBJECT_NIL;
-
 	bonobo_object_unref (view->view_frame);
 	view->view_frame = NULL;
 	/* we can NULL those since we just unref'ed them 
 	   with the aggregate view frame. */
-	view->history_frame = CORBA_OBJECT_NIL;
-	view->zoomable_frame = CORBA_OBJECT_NIL;
+	view->history_frame = NULL;
+	view->zoomable_frame = NULL;
 
 	CORBA_exception_free (&ev);
 	
@@ -562,6 +568,28 @@ check_if_view_is_gone (gpointer data)
 	return ok;
 }
 
+static void
+zoom_level_changed_callback (BonoboZoomableFrame *zframe, float zoom_level, NautilusViewFrame *view)
+{
+	g_return_if_fail (zframe != NULL);
+	g_return_if_fail (BONOBO_IS_ZOOMABLE_FRAME (zframe));
+	g_return_if_fail (view != NULL);
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
+	gtk_signal_emit (GTK_OBJECT (view), signals[ZOOM_LEVEL_CHANGED], zoom_level);
+}
+
+static void
+zoom_parameters_changed_callback (BonoboZoomableFrame *zframe, NautilusViewFrame *view)
+{
+	g_return_if_fail (zframe != NULL);
+	g_return_if_fail (BONOBO_IS_ZOOMABLE_FRAME (zframe));
+	g_return_if_fail (view != NULL);
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
+	gtk_signal_emit (GTK_OBJECT (view), signals[ZOOM_PARAMETERS_CHANGED]);
+}
+
 static gboolean
 nautilus_view_frame_set_to_component (NautilusViewFrame *view, BonoboObjectClient *component)
 {
@@ -569,7 +597,12 @@ nautilus_view_frame_set_to_component (NautilusViewFrame *view, BonoboObjectClien
 	Nautilus_View adapted;
 	Bonobo_Control control;
 	BonoboControlFrame *control_frame;
-	NautilusComponentAdapterFactory *adapter_factory;	
+	NautilusComponentAdapterFactory *adapter_factory;
+	Bonobo_Zoomable zoomable;
+  	
+	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
+
+	CORBA_exception_init (&ev);
 
 	/* Either create an adapter or query for the Nautilus:View
 	 * interface. Either way, we don't need to keep the original
@@ -606,10 +639,22 @@ nautilus_view_frame_set_to_component (NautilusViewFrame *view, BonoboObjectClien
 		(BONOBO_OBJECT (view->client_object),
 		 "IDL:Bonobo/Control:1.0");
 	g_assert (control != CORBA_OBJECT_NIL);
-	view->zoomable = bonobo_object_query_interface
-		(BONOBO_OBJECT (view->client_object), 
-		 "IDL:Nautilus/Zoomable:1.0");
-	
+
+	/* Add a zoomable frame interface. */
+	zoomable = Bonobo_Unknown_queryInterface
+		(control, "IDL:Bonobo/Zoomable:1.0", &ev);
+	if ((ev._major == CORBA_NO_EXCEPTION) && !CORBA_Object_is_nil (zoomable, &ev)) {
+		view->zoomable_frame = bonobo_zoomable_frame_new ();
+
+		gtk_signal_connect (GTK_OBJECT (view->zoomable_frame), "zoom_level_changed",
+				    GTK_SIGNAL_FUNC (zoom_level_changed_callback), view);
+		gtk_signal_connect (GTK_OBJECT (view->zoomable_frame), "zoom_parameters_changed",
+				    GTK_SIGNAL_FUNC (zoom_parameters_changed_callback), view);
+
+		bonobo_zoomable_frame_bind_to_zoomable (view->zoomable_frame, zoomable);
+		bonobo_object_release_unref (zoomable, &ev);
+	}
+
 	/* Start with a view frame interface. */
 	view->view_frame = impl_Nautilus_ViewFrame__create (view, &ev);
 	if (ev._major != CORBA_NO_EXCEPTION) {
@@ -624,14 +669,13 @@ nautilus_view_frame_set_to_component (NautilusViewFrame *view, BonoboObjectClien
 	bonobo_control_frame_bind_to_control (control_frame, control);
 	view->client_widget = bonobo_control_frame_get_widget (control_frame);
 
-	/* Add a zoomable frame interface. */
-	view->zoomable_frame = impl_Nautilus_ZoomableFrame__create (view, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		/* FIXME: Cleanup needed here. */
-		return FALSE;
-	}
-	bonobo_object_add_interface (BONOBO_OBJECT (view->view_frame), 
-	                             BONOBO_OBJECT (view->zoomable_frame));
+
+ 	if (view->zoomable_frame) {
+ 		bonobo_object_add_interface (BONOBO_OBJECT (view->view_frame), 
+ 					     BONOBO_OBJECT (view->zoomable_frame));
+  
+ 		gtk_signal_emit_by_name (GTK_OBJECT (view->zoomable_frame), "zoom_parameters_changed");
+ 	}
 
 	/* Add a history frame interface. */
 	view->history_frame = impl_Nautilus_HistoryFrame__create (view, &ev);
@@ -645,7 +689,7 @@ nautilus_view_frame_set_to_component (NautilusViewFrame *view, BonoboObjectClien
 	/* Add an undo context interface. */
 	nautilus_undo_manager_add_interface
         	(view->undo_manager, BONOBO_OBJECT (view->view_frame));
-	
+
 	bonobo_object_release_unref (control, NULL);
 	
 	CORBA_exception_free (&ev);
@@ -837,14 +881,9 @@ nautilus_view_frame_title_changed (NautilusViewFrame *view,
 gboolean
 nautilus_view_frame_is_zoomable (NautilusViewFrame *view)
 {
-	CORBA_Environment ev;
 	gboolean is_zoomable;
 	
-	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
-	
-	CORBA_exception_init (&ev);
-	is_zoomable = !CORBA_Object_is_nil (view->zoomable, &ev);
-	CORBA_exception_free (&ev);
+	is_zoomable = view->zoomable_frame != NULL;
 	
 	return is_zoomable;
 }
@@ -852,162 +891,123 @@ nautilus_view_frame_is_zoomable (NautilusViewFrame *view)
 gdouble
 nautilus_view_frame_get_zoom_level (NautilusViewFrame *view)
 {
-	CORBA_Environment ev;
-	double level;
-	
-	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), 0);
-	
-	CORBA_exception_init (&ev);
-	
-	if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
-		level = Nautilus_Zoomable__get_zoom_level (view->zoomable, &ev);
-	} else {
-		level = 1.0;
-	}
+	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), 0.0);
 
-	CORBA_exception_free (&ev);
-	
-	return level;
+	if (view->zoomable_frame == NULL)
+		return 0.0;
+
+	return (gdouble) bonobo_zoomable_frame_get_zoom_level (view->zoomable_frame);
 }
 
 void
 nautilus_view_frame_set_zoom_level (NautilusViewFrame *view,
 				    double zoom_level)
 {
-	CORBA_Environment ev;
-	
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-	
-	CORBA_exception_init (&ev);
-	
-	if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
-		Nautilus_Zoomable__set_zoom_level (view->zoomable, zoom_level, &ev);
-	} else {
-		/* do nothing */
-	}
-	
-	CORBA_exception_free (&ev);
+
+	if (view->zoomable_frame == NULL)
+		return;
+
+	bonobo_zoomable_frame_set_zoom_level (view->zoomable_frame, (float) zoom_level);
 }
 
 gdouble
 nautilus_view_frame_get_min_zoom_level (NautilusViewFrame *view)
 {
-	CORBA_Environment ev;
-	double level;
-	
-	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), 0);
-	
-	CORBA_exception_init (&ev);
-	
-	if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
-		level = Nautilus_Zoomable__get_min_zoom_level (view->zoomable, &ev);
-	} else {
-		level = 1.0;
-	}
-	
-	CORBA_exception_free (&ev);
-	
-	return level;
+	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), 0.0);
+
+	if (view->zoomable_frame == NULL)
+		return 0.0;
+
+	return (gdouble) bonobo_zoomable_frame_get_min_zoom_level (view->zoomable_frame);
 }
 
 double
 nautilus_view_frame_get_max_zoom_level (NautilusViewFrame *view)
 {
-	CORBA_Environment ev;
-	double level;
+	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), 0.0);
 	
-	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), 0);
+	if (view->zoomable_frame == NULL)
+		return 0.0;
+
+	return (gdouble) bonobo_zoomable_frame_get_max_zoom_level (view->zoomable_frame);
+}
+
+gboolean
+nautilus_view_frame_get_has_min_zoom_level (NautilusViewFrame *view)
+{
+	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
 	
-	CORBA_exception_init (&ev);
+	if (view->zoomable_frame == NULL)
+		return FALSE;
+
+	return bonobo_zoomable_frame_has_min_zoom_level (view->zoomable_frame);
+}
+
+gboolean
+nautilus_view_frame_get_has_max_zoom_level (NautilusViewFrame *view)
+{
+	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
 	
-	if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
-		level = Nautilus_Zoomable__get_max_zoom_level (view->zoomable, &ev);
-	} else {
-		level = 1.0;
-	}
+	if (view->zoomable_frame == NULL)
+		return FALSE;
+
+	return bonobo_zoomable_frame_has_max_zoom_level (view->zoomable_frame);
+}
+
+gboolean
+nautilus_view_frame_get_is_continuous (NautilusViewFrame *view)
+{
+	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
 	
-	CORBA_exception_free (&ev);
-	
-	return level;
+	if (view->zoomable_frame == NULL)
+		return FALSE;
+
+	return bonobo_zoomable_frame_is_continuous (view->zoomable_frame);
 }
 
 GList *
 nautilus_view_frame_get_preferred_zoom_levels (NautilusViewFrame *view)
 {
-	CORBA_Environment ev;
-	GList *levels;
-	Nautilus_ZoomLevelList *zoom_levels;
-	
-	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), 0);
-	
-	CORBA_exception_init (&ev);
-	
-	if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
-		zoom_levels = Nautilus_Zoomable__get_preferred_zoom_levels (view->zoomable, &ev);
-		levels = nautilus_g_list_from_ZoomLevelList (zoom_levels);
-		CORBA_free (zoom_levels);
-		
-	} else {
-		levels = NULL;
-	}
-	
-	CORBA_exception_free (&ev);
-	
-	return levels;
+	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), NULL);
+
+	if (view->zoomable_frame == NULL)
+		return NULL;
+
+	return bonobo_zoomable_frame_get_preferred_zoom_levels (view->zoomable_frame);
 }
 
 void
 nautilus_view_frame_zoom_in (NautilusViewFrame *view)
 {
-	CORBA_Environment ev;
-	
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-	
-	CORBA_exception_init (&ev);
-	
-	if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
-		Nautilus_Zoomable_zoom_in (view->zoomable, &ev);
-	} else {
-		/* do nothing */
-	}
-	
-	CORBA_exception_free (&ev);
+
+	if (view->zoomable_frame == NULL)
+		return;
+
+	bonobo_zoomable_frame_zoom_in (view->zoomable_frame);
 }
 
 void
 nautilus_view_frame_zoom_out (NautilusViewFrame *view)
 {
-	CORBA_Environment ev;
-	
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 	
-	CORBA_exception_init (&ev);
-	
-	if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
-		Nautilus_Zoomable_zoom_out (view->zoomable, &ev);
-	} else {
-		/* do nothing */
-	}
-	
-	CORBA_exception_free (&ev);
+	if (view->zoomable_frame == NULL)
+		return;
+
+	bonobo_zoomable_frame_zoom_out (view->zoomable_frame);
 }
 
 void
 nautilus_view_frame_zoom_to_fit (NautilusViewFrame *view)
 {
-	CORBA_Environment ev;
-	
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 	
-	CORBA_exception_init (&ev);
-	
-	if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
-		Nautilus_Zoomable_zoom_to_fit (view->zoomable, &ev);
-	} else {
-		/* do nothing */
-	}
-	
-	CORBA_exception_free (&ev);
+	if (view->zoomable_frame == NULL)
+		return;
+
+	bonobo_zoomable_frame_zoom_to_fit (view->zoomable_frame);
 }
 
 const char *
@@ -1124,16 +1124,6 @@ char *
 nautilus_view_frame_get_title (NautilusViewFrame *view)
 {
 	return g_strdup (view->details->title);
-}
-
-void
-nautilus_view_frame_zoom_level_changed (NautilusViewFrame *view,
-                                        double level)
-{
-	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-
-	view_frame_wait_is_over (view);
-	gtk_signal_emit (GTK_OBJECT (view), signals[ZOOM_LEVEL_CHANGED]);
 }
 
 char *

@@ -1474,37 +1474,90 @@ zoom_level_changed_callback (NautilusViewFrame *view,
 {
         g_assert (NAUTILUS_IS_WINDOW (window));
 
+        /* This is called each time the component successfully completed
+         * a zooming operation.
+         */
+
 	nautilus_zoom_control_set_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control),
                                               nautilus_view_frame_get_zoom_level (view));
 
-	/* We rely on the initial zoom_level_changed signal to inform us that the
-	 * view-frame is showing a new zoomable.
-	 */
-	if (!GTK_WIDGET_VISIBLE (window->zoom_control)) {
-		nautilus_zoom_control_set_min_zoom_level
-			(NAUTILUS_ZOOM_CONTROL (window->zoom_control),
-			 nautilus_view_frame_get_min_zoom_level (view));
-		nautilus_zoom_control_set_max_zoom_level
-			(NAUTILUS_ZOOM_CONTROL (window->zoom_control),
-			 nautilus_view_frame_get_max_zoom_level (view));
-		nautilus_zoom_control_set_preferred_zoom_levels
-			(NAUTILUS_ZOOM_CONTROL (window->zoom_control),
-			 nautilus_view_frame_get_preferred_zoom_levels (view));
-	}
-
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 				       NAUTILUS_COMMAND_ZOOM_IN,
-				       nautilus_view_frame_get_zoom_level (view)
-                                       < nautilus_view_frame_get_max_zoom_level (view));
+				       nautilus_zoom_control_can_zoom_in (NAUTILUS_ZOOM_CONTROL (window->zoom_control)));
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 				       NAUTILUS_COMMAND_ZOOM_OUT,
-				       nautilus_view_frame_get_zoom_level (view)
-                                       > nautilus_view_frame_get_min_zoom_level (view));
+				       nautilus_zoom_control_can_zoom_out (NAUTILUS_ZOOM_CONTROL (window->zoom_control)));
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 				       NAUTILUS_COMMAND_ZOOM_NORMAL,
 				       TRUE);
 	/* FIXME bugzilla.eazel.com 3442: Desensitize "Zoom Normal"? */
 }
+
+static void
+zoom_parameters_changed_callback (NautilusViewFrame *view,
+                                  NautilusWindow *window)
+{
+        double zoom_level;
+
+        g_assert (NAUTILUS_IS_WINDOW (window));
+
+        /* This callback is invoked via the "zoom_parameters_changed"
+         * signal of the BonoboZoomableFrame.
+         * 
+         * You can rely upon this callback being called in the following
+         * situations:
+         *
+         * - a zoomable component has been set in the NautilusViewFrame;
+         *   in this case nautilus_view_frame_set_to_component() emits the
+         *   "zoom_parameters_changed" signal after creating the
+         *   BonoboZoomableFrame and binding it to the Bonobo::Zoomable.
+         *
+         *   This means that we can use the following call to
+         *   nautilus_zoom_control_set_parameters() to display the zoom
+         *   control when a new zoomable component has been loaded.
+         *
+         * - a new file has been loaded by the zoomable component; this is
+         *   not 100% guaranteed since it's up to the component to emit this
+         *   signal, but I consider it "good behaviour" of a component to
+         *   emit this signal after loading a new file.
+         */
+
+        nautilus_zoom_control_set_parameters
+                (NAUTILUS_ZOOM_CONTROL (window->zoom_control),
+                 nautilus_view_frame_get_min_zoom_level (view),
+                 nautilus_view_frame_get_max_zoom_level (view),
+                 nautilus_view_frame_get_has_min_zoom_level (view),
+                 nautilus_view_frame_get_has_max_zoom_level (view),
+                 nautilus_view_frame_get_preferred_zoom_levels (view));
+
+        /* The initial zoom level of a component is allowed to be 0.0 if
+         * there is no file loaded yet. In this case we need to set the
+         * commands insensitive but display the zoom control nevertheless
+         * (the component is just temporarily unable to zoom, but the
+         *  zoom control will "do the right thing" here).
+         */
+        zoom_level = nautilus_view_frame_get_zoom_level (view);
+        if (zoom_level == 0.0) {
+                nautilus_bonobo_set_sensitive (window->details->shell_ui,
+                                               NAUTILUS_COMMAND_ZOOM_IN,
+                                               FALSE);
+                nautilus_bonobo_set_sensitive (window->details->shell_ui,
+                                               NAUTILUS_COMMAND_ZOOM_OUT,
+                                               FALSE);
+                nautilus_bonobo_set_sensitive (window->details->shell_ui,
+                                               NAUTILUS_COMMAND_ZOOM_NORMAL,
+                                               FALSE);
+
+                /* Don't attempt to set 0.0 as zoom level. */
+                return;
+        }
+
+        /* "zoom_parameters_changed" always implies "zoom_level_changed",
+         * but you won't get both signals, so we need to pass it down.
+         */
+        zoom_level_changed_callback (view, window);
+}
+
 
 static Nautilus_HistoryList *
 get_history_list_callback (NautilusViewFrame *view,
@@ -1652,7 +1705,8 @@ title_changed_callback (NautilusViewFrame *view,
 	macro (open_location)			\
 	macro (open_location_in_new_window)	\
 	macro (title_changed)			\
-	macro (zoom_level_changed)
+	macro (zoom_level_changed)              \
+        macro (zoom_parameters_changed)
 
 static void
 connect_view (NautilusWindow *window, NautilusViewFrame *view)

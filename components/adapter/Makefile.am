@@ -45,6 +45,8 @@ nautilus_adapter_SOURCES =				\
 	nautilus-adapter-progressive-load-strategy.h	\
 	nautilus-adapter-stream-load-strategy.c		\
 	nautilus-adapter-stream-load-strategy.h		\
+	nautilus-zoomable-proxy.c			\
+	nautilus-zoomable-proxy.h			\
 	nautilus-adapter.c				\
 	nautilus-adapter.h				\
 	$(NULL)
@@ -67,3 +69,4 @@ nautilus_adapter_LDADD =							\
 
 
 EXTRA_DIST = $(oaf_DATA)
+

@@ -1,3 +1,161 @@
+2000-10-22  Martin Baulig  <baulig@suse.de>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	Use the new Bonobo::Zoomable interface instead of Nautilus::Zoomable.
+
+	* libnautilus/nautilus-zoomable.[ch]: Removed.
+	* src/nautilus-zoomable-frame-corba.c: Removed.
+
+	* libnautilus/nautilus-view-component.idl
+	(ZoomLevels, ZoomLevelList, Zoomable, ZoomableFrame): Removed.
+
+	* src/nautilus-view-frame-private.h
+	(impl_Nautilus_ZoomableFrame_vepv, impl_Nautilus_ZoomableFrame__create):
+	Removed external declarations.
+
+	* src/nautilus-view-frame.h: include <bonobo/bonobo-zoomable-frame.h>.
+	(NautilusViewFrame): Removed the `zoomable' field and changed the
+	type of the `zoomable_frame' field from BonoboObject into
+	BonoboZoomableFrame.
+	(NautilusViewFrameClass): Added `zoom_parameters_changed' signal.
+
+	* src/nautilus-view-frame.c (nautilus_view_frame_destroy_client):
+	Don't release `view->zoomable' and set `view->history_frame' and
+	`view->zoomable_frame' to NULL, not to CORBA_OBJECT_NIL.
+	(nautilus_view_frame_initialize_class): Added ZOOM_PARAMETERS_CHANGED
+	signal.
+	(zoom_level_changed_callback): New static callback function; this emits
+	the ZOOM_LEVEL_CHANGED signal on the NautilusViewFrame.
+	(zoom_parameters_changed_callback): New static callback function; this
+	emits the ZOOM_PARAMETERS_CHANGED signal on the NautilusViewFrame.
+	(nautilus_view_frame_set_to_component): QI the adapted component for
+	"IDL:Bonobo/Zoomable:1.0" and - if it was found - create the
+	BonoboZoomableFrame, bind it to the BonoboZoomable and connect the
+	"zoom_level_changed" and the "zoom_parameters_changed" signals.
+	(nautilus_view_frame_is_zoomable): Return `view->zoomable_frame != NULL'.
+	(nautilus_view_frame_get_zoom_level): Check whether view->zoomable_frame
+	is not NULL and call bonobo_zoomable_frame_get_zoom_level().
+	(nautilus_view_frame_set_zoom_level): Check whether view->zoomable_frame
+	is not NULL and call bonobo_zoomable_frame_set_zoom_level().
+	(nautilus_view_frame_get_min_zoom_level): Check whether
+	view->zoomable_frame is not NULL and call
+	bonobo_zoomable_frame_get_min_zoom_level().
+	(nautilus_view_frame_get_max_zoom_level): Check whether
+	view->zoomable_frame is not NULL and call
+	bonobo_zoomable_frame_get_max_zoom_level().
+	(nautilus_view_frame_get_has_min_zoom_level): New function.
+	Check whether view->zoomable_frame is not NULL and call
+	bonobo_zoomable_frame_has_min_zoom_level().
+	(nautilus_view_frame_get_has_max_zoom_level): New function.
+	Check whether view->zoomable_frame is not NULL and call
+	bonobo_zoomable_frame_has_max_zoom_level().
+	(nautilus_view_frame_get_is_continuous): New function.
+	Check whether view->zoomable_frame is not NULL and call
+	bonobo_zoomable_frame_is_continuous().
+	(nautilus_view_frame_get_preferred_zoom_levels): If
+	view->zoomable_frame is NULL, return NULL. Otherwise
+	bonobo_zoomable_frame_get_preferred_zoom_levels() returns GList *
+	of floats which we can just return.
+	(nautilus_view_frame_zoom_in): If view->zoomable_frame is not NULL,
+	call bonobo_zoomable_frame_zoom_in().
+	(nautilus_view_frame_zoom_out): If view->zoomable_frame is not NULL,
+	call bonobo_zoomable_frame_zoom_out().
+	(nautilus_view_frame_zoom_to_fit):  If view->zoomable_frame is not
+	NULL, call bonobo_zoomable_frame_zoom_out().
+	(nautilus_view_frame_zoom_level_changed): Removed.
+
+	* src/nautilus-zoom-control.c (NautilusZoomControlDetails): Added
+	`has_min_zoom_level' and `has_max_zoom_level'.
+	(draw_zoom_control_image): Call nautilus_zoom_control_can_zoom_in/out()
+	to find out whether we can zoom.
+	(zoom_menu_callback): Likewise.
+	(nautilus_zoom_control_button_press_event): Likewise.
+	(create_zoom_menu_item): Changed the type of the `zoom_level' argument
+	from double to float.
+	(nautilus_zoom_control_set_min_zoom_level): Removed.
+	(nautilus_zoom_control_set_max_zoom_level): Removed.
+	(nautilus_zoom_control_set_preferred_zoom_levels): Removed.
+	(nautilus_zoom_control_set_parameters): New function.
+	(nautilus_zoom_control_has_min_zoom_level): New function.
+	(nautilus_zoom_control_has_max_zoom_level): New function.
+	(nautilus_zoom_control_can_zoom_in): New function.
+	(nautilus_zoom_control_can_zoom_out): New function.
+	
+	* src/file-manager/fm-directory-view.c: #include
+	<bonobo/bonobo-zoomable.h> instead of
+	<libnautilus/libnautilus-zoomable.h>.
+	(FMDirectoryViewDetails): Changed the type of `zoomable' to
+	BonoboZoomable.
+	(fm_directory_view_preferred_zoom_levels): Made this an array of float,
+	not double.
+	(fm_directory_view_initialize): Create a new BonoboZoomable object here.
+	(zoomable_zoom_in_callback): The first argument is now a BonoboZoomable.
+	(zoomable_zoom_out_callback): The first argument is now a BonoboZoomable.
+	(nautilus_zoom_level_from_double): Renamed into
+	nautilus_zoom_level_from_float().
+	(zoomable_set_zoom_level_callback): The first argument is now a
+	BonoboZoomable and the second one a float.
+	(zoomable_zoom_to_fit_callback): The first argument is now a
+	BonoboZoomable.
+	(fm_directory_view_set_zoom_level): Call
+	bonobo_zoomable_report_zoom_level_changed()
+	instead of using nautilus_zoomable_set_zoom_level().
+
+	* src/nautilus-window-manage-views.c:
+	(zoom_level_changed_callback): Don't call
+	nautilus_zoom_control_set_min_zoom_level(),
+	nautilus_zoom_control_set_max_zoom_level() and
+	nautilus_zoom_control_set_preferred_zoom_levels() here.
+	Use nautilus_zoom_control_can_zoom_in/out() to find out whether we
+	can zoom in the calls to nautilus_bonobo_set_sensitive().
+	, (zoom_parameters_changed_callback): New callback function.
+	Call nautilus_zoom_control_set_parameters() and - if the zoom_level
+	is not 0.0 - zoom_level_changed_callback().
+
+	* components/adapter/nautilus-zoomable-proxy.[ch]: New files.
+
+	* components/adapter/Makefile.am (nautilus_adapter_SOURCES):
+	Added nautilus-zoomable-proxy.c and nautilus-zoomable-proxy.h.
+
+	* components/adapter/nautilus-adapter-embed-strategy.c
+	(NautilusAdapterEmbedStrategyClass): Added new virtual signal
+	`get_zoomable' which must be overridden.
+	(nautilus_adapter_embed_strategy_initialize_class): Assign it here.
+	(nautilus_adapter_embed_strategy_get_zoomable): New static function;
+	call the virtual `get_zoomable' in the derived class.
+
+	* components/adapter/nautilus-adapter-control-embed-strategy.c:
+	(nautilus_adapter_control_embed_strategy_initialize_class):
+	Assign nautilus_adapter_control_embed_strategy_get_zoomable() as
+	handler of the `get_zoomable' signal.
+	(nautilus_adapter_control_embed_strategy_new): QI the Control for
+	"IDL:Bonobo/Zoomable:1.0" and pass it to nautilus_zoomable_proxy_get()
+	if found and store the return value in strategy->details->zoomable.
+	(nautilus_adapter_control_embed_strategy_get_zoomable): New static
+	function; return strategy->details->zoomable which is set in
+	nautilus_adapter_control_embed_strategy_new().
+
+	* components/adapter/nautilus-adapter-embeddable-embed-strategy.c:
+	(nautilus_adapter_embeddable_embed_strategy_initialize_class):
+	Assign nautilus_adapter_embeddable_embed_strategy_get_zoomable() as
+	handler of the `get_zoomable' signal.
+	(nautilus_adapter_embeddable_embed_strategy_new): QI the View for
+	"IDL:Bonobo/Zoomable:1.0" and pass it to nautilus_zoomable_proxy_get()
+	if found and store the return value in strategy->details->zoomable.
+	(nautilus_adapter_embeddable_embed_strategy_get_zoomable): New static
+	function; return strategy->details->zoomable which is set in
+	nautilus_adapter_embeddable_embed_strategy_new().
+
+	* components/adapter/nautilus-adapter.c: (nautilus_adapter_new):
+	Call nautilus_adapter_embed_strategy_get_zoomable(embed_strategy) and
+	bonobo_add_interface() it to the control if found.
+
+	* components/image-viewer/nautilus-image-view.c: Rewrote the Nautilus
+	image viewer to be a BonoboControl, to add zoomable support to it and
+	to merge back everything from bonobo-image-generic into it.
+
 2000-11-16  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/help/converters/gnome-info2html2/main.c: (main):

@@ -69,6 +69,8 @@ struct NautilusZoomControlDetails {
 	double zoom_level;
 	double min_zoom_level;	 
 	double max_zoom_level;
+	gboolean has_min_zoom_level;
+	gboolean has_max_zoom_level;
 	GList *preferred_zoom_levels;
 
 	int y_offset;
@@ -217,6 +219,8 @@ nautilus_zoom_control_initialize (NautilusZoomControl *zoom_control)
 	zoom_control->details->zoom_level = 1.0;
 	zoom_control->details->min_zoom_level = 0.0;
 	zoom_control->details->max_zoom_level = 2.0;
+	zoom_control->details->has_min_zoom_level = TRUE;
+	zoom_control->details->has_max_zoom_level = TRUE;
 	zoom_control->details->preferred_zoom_levels = NULL;
 
 	/* allocate the pixmap that holds the image */
@@ -378,9 +382,9 @@ draw_zoom_control_image (GtkWidget *widget, GdkRectangle *box)
 	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
 
 	/* draw the decrement symbol if necessary, complete with prelighting */
-	if (zoom_control->details->zoom_level > zoom_control->details->min_zoom_level) {
+	if (nautilus_zoom_control_can_zoom_out (zoom_control)) {
 		draw_pixbuf_with_prelight (zoom_control, zoom_control->details->zoom_decrement_image,
-						box->x, box->y, PRELIGHT_MINUS);
+					   box->x, box->y, PRELIGHT_MINUS);
 	} else {
 		width  = gdk_pixbuf_get_width (zoom_control->details->zoom_decrement_image);
 		height = gdk_pixbuf_get_height (zoom_control->details->zoom_decrement_image);		
@@ -396,12 +400,12 @@ draw_zoom_control_image (GtkWidget *widget, GdkRectangle *box)
 	offset = gdk_pixbuf_get_width (zoom_control->details->zoom_decrement_image) + GAP_WIDTH;
 	/* draw the body image, prelighting if necessary */
 	draw_pixbuf_with_prelight (zoom_control, zoom_control->details->zoom_body_image,
-					box->x + offset, box->y, PRELIGHT_CENTER);
+				   box->x + offset, box->y, PRELIGHT_CENTER);
 	
 	offset += gdk_pixbuf_get_width (zoom_control->details->zoom_body_image) + GAP_WIDTH;
 	
 	/* draw the increment symbol if necessary, complete with prelighting */
-	if (zoom_control->details->zoom_level < zoom_control->details->max_zoom_level) {
+	if (nautilus_zoom_control_can_zoom_in (zoom_control)) {
 		draw_pixbuf_with_prelight (zoom_control, zoom_control->details->zoom_increment_image,
 					   box->x + offset, box->y, PRELIGHT_PLUS);
 	} else {
@@ -526,6 +530,7 @@ zoom_menu_callback (GtkMenuItem *item, gpointer callback_data)
 {
 	double zoom_level;
 	NautilusZoomControl *zoom_control;
+	gboolean can_zoom;
 		
 	zoom_control = NAUTILUS_ZOOM_CONTROL (callback_data);
 
@@ -535,20 +540,29 @@ zoom_menu_callback (GtkMenuItem *item, gpointer callback_data)
 	}
 
 	zoom_level = * (double *) gtk_object_get_data (GTK_OBJECT (item), "zoom_level");
-	
-	/* Check to see if we can zoom out */
-	if ((zoom_control->details->min_zoom_level <= zoom_level && zoom_level <  zoom_control->details->zoom_level) ||
-	    (zoom_control->details->zoom_level     < zoom_level && zoom_level  <= zoom_control->details->max_zoom_level)) {
+
+	/* Assume we can zoom and then check whether we're right. */
+	can_zoom = TRUE;
+	if (zoom_control->details->has_min_zoom_level &&
+	    zoom_level < zoom_control->details->min_zoom_level)
+		can_zoom = FALSE; /* no, we're below the minimum zoom level. */
+	if (zoom_control->details->has_max_zoom_level &&
+	    zoom_level > zoom_control->details->max_zoom_level)
+		can_zoom = FALSE; /* no, we're beyond the upper zoom level. */
+
+	/* if we can zoom */
+	if (can_zoom) {	
 		gtk_signal_emit (GTK_OBJECT (zoom_control), signals[ZOOM_TO_LEVEL], zoom_level);
 	}
 }
 
 static GtkRadioMenuItem *
-create_zoom_menu_item (GtkMenu *menu, GtkWidget *widget, double zoom_level, GtkRadioMenuItem *previous_radio_item)
+create_zoom_menu_item (GtkMenu *menu, GtkWidget *widget, float zoom_level,
+		       GtkRadioMenuItem *previous_radio_item)
 {
 	GtkWidget *menu_item;
-	double	  *zoom_level_ptr;
-	char	  item_text[8];
+	gchar     *item_text;
+	double    *zoom_level_ptr;
 	NautilusZoomControl *zoom_control;
 	GSList	  *radio_item_group;
 
@@ -558,11 +572,12 @@ create_zoom_menu_item (GtkMenu *menu, GtkWidget *widget, double zoom_level, GtkR
 	 * to set toggle state of other radio items.
 	 */
 	zoom_control->details->marking_menu_items = TRUE;
-	
+
 	/* This is marked for localization in case the % sign is not
 	 * appropriate in some locale. I guess that's unlikely.
 	 */
-	g_snprintf (item_text, sizeof (item_text), _("%.0f%%"), 100.0 * zoom_level);
+	item_text = g_strdup_printf (_("%.0f%%"), 100.0 * zoom_level);
+
 	radio_item_group = previous_radio_item == NULL
 		? NULL
 		: gtk_radio_menu_item_group (previous_radio_item);
@@ -601,7 +616,7 @@ create_zoom_menu(GtkWidget *zoom_control)
 
 	menu_item = NULL;
 	while (p != NULL) {
-		menu_item = create_zoom_menu_item (menu, zoom_control, * (double *) p->data, menu_item);
+		menu_item = create_zoom_menu_item (menu, zoom_control, *(float *) p->data, menu_item);
 		p = g_list_next (p);
 	}
 	
@@ -626,9 +641,9 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
 		return TRUE;	  
  	}
 	
-	if (event->x < (width / 3) && (zoom_control->details->zoom_level > zoom_control->details->min_zoom_level)) {
+	if ((event->x < (width / 3)) && nautilus_zoom_control_can_zoom_out (zoom_control)) {
 		gtk_signal_emit (GTK_OBJECT (widget), signals[ZOOM_OUT]);			
-	} else if ((event->x > ((2 * width) / 3)) && (zoom_control->details->zoom_level < zoom_control->details->max_zoom_level)) {
+	} else if ((event->x > ((2 * width) / 3)) && nautilus_zoom_control_can_zoom_in (zoom_control)) {
 		gtk_signal_emit (GTK_OBJECT (widget), signals[ZOOM_IN]);			
 	} else if ((event->x >= (center - (width >> 3))) && (event->x <= (center + (width >> 3)))) {
 		gtk_signal_emit (GTK_OBJECT (widget), signals[ZOOM_TO_FIT]);			
@@ -673,9 +688,9 @@ static gboolean nautilus_zoom_control_motion_notify (GtkWidget *widget, GdkEvent
 	center = width >> 1;
 
 	mode = PRELIGHT_NONE;
-	if (x_offset < (width / 3) && (zoom_control->details->zoom_level > zoom_control->details->min_zoom_level)) {
+	if ((x_offset < (width / 3)) && nautilus_zoom_control_can_zoom_out (zoom_control)) {
 		mode = PRELIGHT_MINUS;		
-	} else if ((x_offset > ((2 * width) / 3)) && (zoom_control->details->zoom_level < zoom_control->details->max_zoom_level)) {
+	} else if ((x_offset > ((2 * width) / 3)) && nautilus_zoom_control_can_zoom_in (zoom_control)) {
 		mode = PRELIGHT_PLUS;
 	} else if ((x_offset >= (center - (width >> 3))) && (x_offset <= (center + (width >> 3)))) {
 		mode = PRELIGHT_CENTER;
@@ -708,24 +723,22 @@ nautilus_zoom_control_set_zoom_level (NautilusZoomControl *zoom_control, double 
 }
 
 void
-nautilus_zoom_control_set_min_zoom_level (NautilusZoomControl *zoom_control, double  zoom_level)
+nautilus_zoom_control_set_parameters (NautilusZoomControl *zoom_control,
+				      double min_zoom_level,
+				      double max_zoom_level,
+				      gboolean has_min_zoom_level,
+				      gboolean has_max_zoom_level,
+				      GList *zoom_levels)
 {
-	zoom_control->details->min_zoom_level = zoom_level;
-	gtk_widget_queue_draw (GTK_WIDGET (zoom_control));
-}
+	zoom_control->details->min_zoom_level = min_zoom_level;
+	zoom_control->details->max_zoom_level = max_zoom_level;
+	zoom_control->details->has_min_zoom_level = has_min_zoom_level;
+	zoom_control->details->has_max_zoom_level = has_max_zoom_level;
 
-void
-nautilus_zoom_control_set_max_zoom_level (NautilusZoomControl *zoom_control, double zoom_level)
-{
-	zoom_control->details->max_zoom_level = zoom_level;
-	gtk_widget_queue_draw (GTK_WIDGET (zoom_control));
-}
-
-void
-nautilus_zoom_control_set_preferred_zoom_levels (NautilusZoomControl *zoom_control, GList* zoom_levels)
-{
 	nautilus_g_list_free_deep (zoom_control->details->preferred_zoom_levels);
 	zoom_control->details->preferred_zoom_levels = zoom_levels;
+
+	gtk_widget_queue_draw (GTK_WIDGET (zoom_control));
 }
 
 double
@@ -746,4 +759,31 @@ nautilus_zoom_control_get_max_zoom_level (NautilusZoomControl *zoom_control)
 	return zoom_control->details->max_zoom_level;
 }
 
+gboolean
+nautilus_zoom_control_has_min_zoom_level (NautilusZoomControl *zoom_control)
+{
+	return zoom_control->details->has_min_zoom_level;
+}
+	
+gboolean
+nautilus_zoom_control_has_max_zoom_level (NautilusZoomControl *zoom_control)
+{
+	return zoom_control->details->has_max_zoom_level;
+}
+	
+gboolean
+nautilus_zoom_control_can_zoom_in (NautilusZoomControl *zoom_control)
+{
+	return !zoom_control->details->has_max_zoom_level ||
+		(zoom_control->details->zoom_level
+		 < zoom_control->details->max_zoom_level);
+}
 
+
+gboolean
+nautilus_zoom_control_can_zoom_out (NautilusZoomControl *zoom_control)
+{
+	return !zoom_control->details->has_min_zoom_level ||
+		(zoom_control->details->zoom_level
+		 > zoom_control->details->min_zoom_level);
+}

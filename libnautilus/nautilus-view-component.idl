@@ -92,44 +92,6 @@ module Nautilus {
 		oneway void set_title (in string new_title);
 	};		
 
-	typedef float ZoomLevel;
-	typedef sequence<ZoomLevel> ZoomLevelList;
-	
-	/* The interface for something zoomable. Nautilus looks for
-	 * this interface on Bonobo controls that it uses as views. If
-	 * the interface is present, it shows a widget in the toolbar
-	 * for zooming. It's still the component's job to save the
-	 * zoom level.
-	 */
-	interface Zoomable : ::Bonobo::Unknown {
-		/* Set this attribute to make the thing zoom. */
-		attribute float zoom_level;
-
-		/* Information about the type of zooming that's supported. */
-		readonly attribute float min_zoom_level;
-		readonly attribute float max_zoom_level;
-		readonly attribute boolean is_continuous;
-		readonly attribute ZoomLevelList preferred_zoom_levels;
-		
-		/* High level operations.
-		 * These can cause a change in the zoom level.
-		 * The zoomable itself must decide what the concepts
-		 * "one level in", "one level out", and "to fit" mean.
-		 */
-		oneway void zoom_in ();
-		oneway void zoom_out ();
-		oneway void zoom_to_fit ();
-	};
-	
-	/* A zoomable has the responsibility to look for this
-	 * interface on its Bonobo control frame and call
-	 * zoom_level_changed whenever it changes the zoom level (on
-	 * its own or due to calls from the zoomable interface).
-	 */
-	interface ZoomableFrame : ::Bonobo::Unknown {
-		oneway void report_zoom_level_changed (in float zoom_level);
-	};
-
 	/* The specifications for a history list item. The structure
 	 * contains the title of the item, and the location it's for.
 	 */

@@ -64,17 +64,20 @@ GtkWidget *nautilus_zoom_control_new                (void);
 
 void       nautilus_zoom_control_set_zoom_level     (NautilusZoomControl *zoom_control,
 						     double               zoom_level);
-void       nautilus_zoom_control_set_min_zoom_level (NautilusZoomControl *zoom_control,
-						     double               zoom_level);
-void       nautilus_zoom_control_set_max_zoom_level (NautilusZoomControl *zoom_control,
-						     double               zoom_level);
-void	   nautilus_zoom_control_set_preferred_zoom_levels
- 						    (NautilusZoomControl *zoom_control,
- 						     GList* zoom_levels);
+void       nautilus_zoom_control_set_parameters     (NautilusZoomControl *zoom_control,
+						     double               min_zoom_level,
+						     double               max_zoom_level,
+						     gboolean             has_min_zoom_level,
+						     gboolean             has_max_zoom_level,
+ 						     GList               *zoom_levels);
 
 double     nautilus_zoom_control_get_zoom_level     (NautilusZoomControl *zoom_control);
 double     nautilus_zoom_control_get_min_zoom_level (NautilusZoomControl *zoom_control);
 double     nautilus_zoom_control_get_max_zoom_level (NautilusZoomControl *zoom_control);
+gboolean   nautilus_zoom_control_has_min_zoom_level (NautilusZoomControl *zoom_control);
+gboolean   nautilus_zoom_control_has_max_zoom_level (NautilusZoomControl *zoom_control);
+gboolean   nautilus_zoom_control_can_zoom_in        (NautilusZoomControl *zoom_control);
+gboolean   nautilus_zoom_control_can_zoom_out       (NautilusZoomControl *zoom_control);
 
 #ifdef __cplusplus
 }

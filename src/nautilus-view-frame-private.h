@@ -39,11 +39,8 @@ typedef struct {
 } impl_POA_Nautilus_ViewFrame;
 
 extern POA_Nautilus_ViewFrame__vepv impl_Nautilus_ViewFrame_vepv;
-extern POA_Nautilus_ZoomableFrame__vepv impl_Nautilus_ZoomableFrame_vepv;
 
 BonoboObject *impl_Nautilus_ViewFrame__create                 (NautilusViewFrame *view,
-                                                               CORBA_Environment *ev);
-BonoboObject *impl_Nautilus_ZoomableFrame__create             (NautilusViewFrame *view,
                                                                CORBA_Environment *ev);
 
 /* ViewFrame */

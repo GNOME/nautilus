@@ -35,6 +35,7 @@
 
 #include <bonobo/bonobo-object-client.h>
 #include <bonobo/bonobo-ui-container.h>
+#include <bonobo/bonobo-zoomable-frame.h>
 #include <libnautilus-extensions/nautilus-generous-bin.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <libnautilus/nautilus-view-component.h>
@@ -57,12 +58,11 @@ typedef struct {
 
         /* The frame itself (from various interface points of view). */
         BonoboObject *view_frame;
-        BonoboObject *zoomable_frame;
+        BonoboZoomableFrame *zoomable_frame;
         BonoboObject *history_frame;
         
         /* The view inside the (various interfaces). */
         BonoboObjectClient *client_object;
-        Nautilus_Zoomable zoomable;
         GtkWidget *client_widget;
 } NautilusViewFrame;
 
@@ -92,6 +92,7 @@ typedef struct {
         void                   (* load_complete)               (NautilusViewFrame *view);
         void                   (* title_changed)               (NautilusViewFrame *view);
         void                   (* zoom_level_changed)          (NautilusViewFrame *view);
+        void                   (* zoom_parameters_changed)     (NautilusViewFrame *view);
 	Nautilus_HistoryList * (* get_history_list)            (NautilusViewFrame *view);
 } NautilusViewFrameClass;
 
@@ -120,6 +121,8 @@ void                  nautilus_view_frame_set_zoom_level            (NautilusVie
                                                                      double               zoom_level);
 gdouble               nautilus_view_frame_get_min_zoom_level        (NautilusViewFrame   *view);
 gdouble               nautilus_view_frame_get_max_zoom_level        (NautilusViewFrame   *view);
+gboolean              nautilus_view_frame_get_has_min_zoom_level    (NautilusViewFrame   *view);
+gboolean              nautilus_view_frame_get_has_max_zoom_level    (NautilusViewFrame   *view);
 gboolean              nautilus_view_frame_get_is_continuous         (NautilusViewFrame   *view);
 GList *               nautilus_view_frame_get_preferred_zoom_levels (NautilusViewFrame   *view);
 void                  nautilus_view_frame_zoom_in                   (NautilusViewFrame   *view);

@@ -57,6 +57,7 @@ static void nautilus_adapter_embed_strategy_destroy          (GtkObject         
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusAdapterEmbedStrategy, nautilus_adapter_embed_strategy, GTK_TYPE_OBJECT)
 
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_embed_strategy, get_widget)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_embed_strategy, get_zoomable)
 
 static void
 nautilus_adapter_embed_strategy_initialize_class (NautilusAdapterEmbedStrategyClass *klass)
@@ -92,6 +93,7 @@ nautilus_adapter_embed_strategy_initialize_class (NautilusAdapterEmbedStrategyCl
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_adapter_embed_strategy, get_widget);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_adapter_embed_strategy, get_zoomable);
 }
 
 static void
@@ -149,6 +151,13 @@ nautilus_adapter_embed_strategy_get_widget (NautilusAdapterEmbedStrategy *strate
 {
 	return NAUTILUS_CALL_VIRTUAL (NAUTILUS_ADAPTER_EMBED_STRATEGY_CLASS, strategy,
 				      get_widget, (strategy));
+}
+
+BonoboObject *
+nautilus_adapter_embed_strategy_get_zoomable (NautilusAdapterEmbedStrategy *strategy)
+{
+	return NAUTILUS_CALL_VIRTUAL (NAUTILUS_ADAPTER_EMBED_STRATEGY_CLASS, strategy,
+				      get_zoomable, (strategy));
 }
 
 

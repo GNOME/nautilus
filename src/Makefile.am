@@ -134,7 +134,6 @@ nautilus_SOURCES = \
 	nautilus-window-toolbars.c      	\
 	nautilus-window.c			\
 	nautilus-zoom-control.c			\
-	nautilus-zoomable-frame-corba.c		\
 	$(profiler_sources)			\
 	$(NULL)
 

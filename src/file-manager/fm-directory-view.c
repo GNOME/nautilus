@@ -33,6 +33,7 @@
 #include "fm-properties-window.h"
 #include "nautilus-trash-monitor.h"
 #include <bonobo/bonobo-control.h>
+#include <bonobo/bonobo-zoomable.h>
 #include <bonobo/bonobo-win.h>
 #include <gtk/gtkcheckmenuitem.h>
 #include <gtk/gtkmain.h>
@@ -69,7 +70,6 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
-#include <libnautilus/nautilus-zoomable.h>
 #include <math.h>
 #include <src/nautilus-application.h>
 
@@ -117,7 +117,7 @@ static guint signals[LAST_SIGNAL];
 struct FMDirectoryViewDetails
 {
 	NautilusView *nautilus_view;
-	NautilusZoomable *zoomable;
+	BonoboZoomable *zoomable;
 
 	NautilusDirectory *model;
 	NautilusFile *directory_as_file;
@@ -191,14 +191,14 @@ static void                open_one_in_new_window                               
 										   gpointer              callback_data);
 static void                open_one_properties_window                             (gpointer              data,
 										   gpointer              callback_data);
-static void                zoomable_set_zoom_level_callback                       (NautilusZoomable     *zoomable,
-										   double                level,
+static void                zoomable_set_zoom_level_callback                       (BonoboZoomable       *zoomable,
+										   float                 level,
 										   FMDirectoryView      *view);
-static void                zoomable_zoom_in_callback                              (NautilusZoomable     *zoomable,
+static void                zoomable_zoom_in_callback                              (BonoboZoomable       *zoomable,
 										   FMDirectoryView      *directory_view);
-static void                zoomable_zoom_out_callback                             (NautilusZoomable     *zoomable,
+static void                zoomable_zoom_out_callback                             (BonoboZoomable       *zoomable,
 										   FMDirectoryView      *directory_view);
-static void                zoomable_zoom_to_fit_callback                          (NautilusZoomable     *zoomable,
+static void                zoomable_zoom_to_fit_callback                          (BonoboZoomable       *zoomable,
 										   FMDirectoryView      *directory_view);
 static void                schedule_update_menus                                  (FMDirectoryView      *view);
 static void                schedule_update_menus_callback                         (gpointer              callback_data);
@@ -892,14 +892,14 @@ smooth_graphics_mode_changed_callback (gpointer callback_data)
 		 smooth_graphics_mode_changed, (view));
 }
 
-static double fm_directory_view_preferred_zoom_levels[] = {
-	(double) NAUTILUS_ICON_SIZE_SMALLEST	/ NAUTILUS_ICON_SIZE_STANDARD,
-	(double) NAUTILUS_ICON_SIZE_SMALLER	/ NAUTILUS_ICON_SIZE_STANDARD,
-	(double) NAUTILUS_ICON_SIZE_SMALL	/ NAUTILUS_ICON_SIZE_STANDARD,
-	(double) NAUTILUS_ICON_SIZE_STANDARD	/ NAUTILUS_ICON_SIZE_STANDARD,
-	(double) NAUTILUS_ICON_SIZE_LARGE	/ NAUTILUS_ICON_SIZE_STANDARD,
-	(double) NAUTILUS_ICON_SIZE_LARGER	/ NAUTILUS_ICON_SIZE_STANDARD,
-	(double) NAUTILUS_ICON_SIZE_LARGEST	/ NAUTILUS_ICON_SIZE_STANDARD,
+static float fm_directory_view_preferred_zoom_levels[] = {
+	(float) NAUTILUS_ICON_SIZE_SMALLEST	/ NAUTILUS_ICON_SIZE_STANDARD,
+	(float) NAUTILUS_ICON_SIZE_SMALLER	/ NAUTILUS_ICON_SIZE_STANDARD,
+	(float) NAUTILUS_ICON_SIZE_SMALL	/ NAUTILUS_ICON_SIZE_STANDARD,
+	(float) NAUTILUS_ICON_SIZE_STANDARD	/ NAUTILUS_ICON_SIZE_STANDARD,
+	(float) NAUTILUS_ICON_SIZE_LARGE	/ NAUTILUS_ICON_SIZE_STANDARD,
+	(float) NAUTILUS_ICON_SIZE_LARGER	/ NAUTILUS_ICON_SIZE_STANDARD,
+	(float) NAUTILUS_ICON_SIZE_LARGEST	/ NAUTILUS_ICON_SIZE_STANDARD
 };
 
 static void
@@ -915,13 +915,13 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 
 	directory_view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (directory_view));
 
-	directory_view->details->zoomable = nautilus_zoomable_new_from_bonobo_control
-		(get_bonobo_control (directory_view),
-		 .25,
-		 4.0,
-		 FALSE,
-		 fm_directory_view_preferred_zoom_levels,
-		 NAUTILUS_N_ELEMENTS (fm_directory_view_preferred_zoom_levels));		
+	directory_view->details->zoomable = bonobo_zoomable_new ();
+	bonobo_zoomable_set_parameters_full (directory_view->details->zoomable,
+					     0.0, .25, 4.0, TRUE, TRUE, FALSE,
+					     fm_directory_view_preferred_zoom_levels, NULL,
+					     NAUTILUS_N_ELEMENTS (fm_directory_view_preferred_zoom_levels));
+	bonobo_object_add_interface (BONOBO_OBJECT (directory_view->details->nautilus_view),
+				     BONOBO_OBJECT (directory_view->details->zoomable));
 
 	gtk_signal_connect (GTK_OBJECT (directory_view->details->nautilus_view), 
 			    "stop_loading",
@@ -951,7 +951,7 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 			    directory_view);
 	gtk_signal_connect (GTK_OBJECT (directory_view->details->zoomable), 
 			    "set_zoom_level", 
-			    zoomable_set_zoom_level_callback,
+			    GTK_SIGNAL_FUNC (zoomable_set_zoom_level_callback),
 			    directory_view);
 	gtk_signal_connect (GTK_OBJECT (directory_view->details->zoomable), 
 			    "zoom_to_fit", 
@@ -1377,22 +1377,20 @@ reset_background_callback (BonoboUIComponent *component, gpointer callback_data,
 			(FM_DIRECTORY_VIEW (callback_data)));
 }
 
-/* handle the zoom in/out menu items */
-
 static void
-zoomable_zoom_in_callback (NautilusZoomable *zoomable, FMDirectoryView *directory_view)
+zoomable_zoom_in_callback (BonoboZoomable *zoomable, FMDirectoryView *directory_view)
 {
 	fm_directory_view_bump_zoom_level (directory_view, 1);
 }
 
 static void
-zoomable_zoom_out_callback (NautilusZoomable *zoomable, FMDirectoryView *directory_view)
+zoomable_zoom_out_callback (BonoboZoomable *zoomable, FMDirectoryView *directory_view)
 {
 	fm_directory_view_bump_zoom_level (directory_view, -1);
 }
 
 static NautilusZoomLevel
-nautilus_zoom_level_from_double(double zoom_level)
+nautilus_zoom_level_from_float(float zoom_level)
 {
 	int icon_size = floor(zoom_level * NAUTILUS_ICON_SIZE_STANDARD + 0.5);
 	
@@ -1414,13 +1412,13 @@ nautilus_zoom_level_from_double(double zoom_level)
 }
 
 static void
-zoomable_set_zoom_level_callback (NautilusZoomable *zoomable, double level, FMDirectoryView *view)
+zoomable_set_zoom_level_callback (BonoboZoomable *zoomable, float level, FMDirectoryView *view)
 {
-	fm_directory_view_zoom_to_level (view, nautilus_zoom_level_from_double(level));
+	fm_directory_view_zoom_to_level (view, nautilus_zoom_level_from_float(level));
 }
 
 static void
-zoomable_zoom_to_fit_callback (NautilusZoomable *zoomable, FMDirectoryView *view)
+zoomable_zoom_to_fit_callback (BonoboZoomable *zoomable, FMDirectoryView *view)
 {
 	/* FIXME bugzilla.eazel.com 2388:
 	 * Need to really implement "zoom to fit"
@@ -1980,16 +1978,18 @@ fm_directory_view_zoom_to_level (FMDirectoryView *view, int zoom_level)
 void
 fm_directory_view_set_zoom_level (FMDirectoryView *view, int zoom_level)
 {
+	float new_zoom_level;
+
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
 	if (!fm_directory_view_supports_zooming (view)) {
 		return;
 	}
 
-	nautilus_zoomable_set_zoom_level
-		(view->details->zoomable,
-		 (double) nautilus_get_icon_size_for_zoom_level (zoom_level)
-		 / NAUTILUS_ICON_SIZE_STANDARD);
+	new_zoom_level = (float) nautilus_get_icon_size_for_zoom_level (zoom_level)
+		/ NAUTILUS_ICON_SIZE_STANDARD;
+
+	bonobo_zoomable_report_zoom_level_changed (view->details->zoomable, new_zoom_level);
 }
 
 /**

@@ -54,7 +54,8 @@ typedef struct {
 				      const char                   *uri);
 
 	/* virtual functions */
-	GtkWidget *(*get_widget) (NautilusAdapterEmbedStrategy *strategy);
+	GtkWidget    *(*get_widget)  (NautilusAdapterEmbedStrategy *strategy);
+	BonoboObject *(*get_zoomable)(NautilusAdapterEmbedStrategy *strategy);
 
 } NautilusAdapterEmbedStrategyClass;
 
@@ -69,6 +70,8 @@ void                          nautilus_adapter_embed_strategy_activate  (Nautilu
 void                          nautilus_adapter_embed_strategy_deactivate(NautilusAdapterEmbedStrategy *strategy);
 
 GtkWidget                   *nautilus_adapter_embed_strategy_get_widget (NautilusAdapterEmbedStrategy *strategy);
+
+BonoboObject                *nautilus_adapter_embed_strategy_get_zoomable (NautilusAdapterEmbedStrategy *strategy);
 
 
 #endif /* NAUTILUS_ADAPTER_EMBED_STRATEGY_H */

@@ -32,6 +32,7 @@
 
 #include "nautilus-adapter-embeddable-embed-strategy.h"
 #include "nautilus-adapter-embed-strategy-private.h"
+#include "nautilus-zoomable-proxy.h"
 
 #include <bonobo/bonobo-client-site.h>
 #include <bonobo/bonobo-item-container.h>
@@ -45,6 +46,7 @@ struct NautilusAdapterEmbeddableEmbedStrategyDetails {
       	BonoboClientSite   *client_site;
 	BonoboViewFrame    *view_frame;
 	GtkWidget          *client_widget;
+	BonoboObject       *zoomable;
 };
 
 
@@ -57,6 +59,7 @@ static void nautilus_adapter_embeddable_embed_strategy_deactivate       (Nautilu
 
 
 static GtkWidget *nautilus_adapter_embeddable_embed_strategy_get_widget (NautilusAdapterEmbedStrategy *strategy);
+static BonoboObject *nautilus_adapter_embeddable_embed_strategy_get_zoomable (NautilusAdapterEmbedStrategy *strategy);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusAdapterEmbeddableEmbedStrategy, nautilus_adapter_embeddable_embed_strategy, NAUTILUS_TYPE_ADAPTER_EMBED_STRATEGY)
@@ -75,6 +78,7 @@ nautilus_adapter_embeddable_embed_strategy_initialize_class (NautilusAdapterEmbe
 	adapter_embed_strategy_class = NAUTILUS_ADAPTER_EMBED_STRATEGY_CLASS (klass);
 
 	adapter_embed_strategy_class->get_widget = nautilus_adapter_embeddable_embed_strategy_get_widget;
+	adapter_embed_strategy_class->get_zoomable = nautilus_adapter_embeddable_embed_strategy_get_zoomable;
 	adapter_embed_strategy_class->activate = nautilus_adapter_embeddable_embed_strategy_activate;
 	adapter_embed_strategy_class->deactivate = nautilus_adapter_embeddable_embed_strategy_deactivate;
 }
@@ -163,6 +167,9 @@ nautilus_adapter_embeddable_embed_strategy_new (Bonobo_Embeddable embeddable,
 						Bonobo_UIContainer ui_container)
 {
 	NautilusAdapterEmbeddableEmbedStrategy *strategy;
+	Bonobo_Zoomable corba_zoomable;
+	Bonobo_View corba_view;
+	CORBA_Environment ev;
 
 	strategy = NAUTILUS_ADAPTER_EMBEDDABLE_EMBED_STRATEGY (gtk_object_new (NAUTILUS_TYPE_ADAPTER_EMBEDDABLE_EMBED_STRATEGY, NULL));
 	gtk_object_ref (GTK_OBJECT (strategy));
@@ -178,6 +185,21 @@ nautilus_adapter_embeddable_embed_strategy_new (Bonobo_Embeddable embeddable,
 
 	strategy->details->view_frame = bonobo_client_site_new_view (strategy->details->client_site, ui_container);
 	strategy->details->client_widget = bonobo_view_frame_get_wrapper (strategy->details->view_frame);
+
+	CORBA_exception_init (&ev);
+	corba_view = bonobo_view_frame_get_view (strategy->details->view_frame);
+
+	corba_zoomable = Bonobo_Unknown_queryInterface (corba_view,
+							"IDL:Bonobo/Zoomable:1.0",
+							&ev);
+	if ((ev._major == CORBA_NO_EXCEPTION) &&
+	    !CORBA_Object_is_nil (corba_zoomable, &ev)) {
+		strategy->details->zoomable = nautilus_zoomable_proxy_get
+			(corba_zoomable);
+	}
+
+	CORBA_exception_free (&ev);
+
 
      	bonobo_wrapper_set_visibility (BONOBO_WRAPPER (strategy->details->client_widget), FALSE);
 	bonobo_view_frame_set_covered (strategy->details->view_frame, FALSE); 
@@ -199,5 +221,14 @@ nautilus_adapter_embeddable_embed_strategy_get_widget (NautilusAdapterEmbedStrat
 	return strategy->details->client_widget;
 }
 
+static BonoboObject *
+nautilus_adapter_embeddable_embed_strategy_get_zoomable (NautilusAdapterEmbedStrategy *abstract_strategy)
+{
+	NautilusAdapterEmbeddableEmbedStrategy *strategy;
+
+	strategy = NAUTILUS_ADAPTER_EMBEDDABLE_EMBED_STRATEGY (abstract_strategy);
+
+	return strategy->details->zoomable;
+}
 
 

@@ -148,6 +148,7 @@ nautilus_adapter_new (Bonobo_Unknown component)
 	NautilusAdapter      *adapter;
 	BonoboControl        *control;
 	GtkWidget            *bin;
+	BonoboObject         *zoomable;
 	CORBA_Environment     ev;
 
 
@@ -178,6 +179,11 @@ nautilus_adapter_new (Bonobo_Unknown component)
 		
 		return NULL;
 	}
+
+	/* Get the NautilusAdapterZoomable proxy object. */
+	zoomable = nautilus_adapter_embed_strategy_get_zoomable (adapter->details->embed_strategy);
+	if (zoomable != NULL)
+		bonobo_object_add_interface (BONOBO_OBJECT (control), zoomable);
 
 	gtk_signal_connect (GTK_OBJECT (control), "activate",
 			    GTK_SIGNAL_FUNC (nautilus_adapter_activate_callback),
