@@ -34,6 +34,7 @@ use strict;
 
 my %name_map =
   (
+   "Alexander Larsson" => "Alex Larsson",
    "Darin as Andy" => "Darin Adler",
    "Eskil Olsen" => "Eskil Heyn Olsen",
    "J. Shane Culpepper" => "J Shane Culpepper",
@@ -54,13 +55,16 @@ my %name_map =
 
 my %email_map =
   (
+   'alla@lysator.liu.se' => 'alexl@redhat.com',
    'almer1@dds.nl' => 'almer@gnome.org',
+   'andersca@codefactory.se' => 'andersca@gnu.org',
    'andy@eazel.com' => 'andy@differnet.com',
    'arik@gnome.org' => 'arik@eazel.com',
    'at@ue-spacy.com' => 'tagoh@gnome.gr.jp',
    'baulig@suse.de' => 'martin@home-of-linux.org',
    'car0969@gamma2.uta.edu' => 'bratsche@gnome.org',
    'carlos@gnome-db.org' => 'carlos@hispalinux.es',
+   'cgabriel@softwarelibero.org' => 'cgabriel@cgabriel.org',
    'chief_wanker@eazel.com' => 'eskil@eazel.com',
    'darin@eazel.com' => 'darin@bentspoon.com',
    'dan@eazel.com' => 'd-mueth@uchicago.edu',

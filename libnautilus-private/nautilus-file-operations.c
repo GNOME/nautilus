@@ -771,8 +771,8 @@ build_error_string (const char *source_name, const char *target_name,
 		/* None of the specific error messages apply, use a catch-all
 		 * generic error
 		 */
-		g_message ("Please tell pavel@eazel.com that you hit case %s while doing "
-			"a file operation.", gnome_vfs_result_to_string (error));
+		g_message ("Hit unexpected error \"%s\" while doing a file operation.",
+			   gnome_vfs_result_to_string (error));
 
 		/* FIXMEs: we need to consider a single item
 		 * move/copy and not offer to continue in that case
