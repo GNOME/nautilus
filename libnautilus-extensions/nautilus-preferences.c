@@ -57,49 +57,46 @@ struct _NautilusPreferencesDetails
 };
 
 /* NautilusPreferencesClass methods */
-static void               nautilus_preferences_initialize_class (NautilusPreferencesClass     *klass);
-static void               nautilus_preferences_initialize       (NautilusPreferences          *prefs);
-
-
-
+static void               nautilus_preferences_initialize_class (NautilusPreferencesClass      *klass);
+static void               nautilus_preferences_initialize       (NautilusPreferences           *prefs);
 
 /* GtkObjectClass methods */
-static void               prefs_destroy                   (GtkObject              *object);
-
-
-
+static void               prefs_destroy                         (GtkObject                     *object);
 
 /* PrefHashInfo functions */
-static PrefHashInfo *     pref_hash_info_alloc            (const NautilusPreferencesInfo *pref_info);
-static void               pref_hash_info_free             (PrefHashInfo           *pref_hash_info);
-static void               pref_hash_info_free_func        (gpointer                key,
-							   gpointer                value,
-							   gpointer                user_data);
+static PrefHashInfo *     pref_hash_info_alloc                  (const NautilusPreferencesInfo *pref_info);
+static void               pref_hash_info_free                   (PrefHashInfo                  *pref_hash_info);
+static void               pref_hash_info_free_func              (gpointer                       key,
+								 gpointer                       value,
+								 gpointer                       user_data);
 
 /* PrefCallbackInfo functions */
-static PrefCallbackInfo * pref_callback_info_alloc        (NautilusPreferencesCallback   callback_proc,
-							   gpointer user_data,
-							   const PrefHashInfo	*hash_info);
-static void               pref_callback_info_free         (PrefCallbackInfo       *pref_hash_info);
-static void               pref_callback_info_free_func    (gpointer                data,
-							   gpointer                user_data);
-static void               pref_callback_info_invoke_func    (gpointer                data,
-							   gpointer                user_data);
-static void               pref_hash_info_add_callback     (PrefHashInfo           *pref_hash_info,
-							   NautilusPreferencesCallback   callback_proc,
-							   gpointer                user_data);
+static PrefCallbackInfo * pref_callback_info_alloc              (NautilusPreferencesCallback    callback_proc,
+								 gpointer                       user_data,
+								 const PrefHashInfo            *hash_info);
+static void               pref_callback_info_free               (PrefCallbackInfo              *pref_hash_info);
+static void               pref_callback_info_free_func          (gpointer                       data,
+								 gpointer                       user_data);
+static void               pref_callback_info_invoke_func        (gpointer                       data,
+								 gpointer                       user_data);
+static void               pref_hash_info_add_callback           (PrefHashInfo                  *pref_hash_info,
+								 NautilusPreferencesCallback    callback_proc,
+								 gpointer                       user_data);
+static void               pref_hash_info_remove_callback        (PrefHashInfo                  *pref_hash_info,
+								 NautilusPreferencesCallback    callback_proc,
+								 gpointer                       user_data);
 
 /* Private stuff */
-static GtkFundamentalType prefs_check_supported_type      (GtkFundamentalType      pref_type);
-static gboolean           prefs_set_pref                  (NautilusPreferences          *prefs,
-							   const gchar            *pref_name,
-							   gpointer		  pref_value);
-static gboolean           prefs_get_pref                  (NautilusPreferences          *prefs,
-							   const gchar            *pref_name,
-							   GtkFundamentalType     *pref_type_out,
-							   gconstpointer          *pref_value_out);
-PrefHashInfo *            prefs_hash_lookup               (NautilusPreferences          *prefs,
-							   const gchar            *pref_name);
+static GtkFundamentalType prefs_check_supported_type            (GtkFundamentalType             pref_type);
+static gboolean           prefs_set_pref                        (NautilusPreferences           *prefs,
+								 const gchar                   *pref_name,
+								 gpointer                       pref_value);
+static gboolean           prefs_get_pref                        (NautilusPreferences           *prefs,
+								 const gchar                   *pref_name,
+								 GtkFundamentalType            *pref_type_out,
+								 gconstpointer                 *pref_value_out);
+PrefHashInfo *            prefs_hash_lookup                     (NautilusPreferences           *prefs,
+								 const gchar                   *pref_name);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferences, nautilus_preferences, GTK_TYPE_OBJECT)
 
@@ -238,9 +235,44 @@ pref_hash_info_add_callback (PrefHashInfo		*pref_hash_info,
 						       user_data,
 						       pref_hash_info);
 
+	g_assert (pref_callback_info != NULL);
+	
 	pref_hash_info->callback_list =
 		g_list_append (pref_hash_info->callback_list, 
 			       (gpointer) pref_callback_info);
+}
+
+static void
+pref_hash_info_remove_callback (PrefHashInfo			*pref_hash_info,
+				NautilusPreferencesCallback	callback_proc,
+				gpointer			user_data)
+{
+	GList		 *new_list;
+	GList		 *iterator;
+
+	g_assert (pref_hash_info != NULL);
+
+	g_assert (callback_proc != NULL);
+
+	g_assert (pref_hash_info->callback_list != NULL);
+
+	new_list = g_list_copy (pref_hash_info->callback_list);
+
+	for (iterator = new_list; iterator != NULL; iterator = iterator->next) 
+	{
+		PrefCallbackInfo *callback_info = (PrefCallbackInfo *) iterator->data;
+
+		g_assert (callback_info != NULL);
+
+		if (callback_info->callback_proc == callback_proc &&
+		    callback_info->user_data == user_data)
+		{
+			g_list_remove (pref_hash_info->callback_list, 
+				       (gpointer) callback_info);
+
+			pref_callback_info_free (callback_info);
+		}
+	}
 }
 
 static void
@@ -525,6 +557,35 @@ nautilus_preferences_add_callback (NautilusPreferences		*prefs,
 	pref_hash_info_add_callback (pref_hash_info,
 				     callback_proc,
 				     user_data);
+
+	return TRUE;
+}
+
+gboolean
+nautilus_preferences_remove_callback (NautilusPreferences	   *prefs,
+				      const gchar		   *pref_name,
+				      NautilusPreferencesCallback  callback_proc,
+				      gpointer			   user_data)
+{
+	PrefHashInfo * pref_hash_info;
+
+	g_return_val_if_fail (prefs != NULL, FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_PREFS (prefs), FALSE);
+	g_return_val_if_fail (pref_name != NULL, FALSE);
+	g_return_val_if_fail (callback_proc != NULL, FALSE);
+
+	pref_hash_info = prefs_hash_lookup (prefs, pref_name);
+
+	if (!pref_hash_info)
+	{
+		g_warning ("trying to remove a callback from an unregistered preference.\n");
+
+		return FALSE;
+	}
+
+	pref_hash_info_remove_callback (pref_hash_info,
+					callback_proc,
+					user_data);
 
 	return TRUE;
 }

@@ -41,9 +41,9 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus/nautilus-alloc.h>
-#include <libnautilus/nautilus-string.h>
-#include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-gtk-extensions.h>
+#include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-icon-factory.h>
 #include <libnautilus/nautilus-string.h>
 
@@ -93,6 +93,8 @@ struct _FMDirectoryViewDetails
 	GList *pending_files_changed;
 
 	gboolean loading;
+
+	gint user_level;
 };
 
 /* forward declarations */
@@ -141,6 +143,12 @@ static void           schedule_timeout_display_of_pending_files                 
 static void           unschedule_timeout_display_of_pending_files                 (FMDirectoryView         *view);
 static void           unschedule_display_of_pending_files                         (FMDirectoryView         *view);
 static void           disconnect_model_handlers                                   (FMDirectoryView         *view);
+static void           user_level_changed_callback                                 (const GtkObject         *prefs,
+										   const gchar             *pref_name,
+										   GtkFundamentalType       pref_type,
+										   gconstpointer            pref_value,
+										   gpointer                 user_data);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_file)
@@ -369,6 +377,19 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
                             directory_view);
 
 	gtk_widget_show (GTK_WIDGET (directory_view));
+
+	/* Obtain the user level for filtering */
+	directory_view->details->user_level = 
+		nautilus_preferences_get_enum (nautilus_preferences_get_global_preferences (),
+					       NAUTILUS_PREFERENCES_USER_LEVEL);
+
+	/* Keep track of subsequent user level changes so that we dont have to query
+	 * preferences continually */
+	nautilus_preferences_add_callback (nautilus_preferences_get_global_preferences (),
+					   NAUTILUS_PREFERENCES_USER_LEVEL,
+					   user_level_changed_callback,
+					   (gpointer) directory_view);
+	
 }
 
 static void
@@ -378,6 +399,11 @@ fm_directory_view_destroy (GtkObject *object)
 
 	view = FM_DIRECTORY_VIEW (object);
 
+	nautilus_preferences_remove_callback (nautilus_preferences_get_global_preferences (),
+					      NAUTILUS_PREFERENCES_USER_LEVEL,
+					      user_level_changed_callback,
+					      (gpointer) view);
+	
 	if (view->details->model != NULL) {
 		disconnect_model_handlers (view);
 		gtk_object_unref (GTK_OBJECT (view->details->model));
@@ -807,18 +833,62 @@ queue_pending_files (FMDirectoryView *view,
 		     GList *files,
 		     GList **pending_list)
 {
-	/* Put the files on the pending list. */
-	nautilus_file_list_ref (files);
-	*pending_list = g_list_concat (*pending_list, g_list_copy (files));
+	GList *filtered_files = NULL;
+	GList *files_iterator;
+
+	/* Filter out files according to the user level */
+	switch (view->details->user_level) {
+	case NAUTILUS_USER_LEVEL_NOVICE:
+	case NAUTILUS_USER_LEVEL_INTERMEDIATE: 
+
+		/* FIXME: Eventually this should become a generic filtering thingy. */
+		for (files_iterator = files; 
+		     files_iterator != NULL; 
+		     files_iterator = files_iterator->next) {
+			NautilusFile *file;
+			char * name;
+			
+			file = NAUTILUS_FILE (files_iterator->data);
+			
+			g_assert (file != NULL);
+			
+			name = nautilus_file_get_name (file);
+			
+			g_assert (name != NULL);
+			
+			if (!nautilus_str_has_prefix (name, ".")) {
+				filtered_files = g_list_append (filtered_files, file);
+			}
+			
+			g_free (name);
+		}
+		
+		files = filtered_files;
+
+		break;
+		
+	case NAUTILUS_USER_LEVEL_HACKER:
+	case NAUTILUS_USER_LEVEL_ETTORE:
+		break;
+
+	default:
+		g_assert_not_reached ();
+	}
 	
-	/* If we haven't see all the files yet, then we'll wait for the
-	 * timeout to fire. If we have seen all the files, then we'll use
-	 * an idle instead.
-	 */
-	if (nautilus_directory_are_all_files_seen (view->details->model)) {
-		schedule_idle_display_of_pending_files (view);
-	} else {
-		schedule_timeout_display_of_pending_files (view);
+	/* Put the files on the pending list if there are any. */
+	if (files) {
+		nautilus_file_list_ref (files);
+		*pending_list = g_list_concat (*pending_list, g_list_copy (files));
+		
+		/* If we haven't see all the files yet, then we'll wait for the
+		 * timeout to fire. If we have seen all the files, then we'll use
+		 * an idle instead.
+		 */
+		if (nautilus_directory_are_all_files_seen (view->details->model)) {
+			schedule_idle_display_of_pending_files (view);
+		} else {
+			schedule_timeout_display_of_pending_files (view);
+		}
 	}
 }
 
@@ -1691,4 +1761,34 @@ fm_directory_view_update_menus (FMDirectoryView *view)
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
 	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->update_menus) (view);
+}
+
+static void
+user_level_changed_callback (const GtkObject         *prefs,
+			     const gchar             *pref_name,
+			     GtkFundamentalType       pref_type,
+			     gconstpointer            pref_value,
+			     gpointer                 user_data)
+{
+	FMDirectoryView * directory_view = FM_DIRECTORY_VIEW (user_data);
+
+	g_assert (directory_view != NULL);
+	g_assert (prefs != NULL);
+	g_assert (pref_name != NULL);
+
+	directory_view->details->user_level = (gint) pref_value;
+
+	/* Reload the current uri so that the filtering changes take place */
+	if (directory_view->details->model != NULL)
+	{
+		char * same_uri;
+
+		same_uri = nautilus_directory_get_uri (directory_view->details->model);
+
+		g_assert (same_uri != NULL);
+
+		fm_directory_view_load_uri (directory_view, same_uri);
+
+		g_free (same_uri);
+	}
 }

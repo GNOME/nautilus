@@ -1,5 +1,24 @@
 2000-03-12  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus/nautilus-global-preferences.c,
+	libnautilus/nautilus-global-preferences.h,
+	src/ntl-window-state.c:
+
+	Use better names for the global preferences macros.
+	Cleanup some #include cruft.
+	
+	* nautilus-widgets/nautilus-preferences.c,
+	nautilus-widgets/nautilus-preferences.h:
+	(nautilus_prefecences_remove_callback):
+	New method for removing callbacks.
+
+	* src/file-manager/fm-directory-view.c:
+	(queue_pending_files, fm_directory_view_initialize ,
+	fm_directory_view_destroy): Filter files according to the user level.
+	Add/Remove a preferences callback to keep track of user level changes.
+
+2000-03-12  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* AUTHORS,
 	src/nautilus-window-menus.c: Added myself.
 

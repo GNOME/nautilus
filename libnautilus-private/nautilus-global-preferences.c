@@ -26,14 +26,7 @@
 #include <nautilus-widgets/nautilus-preferences-group.h>
 #include <nautilus-widgets/nautilus-preferences-item.h>
 #include <nautilus-widgets/nautilus-preferences-dialog.h>
-
-#include <gnome.h>
-
-BEGIN_GNOME_DECLS
-
-
 #include <libnautilus/nautilus-glib-extensions.h>
-
 
 /* 
  * Constants
@@ -53,16 +46,10 @@ static GtkWidget *global_preferences_get_dialog         (void);
 static void       global_preferences_register_static    (NautilusPreferences *prefs);
 static void       global_preferences_register_dynamic   (NautilusPreferences *prefs);
 
-
-// static GtkWidget	*global_preferences_dialog = NULL;
-// static GtkObject	*global_preferences = NULL;
-
-static GtkWidget *panes[3];
-
 static const gchar *global_preferences_window_option_pref_names[] =
 {
-	NAUTILUS_GLOBAL_PREFERENCES_WINDOW_ALWAYS_NEW,
-	NAUTILUS_GLOBAL_PREFERENCES_WINDOW_SEARCH_EXISTING
+	NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
+	NAUTILUS_PREFERENCES_WINDOW_SEARCH_EXISTING
 };
 
 static const gchar *global_preferences_meta_view_names[] =
@@ -110,21 +97,21 @@ static NautilusPreferencesEnumData global_preferences_user_level_data =
 static NautilusPreferencesInfo global_preferences_static_info[] =
 {
 	{
-		NAUTILUS_GLOBAL_PREFERENCES_USER_LEVEL,
+		NAUTILUS_PREFERENCES_USER_LEVEL,
 		"User Level",
 		GTK_TYPE_ENUM,
-		FALSE,
+		(gconstpointer) NAUTILUS_USER_LEVEL_HACKER,
 		(gpointer) &global_preferences_user_level_data
 	},
 	{
-		NAUTILUS_GLOBAL_PREFERENCES_WINDOW_ALWAYS_NEW,
+		NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 		"Create new window for each new page",
 		GTK_TYPE_BOOL,
 		FALSE,
 		NULL
 	},
 	{
-		NAUTILUS_GLOBAL_PREFERENCES_WINDOW_SEARCH_EXISTING,
+		NAUTILUS_PREFERENCES_WINDOW_SEARCH_EXISTING,
 		"Do not open more than one window with the same page",
 		GTK_TYPE_BOOL,
 		FALSE,
@@ -138,9 +125,9 @@ static NautilusPreferencesInfo global_preferences_static_info[] =
 static GtkWidget *
 global_preferences_create_dialog (void)
 {
+	GtkWidget		*panes[3];
 	GtkWidget		*prefs_dialog;
 	NautilusPreferencesBox	*prefs_box;
-	GtkWidget		*user_level_group;
 
 	prefs_dialog = nautilus_preferences_dialog_new (GLOBAL_PREFERENCES_DIALOG_TITLE);
 	
@@ -150,9 +137,9 @@ global_preferences_create_dialog (void)
 						      "User Level",
 						      "User Level Something");
 
-	user_level_group = global_prefernces_create_enum_group (panes[0],
-								"User Level",
-								NAUTILUS_GLOBAL_PREFERENCES_USER_LEVEL);
+	global_prefernces_create_enum_group (panes[0],
+					     "User Level",
+					     NAUTILUS_PREFERENCES_USER_LEVEL);
 
 	panes[1] = nautilus_preferences_box_add_pane (prefs_box,
 						      "Window Options",
