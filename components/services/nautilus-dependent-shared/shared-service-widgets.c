@@ -107,7 +107,7 @@ create_label_widget (const char		*text,
 
 	label = nautilus_label_new (text);
 
-        nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", NULL, NULL, NULL);
+        nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", "bold", NULL, NULL);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), font_size);
 	nautilus_label_set_text_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_WHITE);
 
@@ -159,8 +159,8 @@ create_services_title_widget (const char *title_text)
 
 	label = create_label_widget (title_text, 20, "eazel-services-logo-tile.png", 10, 0, 0, -4);
 
-        nautilus_label_set_font_from_components (NAUTILUS_LABEL (title_text),"helvetica", NULL, NULL, NULL);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 20);
+        nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", "bold", NULL, NULL);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 18);
 	nautilus_label_set_text_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_WHITE);
 
 	gtk_widget_show (logo_image);
@@ -191,11 +191,11 @@ create_services_header_widget (const char	*left_text,
 
 	title_hbox = gtk_hbox_new (FALSE, 0);
 
-	left_label = create_label_widget (left_text, 16, "eazel-services-logo-tile.png", 10, 0, 0, -6);
+	left_label = create_label_widget (left_text, 12, "eazel-services-logo-tile.png", 10, 0, 0, -6);
 
 	filler_image = create_image_widget (NULL, "eazel-services-logo-tile.png");
 
-	right_label = create_label_widget (right_text, 16, "eazel-services-logo-tile.png", 10, 0, 0, -6);
+	right_label = create_label_widget (right_text, 12, "eazel-services-logo-tile.png", 10, 0, 0, -6);
 
 	gtk_widget_show (left_label);
 	gtk_widget_show (filler_image);
