@@ -1474,7 +1474,11 @@ nautilus_directory_schedule_position_set (GList *position_setting_list)
 			 position_string);
 		g_free (position_string);
 
-		screen_string = g_strdup_printf ("%d", item->screen);
+		if (item->set) {
+			screen_string = g_strdup_printf ("%d", item->screen);
+		} else {
+			screen_string = NULL;
+		}
 		nautilus_file_set_metadata
 			(file,
 			 NAUTILUS_METADATA_KEY_SCREEN,
