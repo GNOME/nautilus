@@ -88,11 +88,17 @@ static void                 list_activate_callback                    (NautilusL
 								       gpointer           data);
 static void                 list_selection_changed_callback           (NautilusList      *list,
 								       gpointer           data);
-static void                 fm_list_view_add_file                     (FMDirectoryView   *view,
+static void	            fm_list_view_add_file                     (FMDirectoryView   *view,
 								       NautilusFile      *file);
 static void                 fm_list_view_reset_row_height             (FMListView        *list_view);
 static void                 fm_list_view_file_changed                 (FMDirectoryView   *view,
 								       NautilusFile      *file);
+static void		    fm_list_view_adding_file 	      	      (FMListView 	 *view, 
+								       NautilusFile 	 *file);
+static void		    fm_list_view_removing_file		      (FMListView	 *view,
+								       NautilusFile	 *file);								       
+static gboolean		    fm_list_view_file_still_belongs 	      (FMListView 	 *view, 
+								       NautilusFile 	 *file);
 static void                 fm_list_view_begin_adding_files           (FMDirectoryView   *view);
 static void                 fm_list_view_begin_loading                (FMDirectoryView   *view);
 static void                 fm_list_view_bump_zoom_level              (FMDirectoryView   *view,
@@ -144,6 +150,12 @@ static const char *         get_column_attribute                      (FMListVie
 								       int                column_number);
 static NautilusFileSortType get_column_sort_criterion                 (FMListView        *list_view,
 								       int                column_number);
+static void		    real_adding_file 			      (FMListView 	 *view, 
+								       NautilusFile 	 *file);
+static void		    real_removing_file 			      (FMListView 	 *view, 
+								       NautilusFile 	 *file);
+static gboolean		    real_file_still_belongs 		      (FMListView 	 *view, 
+								       NautilusFile 	 *file);
 static int                  real_get_number_of_columns                (FMListView        *list_view);
 static int                  real_get_link_column                      (FMListView        *list_view);
 static char *               real_get_default_sort_attribute           (FMListView        *list_view);
@@ -190,10 +202,13 @@ fm_list_view_initialize_class (gpointer klass)
         fm_directory_view_class->image_display_policy_changed = fm_list_view_image_display_policy_changed;
         fm_directory_view_class->font_family_changed = fm_list_view_font_family_changed;
 
+	fm_list_view_class->adding_file = real_adding_file;
+	fm_list_view_class->removing_file = real_removing_file;
 	fm_list_view_class->get_number_of_columns = real_get_number_of_columns;
 	fm_list_view_class->get_link_column = real_get_link_column;
 	fm_list_view_class->get_column_specification = real_get_column_specification;
 	fm_list_view_class->get_default_sort_attribute = real_get_default_sort_attribute;
+	fm_list_view_class->file_still_belongs = real_file_still_belongs;
 }
 
 static void
@@ -831,7 +846,7 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (list_view), -1);
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), -1);
 
-	nautilus_file_ref (file);
+	fm_list_view_adding_file (list_view, file);
 
 	/* One extra slot so it's NULL-terminated */
 	number_of_columns = get_number_of_columns (list_view);
@@ -970,7 +985,8 @@ fm_list_view_clear (FMDirectoryView *view)
 
 	/* Clear away the existing list items. */
 	for (row = 0; row < list->rows; ++row) {
-		nautilus_file_unref (NAUTILUS_FILE (gtk_clist_get_row_data (list, row)));
+		fm_list_view_removing_file
+			(FM_LIST_VIEW (view), NAUTILUS_FILE (gtk_clist_get_row_data (list, row)));
 	}
 	gtk_clist_clear (list);
 }
@@ -1032,32 +1048,78 @@ fm_list_view_add_file (FMDirectoryView *view, NautilusFile *file)
 	}
 }
 
-static gboolean
-remove_from_list (FMListView *list_view, NautilusFile *file)
+static void
+remove_from_list (FMListView *list_view, 
+		  NautilusFile *file, 
+		  gboolean *was_in_list, 
+		  gboolean *was_selected)
 {
 	NautilusList *list;
 	int old_row;
-	gboolean was_selected;
+
+	g_assert (was_in_list != NULL);
+	g_assert (was_selected != NULL);
 
 	list = get_list (list_view);
 	old_row = gtk_clist_find_row_from_data (GTK_CLIST (list), file);
 
-	/* Just ignore this.  For some reason this is possible to
-	 * happen that multiple file_changed calls will be emitted for
-	 * the same file.   Thus this means we'll get called on a file
-	 * which no longer exists in the list. */
+	/* Sometimes this might be called on files that are no longer in
+	 * the list. This happens when a NautilusFile has file_changed called
+	 * on it after the file has already been marked as gone (which is legal).
+	 * The file was removed from the list the first time, so with the second
+	 * file_changed it's not there anymore. Also, note that the search-list-view
+	 * subclass relies on this behavior to ignore file_changed calls on the
+	 * search-result-symbolic-link files that aren't actually the ones in
+	 * the list.
+	 */
 	if (old_row < 0) {
-		return FALSE;
+		*was_in_list = FALSE;
+		*was_selected = FALSE;
+		return;
 	}
 	
-	/* Keep this item selected if necessary. */
-	was_selected = nautilus_list_is_row_selected (list, old_row);
+	*was_in_list = TRUE;
+	*was_selected = nautilus_list_is_row_selected (list, old_row);
 
-	/* Remove and re-add file to get new text/icon values and sort correctly. */
 	gtk_clist_remove (GTK_CLIST (list), old_row);
-	nautilus_file_unref (file);
+	fm_list_view_removing_file (list_view, file);
+}
 
-	return was_selected;
+static void
+real_adding_file (FMListView *view, NautilusFile *file)
+{
+	nautilus_file_ref (file);
+}
+
+static void
+fm_list_view_adding_file (FMListView *view, NautilusFile *file)
+{
+	(* FM_LIST_VIEW_CLASS (GTK_OBJECT (view)->klass)->adding_file) (view, file);
+}
+
+static void
+real_removing_file (FMListView *view, NautilusFile *file)
+{
+	nautilus_file_unref (file);
+}
+
+static void
+fm_list_view_removing_file (FMListView *view, NautilusFile *file)
+{
+	(* FM_LIST_VIEW_CLASS (GTK_OBJECT (view)->klass)->removing_file) (view, file);
+}
+
+static gboolean
+fm_list_view_file_still_belongs (FMListView *view, NautilusFile *file)
+{
+	return (* FM_LIST_VIEW_CLASS (GTK_OBJECT (view)->klass)->file_still_belongs) (view, file);
+}
+
+static gboolean
+real_file_still_belongs (FMListView *view, NautilusFile *file)
+{
+	return nautilus_directory_contains_file 
+		(fm_directory_view_get_model (FM_DIRECTORY_VIEW (view)), file);
 }
 
 static void
@@ -1066,6 +1128,7 @@ fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 	FMListView *list_view;
 	GtkCList *clist;
 	int new_row;
+	gboolean was_in_list;
 	gboolean was_selected;
 
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
@@ -1083,9 +1146,9 @@ fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 	
 	gtk_clist_freeze (clist);
 
-	was_selected = remove_from_list (list_view, file);	
+	remove_from_list (list_view, file, &was_in_list, &was_selected);
 
-	if (nautilus_directory_contains_file (fm_directory_view_get_model (view), file)) {
+	if (was_in_list && fm_list_view_file_still_belongs (list_view, file)) {
 		new_row = add_to_list (list_view, file);
 
 		if (was_selected) {

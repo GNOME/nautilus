@@ -49,12 +49,18 @@ typedef struct {
 typedef struct {
 	FMDirectoryViewClass parent_slot;
 
-	int    (* get_number_of_columns)      (FMListView       *list_view);
-	int    (* get_link_column)            (FMListView       *list_view);
-	void   (* get_column_specification)   (FMListView       *list_view,
-					       int               column_number,
-					       FMListViewColumn *specification);
-	char * (* get_default_sort_attribute) (FMListView       *list_view);
+	void	 (* adding_file)		(FMListView	  *list_view,
+						 NautilusFile	  *file);
+	void	 (* removing_file)		(FMListView	  *list_view,
+						 NautilusFile	  *file);
+	gboolean (* file_still_belongs)		(FMListView	  *list_view,
+						 NautilusFile	  *file);
+	int    	 (* get_number_of_columns)      (FMListView       *list_view);
+	int    	 (* get_link_column)            (FMListView       *list_view);
+	void   	 (* get_column_specification)   (FMListView       *list_view,
+					         int               column_number,
+					         FMListViewColumn *specification);
+	char * 	 (* get_default_sort_attribute) (FMListView       *list_view);
 } FMListViewClass;
 
 /* GtkObject support */

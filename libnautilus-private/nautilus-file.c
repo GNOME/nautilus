@@ -88,13 +88,7 @@ static char *nautilus_file_get_owner_as_string       (NautilusFile         *file
 static char *nautilus_file_get_permissions_as_string (NautilusFile         *file);
 static char *nautilus_file_get_size_as_string        (NautilusFile         *file);
 static char *nautilus_file_get_type_as_string        (NautilusFile         *file);
-static char *nautilus_file_get_real_directory_name   (NautilusFile         *file);
-
-static char *nautilus_file_get_real_uri              (NautilusFile         *file);
-static NautilusDirectory *
-             nautilus_file_get_real_parent_directory (NautilusFile         *file);
-static NautilusFile *
-             nautilus_file_get_real_file             (NautilusFile *file);
+static char *nautilus_file_get_real_directory	     (NautilusFile	   *file);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusFile, nautilus_file, GTK_TYPE_OBJECT)
 
@@ -435,72 +429,6 @@ nautilus_file_get_parent_uri_as_string (NautilusFile *file)
 
 	return nautilus_directory_get_uri (file->details->directory);
 }
-
-static char *
-nautilus_file_get_real_parent_uri_as_string (NautilusFile *file) 
-{	
-	char *uri_as_string, *parent_uri_as_string;
-	GnomeVFSURI *gnome_vfs_uri, *gnome_vfs_parent_uri;
-
-	if (!nautilus_file_is_search_result (file)) {
-		return nautilus_file_get_parent_uri_as_string (file);
-	}
-	else {
-		uri_as_string = nautilus_file_get_real_uri (file);
-		gnome_vfs_uri = gnome_vfs_uri_new (uri_as_string);
-		g_free (uri_as_string);
-		
-		if (gnome_vfs_uri_has_parent (gnome_vfs_uri)) {
-			gnome_vfs_parent_uri = gnome_vfs_uri_get_parent (gnome_vfs_uri);
-			parent_uri_as_string = gnome_vfs_uri_to_string (gnome_vfs_parent_uri,GNOME_VFS_URI_HIDE_NONE);
-			gnome_vfs_uri_unref (gnome_vfs_uri);
-			gnome_vfs_uri_unref (gnome_vfs_parent_uri);
-			return parent_uri_as_string;
-		}
-		else {
-			gnome_vfs_uri_unref (gnome_vfs_uri);
-			return g_strdup ("");
-		}
-	}
-}
-
-static NautilusFile *
-nautilus_file_get_real_file (NautilusFile *file)
-{
-	char *real_uri;
-	NautilusFile *real_file;
-
-	if (nautilus_file_is_search_result (file)) {
-		real_uri = nautilus_file_get_real_uri (file);
-		real_file = nautilus_file_get (real_uri);
-		g_free (real_uri);
-		return real_file;
-	}
-	else {
-		return file;
-	}
-}
-
-static NautilusDirectory *
-nautilus_file_get_real_parent_directory (NautilusFile *file)
-{
-
-	char *real_parent_uri;
-	NautilusDirectory *real_parent_directory;
-	
-	if (nautilus_file_is_search_result (file)) {
-		real_parent_uri = nautilus_file_get_real_parent_uri_as_string (file);
-		/* FIXME: This is not getting unref'ed.  
-		   Where should it be unref'ed? */
-		real_parent_directory  = nautilus_directory_get (real_parent_uri);
-		g_free (real_parent_uri);
-		return real_parent_directory;
-	}
-	else {
-		return file->details->directory;
-	}
-}
-
 
 static NautilusFile *
 get_file_for_parent_directory (NautilusFile *file)
@@ -1242,8 +1170,8 @@ nautilus_file_compare_by_real_directory (NautilusFile *file_1, NautilusFile *fil
 	char *directory_2;
 	int compare;
 
-	directory_1 = nautilus_file_get_real_directory_name (file_1);
-	directory_2 = nautilus_file_get_real_directory_name (file_2);
+	directory_1 = nautilus_file_get_real_directory (file_1);
+	directory_2 = nautilus_file_get_real_directory (file_2);
 
 	compare = nautilus_strcasecmp (directory_1, directory_2);
 
@@ -3047,7 +2975,7 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 	}
 
 	if (strcmp (attribute_name, "directory") == 0) {
-		return nautilus_file_get_real_directory_name (file);
+		return nautilus_file_get_real_directory (file);
 	}
 
 	return NULL;
@@ -3359,6 +3287,25 @@ nautilus_file_is_symbolic_link (NautilusFile *file)
 }
 
 /**
+ * nautilus_file_get_symbolic_link_target_path
+ * 
+ * Get the file path of the target of a symbolic link. It is an error 
+ * to call this function on a file that isn't a symbolic link.
+ * @file: NautilusFile representing the symbolic link in question.
+ * 
+ * Returns: newly-allocated copy of the file path of the target of the symbolic link.
+ */
+char *
+nautilus_file_get_symbolic_link_target_path (NautilusFile *file)
+{
+	g_return_val_if_fail (nautilus_file_is_symbolic_link (file), NULL);
+
+	return info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SYMLINK_NAME)
+		? NULL
+		: g_strdup (file->details->info->symlink_name);
+}
+
+/**
  * nautilus_file_is_nautilus_link
  * 
  * Check if this file is a nautilus link.
@@ -3579,11 +3526,14 @@ nautilus_file_get_real_name (NautilusFile *file)
 	return name;
 }
 
-char *
-nautilus_file_get_real_uri (NautilusFile *file)
+
+static char *
+nautilus_file_get_real_directory (NautilusFile *file)
 {
 	char *escaped_uri;
 	char *uri;
+	GnomeVFSURI *vfs_uri;
+	char *dir;
 
 	if (file == NULL) {
 		return NULL;
@@ -3598,23 +3548,6 @@ nautilus_file_get_real_uri (NautilusFile *file)
 	} else {
 		uri = nautilus_file_get_uri (file);
 	}
-	return uri;
-}
-
-static char *
-nautilus_file_get_real_directory_name (NautilusFile *file)
-{
-
-	char *uri;
-	GnomeVFSURI *vfs_uri;
-	char *dir;
-
-	if (file == NULL) {
-		return NULL;
-	}
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-	uri = nautilus_file_get_real_uri (file);
 	
 	vfs_uri = gnome_vfs_uri_new (uri);
 	g_free (uri);
@@ -3770,9 +3703,6 @@ nautilus_file_call_when_ready (NautilusFile *file,
 			       gpointer callback_data)
 
 {
-	NautilusDirectory *real_directory;
-	NautilusFile *real_file;
-
 	g_return_if_fail (callback != NULL);
 
 	if (file == NULL) {
@@ -3782,20 +3712,10 @@ nautilus_file_call_when_ready (NautilusFile *file,
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	real_directory = nautilus_file_get_real_parent_directory (file);
-	real_file = nautilus_file_get_real_file (file);
-
 	nautilus_directory_call_when_ready_internal
-		(real_directory,
-		 real_file,
+		(file->details->directory, file,
 		 file_attributes, wait_for_metadata,
 		 NULL, callback, callback_data);
-	
-	/* FIXME:  These are hacks.  Perhaps there is a better way
-	   to do this */
-	if (nautilus_file_is_search_result (file)) {
-		nautilus_directory_unref (real_directory);
-	}
 }
 
 void
@@ -3812,7 +3732,7 @@ nautilus_file_cancel_call_when_ready (NautilusFile *file,
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
 	nautilus_directory_cancel_callback_internal
-		(nautilus_file_get_real_parent_directory (file),
+		(file->details->directory,
 		 file,
 		 NULL,
 		 callback,

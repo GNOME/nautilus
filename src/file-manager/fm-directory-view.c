@@ -1548,6 +1548,23 @@ files_changed_callback (NautilusDirectory *directory,
 	queue_pending_files (view, files, &view->details->pending_files_changed);
 }
 
+/**
+ * fm_directory_queue_notice_file_change
+ * 
+ * Called by a subclass to put a file into the queue of files to update.
+ * This is only necessary when the subclass is monitoring files other than
+ * the ones in the directory for this location.
+ */
+void
+fm_directory_view_queue_file_change (FMDirectoryView *view, NautilusFile *file)
+{
+	GList *singleton_list;
+
+	singleton_list = g_list_prepend (NULL, file);
+	queue_pending_files (view, singleton_list, &view->details->pending_files_changed);
+	g_list_free (singleton_list);
+}
+
 
 
 /**

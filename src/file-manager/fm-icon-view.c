@@ -473,6 +473,7 @@ fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file)
 					 NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
 		nautilus_file_ref (file);
 	}
+
 }
 
 static void

@@ -31,8 +31,12 @@
 
 #include "fm-directory-view.h"
 #include "fm-list-view-private.h"
+#include <libnautilus-extensions/nautilus-file-attributes.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-search-bar-criterion.h>
 #include <libnautilus-extensions/nautilus-string.h>
+
+#include <libgnomevfs/gnome-vfs-utils.h>
 
 #include <libgnome/gnome-i18n.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -40,23 +44,31 @@
 /* Paths to use when creating & referring to Bonobo menu items */
 #define MENU_PATH_REVEAL_IN_NEW_WINDOW 		"/File/Reveal"
 
-static void 	fm_search_list_view_initialize       (gpointer          object,
-						      gpointer          klass);
-static void 	fm_search_list_view_initialize_class (gpointer          klass);
-static void	real_create_selection_context_menu_items (FMDirectoryView *view,
-					  		  GtkMenu 	  *menu,
-					  		  GList 	  *selection);
-static int  	real_get_number_of_columns           (FMListView       *list_view);
-static int  	real_get_link_column                 (FMListView       *list_view);
-static char *   real_get_default_sort_attribute      (FMListView       *view);
-static void 	real_get_column_specification        (FMListView       *list_view,
-						      int               column_number,
-						      FMListViewColumn *specification);
-static void	real_merge_menus 		     (FMDirectoryView *view);
-static gboolean real_supports_properties 	     (FMDirectoryView *view);
-static void 	load_location_callback               (NautilusView *nautilus_view, 
-						      char *location);
-static void	real_update_menus 		     (FMDirectoryView *view);
+static void 	fm_search_list_view_initialize       	 (gpointer          object,
+						      	  gpointer          klass);
+static void 	fm_search_list_view_initialize_class 	 (gpointer          klass);
+static void 	real_add_file				 (FMDirectoryView  *view,
+							  NautilusFile 	   *file);
+static void	real_create_selection_context_menu_items (FMDirectoryView  *view,
+					  		  GtkMenu 	   *menu,
+					  		  GList 	   *selection);
+static void	real_adding_file 			 (FMListView 	   *view, 
+							  NautilusFile 	   *file);
+static void	real_removing_file 			 (FMListView 	   *view, 
+							  NautilusFile 	   *file);
+static gboolean real_file_still_belongs 		 (FMListView 	   *view, 
+							  NautilusFile 	   *file);
+static int  	real_get_number_of_columns           	 (FMListView       *list_view);
+static int  	real_get_link_column                 	 (FMListView       *list_view);
+static char *   real_get_default_sort_attribute      	 (FMListView       *view);
+static void 	real_get_column_specification        	 (FMListView       *list_view,
+						      	  int               column_number,
+						      	  FMListViewColumn *specification);
+static void	real_merge_menus 		     	 (FMDirectoryView  *view);
+static gboolean real_supports_properties 	     	 (FMDirectoryView  *view);
+static void 	load_location_callback               	 (NautilusView 	   *nautilus_view, 
+						      	  char 		   *location);
+static void	real_update_menus 		     	 (FMDirectoryView  *view);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMSearchListView,
@@ -85,6 +97,7 @@ fm_search_list_view_initialize_class (gpointer klass)
 	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (klass);
 	fm_list_view_class = FM_LIST_VIEW_CLASS (klass);
 
+  	fm_directory_view_class->add_file = real_add_file;
   	fm_directory_view_class->merge_menus = real_merge_menus;
   	fm_directory_view_class->update_menus =	real_update_menus;
 	fm_directory_view_class->supports_properties = 
@@ -92,10 +105,13 @@ fm_search_list_view_initialize_class (gpointer klass)
 	fm_directory_view_class->create_selection_context_menu_items = 
 		real_create_selection_context_menu_items;
 
+	fm_list_view_class->adding_file = real_adding_file;
+	fm_list_view_class->removing_file = real_removing_file;
 	fm_list_view_class->get_number_of_columns = real_get_number_of_columns;
 	fm_list_view_class->get_link_column = real_get_link_column;
 	fm_list_view_class->get_column_specification = real_get_column_specification;
 	fm_list_view_class->get_default_sort_attribute = real_get_default_sort_attribute;
+	fm_list_view_class->file_still_belongs = real_file_still_belongs;
 }
 
 static void
@@ -257,6 +273,34 @@ compute_reveal_item_name_and_sensitivity (GList *selected_files,
 }
 
 static void
+real_add_file (FMDirectoryView *view, NautilusFile *file)
+{
+	char *fake_file_name;
+	char *real_file_uri;
+	NautilusFile *real_file;
+	
+	g_return_if_fail (FM_IS_SEARCH_LIST_VIEW (view));
+
+	/* Get the real file that the funky search symbolic link file 
+	 * refers to. The real file name is hacked into the name of the
+	 * search results virtual file.
+	 */
+	fake_file_name = nautilus_file_get_name (file);
+	real_file_uri = gnome_vfs_unescape_string (fake_file_name, NULL);
+	real_file = nautilus_file_get (real_file_uri);
+
+	/* Tell the normal list-view code to add this file. It will add
+	 * and ref it only if it's not already in the list.
+	 */ 
+	NAUTILUS_CALL_PARENT_CLASS 
+		(FM_DIRECTORY_VIEW_CLASS, add_file, (view, real_file));
+
+	g_free (fake_file_name);
+	g_free (real_file_uri);
+	nautilus_file_unref (real_file);
+}
+
+static void
 real_create_selection_context_menu_items (FMDirectoryView *view,
 					  GtkMenu *menu,
 					  GList *selection)
@@ -288,6 +332,51 @@ real_create_selection_context_menu_items (FMDirectoryView *view,
 	/* FIXME bugzilla.eazel.com 1750: need to connect callback */
 	/* gtk_signal_connect (GTK_OBJECT (menu_item), "activate", callback, view); */
 	gtk_menu_insert (menu, menu_item, position);
+}
+
+static void
+real_adding_file (FMListView *view, NautilusFile *file)
+{
+	GList *attributes;
+
+	g_assert (FM_IS_SEARCH_LIST_VIEW (view));
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	NAUTILUS_CALL_PARENT_CLASS (FM_LIST_VIEW_CLASS, adding_file, (view, file));
+
+	gtk_signal_connect_object (GTK_OBJECT (file),
+				   "changed",
+				   fm_directory_view_queue_file_change,
+				   GTK_OBJECT (view));
+	/* Monitor the things needed to get the right
+	 * icon. Also monitor a directory's item count because
+	 * the "size" attribute is based on that.
+	 */
+	attributes = nautilus_icon_factory_get_required_file_attributes ();		
+	attributes = g_list_prepend (attributes,
+				     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);	nautilus_file_monitor_add (file, view, attributes, TRUE);
+	g_list_free (attributes);
+}
+
+static void
+real_removing_file (FMListView *view, NautilusFile *file)
+{
+	g_assert (FM_IS_SEARCH_LIST_VIEW (view));
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	nautilus_file_monitor_remove (file, view);
+	gtk_signal_disconnect_by_func 
+		(GTK_OBJECT (file), fm_directory_view_queue_file_change, view);
+	NAUTILUS_CALL_PARENT_CLASS (FM_LIST_VIEW_CLASS, removing_file, (view, file));
+}
+
+static gboolean
+real_file_still_belongs (FMListView *view, NautilusFile *file)
+{
+	g_assert (FM_IS_SEARCH_LIST_VIEW (view));
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	return !nautilus_file_is_gone (file);
 }
 
 static void

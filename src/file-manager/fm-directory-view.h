@@ -88,7 +88,7 @@ struct FMDirectoryViewClass {
 	/* The 'add_file' signal is emitted to add one file to the view.
 	 * It must be replaced by each subclass.
 	 */
-	void 	(* add_file) 		 (FMDirectoryView *view, 
+	void    (* add_file) 		 (FMDirectoryView *view, 
 					  NautilusFile *file);
 
 	/* The 'file_changed' signal is emitted to signal a change in a file,
@@ -278,6 +278,8 @@ void               fm_directory_view_begin_loading                  (FMDirectory
  */
 void               fm_directory_view_activate_files                 (FMDirectoryView       *view,
 								     GList          	   *files);
+void		   fm_directory_view_queue_file_change	    	    (FMDirectoryView	   *view,
+								     NautilusFile 	   *file);
 void               fm_directory_view_notify_selection_changed       (FMDirectoryView       *view);
 BonoboUIHandler *  fm_directory_view_get_bonobo_ui_handler          (FMDirectoryView       *view);
 NautilusDirectory *fm_directory_view_get_model                      (FMDirectoryView       *view);
