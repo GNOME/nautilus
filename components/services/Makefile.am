@@ -1,2 +1,2 @@
-SUBDIRS = startup
+SUBDIRS = startup install
 
