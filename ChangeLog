@@ -1,3 +1,13 @@
+2000-09-09  Mathieu Lacage  <mathieu@eazel.com>
+
+	* components/tree/nautilus-tree-view.c: fix bug 2417.
+	cursor is now updated.
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_drag_begin), (nautilus_list_drag_end),
+	(nautilus_list_drag_leave), (nautilus_list_get_drop_action),
+	(nautilus_list_drag_motion), (nautilus_list_drag_drop),
+	(nautilus_list_drag_data_received): remove debugging output.
+
 2000-09-09  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-about.c: (nautilus_about_destroy),

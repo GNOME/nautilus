@@ -221,8 +221,6 @@ static void     nautilus_tree_view_move_copy_files    (NautilusTreeView         
 						       GdkDragContext           *context,
 						       const char               *target_uri);
 static char    *nautilus_tree_view_find_drop_target   (NautilusTreeView         *tree_view,
-						       GList                    *selection_list,
-						       GdkDragContext           *context,
 						       int                       x, 
 						       int                       y);
 static char    *nautilus_tree_view_get_drag_uri           (NautilusTreeView      *tree_view);
@@ -269,6 +267,11 @@ static void  nautilus_tree_view_expand_maybe_later (NautilusTreeView *tree_view,
 						    int x, 
 						    int y,
 						    gpointer user_data);
+static void  nautilus_tree_view_get_drop_action (NautilusTreeView *tree_view, 
+						 GdkDragContext *context,
+						 int x, int y,
+						 int *default_action,
+						 int *non_default_action);
 
 
 static void nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass);
@@ -1464,9 +1467,9 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 	NautilusTreeView *tree_view;
 	NautilusTreeViewDndDetails *dnd;
 	NautilusDragInfo *drag_info;
-#if 0
-	int resulting_action;
-#endif
+
+	int resulting_action, default_action, non_default_action;
+
 	tree_view = NAUTILUS_TREE_VIEW (user_data);
 	dnd = (NautilusTreeViewDndDetails *) (tree_view->details->dnd);
 	drag_info = dnd->drag_info;
@@ -1480,12 +1483,16 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 		switch (drag_info->data_type) {
 		case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
 		case NAUTILUS_ICON_DND_URI_LIST:
-			nautilus_tree_view_expand_maybe_later (NAUTILUS_TREE_VIEW (tree_view), x, y, user_data);
-			nautilus_tree_view_make_prelight_if_file_operation (NAUTILUS_TREE_VIEW (tree_view), x, y);
+			nautilus_tree_view_expand_maybe_later (NAUTILUS_TREE_VIEW (tree_view), 
+							       x, y, user_data);
+			nautilus_tree_view_make_prelight_if_file_operation (NAUTILUS_TREE_VIEW (tree_view), 
+									    x, y);
 			break;
 		case NAUTILUS_ICON_DND_KEYWORD:	
-			nautilus_tree_view_expand_maybe_later (NAUTILUS_TREE_VIEW (tree_view), x, y, user_data);
-			nautilus_tree_view_make_prelight_if_keyword (NAUTILUS_TREE_VIEW (tree_view), x, y);
+			nautilus_tree_view_expand_maybe_later (NAUTILUS_TREE_VIEW (tree_view), 
+							       x, y, user_data);
+			nautilus_tree_view_make_prelight_if_keyword (NAUTILUS_TREE_VIEW (tree_view), 
+								     x, y);
 			break;
 		case NAUTILUS_ICON_DND_COLOR:
 		case NAUTILUS_ICON_DND_BGIMAGE:	
@@ -1494,18 +1501,22 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 		}
 	}
 
-	/* update dragging cursor. */
-	/* FIXME bugzilla.eazel.com 2417: this does not work */
-#if 0
-	resulting_action = nautilus_drag_modifier_based_action (GDK_ACTION_COPY, 
-								GDK_ACTION_MOVE);
-#endif
-	gdk_drag_status (context, context->suggested_action, time);
-
-
 	/* auto scroll */
 	nautilus_tree_view_start_auto_scroll (tree_view);
 
+
+
+	/* update dragging cursor. */
+	nautilus_tree_view_get_drop_action  (tree_view, context, x, y, 
+					     &default_action, 
+					     &non_default_action);
+	resulting_action = nautilus_drag_modifier_based_action (default_action,
+								non_default_action);
+	gdk_drag_status (context, resulting_action, time);
+
+
+
+	/* make sure no one will ever get this event except us */
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
 				      "drag_motion");
 	return TRUE;
@@ -2004,8 +2015,6 @@ nautilus_tree_view_move_copy_files (NautilusTreeView *tree_view,
 
 static char *
 nautilus_tree_view_find_drop_target (NautilusTreeView *tree_view,
-				     GList *selection_list,
-				     GdkDragContext *context,
 				     int x, int y)
 {
 	char *target_uri;
@@ -2025,11 +2034,6 @@ nautilus_tree_view_find_drop_target (NautilusTreeView *tree_view,
 		file = nautilus_tree_node_get_file (parent_node);
 	} else {
 		file = nautilus_tree_node_get_file (current_node);
-	}
-
-	if ( !nautilus_drag_can_accept_items 
-	     (file, selection_list)) {	
-		return NULL;
 	}
 
 	target_uri = nautilus_file_get_uri (file);
@@ -2318,6 +2322,56 @@ nautilus_tree_view_free_drag_data (NautilusTreeView *tree_view)
  * Handle the data dropped on the tree view 
  ******************************************/
 
+static void
+nautilus_tree_view_get_drop_action (NautilusTreeView *tree_view, 
+				    GdkDragContext *context,
+				    int x, int y,
+				    int *default_action,
+				    int *non_default_action)
+{
+	NautilusDragInfo *drag_info;
+	char *drop_target;
+
+	drag_info = NAUTILUS_TREE_VIEW (tree_view)->details->dnd->drag_info;
+
+	/* FIXME bugzilla.eazel.com 2569: Too much code copied from nautilus-icon-dnd.c. Need to share more. */
+
+	if (drag_info->got_drop_data_type == FALSE) {
+		/* drag_data_received didn't get called yet */
+		return;
+	}
+
+
+	switch (drag_info->data_type) {
+	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+		if (drag_info->selection_list == NULL) {
+			*default_action = 0;
+			*non_default_action = 0;
+			return;
+		}
+
+		/* FIXME bugzilla.eazel.com 2571: */ 
+		drop_target = nautilus_tree_view_find_drop_target (tree_view, x, y);
+		if (!drop_target) {
+			*default_action = 0;
+			*non_default_action = 0;
+			return;
+		}
+		nautilus_drag_default_drop_action_for_icons (context, drop_target, 
+							     drag_info->selection_list, 
+							     default_action, 
+							     non_default_action);
+		break;
+	case NAUTILUS_ICON_DND_COLOR:
+		/* FIXME bugzilla.eazel.com 2572: Doesn't handle dropped keywords in list view? Do we need to support this? */
+		*default_action = context->suggested_action;
+		*non_default_action = context->suggested_action;
+		break;
+
+	default:
+	}
+
+}			       
 
 
 
@@ -2347,8 +2401,6 @@ nautilus_tree_view_receive_dropped_icons (NautilusTreeView *view,
 
 	if (context->action > 0) {
 		drop_target_uri = nautilus_tree_view_find_drop_target (tree_view, 
-								       drag_info->selection_list,
-								       context, 
 								       x, y);
 		if (drop_target_uri == NULL) {
 			nautilus_drag_destroy_selection_list (drag_info->selection_list);

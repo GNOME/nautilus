@@ -2760,7 +2760,6 @@ nautilus_list_drag_begin (GtkWidget *widget, GdkDragContext *context)
 
 	list = NAUTILUS_LIST (widget);
 
-	g_print ("drag begin \n");
 }
 
 static void
@@ -2775,7 +2774,6 @@ nautilus_list_drag_end (GtkWidget *widget, GdkDragContext *context)
 	nautilus_drag_destroy_selection_list (drag_info->selection_list);
 	drag_info->selection_list = NULL;
 
-	g_print ("drag end \n");
 }
 
 static void
@@ -2791,7 +2789,6 @@ nautilus_list_drag_leave (GtkWidget *widget, GdkDragContext *context, guint time
 
 	nautilus_list_stop_auto_scroll (NAUTILUS_LIST (list));
 
-	g_print ("drag leave \n");
 }
 
 static char *
@@ -2829,7 +2826,6 @@ nautilus_list_get_drop_action (NautilusList *list,
 	}
 
 
-	g_print ("get_drop_action \n");
 	switch (drag_info->data_type) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
 		if (drag_info->selection_list == NULL) {
@@ -2948,8 +2944,6 @@ nautilus_list_drag_motion (GtkWidget *widget, GdkDragContext *context,
 	NautilusList *list;
 	int default_action, non_default_action, resulting_action;
 
-	g_print ("drag motion \n");
-
 	list = NAUTILUS_LIST (widget);
 
 	nautilus_list_ensure_drag_data (list, context,  time);
@@ -2969,8 +2963,6 @@ nautilus_list_drag_drop (GtkWidget *widget, GdkDragContext *context,
 {
 	NautilusList *list;
 	
-	g_print ("drag drop \n");
-
 	list = NAUTILUS_LIST (widget);
 
 	/* make sure that drag_data_received is going to be called
@@ -2995,8 +2987,6 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 	list = NAUTILUS_LIST (widget);
 	drag_info = list->details->drag_info;
 
-	g_print ("drag data received \n");
-
 	switch (info) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
 		drag_info->selection_list = nautilus_drag_build_selection_list (data);
@@ -3014,8 +3004,6 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 
 	if (drag_info->drop_occured == TRUE) {
 		GList *selected_items;
-
-		g_print ("drag data received drop occured \n");
 
 		switch (info) {
 		case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
