@@ -254,7 +254,8 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	if (view->details->form != NULL) {
 		gtk_container_remove (GTK_CONTAINER (view), view->details->form);
-		gtk_widget_destroy (view->details->form);
+		/* gtk_container_remove does a gtk_widget_destroy */
+		/* gtk_widget_destroy (view->details->form); */
 		view->details->form = NULL;
 	}
 
@@ -269,6 +270,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	else {
 		char	*title_string;
 
+		g_free (view->details->user_name);
 		view->details->user_name = who_is_logged_in (view);
 		title_string = g_strdup_printf ("Welcome Back %s!", view->details->user_name);
 		g_print ("%s\n", title_string);
@@ -277,15 +279,11 @@ generate_summary_form (NautilusSummaryView	*view)
 	}
 	gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
 
-	gtk_widget_show (title);
-
 	/* Create the Parent Table to hold the 4 frames */
 	parent = GTK_TABLE (gtk_table_new (3, 2, FALSE));
 	g_print ("main\n");
 	/* Create the Services Listing Box */
 	frame = gtk_vbox_new (FALSE, 0);
-
-	gtk_widget_show (frame);
 
 	g_print ("services start\n");
 	gtk_table_attach (GTK_TABLE (parent), frame,
@@ -306,8 +304,6 @@ generate_summary_form (NautilusSummaryView	*view)
 	/* setup the title */
 	title = create_summary_service_large_grey_header_widget ("Services");
 	gtk_box_pack_start (GTK_BOX (temp_box), title, FALSE, FALSE, 0);
-
-	gtk_widget_show (title);
 
 	/* Create the parent table to hold 5 rows */
 	view->details->services_table = GTK_TABLE (gtk_table_new (5, 3, FALSE));
@@ -333,17 +329,12 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->services_table), 0, 0, 0);
 	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (temp_scrolled_window), GTK_WIDGET (temp_box));
 
-	gtk_widget_show (GTK_WIDGET (view->details->services_table));
-	gtk_widget_show (temp_box);
-	gtk_widget_show (temp_scrolled_window);
-
 	gtk_box_pack_start (GTK_BOX (frame), temp_scrolled_window, TRUE, TRUE, 0);
 	g_print ("services end\n");
 
 	/* Create the Login Frame */
 	g_print ("login start\n");
 	frame = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (frame);
 
 	gtk_table_attach (GTK_TABLE (parent), frame,
 			  1, 2,
@@ -358,7 +349,6 @@ generate_summary_form (NautilusSummaryView	*view)
 	/* setup the title */
 	title = create_summary_service_large_grey_header_widget ("Options");
 	gtk_box_pack_start (GTK_BOX (temp_box), title, FALSE, FALSE, 0);
-	gtk_widget_show (title);
 
 	if (!view->details->logged_in) {
 		/* username label */
@@ -367,8 +357,6 @@ generate_summary_form (NautilusSummaryView	*view)
 		view->details->username_label = nautilus_label_new ("User Name:");
 		nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->username_label), 16);
 		gtk_box_pack_start (GTK_BOX (temp_hbox), view->details->username_label, FALSE, FALSE, 0);
-		gtk_widget_show (view->details->username_label);
-		gtk_widget_show (temp_hbox);
 		gtk_box_pack_start (GTK_BOX (temp_box), temp_hbox, FALSE, FALSE, 4);
 		g_print ("label unl end\n");
 
@@ -377,8 +365,6 @@ generate_summary_form (NautilusSummaryView	*view)
 		temp_hbox = gtk_hbox_new (FALSE, 4);
 		view->details->username_entry = gtk_entry_new_with_max_length (36);
 		gtk_box_pack_start (GTK_BOX (temp_hbox), view->details->username_entry, FALSE, FALSE, 0);
-		gtk_widget_show (view->details->username_entry);
-		gtk_widget_show (temp_hbox);
 		gtk_box_pack_start (GTK_BOX (temp_box), temp_hbox, FALSE, FALSE, 4);
 		g_print ("label unt end\n");
 
@@ -388,8 +374,6 @@ generate_summary_form (NautilusSummaryView	*view)
 		view->details->password_label = nautilus_label_new ("Password:");
 		nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->password_label), 16);
 		gtk_box_pack_start (GTK_BOX (temp_hbox), view->details->password_label, FALSE, FALSE, 0);
-		gtk_widget_show (view->details->password_label);
-		gtk_widget_show (temp_hbox);
 		gtk_box_pack_start (GTK_BOX (temp_box), temp_hbox, FALSE, FALSE, 4);
 		g_print ("label pwl end\n");
 
@@ -399,8 +383,6 @@ generate_summary_form (NautilusSummaryView	*view)
 		view->details->password_entry = gtk_entry_new_with_max_length (36);
 		gtk_box_pack_start (GTK_BOX (temp_hbox), view->details->password_entry, FALSE, FALSE, 0);
 		gtk_entry_set_visibility (GTK_ENTRY (view->details->password_entry), FALSE);
-		gtk_widget_show (view->details->password_entry);
-		gtk_widget_show (temp_hbox);
 		gtk_box_pack_start (GTK_BOX (temp_box), temp_hbox, FALSE, FALSE, 4);
 		g_print ("label pwt end\n");
 
@@ -413,14 +395,11 @@ generate_summary_form (NautilusSummaryView	*view)
 		gtk_widget_set_usize (view->details->login_button, 140, -1);
 		view->details->login_label = nautilus_label_new (" I'm ready to login! ");
 		nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->login_label), 12);
-		gtk_widget_show (view->details->login_label);
 		gtk_container_add (GTK_CONTAINER (view->details->login_button), view->details->login_label);
 		button_box = gtk_hbox_new (TRUE, 0);
 		gtk_box_pack_start (GTK_BOX (button_box), view->details->login_button, FALSE, FALSE, 0);
 		gtk_signal_connect (GTK_OBJECT (view->details->login_button), "clicked", GTK_SIGNAL_FUNC (login_button_cb), view);
 		gtk_widget_set_sensitive (view->details->login_button, FALSE);
-		gtk_widget_show (view->details->login_button);
-		gtk_widget_show (button_box);
 		gtk_box_pack_start (GTK_BOX (temp_box), button_box, FALSE, FALSE, 4);
 		g_print ("label lib end\n");
 
@@ -430,13 +409,10 @@ generate_summary_form (NautilusSummaryView	*view)
 		gtk_widget_set_usize (view->details->register_button, 140, -1);
 		view->details->register_label = nautilus_label_new ("    Register Now!    ");
 		nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->register_label), 12);
-		gtk_widget_show (view->details->register_label);
 		gtk_container_add (GTK_CONTAINER (view->details->register_button), view->details->register_label);
 		button_box = gtk_hbox_new (TRUE, 0);
 		gtk_box_pack_start (GTK_BOX (button_box), view->details->register_button, FALSE, FALSE, 0);
 		gtk_signal_connect (GTK_OBJECT (view->details->register_button), "clicked", GTK_SIGNAL_FUNC (register_button_cb), view);
-		gtk_widget_show (view->details->register_button);
-		gtk_widget_show (button_box);
 		gtk_box_pack_start (GTK_BOX (temp_box), button_box, FALSE, FALSE, 4);
 		g_print ("label rb end\n");
 
@@ -454,13 +430,10 @@ generate_summary_form (NautilusSummaryView	*view)
 		gtk_widget_set_usize (view->details->preferences_button, 140, -1);
 		view->details->preferences_label = nautilus_label_new (" Account Preferences ");
 		nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->preferences_label), 12);
-		gtk_widget_show (view->details->preferences_label);
 		gtk_container_add (GTK_CONTAINER (view->details->preferences_button), view->details->preferences_label);
 		button_box = gtk_hbox_new (TRUE, 0);
 		gtk_box_pack_start (GTK_BOX (button_box), view->details->preferences_button, FALSE, FALSE, 0);
 		gtk_signal_connect (GTK_OBJECT (view->details->preferences_button), "clicked", GTK_SIGNAL_FUNC (preferences_button_cb), view);
-		gtk_widget_show (view->details->preferences_button);
-		gtk_widget_show (button_box);
 		gtk_box_pack_start (GTK_BOX (temp_box), button_box, FALSE, FALSE, 4);
 
 		/* logout button */
@@ -468,25 +441,20 @@ generate_summary_form (NautilusSummaryView	*view)
 		gtk_widget_set_usize (view->details->logout_button, 140, -1);
 		view->details->logout_label = nautilus_label_new ("Log me out!");
 		nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->logout_label), 12);
-		gtk_widget_show (view->details->logout_label);
 		gtk_container_add (GTK_CONTAINER (view->details->logout_button), view->details->logout_label);
 		button_box = gtk_hbox_new (TRUE, 0);
 		gtk_box_pack_start (GTK_BOX (button_box), view->details->logout_button, FALSE, FALSE, 0);
 		gtk_signal_connect (GTK_OBJECT (view->details->logout_button), "clicked", GTK_SIGNAL_FUNC (logout_button_cb), view);
-		gtk_widget_show (view->details->logout_button);
-		gtk_widget_show (button_box);
 		gtk_box_pack_start (GTK_BOX (temp_box), button_box, FALSE, FALSE, 4);
 	}
 
 	/* draw parent vbox and connect it to the login frame */
-	gtk_widget_show (temp_box);
 	gtk_box_pack_start (GTK_BOX (frame), temp_box, TRUE, TRUE, 0);
 	g_print ("login end\n");
 
 	/* Create the Service News Frame */
 	g_print ("service news start\n");
 	frame = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (frame);
 	gtk_table_attach (GTK_TABLE (parent), frame,
 			  0, 2,
 			  1, 2,
@@ -504,12 +472,10 @@ generate_summary_form (NautilusSummaryView	*view)
 	/* setup the large grey header */
 	title = create_summary_service_large_grey_header_widget ("Eazel News and Updates");
 	gtk_box_pack_start (GTK_BOX (temp_box), title, FALSE, FALSE, 0);
-	gtk_widget_show (title);
 
 	/* setup the small grey header */
 	small_title = create_summary_service_small_grey_header_widget ("Service News");
 	gtk_box_pack_start (GTK_BOX (temp_box), small_title, FALSE, FALSE, 0);
-	gtk_widget_show (small_title);
 
 	view->details->service_news_table = GTK_TABLE (gtk_table_new (4, 2, FALSE));
 
@@ -529,16 +495,12 @@ generate_summary_form (NautilusSummaryView	*view)
 	/* draw parent vbox and connect it to the service news frame */
 	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->service_news_table), TRUE, TRUE, 0);
 	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (temp_scrolled_window), GTK_WIDGET (temp_box));
-	gtk_widget_show (GTK_WIDGET (view->details->service_news_table));
-	gtk_widget_show (temp_box);
-	gtk_widget_show (temp_scrolled_window);
 	gtk_box_pack_start (GTK_BOX (frame), temp_scrolled_window, TRUE, TRUE, 0);
 	g_print ("service news end\n");
 
 	/* Create the Update News Frame */
 	g_print ("update news start\n");
 	frame = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (frame);
 	gtk_table_attach (GTK_TABLE (parent), frame,
 			  0, 2,
 			  2, 3,
@@ -557,7 +519,6 @@ generate_summary_form (NautilusSummaryView	*view)
 	/* setup the small grey header */
 	small_title = create_summary_service_small_grey_header_widget ("Software Updates");
 	gtk_box_pack_start (GTK_BOX (temp_box), small_title, FALSE, FALSE, 0);
-	gtk_widget_show (small_title);
 
 	/* create the default update table with 4 rows */
 	view->details->updates_table = GTK_TABLE (gtk_table_new (4, 3, FALSE));
@@ -582,22 +543,17 @@ generate_summary_form (NautilusSummaryView	*view)
 	/* draw parent vbox and connect it to the update news frame */
 	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->updates_table), TRUE, TRUE, 0);
 	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (temp_scrolled_window), GTK_WIDGET (temp_box));
-	gtk_widget_show (GTK_WIDGET (view->details->updates_table));
-	gtk_widget_show (temp_box);
-	gtk_widget_show (temp_scrolled_window);
 	gtk_box_pack_start (GTK_BOX (frame), temp_scrolled_window, TRUE, TRUE, 0);
 
 	/* draw the parent frame box */
 	gtk_box_pack_start (GTK_BOX (view->details->form), GTK_WIDGET (parent), TRUE, TRUE, 0);
-	gtk_widget_show (GTK_WIDGET (parent));
 	g_print ("update news end\n");
 
-	/*Finally, show the form that hold everything */
-	gtk_widget_show (view->details->form);
-
-
+	/*Show everything */
+	gtk_widget_show_all (GTK_WIDGET(view));
 }
 
+/* Note: does not call gtk_widget_show itself */
 static void
 generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 {
@@ -612,7 +568,6 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	view->details->services_icon_widget = create_image_widget (view->details->services_icon_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);
 	g_assert (view->details->services_icon_widget != NULL);
 	gtk_box_pack_start (GTK_BOX (view->details->services_icon_container), view->details->services_icon_widget, 0, 0, 0);
-	gtk_widget_show (view->details->services_icon_widget);
 	gtk_table_attach (view->details->services_table, view->details->services_icon_container, 0, 1, row - 1 , row, GTK_FILL, GTK_FILL, 0, 0);
 
 	/* Generate second Column with service title and summary */
@@ -626,20 +581,15 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 						 "bold",
 						 NULL,
 						 NULL);
-	gtk_widget_show (view->details->services_description_header_widget);
 	gtk_container_add (GTK_CONTAINER (temp_hbox), view->details->services_description_header_widget);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 0);
-	gtk_widget_show (temp_hbox);
 	/* Body */
 	temp_hbox = gtk_hbox_new (FALSE, 0);
 	view->details->services_description_body_widget = nautilus_label_new (view->details->services_description_body);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->services_description_body_widget), 12);
-	gtk_widget_show (view->details->services_description_body_widget);
 	gtk_container_add (GTK_CONTAINER (temp_hbox), view->details->services_description_body_widget);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 0);
-	gtk_widget_show (temp_hbox);
 	gtk_table_attach (view->details->services_table, temp_vbox, 1, 2, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
-	gtk_widget_show (temp_vbox);
 
 	/* Add the redirect button to the third column */
 	view->details->services_button_container = gtk_hbox_new (FALSE, 0);
@@ -647,7 +597,6 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_widget_set_usize (view->details->services_goto_button, 140, -1);
 	view->details->services_goto_label_widget = nautilus_label_new (view->details->services_goto_label);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->services_goto_label_widget), 12);
-	gtk_widget_show (view->details->services_goto_label_widget);
 	gtk_container_add (GTK_CONTAINER (view->details->services_goto_button), view->details->services_goto_label_widget);
 	gtk_box_pack_end (GTK_BOX (view->details->services_button_container), view->details->services_goto_button, FALSE, FALSE, 0);
 	cbdata->nautilus_view = view->details->nautilus_view;
@@ -658,15 +607,12 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 		gtk_widget_set_sensitive (view->details->services_goto_button, FALSE);
 	}
 
-	gtk_widget_show (view->details->services_goto_button);
 	gtk_table_attach (view->details->services_table, view->details->services_button_container, 2, 3, row - 1, row, 0, 0, 0, 0);
 
-	gtk_widget_show (view->details->services_icon_container);
-
-	gtk_widget_show (view->details->services_button_container);
 
 }
 
+/* Note: does not call gtk_widget_show itself */
 static void
 generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 {
@@ -676,14 +622,11 @@ generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 	view->details->news_icon_widget = create_image_widget (view->details->news_icon_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);
 	g_assert (view->details->news_icon_widget != NULL);
 	gtk_box_pack_start (GTK_BOX (view->details->news_icon_container), view->details->news_icon_widget, 0, 0, 0);
-	gtk_widget_show (view->details->news_icon_widget);
 	gtk_table_attach (view->details->service_news_table, view->details->news_icon_container, 0, 1, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
-	gtk_widget_show (view->details->news_icon_container);
 	/* Generate second Column with news content */
 	view->details->news_description_body_widget = nautilus_label_new (view->details->news_description_body);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->news_description_body_widget), 12);
 	gtk_table_attach (view->details->service_news_table, view->details->news_description_body_widget, 1, 2, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
-	gtk_widget_show (view->details->news_description_body_widget);
 
 }
 
@@ -701,9 +644,7 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	view->details->update_icon_widget = create_image_widget (view->details->update_icon_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);
 	g_assert (view->details->update_icon_widget != NULL);
 	gtk_box_pack_start (GTK_BOX (view->details->update_icon_container), view->details->update_icon_widget, 0, 0, 0);
-	gtk_widget_show (view->details->update_icon_widget);
 	gtk_table_attach (view->details->updates_table, view->details->update_icon_container, 0, 1, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
-	gtk_widget_show (view->details->update_icon_container);
 
 	/* Generate second Column with update title, summary, and version */
 	temp_vbox = gtk_vbox_new (FALSE, 0);
@@ -716,18 +657,14 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 						 "bold",
 						 NULL,
 						 NULL);
-	gtk_widget_show (view->details->update_description_header_widget);
 	gtk_container_add (GTK_CONTAINER (temp_hbox), view->details->update_description_header_widget);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 0);
-	gtk_widget_show (temp_hbox);
 	/* Body */
 	temp_hbox = gtk_hbox_new (FALSE, 0);
 	view->details->update_description_body_widget = nautilus_label_new (view->details->update_description_body);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->update_description_body_widget), 12);
-	gtk_widget_show (view->details->update_description_body_widget);
 	gtk_container_add (GTK_CONTAINER (temp_hbox), view->details->update_description_body_widget);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 0);
-	gtk_widget_show (temp_hbox);
 	/* Version */
 	temp_hbox = gtk_hbox_new (FALSE, 0);
 	view->details->update_description_version_widget = nautilus_label_new (view->details->update_description_version);
@@ -737,13 +674,10 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 						 "bold",
 						 NULL,
 						 NULL);
-	gtk_widget_show (view->details->update_description_version_widget);
 	gtk_container_add (GTK_CONTAINER (temp_hbox), view->details->update_description_version_widget);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 0);
-	gtk_widget_show (temp_hbox);
 
 	gtk_table_attach (view->details->updates_table, temp_vbox, 1, 2, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
-	gtk_widget_show (temp_vbox);
 
 	/* Add the redirect button to the third column */
 	view->details->update_button_container = gtk_hbox_new (TRUE, 0);
@@ -751,15 +685,12 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_widget_set_usize (view->details->update_goto_button, 140, -1);
 	view->details->update_goto_label_widget = nautilus_label_new (view->details->update_goto_label);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->update_goto_label_widget), 12);
-	gtk_widget_show (view->details->update_goto_label_widget);
 	gtk_container_add (GTK_CONTAINER (view->details->update_goto_button), view->details->update_goto_label_widget);
 	gtk_box_pack_start (GTK_BOX (view->details->update_button_container), view->details->update_goto_button, FALSE, FALSE, 13);
 	cbdata->nautilus_view = view->details->nautilus_view;
 	cbdata->uri = view->details->update_redirects[view->details->current_update_row - 1];
 	gtk_signal_connect (GTK_OBJECT (view->details->update_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_update_cb), cbdata);
-	gtk_widget_show (view->details->update_goto_button);
 	gtk_table_attach (view->details->updates_table, view->details->update_button_container, 2, 3, row - 1, row, 0, 0, 0, 0);
-	gtk_widget_show (view->details->update_button_container);
 
 }
 
@@ -777,6 +708,7 @@ entry_changed_cb (GtkWidget	*entry, NautilusSummaryView	*view)
 
 	button_enabled = 	user_name && strlen (user_name) && password && strlen (password)
 				&& (Pending_None == view->details->pending_operation);
+
 
 	gtk_widget_set_sensitive (view->details->login_button, button_enabled);
 
@@ -812,9 +744,6 @@ authn_cb_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *in
 	g_assert (Pending_Login == view->details->pending_operation);
 
 	view->details->pending_operation = Pending_None;
-
-	/* MKF--why is this set sensitive and then unset again? */
-	gtk_widget_set_sensitive (view->details->login_button, TRUE);
 
 	/* Clear out the username and password field */
 	gtk_signal_handler_block_by_func (
@@ -873,12 +802,16 @@ login_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 		view->details->authn_callback = ammonite_auth_callback_wrapper_new (bonobo_poa(), &cb_funcs, view);
 
 		user_name = gtk_entry_get_text (GTK_ENTRY (view->details->username_entry));
-		view->details->user_name = user_name;
+		g_free (view->details->user_name);
+		view->details->user_name = g_strdup (user_name);
 		password = gtk_entry_get_text (GTK_ENTRY (view->details->password_entry));
 
 		authinfo = EazelProxy_AuthnInfo__alloc ();
 		authinfo->username = CORBA_string_dup (user_name);
 		authinfo->password = CORBA_string_dup (password);
+		user_name = NULL;
+		password = NULL;
+				
 		authinfo->services_redirect_uri = CORBA_string_dup ("");
 		authinfo->services_login_path = CORBA_string_dup ("");
 
@@ -898,8 +831,6 @@ login_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 			/* FIXME bugzilla.eazel.com 2745: cleanup after fail here */ 
 		}
 
-		g_free (user_name);
-		g_free (password);
 
 	}
 	
@@ -1010,7 +941,7 @@ who_is_logged_in (NautilusSummaryView	*view)
 	
 				current = user->_buffer + i;
 				if (current->is_default) {
-					rv = current->user_name;
+					rv = g_strdup (current->user_name);
 				}
 			}
 			CORBA_free (user);
@@ -1024,7 +955,6 @@ who_is_logged_in (NautilusSummaryView	*view)
 static gint
 logged_in_callback (gpointer	raw)
 {
-
 	NautilusSummaryView	*view;
 
 	view = NAUTILUS_SUMMARY_VIEW (raw);
@@ -1038,7 +968,6 @@ logged_in_callback (gpointer	raw)
 static gint
 logged_out_callback (gpointer	raw)
 {
-
 	NautilusSummaryView	*view;
 
 	view = NAUTILUS_SUMMARY_VIEW (raw);
