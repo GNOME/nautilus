@@ -340,11 +340,14 @@ static gboolean
 check_for_thumbnails (void)
 {
 	NautilusThumbnailInfo *info;
+	GdkPixbuf *broken_image;
 	GList *head;
 	NautilusFile *file;
 	int status;
 	char *current_thumbnail;
+	char *image_path, *thumbnail_path;
 	gboolean task_terminated;
+	gboolean need_update;
 	
 	info = (NautilusThumbnailInfo*) thumbnails->data;
 	
@@ -354,21 +357,44 @@ check_for_thumbnails (void)
 		file = nautilus_file_get (info->thumbnail_uri);
 
 		current_thumbnail = make_thumbnail_path (info->thumbnail_uri, FALSE, info->is_local, info->anti_aliased);
-					
-		if (file != NULL && vfs_file_exists (current_thumbnail)) {
+		
+		/* if a thumbnail wasn't successfully made, use the "broken image" icon */
+		need_update = TRUE;
+		if (!vfs_file_exists (current_thumbnail)) {
+			/* we don't have a real "broken image" icon yet, so use a generic one for now */
+			image_path = nautilus_theme_get_image_path ("gnome-image-generic");
+			broken_image = gdk_pixbuf_new_from_file (image_path);
+			
+			if (broken_image != NULL) {
+				thumbnail_path = gnome_vfs_get_local_path_from_uri (current_thumbnail);
+				need_update = nautilus_gdk_pixbuf_save_to_file (broken_image, thumbnail_path);
+				gdk_pixbuf_unref (broken_image);
+				g_free (thumbnail_path);
+			} else {
+				need_update = FALSE;
+			}
+			
+			g_free (image_path);
+		}
+		
+		/* update the file's icon */		
+		if (file != NULL && need_update) {
 			nautilus_file_changed (file);
 		}
-
+		
 		if (file != NULL) {
 			nautilus_file_unref (file);
 		}
-		g_free (current_thumbnail);
 		
+		g_free (current_thumbnail);
 		g_free (info->thumbnail_uri);
 		g_free (info);
+		
+		/* remove it from the queue */
 		head = thumbnails;
 		thumbnails = g_list_remove_link (thumbnails, head);
 		g_list_free_1 (head);
+		
 		return TRUE;
 	}
     

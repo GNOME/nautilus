@@ -1,3 +1,12 @@
+2000-09-29  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-thumbnails.c:
+	(check_for_thumbnails):
+	finished fixing bug 3342, thumbnailing never gives up on bad images,
+	by generating a unique "cant thumbnail" icon when thumbnailing fails.
+	Right now it's using the generic image icon; I still need a better
+	one from Susan.
+	
 2000-09-29  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 2602, Integrate gnome-vfs http proxy setting into Mozilla
