@@ -3,7 +3,7 @@
    nautilus-vfs-file.c: Subclass of NautilusFile to help implement the
    virtual trash directory.
  
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -77,11 +77,8 @@ vfs_file_cancel_call_when_ready (NautilusFile *file,
 				 gpointer callback_data)
 {
 	nautilus_directory_cancel_callback_internal
-		(file->details->directory,
-		 file,
-		 NULL,
-		 callback,
-		 callback_data);
+		(file->details->directory, file,
+		 NULL, callback, callback_data);
 }
 
 static gboolean
@@ -89,8 +86,7 @@ vfs_file_check_if_ready (NautilusFile *file,
 			 GList *file_attributes)
 {
 	return nautilus_directory_check_if_ready_internal
-		(file->details->directory,
-		 file,
+		(file->details->directory, file,
 		 file_attributes);
 }
 

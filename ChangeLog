@@ -2,6 +2,38 @@
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
 
+	Fix bug 7778 (Trash directory state not saved properly).
+
+	* libnautilus-extensions/nautilus-trash-file.c:
+	(is_delegated_attribute): Function that returns TRUE if it's passed
+	one of the attributes that needs to be delegated to the individual
+	directories that make up the trash.
+	(is_delegated_attribute_predicate): Cover to use partition call on.
+	(partition_attributes): Helper that partitions a list into a list
+	of the delegated and non-delegated attributes.
+	(real_monitor_add), (real_monitor_remove),
+	(real_call_when_ready), (real_cancel_call_when_ready),
+	(real_check_if_ready): Calls to be used for the trash itself for
+	the non-delegated attributes.
+	(trash_callback_destroy): Destroy both attribute lists.
+	(monitor_add_file): Only monitor delegated attributes here.
+	(trash_file_call_when_ready): Wait for the delegated attributes
+	on the other files, the non-delegated attributes on this file.
+	(trash_file_cancel_call_when_ready): Cancel the wait for both
+	the main file and the other files.
+	(trash_file_check_if_ready): Check for the delegated attributes
+	on the other files, the non-delegated attributes on this file.
+	(trash_file_monitor_add): Monitor the delegated attributes
+	on the other files, the non-delegated attributes on this file.
+	(trash_file_monitor_remove): Remove the monitor from both the
+	main file and the other files.
+	
+	* libnautilus-extensions/nautilus-vfs-file.c: Formatting tweaks.
+
+2001-03-16  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
 	Fix bug 6495 (Emacs-style keybindings not working in location bar
 	and other NautilusEntry fields) by adding an expert preference to
 	control whether the Emacs shortcuts or the ones in the menu bar
