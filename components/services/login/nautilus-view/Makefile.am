@@ -1,11 +1,8 @@
 NULL =
 
-CPPFLAGS =							\
-	-DPREFIX=\"$(prefix)\"					\
-	 -DG_LOG_DOMAIN=\"trilobite-eazel-change-password\"	\
-	$(NULL)
-
 INCLUDES =								\
+	-DPREFIX=\"$(prefix)\"						\
+	 -DG_LOG_DOMAIN=\"trilobite-eazel-change-password\"		\
 	-I$(top_srcdir)							\
 	-I$(top_srcdir)/components/services/nautilus-dependent-shared	\
 	-I$(top_srcdir)/components/services/trilobite/libtrilobite	\

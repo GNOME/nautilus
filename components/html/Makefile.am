@@ -1,11 +1,9 @@
 # FIXME bugzilla.eazel.com 714: I (Elliot) want the HTML component to be a
 # shared library component, not an exe one.
 
-CPPFLAGS =					\
-	-DPREFIX=\"$(prefix)\"
-	-DG_LOG_DOMAIN=\"Nautilus-HTML\"
-
 INCLUDES =					\
+	-DPREFIX=\"$(prefix)\"			\
+	-DG_LOG_DOMAIN=\"Nautilus-HTML\"	\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \

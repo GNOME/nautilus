@@ -32,6 +32,11 @@ struct NautilusFileDetails
 
 	gboolean is_gone;
 	char *name;
+	
+	/* Set by the NautilusDirectory while it's loading the file
+	 * list so the file knows not to do redundant I/O.
+	 */
+	gboolean loading_directory;
 
 	GnomeVFSFileInfo *info;
 	gboolean get_info_failed;
@@ -47,8 +52,7 @@ struct NautilusFileDetails
 	guint deep_unreadable_count;
 	GnomeVFSFileSize deep_size;
 
-	/* if this is a directory, the list of mime-types in it */
-	NautilusRequestStatus mime_list_status;
+	/* If this is a directory, the list of MIME types in it. */
 	GList *mime_list;
 	gboolean got_mime_list;
 	gboolean mime_list_failed;

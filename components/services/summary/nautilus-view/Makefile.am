@@ -1,14 +1,11 @@
 include $(top_srcdir)/Makefile.shared
 
-CPPFLAGS =							\
-	-DPREFIX=\"$(prefix)\"					\
-	 -DG_LOG_DOMAIN=\"trilobite-eazel-summary\"		\
-	-DDATADIR=\"$(datadir)\"		\
-	$(NULL)
-
 SUBDIRS = icons
 
 INCLUDES =								\
+	-DPREFIX=\"$(prefix)\"						\
+	 -DG_LOG_DOMAIN=\"trilobite-eazel-summary\"			\
+	-DDATADIR=\"$(datadir)\"					\
 	-I$(top_srcdir)							\
 	-I$(top_srcdir)/components/services/nautilus-dependent-shared	\
 	-I$(top_srcdir)/components/services/trilobite			\

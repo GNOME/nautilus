@@ -1,10 +1,8 @@
 NULL =
 
-CPPFLAGS = \
-	-DPREFIX=\"$(prefix)\" \
-	-DG_LOG_DOMAIN=\"Nautilus-Authenticate\"
-
 INCLUDES = \
+	-DPREFIX=\"$(prefix)\" \
+	-DG_LOG_DOMAIN=\"Nautilus-Authenticate\" \
 	-I$(top_srcdir) \
 	$(GNOMEUI_CFLAGS) \
 	$(NULL)

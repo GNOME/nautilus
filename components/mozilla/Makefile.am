@@ -1,13 +1,10 @@
 include $(top_srcdir)/Makefile.shared
 
-CPPFLAGS = \
+INCLUDES = \
 	-DPREFIX=\"$(prefix)\" \
 	-DG_LOG_DOMAIN=\"Nautilus-Mozilla\" \
 	-DDATADIR=\"$(datadir)\" \
 	$(MOZILLA_COMPONENT_DEBUG_FLAGS) \
-	$(NULL)
-
-INCLUDES = \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
 	$(BONOBO_CFLAGS) \

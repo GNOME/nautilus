@@ -2,12 +2,9 @@ NULL =
 
 SUBDIRS = icons
 
-CPPFLAGS =							\
-	-DPREFIX=\"$(prefix)\"					\
-	 -DG_LOG_DOMAIN=\"trilobite-sample-service\"		\
-	$(NULL)
-
 INCLUDES =								\
+	-DPREFIX=\"$(prefix)\" 						\
+	 -DG_LOG_DOMAIN=\"trilobite-sample-service\"			\
 	-I$(top_srcdir)							\
 	-I$(top_srcdir)/components/services/trilobite/libtrilobite	\
 	-I$(top_srcdir)/components/services/trilobite/sample/lib	\

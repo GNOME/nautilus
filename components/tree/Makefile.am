@@ -1,11 +1,9 @@
 NULL =
 
-CPPFLAGS =					\
+INCLUDES =					\
 	-DPREFIX=\"$(prefix)\"                  \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	-DG_LOG_DOMAIN=\"Nautilus-Tree\"
-
-INCLUDES =					\
+	-DG_LOG_DOMAIN=\"Nautilus-Tree\"	\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
 	$(VFS_CFLAGS) 				\

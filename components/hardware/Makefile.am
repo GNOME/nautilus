@@ -1,10 +1,8 @@
 SUBDIRS=icons
 
-CPPFLAGS =					\
-	-DPREFIX=\"$(prefix)\"
-	-DG_LOG_DOMAIN=\"Nautilus-Hardware\"
-
 INCLUDES =					\
+	-DPREFIX=\"$(prefix)\"			\
+	-DG_LOG_DOMAIN=\"Nautilus-Hardware\"	\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
 	$(GCONF_CFLAGS) 			\

@@ -2,12 +2,9 @@ include $(top_srcdir)/Makefile.shared
 
 SUBDIRS = icons
 
-CPPFLAGS =							\
+INCLUDES = \
 	-DPREFIX=\"$(prefix)\" 					\
 	-DG_LOG_DOMAIN=\"eazel-service\"			\
-	$(NULL)
-
-INCLUDES = \
 	-I$(top_srcdir)						\
 	-I$(top_builddir)					\
 	-I$(top_srcdir)/components/services/nautilus-dependent-shared	\

@@ -1,10 +1,8 @@
 NULL =
 
-CPPFLAGS = \
-	-DPREFIX=\"$(prefix)\" \
-	-DG_LOG_DOMAIN=\"Nautilus-RPM\"
-
 INCLUDES = \
+	-DPREFIX=\"$(prefix)\" \
+	-DG_LOG_DOMAIN=\"Nautilus-RPM\" \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/components/services/install/lib  \
 	-I$(top_srcdir)/components/services/trilobite \
@@ -19,7 +17,6 @@ INCLUDES = \
 	$(NULL)
 
 oafdir = $(datadir)/oaf
-
 oaf_DATA = nautilus-rpm-view.oafinfo
 
 bin_PROGRAMS = nautilus-rpm-view

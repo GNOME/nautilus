@@ -123,31 +123,31 @@ typedef struct
 } NautilusDirectoryClass;
 
 /* Basic GtkObject requirements. */
-GtkType            nautilus_directory_get_type             (void);
+GtkType            nautilus_directory_get_type                 (void);
 
 /* Get a directory given a uri.
  * Creates the appropriate subclass given the uri mappings.
  * Returns a referenced object, not a floating one. Unref when finished.
  * If two windows are viewing the same uri, the directory object is shared.
  */
-NautilusDirectory *nautilus_directory_get                  (const char                *uri);
+NautilusDirectory *nautilus_directory_get                      (const char                *uri);
 
 /* Covers for gtk_object_ref and gtk_object_unref that provide two conveniences:
  * 1) You don't have to cast to GtkObject *, so using these is type safe.
  * 2) You are allowed to call these with NULL,
  */
-void               nautilus_directory_ref                  (NautilusDirectory         *directory);
-void               nautilus_directory_unref                (NautilusDirectory         *directory);
+void               nautilus_directory_ref                      (NautilusDirectory         *directory);
+void               nautilus_directory_unref                    (NautilusDirectory         *directory);
 
 /* Access to a URI. */
-char *             nautilus_directory_get_uri              (NautilusDirectory         *directory);
+char *             nautilus_directory_get_uri                  (NautilusDirectory         *directory);
 
 /* Is this file still alive and in this directory? */
-gboolean           nautilus_directory_contains_file        (NautilusDirectory         *directory,
-							    NautilusFile              *file);
+gboolean           nautilus_directory_contains_file            (NautilusDirectory         *directory,
+								NautilusFile              *file);
 
 /* Get (and ref) a NautilusFile object for this directory. */
-NautilusFile	  *nautilus_directory_get_corresponding_file (NautilusDirectory	      *directory);
+NautilusFile *     nautilus_directory_get_corresponding_file   (NautilusDirectory         *directory);
 							    
 
 /* Waiting for data that's read asynchronously.
@@ -155,36 +155,35 @@ NautilusFile	  *nautilus_directory_get_corresponding_file (NautilusDirectory	   
  * If any file attributes or metadata keys are passed, it won't call
  * until all the files are seen.
  */
-void               nautilus_directory_call_when_ready      (NautilusDirectory         *directory,
-							    GList                     *file_attributes,
-							    NautilusDirectoryCallback  callback,
-							    gpointer                   callback_data);
-void               nautilus_directory_cancel_callback      (NautilusDirectory         *directory,
-							    NautilusDirectoryCallback  callback,
-							    gpointer                   callback_data);
+void               nautilus_directory_call_when_ready          (NautilusDirectory         *directory,
+								GList                     *file_attributes,
+								NautilusDirectoryCallback  callback,
+								gpointer                   callback_data);
+void               nautilus_directory_cancel_callback          (NautilusDirectory         *directory,
+								NautilusDirectoryCallback  callback,
+								gpointer                   callback_data);
 
 
 /* Monitor the files in a directory. */
-void               nautilus_directory_file_monitor_add     (NautilusDirectory         *directory,
-							    gconstpointer              client,
-							    GList                     *monitor_attributes,
-							    gboolean                   force_reload);
-void               nautilus_directory_file_monitor_remove  (NautilusDirectory         *directory,
-							    gconstpointer              client);
+void               nautilus_directory_file_monitor_add         (NautilusDirectory         *directory,
+								gconstpointer              client,
+								GList                     *monitor_attributes,
+								gboolean                   force_reload);
+void               nautilus_directory_file_monitor_remove      (NautilusDirectory         *directory,
+								gconstpointer              client);
 
 /* Return true if the directory has information about all the files.
  * This will be false until the directory has been read at least once.
  */
-gboolean           nautilus_directory_are_all_files_seen   (NautilusDirectory         *directory);
+gboolean           nautilus_directory_are_all_files_seen       (NautilusDirectory         *directory);
 
 /* Return true if the directory is local. */
-gboolean           nautilus_directory_is_local             (NautilusDirectory         *directory);
+gboolean           nautilus_directory_is_local                 (NautilusDirectory         *directory);
 
 /* Return false if directory contains anything besides a Nautilus metafile.
  * Only valid if directory is monitored. Used by the Trash monitor.
  */
-gboolean	   nautilus_directory_is_not_empty	   (NautilusDirectory	      *directory);
+gboolean           nautilus_directory_is_not_empty             (NautilusDirectory         *directory);
+gboolean           nautilus_directory_file_list_length_reached (NautilusDirectory         *directory);
 
-
-gboolean           nautilus_directory_file_list_length_reached (NautilusDirectory       *directory);
 #endif /* NAUTILUS_DIRECTORY_H */

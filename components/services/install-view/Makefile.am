@@ -1,10 +1,8 @@
 NULL =
 
-CPPFLAGS =						\
-	-DPREFIX=\"$(prefix)\"				\
-	-DG_LOG_DOMAIN=\"Nautilus-service-install\"
-
 INCLUDES =						\
+	-DPREFIX=\"$(prefix)\"				\
+	-DG_LOG_DOMAIN=\"Nautilus-service-install\"	\
 	-I$(top_srcdir)					\
 	-I$(top_srcdir)/components/services/install/lib	\
 	-I$(top_srcdir)/components/services/trilobite	\

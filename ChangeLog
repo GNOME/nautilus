@@ -1,3 +1,74 @@
+2000-10-25  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.h:
+	* libnautilus-extensions/nautilus-file-private.h:
+	* libnautilus-extensions/nautilus-directory-async.c: (istr_equal),
+	(istr_hash), (istr_set_new), (istr_set_insert), (add_istr_to_list),
+	(istr_set_get_as_list), (istr_set_destroy): New set of functions
+	for manipulating a set of case-insensitive strings (private for
+	now).
+	(mime_list_cancel): Change to use the istr_set.
+	(get_filter_options_for_directory_count): Moved up so it can be
+	used by the directory load code.
+	(load_directory_done): Common function to use when a load is
+	completed or cancelled.
+	(dequeue_pending_idle_callback): Update file count and MIME list
+	as well as just loading the files.
+	(should_get_directory_count): New cover that takes into account
+	the fact that a directory load is already getting the count.
+	(should_get_mime_list): New cover that takes into account
+	the fact that a directory load is already getting the MIME list.
+	(start_monitoring_file_list): Set up more stuff since a load
+	does a lot more now.
+	(directory_count_start): Don't start a directory count if we are
+	already loading the directory's file list.
+	(mime_list_one), (mime_list_callback), (mime_list_load): Change to
+	use the istr_set. Also removed some code that set variables that
+	were never used.
+	(mime_list_start): Don't start a MIME list if we are already
+	loading the directory's file list.
+
+	* components/adapter/Makefile.am:
+	* components/hardware/Makefile.am:
+	* components/html/Makefile.am:
+	* components/loser/content/Makefile.am:
+	* components/loser/sidebar/Makefile.am:
+	* components/mozilla/Makefile.am:
+	* components/music/Makefile.am:
+	* components/rpmview/Makefile.am:
+	* components/sample/Makefile.am:
+	* components/services/install/command-line/Makefile.am:
+	* components/services/install/lib/Makefile.am:
+	* components/services/install/nautilus-view/Makefile.am:
+	* components/services/install/server/Makefile.am:
+	* components/services/inventory/lib/Makefile.am:
+	* components/services/inventory/nautilus-view/Makefile.am:
+	* components/services/login/nautilus-view/Makefile.am:
+	* components/services/nautilus-dependent-shared/Makefile.am:
+	* components/services/summary/lib/Makefile.am:
+	* components/services/summary/nautilus-view/Makefile.am:
+	* components/services/time/command-line/Makefile.am:
+	* components/services/time/nautilus-view/Makefile.am:
+	* components/services/time/service/Makefile.am:
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	* components/services/trilobite/sample/command-line/Makefile.am:
+	* components/services/trilobite/sample/lib/Makefile.am:
+	* components/services/trilobite/sample/nautilus-view/Makefile.am:
+	* components/services/trilobite/sample/service/Makefile.am:
+	* components/services/vault/command-line/Makefile.am:
+	* components/tree/Makefile.am:
+	* helper-utilities/authenticate/Makefile.am:
+	* nautilus-installer/src/Makefile.am:
+	Changed all use of CPPFLAGS to use INCLUDES instead as it says in
+	the automake documentation.
+	
+	* libnautilus-extensions/nautilus-glib-extensions.h: Reformatting.
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_g_hash_table_remove_deep_custom),
+	(nautilus_g_hash_table_remove_deep), (destroy_deep_helper),
+	(nautilus_g_hash_table_destroy_deep_custom): Reformatting.
+
 2000-10-25  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-operations.c:

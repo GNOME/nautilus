@@ -4324,7 +4324,7 @@ filtering_changed_callback (gpointer callback_data)
 	
 	directory_view->details->show_backup_files = 
 		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES, FALSE);
-
+	
 	/* Reload the current uri so that the filtering changes take place. */
 	if (directory_view->details->model != NULL) {
 		load_directory (directory_view,

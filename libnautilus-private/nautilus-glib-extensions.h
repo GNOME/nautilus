@@ -102,27 +102,26 @@ void        nautilus_g_string_append_len              (GString                  
 						       int                         length);
 
 /* GHashTable functions */
-GHashTable *nautilus_g_hash_table_new_free_at_exit    (GHashFunc	 hash_function,
-						       GCompareFunc	 key_compare_function,
-						       const char	*display_name);
-void        nautilus_g_hash_table_safe_for_each       (GHashTable	*hash_table,
-						       GHFunc		 callback,
-						       gpointer		 callback_data);
-gboolean    nautilus_g_hash_table_remove_deep_custom  (GHashTable	*hash_table,
-						       gconstpointer	 key,
-						       GFunc		 key_free_func,
-						       gpointer		 key_free_data,
-						       GFunc		 value_free_func,
-						       gpointer		 value_free_data);
-gboolean    nautilus_g_hash_table_remove_deep	      (GHashTable	*hash_table,
-						       gconstpointer	 key);
-void	    nautilus_g_hash_table_destroy_deep_custom (GHashTable	*hash_table,
-						       GFunc		 key_free_func,
-						       gpointer		 key_free_data,
-						       GFunc		 value_free_func,
-						       gpointer		 value_free_data);
-void	    nautilus_g_hash_table_destroy_deep	      (GHashTable	*hash_table);
-
+GHashTable *nautilus_g_hash_table_new_free_at_exit    (GHashFunc                   hash_function,
+						       GCompareFunc                key_compare_function,
+						       const char                 *display_name);
+void        nautilus_g_hash_table_safe_for_each       (GHashTable                 *hash_table,
+						       GHFunc                      callback,
+						       gpointer                    callback_data);
+gboolean    nautilus_g_hash_table_remove_deep_custom  (GHashTable                 *hash_table,
+						       gconstpointer               key,
+						       GFunc                       key_free_func,
+						       gpointer                    key_free_data,
+						       GFunc                       value_free_func,
+						       gpointer                    value_free_data);
+gboolean    nautilus_g_hash_table_remove_deep         (GHashTable                 *hash_table,
+						       gconstpointer               key);
+void        nautilus_g_hash_table_destroy_deep_custom (GHashTable                 *hash_table,
+						       GFunc                       key_free_func,
+						       gpointer                    key_free_data,
+						       GFunc                       value_free_func,
+						       gpointer                    value_free_data);
+void        nautilus_g_hash_table_destroy_deep        (GHashTable                 *hash_table);
 
 /* GPtrArray functions */
 GPtrArray * nautilus_g_ptr_array_new_from_list        (GList                      *list);

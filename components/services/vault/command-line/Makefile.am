@@ -1,10 +1,8 @@
 NULL =
 
-CPPFLAGS =								\
-	-DPREFIX=\"$(prefix)\"
-	-DG_LOG_DOMAIN=\"trilobite-eazel-vault-service\"
-
 INCLUDES =								\
+	-DPREFIX=\"$(prefix)\"						\
+	-DG_LOG_DOMAIN=\"trilobite-eazel-vault-service\"		\
 	-I$(top_srcdir)							\
 	-I$(top_builddir)						\
 	-I$(top_srcdir)/components/services/trilobite 			\

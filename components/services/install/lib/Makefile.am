@@ -1,11 +1,8 @@
 NULL =
 
-CPPFLAGS = \
-	-DPREFIX=\"$(prefix)\" 			\
-	-DG_LOG_DOMAIN=\"trilobite-eazel-install-service\"	\
-	$(NULL)
-
 INCLUDES = \
+	-DPREFIX=\"$(prefix)\" 					\
+	-DG_LOG_DOMAIN=\"trilobite-eazel-install-service\"	\
 	-I$(top_srcdir)						\
 	-I$(top_builddir)					\
 	-I/usr/include/rpm					\

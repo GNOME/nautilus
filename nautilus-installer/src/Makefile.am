@@ -13,12 +13,10 @@ INCLUDES = \
 	$(GNOME_INCLUDEDIR)					\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 		\
 	-DG_LOG_DOMAIN=\"Nautilus-Installer\"			\
+	-DEAZEL_INSTALL_NO_CORBA				\
+	-DEAZEL_INSTALL_SLIM					\
+	-DNO_TEXT_BOX						\
 	$(NULL)
-
-CPPFLAGS = -DEAZEL_INSTALL_NO_CORBA -DEAZEL_INSTALL_SLIM -DNO_TEXT_BOX
-
-CFLAGS = -g
-##LDFLAGS = -static
 
 bin_PROGRAMS = eazel-installer
 

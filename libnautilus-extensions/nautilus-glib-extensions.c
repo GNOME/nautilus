@@ -877,7 +877,6 @@ nautilus_g_hash_table_safe_for_each (GHashTable *hash_table,
 	g_list_free (flattened.values);
 }
 
-
 gboolean
 nautilus_g_hash_table_remove_deep_custom (GHashTable *hash_table, gconstpointer key,
 					  GFunc key_free_func, gpointer key_free_data,
@@ -888,14 +887,15 @@ nautilus_g_hash_table_remove_deep_custom (GHashTable *hash_table, gconstpointer 
 
 	/* It would sure be nice if we could do this with a single lookup.
 	 */
-	if (g_hash_table_lookup_extended (hash_table, key, &key_in_table, &value)) {
+	if (g_hash_table_lookup_extended (hash_table, key,
+					  &key_in_table, &value)) {
 		g_hash_table_remove (hash_table, key);
 		if (key_free_func != NULL) {
-			key_free_func (key_in_table, key_free_data);
+			(* key_free_func) (key_in_table, key_free_data);
 		}
 		/* handle key == value, don't double free */
 		if (value_free_func != NULL && value != key_in_table) {
-			value_free_func (value, value_free_data);
+			(* value_free_func) (value, value_free_data);
 		}
 		return TRUE;
 	} else {
@@ -906,7 +906,8 @@ nautilus_g_hash_table_remove_deep_custom (GHashTable *hash_table, gconstpointer 
 gboolean
 nautilus_g_hash_table_remove_deep (GHashTable *hash_table, gconstpointer key)
 {
-	return nautilus_g_hash_table_remove_deep_custom (hash_table, key, (GFunc) g_free, NULL, (GFunc) g_free, NULL);
+	return nautilus_g_hash_table_remove_deep_custom
+		(hash_table, key, (GFunc) g_free, NULL, (GFunc) g_free, NULL);
 }
 
 typedef struct {
@@ -917,17 +918,18 @@ typedef struct {
 } HashTableFreeFuncs;
 
 static gboolean
-nautilus_g_hash_table_destroy_deep_helper (gpointer key, gpointer value, gpointer data)
+destroy_deep_helper (gpointer key, gpointer value, gpointer data)
 {
 	HashTableFreeFuncs *free_funcs;
+
 	free_funcs = (HashTableFreeFuncs *) data;
 	
 	if (free_funcs->key_free_func != NULL) {
-		free_funcs->key_free_func (key, free_funcs->key_free_data);
+		(* free_funcs->key_free_func) (key, free_funcs->key_free_data);
 	}
 	/* handle key == value, don't double free */
 	if (free_funcs->value_free_func != NULL && value != key) {
-		free_funcs->value_free_func (value, free_funcs->value_free_data);
+		(* free_funcs->value_free_func) (value, free_funcs->value_free_data);
 	}
 	return TRUE;
 }
@@ -946,7 +948,7 @@ nautilus_g_hash_table_destroy_deep_custom (GHashTable *hash_table,
 	free_funcs.value_free_func = value_free_func;
 	free_funcs.value_free_data = value_free_data;
 	
-	g_hash_table_foreach_remove (hash_table, nautilus_g_hash_table_destroy_deep_helper, &free_funcs);
+	g_hash_table_foreach_remove (hash_table, destroy_deep_helper, &free_funcs);
 
 	g_hash_table_destroy (hash_table);
 }

@@ -1,10 +1,8 @@
 include $(top_srcdir)/Makefile.shared
 
-CPPFLAGS = \
-	-DPREFIX=\"$(prefix)\" \
-	-DG_LOG_DOMAIN=\"Nautilus-Services\"
-
 INCLUDES = \
+	-DPREFIX=\"$(prefix)\"					\
+	-DG_LOG_DOMAIN=\"Nautilus-Services\"			\
 	-I$(top_srcdir)						\
 	-I$(top_builddir)					\
 	-I/usr/include/rpm					\

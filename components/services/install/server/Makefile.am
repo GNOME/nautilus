@@ -1,12 +1,9 @@
 NULL =
 
-CPPFLAGS = \
+INCLUDES = \
 	-DPREFIX=\"$(prefix)\" \
 	-DG_LOG_DOMAIN=\"trilobite-eazel-install-service\" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(NULL)
-
-INCLUDES = \
 	-I$(top_srcdir) 	\
 	-I$(top_builddir) 	\
 	-I$(top_srcdir)/components/services/install/lib \

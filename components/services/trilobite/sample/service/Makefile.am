@@ -1,12 +1,9 @@
 NULL =
 
-CPPFLAGS = 							\
-	-DPREFIX=\"$(prefix)\"					\
-	-DG_LOG_DOMAIN=\"trilobite-sample-service\"		\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 		\
-	$(NULL)
-
 INCLUDES =								\
+	-DPREFIX=\"$(prefix)\"						\
+	-DG_LOG_DOMAIN=\"trilobite-sample-service\"			\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 			\
 	-I$(top_srcdir) 						\
 	-I$(top_builddir) 						\
 	-I$(top_srcdir)/components/services/trilobite			\

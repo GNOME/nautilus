@@ -77,10 +77,15 @@ struct NautilusDirectoryDetails
 	int confirmed_file_count;
         guint dequeue_pending_idle_id;
 
+	NautilusFile *load_directory_file;
+	int load_file_count;
+	GnomeVFSDirectoryFilter *load_file_count_filter;
+	GHashTable *load_mime_list_hash;
+
 	GList *get_file_infos_in_progress; /* list of GnomeVFSAsyncHandle * */
 
-	GnomeVFSAsyncHandle *count_in_progress;
 	NautilusFile *count_file;
+	GnomeVFSAsyncHandle *count_in_progress;
 
 	NautilusFile *deep_count_file;
 	GnomeVFSAsyncHandle *deep_count_in_progress;
@@ -90,11 +95,11 @@ struct NautilusDirectoryDetails
 
 	NautilusFile *mime_list_file;
 	GnomeVFSAsyncHandle *mime_list_in_progress;
-	char *mime_list_uri;
 	GnomeVFSDirectoryListPosition mime_list_last_handled;
+	GHashTable *mime_list_hash;
 
-	GnomeVFSAsyncHandle *get_info_in_progress;
 	NautilusFile *get_info_file;
+	GnomeVFSAsyncHandle *get_info_in_progress;
 
 	TopLeftTextReadState *top_left_read_state;
 	ActivationURIReadState *activation_uri_read_state;

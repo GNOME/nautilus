@@ -1,12 +1,9 @@
 NULL =
 
-CPPFLAGS =						\
-	-DPREFIX=\"$(prefix)\"				\
-	-DG_LOG_DOMAIN=\"Nautilus-Adapter\"		\
-	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\"	\
-	$(NULL)
-
 INCLUDES =					\
+	-DPREFIX=\"$(prefix)\"			\
+	-DG_LOG_DOMAIN=\"Nautilus-Adapter\"	\
+	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\" \
 	-I$(top_srcdir) -I$(top_builddir) -I.	\
 	$(GNOMEUI_CFLAGS)			\
 	$(BONOBOX_CFLAGS)			\

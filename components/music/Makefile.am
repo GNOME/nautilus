@@ -1,8 +1,6 @@
-CPPFLAGS =					\
-	-DPREFIX=\"$(prefix)\"
-	-DG_LOG_DOMAIN=\"Nautilus-Music\"
-
 INCLUDES =					\
+	-DPREFIX=\"$(prefix)\"			\
+	-DG_LOG_DOMAIN=\"Nautilus-Music\"	\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
 	$(GCONF_CFLAGS) 			\

@@ -1,11 +1,8 @@
 NULL =
 
-CPPFLAGS =								\
+INCLUDES =								\
 	-DPREFIX=\"$(prefix)\"						\
 	-DG_LOG_DOMAIN=\"trilobite-sample-client\"			\
-	$(NULL)
-
-INCLUDES =								\
 	-I$(top_srcdir)							\
 	-I$(top_builddir)						\
 	-I$(top_srcdir)/components/services/trilobite			\

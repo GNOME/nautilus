@@ -1,12 +1,10 @@
 include $(top_srcdir)/Makefile.shared
 
-CPPFLAGS =					\
+INCLUDES =					\
 	-DPREFIX=\"$(prefix)\"			\
 	-DG_LOG_DOMAIN=\"Nautilus-Test\"	\
 	-DDATADIR=\"$(datadir)\"		\
-	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\"
-
-INCLUDES =					\
+	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\" \
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
 	$(OAF_CFLAGS)				\

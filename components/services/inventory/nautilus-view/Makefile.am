@@ -1,11 +1,8 @@
 NULL =
 
-CPPFLAGS =							\
+INCLUDES =								\
 	-DPREFIX=\"$(prefix)\"					\
 	 -DG_LOG_DOMAIN=\"trilobite-eazel-inventory\"		\
-	$(NULL)
-
-INCLUDES =								\
 	-I$(top_srcdir)							\
 	-I$(top_srcdir)/components/services/trilobite/libtrilobite	\
 	-I$(top_srcdir)/components/services/inventory/lib		\
