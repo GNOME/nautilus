@@ -1,5 +1,12 @@
 2002-01-15  Darin Adler  <darin@bentspoon.com>
 
+	* src/nautilus-desktop-window.c: (finalize),
+	(nautilus_desktop_window_class_init):
+	Fix another of those double-destroy problems by turning a destroy
+	into a finalize.
+
+2002-01-15  Darin Adler  <darin@bentspoon.com>
+
 	Inspired by a patch from Jacob Berkman <jacob@ximian.com>, got
 	rid of all the Makefile.am hackery so that everything ends up in
 	the tarball.

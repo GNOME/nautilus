@@ -28,17 +28,17 @@
 #include <config.h>
 #include "nautilus-desktop-window.h"
 
+#include <X11/Xatom.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <gdk/gdkx.h>
+#include <gtk/gtklayout.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-find-directory.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <eel/eel-gtk-macros.h>
-#include <eel/eel-gtk-extensions.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-link.h>
-#include <X11/Xatom.h>
-#include <gdk/gdkx.h>
-#include <gtk/gtklayout.h>
 
 struct NautilusDesktopWindowDetails {
 	GList *unref_list;
@@ -46,25 +46,9 @@ struct NautilusDesktopWindowDetails {
 
 static void nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass);
 static void nautilus_desktop_window_init       (NautilusDesktopWindow      *window);
-static void destroy                                  (GtkObject                  *object);
-static void realize                                  (GtkWidget                  *widget);
-static void map                                      (GtkWidget                  *widget);
-static void real_add_current_location_to_history_list (NautilusWindow		 *window);
-
-
-static void set_wmspec_desktop_hint                   (GdkWindow *window);
+static void set_wmspec_desktop_hint            (GdkWindow                  *window);
 
 EEL_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_window, NAUTILUS_TYPE_WINDOW)
-
-static void
-nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass)
-{
-	GTK_OBJECT_CLASS (klass)->destroy = destroy;
-	GTK_WIDGET_CLASS (klass)->realize = realize;
-	GTK_WIDGET_CLASS (klass)->map = map;
-	NAUTILUS_WINDOW_CLASS (klass)->add_current_location_to_history_list 
-		= real_add_current_location_to_history_list;
-}
 
 static void
 nautilus_desktop_window_init (NautilusDesktopWindow *window)
@@ -148,7 +132,7 @@ nautilus_desktop_window_new (NautilusApplication *application)
 }
 
 static void
-destroy (GtkObject *object)
+finalize (GObject *object)
 {
 	NautilusDesktopWindow *window;
 
@@ -159,7 +143,7 @@ destroy (GtkObject *object)
 	eel_gtk_object_list_free (window->details->unref_list);
 	g_free (window->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static void
@@ -317,4 +301,14 @@ set_wmspec_desktop_hint (GdkWindow *window)
                                       False),
                          XA_ATOM, 32, PropModeReplace,
                          (guchar *)&atom, 1);
+}
+
+static void
+nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass)
+{
+	G_OBJECT_CLASS (klass)->finalize = finalize;
+	GTK_WIDGET_CLASS (klass)->realize = realize;
+	GTK_WIDGET_CLASS (klass)->map = map;
+	NAUTILUS_WINDOW_CLASS (klass)->add_current_location_to_history_list 
+		= real_add_current_location_to_history_list;
 }
