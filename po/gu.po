@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-16 04:10+0200\n"
-"PO-Revision-Date: 2004-08-16 15:39+0530\n"
+"POT-Creation-Date: 2004-08-16 12:09+0200\n"
+"PO-Revision-Date: 2004-08-16 19:26+0530\n"
 "Last-Translator: Ankit Patel <ankit@redhat.com>\n"
 "Language-Team: Gujarati\n"
 "MIME-Version: 1.0\n"
@@ -15,6 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "<magnet@magnet-i.com>\n"
 "Plural-Forms: Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "X-Generator: KBabel 1.3.1\n"
 
@@ -3483,7 +3484,7 @@ msgid "Check that the spelling is correct and that your proxy settings are corre
 msgstr "તેની જોડણી અને પ્રોક્સી સુયોજના બરાબર છે કે નહી તે ચકાસો."
 
 #: libnautilus-private/nautilus-program-choosing.c:619
-#: src/nautilus-connect-server-dialog.c:101
+#: src/nautilus-connect-server-dialog.c:136
 #: src/nautilus-window-manage-views.c:1341
 #, c-format
 msgid "\"%s\" is not a valid location."
@@ -3491,7 +3492,7 @@ msgstr "\"%s\" એ યોગ્ય જગ્યા નામ નથી."
 
 #: libnautilus-private/nautilus-program-choosing.c:622
 #: libnautilus-private/nautilus-program-choosing.c:629
-#: src/nautilus-connect-server-dialog.c:103
+#: src/nautilus-connect-server-dialog.c:138
 #: src/nautilus-property-browser.c:1106
 #: src/nautilus-window-manage-views.c:1336
 #: src/nautilus-window-manage-views.c:1344
@@ -3980,7 +3981,6 @@ msgid "_Connect"
 msgstr "સંપર્ક કરો (_C)"
 
 #: src/file-manager/fm-directory-view.c:5463
-#: src/nautilus-connect-server-dialog.c:191
 msgid "Link _name:"
 msgstr "કડીનુ નામ: (_n)"
 
@@ -5187,32 +5187,97 @@ msgstr "<b>નામ</b> (_N)"
 msgid "Edit Bookmarks"
 msgstr "બુકમાર્કમાં ફેરફાર કરો"
 
-#: src/nautilus-connect-server-dialog.c:86
-msgid "You must enter a name for the server."
-msgstr "તમારે સર્વર માટે નામ દાખલ કરવું જ પડશે."
-
-#: src/nautilus-connect-server-dialog.c:87
-msgid "Please enter a name and try again."
-msgstr "મહેરબાની કરીને નામ દાખલ કરો અને ફરીથી પ્રયત્ન કરો."
-
-#: src/nautilus-connect-server-dialog.c:88
-#: src/nautilus-connect-server-dialog.c:104
+#: src/nautilus-connect-server-dialog.c:139
+#: src/nautilus-connect-server-dialog.c:154
 msgid "Can't Connect to Server"
 msgstr "સર્વર સાથે સંપર્ક કરી શકાશે નહિ"
 
-#: src/nautilus-connect-server-dialog.c:177
+#: src/nautilus-connect-server-dialog.c:152
+msgid "You must enter a name for the server."
+msgstr "તમારે સર્વર માટે નામ દાખલ કરવું જ પડશે."
+
+#: src/nautilus-connect-server-dialog.c:153
+msgid "Please enter a name and try again."
+msgstr "મહેરબાની કરીને નામ દાખલ કરો અને ફરીથી પ્રયત્ન કરો."
+
+#: src/nautilus-connect-server-dialog.c:252 src/nautilus-window.c:1118
+#, c-format
+msgid "%s on %s"
+msgstr "%s પર %s"
+
+#: src/nautilus-connect-server-dialog.c:380
+msgid "_Location (URI):"
+msgstr "સ્થાન (URL) (_L):"
+
+#: src/nautilus-connect-server-dialog.c:424
+msgid "_Server:"
+msgstr "સર્વર (_S):"
+
+#: src/nautilus-connect-server-dialog.c:443
+msgid "Optional information:"
+msgstr "વધારાની જાણકારી:"
+
+#: src/nautilus-connect-server-dialog.c:455
+msgid "_Share:"
+msgstr "વહેંચો (_S):"
+
+#: src/nautilus-connect-server-dialog.c:476
+msgid "_Port:"
+msgstr "પોર્ટ (_P):"
+
+#: src/nautilus-connect-server-dialog.c:496
+msgid "_Folder:"
+msgstr "ફોલ્ડર (_F):"
+
+#: src/nautilus-connect-server-dialog.c:516
+msgid "_User Name:"
+msgstr "વપરાશકર્તા નામ (_U):"
+
+#: src/nautilus-connect-server-dialog.c:543
+msgid "_Name to use for connection:"
+msgstr "જોડાણ માટે વાપરવાનું નામ (_N):"
+
+#: src/nautilus-connect-server-dialog.c:600
 msgid "Connect to Server"
 msgstr "સર્વર સાથે સંપર્ક કરો"
 
-#: src/nautilus-connect-server-dialog.c:210
-msgid "_Location (URL):"
-msgstr "સ્થાન (URL): (_L)"
+#: src/nautilus-connect-server-dialog.c:612
+msgid "Service _type:"
+msgstr "સેવાનો પ્રકાર (_t):"
 
-#: src/nautilus-connect-server-dialog.c:231
-msgid "Example:"
-msgstr "ઉદાહરણઃ "
+#: src/nautilus-connect-server-dialog.c:621
+msgid "SSH"
+msgstr "SSH"
 
-#: src/nautilus-connect-server-dialog.c:248
+#: src/nautilus-connect-server-dialog.c:623
+msgid "Public FTP"
+msgstr "જાહેર FTP"
+
+#: src/nautilus-connect-server-dialog.c:625
+msgid "FTP (with login)"
+msgstr "FTP (પ્રવેશ સાથે)"
+
+#: src/nautilus-connect-server-dialog.c:627
+msgid "Windows share"
+msgstr "વિન્ડો વહેંચો"
+
+#: src/nautilus-connect-server-dialog.c:629
+msgid "WebDAV (HTTP)"
+msgstr "WebDAV (HTTP)"
+
+#: src/nautilus-connect-server-dialog.c:631
+msgid "Secure WebDAV (HTTPS)"
+msgstr "સુરક્ષિત WebDAV (HTTPS)"
+
+#: src/nautilus-connect-server-dialog.c:633
+msgid "Custom Location"
+msgstr "કસ્ટમ જગ્યા"
+
+#: src/nautilus-connect-server-dialog.c:684
+msgid "Browse _Network"
+msgstr "નેટવર્ક શોધો (_N)"
+
+#: src/nautilus-connect-server-dialog.c:690
 msgid "C_onnect"
 msgstr "સંપર્ક કરો (_C)"
 
@@ -6396,11 +6461,6 @@ msgstr "શું દર્શકમાં સંતાડેલી ફાઈલ
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "\"%s\" સાથે આ સ્થાન પ્રદર્શિત કરો"
-
-#: src/nautilus-window.c:1118
-#, c-format
-msgid "%s on %s"
-msgstr "%s પર %s"
 
 #: src/nautilus-window.c:1558
 msgid "Application ID"
