@@ -30,6 +30,7 @@
 #include "ntl-window-private.h"
 
 
+#include <libnautilus/nautilus-bonobo-extensions.h>
 #include <libnautilus/nautilus-gtk-extensions.h>
 #include <libnautilus/nautilus-icon-factory.h>
 #include <libnautilus/nautilus-string.h>
@@ -674,38 +675,6 @@ refresh_bookmarks_in_go_menu (NautilusWindow *window)
 
                 ++index;
 	}	
-}
-
-/**
- * nautilus_bonobo_ui_handler_menu_item_toggle_appearance
- * 
- * Changes a toggleable bonobo menu item's apparent state
- * without invoking its callback.
- * 
- * @uih: The BonoboUIHandler for this menu item.
- * @path: The standard bonobo-style path specifier for this menu item.
- * @new_value: TRUE if item should appear checked (on), FALSE otherwise.
- */
-/* FIXME: This doesn't belong here long-term. Need to determine whether
- * it belongs in bonobo (or whether bonobo_ui_handler_menu_set_toggle_state
- * should change to behave like this). If not in bonobo, this should be
- * moved somewhere in libnautilus.
- */
-static void
-nautilus_bonobo_ui_handler_menu_set_toggle_appearance (BonoboUIHandler *uih,
-				      	   		    const char *path,
-				      	   		    gboolean new_value)
-{
-	BonoboUIHandlerCallbackFunc saved_callback;
-	gpointer saved_callback_data;
-
-	/* Temporarily clear out callback and data so when we
-	 * set the toggle state the callback isn't called. 
-	 */
-	bonobo_ui_handler_menu_get_callback (uih, path, &saved_callback, &saved_callback_data);
-	bonobo_ui_handler_menu_set_callback (uih, path, NULL, NULL);
-        bonobo_ui_handler_menu_set_toggle_state (uih, path, new_value);
-	bonobo_ui_handler_menu_set_callback (uih, path, saved_callback, saved_callback_data);		
 }
 
 static void 

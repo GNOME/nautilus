@@ -1,3 +1,31 @@
+2000-03-16  John Sullivan  <sullivan@eazel.com>
+
+	Moved a couple of utility functions I wrote recently
+	into the right places in libnautilus.
+
+	* libnautilus/nautilus-bonobo-extensions.h,
+	* libnautilus/nautilus-bonobo-extensions.c: New files,
+	initially containing only the euphoniously-named
+	(nautilus_bonobo_ui_handler_menu_set_toggle_appearance),
+	which toggles a bonobo menu item's checkbox state without
+	invoking its callback.	
+	* libnautilus/Makefile.am: Put these two new files into build.
+	
+	* libnautilus/nautilus-glib-extensions.h,
+	* libnautilus/nautilus-glib-extensions.c:
+	(nautilus_g_strfindv): New function, finds a string in a
+	NULL-terminated string array. Hideous name to match glib conventions.
+	(nautilus_self_check_glib_extensions): Added tests for
+	nautilus_g_strfindv.
+
+	* src/nautilus-window-menus.c:
+	(nautilus_bonobo_ui_handler_menu_toggle_appearance): Moved out
+	of here, now called in its new home in libnautilus.
+	* src/file-manager/fm-icon-text-window.c:
+	(find_string_in_array): Moved out of here and renamed on its
+	way into libnautilus.
+	(synch_menus_with_preference): Updated for function name change.
+
 2000-03-16  Darin Adler  <darin@eazel.com>
 
 	* src/file-manager/fm-directory-view.c:

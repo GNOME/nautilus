@@ -110,6 +110,33 @@ nautilus_g_list_free_deep (GList *list)
 	g_list_free (list);
 }
 
+/**
+ * nautilus_g_strfindv
+ * 
+ * Get index of string in array of strings.
+ * 
+ * @str_array: NULL-terminated array of strings.
+ * @find_me: string to search for.
+ * 
+ * Return value: index of array entry in @str_array that
+ * matches @find_me, or -1 if no matching entry.
+ */
+int
+nautilus_g_strfindv (char **str_array, const char *find_me)
+{
+	int index;
+
+	g_return_val_if_fail (find_me != NULL, -1);
+	
+	for (index = 0; str_array[index] != NULL; ++index) {
+		if (strcmp (str_array[index], find_me) == 0) {
+			return index;
+		}
+	}
+
+	return -1;
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static void 
@@ -137,9 +164,20 @@ check_tm_to_g_date (time_t time)
 void
 nautilus_self_check_glib_extensions (void)
 {
+	char **str_array;
+
 	check_tm_to_g_date (0);			/* lower limit */
 	check_tm_to_g_date ((time_t) -1);	/* upper limit */
 	check_tm_to_g_date (time (NULL));	/* current time */
+
+	str_array = g_strsplit ("zero|one|two|three|four", "|", 0);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_g_strfindv (str_array, "zero"), 0);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_g_strfindv (str_array, "one"), 1);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_g_strfindv (str_array, "four"), 4);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_g_strfindv (str_array, "five"), -1);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_g_strfindv (str_array, ""), -1);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_g_strfindv (str_array, "o"), -1);
+	g_strfreev (str_array);
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

@@ -39,6 +39,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
+#include <libnautilus/nautilus-glib-extensions.h>
 #include <libnautilus/nautilus-global-preferences.h>
 
 static void 	ensure_unique_attributes 	    (int 	menu_index);
@@ -86,20 +87,6 @@ get_attribute_index_from_option_menu (GtkOptionMenu *option_menu)
 		GTK_OBJECT (option_menu->menu_item)));
 }
 
-static int
-find_string_in_array (char **strings, const char *find_me)
-{
-	int index;
-	
-	for (index = 0; strings[index] != NULL; ++index) {
-		if (strcmp (strings[index], find_me) == 0) {
-			return index;
-		}
-	}
-
-	return -1;
-}
-
 static char *attribute_names_preference = NULL;
 
 static void
@@ -129,7 +116,7 @@ synch_menus_with_preference ()
 		 * text_array[i+1]
 		 */
 		g_assert (text_array[menu_index+1] != NULL);
-		string_index = find_string_in_array (attribute_names, text_array[menu_index+1]);
+		string_index = nautilus_g_strfindv (attribute_names, text_array[menu_index+1]);
 		g_assert (string_index >= 0);
 	  	gtk_option_menu_set_history (option_menus[menu_index], string_index);
 	}

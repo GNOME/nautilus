@@ -43,4 +43,8 @@ gboolean nautilus_g_list_equal     (GList      *list_a,
 				    GList      *list_b);
 void     nautilus_g_list_free_deep (GList      *list);
 
+/* NULL terminated string arrays. */
+int	nautilus_g_strfindv	   (char      **str_array,
+				    const char *find_me);
+
 #endif /* NAUTILUS_GLIB_EXTENSIONS_H */
