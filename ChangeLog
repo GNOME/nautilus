@@ -1,3 +1,10 @@
+2002-06-07  Bastien Nocera  <hadess@hadess.net>
+
+	* src/nautilus-application.c: (create_starthere_link_callback):
+	use the start-here application launcher rather than the URL, which
+	would have some dirty german effects when dropped on the panel
+	(Closes: #84457)
+
 2002-05-29  Satyajit Kanungo  <satyajit.kanungo@wipro.com>
 
 	* src/nautilus-bookmarks-window.c: added a help button in the
