@@ -32,8 +32,9 @@
 
 #include <gtk/gtkcheckbutton.h>
 
-#include <nautilus-widgets/nautilus-radio-button-group.h>
-#include <nautilus-widgets/nautilus-string-picker.h>
+#include "nautilus-radio-button-group.h"
+#include "nautilus-string-picker.h"
+#include "nautilus-text-caption.h"
 
 /* Arguments */
 enum
@@ -83,6 +84,8 @@ static void preferences_item_create_enum               (NautilusPreferencesItem 
 							const NautilusPreference     *prefrence);
 static void preferences_item_create_boolean            (NautilusPreferencesItem      *item,
 							const NautilusPreference     *prefrence);
+static void preferences_item_create_editable_string    (NautilusPreferencesItem      *item,
+							const NautilusPreference     *prefrence);
 static void preferences_item_create_font_family               (NautilusPreferencesItem      *item,
 							const NautilusPreference     *prefrence);
 static void preferences_item_create_icon_theme         (NautilusPreferencesItem      *item,
@@ -95,6 +98,8 @@ static void enum_radio_group_changed_callback          (GtkWidget               
 static void boolean_button_toggled_callback            (GtkWidget                    *button_group,
 							gpointer                      user_data);
 static void text_item_changed_callback                 (GtkWidget                    *string_picker,
+							gpointer                      user_data);
+static void editable_string_changed_callback           (GtkWidget                    *caption,
 							gpointer                      user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesItem, nautilus_preferences_item, GTK_TYPE_VBOX)
@@ -277,11 +282,13 @@ preferences_item_construct (NautilusPreferencesItem	*item,
 	case NAUTILUS_PREFERENCE_ITEM_ICON_THEME:
 		preferences_item_create_icon_theme (item, preference);
 		break;
+	case NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING:
+		preferences_item_create_editable_string (item, preference);
+		break;
 	
 	case NAUTILUS_PREFERENCE_ITEM_TOOLBAR_ICON_THEME:
 		preferences_item_create_toolbar_icon_theme (item, preference);
 		break;
-	
 	}
 
 	gtk_object_unref (GTK_OBJECT (preference));
@@ -367,6 +374,38 @@ preferences_item_create_boolean (NautilusPreferencesItem	*item,
 }
 
 static void
+preferences_item_create_editable_string (NautilusPreferencesItem	*item,
+					 const NautilusPreference	*preference)
+{
+	char	*current_value;
+	char	*description;
+	
+	g_assert (item != NULL);
+	g_assert (preference != NULL);
+
+	g_assert (item->details->preference_name != NULL);
+	description = nautilus_preference_get_description (preference);
+	
+	g_assert (description != NULL);
+	
+	item->details->child = nautilus_text_caption_new ();
+
+	nautilus_caption_set_title_label (NAUTILUS_CAPTION (item->details->child), description);
+
+	g_free (description);
+
+	current_value = nautilus_preferences_get (item->details->preference_name, "file://home/pavel");
+
+	g_assert (current_value != NULL);
+	nautilus_text_caption_set_text (NAUTILUS_TEXT_CAPTION (item->details->child), current_value);
+	
+ 	gtk_signal_connect (GTK_OBJECT (item->details->child),
+ 			    "changed",
+ 			    GTK_SIGNAL_FUNC (editable_string_changed_callback),
+ 			    (gpointer) item);
+}
+
+static void
 preferences_item_create_font_family (NautilusPreferencesItem	*item,
 				     const NautilusPreference	*preference)
 {
@@ -384,7 +423,7 @@ preferences_item_create_font_family (NautilusPreferencesItem	*item,
 
 	item->details->child = nautilus_string_picker_new ();
 
-	nautilus_string_picker_set_title_label (NAUTILUS_STRING_PICKER (item->details->child), description);
+	nautilus_caption_set_title_label (NAUTILUS_CAPTION (item->details->child), description);
 	
 	g_free (description);
 
@@ -508,7 +547,7 @@ preferences_item_create_icon_theme (NautilusPreferencesItem	*item,
 
 	item->details->child = nautilus_string_picker_new ();
 
-	nautilus_string_picker_set_title_label (NAUTILUS_STRING_PICKER (item->details->child), description);
+	nautilus_caption_set_title_label (NAUTILUS_CAPTION (item->details->child), description);
 	
 	g_free (description);
 
@@ -554,7 +593,7 @@ preferences_item_create_toolbar_icon_theme (NautilusPreferencesItem	*item,
 
 	item->details->child = nautilus_string_picker_new ();
 
-	nautilus_string_picker_set_title_label (NAUTILUS_STRING_PICKER (item->details->child), description);
+	nautilus_caption_set_title_label (NAUTILUS_CAPTION (item->details->child), description);
 	
 	g_free (description);
 
@@ -654,6 +693,29 @@ text_item_changed_callback (GtkWidget *button, gpointer user_data)
 
 	text = nautilus_string_picker_get_text (NAUTILUS_STRING_PICKER (item->details->child));
 
+	if (text != NULL)
+	{
+		nautilus_preferences_set (item->details->preference_name, text);
+		
+		g_free (text);
+	}
+}
+static void
+editable_string_changed_callback (GtkWidget *button, gpointer user_data)
+{
+	NautilusPreferencesItem	*item;
+	char			*text;
+	
+	g_assert (user_data != NULL);
+	g_assert (NAUTILUS_IS_PREFERENCES_ITEM (user_data));
+
+	item = NAUTILUS_PREFERENCES_ITEM (user_data);
+
+	g_assert (item->details->child != NULL);
+	g_assert (NAUTILUS_IS_TEXT_CAPTION (item->details->child));
+
+	text = nautilus_text_caption_get_text (NAUTILUS_TEXT_CAPTION (item->details->child));
+	
 	if (text != NULL)
 	{
 		nautilus_preferences_set (item->details->preference_name, text);

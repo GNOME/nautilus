@@ -1,5 +1,54 @@
 2000-06-05  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* nautilus-widgets/nautilus-preferences-item.c:
+	(preferences_item_construct),
+	(preferences_item_create_editable_string),
+	(preferences_item_create_font_family),
+	(preferences_item_create_icon_theme),
+	(preferences_item_create_toolbar_icon_theme),
+	(text_item_changed_callback), (editable_string_changed_callback):
+	* nautilus-widgets/nautilus-preferences-item.h:
+	New type of preference, EDITABLE_STRING.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog):
+	Add a new pane, navigation pane.
+	
+	Add support for manually keying in a home page.  Needs some more
+	work to work better.
+	
+	* nautilus-widgets/Makefile.am:
+	* nautilus-widgets/nautilus-caption.c:
+	(nautilus_caption_initialize_class), (nautilus_caption_initialize),
+	(nautilus_caption_destroy), (nautilus_caption_new),
+	(nautilus_caption_set_title_label),
+	(nautilus_caption_get_title_label), (nautilus_caption_set_child):
+	* nautilus-widgets/nautilus-caption.h:
+	New class.  Common stuff for caption widgets.
+
+	* nautilus-widgets/nautilus-string-picker.c:
+	(nautilus_string_picker_initialize_class),
+	(nautilus_string_picker_initialize), (entry_changed_callback),
+	(nautilus_string_picker_set_string_list):
+	* nautilus-widgets/nautilus-string-picker.h:
+	Subclass from caption class.
+	
+	* nautilus-widgets/nautilus-text-caption.h:
+	* nautilus-widgets/nautilus-text-caption.c:
+	(nautilus_text_caption_initialize_class),
+	(nautilus_text_caption_initialize),
+	(nautilus_text_caption_destroy), (entry_changed_callback),
+	(nautilus_text_caption_new), (nautilus_text_caption_get_text),
+	(nautilus_text_caption_set_text):
+	New caption sublcass that manages an text widget.
+	
+	* nautilus-widgets/test-nautilus-widgets.c: (main),
+	(test_string_picker), (test_text_caption),
+	(string_picker_changed_callback), (text_caption_changed_callback):
+	Update for new class and caption changes.
+	
+2000-06-05  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-icon-factory.c: (embed_text):
 	* src/nautilus-sidebar-title.c:
 	(nautilus_index_title_update_label):

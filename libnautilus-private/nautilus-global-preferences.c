@@ -86,6 +86,7 @@ global_preferences_create_dialog (void)
 	GtkWidget		*sidebar_panels_pane;
 	GtkWidget		*appearance_pane;
 	GtkWidget		*tradeoffs_pane;
+	GtkWidget		*navigation_pane;
 
 	/*
 	 * In the soon to come star trek future, the following widgetry
@@ -215,8 +216,23 @@ global_preferences_create_dialog (void)
 							 0,
 							 NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-	/* all done */
+
+	/*
+	 * Tradeoffs
+	 */
+	navigation_pane = nautilus_preferences_box_add_pane (preference_box,
+							    "Navigation",
+							    "Navigation Settings");
+
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (navigation_pane), "Home Location");
 	
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (navigation_pane),
+							 0,
+							 NAUTILUS_PREFERENCES_HOME_URI,
+							 NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING);
+
+	/* all done */
+
 	return prefs_dialog;
 }
 

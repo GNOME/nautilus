@@ -1,9 +1,11 @@
 
 #include <config.h>
-#include <nautilus-widgets/nautilus-radio-button-group.h>
-#include <nautilus-widgets/nautilus-string-picker.h>
-#include <nautilus-widgets/nautilus-caption-table.h>
-#include <nautilus-widgets/nautilus-password-dialog.h>
+
+#include "nautilus-caption-table.h"
+#include "nautilus-password-dialog.h"
+#include "nautilus-radio-button-group.h"
+#include "nautilus-string-picker.h"
+#include "nautilus-text-caption.h"
 
 #include <gtk/gtk.h>
 
@@ -11,11 +13,16 @@ static void test_radio_group                     (void);
 static void test_caption_table                   (void);
 static void test_password_dialog                 (void);
 static void test_string_picker                   (void);
+static void test_text_caption                    (void);
+
+/* Callbacks */
 static void test_radio_changed_callback          (GtkWidget *button_group,
 						  gpointer   user_data);
 static void test_authenticate_boink_callback     (GtkWidget *button,
 						  gpointer   user_data);
-static void string_picker_changed_callback     (GtkWidget *string_picker,
+static void string_picker_changed_callback       (GtkWidget *string_picker,
+						  gpointer   user_data);
+static void text_caption_changed_callback        (GtkWidget *text_caption,
 						  gpointer   user_data);
 static void test_caption_table_activate_callback (GtkWidget *button_group,
 						  gint       active_index,
@@ -30,6 +37,7 @@ main (int argc, char * argv[])
 	test_caption_table ();
 	test_password_dialog ();
 	test_string_picker ();
+	test_text_caption ();
 
 	gtk_main ();
 
@@ -124,7 +132,7 @@ test_string_picker (void)
 
 	picker = nautilus_string_picker_new ();
 	
-	nautilus_string_picker_set_title_label (NAUTILUS_STRING_PICKER (picker), "Icon Font Family:");
+	nautilus_caption_set_title_label (NAUTILUS_CAPTION (picker), "Icon Font Family:");
 
 	font_list = nautilus_string_list_new ();
 
@@ -143,6 +151,30 @@ test_string_picker (void)
 	gtk_signal_connect (GTK_OBJECT (picker),
 			    "changed",
 			    GTK_SIGNAL_FUNC (string_picker_changed_callback),
+			    (gpointer) NULL);
+
+	gtk_widget_show_all (window);
+}
+
+static void
+test_text_caption (void)
+{
+	GtkWidget		*window;
+	GtkWidget		*picker;
+	
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+
+	picker = nautilus_text_caption_new ();
+	
+	nautilus_caption_set_title_label (NAUTILUS_CAPTION (picker), "Home Page:");
+
+	nautilus_text_caption_set_text (NAUTILUS_TEXT_CAPTION (picker), "file:///tmp");
+	
+	gtk_container_add (GTK_CONTAINER (window), picker);
+	
+	gtk_signal_connect (GTK_OBJECT (picker),
+			    "changed",
+			    GTK_SIGNAL_FUNC (text_caption_changed_callback),
 			    (gpointer) NULL);
 
 	gtk_widget_show_all (window);
@@ -189,6 +221,21 @@ string_picker_changed_callback (GtkWidget *string_picker, gpointer user_data)
 	text = nautilus_string_picker_get_text (NAUTILUS_STRING_PICKER (string_picker));
 
 	g_print ("string_picker_changed_callback(%s)\n", text);
+	
+	g_free (text);
+}
+
+static void
+text_caption_changed_callback (GtkWidget *text_caption, gpointer user_data)
+{
+	char	  *text;
+
+	g_assert (text_caption != NULL);
+	g_assert (NAUTILUS_IS_TEXT_CAPTION (text_caption));
+
+	text = nautilus_text_caption_get_text (NAUTILUS_TEXT_CAPTION (text_caption));
+
+	g_print ("text_caption_changed_callback(%s)\n", text);
 	
 	g_free (text);
 }

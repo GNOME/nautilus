@@ -41,11 +41,11 @@ typedef enum
 {
 	CHANGED,
 	LAST_SIGNAL
-} RadioGroupSignals;
+} NautilusStringPickerSignals;
 
 struct _NautilusStringPickerDetail
 {
-	GtkWidget		*title_label;
+// 	GtkWidget		*title_label;
 	GtkWidget		*combo_box;
 	NautilusStringList	*string_list;
 };
@@ -64,7 +64,7 @@ static GtkEntry *string_picker_get_entry_widget          (NautilusStringPicker  
 static void      entry_changed_callback                  (GtkWidget                 *entry,
 							  gpointer                   user_data);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusStringPicker, nautilus_string_picker, GTK_TYPE_HBOX)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusStringPicker, nautilus_string_picker, NAUTILUS_TYPE_CAPTION)
 
 static guint string_picker_signals[LAST_SIGNAL] = { 0 };
 
@@ -80,11 +80,9 @@ nautilus_string_picker_initialize_class (NautilusStringPickerClass *string_picke
 	object_class = GTK_OBJECT_CLASS (string_picker_class);
 	widget_class = GTK_WIDGET_CLASS (string_picker_class);
 
- 	parent_class = gtk_type_class (gtk_hbox_get_type ());
-
 	/* GtkObjectClass */
 	object_class->destroy = nautilus_string_picker_destroy;
-
+	
 	/* Signals */
 	string_picker_signals[CHANGED] =
 		gtk_signal_new ("changed",
@@ -108,29 +106,32 @@ nautilus_string_picker_initialize (NautilusStringPicker *string_picker)
 
 	string_picker->detail->string_list = NULL;
 
-	string_picker->detail->title_label = gtk_label_new ("Title Label:");
+// 	string_picker->detail->title_label = gtk_label_new ("Title Label:");
 	string_picker->detail->combo_box = gtk_combo_new ();
 
 	gtk_entry_set_editable (string_picker_get_entry_widget (string_picker), FALSE);
 
-	gtk_box_pack_start (GTK_BOX (string_picker),
-			    string_picker->detail->title_label,
-			    FALSE,	/* expand */
-			    TRUE,	/* fill */
-			    0);		/* padding */
+// 	gtk_box_pack_start (GTK_BOX (string_picker),
+// 			    string_picker->detail->title_label,
+// 			    FALSE,	/* expand */
+// 			    TRUE,	/* fill */
+// 			    0);		/* padding */
 	
-	gtk_box_pack_end (GTK_BOX (string_picker),
-			  string_picker->detail->combo_box,
-			  TRUE,		/* expand */
-			  TRUE,		/* fill */
-			  0);		/* padding */
+// 	gtk_box_pack_end (GTK_BOX (string_picker),
+// 			  string_picker->detail->combo_box,
+// 			  TRUE,		/* expand */
+// 			  TRUE,		/* fill */
+// 			  0);		/* padding */
+
+
+	nautilus_caption_set_child (NAUTILUS_CAPTION (string_picker),
+				    string_picker->detail->combo_box);
 
 	gtk_signal_connect (GTK_OBJECT (string_picker_get_entry_widget (string_picker)),
 			    "changed",
 			    GTK_SIGNAL_FUNC (entry_changed_callback),
 			    (gpointer) string_picker);
 	
-	gtk_widget_show (string_picker->detail->title_label);
 	gtk_widget_show (string_picker->detail->combo_box);
 }
 
@@ -175,20 +176,12 @@ string_picker_get_entry_widget (NautilusStringPicker *string_picker)
 static void
 entry_changed_callback (GtkWidget *entry, gpointer user_data)
 {
-	const char *entry_text;
-
 	NautilusStringPicker *string_picker;
 
 	g_assert (user_data != NULL);
 	g_assert (NAUTILUS_IS_STRING_PICKER (user_data));
 
 	string_picker = NAUTILUS_STRING_PICKER (user_data);
-
-	/* WATCHOUT: 
-	 * As of gtk1.2, gtk_entry_get_text() returns a non const reference to
-	 * the internal string.
-	 */
-	entry_text = (const char *) gtk_entry_get_text (string_picker_get_entry_widget (string_picker));
 
 	gtk_signal_emit (GTK_OBJECT (string_picker), string_picker_signals[CHANGED]);
 }
@@ -228,23 +221,6 @@ nautilus_string_picker_set_string_list (NautilusStringPicker		*string_picker,
 	gtk_combo_set_popdown_strings (GTK_COMBO (string_picker->detail->combo_box), strings);
 
 	nautilus_g_list_free_deep (strings);
-}
-
-/**
- * nautilus_string_picker_set_title_label:
- * @string_picker: A NautilusStringPicker
- * @title_label: The title label
- *
- */
-void
-nautilus_string_picker_set_title_label (NautilusStringPicker		*string_picker,
-					const char			*title_label)
-{
- 	g_return_if_fail (string_picker != NULL);
-	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
-	g_return_if_fail (title_label != NULL);
-
-	gtk_label_set_text (GTK_LABEL (string_picker->detail->title_label), title_label);
 }
 
 /**

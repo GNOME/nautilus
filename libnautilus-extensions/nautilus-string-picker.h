@@ -25,8 +25,7 @@
 #ifndef NAUTILUS_STRING_PICKER_H
 #define NAUTILUS_STRING_PICKER_H
 
-#include <gtk/gtkvbox.h>
-#include <gnome.h>
+#include <nautilus-widgets/nautilus-caption.h>
 #include <libnautilus-extensions/nautilus-string-list.h>
 
 /*
@@ -50,7 +49,7 @@ typedef struct _NautilusStringPickerDetail     NautilusStringPickerDetail;
 struct _NautilusStringPicker
 {
 	/* Super Class */
-	GtkHBox				hbox;
+	NautilusCaption			caption;
 	
 	/* Private stuff */
 	NautilusStringPickerDetail	*detail;
@@ -58,22 +57,23 @@ struct _NautilusStringPicker
 
 struct _NautilusStringPickerClass
 {
-	GtkHBoxClass			parent_class;
+	NautilusCaptionClass		parent_class;
 };
 
 GtkType    nautilus_string_picker_get_type        (void);
 GtkWidget* nautilus_string_picker_new             (void);
 
+/* String list mutator. */
+void  nautilus_string_picker_set_string_list (NautilusStringPicker     *string_picker,
+					      const NautilusStringList *string_list);
+
+/* Entry text accesor. */
+char *nautilus_string_picker_get_text        (NautilusStringPicker     *string_picker);
 
 
-/* Set the string list. */
-void       nautilus_string_picker_set_string_list (NautilusStringPicker     *string_picker,
-						   const NautilusStringList *string_list);
-void       nautilus_string_picker_set_title_label (NautilusStringPicker     *string_picker,
-						   const char               *title_label);
-char *     nautilus_string_picker_get_text        (NautilusStringPicker     *string_picker);
-void       nautilus_string_picker_set_text        (NautilusStringPicker     *string_picker,
-						   const char		    *text);
+/* Entry text mutator. */
+void  nautilus_string_picker_set_text        (NautilusStringPicker     *string_picker,
+					      const char               *text);
 
 BEGIN_GNOME_DECLS
 

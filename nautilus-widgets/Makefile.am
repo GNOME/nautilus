@@ -21,6 +21,7 @@ libnautilus_widgetsincludedir=$(includedir)/nautilus-widgets
 
 libnautilus_widgetsinclude_HEADERS =\
 	nautilus-caption-table.h \
+	nautilus-caption.h \
 	nautilus-password-dialog.h \
 	nautilus-preference.h \
 	nautilus-preferences-box.h \
@@ -31,11 +32,13 @@ libnautilus_widgetsinclude_HEADERS =\
 	nautilus-preferences.h \
 	nautilus-radio-button-group.h \
 	nautilus-string-picker.h \
+	nautilus-text-caption.h \
 	nautilus-user-level-manager.h \
 	$(NULL)
 
 libnautilus_widgets_la_SOURCES =\
 	nautilus-caption-table.c \
+	nautilus-caption.c \
 	nautilus-password-dialog.c \
 	nautilus-preference.c \
 	nautilus-preferences-box.c \
@@ -46,6 +49,7 @@ libnautilus_widgets_la_SOURCES =\
 	nautilus-preferences.c \
 	nautilus-radio-button-group.c \
 	nautilus-string-picker.c \
+	nautilus-text-caption.c \
 	nautilus-user-level-manager.c \
 	nautilus-widgets-self-check-functions.c \
 	nautilus-widgets-self-check-functions.h \
