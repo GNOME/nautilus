@@ -35,6 +35,7 @@
 #include <libgnomeui/gnome-icon-text.h>
 #include <libart_lgpl/art_rgb_affine.h>
 #include <libart_lgpl/art_rgb_rgba_affine.h>
+#include <libart_lgpl/art_svp_vpath.h>
 #include "nautilus-icon-private.h"
 #include "nautilus-string.h"
 #include "nautilus-glib-extensions.h"
@@ -800,6 +801,55 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 	gdk_gc_unref (gc);
 }
 
+/* utility routine to use libart to draw a rectangle in the anti-aliased canvas */
+
+static void
+draw_filled_rectangle_aa (GnomeCanvasBuf *buf, int left, int top, int width, int height)
+{
+	ArtVpath vpath[6];
+	ArtSVP *path;
+
+	vpath[0].code = ART_MOVETO;
+	vpath[0].x = left;
+	vpath[0].y = top;
+	vpath[1].code = ART_LINETO;
+	vpath[1].x = left;
+	vpath[1].y = top + height;
+	vpath[2].code = ART_LINETO;
+	vpath[2].x = left + width;
+	vpath[2].y = top + height;
+	vpath[3].code = ART_LINETO;
+	vpath[3].x = left + width;
+	vpath[3].y = top;
+	vpath[4].code = ART_LINETO;
+	vpath[4].x = left;
+	vpath[4].y = top;
+	vpath[5].code = ART_END;
+	vpath[5].x = 0;
+	vpath[5].y = 0;
+	
+	path = art_svp_from_vpath(vpath);
+	gnome_canvas_render_svp(buf, path, 0x000000FF);
+	art_svp_free(path);	
+}
+
+/* draw the stretch handles in the anti-aliased canvas */
+
+static void
+draw_stretch_handles_aa (NautilusIconCanvasItem *item, GnomeCanvasBuf *buf,
+		      const ArtIRect *rect)
+{
+	if (!item->details->show_stretch_handles) {
+		return;
+	}
+	
+	draw_filled_rectangle_aa (buf, rect->x0, rect->y0, STRETCH_HANDLE_THICKNESS, STRETCH_HANDLE_THICKNESS);
+	draw_filled_rectangle_aa (buf, rect->x1 - STRETCH_HANDLE_THICKNESS, rect->y0, STRETCH_HANDLE_THICKNESS, STRETCH_HANDLE_THICKNESS);
+	draw_filled_rectangle_aa (buf, rect->x1 - STRETCH_HANDLE_THICKNESS, rect->y1 - STRETCH_HANDLE_THICKNESS, STRETCH_HANDLE_THICKNESS, STRETCH_HANDLE_THICKNESS);
+	draw_filled_rectangle_aa (buf, rect->x0, rect->y1 - STRETCH_HANDLE_THICKNESS, STRETCH_HANDLE_THICKNESS, STRETCH_HANDLE_THICKNESS);
+	
+}
+
 static void
 emblem_layout_reset (EmblemLayout *layout, NautilusIconCanvasItem *icon_item, const ArtIRect *icon_rect)
 {
@@ -1122,6 +1172,7 @@ nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
         i2c[3] = 1.0;
         gnome_canvas_buf_ensure_buf (buf);
 
+
 	/* draw the icon */
 	if (gdk_pixbuf_get_has_alpha(temp_pixbuf))
 		art_rgb_rgba_affine (buf->buf,
@@ -1155,9 +1206,10 @@ nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 		draw_pixbuf_aa (emblem_pixbuf, buf, i2c, emblem_rect.x0 - icon_rect.x0, 
 				emblem_rect.y0 - icon_rect.y0);
 	}
-	
+
 	/* draw the stretch handles */
-	
+	draw_stretch_handles_aa (icon_item, buf, &icon_rect);
+		
 	/* draw the text */
 	i2c[5] += icon_rect.y1 - icon_rect.y0;
 	x_delta = (icon_item->details->text_width - (icon_rect.x1 - icon_rect.x0)) / 2;

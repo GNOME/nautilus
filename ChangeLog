@@ -1,3 +1,15 @@
+2000-05-30  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/file-manager/fm-icon-view.c: (play_file),
+	(icon_container_preview_callback):
+	play it preview a much broader range of sounds using "play"
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_filled_rectangle_aa), (draw_stretch_handles_aa),
+	(nautilus_icon_canvas_item_render):
+	draw the stretch handles in anti-aliased mode.  This isn't quite
+	finished yet, since there's a bug that makes the icon itself disappear
+	
 2000-05-30  Pavel Cisler  <pavel@eazel.com>
 
 	* src/file-manager/dfos-xfer.h:

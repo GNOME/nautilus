@@ -1106,16 +1106,24 @@ icon_container_activate_callback (NautilusIconContainer *container,
 
 static gint play_file(NautilusFile *file)
 {
-	char * file_uri;
-	file_uri = nautilus_file_get_uri(file);
+	char *file_uri, *mime_type, *player;
 	
+	file_uri = nautilus_file_get_uri(file);
+	mime_type = nautilus_file_get_mime_type(file);
+	
+	if (!nautilus_strcmp(mime_type, "audio/x-mp3"))
+		player = "mpg123";
+	else
+		player = "play";
+		
 	mp3_pid = fork ();
 	if (mp3_pid == (pid_t) 0) {
-		execlp ("mpg123", "mpg123", file_uri + 7, NULL);
+		execlp (player, player, file_uri + 7, NULL);
 		_exit (0);
 	}
 
 	g_free(file_uri);
+	g_free(mime_type);
 	timeout = -1;
 	
 	return 0;
@@ -1160,7 +1168,7 @@ icon_container_preview_callback (NautilusIconContainer *container,
 	/* preview files based on the mime_type. */
 	/* for now, we just handle mp3s, soon we'll do more general sounds, eventually, more general types */
 
-	if (!nautilus_strcmp(mime_type, "audio/x-mp3")) {   	
+	if (nautilus_str_has_prefix(mime_type, "audio/")) {   	
 		result = 1;
 		preview_sound(file, start_flag);
 	}
