@@ -891,29 +891,6 @@ text_attribute_names_changed_callback (gpointer callback_data)
 		 text_attribute_names_changed, (view));
 }
 
-/* FIXME bugzilla.eazel.com 1856: 
- * This #include and the call to nautilus_directory_async_state_changed
- * are a hack to get the embedded text to appear if the preference started
- * out off but gets turned on. This is obviously not the right API, but
- * I wanted to check in and Darin was at lunch...
- */
-#include <libnautilus-extensions/nautilus-directory-private.h>
-static void
-embedded_text_policy_changed_callback (gpointer callback_data)
-{
-	FMDirectoryView *view;
-
-	view = FM_DIRECTORY_VIEW (callback_data);
-
-	NAUTILUS_CALL_VIRTUAL
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 embedded_text_policy_changed, (view));
-	
-	nautilus_directory_async_state_changed
-		(fm_directory_view_get_model (view));
-
-}
-
 static void
 image_display_policy_changed_callback (gpointer callback_data)
 {
@@ -1057,11 +1034,6 @@ fm_directory_view_initialize (FMDirectoryView *view)
 					   text_attribute_names_changed_callback,
 					   view);
 
-	/* Keep track of changes in embedded text policy */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
-					   embedded_text_policy_changed_callback,
-					   view);
-
 	/* Keep track of changes in image display policy */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 					   image_display_policy_changed_callback,
@@ -1127,9 +1099,6 @@ fm_directory_view_destroy (GtkObject *object)
 					      view);
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_CAPTIONS,
 					      text_attribute_names_changed_callback,
-					      view);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
-					      embedded_text_policy_changed_callback,
 					      view);
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 					      image_display_policy_changed_callback,

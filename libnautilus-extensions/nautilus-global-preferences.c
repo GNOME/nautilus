@@ -134,6 +134,9 @@ global_preferences_install_descriptions (void)
 	global_preferences_install_speed_tradeoff_descriptions (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
 								_("Display text in icons"));
 	
+	global_preferences_install_speed_tradeoff_descriptions (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
+								_("Display item counts for folders"));
+	
 	global_preferences_install_speed_tradeoff_descriptions (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 								_("Show thumbnails for image files"));
 
@@ -253,6 +256,18 @@ global_preferences_install_defaults (void)
 	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
 						  NAUTILUS_USER_LEVEL_NOVICE,
 						  NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
+
+	/* Don't show remote directory item counts for Beginner users because computing them
+	 * can be annoyingly slow, especially for FTP. If we make this fast enough for FTP in
+	 * particular, we should change this default to ALWAYS.
+	 */
+	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
+						  NAUTILUS_USER_LEVEL_NOVICE,
+						  NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
+	
+	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
+						  NAUTILUS_USER_LEVEL_INTERMEDIATE,
+						  NAUTILUS_SPEED_TRADEOFF_ALWAYS);
 	
 	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
 						 NAUTILUS_USER_LEVEL_NOVICE,
@@ -432,6 +447,9 @@ global_preferences_install_visibility (void)
 						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
 						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
@@ -731,17 +749,24 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
 							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Show Thumbnails for Image Files"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Show Item Counts for Folders"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
 							 1,
+							 NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
+							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
+
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Show Thumbnails for Image Files"));
+	
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
+							 2,
 							 NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
 
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Previewing Sound Files"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
-							 2,
+							 3,
 							 NAUTILUS_PREFERENCES_PREVIEW_SOUND,
 							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
 
@@ -750,7 +775,7 @@ global_preferences_create_dialog (void)
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Make Folder Appearance Details Public"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
-							 3,
+							 4,
 							 NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
 							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
 

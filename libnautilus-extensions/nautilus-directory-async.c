@@ -1283,7 +1283,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 	}
 
 	/* Send the changed and added signals. */
-	nautilus_directory_emit_change_signals_deep (directory, changed_files);
+	nautilus_directory_emit_change_signals (directory, changed_files);
 	nautilus_file_list_free (changed_files);
 	nautilus_directory_emit_files_added (directory, added_files);
 	nautilus_file_list_free (added_files);
@@ -1772,11 +1772,12 @@ static gboolean
 lacks_directory_count (NautilusFile *file)
 {
 	return nautilus_file_is_directory (file)
+		&& nautilus_file_should_show_directory_item_count (file)
 		&& !file->details->directory_count_is_up_to_date;
 }
 
 static gboolean
-should_get_directory_count (NautilusFile *file)
+should_get_directory_count_now (NautilusFile *file)
 {
 	return lacks_directory_count (file)
 		&& !file->details->loading_directory;
@@ -2383,7 +2384,7 @@ directory_count_start (NautilusDirectory *directory)
 			g_assert (NAUTILUS_IS_FILE (file));
 			g_assert (file->details->directory == directory);
 			if (is_needy (file,
-				      should_get_directory_count,
+				      should_get_directory_count_now,
 				      wants_directory_count)) {
 				return;
 			}
@@ -2395,7 +2396,7 @@ directory_count_start (NautilusDirectory *directory)
 
 	/* Figure out which file to get a count for. */
 	file = select_needy_file (directory,
-				  should_get_directory_count,
+				  should_get_directory_count_now,
 				  wants_directory_count);
 	if (file == NULL) {
 		return;

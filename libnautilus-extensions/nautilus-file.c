@@ -1056,14 +1056,14 @@ nautilus_file_is_local (NautilusFile *file)
 	return nautilus_directory_is_local (file->details->directory);
 }
 
-gboolean
-nautilus_file_should_get_top_left_text (NautilusFile *file)
+static gboolean
+get_speed_tradeoff_preference_for_file (NautilusFile *file, const char *preference_name)
 {
 	NautilusSpeedTradeoffValue preference_value;
 	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	preference_value = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS);
+	preference_value = nautilus_preferences_get_integer (preference_name);
 
 	if (preference_value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
 		return TRUE;
@@ -1075,6 +1075,13 @@ nautilus_file_should_get_top_left_text (NautilusFile *file)
 
 	g_assert (preference_value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
 	return nautilus_file_is_local (file);
+}
+
+gboolean
+nautilus_file_should_get_top_left_text (NautilusFile *file)
+{
+	return get_speed_tradeoff_preference_for_file 
+		(file, NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS);
 }
 
 static void
@@ -2271,6 +2278,13 @@ nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type
 	return nautilus_strdup_strftime (format, file_time);
 }
 
+gboolean
+nautilus_file_should_show_directory_item_count (NautilusFile *file)
+{
+	return get_speed_tradeoff_preference_for_file 
+		(file, NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS);
+}
+
 /**
  * nautilus_file_get_directory_item_count
  * 
@@ -2298,6 +2312,10 @@ nautilus_file_get_directory_item_count (NautilusFile *file,
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
 	if (!nautilus_file_is_directory (file)) {
+		return FALSE;
+	}
+
+	if (!nautilus_file_should_show_directory_item_count (file)) {
 		return FALSE;
 	}
 
@@ -2341,6 +2359,14 @@ nautilus_file_get_deep_counts (NautilusFile *file,
 	}
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NAUTILUS_REQUEST_DONE);
+
+	if (!nautilus_file_should_show_directory_item_count (file)) {
+		/* Set field so an existing value isn't treated as up-to-date
+		 * when preference changes later.
+		 */
+		file->details->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
+		return file->details->deep_counts_status;
+	}
 
 	return NAUTILUS_CALL_VIRTUAL
 		(NAUTILUS_FILE_CLASS, file,
@@ -4166,7 +4192,7 @@ nautilus_file_changed (NautilusFile *file)
 		fake_list.data = file;
 		fake_list.next = NULL;
 		fake_list.prev = NULL;
-		nautilus_directory_emit_change_signals_deep
+		nautilus_directory_emit_change_signals
 			(file->details->directory, &fake_list);
 	}
 }

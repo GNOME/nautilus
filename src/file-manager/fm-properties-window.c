@@ -72,8 +72,19 @@ struct FMPropertiesWindowDetails {
 	GtkWidget *remove_image_button;
 	guint file_changed_handler_id;
 
+	GtkTable *basic_table;
+	GtkTable *permissions_table;
+
 	NautilusEntry *name_field;
 	char *pending_name;
+
+	GList *directory_contents_widgets;
+	int directory_contents_row;
+
+	GList *special_flags_widgets;
+	int first_special_flags_row;
+	int num_special_flags_rows;
+
 };
 
 enum {
@@ -968,7 +979,7 @@ append_row (GtkTable *table)
 	return new_row_count - 1;
 }
 
-static guint
+static GtkWidget *
 append_separator (GtkTable *table)
 {
 	GtkWidget *separator;
@@ -982,7 +993,7 @@ append_separator (GtkTable *table)
 			  last_row, last_row+1,
 			  GTK_FILL, 0,
 			  0, 0);
-	return last_row;				   
+	return separator;				   
 }		  	
  
 static void
@@ -1063,7 +1074,7 @@ directory_contents_value_field_update (GtkLabel *label, NautilusFile *file)
 	g_free (text);
 }
 
-static void
+static GtkLabel *
 attach_directory_contents_value_field (GtkTable *table,
 				       int row,
 				       NautilusFile *file,
@@ -1091,7 +1102,9 @@ attach_directory_contents_value_field (GtkTable *table,
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
 					       "updated_deep_count_in_progress",
 					       directory_contents_value_field_update,
-					       GTK_OBJECT (value_field));	
+					       GTK_OBJECT (value_field));
+
+	return value_field;	
 }					
 
 static GtkLabel *
@@ -1139,13 +1152,63 @@ append_title_and_ellipsizing_value (GtkTable *table,
 	attach_ellipsizing_value_field (table, last_row, VALUE_COLUMN, file, file_attribute_name);
 
 	return last_row;
-}				    
+}
+
+static void
+update_visibility_of_table_rows (GtkTable *table,
+		   	 	 gboolean should_show,
+		   		 int first_row, 
+		   		 int row_count,
+		   		 GList *widgets)
+{
+	GList *node;
+	int i;
+
+	for (node = widgets; node != NULL; node = node->next) {
+		if (should_show) {
+			gtk_widget_show (GTK_WIDGET (node->data));
+		} else {
+			gtk_widget_hide (GTK_WIDGET (node->data));
+		}
+	}
+
+	for (i= 0; i < row_count; ++i) {
+		gtk_table_set_row_spacing (table, first_row + i, should_show ? GNOME_PAD : 0);
+	}
+}				   
+
+static void
+update_visibility_of_item_count_fields (FMPropertiesWindow *window)
+{
+	update_visibility_of_table_rows
+		(window->details->basic_table,
+		 nautilus_file_should_show_directory_item_count (window->details->file),
+		 window->details->directory_contents_row,
+		 1,
+		 window->details->directory_contents_widgets);
+}
+
+static void
+update_visibility_of_item_count_fields_wrapper (gpointer callback_data)
+{
+	update_visibility_of_item_count_fields (FM_PROPERTIES_WINDOW (callback_data));
+}  
+
+static void
+remember_directory_contents_widget (FMPropertiesWindow *window, GtkWidget *widget)
+{
+	g_assert (FM_IS_PROPERTIES_WINDOW (window));
+	g_assert (GTK_IS_WIDGET (widget));
+	
+	window->details->directory_contents_widgets = 
+		g_list_prepend (window->details->directory_contents_widgets, widget);
+}
 
 static guint
-append_directory_contents_fields (GtkTable *table,
-				  NautilusFile *file)
+append_directory_contents_fields (FMPropertiesWindow *window,
+				  GtkTable *table)
 {
-	GtkLabel *title_field;
+	GtkLabel *title_field, *value_field;
 	guint last_row;
 
 	last_row = append_row (table);
@@ -1153,8 +1216,20 @@ append_directory_contents_fields (GtkTable *table,
 	title_field = attach_title_field (table, last_row, "");
 	gtk_label_set_line_wrap (title_field, TRUE);
 
-	attach_directory_contents_value_field (table, last_row, file, title_field);
+	value_field = attach_directory_contents_value_field 
+		(table, last_row, window->details->file, title_field);
 
+	remember_directory_contents_widget (window, GTK_WIDGET (title_field));
+	remember_directory_contents_widget (window, GTK_WIDGET (value_field));
+	window->details->directory_contents_row = last_row;
+
+	update_visibility_of_item_count_fields (window);
+	nautilus_preferences_add_callback_while_alive 
+		(NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
+		 update_visibility_of_item_count_fields_wrapper,
+		 window,
+		 GTK_OBJECT (window));
+	
 	return last_row;
 }
 
@@ -1302,6 +1377,8 @@ create_basic_page (FMPropertiesWindow *window)
 					1,
 					&table, 
 					&container);
+	window->details->basic_table = table;
+	
 	/* Icon pixmap */
 	icon_pixmap_widget = create_image_widget_for_file (file);
 	gtk_widget_show (icon_pixmap_widget);
@@ -1378,7 +1455,7 @@ create_basic_page (FMPropertiesWindow *window)
 		append_title_value_pair (table, _("Type:"), file, "type");
 	}
 	if (nautilus_file_is_directory (file)) {
-		append_directory_contents_fields (table, file);
+		append_directory_contents_fields (window, table);
 	} else {
 		append_title_value_pair (table, _("Size:"), file, "size");
 	}
@@ -1710,9 +1787,9 @@ add_permissions_checkbox (GtkTable *table,
 	set_up_permissions_checkbox (check_button, file, permission_to_check);
 }
 
-static guint
-append_special_execution_checkbox (GtkTable *table,
-				   NautilusFile *file, 
+static GtkWidget *
+append_special_execution_checkbox (FMPropertiesWindow *window,
+				   GtkTable *table,
 				   const char *label_text,
 				   GnomeVFSFilePermissions permission_to_check)
 {
@@ -1727,27 +1804,69 @@ append_special_execution_checkbox (GtkTable *table,
 	gtk_table_attach (table, check_button,
 			  VALUE_COLUMN, VALUE_COLUMN + 1,
 			  last_row, last_row + 1,
-			  GTK_FILL | GTK_EXPAND, 0,
+			  GTK_FILL, 0,
 			  0, 0);
 
-	set_up_permissions_checkbox (check_button, file, permission_to_check);
+	set_up_permissions_checkbox (check_button, window->details->file, permission_to_check);
+	++window->details->num_special_flags_rows;
 
-	return last_row;
+	return check_button;
 }
 
 static void
-append_special_execution_flags (GtkTable *table, 
-			     NautilusFile *file)
+remember_special_flags_widget (FMPropertiesWindow *window, GtkWidget *widget)
 {
-	guint label_row;
-
-	label_row = append_special_execution_checkbox (table, file, _("Set User ID"), GNOME_VFS_PERM_SUID);
-	attach_title_field (table, label_row, _("Special Flags:"));
-
-	append_special_execution_checkbox (table, file, _("Set Group ID"), GNOME_VFS_PERM_SGID);
-	append_special_execution_checkbox (table, file, _("Sticky"), GNOME_VFS_PERM_STICKY);
+	g_assert (FM_IS_PROPERTIES_WINDOW (window));
+	g_assert (GTK_IS_WIDGET (widget));
 	
-	append_separator (table);
+	window->details->special_flags_widgets = 
+		g_list_prepend (window->details->special_flags_widgets, widget);
+}
+
+static void
+update_visibility_of_special_flags_widgets (FMPropertiesWindow *window)
+{
+	update_visibility_of_table_rows 
+		(window->details->permissions_table,
+		 nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS),
+		 window->details->first_special_flags_row,
+		 window->details->num_special_flags_rows,
+		 window->details->special_flags_widgets);
+}
+
+static void
+update_visibility_of_special_flags_widgets_wrapper (gpointer callback_data)
+{
+	update_visibility_of_special_flags_widgets (FM_PROPERTIES_WINDOW (callback_data));
+}
+
+static void
+append_special_execution_flags (FMPropertiesWindow *window,
+				GtkTable *table)
+{
+	remember_special_flags_widget (window, append_special_execution_checkbox 
+		(window, table, _("Set User ID"), GNOME_VFS_PERM_SUID));
+
+	window->details->first_special_flags_row = table->nrows - 1;
+
+	remember_special_flags_widget (window, GTK_WIDGET (attach_title_field 
+		(table, table->nrows - 1, _("Special Flags:"))));
+
+	remember_special_flags_widget (window, append_special_execution_checkbox 
+		(window, table, _("Set Group ID"), GNOME_VFS_PERM_SGID));
+	remember_special_flags_widget (window, append_special_execution_checkbox 
+		(window, table, _("Sticky"), GNOME_VFS_PERM_STICKY));
+
+	remember_special_flags_widget (window, append_separator (table));
+	++window->details->num_special_flags_rows;
+
+	update_visibility_of_special_flags_widgets (window);
+	nautilus_preferences_add_callback_while_alive 
+		(NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
+		 update_visibility_of_special_flags_widgets_wrapper,
+		 window,
+		 GTK_OBJECT (window));
+	
 }
 
 static void
@@ -1756,7 +1875,6 @@ create_permissions_page (FMPropertiesWindow *window)
 	GtkWidget *vbox;
 	GtkTable *page_table, *check_button_table;
 	char *file_name, *prompt_text;
-	gboolean show_special_flags;
 	NautilusFile *file;
 	guint last_row;
 	guint checkbox_titles_row;
@@ -1772,9 +1890,9 @@ create_permissions_page (FMPropertiesWindow *window)
 				_("You are not the owner, so you can't change these permissions."));
 		}
 
-		show_special_flags = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS);
-
 		page_table = GTK_TABLE (gtk_table_new (1, COLUMN_COUNT, FALSE));
+		window->details->permissions_table = page_table;
+
 		apply_standard_table_padding (page_table);
 		last_row = 0;
 		gtk_widget_show (GTK_WIDGET (page_table));
@@ -1887,13 +2005,7 @@ create_permissions_page (FMPropertiesWindow *window)
 
 		append_separator (page_table);
 
-		/* FIXME bugzilla.eazel.com 2396: 
-		 * Would be better to show/hide this info dynamically, so if the
-		 * preference is changed while the window is open it would react.
-		 */
-		if (show_special_flags) {
-			append_special_execution_flags (page_table, file);					  
-		}
+		append_special_execution_flags (window, page_table);
 
 		append_title_value_pair (page_table, _("Text View:"), file, "permissions");		
 		append_title_value_pair (page_table, _("Number View:"), file, "octal_permissions");
@@ -2185,6 +2297,8 @@ real_destroy (GtkObject *object)
 	nautilus_file_monitor_remove (window->details->file, window);
 	g_hash_table_remove (windows, window->details->file);
 	nautilus_file_unref (window->details->file);
+	g_list_free (window->details->directory_contents_widgets);
+	g_list_free (window->details->special_flags_widgets);
 
 	/* Note that file_changed_handler_id is disconnected in shutdown,
 	 * and details are freed in finalize 

@@ -1,3 +1,107 @@
+2001-01-31  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 6162 (need option to stop "xx items" from being
+	calculated for ftp:// locations)
+
+	Added a speed tradeoff preference for showing directory
+	counts. It's "local-only" for Beginner and "always" (but
+	changeable) for Intermediate/Advanced.
+
+	Fixed bug 1856 (fix hideous hack to kick-start embedded-text
+	reading when preference changes)
+
+	Fixed bug 2396 (properties window doesn't show/hide
+	"special flags" when preference changes) 
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(dequeue_pending_idle_callback): Update for name change.
+	(lacks_directory_count): Now checks preference by calling
+	nautilus_file_should_show_directory_item_count.
+	(should_get_directory_count_now): Renamed to add the "_now"
+	to help distinguish from 
+	nautilus_file_should_show_directory_item_count.
+	(directory_count_start): Update for name change.
+	
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(emit_change_signals_for_all_files): New function, emits change
+	signals for self-as-file (if applicable) and all contained files.
+	(async_state_changed_one): New hash-table function, calls
+	emit_change_signals_for_all_files on a directory.
+	(async_data_preference_changed_callback): New preferences-changed
+	callback, calls async_state_changed_one on each directory.
+	(add_preferences_callbacks): Renamed from add_filtering_callbacks,
+	now adds callbacks for top-left text and item counts preferences.
+	(remove_preferences_callbacks): Renamed from remove_filtering_callbacks,
+	now removes callbacks for top-left text and item counts preferences.
+	(nautilus_directory_get_internal): Update for name change.
+	(nautilus_directory_emit_change_signals): renamed from
+	_emit_change_signals_deep to avoid recursion connotation.
+	(nautilus_directory_emit_metadata_changed),
+	(call_files_changed_free_list),
+	(call_files_changed_unref_free_list): Update for name change.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(get_speed_tradeoff_preference_for_file): New utility function,
+	returns boolean based on local-ness of file and value of
+	specified speed-tradeoff preference.
+	(nautilus_file_should_get_top_left_text): Now calls
+	get_speed_tradeoff_preference_for_file.
+	(nautilus_file_should_show_directory_item_count): New function,
+	calls get_speed_tradeoff_preference_for_file.
+	(nautilus_file_get_directory_item_count),
+	(nautilus_file_get_deep_counts): Bail out early without computation
+	if _should_show_directory_item_count is FALSE.
+	(nautilus_file_changed): Update for name change.
+	
+	* libnautilus-extensions/nautilus-file.h: Make
+	nautilus_file_should_show_directory_item_count public so the
+	preferences window can make UI decisions based on it.
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_descriptions),
+	(global_preferences_install_defaults),
+	(global_preferences_install_visibility),
+	(global_preferences_create_dialog): Add new preference
+	NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS and wire up
+	default values and UI.
+	
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize), (fm_directory_view_destroy):
+	Remove hideous hack.
+	
+	* src/file-manager/fm-properties-window.c: 
+	(append_separator): Return widget instead of row number.
+	(attach_directory_contents_value_field): Return widget.
+	(update_visibility_of_table_rows): New helper function to
+	update visibility of a series of table rows & contained
+	widgets.
+	(update_visibility_of_item_count_fields): New function
+	to update visibility of directory item count widgetry.
+	(update_visibility_of_item_count_fields_wrapper): Simple
+	wrapper for above.
+	(remember_directory_contents_widget),
+	(append_directory_contents_fields): Remember item counts
+	widgetry so it can be shown/hidden later; set up prefs
+	callback; change signature for to pass window.
+	(create_basic_page), (create_permissions_page): 
+	store table in window->details; update for changed signatures.
+	(append_special_execution_checkbox): Now takes window,
+	don't use GTK_EXPAND to avoid resizing column unnecessarily,
+	count number of special flags rows.
+	(remember_special_flags_widget),
+	(update_visibility_of_special_flags_widgets): New function
+	to update visibility of special flags widgetry.
+	(update_visibility_of_special_flags_widgets_wrapper):
+	Simple wrapper for above.
+	(append_special_execution_flags): Remember special flags
+	widgetry so it can be shown/hidden later; set up prefs
+	callback; change signature to pass window.
+	(real_destroy): free widget lists.
+
 2001-01-31  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>

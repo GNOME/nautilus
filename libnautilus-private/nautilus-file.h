@@ -144,6 +144,9 @@ NautilusRequestStatus   nautilus_file_get_deep_counts                   (Nautilu
 									 guint                          *file_count,
 									 guint                          *unreadable_directory_count,
 									 GnomeVFSFileSize               *total_size);
+
+gboolean      		nautilus_file_should_show_directory_item_count	(NautilusFile                   *file);
+
 GList *                 nautilus_file_get_keywords                      (NautilusFile                   *file);
 void                    nautilus_file_set_keywords                      (NautilusFile                   *file,
 									 GList                          *keywords);

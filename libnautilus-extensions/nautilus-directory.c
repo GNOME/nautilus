@@ -232,7 +232,49 @@ filtering_changed_callback (gpointer callback_data)
 }
 
 static void
-add_filtering_callbacks (void)
+emit_change_signals_for_all_files (NautilusDirectory *directory)
+{
+	GList *files;
+
+	files = nautilus_g_list_copy (directory->details->file_list);
+	if (directory->details->as_file != NULL) {
+		files = g_list_prepend (files, directory->details->as_file);
+	}
+
+	nautilus_directory_emit_change_signals (directory, files);
+
+	g_list_free (files);
+}
+
+static void
+async_state_changed_one (gpointer key, gpointer value, gpointer user_data)
+{
+	NautilusDirectory *directory;
+
+	g_assert (key != NULL);
+	g_assert (NAUTILUS_IS_DIRECTORY (value));
+	g_assert (user_data == NULL);
+
+	directory = NAUTILUS_DIRECTORY (value);
+	
+	nautilus_directory_async_state_changed (directory);
+	emit_change_signals_for_all_files (directory);
+}
+
+static void
+async_data_preference_changed_callback (gpointer callback_data)
+{
+	g_assert (callback_data == NULL);
+
+	/* Preference involving fetched async data has changed, so
+	 * we have to kick off refetching all async data, and tell
+	 * each file that it (might have) changed.
+	 */
+	g_hash_table_foreach (directories, async_state_changed_one, NULL);
+}
+
+static void
+add_preferences_callbacks (void)
 {
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 					   filtering_changed_callback,
@@ -240,16 +282,28 @@ add_filtering_callbacks (void)
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
 					   filtering_changed_callback,
 					   NULL);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
+					   async_data_preference_changed_callback,
+					   NULL);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
+					   async_data_preference_changed_callback,
+					   NULL);
 }
 
 static void
-remove_filtering_callbacks (void)
+remove_preferences_callbacks (void)
 {
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 					      filtering_changed_callback,
 					      NULL);
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
 					      filtering_changed_callback,
+					      NULL);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
+					      async_data_preference_changed_callback,
+					      NULL);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
+					      async_data_preference_changed_callback,
 					      NULL);
 }
 
@@ -315,8 +369,8 @@ nautilus_directory_get_internal (const char *uri, gboolean create)
 		directories = nautilus_g_hash_table_new_free_at_exit
 			(g_str_hash, g_str_equal, "nautilus-directory.c: directories");
 
-		add_filtering_callbacks ();
-		g_atexit (remove_filtering_callbacks);
+		add_preferences_callbacks ();
+		g_atexit (remove_preferences_callbacks);
 		
 	}
 
@@ -669,7 +723,7 @@ nautilus_directory_emit_files_changed (NautilusDirectory *directory,
 }
 
 void
-nautilus_directory_emit_change_signals_deep (NautilusDirectory *directory,
+nautilus_directory_emit_change_signals (NautilusDirectory *directory,
 					     GList *changed_files)
 {
 	GList *p;
@@ -687,8 +741,7 @@ nautilus_directory_emit_metadata_changed (NautilusDirectory *directory)
 	 * We could optimize this to only mention files that
 	 * have metadata, but this is a fine rough cut for now.
 	 */
-	nautilus_directory_emit_change_signals_deep
-		(directory, directory->details->file_list);
+	emit_change_signals_for_all_files (directory);
 }
 
 void
@@ -794,7 +847,7 @@ call_files_changed_free_list (gpointer key, gpointer value, gpointer user_data)
 	g_assert (value != NULL);
 	g_assert (user_data == NULL);
 
-	nautilus_directory_emit_change_signals_deep (key, value);
+	nautilus_directory_emit_change_signals (key, value);
 	g_list_free (value);
 }
 
@@ -805,7 +858,7 @@ call_files_changed_unref_free_list (gpointer key, gpointer value, gpointer user_
 	g_assert (value != NULL);
 	g_assert (user_data == NULL);
 
-	nautilus_directory_emit_change_signals_deep (key, value);
+	nautilus_directory_emit_change_signals (key, value);
 	nautilus_file_list_free (value);
 }
 
