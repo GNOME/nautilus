@@ -1,3 +1,20 @@
+2000-08-01  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 1781 (Type of search bar should change
+	immediately when preference changes)
+
+	* src/nautilus-switchable-search-bar.c:
+	(nautilus_switchable_search_bar_initialize): register to
+	be notified of changes to the search-bar preference.
+	(search_bar_preference_changed_callback): React to changes
+	to the search-bar preference by calling _set_mode
+	(nautilus_switchable_search_bar_initialize_class):
+	install destroy handler.
+	(nautilus_switchable_search_bar_destroy): Unregister
+	search-bar preference callback.
+	(nautilus_switchable_search_bar_set_mode): Added a FIXME
+	comment about a reported bug.
+
 2000-08-01  Michael Engber  <engber@eazel.com>
 
 	* libnautilus/nautilus-bonobo-ui.h:
