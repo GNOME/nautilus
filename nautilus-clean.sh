@@ -5,33 +5,58 @@
 # portable, and should be be expected to be used in any kind of
 # production capacity.
 
+quiet=no
+
+if [ $# -gt 0 ]
+then
+    arg=$1
+
+    if [ "$arg" = "-q" ]
+    then
+	quiet=yes
+    fi
+fi
+
+hack_echo ()
+{
+    if [ "$quiet" != "yes" ]
+    then
+	echo "$*"
+    fi
+}
 
 # Add any new auxiliary programs here.
 AUX_PROGS="hyperbola ntl-history-view ntl-notes ntl-web-search ntl-web-browser nautilus-sample-content-view nautilus-hardware-view
-bonobo-text-plain bonobo-image-generic gnome-vfs-slave nautilus-rpm-view nautilus-service-startup-view nautilus-mozilla-content-view";
+bonobo-text-plain bonobo-image-generic gnome-vfs-slave nautilus-rpm-view nautilus-service-startup-view nautilus-mozilla-content-view"
 
-unset FOUND_ANY;
+unset FOUND_ANY
 
 for NAME in $AUX_PROGS; do
 
-    EGREP_PATTERN=`echo $NAME | sed -e 's/\(.\)\(.*\)/[\1]\2/' | sed -e 's/\[\\\^\]/\[\\^\]/'`;
+    EGREP_PATTERN=`echo $NAME | sed -e 's/\(.\)\(.*\)/[\1]\2/' | sed -e 's/\[\\\^\]/\[\\^\]/'`
 
-    COUNT=`ps auxww | egrep $EGREP_PATTERN | grep -v emacs | wc -l`;
+    COUNT=`ps auxww | egrep $EGREP_PATTERN | grep -v emacs | wc -l`
 
     if [ $COUNT -gt 0 ]; then
 	if [ -z $FOUND_ANY ]; then
-	    echo "Stale Processes Found";
-	    FOUND_ANY=true;
+	    hack_echo "Stale Processes Found"
+	    FOUND_ANY=true
 	fi
-	echo "$NAME: $COUNT";
-	killall "$NAME";
+	hack_echo "$NAME: $COUNT"
+
+	if [ "$quiet" != "yes" ]
+	then
+	    killall "$NAME"
+	else
+	    killall "$NAME" > /dev/null 2>&1
+	fi
     fi
 done
 
 
 if [ -z $FOUND_ANY ]; then
-    echo "No Stale Processes Found";
-    exit 0;
+    hack_echo "No Stale Processes Found"
+    exit 0
 fi
 
 exit 0
