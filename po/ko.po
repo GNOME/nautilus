@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.7.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-13 19:53+0900\n"
+"POT-Creation-Date: 2004-08-16 16:53+0200\n"
 "PO-Revision-Date: 2004-08-13 19:54+0900\n"
 "Last-Translator: Young-Ho Cha <ganadist at mizi.com>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
@@ -144,7 +144,7 @@ msgid "The dragged file does not appear to be a valid image."
 msgstr "끌어 놓은 파일이 올바른 그림파일이 아닌것 같습니다."
 
 #: components/emblem/nautilus-emblem-view.c:904 data/browser.xml.h:35
-#: src/nautilus-property-browser.c:1741
+#: src/nautilus-property-browser.c:1730
 msgid "Erase"
 msgstr "지우기"
 
@@ -1071,22 +1071,18 @@ msgstr ""
 "\"octal_permissions\" 그리고 \"mime_type\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
-msgid "Add Nautilus to session"
-msgstr "노틸러스를 세션에 더합니다"
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:3
 msgid "Bring up a new window for every opened file"
 msgstr "파일을 열 때다 새 창을 엽니다"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:3
 msgid "Computer icon visible on desktop"
 msgstr "바탕 화면에 컴퓨터 아이콘을 보입니다"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
 msgid "Criteria for search bar searching"
 msgstr "찾기 표시줄 찾기의 기준"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
 msgid ""
 "Criteria when matching files searched for in the search bar. If set to "
 "\"search_by_text\", then Nautilus will Search for files by file name only. "
@@ -1097,77 +1093,82 @@ msgstr ""
 "파일이름만 가지고 찾습니다. \"search_by_text_and_properties\"면, 노틸러스는 "
 "파일 이름과 파일 등록 정보로 찾습니다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:7
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid "Current Nautilus theme (deprecated)"
 msgstr "현재 노틸러스 테마 (사용 안 함)"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:8
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:7
 msgid "Custom Background Set"
 msgstr "사용자 지정 바탕 모음"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:8
 msgid "Custom Side Pane Background Set"
 msgstr "사용자 지정 가장자리 창 바탕 모음"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:10
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
 msgid "Date Format"
 msgstr "데이터 형식"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:11
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:10
 msgid "Default Background Color"
 msgstr "기본 바탕색"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:12
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:11
 msgid "Default Background Filename"
 msgstr "기본 바탕 파일이름"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:13
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:12
 msgid "Default Side Pane Background Color"
 msgstr "기본 가장자리 창 바탕색"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:13
 msgid "Default Side Pane Background Filename"
 msgstr "기본 가장자리 창 바탕 파일이름"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
 msgid "Default column order in the list view"
 msgstr "목록 보기에서 열 순서 기본값"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
 msgid "Default column order in the list view."
 msgstr "목록 보기에서 열 순서 기본값."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
 msgid "Default folder viewer"
 msgstr "기본 폴더 뷰어"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
 msgid "Default icon zoom level"
 msgstr "기본 아이콘 확대 수준"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:19
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
 msgid "Default list of columns visible in the list view"
 msgstr "목록 보기에서 표시할 열 목록 기본값"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:20
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:19
 msgid "Default list of columns visible in the list view."
 msgstr "목록 보기에서 표시할 열 목록 기본값."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:21
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:20
 msgid "Default list zoom level"
 msgstr "기본 목록 확대 수준"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:21
 msgid "Default sort order"
 msgstr "기본 정렬 순서"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
 msgid "Default zoom level used by the icon view."
 msgstr "아이콘 보기의 기본 확대 수준입니다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
 msgid "Default zoom level used by the list view."
 msgstr "목록 보기의 기본 확대 수준입니다."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
+#, fuzzy
+msgid "Desktop computer icon name"
+msgstr "바탕 화면 홈 아이콘 이름"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid "Desktop font"
@@ -1335,37 +1336,29 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
-"If this is set to true, Nautilus adds itself to the session when it starts "
-"up. This means it will be started the next time you log in."
-msgstr ""
-"참으로 설정하면, 시작할 때 노틸러스 자신을 세션에 더합니다. 이렇게 하면 다음"
-"에 로그인할 때도 노틸러스가 시작합니다."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
-msgid ""
 "If this is set to true, an icon linking to the computer location will be put "
 "on the desktop."
 msgstr "참으로 설정하면, 컴퓨터 아이콘을 바탕 화면에 만듭니다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
 msgstr "참으로 설정하면, 홈 폴더 아이콘을 바탕 화면에 만듭니다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
 msgstr "참으로 설정하면, 휴지통 아이콘을 바탕 화면에 만듭니다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
 msgstr "참으로 설정하면, 마운트한 볼륨에 연결된 아이콘을 바탕 화면에 만듭니다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -1374,7 +1367,7 @@ msgstr ""
 "참이면, 새 창에서 파일을 반대로 정렬합니다. 즉, 이름으로 정렬할 경우에 \"a"
 "\"부터 \"z\" 순서로 정렬하는 게 아니라 \"z\"에서 \"a\" 순서로 정렬합니다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -1385,20 +1378,20 @@ msgstr ""
 "\"부터 \"z\" 순서로 정렬하는 게 아니라 \"z\"에서 \"a\" 순서로 정렬합니다; 크"
 "기 순서대로 정렬하면 오름차 순이 아니라 내림차 순으로 정렬합니다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr "참이면, 새 창에서 아이콘이 기본적으로 빈틈없이 배치됩니다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid ""
 "If true, labels will be placed beside icons rather than underneath them."
 msgstr "참이면, 레이블을 아이콘 아래가 아니라 옆에 놓습니다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid "If true, new windows will use manual layout by default."
 msgstr "참이면, 새 창에서 기본으로 수동 배치를 사용합니다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -1408,19 +1401,19 @@ msgstr ""
 "은 큰 그림을 썸네일로 만들면 시간이 많이 걸리고 메모리를 많이 쓰기 때문입니"
 "다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid "List of possible captions on icons"
 msgstr "아이콘의 표시가능 캡션 목록"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid "Maximum handled files in a folder"
 msgstr "폴더 하나에서 처리할 최대 파일 개수"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
 msgid "Maximum image size for thumbnailing"
 msgstr "썸네일을 만들 그림의 최대 크기"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
 msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
@@ -1428,19 +1421,19 @@ msgstr ""
 "사용할 노틸러스 테마의 이름. 노틸러스 2.2에서 사용이 중단되었습니다. 대신에 "
 "아이콘 테마를 사용하십시오."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
 msgid "Nautilus handles drawing the desktop"
 msgstr "노틸러스가 바탕 화면 그리기를 담당합니다"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
 msgid "Nautilus uses the users home folder as the desktop"
 msgstr "노틸러스에서 사용자의 홈 폴더를 바탕 화면으로 사용합니다"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid "Only show folders in the tree sidebar"
 msgstr "폴더보기 가장자리 창에 폴더만 보여줍니다"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
@@ -1448,43 +1441,43 @@ msgstr ""
 "가능한 값으로, \"single\"은 한 번 클릭하면 파일을 실행하고, \"double\"은 더"
 "블 클릭해야 실행합니다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid "Put labels beside icons"
 msgstr "아이콘 옆에 레이블 쓰기"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid "Reverse sort order in new windows"
 msgstr "새 창에서 정렬 순서 거꾸로"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid "Show folders first in windows"
 msgstr "창에서 폴더를 먼저 보여줍니다"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid "Show location bar in new windows"
 msgstr "새 창에서 위치 표시줄을 보여줍니다"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid "Show mounted volumes on the desktop"
 msgstr "바탕 화면에 마운트한 볼륨을 보여줍니다"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid "Show side pane in new windows"
 msgstr "새 창에서 가장자리 창을 보여줍니다"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "Show status bar in new windows"
 msgstr "새 창에서 상태 표시줄을 보여줍니다"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "Show toolbar in new windows"
 msgstr "새 창에서 도구 모음을 보여줍니다"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid "Side pane view"
 msgstr "가장자리 창 뷰"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
 "Speed tradeoff for when to preview a sound file when mousing over a files "
 "icon. If set to \"always\" then always plays the sound, even if the file is "
@@ -1496,7 +1489,7 @@ msgstr ""
 "합니다. \"local_only\"는 로컬 파일 시스템에 있는 파일만 연주합니다. \"never"
 "\"이면 사운드 미리 듣기를 하지 않습니다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
 "file's icon. If set to \"always\" then always show previews, even if the "
@@ -1509,7 +1502,7 @@ msgstr ""
 "다. \"local_only\"는 로컬 파일 시스템에 있는 파일만 보여줍니다. \"never\"이"
 "면 미리 보기를 하지 않습니다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -1522,7 +1515,7 @@ msgstr ""
 "로컬 파일 시스템에 있는 파일만 썸네일로 보여줍니다. \"never\"이면 일반적인 아"
 "이콘을 사용합니다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -1534,7 +1527,7 @@ msgstr ""
 "파일 시스템의 경우에만 항목 개수를 보여줍니다. \"never\"이면 항목 개수를 세"
 "어 보지 않습니다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
@@ -1542,7 +1535,7 @@ msgstr ""
 "아이콘 뷰에서 각 항목들의 기본 정렬 순서. 가능한 값은 \"name\", \"size\", "
 "\"type\", \"modification_date\", \"emblems\"입니다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
 msgid ""
 "The default sort-order for the items in the list view. Possible values are "
 "\"name\", \"size\", \"type\", and \"modification_date\"."
@@ -1550,23 +1543,30 @@ msgstr ""
 "목록 뷰에서 각 항목들의 기본 정렬 순서. 가능한 값은 \"name\", \"size\", "
 "\"type\", \"modification_date\"입니다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid "The default width of the side pane in new windows."
 msgstr "새 창에서 가장자리 창의 기본 너비."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid "The font description used for the icons on the desktop."
 msgstr "바탕 화면 아이콘에 사용할 글꼴."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
 msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
 msgstr "파일 날짜의 형식. 가능한 값은 \"locale\", \"iso\", \"informal\"입니다."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
 msgid "The side pane view to show in newly opened windows."
 msgstr "새로 연 창에서 가장자리 창 뷰를 보입니다."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
+#, fuzzy
+msgid ""
+"This name can be set if you want a custom name for the computer icon on the "
+"desktop."
+msgstr "바탕 화면의 홈 아이콘의 이름을 직접 지정하려면 여기서 설정하면 됩니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
 msgid ""
@@ -2090,7 +2090,7 @@ msgid "link (broken)"
 msgstr "바로 가기 (깨어짐)"
 
 #: libnautilus-private/nautilus-file.c:6189
-#: libnautilus-private/nautilus-global-preferences.c:548
+#: libnautilus-private/nautilus-global-preferences.c:542
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
 msgstr "휴지통"
@@ -2744,7 +2744,7 @@ msgid "%ld of %ld"
 msgstr "%2$ld개 중 %1$ld개"
 
 #: libnautilus-private/nautilus-file-utilities.c:369
-#: libnautilus-private/nautilus-global-preferences.c:542
+#: libnautilus-private/nautilus-global-preferences.c:536
 #: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:10
 msgid "Computer"
 msgstr "컴퓨터"
@@ -2974,7 +2974,7 @@ msgstr "24"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: libnautilus-private/nautilus-global-preferences.c:536
+#: libnautilus-private/nautilus-global-preferences.c:530
 #, c-format
 msgid "%s's Home"
 msgstr "%s의 폴더"
@@ -3460,7 +3460,7 @@ msgid ""
 msgstr "맞춤법이 올바르고 프록시 설정이 올바른지 확인하십시오."
 
 #: libnautilus-private/nautilus-program-choosing.c:619
-#: src/nautilus-connect-server-dialog.c:101
+#: src/nautilus-connect-server-dialog.c:136
 #: src/nautilus-window-manage-views.c:1341
 #, c-format
 msgid "\"%s\" is not a valid location."
@@ -3468,8 +3468,8 @@ msgstr "\"%s\"은(는) 올바른 위치가 아닙니다."
 
 #: libnautilus-private/nautilus-program-choosing.c:622
 #: libnautilus-private/nautilus-program-choosing.c:629
-#: src/nautilus-connect-server-dialog.c:103
-#: src/nautilus-property-browser.c:1106
+#: src/nautilus-connect-server-dialog.c:138
+#: src/nautilus-property-browser.c:1095
 #: src/nautilus-window-manage-views.c:1336
 #: src/nautilus-window-manage-views.c:1344
 msgid "Please check the spelling and try again."
@@ -3566,12 +3566,13 @@ msgid "View your computer storage"
 msgstr "컴퓨터의 저장장치를 봅니다"
 
 #: nautilus.desktop.in.h:1
-msgid "Browse Filesystem"
-msgstr "파일시스템 찾아보기"
-
-#: nautilus.desktop.in.h:2
 msgid "Browse the filesystem with the file manager"
 msgstr "파일 관리자로 파일시스템을 찾아봅니다"
+
+#: nautilus.desktop.in.h:2
+#, fuzzy
+msgid "File Browser"
+msgstr "파일 브라우저: %s"
 
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
@@ -3810,12 +3811,12 @@ msgstr "표시(_D)"
 msgid "_Run"
 msgstr "실행(_R)"
 
-#: src/file-manager/fm-directory-view.c:4112
+#: src/file-manager/fm-directory-view.c:4109
 #, c-format
 msgid "Cannot open %s"
 msgstr "%s을(를) 열 수 없습니다"
 
-#: src/file-manager/fm-directory-view.c:4115
+#: src/file-manager/fm-directory-view.c:4112
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -3958,7 +3959,6 @@ msgid "_Connect"
 msgstr "연결(_C)"
 
 #: src/file-manager/fm-directory-view.c:5463
-#: src/nautilus-connect-server-dialog.c:191
 msgid "Link _name:"
 msgstr "바로 가기 이름(_N):"
 
@@ -4587,15 +4587,15 @@ msgstr "도움말을 보여줄 수 없습니다"
 msgid "Open With"
 msgstr "다른 프로그램으로 열기"
 
-#: src/file-manager/fm-properties-window.c:3630
+#: src/file-manager/fm-properties-window.c:3629
 msgid "Cancel Showing Properties Window?"
 msgstr "등록 정보창 보기를 취소하시겠습니까?"
 
-#: src/file-manager/fm-properties-window.c:3631
+#: src/file-manager/fm-properties-window.c:3630
 msgid "Creating Properties window."
 msgstr "등록 정보창 만들기."
 
-#: src/file-manager/fm-properties-window.c:3788
+#: src/file-manager/fm-properties-window.c:3787
 msgid "Select an icon"
 msgstr "아이콘 선택"
 
@@ -5140,7 +5140,7 @@ msgstr ""
 
 #: src/nautilus-bookmarks-window.c:150
 #: src/nautilus-file-management-properties.c:229
-#: src/nautilus-property-browser.c:1456 src/nautilus-window-menus.c:629
+#: src/nautilus-property-browser.c:1445 src/nautilus-window-menus.c:629
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -5169,32 +5169,108 @@ msgstr "<b>이름(_N)</b>"
 msgid "Edit Bookmarks"
 msgstr "책갈피 편집"
 
-#: src/nautilus-connect-server-dialog.c:86
-msgid "You must enter a name for the server."
-msgstr "서버의 이름을 입력하여야 합니다."
-
-#: src/nautilus-connect-server-dialog.c:87
-msgid "Please enter a name and try again."
-msgstr "이름을 입력하고 다시 시도하십시오."
-
-#: src/nautilus-connect-server-dialog.c:88
-#: src/nautilus-connect-server-dialog.c:104
+#: src/nautilus-connect-server-dialog.c:139
+#: src/nautilus-connect-server-dialog.c:154
 msgid "Can't Connect to Server"
 msgstr "서버에 연결할 수 없습니다"
 
-#: src/nautilus-connect-server-dialog.c:177
+#: src/nautilus-connect-server-dialog.c:152
+msgid "You must enter a name for the server."
+msgstr "서버의 이름을 입력하여야 합니다."
+
+#: src/nautilus-connect-server-dialog.c:153
+msgid "Please enter a name and try again."
+msgstr "이름을 입력하고 다시 시도하십시오."
+
+#: src/nautilus-connect-server-dialog.c:252 src/nautilus-window.c:1118
+#, c-format
+msgid "%s on %s"
+msgstr "%s (%s 컴퓨터)"
+
+#: src/nautilus-connect-server-dialog.c:380
+#, fuzzy
+msgid "_Location (URI):"
+msgstr "위치 (URL)(_L):"
+
+#: src/nautilus-connect-server-dialog.c:424
+#, fuzzy
+msgid "_Server:"
+msgstr "전혀(_N)"
+
+#: src/nautilus-connect-server-dialog.c:443
+#, fuzzy
+msgid "Optional information:"
+msgstr "정보"
+
+#: src/nautilus-connect-server-dialog.c:455
+#, fuzzy
+msgid "_Share:"
+msgstr "혈암"
+
+#: src/nautilus-connect-server-dialog.c:476
+#, fuzzy
+msgid "_Port:"
+msgstr "형식(_F):"
+
+#: src/nautilus-connect-server-dialog.c:496
+#, fuzzy
+msgid "_Folder:"
+msgstr "폴더 잘라내기"
+
+#: src/nautilus-connect-server-dialog.c:516
+#, fuzzy
+msgid "_User Name:"
+msgstr "이름(_N):"
+
+#: src/nautilus-connect-server-dialog.c:543
+msgid "_Name to use for connection:"
+msgstr ""
+
+#: src/nautilus-connect-server-dialog.c:600
 msgid "Connect to Server"
 msgstr "서버에 연결"
 
-#: src/nautilus-connect-server-dialog.c:210
-msgid "_Location (URL):"
-msgstr "위치 (URL)(_L):"
+#: src/nautilus-connect-server-dialog.c:612
+#, fuzzy
+msgid "Service _type:"
+msgstr "서비스"
 
-#: src/nautilus-connect-server-dialog.c:231
-msgid "Example:"
-msgstr "예:"
+#: src/nautilus-connect-server-dialog.c:621
+msgid "SSH"
+msgstr ""
 
-#: src/nautilus-connect-server-dialog.c:248
+#: src/nautilus-connect-server-dialog.c:623
+msgid "Public FTP"
+msgstr ""
+
+#: src/nautilus-connect-server-dialog.c:625
+msgid "FTP (with login)"
+msgstr ""
+
+#: src/nautilus-connect-server-dialog.c:627
+#, fuzzy
+msgid "Windows share"
+msgstr "Windows 공유 볼륨"
+
+#: src/nautilus-connect-server-dialog.c:629
+msgid "WebDAV (HTTP)"
+msgstr ""
+
+#: src/nautilus-connect-server-dialog.c:631
+msgid "Secure WebDAV (HTTPS)"
+msgstr ""
+
+#: src/nautilus-connect-server-dialog.c:633
+#, fuzzy
+msgid "Custom Location"
+msgstr "위치:"
+
+#: src/nautilus-connect-server-dialog.c:684
+#, fuzzy
+msgid "Browse _Network"
+msgstr "Windows 네트워크"
+
+#: src/nautilus-connect-server-dialog.c:690
 msgid "C_onnect"
 msgstr "연결(_O)"
 
@@ -5859,192 +5935,192 @@ msgid "Profile Dump"
 msgstr "프로파일 덤프"
 
 #. set the title and standard close accelerator
-#: src/nautilus-property-browser.c:270
+#: src/nautilus-property-browser.c:269
 msgid "Backgrounds and Emblems"
 msgstr "바탕색과 꼬리표"
 
-#: src/nautilus-property-browser.c:386
+#: src/nautilus-property-browser.c:378
 msgid "_Remove..."
 msgstr "지우기(_R)..."
 
-#: src/nautilus-property-browser.c:407
+#: src/nautilus-property-browser.c:398
 msgid "_Add new..."
 msgstr "새 것 더하기(_A)..."
 
-#: src/nautilus-property-browser.c:914
+#: src/nautilus-property-browser.c:903
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "무늬 %s은(는) 지울 수 없습니다."
 
-#: src/nautilus-property-browser.c:915
+#: src/nautilus-property-browser.c:904
 msgid "Check that you have permission to delete the pattern."
 msgstr "무늬를 지울 수 있는 허가권이 있는지 확인하십시오."
 
-#: src/nautilus-property-browser.c:916
+#: src/nautilus-property-browser.c:905
 msgid "Couldn't Delete Pattern"
 msgstr "무늬를 지울 수 없습니다"
 
-#: src/nautilus-property-browser.c:944
+#: src/nautilus-property-browser.c:933
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "꼬리표 %s을(를) 지울 수 없습니다."
 
-#: src/nautilus-property-browser.c:945
+#: src/nautilus-property-browser.c:934
 msgid "Check that you have permission to delete the emblem."
 msgstr "꼬리표를 지울 수 있는 허가권이 있는지 확인하십시오."
 
-#: src/nautilus-property-browser.c:946
+#: src/nautilus-property-browser.c:935
 msgid "Couldn't Delete Emblem"
 msgstr "꼬리표를 지울 수 없습니다"
 
-#: src/nautilus-property-browser.c:984
+#: src/nautilus-property-browser.c:973
 msgid "Create a New Emblem:"
 msgstr "새 꼬리표를 만듭니다:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:997
+#: src/nautilus-property-browser.c:986
 msgid "_Keyword:"
 msgstr "키워드(_K):"
 
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:1015
+#: src/nautilus-property-browser.c:1004
 msgid "_Image:"
 msgstr "그림(_I):"
 
-#: src/nautilus-property-browser.c:1019
+#: src/nautilus-property-browser.c:1008
 msgid "Select an image file for the new emblem:"
 msgstr "새 꼬리표로 사용할 그림 파일 선택:"
 
-#: src/nautilus-property-browser.c:1043
+#: src/nautilus-property-browser.c:1032
 msgid "Create a New Color:"
 msgstr "새 색을 만듭니다:"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:1057
+#: src/nautilus-property-browser.c:1046
 msgid "Color _name:"
 msgstr "색 이름(_N):"
 
-#: src/nautilus-property-browser.c:1073
+#: src/nautilus-property-browser.c:1062
 msgid "Color _value:"
 msgstr "색 값(_V):"
 
-#: src/nautilus-property-browser.c:1105
+#: src/nautilus-property-browser.c:1094
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "\"%s\"은(는) 올바른 테마 폴더가 아닙니다."
 
-#: src/nautilus-property-browser.c:1108
+#: src/nautilus-property-browser.c:1097
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "\"%s\"은(는) 올바른 파일 이름가 아닙니다."
 
-#: src/nautilus-property-browser.c:1109
+#: src/nautilus-property-browser.c:1098
 msgid "Please try again."
 msgstr "다시 시도하십시오."
 
-#: src/nautilus-property-browser.c:1111 src/nautilus-property-browser.c:1156
+#: src/nautilus-property-browser.c:1100 src/nautilus-property-browser.c:1145
 msgid "Couldn't Install Pattern"
 msgstr "무늬를 설치할 수 없습니다"
 
-#: src/nautilus-property-browser.c:1122
+#: src/nautilus-property-browser.c:1111
 msgid "Sorry, but you can't replace the reset image."
 msgstr "초기화할 그림을 바꿀 수 없습니다."
 
-#: src/nautilus-property-browser.c:1123
+#: src/nautilus-property-browser.c:1112
 msgid "Reset is a special image that cannot be deleted."
 msgstr "초기화는 지울 수 없는 특별한 그림입니다."
 
-#: src/nautilus-property-browser.c:1124 src/nautilus-property-browser.c:1328
-#: src/nautilus-property-browser.c:1344
+#: src/nautilus-property-browser.c:1113 src/nautilus-property-browser.c:1317
+#: src/nautilus-property-browser.c:1333
 msgid "Not an Image"
 msgstr "그림이 아님"
 
-#: src/nautilus-property-browser.c:1155
+#: src/nautilus-property-browser.c:1144
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "무늬 %s은(는) 설치할 수 없습니다."
 
-#: src/nautilus-property-browser.c:1175
+#: src/nautilus-property-browser.c:1164
 msgid "Select an image file to add as a pattern"
 msgstr "무늬에 더할 그림파일을 선택하십시오"
 
-#: src/nautilus-property-browser.c:1236
+#: src/nautilus-property-browser.c:1225
 msgid "The color cannot be installed."
 msgstr "색을 설치할 수 없습니다."
 
-#: src/nautilus-property-browser.c:1237
+#: src/nautilus-property-browser.c:1226
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "새 색에 대해 이름을 지정하여야 합니다."
 
-#: src/nautilus-property-browser.c:1238
+#: src/nautilus-property-browser.c:1227
 msgid "Couldn't Install Color"
 msgstr "색을 설치할 수 없습니다"
 
-#: src/nautilus-property-browser.c:1290
+#: src/nautilus-property-browser.c:1279
 msgid "Select a color to add"
 msgstr "더할 색을 선택하십시오"
 
-#: src/nautilus-property-browser.c:1327 src/nautilus-property-browser.c:1343
+#: src/nautilus-property-browser.c:1316 src/nautilus-property-browser.c:1332
 #, c-format
 msgid "Sorry, but \"%s\" is not a usable image file."
 msgstr "\"%s\"은(는) 사용할 수 있는 그림 파일이 아닙니다."
 
-#: src/nautilus-property-browser.c:1328 src/nautilus-property-browser.c:1344
+#: src/nautilus-property-browser.c:1317 src/nautilus-property-browser.c:1333
 msgid "The file is not an image."
 msgstr "파일은 올바른 그림파일이 아닙니다."
 
-#: src/nautilus-property-browser.c:2051
+#: src/nautilus-property-browser.c:2039
 msgid "Select a Category:"
 msgstr "분류 선택:"
 
-#: src/nautilus-property-browser.c:2060
+#: src/nautilus-property-browser.c:2048
 msgid "C_ancel Remove"
 msgstr "지우기 취소(_A)"
 
-#: src/nautilus-property-browser.c:2066
+#: src/nautilus-property-browser.c:2054
 msgid "_Add a New Pattern..."
 msgstr "새 무늬 더하기(_A)..."
 
-#: src/nautilus-property-browser.c:2069
+#: src/nautilus-property-browser.c:2057
 msgid "_Add a New Color..."
 msgstr "새 색 더하기(_A)..."
 
-#: src/nautilus-property-browser.c:2072
+#: src/nautilus-property-browser.c:2060
 msgid "_Add a New Emblem..."
 msgstr "새 꼬리표 더하기(_A)..."
 
-#: src/nautilus-property-browser.c:2095
+#: src/nautilus-property-browser.c:2083
 msgid "Click on a pattern to remove it"
 msgstr "무늬를 지울려면 클릭하십시오"
 
-#: src/nautilus-property-browser.c:2098
+#: src/nautilus-property-browser.c:2086
 msgid "Click on a color to remove it"
 msgstr "색을 지우려면 클릭하십시오"
 
-#: src/nautilus-property-browser.c:2101
+#: src/nautilus-property-browser.c:2089
 msgid "Click on an emblem to remove it"
 msgstr "꼬리표를 지우려면 클릭하십시오"
 
-#: src/nautilus-property-browser.c:2110
+#: src/nautilus-property-browser.c:2098
 msgid "Patterns:"
 msgstr "무늬:"
 
-#: src/nautilus-property-browser.c:2113
+#: src/nautilus-property-browser.c:2101
 msgid "Colors:"
 msgstr "상:"
 
-#: src/nautilus-property-browser.c:2116
+#: src/nautilus-property-browser.c:2104
 msgid "Emblems:"
 msgstr "꼬리표:"
 
-#: src/nautilus-property-browser.c:2136
+#: src/nautilus-property-browser.c:2124
 msgid "_Remove a Pattern..."
 msgstr "무늬 지우기(_R)..."
 
-#: src/nautilus-property-browser.c:2139
+#: src/nautilus-property-browser.c:2127
 msgid "_Remove a Color..."
 msgstr "색 지우기(_R)..."
 
-#: src/nautilus-property-browser.c:2142
+#: src/nautilus-property-browser.c:2130
 msgid "_Remove an Emblem..."
 msgstr "꼬리표 지우기(_R)..."
 
@@ -6381,11 +6457,6 @@ msgstr "숨긴 파일을 뷰에서 표시할 지 여부"
 msgid "Display this location with \"%s\""
 msgstr "이 위치를 \"%s\"(으)로 보여줍니다"
 
-#: src/nautilus-window.c:1118
-#, c-format
-msgid "%s on %s"
-msgstr "%s (%s 컴퓨터)"
-
 #: src/nautilus-window.c:1558
 msgid "Application ID"
 msgstr "프로그램 ID"
@@ -6558,6 +6629,22 @@ msgstr "네트워크 서버"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "노틸러스 파일 관리자에서 네트워크 서버를 봅니다"
+
+#~ msgid "Add Nautilus to session"
+#~ msgstr "노틸러스를 세션에 더합니다"
+
+#~ msgid ""
+#~ "If this is set to true, Nautilus adds itself to the session when it "
+#~ "starts up. This means it will be started the next time you log in."
+#~ msgstr ""
+#~ "참으로 설정하면, 시작할 때 노틸러스 자신을 세션에 더합니다. 이렇게 하면 다"
+#~ "음에 로그인할 때도 노틸러스가 시작합니다."
+
+#~ msgid "Browse Filesystem"
+#~ msgstr "파일시스템 찾아보기"
+
+#~ msgid "Example:"
+#~ msgstr "예:"
 
 #~ msgid "_Other Application..."
 #~ msgstr "다른 프로그램(_O)..."
@@ -7239,9 +7326,6 @@ msgstr "노틸러스 파일 관리자에서 네트워크 서버를 봅니다"
 
 #~ msgid "Windows NT Volume"
 #~ msgstr "Windows NT 볼륨"
-
-#~ msgid "Windows Shared Volume"
-#~ msgstr "Windows 공유 볼륨"
 
 #~ msgid "Windows VFAT Volume"
 #~ msgstr "Windows VFAT 볼륨"

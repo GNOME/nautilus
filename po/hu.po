@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-16 12:09+0200\n"
+"POT-Creation-Date: 2004-08-16 16:53+0200\n"
 "PO-Revision-Date: 2004-08-16 15:39+0200\n"
 "Last-Translator: Laszlo Dvornik <dvornik@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@gnome.hu>\n"
@@ -173,7 +173,7 @@ msgstr "Az áthúzott fájl nem tűnik érvényes képnek."
 
 # data/browser.xml.h:33
 #: components/emblem/nautilus-emblem-view.c:904 data/browser.xml.h:35
-#: src/nautilus-property-browser.c:1741
+#: src/nautilus-property-browser.c:1730
 msgid "Erase"
 msgstr "Törlés"
 
@@ -1296,22 +1296,18 @@ msgstr ""
 "\" és \"mime_type\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
-msgid "Add Nautilus to session"
-msgstr "A Nautilus hozzáadása a munkamenethez"
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:3
 msgid "Bring up a new window for every opened file"
 msgstr "Minden egyes megnyitott fájlhoz új ablak felhozása"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:3
 msgid "Computer icon visible on desktop"
 msgstr "A Számítógép ikon látható a munkaasztalon"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
 msgid "Criteria for search bar searching"
 msgstr "A keresési sáv keresési feltételei"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
 msgid ""
 "Criteria when matching files searched for in the search bar. If set to "
 "\"search_by_text\", then Nautilus will Search for files by file name only. "
@@ -1323,87 +1319,92 @@ msgstr ""
 "\"search_by_text_and_properties\"-re van állítva, akkor a Nautilus a "
 "fájlokat fájlnév és tulajdonság szerint keresi."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:7
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid "Current Nautilus theme (deprecated)"
 msgstr "Jelenlegi Nautilus téma (helytelenítve)"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:30
 # src/nautilus-sidebar.c:490
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:8
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:7
 msgid "Custom Background Set"
 msgstr "Egyéni háttérkészlet"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:30
 # src/nautilus-sidebar.c:490
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:8
 msgid "Custom Side Pane Background Set"
 msgstr "Egyéni oldalsávháttér-készlet"
 
 # src/nautilus-shell-ui.xml.h:39
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:10
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
 msgid "Date Format"
 msgstr "Dátumformátum"
 
 # src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:11
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:10
 msgid "Default Background Color"
 msgstr "Alapértelmezett háttérszín"
 
 # src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:12
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:11
 msgid "Default Background Filename"
 msgstr "Alapértelmezett háttér fájlneve"
 
 # src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:13
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:12
 msgid "Default Side Pane Background Color"
 msgstr "Alapértelmezett oldalsávháttérszín"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:13
 msgid "Default Side Pane Background Filename"
 msgstr "Az oldalpanel alapértelmezett háttere"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
 msgid "Default column order in the list view"
 msgstr "Alapértelmezett oszlopsorrend a listanézetben"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
 msgid "Default column order in the list view."
 msgstr "Alapértelmezett oszlopsorrend a listanézetben."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
 msgid "Default folder viewer"
 msgstr "Alapértelmezett mappanézet"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
 msgid "Default icon zoom level"
 msgstr "Alapértelmezett ikonnagyítás"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:19
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
 msgid "Default list of columns visible in the list view"
 msgstr "A listanézetben megjelenő oszlopok alapértelmezett listája"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:20
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:19
 msgid "Default list of columns visible in the list view."
 msgstr "A listanézetben megjelenő oszlopok alapértelmezett listája."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:21
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:20
 msgid "Default list zoom level"
 msgstr "Alapértelmezett listanagyítás"
 
 # libnautilus-private/nautilus-program-chooser.c:228
 # libnautilus-private/nautilus-program-chooser.c:231
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:21
 msgid "Default sort order"
 msgstr "Alapértelmezett rendezési sorrend"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
 msgid "Default zoom level used by the icon view."
 msgstr "Az ikonnézet alapértelmezett nagyítása."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
 msgid "Default zoom level used by the list view."
 msgstr "Az alapértelmezett listanézet nagyítása."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
+#, fuzzy
+msgid "Desktop computer icon name"
+msgstr "A munkaasztal Saját könyvtár ikonja"
 
 # data/linksets/desktop.xml.h:1
 # libnautilus-private/nautilus-global-preferences.c:548
@@ -1593,22 +1594,13 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
-"If this is set to true, Nautilus adds itself to the session when it starts "
-"up. This means it will be started the next time you log in."
-msgstr ""
-"Ha be van kapcsolva, akkor a Nautilus induláskor hozzáadja magát a "
-"munkamenethez. Ez azt jelenti, hogy el fog indulni a következő "
-"bejelentkezéskor."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
-msgid ""
 "If this is set to true, an icon linking to the computer location will be put "
 "on the desktop."
 msgstr ""
 "Ha be van kapcsolva, akkor egy a számítógép helyére hivatkozó ikon lesz "
 "elhelyezve a munkaasztalon."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
@@ -1616,7 +1608,7 @@ msgstr ""
 "Ha be van kapcsolva, akkor egy saját mappára hivatkozó ikon lesz elhelyezve "
 "a munkaasztalon."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
@@ -1624,7 +1616,7 @@ msgstr ""
 "Ha be van kapcsolva, akkor egy Kukára hivatkozó ikon lesz elhelyezve a "
 "munkaasztalon."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
@@ -1632,7 +1624,7 @@ msgstr ""
 "Ha be van kapcsolva, akkor csatolt kötetekre hivatkozó ikonok lesznek "
 "elhelyezve a munkaasztalon."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -1642,7 +1634,7 @@ msgstr ""
 "lesznek rendezve. Pl., ha név szerint rendezi őket, akkor a fájlok \"a-tól\" "
 "\"z-ig\" helyett \"z-től\" \"a-ig\" lesznek rendezve."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -1654,45 +1646,45 @@ msgstr ""
 "\"z-ig\" helyett \"z-től\" \"a-ig\"; ha méret szerint, akkor növekvő helyett "
 "csökkenő sorrendben lesznek rendezve."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr ""
 "Ha be van kapcsolva, akkor az ikonok szorosabban lesznek elrendezve az új "
 "ablakokban."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid ""
 "If true, labels will be placed beside icons rather than underneath them."
 msgstr ""
 "Ha be van kapcsolva, akkor a címkék az ikonok mellett lesznek elhelyezve, "
 "ahelyett, hogy alattuk lennének."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid "If true, new windows will use manual layout by default."
 msgstr ""
 "Ha be van kapcsolva, akkor az új ablakok alapértelmezettként a kézi "
 "elrendezést fogják használni."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
 "load or use lots of memory."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid "List of possible captions on icons"
 msgstr "Az ikonok lehetséges feliratainak listája"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid "Maximum handled files in a folder"
 msgstr "Egy mappában maximálisan kezelt fájlok"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
 msgid "Maximum image size for thumbnailing"
 msgstr "Maximális képméret előnézet esetén"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
 msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
@@ -1701,20 +1693,20 @@ msgstr ""
 "Használja helyette az ikontémát."
 
 # src/Nautilus_shell.oaf.in.h:9
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
 msgid "Nautilus handles drawing the desktop"
 msgstr "A Nautilus felelős a munkaasztal megjelenítéséért"
 
 # src/Nautilus_shell.oaf.in.h:9
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
 msgid "Nautilus uses the users home folder as the desktop"
 msgstr "A Nautilus a felhasználók saját mappáját használja munkaasztalként"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid "Only show folders in the tree sidebar"
 msgstr "Csak mappák megjelenítése a fa oldalpanelen"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
@@ -1722,46 +1714,46 @@ msgstr ""
 "Lehetséges értékek: \"single\" a fájlok egyszeres kattintással való "
 "indításához, vagy \"double\" a dupla kattintással való indításhoz."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid "Put labels beside icons"
 msgstr "Címkék elhelyezése az ikonok mellé"
 
 # libnautilus-private/nautilus-global-preferences.c:90
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid "Reverse sort order in new windows"
 msgstr "Fordított rendezési sorrend az új ablakokban"
 
 # libnautilus-private/nautilus-global-preferences.c:155
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid "Show folders first in windows"
 msgstr "Könyvtárak megjelenítése elsőként az ablakokban"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid "Show location bar in new windows"
 msgstr "Címsor megjelenítése az új ablakokban"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid "Show mounted volumes on the desktop"
 msgstr "Csatolt kötetek megjelenítése a munkaasztalon"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid "Show side pane in new windows"
 msgstr "Oldalpanel megjelenítése az új ablakokban"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "Show status bar in new windows"
 msgstr "Állapotsor megjelenítése az új ablakokban"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "Show toolbar in new windows"
 msgstr "Eszköztár megjelenítése az új ablakokban"
 
 # libnautilus-private/nautilus-global-preferences.c:628
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid "Side pane view"
 msgstr "Oldalpanel nézet"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
 "Speed tradeoff for when to preview a sound file when mousing over a files "
 "icon. If set to \"always\" then always plays the sound, even if the file is "
@@ -1769,7 +1761,7 @@ msgid ""
 "local filesystems. If set to \"never\" then it never previews sound."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
 "file's icon. If set to \"always\" then always show previews, even if the "
@@ -1778,7 +1770,7 @@ msgid ""
 "read preview data."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -1787,7 +1779,7 @@ msgid ""
 "icon."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -1795,7 +1787,7 @@ msgid ""
 "filesystems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
@@ -1804,7 +1796,7 @@ msgstr ""
 "Lehetséges értékek: \"name\", \"size\", \"type\", \"modification_date\" és "
 "\"emblems\"."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
 msgid ""
 "The default sort-order for the items in the list view. Possible values are "
 "\"name\", \"size\", \"type\", and \"modification_date\"."
@@ -1812,17 +1804,17 @@ msgstr ""
 "Az listanézetben megjelenő elemek alapértelmezett rendezési sorrendje. "
 "Lehetséges értékek: \"name\", \"size\", \"type\" és \"modification_date\"."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid "The default width of the side pane in new windows."
 msgstr "Az oldalpanel alapértelmezett szélessége az új ablakokban."
 
 # libnautilus-private/nautilus-file-operations.c:1899
 # libnautilus-private/nautilus-file-operations.c:2157
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid "The font description used for the icons on the desktop."
 msgstr "A munkaasztal ikonjainál használandó betűkészlet-leírás."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
 msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
@@ -1830,9 +1822,20 @@ msgstr ""
 "A fájldátumok formátuma. Lehetséges értékek: \"locale\", \"iso\" és "
 "\"informal\"."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
 msgid "The side pane view to show in newly opened windows."
 msgstr "Az újonnan megnyitott ablakokban megjelenítendő oldalpanel-nézet."
+
+# libnautilus-private/nautilus-file-operations.c:1899
+# libnautilus-private/nautilus-file-operations.c:2157
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
+#, fuzzy
+msgid ""
+"This name can be set if you want a custom name for the computer icon on the "
+"desktop."
+msgstr ""
+"Ezt a nevet beállíthatja, ha egyéni nevet szeretne a munkaasztalon található "
+"Saját mappának."
 
 # libnautilus-private/nautilus-file-operations.c:1899
 # libnautilus-private/nautilus-file-operations.c:2157
@@ -2456,7 +2459,7 @@ msgstr "link (törött)"
 # libnautilus-private/nautilus-trash-directory.c:301
 # src/file-manager/fm-desktop-icon-view.c:65
 #: libnautilus-private/nautilus-file.c:6189
-#: libnautilus-private/nautilus-global-preferences.c:548
+#: libnautilus-private/nautilus-global-preferences.c:542
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
 msgstr "Kuka"
@@ -3239,7 +3242,7 @@ msgstr "%ld / %ld"
 
 # data/browser.xml.h:18
 #: libnautilus-private/nautilus-file-utilities.c:369
-#: libnautilus-private/nautilus-global-preferences.c:542
+#: libnautilus-private/nautilus-global-preferences.c:536
 #: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:10
 msgid "Computer"
 msgstr "Számítógép"
@@ -3492,7 +3495,7 @@ msgstr "24"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: libnautilus-private/nautilus-global-preferences.c:536
+#: libnautilus-private/nautilus-global-preferences.c:530
 #, c-format
 msgid "%s's Home"
 msgstr "%s mappája"
@@ -4068,7 +4071,7 @@ msgstr "A(z) \"%s\" nem érvényes hely."
 #: libnautilus-private/nautilus-program-choosing.c:622
 #: libnautilus-private/nautilus-program-choosing.c:629
 #: src/nautilus-connect-server-dialog.c:138
-#: src/nautilus-property-browser.c:1106
+#: src/nautilus-property-browser.c:1095
 #: src/nautilus-window-manage-views.c:1336
 #: src/nautilus-window-manage-views.c:1344
 msgid "Please check the spelling and try again."
@@ -4180,12 +4183,14 @@ msgid "View your computer storage"
 msgstr "Számítógép-tároló megtekintése"
 
 #: nautilus.desktop.in.h:1
-msgid "Browse Filesystem"
-msgstr "Fájlrendszer tallózása"
-
-#: nautilus.desktop.in.h:2
 msgid "Browse the filesystem with the file manager"
 msgstr "Tallózás a fájlrendszeren a fájlkezelővel"
+
+# src/file-manager/fm-properties-window.c:1910
+#: nautilus.desktop.in.h:2
+#, fuzzy
+msgid "File Browser"
+msgstr "Fájl tallózó: %s"
 
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
@@ -4480,12 +4485,12 @@ msgid "_Run"
 msgstr "_Futtatás"
 
 # libnautilus-private/nautilus-file-operations.c:1906
-#: src/file-manager/fm-directory-view.c:4112
+#: src/file-manager/fm-directory-view.c:4109
 #, c-format
 msgid "Cannot open %s"
 msgstr "Nem lehet megnyitni a(z) %s-t"
 
-#: src/file-manager/fm-directory-view.c:4115
+#: src/file-manager/fm-directory-view.c:4112
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -5433,17 +5438,17 @@ msgid "Open With"
 msgstr "Megnyitás ezzel"
 
 # src/file-manager/fm-properties-window.c:2303
-#: src/file-manager/fm-properties-window.c:3630
+#: src/file-manager/fm-properties-window.c:3629
 msgid "Cancel Showing Properties Window?"
 msgstr "Mégse mutassa a tulajdonságok ablakot?"
 
 # src/file-manager/fm-properties-window.c:2304
-#: src/file-manager/fm-properties-window.c:3631
+#: src/file-manager/fm-properties-window.c:3630
 msgid "Creating Properties window."
 msgstr "Tulajdonságok létrehozása ablak."
 
 # src/file-manager/fm-properties-window.c:2401
-#: src/file-manager/fm-properties-window.c:3788
+#: src/file-manager/fm-properties-window.c:3787
 msgid "Select an icon"
 msgstr "Ikon kiválasztása"
 
@@ -6089,7 +6094,7 @@ msgstr ""
 # components/music/nautilus-music-view.c:1694
 #: src/nautilus-bookmarks-window.c:150
 #: src/nautilus-file-management-properties.c:229
-#: src/nautilus-property-browser.c:1456 src/nautilus-window-menus.c:629
+#: src/nautilus-property-browser.c:1445 src/nautilus-window-menus.c:629
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -7030,231 +7035,231 @@ msgstr "Profil kiírás"
 
 # src/nautilus-property-browser.c:263
 #. set the title and standard close accelerator
-#: src/nautilus-property-browser.c:270
+#: src/nautilus-property-browser.c:269
 msgid "Backgrounds and Emblems"
 msgstr "Hátterek és matricák"
 
 # src/nautilus-property-browser.c:383
-#: src/nautilus-property-browser.c:386
+#: src/nautilus-property-browser.c:378
 msgid "_Remove..."
 msgstr "_Törlés..."
 
 # src/nautilus-property-browser.c:369
-#: src/nautilus-property-browser.c:407
+#: src/nautilus-property-browser.c:398
 msgid "_Add new..."
 msgstr "Új hozzá_adása..."
 
 # src/nautilus-property-browser.c:874
-#: src/nautilus-property-browser.c:914
+#: src/nautilus-property-browser.c:903
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "Sajnálom, de nem lehet törölni a(z) %s mintát."
 
-#: src/nautilus-property-browser.c:915
+#: src/nautilus-property-browser.c:904
 msgid "Check that you have permission to delete the pattern."
 msgstr "Ellenőrizze a jogosultságait a minta törléséhez."
 
 # src/nautilus-property-browser.c:875 src/nautilus-property-browser.c:904
-#: src/nautilus-property-browser.c:916
+#: src/nautilus-property-browser.c:905
 msgid "Couldn't Delete Pattern"
 msgstr "Nem lehet törölni a mintát"
 
 # src/nautilus-property-browser.c:903
-#: src/nautilus-property-browser.c:944
+#: src/nautilus-property-browser.c:933
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "Sajnálom, de nem lehet törölni a(z) %s matricát."
 
-#: src/nautilus-property-browser.c:945
+#: src/nautilus-property-browser.c:934
 msgid "Check that you have permission to delete the emblem."
 msgstr "Ellenőrizze a jogosultságait a matrica törléséhez."
 
 # src/nautilus-theme-selector.c:606
-#: src/nautilus-property-browser.c:946
+#: src/nautilus-property-browser.c:935
 msgid "Couldn't Delete Emblem"
 msgstr "Nem lehet törölni a matricát"
 
 # src/nautilus-property-browser.c:939
-#: src/nautilus-property-browser.c:984
+#: src/nautilus-property-browser.c:973
 msgid "Create a New Emblem:"
 msgstr "Új matrica létrehozása:"
 
 # src/nautilus-property-browser.c:944
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:997
+#: src/nautilus-property-browser.c:986
 msgid "_Keyword:"
 msgstr "_Kulcsszó:"
 
 # src/nautilus-property-browser.c:957
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:1015
+#: src/nautilus-property-browser.c:1004
 msgid "_Image:"
 msgstr "_Kép:"
 
 # src/nautilus-property-browser.c:961
-#: src/nautilus-property-browser.c:1019
+#: src/nautilus-property-browser.c:1008
 msgid "Select an image file for the new emblem:"
 msgstr "Válasszon ki egy képet az új matricához:"
 
 # src/nautilus-property-browser.c:988
-#: src/nautilus-property-browser.c:1043
+#: src/nautilus-property-browser.c:1032
 msgid "Create a New Color:"
 msgstr "Új szín létrehozása:"
 
 # src/nautilus-property-browser.c:993
 #. make the name label and field
-#: src/nautilus-property-browser.c:1057
+#: src/nautilus-property-browser.c:1046
 msgid "Color _name:"
 msgstr "Szín _neve:"
 
 # src/nautilus-property-browser.c:1004
-#: src/nautilus-property-browser.c:1073
+#: src/nautilus-property-browser.c:1062
 msgid "Color _value:"
 msgstr "Szín é_rtéke:"
 
 # src/nautilus-property-browser.c:1040
-#: src/nautilus-property-browser.c:1105
+#: src/nautilus-property-browser.c:1094
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "Sajnálom, de a(z) \"%s\" nem érvényes fájlnév."
 
 # src/nautilus-property-browser.c:1042
-#: src/nautilus-property-browser.c:1108
+#: src/nautilus-property-browser.c:1097
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "Sajnálom, de nem adott meg érvényes fájlnevet."
 
-#: src/nautilus-property-browser.c:1109
+#: src/nautilus-property-browser.c:1098
 msgid "Please try again."
 msgstr "Kérem próbálja meg újra."
 
 # src/nautilus-property-browser.c:1044 src/nautilus-property-browser.c:1087
-#: src/nautilus-property-browser.c:1111 src/nautilus-property-browser.c:1156
+#: src/nautilus-property-browser.c:1100 src/nautilus-property-browser.c:1145
 msgid "Couldn't Install Pattern"
 msgstr "Nem lehet telepíteni a mintát"
 
 # src/nautilus-property-browser.c:1055
-#: src/nautilus-property-browser.c:1122
+#: src/nautilus-property-browser.c:1111
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Sajnálom, de nem cserélheti le a \"Reset\" képet."
 
-#: src/nautilus-property-browser.c:1123
+#: src/nautilus-property-browser.c:1112
 msgid "Reset is a special image that cannot be deleted."
 msgstr "A \"Reset\" egy speciális kép, amit nem lehet törölni."
 
 # components/music/nautilus-music-view.c:696
 # src/nautilus-property-browser.c:1055 src/nautilus-property-browser.c:1307
-#: src/nautilus-property-browser.c:1124 src/nautilus-property-browser.c:1328
-#: src/nautilus-property-browser.c:1344
+#: src/nautilus-property-browser.c:1113 src/nautilus-property-browser.c:1317
+#: src/nautilus-property-browser.c:1333
 msgid "Not an Image"
 msgstr "Nem kép"
 
 # src/nautilus-property-browser.c:1086
-#: src/nautilus-property-browser.c:1155
+#: src/nautilus-property-browser.c:1144
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Sajnálom, de nem lehet telepíteni a(z) %s mintát."
 
 # src/nautilus-property-browser.c:1109
-#: src/nautilus-property-browser.c:1175
+#: src/nautilus-property-browser.c:1164
 msgid "Select an image file to add as a pattern"
 msgstr "Válasszon ki egy képfájlt (ebből lesz a minta)"
 
-#: src/nautilus-property-browser.c:1236
+#: src/nautilus-property-browser.c:1225
 msgid "The color cannot be installed."
 msgstr "Nem lehet telepíteni a színt."
 
 # src/nautilus-property-browser.c:1168
-#: src/nautilus-property-browser.c:1237
+#: src/nautilus-property-browser.c:1226
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Sajnálom, de a színnek nem lehet üres a neve."
 
 # src/nautilus-property-browser.c:1169
-#: src/nautilus-property-browser.c:1238
+#: src/nautilus-property-browser.c:1227
 msgid "Couldn't Install Color"
 msgstr "Nem lehet telepíteni a színt"
 
 # src/nautilus-property-browser.c:1225
-#: src/nautilus-property-browser.c:1290
+#: src/nautilus-property-browser.c:1279
 msgid "Select a color to add"
 msgstr "Hozzáadandó szín kiválasztása"
 
 # src/nautilus-property-browser.c:1306
-#: src/nautilus-property-browser.c:1327 src/nautilus-property-browser.c:1343
+#: src/nautilus-property-browser.c:1316 src/nautilus-property-browser.c:1332
 #, c-format
 msgid "Sorry, but \"%s\" is not a usable image file."
 msgstr "Sajnálom, de a(z) \"%s\" nem egy használható képfájl."
 
-#: src/nautilus-property-browser.c:1328 src/nautilus-property-browser.c:1344
+#: src/nautilus-property-browser.c:1317 src/nautilus-property-browser.c:1333
 msgid "The file is not an image."
 msgstr "A fájl nem egy kép."
 
 # src/nautilus-property-browser.c:2012
-#: src/nautilus-property-browser.c:2051
+#: src/nautilus-property-browser.c:2039
 msgid "Select a Category:"
 msgstr "Kategória kiválasztása:"
 
 # src/nautilus-property-browser.c:2020 src/nautilus-theme-selector.c:494
-#: src/nautilus-property-browser.c:2060
+#: src/nautilus-property-browser.c:2048
 msgid "C_ancel Remove"
 msgstr "_Mégsem távolítja el"
 
 # src/nautilus-property-browser.c:2024
-#: src/nautilus-property-browser.c:2066
+#: src/nautilus-property-browser.c:2054
 msgid "_Add a New Pattern..."
 msgstr "Új minta hozzá_adása..."
 
 # src/nautilus-property-browser.c:2027
-#: src/nautilus-property-browser.c:2069
+#: src/nautilus-property-browser.c:2057
 msgid "_Add a New Color..."
 msgstr "Új szín hozzá_adása..."
 
 # src/nautilus-property-browser.c:2030
-#: src/nautilus-property-browser.c:2072
+#: src/nautilus-property-browser.c:2060
 msgid "_Add a New Emblem..."
 msgstr "Új matrica hozzá_adása..."
 
 # src/nautilus-property-browser.c:2053
-#: src/nautilus-property-browser.c:2095
+#: src/nautilus-property-browser.c:2083
 msgid "Click on a pattern to remove it"
 msgstr "Kattintson egy mintára annak eltávolításához"
 
 # src/nautilus-property-browser.c:2056
-#: src/nautilus-property-browser.c:2098
+#: src/nautilus-property-browser.c:2086
 msgid "Click on a color to remove it"
 msgstr "Kattintson egy színre annak eltávolításához"
 
 # src/nautilus-property-browser.c:2059
-#: src/nautilus-property-browser.c:2101
+#: src/nautilus-property-browser.c:2089
 msgid "Click on an emblem to remove it"
 msgstr "Kattintson egy matricára annak eltávolításához"
 
 # src/nautilus-property-browser.c:2068
-#: src/nautilus-property-browser.c:2110
+#: src/nautilus-property-browser.c:2098
 msgid "Patterns:"
 msgstr "Minták:"
 
 # src/nautilus-property-browser.c:2071
-#: src/nautilus-property-browser.c:2113
+#: src/nautilus-property-browser.c:2101
 msgid "Colors:"
 msgstr "Színek:"
 
 # src/nautilus-property-browser.c:2074
-#: src/nautilus-property-browser.c:2116
+#: src/nautilus-property-browser.c:2104
 msgid "Emblems:"
 msgstr "Matricák:"
 
 # src/nautilus-property-browser.c:2092
-#: src/nautilus-property-browser.c:2136
+#: src/nautilus-property-browser.c:2124
 msgid "_Remove a Pattern..."
 msgstr "Minta _eltávolítása..."
 
 # src/nautilus-property-browser.c:2095
-#: src/nautilus-property-browser.c:2139
+#: src/nautilus-property-browser.c:2127
 msgid "_Remove a Color..."
 msgstr "Szín _eltávolítása..."
 
 # src/nautilus-property-browser.c:2098
-#: src/nautilus-property-browser.c:2142
+#: src/nautilus-property-browser.c:2130
 msgid "_Remove an Emblem..."
 msgstr "Matrica _eltávolítása..."
 
@@ -7891,3 +7896,17 @@ msgstr "Hálózati kiszolgálók"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Hálózati kiszolgálók megtekintése a Nautilus fájlkezelőben"
+
+#~ msgid "Add Nautilus to session"
+#~ msgstr "A Nautilus hozzáadása a munkamenethez"
+
+#~ msgid ""
+#~ "If this is set to true, Nautilus adds itself to the session when it "
+#~ "starts up. This means it will be started the next time you log in."
+#~ msgstr ""
+#~ "Ha be van kapcsolva, akkor a Nautilus induláskor hozzáadja magát a "
+#~ "munkamenethez. Ez azt jelenti, hogy el fog indulni a következő "
+#~ "bejelentkezéskor."
+
+#~ msgid "Browse Filesystem"
+#~ msgstr "Fájlrendszer tallózása"
