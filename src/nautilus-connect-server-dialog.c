@@ -182,7 +182,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
 	gtk_widget_show (table);
 	
-	label = gtk_label_new (_("Name:"));
+	label = gtk_label_new_with_mnemonic (_("_Name:"));
 	gtk_widget_show (label);
 	gtk_table_attach (GTK_TABLE (table), label,
 			  0, 1,
@@ -191,6 +191,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			  0, 0);
 	
 	dialog->details->name_entry = gtk_entry_new ();
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->name_entry);
 	gtk_widget_show (dialog->details->name_entry);
 	gtk_table_attach (GTK_TABLE (table), dialog->details->name_entry,
 			  1, 2,
@@ -199,7 +200,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			  0, 0);
 
 	
-	label = gtk_label_new (_("Location:"));
+	label = gtk_label_new_with_mnemonic (_("_Location:"));
 	gtk_widget_show (label);
 	gtk_table_attach (GTK_TABLE (table), label,
 			  0, 1,
@@ -208,6 +209,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 			  0, 0);
 	
 	dialog->details->uri_entry = nautilus_location_entry_new ();
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->uri_entry);
 	g_signal_connect (dialog->details->uri_entry,
 			  "activate", 
 			  G_CALLBACK (entry_activate_callback),

@@ -1,5 +1,10 @@
 2003-11-19  Padraig O'Briain  <padraig.obriain@sun.com>
 
+	* src/nautilus-connect-server-dialog.c: Add mnemonics to labels and
+	add calls to gtk_label_set_mnemonic_widget. Fixes bug #126803.
+
+2003-11-19  Padraig O'Briain  <padraig.obriain@sun.com>
+
 	* src/file-manger/fm-properties-window.c:
 	(attach_owner_menu): Return option_menu created in this function.
 	(create_permissions_page): Set mnemonic widget for owner_label.
