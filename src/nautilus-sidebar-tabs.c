@@ -24,6 +24,13 @@
 
 #include <config.h>
 #include "nautilus-sidebar-tabs.h"
+#include "nautilus-view-frame.h"
+
+#include <bonobo/bonobo-event-source.h>
+#include <bonobo/bonobo-listener.h>
+#include <bonobo/bonobo-property-bag-client.h>
+#include <bonobo/bonobo-ui-util.h>
+#include <bonobo/bonobo-exception.h>
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnome/gnome-defs.h>
@@ -75,7 +82,10 @@ typedef struct {
 	gboolean visible;
 	gboolean prelit;
 	char *tab_text;
+	char *indicator_pixbuf_name;
+	GdkPixbuf *indicator_pixbuf;
 	int notebook_page;
+	Bonobo_EventSource_ListenerId listener_id;
 	GtkWidget *tab_view;
 	GdkRectangle tab_rect;
 } TabItem;
@@ -314,7 +324,31 @@ nautilus_sidebar_tabs_new (void)
 static void
 tab_item_destroy (TabItem *item)
 {
+	CORBA_Environment ev;
+	Bonobo_PropertyBag property_bag;
+	Bonobo_Control control;
+	
 	g_free (item->tab_text);
+	g_free (item->indicator_pixbuf_name);
+	
+	if (item->indicator_pixbuf != NULL) {
+		gdk_pixbuf_unref (item->indicator_pixbuf);
+	}
+
+	if (item->listener_id != 0) {
+		CORBA_exception_init (&ev);
+		control = nautilus_view_frame_get_control (NAUTILUS_VIEW_FRAME (item->tab_view));	
+		if (control != NULL) {
+			property_bag = Bonobo_Control_getProperties (control, &ev);
+			if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {	
+				bonobo_event_source_client_remove_listener
+					(property_bag,
+				 	item->listener_id,
+				 	&ev);
+				bonobo_object_release_unref (property_bag, &ev);	
+			}
+		}
+	}
 	g_free (item);
 }
 
@@ -509,13 +543,41 @@ nautilus_sidebar_tabs_size_allocate(GtkWidget *widget, GtkAllocation *allocation
     }
 }
 
+/* convenience routine to composite an image with the proper clipping */
+static void
+pixbuf_composite (GdkPixbuf *source, GdkPixbuf *destination, int x_offset, int y_offset, int alpha)
+{
+	int source_width, source_height, dest_width, dest_height;
+	double float_x_offset, float_y_offset;
+	
+	source_width  = gdk_pixbuf_get_width (source);
+	source_height = gdk_pixbuf_get_height (source);
+	dest_width  = gdk_pixbuf_get_width (destination);
+	dest_height = gdk_pixbuf_get_height (destination);
+	
+	float_x_offset = x_offset;
+	float_y_offset = y_offset;
+	
+	/* clip to the destination size */
+	if ((x_offset + source_width) > dest_width) {
+		source_width = dest_width - x_offset;
+	}
+	if ((y_offset + source_height) > dest_height) {
+		source_height = dest_height - y_offset;
+	}
+	
+	gdk_pixbuf_composite (source, destination, x_offset, y_offset, source_width, source_height,
+					float_x_offset, float_y_offset, 1.0, 1.0, GDK_PIXBUF_ALPHA_BILEVEL, alpha);
+}
+
 /* draw a single tab using the default, non-themed approach */
 static int
-draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
-		    char *tab_name, int x, int y, gboolean prelight_flag, GdkRectangle *tab_rect)
+draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc, char *tab_name,
+		    GdkPixbuf *indicator_pixbuf, int x, int y, gboolean prelight_flag, GdkRectangle *tab_rect)
 {  
 	int tab_bottom;
 	int tab_right;
+	int indicator_width;
 	NautilusDimensions name_dimensions;
 	int total_width;
 	GtkWidget *widget;
@@ -524,13 +586,19 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 	
 	g_assert (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 
+	if (indicator_pixbuf != NULL) {
+		indicator_width = gdk_pixbuf_get_width (indicator_pixbuf);
+	} else {
+		indicator_width = 0;
+	}
+
 	/* measure the name and compute the bounding box */
 	name_dimensions = nautilus_scalable_font_measure_text (sidebar_tabs->details->tab_font, 
 							       sidebar_tabs->details->font_size,
 							       tab_name,
 							       strlen (tab_name));
 	
-	total_width = name_dimensions.width + 2 * TAB_MARGIN;
+	total_width = name_dimensions.width + indicator_width + 2 * TAB_MARGIN;
 
 	widget = GTK_WIDGET (sidebar_tabs);
 	
@@ -565,12 +633,17 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 	gdk_draw_line(widget->window, gc, x + 2, y + 2, x + 2, y + sidebar_tabs->details->tab_height - 1);
 	
 	/* allocate the pixbuf and fill it with the background color */
-	temp_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, name_dimensions.width + 1, name_dimensions.height + 1);
+	temp_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, name_dimensions.width + indicator_width + 1, name_dimensions.height + 1);
 	nautilus_gdk_pixbuf_fill_rectangle_with_color (temp_pixbuf, NULL, nautilus_gdk_color_to_rgb (foreground_color));
+
+	/* draw the indicator if necessary */
+	if (indicator_pixbuf) {
+		pixbuf_composite (indicator_pixbuf, temp_pixbuf, 0, 0, 255);
+	}
 	
 	/* draw the name into the pixbuf using anti-aliased text */
 	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, temp_pixbuf, 
-					  1, 1, 
+					  1 + indicator_width, 1, 
 					  NULL,
 					  sidebar_tabs->details->font_size,
 					  tab_name, strlen (tab_name),
@@ -578,7 +651,7 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 					  NAUTILUS_OPACITY_FULLY_OPAQUE);
 	
 	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, temp_pixbuf, 
-					  0, 0,
+					  indicator_width, 0,
 					  NULL,
 					  sidebar_tabs->details->font_size,
 					  tab_name, strlen (tab_name),
@@ -591,7 +664,7 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 					widget->window,
 					0, 0,
 					x + TAB_MARGIN, y + 5,
-					name_dimensions.width + 1, name_dimensions.height + 1,
+					name_dimensions.width + indicator_width + 1, name_dimensions.height + 1,
 					GDK_PIXBUF_ALPHA_BILEVEL, 128,
 					GDK_RGB_DITHER_MAX,
 					0, 0);
@@ -601,12 +674,12 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 	/* draw the bottom lines */
 	tab_bottom = y + sidebar_tabs->details->tab_height - 1;
 	gdk_gc_set_foreground (gc, &sidebar_tabs->details->line_color);  
-	tab_right = x + 2*TAB_MARGIN + name_dimensions.width;
+	tab_right = x + 2*TAB_MARGIN + name_dimensions.width + indicator_width;
 	gdk_gc_set_foreground (gc, &sidebar_tabs->details->line_color);  
 	gdk_draw_line(widget->window, gc, tab_right, tab_bottom, widget->parent->allocation.width, tab_bottom);
 	gdk_draw_line(widget->window, gc, 0, tab_bottom, x, tab_bottom);
 	
-	return name_dimensions.width + 2 * TAB_MARGIN;
+	return name_dimensions.width + indicator_width + 2 * TAB_MARGIN;
 }
 
 /* utility to draw a single tab piece into a pixbuf */
@@ -668,7 +741,7 @@ draw_tab_piece_aa (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *dest_pixbuf, in
    draw the right edge of the tab, as we don't have enough info about the next tab
    to do it properly at this time.  We draw into an offscreen pixbuf so we can get nice anti-aliased text */
 static int
-draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
+draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf, GdkPixbuf *indicator_pixbuf,
 	      		char *tab_name, int x, int y, gboolean prelight_flag, 
 	      		gboolean first_flag, gboolean prev_invisible, int text_h_offset,
 	      		GdkRectangle *tab_rect)
@@ -681,6 +754,13 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 	int highlight_offset;
 	int text_x;
 	int text_y;
+	int indicator_width;
+	
+	if (indicator_pixbuf != NULL) {
+		indicator_width = gdk_pixbuf_get_width (indicator_pixbuf);
+	} else {
+		indicator_width = 0;
+	}
 
 	left_width = 0;
 	
@@ -708,7 +788,7 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 	
 	/* draw the middle portion in a loop */	
 	text_x_pos = current_pos;
-	right_edge_pos = current_pos + name_dimensions.width;
+	right_edge_pos = current_pos + name_dimensions.width + indicator_width;
 	while (current_pos < right_edge_pos) {
 		piece_width = draw_tab_piece_aa (sidebar_tabs, tab_pixbuf, current_pos, y - widget->allocation.y, 
 						 right_edge_pos, TAB_NORMAL_FILL + highlight_offset);
@@ -724,6 +804,12 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 	
 	/* make sure we can at least draw some of it */
 	if (text_x < gdk_pixbuf_get_width (tab_pixbuf)) {	
+		if (indicator_pixbuf) {
+			
+			pixbuf_composite (indicator_pixbuf, tab_pixbuf, text_x, text_y, 255);
+			text_x += indicator_width;
+		} 
+
 		nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, tab_pixbuf, 
 					  text_x, text_y,
 					  NULL,
@@ -747,12 +833,12 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 	if (tab_rect) {
 		tab_rect->x = x;
 		tab_rect->y = y;
-		tab_rect->width = current_pos - x;
+		tab_rect->width = current_pos - x + indicator_width;
 		tab_rect->height = sidebar_tabs->details->tab_height;
 	}
 	
 	/* return the total tab width */
-	tab_width = left_width + name_dimensions.width;
+	tab_width = left_width + name_dimensions.width + indicator_width;
 	return tab_width;	
 }
 
@@ -777,11 +863,17 @@ get_text_offset (void)
 static int
 get_tab_width (NautilusSidebarTabs *sidebar_tabs, TabItem *this_tab, gboolean is_themed, gboolean first_flag)
 {
-	int edge_width;
+	int edge_width, indicator_width;
 	NautilusDimensions name_dimensions;
 	
 	if (this_tab == NULL)
 		return 0;
+	
+	if (this_tab->indicator_pixbuf != NULL) {
+		indicator_width = gdk_pixbuf_get_width (this_tab->indicator_pixbuf);
+	} else {
+		indicator_width = 0;
+	}
 	
 	if (is_themed) {
 		if (first_flag) {
@@ -799,7 +891,7 @@ get_tab_width (NautilusSidebarTabs *sidebar_tabs, TabItem *this_tab, gboolean is
 		edge_width = 2 * TAB_MARGIN;
 		name_dimensions.width = gdk_string_width (GTK_WIDGET (sidebar_tabs)->style->font, this_tab->tab_text);
 	}		
-	return name_dimensions.width + edge_width;
+	return name_dimensions.width + edge_width + indicator_width;
 }
 
 /* fill the canvas buffer with a tiled pixmap */
@@ -955,12 +1047,12 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 			prev_invisible = prev_item && !prev_item->visible;
 			if (is_themed) {
 				g_assert (tab_pixbuf != NULL);
-				draw_one_tab_themed (sidebar_tabs, tab_pixbuf, this_item->tab_text, x_pos, y_pos,
+				draw_one_tab_themed (sidebar_tabs, tab_pixbuf, this_item->indicator_pixbuf, this_item->tab_text, x_pos, y_pos,
 								 this_item->prelit, first_flag, prev_invisible,
 								 text_h_offset, &this_item->tab_rect);
 			} else {
 				g_assert (temp_gc != NULL);
-				draw_one_tab_plain (sidebar_tabs, temp_gc,  this_item->tab_text,
+				draw_one_tab_plain (sidebar_tabs, temp_gc,  this_item->tab_text, this_item->indicator_pixbuf,
 								x_pos, y_pos, this_item->prelit, &this_item->tab_rect);		
 			}
 		} 
@@ -1176,7 +1268,7 @@ nautilus_sidebar_tabs_expose (GtkWidget *widget, GdkEventExpose *event)
 			tab_height = gdk_pixbuf_get_height (sidebar_tabs->details->tab_piece_images[0]);
 			pixbuf = allocate_cleared_pixbuf (widget->allocation.width, tab_height);
 			
-			tab_width = draw_one_tab_themed (sidebar_tabs, pixbuf, sidebar_tabs->details->title, 0, 0, 
+			tab_width = draw_one_tab_themed (sidebar_tabs, pixbuf, NULL, sidebar_tabs->details->title, 0, 0, 
 							 sidebar_tabs->details->title_prelit, TRUE, FALSE, text_offset, &sidebar_tabs->details->title_rect);
 			/* draw the right edge */
 			draw_tab_piece_aa (sidebar_tabs, pixbuf,  tab_width, 0, -1,
@@ -1194,7 +1286,7 @@ nautilus_sidebar_tabs_expose (GtkWidget *widget, GdkEventExpose *event)
 					
 			gdk_pixbuf_unref (pixbuf); 
 		} else {
-			draw_one_tab_plain (sidebar_tabs, temp_gc, sidebar_tabs->details->title,
+			draw_one_tab_plain (sidebar_tabs, temp_gc, sidebar_tabs->details->title, NULL,
 					    x_pos + TITLE_TAB_OFFSET, y_pos, sidebar_tabs->details->title_prelit, &sidebar_tabs->details->title_rect);
 		}
 		gdk_gc_unref (temp_gc);
@@ -1206,6 +1298,137 @@ nautilus_sidebar_tabs_expose (GtkWidget *widget, GdkEventExpose *event)
 	}
 	
 	return FALSE;
+}
+
+/* update the indicator image for the passed in tab */
+static void
+nautilus_sidebar_tabs_update_tab_item (NautilusSidebarTabs *sidebar_tabs, TabItem *tab_item)
+{
+	CORBA_Environment ev;
+	Bonobo_Control control;
+	Bonobo_PropertyBag property_bag;
+	char *tab_image_name, *image_path;
+	
+	/* fetch indicator icon through the bonobo propertybag mechanism */
+	CORBA_exception_init (&ev);
+	control = nautilus_view_frame_get_control (NAUTILUS_VIEW_FRAME (tab_item->tab_view));	
+	if (control != NULL) {
+		property_bag = Bonobo_Control_getProperties (control, &ev);
+		if (property_bag != NULL) {
+			tab_image_name = bonobo_property_bag_client_get_value_string (property_bag, "tab_image", &ev);
+			bonobo_object_release_unref (property_bag, &ev);	
+
+			/* see if the indicator icon changed; if so, fetch the new one */
+			if (nautilus_strcmp (tab_image_name, tab_item->indicator_pixbuf_name) != 0) {
+				g_free (tab_item->indicator_pixbuf_name);
+
+				if (tab_item->indicator_pixbuf != NULL) {
+					gdk_pixbuf_unref (tab_item->indicator_pixbuf);
+					tab_item->indicator_pixbuf = NULL;	
+				}
+								
+				if (tab_image_name != NULL) {
+					tab_item->indicator_pixbuf_name = g_strdup (tab_image_name);	
+					image_path = nautilus_theme_get_image_path (tab_image_name);
+					if (image_path != NULL) {
+						tab_item->indicator_pixbuf = gdk_pixbuf_new_from_file (image_path);	
+						g_free (image_path);
+					}
+				} else {
+					tab_item->indicator_pixbuf_name = NULL;
+					if (tab_item->indicator_pixbuf != NULL) {
+						gdk_pixbuf_unref (tab_item->indicator_pixbuf);
+						tab_item->indicator_pixbuf = NULL;	
+					}
+				}
+				
+				recalculate_size (sidebar_tabs);				
+				gtk_widget_queue_draw (GTK_WIDGET (sidebar_tabs));
+			}
+			g_free (tab_image_name);
+		}
+	}
+	CORBA_exception_free (&ev);
+
+}
+
+static TabItem *
+get_tab_item_from_view (NautilusSidebarTabs *sidebar_tabs, GtkWidget *view)
+{
+	GList *iterator;
+
+	for (iterator = sidebar_tabs->details->tab_items; iterator != NULL; iterator = iterator->next) {
+		TabItem *tab_item = iterator->data;
+		if (tab_item->tab_view == view) {
+			return tab_item;
+		}
+	}
+	return NULL;
+}
+
+/* check all of the tabs to see if their indicator pixmaps are ready for updating */
+static void
+nautilus_sidebar_tabs_update_all_indicators (NautilusSidebarTabs *sidebar_tabs)
+{
+	GList *iterator;
+
+	for (iterator = sidebar_tabs->details->tab_items; iterator != NULL; iterator = iterator->next) {
+		TabItem *tab_item = iterator->data;
+		nautilus_sidebar_tabs_update_tab_item (sidebar_tabs, tab_item);				
+	}
+}
+
+/* check all of the tabs to see if their indicator pixmaps are ready for updating */
+static void
+nautilus_sidebar_tabs_update_indicator (NautilusSidebarTabs *sidebar_tabs, GtkWidget *view)
+{
+	GList *iterator;
+
+	for (iterator = sidebar_tabs->details->tab_items; iterator != NULL; iterator = iterator->next) {
+		TabItem *tab_item = iterator->data;
+		if (tab_item->tab_view == view) {
+			nautilus_sidebar_tabs_update_tab_item (sidebar_tabs, tab_item);				
+			break;
+		}
+	}
+}
+
+static void
+tab_indicator_changed_callback (BonoboListener *listener,
+				char *event_name,
+				CORBA_any *arg,
+				CORBA_Environment *ev,
+				gpointer callback_data)
+{
+	NautilusSidebarTabs *sidebar_tabs;
+	sidebar_tabs = NAUTILUS_SIDEBAR_TABS (callback_data);
+	nautilus_sidebar_tabs_update_all_indicators (sidebar_tabs);	
+}
+
+/* listen for changes on the tab_image property */
+void
+nautilus_sidebar_tabs_connect_view (NautilusSidebarTabs *sidebar_tabs, GtkWidget *view)
+{
+	CORBA_Environment ev;
+	Bonobo_PropertyBag property_bag;
+	TabItem *tab_item;
+	
+	tab_item = get_tab_item_from_view (sidebar_tabs, view);
+	if (tab_item == NULL) {
+		return;
+	}
+	
+	CORBA_exception_init (&ev);
+	property_bag = Bonobo_Control_getProperties (nautilus_view_frame_get_control (NAUTILUS_VIEW_FRAME (view)), &ev);
+	if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
+			tab_item->listener_id = bonobo_event_source_client_add_listener
+			(property_bag, tab_indicator_changed_callback, 
+				"Bonobo/Property:change:tab_image", NULL, sidebar_tabs); 
+		bonobo_object_release_unref (property_bag, &ev);	
+	}
+	CORBA_exception_free (&ev);
+
+	nautilus_sidebar_tabs_update_indicator (sidebar_tabs, view);
 }
 
 /* add a new tab entry, return TRUE if we succeed */

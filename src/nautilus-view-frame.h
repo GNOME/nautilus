@@ -99,6 +99,7 @@ typedef struct {
 GtkType            nautilus_view_frame_get_type                  (void);
 NautilusViewFrame *nautilus_view_frame_new                       (BonoboUIContainer   *ui_container,
                                                                   NautilusUndoManager *undo_manager);
+Bonobo_Control	   nautilus_view_frame_get_control		 (NautilusViewFrame   *view);
 
 /* connecting to a Nautilus:View */
 void               nautilus_view_frame_load_view                 (NautilusViewFrame   *view,

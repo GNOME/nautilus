@@ -850,6 +850,15 @@ nautilus_sidebar_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 	}
 }
 
+static void
+view_loaded_callback (NautilusViewFrame *view_frame, gpointer user_data)
+{
+	NautilusSidebar *sidebar;
+	
+	sidebar = NAUTILUS_SIDEBAR (user_data);	
+	nautilus_sidebar_tabs_connect_view (sidebar->details->sidebar_tabs, GTK_WIDGET (view_frame));
+}
+
 /* add a new panel to the sidebar */
 void
 nautilus_sidebar_add_panel (NautilusSidebar *sidebar, NautilusViewFrame *panel)
@@ -866,6 +875,8 @@ nautilus_sidebar_add_panel (NautilusSidebar *sidebar, NautilusViewFrame *panel)
 	label = gtk_label_new (description);
 
 	gtk_widget_show (label);
+	
+	gtk_signal_connect (GTK_OBJECT (panel), "view_loaded", view_loaded_callback, sidebar);
 	
 	gtk_notebook_append_page (GTK_NOTEBOOK (sidebar->details->notebook),
 				  GTK_WIDGET (panel), label);

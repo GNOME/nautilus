@@ -227,6 +227,7 @@ icon_DATA =\
 	nautilus-mini-logo.png \
 	netscape.png \
 	not.png \
+	note-indicator.png \
 	novice-selected.png \
 	novice.png \
 	number_strip.png \

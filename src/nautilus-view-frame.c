@@ -1271,6 +1271,17 @@ nautilus_view_frame_report_load_failed (NautilusViewFrame *view)
 	view_frame_failed (view);
 }
 
+/* return the Bonobo_Control CORBA object associated with the view frame */
+Bonobo_Control
+nautilus_view_frame_get_control (NautilusViewFrame *view)
+{
+	if (view->details->control_frame == NULL) {
+		return NULL;
+	}
+	
+	return bonobo_control_frame_get_control (view->details->control_frame);
+}
+
 void
 nautilus_view_frame_go_back (NautilusViewFrame *view)
 {

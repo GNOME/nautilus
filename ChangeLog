@@ -1,3 +1,49 @@
+2001-04-01  Andy Hertzfeld  <andy@eazel.com>
+
+	reviewed by: Michael Engber  <engber@eazel.com>
+	
+	added a way for sidebar views to specify small images that
+	are displayed in their tab for notification purposes.  Used
+	that to make the notes component indicate if a note is present or
+	not.
+	
+	* components/notes/nautilus-notes.c: (get_bonobo_properties),
+	(set_bonobo_properties), (load_note_text_from_metadata),
+	(done_with_file), (notes_load_metainfo),
+	(notify_listeners_if_changed), (notes_save_metainfo), (do_destroy),
+	(notes_get_indicator_image), (make_notes_view):
+	added a property bag to the notes component to provide a tab_image
+	property, and made it notify the listeners when the note text
+	changes.
+	
+	* icons/Makefile.am:
+	* icons/note-indicator.png:
+	new notes indicator image from Arlo.
+	
+	* src/nautilus-sidebar-tabs.c: (tab_item_destroy),
+	(pixbuf_composite), (draw_one_tab_plain), (draw_one_tab_themed),
+	(get_tab_width), (draw_or_layout_all_tabs),
+	(nautilus_sidebar_tabs_expose),
+	(nautilus_sidebar_tabs_update_tab_item), (get_tab_item_from_view),
+	(nautilus_sidebar_tabs_update_all_indicators),
+	(nautilus_sidebar_tabs_update_indicator),
+	(tab_indicator_changed_callback),
+	(nautilus_sidebar_tabs_connect_view):
+	* src/nautilus-sidebar-tabs.h:
+	made the sidebar tabs hook up to the nautilus_view's tab_image
+	property and use it to display a notification image in the tab
+	if necessary.
+	
+	* src/nautilus-sidebar.c: (view_loaded_callback),
+	(nautilus_sidebar_add_panel):
+	connect the sidebar tabs to a newly added view, once the view
+	is loaded.
+	
+	* src/nautilus-view-frame.c: (nautilus_view_frame_get_control):
+	* src/nautilus-view-frame.h:
+	added nautilus_view_frame_get_control so view properties can be
+	accessed by the sidebar.
+	
 2001-03-31  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/nautilus-sidebar.c: (toggle_sidebar_panel):

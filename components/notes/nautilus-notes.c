@@ -54,21 +54,67 @@
 
 #define NOTES_DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/BBBB"
 
-
 typedef struct {
-        NautilusView *view;
-        GtkWidget *note_text_field;
-        char *uri;
-        NautilusFile *file;
-        guint save_timeout_id;
-        char* previous_saved_text;
+	NautilusView *view;
+	BonoboPropertyBag *property_bag;
+	GtkWidget *note_text_field;
+	char *uri;
+	NautilusFile *file;
+	guint save_timeout_id;
+	char* previous_saved_text;
 } Notes;
 
-static void notes_save_metainfo (Notes *notes);
+static void  notes_save_metainfo (Notes *notes);
+static char* notes_get_indicator_image (const char *notes_text);
+static void  notify_listeners_if_changed (Notes *notes, char *new_notes);
 
 static int notes_object_count = 0;
 
 #define SAVE_TIMEOUT (3 * 1000)
+
+/* property bag getting and setting routines */
+enum {
+	TAB_IMAGE,
+} MyArgs;
+
+static void
+get_bonobo_properties (BonoboPropertyBag *bag,
+			BonoboArg *arg,
+			guint arg_id,
+			CORBA_Environment *ev,
+			gpointer user_data)
+{
+        char *indicator_image;
+        Notes *notes;
+	notes = (Notes*) user_data;
+	
+	switch (arg_id) {
+
+		case TAB_IMAGE:
+		{
+			/* if there is a note, return the name of the indicator image,
+			   otherwise, return NULL */
+			indicator_image = notes_get_indicator_image (notes->previous_saved_text);
+			BONOBO_ARG_SET_STRING (arg, indicator_image);					
+			g_free (indicator_image);
+			break;
+		}
+		
+		default:
+			g_warning ("Unhandled arg %d", arg_id);
+			break;
+	}
+}
+
+static void
+set_bonobo_properties (BonoboPropertyBag *bag,
+			const BonoboArg *arg,
+			guint arg_id,
+			CORBA_Environment *ev,
+			gpointer user_data)
+{
+	g_warning ("Cant set note property %d", arg_id);
+}
 
 static gboolean
 schedule_save_callback (gpointer data)
@@ -119,6 +165,9 @@ load_note_text_from_metadata (NautilusFile *file,
 	 * metadata has actually changed.
 	 */
         if (nautilus_strcmp (saved_text, notes->previous_saved_text) != 0) {
+		
+		notify_listeners_if_changed (notes, saved_text);
+		
 		g_free (notes->previous_saved_text);
         	notes->previous_saved_text = saved_text;
         	cancel_pending_save (notes);
@@ -146,8 +195,6 @@ static void
 done_with_file (Notes *notes)
 {
 	cancel_pending_save (notes);
-	g_free (notes->previous_saved_text);
-	notes->previous_saved_text = NULL;
 	
 	if (notes->file != NULL) {
 		nautilus_file_monitor_remove (notes->file, notes);
@@ -163,13 +210,13 @@ notes_load_metainfo (Notes *notes)
 {
         GList *attributes;
 
-        gtk_editable_delete_text (GTK_EDITABLE (notes->note_text_field), 0, -1);   
-        
         done_with_file (notes);
         notes->file = nautilus_file_get (notes->uri);
 
+	gtk_editable_delete_text (GTK_EDITABLE (notes->note_text_field), 0, -1);   
+
         if (notes->file == NULL) {
-                return;
+		return;
         }
 
         attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
@@ -187,8 +234,28 @@ notes_load_metainfo (Notes *notes)
 			    notes);
 }
 
-/* save the metainfo corresponding to the current uri, if any, into the text field */
+/* utility to notify event listeners if the notes data actually changed */
+static void
+notify_listeners_if_changed (Notes *notes, char *new_notes)
+{
+	char *tab_image;
+	BonoboArg *tab_image_arg;
 
+	if (nautilus_strcmp (notes->previous_saved_text, new_notes) != 0) {
+		/* notify listeners that the notes text has changed */	
+		tab_image = notes_get_indicator_image (new_notes);	
+		
+		tab_image_arg = bonobo_arg_new (BONOBO_ARG_STRING);
+		BONOBO_ARG_SET_STRING (tab_image_arg, tab_image);			
+	
+		bonobo_property_bag_notify_listeners (notes->property_bag, "tab_image", tab_image_arg, NULL);
+	
+		bonobo_arg_release (tab_image_arg);
+		g_free (tab_image);
+	} 
+}
+
+/* save the metainfo corresponding to the current uri, if any, into the text field */
 static void
 notes_save_metainfo (Notes *notes)
 {
@@ -208,12 +275,15 @@ notes_save_metainfo (Notes *notes)
                                           
         notes_text = gtk_editable_get_chars (GTK_EDITABLE (notes->note_text_field), 0 , -1);
         nautilus_file_set_metadata (notes->file, NAUTILUS_METADATA_KEY_ANNOTATION, NULL, notes_text);
-	g_free (notes->previous_saved_text);
-	notes->previous_saved_text = notes_text;
-        
+
         gtk_signal_handler_unblock_by_func (GTK_OBJECT (notes->file),
                                             load_note_text_from_metadata,
-                                            notes);
+                                            notes);	
+	
+	notify_listeners_if_changed (notes, notes_text);
+	
+	g_free (notes->previous_saved_text);
+	notes->previous_saved_text = notes_text;        
 }
 
 static void
@@ -268,12 +338,23 @@ do_destroy (GtkObject *obj, Notes *notes)
 	
         done_with_file (notes);
         g_free (notes->uri);
+        g_free (notes->previous_saved_text);
         g_free (notes);
 
         notes_object_count--;
         if (notes_object_count <= 0) {
                 gtk_main_quit();
         }
+}
+
+static char*
+notes_get_indicator_image (const char *notes_text)
+{
+	if (notes_text != NULL && strlen (notes_text) > 0) {
+		return g_strdup ("note-indicator.png");
+	}
+	
+	return NULL;
 }
 
 static BonoboObject *
@@ -316,6 +397,12 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         notes->view = nautilus_view_new (vbox);
         gtk_signal_connect (GTK_OBJECT (notes->view), "destroy", do_destroy, notes);
 
+	/* allocate a property bag to reflect the TAB_IMAGE property */
+	notes->property_bag = bonobo_property_bag_new (get_bonobo_properties,  set_bonobo_properties, notes);
+	bonobo_control_set_properties (nautilus_view_get_bonobo_control (notes->view), notes->property_bag);
+	
+	bonobo_property_bag_add (notes->property_bag, "tab_image", TAB_IMAGE, BONOBO_ARG_STRING, NULL,
+				 "image indicating that a note is present", 0);
         notes_object_count++;
         
         /* handle events */
