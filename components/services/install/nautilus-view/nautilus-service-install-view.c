@@ -57,7 +57,7 @@
 /* for uname */
 #include <sys/utsname.h>
 
-#define PASSWORD_PROMPT		_("Please enter your root password to continue installing. (This password is not saved or transmitted off your system.)")
+#define PASSWORD_PROMPT		_("Please enter your root password to continue installing. (This password is not saved or transmitted outside of your system.)")
 
 static void       nautilus_service_install_view_initialize_class (NautilusServiceInstallViewClass	*klass);
 static void       nautilus_service_install_view_initialize       (NautilusServiceInstallView		*view);
@@ -415,7 +415,7 @@ nautilus_install_service_describe_menu_entry (GnomeDesktopEntry *dentry,
 
 		if (addition == NULL) {
 			addition = g_strdup_printf 
-					(_(" \xB7 %s is in the Gnome menu under %s"),
+					(_(" \xB7 %s is in the GNOME footprint menu under %s"),
 					dentry->name, menu);
 		} else {
 			addition_tmp = g_strconcat (addition, " / ", dir_dentry->name, NULL);

@@ -92,7 +92,7 @@ static const char untranslated_error_need_to_set_proxy[] =
 	   "the environment variable \"http_proxy\" to the URL of your proxy\n"
 	   "server, and then restarting Eazel Installer.");
 static const char untranslated_wait_label[] =
-	N_("Please wait while we download and install the files selected.");
+	N_("Please wait while Nautilus is downloaded and installed.");
 static const char untranslated_wait_label_2[] =
 	N_("Now starting the install process.  This will take some time, so\n"
 	   "please be patient.");

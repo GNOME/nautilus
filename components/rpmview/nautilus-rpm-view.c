@@ -46,6 +46,7 @@
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
+#include <libnautilus-extensions/nautilus-viewport.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtklabel.h>
 #include <gnome.h>
@@ -87,11 +88,7 @@ static void rpm_view_load_location_callback      (NautilusView         *view,
 static void nautilus_rpm_view_verify_package_callback (GtkWidget *widget,
 				   		  NautilusRPMView *rpm_view);
 
-static void file_selection_callback              (GtkCList             *clist,
-                                                  int                   row,
-                                                  int                   column,
-                                                  GdkEventButton       *event,
-                                                  NautilusRPMView      *rpm_view);
+static void file_selection_callback (GtkCTree *ctree, GtkCTreeNode *node, int column, NautilusRPMView *rpm_view);
 static void go_to_button_callback                (GtkWidget            *widget,
                                                   NautilusRPMView      *rpm_view);
 
@@ -120,6 +117,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	GtkWidget *icon_title_box, *title_box;
 	GtkTable *table;
   	char *default_icon_path;
+        GtkWidget *viewport;
   	
   	static gchar *list_headers[] = { N_("Package Contents") };
 	
@@ -138,7 +136,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 
 	rpm_view->details->current_uri = NULL;
 	rpm_view->details->background_connection = 0;
-	rpm_view->details->selected_file = -1;
+	rpm_view->details->selected_file = NULL;
 	
 	/* set up the default background color */
   	background = nautilus_get_widget_background (GTK_WIDGET (rpm_view));
@@ -338,23 +336,24 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	/* add the list of files contained in the package */
 
   	temp_widget = gtk_scrolled_window_new(NULL, NULL);
-  	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(temp_widget),
-				 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW(temp_widget),
+                                        GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
    	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), temp_widget, TRUE, TRUE, 0);	
-  	gtk_widget_show(temp_widget);
- 
-  	rpm_view->details->package_file_list = gtk_clist_new_with_titles(1, list_headers);
-  	gtk_clist_column_titles_passive(GTK_CLIST(rpm_view->details->package_file_list));
-  	gtk_container_add (GTK_CONTAINER (temp_widget), rpm_view->details->package_file_list);	
-  	gtk_widget_show(rpm_view->details->package_file_list);
+  	gtk_widget_show (temp_widget);
 
- 	gtk_signal_connect (GTK_OBJECT (rpm_view->details->package_file_list),
-                            "select_row", GTK_SIGNAL_FUNC (file_selection_callback), rpm_view);
-	
+        /* use a tree list now */
+        rpm_view->details->package_file_tree = gtk_ctree_new_with_titles (1, 0, list_headers);
+        gtk_container_add (GTK_CONTAINER (temp_widget), rpm_view->details->package_file_tree);
+        gtk_signal_connect (GTK_OBJECT (rpm_view->details->package_file_tree),
+                            "tree-select-row", GTK_SIGNAL_FUNC (file_selection_callback), rpm_view);
+        gtk_ctree_set_line_style (GTK_CTREE (rpm_view->details->package_file_tree), GTK_CTREE_LINES_NONE);
+        gtk_ctree_set_expander_style (GTK_CTREE (rpm_view->details->package_file_tree), GTK_CTREE_EXPANDER_TRIANGLE);
+        gtk_widget_show (rpm_view->details->package_file_tree);
+
 	/* add an hbox for buttons that operate on the package list */
-	temp_box = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX (rpm_view->details->package_container), temp_box, FALSE, FALSE, 4);
-	gtk_widget_show(temp_box);
+	temp_box = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), temp_box, FALSE, FALSE, 4);
+	gtk_widget_show (temp_box);
 		
 	/* add the file go-to button */
 
@@ -370,9 +369,21 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	gtk_widget_show(rpm_view->details->go_to_button);
 	
 	/* add the description */
-	rpm_view->details->package_description = gtk_label_new (_("Description"));	
-	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), rpm_view->details->package_description,
-				FALSE, FALSE, 8);	
+        temp_widget = gtk_scrolled_window_new (NULL, NULL);
+        gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (temp_widget),
+                                        GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+        viewport = nautilus_viewport_new (NULL, NULL);
+	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
+        gtk_container_add (GTK_CONTAINER (temp_widget), viewport);
+	background = nautilus_get_widget_background (viewport);
+	nautilus_background_set_color (background, RPM_VIEW_DEFAULT_BACKGROUND_COLOR);
+        gtk_widget_show (viewport);
+        gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), temp_widget, TRUE, TRUE, 8);
+        gtk_widget_show (temp_widget);
+
+	rpm_view->details->package_description = gtk_label_new (_("Description"));
+        gtk_label_set_justify (GTK_LABEL (rpm_view->details->package_description), GTK_JUSTIFY_LEFT);
+        gtk_container_add (GTK_CONTAINER (viewport), rpm_view->details->package_description);
 	gtk_widget_show (rpm_view->details->package_description);
 	
 	/* prepare ourselves to receive dropped objects */
@@ -432,10 +443,10 @@ nautilus_rpm_view_get_nautilus_view (NautilusRPMView *rpm_view)
 
 /* callback to handle file selection in the file list view */
 static void 
-file_selection_callback(GtkCList * clist, int row, int column, GdkEventButton * event, NautilusRPMView* rpm_view)
+file_selection_callback (GtkCTree *ctree, GtkCTreeNode *node, int column, NautilusRPMView *rpm_view)
 {
-	gtk_widget_set_sensitive(rpm_view->details->go_to_button, rpm_view->details->package_installed);
-	rpm_view->details->selected_file = row;
+	gtk_widget_set_sensitive (rpm_view->details->go_to_button, rpm_view->details->package_installed);
+	rpm_view->details->selected_file = node;
 }
 
 /* callback to handle the go to file button */
@@ -443,18 +454,98 @@ static void
 go_to_button_callback (GtkWidget * widget, NautilusRPMView *rpm_view)
 {
 	char *path_name;
-	
-	gtk_clist_get_text (GTK_CLIST(rpm_view->details->package_file_list), 
-			    rpm_view->details->selected_file, 0, &path_name);
+        char *path_item;
+        char *new_name;
+        GtkCTreeNode *node;
+
+        path_name = g_strdup ("");
+        node = rpm_view->details->selected_file;
+        while (1) {
+                gtk_ctree_node_get_pixtext (GTK_CTREE (rpm_view->details->package_file_tree), node,
+                                            0, &path_item, NULL, NULL, NULL);
+                if (path_item[0] == '/') {
+                        new_name = g_strdup_printf ("%s%s", path_item, path_name);
+                } else {
+                        new_name = g_strdup_printf ("/%s%s", path_item, path_name);
+                }
+                g_free (path_name);
+                path_name = new_name;
+
+                if (GTK_CTREE_ROW (node)->parent == NULL) {
+                        break;
+                }
+                node = GTK_CTREE_ROW (node)->parent;
+        }
+
 	nautilus_view_open_location_in_this_window
                 (rpm_view->details->nautilus_view, path_name);
 }
 
 static void
-add_to_clist (char *name,
-              NautilusRPMView *view)
+add_to_filename_tree (char *name, NautilusRPMView *view)
 {
-        gtk_clist_append (GTK_CLIST(view->details->package_file_list), &name);
+        char **path;
+        GNode *node, *next_node;
+        gboolean found;
+        int i;
+
+        path = g_strsplit (name, "/", 0);
+        node = view->details->filename_tree;
+        for (i = 0; path[i] != NULL; i++) {
+                if (path[i][0] == '\0') {
+                        continue;
+                }
+                found = FALSE;
+                for (next_node = g_node_first_child (node); next_node != NULL;
+                     next_node = g_node_next_sibling (next_node)) {
+                        if (strcmp (path[i], (char *) next_node->data) == 0) {
+                                /* hit! */
+                                found = TRUE;
+                                node = next_node;
+                                break;
+                        }
+                }
+                if (! found) {
+                        next_node = g_node_new (g_strdup (path[i]));
+                        g_node_insert (node, -1, next_node);
+                        node = next_node;
+                }
+        }
+}
+
+static void
+fill_filename_tree_int (GtkWidget *ctree, GtkCTreeNode *parent, GNode *node)
+{
+        GNode *child;
+        GtkCTreeNode *me;
+        char *text[1];
+
+        for (child = g_node_first_child (node); child != NULL; child = g_node_next_sibling (child)) {
+                if (child->children == NULL) {
+                        text[0] = g_strdup ((char *) child->data);
+                } else {
+                        text[0] = g_strdup_printf ("/%s", (char *) child->data);
+                }
+                me = gtk_ctree_insert_node (GTK_CTREE (ctree), parent, NULL, text,
+                                            0, NULL, NULL, NULL, NULL,
+                                            (child->children == NULL) ? TRUE : FALSE,
+                                            TRUE);
+                fill_filename_tree_int (ctree, me, child);
+                g_free (text[0]);
+        }
+}
+
+static void
+fill_filename_tree (NautilusRPMView *rpm_view)
+{
+        fill_filename_tree_int (rpm_view->details->package_file_tree, NULL, rpm_view->details->filename_tree);
+}
+
+static gboolean
+filename_node_free (GNode *node)
+{
+        g_free (node->data);
+        return FALSE;
 }
 
 /* here's where we do most of the real work of populating the view with info from the package */
@@ -486,15 +577,22 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 		return FALSE;
 	}
 
-        /* Set the file list */
-        gtk_clist_freeze (GTK_CLIST (rpm_view->details->package_file_list));
-        gtk_clist_clear (GTK_CLIST (rpm_view->details->package_file_list));              
+        /* set the file tree */
+        gtk_clist_freeze (GTK_CLIST (rpm_view->details->package_file_tree));
+        gtk_clist_clear (GTK_CLIST (rpm_view->details->package_file_tree));
+        if (rpm_view->details->filename_tree != NULL) {
+                g_node_traverse (rpm_view->details->filename_tree, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+                                 (GNodeTraverseFunc)filename_node_free, NULL);
+                g_node_destroy (rpm_view->details->filename_tree);
+        }
+        rpm_view->details->filename_tree = g_node_new (g_strdup ("/"));
+        g_list_foreach (rpm_view->details->package->provides, (GFunc)add_to_filename_tree, rpm_view);
+        fill_filename_tree (rpm_view);
         temp_str = g_strdup_printf(_("Package Contents: %d files"), 
                                    g_list_length (rpm_view->details->package->provides));
-        g_list_foreach (rpm_view->details->package->provides, (GFunc)add_to_clist, rpm_view);
-        gtk_clist_set_column_title (GTK_CLIST(rpm_view->details->package_file_list), 0, temp_str);
+        gtk_clist_set_column_title (GTK_CLIST(rpm_view->details->package_file_tree), 0, temp_str);
         g_free(temp_str);                
-        gtk_clist_thaw(GTK_CLIST(rpm_view->details->package_file_list));
+        gtk_clist_thaw(GTK_CLIST(rpm_view->details->package_file_tree));
                 
         temp_str = g_strdup_printf(_("Package \"%s\" "), rpm_view->details->package->name);
         gtk_label_set_text (GTK_LABEL (rpm_view->details->package_title), temp_str);

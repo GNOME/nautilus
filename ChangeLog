@@ -1,3 +1,32 @@
+2001-02-22  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Mike Fleming  <mfleming@eazel.com?
+
+	* components/rpmview/nautilus-rpm-view-private.h:
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_initialize), (file_selection_callback),
+	(go_to_button_callback), (add_to_filename_tree),
+	(fill_filename_tree_int), (fill_filename_tree),
+	(filename_node_free), (nautilus_rpm_view_update_from_uri):
+
+	Change the file list into an exploding tree.  Put the package
+	description inside a viewport with opportunistic scrollbars, so
+	that a long package description won't overwrite everything else.
+
+	* components/services/install/nautilus-view/callbacks.c:
+	(nautilus_service_install_done):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_install_service_describe_menu_entry):
+	* nautilus-installer/src/installer.c:
+	* nautilus-installer/src/prescript:
+
+	Text changes from Vera.
+
+	* nautilus-installer/src/bootstrap-background.xpm:
+	* nautilus-installer/src/error-symbol.xpm:
+
+	Fix names in Arlo's new icons.
+
 2001-02-22  John Harper  <jsh@eazel.com>
 
 	Fixed bug 6764 (Double-clicking a folder with an already-open
@@ -7,7 +36,7 @@
 	(nautilus_gtk_window_present): ensure that the window is on the
 	current desktop
 
- 2001-02-22  Rebecca Schulman  <rebecka@eazel.com>
+2001-02-22  Rebecca Schulman  <rebecka@eazel.com>
  	Fix bugzilla.eazel.com bug 6290, that loading
  	a large directory in the list view hangs nautilus.
  	I've improved this aspect of performance, by 
@@ -818,6 +847,9 @@ Thu Feb 22 21:22:58 2001  George Lebl <jirka@5z.com>
 
 	* components/services/install/lib/eazel-install-corba-callback.c:
 	(impl_install_failed), (impl_uninstall_failed):
+
+	Change direct casts to GtkObject-style casts.
+
 	* components/services/install/nautilus-view/forms.c:
 	(make_query_box):
 

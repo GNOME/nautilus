@@ -65,13 +65,14 @@ struct NautilusRPMViewDetails {
 	GtkVBox   *package_container;
 	GtkWidget *go_to_button;
 	
-	GtkWidget *package_file_list;
+	GtkWidget *package_file_tree;
+	GNode *filename_tree;
+	GtkCTreeNode *selected_file;
 	gboolean  package_installed;
 	
 	int background_connection;
 	int file_count;
 	int last_file_index;
-	int selected_file;	
 
 	gboolean verify_success;
 

@@ -517,7 +517,7 @@ g_warning ("done: panic!");
 	view->details->current_rpm = NULL;
 
 	if (view->details->cancelled) {
-		message = _("Installation aborted.");
+		message = _("Installation cancelled.");
 	} else if (view->details->already_installed) {
 		message = _("This package has already been installed.");
 	} else if (success) {
