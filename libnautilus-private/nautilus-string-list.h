@@ -43,6 +43,7 @@ NautilusStringList *nautilus_string_list_new_from_string_list (const NautilusStr
 NautilusStringList *nautilus_string_list_new_from_tokens      (const char               *string,
 							       const char               *delimiter);
 
+
 /* Free a string list */
 void                nautilus_string_list_free                 (NautilusStringList       *string_list);
 
@@ -55,17 +56,19 @@ void                nautilus_string_list_clear                (NautilusStringLis
 /* Access the nth string in the collection.  Returns an strduped string. */
 gchar *             nautilus_string_list_nth                  (const NautilusStringList *string_list,
 							       guint                     n);
-
 /* Does the string list contain the given string ? */
 gboolean            nautilus_string_list_contains             (const NautilusStringList *string_list,
 							       const char               *string);
-
 /* How many strings are currently in the collection ? */
 guint               nautilus_string_list_get_length           (const NautilusStringList *string_list);
 
 /* Does the string list a equal string list b ? */
 gboolean            nautilus_string_list_equals               (const NautilusStringList *a,
 							       const NautilusStringList *b);
+
+/* Return the string list in a GList.  Must deep free the result with nautilus_g_list_free_deep() */
+GList *             nautilus_string_list_as_g_list            (const NautilusStringList *string_list);
+
 
 #endif /* NAUTILUS_STRING_LIST_H */
 

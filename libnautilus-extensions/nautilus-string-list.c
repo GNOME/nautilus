@@ -23,11 +23,13 @@
 */
 
 #include <config.h>
+
 #include "nautilus-string-list.h"
 
-#include "nautilus-glib-extensions.h"
 #include <string.h>
+#include "nautilus-glib-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
+#include "nautilus-string.h"
 
 static gboolean supress_out_of_bounds_warning;
 
@@ -232,6 +234,29 @@ nautilus_string_list_equals (const NautilusStringList *a,
 	return a_iterator == NULL && b_iterator == NULL;
 }
 
+/**
+ * nautilus_string_list_as_g_list:
+ *
+ * @string_list: A NautilusStringList
+ *
+ * Return value: A GList of strings that must deep free the result with
+ * nautilus_g_list_free_deep()
+ */
+GList *
+nautilus_string_list_as_g_list (const NautilusStringList *string_list)
+{
+	guint i;
+	GList *copy = NULL;
+
+	g_return_val_if_fail (string_list != NULL, NULL);
+
+	for (i = 0; i < nautilus_string_list_get_length (string_list); i++) {
+		copy = g_list_append (copy, nautilus_string_list_nth (string_list, i));
+	}
+
+	return copy;
+}
+
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
@@ -335,6 +360,46 @@ nautilus_self_check_string_list (void)
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (single), 1);
 
 	nautilus_string_list_free (single);
+
+
+	/*
+	 * nautilus_string_list_as_g_list
+	 */
+	{
+		guint			i;
+		GList			*glist;
+		GList			*glist_iterator;
+		NautilusStringList	*string_list;
+
+		string_list = nautilus_string_list_new ();
+		
+		nautilus_string_list_insert (string_list, "orange");
+		nautilus_string_list_insert (string_list, "apple");
+		nautilus_string_list_insert (string_list, "strawberry");
+		nautilus_string_list_insert (string_list, "cherry");
+		nautilus_string_list_insert (string_list, "bananna");
+		nautilus_string_list_insert (string_list, "watermelon");
+		
+		glist = nautilus_string_list_as_g_list (string_list);
+
+		NAUTILUS_CHECK_BOOLEAN_RESULT (g_list_length (glist) == nautilus_string_list_get_length (string_list),
+					       TRUE);
+
+		for (i = 0, glist_iterator = glist;
+		     i < nautilus_string_list_get_length (string_list); 
+		     i++, glist_iterator = glist_iterator->next) {
+			char *s1 = nautilus_string_list_nth (string_list, i);
+			const char *s2 = (const char *) glist_iterator->data;
+
+			NAUTILUS_CHECK_INTEGER_RESULT (nautilus_strcmp (s1, s2), 0);
+
+			g_free (s1);
+		}
+
+		nautilus_string_list_free (string_list);
+
+		nautilus_g_list_free_deep (glist);
+	}
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */
