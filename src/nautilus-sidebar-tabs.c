@@ -87,10 +87,6 @@ static int      draw_or_hit_test_all_tabs            (NautilusIndexTabs      *in
 static TabItem* tab_item_find_by_name                (NautilusIndexTabs      *index_tabs,
 						      const char             *name);
 
-/* static variables */
-
-static GdkFont *tab_font;
-
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIndexTabs, nautilus_index_tabs, GTK_TYPE_WIDGET)
 
 static void
@@ -106,12 +102,6 @@ nautilus_index_tabs_initialize_class (NautilusIndexTabsClass *class)
 	widget_class->expose_event = nautilus_index_tabs_expose;
 	widget_class->size_request = nautilus_index_tabs_size_request;
 	widget_class->size_allocate = nautilus_index_tabs_size_allocate;
-		
-	/* load the font */
-	/* FIXME bugzilla.eazel.com 667: 
-	 * this shouldn't be hardwired - it should be fetched from preferences 
-	 */
-	tab_font = gdk_font_load ("-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");
 }
 
 /* utilities to set up the text color alternatives */
@@ -284,7 +274,7 @@ draw_one_tab (NautilusIndexTabs *index_tabs, GdkGC *gc,
 	g_assert (NAUTILUS_IS_INDEX_TABS (index_tabs));
 
 	/* measure the name and compute the bounding box */
-	name_width = gdk_string_width (tab_font, tab_name);
+	name_width = gdk_string_width (GTK_WIDGET (index_tabs)->style->font, tab_name);
 	total_width = name_width + 2*TAB_MARGIN;
 
 	widget = GTK_WIDGET (index_tabs);
@@ -312,7 +302,9 @@ draw_one_tab (NautilusIndexTabs *index_tabs, GdkGC *gc,
 	/* draw the metaview name */
 	text_y_offset = y + (TAB_HEIGHT >> 1) + 5;  
 	gdk_gc_set_foreground (gc, prelight_flag ? &index_tabs->details->prelit_text_color : &index_tabs->details->text_color);  
-	gdk_draw_string (widget->window, tab_font, gc, x + TAB_MARGIN, text_y_offset, tab_name);
+	gdk_draw_string (widget->window,
+			 GTK_WIDGET (index_tabs)->style->font,
+			 gc, x + TAB_MARGIN, text_y_offset, tab_name);
 	
 	
 	/* draw the bottom lines */
@@ -357,7 +349,8 @@ draw_or_hit_test_all_tabs (NautilusIndexTabs *index_tabs, gboolean draw_flag, in
 		if (index_tabs->details->title == NULL) {
 			return -1;
 		}
-		name_width = gdk_string_width (tab_font, index_tabs->details->title);
+		name_width = gdk_string_width (GTK_WIDGET (index_tabs)->style->font,
+					       index_tabs->details->title);
 		index_tabs->details->total_height = total_height;
 		if ((test_x >= TITLE_TAB_OFFSET) && (test_x < (TITLE_TAB_OFFSET + name_width + edge_width))) {
 			return 0;
@@ -383,7 +376,8 @@ draw_or_hit_test_all_tabs (NautilusIndexTabs *index_tabs, gboolean draw_flag, in
 			tab_width = draw_one_tab(index_tabs, temp_gc, this_item->tab_text, x_pos, y_pos, this_item->prelit);
 		else {   
 			int edge_width = 2 * TAB_MARGIN;
-			name_width = gdk_string_width(tab_font, this_item->tab_text);
+			name_width = gdk_string_width(GTK_WIDGET (index_tabs)->style->font,
+						      this_item->tab_text);
 			tab_width = name_width + edge_width;
 			if (!draw_flag && (test_y >= y_pos) && (test_y <= (y_pos + TAB_HEIGHT)) &&
 			    (test_x >= x_pos) && (test_x <= x_pos + tab_width))	  

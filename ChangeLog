@@ -1,3 +1,12 @@
+2000-05-31  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* src/nautilus-sidebar-tabs.c:
+	(nautilus_index_tabs_initialize_class), (draw_one_tab),
+	(draw_or_hit_test_all_tabs):
+
+	Honor the gtkstyle font instead of hacking in our own.  Part of
+	bug 667.
+	
 2000-05-31  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-program-chooser.c:
