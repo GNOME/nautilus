@@ -943,14 +943,15 @@ fm_directory_view_real_append_selection_context_menu_items (FMDirectoryView *vie
 						       	    GList *files)
 {
 	GtkWidget *menu_item;
-	gboolean exactly_one_item_selected;
+	int item_count;
+	char *label_string;
 
-	g_assert (g_list_length (files) >= 1);
+	item_count = g_list_length (files);
+	
+	g_assert (item_count >= 1);
 
-	exactly_one_item_selected = g_list_length (files) == 1;
-
-	menu_item = gtk_menu_item_new_with_label ("Open");
-	if (!exactly_one_item_selected)
+	menu_item = gtk_menu_item_new_with_label (_("Open"));
+	if (item_count > 1)
 	{
 		/* Can only open a single item in the same window */
 		gtk_widget_set_sensitive (menu_item, FALSE);
@@ -967,7 +968,13 @@ fm_directory_view_real_append_selection_context_menu_items (FMDirectoryView *vie
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
-	menu_item = gtk_menu_item_new_with_label ("Open in New Window");
+	if (item_count == 1) {
+		label_string = g_strdup (_("Open in New Window"));
+	} else {
+		label_string = g_strdup_printf (_("Open in %d New Windows"), item_count);
+	}
+	menu_item = gtk_menu_item_new_with_label (label_string);
+	g_free (label_string);
 	/* Store directory view in menu item so callback can access it. */
 	gtk_object_set_data_full (GTK_OBJECT (menu_item), "directory_view",
 				  view, (GtkDestroyNotify) gtk_object_unref);
@@ -977,7 +984,7 @@ fm_directory_view_real_append_selection_context_menu_items (FMDirectoryView *vie
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
-	menu_item = gtk_menu_item_new_with_label ("Delete");
+	menu_item = gtk_menu_item_new_with_label (_("Delete"));
 	gtk_widget_set_sensitive (menu_item, FALSE);
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
