@@ -849,10 +849,11 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 			    "zoom_to_fit", 
 			    zoomable_zoom_to_fit_callback,
 			    directory_view);
-	gtk_signal_connect (GTK_OBJECT(nautilus_trash_monitor_get ()),
-			    "trash_state_changed",
-			    fm_directory_view_trash_state_changed_callback,
-			    directory_view);
+	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_trash_monitor_get ()),
+				        "trash_state_changed",
+				        fm_directory_view_trash_state_changed_callback,
+				        directory_view,
+				        GTK_OBJECT (directory_view));
 
 	gtk_widget_show (GTK_WIDGET (directory_view));
 

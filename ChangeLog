@@ -1,3 +1,11 @@
+2000-08-09  Pavel Cisler  <pavel@eazel.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize):
+	John helped me fix a crasher in trash empty state notification --
+	signals were being delivered to nonexistent objects, used
+	gtk_signal_connect_while_alive instead to fix things.
+
 2000-08-09  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-file.c:
