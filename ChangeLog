@@ -1,3 +1,21 @@
+2001-02-16  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/image-viewer/nautilus-image-view.c:
+	(zoomable_zoom_to_fit_callback), (rezoom_control),
+	(control_size_allocate_callback), (image_fits_in_container),
+	(scrolled_window_size_allocate_callback),
+	(scrollable_control_factory):
+	fixed a bunch of problems in the image view, including making
+	the initial shrink-to-fit feature work again, made unneccessary
+	scroll bars go away by using GTK_POLICY_AUTOMATIC, improved the
+	scaling to Arlo's taste by using GDK_INTERP_BILINEAR, and tweaked
+	the scale factors, plus other clean-ups.
+	
+	* src/nautilus-zoom-control.c: (create_zoom_menu_item):
+	fixed bug 6288, bogus zoom levels displayed in zoom control, by making
+	the rounding algorithm used in the menu consistent with the one
+	used in the control.
+	
 2001-02-16  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

@@ -573,7 +573,8 @@ create_zoom_menu_item (GtkMenu *menu, GtkWidget *widget, float zoom_level,
 	double    *zoom_level_ptr;
 	NautilusZoomControl *zoom_control;
 	GSList	  *radio_item_group;
-
+	int	  percent;
+	
 	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
 
 	/* Set flag so that callback isn't activated when set_active called
@@ -584,7 +585,8 @@ create_zoom_menu_item (GtkMenu *menu, GtkWidget *widget, float zoom_level,
 	/* This is marked for localization in case the % sign is not
 	 * appropriate in some locale. I guess that's unlikely.
 	 */
-	item_text = g_strdup_printf (_("%.0f%%"), 100.0 * zoom_level);
+	percent = floor((100.0 * zoom_level) + .5);
+	item_text = g_strdup_printf (_("%d%%"), percent);
 
 	radio_item_group = previous_radio_item == NULL
 		? NULL
