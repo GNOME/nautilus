@@ -527,6 +527,40 @@ set_dummy_initial_view_as_menu (NautilusWindow *window)
 }
 
 static void
+nautilus_window_set_up_sidebar (NautilusWindow *window)
+{
+	window->sidebar = nautilus_sidebar_new ();
+
+	if (window->details->location != NULL &&
+	    window->details->title != NULL) {
+		nautilus_sidebar_set_uri (window->sidebar,
+					  window->details->location,
+					  window->details->title);
+	}
+	
+	g_signal_connect_object (window->sidebar, "location_changed",
+				 G_CALLBACK (go_to_callback), window, 0);
+	gtk_paned_pack1 (GTK_PANED (window->content_hbox),
+			 GTK_WIDGET (window->sidebar),
+			 FALSE, TRUE);
+	
+	nautilus_sidebar_setup_width (window->sidebar);
+
+	/* Set up the sidebar panels. */
+	update_sidebar_panels_from_preferences (window);
+
+	gtk_widget_show (GTK_WIDGET (window->sidebar));
+}
+
+static void
+nautilus_window_tear_down_sidebar (NautilusWindow *window)
+{
+	nautilus_window_set_sidebar_panels (window, NULL);
+	gtk_widget_destroy (GTK_WIDGET (window->sidebar));
+	window->sidebar = NULL;
+}
+
+static void
 nautilus_window_constructed (NautilusWindow *window)
 {
 	GtkWidget *location_bar_box;
@@ -624,16 +658,9 @@ nautilus_window_constructed (NautilusWindow *window)
 	
 		window->content_hbox = nautilus_horizontal_splitter_new ();
 
-		/* set up the sidebar */
-		window->sidebar = nautilus_sidebar_new ();
-		gtk_widget_show (GTK_WIDGET (window->sidebar));
-		g_signal_connect_object (window->sidebar, "location_changed",
-					 G_CALLBACK (go_to_callback), window, 0);
-		gtk_paned_pack1 (GTK_PANED (window->content_hbox),
-				 GTK_WIDGET (window->sidebar),
-				 FALSE, TRUE);
-
-		nautilus_sidebar_setup_width (window->sidebar);
+		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR)) {
+			nautilus_window_set_up_sidebar (window);
+		}
 	}
 
 	gtk_widget_show (window->content_hbox);
@@ -681,9 +708,6 @@ nautilus_window_constructed (NautilusWindow *window)
 
 	/* Set up undo manager */
 	nautilus_undo_manager_attach (window->application->undo_manager, G_OBJECT (window));	
-
-	/* Set up the sidebar panels. */
-	update_sidebar_panels_from_preferences (window);
 
 	/* Register that things may be dragged from this window */
 	nautilus_drag_window_register (GTK_WINDOW (window));
@@ -1940,19 +1964,27 @@ nautilus_window_hide_sidebar (NautilusWindow *window)
 	if (window->sidebar == NULL) {
 		return;
 	}
+
+	nautilus_window_tear_down_sidebar (window);
+#if 0
 	nautilus_horizontal_splitter_hide
 		(NAUTILUS_HORIZONTAL_SPLITTER (window->content_hbox));
+#endif
 	nautilus_window_update_show_hide_menu_items (window);
 }
 
 void 
 nautilus_window_show_sidebar (NautilusWindow *window)
 {
-	if (window->sidebar == NULL) {
+	if (window->sidebar != NULL) {
 		return;
 	}
+
+	nautilus_window_set_up_sidebar (window);
+#if 0	
 	nautilus_horizontal_splitter_show
 		(NAUTILUS_HORIZONTAL_SPLITTER (window->content_hbox));
+#endif
 	nautilus_window_update_show_hide_menu_items (window);
 }
 
@@ -1961,7 +1993,7 @@ nautilus_window_sidebar_showing (NautilusWindow *window)
 {
 	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), FALSE);
 
-	return GTK_IS_PANED (window->content_hbox) 
+	return (window->sidebar != NULL) && GTK_IS_PANED (window->content_hbox) 
 		&& nautilus_horizontal_splitter_is_hidden (NAUTILUS_HORIZONTAL_SPLITTER (window->content_hbox));
 }
 

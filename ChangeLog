@@ -1,5 +1,16 @@
 2002-03-11  Anders Carlsson  <andersca@gnu.org>
 
+	* src/nautilus-window.c: (nautilus_window_set_up_sidebar),
+	(nautilus_window_tear_down_sidebar), (nautilus_window_constructed),
+	(nautilus_window_hide_sidebar), (nautilus_window_show_sidebar),
+	(nautilus_window_sidebar_showing):
+	Only create the sidebar if the "Display sidebar in new windows" 
+	preference is turned on, otherwise create it when user activates
+	"Show sidebar" and destroy it when user activates "Hide sidebar".
+	This fixes #72595.
+
+2002-03-11  Anders Carlsson  <andersca@gnu.org>
+
 	* src/file-manager/fm-directory-view.c: (process_old_files),
 	(queue_pending_files), (fm_directory_view_can_rename_file),
 	(can_rename_file), (start_renaming_file),
