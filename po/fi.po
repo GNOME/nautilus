@@ -20,8 +20,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-02-26 23:21+0200\n"
-"PO-Revision-Date: 2001-01-11 20:44+02:00\n"
+"POT-Creation-Date: 2001-03-08 00:26-0500\n"
+"PO-Revision-Date: 2001-03-08 00:39-05:00\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@saunalahti.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -35,6 +35,31 @@ msgstr "Ei voi luoda nautilus-launcher-appletia!"
 #: applets/preferences-applet/nautilus-preferences-applet.c:211
 msgid "Can't create nautilus-preferences-applet!"
 msgstr "Ei voi luoda nautilus-preferences-appletia!"
+
+#: applets/preferences-applet/nautilus-preferences-applet.c:226
+#, fuzzy
+msgid "Show Desktop"
+msgstr "Työpöytä"
+
+#: applets/preferences-applet/nautilus-preferences-applet.c:230
+#, fuzzy
+msgid "Smooth Graphics"
+msgstr "Pehmeämmät grafiikat"
+
+#: applets/preferences-applet/nautilus-preferences-applet.c:243
+#: src/nautilus-application.c:639
+msgid "Quit"
+msgstr "Lopeta"
+
+#: applets/preferences-applet/nautilus-preferences-applet.c:251
+#, fuzzy
+msgid "Start"
+msgstr "Tila"
+
+#: applets/preferences-applet/nautilus-preferences-applet.c:259
+#, fuzzy
+msgid "Restart"
+msgstr "Retro"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -92,6 +117,18 @@ msgstr "%lu Gt"
 msgid "Hardware Overview"
 msgstr "Laitteisto"
 
+#: components/hardware/nautilus-hardware-view.c:520
+msgid "This is a placeholder for the CPU page."
+msgstr ""
+
+#: components/hardware/nautilus-hardware-view.c:545
+msgid "This is a placeholder for the RAM page."
+msgstr ""
+
+#: components/hardware/nautilus-hardware-view.c:570
+msgid "This is a placeholder for the IDE page."
+msgstr ""
+
 #: components/hardware/Nautilus_View_hardware.oaf.in.h:2
 #: components/hardware/nautilus-hardware-view.c:631
 #: data/static_bookmarks.xml.h:16
@@ -118,18 +155,18 @@ msgstr "Näytä laitteisto"
 msgid "hardware view"
 msgstr "laitteistonäkymä"
 
-#: components/help/converters/gnome-db2html2/gdb3html.c:710
+#: components/help/converters/gnome-db2html2/gdb3html.c:712
 #: components/music/nautilus-music-view.c:1512
 msgid "Previous"
 msgstr "Edellinen"
 
-#: components/help/converters/gnome-db2html2/gdb3html.c:719
-#: libnautilus-extensions/nautilus-global-preferences.c:684
+#: components/help/converters/gnome-db2html2/gdb3html.c:721
+#: libnautilus-extensions/nautilus-global-preferences.c:686
 #: src/nautilus-shell-ui.xml.h:38
 msgid "Home"
 msgstr "Koti"
 
-#: components/help/converters/gnome-db2html2/gdb3html.c:728
+#: components/help/converters/gnome-db2html2/gdb3html.c:730
 #: components/music/nautilus-music-view.c:1568
 msgid "Next"
 msgstr "Seuraava"
@@ -257,64 +294,77 @@ msgstr "LIITE"
 #. GNU Public  License  and  many  people  are
 #. working on changes to the kernel)
 #. **
-#: components/help/hyperbola-filefmt.c:503
-#: components/help/hyperbola-filefmt.c:505
-#: components/help/hyperbola-filefmt.c:509
-#: components/help/hyperbola-filefmt.c:511
-#: components/help/hyperbola-filefmt.c:515
+#: components/help/hyperbola-filefmt.c:530
+#: components/help/hyperbola-filefmt.c:532
+#: components/help/hyperbola-filefmt.c:534
+#: components/help/hyperbola-filefmt.c:536
+#: components/help/hyperbola-filefmt.c:537
+#: components/help/hyperbola-filefmt.c:538
+#: components/help/hyperbola-filefmt.c:539
+#: components/help/hyperbola-filefmt.c:541
+#: components/help/hyperbola-filefmt.c:543
 msgid "Manual"
 msgstr "Manuaalisivut"
 
-#: components/help/hyperbola-filefmt.c:505
-msgid "System"
-msgstr "Järjestelmä"
-
-#: components/help/hyperbola-filefmt.c:505
-msgid "Configuration"
-msgstr "Asetukset"
-
-#: components/help/hyperbola-filefmt.c:505
-msgid "Config files"
-msgstr "Asetustiedostot"
-
-#: components/help/hyperbola-filefmt.c:509
-#: components/help/hyperbola-filefmt.c:833 data/linksets/apps.xml.h:1
+#: components/help/hyperbola-filefmt.c:530
+#: components/help/hyperbola-filefmt.c:861 data/linksets/apps.xml.h:1
 msgid "Applications"
 msgstr "Sovellukset"
 
-#: components/help/hyperbola-filefmt.c:509
-msgid "Command Line"
-msgstr "Komentorivi"
-
-#: components/help/hyperbola-filefmt.c:511
-#: components/help/hyperbola-filefmt.c:515
+#: components/help/hyperbola-filefmt.c:532
+#: components/help/hyperbola-filefmt.c:534
+#: components/help/hyperbola-filefmt.c:536
+#: components/help/hyperbola-filefmt.c:543
 msgid "Development"
 msgstr "Ohjelmointi"
 
-#: components/help/hyperbola-filefmt.c:511
-#: components/help/hyperbola-filefmt.c:515
-msgid "APIs"
-msgstr "Ohjelmointirajapinnat"
-
-#: components/help/hyperbola-filefmt.c:511
-msgid "Miscellaneous"
-msgstr "Sekalaista"
-
-#: components/help/hyperbola-filefmt.c:515
+#: components/help/hyperbola-filefmt.c:532
 msgid "System Calls"
 msgstr "Järjestelmäkutsut"
 
-#: components/help/hyperbola-filefmt.c:675
+#: components/help/hyperbola-filefmt.c:534
+msgid "Library Functions"
+msgstr ""
+
+#: components/help/hyperbola-filefmt.c:536
+#, fuzzy
+msgid "Devices"
+msgstr "Palvelut"
+
+#: components/help/hyperbola-filefmt.c:537
+#, fuzzy
+msgid "Configuration Files"
+msgstr "Asetukset"
+
+#: components/help/hyperbola-filefmt.c:538
+#, fuzzy
+msgid "Games"
+msgstr "Peli"
+
+#: components/help/hyperbola-filefmt.c:539
+#, fuzzy
+msgid "Conventions"
+msgstr "Sisältö:"
+
+#: components/help/hyperbola-filefmt.c:541
+msgid "System Administration"
+msgstr ""
+
+#: components/help/hyperbola-filefmt.c:543
+msgid "Kernel Routines"
+msgstr ""
+
+#: components/help/hyperbola-filefmt.c:703
 #: libnautilus-extensions/nautilus-stock-dialogs.c:510
 #: libnautilus-extensions/nautilus-stock-dialogs.c:548
 msgid "Info"
 msgstr "Info-sivut"
 
-#: components/help/hyperbola-nav-tree.c:277
+#: components/help/hyperbola-nav-tree.c:279
 msgid "Introductory Documents:"
 msgstr "Johdantoasiakirjat:"
 
-#: components/help/hyperbola-nav-tree.c:291
+#: components/help/hyperbola-nav-tree.c:293
 msgid "Documents by Subject:"
 msgstr "Asiakirjat aiheen mukaan:"
 
@@ -445,7 +495,7 @@ msgstr "Sulje hukkasisältönäkymä"
 #: components/loser/content/nautilus-content-loser-ui.xml.h:3
 #: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
 #: components/sample/nautilus-sample-content-view-ui.xml.h:4
-#: src/nautilus-shell-ui.xml.h:82
+#: src/nautilus-shell-ui.xml.h:85
 msgid "_File"
 msgstr "_Tiedosto"
 
@@ -695,19 +745,20 @@ msgid "Cyrillic (ISO-IR-111)"
 msgstr "Kyrillinen (ISO-IR-111)"
 
 #: components/mozilla/nautilus-mozilla-encoding-tables.c:78
-msgid "Cyrillic (KOI8-R)"
-msgstr "Kyrillinen (KOI8-R)"
-
-#: components/mozilla/nautilus-mozilla-encoding-tables.c:79
 msgid "Cyrillic (MacCyrillic)"
 msgstr "Kyrillinen (MacCyrillic)"
 
-#: components/mozilla/nautilus-mozilla-encoding-tables.c:80
+#: components/mozilla/nautilus-mozilla-encoding-tables.c:79
 msgid "Cyrillic (Windows-1251)"
 msgstr "Kyrillinen (Windows-1251)"
 
-#: components/mozilla/nautilus-mozilla-encoding-tables.c:81
+#: components/mozilla/nautilus-mozilla-encoding-tables.c:80
 msgid "Cyrillic/Russian (IBM-866)"
+msgstr "Kyrillinen/venäläinen (IBM-866)"
+
+#: components/mozilla/nautilus-mozilla-encoding-tables.c:81
+#, fuzzy
+msgid "Cyrillic/Russian (KOI8-R)"
 msgstr "Kyrillinen/venäläinen (IBM-866)"
 
 #: components/mozilla/nautilus-mozilla-encoding-tables.c:82
@@ -886,19 +937,22 @@ msgstr "x-imap4-modified-utf7"
 msgid "x-u-escaped"
 msgstr "x-u-escaped"
 
-#: components/mozilla/nautilus-mozilla-content-view.c:842
+#: components/mozilla/nautilus-mozilla-content-view.c:809
+#, fuzzy
 msgid ""
-"A Javascript function (small software program) on this page tried to open a "
+"A JavaScript function (small software program) on this page tried to open a "
 "new window, but nautilus does not support the opening of new windows by "
-"Javascript.\n"
+"JavaScript.\n"
 "\n"
 "Try viewing the page in a different web browser, such as Mozilla or Netscape."
 msgstr ""
-"Javascript-funktio (pieni ohjelma) tällä sivulla yritti avata uuden ikkunan, mutta Nautilus ei tue tätä ominaisuutta, joten se ei onnistunut.\n"
+"Javascript-funktio (pieni ohjelma) tällä sivulla yritti avata uuden ikkunan, "
+"mutta Nautilus ei tue tätä ominaisuutta, joten se ei onnistunut.\n"
 "\n"
-"Yritä katsoa tätä sivua toisella WWW-selaimella, kuten Mozillalla tai Netscapella."
+"Yritä katsoa tätä sivua toisella WWW-selaimella, kuten Mozillalla tai "
+"Netscapella."
 
-#: components/mozilla/nautilus-mozilla-content-view.c:843
+#: components/mozilla/nautilus-mozilla-content-view.c:810
 msgid "Nautilus Mozilla View Warning"
 msgstr "Nautiluksen Mozilla-näkymän varoitus"
 
@@ -983,6 +1037,7 @@ msgid "Oldies"
 msgstr "Klassikot"
 
 #: components/music/mpg123.c:32
+#: libnautilus-extensions/nautilus-font-picker.c:115
 msgid "Other"
 msgstr "Muu"
 
@@ -1576,7 +1631,7 @@ msgid "Sorry, but '%s' is not a usable image file."
 msgstr "'%s' ei ole kelvollinen kuvatiedosto."
 
 #: components/music/nautilus-music-view.c:696
-#: src/nautilus-property-browser.c:1055 src/nautilus-property-browser.c:1307
+#: src/nautilus-property-browser.c:1060 src/nautilus-property-browser.c:1312
 msgid "Not an Image"
 msgstr "Ei ole kuva"
 
@@ -1625,7 +1680,7 @@ msgstr "Keskeytä"
 #: libnautilus-extensions/nautilus-file-operations.c:945
 #: libnautilus-extensions/nautilus-file-operations.c:960
 #: libnautilus-extensions/nautilus-file-operations.c:979
-#: src/nautilus-shell-ui.xml.h:58
+#: src/nautilus-shell-ui.xml.h:60
 msgid "Stop"
 msgstr "Pysäytä"
 
@@ -1675,6 +1730,23 @@ msgstr "Musiikkinäkymätehdas"
 msgid "View as Music"
 msgstr "Näytä musiikkina"
 
+#. FIXME: eventually, get this from preferences
+#. set up the default font
+#: components/notes/nautilus-notes.c:200
+#: components/text/nautilus-text-view.c:186
+#: libnautilus-extensions/nautilus-global-preferences.c:1118
+#: libnautilus-extensions/nautilus-icon-container.c:3332
+#: libnautilus-extensions/nautilus-icon-container.c:3333
+#: libnautilus-extensions/nautilus-icon-container.c:3334
+#: libnautilus-extensions/nautilus-icon-container.c:3335
+#: libnautilus-extensions/nautilus-icon-container.c:3336
+#: libnautilus-extensions/nautilus-icon-container.c:3337
+#: libnautilus-extensions/nautilus-icon-container.c:3338
+#: libnautilus-extensions/nautilus-preferences-item.c:482
+#: src/nautilus-sidebar-title.c:495
+msgid "helvetica"
+msgstr "helvetica"
+
 #: components/notes/Nautilus_View_notes.oaf.in.h:1
 msgid "Factory for annotation view"
 msgstr "Tehdas, joka tuottaa huomautusnäkymiä"
@@ -1686,194 +1758,6 @@ msgstr "Muistiinpanosivupaneeli"
 #: components/notes/Nautilus_View_notes.oaf.in.h:4
 msgid "Notes sidebar panel for Nautilus"
 msgstr "Nautiluksen muistiinpanosivupaneeli"
-
-#. set up the window title
-#: components/rpmview/nautilus-rpm-verify-window.c:183
-#, c-format
-msgid "Verifying %s..."
-msgstr "Tarkistaa %s..."
-
-#: components/rpmview/nautilus-rpm-verify-window.c:207
-#, c-format
-msgid "Failed on \"%s\""
-msgstr "Virhe tiedoston \"%s\" kohdalla"
-
-#. TRANSLATORS: this is printed while verifying files from packages,
-#. %s is the filename, %d/%d is filenumber of total-number-of-files
-#: components/rpmview/nautilus-rpm-verify-window.c:211
-#, c-format
-msgid "Checking \"%s\" (%ld/%ld)"
-msgstr "\"%s\" (%ld/%ld) tarkistuu"
-
-#: components/rpmview/nautilus-rpm-view.c:122
-msgid "Package Contents"
-msgstr "Paketin sisältö"
-
-#. allocate the name field
-#: components/rpmview/nautilus-rpm-view.c:169
-msgid "Package Title"
-msgstr "Paketin nimi"
-
-#: components/rpmview/nautilus-rpm-view.c:190
-msgid "Installed Size: "
-msgstr "Asennettu koko: "
-
-#: components/rpmview/nautilus-rpm-view.c:196
-msgid "<size>"
-msgstr "<koko>"
-
-#: components/rpmview/nautilus-rpm-view.c:202
-msgid "Install Date: "
-msgstr "Asennuspäivämäärä: "
-
-#: components/rpmview/nautilus-rpm-view.c:208
-#: components/rpmview/nautilus-rpm-view.c:220
-#: components/rpmview/nautilus-rpm-view.c:232
-#: components/rpmview/nautilus-rpm-view.c:244
-#: components/rpmview/nautilus-rpm-view.c:256
-msgid "<unknown>"
-msgstr "<tuntematon>"
-
-#: components/rpmview/nautilus-rpm-view.c:214
-msgid "License: "
-msgstr "Lisenssi: "
-
-#: components/rpmview/nautilus-rpm-view.c:226
-msgid "Build Date: "
-msgstr "Tekopäivämäärä: "
-
-#: components/rpmview/nautilus-rpm-view.c:238
-msgid "Distribution: "
-msgstr "Jakelu: "
-
-#: components/rpmview/nautilus-rpm-view.c:250
-msgid "Vendor: "
-msgstr "Toimittaja: "
-
-#: components/rpmview/nautilus-rpm-view.c:283
-#: components/services/install-view/Nautilus_View_install.oaf.in.h:1
-#: components/services/install/server/Trilobite_Service_install.oaf.in.h:2
-#: components/services/summary/nautilus-summary-view.c:122
-msgid "Install"
-msgstr "Asenna"
-
-#: components/rpmview/nautilus-rpm-view.c:299
-msgid "Update"
-msgstr "Päivitä"
-
-#: components/rpmview/nautilus-rpm-view.c:308
-msgid "Uninstall"
-msgstr "Poista asennus"
-
-#: components/rpmview/nautilus-rpm-view.c:324
-msgid "Verify"
-msgstr "Tarkista"
-
-#: components/rpmview/nautilus-rpm-view.c:375
-msgid "Description"
-msgstr "Kuvaus"
-
-#: components/rpmview/nautilus-rpm-view.c:570
-#, c-format
-msgid "Package Contents: %d files"
-msgstr "Paketin sisältö: %d tiedostoa"
-
-#: components/rpmview/nautilus-rpm-view.c:576
-#, c-format
-msgid "Package \"%s\" "
-msgstr "Paketti \"%s\""
-
-#: components/rpmview/nautilus-rpm-view.c:762
-msgid "Verification completed, package ok."
-msgstr "Tarkistus valmis, paketti on kunnossa."
-
-#: components/rpmview/nautilus-rpm-view-install.c:119
-#, c-format
-msgid "%s would not work anymore\n"
-msgstr "%s ei toiminut enää\n"
-
-#: components/rpmview/nautilus-rpm-view-install.c:122
-#, c-format
-msgid "%s would break other installed packages\n"
-msgstr "%s rikkoisi muita asennettuja paketteja\n"
-
-#: components/rpmview/nautilus-rpm-view-install.c:127
-#, c-format
-msgid "%s is needed, but could not be found\n"
-msgstr "%s tarvitaan, mutta sitä ei löytynyt\n"
-
-#: components/rpmview/nautilus-rpm-view-install.c:132
-#, c-format
-msgid "%s was already installed\n"
-msgstr "Paketti %s on jo asennettu\n"
-
-#: components/rpmview/nautilus-rpm-view-install.c:135
-#, c-format
-msgid "%s causes a circular dependency problem\n"
-msgstr "%s aiheuttaa kehäriippuvuusongelman\n"
-
-#: components/rpmview/nautilus-rpm-view-install.c:140
-msgid "Cannot access the local package system\n"
-msgstr "Ei voi käyttää paikallista pakettijärjestelmää\n"
-
-#: components/rpmview/nautilus-rpm-view-install.c:156
-#, c-format
-msgid "Installing %s failed because of the following issue(s):\n"
-msgstr "Paketin %s asennus epäonnistui seuraavista syistä:\n"
-
-#: components/rpmview/nautilus-rpm-view-install.c:158
-#, c-format
-msgid "Uninstalling %s failed because of the following issue(s):\n"
-msgstr "Paketin %s asennuksen poisto epäonnistui seuraavista syistä:\n"
-
-#: components/rpmview/nautilus-rpm-view-install.c:278
-msgid "Uninstall failed..."
-msgstr "Asennuksen poistaminen epäonnistui..."
-
-#: components/rpmview/nautilus-rpm-view-install.c:279
-msgid "Uninstall Failed"
-msgstr "Asennuksen poistaminen epäonnistui"
-
-#: components/rpmview/nautilus-rpm-view-install.c:281
-msgid "Install failed..."
-msgstr "Asennus epäonnistui..."
-
-#: components/rpmview/nautilus-rpm-view-install.c:282
-msgid "Install Failed"
-msgstr "Asennus epäonnistui"
-
-#: components/rpmview/nautilus-rpm-view-install.c:342
-#: components/services/install-view/nautilus-service-install-view.c:514
-msgid "Incorrect password."
-msgstr "Väärä salasana."
-
-#: components/rpmview/Nautilus_View_rpm.oaf.in.h:1
-msgid "Factory for rpm view"
-msgstr "Tehdas, joka tuottaa RPM-näkymiä"
-
-#: components/rpmview/Nautilus_View_rpm.oaf.in.h:2
-msgid "Package"
-msgstr "Paketti"
-
-#: components/rpmview/Nautilus_View_rpm.oaf.in.h:3
-msgid "Package Viewer"
-msgstr "Pakettikatselin"
-
-#: components/rpmview/Nautilus_View_rpm.oaf.in.h:4
-msgid "RPM component"
-msgstr "RPM-komponentti"
-
-#: components/rpmview/Nautilus_View_rpm.oaf.in.h:5
-msgid "RPM view factory"
-msgstr "RPM-näkymätehdas"
-
-#: components/rpmview/Nautilus_View_rpm.oaf.in.h:6
-msgid "View as Package"
-msgstr "Näytä pakettina"
-
-#: components/rpmview/Nautilus_View_rpm.oaf.in.h:7
-msgid "rpm view"
-msgstr "RPM-näkymä"
 
 #: components/sample/nautilus-sample-content-view.c:136
 msgid "(none)"
@@ -1980,53 +1864,47 @@ msgid "RPM args are filename"
 msgstr "RPM-parametrit ovat tiedostojen nimiä"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:115
-msgid "Force install"
-msgstr "Asenna väkisin"
-
-#: components/services/install/command-line/eazel-alt-install-corba.c:116
 msgid "Use ftp"
 msgstr "Käytä ftp-protokollaa"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:117
+#: components/services/install/command-line/eazel-alt-install-corba.c:116
 msgid "Use local"
 msgstr "Asenna paikalliselta"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:118
+#: components/services/install/command-line/eazel-alt-install-corba.c:117
 msgid "Use http"
 msgstr "Käytä http-protokollaa"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:119
+#: components/services/install/command-line/eazel-alt-install-corba.c:118
 msgid "RPM args are Eazel Ids"
 msgstr "RPM-parametrit ovat Eazel-Id:itä"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:120
+#: components/services/install/command-line/eazel-alt-install-corba.c:119
 msgid "machine readable output"
 msgstr "koneen luettava tuloste"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:121
+#: components/services/install/command-line/eazel-alt-install-corba.c:120
 msgid "Don't print fancy percent output"
 msgstr "Älä näytä prosentteja hienosti"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:122
+#: components/services/install/command-line/eazel-alt-install-corba.c:121
 msgid "don't use eazel auth stuff"
 msgstr "älä käytä Eazelin todentamistavaraa"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:123
+#: components/services/install/command-line/eazel-alt-install-corba.c:122
 msgid "Specify package file"
 msgstr "Valitse pakettitiedosto"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:124
+#: components/services/install/command-line/eazel-alt-install-corba.c:123
 msgid "RPM args are needed files"
 msgstr "RPM-parametrit ovat tarvittavia tiedostoja"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:125
+#: components/services/install/command-line/eazel-alt-install-corba.c:124
 msgid "Run Query"
 msgstr "Tee kysely"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:126
-msgid "Revert"
-msgstr "Palauta"
-
+#. Disabled for 1.0
+#. {"revert", 'r', POPT_ARG_NONE, &arg_revert, 0, N_("Revert"), NULL},
 #: components/services/install/command-line/eazel-alt-install-corba.c:127
 msgid "Set root"
 msgstr "Aseta juurihakemisto"
@@ -2056,7 +1934,7 @@ msgid "Allow username"
 msgstr "Salli käyttäjätunnus"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:134
-#: components/services/install/lib/eazel-install-problem.c:1009
+#: components/services/install/lib/eazel-install-problem.c:1011
 msgid "Allow upgrades"
 msgstr "Salli päivitykset"
 
@@ -2068,152 +1946,170 @@ msgstr "Näytä lisätietoja"
 msgid "Install a specific package version"
 msgstr "Asenna tietty paketin versio"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:167
+#: components/services/install/command-line/eazel-alt-install-corba.c:159
 msgid "*** You cannot specify more then one protocol type.\n"
 msgstr "*** Voit antaa vain yhden protokollatyypin.\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:184
+#: components/services/install/command-line/eazel-alt-install-corba.c:176
 msgid "*** Erase and revert ?  Somebody set up us the bomb!\n"
 msgstr "*** Poista ja palauta?  Joku asetti meille pommin!\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:293
+#: components/services/install/command-line/eazel-alt-install-corba.c:285
 #, c-format
 msgid "File conflict checking %s...\n"
 msgstr "Tarkistaa tiedostoristiriitoja paketista %s...\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:307
+#: components/services/install/command-line/eazel-alt-install-corba.c:299
 #, c-format
 msgid "File uniqueness checking %s...\n"
 msgstr "Tarkistaa tiedostojen ainoutta paketista %s...\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:321
+#: components/services/install/command-line/eazel-alt-install-corba.c:313
 #, c-format
 msgid "Feature consistency checking %s...\n"
 msgstr "Tarkistaa ominaisuusyhtenäisyyttä paketista %s...\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:352
+#: components/services/install/command-line/eazel-alt-install-corba.c:344
 #: components/services/install/lib/eazel-install-protocols.c:110
 #: components/services/install/lib/eazel-install-protocols.c:248
 #, c-format
 msgid "Downloading %s..."
 msgstr "Haen %s..."
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:368
+#: components/services/install/command-line/eazel-alt-install-corba.c:360
 msgid "Downloading %s... (%d/%d) = %d%% %.1f KB/s"
 msgstr "Hakee paketin %s... (%d/%d) = %d%% %.1f kt/s"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:376
+#: components/services/install/command-line/eazel-alt-install-corba.c:368
 msgid "Downloading %s... (%d/%d) = %d%%"
 msgstr "Hakee paketin %s... (%d/%d) = %d%%"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:384
+#: components/services/install/command-line/eazel-alt-install-corba.c:376
 #, c-format
 msgid "Downloading %s... (%d/%d) %.1f KB/s Done      \n"
 msgstr "Hakee paketin %s... (%d/%d) %.1f kt/s valmis\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:389
+#: components/services/install/command-line/eazel-alt-install-corba.c:381
 #, c-format
 msgid "Downloading %s... %3.1f KB/s Done\n"
 msgstr "Hakee paketin %s... %3.1f kt/s valmis\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:417
+#: components/services/install/command-line/eazel-alt-install-corba.c:409
 msgid "Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 msgstr "Asentaa pakettia %s (%d/%d), (%d/%d)t - (%d/%d) = %d%%"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:425
+#: components/services/install/command-line/eazel-alt-install-corba.c:417
 msgid "Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 msgstr "Poistaa paketin %s asennusta (%d/%d), (%d/%d)t - (%d/%d) = %d%%"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:447
+#: components/services/install/command-line/eazel-alt-install-corba.c:439
 msgid "Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
 msgstr "Asentaa pakettia %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% valmis\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:454
-msgid "Unnstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
+#: components/services/install/command-line/eazel-alt-install-corba.c:446
+#, fuzzy
+msgid "Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
 msgstr "Poistaa paketin %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% valmis\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:462
+#: components/services/install/command-line/eazel-alt-install-corba.c:454
 msgid "Done\n"
 msgstr "Valmis\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:482
+#: components/services/install/command-line/eazel-alt-install-corba.c:474
 #, c-format
 msgid "Download of %s FAILED\n"
 msgstr "Paketin %s haku EPÄONNISTUI\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:602
+#: components/services/install/command-line/eazel-alt-install-corba.c:496
 #, c-format
 msgid "Package %s failed to uninstall.\n"
 msgstr "Paketin %s asennuksen poisto epäonnistui.\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:604
+#: components/services/install/command-line/eazel-alt-install-corba.c:498
 #, c-format
 msgid "Package %s failed to install.\n"
 msgstr "Paketin %s asennus epäonnistui.\n"
 
 #. I18N note: \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:625
-#: components/services/install/command-line/eazel-alt-install-corba.c:627
+#: components/services/install/command-line/eazel-alt-install-corba.c:519
 #, c-format
 msgid "\t· Problem : %s\n"
 msgstr "\t· Ongelma : %s\n"
 
 #. I18N note: \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:636
+#: components/services/install/command-line/eazel-alt-install-corba.c:528
 #, c-format
 msgid "\t· Action : %s\n"
 msgstr "\t· Toiminto : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:679
+#: components/services/install/command-line/eazel-alt-install-corba.c:571
 msgid "Cancelling operation\n"
 msgstr "Peruu toimintoa\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:690
+#: components/services/install/command-line/eazel-alt-install-corba.c:582
 #, c-format
 msgid "About to install a total of %d packages, %dKB\n"
 msgstr "Valmiina asentamaan yhteensä %d pakettia eli %dkt\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:694
+#: components/services/install/command-line/eazel-alt-install-corba.c:586
 #, c-format
 msgid "About to uninstall a total of %d packages, %dKB\n"
 msgstr "Valmiina poistamaan yhteensä %d:n paketin asennuksen eli %dkt\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:698
+#: components/services/install/command-line/eazel-alt-install-corba.c:590
 #, c-format
 msgid "About to revert a total of %d packages, %d KB\n"
 msgstr "Valmiina palauttamaan yhteensä %d pakettia eli %d kt\n"
 
 #. I18N note: %s is a package name, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:713
+#: components/services/install/command-line/eazel-alt-install-corba.c:607
 #, c-format
 msgid "\t· %s and it's dependencies\n"
 msgstr "\t· %s ja sen riippuvuudet\n"
 
 #. I18N note: %s is a package name, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:716
+#: components/services/install/command-line/eazel-alt-install-corba.c:610
 #, c-format
 msgid "\t· %s\n"
 msgstr "\t· %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:738
+#. I18N note: the (y/n) is translateable. There is later a 1 character
+#. string with the context "y" which is the "yes" indicator.
+#. If you eg. translate this to Danish : "Fortsæt (j/n) " and
+#. translated the "y" later to "j", da_DK users can respond with
+#. "j" "ja" "JA" etc.
+#: components/services/install/command-line/eazel-alt-install-corba.c:638
+msgid "Save transaction report ? (y/n) "
+msgstr ""
+
+#. I18N note: y is the letter for the word Yes. This is
+#. used in the response for a yes/no questions. Your translation
+#. must be 1 character only.
+#: components/services/install/command-line/eazel-alt-install-corba.c:649
+#: components/services/install/command-line/eazel-alt-install-corba.c:769
+#: components/services/install/command-line/eazel-alt-install-corba.c:811
+msgid "y"
+msgstr "k"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:670
 #, c-format
 msgid "Dependency : %s needs %s\n"
 msgstr "Riippuvuus : paketti %s tarvitsee %s\n"
 
 #. I18N note: %s is a package name
-#: components/services/install/command-line/eazel-alt-install-corba.c:756
+#: components/services/install/command-line/eazel-alt-install-corba.c:688
 #, c-format
 msgid "Package %s failed md5 check!\n"
 msgstr "Paketin %s failed md5 check!\n"
 
 #. I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:758
+#: components/services/install/command-line/eazel-alt-install-corba.c:690
 #, c-format
 msgid "\t· server MD5 checksum is %s\n"
 msgstr "\t· palvelimen MD5-tarkistussumma on %s\n"
 
 #. I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:760
+#: components/services/install/command-line/eazel-alt-install-corba.c:692
 #, c-format
 msgid "\t· actual MD5 checksum is %s\n"
 msgstr "\t· todellinen MD5-tarkistussumma on %s\n"
@@ -2223,100 +2119,92 @@ msgstr "\t· todellinen MD5-tarkistussumma on %s\n"
 #. If you eg. translate this to Danish : "Fortsæt (j/n " and
 #. translated the "y" later to "j", da_DK users can respond with
 #. "j" "ja" "JA" etc.
-#: components/services/install/command-line/eazel-alt-install-corba.c:826
+#: components/services/install/command-line/eazel-alt-install-corba.c:758
 msgid "Continue? (y/n) "
 msgstr "Jatketaanko? (k/e) "
-
-#. I18N note: y is the letter for the word Yes. This is
-#. used in the response for a yes/no questions. Your translation
-#. must be 1 character only.
-#: components/services/install/command-line/eazel-alt-install-corba.c:837
-#: components/services/install/command-line/eazel-alt-install-corba.c:879
-msgid "y"
-msgstr "k"
 
 #. I18N note: the (y/n) is translateable. There is later a 1 character
 #. string with the context "y" which is the "yes" indicator.
 #. If you eg. translate this to Danish : "Fortsæt (j/n " and
 #. translated the "y" later to "j", da_DK users can respond with
 #. "j" "ja" "JA" etc.
-#: components/services/install/command-line/eazel-alt-install-corba.c:867
+#: components/services/install/command-line/eazel-alt-install-corba.c:799
 msgid "Should I delete the RPM files? (y/n) "
 msgstr "Poistanko RPM-tiedostot? (k/e) "
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:899
+#: components/services/install/command-line/eazel-alt-install-corba.c:831
 msgid "Operation ok\n"
 msgstr "Toiminto onnistui\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:901
+#: components/services/install/command-line/eazel-alt-install-corba.c:833
 msgid "Operation failed\n"
 msgstr "Toiminto epäonnistui\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1018
+#: components/services/install/command-line/eazel-alt-install-corba.c:959
 msgid "Installing"
 msgstr "Asentaa"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1027
+#: components/services/install/command-line/eazel-alt-install-corba.c:968
 msgid "Uninstalling"
 msgstr "Poistaa asennusta"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1042
+#: components/services/install/command-line/eazel-alt-install-corba.c:983
 msgid "Only one operation at a time please."
 msgstr "Vain yksi toiminto kerrallaan."
 
+#: components/services/install/command-line/eazel-alt-install-corba.c:988
+#: components/services/install/command-line/eazel-alt-install-corba.c:996
+#: components/services/install/command-line/eazel-alt-install-corba.c:1040
 #: components/services/install/command-line/eazel-alt-install-corba.c:1047
-#: components/services/install/command-line/eazel-alt-install-corba.c:1055
-#: components/services/install/command-line/eazel-alt-install-corba.c:1099
-#: components/services/install/command-line/eazel-alt-install-corba.c:1106
 #, c-format
 msgid "%s: --help for usage\n"
 msgstr "%s: --help käyttöohje\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1071
+#: components/services/install/command-line/eazel-alt-install-corba.c:1012
 #, c-format
 msgid "Name         : %s\n"
 msgstr "Nimi         : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1072
+#: components/services/install/command-line/eazel-alt-install-corba.c:1013
 #, c-format
 msgid "Version      : %s\n"
 msgstr "Versio       : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1073
+#: components/services/install/command-line/eazel-alt-install-corba.c:1014
 #, c-format
 msgid "Minor        : %s\n"
 msgstr "Vähäinen     : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1075
+#: components/services/install/command-line/eazel-alt-install-corba.c:1016
 #, c-format
 msgid "Size         : %d\n"
 msgstr "Koko         : %d\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1076
+#: components/services/install/command-line/eazel-alt-install-corba.c:1017
 #, c-format
 msgid "Arch         : %s\n"
 msgstr "Laitteisto   : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1077
+#: components/services/install/command-line/eazel-alt-install-corba.c:1018
 #, c-format
 msgid "Distribution : %s\n"
 msgstr "Jakelu       : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1078
+#: components/services/install/command-line/eazel-alt-install-corba.c:1019
 #, c-format
 msgid "Description  : %s\n"
 msgstr "Kuvaus       : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1080
+#: components/services/install/command-line/eazel-alt-install-corba.c:1021
 #, c-format
 msgid "Install root : %s\n"
 msgstr "Asennusjuuri : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1083
+#: components/services/install/command-line/eazel-alt-install-corba.c:1024
 msgid "Provides     : \n"
 msgstr "Tarjoaa      : \n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1125
+#: components/services/install/command-line/eazel-alt-install-corba.c:1066
 #, c-format
 msgid "exit code %d\n"
 msgstr "lopetuskoodi %d\n"
@@ -2376,74 +2264,74 @@ msgstr "käytä tarkistusfunktiota (virheenetsintään)"
 msgid "Show detailed sub-package info"
 msgstr "Näytä tarkat alipaketin tiedot"
 
-#: components/services/install/lib/eazel-install-logic2.c:140
+#: components/services/install/lib/eazel-install-logic2.c:99
 msgid "Failed to lock the downloaded file"
 msgstr "Haettavan tiedoston lukitseminen epäonnistui"
 
-#: components/services/install/lib/eazel-install-logic2.c:157
+#: components/services/install/lib/eazel-install-logic2.c:116
 #, c-format
 msgid "MD5 mismatch, package %s may be compromised"
 msgstr "MD5-summa ei sovi: pakettia %s voi olla käpälöity"
 
-#: components/services/install/lib/eazel-install-logic2.c:173
+#: components/services/install/lib/eazel-install-logic2.c:132
 #, c-format
 msgid "No MD5 available for %s"
 msgstr "Ei MD5-summaa paketille %s"
 
 #. I18N note: "%is is ok" in the sense that %s=package name and the
 #. package is intact
-#: components/services/install/lib/eazel-install-logic2.c:357
+#: components/services/install/lib/eazel-install-logic2.c:324
 #, c-format
 msgid "%s is ok"
 msgstr "Paketti %s on kunnossa"
 
-#: components/services/install/lib/eazel-install-logic2.c:462
+#: components/services/install/lib/eazel-install-logic2.c:430
 #, c-format
 msgid "%s-%s version %s-%s already installed"
 msgstr "Paketin %s-%s versio %s-%s on jo asennettu"
 
-#: components/services/install/lib/eazel-install-logic2.c:466
+#: components/services/install/lib/eazel-install-logic2.c:434
 #, c-format
 msgid "%s version %s already installed"
 msgstr "Paketin %s versio %s on jo asennettu"
 
-#: components/services/install/lib/eazel-install-logic2.c:475
-#: components/services/install/lib/eazel-install-logic2.c:480
+#: components/services/install/lib/eazel-install-logic2.c:443
+#: components/services/install/lib/eazel-install-logic2.c:448
 #, c-format
 msgid "%s upgrades from version %s-%s to %s-%s"
 msgstr "%s päivittyy versiosta %s-%s versioksi %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:489
+#: components/services/install/lib/eazel-install-logic2.c:457
 #, c-format
 msgid "%s downgrades from version %s-%s to %s-%s"
 msgstr "%s päivittyy versiosta %s-%s vanhemmaksi versioksi %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:494
+#: components/services/install/lib/eazel-install-logic2.c:462
 #, c-format
 msgid "%s downgrades from version %s to %s"
 msgstr "%s päivittyy versiosta %s vanhemmaksi versioksi %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:547
+#: components/services/install/lib/eazel-install-logic2.c:515
 #, c-format
 msgid "%s installs version %s-%s"
 msgstr "%s asentaa version %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:552
+#: components/services/install/lib/eazel-install-logic2.c:520
 #, c-format
 msgid "%s installs version %s"
 msgstr "%s asentaa version %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:624
+#: components/services/install/lib/eazel-install-logic2.c:684
 #, c-format
 msgid "Loading package info from file %s"
 msgstr "Hakee paketin tietoja tiedostosta %s..."
 
 #. I18N note: ok is for "package dependencies are ok", "not ok".. well guess...
-#: components/services/install/lib/eazel-install-logic2.c:992
+#: components/services/install/lib/eazel-install-logic2.c:990
 msgid "ok"
 msgstr "kunnossa"
 
-#: components/services/install/lib/eazel-install-logic2.c:992
+#: components/services/install/lib/eazel-install-logic2.c:990
 msgid "not ok"
 msgstr "ei kunnossa"
 
@@ -2455,48 +2343,53 @@ msgstr "Tarkastaa paketin %s riippuvuuksia"
 #. I18N note: both %s' are package names.
 #. related is in the sense that the two packages apparently
 #. are connected somehow, eg. foo and foo-devel
-#: components/services/install/lib/eazel-install-logic2.c:1715
+#: components/services/install/lib/eazel-install-logic2.c:1763
 #, c-format
 msgid "%s is related to %s"
 msgstr "Paketti %s liittyy pakettiin %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1769
+#: components/services/install/lib/eazel-install-logic2.c:1823
 #, c-format
 msgid "updating %s to version %s-%s solves conflict"
 msgstr "Paketin %s päivittäminen versioksi %s-%s ratkaisee ristiriidan"
 
-#: components/services/install/lib/eazel-install-logic2.c:1786
+#: components/services/install/lib/eazel-install-logic2.c:1839
 #, c-format
 msgid "available update to %s (%s-%s) does not solves conflict"
 msgstr ""
 "mahdollinen paketin %s päivitys versioksi (%s-%s) ei ratkaise ristiriitaa"
 
-#: components/services/install/lib/eazel-install-logic2.c:1793
+#: components/services/install/lib/eazel-install-logic2.c:1846
 #, c-format
 msgid "could not revive %s"
 msgstr "ei voinut palauttaa pakettia %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1929
+#: components/services/install/lib/eazel-install-logic2.c:2001
 #, c-format
 msgid "file uniqueness checking %s"
 msgstr "tarkistaa tiedostojen ainoutta paketista %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1950
+#: components/services/install/lib/eazel-install-logic2.c:2022
 #, c-format
 msgid "Duplicate file : %s occurs in %s and %s"
 msgstr "Moninkertainen tiedosto: %s on sekä paketissa %s että %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1968
+#: components/services/install/lib/eazel-install-logic2.c:2034
+#: components/services/install/lib/eazel-install-logic2.c:2188
+msgid "... but it's ok, the packages are related"
+msgstr ""
+
+#: components/services/install/lib/eazel-install-logic2.c:2042
 #, c-format
 msgid "(there were %d other conflicts)"
 msgstr "(muita ristiriitoja oli %d)"
 
-#: components/services/install/lib/eazel-install-logic2.c:2063
+#: components/services/install/lib/eazel-install-logic2.c:2137
 #, c-format
 msgid "file conflict checking %s"
 msgstr "tarkistaa tiedostoristiriitoja paketista %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2111
+#: components/services/install/lib/eazel-install-logic2.c:2174
 #, c-format
 msgid "file conflict : package %s already provides file %s also provided by %s"
 msgstr ""
@@ -2504,17 +2397,17 @@ msgstr ""
 
 #. the owner of this file is a package that we're upgrading, and the
 #. * new version no longer has this file, so everything's okay.
-#: components/services/install/lib/eazel-install-logic2.c:2121
+#: components/services/install/lib/eazel-install-logic2.c:2184
 #, c-format
 msgid "...but it is okay, we're upgrading %s and it ditched that file"
 msgstr "...mutta se ei haittaa, sillä paketti %s päivittyy ja tiedosto poistuu"
 
-#: components/services/install/lib/eazel-install-logic2.c:2211
+#: components/services/install/lib/eazel-install-logic2.c:2276
 #, c-format
 msgid "checking feature consistency of %s"
 msgstr "tarkistaa ominaisuusyhtenäisyyttä paketista %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2277
+#: components/services/install/lib/eazel-install-logic2.c:2344
 #, c-format
 msgid ""
 "feature missing : %s breaks if %s is installed (feature %s would be lost"
@@ -2522,39 +2415,39 @@ msgstr ""
 "puuttuva ominaisuus : %s rikkoutuu, jos %s on asennettu (ominaisuus %s "
 "häviäisi"
 
-#: components/services/install/lib/eazel-install-logic2.c:2355
+#: components/services/install/lib/eazel-install-logic2.c:2423
 #, c-format
 msgid "downloading %d packages"
 msgstr "hakee %d pakettia"
 
-#: components/services/install/lib/eazel-install-logic2.c:2620
+#: components/services/install/lib/eazel-install-logic2.c:2692
 #, c-format
 msgid "will upgrade %s"
 msgstr "päivittää paketin %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2623
+#: components/services/install/lib/eazel-install-logic2.c:2695
 #, c-format
 msgid "will downgrade %s"
 msgstr "vaihtaa vanhemmaksi paketin %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2626
+#: components/services/install/lib/eazel-install-logic2.c:2698
 #, c-format
 msgid "will install %s"
 msgstr "asentaa paketin %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2629
+#: components/services/install/lib/eazel-install-logic2.c:2701
 #, c-format
 msgid "will uninstall %s"
 msgstr "poistaa paketin %s asennuksen"
 
-#: components/services/install/lib/eazel-install-logic2.c:2712
+#: components/services/install/lib/eazel-install-logic2.c:2786
 #: components/services/install/lib/eazel-install-problem.c:335
 #: components/services/install/lib/eazel-install-problem.c:338
 #, c-format
 msgid "%s requires %s"
 msgstr "Paketti %s vaatii paketin %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2876
+#: components/services/install/lib/eazel-install-logic2.c:2979
 #, c-format
 msgid "failed %s"
 msgstr "paketti %s epäonnistui"
@@ -2563,42 +2456,42 @@ msgstr "paketti %s epäonnistui"
 msgid "Could not set URLType from config file!"
 msgstr "URLTypeä ei voitu asettaa asetustiedostosta!"
 
-#: components/services/install/lib/eazel-install-object.c:701
+#: components/services/install/lib/eazel-install-object.c:713
 msgid "Transactions are not stored, could not find home dir"
 msgstr "Tapahtumia ei ole tallennettu: kotihakemistoa ei löytynyt"
 
-#: components/services/install/lib/eazel-install-object.c:729
+#: components/services/install/lib/eazel-install-object.c:741
 #, c-format
 msgid "Transactions are stored in %s"
 msgstr "Tapahtumat on tallennettu hakemistoon %s"
 
-#: components/services/install/lib/eazel-install-object.c:986
+#: components/services/install/lib/eazel-install-object.c:998
 msgid "Getting package list from remote server ...\n"
 msgstr "Haen pakettiluettelon etäpalvelimelta ...\n"
 
-#: components/services/install/lib/eazel-install-object.c:1002
+#: components/services/install/lib/eazel-install-object.c:1014
 msgid "Unable to retrieve package-list.xml!\n"
 msgstr "Tiedoston package-list.xml hakeminen epäonnistui!\n"
 
-#: components/services/install/lib/eazel-install-object.c:1075
+#: components/services/install/lib/eazel-install-object.c:1087
 #, c-format
 msgid "Cannot write to file %s, using default log handler"
 msgstr "Tiedostoon %s ei voi kirjoittaa, käytetään oletuslokikäsittelijää"
 
-#: components/services/install/lib/eazel-install-object.c:1206
+#: components/services/install/lib/eazel-install-object.c:1218
 msgid "Install failed"
 msgstr "Asennus epäonnistui"
 
-#: components/services/install/lib/eazel-install-object.c:1252
+#: components/services/install/lib/eazel-install-object.c:1264
 msgid "Uninstall failed"
 msgstr "Asennuksen poistaminen epäonnistui"
 
-#: components/services/install/lib/eazel-install-object.c:1373
+#: components/services/install/lib/eazel-install-object.c:1387
 #, c-format
 msgid "Could not create transaction directory (%s)! ***\n"
 msgstr "Tapahtumahakemistoa (%s) ei voitu luoda! ***\n"
 
-#: components/services/install/lib/eazel-install-object.c:1396
+#: components/services/install/lib/eazel-install-object.c:1410
 #, c-format
 msgid "Writing transaction to %s"
 msgstr "Kirjoittaa tapahtuman tiedostoon %s"
@@ -2646,7 +2539,7 @@ msgid "%s could not be found on the server"
 msgstr "Pakettia %s ei löytynyt palvelimelta"
 
 #: components/services/install/lib/eazel-install-problem.c:208
-#: components/services/install/lib/eazel-install-problem.c:352
+#: components/services/install/lib/eazel-install-problem.c:353
 #, c-format
 msgid "%s is already installed"
 msgstr "Paketti %s on jo asennettu"
@@ -2663,27 +2556,27 @@ msgid "%s, which is older, needs upgrade and upgrade is not enabled"
 msgstr "%s, joka on vanhempi, vaatii päivitystä, mikä ei ole käytössä"
 
 #: components/services/install/lib/eazel-install-problem.c:346
-#, c-format
-msgid "%s is not installed"
-msgstr "%s ei ole asennettu"
+#, fuzzy, c-format
+msgid "%s is not installed and could not be found on server"
+msgstr "Pakettia %s ei löytynyt palvelimelta"
 
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. %s is a package name or filename
-#: components/services/install/lib/eazel-install-problem.c:911
+#: components/services/install/lib/eazel-install-problem.c:913
 #, c-format
 msgid "Check for a new version of %s"
 msgstr "Tarkista, onko paketista %s uudempaa versiota"
 
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. both %s's are package names or filenames
-#: components/services/install/lib/eazel-install-problem.c:922
+#: components/services/install/lib/eazel-install-problem.c:924
 #, c-format
 msgid "Install both %s and %s"
 msgstr "Asenna paketit %s ja %s"
 
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. %s is a package name or filename
-#: components/services/install/lib/eazel-install-problem.c:937
+#: components/services/install/lib/eazel-install-problem.c:939
 #, c-format
 msgid "Remove %s from your system"
 msgstr "Poista paketti %s järjestelmästäsi"
@@ -2691,21 +2584,21 @@ msgstr "Poista paketti %s järjestelmästäsi"
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. %s is a package name or filename. "Force" is in the rpm sense of force,
 #. meaning that no dependency checking etc will be done
-#: components/services/install/lib/eazel-install-problem.c:950
+#: components/services/install/lib/eazel-install-problem.c:952
 #, c-format
 msgid "Force the removal of %s from your system"
 msgstr "Poista paketti %s väkisin järjestelmästäsi"
 
 #. TRANSLATORS : This string is a solution to a dependency problem
-#: components/services/install/lib/eazel-install-problem.c:958
+#: components/services/install/lib/eazel-install-problem.c:960
 msgid "Package database has an inconsistency"
 msgstr "Pakettitietokanta oli epäyhtenäinen"
 
-#: components/services/install/lib/eazel-install-problem.c:1006
+#: components/services/install/lib/eazel-install-problem.c:1008
 msgid "Continue with force"
 msgstr "Jatka väkisin"
 
-#: components/services/install/lib/eazel-install-problem.c:1012
+#: components/services/install/lib/eazel-install-problem.c:1014
 msgid "Allow downgrade"
 msgstr "Salli vaihto vanhemmaksi"
 
@@ -2891,73 +2784,341 @@ msgstr "*** osd xml ei sisällä tietoa! ***\n"
 msgid "*** Bailing from osd parse! ***\n"
 msgstr "*** osd:n tulkitseminen epäonnistui! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:976
+#: components/services/install/lib/eazel-install-xml-package-list.c:990
 #, c-format
 msgid "Could not parse the xml (length %d)"
 msgstr "XML:ää (pituus %d) ei voitu tulkita"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:755
+#: components/services/install/lib/eazel-package-system-rpm3.c:763
 #, c-format
 msgid "Opened packages database in %s"
 msgstr "Pakettitietokanta hakemistossa %s avattu"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:760
+#: components/services/install/lib/eazel-package-system-rpm3.c:768
 #, c-format
 msgid "Opening packages database in %s failed"
 msgstr "Hakemiston %s pakettitietokannan avaaminen epäonnistui"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:793
+#: components/services/install/lib/eazel-package-system-rpm3.c:801
 #, c-format
 msgid "Closing db for %s (open)"
 msgstr "Sulkee avaimen %s (auki) tietokannan"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:798
+#: components/services/install/lib/eazel-package-system-rpm3.c:806
 #, c-format
 msgid "Closing db for %s (not open)"
 msgstr "Sulkee avaimen %s (ei auki) tietokannan"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:1099
+#: components/services/install/lib/eazel-package-system-rpm3.c:1137
 #, c-format
 msgid "Cannot open %s"
 msgstr "Tiedostoa %s ei voi avata"
 
-#: components/services/install-view/nautilus-service-install-view.c:418
+#. this stuff flies by so fast, it's probably enough to just say "info"
+#: components/services/install-view/callbacks.c:64
+#, fuzzy
+msgid "Getting package information ..."
+msgstr "Haen pakettiluettelon etäpalvelimelta ...\n"
+
+#: components/services/install-view/callbacks.c:82
+#, fuzzy, c-format
+msgid "Checking \"%s\" for conflicts..."
+msgstr "Tarkistaa lupaa..."
+
+#: components/services/install-view/callbacks.c:185
+#, fuzzy, c-format
+msgid "Downloading 1 package (%s)"
+msgstr "hakee %d pakettia"
+
+#: components/services/install-view/callbacks.c:187
+#, fuzzy, c-format
+msgid "Downloading %d packages (%s)"
+msgstr "hakee %d pakettia"
+
+#: components/services/install-view/callbacks.c:236
+#, fuzzy, c-format
+msgid "Downloading \"%s\""
+msgstr "Haen %s..."
+
+#: components/services/install-view/callbacks.c:242
+#, fuzzy, c-format
+msgid "0K of %dK"
+msgstr "%ld / %ld"
+
+#: components/services/install-view/callbacks.c:249
 #, c-format
-msgid " · %s is in the GNOME footprint menu under %s"
-msgstr " · %s on Gnomen jalanjälkivalikossa %s alla."
+msgid ""
+"The package \"%s\" requires \"%s\" to run.\n"
+"Downloading \"%s\" now."
+msgstr ""
 
-#: components/services/install-view/nautilus-service-install-view.c:436
+#: components/services/install-view/callbacks.c:252
 #, c-format
-msgid " · %s is in the Gnome menu.\n"
-msgstr " . %s on Gnomen valikossa.\n"
+msgid "Attempting to download package \"%s\"."
+msgstr ""
 
-#: components/services/install-view/nautilus-service-install-view.c:463
+#: components/services/install-view/callbacks.c:262
+#: components/services/install-view/callbacks.c:333
+#, fuzzy
+msgid "Complete"
+msgstr "Tietokone"
+
+#: components/services/install-view/callbacks.c:266
 #, c-format
-msgid " · %s is in the KDE menu.\n"
-msgstr " . %s on KDE:n valikossa.\n"
+msgid ""
+"The package \"%s\" requires \"%s\" to run.\n"
+"\"%s\" has been successfully downloaded."
+msgstr ""
 
-#: components/services/install-view/nautilus-service-install-view.c:519
-msgid "Authenticate as root"
-msgstr "Todenna pääkäyttäjänä"
+#: components/services/install-view/callbacks.c:269
+#, c-format
+msgid "The package \"%s\" has been successfully downloaded."
+msgstr ""
 
-#: components/services/install-view/nautilus-service-install-view.c:636
-msgid "Installing packages"
+#: components/services/install-view/callbacks.c:287
+#, fuzzy, c-format
+msgid "%dK of %dK"
+msgstr "%ld / %ld"
+
+#: components/services/install-view/callbacks.c:316
+#, fuzzy, c-format
+msgid "Download of package \"%s\" failed!"
+msgstr "hakee %d pakettia"
+
+#: components/services/install-view/callbacks.c:338
+#, c-format
+msgid ""
+"The package \"%s\" requires \"%s\" to run.\n"
+"\"%s\" has been successfully downloaded and installed."
+msgstr ""
+
+#: components/services/install-view/callbacks.c:341
+#, c-format
+msgid "\"%s\" has been successfully downloaded and installed."
+msgstr ""
+
+#. starting a new package -- create new progress indicator
+#: components/services/install-view/callbacks.c:369
+#, fuzzy, c-format
+msgid "Installing package %d of %d"
 msgstr "Asentaa paketteja"
 
-#: components/services/install-view/nautilus-service-install-view.c:638
-msgid "Installing remote package"
-msgstr "Hakee paketteja etäältä"
+#: components/services/install-view/callbacks.c:396
+#, c-format
+msgid ""
+"The package \"%s\" requires \"%s\" to run.\n"
+"\"%s\" is now being installed."
+msgstr ""
 
-#: components/services/install-view/nautilus-service-install-view.c:640
+#: components/services/install-view/callbacks.c:399
+#, fuzzy, c-format
+msgid "Now installing package \"%s\"."
+msgstr "Asentaa paketteja"
+
+#: components/services/install-view/callbacks.c:407
+#: components/services/install-view/nautilus-service-install-view.c:887
 #, c-format
 msgid "Installing \"%s\""
 msgstr "Asentaa \"%s\""
 
-#: components/services/install-view/nautilus-service-install-view.c:642
+#: components/services/install-view/callbacks.c:415
+#: src/nautilus-zoom-control.c:592
+msgid "%d%%"
+msgstr "%d%%"
+
+#: components/services/install-view/callbacks.c:443
+#, fuzzy, c-format
+msgid "Installation failed on %s"
+msgstr "Asennus epäonnistui"
+
+#: components/services/install-view/callbacks.c:471
+msgid "I ran into problems while installing."
+msgstr ""
+
+#: components/services/install-view/callbacks.c:472
+msgid "I'd like to try the following :"
+msgstr ""
+
+#: components/services/install-view/callbacks.c:481
+#, fuzzy
+msgid "Is this ok ?"
+msgstr "Paketti %s on kunnossa"
+
+#: components/services/install-view/callbacks.c:557
+#, fuzzy
+msgid "Installation cancelled."
+msgstr "Asennus epäonnistui..."
+
+#: components/services/install-view/callbacks.c:559
+#, fuzzy
+msgid "This package has already been installed."
+msgstr "Paketti %s on jo asennettu\n"
+
+#: components/services/install-view/callbacks.c:561
+#: components/services/install-view/callbacks.c:658
+#, fuzzy
+msgid "Installation complete."
+msgstr "Hakee jonkin paketin"
+
+#: components/services/install-view/callbacks.c:565
+#, fuzzy
+msgid "Installation failed."
+msgstr "Asennus epäonnistui"
+
+#. some succeeded; some failed
+#: components/services/install-view/callbacks.c:569
+msgid "Some packages installed successfully:"
+msgstr ""
+
+#: components/services/install-view/callbacks.c:578
+#, fuzzy
+msgid ""
+"\n"
+"Some packages failed:"
+msgstr "Valitse pakettitiedosto"
+
+#: components/services/install-view/callbacks.c:627
+msgid "Erase the RPM files?"
+msgstr ""
+
+#: components/services/install-view/callbacks.c:629
+msgid "Erase the leftover RPM files?"
+msgstr ""
+
+#: components/services/install-view/callbacks.c:659
+msgid "Ok"
+msgstr ""
+
+#: components/services/install-view/callbacks.c:674
+msgid ""
+"A core package of Nautilus has been\n"
+"updated.  You should restart Nautilus.\n"
+"\n"
+"Do you wish to do that now?"
+msgstr ""
+
+#. Setup the title
+#: components/services/install-view/forms.c:201
+#, fuzzy
+msgid "Easy Install"
+msgstr "Näytä asennuksena"
+
+#. Setup the progress header
+#. FIXME: the middle header is all fubar now, so we just say "messages", but the spec
+#. * shows "progress" over the 2nd column of the message box.  it's just too hard to get
+#. * it aligned currently.
+#.
+#: components/services/install-view/forms.c:327
+msgid "Messages"
+msgstr ""
+
+#: components/services/install-view/forms.c:358
+#: components/services/summary/nautilus-summary-view.c:647
+#, c-format
+msgid "Version: %s"
+msgstr "Versio: %s"
+
+#: components/services/install-view/forms.c:407
+msgid "These packages are ready to be downloaded and installed:"
+msgstr ""
+
+#: components/services/install-view/forms.c:408
+msgid "If you wish to download and install these packages, click Continue."
+msgstr ""
+
+#: components/services/install-view/forms.c:411
+#, fuzzy
+msgid "These packages are ready to be uninstalled:"
+msgstr "Paketin %s asennuksen poisto epäonnistui.\n"
+
+#: components/services/install-view/forms.c:412
+msgid "If you wish to uninstall these packages, click Continue."
+msgstr ""
+
+#: components/services/install-view/forms.c:415
+msgid "These packages are ready to be reverted:"
+msgstr ""
+
+#: components/services/install-view/forms.c:416
+msgid "If you wish to revert these packages, click Continue."
+msgstr ""
+
+#: components/services/install-view/forms.c:464
+#, c-format
+msgid "for a total of %ld MB."
+msgstr ""
+
+#: components/services/install-view/forms.c:466
+#, c-format
+msgid "for a total of %ld KB."
+msgstr ""
+
+#. buttons
+#: components/services/install-view/forms.c:478
+#, fuzzy
+msgid "Continue"
+msgstr "Jatketaanko? (k/e) "
+
+#: components/services/install-view/forms.c:482
+#: libnautilus-extensions/nautilus-drag.c:493
+#: src/file-manager/fm-directory-view.c:3523
+msgid "Cancel"
+msgstr "Peru"
+
+#: components/services/install-view/nautilus-service-install-view.c:419
+#, fuzzy, c-format
+msgid "%s is in GNOME (footprint) > %s"
+msgstr " · %s on Gnomen jalanjälkivalikossa %s alla."
+
+#: components/services/install-view/nautilus-service-install-view.c:437
+#, fuzzy, c-format
+msgid "%s is in the GNOME (footprint) menu.\n"
+msgstr " · %s on Gnomen jalanjälkivalikossa %s alla."
+
+#: components/services/install-view/nautilus-service-install-view.c:452
+#, fuzzy, c-format
+msgid "%s is in the KDE menu.\n"
+msgstr " . %s on KDE:n valikossa.\n"
+
+#: components/services/install-view/nautilus-service-install-view.c:653
+#, fuzzy
+msgid "Installation Complete"
+msgstr "Hakee jonkin paketin"
+
+#: components/services/install-view/nautilus-service-install-view.c:698
+#, c-format
+msgid ""
+"%sTo start %s, click the Launch button below, or to create a shortcut, drag "
+"the icon on the right to the GNOME panel or your desktop."
+msgstr ""
+
+#. couldn't find an icon
+#: components/services/install-view/nautilus-service-install-view.c:706
+#, c-format
+msgid "%sTo start %s, click the Launch button below."
+msgstr ""
+
+#: components/services/install-view/nautilus-service-install-view.c:761
+msgid "Incorrect password."
+msgstr "Väärä salasana."
+
+#: components/services/install-view/nautilus-service-install-view.c:766
+msgid "Authenticate as root"
+msgstr "Todenna pääkäyttäjänä"
+
+#: components/services/install-view/nautilus-service-install-view.c:883
+msgid "Installing packages"
+msgstr "Asentaa paketteja"
+
+#: components/services/install-view/nautilus-service-install-view.c:885
+msgid "Installing remote package"
+msgstr "Hakee paketteja etäältä"
+
+#: components/services/install-view/nautilus-service-install-view.c:889
 msgid "Installing some package"
 msgstr "Hakee jonkin paketin"
 
-#: components/services/install-view/nautilus-service-install-view.c:659
+#: components/services/install-view/nautilus-service-install-view.c:906
 msgid ""
 "The Eazel install service is missing:\n"
 "Installs will not work."
@@ -2965,25 +3126,31 @@ msgstr ""
 "Eazel-asennuspalvelu puuttuu, joten\n"
 "asentaminen ei toimi."
 
-#: components/services/install-view/nautilus-service-install-view.c:706
+#: components/services/install-view/nautilus-service-install-view.c:955
 msgid "Contacting the Eazel Software Catalog ..."
 msgstr "Yhteys Eazel-ohjelmaluetteloon muodostuu..."
 
-#: components/services/install-view/nautilus-service-install-view.c:764
+#: components/services/install-view/nautilus-service-install-view.c:1013
 msgid "Checking for authorization..."
 msgstr "Tarkistaa lupaa..."
 
-#: components/services/install-view/nautilus-service-install-view.c:836
+#: components/services/install-view/nautilus-service-install-view.c:1085
 msgid "Aborting package downloads (please wait) ..."
 msgstr "Peruu pakettien hakua (odota)..."
 
-#: components/services/install-view/nautilus-service-install-view.c:856
+#: components/services/install-view/nautilus-service-install-view.c:1105
 msgid "Package download aborted."
 msgstr "Paketin hakeminen keskeytettiin."
 
-#: components/services/install-view/nautilus-service-install-view.c:857
+#: components/services/install-view/nautilus-service-install-view.c:1106
 msgid "Aborted"
 msgstr "Keskeytetty"
+
+#: components/services/install-view/Nautilus_View_install.oaf.in.h:1
+#: components/services/install/server/Trilobite_Service_install.oaf.in.h:2
+#: components/services/summary/nautilus-summary-view.c:123
+msgid "Install"
+msgstr "Asenna"
 
 #: components/services/install-view/Nautilus_View_install.oaf.in.h:2
 msgid "Install Viewer"
@@ -3253,85 +3420,83 @@ msgid "Services Login"
 msgstr "Palveluihin kirjautuminen"
 
 #: components/services/summary/nautilus-summary-dialogs.c:131
+#: libnautilus-extensions/nautilus-password-dialog.c:269
 msgid "Username:"
 msgstr "Käyttäjätunnus:"
 
 #: components/services/summary/nautilus-summary-dialogs.c:138
+#: libnautilus-extensions/nautilus-password-dialog.c:276
 msgid "Password:"
 msgstr "Salasana:"
 
 #: components/services/summary/nautilus-summary-dialogs.c:146
 #: components/services/summary/nautilus-summary-dialogs.c:155
-msgid "Please log in to Eazel services"
+#, fuzzy
+msgid "Please log in to Eazel Services"
 msgstr "Ole hyvä, ja kirjaudu Eazel-palveluihin"
 
 #: components/services/summary/nautilus-summary-dialogs.c:150
 msgid "Your user name or password were not correct.  Please try again."
 msgstr "Tunnuksesi tai salasanasi ei ollut oikein. Yritä uudelleen."
 
-#: components/services/summary/nautilus-summary-view.c:116
-#: libnautilus-extensions/nautilus-program-chooser.c:1337
+#: components/services/summary/nautilus-summary-view.c:117
+#: libnautilus-extensions/nautilus-program-chooser.c:1361
 msgid "Go There"
 msgstr "Siirry sinne"
 
-#: components/services/summary/nautilus-summary-view.c:119
+#: components/services/summary/nautilus-summary-view.c:120
 msgid "More Info"
 msgstr "Lisätietoja"
 
-#: components/services/summary/nautilus-summary-view.c:130
+#: components/services/summary/nautilus-summary-view.c:131
 msgid "Account Preferences"
 msgstr "Tunnuksen asetukset"
 
-#: components/services/summary/nautilus-summary-view.c:131
+#: components/services/summary/nautilus-summary-view.c:132
 msgid "Logout"
 msgstr "Kirjaudu ulos"
 
-#: components/services/summary/nautilus-summary-view.c:132
-#: components/services/summary/nautilus-summary-view.c:140
+#: components/services/summary/nautilus-summary-view.c:133
+#: components/services/summary/nautilus-summary-view.c:141
 msgid "Terms of Use"
 msgstr "Käyttöehdot"
 
-#: components/services/summary/nautilus-summary-view.c:133
-#: components/services/summary/nautilus-summary-view.c:141
+#: components/services/summary/nautilus-summary-view.c:134
+#: components/services/summary/nautilus-summary-view.c:142
 msgid "Privacy Statement"
 msgstr "Yksityisyyden suoja"
 
-#: components/services/summary/nautilus-summary-view.c:138
+#: components/services/summary/nautilus-summary-view.c:139
 msgid "Register"
 msgstr "Rekisteröidy"
 
-#: components/services/summary/nautilus-summary-view.c:139
+#: components/services/summary/nautilus-summary-view.c:140
 msgid "Login"
 msgstr "Sisään kirjautuminen"
 
-#: components/services/summary/nautilus-summary-view.c:169
+#: components/services/summary/nautilus-summary-view.c:170
 #, c-format
 msgid "Welcome, %s!"
 msgstr "Tervetuloa, %s!"
 
-#: components/services/summary/nautilus-summary-view.c:174
+#: components/services/summary/nautilus-summary-view.c:175
 msgid "You are not logged in"
 msgstr "Et ole kirjautunut sisään"
 
-#: components/services/summary/nautilus-summary-view.c:181
+#: components/services/summary/nautilus-summary-view.c:182
 msgid "Connecting to Eazel Services..."
 msgstr "Yhdistää Eazel-palveluihin..."
 
-#: components/services/summary/nautilus-summary-view.c:643
-#, c-format
-msgid "Version: %s"
-msgstr "Versio: %s"
-
-#: components/services/summary/nautilus-summary-view.c:737
+#: components/services/summary/nautilus-summary-view.c:741
 #: data/linksets/home.xml.h:3 src/nautilus-service-ui.xml.h:4
 msgid "Services"
 msgstr "Palvelut"
 
-#: components/services/summary/nautilus-summary-view.c:748
+#: components/services/summary/nautilus-summary-view.c:752
 msgid "Featured Downloads"
 msgstr "Mahdolliset haut"
 
-#: components/services/summary/nautilus-summary-view.c:875
+#: components/services/summary/nautilus-summary-view.c:883
 msgid ""
 "Unable to get services data from Eazel's server. The server might be "
 "unavailable right now, or your computer might be configured incorrectly. "
@@ -3341,7 +3506,7 @@ msgstr ""
 "tavoittamattomissa, tai tietokoneesi asetukset ovat väärin. Ota yhteyttä "
 "(englanniksi) osoitteeseen support@eazel.com."
 
-#: components/services/summary/nautilus-summary-view.c:885
+#: components/services/summary/nautilus-summary-view.c:893
 msgid ""
 "Found a problem with services data on Eazel servers. Please contact "
 "support@eazel.com."
@@ -3349,7 +3514,7 @@ msgstr ""
 "Eazelin palvelimien tiedoista löytyi virhe. Ota yhteys sähköpostitse "
 "(englanniksi) osoitteeseen support@eazel.com."
 
-#: components/services/summary/nautilus-summary-view.c:908
+#: components/services/summary/nautilus-summary-view.c:916
 msgid ""
 "Information is missing from the redirect data on Eazel servers. Please "
 "contact support@eazel.com."
@@ -3357,7 +3522,7 @@ msgstr ""
 "Tietoja puuttuu Eazel-palvelimien uudelleenohjausdatasta. Ota yhteys "
 "sähköpostitse (englanniksi) osoitteeseen support@eazel.com."
 
-#: components/services/summary/nautilus-summary-view.c:950
+#: components/services/summary/nautilus-summary-view.c:958
 msgid ""
 "Unable to connect to Eazel's server. The server might be unavailable right "
 "now, or your computer might be configured incorrectly. You could try again "
@@ -3367,7 +3532,7 @@ msgstr ""
 "tavoittamattomissa, tai tietokoneesi asetukset ovat väärin. Voinet yrittää "
 "myöhemmin uudelleen."
 
-#: components/services/summary/nautilus-summary-view.c:960
+#: components/services/summary/nautilus-summary-view.c:968
 msgid ""
 "Found a problem with redirect data on Eazel servers. Please contact "
 "support@eazel.com."
@@ -3375,12 +3540,12 @@ msgstr ""
 "Eazelin palvelimien uudelleenohjaustiedoista löytyi virhe. Ota yhteys "
 "sähköpostitse (englanniksi) osoitteeseen support@eazel.com."
 
-#: components/services/summary/nautilus-summary-view.c:977
+#: components/services/summary/nautilus-summary-view.c:985
 msgid "Failed to upload system inventory."
 msgstr "Järjestelmän sisällysluettelon lähetys epäonnistui."
 
-#: components/services/summary/nautilus-summary-view.c:1040
-#: src/nautilus-first-time-druid.c:250
+#: components/services/summary/nautilus-summary-view.c:1048
+#: src/nautilus-first-time-druid.c:255
 msgid "Eazel Services"
 msgstr "Eazel-palvelut"
 
@@ -3490,13 +3655,13 @@ msgstr "eazelin esimerkkipalvelunäkymä"
 msgid "Factory for the sample service"
 msgstr "Tehdas, joka tuottaa esimerkkipalvelua"
 
-#: components/text/nautilus-text-view.c:329
+#: components/text/nautilus-text-view.c:326
 #, c-format
 msgid "Sorry, but %s is too large for Nautilus to load all of it."
 msgstr ""
 "Valitettavasti tiedosto %s on liian suuri Nautiluksen kokonaan ladattavaksi."
 
-#: components/text/nautilus-text-view.c:330
+#: components/text/nautilus-text-view.c:329
 msgid "File too large"
 msgstr "Tiedosto on liian suuri"
 
@@ -3601,7 +3766,7 @@ msgid "Nautilus Tree view"
 msgstr "Nautiluksen puunäkymä"
 
 #: components/tree/Nautilus_View_tree.oaf.in.h:3
-#: libnautilus-extensions/nautilus-global-preferences.c:635
+#: libnautilus-extensions/nautilus-global-preferences.c:638
 msgid "Tree"
 msgstr "Puu"
 
@@ -3613,7 +3778,7 @@ msgstr "Haamu"
 msgid "Azul"
 msgstr "Lasuuri"
 
-#: data/browser.xml.h:3
+#: data/browser.xml.h:3 libnautilus-extensions/nautilus-font-picker.c:103
 msgid "Black"
 msgstr "Musta"
 
@@ -3725,7 +3890,7 @@ msgstr "Vedä tunnusmerkki johonkin osaan asettaaksesi osan tunnusmerkin"
 msgid "Eclipse"
 msgstr "Pimennys"
 
-#: data/browser.xml.h:31 src/file-manager/fm-properties-window.c:1592
+#: data/browser.xml.h:31 src/file-manager/fm-properties-window.c:1607
 msgid "Emblems"
 msgstr "Tunnusmerkit"
 
@@ -3875,67 +4040,59 @@ msgid "Sea Foam"
 msgstr "Meren vaahto"
 
 #: data/browser.xml.h:68
-msgid "Secret"
-msgstr "Salaisuus"
-
-#: data/browser.xml.h:69
 msgid "Shale"
 msgstr "Liuske"
 
-#: data/browser.xml.h:70
-msgid "Shared"
-msgstr "Jaettu"
-
-#: data/browser.xml.h:71
+#: data/browser.xml.h:69
 msgid "Silver"
 msgstr "Hopea"
 
-#: data/browser.xml.h:72
+#: data/browser.xml.h:70
 msgid "Sky"
 msgstr "Taivas"
 
-#: data/browser.xml.h:73
+#: data/browser.xml.h:71
 msgid "Sky Ridge"
 msgstr "Taivasviirut"
 
-#: data/browser.xml.h:74
+#: data/browser.xml.h:72
 msgid "Snow Ridge"
 msgstr "Lumiviirut"
 
-#: data/browser.xml.h:75
+#: data/browser.xml.h:73
 msgid "Special"
 msgstr "Erityinen"
 
-#: data/browser.xml.h:76
+#: data/browser.xml.h:74
 msgid "Stucco"
 msgstr "Stukko"
 
 # Who would have believed? :)
-#: data/browser.xml.h:77
+#: data/browser.xml.h:75
 msgid "Tangerine"
 msgstr "Mandariini"
 
-#: data/browser.xml.h:78
+#: data/browser.xml.h:76
 msgid "Terracotta"
 msgstr "Terrakotta"
 
-#: data/browser.xml.h:79
+#: data/browser.xml.h:77
 msgid "Urgent"
 msgstr "Kiireellinen"
 
-#: data/browser.xml.h:80
+#: data/browser.xml.h:78
 msgid "Violet"
 msgstr "Violetti"
 
-#: data/browser.xml.h:81
+#: data/browser.xml.h:79
 msgid "Wavy White"
 msgstr "Aaltoileva valkoinen"
 
-#: data/browser.xml.h:82
+#: data/browser.xml.h:80
 msgid "White"
 msgstr "Valkoinen"
 
-#: data/browser.xml.h:83
+#: data/browser.xml.h:81
 msgid "White Ribs"
 msgstr "Valkoiset kylkiluut"
 
@@ -3952,11 +4109,11 @@ msgid "The Gimp"
 msgstr "Gimp"
 
 #: data/linksets/desktop.xml.h:1
-#: libnautilus-extensions/nautilus-global-preferences.c:549
+#: libnautilus-extensions/nautilus-global-preferences.c:554
 msgid "Desktop"
 msgstr "Työpöytä"
 
-#: data/linksets/desktop.xml.h:2 libnautilus-extensions/nautilus-file.c:4740
+#: data/linksets/desktop.xml.h:2 libnautilus-extensions/nautilus-file.c:4796
 #: libnautilus-extensions/nautilus-trash-directory.c:301
 #: src/file-manager/fm-desktop-icon-view.c:65
 msgid "Trash"
@@ -4060,24 +4217,24 @@ msgid "International"
 msgstr "Kansainvälinen"
 
 #: data/static_bookmarks.xml.h:18
-msgid "LWN.net"
-msgstr "LWN.net"
-
-#: data/static_bookmarks.xml.h:19
 msgid "Linux Documentation Project"
 msgstr "Linuxin ohjeprojekti"
 
-#: data/static_bookmarks.xml.h:20
+#: data/static_bookmarks.xml.h:19
 msgid "Linux One"
 msgstr "Linux One"
 
-#: data/static_bookmarks.xml.h:21
+#: data/static_bookmarks.xml.h:20
 msgid "Linux Online"
 msgstr "Linux linjoilla"
 
-#: data/static_bookmarks.xml.h:22
+#: data/static_bookmarks.xml.h:21
 msgid "Linux Resources"
 msgstr "Linux-voimavarat"
+
+#: data/static_bookmarks.xml.h:22
+msgid "Linux Weekly News"
+msgstr ""
 
 #: data/static_bookmarks.xml.h:23
 msgid "LinuxNewbie.org"
@@ -4088,78 +4245,82 @@ msgid "LinuxOrbit.com"
 msgstr "LinuxOrbit.com"
 
 #: data/static_bookmarks.xml.h:25
+msgid "MandrakeSoft"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:26
 msgid "Netraverse"
 msgstr "Netraverse"
 
-#: data/static_bookmarks.xml.h:26
+#: data/static_bookmarks.xml.h:27
 msgid "News and Media"
 msgstr "Uutiset ja tiedotusvälineet"
 
-#: data/static_bookmarks.xml.h:27
+#: data/static_bookmarks.xml.h:28
 msgid "O'Reilly"
 msgstr "O'Reilly"
 
-#: data/static_bookmarks.xml.h:28
+#: data/static_bookmarks.xml.h:29
 msgid "OSDN"
 msgstr "OSDN"
 
-#: data/static_bookmarks.xml.h:29
+#: data/static_bookmarks.xml.h:30
 msgid "Open Source Asia"
 msgstr "Open Source Asia"
 
-#: data/static_bookmarks.xml.h:30
+#: data/static_bookmarks.xml.h:31
 msgid "OpenOffice"
 msgstr "OpenOffice"
 
-#: data/static_bookmarks.xml.h:31
+#: data/static_bookmarks.xml.h:32
 msgid "Penguin Computing"
 msgstr "Penguin Computing"
 
-#: data/static_bookmarks.xml.h:32
+#: data/static_bookmarks.xml.h:33
 msgid "Rackspace"
 msgstr "Rackspace"
 
-#: data/static_bookmarks.xml.h:33
+#: data/static_bookmarks.xml.h:34
 msgid "Red Hat"
 msgstr "Red Hat"
 
-#: data/static_bookmarks.xml.h:34
+#: data/static_bookmarks.xml.h:35
 msgid "Red Hat Network"
 msgstr "Red Hat -verkko"
 
-#: data/static_bookmarks.xml.h:35
+#: data/static_bookmarks.xml.h:36
 msgid "RedFlag Linux"
 msgstr "RedFlag Linux"
 
-#: data/static_bookmarks.xml.h:36
+#: data/static_bookmarks.xml.h:37
 msgid "Software"
 msgstr "Ohjelmisto"
 
-#: data/static_bookmarks.xml.h:37
+#: data/static_bookmarks.xml.h:38
 msgid "SourceForge"
 msgstr "SourceForge"
 
-#: data/static_bookmarks.xml.h:38
+#: data/static_bookmarks.xml.h:39
 msgid "Sun StarOffice"
 msgstr "Sun StarOffice"
 
-#: data/static_bookmarks.xml.h:39
+#: data/static_bookmarks.xml.h:40
 msgid "Sun Wah Linux"
 msgstr "Sun Wah Linux"
 
-#: data/static_bookmarks.xml.h:40
+#: data/static_bookmarks.xml.h:41
 msgid "Web Services"
 msgstr "WWW-palvelut"
 
-#: data/static_bookmarks.xml.h:41
+#: data/static_bookmarks.xml.h:42
 msgid "ZDNet Linux Hardware Database"
 msgstr "ZDNet Linux-laitteistokeskus"
 
-#: data/static_bookmarks.xml.h:42
+#: data/static_bookmarks.xml.h:43
 msgid "ZDNet Linux Resource Center"
 msgstr "ZDNet Linux-keskus"
 
-#: data/static_bookmarks.xml.h:43
+#: data/static_bookmarks.xml.h:44
 msgid "Zero-Knowledge"
 msgstr "Zero-Knowledge"
 
@@ -4207,22 +4368,17 @@ msgstr "Sierra"
 msgid "Uses manila folders and gray-green backgrounds."
 msgstr "Käyttää manillakansioita ja harmaanvihreitä taustoja."
 
-#: libnautilus-extensions/nautilus-drag.c:483
+#: libnautilus-extensions/nautilus-drag.c:489
 msgid "_Move here"
 msgstr "_Siirry sinne"
 
-#: libnautilus-extensions/nautilus-drag.c:484
+#: libnautilus-extensions/nautilus-drag.c:490
 msgid "_Copy here"
 msgstr "_Kopioi tänne"
 
-#: libnautilus-extensions/nautilus-drag.c:485
+#: libnautilus-extensions/nautilus-drag.c:491
 msgid "_Link here"
 msgstr "_Linkitä tänne"
-
-#: libnautilus-extensions/nautilus-drag.c:487
-#: src/file-manager/fm-directory-view.c:3503
-msgid "Cancel"
-msgstr "Peru"
 
 #. Note to localizers: this font is used for text items in Druid pages
 #: libnautilus-extensions/nautilus-druid-page-eazel.c:381
@@ -4246,101 +4402,101 @@ msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-extensions/nautilus-file.c:2217
+#: libnautilus-extensions/nautilus-file.c:2261
 msgid "today at %-I:%M %p"
 msgstr "tänään %-H:%M"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2222
+#: libnautilus-extensions/nautilus-file.c:2266
 msgid "yesterday at %-I:%M %p"
 msgstr "eilen %-H:%M"
 
 #. Current week, include day of week.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2227
+#: libnautilus-extensions/nautilus-file.c:2271
 msgid "%A %-m/%-d/%y at %-I:%M %p"
 msgstr "%A %d.%m.%y %-H:%M"
 
 #. Other dates.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2232
+#: libnautilus-extensions/nautilus-file.c:2276
 msgid "%-m/%-d/%y at %-I:%M %p"
 msgstr "%d.%m.%y %-H:%M"
 
-#: libnautilus-extensions/nautilus-file.c:3363
+#: libnautilus-extensions/nautilus-file.c:3407
 msgid "0 items"
 msgstr "0 kohdetta"
 
-#: libnautilus-extensions/nautilus-file.c:3363
+#: libnautilus-extensions/nautilus-file.c:3407
 msgid "0 folders"
 msgstr "0 hakemistoa"
 
-#: libnautilus-extensions/nautilus-file.c:3364
+#: libnautilus-extensions/nautilus-file.c:3408
 msgid "0 files"
 msgstr "0 tiedostoa"
 
-#: libnautilus-extensions/nautilus-file.c:3368
+#: libnautilus-extensions/nautilus-file.c:3412
 msgid "1 item"
 msgstr "1 kohde"
 
-#: libnautilus-extensions/nautilus-file.c:3368
+#: libnautilus-extensions/nautilus-file.c:3412
 msgid "1 folder"
 msgstr "1 hakemisto"
 
-#: libnautilus-extensions/nautilus-file.c:3369
+#: libnautilus-extensions/nautilus-file.c:3413
 msgid "1 file"
 msgstr "1 tiedosto"
 
-#: libnautilus-extensions/nautilus-file.c:3372
+#: libnautilus-extensions/nautilus-file.c:3416
 #, c-format
 msgid "%u items"
 msgstr "%u kohdetta"
 
-#: libnautilus-extensions/nautilus-file.c:3372
+#: libnautilus-extensions/nautilus-file.c:3416
 #, c-format
 msgid "%u folders"
 msgstr "%u hakemistoa"
 
-#: libnautilus-extensions/nautilus-file.c:3373
+#: libnautilus-extensions/nautilus-file.c:3417
 #, c-format
 msgid "%u files"
 msgstr "%u tiedostoa"
 
 #. This means no contents at all were readable
-#: libnautilus-extensions/nautilus-file.c:3676
-#: libnautilus-extensions/nautilus-file.c:3691
+#: libnautilus-extensions/nautilus-file.c:3720
+#: libnautilus-extensions/nautilus-file.c:3735
 msgid "? items"
 msgstr "? kohdetta"
 
 #. This means no contents at all were readable
-#: libnautilus-extensions/nautilus-file.c:3682
+#: libnautilus-extensions/nautilus-file.c:3726
 msgid "? bytes"
 msgstr "? tavua"
 
-#: libnautilus-extensions/nautilus-file.c:3695
+#: libnautilus-extensions/nautilus-file.c:3739
 msgid "unknown type"
 msgstr "tuntematon tyyppi"
 
-#: libnautilus-extensions/nautilus-file.c:3697
+#: libnautilus-extensions/nautilus-file.c:3741
 msgid "unknown MIME type"
 msgstr "tuntematon MIME-tyyppi"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-extensions/nautilus-file.c:3702
+#: libnautilus-extensions/nautilus-file.c:3746
 msgid "unknown"
 msgstr "tuntematon"
 
-#: libnautilus-extensions/nautilus-file.c:3738
+#: libnautilus-extensions/nautilus-file.c:3782
 msgid "program"
 msgstr "ohjelma"
 
-#: libnautilus-extensions/nautilus-file.c:3750
+#: libnautilus-extensions/nautilus-file.c:3794
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -4350,7 +4506,7 @@ msgstr ""
 "tarkoittanee, että tiedosto gnome-vfs.keys on väärässä paikassa tai ei löydy "
 "muusta syystä."
 
-#: libnautilus-extensions/nautilus-file.c:3754
+#: libnautilus-extensions/nautilus-file.c:3798
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), tell "
@@ -4359,7 +4515,7 @@ msgstr ""
 "Ei kuvausta Mime-tyypille \"%s\" (tiedosto on \"%s\"). Ilmoita (englanniksi) "
 "osoitteeseen aaron@eazel.com."
 
-#: libnautilus-extensions/nautilus-file.c:3768
+#: libnautilus-extensions/nautilus-file.c:3812
 msgid "link"
 msgstr "linkki"
 
@@ -4369,12 +4525,12 @@ msgstr "linkki"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: libnautilus-extensions/nautilus-file-operations.c:1156
-#: libnautilus-extensions/nautilus-file.c:3774
+#: libnautilus-extensions/nautilus-file.c:3818
 #, c-format
 msgid "link to %s"
 msgstr "linkki tyyppiin %s"
 
-#: libnautilus-extensions/nautilus-file.c:3788
+#: libnautilus-extensions/nautilus-file.c:3832
 msgid "link (broken)"
 msgstr "linkki (rikki)"
 
@@ -5273,7 +5429,66 @@ msgstr "jokin jokin (100000000000000. kopio).txt"
 msgid "%ld of %ld"
 msgstr "%ld / %ld"
 
-#: libnautilus-extensions/nautilus-font-picker.c:131
+#: libnautilus-extensions/nautilus-font-picker.c:94
+#, fuzzy
+msgid "Normal"
+msgstr "Tavallinen koko"
+
+#: libnautilus-extensions/nautilus-font-picker.c:95
+#: libnautilus-extensions/nautilus-volume-monitor.c:516
+#: libnautilus-extensions/nautilus-volume-monitor.c:535
+msgid "Unknown"
+msgstr "Tuntematon"
+
+#: libnautilus-extensions/nautilus-font-picker.c:101
+#, fuzzy
+msgid "Bold"
+msgstr "Borland"
+
+#: libnautilus-extensions/nautilus-font-picker.c:102
+#, fuzzy
+msgid "Book"
+msgstr "kunnossa"
+
+#: libnautilus-extensions/nautilus-font-picker.c:104
+msgid "Demibold"
+msgstr ""
+
+#: libnautilus-extensions/nautilus-font-picker.c:105
+#, fuzzy
+msgid "Light"
+msgstr "luettelo"
+
+#: libnautilus-extensions/nautilus-font-picker.c:111
+#, fuzzy
+msgid "Italic"
+msgstr "Balttilainen"
+
+#: libnautilus-extensions/nautilus-font-picker.c:112
+#, fuzzy
+msgid "Oblique"
+msgstr "Klassikot"
+
+#: libnautilus-extensions/nautilus-font-picker.c:113
+#, fuzzy
+msgid "Reverse Italic"
+msgstr "Palauta"
+
+#: libnautilus-extensions/nautilus-font-picker.c:114
+#, fuzzy
+msgid "Reverse Oblique"
+msgstr "Käänteinen järjestys"
+
+#: libnautilus-extensions/nautilus-font-picker.c:121
+#, fuzzy
+msgid "Condensed"
+msgstr "Sisältö:"
+
+#: libnautilus-extensions/nautilus-font-picker.c:122
+msgid "Semicondensed"
+msgstr ""
+
+#: libnautilus-extensions/nautilus-font-picker.c:224
 msgid "Font"
 msgstr "Kirjasin"
 
@@ -5285,7 +5500,7 @@ msgstr "GConf-virhe"
 #. * when no other font can be found. It must be guaranteed
 #. * to exist, * even in the most limited user environment
 #.
-#: libnautilus-extensions/nautilus-gdk-font-extensions.c:704
+#: libnautilus-extensions/nautilus-gdk-font-extensions.c:956
 msgid "fixed"
 msgstr "tasavälinen"
 
@@ -5294,294 +5509,263 @@ msgstr "tasavälinen"
 #. * yields -- usually just omitting the AM part is all that's
 #. * needed.
 #.
-#: libnautilus-extensions/nautilus-glib-extensions.c:1359
+#: libnautilus-extensions/nautilus-glib-extensions.c:1427
 msgid "01/01/00, 01:00 AM"
 msgstr "01/01/00, 01:00"
 
-#: libnautilus-extensions/nautilus-glib-extensions.c:1360
+#: libnautilus-extensions/nautilus-glib-extensions.c:1428
 msgid "1/1/00, 1:00 AM"
 msgstr "1/1/00, 1:00"
 
-#: libnautilus-extensions/nautilus-glib-extensions.c:1361
+#: libnautilus-extensions/nautilus-glib-extensions.c:1429
 msgid " 1/ 1/00,  1:00 AM"
 msgstr " 1/ 1/00,  1:00"
 
 #. Constants
-#: libnautilus-extensions/nautilus-global-preferences.c:45
+#: libnautilus-extensions/nautilus-global-preferences.c:50
 msgid "Nautilus Preferences"
 msgstr "Nautiluksen asetukset"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:90
+#: libnautilus-extensions/nautilus-global-preferences.c:97
 msgid "current theme"
 msgstr "nykyinen teema"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:93
+#: libnautilus-extensions/nautilus-global-preferences.c:100
 msgid "Open each file or folder in a separate window"
 msgstr "Avaa jokainen tiedosto tai hakemisto omassa ikkunassaan"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:96
+#: libnautilus-extensions/nautilus-global-preferences.c:103
 msgid "Ask before emptying the Trash"
 msgstr "Kysy ennen roskakorin tyhjennystä"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:99
-#: libnautilus-extensions/nautilus-global-preferences.c:593
+#: libnautilus-extensions/nautilus-global-preferences.c:106
+#: libnautilus-extensions/nautilus-global-preferences.c:597
 msgid "Click Behavior"
 msgstr "Napsautusten toiminta"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:102
+#: libnautilus-extensions/nautilus-global-preferences.c:109
 msgid "single"
 msgstr "yksinkertainen"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:103
+#: libnautilus-extensions/nautilus-global-preferences.c:110
 msgid "Activate items with a single click"
 msgstr "Käytä kohteita yhdellä napsautuksella"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:107
+#: libnautilus-extensions/nautilus-global-preferences.c:114
 msgid "double"
 msgstr "kaksinkertainen"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:108
+#: libnautilus-extensions/nautilus-global-preferences.c:115
 msgid "Activate items with a double click"
 msgstr "Käytä kohteita kaksoisnapsautuksella"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:112
-#: libnautilus-extensions/nautilus-global-preferences.c:600
+#: libnautilus-extensions/nautilus-global-preferences.c:119
+#: libnautilus-extensions/nautilus-global-preferences.c:604
 msgid "Executable Text Files"
 msgstr "Suoritettavat tekstitiedostot"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:115
+#: libnautilus-extensions/nautilus-global-preferences.c:122
 msgid "launch"
 msgstr "käynnistä"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:116
+#: libnautilus-extensions/nautilus-global-preferences.c:123
 msgid "Execute files when they are clicked"
 msgstr "Käynnistä tiedostot, kun niitä napsautetaan"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:120
+#: libnautilus-extensions/nautilus-global-preferences.c:127
 msgid "display"
 msgstr "näytä"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:121
+#: libnautilus-extensions/nautilus-global-preferences.c:128
 msgid "Display files when they are clicked"
 msgstr "Näytä tiedostot, kun niitä napsautetaan"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:125
+#: libnautilus-extensions/nautilus-global-preferences.c:132
 msgid "ask"
 msgstr "kysy"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:126
+#: libnautilus-extensions/nautilus-global-preferences.c:133
 msgid "Ask each time"
 msgstr "Kysy joka kerta"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:136
-#: libnautilus-extensions/nautilus-global-preferences.c:724
+#: libnautilus-extensions/nautilus-global-preferences.c:143
+#: libnautilus-extensions/nautilus-global-preferences.c:725
 msgid "Show Text in Icons"
 msgstr "Näytä tekstit kuvakkeissa"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:139
-#: libnautilus-extensions/nautilus-global-preferences.c:731
+#: libnautilus-extensions/nautilus-global-preferences.c:146
+#: libnautilus-extensions/nautilus-global-preferences.c:732
 msgid "Show Count of Items in Folders"
 msgstr "Näytä hakemistojen sisältöjen lukumäärät"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:142
-#: libnautilus-extensions/nautilus-global-preferences.c:738
+#: libnautilus-extensions/nautilus-global-preferences.c:149
+#: libnautilus-extensions/nautilus-global-preferences.c:739
 msgid "Show Thumbnails for Image Files"
 msgstr "Näytä pienoiskuvat kuvatiedostoista"
 
 #. FIXME bugzilla.eazel.com 2560: This title phrase needs improvement.
-#: libnautilus-extensions/nautilus-global-preferences.c:145
-#: libnautilus-extensions/nautilus-global-preferences.c:754
+#: libnautilus-extensions/nautilus-global-preferences.c:152
+#: libnautilus-extensions/nautilus-global-preferences.c:755
 msgid "Make Folder Appearance Details Public"
 msgstr "Tee hakemiston ulkonäön asetuksista julkisia"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:148
-#: libnautilus-extensions/nautilus-global-preferences.c:745
+#: libnautilus-extensions/nautilus-global-preferences.c:155
+#: libnautilus-extensions/nautilus-global-preferences.c:746
 msgid "Preview Sound Files"
 msgstr "Kuuntele äänitiedostoja"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:151
+#: libnautilus-extensions/nautilus-global-preferences.c:158
 msgid "Use smoother (but slower) graphics"
 msgstr "Käytä pehmeämpää (mutta hitaampaa) grafiikkaa"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:154
+#: libnautilus-extensions/nautilus-global-preferences.c:161
+#: libnautilus-extensions/nautilus-global-preferences.c:164
 msgid "Use this font family to display file names:"
 msgstr "Käytä tätä kirjasinperhettä tiedostojen nimien näyttämiseen:"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:158
+#: libnautilus-extensions/nautilus-global-preferences.c:167
 msgid "Display toolbar in new windows"
 msgstr "Näytä työkalupalkki uusissa ikkunoissa"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:161
+#: libnautilus-extensions/nautilus-global-preferences.c:170
 msgid "Display location bar in new windows"
 msgstr "Näytä sijaintipalkki uusissa ikkunoissa"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:164
+#: libnautilus-extensions/nautilus-global-preferences.c:173
 msgid "Display status bar in new windows"
 msgstr "Näytä tilarivi uusissa ikkunoissa"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:167
+#: libnautilus-extensions/nautilus-global-preferences.c:176
 msgid "Display sidebar in new windows"
 msgstr "Näytä sivupaneeli uusissa ikkunoissa"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:170
+#: libnautilus-extensions/nautilus-global-preferences.c:179
 msgid "Use Nautilus to draw the desktop"
 msgstr "Piirrä työpöytä Nautiluksella"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:174
+#: libnautilus-extensions/nautilus-global-preferences.c:183
 msgid "Enable fast search (indexes your hard drive)"
 msgstr "Käytä nopeaa etsintää (luetteloi levyasemasi)"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:177
+#: libnautilus-extensions/nautilus-global-preferences.c:186
 msgid "search type to do by default"
 msgstr "etsinnän oletustyyppi"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:180
+#: libnautilus-extensions/nautilus-global-preferences.c:189
 msgid "search by text"
 msgstr "etsi tekstin perusteella"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:181
+#: libnautilus-extensions/nautilus-global-preferences.c:190
 msgid "Search for files by file name only"
 msgstr "Etsi tiedostoja vain nimen perusteella"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:185
+#: libnautilus-extensions/nautilus-global-preferences.c:194
 msgid "search by text and properties"
 msgstr "etsi tekstin ja ominaisuuksien perusteella"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:186
+#: libnautilus-extensions/nautilus-global-preferences.c:195
 msgid "Search for files by file name and file properties"
 msgstr "Etsi tiedostoja nimen ja ominaisuuksien perusteella"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:190
+#: libnautilus-extensions/nautilus-global-preferences.c:199
 msgid "Search Engine Location"
 msgstr "Hakukoneen sijainti"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:194
+#: libnautilus-extensions/nautilus-global-preferences.c:203
 msgid "Show hidden files (file names start with \".\")"
 msgstr "Näytä piilotiedostot (alkavat merkillä \".\")"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:197
+#: libnautilus-extensions/nautilus-global-preferences.c:206
 msgid "Show backup files (file names end with \"~\")"
 msgstr "Näytä varmuuskopiot (loppuvat merkkiin \"~\")"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:200
+#: libnautilus-extensions/nautilus-global-preferences.c:209
 msgid "Show special flags in Properties window"
 msgstr "Näytä erityiset liput ominaisuusikkunassa"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:203
+#: libnautilus-extensions/nautilus-global-preferences.c:212
 msgid "Show only folders (no files) in the tree"
 msgstr "Näytä vain hakemistot (ei tiedostoja) puussa"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:206
+#: libnautilus-extensions/nautilus-global-preferences.c:215
 msgid "Can add Content"
 msgstr "Voi lisätä sisältöä"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:209
+#: libnautilus-extensions/nautilus-global-preferences.c:218
 msgid "Don't include the built-in bookmarks in the Bookmarks menu"
 msgstr "Älä näytä sisäänrakennettuja kirjanmerkkejä"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:213
-#: libnautilus-extensions/nautilus-global-preferences.c:218
-#: src/file-manager/fm-properties-window.c:1504 src/nautilus-location-bar.c:62
+#: libnautilus-extensions/nautilus-global-preferences.c:222
+#: libnautilus-extensions/nautilus-global-preferences.c:227
+#: src/file-manager/fm-properties-window.c:1519 src/nautilus-location-bar.c:62
 msgid "Location:"
 msgstr "Sijainti:"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:217
+#: libnautilus-extensions/nautilus-global-preferences.c:226
 msgid "Use HTTP Proxy"
 msgstr "Käytä HTTP-välityspalvelinta"
 
 #. allocate the proxy label, followed by the entry
-#: libnautilus-extensions/nautilus-global-preferences.c:219
-#: src/nautilus-first-time-druid.c:667
+#: libnautilus-extensions/nautilus-global-preferences.c:228
+#: src/nautilus-first-time-druid.c:680
 msgid "Port:"
 msgstr "Portti:"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:525
+#: libnautilus-extensions/nautilus-global-preferences.c:533
 msgid "Appearance"
 msgstr "Ulkonäkö"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:526
-msgid "Appearance Settings"
-msgstr "Ulkonäön asetukset"
-
-#: libnautilus-extensions/nautilus-global-preferences.c:528
+#: libnautilus-extensions/nautilus-global-preferences.c:535
 msgid "Smoother Graphics"
 msgstr "Pehmeämmät grafiikat"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:535
-msgid "Fonts"
-msgstr "Kirjasimet"
-
-#: libnautilus-extensions/nautilus-global-preferences.c:546
+#: libnautilus-extensions/nautilus-global-preferences.c:552
 msgid "Windows & Desktop"
 msgstr "Ikkunat & työpöytä"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:547
-msgid "Windows & Desktop Settings"
-msgstr "Ikkunat & työpöydän asetukset"
-
-#: libnautilus-extensions/nautilus-global-preferences.c:555
+#: libnautilus-extensions/nautilus-global-preferences.c:560
 msgid "Opening New Windows"
 msgstr "Uusien ikkunoiden avaaminen"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:578
+#: libnautilus-extensions/nautilus-global-preferences.c:583
 msgid "Trash Behavior"
 msgstr "Roskakorin toiminta"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:590
+#: libnautilus-extensions/nautilus-global-preferences.c:595
 msgid "Icon & List Views"
 msgstr "Kuvake- ja luettelonäkymät"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:591
-msgid "Icon & List Views Settings"
-msgstr "Kuvake- ja luettelonäkymien asetukset"
-
-#: libnautilus-extensions/nautilus-global-preferences.c:607
+#: libnautilus-extensions/nautilus-global-preferences.c:611
 msgid "Show/Hide Options"
 msgstr "Näytä/piilota valinnat"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:628
+#: libnautilus-extensions/nautilus-global-preferences.c:632
 msgid "Sidebar Panels"
 msgstr "Sivupaneelit"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:629
-msgid "Sidebar Panels Settings"
-msgstr "Sivupaneelien asetukset"
-
-#: libnautilus-extensions/nautilus-global-preferences.c:632
+#: libnautilus-extensions/nautilus-global-preferences.c:635
 msgid "Tabs"
 msgstr "Lehdet"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:681
+#: libnautilus-extensions/nautilus-global-preferences.c:684
 msgid "Navigation"
 msgstr "Ohjailu"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:682
-msgid "Navigation Settings"
-msgstr "Ohjailun asetukset"
-
-#: libnautilus-extensions/nautilus-global-preferences.c:691
+#: libnautilus-extensions/nautilus-global-preferences.c:693
 msgid "HTTP Proxy Settings"
 msgstr "HTTP-välityspalvelinasetukset"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:710
+#: libnautilus-extensions/nautilus-global-preferences.c:712
 msgid "Built-in Bookmarks"
 msgstr "Sisäänrakennetut kirjanmerkit"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:721
+#: libnautilus-extensions/nautilus-global-preferences.c:723
 msgid "Speed Tradeoffs"
 msgstr "Nopeuden lisääminen"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:722
-msgid "Speed Tradeoffs Settings"
-msgstr "Nopeuden lisäämisen asetukset"
-
-#: libnautilus-extensions/nautilus-global-preferences.c:793
+#: libnautilus-extensions/nautilus-global-preferences.c:794
 msgid "Search"
 msgstr "Etsi"
-
-#: libnautilus-extensions/nautilus-global-preferences.c:794
-msgid "Search Settings"
-msgstr "Etsinnän asetukset"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:796
 msgid "Search Complexity Options"
@@ -5591,37 +5775,82 @@ msgstr "Etsinnän monimutkaisuuden asetukset"
 msgid "Fast Search"
 msgstr "Nopea etsintä"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:975
+#: libnautilus-extensions/nautilus-global-preferences.c:846
+msgid "Fonts"
+msgstr "Kirjasimet"
+
+#: libnautilus-extensions/nautilus-global-preferences.c:1026
 #, c-format
 msgid "Display %s tab in sidebar"
 msgstr "Näytä lehti %s sivupaneelissa"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1022
+#: libnautilus-extensions/nautilus-global-preferences.c:1073
 msgid "always"
 msgstr "aina"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1023
+#: libnautilus-extensions/nautilus-global-preferences.c:1074
 msgid "Always"
 msgstr "Aina"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1026
+#: libnautilus-extensions/nautilus-global-preferences.c:1077
 msgid "local only"
 msgstr "vain paikallinen"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1027
+#: libnautilus-extensions/nautilus-global-preferences.c:1078
 msgid "Local Files Only"
 msgstr "Vain paikalliset tiedostot"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1030
+#: libnautilus-extensions/nautilus-global-preferences.c:1081
 msgid "never"
 msgstr "ei koskaan"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1031
+#: libnautilus-extensions/nautilus-global-preferences.c:1082
 msgid "Never"
 msgstr "Ei koskaan"
 
+#: libnautilus-extensions/nautilus-global-preferences.c:1145
+msgid ""
+"Indexing is turned on, enabling the fast search feature. However, indexing "
+"currently can't be performed because the program crond, which does nightly "
+"tasks on your computer, is turned off. To make sure fast searches can be "
+"done, turn crond on."
+msgstr ""
+
+#: libnautilus-extensions/nautilus-global-preferences.c:1152
+#: libnautilus-extensions/nautilus-global-preferences.c:1170
+msgid "Files May Not Be Indexed"
+msgstr ""
+
+#: libnautilus-extensions/nautilus-global-preferences.c:1153
+#: libnautilus-extensions/nautilus-global-preferences.c:1171
+msgid ""
+"If you are running Linux, you can log in as root and type these commands to "
+"start cron:\n"
+"\n"
+"/sbin/chkconfig --level 345 crond on\n"
+"/etc/rc.d/init.d/cron start\n"
+msgstr ""
+
+#: libnautilus-extensions/nautilus-global-preferences.c:1162
+msgid ""
+"Indexing is turned on, enabling the fast search feature. However, indexing "
+"may not be performed because the program crond, which does nightly tasks on "
+"your computer, may be turned off. To make sure fast searches can be done, "
+"check to make sure that crond is turned on.\n"
+"\n"
+msgstr ""
+
+#: libnautilus-extensions/nautilus-gnome-extensions.c:640
+msgid "No image was selected.  You must click on an image to select it."
+msgstr ""
+
+#: libnautilus-extensions/nautilus-gnome-extensions.c:641
+#, fuzzy
+msgid "No selection made"
+msgstr "tämä kappale"
+
 #. The list of characters that cause line breaks can be localized.
-#: libnautilus-extensions/nautilus-icon-canvas-item.c:68
+#: libnautilus-extensions/nautilus-icon-canvas-item.c:70
 msgid " -_,;.?/&"
 msgstr " -_,;.?/&"
 
@@ -5690,6 +5919,25 @@ msgstr "Tee kirjoitus uudelleen"
 msgid "Restore the changed name"
 msgstr "Palauta muutettu nimi"
 
+#: libnautilus-extensions/nautilus-password-dialog.c:306
+msgid "Remember this password"
+msgstr ""
+
+#: libnautilus-extensions/nautilus-preferences-item.c:483
+#, fuzzy
+msgid "times"
+msgstr "_Times"
+
+#: libnautilus-extensions/nautilus-preferences-item.c:484
+#, fuzzy
+msgid "courier"
+msgstr "_Courier"
+
+#: libnautilus-extensions/nautilus-preferences-item.c:485
+#, fuzzy
+msgid "lucida"
+msgstr "Lucida"
+
 #: libnautilus-extensions/nautilus-preferences.c:76
 msgid "Beginner"
 msgstr "Aloittelija"
@@ -5702,151 +5950,151 @@ msgstr "Keskitaso"
 msgid "Advanced"
 msgstr "Edistynyt"
 
-#: libnautilus-extensions/nautilus-preferences-dialog.c:205
+#: libnautilus-extensions/nautilus-preferences-dialog.c:202
 msgid "Prefs Box"
 msgstr "Asetuslaatikko"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:218
+#: libnautilus-extensions/nautilus-program-chooser.c:226
 msgid "not in menu"
 msgstr "ei valikossa"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:221
+#: libnautilus-extensions/nautilus-program-chooser.c:229
 msgid "in menu for this file"
 msgstr "tämän tiedoston valikossa"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:224
-#: libnautilus-extensions/nautilus-program-chooser.c:227
+#: libnautilus-extensions/nautilus-program-chooser.c:232
+#: libnautilus-extensions/nautilus-program-chooser.c:235
 #, c-format
 msgid "in menu for \"%s\""
 msgstr "tyypin \"%s\" valikossa"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:230
+#: libnautilus-extensions/nautilus-program-chooser.c:238
 msgid "default for this file"
 msgstr "tämän tiedoston oletus"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:233
-#: libnautilus-extensions/nautilus-program-chooser.c:236
+#: libnautilus-extensions/nautilus-program-chooser.c:241
+#: libnautilus-extensions/nautilus-program-chooser.c:244
 #, c-format
 msgid "default for \"%s\""
 msgstr "tyypin \"%s\" oletus"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:265
+#: libnautilus-extensions/nautilus-program-chooser.c:289
 #, c-format
 msgid "Is not in the menu for \"%s\" items."
 msgstr "Ei ole tiedostotyypin \"%s\" valikossa."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:268
+#: libnautilus-extensions/nautilus-program-chooser.c:292
 #, c-format
 msgid "Is in the menu for \"%s\"."
 msgstr "On tiedoston \"%s\" valikossa."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:271
+#: libnautilus-extensions/nautilus-program-chooser.c:295
 #, c-format
 msgid "Is in the menu for \"%s\" items."
 msgstr "On tiedostotyypin \"%s\" valikossa."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:274
+#: libnautilus-extensions/nautilus-program-chooser.c:298
 #, c-format
 msgid "Is in the menu for all \"%s\" items."
 msgstr "On kaikkien tiedostotyyppien \"%s\" valikossa."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:277
+#: libnautilus-extensions/nautilus-program-chooser.c:301
 #, c-format
 msgid "Is the default for \"%s\"."
 msgstr "On tiedoston \"%s\" oletus."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:280
+#: libnautilus-extensions/nautilus-program-chooser.c:304
 #, c-format
 msgid "Is the default for \"%s\" items."
 msgstr "On tiedostotyypin \"%s\" oletus."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:283
+#: libnautilus-extensions/nautilus-program-chooser.c:307
 #, c-format
 msgid "Is the default for all \"%s\" items."
 msgstr "On kaikkien tiedostotyyppien \"%s\" oletus."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:969
+#: libnautilus-extensions/nautilus-program-chooser.c:993
 #, c-format
 msgid "Modify \"%s\""
 msgstr "Muokkaa ohjelmalla \"%s\""
 
 #. Radio button for adding to short list for file type.
-#: libnautilus-extensions/nautilus-program-chooser.c:994
+#: libnautilus-extensions/nautilus-program-chooser.c:1018
 #, c-format
 msgid "Include in the menu for \"%s\" items"
 msgstr "Näytä tiedostotyypin \"%s\" valikossa"
 
 #. Radio button for setting default for file type.
-#: libnautilus-extensions/nautilus-program-chooser.c:1001
+#: libnautilus-extensions/nautilus-program-chooser.c:1025
 #, c-format
 msgid "Use as default for \"%s\" items"
 msgstr "Käytä tiedostotyypin \"%s\" oletuksena"
 
 #. Radio button for adding to short list for specific file.
-#: libnautilus-extensions/nautilus-program-chooser.c:1008
+#: libnautilus-extensions/nautilus-program-chooser.c:1032
 #, c-format
 msgid "Include in the menu just for \"%s\""
 msgstr "Näytä vain tiedoston \"%s\" valikossa"
 
 #. Radio button for setting default for specific file.
-#: libnautilus-extensions/nautilus-program-chooser.c:1014
+#: libnautilus-extensions/nautilus-program-chooser.c:1038
 #, c-format
 msgid "Use as default just for \"%s\""
 msgstr "Käytä vain tiedoston \"%s\" oletuksena"
 
 #. Radio button for not including program in short list for type or file.
-#: libnautilus-extensions/nautilus-program-chooser.c:1021
+#: libnautilus-extensions/nautilus-program-chooser.c:1045
 #, c-format
 msgid "Don't include in the menu for \"%s\" items"
 msgstr "Älä näytä tiedostotyypin \"%s\" valikossa"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1185
+#: libnautilus-extensions/nautilus-program-chooser.c:1209
 #: src/file-manager/fm-list-view.c:2122
 #: src/file-manager/fm-search-list-view.c:545
 #: src/nautilus-bookmarks-window.c:164
 msgid "Name"
 msgstr "Nimi"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1188
+#: libnautilus-extensions/nautilus-program-chooser.c:1212
 msgid "Status"
 msgstr "Tila"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1236
+#: libnautilus-extensions/nautilus-program-chooser.c:1260
 msgid "Open with Other"
 msgstr "Avaa muulla ohjelmalla"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1237
+#: libnautilus-extensions/nautilus-program-chooser.c:1261
 #, c-format
 msgid "Choose an application with which to open \"%s\"."
 msgstr "Valitse sovellus, jolla tiedosto \"%s\" avataan"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1241
+#: libnautilus-extensions/nautilus-program-chooser.c:1265
 msgid "View as Other"
 msgstr "Katsele muuna tyyppinä"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1242
+#: libnautilus-extensions/nautilus-program-chooser.c:1266
 #, c-format
 msgid "Choose a view for \"%s\"."
 msgstr "Valitse tiedoston \"%s\" näkymä."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1249
+#: libnautilus-extensions/nautilus-program-chooser.c:1273
 msgid "Choose"
 msgstr "Valitse"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1251
+#: libnautilus-extensions/nautilus-program-chooser.c:1275
 msgid "Done"
 msgstr "Valmis"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1314
+#: libnautilus-extensions/nautilus-program-chooser.c:1338
 msgid "Modify..."
 msgstr "Muokkaa..."
 
 #. Framed area with button to launch mime type editing capplet.
-#: libnautilus-extensions/nautilus-program-chooser.c:1325
+#: libnautilus-extensions/nautilus-program-chooser.c:1349
 msgid "File Types and Programs"
 msgstr "Tiedostotyypit ja ohjelmat"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1346
+#: libnautilus-extensions/nautilus-program-chooser.c:1370
 msgid ""
 "You can configure which programs are offered for which file types in the "
 "GNOME Control Center."
@@ -5854,7 +6102,42 @@ msgstr ""
 "Voi valita Gnomen hallintakeskuksesta, mitä ohjelmia tarjotaan millekin "
 "tiedostotyypille."
 
-#: libnautilus-extensions/nautilus-program-choosing.c:516
+#: libnautilus-extensions/nautilus-program-chooser.c:1485
+#, fuzzy, c-format
+msgid "No viewers are available for \"%s\"."
+msgstr "Ei MD5-summaa paketille %s"
+
+#: libnautilus-extensions/nautilus-program-chooser.c:1486
+msgid "No Viewers Available"
+msgstr ""
+
+#: libnautilus-extensions/nautilus-program-chooser.c:1489
+#, fuzzy, c-format
+msgid "No applications are available for \"%s\"."
+msgstr "Teeman \"%s\" kuvausta ei ole saatavilla"
+
+#: libnautilus-extensions/nautilus-program-chooser.c:1490
+#, fuzzy
+msgid "No Applications Available"
+msgstr "Sovellukset"
+
+#. Note: This might be misleading in the components case, since the
+#. * user can't add components to the complete list even from the capplet.
+#. * (They can add applications though.)
+#.
+#: libnautilus-extensions/nautilus-program-chooser.c:1497
+#, fuzzy, c-format
+msgid ""
+"%s\n"
+"\n"
+"You can configure which programs are offered for which file types with the "
+"\"File Types and Programs\" part of the GNOME Control Center. Do you want to "
+"go there now?"
+msgstr ""
+"Voi valita Gnomen hallintakeskuksesta, mitä ohjelmia tarjotaan millekin "
+"tiedostotyypille."
+
+#: libnautilus-extensions/nautilus-program-choosing.c:492
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -5863,17 +6146,17 @@ msgstr ""
 "\"%s\" ei voi avata kohdetta \"%s\" koska \"%s\" ei voi koskea tiedostoihin "
 "sijainneissa \"%s\". Haluatko valita toisen ohjelman?"
 
-#: libnautilus-extensions/nautilus-program-choosing.c:521
-#: libnautilus-extensions/nautilus-program-choosing.c:542
+#: libnautilus-extensions/nautilus-program-choosing.c:497
+#: libnautilus-extensions/nautilus-program-choosing.c:518
 msgid "Can't Open Location"
 msgstr "Ei voi avata sijaintia"
 
-#: libnautilus-extensions/nautilus-program-choosing.c:537
-#, c-format
+#: libnautilus-extensions/nautilus-program-choosing.c:513
+#, fuzzy, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations.  No other applications are available to view this file.  If you "
-"copy this file onto your computer, you will be able to open it."
+"copy this file onto your computer, you may be able to open it."
 msgstr ""
 "\"%s\" ei voi avata kohdetta \"%s\", koska \"%s\" ei voi koskea tiedostoihin "
 "\"%s\" sijainneissa.  Muita ohjelmia tämän tiedoston näyttämiseen ei ole. "
@@ -6150,7 +6433,7 @@ msgstr "Etsitään levyiltä"
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "Nautilus etsii roskakorihakemistoja levyasemiltasi."
 
-#: libnautilus-extensions/nautilus-trash-file.c:593
+#: libnautilus-extensions/nautilus-trash-file.c:600
 msgid "on the desktop"
 msgstr "työpöydällä"
 
@@ -6174,52 +6457,57 @@ msgstr "Tee muokkaus uudelleen"
 msgid "Redo the edit"
 msgstr "Tee muokkaus uudelleen"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:514
-#: libnautilus-extensions/nautilus-volume-monitor.c:533
-msgid "Unknown"
-msgstr "Tuntematon"
+#: libnautilus-extensions/nautilus-view-identifier.c:61
+#, fuzzy, c-format
+msgid "View as %s"
+msgstr "Näytä luettelona"
+
+#: libnautilus-extensions/nautilus-view-identifier.c:64
+#, fuzzy, c-format
+msgid "%s Viewer"
+msgstr "Luettelokatselin"
 
 #. Populate table with items we know localized names for.
-#: libnautilus-extensions/nautilus-volume-monitor.c:619
-#: libnautilus-extensions/nautilus-volume-monitor.c:1807
+#: libnautilus-extensions/nautilus-volume-monitor.c:623
+#: libnautilus-extensions/nautilus-volume-monitor.c:1862
 msgid "Floppy"
 msgstr "Levyke"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:620
+#: libnautilus-extensions/nautilus-volume-monitor.c:624
 msgid "CD-ROM"
 msgstr "CD-ROM"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:621
+#: libnautilus-extensions/nautilus-volume-monitor.c:625
 msgid "Zip Drive"
 msgstr "Zip-asema"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:642
-#: libnautilus-extensions/nautilus-volume-monitor.c:664
+#: libnautilus-extensions/nautilus-volume-monitor.c:646
+#: libnautilus-extensions/nautilus-volume-monitor.c:668
 msgid "Audio CD"
 msgstr "Ääni-CD"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1523
+#: libnautilus-extensions/nautilus-volume-monitor.c:1547
 msgid "Mount Error"
 msgstr "Liittämisvirhe"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1525
+#: libnautilus-extensions/nautilus-volume-monitor.c:1549
 msgid "Unmount Error"
 msgstr "Irrottamisvirhe"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1555
+#: libnautilus-extensions/nautilus-volume-monitor.c:1579
 msgid "is write-protected, mounting read-only"
 msgstr "on kirjoitussuojattu: liitetään vain luettavaksi."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1558
+#: libnautilus-extensions/nautilus-volume-monitor.c:1582
 msgid "is not a valid block device"
 msgstr "ei ole kelvollinen lohkolaite"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1559
+#: libnautilus-extensions/nautilus-volume-monitor.c:1583
 msgid "No medium found"
 msgstr "Ei tallennusvälinettä"
 
 #. Handle floppy case
-#: libnautilus-extensions/nautilus-volume-monitor.c:1563
+#: libnautilus-extensions/nautilus-volume-monitor.c:1587
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -6228,25 +6516,25 @@ msgstr ""
 "levykettä sisällä."
 
 #. All others
-#: libnautilus-extensions/nautilus-volume-monitor.c:1567
+#: libnautilus-extensions/nautilus-volume-monitor.c:1591
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
 msgstr ""
 "Nautilus ei voinut liittää osiota. Laitteessa ei todennäköisesti ole levyä."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1570
+#: libnautilus-extensions/nautilus-volume-monitor.c:1594
 msgid "wrong fs type, bad option, bad superblock on"
 msgstr "väärä tiedostojärjestelmä, väärä valitsin, väärä superblock päällä"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1573
+#: libnautilus-extensions/nautilus-volume-monitor.c:1597
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
 msgstr ""
 "Nautilus ei voinut liittää levykeasemaa. Luultavasti syynä on tallennusmuoto."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1576
+#: libnautilus-extensions/nautilus-volume-monitor.c:1600
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -6254,40 +6542,50 @@ msgstr ""
 "Nautilus ei voinut liittää valittua osiota. Luultavasti syynä on "
 "tallennusmuoto."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1581
+#: libnautilus-extensions/nautilus-volume-monitor.c:1605
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilus ei voinut liittää valittua levykeasemaa."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1583
+#: libnautilus-extensions/nautilus-volume-monitor.c:1607
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilus ei voinut liittää valittua osiota."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-extensions/nautilus-volume-monitor.c:1588
+#: libnautilus-extensions/nautilus-volume-monitor.c:1612
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilus ei voinut irrottaa valittua osiota."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1740
+#: libnautilus-extensions/nautilus-volume-monitor.c:1764
 msgid "ISO 9660 Volume"
 msgstr "ISO 9660 -osio"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1755
+#: libnautilus-extensions/nautilus-volume-monitor.c:1779
 msgid "Root"
 msgstr "Juuri"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1762
+#: libnautilus-extensions/nautilus-volume-monitor.c:1786
 msgid "Ext2 Volume"
 msgstr "Ext2-osio"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1777
+#: libnautilus-extensions/nautilus-volume-monitor.c:1801
 msgid "MSDOS Volume"
 msgstr "MS DOS-osio"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1792
+#: libnautilus-extensions/nautilus-volume-monitor.c:1816
 msgid "NFS Volume"
 msgstr "NFS-osio"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1822
+#: libnautilus-extensions/nautilus-volume-monitor.c:1831
+#, fuzzy
+msgid "ReiserFS Volume"
+msgstr "NFS-osio"
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1847
+#, fuzzy
+msgid "UFS Volume"
+msgstr "NFS-osio"
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1877
 msgid "Unknown Volume"
 msgstr "Tuntematon osio"
 
@@ -6303,7 +6601,7 @@ msgstr "Kopioi valittu teksti leikepöydälle"
 msgid "Cut the selected text to the clipboard"
 msgstr "Leikkaa valittu teksti leikepöydälle"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:4 src/nautilus-shell-ui.xml.h:45
+#: libnautilus/nautilus-clipboard-ui.xml.h:4 src/nautilus-shell-ui.xml.h:46
 msgid "Paste the text stored on the clipboard"
 msgstr "Liitä leikepöydän sisältämä teksti"
 
@@ -6311,7 +6609,7 @@ msgstr "Liitä leikepöydän sisältämä teksti"
 msgid "Remove the selected text without putting it on the clipboard"
 msgstr "Poista valittu teksti kopioimatta sitä leikepöydälle"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:77
+#: libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:80
 msgid "_Copy Text"
 msgstr "_Kopioi teksti"
 
@@ -6319,7 +6617,7 @@ msgstr "_Kopioi teksti"
 msgid "_Cut Text"
 msgstr "_Leikkaa teksti"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:91
+#: libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:93
 msgid "_Paste Text"
 msgstr "_Liitä tekstiä"
 
@@ -6328,7 +6626,7 @@ msgstr "_Liitä tekstiä"
 #. * to change it when we upgrade to GTK 2.0.
 #.
 #: nautilus.desktop.in.h:1 src/nautilus-window-manage-views.c:254
-#: src/nautilus-window-menus.c:559
+#: src/nautilus-window-menus.c:563
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -6373,49 +6671,49 @@ msgstr "Tämä avaisi %d eri ikkunaa. Oletko varma, että haluat tehdä tämän?"
 msgid "Open %d Windows?"
 msgstr "Avataanko %d ikkunaa?"
 
-#: src/file-manager/fm-directory-view.c:1199
+#: src/file-manager/fm-directory-view.c:1219
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" valittu"
 
-#: src/file-manager/fm-directory-view.c:1201
+#: src/file-manager/fm-directory-view.c:1221
 msgid "1 folder selected"
 msgstr "1 hakemisto valittu"
 
-#: src/file-manager/fm-directory-view.c:1204
+#: src/file-manager/fm-directory-view.c:1224
 #, c-format
 msgid "%d folders selected"
 msgstr "%d hakemistoa valittu"
 
-#: src/file-manager/fm-directory-view.c:1210
+#: src/file-manager/fm-directory-view.c:1230
 msgid " (containing 0 items)"
 msgstr " (sisältää 0 kohdetta)"
 
-#: src/file-manager/fm-directory-view.c:1212
+#: src/file-manager/fm-directory-view.c:1232
 msgid " (containing 1 item)"
 msgstr " (sisältää yhden kohteen)"
 
-#: src/file-manager/fm-directory-view.c:1214
+#: src/file-manager/fm-directory-view.c:1234
 #, c-format
 msgid " (containing %d items)"
 msgstr " (sisältää %d kohdetta)"
 
-#: src/file-manager/fm-directory-view.c:1225
+#: src/file-manager/fm-directory-view.c:1245
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" valittu (%s)"
 
-#: src/file-manager/fm-directory-view.c:1229
+#: src/file-manager/fm-directory-view.c:1249
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d kohdetta on valittu (%s)"
 
-#: src/file-manager/fm-directory-view.c:1236
+#: src/file-manager/fm-directory-view.c:1256
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 toinen kohde on valittu (%s)"
 
-#: src/file-manager/fm-directory-view.c:1239
+#: src/file-manager/fm-directory-view.c:1259
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d muuta kohdetta on valittu (%s)"
@@ -6427,7 +6725,7 @@ msgstr "%d muuta kohdetta on valittu (%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1268
+#: src/file-manager/fm-directory-view.c:1288
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -6436,7 +6734,7 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1395
+#: src/file-manager/fm-directory-view.c:1415
 #, c-format
 msgid ""
 "The folder \"%s\" contains more files than Nautilus can handle. Some files "
@@ -6445,17 +6743,17 @@ msgstr ""
 "Hakemisto \"%s\" sisältää enemmän tiedostoja kuin Nautilus voi käsitellä. "
 "Joitakin tiedostoja ei näy."
 
-#: src/file-manager/fm-directory-view.c:1402
+#: src/file-manager/fm-directory-view.c:1422
 msgid "Too Many Files"
 msgstr "Liian monta tiedostoa"
 
-#: src/file-manager/fm-directory-view.c:2599
+#: src/file-manager/fm-directory-view.c:2619
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr "Kohdetta \"%s\" ei voi siirtää roskakoriin. Haluatko poistaa sen heti?"
 
-#: src/file-manager/fm-directory-view.c:2604
+#: src/file-manager/fm-directory-view.c:2624
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
@@ -6463,7 +6761,7 @@ msgid ""
 msgstr ""
 "Ei voi siirtää %d valittua kohdetta roskakoriin. Haluatko poistaa ne heti?"
 
-#: src/file-manager/fm-directory-view.c:2608
+#: src/file-manager/fm-directory-view.c:2628
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
@@ -6472,22 +6770,22 @@ msgstr ""
 "On %d valittua kohdetta, joita ei voi siirtää roskakoriin. Haluatko poistaa "
 "nämä %d kohdetta heti?"
 
-#: src/file-manager/fm-directory-view.c:2616
+#: src/file-manager/fm-directory-view.c:2636
 msgid "Delete Immediately?"
 msgstr "Poistetaanko heti?"
 
-#: src/file-manager/fm-directory-view.c:2617
-#: src/file-manager/fm-directory-view.c:2658
+#: src/file-manager/fm-directory-view.c:2637
+#: src/file-manager/fm-directory-view.c:2678
 msgid "Delete"
 msgstr "Poista"
 
-#: src/file-manager/fm-directory-view.c:2647
+#: src/file-manager/fm-directory-view.c:2667
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
 msgstr ""
 "Oletko varma, että haluat poistaa kohteen \"%s\" pysyvästi roskakorista?"
 
-#: src/file-manager/fm-directory-view.c:2651
+#: src/file-manager/fm-directory-view.c:2671
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
@@ -6496,74 +6794,76 @@ msgstr ""
 "Oletko varma, että haluat poistaa pysyvästi kaikki %d valittua kohdetta "
 "roskakorista?"
 
-#: src/file-manager/fm-directory-view.c:2657
+#: src/file-manager/fm-directory-view.c:2677
 msgid "Delete From Trash?"
 msgstr "Poistetaanko roskakorista?"
 
-#: src/file-manager/fm-directory-view.c:2930
-#: src/file-manager/fm-directory-view.c:2970
+#: src/file-manager/fm-directory-view.c:2950
+#: src/file-manager/fm-directory-view.c:2990
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Käytä ohjelmaa \"%s\" valitun kohteen avaamiseen"
 
-#: src/file-manager/fm-directory-view.c:3172
-msgid "Open in _New Window"
-msgstr "Avaa uudessa _ikkunassa"
+#: src/file-manager/fm-directory-view.c:3192
+#: src/file-manager/nautilus-directory-view-ui.xml.h:19
+#, fuzzy
+msgid "Open _in New Window"
+msgstr "Avaa uudessa ikkunassa"
 
-#: src/file-manager/fm-directory-view.c:3174
-#, c-format
-msgid "Open in %d _New Windows"
+#: src/file-manager/fm-directory-view.c:3194
+#, fuzzy, c-format
+msgid "Open _in %d New Windows"
 msgstr "Avaa %d _uutta ikkunaa näyttämistä varten"
 
-#: src/file-manager/fm-directory-view.c:3200
+#: src/file-manager/fm-directory-view.c:3220
 msgid "Delete all selected items permanently"
 msgstr "Poista kaikki valitut kohteet pysyvästi"
 
-#: src/file-manager/fm-directory-view.c:3205
+#: src/file-manager/fm-directory-view.c:3225
 msgid "Delete from _Trash..."
 msgstr "Poista _roskakorista..."
 
-#: src/file-manager/fm-directory-view.c:3206
+#: src/file-manager/fm-directory-view.c:3226
 msgid "Delete from _Trash"
 msgstr "Poista _roskakorista"
 
-#: src/file-manager/fm-directory-view.c:3210
+#: src/file-manager/fm-directory-view.c:3230
 msgid "Move all selected items to the Trash"
 msgstr "Siirrä kaikki valitut kohteet roskakoriin"
 
-#: src/file-manager/fm-directory-view.c:3214
+#: src/file-manager/fm-directory-view.c:3234
 #: src/file-manager/nautilus-directory-view-ui.xml.h:14
 msgid "Move to _Trash"
 msgstr "Siirrä _roskakoriin"
 
-#: src/file-manager/fm-directory-view.c:3244
+#: src/file-manager/fm-directory-view.c:3264
 msgid "Create _Links"
 msgstr "_Luo linkkejä"
 
-#: src/file-manager/fm-directory-view.c:3245
+#: src/file-manager/fm-directory-view.c:3265
 #: src/file-manager/nautilus-directory-view-ui.xml.h:5
 msgid "Create _Link"
 msgstr "_Luo linkki"
 
-#: src/file-manager/fm-directory-view.c:3263
+#: src/file-manager/fm-directory-view.c:3283
 msgid "_Empty Trash..."
 msgstr "_Tyhjennä roskakori..."
 
-#: src/file-manager/fm-directory-view.c:3264
-#: src/file-manager/nautilus-directory-view-ui.xml.h:39
+#: src/file-manager/fm-directory-view.c:3284
+#: src/file-manager/nautilus-directory-view-ui.xml.h:41
 msgid "_Empty Trash"
 msgstr "_Tyhjennä roskakori"
 
-#: src/file-manager/fm-directory-view.c:3275
-#: src/file-manager/nautilus-directory-view-ui.xml.h:26
+#: src/file-manager/fm-directory-view.c:3295
+#: src/file-manager/nautilus-directory-view-ui.xml.h:27
 msgid "R_emove Custom Images"
 msgstr "Poista _mukautetut kuvat"
 
-#: src/file-manager/fm-directory-view.c:3276
+#: src/file-manager/fm-directory-view.c:3296
 msgid "R_emove Custom Image"
 msgstr "Poista _mukautettu kuva"
 
-#: src/file-manager/fm-directory-view.c:3429
+#: src/file-manager/fm-directory-view.c:3449
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
@@ -6571,7 +6871,7 @@ msgstr ""
 "Tätä linkkiä ei voi käyttää, koska sillä ei ole kohdetta. Haluatko heittää "
 "tämän linkin roskakoriin?"
 
-#: src/file-manager/fm-directory-view.c:3432
+#: src/file-manager/fm-directory-view.c:3452
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -6580,15 +6880,15 @@ msgstr ""
 "Tätä linkkiä ei voi käyttää, koska sen kohdetta \"%s\" ei ole olemassa. "
 "Haluatko heittää tämän linkin roskakoriin?"
 
-#: src/file-manager/fm-directory-view.c:3438
+#: src/file-manager/fm-directory-view.c:3458
 msgid "Broken Link"
 msgstr "Rikkinäinen linkki"
 
-#: src/file-manager/fm-directory-view.c:3439
+#: src/file-manager/fm-directory-view.c:3459
 msgid "Throw Away"
 msgstr "Heitä pois"
 
-#: src/file-manager/fm-directory-view.c:3492
+#: src/file-manager/fm-directory-view.c:3512
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -6597,35 +6897,35 @@ msgstr ""
 "\"%s\" on suoritettava tekstitiedosto. Haluatko käynnistää sen vai nähdä sen "
 "sisällön?"
 
-#: src/file-manager/fm-directory-view.c:3498
+#: src/file-manager/fm-directory-view.c:3518
 msgid "Run or Display?"
 msgstr "Käynnistä vai näytä?"
 
-#: src/file-manager/fm-directory-view.c:3499
+#: src/file-manager/fm-directory-view.c:3519
 msgid "Run"
 msgstr "Käynnistä"
 
-#: src/file-manager/fm-directory-view.c:3500
+#: src/file-manager/fm-directory-view.c:3520
 msgid "Display"
 msgstr "Näyttö"
 
-#: src/file-manager/fm-directory-view.c:3554
+#: src/file-manager/fm-directory-view.c:3574
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
 msgstr ""
 "Valitettavasti et voi turvallisuussyistä suorittaa komentoja etäsivustolta."
 
-#: src/file-manager/fm-directory-view.c:3556
+#: src/file-manager/fm-directory-view.c:3576
 msgid "Can't execute remote links"
 msgstr "Etälinkkejä ei voi suorittaa"
 
-#: src/file-manager/fm-directory-view.c:3690
+#: src/file-manager/fm-directory-view.c:3710
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Avaa tiedostoa \"%s\""
 
-#: src/file-manager/fm-directory-view.c:3696
+#: src/file-manager/fm-directory-view.c:3716
 msgid "Cancel Open?"
 msgstr "Perutaanko avaaminen?"
 
@@ -6814,61 +7114,61 @@ msgstr ""
 "Valitse tietojen ilmestymisjärjestys. Niitä ilmestyy kuvakkeiden alle, kun "
 "kasvatat suurennosta."
 
-#: src/file-manager/fm-icon-view.c:157
+#: src/file-manager/fm-icon-view.c:158
 msgid "by _Name"
 msgstr "_Nimen mukaan"
 
-#: src/file-manager/fm-icon-view.c:158
+#: src/file-manager/fm-icon-view.c:159
 #: src/file-manager/nautilus-icon-view-ui.xml.h:17
 msgid "Keep icons sorted by name in rows"
 msgstr "Pidä kuvakkeet riveissä nimen mukaisessa järjestyksessä"
 
-#: src/file-manager/fm-icon-view.c:164
+#: src/file-manager/fm-icon-view.c:165
 msgid "by _Size"
 msgstr "_Koon mukaan"
 
-#: src/file-manager/fm-icon-view.c:165
+#: src/file-manager/fm-icon-view.c:166
 #: src/file-manager/nautilus-icon-view-ui.xml.h:18
 msgid "Keep icons sorted by size in rows"
 msgstr "Pidä kuvakkeet riveissä koon mukaisessa järjestyksessä"
 
-#: src/file-manager/fm-icon-view.c:171
+#: src/file-manager/fm-icon-view.c:172
 msgid "by _Type"
 msgstr "_Tyypin mukaan"
 
-#: src/file-manager/fm-icon-view.c:172
+#: src/file-manager/fm-icon-view.c:173
 #: src/file-manager/nautilus-icon-view-ui.xml.h:19
 msgid "Keep icons sorted by type in rows"
 msgstr "Pidä kuvakkeet riveissä tyypin mukaisessa järjestyksessä"
 
-#: src/file-manager/fm-icon-view.c:178
+#: src/file-manager/fm-icon-view.c:179
 msgid "by Modification _Date"
 msgstr "Muokkaus_päivämäärän mukaan"
 
-#: src/file-manager/fm-icon-view.c:179
+#: src/file-manager/fm-icon-view.c:180
 #: src/file-manager/nautilus-icon-view-ui.xml.h:16
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Pidä kuvakkeet riveissä muokkauspäivämääärän mukaisessa järjestyksessä"
 
-#: src/file-manager/fm-icon-view.c:185
+#: src/file-manager/fm-icon-view.c:186
 msgid "by _Emblems"
 msgstr "Tunnus_merkkien mukaan"
 
-#: src/file-manager/fm-icon-view.c:186
+#: src/file-manager/fm-icon-view.c:187
 #: src/file-manager/nautilus-icon-view-ui.xml.h:15
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Pidä kuvakkeet riveissä tunnusmerkkien mukaisessa järjestyksessä"
 
-#: src/file-manager/fm-icon-view.c:1229
+#: src/file-manager/fm-icon-view.c:1230
 #: src/file-manager/nautilus-icon-view-ui.xml.h:39
 msgid "_Restore Icons' Original Sizes"
 msgstr "_Palauta kuvakkeiden alkuperäiset koot"
 
-#: src/file-manager/fm-icon-view.c:1230
+#: src/file-manager/fm-icon-view.c:1231
 msgid "_Restore Icon's Original Size"
 msgstr "_Palauta kuvakkeen alkuperäinen koko"
 
-#: src/file-manager/fm-icon-view.c:1442
+#: src/file-manager/fm-icon-view.c:1443
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "viittaa kohteeseen \"%s\""
@@ -6888,46 +7188,46 @@ msgstr "Tyyppi"
 msgid "Date Modified"
 msgstr "Muokattu"
 
-#: src/file-manager/fm-properties-window.c:519
+#: src/file-manager/fm-properties-window.c:522
 #, c-format
 msgid "%s Properties"
 msgstr "Kohteen %s ominaisuudet"
 
-#: src/file-manager/fm-properties-window.c:714
+#: src/file-manager/fm-properties-window.c:717
 msgid "Cancel Group Change?"
 msgstr "Haluatko perua ryhmän vaihdon?"
 
-#: src/file-manager/fm-properties-window.c:715
+#: src/file-manager/fm-properties-window.c:718
 msgid "Changing group"
 msgstr "Ryhmän vaihto"
 
-#: src/file-manager/fm-properties-window.c:876
+#: src/file-manager/fm-properties-window.c:879
 msgid "Cancel Owner Change?"
 msgstr "Haluatko perua omistajan vaihdon?"
 
-#: src/file-manager/fm-properties-window.c:877
+#: src/file-manager/fm-properties-window.c:880
 msgid "Changing owner"
 msgstr "Omistajan vaihto"
 
-#: src/file-manager/fm-properties-window.c:1052
+#: src/file-manager/fm-properties-window.c:1063
 msgid "nothing"
 msgstr "ei mitään"
 
-#: src/file-manager/fm-properties-window.c:1054
+#: src/file-manager/fm-properties-window.c:1065
 msgid "unreadable"
 msgstr "ei luettavissa"
 
-#: src/file-manager/fm-properties-window.c:1063
+#: src/file-manager/fm-properties-window.c:1074
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 kohde, jonka koko on %s"
 
-#: src/file-manager/fm-properties-window.c:1065
+#: src/file-manager/fm-properties-window.c:1076
 #, c-format
 msgid "%d items, totalling %s"
 msgstr "%d kohdetta, yhteensä %s"
 
-#: src/file-manager/fm-properties-window.c:1071
+#: src/file-manager/fm-properties-window.c:1082
 msgid "(some contents unreadable)"
 msgstr "(sisältö ei kokonaan luettavissa) "
 
@@ -6936,124 +7236,124 @@ msgstr "(sisältö ei kokonaan luettavissa) "
 #. * "Contents:" title to line up with the first line of the 2-line value.
 #. * Maybe there's a better way to do this, but I couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1085
+#: src/file-manager/fm-properties-window.c:1096
 msgid "Contents:"
 msgstr "Sisältö:"
 
-#: src/file-manager/fm-properties-window.c:1418
+#: src/file-manager/fm-properties-window.c:1433
 msgid "Basic"
 msgstr "Perustiedot"
 
-#: src/file-manager/fm-properties-window.c:1497
+#: src/file-manager/fm-properties-window.c:1512
 msgid "Type:"
 msgstr "Tyyppi:"
 
-#: src/file-manager/fm-properties-window.c:1502
+#: src/file-manager/fm-properties-window.c:1517
 msgid "Size:"
 msgstr "Koko:"
 
-#: src/file-manager/fm-properties-window.c:1506
+#: src/file-manager/fm-properties-window.c:1521
 msgid "MIME type:"
 msgstr "MIME-tyyppi:"
 
-#: src/file-manager/fm-properties-window.c:1512
+#: src/file-manager/fm-properties-window.c:1527
 msgid "Modified:"
 msgstr "Muokattu:"
 
-#: src/file-manager/fm-properties-window.c:1515
+#: src/file-manager/fm-properties-window.c:1530
 msgid "Accessed:"
 msgstr "Käytetty:"
 
-#: src/file-manager/fm-properties-window.c:1524
+#: src/file-manager/fm-properties-window.c:1539
 msgid "Select Custom Icon..."
 msgstr "Valitse mukautettu kuva..."
 
-#: src/file-manager/fm-properties-window.c:1530
+#: src/file-manager/fm-properties-window.c:1545
 msgid "Remove Custom Icon"
 msgstr "Poista mukautettu kuva"
 
-#: src/file-manager/fm-properties-window.c:1855
+#: src/file-manager/fm-properties-window.c:1873
 msgid "Set User ID"
 msgstr "Asettaa käyttäjän (SUID)"
 
-#: src/file-manager/fm-properties-window.c:1860
+#: src/file-manager/fm-properties-window.c:1878
 msgid "Special Flags:"
 msgstr "Erikoisliput:"
 
-#: src/file-manager/fm-properties-window.c:1863
+#: src/file-manager/fm-properties-window.c:1881
 msgid "Set Group ID"
 msgstr "Asettaa ryhmän (SGID)"
 
-#: src/file-manager/fm-properties-window.c:1865
+#: src/file-manager/fm-properties-window.c:1883
 msgid "Sticky"
 msgstr "\"Sticky\""
 
-#: src/file-manager/fm-properties-window.c:1891
+#: src/file-manager/fm-properties-window.c:1909
 msgid "Permissions"
 msgstr "Oikeudet"
 
-#: src/file-manager/fm-properties-window.c:1897
+#: src/file-manager/fm-properties-window.c:1915
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Et ole tiedoston omistaja, joten et voi muuttaa sen oikeuksia."
 
-#: src/file-manager/fm-properties-window.c:1910
+#: src/file-manager/fm-properties-window.c:1928
 msgid "File Owner:"
 msgstr "Tiedoston omistaja:"
 
-#: src/file-manager/fm-properties-window.c:1919
+#: src/file-manager/fm-properties-window.c:1937
 msgid "File Group:"
 msgstr "Tiedoston ryhmä:"
 
-#: src/file-manager/fm-properties-window.c:1937
+#: src/file-manager/fm-properties-window.c:1955
 msgid "Owner:"
 msgstr "Omistaja:"
 
-#: src/file-manager/fm-properties-window.c:1938
+#: src/file-manager/fm-properties-window.c:1956
 msgid "Group:"
 msgstr "Ryhmä:"
 
-#: src/file-manager/fm-properties-window.c:1939
+#: src/file-manager/fm-properties-window.c:1957
 msgid "Others:"
 msgstr "Muut:"
 
-#: src/file-manager/fm-properties-window.c:1958
+#: src/file-manager/fm-properties-window.c:1976
 msgid "Read"
 msgstr "Luku"
 
-#: src/file-manager/fm-properties-window.c:1962
+#: src/file-manager/fm-properties-window.c:1980
 msgid "Write"
 msgstr "Kirjoitus"
 
-#: src/file-manager/fm-properties-window.c:1966
+#: src/file-manager/fm-properties-window.c:1984
 msgid "Execute"
 msgstr "Suoritus"
 
-#: src/file-manager/fm-properties-window.c:2017
+#: src/file-manager/fm-properties-window.c:2035
 msgid "Text View:"
 msgstr "Tekstinä:"
 
-#: src/file-manager/fm-properties-window.c:2018
+#: src/file-manager/fm-properties-window.c:2036
 msgid "Number View:"
 msgstr "Numeroina:"
 
-#: src/file-manager/fm-properties-window.c:2019
+#: src/file-manager/fm-properties-window.c:2037
 msgid "Last Changed:"
 msgstr "Viimeksi muuttuneet:"
 
-#: src/file-manager/fm-properties-window.c:2023
+#: src/file-manager/fm-properties-window.c:2041
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Kohteen \"%s\" oikeuksia ei saatu selville."
 
-#: src/file-manager/fm-properties-window.c:2303
+#: src/file-manager/fm-properties-window.c:2321
 msgid "Cancel Showing Properties Window?"
 msgstr "Perutaanko ominaisuusikkunan näyttäminen?"
 
-#: src/file-manager/fm-properties-window.c:2304
+#: src/file-manager/fm-properties-window.c:2322
 msgid "Creating Properties window"
 msgstr "Luodaan ominaisuusikkuna"
 
-#: src/file-manager/fm-properties-window.c:2404
+#: src/file-manager/fm-properties-window.c:2422
 msgid "Select an icon:"
 msgstr "Valitse kuvake:"
 
@@ -7414,108 +7714,111 @@ msgid "New Folder"
 msgstr "Uusi hakemisto"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:16
-msgid "New _Folder"
-msgstr "Uusi _hakemisto"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Open"
 msgstr "Avaa"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:17
+#, fuzzy
+msgid "Open Wit_h"
+msgstr "Avaa ohjelmalla"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Open With"
 msgstr "Avaa ohjelmalla"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:19
+#: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Open each selected item in a new window"
 msgstr "Avaa jokainen valittu kohde uudessa ikkunassa"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:20
+#: src/file-manager/nautilus-directory-view-ui.xml.h:21
 msgid "Open in New Window"
 msgstr "Avaa uudessa ikkunassa"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:21
+#: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Open the selected item in this window"
 msgstr "Avaa valittu kohde tässä ikkunassa"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:22
+#: src/file-manager/nautilus-directory-view-ui.xml.h:23
 msgid "Other Application..."
 msgstr "Muu sovellus..."
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:23
+#: src/file-manager/nautilus-directory-view-ui.xml.h:24
 msgid "Other Viewer..."
 msgstr "Muu katselin..."
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:24
+#: src/file-manager/nautilus-directory-view-ui.xml.h:25
 msgid "Other _Application..."
 msgstr "Muu _sovellus..."
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:25
+#: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Other _Viewer..."
 msgstr "Muu _katselin..."
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:27
+#: src/file-manager/nautilus-directory-view-ui.xml.h:28
 msgid "Remove Custom Images"
 msgstr "Poista mukautetut kuvat"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:28
+#: src/file-manager/nautilus-directory-view-ui.xml.h:29
 msgid "Remove any custom images from selected icons"
 msgstr "Poista kaikki valittujen kuvakkeiden mukautetut kuvat"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:29
+#: src/file-manager/nautilus-directory-view-ui.xml.h:30
 msgid "Remove any custom pattern or color from the background of this location"
 msgstr "Poista tämän sijainnin taustan omat kuviot tai värit."
 
 #. add the reset background item, possibly disabled
-#: src/file-manager/nautilus-directory-view-ui.xml.h:30
+#: src/file-manager/nautilus-directory-view-ui.xml.h:31
 #: src/nautilus-sidebar.c:490
 msgid "Reset Background"
 msgstr "Palauta tausta"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:31
+#: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Select All Files"
 msgstr "Valitse kaikki tiedostot"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:32
+#: src/file-manager/nautilus-directory-view-ui.xml.h:33
+#, fuzzy
+msgid "Select _All Files"
+msgstr "Valitse kaikki tiedostot"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:34
 msgid "Select all items in this window"
 msgstr "Valitse tämän ikkunan kaikki kohteet"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:33
+#: src/file-manager/nautilus-directory-view-ui.xml.h:35
 msgid "Show Properties"
 msgstr "Näytä ominaisuudet"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:34
+#: src/file-manager/nautilus-directory-view-ui.xml.h:36
 msgid "Show Trash"
 msgstr "Näytä roskakori"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:35
+#: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "Show _Properties"
 msgstr "_Näytä ominaisuudet"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:36
+#: src/file-manager/nautilus-directory-view-ui.xml.h:38
 msgid "Show the contents of the Trash"
 msgstr "Näytä roskakorin sisältö"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:37
+#: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "View or modify the properties of each selected item"
 msgstr "Katsele tai muokkaa jokaisen valitun kohteen ominaisuuksia"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:38
+#: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "_Duplicate"
 msgstr "_Monista"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:40
+#: src/file-manager/nautilus-directory-view-ui.xml.h:42
+#, fuzzy
+msgid "_New Folder"
+msgstr "Uusi hakemisto"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:43
 msgid "_Open"
 msgstr "_Avaa"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:41
-msgid "_Open in New Window"
-msgstr "Avaa _uudessa ikkunassa"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:42
-msgid "_Select All Files"
-msgstr "_Valitse kaikki tiedostot"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:43
+#: src/file-manager/nautilus-directory-view-ui.xml.h:44
 msgid "_Show Trash"
 msgstr "_Näytä roskakori"
 
@@ -7765,13 +8068,32 @@ msgstr "Tietoja Nautiluksesta"
 msgid "Authors"
 msgstr "Tekijät"
 
-#: src/nautilus-application.c:274
+#: src/nautilus-application.c:275
 msgid "Couldn't Create Required Folder"
 msgstr "Vaadittua hakemistoa ei voitu luoda"
 
-#: src/nautilus-application.c:279
+#: src/nautilus-application.c:276
+#, c-format
+msgid ""
+"Nautilus could not create the required folder \"%s\". Before running "
+"Nautilus, please create this folder, or set permissions such that Nautilus "
+"can create it."
+msgstr ""
+
+#: src/nautilus-application.c:281
 msgid "Couldn't Create Required Folders"
 msgstr "Vaadittuja hakemistoja ei voitu luoda"
+
+#: src/nautilus-application.c:282
+#, c-format
+msgid ""
+"Nautilus could not create the following required folders:\n"
+"\n"
+"%s\n"
+"\n"
+"Before running Nautilus, please create these folders, or set permissions "
+"such that Nautilus can create them."
+msgstr ""
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.oaf file. This has happened when you
@@ -7783,7 +8105,7 @@ msgstr "Vaadittuja hakemistoja ei voitu luoda"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:404
+#: src/nautilus-application.c:407
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
 "from the console may fix the problem. If not, you can try rebooting the "
@@ -7794,7 +8116,7 @@ msgstr ""
 "käynnistää tietokoneesi uudelleen ja asentaa Nautiluksen uudestaan."
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:410
+#: src/nautilus-application.c:413
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
 "from the console may fix the problem. If not, you can try rebooting the "
@@ -7838,12 +8160,12 @@ msgstr ""
 #. * wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:441 src/nautilus-application.c:459
-#: src/nautilus-application.c:466
+#: src/nautilus-application.c:444 src/nautilus-application.c:462
+#: src/nautilus-application.c:469
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilusta ei voi käyttää nyt odottamattoman virheen takia."
 
-#: src/nautilus-application.c:442
+#: src/nautilus-application.c:445
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to register the file manager view server."
@@ -7851,7 +8173,7 @@ msgstr ""
 "Nautilusta ei voi käyttää nyt, koska OAF ilmoitti odottamattomasta virheestä "
 "tiedostonhallintanäkymää rekisteröidessä."
 
-#: src/nautilus-application.c:460
+#: src/nautilus-application.c:463
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the factory.Killing oafd and restarting Nautilus may "
@@ -7861,7 +8183,7 @@ msgstr ""
 "tehdasta paikantaessa. Oafd:n sulkeminen ja Nautiluksen käynnistäminen "
 "uudelleen saattaa korjata ongelman."
 
-#: src/nautilus-application.c:467
+#: src/nautilus-application.c:470
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the shell object. Killing oafd and restarting Nautilus "
@@ -7871,7 +8193,7 @@ msgstr ""
 "komentotulkkioliota paikantaessa. Oafd:n sulkeminen ja Nautiluksen "
 "käynnistäminen uudelleen saattaa korjata ongelman."
 
-#: src/nautilus-application.c:632
+#: src/nautilus-application.c:635
 msgid ""
 "You are about to run Nautilus as root.\n"
 "\n"
@@ -7884,10 +8206,6 @@ msgstr ""
 "järjestelmääsi, jos olet varomaton, ja Nautilus ei estä sinua\n"
 "tekemästä tätä."
 
-#: src/nautilus-application.c:636
-msgid "Quit"
-msgstr "Lopeta"
-
 #: src/nautilus-bookmarks-window.c:127
 msgid "Bookmarks"
 msgstr "Kirjanmerkit"
@@ -7896,7 +8214,7 @@ msgstr "Kirjanmerkit"
 msgid "Location"
 msgstr "Sijainti"
 
-#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:749
+#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:757
 msgid "Remove"
 msgstr "Poista"
 
@@ -7913,12 +8231,13 @@ msgstr "Vähemmän valintoja"
 msgid "Find Them!"
 msgstr "Etsi!"
 
-#: src/nautilus-first-time-druid.c:180
+#: src/nautilus-first-time-druid.c:184
+#, fuzzy
 msgid ""
-"Existence of this file indicates that the Nautilus configuration wizard\n"
+"Existence of this file indicates that the Nautilus configuration druid\n"
 "has been presented.\n"
 "\n"
-"You can manually erase this file to present the wizard again.\n"
+"You can manually erase this file to present the druid again.\n"
 "\n"
 msgstr ""
 "Tämän tiedoston olemassaolo tarkoittaa, että Nautiluksen asetusvelho\n"
@@ -7927,17 +8246,7 @@ msgstr ""
 "Voit poistaa tämän tiedoston, jos haluat käydä velhon läpi uudestaan.\n"
 "\n"
 
-#. Note to localizers: this font is used for title text in
-#. * the first time druid
-#: src/nautilus-first-time-druid.c:342
-msgid "helvetica"
-msgstr "helvetica"
-
-#: src/nautilus-first-time-druid.c:342
-msgid "medium"
-msgstr "keskivahva"
-
-#: src/nautilus-first-time-druid.c:471
+#: src/nautilus-first-time-druid.c:484
 msgid ""
 "Your user level adjusts Nautilus to your degree of experience\n"
 "using GNOME and Linux. Choose a level that's comfortable for\n"
@@ -7947,7 +8256,7 @@ msgstr ""
 "kokemuksesi mukaan. Valitse nyt taso, jonka luulet sopivan\n"
 "itsellesi. Voit vaihtaa sen halutessasi myöhemmin."
 
-#: src/nautilus-first-time-druid.c:482
+#: src/nautilus-first-time-druid.c:495
 msgid ""
 "For users who have no previous experience with GNOME\n"
 "and Linux."
@@ -7955,7 +8264,7 @@ msgstr ""
 "Käyttäjille, joilla ei ole aikaisempaa kokemusta Gnomesta\n"
 "tai Linuxista."
 
-#: src/nautilus-first-time-druid.c:488
+#: src/nautilus-first-time-druid.c:501
 msgid ""
 "For users who are comfortable with GNOME and Linux,\n"
 "but don't describe themselves as ``technical.''"
@@ -7963,7 +8272,7 @@ msgstr ""
 "Käyttäjille, jotka ovat tutustuneet Gnomeen ja Linuxiin, \n"
 "mutta eivät pidä itseään mitenkään \"teknisinä\"."
 
-#: src/nautilus-first-time-druid.c:494
+#: src/nautilus-first-time-druid.c:507
 msgid ""
 "For users who have GNOME and Linux experience, and\n"
 "like to see every detail of the operating system."
@@ -7971,7 +8280,7 @@ msgstr ""
 "Käyttäjille, joilla on kokemusta Gnomesta ja Linuxista ja\n"
 "jotka haluavat nähdä kaikki käyttöjärjestelmänsä pikkuasiat."
 
-#: src/nautilus-first-time-druid.c:532
+#: src/nautilus-first-time-druid.c:545
 msgid ""
 "To verify your Internet connection and make sure you have\n"
 "the latest Nautilus updates, Nautilus will now connect to\n"
@@ -7991,15 +8300,15 @@ msgstr ""
 "Jos tiedät, että tietokoneesi käyttää välityspalvelinta, niin\n"
 "napsauta \"Tarkista\", ja Nautiluskin käyttää sitä.\n"
 
-#: src/nautilus-first-time-druid.c:546
+#: src/nautilus-first-time-druid.c:559
 msgid "Verify my connection and check for updates"
 msgstr "Tarkista yhteyteni ja etsi päivityksiä"
 
-#: src/nautilus-first-time-druid.c:547
+#: src/nautilus-first-time-druid.c:560
 msgid "Don't verify my connection or check for updates"
 msgstr "Älä tarkista yhteyttä tai etsi päivityksiä"
 
-#: src/nautilus-first-time-druid.c:612
+#: src/nautilus-first-time-druid.c:625
 msgid ""
 "We are having trouble making an external web connection.\n"
 "Sometimes, firewalls require you to specify a web proxy server.\n"
@@ -8010,28 +8319,28 @@ msgstr ""
 "palomuurien takia. Jos välityspalvelin on, niin kirjoita  \n"
 "alla olevaan laatikkoon sen portti tai nimi."
 
-#: src/nautilus-first-time-druid.c:624
+#: src/nautilus-first-time-druid.c:637
 msgid "No proxy server required."
 msgstr "Välityspalvelinta ei tarvita."
 
-#: src/nautilus-first-time-druid.c:625
+#: src/nautilus-first-time-druid.c:638
 msgid "Use this proxy server:"
 msgstr "Käytä tätä välityspalvelinta:"
 
 #. allocate the proxy label, followed by the entry
-#: src/nautilus-first-time-druid.c:650
+#: src/nautilus-first-time-druid.c:663
 msgid "Proxy address:"
 msgstr "Osoite:"
 
-#: src/nautilus-first-time-druid.c:712
+#: src/nautilus-first-time-druid.c:725
 msgid "Verifying your Internet connection and checking for updates..."
 msgstr "Tarkistaa Internet-yhteyttäsi ja etsii päivityksiä..."
 
-#: src/nautilus-first-time-druid.c:720
+#: src/nautilus-first-time-druid.c:733
 msgid "Downloading Nautilus updates..."
 msgstr "Hakee Nautiluksen päivityksiä..."
 
-#: src/nautilus-first-time-druid.c:873
+#: src/nautilus-first-time-druid.c:902
 msgid ""
 "If you have been using the GNOME Midnight Commander\n"
 "these settings move your desktop icons to Nautilus and\n"
@@ -8041,19 +8350,34 @@ msgstr ""
 "asetukset siirtävät työpöydän kuvakkeesi Nautilukseen ja\n"
 "tekevät Nautiluksesta oletustyöpöydän.\n"
 
-#: src/nautilus-first-time-druid.c:880
+#: src/nautilus-first-time-druid.c:909
 msgid "Use Nautilus to draw the desktop."
 msgstr "Piirrä työpöytä Nautiluksella."
 
-#: src/nautilus-first-time-druid.c:886
+#: src/nautilus-first-time-druid.c:915
 msgid "Move existing desktop icons to the Nautilus desktop."
 msgstr "Siirrä olemassa olevat työpöydän kuvakkeet Nautiluksen työpöydälle."
 
-#: src/nautilus-first-time-druid.c:891
+#: src/nautilus-first-time-druid.c:920
 msgid "Launch Nautilus when GNOME starts up."
 msgstr "Käynnistä Nautilus Gnomen käynnistyessä."
 
-#: src/nautilus-first-time-druid.c:926
+#: src/nautilus-first-time-druid.c:959
+#, fuzzy
+msgid ""
+"The fast search feature indexes all the items on your hard disk.\n"
+"It speeds up searching and allows you to search by file content\n"
+"as well as filename, date, and other file properties.  The indexing\n"
+"takes time but is performed only when your computer is idle.\n"
+"Fast search requires that the cron daemon on your system be running.\n"
+msgstr ""
+"Nopea etsintä luetteloi tietokoneesi asemien kaikki kohteet.\n"
+"Se nopeuttaa etsintää ja mahdollistaa tiedostojen sisällön\n"
+"perusteella etsimisen, sekä myös nimi-, päivämäärä- ja tiedosto-\n"
+"ominaisuushaut. Luettelointi vie aikaa, mutta se tapahtuu vain\n"
+"kuin tietokoneesi on jouten.\n"
+
+#: src/nautilus-first-time-druid.c:964
 msgid ""
 "The fast search feature indexes all the items on your hard disk.\n"
 "It speeds up searching and allows you to search by file content\n"
@@ -8066,19 +8390,51 @@ msgstr ""
 "ominaisuushaut. Luettelointi vie aikaa, mutta se tapahtuu vain\n"
 "kuin tietokoneesi on jouten.\n"
 
-#: src/nautilus-first-time-druid.c:934
+#: src/nautilus-first-time-druid.c:973
 msgid "Enable fast search"
 msgstr "Käytä nopeaa etsintää"
 
+#: src/nautilus-first-time-druid.c:974
+msgid "Turn fast search on when cron is enabled"
+msgstr ""
+
+#: src/nautilus-first-time-druid.c:1020
+msgid ""
+"Indexing is turned on, enabling the fast search feature. However, indexing\n"
+"currently can't be performed because the program crond, which does\n"
+"nightly tasks on your computer, is turned off. To make sure fast searches\n"
+"can be done, turn crond on.\n"
+"\n"
+"If you are running Linux, you can log in as root and type these commands \n"
+"to start cron:\n"
+"\n"
+"/sbin/chkconfig --level 345 crond on\n"
+"/etc/rc.d/init.d/cron start\n"
+msgstr ""
+
 #: src/nautilus-first-time-druid.c:1028
+msgid ""
+"Indexing is turned on, enabling the fast search feature. However, indexing\n"
+"may not be performed because the program crond, which does nightly tasks\n"
+"on your computer, may be turned off. To make sure fast searches can be\n"
+"done, check to make sure that crond is turned on.\n"
+"\n"
+"If you are running Linux, you can log in as root and type these commands\n"
+"to start cron:\n"
+"\n"
+"/sbin/chkconfig --level 345 crond on\n"
+"/etc/rc.d/init.d/cron start\n"
+msgstr ""
+
+#: src/nautilus-first-time-druid.c:1128
 msgid "Nautilus First Time Setup"
 msgstr "Nautiluksen ensi kerran asennus"
 
-#: src/nautilus-first-time-druid.c:1058
+#: src/nautilus-first-time-druid.c:1158
 msgid "Welcome to Nautilus"
 msgstr "Tervetuloa Nautilukseen"
 
-#: src/nautilus-first-time-druid.c:1060
+#: src/nautilus-first-time-druid.c:1160
 msgid ""
 "Nautilus is part of your GNOME desktop environment. It\n"
 "helps you manage your files and folders (directories),\n"
@@ -8099,11 +8455,11 @@ msgstr ""
 "jatkaaksesi."
 
 #. set up the final page
-#: src/nautilus-first-time-druid.c:1072
+#: src/nautilus-first-time-druid.c:1172
 msgid "Finished"
 msgstr "Valmis"
 
-#: src/nautilus-first-time-druid.c:1079
+#: src/nautilus-first-time-druid.c:1179
 msgid ""
 "Click Finish to launch Nautilus. You'll start with two\n"
 "Nautilus windows: one shows your home folder, and the\n"
@@ -8120,41 +8476,46 @@ msgstr ""
 "Toivomme, että pidät Nautiluksesta!"
 
 #. set up the user level page
-#: src/nautilus-first-time-druid.c:1088
+#: src/nautilus-first-time-druid.c:1188
 msgid "Choose Your User Level"
 msgstr "Valitse käyttäjätaso"
 
 #. set up the GMC transition page
-#: src/nautilus-first-time-druid.c:1092
+#: src/nautilus-first-time-druid.c:1192
 msgid "GMC to Nautilus Transition"
 msgstr "GMC:stä Nautilukseen siirtyminen"
 
 #. set up the `Launch Medusa' page
-#: src/nautilus-first-time-druid.c:1096
+#: src/nautilus-first-time-druid.c:1196
 msgid "Fast Searches"
 msgstr "Nopeat etsinnät"
 
+#. set up optional page to tell the user how to run cron
+#: src/nautilus-first-time-druid.c:1204
+msgid "The Cron Daemon"
+msgstr ""
+
 #. set up the update page
-#: src/nautilus-first-time-druid.c:1100
+#: src/nautilus-first-time-druid.c:1209
 msgid "Checking Your Internet Connection"
 msgstr "Tarkistaa Internet-yhteyttäsi"
 
 #. set up the update feedback page
-#: src/nautilus-first-time-druid.c:1108
+#: src/nautilus-first-time-druid.c:1220
 msgid "Updating Nautilus..."
 msgstr "Nautilus päivittyy..."
 
 #. set up the (optional) proxy configuration page
-#: src/nautilus-first-time-druid.c:1116
+#: src/nautilus-first-time-druid.c:1228
 msgid "Web Proxy Configuration"
 msgstr "WWW-välityspalvelimen asetukset"
 
 #. change the message to expanding file
-#: src/nautilus-first-time-druid.c:1191
+#: src/nautilus-first-time-druid.c:1303
 msgid "Decoding Update..."
 msgstr "Purkaa päivitystä..."
 
-#: src/nautilus-first-time-druid.c:1208
+#: src/nautilus-first-time-druid.c:1320
 msgid "Update Complete. Click Next to Continue."
 msgstr "Päivitys valmis. Napsauta \"Seuraava\" jatkaaksesi."
 
@@ -8162,7 +8523,7 @@ msgstr "Päivitys valmis. Napsauta \"Seuraava\" jatkaaksesi."
 #. * doesn't exist. Arlo and I (jsh) and decided that the
 #. * best thing to do is silently fail
 #.
-#: src/nautilus-first-time-druid.c:1221
+#: src/nautilus-first-time-druid.c:1333
 msgid "No Update Available... Press Next to Continue."
 msgstr "Ei päivityksiä. Napsauta \"Seuraava\" jatkaaksesi."
 
@@ -8238,191 +8599,194 @@ msgstr ""
 "nautilus: valitsinta --geometry ei voi käyttää yhtä useamman URI:n kanssa.\n"
 
 #. set the title and standard close accelerator
-#: src/nautilus-property-browser.c:263
+#: src/nautilus-property-browser.c:265
 msgid "Backgrounds and Emblems"
 msgstr "Taustat ja tunnusmerkit"
 
-#: src/nautilus-property-browser.c:359 src/nautilus-theme-selector.c:266
+#. FIXME: Using spaces to add padding is not good design.
+#: src/nautilus-property-browser.c:362 src/nautilus-theme-selector.c:267
 msgid "  Done  "
 msgstr "  Valmis  "
 
-#: src/nautilus-property-browser.c:369
+#. FIXME: Using spaces to add padding is not good design.
+#: src/nautilus-property-browser.c:373
 msgid "  Add new...  "
 msgstr "  Lisää uusi...  "
 
-#: src/nautilus-property-browser.c:383
+#. FIXME: Using spaces to add padding is not good design.
+#: src/nautilus-property-browser.c:388
 msgid "  Remove...  "
 msgstr "  Poista...  "
 
-#: src/nautilus-property-browser.c:874
+#: src/nautilus-property-browser.c:879
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "Valitettavasti kuviota %s ei voitu poistaa."
 
-#: src/nautilus-property-browser.c:875 src/nautilus-property-browser.c:904
+#: src/nautilus-property-browser.c:880 src/nautilus-property-browser.c:909
 msgid "Couldn't delete pattern"
 msgstr "Kuviota ei voitu poistaa"
 
-#: src/nautilus-property-browser.c:903
+#: src/nautilus-property-browser.c:908
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "Valitettavasti tunnusmerkkiä %s ei voitu poistaa."
 
-#: src/nautilus-property-browser.c:939
+#: src/nautilus-property-browser.c:944
 msgid "Create a New Emblem:"
 msgstr "Lisää uusi tunnusmerkki:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:944
+#: src/nautilus-property-browser.c:949
 msgid "Keyword:"
 msgstr "Avainsana:"
 
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:957
+#: src/nautilus-property-browser.c:962
 msgid "Image:"
 msgstr "Kuva:"
 
-#: src/nautilus-property-browser.c:961
+#: src/nautilus-property-browser.c:966
 msgid "Select an image file for the new emblem:"
 msgstr "Valitse uuden tunnusmerkin kuva:"
 
-#: src/nautilus-property-browser.c:988
+#: src/nautilus-property-browser.c:993
 msgid "Create a New Color:"
 msgstr "Luo uusi väri:"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:993
+#: src/nautilus-property-browser.c:998
 msgid "Color name:"
 msgstr "Värin nimi:"
 
-#: src/nautilus-property-browser.c:1004
+#: src/nautilus-property-browser.c:1009
 msgid "Color value:"
 msgstr "Väriarvo:"
 
-#: src/nautilus-property-browser.c:1040
+#: src/nautilus-property-browser.c:1045
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "\"%s\" ei ole kelvollinen tiedoston nimi."
 
-#: src/nautilus-property-browser.c:1042
+#: src/nautilus-property-browser.c:1047
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "Et antanut kelvollista tiedoston nimeä."
 
-#: src/nautilus-property-browser.c:1044 src/nautilus-property-browser.c:1087
+#: src/nautilus-property-browser.c:1049 src/nautilus-property-browser.c:1092
 msgid "Couldn't install pattern"
 msgstr "Kuviota ei voitu asentaa"
 
-#: src/nautilus-property-browser.c:1055
+#: src/nautilus-property-browser.c:1060
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Et voi vaihtaa uudelleenasetuskuvaa."
 
-#: src/nautilus-property-browser.c:1086
+#: src/nautilus-property-browser.c:1091
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Valitettavasti kuviota %s ei voitu asentaa."
 
-#: src/nautilus-property-browser.c:1109
+#: src/nautilus-property-browser.c:1114
 msgid "Select an image file to add as a pattern:"
 msgstr "Valitse kuviona lisättävä kuva:"
 
-#: src/nautilus-property-browser.c:1168
+#: src/nautilus-property-browser.c:1173
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Uudelle värille pitää antaa nimi."
 
-#: src/nautilus-property-browser.c:1169
+#: src/nautilus-property-browser.c:1174
 msgid "Couldn't install color"
 msgstr "Väriä ei voitu asentaa"
 
-#: src/nautilus-property-browser.c:1225
+#: src/nautilus-property-browser.c:1230
 msgid "Select a color to add:"
 msgstr "Valitse lisättävä väri:"
 
-#: src/nautilus-property-browser.c:1306
+#: src/nautilus-property-browser.c:1311
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Valitettavasti '%s' ei ole kelvollinen kuvatiedosto."
 
-#: src/nautilus-property-browser.c:1324
+#: src/nautilus-property-browser.c:1329
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Uudelle tunnusmerkille pitää antaa avainsana."
 
-#: src/nautilus-property-browser.c:1325 src/nautilus-property-browser.c:1328
-#: src/nautilus-property-browser.c:1332 src/nautilus-property-browser.c:1361
+#: src/nautilus-property-browser.c:1330 src/nautilus-property-browser.c:1333
+#: src/nautilus-property-browser.c:1337 src/nautilus-property-browser.c:1366
 msgid "Couldn't install emblem"
 msgstr "Tunnusmerkkiä ei voitu asentaa"
 
-#: src/nautilus-property-browser.c:1327
+#: src/nautilus-property-browser.c:1332
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Valitettavasti tunnusmerkkien avainsanat voivat sisältää vain kirjaimia, "
 "tyhjää sekä numeroita."
 
-#: src/nautilus-property-browser.c:1330
+#: src/nautilus-property-browser.c:1335
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
 "for it."
 msgstr "Avainsana \"%s\" on olemassa. Valitsepa jokin toinen."
 
-#: src/nautilus-property-browser.c:1360
+#: src/nautilus-property-browser.c:1365
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Valitettavasti kuvaa %s ei voitu asentaa tunnusmerkiksi."
 
-#: src/nautilus-property-browser.c:2012
+#: src/nautilus-property-browser.c:2024
 msgid "Select A Category:"
 msgstr "Valitse kategoria:"
 
-#: src/nautilus-property-browser.c:2020 src/nautilus-theme-selector.c:494
+#: src/nautilus-property-browser.c:2032 src/nautilus-theme-selector.c:497
 msgid "Cancel Remove"
 msgstr "Peru poisto"
 
-#: src/nautilus-property-browser.c:2024
+#: src/nautilus-property-browser.c:2037
 msgid "  Add a New Pattern  "
 msgstr "  Lisää uusi kuvio  "
 
-#: src/nautilus-property-browser.c:2027
+#: src/nautilus-property-browser.c:2040
 msgid "  Add a New Color  "
 msgstr "  Lisää uusi väri  "
 
-#: src/nautilus-property-browser.c:2030
+#: src/nautilus-property-browser.c:2043
 msgid "  Add a New Emblem  "
 msgstr "  Lisää uusi tunnusmerkki  "
 
-#: src/nautilus-property-browser.c:2053
+#: src/nautilus-property-browser.c:2066
 msgid "Click on a pattern to remove it"
 msgstr "Napsauta kuviota poistaaksesi sen."
 
-#: src/nautilus-property-browser.c:2056
+#: src/nautilus-property-browser.c:2069
 msgid "Click on a color to remove it"
 msgstr "Napsauta väriä poistaaksesi sen"
 
-#: src/nautilus-property-browser.c:2059
+#: src/nautilus-property-browser.c:2072
 msgid "Click on an emblem to remove it"
 msgstr "Napsauta tunnusmerkkiä poistaaksesi sen"
 
-#: src/nautilus-property-browser.c:2068
+#: src/nautilus-property-browser.c:2081
 msgid "Patterns:"
 msgstr "Kuviot:"
 
-#: src/nautilus-property-browser.c:2071
+#: src/nautilus-property-browser.c:2084
 msgid "Colors:"
 msgstr "Värit:"
 
-#: src/nautilus-property-browser.c:2074
+#: src/nautilus-property-browser.c:2087
 msgid "Emblems:"
 msgstr "Tunnusmerkit:"
 
-#: src/nautilus-property-browser.c:2092
+#: src/nautilus-property-browser.c:2106
 msgid "  Remove a Pattern  "
 msgstr "  Poista kuvio  "
 
-#: src/nautilus-property-browser.c:2095
+#: src/nautilus-property-browser.c:2109
 msgid "  Remove a Color  "
 msgstr "  Poista väri  "
 
-#: src/nautilus-property-browser.c:2098
+#: src/nautilus-property-browser.c:2112
 msgid "  Remove an Emblem  "
 msgstr "  Poista tunnusmerkki  "
 
@@ -8857,20 +9221,24 @@ msgstr "Siirry seuraavaan sijaintiin"
 msgid "Go to the previous visited location"
 msgstr "Siirry edelliseen sijaintiin"
 
-#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:440
-msgid "Hide Location Bar"
+#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:442
+#, fuzzy
+msgid "Hide Location _Bar"
 msgstr "Piilota sijaintipalkki"
 
-#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:428
-msgid "Hide Sidebar"
-msgstr "Piilota sivupaneeli"
-
-#: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:422
-msgid "Hide Status Bar"
+#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:424
+#, fuzzy
+msgid "Hide St_atus Bar"
 msgstr "Piilota tilarivi"
 
-#: src/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:434
-msgid "Hide Toolbar"
+#: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:430
+#, fuzzy
+msgid "Hide _Sidebar"
+msgstr "Piilota sivupaneeli"
+
+#: src/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:436
+#, fuzzy
+msgid "Hide _Toolbar"
 msgstr "Piilota työkalupalkki"
 
 #: src/nautilus-shell-ui.xml.h:39
@@ -8890,227 +9258,231 @@ msgid "New Window"
 msgstr "Uusi ikkuna"
 
 #: src/nautilus-shell-ui.xml.h:43
+#, fuzzy
+msgid "New _Window"
+msgstr "Uusi ikkuna"
+
+#: src/nautilus-shell-ui.xml.h:44
 msgid "Normal Size"
 msgstr "Tavallinen koko"
 
-#: src/nautilus-shell-ui.xml.h:44
+#: src/nautilus-shell-ui.xml.h:45
 msgid "Open another Nautilus window for the displayed location"
 msgstr "Avaa nykyinen sijainti toisessa Nautiluksen ikkunassa"
 
-#: src/nautilus-shell-ui.xml.h:46
+#: src/nautilus-shell-ui.xml.h:47
 msgid "Preferences..."
 msgstr "Asetukset..."
 
-#: src/nautilus-shell-ui.xml.h:47
+#: src/nautilus-shell-ui.xml.h:48
 msgid "Refresh"
 msgstr "Päivitä"
 
-#: src/nautilus-shell-ui.xml.h:48
+#: src/nautilus-shell-ui.xml.h:49
 msgid "Removes the selected text without putting it on the clipboard"
 msgstr "Poistaa valitun tekstin kopioimatta sitä leikepöydälle"
 
-#: src/nautilus-shell-ui.xml.h:49
+#: src/nautilus-shell-ui.xml.h:50
 msgid "Report Profiling"
 msgstr "Näytä profiloinnin tulokset"
 
-#: src/nautilus-shell-ui.xml.h:50
+#: src/nautilus-shell-ui.xml.h:51
 msgid "Reset Profiling"
 msgstr "Alusta profilointi"
 
-#: src/nautilus-shell-ui.xml.h:51
+#: src/nautilus-shell-ui.xml.h:52
 msgid "Search the World Wide Web"
 msgstr "Etsi World Wide Webistä"
 
-#: src/nautilus-shell-ui.xml.h:52
+#: src/nautilus-shell-ui.xml.h:53
 msgid "Search this computer for files"
 msgstr "Etsi tästä tietokoneesta tiedostoja"
 
-#: src/nautilus-shell-ui.xml.h:53
+#: src/nautilus-shell-ui.xml.h:54
+#, fuzzy
+msgid "Select _All"
+msgstr "_Valitse kaikki"
+
+#: src/nautilus-shell-ui.xml.h:55
 msgid ""
 "Show a page from which you can send feedback about Nautilus and Eazel "
 "Services"
 msgstr ""
 "Näytä sivu, jolta voi lähettää palautetta Nautiluksesta ja Eazel-palveluista."
 
-#: src/nautilus-shell-ui.xml.h:54
+#: src/nautilus-shell-ui.xml.h:56
 msgid "Show the contents at the normal size"
 msgstr "Näytä sisältö tavallisen kokoisena"
 
-#: src/nautilus-shell-ui.xml.h:55
+#: src/nautilus-shell-ui.xml.h:57
 msgid "Show the contents in less detail"
 msgstr "Näytä vähemmän tietoja sisällöstä"
 
-#: src/nautilus-shell-ui.xml.h:56
+#: src/nautilus-shell-ui.xml.h:58
 msgid "Show the contents in more detail"
 msgstr "Näytä lisää tietoja sisällöstä"
 
-#: src/nautilus-shell-ui.xml.h:57
+#: src/nautilus-shell-ui.xml.h:59
 msgid "Start Profiling"
 msgstr "Aloita profilointi"
 
-#: src/nautilus-shell-ui.xml.h:59
+#: src/nautilus-shell-ui.xml.h:61
 msgid "Stop Profiling"
 msgstr "Lopeta profilointi"
 
-#: src/nautilus-shell-ui.xml.h:60
+#: src/nautilus-shell-ui.xml.h:62
 msgid "Stop loading this location"
 msgstr "Lopeta tämän sijainnin lataaminen"
 
-#: src/nautilus-shell-ui.xml.h:61
+#: src/nautilus-shell-ui.xml.h:63
 msgid "Undo the last text change"
 msgstr "Kumoa viimeisin tekstin muutos"
 
-#: src/nautilus-shell-ui.xml.h:62
+#: src/nautilus-shell-ui.xml.h:64
 msgid "Up"
 msgstr "Ylös"
 
-#: src/nautilus-shell-ui.xml.h:63
+#: src/nautilus-shell-ui.xml.h:65
 msgid "Use Advanced settings"
 msgstr "Käytä edistyneen käyttäjän asetuksia"
 
-#: src/nautilus-shell-ui.xml.h:64
+#: src/nautilus-shell-ui.xml.h:66
 msgid "Use Beginner settings"
 msgstr "Käytä aloittelijan asetuksia"
 
-#: src/nautilus-shell-ui.xml.h:65
+#: src/nautilus-shell-ui.xml.h:67
 msgid "Use Intermediate settings"
 msgstr "Käytä keskitason käyttäjän asetuksia"
 
-#: src/nautilus-shell-ui.xml.h:66
+#: src/nautilus-shell-ui.xml.h:68
+#, fuzzy
+msgid "We_b Search"
+msgstr "Etsi WWW:stä"
+
+#: src/nautilus-shell-ui.xml.h:69
 msgid "Web Search"
 msgstr "Etsi WWW:stä"
 
-#: src/nautilus-shell-ui.xml.h:67
+#: src/nautilus-shell-ui.xml.h:70
 msgid "Zoom In"
 msgstr "Suurenna"
 
-#: src/nautilus-shell-ui.xml.h:68
+#: src/nautilus-shell-ui.xml.h:71
 msgid "Zoom Out"
 msgstr "Pienennä"
 
-#: src/nautilus-shell-ui.xml.h:69
+#: src/nautilus-shell-ui.xml.h:72
 msgid "Zoom _In"
 msgstr "_Suurenna"
 
-#: src/nautilus-shell-ui.xml.h:70
+#: src/nautilus-shell-ui.xml.h:73
 msgid "Zoom _Out"
 msgstr "_Pienennä"
 
-#: src/nautilus-shell-ui.xml.h:71
-msgid "_About Nautilus"
+#: src/nautilus-shell-ui.xml.h:74
+#, fuzzy
+msgid "_About Nautilus..."
 msgstr "Tietoja _Nautiluksesta"
 
-#: src/nautilus-shell-ui.xml.h:72
+#: src/nautilus-shell-ui.xml.h:75
 msgid "_Add Bookmark"
 msgstr "_Lisää kirjanmerkki"
 
-#: src/nautilus-shell-ui.xml.h:73
+#: src/nautilus-shell-ui.xml.h:76
 msgid "_Back"
 msgstr "_Takaisin"
 
-#: src/nautilus-shell-ui.xml.h:74
+#: src/nautilus-shell-ui.xml.h:77
 msgid "_Backgrounds and Emblems..."
 msgstr "_Taustat ja tunnusmerkit..."
 
-#: src/nautilus-shell-ui.xml.h:75
+#: src/nautilus-shell-ui.xml.h:78
 msgid "_Bookmarks"
 msgstr "_Kirjanmerkit"
 
-#: src/nautilus-shell-ui.xml.h:76
+#: src/nautilus-shell-ui.xml.h:79
 msgid "_Close Window"
 msgstr "_Sulje ikkuna"
 
-#: src/nautilus-shell-ui.xml.h:78
+#: src/nautilus-shell-ui.xml.h:81
 msgid "_Customer Support"
 msgstr "_Asiakaspalvelu"
 
-#: src/nautilus-shell-ui.xml.h:79
+#: src/nautilus-shell-ui.xml.h:82
 msgid "_Edit"
 msgstr "_Muokkaa"
 
-#: src/nautilus-shell-ui.xml.h:80
+#: src/nautilus-shell-ui.xml.h:83
 msgid "_Edit Bookmarks..."
 msgstr "_Muokkaa kirjanmerkkejä..."
 
-#: src/nautilus-shell-ui.xml.h:81
+#: src/nautilus-shell-ui.xml.h:84
 msgid "_Feedback"
 msgstr "_Palaute"
 
-#: src/nautilus-shell-ui.xml.h:83 src/nautilus-window-menus.c:1306
+#: src/nautilus-shell-ui.xml.h:86 src/nautilus-window-menus.c:1352
 msgid "_Find"
 msgstr "_Etsi"
 
-#: src/nautilus-shell-ui.xml.h:84
+#: src/nautilus-shell-ui.xml.h:87
 msgid "_Forward"
 msgstr "_Eteenpäin"
 
-#: src/nautilus-shell-ui.xml.h:85
+#: src/nautilus-shell-ui.xml.h:88
 msgid "_Go"
 msgstr "_Siirry"
 
-#: src/nautilus-shell-ui.xml.h:86
+#: src/nautilus-shell-ui.xml.h:89
 msgid "_Help"
 msgstr "_Ohje"
 
-#: src/nautilus-shell-ui.xml.h:87
+#: src/nautilus-shell-ui.xml.h:90
 msgid "_Home"
 msgstr "_Koti"
 
-#: src/nautilus-shell-ui.xml.h:88
+#: src/nautilus-shell-ui.xml.h:91
 msgid "_Nautilus Themes..."
 msgstr "_Nautiluksen teemat..."
 
-#: src/nautilus-shell-ui.xml.h:89
-msgid "_New Window"
-msgstr "_Uusi ikkuna"
-
-#: src/nautilus-shell-ui.xml.h:90
+#: src/nautilus-shell-ui.xml.h:92
 msgid "_Normal Size"
 msgstr "_Tavallinen koko"
 
-#: src/nautilus-shell-ui.xml.h:92
+#: src/nautilus-shell-ui.xml.h:94
 msgid "_Profiler"
 msgstr "_Profilointi"
 
-#: src/nautilus-shell-ui.xml.h:93
+#: src/nautilus-shell-ui.xml.h:95
 msgid "_Refresh"
 msgstr "_Päivitä"
 
-#: src/nautilus-shell-ui.xml.h:94
+#: src/nautilus-shell-ui.xml.h:96
 msgid "_Report Profiling"
 msgstr "_Näytä profiloinnin tulokset"
 
-#: src/nautilus-shell-ui.xml.h:95
+#: src/nautilus-shell-ui.xml.h:97
 msgid "_Reset Profiling"
 msgstr "_Alusta profilointi"
 
-#: src/nautilus-shell-ui.xml.h:96
-msgid "_Select All"
-msgstr "_Valitse kaikki"
-
-#: src/nautilus-shell-ui.xml.h:97
+#: src/nautilus-shell-ui.xml.h:98
 msgid "_Start Profiling"
 msgstr "_Aloita profilointi"
 
-#: src/nautilus-shell-ui.xml.h:98
+#: src/nautilus-shell-ui.xml.h:99
 msgid "_Stop Profiling"
 msgstr "_Lopeta profilointi"
 
-#: src/nautilus-shell-ui.xml.h:99
+#: src/nautilus-shell-ui.xml.h:100
 msgid "_Undo"
 msgstr "_Kumoa"
 
-#: src/nautilus-shell-ui.xml.h:100
+#: src/nautilus-shell-ui.xml.h:101
 msgid "_Up a Level"
 msgstr "_Ylemmälle tasolle"
 
-#: src/nautilus-shell-ui.xml.h:101
+#: src/nautilus-shell-ui.xml.h:102
 msgid "_View"
 msgstr "_Näytä"
-
-#: src/nautilus-shell-ui.xml.h:102
-msgid "_Web Search"
-msgstr "Etsi _WWW:stä"
 
 #: src/nautilus-sidebar.c:659
 msgid ""
@@ -9177,41 +9549,43 @@ msgstr "Nautiluksen teemavalitsin"
 msgid "Nautilus Theme:"
 msgstr "Nautiluksen teema:"
 
-#: src/nautilus-theme-selector.c:276
+#. FIXME: Using spaces to add padding is not good design.
+#: src/nautilus-theme-selector.c:278
 msgid "  Add New Theme  "
 msgstr "  Lisää uusi teema  "
 
-#: src/nautilus-theme-selector.c:285
+#. FIXME: Using spaces to add padding is not good design.
+#: src/nautilus-theme-selector.c:288
 msgid "  Remove Theme  "
 msgstr "  Poista teema  "
 
-#: src/nautilus-theme-selector.c:397
+#: src/nautilus-theme-selector.c:400
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid theme folder."
 msgstr "Valitettavasti \"%s\" ei ole kelvollinen teemahakemisto."
 
-#: src/nautilus-theme-selector.c:398
+#: src/nautilus-theme-selector.c:401
 msgid "Couldn't add theme"
 msgstr "Teemaa ei voitu lisätä"
 
-#: src/nautilus-theme-selector.c:426
+#: src/nautilus-theme-selector.c:429
 #, c-format
 msgid "Sorry, but the \"%s\" theme couldn't be installed."
 msgstr "Valitettavasti teemaa \"%s\" ei voitu asentaa."
 
-#: src/nautilus-theme-selector.c:427
+#: src/nautilus-theme-selector.c:430
 msgid "Couldn't install theme"
 msgstr "Teemaa ei voitu asentaa"
 
-#: src/nautilus-theme-selector.c:460
+#: src/nautilus-theme-selector.c:463
 msgid "Select a theme folder to add as a new theme:"
 msgstr "Valitse teemana asennettava teemahakemisto:"
 
-#: src/nautilus-theme-selector.c:492 src/nautilus-theme-selector.c:539
+#: src/nautilus-theme-selector.c:495 src/nautilus-theme-selector.c:542
 msgid "Click on a theme to remove it."
 msgstr "Napsauta teemaa poistaaksesi sen."
 
-#: src/nautilus-theme-selector.c:542
+#: src/nautilus-theme-selector.c:545
 msgid ""
 "Click on a theme to change the\n"
 "appearance of Nautilus."
@@ -9220,11 +9594,11 @@ msgstr ""
 "Nautiluksen ulkonäköä."
 
 #. change the add button label back to it's normal state
-#: src/nautilus-theme-selector.c:555
+#: src/nautilus-theme-selector.c:558
 msgid "Add New Theme"
 msgstr "Lisää uusi teema"
 
-#: src/nautilus-theme-selector.c:582
+#: src/nautilus-theme-selector.c:585
 msgid ""
 "Sorry, but you can't remove the current theme. Please change to another "
 "theme before removing this one."
@@ -9232,29 +9606,34 @@ msgstr ""
 "Valitettavasti et voi poistaa nykyistä teemaa. Valitse joku muu teema ennen "
 "tämän teeman poistamista"
 
-#: src/nautilus-theme-selector.c:584
+#: src/nautilus-theme-selector.c:587
 msgid "Can't delete current theme"
 msgstr "Nykyistä teemaa ei voi poistaa"
 
-#: src/nautilus-theme-selector.c:605
+#: src/nautilus-theme-selector.c:608
 msgid "Sorry, but that theme could not be removed!"
 msgstr "Valitettavasti tätä teemaa ei voitu poistaa."
 
-#: src/nautilus-theme-selector.c:606
+#: src/nautilus-theme-selector.c:609
 msgid "Couldn't remove theme"
 msgstr "Teemaa ei voitu poistaa"
 
-#: src/nautilus-theme-selector.c:713
+#: src/nautilus-theme-selector.c:716
 #, c-format
 msgid "No description available for the \"%s\" theme"
 msgstr "Teeman \"%s\" kuvausta ei ole saatavilla"
 
+#: src/nautilus-window.c:584
+#, fuzzy
+msgid "View as ..."
+msgstr "Katsele muuna muotona..."
+
 #. Add "View as Other..." extra bonus choice.
-#: src/nautilus-window.c:1113
+#: src/nautilus-window.c:1286
 msgid "View as Other..."
 msgstr "Katsele muuna muotona..."
 
-#: src/nautilus-window.c:1476
+#: src/nautilus-window.c:1687
 msgid "Close"
 msgstr "Sulje"
 
@@ -9268,11 +9647,11 @@ msgstr "Sulje"
 msgid "Preview Release %s: %s"
 msgstr "Esiversio %s: %s"
 
-#: src/nautilus-window-manage-views.c:798
+#: src/nautilus-window-manage-views.c:812
 msgid "View Failed"
 msgstr "Katselu epäonnistui"
 
-#: src/nautilus-window-manage-views.c:809
+#: src/nautilus-window-manage-views.c:823
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -9281,12 +9660,12 @@ msgstr ""
 "Näkymä %s ei voi jatkaa toimintaansa, koska tapahtui virhe. Voit valita muun "
 "näkymän tai siirtyä toiseen sijaintiin."
 
-#: src/nautilus-window-manage-views.c:820
+#: src/nautilus-window-manage-views.c:834
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "Näkymässä %s tapahtui virhe sen käynnistyessä."
 
-#: src/nautilus-window-manage-views.c:975
+#: src/nautilus-window-manage-views.c:993
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -9294,7 +9673,7 @@ msgstr ""
 "Jossakin sivupaneelissa tapahtui virhe, joten se ei voi jatkaa. "
 "Valitettavasti ei saatu selville, mikä se niistä oli."
 
-#: src/nautilus-window-manage-views.c:979
+#: src/nautilus-window-manage-views.c:997
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -9303,17 +9682,17 @@ msgstr ""
 "Sivupaneeli %s ei voi jatkaa toimintaansa, koska tapahtui virhe. Jos tätä "
 "ilmenee jatkuvasti, voit poistaa kyseisen paneelin käytöstä."
 
-#: src/nautilus-window-manage-views.c:984
+#: src/nautilus-window-manage-views.c:1002
 msgid "Sidebar Panel Failed"
 msgstr "Virhe sivupaneelissa"
 
-#: src/nautilus-window-manage-views.c:1194
+#: src/nautilus-window-manage-views.c:1217
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "Sijaintia \"%s\" ei löytynyt. Tarkasta oikeinkirjoitus ja yritä uudelleen."
 
-#: src/nautilus-window-manage-views.c:1200
+#: src/nautilus-window-manage-views.c:1223
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
@@ -9321,7 +9700,7 @@ msgstr ""
 "\"%s\" ei ole kelvollinen sijainti. Tarkasta oikeinkirjoitus ja yritä "
 "uudelleen."
 
-#: src/nautilus-window-manage-views.c:1214
+#: src/nautilus-window-manage-views.c:1237
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -9329,32 +9708,32 @@ msgid ""
 msgstr ""
 "Sijaintia \"%s\" ei voitu näyttää, koska Nautilus ei tiedä sen tyyppiä."
 
-#: src/nautilus-window-manage-views.c:1222
+#: src/nautilus-window-manage-views.c:1245
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr ""
 "Nautilukseen ei ole asennettu katselinta, joka voisi näyttää kohteen \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1234
+#: src/nautilus-window-manage-views.c:1257
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Ei voitu näyttää kohdetta \"%s\", koska Nautilus ei voi käsitellä %s: "
 "-sijainteja."
 
-#: src/nautilus-window-manage-views.c:1240
+#: src/nautilus-window-manage-views.c:1263
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr ""
 "Ei voitu näyttää kohdetta \"%s\", koska sisään kirjautuminen epäonnistui."
 
-#: src/nautilus-window-manage-views.c:1245
+#: src/nautilus-window-manage-views.c:1268
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Ei voitu näyttää kohdetta \"%s\", koska oikeudet eivät riittäneet."
 
-#: src/nautilus-window-manage-views.c:1256
+#: src/nautilus-window-manage-views.c:1279
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -9364,7 +9743,7 @@ msgstr ""
 "löytynyt. Varmista että se on oikein kirjoitettu ja että "
 "välityspalvelinasetukset ovat kunnossa."
 
-#: src/nautilus-window-manage-views.c:1264
+#: src/nautilus-window-manage-views.c:1287
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -9373,7 +9752,7 @@ msgstr ""
 "Ei voitu näyttää kohdetta \"%s\", koska isäntäkoneen nimi oli tyhjä. "
 "Varmista, että välityspalvelinasetukset ovat kunnossa."
 
-#: src/nautilus-window-manage-views.c:1276
+#: src/nautilus-window-manage-views.c:1299
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -9384,16 +9763,16 @@ msgstr ""
 "ei ole käynnissä. Varmista, että olet käynnistänyt Medusa-etsintäpalvelun. "
 "Jos sinulla ei ole luetteloa vielä, niin käynnistä myös Medusa-luettelin."
 
-#: src/nautilus-window-manage-views.c:1280
+#: src/nautilus-window-manage-views.c:1303
 msgid "Searching Unavailable"
 msgstr "Etsintäpalvelu ei ole saatavilla"
 
-#: src/nautilus-window-manage-views.c:1284
+#: src/nautilus-window-manage-views.c:1307
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus ei voi näyttää sijaintia \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1289
+#: src/nautilus-window-manage-views.c:1312
 msgid "Can't Display Location"
 msgstr "Sijaintia ei voi näyttää"
 
@@ -9422,23 +9801,27 @@ msgstr "Haluatko, että historia unohtuu?"
 msgid "Forget"
 msgstr "Unohda"
 
-#: src/nautilus-window-menus.c:423
-msgid "Show Status Bar"
+#: src/nautilus-window-menus.c:425
+#, fuzzy
+msgid "Show St_atus Bar"
 msgstr "Näytä tilarivi"
 
-#: src/nautilus-window-menus.c:429
-msgid "Show Sidebar"
+#: src/nautilus-window-menus.c:431
+#, fuzzy
+msgid "Show _Sidebar"
 msgstr "Näytä sivupaneeli"
 
-#: src/nautilus-window-menus.c:435
-msgid "Show Toolbar"
+#: src/nautilus-window-menus.c:437
+#, fuzzy
+msgid "Show _Toolbar"
 msgstr "Näytä työkalupalkki"
 
-#: src/nautilus-window-menus.c:441
-msgid "Show Location Bar"
+#: src/nautilus-window-menus.c:443
+#, fuzzy
+msgid "Show Location _Bar"
 msgstr "Näytä sijaintipalkki"
 
-#: src/nautilus-window-menus.c:490
+#: src/nautilus-window-menus.c:494
 msgid "Preferences"
 msgstr "Asetukset"
 
@@ -9448,11 +9831,11 @@ msgstr "Asetukset"
 #. * not translate the
 #. * company name, please.
 #.
-#: src/nautilus-window-menus.c:567
+#: src/nautilus-window-menus.c:571
 msgid "Copyright © 1999-2001 Eazel, Inc."
 msgstr "Copyright © 1999-2001 Eazel, Inc."
 
-#: src/nautilus-window-menus.c:569
+#: src/nautilus-window-menus.c:573
 msgid ""
 "Nautilus is a graphical shell\n"
 "for GNOME that makes it\n"
@@ -9470,7 +9853,7 @@ msgstr ""
 #. * bottom of the about box to give credit
 #. * to the translator(s)
 #.
-#: src/nautilus-window-menus.c:578
+#: src/nautilus-window-menus.c:582
 msgid "Translator Credits"
 msgstr ""
 "Suomennos:\n"
@@ -9478,7 +9861,7 @@ msgstr ""
 "GNOME Finnish Translation Team\n"
 "http://gnome-fi.sourceforge.net/"
 
-#: src/nautilus-window-menus.c:744
+#: src/nautilus-window-menus.c:752
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -9487,32 +9870,32 @@ msgstr ""
 "Sijainti \"%s\" ei ole olemassa. Haluatko, että kaikki siihen viittaavat "
 "kirjanmerkkisi poistetaan?"
 
-#: src/nautilus-window-menus.c:748
+#: src/nautilus-window-menus.c:756
 msgid "Bookmark for Nonexistent Location"
 msgstr "Olemattomaan sijaintiin viittaava kirjanmerkki"
 
-#: src/nautilus-window-menus.c:762
+#: src/nautilus-window-menus.c:770
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Sijainti \"%s\" ei ole enää olemassa"
 
-#: src/nautilus-window-menus.c:763
+#: src/nautilus-window-menus.c:771
 msgid "Go to Nonexistent Location"
 msgstr "Siirry olemattomaan sijaintiin"
 
-#: src/nautilus-window-menus.c:830
+#: src/nautilus-window-menus.c:840
 msgid "Go to the location specified by this bookmark"
 msgstr "Siirry tämän kirjanmerkin osoittamaan sijaintiin"
 
-#: src/nautilus-window-menus.c:1305
+#: src/nautilus-window-menus.c:1351
 msgid "_Browse"
 msgstr "_Selaa"
 
-#: src/nautilus-window-toolbars.c:381
+#: src/nautilus-window-toolbars.c:402
 msgid "Back"
 msgstr "Takaisin"
 
-#: src/nautilus-window-toolbars.c:383
+#: src/nautilus-window-toolbars.c:404
 msgid "Forward"
 msgstr "Eteenpäin"
 
@@ -9522,7 +9905,3 @@ msgstr "Eteenpäin"
 #: src/nautilus-zoom-control.c:531
 msgid "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-iso8859-15"
-
-#: src/nautilus-zoom-control.c:592
-msgid "%d%%"
-msgstr "%d%%"
