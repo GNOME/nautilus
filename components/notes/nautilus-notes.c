@@ -189,9 +189,11 @@ done_with_file (Notes *notes)
 	
 	if (notes->file != NULL) {
 		nautilus_file_monitor_remove (notes->file, notes);
-		gtk_signal_disconnect_by_func (GTK_OBJECT (notes->file),
-					       G_CALLBACK (load_note_text_from_metadata),
-					       notes);
+		g_signal_handlers_disconnect_matched (notes->file,
+                                                      G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
+                                                      0, 0, NULL,
+                                                      G_CALLBACK (load_note_text_from_metadata),
+                                                      notes);
 	        nautilus_file_unref (notes->file);
         }
 }
@@ -263,9 +265,11 @@ notes_save_metainfo (Notes *notes)
 	
         /* Block the handler, so we don't respond to our own change.
          */
-        gtk_signal_handler_block_by_func (GTK_OBJECT (notes->file),
-                                          G_CALLBACK (load_note_text_from_metadata),
-                                          notes);
+        g_signal_handlers_block_matched (notes->file,
+                                         G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
+                                         0, 0, NULL,
+                                         G_CALLBACK (load_note_text_from_metadata), 
+                                         notes);
 
 	gtk_text_buffer_get_start_iter (notes->text_buffer, &start_iter);
 	gtk_text_buffer_get_end_iter (notes->text_buffer, &end_iter);
@@ -278,9 +282,11 @@ notes_save_metainfo (Notes *notes)
                                     NAUTILUS_METADATA_KEY_ANNOTATION,
                                     NULL, notes_text);
 
-        gtk_signal_handler_unblock_by_func (GTK_OBJECT (notes->file),
-                                            G_CALLBACK (load_note_text_from_metadata),
-                                            notes);
+        g_signal_handlers_unblock_matched (notes->file,
+                                           G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
+                                           0, 0, NULL,
+                                           G_CALLBACK (load_note_text_from_metadata), 
+                                           notes);
 	
 	notify_listeners_if_changed (notes, notes_text);
 	
