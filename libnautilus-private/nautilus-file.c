@@ -4006,7 +4006,7 @@ nautilus_file_get_file_info_result (NautilusFile *file)
  * This is private and is used to decide whether or not to read the top left text.
  * @file: NautilusFile representing the file in question.
  * 
- * Returns: TRUE if @file has a text MIME type or is a regular file with unknown MIME type.
+ * Returns: TRUE if @file has a text MIME type.
  * 
  **/
 gboolean
@@ -4022,9 +4022,7 @@ nautilus_file_contains_text (NautilusFile *file)
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 	
 	mime_type = nautilus_file_get_mime_type (file);
-	contains_text = nautilus_istr_has_prefix (mime_type, "text/")
-		|| (g_strcasecmp (mime_type, "application/octet-stream") == 0
-		    && nautilus_file_get_file_type (file) == GNOME_VFS_FILE_TYPE_REGULAR);
+	contains_text = nautilus_istr_has_prefix (mime_type, "text/");
 	g_free (mime_type);
 	
 	return contains_text;

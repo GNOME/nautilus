@@ -1,3 +1,15 @@
+2000-11-27  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_contains_text):
+	Fixed bugzilla 4756 - binary files previewed on icons.
+	Turned out to be easy - the nautilus_file_contains_text was 
+	over-optimistic. Changed it to only mark for preview actual text files 
+	(files with the "text" MIME supertype).
+	
+
 2000-11-27  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
 
 	added a new text view component with zooming, settable fonts and
