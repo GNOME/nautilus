@@ -486,12 +486,14 @@ packagedata_tree_from_corba_packagedatastructlist (const GNOME_Trilobite_Eazel_P
 					pbreakfile->files = corba_string_sequence_to_glist (&(corbapack->breaks._buffer[j].u._u.files));
 					packagedata_add_to_breaks (pack, PACKAGEBREAKS (pbreakfile));
 					gtk_object_unref (GTK_OBJECT (pbreakfile));
+					break;
 				case GNOME_Trilobite_Eazel_PACKAGE_FEATURE_MISSING:
 					pbreakfeature = packagefeaturemissing_new ();
 					packagebreaks_set_package (PACKAGEBREAKS (pbreakfeature), subpack);
 					pbreakfeature->features = corba_string_sequence_to_glist (&(corbapack->breaks._buffer[j].u._u.features));
 					packagedata_add_to_breaks (pack, PACKAGEBREAKS (pbreakfeature));
 					gtk_object_unref (GTK_OBJECT (pbreakfeature));
+					break;
 				default:
 					g_assert_not_reached ();
 				}

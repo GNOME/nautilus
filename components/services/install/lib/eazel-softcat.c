@@ -507,8 +507,21 @@ get_search_url_for_package (EazelSoftCat *softcat, const PackageData *package, i
 		g_free (arch);
 	} else if (package->suite_id != NULL) {
 		/* find by suite-id! */
+		/* this devolves into several different cases.  softcat cares
+		 * about the differences between them, but we don't.
+		 */
+		if (package->suite_id[0] == 'P') {
+			add_to_url (url, "?product_id=", package->suite_id+2);
+		} else if (package->suite_id[0] == 'S') {
+			add_to_url (url, "?suite_id=", package->suite_id+2);
+		} else if (package->suite_id[0] == 'N') {
+			add_to_url (url, "?product_name=", package->suite_id+2);
+		} else if (package->suite_id[0] == 'X') {
+			add_to_url (url, "?suite_name=", package->suite_id+2);
+		} else {
+			g_assert_not_reached ();
+		}
 		arch = trilobite_get_distribution_arch ();
-		add_to_url (url, "?suite_id=", package->eazel_id);
 		add_to_url (url, "&arch=", arch);
 		g_free (arch);
 	} else if (package->name == NULL) {

@@ -220,32 +220,47 @@ find_package_group (PackageData *package, char **version)
 
         return INSTALL_GROUP;
 }
-        
-/* build up a list of the packagedata's that reference this one */
-static GList *
-find_package_parents_int (PackageData *package, PackageData *top, GList *packlist, GList *sofar)
-{
-        GList *iter;
-        PackageData *subpack;
 
-        for (iter = g_list_first (packlist); iter != NULL; iter = g_list_next (iter)) {
-                subpack = (PackageData *)(iter->data);
-                if (subpack == package) {
-                        if (top != NULL) {
-                                sofar = g_list_prepend (sofar, top);
-                        }
-                } else {
-                        sofar = find_package_parents_int (package, subpack, subpack->soft_depends, sofar);
-                        sofar = find_package_parents_int (package, subpack, subpack->hard_depends, sofar);
-                }
-        }
-        return sofar;
+/* build up a list of the PackageDatas that reference this one */
+static GList *
+find_package_parents_int (PackageData *package, PackageData *top, PackageData *subpack, GList *sofar)
+{
+	PackageDependency *dep;
+	GList *iter;
+
+	if (subpack == package) {
+		/* be careful -- it's really a directed graph now, not a tree */
+		if ((top != NULL) && (g_list_find (sofar, top) == NULL)) {
+			sofar = g_list_prepend (sofar, top);
+		}
+	} else {
+		for (iter = g_list_first (subpack->depends); iter != NULL; iter = g_list_next (iter)) {
+			dep = (PackageDependency *)(iter->data);
+			sofar = find_package_parents_int (package, subpack, dep->package, sofar);
+		}
+	}
+
+	return sofar;
 }
 
 static GList *
 find_package_parents (PackageData *package, GList *packlist, GList *sofar)
 {
-        return find_package_parents_int (package, NULL, packlist, sofar);
+	PackageData *subpack;
+	GList *iter;
+
+	for (iter = g_list_first (packlist); iter != NULL; iter = g_list_next (iter)) {
+		subpack = PACKAGEDATA (iter->data);
+		sofar = find_package_parents_int (package, NULL, subpack, sofar);
+	}
+
+#if 0
+	printf ("parents of %s:\n", packagedata_get_readable_name (package));
+	for (iter = g_list_first (sofar); iter != NULL; iter = g_list_next (iter)) {
+		printf ("\t%s\n", packagedata_get_readable_name (PACKAGEDATA (iter->data)));
+	}
+#endif
+	return sofar;
 }
 
 static int
@@ -269,21 +284,28 @@ package_customizer_find_package (PackageCustomizer *table, PackageData *package)
 }
 
 static GList *
-get_errant_children_list (GList *bad, PackageInfo *info, GList *list)
+get_errant_children_int (GList *bad, PackageInfo *info, PackageData *subpack)
 {
-        GList *iter;
-        PackageInfo *sub_info;
+	PackageDependency *dep;
+	PackageInfo *sub_info;
+	GList *iter;
 
-        for (iter = g_list_first (list); iter != NULL; iter = g_list_next (iter)) {
-                sub_info = package_customizer_find_package (info->table, (PackageData *)(iter->data));
-                if (! gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (sub_info->checkbox))) {
-                        /* unchecked dependency: you are an errant child! */
-                        bad = g_list_prepend (bad, sub_info);
-                }
-                bad = get_errant_children_list (bad, info, sub_info->package->soft_depends);
-                bad = get_errant_children_list (bad, info, sub_info->package->hard_depends);
-        }
-        return bad;
+	if (subpack != NULL) {
+		sub_info = package_customizer_find_package (info->table, subpack);
+		if ((! gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (sub_info->checkbox))) &&
+		    (g_list_find (bad, sub_info) == NULL)) {
+			/* unchecked dependency: you are an errant child! */
+			bad = g_list_prepend (bad, sub_info);
+		}
+	} else {
+		subpack = info->package;
+	}
+
+        for (iter = g_list_first (subpack->depends); iter != NULL; iter = g_list_next (iter)) {
+		dep = (PackageDependency *)(iter->data);
+		bad = get_errant_children_int (bad, info, dep->package);
+	}
+	return bad;
 }
 
 /* return a list of PackageInfo's for packages needed by this package, but unchecked */
@@ -291,11 +313,7 @@ get_errant_children_list (GList *bad, PackageInfo *info, GList *list)
 static GList *
 get_errant_children (PackageInfo *info)
 {
-        GList *bad = NULL;
-
-        bad = get_errant_children_list (bad, info, info->package->soft_depends);
-        bad = get_errant_children_list (bad, info, info->package->hard_depends);
-        return bad;
+	return get_errant_children_int (NULL, info, NULL);
 }
 
 /* display info about a package */
@@ -453,6 +471,14 @@ package_toggled (GtkToggleButton *button, PackageInfo *info)
         package_customizer_recompute_bongs (info->table->private);
 }
 
+static void package_customizer_fill (PackageData *package, PackageCustomizer *table);
+
+static void
+package_customizer_fill_dep (PackageDependency *dep, PackageCustomizer *table)
+{
+	package_customizer_fill (dep->package, table);
+}
+
 static void
 package_customizer_fill (PackageData *package, PackageCustomizer *table)
 {
@@ -549,8 +575,7 @@ package_customizer_fill (PackageData *package, PackageCustomizer *table)
         gtk_box_pack_start (GTK_BOX (gtk_box_nth (hbox_group, 2)), info->checkbox, FALSE, FALSE, 0);
         gtk_box_pack_start (GTK_BOX (gtk_box_nth (hbox_group, 3)), info->info_button, FALSE, FALSE, 0);
 
-        g_list_foreach (package->soft_depends, (GFunc)package_customizer_fill, table);
-        g_list_foreach (package->hard_depends, (GFunc)package_customizer_fill, table);
+        g_list_foreach (package->depends, (GFunc)package_customizer_fill_dep, table);
 }
 
 static GtkWidget *
@@ -782,6 +807,7 @@ jump_to_package_tree_page (EazelInstaller *installer, GList *packages)
         GtkWidget *pane;
         GtkWidget *hbox;
         GtkWidget *table_widget;
+	GtkWidget *viewport;
 
         page = nautilus_druid_page_eazel_new_with_vals (NAUTILUS_DRUID_PAGE_EAZEL_OTHER,
                                                         NULL, NULL, NULL, NULL,
@@ -800,7 +826,15 @@ jump_to_package_tree_page (EazelInstaller *installer, GList *packages)
 
         pane = gtk_scrolled_window_new (NULL, NULL);
         gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (pane), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-        gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (pane), hbox);
+	viewport = gtk_viewport_new (NULL, NULL);
+	/* bug in gtk viewport causes this not to work.  ramiro's nautilus viewport
+	 * would probably fix this, if it ever becomes important.
+	   gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
+	*/
+	gtk_container_add (GTK_CONTAINER (pane), viewport);
+	gtk_widget_show (viewport);
+	gtk_container_add (GTK_CONTAINER (viewport), hbox);
+	gtk_widget_show (hbox);
         gtk_widget_show (pane);
 	/* gtk_window_set_focus (window, widget); */
 	nautilus_druid_page_eazel_put_widget (NAUTILUS_DRUID_PAGE_EAZEL (page), pane);

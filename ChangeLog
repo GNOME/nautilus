@@ -1,3 +1,46 @@
+2001-02-02  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(packagedata_tree_from_corba_packagedatastructlist):
+
+	Fix small bug in the package tree inflater that caused break
+	structs to be messed up.
+	
+	* components/services/install/lib/eazel-softcat.c:
+	(get_search_url_for_package):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (create_package),
+	(nautilus_service_install_view_update_from_uri_finish):
+
+	Encode and decode suite_id/suite_name/product_id/product_name from
+	eazel-install: urls and pass through to softcat queries.  They are
+	all treated like variant flavors of suite_id internally (group of
+	packages with a single id).
+	
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/installer.c:
+	(get_detailed_errors_foreach), (get_detailed_errors),
+	(eazel_install_preflight), (eazel_installer_set_default_texts),
+	(eazel_installer_initialize):
+
+	Remove eazel-hacking uninstall, since experts claim we no longer
+	need it.  Some changes to sync up with the new world order where
+	PackageData is now a GTK object.
+	
+	* nautilus-installer/src/package-tree.c:
+	(find_package_parents_int), (find_package_parents),
+	(get_errant_children_int), (get_errant_children),
+	(package_customizer_fill_dep), (package_customizer_fill),
+	(jump_to_package_tree_page):
+
+	Fix the package customizer to cope with the new world order, where
+	the package tree is sent across as a directed graph (instead of
+	tree) and the deps are in 'depends' not 'soft_depends'.
+	
+	* nautilus-installer/src/prescript:
+
+	Up version to 1.0.
+
 2001-02-02  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

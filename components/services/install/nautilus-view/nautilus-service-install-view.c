@@ -482,6 +482,22 @@ create_package (char *name, int local_file)
 		pack->eazel_id = g_strdup (name+9);
 	} else if (strncmp (name, "rpm_id=", 7) == 0) {
 		pack->eazel_id = g_strdup (name+7);
+	} else if (strncmp (name, "product_id%3D", 13) == 0) {
+		pack->suite_id = g_strdup_printf ("P:%s", name+13);
+	} else if (strncmp (name, "product_id=", 11) == 0) {
+		pack->suite_id = g_strdup_printf ("P:%s", name+11);
+	} else if (strncmp (name, "suite_id%3D", 11) == 0) {
+		pack->suite_id = g_strdup_printf ("S:%s", name+11);
+	} else if (strncmp (name, "suite_id=", 9) == 0) {
+		pack->suite_id = g_strdup_printf ("S:%s", name+9);
+	} else if (strncmp (name, "product_name%3D", 15) == 0) {
+		pack->suite_id = g_strdup_printf ("N:%s", name+15);
+	} else if (strncmp (name, "product_name=", 13) == 0) {
+		pack->suite_id = g_strdup_printf ("N:%s", name+13);
+	} else if (strncmp (name, "suite_name%3D", 13) == 0) {
+		pack->suite_id = g_strdup_printf ("X:%s", name+13);
+	} else if (strncmp (name, "suite_name=", 11) == 0) {
+		pack->suite_id = g_strdup_printf ("X:%s", name+11);
 	} else {
 		pack->name = g_strdup (name);
 	}
@@ -1580,7 +1596,7 @@ nautilus_service_install_view_update_from_uri_finish (NautilusServiceInstallView
 
 	gtk_object_set_data (GTK_OBJECT (view), "packagedata", pack);
 
-	if (pack->eazel_id != NULL) {
+	if ((pack->eazel_id != NULL) || (pack->suite_id != NULL)) {
 		out = g_strdup_printf (_("Downloading remote package"));
 	} else if (pack->name != NULL) {
 		out = g_strdup_printf (_("Downloading \"%s\""), pack->name);

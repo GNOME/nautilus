@@ -119,16 +119,6 @@ static const char untranslated_error_title[] = N_("An error has occurred");
 static const char untranslated_splash_title[] = N_("Welcome to the Eazel Installer!");
 static const char untranslated_finished_title[] = N_("Congratulations!");
 
-static const char untranslated_eazel_hacking_title[] = N_("Eazel-Hacking");
-static const char untranslated_eazel_hacking_text[] =
-	N_("You have the eazel-hacking environment installed.\n"
-	   "That does not mix well with Nautilus PR2, so I'm\n"
-	   "going to remove the eazel-hacking enviroment for you.\n"
-	   "Do note, that there will be leftovers in\n"
-	   " \xB7 /gnome\n"
-	   " \xB7 /gnome-source\n"
-	   "that you should manually remove.");
-
 static const char untranslated_what_to_install_label[] = N_("What would you like to install?");
 static const char untranslated_what_to_install_label_single[] = N_("What we'll install...");
 
@@ -155,8 +145,6 @@ static const char untranslated_error_Red_Hat_7_not_supported[] =
 #define D_ERROR_TITLE _(untranslated_error_title)
 #define D_SPLASH_TITLE _(untranslated_splash_title)
 #define D_FINISHED_TITLE _(untranslated_finished_title)
-#define D_INFO_EAZEL_HACKING_TITLE _(untranslated_eazel_hacking_title)
-#define D_INFO_EAZEL_HACKING_TEXT _(untranslated_eazel_hacking_text)
 #define D_WHAT_TO_INSTALL_LABEL _(untranslated_what_to_install_label)
 #define D_WHAT_TO_INSTALL_LABEL_SINGLE _(untranslated_what_to_install_label_single)
 #define D_ERROR_RPM_4_NOT_SUPPORTED _(untranslated_error_RPM_4_not_supported)
@@ -176,9 +164,6 @@ enum {
 	ERROR_UNTESTED_RPM_BASED_SYSTEM_TITLE,
 	ERROR_UNTESTED_RPM_BASED_SYSTEM_TEXT,
 
-	INFO_EAZEL_HACKING_TITLE,
-	INFO_EAZEL_HACKING_TEXT,
-	
 	WAIT_LABEL,
 	WAIT_LABEL_2,
 	ERROR_LABEL,
@@ -881,6 +866,8 @@ eazel_download_progress (EazelInstall *service,
 	}
 }
 
+#if 0
+/* used to be used by eazel-hacking force remove */
 static void
 create_initial_force_remove_category (EazelInstaller *installer) 
 {
@@ -904,6 +891,7 @@ add_force_remove (EazelInstaller *installer,
 	cat = (CategoryData*)installer->force_remove_categories->data;
 	cat->packages = g_list_prepend (cat->packages, pack);
 }
+#endif
 
 static void
 get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
@@ -916,7 +904,7 @@ get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 	GList *iter, *iter2;
 
 	if (data->path) {
-		previous_pack = (PackageData*)(data->path->data);
+		previous_pack = PACKAGEDATA (data->path->data);
 	}
 
 	log_debug ("pack->name = %s, pack->status = %d", pack->name, pack->status);
@@ -930,7 +918,7 @@ get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 		for (iter = installer->categories; iter; iter = g_list_next (iter)) {
 			cat = (CategoryData *)iter->data;
 			for (iter2 = cat->packages; iter2 ; iter2 = g_list_next (iter2)) {
-				pack_in = (PackageData *)iter2->data;
+				pack_in = PACKAGEDATA (iter2->data);
 				log_debug ("pack->name = %s, pack_in->name = %s", pack->name, pack_in->name);
 				if (strcmp (pack->name, pack_in->name) == 0) {
 					g_message ("bad mojo: cannot open package %s", pack->name);
@@ -962,7 +950,6 @@ get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 	data->path = g_list_prepend (data->path, pack);
 
 	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_errors_foreach, data);
-	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_errors_foreach, data);
 	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, data);
 	g_list_foreach (pack->breaks, (GFunc)get_detailed_errors_foreach, data);
 
@@ -993,7 +980,7 @@ get_detailed_errors (const PackageData *pack, EazelInstaller *installer)
 	log_debug ("getting detailed errors");
 	get_detailed_errors_foreach (non_const_pack, &data);
 	log_debug ("destroying copy");
-	packagedata_destroy (non_const_pack, TRUE);
+	gtk_object_unref (GTK_OBJECT (non_const_pack));
 }
 
 
@@ -1076,12 +1063,10 @@ eazel_install_preflight (EazelInstall *service,
 	char *temp;
 	int total_mb;
 
-#if 0
-	if (strcmp (((PackageData *)(packages->data))->name, "eazel-hacking") != 0) {
+	if (1) {
 		jump_to_package_tree_page (installer, (GList *)packages);
 		while (1) { while (gtk_events_pending ()) { gtk_main_iteration (); } }
 	}
-#endif
 
 	label_single = gtk_object_get_data (GTK_OBJECT (installer->window), "download_label");
 	label_single_2 = gtk_object_get_data (GTK_OBJECT (installer->window), "download_label_2");
@@ -1496,56 +1481,6 @@ check_system (EazelInstaller *installer)
 	return TRUE;
 }
 
-static void
-more_check_system (EazelInstaller *installer)
-{
-	EazelPackageSystem *packsys;
-	GList *matches = NULL;
-
-	packsys = eazel_package_system_new (NULL);
-	matches = eazel_package_system_query (packsys, NULL, "eazel-hacking",
-					      EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
-					      PACKAGE_FILL_MINIMAL);
-	if (matches && 0) {
-		PackageData *pack = packagedata_new ();
-
-		pack->name = g_strdup ("eazel-hacking");
-		add_force_remove (installer, pack);
-		
-		insert_info_page (installer,
-				  text_labels [INFO_EAZEL_HACKING_TITLE],
-				  text_labels [INFO_EAZEL_HACKING_TEXT]);
-		
-		g_list_foreach (matches, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
-		matches = NULL;
-	}
-
-	matches = eazel_package_system_query (packsys, NULL, "rpm",
-					      EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
-					      PACKAGE_FILL_MINIMAL);
-	if (matches) {		
-		PackageData *pack = (PackageData*)matches->data;
-		
-		log_debug ("** installed rpm has version %s", pack->version);
-#if 0
-		if (rpmvercmp (pack->version, "4")>0) {
-			jump_to_error_page (installer,
-					    NULL,
-					    D_ERROR_RPM_4_NOT_SUPPORTED,
-					    NULL);
-		}
-#endif
-		
-		g_list_foreach (matches, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
-		matches = NULL;
-	} else {
-		log_debug ("** rpm not installed!");
-	}
-
-	/* NEEDED: eazel_package_system_unref (packsys); */
-	gtk_object_unref (GTK_OBJECT (packsys));
-}
-
 #if 0
 void
 revert_nautilus_install (EazelInstall *service)
@@ -1750,8 +1685,6 @@ eazel_installer_set_default_texts (EazelInstaller *installer)
 	text_labels [FINISHED_TITLE] = g_strdup (D_FINISHED_TITLE);
 	text_labels [WHAT_TO_INSTALL_LABEL] = g_strdup (D_WHAT_TO_INSTALL_LABEL);
 	text_labels [WHAT_TO_INSTALL_LABEL_SINGLE] = g_strdup (D_WHAT_TO_INSTALL_LABEL_SINGLE);
-	text_labels [INFO_EAZEL_HACKING_TEXT] = g_strdup (D_INFO_EAZEL_HACKING_TEXT); 
-	text_labels [INFO_EAZEL_HACKING_TITLE] = g_strdup (D_INFO_EAZEL_HACKING_TITLE); 
 }
 
 static gboolean
@@ -2158,8 +2091,8 @@ eazel_installer_initialize (EazelInstaller *object)
 		gtk_main_iteration ();
 	}
 
-	if (installer_package==NULL) {
-		more_check_system (installer);
+	if (installer_package == NULL) {
+		/* used to do RPM4 and eazel-hacking checks here... no point anymore (both should work) */
 	}
 
 	installer->problem = eazel_install_problem_new ();
