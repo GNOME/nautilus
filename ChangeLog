@@ -1,3 +1,15 @@
+2000-09-18  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/summary/lib/eazel-summary-shared.c:
+	(services_data_new), (parse_a_service), (parse_summary_xml_file):
+	* components/services/summary/lib/eazel-summary-shared.h:
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_startup_form), (generate_summary_form),
+	(authn_cb_succeeded), (login_button_cb), (register_button_cb):
+
+	Pointing summary view to the real servers.  Lots of little state fixes
+	to help generate real content.
+
 2000-09-18  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 2243 (trash window name should be "Trash"

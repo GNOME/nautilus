@@ -32,7 +32,7 @@ typedef struct _UpdateNewsData UpdateNewsData;
 typedef struct _SummaryData SummaryData;
 
 struct _ServicesData {
-	char		*gconf_name;
+	char		*name;
 	char		*icon;
 	char		*button_label;
 	char		*uri;
@@ -63,7 +63,7 @@ struct _SummaryData {
 	GList	*update_news_list;
 };
 
-SummaryData * parse_summary_xml_file (void);
+SummaryData * parse_summary_xml_file (const char *url);
 
 #endif /* EAZEL_SUMMARY_SHARED_H */
 

@@ -35,8 +35,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define CONFIG_SUMMARY_VIEW_URL		"http://localhost/summary-configuration.xml"
-
 static GList * build_services_glist_from_xml (xmlNodePtr node);
 static GList * build_eazel_news_glist_from_xml (xmlNodePtr node);
 static GList * build_update_news_glist_from_xml (xmlNodePtr node);
@@ -69,7 +67,7 @@ services_data_new ()
 	ServicesData	*return_value;
 	return_value = g_new0 (ServicesData, 1);
 
-	return_value->gconf_name = NULL;
+	return_value->name = NULL;
 	return_value->icon = NULL;
 	return_value->button_label = NULL;
 	return_value->description_header = NULL;
@@ -120,8 +118,8 @@ parse_a_service (xmlNodePtr node)
 
 	return_value = services_data_new ();
 
-	return_value->gconf_name = g_strdup (xml_get_value (node, "GCONF_NAME"));
-	g_print ("%s\n", return_value->gconf_name);
+	return_value->name = g_strdup (xml_get_value (node, "NAME"));
+	g_print ("%s\n", return_value->name);
 	return_value->icon = g_strdup (xml_get_value (node, "ICON"));
 	g_print ("%s\n", return_value->icon);
 	return_value->button_label = (xml_get_value (node, "BUTTON_LABEL"));
@@ -268,7 +266,7 @@ build_update_news_glist_from_xml (xmlNodePtr node)
 
 
 SummaryData *
-parse_summary_xml_file (void)
+parse_summary_xml_file (const char *url)
 {
 
 	SummaryData	*return_value;
@@ -279,9 +277,16 @@ parse_summary_xml_file (void)
 	xmlNodePtr	child;
 
 	/* fetch remote config file into memory */
-	if (! trilobite_fetch_uri (CONFIG_SUMMARY_VIEW_URL, &body, &length)) {
+	if (! trilobite_fetch_uri (url, &body, &length)) {
 		g_warning (_("Could not fetch summary configuration !"));
 		return NULL;
+	}
+
+	/* <rant> libxml will have a temper tantrum if there is whitespace before the
+	*          * first tag.  so we must babysit it.
+	*                   */
+	while ((length > 0) && (*body <= ' ')) {
+		body++, length--;
 	}
 
 	doc = xmlParseMemory (body, length);

@@ -50,6 +50,9 @@
 
 #define DEFAULT_BACKGROUND_COLOR		"rgb:0000/6666/6666"
 #define DEFAULT_SUMMARY_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
+/* #define	SUMMARY_XML_HOME			"http://localhost/summary-configuration.xml" */
+#define	SUMMARY_XML_HOME			"http://services.eazel.com:8888/services"
+#define	REGISTER_HOME				"http://services.eazel.com:8888/account/register/form"
 
 typedef struct _ServicesButtonCallbackData ServicesButtonCallbackData;
 
@@ -82,7 +85,7 @@ struct _NautilusSummaryViewDetails {
 
 	/* Login State */
 	char		*user_name;
-	gboolean	*logged_in;
+	gboolean	logged_in;
 
 	/* Services control panel */
 	int		current_service_row;
@@ -194,7 +197,21 @@ generate_startup_form (NautilusSummaryView       *view)
 	int			counter;
 
 	/* fetch and parse the xml file */
-	view->details->xml_data = parse_summary_xml_file ();
+	view->details->xml_data = parse_summary_xml_file (SUMMARY_XML_HOME);
+
+	if (view->details->logged_in == TRUE) {
+		/* dispose of startup form that was shown */
+		if (view->details->form != NULL) {
+			gtk_widget_destroy (view->details->form);
+			view->details->form = NULL;
+		}
+
+		generate_summary_form (view);
+	}
+	else {
+
+	/* set to default not logged in for now */
+	view->details->logged_in = FALSE;
 
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -238,25 +255,28 @@ generate_startup_form (NautilusSummaryView       *view)
 	gtk_widget_show (view->details->progress_bar);
 
 	/* bogus progress loop */
-	for (counter = 1; counter <= 20000; counter++) {
+	for (counter = 1; counter <= 10000; counter++) {
 		float value;
 
-		value = (float) counter / 20000;
+		value = (float) counter / 10000;
 
 		if (counter == 1) {
-			show_feedback (view->details->feedback_text, "Initializing eazel-proxy ...");
+			show_feedback (view->details->feedback_text, "Testing eazel-proxy configuration ...");
 		}
 		if (counter == 5000) {
-			show_feedback (view->details->feedback_text, "Contacting www.eazel.com ...");
-		}
-		if (counter == 10000) {
 			show_feedback (view->details->feedback_text, "Authenticating user anonymous ...");
 		}
-		if (counter == 15000) {
-			show_feedback (view->details->feedback_text, "Retreiving services list ...");
+		if (counter == 8000) {
+			show_feedback (view->details->feedback_text, "Retrieving services list ...");
 		}
-		if (counter == 20000) {
-			break;
+		if (counter == 10000) {
+			/* dispose of startup form that was shown */
+			if (view->details->form != NULL) {
+				gtk_widget_destroy (view->details->form);
+				view->details->form = NULL;
+			}
+
+			generate_summary_form (view);
 		}
 		else {
 			gtk_progress_bar_update (GTK_PROGRESS_BAR (view->details->progress_bar), value);
@@ -264,6 +284,7 @@ generate_startup_form (NautilusSummaryView       *view)
 				gtk_main_iteration ();
 			}
 		}
+	}
 	}
 
 }
@@ -310,9 +331,6 @@ generate_summary_form (NautilusSummaryView	*view)
 	view->details->current_news_row = 0;
 	view->details->current_update_row = 0;
 
-	/* set to default not logged in for now */
-	view->details->logged_in = FALSE;
-
 	/* reset the default background color */
 	background = nautilus_get_widget_background (GTK_WIDGET (view));
 	nautilus_background_set_color (background, DEFAULT_SUMMARY_BACKGROUND_COLOR);
@@ -326,7 +344,11 @@ generate_summary_form (NautilusSummaryView	*view)
 		title = create_summary_service_title_top_widget ("You are not logged in!.");
 	}
 	else {
-		title = create_summary_service_title_top_widget ("Welcome back Billy Bob!");
+		char	*title_string;
+
+		title_string = g_strdup_printf ("Welcome Back %s!", view->details->user_name);
+		title = create_summary_service_title_top_widget (title_string);
+		g_free (title_string);
 	}
 	gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
 	gtk_widget_show (title);
@@ -785,6 +807,15 @@ authn_cb_succeeded (const EazelProxy_User *user, gpointer state, CORBA_Environme
 	/* FIXME bugzilla.eazel.com 2743: what now? */
 
 	g_message ("Login succeeded");
+	view->details->logged_in = TRUE;
+
+	/* dispose of startup form that was shown */
+	if (view->details->form != NULL) {
+		gtk_widget_destroy (view->details->form);
+		view->details->form = NULL;
+	}
+
+	generate_summary_form (view);
 	
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 }
@@ -831,6 +862,7 @@ login_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 		view->details->authn_callback = ammonite_auth_callback_wrapper_new (bonobo_poa(), &cb_funcs, view);
 
 		user_name = gtk_entry_get_text (GTK_ENTRY (view->details->username_entry));
+		view->details->user_name = user_name;
 		password = gtk_entry_get_text (GTK_ENTRY (view->details->password_entry));
 
 		authinfo = EazelProxy_AuthnInfo__alloc ();
@@ -855,12 +887,12 @@ login_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 			/* FIXME bugzilla.eazel.com 2745: cleanup after fail here */ 
 		}
 
-		g_free (user_name);
-		g_free (password);
 	}
-/*	go_to_uri (view->details->nautilus_view, "eazel-inventory:");*/
 
+	g_free (user_name);
+	g_free (password);
 	CORBA_exception_free (&ev);
+
 }
 
 /* callback to handle the logout button.  Right now only does a simple redirect. */
@@ -923,7 +955,7 @@ static void
 register_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 {
 
-	go_to_uri (view->details->nautilus_view, "http://www.eazel.com/register.html");
+	go_to_uri (view->details->nautilus_view, REGISTER_HOME);
 
 }
 
