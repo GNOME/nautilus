@@ -966,7 +966,7 @@ get_current_mount_list (void)
 		fh = fopen ("/proc/mounts", "r");
 		separator = " ";
 		if (fh == NULL) {
-			g_warning ("can't open /etc/mnttab or /proc/mounts");
+			g_warning ("Unable to open /etc/mnttab or /proc/mounts: %s", strerror (errno));
 			return NULL;
 		}
 	}
