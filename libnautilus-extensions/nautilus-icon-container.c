@@ -5125,7 +5125,7 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 	container = NAUTILUS_ICON_CONTAINER (user_data);
 	
 	/* load the highlight frame */		
-	text_frame_path = nautilus_theme_get_image_path ("text-selection-frame.png");
+	text_frame_path = nautilus_theme_get_image_path ("text-selection-frame-aa.png");
 	if (container->details->highlight_frame) {
 		gdk_pixbuf_unref (container->details->highlight_frame);
 	}
