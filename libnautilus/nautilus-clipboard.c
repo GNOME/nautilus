@@ -368,7 +368,6 @@ initialize_clipboard_component_with_callback_data (GtkEditable *target,
 	 * time.
 	 */
 	target_data = g_new (TargetCallbackData, 1);
-	bonobo_object_ref (ui);
 	target_data->component = ui;
 	target_data->container = bonobo_object_dup_ref (ui_container, NULL);
 	target_data->editable_shares_selection_changes = 

@@ -22,15 +22,12 @@
 
 #include <config.h>
 #include "nautilus-metafile-factory.h"
+
 #include "nautilus-metafile.h"
-
+#include <bonobo/bonobo-macros.h>
 #include <eel/eel-debug.h>
-#include <eel/eel-gtk-macros.h>
-#include "nautilus-bonobo-extensions.h"
 
-struct NautilusMetafileFactoryDetails {
-	char dummy; /* ANSI C does not allow empty structs */
-};
+static NautilusMetafileFactory *the_factory;
 
 BONOBO_CLASS_BOILERPLATE_FULL (NautilusMetafileFactory, nautilus_metafile_factory,
 			       Nautilus_MetafileFactory,
@@ -39,32 +36,34 @@ BONOBO_CLASS_BOILERPLATE_FULL (NautilusMetafileFactory, nautilus_metafile_factor
 static void
 nautilus_metafile_factory_instance_init (NautilusMetafileFactory *factory)
 {
-	factory->details = g_new0 (NautilusMetafileFactoryDetails, 1);
-}
-
-static void
-finalize (GObject *object)
-{
-	NautilusMetafileFactory *factory;
-
-	factory = NAUTILUS_METAFILE_FACTORY (object);
-	g_free (factory->details);
-
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static NautilusMetafileFactory *
 nautilus_metafile_factory_new (void)
 {
-	NautilusMetafileFactory *metafile_factory;
-
-	metafile_factory = NAUTILUS_METAFILE_FACTORY (
-		g_object_new (NAUTILUS_TYPE_METAFILE_FACTORY, NULL));
-
-	return metafile_factory;
+	return NAUTILUS_METAFILE_FACTORY
+		(g_object_new (NAUTILUS_TYPE_METAFILE_FACTORY, NULL));
 }
 
-static NautilusMetafileFactory *the_factory;
+static Nautilus_Metafile
+corba_open (PortableServer_Servant servant,
+	    const CORBA_char *directory,
+	    CORBA_Environment *ev)
+{
+	NautilusMetafile *metafile;
+	Nautilus_Metafile objref;
+
+	metafile = nautilus_metafile_get (directory);
+	objref = bonobo_object_dup_ref (BONOBO_OBJREF (metafile), NULL);
+	bonobo_object_unref (metafile);
+	return objref;
+}
+
+static void
+nautilus_metafile_factory_class_init (NautilusMetafileFactoryClass *class)
+{
+	class->epv.open = corba_open;
+}
 
 static void
 free_factory_instance (void)
@@ -81,25 +80,5 @@ nautilus_metafile_factory_get_instance (void)
 		eel_debug_call_at_shutdown (free_factory_instance);
 	}
 
-	return bonobo_object_ref (the_factory);
-}
-
-static Nautilus_Metafile
-corba_open (PortableServer_Servant  servant,
-	    const CORBA_char       *directory,
-	    CORBA_Environment      *ev)
-{
-	NautilusMetafile *metafile;
-
-	metafile = nautilus_metafile_get (directory);
-
-	return CORBA_Object_duplicate (BONOBO_OBJREF (metafile), ev);
-}
-
-static void
-nautilus_metafile_factory_class_init (NautilusMetafileFactoryClass *klass)
-{
-	G_OBJECT_CLASS (klass)->finalize = finalize;
-
-	klass->epv.open = corba_open;
+	return the_factory;
 }

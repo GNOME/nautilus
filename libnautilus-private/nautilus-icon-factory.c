@@ -1950,8 +1950,9 @@ get_icon_from_cache (NautilusScalableIcon *scalable_icon,
 		key->scalable_icon = scalable_icon;
 		key->size = *size;
 
-		/* recursive get_icon_from_cache might already have placed icon
-		 * in hash table if there was an exact match */
+		/* Recursive get_icon_from_cache might already have placed icon
+		 * in hash table if there was an exact match.
+		 */
 		if (g_hash_table_lookup (hash_table, key) != NULL) {
 			g_free (key);
 			return icon;
@@ -1960,7 +1961,6 @@ get_icon_from_cache (NautilusScalableIcon *scalable_icon,
 		/* Add the item to the hash table. */
 		nautilus_scalable_icon_ref (scalable_icon);
 		g_hash_table_insert (hash_table, key, icon);
-			
 	}
 
 	/* Hand back a ref to the caller. */

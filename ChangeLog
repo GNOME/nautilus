@@ -1,3 +1,27 @@
+2002-02-27  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-directory-metafile.c:
+	(free_factory): Just release, don't unref.
+	(get_metafile): Don't keep a ref. Also fix CORBA objref leak.
+
+	* libnautilus-private/nautilus-icon-factory.c:
+	(get_icon_from_cache):
+
+	* libnautilus-private/nautilus-metafile-factory.c:
+	(nautilus_metafile_factory_get_instance): Return the same
+	instance each time, don't ref, since lifetime is not managed
+	by ref counting.
+
+	* libnautilus/nautilus-clipboard.c:
+	(initialize_clipboard_component_with_callback_data):
+	Get rid of BonoboUIComponent leak.
+
+	* src/nautilus-application.c: Formatting tweaks.
+	* libnautilus-private/nautilus-bookmark.c: Minor cleanup.
+
+	* test/Makefile.am:
+	* test/test-nautilus-async-activation.c: Remove.
+
 2002-02-27  Michael Meeks  <michael@ximian.com>
 
 	* libnautilus-private/nautilus-program-choosing.c

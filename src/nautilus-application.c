@@ -122,7 +122,7 @@ create_object (PortableServer_Servant servant,
 	} else if (strcmp (iid, METAFILE_FACTORY_IID) == 0) {
 		object = BONOBO_OBJECT (nautilus_metafile_factory_get_instance ());
 	} else {
-		return CORBA_OBJECT_NIL;
+		object = CORBA_OBJECT_NIL;
 	}
 
 	return CORBA_Object_duplicate (BONOBO_OBJREF (object), ev);
@@ -141,16 +141,12 @@ nautilus_application_instance_init (NautilusApplication *application)
 	application->undo_manager = nautilus_undo_manager_new ();
 
 	/* Watch for volume mounts so we can restore open windows */
-	g_signal_connect (nautilus_volume_monitor_get (),
-			    "volume_mounted",
-			    G_CALLBACK (volume_mounted_callback),
-			    application);
+	g_signal_connect (nautilus_volume_monitor_get (), "volume_mounted",
+			  G_CALLBACK (volume_mounted_callback), application);
 
 	/* Watch for volume unmounts so we can close open windows */
-	g_signal_connect (nautilus_volume_monitor_get (),
-			    "volume_unmounted",
-			    G_CALLBACK (volume_unmounted_callback),
-			    application);
+	g_signal_connect (nautilus_volume_monitor_get (), "volume_unmounted",
+			  G_CALLBACK (volume_unmounted_callback), application);
 }
 
 NautilusApplication *
@@ -417,8 +413,8 @@ nautilus_application_startup (NautilusApplication *application,
 	/* Start up the factory. */
 	while (TRUE) {
 		/* Try to register the file manager view factory. */
-		result = bonobo_activation_active_server_register (
-			FACTORY_IID, BONOBO_OBJREF (application));
+		result = bonobo_activation_active_server_register
+			(FACTORY_IID, BONOBO_OBJREF (application));
 
 		switch (result) {
 		case Bonobo_ACTIVATION_REG_SUCCESS:

@@ -15,7 +15,6 @@ LDADD =\
 	$(NULL)
 
 noinst_PROGRAMS =\
-	test-nautilus-async-activation \
 	test-nautilus-mime-actions \
 	test-nautilus-mime-actions-set \
 	test-nautilus-preferences-change \
@@ -23,7 +22,6 @@ noinst_PROGRAMS =\
 	test-nautilus-wrap-table \
 	$(NULL)
 
-test_nautilus_async_activation_SOURCES = test-nautilus-async-activation.c test.c
 test_nautilus_mime_actions_SOURCES = test-nautilus-mime-actions.c test.c
 test_nautilus_mime_actions_set_SOURCES = test-nautilus-mime-actions-set.c test.c
 test_nautilus_preferences_change_SOURCES = test-nautilus-preferences-change.c test.c

@@ -61,21 +61,20 @@ struct NautilusBookmarkDetails
 
 static void	  nautilus_bookmark_connect_file	  (NautilusBookmark	 *file);
 static void	  nautilus_bookmark_disconnect_file	  (NautilusBookmark	 *file);
-static void       nautilus_bookmark_class_init      (NautilusBookmarkClass *class);
-static void       nautilus_bookmark_init            (NautilusBookmark      *bookmark);
 
-EEL_CLASS_BOILERPLATE (NautilusBookmark, nautilus_bookmark, GTK_TYPE_OBJECT)
+GNOME_CLASS_BOILERPLATE (NautilusBookmark, nautilus_bookmark,
+			 GtkObject, GTK_TYPE_OBJECT)
 
 /* GtkObject methods.  */
 
 static void
-nautilus_bookmark_destroy (GtkObject *object)
+nautilus_bookmark_finalize (GObject *object)
 {
 	NautilusBookmark *bookmark;
 
 	g_assert (NAUTILUS_IS_BOOKMARK (object));
 
-	bookmark = NAUTILUS_BOOKMARK(object);
+	bookmark = NAUTILUS_BOOKMARK (object);
 
 	nautilus_bookmark_disconnect_file (bookmark);	
 
@@ -83,8 +82,7 @@ nautilus_bookmark_destroy (GtkObject *object)
 	g_free (bookmark->details->uri);
 	g_free (bookmark->details);
 
-	/* Chain up */
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 /* Initialization.  */
@@ -92,15 +90,11 @@ nautilus_bookmark_destroy (GtkObject *object)
 static void
 nautilus_bookmark_class_init (NautilusBookmarkClass *class)
 {
-	GtkObjectClass *object_class;
-
-	object_class = GTK_OBJECT_CLASS (class);
-
-	object_class->destroy = nautilus_bookmark_destroy;
+	G_OBJECT_CLASS (class)->finalize = nautilus_bookmark_finalize;
 
 	signals[APPEARANCE_CHANGED] =
 		g_signal_new ("appearance_changed",
-		              G_TYPE_FROM_CLASS (object_class),
+		              G_TYPE_FROM_CLASS (class),
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusBookmarkClass, appearance_changed),
 		              NULL, NULL,
@@ -109,7 +103,7 @@ nautilus_bookmark_class_init (NautilusBookmarkClass *class)
 
 	signals[CONTENTS_CHANGED] =
 		g_signal_new ("contents_changed",
-		              G_TYPE_FROM_CLASS (object_class),
+		              G_TYPE_FROM_CLASS (class),
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusBookmarkClass, contents_changed),
 		              NULL, NULL,
@@ -119,7 +113,7 @@ nautilus_bookmark_class_init (NautilusBookmarkClass *class)
 }
 
 static void
-nautilus_bookmark_init (NautilusBookmark *bookmark)
+nautilus_bookmark_instance_init (NautilusBookmark *bookmark)
 {
 	bookmark->details = g_new0 (NautilusBookmarkDetails, 1);
 }
