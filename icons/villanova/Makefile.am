@@ -29,6 +29,7 @@ villa_DATA =	\
 	i-directory-accept-aa.png	\
 	i-directory-accept.png		\
 	number_strip.png		\
+	Sierra_desktop.png		\
 	theme_preview.png		\
 	villanova_green.png		\
 	villanova.xml

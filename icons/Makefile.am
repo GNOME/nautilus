@@ -199,6 +199,7 @@ icon_DATA =\
 	i-spreadsheet.png \
 	i-stalled.png \
 	i-symlink.png \
+	i-symlink-aa.png \
 	i-web-72.png \
 	i-zipdisk.png \
 	i-zipdisk2.png \
