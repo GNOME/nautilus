@@ -272,8 +272,12 @@ nautilus_indexing_info_get_last_index_time (void)
 	time_t update_time;
         
 	update_time = medusa_index_service_get_last_index_update_time ();
-        return nautilus_strdup_strftime (_("%I:%M %p, %x"),
-                                         localtime (&update_time));
+        if (update_time) {
+                return nautilus_strdup_strftime (_("%I:%M %p, %x"),
+                                                 localtime (&update_time));
+        } else {
+                return NULL;
+        }
 #else
         g_warning ("called nautilus_indexing_info_get_last_index_time with HAVE_MEDUSA off");
         return g_strdup ("");

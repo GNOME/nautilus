@@ -1,3 +1,20 @@
+2001-01-22  Rebecca Schulman  <rebecka@eazel.com>
+        Fix bugzilla.eazel.com bug 2659, that behavior
+	with backup search is inconsistent, because content
+	backup searches are unavailable.  We now
+
+
+	* src/file-manager/fm-search-list-view.c: (load_location_callback),
+	(load_error_callback), (display_indexed_search_problems_dialog):
+	Add checks to handle both the case where the indexed search is not
+	available and the case where a backup search is not available.
+	Explain why an index search cannot be performed, and also if
+	applicable why a backup search can't be performed.
+	* src/file-manager/nautilus-indexing-info.c:
+	(nautilus_indexing_info_get_last_index_time):
+	Return NULL if there are no indices, instead of 
+	the timestring for time = 0.
+
 2001-01-22  Arlo Rose  <arlo@eazel.com>
 
 	* data/patterns/Makefile.am:

@@ -37,6 +37,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #ifdef HAVE_MEDUSA
 #include <libmedusa/medusa-indexed-search.h>
+#include <libmedusa/medusa-unindexed-search.h>
 #include <libmedusa/medusa-index-service.h>
 #endif
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
@@ -96,7 +97,7 @@ static void 	load_location_callback               	 (NautilusView 	   *nautilus_
 						      	  char 		   *location);
 static void	real_update_menus 		     	 (FMDirectoryView  *view);
 #ifdef HAVE_MEDUSA
-static void     display_indexed_search_problems_dialog   (void);
+static void     display_indexed_search_problems_dialog   (gboolean unindexed_search_is_available);
 #endif
 static void	reveal_selected_items_callback 		 (BonoboUIComponent *component, 
 							  gpointer 	    user_data, 
@@ -112,18 +113,27 @@ load_location_callback (NautilusView *nautilus_view, char *location)
 {
 #ifdef HAVE_MEDUSA
 	char *last_indexing_time, *status_string;
+	char *unescaped_location;
+	gboolean unindexed_search_is_available_for_uri;
+	gboolean indexed_search_is_available;
 
-	last_indexing_time = nautilus_indexing_info_get_last_index_time ();
-	if (last_indexing_time) {
-		status_string = g_strdup_printf (_("Search results may not include items modified after %s, when your drive was last indexed."),
-						 last_indexing_time);
-	
-		g_free (last_indexing_time);
-		nautilus_view_report_status (nautilus_view, status_string);
-		g_free (status_string);
+	indexed_search_is_available = medusa_indexed_search_is_available () == GNOME_VFS_OK;
+	if (indexed_search_is_available) {
+		last_indexing_time = nautilus_indexing_info_get_last_index_time ();
+		if (last_indexing_time) {
+			status_string = g_strdup_printf (_("Search results may not include items modified after %s, when your drive was last indexed."),
+							 last_indexing_time);
+			
+			g_free (last_indexing_time);
+			nautilus_view_report_status (nautilus_view, status_string);
+			g_free (status_string);
+		}
 	}
-	if (medusa_indexed_search_is_available () != GNOME_VFS_OK) {
-		display_indexed_search_problems_dialog ();
+	if (!indexed_search_is_available) {
+		unescaped_location = gnome_vfs_unescape_string (location, NULL);
+		unindexed_search_is_available_for_uri = (medusa_unindexed_search_is_available_for_uri (unescaped_location) == GNOME_VFS_OK);
+		g_free (unescaped_location);
+		display_indexed_search_problems_dialog (unindexed_search_is_available_for_uri);
 	}
 #else
 	nautilus_error_dialog (_("Sorry, but the Medusa search service is not available because it is not installed."),
@@ -143,7 +153,7 @@ load_error_callback (FMDirectoryView *nautilus_view,
 		     gpointer callback_data)
 {
 	GnomeDialog *load_error_dialog;
-	char *generic_error_string;
+	char *error_string;
 	
 	switch (result) {
 	case GNOME_VFS_ERROR_SERVICE_OBSOLETE:
@@ -165,34 +175,37 @@ load_error_callback (FMDirectoryView *nautilus_view,
 				    NULL);
 		break;
 	case GNOME_VFS_ERROR_TOO_BIG:
-		generic_error_string = g_strdup_printf (_("Every indexed file on your computer "
-							  "matches the criteria you selected. "
-							  "You can check the spelling on your selections "
-							  "or add more criteria to narrow your results."));
-		load_error_dialog = nautilus_error_dialog (generic_error_string,
-							   _("Error during search"),
-							   NULL);
+		nautilus_error_dialog (_("Every indexed file on your computer "
+					 "matches the criteria you selected. "
+					 "You can check the spelling on your selections "
+					 "or add more criteria to narrow your results."),
+				       _("Error during search"),
+				       NULL);
 		break;
-
+	case GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE:
+		/* We've handled this case in load_location_callback */
+		break;
 	default:
-		generic_error_string = g_strdup_printf (_("An error occurred while loading "
+		error_string = g_strdup_printf (_("An error occurred while loading "
 							  "this search's contents: "
 							  "%s"),
 							gnome_vfs_result_to_string (result));
-		load_error_dialog = nautilus_error_dialog (generic_error_string,
-							   _("Error during search"),
-							   NULL);
+		nautilus_error_dialog (error_string,
+				       _("Error during search"),
+				       NULL);
+		g_free (error_string);
+		
 	}
 }
 
 
 #ifdef HAVE_MEDUSA
 static void
-display_indexed_search_problems_dialog (void)
+display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 {
 
 	GnomeDialog *index_problem_dialog;
-
+	const char *error_string, *title_string;
 	MedusaIndexingRequestResult index_service_availability;
 	GtkButton *create_index_button;
 
@@ -200,19 +213,27 @@ display_indexed_search_problems_dialog (void)
 		/* There is an index on the system, but there is no
 		   way to run a search anyways.  The system is
 		   confused.  Tell the user this */
-		nautilus_error_dialog_with_details (_("To do a fast search, Find requires an index "
-						      "of the files on your system.  "
-						      "Find can't access your index right now "
-						      "so a slower search will be performed that "
-						      "doesn't use the index."),
-						      _("Fast searches are not available"),
-						      _("Your index files are available "
-							"but the Medusa search daemon, which handles "
-							"index requests, isn't running."
-							"To start this program, log in as root and "
-							"enter this command at the command line: "
+		error_string = backup_search_is_available 
+			? N_("To do a fast search, Find requires an index "
+			     "of the files on your system.  "
+			     "Find can't access your index right now "
+			     "so a slower search will be performed that "
+			     "doesn't use the index.") 
+			: N_("To do a content search, Find requires an index "
+			     "of thie files on your system.  "
+			     "Find can't access your index right now. ");
+		title_string = backup_search_is_available 
+			?  N_("Fast searches are not available")
+			:  N_("Content searches are not available");
+		nautilus_error_dialog_with_details (error_string,
+						    title_string,
+						    _("Your index files are available "
+						      "but the Medusa search daemon, which handles "
+						      "index requests, isn't running.  "
+						      "To start this program, log in as root and "
+						      "enter this command at the command line: "
 						      "medusa-searchd"),
-						      NULL);
+						    NULL);
 	}
 	else {
 		/* There is currently no index available, so we need to explain
@@ -225,16 +246,27 @@ display_indexed_search_problems_dialog (void)
 		index_service_availability = medusa_index_service_is_available ();
 		switch (index_service_availability) {
 		case MEDUSA_INDEXER_READY_TO_INDEX:
-			index_problem_dialog = nautilus_yes_no_dialog (_("To do a fast search, Find requires an index "
-									 "of the files on your system.  "
-									 "Your computer does not have an index "
-									 "right now.  Because Find cannot use an "
-									 "index, this search may take several "
-									 "minutes.  "
-									 "Would you like to create an index? "
-									 "Creating an index will be done while "
-									 "you are not actively using your computer."),
-								       _("Indexed searches are not available"),
+			error_string = backup_search_is_available
+				? N_("To do a fast search, Find requires an index "
+				     "of the files on your system.  "
+				     "Your computer does not have an index "
+				     "right now.  Because Find cannot use an "
+				     "index, this search may take several "
+				     "minutes.  "
+				     "Would you like to create an index? "
+				     "Creating an index will be done while "
+				     "you are not actively using your computer.")
+				: N_("To do a content search, Find requires an index "
+				     "of the content on your system.  "
+				     "Your computer does not have an index "
+				     "right now.  Would you like to create an index?  "
+				     "Creating an index will be done while you are not "
+				     "actively using your computer.");
+			title_string = backup_search_is_available
+				? N_("Indexed searches are not available")
+				: N_("Content searches are not available");
+			index_problem_dialog = nautilus_yes_no_dialog (error_string,
+								       title_string,
 								       _("Create an Index"),
 								       _("Don't Create an Index Now"),
 								       NULL);
@@ -246,23 +278,42 @@ display_indexed_search_problems_dialog (void)
 					    NULL);
 			break;
 		case MEDUSA_INDEXER_ALREADY_INDEXING:
-			nautilus_error_dialog (_("To do a fast search, Find requires an index "
-						 "of the files on your system.  "
-						 "Your computer is currently creating that "
-						 "index.   Because Find cannot use an index, "
-						 "this search may take several "
-						 "minutes."),
-					       _("Indexed search is not available"),
+			error_string = backup_search_is_available 
+				? N_("To do a fast search, Find requires an index "
+				    "of the files on your system.  "
+				    "Your computer is currently creating that "
+				     "index.   Because Find cannot use an index, "
+				     "this search may take several "
+				     "minutes.")
+				: N_("To do a content search, Find requires an index "
+				     "of the content on your system.  "
+				     "Your computer is currently creating that "
+				     "index.  Content searches will be available "
+				     "when the index is complete.");
+			title_string = backup_search_is_available
+				? N_("Indexed searches are not available")
+				: N_("Content searches are not available");
+			nautilus_error_dialog (error_string,
+					       title_string,
 					       NULL);
 			break;
 		default:
-			nautilus_error_dialog_with_details (_("To do a fast search, Find requires an index "
-							      "of the files on your system.  "
-							      "An index can't be created "
-							      "right now. When an index is not "
-							      "available, searches will "
-							      "take several minutes."),
-							    _("Indexed search is not available"),
+			error_string = backup_search_is_available
+				? N_("To do a fast search, Find requires an index "
+				     "of the files on your system.  "
+				     "An index can't be created "
+				     "right now. When an index is not "
+				     "available, searches will "
+				     "take several minutes.")
+				: N_("To do a content search, Find requires an index "
+				     "of the content on your system.  "
+				     "An index can't be created "
+				     "right now.");
+			title_string = backup_search_is_available
+				? N_("Indexed searches are not available")
+				: N_("Content searches are not available");
+			nautilus_error_dialog_with_details (error_string,
+							    title_string,
 							    _("The program that creates an index "
 							      "is not set up correctly.  You can "
 							      "create an index by hand by "
