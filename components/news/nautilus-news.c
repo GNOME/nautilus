@@ -119,6 +119,7 @@ typedef struct {
 	int display_height;
 	int max_item_count;
 	uint update_interval;
+	int update_timeout;
 	
 	EelScalableFont *font;	
 	EelScalableFont *bold_font;	
@@ -204,6 +205,8 @@ static char *news_get_indicator_image   (News *news_data);
 static void nautilus_news_free_channel_list (News *news_data);
 static gboolean nautilus_news_save_channel_state (News* news_data);
 static void update_size_and_redraw (News* news_data);
+static void queue_update_size_and_redraw (News* news_data);
+
 static char* get_xml_path (const char *file_name, gboolean force_local);
 static int check_for_updates (gpointer callback_data);
 static RSSChannelData* get_channel_from_name (News *news_data, const char *channel_name);
@@ -313,6 +316,11 @@ do_destroy (GtkObject *obj, News *news)
 		news->timer_task = 0;
 	}
 
+	if (news->update_timeout > 0) {
+		gtk_timeout_remove (news->update_timeout);
+		news->update_timeout = -1;
+	}
+	
         if (news->closed_triangle != NULL) {
 		gdk_pixbuf_unref (news->closed_triangle);
 	}
@@ -1121,7 +1129,7 @@ rss_logo_callback (GnomeVFSResult  error, GdkPixbuf *pixbuf, gpointer callback_d
 		gdk_pixbuf_ref (pixbuf);
 		pixbuf = eel_gdk_pixbuf_scale_down_to_fit (pixbuf, 192, 40);		
 		channel_data->logo_image = pixbuf;
-		update_size_and_redraw (channel_data->owner);
+		queue_update_size_and_redraw (channel_data->owner);
 	}
 }
 
@@ -1216,6 +1224,30 @@ update_size_and_redraw (News* news_data)
 		gtk_widget_queue_resize (news_data->news_display);				
 	}
 	gtk_widget_queue_draw (news_data->news_display);
+}
+
+/* handle the timeout firing by updating and redrawing */
+static int
+update_timeout_callback (gpointer callback_data)
+{
+	News *news_data;
+	news_data = (News*) callback_data;
+
+	news_data->update_timeout = -1;	
+	update_size_and_redraw (news_data);
+	return 0;
+}
+
+/* utility routine to queue an update for the future, so many quick ones get coalesced */
+static void
+queue_update_size_and_redraw (News* news_data)
+{
+	/* if there already is one pending, simply return */
+	if (news_data->update_timeout > 0) {
+		return;
+	}
+	
+	news_data->update_timeout = gtk_timeout_add (1500, update_timeout_callback, news_data);
 }
 
 /* utility routine to search for the passed-in url in an item list */
@@ -1507,7 +1539,7 @@ rss_read_done_callback (GnomeVFSResult result,
 	 * schedule a redraw.
 	 */
 	if (changed_count > 0) {
-		update_size_and_redraw (channel_data->owner); 
+		queue_update_size_and_redraw (channel_data->owner); 
 	}
 }
 
@@ -2234,7 +2266,6 @@ make_remove_widgets (News *news, GtkWidget *container)
 	gtk_container_add (GTK_CONTAINER (button_box), news->remove_button);
 	gtk_signal_connect (GTK_OBJECT (news->remove_button), "clicked",
 		(GtkSignalFunc) remove_selected_site, news);
-
 }
 
 /* generate the add new site widgets */
@@ -2432,7 +2463,8 @@ make_news_view (const char *iid, gpointer callback_data)
 	/* get preferences and sanity check them */
 	news->max_item_count = eel_preferences_get_integer (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS);
 	news->update_interval = 60 * eel_preferences_get_integer (NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL);	
-	
+	news->update_timeout = -1;
+		
 	if (news->max_item_count <= 0) {
 		news->max_item_count = 2;		
 	}

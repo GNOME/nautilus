@@ -1,3 +1,13 @@
+2001-05-21  Andy Hertzfeld  <andy@eazel.com>
+
+	made the news panel flash less by defering async updates with a timer
+	task, so ones that fire close together are coalesced.
+	
+	* components/news/nautilus-news.c: (do_destroy),
+	(rss_logo_callback), (update_timeout_callback),
+	(queue_update_size_and_redraw), (rss_read_done_callback),
+	(make_remove_widgets), (make_news_view):
+
 2001-05-18  Yoann Vandoorselaere  <yoann@mandrakesoft.com>
 
 	Code reviewed by Darin Adler <darin@bentspoon.com>.
