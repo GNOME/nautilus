@@ -103,77 +103,12 @@ nautilus-config: nautilus-config.in Makefile
 
 ##################################################################
 #
-# eazel-logos/*, if it exists
-#
-##################################################################
-
-icondir = $(datadir)/pixmaps/nautilus/eazel-logos
-
-if HAVE_EAZEL_LOGOS
-EAZEL_LOGOS_ICONS = \
-	$(top_srcdir)/eazel-logos/LICENSE \
-	$(top_srcdir)/eazel-logos/About_Image.png \
-	$(top_srcdir)/eazel-logos/about_background.png \
-	$(top_srcdir)/eazel-logos/default.xml \
-	$(top_srcdir)/eazel-logos/druid_header.png \
-	$(top_srcdir)/eazel-logos/eazel-logo-right-side-logo.png \
-	$(NULL)
-endif
-
-##################################################################
-#
-# eazel-logos/throbber/*, if it exists
-#
-##################################################################
-
-throbberdir = $(datadir)/pixmaps/nautilus/eazel-logos/throbber
-
-if HAVE_EAZEL_LOGOS
-EAZEL_LOGOS_THROBBER = \
-	$(top_srcdir)/eazel-logos/throbber/001.png \
-	$(top_srcdir)/eazel-logos/throbber/002.png \
-	$(top_srcdir)/eazel-logos/throbber/003.png \
-	$(top_srcdir)/eazel-logos/throbber/004.png \
-	$(top_srcdir)/eazel-logos/throbber/005.png \
-	$(top_srcdir)/eazel-logos/throbber/006.png \
-	$(top_srcdir)/eazel-logos/throbber/007.png \
-	$(top_srcdir)/eazel-logos/throbber/008.png \
-	$(top_srcdir)/eazel-logos/throbber/009.png \
-	$(top_srcdir)/eazel-logos/throbber/010.png \
-	$(top_srcdir)/eazel-logos/throbber/011.png \
-	$(top_srcdir)/eazel-logos/throbber/012.png \
-	$(top_srcdir)/eazel-logos/throbber/013.png \
-	$(top_srcdir)/eazel-logos/throbber/014.png \
-	$(top_srcdir)/eazel-logos/throbber/015.png \
-	$(top_srcdir)/eazel-logos/throbber/rest.png \
-	$(NULL)
-endif
-
-##################################################################
-#
 # dist-hook
 #
 ##################################################################
 
 dist-hook: nautilus.spec
 	cp nautilus.spec $(distdir)
-
-# This is ridiculous, but automake apparently won't allow conditionals
-# in EXTRA_DIST.
-
-	mkdir -p $(distdir)/eazel-logos
-	list='$(EAZEL_LOGOS_ICONS)'; \
-	for i in $$list; \
-	do \
-		cp $$i $(distdir)/eazel-logos; \
-	done
-
-	mkdir -p $(distdir)/eazel-logos/throbber
-	list='$(EAZEL_LOGOS_THROBBER)'; \
-	for i in $$list; \
-	do \
-		cp $$i $(distdir)/eazel-logos/throbber; \
-	done
 
 ##################################################################
 #
@@ -188,24 +123,4 @@ install-data-hook: nautilus-clean.sh
 	    echo "  $(INSTALL_PROGRAM) $(srcdir)/$$p $(DESTDIR)/$(prefix)/bin/$$p"; \
 	    $(INSTALL_PROGRAM) $(srcdir)/$$p $(DESTDIR)/$(prefix)/bin/$$p; \
 	  else :; fi; \
-	done
-
-# This is slightly less ridiculous.  I'm doing it this way instead of with
-# an automake DATA rule because it's easier to deal with the relative paths
-# like this.
-
-	$(mkinstalldirs) $(icondir)
-	@list='$(EAZEL_LOGOS_ICONS)'; \
-	for i in $$list; \
-	do \
-		echo $(INSTALL_PROGRAM) $$i $(icondir)/`basename $$i`; \
-		$(INSTALL_PROGRAM) $$i $(icondir)/`basename $$i`; \
-	done
-
-	$(mkinstalldirs) $(throbberdir)
-	@list='$(EAZEL_LOGOS_THROBBER)'; \
-	for i in $$list; \
-	do \
-		echo $(INSTALL_PROGRAM) $$i $(throbberdir)/`basename $$i`; \
-		$(INSTALL_PROGRAM) $$i $(throbberdir)/`basename $$i`; \
 	done

@@ -1,3 +1,17 @@
+2001-10-05  Darin Adler  <darin@bentspoon.com>
+
+	* eazel-logos: removed
+	* libnautilus-private/nautilus-file-utilities.c:
+	(nautilus_pixmap_file): Remove the code to look for Eazel logos.
+
+	* configure.in:
+	* Makefile.am:
+	* nautilus.spec.in:
+	Remove the code to include the Eazel logos in the tarball and
+	the package.
+
+	* HACKING: Remove the instructions on how to omit the Eazel logos.
+
 2001-10-05  Benedikt Roth  <Benedikt.Roth@gmx.net>
 
  	* src/file-manager/fm-properties-window.c: (uri_is_local_image),

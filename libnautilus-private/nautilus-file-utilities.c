@@ -191,20 +191,11 @@ nautilus_pixmap_file (const char *partial_path)
 {
 	char *path;
 
-	/* Look for a non-GPL Eazel logo version. */
-	path = nautilus_make_path (DATADIR "/pixmaps/nautilus/eazel-logos", partial_path);
-	if (g_file_exists (path)) {
-		return path;
-	}
-	g_free (path);
-
-	/* Look for a GPL version. */
 	path = nautilus_make_path (DATADIR "/pixmaps/nautilus", partial_path);
 	if (g_file_exists (path)) {
 		return path;
 	}
 	g_free (path);
-
 	return NULL;
 }
 
