@@ -38,6 +38,11 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_BACKGROUND_COLOR                   "preferences/background_color" 
 #define NAUTILUS_PREFERENCES_BACKGROUND_FILENAME                "preferences/background_filename" 
 
+/* Side Pane Background options */
+#define NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_SET                     "preferences/side_pane_background_set" 
+#define NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_COLOR                   "preferences/side_pane_background_color" 
+#define NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_FILENAME                "preferences/side_pane_background_filename" 
+
 /* How wide the sidebar is (or how wide it will be when expanded) */
 #define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"preferences/sidebar_width"
 

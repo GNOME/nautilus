@@ -397,6 +397,42 @@
       </locale>
     </schema>
 
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/side_pane_background_set</key>
+      <applyto>/apps/nautilus/preferences/side_pane_background_set</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+      <short>Custom Side Pane Background Set</short>
+      <long>Whether a custom default side pane background has been set.</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/side_pane_background_color</key>
+      <applyto>/apps/nautilus/preferences/side_pane_background_color</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>#ffffff</default>
+      <locale name="C">
+      <short>Default Side Pane Background Color</short>
+      <long>Filename for the default side pane background.  Only used if side_pane_background_set is true.</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/side_pane_background_filename</key>
+      <applyto>/apps/nautilus/preferences/side_pane_background_filename</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default></default>
+      <locale name="C">
+      <short>Default Side Pane Background Filename</short>
+      <long>Filename for the default side pane background.  Only used if side_pane_background_set is true.</long>
+      </locale>
+    </schema>
+
+
     <!-- Icon View -->
 
     <schema>

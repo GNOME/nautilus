@@ -1,3 +1,39 @@
+2002-10-31  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-directory-background.c:
+	(nautilus_file_background_get_default_settings),
+	(nautilus_file_background_is_set), (background_changed_callback),
+	(background_reset_callback):
+	* libnautilus-private/nautilus-dnd.c: 
+	(nautilus_drag_drop_background_ask):
+	* libnautilus-private/nautilus-dnd.h:
+	* libnautilus-private/nautilus-global-preferences.h:
+	* libnautilus-private/nautilus-icon-dnd.c: 
+	(get_background_drag_action),
+	(receive_dropped_color), (receive_dropped_tile_image),
+	(nautilus_icon_container_receive_dropped_icons),
+	(drag_data_received_callback):  Set the background globally by 
+	default.  On a right-drag from the property dialog, pop up a 
+	context menu asking to set it globally or for that directory.
+
+	* libnautilus-private/apps_nautilus_preferences.schemas:
+	* src/nautilus-information-panel.c: (nautilus_information_panel_init),
+	(nautilus_information_panel_finalize),
+	(information_panel_has_background),
+	(nautilus_information_panel_create_context_menu),
+	(nautilus_information_panel_read_defaults),
+	(nautilus_information_panel_theme_changed),
+	(receive_dropped_uri_list), (receive_dropped_color),
+	(nautilus_information_panel_drag_data_received),
+	(background_settings_changed_callback),
+	(background_reset_callback),
+	(nautilus_information_panel_update_appearance): Take the default
+	background from gconf, handle global vs. per-directory
+	backgrounds.
+
+	* nautilus-property-browser.c: (element_clicked_callback): Add 
+	ASK to the list of actions.
+
 2002-10-31  Bastien Nocera  <hadess@hadess.net>
 
 	* src/Makefile.am: upd
@@ -5,7 +41,7 @@
 	(main): update for the icon
 	* src/nautilus-server-connect.desktop.in: update icon
 	* src/network-scheme.desktop.in: added
-
+	
 2002-10-31  Dave Camp  <dave@ximian.com>
 
 	* src/Makefile.am (bin_PROGRAMS): Removed the extra 'nautilus'.

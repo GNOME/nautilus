@@ -63,7 +63,8 @@ typedef enum {
 
 typedef enum {
 	NAUTILUS_DND_ACTION_FIRST = GDK_ACTION_ASK << 1,
-	NAUTILUS_DND_ACTION_SET_AS_BACKGROUND = NAUTILUS_DND_ACTION_FIRST << 0
+	NAUTILUS_DND_ACTION_SET_AS_BACKGROUND = NAUTILUS_DND_ACTION_FIRST << 0,
+	NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND = NAUTILUS_DND_ACTION_FIRST << 1
 } NautilusDndAction;
 
 /* drag&drop-related information. */
@@ -126,7 +127,10 @@ gboolean                    nautilus_drag_drag_data_get                 (GtkWidg
 									 NautilusDragEachSelectedItemIterator  each_selected_item_iterator);
 int                         nautilus_drag_modifier_based_action         (int                                   default_action,
 									 int                                   non_default_action);
+
 GdkDragAction               nautilus_drag_drop_action_ask               (GdkDragAction                         possible_actions);
+GdkDragAction               nautilus_drag_drop_background_ask           (GdkDragAction                         possible_actions);
+
 gboolean                    nautilus_drag_autoscroll_in_scroll_region   (GtkWidget                            *widget);
 void                        nautilus_drag_autoscroll_calculate_delta    (GtkWidget                            *widget,
 									 float                                *x_scroll_delta,

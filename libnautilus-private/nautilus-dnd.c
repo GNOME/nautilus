@@ -613,6 +613,59 @@ nautilus_drag_drop_action_ask (GdkDragAction actions)
 	return damd.chosen;
 }
 
+GdkDragAction
+nautilus_drag_drop_background_ask (GdkDragAction actions)
+{
+	GtkWidget *menu;
+	GtkWidget *menu_item;
+	DropActionMenuData damd;
+	
+	/* Create the menu and set the sensitivity of the items based on the
+	 * allowed actions.
+	 */
+	menu = gtk_menu_new ();
+	
+	append_drop_action_menu_item (menu, _("Set as background for _all directories"),
+				      NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND,
+				      (actions & NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND) != 0,
+				      &damd);
+
+	append_drop_action_menu_item (menu, _("Set as background for _this directory"),
+				      NAUTILUS_DND_ACTION_SET_AS_BACKGROUND,
+				      (actions & NAUTILUS_DND_ACTION_SET_AS_BACKGROUND) != 0,
+				      &damd);
+
+	menu_item = gtk_separator_menu_item_new ();
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+	gtk_widget_show (menu_item);
+	
+	menu_item = gtk_menu_item_new_with_mnemonic (_("Cancel"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+	gtk_widget_show (menu_item);
+	
+	damd.chosen = 0;
+	damd.loop = g_main_loop_new (NULL, FALSE);
+
+	g_signal_connect (menu, "deactivate",
+			  G_CALLBACK (menu_deactivate_callback),
+			  &damd);
+	
+	gtk_grab_add (menu);
+	
+	gtk_menu_popup (GTK_MENU (menu), NULL, NULL,
+			NULL, NULL, 0, GDK_CURRENT_TIME);
+	
+	g_main_loop_run (damd.loop);
+
+	gtk_grab_remove (menu);
+	
+	g_main_loop_unref (damd.loop);
+	
+	gtk_object_sink (GTK_OBJECT (menu));
+	
+	return damd.chosen;	
+}
+
 gboolean
 nautilus_drag_autoscroll_in_scroll_region (GtkWidget *widget)
 {

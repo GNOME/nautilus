@@ -54,6 +54,7 @@
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file-dnd.h>
 #include <libnautilus-private/nautilus-file-operations.h>
@@ -64,7 +65,6 @@
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-sidebar-functions.h>
-#include <libnautilus-private/nautilus-theme.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <math.h>
 
@@ -83,7 +83,6 @@ struct NautilusInformationPanelDetails {
 	char *default_background_image;
 	char *current_background_color;
 	char *current_background_image;
-	gboolean is_default_background;
 };
 
 /* button assignments */
@@ -102,7 +101,7 @@ static void     nautilus_information_panel_drag_data_received    (GtkWidget     
 							GtkSelectionData *selection_data,
 							guint             info,
 							guint             time);
-static void     nautilus_information_panel_read_theme            (NautilusInformationPanel  *information_panel);
+static void     nautilus_information_panel_read_defaults         (NautilusInformationPanel  *information_panel);
 static void     nautilus_information_panel_style_set             (GtkWidget        *widget,
 							GtkStyle         *previous_style);
 static void     nautilus_information_panel_theme_changed         (gpointer          user_data);
@@ -221,8 +220,8 @@ nautilus_information_panel_init (GtkObject *object)
 			&confirm_trash_auto_value);
 	}	
 	
-	/* load the default background from the current theme */
-	nautilus_information_panel_read_theme (information_panel);
+	/* load the default background */
+	nautilus_information_panel_read_defaults (information_panel);
 
 	/* enable mouse tracking */
 	gtk_widget_add_events (GTK_WIDGET (information_panel), GDK_POINTER_MOTION_MASK);
@@ -245,7 +244,9 @@ nautilus_information_panel_init (GtkObject *object)
 	make_button_box (information_panel);
 
 	/* add a callback for when the theme changes */
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_information_panel_theme_changed, information_panel);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_SET, nautilus_information_panel_theme_changed, information_panel);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_COLOR, nautilus_information_panel_theme_changed, information_panel);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_FILENAME, nautilus_information_panel_theme_changed, information_panel);
 
 	/* add a callback for when the preference whether to confirm trashing/deleting file changes */
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH, nautilus_information_panel_confirm_trash_changed, information_panel);
@@ -254,7 +255,7 @@ nautilus_information_panel_init (GtkObject *object)
 	gtk_drag_dest_set (GTK_WIDGET (information_panel),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
 			   target_table, G_N_ELEMENTS (target_table),
-			   GDK_ACTION_COPY | GDK_ACTION_MOVE);
+			   GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_ASK);
 }
 
 static void
@@ -286,7 +287,13 @@ nautilus_information_panel_finalize (GObject *object)
 	g_free (information_panel->details->current_background_image);
 	g_free (information_panel->details);
 		
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_SET,
+					 nautilus_information_panel_theme_changed,
+					 information_panel);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_COLOR,
+					 nautilus_information_panel_theme_changed,
+					 information_panel);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_FILENAME,
 					 nautilus_information_panel_theme_changed,
 					 information_panel);
 
@@ -310,16 +317,29 @@ reset_background_callback (GtkWidget *menu_item, GtkWidget *information_panel)
 	}
 }
 
+static gboolean
+information_panel_has_background (NautilusInformationPanel *information_panel)
+{
+	EelBackground *background;
+	gboolean has_background;
+	char *color;
+	char *image;
+
+	background = eel_get_widget_background (GTK_WIDGET(information_panel));
+
+	color = eel_background_get_color (background);
+	image = eel_background_get_image_uri (background);
+	
+	has_background = (color || image);
+
+	return has_background;
+}
+
 /* create the context menu */
 static GtkWidget *
 nautilus_information_panel_create_context_menu (NautilusInformationPanel *information_panel)
 {
 	GtkWidget *menu, *menu_item;
-	EelBackground *background;
-	gboolean has_background;
-
-	background = eel_get_widget_background (GTK_WIDGET(information_panel));
-	has_background = background && !information_panel->details->is_default_background;
 
 	menu = gtk_menu_new ();
 	gtk_menu_set_screen (GTK_MENU (menu),
@@ -329,7 +349,7 @@ nautilus_information_panel_create_context_menu (NautilusInformationPanel *inform
 	menu_item = gtk_menu_item_new_with_mnemonic (_("Use _Default Background"));
  	gtk_widget_show (menu_item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-        gtk_widget_set_sensitive (menu_item, has_background);
+        gtk_widget_set_sensitive (menu_item, information_panel_has_background (information_panel));
 	g_signal_connect_object (menu_item, "activate",
 				 G_CALLBACK (reset_background_callback), information_panel, 0);
 
@@ -343,34 +363,21 @@ nautilus_information_panel_new (void)
 	return NAUTILUS_INFORMATION_PANEL (gtk_widget_new (nautilus_information_panel_get_type (), NULL));
 }
 
-/* utility routine to handle mapping local file names to a uri */
-static char*
-map_local_data_file (char *file_name)
-{
-	char *temp_str;
-	if (file_name && !eel_istr_has_prefix (file_name, "file://")) {
-
-		if (eel_str_has_prefix (file_name, "./")) {
-			temp_str = nautilus_theme_get_image_path (file_name + 2);
-		} else {
-			temp_str = g_strdup_printf ("%s/%s", NAUTILUS_DATADIR, file_name);
-		}
-		
-		g_free (file_name);
-		file_name = gnome_vfs_get_uri_from_local_path (temp_str);
-		g_free (temp_str);
-	}
-	return file_name;
-}
-
-/* read the theme file and set up the default backgrounds and images accordingly */
+/* set up the default backgrounds and images */
 static void
-nautilus_information_panel_read_theme (NautilusInformationPanel *information_panel)
+nautilus_information_panel_read_defaults (NautilusInformationPanel *information_panel)
 {
+	gboolean background_set;
 	char *background_color, *background_image;
 	
-	background_color = nautilus_theme_get_theme_data ("sidebar", NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR);
-	background_image = nautilus_theme_get_theme_data ("sidebar", NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE);
+	background_set = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_SET);
+	
+	background_color = NULL;
+	background_image = NULL;
+	if (background_set) {
+		background_color = eel_preferences_get (NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_COLOR);
+		background_image = eel_preferences_get (NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_FILENAME);
+	}	
 	
 	g_free (information_panel->details->default_background_color);
 	information_panel->details->default_background_color = NULL;
@@ -383,7 +390,6 @@ nautilus_information_panel_read_theme (NautilusInformationPanel *information_pan
 			
 	/* set up the default background image */
 	
-	background_image = map_local_data_file (background_image);
 	if (background_image && strlen (background_image)) {
 		information_panel->details->default_background_image = g_strdup (background_image);
 	}
@@ -400,7 +406,7 @@ nautilus_information_panel_theme_changed (gpointer user_data)
 	NautilusInformationPanel *information_panel;
 	
 	information_panel = NAUTILUS_INFORMATION_PANEL (user_data);
-	nautilus_information_panel_read_theme (information_panel);
+	nautilus_information_panel_read_defaults (information_panel);
 	nautilus_information_panel_update_appearance (information_panel);
 	gtk_widget_queue_draw (GTK_WIDGET (information_panel)) ;	
 }
@@ -457,6 +463,7 @@ uri_is_local_image (const char *uri)
 
 static void
 receive_dropped_uri_list (NautilusInformationPanel *information_panel,
+			  GdkDragAction action,
 			  int x, int y,
 			  GtkSelectionData *selection_data)
 {
@@ -475,9 +482,16 @@ receive_dropped_uri_list (NautilusInformationPanel *information_panel,
 		 * Other views handle background images differently from other URIs.
 		 */
 		if (exactly_one && uri_is_local_image (uris[0])) {
-			eel_background_receive_dropped_background_image
-				(eel_get_widget_background (GTK_WIDGET (information_panel)),
-				 uris[0]);
+			if (action == GDK_ACTION_ASK) {
+				action = nautilus_drag_drop_background_ask (NAUTILUS_DND_ACTION_SET_AS_BACKGROUND | NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND);
+			}	
+
+			if (action > 0) {
+				eel_background_receive_dropped_background_image
+					(eel_get_widget_background (GTK_WIDGET (information_panel)),
+					 action,
+					 uris[0]);
+			}
 		} else if (exactly_one) {
 			g_signal_emit (information_panel,
 					 signals[LOCATION_CHANGED], 0,
@@ -531,6 +545,7 @@ receive_dropped_uri_list (NautilusInformationPanel *information_panel,
 
 static void
 receive_dropped_color (NautilusInformationPanel *information_panel,
+		       GdkDragAction action,
 		       int x, int y,
 		       GtkSelectionData *selection_data)
 {
@@ -551,10 +566,18 @@ receive_dropped_color (NautilusInformationPanel *information_panel,
 		break;
 	case ICON_PART:
 	case BACKGROUND_PART:
-		/* Let the background change based on the dropped color. */
-		eel_background_receive_dropped_color
-			(eel_get_widget_background (GTK_WIDGET (information_panel)),
-			 GTK_WIDGET (information_panel), x, y, selection_data);
+		if (action == GDK_ACTION_ASK) {
+			action = nautilus_drag_drop_background_ask (NAUTILUS_DND_ACTION_SET_AS_BACKGROUND | NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND);
+		}	
+
+		if (action > 0) {
+			/* Let the background change based on the dropped color. */
+			eel_background_receive_dropped_color
+				(eel_get_widget_background (GTK_WIDGET (information_panel)),
+				 GTK_WIDGET (information_panel), 
+				 action, x, y, selection_data);
+		}
+		
 		break;
 	}
 	g_free(color_spec);
@@ -589,14 +612,14 @@ nautilus_information_panel_drag_data_received (GtkWidget *widget, GdkDragContext
 	switch (info) {
 	case TARGET_GNOME_URI_LIST:
 	case TARGET_URI_LIST:
-		receive_dropped_uri_list (information_panel, x, y, selection_data);
+		receive_dropped_uri_list (information_panel, context->action, x, y, selection_data);
 		break;
 	case TARGET_COLOR:
-		receive_dropped_color (information_panel, x, y, selection_data);
+		receive_dropped_color (information_panel, context->action, x, y, selection_data);
 		break;
 	case TARGET_BGIMAGE:
 		if (hit_test (information_panel, x, y) == BACKGROUND_PART)
-			receive_dropped_uri_list (information_panel, x, y, selection_data);
+			receive_dropped_uri_list (information_panel, context->action, x, y, selection_data);
 		break;	
 	case TARGET_BACKGROUND_RESET:
 		background = eel_get_widget_background ( GTK_WIDGET (information_panel));
@@ -651,7 +674,7 @@ value_different (const char *a, const char *b)
 /* Handle the background changed signal by writing out the settings to metadata.
  */
 static void
-background_settings_changed_callback (EelBackground *background, NautilusInformationPanel *information_panel)
+background_settings_changed_callback (EelBackground *background, GdkDragAction action, NautilusInformationPanel *information_panel)
 {
 	char *image;
 	char *color;
@@ -671,16 +694,35 @@ background_settings_changed_callback (EelBackground *background, NautilusInforma
 
 	color = eel_background_get_color (background);
 	image = eel_background_get_image_uri (background);
-	
-	nautilus_file_set_metadata (information_panel->details->file,
-				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
-				    NULL,
-				    color);
 
-	nautilus_file_set_metadata (information_panel->details->file,
-				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
-				    NULL,
-				    image);
+	if (action != NAUTILUS_DND_ACTION_SET_AS_BACKGROUND) {
+		nautilus_file_set_metadata (information_panel->details->file,
+					    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
+					    NULL,
+					    NULL);
+
+		nautilus_file_set_metadata (information_panel->details->file,
+					    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
+					    NULL,
+					    NULL);
+		
+		eel_preferences_set
+			(NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_COLOR, color ? color : "");
+		eel_preferences_set
+			(NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_FILENAME, image ? image : "");
+		eel_preferences_set_boolean
+			(NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_SET, TRUE);
+	} else {
+		nautilus_file_set_metadata (information_panel->details->file,
+					    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
+					    NULL,
+					    color);
+		
+		nautilus_file_set_metadata (information_panel->details->file,
+					    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
+					    NULL,
+					    image);
+	}
 
 	if (value_different (information_panel->details->current_background_color, color)) {
 		g_free (information_panel->details->current_background_color);
@@ -691,8 +733,6 @@ background_settings_changed_callback (EelBackground *background, NautilusInforma
 		g_free (information_panel->details->current_background_image);
 		information_panel->details->current_background_image = g_strdup (image);
 	}
-
-	information_panel->details->is_default_background = FALSE;
 
 	g_free (color);
 	g_free (image);
@@ -707,6 +747,8 @@ background_settings_changed_callback (EelBackground *background, NautilusInforma
 static void
 background_reset_callback (EelBackground *background, NautilusInformationPanel *information_panel)
 {
+	char *color;
+	char *image;
 	g_assert (EEL_IS_BACKGROUND (background));
 	g_assert (NAUTILUS_IS_INFORMATION_PANEL (information_panel));
 
@@ -720,15 +762,26 @@ background_reset_callback (EelBackground *background, NautilusInformationPanel *
 					 G_CALLBACK (background_metadata_changed_callback),
 					 information_panel);
 
-	nautilus_file_set_metadata (information_panel->details->file,
+	color = nautilus_file_get_metadata (information_panel->details->file,
 				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
-				    NULL,
 				    NULL);
 
-	nautilus_file_set_metadata (information_panel->details->file,
+	image = nautilus_file_get_metadata (information_panel->details->file,
 				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
-				    NULL,
 				    NULL);
+	if (color || image) {
+		nautilus_file_set_metadata (information_panel->details->file,
+					    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
+					    NULL,
+					    NULL);
+		
+		nautilus_file_set_metadata (information_panel->details->file,
+					    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
+					    NULL,
+					    NULL);
+	} else {
+		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_SIDE_PANE_BACKGROUND_SET, FALSE);
+	}
 
 	g_signal_handlers_unblock_by_func (information_panel->details->file,
 					   G_CALLBACK (background_metadata_changed_callback),
@@ -1021,9 +1074,6 @@ nautilus_information_panel_update_appearance (NautilusInformationPanel *informat
 	if (background_color == NULL && background_image == NULL) {
 		background_color = g_strdup (information_panel->details->default_background_color);
 		background_image = g_strdup (information_panel->details->default_background_image);
-		information_panel->details->is_default_background = TRUE;
-	} else {
-		information_panel->details->is_default_background = FALSE;
 	}
 		
 	/* Block so we don't write these settings out in response to our set calls below */
@@ -1044,7 +1094,7 @@ nautilus_information_panel_update_appearance (NautilusInformationPanel *informat
 
 		nautilus_sidebar_title_select_text_color
 			(information_panel->details->title, background,
-			 information_panel->details->is_default_background);
+			 !information_panel_has_background (information_panel));
 	}
 
 	g_free (background_color);

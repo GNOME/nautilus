@@ -520,13 +520,56 @@ nautilus_icon_container_selection_items_local (NautilusIconContainer *container,
 	return result;
 }
 
+static GdkDragAction 
+get_background_drag_action (NautilusIconContainer *container, 
+			    GdkDragAction action)
+{
+	/* FIXME: This function is very FMDirectoryView specific, and
+	 * should be moved out of nautilus-icon-dnd.c */
+	GdkDragAction valid_actions;
+
+	if (action == GDK_ACTION_ASK) {
+		valid_actions = NAUTILUS_DND_ACTION_SET_AS_BACKGROUND;
+		if (g_object_get_data (G_OBJECT (eel_get_widget_background (GTK_WIDGET (container))), "is_desktop") == 0) {
+			valid_actions |= NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND;
+		}
+
+		action = nautilus_drag_drop_background_ask (valid_actions);
+	}
+
+	return action;
+}
+
+static void
+receive_dropped_color (NautilusIconContainer *container,
+		       int x, int y,
+		       GdkDragAction action,
+		       GtkSelectionData *data)
+{
+	action = get_background_drag_action (container, action);
+	
+	if (action > 0) {
+		eel_background_receive_dropped_color
+			(eel_get_widget_background (GTK_WIDGET (container)),
+			 GTK_WIDGET (container), 
+			 action, x, y, data);
+	}
+}
+
 /* handle dropped tile images */
 static void
-receive_dropped_tile_image (NautilusIconContainer *container, GtkSelectionData *data)
+receive_dropped_tile_image (NautilusIconContainer *container, GdkDragAction action, GtkSelectionData *data)
 {
 	g_assert (data != NULL);
-	eel_background_receive_dropped_background_image
-		(eel_get_widget_background (GTK_WIDGET (container)), data->data);
+
+	action = get_background_drag_action (container, action);
+
+	if (action > 0) {
+		eel_background_receive_dropped_background_image
+			(eel_get_widget_background (GTK_WIDGET (container)), 
+			 action, 
+			 data->data);
+	}
 }
 
 /* handle dropped keywords */
@@ -915,6 +958,7 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 		selected_item = container->details->dnd_info->drag_info.selection_list->data;
 		eel_background_receive_dropped_background_image
 			(eel_get_widget_background (GTK_WIDGET (container)),
+			 context->action,
 			 selected_item->uri);
 		return;
 	}
@@ -1357,7 +1401,6 @@ drag_data_received_callback (GtkWidget *widget,
 		break;
 	}
 
-
 	/* this is the second use case of this callback.
 	 * we have to do the actual work for the drop.
 	 */
@@ -1371,14 +1414,16 @@ drag_data_received_callback (GtkWidget *widget,
 				 context, x, y);
 			break;
 		case NAUTILUS_ICON_DND_COLOR:
-			eel_background_receive_dropped_color
-				(eel_get_widget_background (widget),
-				 widget, x, y, data);
+			receive_dropped_color (NAUTILUS_ICON_CONTAINER (widget),
+					       x, y,
+					       context->action,
+					       data);
 			success = TRUE;
 			break;
 		case NAUTILUS_ICON_DND_BGIMAGE:
 			receive_dropped_tile_image
 				(NAUTILUS_ICON_CONTAINER (widget),
+				 context->action,
 				 data);
 			break;
 		case NAUTILUS_ICON_DND_KEYWORD:

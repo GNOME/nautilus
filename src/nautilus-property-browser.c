@@ -1475,6 +1475,7 @@ element_clicked_callback (GtkWidget *image_table,
 	int x_delta, y_delta;
 	const char *element_name;
 	int scroll_offset_x, scroll_offset_y;
+	GdkDragAction action;
 
 	g_return_if_fail (EEL_IS_IMAGE_TABLE (image_table));
 	g_return_if_fail (EEL_IS_LABELED_IMAGE (child));
@@ -1504,10 +1505,11 @@ element_clicked_callback (GtkWidget *image_table,
 	
 	target_list = gtk_target_list_new (drag_types, G_N_ELEMENTS (drag_types));
 	nautilus_property_browser_set_dragged_file(property_browser, element_name);
+	action = event->button == 3 ? GDK_ACTION_ASK : GDK_ACTION_MOVE | GDK_ACTION_COPY;
 	
 	context = gtk_drag_begin (GTK_WIDGET (property_browser),
 				  target_list,
-				  GDK_ACTION_MOVE | GDK_ACTION_COPY,
+				  GDK_ACTION_ASK | GDK_ACTION_MOVE | GDK_ACTION_COPY,
 				  event->button,
 				  event->event);
 	gtk_target_list_unref (target_list);
