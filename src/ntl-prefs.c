@@ -270,7 +270,7 @@ meta_prefs_pull(gpointer data)
   for(cur = mpi->entry_list; cur; cur = cur->next)
     {
       MetaViewInfo *mvi = cur->data;
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mvi->cb_enabled), TRUE);
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mvi->cb_enabled), FALSE);
     }
   for(cur = nautilus_prefs.global_meta_views; cur; cur = cur->next)
     {
