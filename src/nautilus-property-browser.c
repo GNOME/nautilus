@@ -969,7 +969,7 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 		
 	g_free(directory_path);
 	
-	/* FIXME: Should use a quoting function that handles strings
+	/* FIXME bugzilla.eazel.com 2539: Should use a quoting function that handles strings
          * with "'" in them.
 	 */
 	command_str = g_strdup_printf ("cp '%s' '%s'", path_name, destination_name);

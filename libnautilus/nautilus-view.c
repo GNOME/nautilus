@@ -303,7 +303,7 @@ view_frame_call_begin (NautilusView *view, CORBA_Environment *ev)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), CORBA_OBJECT_NIL);
 	
-	/* FIXME: Do we have to handle failure in this query? */
+	/* FIXME bugzilla.eazel.com 2545: Do we have to handle failure in this query? */
 	CORBA_exception_init (ev);
 	return Bonobo_Unknown_query_interface 
 		(bonobo_control_get_control_frame (nautilus_view_get_bonobo_control (view)),

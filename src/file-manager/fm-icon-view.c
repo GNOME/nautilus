@@ -1198,16 +1198,17 @@ fm_icon_view_start_renaming_item  (FMDirectoryView *view, const char *uri)
 		(get_icon_container (FM_ICON_VIEW (view)));
 }
 
-/** 
- * FIXME: this whole function is a workaround for a Bonobo bug in
- * which asking for the position of the last item returns -1.
- */
 static int
 get_next_position (BonoboUIHandler *ui_handler, const char *path)
 {
 	int position;
 
 	position = bonobo_ui_handler_menu_get_pos (ui_handler, path);
+	/** 
+	 * FIXME bugzilla.eazel.com 2527: this is a workaround for a Bonobo bug in
+	 * which asking for the position of the last item returns -1.
+	 * This code can be removed when the bug is fixed in Bonobo.
+	 */
 	if (position < 0) {
 		return position;
 	}
@@ -1425,7 +1426,7 @@ play_file (NautilusFile *file)
 	if (mp3_pid == (pid_t) 0) {
 		file_uri = nautilus_file_get_uri (file);
 		file_path = gnome_vfs_get_local_path_from_uri (file_uri);
-		/* FIXME: This can return NULL for non-local files. */
+		/* FIXME bugzilla.eazel.com 2529: This can return NULL for non-local files. */
 
 		mime_type = nautilus_file_get_mime_type (file);
 
@@ -1449,7 +1450,7 @@ play_file (NautilusFile *file)
 	return 0;
 }
 
-/* FIXME: Hardcoding this here sucks. We should be using components
+/* FIXME bugzilla.eazel.com 2530: Hardcoding this here sucks. We should be using components
  * for open ended things like this.
  */
 
@@ -1767,7 +1768,7 @@ get_icon_text_callback (NautilusIconContainer *container,
 	/* Handle link files specially. */
 	actual_uri = nautilus_file_get_uri (file);
 	if (nautilus_file_is_nautilus_link (file)) {
-		/* FIXME: Does sync. I/O. */
+		/* FIXME bugzilla.eazel.com 2531: Does sync. I/O. */
 		*additional_text = nautilus_link_get_additional_text (actual_uri);
 		g_free (actual_uri);
 		return;

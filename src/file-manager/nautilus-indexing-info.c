@@ -122,7 +122,7 @@ nautilus_indexing_info_show_dialog (void)
 	char *time_str;
 	char *label_str;
 
-        /* FIXME:  is it ok to show the index dialog if
+        /* FIXME bugzilla.eazel.com 2534:  is it ok to show the index dialog if
            we can't use the index right now?
            This assumes not */
 	if (medusa_indexed_search_is_available () != GNOME_VFS_OK) {

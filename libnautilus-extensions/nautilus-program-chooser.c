@@ -102,7 +102,7 @@ program_file_pair_compute_status (ProgramFilePair *pair)
 {
 	ProgramFileStatus new_status;
 
-	/* FIXME: Need to check whether it's the default or in short list for the supertype */
+	/* FIXME bugzilla.eazel.com 1459: Need to check whether it's the default or in short list for the supertype */
 	if (program_file_pair_is_default_for_file_type (pair)) {
 		new_status = PROGRAM_DEFAULT_FOR_TYPE;
 	} else if (program_file_pair_is_default_for_file (pair)) {
@@ -194,7 +194,7 @@ program_file_pair_get_program_name_for_display (ProgramFilePair *pair)
 static char *
 get_supertype_from_file (NautilusFile *file)
 {
-	/* FIXME: Needs implementation */
+	/* FIXME bugzilla.eazel.com 1459: Needs implementation */
 	return nautilus_file_get_string_attribute (file, "type");
 }
 

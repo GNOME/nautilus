@@ -27,8 +27,8 @@
 #include <config.h>
 #include "nautilus-application.h"
 
-/* FIXME: This is a workaround for ORBit bug where including idl files
- * in other idl files causes trouble.
+/* FIXME bugzilla.eazel.com 2535: This is a workaround for ORBit bug where including idl files
+ * in other idl files causes trouble. We should remove this workaround when the bug is fixed.
  */
 #include "nautilus-shell-interface.h"
 #define nautilus_view_component_H
@@ -350,7 +350,7 @@ nautilus_application_startup (NautilusApplication *application,
 			message = _("Nautilus can't be used now. "
 				    "Rebooting the computer or installing "
 				    "Nautilus again may fix the problem.");
-			/* FIXME: The guesses and stuff here are lame. */
+			/* FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame. */
 			detailed_message = _("Nautilus can't be used now. "
 					     "Rebooting the computer or installing "
 					     "Nautilus again may fix the problem.\n\n"
@@ -371,7 +371,7 @@ nautilus_application_startup (NautilusApplication *application,
 			 * version of OAF). Show dialog and terminate the
 			 * program.
 			 */
-			/* FIXME: Looks like this does happen with the
+			/* FIXME bugzilla.eazel.com 2537: Looks like this does happen with the
 			 * current OAF. I guess I read the code
 			 * wrong. Need to figure out when and make a
 			 * good message.
@@ -393,7 +393,7 @@ nautilus_application_startup (NautilusApplication *application,
 			 * we better stop looping.
 			 */
 			if (result == OAF_REG_SUCCESS) {
-				/* FIXME: When can this happen? */
+				/* FIXME bugzilla.eazel.com 2538: When can this happen? */
 				message = _("Nautilus can't be used now, due to an unexpected error.");
 				detailed_message = _("Nautilus can't be used now, due to an unexpected error "
 						     "from OAF when attempting to locate the factory.");

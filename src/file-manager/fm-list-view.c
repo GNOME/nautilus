@@ -240,7 +240,8 @@ fm_list_view_initialize (gpointer object, gpointer klass)
 	 * to create_list) until later, when the function pointers
 	 * have been initialized by the subclass.
 	 */
-	/* FIXME: This code currently relies on there being a call to
+	/* FIXME bugzilla.eazel.com 2533: 
+	 * This code currently relies on there being a call to
 	 * get_list before the widget is shown to the user. It would
 	 * be better to do something explicit, like connecting to
 	 * "realize" instead of just relying on the various get_list
@@ -703,7 +704,7 @@ create_list (FMListView *list_view)
 	for (i = 0; i < number_of_columns; ++i) {
 		get_column_specification (list_view, i, &column);
 
-		/* FIXME: Make a cover to do this trick. */
+		/* FIXME bugzilla.eazel.com 2532: Make a cover to do this trick. */
 		gtk_clist_set_column_max_width (clist, i, column.maximum_width);
 		gtk_clist_set_column_min_width (clist, i, column.minimum_width);
 		/* work around broken GtkCList that pins the max_width to be no less than
@@ -1248,7 +1249,7 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 	/* This little dance is necessary due to bugs in GtkCList.
 	 * Must set min, then max, then min, then actual width.
 	 */
-	/* FIXME: Make a cover to do this trick. */
+	/* FIXME bugzilla.eazel.com 2532: Make a cover to do this trick. */
 	gtk_clist_set_column_min_width (clist,
 					LIST_VIEW_COLUMN_ICON,
 					new_width);
@@ -1520,7 +1521,7 @@ fm_list_view_font_family_changed (FMDirectoryView *view)
 {
 	GdkFont *font;
 
-	/* FIXME: need to use the right font size for a given zoom level here */
+	/* FIXME bugzilla.eazel.com 143: need to use the right font size for a given zoom level here */
 	font = nautilus_font_factory_get_font_from_preferences (10);
 	g_assert (font != NULL);
 	nautilus_gtk_widget_set_font (GTK_WIDGET (get_list (FM_LIST_VIEW (view))), font);

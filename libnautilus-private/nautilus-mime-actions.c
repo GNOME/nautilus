@@ -1169,7 +1169,7 @@ make_oaf_query_with_known_mime_type (const char *mime_type, const char *uri_sche
 
 		 /* One of two possibilties */
 
-		 /* FIXME: this comment is not very clear. */
+		 /* FIXME bugzilla.eazel.com 2542: this comment is not very clear. */
 		 /* 1 The mime type and URI scheme match the supported
                     attributes. */
 
@@ -1261,7 +1261,7 @@ make_oaf_query_with_uri_scheme_only (const char *uri_scheme, GList *explicit_iid
                    */
                   "AND (NOT bonobo:supported_mime_types.defined ()))"
 
-		  /* FIXME: improve the comment explaining this. */
+		  /* FIXME bugzilla.eazel.com 2542: improve the comment explaining this. */
 		  
 		  /* This attribute allows uri schemes to be supported
 		     even for unsupported mime types or no mime type. */

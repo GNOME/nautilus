@@ -628,7 +628,7 @@ nautilus_scalable_font_measure_text (const NautilusScalableFont	*font,
 
 	art_affine_identity (affine);
 
-	/* FIXME: We need to change rsvg_ft_render_string() to accept 
+	/* FIXME bugzilla.eazel.com 2544: We need to change rsvg_ft_render_string() to accept 
 	 * a 'do_render' flag so that we can use to to compute metrics
 	 * without actually having to render
 	 */

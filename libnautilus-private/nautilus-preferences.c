@@ -773,7 +773,7 @@ nautilus_preferences_set_string_list (const char	*name,
 	key = nautilus_user_level_manager_make_current_gconf_key (name);
 	g_assert (key != NULL);
 
-	/* FIXME: Make sure the preference value is indeed different
+	/* FIXME bugzilla.eazel.com 2543: Make sure the preference value is indeed different
            before setting, like the other functions */
 
 	gconf_client_set_list (GLOBAL.gconf_client, key,

@@ -2008,7 +2008,7 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 					g_list_free (second_matches);
 				} else {
 					g_message ("D: must lookup %s", require_name[j]);
-					/* FIXME bugzilla.eazel.com 1539:
+					/* FIXME bugzilla.eazel.com 1541:
 					   lookup package "p" that provides requires[j],
 					   if packages that that require "p" are not in "packages"
 					   don't add it, otherwise add to requires */

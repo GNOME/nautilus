@@ -1,3 +1,38 @@
+2000-08-29  John Sullivan  <sullivan@eazel.com>
+
+	Added more bug numbers to FIXMEs. 49 to go.
+
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_uninstall_downward_traverse):
+	* libnautilus-extensions/nautilus-merged-directory.c:
+	(nautilus_merged_directory_add_real_directory):
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(make_oaf_query_with_known_mime_type),
+	(make_oaf_query_with_uri_scheme_only):
+	* libnautilus-extensions/nautilus-preferences.c:
+	(nautilus_preferences_set_string_list):
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(program_file_pair_compute_status), (get_supertype_from_file):
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_measure_text):
+	* libnautilus/nautilus-view.c: (view_frame_call_begin):
+	* nautilus-installer/src/support.c: (create_pixmap),
+	(create_image):
+	* src/file-manager/fm-desktop-icon-view.c: (create_mount_link),
+	(volume_unmounted_callback), (place_home_directory):
+	* src/file-manager/fm-icon-view.c: (get_next_position),
+	(play_file), (get_icon_text_callback):
+	* src/file-manager/fm-list-view.c: (fm_list_view_initialize),
+	(create_list), (fm_list_view_set_zoom_level),
+	(fm_list_view_font_family_changed):
+	* src/file-manager/nautilus-indexing-info.c:
+	(nautilus_indexing_info_show_dialog):
+	* src/nautilus-application.c: (nautilus_application_startup):
+	* src/nautilus-first-time-druid.c:
+	(next_proxy_configuration_page_callback), (initiate_file_download):
+	* src/nautilus-property-browser.c: (add_background_to_browser):
+	* src/nautilus-shell.c:
+
 2000-08-29  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-first-time-druid.c: (proxy_selection_changed),

@@ -91,7 +91,7 @@ create_pixmap                          (GtkWidget       *widget,
   GdkBitmap *mask;
   gchar *pathname;
 
-  /* FIXME: If we try to use this to get "nautilus/" pixmaps it
+  /* FIXME bugzilla.eazel.com 2546: If we try to use this to get "nautilus/" pixmaps it
    * won't work unless our prefix matches the one from gnome-libs.
    */
   pathname = gnome_pixmap_file (filename);
@@ -132,7 +132,7 @@ create_image                           (const gchar     *filename)
   GdkImlibImage *image;
   gchar *pathname;
 
-  /* FIXME: If we try to use this to get "nautilus/" pixmaps it
+  /* FIXME bugzilla.eazel.com 2546: If we try to use this to get "nautilus/" pixmaps it
    * won't work unless our prefix matches the one from gnome-libs.
    */
   pathname = gnome_pixmap_file (filename);

@@ -485,13 +485,13 @@ nautilus_merged_directory_add_real_directory (NautilusMergedDirectory *merged,
 			    "files_changed",
 			    forward_files_changed_cover,
 			    merged);
-	/* FIXME: Hook up the done_loading signal too? */
+	/* FIXME bugzilla.eazel.com 2540: Hook up the done_loading signal too? */
 
 	/* Add the directory to any extant monitors. */
 	g_hash_table_foreach (merged->details->monitors,
 			      monitor_add_directory,
 			      real_directory);
-	/* FIXME: Do we need to add the directory to callbacks too? */
+	/* FIXME bugzilla.eazel.com 2541: Do we need to add the directory to callbacks too? */
 }
 
 static void

@@ -611,7 +611,7 @@ static gboolean
 next_proxy_configuration_page_callback (GtkWidget *button, NautilusDruid *druid)
 {
 	
-	/* FIXME: here's where we configuration the proxy server information - Mike Fleming will do that soon */
+	/* FIXME bugzilla.eazel.com 1812: here's where we configuration the proxy server information - Mike Fleming will do that soon */
 	/* including unconfiguring the proxy server if last_proxy_choice == 0 */
 	
 	g_message ("proxy server name is %s, port is %s", gtk_entry_get_text (GTK_ENTRY(proxy_address_entry)), gtk_entry_get_text (GTK_ENTRY(port_number_entry))); 
@@ -859,7 +859,7 @@ initiate_file_download (NautilusDruid *druid)
 {
 	NautilusReadFileHandle *file_handle;
 
-	/* FIXME: for testing; this needs to move to the real service */
+	/* FIXME bugzilla.eazel.com 1826: for testing; this needs to move to the real service */
 	const char *file_uri = "http://linus.differnet.com/eazel-services/updates.tgz";
 
 	/* disable the next and previous buttons during the  file loading process */

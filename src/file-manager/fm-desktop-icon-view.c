@@ -236,7 +236,7 @@ create_mount_link (const NautilusVolume *volume)
 	/* Create link */
 	result = nautilus_link_create (desktop_path, volume->volume_name, icon_name, 
 				       target_uri, NAUTILUS_LINK_MOUNT);
-	/* FIXME: Ignoring the result here OK? */
+	/* FIXME bugzilla.eazel.com 2526: Ignoring the result here OK? */
 
 	g_free (desktop_path);
 	g_free (target_uri);
@@ -527,7 +527,7 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor,
 		
 		result = gnome_vfs_unlink (link_uri);
 		if (result != GNOME_VFS_OK) {
-			/* FIXME: Is a message to the console acceptable here? */
+			/* FIXME bugzilla.eazel.com 2526: OK to ignore error? */
 		}
 		g_free (link_uri);
 	}
@@ -627,7 +627,7 @@ place_home_directory (FMDesktopIconView *icon_view)
 					  home_dir_uri, NAUTILUS_LINK_HOME);
 	g_free (home_dir_uri);
 	if (!made_link) {
-		/* FIXME: Is a message to the console acceptable here? */
+		/* FIXME bugzilla.eazel.com 2526: Is a message to the console acceptable here? */
 		g_message ("Unable to create home link");
 	}
 		
