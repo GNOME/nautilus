@@ -1003,7 +1003,7 @@ find_volumes (NautilusVolumeMonitor *monitor)
 #if HAVE_SETMNTENT
 	mef = setmntent (_PATH_MNTTAB, "r");
 #else
-	mef = fopen ("/etc/mtab", "r");
+	mef = fopen ("/proc/mounts", "r");
 #endif
 
 	g_return_if_fail (mef != NULL);

@@ -1,3 +1,13 @@
+2000-12-11  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 2242, fstat /etc/mtab to check if needs
+	to reread (for speed)
+	
+	I now use a read of /proc/mounts. This is not only faster, but
+	it avoids a read to disk thus saving power for portable users.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c: (find_volumes):
+
 2000-12-11  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* README:
