@@ -60,6 +60,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-customization-data.c		\
 	nautilus-dateedit-extensions.c		\
 	nautilus-debug.c			\
+	nautilus-debug-drawing.c		\
 	nautilus-default-file-icon.c		\
 	nautilus-directory-async.c		\
 	nautilus-directory-background.c		\
@@ -151,6 +152,7 @@ noinst_HEADERS =				\
 	nautilus-customization-data.h		\
 	nautilus-dateedit-extensions.h 		\
 	nautilus-debug.h			\
+	nautilus-debug-drawing.h		\
 	nautilus-default-file-icon.h		\
 	nautilus-directory-background.h		\
 	nautilus-directory-metafile.h		\
