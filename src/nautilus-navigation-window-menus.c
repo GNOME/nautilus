@@ -50,6 +50,7 @@
 #include <eel/eel-xml-extensions.h>
 #include <libxml/parser.h>
 #include <gtk/gtkmain.h>
+#include <libgnome/gnome-help.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-about.h>
@@ -631,7 +632,29 @@ help_menu_nautilus_manual_callback (BonoboUIComponent *component,
 			              gpointer user_data, 
 			              const char *verb)
 {
-	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), USER_MANUAL_URI);
+	GError *error;
+	GtkWidget *dialog;
+
+	error = NULL;
+	gnome_help_display_desktop (NULL,
+				    "user-guide",
+				    "wgosnautilus.xml",
+				    "gosnautilus-1", &error);
+	if (error) {
+		dialog = gtk_message_dialog_new (NULL,
+						 GTK_DIALOG_MODAL,
+						 GTK_MESSAGE_ERROR,
+						 GTK_BUTTONS_CLOSE,
+						 _("There was an error displaying help: \n%s"),
+						 error->message);
+		g_signal_connect (G_OBJECT (dialog), "response",
+				  G_CALLBACK (gtk_widget_destroy),
+				  NULL);
+
+		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+		gtk_widget_show (dialog);
+		g_error_free (error);
+	}
 }
 
 static void
