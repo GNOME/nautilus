@@ -36,6 +36,7 @@
 #include "ntl-index-panel.h"
 #include "explorer-location-bar.h"
 #include <libnautilus/nautilus-gtk-extensions.h>
+#include <libnautilus/nautilus-string.h>
 #include <stdarg.h>
 
 static void nautilus_window_notify_selection_change(NautilusWindow *window,
@@ -891,41 +892,62 @@ static void
 nautilus_window_change_location_2(NautilusNavigationInfo *navi, gpointer data)
 {
   NautilusWindow *window = data;
-  char *errmsg;
+  char *requested_uri;
+  char *error_message;
 
-  /* Do various error checking here */
+  g_assert (navi != NULL);
 
   window->cancel_tag = NULL;
 
-  if(!navi)
+  if (navi->result_code == NAUTILUS_NAVIGATION_RESULT_OK)
     {
-     /* FIXME: Give uri explicitly in this message. Also reword to
-      * make it more understandable.
-      */
-      errmsg = _("The chosen file could not be retrieved.");
-      goto errout;
+      /* Navigation successful. Show the window to handle the
+       * new-window case. (Doesn't hurt if window is already showing.)
+       * Maybe this should go sometime later so the blank window isn't
+       * on screen so long.
+       */
+       gtk_widget_show (GTK_WIDGET (window));
+       nautilus_window_set_state_info (window, 
+       				       (NautilusWindowStateItem)NAVINFO_RECEIVED, 
+       				       navi, 
+       				       (NautilusWindowStateItem)0);
+       return;
     }
 
-  if(!navi->default_content_iid)
+  /* Some sort of failure occurred. How 'bout we tell the user? */
+  requested_uri = navi->navinfo.requested_uri;
+
+  switch (navi->result_code)
     {
-     /* FIXME: Give uri explicitly in this message. Also reword to
-      * make it more understandable. Is this any different to the user
-      * than the previous case?
-      */
-      errmsg = _("There is no known method of displaying the chosen file.");
-      goto errout;
+      case NAUTILUS_NAVIGATION_RESULT_NOT_FOUND:
+        error_message = g_strdup_printf (_("Couldn't find \"%s\".\nPlease check the spelling and try again."), requested_uri);
+        break;
+      case NAUTILUS_NAVIGATION_RESULT_INVALID_URI:
+        error_message = g_strdup_printf (_("\"%s\" is not a valid location.\nPlease check the spelling and try again."), requested_uri);
+        break;
+      case NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE:
+      	error_message = g_strdup_printf ("Couldn't display \"%s\",\nbecause Nautilus cannot handle items of this type.", requested_uri);
+        break;
+      case NAUTILUS_NAVIGATION_RESULT_UNSUPPORTED_SCHEME:
+      {
+        /* Can't create a vfs_uri and get the method from that, because 
+         * gnome_vfs_uri_new might return NULL.
+         */
+        char * scheme_string;
+
+        scheme_string = nautilus_strdup_prefix (requested_uri, ":");
+        g_assert (scheme_string != NULL);  /* Shouldn't have gotten this error unless there's a : separator. */
+      	error_message = g_strdup_printf ("Couldn't display \"%s\",\nbecause Nautilus cannot handle %s: locations.", requested_uri, scheme_string);
+	g_free (scheme_string);
+        break;
+      }
+      default:
+        /* It is so sad that we can't say anything more useful than this.
+         * When this comes up, we should figure out what's really happening
+         * and add another specific case.
+         */
+      	error_message = g_strdup_printf ("Nautilus cannot display \"%s\".", requested_uri);
     }
-
-  /* Show the window to handle the new-window case. 
-   * Doesn't hurt if window already showing. Maybe this should
-   * go sometime later so the gray window isn't on screen so long.
-   */
-  gtk_widget_show (GTK_WIDGET (window));
-
-  nautilus_window_set_state_info(window, (NautilusWindowStateItem)NAVINFO_RECEIVED, navi, (NautilusWindowStateItem)0);
-  return;
-
- errout:
 
   if (navi != NULL)
     nautilus_navinfo_free(navi);
@@ -936,15 +958,17 @@ nautilus_window_change_location_2(NautilusNavigationInfo *navi, gpointer data)
        * happens when a new window cannot display its initial URI. 
        */
       gtk_object_destroy (GTK_OBJECT (window));
-      gtk_widget_show (gnome_error_dialog (errmsg));
+      gtk_widget_show (gnome_error_dialog (error_message));
     }
   else
     {
       /* Clean up state of already-showing window */
       nautilus_window_allow_stop(window, FALSE);
       window->is_back = FALSE;
-      nautilus_window_progress_indicate(window, PROGRESS_ERROR, 0, errmsg);
+      nautilus_window_progress_indicate(window, PROGRESS_ERROR, 0, error_message);
     }
+
+    g_free (error_message);
 }
 
 void

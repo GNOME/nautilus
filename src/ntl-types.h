@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*- */
 
 /*
  *  Nautilus
@@ -39,22 +39,39 @@ typedef struct _NautilusViewIdentifier NautilusViewIdentifier;
 typedef void (*NautilusNavigationInfoFunc)(NautilusNavigationInfo *navinfo, gpointer data);
 
 struct _NautilusViewIdentifier {
-  char *iid;	/* magic key */
-  char *name;	/* human-readable name */
+	char *iid;	/* magic key */
+	char *name;	/* human-readable name */
 };
 
+/* These are the different ways that Nautilus can fail to
+ * display the contents of a given uri. NAUTILUS_NAVIGATION_RESULT_OK
+ * means the uri was displayed successfully. These are similar to
+ * GnomeVFSResults but there are nautilus-specific codes and many of
+ * the GnomeVFSResults are treated the same here.
+ */
+enum _NautilusNavigationResult {
+	NAUTILUS_NAVIGATION_RESULT_OK,
+	NAUTILUS_NAVIGATION_RESULT_UNSPECIFIC_ERROR,
+	NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE,
+	NAUTILUS_NAVIGATION_RESULT_NOT_FOUND,
+	NAUTILUS_NAVIGATION_RESULT_UNSUPPORTED_SCHEME,
+	NAUTILUS_NAVIGATION_RESULT_INVALID_URI
+};
+typedef enum _NautilusNavigationResult NautilusNavigationResult;
+
 struct _NautilusNavigationInfo {
-  Nautilus_NavigationInfo navinfo;
+	Nautilus_NavigationInfo navinfo;
 
-  const char *default_content_iid;
-  GSList *content_identifiers;	/* list of NautilusViewIdentifiers */
-  GSList *meta_iids;	/* list of iid strings */
+	const char *default_content_iid;
+	GSList *content_identifiers;	/* list of NautilusViewIdentifiers */
+	GSList *meta_iids;	/* list of iid strings */
+	NautilusNavigationResult result_code;
 
-  /* internal usage */
-  NautilusNavigationInfoFunc notify_ready;
-  gpointer data;
+	/* internal usage */
+	NautilusNavigationInfoFunc notify_ready;
+	gpointer data;
   
-  GnomeVFSAsyncHandle *ah;
+	GnomeVFSAsyncHandle *ah;
 };
 
 #endif

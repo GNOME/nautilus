@@ -68,6 +68,33 @@ nautilus_navinfo_append_globals(gpointer value, gpointer data)
   *target = g_slist_prepend(*target, g_strdup(value));
 }
 
+static NautilusNavigationResult
+get_nautilus_navigation_result_from_gnome_vfs_result (GnomeVFSResult gnome_vfs_result)
+{
+  switch (gnome_vfs_result)
+    {
+      case GNOME_VFS_OK:
+        return NAUTILUS_NAVIGATION_RESULT_OK;
+      case GNOME_VFS_ERROR_NOTFOUND:
+      case GNOME_VFS_ERROR_HOSTNOTFOUND:
+        return NAUTILUS_NAVIGATION_RESULT_NOT_FOUND;
+      case GNOME_VFS_ERROR_INVALIDURI:
+        return NAUTILUS_NAVIGATION_RESULT_INVALID_URI;
+      case GNOME_VFS_ERROR_NOTSUPPORTED:
+        return NAUTILUS_NAVIGATION_RESULT_UNSUPPORTED_SCHEME;
+      default:
+        /* Whenever this message fires, we should consider adding a specific case
+         * to make the error as comprehensible as possible to the user. Please
+         * bug me (sullivan@eazel.com) if you see this fire and don't have the
+         * inclination to immediately make a good message yourself (tell me
+         * what GnomeVFSResult code the message reported, and what caused it to
+         * fire).
+         */
+        g_message ("in ntl-uri-map.c, got unhandled GnomeVFSResult %d.", gnome_vfs_result);
+        return NAUTILUS_NAVIGATION_RESULT_UNSPECIFIC_ERROR;
+      }
+}
+
 static void
 my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
                      GnomeVFSFileInfo *vfs_fileinfo,
@@ -81,7 +108,11 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
 
   if(result != GNOME_VFS_OK)
     {
-      nautilus_navinfo_free(navinfo); navinfo = NULL;
+      /* Map GnomeVFSResult to one of the types that Nautilus knows how to handle.
+       * Leave navinfo intact so notify_ready function can access the uri.
+       * (notify_ready function is responsible for freeing navinfo).
+       */
+      navinfo->result_code = get_nautilus_navigation_result_from_gnome_vfs_result (result);
       goto out;
     }
 
@@ -150,8 +181,8 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
     }
   else
     {
-      /* Error - couldn't handle */
-      nautilus_navinfo_free(navinfo); navinfo = NULL;
+      /* Can't display file; nothing registered to handle this file type. */
+      navinfo->result_code = NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE;
       goto out;
     }
 
@@ -194,14 +225,17 @@ nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
                                       GNOME_VFS_FILE_INFO_GETMIMETYPE
                                       |GNOME_VFS_FILE_INFO_FOLLOWLINKS,
                                       meta_keys, my_notify_when_ready, navinfo);
+
   if(res != GNOME_VFS_OK)
     {
-      notify_when_ready(NULL, notify_data);
-      nautilus_navinfo_free(navinfo); navinfo = NULL;
-      goto out;
+      /* Note: Not sure if or when this case ever occurs. res == GNOME_VFS_OK
+       * for normally-handled uris, for non-existent uris, and for uris for which
+       * Nautilus has no content viewer.
+       */    
+      navinfo->result_code = get_nautilus_navigation_result_from_gnome_vfs_result (res);
+      notify_when_ready(navinfo, notify_data);
     }
 
- out:
   return navinfo?navinfo->ah:NULL;
 }
 

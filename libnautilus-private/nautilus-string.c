@@ -77,6 +77,43 @@ nautilus_has_prefix (const char *haystack_null_allowed, const char *needle_null_
 	return FALSE;
 }
 
+/**
+ * nautilus_strdup_prefix:
+ * Get a new string containing the first part of an existing string.
+ * 
+ * @source_null_allowed: The string whose prefix should be extracted.
+ * @delimiter_null_allowed: The string that marks the end of the prefix.
+ * 
+ * Return value: A newly-allocated string that that matches the first part
+ * of @source_null_allowed, up to but not including the first occurrence of
+ * @delimiter_null_allowed. If @source_null_allowed is NULL, returns NULL. If 
+ * @delimiter_null_allowed is NULL, returns a copy of @source_null_allowed.
+ * If @delimiter_null_allowed does not occur in @source_null_allowed, returns
+ * a copy of @source_null_allowed.
+ **/
+char *
+nautilus_strdup_prefix (const char *source_null_allowed, 
+			const char *delimiter_null_allowed)
+{
+	char *prefix_start;
+
+	if (source_null_allowed == NULL) {
+		return NULL;
+	}
+
+	if (delimiter_null_allowed == NULL) {
+		return g_strdup (source_null_allowed);
+	}
+
+	prefix_start = strstr (source_null_allowed, delimiter_null_allowed);
+
+	if (prefix_start == NULL) {
+		return NULL;
+	}
+
+	return g_strndup (source_null_allowed, prefix_start - source_null_allowed);
+}
+
 gboolean
 nautilus_string_to_int (const char *string, int *integer)
 {
@@ -192,6 +229,14 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_prefix ("ab", "a"), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_prefix ("aaa", "aaab"), FALSE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_prefix ("aaab", "aaa"), TRUE);
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix (NULL, NULL), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix (NULL, "foo"), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix ("foo", NULL), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix ("foo", "foo"), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix ("foo:", ":"), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix ("foo:bar", ":"), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix ("footle:bar", "tle:"), "foo");	
 
 	#define TEST_INTEGER_CONVERSION_FUNCTIONS(string, boolean_result, integer_result) \
 		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_to_int (string, &integer), boolean_result); \

@@ -1,13 +1,48 @@
+2000-02-24  John Sullivan  <sullivan@eazel.com>
+
+	Some work on improving the error messages when files
+	can't be displayed. There's still plenty of room for
+	improvement, but at least the most common cases are
+	halfway decent now.
+
+	* libnautilus/nautilus-string.h,
+	* libnautilus/nautilus-string.c:
+	(nautilus_strdup_prefix): New function, returns a new
+	string matching the beginning of another string, up to
+	but not including the first occurrence of a given substring.
+	(nautilus_self_check_string): Added test cases for new function.
+
+	* src/ntl-types.h:
+	Added enum NautilusNavigationResult, which is a cousin of
+	GnomeVFSResult that lumps many error types together and also
+	has special Nautilus-specific types. Added a field of this type
+	to NautilusNavigationInfo to keep track of various failure
+	scenarios. Also reformatted this file.
+	* src/ntl-uri-map.c:
+	(get_nautilus_navigation_result_from_gnome_vfs_result): 
+	Long-windedly named helper function to translate between
+	GnomeVFSResult and NautilusNavigationResult.
+	(my_notify_when_ready): Determine and store NautilusNavigationResult
+	for error cases. Don't free navinfo here, because it's needed to
+	determine the uri-that-didn't-work later.
+	* src/ntl-window-msgs.c:
+	(nautilus_window_change_location_2): Compose reasonable error messages,
+	which include the uri that couldn't be shown, from various failure cases.
+
 2000-02-24  Andy Hertzfeld <andy@eazel.com>
 
-	implemented the delete command in the context menu.  It's not completed yet,it still
-	needs to remove entries from the model, as well as giving better feedback.
+	implemented the delete command in the context menu.  It's not 
+	completed yet,it still needs to remove entries from the model, 
+	as well as giving better feedback.
 	
 	* libnautilus/gnome-icon-container.c,.h:
-	added gnome_icon_container_clear_selected_items to remove selected items from the view
+	added gnome_icon_container_clear_selected_items to remove 
+	selected items from the view
 	* src/file-manager/fm-directory-view.c,h:
-	enabled the delete menu item, added a callback for it which actually does the deletion
-	added a delete_selection method, implemented by the subclasses to remove items from the view
+	enabled the delete menu item, added a callback for it which 
+	actually does the deletion
+	added a delete_selection method, implemented by the subclasses 
+	to remove items from the view
 	* src/file-manager/fm-directory-view-icons.c:
 	implemented delete_selection by calling the icon container
 	* src/file-manager/fm-directory-view-list.c:

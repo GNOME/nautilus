@@ -42,6 +42,9 @@ int      nautilus_eat_strcmp        (char       *string_a_null_allowed_gets_free
 /* Other basic string operations. */
 gboolean nautilus_has_prefix        (const char *target_null_allowed,
 				     const char *prefix_null_allowed);
+char *   nautilus_strdup_prefix     (const char *source_null_allowed,
+				     const char *delimiter_null_allowed);
+
 
 /* Conversions to and from strings. */
 gboolean nautilus_string_to_int     (const char *string,
