@@ -2,15 +2,15 @@
 # Young-Ho, Cha <ganadist@chollian.net>, 2000, 2001, 2002
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 2.3.8\n"
-"POT-Creation-Date: 2003-11-24 12:49+0100\n"
-"PO-Revision-Date: 2003-08-24 06:54+0900\n"
-"Last-Translator: Young-Ho, Cha <ganadist at mizi.com>\n"
+"Project-Id-Version: nautilus 2.5.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-11-26 20:46+0900\n"
+"PO-Revision-Date: 2003-11-26 13:59+0900\n"
+"Last-Translator: Young-Ho Cha <ganadist at mizi.com>\n"
 "Language-Team: GTP Korean <gnome-kr-translation@gnome.or.kr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -252,7 +252,7 @@ msgstr "노틸러스의 방문기록 가장자리 창"
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:1
 msgid "Image"
-msgstr "그림:"
+msgstr "그림"
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:2
 msgid "Image Properties content view component"
@@ -263,51 +263,48 @@ msgid "Nautilus Image Properties view"
 msgstr "노틸러스 그림 기본 설정 보기"
 
 #: components/image_properties/nautilus-image-properties-view.c:192
-#, fuzzy
 msgid "Camera Brand"
-msgstr "카메라"
+msgstr "카메라 상표"
 
 #: components/image_properties/nautilus-image-properties-view.c:193
-#, fuzzy
 msgid "Camera Model"
-msgstr "카메라"
+msgstr "카메라 모델"
 
 #: components/image_properties/nautilus-image-properties-view.c:194
 msgid "Date Taken"
-msgstr ""
+msgstr "찍은 날짜"
 
 #: components/image_properties/nautilus-image-properties-view.c:195
 msgid "Exposure Time"
-msgstr ""
+msgstr "노출 시간"
 
 #: components/image_properties/nautilus-image-properties-view.c:196
-#, fuzzy
 msgid "Exposure Program"
-msgstr "프로그램"
+msgstr "노출 프로그램"
 
 #: components/image_properties/nautilus-image-properties-view.c:197
 msgid "Aperture Value"
-msgstr ""
+msgstr "조리개 값"
 
 #: components/image_properties/nautilus-image-properties-view.c:198
 msgid "Metering Mode"
-msgstr ""
+msgstr "측광 방식"
 
 #: components/image_properties/nautilus-image-properties-view.c:199
 msgid "Flash Fired"
-msgstr ""
+msgstr "플래시 켜짐"
 
 #: components/image_properties/nautilus-image-properties-view.c:200
 msgid "Focal Lenght"
-msgstr ""
+msgstr "초점 거리"
 
 #: components/image_properties/nautilus-image-properties-view.c:201
 msgid "Shutter Speed"
-msgstr ""
+msgstr "셔터 속도"
 
 #: components/image_properties/nautilus-image-properties-view.c:202
 msgid "ISO Speed Rating"
-msgstr ""
+msgstr "ISO 값"
 
 #: components/image_properties/nautilus-image-properties-view.c:203
 #: data/static_bookmarks.xml.h:36
@@ -1102,9 +1099,8 @@ msgid "Bring up a new window for every opened file"
 msgstr "파일을 열 때다 새 창을 엽니다"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
-#, fuzzy
 msgid "Computer icon visible on desktop"
-msgstr "바탕화면에 홈 아이콘을 보입니다"
+msgstr "바탕화면에 컴퓨터 아이콘을 보입니다"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
 msgid "Criteria for search bar searching"
@@ -1334,11 +1330,10 @@ msgstr ""
 "에 로그인할 때도 노틸러스가 시작합니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
-#, fuzzy
 msgid ""
 "If this is set to true, an icon linking to the computer location will be put "
 "on the desktop."
-msgstr "참으로 설정하면, 휴지통 아이콘을 데스크탑에 만듭니다."
+msgstr "참으로 설정하면, 컴퓨터 아이콘을 데스크탑에 만듭니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
@@ -2362,7 +2357,7 @@ msgstr "모르는 GnomeVFSXferProgressStatus %d"
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:1854
 msgid "Moving files to the Trash"
-msgstr "파일을 휴지통으로 옮기는 중"
+msgstr "파일을 휴지통으로 보내는 중"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1856
@@ -2377,7 +2372,7 @@ msgstr "옮길 중"
 
 #: libnautilus-private/nautilus-file-operations.c:1859
 msgid "Preparing to Move to Trash..."
-msgstr "휴지통으로 옮길 준비 중"
+msgstr "휴지통으로 보낼 준비 중"
 
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:1865
@@ -2552,13 +2547,12 @@ msgid "Preparing to Empty the Trash..."
 msgstr "휴지통 비우기 준비중"
 
 #: libnautilus-private/nautilus-file-operations.c:2293
-#, fuzzy
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr "휴지통에 있는 모든 항목을 완전히 지우시겠습니까?"
 
 #: libnautilus-private/nautilus-file-operations.c:2307
 msgid "If you empty the trash, items will be permanently deleted."
-msgstr ""
+msgstr "휴지통을 비우면 항목들이 완전히 지워지게 됩니다."
 
 #: libnautilus-private/nautilus-file-operations.c:2319
 msgid "_Empty"
@@ -3327,9 +3321,8 @@ msgstr "%s의 폴더"
 #: libnautilus-private/nautilus-global-preferences.c:549
 #: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:9
 #: src/nautilus-window.c:1169
-#, fuzzy
 msgid "Computer"
-msgstr "카운터탑"
+msgstr "컴퓨터"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2343
 msgid "file icon"
@@ -4182,7 +4175,7 @@ msgstr "글자 붙이기(_P)"
 
 #: nautilus-computer.desktop.in.h:2
 msgid "View your computer storage"
-msgstr ""
+msgstr "컴퓨터의 저장장치를 봅니다"
 
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
@@ -4197,13 +4190,12 @@ msgid "View your home folder in the Nautilus file manager"
 msgstr "노틸러스 파일 관리자로 내 폴더 보기"
 
 #: nautilus.desktop.in.h:1
-#, fuzzy
 msgid "Browse Filesystem"
-msgstr "파일시스템"
+msgstr "파일시스템 찾아보기"
 
 #: nautilus.desktop.in.h:2
 msgid "Browse the filesystem with the file manager"
-msgstr ""
+msgstr "파일 관리자로 파일시스템을 찾아봅니다"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4336,14 +4328,12 @@ msgid "Delete?"
 msgstr "지울까요?"
 
 #: src/file-manager/fm-directory-view.c:985
-#, fuzzy
 msgid "Select Pattern"
-msgstr "분류 선택:"
+msgstr "파일이름 형태 선택"
 
 #: src/file-manager/fm-directory-view.c:1001
-#, fuzzy
 msgid "_Pattern:"
-msgstr "무늬(_P)"
+msgstr "파일이름 형태(_P):"
 
 #: src/file-manager/fm-directory-view.c:1598
 #, c-format
@@ -4438,7 +4428,7 @@ msgstr "파일이 너무 많음"
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
-msgstr "\"%s\"은(는) 휴지통으로 옮길 수 없습니다. 지금 바로 지워버릴까요?"
+msgstr "\"%s\"은(는) 휴지통으로 보낼 수 없습니다. 지금 바로 지워버릴까요?"
 
 #: src/file-manager/fm-directory-view.c:3063
 #, c-format
@@ -4446,7 +4436,7 @@ msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
 "them immediately?"
 msgstr ""
-"%d개의 선택된 항목은 휴지통으로 옮길 수 없습니다. 지금 바로 지워버릴까요?"
+"%d개의 선택된 항목은 휴지통으로 보낼 수 없습니다. 지금 바로 지워버릴까요?"
 
 #: src/file-manager/fm-directory-view.c:3067
 #, c-format
@@ -4454,7 +4444,7 @@ msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
 "those %d items immediately?"
 msgstr ""
-"%d개의 선택된 항목은 휴지통으로 옮길 수 없습니다. 지금 바로 그 %d개의 항목을 "
+"%d개의 선택된 항목은 휴지통으로 보낼 수 없습니다. 지금 바로 그 %d개의 항목을 "
 "지워버릴까요?"
 
 #: src/file-manager/fm-directory-view.c:3075
@@ -4604,9 +4594,8 @@ msgid "Unmount Error"
 msgstr "언마운트 오류"
 
 #: src/file-manager/fm-directory-view.c:4771
-#, fuzzy
 msgid "Eject Error"
-msgstr "마운트 오류"
+msgstr "꺼내기 오류"
 
 #: src/file-manager/fm-directory-view.c:4993
 msgid "E_ject"
@@ -4618,24 +4607,21 @@ msgid "_Unmount Volume"
 msgstr "볼륨 마운트해제(_U)"
 
 #: src/file-manager/fm-directory-view.c:5073
-#, fuzzy
 msgid "Open in New Window"
-msgstr "새 창에서 열기(_I)"
+msgstr "새 창에서 열기"
 
 #: src/file-manager/fm-directory-view.c:5075
-#, fuzzy, c-format
+#, c-format
 msgid "Open in %d New Windows"
-msgstr "%d개의 새 창에서 열기(_I)"
+msgstr "%d개의 새 창에서 열기"
 
 #: src/file-manager/fm-directory-view.c:5080
-#, fuzzy
 msgid "Browse Folder"
-msgstr "내 폴더"
+msgstr "폴더 찾아보기"
 
 #: src/file-manager/fm-directory-view.c:5082
-#, fuzzy
 msgid "Browse Folders"
-msgstr "내 폴더"
+msgstr "폴더 찾아보기"
 
 #: src/file-manager/fm-directory-view.c:5105
 msgid "_Delete from Trash"
@@ -4649,12 +4635,12 @@ msgstr "선택한 항목을 모두 지웁니다"
 #: src/file-manager/fm-directory-view.c:5398
 #: src/file-manager/nautilus-directory-view-ui.xml.h:19
 msgid "Mo_ve to Trash"
-msgstr "휴지통으로 옮김(_M)"
+msgstr "휴지통으로 보내기(_M)"
 
 #: src/file-manager/fm-directory-view.c:5112
 #: src/file-manager/nautilus-directory-view-ui.xml.h:21
 msgid "Move each selected item to the Trash"
-msgstr "각각 선택한 항목을 휴지통으로 옮깁니다"
+msgstr "각각 선택한 항목을 휴지통으로 보냅니다"
 
 #: src/file-manager/fm-directory-view.c:5136
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
@@ -5173,9 +5159,8 @@ msgid "You are not the owner, so you can't change these permissions."
 msgstr "당신은 이파일의 소유주가 아니기 때문에 허가권을 바꿀 수 없습니다."
 
 #: src/file-manager/fm-properties-window.c:2882
-#, fuzzy
 msgid "File _owner:"
-msgstr "파일 소유주:"
+msgstr "파일 소유주(_O):"
 
 #: src/file-manager/fm-properties-window.c:2888
 msgid "File owner:"
@@ -5564,9 +5549,8 @@ msgid "Medi_a Properties"
 msgstr "미디어 등록 정보(_A)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
-#, fuzzy
 msgid "Mount the selected volume"
-msgstr "선택한 볼륨을 마운트 해제"
+msgstr "선택한 볼륨을 마운트"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid ""
@@ -5586,14 +5570,12 @@ msgid "Open Wit_h"
 msgstr "다른 프로그램으로 열기(_H)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:25
-#, fuzzy
 msgid "Open each selected item in a navigation window"
-msgstr "각각 선택한 항목을 새 창에서 엽니다"
+msgstr "각각 선택한 항목을 새 찾아보기 창에서 엽니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
-#, fuzzy
 msgid "Open in Navigation Window"
-msgstr "새 창에서 열기(_I)"
+msgstr "새 찾아보기 창에서 열기"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:27
 msgid "Open the selected item in this window"
@@ -5636,18 +5618,16 @@ msgid "Select _All Files"
 msgstr "모든 파일 선택(_A)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
-#, fuzzy
 msgid "Select _Pattern"
-msgstr "무늬(_P)"
+msgstr "파일이름 형태 선택(_P)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "Select all items in this window"
 msgstr "이 창에 있는 모든 항목을 선택합니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
-#, fuzzy
 msgid "Select items in this window matching a given pattern"
-msgstr "이 창에 있는 모든 항목을 선택합니다"
+msgstr "창에서 주어진 파일이름 형태에 맞는 항목을 선택합니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:42
 msgid "Show media properties for the selected volume"
@@ -5674,9 +5654,8 @@ msgid "_Format"
 msgstr "포맷(_F)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
-#, fuzzy
 msgid "_Mount Volume"
-msgstr "볼륨 마운트해제(_U)"
+msgstr "볼륨 마운트(_M)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:53
 msgid "_Open"
@@ -5752,7 +5731,7 @@ msgstr "아이콘이 놓아진대로 둡니다"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:17
 msgid "Make the selected icon stretchable"
-msgstr "선택한 아이콘을 확대 합니다"
+msgstr "선택한 아이콘을 크기를 바꿉니다"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:18
 msgid "Re_versed Order"
@@ -5768,7 +5747,7 @@ msgstr "각각 선택한 아이콘을 원래 크기로 되돌립니다"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:22
 msgid "Str_etch Icon"
-msgstr "아이콘 확대(_E)"
+msgstr "아이콘 크기 바꾸기(_E)"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:23
 msgid "Toggle using a tighter layout scheme"
@@ -6041,13 +6020,12 @@ msgstr "찾기!"
 
 #: src/nautilus-connect-server-dialog.c:87
 msgid "You must enter a name for the server"
-msgstr ""
+msgstr "서버의 이름을 입력하여야 합니다"
 
 #: src/nautilus-connect-server-dialog.c:87
 #: src/nautilus-connect-server-dialog.c:102
-#, fuzzy
 msgid "Can't connect to server"
-msgstr "자신으로 옮길 수 없습니다"
+msgstr "서버에 연결할 수 없습니다"
 
 #: src/nautilus-connect-server-dialog.c:100
 #: src/nautilus-window-manage-views.c:1246
@@ -6059,19 +6037,16 @@ msgstr ""
 "정확히 입력하였는지 확인하시고 다시 시도 해보십시오."
 
 #: src/nautilus-connect-server-dialog.c:174
-#, fuzzy
 msgid "Connect to Server"
-msgstr "네트워크 서버"
+msgstr "서버에 연결"
 
 #: src/nautilus-connect-server-dialog.c:203
-#, fuzzy
 msgid "_Location:"
-msgstr "위치:"
+msgstr "위치(_L):"
 
 #: src/nautilus-connect-server-dialog.c:228
-#, fuzzy
 msgid "Connect"
-msgstr "연결(_C)"
+msgstr "연결"
 
 #: src/nautilus-desktop-window.c:356
 msgid "Desktop"
@@ -6316,9 +6291,8 @@ msgid "View in Multiple Windows?"
 msgstr "다중 창으로 보기?"
 
 #: src/nautilus-location-dialog.c:138
-#, fuzzy
 msgid "Open Location"
-msgstr "위치를 열 수 없습니다"
+msgstr "위치를 엽니다"
 
 #: src/nautilus-main.c:187
 msgid "Perform a quick set of self-check tests."
@@ -6345,7 +6319,7 @@ msgstr ""
 
 #: src/nautilus-main.c:196
 msgid "open a browser window."
-msgstr ""
+msgstr "찾아보기 창을 엽니다."
 
 #: src/nautilus-main.c:198
 msgid "Quit Nautilus."
@@ -6448,14 +6422,13 @@ msgstr "모든 창 닫기(_A)"
 
 #: src/nautilus-navigation-window-ui.xml.h:8
 #: src/nautilus-spatial-window-ui.xml.h:3
-#, fuzzy
 msgid "Close all Navigation windows"
-msgstr "모든 노틸러스 창을 닫습니다"
+msgstr "모든 찾아보기 창을 닫습니다"
 
 #: src/nautilus-navigation-window-ui.xml.h:10
 #: src/nautilus-spatial-window-ui.xml.h:4
 msgid "Connect to _Server..."
-msgstr ""
+msgstr "서버에 연결(_S)..."
 
 #: src/nautilus-navigation-window-ui.xml.h:11
 msgid "Display a window that allows editing the bookmarks in this menu"
@@ -6532,9 +6505,8 @@ msgstr "방문기록 지우기(_C)"
 
 #: src/nautilus-navigation-window-ui.xml.h:29
 #: src/nautilus-spatial-window-ui.xml.h:11
-#, fuzzy
 msgid "_Computer"
-msgstr "카운터탑"
+msgstr "컴퓨터(_C)"
 
 #: src/nautilus-navigation-window-ui.xml.h:30
 msgid "_Edit Bookmarks"
@@ -6584,32 +6556,30 @@ msgid "View as..."
 msgstr "...로서 보기"
 
 #: src/nautilus-navigation-window.c:734
-#, fuzzy, c-format
+#, c-format
 msgid "File Browser: %s"
-msgstr "파일 소유주:"
+msgstr "파일 찾아보기: %s"
 
 #: src/nautilus-navigation-window.c:1104
-#, fuzzy
 msgid ""
 "One of the side panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
 msgstr ""
-"가장자리 창중 하나가 오류를 발생하여 계속할 수 없습니다. 불행하게도 어느것인"
-"지 알 수 없습니다."
+"가장자리 패널 중 하나가 오류를 발생하여 계속할 수 없습니다."
+"불행하게도 어느것 인지 알 수 없습니다."
 
 #: src/nautilus-navigation-window.c:1108
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The %s side panel encountered an error and can't continue. If this keeps "
 "happening, you might want to turn this panel off."
 msgstr ""
-"%s 가장자리 창이 오류를 발생하여 계속할 수 없습니다. 계속 발생된다면 이 패널"
+"%s 가장자리 패널이 오류를 발생하여 계속할 수 없습니다. 계속 발생된다면 이 패널"
 "을 꺼두는 편이 좋습니다."
 
 #: src/nautilus-navigation-window.c:1113
-#, fuzzy
 msgid "Side Panel Failed"
-msgstr "가장자리 창 실패"
+msgstr "가장자리 패널 실패"
 
 #: src/nautilus-navigation-window.c:1244
 msgid "Side Pane"
@@ -7011,7 +6981,7 @@ msgstr "노틸러스를 만든 사람들을 보여줍니다"
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
-msgstr "모양새를 꾸밀수 있는 무늬 및 생상, 그리고 꼬리표등을 보여줍니다"
+msgstr "모양새를 꾸밀수 있는 무늬 및 색상, 그리고 꼬리표등을 보여줍니다"
 
 #: src/nautilus-shell-ui.xml.h:8
 msgid "Display the latest contents of the current location"
@@ -7171,43 +7141,36 @@ msgid "Show %s"
 msgstr "%s 보기"
 
 #: src/nautilus-spatial-window-ui.xml.h:1
-#, fuzzy
 msgid "CD _Creator"
 msgstr "CD 만들기(_C)"
 
 #: src/nautilus-spatial-window-ui.xml.h:2
-#, fuzzy
 msgid "Close _All Parents"
-msgstr "모든 창 닫기(_A)"
+msgstr "모든 부모 폴더 닫기(_A)"
 
 #: src/nautilus-spatial-window-ui.xml.h:5
-#, fuzzy
 msgid "Go to Computer"
-msgstr "CD 지우기 폴더로 갑니다"
+msgstr "컴퓨터 폴더로 갑니다"
 
 #: src/nautilus-spatial-window-ui.xml.h:6
-#, fuzzy
 msgid "Go to the CD Creator"
-msgstr "휴지통 폴더로 갑니다"
+msgstr "CD 만들기 폴더로 갑니다"
 
 #: src/nautilus-spatial-window-ui.xml.h:8
-#, fuzzy
 msgid "Open _Location..."
-msgstr "위치(_L)..."
+msgstr "위치 열기(_L)..."
 
 #: src/nautilus-spatial-window-ui.xml.h:9
 msgid "Open _Pa_rent"
-msgstr ""
+msgstr "부모 폴더 열기(_P)"
 
 #: src/nautilus-spatial-window-ui.xml.h:10
-#, fuzzy
 msgid "Open the parent folder"
-msgstr "[항목 ]폴더"
+msgstr "부모 폴더를 엽니다"
 
 #: src/nautilus-spatial-window-ui.xml.h:13
-#, fuzzy
 msgid "_Places"
-msgstr "무늬(_P)"
+msgstr "가기(_P)"
 
 #: src/nautilus-switchable-search-bar.c:129
 msgid "Find:"
@@ -7227,7 +7190,7 @@ msgstr "현재 선택"
 
 #: src/nautilus-view-frame.c:622
 msgid "the type of window the view is embedded in"
-msgstr ""
+msgstr "창안에 포함된 형식"
 
 #: src/nautilus-window-manage-views.c:817
 msgid "View Failed"
@@ -7383,19 +7346,16 @@ msgid "Display this location with \"%s\""
 msgstr "이 위치를 \"%s\"(으)로 보여줍니다"
 
 #: src/nautilus-window.c:1172
-#, fuzzy
 msgid "Network"
-msgstr "레드햇 네트워크"
+msgstr "네트워크"
 
 #: src/nautilus-window.c:1175
-#, fuzzy
 msgid "Fonts"
-msgstr "점"
+msgstr "글꼴"
 
 #: src/nautilus-window.c:1178
-#, fuzzy
 msgid "CD Creator"
-msgstr "CD 만들기(_C)"
+msgstr "CD 만들기"
 
 #: src/nautilus-window.c:1610
 msgid "Application ID"
@@ -7445,7 +7405,6 @@ msgstr "네트워크 서버"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "노틸러스 파일 관리자에서 네트워크 서버를 봅니다"
 
-#, fuzzy
 #~ msgid "Name:"
 #~ msgstr "이름(_N):"
 
