@@ -347,15 +347,6 @@ dnl = begin gdk-pixbuf checks
 dnl ====================================
 
 
-AC_PATH_PROG(LIBWWW_CONFIG,libwww-config,no)
-if test x$LIBWWW_CONFIG = xno; then
-  AC_MSG_ERROR(Couldn't find libwww-config try http://www.w3.org/Library/Distribution.html to get a copy of libwww)
-fi
-LIBWWW_LIBS=`$LIBWWW_CONFIG --libs`
-LIBWWW_CFLAGS=`$LIBWWW_CONFIG --cflags`
-AC_SUBST(LIBWWW_LIBS)
-AC_SUBST(LIBWWW_CFLAGS)
-
 AC_CHECK_LIB(z, gzopen, [Z_LIBS=-lz
 AC_SUBST(Z_LIBS)], AC_MSG_ERROR([*** zlib is required]))
 
