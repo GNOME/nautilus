@@ -143,8 +143,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-sound.h \
 	nautilus-theme.c \
 	nautilus-theme.h \
-	nautilus-thumbnails-jpeg.c \
-	nautilus-thumbnails-jpeg.h \
 	nautilus-thumbnails.c \
 	nautilus-thumbnails.h \
 	nautilus-trash-directory.c \

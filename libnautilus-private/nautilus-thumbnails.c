@@ -30,7 +30,6 @@
 #include "nautilus-icon-factory-private.h"
 #include "nautilus-icon-factory.h"
 #include "nautilus-theme.h"
-#include "nautilus-thumbnails-jpeg.h"
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-string.h>
