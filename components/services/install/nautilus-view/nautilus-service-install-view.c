@@ -97,41 +97,32 @@ generate_install_form (NautilusServiceInstallView	*view) {
 	/* Add package information */
 
 	/* Package Name */
-	temp_box = gtk_alignment_new (0.1, 0.1, 0, 0);
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
-	gtk_widget_show (temp_box);
 	view->details->package_name = gtk_label_new (_("Installing \"The Gimp\""));
+	gtk_misc_set_alignment (GTK_MISC (view->details->package_name), 0.1, 0.1);
+	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_name, FALSE, FALSE, 2);
 	font = nautilus_font_factory_get_font_from_preferences (20);
 	nautilus_gtk_widget_set_font (view->details->package_name, font);
-	gdk_font_unref (font);
-	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_name, FALSE, FALSE, 2);
 	gtk_widget_show (view->details->package_name);
+	gdk_font_unref (font);
 
 	/* Package Description */
 	view->details->package_details = gtk_label_new ("Description: The GIMP is the GNU Image Manipulation Program.  It is a freely distributed piece of software suitable for such tasks as photo retouching, image composition, and image authoring.");
 	gtk_misc_set_alignment (GTK_MISC (view->details->package_details), 0.25, 0.6);
-	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_details, FALSE, FALSE, 0);
-	font = nautilus_font_factory_get_font_from_preferences (13);
-	nautilus_gtk_widget_set_font (view->details->package_details, font);
-	gdk_font_unref (font);
 	gtk_label_set_line_wrap (GTK_LABEL (view->details->package_details), TRUE);
+	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_details, FALSE, FALSE, 0);
+	font = nautilus_font_factory_get_font_from_preferences (12);
+	nautilus_gtk_widget_set_font (view->details->package_details, font);
 	gtk_widget_show (view->details->package_details);
+	gdk_font_unref (font);
 
 	/* Package Version */
-	temp_box = gtk_alignment_new (0.1, 0.1, 0, 0);
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
-	gtk_widget_show (temp_box);
 	view->details->package_version = gtk_label_new ("Version 1.0.4-1");
+	gtk_misc_set_alignment (GTK_MISC (view->details->package_version), 0.1, 0.1);
 	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_version, FALSE, FALSE, 2);
-	font = nautilus_font_factory_get_font_from_preferences (14);
+	font = nautilus_font_factory_get_font_from_preferences (13);
 	nautilus_gtk_widget_set_font (view->details->package_version, font);
-	gdk_font_unref (font);
 	gtk_widget_show (view->details->package_version);
-
-	/* Setup the title */
-	middle_title = create_middle_title_widget ("Messages", "Progress");
-        gtk_box_pack_start (GTK_BOX (view->details->form), middle_title, FALSE, FALSE, 0);
-        gtk_widget_show (middle_title);
+	gdk_font_unref (font);
 
 	/* generate the overall progress bar */
 	temp_box = gtk_alignment_new (0.1, 0.1, 0, 0);
@@ -142,13 +133,16 @@ generate_install_form (NautilusServiceInstallView	*view) {
 	gtk_widget_show (view->details->total_progress_bar);
 
 	/* add a label for progress messages, but don't show it until there's a message */
-	temp_box = gtk_alignment_new (0.1, 0.1, 0, 0);
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
-	gtk_widget_show (temp_box);
 	view->details->overall_feedback_text = gtk_label_new ("");
+	gtk_misc_set_alignment (GTK_MISC (view->details->overall_feedback_text), 0.1, 0.1);
 	font = nautilus_font_factory_get_font_from_preferences (12);
 	nautilus_gtk_widget_set_font (view->details->overall_feedback_text, font);
 	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->overall_feedback_text, FALSE, FALSE, 8);
+
+	/* Setup the title */
+	middle_title = create_middle_title_widget ("Messages", "Progress");
+        gtk_box_pack_start (GTK_BOX (view->details->form), middle_title, FALSE, FALSE, 0);
+	gtk_widget_show (middle_title);
 
 	/* add an hbox at the bottom of the screen to hold current progress but don't show it yet */
         view->details->message_box = gtk_vbox_new (FALSE, 0);
