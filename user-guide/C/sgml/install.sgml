@@ -29,7 +29,7 @@
 	<itemizedlist>
 
 	<listitem><para>
-	x86 compatible processor.
+	x86 compatible processor (200mHz minimum).
 	</para></listitem>
 
 	<listitem><para>
@@ -58,15 +58,17 @@
 	<itemizedlist>
 
 	<listitem><para>
-	RedHat 6.2 (others may work, but this is the preview test platform).
+	RedHat Linux 6.2 (others may work, but this is the preview test 
+	platform).
 	</para></listitem>
 
 	<listitem><para>
-	Helixcode GNOME 1.2
+	GNOME 1.2 (Components for GNOME will be downloaded by the Eazel
+	Installer if needed).
 	</para></listitem>
 
 	<listitem><para>
-	Mozilla-5.0-M17-7 (downloadable with Nautilus)
+	Mozilla-5.0-M18-4 (downloaded by the Eazel Installer if needed).
 	</para></listitem>
 
 	</itemizedlist>
@@ -76,7 +78,8 @@
 	</sect1>
 
 	<sect1 id="instal-download-install">
-	<title>Download and Install Instructions for the Nautilus Preview Release Two</title>
+	<title>Download and Install Instructions for the Nautilus Preview 
+	Release Two</title>
 
 	<para>First, make sure you have enough hard disk space, 
 	and are running the correct version of Linux, and 
@@ -85,11 +88,7 @@
 
 	<para>
 	The Eazel site for downloading Nautilus is 
-	<ulink url="http://www.nautilus.eazel.com/">www.nautilus.eazel.com</ulink>.
-	</para>
-
-	<para>
-	To install Nautilus using this procedure, you should be running Linux with root privelages.
+	<ulink url="http://download.eazel.com/">http://download.eazel.com</ulink>.
 	</para>
 
 	<para>
@@ -99,15 +98,15 @@
 	Fill out the simple registration form.
 	</para></listitem>
 	<listitem><para>
-	Download the installer script into your tmp directory.
+	Save the Eazel Installer in your tmp directory.
 	</para></listitem>
 
 	<listitem><para>
-	Remain connected to the Internet, and cd to /tmp.
+	Open a terminal window, and type: /tmp
 	</para></listitem>
 
 	<listitem><para>
-	Execute: sh ./nautilus-installer.sh
+	Next, type: sh ./nautilus-installer.sh
 	</para></listitem>
 
 	<listitem><para>
@@ -142,7 +141,7 @@
 
 	<figure>
 	<title>Selecting an Initial User Level</title>
-	<graphic fileref="install-user-level.png" scale="50"></graphic>
+	<graphic fileref="install-user-level" scale="50"></graphic>
 	</figure>
 
 	<para>
@@ -167,7 +166,7 @@
 
 	<figure>
 	<title>The Nautilus Update Screen</title>
-	<graphic fileref="" scale="50"></graphic>
+	<graphic fileref="install-update" scale="50"></graphic>
 	</figure>
 
 	<para>
