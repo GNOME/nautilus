@@ -35,6 +35,8 @@ void         fm_icon_cache_set_theme (FMIconCache            *fmic,
 GdkPixbuf *  fm_icon_cache_get_icon  (FMIconCache            *fmic,
                                       const GnomeVFSFileInfo *info);
 
+FMIconCache*fm_get_current_icon_cache        (void);
+
 #endif
 
 

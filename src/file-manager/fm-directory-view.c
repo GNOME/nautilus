@@ -43,6 +43,9 @@
 
 static NautilusViewClientClass *parent_class = NULL;
 
+/* FIXME this no longer has any reason to be global,
+   given fm_get_current_icon_cache()
+*/
 static FMIconCache *icm = NULL;
 
 static void
@@ -238,7 +241,7 @@ load_icon_container (FMDirectoryView *view,
 		GnomeVFSDirectoryListPosition *position;
 
 		if (!icm)
-			icm = fm_icon_cache_new(NULL);
+			icm = fm_get_current_icon_cache();
 
 		position = gnome_vfs_directory_list_get_first_position
 			(view->directory_list);
@@ -444,7 +447,7 @@ create_flist (FMDirectoryView *view)
 		FMIconCache *icon_manager;
 
 		if(!icm)
-			icm = fm_icon_cache_new(NULL);
+			icm = fm_get_current_icon_cache();
 		icon_manager = icm;
 
 		position = gnome_vfs_directory_list_get_first_position
@@ -608,7 +611,7 @@ display_pending_entries (FMDirectoryView *view)
 	FM_DEBUG (("Adding %d entries.", view->entries_to_display));
 
 	if(!icm)
-	       icm = fm_icon_cache_new(NULL);
+	       icm = fm_get_current_icon_cache();
 	icon_manager = icm;
 
 	if (view_has_icon_container (view)) {
@@ -662,7 +665,7 @@ display_icons_not_in_layout (FMDirectoryView *view)
 	FM_DEBUG (("Adding entries not in layout."));
 
 	if (!icm)
-		icm = fm_icon_cache_new(NULL);
+		icm = fm_get_current_icon_cache();
 	icon_manager = icm;
 
 	icon_container = get_icon_container (view);

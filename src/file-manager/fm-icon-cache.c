@@ -456,3 +456,14 @@ fm_icon_cache_get_icon(FMIconCache *fmic,
 
   return retval;
 }
+
+static FMIconCache *global_icon_cache = NULL;
+
+FMIconCache*
+fm_get_current_icon_cache (void)
+{
+        if (global_icon_cache == NULL)
+                global_icon_cache = fm_icon_cache_new(NULL);
+
+        return global_icon_cache;
+}
