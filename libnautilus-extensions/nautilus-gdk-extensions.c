@@ -24,6 +24,8 @@
             Ramiro Estrugo <ramiro@eazel.com>
 */
 
+#include <stdlib.h>
+
 #include <config.h>
 #include "nautilus-gdk-extensions.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -290,6 +292,56 @@ nautilus_gradient_strip_trailing_direction_if_any (const char *gradient_spec)
 	return g_strndup (gradient_spec, length);
 }
 
+/* For parsing n-point gradients. Successive calls should pass the next_spec value
+ * set by the previous call as their first argument - to continue parsing where the
+ * previous call left off.
+ */
+char *
+nautilus_gradient_parse_one_color_spec (const char *spec, int *percent, const char **next_spec)
+{
+	char *result;
+	const char *rgb_end_ptr;
+	const char *percent_ptr;
+	const char *separator_ptr;
+	
+	percent_ptr   = nautilus_strchr (spec, '%');
+	separator_ptr = nautilus_strchr (spec, '-');
+
+	if (percent_ptr != NULL) {
+		if (percent != NULL) {
+			*percent = (int) strtol (percent_ptr + 1, NULL, 10);
+		}
+		rgb_end_ptr = percent_ptr;
+	} else {
+		if (percent != NULL) {
+			*percent = 100;
+		}
+		rgb_end_ptr = separator_ptr;
+	}
+		
+	if (rgb_end_ptr != NULL) {
+		result = g_strndup (spec, rgb_end_ptr - spec);
+	} else {
+		result = nautilus_gradient_strip_trailing_direction_if_any (spec);
+	}
+
+	/* It's important not to use spec after setting *next_spec because it's
+	 * likely that *next_spec == spec. 
+	 */
+	if (next_spec != NULL) {
+		*next_spec = (separator_ptr != NULL) ? separator_ptr + 1 : NULL;
+	}
+
+	return result;
+}
+
+/* FIXME anyone using nautilus_gradient_get_start_color_spec or
+ * nautilus_gradient_get_end_color_spec is assuming the gradient
+ * is 2 colors which is questionable.
+ * 
+ * Callers should be rewritten and these fns eliminated.
+ */
+ 
 /**
  * nautilus_gradient_get_start_color_spec
  * @gradient_spec: A gradient spec. string.
@@ -300,14 +352,7 @@ nautilus_gradient_strip_trailing_direction_if_any (const char *gradient_spec)
 char *
 nautilus_gradient_get_start_color_spec (const char *gradient_spec)
 {
-	const char *separator;
-	
-	separator = nautilus_strchr (gradient_spec, '-');
-	if (separator == NULL) {
-		return nautilus_gradient_strip_trailing_direction_if_any (gradient_spec);
-	}
-
-	return g_strndup (gradient_spec, separator - gradient_spec);
+	return nautilus_gradient_parse_one_color_spec (gradient_spec, NULL, NULL);
 }
 
 /**
@@ -320,11 +365,14 @@ nautilus_gradient_get_start_color_spec (const char *gradient_spec)
 char *
 nautilus_gradient_get_end_color_spec (const char *gradient_spec)
 {
-	const char *separator;
+	char* color = NULL;
 
-	separator = nautilus_strchr (gradient_spec, '-');
-	return nautilus_gradient_strip_trailing_direction_if_any
-		(separator != NULL ? separator + 1 : gradient_spec);
+	do {
+		g_free (color);
+		color = nautilus_gradient_parse_one_color_spec (gradient_spec, NULL, &gradient_spec);
+	} while (gradient_spec != NULL);
+
+	return color;
 }
 
 /* Do the work shared by all the set_color_spec functions below. */

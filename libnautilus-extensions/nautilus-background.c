@@ -29,6 +29,9 @@
 
 #include <math.h>
 
+#include <stdio.h>
+#include "nautilus-glib-extensions.h"
+
 #include <gtk/gtksignal.h>
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
@@ -40,6 +43,8 @@
 
 #include <libgnomeui/gnome-canvas.h>
 #include <libgnomeui/gnome-canvas-util.h>
+
+#include <libart_lgpl/art_rgb.h>
 
 static void nautilus_background_initialize_class (gpointer            klass);
 static void nautilus_background_initialize       (gpointer            object,
@@ -75,6 +80,14 @@ static guint signals[LAST_SIGNAL];
 
 struct NautilusBackgroundDetails {
 	char *color;
+	
+	int gradient_num_pixels;
+	guchar *gradient_buffer;
+	gboolean gradient_is_horizontal;
+
+	gboolean is_solid_color;
+	GdkColor solid_color;
+	
 	char *image_uri;
 	GdkPixbuf *image;
 	int image_width_unscaled;
@@ -157,6 +170,7 @@ nautilus_background_destroy (GtkObject *object)
 	nautilus_cancel_gdk_pixbuf_load (background->details->load_image_handle);
 
 	g_free (background->details->color);
+	g_free (background->details->gradient_buffer);
 	g_free (background->details->image_uri);
 	if (background->details->image != NULL) {
 		gdk_pixbuf_unref (background->details->image);
@@ -222,6 +236,161 @@ NautilusBackground *
 nautilus_background_new (void)
 {
 	return NAUTILUS_BACKGROUND (gtk_type_new (NAUTILUS_TYPE_BACKGROUND));
+}
+ 
+static void
+reset_cached_color_info (NautilusBackground *background)
+{
+	background->details->gradient_num_pixels = 0;
+	
+	background->details->is_solid_color = !nautilus_gradient_is_gradient (background->details->color);
+	
+	if (background->details->is_solid_color) {
+		g_free (background->details->gradient_buffer);
+		background->details->gradient_buffer = NULL;
+		nautilus_gdk_color_parse_with_white_default (background->details->color, &background->details->solid_color);
+	} else {
+		/* If color is still a gradient, don't g_free the buffer, ensure_gradient_buffered
+		 * uses g_realloc to try to reuse it.
+		 */
+		background->details->gradient_is_horizontal = nautilus_gradient_is_horizontal (background->details->color);
+	}
+}
+
+static void
+ensure_gradient_buffered (NautilusBackground *background, int new_width, int new_height)
+{
+	int num_pixels;
+
+	guchar *buff_ptr;
+	guchar *buff_limit;
+
+	GdkColor cur_color;
+
+	char* color_spec;
+	const char* spec_ptr;
+
+	if (background->details->is_solid_color) {
+		return;
+	}
+
+	num_pixels = background->details->gradient_is_horizontal ? new_width : new_height;
+
+	if (background->details->gradient_num_pixels == num_pixels) {
+		return;
+	}
+
+	background->details->gradient_num_pixels = num_pixels;
+	background->details->gradient_buffer = g_realloc (background->details->gradient_buffer, num_pixels * 3);
+	
+	buff_ptr   = background->details->gradient_buffer;
+	buff_limit = background->details->gradient_buffer + num_pixels * 3;
+
+	spec_ptr = background->details->color;
+	
+	color_spec = nautilus_gradient_parse_one_color_spec (spec_ptr, NULL, &spec_ptr);
+	nautilus_gdk_color_parse_with_white_default (color_spec, &cur_color);
+	g_free (color_spec);
+
+	while (spec_ptr != NULL && buff_ptr < buff_limit) {
+		int percent;
+		int fill_pos;
+		int fill_width;
+		int dr, dg, db;
+		guchar *fill_limit;
+		GdkColor new_color;
+	
+		color_spec = nautilus_gradient_parse_one_color_spec (spec_ptr, &percent, &spec_ptr);
+		nautilus_gdk_color_parse_with_white_default (color_spec, &new_color);
+		g_free (color_spec);
+
+		dr = new_color.red   - cur_color.red;
+		dg = new_color.green - cur_color.green;
+		db = new_color.blue  - cur_color.blue;
+
+		fill_pos   = 0;
+		fill_width = (percent * num_pixels) / 100;
+		fill_limit = MIN (buff_ptr + fill_width * 3, buff_limit);
+		
+		while (buff_ptr < fill_limit) {
+			*buff_ptr++ = (cur_color.red   + (dr * fill_pos) / fill_width) >> 8;
+			*buff_ptr++ = (cur_color.green + (dg * fill_pos) / fill_width) >> 8;
+			*buff_ptr++ = (cur_color.blue  + (db * fill_pos) / fill_width) >> 8;
+			++fill_pos;
+		}
+
+		cur_color = new_color;
+	}
+
+	/* fill in the remainder */
+	art_rgb_fill_run (buff_ptr, cur_color.red, cur_color.green, cur_color.blue, (buff_limit - buff_ptr) / 3);	
+}
+
+static void
+gradient_helper_v (GnomeCanvasBuf *buf, art_u8 *gradient_buff)
+{
+	int width  = buf->rect.x1 - buf->rect.x0;
+	int height = buf->rect.y1 - buf->rect.y0;
+
+	art_u8 *dst       = buf->buf;
+	art_u8 *dst_limit = buf->buf + height * buf->buf_rowstride;
+
+	gradient_buff += buf->rect.y0 * 3;
+	
+	while (dst < dst_limit) {
+		art_u8 r = *gradient_buff++;
+		art_u8 g = *gradient_buff++;
+		art_u8 b = *gradient_buff++;
+ 		art_rgb_fill_run (dst, r, g, b, width);
+		dst += buf->buf_rowstride;
+	}
+}
+
+static void
+gradient_helper_h (GnomeCanvasBuf *buf, art_u8 *gradient_buff)
+{
+	int width  = buf->rect.x1 - buf->rect.x0;
+	int height = buf->rect.y1 - buf->rect.y0;
+
+	art_u8 *dst       = buf->buf;
+	art_u8 *dst_limit = buf->buf + height * buf->buf_rowstride;
+
+	int copy_bytes_per_row = width * 3;
+
+	gradient_buff += buf->rect.x0 * 3;
+	
+	while (dst < dst_limit) {
+ 		memcpy (dst, gradient_buff, copy_bytes_per_row);
+		dst += buf->buf_rowstride;
+	}
+}
+
+static void
+fill_canvas_from_gradient_buffer (GnomeCanvasBuf *buf, NautilusBackground *background)
+{
+	g_return_if_fail (background->details->gradient_buffer != NULL);
+
+	/* FIXME bugzilla.eazel.com 415: This hack is needed till we fix it so the
+	 * background doesn't scroll.
+	 * 
+	 * I.e. currently you can scroll off the end of the gradient - and we
+	 * handle this by pegging it the the last rgb value.
+	 */
+	if (background->details->gradient_is_horizontal) {
+		if (buf->rect.x1 > background->details->gradient_num_pixels) {
+			art_u8 *rgb = background->details->gradient_buffer + (background->details->gradient_num_pixels - 1) * 3;
+			nautilus_gnome_canvas_fill_rgb (buf, rgb[0], rgb[1], rgb[2]);
+			return;
+		}
+	} else {
+		if (buf->rect.y1 > background->details->gradient_num_pixels) {
+			art_u8 *rgb = background->details->gradient_buffer + (background->details->gradient_num_pixels - 1) * 3;
+			nautilus_gnome_canvas_fill_rgb (buf, rgb[0], rgb[1], rgb[2]);
+			return;
+		}
+	}
+
+	(background->details->gradient_is_horizontal ? gradient_helper_h : gradient_helper_v) (buf, background->details->gradient_buffer);
 }
 
 static void
@@ -377,6 +546,9 @@ nautilus_background_draw (NautilusBackground *background,
 	}
 
 	ensure_image_scaled (background, rectangle->width, rectangle->height);
+	/* Not needed till we stop using nautilus_fill_rectangle_with_gradient
+	ensure_gradient_buffered (background, rectangle->width, rectangle->height);
+	*/
 
 	if (!nautilus_background_image_fully_obscures (background, rectangle->width, rectangle->height, FALSE)) {
 		start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
@@ -452,34 +624,16 @@ draw_pixbuf_tiled_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer)
 {
 	int x, y;
 	int start_x, start_y;
-	int end_x, end_y;
-	int tile_x, tile_y;
-	int blit_x, blit_y;
 	int tile_width, tile_height;
-	int blit_width, blit_height;
-	int tile_offset_x, tile_offset_y;
 	
 	tile_width = gdk_pixbuf_get_width (pixbuf);
 	tile_height = gdk_pixbuf_get_height (pixbuf);
 	
-	tile_offset_x = buffer->rect.x0  % tile_width;
-	tile_offset_y = buffer->rect.y0  % tile_height;
+	start_x = buffer->rect.x0 - (buffer->rect.x0  % tile_width);
+	start_y = buffer->rect.y0 - (buffer->rect.y0  % tile_height);
 
-	start_x = buffer->rect.x0 - tile_offset_x;
-	start_y = buffer->rect.y0 - tile_offset_y;
-	end_x = buffer->rect.x1;
-	end_y = buffer->rect.y1;
-
-	for (x = start_x; x < end_x; x += tile_width) {
-		blit_x = MAX (x, buffer->rect.x0);
-		tile_x = blit_x - x;
-		blit_width = MIN (tile_width, end_x - x) - tile_x;
-		
-		for (y = start_y; y < end_y; y += tile_height) {
-			blit_y = MAX (y, buffer->rect.y0);
-			tile_y = blit_y - y;
-			blit_height = MIN (tile_height, end_y - y) - tile_y;
-			
+	for (y = start_y; y < buffer->rect.y1; y += tile_height) {
+		for (x = start_x; x < buffer->rect.x1; x += tile_width) {
 			nautilus_gnome_canvas_draw_pixmap (buffer, pixbuf, x, y);
 		}
 	}
@@ -494,132 +648,53 @@ nautilus_background_draw_aa (NautilusBackground *background,
 			     int entire_width,
 			     int entire_height)
 {
-	char *start_color_spec, *current_color;
-	char *temp_str, *percentage_str; 
-	GnomeCanvasBuf save_buf;
-	guint32 start_rgb, end_rgb;
-	gboolean horizontal_gradient, more_to_do;
-	int current_width, current_height;
-	int remaining_width, remaining_height;
-	int accumulator, temp_value;
-
 	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
-
-	remaining_width = 0;
-	remaining_height = 0;
 	
 	ensure_image_scaled (background, entire_width, entire_height);
-		
-	if (!buffer->is_buf) {
-		if (!nautilus_background_image_fully_obscures (background, entire_width, entire_height, TRUE)) {
-			/* get the initial color */
-			start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
-			start_rgb = nautilus_parse_rgb_with_white_default (start_color_spec);
-			g_free (start_color_spec);
 
-			/* set up constants for the loop */
-			horizontal_gradient = nautilus_gradient_is_horizontal (background->details->color);
-			current_color = nautilus_strchr (background->details->color, '-');
-			more_to_do = TRUE;
-			current_width = entire_width;
-			current_height = entire_height;			
-			save_buf = *buffer;
-			
-			while (more_to_do) {
-				/* extract the next color and flag the continuation state */
-				if (current_color == NULL) {
-					end_rgb = start_rgb;
-					more_to_do = FALSE;
-				} else {
-					start_color_spec = nautilus_gradient_get_start_color_spec (current_color + 1);
-					
-					/* remove percentage specifier, if necessary */
-					percentage_str = nautilus_strchr (start_color_spec, '|');
-					if (percentage_str) {
-						*percentage_str = '\0';
-					}
-					end_rgb = nautilus_parse_rgb_with_white_default (start_color_spec);
-					g_free (start_color_spec);
 
-					temp_str = nautilus_strchr (current_color + 1, '-');
-					if (temp_str == NULL) {
-						more_to_do = FALSE;
-					} else {
-						/* extract the percentage and scale done the width or height */
-						percentage_str = nautilus_strchr (current_color, '|');
-						if (percentage_str) {
-							percentage_str += 1;
-							accumulator = 0;
-							while (isdigit (*percentage_str))  {
-								accumulator = (10 * accumulator) + (*percentage_str - '0');
-								percentage_str += 1;
-							}
-							
-							if (horizontal_gradient) {
-								temp_value = current_width * accumulator / 100;
-								remaining_width = current_width - temp_value;
-								current_width = temp_value;
-							} else {
-								temp_value = current_height * accumulator / 100;
-								remaining_height = current_height - temp_value;
-								current_height = temp_value;
-							}
-							
-							current_color = temp_str;
-							more_to_do = TRUE;
-						} else {
-							more_to_do = FALSE;
-						}
-						
-					}
-				}
-				
-				/* draw the gradient or solid color */		
-				nautilus_gnome_canvas_fill_with_gradient
-					(buffer, current_width, current_height,
-					 start_rgb, end_rgb,
-					 horizontal_gradient);
-			
-				/* set things up for the next time through, if necessary */
-				start_rgb = end_rgb;
-				/* bump the buffer pointer by the amount done */
-				if (more_to_do) {
-					if (horizontal_gradient) {
-						buffer->buf += (3 * current_width);
-						current_width = remaining_width;
-						buffer->rect.x1 = buffer->rect.x0 + remaining_width;
-					} else {
-						buffer->buf += (current_height * buffer->buf_rowstride);
-						current_height = remaining_height;
-						buffer->rect.y1 = buffer->rect.y0 + remaining_height;
-					}
-				}
-			}
-			*buffer = save_buf;
+	/* FIXME bugzilla.eazel.com 2280:
+	 * Now we may draw each update buffer twice: first with color/gradient, then
+	 * with the image. To fix this we should have the color/gradient drawn in the
+	 * cached image AND then be smart about if the update rect is background or
+	 * image or both.
+	 * 
+	 * Another thing to do is cache the nautilus_background_image_fully_obscures
+	 * value - there's no need to be recomputing it all the time.
+	 */
+	if (!nautilus_background_image_fully_obscures (background, entire_width, entire_height, TRUE)) {
+		if (background->details->is_solid_color) {
+			nautilus_gnome_canvas_fill_rgb (buffer,
+							background->details->solid_color.red,
+							background->details->solid_color.green,
+							background->details->solid_color.blue);
+		} else {
+			ensure_gradient_buffered (background, entire_width, entire_height);
+			fill_canvas_from_gradient_buffer (buffer, background);
 		}
-
-		if (background->details->image != NULL) {
-			switch (background->details->image_placement) {
-			case NAUTILUS_BACKGROUND_TILED:
-				draw_pixbuf_tiled_aa (background->details->image, buffer);
-				break;
-			default:
-				g_assert_not_reached ();
-				/* fall through */
-			case NAUTILUS_BACKGROUND_CENTERED:
-			case NAUTILUS_BACKGROUND_SCALED:
-			case NAUTILUS_BACKGROUND_SCALED_ASPECT:
-				/* Since the image has already been scaled, all these cases
-				 * can be treated identically.
-				 */
-				draw_pixbuf_centered_aa (background->details->image, buffer, entire_width, entire_height);
-				break;
-			}
-		}
-						
-		buffer->is_bg = FALSE;
-		buffer->is_buf = TRUE;
 	}
+
+	if (background->details->image != NULL) {
+		switch (background->details->image_placement) {
+		case NAUTILUS_BACKGROUND_TILED:
+			draw_pixbuf_tiled_aa (background->details->image, buffer);
+			break;
+		default:
+			g_assert_not_reached ();
+			/* fall through */
+		case NAUTILUS_BACKGROUND_CENTERED:
+		case NAUTILUS_BACKGROUND_SCALED:
+		case NAUTILUS_BACKGROUND_SCALED_ASPECT:
+			/* Since the image has already been scaled, all these cases
+			 * can be treated identically.
+			 */
+			draw_pixbuf_centered_aa (background->details->image, buffer, entire_width, entire_height);
+			break;
+		}
+	}
+					
+	buffer->is_bg  = FALSE;
+	buffer->is_buf = TRUE;
 }
 
 char *
@@ -647,10 +722,10 @@ nautilus_background_set_color_no_emit (NautilusBackground *background,
 	if (nautilus_strcmp (background->details->color, color) == 0) {
 		return FALSE;
 	}
-
 	g_free (background->details->color);
 	background->details->color = g_strdup (color);
-		
+	reset_cached_color_info (background);
+
 	return TRUE;
 }
 

@@ -91,14 +91,11 @@ void	   nautilus_gnome_canvas_draw_pixmap			(GnomeCanvasBuf *buf,
 								 GdkPixbuf *pixbuf,
 								 int x,
 								 int y);
-
-/* Fill a canvas buffer with a gradient background. */
-void       nautilus_gnome_canvas_fill_with_gradient             (GnomeCanvasBuf  *buffer,
-								 int              entire_width,
-								 int              entire_height,
-								 guint32          start_rgb,
-								 guint32          end_rgb,
-								 gboolean         horizontal);
+								 
+void	   nautilus_gnome_canvas_fill_rgb			(GnomeCanvasBuf  *buf,
+										  art_u8 r,
+										  art_u8 g,
+										  art_u8 b);
 
 /* More functions for ArtIRect and ArtDRect. */
 gboolean   nautilus_art_irect_equal                             (const ArtIRect  *rect_a,

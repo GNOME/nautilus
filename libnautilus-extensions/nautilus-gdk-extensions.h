@@ -55,6 +55,9 @@
 char *     nautilus_gradient_new                       (const char         *start_color,
 							const char         *end_color,
 							gboolean            is_horizontal);
+char *     nautilus_gradient_parse_one_color_spec      (const char         *spec,
+                                                              int          *percent,
+                                                        const char        **next_spec);
 gboolean   nautilus_gradient_is_gradient               (const char         *gradient_spec);
 char *     nautilus_gradient_get_start_color_spec      (const char         *gradient_spec);
 char *     nautilus_gradient_get_end_color_spec        (const char         *gradient_spec);

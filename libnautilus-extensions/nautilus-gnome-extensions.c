@@ -323,8 +323,7 @@ nautilus_gnome_canvas_draw_pixmap (GnomeCanvasBuf *buf, GdkPixbuf *pixbuf, int x
 	}
 }
 
-#if 0
-static void
+void
 nautilus_gnome_canvas_fill_rgb (GnomeCanvasBuf *buf, art_u8 r, art_u8 g, art_u8 b)
 {
 	art_u8 *dst = buf->buf;
@@ -339,111 +338,6 @@ nautilus_gnome_canvas_fill_rgb (GnomeCanvasBuf *buf, art_u8 r, art_u8 g, art_u8 
 	 		art_rgb_fill_run (dst, r, g, b, width);
 			dst += buf->buf_rowstride;
 		}
-	}
-}
-#endif
-
-/**
- * nautilus_gnome_canvas_fill_with_gradient, for the anti-aliased canvas:
- * @buffer: canvas buffer to draw into.
- * @full_rect: rectangle of entire canvas for gradient color selection
- * @start_color: Color for the left or top; pixel value does not matter.
- * @end_color: Color for the right or bottom; pixel value does not matter.
- * @horizontal: TRUE if the color changes from left to right. FALSE if from top to bottom.
- *
- * Fill the rectangle with a gradient.
- * The color changes from start_color to end_color.
- * This effect works best on true color displays.
- *
- * note that most of this routine is a clone of nautilus_fill_rectangle_with_gradient
- * from nautilus-gdk-extensions.
- */
-
-#define GRADIENT_BAND_SIZE 4
-
-void
-nautilus_gnome_canvas_fill_with_gradient (GnomeCanvasBuf *buffer,
-					  int entire_width, int entire_height,
-					  guint32 start_rgb,
-					  guint32 end_rgb,
-					  gboolean horizontal)
-{
-	GdkRectangle band_box;
-	guchar *bufptr;
-	gint16 *position;
-	guint16 *size;
-	gint num_bands;
-	guint16 last_band_size;
-	gdouble fraction;
-	gint y, band;
-	gint red_value, green_value, blue_value;
-	guint32 band_rgb;
-
-	g_return_if_fail (horizontal == FALSE || horizontal == TRUE);
-
-	if (entire_width == 0 || entire_height == 0) {
-		return;
-	}
-
-	/* Set up the band box so we can access it the same way for horizontal or vertical. */
-	band_box.x = buffer->rect.x0;
-	band_box.y = buffer->rect.y0;
-	band_box.width = buffer->rect.x1 - buffer->rect.x0;
-	band_box.height = buffer->rect.y1 - buffer->rect.y0;
-
-	position = horizontal ? &band_box.x : &band_box.y;
-	size = horizontal ? &band_box.width : &band_box.height;
-
-	/* Figure out how many bands we will need. */
-	num_bands = (*size + GRADIENT_BAND_SIZE - 1) / GRADIENT_BAND_SIZE;
-	last_band_size = GRADIENT_BAND_SIZE - (GRADIENT_BAND_SIZE * num_bands - *size);
-
-	/* Change the band box to be the size of a single band. */
-	*size = GRADIENT_BAND_SIZE;
-	
-	/* Fill each band with a separate nautilus_draw_rectangle call. */
-	for (band = 0; band < num_bands; band++) {
-		/* Compute a new color value for each band. */
-		
-		if (horizontal) {
-			fraction = (double) *position / (double) entire_width;
-		} else {
-			fraction = (double) *position / (double) entire_height;
-		}
-		if (fraction > 1.0) {
-			fraction = 1.0;
-		} else if (fraction < 0.0) {
-			fraction = 0.0;
-		}
-							
-		band_rgb = nautilus_interpolate_color (fraction, start_rgb, end_rgb);
-		red_value = band_rgb >> 16;
-		green_value = (band_rgb >> 8) & 0xff;
-		blue_value = band_rgb & 0xff;
-
-		/* Last band may need to be a bit smaller to avoid writing outside the box.
-		 * This is more efficient than changing and restoring the clip.
-		 */
-		if (band == num_bands - 1) {
-			*size = last_band_size;
-		}
-		
-		/* use libart to fill the band rectangle with the color */
-		if (!horizontal)
-			bufptr = buffer->buf + (buffer->buf_rowstride * band * GRADIENT_BAND_SIZE);
-		else
-			bufptr = buffer->buf + (3 * band * GRADIENT_BAND_SIZE);
-					
-		for (y = band_box.y; y < (band_box.y + band_box.height); y++) {
-			art_rgb_fill_run(bufptr,
-					 red_value,
-					 green_value,
-					 blue_value,
-					 band_box.width);
-			bufptr += buffer->buf_rowstride; 
-		}
-	
-		*position += *size;
 	}
 }
 

@@ -1,3 +1,25 @@
+2000-09-22  Michael Engber  <engber@eazel.com>
+
+	Sped up gradient drawing. Also changed the n-point
+	gradient syntax to use a '%' to indicate percentage
+	instead of a '|'.
+	* icons/arlo/arlo.xml:
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_destroy), (reset_cached_color_info),
+	(ensure_gradient_buffered), (gradient_helper_v),
+	(gradient_helper_h), (fill_canvas_from_gradient_buffer),
+	(nautilus_background_draw), (draw_pixbuf_tiled_aa),
+	(nautilus_background_draw_aa),
+	(nautilus_background_set_color_no_emit):
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(nautilus_gradient_parse_one_color_spec),
+	(nautilus_gradient_get_start_color_spec),
+	(nautilus_gradient_get_end_color_spec):
+	* libnautilus-extensions/nautilus-gdk-extensions.h:
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	(nautilus_gnome_canvas_fill_rgb):
+	* libnautilus-extensions/nautilus-gnome-extensions.h:
+
 2000-09-22  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-object.c:
