@@ -2499,7 +2499,7 @@ key_press_event (GtkWidget *widget,
 	NautilusIconContainer *container;
 	gboolean handled;
 	gboolean flush_typeahead;
-
+	GList *selection;
 
 	container = NAUTILUS_ICON_CONTAINER (widget);
 	handled = FALSE;
@@ -2508,6 +2508,7 @@ key_press_event (GtkWidget *widget,
 	if (nautilus_icon_container_is_renaming (container)) {
 		switch (event->keyval) {
 		case GDK_Return:
+		case GDK_KP_Enter:
 			end_renaming_mode (container, TRUE);	
 			handled = TRUE;
 			break;			
@@ -2555,9 +2556,20 @@ key_press_event (GtkWidget *widget,
 			handled = TRUE;
 			break;
 		case GDK_Return:
-			activate_selected_items (container);
+		case GDK_KP_Enter:
+			/* Return enters renaming mode if only one item is selected. */
+			/*activate_selected_items (container);*/
+			selection = nautilus_icon_container_get_selection (container);
+			if (selection != NULL) {
+				if (nautilus_g_list_exactly_one_item (selection)
+				    && nautilus_file_can_rename (selection->data)) {
+					nautilus_icon_container_start_renaming_selected_item (container);					
+				}
+				g_list_free (selection);
+			}
 			handled = TRUE;
 			break;
+
 		default:
 			/* Don't use Control or Alt keys for type-selecting, because they
 			 * might be used for menus.
