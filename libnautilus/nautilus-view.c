@@ -217,7 +217,6 @@ history_dup (const Nautilus_History *history)
 	for (i = 0; i < length; i++) {
 		dup->_buffer[i].title = CORBA_string_dup (history->_buffer[i].title);
 		dup->_buffer[i].location = CORBA_string_dup (history->_buffer[i].location);
-		dup->_buffer[i].icon = CORBA_string_dup (history->_buffer[i].icon);
 	}
 	CORBA_sequence_set_release (dup, CORBA_TRUE);
 

@@ -34,28 +34,16 @@
 #include <gtk/gtkliststore.h>
 #include <gtk/gtktreemodel.h>
 #include <gtk/gtktreeselection.h>
-#include <gtk/gtktreeview.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <libgnome/gnome-macros.h>
 #include <libnautilus-private/nautilus-bookmark.h>
-#include <libnautilus/nautilus-view.h>
-#include <libnautilus/nautilus-view-standard-main.h>
+#include "nautilus-history-view.h"
 
 #define FACTORY_IID "OAFIID:Nautilus_History_View_Factory"
-#define VIEW_IID    "OAFIID:Nautilus_History_View"
 
-#define NAUTILUS_TYPE_HISTORY_VIEW            (nautilus_history_view_get_type ())
-#define NAUTILUS_HISTORY_VIEW(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_HISTORY_VIEW, NautilusHistoryView))
 #define NAUTILUS_HISTORY_VIEW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_HISTORY_VIEW, NautilusHistoryViewClass))
 #define NAUTILUS_IS_HISTORY_VIEW(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_HISTORY_VIEW))
 #define NAUTILUS_IS_HISTORY_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_HISTORY_VIEW))
-
-typedef struct {
-	NautilusView      parent;
-	GtkTreeView      *tree_view;
-	guint             selection_changed_id;
-	gboolean         *stop_updating_history;
-} NautilusHistoryView;
 
 typedef struct {
 	NautilusViewClass parent;
@@ -67,8 +55,6 @@ enum {
 	HISTORY_VIEW_COLUMN_BOOKMARK,
 	HISTORY_VIEW_COLUMN_COUNT,
 };
-
-static GType nautilus_history_view_get_type (void);
 
 BONOBO_CLASS_BOILERPLATE (NautilusHistoryView, nautilus_history_view,
 			  NautilusView, NAUTILUS_TYPE_VIEW)
@@ -121,8 +107,8 @@ update_history (NautilusHistoryView    *view,
 			return;
 		}
 
-		pixbuf = bonobo_ui_util_xml_to_pixbuf (item->icon);
-		
+		pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS, FALSE);
+
 		gtk_list_store_append (store, &iter);
 		gtk_list_store_set (store, &iter,
 				    HISTORY_VIEW_COLUMN_ICON, pixbuf,

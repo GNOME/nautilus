@@ -1,15 +1,8 @@
 <oaf_info>
 
-<oaf_server iid="OAFIID:Nautilus_History_View_Factory" type="exe" location="nautilus-history-view">
+<oaf_server iid="OAFIID:Nautilus_History_View" type="shlib" location="libnautilus-history-view.so">
 	<oaf_attribute name="repo_ids" type="stringv">
-		<item value="IDL:GNOME/ObjectFactory:1.0"/>
-	</oaf_attribute>
-	<oaf_attribute name="description" type="string" _value="Factory for history views"/>
-</oaf_server>
-
-<oaf_server iid="OAFIID:Nautilus_History_View" type="factory" location="OAFIID:Nautilus_History_View_Factory">
-	<oaf_attribute name="repo_ids" type="stringv">
-		<item value="IDL:Bonobo/Unknown:1.0"/>
+ 		<item value="IDL:Bonobo/Unknown:1.0"/>
 		<item value="IDL:Bonobo/Control:1.0"/>
 		<item value="IDL:Nautilus/View:1.0"/>
 	</oaf_attribute>
@@ -19,7 +12,6 @@
 	<oaf_attribute name="nautilus:recommended_uri_schemes" type="stringv">
 		<item value="*"/>
 	</oaf_attribute>
-
 </oaf_server>
 
 </oaf_info>

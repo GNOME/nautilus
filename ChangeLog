@@ -1,3 +1,25 @@
+2002-05-15  Sean Atkinson  <sean@cantab.net>
+
+	* src/nautilus-window-manage-views.c
+	(get_history_list_callback): 
+	* libnautilus/nautilus-view.c (history_dup):
+	* libnautilus/nautilus-view-component.idl:
+	Remove icon XML string from HistoryItem.
+
+	* components/history/nautilus-history-view.c
+	(update_history): Use bookmark icon, not XML one.
+
+	* components/history/nautilus-history-view.h: Moved some stuff
+	from nautilus-history-view.c here for libmain.c.
+
+	* components/history/Nautilus_View_history.server.in: Changed exe
+	to shlib to run history in-process.
+
+	* components/history/libmain.c: Added for shared library.
+
+	* components/history/Makefile.am: Build shared library.
+	
+
 2002-05-13  Frank Worsley  <fworsley@shaw.ca>
 
 	* libnautilus-private/nautilus-file.c:

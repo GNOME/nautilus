@@ -1678,8 +1678,7 @@ get_history_list_callback (NautilusViewFrame *view,
 	NautilusBookmark *bookmark;
 	int length, i;
 	GList *node;
-	char *name, *location, *pixbuf_xml;
-	GdkPixbuf *pixbuf;
+	char *name, *location;
 	
 	/* Get total number of history items */
 	length = g_list_length (nautilus_get_history_list ());
@@ -1690,24 +1689,19 @@ get_history_list_callback (NautilusViewFrame *view,
 	list->_maximum = length;
 	list->_buffer = CORBA_sequence_Nautilus_HistoryItem_allocbuf (length);
 	CORBA_sequence_set_release (list, CORBA_TRUE);
-	
+
 	/* Iterate through list and copy item data */
 	for (i = 0, node = nautilus_get_history_list (); i < length; i++, node = node->next) {
 		bookmark = node->data;
 
 		name = nautilus_bookmark_get_name (bookmark);
 		location = nautilus_bookmark_get_uri (bookmark);
-		pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS, FALSE);
-		pixbuf_xml = bonobo_ui_util_pixbuf_to_xml (pixbuf);
 		
 		list->_buffer[i].title = CORBA_string_dup (name);
 		list->_buffer[i].location = CORBA_string_dup (location);
-		list->_buffer[i].icon = CORBA_string_dup (pixbuf_xml);
-
+                
 		g_free (name);
 		g_free (location);
-		g_free (pixbuf_xml);
-		g_object_unref (pixbuf);		
 	}
 
 	return list;
