@@ -37,9 +37,4 @@ typedef struct {
 	gpointer user_data;
 } HyperbolaDocTree;
 
-#ifndef _
-#define _(x) x
-#define N_(x) x
-#endif
-
 #endif

@@ -2,6 +2,8 @@
 #include <libnautilus/libnautilus.h>
 #include "hyperbola-filefmt.h"
 #include <gtk/gtk.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include <libnautilus-extensions/nautilus-ctree.h>
 #include <libnautilus-extensions/nautilus-gdk-font-extensions.h>
 
