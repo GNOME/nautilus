@@ -1,3 +1,28 @@
+2004-01-14  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	* libnautilus-private/nautilus-directory-private.h:
+	* libnautilus-private/nautilus-file-attributes.h:
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.c:
+	* libnautilus-private/nautilus-file.h:
+	Add slow_mime_type file attribute.
+	Allow call_when_ready to take a NULL callback, and
+	allow these monitors to be duplicated. (Used for
+	fire-and-forget attribute reading)
+	
+	* libnautilus-private/nautilus-mime-actions.c:
+	(nautilus_mime_actions_get_minimum_file_attributes):
+	Add slow mime type here
+	
+	* src/file-manager/fm-directory-view.c:
+	Get slow mime type on selection
+	
+	* src/file-manager/fm-properties-window.c:
+	Get slow mime type for properties dialog.
+	Don't use the same pointer twice for the
+	same monitor.
+
 2004-01-13  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/Makefile.am (ui_DATA):

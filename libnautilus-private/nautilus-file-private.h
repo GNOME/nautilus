@@ -117,6 +117,8 @@ struct NautilusFileDetails
 	/* got_info known from info field being non-NULL */
 	eel_boolean_bit get_info_failed               : 1;
 	eel_boolean_bit file_info_is_up_to_date       : 1;
+	
+	eel_boolean_bit got_slow_mime_type            : 1;
 
 	eel_boolean_bit got_directory_count           : 1;
 	eel_boolean_bit directory_count_failed        : 1;
@@ -168,7 +170,8 @@ void          nautilus_file_clear_cached_display_name      (NautilusFile        
  * no change, update file and return TRUE if the file info contains
  * new state.  */
 gboolean      nautilus_file_update_info                    (NautilusFile           *file,
-							    GnomeVFSFileInfo       *info);
+							    GnomeVFSFileInfo       *info,
+							    gboolean                info_has_slow_mime);
 gboolean      nautilus_file_update_name                    (NautilusFile           *file,
 							    const char             *name);
 

@@ -541,6 +541,7 @@ nautilus_directory_set_up_request (Request *request,
 			      NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES) != FALSE;
 	request->file_info = (file_attributes & 
 			      (NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE |
+			       NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE |
 			       NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY |
 			       NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES |
 			       NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE)) != FALSE;
@@ -583,7 +584,9 @@ nautilus_directory_set_up_request (Request *request,
 	
 	request->metafile |= (file_attributes & 
 			      NAUTILUS_FILE_ATTRIBUTE_METADATA) != FALSE;
-	
+
+	request->slow_mime_type = (file_attributes & NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE) != FALSE;
+
 	request->extension_info = (file_attributes & NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO) != FALSE;
 }
 
@@ -602,6 +605,7 @@ mime_db_changed_callback (GnomeVFSMIMEMonitor *ignore, NautilusDirectory *dir)
 		NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES |
 		NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON |
 		NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE |
+		NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE |
 		NAUTILUS_FILE_ATTRIBUTE_METADATA |
 		NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE |
 		NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES;
@@ -894,7 +898,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		if (file != NULL) {
 			/* file already exists, check if it changed */
 			set_file_unconfirmed (file, FALSE);
-			if (nautilus_file_update_info (file, file_info)) {
+			if (nautilus_file_update_info (file, file_info, FALSE)) {
 				/* File changed, notify about the change. */
 				nautilus_file_ref (file);
 				changed_files = g_list_prepend (changed_files, file);
@@ -1277,9 +1281,11 @@ ready_callback_call (NautilusDirectory *directory,
 
 	/* Call the callback. */
 	if (callback->file != NULL) {
-		(* callback->callback.file) (callback->file,
-					     callback->callback_data);
-	} else {
+		if (callback->callback.file) {
+			(* callback->callback.file) (callback->file,
+						     callback->callback_data);
+		}
+	} else if (callback->callback.directory != NULL) {
 		if (directory == NULL || !callback->request.file_list) {
 			file_list = NULL;
 		} else {
@@ -1309,7 +1315,6 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 	g_assert (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
 	g_assert (file == NULL || NAUTILUS_IS_FILE (file));
 	g_assert (file != NULL || directory_callback != NULL);
-	g_assert (file == NULL || file_callback != NULL);
 	
 	/* Construct a callback object. */
 	callback.file = file;
@@ -1321,7 +1326,7 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 	callback.callback_data = callback_data;
 	nautilus_directory_set_up_request (&callback.request, file_attributes);
 	callback.request.file_list = wait_for_file_list;
-	
+
 	/* Handle the NULL case. */
 	if (directory == NULL) {
 		ready_callback_call (NULL, &callback);
@@ -1332,7 +1337,10 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 	if (g_list_find_custom (directory->details->call_when_ready_list,
 				&callback,
 				ready_callback_key_compare) != NULL) {
-		g_warning ("tried to add a new callback while an old one was pending");
+		if (file_callback != NULL && directory_callback != NULL) {
+			g_warning ("tried to add a new callback while an old one was pending");
+		}
+		/* NULL callback means, just read it. Conflicts are ok. */
 		return;
 	}
 
@@ -1670,6 +1678,26 @@ wants_info (const Request *request)
 }
 
 static gboolean
+always_lacks (NautilusFile *file)
+{
+	return TRUE;
+}
+
+static gboolean
+lacks_slow_mime_type (NautilusFile *file)
+{
+	return !file->details->got_slow_mime_type
+		&& !file->details->is_gone;
+}
+
+static gboolean
+wants_slow_mime_type (const Request *request)
+{
+	return request->slow_mime_type;
+}
+
+
+static gboolean
 lacks_deep_count (NautilusFile *file)
 {
 	return file->details->deep_counts_status != NAUTILUS_REQUEST_DONE;
@@ -1814,6 +1842,12 @@ request_is_satisfied (NautilusDirectory *directory,
 
 	if (request->file_info) {
 		if (has_problem (directory, file, lacks_info)) {
+			return FALSE;
+		}
+	}
+
+	if (request->slow_mime_type) {
+		if (has_problem (directory, file, lacks_slow_mime_type)) {
 			return FALSE;
 		}
 	}
@@ -2097,7 +2131,7 @@ start_monitoring_file_list (NautilusDirectory *directory)
 	
 #ifdef DEBUG_LOAD_DIRECTORY
 	g_message ("load_directory called to monitor file list of %s", directory->details->uri);
-#endif	
+#endif
 	gnome_vfs_async_load_directory
 		(&directory->details->directory_load_in_progress, /* handle */
 		 directory->details->uri,                         /* uri */
@@ -2791,6 +2825,7 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 	NautilusDirectory *directory;
 	NautilusFile *get_info_file;
 	GnomeVFSGetFileInfoResult *result;
+	gboolean has_slow_mime_type;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 	g_assert (handle == NULL || handle == directory->details->get_info_in_progress);
@@ -2799,10 +2834,13 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 	g_assert (NAUTILUS_IS_FILE (get_info_file));
 
 	nautilus_directory_ref (directory);
+
+	has_slow_mime_type = directory->details->get_info_has_slow_mime_type;
 	
 	directory->details->get_info_file = NULL;
 	directory->details->get_info_in_progress = NULL;
-
+	directory->details->get_info_has_slow_mime_type = FALSE;
+	
 	/* ref here because we might be removing the last ref when we
 	 * mark the file gone below, but we need to keep a ref at
 	 * least long enough to send the change notification. 
@@ -2828,7 +2866,7 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 			}
 		}
 	} else {
-		nautilus_file_update_info (get_info_file, result->file_info);
+		nautilus_file_update_info (get_info_file, result->file_info, has_slow_mime_type);
 	}
 
 	nautilus_file_changed (get_info_file);
@@ -2850,7 +2888,8 @@ file_info_stop (NautilusDirectory *directory)
 		if (file != NULL) {
 			g_assert (NAUTILUS_IS_FILE (file));
 			g_assert (file->details->directory == directory);
-			if (is_needy (file, lacks_info, wants_info)) {
+			if (is_needy (file, lacks_info, wants_info) ||
+			    is_needy (file, lacks_slow_mime_type, wants_slow_mime_type)) {
 				return;
 			}
 		}
@@ -2867,16 +2906,20 @@ file_info_start (NautilusDirectory *directory,
 	char *uri;
 	GnomeVFSURI *vfs_uri;
 	GList fake_list;
-
+	gboolean need_slow_mime;
+	GnomeVFSFileInfoOptions options;
+	
 	file_info_stop (directory);
 
 	if (directory->details->get_info_in_progress != NULL) {
 		return;
 	}
 
-	if (!is_needy (file, lacks_info, wants_info)) {
+	if (!is_needy (file, lacks_info, wants_info) &&
+	    !is_needy (file, lacks_slow_mime_type, wants_slow_mime_type)) {
 		return;
 	}
+	need_slow_mime = is_needy (file, always_lacks, wants_slow_mime_type);
 	
 	uri = nautilus_file_get_uri (file);
 	vfs_uri = gnome_vfs_uri_new (uri);
@@ -2889,6 +2932,7 @@ file_info_start (NautilusDirectory *directory,
 		file->details->file_info_is_up_to_date = TRUE;
 		file->details->get_info_failed = TRUE;
 		file->details->get_info_error = GNOME_VFS_ERROR_INVALID_URI;
+		file->details->got_slow_mime_type = need_slow_mime;
 
 		nautilus_directory_async_state_changed (directory);
 		return;
@@ -2902,17 +2946,22 @@ file_info_start (NautilusDirectory *directory,
 	fake_list.data = vfs_uri;
 	fake_list.prev = NULL;
 	fake_list.next = NULL;
+
+	options = GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+		| GNOME_VFS_FILE_INFO_FOLLOW_LINKS;
+	if (need_slow_mime) {
+		options |= GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE;
+	}
+	directory->details->get_info_has_slow_mime_type = need_slow_mime;
 	gnome_vfs_async_get_file_info
 		(&directory->details->get_info_in_progress,
 		 &fake_list,
-		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-		 | GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
+		 options,
 		 GNOME_VFS_PRIORITY_DEFAULT,
 		 get_info_callback,
 		 directory);
 	gnome_vfs_uri_unref (vfs_uri);
 }
-
 
 static void
 link_info_done (NautilusDirectory *directory,
@@ -3344,6 +3393,7 @@ start_or_stop_io (NautilusDirectory *directory)
 
 		if (file_needs_low_priority_work_done (directory, file)) {
 			/* Start getting attributes if possible */
+			file_info_start (directory, file); /* for slow mime type */
 			directory_count_start (directory, file);
 			deep_count_start (directory, file);
 			mime_list_start (directory, file);
@@ -3588,6 +3638,10 @@ file_needs_low_priority_work_done (NautilusDirectory *directory,
 	}
 
 	if (is_needy (file, lacks_mime_list, wants_mime_list)) {
+		return TRUE;
+	}
+
+	if (is_needy (file, lacks_slow_mime_type, wants_slow_mime_type)) {
 		return TRUE;
 	}
 

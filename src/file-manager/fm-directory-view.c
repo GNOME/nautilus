@@ -5597,7 +5597,6 @@ schedule_update_status (FMDirectoryView *view)
 	}
 }
 
-
 /**
  * fm_directory_view_notify_selection_changed:
  * 
@@ -5609,6 +5608,9 @@ schedule_update_status (FMDirectoryView *view)
 void
 fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 {
+	NautilusFile *file;
+	GList *selection, *p;
+	
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
 	if (!view->details->selection_change_is_due_to_shell) {
@@ -5633,6 +5635,20 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 
 		/* Schedule an update of menu item states to match selection */
 		schedule_update_menus (view);
+
+		selection = fm_directory_view_get_selection (view);
+		for (p = selection; p != NULL; p = p->next) {
+			file = p->data;
+			
+			if (nautilus_file_needs_slow_mime_type (file)) {
+				nautilus_file_call_when_ready
+					(file,
+					 NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE,
+					 NULL,
+					 NULL);
+			}
+		}
+		nautilus_file_list_free (selection);
 	}
 }
 
@@ -5942,7 +5958,7 @@ activate_activation_uri_ready_callback (NautilusFile *file, gpointer callback_da
 
 	parameters->file = actual_file;
 	parameters->callback = activate_callback;
-	
+
 	nautilus_file_call_when_ready
 		(actual_file, attributes, activate_callback, parameters);
 }

@@ -993,8 +993,8 @@ remove_from_dialog (FMPropertiesWindow *window,
 					      G_CALLBACK (properties_window_update),
 					      window);
 
-	nautilus_file_monitor_remove (original_file, window);
-	nautilus_file_monitor_remove (target_file, window);
+	nautilus_file_monitor_remove (original_file, &window->details->original_files);
+	nautilus_file_monitor_remove (target_file, &window->details->target_files);
 
 	nautilus_file_unref (original_file);
 	nautilus_file_unref (target_file);
@@ -3224,10 +3224,11 @@ create_properties_window (StartupData *startup_data)
 		file = NAUTILUS_FILE (l->data);
 
 		attributes = nautilus_icon_factory_get_required_file_attributes ();
-		attributes |= NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
+		attributes |= NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME
+			| NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE;
 
 		nautilus_file_monitor_add (NAUTILUS_FILE (l->data),
-					   window, 
+					   &window->details->original_files, 
 					   attributes);	
 	}
 	
@@ -3243,7 +3244,7 @@ create_properties_window (StartupData *startup_data)
 		}
 		
 		attributes |= NAUTILUS_FILE_ATTRIBUTE_METADATA;
-		nautilus_file_monitor_add (file, window, attributes);
+		nautilus_file_monitor_add (file, &window->details->target_files, attributes);
 	}	
 		
 	for (l = window->details->target_files; l != NULL; l = l->next) {
@@ -3545,13 +3546,13 @@ real_destroy (GtkObject *object)
 	remove_window (window);
 
 	for (l = window->details->original_files; l != NULL; l = l->next) {
-		nautilus_file_monitor_remove (NAUTILUS_FILE (l->data), window);
+		nautilus_file_monitor_remove (NAUTILUS_FILE (l->data), &window->details->original_files);
 	}
 	nautilus_file_list_free (window->details->original_files);
 	window->details->original_files = NULL;
 	
 	for (l = window->details->target_files; l != NULL; l = l->next) {
-		nautilus_file_monitor_remove (NAUTILUS_FILE (l->data), window);
+		nautilus_file_monitor_remove (NAUTILUS_FILE (l->data), &window->details->target_files);
 	}
 	nautilus_file_list_free (window->details->target_files);
 	window->details->target_files = NULL;

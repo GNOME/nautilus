@@ -100,6 +100,7 @@ typedef struct {
 	NautilusFileOperationCallback callback;
 	gpointer callback_data;
 	gboolean is_rename;
+	gboolean use_slow_mime;
 } Operation;
 
 typedef GList * (* ModifyListFunction) (GList *list, NautilusFile *file);
@@ -123,7 +124,8 @@ static char *   nautilus_file_get_owner_as_string            (NautilusFile      
 							      gboolean               include_real_name);
 static char *   nautilus_file_get_type_as_string             (NautilusFile          *file);
 static gboolean update_info_and_name                         (NautilusFile          *file,
-							      GnomeVFSFileInfo      *info);
+							      GnomeVFSFileInfo      *info,
+							      gboolean info_has_slow_mime);
 static char *   nautilus_file_get_display_name_nocopy        (NautilusFile          *file);
 static char *   nautilus_file_get_display_name_collation_key (NautilusFile          *file);
 
@@ -310,7 +312,7 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
 	nautilus_directory_ref (directory);
 	file->details->directory = directory;
 
-	update_info_and_name (file, info);
+	update_info_and_name (file, info, FALSE);
 	return file;
 }
 
@@ -1059,7 +1061,7 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 		old_uri = nautilus_file_get_uri (op->file);
 		old_relative_uri = g_strdup (op->file->details->relative_uri);
 
-		update_info_and_name (op->file, new_info);
+		update_info_and_name (op->file, new_info, op->use_slow_mime);
 
 		/* Self-owned files store their metadata under the
 		 * hard-code name "."  so there's no need to rename
@@ -1114,7 +1116,8 @@ rename_guts (NautilusFile *file,
 	char *uri, *old_name;
 	gboolean success;
 	gboolean is_local_desktop_file;
-
+	GnomeVFSFileInfoOptions options;
+	
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (new_name != NULL);
 	g_return_if_fail (callback != NULL);
@@ -1221,6 +1224,13 @@ rename_guts (NautilusFile *file,
 	/* Set up a renaming operation. */
 	op = operation_new (file, callback, callback_data);
 	op->is_rename = TRUE;
+	op->use_slow_mime = file->details->got_slow_mime_type;
+
+	options = GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+		| GNOME_VFS_FILE_INFO_FOLLOW_LINKS;
+	if (op->use_slow_mime) {
+		options |= GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE;
+	}
 
 	/* Do the renaming. */
 	partial_file_info = gnome_vfs_file_info_new ();
@@ -1229,8 +1239,7 @@ rename_guts (NautilusFile *file,
 	gnome_vfs_async_set_file_info (&op->handle,
 				       vfs_uri, partial_file_info, 
 				       GNOME_VFS_SET_FILE_INFO_NAME,
-				       (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-					| GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
+				       options,
 				       GNOME_VFS_PRIORITY_DEFAULT,
 				       rename_callback, op);
 	gnome_vfs_file_info_unref (partial_file_info);
@@ -1393,7 +1402,8 @@ update_links_if_target (NautilusFile *target_file)
 static gboolean
 update_info_internal (NautilusFile *file,
 		      GnomeVFSFileInfo *info,
-		      gboolean update_name)
+		      gboolean update_name,
+		      gboolean info_has_slow_mime)
 {
 	GList *node;
 	GnomeVFSFileInfo *info_copy;
@@ -1409,11 +1419,12 @@ update_info_internal (NautilusFile *file,
 	}
 
 	file->details->file_info_is_up_to_date = TRUE;
-
+	file->details->got_slow_mime_type = info_has_slow_mime;
 	if (file->details->info != NULL
 	    && gnome_vfs_file_info_matches (file->details->info, info)) {
 		return FALSE;
 	}
+
 
 	/* FIXME bugzilla.gnome.org 42044: Need to let links that
 	 * point to the old name know that the file has been renamed.
@@ -1452,16 +1463,18 @@ update_info_internal (NautilusFile *file,
 
 static gboolean
 update_info_and_name (NautilusFile *file,
-		      GnomeVFSFileInfo *info)
+		      GnomeVFSFileInfo *info,
+		      gboolean info_has_slow_mime)
 {
-	return update_info_internal (file, info, TRUE);
+	return update_info_internal (file, info, TRUE, info_has_slow_mime);
 }
 
 gboolean
 nautilus_file_update_info (NautilusFile *file,
-			   GnomeVFSFileInfo *info)
+			   GnomeVFSFileInfo *info,
+			   gboolean info_has_slow_mime)
 {
-	return update_info_internal (file, info, FALSE);
+	return update_info_internal (file, info, FALSE, info_has_slow_mime);
 }
 
 static gboolean
@@ -3403,7 +3416,7 @@ set_permissions_callback (GnomeVFSAsyncHandle *handle,
 	g_assert (handle == op->handle);
 
 	if (result == GNOME_VFS_OK && new_info != NULL) {
-		nautilus_file_update_info (op->file, new_info);
+		nautilus_file_update_info (op->file, new_info, op->use_slow_mime);
 	}
 	operation_complete (op, result);
 }
@@ -3427,6 +3440,7 @@ nautilus_file_set_permissions (NautilusFile *file,
 	Operation *op;
 	GnomeVFSURI *vfs_uri;
 	GnomeVFSFileInfo *partial_file_info;
+	GnomeVFSFileInfoOptions options;
 
 	if (!nautilus_file_can_set_permissions (file)) {
 		/* Claim that something changed even if the permission change failed.
@@ -3449,7 +3463,13 @@ nautilus_file_set_permissions (NautilusFile *file,
 
 	/* Set up a permission change operation. */
 	op = operation_new (file, callback, callback_data);
+	op->use_slow_mime = file->details->got_slow_mime_type;
 
+	options = GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+		| GNOME_VFS_FILE_INFO_FOLLOW_LINKS;
+	if (op->use_slow_mime) {
+		options |= GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE;
+	}
 	/* Change the file-on-disk permissions. */
 	partial_file_info = gnome_vfs_file_info_new ();
 	partial_file_info->permissions = new_permissions;
@@ -3457,8 +3477,7 @@ nautilus_file_set_permissions (NautilusFile *file,
 	gnome_vfs_async_set_file_info (&op->handle,
 				       vfs_uri, partial_file_info, 
 				       GNOME_VFS_SET_FILE_INFO_PERMISSIONS,
-				       (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-					| GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
+				       options,
 				       GNOME_VFS_PRIORITY_DEFAULT,
 				       set_permissions_callback, op);
 	gnome_vfs_file_info_unref (partial_file_info);
@@ -3701,7 +3720,7 @@ set_owner_and_group_callback (GnomeVFSAsyncHandle *handle,
 	g_assert (handle == op->handle);
 
 	if (result == GNOME_VFS_OK && new_info != NULL) {
-		nautilus_file_update_info (op->file, new_info);
+		nautilus_file_update_info (op->file, new_info, op->use_slow_mime);
 	}
 	operation_complete (op, result);
 }
@@ -3716,9 +3735,17 @@ set_owner_and_group (NautilusFile *file,
 	Operation *op;
 	GnomeVFSURI *uri;
 	GnomeVFSFileInfo *partial_file_info;
+	GnomeVFSFileInfoOptions options;
 	
 	/* Set up a owner-change operation. */
 	op = operation_new (file, callback, callback_data);
+	op->use_slow_mime = file->details->got_slow_mime_type;
+
+	options = GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+		| GNOME_VFS_FILE_INFO_FOLLOW_LINKS;
+	if (op->use_slow_mime) {
+		options |= GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE;
+	}
 
 	/* Change the file-on-disk owner. */
 	partial_file_info = gnome_vfs_file_info_new ();
@@ -3729,8 +3756,7 @@ set_owner_and_group (NautilusFile *file,
 	gnome_vfs_async_set_file_info (&op->handle,
 				       uri, partial_file_info, 
 				       GNOME_VFS_SET_FILE_INFO_OWNER,
-				       (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-					| GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
+				       options,
 				       GNOME_VFS_PRIORITY_DEFAULT,
 				       set_owner_and_group_callback, op);
 	gnome_vfs_file_info_unref (partial_file_info);
@@ -4702,6 +4728,13 @@ nautilus_file_get_file_type (NautilusFile *file)
 	return ((NautilusFileClass*)G_OBJECT_GET_CLASS (file))->get_file_type (file);
 }
 
+gboolean
+nautilus_file_needs_slow_mime_type (NautilusFile *file)
+{
+	return !file->details->got_slow_mime_type &&
+		has_local_path (file);
+}
+
 /**
  * nautilus_file_get_mime_type
  * 
@@ -5367,8 +5400,6 @@ nautilus_file_call_when_ready (NautilusFile *file,
 			       gpointer callback_data)
 
 {
-	g_return_if_fail (callback != NULL);
-
 	if (file == NULL) {
 		(* callback) (file, callback_data);
 		return;
@@ -5431,6 +5462,12 @@ invalidate_file_info (NautilusFile *file)
 }
 
 static void
+invalidate_slow_mime_type (NautilusFile *file)
+{
+	file->details->file_info_is_up_to_date = FALSE;
+}
+
+static void
 invalidate_link_info (NautilusFile *file)
 {
 	file->details->link_info_is_up_to_date = FALSE;
@@ -5480,6 +5517,9 @@ nautilus_file_invalidate_attributes_internal (NautilusFile *file,
 	}
 	if (request.file_info) {
 		invalidate_file_info (file);
+	}
+	if (request.slow_mime_type) {
+		invalidate_slow_mime_type (file);
 	}
 	if (request.top_left_text) {
 		invalidate_top_left_text (file);
@@ -5572,6 +5612,7 @@ nautilus_file_get_all_attributes (void)
 		NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE |
 		NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT |
 		NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME |
+		NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE |
 		NAUTILUS_FILE_ATTRIBUTE_VOLUMES;
 }
 

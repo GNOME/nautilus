@@ -101,6 +101,10 @@ struct NautilusDirectoryDetails
 
 	NautilusFile *get_info_file;
 	GnomeVFSAsyncHandle *get_info_in_progress;
+	gboolean get_info_has_slow_mime_type;
+
+	NautilusFile *slow_mime_type_file;
+	GnomeVFSAsyncHandle *slow_mime_type_in_progress;
 
 	NautilusFile *extension_info_file;
 	NautilusInfoProvider *extension_info_provider;
@@ -126,6 +130,7 @@ typedef struct {
 	gboolean mime_list;
 	gboolean top_left_text;
 	gboolean extension_info;
+	gboolean slow_mime_type;
 } Request;
 
 NautilusDirectory *nautilus_directory_get_existing                    (const char                *uri);
