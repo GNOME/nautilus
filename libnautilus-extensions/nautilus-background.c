@@ -620,11 +620,7 @@ nautilus_background_draw_flat_box (GtkStyle *style,
 	if (state_type == GTK_STATE_NORMAL) {
 		background = nautilus_get_widget_background (widget);
 		if (background != NULL) {
-			if (nautilus_gradient_is_gradient (background->details->color) ||
-			   (background->details->tile_image != NULL)) {
-				call_parent = FALSE;
-			}
-		  
+			call_parent = FALSE;
 		}
 	}
 
@@ -638,6 +634,7 @@ nautilus_background_draw_flat_box (GtkStyle *style,
     	gc = style->bg_gc[state_type];
 	if (area)
 		gdk_gc_set_clip_rectangle (gc, area);
+
 
 	nautilus_gdk_window_update_sizes (window, &width, &height);	
 	rectangle.x = x;
@@ -689,6 +686,7 @@ nautilus_background_set_widget_style (NautilusBackground *background,
 	start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
 	nautilus_gdk_color_parse_with_white_default (start_color_spec, &color);
 	g_free (start_color_spec);
+	
 	style->bg[GTK_STATE_NORMAL] = color;
 	style->base[GTK_STATE_NORMAL] = color;
 	style->bg[GTK_STATE_ACTIVE] = color;

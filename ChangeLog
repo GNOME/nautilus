@@ -1,3 +1,17 @@
+2000-08-04  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_draw_flat_box),
+	(nautilus_background_set_widget_style):
+	fixed bug where setting the sidebar to a solid color background
+	wouldn't work; fixed by allowing nautilus_background to handle
+	that case instead of inheriting.
+	
+	* src/nautilus-property-browser.c: (format_name_for_display):
+	at Susan's suggestion, don't draw the name for the reset background
+	property, to better distinguish it from the others (and its name
+	is part of its image, anyway)
+	
 Fri Aug 04 14:21:51 2000  George Lebl <jirka@5z.com>
 
 	* components/hardware/nautilus-hardware-view.c (setup_form_title):

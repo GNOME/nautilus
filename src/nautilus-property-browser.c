@@ -1310,7 +1310,13 @@ format_name_for_display (const char* name)
 	gboolean need_to_cap;
 	int index, length;
 	char *formatted_str;
-	
+
+	/* don't display a name for the "reset" property, since it's name is
+	   contained in its image and also to help distinguish it */  
+	if (!nautilus_strcmp(name, RESET_IMAGE_NAME)) {
+		return g_strdup("");
+	}
+		
 	formatted_str = strip_extension (name);
 	
 	need_to_cap = TRUE;
