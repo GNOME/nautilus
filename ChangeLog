@@ -1,3 +1,13 @@
+2000-06-12  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-link-set-window.c,h:
+	(nautilus_link_set_configure_window), (delete_window_callback),
+	(nautilus_link_set_toggle_configure_window):
+	clean-up for the link set configuration window.  Added some
+	descriptive text, tweaked it's size, and made its visibility optionally toggle.
+	* src/nautilus-sidebar.c: (metadata_button_callback):
+	checked the call invoking the link_set_window to toggle it's visiblity
+
 2000-06-12  John Sullivan  <sullivan@eazel.com>
 
 	Finished task 1006 (Should be able to set default

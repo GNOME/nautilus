@@ -741,7 +741,7 @@ metadata_button_callback (GtkWidget *button, char *command_str)
 	sidebar = NAUTILUS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (button)));
 	if (!strcmp(command_str, "#linksets")) {
 		window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (sidebar)));
-		nautilus_link_set_configure_window(sidebar->details->uri, window);
+		nautilus_link_set_toggle_configure_window(sidebar->details->uri, window);
 	}
 }
 

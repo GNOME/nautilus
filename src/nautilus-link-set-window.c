@@ -30,6 +30,7 @@
 
 #include <libgnomevfs/gnome-vfs.h>
 #include <gtk/gtkwindow.h>
+#include <gtk/gtkvbox.h>
 #include <gtk/gtktogglebutton.h>
 
 #include <libnautilus-extensions/nautilus-file.h>
@@ -44,6 +45,10 @@
 
 #include "nautilus-window.h"
 #include "nautilus-link-set-window.h"
+
+/* global to hold the currently allocated link set window, if any */
+
+static GtkWindow *link_set_window = NULL;
 
 /* handle the check box toggling */
 static void
@@ -161,29 +166,37 @@ get_link_set_names()
 
 /* create a window used to configure the link sets in the passed in directory */
 GtkWindow *
-nautilus_link_set_configure_window(const char *directory_path, GtkWindow *window_to_update)
-{
-	char *title, *temp_str;
+nautilus_link_set_configure_window (const char *directory_path, GtkWindow *window_to_update)
+{		
+	char *temp_str;
 	int link_set_count, index;
 	GtkWindow *window;
+	GtkWidget *vbox, *label;
 	GtkWidget *checkbox_table, *scrolled_window;
 	GList *link_set_names, *current_link_set;
 
 	/* Create the window. */
 	window = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
   	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
- 	/*
- 	gtk_widget_set_usize(GTK_WIDGET(window), 240, 160);
- 	*/
+ 	gtk_widget_set_usize(GTK_WIDGET(window), 280, 120);
  		
 	/* set the window title */
-	title = g_strdup_printf (_("Linksets for %s"), directory_path);
-  	gtk_window_set_title (window, title);
-	g_free(title);
+  	gtk_window_set_title (window, _("Link sets"));
 	
 	/* fetch the link set names */
 	link_set_names = get_link_set_names();	
 	link_set_count = g_list_length(link_set_names);
+	
+	/* allocate a vbox to hold the contents of the window */
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(window), vbox);
+	gtk_widget_show(vbox);
+	
+	/* add a descriptive label */
+	label = gtk_label_new(_("Add or remove sets of links by clicking on the checkboxes below."));
+	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 4);
+	gtk_widget_show(label);
 	
 	/* allocate a table to hold the link set checkboxes */
 	checkbox_table = gtk_table_new ((link_set_count + 1) / 2, 2, TRUE);
@@ -196,7 +209,7 @@ nautilus_link_set_configure_window(const char *directory_path, GtkWindow *window
 					GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (scrolled_window), 
 					       checkbox_table);
-	gtk_container_add(GTK_CONTAINER(window), scrolled_window);
+	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
 	gtk_widget_show (scrolled_window);
 	
 	/* iterate the directory to add a checkbox for each linkset found */
@@ -208,13 +221,40 @@ nautilus_link_set_configure_window(const char *directory_path, GtkWindow *window
 				make_link_set_check_box(directory_path, checkbox_table, 
 						index++, temp_str, window_to_update);	
 	}
-	
-	/* clean up and we're done */
-	
+		
 	nautilus_g_list_free_deep (link_set_names);
-	
+
+	/* show the window */
+	gtk_window_set_position(window, GTK_WIN_POS_CENTER);
 	gtk_widget_show(GTK_WIDGET(window));
 	return window;	
 }
 
+/* callback to clear the window global when the window is deleted */
+static gboolean
+delete_window_callback (GtkWidget *widget,
+			GdkEvent *event,
+			gpointer user_data)
+{
+	link_set_window = NULL;
+	return FALSE;
+}
+
+/* toggle the visiblity of the link set window */
+GtkWindow *
+nautilus_link_set_toggle_configure_window (const char *directory_path, GtkWindow *window_to_update)
+{
+	if (link_set_window != NULL) {
+		gtk_widget_destroy(GTK_WIDGET(link_set_window));
+		link_set_window = NULL;
+	} else {
+		link_set_window = nautilus_link_set_configure_window (directory_path, 
+					window_to_update);
+		
+		gtk_signal_connect (GTK_OBJECT (link_set_window), "delete_event",
+                    	    GTK_SIGNAL_FUNC (delete_window_callback), NULL);
+	}
+									
+	return link_set_window;		
+}
 

@@ -31,5 +31,7 @@
 
 GtkWindow	*nautilus_link_set_configure_window (const char *directory_path, 
 							GtkWindow *window);
+GtkWindow 	*nautilus_link_set_toggle_configure_window (const char *directory_path, 
+								GtkWindow *window_to_update);
 
 #endif /* NAUTILUS_LINK_SET_H */
