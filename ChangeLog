@@ -1,5 +1,11 @@
 2003-09-18  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus/nautilus-view-standard-main.c (nautilus_view_instrument_for_failure):
+	Correctly remove nautilus_view_never_got_frame_timeout timeout on destroy.
+	Fixes #120904, thanks to Narayana Pattipati for diagnosing this.
+
+2003-09-18  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-properties-window.c (permission_change_callback):
 	Fix compilation error (bug #122537).
 	Patch by david.hawthorne@sun.com
