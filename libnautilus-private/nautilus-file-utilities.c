@@ -377,6 +377,8 @@ nautilus_get_vfs_method_display_name (char *method)
 		return _("CD Creator");
 	} else if (g_ascii_strcasecmp (method, "smb") == 0 ) {
 		return _("Windows Network");
+	} else if (g_ascii_strcasecmp (method, "dns-sd") == 0 ) {
+		return _("Services in");
 	}
 	return NULL;
 }

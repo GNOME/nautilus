@@ -86,6 +86,8 @@ struct NautilusWindowDetails
         /* Deferred location change. */
         char *location_to_change_to_at_idle;
         guint location_change_at_idle_id;
+
+        Nautilus_ShowHiddenFilesMode show_hidden_files_mode;
 };
 
 struct _NautilusNavigationWindowDetails {

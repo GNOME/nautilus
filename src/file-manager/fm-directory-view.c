@@ -322,6 +322,7 @@ static void     fm_directory_view_activate_file                (FMDirectoryView 
 static void     load_directory                                 (FMDirectoryView      *view,
 								NautilusDirectory    *directory);
 static void     fm_directory_view_merge_menus                  (FMDirectoryView      *view);
+static void     fm_directory_view_init_show_hidden_files       (FMDirectoryView      *view);
 static char *   file_name_from_uri                             (const char           *uri);
 static void     stop_loading_callback                          (NautilusView         *nautilus_view,
 								FMDirectoryView      *directory_view);
@@ -1093,6 +1094,37 @@ reset_to_defaults_callback (BonoboUIComponent *component,
 	fm_directory_view_reset_to_defaults (callback_data);
 }
 
+
+static void
+show_hidden_files_toggle_callback (BonoboUIComponent *component, 
+				   const char *path,
+				   Bonobo_UIComponent_EventType type,
+				   const char *state,
+				   gpointer callback_data)
+{
+	FMDirectoryView	*directory_view;
+	Nautilus_ShowHiddenFilesMode mode;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+	directory_view = FM_DIRECTORY_VIEW (callback_data);
+
+        if (strcmp (state, "") == 0) {
+                /* State goes blank when component is removed; ignore this. */
+                return;
+        }
+	
+	directory_view->details->show_hidden_files = strcmp (state, "1") == 0;
+	if (directory_view->details->show_hidden_files) {
+		mode = Nautilus_SHOW_HIDDEN_FILES_ENABLE;
+	} else {
+		mode = Nautilus_SHOW_HIDDEN_FILES_DISABLE;
+	}
+	nautilus_view_set_show_hidden_files_mode (directory_view->details->nautilus_view, mode);
+	if (directory_view->details->model != NULL) {
+		load_directory (directory_view, directory_view->details->model);
+	}
+}
+
 static void
 bonobo_menu_empty_trash_callback (BonoboUIComponent *component, 
 				  gpointer callback_data, 
@@ -1231,8 +1263,11 @@ bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointe
 
 	        /* Set initial sensitivity, wording, toggle state, etc. */       
                 fm_directory_view_update_menus (view);
-        }
-
+		
+		/* initialise show hidden mode */
+		fm_directory_view_init_show_hidden_files (view);
+	}		
+ 
         /* 
          * Nothing to do on deactivate case, which never happens because
          * of the way Nautilus content views are handled.
@@ -1579,8 +1614,6 @@ fm_directory_view_init (FMDirectoryView *view)
 				 G_CALLBACK (clipboard_changed_callback), view, 0);
 	
 	gtk_widget_show (GTK_WIDGET (view));
-
-	filtering_changed_callback (view);
 	
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
 				      schedule_update_menus_callback, view);
@@ -5188,6 +5221,44 @@ unmount_volume_callback (BonoboUIComponent *component,
 	nautilus_file_list_free (selection);
 }
 
+static void
+fm_directory_view_init_show_hidden_files (FMDirectoryView *view)
+{
+	Nautilus_ShowHiddenFilesMode mode;
+	gboolean show_hidden_changed;
+	gboolean show_hidden_default_setting;
+
+	show_hidden_changed = FALSE;
+	mode = nautilus_view_get_show_hidden_files_mode (view->details->nautilus_view);
+	
+	if (mode == Nautilus_SHOW_HIDDEN_FILES_DEFAULT) {
+		show_hidden_default_setting = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
+		if (show_hidden_default_setting != view->details->show_hidden_files) {
+			view->details->show_hidden_files = show_hidden_default_setting;
+			view->details->show_backup_files = show_hidden_default_setting;
+			show_hidden_changed = TRUE;
+		}
+	} else {
+		if (mode == Nautilus_SHOW_HIDDEN_FILES_ENABLE) {
+			show_hidden_changed = !view->details->show_hidden_files;
+			view->details->show_hidden_files = TRUE;
+			view->details->show_backup_files = TRUE;
+		} else {
+			show_hidden_changed = view->details->show_hidden_files;
+			view->details->show_hidden_files = FALSE;
+			view->details->show_backup_files = FALSE;
+		}
+	}
+ 
+	nautilus_bonobo_set_toggle_state (view->details->ui,
+					  "/commands/Show Hidden Files",
+					  view->details->show_hidden_files);
+	
+	if (show_hidden_changed && (view->details->model != NULL)) {
+		load_directory (view, view->details->model);	
+	}
+
+}
 
 static void
 real_merge_menus (FMDirectoryView *view)
@@ -5230,6 +5301,16 @@ real_merge_menus (FMDirectoryView *view)
 
 	bonobo_ui_component_add_verb_list_with_data (view->details->ui, verbs, view);
 
+	bonobo_ui_component_add_listener
+		(view->details->ui, 
+		 "Show Hidden Files",
+		 show_hidden_files_toggle_callback, 
+		 view);
+	
+	nautilus_bonobo_set_toggle_state (view->details->ui,
+					  "/commands/Show Hidden Files",
+					  view->details->show_hidden_files);
+	
 	g_signal_connect_object (fm_directory_view_get_background (view), "settings_changed",
 				 G_CALLBACK (schedule_update_menus), G_OBJECT (view),
 				 G_CONNECT_SWAPPED);
@@ -6652,11 +6733,19 @@ disconnect_model_handlers (FMDirectoryView *view)
 void
 fm_directory_view_reset_to_defaults (FMDirectoryView *view)
 {
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+	Nautilus_ShowHiddenFilesMode mode;
 
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+	
 	EEL_CALL_METHOD
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 reset_to_defaults, (view));
+	mode = nautilus_view_get_show_hidden_files_mode (view->details->nautilus_view);
+	if (mode != Nautilus_SHOW_HIDDEN_FILES_DEFAULT) {
+		nautilus_view_set_show_hidden_files_mode (view->details->nautilus_view,
+							  Nautilus_SHOW_HIDDEN_FILES_DEFAULT);
+		fm_directory_view_init_show_hidden_files (view);
+	}
 }
 
 /**
@@ -6919,28 +7008,26 @@ static void
 filtering_changed_callback (gpointer callback_data)
 {
 	FMDirectoryView	*directory_view;
-	gboolean new_show_hidden, new_show_backup;
-	gboolean filtering_actually_changed;
+	gboolean new_show_hidden;
+	Nautilus_ShowHiddenFilesMode mode;
 
 	directory_view = FM_DIRECTORY_VIEW (callback_data);
-	filtering_actually_changed = FALSE;
-
 	new_show_hidden = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
-	if (new_show_hidden != directory_view->details->show_hidden_files) {
-		filtering_actually_changed = TRUE;
-		directory_view->details->show_hidden_files = new_show_hidden ;
-	}
+	mode = nautilus_view_get_show_hidden_files_mode (directory_view->details->nautilus_view);
 
-	new_show_backup = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
-	if (new_show_backup != directory_view->details->show_backup_files) {
-		filtering_actually_changed = TRUE;
-		directory_view->details->show_backup_files = new_show_backup;
-	}
+	/* only apply global show hidden files pref if local setting has not been set for this window */
+	if (new_show_hidden != directory_view->details->show_hidden_files
+	    && mode == Nautilus_SHOW_HIDDEN_FILES_DEFAULT) {
+		directory_view->details->show_hidden_files = new_show_hidden;
+		directory_view->details->show_backup_files = new_show_hidden;
+		nautilus_bonobo_set_toggle_state (directory_view->details->ui,
+							  "/commands/Show Hidden Files",
+						  	  directory_view->details->show_hidden_files);
 
-	/* Reload the current uri so that the filtering changes take place. */
-	if (filtering_actually_changed && directory_view->details->model != NULL) {
-		load_directory (directory_view,
-				directory_view->details->model);
+		/* Reload the current uri so that the filtering changes take place. */
+		if (directory_view->details->model != NULL) {
+			load_directory (directory_view, directory_view->details->model);
+		}
 	}
 }
 

@@ -110,9 +110,6 @@ struct NautilusWindow {
 
         /* All views */
         GList *views;
-
-        /* Window showed state (for saved_window_positions) */
-        NautilusWindowShowState show_state;
 };
 
 GType            nautilus_window_get_type             (void);

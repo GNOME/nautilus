@@ -1,3 +1,29 @@
+2004-06-21  Alexander Larsson  <alexl@redhat.com>
+
+        Based on patch by Jamie McCracken <jamiemcc@blueyonder.co.uk>
+	
+	* libnautilus-private/nautilus-metadata.h:
+	Add show hidden files metadata name
+	
+	* libnautilus/nautilus-view-component.idl:
+	* libnautilus/nautilus-view.[ch]:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-tree-view.c:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/nautilus-spatial-window.[ch]:
+	* src/nautilus-view-frame-corba.c: 
+	* src/nautilus-view-frame.[ch]:
+	* src/nautilus-window-manage-views.c:
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.[ch]:
+	Add per-window show hidden files setting, saved per folder
+	in spatial mode.
+
+2004-06-21  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file-utilities.c (nautilus_get_vfs_method_display_name):
+	Handle dns-sd name
+
 2004-06-17  Bastien Nocera  <hadess@hadess.net>
 
 	reviewed by: Alexander Larsson  <alexl@redhat.com>

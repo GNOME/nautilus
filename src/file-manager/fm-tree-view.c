@@ -1169,13 +1169,23 @@ create_tree (FMTreeView *view)
 static void
 update_filtering_from_preferences (FMTreeView *view)
 {
+	Nautilus_ShowHiddenFilesMode mode;
+	
 	if (view->details->child_model == NULL) {
 		return;
 	}
 
-	fm_tree_model_set_show_hidden_files
-		(view->details->child_model,
-		 eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES));
+	mode = nautilus_view_get_show_hidden_files_mode (NAUTILUS_VIEW (view));
+
+	if (mode == Nautilus_SHOW_HIDDEN_FILES_DEFAULT) {
+		fm_tree_model_set_show_hidden_files
+			(view->details->child_model,
+			 eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES));
+	} else {
+		fm_tree_model_set_show_hidden_files
+			(view->details->child_model,
+			 mode == Nautilus_SHOW_HIDDEN_FILES_ENABLE);
+	}
 	fm_tree_model_set_show_backup_files
 		(view->details->child_model,
 		 eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES));
@@ -1221,6 +1231,7 @@ fm_tree_view_instance_init (FMTreeView *view)
 	
 	view->details = g_new0 (FMTreeViewDetails, 1);
 	
+	
 	view->details->scrolled_window = gtk_scrolled_window_new (NULL, NULL);
 	
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view->details->scrolled_window), 
@@ -1246,7 +1257,14 @@ fm_tree_view_instance_init (FMTreeView *view)
 				      filtering_changed_callback, view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 				      filtering_changed_callback, view);
+	g_signal_connect_object (view, "show_hidden_files_mode_changed",
+				 G_CALLBACK (filtering_changed_callback), view, 0);  
 
+	nautilus_view_set_listener_mask
+		(NAUTILUS_VIEW (view),
+		 NAUTILUS_VIEW_LISTEN_SHOW_HIDDEN_FILES_MODE);
+
+	
 	g_signal_connect_object (nautilus_icon_factory_get(), "icons_changed",
 				 G_CALLBACK (theme_changed_callback), view, 0);  
 

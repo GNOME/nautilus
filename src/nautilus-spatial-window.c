@@ -263,6 +263,26 @@ nautilus_spatial_window_save_scroll_position (NautilusSpatialWindow *window)
 	g_free (scroll_string);
 }
 
+void
+nautilus_spatial_window_save_show_hidden_files_mode (NautilusSpatialWindow *window)
+{
+	char *show_hidden_file_setting;
+	Nautilus_ShowHiddenFilesMode mode;
+
+	mode = NAUTILUS_WINDOW (window)->details->show_hidden_files_mode;
+	if (mode != Nautilus_SHOW_HIDDEN_FILES_DEFAULT) {
+		if (mode == Nautilus_SHOW_HIDDEN_FILES_ENABLE) {
+			show_hidden_file_setting = "1";
+		} else {
+			show_hidden_file_setting = "0";
+		}
+		nautilus_file_set_metadata (NAUTILUS_WINDOW (window)->details->viewed_file,
+			 		    NAUTILUS_METADATA_KEY_WINDOW_SHOW_HIDDEN_FILES,
+				    	    NULL,
+				    	    show_hidden_file_setting);
+	} 
+}
+
 static void
 nautilus_spatial_window_show (GtkWidget *widget)
 {	
@@ -370,6 +390,7 @@ real_window_close (NautilusWindow *window)
 {
 	nautilus_spatial_window_save_geometry (NAUTILUS_SPATIAL_WINDOW (window));
 	nautilus_spatial_window_save_scroll_position (NAUTILUS_SPATIAL_WINDOW (window));
+	nautilus_spatial_window_save_show_hidden_files_mode (NAUTILUS_SPATIAL_WINDOW (window));
 }
 
 static void 

@@ -165,6 +165,8 @@ nautilus_window_instance_init (NautilusWindow *window)
 {
 	window->details = g_new0 (NautilusWindowDetails, 1);
 
+	window->details->show_hidden_files_mode = Nautilus_SHOW_HIDDEN_FILES_DEFAULT;
+	
 	/* CORBA and Bonobo setup, which must be done before the location bar setup */
 	window->details->ui_container = bonobo_window_get_ui_container (BONOBO_WINDOW (window));
 	bonobo_object_ref (window->details->ui_container);

@@ -59,6 +59,12 @@ module Nautilus {
                WINDOW_DESKTOP
 	};
 
+	enum ShowHiddenFilesMode {
+		SHOW_HIDDEN_FILES_DEFAULT,
+		SHOW_HIDDEN_FILES_ENABLE,
+		SHOW_HIDDEN_FILES_DISABLE
+	};
+
 	/* The View interface is used by the Nautilus shell to control
 	 * the view. A view that is a Bonobo::Control can choose to
 	 * implement the View interface for additional finer control
@@ -91,6 +97,7 @@ module Nautilus {
 	 *      'title'       - ro - string            - the title
 	 *      'history'     - ro - Nautilus::History - the history list
 	 *      'selection'   - ro - URIList           - the selection
+	 *	'show-hidden-files-mode' -ro - Nautilus::ShowHiddenFilesMode - show hidden files setting
 	 *      'window-type' - ro - Nautilus::WindowType - the window type
 	 */
 	interface ViewFrame : ::Bonobo::Unknown {
@@ -158,6 +165,9 @@ module Nautilus {
 
 		/* Called by a view component to change the title. */
 		oneway void set_title (in string new_title);
+		
+		/* Called by a view component to change the show hidden files mode. */
+		oneway void set_show_hidden_files_mode (in ShowHiddenFilesMode new_mode);
 
 		/* Called when a view component wants to make the
 		 * window it's in "go back". At some point we may add a more

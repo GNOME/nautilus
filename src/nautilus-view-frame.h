@@ -91,6 +91,7 @@ typedef struct {
 	Nautilus_History * (* get_history_list)                     (NautilusViewFrame *view);
         void               (* go_back)                              (NautilusViewFrame *view);
         void               (* close_window)                         (NautilusViewFrame *view);
+        void               (* show_hidden_files_mode_changed)       (NautilusViewFrame *view);
 } NautilusViewFrameClass;
 
 /* basic view management */
@@ -136,12 +137,16 @@ void               nautilus_view_frame_scroll_to_file            (NautilusViewFr
                                                                   const char          *uri);
 
 /* Other. */
-gboolean           nautilus_view_frame_get_is_view_loaded        (NautilusViewFrame   *view);
-const char *       nautilus_view_frame_get_view_iid              (NautilusViewFrame   *view);
-gboolean           nautilus_view_frame_get_is_zoomable           (NautilusViewFrame   *view);
-char *             nautilus_view_frame_get_title                 (NautilusViewFrame   *view);
-char *             nautilus_view_frame_get_label                 (NautilusViewFrame   *view);
-void               nautilus_view_frame_set_label                 (NautilusViewFrame   *view,
-                                                                  const char          *label);
+gboolean                        nautilus_view_frame_get_is_view_loaded                  (NautilusViewFrame   		*view);
+const char *                    nautilus_view_frame_get_view_iid                        (NautilusViewFrame   		*view);
+gboolean                        nautilus_view_frame_get_is_zoomable                     (NautilusViewFrame   		*view);
+Nautilus_ShowHiddenFilesMode    nautilus_view_frame_get_show_hidden_files_mode          (NautilusViewFrame   		*view);
+void                            nautilus_view_frame_set_show_hidden_files_mode          (NautilusViewFrame   		*viev,
+                                                                                         Nautilus_ShowHiddenFilesMode 	mode,
+                                                                                         gboolean                        signal);
+char *                          nautilus_view_frame_get_title                           (NautilusViewFrame   		*view);
+char *                          nautilus_view_frame_get_label                           (NautilusViewFrame   		*view);
+void                            nautilus_view_frame_set_label                           (NautilusViewFrame   		*view,
+                                                                                         const char          		*label);
 
 #endif /* NAUTILUS_VIEW_FRAME_H */

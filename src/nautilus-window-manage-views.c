@@ -84,6 +84,11 @@ typedef struct {
 	NautilusViewIdentifier *id;
 } ViewFrameInfo;
 
+typedef struct {
+	NautilusWindow *window;
+	NautilusViewIdentifier *id;
+} ViewFrameWindowInfo;
+
 static void connect_view           (NautilusWindow             *window,
                                     NautilusViewFrame          *view,
                                     gboolean                    content_view);
@@ -97,7 +102,7 @@ static void begin_location_change  (NautilusWindow             *window,
 static void free_location_change   (NautilusWindow             *window);
 static void end_location_change    (NautilusWindow             *window);
 static void cancel_location_change (NautilusWindow             *window);
-static void position_and_show_window_callback (NautilusFile *file,
+static void load_directory_metadata_callback (NautilusFile *file,
 					       gpointer callback_data);
 
 static void
@@ -628,16 +633,7 @@ location_has_really_changed (NautilusWindow *window)
         update_title (window);
 	nautilus_window_update_icon (window);
 
-        /* The whole window has been finished. Now show it, unless
-         * we're still waiting for the saved positions from the
-         * metadata. Then tell the callback it needs to show the
-         * window
-         */
-        if (window->show_state == NAUTILUS_WINDOW_POSITION_SET) {
-                gtk_widget_show (GTK_WIDGET (window));
-        } else {
-                window->show_state = NAUTILUS_WINDOW_SHOULD_SHOW;
-        }
+	gtk_widget_show (GTK_WIDGET (window));
 }
 
 static void
@@ -1020,6 +1016,7 @@ load_content_view (NautilusWindow *window,
                 g_object_ref (view);
                 gtk_object_sink (GTK_OBJECT (view));
 		set_view_frame_info (view, id);
+                nautilus_view_frame_set_show_hidden_files_mode (view, NAUTILUS_WINDOW (window)->details->show_hidden_files_mode, FALSE);
                 connect_view (window, view, TRUE);
                 nautilus_view_frame_load_view (view, iid);
         }
@@ -1083,7 +1080,7 @@ handle_view_failure (NautilusWindow *window,
 			window->details->pending_file_for_position = NULL;
 			
 			nautilus_file_cancel_call_when_ready (file,
-							      position_and_show_window_callback,
+							      load_directory_metadata_callback,
 							      window);
 			nautilus_file_unref (file);
 		}
@@ -1181,23 +1178,42 @@ pending_location_already_showing (NautilusWindow *window)
 	return FALSE;
 }
 
-
 static void
-position_and_show_window_callback (NautilusFile *file,
-                       		   gpointer callback_data)
+load_directory_metadata_callback (NautilusFile *file,
+				  gpointer callback_data)
 {
 	NautilusWindow *window;
 	char *geometry_string;
 	char *scroll_string;
-   
-	window = NAUTILUS_WINDOW (callback_data);
+   	char *show_hidden_file_setting;
+	ViewFrameWindowInfo *new_info;
+	NautilusViewIdentifier *initial_view;
 
+  	new_info = callback_data;
+	window = NAUTILUS_WINDOW (new_info->window);
+	initial_view = new_info->id;
 	g_assert (window->details->pending_file_for_position == file);
 	
 #if !NEW_UI_COMPLETE
         if (NAUTILUS_IS_SPATIAL_WINDOW (window) && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-                /* load the saved window geometry */
-                geometry_string = nautilus_file_get_metadata 
+
+		/* load show hidden state */
+		show_hidden_file_setting = nautilus_file_get_metadata 
+			(file, NAUTILUS_METADATA_KEY_WINDOW_SHOW_HIDDEN_FILES,
+		 	 NULL);
+		if (show_hidden_file_setting != NULL) {
+			if (strcmp (show_hidden_file_setting, "1") == 0) {
+				NAUTILUS_WINDOW (window)->details->show_hidden_files_mode = Nautilus_SHOW_HIDDEN_FILES_ENABLE;	
+			} else {
+				NAUTILUS_WINDOW (window)->details->show_hidden_files_mode = Nautilus_SHOW_HIDDEN_FILES_DISABLE;
+			}
+		} else {
+			NAUTILUS_WINDOW (window)->details->show_hidden_files_mode = Nautilus_SHOW_HIDDEN_FILES_DEFAULT;
+		}
+		g_free (show_hidden_file_setting);
+
+		/* load the saved window geometry */
+		geometry_string = nautilus_file_get_metadata 
 			(file, NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY, NULL);
                 if (geometry_string != NULL) {
 			/* Ignore saved window position if a window with the same
@@ -1222,14 +1238,14 @@ position_and_show_window_callback (NautilusFile *file,
 		}
         }
 #endif
-        /* If we finished constructing the window by now we need
-         * to show the window here.
-         */
-        if (window->show_state == NAUTILUS_WINDOW_SHOULD_SHOW) {
-                gtk_widget_show (GTK_WIDGET (window));
-        }
-        window->show_state = NAUTILUS_WINDOW_POSITION_SET;
-        
+
+	
+	/* finish loading the view */
+	load_content_view (window, initial_view);
+
+	nautilus_view_identifier_free (initial_view);
+	g_free (new_info);
+	
         /* This object was ref'd when starting the callback. */
         nautilus_file_unref (file);
 	window->details->pending_file_for_position = NULL;
@@ -1263,6 +1279,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
 	GtkDialog *dialog;
         NautilusFileAttributes attributes;
         GnomeVFSURI *vfs_uri;
+	ViewFrameWindowInfo *new_info;
        
         window = NAUTILUS_WINDOW (data);
 
@@ -1277,19 +1294,21 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
 		 * windows), position and show it only after we've got the
 		 * metadata (since position info is stored there).
 		 */
-		window->show_state = NAUTILUS_WINDOW_NOT_SHOWN;
 		if (!GTK_WIDGET_VISIBLE (window)) {
 			file = nautilus_file_get (location);
 			window->details->pending_file_for_position = file;
-                                
+			new_info = g_new (ViewFrameWindowInfo, 1);        
+			new_info->window = window;
+			new_info->id = nautilus_view_identifier_copy (initial_view);
 			attributes = NAUTILUS_FILE_ATTRIBUTE_METADATA;
 			nautilus_file_call_when_ready (file,
                                                        attributes,
-                                                       position_and_show_window_callback,
-                                                       window);
+                                                       load_directory_metadata_callback,
+                                                       new_info);
+		} else {
+			load_content_view (window, initial_view);
 		}
 
-		load_content_view (window, initial_view);
 		return;
         }
         
@@ -1629,6 +1648,7 @@ nautilus_window_connect_extra_view (NautilusWindow *window,
 {
         connect_view (window, view_frame, FALSE);
         set_view_frame_info (view_frame, id);
+	nautilus_view_frame_set_show_hidden_files_mode (view_frame, NAUTILUS_WINDOW (window)->details->show_hidden_files_mode, FALSE);
 }
 
 void
@@ -1918,6 +1938,30 @@ report_redirect_callback (NautilusViewFrame *view,
 }
 
 static void
+show_hidden_files_mode_changed_callback (NautilusViewFrame *requesting_view,
+                                         NautilusWindow *window)
+{
+	Nautilus_ShowHiddenFilesMode mode;
+	NautilusViewFrame *view;
+	GList *views, *node;
+
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	/* sync NautilusWindow and ViewFrame show hidden files modes */
+	mode = nautilus_view_frame_get_show_hidden_files_mode (requesting_view);
+	NAUTILUS_WINDOW (window)->details->show_hidden_files_mode = mode;
+	
+        views = g_list_copy (window->views);
+        for (node = views; node != NULL; node = node->next) {
+                view = NAUTILUS_VIEW_FRAME (node->data);
+                if (view != requesting_view) {
+			nautilus_view_frame_set_show_hidden_files_mode (view, mode, FALSE);
+                }
+        }
+	g_list_free (views);
+}
+
+static void
 title_changed_callback (NautilusViewFrame *view,
                         NautilusWindow *window)
 {
@@ -1963,6 +2007,7 @@ view_loaded_callback (NautilusViewFrame *view,
 	macro (open_location)	                        \
 	macro (report_location_change)			\
 	macro (report_redirect)				\
+	macro (show_hidden_files_mode_changed)		\
 	macro (title_changed)				\
 	macro (view_loaded)				\
 	macro (zoom_level_changed)			\

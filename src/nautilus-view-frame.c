@@ -70,6 +70,7 @@ enum {
 	VIEW_LOADED,
 	ZOOM_LEVEL_CHANGED,
 	ZOOM_PARAMETERS_CHANGED,
+	SHOW_HIDDEN_FILES_MODE_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -119,7 +120,8 @@ struct NautilusViewFrameDetails {
 	gboolean has_max_zoom_level;
 	GList *zoom_levels;
 
-	Nautilus_WindowType window_type;
+	Nautilus_WindowType 	     window_type;
+	Nautilus_ShowHiddenFilesMode show_hidden_files_mode;
 };
 
 static void nautilus_view_frame_init       (NautilusViewFrame      *view);
@@ -464,7 +466,7 @@ nautilus_view_frame_new (BonoboUIContainer *ui_container,
 	view_frame->details->ui_container = ui_container;
 	view_frame->details->undo_manager = undo_manager;
 	view_frame->details->window_type = window_type;
-	
+	view_frame->details->show_hidden_files_mode = Nautilus_SHOW_HIDDEN_FILES_DEFAULT;
 	return view_frame;
 }
 
@@ -528,6 +530,7 @@ enum {
 	BONOBO_PROPERTY_HISTORY,
 	BONOBO_PROPERTY_SELECTION,
 	BONOBO_PROPERTY_WINDOW_TYPE,
+	BONOBO_PROPERTY_SHOW_HIDDEN_FILES_MODE
 };
 
 static Nautilus_History *
@@ -571,6 +574,13 @@ nautilus_view_frame_get_prop (BonoboPropertyBag *bag,
 		BONOBO_ARG_SET_GENERAL (arg, view->details->window_type,
 					TC_Nautilus_WindowType,
 					Nautilus_WindowType,
+					NULL);
+		break;
+
+	case BONOBO_PROPERTY_SHOW_HIDDEN_FILES_MODE :
+		BONOBO_ARG_SET_GENERAL (arg, view->details->show_hidden_files_mode,
+					TC_Nautilus_ShowHiddenFilesMode,
+					Nautilus_ShowHiddenFilesMode,
 					NULL);
 		break;
 	default:
@@ -620,6 +630,15 @@ create_ambient_properties (NautilusViewFrame *view)
 		 TC_Nautilus_WindowType,
 		 NULL,
 		 _("the type of window the view is embedded in"),
+		 BONOBO_PROPERTY_READABLE);
+
+	bonobo_property_bag_add
+		(bag,
+		 "show-hidden-files-mode",
+		 BONOBO_PROPERTY_SHOW_HIDDEN_FILES_MODE,
+		 TC_Nautilus_ShowHiddenFilesMode,
+		 NULL,
+		 _("whether to show hidden files in the view"),
 		 BONOBO_PROPERTY_READABLE);
 
 	view->details->event_source = bag->es;
@@ -1354,6 +1373,43 @@ nautilus_view_frame_close_window (NautilusViewFrame *view)
 	g_signal_emit (view, signals[CLOSE_WINDOW], 0);
 }
 
+Nautilus_ShowHiddenFilesMode
+nautilus_view_frame_get_show_hidden_files_mode	(NautilusViewFrame   *view)
+{
+	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), 0);
+
+	return view->details->show_hidden_files_mode;
+}
+
+
+void
+nautilus_view_frame_set_show_hidden_files_mode (NautilusViewFrame *view,
+                                                Nautilus_ShowHiddenFilesMode mode,
+						gboolean from_view)
+{
+	CORBA_Environment ev;
+	
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+	view->details->show_hidden_files_mode = mode;
+	if (from_view) {
+		/* The call was from the the view, propagate to the window */
+		g_signal_emit (view, signals[SHOW_HIDDEN_FILES_MODE_CHANGED], 0);
+	} else if (view->details->event_source) {
+		/* The call was from the window, propagate to all views */
+		CORBA_exception_init (&ev);
+		
+		bonobo_event_source_notify_listeners
+			(view->details->event_source,
+			 "Bonobo/Property:change:show-hidden-files-mode", NULL, &ev);
+		
+		if (BONOBO_EX (&ev)) {
+			g_warning ("show hidden mode notification failed");
+		}
+
+		CORBA_exception_free (&ev);
+	}
+}
+
 void
 nautilus_view_frame_set_title (NautilusViewFrame *view,
                                const char *title)
@@ -1604,6 +1660,15 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *class)
 		 NULL, NULL,
 		 eel_marshal_VOID__STRING_STRING_POINTER_STRING,
 		 G_TYPE_NONE, 4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_STRING);
+	signals[SHOW_HIDDEN_FILES_MODE_CHANGED] = g_signal_new
+		("show_hidden_files_mode_changed",
+		 G_TYPE_FROM_CLASS (class),
+		 G_SIGNAL_RUN_LAST,
+		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
+				  show_hidden_files_mode_changed),
+		 NULL, NULL,
+		 g_cclosure_marshal_VOID__VOID,
+		 G_TYPE_NONE, 0);
 	signals[TITLE_CHANGED] = g_signal_new
 		("title_changed",
 		 G_TYPE_FROM_CLASS (class),

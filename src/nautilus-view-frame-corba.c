@@ -163,6 +163,15 @@ report_load_failed (NautilusViewFrame *view,
 }
 
 static void
+set_show_hidden_files_mode (NautilusViewFrame *view, gpointer callback_data)
+{
+        nautilus_view_frame_set_show_hidden_files_mode (view,
+							* (Nautilus_ShowHiddenFilesMode *) callback_data,
+							TRUE);
+}
+
+
+static void
 set_title (NautilusViewFrame *view,
 	   gpointer callback_data)
 {
@@ -323,6 +332,18 @@ impl_Nautilus_ViewFrame_report_load_failed (PortableServer_Servant servant,
 }
 
 static void
+impl_Nautilus_ViewFrame_set_show_hidden_files_mode (PortableServer_Servant servant,
+                                                    const Nautilus_ShowHiddenFilesMode mode,
+                                                    CORBA_Environment *ev)
+{
+	nautilus_view_frame_queue_incoming_call
+		(servant,
+		 set_show_hidden_files_mode,
+		 g_memdup (&mode, sizeof (Nautilus_ShowHiddenFilesMode)),
+		 g_free);
+}
+
+static void
 impl_Nautilus_ViewFrame_set_title (PortableServer_Servant servant,
 				   const CORBA_char *title,
 				   CORBA_Environment *ev)
@@ -371,6 +392,7 @@ nautilus_view_frame_corba_part_class_init (NautilusViewFrameCorbaPartClass *clas
 	class->epv.report_load_progress = impl_Nautilus_ViewFrame_report_load_progress;
 	class->epv.report_load_complete = impl_Nautilus_ViewFrame_report_load_complete;
 	class->epv.report_load_failed = impl_Nautilus_ViewFrame_report_load_failed;
+	class->epv.set_show_hidden_files_mode = impl_Nautilus_ViewFrame_set_show_hidden_files_mode;
 	class->epv.set_title = impl_Nautilus_ViewFrame_set_title;
 	class->epv.go_back = impl_Nautilus_ViewFrame_go_back;
 	class->epv.close_window = impl_Nautilus_ViewFrame_close_window;
