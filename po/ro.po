@@ -3,10 +3,12 @@
 # Marius Andreiana <mandreiana@yahoo.com>, 2001
 #
 #
+#: libnautilus-private/nautilus-authn-manager.c:70
+#: libnautilus-private/nautilus-authn-manager.c:71
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-12-27 07:30-0500\n"
+"POT-Creation-Date: 2002-01-15 13:46-0800\n"
 "PO-Revision-Date: 2001-12-27 21:56+0200\n"
 "Last-Translator: Marius Andreiana <mandreiana@yahoo.com>\n"
 "Language-Team: Română <ro@li.org>\n"
@@ -24,12 +26,16 @@ msgstr ""
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.h:3
 msgid ""
-"Factory for objects that wrap ordinary Bonobo Controls or Embeddables to look "
-"like Nautilus Views"
+"Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
+"look like Nautilus Views"
 msgstr ""
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.h:4
 msgid "Nautilus component adapter factory"
+msgstr ""
+
+#: components/adapter/main.c:105
+msgid "bonobo_ui_init() failed."
 msgstr ""
 
 #: components/hardware/Nautilus_View_hardware.server.in.h:1
@@ -37,7 +43,7 @@ msgid "Factory for hardware view"
 msgstr ""
 
 #: components/hardware/Nautilus_View_hardware.server.in.h:2
-#: components/hardware/nautilus-hardware-view.c:765
+#: components/hardware/nautilus-hardware-view.c:763
 #: data/static_bookmarks.xml.h:15
 msgid "Hardware"
 msgstr "Hardware"
@@ -58,15 +64,15 @@ msgstr "Vizualizează ca Hardware"
 msgid "hardware view"
 msgstr "vizualizare hardware"
 
-#: components/hardware/nautilus-hardware-view.c:183
+#: components/hardware/nautilus-hardware-view.c:182
 msgid "name of icon for the hardware view"
 msgstr ""
 
-#: components/hardware/nautilus-hardware-view.c:185
+#: components/hardware/nautilus-hardware-view.c:184
 msgid "summary of hardware info"
 msgstr ""
 
-#: components/hardware/nautilus-hardware-view.c:319
+#: components/hardware/nautilus-hardware-view.c:318
 #, c-format
 msgid ""
 "%s CPU\n"
@@ -77,45 +83,45 @@ msgstr ""
 "%s MHz\n"
 "%s K dimensiune cache"
 
-#: components/hardware/nautilus-hardware-view.c:354
+#: components/hardware/nautilus-hardware-view.c:353
 #, c-format
 msgid "%lu GB RAM"
 msgstr "%lu GB RAM"
 
-#: components/hardware/nautilus-hardware-view.c:356
+#: components/hardware/nautilus-hardware-view.c:355
 #, c-format
 msgid "%lu MB RAM"
 msgstr "%lu MB RAM"
 
-#: components/hardware/nautilus-hardware-view.c:414
+#: components/hardware/nautilus-hardware-view.c:413
 #, c-format
 msgid "%lu GB"
 msgstr "%lu GB"
 
-#: components/hardware/nautilus-hardware-view.c:416
+#: components/hardware/nautilus-hardware-view.c:415
 #, c-format
 msgid "%lu MB"
 msgstr "%lu MB"
 
-#: components/hardware/nautilus-hardware-view.c:494
+#: components/hardware/nautilus-hardware-view.c:493
 #, c-format
 msgid "Uptime is %d days, %d hours, %d minutes"
 msgstr ""
 
 #. set up the title
-#: components/hardware/nautilus-hardware-view.c:520
+#: components/hardware/nautilus-hardware-view.c:519
 msgid "Hardware Overview"
 msgstr "Sumar hardware"
 
-#: components/hardware/nautilus-hardware-view.c:643
+#: components/hardware/nautilus-hardware-view.c:641
 msgid "This is a placeholder for the CPU page."
 msgstr "Acesta este un loc pentru pagina CPU."
 
-#: components/hardware/nautilus-hardware-view.c:668
+#: components/hardware/nautilus-hardware-view.c:666
 msgid "This is a placeholder for the RAM page."
 msgstr "Acesta este un loc pentru pagina RAM."
 
-#: components/hardware/nautilus-hardware-view.c:693
+#: components/hardware/nautilus-hardware-view.c:691
 msgid "This is a placeholder for the IDE page."
 msgstr "Acesta este un loc pentru pagina IDE."
 
@@ -168,30 +174,37 @@ msgstr "Vizualizeaza ca imagine"
 msgid "I could not initialize Bonobo"
 msgstr "Nu am putut iniţializa Bonobo"
 
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:1
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:1
 msgid "Content Loser"
 msgstr ""
 
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:2
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:2
 msgid "Content Loser Viewer"
 msgstr ""
 
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:3
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:3
 msgid "Nautilus Content Loser"
 msgstr ""
 
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:4
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:4
 msgid "Nautilus content loser component's factory"
 msgstr ""
 
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:5
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:5
 msgid "Nautilus content loser factory"
 msgstr ""
 
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:6
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:6
 msgid "Nautilus content view that fails on command"
 msgstr "Vizualizare conţinut Nautilus care eşuează la cerere"
 
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:7
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:7
 msgid "View as Content Loser"
 msgstr ""
@@ -207,7 +220,7 @@ msgstr ""
 #: components/loser/content/nautilus-content-loser-ui.xml.h:3
 #: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
 #: components/sample/nautilus-sample-content-view-ui.xml.h:4
-#: src/nautilus-shell-ui.xml.h:80
+#: src/nautilus-shell-ui.xml.h:74
 msgid "_File"
 msgstr "_Fişier"
 
@@ -230,22 +243,27 @@ msgstr ""
 msgid "You have tried to kill the Content Loser"
 msgstr "Aţi încercaţi să închideţi Content Loser"
 
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:1
 #: components/loser/sidebar/Nautilus_View_sidebar-loser.server.in.h:1
 msgid "Nautilus Sidebar Loser"
 msgstr ""
 
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:2
 #: components/loser/sidebar/Nautilus_View_sidebar-loser.server.in.h:2
 msgid "Nautilus sidebar loser component's factory"
 msgstr ""
 
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:3
 #: components/loser/sidebar/Nautilus_View_sidebar-loser.server.in.h:3
 msgid "Nautilus sidebar loser factory"
 msgstr ""
 
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:4
 #: components/loser/sidebar/Nautilus_View_sidebar-loser.server.in.h:4
 msgid "Nautilus sidebar view that fails on command"
 msgstr "Vizualizare laterală Nautilus care eşuează la cerere"
 
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:5
 #: components/loser/sidebar/Nautilus_View_sidebar-loser.server.in.h:5
 msgid "Sidebar Loser"
 msgstr ""
@@ -893,45 +911,50 @@ msgstr "JPop"
 msgid "Synthpop"
 msgstr "Synthpop"
 
-#: components/music/nautilus-music-view.c:284
+#: components/music/nautilus-music-view.c:286
+#: libnautilus-private/nautilus-volume-monitor.c:682
+msgid "Unknown"
+msgstr "Necunoscut"
+
+#: components/music/nautilus-music-view.c:339
 msgid "Track"
 msgstr "Piesă"
 
-#: components/music/nautilus-music-view.c:284
+#: components/music/nautilus-music-view.c:350
 msgid "Title"
 msgstr "Titlu"
 
-#: components/music/nautilus-music-view.c:284
+#: components/music/nautilus-music-view.c:360
 msgid "Artist"
 msgstr "Artist"
 
-#: components/music/nautilus-music-view.c:284
+#: components/music/nautilus-music-view.c:374
 msgid "Bit Rate"
 msgstr "Rată în biţi"
 
-#: components/music/nautilus-music-view.c:284
+#: components/music/nautilus-music-view.c:389
 msgid "Time"
 msgstr "Timp"
 
-#: components/music/nautilus-music-view.c:401
+#: components/music/nautilus-music-view.c:509
 msgid "Set Cover Image"
 msgstr "Setează imaginea de copertă"
 
-#: components/music/nautilus-music-view.c:787
+#: components/music/nautilus-music-view.c:735
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Îmi pare rău, dar '%s' nu este un fişier imagine folosibil."
 
-#: components/music/nautilus-music-view.c:789
-#: src/nautilus-property-browser.c:1054 src/nautilus-property-browser.c:1313
+#: components/music/nautilus-music-view.c:737
+#: src/nautilus-property-browser.c:1053 src/nautilus-property-browser.c:1312
 msgid "Not an Image"
 msgstr "Nu este imagine"
 
-#: components/music/nautilus-music-view.c:837
+#: components/music/nautilus-music-view.c:785
 msgid "Select an image file for the album cover:"
 msgstr "Selectaţi un fişier imagine pentru coperta albumului:"
 
-#: components/music/nautilus-music-view.c:1283
+#: components/music/nautilus-music-view.c:1166
 msgid ""
 "Sorry, but the music view is unable to play back sound right now. This is "
 "because the Enable sound server startup setting in the Sound section of the "
@@ -941,12 +964,12 @@ msgstr ""
 "deoarece opţiunea Activează serverul de sunet la pornire din Centrul de "
 "control -> Multimedia -> Sunet este dezactivată."
 
-#: components/music/nautilus-music-view.c:1286
-#: components/music/nautilus-music-view.c:1298
+#: components/music/nautilus-music-view.c:1169
+#: components/music/nautilus-music-view.c:1181
 msgid "Unable to Play File"
 msgstr "Nu pot reda fişierul"
 
-#: components/music/nautilus-music-view.c:1294
+#: components/music/nautilus-music-view.c:1177
 msgid ""
 "Sorry, but the music view is unable to play back sound right now. Either "
 "another program is using or blocking the sound card, or your sound card is "
@@ -955,60 +978,60 @@ msgid ""
 msgstr ""
 "Îmi pare rău, dar vizualizarea muzicii nu poate reda sunet acum. Ori alt "
 "program foloseşte sau blocheaza placa de sunet, ori placa dvs. de sunet nu "
-"este configurată corect. Încercaţi să ieşiţi din aplicaţiile care ar putea să "
-"blocheze folosirea plăcii de sunet."
+"este configurată corect. Încercaţi să ieşiţi din aplicaţiile care ar putea "
+"să blocheze folosirea plăcii de sunet."
 
-#: components/music/nautilus-music-view.c:1319
+#: components/music/nautilus-music-view.c:1205
 msgid "Sorry, but the music view can't play non-local files yet."
 msgstr ""
 "Îmi pare rău, dar vizualizarea muzicii nu poate reda fişiere non-locale "
 "deocamdată."
 
-#: components/music/nautilus-music-view.c:1320
+#: components/music/nautilus-music-view.c:1206
 msgid "Can't Play Remote Files"
 msgstr "Nu pot reda fişiere aflate la distanţă"
 
-#: components/music/nautilus-music-view.c:1606
+#: components/music/nautilus-music-view.c:1493
 msgid "Drag to seek within track"
 msgstr "Trageţi pentru a poziţiona în piesă"
 
-#: components/music/nautilus-music-view.c:1632
+#: components/music/nautilus-music-view.c:1520
 msgid "Previous"
 msgstr "Precedentul"
 
-#: components/music/nautilus-music-view.c:1646
+#: components/music/nautilus-music-view.c:1534
 msgid "Play"
 msgstr "Redă"
 
-#: components/music/nautilus-music-view.c:1660
+#: components/music/nautilus-music-view.c:1548
 msgid "Pause"
 msgstr "Pauză"
 
-#: components/music/nautilus-music-view.c:1674
-#: libnautilus-private/nautilus-file-operations.c:969
-#: libnautilus-private/nautilus-file-operations.c:984
-#: libnautilus-private/nautilus-file-operations.c:1003
-#: src/nautilus-shell-ui.xml.h:54
+#: components/music/nautilus-music-view.c:1562
+#: libnautilus-private/nautilus-file-operations.c:968
+#: libnautilus-private/nautilus-file-operations.c:983
+#: libnautilus-private/nautilus-file-operations.c:1002
+#: src/nautilus-shell-ui.xml.h:52
 msgid "Stop"
 msgstr "Stop"
 
-#: components/music/nautilus-music-view.c:1688
+#: components/music/nautilus-music-view.c:1576
 msgid "Next"
 msgstr "Următorul"
 
-#: components/music/nautilus-music-view.c:1803
+#: components/music/nautilus-music-view.c:1685
 #, c-format
 msgid "Sorry, but there was an error reading %s."
 msgstr "Îmi pare rău, dar a fost o eroare la citirea %s."
 
-#: components/music/nautilus-music-view.c:1804
+#: components/music/nautilus-music-view.c:1686
 msgid "Can't Read Folder"
 msgstr "Nu pot citi dosarul."
 
-#: components/music/nautilus-music-view.c:1909
+#: components/music/nautilus-music-view.c:1780
 #, c-format
-msgid "%s - %s"
-msgstr "%s - %s"
+msgid "<span size=\"xx-large\">%s - %s</span>"
+msgstr ""
 
 #: components/news/Nautilus_View_news.server.in.h:1
 msgid "Factory for news view"
@@ -1026,104 +1049,104 @@ msgstr "Panou lateral Ştiri"
 msgid "News sidebar panel fetches and displays RSS feeds"
 msgstr "Panoul lateral Ştiri primeşte şi afişează surse RSS"
 
-#: components/news/nautilus-news.c:477
+#: components/news/nautilus-news.c:465
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
-#: components/news/nautilus-news.c:1332
+#: components/news/nautilus-news.c:1322
 #, c-format
 msgid "Couldn't load %s"
 msgstr "Nu s-a putut încărca %s"
 
 #. put up a title that's displayed while we wait
-#: components/news/nautilus-news.c:1576
+#: components/news/nautilus-news.c:1566
 #, c-format
 msgid "Loading %s"
 msgstr "Încarc %s"
 
-#: components/news/nautilus-news.c:1914
+#: components/news/nautilus-news.c:1904
 msgid "Sorry, but you have not specified a name for the site!"
 msgstr "Îmi pare rău, dar nu aţi specificat un nume pentru site!"
 
-#: components/news/nautilus-news.c:1914
+#: components/news/nautilus-news.c:1904
 msgid "Missing Site Name Error"
 msgstr "Eroare Lipsă nume site"
 
-#: components/news/nautilus-news.c:1918
+#: components/news/nautilus-news.c:1908
 msgid "Sorry, but you have not specified a URL for the site!"
 msgstr "Îmi pare rău, dar nu aţi specificat un URL pentru site!"
 
-#: components/news/nautilus-news.c:1918
+#: components/news/nautilus-news.c:1908
 msgid "Missing URL Error"
 msgstr "Eroare Lipsă URL"
 
-#: components/news/nautilus-news.c:1935
+#: components/news/nautilus-news.c:1925
 msgid "Sorry, but the specified url doesn't seem to be a valid RSS file!"
 msgstr ""
 
-#: components/news/nautilus-news.c:1935
+#: components/news/nautilus-news.c:1925
 msgid "Invalid RSS URL"
 msgstr ""
 
-#: components/news/nautilus-news.c:2017
+#: components/news/nautilus-news.c:2007
 #: libnautilus-private/nautilus-undo-signal-handlers.c:176
 msgid "Edit"
 msgstr "Editare"
 
-#: components/news/nautilus-news.c:2280
+#: components/news/nautilus-news.c:2272
 msgid "Remove Site"
 msgstr "Elimină site"
 
 #. allocate the name field
-#: components/news/nautilus-news.c:2299
+#: components/news/nautilus-news.c:2291
 msgid "Site Name:"
 msgstr "Nume site:"
 
-#: components/news/nautilus-news.c:2310
+#: components/news/nautilus-news.c:2302
 msgid "Site RSS URL:"
 msgstr ""
 
-#: components/news/nautilus-news.c:2325
+#: components/news/nautilus-news.c:2317
 msgid "Add New Site"
 msgstr "Adaugă site nou"
 
 #. make the add new site label
-#: components/news/nautilus-news.c:2348
+#: components/news/nautilus-news.c:2340
 msgid "Add a New Site:"
 msgstr "Adaugă un site nou:"
 
-#: components/news/nautilus-news.c:2357
+#: components/news/nautilus-news.c:2349
 msgid "Remove a Site:"
 msgstr "Elimină un site:"
 
 #. add a descriptive label
-#: components/news/nautilus-news.c:2382
+#: components/news/nautilus-news.c:2374
 msgid "Select Sites:"
 msgstr "Selectaţi site-uri:"
 
 #. allocate the button box for the done button
-#: components/news/nautilus-news.c:2397
-#: libnautilus-private/nautilus-program-chooser.c:1267
-#: src/nautilus-bookmarks-window.c:133
+#: components/news/nautilus-news.c:2389
+#: libnautilus-private/nautilus-program-chooser.c:1292
+#: src/nautilus-bookmarks-window.c:139
 msgid "Done"
 msgstr "Gata"
 
 #. add the empty message
-#: components/news/nautilus-news.c:2425
+#: components/news/nautilus-news.c:2417
 msgid ""
-"The News panel displays current headlines from your favorite websites.  Click "
-"the 'Select Sites' button to select the sites to display."
+"The News panel displays current headlines from your favorite websites.  "
+"Click the 'Select Sites' button to select the sites to display."
 msgstr ""
 "Panoul Ştiri afişează titlurile curente de la site-urile dvs. favorite de "
-"ştiri.  Apăsaţi butonul 'Selectaţi site-uri' pentru a selecta site-urile care "
-"să fie afişate."
+"ştiri.  Apăsaţi butonul 'Selectaţi site-uri' pentru a selecta site-urile "
+"care să fie afişate."
 
 #. create a button box to hold the command buttons
-#: components/news/nautilus-news.c:2453
+#: components/news/nautilus-news.c:2444
 msgid "Select Sites"
 msgstr "Selectaţi site-uri"
 
-#: components/news/nautilus-news.c:2516
+#: components/news/nautilus-news.c:2503
 msgid "image indicating that the news has changed"
 msgstr "imagine care indică că ştirile s-au schimbat"
 
@@ -1293,14 +1316,14 @@ msgstr "_Helvetica"
 msgid "_Times"
 msgstr "_Times"
 
-#: components/text/nautilus-text-view.c:350
+#: components/text/nautilus-text-view.c:349
 #, c-format
 msgid "Sorry, but %s is too large for Nautilus to load all of it."
 msgstr ""
 "Îmi pare rău, dar %s este prea mare pentru ca să fie încarcat complet de "
 "Nautilus."
 
-#: components/text/nautilus-text-view.c:353
+#: components/text/nautilus-text-view.c:352
 msgid "File too large"
 msgstr "Fişier prea mare"
 
@@ -1348,6 +1371,14 @@ msgstr "Vizualizare Arbore"
 #: src/nautilus-preferences-dialog.c:387
 msgid "Tree"
 msgstr "Arbore"
+
+#: data/applications.desktop.in.h:1
+msgid "Applications"
+msgstr "Aplicaţii"
+
+#: data/applications.desktop.in.h:2
+msgid "Browse available software"
+msgstr "Navighează prin softul disponibil"
 
 #: data/browser.xml.h:1
 msgid "Apparition"
@@ -1469,8 +1500,8 @@ msgstr ""
 msgid "Eclipse"
 msgstr ""
 
-#: data/browser.xml.h:31 src/file-manager/fm-list-view.c:2252
-#: src/file-manager/fm-properties-window.c:1712
+#: data/browser.xml.h:31 src/file-manager/fm-list-view.c:2256
+#: src/file-manager/fm-properties-window.c:1710
 #: src/file-manager/fm-search-list-view.c:501
 msgid "Emblems"
 msgstr "Embleme"
@@ -1690,14 +1721,6 @@ msgstr ""
 #: data/preferences.desktop.in.h:2 src/nautilus-preferences-dialog.c:438
 msgid "Preferences"
 msgstr "Preferinţe"
-
-#: data/applications.desktop.in.h:1
-msgid "Applications"
-msgstr "Aplicaţii"
-
-#: data/applications.desktop.in.h:2
-msgid "Browse available software"
-msgstr "Navighează prin softul disponibil"
 
 #: data/serverconfig.desktop.in.h:1
 msgid "Configure network services (web server, DNS server, etc.)"
@@ -2035,26 +2058,51 @@ msgstr "Volum XIAFS"
 msgid "Xenix Volume"
 msgstr "Volum Xenix"
 
-#: libnautilus-private/nautilus-customization-data.c:354
+#: libnautilus-private/nautilus-authn-manager.c:60
+msgid "Your HTTP Proxy requires you to log in.\n"
+msgstr ""
+
+#: libnautilus-private/nautilus-authn-manager.c:61
+#, c-format
+msgid ""
+"You must log in to access \"%s\".\n"
+"\n"
+"%s"
+msgstr ""
+
+#: libnautilus-private/nautilus-authn-manager.c:64
+msgid "Your password will be transmitted unencrypted."
+msgstr ""
+
+#: libnautilus-private/nautilus-authn-manager.c:65
+msgid "Your password will be transmitted encrypted."
+msgstr ""
+
+#: libnautilus-private/nautilus-authn-manager.c:68
+#, fuzzy
+msgid "Authentication Required"
+msgstr "această secţiune"
+
+#: libnautilus-private/nautilus-customization-data.c:351
 msgid "reset"
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations-progress.c:362
+#: libnautilus-private/nautilus-file-operations-progress.c:361
 #, c-format
 msgid "%ld of %ld"
 msgstr "%ld din %ld"
 
 #. "From" dialog label, source path gets placed next to it in the dialog
-#: libnautilus-private/nautilus-file-operations.c:418
+#: libnautilus-private/nautilus-file-operations.c:417
 msgid "From:"
 msgstr "De la:"
 
 #. "To" dialog label, source path gets placed next to it in the dialog
-#: libnautilus-private/nautilus-file-operations.c:433
+#: libnautilus-private/nautilus-file-operations.c:432
 msgid "To:"
 msgstr "Către:"
 
-#: libnautilus-private/nautilus-file-operations.c:612
+#: libnautilus-private/nautilus-file-operations.c:611
 #, c-format
 msgid ""
 "Error while moving.\n"
@@ -2062,7 +2110,7 @@ msgid ""
 "\"%s\" cannot be moved because it is on a read-only disk."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:623
+#: libnautilus-private/nautilus-file-operations.c:622
 #, c-format
 msgid ""
 "Error while deleting.\n"
@@ -2071,7 +2119,7 @@ msgid ""
 "parent folder."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:629
+#: libnautilus-private/nautilus-file-operations.c:628
 #, c-format
 msgid ""
 "Error while deleting.\n"
@@ -2079,7 +2127,7 @@ msgid ""
 "\"%s\" cannot be deleted because it is on a read-only disk."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:660
+#: libnautilus-private/nautilus-file-operations.c:659
 #, c-format
 msgid ""
 "Error while moving.\n"
@@ -2088,7 +2136,7 @@ msgid ""
 "its parent folder."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:667
+#: libnautilus-private/nautilus-file-operations.c:666
 #, c-format
 msgid ""
 "Error while moving.\n"
@@ -2097,7 +2145,7 @@ msgid ""
 "change it or its parent folder."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:691
+#: libnautilus-private/nautilus-file-operations.c:690
 #, c-format
 msgid ""
 "Error while copying.\n"
@@ -2105,7 +2153,7 @@ msgid ""
 "\"%s\" cannot be copied because you do not have permissions to read it."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:713
+#: libnautilus-private/nautilus-file-operations.c:712
 #, c-format
 msgid ""
 "Error while copying to \"%s\".\n"
@@ -2113,7 +2161,7 @@ msgid ""
 "There is not enough space on the destination."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:718
+#: libnautilus-private/nautilus-file-operations.c:717
 #, c-format
 msgid ""
 "Error while moving to \"%s\".\n"
@@ -2121,7 +2169,7 @@ msgid ""
 "There is not enough space on the destination."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:722
+#: libnautilus-private/nautilus-file-operations.c:721
 #, c-format
 msgid ""
 "Error while creating link in \"%s\".\n"
@@ -2129,7 +2177,7 @@ msgid ""
 "There is not enough space on the destination."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:734
+#: libnautilus-private/nautilus-file-operations.c:733
 #, c-format
 msgid ""
 "Error while copying to \"%s\".\n"
@@ -2137,7 +2185,7 @@ msgid ""
 "You do not have permissions to write to this folder."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:738
+#: libnautilus-private/nautilus-file-operations.c:737
 #, c-format
 msgid ""
 "Error while copying to \"%s\".\n"
@@ -2145,7 +2193,7 @@ msgid ""
 "The destination disk is read-only."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:745
+#: libnautilus-private/nautilus-file-operations.c:744
 #, c-format
 msgid ""
 "Error while moving items to \"%s\".\n"
@@ -2153,7 +2201,7 @@ msgid ""
 "You do not have permissions to write to this folder."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:749
+#: libnautilus-private/nautilus-file-operations.c:748
 #, c-format
 msgid ""
 "Error while moving items to \"%s\".\n"
@@ -2161,7 +2209,7 @@ msgid ""
 "The destination disk is read-only."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:756
+#: libnautilus-private/nautilus-file-operations.c:755
 #, c-format
 msgid ""
 "Error while creating links in \"%s\".\n"
@@ -2169,7 +2217,7 @@ msgid ""
 "You do not have permissions to write to this folder."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:760
+#: libnautilus-private/nautilus-file-operations.c:759
 #, c-format
 msgid ""
 "Error while creating links in \"%s\".\n"
@@ -2177,7 +2225,7 @@ msgid ""
 "The destination disk is read-only."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:789
+#: libnautilus-private/nautilus-file-operations.c:788
 #, c-format
 msgid ""
 "Error \"%s\" while copying \"%s\".\n"
@@ -2185,7 +2233,7 @@ msgid ""
 "Would you like to continue?"
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:793
+#: libnautilus-private/nautilus-file-operations.c:792
 #, c-format
 msgid ""
 "Error \"%s\" while moving \"%s\".\n"
@@ -2193,7 +2241,7 @@ msgid ""
 "Would you like to continue?"
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:797
+#: libnautilus-private/nautilus-file-operations.c:796
 #, c-format
 msgid ""
 "Error \"%s\" while creating a link to \"%s\".\n"
@@ -2201,7 +2249,7 @@ msgid ""
 "Would you like to continue?"
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:803
+#: libnautilus-private/nautilus-file-operations.c:802
 #, c-format
 msgid ""
 "Error \"%s\" while deleting \"%s\".\n"
@@ -2209,7 +2257,7 @@ msgid ""
 "Would you like to continue?"
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:818
+#: libnautilus-private/nautilus-file-operations.c:817
 #, c-format
 msgid ""
 "Error \"%s\" while copying.\n"
@@ -2217,7 +2265,7 @@ msgid ""
 "Would you like to continue?"
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:822
+#: libnautilus-private/nautilus-file-operations.c:821
 #, c-format
 msgid ""
 "Error \"%s\" while moving.\n"
@@ -2225,7 +2273,7 @@ msgid ""
 "Would you like to continue?"
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:826
+#: libnautilus-private/nautilus-file-operations.c:825
 #, c-format
 msgid ""
 "Error \"%s\" while linking.\n"
@@ -2233,7 +2281,7 @@ msgid ""
 "Would you like to continue?"
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:832
+#: libnautilus-private/nautilus-file-operations.c:831
 #, c-format
 msgid ""
 "Error \"%s\" while deleting.\n"
@@ -2241,34 +2289,34 @@ msgid ""
 "Would you like to continue?"
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:948
+#: libnautilus-private/nautilus-file-operations.c:947
 msgid "Error while copying."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:951
+#: libnautilus-private/nautilus-file-operations.c:950
 msgid "Error while moving."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:954
+#: libnautilus-private/nautilus-file-operations.c:953
 msgid "Error while linking."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:959
+#: libnautilus-private/nautilus-file-operations.c:958
 msgid "Error while deleting."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:984
-#: libnautilus-private/nautilus-file-operations.c:1003
-#: libnautilus-private/nautilus-file-operations.c:1114
-#: libnautilus-private/nautilus-file-operations.c:1128
+#: libnautilus-private/nautilus-file-operations.c:983
+#: libnautilus-private/nautilus-file-operations.c:1002
+#: libnautilus-private/nautilus-file-operations.c:1113
+#: libnautilus-private/nautilus-file-operations.c:1127
 msgid "Skip"
 msgstr "Sări"
 
-#: libnautilus-private/nautilus-file-operations.c:1003
+#: libnautilus-private/nautilus-file-operations.c:1002
 msgid "Retry"
 msgstr "Reîncearcă"
 
-#: libnautilus-private/nautilus-file-operations.c:1078
+#: libnautilus-private/nautilus-file-operations.c:1077
 #, c-format
 msgid ""
 "\"%s\" could not be moved to the new location, because its name is already "
@@ -2277,7 +2325,7 @@ msgid ""
 "If you still want to move \"%s\", rename it and try again."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:1084
+#: libnautilus-private/nautilus-file-operations.c:1083
 #, c-format
 msgid ""
 "\"%s\" could not be copied to the new location, because its name is already "
@@ -2286,11 +2334,11 @@ msgid ""
 "If you still want to copy \"%s\", rename it and try again."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:1092
+#: libnautilus-private/nautilus-file-operations.c:1091
 msgid "Unable to replace file."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:1102
+#: libnautilus-private/nautilus-file-operations.c:1101
 #, c-format
 msgid ""
 "File \"%s\" already exists.\n"
@@ -2301,29 +2349,29 @@ msgstr ""
 "\n"
 "Doriţi să-l înlocuiţi?"
 
-#: libnautilus-private/nautilus-file-operations.c:1113
-#: libnautilus-private/nautilus-file-operations.c:1127
+#: libnautilus-private/nautilus-file-operations.c:1112
+#: libnautilus-private/nautilus-file-operations.c:1126
 msgid "Conflict while copying"
 msgstr "Conflict în timpul copierii"
 
-#: libnautilus-private/nautilus-file-operations.c:1114
-#: libnautilus-private/nautilus-file-operations.c:1128
+#: libnautilus-private/nautilus-file-operations.c:1113
+#: libnautilus-private/nautilus-file-operations.c:1127
 msgid "Replace"
 msgstr "Înlocuieşte"
 
-#: libnautilus-private/nautilus-file-operations.c:1128
+#: libnautilus-private/nautilus-file-operations.c:1127
 msgid "Replace All"
 msgstr "Înlocuieşte pe toate"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1177
-#: libnautilus-private/nautilus-file.c:4209
+#: libnautilus-private/nautilus-file-operations.c:1176
+#: libnautilus-private/nautilus-file.c:4247
 #, c-format
 msgid "link to %s"
 msgstr "legătură la %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1181
+#: libnautilus-private/nautilus-file-operations.c:1180
 #, c-format
 msgid "another link to %s"
 msgstr "altă legătura la %s"
@@ -2332,25 +2380,25 @@ msgstr "altă legătura la %s"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: libnautilus-private/nautilus-file-operations.c:1197
+#: libnautilus-private/nautilus-file-operations.c:1196
 #, c-format
 msgid "%dst link to %s"
 msgstr "legătura nr %d către %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1201
+#: libnautilus-private/nautilus-file-operations.c:1200
 #, c-format
 msgid "%dnd link to %s"
 msgstr "legătura nr %d către %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1205
+#: libnautilus-private/nautilus-file-operations.c:1204
 #, c-format
 msgid "%drd link to %s"
 msgstr "legătura nr %d către %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1209
+#: libnautilus-private/nautilus-file-operations.c:1208
 #, c-format
 msgid "%dth link to %s"
 msgstr "legătura nr %d către %s"
@@ -2360,233 +2408,233 @@ msgstr "legătura nr %d către %s"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1229
-#: libnautilus-private/nautilus-file-operations.c:2332
+#: libnautilus-private/nautilus-file-operations.c:1228
+#: libnautilus-private/nautilus-file-operations.c:2331
 msgid " (copy)"
 msgstr " (copie)"
 
 #. localizers: tag used to detect the second copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1231
-#: libnautilus-private/nautilus-file-operations.c:2332
+#: libnautilus-private/nautilus-file-operations.c:1230
+#: libnautilus-private/nautilus-file-operations.c:2331
 msgid " (another copy)"
 msgstr " (altă copie)"
 
 #. localizers: tag used to detect the x11th copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1234
-#: libnautilus-private/nautilus-file-operations.c:1236
-#: libnautilus-private/nautilus-file-operations.c:1238
-#: libnautilus-private/nautilus-file-operations.c:1248
+#: libnautilus-private/nautilus-file-operations.c:1233
+#: libnautilus-private/nautilus-file-operations.c:1235
+#: libnautilus-private/nautilus-file-operations.c:1237
+#: libnautilus-private/nautilus-file-operations.c:1247
 msgid "th copy)"
 msgstr ""
 
 #. localizers: tag used to detect the x1st copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1241
+#: libnautilus-private/nautilus-file-operations.c:1240
 msgid "st copy)"
 msgstr ""
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1243
+#: libnautilus-private/nautilus-file-operations.c:1242
 msgid "nd copy)"
 msgstr ""
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1245
+#: libnautilus-private/nautilus-file-operations.c:1244
 msgid "rd copy)"
 msgstr ""
 
 #. localizers: appended to first file copy
-#: libnautilus-private/nautilus-file-operations.c:1262
+#: libnautilus-private/nautilus-file-operations.c:1261
 #, c-format
 msgid "%s (copy)%s"
 msgstr ""
 
 #. localizers: appended to second file copy
-#: libnautilus-private/nautilus-file-operations.c:1264
+#: libnautilus-private/nautilus-file-operations.c:1263
 #, c-format
 msgid "%s (another copy)%s"
 msgstr ""
 
 #. localizers: appended to x11th file copy
-#: libnautilus-private/nautilus-file-operations.c:1267
-#: libnautilus-private/nautilus-file-operations.c:1269
-#: libnautilus-private/nautilus-file-operations.c:1271
-#: libnautilus-private/nautilus-file-operations.c:1280
+#: libnautilus-private/nautilus-file-operations.c:1266
+#: libnautilus-private/nautilus-file-operations.c:1268
+#: libnautilus-private/nautilus-file-operations.c:1270
+#: libnautilus-private/nautilus-file-operations.c:1279
 #, c-format
 msgid "%s (%dth copy)%s"
 msgstr ""
 
 #. localizers: appended to x1st file copy
-#: libnautilus-private/nautilus-file-operations.c:1274
+#: libnautilus-private/nautilus-file-operations.c:1273
 #, c-format
 msgid "%s (%dst copy)%s"
 msgstr ""
 
 #. localizers: appended to x2nd file copy
-#: libnautilus-private/nautilus-file-operations.c:1276
+#: libnautilus-private/nautilus-file-operations.c:1275
 #, c-format
 msgid "%s (%dnd copy)%s"
 msgstr ""
 
 #. localizers: appended to x3rd file copy
-#: libnautilus-private/nautilus-file-operations.c:1278
+#: libnautilus-private/nautilus-file-operations.c:1277
 #, c-format
 msgid "%s (%drd copy)%s"
 msgstr ""
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: libnautilus-private/nautilus-file-operations.c:1378
+#: libnautilus-private/nautilus-file-operations.c:1377
 msgid " ("
 msgstr ""
 
 #. localizers: opening parentheses of the "th copy)" string
-#: libnautilus-private/nautilus-file-operations.c:1386
+#: libnautilus-private/nautilus-file-operations.c:1385
 #, c-format
 msgid " (%d"
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:1564
-#: libnautilus-private/nautilus-file-operations.c:2154
+#: libnautilus-private/nautilus-file-operations.c:1563
+#: libnautilus-private/nautilus-file-operations.c:2153
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr ""
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1885
+#: libnautilus-private/nautilus-file-operations.c:1884
 msgid "Moving files to the Trash"
 msgstr "Mut fişierele la gunoi"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1887
+#: libnautilus-private/nautilus-file-operations.c:1886
 msgid "Files thrown out:"
 msgstr "Fişiere aruncate:"
 
 #. localizers: label prepended to the name of the current file moved
-#: libnautilus-private/nautilus-file-operations.c:1889
-#: libnautilus-private/nautilus-file-operations.c:1905
+#: libnautilus-private/nautilus-file-operations.c:1888
+#: libnautilus-private/nautilus-file-operations.c:1904
 msgid "Moving"
 msgstr "Mut"
 
-#: libnautilus-private/nautilus-file-operations.c:1890
+#: libnautilus-private/nautilus-file-operations.c:1889
 msgid "Preparing to Move to Trash..."
 msgstr "Pregătire pentru a muta la gunoi..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1901
+#: libnautilus-private/nautilus-file-operations.c:1900
 msgid "Moving files"
 msgstr "Mut fişierele"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1903
+#: libnautilus-private/nautilus-file-operations.c:1902
 msgid "Files moved:"
 msgstr "Fişiere mutate:"
 
-#: libnautilus-private/nautilus-file-operations.c:1906
+#: libnautilus-private/nautilus-file-operations.c:1905
 msgid "Preparing To Move..."
 msgstr "Pregătire pentru a muta..."
 
-#: libnautilus-private/nautilus-file-operations.c:1907
+#: libnautilus-private/nautilus-file-operations.c:1906
 msgid "Finishing Move..."
 msgstr "Termin mutarea..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1920
+#: libnautilus-private/nautilus-file-operations.c:1919
 msgid "Creating links to files"
 msgstr "Creez legături la fişiere"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1922
+#: libnautilus-private/nautilus-file-operations.c:1921
 msgid "Files linked:"
 msgstr "Fişiere legate:"
 
 #. localizers: label prepended to the name of the current file linked
-#: libnautilus-private/nautilus-file-operations.c:1924
+#: libnautilus-private/nautilus-file-operations.c:1923
 msgid "Linking"
 msgstr "Leg"
 
-#: libnautilus-private/nautilus-file-operations.c:1925
+#: libnautilus-private/nautilus-file-operations.c:1924
 msgid "Preparing to Create Links..."
 msgstr "Pregătire pentru a crea legături..."
 
-#: libnautilus-private/nautilus-file-operations.c:1926
+#: libnautilus-private/nautilus-file-operations.c:1925
 msgid "Finishing Creating Links..."
 msgstr "Termin crearea legăturilor..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1933
+#: libnautilus-private/nautilus-file-operations.c:1932
 msgid "Copying files"
 msgstr "Copiez fişierele"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1935
+#: libnautilus-private/nautilus-file-operations.c:1934
 msgid "Files copied:"
 msgstr "Fişiere copiate:"
 
 #. localizers: label prepended to the name of the current file copied
-#: libnautilus-private/nautilus-file-operations.c:1937
+#: libnautilus-private/nautilus-file-operations.c:1936
 msgid "Copying"
 msgstr "Copiez"
 
-#: libnautilus-private/nautilus-file-operations.c:1938
+#: libnautilus-private/nautilus-file-operations.c:1937
 msgid "Preparing To Copy..."
 msgstr "Pregătire pentru a copia..."
 
-#: libnautilus-private/nautilus-file-operations.c:1956
+#: libnautilus-private/nautilus-file-operations.c:1955
 msgid "You cannot copy items into the Trash."
 msgstr "Nu puteţi copia elemente la gunoi."
 
-#: libnautilus-private/nautilus-file-operations.c:1957
+#: libnautilus-private/nautilus-file-operations.c:1956
 msgid "Can't Copy to Trash"
 msgstr "Nu pot copia la gunoi"
 
-#: libnautilus-private/nautilus-file-operations.c:1984
+#: libnautilus-private/nautilus-file-operations.c:1983
 msgid "The Trash must remain on the desktop."
 msgstr "Coşul de gunoi trebuie să rămână pe desktop."
 
-#: libnautilus-private/nautilus-file-operations.c:1985
+#: libnautilus-private/nautilus-file-operations.c:1984
 msgid "You cannot move this trash folder."
 msgstr "Nu puteţi muta acest dosar din gunoi."
 
-#: libnautilus-private/nautilus-file-operations.c:1987
+#: libnautilus-private/nautilus-file-operations.c:1986
 msgid "You cannot copy the Trash."
 msgstr "Nu puteţi copia gunoiul."
 
-#: libnautilus-private/nautilus-file-operations.c:1988
+#: libnautilus-private/nautilus-file-operations.c:1987
 msgid "You cannot copy this trash folder."
 msgstr "Nu puteţi copia acest dosar din gunoi."
 
-#: libnautilus-private/nautilus-file-operations.c:1990
+#: libnautilus-private/nautilus-file-operations.c:1989
 msgid "Can't Change Trash Location"
 msgstr "Nu pot schimba locaţia gunoiului"
 
-#: libnautilus-private/nautilus-file-operations.c:1991
+#: libnautilus-private/nautilus-file-operations.c:1990
 msgid "Can't Copy Trash"
 msgstr "Nu pot copia gunoiul"
 
-#: libnautilus-private/nautilus-file-operations.c:2014
+#: libnautilus-private/nautilus-file-operations.c:2013
 msgid "You cannot move a folder into itself."
 msgstr "Nu puteţi muta un dosar in el însuşi."
 
-#: libnautilus-private/nautilus-file-operations.c:2015
+#: libnautilus-private/nautilus-file-operations.c:2014
 msgid "You cannot copy a folder into itself."
 msgstr "Nu puteţi copia un dosar in el însuşi."
 
-#: libnautilus-private/nautilus-file-operations.c:2017
+#: libnautilus-private/nautilus-file-operations.c:2016
 msgid "Can't Move Into Self"
 msgstr "Nu pot muta in el însuşi."
 
-#: libnautilus-private/nautilus-file-operations.c:2018
+#: libnautilus-private/nautilus-file-operations.c:2017
 msgid "Can't Copy Into Self"
 msgstr "Nu pot copia in el însuşi."
 
-#: libnautilus-private/nautilus-file-operations.c:2030
+#: libnautilus-private/nautilus-file-operations.c:2029
 msgid "You cannot copy a file over itself."
 msgstr "Nu puteţi copia un fişier in el însuşi."
 
-#: libnautilus-private/nautilus-file-operations.c:2031
+#: libnautilus-private/nautilus-file-operations.c:2030
 msgid "Can't Copy Over Self"
 msgstr "Nu pot copia in el însuşi."
 
-#: libnautilus-private/nautilus-file-operations.c:2083
+#: libnautilus-private/nautilus-file-operations.c:2082
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -2596,7 +2644,7 @@ msgstr ""
 "\n"
 "Nu aveţi permisii pentru a scrie în destinaţie."
 
-#: libnautilus-private/nautilus-file-operations.c:2086
+#: libnautilus-private/nautilus-file-operations.c:2085
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -2606,327 +2654,331 @@ msgstr ""
 "\n"
 "Nu este spaţiu liber în destinaţie."
 
-#: libnautilus-private/nautilus-file-operations.c:2089
+#: libnautilus-private/nautilus-file-operations.c:2088
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Eroare \"%s\" la creearea noului dosar"
 
-#: libnautilus-private/nautilus-file-operations.c:2093
+#: libnautilus-private/nautilus-file-operations.c:2092
 msgid "Error creating new folder"
 msgstr "Eroare la creearea noului dosar"
 
 #. localizers: the initial name of a new folder
-#: libnautilus-private/nautilus-file-operations.c:2180
+#: libnautilus-private/nautilus-file-operations.c:2179
 msgid "untitled folder"
 msgstr "dosar fără nume"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2214
+#: libnautilus-private/nautilus-file-operations.c:2213
 msgid "Deleting files"
 msgstr "Şterg fişierele"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2216
-#: libnautilus-private/nautilus-file-operations.c:2252
+#: libnautilus-private/nautilus-file-operations.c:2215
+#: libnautilus-private/nautilus-file-operations.c:2251
 msgid "Files deleted:"
 msgstr "Fişiere şterse:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-private/nautilus-file-operations.c:2218
-#: libnautilus-private/nautilus-file-operations.c:2254
+#: libnautilus-private/nautilus-file-operations.c:2217
+#: libnautilus-private/nautilus-file-operations.c:2253
 msgid "Deleting"
 msgstr "Şterg"
 
-#: libnautilus-private/nautilus-file-operations.c:2219
+#: libnautilus-private/nautilus-file-operations.c:2218
 msgid "Preparing to Delete files..."
 msgstr "Pregătire pentru a şterge fişierele..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2250
+#: libnautilus-private/nautilus-file-operations.c:2249
 msgid "Emptying the Trash"
 msgstr "Golesc gunoiul"
 
-#: libnautilus-private/nautilus-file-operations.c:2255
+#: libnautilus-private/nautilus-file-operations.c:2254
 msgid "Preparing to Empty the Trash..."
 msgstr "Pregătire pentru a goli gunoiul..."
 
-#: libnautilus-private/nautilus-file-operations.c:2288
+#: libnautilus-private/nautilus-file-operations.c:2287
 msgid ""
 "Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr ""
 "Sunteţi sigur că vreţi să ştergeţi pentru totdeauna toate elementele din "
 "gunoi?"
 
-#: libnautilus-private/nautilus-file-operations.c:2290
+#: libnautilus-private/nautilus-file-operations.c:2289
 msgid "Delete Trash Contents?"
 msgstr "Şterg conţinutul gunoiului?"
 
-#: libnautilus-private/nautilus-file-operations.c:2291
+#: libnautilus-private/nautilus-file-operations.c:2290
 msgid "Empty"
 msgstr "Goleşte"
 
-#: libnautilus-private/nautilus-file-operations.c:2333
+#: libnautilus-private/nautilus-file-operations.c:2332
 msgid "foo"
 msgstr "foo"
 
-#: libnautilus-private/nautilus-file-operations.c:2333
-#: libnautilus-private/nautilus-file-operations.c:2343
+#: libnautilus-private/nautilus-file-operations.c:2332
+#: libnautilus-private/nautilus-file-operations.c:2342
 msgid "foo (copy)"
 msgstr "foo (copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2334
+#: libnautilus-private/nautilus-file-operations.c:2333
 msgid ".bashrc"
 msgstr ".bashrc"
 
-#: libnautilus-private/nautilus-file-operations.c:2334
+#: libnautilus-private/nautilus-file-operations.c:2333
 msgid ".bashrc (copy)"
 msgstr ".bashrc (copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2335
+#: libnautilus-private/nautilus-file-operations.c:2334
 msgid ".foo.txt"
 msgstr ".foo.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2335
+#: libnautilus-private/nautilus-file-operations.c:2334
 msgid ".foo (copy).txt"
 msgstr ".foo (copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2336
+#: libnautilus-private/nautilus-file-operations.c:2335
 msgid "foo foo"
 msgstr "foo foo"
 
-#: libnautilus-private/nautilus-file-operations.c:2336
+#: libnautilus-private/nautilus-file-operations.c:2335
 msgid "foo foo (copy)"
 msgstr "foo foo (copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2337
+#: libnautilus-private/nautilus-file-operations.c:2336
 msgid "foo.txt"
 msgstr "foo.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2337
-#: libnautilus-private/nautilus-file-operations.c:2344
+#: libnautilus-private/nautilus-file-operations.c:2336
+#: libnautilus-private/nautilus-file-operations.c:2343
 msgid "foo (copy).txt"
 msgstr "foo (copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2338
+#: libnautilus-private/nautilus-file-operations.c:2337
 msgid "foo foo.txt"
 msgstr "foo foo.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2338
-#: libnautilus-private/nautilus-file-operations.c:2360
+#: libnautilus-private/nautilus-file-operations.c:2337
+#: libnautilus-private/nautilus-file-operations.c:2359
 msgid "foo foo (copy).txt"
 msgstr "foo foo (copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2339
+#: libnautilus-private/nautilus-file-operations.c:2338
 msgid "foo foo.txt txt"
 msgstr "foo foo.txt txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2339
+#: libnautilus-private/nautilus-file-operations.c:2338
 msgid "foo foo (copy).txt txt"
 msgstr "foo foo (copy).txt txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2340
+#: libnautilus-private/nautilus-file-operations.c:2339
 msgid "foo...txt"
 msgstr "foo...txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2340
+#: libnautilus-private/nautilus-file-operations.c:2339
 msgid "foo.. (copy).txt"
 msgstr "foo.. (copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2341
+#: libnautilus-private/nautilus-file-operations.c:2340
 msgid "foo..."
 msgstr "foo..."
 
-#: libnautilus-private/nautilus-file-operations.c:2341
+#: libnautilus-private/nautilus-file-operations.c:2340
 msgid "foo... (copy)"
 msgstr "foo... (copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2342
+#: libnautilus-private/nautilus-file-operations.c:2341
 msgid "foo. (copy)"
 msgstr "foo. (copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2342
+#: libnautilus-private/nautilus-file-operations.c:2341
 msgid "foo. (another copy)"
 msgstr "foo. (another copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2343
-#: libnautilus-private/nautilus-file-operations.c:2345
+#: libnautilus-private/nautilus-file-operations.c:2342
+#: libnautilus-private/nautilus-file-operations.c:2344
 msgid "foo (another copy)"
 msgstr "foo (another copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2344
-#: libnautilus-private/nautilus-file-operations.c:2346
+#: libnautilus-private/nautilus-file-operations.c:2343
+#: libnautilus-private/nautilus-file-operations.c:2345
 msgid "foo (another copy).txt"
 msgstr "foo (another copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2345
+#: libnautilus-private/nautilus-file-operations.c:2344
 msgid "foo (3rd copy)"
 msgstr "foo (3rd copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2346
+#: libnautilus-private/nautilus-file-operations.c:2345
 msgid "foo (3rd copy).txt"
 msgstr "foo (3rd copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2347
+#: libnautilus-private/nautilus-file-operations.c:2346
 msgid "foo foo (another copy).txt"
 msgstr "foo foo (another copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2347
+#: libnautilus-private/nautilus-file-operations.c:2346
 msgid "foo foo (3rd copy).txt"
 msgstr "foo foo (3rd copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2348
-#: libnautilus-private/nautilus-file-operations.c:2365
+#: libnautilus-private/nautilus-file-operations.c:2347
+#: libnautilus-private/nautilus-file-operations.c:2364
 msgid "foo (13th copy)"
 msgstr "foo (13th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2348
+#: libnautilus-private/nautilus-file-operations.c:2347
 msgid "foo (14th copy)"
 msgstr "foo (14th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2349
-#: libnautilus-private/nautilus-file-operations.c:2366
+#: libnautilus-private/nautilus-file-operations.c:2348
+#: libnautilus-private/nautilus-file-operations.c:2365
 msgid "foo (13th copy).txt"
 msgstr "foo (13th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2349
+#: libnautilus-private/nautilus-file-operations.c:2348
 msgid "foo (14th copy).txt"
 msgstr "foo (14th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2350
+#: libnautilus-private/nautilus-file-operations.c:2349
 msgid "foo (21st copy)"
 msgstr "foo (21st copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2350
-#: libnautilus-private/nautilus-file-operations.c:2352
+#: libnautilus-private/nautilus-file-operations.c:2349
+#: libnautilus-private/nautilus-file-operations.c:2351
 msgid "foo (22nd copy)"
 msgstr "foo (22nd copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2351
+#: libnautilus-private/nautilus-file-operations.c:2350
 msgid "foo (21st copy).txt"
 msgstr "foo (21st copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2351
-#: libnautilus-private/nautilus-file-operations.c:2353
+#: libnautilus-private/nautilus-file-operations.c:2350
+#: libnautilus-private/nautilus-file-operations.c:2352
 msgid "foo (22nd copy).txt"
 msgstr "foo (22nd copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2352
-#: libnautilus-private/nautilus-file-operations.c:2354
+#: libnautilus-private/nautilus-file-operations.c:2351
+#: libnautilus-private/nautilus-file-operations.c:2353
 msgid "foo (23rd copy)"
 msgstr "foo (23rd copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2353
-#: libnautilus-private/nautilus-file-operations.c:2355
+#: libnautilus-private/nautilus-file-operations.c:2352
+#: libnautilus-private/nautilus-file-operations.c:2354
 msgid "foo (23rd copy).txt"
 msgstr "foo (23rd copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2354
-#: libnautilus-private/nautilus-file-operations.c:2356
+#: libnautilus-private/nautilus-file-operations.c:2353
+#: libnautilus-private/nautilus-file-operations.c:2355
 msgid "foo (24th copy)"
 msgstr "foo (24th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2355
-#: libnautilus-private/nautilus-file-operations.c:2357
+#: libnautilus-private/nautilus-file-operations.c:2354
+#: libnautilus-private/nautilus-file-operations.c:2356
 msgid "foo (24th copy).txt"
 msgstr "foo (24th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2356
+#: libnautilus-private/nautilus-file-operations.c:2355
 msgid "foo (25th copy)"
 msgstr "foo (25th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2357
+#: libnautilus-private/nautilus-file-operations.c:2356
 msgid "foo (25th copy).txt"
 msgstr "foo (25th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2358
+#: libnautilus-private/nautilus-file-operations.c:2357
 msgid "foo foo (24th copy)"
 msgstr "foo foo (24th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2358
+#: libnautilus-private/nautilus-file-operations.c:2357
 msgid "foo foo (25th copy)"
 msgstr "foo foo (25th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2359
+#: libnautilus-private/nautilus-file-operations.c:2358
 msgid "foo foo (24th copy).txt"
 msgstr "foo foo (24th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2359
+#: libnautilus-private/nautilus-file-operations.c:2358
 msgid "foo foo (25th copy).txt"
 msgstr "foo foo (25th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2360
+#: libnautilus-private/nautilus-file-operations.c:2359
 msgid "foo foo (100000000000000th copy).txt"
 msgstr "foo foo (100000000000000th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2361
+#: libnautilus-private/nautilus-file-operations.c:2360
 msgid "foo (10th copy)"
 msgstr "foo (10th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2361
-#: libnautilus-private/nautilus-file-operations.c:2363
+#: libnautilus-private/nautilus-file-operations.c:2360
+#: libnautilus-private/nautilus-file-operations.c:2362
 msgid "foo (11th copy)"
 msgstr "foo (11th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2362
+#: libnautilus-private/nautilus-file-operations.c:2361
 msgid "foo (10th copy).txt"
 msgstr "foo (10th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2362
-#: libnautilus-private/nautilus-file-operations.c:2364
+#: libnautilus-private/nautilus-file-operations.c:2361
+#: libnautilus-private/nautilus-file-operations.c:2363
 msgid "foo (11th copy).txt"
 msgstr "foo (11th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2363
-#: libnautilus-private/nautilus-file-operations.c:2365
+#: libnautilus-private/nautilus-file-operations.c:2362
+#: libnautilus-private/nautilus-file-operations.c:2364
 msgid "foo (12th copy)"
 msgstr "foo (12th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2364
-#: libnautilus-private/nautilus-file-operations.c:2366
+#: libnautilus-private/nautilus-file-operations.c:2363
+#: libnautilus-private/nautilus-file-operations.c:2365
 msgid "foo (12th copy).txt"
 msgstr "foo (12th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2367
+#: libnautilus-private/nautilus-file-operations.c:2366
 msgid "foo (110th copy)"
 msgstr "foo (110th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2367
+#: libnautilus-private/nautilus-file-operations.c:2366
 msgid "foo (111th copy)"
 msgstr "foo (111th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2368
+#: libnautilus-private/nautilus-file-operations.c:2367
 msgid "foo (110th copy).txt"
 msgstr "foo (110th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2368
+#: libnautilus-private/nautilus-file-operations.c:2367
 msgid "foo (111th copy).txt"
 msgstr "foo (111th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2369
+#: libnautilus-private/nautilus-file-operations.c:2368
 msgid "foo (122nd copy)"
 msgstr "foo (122nd copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2369
-#: libnautilus-private/nautilus-file-operations.c:2371
+#: libnautilus-private/nautilus-file-operations.c:2368
+#: libnautilus-private/nautilus-file-operations.c:2370
 msgid "foo (123rd copy)"
 msgstr "foo (123rd copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2370
+#: libnautilus-private/nautilus-file-operations.c:2369
 msgid "foo (122nd copy).txt"
 msgstr "foo (122nd copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2370
-#: libnautilus-private/nautilus-file-operations.c:2372
+#: libnautilus-private/nautilus-file-operations.c:2369
+#: libnautilus-private/nautilus-file-operations.c:2371
 msgid "foo (123rd copy).txt"
 msgstr "foo (123rd copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2371
+#: libnautilus-private/nautilus-file-operations.c:2370
 msgid "foo (124th copy)"
 msgstr "foo (124th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2372
+#: libnautilus-private/nautilus-file-operations.c:2371
 msgid "foo (124th copy).txt"
 msgstr "foo (124th copy).txt"
+
+#: libnautilus-private/nautilus-file.c:2294
+msgid " (invalid Unicode)"
+msgstr ""
 
 #. Today, use special word.
 #. * strftime patterns preceeded with the widest
@@ -2943,64 +2995,64 @@ msgstr "foo (124th copy).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2461
+#: libnautilus-private/nautilus-file.c:2499
 msgid "today at 00:00:00 PM"
 msgstr "azi la 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2462
+#: libnautilus-private/nautilus-file.c:2500
 msgid "today at %-I:%M:%S %p"
 msgstr "azi la %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2464
+#: libnautilus-private/nautilus-file.c:2502
 msgid "today at 00:00 PM"
 msgstr "azi la 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2465
+#: libnautilus-private/nautilus-file.c:2503
 msgid "today at %-I:%M %p"
 msgstr "azi la %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2467
+#: libnautilus-private/nautilus-file.c:2505
 msgid "today, 00:00 PM"
 msgstr "azi, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2468
+#: libnautilus-private/nautilus-file.c:2506
 msgid "today, %-I:%M %p"
 msgstr "azi, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2470
-#: libnautilus-private/nautilus-file.c:2471
+#: libnautilus-private/nautilus-file.c:2508
+#: libnautilus-private/nautilus-file.c:2509
 msgid "today"
 msgstr "azi"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2480
+#: libnautilus-private/nautilus-file.c:2518
 msgid "yesterday at 00:00:00 PM"
 msgstr "ieri la at 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2481
+#: libnautilus-private/nautilus-file.c:2519
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "ieri la %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2483
+#: libnautilus-private/nautilus-file.c:2521
 msgid "yesterday at 00:00 PM"
 msgstr "ieri la 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2484
+#: libnautilus-private/nautilus-file.c:2522
 msgid "yesterday at %-I:%M %p"
 msgstr "ieri la %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2486
+#: libnautilus-private/nautilus-file.c:2524
 msgid "yesterday, 00:00 PM"
 msgstr "ieri, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2487
+#: libnautilus-private/nautilus-file.c:2525
 msgid "yesterday, %-I:%M %p"
 msgstr "ieri, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2489
-#: libnautilus-private/nautilus-file.c:2490
+#: libnautilus-private/nautilus-file.c:2527
+#: libnautilus-private/nautilus-file.c:2528
 msgid "yesterday"
 msgstr "ieri"
 
@@ -3009,390 +3061,390 @@ msgstr "ieri"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2501
+#: libnautilus-private/nautilus-file.c:2539
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2502
+#: libnautilus-private/nautilus-file.c:2540
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2504
+#: libnautilus-private/nautilus-file.c:2542
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2505
+#: libnautilus-private/nautilus-file.c:2543
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2507
+#: libnautilus-private/nautilus-file.c:2545
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2508
+#: libnautilus-private/nautilus-file.c:2546
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2510
+#: libnautilus-private/nautilus-file.c:2548
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2511
+#: libnautilus-private/nautilus-file.c:2549
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2513
+#: libnautilus-private/nautilus-file.c:2551
 msgid "Oct 00 0000, 00:00 PM"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2514
+#: libnautilus-private/nautilus-file.c:2552
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2516
+#: libnautilus-private/nautilus-file.c:2554
 msgid "00/00/00, 00:00 PM"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2517
+#: libnautilus-private/nautilus-file.c:2555
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2519
+#: libnautilus-private/nautilus-file.c:2557
 msgid "00/00/00"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2520
+#: libnautilus-private/nautilus-file.c:2558
 msgid "%m/%d/%y"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:3794
+#: libnautilus-private/nautilus-file.c:3832
 msgid "0 items"
 msgstr "0 elemente"
 
-#: libnautilus-private/nautilus-file.c:3794
+#: libnautilus-private/nautilus-file.c:3832
 msgid "0 folders"
 msgstr "0 dosare"
 
-#: libnautilus-private/nautilus-file.c:3795
+#: libnautilus-private/nautilus-file.c:3833
 msgid "0 files"
 msgstr "0 fişiere"
 
-#: libnautilus-private/nautilus-file.c:3799
+#: libnautilus-private/nautilus-file.c:3837
 msgid "1 item"
 msgstr "1 element"
 
-#: libnautilus-private/nautilus-file.c:3799
+#: libnautilus-private/nautilus-file.c:3837
 msgid "1 folder"
 msgstr "1 dosar"
 
-#: libnautilus-private/nautilus-file.c:3800
+#: libnautilus-private/nautilus-file.c:3838
 msgid "1 file"
 msgstr "1 fişier"
 
-#: libnautilus-private/nautilus-file.c:3803
+#: libnautilus-private/nautilus-file.c:3841
 #, c-format
 msgid "%u items"
 msgstr "%u elemente"
 
-#: libnautilus-private/nautilus-file.c:3803
+#: libnautilus-private/nautilus-file.c:3841
 #, c-format
 msgid "%u folders"
 msgstr "%u dosare"
 
-#: libnautilus-private/nautilus-file.c:3804
+#: libnautilus-private/nautilus-file.c:3842
 #, c-format
 msgid "%u files"
 msgstr "%u fişiere"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4111
-#: libnautilus-private/nautilus-file.c:4127
+#: libnautilus-private/nautilus-file.c:4149
+#: libnautilus-private/nautilus-file.c:4165
 msgid "? items"
 msgstr "? elemente"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4117
+#: libnautilus-private/nautilus-file.c:4155
 msgid "? bytes"
 msgstr "? octeţi"
 
-#: libnautilus-private/nautilus-file.c:4132
+#: libnautilus-private/nautilus-file.c:4170
 msgid "unknown type"
 msgstr "tip necunoscut"
 
-#: libnautilus-private/nautilus-file.c:4135
+#: libnautilus-private/nautilus-file.c:4173
 msgid "unknown MIME type"
 msgstr "tip MIME necunoscut"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4141
+#: libnautilus-private/nautilus-file.c:4179
 msgid "unknown"
 msgstr "necunoscut"
 
-#: libnautilus-private/nautilus-file.c:4173
+#: libnautilus-private/nautilus-file.c:4211
 msgid "program"
 msgstr "program"
 
-#: libnautilus-private/nautilus-file.c:4185
+#: libnautilus-private/nautilus-file.c:4223
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
 "some other reason."
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:4189
+#: libnautilus-private/nautilus-file.c:4227
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
 "gnome-vfs mailing list."
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:4203
+#: libnautilus-private/nautilus-file.c:4241
 msgid "link"
 msgstr "legătură"
 
-#: libnautilus-private/nautilus-file.c:4223
+#: libnautilus-private/nautilus-file.c:4261
 msgid "link (broken)"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:5222
+#: libnautilus-private/nautilus-file.c:5260
 #: libnautilus-private/nautilus-trash-directory.c:388
 #: src/file-manager/fm-desktop-icon-view.c:69
 msgid "Trash"
 msgstr "Gunoi"
 
-#: libnautilus-private/nautilus-global-preferences.c:75
+#: libnautilus-private/nautilus-global-preferences.c:69
 msgid "Always"
 msgstr "Întotdeauna"
 
-#: libnautilus-private/nautilus-global-preferences.c:76
+#: libnautilus-private/nautilus-global-preferences.c:70
 msgid "Local Files Only"
 msgstr "Doar fişiere locale"
 
-#: libnautilus-private/nautilus-global-preferences.c:77
+#: libnautilus-private/nautilus-global-preferences.c:71
 msgid "Never"
 msgstr "Niciodată"
 
-#: libnautilus-private/nautilus-global-preferences.c:83
+#: libnautilus-private/nautilus-global-preferences.c:77
 #, no-c-format
 msgid "25%"
 msgstr "25%"
 
-#: libnautilus-private/nautilus-global-preferences.c:85
+#: libnautilus-private/nautilus-global-preferences.c:79
 #, no-c-format
 msgid "50%"
 msgstr "50%"
 
-#: libnautilus-private/nautilus-global-preferences.c:87
+#: libnautilus-private/nautilus-global-preferences.c:81
 #, no-c-format
 msgid "75%"
 msgstr "75%"
 
-#: libnautilus-private/nautilus-global-preferences.c:89
+#: libnautilus-private/nautilus-global-preferences.c:83
 #, no-c-format
 msgid "100%"
 msgstr "100%"
 
-#: libnautilus-private/nautilus-global-preferences.c:91
+#: libnautilus-private/nautilus-global-preferences.c:85
 #, no-c-format
 msgid "150%"
 msgstr "150%"
 
-#: libnautilus-private/nautilus-global-preferences.c:93
+#: libnautilus-private/nautilus-global-preferences.c:87
 #, no-c-format
 msgid "200%"
 msgstr "200%"
 
-#: libnautilus-private/nautilus-global-preferences.c:95
+#: libnautilus-private/nautilus-global-preferences.c:89
 #, no-c-format
 msgid "400%"
 msgstr "400%"
 
-#: libnautilus-private/nautilus-global-preferences.c:100
+#: libnautilus-private/nautilus-global-preferences.c:94
 msgid "100 K"
 msgstr "100 K"
 
-#: libnautilus-private/nautilus-global-preferences.c:101
+#: libnautilus-private/nautilus-global-preferences.c:95
 msgid "500 K"
 msgstr "500 K"
 
-#: libnautilus-private/nautilus-global-preferences.c:102
+#: libnautilus-private/nautilus-global-preferences.c:96
 msgid "1 MB"
 msgstr "1 MB"
 
-#: libnautilus-private/nautilus-global-preferences.c:103
+#: libnautilus-private/nautilus-global-preferences.c:97
 msgid "3 MB"
 msgstr "3 MB"
 
-#: libnautilus-private/nautilus-global-preferences.c:104
+#: libnautilus-private/nautilus-global-preferences.c:98
 msgid "5 MB"
 msgstr "5 MB"
 
-#: libnautilus-private/nautilus-global-preferences.c:105
+#: libnautilus-private/nautilus-global-preferences.c:99
 msgid "10 MB"
 msgstr "10 MB"
 
-#: libnautilus-private/nautilus-global-preferences.c:106
+#: libnautilus-private/nautilus-global-preferences.c:100
 msgid "100 MB"
 msgstr ""
 
-#: libnautilus-private/nautilus-global-preferences.c:112
+#: libnautilus-private/nautilus-global-preferences.c:106
 msgid "Activate items with a single click"
 msgstr "Activează elementele cu un singur click"
 
-#: libnautilus-private/nautilus-global-preferences.c:116
+#: libnautilus-private/nautilus-global-preferences.c:110
 msgid "Activate items with a double click"
 msgstr "Activează elementele cu un dublu click"
 
-#: libnautilus-private/nautilus-global-preferences.c:124
+#: libnautilus-private/nautilus-global-preferences.c:118
 msgid "Execute files when they are clicked"
 msgstr "Execută fişierele când sunt click-ate"
 
-#: libnautilus-private/nautilus-global-preferences.c:128
+#: libnautilus-private/nautilus-global-preferences.c:122
 msgid "Display files when they are clicked"
 msgstr "Arată fişierele când sunt click-ate"
 
-#: libnautilus-private/nautilus-global-preferences.c:132
+#: libnautilus-private/nautilus-global-preferences.c:126
 msgid "Ask each time"
 msgstr "Întreabă de fiecare dată"
 
-#: libnautilus-private/nautilus-global-preferences.c:139
+#: libnautilus-private/nautilus-global-preferences.c:133
 msgid "search by text"
 msgstr "caută după text"
 
-#: libnautilus-private/nautilus-global-preferences.c:140
+#: libnautilus-private/nautilus-global-preferences.c:134
 msgid "Search for files by file name only"
 msgstr "Caută fişiere doar după nume"
 
-#: libnautilus-private/nautilus-global-preferences.c:143
+#: libnautilus-private/nautilus-global-preferences.c:137
 msgid "search by text and properties"
 msgstr "caută după text şi proprietăţi"
 
-#: libnautilus-private/nautilus-global-preferences.c:144
+#: libnautilus-private/nautilus-global-preferences.c:138
 msgid "Search for files by file name and file properties"
 msgstr "Caută fişiere după nume şi proprietăţi"
 
-#: libnautilus-private/nautilus-global-preferences.c:151
+#: libnautilus-private/nautilus-global-preferences.c:145
 msgid "Icon View"
 msgstr "Vizualizare iconuri"
 
-#: libnautilus-private/nautilus-global-preferences.c:152
+#: libnautilus-private/nautilus-global-preferences.c:146
 msgid "List View"
 msgstr "Vizualizare listă"
 
-#: libnautilus-private/nautilus-global-preferences.c:157
+#: libnautilus-private/nautilus-global-preferences.c:151
 #: src/file-manager/nautilus-icon-view-ui.xml.h:21
 msgid "Manually"
 msgstr "Manual"
 
-#: libnautilus-private/nautilus-global-preferences.c:159
-#: libnautilus-private/nautilus-global-preferences.c:168
+#: libnautilus-private/nautilus-global-preferences.c:153
+#: libnautilus-private/nautilus-global-preferences.c:162
 #: src/file-manager/nautilus-icon-view-ui.xml.h:4
 msgid "By Name"
 msgstr "După nume"
 
-#: libnautilus-private/nautilus-global-preferences.c:160
-#: libnautilus-private/nautilus-global-preferences.c:169
+#: libnautilus-private/nautilus-global-preferences.c:154
+#: libnautilus-private/nautilus-global-preferences.c:163
 #: src/file-manager/nautilus-icon-view-ui.xml.h:5
 msgid "By Size"
 msgstr "După mărime"
 
-#: libnautilus-private/nautilus-global-preferences.c:161
-#: libnautilus-private/nautilus-global-preferences.c:170
+#: libnautilus-private/nautilus-global-preferences.c:155
+#: libnautilus-private/nautilus-global-preferences.c:164
 #: src/file-manager/nautilus-icon-view-ui.xml.h:6
 msgid "By Type"
 msgstr "După tip"
 
-#: libnautilus-private/nautilus-global-preferences.c:162
-#: libnautilus-private/nautilus-global-preferences.c:171
+#: libnautilus-private/nautilus-global-preferences.c:156
+#: libnautilus-private/nautilus-global-preferences.c:165
 #: src/file-manager/nautilus-icon-view-ui.xml.h:2
 msgid "By Modification Date"
 msgstr "După data modificării"
 
-#: libnautilus-private/nautilus-global-preferences.c:163
-#: libnautilus-private/nautilus-global-preferences.c:172
+#: libnautilus-private/nautilus-global-preferences.c:157
+#: libnautilus-private/nautilus-global-preferences.c:166
 #: src/file-manager/nautilus-icon-view-ui.xml.h:1
 msgid "By Emblems"
 msgstr "După embleme"
 
-#: libnautilus-private/nautilus-global-preferences.c:177
+#: libnautilus-private/nautilus-global-preferences.c:171
 msgid "8"
 msgstr "8"
 
-#: libnautilus-private/nautilus-global-preferences.c:178
+#: libnautilus-private/nautilus-global-preferences.c:172
 msgid "10"
 msgstr "10"
 
-#: libnautilus-private/nautilus-global-preferences.c:179
+#: libnautilus-private/nautilus-global-preferences.c:173
 msgid "12"
 msgstr "12"
 
-#: libnautilus-private/nautilus-global-preferences.c:180
+#: libnautilus-private/nautilus-global-preferences.c:174
 msgid "14"
 msgstr "14"
 
-#: libnautilus-private/nautilus-global-preferences.c:181
+#: libnautilus-private/nautilus-global-preferences.c:175
 msgid "16"
 msgstr "16"
 
-#: libnautilus-private/nautilus-global-preferences.c:182
+#: libnautilus-private/nautilus-global-preferences.c:176
 msgid "18"
 msgstr "18"
 
-#: libnautilus-private/nautilus-global-preferences.c:183
+#: libnautilus-private/nautilus-global-preferences.c:177
 msgid "20"
 msgstr "20"
 
-#: libnautilus-private/nautilus-global-preferences.c:184
+#: libnautilus-private/nautilus-global-preferences.c:178
 msgid "22"
 msgstr "22"
 
-#: libnautilus-private/nautilus-global-preferences.c:185
+#: libnautilus-private/nautilus-global-preferences.c:179
 msgid "24"
 msgstr "24"
 
-#: libnautilus-private/nautilus-global-preferences.c:190
+#: libnautilus-private/nautilus-global-preferences.c:184
 msgid "size"
 msgstr "mărime"
 
-#: libnautilus-private/nautilus-global-preferences.c:191
+#: libnautilus-private/nautilus-global-preferences.c:185
 msgid "type"
 msgstr "tip"
 
-#: libnautilus-private/nautilus-global-preferences.c:192
+#: libnautilus-private/nautilus-global-preferences.c:186
 msgid "date modified"
 msgstr "data modificării"
 
-#: libnautilus-private/nautilus-global-preferences.c:193
+#: libnautilus-private/nautilus-global-preferences.c:187
 msgid "date changed"
 msgstr "data schimbării"
 
-#: libnautilus-private/nautilus-global-preferences.c:194
+#: libnautilus-private/nautilus-global-preferences.c:188
 msgid "date accessed"
 msgstr "data accesării"
 
-#: libnautilus-private/nautilus-global-preferences.c:195
+#: libnautilus-private/nautilus-global-preferences.c:189
 msgid "owner"
 msgstr "deţinător"
 
-#: libnautilus-private/nautilus-global-preferences.c:196
+#: libnautilus-private/nautilus-global-preferences.c:190
 msgid "group"
 msgstr "grup"
 
-#: libnautilus-private/nautilus-global-preferences.c:197
+#: libnautilus-private/nautilus-global-preferences.c:191
 msgid "permissions"
 msgstr "permisii"
 
-#: libnautilus-private/nautilus-global-preferences.c:198
+#: libnautilus-private/nautilus-global-preferences.c:192
 msgid "octal permissions"
 msgstr "permisii octale"
 
-#: libnautilus-private/nautilus-global-preferences.c:199
+#: libnautilus-private/nautilus-global-preferences.c:193
 msgid "MIME type"
 msgstr "tip MIME"
 
-#: libnautilus-private/nautilus-global-preferences.c:200
+#: libnautilus-private/nautilus-global-preferences.c:194
 msgid "none"
 msgstr "nimic"
 
@@ -3403,28 +3455,28 @@ msgstr " -_,;.?/&"
 
 #: libnautilus-private/nautilus-icon-dnd.c:773
 msgid ""
-"This folder uses automatic layout. Do you want to switch to manual layout and "
-"leave this item where you dropped it? This will clobber the stored manual "
-"layout."
+"This folder uses automatic layout. Do you want to switch to manual layout "
+"and leave this item where you dropped it? This will clobber the stored "
+"manual layout."
 msgstr ""
 
 #: libnautilus-private/nautilus-icon-dnd.c:777
 msgid ""
-"This folder uses automatic layout. Do you want to switch to manual layout and "
-"leave these items where you dropped them? This will clobber the stored manual "
-"layout."
+"This folder uses automatic layout. Do you want to switch to manual layout "
+"and leave these items where you dropped them? This will clobber the stored "
+"manual layout."
 msgstr ""
 
 #: libnautilus-private/nautilus-icon-dnd.c:783
 msgid ""
-"This folder uses automatic layout. Do you want to switch to manual layout and "
-"leave this item where you dropped it?"
+"This folder uses automatic layout. Do you want to switch to manual layout "
+"and leave this item where you dropped it?"
 msgstr ""
 
 #: libnautilus-private/nautilus-icon-dnd.c:786
 msgid ""
-"This folder uses automatic layout. Do you want to switch to manual layout and "
-"leave these items where you dropped them?"
+"This folder uses automatic layout. Do you want to switch to manual layout "
+"and leave these items where you dropped them?"
 msgstr ""
 
 #: libnautilus-private/nautilus-icon-dnd.c:791
@@ -3475,153 +3527,135 @@ msgstr ""
 msgid ""
 "Medusa, the application that performs searches, cannot be found on your "
 "system.  If you have compiled nautilus yourself, you will need to install a "
-"copy of medusa and recompile nautilus.  (A copy of Medusa may be available at "
-"ftp://ftp.gnome.org)\n"
+"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
+"at ftp://ftp.gnome.org)\n"
 "If you are using a packaged version of Nautilus, fast searching is not "
 "available.\n"
 msgstr ""
 
-#: libnautilus-private/nautilus-program-chooser.c:224
+#: libnautilus-private/nautilus-program-chooser.c:291
 msgid "not in menu"
 msgstr "nu este în meniu"
 
-#: libnautilus-private/nautilus-program-chooser.c:227
+#: libnautilus-private/nautilus-program-chooser.c:294
 msgid "in menu for this file"
 msgstr "în meniu pentru acest fişier"
 
-#: libnautilus-private/nautilus-program-chooser.c:230
-#: libnautilus-private/nautilus-program-chooser.c:233
+#: libnautilus-private/nautilus-program-chooser.c:297
+#: libnautilus-private/nautilus-program-chooser.c:300
 #, c-format
 msgid "in menu for \"%s\""
 msgstr "în meniu pentr \"%s\""
 
-#: libnautilus-private/nautilus-program-chooser.c:236
+#: libnautilus-private/nautilus-program-chooser.c:303
 msgid "default for this file"
 msgstr "implicit pentru acest fişier"
 
-#: libnautilus-private/nautilus-program-chooser.c:239
-#: libnautilus-private/nautilus-program-chooser.c:242
+#: libnautilus-private/nautilus-program-chooser.c:306
+#: libnautilus-private/nautilus-program-chooser.c:309
 #, c-format
 msgid "default for \"%s\""
 msgstr "implicit pentru \"%s\""
 
-#: libnautilus-private/nautilus-program-chooser.c:287
+#: libnautilus-private/nautilus-program-chooser.c:354
 #, c-format
 msgid "Is not in the menu for \"%s\" items."
 msgstr "Nu este în meniu pentru \"%s\" elemente."
 
-#: libnautilus-private/nautilus-program-chooser.c:290
+#: libnautilus-private/nautilus-program-chooser.c:357
 #, c-format
 msgid "Is in the menu for \"%s\"."
 msgstr "Este în meniu pentru \"%s\"."
 
-#: libnautilus-private/nautilus-program-chooser.c:293
+#: libnautilus-private/nautilus-program-chooser.c:360
 #, c-format
 msgid "Is in the menu for \"%s\" items."
 msgstr "Este în meniu pentru \"%s\" elemente."
 
-#: libnautilus-private/nautilus-program-chooser.c:296
+#: libnautilus-private/nautilus-program-chooser.c:363
 #, c-format
 msgid "Is in the menu for all \"%s\" items."
 msgstr "Este în meniu pentru toate \"%s\" elementele."
 
-#: libnautilus-private/nautilus-program-chooser.c:299
+#: libnautilus-private/nautilus-program-chooser.c:366
 #, c-format
 msgid "Is the default for \"%s\"."
 msgstr "Este implicit pentru \"%s\"."
 
-#: libnautilus-private/nautilus-program-chooser.c:302
+#: libnautilus-private/nautilus-program-chooser.c:369
 #, c-format
 msgid "Is the default for \"%s\" items."
 msgstr "Este implicit pentru \"%s\" elemente."
 
-#: libnautilus-private/nautilus-program-chooser.c:305
+#: libnautilus-private/nautilus-program-chooser.c:372
 #, c-format
 msgid "Is the default for all \"%s\" items."
 msgstr "Este implicit pentru toate \"%s\" elementele."
 
-#: libnautilus-private/nautilus-program-chooser.c:995
+#: libnautilus-private/nautilus-program-chooser.c:989
 #, c-format
 msgid "Modify \"%s\""
 msgstr "Modifică \"%s\""
 
 #. Radio button for adding to short list for file type.
-#: libnautilus-private/nautilus-program-chooser.c:1021
+#: libnautilus-private/nautilus-program-chooser.c:1015
 #, c-format
 msgid "Include in the menu for \"%s\" items"
 msgstr "Include în meniu pentru \"%s\" elemente"
 
 #. Radio button for setting default for file type.
-#: libnautilus-private/nautilus-program-chooser.c:1028
+#: libnautilus-private/nautilus-program-chooser.c:1022
 #, c-format
 msgid "Use as default for \"%s\" items"
 msgstr "Foloseşte ca implicit pentru \"%s\" elemente"
 
 #. Radio button for adding to short list for specific file.
-#: libnautilus-private/nautilus-program-chooser.c:1035
+#: libnautilus-private/nautilus-program-chooser.c:1029
 #, c-format
 msgid "Include in the menu just for \"%s\""
 msgstr "Include în meniu doar pentru \"%s\""
 
 #. Radio button for setting default for specific file.
-#: libnautilus-private/nautilus-program-chooser.c:1041
+#: libnautilus-private/nautilus-program-chooser.c:1035
 #, c-format
 msgid "Use as default just for \"%s\""
 msgstr "Foloseşte ca implicit doar pentru \"%s\""
 
 #. Radio button for not including program in short list for type or file.
-#: libnautilus-private/nautilus-program-chooser.c:1048
+#: libnautilus-private/nautilus-program-chooser.c:1042
 #, c-format
 msgid "Don't include in the menu for \"%s\" items"
 msgstr "Nu include în meniu pentru \"%s\" elemente"
 
-#: libnautilus-private/nautilus-program-chooser.c:1201
-#: src/file-manager/fm-list-view.c:2246
+#: libnautilus-private/nautilus-program-chooser.c:1200
+#: src/file-manager/fm-list-view.c:2250
 #: src/file-manager/fm-search-list-view.c:495
-#: src/nautilus-bookmarks-window.c:174
+#: src/nautilus-bookmarks-window.c:209
 msgid "Name"
 msgstr "Nume"
 
-#: libnautilus-private/nautilus-program-chooser.c:1204
+#: libnautilus-private/nautilus-program-chooser.c:1209
 msgid "Status"
 msgstr "Status"
 
-#: libnautilus-private/nautilus-program-chooser.c:1252
-msgid "Open with Other"
-msgstr "Deschide cu alta"
-
-#: libnautilus-private/nautilus-program-chooser.c:1253
-#, c-format
-msgid "Choose an application with which to open \"%s\"."
-msgstr "Alegeţi o aplicaţie pentru a deschide \"%s\"."
-
-#: libnautilus-private/nautilus-program-chooser.c:1257
-msgid "View as Other"
-msgstr "Vizualizeaza ca alt tip"
-
-#: libnautilus-private/nautilus-program-chooser.c:1258
-#, c-format
-msgid "Choose a view for \"%s\"."
-msgstr "Alegeţi o vizualizare pentru \"%s\"."
-
-#: libnautilus-private/nautilus-program-chooser.c:1265
+#: libnautilus-private/nautilus-program-chooser.c:1287
 msgid "Choose"
 msgstr "Alegeţi"
 
-#: libnautilus-private/nautilus-program-chooser.c:1330
+#: libnautilus-private/nautilus-program-chooser.c:1361
 msgid "_Modify..."
 msgstr "_Modifică..."
 
 #. Framed area with button to launch mime type editing capplet.
-#: libnautilus-private/nautilus-program-chooser.c:1341
+#: libnautilus-private/nautilus-program-chooser.c:1372
 msgid "File Types and Programs"
 msgstr "Tipuri fişiere şi programe"
 
-#: libnautilus-private/nautilus-program-chooser.c:1353
+#: libnautilus-private/nautilus-program-chooser.c:1384
 msgid "_Go There"
 msgstr "_Du-te acolo"
 
-#: libnautilus-private/nautilus-program-chooser.c:1362
+#: libnautilus-private/nautilus-program-chooser.c:1393
 msgid ""
 "You can configure which programs are offered for which file types in the "
 "GNOME Control Center."
@@ -3629,21 +3663,39 @@ msgstr ""
 "Puteţi configura care programe sunt oferite pentru care tipuri de fişiere în "
 "Centrul de control GNOME."
 
-#: libnautilus-private/nautilus-program-chooser.c:1473
+#: libnautilus-private/nautilus-program-chooser.c:1424
+msgid "Open with Other"
+msgstr "Deschide cu alta"
+
+#: libnautilus-private/nautilus-program-chooser.c:1425
+#, c-format
+msgid "Choose an application with which to open \"%s\"."
+msgstr "Alegeţi o aplicaţie pentru a deschide \"%s\"."
+
+#: libnautilus-private/nautilus-program-chooser.c:1429
+msgid "View as Other"
+msgstr "Vizualizeaza ca alt tip"
+
+#: libnautilus-private/nautilus-program-chooser.c:1430
+#, c-format
+msgid "Choose a view for \"%s\"."
+msgstr "Alegeţi o vizualizare pentru \"%s\"."
+
+#: libnautilus-private/nautilus-program-chooser.c:1532
 #, c-format
 msgid "No viewers are available for \"%s\"."
 msgstr "Nici un vizualizator nu este disponibil pentru \"%s\"."
 
-#: libnautilus-private/nautilus-program-chooser.c:1474
+#: libnautilus-private/nautilus-program-chooser.c:1533
 msgid "No Viewers Available"
 msgstr "Nici un vizualizator disponibil"
 
-#: libnautilus-private/nautilus-program-chooser.c:1477
+#: libnautilus-private/nautilus-program-chooser.c:1536
 #, c-format
 msgid "No applications are available for \"%s\"."
 msgstr "Nici o aplicaţie nu este disponibilă pentru \"%s\"."
 
-#: libnautilus-private/nautilus-program-chooser.c:1478
+#: libnautilus-private/nautilus-program-chooser.c:1537
 msgid "No Applications Available"
 msgstr "Nici o aplicaţie disponibilă"
 
@@ -3651,20 +3703,20 @@ msgstr "Nici o aplicaţie disponibilă"
 #. * user can't add components to the complete list even from the capplet.
 #. * (They can add applications though.)
 #.
-#: libnautilus-private/nautilus-program-chooser.c:1485
+#: libnautilus-private/nautilus-program-chooser.c:1544
 #, c-format
 msgid ""
 "%s\n"
 "\n"
 "You can configure which programs are offered for which file types with the "
-"\"File Types and Programs\" part of the GNOME Control Center. Do you want to go "
-"there now?"
+"\"File Types and Programs\" part of the GNOME Control Center. Do you want to "
+"go there now?"
 msgstr ""
 "%s\n"
 "\n"
 "Puteţi configura care programe sunt oferite pentru care fişiere cu opţiunea "
-"\"Tipuri fişiere şi programe\" din Centrul de control GNOME. Doriţi să mergeţi "
-"acolo acum?"
+"\"Tipuri fişiere şi programe\" din Centrul de control GNOME. Doriţi să "
+"mergeţi acolo acum?"
 
 #: libnautilus-private/nautilus-program-choosing.c:489
 #, c-format
@@ -3926,8 +3978,8 @@ msgstr ""
 
 #: libnautilus-private/nautilus-search-uri.c:709
 msgid ""
-"Items containing \"stuff\" in their names, that are regular files and smaller "
-"than 2000 bytes"
+"Items containing \"stuff\" in their names, that are regular files and "
+"smaller than 2000 bytes"
 msgstr ""
 "Elemente conţinând \"chestie\" în numele lor şi care sunt fişiere normale şi "
 "mai mici decât 2000 octeţi"
@@ -3979,10 +4031,6 @@ msgstr "Vizualizează ca %s"
 msgid "%s Viewer"
 msgstr "vizualizator %s"
 
-#: libnautilus-private/nautilus-volume-monitor.c:682
-msgid "Unknown"
-msgstr "Necunoscut"
-
 #. Populate table with items we know localized names for.
 #: libnautilus-private/nautilus-volume-monitor.c:781
 msgid "Floppy"
@@ -4016,8 +4064,8 @@ msgstr "Eroare la demontare"
 #. Handle floppy case
 #: libnautilus-private/nautilus-volume-monitor.c:1507
 msgid ""
-"Nautilus was unable to mount the floppy drive. There is probably no floppy in "
-"the drive."
+"Nautilus was unable to mount the floppy drive. There is probably no floppy "
+"in the drive."
 msgstr ""
 "Nautilus nu a putut monta discheta. Probabil nu se află nici o dischetă "
 "înăuntru."
@@ -4041,8 +4089,8 @@ msgstr ""
 
 #: libnautilus-private/nautilus-volume-monitor.c:1520
 msgid ""
-"Nautilus was unable to mount the selected volume. The volume is probably in a "
-"format that cannot be mounted."
+"Nautilus was unable to mount the selected volume. The volume is probably in "
+"a format that cannot be mounted."
 msgstr ""
 "Nautilus nu a putut monta volumul selectat. Probabil volumul este într-un "
 "format care nu poate fi montat."
@@ -4064,7 +4112,7 @@ msgstr "Nautilus nu a putut demonta volumul selectat."
 msgid "ISO 9660 Volume"
 msgstr "Volum ISO 9660"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:1 src/nautilus-shell-ui.xml.h:5
+#: libnautilus/nautilus-clipboard-ui.xml.h:1 src/nautilus-shell-ui.xml.h:2
 msgid "C_lear Text"
 msgstr "_Şterge text"
 
@@ -4084,7 +4132,7 @@ msgstr "Copiază textul selectat în memorie"
 msgid "Cut Text"
 msgstr "Taie text"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:15
+#: libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:12
 msgid "Cut _Text"
 msgstr "Taie _Text"
 
@@ -4108,7 +4156,7 @@ msgstr "Elimină textul selectat fără a-l pune în memorie"
 msgid "Select All"
 msgstr "Selectează tot"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:49
+#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:47
 msgid "Select _All"
 msgstr "Selecte_ază tot"
 
@@ -4116,24 +4164,16 @@ msgstr "Selecte_ază tot"
 msgid "Select all the text in a text field"
 msgstr "Selectează tot textul într-un câmp text"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:14 src/nautilus-shell-ui.xml.h:75
+#: libnautilus/nautilus-clipboard-ui.xml.h:14 src/nautilus-shell-ui.xml.h:70
 msgid "_Copy Text"
 msgstr "_Copiază text"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:15 src/nautilus-shell-ui.xml.h:88
+#: libnautilus/nautilus-clipboard-ui.xml.h:15 src/nautilus-shell-ui.xml.h:82
 msgid "_Paste Text"
 msgstr "_Lipeşte text"
 
-#: nautilus-help.desktop.in.h:1
-msgid "Documentation"
-msgstr "Documentaţie"
-
-#: nautilus-help.desktop.in.h:2
-msgid "Help"
-msgstr "Ajutor"
-
-#: nautilus.desktop.in.h:1 src/nautilus-main.c:190
-#: src/nautilus-window-manage-views.c:256 src/nautilus-window-menus.c:647
+#: nautilus.desktop.in.h:1 src/nautilus-main.c:191
+#: src/nautilus-window-manage-views.c:256 src/nautilus-window-menus.c:630
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -4177,8 +4217,7 @@ msgstr ""
 "Componentă Nautilus care arată o listă defilabilă pentru rezulatele căutării"
 
 #: src/Nautilus_shell.server.in.h:9
-msgid ""
-"Nautilus file manager component that shows a two-dimensional icon space"
+msgid "Nautilus file manager component that shows a two-dimensional icon space"
 msgstr "Componentă Nautilus care arată un spaţiu bidimensional pentru iconuri"
 
 #: src/Nautilus_shell.server.in.h:10
@@ -4232,7 +4271,7 @@ msgstr "Vizualizează ca iconuri"
 msgid "View as List"
 msgstr "Vizualizează ca listă"
 
-#: src/file-manager/fm-desktop-icon-view.c:672
+#: src/file-manager/fm-desktop-icon-view.c:671
 msgid "Background"
 msgstr "Fundal"
 
@@ -4244,22 +4283,22 @@ msgstr "Fundal"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: src/file-manager/fm-desktop-icon-view.c:918
+#: src/file-manager/fm-desktop-icon-view.c:917
 #, c-format
 msgid "%s's Home"
 msgstr "Casa lui %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1200
+#: src/file-manager/fm-desktop-icon-view.c:1198
 msgid "Empty Trash..."
 msgstr "Goleşte gunoiul..."
 
-#: src/file-manager/fm-desktop-icon-view.c:1202
+#: src/file-manager/fm-desktop-icon-view.c:1200
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
 msgid "Empty Trash"
 msgstr "Goleşte gunoiul"
 
-#: src/file-manager/fm-desktop-icon-view.c:1222
+#: src/file-manager/fm-desktop-icon-view.c:1220
 msgid "Unmount Volume"
 msgstr "Demontează volumul"
 
@@ -4289,68 +4328,68 @@ msgid "Delete?"
 msgstr "Şterg?"
 
 #: src/file-manager/fm-directory-view.c:789
-#: src/file-manager/fm-directory-view.c:2965
-#: src/file-manager/fm-directory-view.c:3007
+#: src/file-manager/fm-directory-view.c:2975
+#: src/file-manager/fm-directory-view.c:3017
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Delete"
 msgstr "Şterg"
 
-#: src/file-manager/fm-directory-view.c:1432
+#: src/file-manager/fm-directory-view.c:1442
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" selectat"
 
-#: src/file-manager/fm-directory-view.c:1434
+#: src/file-manager/fm-directory-view.c:1444
 msgid "1 folder selected"
 msgstr "1 dosar selectat"
 
-#: src/file-manager/fm-directory-view.c:1437
+#: src/file-manager/fm-directory-view.c:1447
 #, c-format
 msgid "%d folders selected"
 msgstr "%d dosare selectate"
 
-#: src/file-manager/fm-directory-view.c:1444
+#: src/file-manager/fm-directory-view.c:1454
 msgid " (containing 0 items)"
 msgstr " (conţinând 0 elemente)"
 
-#: src/file-manager/fm-directory-view.c:1446
+#: src/file-manager/fm-directory-view.c:1456
 msgid " (containing 1 item)"
 msgstr " (conţinând 1 element)"
 
-#: src/file-manager/fm-directory-view.c:1448
+#: src/file-manager/fm-directory-view.c:1458
 #, c-format
 msgid " (containing %d items)"
 msgstr " (conţinând %d elemente)"
 
-#: src/file-manager/fm-directory-view.c:1455
+#: src/file-manager/fm-directory-view.c:1465
 msgid " (containing a total of 0 items)"
 msgstr " (conţinând un total de 0 elemente)"
 
-#: src/file-manager/fm-directory-view.c:1457
+#: src/file-manager/fm-directory-view.c:1467
 msgid " (containing a total of 1 item)"
 msgstr " (conţinând un total de 1 element)"
 
-#: src/file-manager/fm-directory-view.c:1459
+#: src/file-manager/fm-directory-view.c:1469
 #, c-format
 msgid " (containing a total of %d items)"
 msgstr " (conţinând un total de %d elemente)"
 
-#: src/file-manager/fm-directory-view.c:1472
+#: src/file-manager/fm-directory-view.c:1482
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" selectat (%s)"
 
-#: src/file-manager/fm-directory-view.c:1476
+#: src/file-manager/fm-directory-view.c:1486
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d elemente selectate (%s)"
 
-#: src/file-manager/fm-directory-view.c:1483
+#: src/file-manager/fm-directory-view.c:1493
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 alt element selectat (%s)"
 
-#: src/file-manager/fm-directory-view.c:1486
+#: src/file-manager/fm-directory-view.c:1496
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d alte elemente selectate (%s)"
@@ -4362,7 +4401,7 @@ msgstr "%d alte elemente selectate (%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1515
+#: src/file-manager/fm-directory-view.c:1525
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4371,7 +4410,7 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1641
+#: src/file-manager/fm-directory-view.c:1651
 #, c-format
 msgid ""
 "The folder \"%s\" contains more files than Nautilus can handle. Some files "
@@ -4380,17 +4419,17 @@ msgstr ""
 "Dosarul \"%s\" conţine mai multe fişiere decât capacitatea lui Nautilus. "
 "Unele fişiere Nu vor fi afişate."
 
-#: src/file-manager/fm-directory-view.c:1648
+#: src/file-manager/fm-directory-view.c:1658
 msgid "Too Many Files"
 msgstr "Prea multe fişiere"
 
-#: src/file-manager/fm-directory-view.c:2948
+#: src/file-manager/fm-directory-view.c:2958
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr "\"%s\" nu poate fi mutat la gunoi. Doriţi să-l ştergeţi imediat?"
 
-#: src/file-manager/fm-directory-view.c:2953
+#: src/file-manager/fm-directory-view.c:2963
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
@@ -4399,7 +4438,7 @@ msgstr ""
 "Elementele selectate %d nu pot fi mutate la gunoi. Doriţi să le ştergeţi "
 "imediat?"
 
-#: src/file-manager/fm-directory-view.c:2957
+#: src/file-manager/fm-directory-view.c:2967
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
@@ -4408,16 +4447,16 @@ msgstr ""
 "%d din elementele selectate nu pot fi mutate la gunoi. Doriţi să ştergeţi "
 "imediat aceste %d elemente?"
 
-#: src/file-manager/fm-directory-view.c:2965
+#: src/file-manager/fm-directory-view.c:2975
 msgid "Delete Immediately?"
 msgstr "Şterg imediat?"
 
-#: src/file-manager/fm-directory-view.c:2997
+#: src/file-manager/fm-directory-view.c:3007
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
 msgstr "Sunteţi sigur(ă) că doriţi să ştergeţi permanent \"%s\" din Gunoi?"
 
-#: src/file-manager/fm-directory-view.c:3001
+#: src/file-manager/fm-directory-view.c:3011
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
@@ -4426,56 +4465,57 @@ msgstr ""
 "Sunteţi sigur(ă) că doriţi să ştergeţi permanent din Gunoi cele %d elemente "
 "selectate?"
 
-#: src/file-manager/fm-directory-view.c:3007
+#: src/file-manager/fm-directory-view.c:3017
 msgid "Delete From Trash?"
 msgstr "Şterge din Gunoi?"
 
-#: src/file-manager/fm-directory-view.c:3322
-#: src/file-manager/fm-directory-view.c:3364
+#: src/file-manager/fm-directory-view.c:3332
+#: src/file-manager/fm-directory-view.c:3374
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Foloseşte \"%s\" pentru a deschide elementul selectat"
 
-#: src/file-manager/fm-directory-view.c:3446
+#: src/file-manager/fm-directory-view.c:3456
 #: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Other _Application..."
 msgstr "Altă _Aplicaţie..."
 
-#: src/file-manager/fm-directory-view.c:3446
+#: src/file-manager/fm-directory-view.c:3456
 msgid "An _Application..."
 msgstr "O _Aplicaţie..."
 
-#: src/file-manager/fm-directory-view.c:3452
+#: src/file-manager/fm-directory-view.c:3462
 #: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Other _Viewer..."
 msgstr "Alt _Vizualizator..."
 
-#: src/file-manager/fm-directory-view.c:3452
+#: src/file-manager/fm-directory-view.c:3462
 msgid "A _Viewer..."
 msgstr "Un _Vizualizator..."
 
-#: src/file-manager/fm-directory-view.c:3669
+#: src/file-manager/fm-directory-view.c:3679
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Rulează \"%s\" pe orice elemente selectate"
 
-#: src/file-manager/fm-directory-view.c:3871
+#: src/file-manager/fm-directory-view.c:3881
 msgid ""
-"All executable files in this folder will appear in the Scripts menu. Choosing "
-"a script from the menu will run that script with any selected items as input."
+"All executable files in this folder will appear in the Scripts menu. "
+"Choosing a script from the menu will run that script with any selected items "
+"as input."
 msgstr ""
 "Toate fişierele executabile din acest dosar vor apare în meniul Scripturi. "
 "Alegând un script din meniu va rula acel script cu elementele selectate ca "
 "parametru."
 
-#: src/file-manager/fm-directory-view.c:3874
+#: src/file-manager/fm-directory-view.c:3884
 msgid "About Scripts"
 msgstr "Despre scripturi"
 
-#: src/file-manager/fm-directory-view.c:3875
+#: src/file-manager/fm-directory-view.c:3885
 msgid ""
-"All executable files in this folder will appear in the Scripts menu. Choosing "
-"a script from the menu will run that script.\n"
+"All executable files in this folder will appear in the Scripts menu. "
+"Choosing a script from the menu will run that script.\n"
 "\n"
 "When executed from a local folder, scripts will be passed the selected file "
 "names. When executed from a remote folder (e.g. a folder showing web or ftp "
@@ -4513,17 +4553,17 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: poziţia şi mărimea ferestrei curente"
 
-#: src/file-manager/fm-directory-view.c:3941
+#: src/file-manager/fm-directory-view.c:3951
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" va fi mutat dacă selectaţi comanda Lipeşte fişiere"
 
-#: src/file-manager/fm-directory-view.c:3945
+#: src/file-manager/fm-directory-view.c:3955
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" va fi copiat dacă selectaţi comanda Lipeşte fişiere"
 
-#: src/file-manager/fm-directory-view.c:3952
+#: src/file-manager/fm-directory-view.c:3962
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
@@ -4531,7 +4571,7 @@ msgstr ""
 "Cele %d elemente selectate vor fi mutate dacă selectaţi comanda Lipeşte "
 "fişiere"
 
-#: src/file-manager/fm-directory-view.c:3956
+#: src/file-manager/fm-directory-view.c:3966
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
@@ -4539,101 +4579,101 @@ msgstr ""
 "Cele %d elemente selectate vor fi copiate dacă selectaţi comanda Lipeşte "
 "fişiere"
 
-#: src/file-manager/fm-directory-view.c:4102
+#: src/file-manager/fm-directory-view.c:4112
 msgid "There is nothing on the clipboard to paste."
 msgstr "Nu este nimic în memorie pentru a fi lipit."
 
-#: src/file-manager/fm-directory-view.c:4221
+#: src/file-manager/fm-directory-view.c:4231
 msgid "Open _in This Window"
 msgstr "Deschide _în această fereastră"
 
-#: src/file-manager/fm-directory-view.c:4224
+#: src/file-manager/fm-directory-view.c:4234
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Open _in New Window"
 msgstr "Deschide în fereastră nouă"
 
-#: src/file-manager/fm-directory-view.c:4226
+#: src/file-manager/fm-directory-view.c:4236
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "Deschide în %d ferestre noi"
 
-#: src/file-manager/fm-directory-view.c:4244
+#: src/file-manager/fm-directory-view.c:4254
 msgid "Delete from _Trash..."
 msgstr "Şterge din _Gunoi..."
 
-#: src/file-manager/fm-directory-view.c:4244
+#: src/file-manager/fm-directory-view.c:4254
 msgid "Delete from _Trash"
 msgstr "Şterge din Gunoi"
 
-#: src/file-manager/fm-directory-view.c:4246
+#: src/file-manager/fm-directory-view.c:4256
 msgid "Delete all selected items permanently"
 msgstr "Şterge permanent toate elementele selectate"
 
-#: src/file-manager/fm-directory-view.c:4249
+#: src/file-manager/fm-directory-view.c:4259
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Move to _Trash"
 msgstr "Mută la Gunoi"
 
-#: src/file-manager/fm-directory-view.c:4251
+#: src/file-manager/fm-directory-view.c:4261
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Move each selected item to the Trash"
 msgstr "Mută elementele selectate la Gunoi"
 
-#: src/file-manager/fm-directory-view.c:4278
+#: src/file-manager/fm-directory-view.c:4288
 msgid "De_lete..."
 msgstr "_Şterge..."
 
-#: src/file-manager/fm-directory-view.c:4278
+#: src/file-manager/fm-directory-view.c:4288
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "De_lete"
 msgstr "Şterge"
 
-#: src/file-manager/fm-directory-view.c:4299
+#: src/file-manager/fm-directory-view.c:4309
 msgid "Make _Links"
 msgstr "Fă legături"
 
-#: src/file-manager/fm-directory-view.c:4300
+#: src/file-manager/fm-directory-view.c:4310
 msgid "Make _Link"
 msgstr "Fă legătură"
 
-#: src/file-manager/fm-directory-view.c:4315 src/nautilus-sidebar.c:1488
+#: src/file-manager/fm-directory-view.c:4325 src/nautilus-sidebar.c:1509
 msgid "_Empty Trash..."
 msgstr "Goleşte Gunoiul..."
 
-#: src/file-manager/fm-directory-view.c:4316
+#: src/file-manager/fm-directory-view.c:4326
 #: src/file-manager/nautilus-directory-view-ui.xml.h:58
-#: src/nautilus-sidebar.c:1489
+#: src/nautilus-sidebar.c:1510
 msgid "_Empty Trash"
 msgstr "Goleşte Gunoiul"
 
-#: src/file-manager/fm-directory-view.c:4327
+#: src/file-manager/fm-directory-view.c:4337
 #: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "R_emove Custom Images"
 msgstr "Elimină imaginile personalizate"
 
-#: src/file-manager/fm-directory-view.c:4328
+#: src/file-manager/fm-directory-view.c:4338
 msgid "R_emove Custom Image"
 msgstr "Elimină imaginiea personalizată"
 
-#: src/file-manager/fm-directory-view.c:4342
+#: src/file-manager/fm-directory-view.c:4352
 msgid "Cu_t File"
 msgstr "Taie fişierul"
 
-#: src/file-manager/fm-directory-view.c:4343
+#: src/file-manager/fm-directory-view.c:4353
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "Taie fişierele"
 
-#: src/file-manager/fm-directory-view.c:4353
+#: src/file-manager/fm-directory-view.c:4363
 msgid "_Copy File"
 msgstr "Copie fişierul"
 
-#: src/file-manager/fm-directory-view.c:4354
+#: src/file-manager/fm-directory-view.c:4364
 #: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "_Copy Files"
 msgstr "Copiază fişierele"
 
-#: src/file-manager/fm-directory-view.c:4519
+#: src/file-manager/fm-directory-view.c:4529
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
@@ -4641,24 +4681,24 @@ msgstr ""
 "Aceată legătură nu poate fi folosită deoarece nu are ţintă. Doriţi să o "
 "puneţi la Gunoi?"
 
-#: src/file-manager/fm-directory-view.c:4522
+#: src/file-manager/fm-directory-view.c:4532
 #, c-format
 msgid ""
-"This link can't be used, because its target \"%s\" doesn't exist. Do you want "
-"to put this link in the Trash?"
+"This link can't be used, because its target \"%s\" doesn't exist. Do you "
+"want to put this link in the Trash?"
 msgstr ""
 "Aceată legătură nu poate fi folosită deoarece ţinta sa \"%s\" nu există. "
 "Doriţi să o puneţi la Gunoi?"
 
-#: src/file-manager/fm-directory-view.c:4528
+#: src/file-manager/fm-directory-view.c:4538
 msgid "Broken Link"
 msgstr "Legătură greşită"
 
-#: src/file-manager/fm-directory-view.c:4528
+#: src/file-manager/fm-directory-view.c:4538
 msgid "Throw Away"
 msgstr "Aruncă"
 
-#: src/file-manager/fm-directory-view.c:4585
+#: src/file-manager/fm-directory-view.c:4595
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -4666,36 +4706,36 @@ msgid ""
 msgstr ""
 "\"%s\" este un fişier executabil. Doriţi să-l rulaţi sau să-l vizualizaţi?"
 
-#: src/file-manager/fm-directory-view.c:4591
+#: src/file-manager/fm-directory-view.c:4601
 msgid "Run or Display?"
 msgstr "Rulează sau vizualizează"
 
-#: src/file-manager/fm-directory-view.c:4592
+#: src/file-manager/fm-directory-view.c:4602
 msgid "Run"
 msgstr "Rulează"
 
-#: src/file-manager/fm-directory-view.c:4593
+#: src/file-manager/fm-directory-view.c:4603
 msgid "Display"
 msgstr "Vizualizează"
 
-#: src/file-manager/fm-directory-view.c:4646
+#: src/file-manager/fm-directory-view.c:4656
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
 msgstr ""
-"Îmi pare rău, dar nu puteţi rula comenzi dintr-un site la distanţă din motive "
-"de securitate."
+"Îmi pare rău, dar nu puteţi rula comenzi dintr-un site la distanţă din "
+"motive de securitate."
 
-#: src/file-manager/fm-directory-view.c:4648
+#: src/file-manager/fm-directory-view.c:4658
 msgid "Can't execute remote links"
 msgstr "Nu pot executa legături la distanţă"
 
-#: src/file-manager/fm-directory-view.c:4776
+#: src/file-manager/fm-directory-view.c:4786
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Deschid \"%s\""
 
-#: src/file-manager/fm-directory-view.c:4782
+#: src/file-manager/fm-directory-view.c:4792
 msgid "Cancel Open?"
 msgstr "Renunţă la deschidere?"
 
@@ -4743,8 +4783,8 @@ msgid ""
 "The name \"%s\" is not valid because it contains the character \"/\". Please "
 "use a different name."
 msgstr ""
-"Numele \"%s\" nu este valid deoarece conţine caracterul \"/\". Vă rog alegeţi "
-"alt nume."
+"Numele \"%s\" nu este valid deoarece conţine caracterul \"/\". Vă rog "
+"alegeţi alt nume."
 
 #: src/file-manager/fm-error-reporting.c:121
 #, c-format
@@ -4881,108 +4921,108 @@ msgstr "_Restaurează mărimea originală a iconurilor"
 msgid "_Restore Icon's Original Size"
 msgstr "_Restaurează mărimea originală a iconului"
 
-#: src/file-manager/fm-icon-view.c:1687
+#: src/file-manager/fm-icon-view.c:1736
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "arată către \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2548
+#: src/file-manager/fm-icon-view.c:2597
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Tragere şi plasare este suportată doar pe sisteme de fişiere locale."
 
-#: src/file-manager/fm-icon-view.c:2549 src/file-manager/fm-icon-view.c:2568
+#: src/file-manager/fm-icon-view.c:2598 src/file-manager/fm-icon-view.c:2617
 msgid "Drag and Drop error"
 msgstr "Eroare tragere şi plasare"
 
-#: src/file-manager/fm-icon-view.c:2567
+#: src/file-manager/fm-icon-view.c:2616
 msgid "An invalid drag type was used."
 msgstr ""
 
-#: src/file-manager/fm-list-view.c:2258
+#: src/file-manager/fm-list-view.c:2262
 #: src/file-manager/fm-search-list-view.c:513
 msgid "Size"
 msgstr "Mărime"
 
-#: src/file-manager/fm-list-view.c:2264
+#: src/file-manager/fm-list-view.c:2268
 #: src/file-manager/fm-search-list-view.c:519
 msgid "Type"
 msgstr "Tip"
 
-#: src/file-manager/fm-list-view.c:2270
+#: src/file-manager/fm-list-view.c:2274
 #: src/file-manager/fm-search-list-view.c:525
 msgid "Date Modified"
 msgstr "Data modificării"
 
-#: src/file-manager/fm-properties-window.c:316 src/nautilus-sidebar.c:728
+#: src/file-manager/fm-properties-window.c:314 src/nautilus-sidebar.c:749
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
 "image to set a custom icon."
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:318 src/nautilus-sidebar.c:730
+#: src/file-manager/fm-properties-window.c:316 src/nautilus-sidebar.c:751
 msgid "More Than One Image"
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:327 src/nautilus-sidebar.c:749
+#: src/file-manager/fm-properties-window.c:325 src/nautilus-sidebar.c:770
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
 "custom icons."
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:329 src/nautilus-sidebar.c:751
+#: src/file-manager/fm-properties-window.c:327 src/nautilus-sidebar.c:772
 msgid "Local Images Only"
 msgstr "Doar imagini locale"
 
-#: src/file-manager/fm-properties-window.c:334 src/nautilus-sidebar.c:756
+#: src/file-manager/fm-properties-window.c:332 src/nautilus-sidebar.c:777
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
 "custom icons."
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:336 src/nautilus-sidebar.c:758
+#: src/file-manager/fm-properties-window.c:334 src/nautilus-sidebar.c:779
 msgid "Images Only"
 msgstr "Doar imagini"
 
-#: src/file-manager/fm-properties-window.c:614
+#: src/file-manager/fm-properties-window.c:612
 #, c-format
 msgid "%s Properties"
 msgstr "Proprietăţile %s"
 
-#: src/file-manager/fm-properties-window.c:809
+#: src/file-manager/fm-properties-window.c:807
 msgid "Cancel Group Change?"
 msgstr "Renunţă la schimbarea grupului?"
 
-#: src/file-manager/fm-properties-window.c:810
+#: src/file-manager/fm-properties-window.c:808
 msgid "Changing group"
 msgstr "Schimb grupul"
 
-#: src/file-manager/fm-properties-window.c:971
+#: src/file-manager/fm-properties-window.c:969
 msgid "Cancel Owner Change?"
 msgstr "Renunţă la schimbarea deţinătorului?"
 
-#: src/file-manager/fm-properties-window.c:972
+#: src/file-manager/fm-properties-window.c:970
 msgid "Changing owner"
 msgstr "Schimb deţinătorul"
 
-#: src/file-manager/fm-properties-window.c:1155
+#: src/file-manager/fm-properties-window.c:1153
 msgid "nothing"
 msgstr "nimic"
 
-#: src/file-manager/fm-properties-window.c:1157
+#: src/file-manager/fm-properties-window.c:1155
 msgid "unreadable"
 msgstr "ne-citibil"
 
-#: src/file-manager/fm-properties-window.c:1166
+#: src/file-manager/fm-properties-window.c:1164
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 element, cu mărimea %s"
 
-#: src/file-manager/fm-properties-window.c:1168
+#: src/file-manager/fm-properties-window.c:1166
 #, c-format
 msgid "%d items, totalling %s"
 msgstr "%d elemente, cu mărimea totală %s"
 
-#: src/file-manager/fm-properties-window.c:1174
+#: src/file-manager/fm-properties-window.c:1172
 msgid "(some contents unreadable)"
 msgstr "(o parte din conţinut necitibil)"
 
@@ -4991,133 +5031,133 @@ msgstr "(o parte din conţinut necitibil)"
 #. * "Contents:" title to line up with the first line of the 2-line value.
 #. * Maybe there's a better way to do this, but I couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1188
+#: src/file-manager/fm-properties-window.c:1186
 msgid "Contents:"
 msgstr "Conţinut:"
 
-#: src/file-manager/fm-properties-window.c:1535
+#: src/file-manager/fm-properties-window.c:1533
 msgid "Basic"
 msgstr "Simplu"
 
-#: src/file-manager/fm-properties-window.c:1614
+#: src/file-manager/fm-properties-window.c:1612
 msgid "Type:"
 msgstr "Tip:"
 
-#: src/file-manager/fm-properties-window.c:1619
+#: src/file-manager/fm-properties-window.c:1617
 msgid "Size:"
 msgstr "Mărime:"
 
-#: src/file-manager/fm-properties-window.c:1621 src/nautilus-location-bar.c:60
+#: src/file-manager/fm-properties-window.c:1619 src/nautilus-location-bar.c:60
 #: src/nautilus-preferences-dialog.c:294 src/nautilus-preferences-dialog.c:304
 msgid "Location:"
 msgstr "Locaţie:"
 
-#: src/file-manager/fm-properties-window.c:1623
+#: src/file-manager/fm-properties-window.c:1621
 msgid "Link Target:"
 msgstr "Ţinta legăturii:"
 
-#: src/file-manager/fm-properties-window.c:1626
+#: src/file-manager/fm-properties-window.c:1624
 msgid "MIME Type:"
 msgstr "Tip MIME:"
 
-#: src/file-manager/fm-properties-window.c:1632
+#: src/file-manager/fm-properties-window.c:1630
 msgid "Modified:"
 msgstr "Modificat:"
 
-#: src/file-manager/fm-properties-window.c:1635
+#: src/file-manager/fm-properties-window.c:1633
 msgid "Accessed:"
 msgstr "Accesat:"
 
-#: src/file-manager/fm-properties-window.c:1644
+#: src/file-manager/fm-properties-window.c:1642
 msgid "_Select Custom Icon..."
 msgstr "_Selectează icon personalizat..."
 
-#: src/file-manager/fm-properties-window.c:1650
+#: src/file-manager/fm-properties-window.c:1648
 msgid "_Remove Custom Icon"
 msgstr "_Elimină icon personalizat..."
 
-#: src/file-manager/fm-properties-window.c:1978
+#: src/file-manager/fm-properties-window.c:1976
 msgid "Set User ID"
 msgstr "Setează ID utilizator"
 
-#: src/file-manager/fm-properties-window.c:1983
+#: src/file-manager/fm-properties-window.c:1981
 msgid "Special Flags:"
 msgstr "Opţiuni speciale:"
 
-#: src/file-manager/fm-properties-window.c:1986
+#: src/file-manager/fm-properties-window.c:1984
 msgid "Set Group ID"
 msgstr "Setează ID grup"
 
-#: src/file-manager/fm-properties-window.c:1988
+#: src/file-manager/fm-properties-window.c:1986
 msgid "Sticky"
 msgstr "Lipicios"
 
-#: src/file-manager/fm-properties-window.c:2014
+#: src/file-manager/fm-properties-window.c:2012
 msgid "Permissions"
 msgstr "Permisii"
 
-#: src/file-manager/fm-properties-window.c:2020
+#: src/file-manager/fm-properties-window.c:2018
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Nu sunteţi deţinătorul, nu puteţi schimba permisiile"
 
-#: src/file-manager/fm-properties-window.c:2033
+#: src/file-manager/fm-properties-window.c:2031
 msgid "File Owner:"
 msgstr "Deţinător fişier:"
 
-#: src/file-manager/fm-properties-window.c:2042
+#: src/file-manager/fm-properties-window.c:2040
 msgid "File Group:"
 msgstr "Grup fişier:"
 
-#: src/file-manager/fm-properties-window.c:2060
+#: src/file-manager/fm-properties-window.c:2058
 msgid "Owner:"
 msgstr "Deţinător:"
 
-#: src/file-manager/fm-properties-window.c:2061
+#: src/file-manager/fm-properties-window.c:2059
 msgid "Group:"
 msgstr "Grup:"
 
-#: src/file-manager/fm-properties-window.c:2062
+#: src/file-manager/fm-properties-window.c:2060
 msgid "Others:"
 msgstr "Alţii:"
 
-#: src/file-manager/fm-properties-window.c:2081
+#: src/file-manager/fm-properties-window.c:2079
 msgid "Read"
 msgstr "Citire"
 
-#: src/file-manager/fm-properties-window.c:2085
+#: src/file-manager/fm-properties-window.c:2083
 msgid "Write"
 msgstr "Scriere"
 
-#: src/file-manager/fm-properties-window.c:2089
+#: src/file-manager/fm-properties-window.c:2087
 msgid "Execute"
 msgstr "Execuţie"
 
-#: src/file-manager/fm-properties-window.c:2140
+#: src/file-manager/fm-properties-window.c:2138
 msgid "Text View:"
 msgstr "Vizualizare text:"
 
-#: src/file-manager/fm-properties-window.c:2141
+#: src/file-manager/fm-properties-window.c:2139
 msgid "Number View:"
 msgstr "Vizualizare număr:"
 
-#: src/file-manager/fm-properties-window.c:2142
+#: src/file-manager/fm-properties-window.c:2140
 msgid "Last Changed:"
 msgstr "Ultima schimbare:"
 
-#: src/file-manager/fm-properties-window.c:2146
+#: src/file-manager/fm-properties-window.c:2144
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Permisiile lui \"%s\" nu au putut fi determinate."
 
-#: src/file-manager/fm-properties-window.c:2428
+#: src/file-manager/fm-properties-window.c:2426
 msgid "Cancel Showing Properties Window?"
 msgstr "Renuţă la afişarea ferestrei cu proprităţi?"
 
-#: src/file-manager/fm-properties-window.c:2429
+#: src/file-manager/fm-properties-window.c:2427
 msgid "Creating Properties window"
 msgstr "Creez ferestra cu proprităţi"
 
-#: src/file-manager/fm-properties-window.c:2541
+#: src/file-manager/fm-properties-window.c:2521
 msgid "Select an icon:"
 msgstr "Selectează un icon:"
 
@@ -5139,11 +5179,11 @@ msgid ""
 "Sorry, but the Medusa search service is not available because it is not "
 "installed."
 msgstr ""
-"Îmi pare rău, dar serviciul de căutare Medusa nu este disponibil pentru că nu "
-"a fost instalat."
+"Îmi pare rău, dar serviciul de căutare Medusa nu este disponibil pentru că "
+"nu a fost instalat."
 
 #: src/file-manager/fm-search-list-view.c:168
-#: src/file-manager/nautilus-indexing-info.c:301
+#: src/file-manager/nautilus-indexing-info.c:297
 msgid "Search Service Not Available"
 msgstr "Serviciul de căutare nu este disponibil"
 
@@ -5164,12 +5204,12 @@ msgstr "Caută elemente care sunt prea noi"
 #: src/file-manager/fm-search-list-view.c:201
 msgid ""
 "Every indexed file on your computer matches the criteria you selected. You "
-"can check the spelling on your selections or add more criteria to narrow your "
-"results."
+"can check the spelling on your selections or add more criteria to narrow "
+"your results."
 msgstr ""
 "Fiecare fişier indexat de pe sistemul dvs. corespunde criteriului selectat. "
-"Puteţi verifica corectitudinea selecţiei sau adauga mai multe criterii pentru "
-"a fi mai selectiv."
+"Puteţi verifica corectitudinea selecţiei sau adauga mai multe criterii "
+"pentru a fi mai selectiv."
 
 #: src/file-manager/fm-search-list-view.c:205
 #: src/file-manager/fm-search-list-view.c:226
@@ -5244,9 +5284,9 @@ msgstr ""
 
 #: src/file-manager/fm-search-list-view.c:278
 msgid ""
-"To do a content search, Find requires an index of the content on your system. "
-" Your computer is currently creating that index.  Content searches will be "
-"available when the index is complete."
+"To do a content search, Find requires an index of the content on your "
+"system.  Your computer is currently creating that index.  Content searches "
+"will be available when the index is complete."
 msgstr ""
 "Pentru a face o căutare după conţinut este nevoie de un index al fişierelor "
 "de pe sistemul dvs. Acest index este creat acum."
@@ -5259,9 +5299,9 @@ msgstr "Căutarea indexată nu este disponibilă"
 #: src/file-manager/fm-search-list-view.c:292
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now. You can create an index by running "
-"\"medusa-indexd\" as root on the command line.  Until a complete index is "
-"available, searches will take several minutes."
+"index is available right now. You can create an index by running \"medusa-"
+"indexd\" as root on the command line.  Until a complete index is available, "
+"searches will take several minutes."
 msgstr ""
 "Pentru a face o căutare rapidă este nevoie de un index al fişierelor de pe "
 "sistemul dvs. Acest index nu este disponibil. Puteţi crea un index rulând "
@@ -5269,10 +5309,10 @@ msgstr ""
 
 #: src/file-manager/fm-search-list-view.c:299
 msgid ""
-"To do a content search, Find requires an index of the content on your system. "
-" No index is available right now.  You can create an index by running "
-"\"medusa-indexd\" as root on the command line.  Until a complete index is "
-"available, content searches cannot be performed."
+"To do a content search, Find requires an index of the content on your "
+"system.  No index is available right now.  You can create an index by "
+"running \"medusa-indexd\" as root on the command line.  Until a complete "
+"index is available, content searches cannot be performed."
 msgstr ""
 "Pentru a face o căutare după conţinut este nevoie de un index al fişierelor "
 "de pe sistemul dvs. Acest index nu este disponibil. Puteţi crea un index "
@@ -5280,9 +5320,9 @@ msgstr ""
 
 #: src/file-manager/fm-search-list-view.c:324
 msgid ""
-"To do a fast search, Find requires an index of the files on your system. Your "
-"system administrator has disabled fast search on your computer, so no index "
-"is available."
+"To do a fast search, Find requires an index of the files on your system. "
+"Your system administrator has disabled fast search on your computer, so no "
+"index is available."
 msgstr ""
 "Pentru a face o căutare rapidă este nevoie de un index al fişierelor de pe "
 "sistemul dvs. Acest index nu este disponibil deoarece administratorul "
@@ -5326,8 +5366,8 @@ msgid ""
 "Nautilus found more search results than it can display. Some matching items "
 "will not be displayed. "
 msgstr ""
-"Nautilus a găsit mai multe rezultate decât poate afişa. Unele elemente nu vor "
-"fi afişate."
+"Nautilus a găsit mai multe rezultate decât poate afişa. Unele elemente nu "
+"vor fi afişate."
 
 #: src/file-manager/fm-search-list-view.c:682
 msgid "Too Many Matches"
@@ -5486,14 +5526,13 @@ msgid "Remove any custom images from selected icons"
 msgstr "Elimină orice imagine personalizată din iconurile selectate"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:40
-msgid ""
-"Remove any custom pattern or color from the background of this location"
+msgid "Remove any custom pattern or color from the background of this location"
 msgstr ""
 "Elimină orice imagine sau culoare personalizată din fundalul acestei locaţii"
 
 #. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
-#: src/nautilus-sidebar.c:547
+#: src/nautilus-sidebar.c:568
 msgid "Reset Background"
 msgstr "Resetează fundalul"
 
@@ -5683,49 +5722,49 @@ msgstr "_Renumeşte"
 msgid "_Stretch Icon"
 msgstr "_Întinde iconul"
 
-#: src/file-manager/nautilus-indexing-info.c:87
+#: src/file-manager/nautilus-indexing-info.c:86
 #, c-format
 msgid "Indexing is %d%% complete."
 msgstr ""
 
-#: src/file-manager/nautilus-indexing-info.c:157
+#: src/file-manager/nautilus-indexing-info.c:156
 msgid ""
-"Once a day your files and text content are indexed so your searches are fast. "
-""
+"Once a day your files and text content are indexed so your searches are "
+"fast. "
 msgstr ""
 
-#: src/file-manager/nautilus-indexing-info.c:159
-#: src/file-manager/nautilus-indexing-info.c:198
+#: src/file-manager/nautilus-indexing-info.c:158
+#: src/file-manager/nautilus-indexing-info.c:196
 msgid "Indexing Status"
 msgstr "Status indexare"
 
-#: src/file-manager/nautilus-indexing-info.c:164
+#: src/file-manager/nautilus-indexing-info.c:163
 #, c-format
 msgid "Your files were last indexed at %s"
 msgstr ""
 
-#: src/file-manager/nautilus-indexing-info.c:196
+#: src/file-manager/nautilus-indexing-info.c:194
 msgid ""
-"Once a day your files and text content are indexed so your searches are fast. "
-" Your files are currently being indexed."
+"Once a day your files and text content are indexed so your searches are "
+"fast.  Your files are currently being indexed."
 msgstr ""
 
-#: src/file-manager/nautilus-indexing-info.c:258
+#: src/file-manager/nautilus-indexing-info.c:254
 msgid ""
 "When Fast Search is enabled, Find creates an index to speed up searches.  "
 "Fast searching is not enabled on your computer, so you do not have an index "
 "right now."
 msgstr ""
 
-#: src/file-manager/nautilus-indexing-info.c:262
+#: src/file-manager/nautilus-indexing-info.c:258
 msgid "There is no index of your files right now."
 msgstr ""
 
-#: src/file-manager/nautilus-indexing-info.c:300
+#: src/file-manager/nautilus-indexing-info.c:296
 msgid "Sorry, but the medusa search service is not available."
 msgstr "Îmi pare rău,"
 
-#: src/file-manager/nautilus-indexing-info.c:315
+#: src/file-manager/nautilus-indexing-info.c:311
 msgid "%I:%M %p, %x"
 msgstr "%I:%M %p, %x"
 
@@ -5750,20 +5789,20 @@ msgid "Show status of indexing used when searching"
 msgstr ""
 
 #. set the window title
-#: src/nautilus-about.c:130
+#: src/nautilus-about.c:129
 msgid "About Nautilus"
 msgstr "Despre Nautilus"
 
 #. draw the authors title
-#: src/nautilus-about.c:341
+#: src/nautilus-about.c:337
 msgid "Authors"
 msgstr "Autori"
 
-#: src/nautilus-application.c:216
+#: src/nautilus-application.c:224
 msgid "Couldn't Create Required Folder"
 msgstr "Nu s-a putut crea dosarul cerut"
 
-#: src/nautilus-application.c:217
+#: src/nautilus-application.c:225
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5771,19 +5810,19 @@ msgid ""
 "can create it."
 msgstr ""
 
-#: src/nautilus-application.c:222
+#: src/nautilus-application.c:230
 msgid "Couldn't Create Required Folders"
 msgstr "Nu s-au putut crea dosarele cerute"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:231
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
 "\n"
 "%s\n"
 "\n"
-"Before running Nautilus, please create these folders, or set permissions such "
-"that Nautilus can create them."
+"Before running Nautilus, please create these folders, or set permissions "
+"such that Nautilus can create them."
 msgstr ""
 
 #. Can't register myself due to trouble locating the
@@ -5796,7 +5835,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:466
+#: src/nautilus-application.c:474
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5804,7 +5843,7 @@ msgid ""
 msgstr ""
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:472
+#: src/nautilus-application.c:480
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5833,40 +5872,40 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:502 src/nautilus-application.c:520
-#: src/nautilus-application.c:527
+#: src/nautilus-application.c:510 src/nautilus-application.c:528
+#: src/nautilus-application.c:535
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr ""
 
-#: src/nautilus-application.c:503
+#: src/nautilus-application.c:511
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
 msgstr ""
 
-#: src/nautilus-application.c:521
+#: src/nautilus-application.c:529
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
 
-#: src/nautilus-application.c:528
+#: src/nautilus-application.c:536
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
 
-#: src/nautilus-bookmarks-window.c:132
+#: src/nautilus-bookmarks-window.c:138
 msgid "Bookmarks"
 msgstr "Semne de carte"
 
-#: src/nautilus-bookmarks-window.c:187
+#: src/nautilus-bookmarks-window.c:222
 msgid "Location"
 msgstr "Locaţie"
 
-#: src/nautilus-bookmarks-window.c:200
+#: src/nautilus-bookmarks-window.c:235
 msgid "_Remove"
 msgstr "_Elimină..."
 
@@ -5879,14 +5918,14 @@ msgid "Fewer Options"
 msgstr "Mai puţine opţiuni"
 
 #. Create button first so we can use it for auto_click
-#: src/nautilus-complex-search-bar.c:233 src/nautilus-simple-search-bar.c:129
+#: src/nautilus-complex-search-bar.c:233 src/nautilus-simple-search-bar.c:145
 msgid "Find Them!"
 msgstr "Găseşte-le!"
 
 #: src/nautilus-first-time-druid.c:40
 msgid ""
-"Existence of this file indicates that the Nautilus configuration "
-"druid\nhas been presented.\n"
+"Existence of this file indicates that the Nautilus configuration druid\n"
+"has been presented.\n"
 "\n"
 "You can manually erase this file to present the druid again.\n"
 msgstr ""
@@ -5904,53 +5943,53 @@ msgstr "Doriţi să vizualizaţi aceste %d locaţii în ferestre separate?"
 msgid "View in Multiple Windows?"
 msgstr "Vizualizează ferestre multiple?"
 
-#: src/nautilus-main.c:149
+#: src/nautilus-main.c:150
 msgid "Perform a quick set of self-check tests."
 msgstr ""
 
-#: src/nautilus-main.c:152
+#: src/nautilus-main.c:153
 msgid "Create the initial window with the given geometry."
 msgstr ""
 
-#: src/nautilus-main.c:152
+#: src/nautilus-main.c:153
 msgid "GEOMETRY"
 msgstr ""
 
-#: src/nautilus-main.c:154
+#: src/nautilus-main.c:155
 msgid "Only create windows for explicitly specified URIs."
 msgstr ""
 
-#: src/nautilus-main.c:156
+#: src/nautilus-main.c:157
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
 msgstr ""
 
-#: src/nautilus-main.c:158
+#: src/nautilus-main.c:159
 msgid "Quit Nautilus."
 msgstr "Ieşi din Nautilus"
 
-#: src/nautilus-main.c:160
+#: src/nautilus-main.c:161
 msgid "Restart Nautilus."
 msgstr "Reporneşte Nautilus."
 
-#: src/nautilus-main.c:209
+#: src/nautilus-main.c:205
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr ""
 
-#: src/nautilus-main.c:213
+#: src/nautilus-main.c:209
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr ""
 
-#: src/nautilus-main.c:217
+#: src/nautilus-main.c:213
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr ""
 
-#: src/nautilus-main.c:221
+#: src/nautilus-main.c:217
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr ""
 
-#: src/nautilus-main.c:225
+#: src/nautilus-main.c:221
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr ""
 
@@ -6149,7 +6188,7 @@ msgstr "Motoare de căutare"
 msgid "Search Engine Location"
 msgstr "Locaţie motor căutare"
 
-#: src/nautilus-preferences-dialog.c:292 src/nautilus-shell-ui.xml.h:35
+#: src/nautilus-preferences-dialog.c:292 src/nautilus-shell-ui.xml.h:32
 msgid "Home"
 msgstr "Acasă"
 
@@ -6277,194 +6316,209 @@ msgstr "Panou ştiri"
 msgid "Display %s tab in sidebar"
 msgstr "Afişează tabul %s în bară"
 
+#: src/nautilus-profiler.c:211
+#, fuzzy
+msgid "Print"
+msgstr "Port:"
+
+#: src/nautilus-profiler.c:212
+#, fuzzy
+msgid "Save"
+msgstr "Rave"
+
+#: src/nautilus-profiler.c:253
+#, fuzzy
+msgid "Profile Dump"
+msgstr "_Profilator"
+
 #. set the title and standard close accelerator
-#: src/nautilus-property-browser.c:265
+#: src/nautilus-property-browser.c:264
 msgid "Backgrounds and Emblems"
 msgstr "Fundaluri şi embleme"
 
 #. create the "done" button
-#: src/nautilus-property-browser.c:358
+#: src/nautilus-property-browser.c:357
 msgid "_Done"
 msgstr "_Gata"
 
-#: src/nautilus-property-browser.c:369
+#: src/nautilus-property-browser.c:368
 msgid "_Add new..."
 msgstr "_Adaugă nou..."
 
 #. FIXME: Using spaces to add padding is not good design.
-#: src/nautilus-property-browser.c:385
+#: src/nautilus-property-browser.c:384
 msgid "_Remove..."
 msgstr "_Elimină..."
 
-#: src/nautilus-property-browser.c:857
+#: src/nautilus-property-browser.c:856
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "Îmi pare rău, dar %s nu a putut fi şters."
 
-#: src/nautilus-property-browser.c:858 src/nautilus-property-browser.c:887
+#: src/nautilus-property-browser.c:857 src/nautilus-property-browser.c:886
 msgid "Couldn't delete pattern"
 msgstr ""
 
-#: src/nautilus-property-browser.c:886
+#: src/nautilus-property-browser.c:885
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "Îmi pare rău, dar emblema %s nu a putut fi ştearsă."
 
-#: src/nautilus-property-browser.c:925
+#: src/nautilus-property-browser.c:924
 msgid "Create a New Emblem:"
 msgstr "Crează o emblemă nouă:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:932
+#: src/nautilus-property-browser.c:931
 msgid "Keyword:"
 msgstr "Cuvânt cheie:"
 
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:945
+#: src/nautilus-property-browser.c:944
 msgid "Image:"
 msgstr "Imagine:"
 
-#: src/nautilus-property-browser.c:949
+#: src/nautilus-property-browser.c:948
 msgid "Select an image file for the new emblem:"
 msgstr "Selectează un fişier imagine pentru emblema nouă:"
 
-#: src/nautilus-property-browser.c:981
+#: src/nautilus-property-browser.c:980
 msgid "Create a New Color:"
 msgstr "Creează o nouă culoare:"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:988
+#: src/nautilus-property-browser.c:987
 msgid "Color name:"
 msgstr "Nume culoare:"
 
-#: src/nautilus-property-browser.c:999
+#: src/nautilus-property-browser.c:998
 msgid "Color value:"
 msgstr "Valoare culoare:"
 
-#: src/nautilus-property-browser.c:1039
+#: src/nautilus-property-browser.c:1038
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "Îmi pare rău, dar \"%s\" nu este un nume valid de fişier."
 
-#: src/nautilus-property-browser.c:1041
+#: src/nautilus-property-browser.c:1040
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "Îmi pare rău, dar nu aţi introdus un nume valid de fişier."
 
-#: src/nautilus-property-browser.c:1043 src/nautilus-property-browser.c:1086
+#: src/nautilus-property-browser.c:1042 src/nautilus-property-browser.c:1085
 msgid "Couldn't install pattern"
 msgstr "N-am putut instala pattern-ul"
 
-#: src/nautilus-property-browser.c:1054
+#: src/nautilus-property-browser.c:1053
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Îmi pare rău,"
 
-#: src/nautilus-property-browser.c:1085
+#: src/nautilus-property-browser.c:1084
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Îmi pare rău, dar tapetul %s nu a putut fi instalat."
 
-#: src/nautilus-property-browser.c:1111
+#: src/nautilus-property-browser.c:1110
 msgid "Select an image file to add as a pattern:"
 msgstr ""
 
-#: src/nautilus-property-browser.c:1172
+#: src/nautilus-property-browser.c:1171
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Îmi pare rău, dar trebuie să specificaţi un nume pentru culoare"
 
-#: src/nautilus-property-browser.c:1173
+#: src/nautilus-property-browser.c:1172
 msgid "Couldn't install color"
 msgstr "N-am putut instala culoarea"
 
-#: src/nautilus-property-browser.c:1229
+#: src/nautilus-property-browser.c:1228
 msgid "Select a color to add:"
 msgstr "Selectează o culoare pentru adăugare:"
 
-#: src/nautilus-property-browser.c:1312
+#: src/nautilus-property-browser.c:1311
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Îmi pare rău, dar '%s' nu este o imagine!"
 
-#: src/nautilus-property-browser.c:1330
+#: src/nautilus-property-browser.c:1329
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Îmi pare rău, dar trebuie să specificaţi un nume cheie."
 
-#: src/nautilus-property-browser.c:1331 src/nautilus-property-browser.c:1334
-#: src/nautilus-property-browser.c:1338 src/nautilus-property-browser.c:1367
+#: src/nautilus-property-browser.c:1330 src/nautilus-property-browser.c:1333
+#: src/nautilus-property-browser.c:1337 src/nautilus-property-browser.c:1366
 msgid "Couldn't install emblem"
 msgstr ""
 
-#: src/nautilus-property-browser.c:1333
+#: src/nautilus-property-browser.c:1332
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr "Îmi pare rău,"
 
-#: src/nautilus-property-browser.c:1336
+#: src/nautilus-property-browser.c:1335
 #, c-format
 msgid ""
-"Sorry, but \"%s\" is an existing keyword.  Please choose a different name for "
-"it."
+"Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
+"for it."
 msgstr ""
 "Îmi pare rău, dar \"%s\" este un cuvânt cheie existent. Vă rog să alegeţi un "
 "nume diferit."
 
-#: src/nautilus-property-browser.c:1366
+#: src/nautilus-property-browser.c:1365
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr ""
 
-#: src/nautilus-property-browser.c:2035
+#: src/nautilus-property-browser.c:2031
 msgid "Select A Category:"
 msgstr "Selectează o categorie:"
 
-#: src/nautilus-property-browser.c:2043 src/nautilus-theme-selector.c:191
+#: src/nautilus-property-browser.c:2039 src/nautilus-theme-selector.c:191
 msgid "Cancel Remove"
 msgstr "Renunţă la eliminare"
 
-#: src/nautilus-property-browser.c:2048
+#: src/nautilus-property-browser.c:2044
 msgid "Add a New Pattern..."
 msgstr ""
 
-#: src/nautilus-property-browser.c:2051
+#: src/nautilus-property-browser.c:2047
 msgid "Add a New Color..."
 msgstr ""
 
-#: src/nautilus-property-browser.c:2054
+#: src/nautilus-property-browser.c:2050
 msgid "Add a New Emblem..."
 msgstr ""
 
-#: src/nautilus-property-browser.c:2077
+#: src/nautilus-property-browser.c:2073
 msgid "Click on a pattern to remove it"
 msgstr ""
 
-#: src/nautilus-property-browser.c:2080
+#: src/nautilus-property-browser.c:2076
 msgid "Click on a color to remove it"
 msgstr ""
 
-#: src/nautilus-property-browser.c:2083
+#: src/nautilus-property-browser.c:2079
 msgid "Click on an emblem to remove it"
 msgstr ""
 
-#: src/nautilus-property-browser.c:2092
+#: src/nautilus-property-browser.c:2088
 msgid "Patterns:"
 msgstr ""
 
-#: src/nautilus-property-browser.c:2095
+#: src/nautilus-property-browser.c:2091
 msgid "Colors:"
 msgstr ""
 
-#: src/nautilus-property-browser.c:2098
+#: src/nautilus-property-browser.c:2094
 msgid "Emblems:"
 msgstr ""
 
-#: src/nautilus-property-browser.c:2117
+#: src/nautilus-property-browser.c:2113
 msgid "Remove a Pattern..."
 msgstr ""
 
-#: src/nautilus-property-browser.c:2120
+#: src/nautilus-property-browser.c:2116
 msgid "Remove a Color..."
 msgstr ""
 
-#: src/nautilus-property-browser.c:2123
+#: src/nautilus-property-browser.c:2119
 msgid "Remove an Emblem..."
 msgstr ""
 
@@ -6624,384 +6678,358 @@ msgid "[File owner] is not [root]"
 msgstr ""
 
 #: src/nautilus-shell-ui.xml.h:1
-msgid " _Advanced"
-msgstr "_Avansat"
-
-#: src/nautilus-shell-ui.xml.h:2
-msgid " _Beginner"
-msgstr "_Începător"
-
-#: src/nautilus-shell-ui.xml.h:3
-msgid " _Intermediate"
-msgstr "_Mediu"
-
-#: src/nautilus-shell-ui.xml.h:4
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Adaugă un semn de carte pentru locaţia curentă la acest meniu"
 
-#: src/nautilus-shell-ui.xml.h:6
+#: src/nautilus-shell-ui.xml.h:3
 msgid "Change the visibility of this window's location bar"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:7
+#: src/nautilus-shell-ui.xml.h:4
 msgid "Change the visibility of this window's sidebar"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:8
+#: src/nautilus-shell-ui.xml.h:5
 msgid "Change the visibility of this window's status bar"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:9
+#: src/nautilus-shell-ui.xml.h:6
 msgid "Change the visibility of this window's toolbar"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:10
+#: src/nautilus-shell-ui.xml.h:7
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:11
+#: src/nautilus-shell-ui.xml.h:8
 msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Şterge conţinutul meniului Go şi listelor Înainte/Înapoi"
 
-#: src/nautilus-shell-ui.xml.h:12
+#: src/nautilus-shell-ui.xml.h:9
 msgid "Close _All Windows"
 msgstr "Închide _toate ferestrele"
 
-#: src/nautilus-shell-ui.xml.h:13
+#: src/nautilus-shell-ui.xml.h:10
 msgid "Close all Nautilus windows"
 msgstr "Închide toate ferestrele Nautilus"
 
-#: src/nautilus-shell-ui.xml.h:14
+#: src/nautilus-shell-ui.xml.h:11
 msgid "Close this window"
 msgstr "Închide această fereastră"
 
-#: src/nautilus-shell-ui.xml.h:16
+#: src/nautilus-shell-ui.xml.h:13
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:17
+#: src/nautilus-shell-ui.xml.h:14
 msgid "Display credits for the creators of Nautilus"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:18
+#: src/nautilus-shell-ui.xml.h:15
 msgid "Display on-line help for Nautilus"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:19
+#: src/nautilus-shell-ui.xml.h:16
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:20
+#: src/nautilus-shell-ui.xml.h:17
 msgid "Display quick reference pages for Nautilus"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:21
+#: src/nautilus-shell-ui.xml.h:18
 msgid "Display release notes for Nautilus"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:22
+#: src/nautilus-shell-ui.xml.h:19
 msgid "Display the latest contents of the current location"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:23
-msgid "Edit various Nautilus preferences"
+#: src/nautilus-shell-ui.xml.h:20
+#, fuzzy
+msgid "Edit Nautilus preferences"
 msgstr "Editează diverse preferinţe Nautilus"
 
-#: src/nautilus-shell-ui.xml.h:24
+#: src/nautilus-shell-ui.xml.h:21
 msgid "Find"
 msgstr "Găseşte"
 
-#: src/nautilus-shell-ui.xml.h:25
+#: src/nautilus-shell-ui.xml.h:22
 msgid "For_get History"
 msgstr "Uită _istoria"
 
-#: src/nautilus-shell-ui.xml.h:26
+#: src/nautilus-shell-ui.xml.h:23
 msgid "Go to the Start Here folder"
 msgstr "Mergi la dosarul Începeţi aici"
 
-#: src/nautilus-shell-ui.xml.h:27
+#: src/nautilus-shell-ui.xml.h:24
 msgid "Go to the home location"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:28
+#: src/nautilus-shell-ui.xml.h:25
 msgid "Go to the next visited location"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:29
+#: src/nautilus-shell-ui.xml.h:26
 msgid "Go to the previous visited location"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:30
+#: src/nautilus-shell-ui.xml.h:27
 msgid "Go up to the location that contains the displayed location"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:31 src/nautilus-window-menus.c:495
+#: src/nautilus-shell-ui.xml.h:28 src/nautilus-window-menus.c:478
 msgid "Hide Location _Bar"
 msgstr "Ascunde bara Locaţie"
 
-#: src/nautilus-shell-ui.xml.h:32 src/nautilus-window-menus.c:477
+#: src/nautilus-shell-ui.xml.h:29 src/nautilus-window-menus.c:460
 msgid "Hide St_atus Bar"
 msgstr "Ascunde bara status"
 
-#: src/nautilus-shell-ui.xml.h:33 src/nautilus-window-menus.c:483
+#: src/nautilus-shell-ui.xml.h:30 src/nautilus-window-menus.c:466
 msgid "Hide _Sidebar"
 msgstr "Ascunde bara de pe margine"
 
-#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:489
+#: src/nautilus-shell-ui.xml.h:31 src/nautilus-window-menus.c:472
 msgid "Hide _Toolbar"
 msgstr "Ascunde bara cu unelte"
 
-#: src/nautilus-shell-ui.xml.h:36
+#: src/nautilus-shell-ui.xml.h:33
 msgid "Mailing list where you can send feedback about Nautilus"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:37
+#: src/nautilus-shell-ui.xml.h:34
 msgid "Nautilus Quick _Reference"
 msgstr "_Referinţă rapidă Nautilus"
 
-#: src/nautilus-shell-ui.xml.h:38
+#: src/nautilus-shell-ui.xml.h:35
 msgid "Nautilus Release _Notes"
 msgstr "_Note versiune Nautilus"
 
-#: src/nautilus-shell-ui.xml.h:39
+#: src/nautilus-shell-ui.xml.h:36
 msgid "Nautilus User _Manual"
 msgstr "_Manualul utilizatorului Nautilus"
 
-#: src/nautilus-shell-ui.xml.h:40
+#: src/nautilus-shell-ui.xml.h:37
 msgid "New Window"
 msgstr "Fereastră nouă"
 
-#: src/nautilus-shell-ui.xml.h:41
+#: src/nautilus-shell-ui.xml.h:38
 msgid "New _Window"
 msgstr "_Fereastră nouă"
 
-#: src/nautilus-shell-ui.xml.h:42
+#: src/nautilus-shell-ui.xml.h:39
 msgid "Normal Size"
 msgstr "Mărime normală"
 
-#: src/nautilus-shell-ui.xml.h:43
+#: src/nautilus-shell-ui.xml.h:40
 msgid "Open another Nautilus window for the displayed location"
 msgstr "Deschide altă fereastră Nautilus pentru locaţia afişată"
 
-#: src/nautilus-shell-ui.xml.h:44
+#: src/nautilus-shell-ui.xml.h:41
+#, fuzzy
+msgid "P_references..."
+msgstr "Preferinţe"
+
+#: src/nautilus-shell-ui.xml.h:42
 msgid "Refresh"
 msgstr "Actualizează"
 
-#: src/nautilus-shell-ui.xml.h:45
+#: src/nautilus-shell-ui.xml.h:43
 msgid "Report Profiling"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:46
+#: src/nautilus-shell-ui.xml.h:44
 msgid "Reset Profiling"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:47
+#: src/nautilus-shell-ui.xml.h:45
 msgid "Search the World Wide Web"
 msgstr "Caută World Wide Web"
 
-#: src/nautilus-shell-ui.xml.h:48
+#: src/nautilus-shell-ui.xml.h:46
 msgid "Search this computer for files"
 msgstr "Caută fişiere acest computer"
 
-#: src/nautilus-shell-ui.xml.h:50
+#: src/nautilus-shell-ui.xml.h:48
 msgid "Show the contents at the normal size"
 msgstr "Afişează conţinutul la mărime normală"
 
-#: src/nautilus-shell-ui.xml.h:51
+#: src/nautilus-shell-ui.xml.h:49
 msgid "Show the contents in less detail"
 msgstr "Arată conţinutul cu mai puţin detaliu"
 
-#: src/nautilus-shell-ui.xml.h:52
+#: src/nautilus-shell-ui.xml.h:50
 msgid "Show the contents in more detail"
 msgstr "Arată conţinutul cu mai mult detaliu"
 
-#: src/nautilus-shell-ui.xml.h:53
+#: src/nautilus-shell-ui.xml.h:51
 msgid "Start Profiling"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:55
+#: src/nautilus-shell-ui.xml.h:53
 msgid "Stop Profiling"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:56
+#: src/nautilus-shell-ui.xml.h:54
 msgid "Stop loading this location"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:57
+#: src/nautilus-shell-ui.xml.h:55
 msgid "Undo the last text change"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:58
+#: src/nautilus-shell-ui.xml.h:56
 msgid "Up"
 msgstr "Sus"
 
-#: src/nautilus-shell-ui.xml.h:59
-msgid "Use preferences appropriate for beginners"
-msgstr ""
-
-#: src/nautilus-shell-ui.xml.h:60
-msgid "Use preferences appropriate for experts"
-msgstr ""
-
-#: src/nautilus-shell-ui.xml.h:61
-msgid "Use preferences appropriate for most people"
-msgstr ""
-
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-shell-ui.xml.h:62 src/nautilus-window.c:591
-#: src/nautilus-window.c:1486
+#: src/nautilus-shell-ui.xml.h:57 src/nautilus-window.c:590
+#: src/nautilus-window.c:1485
 msgid "View as..."
 msgstr "Vizualizează ca..."
 
-#: src/nautilus-shell-ui.xml.h:63
+#: src/nautilus-shell-ui.xml.h:58
 msgid "We_b Search"
 msgstr "Căutare we_b"
 
-#: src/nautilus-shell-ui.xml.h:64
+#: src/nautilus-shell-ui.xml.h:59
 msgid "Web Search"
 msgstr "Căutare web"
 
-#: src/nautilus-shell-ui.xml.h:65
+#: src/nautilus-shell-ui.xml.h:60
 msgid "Zoom In"
 msgstr "Măreşte"
 
-#: src/nautilus-shell-ui.xml.h:66
+#: src/nautilus-shell-ui.xml.h:61
 msgid "Zoom Out"
 msgstr "Micşorează"
 
-#: src/nautilus-shell-ui.xml.h:67
+#: src/nautilus-shell-ui.xml.h:62
 msgid "Zoom _In"
 msgstr "Măreşte"
 
-#: src/nautilus-shell-ui.xml.h:68
+#: src/nautilus-shell-ui.xml.h:63
 msgid "Zoom _Out"
 msgstr "Micşorează"
 
-#: src/nautilus-shell-ui.xml.h:69
+#: src/nautilus-shell-ui.xml.h:64
 msgid "_About Nautilus..."
 msgstr "_Despre Nautilus..."
 
-#: src/nautilus-shell-ui.xml.h:70
+#: src/nautilus-shell-ui.xml.h:65
 msgid "_Add Bookmark"
 msgstr "_Adaugă semn de carte"
 
-#: src/nautilus-shell-ui.xml.h:71
+#: src/nautilus-shell-ui.xml.h:66
 msgid "_Back"
 msgstr "_Înapoi"
 
-#: src/nautilus-shell-ui.xml.h:72
+#: src/nautilus-shell-ui.xml.h:67
 msgid "_Backgrounds and Emblems..."
 msgstr "_Fundaluri şi embleme..."
 
-#: src/nautilus-shell-ui.xml.h:73
+#: src/nautilus-shell-ui.xml.h:68
 msgid "_Bookmarks"
 msgstr "_Semne de carte"
 
-#: src/nautilus-shell-ui.xml.h:74
+#: src/nautilus-shell-ui.xml.h:69
 msgid "_Close Window"
 msgstr "_Închid fereastra"
 
-#: src/nautilus-shell-ui.xml.h:76
+#: src/nautilus-shell-ui.xml.h:71
 msgid "_Edit"
 msgstr "_Editare"
 
-#: src/nautilus-shell-ui.xml.h:77
+#: src/nautilus-shell-ui.xml.h:72
 msgid "_Edit Bookmarks..."
 msgstr "_Editează semne de carte..."
 
-#: src/nautilus-shell-ui.xml.h:78
-msgid "_Edit Preferences..."
-msgstr "_Editează preferinţele..."
-
-#: src/nautilus-shell-ui.xml.h:79
+#: src/nautilus-shell-ui.xml.h:73
 msgid "_Feedback"
 msgstr "_Comentarii"
 
-#: src/nautilus-shell-ui.xml.h:81
+#: src/nautilus-shell-ui.xml.h:75
 msgid "_Find"
 msgstr "_Caută"
 
-#: src/nautilus-shell-ui.xml.h:82
+#: src/nautilus-shell-ui.xml.h:76
 msgid "_Forward"
 msgstr "În_ainte"
 
-#: src/nautilus-shell-ui.xml.h:83
+#: src/nautilus-shell-ui.xml.h:77
 msgid "_Go"
 msgstr "_Du-te"
 
-#: src/nautilus-shell-ui.xml.h:84
+#: src/nautilus-shell-ui.xml.h:78
 msgid "_Help"
 msgstr "_Ajutor"
 
-#: src/nautilus-shell-ui.xml.h:85
+#: src/nautilus-shell-ui.xml.h:79
 msgid "_Home"
 msgstr "_Acasă"
 
-#: src/nautilus-shell-ui.xml.h:86
+#: src/nautilus-shell-ui.xml.h:80
 msgid "_Location..."
 msgstr "_Locaţie..."
 
-#: src/nautilus-shell-ui.xml.h:87
+#: src/nautilus-shell-ui.xml.h:81
 msgid "_Normal Size"
 msgstr "_Mărime normală"
 
-#: src/nautilus-shell-ui.xml.h:89
-msgid "_Preferences"
-msgstr "_Preferinţe"
-
-#: src/nautilus-shell-ui.xml.h:90
+#: src/nautilus-shell-ui.xml.h:83
 msgid "_Profiler"
 msgstr "_Profilator"
 
-#: src/nautilus-shell-ui.xml.h:91
+#: src/nautilus-shell-ui.xml.h:84
 msgid "_Refresh"
 msgstr "_Actualizează"
 
-#: src/nautilus-shell-ui.xml.h:92
+#: src/nautilus-shell-ui.xml.h:85
 msgid "_Report Profiling"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:93
+#: src/nautilus-shell-ui.xml.h:86
 msgid "_Reset Profiling"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:94
+#: src/nautilus-shell-ui.xml.h:87
 msgid "_Start Here"
 msgstr "_Începeţi aici"
 
-#: src/nautilus-shell-ui.xml.h:95
+#: src/nautilus-shell-ui.xml.h:88
 msgid "_Start Profiling"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:96
+#: src/nautilus-shell-ui.xml.h:89
 msgid "_Stop Profiling"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:97
+#: src/nautilus-shell-ui.xml.h:90
 msgid "_Undo"
 msgstr "_Refă"
 
-#: src/nautilus-shell-ui.xml.h:98
+#: src/nautilus-shell-ui.xml.h:91
 msgid "_Up a Level"
 msgstr "_Un nivel mai sus"
 
-#: src/nautilus-shell-ui.xml.h:99
+#: src/nautilus-shell-ui.xml.h:92
 msgid "_View"
 msgstr "_Vizualizare"
 
-#: src/nautilus-shell-ui.xml.h:100
+#: src/nautilus-shell-ui.xml.h:93
 msgid "_View as..."
 msgstr "_Vizualizează ca..."
 
-#: src/nautilus-sidebar.c:1344
+#: src/nautilus-sidebar.c:1365
 #, c-format
 msgid "Open with %s"
 msgstr "Deschide cu %s"
 
 #. Catch-all button after all the others.
-#: src/nautilus-sidebar.c:1380
+#: src/nautilus-sidebar.c:1401
 msgid "Open with..."
 msgstr "Deschide cu..."
 
@@ -7049,8 +7077,8 @@ msgstr ""
 
 #: src/nautilus-theme-selector.c:472
 msgid ""
-"Sorry, but you can't remove the current theme. Please change to another theme "
-"before removing this one."
+"Sorry, but you can't remove the current theme. Please change to another "
+"theme before removing this one."
 msgstr ""
 "Îmi pare rău, dar nu puteţi elimina această temă. Schimbaţi tema curentă "
 "înainte de a încerca să o eliminaţi pe aceasta."
@@ -7066,6 +7094,20 @@ msgstr "Îmi pare rău, dar tema nu a putut fi eliminată"
 #: src/nautilus-theme-selector.c:483
 msgid "Couldn't remove theme"
 msgstr "N-am putut elimina tema"
+
+#: src/nautilus-view-frame.c:553
+#, fuzzy
+msgid "a title"
+msgstr "Titlu"
+
+#: src/nautilus-view-frame.c:562
+msgid "the browse history"
+msgstr ""
+
+#: src/nautilus-view-frame.c:571
+#, fuzzy
+msgid "the current selection"
+msgstr "secţiunea"
 
 #. FIXME bugzilla.gnome.org 45037: The text Preview
 #. * Release is hardcoded here. Are all builds with
@@ -7166,8 +7208,9 @@ msgstr ""
 #: src/nautilus-window-manage-views.c:1297
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
-"search service isn't running. Be sure that you have started the Medusa search "
-"service, and if you don't have an index, that the Medusa indexer is running."
+"search service isn't running. Be sure that you have started the Medusa "
+"search service, and if you don't have an index, that the Medusa indexer is "
+"running."
 msgstr ""
 
 #: src/nautilus-window-manage-views.c:1301
@@ -7186,7 +7229,7 @@ msgstr "Nu pot afişa locaţia"
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:370
+#: src/nautilus-window-menus.c:353
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
@@ -7194,32 +7237,32 @@ msgstr ""
 "Sunteţi sigur(ă) că doriţi să uitaţi istoria? Daca da, veţi fi blestemat(ă) "
 "să o repetaţi."
 
-#: src/nautilus-window-menus.c:373
+#: src/nautilus-window-menus.c:356
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr "Sunteţi sigur(ă) că doriţi ca Nautilus să uite ce locaţii a vizitat?"
 
-#: src/nautilus-window-menus.c:378
+#: src/nautilus-window-menus.c:361
 msgid "Forget History?"
 msgstr "Uită istoria?"
 
-#: src/nautilus-window-menus.c:378
+#: src/nautilus-window-menus.c:361
 msgid "Forget"
 msgstr "Uită"
 
-#: src/nautilus-window-menus.c:478
+#: src/nautilus-window-menus.c:461
 msgid "Show St_atus Bar"
 msgstr "Arată bara de _status"
 
-#: src/nautilus-window-menus.c:484
+#: src/nautilus-window-menus.c:467
 msgid "Show _Sidebar"
 msgstr "Arată bara l_aterală"
 
-#: src/nautilus-window-menus.c:490
+#: src/nautilus-window-menus.c:473
 msgid "Show _Toolbar"
 msgstr "Arată bara de unel_te"
 
-#: src/nautilus-window-menus.c:496
+#: src/nautilus-window-menus.c:479
 msgid "Show Location _Bar"
 msgstr "Arată bara de _locaţie"
 
@@ -7227,7 +7270,7 @@ msgstr "Arată bara de _locaţie"
 #. * symbol characters -- do not translate the company
 #. * name, please.
 #.
-#: src/nautilus-window-menus.c:638
+#: src/nautilus-window-menus.c:621
 msgid "Copyright (C) 1999-2001 Eazel, Inc."
 msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 
@@ -7235,11 +7278,11 @@ msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window-menus.c:645
+#: src/nautilus-window-menus.c:628
 msgid "Translator Credits"
 msgstr "Traducere: Marius Andreiana <mandreiana@yahoo.com>"
 
-#: src/nautilus-window-menus.c:651
+#: src/nautilus-window-menus.c:634
 msgid ""
 "Nautilus is a graphical shell\n"
 "for GNOME that makes it\n"
@@ -7251,31 +7294,31 @@ msgstr ""
 "managementul fişierelor\n"
 "şi sistemului dvs."
 
-#: src/nautilus-window-menus.c:808
+#: src/nautilus-window-menus.c:708
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
 "this location from your list?"
 msgstr ""
 
-#: src/nautilus-window-menus.c:812
+#: src/nautilus-window-menus.c:712
 msgid "Bookmark for Nonexistent Location"
 msgstr ""
 
-#: src/nautilus-window-menus.c:813
+#: src/nautilus-window-menus.c:713
 msgid "Remove"
 msgstr "Elimină"
 
-#: src/nautilus-window-menus.c:824
+#: src/nautilus-window-menus.c:724
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr ""
 
-#: src/nautilus-window-menus.c:825
+#: src/nautilus-window-menus.c:725
 msgid "Go to Nonexistent Location"
 msgstr ""
 
-#: src/nautilus-window-menus.c:894
+#: src/nautilus-window-menus.c:794
 msgid "Go to the location specified by this bookmark"
 msgstr ""
 
@@ -7287,7 +7330,7 @@ msgstr "Înapoi"
 msgid "Forward"
 msgstr "Înainte"
 
-#: src/nautilus-window.c:1192
+#: src/nautilus-window.c:1191
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Afişează această locaţie cu \"%s\""
@@ -7295,700 +7338,721 @@ msgstr "Afişează această locaţie cu \"%s\""
 #. Note to localizers: this font is used for the number in the
 #. * zoom control widget.
 #.
-#: src/nautilus-zoom-control.c:442
+#: src/nautilus-zoom-control.c:451
 msgid "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 
-#: src/nautilus-zoom-control.c:503
+#: src/nautilus-zoom-control.c:512
 #, c-format
 msgid "%d%%"
 msgstr "%d%%"
 
-msgid "Can't create nautilus-launcher-applet!"
-msgstr "Nu pot crea nautilus-launcher-applet!"
+#~ msgid "%s - %s"
+#~ msgstr "%s - %s"
 
-msgid "Can't create nautilus-preferences-applet!"
-msgstr "Nu pot crea nautilus-preferences-applet!"
+#~ msgid "Documentation"
+#~ msgstr "Documentaţie"
 
-msgid "Show Desktop"
-msgstr "Afişează desktop-ul"
+#~ msgid "Help"
+#~ msgstr "Ajutor"
 
-msgid "Smooth Graphics"
-msgstr "Grafică fină"
+#~ msgid " _Advanced"
+#~ msgstr "_Avansat"
 
-msgid "Quit"
-msgstr "Ieşire"
+#~ msgid " _Beginner"
+#~ msgstr "_Începător"
 
-msgid "Start"
-msgstr "Start"
+#~ msgid " _Intermediate"
+#~ msgstr "_Mediu"
 
-msgid "Restart"
-msgstr "Restart"
+#~ msgid "_Edit Preferences..."
+#~ msgstr "_Editează preferinţele..."
 
-msgid "Help Index"
-msgstr "Index ajutor"
+#~ msgid "_Preferences"
+#~ msgstr "_Preferinţe"
 
-msgid "Help Index sidebar panel"
-msgstr "Panou lateral Index ajutor"
+#~ msgid "Can't create nautilus-launcher-applet!"
+#~ msgstr "Nu pot crea nautilus-launcher-applet!"
 
-msgid "Help Navigation Tree"
-msgstr "Ajutor Arbore navigare"
+#~ msgid "Can't create nautilus-preferences-applet!"
+#~ msgstr "Nu pot crea nautilus-preferences-applet!"
 
-msgid "Help Search"
-msgstr "Ajutor Căutare"
+#~ msgid "Show Desktop"
+#~ msgstr "Afişează desktop-ul"
 
-msgid "Help Search sidebar panel"
-msgstr "Ajutor Panou lateral căutare"
+#~ msgid "Smooth Graphics"
+#~ msgstr "Grafică fină"
 
-msgid "Help sidebar panel"
-msgstr "Ajutor Panou lateral"
+#~ msgid "Quit"
+#~ msgstr "Ieşire"
 
-msgid "Internal use only"
-msgstr "Numai pentru uz intern"
+#~ msgid "Start"
+#~ msgstr "Start"
 
-msgid "Table %d."
-msgstr "Tabela %d."
+#~ msgid "Restart"
+#~ msgstr "Restart"
 
-msgid "Up to Table of Contents"
-msgstr "Sus la Cuprins"
+#~ msgid "Help Index"
+#~ msgstr "Index ajutor"
 
-msgid "Figure %s"
-msgstr "Figura %s"
+#~ msgid "Help Index sidebar panel"
+#~ msgstr "Panou lateral Index ajutor"
 
-msgid "the section here"
-msgstr "această secţiune"
+#~ msgid "Help Navigation Tree"
+#~ msgstr "Ajutor Arbore navigare"
 
-msgid "the section"
-msgstr "secţiunea"
+#~ msgid "Help Search"
+#~ msgstr "Ajutor Căutare"
 
-msgid "Figure %d"
-msgstr "Figura %d"
+#~ msgid "Help Search sidebar panel"
+#~ msgstr "Ajutor Panou lateral căutare"
 
-msgid "IMAGE"
-msgstr "IMAGE"
+#~ msgid "Help sidebar panel"
+#~ msgstr "Ajutor Panou lateral"
 
-msgid "Legal Notice"
-msgstr "Notă legală"
+#~ msgid "Internal use only"
+#~ msgstr "Numai pentru uz intern"
 
-msgid "Q"
-msgstr "Î"
+#~ msgid "Table %d."
+#~ msgstr "Tabela %d."
 
-msgid "A"
-msgstr "R"
+#~ msgid "Up to Table of Contents"
+#~ msgstr "Sus la Cuprins"
 
-msgid "See"
-msgstr "Vezi"
+#~ msgid "Figure %s"
+#~ msgstr "Figura %s"
 
-msgid "See also"
-msgstr "Vezi şi"
+#~ msgid "Figure %d"
+#~ msgstr "Figura %d"
 
-msgid "GNOME Documentation"
-msgstr "Documentaţia GNOME"
+#~ msgid "IMAGE"
+#~ msgstr "IMAGE"
 
-msgid "Copyright"
-msgstr "Copyright"
+#~ msgid "Legal Notice"
+#~ msgstr "Notă legală"
 
-msgid "by"
-msgstr "de"
+#~ msgid "Q"
+#~ msgstr "Î"
 
-msgid "Table of Contents"
-msgstr "Cuprins"
+#~ msgid "A"
+#~ msgstr "R"
 
-msgid "PREFACE"
-msgstr "PREFACE"
+#~ msgid "See"
+#~ msgstr "Vezi"
 
-msgid "APPENDIX"
-msgstr "APPENDIX"
+#~ msgid "See also"
+#~ msgstr "Vezi şi"
 
-msgid "Manual"
-msgstr "Manual"
+#~ msgid "GNOME Documentation"
+#~ msgstr "Documentaţia GNOME"
 
-msgid "Development"
-msgstr "Dezvoltare"
+#~ msgid "Copyright"
+#~ msgstr "Copyright"
 
-msgid "System Calls"
-msgstr "Apeluri sistem"
+#~ msgid "by"
+#~ msgstr "de"
 
-msgid "Library Functions"
-msgstr "Funcţii de bibliotecă"
+#~ msgid "Table of Contents"
+#~ msgstr "Cuprins"
 
-msgid "Devices"
-msgstr "Dispozitive"
+#~ msgid "PREFACE"
+#~ msgstr "PREFACE"
 
-msgid "Configuration Files"
-msgstr "Fişiere de configurare"
+#~ msgid "APPENDIX"
+#~ msgstr "APPENDIX"
 
-msgid "Games"
-msgstr "Jocuri"
+#~ msgid "Manual"
+#~ msgstr "Manual"
 
-msgid "Conventions"
-msgstr "Convenţii"
+#~ msgid "Development"
+#~ msgstr "Dezvoltare"
 
-msgid "System Administration"
-msgstr "Administrare sistem"
+#~ msgid "System Calls"
+#~ msgstr "Apeluri sistem"
 
-msgid "Kernel Routines"
-msgstr "Rutine kernel"
+#~ msgid "Library Functions"
+#~ msgstr "Funcţii de bibliotecă"
 
-msgid "Info"
-msgstr "Info"
+#~ msgid "Devices"
+#~ msgstr "Dispozitive"
 
-msgid "see "
-msgstr "vezi"
+#~ msgid "Configuration Files"
+#~ msgstr "Fişiere de configurare"
 
-msgid "see also "
-msgstr "vezi şi"
+#~ msgid "Games"
+#~ msgstr "Jocuri"
 
-msgid "No matches."
-msgstr "Nici un rezultat."
+#~ msgid "Conventions"
+#~ msgstr "Convenţii"
 
-msgid " (see \""
-msgstr " (vezi \""
+#~ msgid "System Administration"
+#~ msgstr "Administrare sistem"
 
-msgid " (see also \""
-msgstr " (vezi şi \""
+#~ msgid "Kernel Routines"
+#~ msgstr "Rutine kernel"
 
-msgid "Introductory Documents"
-msgstr "Documente introductive:"
+#~ msgid "Info"
+#~ msgstr "Info"
 
-msgid "Documents by Subject"
-msgstr "Documente după subiect:"
+#~ msgid "see "
+#~ msgstr "vezi"
 
-msgid "View as Web Page"
-msgstr "Vizualizează ca pagină web"
+#~ msgid "see also "
+#~ msgstr "vezi şi"
 
-msgid "Web Page"
-msgstr "Pagină web"
+#~ msgid "No matches."
+#~ msgstr "Nici un rezultat."
 
-msgid "Web Page Viewer"
-msgstr "Vizualizator pagină web"
+#~ msgid " (see \""
+#~ msgstr " (vezi \""
 
-msgid ""
-"GConf error:\n"
-"  %s"
-msgstr ""
-"Eroare GConf:\n"
-"  %s"
+#~ msgid " (see also \""
+#~ msgstr " (vezi şi \""
 
-msgid ""
-"GConf error:\n"
-"  %s\n"
-"All further errors shown only on terminal"
-msgstr ""
-"Eroare GConf:\n"
-"  %s\n"
-"Orice alte erori vor apare numai pe terminal"
+#~ msgid "Introductory Documents"
+#~ msgstr "Documente introductive:"
 
-msgid ""
-"A JavaScript function (small software program) on this page tried to open a "
-"new window, but Nautilus does not support the opening new windows by "
-"JavaScript.\n"
-"\n"
-"Try viewing the page in a different web browser, such as Mozilla."
-msgstr ""
-"O funcţie JavaScript (un mic program) din această pagină a încercat să "
-"deschidă\n"
-"o două fereastră, însă Nautilus nu suportă deschiderea de noi ferestre prin\n"
-"JavaScript.\n"
-"\n"
-"Încercaţi să vizualizaţi pagina cu un navigator web diferit, cum ar fi "
-"Mozilla."
+#~ msgid "Documents by Subject"
+#~ msgstr "Documente după subiect:"
 
-msgid "Nautilus JavaScript Warning"
-msgstr "Avertizare Nautilus JavaScript"
+#~ msgid "View as Web Page"
+#~ msgstr "Vizualizează ca pagină web"
 
-msgid "Arabic"
-msgstr "Arabă"
+#~ msgid "Web Page"
+#~ msgstr "Pagină web"
 
-msgid "Baltic"
-msgstr "Baltică"
+#~ msgid "Web Page Viewer"
+#~ msgstr "Vizualizator pagină web"
 
-msgid "Central European"
-msgstr "European-centrală"
+#~ msgid ""
+#~ "GConf error:\n"
+#~ "  %s"
+#~ msgstr ""
+#~ "Eroare GConf:\n"
+#~ "  %s"
 
-msgid "Chinese"
-msgstr "Chineză"
+#~ msgid ""
+#~ "GConf error:\n"
+#~ "  %s\n"
+#~ "All further errors shown only on terminal"
+#~ msgstr ""
+#~ "Eroare GConf:\n"
+#~ "  %s\n"
+#~ "Orice alte erori vor apare numai pe terminal"
 
-msgid "Cyrillic"
-msgstr "Chirilică"
+#~ msgid ""
+#~ "A JavaScript function (small software program) on this page tried to open "
+#~ "a new window, but Nautilus does not support the opening new windows by "
+#~ "JavaScript.\n"
+#~ "\n"
+#~ "Try viewing the page in a different web browser, such as Mozilla."
+#~ msgstr ""
+#~ "O funcţie JavaScript (un mic program) din această pagină a încercat să "
+#~ "deschidă\n"
+#~ "o două fereastră, însă Nautilus nu suportă deschiderea de noi ferestre "
+#~ "prin\n"
+#~ "JavaScript.\n"
+#~ "\n"
+#~ "Încercaţi să vizualizaţi pagina cu un navigator web diferit, cum ar fi "
+#~ "Mozilla."
 
-msgid "Greek"
-msgstr "Greacă"
+#~ msgid "Nautilus JavaScript Warning"
+#~ msgstr "Avertizare Nautilus JavaScript"
 
-msgid "Hebrew"
-msgstr "Ebraică"
+#~ msgid "Arabic"
+#~ msgstr "Arabă"
 
-msgid "Japanese"
-msgstr "Japoneză"
+#~ msgid "Baltic"
+#~ msgstr "Baltică"
 
-msgid "Turkish"
-msgstr "Turcă"
+#~ msgid "Central European"
+#~ msgstr "European-centrală"
 
-msgid "Unicode"
-msgstr "Unicode"
+#~ msgid "Chinese"
+#~ msgstr "Chineză"
 
-msgid "UTF"
-msgstr "UTF"
+#~ msgid "Cyrillic"
+#~ msgstr "Chirilică"
 
-msgid "Vietnamese"
-msgstr "Vietnameză"
+#~ msgid "Greek"
+#~ msgstr "Greacă"
 
-msgid "Western"
-msgstr "Vestică"
+#~ msgid "Hebrew"
+#~ msgstr "Ebraică"
 
-msgid "Arabic (IBM-864)"
-msgstr "Arabic (IBM-864)"
+#~ msgid "Japanese"
+#~ msgstr "Japoneză"
 
-msgid "Arabic (ISO-8859-6)"
-msgstr "Arabic (ISO-8859-6)"
+#~ msgid "Turkish"
+#~ msgstr "Turcă"
 
-msgid "Arabic (ISO-8859-6-E)"
-msgstr "Arabic (ISO-8859-6-E)"
+#~ msgid "Unicode"
+#~ msgstr "Unicode"
 
-msgid "Arabic (ISO-8859-6-I)"
-msgstr "Arabic (ISO-8859-6-I)"
+#~ msgid "UTF"
+#~ msgstr "UTF"
 
-msgid "Arabic (Windows-1256)"
-msgstr "Arabic (Windows-1256)"
+#~ msgid "Vietnamese"
+#~ msgstr "Vietnameză"
 
-msgid "Armenian (ARMSCII-8)"
-msgstr "Armenian (ARMSCII-8)"
+#~ msgid "Western"
+#~ msgstr "Vestică"
 
-msgid "Baltic (ISO-8859-13)"
-msgstr "Baltic (ISO-8859-13)"
+#~ msgid "Arabic (IBM-864)"
+#~ msgstr "Arabic (IBM-864)"
 
-msgid "Baltic (ISO-8859-4)"
-msgstr "Baltic (ISO-8859-4)"
+#~ msgid "Arabic (ISO-8859-6)"
+#~ msgstr "Arabic (ISO-8859-6)"
 
-msgid "Baltic (Windows-1257)"
-msgstr "Baltic (Windows-1257)"
+#~ msgid "Arabic (ISO-8859-6-E)"
+#~ msgstr "Arabic (ISO-8859-6-E)"
 
-msgid "Celtic (ISO-8859-14)"
-msgstr "Celtic (ISO-8859-14)"
+#~ msgid "Arabic (ISO-8859-6-I)"
+#~ msgstr "Arabic (ISO-8859-6-I)"
 
-msgid "Central European (IBM-852)"
-msgstr "Central European (IBM-852)"
+#~ msgid "Arabic (Windows-1256)"
+#~ msgstr "Arabic (Windows-1256)"
 
-msgid "Central European (ISO-8859-2)"
-msgstr "Central European (ISO-8859-2)"
+#~ msgid "Armenian (ARMSCII-8)"
+#~ msgstr "Armenian (ARMSCII-8)"
 
-msgid "Central European (MacCE)"
-msgstr "Central European (MacCE)"
+#~ msgid "Baltic (ISO-8859-13)"
+#~ msgstr "Baltic (ISO-8859-13)"
 
-msgid "Central European (Windows-1250)"
-msgstr "Central European (Windows-1250)"
+#~ msgid "Baltic (ISO-8859-4)"
+#~ msgstr "Baltic (ISO-8859-4)"
 
-msgid "Chinese Simplified (GB2312)"
-msgstr "Chinese Simplified (GB2312)"
+#~ msgid "Baltic (Windows-1257)"
+#~ msgstr "Baltic (Windows-1257)"
 
-msgid "Chinese Simplified (GBK)"
-msgstr "Chinese Simplified (GBK)"
+#~ msgid "Celtic (ISO-8859-14)"
+#~ msgstr "Celtic (ISO-8859-14)"
 
-msgid "Chinese Simplified (HZ)"
-msgstr "Chinese Simplified (HZ)"
+#~ msgid "Central European (IBM-852)"
+#~ msgstr "Central European (IBM-852)"
 
-msgid "Chinese Traditional (Big5)"
-msgstr "Chinese Traditional (Big5)"
+#~ msgid "Central European (ISO-8859-2)"
+#~ msgstr "Central European (ISO-8859-2)"
 
-msgid "Chinese Traditional (EUC-TW)"
-msgstr "Chinese Traditional (EUC-TW)"
+#~ msgid "Central European (MacCE)"
+#~ msgstr "Central European (MacCE)"
 
-msgid "Croatian (MacCroatian)"
-msgstr "Croatian (MacCroatian)"
+#~ msgid "Central European (Windows-1250)"
+#~ msgstr "Central European (Windows-1250)"
 
-msgid "Cyrillic (IBM-855)"
-msgstr "Cyrillic (IBM-855)"
+#~ msgid "Chinese Simplified (GB2312)"
+#~ msgstr "Chinese Simplified (GB2312)"
 
-msgid "Cyrillic (ISO-8859-5)"
-msgstr "Cyrillic (ISO-8859-5)"
+#~ msgid "Chinese Simplified (GBK)"
+#~ msgstr "Chinese Simplified (GBK)"
 
-msgid "Cyrillic (ISO-IR-111)"
-msgstr "Cyrillic (ISO-IR-111)"
+#~ msgid "Chinese Simplified (HZ)"
+#~ msgstr "Chinese Simplified (HZ)"
 
-msgid "Cyrillic (MacCyrillic)"
-msgstr "Cyrillic (MacCyrillic)"
+#~ msgid "Chinese Traditional (Big5)"
+#~ msgstr "Chinese Traditional (Big5)"
 
-msgid "Cyrillic (Windows-1251)"
-msgstr "Cyrillic (Windows-1251)"
+#~ msgid "Chinese Traditional (EUC-TW)"
+#~ msgstr "Chinese Traditional (EUC-TW)"
 
-msgid "Cyrillic/Russian (IBM-866)"
-msgstr "Cyrillic/Russian (IBM-866)"
+#~ msgid "Croatian (MacCroatian)"
+#~ msgstr "Croatian (MacCroatian)"
 
-msgid "Cyrillic/Russian (KOI8-R)"
-msgstr "Cyrillic/Russian (KOI8-R)"
+#~ msgid "Cyrillic (IBM-855)"
+#~ msgstr "Cyrillic (IBM-855)"
 
-msgid "Cyrillic/Ukrainian (KOI8-U)"
-msgstr "Cyrillic/Ukrainian (KOI8-U)"
+#~ msgid "Cyrillic (ISO-8859-5)"
+#~ msgstr "Cyrillic (ISO-8859-5)"
 
-msgid "Cyrillic/Ukrainian (MacUkrainian)"
-msgstr "Cyrillic/Ukrainian (MacUkrainian)"
+#~ msgid "Cyrillic (ISO-IR-111)"
+#~ msgstr "Cyrillic (ISO-IR-111)"
 
-msgid "English (US-ASCII)"
-msgstr "Engleză (US-ASCII)"
+#~ msgid "Cyrillic (MacCyrillic)"
+#~ msgstr "Cyrillic (MacCyrillic)"
 
-msgid "Greek (ISO-8859-7)"
-msgstr "Greek (ISO-8859-7)"
+#~ msgid "Cyrillic (Windows-1251)"
+#~ msgstr "Cyrillic (Windows-1251)"
 
-msgid "Greek (MacGreek)"
-msgstr "Greek (MacGreek)"
+#~ msgid "Cyrillic/Russian (IBM-866)"
+#~ msgstr "Cyrillic/Russian (IBM-866)"
 
-msgid "Greek (Windows-1253)"
-msgstr "Greek (Windows-1253)"
+#~ msgid "Cyrillic/Russian (KOI8-R)"
+#~ msgstr "Cyrillic/Russian (KOI8-R)"
 
-msgid "Hebrew (IBM-862)"
-msgstr "Hebrew (IBM-862)"
+#~ msgid "Cyrillic/Ukrainian (KOI8-U)"
+#~ msgstr "Cyrillic/Ukrainian (KOI8-U)"
 
-msgid "Hebrew (ISO-8859-8-E)"
-msgstr "Hebrew (ISO-8859-8-E)"
+#~ msgid "Cyrillic/Ukrainian (MacUkrainian)"
+#~ msgstr "Cyrillic/Ukrainian (MacUkrainian)"
 
-msgid "Hebrew (ISO-8859-8-I)"
-msgstr "Hebrew (ISO-8859-8-I)"
+#~ msgid "English (US-ASCII)"
+#~ msgstr "Engleză (US-ASCII)"
 
-msgid "Hebrew (Windows-1255)"
-msgstr "Hebrew (Windows-1255)"
+#~ msgid "Greek (ISO-8859-7)"
+#~ msgstr "Greek (ISO-8859-7)"
 
-msgid "Icelandic (MacIcelandic)"
-msgstr "Icelandic (MacIcelandic)"
+#~ msgid "Greek (MacGreek)"
+#~ msgstr "Greek (MacGreek)"
 
-msgid "Japanese (EUC-JP)"
-msgstr "Japanese (EUC-JP)"
+#~ msgid "Greek (Windows-1253)"
+#~ msgstr "Greek (Windows-1253)"
 
-msgid "Japanese (ISO-2022-JP)"
-msgstr "Japanese (ISO-2022-JP)"
+#~ msgid "Hebrew (IBM-862)"
+#~ msgstr "Hebrew (IBM-862)"
 
-msgid "Japanese (Shift_JIS)"
-msgstr "Japanese (Shift_JIS)"
+#~ msgid "Hebrew (ISO-8859-8-E)"
+#~ msgstr "Hebrew (ISO-8859-8-E)"
 
-msgid "Korean (EUC-KR)"
-msgstr "Korean (EUC-KR)"
+#~ msgid "Hebrew (ISO-8859-8-I)"
+#~ msgstr "Hebrew (ISO-8859-8-I)"
 
-msgid "Nordic (ISO-8859-10)"
-msgstr "Nordic (ISO-8859-10)"
+#~ msgid "Hebrew (Windows-1255)"
+#~ msgstr "Hebrew (Windows-1255)"
 
-msgid "Romanian (MacRomanian)"
-msgstr "Română (MacRomanian)"
+#~ msgid "Icelandic (MacIcelandic)"
+#~ msgstr "Icelandic (MacIcelandic)"
 
-msgid "South European (ISO-8859-3)"
-msgstr "South European (ISO-8859-3)"
+#~ msgid "Japanese (EUC-JP)"
+#~ msgstr "Japanese (EUC-JP)"
 
-msgid "T.61-8bit"
-msgstr "T.61-8bit"
+#~ msgid "Japanese (ISO-2022-JP)"
+#~ msgstr "Japanese (ISO-2022-JP)"
 
-msgid "Thai (TIS-620)"
-msgstr "Thai (TIS-620)"
+#~ msgid "Japanese (Shift_JIS)"
+#~ msgstr "Japanese (Shift_JIS)"
 
-msgid "Turkish (IBM-857)"
-msgstr "Turkish (IBM-857)"
+#~ msgid "Korean (EUC-KR)"
+#~ msgstr "Korean (EUC-KR)"
 
-msgid "Turkish (ISO-8859-9)"
-msgstr "Turkish (ISO-8859-9)"
+#~ msgid "Nordic (ISO-8859-10)"
+#~ msgstr "Nordic (ISO-8859-10)"
 
-msgid "Turkish (MacTurkish)"
-msgstr "Turkish (MacTurkish)"
+#~ msgid "Romanian (MacRomanian)"
+#~ msgstr "Română (MacRomanian)"
 
-msgid "Turkish (Windows-1254)"
-msgstr "Turkish (Windows-1254)"
+#~ msgid "South European (ISO-8859-3)"
+#~ msgstr "South European (ISO-8859-3)"
 
-msgid "Unicode (UTF-7)"
-msgstr "Unicode (UTF-7)"
+#~ msgid "T.61-8bit"
+#~ msgstr "T.61-8bit"
 
-msgid "Unicode (UTF-8)"
-msgstr "Unicode (UTF-8)"
+#~ msgid "Thai (TIS-620)"
+#~ msgstr "Thai (TIS-620)"
 
-msgid "User Defined"
-msgstr "Definit de utilizator"
+#~ msgid "Turkish (IBM-857)"
+#~ msgstr "Turkish (IBM-857)"
 
-msgid "UTF-16BE"
-msgstr "UTF-16BE"
+#~ msgid "Turkish (ISO-8859-9)"
+#~ msgstr "Turkish (ISO-8859-9)"
 
-msgid "UTF-16LE"
-msgstr "UTF-16LE"
+#~ msgid "Turkish (MacTurkish)"
+#~ msgstr "Turkish (MacTurkish)"
 
-msgid "UTF-32BE"
-msgstr "UTF-32BE"
+#~ msgid "Turkish (Windows-1254)"
+#~ msgstr "Turkish (Windows-1254)"
 
-msgid "UTF-32LE"
-msgstr "UTF-32LE"
+#~ msgid "Unicode (UTF-7)"
+#~ msgstr "Unicode (UTF-7)"
 
-msgid "Vietnamese (TCVN)"
-msgstr "Vietnamese (TCVN)"
+#~ msgid "Unicode (UTF-8)"
+#~ msgstr "Unicode (UTF-8)"
 
-msgid "Vietnamese (VISCII)"
-msgstr "Vietnamese (VISCII)"
+#~ msgid "User Defined"
+#~ msgstr "Definit de utilizator"
 
-msgid "Vietnamese (VPS)"
-msgstr "Vietnamese (VPS)"
+#~ msgid "UTF-16BE"
+#~ msgstr "UTF-16BE"
 
-msgid "Vietnamese (Windows-1258)"
-msgstr "Vietnamese (Windows-1258)"
+#~ msgid "UTF-16LE"
+#~ msgstr "UTF-16LE"
 
-msgid "Visual Hebrew (ISO-8859-8)"
-msgstr "Visual Hebrew (ISO-8859-8)"
+#~ msgid "UTF-32BE"
+#~ msgstr "UTF-32BE"
 
-msgid "Western (IBM-850)"
-msgstr "Western (IBM-850)"
+#~ msgid "UTF-32LE"
+#~ msgstr "UTF-32LE"
 
-msgid "Western (ISO-8859-1)"
-msgstr "Western (ISO-8859-1)"
+#~ msgid "Vietnamese (TCVN)"
+#~ msgstr "Vietnamese (TCVN)"
 
-msgid "Western (ISO-8859-15)"
-msgstr "Western (ISO-8859-15)"
+#~ msgid "Vietnamese (VISCII)"
+#~ msgstr "Vietnamese (VISCII)"
 
-msgid "Western (MacRoman)"
-msgstr "Western (MacRoman)"
+#~ msgid "Vietnamese (VPS)"
+#~ msgstr "Vietnamese (VPS)"
 
-msgid "Western (Windows-1252)"
-msgstr "Western (Windows-1252)"
+#~ msgid "Vietnamese (Windows-1258)"
+#~ msgstr "Vietnamese (Windows-1258)"
 
-msgid "windows-936"
-msgstr "windows-936"
+#~ msgid "Visual Hebrew (ISO-8859-8)"
+#~ msgstr "Visual Hebrew (ISO-8859-8)"
 
-msgid "x-imap4-modified-utf7"
-msgstr "x-imap4-modified-utf7"
+#~ msgid "Western (IBM-850)"
+#~ msgstr "Western (IBM-850)"
 
-msgid "x-u-escaped"
-msgstr "x-u-escaped"
+#~ msgid "Western (ISO-8859-1)"
+#~ msgstr "Western (ISO-8859-1)"
 
-msgid "Cancel"
-msgstr "Renunţă"
+#~ msgid "Western (ISO-8859-15)"
+#~ msgstr "Western (ISO-8859-15)"
 
-msgid "Gnumeric"
-msgstr "Gnumeric"
+#~ msgid "Western (MacRoman)"
+#~ msgstr "Western (MacRoman)"
 
-msgid "Netscape"
-msgstr "Netscape"
+#~ msgid "Western (Windows-1252)"
+#~ msgstr "Western (Windows-1252)"
 
-msgid "Computer"
-msgstr "Computer"
+#~ msgid "windows-936"
+#~ msgstr "windows-936"
 
-msgid "Home Directory"
-msgstr "Directorul Acasă"
+#~ msgid "x-imap4-modified-utf7"
+#~ msgstr "x-imap4-modified-utf7"
 
-msgid "Excite"
-msgstr "Excite"
+#~ msgid "x-u-escaped"
+#~ msgstr "x-u-escaped"
 
-msgid "Portals"
-msgstr "Portaluri"
+#~ msgid "Cancel"
+#~ msgstr "Renunţă"
 
-msgid "Yahoo"
-msgstr "Yahoo"
+#~ msgid "Gnumeric"
+#~ msgstr "Gnumeric"
 
-msgid "Alta Vista"
-msgstr "Alta Vista"
+#~ msgid "Netscape"
+#~ msgstr "Netscape"
 
-msgid "Google"
-msgstr "Google"
+#~ msgid "Computer"
+#~ msgstr "Computer"
 
-msgid "Programs"
-msgstr "Programe"
+#~ msgid "Home Directory"
+#~ msgstr "Directorul Acasă"
 
-msgid "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
-msgstr "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
+#~ msgid "Excite"
+#~ msgstr "Excite"
 
-msgid "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
-msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
+#~ msgid "Portals"
+#~ msgstr "Portaluri"
 
-msgid ""
-"Your user level adjusts Nautilus to your degree of experience\n"
-"using GNOME and %s. Choose a level that's comfortable for\n"
-"you - you can always change it later."
-msgstr ""
-"Nivelul cerut de dvs. ajustează Nautilus pentru gradul dvs. de experienţă\n"
-"folosind GNOME şi %s. Alegeţi un nivel comfortabil pentru dvs - puteţi\n"
-"să-l schimbaţi oricând mai târziu."
+#~ msgid "Yahoo"
+#~ msgstr "Yahoo"
 
-msgid ""
-"For users who have no previous experience with GNOME\n"
-"and %s."
-msgstr ""
-"Pentru utilizatori fără experienţă anterioară cu GNOME\n"
-"şi %s."
+#~ msgid "Alta Vista"
+#~ msgstr "Alta Vista"
 
-msgid ""
-"For users who are comfortable with GNOME and %s,\n"
-"but don't describe themselves as ``technical.''"
-msgstr ""
-"Pentru utilizatori care sunt comfortabili cu GNOME şi %s,\n"
-"dar nu se descriu ca ``tehnici.''"
+#~ msgid "Google"
+#~ msgstr "Google"
 
-msgid ""
-"For users who have GNOME and %s experience, and\n"
-"like to see every detail of the operating system."
-msgstr ""
-"Pentru utilizatori cu experienţă anterioară cu GNOME\n"
-"şi %s, care doresc să vadă orice detaliu al sistemului de operare."
+#~ msgid "Programs"
+#~ msgstr "Programe"
 
-msgid "Verify my connection and check for updates"
-msgstr "Verifică conexiunea şi află dacă sunt actualizări"
+#~ msgid "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
+#~ msgstr "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
 
-msgid "Don't verify my connection or check for updates"
-msgstr "Nu verifica conexiunea sau află dacă sunt actualizări"
+#~ msgid "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
+#~ msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
 
-msgid ""
-"We are having trouble making an external web connection.\n"
-"Sometimes, firewalls require you to specify a web proxy server.\n"
-"Fill in the name or port of your proxy server, if any, below."
-msgstr ""
-"Nu se poate stabili o conexiune externă la web.\n"
-"Uneori este nevoie de un server proxy."
+#~ msgid ""
+#~ "Your user level adjusts Nautilus to your degree of experience\n"
+#~ "using GNOME and %s. Choose a level that's comfortable for\n"
+#~ "you - you can always change it later."
+#~ msgstr ""
+#~ "Nivelul cerut de dvs. ajustează Nautilus pentru gradul dvs. de "
+#~ "experienţă\n"
+#~ "folosind GNOME şi %s. Alegeţi un nivel comfortabil pentru dvs - puteţi\n"
+#~ "să-l schimbaţi oricând mai târziu."
 
-msgid "No proxy server required."
-msgstr "Nu este nevoie de server proxy."
+#~ msgid ""
+#~ "For users who have no previous experience with GNOME\n"
+#~ "and %s."
+#~ msgstr ""
+#~ "Pentru utilizatori fără experienţă anterioară cu GNOME\n"
+#~ "şi %s."
 
-msgid "Use this proxy server:"
-msgstr "Foloseşte acest server proxy:"
+#~ msgid ""
+#~ "For users who are comfortable with GNOME and %s,\n"
+#~ "but don't describe themselves as ``technical.''"
+#~ msgstr ""
+#~ "Pentru utilizatori care sunt comfortabili cu GNOME şi %s,\n"
+#~ "dar nu se descriu ca ``tehnici.''"
 
-msgid "Proxy address:"
-msgstr "Adresa proxy:"
+#~ msgid ""
+#~ "For users who have GNOME and %s experience, and\n"
+#~ "like to see every detail of the operating system."
+#~ msgstr ""
+#~ "Pentru utilizatori cu experienţă anterioară cu GNOME\n"
+#~ "şi %s, care doresc să vadă orice detaliu al sistemului de operare."
 
-msgid "Verifying your Internet connection and checking for updates..."
-msgstr "Verific conexiunea Internet şi actualizările..."
+#~ msgid "Verify my connection and check for updates"
+#~ msgstr "Verifică conexiunea şi află dacă sunt actualizări"
 
-msgid "Downloading Nautilus updates..."
-msgstr "Descarc actualizări Nautilus..."
+#~ msgid "Don't verify my connection or check for updates"
+#~ msgstr "Nu verifica conexiunea sau află dacă sunt actualizări"
 
-msgid "Use Nautilus to draw the desktop."
-msgstr "Foloseşte Nautilus pentru a desena desktopul."
+#~ msgid ""
+#~ "We are having trouble making an external web connection.\n"
+#~ "Sometimes, firewalls require you to specify a web proxy server.\n"
+#~ "Fill in the name or port of your proxy server, if any, below."
+#~ msgstr ""
+#~ "Nu se poate stabili o conexiune externă la web.\n"
+#~ "Uneori este nevoie de un server proxy."
 
-msgid "Launch Nautilus when GNOME starts up."
-msgstr "Lansează Nautilus când porneşte GNOME."
+#~ msgid "No proxy server required."
+#~ msgstr "Nu este nevoie de server proxy."
 
-msgid ""
-"Click Finish to launch Nautilus. You'll start with a\n"
-"window showing your home folder.\n"
-"\n"
-"We hope you enjoy Nautilus!"
-msgstr ""
-"Apăsaţi Terminare pentru a lansa Nautilus. O să înceapă\n"
-"cu o fereastră arătând dosarul dvs. 'Acasă'\n"
-"\n"
-"Sperăm să vă placă Nautilus!"
+#~ msgid "Use this proxy server:"
+#~ msgstr "Foloseşte acest server proxy:"
 
-msgid "Nautilus First Time Setup"
-msgstr "Setare Nautilus pentru prima oară"
+#~ msgid "Proxy address:"
+#~ msgstr "Adresa proxy:"
 
-msgid "Welcome to Nautilus"
-msgstr "Bine aţi venit la Nautilus"
+#~ msgid "Verifying your Internet connection and checking for updates..."
+#~ msgstr "Verific conexiunea Internet şi actualizările..."
 
-msgid ""
-"Nautilus...\n"
-"    Is a great file manager for the GNOME desktop.\n"
-"    Provides a simple intuitive way to access Internet services.\n"
-"    Is an extensible framework for GNOME developers.\n"
-"    Provides a powerful delivery platform for service providers.\n"
-"\n"
-"Click Next to begin customizing your Nautilus environment."
-msgstr ""
-"Nautilus...\n"
-"    Este un manager de fişiere grozav pentru desktopul GNOME.\n"
-"    Oferă o cale intuitivă pentru a accesa servicii Internet.\n"
-"    Este un atelier extensibil pentru dezvoltatorii GNOME.\n"
-"    Asigură o platformă puternică pentru ofertanţii de servicii.\n"
-"\n"
-"Apăsaţi Următorul pentru a începe să vă personalizaţi mediul dvs. Nautilus."
+#~ msgid "Downloading Nautilus updates..."
+#~ msgstr "Descarc actualizări Nautilus..."
 
-msgid "Finished"
-msgstr "Terminare"
+#~ msgid "Use Nautilus to draw the desktop."
+#~ msgstr "Foloseşte Nautilus pentru a desena desktopul."
 
-msgid "Choose Your User Level"
-msgstr "Alegeţi nivelul dvs. de experienţă"
+#~ msgid "Launch Nautilus when GNOME starts up."
+#~ msgstr "Lansează Nautilus când porneşte GNOME."
 
-msgid "Checking Your Internet Connection"
-msgstr "Verific conexiunea dvs. Internet"
+#~ msgid ""
+#~ "Click Finish to launch Nautilus. You'll start with a\n"
+#~ "window showing your home folder.\n"
+#~ "\n"
+#~ "We hope you enjoy Nautilus!"
+#~ msgstr ""
+#~ "Apăsaţi Terminare pentru a lansa Nautilus. O să înceapă\n"
+#~ "cu o fereastră arătând dosarul dvs. 'Acasă'\n"
+#~ "\n"
+#~ "Sperăm să vă placă Nautilus!"
 
-msgid "Updating Nautilus..."
-msgstr "Actualizez Nautilus..."
+#~ msgid "Nautilus First Time Setup"
+#~ msgstr "Setare Nautilus pentru prima oară"
 
-msgid "Web Proxy Configuration"
-msgstr "Configurare proxy"
+#~ msgid "Welcome to Nautilus"
+#~ msgstr "Bine aţi venit la Nautilus"
 
-msgid "Decoding Update..."
-msgstr "Decodez actualizarea..."
+#~ msgid ""
+#~ "Nautilus...\n"
+#~ "    Is a great file manager for the GNOME desktop.\n"
+#~ "    Provides a simple intuitive way to access Internet services.\n"
+#~ "    Is an extensible framework for GNOME developers.\n"
+#~ "    Provides a powerful delivery platform for service providers.\n"
+#~ "\n"
+#~ "Click Next to begin customizing your Nautilus environment."
+#~ msgstr ""
+#~ "Nautilus...\n"
+#~ "    Este un manager de fişiere grozav pentru desktopul GNOME.\n"
+#~ "    Oferă o cale intuitivă pentru a accesa servicii Internet.\n"
+#~ "    Este un atelier extensibil pentru dezvoltatorii GNOME.\n"
+#~ "    Asigură o platformă puternică pentru ofertanţii de servicii.\n"
+#~ "\n"
+#~ "Apăsaţi Următorul pentru a începe să vă personalizaţi mediul dvs. "
+#~ "Nautilus."
 
-msgid "Update Complete. Click Next to Continue."
-msgstr "Actualizarea completă. Apasaţi Următorul pentru a continua."
+#~ msgid "Finished"
+#~ msgstr "Terminare"
 
-msgid "No Update Available... Press Next to Continue."
-msgstr "Nici o actualizare disponibilă... Apasaţi Următorul pentru a continua."
+#~ msgid "Choose Your User Level"
+#~ msgstr "Alegeţi nivelul dvs. de experienţă"
 
-msgid "Link sets"
-msgstr "Seturi legături"
+#~ msgid "Checking Your Internet Connection"
+#~ msgstr "Verific conexiunea dvs. Internet"
 
-msgid "Add or remove sets of links by clicking on the checkboxes below."
-msgstr "Adaugaţi sau eliminaţi legături bifând mai jos."
+#~ msgid "Updating Nautilus..."
+#~ msgstr "Actualizez Nautilus..."
 
-msgid "Close"
-msgstr "Închide"
+#~ msgid "Web Proxy Configuration"
+#~ msgstr "Configurare proxy"
 
-msgid "Year"
-msgstr "An"
+#~ msgid "Decoding Update..."
+#~ msgstr "Decodez actualizarea..."
 
-msgid "Album"
-msgstr "Album"
+#~ msgid "Update Complete. Click Next to Continue."
+#~ msgstr "Actualizarea completă. Apasaţi Următorul pentru a continua."
 
-msgid "Comment"
-msgstr "Comentariu"
+#~ msgid "No Update Available... Press Next to Continue."
+#~ msgstr ""
+#~ "Nici o actualizare disponibilă... Apasaţi Următorul pentru a continua."
 
-msgid "Channels"
-msgstr "Canale"
+#~ msgid "Link sets"
+#~ msgstr "Seturi legături"
 
-msgid "Sample Rate"
-msgstr "Rată de sample"
+#~ msgid "Add or remove sets of links by clicking on the checkboxes below."
+#~ msgstr "Adaugaţi sau eliminaţi legături bifând mai jos."
 
-msgid "Stereo"
-msgstr "Stereo"
+#~ msgid "Close"
+#~ msgstr "Închide"
 
-msgid "Mono"
-msgstr "Mono"
+#~ msgid "Year"
+#~ msgstr "An"
 
-msgid "Eazel"
-msgstr "Eazel"
+#~ msgid "Album"
+#~ msgstr "Album"
 
-msgid "foo (11st copy)"
-msgstr "foo (11st copy)"
+#~ msgid "Comment"
+#~ msgstr "Comentariu"
 
-msgid "foo (11st copy).txt"
-msgstr "foo (11st copy).txt"
+#~ msgid "Channels"
+#~ msgstr "Canale"
 
-msgid "foo (12nd copy)"
-msgstr "foo (12nd copy)"
+#~ msgid "Sample Rate"
+#~ msgstr "Rată de sample"
 
-msgid "foo (13rd copy)"
-msgstr "foo (13rd copy)"
+#~ msgid "Stereo"
+#~ msgstr "Stereo"
 
-msgid "Root"
-msgstr "Root"
+#~ msgid "Mono"
+#~ msgstr "Mono"
 
-msgid "UFS Volume"
-msgstr "Volum UFS"
+#~ msgid "Eazel"
+#~ msgstr "Eazel"
 
-msgid "is write-protected, mounting read-only"
-msgstr "este protejat la scriere, montez doar-citire"
+#~ msgid "foo (11st copy)"
+#~ msgstr "foo (11st copy)"
 
-msgid "is not a valid block device"
-msgstr "nu este un dispozitiv valid"
+#~ msgid "foo (11st copy).txt"
+#~ msgstr "foo (11st copy).txt"
 
-msgid "No medium found"
-msgstr "Nu a fost găsit nici un mediu"
+#~ msgid "foo (12nd copy)"
+#~ msgstr "foo (12nd copy)"
 
-msgid "wrong fs type, bad option, bad superblock on"
-msgstr "tip greşit de sistem fişiere, opţiune greşită, superbloc prost pe"
+#~ msgid "foo (13rd copy)"
+#~ msgstr "foo (13rd copy)"
 
-msgid "scripts"
-msgstr "scripts"
+#~ msgid "Root"
+#~ msgstr "Root"
 
-msgid "Nautilus was unable to create the directory %s."
-msgstr "Nautilus nu a putut crea dosarul %s."
+#~ msgid "UFS Volume"
+#~ msgstr "Volum UFS"
 
-msgid "No Scripts Folder"
-msgstr "Nu există dosar pentru scripturi"
+#~ msgid "is write-protected, mounting read-only"
+#~ msgstr "este protejat la scriere, montez doar-citire"
 
-msgid "Move all selected items to the Trash"
-msgstr "Mută toate elementele selectate la Gunoi"
+#~ msgid "is not a valid block device"
+#~ msgstr "nu este un dispozitiv valid"
 
-msgid "_Services"
-msgstr "_Servicii"
+#~ msgid "No medium found"
+#~ msgstr "Nu a fost găsit nici un mediu"
 
-msgid "_Community Support"
-msgstr "Suport din partea comunităţii"
+#~ msgid "wrong fs type, bad option, bad superblock on"
+#~ msgstr "tip greşit de sistem fişiere, opţiune greşită, superbloc prost pe"
 
+#~ msgid "scripts"
+#~ msgstr "scripts"
+
+#~ msgid "Nautilus was unable to create the directory %s."
+#~ msgstr "Nautilus nu a putut crea dosarul %s."
+
+#~ msgid "No Scripts Folder"
+#~ msgstr "Nu există dosar pentru scripturi"
+
+#~ msgid "Move all selected items to the Trash"
+#~ msgstr "Mută toate elementele selectate la Gunoi"
+
+#~ msgid "_Services"
+#~ msgstr "_Servicii"
+
+#~ msgid "_Community Support"
+#~ msgstr "Suport din partea comunităţii"
