@@ -63,7 +63,7 @@ install_new_packages (InstallOptions* iopts) {
 	
 	rpmReadConfigFiles (iopts->rpmrc_file, NULL);
 
-	g_print ("Reading the package list ...\n");
+	g_print ("Reading the install package list ...\n");
 	categories = fetch_xml_package_list_local (iopts->pkg_list_file);
 
 	while (categories) {
@@ -106,6 +106,66 @@ install_new_packages (InstallOptions* iopts) {
 
 gboolean 
 uninstall_packages (InstallOptions* iopts) {
-	fprintf (stderr, "***Sorry uninstall not supported yet!***\n");
-	return TRUE;
+	GList *categories;
+	gboolean rv;
+	int uninstallFlags, interfaceFlags;
+	
+	categories = NULL;
+	uninstallFlags = 0;
+	interfaceFlags = 0;
+	
+	if (iopts->mode_test == TRUE) {
+		uninstallFlags |= RPMTRANS_FLAG_TEST;
+	}
+
+	if (iopts->mode_verbose == TRUE) {
+		interfaceFlags |= INSTALL_HASH;
+		rpmSetVerbosity (RPMMESS_VERBOSE);
+	}
+	else {
+		rpmSetVerbosity (RPMMESS_NORMAL);
+	}
+
+	rpmReadConfigFiles (iopts->rpmrc_file, NULL);
+
+	g_print ("Reading the uninstall package list ...\n");
+	categories = fetch_xml_package_list_local (iopts->pkg_list_file);
+
+	while (categories) {
+		CategoryData* c = categories->data;
+		GList* t = c->Packages;
+
+		g_print ("Uninstall Category - %s\n", c->name);
+		while (t) {
+			PackageData* pack = t->data;
+			const char* pkg[2]; 
+			char *tmpbuf;
+			int retval;
+
+			retval = 0;
+			
+			tmpbuf = g_strdup_printf ("%s/%s", iopts->rpm_storage_dir, pack->rpm_name);
+            pkg[0] = tmpbuf;
+			pkg[1] = NULL;
+			g_print ("Uninstalling %s\n", pack->summary);
+			retval = rpmErase ("/", pkg, uninstallFlags, interfaceFlags);
+
+			if (retval == 0) {
+				g_print ("Package uninstall successful !\n");
+				rv = TRUE;
+			}
+			else {
+				g_print ("Package uninstall failed !\n");
+				rv = FALSE;
+			}
+			g_free(tmpbuf);
+			t = t->next;
+		}
+		categories = categories->next;
+	}
+
+	free_categories (categories);
+	
+	return rv;
+
 } /* end install_new_packages */

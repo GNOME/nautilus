@@ -38,16 +38,20 @@ show_usage (int exitcode, char* error) {
 			"	-L --License    : show license\n"
 			"	-l --local      : use local file\n"
 			"	-w --http       : use http\n"
-			"	-f --ftp        : use ftp\n");			
+			"	-f --ftp        : use ftp\n"
+			"	-u --uninstall	: uninstall the package list\n");
+			
 	if (error) {
 		fprintf (stderr, "%s\n", error);
 	}
+
 	exit (exitcode);
+
 } /* end usage */
 
 static void
 show_license (int exitcode, char* error) {
-	fprintf (stderr, "ezlinstall: a quick and powerful remote installation utility.\n\n"
+	fprintf (stderr, "eazel-install: a quick and powerful remote installation utility.\n\n"
 			"Copyright (C) 2000 Eazel, Inc.\n\n"
 			"This program is free software; you can redistribute it and/or\n"
 			"modify it under the terms of the GNU General Public License as\n"
@@ -60,17 +64,20 @@ show_license (int exitcode, char* error) {
 			"You should have received a copy of the GNU General Public License\n"
 			"along with this program; if not, write to the Free Software\n"
 			"Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.\n\n");
+
 	if (error) {
 		fprintf(stderr, "%s\n", error);
 	}
+
 	exit(exitcode);
+
 } /* end show_license */
 
 int
 main (int argc, char* argv[]) {
 	char opt;
 	gboolean retval;
-	gboolean USE_LOCAL, USE_HTTP, USE_FTP;
+	gboolean USE_LOCAL, USE_HTTP, USE_FTP, UNINSTALL_MODE;
 	InstallOptions *iopts;
 	poptContext pctx;
 	char* config_file;
@@ -81,6 +88,7 @@ main (int argc, char* argv[]) {
 		{ "local", 'l', 0, NULL, 'l'},
 		{ "http", 'w', 0, NULL, 'w' },
 		{ "ftp", 'f', 0, NULL, 'f' },
+		{ "uninstall", 'u', 0, NULL, 'u' },
 		{ NULL, '\0', 0, NULL, 0 }
 	};
 
@@ -88,6 +96,7 @@ main (int argc, char* argv[]) {
 	USE_LOCAL = FALSE;
 	USE_HTTP = FALSE;
 	USE_FTP = FALSE;
+	UNINSTALL_MODE = FALSE;
 
 	config_file = g_strdup ("/home/pepper/tmp/eazel-services-config.xml");
 /*
@@ -113,6 +122,9 @@ main (int argc, char* argv[]) {
 				break;
 			case 'f':
 				USE_FTP = TRUE;
+				break;
+			case 'u':
+				UNINSTALL_MODE = TRUE;
 				break;
 		}
 	}
@@ -163,10 +175,21 @@ main (int argc, char* argv[]) {
 		exit (1);
 	}
 
-	retval = install_new_packages (iopts);
-	if (retval == FALSE) {
-		fprintf (stderr, "***The install failed!***\n");
-		exit (1);
+	if (UNINSTALL_MODE == TRUE) {
+		iopts->mode_uninstall = TRUE;
+
+		retval = uninstall_packages (iopts);
+		if (retval == FALSE) {
+			fprintf (stderr, "***The uninstall failed !***\n");
+			exit (1);
+		}
+	}
+	else {
+		retval = install_new_packages (iopts);
+		if (retval == FALSE) {
+			fprintf (stderr, "***The install failed!***\n");
+			exit (1);
+		}
 	}
 
 	g_print ("***Install completed normally.***\n");
