@@ -428,14 +428,6 @@ nautilus_link_local_get_link_uri (const char *path)
 }
 
 /* Returns the link type of the link file. */
-gboolean
-nautilus_link_local_get_link_type (const char *path)
-{
-	return get_link_type (local_get_root_property (path, "NAUTILUS_LINK"));
-}
-
-
-/* Returns the link type of the link file. */
 NautilusLinkType
 nautilus_link_local_get_link_type (const char *path)
 {
