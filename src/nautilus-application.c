@@ -434,7 +434,7 @@ nautilus_application_startup (NautilusApplication *application,
 			url_list = nautilus_make_uri_list_from_strv (urls);
 			Nautilus_Shell_open_windows (shell, url_list, &ev);
 			CORBA_free (url_list);
-		} else if (!start_desktop && !stop_desktop) {
+		} else if (!stop_desktop) {
 			Nautilus_Shell_open_default_window (shell, &ev);
 		}
 	}

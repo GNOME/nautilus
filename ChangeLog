@@ -1,5 +1,12 @@
 2000-11-22  Michael Engber  <engber@eazel.com>
 
+	* src/nautilus-application.c: (nautilus_application_startup):
+	Always open a window in response to typing nautilus
+	at the cmd line. Used to not open a window if you typed
+	nautilus --start-desktop. Bug 4720
+
+2000-11-22  Michael Engber  <engber@eazel.com>
+
 	reviewed by: <delete if not using a buddy>
 
 	* libnautilus-extensions/nautilus-background.c:
