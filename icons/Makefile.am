@@ -5,7 +5,6 @@ SUBDIRS =\
 	crux_teal \
 	default \
 	gnome \
-	sidebar_tab_pieces \
 	sierra \
 	tahoe \
 	throbber \

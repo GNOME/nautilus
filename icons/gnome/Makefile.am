@@ -1,6 +1,6 @@
 NULL=
 
-SUBDIRS = throbber sidebar_tab_pieces
+SUBDIRS = throbber
 
 gnomedir = $(datadir)/pixmaps/nautilus/gnome
 

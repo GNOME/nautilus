@@ -1,6 +1,6 @@
 crux_eggplantdir = $(datadir)/pixmaps/nautilus/crux_eggplant
 
-SUBDIRS = sidebar_tab_pieces backgrounds throbber
+SUBDIRS = backgrounds throbber
 
 crux_eggplant_DATA =				\
 	crux_eggplant.xml			\

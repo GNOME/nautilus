@@ -1,6 +1,6 @@
 crux_tealdir = $(datadir)/pixmaps/nautilus/crux_teal
 
-SUBDIRS = sidebar_tab_pieces backgrounds throbber
+SUBDIRS = backgrounds throbber
 
 crux_teal_DATA =	\
 	crux_teal.xml		\
