@@ -59,16 +59,6 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_HOME_URI                 		"preferences/home_uri"
 #define NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS		"preferences/hide_built_in_bookmarks"
 
-/* Proxy */
-#define NAUTILUS_PREFERENCES_HTTP_USE_PROXY                	"/system/gnome_vfs/use_http_proxy"
-#define NAUTILUS_PREFERENCES_HTTP_PROXY_HOST                 	"/system/gnome_vfs/http_proxy_host"
-#define NAUTILUS_PREFERENCES_HTTP_PROXY_PORT                	"/system/gnome_vfs/http_proxy_port"
-
-/* HTTP Proxy Authentication */
-#define NAUTILUS_PREFERENCES_HTTP_PROXY_USE_AUTH                "/system/gnome_vfs/use_http_proxy_authorization"
-#define NAUTILUS_PREFERENCES_HTTP_PROXY_AUTH_USERNAME      	"/system/gnome_vfs/http_proxy_authorization_user"
-#define NAUTILUS_PREFERENCES_HTTP_USE_AUTH_PASSWORD     	"/system/gnome_vfs/http_proxy_authorization_password"
-
 /* Content fonts */
 #define NAUTILUS_PREFERENCES_DEFAULT_FONT			"preferences/default_font"
 #define NAUTILUS_PREFERENCES_DEFAULT_FONT_SIZE			"preferences/default_font_size"
