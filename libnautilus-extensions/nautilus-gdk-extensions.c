@@ -472,13 +472,37 @@ guint32
 nautilus_gdk_color_to_rgb (const GdkColor *color)
 {
 	guint32 result;
-	
+
 	result = (0xff0000 | (color->red & 0xff00));
 	result <<= 8;
 	result |= ((color->green & 0xff00) | (color->blue >> 8));
 
 	return result;
 }
+
+/**
+ * nautilus_gdk_color_to_rgb
+ * @color: a gdk_rgb style value.
+ *
+ * Converts from a gdk_rgb value style to a GdkColor one.
+ * The gdk_rgb color alpha channel is ignored.
+ * 
+ * Return value: a newly allocated GdkColor.
+ */
+GdkColor *
+nautilus_gdk_rgb_to_color (const guint32 color)
+{
+	GdkColor *result;
+	
+	result = g_new0 (GdkColor, 1);
+	 
+	result->red = (color & 0xff0000) >> 16 ;
+	result->green = (color & 0xff00);
+	result->blue = color << 8;
+
+	return result;
+}
+
 
 static guint32
 nautilus_shift_color_component (guchar component, float shift_by)

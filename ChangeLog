@@ -1,3 +1,15 @@
+2000-08-24  Mathieu Lacage  <mathieu@eazel.com>
+
+	* nautilus-gdk-extensions.c: (nautilus_gdk_color_to_rgb): space,
+	(nautilus_gdk_rgb_to_color): add function.. could be useful. 
+	* nautilus-gdk-extensions.h: add prototype.
+	* nautilus-gtk-extensions.c: (rgb_to_hls): new internal function. converts
+	from rgb to hls., (hls_to_rgb): from hls to rgb,
+	(nautilus_gtk_style_shade): necassery magic to "shade a color by a given 
+	amount... All this was copied from panel.c which was in turn copied from 
+	gtk.
+	* nautilus-gtk-extensions.h: add prototype.
+
 2000-08-24  Robey Pointer  <robey@eazel.com>
 
 	components/services/install/nautilus-view/nautilus-service-install-

@@ -121,6 +121,12 @@ void              nautilus_gtk_adjustment_set_value            (GtkAdjustment   
 								float                   value);
 void              nautilus_gtk_adjustment_clamp_value          (GtkAdjustment          *adjustment);
 
+/* GdkColor */
+void              nautilus_gtk_style_shade                     (GdkColor                *a, 
+								GdkColor                *b, 
+								gdouble                  k);
+
+
 /* marshals */
 
 #define nautilus_gtk_marshal_NONE__BOXED_BOXED gtk_marshal_NONE__POINTER_POINTER
