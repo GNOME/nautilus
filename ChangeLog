@@ -1,3 +1,30 @@
+2001-02-28  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fix bug 6368 - Multibyte font handling.
+	
+	* librsvg/rsvg-ft.c: (rsvg_ft_get_glyph),
+	(rsvg_ft_measure_or_render_string):
+	Tell freetype to never load bitmaps when loading glyphs.  We only
+	use the outlines of scalable fonts.  This means our code will work
+	even for glyphs that have embedded bitmaps.
+
+	Add support for multi byte characters.  We do this by allocate a
+	wide character array and converting the source string to wide
+	chars.  If no wide characters are found in the source string, then
+	we fill in the wide char array with the regular single byte chars.
+
+	This changes are based on a patch contributed by Yukihiro Nakai
+	<nakai@gnome.gr.jp> - thanks much.
+
+
+	Unrelated change.
+	
+	* libnautilus-extensions/nautilus-labeled-image.c:
+	(nautilus_labeled_image_initialize):
+	Remove a extraneous '+' that sneaked in here.
+
 2001-03-01  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* configure.in: Added Makefile generation for the below.

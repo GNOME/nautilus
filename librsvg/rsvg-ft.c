@@ -659,7 +659,11 @@ rsvg_ft_get_glyph (RsvgFTFont *font, FT_UInt glyph_ix, double sx, double sy,
 
 	FT_Set_Transform (face, &matrix, &delta);
 
-	error = FT_Load_Glyph (face, glyph_ix, FT_LOAD_NO_HINTING);
+	/* Tell freetype to never load bitmaps when loading glyphs.  We only
+	 * use the outlines of scalable fonts.  This means our code will work
+	 * even for glyphs that have embedded bitmaps.
+	 */
+	error = FT_Load_Glyph (face, glyph_ix, FT_LOAD_NO_HINTING | FT_LOAD_NO_BITMAP);
 	if (error)
 		return NULL;
 
@@ -811,6 +815,8 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 	double init_x, init_y;
 	int pixel_height, pixel_baseline;
 	int pixel_underline_position, pixel_underline_thickness;
+	int wclength;
+	wchar_t *wcstr;
 
 	g_return_val_if_fail (ctx != NULL, NULL);
 	g_return_val_if_fail (str != NULL, NULL);
@@ -855,11 +861,28 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 	init_x = affine[4];
 	init_y = affine[5];
 	n_glyphs = 0;
+
+	/* Alloc max length of wide char */
+	wcstr = g_new0 (wchar_t, length);
+	wclength = mbstowcs (wcstr, str, length);
+
+	/* mbstowcs fallback.  0 means not found any wide chars.
+	 * -1 means an invalid sequence was found.  In either of 
+	 * these two cases we fill in the wide char array with 
+	 * the single byte chars.
+	 */
+	if (wclength > 0) {
+		length = wclength;
+	} else {
+		for (i = 0; i < length; i++) {
+			wcstr[i] = (unsigned char) str[i];
+		}
+	}
+	
 	for (i = 0; i < length; i++) {
 		RsvgFTGlyph *glyph;
-
-		glyph_index = FT_Get_Char_Index (font->face,
-						 ((unsigned char *)str)[i]);
+		
+		glyph_index = FT_Get_Char_Index (font->face, wcstr[i]);
 
 		/* FIXME bugzilla.eazel.com 2775: Need a better way to deal
 		 * with unknown characters.
@@ -927,6 +950,8 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 
 	dimensions[0] = (bbox.x1 - bbox.x0);
 	dimensions[1] = (bbox.y1 - bbox.y0);
+
+	g_free (wcstr);
 	
 	/* Skip the glyph compositing loop for the case when all we
 	 * are doing is measuring strings.

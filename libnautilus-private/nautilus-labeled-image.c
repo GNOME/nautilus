@@ -207,7 +207,7 @@ nautilus_labeled_image_initialize (NautilusLabeledImage *labeled_image)
 	labeled_image->details->y_padding = DEFAULT_Y_PADDING;
 	labeled_image->details->x_alignment = DEFAULT_X_ALIGNMENT;
 	labeled_image->details->y_alignment = DEFAULT_Y_ALIGNMENT;
-+	labeled_image->details->fixed_image_height = 0;
+	labeled_image->details->fixed_image_height = 0;
 
 	nautilus_labeled_image_set_fill (labeled_image, FALSE);
 }
