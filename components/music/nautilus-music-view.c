@@ -1188,24 +1188,25 @@ slider_release_callback (GtkWidget *bar, GdkEvent *event, NautilusMusicView *mus
 static GtkWidget *
 xpm_label_box (NautilusMusicView *music_view, char * xpm_data[])
 {
-	GtkWidget *box;
-	GtkStyle *style;
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
-	GtkWidget *pix_widget;
-	
-	box = gtk_hbox_new(FALSE, 0);
-	gtk_container_border_width(GTK_CONTAINER(box), 2);
-	style = gtk_widget_get_style(GTK_WIDGET(music_view));
+        GdkPixbuf *pixbuf;
+        GdkPixmap *pixmap;
+        GdkBitmap *mask;
+        GtkWidget *pix_widget;
+        GtkWidget *box;
+        GtkStyle *style;
 
-        /* FIXME: This window can be NULL. */
-	pixmap = gdk_pixmap_create_from_xpm_d (GTK_WIDGET(music_view)->window,
-                                               &mask, &style->bg[GTK_STATE_NORMAL], xpm_data);
-	pix_widget = gtk_pixmap_new (pixmap, mask);
-	gtk_box_pack_start (GTK_BOX(box), pix_widget, TRUE, FALSE, 3);
-	gtk_widget_show (pix_widget);
+        box = gtk_hbox_new (FALSE, 0);
+        gtk_container_border_width (GTK_CONTAINER (box), 2);
+        style = gtk_widget_get_style (GTK_WIDGET (music_view));
 
-	return box;
+        pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xpm_data);
+        gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, GDK_PIXBUF_ALPHA_FULL);
+
+        pix_widget = gtk_pixmap_new (pixmap, mask);
+        gtk_box_pack_start (GTK_BOX (box), pix_widget, TRUE, FALSE, 3);
+        gtk_widget_show (pix_widget);
+
+        return box;
 }
 
 /* creates a button with 2 internal pixwidgets, with only one visible at a time */
@@ -1215,35 +1216,37 @@ xpm_dual_label_box (NautilusMusicView *music_view, char * xpm_data[],
                     char *alt_xpm_data[],
                     GtkWidget **main_pixwidget, GtkWidget **alt_pixwidget )
 {
-	GtkWidget *box;
-	GtkStyle *style;
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
-	
-	box = gtk_hbox_new (FALSE, 0);
-	gtk_container_border_width (GTK_CONTAINER (box), 2);
+        GtkWidget *box;
+        GtkStyle *style;
+        GdkPixmap *pixmap;
+        GdkBitmap *mask;
+        GdkPixbuf *pixbuf;
 
-	style = gtk_widget_get_style (GTK_WIDGET (music_view));
 
-	/* create the main pixwidget */
-        /* FIXME: This window can be NULL. */
-	pixmap = gdk_pixmap_create_from_xpm_d (GTK_WIDGET (music_view)->window,
-                                               &mask, &style->bg[GTK_STATE_NORMAL], xpm_data);
-	*main_pixwidget = gtk_pixmap_new (pixmap, mask);
+        box = gtk_hbox_new (FALSE, 0);
+        gtk_container_border_width (GTK_CONTAINER (box), 2);
 
-	gtk_box_pack_start (GTK_BOX (box), *main_pixwidget, TRUE, FALSE, 3);
-	gtk_widget_show (*main_pixwidget);
+        style = gtk_widget_get_style (GTK_WIDGET (music_view));
 
-	/* create the alternative pixwidget */
-        /* FIXME: This window can be NULL. */
-	pixmap = gdk_pixmap_create_from_xpm_d (GTK_WIDGET(music_view)->window,
-                                               &mask, &style->bg[GTK_STATE_NORMAL], alt_xpm_data);
-	*alt_pixwidget = gtk_pixmap_new (pixmap, mask);
+        /* create the main pixwidget */
+        pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xpm_data);
+        gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, GDK_PIXBUF_ALPHA_FULL);
 
-	gtk_box_pack_start (GTK_BOX (box), *alt_pixwidget, TRUE, FALSE, 3);
-	gtk_widget_hide (*alt_pixwidget);
+        *main_pixwidget = gtk_pixmap_new (pixmap, mask);
 
-	return box;
+        gtk_box_pack_start (GTK_BOX (box), *main_pixwidget, TRUE, FALSE, 3);
+        gtk_widget_show (*main_pixwidget);
+
+        /* create the alternative pixwidget */
+        pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)alt_xpm_data);
+        gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, GDK_PIXBUF_ALPHA_FULL);
+
+        *alt_pixwidget = gtk_pixmap_new (pixmap, mask);
+
+        gtk_box_pack_start (GTK_BOX (box), *alt_pixwidget, TRUE, FALSE, 3);
+        gtk_widget_hide (*alt_pixwidget);
+
+        return box;
 }
 
 /* add the play controls */
