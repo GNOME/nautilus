@@ -32,8 +32,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.2.x\n"
-"POT-Creation-Date: 2003-01-27 21:43-0500\n"
-"PO-Revision-Date: 2003-01-20 23:02+0100\n"
+"POT-Creation-Date: 2003-02-09 17:41+0100\n"
+"PO-Revision-Date: 2003-02-29 17:41+0100\n"
 "Last-Translator: Christian Neumair <chris@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1251,41 +1251,39 @@ msgstr "Legitimation benötigt"
 msgid "reset"
 msgstr "zurücksetzen"
 
-#: libnautilus-private/nautilus-dnd.c:565
+#: libnautilus-private/nautilus-dnd.c:567
 msgid "_Move here"
 msgstr "Hierher _verschieben"
 
-#: libnautilus-private/nautilus-dnd.c:570
+#: libnautilus-private/nautilus-dnd.c:572
 msgid "_Copy here"
 msgstr "Hierher _kopieren"
 
 # CHECK
-#: libnautilus-private/nautilus-dnd.c:575
+#: libnautilus-private/nautilus-dnd.c:577
 msgid "_Link here"
 msgstr "_Verknüpfung hier"
 
-#: libnautilus-private/nautilus-dnd.c:580
+#: libnautilus-private/nautilus-dnd.c:582
 msgid "Set as _Background"
 msgstr "Als _Hintergrund verwenden"
 
-#: libnautilus-private/nautilus-dnd.c:589
-#: libnautilus-private/nautilus-dnd.c:642
+#: libnautilus-private/nautilus-dnd.c:591
+#: libnautilus-private/nautilus-dnd.c:646
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: libnautilus-private/nautilus-dnd.c:628
+#: libnautilus-private/nautilus-dnd.c:632
 msgid "Set as background for _all folders"
 msgstr "Als Hintergrund für _alle Ordner verwenden"
 
-#: libnautilus-private/nautilus-dnd.c:633
+#: libnautilus-private/nautilus-dnd.c:637
 msgid "Set as background for _this folder"
 msgstr "Als Hintergrund für _diesen Ordner verwenden"
 
 #: libnautilus-private/nautilus-emblem-utils.c:194
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
-msgstr ""
-"Entschuldigung, aber Sie müssen ein nichtleeres Schlüsselwort für das neue "
-"Emblem angeben."
+msgstr "Sie müssen ein Stichwort zum neuen Emblem angeben."
 
 #: libnautilus-private/nautilus-emblem-utils.c:195
 #: libnautilus-private/nautilus-emblem-utils.c:199
@@ -1299,8 +1297,8 @@ msgstr "Emblem konnte nicht installiert werden"
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
-"Entschuldigung, aber Emblemschlüsselwörter dürfen nur Buchstaben, "
-"Leerzeichen und Zahlen enthalten."
+"Stichwörter zu Emblemen dürfen ausschließlich aus Buchstaben, Leerzeichen "
+"und Zahlen bestehen."
 
 #. this really should never happen, as a user has no idea
 #. * what a keyword is, and people should be passing a unique
@@ -1630,13 +1628,6 @@ msgstr "Fehler beim Anlegen einer Verknüpfung."
 #: libnautilus-private/nautilus-file-operations.c:903
 msgid "Error while deleting."
 msgstr "Fehler beim Löschen."
-
-#: libnautilus-private/nautilus-file-operations.c:914
-#: libnautilus-private/nautilus-file-operations.c:929
-#: libnautilus-private/nautilus-file-operations.c:949
-#: src/nautilus-shell-ui.xml.h:44
-msgid "Stop"
-msgstr "Stopp"
 
 #: libnautilus-private/nautilus-file-operations.c:929
 #: libnautilus-private/nautilus-file-operations.c:949
@@ -2809,7 +2800,7 @@ msgstr "MIME-Typ"
 #: libnautilus-private/nautilus-global-preferences.c:224
 #: src/nautilus-file-management-properties.glade.h:78
 msgid "none"
-msgstr "Keins"
+msgstr "Keine"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:1884
 msgid "file icon"
@@ -2909,7 +2900,7 @@ msgstr "Dunkle Info-Farbe"
 msgid "Color used for information text against a light background"
 msgstr "Für Informationstext vor einem hellen Hintergrund zu verwendender Text"
 
-#: libnautilus-private/nautilus-icon-dnd.c:726
+#: libnautilus-private/nautilus-icon-dnd.c:727
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
@@ -2919,7 +2910,7 @@ msgstr ""
 "Layout umschalten und dieses Objekt dort lassen, wo Sie es fallen gelassen "
 "haben? Dies wird das gespeicherte manuelle Layout überschreiben."
 
-#: libnautilus-private/nautilus-icon-dnd.c:730
+#: libnautilus-private/nautilus-icon-dnd.c:731
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
@@ -2929,7 +2920,7 @@ msgstr ""
 "Layout umschalten und diese Objekte dort lassen, wo Sie sie fallen gelassen "
 "haben? Dies wird das gespeicherte manuelle Layout überschreiben."
 
-#: libnautilus-private/nautilus-icon-dnd.c:736
+#: libnautilus-private/nautilus-icon-dnd.c:737
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
@@ -2938,7 +2929,7 @@ msgstr ""
 "Layout umschalten und dieses Objekt dort lassen, wo Sie es fallen gelassen "
 "haben?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:739
+#: libnautilus-private/nautilus-icon-dnd.c:740
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
@@ -2947,11 +2938,11 @@ msgstr ""
 "Layout umschalten und diese Objekte dort lassen, wo Sie sie fallen gelassen "
 "haben?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:744
+#: libnautilus-private/nautilus-icon-dnd.c:745
 msgid "Switch to Manual Layout?"
 msgstr "Auf manuelles Layout umschalten?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:745
+#: libnautilus-private/nautilus-icon-dnd.c:746
 msgid "Switch"
 msgstr "Umschalten"
 
@@ -3070,13 +3061,13 @@ msgstr "»%s« ändern"
 #: libnautilus-private/nautilus-program-chooser.c:1067
 #, c-format
 msgid "Include in the menu for \"%s\" items"
-msgstr "Ins Menü für alle »%s«-Objekte aufnehmen"
+msgstr "Für alle »%s«-Objekte ins Menü aufnehmen"
 
 #. Radio button for setting default for file type.
 #: libnautilus-private/nautilus-program-chooser.c:1074
 #, c-format
 msgid "Use as default for \"%s\" items"
-msgstr "Als Voreinstellung für alle »%s«-Objekte verwenden"
+msgstr "Als Vorgabe für alle »%s«-Objekte verwenden"
 
 #. Radio button for adding to short list for specific file.
 #: libnautilus-private/nautilus-program-chooser.c:1081
@@ -3088,7 +3079,7 @@ msgstr "Nur für »%s« ins Menü aufnehmen"
 #: libnautilus-private/nautilus-program-chooser.c:1087
 #, c-format
 msgid "Use as default for \"%s\" only"
-msgstr "Nur für »%s« als Voreinstellung verwenden"
+msgstr "Nur als Vorgabe für »%s« verwenden"
 
 #. Radio button for not including program in short list for type or file.
 #: libnautilus-private/nautilus-program-chooser.c:1094
@@ -3124,7 +3115,7 @@ msgstr "Dateitypen und Programme"
 
 #: libnautilus-private/nautilus-program-chooser.c:1449
 msgid "_Go There"
-msgstr "Dorthin _gehen"
+msgstr "_Dorthin gehen"
 
 #: libnautilus-private/nautilus-program-chooser.c:1456
 msgid ""
@@ -3198,7 +3189,7 @@ msgid ""
 "locations.  Would you like to choose another application?"
 msgstr ""
 "»%s« kann »%s« nicht öffnen, da »%s« nicht auf Dateien an »%s«-Orten "
-"zugreifen kann. Möchten Sie eine andere Anwendung auswählen?"
+"zugreifen kann. Möchten Sie eine andere Anwendung wählen?"
 
 #: libnautilus-private/nautilus-program-choosing.c:500
 #: libnautilus-private/nautilus-program-choosing.c:522
@@ -3222,8 +3213,8 @@ msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
 msgstr ""
-"Entschuldigung, aber Sie dürfen aus Sicherheitsgründen keine Befehle von "
-"einen fernen Rechner ausführen."
+"Aus Sicherheitsgründen von einem entfernten Rechner aus dürfen Sie keine "
+"Befehle ausführen."
 
 #: libnautilus-private/nautilus-program-choosing.c:672
 msgid "Can't execute remote links"
@@ -3681,7 +3672,7 @@ msgstr "Alles au_swählen"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:9
 msgid "Select all the text in a text field"
-msgstr "Den gesamten Text in einem Textfeld auswählen"
+msgstr "Den gesamten Text in einem Textfeld markieren"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:10 src/nautilus-shell-ui.xml.h:60
 msgid "_Copy Text"
@@ -4100,19 +4091,19 @@ msgstr ""
 #: src/file-manager/fm-directory-view.c:4369
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
-msgstr "»%s« wird verschoben, wenn Sie »Dateien einfügen« auswählen"
+msgstr "»%s« wird verschoben, sobald Sie »Dateien einfügen« auswählen"
 
 #: src/file-manager/fm-directory-view.c:4373
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
-msgstr "»%s« wird kopiert, wenn Sie »Dateien einfügen« auswählen"
+msgstr "»%s« wird kopiert, sobald Sie »Dateien einfügen« auswählen"
 
 #: src/file-manager/fm-directory-view.c:4380
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
 msgstr ""
-"Die %d gewählten Objekte werden verschoben, wenn Sie »Dateien einfügen« "
+"Die %d gewählten Objekte werden verschoben, sobald Sie »Dateien einfügen« "
 "auswählen"
 
 #: src/file-manager/fm-directory-view.c:4384
@@ -4120,7 +4111,7 @@ msgstr ""
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
 msgstr ""
-"Die %d gewählten Objekte werden kopiert, wenn Sie »Dateien einfügen« "
+"Die %d gewählten Objekte werden kopiert, sobald Sie »Dateien einfügen« "
 "auswählen"
 
 #: src/file-manager/fm-directory-view.c:4469
@@ -4267,8 +4258,7 @@ msgstr ""
 #: src/file-manager/fm-error-reporting.c:68
 #, c-format
 msgid "Sorry, couldn't display all the contents of \"%s\"."
-msgstr ""
-"Entschuldigung, es konnte nicht der ganze Inhalt von »%s« angezeigt werden."
+msgstr "Leider konnte nicht der gesamte Inhalt von »%s« angezeigt werden."
 
 #: src/file-manager/fm-error-reporting.c:71
 msgid "Error Displaying Folder"
@@ -4319,7 +4309,7 @@ msgstr ""
 #: src/file-manager/fm-error-reporting.c:136
 #, c-format
 msgid "Sorry, couldn't rename \"%s\" to \"%s\"."
-msgstr "Entschuldigung, »%s« konnte nicht in »%s« umbenannt werden."
+msgstr "»%s« konnte nicht in »%s« umbenannt werden."
 
 #: src/file-manager/fm-error-reporting.c:143
 msgid "Renaming Error"
@@ -4341,7 +4331,7 @@ msgstr ""
 #: src/file-manager/fm-error-reporting.c:175
 #, c-format
 msgid "Sorry, couldn't change the group of \"%s\"."
-msgstr "Entschuldigung, konnte die Gruppe von »%s« nicht ändern."
+msgstr "Die Gruppe von »%s« konnte nicht geändert werden."
 
 #: src/file-manager/fm-error-reporting.c:179
 msgid "Error Setting Group"
@@ -4357,7 +4347,7 @@ msgstr ""
 #: src/file-manager/fm-error-reporting.c:208
 #, c-format
 msgid "Sorry, couldn't change the owner of \"%s\"."
-msgstr "Entschuldigung, der Besitzer von »%s« nicht geändert werden."
+msgstr "Der Besitzer von »%s« konnte nicht geändert werden."
 
 #: src/file-manager/fm-error-reporting.c:211
 msgid "Error Setting Owner"
@@ -4374,8 +4364,7 @@ msgstr ""
 #: src/file-manager/fm-error-reporting.c:240
 #, c-format
 msgid "Sorry, couldn't change the permissions of \"%s\"."
-msgstr ""
-"Entschuldigung, die Berechtigungen von »%s« konnte nicht geändert werden."
+msgstr "Die Berechtigungen von »%s« konnten nicht geändert werden."
 
 #: src/file-manager/fm-error-reporting.c:243
 msgid "Error Setting Permissions"
@@ -4453,11 +4442,11 @@ msgstr "zeigt auf »%s«"
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Drag und Drop wird nur auf lokalen Laufwerken unterstützt"
 
-#: src/file-manager/fm-icon-view.c:2304 src/file-manager/fm-icon-view.c:2322
+#: src/file-manager/fm-icon-view.c:2304 src/file-manager/fm-icon-view.c:2323
 msgid "Drag and Drop error"
 msgstr "Fehler beim Drag und Drop"
 
-#: src/file-manager/fm-icon-view.c:2321
+#: src/file-manager/fm-icon-view.c:2322
 msgid "An invalid drag type was used."
 msgstr "Ein ungültiger Drag-Typ wurde verwendet."
 
@@ -4487,7 +4476,7 @@ msgid ""
 "image to set a custom icon."
 msgstr ""
 "Sie können nicht mehr als ein eigenes Symbol auf einmal zuweisen! Bitte "
-"ziehen Sie bloß ein Bild, um ein eigenes Icon einzustellen."
+"ziehen Sie immer nur ein Bild, um ein eigenes Symbol einzustellen."
 
 #: src/file-manager/fm-properties-window.c:329
 #: src/nautilus-information-panel.c:508
@@ -4606,7 +4595,7 @@ msgstr "MIME-Typ:"
 
 #: src/file-manager/fm-properties-window.c:1706
 msgid "Modified:"
-msgstr "Verändert:"
+msgstr "Geändert:"
 
 #: src/file-manager/fm-properties-window.c:1709
 msgid "Accessed:"
@@ -4614,7 +4603,7 @@ msgstr "Zugegriffen:"
 
 #: src/file-manager/fm-properties-window.c:1718
 msgid "_Select Custom Icon..."
-msgstr "Eigenes Symbol auswählen..."
+msgstr "E_igenes Symbol verwenden..."
 
 #: src/file-manager/fm-properties-window.c:1724
 msgid "_Remove Custom Icon"
@@ -4744,8 +4733,7 @@ msgid ""
 "Sorry, but the Medusa search service is not available because it is not "
 "installed."
 msgstr ""
-"Entschuldigung, aber der Medusa-Suchdienst ist nicht verfügbar, da er nicht "
-"installiert ist."
+"Der Medusa-Suchdienst wurde nicht installiert und ist daher nicht verfügbar."
 
 #: src/file-manager/fm-search-list-view.c:167
 #: src/file-manager/nautilus-indexing-info.c:303
@@ -4760,7 +4748,7 @@ msgid ""
 msgstr ""
 "Die von Ihnen gewählte Suche ist neuer als der Index auf Ihrem System. Die "
 "Suche wird darum jetzt noch keine Ergebnisse liefern. Sie können einen Index "
-"erzeugen, indem Sie als root auf der Befehlszeile »medusa-index« ausführen."
+"anlegen, indem Sie als root auf der Befehlszeile »medusa-index« ausführen."
 
 #: src/file-manager/fm-search-list-view.c:196
 msgid "Search for items that are too new"
@@ -4790,7 +4778,7 @@ msgid ""
 "the command line."
 msgstr ""
 "Die Suche kann Ihren Dateisystem-Index nicht finden. Ihr Index fehlt "
-"vielleicht oder ist beschädigt. Sie können einen neuen erzeugen, indem Sie "
+"vielleicht oder ist beschädigt. Sie können einen neuen anlegen, indem Sie "
 "als root auf der Befehlszeile »medusa-indexd« ausführen."
 
 #: src/file-manager/fm-search-list-view.c:214
@@ -4882,7 +4870,7 @@ msgid ""
 msgstr ""
 "Um eine schnelle Suche durchzuführen, wird ein Index der Dateien auf Ihrem "
 "System benötigt. Momentan ist kein Index verfügbar. Sie können einen "
-"erzeugen, indem Sie »medusa-indexd« auf der Befehlszeile als root ausführen. "
+"anlegen, indem Sie »medusa-indexd« auf der Befehlszeile als root ausführen. "
 "Bevor ein vollständiger Index verfügbar ist, dauern Suchvorgänge mehrere "
 "Minuten."
 
@@ -4978,7 +4966,7 @@ msgstr "Die gewählte Partition formatieren"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:7
 msgid "Medi_a Properties"
-msgstr "Eigenschaften des _Mediums"
+msgstr "_Medieneigenschaften"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
 msgid "Mount or unmount disks"
@@ -5290,7 +5278,7 @@ msgstr "Es gibt momentan keinen Index Ihrer Dateien."
 
 #: src/file-manager/nautilus-indexing-info.c:302
 msgid "Sorry, but the medusa search service is not available."
-msgstr "Entschuldigung, aber der Medusa-Suchdienst ist nicht verfügbar."
+msgstr "Der Medusa-Suchdienst ist nicht verfügbar."
 
 #: src/file-manager/nautilus-indexing-info.c:317
 msgid "%I:%M %p, %x"
@@ -5718,7 +5706,7 @@ msgstr "Einen Satz schnelle Selbsttests durchführen."
 
 #: src/nautilus-main.c:151
 msgid "Create the initial window with the given geometry."
-msgstr "Das erste Fenster mit der angegebenen Geometrie erzeugen."
+msgstr "Das erste Fenster mit der angegebenen Geometrie öffnen."
 
 #: src/nautilus-main.c:151
 msgid "GEOMETRY"
@@ -5799,7 +5787,7 @@ msgstr "Neues hinzufügen..."
 #: src/nautilus-property-browser.c:907
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
-msgstr "Entschuldigung, aber Muster %s konnte nicht gelöscht werden."
+msgstr "Das Muster %s konnte nicht gelöscht werden."
 
 #: src/nautilus-property-browser.c:908 src/nautilus-property-browser.c:937
 msgid "Couldn't delete pattern"
@@ -5808,16 +5796,16 @@ msgstr "Muster konnte nicht gelöscht werden"
 #: src/nautilus-property-browser.c:936
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
-msgstr "Entschuldigung, aber Emblem %s konnte nicht gelöscht werden."
+msgstr "Das Emblem %s konnte nicht gelöscht werden."
 
 #: src/nautilus-property-browser.c:975
 msgid "Create a New Emblem:"
-msgstr "Ein neues Emblem erzeugen:"
+msgstr "Ein neues Emblem hinzufügen"
 
 #. make the keyword label and field
 #: src/nautilus-property-browser.c:988
 msgid "_Keyword:"
-msgstr "_Schlüsselwort:"
+msgstr "_Stichwort:"
 
 #. set up a gnome icon entry to pick the image file
 #: src/nautilus-property-browser.c:1006
@@ -5844,11 +5832,11 @@ msgstr "Farb_wert:"
 #: src/nautilus-property-browser.c:1095
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
-msgstr "Entschuldigung, aber »%s« ist kein gültiger Dateiname."
+msgstr "»%s« ist kein gültiger Dateiname."
 
 #: src/nautilus-property-browser.c:1097
 msgid "Sorry, but you did not supply a valid file name."
-msgstr "Entschuldigung, aber Sie haben keinen gültigen Dateinamen angegeben."
+msgstr "Sie haben keinen gültigen Dateinamen angegeben."
 
 #: src/nautilus-property-browser.c:1099 src/nautilus-property-browser.c:1142
 msgid "Couldn't install pattern"
@@ -5856,7 +5844,7 @@ msgstr "Muster konnte nicht installiert werden"
 
 #: src/nautilus-property-browser.c:1110
 msgid "Sorry, but you can't replace the reset image."
-msgstr "Entschuldigung, aber Sie können das Reset-Bild nicht ersetzen."
+msgstr "Sie können das zurückgesetzte Bild nicht ersetzen."
 
 #: src/nautilus-property-browser.c:1110 src/nautilus-property-browser.c:1313
 #: src/nautilus-property-browser.c:1329
@@ -5866,7 +5854,7 @@ msgstr "Kein Bild"
 #: src/nautilus-property-browser.c:1141
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
-msgstr "Entschuldigung, aber Muster %s konnte nicht installiert werden."
+msgstr "Das Muster %s konnte nicht installiert werden."
 
 #: src/nautilus-property-browser.c:1161
 msgid "Select an image file to add as a pattern"
@@ -5874,9 +5862,7 @@ msgstr "Wählen Sie eine Bilddatei, die als Muster hinzugefügt werden soll"
 
 #: src/nautilus-property-browser.c:1222
 msgid "Sorry, but you must specify a non-blank name for the new color."
-msgstr ""
-"Entschuldigung, aber Sie müssen einen nichtleeren Namen für die neue Farbe "
-"angeben."
+msgstr "Sie müssen einen Namen für die neue Farbe angeben."
 
 #: src/nautilus-property-browser.c:1223
 msgid "Couldn't install color"
@@ -5884,12 +5870,12 @@ msgstr "Farbe konnte nicht installiert werden"
 
 #: src/nautilus-property-browser.c:1275
 msgid "Select a color to add"
-msgstr "Wählen Sie die hinzuzufügende Farbe aus"
+msgstr "Wählen Sie die hinzuzufügende Farbe"
 
 #: src/nautilus-property-browser.c:1312 src/nautilus-property-browser.c:1328
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
-msgstr "Entschuldigung, aber »%s« ist keine verwendbare Bilddatei!"
+msgstr "»%s« ist keine verwendbare Bilddatei!"
 
 #: src/nautilus-property-browser.c:2035
 msgid "Select A Category:"
@@ -6314,6 +6300,10 @@ msgstr "S_tatusleiste"
 msgid "Start Profiling"
 msgstr "Profiling beginnen"
 
+#: src/nautilus-shell-ui.xml.h:44
+msgid "Stop"
+msgstr "Stopp"
+
 #: src/nautilus-shell-ui.xml.h:45
 msgid "Stop Profiling"
 msgstr "Profiling beenden"
@@ -6332,7 +6322,7 @@ msgstr "Rauf"
 
 #. Add "View as..." extra bonus choice.
 #: src/nautilus-shell-ui.xml.h:49 src/nautilus-window.c:518
-#: src/nautilus-window.c:1465
+#: src/nautilus-window.c:1467
 msgid "View as..."
 msgstr "Ansicht auswählen..."
 
@@ -6748,24 +6738,24 @@ msgstr "Eine Anzahl Seiten vorgehen"
 msgid "Information"
 msgstr "Informationen"
 
-#: src/nautilus-window.c:1171
+#: src/nautilus-window.c:1173
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Diesen Ort mit der %s anzeigen"
 
-#: src/nautilus-window.c:2198
+#: src/nautilus-window.c:2200
 msgid "Application ID"
 msgstr "Anwendungskennung"
 
-#: src/nautilus-window.c:2199
+#: src/nautilus-window.c:2201
 msgid "The application ID of the window."
 msgstr "Die Anwendungskennung des Fensters."
 
-#: src/nautilus-window.c:2205
+#: src/nautilus-window.c:2207
 msgid "Application"
 msgstr "Anwendung"
 
-#: src/nautilus-window.c:2206
+#: src/nautilus-window.c:2208
 msgid "The NautilusApplication associated with this window."
 msgstr "Die NautilusAnwendung verbunden mit diesem Fenster."
 
