@@ -255,7 +255,6 @@ nautilus_window_constructed (NautilusWindow *window)
 {
 	GnomeApp *app;
 	GtkWidget *location_bar_box, *statusbar;
-  	GtkWidget *temp_frame;
   	GnomeDockItemBehavior behavior;
   	int sidebar_width;
 
@@ -331,14 +330,10 @@ nautilus_window_constructed (NautilusWindow *window)
 	
 	gnome_app_set_contents (app, window->content_hbox);
 	
-	/* set up the index panel in a frame */
-	temp_frame = gtk_frame_new (NULL);
-	gtk_frame_set_shadow_type (GTK_FRAME (temp_frame), GTK_SHADOW_OUT);
-	gtk_widget_show (temp_frame);
+	/* set up the index panel */
 	
 	window->sidebar = nautilus_sidebar_new ();
 	gtk_widget_show (GTK_WIDGET (window->sidebar));
-	gtk_container_add (GTK_CONTAINER (temp_frame), GTK_WIDGET (window->sidebar));
 	gtk_signal_connect (GTK_OBJECT (window->sidebar), "location_changed",
 			    nautilus_window_goto_uri_callback, window);
 	
@@ -347,7 +342,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	 * for the desktop window.
 	 */
         if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-		e_paned_pack1 (E_PANED(window->content_hbox), temp_frame, FALSE, FALSE);
+		e_paned_pack1 (E_PANED(window->content_hbox), GTK_WIDGET(window->sidebar), FALSE, FALSE);
 	}
 	
 	gtk_widget_show_all (window->content_hbox);
