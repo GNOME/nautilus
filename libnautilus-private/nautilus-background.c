@@ -33,6 +33,12 @@
 #include "nautilus-gtk-macros.h"
 #include "nautilus-string.h"
 
+#include <libgnomeui/gnome-canvas.h>
+#include <libgnomeui/gnome-canvas-util.h>
+#include <libart_lgpl/art_rgb_affine.h>
+#include <libart_lgpl/art_rgb_rgba_affine.h>
+#include <libart_lgpl/art_svp_vpath.h>
+
 static void nautilus_background_initialize_class (gpointer            klass);
 static void nautilus_background_initialize       (gpointer            object,
 						  gpointer            klass);
@@ -158,6 +164,97 @@ nautilus_background_draw (NautilusBackground *background,
 						       start_rgb,
 						       end_rgb,
 						       horizontal_gradient);
+	}
+}
+
+static void
+draw_pixbuf_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buf, double affine[6], int x_offset, int y_offset)
+{
+	void (* affine_function)
+		(art_u8 *dst, int x0, int y0, int x1, int y1, int dst_rowstride,
+		 const art_u8 *src, int src_width, int src_height, int src_rowstride,
+		 const double affine[6],
+		 ArtFilterLevel level,
+		 ArtAlphaGamma *alpha_gamma);
+
+	affine[4] += x_offset;
+	affine[5] += y_offset;
+
+	affine_function = gdk_pixbuf_get_has_alpha (pixbuf)
+		? art_rgb_rgba_affine
+		: art_rgb_affine;
+	
+	(* affine_function)
+		(buf->buf,
+		 buf->rect.x0, buf->rect.y0,
+		 buf->rect.x1, buf->rect.y1,
+		 buf->buf_rowstride,
+		 gdk_pixbuf_get_pixels (pixbuf),
+		 gdk_pixbuf_get_width (pixbuf),
+		 gdk_pixbuf_get_height (pixbuf),
+		 gdk_pixbuf_get_rowstride (pixbuf),
+		 affine,
+		 ART_FILTER_NEAREST,
+		 NULL);
+
+	affine[4] -= x_offset;
+	affine[5] -= y_offset;
+}
+
+static void
+draw_pixbuf_tiled(GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer)
+{
+	int x, y;
+	int start_x, start_y;
+	int end_x, end_y;
+	int tile_x, tile_y;
+	int blit_x, blit_y;
+	int tile_width, tile_height;
+	int blit_width, blit_height;
+	int tile_offset_x, tile_offset_y;
+	
+	double affine[6];
+	
+	art_affine_identity(affine);
+
+	tile_width = gdk_pixbuf_get_width (pixbuf);
+	tile_height = gdk_pixbuf_get_height (pixbuf);
+	
+	tile_offset_x = buffer->rect.x0  % tile_width;
+	tile_offset_y = buffer->rect.y0  % tile_height;
+
+	start_x = buffer->rect.x0 - tile_offset_x;
+	start_y = buffer->rect.y0 - tile_offset_y;
+	end_x = buffer->rect.x1;
+	end_y = buffer->rect.y1;
+
+	for (x = start_x; x < end_x; x += tile_width) {
+		blit_x = MAX (x, buffer->rect.x0);
+		tile_x = blit_x - x;
+		blit_width = MIN (tile_width, end_x - x) - tile_x;
+		
+		for (y = start_y; y < end_y; y += tile_height) {
+			blit_y = MAX (y, buffer->rect.y0);
+			tile_y = blit_y - y;
+			blit_height = MIN (tile_height, end_y - y) - tile_y;
+			
+			draw_pixbuf_aa(pixbuf, buffer, affine, x, y);
+		}
+	}
+}
+
+/* draw the background on the anti-aliased canvas */
+void nautilus_background_draw_aa (NautilusBackground *background,
+				  GnomeCanvasBuf *buffer)
+{
+	
+	if (background->details->tile_image) {
+		if (!buffer->is_buf) {
+			draw_pixbuf_tiled(background->details->tile_image, buffer);
+			buffer->is_buf = TRUE;
+		}
+	} else {
+		gnome_canvas_buf_ensure_buf(buffer);
 	}
 }
 

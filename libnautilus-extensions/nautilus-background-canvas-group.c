@@ -26,6 +26,10 @@
 #include "nautilus-background-canvas-group.h"
 
 #include <libgnomeui/gnome-canvas.h>
+#include <libgnomeui/gnome-canvas-util.h>
+#include <libart_lgpl/art_rgb_affine.h>
+#include <libart_lgpl/art_rgb_rgba_affine.h>
+
 #include "nautilus-background.h"
 #include "nautilus-gtk-macros.h"
 
@@ -35,6 +39,8 @@ static void nautilus_background_canvas_group_destroy (GtkObject *object);
 static void nautilus_background_canvas_group_finalize (GtkObject *object);
 static void nautilus_background_canvas_group_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 						   int x, int y, int width, int height);
+static void nautilus_background_canvas_group_render (GnomeCanvasItem *item, GnomeCanvasBuf *buffer);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBackgroundCanvasGroup, nautilus_background_canvas_group, GNOME_TYPE_CANVAS_GROUP)
 
@@ -51,6 +57,7 @@ nautilus_background_canvas_group_initialize_class (gpointer klass)
 	object_class->finalize = nautilus_background_canvas_group_finalize;
 
 	canvas_item_class->draw = nautilus_background_canvas_group_draw;
+	canvas_item_class->render = nautilus_background_canvas_group_render;
 }
 
 static void
@@ -113,5 +120,31 @@ nautilus_background_canvas_group_draw (GnomeCanvasItem *item, GdkDrawable *drawa
 	NAUTILUS_CALL_PARENT_CLASS (GNOME_CANVAS_ITEM_CLASS, draw,
 				    (item, drawable,
 				     drawable_corner_x, drawable_corner_y,
-				     drawable_width, drawable_height));
+				     drawable_width, drawable_height));				     
+}
+
+
+/* draw the background for the anti-aliased canvas */
+
+static void
+nautilus_background_canvas_group_render (GnomeCanvasItem *item, GnomeCanvasBuf *buffer)
+{
+	NautilusBackground *background;
+	
+	background = nautilus_get_widget_background(GTK_WIDGET (item->canvas));
+	if (background != NULL)
+		nautilus_background_draw_aa(background, buffer);
+	else
+		gnome_canvas_buf_ensure_buf (buffer);
+	
+	buffer->is_bg = FALSE;
+	buffer->is_buf = TRUE;
+	
+	/* Call through to the GnomeCanvasGroup implementation, which will draw all
+	   the canvas items.
+	*/
+	NAUTILUS_CALL_PARENT_CLASS (GNOME_CANVAS_ITEM_CLASS, render ,
+				    (item, buffer));
+				     
+	
 }

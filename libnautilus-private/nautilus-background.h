@@ -43,6 +43,8 @@
 #include <gdk/gdktypes.h>
 #include <gtk/gtkwidget.h>
 
+#include <libgnomeui/gnome-canvas.h>
+
 typedef struct NautilusBackground NautilusBackground;
 typedef struct NautilusBackgroundClass NautilusBackgroundClass;
 
@@ -78,6 +80,10 @@ void                nautilus_background_draw                  (NautilusBackgroun
 							       int                     origin_x,
 							       int                     origin_y);
 
+/* Explicitly fills a rectangle with a background on the anti-aliased canvas. */
+void                nautilus_background_draw_aa               (NautilusBackground     *background,
+							       GnomeCanvasBuf	      *buffer);
+							       
 /* Handles a dragged color being dropped on a widget to change the background color. */
 void		    nautilus_background_receive_dropped_color (NautilusBackground     *background,
 							       GtkWidget              *widget,

@@ -1,3 +1,26 @@
+2000-06-06  Andy Hertzfeld  <andy@eazel.com>
+
+	made tiled image backgrounds work properly in anti-aliased mode
+	
+	* libnautilus-extensions/nautilus-background-canvas-group.c:
+	(nautilus_background_canvas_group_initialize_class),
+	(nautilus_background_canvas_group_draw),
+	(nautilus_background_canvas_group_render):
+	overrode the render method so backgrounds draw in anti-aliased mode
+	
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_draw), (draw_pixbuf_aa), (draw_pixbuf_tiled),
+	(nautilus_background_draw_aa):
+	added nautilus_background_draw_aa to draw the background in
+	anti-aliased yet.  We don't support gradients yet, but that's
+	coming soon.
+	* libnautilus-extensions/nautilus-background.h:
+	added nautilus_background_draw_aa
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_render):
+	made it respect the is_bg flag
+	
 2000-06-05	Mathieu Lacage	<mathieu@gnome.org>
 
 	* components/rpmview/Makefile.am: add 

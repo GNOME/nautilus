@@ -1214,11 +1214,14 @@ nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 	/* compute the affine transform, but force the scale to 1.0 because the icon factory does
 	   the scaling for us */
 	gnome_canvas_item_i2c_affine (item, i2c);
-        i2c[0] = 1.0;
-        i2c[3] = 1.0;
-        gnome_canvas_buf_ensure_buf (buf);
-
-
+	i2c[0] = 1.0;
+	i2c[3] = 1.0;
+	
+	if (buf->is_bg) {
+		gnome_canvas_buf_ensure_buf (buf);
+		buf->is_bg = FALSE;
+	}
+	
 	/* draw the icon */
 	if (gdk_pixbuf_get_has_alpha(temp_pixbuf))
 		art_rgb_rgba_affine (buf->buf,
