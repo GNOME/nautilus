@@ -67,6 +67,7 @@ enum
 	ARG_SMOOTH_DROP_SHADOW_OFFSET,
 	ARG_SMOOTH_DROP_SHADOW_COLOR,
 	ARG_SMOOTH_LINE_WRAP_WIDTH,
+	ARG_ADJUST_WRAP_ON_RESIZE,
 
 	ARG_TILE_HEIGHT,
 	ARG_TILE_MODE_HORIZONTAL,
@@ -107,6 +108,7 @@ struct _NautilusLabelDetails
 	guint smooth_drop_shadow_offset;
 	guint32 smooth_drop_shadow_color;
  	guint smooth_line_wrap_width;
+	gboolean adjust_wrap_on_resize;
 
 	/* Text */
   	int text_opacity;
@@ -143,6 +145,8 @@ static void     nautilus_label_get_arg                      (GtkObject          
 /* GtkWidgetClass methods */
 static void     nautilus_label_size_request                 (GtkWidget           *widget,
 							     GtkRequisition      *requisition);
+static void     nautilus_label_size_allocate    (GtkWidget                  *widget,
+							 GtkAllocation              *allocation);
 static int      nautilus_label_expose_event                 (GtkWidget           *widget,
 							     GdkEventExpose      *event);
 
@@ -185,6 +189,7 @@ nautilus_label_initialize_class (NautilusLabelClass *label_class)
 	
 	/* GtkWidgetClass */
 	widget_class->size_request = nautilus_label_size_request;
+	widget_class->size_allocate = nautilus_label_size_allocate;
 	widget_class->expose_event = nautilus_label_expose_event;
 
 	/* NautilusLabelClass */
@@ -423,6 +428,10 @@ nautilus_label_set_arg (GtkObject *object,
 		nautilus_label_set_smooth_line_wrap_width (label, GTK_VALUE_UINT (*arg));
 		break;
 
+	case ARG_ADJUST_WRAP_ON_RESIZE:
+		nautilus_label_set_adjust_wrap_on_resize (label, GTK_VALUE_BOOL (*arg));
+		break;
+
  	default:
 		g_assert_not_reached ();
 	}
@@ -514,6 +523,10 @@ nautilus_label_get_arg (GtkObject *object,
 		GTK_VALUE_UINT (*arg) = nautilus_label_get_smooth_line_wrap_width (label);
 		break;
 
+	case ARG_ADJUST_WRAP_ON_RESIZE:
+		GTK_VALUE_BOOL (*arg) = nautilus_label_get_adjust_wrap_on_resize (label);
+		break;
+
  	default:
 		g_assert_not_reached ();
 	}
@@ -550,6 +563,26 @@ nautilus_label_size_request (GtkWidget *widget,
 								      label->details->tile_height);
    	requisition->width = preferred_frame.x1;
    	requisition->height = preferred_frame.y1;
+}
+
+static void
+nautilus_label_size_allocate (GtkWidget *widget,
+			      GtkAllocation *allocation)
+{
+	NautilusLabel *label;
+	
+ 	g_return_if_fail (NAUTILUS_IS_LABEL (widget));
+ 	g_return_if_fail (allocation != NULL);
+	
+  	label = NAUTILUS_LABEL (widget);
+	
+	/* Pre chain size_allocate */
+	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+
+	if (label->details->adjust_wrap_on_resize) {
+		label->details->smooth_line_wrap_width = allocation->width;
+		label_line_geometries_recompute (label);
+	}
 }
 
 /* Painting callback for non smooth case */
@@ -1905,7 +1938,7 @@ nautilus_label_set_never_smooth (NautilusLabel *label,
 				 gboolean never_smooth)
 {
 	g_return_if_fail (NAUTILUS_IS_LABEL (label));
-
+	
 	label->details->never_smooth = never_smooth;
 
 	label_line_geometries_recompute (label);
@@ -1921,3 +1954,40 @@ nautilus_label_set_never_smooth (NautilusLabel *label,
 	gtk_widget_queue_resize (GTK_WIDGET (label));
 }
 
+/**
+ * nautilus_label_set_adjust_wrap_on_resize:
+ *
+ * @label: A NautilusLabel
+ * @adjust_wrap_on_resize: A boolean value indicating whether the label should
+ * automatically update the line_wrap_width when its resized.
+ */
+void
+nautilus_label_set_adjust_wrap_on_resize (NautilusLabel *label,
+					  gboolean adjust_wrap_on_resize)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+
+	if (label->details->adjust_wrap_on_resize == adjust_wrap_on_resize) {
+		return;
+	}
+
+	label->details->adjust_wrap_on_resize = adjust_wrap_on_resize;
+	
+	gtk_widget_queue_resize (GTK_WIDGET (label));
+}
+
+/**
+ * nautilus_label_get_wrap:
+ *
+ * @label: A NautilusLabel
+ *
+ * Return value: A boolean value indicating whether the label
+ * automatically updates the line_wrap_width when its resized.
+ */
+gboolean
+nautilus_label_get_adjust_wrap_on_resize (const NautilusLabel *label)
+{
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), FALSE);
+
+	return label->details->adjust_wrap_on_resize;
+}

@@ -1,3 +1,31 @@
+2001-02-02  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	Fix bug 6131 - NautilusLabel does not support proper line wrap.
+	Its fixed for smooth mode.  Theres a bug (6243) for the more
+	complicated issue of wrapping in non smooth mode.
+
+	* libnautilus-extensions/nautilus-label.h:
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_initialize_class), (nautilus_label_set_arg),
+	(nautilus_label_get_arg), (nautilus_label_size_allocate),
+	(nautilus_label_set_never_smooth),
+	(nautilus_label_set_adjust_wrap_on_resize),
+	(nautilus_label_get_adjust_wrap_on_resize):
+	Add a boolean attribute 'adjust_wrap_on_resize' that controls
+	whether the label will automatically update its line wrap width
+	when its resized.
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (summary_view_item_label_new), (summary_load_location_callback):
+	No longer need size_allocate hack.  Use NautilusLabel's
+	'adjust_wrap_on_resize' attribute instead.
+	
+	* test/test-nautilus-label-wrapped.c: (create_nautilus_label),
+	(create_gtk_label_window), (create_nautilus_label_window), (main):
+	Update for 'adjust_wrap_on_resize'.
+	
 2001-02-01  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>

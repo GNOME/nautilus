@@ -99,7 +99,7 @@ GtkJustification             nautilus_label_get_text_justify               (cons
 void                         nautilus_label_set_wrap                       (NautilusLabel                *label,
 									    gboolean                      line_wrap);
 gboolean                     nautilus_label_get_wrap                       (const NautilusLabel          *label);
-GtkWidget *                  nautilus_label_new_solid                       (const char                   *text,
+GtkWidget *                  nautilus_label_new_solid                      (const char                   *text,
 									    guint                         drop_shadow_offset,
 									    guint32                       drop_shadow_color,
 									    guint32                       text_color,
@@ -136,6 +136,9 @@ void                         nautilus_label_set_tile_mode_horizontal       (Naut
 NautilusSmoothTileMode       nautilus_label_get_tile_mode_horizontal       (const NautilusLabel          *label);
 void                         nautilus_label_set_never_smooth               (NautilusLabel                *label,
 									    gboolean                      never_smooth);
+void                         nautilus_label_set_adjust_wrap_on_resize      (NautilusLabel                *label,
+									    gboolean                      adjust_wrap_on_resize);
+gboolean                     nautilus_label_get_adjust_wrap_on_resize      (const NautilusLabel          *label);
 
 END_GNOME_DECLS
 

@@ -94,9 +94,6 @@ static GtkWidget * generate_update_news_entry_row      (NautilusSummaryView     
 							void                       *data);
 static void     summary_view_button_callback           (GtkWidget                  *button, 
 							ServicesButtonCallbackData *cbdata);
-static void     text_resize_callback                   (GtkWidget *widget,
-							GtkAllocation *allocation,
-							gpointer user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
 
@@ -223,12 +220,8 @@ summary_view_item_label_new (char *label_text,
 					  bold);
 	nautilus_label_set_wrap (NAUTILUS_LABEL (label), TRUE);
 	nautilus_label_set_justify (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment (GTK_MISC (label),
-				0, 0);
-
-	gtk_signal_connect (GTK_OBJECT (label), "size_allocate",
-			    text_resize_callback, NULL);
-
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0);
+	nautilus_label_set_adjust_wrap_on_resize (NAUTILUS_LABEL (label), TRUE);
 
 	return label;
 }
@@ -916,16 +909,4 @@ summary_load_location_callback (NautilusView		*nautilus_view,
 	nautilus_summary_view_load_uri (view, location);
 
 	nautilus_view_report_load_complete (nautilus_view);
-}
-
-static void
-text_resize_callback      (GtkWidget *widget,
-			   GtkAllocation *allocation,
-			   gpointer user_data)
-{
-	g_return_if_fail (NAUTILUS_IS_LABEL (widget));
-	g_return_if_fail (allocation != NULL);
-
-	nautilus_label_set_smooth_line_wrap_width (NAUTILUS_LABEL (widget),
-						   allocation->width);
 }
