@@ -70,4 +70,4 @@ dfos_corba_stamp: $(top_srcdir)/idl/GNOME_Desktop_FileOperationService.idl
 
 BUILT_SOURCES=$(dfos_corba_srcs)
 
-CLEAN_FILES=$(dfos_corba_srcs) dfos_corba_stamp
+CLEANFILES=$(dfos_corba_srcs) dfos_corba_stamp

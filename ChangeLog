@@ -1,3 +1,10 @@
+2000-05-12  Eskil Heyn Olsen  <eskil@eazel.om>
+
+	* src/file-manager/Makefile.am (CLEANFILES): Fixed the CLEANFILES
+	so the corba generated file and the dfos_corba_stamp get's deleted
+	on make clean - thus build no longer breaks on missing files after
+	a few make all/clean iterations.
+
 2000-05-11  J Shane Culpepper <pepper@eazel.com>
 
 	* components/services/trilobite/lib/*
