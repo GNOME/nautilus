@@ -158,6 +158,7 @@ static void          icon_get_bounding_box                 (NautilusIcon        
 static gboolean      is_renaming                           (NautilusIconContainer      *container);
 static gboolean      is_renaming_pending                   (NautilusIconContainer      *container);
 static void          process_pending_icon_to_rename        (NautilusIconContainer      *container);
+static void          setup_label_gcs                       (NautilusIconContainer      *container);
 
 static int click_policy_auto_value;
 
@@ -2403,6 +2404,8 @@ realize (GtkWidget *widget)
 		(GTK_LAYOUT (widget)->bin_window,
 		 &widget->style->bg[GTK_STATE_NORMAL]);
 
+	setup_label_gcs (NAUTILUS_ICON_CONTAINER (widget));
+
  	/* make us the focused widget */
  	g_assert (GTK_IS_WINDOW (gtk_widget_get_toplevel (widget)));
 	window = GTK_WINDOW (gtk_widget_get_toplevel (widget));
@@ -2412,10 +2415,22 @@ realize (GtkWidget *widget)
 static void
 unrealize (GtkWidget *widget)
 {
+	int i;
 	GtkWindow *window;
+	NautilusIconContainer *container;
+
+	container = NAUTILUS_ICON_CONTAINER (widget);
+
         g_assert (GTK_IS_WINDOW (gtk_widget_get_toplevel (widget)));
         window = GTK_WINDOW (gtk_widget_get_toplevel (widget));
 	gtk_window_set_focus (window, NULL);
+
+	for (i = 0; i < LAST_LABEL_COLOR; i++) {
+		if (container->details->label_gcs [i]) {
+			g_object_unref (container->details->label_gcs [i]);
+			container->details->label_gcs [i] = NULL;
+		}
+	}
 
 	GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
 }
@@ -5011,41 +5026,67 @@ nautilus_icon_container_set_single_click_mode (NautilusIconContainer *container,
 
 /* update the label color when the background changes */
 
-GdkColor *
-nautilus_icon_container_get_label_color (NautilusIconContainer *container,
-					 gboolean               is_name,
-					 gboolean               is_highlight)
+GdkGC *
+nautilus_icon_container_get_label_color_and_gc (NautilusIconContainer *container,
+						GdkColor             **color,
+						gboolean               is_name,
+						gboolean               is_highlight)
 {
-	GtkStyle *style;
-
-	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), 0);
-
-	style = gtk_widget_get_style (GTK_WIDGET (container));
+	int idx;
 
 	if (is_name) {
 		if (is_highlight) {
-			return &container->details->label_color_highlight;
+			idx = LABEL_COLOR_HIGHLIGHT;
 		} else {
-			return &container->details->label_color;
+			idx = LABEL_COLOR;
 		}
 	} else {
 		if (is_highlight) {
-			return &container->details->label_info_color_highlight;
+			idx = LABEL_INFO_COLOR_HIGHLIGHT;
 		} else {
-			return &container->details->label_info_color;
+			idx = LABEL_INFO_COLOR;
 		}
 	}
+
+	if (color) {
+		*color = &container->details->label_colors [idx];
+	}
+
+	return container->details->label_gcs [idx];
 }
 
 static void
-update_label_color (EelBackground         *background,
-		    NautilusIconContainer *container)
+setup_gc_with_fg (NautilusIconContainer *container, int idx, guint32 color)
 {
+	GdkGC *gc;
+	GdkColor gcolor;
+
+	gcolor = eel_gdk_rgb_to_color (color);
+	container->details->label_colors [idx] = gcolor;
+
+	gc = gdk_gc_new (GTK_LAYOUT (container)->bin_window);
+	gdk_gc_set_rgb_fg_color (gc, &gcolor);
+
+	if (container->details->label_gcs [idx]) {
+		g_object_unref (container->details->label_gcs [idx]);
+	}
+
+	container->details->label_gcs [idx] = gc;
+}
+
+static void
+setup_label_gcs (NautilusIconContainer *container)
+{
+	EelBackground *background;
 	char *light_info_color, *dark_info_color;
 	uint light_info_value, dark_info_value;
-	
-	g_assert (EEL_IS_BACKGROUND (background));
+
+	if (!GTK_WIDGET_REALIZED (container))
+		return;
+
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	background = eel_get_widget_background (GTK_WIDGET (container));
 
 	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
 	 * The NautilusIconContainer class should simply provide calls to set the colors.
@@ -5066,17 +5107,26 @@ update_label_color (EelBackground         *background,
 		dark_info_value = strtoul (dark_info_color, NULL, 0);
 		g_free (dark_info_color);
 	}
-	
-	container->details->label_color_highlight = eel_gdk_rgb_to_color (0xFFFFFF);
-	container->details->label_info_color_highlight = eel_gdk_rgb_to_color (0xCCCCCC);
-	
+
+	setup_gc_with_fg (container, LABEL_COLOR_HIGHLIGHT, 0xFFFFFF);
+	setup_gc_with_fg (container, LABEL_INFO_COLOR_HIGHLIGHT, 0xCCCCCC);
+		
 	if (container->details->use_drop_shadows || eel_background_is_dark (background)) {
-		container->details->label_color = eel_gdk_rgb_to_color (0xEFEFEF);
-		container->details->label_info_color = eel_gdk_rgb_to_color (light_info_value);
+		setup_gc_with_fg (container, LABEL_COLOR, 0xEFEFEF);
+		setup_gc_with_fg (container, LABEL_INFO_COLOR, light_info_value);
 	} else { /* converse */
-		container->details->label_color = eel_gdk_rgb_to_color (0x000000);
-		container->details->label_info_color = eel_gdk_rgb_to_color (dark_info_value);
+		setup_gc_with_fg (container, LABEL_COLOR, 0x000000);
+		setup_gc_with_fg (container, LABEL_INFO_COLOR, dark_info_value);
 	}
+}
+
+static void
+update_label_color (EelBackground         *background,
+		    NautilusIconContainer *container)
+{
+	g_assert (EEL_IS_BACKGROUND (background));
+
+	setup_label_gcs (container);
 }
 
 

@@ -133,7 +133,7 @@ typedef struct {
 	GList *emblem;
 } EmblemLayout;
 
-static  gboolean antialias_selection_rectangle = TRUE;
+#define ANTIALIAS_SELECTION_RECTANGLE TRUE
 
 static int click_policy_auto_value;
 
@@ -651,7 +651,6 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 
 	canvas_item = GNOME_CANVAS_ITEM (item);
 	if (drawable != NULL) {
-		gc = gdk_gc_new (canvas_item->canvas->layout.bin_window);
 		icon_width = details->pixbuf == NULL ? 0 : gdk_pixbuf_get_width (details->pixbuf);
 	}
 	
@@ -665,7 +664,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	/* if the icon is highlighted, do some set-up */
 	if (needs_highlight && drawable != NULL && !details->is_renaming &&
 	    details->text_width > 0 && details->text_height > 0) {
-		if (antialias_selection_rectangle) {
+		if (ANTIALIAS_SELECTION_RECTANGLE) {
 			selection_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
 							   TRUE,
 							   8,
@@ -680,10 +679,8 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 				     icon_bottom);
 			g_object_unref (selection_pixbuf);
 		} else {
-			gdk_gc_set_rgb_fg_color (gc, &container->details->highlight_color);
-			
 			gdk_draw_rectangle
-				(drawable, GTK_WIDGET (GNOME_CANVAS_ITEM (item)->canvas)->style->black_gc, TRUE,
+				(drawable, GTK_WIDGET (container)->style->black_gc, TRUE,
 				 icon_left + (icon_width - details->text_width) / 2,
 				 icon_bottom,
 				 details->text_width, details->text_height);
@@ -695,11 +692,9 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		layout = get_label_layout (&details->editable_text_layout, item, details->editable_text);
 
 		if (drawable != NULL) {
-			label_color = nautilus_icon_container_get_label_color
+			gc = nautilus_icon_container_get_label_color_and_gc
 				(NAUTILUS_ICON_CONTAINER (canvas_item->canvas),
-				 TRUE, needs_highlight);
-
-			gdk_gc_set_rgb_fg_color (gc, label_color);
+				 &label_color, TRUE, needs_highlight);
 			
 			draw_label_layout (item, drawable,
 					   layout, needs_highlight,
@@ -720,12 +715,10 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		layout = get_label_layout (&details->additional_text_layout, item, details->additional_text);
 
 		if (drawable != NULL) {
-			label_color = nautilus_icon_container_get_label_color
+			gc = nautilus_icon_container_get_label_color_and_gc
 				(NAUTILUS_ICON_CONTAINER (canvas_item->canvas),
-				 FALSE, needs_highlight);
+				 &label_color, FALSE, needs_highlight);
 
-			gdk_gc_set_rgb_fg_color (gc, label_color);
-			
 			draw_label_layout (item, drawable,
 					   layout, needs_highlight,
 					   label_color,
@@ -737,10 +730,9 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 
 		width_so_far = MAX (width_so_far, (guint) layout_width);
 		height_so_far += layout_height + LABEL_LINE_SPACING;
-
 	}
 	
-	if (antialias_selection_rectangle) {
+	if (ANTIALIAS_SELECTION_RECTANGLE) {
 		/* add some extra space for highlighting even when we don't highlight so things won't move */
 		height_so_far += 2; /* extra slop for nicer highlighting */	
 		width_so_far += 8;  /* account for emboldening, plus extra to make it look nicer */
@@ -777,10 +769,6 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		/* If measuring, remember the width & height. */
 		details->text_width = width_so_far;
 		details->text_height = height_so_far;
-	}
-
-	if (gc != NULL) {
-		g_object_unref (gc);
 	}
 }
 
@@ -1229,7 +1217,7 @@ draw_label_layout (NautilusIconCanvasItem *item,
 		return;
 	}
 
-	if (!highlight || !antialias_selection_rectangle) {
+	if (!highlight || !ANTIALIAS_SELECTION_RECTANGLE) {
 		if (NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (item)->canvas)->details->use_drop_shadows) {
 			/* draw a drop shadow */
 			eel_gdk_draw_layout_with_drop_shadow (drawable, gc,

@@ -1,5 +1,22 @@
 2002-07-11  Michael Meeks  <michael@ximian.com>
 
+	* libnautilus-private/nautilus-icon-container.c
+	(setup_gc_with_fg, setup_label_gcs, update_label_color):
+	impl, split, upd.
+	(nautilus_icon_container_get_label_color): don't
+	fetch the style for no good reason, get the colored
+	gc from an array instead. rename to
+	(nautilus_icon_container_get_label_color_and_gc): this
+	(realize, unrealize): setup / free the gcs.
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(draw_or_measure_label_text): use cached gc(s) from
+	the container, instead of thrashing them.
+	(antialias_selection_rectangle): upper case, and #define
+	since it's always true.
+
+2002-07-11  Michael Meeks  <michael@ximian.com>
+
 	* libnautilus-private/nautilus-icon-canvas-item.c
 	(nautilus_icon_canvas_item_update): move the render out of
 	update_bounds so we request_redraw if the bounds don't change,
