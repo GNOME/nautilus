@@ -2,7 +2,7 @@
 #include <config.h>
 
 #include <gtk/gtk.h>
-#include <libnautilus-extensions/nautilus-graphic.h>
+#include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
@@ -40,175 +40,175 @@ create_pixbuf (const char *name)
 }
 
 static GtkWidget*
-create_graphic (const char *name, GdkPixbuf *background)
+create_image (const char *name, GdkPixbuf *background)
 {
-	GtkWidget	*graphic;
+	GtkWidget	*image;
 	GdkPixbuf	*pixbuf;
 
 	g_assert (background != NULL);
 
-	graphic = nautilus_graphic_new ();
-	g_assert (graphic != NULL);
+	image = nautilus_image_new ();
+	g_assert (image != NULL);
 
-	nautilus_graphic_set_background_type (NAUTILUS_GRAPHIC (graphic), NAUTILUS_GRAPHIC_BACKGROUND_PIXBUF);
-	nautilus_graphic_set_background_pixbuf (NAUTILUS_GRAPHIC (graphic), background);
+	nautilus_image_set_background_type (NAUTILUS_IMAGE (image), NAUTILUS_IMAGE_BACKGROUND_PIXBUF);
+	nautilus_image_set_background_pixbuf (NAUTILUS_IMAGE (image), background);
 
 	if (name != NULL)
 	{
 		pixbuf = create_pixbuf (name);
 		g_assert (pixbuf != NULL);
 		
-		nautilus_graphic_set_pixbuf (NAUTILUS_GRAPHIC (graphic), pixbuf);
+		nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image), pixbuf);
 		
 		gdk_pixbuf_unref (pixbuf);
 	}
 
-	return graphic;
+	return image;
 }
 
 static void
 alpha_scale_value_changed (GtkAdjustment *adjustment, gpointer client_data)
 {
-	GList *graphic_list;
+	GList *image_list;
 
 	g_return_if_fail (adjustment != NULL);
 	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
 	g_return_if_fail (client_data != NULL);
 
-	graphic_list = (GList *) client_data;
+	image_list = (GList *) client_data;
 
-	while (graphic_list)
+	while (image_list)
 	{
-		g_assert (graphic_list->data != NULL);
-		g_assert (NAUTILUS_IS_GRAPHIC (graphic_list->data));
+		g_assert (image_list->data != NULL);
+		g_assert (NAUTILUS_IS_IMAGE (image_list->data));
 
-		nautilus_graphic_set_overall_alpha (NAUTILUS_GRAPHIC (graphic_list->data), (guchar) adjustment->value);
+		nautilus_image_set_overall_alpha (NAUTILUS_IMAGE (image_list->data), (guchar) adjustment->value);
 
-		graphic_list = graphic_list->next;
+		image_list = image_list->next;
 	}
 }
 
 static void
 red_color_value_changed (GtkAdjustment *adjustment, gpointer client_data)
 {
-	GList *graphic_list;
+	GList *image_list;
 
 	g_return_if_fail (adjustment != NULL);
 	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
 	g_return_if_fail (client_data != NULL);
 
-	graphic_list = (GList *) client_data;
+	image_list = (GList *) client_data;
 
-	while (graphic_list)
+	while (image_list)
 	{
-		NautilusGraphic	 *graphic;
+		NautilusImage	 *image;
 		guint32	 color;
 
-		g_assert (graphic_list->data != NULL);
-		g_assert (NAUTILUS_IS_GRAPHIC (graphic_list->data));
+		g_assert (image_list->data != NULL);
+		g_assert (NAUTILUS_IS_IMAGE (image_list->data));
 
-		graphic = NAUTILUS_GRAPHIC (graphic_list->data);
+		image = NAUTILUS_IMAGE (image_list->data);
 
-		color = nautilus_graphic_get_background_color (graphic);
+		color = nautilus_image_get_background_color (image);
 
 		color = NAUTILUS_RGBA_COLOR_PACK ((guchar) adjustment->value,
 						  NAUTILUS_RGBA_COLOR_GET_G (color),
 						  NAUTILUS_RGBA_COLOR_GET_B (color),
 						  NAUTILUS_RGBA_COLOR_GET_A (color));
 		
-		nautilus_graphic_set_background_color (graphic, color);
+		nautilus_image_set_background_color (image, color);
 
-		graphic_list = graphic_list->next;
+		image_list = image_list->next;
 	}
 }
 
 static void
 green_color_value_changed (GtkAdjustment *adjustment, gpointer client_data)
 {
-	GList *graphic_list;
+	GList *image_list;
 
 	g_return_if_fail (adjustment != NULL);
 	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
 	g_return_if_fail (client_data != NULL);
 
-	graphic_list = (GList *) client_data;
+	image_list = (GList *) client_data;
 
-	while (graphic_list)
+	while (image_list)
 	{
-		NautilusGraphic	 *graphic;
+		NautilusImage	 *image;
 		guint32	 color;
 
-		g_assert (graphic_list->data != NULL);
-		g_assert (NAUTILUS_IS_GRAPHIC (graphic_list->data));
+		g_assert (image_list->data != NULL);
+		g_assert (NAUTILUS_IS_IMAGE (image_list->data));
 
-		graphic = NAUTILUS_GRAPHIC (graphic_list->data);
+		image = NAUTILUS_IMAGE (image_list->data);
 
-		color = nautilus_graphic_get_background_color (graphic);
+		color = nautilus_image_get_background_color (image);
 
 		color = NAUTILUS_RGBA_COLOR_PACK (NAUTILUS_RGBA_COLOR_GET_R (color),
 						  (guchar) adjustment->value,
 						  NAUTILUS_RGBA_COLOR_GET_B (color),
 						  NAUTILUS_RGBA_COLOR_GET_A (color));
 		
-		nautilus_graphic_set_background_color (graphic, color);
+		nautilus_image_set_background_color (image, color);
 
-		graphic_list = graphic_list->next;
+		image_list = image_list->next;
 	}
 }
 
 static void
 blue_color_value_changed (GtkAdjustment *adjustment, gpointer client_data)
 {
-	GList *graphic_list;
+	GList *image_list;
 
 	g_return_if_fail (adjustment != NULL);
 	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
 	g_return_if_fail (client_data != NULL);
 
-	graphic_list = (GList *) client_data;
+	image_list = (GList *) client_data;
 
-	while (graphic_list)
+	while (image_list)
 	{
-		NautilusGraphic	 *graphic;
+		NautilusImage	 *image;
 		guint32	 color;
 
-		g_assert (graphic_list->data != NULL);
-		g_assert (NAUTILUS_IS_GRAPHIC (graphic_list->data));
+		g_assert (image_list->data != NULL);
+		g_assert (NAUTILUS_IS_IMAGE (image_list->data));
 
-		graphic = NAUTILUS_GRAPHIC (graphic_list->data);
+		image = NAUTILUS_IMAGE (image_list->data);
 
-		color = nautilus_graphic_get_background_color (graphic);
+		color = nautilus_image_get_background_color (image);
 
 		color = NAUTILUS_RGBA_COLOR_PACK (NAUTILUS_RGBA_COLOR_GET_R (color),
 						  NAUTILUS_RGBA_COLOR_GET_G (color),
 						  (guchar) adjustment->value,
 						  NAUTILUS_RGBA_COLOR_GET_A (color));
 		
-		nautilus_graphic_set_background_color (graphic, color);
+		nautilus_image_set_background_color (image, color);
 
-		graphic_list = graphic_list->next;
+		image_list = image_list->next;
 	}
 }
 
 static void
 toggle_background_type_callback (GtkWidget *widget, gpointer client_data)
 {
-	NautilusGraphic *graphic;
+	NautilusImage *image;
 
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (GTK_IS_BUTTON (widget));
 	g_return_if_fail (client_data != NULL);
-	g_return_if_fail (NAUTILUS_IS_GRAPHIC (client_data));
+	g_return_if_fail (NAUTILUS_IS_IMAGE (client_data));
 
-	graphic = NAUTILUS_GRAPHIC (client_data);
+	image = NAUTILUS_IMAGE (client_data);
 
-	if (nautilus_graphic_get_background_type (graphic) == NAUTILUS_GRAPHIC_BACKGROUND_PIXBUF)
+	if (nautilus_image_get_background_type (image) == NAUTILUS_IMAGE_BACKGROUND_PIXBUF)
 	{
-		nautilus_graphic_set_background_type (graphic, NAUTILUS_GRAPHIC_BACKGROUND_SOLID);
+		nautilus_image_set_background_type (image, NAUTILUS_IMAGE_BACKGROUND_SOLID);
 	}
 	else
 	{
-		nautilus_graphic_set_background_type (graphic, NAUTILUS_GRAPHIC_BACKGROUND_PIXBUF);
+		nautilus_image_set_background_type (image, NAUTILUS_IMAGE_BACKGROUND_PIXBUF);
 	}
 }
 
@@ -242,7 +242,7 @@ main (int argc, char* argv[])
 {
 	GtkWidget	*window;
 	GtkWidget	*main_box;
-	GtkWidget	*graphic_box;
+	GtkWidget	*image_box;
 	GtkWidget	*tool_box;
 	GtkWidget	*toggle_background_type;
 
@@ -254,13 +254,13 @@ main (int argc, char* argv[])
 
 	GdkPixbuf	*background;
 
-	GtkWidget	*graphic1;
-	GtkWidget	*graphic2;
-	GtkWidget	*graphic3;
+	GtkWidget	*image1;
+	GtkWidget	*image2;
+	GtkWidget	*image3;
 
-	GtkWidget	*background_graphic;
+	GtkWidget	*background_image;
 
-	GList		*graphic_list = NULL;
+	GList		*image_list = NULL;
 
 	const char	*file_name1 = "eazel-services-logo.png";
 	const char	*file_name2 = "eazel-services-logo-tile.png";
@@ -270,7 +270,7 @@ main (int argc, char* argv[])
 	gdk_rgb_init ();
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title (GTK_WINDOW (window), "Graphic Test");
+	gtk_window_set_title (GTK_WINDOW (window), "Image Test");
 	gtk_container_set_border_width (GTK_CONTAINER (window), 10);
 
 	main_box = gtk_vbox_new (FALSE, 0);
@@ -278,51 +278,51 @@ main (int argc, char* argv[])
 
 	background = create_background ();
 
-	graphic1 = create_graphic (file_name1, background);
-	graphic2 = create_graphic (file_name2, background);
-	graphic3 = create_graphic (file_name3, background);
-	background_graphic = create_graphic (NULL, background);
+	image1 = create_image (file_name1, background);
+	image2 = create_image (file_name2, background);
+	image3 = create_image (file_name3, background);
+	background_image = create_image (NULL, background);
 
-	graphic_list = g_list_append (graphic_list, graphic1);
-	graphic_list = g_list_append (graphic_list, graphic2);
-	graphic_list = g_list_append (graphic_list, graphic3);
-	graphic_list = g_list_append (graphic_list, background_graphic);
+	image_list = g_list_append (image_list, image1);
+	image_list = g_list_append (image_list, image2);
+	image_list = g_list_append (image_list, image3);
+	image_list = g_list_append (image_list, background_image);
 
-	nautilus_graphic_set_placement_type (NAUTILUS_GRAPHIC (graphic2), NAUTILUS_GRAPHIC_PLACEMENT_TILE);
-	nautilus_graphic_set_placement_type (NAUTILUS_GRAPHIC (graphic3), NAUTILUS_GRAPHIC_PLACEMENT_TILE);
+	nautilus_image_set_placement_type (NAUTILUS_IMAGE (image2), NAUTILUS_IMAGE_PLACEMENT_TILE);
+	nautilus_image_set_placement_type (NAUTILUS_IMAGE (image3), NAUTILUS_IMAGE_PLACEMENT_TILE);
 
 	{
 		GdkFont *font;
 
 		font = nautilus_font_factory_get_font_by_family ("helvetica", 20);
 
-		nautilus_graphic_set_label_text (NAUTILUS_GRAPHIC (graphic3), "Welcome Back, Arlo!");
-		nautilus_graphic_set_label_font (NAUTILUS_GRAPHIC (graphic3), font);
+		nautilus_image_set_label_text (NAUTILUS_IMAGE (image3), "Welcome Back, Arlo!");
+		nautilus_image_set_label_font (NAUTILUS_IMAGE (image3), font);
 
 		gdk_font_unref (font);
 
-		nautilus_graphic_set_extra_width (NAUTILUS_GRAPHIC (graphic3), 8);
-		nautilus_graphic_set_right_offset (NAUTILUS_GRAPHIC (graphic3), 8);
-		nautilus_graphic_set_top_offset (NAUTILUS_GRAPHIC (graphic3), 3);
+		nautilus_image_set_extra_width (NAUTILUS_IMAGE (image3), 8);
+		nautilus_image_set_right_offset (NAUTILUS_IMAGE (image3), 8);
+		nautilus_image_set_top_offset (NAUTILUS_IMAGE (image3), 3);
 	}
 	
-	graphic_box = gtk_hbox_new (FALSE, 0);
+	image_box = gtk_hbox_new (FALSE, 0);
 	tool_box = gtk_hbox_new (FALSE, 0);
 
-	gtk_box_pack_start (GTK_BOX (main_box), graphic_box, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (main_box), background_graphic, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (main_box), image_box, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (main_box), background_image, TRUE, TRUE, 0);
 	gtk_box_pack_end (GTK_BOX (main_box), tool_box, FALSE, FALSE, 10);
 
-	gtk_box_pack_start (GTK_BOX (graphic_box), graphic1, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (graphic_box), graphic2, TRUE, TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (graphic_box), graphic3, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (image_box), image1, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (image_box), image2, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (image_box), image3, FALSE, FALSE, 0);
 
-	alpha_scale = create_color_scale (255, alpha_scale_value_changed, graphic_list);
+	alpha_scale = create_color_scale (255, alpha_scale_value_changed, image_list);
 
 	toggle_background_type = gtk_button_new_with_label ("Toggle Background Type");
-	red_scale = create_color_scale (255, red_color_value_changed, graphic_list);
-	green_scale = create_color_scale (255, green_color_value_changed, graphic_list);
-	blue_scale = create_color_scale (255, blue_color_value_changed, graphic_list);
+	red_scale = create_color_scale (255, red_color_value_changed, image_list);
+	green_scale = create_color_scale (255, green_color_value_changed, image_list);
+	blue_scale = create_color_scale (255, blue_color_value_changed, image_list);
 	
 	gtk_box_pack_start (GTK_BOX (tool_box), alpha_scale, FALSE, FALSE, 5);
 	gtk_box_pack_start (GTK_BOX (tool_box), toggle_background_type, FALSE, FALSE, 5);
@@ -333,21 +333,21 @@ main (int argc, char* argv[])
 	gtk_signal_connect (GTK_OBJECT (toggle_background_type), 
 			    "clicked",
 			    GTK_SIGNAL_FUNC (toggle_background_type_callback),
-			    (gpointer) graphic1);
+			    (gpointer) image1);
 
 	gtk_signal_connect (GTK_OBJECT (toggle_background_type), 
 			    "clicked",
 			    GTK_SIGNAL_FUNC (toggle_background_type_callback),
-			    (gpointer) graphic2);
+			    (gpointer) image2);
 	gtk_signal_connect (GTK_OBJECT (toggle_background_type), 
 			    "clicked",
 			    GTK_SIGNAL_FUNC (toggle_background_type_callback),
-			    (gpointer) graphic3);
+			    (gpointer) image3);
 
 	gtk_signal_connect (GTK_OBJECT (toggle_background_type), 
 			    "clicked",
 			    GTK_SIGNAL_FUNC (toggle_background_type_callback),
-			    (gpointer) background_graphic);
+			    (gpointer) background_image);
 
 	gtk_widget_show_all (window);
 

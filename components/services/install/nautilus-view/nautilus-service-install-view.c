@@ -38,7 +38,7 @@
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
-#include <libnautilus-extensions/nautilus-graphic.h>
+#include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -51,34 +51,34 @@
 #define SERVICE_DOMAIN_NAME			"testmachine.eazel.com"
 #define NEXT_VIEW				"http://eazel1.eazel.com/services/control2.html"
 
-static void       nautilus_service_install_view_initialize_class (NautilusServiceInstallViewClass	*klass);
-static void       nautilus_service_install_view_initialize       (NautilusServiceInstallView		*view);
-static void       nautilus_service_install_view_destroy          (GtkObject				*object);
-static void       service_install_load_location_callback         (NautilusView				*nautilus_view,
-								  const char				*location,
-								  NautilusServiceInstallView		*view);
-static void       generate_install_form                          (NautilusServiceInstallView		*view);
-static void       fake_overall_install_progress                  (NautilusServiceInstallView		*view);
-static void       generate_current_progress                      (NautilusServiceInstallView		*view,
-								  char					*progress_message);
-static void       nautilus_service_install_view_update_from_uri  (NautilusServiceInstallView		*view,
-								  const char				*uri);
-static void       show_overall_feedback                          (NautilusServiceInstallView		*view,
-								  char					*progress_message);
-static GtkWidget* create_title_widget                            (const char				*title_text);
-static GtkWidget* create_middle_title_widget                     (const char				*left_text,
-								  const char				*right_text);
-static GtkWidget* create_graphic_widget                          (const char				*icon_name,
-								  const char				*background_color_spec,
-								  NautilusGraphicPlacementType		placement);
-static void	go_to_uri					(NautilusServiceInstallView		*view,
-								 char					*uri);
+static void       nautilus_service_install_view_initialize_class (NautilusServiceInstallViewClass *klass);
+static void       nautilus_service_install_view_initialize       (NautilusServiceInstallView      *view);
+static void       nautilus_service_install_view_destroy          (GtkObject                       *object);
+static void       service_install_load_location_callback         (NautilusView                    *nautilus_view,
+								  const char                      *location,
+								  NautilusServiceInstallView      *view);
+static void       generate_install_form                          (NautilusServiceInstallView      *view);
+static void       fake_overall_install_progress                  (NautilusServiceInstallView      *view);
+static void       generate_current_progress                      (NautilusServiceInstallView      *view,
+								  char                            *progress_message);
+static void       nautilus_service_install_view_update_from_uri  (NautilusServiceInstallView      *view,
+								  const char                      *uri);
+static void       show_overall_feedback                          (NautilusServiceInstallView      *view,
+								  char                            *progress_message);
+static GtkWidget* create_title_widget                            (const char                      *title_text);
+static GtkWidget* create_middle_title_widget                     (const char                      *left_text,
+								  const char                      *right_text);
+static GtkWidget* create_image_widget                            (const char                      *icon_name,
+								  const char                      *background_color_spec,
+								  NautilusImagePlacementType       placement);
+static void       go_to_uri                                      (NautilusServiceInstallView      *view,
+								  char                            *uri);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusServiceInstallView, nautilus_service_install_view, GTK_TYPE_EVENT_BOX)
 
 static void
-generate_install_form (NautilusServiceInstallView	*view) {
-
+generate_install_form (NautilusServiceInstallView	*view) 
+{
 	GdkFont		*font;
 	GtkWidget	*temp_box;
 	GtkWidget	*title;
@@ -152,19 +152,19 @@ generate_install_form (NautilusServiceInstallView	*view) {
 }
 
 static GtkWidget*
-create_graphic_widget (const char			*icon_name,
-		       const char			*background_color_spec,
-		       NautilusGraphicPlacementType	placement)
+create_image_widget (const char			*icon_name,
+		     const char			*background_color_spec,
+		     NautilusImagePlacementType	placement)
 {
 	char		*path;
-	GtkWidget	*graphic;
+	GtkWidget	*image;
 	GdkPixbuf	*pixbuf;
 	guint32		background_rgb;
 
 	g_return_val_if_fail (icon_name != NULL, NULL);
 	g_return_val_if_fail (background_color_spec != NULL, NULL);
 
-	graphic = nautilus_graphic_new();
+	image = nautilus_image_new();
 	
 	path = nautilus_pixmap_file (icon_name);
 	
@@ -172,68 +172,68 @@ create_graphic_widget (const char			*icon_name,
 	g_free (path);
 
 	if (pixbuf != NULL) {
-		nautilus_graphic_set_pixbuf (NAUTILUS_GRAPHIC (graphic), pixbuf);
+		nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image), pixbuf);
 		gdk_pixbuf_unref (pixbuf);
 	}
 	else {
 		g_warning ("Could not find the requested icon.");
 	}
 	
-	nautilus_graphic_set_background_type (NAUTILUS_GRAPHIC (graphic),
-					      NAUTILUS_GRAPHIC_BACKGROUND_SOLID);
+	nautilus_image_set_background_type (NAUTILUS_IMAGE (image),
+					    NAUTILUS_IMAGE_BACKGROUND_SOLID);
 	
 	background_rgb = nautilus_parse_rgb_with_white_default (background_color_spec);
 	
-	nautilus_graphic_set_background_color (NAUTILUS_GRAPHIC (graphic),
-					       background_rgb);
+	nautilus_image_set_background_color (NAUTILUS_IMAGE (image),
+					     background_rgb);
 
-	nautilus_graphic_set_placement_type (NAUTILUS_GRAPHIC (graphic), placement);
+	nautilus_image_set_placement_type (NAUTILUS_IMAGE (image), placement);
 
-	return graphic;
+	return image;
 }
 
 static GtkWidget*
 create_title_widget (const char *title_text) 
 {
         GtkWidget	*title_hbox;
-        GtkWidget	*logo_graphic;
-        GtkWidget	*filler_graphic;
-        GtkWidget	*text_graphic;
+        GtkWidget	*logo_image;
+        GtkWidget	*filler_image;
+        GtkWidget	*text_image;
 	GdkFont		*font;
 
 	g_assert (title_text != NULL);
 
         title_hbox = gtk_hbox_new (FALSE, 0);
 
-	logo_graphic = create_graphic_widget ("eazel-services-logo.png",
+	logo_image = create_image_widget ("eazel-services-logo.png",
 					      SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
-					      NAUTILUS_GRAPHIC_PLACEMENT_CENTER);
+					      NAUTILUS_IMAGE_PLACEMENT_CENTER);
 
-	filler_graphic = create_graphic_widget ("eazel-services-logo-tile.png",
+	filler_image = create_image_widget ("eazel-services-logo-tile.png",
 						SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
-						NAUTILUS_GRAPHIC_PLACEMENT_TILE);
+						NAUTILUS_IMAGE_PLACEMENT_TILE);
 
-	text_graphic = create_graphic_widget ("eazel-services-logo-tile.png",
+	text_image = create_image_widget ("eazel-services-logo-tile.png",
 					      SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
-					      NAUTILUS_GRAPHIC_PLACEMENT_TILE);
+					      NAUTILUS_IMAGE_PLACEMENT_TILE);
 
 	font = nautilus_font_factory_get_font_by_family ("helvetica", 20);
 
-	nautilus_graphic_set_label_text (NAUTILUS_GRAPHIC (text_graphic), title_text);
-	nautilus_graphic_set_label_font (NAUTILUS_GRAPHIC (text_graphic), font);
-	nautilus_graphic_set_extra_width (NAUTILUS_GRAPHIC (text_graphic), 8);
-	nautilus_graphic_set_right_offset (NAUTILUS_GRAPHIC (text_graphic), 8);
-	nautilus_graphic_set_top_offset (NAUTILUS_GRAPHIC (text_graphic), 3);
+	nautilus_image_set_label_text (NAUTILUS_IMAGE (text_image), title_text);
+	nautilus_image_set_label_font (NAUTILUS_IMAGE (text_image), font);
+	nautilus_image_set_extra_width (NAUTILUS_IMAGE (text_image), 8);
+	nautilus_image_set_right_offset (NAUTILUS_IMAGE (text_image), 8);
+	nautilus_image_set_top_offset (NAUTILUS_IMAGE (text_image), 3);
 
 	gdk_font_unref (font);
 
-	gtk_widget_show (logo_graphic);
-	gtk_widget_show (filler_graphic);
-	gtk_widget_show (text_graphic);
+	gtk_widget_show (logo_image);
+	gtk_widget_show (filler_image);
+	gtk_widget_show (text_image);
 
-        gtk_box_pack_start (GTK_BOX (title_hbox), logo_graphic, FALSE, FALSE, 0);
-        gtk_box_pack_start (GTK_BOX (title_hbox), filler_graphic, TRUE, TRUE, 0);
-        gtk_box_pack_end (GTK_BOX (title_hbox), text_graphic, FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX (title_hbox), logo_image, FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX (title_hbox), filler_image, TRUE, TRUE, 0);
+        gtk_box_pack_end (GTK_BOX (title_hbox), text_image, FALSE, FALSE, 0);
 
 	return title_hbox;
 }
@@ -243,9 +243,9 @@ create_middle_title_widget (const char *left_text,
 			    const char *right_text)
 {
         GtkWidget	*title_hbox;
-        GtkWidget	*left_graphic;
-        GtkWidget	*right_graphic;
-        GtkWidget	*filler_graphic;
+        GtkWidget	*left_image;
+        GtkWidget	*right_image;
+        GtkWidget	*filler_image;
 	GdkFont		*font;
 	
 	g_assert (left_text != NULL);
@@ -253,43 +253,43 @@ create_middle_title_widget (const char *left_text,
 
         title_hbox = gtk_hbox_new (FALSE, 0);
 
-	left_graphic = create_graphic_widget ("eazel-services-logo-tile.png",
-					      SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
-					      NAUTILUS_GRAPHIC_PLACEMENT_TILE);
+	left_image = create_image_widget ("eazel-services-logo-tile.png",
+					  SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
+					  NAUTILUS_IMAGE_PLACEMENT_TILE);
+	
+	filler_image = create_image_widget ("eazel-services-logo-tile.png",
+					    SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
+					    NAUTILUS_IMAGE_PLACEMENT_TILE);
 
-	filler_graphic = create_graphic_widget ("eazel-services-logo-tile.png",
-						SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
-						NAUTILUS_GRAPHIC_PLACEMENT_TILE);
-
-	right_graphic = create_graphic_widget ("eazel-services-logo-tile.png",
-					       SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
-					       NAUTILUS_GRAPHIC_PLACEMENT_TILE);
+	right_image = create_image_widget ("eazel-services-logo-tile.png",
+					   SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
+					   NAUTILUS_IMAGE_PLACEMENT_TILE);
 
 	font = nautilus_font_factory_get_font_by_family ("helvetica", 18);
 
-	nautilus_graphic_set_label_text (NAUTILUS_GRAPHIC (left_graphic), left_text);
-	nautilus_graphic_set_label_font (NAUTILUS_GRAPHIC (left_graphic), font);
+	nautilus_image_set_label_text (NAUTILUS_IMAGE (left_image), left_text);
+	nautilus_image_set_label_font (NAUTILUS_IMAGE (left_image), font);
 
-	nautilus_graphic_set_extra_width (NAUTILUS_GRAPHIC (left_graphic), 8);
-	nautilus_graphic_set_left_offset (NAUTILUS_GRAPHIC (left_graphic), 8);
-	nautilus_graphic_set_top_offset (NAUTILUS_GRAPHIC (left_graphic), 1);
+	nautilus_image_set_extra_width (NAUTILUS_IMAGE (left_image), 8);
+	nautilus_image_set_left_offset (NAUTILUS_IMAGE (left_image), 8);
+	nautilus_image_set_top_offset (NAUTILUS_IMAGE (left_image), 1);
 
-	nautilus_graphic_set_label_text (NAUTILUS_GRAPHIC (right_graphic), right_text);
-	nautilus_graphic_set_label_font (NAUTILUS_GRAPHIC (right_graphic), font);
+	nautilus_image_set_label_text (NAUTILUS_IMAGE (right_image), right_text);
+	nautilus_image_set_label_font (NAUTILUS_IMAGE (right_image), font);
 
-	nautilus_graphic_set_extra_width (NAUTILUS_GRAPHIC (right_graphic), 8);
-	nautilus_graphic_set_right_offset (NAUTILUS_GRAPHIC (right_graphic), 8);
-	nautilus_graphic_set_top_offset (NAUTILUS_GRAPHIC (right_graphic), 1);
+	nautilus_image_set_extra_width (NAUTILUS_IMAGE (right_image), 8);
+	nautilus_image_set_right_offset (NAUTILUS_IMAGE (right_image), 8);
+	nautilus_image_set_top_offset (NAUTILUS_IMAGE (right_image), 1);
 
 	gdk_font_unref (font);
 
-	gtk_widget_show (left_graphic);
-	gtk_widget_show (filler_graphic);
-	gtk_widget_show (right_graphic);
+	gtk_widget_show (left_image);
+	gtk_widget_show (filler_image);
+	gtk_widget_show (right_image);
 
-        gtk_box_pack_start (GTK_BOX (title_hbox), left_graphic, FALSE, FALSE, 0);
-        gtk_box_pack_start (GTK_BOX (title_hbox), filler_graphic, TRUE, TRUE, 0);
-        gtk_box_pack_end (GTK_BOX (title_hbox), right_graphic, FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX (title_hbox), left_image, FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX (title_hbox), filler_image, TRUE, TRUE, 0);
+        gtk_box_pack_end (GTK_BOX (title_hbox), right_image, FALSE, FALSE, 0);
 
 	return title_hbox;
 }

@@ -1,5 +1,63 @@
 2000-07-14  Ramiro Estrugo  <ramiro@eazel.com>
 
+	*
+	components/services/install/nautilus-view/nautilus-service-install-
+	view.c: (generate_install_form), (create_image_widget),
+	(create_title_widget), (create_middle_title_widget):
+	* components/services/login/nautilus-view/nautilus-login-view.c:
+	(generate_login_form), (create_image_widget),
+	(create_title_widget):
+	*
+	components/services/startup/nautilus-view/nautilus-service-startup-
+	view.c: (generate_startup_form), (create_image_widget),
+	(generate_form_logo):
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-graphic.c:
+	* libnautilus-extensions/nautilus-graphic.h:
+	* libnautilus-extensions/nautilus-image.c:
+	(nautilus_image_initialize_class), (nautilus_image_initialize),
+	(nautilus_image_destroy), (nautilus_image_set_arg),
+	(nautilus_image_get_arg), (nautilus_image_realize),
+	(nautilus_image_unrealize), (nautilus_image_draw),
+	(nautilus_image_size_allocate), (nautilus_image_size_request),
+	(nautilus_image_map), (nautilus_image_unmap),
+	(nautilus_image_expose), (ensure_buffer_size),
+	(create_child_window), (nautilus_gdk_create_copy_area_gc),
+	(nautilus_gdk_pixbuf_render_to_drawable),
+	(nautilus_gdk_pixbuf_render_to_pixbuf),
+	(nautilus_gdk_pixbuf_render_to_pixbuf_alpha),
+	(gdk_string_dimensions), (nautilus_gdk_pixbuf_set_to_color),
+	(nautilus_gdk_pixbuf_tile), (nautilus_gdk_pixbuf_tile_alpha),
+	(nautilus_image_new), (nautilus_image_set_background_pixbuf),
+	(nautilus_image_get_background_pixbuf),
+	(nautilus_image_set_background_type),
+	(nautilus_image_get_background_type),
+	(nautilus_image_set_background_color),
+	(nautilus_image_get_background_color),
+	(nautilus_image_set_placement_type),
+	(nautilus_image_get_placement_type), (nautilus_image_set_pixbuf),
+	(nautilus_image_get_pixbuf), (nautilus_image_set_overall_alpha),
+	(nautilus_image_set_label_text), (nautilus_image_get_label_text),
+	(nautilus_image_set_label_font), (nautilus_image_get_label_font),
+	(nautilus_image_set_left_offset),
+	(nautilus_image_set_right_offset), (nautilus_image_set_top_offset),
+	(nautilus_image_set_bottom_offset),
+	(nautilus_image_set_extra_width),
+	(nautilus_image_set_extra_height):
+	* libnautilus-extensions/nautilus-image.h:
+	* test/.cvsignore:
+	* test/Makefile.am:
+	* test/test-nautilus-graphic.c:
+	* test/test-nautilus-image.c: (create_background), (create_pixbuf),
+	(create_image), (alpha_scale_value_changed),
+	(red_color_value_changed), (green_color_value_changed),
+	(blue_color_value_changed), (toggle_background_type_callback),
+	(create_color_scale), (main):
+
+	Rename NautilusGraphic to NautilusImage everywhere.
+	
+2000-07-14  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* src/nautilus-main.c: (main):
 	Commit the damn file for real this time.
 

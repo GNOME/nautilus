@@ -54,7 +54,6 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-glib-extensions.c		\
 	nautilus-global-preferences.c		\
 	nautilus-gnome-extensions.c		\
-	nautilus-graphic.c			\
 	nautilus-graphic-effects.c		\
 	nautilus-gtk-extensions.c		\
 	nautilus-horizontal-splitter.c		\
@@ -63,6 +62,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-icon-dnd.c			\
 	nautilus-icon-factory.c			\
 	nautilus-icon-text-item.c		\
+	nautilus-image.c			\
 	nautilus-keep-last-vertical-box.c	\
 	nautilus-lib-self-check-functions.c	\
 	nautilus-link-set.c			\
@@ -128,7 +128,6 @@ noinst_HEADERS =				\
 	nautilus-global-preferences.h		\
 	nautilus-gnome-extensions.h		\
 	nautilus-graphic-effects.h		\
-	nautilus-graphic.h			\
 	nautilus-gtk-extensions.h		\
 	nautilus-gtk-macros.h			\
 	nautilus-horizontal-splitter.h		\
@@ -138,6 +137,7 @@ noinst_HEADERS =				\
 	nautilus-icon-factory.h			\
 	nautilus-icon-private.h			\
 	nautilus-icon-text-item.h		\
+	nautilus-image.h			\
 	nautilus-keep-last-vertical-box.h	\
 	nautilus-lib-self-check-functions.h	\
 	nautilus-link-set.h			\
