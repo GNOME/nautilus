@@ -1,3 +1,12 @@
+2001-03-19  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-glyph.c:
+	(nautilus_glyph_draw_to_pixbuf):
+	Speed up drag-selection a whole bunch by making this call
+	4 x faster in the anti-aliased mode.
+
 2001-03-19  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* components/music/Makefile.am: added non-i386 files

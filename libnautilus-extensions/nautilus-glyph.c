@@ -213,6 +213,62 @@ glyph_is_valid (const NautilusGlyph *glyph)
 		&& glyph_get_height_space_safe (glyph) > 0;
 }
 
+
+/* Color packing macros for nautilus_glyph_draw_to_pixbuf */
+#define RGBA_COLOR_PACK(r, g, b, a)	\
+( ((r) << 24) |				\
+  ((g) << 16) |				\
+  ((b) <<  8) |				\
+  ((a) <<  0) )
+
+#define RGB_COLOR_PACK(r, g, b)		\
+( ((r) << 24) |				\
+  ((g) << 16) |				\
+  ((b) <<  8) )
+
+#define RGBA_COLOR_PACK_ALPHA(a)	(a)
+#define RGBA_COLOR_GET_RED(c)		(((c) >> 24) & 0xFF)
+#define RGBA_COLOR_GET_GREEN(c)		(((c) >> 16) & 0xFF)
+#define RGBA_COLOR_GET_BLUE(c)		(((c) >> 8)  & 0xFF)
+#define RGBA_COLOR_GET_ALPHA(c)		(((c) >> 0)  & 0xFF)
+
+#define ABGR_COLOR_PACK(r, g, b, a)	\
+( ((a) << 24) |				\
+  ((b) << 16) |				\
+  ((g) <<  8) |				\
+  ((r) <<  0) )
+
+#define BGR_COLOR_PACK(r, g, b)		\
+( ((b) << 16) |				\
+  ((g) <<  8) |				\
+  ((r) <<  0) )
+
+#define ABGR_COLOR_PACK_ALPHA(a)	((a) << 24)
+#define ABGR_COLOR_GET_RED(c)		(((c) >> 0)  & 0xFF)
+#define ABGR_COLOR_GET_GREEN(c)		(((c) >> 8)  & 0xFF)
+#define ABGR_COLOR_GET_BLUE(c)		(((c) >> 16) & 0xFF)
+#define ABGR_COLOR_GET_ALPHA(c)		(((c) >> 24) & 0xFF)
+
+
+
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
+#define PACK_COLOR_WITH_ALPHA(r, g, b, a)	ABGR_COLOR_PACK(r, g, b, a)
+#define PACK_COLOR(r, g, b)			BGR_COLOR_PACK(r, g, b)
+#define PACK_ALPHA(a)				ABGR_COLOR_PACK_ALPHA(a)
+#define GET_RED(c)				ABGR_COLOR_GET_RED(c)
+#define GET_GREEN(c)				ABGR_COLOR_GET_GREEN(c)
+#define GET_BLUE(c)				ABGR_COLOR_GET_BLUE(c)
+#define GET_ALPHA(c)				ABGR_COLOR_GET_ALPHA(c)
+#else
+#define PACK_COLOR_WITH_ALPHA(r, g, b, a) 	RGBA_COLOR_PACK(r, g, b, a)
+#define PACK_COLOR(r, g, b)			RGB_COLOR_PACK(r, g, b)
+#define PACK_ALPHA(a)				RGBA_COLOR_PACK_ALPHA(a)
+#define GET_RED(c)				RGBA_COLOR_GET_RED(c)
+#define GET_GREEN(c)				RGBA_COLOR_GET_GREEN(c)
+#define GET_BLUE(c)				RGBA_COLOR_GET_BLUE(c)
+#define GET_ALPHA(c)				RGBA_COLOR_GET_ALPHA(c)
+#endif
+
 /**
  * nautilus_glyph_draw_to_pixbuf:
  * @glyph: A NautilusGlyph.
@@ -342,56 +398,111 @@ nautilus_glyph_draw_to_pixbuf (const NautilusGlyph *glyph,
 	 * and the glyph's buffer.
 	 */
 
-	/* Iterate vertically */
-	for (y = render_area.y0 ; y < render_area.y1; y++) {
-		pixbuf_x_offset = pixbuf_y_offset;
-		glyph_x_offset = glyph_y_offset;
+	if (pixbuf_has_alpha) {
+		/* Speed optimization -- avoid calling art_rgba_run_alpha, precompute
+		 * src_rgb outside of the loop
+		 */
+		 
+		guint32 src_color, dst_color;
 		
-		/* Iterate horizontally */
-		for (x = render_area.x0 ; x < render_area.x1; x++) {
-			const guchar point_opacity = *glyph_x_offset;
+		src_color = PACK_COLOR(foreground_r, foreground_g, foreground_b);
+		
+		for (y = render_area.y0 ; y < render_area.y1; y++) {
+			pixbuf_x_offset = pixbuf_y_offset;
+			glyph_x_offset = glyph_y_offset;
+			
+			/* Iterate horizontally */
+			for (x = render_area.x0 ; x < render_area.x1; x++) {
+				guchar dest_alpha;
+				const guchar source_alpha = *glyph_x_offset;
+				dst_color = *(guint32 *) pixbuf_x_offset;
+				dest_alpha = GET_ALPHA (dst_color);
+		
+				if (dest_alpha) { 
+					int dst_r, dst_g, dst_b, tmp, a, c;
 
-			/* Optimize the common fully opaque case */
-			if (point_opacity == NAUTILUS_OPACITY_FULLY_OPAQUE) {
-				*(pixbuf_x_offset + 0) = foreground_r;
-				*(pixbuf_x_offset + 1) = foreground_g;
-				*(pixbuf_x_offset + 2) = foreground_b;
-				if (pixbuf_has_alpha) {
-					*(pixbuf_x_offset + 3) = NAUTILUS_OPACITY_FULLY_OPAQUE;
-				}
-			/* If the opacity is not fully opaque or fully transparent,
-			 * we need to to alpha blending.
-			 */
-			} else if (point_opacity != NAUTILUS_OPACITY_FULLY_TRANSPARENT) {
-				if (pixbuf_has_alpha) {
-					art_rgba_run_alpha (pixbuf_x_offset,
-							    foreground_r,
-							    foreground_g,
-							    foreground_b,
-							    point_opacity,
-							    1);
+					tmp = (255 - source_alpha) * (255 - dest_alpha) + 0x80;
+					a = 255 - ((tmp + (tmp >> 8)) >> 8);
+					c = ((source_alpha << 16) + (a >> 1)) / a;
+
+					dst_r = GET_RED (dst_color);
+					dst_g = GET_GREEN (dst_color);
+					dst_b = GET_BLUE (dst_color);
+	
+					dst_r += (((foreground_r - dst_r) * c + 0x8000) >> 16);
+					dst_g += (((foreground_g - dst_g) * c + 0x8000) >> 16);
+					dst_b += (((foreground_b - dst_b) * c + 0x8000) >> 16);
+	
+					*(guint32 *) pixbuf_x_offset = PACK_COLOR_WITH_ALPHA (dst_r, dst_g, dst_b, a);
 				} else {
-					art_rgb_run_alpha (pixbuf_x_offset,
-							   foreground_r,
-							   foreground_g,
-							   foreground_b,
-							   point_opacity,
-							   1);
+	  				*(guint32 *) pixbuf_x_offset = PACK_ALPHA (source_alpha) | src_color;
 				}
+	
+				/* Advance to the next pixel */
+				pixbuf_x_offset += pixbuf_pixel_offset;
+	
+				/* Advance to the next opacity */
+				glyph_x_offset++;
 			}
-
-			/* Advance to the next pixel */
-			pixbuf_x_offset += pixbuf_pixel_offset;
-
-			/* Advance to the next opacity */
-			glyph_x_offset++;
+	
+			/* Advance to the next pixbuf pixel row */
+			pixbuf_y_offset += pixbuf_rowstride;
+	
+			/* Advance to the next glyph buffer row */
+			glyph_y_offset += glyph_rowstride;
 		}
-
-		/* Advance to the next pixbuf pixel row */
-		pixbuf_y_offset += pixbuf_rowstride;
-
-		/* Advance to the next glyph buffer row */
-		glyph_y_offset += glyph_rowstride;
+	} else {
+		/* Iterate vertically */
+		for (y = render_area.y0 ; y < render_area.y1; y++) {
+			pixbuf_x_offset = pixbuf_y_offset;
+			glyph_x_offset = glyph_y_offset;
+			
+			/* Iterate horizontally */
+			for (x = render_area.x0 ; x < render_area.x1; x++) {
+				const guchar point_opacity = *glyph_x_offset;
+	
+				/* Optimize the common fully opaque case */
+				if (point_opacity == NAUTILUS_OPACITY_FULLY_OPAQUE) {
+					*(pixbuf_x_offset + 0) = foreground_r;
+					*(pixbuf_x_offset + 1) = foreground_g;
+					*(pixbuf_x_offset + 2) = foreground_b;
+					if (pixbuf_has_alpha) {
+						*(pixbuf_x_offset + 3) = NAUTILUS_OPACITY_FULLY_OPAQUE;
+					}
+				/* If the opacity is not fully opaque or fully transparent,
+				 * we need to to alpha blending.
+				 */
+				} else if (point_opacity != NAUTILUS_OPACITY_FULLY_TRANSPARENT) {
+					if (pixbuf_has_alpha) {
+						art_rgba_run_alpha (pixbuf_x_offset,
+								    foreground_r,
+								    foreground_g,
+								    foreground_b,
+								    point_opacity,
+								    1);
+					} else {
+						art_rgb_run_alpha (pixbuf_x_offset,
+								   foreground_r,
+								   foreground_g,
+								   foreground_b,
+								   point_opacity,
+								   1);
+					}
+				}
+	
+				/* Advance to the next pixel */
+				pixbuf_x_offset += pixbuf_pixel_offset;
+	
+				/* Advance to the next opacity */
+				glyph_x_offset++;
+			}
+	
+			/* Advance to the next pixbuf pixel row */
+			pixbuf_y_offset += pixbuf_rowstride;
+	
+			/* Advance to the next glyph buffer row */
+			glyph_y_offset += glyph_rowstride;
+		}
 	}
 }
 
