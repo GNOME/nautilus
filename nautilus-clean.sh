@@ -84,6 +84,7 @@ nautilus-sample-content-view \
 nautilus-service-startup-view \
 nautilus-sidebar-loser \
 nautilus-tree-view \
+nautilus-image-view \
 ntl-history-view \
 ntl-notes \
 ntl-web-search \

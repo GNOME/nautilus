@@ -131,8 +131,6 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 	CORBA_octet *data;
 	CORBA_Environment ev;
 
-	gnome_vfs_file_info_clear (&file_info);
-
 	strategy = NAUTILUS_ADAPTER_PROGRESSIVE_LOAD_STRATEGY (abstract_strategy);
 
 	CORBA_exception_init (&ev);
@@ -159,6 +157,7 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 
 	gnome_vfs_file_info_init (&file_info);
 	result = gnome_vfs_get_file_info_from_handle (handle, &file_info, GNOME_VFS_FILE_INFO_DEFAULT);
+	gnome_vfs_file_info_clear (&file_info);
 
 	if (result == GNOME_VFS_OK && file_info.valid_fields | GNOME_VFS_FILE_INFO_FIELDS_SIZE) {
 		Bonobo_ProgressiveDataSink_set_size (strategy->details->progressive_data_sink, 
@@ -167,8 +166,6 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 		
 	do {
 		result = gnome_vfs_read (handle, data, LOAD_CHUNK, &bytes_read);
-
-		printf ("XXX - read result: %u\n", (unsigned) result);
 
 		if (result == GNOME_VFS_OK) {
 			iobuf->_length = bytes_read;

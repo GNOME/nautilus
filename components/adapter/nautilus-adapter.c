@@ -28,6 +28,7 @@
 #include <config.h>
 #include "nautilus-adapter.h"
 #include "nautilus-adapter-load-strategy.h"
+#include "nautilus-adapter-embed-strategy.h"
 
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-container.h>
@@ -42,11 +43,10 @@
 #include <libnautilus-extensions/nautilus-generous-bin.h>
 #include <libnautilus-adapter/nautilus-adapter-factory.h>
 
-#include <stdio.h>
-
 struct NautilusAdapterDetails {
-	NautilusAdapterLoadStrategy *load_strategy;
-	NautilusView                *nautilus_view;
+	NautilusAdapterLoadStrategy  *load_strategy;
+	NautilusAdapterEmbedStrategy *embed_strategy;
+	NautilusView                 *nautilus_view;
 };
 
 
@@ -57,6 +57,10 @@ static void nautilus_adapter_load_location_callback (NautilusView    *view,
 
 static void nautilus_adapter_stop_loading_callback  (NautilusView    *view,
 						     NautilusAdapter *adapter);
+
+static void nautilus_adapter_open_location_callback (NautilusAdapterEmbedStrategy *strategy,
+						     const char                   *uri,
+						     NautilusAdapter              *adapter);
 
 
 
@@ -101,9 +105,16 @@ nautilus_adapter_destroy (GtkObject *object)
 {
 	NautilusAdapter *server;
 	
+
 	server = NAUTILUS_ADAPTER (object);
 	
-	gtk_object_unref (GTK_OBJECT (server->details->load_strategy));
+	if (server->details->load_strategy != NULL) {
+		gtk_object_unref (GTK_OBJECT (server->details->load_strategy));
+	}
+
+	if (server->details->embed_strategy != NULL) {
+		gtk_object_unref (GTK_OBJECT (server->details->embed_strategy));
+	}
 
 	g_free (server->details);
 	
@@ -115,16 +126,9 @@ NautilusAdapter *
 nautilus_adapter_new (Bonobo_Unknown component)
 {
 	NautilusAdapter      *adapter;
-	Bonobo_Embeddable     embeddable;
 	BonoboControl        *control;
-	BonoboContainer      *container;
-	BonoboClientSite     *client_site;
-	BonoboViewFrame      *view_frame;
-	Bonobo_UIHandler      uih;
 	GtkWidget            *bin;
 	CORBA_Environment     ev;
-	BonoboObjectClient   *component_wrapper;
-	GtkWidget            *client_widget;
 
 
 	/* FIXME: should be done with construct args */
@@ -133,37 +137,12 @@ nautilus_adapter_new (Bonobo_Unknown component)
 
 	adapter = NAUTILUS_ADAPTER (gtk_type_new (NAUTILUS_TYPE_ADAPTER));
 
-	embeddable = Bonobo_Unknown_query_interface (component,
-						     "IDL:Bonobo/Embeddable:1.0",
-						     &ev);
-	
-	if (ev._major != CORBA_NO_EXCEPTION || CORBA_Object_is_nil (embeddable, &ev)) {
-		CORBA_exception_free (&ev);
-		
-		gtk_object_unref (GTK_OBJECT (adapter));
 
-		return NULL;
-	}
-
+	/* Set up a few wrapper framework details */
 	bin =  gtk_widget_new (NAUTILUS_TYPE_GENEROUS_BIN, NULL);
+	gtk_widget_show (bin);
 	control = bonobo_control_new (bin);
 	adapter->details->nautilus_view = nautilus_view_new_from_bonobo_control (control);
-
-
-	adapter->details->load_strategy = nautilus_adapter_load_strategy_get
-		(component, adapter->details->nautilus_view);
-
-	if (adapter->details->load_strategy == NULL) {
-		bonobo_object_release_unref (embeddable, &ev);
-		CORBA_exception_free (&ev);
-
-		bonobo_object_unref (BONOBO_OBJECT (control));
-		bonobo_object_unref (BONOBO_OBJECT (adapter->details->nautilus_view));
-
-		gtk_object_unref (GTK_OBJECT (adapter));
-		
-		return NULL;
-	}
 
 	gtk_signal_connect_object (GTK_OBJECT (adapter->details->nautilus_view),
 				   "destroy",
@@ -171,30 +150,39 @@ nautilus_adapter_new (Bonobo_Unknown component)
 				   GTK_OBJECT (adapter));
 
 
-	component_wrapper = bonobo_object_client_from_corba (embeddable);
+
+	/* Get the class to handle embedding this kind of component. */
+	adapter->details->embed_strategy = nautilus_adapter_embed_strategy_get
+		(component, bonobo_object_corba_objref (BONOBO_OBJECT (bonobo_control_get_ui_handler 
+								       (control))));
+
+	if (adapter->details->embed_strategy == NULL) {
+		gtk_object_unref (GTK_OBJECT (adapter));
+		
+		return NULL;
+	}
+
+	gtk_signal_connect (GTK_OBJECT (adapter->details->embed_strategy), "open_location", 
+			    nautilus_adapter_open_location_callback, adapter);
 
 
-	gtk_widget_show (bin);
+	/* Get the class to handle loading this kind of component. */
 
+	adapter->details->load_strategy = nautilus_adapter_load_strategy_get
+		(component, adapter->details->nautilus_view);
 
-	uih = bonobo_object_corba_objref (BONOBO_OBJECT (bonobo_control_get_ui_handler 
-							 (control)));
+	if (adapter->details->load_strategy == NULL) {
+		gtk_object_unref (GTK_OBJECT (adapter));
+		
+		return NULL;
+	}
 
-	container = bonobo_container_new();
-      	client_site = bonobo_client_site_new (container);
-	bonobo_client_site_bind_embeddable (client_site, component_wrapper);
-	bonobo_container_add (container, BONOBO_OBJECT (client_site));
+	gtk_container_add (GTK_CONTAINER (bin), 
+			   nautilus_adapter_embed_strategy_get_widget (adapter->details->embed_strategy));
 
-	view_frame = bonobo_client_site_new_view (client_site, uih);
-	client_widget = bonobo_view_frame_get_wrapper(view_frame);
+			   
+	/* hook up view signals. */
 
-	gtk_widget_show (client_widget);
-
-	gtk_container_add (GTK_CONTAINER (bin), client_widget);
-     	bonobo_wrapper_set_visibility (BONOBO_WRAPPER (client_widget), FALSE);
-	bonobo_view_frame_set_covered (view_frame, FALSE); 
-
-	
 	gtk_signal_connect (GTK_OBJECT (adapter->details->nautilus_view),
 			    "load_location",
 			    nautilus_adapter_load_location_callback,
@@ -227,12 +215,21 @@ nautilus_adapter_load_location_callback (NautilusView    *view,
 }
 
 
-
 static void
 nautilus_adapter_stop_loading_callback  (NautilusView    *view,
 					 NautilusAdapter *adapter)
 {
 	nautilus_adapter_load_strategy_stop_loading (adapter->details->load_strategy);
+}
+
+
+static void
+nautilus_adapter_open_location_callback  (NautilusAdapterEmbedStrategy *strategy,
+					  const char                   *uri,
+					  NautilusAdapter              *adapter)
+{
+	nautilus_view_open_location (adapter->details->nautilus_view,
+				     uri);
 }
 
 

@@ -33,6 +33,8 @@
 #include "nautilus-application.h"
 #include "nautilus-history-frame.h"
 #include "nautilus-window.h"
+#include "nautilus-component-adapter-factory.h"
+
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <gtk/gtksignal.h>
@@ -40,6 +42,8 @@
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <libnautilus/nautilus-view.h>
 #include <libnautilus/nautilus-zoomable.h>
+
+
 
 enum {
 	OPEN_LOCATION,
@@ -463,11 +467,11 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 	CORBA_Object obj;
 	CORBA_Environment ev;
   	int i;
+	Nautilus_View adapted;
+
   	
   	NautilusViewComponentType *component_types[] = {
     		&nautilus_view_component_type,
-    		&bonobo_subdoc_component_type,
-    		&bonobo_control_component_type,
     		NULL
   	};
 
@@ -506,14 +510,26 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 	nautilus_undo_manager_add_interface
         	(view->undo_manager, BONOBO_OBJECT (view->view_frame));
 	
+	adapted = nautilus_component_adapter_factory_create_adapter 
+		(nautilus_component_adapter_factory_get (),
+		 view->client_object);
+
+	if (adapted != CORBA_OBJECT_NIL) {
+		bonobo_object_unref (BONOBO_OBJECT (view->client_object));
+		view->client_object = bonobo_object_client_from_corba (adapted);
+	}
+
+
 	/* Get at our client's zoomable interface. */
 	view->zoomable = bonobo_object_query_interface
 		(BONOBO_OBJECT (view->client_object), 
 		 "IDL:Nautilus/Zoomable:1.0");
 	
-	/* Now figure out which type of embedded object we have so we
-	 * can host it appropriately:
-	 */
+
+
+	/* FIXME: we should undo the virtualization since the adapter
+           handles that now. */
+
 	for (i = 0; component_types[i] != NULL && view->component_class == NULL; i++) {
 		obj = Bonobo_Unknown_query_interface
 			(bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object)),
@@ -594,7 +610,9 @@ nautilus_view_frame_load_location (NautilusViewFrame *view,
 
 	CORBA_exception_init (&ev);
 	/* ORBit does a bad job with Nautilus_URI, so it's not const char *. */
+
 	view->component_class->load_location (view, (Nautilus_URI) location, &ev);
+
 	CORBA_exception_free (&ev);
 }
 

@@ -117,8 +117,6 @@ nautilus_SOURCES = \
 	nautilus-theme-selector.c		\
 	nautilus-throbber.c			\
 	nautilus-toolbar.c			\
-	nautilus-view-frame-bonobo-control.c	\
-	nautilus-view-frame-bonobo-embeddable.c	\
 	nautilus-view-frame-corba.c		\
 	nautilus-view-frame-nautilus-view.c	\
 	nautilus-view-frame.c			\

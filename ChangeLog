@@ -1,3 +1,48 @@
+2000-09-20  Maciej Stachowiak  <mjs@eazel.com>
+
+	Finally fixed bug 1994; in the process I think I also ended up
+	fixing 2576, 2577, 2578, 2579 and 2580.
+
+	* components/adapter/nautilus-adapter-embed-strategy.h,
+	components/adapter/nautilus-adapter-embed-strategy.c: Abstract
+	interface for embedding various kinds of Bonobo components.
+	* components/adapter/nautilus-adapter-embed-strategy-private.h:
+	Header inclusing a `protected' call to emit a signal.
+	* components/adapter/nautilus-adapter-control-embed-strategy.h,
+	components/adapter/nautilus-adapter-control-embed-strategy.c:
+	Concrete subclass for embedding a Control.
+	* components/adapter/nautilus-adapter-embeddable-embed-strategy.h,
+	components/adapter/nautilus-adapter-embeddable-embed-strategy.c:
+	Concrete subclass for embedding an Embeddable.
+	* components/adapter/Makefile.am: Add new files.
+
+	* components/adapter/nautilus-adapter-progressive-load-strategy.c
+	(nautilus_adapter_progressive_load_strategy_load_location): Fixed
+	incorrect GnomeVFSFIleInfo handling and removed a printf.
+
+	* components/adapter/nautilus-adapter-stream-load-strategy.c:
+	(nautilus_adapter_stream_load_strategy_load_location,
+	nautilus_adapter_stream_load_strategy_stop_loading): Removed print
+	statements.
+
+	* components/adapter/nautilus-adapter.c:
+	(nautilus_adapter_destroy): Free stuff.
+
+	(nautilus_adapter_new): Use the new embed strategy stuff.
+	
+	(nautilus_adapter_open_location_callback): callback for signal
+	handler attached to embed strategy.
+
+	* src/nautilus-view-frame-bonobo-control.c,
+	src/nautilus-view-frame-bonobo-embeddable.c: Removed.
+	* src/nautilus-view-frame-private.h, src/Makefile.am: Remove
+	mentions of the two preceding files.
+
+	* src/nautilus-view-frame.c (nautilus_view_frame_load_client): Use
+	the adapter to host non-nautilus-native components.
+
+	* nautilus-clean.sh: Added image view.
+
 2000-09-20  Michael Engber  <engber@eazel.com>
 
 	Refactor/clean-up background blitting code

@@ -40,6 +40,12 @@ nautilus_adapter_SOURCES =				\
 	nautilus-adapter-file-load-strategy.h		\
 	nautilus-adapter-progressive-load-strategy.h	\
 	nautilus-adapter-progressive-load-strategy.c	\
+	nautilus-adapter-embed-strategy.h		\
+	nautilus-adapter-embed-strategy.c		\
+	nautilus-adapter-control-embed-strategy.h	\
+	nautilus-adapter-control-embed-strategy.c	\
+	nautilus-adapter-embeddable-embed-strategy.h	\
+	nautilus-adapter-embeddable-embed-strategy.c	\
 	$(NULL)
 
 nautilus_adapter_LDADD =							\

@@ -89,7 +89,5 @@ struct NautilusViewComponentType {
 };
 
 extern NautilusViewComponentType nautilus_view_component_type;
-extern NautilusViewComponentType bonobo_subdoc_component_type;
-extern NautilusViewComponentType bonobo_control_component_type;
 
 #endif /* NAUTILUS_VIEW_FRAME_PRIVATE_H */

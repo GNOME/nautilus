@@ -37,8 +37,6 @@
 #include <libnautilus/nautilus-view.h>
 #include <libnautilus-extensions/bonobo-stream-vfs.h>
 
-#include <stdio.h>
-
 struct NautilusAdapterStreamLoadStrategyDetails {
 	Bonobo_PersistStream  persist_stream;
 	NautilusView         *nautilus_view;
@@ -125,8 +123,6 @@ nautilus_adapter_stream_load_strategy_load_location (NautilusAdapterLoadStrategy
 
 	strategy = NAUTILUS_ADAPTER_STREAM_LOAD_STRATEGY (abstract_strategy);
 
-	puts ("XXX - loading");
-
 	CORBA_exception_init (&ev);
 
 	nautilus_view_report_load_underway (strategy->details->nautilus_view);
@@ -145,23 +141,17 @@ nautilus_adapter_stream_load_strategy_load_location (NautilusAdapterLoadStrategy
 		 * it should be easy to keep it around and pass it in here.
 		 */
 
-		puts ("XXX - really loading");
-
 		Bonobo_PersistStream_load
 			(strategy->details->persist_stream,
 			 bonobo_object_corba_objref (BONOBO_OBJECT (stream)),
 			 "", /* MIME type of stream */
 			 &ev);
 
-		puts ("XXX - done loading");
-
 		bonobo_object_unref (BONOBO_OBJECT (stream));
 
 		if (ev._major == CORBA_NO_EXCEPTION) {
-			puts ("XXX - succeeded");
 			nautilus_view_report_load_complete (strategy->details->nautilus_view);
 		} else {
-			puts ("XXX - failed");
 			nautilus_view_report_load_failed (strategy->details->nautilus_view);
 		}
         }
@@ -176,5 +166,5 @@ nautilus_adapter_stream_load_strategy_stop_loading  (NautilusAdapterLoadStrategy
 {
 	g_return_if_fail (NAUTILUS_IS_ADAPTER_STREAM_LOAD_STRATEGY (strategy));
 
-	puts ("XXX stop");
+	/* FIXME: is there anything we can do? */
 }
