@@ -1,3 +1,9 @@
+2003-05-16  Anders Carlsson  <andersca@codefactory.se>
+
+	* src/nautilus-zoom-control.c: (draw_number), (draw_pixbuf):
+	Replace deprecated calls to gdk_pixbuf_render_to_drawable_alpha
+	with calls to gdk_draw_pixbuf.
+	
 2003-05-15  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/Makefile.am:
