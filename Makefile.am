@@ -2,17 +2,13 @@ include $(top_srcdir)/Makefile.shared
 
 @INTLTOOL_DESKTOP_RULE@
 
-DESKTOP_IN_FILES= 					\
+desktopdir       = $(datadir)/applications
+desktop_DATA     = $(desktop_in_files:.desktop.in=.desktop)
+desktop_in_files = 					\
 	nautilus.desktop.in				\
 	nautilus-home.desktop.in			\
 	nautilus-computer.desktop.in			\
 	nautilus-file-management-properties.desktop.in
-DESKTOP_APPLICATIONS_FILES=		\
-	nautilus.desktop		\
-	nautilus-home.desktop		\
-	nautilus-computer.desktop
-DESKTOP_SETTINGS_FILES=				\
-	nautilus-file-management-properties.desktop
 
 SUBDIRS =			\
 	libnautilus 		\
@@ -47,16 +43,8 @@ EXTRA_DIST=					\
 	intltool-update.in			\
 	Makefile.shared				\
 	add-include-prefix			\
-	$(DESKTOP_IN_FILES)			\
-	$(DESKTOP_APPLICATIONS_FILES)			\
-	$(DESKTOP_SETTINGS_FILES)			\
+	$(desktop_in_files)			\
 	$(NULL)
-
-Applicationsdir = $(datadir)/applications
-Applications_DATA = $(DESKTOP_APPLICATIONS_FILES)
-
-Settingsdir = $(datadir)/control-center-2.0/capplets
-Settings_DATA = $(DESKTOP_SETTINGS_FILES)
 
 dist-hook: nautilus.spec
 	cp nautilus.spec $(distdir)
