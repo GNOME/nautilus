@@ -47,7 +47,10 @@ void nautilus_choose_component_for_file (NautilusFile 			     *file,
 					 NautilusComponentChoiceCallback      callback,
 					 gpointer			      callback_data);
 
-void nautilus_launch_application	(const char 			     *command_string,
+void nautilus_launch_application	(GnomeVFSMimeApplication	     *application,
 					 const char			     *uri);
+void nautilus_launch_application_from_command (const char                    *command_string, 
+					       const char                    *uri);
+
 
 #endif /* NAUTILUS_PROGRAM_CHOOSING_H */
