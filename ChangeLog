@@ -1,3 +1,22 @@
+2000-07-07  Darin Adler  <darin@eazel.com>
+
+	* components/music/main.c: (music_view_make_object), (main):
+	* components/services/install/nautilus-view/main.c: (main):
+	Got rid of unneeded CORBA_Environment variable.
+
+	* components/services/install/nautilus-view/nautilus-service-install-view.oafinfo:
+	Fixed a typo that was making the view not work.
+	
+	* src/nautilus-applicable-views.c: (got_file_info_callback):
+	Reformatted.
+	
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_update_state): Added a FIXME for a place where an
+	error happens and it's not reported.
+
+	* src/nautilus-application.c: (nautilus_application_startup):
+	Fixed a double-destroy problem with the CORBA object I just added.
+
 2000-07-07  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/install/Makefile.am:
@@ -6,24 +25,18 @@
 	* components/services/install/nautilus-view/main.c:
 	(service_install_object_destroyed), (service_install_make_object),
 	(main):
-	*
-	components/services/install/nautilus-view/nautilus-service-install-
-	view.c: (generate_install_form), (generate_form_title),
+	* components/services/install/nautilus-view/nautilus-service-install-view.c:
+	(generate_install_form), (generate_form_title),
 	(nautilus_service_install_view_initialize_class),
 	(nautilus_service_install_view_initialize),
 	(nautilus_service_install_view_destroy),
 	(nautilus_service_install_view_get_nautilus_view),
 	(nautilus_service_install_view_load_uri),
 	(service_install_load_location_callback):
-	*
-	components/services/install/nautilus-view/nautilus-service-install-
-	view.h:
-	*
-	components/services/install/nautilus-view/nautilus-service-install-
-	view.oafinfo:
-	*
-	components/services/install/nautilus-view/nautilus-service-install.
-	c: (nautilus_service_install_download_progress_signal),
+	* components/services/install/nautilus-view/nautilus-service-install-view.h:
+	* components/services/install/nautilus-view/nautilus-service-install-view.oafinfo:
+	* components/services/install/nautilus-view/nautilus-service-install.c:
+	(nautilus_service_install_download_progress_signal),
 	(nautilus_service_install_progress_signal),
 	(nautilus_service_install_download_failed),
 	(nautilus_service_install_failed_helper),
@@ -32,9 +45,7 @@
 	(nautilus_service_install_done),
 	(nautilus_service_install_view_install_package_callback),
 	(nautilus_service_install_view_uninstall_package_callback):
-	*
-	components/services/install/nautilus-view/nautilus-service-install.
-	h:
+	* components/services/install/nautilus-view/nautilus-service-install.h:
 
 	Adding the skeleton for the eazel install view.
 

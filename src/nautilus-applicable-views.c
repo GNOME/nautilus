@@ -46,8 +46,6 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 
-#include <liboaf/liboaf.h>
-
 #include <sys/types.h>
 #include <dirent.h>
 #include <limits.h>
@@ -60,8 +58,6 @@ static void async_get_file_info_text            (GnomeVFSAsyncHandle            
                                                  GnomeVFSFileInfoOptions            options,
                                                  GnomeVFSAsyncGetFileInfoCallback   callback,
                                                  gpointer                           callback_data);
-
-/* Nautilus View Identifiers associate a component name with a user displayable name */
 
 static NautilusNavigationResult
 get_nautilus_navigation_result_from_gnome_vfs_result (GnomeVFSResult gnome_vfs_result)
@@ -126,8 +122,9 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
         file_result = result_list->data;
         vfs_result_code = file_result->result;
 
-        if (vfs_result_code != GNOME_VFS_OK && vfs_result_code != GNOME_VFS_ERROR_NOT_SUPPORTED
-                   && vfs_result_code != GNOME_VFS_ERROR_INVALID_URI) {
+        if (vfs_result_code != GNOME_VFS_OK
+            && vfs_result_code != GNOME_VFS_ERROR_NOT_SUPPORTED
+            && vfs_result_code != GNOME_VFS_ERROR_INVALID_URI) {
                 goto out;
         }
 

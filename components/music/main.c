@@ -44,13 +44,13 @@ music_view_object_destroyed(GtkObject *obj)
 
 static BonoboObject *
 music_view_make_object (BonoboGenericFactory *factory, 
-		    const char *goad_id, 
-		    void *closure)
+			const char *iid, 
+			void *closure)
 {
 	NautilusMusicView *music_view;
 	NautilusView *nautilus_view;
 
-	if (strcmp (goad_id, "OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391")) {
+	if (strcmp (iid, "OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391")) {
 		return NULL;
 	}
 	
@@ -64,19 +64,17 @@ music_view_make_object (BonoboGenericFactory *factory,
 	return BONOBO_OBJECT (nautilus_view);
 }
 
-int main(int argc, char *argv[])
+int
+main (int argc, char *argv[])
 {
 	BonoboGenericFactory *factory;
 	CORBA_ORB orb;
-	CORBA_Environment ev;
-	
+
 	/* Initialize gettext support */
 #ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
 #endif
-	
-	CORBA_exception_init(&ev);
 	
         gnome_init_with_popt_table("nautilus-music-view", VERSION, 
 				   argc, argv,

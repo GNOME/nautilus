@@ -372,12 +372,12 @@ nautilus_application_startup (NautilusApplication *application,
 	}
 #endif
 
+	CORBA_exception_init (&ev);
+
 	/* FIXME: This is a temporary hack so we can use the CORBA
          * interface even though I can't get activation to work.
 	 */
-	shell = bonobo_object_corba_objref (BONOBO_OBJECT (nautilus_shell_new (application)));
-
-	CORBA_exception_init (&ev);
+	shell = CORBA_Object_duplicate (bonobo_object_corba_objref (BONOBO_OBJECT (nautilus_shell_new (application))), &ev);
 
 	/* Set up the desktop. */
 	if (manage_desktop) {
@@ -401,9 +401,7 @@ nautilus_application_startup (NautilusApplication *application,
 
 	/* We're done with the shell now, so let it go. */
 	Nautilus_Shell_unref (shell, &ev);
-#if 0
 	CORBA_Object_release (shell, &ev);
-#endif
 
 	CORBA_exception_free (&ev);
 }

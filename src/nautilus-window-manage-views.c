@@ -945,6 +945,7 @@ nautilus_window_update_state (gpointer data)
                                                              location, selection,
                                                              window->new_requesting_view, window->new_content_view);
                         } else {
+                                /* FIXME: Silent error here! */
                                 window->cv_progress_error = TRUE;
                         }
                         

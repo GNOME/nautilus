@@ -30,7 +30,7 @@
 #include <bonobo.h>
 #include "nautilus-service-install-view.h"
 
-static int object_count =0;
+static int object_count = 0;
 
 static void
 service_install_object_destroyed (GtkObject *obj) {
@@ -40,7 +40,7 @@ service_install_object_destroyed (GtkObject *obj) {
 	}
 }
 
-static BonoboObject*
+static BonoboObject *
 service_install_make_object (BonoboGenericFactory	*factory, 
 	  		     const char			*iid,
 			     void			*closure) {
@@ -68,11 +68,8 @@ service_install_make_object (BonoboGenericFactory	*factory,
 int
 main (int argc, char *argv[]) {
 
-	BonoboGenericFactory	*factory;
-	CORBA_ORB		orb;
-	CORBA_Environment	ev;
-	
-	CORBA_exception_init (&ev);
+	BonoboGenericFactory *factory;
+	CORBA_ORB orb;
 	
         gnome_init_with_popt_table ("nautilus-service-install-view", VERSION, 
                                     argc, argv,
