@@ -953,18 +953,14 @@ update_disks_menu (FMDesktopIconView *view)
 		volume = element->data;
 		
 		/* Determine human-readable name from mount path */
-		name = strrchr (volume->mount_path, '/');
-		if (name != NULL) {
-			name = name + 1;
-		} else {
-			name = volume->mount_path;
-		}
-
+		name = nautilus_volume_monitor_get_mount_name_for_display (nautilus_volume_monitor_get (), volume);
+		
 		nautilus_bonobo_add_numbered_toggle_menu_item 
 			(view->details->ui,
 			 DESKTOP_BACKGROUND_POPUP_PATH_DISKS,
 			 index,
 			 name);
+		g_free (name);
 
 		command_name = nautilus_bonobo_get_numbered_menu_item_command
 			(view->details->ui,
@@ -983,8 +979,9 @@ update_disks_menu (FMDesktopIconView *view)
 			 command_name,
 			 mount_or_unmount_removable_volume,
 			 mount_parameters_new (view, volume->mount_path),
-			 mount_parameters_free_wrapper);
-		g_free (command_name);		
+			 mount_parameters_free_wrapper);			 
+		g_free (command_name);
+		
 	}
 }
 

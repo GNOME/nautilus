@@ -139,6 +139,7 @@ struct NautilusVolumeMonitorDetails
 	GList *mounts;
 	GList *removable_volumes;
 	guint mount_volume_timer_id;
+	GHashTable *readable_mount_point_names;
 };
 
 static NautilusVolumeMonitor *global_volume_monitor = NULL;
@@ -176,7 +177,8 @@ static NautilusVolume	*copy_volume					(NautilusVolume             	*volume);
 static void		find_volumes 					(NautilusVolumeMonitor 		*monitor);
 static void		free_mount_list 				(GList 				*mount_list);
 static GList 		*get_removable_volumes 				(void);
-
+static GHashTable 	*create_readable_mount_point_name_table 	(void);
+									 
 #ifdef MOUNT_AUDIO_CD
 static cdrom_drive 	*open_cdda_device 				(GnomeVFSURI 			*uri);
 static gboolean 	locate_audio_cd 				(void);
@@ -197,7 +199,8 @@ nautilus_volume_monitor_initialize (NautilusVolumeMonitor *monitor)
 	monitor->details = g_new0 (NautilusVolumeMonitorDetails, 1);	
 	monitor->details->mounts = NULL;
 	monitor->details->removable_volumes = NULL;
-	
+	monitor->details->readable_mount_point_names = create_readable_mount_point_name_table ();
+
 	monitor->details->removable_volumes = get_removable_volumes ();
 	
 	find_volumes (monitor);
@@ -246,6 +249,9 @@ nautilus_volume_monitor_destroy (GtkObject *object)
 	/* Clean up mount info */
 	free_mount_list (monitor->details->mounts);
 	free_mount_list (monitor->details->removable_volumes);
+
+	/* Clean up readable names table */	
+	g_hash_table_destroy (monitor->details->readable_mount_point_names);
 
 	/* Clean up details */	 
 	g_free (monitor->details);
@@ -594,6 +600,27 @@ const char *
 nautilus_volume_monitor_get_volume_mount_uri (const NautilusVolume *volume)
 {
 	return volume->mount_path;
+}
+
+
+/* create_readable_mount_point_name_table
+ *
+ * Create a table with mapping between the mount point names that are found
+ * in /etc/fstab and names that are clear and easy to understand.  
+ */
+static GHashTable *
+create_readable_mount_point_name_table (void)
+{
+	GHashTable *table;
+	
+	table = g_hash_table_new (g_str_hash, g_str_equal);
+	
+	/* Populate table with items we know localized names for. */
+	g_hash_table_insert (table, "floppy", _("Floppy"));
+	g_hash_table_insert (table, "cdrom", _("CD-ROM"));
+	g_hash_table_insert (table, "zip", _("Zip Drive"));
+	
+	return table;	
 }
 
 static void
@@ -1855,6 +1882,30 @@ mount_volume_add_filesystem (NautilusVolume *volume, GList *volume_list)
 	return volume_list;
 }
 
+char *
+nautilus_volume_monitor_get_mount_name_for_display (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
+{
+	const char *name, *found_name;
+	
+	if (monitor == NULL || volume == NULL) {
+		return NULL;
+	}
+	
+	name = strrchr (volume->mount_path, '/');
+	if (name != NULL) {
+		name = name + 1;
+	} else {
+		name = volume->mount_path;
+	}
+	
+	/* Look for a match in out localized mount name list */
+	found_name = g_hash_table_lookup (monitor->details->readable_mount_point_names, name);
+	if (found_name != NULL) {
+		return g_strdup (found_name);
+	} else {
+		return g_strdup (name);
+	}
+}
 
 #ifdef MOUNT_AUDIO_CD
 

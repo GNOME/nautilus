@@ -112,6 +112,7 @@ char 			*nautilus_volume_monitor_get_target_uri 		(const NautilusVolume 		*volum
 void			nautilus_volume_monitor_set_volume_name 		(NautilusVolumeMonitor 		*monitor,
 										 const NautilusVolume 		*volume,
 										 const char 			*volume_name);
-
-
+char 			*nautilus_volume_monitor_get_mount_name_for_display 	(NautilusVolumeMonitor 		*monitor,
+										 NautilusVolume 		*volume);
+										 
 #endif /* NAUTILUS_VOLUME_MONITOR_H */
