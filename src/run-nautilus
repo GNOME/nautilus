@@ -7,6 +7,15 @@
 GNOME_DISABLE_CRASH_DIALOG=1 ; export GNOME_DISABLE_CRASH_DIALOG
 
 ##
+## Set up Mozilla environment variables for people using Debian.
+##
+if [ -z "$MOZILLA_FIVE_HOME" -a -f /etc/debian_version ]
+then
+  MOZILLA_FIVE_HOME=/usr/lib/mozilla ; export MOZILLA_FIVE_HOME
+  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MOZILLA_FIVE_HOME ; export LD_LIBRARY_PATH
+fi
+
+##
 ## Find out if Nautilus is already running
 ##
 ps ax|awk '{ print $5; }' | grep -w -e  "nautilus$" > /dev/null 2>&1
@@ -32,7 +41,7 @@ then
   ##
   nautilus-clean.sh -q -x
 else
-  ## If no arguments give, open a new new home window
+  ## If no arguments given, open a new new home window
   if [ $# -eq 0 ]
   then
     nautilus ~

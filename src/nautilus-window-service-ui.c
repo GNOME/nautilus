@@ -111,10 +111,6 @@ goto_services_support (BonoboUIComponent *component,
 		       gpointer callback_data, 
 		       const char *verb)
 {
-	/* FIXME bugzilla.eazel.com 4805:
-	 * Change this url to "http://services.eazel.com/support" when
-	 * that is available.
-	 */
 	nautilus_window_goto_uri (NAUTILUS_WINDOW (callback_data),
 				  "http://services.eazel.com/support");
 
