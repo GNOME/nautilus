@@ -133,7 +133,6 @@ nv_notify_title_change(NautilusView *view, const char *new_title, CORBA_Environm
 {
   NautilusViewInfo *nvi = view->component_data;
 
-  g_message ("called nv_notify_title_change");
   Nautilus_View_notify_title_change(nvi->view_client, new_title, ev);
   if(ev->_major != CORBA_NO_EXCEPTION)
     gtk_object_destroy(GTK_OBJECT(view));

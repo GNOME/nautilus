@@ -77,6 +77,7 @@ impl_Nautilus_View_load_state(impl_POA_Nautilus_View * servant,
 static void
 impl_Nautilus_View_notify_location_change(impl_POA_Nautilus_View * servant,
 					  Nautilus_NavigationInfo * navinfo,
+					  const char *initial_title,
 					  CORBA_Environment * ev);
 
 static void
@@ -137,9 +138,10 @@ impl_Nautilus_View_load_state(impl_POA_Nautilus_View * servant,
 static void
 impl_Nautilus_View_notify_location_change(impl_POA_Nautilus_View * servant,
 					  Nautilus_NavigationInfo * navinfo,
+					  const char *initial_title,
 					  CORBA_Environment * ev)
 {
-  gtk_signal_emit(GTK_OBJECT(servant->view), nautilus_view_frame_signals[NOTIFY_LOCATION_CHANGE], navinfo);
+  gtk_signal_emit(GTK_OBJECT(servant->view), nautilus_view_frame_signals[NOTIFY_LOCATION_CHANGE], navinfo, initial_title);
 }
 
 static void
@@ -268,13 +270,15 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *klass)
   klass->servant_destroy_func = POA_Nautilus_View__fini;
   klass->vepv = &impl_Nautilus_View_vepv;
 
+  #define gtk_marshal_NONE__BOXED_POINTER gtk_marshal_NONE__POINTER_POINTER
+
   nautilus_view_frame_signals[NOTIFY_LOCATION_CHANGE] =
     gtk_signal_new("notify_location_change",
 		   GTK_RUN_LAST,
 		   object_class->type,
 		   GTK_SIGNAL_OFFSET (NautilusViewFrameClass, notify_location_change),
-		   gtk_marshal_NONE__BOXED,
-		   GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
+		   gtk_marshal_NONE__BOXED_POINTER,
+		   GTK_TYPE_NONE, 2, GTK_TYPE_BOXED, GTK_TYPE_POINTER);
   nautilus_view_frame_signals[NOTIFY_SELECTION_CHANGE] = 
     gtk_signal_new("notify_selection_change",
 		   GTK_RUN_LAST,

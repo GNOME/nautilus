@@ -100,6 +100,7 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMusicView, nautilus_music_view, GTK_T
 static void 
 music_view_notify_location_change_cb(NautilusContentViewFrame  *view, 
 				     Nautilus_NavigationInfo   *navinfo, 
+				     const char *initial_title,
 				     NautilusMusicView *music_view);
 static void selection_callback(GtkCList * clist, int row, int column, GdkEventButton * event);
 
@@ -605,6 +606,7 @@ nautilus_music_view_load_uri (NautilusMusicView *music_view, const char *uri)
 static void
 music_view_notify_location_change_cb (NautilusContentViewFrame  *view, 
 				  Nautilus_NavigationInfo   *navinfo, 
+				  const char *initial_title,
 				  NautilusMusicView *music_view)
 {
 	Nautilus_ProgressRequestInfo pri;

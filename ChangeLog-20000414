@@ -1,3 +1,27 @@
+2000-03-28  John Sullivan <sullivan@eazel.com>
+
+	Followup to last night's checkin; I forgot to add the
+	initial_title parameter to a notify_location_change
+	signal and all its signal handlers.
+	
+	* libnautilus/ntl-view-frame.c:
+	(impl_Nautilus_View_notify_location_change): Add
+	initial_title parameter, pass it along when emitting
+	signal.
+
+	* components/help/hyperbola-nav-tree.c,
+	* components/history/ntl-history-view.c,
+	* components/html/ntl-web-browser.c,
+	* components/music/nautilus-music-view.c,
+	* components/notes/ntl-notes.c,
+	* components/sample/nautilus-sample-content-view.c,
+	* components/websearch/ntl-web-search.c,
+	* src/file-manager/fm-directory-view.c:
+	Added initial_title parameter to notify_location_change
+	signal handlers.
+
+	* src/ntl-view-nautilus.c: Removed a stray g_message.
+
 2000-03-27  Andy Hertzfeld <andy@eazel.com>
 
 	* icons/eazel/i-directory-24.png:
