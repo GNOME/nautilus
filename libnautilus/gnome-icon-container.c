@@ -598,40 +598,13 @@ static void
 scroll (GnomeIconContainer *container,
 	int delta_x, int delta_y)
 {
-	GnomeIconContainerDetails *details;
 	GtkAdjustment *hadj, *vadj;
-	GtkAllocation *allocation;
-	gfloat vnew, hnew;
-	gfloat hmax, vmax;
-
-	details = container->details;
 
 	hadj = GTK_LAYOUT (container)->hadjustment;
 	vadj = GTK_LAYOUT (container)->vadjustment;
 
-	allocation = &GTK_WIDGET (container)->allocation;
-
-	if (container->details->width > allocation->width)
-		hmax = (gfloat) (container->details->width - allocation->width);
-	else
-		hmax = 0.0;
-
-	if (container->details->height > allocation->height)
-		vmax = (gfloat) (container->details->height - allocation->height);
-	else
-		vmax = 0.0;
-
-	hnew = CLAMP (hadj->value + (gfloat) delta_x, 0.0, hmax);
-	vnew = CLAMP (vadj->value + (gfloat) delta_y, 0.0, vmax);
-
-	if (hnew != hadj->value) {
-		hadj->value = hnew;
-		gtk_signal_emit_by_name (GTK_OBJECT (hadj), "value_changed");
-	}
-	if (vnew != vadj->value) {
-		vadj->value = vnew;
-		gtk_signal_emit_by_name (GTK_OBJECT (vadj), "value_changed");
-	}
+	gtk_adjustment_set_value (hadj, hadj->value + delta_x);
+	gtk_adjustment_set_value (vadj, vadj->value + delta_y);
 }
 
 static void
@@ -645,10 +618,6 @@ make_icon_visible (GnomeIconContainer *container,
 
 	details = container->details;
 	allocation = &GTK_WIDGET (container)->allocation;
-
-	if (details->height < allocation->height
-	    && details->width < allocation->width)
-		return;
 
 	hadj = GTK_LAYOUT (container)->hadjustment;
 	vadj = GTK_LAYOUT (container)->vadjustment;
@@ -845,41 +814,36 @@ set_kbd_current (GnomeIconContainer *container,
 static void
 set_scroll_region (GnomeIconContainer *container)
 {
-	GnomeIconContainerDetails *details;
-	GnomeIconContainerIconGrid *grid;
+	double x1, y1, x2, y2;
+        double content_width, content_height;
+	double scroll_width, scroll_height;
 	GtkAllocation *allocation;
 	GtkAdjustment *vadj, *hadj;
-	double x1, y1, x2, y2;
-	guint scroll_width, scroll_height;
 
-	details = container->details;
-	grid = details->grid;
-	allocation = &(GTK_WIDGET (container)->allocation);
-	hadj = GTK_LAYOUT (container)->hadjustment;
-	vadj = GTK_LAYOUT (container)->vadjustment;
-
-	/* FIXME: We can do this more efficiently.  */
 	gnome_canvas_item_get_bounds (GNOME_CANVAS (container)->root,
 				      &x1, &y1, &x2, &y2);
 
-	details->width = x2 + GNOME_ICON_CONTAINER_CELL_SPACING (container);
-	details->height = y2 + GNOME_ICON_CONTAINER_CELL_SPACING (container);
+	content_width = x2 - x1 + GNOME_ICON_CONTAINER_CELL_SPACING (container);
+	content_height = y2 - y1 + GNOME_ICON_CONTAINER_CELL_SPACING (container);
 
-	scroll_width = MAX (details->width, allocation->width);
-	scroll_height = MAX (details->height, allocation->height);
+	allocation = &GTK_WIDGET (container)->allocation;
 
-	scroll_width--;
-	scroll_height--;
+	scroll_width = MAX (content_width, allocation->width);
+	scroll_height = MAX (content_height, allocation->height);
 
+	/* FIXME: Why are we subtracting one from each dimension? */
 	gnome_canvas_set_scroll_region (GNOME_CANVAS (container),
-					0.0, 0.0,
-					(double) scroll_width,
-					(double) scroll_height);
+					x1, y1,
+					x1 + scroll_width - 1,
+					y1 + scroll_height - 1);
 
-	if (details->width <= allocation->width)
-		gtk_adjustment_set_value (hadj, 0.0);
-	if (details->height <= allocation->height)
-		gtk_adjustment_set_value (vadj, 0.0);
+	hadj = GTK_LAYOUT (container)->hadjustment;
+	vadj = GTK_LAYOUT (container)->vadjustment;
+
+	if (content_width <= allocation->width)
+		gtk_adjustment_set_value (hadj, x1);
+	if (content_height <= allocation->height)
+		gtk_adjustment_set_value (vadj, y1);
 }
 
 static gboolean

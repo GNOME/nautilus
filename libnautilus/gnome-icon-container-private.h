@@ -30,17 +30,17 @@
 #include "nautilus-icon-factory.h"
 #include "nautilus-icons-view-icon-item.h"
 
-/* An Icon.  */
+/* An Icon. */
 
 typedef struct {
 	/* Canvas item for the icon. */
 	NautilusIconsViewIconItem *item;
 
-	/* X/Y coordinates and size.  We could use the GnomeCanvasItem
-         * functions, but this is a lot faster
+	/* X/Y coordinates and size. We could use the GnomeCanvasItem
+	 * functions, but this is a lot faster
 	 */
 	double x, y;
-        
+	
 	/* Whether this item is selected for operation. */
 	gboolean is_selected : 1;
 
@@ -62,29 +62,29 @@ typedef struct {
 #define INITIAL_GRID_HEIGHT 64
 
 typedef struct {
-	/* Size of the grid.  */
+	/* Size of the grid. */
 	guint width, height;
 
 	/* This is the width that we can actually use for finding an empty
-         * position.
+	 * position.
 	 */
 	guint visible_width;
 
-	/* Array of grid elements.  */
+	/* Array of grid elements. */
 	GList **elems;
 
-	/* Size of the allocated array.  */
+	/* Size of the allocated array. */
 	guint alloc_width, alloc_height;
 
 	/* Position of the first free cell (used to speed up progressive
-	 * updates).  If negative, there is no free cell.
+	 * updates). If negative, there is no free cell.
 	 */
 	int first_free_x, first_free_y;
 } GnomeIconContainerIconGrid;
 
 
 
-/* Private GnomeIconContainer members.  */
+/* Private GnomeIconContainer members. */
 
 typedef struct {
 	gboolean active;
@@ -108,65 +108,62 @@ struct _GnomeIconContainerDetails {
 	/* single-click mode setting */
 	gboolean single_click_mode;
 	
-	/* Size of the container.  */
-	guint width, height;
-
-	/* List of icons.  */
+	/* List of icons. */
 	GList *icons;
 	guint num_icons;
 
-	/* The grid.  */
+	/* The grid. */
 	GnomeIconContainerIconGrid *grid;
 
 	/* FIXME: This is *ugly*, but more efficient (both memory- and
-           speed-wise) than using gtk_object_{set,get}_data() for all the
-           icon items.  */
+	   speed-wise) than using gtk_object_{set,get}_data() for all the
+	   icon items. */
 	GHashTable *canvas_item_to_icon;
 
-	/* Current icon for keyboard navigation.  */
+	/* Current icon for keyboard navigation. */
 	GnomeIconContainerIcon *kbd_current;
 
 	/* Rubberbanding status. */
 	GnomeIconContainerRubberbandInfo rubberband_info;
 
 	/* Timeout used to make a selected icon fully visible after a short
-         * period of time.  (The timeout is needed to make sure
-         * double-clicking still works.)
+	 * period of time. (The timeout is needed to make sure
+	 * double-clicking still works.)
 	 */
 	guint kbd_icon_visibility_timer_id;
 
-        /* the time the mouse button went down in milliseconds */
-        guint32 button_down_time;
-        
-	/* Position of the pointer during the last click.  */
+	/* the time the mouse button went down in milliseconds */
+	guint32 button_down_time;
+	
+	/* Position of the pointer during the last click. */
 	int drag_x, drag_y;
 
-	/* Button currently pressed, possibly for dragging.  */
+	/* Button currently pressed, possibly for dragging. */
 	guint drag_button;
 
-	/* Icon on which the click happened.  */
+	/* Icon on which the click happened. */
 	GnomeIconContainerIcon *drag_icon;
 
-	/* Whether we are actually performing a dragging action.  */
+	/* Whether we are actually performing a dragging action. */
 	gboolean doing_drag;
 
-	/* Idle ID.  */
+	/* Idle ID. */
 	guint idle_id;
 
 	/* Timeout for selection in browser mode. */
 	guint linger_selection_mode_timer_id;
 
-	/* Icon to be selected at timeout in browser mode.  */
+	/* Icon to be selected at timeout in browser mode. */
 	GnomeIconContainerIcon *linger_selection_mode_icon;
 
-	/* DnD info.  */
+	/* DnD info. */
 	GnomeIconContainerDndInfo *dnd_info;
 
-        /* zoom level */
-        int zoom_level;
-        
-        /* default fonts used to draw labels */
-        GdkFont *label_font[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
+	/* zoom level */
+	int zoom_level;
+	
+	/* default fonts used to draw labels */
+	GdkFont *label_font[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
 };
 
 /* Layout and icon size constants.

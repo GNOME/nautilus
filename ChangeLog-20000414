@@ -1,3 +1,33 @@
+2000-02-14  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/nautilus-icon-factory.c:
+	Redid the icon factory to fix a few things:
+	
+	- Replaced the existing non-working count-based LRU algorithm with
+	  one that works (uses a linked list).
+	- Keep resized icons in the cache.
+	- Hand out a single NautilusScalableIcon when multiple callers ask
+	  for the same icon instead of a new one each time.
+	- Fixed one bug where pixbuf's would get an extra ref and never get
+	  freed once they are no longer used.
+
+	* libnautilus/nautilus-metadata.h:
+	* src/nautilus-index-title.c (nautilus_index_title_set_up_info):
+	* libnautilus/nautilus-icon-factory.c
+	(nautilus_icon_factory_get_icon_for_file):
+	Added keys for the two pieces of metadata Andy just added.
+
+	* libnautilus/gnome-icon-container-private.h:
+	* libnautilus/gnome-icon-container.c: (scroll),
+	(make_icon_visible), (set_scroll_region): Fixed the code that
+	resizes the canvas as items are added and removed to properly
+	handle the case where the canvas extends into negative-coordinate
+	territory. This included removing the width and height that were
+	stored in the private structure.
+
+	* libnautilus/nautilus-directory.c: (nautilus_directory_get): Tiny
+	formatting tweak.
+
 2000-02-14  John Sullivan <sullivan@eazel.com>
 
 	Fixed index title bugs that showed up when visiting http:// url.
@@ -42,7 +72,6 @@
 	(fm_directory_view_list_set_zoom_level): Pass default_zoom_level
 	to metadata call, also reset default_zoom_level to new level.
 	
-
 2000-02-14  Elliot Lee  <sopwith@redhat.com>
 
 	* components/html/ntl-web-browser.c: Send status strings for now,
@@ -50,27 +79,30 @@
 
 2000-02-14  Andy Hertzfeld <andy@eazel.com>
 
-	*src/nautilus-index-tabs.c:
+	* src/nautilus-index-tabs.c:
 	Fixed warning about measuring NULL string that Elliot pointed out
 	
 2000-02-14  Elliot Lee  <sopwith@redhat.com>
+	
 	* src/ntl-window-msgs.c: Revert.
 	* components/help/hyperbola-nav-index.c: More work.
 
 2000-02-13  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus/nautilus-icon-factory.c:
-	made it use custom image specified in meta-data, if present.
-	also, upped the size used for displaying images as themselves without thumbnails,
-	from 10K to 16K.
+	Made it use custom image specified in meta-data, if present.
+	also, upped the size used for displaying images as themselves
+	without thumbnails, from 10K to 16K.
 	* src/nautilus-index-title.c:
-	display "notes" from metadata in index panel if present
+	Display "notes" from metadata in index panel if present.
 	* src/ntl-index-panel.c:
-	fiddled with drag and drop code trying to get it to accept image files, not yet working
+	Fiddled with drag and drop code trying to get it to accept
+	image files, not yet working
 	
 2000-02-13  Andy Hertzfeld <andy@eazel.com>
 
-	made nautilus-index-title widget to hold the title information for the index panel
+	Made nautilus-index-title widget to hold the title information
+	for the index panel.
 	
 	* src/ntl-index-panel.c:
 	allocated index-title to display info, removed old code that did it
@@ -85,11 +117,11 @@
 
 	* src/nautilus-index-tabs.c:
 	made the tabs layout be more dynamic, laying out as many
-	tabs as fit in a row instead of a maximum of two.  Tightened
+	tabs as fit in a row instead of a maximum of two. Tightened
 	up the layout and improved the drawing, too.
 	* src/ntl-index-panel.c:
-    	right clicking on the tabs adds extra ones for testing purposes
-    
+	Right clicking on the tabs adds extra ones for testing purposes.
+	
 2000-02-11  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus/gnome-icon-container-dnd.c:
@@ -257,13 +289,12 @@
 2000-02-10  Elliot Lee  <sopwith@redhat.com>
 
 	* src/ntl-window.c: Set hpaned position for Darin's sanity.
-
 	* src/ntl-window-state.c: Handle view loading failure properly.
 
 2000-02-10  Darin Adler  <darin@eazel.com>
 
 	* ntl-window-msgs.c: (nautilus_window_has_really_changed):
-	Check GTK_OBJECT_DESTROYTED to handle the case of a view
+	Check GTK_OBJECT_DESTROYED to handle the case of a view
 	that self-destructs.
 
 2000-02-10  Darin Adler  <darin@eazel.com>

@@ -249,7 +249,7 @@ nautilus_directory_get (const char *uri)
 	} else {
 		/* Create a new directory object instead. */
 		directory = NAUTILUS_DIRECTORY (nautilus_directory_new (uri));
-		if(!directory)
+		if (directory == NULL)
 			return NULL;
 
 		g_assert (strcmp (directory->details->uri_text, uri) == 0);

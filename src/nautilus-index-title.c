@@ -303,7 +303,7 @@ nautilus_index_title_set_up_info (NautilusIndexTitle *index_title, NautilusFile 
   g_free(info_string);
 
   /* see if there are any notes for this file. If so, display them */
-  notes_text = nautilus_file_get_metadata(file_object, "notes", NULL);
+  notes_text = nautilus_file_get_metadata(file_object, NAUTILUS_NOTES_METADATA_KEY, NULL);
   if (notes_text)
     {
 	  if (index_title->details->notes)
