@@ -1,3 +1,12 @@
+2003-10-01  Murray Cumming  <murrayc@usa.net>
+
+	* src/Makefile.am, src/file-manager/Makefile.am: Removed 
+	-DG_DISABLE_DEPRECATED so that it builds against glib 2.3.0, which
+	has deprecated g_value_string_set_take_ownership() in favour of 
+	g_value_take_string(). G_DISABLE_DEPRECATED has already been removed
+	from configure.in, but it is hard-coded into lots of the Makefile.am
+	files.
+
 2003-09-30  Dave Camp  <dave@ximian.com>
 
 	* Merge the nautilus-spatial-playground branch to HEAD.
