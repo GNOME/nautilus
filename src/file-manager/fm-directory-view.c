@@ -2398,7 +2398,8 @@ fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files,
 
         g_assert (FM_IS_DIRECTORY_VIEW (view));
         g_assert (files != NULL);
-	g_assert (g_list_length (files) == relative_item_points->len);
+	g_assert (g_list_length (files) == relative_item_points->len
+		|| relative_item_points->len == 0);
 
 	/* create a list of URIs */
 	uris = NULL;
