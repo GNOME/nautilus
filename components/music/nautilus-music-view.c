@@ -1504,6 +1504,7 @@ add_play_controls (NautilusMusicView *music_view)
 	 * left edge of the playtime moves.
 	 */
         gtk_widget_set_usize (music_view->details->playtime, 40, -1);
+        gtk_misc_set_alignment (GTK_MISC (music_view->details->playtime), 0.0, 0.0);
         
 	gtk_widget_show (music_view->details->playtime);
 	gtk_box_pack_start (GTK_BOX (hbox2), music_view->details->playtime, FALSE, FALSE, 0);
