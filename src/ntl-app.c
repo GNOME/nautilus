@@ -269,24 +269,64 @@ nautilus_app_destroy (GtkObject *object)
 	GTK_OBJECT_CLASS(app_parent_class)->destroy (object);
 }
 
+
 static void
-display_caveat (GtkWindow *window)
+display_caveat (GtkWindow *parent_window)
 {
-	/* FIXME: bugzilla.eazel.com 963:
-	 * This shouldn't have to be explicitly word-wrapped, but we ran into a bug
-	 * resulting in segfaulting in some tree code when closing this dialog when
-	 * we tried to use a word-wrapped version.
-	 */
-	gnome_warning_dialog_parented (_("The Nautilus shell is under development; it's not ready for daily use. "
-			   		 "\nMany features, including some of the best ones, are not yet done, "
-			   		 "\npartly done, or unstable. The program doesn't look or act the way it "
-			   		 "\nwill in version 1.0."
-			   		 "\n"
-			   		 "\nIf you do decide to test this version of Nautilus, beware. The program "
-			   		 "\ncould do something unpredictable and may even delete or overwrite "
-			   		 "\nfiles on your computer."
-			   		 "\n"
-			   		 "\nFor more information, visit http://nautilus.eazel.com."), window);
+	GtkWidget *dialog;
+	GtkWidget *frame;
+	GtkWidget *pixmap;
+	GtkWidget *hbox;
+	GtkWidget *text;
+	char *file_name;
+
+	dialog = gnome_dialog_new (_("Nautilus: caveat"),
+				   GNOME_STOCK_BUTTON_OK,
+				   NULL);
+  	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);
+  	gtk_window_set_policy (GTK_WINDOW (dialog), FALSE, FALSE, FALSE);
+
+  	hbox = gtk_hbox_new (FALSE, GNOME_PAD);
+  	gtk_container_set_border_width (GTK_CONTAINER (hbox), GNOME_PAD);
+  	gtk_widget_show (hbox);
+  	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), 
+  			    hbox,
+  			    FALSE, FALSE, 0);
+
+	frame = gtk_frame_new (NULL);
+	gtk_widget_show (frame);
+	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_IN);
+  	gtk_box_pack_start (GTK_BOX (hbox), frame, FALSE, FALSE, 0);
+	
+				
+	file_name = gnome_pixmap_file ("nautilus/About_Image.png");
+	pixmap = gnome_pixmap_new_from_file (file_name);
+	g_free (file_name);
+	gtk_widget_show (pixmap);
+	gtk_container_add (GTK_CONTAINER (frame), pixmap);
+
+  	text = gtk_label_new (
+  		 _("The Nautilus shell is under development; it's not"
+  		   "\nready for daily use. Many features, including some"
+  		   "\nof the best ones, are not yet done, partly done, or"
+  		   "\nunstable. The program doesn't look or act the way"
+  		   "\nit will in version 1.0."
+		   "\n"
+		   "\nIf you do decide to test this version of Nautilus,"
+		   "\nbeware. The program could do something"
+		   "\nunpredictable and may even delete or overwrite"
+		   "\nfiles on your computer."
+		   "\n"
+		   "\nFor more information, visit http://nautilus.eazel.com."));
+   	gtk_label_set_justify (GTK_LABEL (text), GTK_JUSTIFY_LEFT);
+	gtk_widget_show (text);
+  	gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
+
+  	gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
+
+  	gnome_dialog_set_parent (GNOME_DIALOG (dialog), parent_window);
+
+	gtk_widget_show (GTK_WIDGET (dialog));
 }
 
 void
