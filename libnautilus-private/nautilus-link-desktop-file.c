@@ -122,7 +122,7 @@ nautilus_link_desktop_file_local_create (const char        *directory_path,
 		return FALSE;
 	}
 
-	fputs ("[Desktop Entry]\nEncoding=Legacy-Mixed\nName=", file);
+	fputs ("[Desktop Entry]\nEncoding=UTF-8\nName=", file);
 	fputs (name, file);
 	fputs ("\nType=", file);
 	fputs (get_tag (type), file);
