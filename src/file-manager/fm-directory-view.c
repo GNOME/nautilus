@@ -3659,12 +3659,15 @@ add_application_to_open_with_menu (FMDirectoryView *view,
 	char *tip;
 	char *label;
 	char *action_name;
+	char *escaped_app;
 	GtkAction *action;
 
 	launch_parameters = application_launch_parameters_new 
 		(application, file, view);
-	label = g_strdup_printf (_("Open with \"%s\""), application->name);
-	tip = g_strdup_printf (_("Use \"%s\" to open the selected item"), application->name);
+	escaped_app = eel_str_double_underscores (application->name);
+	label = g_strdup_printf (_("Open with \"%s\""), escaped_app);
+	tip = g_strdup_printf (_("Use \"%s\" to open the selected item"), escaped_app);
+	g_free (escaped_app);
 
 	action_name = g_strdup_printf ("open_with_%d", index);
 	
@@ -6168,8 +6171,11 @@ real_update_menus (FMDirectoryView *view)
 
 			app = nautilus_mime_get_default_application_for_file (file);
 			if (app) {
+				char *escaped_app;
+				escaped_app = eel_str_double_underscores (app->name);
 				label_with_underscore = g_strdup_printf (_("_Open with \"%s\""),
-									 app->name);
+									 escaped_app);
+				g_free (escaped_app);
 				gnome_vfs_mime_application_free (app);
 			} else {
 				can_open = FALSE;
