@@ -75,6 +75,7 @@ struct TopLeftTextReadState {
 typedef struct {
 	gboolean metafile;
 	gboolean file_list; /* always FALSE if file != NULL */
+	gboolean file_info;
 	gboolean directory_count;
 	gboolean top_left_text;
 } Request;
@@ -99,10 +100,13 @@ typedef gboolean (* RequestCheck) (const Request *);
 typedef gboolean (* FileCheck) (NautilusFile *);
 
 /* Forward declarations for functions that need them. */
-static void metafile_read_some  (NautilusDirectory *directory);
-static void metafile_read_start (NautilusDirectory *directory);
-static void state_changed       (NautilusDirectory *directory);
-static void top_left_read_some  (NautilusDirectory *directory);
+static void 	metafile_read_some   (NautilusDirectory *directory);
+static void 	metafile_read_start  (NautilusDirectory *directory);
+static gboolean request_is_satisfied (NautilusDirectory *directory,
+		      		      NautilusFile  	*file,
+		      		      Request 		*request);
+static void 	state_changed        (NautilusDirectory *directory);
+static void 	top_left_read_some   (NautilusDirectory *directory);
 
 static void
 empty_close_callback (GnomeVFSAsyncHandle *handle,
@@ -580,6 +584,16 @@ set_up_request_by_file_attributes (Request *request,
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT,
 		 nautilus_str_compare) != NULL;
+	request->file_info = g_list_find_custom
+		(file_attributes,
+		 NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE,
+		 nautilus_str_compare) != NULL;
+	if (!request->metafile) {
+		request->metafile = g_list_find_custom
+			(file_attributes,
+			 NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON,
+			 nautilus_str_compare) != NULL;
+	}
 }
 
 void
@@ -963,6 +977,22 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 	state_changed (directory);
 }
 
+gboolean      
+nautilus_directory_check_if_ready_internal (NautilusDirectory *directory,
+					    NautilusFile *file,
+					    GList *file_attributes)
+{
+	Request request;
+
+	g_assert (directory != NULL);
+
+	request.metafile = FALSE;
+	request.file_list = FALSE;
+	set_up_request_by_file_attributes (&request, file_attributes);
+
+	return request_is_satisfied (directory, file, &request);
+}					    
+
 static void
 remove_callback_link_keep_data (NautilusDirectory *directory,
 				GList *link)
@@ -1208,25 +1238,30 @@ has_problem (NautilusDirectory *directory, NautilusFile *file, FileCheck problem
 }
 
 static gboolean
-ready_callback_is_satisfied (NautilusDirectory *directory,
-			     ReadyCallback *callback)
+request_is_satisfied (NautilusDirectory *directory,
+		      NautilusFile *file,
+		      Request *request)
 {
-	if (callback->request.metafile && !directory->details->metafile_read) {
+	if (request->metafile && !directory->details->metafile_read) {
 		return FALSE;
 	}
 
-	if (callback->request.file_list && !directory->details->directory_loaded) {
+	if (request->file_list && !directory->details->directory_loaded) {
 		return FALSE;
 	}
 
-	if (callback->request.directory_count) {
-		if (has_problem (directory, callback->file, lacks_directory_count)) {
+	if (request->directory_count) {
+		if (has_problem (directory, file, lacks_directory_count)) {
 			return FALSE;
 		}
 	}
 
+	/* FIXME: need to handle file_info in some async fashion. For now,
+	 * it is just ignored here, meaning it's treated as always satisfied.
+	 */
+
 	return TRUE;
-}
+}		      
 
 static void
 call_ready_callbacks (NautilusDirectory *directory)
@@ -1239,8 +1274,8 @@ call_ready_callbacks (NautilusDirectory *directory)
 		for (p = directory->details->call_when_ready_list; p != NULL; p = next) {
 			next = p->next;
 			callback = p->data;
-			
-			if (ready_callback_is_satisfied (directory, callback)) {
+
+			if (request_is_satisfied (directory, callback->file, &callback->request)) {
 				break;
 			}
 		}

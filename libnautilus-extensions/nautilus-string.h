@@ -50,6 +50,7 @@ int      nautilus_eat_strcmp             (char          *string_a_gets_freed,
 					  const char    *string_b);
 
 /* Other basic string operations. */
+gboolean nautilus_str_is_empty		 (const char	*string_or_null);
 gboolean nautilus_str_has_prefix         (const char    *target,
 					  const char    *prefix);
 char *   nautilus_str_get_prefix         (const char    *source,

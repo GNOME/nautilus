@@ -113,6 +113,7 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
         g_assert (result_list->next == NULL);
 
         result_code = NAUTILUS_NAVIGATION_RESULT_UNDEFINED;
+	default_id = NULL;
 
         navinfo = data;
 

@@ -1,3 +1,55 @@
+2000-06-19  John Sullivan  <sullivan@eazel.com>
+
+	Fixed uninitialized variable that was masking the real
+	reason why eazel: URIs don't work today (real reason 
+	has not been figured out yet).
+
+	* src/nautilus-applicable-views.c: (got_file_info_callback):
+	Initialize default_id to NULL.
+
+	More work towards bug 1401 (bookmark icon never updates).
+	Almost done, but for a bug where bookmark for current
+	location in Go menu doesn't get an icon.
+
+	* libnautilus-extensions/nautilus-string.h,
+	* libnautilus-extensions/nautilus-string.c:
+	(nautilus_str_is_empty): New function, returns TRUE for
+	NULL or zero-length string.
+
+	* libnautilus-extensions/nautilus-file-attributes.h:
+	Added #define for NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	Add file_info to Request struct.
+	(request_is_satisfied): Renamed from ready_callback_is_satisfied;
+	now takes a Request and a NautilusFile instead of a ReadyCallback.
+	(call_ready_callbacks): Update existing caller for API change.
+	(set_up_request_by_file_attributes): Set request's file_info
+	field to TRUE if mime type requested; set request's metafile
+	field to TRUE if custom icon requested.	
+	(nautilus_directory_check_if_ready_internal): New function,
+	use request_is_satisfied to see whether specified attributes 
+	are available.
+	* libnautilus-extensions/nautilus-directory-private.h:
+	Added nautilus_directory_check_if_ready_internal.
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_check_if_ready): Call nautilus_directory_check_
+	if_ready_internal.
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_is_icon_ready_for_file): Implemented
+	this formerly nonexistent function by calling 
+	nautilus_file_check_if_ready
+
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_destroy), (nautilus_bookmark_icon_is_different),
+	(nautilus_bookmark_update_icon), (bookmark_file_changed_callback),
+	(nautilus_bookmark_set_icon_to_default), (nautilus_bookmark_new),
+	(nautilus_bookmark_new_with_icon): NautilusBookmark now keeps
+	ahold of a NautilusFile internally so it can notice its
+	"changed" signal. When this signal fires, the bookmark determines
+	whether a changed icon is available.
+
 2000-06-19  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-list.c: (activate_row),

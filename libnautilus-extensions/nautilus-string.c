@@ -50,6 +50,12 @@ nautilus_strcmp (const char *string_a, const char *string_b)
 		       string_b == NULL ? "" : string_b);
 }
 
+gboolean
+nautilus_str_is_empty (const char *string_or_null)
+{
+	return nautilus_strcmp (string_or_null, NULL) == 0;
+}
+
 int
 nautilus_str_compare (gconstpointer string_a, gconstpointer string_b)
 {

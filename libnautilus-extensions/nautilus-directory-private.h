@@ -100,6 +100,9 @@ void          nautilus_directory_call_when_ready_internal  (NautilusDirectory   
 							    NautilusDirectoryCallback  directory_callback,
 							    NautilusFileCallback       file_callback,
 							    gpointer                   callback_data);
+gboolean      nautilus_directory_check_if_ready_internal   (NautilusDirectory	      *directory,
+							    NautilusFile	      *file,
+							    GList		      *file_attributes);
 void          nautilus_directory_cancel_callback_internal  (NautilusDirectory         *directory,
 							    NautilusFile              *file,
 							    NautilusDirectoryCallback  directory_callback,

@@ -48,6 +48,7 @@ struct NautilusBookmarkDetails
 	char *name;
 	char *uri;
 	NautilusScalableIcon *icon;
+	NautilusFile *file;
 };
 
 
@@ -71,6 +72,11 @@ nautilus_bookmark_destroy (GtkObject *object)
 
 	g_free (bookmark->details->name);
 	g_free (bookmark->details->uri);
+	if (bookmark->details->icon) {
+		nautilus_scalable_icon_unref (bookmark->details->icon);
+	}
+	nautilus_file_unref (bookmark->details->file);
+	
 	g_free (bookmark->details);
 
 	/* Chain up */
@@ -238,37 +244,103 @@ nautilus_bookmark_set_name (NautilusBookmark *bookmark, const char *new_name)
 	gtk_signal_emit (GTK_OBJECT (bookmark), signals[CHANGED]);
 }
 
-static NautilusScalableIcon *
-get_icon_for_uri (const char *uri)
+static gboolean
+nautilus_bookmark_icon_is_different (NautilusBookmark *bookmark,
+		   		     NautilusScalableIcon *new_icon)
 {
-	NautilusFile *file;
-	NautilusScalableIcon *icon;
+	char *new_uri, *new_name;
+	char *old_uri, *old_name;
+	gboolean result;
 
-	/* FIXME bugzilla.eazel.com 866: We can't expect to use the
-	 * file object right away, since the get_file_info call will
-	 * be async.
-	 */
-	file = nautilus_file_get (uri);
+	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
+	g_assert (new_icon != NULL);
 
-	/* FIXME bugzilla.eazel.com 461: This might be a bookmark that points 
-	 * to nothing, or maybe its uri cannot be converted to a NautilusFile 
-	 * for some other reason. It should get some sort of generic icon, but 
-	 * for now it gets none.
-	 */
-	if (file == NULL) {
-		return NULL;
+	/* Bookmarks only care about the uri and name. */
+	nautilus_scalable_icon_get_text_pieces 
+		(new_icon, &new_uri, &new_name, NULL, NULL);
+
+	if (bookmark->details->icon == NULL) {
+		result = (!nautilus_str_is_empty (new_uri) || !nautilus_str_is_empty (new_name));
+	} else {
+		nautilus_scalable_icon_get_text_pieces 
+			(bookmark->details->icon, &old_uri, &old_name, NULL, NULL);
+
+		result = (nautilus_eat_strcmp (old_uri, new_uri) != 0 || 
+			  nautilus_eat_strcmp (old_name, new_name) != 0);
+
 	}
 
-	icon = nautilus_icon_factory_get_icon_for_file (file, NULL);
-	nautilus_file_unref (file);
+	g_free (new_uri);
+	g_free (new_name);
 
-	return icon;
+	return result;
+}
+
+/**
+ * Update icon if there's a better one available.
+ * Return TRUE if the icon changed.
+ */
+static gboolean
+nautilus_bookmark_update_icon (NautilusBookmark *bookmark)
+{
+	NautilusScalableIcon *new_icon;
+
+	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
+
+	if (bookmark->details->file == NULL) {
+		return FALSE;
+	}
+
+	if (nautilus_icon_factory_is_icon_ready_for_file (bookmark->details->file)) {
+		new_icon = nautilus_icon_factory_get_icon_for_file (bookmark->details->file, NULL);
+		if (nautilus_bookmark_icon_is_different (bookmark, new_icon)) {
+			if (bookmark->details->icon != NULL) {
+				nautilus_scalable_icon_unref (bookmark->details->icon);
+			}
+			nautilus_scalable_icon_ref (new_icon);
+			bookmark->details->icon = new_icon;
+
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+static void
+bookmark_file_changed_callback (NautilusFile *file, NautilusBookmark *bookmark)
+{
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
+	g_assert (file == bookmark->details->file);
+
+	/* Check whether the file knows about a better icon. */
+	if (nautilus_bookmark_update_icon (bookmark)) {
+		gtk_signal_emit (GTK_OBJECT (bookmark), signals[CHANGED]);
+	}
+}
+
+static void
+nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
+{
+	if (bookmark->details->icon != NULL) {
+		nautilus_scalable_icon_unref (bookmark->details->icon);
+	}
+
+	/* FIXME bugzilla.eazel.com 461:
+	 * Need some sort of bookmark icon as a default.
+	 */ 
+	bookmark->details->icon = NULL;
 }
 
 /**
  * nautilus_bookmark_new:
  *
  * Create a new NautilusBookmark from a text uri and a display name.
+ * The initial icon for the bookmark will be based on the information 
+ * already available without any explicit action on NautilusBookmark's
+ * part.
+ * 
  * @uri: Any uri, even a malformed or non-existent one.
  * @name: A string to display to the user as the bookmark's name.
  * 
@@ -278,20 +350,7 @@ get_icon_for_uri (const char *uri)
 NautilusBookmark *
 nautilus_bookmark_new (const char *uri, const char *name)
 {
-	NautilusScalableIcon *icon;
-	NautilusBookmark *result;
-
-	/* FIXME: This needs to do fancy asynch stuff to be
-	 * notified when the icon is ready; we can't just get it
-	 * right away like this.
-	 */
-	icon = get_icon_for_uri (uri);
-	result = nautilus_bookmark_new_with_icon (uri, name, icon);
-	if (icon != NULL) {
-		nautilus_scalable_icon_unref (icon);
-	}
-
-	return result;
+	return nautilus_bookmark_new_with_icon (uri, name, NULL);
 }
 
 NautilusBookmark *
@@ -309,6 +368,24 @@ nautilus_bookmark_new_with_icon (const char *uri, const char *name,
 		nautilus_scalable_icon_ref (icon);
 	}
 	new_bookmark->details->icon = icon;
+
+	new_bookmark->details->file = nautilus_file_get (uri);
+	nautilus_file_ref (new_bookmark->details->file);
+
+	/* Set initial icon based on available information. */
+	if (!nautilus_bookmark_update_icon (new_bookmark)) {
+		if (new_bookmark->details->icon == NULL) {
+			nautilus_bookmark_set_icon_to_default (new_bookmark);
+		}
+	}
+
+	if (new_bookmark->details->file != NULL) {
+		gtk_signal_connect_while_alive (GTK_OBJECT (new_bookmark->details->file),
+						"changed",
+						bookmark_file_changed_callback,
+						new_bookmark,
+						GTK_OBJECT (new_bookmark));
+	}
 
 	return new_bookmark;
 }				 

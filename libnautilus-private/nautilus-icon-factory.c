@@ -45,6 +45,7 @@
 #include <librsvg/rsvg.h>
 
 #include "nautilus-default-file-icon.h"
+#include "nautilus-file-attributes.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
@@ -942,6 +943,32 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	g_free (top_left_text);
 	
 	return scalable_icon;
+}
+
+/**
+ * nautilus_icon_factory_is_icon_ready_for_file
+ * 
+ * Check whether a NautilusFile has enough information to report
+ * what its icon should be.
+ * 
+ * @file: The NautilusFile in question.
+ */
+gboolean
+nautilus_icon_factory_is_icon_ready_for_file (NautilusFile *file)
+{
+	GList *attributes;
+	gboolean result;
+
+	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
+	attributes = g_list_prepend (attributes,
+				     NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE);
+	attributes = g_list_prepend (attributes,
+				     NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
+
+	result = nautilus_file_check_if_ready (file, attributes);
+	g_list_free (attributes);
+
+	return result;
 }
 
 NautilusScalableIcon *

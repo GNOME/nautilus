@@ -2191,12 +2191,36 @@ nautilus_file_activate_custom (NautilusFile *file, gboolean use_new_window)
 	return FALSE;
 }
 
+/**
+ * nautilus_file_check_if_ready
+ *
+ * Check whether the values for a set of file attributes are
+ * currently available, without doing any additional work. This
+ * is useful for callers that want to reflect updated information
+ * when it is ready but don't want to force the work required to
+ * obtain the information, which might be slow network calls, e.g.
+ *
+ * @file: The file being queried.
+ * @file_attributes: A GList of the desired information.
+ * 
+ * Return value: TRUE if all of the specified attributes are currently readable.
+ */
 gboolean
 nautilus_file_check_if_ready (NautilusFile *file,
 			      GList *file_attributes)
 {
-	/* FIXME: placeholder, need to implement this. */
-	return TRUE;
+	/* To be parallel with call_when_ready, return
+	 * TRUE for NULL file.
+	 */
+	if (file == NULL) {
+		return TRUE;
+	}
+
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	return nautilus_directory_check_if_ready_internal
+		(file->details->directory, file,
+		 file_attributes);
 }			      
 
 
