@@ -846,14 +846,6 @@ nautilus_file_get_uri (NautilusFile *file)
 gchar *
 nautilus_file_get_date_as_string (NautilusFile *file)
 {
-	time_t now_secs;
-	struct tm *now;
-	struct tm *file_time;
-	GDate *today;
-	GDate *file_date;
-	gchar *result;
-	guint32 file_date_age;
-
 	/* Note: This uses modified time. There's also accessed time and 
 	 * changed time. Accessed time doesn't seem worth showing to the user.
 	 * Changed time is only subtly different from modified time
@@ -861,21 +853,22 @@ nautilus_file_get_date_as_string (NautilusFile *file)
 	 * We should not display both, but we might change our minds as to
 	 * which one is better.
 	 */
+	 
+	struct tm *file_time;
+	const char *format;
+	GDate *today;
+	GDate *file_date;
+	guint32 file_date_age;
+
 	g_return_val_if_fail (file != NULL, NULL);
 
-	/* Each call to localtime clobbers a static variable. So to compare two
-	 * time structures, one of the calls needs to use localtime_r to
-	 * fill in a locally created time structure. This call still clobbers
-	 * the static variable, so the other localtime call must be later.
-	 */
-	file_time = g_new0 (struct tm, 1);
-	localtime_r (&file->info->mtime, file_time);
+	file_time = localtime(&file->info->mtime);
 	file_date = nautilus_g_date_new_tm (file_time);
 	
-	now_secs = time (NULL);
-	now = localtime (&now_secs);
-	today = nautilus_g_date_new_tm (now);
+	today = g_date_new ();
+	g_date_set_time (today, time (NULL));
 
+	/* Overflow results in a large number; fine for our purposes */
 	file_date_age = g_date_julian (today) - g_date_julian (file_date);
 
 	g_date_free (file_date);
@@ -892,26 +885,25 @@ nautilus_file_get_date_as_string (NautilusFile *file)
 	if (file_date_age == 0)
 	{
 		/* today, use special word */
-		result = nautilus_strdup_strftime (_("today %-I:%M %p"), file_time);	
+		format = _("today %-I:%M %p");
 	}
 	else if (file_date_age == 1)
 	{
 		/* yesterday, use special word */
-		result = nautilus_strdup_strftime (_("yesterday %-I:%M %p"), file_time);	
+		format = _("yesterday %-I:%M %p");
 	}
 	else if (file_date_age < 7)
 	{
 		/* current week, include day of week */
-		result = nautilus_strdup_strftime (_("%A %-m/%-d/%y %-I:%M %p"), file_time);
+		format = _("%A %-m/%-d/%y %-I:%M %p");
 	}
 	else
 	{
-		result = nautilus_strdup_strftime (_("%-m/%-d/%y %-I:%M %p"), file_time);
+		format = _("%-m/%-d/%y %-I:%M %p");
 	}
 
-	g_free (file_time);
 
-	return result;
+	return nautilus_strdup_strftime (format, file_time);
 }
 
 /**
