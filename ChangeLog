@@ -1,3 +1,12 @@
+2001-02-20  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 6384, Nautilus program chooser uses
+	"nautilus-mime-type-capplet" to launch capplet
+	
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(launch_mime_capplet):
+	Rename capplet to "file-types-capplet"
+
 2001-02-20  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Gene Ragan <gzr@eazel.com>

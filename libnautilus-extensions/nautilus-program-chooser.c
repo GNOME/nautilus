@@ -90,7 +90,7 @@ typedef struct {
 #define NAME_COLUMN_INITIAL_WIDTH	 200
 
 /* Progamr name of the mime type capplet */
-#define MIME_TYPE_CAPPLET_NAME 		"nautilus-mime-type-capplet"
+#define FILE_TYPES_CAPPLET_NAME 	"file-types-capplet"
 
 /* Forward declarations as needed */
 static gboolean program_file_pair_is_default_for_file_type 	 (ProgramFilePair *pair);
@@ -901,7 +901,7 @@ launch_mime_capplet (GtkWidget *button, gpointer callback_data)
 		
 	g_assert (GTK_IS_WIDGET (button));
 	
-	command = g_strdup_printf ("%s %s", MIME_TYPE_CAPPLET_NAME, (char *)callback_data);
+	command = g_strdup_printf ("%s %s", FILE_TYPES_CAPPLET_NAME, (char *)callback_data);
 		
 	nautilus_launch_application_from_command (command, NULL, FALSE);
 	
