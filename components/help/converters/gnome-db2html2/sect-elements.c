@@ -419,6 +419,9 @@ sect_email_characters (Context *context, const gchar *chars, int len)
 	ElementIndex index;
 	char *temp;
 
+	if (!IS_IN_SECT (context))
+		return;
+
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ARTHEADER));
 	index = find_first_parent (context, element_list);
 	g_slist_free (element_list);
@@ -594,11 +597,11 @@ sect_title_characters (Context *context,
 		sect_print (context, "<TITLE>%s</TITLE>\n</HEAD>\n", temp);
 		sect_print (context, "<BODY BGCOLOR=\"#FFFFFF\" TEXT=\"#000000\" LINK=\"#0000FF\" VLINK=\"#840084\" ALINK=\"#0000FF\">\n");
 		if (stack_el == NULL)
-			sect_print (context, "<A href=\"%s\"><font size=3>Up to Table of Contents</font></A><BR>\n",
+			sect_print (context, "<A href=\"ghelp:%s\"><font size=3>Up to Table of Contents</font></A><BR>\n",
 				 context->base_file);
 #if 0
 		else
-			sect_print (context, "<A href=\"%s#%s\"><font size=3>Up to %s</font></A><BR>\n",
+			sect_print (context, "<A href=\"ghelp:%s#%s\"><font size=3>Up to %s</font></A><BR>\n",
 				 context->base_file,
 				 sect_context->topid,
 				 sect_context->top);
@@ -685,12 +688,12 @@ sect_xref_start_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	sect_print (context, "<A HREF=\"%s?", context->base_file);
+	sect_print (context, "<A HREF=\"ghelp:%s", context->base_file);
 	atrs_ptr = (gchar **) atrs;
 	while (atrs_ptr && *atrs_ptr) {
 		if (!strcasecmp (*atrs_ptr, "linkend")) {
 			atrs_ptr++;
-			sect_print (context, "%s", *atrs_ptr);
+			sect_print (context, "?%s", *atrs_ptr);
 			break;
 		}
 		atrs_ptr += 2;
