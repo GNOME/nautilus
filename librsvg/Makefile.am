@@ -27,10 +27,15 @@ librsvginclude_HEADERS=			\
 
 librsvg_la_SOURCES=	\
 	rsvg.c	 		\
+	rsvg.h	 		\
 	rsvg-path.c 		\
+	rsvg-path.h 		\
 	rsvg-bpath-util.c 	\
+	rsvg-bpath-util.h	\
 	art_rgba.c 		\
+	art_rgba.h 		\
 	art_rgba_svp.c		\
+	art_rgba_svp.h		\
 	$(NULL)
 
 test_rsvg_SOURCES =\
