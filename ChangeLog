@@ -1,3 +1,82 @@
+2001-02-23  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Ian McKellar  <ian@eazel.com>
+
+	Fixed bug 6185 (Inventory collection and upload is slow, blocks UI)
+	
+	* components/services/inventory-view/Makefile.am,
+	* components/services/inventory-view/nautilus-inventory-config-page.c,
+	* components/services/inventory-view/nautilus-inventory-config-page.h:
+
+	* components/services/inventory-view/nautilus-inventory-enable-page.c:
+	(nautilus_inventory_enable_page_initialize_class,
+	nautilus_inventory_enable_page_initialize,
+	nautilus_inventory_enable_page_new, callback,
+	nautilus_inventory_enable_page_run,
+	nautilus_inventory_enable_page_destroy):
+
+	* components/services/inventory-view/nautilus-inventory-enable-page.h:
+
+	* components/services/inventory-view/nautilus-inventory-view.c:
+	(nautilus_inventory_view_initialize,
+	inventory_load_location_callback):
+
+	* components/services/inventory/Makefile.am:
+	* components/services/inventory/eazel-inventory-client.c:
+	(callback, main):
+
+	* components/services/inventory/eazel-inventory-collect-hardware.c:
+	(eazel_inventory_collect_scsi):
+
+	* components/services/inventory/eazel-inventory-service-interface.idl:
+
+	* components/services/inventory/eazel-inventory-service.c:
+	(impl_Trilobite_Eazel_Inventory__get_enabled,
+	impl_Trilobite_Eazel_Inventory__set_enabled,
+	impl_Trilobite_Eazel_Inventory__get_machine_id,
+	impl_Trilobite_Eazel_Inventory_upload),
+	eazel_inventory_service_get_epv):
+
+	* libnautilus-extensions/nautilus-clickable-image.c: (label_enter),
+	(nautilus_clickable_image_set_up_pixbufs):
+
+2001-02-21  Maciej Stachowiak  <mjs@eazel.com>
+
+	pair programmed with: Ian McKellar  <ian@eazel.com>
+	
+	* components/services/inventory-view/nautilus-inventory-config-page.c,
+	components/services/inventory-view/nautilus-inventory-config-page.h:
+	Removed.
+	* components/services/inventory-view/nautilus-inventory-enable-page.h,
+	components/services/inventory-view/nautilus-inventory-enable-page.c:
+	This view will have enable and disable pages.
+	* components/services/inventory-view/nautilus-inventory-view.c
+	(nautilus_inventory_view_initialize,
+	inventory_load_location_callback): Now there are enable and
+	disable pages (the latter not yet implemented), no config page.
+	* components/services/inventory-view/Makefile.am: Add new files,
+	remove old files.
+
+	* components/services/inventory/eazel-inventory-client.c (main):
+	Adjust to new changes.
+
+	* components/services/inventory/eazel-inventory-collect-hardware.c
+	(eazel_inventory_collect_scsi): Fix for non-SCSI case. 
+	
+	* components/services/inventory/eazel-inventory-service-interface.idl:
+	Remove warn_before_upload attribute, make machine ID readonly
+	attribute (and rename from machine name).
+
+	* components/services/inventory/eazel-inventory-service.c:
+	(impl_Trilobite_Eazel_Inventory__get_machine_id,
+	impl_Trilobite_Eazel_Inventory_upload,
+	eazel_inventory_service_get_epv): get machine ID from ammonite;
+	remove dead methods.
+
+	* libnautilus-extensions/nautilus-clickable-image.c
+	(nautilus_clickable_image_set_up_pixbufs): Don't die if pixbuf is
+	NULL (which happens of a failed image load).
+
 2001-02-23  Eric Fischer <eric@eazel.com>
 
 	reviewed by: Robin Slomkowski <rslomkow@eazel.com>

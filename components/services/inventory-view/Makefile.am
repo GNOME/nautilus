@@ -25,8 +25,8 @@ bin_PROGRAMS =					\
 nautilus_inventory_view_SOURCES =		\
 	nautilus-inventory-view.h		\
 	nautilus-inventory-view.c		\
-	nautilus-inventory-config-page.h	\
-	nautilus-inventory-config-page.c	\
+	nautilus-inventory-enable-page.h	\
+	nautilus-inventory-enable-page.c	\
 	main.c
 
 nautilus_inventory_view_LDADD =								\

@@ -4,18 +4,21 @@
 
 module Trilobite {
 	module Eazel {
+		interface InventoryUploadCallback : Bonobo::Unknown {
+			/* FIXME: need to report more specific error on failure */
+			oneway void done_uploading (in boolean succeeded);
+		};
+
 		interface Inventory : Bonobo::Unknown {
 			attribute boolean enabled;
-			attribute string machine_name;
-			attribute boolean warn_before_upload;
+			readonly attribute string machine_id;
 
 			/* Will not actually upload if inventory is
 			 * unchanged since last upload, or if
 			 * inventory is not enabled.
 			 */
 
-			/* FIXME: need exceptions. */
-			void upload ();
+			oneway void upload (in InventoryUploadCallback listener);
 		};
 	};
 };

@@ -49,7 +49,6 @@
 #include "eazel-inventory-service-interface.h"
 
 #define KEY_GCONF_EAZEL_INVENTORY_ENABLED "/apps/eazel-trilobite/inventory/enabled"
-#define KEY_GCONF_EAZEL_INVENTORY_WARN_BEFORE_UPLOAD "/apps/eazel-trilobite/inventory/warn_before_upload"
 
 #define EAZEL_INVENTORY_UPLOAD_URI "eazel-services:/inventory/upload"
 
@@ -89,108 +88,60 @@ get_enabled (EazelInventoryService *service) {
 }
 
 static CORBA_boolean
-impl_Trilobite_Eazel_Inventory__get_enabled (impl_POA_Trilobite_Eazel_Inventory *service,
-					     CORBA_Environment                  *ev) 
+impl_Trilobite_Eazel_Inventory__get_enabled (PortableServer_Servant servant,
+					     CORBA_Environment     *ev) 
 {
+	impl_POA_Trilobite_Eazel_Inventory *service; 
+
+	service = (impl_POA_Trilobite_Eazel_Inventory *) servant;
 	return get_enabled (service->object);
 }
 
 static void
-impl_Trilobite_Eazel_Inventory__set_enabled (impl_POA_Trilobite_Eazel_Inventory *service,
-                                             CORBA_boolean                       enabled,
-					     CORBA_Environment                  *ev) 
+impl_Trilobite_Eazel_Inventory__set_enabled (PortableServer_Servant servant,
+					     CORBA_boolean          enabled,
+					     CORBA_Environment     *ev) 
 {
+	impl_POA_Trilobite_Eazel_Inventory *service; 
+
+	service = (impl_POA_Trilobite_Eazel_Inventory *) servant;
+                                             
 	gconf_client_set_bool (service->object->details->gconf_client, KEY_GCONF_EAZEL_INVENTORY_ENABLED, enabled, NULL);
 	/* FIXME: handle gconf errors */
 }
 
+
+
+
 static CORBA_char *
-impl_Trilobite_Eazel_Inventory__get_machine_name (impl_POA_Trilobite_Eazel_Inventory *service,
-					          CORBA_Environment                  *ev) 
+impl_Trilobite_Eazel_Inventory__get_machine_id (PortableServer_Servant servant,
+						CORBA_Environment     *ev) 
 {
 	gchar *g_machine_name;
 	CORBA_char *c_machine_name;
+	impl_POA_Trilobite_Eazel_Inventory *service; 
 
-	g_machine_name = gconf_client_get_string (service->object->details->gconf_client, 
-				KEY_GCONF_EAZEL_INVENTORY_MACHINE_NAME, NULL);
+	service = (impl_POA_Trilobite_Eazel_Inventory *) servant;
 
-	if (g_machine_name != NULL) {
-		c_machine_name = CORBA_string_dup (g_machine_name);
-	} else {
-		char hostname_buffer[256]; /* the maximum hostname length is 255 */
-		
-		if ( (gethostname (hostname_buffer, (size_t)255) == 0) &&
-				(strncasecmp (hostname_buffer, "localhost.", 10)) &&
-				(strcasecmp (hostname_buffer, "localhost")) ) {
-			char *dot = strchr(hostname_buffer, '.');
-			if (dot != NULL) {
-				*dot = '\0';
-			}
-			c_machine_name = CORBA_string_dup (hostname_buffer);
-		} else {
-			/* couldn't get hostname */
-			c_machine_name = CORBA_string_dup ("");
-		}
-	}
+	g_machine_name = ammonite_get_machine_id ();
+
+	c_machine_name = CORBA_string_dup (g_machine_name);
 
 	g_free (g_machine_name);
 	return c_machine_name;
-	/* FIXME: handle gconf errors correctly... */
 }
+
 
 static void
-impl_Trilobite_Eazel_Inventory__set_machine_name (impl_POA_Trilobite_Eazel_Inventory *service,
-                                                  CORBA_char                         *machine_name,
-					          CORBA_Environment                  *ev) 
-{
-	GError *error = NULL;
-	DEBUG ("set machine name: %s\n", machine_name);
-	gconf_client_set_string (service->object->details->gconf_client, 
-			KEY_GCONF_EAZEL_INVENTORY_MACHINE_NAME, machine_name, &error);
-	if (error != NULL) {
-		DEBUG ("GConf error setting machine name: %p\n", error);
-		DEBUG ("GConf error setting machine name: %p\n", error->message);
-		DEBUG ("GConf error setting machine name: code %d\n", error->code);
-		DEBUG ("GConf error setting machine name: domain %d\n", error->domain);
-		DEBUG ("GConf error setting machine name: %s\n", error->message);
-		g_error_free (error);
-	}
-	/* FIXME: handle gconf errors */
-	/* TODO: tell the server */
-}
-
-static gboolean
-get_warn_before_upload (EazelInventoryService *service) {
-	return gconf_client_get_bool (service->details->gconf_client, KEY_GCONF_EAZEL_INVENTORY_WARN_BEFORE_UPLOAD, NULL);
-	/* FIXME: handle gconf errors */
-}
-
-static CORBA_boolean
-impl_Trilobite_Eazel_Inventory__get_warn_before_upload (impl_POA_Trilobite_Eazel_Inventory *service,
-					                CORBA_Environment                  *ev) 
-{
-	return get_warn_before_upload (service->object);
-}
-
-static void
-impl_Trilobite_Eazel_Inventory__set_warn_before_upload (impl_POA_Trilobite_Eazel_Inventory *service,
-                                                        CORBA_boolean                       warn_before_upload,
-					                CORBA_Environment                  *ev) 
-{
-	gconf_client_set_bool (service->object->details->gconf_client, KEY_GCONF_EAZEL_INVENTORY_WARN_BEFORE_UPLOAD, warn_before_upload, NULL);
-	/* FIXME: handle gconf errors */
-}
-
-static void
-impl_Trilobite_Eazel_Inventory_upload (impl_POA_Trilobite_Eazel_Inventory *service,
-			               CORBA_Environment                  *ev) 
+impl_Trilobite_Eazel_Inventory_upload (PortableServer_Servant servant,
+				       Trilobite_Eazel_InventoryUploadCallback callback,
+				       CORBA_Environment *caller_ev) 
 {
 	AmmoniteError error;
 	char *url, *partial_url;
 	gboolean do_upload;
         ghttp_request* request;
-        /*ghttp_status status;*/
-
+	ghttp_status status;
 	GnomeVFSResult result;
 	int file_size;
 	char *file_contents;
@@ -198,25 +149,30 @@ impl_Trilobite_Eazel_Inventory_upload (impl_POA_Trilobite_Eazel_Inventory *servi
 	char *escaped;
 	char *body;
 	char *path;
-	
-	ghttp_status status;
+	CORBA_Environment ev;
+	impl_POA_Trilobite_Eazel_Inventory *service; 
 
-	g_print ("upload\n");
+	service = (impl_POA_Trilobite_Eazel_Inventory *) servant;
+
+	CORBA_exception_init (&ev);
+
 
 	if (!get_enabled (service->object)) {
-		g_print("upload not enabled... so I'm not uploading\n");
+		/* g_print ("not enabled\n"); */
+		if (! CORBA_Object_is_nil (callback, &ev)) {
+			Trilobite_Eazel_InventoryUploadCallback_done_uploading (callback, CORBA_FALSE, &ev);
+		}
+		CORBA_exception_free (&ev);
 		return;
-	}
-
-	if (get_warn_before_upload (service->object)) {
-		g_print("we should really be warning the user right now\n");
-		/* FIXME: duh */
 	}
 
 	do_upload = eazel_gather_inventory ();
 
 	if (!do_upload) {
-		g_print("we're up to date, dude\n");
+		if (! CORBA_Object_is_nil (callback, &ev)) {
+			Trilobite_Eazel_InventoryUploadCallback_done_uploading (callback, CORBA_TRUE, &ev);
+		}
+		CORBA_exception_free (&ev);
 		return;
 	}
 
@@ -228,6 +184,7 @@ impl_Trilobite_Eazel_Inventory_upload (impl_POA_Trilobite_Eazel_Inventory *servi
 	/* FIXME: CRAAAAAACK */
 
 	if (error != ERR_Success) {
+#if 0
 		switch (error) {
 		case ERR_UserNotLoggedIn:
 			g_print (_("User isn't logged into ammonite yet.\n"));
@@ -241,6 +198,12 @@ impl_Trilobite_Eazel_Inventory_upload (impl_POA_Trilobite_Eazel_Inventory *servi
 		default:
 			g_print (_("Ammonite returned an error translating the url.\n"));
 		}
+#endif
+
+		if (! CORBA_Object_is_nil (callback, &ev)) {
+			Trilobite_Eazel_InventoryUploadCallback_done_uploading (callback, CORBA_FALSE, &ev);
+		}
+		CORBA_exception_free (&ev);
 		return;
 	}
 
@@ -250,17 +213,29 @@ impl_Trilobite_Eazel_Inventory_upload (impl_POA_Trilobite_Eazel_Inventory *servi
 
 	request = ghttp_request_new();
 	if (!request) {
-                g_warning (_("Could not create an http request !"));
+                /* g_warning (_("Could not create an http request !")); */
+		if (! CORBA_Object_is_nil (callback, &ev)) {
+			Trilobite_Eazel_InventoryUploadCallback_done_uploading (callback, CORBA_FALSE, &ev);
+		}
+		CORBA_exception_free (&ev);
 		return;
 	}
 
         if (ghttp_set_uri (request, url) != 0) {
-                g_warning (_("Invalid uri !"));
+                /* g_warning (_("Invalid uri !")); */
+		if (! CORBA_Object_is_nil (callback, &ev)) {
+			Trilobite_Eazel_InventoryUploadCallback_done_uploading (callback, CORBA_FALSE, &ev);
+		}
+		CORBA_exception_free (&ev);
 		return;
         }
 
 	if (ghttp_set_type (request, ghttp_type_post) != 0) {
-		g_warning (_("Can't post !"));
+		/* g_warning (_("Can't post !")); */
+		if (! CORBA_Object_is_nil (callback, &ev)) {
+			Trilobite_Eazel_InventoryUploadCallback_done_uploading (callback, CORBA_FALSE, &ev);
+		}
+		CORBA_exception_free (&ev);
 		return;
 	}
 
@@ -273,7 +248,11 @@ impl_Trilobite_Eazel_Inventory_upload (impl_POA_Trilobite_Eazel_Inventory *servi
 	result = nautilus_read_entire_file (path, &file_size, &file_contents);
 	g_free (path);
 	if (result != GNOME_VFS_OK) {
-		g_warning(_("can't open tempory file hell\n"));
+		/* g_warning(_("can't open tempory file hell\n")); */
+		if (! CORBA_Object_is_nil (callback, &ev)) {
+			Trilobite_Eazel_InventoryUploadCallback_done_uploading (callback, CORBA_FALSE, &ev);
+		}
+		CORBA_exception_free (&ev);
 		return;
 	}
 
@@ -293,30 +272,51 @@ impl_Trilobite_Eazel_Inventory_upload (impl_POA_Trilobite_Eazel_Inventory *servi
 	g_free (escaped);
 
 	if (ghttp_set_body (request, body, strlen(body)) != 0) {
-		g_warning (_("Can't set body !"));
+		/* g_warning (_("Can't set body !")); */
+		g_free (body);
+		ghttp_close (request);
+		if (! CORBA_Object_is_nil (callback, &ev)) {
+			Trilobite_Eazel_InventoryUploadCallback_done_uploading (callback, CORBA_FALSE, &ev);
+		}
+		CORBA_exception_free (&ev);
 		return;
 	}
 
 	if (ghttp_prepare (request) != 0) {
-                g_warning (_("Could not prepare http request !"));
+                /* g_warning (_("Could not prepare http request !")); */
+		g_free (body);
+		ghttp_close (request);
+		if (! CORBA_Object_is_nil (callback, &ev)) {
+			Trilobite_Eazel_InventoryUploadCallback_done_uploading (callback, CORBA_FALSE, &ev);
+		}
+		CORBA_exception_free (&ev);
 		return;
         }
 
 	
-	status = ghttp_process(request);
+	status = ghttp_process (request);
 
 	if (status != ghttp_done) {
-		g_print ("an error occured uploading the inventory: %s\n",
-			ghttp_get_error (request));
+		/* g_print ("an error occured uploading the inventory: %s\n",
+		   ghttp_get_error (request)); */
+		g_free (body);
+		ghttp_close (request);
+		if (! CORBA_Object_is_nil (callback, &ev)) {
+			Trilobite_Eazel_InventoryUploadCallback_done_uploading (callback, CORBA_FALSE, &ev);
+		}
+		CORBA_exception_free (&ev);
+		return;
 	}
 
 	g_free (body);
-
 	ghttp_close (request);
 
 	/* store the new MD5 */
 	eazel_inventory_update_md5 ();
 
+	if (! CORBA_Object_is_nil (callback, &ev)) {
+		Trilobite_Eazel_InventoryUploadCallback_done_uploading (callback, CORBA_TRUE, &ev);
+	}
 }
 
 
@@ -333,13 +333,10 @@ eazel_inventory_service_get_epv()
 
 	epv = g_new0 (POA_Trilobite_Eazel_Inventory__epv, 1);
 
-	epv->_get_enabled             = (gpointer) &impl_Trilobite_Eazel_Inventory__get_enabled;
-	epv->_set_enabled             = (gpointer) &impl_Trilobite_Eazel_Inventory__set_enabled;
-	epv->_get_machine_name        = (gpointer) &impl_Trilobite_Eazel_Inventory__get_machine_name;
-	epv->_set_machine_name        = (gpointer) &impl_Trilobite_Eazel_Inventory__set_machine_name;
-	epv->_get_warn_before_upload  = (gpointer) &impl_Trilobite_Eazel_Inventory__get_warn_before_upload;
-	epv->_set_warn_before_upload  = (gpointer) &impl_Trilobite_Eazel_Inventory__set_warn_before_upload;
-	epv->upload                   = (gpointer) &impl_Trilobite_Eazel_Inventory_upload;
+	epv->_get_enabled           = &impl_Trilobite_Eazel_Inventory__get_enabled;
+	epv->_set_enabled           = &impl_Trilobite_Eazel_Inventory__set_enabled;
+	epv->_get_machine_id        = &impl_Trilobite_Eazel_Inventory__get_machine_id;
+	epv->upload                 = &impl_Trilobite_Eazel_Inventory_upload;
 		
 	return epv;
 }

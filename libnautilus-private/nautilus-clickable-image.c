@@ -250,7 +250,7 @@ label_enter (NautilusClickableImage *clickable_image)
 
 	if (clickable_image->details->prelight) {
 		nautilus_labeled_image_set_pixbuf (NAUTILUS_LABELED_IMAGE (clickable_image),
-						   clickable_image->details->prelight_pixbuf); 
+						   clickable_image->details->prelight_pixbuf);
 	}
 
 	gtk_widget_set_state (GTK_WIDGET (clickable_image), GTK_STATE_PRELIGHT);
@@ -258,7 +258,6 @@ label_enter (NautilusClickableImage *clickable_image)
 	gtk_signal_emit (GTK_OBJECT (clickable_image), 
 			 clickable_image_signals[ENTER],
 			 clickable_image);
-
 }
 
 static void
@@ -488,8 +487,10 @@ nautilus_clickable_image_set_up_pixbufs (NautilusClickableImage *clickable_image
 	clickable_image->details->pixbuf =
 		nautilus_labeled_image_get_pixbuf (NAUTILUS_LABELED_IMAGE (clickable_image));
 
-	clickable_image->details->prelight_pixbuf = nautilus_create_spotlight_pixbuf 
-		(clickable_image->details->pixbuf);
+	if (clickable_image->details->pixbuf != NULL) {
+		clickable_image->details->prelight_pixbuf = nautilus_create_spotlight_pixbuf 
+			(clickable_image->details->pixbuf);
+	}
 } 
 
 /* Public NautilusClickableImage methods */

@@ -31,7 +31,7 @@
 
 #include <unistd.h>
 
-#include "eazel-inventory-service-interface.h"
+#include "eazel-inventory.h"
 
 #define SERVICE_IID "OAFIID:trilobite_inventory_service:eaae1152-1551-43d5-a764-52274131a9d5"
 
@@ -46,43 +46,42 @@ gboolean_to_yes_or_no (gboolean bool)
 	return bool ? "YES" : "NO";
 }
 
+static void
+callback (EazelInventory *inventory,
+	  gboolean succeeded,
+	  gpointer callback_data)
+{
+	puts (succeeded ? "Upload succeeded" : "Upload failed");
+	gtk_main_quit ();
+}
+
 int
 main (int argc, 
       char *argv[]) 
 {
-	BonoboObjectClient *service;
-	Trilobite_Eazel_Inventory inventory_service; 
+	EazelInventory *inventory_service; 
 	gboolean enable = FALSE;
 	gboolean disable = FALSE;
-	gboolean enable_warn = FALSE;
-	gboolean disable_warn = FALSE;
-	char * machine_name=NULL;
 	gboolean info = FALSE;
 	gboolean upload = FALSE;
-
 
 	struct poptOption options[] = {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
 		{ "enable", 'e', POPT_ARG_NONE, &enable, 0, N_("Enable inventory upload."), NULL },
 #endif
 		{ "disable", 'd', POPT_ARG_NONE, &disable, 0, N_("Disable inventory upload."), NULL },
-		{ "enable-warn", 'w', POPT_ARG_NONE, &enable_warn, 0, N_("Enable warning before each upload."), NULL },
-		{ "disable-warn", 'n', POPT_ARG_NONE, &disable_warn, 0, N_("Disable warning before each upload."), NULL },
-		{ "machine-name", 'm', POPT_ARG_STRING, &machine_name, 0, N_("Set machine name."), NULL },
 		{ "info", 'i', POPT_ARG_NONE, &info, 0, N_("Display information about current inventory settings."), NULL },
 		{ "upload", 'u', POPT_ARG_NONE, &upload, 0, N_("Upload inventory now, if not up to date."), NULL },
 		/* FIXME bugzilla.eazel.com 5510: These OAF options don't get translated for some reason. */
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
 	};
 
+	gtk_init (&argc, &argv);
+
 	if (enable && disable) {
 		g_error ("Cannot both enable and disable inventory.");
+		exit (1);
 	}
-
-	if (enable_warn && disable_warn) {
-		g_error ("Cannot both enable and disable warning before upload.");
-	}
-	
 
 	if (!trilobite_init ("eazel-inventory-client", "0.1", NULL, options, argc, argv)) {
 		g_error ("Could not initialize trilobite.");
@@ -91,57 +90,40 @@ main (int argc,
 
 	CORBA_exception_init (&ev);
 
+
+	/* Disable session manager connection */
+	gnome_client_disable_master_connection ();
+
+
 	bonobo_activate ();
 
-	service = bonobo_object_activate (SERVICE_IID, 0);
-	if (!service) {
-		g_error ("Cannot activate %s\n", SERVICE_IID);
-	}
-
-	if (!bonobo_object_client_has_interface (service, "IDL:Trilobite/Eazel/Inventory:1.0", &ev)) {
-		bonobo_object_unref (BONOBO_OBJECT (service)); 
-		g_error ("Inventory component does not have inventory interface.");
-	}
-
-	inventory_service = bonobo_object_query_interface (BONOBO_OBJECT (service), "IDL:Trilobite/Eazel/Inventory:1.0");
+	inventory_service = eazel_inventory_get ();
 
 	if (enable) {
-		Trilobite_Eazel_Inventory__set_enabled (inventory_service, CORBA_TRUE, &ev);
+		eazel_inventory_set_enabled (inventory_service, TRUE);
 	}
 
 	if (disable) {
-		Trilobite_Eazel_Inventory__set_enabled (inventory_service, CORBA_FALSE, &ev);
-	}
-
-	if (machine_name != NULL) {
-		Trilobite_Eazel_Inventory__set_machine_name (inventory_service, machine_name, &ev);
-	}
-
-	if (enable_warn) {
-		Trilobite_Eazel_Inventory__set_warn_before_upload (inventory_service, CORBA_TRUE, &ev);
-	}
-
-	if (disable_warn) {
-		Trilobite_Eazel_Inventory__set_warn_before_upload (inventory_service, CORBA_FALSE, &ev);
+		eazel_inventory_set_enabled (inventory_service, CORBA_FALSE);
 	}
 
 	if (upload) {
-		Trilobite_Eazel_Inventory_upload (inventory_service, &ev);
+		eazel_inventory_upload (inventory_service, 
+					callback,
+					NULL);
+		gtk_main ();
 	}
 
 	if (info) {
 		printf ("Inventory upload enabled: %s\n", gboolean_to_yes_or_no 
-			(Trilobite_Eazel_Inventory__get_enabled (inventory_service, &ev)));
-		printf ("Machine name:             %s\n", 
-			Trilobite_Eazel_Inventory__get_machine_name (inventory_service, &ev));
-		printf ("Warn before upload:       %s\n", gboolean_to_yes_or_no 
-			(Trilobite_Eazel_Inventory__get_warn_before_upload (inventory_service, &ev)));
+			(eazel_inventory_get_enabled (inventory_service)));
+		printf ("Machine ID:               %s\n", 
+			eazel_inventory_get_machine_id (inventory_service));
 		/* Last upload date? */
 	}
-		
 
-	/* Clean up the bonobo_object_activate return value */
-	bonobo_object_unref (BONOBO_OBJECT (service)); 
+	gtk_object_unref (GTK_OBJECT (inventory_service));
+
 	/* And free the exception structure */
 	CORBA_exception_free (&ev);
 

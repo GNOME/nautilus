@@ -27,7 +27,10 @@
 #include <config.h>
 #include "nautilus-inventory-view.h"
 
-#include "nautilus-inventory-config-page.h"
+#include "nautilus-inventory-enable-page.h"
+#if 0
+#include "nautilus-inventory-disable-page.h"
+#endif
 
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
@@ -40,6 +43,7 @@
 
 struct NautilusInventoryViewDetails {
 	GtkWidget *notebook;
+	GtkWidget *enable_page;
 };
 
 static void nautilus_inventory_view_initialize_class (NautilusInventoryViewClass *klass);
@@ -78,14 +82,14 @@ nautilus_inventory_view_initialize (NautilusInventoryView *view)
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (view->details->notebook), FALSE);
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (view->details->notebook), FALSE);
 	
+
+	view->details->enable_page = nautilus_inventory_enable_page_new (NAUTILUS_VIEW (view),
+									 "eazel-services:/inventory/updates");
 	gtk_notebook_append_page (GTK_NOTEBOOK (view->details->notebook),
-				  gtk_label_new ("Intro page"),
+				  view->details->enable_page,
 				  gtk_label_new (""));
 	gtk_notebook_append_page (GTK_NOTEBOOK (view->details->notebook),
-				  nautilus_inventory_config_page_new (NAUTILUS_VIEW (view)),
-				  gtk_label_new (""));
-	gtk_notebook_append_page (GTK_NOTEBOOK (view->details->notebook),
-				  gtk_label_new ("Inventory page"),
+				  gtk_label_new ("Disable page"),
 				  gtk_label_new (""));
 
 	gtk_widget_show_all (view->details->notebook);
@@ -128,15 +132,15 @@ inventory_load_location_callback (NautilusView *nautilus_view,
 	
 	nautilus_view_report_load_underway (nautilus_view);
 	
-	if (strcmp (location, "eazel-inventory:intro") == 0) {
+	if (strcmp (location, "eazel-inventory:enable") == 0) {
 		gtk_notebook_set_page (GTK_NOTEBOOK (view->details->notebook), 0);
-	} else if (strcmp (location, "eazel-inventory:config") == 0) {
+		nautilus_view_report_load_complete (nautilus_view);
+		nautilus_inventory_enable_page_run (NAUTILUS_INVENTORY_ENABLE_PAGE 
+						    (view->details->enable_page));
+	} else if (strcmp (location, "eazel-inventory:disable") == 0) {
 		gtk_notebook_set_page (GTK_NOTEBOOK (view->details->notebook), 1);
+		nautilus_view_report_load_complete (nautilus_view);
 	} else {
-		gtk_notebook_set_page (GTK_NOTEBOOK (view->details->notebook), 2);
+		nautilus_view_report_load_failed (nautilus_view);
 	}
-
-	nautilus_view_report_load_complete (nautilus_view);
 }
-
-

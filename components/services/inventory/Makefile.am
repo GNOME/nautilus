@@ -93,7 +93,11 @@ trilobiteinclude_HEADERS =			\
 	$(NULL)
 
 libtrilobite_inventory_service_la_SOURCES =	\
-	$(CORBA_GENERATED)	                \
+	$(CORBA_GENERATED)			\
+	eazel-inventory.c			\
+	eazel-inventory.h			\
+	eazel-inventory-upload-callback.c	\
+	eazel-inventory-upload-callback.h	\
 	$(NULL)
 
 
