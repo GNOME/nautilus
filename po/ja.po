@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus CVS-20020620\n"
-"POT-Creation-Date: 2002-08-28 18:10+0200\n"
+"POT-Creation-Date: 2002-09-13 20:23-0400\n"
 "PO-Revision-Date: 2002-08-23 19:42+0900\n"
 "Last-Translator: James Hashida <khashida@redhat.com>\n"
 "Language-Team: Japanese <i18-list@redhat.com>\n"
@@ -3224,7 +3224,7 @@ msgid "link (broken)"
 msgstr "リンク (切れています)"
 
 #: libnautilus-private/nautilus-file.c:5319
-#: libnautilus-private/nautilus-trash-directory.c:377
+#: libnautilus-private/nautilus-trash-directory.c:383
 #: src/file-manager/fm-desktop-icon-view.c:70
 msgid "Trash"
 msgstr "ゴミ箱"
@@ -4178,16 +4178,16 @@ msgstr "オーディオ CD"
 msgid "Root Volume"
 msgstr "ルートボリューム"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1450
+#: libnautilus-private/nautilus-volume-monitor.c:1453
 msgid "Mount Error"
 msgstr "マウントエラー"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1450
+#: libnautilus-private/nautilus-volume-monitor.c:1453
 msgid "Unmount Error"
 msgstr "アンマウントエラー"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1523
+#: libnautilus-private/nautilus-volume-monitor.c:1526
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4196,7 +4196,7 @@ msgstr ""
 "ディスクが入っていません"
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1527
+#: libnautilus-private/nautilus-volume-monitor.c:1530
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
@@ -4204,7 +4204,7 @@ msgstr ""
 "Nautilus はボリュームをマウントできませんでした. おそらくドライブ内にメディア"
 "がありません"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1533
+#: libnautilus-private/nautilus-volume-monitor.c:1536
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4212,7 +4212,7 @@ msgstr ""
 "Nautilus はフロッピーディスクをマウントできませんでした. おそらくフロッピーは"
 "マウント出来ないフォーマットになっています"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1536
+#: libnautilus-private/nautilus-volume-monitor.c:1539
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4220,20 +4220,20 @@ msgstr ""
 "Nautilus は選択ボリュームをマウントできませんでした. おそらくボリュームはマウ"
 "ント出来ないフォーマットになっています"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1541
+#: libnautilus-private/nautilus-volume-monitor.c:1544
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilusは選択したフロッピーディスクをマウントできませんでした"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1543
+#: libnautilus-private/nautilus-volume-monitor.c:1546
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilusは選択ボリュームをマウントできませんでした"
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1548
+#: libnautilus-private/nautilus-volume-monitor.c:1551
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilusは選択ボリュームをマウント解除できませんでした"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1753
+#: libnautilus-private/nautilus-volume-monitor.c:1756
 msgid "ISO 9660 Volume"
 msgstr "ISO 9660 ボリューム"
 
@@ -5855,11 +5855,11 @@ msgstr "インデックスステータスを表示(_I)"
 msgid "Show status of indexing used when searching"
 msgstr "検索しているときにインデックスのステータスを表示します"
 
-#: src/nautilus-application.c:217
+#: src/nautilus-application.c:218
 msgid "Couldn't Create Required Folder"
 msgstr "要求されたフォルダを作成できませんでした"
 
-#: src/nautilus-application.c:218
+#: src/nautilus-application.c:219
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5870,11 +5870,11 @@ msgstr ""
 "前にこのフォルダを作成するか, Nautilus がフォルダを作成できるように適切なパー"
 "ミションを設定して下さい"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 msgid "Couldn't Create Required Folders"
 msgstr "要求されたフォルダを作成できませんでした"
 
-#: src/nautilus-application.c:224
+#: src/nautilus-application.c:225
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5901,7 +5901,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:442
+#: src/nautilus-application.c:443
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5912,7 +5912,7 @@ msgstr ""
 "Nautilus の再インストールを試みて下さい"
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:448
+#: src/nautilus-application.c:449
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5958,12 +5958,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:478 src/nautilus-application.c:496
-#: src/nautilus-application.c:503
+#: src/nautilus-application.c:479 src/nautilus-application.c:497
+#: src/nautilus-application.c:504
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "予期しないエラーのために Nautilus は現在使用することができません"
 
-#: src/nautilus-application.c:479
+#: src/nautilus-application.c:480
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5971,7 +5971,7 @@ msgstr ""
 "ファイルマネージャビューサーバを登録しようとした時に Bonoboから予期しないエ"
 "ラーが発生したため Nautilus は現在利用できません"
 
-#: src/nautilus-application.c:497
+#: src/nautilus-application.c:498
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5981,7 +5981,7 @@ msgstr ""
 "は現在利用することができません．bonobo-activation-serverをkillしてNautilusを"
 "再起動することで問題が解決するかもしれません"
 
-#: src/nautilus-application.c:504
+#: src/nautilus-application.c:505
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "

@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2002-08-28 18:10+0200\n"
+"POT-Creation-Date: 2002-09-13 20:23-0400\n"
 "PO-Revision-Date: 2002-05-27 08:43+0200\n"
 "Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -3296,7 +3296,7 @@ msgid "link (broken)"
 msgstr "посилання (зламане)"
 
 #: libnautilus-private/nautilus-file.c:5319
-#: libnautilus-private/nautilus-trash-directory.c:377
+#: libnautilus-private/nautilus-trash-directory.c:383
 #: src/file-manager/fm-desktop-icon-view.c:70
 msgid "Trash"
 msgstr "Смітник"
@@ -4236,16 +4236,16 @@ msgstr "Аудіо КД"
 msgid "Root Volume"
 msgstr "Кореневий розділ"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1450
+#: libnautilus-private/nautilus-volume-monitor.c:1453
 msgid "Mount Error"
 msgstr "Помилка монтування"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1450
+#: libnautilus-private/nautilus-volume-monitor.c:1453
 msgid "Unmount Error"
 msgstr "Помилка демонтування"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1523
+#: libnautilus-private/nautilus-volume-monitor.c:1526
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4254,13 +4254,13 @@ msgstr ""
 "дискети."
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1527
+#: libnautilus-private/nautilus-volume-monitor.c:1530
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
 msgstr "Наутілусу не вдалося змонтувани розділ. Схоже, в пристрої немає носія."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1533
+#: libnautilus-private/nautilus-volume-monitor.c:1536
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4268,7 +4268,7 @@ msgstr ""
 "Наутілусу не вдалося змонтувати пристрій дисковода. Схоже, дискети цього "
 "формату неможливо змонтувати."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1536
+#: libnautilus-private/nautilus-volume-monitor.c:1539
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4276,20 +4276,20 @@ msgstr ""
 "Наутілусу не вдалося змонтувати вибраний розділ. Схоже, розділи цього "
 "формату неможливо змонтувати."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1541
+#: libnautilus-private/nautilus-volume-monitor.c:1544
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Наутілусу не вдалося змонтувати вибраний пристрій дисковода."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1543
+#: libnautilus-private/nautilus-volume-monitor.c:1546
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Наутілусу не вдалося змонтувати вибраний розділ."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1548
+#: libnautilus-private/nautilus-volume-monitor.c:1551
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Наутілусу не вдалося демонтувати вибраний розділ."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1753
+#: libnautilus-private/nautilus-volume-monitor.c:1756
 msgid "ISO 9660 Volume"
 msgstr "Розділ ISO 9660"
 
@@ -5966,11 +5966,11 @@ msgstr "Показати стан індексації"
 msgid "Show status of indexing used when searching"
 msgstr "Показати стан індексації, який використовується для пошуків"
 
-#: src/nautilus-application.c:217
+#: src/nautilus-application.c:218
 msgid "Couldn't Create Required Folder"
 msgstr "Не вдалося створити необхідну теку"
 
-#: src/nautilus-application.c:218
+#: src/nautilus-application.c:219
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5981,11 +5981,11 @@ msgstr ""
 "будь ласка, створіть цю теку чи встановіть такі права, щоб Наутілус міг "
 "створити її."
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 msgid "Couldn't Create Required Folders"
 msgstr "Не вдалося створити необхідні теки"
 
-#: src/nautilus-application.c:224
+#: src/nautilus-application.c:225
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -6012,7 +6012,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:442
+#: src/nautilus-application.c:443
 #, fuzzy
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -6024,7 +6024,7 @@ msgstr ""
 "можете спробувати перезавантажити комп'ютер чи перевстановити Наутілус."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:448
+#: src/nautilus-application.c:449
 #, fuzzy
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -6068,12 +6068,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:478 src/nautilus-application.c:496
-#: src/nautilus-application.c:503
+#: src/nautilus-application.c:479 src/nautilus-application.c:497
+#: src/nautilus-application.c:504
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Наутілус не можна використовувати зараз через неочікувану помилку."
 
-#: src/nautilus-application.c:479
+#: src/nautilus-application.c:480
 #, fuzzy
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
@@ -6082,7 +6082,7 @@ msgstr ""
 "Наутілус не можна використовувати зараз через неочікувану помилку в OAF на "
 "спробі зареєструвати сервер перегляду файлового менеджера."
 
-#: src/nautilus-application.c:497
+#: src/nautilus-application.c:498
 #, fuzzy
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
@@ -6093,7 +6093,7 @@ msgstr ""
 "під час спроби знайти фабрику. Можливо знищення oafd та перезапуск Наутілуса "
 "зможе вирішити цю проблему."
 
-#: src/nautilus-application.c:504
+#: src/nautilus-application.c:505
 #, fuzzy
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "

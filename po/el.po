@@ -21,7 +21,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.1.12\n"
-"POT-Creation-Date: 2002-08-28 18:10+0200\n"
+"POT-Creation-Date: 2002-09-13 20:23-0400\n"
 "PO-Revision-Date: 2002-04-20 19:06+0100\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
@@ -3357,7 +3357,7 @@ msgstr "σύνδεσμος (σπασμένος)"
 
 #
 #: libnautilus-private/nautilus-file.c:5319
-#: libnautilus-private/nautilus-trash-directory.c:377
+#: libnautilus-private/nautilus-trash-directory.c:383
 #: src/file-manager/fm-desktop-icon-view.c:70
 msgid "Trash"
 msgstr "Απορρίμματα"
@@ -4321,16 +4321,16 @@ msgstr "CD Μουσικής"
 msgid "Root Volume"
 msgstr "Τόμος Ext2"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1450
+#: libnautilus-private/nautilus-volume-monitor.c:1453
 msgid "Mount Error"
 msgstr "Σφάλμα Προσάρτησης"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1450
+#: libnautilus-private/nautilus-volume-monitor.c:1453
 msgid "Unmount Error"
 msgstr "Σφάλμα Αποπροσάρτησης"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1523
+#: libnautilus-private/nautilus-volume-monitor.c:1526
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4339,7 +4339,7 @@ msgstr ""
 "δισκέτα στον οδηγό δισκέτας."
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1527
+#: libnautilus-private/nautilus-volume-monitor.c:1530
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
@@ -4347,7 +4347,7 @@ msgstr ""
 "Ο Ναυτίλος δε μπόρεσε να προσαρτήσει τον τόμο. Πιθανόν να μην υπάρχουν μέσα "
 "στη συσκευή."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1533
+#: libnautilus-private/nautilus-volume-monitor.c:1536
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4355,7 +4355,7 @@ msgstr ""
 "Ο Ναυτίλος δε μπόρεσε να προσαρτήσει τη δισκέτα. Πιθανόν η δισκέτα να είναι "
 "σε μορφή που δε μπορεί να προσαρτηθεί."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1536
+#: libnautilus-private/nautilus-volume-monitor.c:1539
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4363,20 +4363,20 @@ msgstr ""
 "Ο Ναυτίλος δε μπόρεσε να προσαρτήσει τον επιλεγμένο τόμο. Πιθανόν ο τόμος να "
 "είναι σε μορφοποίηση που δε μπορεί να προσαρτηθεί."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1541
+#: libnautilus-private/nautilus-volume-monitor.c:1544
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Ο Ναυτίλος δε μπόρεσε να προσαρτήσει την επιλεγμένη δισκέτα."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1543
+#: libnautilus-private/nautilus-volume-monitor.c:1546
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Ο Ναυτίλος δε μπόρεσε να προσαρτήσει τον επιλεγμένο τόμο."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1548
+#: libnautilus-private/nautilus-volume-monitor.c:1551
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Ο Ναυτίλος δε μπόρεσε να αποπροσαρτήσει τον επιλεγμένο τόμο."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1753
+#: libnautilus-private/nautilus-volume-monitor.c:1756
 msgid "ISO 9660 Volume"
 msgstr "Τόμος ISO 9660"
 
@@ -6145,11 +6145,11 @@ msgstr "Εμφάνιση Κατάσταση _Δημιουργίας Ευρετη
 msgid "Show status of indexing used when searching"
 msgstr "Εμφάνιση κατάστασης χρήσης του ευρετηρίου κατά την αναζήτηση"
 
-#: src/nautilus-application.c:217
+#: src/nautilus-application.c:218
 msgid "Couldn't Create Required Folder"
 msgstr "Aδύνατη η Δημιουργία Απαιτούμενου Φακέλου"
 
-#: src/nautilus-application.c:218
+#: src/nautilus-application.c:219
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -6160,11 +6160,11 @@ msgstr ""
 "την εκτέλεση του Ναυτίλου, παρακαλώ δημιουργήστε τον φάκελο ή καθορίστε τα "
 "δικαιώματα ούτως ώστε ο Ναυτίλος να μπορέσει να τον δημιουργήσει."
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 msgid "Couldn't Create Required Folders"
 msgstr "Aδύνατη η Δημιουργία Απαιτούμενου Φακέλου"
 
-#: src/nautilus-application.c:224
+#: src/nautilus-application.c:225
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -6193,7 +6193,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:442
+#: src/nautilus-application.c:443
 #, fuzzy
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -6206,7 +6206,7 @@ msgstr ""
 "Ναυτίλο ξανά."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:448
+#: src/nautilus-application.c:449
 #, fuzzy
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -6250,14 +6250,14 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:478 src/nautilus-application.c:496
-#: src/nautilus-application.c:503
+#: src/nautilus-application.c:479 src/nautilus-application.c:497
+#: src/nautilus-application.c:504
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr ""
 "Ο Ναυτίλος δε μπορεί να χρησιμοποιηθεί τώρα λόγω ενός μη αναμενόμενου "
 "σφάλματος."
 
-#: src/nautilus-application.c:479
+#: src/nautilus-application.c:480
 #, fuzzy
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
@@ -6267,7 +6267,7 @@ msgstr ""
 "από το OAF κατά την προσπάθεια δήλωσης του εξυπηρετητή όψης διαχειριστή "
 "αρχείων."
 
-#: src/nautilus-application.c:497
+#: src/nautilus-application.c:498
 #, fuzzy
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
@@ -6279,7 +6279,7 @@ msgstr ""
 "oafd και η επανεκκίνηση του Ναυτίλου μπορεί να βοηθήσει στη λύση του "
 "προβλήματός."
 
-#: src/nautilus-application.c:504
+#: src/nautilus-application.c:505
 #, fuzzy
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "

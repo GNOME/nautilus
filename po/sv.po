@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2002-08-28 18:10+0200\n"
+"POT-Creation-Date: 2002-09-13 20:23-0400\n"
 "PO-Revision-Date: 2002-08-16 12:11+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -3229,7 +3229,7 @@ msgid "link (broken)"
 msgstr "länk (trasig)"
 
 #: libnautilus-private/nautilus-file.c:5319
-#: libnautilus-private/nautilus-trash-directory.c:377
+#: libnautilus-private/nautilus-trash-directory.c:383
 #: src/file-manager/fm-desktop-icon-view.c:70
 msgid "Trash"
 msgstr "Papperskorg"
@@ -4187,16 +4187,16 @@ msgstr "Ljud-cd"
 msgid "Root Volume"
 msgstr "Rotvolym"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1450
+#: libnautilus-private/nautilus-volume-monitor.c:1453
 msgid "Mount Error"
 msgstr "Monteringsfel"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1450
+#: libnautilus-private/nautilus-volume-monitor.c:1453
 msgid "Unmount Error"
 msgstr "Avmonteringsfel"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1523
+#: libnautilus-private/nautilus-volume-monitor.c:1526
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4205,7 +4205,7 @@ msgstr ""
 "diskett i enheten."
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1527
+#: libnautilus-private/nautilus-volume-monitor.c:1530
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
@@ -4213,7 +4213,7 @@ msgstr ""
 "Nautilus kunde inte montera volymen. Det finns antagligen inget media i "
 "enheten."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1533
+#: libnautilus-private/nautilus-volume-monitor.c:1536
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4221,7 +4221,7 @@ msgstr ""
 "Nautilus kunde inte montera diskettstationen. Disketten är antagligen i ett "
 "format som inte kan monteras."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1536
+#: libnautilus-private/nautilus-volume-monitor.c:1539
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4229,20 +4229,20 @@ msgstr ""
 "Nautilus kunde inte montera den valda volymen. Volymen är antagligen i ett "
 "format som inte kan monteras."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1541
+#: libnautilus-private/nautilus-volume-monitor.c:1544
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilus kunde inte montera den valda diskettstationen."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1543
+#: libnautilus-private/nautilus-volume-monitor.c:1546
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilus kunde inte montera den valda volymen."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1548
+#: libnautilus-private/nautilus-volume-monitor.c:1551
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilus kunde inte avmontera den valda volymen."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1753
+#: libnautilus-private/nautilus-volume-monitor.c:1756
 msgid "ISO 9660 Volume"
 msgstr "ISO9660-volym"
 
@@ -5886,11 +5886,11 @@ msgstr "Visa _indexeringsstatus"
 msgid "Show status of indexing used when searching"
 msgstr "Visa statusen för indexeringen som används av sökning"
 
-#: src/nautilus-application.c:217
+#: src/nautilus-application.c:218
 msgid "Couldn't Create Required Folder"
 msgstr "Kan inte skapa mapp som krävs"
 
-#: src/nautilus-application.c:218
+#: src/nautilus-application.c:219
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5901,11 +5901,11 @@ msgstr ""
 "Nautilus bör du skapa denna mapp, eller ställa in de nödvändiga "
 "rättigheterna för att Nautilus ska kunna skapa den."
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 msgid "Couldn't Create Required Folders"
 msgstr "Kan inte skapa mappar som krävs"
 
-#: src/nautilus-application.c:224
+#: src/nautilus-application.c:225
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5932,7 +5932,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:442
+#: src/nautilus-application.c:443
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5943,7 +5943,7 @@ msgstr ""
 "eller installera om Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:448
+#: src/nautilus-application.c:449
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5989,12 +5989,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:478 src/nautilus-application.c:496
-#: src/nautilus-application.c:503
+#: src/nautilus-application.c:479 src/nautilus-application.c:497
+#: src/nautilus-application.c:504
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus kan inte användas just nu på grund av ett oväntat fel."
 
-#: src/nautilus-application.c:479
+#: src/nautilus-application.c:480
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -6002,7 +6002,7 @@ msgstr ""
 "Nautilus kan inte användas just nu på grund av ett oväntat fel från Bonobo "
 "inträffade när ett försök gjordes att registrera filhanterarens vyserver."
 
-#: src/nautilus-application.c:497
+#: src/nautilus-application.c:498
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -6012,7 +6012,7 @@ msgstr ""
 "när den skulle hitta fabriken. Om du dödar bonobo-activation-server och "
 "startar om Nautilus kanske problemet löser sig."
 
-#: src/nautilus-application.c:504
+#: src/nautilus-application.c:505
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "

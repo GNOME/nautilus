@@ -13,7 +13,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2002-08-24 05:11+0200\n"
+"POT-Creation-Date: 2002-09-13 20:23-0400\n"
 "PO-Revision-Date: 2002-08-10 21:32+0100\n"
 "Last-Translator: Reinout van Schouwen <reinout@cs.vu.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
@@ -871,7 +871,7 @@ msgid "Synthpop"
 msgstr "Syntpop"
 
 #: components/music/nautilus-music-view.c:296
-#: libnautilus-private/nautilus-volume-monitor.c:678
+#: libnautilus-private/nautilus-volume-monitor.c:676
 msgid "Unknown"
 msgstr "Onbekend"
 
@@ -3238,7 +3238,7 @@ msgid "link (broken)"
 msgstr "verwijzing (gebroken)"
 
 #: libnautilus-private/nautilus-file.c:5319
-#: libnautilus-private/nautilus-trash-directory.c:373
+#: libnautilus-private/nautilus-trash-directory.c:383
 #: src/file-manager/fm-desktop-icon-view.c:70
 msgid "Trash"
 msgstr "Prullenbak"
@@ -4171,38 +4171,38 @@ msgid "%s Viewer"
 msgstr "%s-Bekijker"
 
 #. Populate table with items we know localized names for.
-#: libnautilus-private/nautilus-volume-monitor.c:785
+#: libnautilus-private/nautilus-volume-monitor.c:803
 msgid "Floppy"
 msgstr "Diskette"
 
-#: libnautilus-private/nautilus-volume-monitor.c:786
-#: libnautilus-private/nautilus-volume-monitor.c:815
+#: libnautilus-private/nautilus-volume-monitor.c:804
+#: libnautilus-private/nautilus-volume-monitor.c:833
 msgid "CD-ROM"
 msgstr "CD-ROM"
 
-#: libnautilus-private/nautilus-volume-monitor.c:787
+#: libnautilus-private/nautilus-volume-monitor.c:805
 msgid "Zip Drive"
 msgstr "Zip-drive"
 
-#: libnautilus-private/nautilus-volume-monitor.c:802
-#: libnautilus-private/nautilus-volume-monitor.c:846
+#: libnautilus-private/nautilus-volume-monitor.c:820
+#: libnautilus-private/nautilus-volume-monitor.c:864
 msgid "Audio CD"
 msgstr "Audio-CD"
 
-#: libnautilus-private/nautilus-volume-monitor.c:837
+#: libnautilus-private/nautilus-volume-monitor.c:855
 msgid "Root Volume"
 msgstr "Root Volume"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1432
+#: libnautilus-private/nautilus-volume-monitor.c:1453
 msgid "Mount Error"
 msgstr "Aankoppelingsfout"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1432
+#: libnautilus-private/nautilus-volume-monitor.c:1453
 msgid "Unmount Error"
 msgstr "Afkoppelingsfout"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1505
+#: libnautilus-private/nautilus-volume-monitor.c:1526
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4211,7 +4211,7 @@ msgstr ""
 "geen diskette in het station."
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1509
+#: libnautilus-private/nautilus-volume-monitor.c:1530
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
@@ -4219,7 +4219,7 @@ msgstr ""
 "Nautilus was niet in staat het volume aan te koppelen. Er zit waarschijnlijk "
 "geen medium in het apparaat"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1515
+#: libnautilus-private/nautilus-volume-monitor.c:1536
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4227,7 +4227,7 @@ msgstr ""
 "Nautilus was niet in staat het diskettestation aan te koppelen. De diskette "
 "heeft waarschijnlijk een niet-ondersteund formaat."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1518
+#: libnautilus-private/nautilus-volume-monitor.c:1539
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4235,20 +4235,20 @@ msgstr ""
 "Nautilus was niet instaat in het geselecteerde volume aan te koppelen. Het "
 "volume heeft waarschijnlijk een niet-ondersteund formaat."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1523
+#: libnautilus-private/nautilus-volume-monitor.c:1544
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilus kon de geselecteerde diskette niet aankoppelen."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1525
+#: libnautilus-private/nautilus-volume-monitor.c:1546
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilus kan het geselecteerde volume niet aankoppelen."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1530
+#: libnautilus-private/nautilus-volume-monitor.c:1551
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilus kon het geselecteerde volume niet ontkoppelen."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1735
+#: libnautilus-private/nautilus-volume-monitor.c:1756
 msgid "ISO 9660 Volume"
 msgstr "ISO9660-Volume"
 
@@ -5906,11 +5906,11 @@ msgstr "_Indexeringsstatus tonen"
 msgid "Show status of indexing used when searching"
 msgstr "Indexeringsstatus tonen die gebruikt wordt bij het zoeken"
 
-#: src/nautilus-application.c:217
+#: src/nautilus-application.c:218
 msgid "Couldn't Create Required Folder"
 msgstr "Kon vereiste map niet creëren"
 
-#: src/nautilus-application.c:218
+#: src/nautilus-application.c:219
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5921,11 +5921,11 @@ msgstr ""
 "maken alvorens Nautilus te starten, of de rechten zodanig in te stellen "
 "zodat Nautilus hem kan creëren."
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 msgid "Couldn't Create Required Folders"
 msgstr "Kon vereiste mappen niet creëren"
 
-#: src/nautilus-application.c:224
+#: src/nautilus-application.c:225
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5952,7 +5952,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:442
+#: src/nautilus-application.c:443
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5964,7 +5964,7 @@ msgstr ""
 "installeren."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:448
+#: src/nautilus-application.c:449
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6010,12 +6010,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:478 src/nautilus-application.c:496
-#: src/nautilus-application.c:503
+#: src/nautilus-application.c:479 src/nautilus-application.c:497
+#: src/nautilus-application.c:504
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus kan nu niet gebruikt worden vanwege een onbekende fout."
 
-#: src/nautilus-application.c:479
+#: src/nautilus-application.c:480
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -6023,7 +6023,7 @@ msgstr ""
 "Nautilus kan nu niet gebruikt worden vanwege een onverwachte fout van Bonobo "
 "bij het registreren van de weergavedienst van de bestandsbeheerder."
 
-#: src/nautilus-application.c:497
+#: src/nautilus-application.c:498
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -6034,7 +6034,7 @@ msgstr ""
 "server en het herstarten van Nautilus zou het probleem misschien kunnen "
 "oplossen."
 
-#: src/nautilus-application.c:504
+#: src/nautilus-application.c:505
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
