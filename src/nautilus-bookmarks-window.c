@@ -39,49 +39,50 @@
  * more than one bookmark-editing window, these would be struct or
  * class fields. 
  */
-static int		     bookmark_list_changed_signalID;
+static int		     bookmark_list_changed_signal_id;
 static NautilusBookmarkList *bookmarks = NULL;
 static GtkWidget	    *bookmark_list_widget = NULL; /* awkward name to distinguish from NautilusBookmarkList */
 static GtkWidget	    *name_field = NULL;
-static int		     name_field_changed_signalID;
+static int		     name_field_changed_signal_id;
 static GtkWidget	    *remove_button = NULL;
 static gboolean		     text_changed = FALSE;
 static GtkWidget	    *uri_field = NULL;
-static int		     uri_field_changed_signalID;
+static int		     uri_field_changed_signal_id;
 
 /* forward declarations */
-static NautilusBookmark *get_selected_bookmark (void);
-static guint	get_selected_row	      (void);
-static gboolean get_selection_exists 	      (void);
-static void     name_or_uri_field_activate    (NautilusEntry *entry);
-static void	nautilus_bookmarks_window_restore_geometry
-					      (GtkWidget *window);
-static void	on_bookmark_list_changed       (NautilusBookmarkList *, 
-					       gpointer user_data);
-static void	on_name_field_changed 	      (GtkEditable *, gpointer user_data);
-static void	on_remove_button_clicked      (GtkButton *, gpointer user_data);
-static void	on_row_move 		      (GtkCList *,
-	     				       int old_row,
-	     				       int new_row,
-	     				       gpointer user_data);
-static void	on_select_row 		      (GtkCList	*,
-	       				       int row,
-	       				       int column,
-	       				       GdkEventButton *,
-	       				       gpointer user_data);
-static gboolean	on_text_field_focus_out_event (GtkWidget *, 
-					       GdkEventFocus *, 
-					       gpointer user_data);
-static void	on_uri_field_changed 	      (GtkEditable *, gpointer user_data);
-static gboolean on_window_delete_event 	      (GtkWidget *, 
-					       GdkEvent *, 
-					       gpointer user_data);
-static void     on_window_hide_event 	      (GtkWidget *, 
-					       gpointer user_data);
-static void     on_window_destroy_event       (GtkWidget *, 
-					       gpointer user_data);
-static void	repopulate		      (void);
-static void	set_up_close_accelerator      (GtkWidget *window);
+static guint    get_selected_row                            (void);
+static gboolean get_selection_exists                        (void);
+static void     name_or_uri_field_activate                  (NautilusEntry        *entry);
+static void     nautilus_bookmarks_window_restore_geometry  (GtkWidget            *window);
+static void     on_bookmark_list_changed                    (NautilusBookmarkList *list,
+							     gpointer              user_data);
+static void     on_name_field_changed                       (GtkEditable          *editable,
+							     gpointer              user_data);
+static void     on_remove_button_clicked                    (GtkButton            *button,
+							     gpointer              user_data);
+static void     on_row_move                                 (GtkCList             *clist,
+							     int                   old_row,
+							     int                   new_row,
+							     gpointer              user_data);
+static void     on_select_row                               (GtkCList             *clist,
+							     int                   row,
+							     int                   column,
+							     GdkEventButton       *event,
+							     gpointer              user_data);
+static gboolean on_text_field_focus_out_event               (GtkWidget            *widget,
+							     GdkEventFocus        *event,
+							     gpointer              user_data);
+static void     on_uri_field_changed                        (GtkEditable          *editable,
+							     gpointer              user_data);
+static gboolean on_window_delete_event                      (GtkWidget            *widget,
+							     GdkEvent             *event,
+							     gpointer              user_data);
+static void     on_window_hide_event                        (GtkWidget            *widget,
+							     gpointer              user_data);
+static void     on_window_destroy_event                     (GtkWidget            *widget,
+							     gpointer              user_data);
+static void     repopulate                                  (void);
+static void     set_up_close_accelerator                    (GtkWidget            *window);
 
 #define BOOKMARK_LIST_COLUMN_ICON		0
 #define BOOKMARK_LIST_COLUMN_NAME		1
@@ -96,6 +97,14 @@ static void	set_up_close_accelerator      (GtkWidget *window);
 /* Larger size initially; user can stretch or shrink (but not shrink below min) */
 #define BOOKMARKS_WINDOW_INITIAL_WIDTH	500
 #define BOOKMARKS_WINDOW_INITIAL_HEIGHT	200
+
+static void
+nautilus_bookmarks_window_response_callback (GtkDialog *dialog,
+					     int response_id,
+					     gpointer callback_data)
+{
+	gtk_widget_hide (GTK_WIDGET (dialog));
+}
 
 /**
  * create_bookmarks_window:
@@ -193,71 +202,60 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	gtk_widget_show (remove_button);
 	gtk_box_pack_start (GTK_BOX (hbox2), remove_button, TRUE, FALSE, 0);
 
-	bookmark_list_changed_signalID =
-		gtk_signal_connect (GTK_OBJECT(bookmarks), "contents_changed",
-				    G_CALLBACK(on_bookmark_list_changed),
-				    NULL);
+	bookmark_list_changed_signal_id =
+		g_signal_connect (bookmarks, "contents_changed",
+				  G_CALLBACK (on_bookmark_list_changed), NULL);
 				    
-	gtk_signal_connect (GTK_OBJECT(bookmark_list_widget), "row_move",
-			    G_CALLBACK(on_row_move),
-			    NULL);
-			    
-	gtk_signal_connect (GTK_OBJECT(bookmark_list_widget), "select_row",
-			    G_CALLBACK(on_select_row),
-			    NULL);
+	g_signal_connect (bookmark_list_widget, "row_move",
+			  G_CALLBACK (on_row_move), NULL);
+	
+	g_signal_connect (bookmark_list_widget, "select_row",
+			  G_CALLBACK (on_select_row), NULL);
 
 	g_signal_connect (window, "delete_event",
-                    	    G_CALLBACK (on_window_delete_event),
-                    	    NULL);
+			  G_CALLBACK (on_window_delete_event), NULL);
                     	    
 	g_signal_connect (window, "hide",
-                    	    G_CALLBACK (on_window_hide_event),
-                    	    NULL);
+			  G_CALLBACK (on_window_hide_event), NULL);
                     	    
 	g_signal_connect (window, "destroy",
-                    	    G_CALLBACK (on_window_destroy_event),
-                    	    NULL);
+			  G_CALLBACK (on_window_destroy_event), NULL);
                     	    
-	name_field_changed_signalID =
+	g_signal_connect (window, "response",
+			  G_CALLBACK (nautilus_bookmarks_window_response_callback), NULL);
+
+	name_field_changed_signal_id =
 		g_signal_connect (name_field, "changed",
-                	            G_CALLBACK (on_name_field_changed),
-                      		    NULL);
+				  G_CALLBACK (on_name_field_changed),
+				  NULL);
                       		    
 	g_signal_connect (name_field, "focus_out_event",
-      	              	    G_CALLBACK (on_text_field_focus_out_event),
-                            NULL);
+			  G_CALLBACK (on_text_field_focus_out_event), NULL);
                             
 	g_signal_connect (name_field, "activate",
-      	              	    G_CALLBACK (name_or_uri_field_activate),
-                            NULL);
+			  G_CALLBACK (name_or_uri_field_activate), NULL);
 
-	uri_field_changed_signalID = 
+	uri_field_changed_signal_id = 
 		g_signal_connect (uri_field, "changed",
-                	    	    G_CALLBACK (on_uri_field_changed),
-                      		    NULL);
+				  G_CALLBACK (on_uri_field_changed), NULL);
                       		    
 	g_signal_connect (uri_field, "focus_out_event",
-        	            G_CALLBACK (on_text_field_focus_out_event),
-              	    	    NULL);
+			  G_CALLBACK (on_text_field_focus_out_event), NULL);
               	    	    
 	g_signal_connect (uri_field, "activate",
-      	              	    G_CALLBACK (name_or_uri_field_activate),
-                            NULL);
+			  G_CALLBACK (name_or_uri_field_activate), NULL);
 
 	g_signal_connect (remove_button, "clicked",
-        	            G_CALLBACK (on_remove_button_clicked),
-                      	    NULL);
+			  G_CALLBACK (on_remove_button_clicked), NULL);
 
 	/* Register to find out about icon theme changes */
-	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
-					       "icons_changed",
-					       repopulate,
-					       GTK_OBJECT (window));
+	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (), "icons_changed",
+					       repopulate, GTK_OBJECT (window));
                       	    
 
 	/* Set selection mode after connecting signal to notice initial selected row. */
-	gtk_clist_set_selection_mode(GTK_CLIST (bookmark_list_widget), 
-				     GTK_SELECTION_BROWSE);
+	gtk_clist_set_selection_mode (GTK_CLIST (bookmark_list_widget), 
+				      GTK_SELECTION_BROWSE);
 
 	/* Fill in list widget with bookmarks, must be after signals are wired up. */
 	repopulate();
@@ -266,26 +264,25 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 }
 
 static NautilusBookmark *
-get_selected_bookmark ()
+get_selected_bookmark (void)
 {
 	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK_LIST(bookmarks), NULL);
 
-	return nautilus_bookmark_list_item_at(bookmarks, get_selected_row());
+	return nautilus_bookmark_list_item_at(bookmarks, get_selected_row ());
 }
 
 static guint
-get_selected_row ()
+get_selected_row (void)
 {
-	g_assert(get_selection_exists());
-	return GPOINTER_TO_UINT(g_list_nth_data(
-		GTK_CLIST(bookmark_list_widget)->selection, 0));
+	g_assert (get_selection_exists());
+	return GPOINTER_TO_UINT (g_list_nth_data (GTK_CLIST (bookmark_list_widget)->selection, 0));
 }
 
 static gboolean
-get_selection_exists ()
+get_selection_exists (void)
 {
 	g_assert (GTK_CLIST(bookmark_list_widget)->selection_mode 
-		== GTK_SELECTION_BROWSE);
+		  == GTK_SELECTION_BROWSE);
 	return GTK_CLIST(bookmark_list_widget)->rows > 0;
 }
 
@@ -298,8 +295,7 @@ install_bookmark_icon (NautilusBookmark *bookmark, int row)
 	if (!nautilus_bookmark_get_pixmap_and_mask (bookmark,
 		  				    NAUTILUS_ICON_SIZE_SMALLER,
 						    &pixmap,
-						    &bitmap))
-	{
+						    &bitmap)) {
 		return;
 	}
 
@@ -320,8 +316,7 @@ nautilus_bookmarks_window_restore_geometry (GtkWidget *window)
 
 	window_geometry = nautilus_bookmark_list_get_window_geometry (bookmarks);
 
-	if (window_geometry != NULL) 
-	{	
+	if (window_geometry != NULL) {	
 		eel_gtk_window_set_initial_geometry_from_string 
 			(GTK_WINDOW (window), window_geometry, 
 			 BOOKMARKS_WINDOW_MIN_WIDTH, BOOKMARKS_WINDOW_MIN_HEIGHT);
@@ -397,10 +392,10 @@ on_remove_button_clicked (GtkButton *button,
 	 * back to the top.
 	 */
 	gtk_signal_handler_block(GTK_OBJECT(bookmarks), 
-				 bookmark_list_changed_signalID);
+				 bookmark_list_changed_signal_id);
 	nautilus_bookmark_list_delete_item_at(bookmarks, get_selected_row());
 	gtk_signal_handler_unblock(GTK_OBJECT(bookmarks), 
-				   bookmark_list_changed_signalID);
+				   bookmark_list_changed_signal_id);
 
 	gtk_clist_remove(GTK_CLIST(bookmark_list_widget), get_selected_row());
 
@@ -431,11 +426,11 @@ on_row_move (GtkCList *clist,
 	 * after repopulate(), thus reordering the correctly-ordered list.
 	 */
 	gtk_signal_handler_block(GTK_OBJECT(bookmarks), 
-				 bookmark_list_changed_signalID);
+				 bookmark_list_changed_signal_id);
 	nautilus_bookmark_list_delete_item_at(bookmarks, old_row);
 	nautilus_bookmark_list_insert_item(bookmarks, bookmark, new_row);
 	gtk_signal_handler_unblock(GTK_OBJECT(bookmarks), 
-				   bookmark_list_changed_signalID);
+				   bookmark_list_changed_signal_id);
 
 	g_object_unref (G_OBJECT (bookmark));
 }
@@ -471,7 +466,7 @@ on_select_row (GtkCList	       *clist,
 
 
 static void
-update_bookmark_from_text ()
+update_bookmark_from_text (void)
 {
 	if (text_changed) {
 		NautilusBookmark *bookmark;
@@ -489,11 +484,11 @@ update_bookmark_from_text ()
 		 * after repopulate(), thus reordering the correctly-ordered list.
 		 */
 		gtk_signal_handler_block (GTK_OBJECT (bookmarks), 
-					  bookmark_list_changed_signalID);
+					  bookmark_list_changed_signal_id);
 		nautilus_bookmark_list_delete_item_at (bookmarks, selected_row);
 		nautilus_bookmark_list_insert_item (bookmarks, bookmark, selected_row);
 		gtk_signal_handler_unblock (GTK_OBJECT (bookmarks), 
-					    bookmark_list_changed_signalID);
+					    bookmark_list_changed_signal_id);
 
 		g_object_unref (G_OBJECT (bookmark));
 	}
@@ -529,22 +524,12 @@ on_uri_field_changed (GtkEditable *editable,
 	text_changed = TRUE;
 }
 
-static void
-save_geometry_and_hide (GtkWindow *window)
-{
-	g_assert (GTK_IS_WINDOW (window));
-
-	nautilus_bookmarks_window_save_geometry (window);
-	gtk_widget_hide (GTK_WIDGET (window));
-}
-
-
 static gboolean
 on_window_delete_event (GtkWidget *widget,
 			GdkEvent *event,
 			gpointer user_data)
 {
-	save_geometry_and_hide (GTK_WINDOW (widget));
+	gtk_widget_hide (widget);
 	return TRUE;
 }
 
@@ -623,18 +608,18 @@ repopulate (void)
 	gtk_widget_set_sensitive (uri_field, selection_exists);
 	    
 	if (!selection_exists) {
-		/* Block signals to avoid modifying non-existent selected item. */
+		/* Block signals to avoid modifying nonexistent selected item. */
 		gtk_signal_handler_block (GTK_OBJECT (name_field), 
-					  name_field_changed_signalID);
+					  name_field_changed_signal_id);
 		nautilus_entry_set_text (NAUTILUS_ENTRY (name_field), "");
 		gtk_signal_handler_unblock (GTK_OBJECT (name_field), 
-					    name_field_changed_signalID);
+					    name_field_changed_signal_id);
 
 		gtk_signal_handler_block (GTK_OBJECT (uri_field), 
-					  uri_field_changed_signalID);
+					  uri_field_changed_signal_id);
 		nautilus_entry_set_text (NAUTILUS_ENTRY (uri_field), "");
 		gtk_signal_handler_unblock (GTK_OBJECT (uri_field), 
-					    uri_field_changed_signalID);
+					    uri_field_changed_signal_id);
 	}
 	  
 	gtk_clist_thaw (GTK_CLIST (bookmark_list_widget));
@@ -650,9 +635,8 @@ handle_close_accelerator (GtkWindow *window,
 	g_assert (user_data == NULL);
 
 	if (eel_gtk_window_event_is_close_accelerator (window, event)) {		
-		save_geometry_and_hide (window);
-		gtk_signal_emit_stop_by_name 
-			(GTK_OBJECT (window), "key_press_event");
+		gtk_widget_hide (GTK_WIDGET (window));
+		gtk_signal_emit_stop_by_name (GTK_OBJECT (window), "key_press_event");
 		return TRUE;
 	}
 
@@ -666,8 +650,6 @@ set_up_close_accelerator (GtkWidget *window)
 	 * here because we have to handle saving geometry before hiding the
 	 * window.
 	 */
-	g_signal_connect (window,
-			    "key_press_event",
-			    G_CALLBACK (handle_close_accelerator),
-			    NULL);
+	g_signal_connect (window, "key_press_event",
+			  G_CALLBACK (handle_close_accelerator), NULL);
 }

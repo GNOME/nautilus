@@ -386,21 +386,21 @@ nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
 		if (sidebar_title_color == NULL) {
 			/* FIXME bugzilla.gnome.org 42496: for now, both the title and info colors are the same */
 			if (eel_background_is_dark (background)) {
-				sidebar_title_color = g_strdup("rgb:FFFF/FFFF/FFFF");
-				sidebar_info_title_color = g_strdup("rgb:FFFF/FFFF/FFFF");
-				sidebar_title_shadow_color = g_strdup("rgb:0000/0000/0000");
+				sidebar_title_color = g_strdup ("#FFFFFF");
+				sidebar_info_title_color = g_strdup ("#FFFFFF");
+				sidebar_title_shadow_color = g_strdup ("#000000");
 				
 			} else {
-				sidebar_title_color = g_strdup("rgb:0000/0000/0000");
-				sidebar_info_title_color = g_strdup("rgb:0000/0000/0000");
-				sidebar_title_shadow_color = g_strdup("rgb:FFFF/FFFF/FFFF");
+				sidebar_title_color = g_strdup ("#000000");
+				sidebar_info_title_color = g_strdup ("#000000");
+				sidebar_title_shadow_color = g_strdup ("#FFFFFF");
 			}
 		} else {
 			if (sidebar_info_title_color == NULL) {
 				sidebar_info_title_color = g_strdup (sidebar_title_color);
 			}
 			if (sidebar_title_shadow_color == NULL) {
-				sidebar_title_shadow_color = g_strdup("rgb:FFFF/FFFF/FFFF");
+				sidebar_title_shadow_color = g_strdup ("#FFFFFF");
 			}
 		}
 

@@ -1,3 +1,58 @@
+2001-11-30  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(top_left_read_callback): Roll double-free bug fix from the branch.
+	
+	* TODO: Some small updates.
+	
+	* components/hardware/nautilus-hardware-view.c:
+	* data/browser.xml:
+	* icons/crux_eggplant/crux_eggplant.xml:
+	* icons/crux_teal/crux_teal.xml:
+	* icons/default.xml:
+	* icons/gnome/gnome.xml:
+	* icons/sierra/sierra.xml:
+	* icons/tahoe/tahoe.xml:
+	* libnautilus-private/nautilus-directory-background.c:
+	(nautilus_file_background_write_desktop_settings):
+	* libnautilus-private/nautilus-icon-container.c:
+	(start_rubberbanding):
+	* libnautilus-private/nautilus-icon-text-item.c:
+	(fetch_themed_color):
+	* src/nautilus-property-browser.c: (add_color_to_browser):
+	* src/nautilus-sidebar-tabs.c: (setup_light_text),
+	(setup_dark_text), (nautilus_sidebar_tabs_init),
+	(nautilus_sidebar_tabs_receive_dropped_color):
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_select_text_color):
+	* src/nautilus-sidebar.c: (receive_dropped_color):
+	Changed all rgb:RRRR/GGGG/BBBB to #RRGGBB. We still probably have
+	to handle the old format just for old data files.
+	
+	* libnautilus-private/.cvsignore:
+	nautilus-marshal-guts.h -> nautilus-marshal.h
+	
+	* src/file-manager/fm-directory-view.c:
+	(update_directory_in_scripts_menu): Add filter so that we don't
+	see invisible or backup files in the scripts menu. In the old
+	days, gnome-vfs supplied the filtering.
+	
+	* src/nautilus-about.c: (nautilus_about_finalize),
+	(nautilus_about_instance_init), (nautilus_about_hide),
+	(nautilus_about_hide_on_response),
+	(nautilus_about_hide_on_delete), (nautilus_about_class_init):
+	Get rid of double-destroy problem with about, and fix OK button.
+	
+	* src/nautilus-bookmarks-window.c:
+	(nautilus_bookmarks_window_response_callback): Fix Done button.
+	(create_bookmarks_window): Hook up response callback.
+	(on_window_delete_event), (handle_close_accelerator): Get rid of
+	save_geometry_and_hide, since hide already does that.
+	
+	* src/nautilus-main.c: (main): Add some missing domains for better
+	debugging. We should figure out a way to do this without a list of
+	domains.
+
 2001-11-27  Seth Nickell  <snickell@stanford.edu>
 
 	* nautilus-help.desktop.in:
@@ -192,6 +247,7 @@ Tue Nov 20 21:45:43 2001  Owen Taylor  <otaylor@redhat.com>
 	CORBA_OBJECT_NIL return from get_control_frame.
 
 2001-11-12  Thomas Canty  <tommydal@optushome.com.au>
+	
 	* configure.in: Initialise the gnome-vfs-module package,
 	which is required for the help component
 
@@ -223,7 +279,6 @@ Tue Nov 20 21:45:43 2001  Owen Taylor  <otaylor@redhat.com>
  
  	* src/nautilus-window-toolbars.c:
  	Re-enable the throbber.
- 
 
 2001-11-10  Benedikt Roth  <Benedikt.Roth@gmx.net>
  

@@ -184,9 +184,9 @@ static void     element_clicked_callback                        (GtkWidget      
 								 gpointer                       callback_data);
 
 
-#define BROWSER_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
+#define BROWSER_BACKGROUND_COLOR "#FFFFFF"
 
-#define THEME_SELECT_COLOR "rgb:FFFF/9999/9999"
+#define THEME_SELECT_COLOR "#FF9999"
 
 #define BROWSER_CATEGORIES_FILE_NAME "browser.xml"
 
@@ -1154,10 +1154,10 @@ add_color_to_browser (GtkWidget *widget, int which_button, gpointer *data)
 	if (which_button == GNOME_OK) {	
 		gnome_color_picker_get_d (GNOME_COLOR_PICKER (property_browser->details->color_picker), &color[0], &color[1], &color[2], &color[3]);		
 		color_spec = g_strdup_printf
-			("rgb:%04hX/%04hX/%04hX",
-		 	(gushort) (color[0] * 65535.0 + 0.5),
-		 	(gushort) (color[1] * 65535.0 + 0.5),
-		 	(gushort) (color[2] * 65535.0 + 0.5));
+			("#%02X%02X%02X",
+			 (guint) (color[0] * 255.0 + 0.5),
+			 (guint) (color[1] * 255.0 + 0.5),
+			 (guint) (color[2] * 255.0 + 0.5));
 
 		color_name = gtk_entry_get_text (GTK_ENTRY (property_browser->details->color_name));
 		stripped_color_name = g_strstrip (g_strdup (color_name));

@@ -433,7 +433,7 @@ fetch_themed_color (const char *property_name, GdkColor *color)
 	
 	color_string = nautilus_theme_get_theme_data ("icon", property_name);
 	if (color_string == NULL) {
-		color_string = g_strdup ("rgb:FFFF/FFFF/FFFF");
+		color_string = g_strdup ("#FFFFFF");
 	}
 	gdk_color_parse (color_string, color);
 	g_free (color_string);

@@ -169,6 +169,8 @@ main (int argc, char *argv[])
 		eel_make_warnings_and_criticals_stop_in_debugger
 			(G_LOG_DOMAIN,
 			 "Bonobo",
+			 "GLib",
+			 "GLib-GObject",
 			 "Gdk",
 			 "GnomeUI",
 			 "GnomeVFS",

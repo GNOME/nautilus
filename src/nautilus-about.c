@@ -28,42 +28,38 @@
 #include <config.h>
 #include "nautilus-about.h"
 
-
-#include <math.h>
-#include <gnome.h>
-#include <gdk/gdk.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkmenu.h>
-#include <gtk/gtkmenuitem.h>
-#include <libgnome/gnome-util.h>
-#include <libgnomeui/gnome-pixmap.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-gtk-macros.h>
-#include <eel/eel-gtk-extensions.h>
 #include <eel/eel-glib-extensions.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
+#include <eel/eel-gtk-extensions.h>
 #include <eel/eel-scalable-font.h>
 #include <eel/eel-string.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtkdrawingarea.h>
+#include <gtk/gtkframe.h>
+#include <gtk/gtkmain.h>
+#include <gtk/gtkmenu.h>
+#include <gtk/gtkmenuitem.h>
+#include <gtk/gtkstock.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-macros.h>
+#include <libgnome/gnome-util.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-theme.h>
+#include <math.h>
+#include <time.h>
 
 struct NautilusAboutDetails {
 	GtkWidget *drawing_area;
 	GdkPixbuf *background_pixbuf;	
 	int	  last_update_time;
-	int	  timer_task;
+	guint	  timer_task;
 	char	  **authors;
 	int	  *order_array;
 };
 
-static gboolean nautilus_about_close            (NautilusAbout       *about,
-						 gpointer            *unused);
-static void     nautilus_about_class_init (NautilusAboutClass  *klass);
-static void     nautilus_about_init       (NautilusAbout       *about);
-static void     nautilus_about_destroy          (GtkObject           *object);
 static void     nautilus_about_repaint          (GtkWidget           *drawing_area,
 						 GdkEventExpose      *event,
 						 NautilusAbout       *about);
@@ -87,21 +83,13 @@ static int      update_authors_if_necessary     (gpointer             callback_d
 /* delay between randomizing, in seconds  */
 #define UPDATE_TIME_INTERVAL 8
 
-/* gtk class definition boilerplate */
-EEL_CLASS_BOILERPLATE (NautilusAbout,
-		       nautilus_about,
-		       GTK_TYPE_DIALOG)
-
-static void
-nautilus_about_class_init (NautilusAboutClass *about_class)
-{
-	GtkObjectClass *object_class = GTK_OBJECT_CLASS (about_class);
-		
-	object_class->destroy = nautilus_about_destroy;
-}
+GNOME_CLASS_BOILERPLATE (NautilusAbout,
+			 nautilus_about,
+			 GtkDialog,
+			 GTK_TYPE_DIALOG)
 
 static void 
-nautilus_about_destroy (GtkObject *object)
+nautilus_about_finalize (GObject *object)
 {
 	NautilusAbout *about;
 	
@@ -120,13 +108,13 @@ nautilus_about_destroy (GtkObject *object)
 	
 	g_free (about->details);
 	
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	GNOME_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 
 /* initialize the about */
 static void
-nautilus_about_init (NautilusAbout *about)
+nautilus_about_instance_init (NautilusAbout *about)
 {
 	char *background_path;
 	GtkWidget *frame;
@@ -162,7 +150,7 @@ nautilus_about_init (NautilusAbout *about)
 	gtk_widget_set_events (about->details->drawing_area, GDK_EXPOSURE_MASK);
 
 	g_signal_connect (about->details->drawing_area, "expose_event",
-			    G_CALLBACK (nautilus_about_repaint), about);
+			  G_CALLBACK (nautilus_about_repaint), about);
 
 	gtk_widget_show (about->details->drawing_area);
  	gtk_container_add (GTK_CONTAINER (frame), about->details->drawing_area);
@@ -170,15 +158,9 @@ nautilus_about_init (NautilusAbout *about)
 	/* set up the timer task */
 	about->details->timer_task = gtk_timeout_add (2000, update_authors_if_necessary, about); 
 	       
-	/* configure the dialog */                                  
+	/* configure the dialog */
 	gtk_dialog_add_button (GTK_DIALOG (about),
 			       GTK_STOCK_OK, GTK_RESPONSE_OK);
-
-	gtk_signal_connect
-	        (GTK_OBJECT (about),
-	         "close",
-	         G_CALLBACK (nautilus_about_close), 
-	         NULL);
 }
 
 /* allocate a new about dialog */
@@ -442,22 +424,24 @@ nautilus_about_update_authors (NautilusAbout *about)
 	if (about->details->timer_task == 0) {
 		about->details->timer_task = gtk_timeout_add
 			(2000, update_authors_if_necessary, about); 
-  	}  
+  	}
 	
 	/* schedule a redraw for the about box */
 	gtk_widget_queue_draw (GTK_WIDGET (about));
 }
 
-/* handle the dialog closing by killing the timer task */
-
-static gboolean
-nautilus_about_close (NautilusAbout *about, gpointer  *unused)
+static void
+nautilus_about_hide (GtkWidget *widget)
 {
+	NautilusAbout *about;
+
+	about = NAUTILUS_ABOUT (widget);
 	if (about->details->timer_task != 0) {
 		gtk_timeout_remove (about->details->timer_task);
 		about->details->timer_task = 0;
-	}  
-	return FALSE;
+	}
+	
+	GNOME_CALL_PARENT (GTK_WIDGET_CLASS, hide, (widget));
 }
 
 static int
@@ -475,4 +459,25 @@ update_authors_if_necessary (gpointer callback_data)
 		nautilus_about_update_authors (about);
 	}
 	return TRUE;
+}
+
+static void
+nautilus_about_hide_on_response (GtkDialog *dialog, int response_id)
+{
+	gtk_widget_hide (GTK_WIDGET (dialog));
+}
+
+static gboolean
+nautilus_about_hide_on_delete (GtkWidget *widget, GdkEventAny *event)
+{
+	return gtk_widget_hide_on_delete (widget);
+}
+
+static void
+nautilus_about_class_init (NautilusAboutClass *class)
+{
+	G_OBJECT_CLASS (class)->finalize = nautilus_about_finalize;
+	GTK_WIDGET_CLASS (class)->delete_event = nautilus_about_hide_on_delete;
+	GTK_WIDGET_CLASS (class)->hide = nautilus_about_hide;
+	GTK_DIALOG_CLASS (class)->response = nautilus_about_hide_on_response;
 }

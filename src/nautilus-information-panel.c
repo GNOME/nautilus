@@ -124,7 +124,7 @@ static void     add_command_buttons                    (NautilusSidebar  *sideba
 							GList            *application_list);
 static void     background_metadata_changed_callback   (NautilusSidebar  *sidebar);
 
-#define DEFAULT_TAB_COLOR "rgb:9999/9999/9999"
+#define DEFAULT_TAB_COLOR "#999999"
 
 /* FIXME bugzilla.gnome.org 41245: hardwired sizes */
 #define SIDEBAR_MINIMUM_WIDTH 1
@@ -776,7 +776,7 @@ receive_dropped_color (NautilusSidebar *sidebar,
 	}
 	
 	channels = (guint16 *) selection_data->data;
-	color_spec = g_strdup_printf ("rgb:%04hX/%04hX/%04hX", channels[0], channels[1], channels[2]);
+	color_spec = g_strdup_printf ("#%02X%02X%02X", channels[0] >> 8, channels[1] >> 8, channels[2] >> 8);
 
 	switch (hit_test (sidebar, x, y)) {
 	case NO_PART:

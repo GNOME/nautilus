@@ -97,7 +97,7 @@ static int  update_uptime_text			      (gpointer			 callback_data);
 
 EEL_CLASS_BOILERPLATE (NautilusHardwareView, nautilus_hardware_view, GTK_TYPE_EVENT_BOX)
 
-#define HARDWARE_DEFAULT_BACKGROUND_COLOR  "rgb:DDDD/DDDD/BBBB"
+#define HARDWARE_DEFAULT_BACKGROUND_COLOR "#DDDDBB"
 
 static void
 nautilus_hardware_view_class_init (NautilusHardwareViewClass *klass)

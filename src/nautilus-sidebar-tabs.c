@@ -162,7 +162,7 @@ nautilus_sidebar_tabs_class_init (NautilusSidebarTabsClass *class)
 static void
 setup_light_text(NautilusSidebarTabs *sidebar_tabs)
 {
-	gdk_color_parse ("rgb:ff/ff/ff", &sidebar_tabs->details->text_color);
+	gdk_color_parse ("#ffffff", &sidebar_tabs->details->text_color);
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (sidebar_tabs)), 
 				  &sidebar_tabs->details->text_color, FALSE, TRUE);
 }
@@ -170,7 +170,7 @@ setup_light_text(NautilusSidebarTabs *sidebar_tabs)
 static void
 setup_dark_text(NautilusSidebarTabs *sidebar_tabs)
 {
-	gdk_color_parse ("rgb:00/00/00", &sidebar_tabs->details->text_color);
+	gdk_color_parse ("#000000", &sidebar_tabs->details->text_color);
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (sidebar_tabs)), 
 				  &sidebar_tabs->details->text_color, FALSE, TRUE);
 }
@@ -282,23 +282,23 @@ nautilus_sidebar_tabs_init (NautilusSidebarTabs *sidebar_tabs)
 	sidebar_tabs->details = g_new0 (NautilusSidebarTabsDetails, 1);
 		
 	/* set up the default colors used for the structured (non-themed) tabs */
-	gdk_color_parse ("rgb:99/99/99", &sidebar_tabs->details->tab_color);
+	gdk_color_parse ("#999999", &sidebar_tabs->details->tab_color);
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (sidebar_tabs)), 
 				  &sidebar_tabs->details->tab_color, FALSE, TRUE);
 	
-	gdk_color_parse ("rgb:ee/ee/ee", &sidebar_tabs->details->prelight_color);
+	gdk_color_parse ("#eeeeee", &sidebar_tabs->details->prelight_color);
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (sidebar_tabs)), 
 				  &sidebar_tabs->details->prelight_color, FALSE, TRUE);
 	
-	gdk_color_parse ("rgb:ff/ff/ff", &sidebar_tabs->details->background_color);
+	gdk_color_parse ("#ffffff", &sidebar_tabs->details->background_color);
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (sidebar_tabs)), 
 				  &sidebar_tabs->details->background_color, FALSE, TRUE);
 	
-	gdk_color_parse ("rgb:00/00/00", &sidebar_tabs->details->line_color);
+	gdk_color_parse ("#000000", &sidebar_tabs->details->line_color);
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (sidebar_tabs)), 
 				  &sidebar_tabs->details->line_color, FALSE, TRUE);
 	
-	gdk_color_parse ("rgb:d6/d6/d6", &sidebar_tabs->details->hilight_color);
+	gdk_color_parse ("#d6d6d6", &sidebar_tabs->details->hilight_color);
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (sidebar_tabs)), 
 				  &sidebar_tabs->details->hilight_color, FALSE, TRUE);
 	
@@ -1660,7 +1660,7 @@ nautilus_sidebar_tabs_receive_dropped_color (NautilusSidebarTabs *sidebar_tabs,
 	}
 	
 	channels = (guint16 *) selection_data->data;
-	color_spec = g_strdup_printf ("rgb:%04hX/%04hX/%04hX", channels[0], channels[1], channels[2]);
+	color_spec = g_strdup_printf ("#%02X%02X%02X", channels[0] >> 8, channels[1] >> 8, channels[2] >> 8);
 	nautilus_sidebar_tabs_set_color(sidebar_tabs, color_spec);
 	g_free (color_spec);
 }

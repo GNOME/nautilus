@@ -1580,7 +1580,7 @@ start_rubberbanding (NautilusIconContainer *container,
 	} else {
 		fill_color_str = nautilus_theme_get_theme_data ("directory", "selection_box_color");
 		if (fill_color_str == NULL) {
-			fill_color_str = g_strdup ("rgb:7777/BBBB/DDDD");
+			fill_color_str = g_strdup ("#77BBDD");
 		}
 
 		band_info->selection_rectangle = gnome_canvas_item_new

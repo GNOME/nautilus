@@ -397,8 +397,8 @@ nautilus_file_background_write_desktop_settings (char *color, char *image, EelBa
 		/* We set it to white here because that's how backgrounds with a NULL color
 		 * are drawn by Nautilus - due to usage of eel_gdk_color_parse_with_white_default.
 		 */
-		gnome_config_set_string ("/Background/Default/color1", "rgb:FFFF/FFFF/FFFF");		
-		gnome_config_set_string ("/Background/Default/color2", "rgb:FFFF/FFFF/FFFF");		
+		gnome_config_set_string ("/Background/Default/color1", "#FFFFFF");		
+		gnome_config_set_string ("/Background/Default/color2", "#FFFFFF");		
 		gnome_config_set_string ("/Background/Default/simple", "solid");
 		gnome_config_set_string ("/Background/Default/gradient", "vertical");
 	}
