@@ -36,7 +36,7 @@ egg_recent_item_new (void)
 	item = g_new (EggRecentItem, 1);
 
 	item->groups = NULL;
-	item->private = FALSE;
+	item->private_data = FALSE;
 	item->uri = NULL;
 	item->mime_type = NULL;
 
@@ -133,7 +133,7 @@ egg_recent_item_copy (const EggRecentItem *item)
 	if (item->mime_type)
 		newitem->mime_type = g_strdup (item->mime_type);
 	newitem->timestamp = item->timestamp;
-	newitem->private = item->private;
+	newitem->private_data = item->private_data;
 	newitem->groups = egg_recent_item_copy_groups (item->groups);
 
 	return newitem;
@@ -238,6 +238,98 @@ egg_recent_item_get_uri_for_display (const EggRecentItem *item)
 	return gnome_vfs_format_uri_for_display (item->uri);
 }
 
+/* Stolen from gnome_vfs_make_valid_utf8() */
+static char *
+make_valid_utf8 (const char *name)
+{
+	GString *string;
+	const char *remainder, *invalid;
+	int remaining_bytes, valid_bytes;
+
+	string = NULL;
+	remainder = name;
+	remaining_bytes = strlen (name);
+
+	while (remaining_bytes != 0) {
+		if (g_utf8_validate (remainder, remaining_bytes, &invalid))
+			break;
+
+		valid_bytes = invalid - remainder;
+
+		if (string == NULL)
+			string = g_string_sized_new (remaining_bytes);
+
+		g_string_append_len (string, remainder, valid_bytes);
+		g_string_append_c (string, '?');
+
+		remaining_bytes -= valid_bytes + 1;
+		remainder = invalid + 1;
+	}
+
+	if (string == NULL)
+		return g_strdup (name);
+
+	g_string_append (string, remainder);
+/* 	g_string_append (string, _(" (invalid file name)")); */
+	g_assert (g_utf8_validate (string->str, -1, NULL));
+
+	return g_string_free (string, FALSE);
+}
+
+/**
+ * egg_recent_item_get_short_name:
+ * @item: an #EggRecentItem
+ *
+ * Computes a valid UTF-8 string that can be used as the name of the item in a
+ * menu or list.  For example, calling this function on an item that refers to
+ * "file:///foo/bar.txt" will yield "bar.txt".
+ *
+ * Return value: A newly-allocated string in UTF-8 encoding; free it with
+ * g_free().
+ **/
+gchar *
+egg_recent_item_get_short_name (const EggRecentItem *item)
+{
+	GnomeVFSURI *uri;
+	char *short_name;
+	gboolean valid;
+
+	g_return_val_if_fail (item != NULL, NULL);
+
+	if (item->uri == NULL)
+		return NULL;
+
+	uri = gnome_vfs_uri_new (item->uri);
+	g_assert (uri != NULL); /* We already checked this in egg_recent_item_set_uri() */
+
+	short_name = gnome_vfs_uri_extract_short_name (uri);
+	valid = FALSE;
+
+	if (strcmp (gnome_vfs_uri_get_scheme (uri), "file") == 0) {
+		char *tmp;
+
+		tmp = g_filename_to_utf8 (short_name, -1, NULL, NULL, NULL);
+		if (tmp) {
+			g_free (short_name);
+			short_name = tmp;
+			valid = TRUE;
+		}
+	}
+
+	if (!valid) {
+		char *tmp;
+
+		tmp = make_valid_utf8 (short_name);
+		g_assert (tmp != NULL);
+		g_free (short_name);
+		short_name = tmp;
+	}
+
+	g_free (uri);
+
+	return short_name;
+}
+
 void 
 egg_recent_item_set_mime_type (EggRecentItem *item, const gchar *mime)
 {
@@ -323,13 +415,13 @@ egg_recent_item_remove_group (EggRecentItem *item, const gchar *group_name)
 void
 egg_recent_item_set_private (EggRecentItem *item, gboolean priv)
 {
-	item->private = priv;
+	item->private_data = priv;
 }
 
 gboolean
 egg_recent_item_get_private (const EggRecentItem *item)
 {
-	return item->private;
+	return item->private_data;
 }
 
 GType
