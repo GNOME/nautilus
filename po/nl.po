@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-07-03 13:16+0200\n"
+"POT-Creation-Date: 2003-07-07 13:14+0200\n"
 "PO-Revision-Date: 2003-07-03 19:00+0100\n"
 "Last-Translator: Reinout van Schouwen <reinout@cs.vu.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
@@ -1047,11 +1047,13 @@ msgid "Preview"
 msgstr "Voorbeeld"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:1
+#, fuzzy
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
 "actual number of captions shown depends on the zoom level. Possible values "
-"are: size, type, date_modified, date_changed, date_accessed, owner, group, "
-"permissions, octal_permissions and mime_type"
+"are: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed"
+"\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and "
+"\"mime_type\"."
 msgstr ""
 "Een lijst van bijschriften onder een pictogram in pictogramweergave en op "
 "het werkblad. Het werkelijke aantal getoonde bijschriften hangt af van de "
@@ -1060,7 +1062,8 @@ msgstr ""
 "en mime_type"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
-msgid "Add nautilus to session"
+#, fuzzy
+msgid "Add Nautilus to session"
 msgstr "Nautilus aan sessie toevoegen"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:3
@@ -1068,15 +1071,17 @@ msgid "Bring up a new window for every opened file"
 msgstr "Nieuw venster openen voor elk geopend bestand"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
-msgid "Criteria for search bar searching."
+#, fuzzy
+msgid "Criteria for search bar searching"
 msgstr "Criteria voor zoeken met de zoekbalk"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
+#, fuzzy
 msgid ""
 "Criteria when matching files searched for in the search bar. If set to "
-"search_by_text, then nautilus will Search for files by file name only. If "
-"set to search_by_text_and_properties\", then nautilus will search for files "
-"by file name and file properties."
+"\"search_by_text\", then Nautilus will Search for files by file name only. "
+"If set to \"search_by_text_and_properties\", then Nautilus will search for "
+"files by file name and file properties."
 msgstr ""
 "Criteria voor overeenkomende bestanden met waarnaar gezocht is in de "
 "zoekbalk. Als dit is ingesteld op zoeken_op_tekst, dan zal nautilus alleen "
@@ -1122,20 +1127,22 @@ msgid "Default folder viewer"
 msgstr "Standaard mapweergave"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
+#, fuzzy
+msgid "Default icon zoom level"
+msgstr "Standaard _zoomfactor:"
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
+#, fuzzy
+msgid "Default list zoom level"
+msgstr "Standaard _zoomfactor:"
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
 msgid "Default sort order"
 msgstr "Standaard sorteervolgorde"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
-msgid "Default zoom level used by the icon view"
-msgstr "Standaard zoomfactor van pictogramweergave"
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
 msgid "Default zoom level used by the icon view."
 msgstr "Standaard zoomfactor van pictogramweergave"
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
-msgid "Default zoom level used by the list view"
-msgstr "Standaard zoomfactor van lijstweergave"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
 msgid "Default zoom level used by the list view."
@@ -1154,10 +1161,24 @@ msgid "Desktop trash icon name"
 msgstr "Naam van prullenbak-pictogram op werkblad"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
+#, fuzzy
+msgid ""
+"Directories over this size will be truncated to around this size. The "
+"purpose of this is to avoid unintentionally blowing the heap and killing "
+"Nautilus on massive directories. A negative value denotes no limit. The "
+"limit is approximate due to the reading of directories chunk-wise."
+msgstr ""
+"Enorme mappen, boven deze grootte, worden afgekapt rond deze grootte. De "
+"bedoeling hiervan is om het onbedoeld opblazen van de heap te voorkomen en "
+"daarmee het doodslaan van nautilus bij enorme mappen. Een negatieve waarde "
+"geeft aan dat er geen begrenzing is. De waarde is een benadering ten "
+"gevolgde van het \"chunksgewijze\" inlezen van mappen."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
 msgid "Enable 'special' flags in file preferences dialog"
 msgstr "'speciale' vlaggen inschakelen in bestandsvoorkeuren-dialoogvenster"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
 msgid ""
 "Filename for the default directory background. Only used if background_set "
 "is true."
@@ -1165,7 +1186,7 @@ msgstr ""
 "Bestandsnaam voor de standaard mapachtergrond. Alleen gebruikt als "
 "background_set waar is."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
@@ -1173,48 +1194,69 @@ msgstr ""
 "Bestandsnaam voor standaard zijpaneel-achtergrond. Alleen gebruikt als "
 "side_pane_background_set waar is."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
-msgid "Hide default bookmarks in the bookmark menu."
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
+#, fuzzy
+msgid "Hide default bookmarks in the bookmark menu"
 msgstr "Standaard bladwijzers in het bladwijzermenu verbergen."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
 msgid "Home icon visible on desktop"
 msgstr "Persoonlijke map-pictogram zichtbaar op werkblad"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
+#, fuzzy
 msgid ""
-"If set to true, Nautilus will show only show directories in the tree "
-"sidebar. Otherwise it will show both directories and files."
+"If set to true, Nautilus will show only show directories in the tree side "
+"pane. Otherwise it will show both directories and files."
 msgstr ""
 "Als ingesteld op waar, dan toont Nautilus alleen mappen in de boom-zijbalk. "
 "Anders toont het zowel mappen als bestanden."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr ""
 "Als ingesteld op waar, dan is de locatiebalk zichtbaar in nieuw geopende "
 "vensters."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
-msgid "If set to true, newly opened windows will have the side bar visible."
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
+#, fuzzy
+msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr ""
 "Als ingesteld op waar, dan is de zijbalk zichtbaar in nieuw geopende "
 "vensters."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
 msgid "If set to true, newly opened windows will have the status bar visible."
 msgstr ""
 "Als ingesteld op waar, dan is de statusbalk zichtbaar in nieuw geopende "
 "vensters."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
 msgid "If set to true, newly opened windows will have toolbars visible."
 msgstr ""
 "Als ingesteld op waar, dan zijn de werkbalken zichtbaar in nieuw geopende "
 "vensters."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
+#, fuzzy
+msgid ""
+"If set to true, then Nautilus lets you edit some of the more esoteric "
+"options of a file in the file preferences dialog."
+msgstr ""
+"Als ingesteld op waar, dan laat Nautilus u sommige wat meer esoterische "
+"opties van een bestand instellen in het bestandsvoorkeuren-venster."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
+#, fuzzy
+msgid ""
+"If set to true, then Nautilus shows directories prior to showing files in "
+"the icon and list views."
+msgstr ""
+"Als ingesteld op waar, dan toont Nautilus mappen voor bestanden in de "
+"pictogram- en lijstweergaven."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "put files in the trash."
@@ -1222,7 +1264,22 @@ msgstr ""
 "Als ingesteld op waar, dan vraagt Nautilus om bevestiging bij een poging om "
 "bestanden in de prullenbak te gooien."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
+#, fuzzy
+msgid ""
+"If set to true, then Nautilus will bring up a new Nautilus window by default "
+"whenever an item is opened."
+msgstr ""
+"Als ingesteld op waar, dan opent Nautilus standaard een nieuw venster "
+"wanneer een item geopend wordt."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
+#, fuzzy
+msgid "If set to true, then Nautilus will draw the icons on the desktop."
+msgstr ""
+"Als ingesteld op waar, dan tekent Nautilus de pictogrammen op het werkblad."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
 msgid ""
 "If set to true, then Nautilus will have a feature allowing you to delete a "
 "file immediately and in-place, instead of moving it to the trash. This "
@@ -1232,7 +1289,26 @@ msgstr ""
 "onmiddelijk te verwijderen in plaats van het naar de prullenbak te "
 "verplaatsen. Deze functie kan riskant zijn, dus wees voorzichtig."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
+#, fuzzy
+msgid ""
+"If set to true, then Nautilus will just show the user's bookmarks in the "
+"bookmark menu."
+msgstr ""
+"Indien ingesteld op waar, dan zal Nautilus alleen de gebruikersbladwijzers "
+"in het Bladwijzers-menu tonen."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
+#, fuzzy
+msgid ""
+"If set to true, then Nautilus will use the user's home directory as the "
+"desktop. If it is false, then it will use ~/Desktop as the desktop."
+msgstr ""
+"Als ingesteld op waar, dan gebruikt Nautilus de persoonlijke map van de "
+"gebruiker als werkblad. Als het onwaar is, dan gebruikt het ~/Desktop als "
+"werkblad."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
 "If set to true, then backup files such as those created by Emacs are "
 "displayed. Currently, only files ending in a tilde (~) are considered backup "
@@ -1242,60 +1318,13 @@ msgstr ""
 "aanmaakt, getoond. Momenteel worden alleen bestandsnamen die eindigen op een "
 "tilde (~) beschouwd als reservekopiebestanden."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
-msgid ""
-"If set to true, then hidden files (dotfiles) are shown in the file manager."
-msgstr ""
-"Als ingesteld op waar, dan worden verborgen bestanden getoond in het "
-"bestandsbeheer."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
-msgid ""
-"If set to true, then nautilus lets you edit some of the more esoteric "
-"options of a file in the file preferences dialog."
-msgstr ""
-"Als ingesteld op waar, dan laat Nautilus u sommige wat meer esoterische "
-"opties van een bestand instellen in het bestandsvoorkeuren-venster."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
-msgid ""
-"If set to true, then nautilus shows directories prior to showing files in "
-"the icon and list views."
-msgstr ""
-"Als ingesteld op waar, dan toont Nautilus mappen voor bestanden in de "
-"pictogram- en lijstweergaven."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
-msgid ""
-"If set to true, then nautilus will bring up a new nautilus window by default "
-"whenever an item is opened."
-msgstr ""
-"Als ingesteld op waar, dan opent Nautilus standaard een nieuw venster "
-"wanneer een item geopend wordt."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
-msgid "If set to true, then nautilus will draw the icons on the desktop."
-msgstr ""
-"Als ingesteld op waar, dan tekent Nautilus de pictogrammen op het werkblad."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
-msgid ""
-"If set to true, then nautilus will just show the user's bookmarks in the "
-"bookmark menu."
-msgstr ""
-"Indien ingesteld op waar, dan zal Nautilus alleen de gebruikersbladwijzers "
-"in het Bladwijzers-menu tonen."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
-msgid ""
-"If set to true, then nautilus will use the user's home directory as the "
-"desktop. If it is false, then it will use ~/Desktop as the desktop."
-msgstr ""
-"Als ingesteld op waar, dan gebruikt Nautilus de persoonlijke map van de "
-"gebruiker als werkblad. Als het onwaar is, dan gebruikt het ~/Desktop als "
-"werkblad."
-
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
+msgid ""
+"If set to true, then hidden files are shown in the file manager. Hidden "
+"files are either dotfiles or are listed in the directory's .hidden file."
+msgstr ""
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid ""
 "If this is set to true, Nautilus adds itself to the session when it starts "
 "up. This means it will be started the next time you log in."
@@ -1304,7 +1333,7 @@ msgstr ""
 "tijdens het opstarten. Dit betekent dat het gestart wordt bij de volgende "
 "keer dat u zich aanmeldt."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
 "If this is set to true, an icon linking to the home directory will be put on "
 "the desktop."
@@ -1312,7 +1341,7 @@ msgstr ""
 "Indien ingesteld op waar, dan wordt een pictogram dat verwijst naar de "
 "persoonlijke map op het werkblad gezet."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
@@ -1320,7 +1349,7 @@ msgstr ""
 "Indien ingesteld op waar, dan wordt een pictogram dat verwijst naar de "
 "prullenbak op het werkblad gezet."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -1331,7 +1360,7 @@ msgstr ""
 "niet van \"a\" tot \"z\" gesorteerd zijn, maar in plaats daarvan van \"z\" "
 "naar \"a\"."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -1344,27 +1373,27 @@ msgstr ""
 "naar \"a\"; als ze op grootte gesorteerd zijn, dan worden ze niet oplopend "
 "maar aflopend gesorteerd."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid "If true, icons will be layed out tighter by default in new windows."
 msgstr ""
 "Indien ingesteld op waar, dan worden pictogrammen standaard dichter op "
 "elkaar gezet in nieuwe vensters."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
+#, fuzzy
 msgid ""
-"If true, labels will be placed beside icons icons rather than underneath "
-"them."
+"If true, labels will be placed beside icons rather than underneath them."
 msgstr ""
 "Indien waar, dan worden bijschriften naast pictogrammen geplaatst, in plaats "
 "van eronder."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid "If true, new windows will use manual layout by default."
 msgstr ""
 "Indien ingesteld op waar dan maken nieuwe vensters standaard van handmatige "
 "lay-out gebruik."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -1374,19 +1403,19 @@ msgstr ""
 "Het doel van deze instelling is het vermijden van het miniaturiseren van "
 "grote afbeeldingen, dat veel tijd kan kosten of veel geheugen gebruikt."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid "List of possible captions on icons"
 msgstr "Lijst van mogelijke bijschriften bij pictogrammen"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 msgid "Maximum handled files in a directory"
 msgstr "Maximum aantal afhandelbare bestanden in een map"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid "Maximum image size for thumbnailing"
 msgstr "Maximum afbeeldingsgrootte voor miniaturiseren"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
@@ -1394,19 +1423,19 @@ msgstr ""
 "Naam van het te gebruiken Nautilus-thema. Dit is verouderd sinds Nautilus "
 "2.2. Gelieve het pictogramthema in plaats ervan te gebruiken."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid "Nautilus handles drawing the desktop"
 msgstr "Nautilus neemt het tekenen van het werkblad voor zijn rekening"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 msgid "Nautilus uses the users home directory as the desktop"
 msgstr "Nautilus gebruikt de persoonlijke map van de gebruiker als werkblad"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid "Only show directories in the tree sidebar"
 msgstr "Mappen slechts in de boom-zijbalk tonen"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
@@ -1414,39 +1443,40 @@ msgstr ""
 "Mogelijke waarden zijn \"single\" om bestanden met een enkele klik te "
 "starten, of \"double\" om ze met een dubbelklik te starten."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid "Put labels beside icons"
 msgstr "Bijschriften naast pictogrammen plaatsen"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid "Reverse sort order in new windows"
 msgstr "Sorteervolgorde omdraaien in nieuwe vensters"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid "Show directories first in windows"
 msgstr "Mappen eerst tonen in vensters"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
 msgid "Show location bar in new windows"
 msgstr "Locatiebalk tonen in nieuwe vensters"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
-msgid "Show side bar in new windows"
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
+#, fuzzy
+msgid "Show side pane in new windows"
 msgstr "Zijbalk tonen in nieuwe vensters"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
 msgid "Show status bar in new windows"
 msgstr "Statusbalk tonen in nieuwe vensters"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
 msgid "Show toolbar in new windows"
 msgstr "Werkbalk tonen in nieuwe vensters"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid "Side pane view"
 msgstr "Zijpaneel-weergave"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid ""
 "Speed tradeoff for when to preview a sound file when mousing over a files "
 "icon. If set to \"always\" then always plays the sound, even if the file is "
@@ -1460,21 +1490,6 @@ msgstr ""
 "\"local_only\" dan worden er alleen voorproefjes afgespeeld op lokale "
 "bestandssystemen. Indien ingesteld op \"never\" dan wordt er nooit een "
 "voorproefje van geluid gegeven."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
-msgid ""
-"Speed tradeoff for when to show a image files as a thumbnail. If set to "
-"\"always\" then always thumbnail, even if the directory is on a remote "
-"server. If set to \"local_only\" then only show thumbnails for local "
-"filesystems. If set to \"never\" then never bother to thumbnail images, just "
-"use a generic icon."
-msgstr ""
-"Snelheidsafweging voor wanneer bestanden als miniaturen te tonen. Indien "
-"ingesteld op \"always\" dan wordt er altijd een miniatuur gemaakt, zelfs als "
-"de map zich op een server op afstand bevindt. Indien ingesteld op "
-"\"local_only\" dan worden miniaturen alleen voor lokale bestandssystemen "
-"getoond. Indien ingesteld op \"never\" dan wordt er nooit een miniatuur van "
-"een afbeelding gemaakt, maar slechts een algemeen pictogram gebruikt."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid ""
@@ -1492,6 +1507,22 @@ msgstr ""
 "\" dan worden er nooit voorbeeldgegevens gelezen."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
+#, fuzzy
+msgid ""
+"Speed tradeoff for when to show an image file as a thumbnail. If set to "
+"\"always\" then always thumbnail, even if the directory is on a remote "
+"server. If set to \"local_only\" then only show thumbnails for local "
+"filesystems. If set to \"never\" then never bother to thumbnail images, just "
+"use a generic icon."
+msgstr ""
+"Snelheidsafweging voor wanneer bestanden als miniaturen te tonen. Indien "
+"ingesteld op \"always\" dan wordt er altijd een miniatuur gemaakt, zelfs als "
+"de map zich op een server op afstand bevindt. Indien ingesteld op "
+"\"local_only\" dan worden miniaturen alleen voor lokale bestandssystemen "
+"getoond. Indien ingesteld op \"never\" dan wordt er nooit een miniatuur van "
+"een afbeelding gemaakt, maar slechts een algemeen pictogram gebruikt."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid ""
 "Speed tradeoff for when to show the number of items in a directory. If set "
 "to \"always\" then always show item counts, even if the directory is on a "
@@ -1505,15 +1536,16 @@ msgstr ""
 "getoond. Indien ingesteld op \"never\" dan worden er nooit itemtotalen "
 "berekend."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
+#, fuzzy
 msgid ""
-"The default sort-order for the item in the icon view. Possible values are "
-"name, size, type, modification_date, emblems."
+"The default sort-order for items in the icon view. Possible values are \"name"
+"\", \"size\", \"type\", \"modification_date\", \"emblems\"."
 msgstr ""
 "Standaard sorteervolgorde voor het item in de pictogramweergave. Mogelijke "
 "waarden zijn: name, size, type, modification_date, emblems."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid ""
 "The default sort-order for the item in the list view. Possible values are "
 "name, size, type, and modification_date."
@@ -1521,27 +1553,29 @@ msgstr ""
 "Standaard sorteervolgorde voor het item in de lijstweergave. Mogelijke "
 "waarden zijn: name, size, type, en modification_date."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
-msgid "The default width of the sidebar in new windows."
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
+#, fuzzy
+msgid "The default width of the side pane in new windows."
 msgstr "De standaardbreedte van de zijbalk in nieuwe vensters."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "The font description used for the icons on the desktop."
 msgstr "De lettertypeomschrijving voor de pictogrammen op het werkblad."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "The side pane view to show in newly opened windows."
 msgstr "De zijpaneelweergave om in nieuw geopende vensters te tonen."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
+#, fuzzy
 msgid ""
-"This name can be set if you want a custom name for the home link icon on the "
+"This name can be set if you want a custom name for the home icon on the "
 "desktop."
 msgstr ""
 "Deze naam kan ingesteld worden indien u een aangepaste naam wilt voor de "
 "verwijzing naar uw persoonlijke map op het werkblad."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
@@ -1549,34 +1583,22 @@ msgstr ""
 "Deze naam kan ingesteld worden indien u een aangepaste naam wilt voor de "
 "verwijzing naar het prullenbak-pictogram op het werkblad."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid "Trash icon visible on desktop"
 msgstr "Prullenbak-pictogram zichtbaar op werkblad"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid "Type of click used to launch/open files"
 msgstr "Soort klik om bestanden te starten/openen"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
-msgid "Use manual layout new windows"
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
+#, fuzzy
+msgid "Use manual layout in new windows"
 msgstr "Handmatige lay-out gebruiken in nieuwe vensters"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid "Use tighter Layout in new windows"
 msgstr "Strakkere lay-out gebruiken in nieuwe vensters"
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
-msgid ""
-"Vast directories, over this size will be truncated to around this size. The "
-"purpose of this is to avoid unintentionally blowing the heap and killing "
-"nautilus on massive directories. A negative value denotes no limit. The "
-"limit is approximate due to the reading of directories chunk-wise."
-msgstr ""
-"Enorme mappen, boven deze grootte, worden afgekapt rond deze grootte. De "
-"bedoeling hiervan is om het onbedoeld opblazen van de heap te voorkomen en "
-"daarmee het doodslaan van nautilus bij enorme mappen. Een negatieve waarde "
-"geeft aan dat er geen begrenzing is. De waarde is een benadering ten "
-"gevolgde van het \"chunksgewijze\" inlezen van mappen."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
 msgid "What to do with executable text files when activated"
@@ -1595,10 +1617,11 @@ msgstr ""
 "moet gebeuren, en \"display\" om ze als tekstbestanden weer te geven."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
+#, fuzzy
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
-"another view for that particular folder. Possible values are list_view and "
-"icon_view."
+"another view for that particular folder. Possible values are \"list_view\" "
+"and \"icon_view\"."
 msgstr ""
 "Wanneer een map bezocht wordt dan is dit de weergave die wordt gebruikt, "
 "tenzij u een andere weergave voor die ene map heeft geselecteerd. Mogelijke "
@@ -1645,11 +1668,13 @@ msgid "Whether to show backup files"
 msgstr "Al dan niet tonen van reservekopiebestanden"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
-msgid "Whether to show dotfiles"
+#, fuzzy
+msgid "Whether to show hidden files"
 msgstr "Al dan niet tonen van verborgen bestanden"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
-msgid "width of the sidebar"
+#, fuzzy
+msgid "Width of the side pane"
 msgstr "breedte van de zijbalk"
 
 #: libnautilus-private/filesystem-attributes.xml.h:1
@@ -3344,99 +3369,99 @@ msgstr "geen"
 msgid "%s's Home"
 msgstr "%s's persoonlijke map"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2118
+#: libnautilus-private/nautilus-icon-canvas-item.c:2123
 msgid "file icon"
 msgstr "bestandspictogram"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2491
+#: libnautilus-private/nautilus-icon-canvas-item.c:2496
 msgid "editable text"
 msgstr "bewerkbare tekst"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2492
+#: libnautilus-private/nautilus-icon-canvas-item.c:2497
 msgid "the editable label"
 msgstr "het bewerkbare bijschrift"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2499
+#: libnautilus-private/nautilus-icon-canvas-item.c:2504
 msgid "additional text"
 msgstr "aanvullende tekst"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2500
+#: libnautilus-private/nautilus-icon-canvas-item.c:2505
 msgid "some more text"
 msgstr "wat meer tekst"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2507
+#: libnautilus-private/nautilus-icon-canvas-item.c:2512
 msgid "highlighted for selection"
 msgstr "gemarkeerd voor selectie"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2508
+#: libnautilus-private/nautilus-icon-canvas-item.c:2513
 msgid "whether we are highlighted for a selection"
 msgstr "of we gemarkeerd voor selectie zijn"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2515
+#: libnautilus-private/nautilus-icon-canvas-item.c:2520
 msgid "highlighted as keyboard focus"
 msgstr "gemarkeerd als toetsenbordfocus"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2516
+#: libnautilus-private/nautilus-icon-canvas-item.c:2521
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "of we gemarkeerd zijn om de toetsenbordfocus terug te geven"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2524
+#: libnautilus-private/nautilus-icon-canvas-item.c:2529
 msgid "highlighted for drop"
 msgstr "gemarkeerd voor loslaten"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2525
+#: libnautilus-private/nautilus-icon-canvas-item.c:2530
 msgid "whether we are highlighted for a D&D drop"
 msgstr "of we gemarkeerd zijn voor sleepactie loslaten"
 
-#: libnautilus-private/nautilus-icon-container.c:2003
+#: libnautilus-private/nautilus-icon-container.c:2009
 msgid "The selection rectangle"
 msgstr "De selectierechthoek"
 
-#: libnautilus-private/nautilus-icon-container.c:3937
+#: libnautilus-private/nautilus-icon-container.c:3943
 msgid "Frame Text"
 msgstr "Tekst omkaderen"
 
-#: libnautilus-private/nautilus-icon-container.c:3938
+#: libnautilus-private/nautilus-icon-container.c:3944
 msgid "Draw a frame around unselected text"
 msgstr "Kader om ongeselecteerde tekst tekenen"
 
-#: libnautilus-private/nautilus-icon-container.c:3944
+#: libnautilus-private/nautilus-icon-container.c:3950
 msgid "Selection Box Color"
 msgstr "Kleur selectieveld"
 
-#: libnautilus-private/nautilus-icon-container.c:3945
+#: libnautilus-private/nautilus-icon-container.c:3951
 msgid "Color of the selection box"
 msgstr "Naar van het selectieveld"
 
-#: libnautilus-private/nautilus-icon-container.c:3950
+#: libnautilus-private/nautilus-icon-container.c:3956
 msgid "Selection Box Alpha"
 msgstr "Alpha-waarde selectieveld"
 
-#: libnautilus-private/nautilus-icon-container.c:3951
+#: libnautilus-private/nautilus-icon-container.c:3957
 msgid "Opacity of the selection box"
 msgstr "Doorschijnendheid van het selectieveld"
 
-#: libnautilus-private/nautilus-icon-container.c:3958
+#: libnautilus-private/nautilus-icon-container.c:3964
 msgid "Highlight Alpha"
 msgstr "Alpha-waarde markering"
 
-#: libnautilus-private/nautilus-icon-container.c:3959
+#: libnautilus-private/nautilus-icon-container.c:3965
 msgid "Opacity of the highlight for selected icons"
 msgstr "Doorschijnendheid van de markering voor geselecteerde pictogrammen"
 
-#: libnautilus-private/nautilus-icon-container.c:3965
+#: libnautilus-private/nautilus-icon-container.c:3971
 msgid "Light Info Color"
 msgstr "Lichte informatiekleur"
 
-#: libnautilus-private/nautilus-icon-container.c:3966
+#: libnautilus-private/nautilus-icon-container.c:3972
 msgid "Color used for information text against a dark background"
 msgstr "Kleur voor informatietekst tegen een donkere achtergrond"
 
-#: libnautilus-private/nautilus-icon-container.c:3971
+#: libnautilus-private/nautilus-icon-container.c:3977
 msgid "Dark Info Color"
 msgstr "Donkere informatiekleur"
 
-#: libnautilus-private/nautilus-icon-container.c:3972
+#: libnautilus-private/nautilus-icon-container.c:3978
 msgid "Color used for information text against a light background"
 msgstr "Kleur voor informatietekst tegen een lichte achtergrond"
 
@@ -5776,7 +5801,7 @@ msgstr "Bestanden _plakken"
 msgid "_Paste Files Into Folder"
 msgstr "Bestanden in map _plakken"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:46
+#: src/file-manager/nautilus-directory-view-ui.xml.h:44
 msgid "_Properties"
 msgstr "_Eigenschappen"
 
@@ -5981,8 +6006,9 @@ msgid "Link To Old Desktop"
 msgstr "Verwijzing naar oud werkblad"
 
 #: src/nautilus-application.c:314
+#, fuzzy
 msgid ""
-"The location of the desktop directory has changed in Gnome 2.4. A link "
+"The location of the desktop directory has changed in GNOME 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
@@ -6815,7 +6841,7 @@ msgstr "Bladwijzer op huidige lokatie toevoegen aan dit menu"
 
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Back"
-msgstr "Vorige"
+msgstr "Terug"
 
 #: src/nautilus-shell-ui.xml.h:4
 msgid "Change the visibility of this window's location bar"
@@ -6996,7 +7022,7 @@ msgstr "Laatste tekstverandering ongedaan maken"
 
 #: src/nautilus-shell-ui.xml.h:49
 msgid "Up"
-msgstr "Boven"
+msgstr "Omhoog"
 
 #. Add "View as..." extra bonus choice.
 #: src/nautilus-shell-ui.xml.h:50 src/nautilus-window.c:522
@@ -7098,7 +7124,7 @@ msgstr "_Profilering"
 
 #: src/nautilus-shell-ui.xml.h:76
 msgid "_Reload"
-msgstr "_Verversen"
+msgstr "He_rladen"
 
 #: src/nautilus-shell-ui.xml.h:77
 msgid "_Report Profiling"
@@ -7122,7 +7148,7 @@ msgstr "Profilering _starten"
 
 #: src/nautilus-shell-ui.xml.h:82
 msgid "_Stop"
-msgstr "S_top"
+msgstr "_Stoppen"
 
 #: src/nautilus-shell-ui.xml.h:83
 msgid "_Stop Profiling"
@@ -7142,7 +7168,7 @@ msgstr "_Ongedaan maken"
 
 #: src/nautilus-shell-ui.xml.h:87
 msgid "_Up"
-msgstr "_Boven"
+msgstr "_Omhoog"
 
 #: src/nautilus-shell-ui.xml.h:88
 msgid "_View"
@@ -7460,9 +7486,9 @@ msgstr "Zoomen naar passend"
 msgid "Try to fit in window"
 msgstr "In venster trachten in te passen"
 
-#: src/nautilus-zoom-control.c:796
+#: src/nautilus-zoom-control.c:794
 msgid "Zoom"
-msgstr "Inzoomen"
+msgstr "Zoomen"
 
 #: src/nautilus-zoom-control.c:802
 msgid "Set the zoom level of the current view"
@@ -7475,6 +7501,19 @@ msgstr "Netwerkservers"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Uw netwerkservers weergeven met Nautilus bestandsbeheer"
+
+#~ msgid "Default zoom level used by the icon view"
+#~ msgstr "Standaard zoomfactor van pictogramweergave"
+
+#~ msgid "Default zoom level used by the list view"
+#~ msgstr "Standaard zoomfactor van lijstweergave"
+
+#~ msgid ""
+#~ "If set to true, then hidden files (dotfiles) are shown in the file "
+#~ "manager."
+#~ msgstr ""
+#~ "Als ingesteld op waar, dan worden verborgen bestanden getoond in het "
+#~ "bestandsbeheer."
 
 #~ msgid "_New Folder"
 #~ msgstr "_Nieuwe map"
