@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus CVS-HEAD\n"
-"POT-Creation-Date: 2001-03-10 13:52+0100\n"
-"PO-Revision-Date: 2001-03-10 19:40+01:00\n"
+"POT-Creation-Date: 2001-03-12 15:19+0100\n"
+"PO-Revision-Date: 2001-03-12 15:35+01:00\n"
 "Last-Translator: Emese Kovacs <emese@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -159,7 +159,7 @@ msgstr "Hardvernézet"
 # data/static_bookmarks.xml.h:13
 #: components/hardware/Nautilus_View_hardware.oaf.in.h:5
 msgid "View as Hardware"
-msgstr "Nézet mint hardver"
+msgstr "Hardverként"
 
 # components/hardware/Nautilus_View_hardware.oaf.in.h:4
 #: components/hardware/Nautilus_View_hardware.oaf.in.h:6
@@ -548,7 +548,7 @@ msgstr "Factory a Nautilus képmegjelenítõhöz"
 # src/nautilus-window.c:903
 #: components/image-viewer/Nautilus_View_image.oaf.in.h:7
 msgid "View as Image"
-msgstr "Nézet mint kép"
+msgstr "Képként"
 
 # components/loser/content/nautilus-content-loser.c:140
 # components/loser/content/nautilus-content-loser.c:140
@@ -624,7 +624,7 @@ msgstr "Ez egy Nautilus tartalom nézet. Annyit tud, hogy kérésre elpusztul."
 # components/loser/content/nautilus-content-loser-ui.xml.h:1
 #: components/loser/content/Nautilus_View_content-loser.oaf.in.h:7
 msgid "View as Content Loser"
-msgstr "Nézet mint Content Loser"
+msgstr "Tartalomvesztõként"
 
 # components/loser/sidebar/nautilus-sidebar-loser.c:143
 #: components/loser/sidebar/nautilus-sidebar-loser.c:143
@@ -1179,7 +1179,7 @@ msgstr "Factory a Mozilla tartalomnézet-komponenshez"
 # components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
 #: components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
 msgid "View as Web Page"
-msgstr "Nézet mint weblap"
+msgstr "Weblapként"
 
 # components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
 #: components/mozilla/Nautilus_View_mozilla.oaf.in.h:6
@@ -2118,7 +2118,7 @@ msgstr "Zenenézet factory"
 # src/nautilus-window.c:903
 #: components/music/Nautilus_View_music.oaf.in.h:6
 msgid "View as Music"
-msgstr "Nézet mint Zene"
+msgstr "Zeneként"
 
 # libnautilus-extensions/nautilus-icon-factory.c:133
 #. FIXME: eventually, get this from preferences
@@ -2235,7 +2235,7 @@ msgstr "Példa tartlomnézet factory"
 # src/nautilus-window.c:903
 #: components/sample/Nautilus_View_sample.oaf.in.h:7
 msgid "View as Sample"
-msgstr "Nézet mint Példa"
+msgstr "Példaként"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:106
 #: components/services/install/command-line/eazel-alt-install-corba.c:107
@@ -2375,7 +2375,7 @@ msgstr "Felhasználónév engedélyezése"
 # components/services/install/command-line/eazel-alt-install-corba.c:133
 # components/services/install/lib/eazel-install-problem.c:969
 #: components/services/install/command-line/eazel-alt-install-corba.c:134
-#: components/services/install/lib/eazel-install-problem.c:1015
+#: components/services/install/lib/eazel-install-problem.c:1011
 msgid "Allow upgrades"
 msgstr "Frissítés engedélyezése"
 
@@ -2414,8 +2414,8 @@ msgstr "Konzisztenciaellenõrzés: %s ...\n"
 # components/services/install/lib/eazel-install-protocols.c:112
 # components/services/install/lib/eazel-install-protocols.c:250
 #: components/services/install/command-line/eazel-alt-install-corba.c:344
-#: components/services/install/lib/eazel-install-protocols.c:116
-#: components/services/install/lib/eazel-install-protocols.c:254
+#: components/services/install/lib/eazel-install-protocols.c:110
+#: components/services/install/lib/eazel-install-protocols.c:248
 #, c-format
 msgid "Downloading %s..."
 msgstr "%s letöltése folyamatban..."
@@ -2752,18 +2752,18 @@ msgid "Show detailed sub-package info"
 msgstr "Részletes alcsomag-információ"
 
 # components/services/install/lib/eazel-install-logic2.c:137
-#: components/services/install/lib/eazel-install-logic2.c:102
+#: components/services/install/lib/eazel-install-logic2.c:99
 msgid "Failed to lock the downloaded file"
 msgstr "A letöltött fájl zárolása sikertelen"
 
 # components/services/install/lib/eazel-install-logic2.c:154
-#: components/services/install/lib/eazel-install-logic2.c:119
+#: components/services/install/lib/eazel-install-logic2.c:116
 #, c-format
 msgid "MD5 mismatch, package %s may be compromised"
 msgstr "MD5 eltérés, a %s csomag lehet, hogy hamis"
 
 # src/nautilus-theme-selector.c:709
-#: components/services/install/lib/eazel-install-logic2.c:135
+#: components/services/install/lib/eazel-install-logic2.c:132
 #, c-format
 msgid "No MD5 available for %s"
 msgstr "Nincs MD5 a következõhöz: %s"
@@ -2771,20 +2771,20 @@ msgstr "Nincs MD5 a következõhöz: %s"
 # components/services/install/nautilus-view/nautilus-service-install-view.c:1259
 #. I18N note: "%is is ok" in the sense that %s=package name and the
 #. package is intact
-#: components/services/install/lib/eazel-install-logic2.c:330
+#: components/services/install/lib/eazel-install-logic2.c:327
 #, c-format
 msgid "%s is ok"
 msgstr "%s rendben van?"
 
 # components/services/install/lib/eazel-install-logic2.c:408
-#: components/services/install/lib/eazel-install-logic2.c:436
+#: components/services/install/lib/eazel-install-logic2.c:433
 #, c-format
 msgid "%s-%s version %s-%s already installed"
 msgstr "%s-%s %s-%s változat már telepítve van"
 
 # components/services/install/lib/eazel-install-logic.c:1508
 # components/services/install/lib/eazel-install-logic2.c:412
-#: components/services/install/lib/eazel-install-logic2.c:440
+#: components/services/install/lib/eazel-install-logic2.c:437
 #, c-format
 msgid "%s version %s already installed"
 msgstr "%s %s változata már telepítve van"
@@ -2793,53 +2793,53 @@ msgstr "%s %s változata már telepítve van"
 # components/services/install/lib/eazel-install-logic.c:1522
 # components/services/install/lib/eazel-install-logic2.c:421
 # components/services/install/lib/eazel-install-logic2.c:426
-#: components/services/install/lib/eazel-install-logic2.c:449
-#: components/services/install/lib/eazel-install-logic2.c:454
+#: components/services/install/lib/eazel-install-logic2.c:446
+#: components/services/install/lib/eazel-install-logic2.c:451
 #, c-format
 msgid "%s upgrades from version %s-%s to %s-%s"
 msgstr "%s frissít %s-%s változatról %s-%s változatra"
 
 # components/services/install/lib/eazel-install-logic2.c:435
-#: components/services/install/lib/eazel-install-logic2.c:463
+#: components/services/install/lib/eazel-install-logic2.c:460
 #, c-format
 msgid "%s downgrades from version %s-%s to %s-%s"
 msgstr "%s verziócsökkenést idéz elõ %s-%s változatról %s-%s változatra"
 
 # components/services/install/lib/eazel-install-logic2.c:440
-#: components/services/install/lib/eazel-install-logic2.c:468
+#: components/services/install/lib/eazel-install-logic2.c:465
 #, c-format
 msgid "%s downgrades from version %s to %s"
 msgstr "%s verziócsökkenést idéz elõ %s változatról %s változatra"
 
 # components/services/install/lib/eazel-install-logic2.c:494
-#: components/services/install/lib/eazel-install-logic2.c:521
+#: components/services/install/lib/eazel-install-logic2.c:518
 #, c-format
 msgid "%s installs version %s-%s"
 msgstr "%s a következõ változatot telepíti: %s-%s"
 
 # components/services/install/lib/eazel-install-logic2.c:499
-#: components/services/install/lib/eazel-install-logic2.c:526
+#: components/services/install/lib/eazel-install-logic2.c:523
 #, c-format
 msgid "%s installs version %s"
 msgstr "%s a következõ változatot telepíti: %s"
 
 # components/services/install/nautilus-view/nautilus-service-install-view.c:809
-#: components/services/install/lib/eazel-install-logic2.c:690
+#: components/services/install/lib/eazel-install-logic2.c:691
 #, c-format
 msgid "Loading package info from file %s"
 msgstr "Csomaginformáció betöltése %s fájlból0..."
 
 # components/music/mpg123.c:33
 #. I18N note: ok is for "package dependencies are ok", "not ok".. well guess...
-#: components/services/install/lib/eazel-install-logic2.c:996
+#: components/services/install/lib/eazel-install-logic2.c:1008
 msgid "ok"
 msgstr "rendben"
 
-#: components/services/install/lib/eazel-install-logic2.c:996
+#: components/services/install/lib/eazel-install-logic2.c:1008
 msgid "not ok"
 msgstr "nincs rendben"
 
-#: components/services/install/lib/eazel-install-logic2.c:1162
+#: components/services/install/lib/eazel-install-logic2.c:1174
 #, c-format
 msgid "Checking dependencies for %s"
 msgstr "%s függõségeinek ellenõrzése"
@@ -2849,71 +2849,71 @@ msgstr "%s függõségeinek ellenõrzése"
 #. I18N note: both %s' are package names.
 #. related is in the sense that the two packages apparently
 #. are connected somehow, eg. foo and foo-devel
-#: components/services/install/lib/eazel-install-logic2.c:1769
+#: components/services/install/lib/eazel-install-logic2.c:1798
 #, c-format
 msgid "%s is related to %s"
 msgstr "%s és %s összetartozik"
 
-#: components/services/install/lib/eazel-install-logic2.c:1829
+#: components/services/install/lib/eazel-install-logic2.c:1874
 #, c-format
 msgid "updating %s to version %s-%s solves conflict"
 msgstr "%s frissítése %s-%s változatra megoldja a problémát"
 
-#: components/services/install/lib/eazel-install-logic2.c:1845
+#: components/services/install/lib/eazel-install-logic2.c:1897
 #, c-format
 msgid "available update to %s (%s-%s) does not solves conflict"
 msgstr "az elérhetõ frissítés (%s %s-%s) nem oldja meg a problémát"
 
 # components/services/install/lib/eazel-install-logic2.c:1239
-#: components/services/install/lib/eazel-install-logic2.c:1852
+#: components/services/install/lib/eazel-install-logic2.c:1905
 #, c-format
 msgid "could not revive %s"
 msgstr "%s újraélesztése sikertelen"
 
-#: components/services/install/lib/eazel-install-logic2.c:2007
+#: components/services/install/lib/eazel-install-logic2.c:2060
 #, c-format
 msgid "file uniqueness checking %s"
 msgstr "fájlegyediség ellenõrzése: %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2028
+#: components/services/install/lib/eazel-install-logic2.c:2081
 #, c-format
 msgid "Duplicate file : %s occurs in %s and %s"
 msgstr "A %s fájl több csomagban elõfordul: %s és %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2040
-#: components/services/install/lib/eazel-install-logic2.c:2194
+#: components/services/install/lib/eazel-install-logic2.c:2093
+#: components/services/install/lib/eazel-install-logic2.c:2247
 msgid "... but it's ok, the packages are related"
 msgstr "... de ez rendben van, a csomagok rokoni kapcsolatban állnak"
 
-#: components/services/install/lib/eazel-install-logic2.c:2048
+#: components/services/install/lib/eazel-install-logic2.c:2101
 #, c-format
 msgid "(there were %d other conflicts)"
 msgstr "(még %d probléma van)"
 
-#: components/services/install/lib/eazel-install-logic2.c:2143
+#: components/services/install/lib/eazel-install-logic2.c:2196
 #, c-format
 msgid "file conflict checking %s"
 msgstr "fájlütközés ellenõrzése: %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2180
+#: components/services/install/lib/eazel-install-logic2.c:2233
 #, c-format
 msgid "file conflict : package %s already provides file %s also provided by %s"
 msgstr "fájlütközések: a(z) %s csomag tartalmazza ezt: %s, de %s is."
 
 #. the owner of this file is a package that we're upgrading, and the
 #. * new version no longer has this file, so everything's okay.
-#: components/services/install/lib/eazel-install-logic2.c:2190
+#: components/services/install/lib/eazel-install-logic2.c:2243
 #, c-format
 msgid "...but it is okay, we're upgrading %s and it ditched that file"
 msgstr ""
 "... de ez rendben van, %s csomagot frissítjük, ezzel megoldódik a probléma"
 
-#: components/services/install/lib/eazel-install-logic2.c:2282
+#: components/services/install/lib/eazel-install-logic2.c:2335
 #, c-format
 msgid "checking feature consistency of %s"
 msgstr "szolgáltatás-konzisztenciaellenõrzés: %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2350
+#: components/services/install/lib/eazel-install-logic2.c:2403
 #, c-format
 msgid ""
 "feature missing : %s breaks if %s is installed (feature %s would be lost"
@@ -2922,183 +2922,183 @@ msgstr ""
 "elvész"
 
 # components/services/install/nautilus-view/nautilus-service-install-view.c:1614
-#: components/services/install/lib/eazel-install-logic2.c:2429
+#: components/services/install/lib/eazel-install-logic2.c:2482
 #, c-format
 msgid "downloading %d packages"
 msgstr "%d csomag letöltése"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:133
 # components/services/install/lib/eazel-install-problem.c:969
-#: components/services/install/lib/eazel-install-logic2.c:2698
+#: components/services/install/lib/eazel-install-logic2.c:2752
 #, c-format
 msgid "will upgrade %s"
 msgstr "frissíteni fogja a következõt: %s"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:110
-#: components/services/install/lib/eazel-install-logic2.c:2701
+#: components/services/install/lib/eazel-install-logic2.c:2755
 #, c-format
 msgid "will downgrade %s"
 msgstr "csökkenteni fogja %s verzióját"
 
-#: components/services/install/lib/eazel-install-logic2.c:2704
+#: components/services/install/lib/eazel-install-logic2.c:2758
 #, c-format
 msgid "will install %s"
 msgstr "telepíteni fogja a következõt: %s"
 
 # components/rpmview/nautilus-rpm-view.c:310
-#: components/services/install/lib/eazel-install-logic2.c:2707
+#: components/services/install/lib/eazel-install-logic2.c:2761
 #, c-format
 msgid "will uninstall %s"
 msgstr "el fogja távolítani a következõt: %s"
 
 # components/services/install/lib/eazel-install-problem.c:312
 # components/services/install/lib/eazel-install-problem.c:315
-#: components/services/install/lib/eazel-install-logic2.c:2792
-#: components/services/install/lib/eazel-install-problem.c:339
-#: components/services/install/lib/eazel-install-problem.c:342
+#: components/services/install/lib/eazel-install-logic2.c:2846
+#: components/services/install/lib/eazel-install-problem.c:335
+#: components/services/install/lib/eazel-install-problem.c:338
 #, c-format
 msgid "%s requires %s"
 msgstr "%s igényli a következõt: %s"
 
 # components/rpmview/nautilus-rpm-verify-window.c:207
-#: components/services/install/lib/eazel-install-logic2.c:2985
+#: components/services/install/lib/eazel-install-logic2.c:3039
 #, c-format
 msgid "failed %s"
 msgstr "sikertelen: %s"
 
 # components/services/install/lib/eazel-install-metadata.c:171
 # components/services/install/lib/eazel-install-metadata.c:171
-#: components/services/install/lib/eazel-install-metadata.c:174
+#: components/services/install/lib/eazel-install-metadata.c:171
 msgid "Could not set URLType from config file!"
 msgstr "URLType beállítása a konfig fájlból sikertelen!"
 
 # components/services/install/lib/eazel-install-object.c:581
 # components/services/install/lib/eazel-install-object.c:701
-#: components/services/install/lib/eazel-install-object.c:717
+#: components/services/install/lib/eazel-install-object.c:713
 msgid "Transactions are not stored, could not find home dir"
 msgstr ""
 "A tranzakciók nincsenek letárolva, mert a saját könyvtár nem található."
 
 # components/services/install/lib/eazel-install-object.c:729
-#: components/services/install/lib/eazel-install-object.c:745
+#: components/services/install/lib/eazel-install-object.c:741
 #, c-format
 msgid "Transactions are stored in %s"
 msgstr "Tranzakciók tárolásának helye: %s"
 
 # components/services/install/lib/eazel-install-object.c:986
-#: components/services/install/lib/eazel-install-object.c:1002
+#: components/services/install/lib/eazel-install-object.c:998
 msgid "Getting package list from remote server ...\n"
 msgstr "Csomaglista letöltése a távoli kiszolgálóról...\n"
 
 # components/services/install/lib/eazel-install-object.c:1002
-#: components/services/install/lib/eazel-install-object.c:1018
+#: components/services/install/lib/eazel-install-object.c:1014
 msgid "Unable to retrieve package-list.xml!\n"
 msgstr "package-list.xml letöltése sikertelen!\n"
 
 # components/services/install/lib/eazel-install-object.c:1075
-#: components/services/install/lib/eazel-install-object.c:1091
+#: components/services/install/lib/eazel-install-object.c:1087
 #, c-format
 msgid "Cannot write to file %s, using default log handler"
 msgstr ""
 "%s fájl írása sikertelen. Helyette az alapértelmezett naplóeszköz használata."
 
 # components/services/install/lib/eazel-install-object.c:1206
-#: components/services/install/lib/eazel-install-object.c:1222
+#: components/services/install/lib/eazel-install-object.c:1218
 msgid "Install failed"
 msgstr "Sikertelen telepítés"
 
 # components/services/install/lib/eazel-install-object.c:1252
-#: components/services/install/lib/eazel-install-object.c:1268
+#: components/services/install/lib/eazel-install-object.c:1264
 msgid "Uninstall failed"
 msgstr "Sikertelen eltávolítás"
 
 # components/services/install/lib/eazel-install-object.c:1373
-#: components/services/install/lib/eazel-install-object.c:1403
+#: components/services/install/lib/eazel-install-object.c:1387
 #, c-format
 msgid "Could not create transaction directory (%s)! ***\n"
 msgstr "Nem tudom a tranzakciós könyvtárat létrehozni: %s\n"
 
 # components/services/install/lib/eazel-install-object.c:1396
-#: components/services/install/lib/eazel-install-object.c:1426
+#: components/services/install/lib/eazel-install-object.c:1410
 #, c-format
 msgid "Writing transaction to %s"
 msgstr "Tranzakció írása ide: %s"
 
 # components/services/install/lib/eazel-install-problem.c:141
-#: components/services/install/lib/eazel-install-problem.c:163
+#: components/services/install/lib/eazel-install-problem.c:159
 #, c-format
 msgid "%s was cancelled"
 msgstr "%s meg lett szakítva"
 
 # components/services/install/lib/eazel-install-problem.c:145
 # components/services/install/lib/eazel-install-problem.c:304
-#: components/services/install/lib/eazel-install-problem.c:168
-#: components/services/install/lib/eazel-install-problem.c:331
+#: components/services/install/lib/eazel-install-problem.c:164
+#: components/services/install/lib/eazel-install-problem.c:327
 #, c-format
 msgid "%s is a source package, which is not yet supported"
 msgstr "%s forráscsomag. A forráscsomagok még nem támogatottak."
 
 # components/services/install/lib/eazel-install-problem.c:167
 # components/services/install/lib/eazel-install-problem.c:178
-#: components/services/install/lib/eazel-install-problem.c:182
-#: components/services/install/lib/eazel-install-problem.c:193
+#: components/services/install/lib/eazel-install-problem.c:178
+#: components/services/install/lib/eazel-install-problem.c:189
 #, c-format
 msgid "%s would break other packages"
 msgstr "%s elrontana más csomagokat"
 
 # components/services/install/lib/eazel-install-problem.c:170
-#: components/services/install/lib/eazel-install-problem.c:185
+#: components/services/install/lib/eazel-install-problem.c:181
 #, c-format
 msgid "%s would break"
 msgstr "%s elromlana"
 
 # components/services/install/lib/eazel-install-problem.c:176
-#: components/services/install/lib/eazel-install-problem.c:191
+#: components/services/install/lib/eazel-install-problem.c:187
 #, c-format
 msgid "%s would break %s"
 msgstr "%s elrontaná a következõt: %s"
 
 # components/services/install/lib/eazel-install-problem.c:182
-#: components/services/install/lib/eazel-install-problem.c:197
+#: components/services/install/lib/eazel-install-problem.c:193
 #, c-format
 msgid "%s is damaged"
 msgstr "%s megsérült"
 
 # components/services/install/lib/eazel-install-problem.c:187
-#: components/services/install/lib/eazel-install-problem.c:201
+#: components/services/install/lib/eazel-install-problem.c:197
 #, c-format
 msgid "%s requires %s, which could not be found on the server"
 msgstr "%s igényli a következõt: %s. Ez utóbbi nem található a kiszolgálón."
 
 # components/services/install/lib/eazel-install-problem.c:191
-#: components/services/install/lib/eazel-install-problem.c:204
+#: components/services/install/lib/eazel-install-problem.c:200
 #, c-format
 msgid "%s could not be found on the server"
 msgstr "%s nem található s kiszolgálón"
 
 # components/services/install/lib/eazel-install-problem.c:199
 # components/services/install/lib/eazel-install-problem.c:329
-#: components/services/install/lib/eazel-install-problem.c:212
-#: components/services/install/lib/eazel-install-problem.c:357
+#: components/services/install/lib/eazel-install-problem.c:208
+#: components/services/install/lib/eazel-install-problem.c:353
 #, c-format
 msgid "%s is already installed"
 msgstr "%s már telepítve van"
 
 # components/services/install/lib/eazel-install-problem.c:230
-#: components/services/install/lib/eazel-install-problem.c:256
+#: components/services/install/lib/eazel-install-problem.c:252
 #, c-format
 msgid "%s, which is newer, needs downgrade and downgrade is not enabled"
 msgstr ""
 "%s, ami újabb, már telepítve van, és a verziócsökkentés nincs engedélyezve"
 
 # components/services/install/lib/eazel-install-problem.c:230
-#: components/services/install/lib/eazel-install-problem.c:260
+#: components/services/install/lib/eazel-install-problem.c:256
 #, c-format
 msgid "%s, which is older, needs upgrade and upgrade is not enabled"
 msgstr "%s, ami régebbi, frissítésre szorul, de a frissítés nincs engedélyezve"
 
 # components/services/install/lib/eazel-install-problem.c:191
-#: components/services/install/lib/eazel-install-problem.c:350
+#: components/services/install/lib/eazel-install-problem.c:346
 #, c-format
 msgid "%s is not installed and could not be found on server"
 msgstr "%s nincs feltelepítve, és nem található a kiszolgálón"
@@ -3106,7 +3106,7 @@ msgstr "%s nincs feltelepítve, és nem található a kiszolgálón"
 # components/services/install/lib/eazel-install-problem.c:871
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. %s is a package name or filename
-#: components/services/install/lib/eazel-install-problem.c:917
+#: components/services/install/lib/eazel-install-problem.c:913
 #, c-format
 msgid "Check for a new version of %s"
 msgstr "Próbáld telepíteni %s újabb változatát"
@@ -3114,7 +3114,7 @@ msgstr "Próbáld telepíteni %s újabb változatát"
 # components/services/install/lib/eazel-install-problem.c:882
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. both %s's are package names or filenames
-#: components/services/install/lib/eazel-install-problem.c:928
+#: components/services/install/lib/eazel-install-problem.c:924
 #, c-format
 msgid "Install both %s and %s"
 msgstr "Próbáld meg telepíteni a következõket: %s, %s."
@@ -3122,7 +3122,7 @@ msgstr "Próbáld meg telepíteni a következõket: %s, %s."
 # components/services/install/lib/eazel-install-problem.c:897
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. %s is a package name or filename
-#: components/services/install/lib/eazel-install-problem.c:943
+#: components/services/install/lib/eazel-install-problem.c:939
 #, c-format
 msgid "Remove %s from your system"
 msgstr "Távolítsd el a következõt a rendszerbõl: %s."
@@ -3131,31 +3131,31 @@ msgstr "Távolítsd el a következõt a rendszerbõl: %s."
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. %s is a package name or filename. "Force" is in the rpm sense of force,
 #. meaning that no dependency checking etc will be done
-#: components/services/install/lib/eazel-install-problem.c:956
+#: components/services/install/lib/eazel-install-problem.c:952
 #, c-format
 msgid "Force the removal of %s from your system"
 msgstr "Próbáld meg eltávolítani (--force kapcsolóval) a következõt: %s."
 
 # components/services/install/lib/eazel-install-problem.c:918
 #. TRANSLATORS : This string is a solution to a dependency problem
-#: components/services/install/lib/eazel-install-problem.c:964
+#: components/services/install/lib/eazel-install-problem.c:960
 msgid "Package database has an inconsistency"
 msgstr "A csomagadatbázis inkonzisztens."
 
 # components/services/install/lib/eazel-install-problem.c:966
-#: components/services/install/lib/eazel-install-problem.c:1012
+#: components/services/install/lib/eazel-install-problem.c:1008
 msgid "Continue with force"
 msgstr "Folytatás erõltetéssel"
 
 # components/services/install/lib/eazel-install-problem.c:972
-#: components/services/install/lib/eazel-install-problem.c:1018
+#: components/services/install/lib/eazel-install-problem.c:1014
 msgid "Allow downgrade"
 msgstr "Verziócsökkenés engedélyezése"
 
 # components/services/install/lib/eazel-install-protocols.c:125
 # components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:166
-#: components/services/install/lib/eazel-install-protocols.c:129
-#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:169
+#: components/services/install/lib/eazel-install-protocols.c:123
+#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:166
 #, c-format
 msgid "Could not open target file %s"
 msgstr "A %s célfájl megnyitása sikertelen"
@@ -3163,38 +3163,38 @@ msgstr "A %s célfájl megnyitása sikertelen"
 # components/services/install/lib/eazel-install-protocols.c:132
 # components/services/inventory/eazel-inventory-service.c:253
 # components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:92
-#: components/services/install/lib/eazel-install-protocols.c:136
-#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:95
+#: components/services/install/lib/eazel-install-protocols.c:130
+#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:92
 msgid "Could not create an http request !"
 msgstr "A http kérés létrehozása sikertelen!"
 
 # components/services/install/lib/eazel-install-protocols.c:139
 # components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:99
-#: components/services/install/lib/eazel-install-protocols.c:143
-#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:102
+#: components/services/install/lib/eazel-install-protocols.c:137
+#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:99
 msgid "Proxy: Invalid uri !"
 msgstr "Proxy: érvénytelen URI!"
 
 # components/services/install/lib/eazel-install-protocols.c:144
 # components/services/inventory/eazel-inventory-service.c:258
 # components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:105
-#: components/services/install/lib/eazel-install-protocols.c:148
-#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:108
+#: components/services/install/lib/eazel-install-protocols.c:142
+#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:105
 msgid "Invalid uri !"
 msgstr "Érvénytelen URI!"
 
 # components/services/install/lib/eazel-install-protocols.c:151
 # components/services/inventory/eazel-inventory-service.c:301
 # components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:115
-#: components/services/install/lib/eazel-install-protocols.c:155
-#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:118
+#: components/services/install/lib/eazel-install-protocols.c:149
+#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:115
 msgid "Could not prepare http request !"
 msgstr "A http kérés elõkészítése sikertelen!"
 
 # components/services/install/lib/eazel-install-protocols.c:156
 # components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:120
-#: components/services/install/lib/eazel-install-protocols.c:160
-#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:123
+#: components/services/install/lib/eazel-install-protocols.c:154
+#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:120
 msgid "Couldn't get async mode "
 msgstr "Aszinkron módba váltás sikertelen"
 
@@ -3202,225 +3202,225 @@ msgstr "Aszinkron módba váltás sikertelen"
 # components/services/install/lib/eazel-install-protocols.c:214
 # components/services/install/lib/eazel-install-protocols.c:230
 #. probably out of disk space
-#: components/services/install/lib/eazel-install-protocols.c:189
-#: components/services/install/lib/eazel-install-protocols.c:218
-#: components/services/install/lib/eazel-install-protocols.c:234
+#: components/services/install/lib/eazel-install-protocols.c:183
+#: components/services/install/lib/eazel-install-protocols.c:212
+#: components/services/install/lib/eazel-install-protocols.c:228
 #, c-format
 msgid "DISK FULL: could not write %s"
 msgstr "MEGTELT A LEMEZ: %s írása sikertelen"
 
 # components/services/install/lib/eazel-install-protocols.c:191
 # components/services/install/lib/eazel-install-protocols.c:219
-#: components/services/install/lib/eazel-install-protocols.c:195
-#: components/services/install/lib/eazel-install-protocols.c:223
+#: components/services/install/lib/eazel-install-protocols.c:189
+#: components/services/install/lib/eazel-install-protocols.c:217
 msgid "Could not get request body!"
 msgstr "A törzs letöltése sikertelen!"
 
 # components/services/install/lib/eazel-install-protocols.c:204
-#: components/services/install/lib/eazel-install-protocols.c:208
+#: components/services/install/lib/eazel-install-protocols.c:202
 #, c-format
 msgid "HTTP error: %d %s"
 msgstr "HTTP hiba: %d %s"
 
 # components/services/install/lib/eazel-install-protocols.c:251
-#: components/services/install/lib/eazel-install-protocols.c:255
+#: components/services/install/lib/eazel-install-protocols.c:249
 msgid "FTP not supported yet"
 msgstr "Az FTP még nem támogatott"
 
 # components/services/install/lib/eazel-install-protocols.c:446
-#: components/services/install/lib/eazel-install-protocols.c:463
+#: components/services/install/lib/eazel-install-protocols.c:457
 #, c-format
 msgid "Checking local file %s..."
 msgstr "Lokális fájl (%s) ellenõrzése..."
 
 # components/services/install/lib/eazel-install-protocols.c:567
-#: components/services/install/lib/eazel-install-protocols.c:584
+#: components/services/install/lib/eazel-install-protocols.c:578
 #, c-format
 msgid "Failed to retrieve %s!"
 msgstr "Nem sikerült a következõt letölteni: %s"
 
 # components/services/install/lib/eazel-install-protocols.c:633
-#: components/services/install/lib/eazel-install-protocols.c:657
+#: components/services/install/lib/eazel-install-protocols.c:651
 #, c-format
 msgid "Could not get an URL for %s"
 msgstr "A következõhöz nincs URL: %s"
 
 # components/services/install/lib/eazel-install-protocols.c:648
-#: components/services/install/lib/eazel-install-protocols.c:672
+#: components/services/install/lib/eazel-install-protocols.c:666
 msgid "Downloaded package does not have the correct name"
 msgstr "A letöltött csomagnak nem jó a neve."
 
 # components/services/install/lib/eazel-install-protocols.c:649
-#: components/services/install/lib/eazel-install-protocols.c:673
+#: components/services/install/lib/eazel-install-protocols.c:667
 #, c-format
 msgid "Package %s should have had name %s"
 msgstr "A %s csomag neve %s kellett volna legyen."
 
 # components/services/install/lib/eazel-install-protocols.c:676
-#: components/services/install/lib/eazel-install-protocols.c:701
+#: components/services/install/lib/eazel-install-protocols.c:695
 msgid "File download failed"
 msgstr "A fájl letöltése sikertelen"
 
 # components/services/install/lib/eazel-install-tests.c:33
-#: components/services/install/lib/eazel-install-tests.c:34
+#: components/services/install/lib/eazel-install-tests.c:33
 msgid "*** Begin pkg dump ***\n"
 msgstr "*** pkg dump eleje ***\n"
 
 # components/services/install/lib/eazel-install-tests.c:40
-#: components/services/install/lib/eazel-install-tests.c:41
+#: components/services/install/lib/eazel-install-tests.c:40
 msgid "*** End pkg dump ***\n"
 msgstr "*** pkg dump vége ***\n"
 
 # components/services/install/lib/eazel-install-xml-package-list.c:157
-#: components/services/install/lib/eazel-install-xml-package-list.c:161
+#: components/services/install/lib/eazel-install-xml-package-list.c:158
 msgid "*** No package nodes! (cat has no children) ***"
 msgstr ""
 
 # components/services/install/lib/eazel-install-xml-package-list.c:159
 # components/services/install/lib/eazel-install-xml-package-list.c:167
 # components/services/install/lib/eazel-install-xml-package-list.c:182
-#: components/services/install/lib/eazel-install-xml-package-list.c:163
-#: components/services/install/lib/eazel-install-xml-package-list.c:171
-#: components/services/install/lib/eazel-install-xml-package-list.c:186
+#: components/services/install/lib/eazel-install-xml-package-list.c:160
+#: components/services/install/lib/eazel-install-xml-package-list.c:168
+#: components/services/install/lib/eazel-install-xml-package-list.c:183
 msgid "*** Bailing from package parse! ***"
 msgstr ""
 
 # components/services/install/lib/eazel-install-xml-package-list.c:165
-#: components/services/install/lib/eazel-install-xml-package-list.c:169
+#: components/services/install/lib/eazel-install-xml-package-list.c:166
 msgid "*** No package nodes! ***"
 msgstr "*** Nincsenek csomag node-ok! ***"
 
 # components/services/install/lib/eazel-install-xml-package-list.c:171
-#: components/services/install/lib/eazel-install-xml-package-list.c:175
+#: components/services/install/lib/eazel-install-xml-package-list.c:172
 msgid "*** Malformed package node!"
 msgstr "*** Rossz a csomag node-ok formátuma!"
 
 # components/services/install/lib/eazel-install-xml-package-list.c:180
-#: components/services/install/lib/eazel-install-xml-package-list.c:184
+#: components/services/install/lib/eazel-install-xml-package-list.c:181
 msgid "*** No depends nodes! ***"
 msgstr "*** Nincsenek \"depends\" node-ok ***"
 
 # components/services/install/lib/eazel-install-xml-package-list.c:186
-#: components/services/install/lib/eazel-install-xml-package-list.c:190
+#: components/services/install/lib/eazel-install-xml-package-list.c:187
 msgid "*** Malformed depends node!"
 msgstr "*** Rossz formátumú \"depends\" node-ok!"
 
 # components/services/install/lib/eazel-install-xml-package-list.c:210
-#: components/services/install/lib/eazel-install-xml-package-list.c:214
+#: components/services/install/lib/eazel-install-xml-package-list.c:211
 #, c-format
 msgid "*** Unknown node type '%s'"
 msgstr "*** Ismeretlen node típus: '%s'"
 
 # components/services/install/lib/eazel-install-xml-package-list.c:227
-#: components/services/install/lib/eazel-install-xml-package-list.c:231
+#: components/services/install/lib/eazel-install-xml-package-list.c:228
 msgid "*** The pkg list file contains no data! ***\n"
 msgstr "*** A csomaglista fájlban nincs adat! ***\n"
 
 # components/services/install/lib/eazel-install-xml-package-list.c:232
-#: components/services/install/lib/eazel-install-xml-package-list.c:236
+#: components/services/install/lib/eazel-install-xml-package-list.c:233
 msgid "*** Cannot find the CATEGORIES xmlnode! ***\n"
 msgstr "*** A CATEGORIES xmlnode nem található! ***\n"
 
 # components/services/install/lib/eazel-install-xml-package-list.c:233
-#: components/services/install/lib/eazel-install-xml-package-list.c:237
+#: components/services/install/lib/eazel-install-xml-package-list.c:234
 msgid "*** Bailing from categories parse! ***\n"
 msgstr ""
 
 # components/services/install/lib/eazel-install-xml-package-list.c:239
-#: components/services/install/lib/eazel-install-xml-package-list.c:243
+#: components/services/install/lib/eazel-install-xml-package-list.c:240
 msgid "*** No Categories! ***\n"
 msgstr "*** Nincsenek kategóriák! ***\n"
 
 # components/services/install/lib/eazel-install-xml-package-list.c:240
-#: components/services/install/lib/eazel-install-xml-package-list.c:244
+#: components/services/install/lib/eazel-install-xml-package-list.c:241
 msgid "*** Bailing from category parse! ***\n"
 msgstr ""
 
 # components/services/install/lib/eazel-install-xml-package-list.c:294
-#: components/services/install/lib/eazel-install-xml-package-list.c:298
+#: components/services/install/lib/eazel-install-xml-package-list.c:295
 msgid "*** Cannot find the TRANSACTION xmlnode! ***\n"
 msgstr "*** A TRANSACTION xmlnodenem található! ***\n"
 
 # components/services/install/lib/eazel-install-xml-package-list.c:296
 # components/services/install/lib/eazel-install-xml-package-list.c:304
-#: components/services/install/lib/eazel-install-xml-package-list.c:300
-#: components/services/install/lib/eazel-install-xml-package-list.c:308
+#: components/services/install/lib/eazel-install-xml-package-list.c:297
+#: components/services/install/lib/eazel-install-xml-package-list.c:305
 msgid "*** Bailing from transaction parse! ***\n"
 msgstr ""
 
 # components/services/install/lib/eazel-install-xml-package-list.c:302
-#: components/services/install/lib/eazel-install-xml-package-list.c:306
+#: components/services/install/lib/eazel-install-xml-package-list.c:303
 msgid "*** No packages! ***\n"
 msgstr "*** Nincsenek csomagok! ***\n"
 
 # components/services/install/lib/eazel-install-xml-package-list.c:338
-#: components/services/install/lib/eazel-install-xml-package-list.c:342
+#: components/services/install/lib/eazel-install-xml-package-list.c:339
 msgid "*** No category nodes! ***"
 msgstr "*** Nincsenek kategória node-ok! ***"
 
 # components/services/install/lib/eazel-install-xml-package-list.c:342
-#: components/services/install/lib/eazel-install-xml-package-list.c:346
+#: components/services/install/lib/eazel-install-xml-package-list.c:343
 msgid "*** Cannot find the CATEGORIES xmlnode! ***"
 msgstr "*** A CATEGORIES xmlnode nem található! ***"
 
 # components/services/install/lib/eazel-install-xml-package-list.c:376
-#: components/services/install/lib/eazel-install-xml-package-list.c:380
+#: components/services/install/lib/eazel-install-xml-package-list.c:377
 #, c-format
 msgid "*** Unknown node %s"
 msgstr "*** Ismeretlen node: %s"
 
 # components/services/install/lib/eazel-install-xml-package-list.c:466
-#: components/services/install/lib/eazel-install-xml-package-list.c:470
+#: components/services/install/lib/eazel-install-xml-package-list.c:467
 msgid "*** Error generating xml package list! ***\n"
 msgstr "*** Hiba az xml csomaglista generálása közben! ***\n"
 
 # components/services/install/lib/eazel-install-xml-package-list.c:513
-#: components/services/install/lib/eazel-install-xml-package-list.c:517
+#: components/services/install/lib/eazel-install-xml-package-list.c:514
 msgid "*** Error reading package list! ***\n"
 msgstr "*** Hiba a csomaglista olvasásakor! ***\n"
 
 # components/services/install/lib/eazel-install-xml-package-list.c:892
-#: components/services/install/lib/eazel-install-xml-package-list.c:912
+#: components/services/install/lib/eazel-install-xml-package-list.c:909
 msgid "*** The osd xml contains no data! ***\n"
 msgstr "*** Az osd xml-ben nincs adat! ***\n"
 
 # components/services/install/lib/eazel-install-xml-package-list.c:897
-#: components/services/install/lib/eazel-install-xml-package-list.c:917
+#: components/services/install/lib/eazel-install-xml-package-list.c:914
 msgid "*** Bailing from osd parse! ***\n"
 msgstr ""
 
 # components/services/install/lib/eazel-install-xml-package-list.c:958
-#: components/services/install/lib/eazel-install-xml-package-list.c:993
+#: components/services/install/lib/eazel-install-xml-package-list.c:990
 #, c-format
 msgid "Could not parse the xml (length %d)"
 msgstr "Az XML értelmezése sikertelen (hossz %d)"
 
 # components/services/install/lib/eazel-package-system-rpm3.c:668
-#: components/services/install/lib/eazel-package-system-rpm3.c:764
+#: components/services/install/lib/eazel-package-system-rpm3.c:763
 #, c-format
 msgid "Opened packages database in %s"
 msgstr "Megnyitott csomagadatbázis helye: %s"
 
 # components/services/install/lib/eazel-package-system-rpm3.c:673
-#: components/services/install/lib/eazel-package-system-rpm3.c:769
+#: components/services/install/lib/eazel-package-system-rpm3.c:768
 #, c-format
 msgid "Opening packages database in %s failed"
 msgstr "A csomagadatbázis megnyitása sikertelen (hely: %s)"
 
 # components/services/install/lib/eazel-package-system-rpm3.c:696
-#: components/services/install/lib/eazel-package-system-rpm3.c:802
+#: components/services/install/lib/eazel-package-system-rpm3.c:801
 #, c-format
 msgid "Closing db for %s (open)"
 msgstr "Adatbázis lezárása (következõnek: %s) (nyitva)"
 
 # components/services/install/lib/eazel-package-system-rpm3.c:701
-#: components/services/install/lib/eazel-package-system-rpm3.c:807
+#: components/services/install/lib/eazel-package-system-rpm3.c:806
 #, c-format
 msgid "Closing db for %s (not open)"
 msgstr "Adatbázis lezárása (következõnek: %s) (nincs nyitva)"
 
 # components/services/install/lib/eazel-package-system-rpm3.c:953
-#: components/services/install/lib/eazel-package-system-rpm3.c:1138
+#: components/services/install/lib/eazel-package-system-rpm3.c:1137
 #, c-format
 msgid "Cannot open %s"
 msgstr "%s megnyitása sikertelen"
@@ -3868,7 +3868,7 @@ msgstr ""
 # components/services/install/nautilus-view/nautilus-service-install-view.c:252
 #: components/services/install-view/Nautilus_View_install.oaf.in.h:7
 msgid "View as Install"
-msgstr "Nézet mint telepítés"
+msgstr "Telepítésként"
 
 # components/services/install/server/Trilobite_Service_install.oaf.in.h:1
 #: components/services/install/server/Trilobite_Service_install.oaf.in.h:1
@@ -3938,7 +3938,7 @@ msgstr "Redszerleltárnézet-komponens"
 # components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:4
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:7
 msgid "View as System Inventory"
-msgstr "Nézet mint rendszerleltár"
+msgstr "Rendszerleltárként"
 
 # components/services/login/nautilus-view/nautilus-change-password-view.c:153
 #. Setup the title
@@ -4088,7 +4088,7 @@ msgstr ""
 # components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:1
 #: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:7
 msgid "View as Change Password"
-msgstr "Nézet mint jelszóváltoztatás"
+msgstr "Jelszóváltoztatásként"
 
 # components/services/nautilus-dependent-shared/eazel-services-extensions.c:260
 #: components/services/nautilus-dependent-shared/eazel-services-extensions.c:295
@@ -4291,6 +4291,9 @@ msgid ""
 "now, or your computer might be configured incorrectly. You could try again "
 "later."
 msgstr ""
+"Kapcsolatfelvétel az Eazel kiszolgálójával sikertelen. Lehet, hogy a "
+"kiszolgáló most nem elérhetõ, vagy a számÍtógépeden nincs jól beállÍtva a "
+"hálózat. Próbálkozz késõbb."
 
 #: components/services/summary/nautilus-summary-view.c:968
 msgid ""
@@ -4300,7 +4303,7 @@ msgstr ""
 
 #: components/services/summary/nautilus-summary-view.c:985
 msgid "Failed to upload system inventory."
-msgstr ""
+msgstr "Rendszerleltár feltöltése sikertelen."
 
 # src/nautilus-first-time-druid.c:248 src/nautilus-first-time-druid.c:511
 #: components/services/summary/nautilus-summary-view.c:1048
@@ -4380,23 +4383,23 @@ msgstr "Összefoglaló megjelenítõ"
 # libnautilus-extensions/nautilus-program-chooser.c:1242
 #: components/services/summary/Nautilus_View_services-summary.oaf.in.h:7
 msgid "View as Summary"
-msgstr "Nézet mint összefoglaló"
+msgstr "Összefoglalóként"
 
 # components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:130
-#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:133
+#: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:130
 #, c-format
 msgid "HTTP error %d \"%s\" on uri %s"
 msgstr "HTTP hiba %d \"%s\" a következõ URI-n: %s"
 
 # components/services/trilobite/libtrilobite/trilobite-core-utils.c:477
 # components/services/trilobite/libtrilobite/trilobite-core-utils.c:200
-#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:202
+#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:200
 msgid "Could not initialize Bonobo"
 msgstr "Bonobo inicializálása sikertelen"
 
 # components/services/trilobite/libtrilobite/trilobite-core-utils.c:498
 # components/services/trilobite/libtrilobite/trilobite-core-utils.c:215
-#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:217
+#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:215
 #, c-format
 msgid "Can't write logfile %s -- using default log handler"
 msgstr ""
@@ -4429,7 +4432,7 @@ msgstr ""
 # libnautilus-extensions/nautilus-program-chooser.c:1242
 #: components/services/trilobite/sample/nautilus-view/Nautilus_View_service-sample.oaf.in.h:6
 msgid "View as Service"
-msgstr "Nézet mint szolgáltatás"
+msgstr "Szolgáltatásként"
 
 # components/services/trilobite/sample/nautilus-view/Nautilus_View_service-sample.oaf.in.h:5
 #: components/services/trilobite/sample/nautilus-view/Nautilus_View_service-sample.oaf.in.h:7
@@ -4527,7 +4530,7 @@ msgstr "Factory a szövegnézetekhez"
 # src/nautilus-window.c:903
 #: components/text/Nautilus_View_text.oaf.in.h:6
 msgid "View as Text"
-msgstr "Nézet mint szöveg"
+msgstr "Szövegként"
 
 # components/text/services/google.xml.h:1
 #: components/text/services/google.xml.h:1
@@ -6767,7 +6770,7 @@ msgstr "Állapotsor megjelenítése az új ablakokban"
 # libnautilus-extensions/nautilus-global-preferences.c:164
 #: libnautilus-extensions/nautilus-global-preferences.c:176
 msgid "Display sidebar in new windows"
-msgstr "Sidebar megjelenítése az új ablakokban"
+msgstr "Oldalpanel megjelenítése az új ablakokban"
 
 # libnautilus-extensions/nautilus-global-preferences.c:167
 #: libnautilus-extensions/nautilus-global-preferences.c:179
@@ -6776,7 +6779,7 @@ msgstr "A Nautilus jeleníti meg a munkafelületet"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:183
 msgid "Enable fast search (indexes your hard drive)"
-msgstr ""
+msgstr "Gyorskeresés engedélyezése (leindexeli a merevlemezedet)"
 
 # libnautilus-extensions/nautilus-global-preferences.c:174
 #: libnautilus-extensions/nautilus-global-preferences.c:186
@@ -7037,7 +7040,7 @@ msgid " -_,;.?/&"
 msgstr " -_,;.?/&"
 
 # libnautilus-extensions/nautilus-icon-dnd.c:733
-#: libnautilus-extensions/nautilus-icon-dnd.c:766
+#: libnautilus-extensions/nautilus-icon-dnd.c:741
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
@@ -7045,7 +7048,7 @@ msgid ""
 msgstr ""
 
 # libnautilus-extensions/nautilus-icon-dnd.c:737
-#: libnautilus-extensions/nautilus-icon-dnd.c:770
+#: libnautilus-extensions/nautilus-icon-dnd.c:745
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
@@ -7053,7 +7056,7 @@ msgid ""
 msgstr ""
 
 # libnautilus-extensions/nautilus-icon-dnd.c:743
-#: libnautilus-extensions/nautilus-icon-dnd.c:776
+#: libnautilus-extensions/nautilus-icon-dnd.c:751
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
@@ -7062,7 +7065,7 @@ msgstr ""
 "elrendezés, és otthagyni ezt az elemet, ahova letetted?"
 
 # libnautilus-extensions/nautilus-icon-dnd.c:746
-#: libnautilus-extensions/nautilus-icon-dnd.c:779
+#: libnautilus-extensions/nautilus-icon-dnd.c:754
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
@@ -7071,12 +7074,12 @@ msgstr ""
 "elrendezésre és otthagyni ezeket az elemeket, ahova letetted õket?"
 
 # libnautilus-extensions/nautilus-icon-dnd.c:751
-#: libnautilus-extensions/nautilus-icon-dnd.c:784
+#: libnautilus-extensions/nautilus-icon-dnd.c:759
 msgid "Switch to Manual Layout?"
 msgstr "Átváltás kézi elrendezésre?"
 
 # libnautilus-extensions/nautilus-icon-dnd.c:752
-#: libnautilus-extensions/nautilus-icon-dnd.c:785
+#: libnautilus-extensions/nautilus-icon-dnd.c:760
 msgid "Switch"
 msgstr "Átváltás"
 
@@ -7293,7 +7296,7 @@ msgstr "Válassz ki egy alkalmazásat, amivel megnyitod a következõt: \"%s\"."
 # libnautilus-extensions/nautilus-program-chooser.c:1242
 #: libnautilus-extensions/nautilus-program-chooser.c:1265
 msgid "View as Other"
-msgstr "Megjelenítés másként"
+msgstr "Másként"
 
 # libnautilus-extensions/nautilus-program-chooser.c:1243
 #: libnautilus-extensions/nautilus-program-chooser.c:1266
@@ -7756,7 +7759,7 @@ msgstr "A visszavont szerkesztés újravégrahajtása"
 #: libnautilus-extensions/nautilus-view-identifier.c:61
 #, c-format
 msgid "View as %s"
-msgstr "Nézet mint %s"
+msgstr "%sként"
 
 # src/file-manager/fm-directory-view.c:2959
 #: libnautilus-extensions/nautilus-view-identifier.c:64
@@ -9031,7 +9034,11 @@ msgid ""
 "To do a fast search, Find requires an index of the files on your system.  "
 "Your computer is currently creating that index.   Because Find cannot use an "
 "index, this search may take several minutes."
-msgstr "A gyorskereséshez a keresõprogramnak szüksége van egy indexfájlra. A számítógéped éppen most állítja elõ ezt a fájlt, ezért még nem lehet használni. Ezt azt eredményezi, hogy a megadott keresés több percig is eltarthat."
+msgstr ""
+"A gyorskereséshez a keresõprogramnak szüksége van egy indexfájlra. A "
+"számítógéped éppen most állítja elõ ezt a fájlt, ezért még nem lehet "
+"használni. Ezt azt eredményezi, hogy a megadott keresés több percig is "
+"eltarthat."
 
 # src/file-manager/fm-search-list-view.c:313
 #: src/file-manager/fm-search-list-view.c:312
@@ -9051,7 +9058,9 @@ msgid ""
 "To do a fast search, Find requires an index of the files on your system.  An "
 "index can't be created right now. When an index is not available, searches "
 "will take several minutes."
-msgstr "A gyorskereséshez a keresõprogramnak szüksége van egy indexfájlra. Ez a fájl most nem állítható elõ. Amikor nincs indexfájl, a keresések sokáig tartanak."
+msgstr ""
+"A gyorskereséshez a keresõprogramnak szüksége van egy indexfájlra. Ez a fájl "
+"most nem állítható elõ. Amikor nincs indexfájl, a keresések sokáig tartanak."
 
 # src/file-manager/fm-search-list-view.c:333
 #: src/file-manager/fm-search-list-view.c:332
@@ -9313,7 +9322,7 @@ msgstr "Más alkalmazás..."
 # src/file-manager/nautilus-directory-view-ui.xml.h:23
 #: src/file-manager/nautilus-directory-view-ui.xml.h:24
 msgid "Other Viewer..."
-msgstr "Más nézõke..."
+msgstr "Más megjelenítõ..."
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:24
 #: src/file-manager/nautilus-directory-view-ui.xml.h:25
@@ -9323,7 +9332,7 @@ msgstr "Más _alkalmazás..."
 # src/file-manager/nautilus-directory-view-ui.xml.h:25
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Other _Viewer..."
-msgstr "Más _nézõke..."
+msgstr "Más _megjelenítõ..."
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:27
 #: src/file-manager/nautilus-directory-view-ui.xml.h:28
@@ -10927,13 +10936,13 @@ msgstr "Keresési lista"
 # src/nautilus-window.c:903
 #: src/Nautilus_shell.oaf.in.h:20
 msgid "View as Icons"
-msgstr "Nézet mint ikon"
+msgstr "Ikonként"
 
 # libnautilus-extensions/nautilus-program-chooser.c:189
 # src/nautilus-window.c:903
 #: src/Nautilus_shell.oaf.in.h:21
 msgid "View as List"
-msgstr "Nézet mint lista"
+msgstr "Listaként"
 
 # src/nautilus-shell-ui.xml.h:1
 #: src/nautilus-shell-ui.xml.h:1
@@ -10953,7 +10962,7 @@ msgstr " Középszintû"
 # src/nautilus-shell-ui.xml.h:4
 #: src/nautilus-shell-ui.xml.h:4
 msgid "Add a bookmark for the current location to this menu"
-msgstr ""
+msgstr "Könyvjelzõ hozzáadása a jelenlegi helyhez, ebbe a menübe"
 
 # src/nautilus-shell-ui.xml.h:6
 #: src/nautilus-shell-ui.xml.h:6
@@ -11096,7 +11105,7 @@ msgstr "Az elõzõ meglátogatott helyre ugrik"
 # src/nautilus-shell-ui.xml.h:32 src/nautilus-window-menus.c:434
 #: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:442
 msgid "Hide Location _Bar"
-msgstr "Címsáv el_rejtése"
+msgstr "_Címsáv elrejtése"
 
 # src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:416
 #: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:424
@@ -11106,7 +11115,7 @@ msgstr "_Státuszsor elrejtése"
 # src/nautilus-shell-ui.xml.h:33 src/nautilus-window-menus.c:422
 #: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:430
 msgid "Hide _Sidebar"
-msgstr "_Oldalsáv elrejtése"
+msgstr "_Oldalpanel elrejtése"
 
 # src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:428
 #: src/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:436
@@ -11780,17 +11789,17 @@ msgstr "Törlés"
 # src/nautilus-window-menus.c:417
 #: src/nautilus-window-menus.c:425
 msgid "Show St_atus Bar"
-msgstr "Státuszsor _mutatása"
+msgstr "_Státuszsor mutatása"
 
 # src/nautilus-window-menus.c:423
 #: src/nautilus-window-menus.c:431
 msgid "Show _Sidebar"
-msgstr "Oldalsáv m_utatása"
+msgstr "_Oldalpanel mutatása"
 
 # src/nautilus-window-menus.c:429
 #: src/nautilus-window-menus.c:437
 msgid "Show _Toolbar"
-msgstr "Eszközsor mu_tatása"
+msgstr "_Eszközsor mutatása"
 
 # src/nautilus-window-menus.c:435
 #: src/nautilus-window-menus.c:443
