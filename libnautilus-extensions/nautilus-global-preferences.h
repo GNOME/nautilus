@@ -121,7 +121,7 @@ typedef enum
 } NautilusSpeedTradeoffValue;
 
 #define NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS		"preferences/show_icon_text"
-#define NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS "preferencees/show_directory_item_counts"
+#define NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS "preferences/show_directory_item_counts"
 #define NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS	"preferences/show_image_thumbnails"
 #define NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA	"preferences/use_public_metadata"
 #define NAUTILUS_PREFERENCES_PREVIEW_SOUND		"preferences/preview_sound"
