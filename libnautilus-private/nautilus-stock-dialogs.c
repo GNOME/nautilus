@@ -59,6 +59,9 @@ static GHashTable *timed_wait_hash_table;
 static void find_message_label_callback (GtkWidget *widget,
 					 gpointer   callback_data);
 
+static void timed_wait_cancel_callback (GtkObject *object, gpointer callback_data);
+
+
 static guint
 timed_wait_hash (gconstpointer value)
 {
@@ -116,8 +119,15 @@ timed_wait_free (TimedWait *wait)
 		gtk_timeout_remove (wait->timeout_handler_id);
 	}
 	if (wait->dialog != NULL) {
+
+		/* Make sure to detach from the "destroy" signal, or we'll
+		 * double-free
+		 */
+		 
+		gtk_signal_disconnect_by_func (GTK_OBJECT (wait->dialog),
+				    timed_wait_cancel_callback, wait);
+
 		gtk_object_destroy (GTK_OBJECT (wait->dialog));
-		gtk_object_unref (GTK_OBJECT (wait->dialog));
 	}
 	
 	/* And the wait object itself. */
@@ -167,6 +177,8 @@ timed_wait_callback (gpointer callback_data)
 			    timed_wait_cancel_callback, wait);
 
 	wait->timeout_handler_id = 0;
+	wait->dialog = dialog;
+	
 	return FALSE;
 }
 

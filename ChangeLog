@@ -1,3 +1,11 @@
+2000-10-22  Mike Fleming  <mfleming@eazel.com>
+
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	(timed_wait_free), (timed_wait_callback):
+
+	Made timed-wait dialog remember the dialog.  Was being triggered
+	during a DAV rename w/ debug info on.
+
 2000-10-22  Robert Brady  <rwb197@zepler.org>
 
 	* configure.in: Added en_GB to ALL_LINGUAS.
