@@ -1,3 +1,20 @@
+2000-07-05  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_initialize_class), (nautilus_list_button_press),
+	(nautilus_list_button_release), (nautilus_list_drag_start):
+	* libnautilus-extensions/nautilus-list.h:
+	* src/file-manager/fm-list-view.c: (fm_list_drag_data_get),
+	(fm_list_get_drag_pixmap), (create_list):
+	Fixed 1095 - need to draw dragged icon when dragging from list view.
+
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	(nautilus_gtk_marshal_NONE__POINTER_INT_POINTER_POINTER):
+	I swore the next time I need a new marshaling function, I'll 
+	set Nautilus to auto-generate them like the gtk build and here
+	I am adding another one manually.
+
 2000-07-05  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus-extensions/nautilus-search-async.c: include

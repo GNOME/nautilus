@@ -56,6 +56,11 @@ typedef enum
 #define NAUTILUS_CELL_PIXBUF_LIST(cell)	((NautilusCellPixbufList *) &(cell))
 /* no #define for NAUTILUS_CELL_LINK_TEXT, use GTK_CELL_TEXT instead */
 
+/* returns the GList item for the nth row */
+#define	ROW_ELEMENT(clist, row)	(((row) == (clist)->rows - 1) ? \
+				 (clist)->row_list_end : \
+				 g_list_nth ((clist)->row_list, (row)))
+
 typedef struct NautilusCellPixbufList NautilusCellPixbufList;
 /* no struct for NautilusCellLinkText, use GtkCellText instead */
 
@@ -113,6 +118,7 @@ struct NautilusListClass {
 	void (* select_previous_name) (GtkWidget *widget);
 	void (* select_next_name) (GtkWidget *widget);
 	void (* handle_dropped_icons) (GtkWidget *widget, GList *icons, int x, int y, int action);
+	void (* get_drag_pixmap) (GtkWidget *widget, int row_index, GdkPixmap **pixmap, GdkBitmap **mask);
 };
 
 typedef gboolean (* NautilusEachRowFunction) (GtkCListRow *, gpointer);

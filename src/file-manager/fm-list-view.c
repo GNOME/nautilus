@@ -610,8 +610,8 @@ each_icon_get_data_binder (NautilusDragEachSelectedItemDataGet iteratee,
 
 static void
 fm_list_drag_data_get (GtkWidget *widget, GdkDragContext *context,
-			 GtkSelectionData *selection_data, guint info, guint time,
-			 FMListView *list_view)
+		       GtkSelectionData *selection_data, guint info, guint time,
+		       FMListView *list_view)
 {
 	g_assert (widget != NULL);
 	g_assert (NAUTILUS_IS_LIST (widget));
@@ -623,6 +623,26 @@ fm_list_drag_data_get (GtkWidget *widget, GdkDragContext *context,
 	 */
 	nautilus_drag_drag_data_get (widget, context, selection_data,
 		info, time, widget, each_icon_get_data_binder);
+}
+
+static void
+fm_list_get_drag_pixmap (GtkWidget *widget, int row_index, GdkPixmap **pixmap, 
+			 GdkBitmap **mask, FMListView *list_view)
+{
+	GtkCList *clist;
+	GtkCListRow *row;
+
+	g_assert (widget != NULL);
+	g_assert (NAUTILUS_IS_LIST (widget));
+
+	clist = GTK_CLIST (widget);
+	row = ROW_ELEMENT (clist, row_index)->data;
+
+	g_assert (row != NULL);
+
+	*pixmap = GTK_CELL_PIXMAP (row->cell[LIST_VIEW_COLUMN_ICON])->pixmap;
+	*mask = GTK_CELL_PIXMAP (row->cell[LIST_VIEW_COLUMN_ICON])->mask;
+
 }
 
 static void
@@ -754,7 +774,10 @@ create_list (FMListView *list_view)
 			    "drag_data_get",
 			    fm_list_drag_data_get,
 			    list_view);
-
+	gtk_signal_connect (GTK_OBJECT (list),
+			    "get_drag_pixmap",
+			    fm_list_get_drag_pixmap,
+			    list_view);
 
 	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (list));
 

@@ -85,6 +85,7 @@ struct NautilusListDetails
 	/* Drag state */
 	NautilusDragInfo *drag_info;
 	gboolean drag_started;
+	int clicked_row;
 	
 	/* Delayed selection information */
 	int dnd_select_pending;
@@ -159,6 +160,7 @@ enum {
 	SELECT_PREVIOUS_NAME,
 	SELECT_NEXT_NAME,
 	HANDLE_DROPPED_ICONS,
+	GET_DRAG_PIXMAP,
 	LAST_SIGNAL
 };
 
@@ -354,6 +356,17 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				GTK_TYPE_INT,
 				GTK_TYPE_INT,
 				GTK_TYPE_INT);
+	list_signals[GET_DRAG_PIXMAP] =
+		gtk_signal_new ("get_drag_pixmap",
+				GTK_RUN_FIRST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusListClass, get_drag_pixmap),
+				nautilus_gtk_marshal_NONE__POINTER_INT_POINTER_POINTER,
+				GTK_TYPE_NONE, 4,
+				GTK_TYPE_POINTER,
+				GTK_TYPE_INT,
+				GTK_TYPE_POINTER,
+				GTK_TYPE_POINTER);
 
 	gtk_object_class_add_signals (object_class, list_signals, LAST_SIGNAL);
 
@@ -740,7 +753,8 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 	on_row = gtk_clist_get_selection_info (clist, event->x, event->y, &row_index, &column_index);
 	list->details->button_down_time = event->time;
 	list->details->drag_started = FALSE;
-
+	list->details->clicked_row = -1;
+	
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
 		if (event->button == 1 || event->button == 2) {
@@ -771,6 +785,7 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 
 				if (!list->details->dnd_select_pending) {
 					select_row_from_mouse (list, row_index, event->state);
+					list->details->clicked_row = row_index;
 				}
 			} else {
 				gtk_clist_unselect_all (clist);
@@ -855,6 +870,7 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 	list->details->dnd_press_x = 0;
 	list->details->dnd_press_y = 0;
 	list->details->drag_started = TRUE;
+	list->details->clicked_row = -1;
 
 	if (on_row) {
 		/* Clean up after abortive drag-and-drop attempt (since user can't
@@ -2107,11 +2123,6 @@ nautilus_list_resize_column (GtkCList *clist, int column_index, int width)
 }
 
 /* Macros borrowed from gtkclist.c */
-/* returns the GList item for the nth row */
-#define	ROW_ELEMENT(clist, row)	(((row) == (clist)->rows - 1) ? \
-				 (clist)->row_list_end : \
-				 g_list_nth ((clist)->row_list, (row)))
-
 
 #define GTK_CLIST_CLASS_FW(_widget_) GTK_CLIST_CLASS (((GtkObject*) (_widget_))->klass)
 
@@ -2288,15 +2299,12 @@ nautilus_list_drag_start (GtkWidget *widget, GdkEventMotion *event)
 {
 	NautilusList *list;
 	GdkDragContext *context;
-	GdkPixbuf *pixbuf;
 	GdkPixmap *pixmap_for_dragged_file;
 	GdkBitmap *mask_for_dragged_file;
 	int x_offset, y_offset;
 
 	g_return_if_fail (NAUTILUS_IS_LIST (widget));
 	list = NAUTILUS_LIST (widget);
-
-	pixbuf = NULL;
 	
 	list->details->drag_started = TRUE;
 	list->details->dnd_select_pending = FALSE;
@@ -2308,12 +2316,11 @@ nautilus_list_drag_start (GtkWidget *widget, GdkEventMotion *event)
 	x_offset = 10;
 	y_offset = 10;
 
-	if (pixbuf) {
-		gdk_pixbuf_render_pixmap_and_mask (pixbuf,
-						   &pixmap_for_dragged_file,
-						   &mask_for_dragged_file,
-						   2);
+	gtk_signal_emit (GTK_OBJECT (list), list_signals[GET_DRAG_PIXMAP], 
+		list->details->clicked_row, &pixmap_for_dragged_file, 
+		&mask_for_dragged_file);
 
+	if (pixmap_for_dragged_file) {
 	        /* set the pixmap and mask for dragging */
 	        gtk_drag_set_icon_pixmap (context,
 					  gtk_widget_get_colormap (widget),
