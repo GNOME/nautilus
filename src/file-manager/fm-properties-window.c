@@ -1916,7 +1916,7 @@ attach_directory_contents_value_field (FMPropertiesWindow *window,
 	directory_contents_value_field_update (window);
  
 	       
-	for (l = window->details->original_files; l; l = l->next) {
+	for (l = window->details->target_files; l; l = l->next) {
 		file = NAUTILUS_FILE (l->data);
 		nautilus_file_recompute_deep_counts (file);
 		
