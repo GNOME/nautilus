@@ -42,7 +42,7 @@ sub found_string;
 
 # read in file with functions for which no translation is needed
 my @no_translation_needed_functions;
-open FUNCTIONS, "po/check-strings-functions";
+open FUNCTIONS, "check-strings-functions" or die "can't open functions file";
 while (<FUNCTIONS>)
   {
     chomp;
@@ -56,7 +56,7 @@ my $no_translation_needed_function_pattern = "^" . (join "|", @no_translation_ne
 
 # read in file with patterns for which no translation is needed
 my @no_translation_needed_patterns;
-open STRINGS, "check-strings-patterns";
+open STRINGS, "check-strings-patterns" or die "can't open patterns file";
 while (<STRINGS>)
   {
     chomp;
