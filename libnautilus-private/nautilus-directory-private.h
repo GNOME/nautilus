@@ -77,6 +77,9 @@ struct NautilusDirectoryDetails
 	GnomeVFSAsyncHandle *count_in_progress;
 	NautilusFile *count_file;
 
+	GnomeVFSAsyncHandle *get_info_in_progress;
+	NautilusFile *get_info_file;
+
 	TopLeftTextReadState *top_left_read_state;
 
 	GList *file_operations_in_progress; /* list of FileOperation * */
@@ -127,7 +130,7 @@ void          nautilus_directory_request_read_metafile     (NautilusDirectory   
 void          nautilus_directory_request_write_metafile    (NautilusDirectory         *directory);
 void          nautilus_directory_schedule_dequeue_pending  (NautilusDirectory         *directory);
 void          nautilus_directory_stop_monitoring_file_list (NautilusDirectory         *directory);
-void          nautilus_metafile_read_cancel                (NautilusDirectory         *directory);
+void          nautilus_directory_cancel                    (NautilusDirectory         *directory);
 void          nautilus_metafile_write_start                (NautilusDirectory         *directory);
 void          nautilus_async_destroying_file               (NautilusFile              *file);
 void          nautilus_directory_force_reload              (NautilusDirectory         *directory);

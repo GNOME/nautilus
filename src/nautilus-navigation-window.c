@@ -373,10 +373,8 @@ nautilus_window_constructed (NautilusWindow *window)
 		e_paned_pack1 (E_PANED(window->content_hbox), GTK_WIDGET(window->sidebar), FALSE, FALSE);
 	}
 	
-	gtk_widget_show_all (window->content_hbox);
-	
 	/* enable mouse tracking for the index panel */
-	/* FIXME bugzilla.eazel.com 1246: How about the sidebar doing this for itself. */
+	/* FIXME bugzilla.eazel.com 1246: How about the sidebar doing this for itself? */
 	gtk_widget_add_events (GTK_WIDGET (window->sidebar), GDK_POINTER_MOTION_MASK);
 
 	/* CORBA and Bonobo setup */
@@ -821,7 +819,6 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
 	GList *components;
         GList *p;
         GtkWidget *new_menu;
-        int index;
         GtkWidget *menu_item;
 
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
@@ -832,16 +829,11 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
         /* Add a menu item for each view in the preferred list for this location. */
         components = nautilus_mime_get_short_list_components_for_uri (window->location);
 
-        index = 0;
         for (p = components; p != NULL; p = p->next) {
                 menu_item = create_content_view_menu_item 
                 	(window, nautilus_view_identifier_new_from_content_view (p->data));
                 gtk_menu_append (GTK_MENU (new_menu), menu_item);
-
-                ++index;
         }
-
-	gnome_vfs_mime_component_list_free (components);
 
         /* Add "View as Other..." extra bonus choice, with separator before it.
          * Leave separator out if there are no viewers in menu by default. 
@@ -851,6 +843,8 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
 	        gtk_widget_show (menu_item);
 	        gtk_menu_append (GTK_MENU (new_menu), menu_item);
         }
+
+	gnome_vfs_mime_component_list_free (components);
 
        	menu_item = gtk_menu_item_new_with_label (_("View as Other..."));
         /* Store reference to window in item; no need to free this. */
@@ -862,8 +856,7 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
        	gtk_widget_show (menu_item);
        	gtk_menu_append (GTK_MENU (new_menu), menu_item);
         
-        /*
-         * We create and attach a new menu here because adding/removing
+        /* We create and attach a new menu here because adding/removing
          * items from existing menu screws up the size of the option menu.
          */
         gtk_option_menu_set_menu (GTK_OPTION_MENU (window->view_as_option_menu),

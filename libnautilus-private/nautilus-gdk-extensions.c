@@ -478,21 +478,24 @@ nautilus_gdk_font_equal (GdkFont *font_a_null_allowed,
 }
 
 GdkFont *
-nautilus_get_largest_fitting_font (const char *text_to_format, int width, const char* font_template)
+nautilus_get_largest_fitting_font (const char *text_to_format, int width, const char *font_template)
 {
 	int font_index, this_width;
 	char *font_name;
 	const int font_sizes[5] = { 28, 24, 18, 14, 12 };
-	GdkFont *candidate_font = NULL;
+	GdkFont *candidate_font;
 	char *alt_text_to_format = NULL;
-	char *temp_str = strdup(text_to_format);
-	char *cr_pos = strchr(temp_str, '\n');
+	char *temp_str;
+	char *cr_pos;
 
-	if (cr_pos) {
+	temp_str = g_strdup (text_to_format == NULL ? "" : text_to_format);
+	cr_pos = strchr (temp_str, '\n');
+	if (cr_pos != NULL) {
 		*cr_pos = '\0';
 		alt_text_to_format = cr_pos + 1;
 	}
-	  
+	
+	candidate_font = NULL;
 	for (font_index = 0; font_index < NAUTILUS_N_ELEMENTS (font_sizes); font_index++) {
 		if (candidate_font != NULL) {
 			gdk_font_unref (candidate_font);

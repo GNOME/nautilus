@@ -895,3 +895,21 @@ nautilus_gtk_container_get_first_child (GtkContainer *container)
 	g_assert (first_child == NULL || GTK_IS_WIDGET (first_child));
 	return first_child;
 }
+
+/* We have to supply a dummy pixmap to avoid the return_if_fail in gtk_pixmap_new. */
+GtkPixmap *
+nautilus_gtk_pixmap_new_empty (void)
+{
+	GtkPixmap *pixmap;
+
+	/* Make a GtkPixmap with a dummy GdkPixmap. The
+         * gdk_pixmap_new call will fail if passed 0 for height or
+	 * width, or if passed a bad depth.
+	 */
+	pixmap = GTK_PIXMAP (gtk_pixmap_new (gdk_pixmap_new (NULL, 1, 1, gdk_visual_get_best_depth ()), NULL));
+
+	/* Clear out the dummy pixmap. */
+	gtk_pixmap_set (pixmap, NULL, NULL);
+
+	return pixmap;
+}

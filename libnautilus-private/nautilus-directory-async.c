@@ -167,8 +167,18 @@ cancel_top_left_read (NautilusDirectory *directory)
 	}
 }
 
-void
-nautilus_metafile_read_cancel (NautilusDirectory *directory)
+static void
+cancel_get_info (NautilusDirectory *directory)
+{
+	if (directory->details->get_info_in_progress != NULL) {
+		gnome_vfs_async_cancel (directory->details->get_info_in_progress);
+		directory->details->get_info_file = NULL;
+		directory->details->get_info_in_progress = NULL;
+	}
+}
+
+static void
+cancel_metafile_read (NautilusDirectory *directory)
 {
 	if (directory->details->metafile_read_state != NULL) {
 		g_assert (directory->details->metafile_read_state->handle != NULL);
@@ -177,8 +187,15 @@ nautilus_metafile_read_cancel (NautilusDirectory *directory)
 		g_free (directory->details->metafile_read_state);
 		directory->details->metafile_read_state = NULL;
 	}
+}
+
+void
+nautilus_directory_cancel (NautilusDirectory *directory)
+{
+	cancel_metafile_read (directory);
 	cancel_directory_counts (directory);
 	cancel_top_left_read (directory);
+	cancel_get_info (directory);
 }
 
 static void
@@ -331,8 +348,10 @@ void
 nautilus_directory_request_read_metafile (NautilusDirectory *directory)
 {
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-	/* Don't read metafiles for search directories 
-	   since they don't exist yet */
+
+	/* Don't read metafiles for search directories since they
+	 * don't exist yet.
+	 */
 	if (nautilus_directory_is_search_directory (directory)) {
 		return;
 	}
@@ -654,7 +673,7 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 int
 nautilus_compare_file_with_name (gconstpointer a, gconstpointer b)
 {
-	return strcmp (NAUTILUS_FILE (a)->details->info->name,
+	return strcmp (NAUTILUS_FILE (a)->details->name,
 		       (const char *) b);
 }
 
@@ -673,7 +692,7 @@ update_file_info_in_list_if_needed (GList *list,
 	}
 
 	/* the file is in the list already update the file info if needed */
-	nautilus_file_update (NAUTILUS_FILE (list_entry->data), file_info);
+	nautilus_file_update_info (NAUTILUS_FILE (list_entry->data), file_info);
 
 	return TRUE;
 }
@@ -719,7 +738,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		if (file != NULL) {
 			/* file already exists, check if it changed */
 			file->details->unconfirmed = FALSE;
-			if (nautilus_file_update (file, file_info)) {
+			if (nautilus_file_update_info (file, file_info)) {
 				/* File changed, notify about the change. */
 				nautilus_file_ref (file);
 				changed_files = g_list_prepend (changed_files, file);
@@ -728,7 +747,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 			saw_again_files = g_list_prepend (saw_again_files, file);
 		} else if (!update_file_info_in_list_if_needed (pending_files, file_info)) {
 			/* new file, create a nautilus file object and add it to the list */
-			file = nautilus_file_new (directory, file_info);
+			file = nautilus_file_new_from_info (directory, file_info);
 			pending_files = g_list_prepend (pending_files, file);
 		}
 	}
@@ -1137,7 +1156,6 @@ nautilus_directory_get_info_for_new_files (NautilusDirectory *directory,
 		(&handle,
 		 vfs_uri_list,
 		 (GNOME_VFS_FILE_INFO_GETMIMETYPE
-		  | GNOME_VFS_FILE_INFO_FASTMIMETYPE
 		  | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
 		 NULL,
 		 new_files_callback,
@@ -1199,6 +1217,10 @@ nautilus_async_destroying_file (NautilusFile *file)
 		directory->details->top_left_read_state->file = NULL;
 		changed = TRUE;
 	}
+	if (directory->details->get_info_file == file) {
+		directory->details->get_info_file = NULL;
+		changed = TRUE;
+	}
 
 	/* Let the directory take care of the rest. */
 	if (changed) {
@@ -1231,6 +1253,19 @@ static gboolean
 wants_top_left (const Request *request)
 {
 	return request->top_left_text;
+}
+
+static gboolean
+lacks_info (NautilusFile *file)
+{
+	return file->details->info == NULL
+		&& !file->details->is_gone;
+}
+
+static gboolean
+wants_info (const Request *request)
+{
+	return request->file_info;
 }
 
 static gboolean
@@ -1271,9 +1306,11 @@ request_is_satisfied (NautilusDirectory *directory,
 		}
 	}
 
-	/* FIXME: need to handle file_info in some async fashion. For now,
-	 * it is just ignored here, meaning it's treated as always satisfied.
-	 */
+	if (request->file_info) {
+		if (has_problem (directory, file, lacks_info)) {
+			return FALSE;
+		}
+	}
 
 	return TRUE;
 }		      
@@ -1393,20 +1430,24 @@ start_monitoring_file_list (NautilusDirectory *directory)
 	}
 
 	mark_all_files_unconfirmed (directory);
-	/* The second condition should be true for 
-	   directories, and the first should be
-	   true for searches */
+
+	/* The second condition should be true for directories, and
+	 * the first should be true for searches.
+	 */
 	g_assert (nautilus_uri_is_search_uri (directory->details->uri_text) ||
 		  directory->details->uri->text != NULL);
+
 	directory->details->directory_load_list_last_handled
 		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
-	/* Don't use gnome vfs load mechanisms for 
-	   doing searches.  Use a separate search call */
+
+	/* Don't use gnome vfs load mechanisms for doing searches. Use
+	 * a separate search call.
+	 */
 	if (nautilus_directory_is_search_directory (directory)) {
 		nautilus_async_medusa_search (&directory->details->directory_load_in_progress,
-						   directory->details->uri_text,
-						   directory_load_callback,
-						   directory);
+					      directory->details->uri_text,
+					      directory_load_callback,
+					      directory);
 	}
 	else {
 		gnome_vfs_async_load_directory_uri
@@ -1754,6 +1795,82 @@ start_getting_top_lefts (NautilusDirectory *directory)
 	g_free (uri);
 }
 
+static void
+get_info_callback (GnomeVFSAsyncHandle *handle,
+		   GList *results,
+		   gpointer callback_data)
+{
+	NautilusDirectory *directory;
+	NautilusFile *get_info_file;
+	GnomeVFSGetFileInfoResult *result;
+
+	directory = NAUTILUS_DIRECTORY (callback_data);
+
+	g_assert (handle == NULL || handle == directory->details->get_info_in_progress);
+	g_assert (nautilus_g_list_exactly_one_item (results));
+	get_info_file = directory->details->get_info_file;
+	g_assert (NAUTILUS_IS_FILE (get_info_file));
+	
+	result = results->data;
+	nautilus_file_update_info (get_info_file, result->file_info);
+
+	directory->details->get_info_file = NULL;
+	directory->details->get_info_in_progress = NULL;
+
+	nautilus_file_changed (get_info_file);
+
+	state_changed (directory);
+}
+
+static void
+start_getting_file_info (NautilusDirectory *directory)
+{
+	NautilusFile *file;
+	char *uri;
+	GnomeVFSURI *vfs_uri;
+	GList fake_list;
+
+	/* If there's already a count in progress, check to be sure
+	 * it's still wanted.
+	 */
+	if (directory->details->get_info_in_progress != NULL) {
+		if (directory->details->get_info_file != NULL) {
+			g_assert (NAUTILUS_IS_FILE (directory->details->get_info_file));
+			g_assert (directory->details->get_info_file->details->directory == directory);
+			if (is_wanted (directory->details->get_info_file,
+				       wants_info)) {
+				return;
+			}
+		}
+
+		/* The count is not wanted, so stop it. */
+		cancel_get_info (directory);
+	}
+
+	/* Figure out which file to get a count for. */
+	file = select_needy_file (directory, lacks_info, wants_info);
+	if (file == NULL) {
+		return;
+	}
+
+	directory->details->get_info_file = file;
+	uri = nautilus_file_get_uri (file);
+	vfs_uri = gnome_vfs_uri_new (uri);
+	g_free (uri);
+	fake_list.data = vfs_uri;
+	fake_list.prev = NULL;
+	fake_list.next = NULL;
+	gnome_vfs_async_get_file_info
+		(&directory->details->get_info_in_progress,
+		 &fake_list,
+		 (GNOME_VFS_FILE_INFO_GETMIMETYPE
+		  | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
+		 NULL,
+		 get_info_callback,
+		 directory);
+	gnome_vfs_uri_unref (vfs_uri);
+}
+
 /* Call this when the monitor or call when ready list changes,
  * or when some I/O is completed.
  */
@@ -1762,6 +1879,9 @@ state_changed (NautilusDirectory *directory)
 {
 	/* Check if any callbacks are satisifed and call them if they are. */
 	call_ready_callbacks (directory);
+
+	/* Start or stop getting file info. */
+	start_getting_file_info (directory);
 
 	/* Start or stop reading the metafile. */
 	if (is_anyone_waiting_for_metafile (directory)) {
@@ -1779,8 +1899,8 @@ state_changed (NautilusDirectory *directory)
 	start_getting_directory_counts (directory);
 
 	/* Start or stop getting top left pieces of files. */
-	if (nautilus_directory_is_local(directory) || 
-			nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS, FALSE)) {
+	if (nautilus_directory_is_local(directory)
+	    || nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS, FALSE)) {
 		start_getting_top_lefts (directory);
 	}
 }

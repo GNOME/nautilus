@@ -1,3 +1,199 @@
+2000-06-20  Darin Adler  <darin@eazel.com>
+
+	Made NautilusFile async. like NautilusDirectory already was.
+	
+	* RENAMING: Added a renaming idea.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(cancel_get_info), (cancel_metafile_read),
+	(nautilus_directory_cancel): Added the new getting of file info
+	to the cancel logic.
+	(nautilus_compare_file_with_name): Changed to get the name in a
+	way that works with files with no info.
+	(nautilus_async_destroying_file): Handle the cancelling for the
+	get_file_info case.
+	(lacks_info), (wants_info), (request_is_satisfied): Add code to
+	handle the need for file info for a newly created NautilusFile.
+	(get_info_callback), (start_getting_file_info), (state_changed):
+	Add code to get file info for files that lack it.
+	
+	* libnautilus-extensions/nautilus-directory-private.h:
+	Add fields for getting file info for new files.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_notify_files_moved): Moved the logic about
+	updating the name on a file as it is moved into nautilus-file.c.
+	
+	* libnautilus-extensions/nautilus-file-attributes.h:
+	Added a "deep count" attribute and function as a placeholder for
+	work that I'll be doing for John shortly.
+	
+	* libnautilus-extensions/nautilus-file-private.h:
+	Moved the calls relating to updating an existing NautilusFile
+	so they are private and added one for a name change.
+	
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	Added interface for new nautilus_read_entire_file family of calls
+	that I still need to implement.
+	
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_new_from_name), (nautilus_file_new_from_info):
+	Added a way to create a file without having GnomeVFSFileInfo yet.
+	(nautilus_file_get): Don't get the GnomeVFSFileInfo; let the async.
+	logic handler that.
+	(rename_update_info_and_metafile): Handle new name field.
+	(nautilus_file_rename): Use new name field.
+	(nautilus_file_get_gnome_vfs_uri): Common code shared in a couple
+	of places. Started fixing the "no file object for root" problem.
+	(nautilus_file_matches_uri): Use nautilus_file_get_gnome_vfs_uri.
+	(nautilus_file_update_info): Handle NULL case and new name field.
+	(nautilus_file_update_name): New function used by move code in
+	nautilus-directory.c.
+	(nautilus_file_compare_by_type): Handle NULL info case.
+	(nautilus_file_compare_for_sort_internal): Handle NULL info case.
+	(nautilus_file_compare_name): Use new name field.
+	(nautilus_file_get_metadata), (nautilus_file_get_metadata_list):
+	Handle NULL file and use new name field.
+	(nautilus_file_set_metadata), (nautilus_file_set_metadata_list):
+	Use new name field.
+	(nautilus_file_get_name): Handle NULL file and use new name field.
+	(nautilus_file_get_uri): Use nautilus_file_get_gnome_vfs_uri.
+	(info_missing): New function to handle NULL file case, NULL info
+	case, and check the valid_fields more thoroughly.
+	(nautilus_file_get_date_as_string), (nautilus_file_get_size),
+	(nautilus_file_can_get_permissions),
+	(nautilus_file_get_owner_as_string),
+	(nautilus_file_get_group_as_string),
+	(nautilus_file_get_size_as_string),
+	(nautilus_file_get_type_as_string), (nautilus_file_get_file_type),
+	(nautilus_file_get_mime_type), (nautilus_file_is_mime_type),
+	(nautilus_file_is_symbolic_link),
+	Use info_missing to handle NULL file and NULL info cases and to
+	do valid_fields checks as needed.
+	(nautilus_file_get_permissions_as_string): Move file check so the
+	NULL case will work properly.
+	(nautilus_file_get_mime_type_as_string_attribute): Got rid of
+	redundant g_free call.
+	(nautilus_file_get_string_attribute): Remove file check so NULL
+	case will work properly.
+	(nautilus_file_get_emblem_names): Handle NULL file case.
+	(nautilus_file_get_keywords): Handle NULL file case.
+	(nautilus_file_is_executable): Remove file check so NULL case will
+	work properly.
+	(nautilus_file_mark_gone): Add code to get rid of info which we
+	don't need to keep around for files that are gone.
+	(nautilus_file_activate_custom): Added FIXME comments.
+
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(nautilus_get_largest_fitting_font): Changed so it handles the case
+	of NULL for passed-in text properly.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file): Formatting.
+	(nautilus_icon_factory_get_pixbuf_for_file): Handle NULL file by
+	returning NULL for the pixbuf.
+	(nautilus_icon_factory_get_pixmap_and_mask_for_file):
+	Handle NULL for the pixbuf by return NULL for the pixmap/mask.
+	
+	* src/nautilus-main.c: (print_leaks), (main): Do the leak printing
+	from an atexit function so more of the cleanup will run first.
+
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_pixmap_new_empty): A simple cover for allocating a
+	GtkPixmap before we have a GdkPixmap to display.
+	
+	* src/nautilus-sidebar-title.c: (nautilus_sidebar_title_initialize):
+	Create the widgets when the title is set up instead of creating
+	them "as needed".
+	(update_icon): Always update the icon, even if the file is NULL.
+	(update_title): Always update the title, even if the file is NULL.
+	Also got rid of the line-breaking code. We instead use the line-
+	breaking code inside GtkLabel, which we can tweak as needed by
+	setting a line width. We may need to revisit this, but lets not
+	re-add our own line-break code unless we have to.
+	(append_and_eat), (update_more_info): Always update the info field,
+	even if the file is NULL. I rewrote this.
+	(add_emblem), (update_emblems): Always update the emblems, even if
+	the file is NULL.
+	(update_notes): Always update the notes, even if the file is NULL.
+	(update_all): Update all the pieces separately (the old code was
+	doing them strangely bunched up).
+	(nautilus_sidebar_title_set_uri): Always ask for the directory
+	item count, even when the item is not yet known to be a directory.
+	
+	* src/nautilus-window.c: (nautilus_window_constructed): Get rid
+	of the call to gtk_widget_show_all that was showhing things that
+	were intentionally hidden.
+	(nautilus_window_load_content_view_menu): Removed an unused
+	variable that was set up but never examined.
+
+2000-06-20  Darin Adler  <darin@eazel.com>
+
+	* RENAMING:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(cancel_get_info), (cancel_metafile_read),
+	(nautilus_directory_cancel),
+	(nautilus_directory_request_read_metafile),
+	(nautilus_compare_file_with_name),
+	(update_file_info_in_list_if_needed),
+	(dequeue_pending_idle_callback),
+	(nautilus_directory_get_info_for_new_files),
+	(nautilus_async_destroying_file), (lacks_info), (wants_info),
+	(request_is_satisfied), (start_monitoring_file_list),
+	(get_info_callback), (start_getting_file_info), (state_changed):
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_destroy),
+	(nautilus_directory_notify_files_moved):
+	* libnautilus-extensions/nautilus-file-attributes.h:
+	* libnautilus-extensions/nautilus-file-private.h:
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_new_from_name), (nautilus_file_new_from_info),
+	(nautilus_file_get), (rename_update_info_and_metafile),
+	(nautilus_file_rename), (nautilus_file_get_gnome_vfs_uri),
+	(nautilus_file_matches_uri), (nautilus_file_update_info),
+	(nautilus_file_update_name), (nautilus_file_compare_by_type),
+	(nautilus_file_compare_for_sort_internal),
+	(nautilus_file_compare_name), (nautilus_file_get_metadata),
+	(nautilus_file_get_metadata_list), (nautilus_file_set_metadata),
+	(nautilus_file_set_metadata_list), (nautilus_file_get_name),
+	(nautilus_file_get_uri), (info_missing),
+	(nautilus_file_get_date_as_string), (nautilus_file_get_size),
+	(nautilus_file_can_get_permissions),
+	(nautilus_file_get_permissions_as_string),
+	(nautilus_file_get_owner_as_string),
+	(nautilus_file_get_group_as_string),
+	(nautilus_file_get_mime_type_as_string_attribute),
+	(nautilus_file_get_size_as_string),
+	(nautilus_file_get_string_attribute),
+	(nautilus_file_get_type_as_string), (nautilus_file_get_file_type),
+	(nautilus_file_get_mime_type), (nautilus_file_is_mime_type),
+	(nautilus_file_get_emblem_names), (nautilus_file_get_keywords),
+	(nautilus_file_is_symbolic_link), (nautilus_file_is_executable),
+	(nautilus_file_mark_gone), (nautilus_file_activate_custom):
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(nautilus_get_largest_fitting_font):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file),
+	(nautilus_icon_factory_get_pixbuf_for_file),
+	(nautilus_icon_factory_get_pixmap_and_mask_for_file):
+	* src/nautilus-main.c: (nautilus_leak_checker_init),
+	(nautilus_leak_print_leaks), (print_leaks), (main):
+	* src/nautilus-sidebar-title.c: (nautilus_gtk_pixmap_new_empty),
+	(nautilus_sidebar_title_initialize),
+	(nautilus_sidebar_title_destroy), (update_icon), (update_title),
+	(append_and_eat), (update_more_info), (add_emblem),
+	(update_emblems), (update_notes),
+	(nautilus_sidebar_title_get_text),
+	(nautilus_sidebar_title_set_text), (update_all),
+	(nautilus_sidebar_title_set_uri):
+	* src/nautilus-window.c: (nautilus_window_constructed),
+	(nautilus_window_load_content_view_menu):
+
 2000-06-20  Michael Engber  <engber@eazel.com>
 
 	* src/file-manager/fm-list-view.c: (fm_list_view_bump_zoom_level),
@@ -33,7 +229,7 @@
 	(create_permissions_page): Show permissions as octal number
 	in addition to as string.
 
-2000-06-20  Michael Engber  <set EMAIL_ADDRESS environment variable>
+2000-06-20  Michael Engber  <engber@eazel.com>
 
 	* src/file-manager/fm-directory-view.c:
 	(fm_directory_view_report_zoom_level_changed):
@@ -97,15 +293,14 @@
 	* src/Makefile.am:
 	* src/file-manager/Makefile.am:
 	* test/Makefile.am:
-
 	Remove the GNOMECANVASPIXBUF depedency.  Its not used no more.
 
-Tue Jun 20 01:49:08 2000  George Lebl <jirka@5z.com>
+Tue Jun 20 01:49:08 2000  George Lebl  <jirka@5z.com>
 
 	* test/nautilus-leak-symbol-lookup.c
-	  (nautilus_leak_symbol_map_get_offsets):  Do the sscanf into a
-	  gulong and then assign to the inode which is of type ino_t to avoid
-	  #ifdefs or other hacks to make it work on alpha.
+	(nautilus_leak_symbol_map_get_offsets):  Do the sscanf into a
+	gulong and then assign to the inode which is of type ino_t to avoid
+	#ifdefs or other hacks to make it work on alpha.
 
 2000-06-19  Maciej Stachowiak  <mjs@eazel.com>
 
@@ -129,7 +324,6 @@ Tue Jun 20 01:49:08 2000  George Lebl <jirka@5z.com>
 2000-06-19  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* configure.in:
-
 	Added better mozilla detection artificial intelligence and voodoo.
 	
 2000-06-19  Maciej Stachowiak  <mjs@eazel.com>
@@ -147,8 +341,8 @@ Tue Jun 20 01:49:08 2000  George Lebl <jirka@5z.com>
 2000-06-19  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.h:
-	Removed old never-implemented prototypes that no
-	longer even fit the general design.
+	Removed old never-implemented prototypes that no longer even fit
+	the general design.
 
 2000-06-19  Maciej Stachowiak  <mjs@eazel.com>
 
@@ -300,9 +494,10 @@ Tue Jun 20 01:49:08 2000  George Lebl <jirka@5z.com>
 
 	* libnautilus-extensions/nautilus-background.c:
 	(nautilus_background_draw_flat_box):
-	fixed long-standing bug where gradient or tiled image backgrounds would draw over other
-	widgets in the sidebar.  Fixed by making nautilus_background_draw_flat_box set
-	up the clip rectangle if necessary.
+	fixed long-standing bug where gradient or tiled image backgrounds
+	would draw over other widgets in the sidebar.  Fixed by making
+	nautilus_background_draw_flat_box set up the clip rectangle if
+	necessary.
 	
 2000-06-18  Andy Hertzfeld  <andy@eazel.com>
 
@@ -310,9 +505,9 @@ Tue Jun 20 01:49:08 2000  George Lebl <jirka@5z.com>
 	(nautilus_icon_factory_remove_image_uri),
 	(nautilus_icon_factory_clear_image), (first_file_more_recent),
 	(nautilus_icon_factory_get_thumbnail_uri), (check_for_thumbnails):
-	made it check modification dates to update thumbnails when their underlying
-	image changes.  Had to add a routine to remove specific images from the
-	icon cache.
+	made it check modification dates to update thumbnails when their
+	underlying image changes.  Had to add a routine to remove specific
+	images from the icon cache.
 	
 2000-06-18  J Shane Culpepper  <pepper@eazel.com>
 
@@ -324,26 +519,18 @@ Tue Jun 20 01:49:08 2000  George Lebl <jirka@5z.com>
 	* components/services/inventory/idl/trilobite-eazel-inventory.idl:
 	* components/services/inventory/lib/.cvsignore:
 	* components/services/inventory/lib/Makefile.am:
-	*
-	components/services/inventory/lib/trilobite-eazel-inventory-public.
-	h:
+	* components/services/inventory/lib/trilobite-eazel-inventory-public.h:
 	* components/services/inventory/nautilus-view/.cvsignore:
 	* components/services/inventory/nautilus-view/Makefile.am:
 	* components/services/inventory/nautilus-view/icons/.cvsignore:
 	* components/services/inventory/nautilus-view/icons/Makefile.am:
 	* components/services/inventory/nautilus-view/main.c: (main):
-	*
-	components/services/inventory/nautilus-view/nautilus-inventory-view
-	.c:
-	*
-	components/services/inventory/nautilus-view/nautilus-inventory-view
-	.h:
+	* components/services/inventory/nautilus-view/nautilus-inventory-view.c:
+	* components/services/inventory/nautilus-view/nautilus-inventory-view.h:
 	* components/services/inventory/service/.cvsignore:
 	* components/services/inventory/service/Makefile.am:
 	* components/services/inventory/service/main.c: (main):
-	*
-	components/services/inventory/service/trilobite-eazel-inventory-imp
-	l.c:
+	* components/services/inventory/service/trilobite-eazel-inventory-impl.c:
 	* components/services/login/nautilus-view/.cvsignore:
 	* configure.in:
 

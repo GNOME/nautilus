@@ -115,8 +115,32 @@ nautilus_file_initialize (NautilusFile *file)
 	file->details = g_new0 (NautilusFileDetails, 1);
 }
 
+static NautilusFile *
+nautilus_file_new_from_name (NautilusDirectory *directory,
+			     const char *name)
+{
+	NautilusFile *file;
+
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (name[0] != '\0', NULL);
+
+	file = gtk_type_new (NAUTILUS_TYPE_FILE);
+
+	nautilus_file_ref (file);
+	gtk_object_sink (GTK_OBJECT (file));
+
+	nautilus_directory_ref (directory);
+
+	file->details->directory = directory;
+	file->details->name = g_strdup (name);
+
+	return file;
+}
+
 NautilusFile *
-nautilus_file_new (NautilusDirectory *directory, GnomeVFSFileInfo *info)
+nautilus_file_new_from_info (NautilusDirectory *directory,
+			     GnomeVFSFileInfo *info)
 {
 	NautilusFile *file;
 
@@ -133,6 +157,7 @@ nautilus_file_new (NautilusDirectory *directory, GnomeVFSFileInfo *info)
 
 	file->details->directory = directory;
 	file->details->info = info;
+	file->details->name = info->name;
 
 	return file;
 }
@@ -153,8 +178,6 @@ nautilus_file_get (const char *uri)
 	NautilusDirectory *directory;
 	char *file_name_escaped, *file_name;
 	NautilusFile *file;
-	GnomeVFSResult result;
-	GnomeVFSFileInfo *file_info;
 
 	g_return_val_if_fail (uri != NULL, NULL);
 
@@ -167,8 +190,9 @@ nautilus_file_get (const char *uri)
 	/* Make VFS version of directory URI. */
 	directory_vfs_uri = gnome_vfs_uri_get_parent (vfs_uri);
 	if (directory_vfs_uri == NULL) {
-		gnome_vfs_uri_unref (vfs_uri);
-		return NULL;
+		/* Use the directory itself if we have no parent. */
+		gnome_vfs_uri_ref (vfs_uri);
+		directory_vfs_uri = vfs_uri;
 	}
 
 	/* Make text version of directory URI. */
@@ -193,26 +217,14 @@ nautilus_file_get (const char *uri)
 		return NULL;
 	}
 	file = nautilus_directory_find_file (directory, file_name);
-	g_free (file_name);
 	if (file != NULL) {
 		nautilus_file_ref (file);
 	} else {
-		/* Get info on the file. */
-		file_info = gnome_vfs_file_info_new ();
-		result = gnome_vfs_get_file_info (uri, file_info,
-						  GNOME_VFS_FILE_INFO_GETMIMETYPE
-						  | GNOME_VFS_FILE_INFO_FASTMIMETYPE
-						  | GNOME_VFS_FILE_INFO_FOLLOWLINKS, NULL);
-		if (result != GNOME_VFS_OK) {
-			return NULL;
-		}
-
-		file = nautilus_file_new (directory, file_info);
+		file = nautilus_file_new_from_name (directory, file_name);
 		directory->details->files =
 			g_list_prepend (directory->details->files, file);
-
-		gnome_vfs_file_info_unref (file_info);
 	}
+	g_free (file_name);
 
 	nautilus_directory_unref (directory);
 	
@@ -552,11 +564,14 @@ rename_update_info_and_metafile (FileOperationState *state)
 {
 	nautilus_directory_update_file_metadata
 		(state->file->details->directory,
-		 state->file->details->info->name,
+		 state->file->details->name,
 		 state->new_name);
 	
-	g_free (state->file->details->info->name);
-	state->file->details->info->name = g_strdup (state->new_name);
+	g_free (state->file->details->name);
+	state->file->details->name = g_strdup (state->new_name);
+	if (state->file->details->info != NULL) {
+		state->file->details->info->name = state->file->details->name;
+	}
 }
 
 static int
@@ -639,7 +654,7 @@ nautilus_file_rename (NautilusFile *file,
 	 * (1) gnome_vfs_move returns an error if new & old are same.
 	 * (2) We don't want to send file-changed signal if nothing changed.
 	 */
-	if (strcmp (new_name, file->details->info->name) == 0) {
+	if (strcmp (new_name, file->details->name) == 0) {
 		(* callback) (file, GNOME_VFS_OK, callback_data);
 		return;
 	}
@@ -648,7 +663,7 @@ nautilus_file_rename (NautilusFile *file,
 	state->new_name = g_strdup (new_name);
 
 	directory_uri_text = nautilus_directory_get_uri (file->details->directory);
-	source_name_list = g_list_prepend (NULL, file->details->info->name);
+	source_name_list = g_list_prepend (NULL, file->details->name);
 	target_name_list = g_list_prepend (NULL, (char *) new_name);
 	result = gnome_vfs_async_xfer
 		(&state->handle,
@@ -676,6 +691,18 @@ nautilus_file_rename (NautilusFile *file,
 	}
 }
 
+static GnomeVFSURI *
+nautilus_file_get_gnome_vfs_uri (NautilusFile *file)
+{
+	if (file->details->name[0] == '/') {
+		gnome_vfs_uri_ref (file->details->directory->details->uri);
+		return file->details->directory->details->uri;
+	}
+
+	return gnome_vfs_uri_append_file_name (file->details->directory->details->uri,
+					       file->details->name);
+}
+
 gboolean         
 nautilus_file_matches_uri (NautilusFile *file, const char *uri_string)
 {
@@ -687,17 +714,12 @@ nautilus_file_matches_uri (NautilusFile *file, const char *uri_string)
 	g_return_val_if_fail (uri_string != NULL, FALSE);
 
 	match_uri = gnome_vfs_uri_new (uri_string);
-	if (match_uri == NULL)
+	if (match_uri == NULL) {
 		return FALSE;
-
-	result = FALSE;
-	file_uri = gnome_vfs_uri_append_file_name (file->details->directory->details->uri,
-					      file->details->info->name);
-
-	if (match_uri != NULL) {
-		result = gnome_vfs_uri_equal (file_uri, match_uri);
 	}
 
+	file_uri = nautilus_file_get_gnome_vfs_uri (file);
+	result = gnome_vfs_uri_equal (file_uri, match_uri);
 	gnome_vfs_uri_unref (file_uri);
 	gnome_vfs_uri_unref (match_uri);
 
@@ -712,17 +734,64 @@ nautilus_file_is_local(NautilusFile *file)
 	return(nautilus_directory_is_local(file->details->directory));
 }
 
-
 gboolean
-nautilus_file_update (NautilusFile *file, GnomeVFSFileInfo *info)
+nautilus_file_update_info (NautilusFile *file, GnomeVFSFileInfo *info)
 {
-	if (gnome_vfs_file_info_matches (file->details->info, info)) {
+	if (file->details->is_gone) {
 		return FALSE;
 	}
 
-	gnome_vfs_file_info_unref (file->details->info);
+	if (info == NULL) {
+		nautilus_file_mark_gone (file);
+		return TRUE;
+	}
+
+	if (file->details->info != NULL
+	    && gnome_vfs_file_info_matches (file->details->info, info)) {
+		return FALSE;
+	}
+
 	gnome_vfs_file_info_ref (info);
+
+	if (file->details->info == NULL) {
+		g_free (file->details->name);
+	} else {
+		gnome_vfs_file_info_unref (file->details->info);
+	}
+
 	file->details->info = info;
+	file->details->name = info->name;
+
+	return TRUE;
+}
+
+gboolean
+nautilus_file_update_name (NautilusFile *file, const char *name)
+{
+	GnomeVFSFileInfo *info;
+
+	g_assert (name != NULL);
+
+	if (file->details->is_gone) {
+		return FALSE;
+	}
+
+	/* Make a copy and update the file name in the copy. */
+	if (strcmp (file->details->name, name) == 0) {
+		return FALSE;
+	}
+
+	if (file->details->info == NULL) {
+		g_free (file->details->name);
+		file->details->name = g_strdup (name);
+	} else {
+		info = gnome_vfs_file_info_new ();
+		gnome_vfs_file_info_copy (info, file->details->info);
+		g_free (info->name);
+		info->name = g_strdup (name);
+		nautilus_file_update_info (file, info);
+		gnome_vfs_file_info_unref (info);
+	}
 
 	return TRUE;
 }
@@ -897,8 +966,10 @@ nautilus_file_compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
 		return +1;
 	}
 
-	if (nautilus_strcmp (file_1->details->info->mime_type,
-			     file_2->details->info->mime_type) == 0) {
+	if (file_1->details->info != NULL
+	    && file_2->details->info != NULL
+	    && nautilus_strcmp (file_1->details->info->mime_type,
+				file_2->details->info->mime_type) == 0) {
 		return 0;
 	}
 
@@ -964,8 +1035,7 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 		rules[2] = GNOME_VFS_DIRECTORY_SORT_NONE;
 		break;
 	case NAUTILUS_FILE_SORT_BY_EMBLEMS:
-		/*
-		 * GnomeVFS doesn't know squat about our emblems, so
+		/* GnomeVFS doesn't know squat about our emblems, so
 		 * we handle comparing them here, before falling back
 		 * to tie-breakers.
 		 */
@@ -980,13 +1050,33 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 		g_return_val_if_fail (FALSE, 0);
 	}
 
-	if (reversed) {
-		return gnome_vfs_file_info_compare_for_sort_reversed
-			(file_1->details->info, file_2->details->info, rules);
+	if (file_1->details->info == NULL) {
+		if (file_2->details->info == NULL) {
+			compare = g_strcasecmp (file_1->details->name,
+						file_2->details->name);
+		} else {
+			/* FIXME: We do have a name for file 2 to
+                         * compare with, so we can probably do better
+                         * than this for all cases.
+			 */
+			compare = -1;
+		}
+	} else if (file_2->details->info == NULL) {
+		/* FIXME: We do have a name for file 1 to compare
+                 * with, so we can probably do better than this for
+		 * all cases.
+		 */
+		compare = +1;
 	} else {
-		return gnome_vfs_file_info_compare_for_sort
+		compare = gnome_vfs_file_info_compare_for_sort
 			(file_1->details->info, file_2->details->info, rules);
 	}
+
+	if (reversed) {
+		compare = -compare;
+	}
+
+	return compare;
 }
 
 /**
@@ -1042,7 +1132,7 @@ int
 nautilus_file_compare_name (NautilusFile *file,
 			    const char *pattern)
 {
-	return g_strcasecmp (file->details->info->name, pattern);
+	return g_strcasecmp (file->details->name, pattern);
 }
 
 char *
@@ -1050,13 +1140,16 @@ nautilus_file_get_metadata (NautilusFile *file,
 			    const char *key,
 			    const char *default_metadata)
 {
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), g_strdup (default_metadata));
 	g_return_val_if_fail (key != NULL, g_strdup (default_metadata));
 	g_return_val_if_fail (key[0] != '\0', g_strdup (default_metadata));
+	if (file == NULL) {
+		return g_strdup (default_metadata);
+	}
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), g_strdup (default_metadata));
 
 	return nautilus_directory_get_file_metadata
 		(file->details->directory,
-		 file->details->info->name,
+		 file->details->name,
 		 key,
 		 default_metadata);
 }
@@ -1066,15 +1159,18 @@ nautilus_file_get_metadata_list (NautilusFile *file,
 				 const char *list_key,
 				 const char *list_subkey)
 {
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 	g_return_val_if_fail (list_key != NULL, NULL);
 	g_return_val_if_fail (list_key[0] != '\0', NULL);
 	g_return_val_if_fail (list_subkey != NULL, NULL);
 	g_return_val_if_fail (list_subkey[0] != '\0', NULL);
+	if (file == NULL) {
+		return NULL;
+	}
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
 	return nautilus_directory_get_file_metadata_list
 		(file->details->directory,
-		 file->details->info->name,
+		 file->details->name,
 		 list_key,
 		 list_subkey);
 }
@@ -1090,7 +1186,7 @@ nautilus_file_set_metadata (NautilusFile *file,
 	g_return_if_fail (key[0] != '\0');
 
 	if (nautilus_directory_set_file_metadata (file->details->directory,
-						  file->details->info->name,
+						  file->details->name,
 						  key,
 						  default_metadata,
 						  metadata)) {
@@ -1111,7 +1207,7 @@ nautilus_file_set_metadata_list (NautilusFile *file,
 	g_return_if_fail (list_subkey[0] != '\0');
 
 	if (nautilus_directory_set_file_metadata_list (file->details->directory,
-						       file->details->info->name,
+						       file->details->name,
 						       list_key,
 						       list_subkey,
 						       list)) {
@@ -1122,8 +1218,11 @@ nautilus_file_set_metadata_list (NautilusFile *file,
 char *
 nautilus_file_get_name (NautilusFile *file)
 {
+	if (file == NULL) {
+		return NULL;
+	}
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-	return g_strdup (file->details->info->name);
+	return g_strdup (file->details->name);
 }
    
 void             
@@ -1203,7 +1302,7 @@ nautilus_file_get_mapped_uri (NautilusFile *file)
 	return actual_uri;
 }
 
-/* return the actual uri associated with the passed-in file */
+/* Return the actual uri associated with the passed-in file. */
 char *
 nautilus_file_get_uri (NautilusFile *file)
 {
@@ -1212,12 +1311,26 @@ nautilus_file_get_uri (NautilusFile *file)
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	uri = gnome_vfs_uri_append_file_name
-		(file->details->directory->details->uri,
-		 file->details->info->name);
+	uri = nautilus_file_get_gnome_vfs_uri (file);
 	uri_text = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
 	gnome_vfs_uri_unref (uri);
 	return uri_text;
+}
+
+static gboolean
+info_missing (NautilusFile *file, GnomeVFSFileInfoFields needed_mask)
+{
+	GnomeVFSFileInfo *info;
+
+	if (file == NULL) {
+		return TRUE;
+	}
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), TRUE);
+	info = file->details->info;
+	if (info == NULL) {
+		return TRUE;
+	}
+	return (info->valid_fields & needed_mask) != needed_mask;
 }
 
 /**
@@ -1239,22 +1352,36 @@ nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type
 	GDate *file_date;
 	guint32 file_date_age;
 
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+	g_return_val_if_fail (date_type == NAUTILUS_DATE_TYPE_CHANGED
+			      || date_type == NAUTILUS_DATE_TYPE_ACCESSED
+			      || date_type == NAUTILUS_DATE_TYPE_MODIFIED, NULL);
 
-	switch (date_type)
-	{
-		case NAUTILUS_DATE_TYPE_CHANGED:
-			file_time = localtime(&file->details->info->ctime);
-			break;
-		case NAUTILUS_DATE_TYPE_ACCESSED:
-			file_time = localtime(&file->details->info->atime);
-			break;
-		case NAUTILUS_DATE_TYPE_MODIFIED:
-			file_time = localtime(&file->details->info->mtime);
-			break;
-		default:
-			g_assert_not_reached ();
+	switch (date_type) {
+	case NAUTILUS_DATE_TYPE_CHANGED:
+		/* Before we have info on a file, the date is unknown. */
+		if (info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_CTIME)) {
+			return NULL;
+		}
+		file_time = localtime (&file->details->info->ctime);
+		break;
+	case NAUTILUS_DATE_TYPE_ACCESSED:
+		/* Before we have info on a file, the date is unknown. */
+		if (info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_ATIME)) {
+			return NULL;
+		}
+		file_time = localtime (&file->details->info->atime);
+		break;
+	case NAUTILUS_DATE_TYPE_MODIFIED:
+		/* Before we have info on a file, the date is unknown. */
+		if (info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_MTIME)) {
+			return NULL;
+		}
+		file_time = localtime (&file->details->info->mtime);
+		break;
+	default:
+		g_assert_not_reached ();
 	}
+
 	file_date = nautilus_g_date_new_tm (file_time);
 	
 	today = g_date_new ();
@@ -1336,9 +1463,9 @@ nautilus_file_get_directory_item_count (NautilusFile *file,
 GnomeVFSFileSize
 nautilus_file_get_size (NautilusFile *file)
 {
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), 0);
-
-	return file->details->info->size;
+	/* Before we have info on the file, we don't know the size. */
+	return info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SIZE)
+		? 0 : file->details->info->size;
 }
 
 /**
@@ -1354,10 +1481,7 @@ nautilus_file_get_size (NautilusFile *file)
 gboolean
 nautilus_file_can_get_permissions (NautilusFile *file)
 {
-	if (nautilus_file_is_gone (file)) {
-		return FALSE;
-	}
-	return (file->details->info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS) != 0;
+	return !info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS);
 }
 
 /**
@@ -1514,15 +1638,15 @@ nautilus_file_get_permissions_as_string (NautilusFile *file)
 	gboolean is_directory;
 	gboolean is_link;
 
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
 	if (!nautilus_file_can_get_permissions (file)) {
 		return g_strdup (_("unknown permissions"));
 	}
 
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
 	permissions = file->details->info->permissions;
 	is_directory = nautilus_file_is_directory (file);
-	is_link = GNOME_VFS_FILE_INFO_SYMLINK(file->details->info);
+	is_link = GNOME_VFS_FILE_INFO_SYMLINK (file->details->info);
 
 	/* FIXME bugzilla.eazel.com 877: Need to reflect suid, guid, sticky bits */
 	return g_strdup_printf ("%c%c%c%c%c%c%c%c%c%c",
@@ -1553,7 +1677,10 @@ nautilus_file_get_owner_as_string (NautilusFile *file)
 {
 	struct passwd *password_info;
 
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+	/* Before we have info on a file, the owner is unknown. */
+	if (info_missing (file, 0 /* FIXME: GNOME_VFS_FILE_INFO_FIELDS_UID */)) {
+		return NULL;
+	}
 
 	/* FIXME bugzilla.eazel.com 644: 
 	 * Can we trust the uid in the file info? Might
@@ -1584,7 +1711,10 @@ nautilus_file_get_group_as_string (NautilusFile *file)
 {
 	struct group *group_info;
 
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+	/* Before we have info on a file, the owner is unknown. */
+	if (info_missing (file, 0 /* FIXME: GNOME_VFS_FILE_INFO_FIELDS_GID */)) {
+		return NULL;
+	}
 
 	/* FIXME bugzilla.eazel.com 644: 
 	 * Can we trust the gid in the file info? Might
@@ -1621,8 +1751,6 @@ nautilus_file_get_mime_type_as_string_attribute (NautilusFile *file)
 	if (mime_string != NULL) {
 		return mime_string;
 	}
-
-	g_free (mime_string);
 	return g_strdup (_("unknown MIME type"));
 }
 
@@ -1642,6 +1770,10 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 {
 	guint item_count;
 	gboolean count_unreadable;
+
+	if (file == NULL) {
+		return NULL;
+	}
 	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 	
@@ -1658,6 +1790,9 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 		return g_strdup_printf (_("%u items"), item_count);
 	}
 	
+	if (info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SIZE)) {
+		return g_strdup (_("--"));
+	}
 	return gnome_vfs_file_size_to_string (file->details->info->size);
 }
 
@@ -1679,14 +1814,12 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 char *
 nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_name)
 {
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
 	/* FIXME bugzilla.eazel.com 646: 
 	 * Use hash table and switch statement or function pointers for speed? 
 	 */
 
 	if (strcmp (attribute_name, "name") == 0) {
-		return nautilus_link_get_display_name(nautilus_file_get_name (file));
+		return nautilus_link_get_display_name (nautilus_file_get_name (file));
 	}
 
 	if (strcmp (attribute_name, "type") == 0) {
@@ -1759,11 +1892,8 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 	const char *mime_type;
 	const char *description;
 
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-	mime_type = (file->details->info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0 ?
-		file->details->info->mime_type :
-		NULL;
+	mime_type = info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE)
+		? NULL : file->details->info->mime_type;
 
 	if (nautilus_strlen (mime_type) == 0) {
 		/* No mime type, anything else interesting we can say about this? */
@@ -1790,7 +1920,7 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 	} else {
 		g_warning ("No description found for mime type \"%s\" (file is \"%s\"), tell sullivan@eazel.com", 
 			    mime_type,
-			    file->details->info->name);
+			    file->details->name);
 	}
 	return g_strdup (mime_type);
 }
@@ -1807,9 +1937,8 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 GnomeVFSFileType
 nautilus_file_get_file_type (NautilusFile *file)
 {
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), GNOME_VFS_FILE_TYPE_UNKNOWN);
-
-	return file->details->info->type;
+	return info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_TYPE)
+		? GNOME_VFS_FILE_TYPE_UNKNOWN : file->details->info->type;
 }
 
 /**
@@ -1824,9 +1953,8 @@ nautilus_file_get_file_type (NautilusFile *file)
 char *
 nautilus_file_get_mime_type (NautilusFile *file)
 {
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-	return g_strdup (file->details->info->mime_type);
+	return info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE)
+		? NULL : g_strdup (file->details->info->mime_type);
 }
 
 /**
@@ -1843,9 +1971,11 @@ nautilus_file_get_mime_type (NautilusFile *file)
 gboolean
 nautilus_file_is_mime_type (NautilusFile *file, const char *mime_type)
 {
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 	g_return_val_if_fail (mime_type != NULL, FALSE);
 
+	if (info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE)) {
+		return FALSE;
+	}
 	return nautilus_strcmp (file->details->info->mime_type, mime_type) == 0;
 }
 
@@ -1863,6 +1993,12 @@ GList *
 nautilus_file_get_emblem_names (NautilusFile *file)
 {
 	GList *names;
+
+	if (file == NULL) {
+		return NULL;
+	}
+
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
 	names = nautilus_file_get_keywords (file);
 	
@@ -1924,6 +2060,10 @@ nautilus_file_get_keywords (NautilusFile *file)
 {
 	GList *keywords;
 
+	if (file == NULL) {
+		return NULL;
+	}
+
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
 	/* Put all the keywords into a list. */
@@ -1966,9 +2106,8 @@ nautilus_file_set_keywords (NautilusFile *file, GList *keywords)
 gboolean
 nautilus_file_is_symbolic_link (NautilusFile *file)
 {
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-	return GNOME_VFS_FILE_INFO_SYMLINK (file->details->info);
+	return info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_FLAGS)
+		? FALSE : GNOME_VFS_FILE_INFO_SYMLINK (file->details->info);
 }
 
 /**
@@ -2042,19 +2181,17 @@ nautilus_file_contains_text (NautilusFile *file)
 gboolean
 nautilus_file_is_executable (NautilusFile *file)
 {
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
 	if (!nautilus_file_can_get_permissions (file)) {
-		/* 
-		 * File's permissions field is not valid.
+		/* File's permissions field is not valid.
 		 * Can't access specific permissions, so return FALSE.
 		 */
 		return FALSE;
 	}
 
-	return (file->details->info->permissions & (GNOME_VFS_PERM_USER_EXEC
-				     | GNOME_VFS_PERM_GROUP_EXEC
-				     | GNOME_VFS_PERM_OTHER_EXEC)) != 0;
+	return (file->details->info->permissions
+		& (GNOME_VFS_PERM_USER_EXEC
+		   | GNOME_VFS_PERM_GROUP_EXEC
+		   | GNOME_VFS_PERM_OTHER_EXEC)) != 0;
 }
 
 /**
@@ -2128,6 +2265,18 @@ nautilus_file_mark_gone (NautilusFile *file)
 
 	file->details->is_gone = TRUE;
 	
+	/* Drop away all the old file information, but keep the name. */
+	/* FIXME: Maybe we can get rid of the name too eventually, but
+	 * for now that would probably require too many if statements
+	 * everywhere anyone deals with the name. Maybe we can give it
+	 * a hard-coded "<deleted>" name or something.
+	 */
+	if (file->details->info != NULL) {
+		file->details->name = g_strdup (file->details->name);
+		gnome_vfs_file_info_unref (file->details->info);
+		file->details->info = NULL;
+	}
+
 	/* Let the directory know it's gone. */
 	directory = file->details->directory;
 	files = &directory->details->files;
@@ -2192,15 +2341,20 @@ nautilus_file_is_gone (NautilusFile *file)
 }
 
 /**
- *  nautilus_file_activate_custom
+ * nautilus_file_activate_custom
  *
- *  this routine is called when a file is activated to have a chance to do file-type specific 
- *  activation. If it returns true, the framework won't try to change location.
+ * This routine is called when a file is activated to have a chance to
+ * do file-type specific activation. If it returns true, the framework
+ * won't try to change location.
  *  
- *  for now, the only thing we handle specially is link activation, where we special case
- *  uris with a protocol of "command" to execute shell commands, mainly to launch applications
+ * For now, the only thing we handle specially is link activation,
+ * where we special case uris with a protocol of "command" to execute
+ * shell commands, mainly to launch applications.
  *
  **/
+/* FIXME: This does not belong here! It's a much higher-level
+ * operation than we should have in Nautilusfile.
+ */
 gboolean
 nautilus_file_activate_custom (NautilusFile *file, gboolean use_new_window)
 {
@@ -2208,21 +2362,22 @@ nautilus_file_activate_custom (NautilusFile *file, gboolean use_new_window)
 	char *uri, *old_uri, *command_str;
 	uri = nautilus_file_get_uri (file);
 	
-	/* see if it's a nautilus link xml file - if so, see if we need to handle specially */
+	/* See if it's a nautilus link xml file - if so, see if we need to handle specially. */
 	if (nautilus_link_is_link_file (uri)) {
 		old_uri = uri;
 		uri = nautilus_link_get_link_uri (uri);
 		g_free (old_uri);
 	
-		if (nautilus_str_has_prefix(uri, "command:")) {
-			command_str = g_strdup_printf("%s &", uri + 8);
-			result = system(command_str);
-			g_free(command_str);
-			g_free(uri);
+		if (nautilus_str_has_prefix (uri, "command:")) {
+			/* FIXME: Hardcoded "+8"? */
+			command_str = g_strdup_printf ("%s &", uri + 8);
+			result = system (command_str);
+			g_free (command_str);
+			g_free (uri);
 			return TRUE;
 		}
 	}
-	g_free(uri);
+	g_free (uri);
 	return FALSE;
 }
 

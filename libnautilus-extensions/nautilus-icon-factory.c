@@ -878,13 +878,13 @@ nautilus_scalable_icon_equal (gconstpointer a,
 NautilusScalableIcon *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifier)
 {
-	char *uri, *file_uri, *image_uri, *icon_name, *mime_type, *top_left_text = NULL;
+	char *uri, *file_uri, *image_uri, *icon_name, *mime_type, *top_left_text;
  	NautilusScalableIcon *scalable_icon;
 	
 	if (file == NULL) {
 		return NULL;
 	}
-	
+
 	/* if there is a custom image in the metadata, use that. */
 	uri = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
 	file_uri = nautilus_file_get_uri (file);
@@ -930,10 +930,11 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 		icon_name = g_strdup (nautilus_icon_factory_get_icon_name_for_file (file));
 	}
 
-	if (nautilus_file_is_local (file) || nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS, FALSE)) {
+	top_left_text = NULL;
+	if (nautilus_file_is_local (file)
+	    || nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS, FALSE)) {
 		top_left_text = nautilus_file_get_top_left_text (file);
 	}
-
 	
 	/* Create the icon or find it in the cache if it's already there. */
 	scalable_icon = nautilus_scalable_icon_new_from_text_pieces 
@@ -1913,10 +1914,11 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
 	NautilusScalableIcon *icon;
 	GdkPixbuf *pixbuf;
 
-	g_return_val_if_fail (file != NULL, NULL);
-
 	/* Get the pixbuf for this file. */
 	icon = nautilus_icon_factory_get_icon_for_file (file, NULL);
+	if (icon == NULL) {
+		return NULL;
+	}
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 		(icon,
 		 size_in_pixels, size_in_pixels,
@@ -1944,9 +1946,10 @@ nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile *file,
 	*pixmap = NULL;
 	*mask = NULL;
 
-	g_return_if_fail (file != NULL);
-
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, size_in_pixels);
+	if (pixbuf == NULL) {
+		return;
+	}
 	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap, mask, 128);
 	gdk_pixbuf_unref (pixbuf);
 }

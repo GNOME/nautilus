@@ -38,7 +38,6 @@
 #define NAUTILUS_FILE_DEFINED
 typedef struct NautilusFile NautilusFile;
 #endif
-typedef struct NautilusFileClass NautilusFileClass;
 
 #define NAUTILUS_TYPE_FILE \
 	(nautilus_file_get_type ())
@@ -115,12 +114,15 @@ gboolean                nautilus_file_is_directory              (NautilusFile   
 gboolean                nautilus_file_get_directory_item_count  (NautilusFile                  *file,
 								 guint                         *count,
 								 gboolean                      *count_unreadable);
+gboolean                nautilus_file_get_directory_item_deep_count
+								(NautilusFile                  *file,
+								 guint                         *count,
+								 gboolean                      *count_unreadable);
 GList *                 nautilus_file_get_keywords              (NautilusFile                  *file);
 void                    nautilus_file_set_keywords              (NautilusFile                  *file,
 								 GList                         *keywords);
 GList *                 nautilus_file_get_emblem_names          (NautilusFile                  *file);
 char *                  nautilus_file_get_top_left_text         (NautilusFile                  *file);
-
 
 /* Permissions. */
 gboolean                nautilus_file_can_get_permissions       (NautilusFile                  *file);
@@ -181,15 +183,6 @@ gboolean                nautilus_file_matches_uri               (NautilusFile   
 /* Is the file local? */
 gboolean                nautilus_file_is_local                  (NautilusFile                  *file);
 
-/* Compare file's state with a fresh file info struct, return FALSE if no change,
-   update file and return TRUE if the file info contains new state.
- */
-gboolean                nautilus_file_update                    (NautilusFile                  *file,
-								 GnomeVFSFileInfo              *info);
-/* give a file a chance to activate itself instead of letting the location-based framework do it */
-gboolean		nautilus_file_activate_custom		(NautilusFile			*file,
-								 gboolean			use_new_window);
-
 /* Comparing two file objects for sorting */
 int                     nautilus_file_compare_for_sort          (NautilusFile                  *file_1,
 								 NautilusFile                  *file_2,
@@ -199,6 +192,15 @@ int                     nautilus_file_compare_for_sort_reversed (NautilusFile   
 								 NautilusFileSortType           sort_type);
 int                     nautilus_file_compare_name		(NautilusFile                  *file_1,
 								 const char		       *pattern);
+
+/* Give a file a chance to activate itself instead of letting the
+ * location-based framework do it.
+ */
+/* FIXME: This does not belong here! It's a much higher-level
+ * operation than we should have in Nautilusfile.
+ */
+gboolean		nautilus_file_activate_custom		(NautilusFile		       *file,
+								 gboolean			use_new_window);
 
 /* Change notification hack.
  * This is called when code modifies the file and it needs to trigger
@@ -221,11 +223,11 @@ struct NautilusFile
 	NautilusFileDetails *details;
 };
 
-struct NautilusFileClass
+typedef struct
 {
 	GtkObjectClass parent_class;
 	
 	void (* changed) (NautilusFile *file);
-};
+} NautilusFileClass;
 
 #endif /* NAUTILUS_FILE_H */

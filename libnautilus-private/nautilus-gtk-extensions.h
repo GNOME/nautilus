@@ -29,6 +29,7 @@
 
 #include <gtk/gtkclist.h>
 #include <gtk/gtkmenu.h>
+#include <gtk/gtkpixmap.h>
 #include <gtk/gtkwindow.h>
 
 #define NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT 2
@@ -102,6 +103,9 @@ void              nautilus_gtk_style_set_font                  (GtkStyle        
 								GdkFont                *font);
 void              nautilus_gtk_style_set_font_by_name          (GtkStyle               *style,
 								const char             *font_name);
+
+/* GtkPixmap */
+GtkPixmap        *nautilus_gtk_pixmap_new_empty                (void);
 
 /* marshals */
 

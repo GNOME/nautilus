@@ -50,27 +50,18 @@ static void     nautilus_sidebar_title_destroy            (GtkObject            
 static void     nautilus_sidebar_title_initialize         (NautilusSidebarTitle      *pixmap);
 static gboolean nautilus_sidebar_title_button_press_event (GtkWidget                 *widget,
 							   GdkEventButton            *event);
-static void     nautilus_sidebar_title_update_icon        (NautilusSidebarTitle      *sidebar_title);
-static void     nautilus_sidebar_title_update_label       (NautilusSidebarTitle      *sidebar_title);
-static void     nautilus_sidebar_title_update_info        (NautilusSidebarTitle      *sidebar_title);
+static void     update_icon                               (NautilusSidebarTitle      *sidebar_title);
 
 struct NautilusSidebarTitleDetails {
 	NautilusFile *file;
 	guint file_changed_connection;
-	char *requested_text;
+	char *title_text;
 	GtkWidget *icon;
 	GtkWidget *title;
 	GtkWidget *more_info;
 	GtkWidget *emblem_box;
 	GtkWidget *notes;
 };
-
-/* constants */
-
-#define MAX_ICON_WIDTH 100
-#define MAX_ICON_HEIGHT 120
-
-/* button assignments */
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSidebarTitle, nautilus_sidebar_title, gtk_vbox_get_type ())
 
@@ -90,13 +81,42 @@ nautilus_sidebar_title_initialize_class (NautilusSidebarTitleClass *class)
 static void
 nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 { 
+	GdkFont *font;
+
 	sidebar_title->details = g_new0 (NautilusSidebarTitleDetails, 1);
 
 	/* Register to find out about icon theme changes */
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
 					       "icons_changed",
-					       nautilus_sidebar_title_update_icon,
+					       update_icon,
 					       GTK_OBJECT (sidebar_title));
+
+	sidebar_title->details->icon = GTK_WIDGET (nautilus_gtk_pixmap_new_empty ());
+	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->icon, 0, 0, 0);
+
+	sidebar_title->details->title = GTK_WIDGET (gtk_label_new (NULL));
+	gtk_label_set_line_wrap (GTK_LABEL (sidebar_title->details->title), TRUE);
+	gtk_widget_show (sidebar_title->details->title);
+	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->title, 0, 0, 0);
+
+	sidebar_title->details->more_info = GTK_WIDGET (gtk_label_new (NULL));
+        font = nautilus_font_factory_get_font_from_preferences (12);
+	nautilus_gtk_widget_set_font (sidebar_title->details->more_info, font);
+        gdk_font_unref (font);
+	gtk_widget_show (sidebar_title->details->more_info);
+	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->more_info, 0, 0, 0);
+
+	sidebar_title->details->emblem_box = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (sidebar_title->details->emblem_box);
+	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->emblem_box, 0, 0, 0);
+
+	sidebar_title->details->notes = GTK_WIDGET (gtk_label_new (NULL));
+	gtk_label_set_line_wrap (GTK_LABEL (sidebar_title->details->notes), TRUE);
+	font = nautilus_font_factory_get_font_from_preferences (12);
+	nautilus_gtk_widget_set_font (sidebar_title->details->notes, font);
+	gdk_font_unref (font);
+	gtk_widget_show (sidebar_title->details->notes);
+	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->notes, 0, 0, 0);
 }
 
 /* destroy by throwing away private storage */
@@ -126,7 +146,7 @@ nautilus_sidebar_title_destroy (GtkObject *object)
 
 	release_file (sidebar_title);
 	
-	g_free (sidebar_title->details->requested_text);
+	g_free (sidebar_title->details->title_text);
 	g_free (sidebar_title->details);
   	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -142,293 +162,198 @@ nautilus_sidebar_title_new (void)
 
 /* set up the icon image */
 static void
-nautilus_sidebar_title_update_icon (NautilusSidebarTitle *sidebar_title)
+update_icon (NautilusSidebarTitle *sidebar_title)
 {
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
-	GdkPixbuf *pixbuf;
 
-	/* NULL can happen because nautilus_file_get returns NULL for the root. */
-	if (sidebar_title->details->file == NULL) {
-		return;
-	}
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (sidebar_title->details->file,
-							    NAUTILUS_ICON_SIZE_STANDARD);
+	nautilus_icon_factory_get_pixmap_and_mask_for_file
+		(sidebar_title->details->file,
+		 NAUTILUS_ICON_SIZE_STANDARD,
+		 &pixmap, &mask);
 
-	/* make a pixmap and mask to pass to the widget */
-        gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
-	gdk_pixbuf_unref (pixbuf);
-	
-	/* if there's no pixmap so far, so allocate one */
-	if (sidebar_title->details->icon != NULL) {
-		gtk_pixmap_set (GTK_PIXMAP (sidebar_title->details->icon),
-				pixmap, mask);
+	gtk_pixmap_set (GTK_PIXMAP (sidebar_title->details->icon),
+			pixmap, mask);
+	if (pixmap == NULL) {
+		gtk_widget_hide (sidebar_title->details->icon);
 	} else {
-		sidebar_title->details->icon = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
 		gtk_widget_show (sidebar_title->details->icon);
-		gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->icon, 0, 0, 0);
-		gtk_box_reorder_child (GTK_BOX (sidebar_title), sidebar_title->details->icon, 0);
 	}
 }
 
 /* set up the filename label */
 static void
-nautilus_sidebar_title_update_label (NautilusSidebarTitle *sidebar_title)
+update_title (NautilusSidebarTitle *sidebar_title)
 {
 	GdkFont *label_font;
-	char *displayed_text;
-		
-	if (sidebar_title->details->requested_text == NULL) {
-		/* Use empty string to replace previous contents. */
-		displayed_text = g_strdup ("");
-	} else {
-		displayed_text = g_strdup (sidebar_title->details->requested_text);
-	}
-	
-	/* split the filename into two lines if necessary */
-	if (strlen(displayed_text) >= 16) {
-		/* find an appropriate split point if we can */
-		int index;
-		int mid_point = strlen(displayed_text) >> 1;
-		int quarter_point = mid_point >> 1;
-		for (index = 0; index < quarter_point; index++) {
-			int split_offset = 0;
-			
-			if (!isalnum(displayed_text[mid_point + index]))
-				split_offset = mid_point + index;
-			else if (!isalnum(displayed_text[mid_point - index]))
-				split_offset = mid_point - index;
-			
-			if (split_offset != 0) {
-				char *buffer = g_malloc(strlen(displayed_text) + 2);
-				
-				/* build the new string, with a blank inserted, also remembering them separately for measuring */
-				memcpy(buffer, displayed_text, split_offset);
-				buffer[split_offset] = '\n';
-				strcpy(&buffer[split_offset + 1], &displayed_text[split_offset]);
-				
-				/* free up the old string and replace it with the new one with the return inserted */
-				
-				g_free (displayed_text);
-				displayed_text = buffer;
-				break;
-			}
-		}
-	}
-	
-	if (sidebar_title->details->title != NULL) {
-		gtk_label_set_text (GTK_LABEL (sidebar_title->details->title), displayed_text);
-	} else {
-		sidebar_title->details->title = GTK_WIDGET (gtk_label_new (displayed_text));
-		gtk_label_set_line_wrap (GTK_LABEL (sidebar_title->details->title), TRUE);
-		gtk_widget_show (sidebar_title->details->title);
-		gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->title, 0, 0, 0);
-		gtk_box_reorder_child (GTK_BOX (sidebar_title), sidebar_title->details->title, 1);
-	}
-	
-	/* FIXME bugzilla.eazel.com 1103: 
-	 * Make this use the font factory 
+
+	gtk_label_set_text (GTK_LABEL (sidebar_title->details->title),
+			    sidebar_title->details->title_text);
+
+	/* FIXME bugzilla.eazel.com 1103: Make this use the font
+	 * factory.
 	 */
-	label_font = nautilus_get_largest_fitting_font (displayed_text, GTK_WIDGET (sidebar_title)->allocation.width - 4,
-				  "-*-helvetica-medium-r-normal-*-%d-*-*-*-*-*-*-*");
-	
+	/* FIXME: Where does the "4" come from? */
+	label_font = nautilus_get_largest_fitting_font
+		(sidebar_title->details->title_text,
+		 GTK_WIDGET (sidebar_title)->allocation.width - 4,
+		 "-*-helvetica-medium-r-normal-*-%d-*-*-*-*-*-*-*");
 	nautilus_gtk_widget_set_font (sidebar_title->details->title, label_font);
-	g_free (displayed_text);
+}
+
+static void
+append_and_eat (GString *string, const char *separator, char *new_string)
+{
+	if (new_string == NULL) {
+		return;
+	}
+	if (separator != NULL) {
+		g_string_append (string, separator);
+	}
+	g_string_append (string, new_string);
+	g_free (new_string);
+}
+
+static void
+update_more_info (NautilusSidebarTitle *sidebar_title)
+{
+	NautilusFile *file;
+	GString *info_string;
+
+	file = sidebar_title->details->file;
+	
+	info_string = g_string_new (NULL);
+	append_and_eat (info_string, NULL,
+			nautilus_file_get_string_attribute (file, "type"));
+	append_and_eat (info_string, ", ",
+			nautilus_file_get_string_attribute (file, "size"));
+	append_and_eat (info_string, "\n",
+			nautilus_file_get_string_attribute (file, "date_modified"));
+	g_string_append_c (info_string, '\0');
+
+	gtk_label_set_text (GTK_LABEL (sidebar_title->details->more_info), info_string->str);
+
+	g_string_free (info_string, TRUE);
 }
 
 /* add a pixbuf to the emblem box */
 static void
-nautilus_sidebar_title_add_pixbuf(NautilusSidebarTitle *sidebar_title, GdkPixbuf *pixbuf)
+add_emblem (NautilusSidebarTitle *sidebar_title, GdkPixbuf *pixbuf)
 {
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
 	GtkWidget *pixmap_widget;
 	
-	if (sidebar_title->details->emblem_box == NULL) {
-		/* alllocate a new emblem box */
-		sidebar_title->details->emblem_box = gtk_hbox_new(FALSE, 0);
-		gtk_widget_show(sidebar_title->details->emblem_box);
-		gtk_box_pack_start(GTK_BOX (sidebar_title), sidebar_title->details->emblem_box, 0, 0, 0);
-	}
-        
         gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
 	pixmap_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
 	gtk_widget_show (pixmap_widget);
-	gtk_container_add(GTK_CONTAINER(sidebar_title->details->emblem_box), pixmap_widget);	
+	gtk_container_add (GTK_CONTAINER (sidebar_title->details->emblem_box), pixmap_widget);	
 }
 
-/* set up more info about the file */
-
-void
-nautilus_sidebar_title_update_info (NautilusSidebarTitle *sidebar_title)
+static void
+update_emblems (NautilusSidebarTitle *sidebar_title)
 {
-	NautilusFile *file;
-	GList *emblem_icons, *current_emblem;
-	char *notes_text;
-	char *temp_string;
-	char *info_string;
-	GdkFont *font;
+	GList *icons, *p;
+	GdkPixbuf *pixbuf;
 
-	/* NULL can happen because nautilus_file_get returns NULL for the root. */
-	file = sidebar_title->details->file;
-	if (file == NULL) {
-		return;
-	}
-	
-	info_string = nautilus_file_get_string_attribute(file, "type");
-	if (info_string == NULL) {
-		return;
-	}
+	/* First, deallocate any existing ones */
+	gtk_container_foreach (GTK_CONTAINER (sidebar_title->details->emblem_box),
+			       (GtkCallback) gtk_widget_destroy,
+			       NULL);
 
-	/* combine the type and the size */
-	temp_string = nautilus_file_get_string_attribute(file, "size");
-	if (temp_string != NULL) {
-		char *new_info_string = g_strconcat(info_string, ", ", temp_string, NULL);
-		g_free (info_string);
-		g_free (temp_string);
-		info_string = new_info_string; 
-	}
-	
-	/* append the date modified */
-	temp_string = nautilus_file_get_string_attribute(file, "date_modified");
-	if (temp_string != NULL) {
-		char *new_info_string = g_strconcat(info_string, "\n", temp_string, NULL);
-		g_free (info_string);
-		g_free (temp_string);
-		info_string = new_info_string;
-	}
-	
-	/* set up the emblems if necessary.  First, deallocate any existing ones */
-	if (sidebar_title->details->emblem_box) {
-		gtk_widget_destroy(sidebar_title->details->emblem_box);
-		sidebar_title->details->emblem_box = NULL;
-	}
-	
 	/* fetch the emblem icons from metadata */
-	emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file);
-	if (emblem_icons) {
-		GdkPixbuf *emblem_pixbuf;
+	icons = nautilus_icon_factory_get_emblem_icons_for_file (sidebar_title->details->file);
 
-		/* loop through the list of emblems, installing them in the box */
-		for (current_emblem = emblem_icons; current_emblem != NULL; current_emblem = current_emblem->next) {
-			emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-				(current_emblem->data,
-				 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD,
-				 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD);
-			if (emblem_pixbuf != NULL) {
-				nautilus_sidebar_title_add_pixbuf (sidebar_title, emblem_pixbuf);
-				gdk_pixbuf_unref (emblem_pixbuf);
-			}
+	/* loop through the list of emblems, installing them in the box */
+	for (p = icons; p != NULL; p = p->next) {
+		pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
+			(p->data,
+			 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD,
+			 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD);
+		if (pixbuf != NULL) {
+			add_emblem (sidebar_title, pixbuf);
+			gdk_pixbuf_unref (pixbuf);
 		}
-		
-		nautilus_scalable_icon_list_free (emblem_icons);
 	}
-			
-	/* set up the additional text info */
 	
-	if (sidebar_title->details->more_info)
-		gtk_label_set_text(GTK_LABEL(sidebar_title->details->more_info), info_string);
-	else {
-		sidebar_title->details->more_info = GTK_WIDGET(gtk_label_new(info_string));
-		gtk_widget_show (sidebar_title->details->more_info);
-		gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->more_info, 0, 0, 0);
-		gtk_box_reorder_child (GTK_BOX (sidebar_title), sidebar_title->details->more_info, 2);
-	}   
+	nautilus_scalable_icon_list_free (icons);
+}
 
-        font = nautilus_font_factory_get_font_from_preferences (12);
-	nautilus_gtk_widget_set_font (sidebar_title->details->more_info, font);
-        gdk_font_unref (font);
+static void
+update_notes (NautilusSidebarTitle *sidebar_title)
+{
+	char *text;
 	
-	g_free (info_string);
-	
-	/* see if there are any notes for this file. If so, display them */
-	notes_text = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_NOTES, NULL);
-	if (notes_text != NULL) {
-		if (sidebar_title->details->notes != NULL)
-			gtk_label_set_text(GTK_LABEL(sidebar_title->details->notes), notes_text);
-		else  {  
-			sidebar_title->details->notes = GTK_WIDGET(gtk_label_new(notes_text));
-			gtk_label_set_line_wrap(GTK_LABEL(sidebar_title->details->notes), TRUE);
-			gtk_widget_show (sidebar_title->details->notes);
-			gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->notes, 0, 0, 0);
-			gtk_box_reorder_child (GTK_BOX (sidebar_title), sidebar_title->details->notes, 3);
-		}
-		
-		font = nautilus_font_factory_get_font_from_preferences (12);
-		nautilus_gtk_widget_set_font (sidebar_title->details->notes, font);
-		gdk_font_unref (font);
-		
-		g_free (notes_text);
-	} else if (sidebar_title->details->notes != NULL) {
-		gtk_label_set_text (GTK_LABEL (sidebar_title->details->notes), "");
-	}
+	text = nautilus_file_get_metadata (sidebar_title->details->file,
+					   NAUTILUS_METADATA_KEY_NOTES,
+					   NULL);
+	gtk_label_set_text (GTK_LABEL (sidebar_title->details->notes), text);
+	g_free (text);
 }
 
 /* return the filename text */
 char *
-nautilus_sidebar_title_get_text(NautilusSidebarTitle *sidebar_title)
+nautilus_sidebar_title_get_text (NautilusSidebarTitle *sidebar_title)
 {
-	return g_strdup (sidebar_title->details->requested_text);
+	return g_strdup (sidebar_title->details->title_text);
 }
 
 /* set up the filename text */
 void
-nautilus_sidebar_title_set_text (NautilusSidebarTitle *sidebar_title, const char* new_text)
+nautilus_sidebar_title_set_text (NautilusSidebarTitle *sidebar_title,
+				 const char* new_text)
 {
-	g_free (sidebar_title->details->requested_text);
-	sidebar_title->details->requested_text = g_strdup (new_text);
+	g_free (sidebar_title->details->title_text);
+	sidebar_title->details->title_text = g_strdup (new_text);
 
 	/* Recompute the displayed text. */
-	nautilus_sidebar_title_update_label (sidebar_title);
+	update_title (sidebar_title);
 }
 
 static void
-update (NautilusSidebarTitle *sidebar_title)
+update_all (NautilusSidebarTitle *sidebar_title)
 {
-	/* add the icon */
-	nautilus_sidebar_title_update_icon (sidebar_title);
-
-	/* add the name, in a variable-sized label */
-	nautilus_sidebar_title_update_label (sidebar_title);
-
-	/* add various info */
-	nautilus_sidebar_title_update_info (sidebar_title);
+	update_icon (sidebar_title);
+	update_title (sidebar_title);
+	update_more_info (sidebar_title);
+	update_emblems (sidebar_title);
+	update_notes (sidebar_title);
 }
 
 void
 nautilus_sidebar_title_set_uri (NautilusSidebarTitle *sidebar_title,
-			      const char* new_uri,
-			      const char* initial_text)
+				const char *new_uri,
+				const char *initial_text)
 {
 	GList *attributes;
 
 	release_file (sidebar_title);
-
 	sidebar_title->details->file = nautilus_file_get (new_uri);
+
+	/* attach file */
 	if (sidebar_title->details->file != NULL) {
 		sidebar_title->details->file_changed_connection =
 			gtk_signal_connect_object (GTK_OBJECT (sidebar_title->details->file),
 						   "changed",
-						   update,
+						   update_all,
 						   GTK_OBJECT (sidebar_title));
 
-		/* Monitor the things needed to get the right icon. */
+		/* Monitor the things needed to get the right
+		 * icon. Also monitor a directory's item count because
+		 * the "size" attribute is based on that.
+		 */
 		attributes = nautilus_icon_factory_get_required_file_attributes ();		
-						   
-		/* Also monitor a directory's item count so we can update when it is known. */
-		if (nautilus_file_is_directory (sidebar_title->details->file)) {
-			attributes = g_list_prepend (attributes,
-						     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
-		}
+		attributes = g_list_prepend (attributes,
+					     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
 		nautilus_file_monitor_add (sidebar_title->details->file, sidebar_title,
-					   attributes, FALSE);
+					   attributes, TRUE);
 		g_list_free (attributes);
 	}
 
-	g_free (sidebar_title->details->requested_text);
-	sidebar_title->details->requested_text = g_strdup (initial_text);
+	g_free (sidebar_title->details->title_text);
+	sidebar_title->details->title_text = g_strdup (initial_text);
 
-	update (sidebar_title);
+	update_all (sidebar_title);
 }
 
 static gboolean

@@ -29,8 +29,12 @@ struct NautilusFileDetails
 {
 	NautilusDirectory *directory;
 	gboolean unconfirmed;
+
 	gboolean is_gone;
+	char *name;
+
 	GnomeVFSFileInfo *info;
+	gboolean get_info_failed;
 
 	gboolean got_directory_count;
 	gboolean directory_count_failed;
@@ -44,10 +48,19 @@ struct NautilusFileDetails
 #define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES               24
 #define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES            10000
 
-NautilusFile *nautilus_file_new              (NautilusDirectory *directory,
+NautilusFile *nautilus_file_new_from_info    (NautilusDirectory *directory,
 					      GnomeVFSFileInfo  *info);
 void          nautilus_file_emit_changed     (NautilusFile      *file);
 void          nautilus_file_mark_gone        (NautilusFile      *file);
 char *        nautilus_extract_top_left_text (const char        *text,
 					      int                length);
 gboolean      nautilus_file_contains_text    (NautilusFile      *file);
+
+/* Compare file's state with a fresh file info struct, return FALSE if
+ * no change, update file and return TRUE if the file info contains
+ * new state.
+ */
+gboolean      nautilus_file_update_info      (NautilusFile      *file,
+					      GnomeVFSFileInfo  *info);
+gboolean      nautilus_file_update_name      (NautilusFile      *file,
+					      const char        *name);

@@ -146,7 +146,7 @@ nautilus_directory_destroy (GtkObject *object)
 	directory = NAUTILUS_DIRECTORY (object);
 
 	g_assert (directory->details->metafile_write_state == NULL);
-	nautilus_metafile_read_cancel (directory);
+	nautilus_directory_cancel (directory);
 	g_assert (directory->details->metafile_read_state == NULL);
 	g_assert (directory->details->count_in_progress == NULL);
 	g_assert (directory->details->top_left_read_state == NULL);
@@ -757,7 +757,7 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	GList *new_files_list, *unref_list;
 	GHashTable *added_lists, *changed_lists;
 	GList **files;
-	GnomeVFSFileInfo *info;
+	char *name;
 
 	/* Make a list of added and changed files in each directory. */
 	new_files_list = NULL;
@@ -793,23 +793,19 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 			 */
 			file->details->directory = new_directory;
 
-
-			/* If the file is moving, between directories, there
-			 * is more to do.
+			/* If the file is moving between directories,
+			 * there is more to do.
 			 */
 			if (new_directory != old_directory) {
 				/* Remove from old directory. */
 				files = &old_directory->details->files;
 				g_assert (g_list_find (*files, file) != NULL);
 				*files = g_list_remove (*files, file);
-				
-				/* Make a copy and update the file name in the copy. */
-				info = gnome_vfs_file_info_new ();
-				gnome_vfs_file_info_copy (info, file->details->info);
-				g_free (info->name);
-				info->name = uri_get_basename (pair->to_uri);
-				nautilus_file_update (file, info);
-				gnome_vfs_file_info_unref (info);
+
+				/* Update the name. */
+				name = uri_get_basename (pair->to_uri);
+				nautilus_file_update_name (file, name);
+				g_free (name);
 				
 				/* Add to new directory. */
 				files = &new_directory->details->files;
