@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+;/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* fm-directory-view.c
  *
  * Copyright (C) 1999, 2000  Free Software Foundaton
@@ -183,6 +183,8 @@ static void           start_renaming_item                   	                  (
 static void           metadata_ready_callback                                     (NautilusDirectory        *directory,
 										   GList                    *files,
 										   gpointer                  callback_data);
+static void	      set_trash_empty 						  (gboolean 		    state);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_file)
@@ -197,6 +199,8 @@ NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, file_changed)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, select_all)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, set_selection)
+
+static gboolean global_trash_is_empty;
 
 static void
 fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
@@ -618,6 +622,8 @@ bonobo_menu_empty_trash_callback (BonoboUIHandler *ui_handler, gpointer user_dat
         g_assert (FM_IS_DIRECTORY_VIEW (user_data));
 
 	fs_empty_trash (GTK_WIDGET (FM_DIRECTORY_VIEW (user_data)));
+
+	set_trash_empty (TRUE);
 }
 
 static void
@@ -1820,6 +1826,7 @@ fm_directory_view_trash_or_delete_selection (FMDirectoryView *view, GList *files
 	g_assert (g_list_length (uris) == g_list_length (files));
 
 	if (fm_directory_can_move_to_trash (view)) {
+		set_trash_empty (FALSE);
 		fs_move_to_trash (uris, GTK_WIDGET (view));
 	} else if (fm_directory_is_trash (view)
 		|| fm_directory_view_confirm_deletion (view, files)) {
@@ -3416,4 +3423,38 @@ fm_directory_view_get_context_menu_index (const char *menu_name)
 		/* No match found */
 		return -1;
 	}
+}
+
+
+static void
+set_trash_empty (gboolean state)
+{
+	NautilusFile *file;
+	char *path, *desktop_directory_path;
+
+	global_trash_is_empty = state;
+
+	g_message ("state: %d", state);
+	
+	desktop_directory_path = nautilus_get_desktop_directory ();
+	path = g_strdup_printf ("%s/%s", desktop_directory_path, "Trash");
+
+	g_message ("path: %s", path);
+	
+	file = nautilus_file_get (path);	
+	if (file != NULL) {
+		if (state) {
+			nautilus_link_set_icon (path, "trash-empty.png");
+		} else {
+			nautilus_link_set_icon (path, "trash-full.png");
+		}
+
+		nautilus_file_changed (file);
+		nautilus_file_unref (file);		
+	} else {
+		g_message ("Unable to get trash file");
+	}
+	
+	g_free (desktop_directory_path);
+	g_free (path);
 }

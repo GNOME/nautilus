@@ -1,3 +1,24 @@
+2000-07-28  Gene Z. Ragan  <gzr@eazel.com>
+
+	Some placeholder trash code written at the request of Pavel.
+	
+	* libnautilus-extensions/nautilus-link.c: (nautilus_link_set_icon):
+	Made sure the modified xml link gets flushed back to disk.
+	
+	* src/file-manager/fm-directory-view.c:
+	(set_trash_empty):	
+	New function that updates the status of the trash tracking global
+	and update the trash icon.
+	
+	(bonobo_menu_empty_trash_callback),
+	(fm_directory_view_trash_or_delete_selection):
+	Add calls to set_trash_empty ()
+	
+	* src/nautilus-desktop-window.c: 
+	(nautilus_desktop_window_new):
+	Removed some debugging cruft
+	
+
 2000-07-27  Pavel Cisler  <pavel@eazel.com>
 
 	Bug 1561: Font preferences have no effect on the list view.

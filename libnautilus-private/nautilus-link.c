@@ -125,6 +125,8 @@ nautilus_link_set_icon (const char *path, const char *icon_name)
 
 	xmlSetProp (xmlDocGetRootElement (document), NAUTILUS_METADATA_KEY_CUSTOM_ICON, icon_name);
 
+	xmlSaveFile (path, document);
+
 	xmlFreeDoc (document);
 	
 	return TRUE;

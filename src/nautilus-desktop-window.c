@@ -109,22 +109,8 @@ nautilus_desktop_window_new (NautilusApplication *application)
 	result = gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH, 
 					   &trash_dir_uri, TRUE, 0777);
 
-	nautilus_link_create (desktop_directory_path, "Trash", "trash-full.png", 
+	nautilus_link_create (desktop_directory_path, "Trash", "trash-empty.png", 
 			      gnome_vfs_uri_get_path (trash_dir_uri));
-
-	{
-		NautilusFile *file;
-		char *path;
-		
-		file = nautilus_file_get ("/home/gzr/.nautilus/desktop/Trash");
-		if (file != NULL) {
-			path = g_strdup_printf ("%s/%s", desktop_directory_path, "Trash");
-			nautilus_link_set_icon (path, "trash-empty.png");
-			nautilus_file_changed (file);
-			nautilus_file_unref (file);
-			g_free (path);
-		}
-	}
 
 	/* Point window at the desktop folder.
 	 * Note that nautilus_desktop_window_initialize is too early to do this.
