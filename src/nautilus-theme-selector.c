@@ -263,6 +263,7 @@ nautilus_theme_selector_initialize (GtkObject *object)
  	/* create the done button */
  	temp_button = gtk_button_new ();
 	gtk_widget_show(temp_button);
+	/* FIXME: Using spaces to add padding is not good design. */
 	temp_label = gtk_label_new (_("  Done  "));
 	gtk_widget_show(temp_label);
 	gtk_container_add (GTK_CONTAINER(temp_button), temp_label);
@@ -273,6 +274,7 @@ nautilus_theme_selector_initialize (GtkObject *object)
   	theme_selector->details->add_button = gtk_button_new ();
 	gtk_widget_show(theme_selector->details->add_button);
 	
+	/* FIXME: Using spaces to add padding is not good design. */
 	theme_selector->details->add_button_label = gtk_label_new (_("  Add New Theme  "));
 	gtk_widget_show(theme_selector->details->add_button_label);
 	gtk_container_add (GTK_CONTAINER(theme_selector->details->add_button), theme_selector->details->add_button_label);
@@ -282,6 +284,7 @@ nautilus_theme_selector_initialize (GtkObject *object)
 	
 	/* now create the "remove" button */
   	theme_selector->details->remove_button = gtk_button_new();
+	/* FIXME: Using spaces to add padding is not good design. */
 	theme_selector->details->remove_button_label = gtk_label_new (_("  Remove Theme  "));
 	gtk_widget_show(theme_selector->details->remove_button_label);
 	gtk_container_add (GTK_CONTAINER(theme_selector->details->remove_button), theme_selector->details->remove_button_label);

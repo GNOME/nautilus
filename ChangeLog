@@ -1,3 +1,34 @@
+2001-03-02  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Arik Devens <arik@eazel.com>
+
+	Fix bug 7190 (Typing / in location moves cursor to end of line).
+
+	* src/nautilus-location-bar.c: (try_to_expand_path): Fix a bunch
+	of storage leaks, including calls to
+	gnome_vfs_expand_initial_tilde that do nothing. Remove code to
+	expand the initial tilde in here. That can all be handled below
+	(and need not be deferred until idle time).
+	(get_editable_length): New helper function.
+	(has_exactly_one_slash): New helper function.
+	(set_position_and_selection_to_end): New helper function.
+	(position_and_selection_are_at_end): New helper function.
+	(editable_key_press_callback): Fix logic so we only try to do
+	completion of any kind when the user is typing at the end of the
+	text. Also only do the tilde expansion when the path has exactly
+	one slash, and do it right away rather than waiting for idle the
+	way the file name expansion does. Finally, cancel the file name
+	expansion if you are no longer at the end of the text.
+
+	Other change.
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize),
+	(nautilus_property_browser_update_contents):
+	* src/nautilus-theme-selector.c:
+	(nautilus_theme_selector_initialize):
+	Add FIXMEs for uses of spaces to make buttons look right.
+
 2001-03-02  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: John Harper  <jsh@eazel.com>
@@ -279,7 +310,7 @@
 
 	reviewed by: Michael Engber <engber@eazel.com>
 
-	* nautilus.spec.in:
+	* configure.in:
 	Fix tinderbox breakage by adding missing AC_SUBST lines for
 	version number dependencies that got moved from the spec file
 	to the configure file.

@@ -358,6 +358,7 @@ nautilus_property_browser_initialize (GtkObject *object)
  	temp_button = gtk_button_new ();
 	gtk_widget_show(temp_button);
 	
+	/* FIXME: Using spaces to add padding is not good design. */
 	temp_label = gtk_label_new (_("  Done  "));
 	gtk_widget_show(temp_label);
 	gtk_container_add (GTK_CONTAINER(temp_button), temp_label);
@@ -368,6 +369,7 @@ nautilus_property_browser_initialize (GtkObject *object)
   	property_browser->details->add_button = gtk_button_new ();
 	gtk_widget_show(property_browser->details->add_button);
 	
+	/* FIXME: Using spaces to add padding is not good design. */
 	property_browser->details->add_button_label = gtk_label_new (_("  Add new...  "));
 	gtk_widget_show(property_browser->details->add_button_label);
 	gtk_container_add (GTK_CONTAINER(property_browser->details->add_button),
@@ -382,6 +384,7 @@ nautilus_property_browser_initialize (GtkObject *object)
   	property_browser->details->remove_button = gtk_button_new();
 	gtk_widget_show(property_browser->details->remove_button);
 	
+	/* FIXME: Using spaces to add padding is not good design. */
 	property_browser->details->remove_button_label = gtk_label_new (_("  Remove...  "));	
 	gtk_widget_show(property_browser->details->remove_button_label);
 	gtk_container_add (GTK_CONTAINER(property_browser->details->remove_button),
@@ -2028,6 +2031,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		if (property_browser->details->remove_mode) {
 			text = _("Cancel Remove");
 		} else {
+			/* FIXME: Using spaces to add padding is not good design. */
 			switch (property_browser->details->category_type) {
 			case NAUTILUS_PROPERTY_PATTERN:
 				text = _("  Add a New Pattern  ");
@@ -2096,6 +2100,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		/* enable the remove button (if necessary) and update its name */
 		
 		/* case out instead of substituting to provide flexibilty for other languages */
+		/* FIXME: Using spaces to add padding is not good design. */
 		switch (property_browser->details->category_type) {
 		case NAUTILUS_PROPERTY_PATTERN:
 			text = _("  Remove a Pattern  ");

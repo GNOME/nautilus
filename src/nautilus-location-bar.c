@@ -73,7 +73,7 @@ struct NautilusLocationBarDetails {
 	char *current_directory;
 	GList *file_info_list;
 	
-	uint idle_id;
+	guint idle_id;
 };
 
 enum {
@@ -289,8 +289,10 @@ get_file_info_list (NautilusLocationBar *bar, const char* dir_name)
   find something, add it to the entry */
   
 static gboolean
-try_to_expand_path (NautilusLocationBar *bar)
+try_to_expand_path (gpointer callback_data)
 {
+	NautilusLocationBar *bar;
+
 	GnomeVFSFileInfo *current_file_info;
 	GList *element;
 	GnomeVFSURI *uri;
@@ -306,8 +308,8 @@ try_to_expand_path (NautilusLocationBar *bar)
 	char *dir_name;
 	char *expand_text;
 	char *expand_name;
-	char *tilde_expand_name;
-	char *expanded_name;
+
+	bar = NAUTILUS_LOCATION_BAR (callback_data);
 
 	editable = GTK_EDITABLE (bar->details->entry);
 	user_location = gtk_editable_get_chars (editable, 0, -1);
@@ -316,20 +318,22 @@ try_to_expand_path (NautilusLocationBar *bar)
 	/* if it's just '~' or '~/', don't expand because slash shouldn't be appended */
 	if (nautilus_strcmp (user_location, "~") == 0
 	    || nautilus_strcmp (user_location, "~/") == 0) {
+		g_free (user_location);
 		return FALSE;
 	}
-	gnome_vfs_expand_initial_tilde (user_location);
 	current_path = nautilus_make_uri_from_input (user_location);
 
 	if (!nautilus_istr_has_prefix (current_path, "file://")) {
+		g_free (user_location);
 		g_free (current_path);
 		return FALSE;
 	}
 
-	current_path_length = strlen(current_path);	
-	offset = current_path_length - strlen(user_location);
+	current_path_length = strlen (current_path);	
+	offset = current_path_length - strlen (user_location);
 
-	gnome_vfs_expand_initial_tilde (current_path);
+	g_free (user_location);
+
 	uri = gnome_vfs_uri_new (current_path);
 	
 	base_name_ptr = gnome_vfs_uri_get_basename (uri);
@@ -376,25 +380,19 @@ try_to_expand_path (NautilusLocationBar *bar)
 	}
 	
 	/* if we've got something, add it to the entry */	
-	if (expand_text && !nautilus_str_has_suffix (current_path, expand_text)
+	if (expand_text != NULL
+	    && !nautilus_str_has_suffix (current_path, expand_text)
 	    && base_length < strlen (expand_text)) {
 		gtk_entry_append_text (GTK_ENTRY (editable), expand_text + base_length);
-		gtk_entry_select_region (GTK_ENTRY (editable), current_path_length - offset,
-					 current_path_length + strlen (expand_text) - base_length - offset);
+		gtk_entry_select_region (GTK_ENTRY (editable),
+					 current_path_length - offset,
+					 current_path_length - offset + strlen (expand_text) - base_length);
 	}
 	g_free (expand_text);
-
-	tilde_expand_name = gtk_entry_get_text (GTK_ENTRY (editable));
-	if (*tilde_expand_name == '~') {
-		expanded_name = gnome_vfs_expand_initial_tilde (tilde_expand_name);
-		gtk_entry_set_text (GTK_ENTRY (editable), expanded_name);
-		g_free (expanded_name);
-	}
 
 	g_free (dir_name);
 	g_free (base_name);
 	g_free (current_path);
-	g_free (user_location);
 
 	return FALSE;
 }
@@ -431,6 +429,57 @@ entry_would_have_inserted_characters (const GdkEventKey *event)
 	}
 }
 
+static int
+get_editable_length (GtkEditable *editable)
+{
+	char *text;
+	int length;
+
+	text = gtk_editable_get_chars (editable, 0, -1);
+	length = strlen (text);
+	g_free (text);
+	return length;
+}
+
+static gboolean
+has_exactly_one_slash (GtkEditable *editable)
+{
+	char *text, *slash;
+	gboolean exactly_one;
+
+	text = gtk_editable_get_chars (editable, 0, -1);
+	slash = strchr (text, '/');
+	exactly_one = slash != NULL && strchr (slash + 1, '/') == NULL;
+	g_free (text);
+
+	return exactly_one;
+}
+
+static void
+set_position_and_selection_to_end (GtkEditable *editable)
+{
+	int end;
+
+	end = get_editable_length (editable);
+	gtk_editable_select_region (editable, end, end);
+	gtk_editable_set_position (editable, end);
+}
+
+static gboolean
+position_and_selection_are_at_end (GtkEditable *editable)
+{
+	int end;
+	
+	end = get_editable_length (editable);
+	if (editable->has_selection) {
+		if ((int) editable->selection_start_pos != end
+		    || (int) editable->selection_end_pos == end) {
+			return FALSE;
+		}
+	}
+	return gtk_editable_get_position (editable) == end;
+}
+
 /* Handle changes in the location entry. This is a marshal-style
  * callback so that we don't mess up the return value.
  */
@@ -442,10 +491,9 @@ editable_key_press_callback (GtkObject *object,
 {
 	GtkEditable *editable;
 	GdkEventKey *event;
-	int position;
 	gboolean *return_value_location;
 	NautilusLocationBar *bar;
-	char *unexpanded_text;
+	const char *unexpanded_text;
 	char *expanded_text;
 	
 	g_assert (n_args == 1);
@@ -457,33 +505,57 @@ editable_key_press_callback (GtkObject *object,
 	event = GTK_VALUE_POINTER (args[0]);
 	return_value_location = GTK_RETLOC_BOOL (args[1]);
 
-	if (event->keyval == GDK_Right && editable->has_selection) {
-		position = strlen (gtk_entry_get_text (GTK_ENTRY (editable)));
-		gtk_entry_select_region (GTK_ENTRY (editable), position, position);
-		return;
-	}
-	
-	/* Only do an expand if we just handled a key that inserted
-	 * characters. Do the expand at idle time to avoid slowing down typing
-	 * when the directory is large.
+	/* After typing the right arrow key we move the selection to
+	 * the end.
 	 */
-	if (*return_value_location
-	    && bar->details->idle_id <= 0
-	    && entry_would_have_inserted_characters (event))  {
-        	bar->details->idle_id = gtk_idle_add ( (GtkFunction) try_to_expand_path, bar);		
+	/* FIXME: Why do this? This breaks key combinations like
+	 * Ctrl-Right to move a word at a time and Shift-Right to
+	 * extend the selection by a single character, and also means
+	 * you can't move through the text a character at a
+	 * time. Seems like a bad idea.
+	 */
+	if (event->keyval == GDK_Right && editable->has_selection) {
+		set_position_and_selection_to_end (editable);
 	}
 
-	if (event->keyval == GDK_slash) {
-		unexpanded_text = gtk_entry_get_text (GTK_ENTRY (editable));
-		expanded_text = gnome_vfs_expand_initial_tilde (unexpanded_text);
-
-		if (strcmp (unexpanded_text, expanded_text) != 0) {
-			gtk_entry_set_text (GTK_ENTRY (editable), expanded_text);
+	/* Only do expanding when we are typing at the end of the
+	 * text. Do the expand at idle time to avoid slowing down
+	 * typing when the directory is large. Only trigger the expand
+	 * when we type a key that would have inserted characters.
+	 */
+	if (position_and_selection_are_at_end (editable)) {
+		if (*return_value_location
+		    && entry_would_have_inserted_characters (event)) {
+			if (event->keyval == GDK_slash
+			    && has_exactly_one_slash (editable)) {
+				/* It's OK for us to call
+				 * gtk_entry_set_text here, even
+				 * though it has a side effect of
+				 * putting the position and selection
+				 * at the end, since the position and
+				 * selection are already at the end.
+				 */
+				unexpanded_text = gtk_entry_get_text (GTK_ENTRY (editable));
+				expanded_text = gnome_vfs_expand_initial_tilde (unexpanded_text);
+				if (strcmp (unexpanded_text, expanded_text) != 0) {
+					gtk_entry_set_text (GTK_ENTRY (editable), expanded_text);
+				}
+				g_free (expanded_text);
+			}
+			if (bar->details->idle_id == 0) {
+				bar->details->idle_id = gtk_idle_add (try_to_expand_path, bar);
+			}
 		}
-
-		g_free (expanded_text);
+	} else {
+		/* FIXME: Also might be good to do this when you click
+		 * to change the position or selection.
+		 */
+		if (bar->details->idle_id != 0) {
+			gtk_idle_remove (bar->details->idle_id);
+		}
+		bar->details->idle_id = 0;
 	}
-	
+
 	nautilus_location_bar_update_label (bar);
 }
 
@@ -506,7 +578,7 @@ destroy (GtkObject *object)
 	bar = NAUTILUS_LOCATION_BAR (object);
 	
 	/* cancel the pending idle call, if any */
-	if (bar->details->idle_id > 0) {
+	if (bar->details->idle_id != 0) {
 		gtk_idle_remove (bar->details->idle_id);
 	}
 	
@@ -708,6 +780,7 @@ nautilus_location_bar_update_label (NautilusLocationBar *bar)
 		gtk_label_set_text (GTK_LABEL (bar->details->label), LOCATION_LABEL);
 	} else {		 
 		gtk_label_set_text (GTK_LABEL (bar->details->label), GO_TO_LABEL);
-	}	
+	}
+
 	g_free (current_location);
 }
