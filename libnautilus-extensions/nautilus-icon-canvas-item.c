@@ -1330,7 +1330,20 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 			
 			/* if it's prelit, and we're in click-to-activate mode, underline the text */
 			underlined = (details->is_prelit && in_single_click_mode ());
+			
+			/* draw the shadow in black */
+			if (needs_highlight) {
+				nautilus_text_layout_paint (icon_text_layout, 
+							    destination_pixbuf, 
+							    text_left + 2, 
+							    icon_bottom + height_so_far + 1,
+							    GTK_JUSTIFY_CENTER,
+							    NAUTILUS_RGB_COLOR_BLACK,
+							    FALSE,
+							    underlined);
+			}
 						
+			
 			nautilus_text_layout_paint (icon_text_layout, 
 						    destination_pixbuf, 
 						    text_left,
@@ -1405,7 +1418,8 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 static void
 draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, double i2c[6], int x_delta)
 {
-	GdkPixbuf *text_pixbuf;
+	GdkPixbuf *text_pixbuf, *temp_pixbuf;
+	char *text_frame_path;
 	gboolean needs_highlight;
 	gboolean have_editable;
 	gboolean have_additional;
@@ -1444,10 +1458,23 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, doub
 				      icon_item->details->text_height);
 	
 	if (needs_highlight) {
-		nautilus_gdk_pixbuf_fill_rectangle_with_color (text_pixbuf, NULL,
-							       NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 255));
-	}
-	else {
+		text_frame_path = nautilus_theme_get_image_path ("text-selection-frame.png");
+		temp_pixbuf = gdk_pixbuf_new_from_file (text_frame_path);
+		g_free (text_frame_path);
+		
+		
+		text_pixbuf = nautilus_stretch_frame_image (temp_pixbuf, 9, 8, 9, 8,
+							    icon_item->details->text_width,
+							    icon_item->details->text_height, TRUE);
+		
+		gdk_pixbuf_unref (temp_pixbuf);					    
+	} else {
+		text_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+				      TRUE,
+				      8,
+				      icon_item->details->text_width,
+				      icon_item->details->text_height);
+
 		nautilus_gdk_pixbuf_fill_rectangle_with_color (text_pixbuf, NULL,
 							       NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 0));
 	}

@@ -259,8 +259,9 @@ draw_frame_column (GdkPixbuf *frame_image, int target_height, int source_height,
 	}
 }
 
-static GdkPixbuf *
-stretch_frame_image (GdkPixbuf *frame_image, int left_offset, int top_offset, int right_offset, int bottom_offset, int dest_width, int dest_height)
+GdkPixbuf *
+nautilus_stretch_frame_image (GdkPixbuf *frame_image, int left_offset, int top_offset, int right_offset, int bottom_offset,
+				int dest_width, int dest_height, gboolean fill_flag)
 {
 	GdkPixbuf *result_pixbuf;
 	guchar *pixels_ptr;
@@ -272,14 +273,20 @@ stretch_frame_image (GdkPixbuf *frame_image, int left_offset, int top_offset, in
 	frame_width  = gdk_pixbuf_get_width  (frame_image);
 	frame_height = gdk_pixbuf_get_height (frame_image );
 	
-	result_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, dest_width, dest_height);
+	if (fill_flag) {
+		result_pixbuf = gdk_pixbuf_scale_simple (frame_image, dest_width, dest_height, GDK_INTERP_NEAREST);
+	} else {
+		result_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, dest_width, dest_height);
+	}
 	row_stride = gdk_pixbuf_get_rowstride (result_pixbuf);
 	pixels_ptr = gdk_pixbuf_get_pixels (result_pixbuf);
 	
 	/* clear the new pixbuf */
-	for (y = 0; y < dest_height; y++) {
-		art_rgb_run_alpha (pixels_ptr, 255, 255, 255, 255, dest_width);
-		pixels_ptr += row_stride; 
+	if (!fill_flag) {
+		for (y = 0; y < dest_height; y++) {
+			art_rgb_run_alpha (pixels_ptr, 255, 255, 255, 255, dest_width);
+			pixels_ptr += row_stride; 
+		}
 	}
 	
 	target_width  = dest_width - left_offset - right_offset;
@@ -322,7 +329,8 @@ nautilus_embed_image_in_frame (GdkPixbuf *source_image, GdkPixbuf *frame_image, 
 	dest_width  = source_width  + left_offset + right_offset;
 	dest_height = source_height + top_offset  + bottom_offset;
 	
-	result_pixbuf = stretch_frame_image (frame_image, left_offset, top_offset, right_offset, bottom_offset, dest_width, dest_height);
+	result_pixbuf = nautilus_stretch_frame_image (frame_image, left_offset, top_offset, right_offset, bottom_offset, 
+						      dest_width, dest_height, FALSE);
 		
 	/* Finally, copy the source image into the framed area */
 	gdk_pixbuf_copy_area (source_image, 0, 0, source_width, source_height, result_pixbuf, left_offset,  top_offset);

@@ -1,3 +1,21 @@
+2000-09-22  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+
+	implemented Arlo's new design for icon selection highlighting.
+	It's still not finished; it needs to be optimized and refined in
+	various ways.
+	
+	* icons/Makefile.am:
+	* icons/text-selection-frame.png
+	added semi-transparent text selection frame image
+	
+	* libnautilus-extensions/nautilus-graphic-effects.c,h:
+	(nautilus_stretch_frame_image), (nautilus_embed_image_in_frame):
+	exposed the stretch frame image routine
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text_aa), (draw_label_text_aa):
+	implemented the new, transparent highlighting.
+	
 2000-09-22  Darin Adler  <darin@eazel.com>
 
 	Storage leak fixes. Today I concentrated on leaks that happen

@@ -181,6 +181,7 @@ icon_DATA =\
 	search.png \
 	SearchWeb.png \
 	temp-home.png \
+	text-selection-frame.png \
 	theme_preview.png \
 	thumbnail_frame.aa.png \
 	thumbnail_frame.png \

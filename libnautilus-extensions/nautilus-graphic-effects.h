@@ -41,6 +41,12 @@ GdkPixbuf* nautilus_create_colorized_pixbuf (GdkPixbuf *source_pixbuf,
 					     int        green_value,
 					     int        blue_value);
 
+/* stretch a image frame */
+GdkPixbuf *nautilus_stretch_frame_image (GdkPixbuf *frame_image, int left_offset, int top_offset,
+					 int right_offset, int bottom_offset,
+					 int dest_width, int dest_height,
+					 gboolean fill_flag);
+
 /* embed in image in a frame */
 GdkPixbuf *nautilus_embed_image_in_frame (GdkPixbuf *source_image, GdkPixbuf *frame_image, int left_offset, int top_offset, int right_offset, int bottom_offset);
 
