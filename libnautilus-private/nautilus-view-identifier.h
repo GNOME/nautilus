@@ -34,17 +34,17 @@ typedef struct {
 	char *viewer_label;   /* "<name> Viewer" */
 } NautilusViewIdentifier;
 
-NautilusViewIdentifier *nautilus_view_identifier_new_from_bonobo_activation_server_info (Bonobo_ServerInfo            *server,
-											 char                         *name_attribute);
-NautilusViewIdentifier *nautilus_view_identifier_new_from_content_view                  (Bonobo_ServerInfo            *server);
-NautilusViewIdentifier *nautilus_view_identifier_new_from_sidebar_panel                 (Bonobo_ServerInfo            *server);
-NautilusViewIdentifier *nautilus_view_identifier_new_from_property_page                 (Bonobo_ServerInfo            *server);
-NautilusViewIdentifier *nautilus_view_identifier_copy                                   (const NautilusViewIdentifier *identifier);
-void                    nautilus_view_identifier_free                                   (NautilusViewIdentifier       *identifier);
-int                     nautilus_view_identifier_compare                                (const NautilusViewIdentifier *a,
-											 const NautilusViewIdentifier *b);
+NautilusViewIdentifier *nautilus_view_identifier_new_from_bonobo_server_info (Bonobo_ServerInfo            *server,
+									      char                         *name_attribute);
+NautilusViewIdentifier *nautilus_view_identifier_new_from_content_view       (Bonobo_ServerInfo            *server);
+NautilusViewIdentifier *nautilus_view_identifier_new_from_sidebar_panel      (Bonobo_ServerInfo            *server);
+NautilusViewIdentifier *nautilus_view_identifier_new_from_property_page      (Bonobo_ServerInfo            *server);
+NautilusViewIdentifier *nautilus_view_identifier_copy                        (const NautilusViewIdentifier *identifier);
+void                    nautilus_view_identifier_free                        (NautilusViewIdentifier       *identifier);
+int                     nautilus_view_identifier_compare                     (const NautilusViewIdentifier *a,
+									      const NautilusViewIdentifier *b);
 /* lists of NautilusViewIdentifier */
-GList *                 nautilus_view_identifier_list_copy                              (GList                        *list);
-void                    nautilus_view_identifier_list_free                              (GList                        *list);
+GList *                 nautilus_view_identifier_list_copy                   (GList                        *list);
+void                    nautilus_view_identifier_list_free                   (GList                        *list);
 
 #endif /* NAUTILUS_VIEW_IDENTIFIER */

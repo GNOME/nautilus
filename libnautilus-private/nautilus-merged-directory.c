@@ -502,7 +502,7 @@ merged_add_real_directory (NautilusMergedDirectory *merged,
 
 	gtk_signal_connect (GTK_OBJECT (real_directory),
 			    "done_loading",
-			    done_loading_callback,
+			    G_CALLBACK (done_loading_callback),
 			    merged);
 
 	/* FIXME bugzilla.gnome.org 45084: The done_loading part won't work for the case where
@@ -517,11 +517,11 @@ merged_add_real_directory (NautilusMergedDirectory *merged,
 
 	gtk_signal_connect (GTK_OBJECT (real_directory),
 			    "files_added",
-			    forward_files_added_cover,
+			    G_CALLBACK (forward_files_added_cover),
 			    merged);
 	gtk_signal_connect (GTK_OBJECT (real_directory),
 			    "files_changed",
-			    forward_files_changed_cover,
+			    G_CALLBACK (forward_files_changed_cover),
 			    merged);
 }
 

@@ -38,10 +38,12 @@ static void nautilus_metafile_factory_class_init (NautilusMetafileFactoryClass *
 static void destroy (GtkObject *factory);
 
 static Nautilus_Metafile corba_open (PortableServer_Servant  servant,
-				     const Nautilus_URI      directory,
+				     const CORBA_char       *directory,
 				     CORBA_Environment      *ev);
 
-NAUTILUS_BONOBO_X_BOILERPLATE (NautilusMetafileFactory, Nautilus_MetafileFactory, BONOBO_X_OBJECT_TYPE, nautilus_metafile_factory)
+EEL_DEFINE_BONOBO_BOILERPLATE (NautilusMetafileFactory,
+			       nautilus_metafile_factory,
+			       BONOBO_OBJECT_TYPE)
 
 static void
 nautilus_metafile_factory_class_init (NautilusMetafileFactoryClass *klass)
@@ -100,7 +102,7 @@ nautilus_metafile_factory_get_instance (void)
 
 static Nautilus_Metafile
 corba_open (PortableServer_Servant  servant,
-	    const Nautilus_URI      directory,
+	    const CORBA_char       *directory,
 	    CORBA_Environment      *ev)
 {
 	BonoboObject *object;

@@ -374,6 +374,7 @@ nautilus_link_historical_local_is_trash_link (const char *path)
 	return nautilus_link_historical_local_get_link_type (path) == NAUTILUS_LINK_TRASH;
 }
 
+#if GNOME2_CONVERSION_COMPLETE
 
 void
 nautilus_link_historical_local_create_from_gnome_entry (GnomeDesktopEntry *entry, const char *dest_path, const GdkPoint *position)
@@ -432,4 +433,4 @@ nautilus_link_historical_local_create_from_gnome_entry (GnomeDesktopEntry *entry
 	g_free (arguments);
 }
 
-
+#endif

@@ -290,7 +290,7 @@ get_icon_factory (void)
 
 		gtk_signal_connect (GTK_OBJECT (gnome_vfs_mime_monitor_get ()),
 				    "data_changed",
-				    mime_type_data_changed_callback,
+				    G_CALLBACK (mime_type_data_changed_callback),
 				    NULL);
 
 		g_atexit (destroy_icon_factory);
@@ -398,6 +398,7 @@ cache_key_destroy (CacheKey *key)
 	g_free (key);
 }
 
+#if GNOME2_CONVERSION_COMPLETE
 static void
 mark_icon_not_outstanding (GdkPixbuf *pixbuf, gpointer callback_data)
 {
@@ -415,6 +416,7 @@ mark_icon_not_outstanding (GdkPixbuf *pixbuf, gpointer callback_data)
 
 	icon->outstanding = FALSE;
 }
+#endif
  
 static CacheIcon *
 cache_icon_new (GdkPixbuf *pixbuf,
@@ -432,8 +434,10 @@ cache_icon_new (GdkPixbuf *pixbuf,
 
 	/* Grab the pixbuf since we are keeping it. */
 	gdk_pixbuf_ref (pixbuf);
+#if GNOME2_CONVERSION_COMPLETE
 	gdk_pixbuf_set_last_unref_handler
 		(pixbuf, mark_icon_not_outstanding, NULL);
+#endif
 
 	/* Make the icon. */
 	icon = g_new0 (CacheIcon, 1);
@@ -517,7 +521,9 @@ cache_icon_unref (CacheIcon *icon)
 	g_hash_table_remove (factory->cache_icons, icon->pixbuf);
 
 	/* Since it's no longer in the cache, we don't need to notice the last unref. */
+#if GNOME2_CONVERSION_COMPLETE
 	gdk_pixbuf_set_last_unref_handler (icon->pixbuf, NULL, NULL);
+#endif
 
 	/* Let go of the pixbuf if we were holding a reference to it.
 	 * If it was still outstanding, we didn't have a reference to it,
@@ -1424,14 +1430,7 @@ get_next_icon_size_to_try (guint target_size, guint *current_size)
 static GdkPixbuf *
 load_pixbuf_svg (const char *path, guint size_in_pixels, gboolean is_emblem)
 {
-	FILE *f;
-	GdkPixbuf *pixbuf;
-	double actual_size_in_pixels;
-	
-	f = fopen (path, "rb");
-	if (f == NULL) {
-		return NULL;
-	}
+	double actual_size_in_pixels, zoom;
 	
 	/* FIXME: the nominal size of .svg emblems is too large, so we scale it
 	 * down here if the file is an emblem. This code should be removed
@@ -1442,11 +1441,9 @@ load_pixbuf_svg (const char *path, guint size_in_pixels, gboolean is_emblem)
 	} else {
 		actual_size_in_pixels = size_in_pixels;
 	}
+	zoom = actual_size_in_pixels / NAUTILUS_ICON_SIZE_STANDARD;
 	
-	pixbuf = rsvg_render_file (f, (double) (actual_size_in_pixels / NAUTILUS_ICON_SIZE_STANDARD));
-	fclose (f);
-	
-	return pixbuf;
+	return rsvg_pixbuf_from_file_at_zoom (path, zoom, zoom, NULL);
 }
 
 static gboolean

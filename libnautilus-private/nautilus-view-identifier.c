@@ -85,7 +85,8 @@ static GSList *
 get_lang_list (void)
 {
         GSList *retval;
-        char *lang, *lang_with_locale, *tmp, *org_pointer;
+	const char *tmp;
+        char *lang, *lang_with_locale, *org_pointer;
         char *equal_char;
 
         retval = NULL;
@@ -132,7 +133,7 @@ get_lang_list (void)
 }
 
 NautilusViewIdentifier *
-nautilus_view_identifier_new_from_bonobo_activation_server_info (Bonobo_ServerInfo *server, char *name_attribute)
+nautilus_view_identifier_new_from_bonobo_server_info (Bonobo_ServerInfo *server, char *name_attribute)
 {
         const char *view_as_name;       
         const char *view_as_label;       
@@ -141,12 +142,12 @@ nautilus_view_identifier_new_from_bonobo_activation_server_info (Bonobo_ServerIn
 
         langs = get_lang_list ();
 
-        view_as_name = bonobo_activation_server_info_prop_lookup (server, name_attribute, langs);
-	view_as_label = bonobo_activation_server_info_prop_lookup (server, "nautilus:view_as_label", langs);
-	viewer_label = bonobo_activation_server_info_prop_lookup (server, "nautilus:viewer_label", langs);
+        view_as_name = bonobo_server_info_prop_lookup (server, name_attribute, langs);
+	view_as_label = bonobo_server_info_prop_lookup (server, "nautilus:view_as_label", langs);
+	viewer_label = bonobo_server_info_prop_lookup (server, "nautilus:viewer_label", langs);
 
         if (view_as_name == NULL) {
-                view_as_name = bonobo_activation_server_info_prop_lookup (server, "name", langs);
+                view_as_name = bonobo_server_info_prop_lookup (server, "name", langs);
         }
         if (view_as_name == NULL) {
                 view_as_name = server->iid;
@@ -178,21 +179,21 @@ nautilus_view_identifier_new_from_bonobo_activation_server_info (Bonobo_ServerIn
 NautilusViewIdentifier *
 nautilus_view_identifier_new_from_content_view (Bonobo_ServerInfo *server)
 {
-	return nautilus_view_identifier_new_from_bonobo_activation_server_info
+	return nautilus_view_identifier_new_from_bonobo_server_info
 		(server, "nautilus:view_as_name");
 }
 
 NautilusViewIdentifier *
 nautilus_view_identifier_new_from_property_page (Bonobo_ServerInfo *server)
 {
-	return nautilus_view_identifier_new_from_bonobo_activation_server_info
+	return nautilus_view_identifier_new_from_bonobo_server_info
 		(server, "nautilus:property_page_name");
 }
 
 NautilusViewIdentifier *
 nautilus_view_identifier_new_from_sidebar_panel (Bonobo_ServerInfo *server)
 {
-	return nautilus_view_identifier_new_from_bonobo_activation_server_info
+	return nautilus_view_identifier_new_from_bonobo_server_info
 		(server, "nautilus:sidebar_panel_name");
 }
 

@@ -37,7 +37,7 @@ GnomeVFSMimeActionType   nautilus_mime_get_default_action_type_for_file         
 GnomeVFSMimeAction *     nautilus_mime_get_default_action_for_file                 (NautilusFile           *file);
 GnomeVFSMimeApplication *nautilus_mime_get_default_application_for_file            (NautilusFile           *file);
 gboolean                 nautilus_mime_is_default_application_for_file_user_chosen (NautilusFile           *file);
-OAF_ServerInfo *         nautilus_mime_get_default_component_for_file              (NautilusFile           *file);
+Bonobo_ServerInfo *      nautilus_mime_get_default_component_for_file              (NautilusFile           *file);
 gboolean                 nautilus_mime_is_default_component_for_file_user_chosen   (NautilusFile           *file);
 GList *                  nautilus_mime_get_short_list_applications_for_file        (NautilusFile           *file);
 GList *                  nautilus_mime_get_short_list_components_for_file          (NautilusFile           *file);

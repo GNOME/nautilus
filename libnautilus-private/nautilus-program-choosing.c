@@ -483,7 +483,7 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 				  const char *uri_scheme,
 				  GtkWindow *parent_window)
 {
-	GnomeDialog *message_dialog;
+	GtkDialog *message_dialog;
 	LaunchParameters *launch_parameters;
 	char *message;
 	char *file_name;
@@ -496,11 +496,11 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 					   application->name, file_name, 
 					   application->name, uri_scheme);
 		message_dialog = eel_show_yes_no_dialog (message, 
-							       _("Can't Open Location"), 
-							       GNOME_STOCK_BUTTON_OK, 
-							       GNOME_STOCK_BUTTON_CANCEL,
-							       parent_window);
-		if (gnome_dialog_run (message_dialog) == GNOME_OK) {
+							 _("Can't Open Location"), 
+							 _("OK"),
+							 _("Cancel"),
+							 parent_window);
+		if (gtk_dialog_run (message_dialog) == GTK_RESPONSE_OK) {
 			launch_parameters = launch_parameters_new (file, parent_window);
 			nautilus_choose_application_for_file 
 				(file,
@@ -625,7 +625,7 @@ get_xalf_prefix (const char *name)
 
 	s = g_string_new (xalf_executable);
 	g_string_append (s, " --title ");
-	quoted = eel_shell_quote (name);
+	quoted = g_shell_quote (name);
 	g_string_append (s, quoted);
 	g_free (quoted);
 	g_string_append_c (s, ' ');
@@ -633,7 +633,7 @@ get_xalf_prefix (const char *name)
 	gnome_config_get_vector ("/xalf/settings/options",
 				 &argc, &argv);
 	for (i = 0; i < argc; i++) {
-		quoted = eel_shell_quote (argv[i]);
+		quoted = g_shell_quote (argv[i]);
 		g_free (argv[i]);
 
 		g_string_append (s, quoted);
@@ -670,7 +670,7 @@ nautilus_launch_application_from_command (const char *name,
 	char *xalf_prefix;
 
 	if (parameter != NULL) {
-		quoted_parameter = eel_shell_quote (parameter);
+		quoted_parameter = g_shell_quote (parameter);
 		full_command = g_strconcat (command_string, " ", quoted_parameter, NULL);
 		g_free (quoted_parameter);
 	} else {

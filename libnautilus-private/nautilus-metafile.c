@@ -93,7 +93,7 @@ static void corba_set_list (PortableServer_Servant       servant,
 					       
 static void corba_copy             (PortableServer_Servant   servant,
 				    const CORBA_char        *source_file_name,
-				    const Nautilus_URI       destination_directory_uri,
+				    const CORBA_char        *destination_directory_uri,
 				    const CORBA_char        *destination_file_name,
 				    CORBA_Environment       *ev);
 static void corba_remove           (PortableServer_Servant  servant,
@@ -157,7 +157,7 @@ static void async_read_cancel                (NautilusMetafile *metafile);
 static void nautilus_metafile_set_metafile_contents (NautilusMetafile *metafile,
 					             xmlDocPtr metafile_contents);
 
-NAUTILUS_BONOBO_X_BOILERPLATE (NautilusMetafile, Nautilus_Metafile, BONOBO_X_OBJECT_TYPE, nautilus_metafile)
+EEL_DEFINE_BONOBO_BOILERPLATE (NautilusMetafile, nautilus_metafile, BONOBO_OBJECT_TYPE)
 
 typedef struct MetafileReadState {
 	gboolean use_public_metafile;
@@ -586,7 +586,7 @@ corba_set_list (PortableServer_Servant      servant,
 static void
 corba_copy (PortableServer_Servant   servant,
 	    const CORBA_char        *source_file_name,
-	    const Nautilus_URI       destination_directory_uri,
+	    const CORBA_char        *destination_directory_uri,
 	    const CORBA_char        *destination_file_name,
 	    CORBA_Environment       *ev)
 {
@@ -1595,7 +1595,7 @@ remove_file_metadata (NautilusMetafile *metafile,
 			g_hash_table_remove (hash,
 					     file_name);
 			xmlFree (key);
-			eel_xml_remove_node (file_node);
+			xmlUnlinkNode (file_node);
 			xmlFreeNode (file_node);
 			directory_request_write_metafile (metafile);
 		}
@@ -1776,6 +1776,7 @@ metafile_read_check_for_directory (NautilusMetafile *metafile)
 		(&metafile->details->read_state->get_file_info_handle,
 		 &fake_list,
 		 GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
+		 GNOME_VFS_PRIORITY_DEFAULT,
 		 metafile_read_check_for_directory_callback,
 		 metafile);
 }
@@ -1874,7 +1875,9 @@ metafile_read_restart (NautilusMetafile *metafile)
 		 GNOME_VFS_URI_HIDE_NONE);
 
 	metafile->details->read_state->handle = eel_read_entire_file_async
-		(text_uri, metafile_read_done_callback, metafile);
+		(text_uri,
+		 GNOME_VFS_PRIORITY_DEFAULT,
+		 metafile_read_done_callback, metafile);
 
 	g_free (text_uri);
 }
@@ -2060,6 +2063,7 @@ metafile_write_start (NautilusMetafile *metafile)
 		 ? metafile->details->public_vfs_uri
 		 : metafile->details->private_vfs_uri,
 		 GNOME_VFS_OPEN_WRITE, FALSE, METAFILE_PERMISSIONS,
+		 GNOME_VFS_PRIORITY_DEFAULT,
 		 metafile_write_create_callback, metafile);
 }
 

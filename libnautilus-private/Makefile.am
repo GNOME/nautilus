@@ -23,7 +23,6 @@ CDDALIBADD =
 endif
 
 libnautilus_private_la_LDFLAGS =	\
-	$(dependency_static_libs)	\
 	$(LIBNAUTILUS_PRIVATE_LIBS)	\
 	$(CDDALIBADD)			\
 	$(NULL)
@@ -178,7 +177,7 @@ libnautilus_private_la_SOURCES = \
 fsattributesdir = $(datadir)/nautilus
 fsattributes_DATA = filesystem-attributes.xml
 
-$(lib_LTLIBRARIES): $(dependency_static_libs)
+# $(lib_LTLIBRARIES): $(dependency_static_libs)
 
 $(nautilus_metafile_server_idl_sources): nautilus_metafile_server_idl_stamp
 nautilus_metafile_server_idl_stamp: nautilus-metafile-server.idl $(ORBIT_IDL)

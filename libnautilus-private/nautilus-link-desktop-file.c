@@ -490,6 +490,8 @@ nautilus_link_desktop_file_get_link_icon_given_file_contents (const char *link_f
 }
 
 
+#if GNOME2_CONVERSION_COMPLETE
+
 void
 nautilus_link_desktop_file_local_create_from_gnome_entry (GnomeDesktopEntry *entry,
 							  const char        *dest_path,
@@ -530,3 +532,4 @@ nautilus_link_desktop_file_local_create_from_gnome_entry (GnomeDesktopEntry *ent
 	gnome_desktop_entry_free (new_entry);
 }
 
+#endif

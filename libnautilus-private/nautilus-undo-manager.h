@@ -27,6 +27,7 @@
 #define NAUTILUS_UNDO_MANAGER_H
 
 #include <bonobo/bonobo-object.h>
+#include <libnautilus/nautilus-distributed-undo.h>
 
 #define NAUTILUS_TYPE_UNDO_MANAGER \
 	(nautilus_undo_manager_get_type ())
@@ -48,10 +49,11 @@ typedef struct {
 
 typedef struct {
 	BonoboObjectClass parent_slot;
-	void (* changed) (GtkObject *object, gpointer data);
+	POA_Nautilus_Undo_Manager__epv epv;
+	void (* changed) (GObject *object, gpointer data);
 } NautilusUndoManagerClass;
 
-GtkType              nautilus_undo_manager_get_type                           (void);
+GType                nautilus_undo_manager_get_type                           (void);
 NautilusUndoManager *nautilus_undo_manager_new                                (void);
 
 /* Undo operations. */
@@ -69,7 +71,7 @@ void                 nautilus_undo_manager_set_up_bonobo_ui_handler_undo_item (N
 
 /* Attach the undo manager to a Gtk object so that object and the widgets inside it can participate in undo. */
 void                 nautilus_undo_manager_attach                             (NautilusUndoManager *manager,
-									       GtkObject           *object);
+									       GObject             *object);
 
 /* Attach the undo manager to a Bonobo object so another component can find it. */
 void                 nautilus_undo_manager_add_interface                      (NautilusUndoManager *manager,

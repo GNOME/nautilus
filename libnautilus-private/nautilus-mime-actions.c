@@ -1497,11 +1497,11 @@ mime_type_hash_table_destroy (GHashTable *table)
 static gboolean
 server_has_content_requirements (Bonobo_ServerInfo *server)
 {
-        OAF_Property *prop;
+        Bonobo_ActivationProperty *prop;
 	
-        prop = bonobo_activation_server_info_prop_find (server, "nautilus:required_directory_content_mime_types");
+        prop = bonobo_server_info_prop_find (server, "nautilus:required_directory_content_mime_types");
 
-        if (prop == NULL || prop->v._d != OAF_P_STRINGV) {
+        if (prop == NULL || prop->v._d != Bonobo_ACTIVATION_P_STRINGV) {
                 return FALSE;
         } else {
 		return TRUE;
@@ -1513,8 +1513,8 @@ server_matches_content_requirements (Bonobo_ServerInfo *server,
 				     GHashTable     *type_table, 
 				     GList          *explicit_iids)
 {
-        OAF_Property *prop;
-        GNOME_stringlist types;
+        Bonobo_ActivationProperty *prop;
+        Bonobo_StringList types;
         guint i;
 
         /* Components explicitly requested in the metafile are not capability tested. */
@@ -1525,7 +1525,7 @@ server_matches_content_requirements (Bonobo_ServerInfo *server,
         if (!server_has_content_requirements (server)) {
                 return TRUE;
         } else {
-        	prop = bonobo_activation_server_info_prop_find (server, "nautilus:required_directory_content_mime_types");
+        	prop = bonobo_server_info_prop_find (server, "nautilus:required_directory_content_mime_types");
 
                 types = prop->v._u.value_stringv;
 

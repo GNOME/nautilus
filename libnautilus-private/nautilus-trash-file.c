@@ -286,7 +286,7 @@ add_real_file (NautilusTrashFile *trash,
 	
 	gtk_signal_connect (GTK_OBJECT (real_file),
 			    "changed",
-			    real_file_changed_callback,
+			    G_CALLBACK (real_file_changed_callback),
 			    trash);
 
 	/* Add the file to any extant monitors. */
@@ -331,7 +331,7 @@ remove_real_file (NautilusTrashFile *trash,
 		 real_file);
 
 	gtk_signal_disconnect_by_func (GTK_OBJECT (real_file),
-				       real_file_changed_callback,
+				       G_CALLBACK (real_file_changed_callback),
 				       trash);
 
 	trash->details->files = g_list_remove
@@ -754,12 +754,12 @@ nautilus_trash_file_init (gpointer object, gpointer klass)
 	trash_file->details->add_directory_connection_id = gtk_signal_connect
 		(GTK_OBJECT (trash_directory),
 		 "add_real_directory",
-		 add_directory_callback,
+		 G_CALLBACK (add_directory_callback),
 		 trash_file);
 	trash_file->details->remove_directory_connection_id = gtk_signal_connect
 		(GTK_OBJECT (trash_directory),
 		 "remove_real_directory",
-		 remove_directory_callback,
+		 G_CALLBACK (remove_directory_callback),
 		 trash_file);
 
 	real_directories = nautilus_merged_directory_get_real_directories

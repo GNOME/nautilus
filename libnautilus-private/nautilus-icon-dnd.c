@@ -787,7 +787,7 @@ confirm_switch_to_manual_layout (NautilusIconContainer *container)
 	}
 
 	dialog = eel_show_yes_no_dialog (message, _("Switch to Manual Layout?"),
-					 _("Switch"), GTK_RESPONSE_CANCEL,
+					 _("Switch"), _("Cancel"),
 					 GTK_WINDOW (gtk_widget_get_ancestor 
 						     (GTK_WIDGET (container), GTK_TYPE_WINDOW)));
 	

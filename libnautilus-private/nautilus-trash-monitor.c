@@ -147,13 +147,13 @@ nautilus_trash_monitor_init (gpointer object, gpointer klass)
     	gtk_signal_connect_while_alive
 		(GTK_OBJECT (trash_directory),
 		 "files_added",
-		 nautilus_trash_files_changed_callback,
+		 G_CALLBACK (nautilus_trash_files_changed_callback),
 		 trash_monitor,
 		 GTK_OBJECT (trash_monitor));
     	gtk_signal_connect_while_alive
 		(GTK_OBJECT (trash_directory),
 		 "files_changed",
-		 nautilus_trash_files_changed_callback,
+		 G_CALLBACK (nautilus_trash_files_changed_callback),
 		 trash_monitor,
 		 GTK_OBJECT (trash_monitor));
 }

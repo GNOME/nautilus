@@ -398,12 +398,7 @@ nautilus_theme_make_preview_pixbuf (const char *theme_name)
 	
 	/* load the icon that we found and return it */
 	if (eel_istr_has_suffix (pixbuf_file, ".svg")) {
-		FILE *f = fopen (pixbuf_file, "rb");
-		if (f != NULL) {
-			pixbuf = rsvg_render_file (f, 1.0);
-			fclose (f);
-		}
-	
+		pixbuf = rsvg_pixbuf_from_file (pixbuf_file, NULL);
 	} else {
 		pixbuf = gdk_pixbuf_new_from_file (pixbuf_file, NULL);
 	}
@@ -605,8 +600,7 @@ theme_get_themes_for_location (const char *themes_location_uri,
 	possible_theme_directories = NULL;
 	result = gnome_vfs_directory_list_load (&possible_theme_directories,
 						themes_location_uri,
-						GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
-						NULL);
+						GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
 	
 	if (result != GNOME_VFS_OK) {
 		return NULL;
@@ -804,7 +798,7 @@ nautilus_theme_install_user_theme (const char *theme_to_install_path)
 	char *theme_destination_path;
 
 	if (theme_to_install_path == NULL
-	    || !g_file_test (theme_to_install_path, G_FILE_TEST_EXISTS | G_FILE_TEST_ISDIR)) {
+	    || !g_file_test (theme_to_install_path, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
 		return NAUTILUS_THEME_INSTALL_NOT_A_THEME_DIRECTORY;
 	}
 

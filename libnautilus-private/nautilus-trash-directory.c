@@ -190,6 +190,7 @@ add_volume (NautilusTrashDirectory *trash,
 	gnome_vfs_async_find_directory
 		(&trash_volume->handle, &vfs_uri_as_list, 
 		 GNOME_VFS_DIRECTORY_KIND_TRASH, FALSE, TRUE, 0777,
+		 GNOME_VFS_PRIORITY_DEFAULT,
 		 find_directory_callback, trash_volume);
 
 	gnome_vfs_uri_unref (volume_mount_uri);
@@ -318,10 +319,10 @@ nautilus_trash_directory_init (gpointer object, gpointer klass)
 
 	gtk_signal_connect
 		(GTK_OBJECT (volume_monitor), "volume_mounted",
-		 volume_mounted_callback, trash);
+		 G_CALLBACK (volume_mounted_callback), trash);
 	gtk_signal_connect
 		(GTK_OBJECT (volume_monitor), "volume_unmount_started",
-		 volume_unmount_started_callback, trash);
+		 G_CALLBACK (volume_unmount_started_callback), trash);
 }
 
 /* Finish initializing a new NautilusTrashDirectory. We have to do the
@@ -338,7 +339,7 @@ nautilus_trash_directory_finish_initializing (NautilusTrashDirectory *trash)
 
 	gtk_signal_connect
 		(GTK_OBJECT (nautilus_trash_monitor_get ()), "check_trash_directory_added",
-		 check_trash_directory_added_callback, trash);
+		 G_CALLBACK (check_trash_directory_added_callback), trash);
 	nautilus_volume_monitor_each_mounted_volume
 		(volume_monitor, add_one_volume, trash);
 }

@@ -47,9 +47,10 @@ typedef struct {
 
 typedef struct {
 	BonoboObjectClass parent_slot;
+	POA_Nautilus_Undo_Context__epv epv;
 } NautilusUndoContextClass;
 
-GtkType              nautilus_undo_context_get_type (void);
+GType                nautilus_undo_context_get_type (void);
 NautilusUndoContext *nautilus_undo_context_new      (Nautilus_Undo_Manager undo_manager);
 
 #endif /* NAUTILUS_UNDO_CONTEXT_H */

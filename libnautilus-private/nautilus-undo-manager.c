@@ -98,50 +98,6 @@ static POA_Nautilus_Undo_Manager__vepv vepv = {
 };
 
 static void
-destroy_servant (BonoboObject *object,
-		 UndoManagerServant *servant)
-{
-	PortableServer_ObjectId *object_id;
-	CORBA_Environment ev;
-
-  	CORBA_exception_init (&ev);
-
-	/* Deactivate the object. */
-  	object_id = PortableServer_POA_servant_to_id (bonobo_poa (), servant, &ev);
-  	PortableServer_POA_deactivate_object (bonobo_poa (), object_id, &ev);
-  	CORBA_free (object_id);
-
-	/* Disconnect the object from the servant. */
-  	object->servant = NULL;
-
-	/* Free the servant. */
-	POA_Nautilus_Undo_Manager__fini (servant, &ev);
-  	g_free (servant);
-
-  	CORBA_exception_free (&ev);
-}
-
-static Nautilus_Undo_Manager
-create_servant (NautilusUndoManager *bonobo_object,
-		CORBA_Environment *ev)
-{
-	UndoManagerServant *servant;
-
-	/* Create the servant. */
-	servant = g_new0 (UndoManagerServant, 1);
-	servant->servant.vepv = &vepv;
-  	servant->bonobo_object = bonobo_object;
-  	POA_Nautilus_Undo_Manager__init ((PortableServer_Servant) servant, ev);
-
-	/* Set up code so we will destroy the servant when the bonobo_object is destroyed. */
-  	gtk_signal_connect (GTK_OBJECT (bonobo_object), "destroy",
-			    destroy_servant, servant);
-
-	/* Activate the servant to create the CORBA object. */
-	return bonobo_object_activate_servant (BONOBO_OBJECT (bonobo_object), servant);
-}
-
-static void
 release_transaction (NautilusUndoManager *manager)
 {
 	Nautilus_Undo_Transaction transaction;
@@ -239,16 +195,7 @@ nautilus_undo_manager_new (void)
 static void
 nautilus_undo_manager_init (NautilusUndoManager *manager)
 {
-	CORBA_Environment ev;
-	
-	CORBA_exception_init (&ev);
-
 	manager->details = g_new0 (NautilusUndoManagerDetails, 1);
-
-	bonobo_object_construct (BONOBO_OBJECT (manager),
-				 create_servant (manager, &ev));
-
-  	CORBA_exception_free (&ev);
 }
 
 static void
@@ -323,13 +270,13 @@ destroy (GtkObject *object)
 }
 
 void
-nautilus_undo_manager_attach (NautilusUndoManager *manager, GtkObject *target)
+nautilus_undo_manager_attach (NautilusUndoManager *manager, GObject *target)
 {
 	g_return_if_fail (NAUTILUS_IS_UNDO_MANAGER (manager));
 	g_return_if_fail (GTK_IS_OBJECT (target));
 
 	nautilus_undo_attach_undo_manager
-		(target,
+		(GTK_OBJECT (target),
 		 bonobo_object_corba_objref (BONOBO_OBJECT (manager)));
 }
 

@@ -13,6 +13,8 @@
 #include <config.h>
 #include "nautilus-icon-text-item.h"
 
+#if GNOME2_CONVERSION_COMPLETE
+
 #include "nautilus-entry.h"
 #include "nautilus-theme.h"
 
@@ -1618,3 +1620,5 @@ restore_from_undo_snapshot_callback (GtkObject *target, gpointer callback_data)
 	/* Reset the registered flag so we get a new item for future editing. */
 	priv->undo_registered = FALSE;
 }
+
+#endif

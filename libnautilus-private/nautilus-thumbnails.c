@@ -570,11 +570,7 @@ make_thumbnails (gpointer data)
 			if (nautilus_file_is_mime_type (file, "image/svg")) {
 				thumbnail_path = gnome_vfs_get_local_path_from_uri (info->thumbnail_uri);
 				if (thumbnail_path != NULL) {
-					FILE *f = fopen (thumbnail_path, "rb");
-					if (f != NULL) {
-						full_size_image = rsvg_render_file (f, 1.0);
-						fclose (f);
-					}
+					full_size_image = rsvg_pixbuf_from_file (thumbnail_path, NULL);
 				}
 #ifdef HAVE_LIBJPEG
 			} else if (nautilus_file_is_mime_type (file, "image/jpeg")) {

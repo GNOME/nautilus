@@ -26,7 +26,6 @@
 #include "nautilus-metafile-server.h"
 
 #include <bonobo/bonobo-object.h>
-#include <bonobo/bonobo-xobject.h>
 #include <libxml/tree.h>
 
 #include "nautilus-directory.h"
@@ -41,12 +40,12 @@
 typedef struct NautilusMetafileDetails NautilusMetafileDetails;
 
 typedef struct {
-	BonoboXObject parent_slot;
+	BonoboObject parent_slot;
 	NautilusMetafileDetails *details;
 } NautilusMetafile;
 
 typedef struct {
-	BonoboXObjectClass parent_slot;
+	BonoboObjectClass parent_slot;
 	POA_Nautilus_Metafile__epv epv;
 } NautilusMetafileClass;
 

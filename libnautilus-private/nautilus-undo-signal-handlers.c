@@ -30,6 +30,7 @@
 #include <libnautilus/nautilus-undo.h>
 
 #include <eel/eel-gtk-macros.h>
+#include <string.h>
 
 #include "nautilus-undo-signal-handlers.h"
 
@@ -160,11 +161,12 @@ editable_register_edit_undo (GtkEditable *editable)
 		return;
 	}
 	
-	undo_data = g_new (EditableUndoData, 1);
+	undo_data = g_new0 (EditableUndoData, 1);
 	undo_data->undo_text = g_strdup (gtk_editable_get_chars (editable, 0, -1));
 	undo_data->position = gtk_editable_get_position (editable);
-	undo_data->selection_start = editable->selection_start_pos;
-	undo_data->selection_end = editable->selection_end_pos;
+	gtk_editable_get_selection_bounds (editable,
+					   &undo_data->selection_start,
+					   &undo_data->selection_end);
 
 	nautilus_undo_register
 		(GTK_OBJECT (editable),

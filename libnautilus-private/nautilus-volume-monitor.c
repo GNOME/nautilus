@@ -1493,7 +1493,7 @@ mount_unmount_callback (void *arg)
 {
 	FILE *file;
 	MountThreadInfo *info;
-	gchar *old_locale;
+	const char *old_locale;
 
 	info = arg;
 	

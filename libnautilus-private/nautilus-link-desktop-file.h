@@ -50,10 +50,11 @@ char *           nautilus_link_desktop_file_get_link_name_given_file_contents (c
 									       int                link_file_size);
 char *           nautilus_link_desktop_file_get_link_icon_given_file_contents (const char        *link_file_contents,
 									       int                link_file_size);
+#if GNOME2_CONVERSION_COMPLETE
 void             nautilus_link_desktop_file_local_create_from_gnome_entry    (GnomeDesktopEntry *entry,
 									      const char        *dest_path,
 									      const GdkPoint    *position);
-
+#endif
 
 #endif /* NAUTILUS_LINK_DESKTOP_FILE_H */
 
