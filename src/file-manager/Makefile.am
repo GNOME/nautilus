@@ -9,8 +9,7 @@ INCLUDES = 					\
 	-DVERSION="\"$(VERSION)\""		\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	-DDATADIR=\""$(datadir)"\"		\
-	-DGDK_DISABLE_DEPRECATED \
-	-DGDK_PIXBUF_DISABLE_DEPRECATED \
+	$(DISABLE_DEPRECATED_CFLAGS)            \
 	$(NULL)	
 
 

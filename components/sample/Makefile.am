@@ -3,9 +3,6 @@
 # and change the G_LOG_DOMAIN.
 
 INCLUDES =						\
-	-DG_DISABLE_DEPRECATED				\
-	-DGTK_DISABLE_DEPRECATED			\
-	-DGNOME_DISABLE_DEPRECATED			\
 	-DG_LOG_DOMAIN=\"Nautilus-Sample\"		\
 	-DDATADIR=\"$(datadir)\"			\
 	-I$(top_srcdir)					\
