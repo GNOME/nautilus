@@ -82,7 +82,6 @@ static char *nautilus_file_get_owner_as_string       (NautilusFile         *file
 static char *nautilus_file_get_permissions_as_string (NautilusFile         *file);
 static char *nautilus_file_get_size_as_string        (NautilusFile         *file);
 static char *nautilus_file_get_type_as_string        (NautilusFile         *file);
-static char *nautilus_file_get_directory_name	     (NautilusFile	   *file);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusFile, nautilus_file, GTK_TYPE_OBJECT)
 
@@ -430,12 +429,15 @@ nautilus_file_is_self_owned (NautilusFile *file)
  * 
  * @file: The file in question.
  * 
- * Return value: A string representing the parent's location.
+ * Return value: A string representing the parent's location,
+ * formatted for user display (including stripping "file://").
  * If the parent is NULL, returns the empty string.
  */ 
 char *
 nautilus_file_get_parent_uri (NautilusFile *file) 
 {
+	char *raw_uri;
+
 	g_assert (NAUTILUS_IS_FILE (file));
 	
 	if (nautilus_file_is_self_owned (file)) {
@@ -443,7 +445,8 @@ nautilus_file_get_parent_uri (NautilusFile *file)
 		return g_strdup ("");
 	}
 
-	return nautilus_directory_get_uri (file->details->directory);
+	raw_uri = nautilus_directory_get_uri (file->details->directory);\
+	return nautilus_format_uri_for_display (raw_uri);
 }
 
 static NautilusFile *
@@ -1206,8 +1209,8 @@ nautilus_file_compare_by_directory_name (NautilusFile *file_1, NautilusFile *fil
 	char *directory_2;
 	int compare;
 
-	directory_1 = nautilus_file_get_directory_name (file_1);
-	directory_2 = nautilus_file_get_directory_name (file_2);
+	directory_1 = nautilus_file_get_parent_uri (file_1);
+	directory_2 = nautilus_file_get_parent_uri (file_2);
 
 	compare = nautilus_strcasecmp (directory_1, directory_2);
 
@@ -2898,8 +2901,7 @@ nautilus_file_get_deep_directory_count_as_string (NautilusFile *file)
  * @attribute_name: The name of the desired attribute. The currently supported
  * set includes "name", "type", "mime_type", "size", "deep_size", "deep_directory_count",
  * "deep_file_count", "deep_total_count", "date_modified", "date_changed", "date_accessed", 
- * "date_permissions", "owner", "group", "permissions", "octal_permissions", "uri", "parent_uri",
- * "directory".
+ * "date_permissions", "owner", "group", "permissions", "octal_permissions", "uri", "parent_uri".
  * 
  * Returns: Newly allocated string ready to display to the user, or NULL
  * if the value is unknown or @attribute_name is not supported.
@@ -2986,10 +2988,6 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 
 	if (strcmp (attribute_name, "parent_uri") == 0) {
 		return nautilus_file_get_parent_uri (file);
-	}
-
-	if (strcmp (attribute_name, "directory") == 0) {
-		return nautilus_file_get_directory_name (file);
 	}
 
 	return NULL;
@@ -3483,27 +3481,6 @@ nautilus_file_get_top_left_text (NautilusFile *file)
 
 	/* Show what we read in. */
 	return g_strdup (file->details->top_left_text);
-}
-
-static char *
-nautilus_file_get_directory_name (NautilusFile *file)
-{
-	GnomeVFSURI *vfs_uri;
-	char *directory_name;
-
-	if (file == NULL) {
-		return NULL;
-	}
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-	vfs_uri = nautilus_file_get_gnome_vfs_uri (file);
-	if (vfs_uri == NULL) {
-		return NULL;
-	}
-	directory_name = gnome_vfs_uri_extract_dirname (vfs_uri);
-	gnome_vfs_uri_unref (vfs_uri);
-	
-	return directory_name;
 }
 
 void

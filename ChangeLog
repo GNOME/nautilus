@@ -1,3 +1,31 @@
+2000-08-21  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1456 ("file://" shouldn't appear in locations
+	in Property window)
+
+	Robert Brady (rwb197@zepler.org) submitted a patch for this
+	bug (thanks Robert!). The patch worked, but I ended up fixing 
+	it a somewhat different way when I realized that we had two 
+	similar routines that needed to be merged.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_directory_name): Removed this function;
+	callers should use get_parent_uri instead.
+	(nautilus_file_get_parent_uri): Use 
+	nautilus_format_uri_for_display before returning result,
+	since this call is intended for display purposes; beef up
+	comment to explain.
+	(nautilus_file_compare_by_directory_name): Use _get_parent_uri
+	instaed of _get_directory_name
+	(nautilus_file_get_string_attribute): Eliminate "directory"
+	string attribute.
+	* src/file-manager/fm-search-list-view.c:
+	(real_get_column_specification): Use "parent_uri" instead of
+	"directory" name. The only visible effect this has is to remove
+	the trailing slashes from the "Directory" column. Also, changed
+	title of column from "Directory" to "Where" to match properties
+	window.
+
 2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-string-list.c:
