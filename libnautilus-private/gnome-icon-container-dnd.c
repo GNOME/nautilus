@@ -223,13 +223,8 @@ set_gnome_icon_list_selection (GnomeIconContainer *container,
 		if (!icon->is_selected)
 			continue;
 
-		x = icon->x - x_offset;
+		x = icon->x - x_offset - (GNOME_ICON_CONTAINER_ICON_WIDTH (container) / 2);
 		y = icon->y - y_offset;
-
-		x += GNOME_ICON_CONTAINER_ICON_X_OFFSET (container)
-		      - GNOME_ICON_CONTAINER_ICON_WIDTH (container) / 2;
-		y += GNOME_ICON_CONTAINER_ICON_Y_OFFSET (container)
-		      - GNOME_ICON_CONTAINER_ICON_HEIGHT (container) / 2;
 
 		uri = nautilus_icons_controller_get_icon_uri (details->controller, icon->data);
 		s = g_strdup_printf ("%s\r%d:%d\r\n", uri, x, y);
@@ -736,8 +731,8 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 				  (GdkEvent *) event);
 	
         /* create a pixmap and mask to drag with */
-        pixbuf_item = GNOME_CANVAS_ITEM (container->details->drag_icon->image_item);
-        pixbuf_args[0].name = "GnomeCanvasPixbuf::pixbuf";
+        pixbuf_item = GNOME_CANVAS_ITEM (container->details->drag_icon->item);
+        pixbuf_args[0].name = "NautilusIconsViewIconItem::pixbuf";
         gtk_object_getv (GTK_OBJECT (pixbuf_item), 1, pixbuf_args);
         temp_pixbuf = (GdkPixbuf *) GTK_VALUE_OBJECT (pixbuf_args[0]);
         gdk_pixbuf_render_pixmap_and_mask (temp_pixbuf, &pixmap_for_dragged_file, &mask_for_dragged_file, 128); 

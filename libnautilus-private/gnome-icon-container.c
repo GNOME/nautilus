@@ -30,6 +30,7 @@
 
 #include "gnome-icon-container-private.h"
 #include "gnome-icon-container-dnd.h"
+#include "nautilus-icons-view-icon-item.h"
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
@@ -88,31 +89,8 @@ icon_destroy (GnomeIconContainerIcon *icon)
 	gtk_object_destroy (GTK_OBJECT (icon->item));
 }
 
-static void
-icon_configure (GnomeIconContainerIcon *icon,
-		GnomeIconContainer *container)
-{
-	gnome_icon_text_item_configure
-		(icon->text_item,
-		 GNOME_ICON_CONTAINER_CELL_SPACING (container),
-		 GNOME_ICON_CONTAINER_ICON_HEIGHT (container),
-		 (GNOME_ICON_CONTAINER_CELL_WIDTH (container)
-		  - 2 * GNOME_ICON_CONTAINER_CELL_SPACING (container)),
-		 NULL,
-		 icon->text,
-		 TRUE,
-		 TRUE);
-
-	gnome_canvas_item_set
-		(GNOME_CANVAS_ITEM (icon->image_item),
-		 "width", (gdouble) GNOME_ICON_CONTAINER_ICON_WIDTH (container),
-		 "height", (gdouble) GNOME_ICON_CONTAINER_ICON_HEIGHT (container),
-		 NULL);
-}
-
 static GnomeIconContainerIcon *
 icon_new (GnomeIconContainer *container,
-	  const gchar *text,
 	  NautilusControllerIcon *data)
 {
 	GnomeCanvas *canvas;
@@ -127,18 +105,8 @@ icon_new (GnomeIconContainer *container,
 	new->layout_done = TRUE;
 
 	new->data = data;
-	new->text = g_strdup (text); /* FIXME */
 
-	new->item = GNOME_CANVAS_GROUP (gnome_canvas_item_new
-					(GNOME_CANVAS_GROUP (canvas->root),
-					 gnome_canvas_group_get_type (),
-					 NULL));
-
-	new->text_item
-		= GNOME_ICON_TEXT_ITEM (gnome_canvas_item_new
-					(new->item,
-					 gnome_icon_text_item_get_type (),
-					 NULL));
+        new->item = NULL;
 
 	new->width = GNOME_ICON_CONTAINER_CELL_WIDTH (container);
 	new->height = GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
@@ -154,31 +122,25 @@ icon_new_pixbuf (GnomeIconContainer *container,
 	char *name;
 	GnomeIconContainerIcon *new;
 	GdkPixbuf *image;
-
+        GnomeCanvas* canvas = GNOME_CANVAS(container);
+        
 	details = container->details;
 
-	name = nautilus_icons_controller_get_icon_name (details->controller, data);
-	new = icon_new (container, name, data);
-	g_free (name);
+	new = icon_new (container, data);
 
 	image = nautilus_icons_controller_get_icon_image (details->controller, data);
-	new->image_item
-		= gnome_canvas_item_new (new->item,
-					 gnome_canvas_pixbuf_get_type (),
-					 "pixbuf", image,
-					 "x", (gdouble) 0,
-					 "y", (gdouble) 0,
-					 "x_set", TRUE,
-					 "width_set", TRUE,
-					 NULL);
-
-	icon_configure (new, container);
-
-	gnome_canvas_item_set (GNOME_CANVAS_ITEM (new->item),
-			       "x", (gdouble) 0,
-			       "y", (gdouble) 0,
-			       NULL);
-
+	name = nautilus_icons_controller_get_icon_name (details->controller, data);
+	
+        new->item = gnome_canvas_item_new
+			(GNOME_CANVAS_GROUP (canvas->root),
+			nautilus_icons_view_icon_item_get_type (),
+	 		"pixbuf", image,    
+			"label", name,
+			"x", (gdouble) 0,
+			"y", (gdouble) 0,	 
+                        NULL);
+	g_free (name);
+        
 	return new;
 }
 
@@ -193,21 +155,6 @@ icon_position (GnomeIconContainerIcon *icon,
 
 	icon->x = x;
 	icon->y = y;
-
-	/* FIXME: Canvas bug?  It should be enough to do the following once in
-           `icon-configure()', but it does not work.
-	*/
-	gnome_icon_text_item_setxy
-		(icon->text_item,
-		 GNOME_ICON_CONTAINER_CELL_SPACING (container),
-		 (GNOME_ICON_CONTAINER_ICON_HEIGHT (container)
-		  + GNOME_ICON_CONTAINER_CELL_SPACING (container) + 2));
-	
-	gnome_canvas_item_set
-		(icon->image_item,
-		 "x", (gdouble) GNOME_ICON_CONTAINER_ICON_X_OFFSET (container),
-		 "y", (gdouble) GNOME_ICON_CONTAINER_ICON_Y_OFFSET (container),
-		 NULL);
 
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
 			       "x", (gdouble) icon->x,
@@ -231,16 +178,14 @@ static void
 icon_select (GnomeIconContainerIcon *icon,
 	     gboolean sel)
 {
-	gboolean was_selected;
 
-	/* FIXME: We want the icon image to appear as selected too.  Maybe
-           this can be done with a new custom CanvasImage-like item providing
-           this functionality?  */
-
-	was_selected = icon->is_selected;
+        if (sel == icon->is_selected)
+            return;
+            
 	icon->is_selected = sel;
-
-	gnome_icon_text_item_select (icon->text_item, sel);
+	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
+			       "selected", (gboolean) sel,
+			       NULL);
 }
 
 static gboolean
@@ -279,15 +224,23 @@ icon_get_text_bounding_box (GnomeIconContainerIcon *icon,
 			    guint *x1_return, guint *y1_return,
 			    guint *x2_return, guint *y2_return)
 {
+
+        /* FIXME: need to ask item for the text bounds */
+	
+        /*  
 	double x1, y1, x2, y2;
-
-	gnome_canvas_item_get_bounds (GNOME_CANVAS_ITEM (icon->text_item),
-				      &x1, &y1, &x2, &y2);
-
+        gnome_canvas_item_get_bounds (GNOME_CANVAS_ITEM (icon->text_item),        
 	*x1_return = icon->x + x1;
 	*y1_return = icon->y + y1;
 	*x2_return = icon->x + x2;
 	*y2_return = icon->y + y2;
+        */
+        
+        *x1_return = 0;
+        *y1_return = 0;
+        *x2_return = 0;
+        *y2_return = 0;
+        
 }
 
 static void
@@ -1733,7 +1686,9 @@ destroy (GtkObject *object)
 		gtk_idle_remove (container->details->idle_id);
 	if (container->details->linger_selection_mode_timer_tag != -1)
 		gtk_timeout_remove (container->details->linger_selection_mode_timer_tag);
-
+        if (container->details->label_font)
+                gdk_font_unref(container->details->label_font);
+                
 	g_free (container->details);
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
@@ -2113,6 +2068,9 @@ gnome_icon_container_initialize (GnomeIconContainer *container)
 
 	details->kbd_icon_visibility_timer_tag = -1;
 	details->linger_selection_mode_timer_tag = -1;
+        
+        /* FIXME: soon we'll need fonts at multiple sizes */
+        details->label_font = gdk_font_load("-bitstream-charter-medium-r-normal-*-12-*-*-*-*-*-*-*"); 	
 
 	/* FIXME: Read these from preferences. */
 	details->linger_selection_mode = FALSE;

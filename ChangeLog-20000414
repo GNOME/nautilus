@@ -1,3 +1,25 @@
+2000-01-25  Andy Hertzfeld <andy@eazel.com>
+
+        * libnautilus/nautilus-icons-view-icon-item.c,h:
+          new canvas item class for icon items.  Now we use a single
+          canvas item to draw the icons instead of a group with two subitems.
+          This will pay-off when we implement the emblems, zooming and
+          special icons for text, etc.  This is the first cut, I'm pretty
+          sure it doesn't work when pixels_per_item isn't 1.0 and there
+          are other small problems.
+          
+        * libnautilus/gnome-icon-container-private.h:
+          removed old fields for sub-items
+        
+        * libnautilus/Makefile.am:
+          added new item class to makefile
+          
+        * libnautilus/gnome-icon-container-dnd.c:
+          drag asks main item for pixbuf instead of image item
+          
+        * libnautilus/gnome-icon-container.c:
+          use new icon item instead of making group with two sub-items
+        
 2000-01-24  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/file-manager/fm-directory-view.c,

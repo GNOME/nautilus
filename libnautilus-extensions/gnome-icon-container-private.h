@@ -33,24 +33,12 @@
 
 struct _GnomeIconContainerIcon {
 	/* Group containing the text and the image.  */
-	GnomeCanvasGroup *item;	/* FIXME wrong name. */
-
-	/* The image for the icon.  Using a generic item makes it
-           possible for us to use any fancy canvas element.  */
-	GnomeCanvasItem *image_item;
-
-	/* The text for the icon.  */
-	GnomeIconTextItem *text_item;
-
-	/* Text for the icon.  */
-	gchar *text;
+	GnomeCanvasItem *item;
 
 	/* X/Y coordinates and size.  We could use the GnomeCanvasItem
            functions, but this is a lot faster.  */
 	gdouble x, y;
-	guint width, height;	/* FIXME we could actually do without this if
-                                   we assume the size is always given by
-                                   GnomeIconContainer.cell_width*/
+	guint width, height;	
         
 	/* Whether this item is selected (i.e. highlighted) for operation.  */
 	gboolean is_selected : 1;
@@ -175,6 +163,9 @@ struct _GnomeIconContainerDetails {
 
 	/* DnD info.  */
 	GnomeIconContainerDndInfo *dnd_info;
+
+        /* default font used to draw labels */
+        GdkFont *label_font;
 };
 
 /* Layout and icon size constants.
@@ -186,9 +177,6 @@ struct _GnomeIconContainerDetails {
 #define GNOME_ICON_CONTAINER_CELL_HEIGHT(container)    80
 
 #define GNOME_ICON_CONTAINER_CELL_SPACING(container)    4
-
-#define GNOME_ICON_CONTAINER_ICON_X_OFFSET(container)  12
-#define GNOME_ICON_CONTAINER_ICON_Y_OFFSET(container)  28
 
 #define GNOME_ICON_CONTAINER_ICON_WIDTH(container)     48
 #define GNOME_ICON_CONTAINER_ICON_HEIGHT(container)    48

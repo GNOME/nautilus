@@ -36,7 +36,8 @@ libnautilusinclude_HEADERS=			\
 	nautilus-file-utilities.h		\
 	nautilus-gtk-extensions.h		\
 	nautilus-icons-controller.h		\
-	nautilus-lib-self-check-functions.h	\
+	nautilus-icons-view-icon-item.h         \
+        nautilus-lib-self-check-functions.h	\
 	nautilus-self-checks.h			\
 	nautilus-string.h			\
 	ntl-content-view-frame.h		\
@@ -56,6 +57,7 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	nautilus-file-utilities.c		\
 	nautilus-gtk-extensions.c		\
 	nautilus-icons-controller.c		\
+	nautilus-icons-view-icon-item.c         \
 	nautilus-lib-self-check-functions.c	\
 	nautilus-self-checks.c			\
 	nautilus-string.c			\
