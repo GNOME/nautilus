@@ -1,3 +1,11 @@
+2002-01-15  Johan Dahlin  <jdahlin@telia.com>
+
+        * libnautilus/Makefile.am (nautilus_view_component_idl_stamp):  
+        * libnautilus/nautilus-view-component.idl: define
+        __nautilus_view_component_COMPILATION instead of 
+        NAUTILUS_VIEW_COMPONENT_COMPILATION, to be compatible with
+        libbonobo and bonobo-activation's idls.
+
 === nautilus 1.1.1 ===
 
 2002-01-15  Darin Adler  <darin@bentspoon.com>

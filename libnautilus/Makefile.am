@@ -56,7 +56,7 @@ libnautilus_la_SOURCES=					\
 
 $(nautilus_view_component_idl_sources): nautilus_view_component_idl_stamp
 nautilus_view_component_idl_stamp: nautilus-view-component.idl
-	$(ORBIT_IDL) $(LIBNAUTILUS_IDL_INCLUDES) --define=NAUTILUS_VIEW_COMPONENT_COMPILATION $<
+	$(ORBIT_IDL) $(LIBNAUTILUS_IDL_INCLUDES) --define=__nautilus_view_component_COMPILATION $<
 	touch $@
 
 $(nautilus_distributed_undo_idl_sources): nautilus_distributed_undo_idl_stamp
