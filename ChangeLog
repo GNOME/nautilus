@@ -1,3 +1,20 @@
+2000-09-19  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1860 (Switching to complex search bar leaves
+	navigation bar too tall forever)
+
+	I never did fully figure out what was wrong, but I found
+	a workaround, and added a FIXME (bug 3171) about the fact 
+	that the need for the workaround isn't well-understood.
+
+	* src/nautilus-switchable-navigation-bar.c:
+	(nautilus_switchable_navigation_bar_set_mode):
+	* src/nautilus-switchable-search-bar.c:
+	(nautilus_switchable_search_bar_set_mode):
+	Added gtk_widget_queue_resize calls on the GNOME_DOCK
+	ancestor of the navigation bar and search bar when the
+	contents are swapped.
+
 2000-09-19  Andy Hertzfeld  <andy@eazel.com>
 
 	added a new theme for the classic GNOME icons, and changed the

@@ -65,6 +65,7 @@ static void  nautilus_switchable_navigation_bar_destroy 	 (GtkObject 			       *
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableNavigationBar,
 				   nautilus_switchable_navigation_bar,
 				   NAUTILUS_TYPE_NAVIGATION_BAR)
+
 static void
 nautilus_switchable_navigation_bar_initialize_class (NautilusSwitchableNavigationBarClass *klass)
 {
@@ -145,6 +146,8 @@ void
 nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar     *bar,
 					     NautilusSwitchableNavigationBarMode  mode)
 {
+	GtkWidget *dock;
+
 	if (bar->details->mode == mode) {
 		return;
 	}
@@ -162,6 +165,17 @@ nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar    
 		break;
 	default:
 		g_return_if_fail (mode && 0);
+	}
+
+	/* FIXME bugzilla.eazel.com 3171:
+	 * We don't know why this line is needed here, but if it's removed
+	 * then the bar won't shrink when we switch from the complex search
+	 * bar to the location bar (though it does grow when switching in
+	 * the other direction)
+	 */
+	dock = gtk_widget_get_ancestor (GTK_WIDGET (bar), GNOME_TYPE_DOCK);
+	if (dock != NULL) {
+		gtk_widget_queue_resize (dock);
 	}
 
 	bar->details->mode = mode;
