@@ -1,5 +1,30 @@
 2001-01-03  Andy Hertzfeld  <andy@eazel.com>
 
+	* components/rss-control/main.c: (main):
+	tweaked broken stop-on-criticals stuff
+	
+	* components/rss-control/nautilus-rss-control.c:
+	(free_rss_data_item), (nautilus_rss_control_clear_items),
+	(nautilus_rss_control_destroy), (rss_logo_callback),
+	(rss_read_done_callback), (load_rss_file), (draw_rss_items),
+	(nautilus_rss_control_button_press_event):
+	made it extract urls for rss items and keep them in a structure,
+	and then activate them when clicked.
+	
+	Also, keep around file handles in instance data so we can cancel
+	any pending async I/O when the object is destroyed.
+	
+	* data/top/Makefile.am:
+	add sample controls to novice home directory
+	* data/top/Clock:
+	sample control
+	* data/top/Slashdot:
+	sample control
+	* src/file-manager/fm-icon-view.c: (get_icon_control_callback):
+	added check for non-zero moniker length
+	
+2001-01-03  Andy Hertzfeld  <andy@eazel.com>
+
 	* components/rss-control/nautilus-rss-control.c:
 	(nautilus_rss_control_initialize), (nautilus_rss_control_destroy),
 	(rss_read_done_callback), (nautilus_rss_control_draw),

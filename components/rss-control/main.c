@@ -85,7 +85,7 @@ main (int argc, char *argv[])
 			 "GnomeVFS-CORBA",
 			 "GnomeVFS-pthread",
 			 "Gtk",
-			 "GdkPixbuf",
+			 "Gdk-Pixbuf",
 			 "Nautilus",
 			 "Nautilus-Authenticate",
 			 "Nautilus-Tree",

@@ -52,11 +52,15 @@
 #include <libnautilus-extensions/nautilus-xml-extensions.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
 
+/* private instance variables */
 struct _NautilusRSSControlDetails {
 	char* rss_uri;
 	BonoboObject *control;
 	NautilusScalableFont *font;	
 
+	NautilusReadFileHandle *load_file_handle;
+	NautilusPixbufLoadHandle *load_image_handle;
+	
 	int items_v_offset;
 	
 	char* title;
@@ -67,6 +71,14 @@ struct _NautilusRSSControlDetails {
 	GList *items;
 };
 
+/* per item structure for rss items */
+typedef struct {
+	char *item_title;
+	char *item_url;
+	
+} RSSItemData;
+
+#define RSS_ITEM_HEIGHT 15
 
 static void nautilus_rss_control_initialize_class (NautilusRSSControlClass *klass);
 static void nautilus_rss_control_initialize (NautilusRSSControl *view);
@@ -201,10 +213,18 @@ nautilus_rss_control_initialize (NautilusRSSControl *rss_control)
 }
 
 static void
-nautilus_rss_control_clear_items (NautilusRSSControl *rss_control)
+free_rss_data_item (RSSItemData *item)
 {
+	g_free (item->item_title);
+	g_free (item->item_url);
+	g_free (item);
+}
+
+static void
+nautilus_rss_control_clear_items (NautilusRSSControl *rss_control)
+{	
 	if (rss_control->details->items != NULL) {
-		nautilus_g_list_free_deep (rss_control->details->items);
+		nautilus_g_list_free_deep_custom (rss_control->details->items, (GFunc) free_rss_data_item, NULL);
 		rss_control->details->items = NULL;	
 	}
 }
@@ -218,7 +238,15 @@ nautilus_rss_control_destroy (GtkObject *object)
 	g_free (rss_control->details->rss_uri);
 	g_free (rss_control->details->title);
 	g_free (rss_control->details->main_uri);
+
+	if (rss_control->details->load_file_handle != NULL) {
+		nautilus_read_file_cancel (rss_control->details->load_file_handle);
+	}
 	
+	if (rss_control->details->load_image_handle != NULL) {
+		nautilus_cancel_gdk_pixbuf_load (rss_control->details->load_image_handle);
+	}
+		
 	if (rss_control->details->logo != NULL) {
 		gdk_pixbuf_unref (rss_control->details->logo);
 	}
@@ -274,6 +302,8 @@ rss_logo_callback (GnomeVFSResult  error, GdkPixbuf *pixbuf, gpointer callback_d
 	NautilusRSSControl *rss_control;
 	
 	rss_control = NAUTILUS_RSS_CONTROL (callback_data);
+	rss_control->details->load_image_handle = NULL;
+	
 	if (rss_control->details->logo) {
 		gdk_pixbuf_unref (rss_control->details->logo);
 	}
@@ -294,14 +324,17 @@ rss_read_done_callback (GnomeVFSResult result,
 			 char *file_contents,
 			 gpointer callback_data)
 {
+	RSSItemData *item_parameters;
 	xmlDocPtr rss_document;
 	xmlNodePtr image_node, channel_node;
 	xmlNodePtr  current_node, title_node, temp_node, uri_node;
 	char *image_uri, *title, *temp_str;
 	NautilusRSSControl *rss_control;
-	NautilusPixbufLoadHandle *load_image_handle;
 	
 	char *buffer;
+
+	rss_control = NAUTILUS_RSS_CONTROL (callback_data);
+	rss_control->details->load_file_handle = NULL;
 
 	/* make sure the read was successful */
 	if (result != GNOME_VFS_OK) {
@@ -309,7 +342,6 @@ rss_read_done_callback (GnomeVFSResult result,
 		return;
 	}
 
-	rss_control = NAUTILUS_RSS_CONTROL (callback_data);
 	
 	/* Parse the rss file with gnome-xml. The gnome-xml parser requires a zero-terminated array. */
 	buffer = g_realloc (file_contents, file_size + 1);
@@ -348,7 +380,7 @@ rss_read_done_callback (GnomeVFSResult result,
 		if (uri_node != NULL) {
 			image_uri = xmlNodeGetContent (uri_node);
 			if (image_uri != NULL) {
-				load_image_handle = nautilus_gdk_pixbuf_load_async (image_uri, rss_logo_callback, rss_control);
+				rss_control->details->load_image_handle = nautilus_gdk_pixbuf_load_async (image_uri, rss_logo_callback, rss_control);
 				xmlFree (image_uri);
 			}
 		}
@@ -361,9 +393,20 @@ rss_read_done_callback (GnomeVFSResult result,
 		if (nautilus_strcmp (current_node->name, "item") == 0) {
 			title_node = nautilus_xml_get_child_by_name (current_node, "title");
 			if (title_node) {
+				item_parameters = (RSSItemData*) g_new0 (RSSItemData, 1);
+
 				title = xmlNodeGetContent (title_node);
-				rss_control->details->items = g_list_append (rss_control->details->items, g_strdup (title));
+				item_parameters->item_title = g_strdup (title);
 				xmlFree (title);
+				temp_node = nautilus_xml_get_child_by_name (current_node, "link");
+				
+				if (temp_node) {
+					temp_str = xmlNodeGetContent (temp_node);
+					item_parameters->item_url = g_strdup (temp_str);
+					xmlFree (temp_str);
+				}
+				
+				rss_control->details->items = g_list_append (rss_control->details->items, item_parameters);
 			}
 		}
 		current_node = current_node->next;
@@ -376,13 +419,13 @@ rss_read_done_callback (GnomeVFSResult result,
 	gtk_widget_queue_draw (GTK_WIDGET (rss_control));
 }
 
-/* load the rs file asynchronously */
+/* load the rss file asynchronously */
 static void
 load_rss_file (NautilusRSSControl *rss_control)
 {
 	char *title;
 	/* load the uri asynchrounously, calling a completion routine when completed */
-	nautilus_read_entire_file_async (rss_control->details->rss_uri, rss_read_done_callback, rss_control);
+	rss_control->details->load_file_handle = nautilus_read_entire_file_async (rss_control->details->rss_uri, rss_read_done_callback, rss_control);
 	
 	/* put up a title that's displayed while we wait */
 	title = g_strdup_printf ("Loading %s", rss_control->details->rss_uri);
@@ -497,6 +540,7 @@ static int
 draw_rss_items (NautilusRSSControl *rss_control, GdkPixbuf *pixbuf, int v_offset)
 {
 	GList *current_item;
+	RSSItemData *item_data;
 	int bullet_width, bullet_height;
 	int text_width, text_height, maximum_height;
 
@@ -515,9 +559,10 @@ draw_rss_items (NautilusRSSControl *rss_control, GdkPixbuf *pixbuf, int v_offset
 	while (current_item != NULL) {		
 		/* draw the text */
 
+		item_data = (RSSItemData*) current_item->data;		
 		nautilus_scalable_font_measure_text (rss_control->details->font, 
 					     12, 12,
-					     current_item->data, strlen (current_item->data),
+					     item_data->item_title, strlen (item_data->item_title),
 					     &text_width, 
 					     &text_height);
 		
@@ -525,7 +570,7 @@ draw_rss_items (NautilusRSSControl *rss_control, GdkPixbuf *pixbuf, int v_offset
 					  20, v_offset,
 					  NULL,
 					  12, 12,
-					  current_item->data, strlen (current_item->data),
+					  item_data->item_title, strlen (item_data->item_title),
 					  NAUTILUS_RGB_COLOR_BLACK,
 					  NAUTILUS_OPACITY_NONE);
 
@@ -538,7 +583,7 @@ draw_rss_items (NautilusRSSControl *rss_control, GdkPixbuf *pixbuf, int v_offset
 					2, v_offset - 2, 1.0, 1.0, GDK_PIXBUF_ALPHA_BILEVEL, 192);
 		}
 		
-		v_offset += 15;
+		v_offset += RSS_ITEM_HEIGHT;
 		current_item = current_item->next;
 		if (v_offset > maximum_height) {
 			break;
@@ -609,16 +654,27 @@ nautilus_rss_control_expose (GtkWidget *widget, GdkEventExpose *event)
 static gboolean
 nautilus_rss_control_button_press_event (GtkWidget *widget, GdkEventButton *event)
 {
+	GList *selected_item;
 	NautilusRSSControl *rss_control;
+	RSSItemData *item_data;
 	char *command;
-	int result;
-	
+	int result, which_item;
+
 	rss_control = NAUTILUS_RSS_CONTROL (widget);
-	
-	if (event->x < (widget->allocation.x + rss_control->details->items_v_offset)) {
+	if (event->y < (widget->allocation.y + rss_control->details->items_v_offset)) {
 		command = g_strdup_printf ("nautilus %s", rss_control->details->main_uri);
 		result = system (command);
 		g_free (command);
+	} else {
+		which_item = (event->y - (widget->allocation.y + rss_control->details->items_v_offset)) / RSS_ITEM_HEIGHT;
+		if (which_item < (int) g_list_length (rss_control->details->items)) {
+			selected_item = g_list_nth (rss_control->details->items, which_item);
+			item_data = (RSSItemData*) selected_item->data;
+			
+			command = g_strdup_printf ("nautilus %s", item_data->item_url);
+			result = system (command);
+			g_free (command);
+		}
 	}
 	
 	return FALSE;
