@@ -613,7 +613,7 @@ get_user_level_icon_name (int user_level, gboolean is_selected)
 	case NAUTILUS_USER_LEVEL_NOVICE:
 		image_name = "novice";
 		break;
-	case NAUTILUS_USER_LEVEL_HACKER:
+	case NAUTILUS_USER_LEVEL_ADVANCED:
 		image_name = "expert";
 		break;
 	case NAUTILUS_USER_LEVEL_INTERMEDIATE:
@@ -1209,7 +1209,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 	add_user_level_menu_item (window, NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM, 
 				  NAUTILUS_USER_LEVEL_INTERMEDIATE);
 	add_user_level_menu_item (window, NAUTILUS_MENU_PATH_EXPERT_ITEM, 
-				  NAUTILUS_USER_LEVEL_HACKER);
+				  NAUTILUS_USER_LEVEL_ADVANCED);
 	update_user_level_menu_items (window);				  
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 
@@ -1417,7 +1417,7 @@ convert_verb_to_user_level (const char *verb)
 	} else if (strcmp (verb, SWITCH_TO_INTERMEDIATE_VERB) == 0) {
 		return NAUTILUS_USER_LEVEL_INTERMEDIATE;
 	} else if (strcmp (verb, SWITCH_TO_ADVANCED_VERB) == 0) {
-		return NAUTILUS_USER_LEVEL_HACKER;
+		return NAUTILUS_USER_LEVEL_ADVANCED;
 	}
 
 	g_assert_not_reached ();
@@ -1432,7 +1432,7 @@ convert_user_level_to_path (guint user_level)
 		return NAUTILUS_MENU_PATH_NOVICE_ITEM;
 	case NAUTILUS_USER_LEVEL_INTERMEDIATE:
 		return NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM;
-	case NAUTILUS_USER_LEVEL_HACKER:
+	case NAUTILUS_USER_LEVEL_ADVANCED:
 		return NAUTILUS_MENU_PATH_EXPERT_ITEM; 
 	}
 

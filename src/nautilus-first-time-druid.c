@@ -467,18 +467,18 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 				       NULL);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 2);
 	hbox = make_hbox_user_level_radio_button
-		(NAUTILUS_USER_LEVEL_HACKER, radio_buttons, "expert.png",
+		(NAUTILUS_USER_LEVEL_ADVANCED, radio_buttons, "expert.png",
 		 _("For users that have the need to be exposed\n"
 		   "to every detail of their operating system."),
 		 NULL);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 2);
 
 	user_level = nautilus_preferences_get_user_level ();
-	g_assert (user_level >= NAUTILUS_USER_LEVEL_NOVICE && user_level <= NAUTILUS_USER_LEVEL_HACKER);
+	g_assert (user_level >= NAUTILUS_USER_LEVEL_NOVICE && user_level <= NAUTILUS_USER_LEVEL_ADVANCED);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_buttons[user_level]), TRUE);
 
 
-	for (index = NAUTILUS_USER_LEVEL_NOVICE; index <= NAUTILUS_USER_LEVEL_HACKER; index ++) {
+	for (index = NAUTILUS_USER_LEVEL_NOVICE; index <= NAUTILUS_USER_LEVEL_ADVANCED; index ++) {
 		gtk_signal_connect (GTK_OBJECT (radio_buttons[index]),
 				    "toggled",
 				    GTK_SIGNAL_FUNC (user_level_selection_changed),

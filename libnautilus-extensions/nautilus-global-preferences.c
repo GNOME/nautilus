@@ -305,7 +305,7 @@ global_preferences_install_defaults (void)
 						  NAUTILUS_USER_LEVEL_NOVICE,
 						  FALSE);
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
-						  NAUTILUS_USER_LEVEL_HACKER,
+						  NAUTILUS_USER_LEVEL_ADVANCED,
 						  TRUE);
 	
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
@@ -411,7 +411,7 @@ global_preferences_install_visibility (void)
 						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-						     NAUTILUS_USER_LEVEL_HACKER);
+						     NAUTILUS_USER_LEVEL_ADVANCED);
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
@@ -423,10 +423,10 @@ global_preferences_install_visibility (void)
 						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
-						     NAUTILUS_USER_LEVEL_HACKER);
+						     NAUTILUS_USER_LEVEL_ADVANCED);
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
-						     NAUTILUS_USER_LEVEL_HACKER);
+						     NAUTILUS_USER_LEVEL_ADVANCED);
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
@@ -459,7 +459,7 @@ global_preferences_install_visibility (void)
 						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
-						     NAUTILUS_USER_LEVEL_HACKER);
+						     NAUTILUS_USER_LEVEL_ADVANCED);
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
@@ -880,7 +880,7 @@ static struct
 	const char *name;
 	gboolean novice_default;
 	gboolean intermediate_default;
-	gboolean hacker_default;
+	gboolean advanced_default;
 	int visible_user_level;
 } known_sidebar_panels[] =
 {
@@ -906,8 +906,8 @@ global_preferences_install_sidebar_panel_defaults (void)
 							  NAUTILUS_USER_LEVEL_INTERMEDIATE,
 							  known_sidebar_panels[i].intermediate_default);
 		nautilus_preferences_default_set_boolean (key,
-							  NAUTILUS_USER_LEVEL_HACKER,
-							  known_sidebar_panels[i].hacker_default);
+							  NAUTILUS_USER_LEVEL_ADVANCED,
+							  known_sidebar_panels[i].advanced_default);
 
 		nautilus_preferences_set_visible_user_level (key,
 							     known_sidebar_panels[i].visible_user_level);

@@ -82,7 +82,7 @@ static const char *user_level_names_for_storage[] =
 {
 	"novice",
 	"intermediate",
-	"hacker"
+	"advanced"
 };
 
 static char *       preferences_get_path                            (void);
@@ -564,7 +564,7 @@ nautilus_preferences_get_user_level (void)
 	user_level = nautilus_gconf_get_string (key);
 	g_free (key);
 
-	if (nautilus_str_is_equal (user_level, "hacker")) {
+	if (nautilus_str_is_equal (user_level, "advanced")) {
 		result = 2;
 	} else if (nautilus_str_is_equal (user_level, "intermediate")) {
 		result = 1;

@@ -45,7 +45,7 @@ typedef void (*NautilusPreferencesCallback) (gpointer callback_data);
  */
 #define NAUTILUS_USER_LEVEL_NOVICE		0
 #define NAUTILUS_USER_LEVEL_INTERMEDIATE	1
-#define NAUTILUS_USER_LEVEL_HACKER		2
+#define NAUTILUS_USER_LEVEL_ADVANCED		2
 
 char *   nautilus_preferences_get_user_level_name_for_display (int                          user_level);
 char *   nautilus_preferences_get_user_level_name_for_storage (int                          user_level);

@@ -1,3 +1,22 @@
+2001-02-01  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_defaults),
+	(global_preferences_install_visibility),
+	(global_preferences_install_sidebar_panel_defaults):
+	* libnautilus-extensions/nautilus-preferences.c:
+	(nautilus_preferences_get_user_level):
+	* libnautilus-extensions/nautilus-preferences.h:
+	* src/nautilus-first-time-druid.c: (set_up_user_level_page):
+	* src/nautilus-window-menus.c: (get_user_level_icon_name),
+	(nautilus_window_initialize_menus), (convert_verb_to_user_level),
+	(convert_user_level_to_path):
+	* test/test-nautilus-preferences-change.c: (main):
+	Change 'hacker' to 'advanced' for the advanced user level so that
+	the names used for storage match those used for display.
+
 2001-02-01  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com> and 
