@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 2.3.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-08-09 10:19+0200\n"
-"PO-Revision-Date: 2003-08-09 09:39+0200\n"
+"POT-Creation-Date: 2003-08-17 17:45+0200\n"
+"PO-Revision-Date: 2003-08-17 17:14+0200\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -60,12 +60,13 @@ msgid ""
 "Couldn't remove emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one you added yourself."
 msgstr ""
-"Ne peut supprimer l'emblème avec le nom « %s ». Cela est sûrement du au fait "
-"que c'est un emblème permanent, et non pas un que vous avez joutez vous-même."
+"Impossible de supprimer l'emblème avec le nom « %s ». Cela est sûrement du "
+"au fait que c'est un emblème permanent, et non pas un que vous avez joutez "
+"vous-même."
 
 #: components/emblem/nautilus-emblem-view.c:204
 msgid "Couldn't remove emblem"
-msgstr "Ne peut supprimer l'emblème"
+msgstr "Impossible de supprimer l'emblème"
 
 #: components/emblem/nautilus-emblem-view.c:238
 #, c-format
@@ -73,12 +74,13 @@ msgid ""
 "Couldn't rename emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one that you added yourself."
 msgstr ""
-"Ne peut renommer l'emblème avec le nom « %s ». Cela est sûrement du au fait "
-"que c'est un emblème permanent, et non pas un que vous avez joutez vous-même."
+"Impossible de renommer l'emblème avec le nom « %s ». Cela est sûrement du au "
+"fait que c'est un emblème permanent, et non pas un que vous avez joutez vous-"
+"même."
 
 #: components/emblem/nautilus-emblem-view.c:239
 msgid "Couldn't rename emblem"
-msgstr "Ne peut renommer l'emblème"
+msgstr "Impossible de renommer l'emblème"
 
 #: components/emblem/nautilus-emblem-view.c:258
 msgid "Rename Emblem"
@@ -123,14 +125,14 @@ msgstr ""
 #: components/emblem/nautilus-emblem-view.c:739
 #: components/emblem/nautilus-emblem-view.c:741
 msgid "Couldn't add emblems"
-msgstr "Ne peut ajouter d'emblèmes"
+msgstr "Impossible d'ajouter d'emblèmes"
 
 #: components/emblem/nautilus-emblem-view.c:741
 msgid ""
 "None of the files could be added as emblems because they did not appear to "
 "be valid images."
 msgstr ""
-"Aucuns des fichiers ne peuvent être ajoutés comme emblèmes car ce ne semble "
+"Aucun des fichiers ne peuvent être ajoutés comme emblèmes car ce ne semble "
 "pas être des images valides."
 
 #: components/emblem/nautilus-emblem-view.c:762
@@ -141,7 +143,7 @@ msgstr "Le texte déposé n'est pas un emplacement de fichiers valide."
 #: components/emblem/nautilus-emblem-view.c:786
 #: components/emblem/nautilus-emblem-view.c:835
 msgid "Couldn't add emblem"
-msgstr "Ne peut ajouter d'emblème"
+msgstr "Impossible d'ajouter d'emblèmes"
 
 #: components/emblem/nautilus-emblem-view.c:781
 #: components/emblem/nautilus-emblem-view.c:834
@@ -1034,7 +1036,7 @@ msgstr "Ce thème utilise des icônes photoréalistes pour les dossiers."
 
 #: libbackground/preview-file-selection.c:207
 msgid "Can't find an hbox, using a normal file selection"
-msgstr "Ne peut trouver de hbox, utilise un sélecteur de fichiers normal"
+msgstr "Impossible de trouver de hbox, utilise un sélecteur de fichiers normal"
 
 #: libbackground/preview-file-selection.c:212
 #: src/nautilus-file-management-properties.glade.h:55
@@ -1458,6 +1460,12 @@ msgid ""
 "on a remote server. If set to \"local_only\" then only plays previews on "
 "local filesystems. If set to \"never\" then it never previews sound."
 msgstr ""
+"Optimisation de la vitesse lors de la prévisualisation d'un fichier son "
+"lorsque la souris est au-dessus de l'icône des fichiers. Si définit à "
+"« always » alors toujours jouer le son même si le fichier est sur un serveur "
+"distant. Si définit à « local_only » alors jouer le fichier suelement sur "
+"les systèmes de fichiers locaux. Si définit à « never » alors ne jamais "
+"jouer le son."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid ""
@@ -1467,6 +1475,12 @@ msgid ""
 "previews for local filesystems. If set to \"never\" then never bother to "
 "read preview data."
 msgstr ""
+"Optimisation de la vitesse pour quand afficher un aperçu du contenu du "
+"fichier texte dans l'icône du fichier. Si définit à « always », alors "
+"toujours afficher l'aperçu même le répertoire est sur un serveur distant. Si "
+"définit à « local_only » alors n'afficher l'aperçu que pour les systèmes de "
+"fichiers locaux. Si définit à « never » alors ne jamais essayer de lire les "
+"données de l'aperçu."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid ""
@@ -1476,6 +1490,12 @@ msgid ""
 "filesystems. If set to \"never\" then never bother to thumbnail images, just "
 "use a generic icon."
 msgstr ""
+"Optimisation de la vitesse pour quand afficher un fichier d'image comme une "
+"vignette. Si définit à « always », alors toujours afficher une vignette, "
+"même si le répertoire est sur un serveur distant. Si définit à "
+"« local_only » alors n'afficher les vignettes que pour les systèmes de "
+"fichiers locaux. Si définit à « never » alors ne jamais afficher les "
+"vignettes, juste des icônes génériques."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid ""
@@ -1484,6 +1504,12 @@ msgid ""
 "remote server. If set to \"local_only\" then only show counts for local "
 "filesystems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
+"Optimisation de la vitesse pour quand afficher le nombre d'éléments dans un "
+"répertoire. Si définit à « always », alors toujours afficher le nombre "
+"d'éléments, même si le répertoire est sur un serveur distant. Si définit à "
+"« local_only » alors n'afficher le nombre d'éléments que pour les systèmes "
+"de fichiers locaux. Si définit à « never » alors ne jamais afficher le "
+"nombre d'éléments."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid ""
@@ -1762,7 +1788,7 @@ msgstr ""
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:105
 msgid "Can't delete volume"
-msgstr "Ne peut supprimer le volume"
+msgstr "Impossible de supprimer le volume"
 
 #: libnautilus-private/nautilus-desktop-link.c:139
 #: libnautilus-private/nautilus-file.c:5592
@@ -1810,7 +1836,7 @@ msgstr "Désolé, mais vous devez spécifier un mot-clé pour le nouvel emblème
 #: libnautilus-private/nautilus-emblem-utils.c:256
 #: libnautilus-private/nautilus-emblem-utils.c:271
 msgid "Couldn't install emblem"
-msgstr "Ne peut installer l'emblème"
+msgstr "Impossible d'installer d'emblèmes"
 
 #: libnautilus-private/nautilus-emblem-utils.c:201
 msgid ""
@@ -1834,11 +1860,11 @@ msgstr ""
 
 #: libnautilus-private/nautilus-emblem-utils.c:255
 msgid "Sorry, unable to save custom emblem."
-msgstr "Désole, incapable d'enregistrer l'emblème personnalisé."
+msgstr "Désole, impossible d'enregistrer l'emblème personnalisé."
 
 #: libnautilus-private/nautilus-emblem-utils.c:270
 msgid "Sorry, unable to save custom emblem name."
-msgstr "Désolé, incapable d'enregistrer le nom de l'emblème personnalisé."
+msgstr "Désolé, impossible d'enregistrer le nom de l'emblème personnalisé."
 
 #: libnautilus-private/nautilus-file-operations-progress.c:456
 #, c-format
@@ -2182,7 +2208,7 @@ msgstr ""
 
 #: libnautilus-private/nautilus-file-operations.c:1031
 msgid "Unable to replace file."
-msgstr "Incapable de remplacer le fichier."
+msgstr "Impossible de remplacer le fichier."
 
 #: libnautilus-private/nautilus-file-operations.c:1044
 #, c-format
@@ -2442,11 +2468,11 @@ msgstr "Vous ne pouvez copier ce dossier corbeille."
 
 #: libnautilus-private/nautilus-file-operations.c:1936
 msgid "Can't Change Trash Location"
-msgstr "Ne peut changer l'emplacement de la corbeille"
+msgstr "Impossible de changer l'emplacement de la corbeille"
 
 #: libnautilus-private/nautilus-file-operations.c:1937
 msgid "Can't Copy Trash"
-msgstr "Ne peut copier la corbeille"
+msgstr "Impossible de copier la corbeille"
 
 #: libnautilus-private/nautilus-file-operations.c:1960
 msgid "You cannot move a folder into itself."
@@ -2458,11 +2484,11 @@ msgstr "Vous ne pouvez copier un dossier sur lui même."
 
 #: libnautilus-private/nautilus-file-operations.c:1963
 msgid "Can't Move Into Self"
-msgstr "Ne peut être déplacé sur soi-même"
+msgstr "Impossible d'être déplacé sur soi-même"
 
 #: libnautilus-private/nautilus-file-operations.c:1964
 msgid "Can't Copy Into Self"
-msgstr "Ne peut être copier sur soi-même"
+msgstr "Impossible d'être copier sur soi-même"
 
 #: libnautilus-private/nautilus-file-operations.c:1976
 msgid "You cannot copy a file over itself."
@@ -2470,7 +2496,7 @@ msgstr "Vous ne pouvez copier un fichier sur lui-même."
 
 #: libnautilus-private/nautilus-file-operations.c:1977
 msgid "Can't Copy Over Self"
-msgstr "Ne peut être copié sur soi-même"
+msgstr "Impossible d'être copié sur soi-même"
 
 #: libnautilus-private/nautilus-file-operations.c:2029
 msgid ""
@@ -3029,7 +3055,7 @@ msgid ""
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
 "some other reason."
 msgstr ""
-"Ne peut trouver de description même pour « x-directory/normal ». Ceci "
+"Impossible de trouver de description même pour « x-directory/normal ». Ceci "
 "signifie probablement que votre fichier gnome-vfs.keys est à la mauvaise "
 "place ou qu'il n'a pu être trouvé pour une autre raison."
 
@@ -3766,7 +3792,7 @@ msgstr ""
 #: libnautilus-private/nautilus-program-choosing.c:515
 #: libnautilus-private/nautilus-program-choosing.c:546
 msgid "Can't Open Location"
-msgstr "Ne peut ouvrir l'emplacement"
+msgstr "Impossible d'ouvrir l'emplacement"
 
 #: libnautilus-private/nautilus-program-choosing.c:534
 #, c-format
@@ -4596,11 +4622,11 @@ msgstr "Un _visionneur..."
 #: src/file-manager/fm-directory-view.c:3597
 #, c-format
 msgid "Could not complete specified action:  %s"
-msgstr "Ne peut compléter l'action spécifiée : %s"
+msgstr "Impossible de compléter l'action spécifiée : %s"
 
 #: src/file-manager/fm-directory-view.c:3621
 msgid "Could not complete specified action."
-msgstr "Ne peut compléter l'action spécifié."
+msgstr "Impossible de compléter l'action spécifié."
 
 #: src/file-manager/fm-directory-view.c:4130
 #, c-format
@@ -4836,7 +4862,7 @@ msgstr "« %s » est introuvable. Il a peut être été effacé récemment."
 #: src/file-manager/fm-error-reporting.c:68
 #, c-format
 msgid "Sorry, couldn't display all the contents of \"%s\"."
-msgstr "Désolé, ne peut afficher tout le contenu de « %s »."
+msgstr "Désolé, impossible d'afficher tout le contenu de « %s »."
 
 #: src/file-manager/fm-error-reporting.c:71
 msgid "Error Displaying Folder"
@@ -4881,12 +4907,13 @@ msgstr "Le nom « %s » n'est pas valide. Veuillez utiliser un nom différent.
 #, c-format
 msgid "Couldn't change the name of \"%s\" because it is on a read-only disk"
 msgstr ""
-"Ne peut changer le nom de « %s » car il est sur un disque en lecture seule"
+"Impossible de changer le nom de « %s » car il est sur un disque en lecture "
+"seule"
 
 #: src/file-manager/fm-error-reporting.c:136
 #, c-format
 msgid "Sorry, couldn't rename \"%s\" to \"%s\"."
-msgstr "Désolé, ne peut renommer « %s » en « %s »."
+msgstr "Désolé, impossible de renommer « %s » en « %s »."
 
 #: src/file-manager/fm-error-reporting.c:143
 msgid "Renaming Error"
@@ -4902,12 +4929,13 @@ msgstr "Vous n'avez pas l'autorisation de changer le groupe de « %s »."
 #, c-format
 msgid "Couldn't change the group of \"%s\" because it is on a read-only disk"
 msgstr ""
-"Ne peut changer le groupe de « %s » car il est sur un disque en lecture seule"
+"Impossible de changer le groupe de « %s » car il est sur un disque en "
+"lecture seule"
 
 #: src/file-manager/fm-error-reporting.c:175
 #, c-format
 msgid "Sorry, couldn't change the group of \"%s\"."
-msgstr "Désolé, ne peut changer le groupe de « %s »."
+msgstr "Désolé, impossible de changer le groupe de « %s »."
 
 #: src/file-manager/fm-error-reporting.c:179
 msgid "Error Setting Group"
@@ -4917,13 +4945,13 @@ msgstr "Erreur dans l'attribution du groupe"
 #, c-format
 msgid "Couldn't change the owner of \"%s\" because it is on a read-only disk"
 msgstr ""
-"Ne peut changer le propriétaire de « %s » car il est sur un disque en "
+"Impossible de changer le propriétaire de « %s » car il est sur un disque en "
 "lecture seule"
 
 #: src/file-manager/fm-error-reporting.c:208
 #, c-format
 msgid "Sorry, couldn't change the owner of \"%s\"."
-msgstr "Désolé, ne peut changer le propriétaire de « %s »."
+msgstr "Désolé, impossible de changer le propriétaire de « %s »."
 
 #: src/file-manager/fm-error-reporting.c:211
 msgid "Error Setting Owner"
@@ -4934,13 +4962,13 @@ msgstr "Erreur dans l'attribution du propriétaire"
 msgid ""
 "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
 msgstr ""
-"Ne peut changer les permissions de « %s » car il est sur un disque en "
+"Impossible de changer les permissions de « %s » car il est sur un disque en "
 "lecture seule"
 
 #: src/file-manager/fm-error-reporting.c:240
 #, c-format
 msgid "Sorry, couldn't change the permissions of \"%s\"."
-msgstr "Désolé, ne peut changer les permissions de « %s »."
+msgstr "Désolé, impossible de changer les permissions de « %s »."
 
 #: src/file-manager/fm-error-reporting.c:243
 msgid "Error Setting Permissions"
@@ -5316,7 +5344,7 @@ msgstr ""
 
 #: src/file-manager/fm-properties-window.c:3287
 msgid "Couldn't show help"
-msgstr "Ne peut afficher l'aide"
+msgstr "Impossible d'afficher l'aide"
 
 #: src/file-manager/fm-properties-window.c:3623
 msgid "Cancel Showing Properties Window?"
@@ -5941,7 +5969,7 @@ msgstr "Afficher l'état de l'indexation utilisé durant la recherche"
 
 #: src/nautilus-application.c:220
 msgid "Couldn't Create Required Folder"
-msgstr "Ne peut créer le dossier requis"
+msgstr "Impossible de créer le dossier requis"
 
 #: src/nautilus-application.c:221
 #, c-format
@@ -5956,7 +5984,7 @@ msgstr ""
 
 #: src/nautilus-application.c:226
 msgid "Couldn't Create Required Folders"
-msgstr "ne peut créer les dossiers requis"
+msgstr "Impossible de créer les dossiers requis"
 
 #: src/nautilus-application.c:227
 #, c-format
@@ -5968,7 +5996,7 @@ msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
 msgstr ""
-"Nautilus ne peut créer les dossiers suivants requis :\n"
+"Nautilus ne peut créer les dossiers requis suivants :\n"
 "\n"
 "%s\n"
 "\n"
@@ -6344,12 +6372,12 @@ msgid ""
 "Unable to launch the cd burner application:\n"
 "%s"
 msgstr ""
-"Incapable de lancer l'application de gravure de CD :\n"
+"Impossible de lancer l'application de gravure de CD :\n"
 "%s"
 
 #: src/nautilus-information-panel.c:996 src/nautilus-window-menus.c:231
 msgid "Can't launch cd burner"
-msgstr "Ne peut lancer le graveur de CD"
+msgstr "Impossible de lancer le graveur de CD"
 
 #. FIXME: We don't use spaces to pad labels!
 #: src/nautilus-information-panel.c:1042
@@ -6470,7 +6498,7 @@ msgstr "Désolé, mais le motif %s n'a pas pu être supprimé."
 
 #: src/nautilus-property-browser.c:914 src/nautilus-property-browser.c:943
 msgid "Couldn't delete pattern"
-msgstr "Ne peut supprimer le motif"
+msgstr "Impossible de supprimer le motif"
 
 #: src/nautilus-property-browser.c:942
 #, c-format
@@ -6519,7 +6547,7 @@ msgstr "Désolé, mais vous n'avez pas fournit de nom de fichiers valide."
 
 #: src/nautilus-property-browser.c:1105 src/nautilus-property-browser.c:1148
 msgid "Couldn't install pattern"
-msgstr "Ne peut installer le motif"
+msgstr "Impossible d'installer le motif"
 
 #: src/nautilus-property-browser.c:1116
 msgid "Sorry, but you can't replace the reset image."
@@ -6545,7 +6573,7 @@ msgstr "Désolé, mais vous devez spécifier un nom pour la nouvelle couleur."
 
 #: src/nautilus-property-browser.c:1229
 msgid "Couldn't install color"
-msgstr "Ne peut installer la couleur"
+msgstr "Impossible d'installer la couleur"
 
 #: src/nautilus-property-browser.c:1281
 msgid "Select a color to add"
@@ -6772,7 +6800,7 @@ msgid ""
 "Couldn't execute nautilus\n"
 "Make sure nautilus is in your path and correctly installed"
 msgstr ""
-"Ne peut exécuter Nautilus\n"
+"Impossible d'exécuter Nautilus\n"
 "Assurez vous que nautilus est dans votre « path » et qu'il est correctement "
 "installé"
 
@@ -6783,7 +6811,7 @@ msgid ""
 "Please make sure that the address is correct and alternatively, type in this "
 "address in the file manager directly"
 msgstr ""
-"Ne peut se connecter à l'URI %s\n"
+"Impossible de se connecter à l'URI %s\n"
 "Veuillez vous assurer que l'adresse est correcte et saisissez la directement "
 "dans le gestionnaire de fichiers"
 
@@ -7239,7 +7267,8 @@ msgstr "Echec panneau latéral"
 #: src/nautilus-window-manage-views.c:1328
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
-msgstr "Ne peut trouver « %s ». Vérifiez l'orthographe et essayez à nouveau."
+msgstr ""
+"Impossible de trouver « %s ». Vérifiez l'orthographe et essayez à nouveau."
 
 #: src/nautilus-window-manage-views.c:1334
 #, c-format
@@ -7254,7 +7283,8 @@ msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
 "it is."
 msgstr ""
-"Ne peut afficher « %s », car Nautilus ne peut déterminer le type du fichier."
+"Impossible d'afficher « %s », car Nautilus ne peut déterminer le type du "
+"fichier."
 
 #: src/nautilus-window-manage-views.c:1356
 #, c-format
@@ -7266,17 +7296,18 @@ msgstr "Nautilus n'a aucun visionneur installé capable d'afficher « %s »."
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
-"Ne peut afficher « %s », car Nautilus ne reconnaît pas les emplacements %s."
+"Impossible d'afficher « %s », car Nautilus ne reconnaît pas les emplacements "
+"%s."
 
 #: src/nautilus-window-manage-views.c:1374
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
-msgstr "Ne peut afficher « %s », car la tentative de connexion a échouée."
+msgstr "Impossible d'afficher « %s », car la tentative de connexion a échouée."
 
 #: src/nautilus-window-manage-views.c:1379
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
-msgstr "Ne peut afficher « %s », car l'accès n'a pas été autorisé."
+msgstr "Impossible d'afficher « %s », car l'accès n'a pas été autorisé."
 
 #: src/nautilus-window-manage-views.c:1390
 #, c-format
@@ -7284,8 +7315,8 @@ msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
 "the spelling is correct and that your proxy settings are correct."
 msgstr ""
-"Ne peut afficher « %s », car aucun hôte « %s » n'a pas été trouvé. Vérifiez "
-"que l'orthographe ainsi que vos paramètres de proxy soient corrects."
+"Impossible d'afficher « %s », car aucun hôte « %s » n'a pas été trouvé. "
+"Vérifiez que l'orthographe ainsi que vos paramètres de proxy soient corrects."
 
 #: src/nautilus-window-manage-views.c:1398
 #, c-format
@@ -7301,8 +7332,8 @@ msgid ""
 "browser.\n"
 "Check that an SMB server is running in the local network."
 msgstr ""
-"Ne peut afficher « %s », car Nautilus ne peut contacter le navigateur maître "
-"SMB.\n"
+"Impossible d'afficher « %s », car Nautilus ne peut contacter le navigateur "
+"maître SMB.\n"
 "Veuillez vérifier que le serveur SMB fonctionne dans le réseau local."
 
 #: src/nautilus-window-manage-views.c:1417
