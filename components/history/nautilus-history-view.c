@@ -148,8 +148,9 @@ update_history (NautilusHistoryView    *view,
 	}
 
 	g_signal_handler_block (selection, view->selection_changed_id);
-	gtk_tree_model_get_iter_root (GTK_TREE_MODEL (store), &iter);
-	gtk_tree_selection_select_iter (selection, &iter);
+	if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (store), &iter)) {
+		gtk_tree_selection_select_iter (selection, &iter);
+	}
 	g_signal_handler_unblock (selection, view->selection_changed_id);	
 	
   	view->updating_history = FALSE;
