@@ -120,6 +120,8 @@ static void nautilus_window_get_arg (GtkObject      *object,
 static void nautilus_window_goto_uri_cb (GtkWidget *widget,
                                          const char *uri,
                                          GtkWidget *window);
+static void nautilus_window_about_cb (GtkWidget *widget,
+                                      NautilusWindow *window);
 
 #undef CONTENTS_AS_HBOX
 
@@ -207,7 +209,7 @@ static GnomeUIInfo help_menu_info[] = {
         {
             GNOME_APP_UI_ITEM,
             N_("About Nautilus..."), N_("Info about the Nautilus program"),
-            NULL, NULL, NULL,
+            nautilus_window_about_cb, NULL, NULL,
             GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_ABOUT,
             0, 0, NULL
         },
@@ -438,8 +440,7 @@ nautilus_window_constructed(NautilusWindow *window)
 
   gtk_widget_set_sensitive(bookmarks_menu_info[0].widget, FALSE); /* Add Bookmark */
   gtk_widget_set_sensitive(bookmarks_menu_info[1].widget, FALSE); /* Edit Bookmarks */
-
-  gtk_widget_set_sensitive(help_menu_info[0].widget, FALSE); /* About */
+  gtk_widget_set_sensitive(help_menu_info[0].widget, TRUE); /* About */
 
   /* insert bookmarks menu */
   gtk_menu_item_set_submenu(GTK_MENU_ITEM (main_menu[BOOKMARKS_MENU_INDEX].widget), 
@@ -865,6 +866,28 @@ static void
 nautilus_window_stop (GtkWidget *btn, NautilusWindow *window)
 {
 
+}
+
+static void
+nautilus_window_about_cb (GtkWidget *widget,
+                          NautilusWindow *window)
+{
+  GtkWidget *aboot;
+  const char *authors[] = {
+    "Darin Adler",
+    "Elliot Lee",
+    "Ettore Perazzoli",
+    "John Sullivan",
+    NULL
+  };
+
+  aboot = gnome_about_new(_("Nautilus"),
+                          VERSION,
+                          "Copyright (C) 1999",
+                          authors,
+                          _("The Cool Shell Program"),
+                          "nautilus/nautilus3.jpg");
+  gtk_widget_show(aboot);
 }
 
 void
