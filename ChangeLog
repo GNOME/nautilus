@@ -1,3 +1,19 @@
+2002-02-25  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-file-operations.c
+	(fit_rect_on_screen, center_dialog_over_rect),
+	(center_dialog_over_window): kill deprecated code, use
+	gtk_window_set_transient instead.
+
+	* libnautilus-private/nautilus-file-operations-progress.c
+	(nautilus_file_operations_progress_init): setup the default
+	dialog width instead of the bar's.
+
+2002-02-21  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-customization-data.c
+	(add_reset_text): port, requires new eel API.
+
 2002-02-25  Alexander Larsson  <alla@lysator.liu.se>
 
 	* libnautilus-private/nautilus-icon-factory.c:

@@ -42,11 +42,11 @@
 #include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
-/* The width of the progress bar determines the minimum width of the
- * window. It will be wider only if the font is really huge and the
- * fixed labels don't fit in the window otherwise.
+/* The default width of the progress dialog. It will be wider
+ * only if the font is really huge and the fixed labels don't
+ * fit in the window otherwise.
  */
-#define PROGRESS_BAR_WIDTH 350
+#define PROGRESS_DIALOG_WIDTH 400
 
 #define OUTER_BORDER       5
 #define HORIZONTAL_SPACING 3
@@ -240,9 +240,7 @@ nautilus_file_operations_progress_init (NautilusFileOperationsProgress *progress
 
 	/* progress bar */
 	progress->details->progress_bar = gtk_progress_bar_new ();
-#ifdef GNOME2_CONVERSION_COMPLETE
-	gtk_widget_set_usize (progress->details->progress_bar, PROGRESS_BAR_WIDTH, -1);
-#endif
+	gtk_window_set_default_size (GTK_WINDOW (progress), PROGRESS_DIALOG_WIDTH, -1);
 	gtk_box_pack_start (vbox, progress->details->progress_bar, FALSE, TRUE, 0);
 	gtk_widget_show (progress->details->progress_bar);
 

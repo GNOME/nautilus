@@ -31,6 +31,7 @@
 #include "nautilus-file-utilities.h"
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-extensions.h>
+#include <eel/eel-pango-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
@@ -338,39 +339,34 @@ get_file_path_for_mode (const NautilusCustomizationData *data,
 static void
 add_reset_text (GdkPixbuf *pixbuf)
 {
-	char *reset_text;
 	int width, height;
-	int text_len;
-#if GNOME2_CONVERSION_COMPLETE
-	EelDimensions title_dimensions;
-	int font_size;
 	int h_offset, v_offset;
-#endif
-	
-	reset_text = _("reset");
-	text_len = strlen (reset_text);
+	PangoLayout *layout;
+	PangoRectangle text_extent;
+	PangoFontDescription *font_desc;
 
 	width = gdk_pixbuf_get_width (pixbuf);
 	height = gdk_pixbuf_get_height (pixbuf);
-	
-#if GNOME2_CONVERSION_COMPLETE
-	font_size = eel_scalable_font_largest_fitting_font_size (font, reset_text, width - 12, 12, 36);
-	title_dimensions = eel_scalable_font_measure_text (font, font_size, reset_text, text_len);
-	
+
+	font_desc = pango_font_description_from_string ("Mono");
+
+	layout = pango_layout_new (eel_pango_ft2_get_context ());
+	pango_layout_set_text (layout, _("reset"), -1);
+	pango_layout_set_font_description (layout, font_desc);
+
+	text_extent = eel_pango_layout_fit_to_dimensions (
+		layout, width - 12, -1);
+
 	/* compute text position, correcting for the imbalanced shadow, etc. */
-	h_offset = ((width - title_dimensions.width) / 2) - 2;
-	v_offset = (((height - 8)/ 2) - title_dimensions.height) / 2;
-	
-	eel_scalable_font_draw_text (font, pixbuf, 
-					  h_offset, v_offset,
-					  eel_gdk_pixbuf_whole_pixbuf,
-					  font_size,
-					  reset_text, text_len,
-					  EEL_RGBA_COLOR_OPAQUE_WHITE,
-					  EEL_OPACITY_FULLY_OPAQUE);
-	
-	g_object_unref (font);
-#endif
+	h_offset = ((width - text_extent.width) / 2) - 2;
+	v_offset = (((height - 8)/ 2) - text_extent.height) / 2;
+
+	eel_gdk_pixbuf_draw_layout (pixbuf,
+				    h_offset, v_offset,
+				    EEL_RGBA_COLOR_OPAQUE_WHITE,
+				    layout);
+
+	g_object_unref (layout);
 }
 
 /* utility to make an attractive pattern image by compositing with a frame */

@@ -294,72 +294,6 @@ parent_for_error_dialog (TransferInfo *transfer_info)
 	return transfer_info->parent_view;
 }
 
-#ifdef GNOME2_CONVERSION_COMPLETE
-/* This needs testing with a working WM - metacity ? */
-static void
-fit_rect_on_screen (GdkRectangle *rect)
-{
-	if (rect->x + rect->width > gdk_screen_width ()) {
-		rect->x = gdk_screen_width () - rect->width;
-	}
-
-	if (rect->y + rect->height > gdk_screen_height ()) {
-		rect->y = gdk_screen_height () - rect->height;
-	}
-
-	if (rect->x < 0) {
-		rect->x = 0;
-	}
-
-	if (rect->y < 0) {
-		rect->y = 0;
-	}
-}
-
-static void
-center_dialog_over_rect (GtkWindow *window, GdkRectangle rect)
-{
-	g_return_if_fail (GTK_WINDOW (window) != NULL);
-
-	fit_rect_on_screen (&rect);
-
-	gtk_widget_set_uposition (GTK_WIDGET (window), 
-		rect.x + rect.width / 2 
-			- GTK_WIDGET (window)->allocation.width / 2,
-		rect.y + rect.height / 2
-			- GTK_WIDGET (window)->allocation.height / 2);
-}
-#endif
-
-static void
-center_dialog_over_window (GtkWindow *window, GtkWindow *over)
-{
-#ifdef GNOME2_CONVERSION_COMPLETE
-	GdkRectangle rect;
-	int x, y, w, h;
-
-	g_return_if_fail (GTK_WINDOW (window) != NULL);
-	g_return_if_fail (GTK_WINDOW (over) != NULL);
-
-	gdk_window_get_root_origin (GTK_WIDGET (over)->window, &x, &y);
-	gdk_window_get_size (GTK_WIDGET (over)->window, &w, &h);
-	rect.x = x;
-	rect.y = y;
-	rect.width = w;
-	rect.height = h;
-
-	center_dialog_over_rect (window, rect);
-#endif
-	GdkGeometry geometry = { 0 };
-
-	geometry.win_gravity = GDK_GRAVITY_CENTER;
-
-	gtk_window_set_geometry_hints (window,
-				       GTK_WIDGET (over),
-				       &geometry,
-				       GDK_HINT_WIN_GRAVITY);
-}
-
 static void
 handle_response_callback (GtkDialog *dialog, int response, TransferInfo *transfer_info)
 {
@@ -399,8 +333,9 @@ create_transfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 
 	/* Make the progress dialog show up over the window we are copying into */
 	if (transfer_info->parent_view != NULL) {
-		center_dialog_over_window (GTK_WINDOW (transfer_info->progress_dialog), 
-					   GTK_WINDOW (gtk_widget_get_toplevel (transfer_info->parent_view)));
+		gtk_window_set_transient_for (
+			GTK_WINDOW (transfer_info->progress_dialog), 
+			GTK_WINDOW (gtk_widget_get_toplevel (transfer_info->parent_view)));
 	}
 
 	gtk_widget_show (GTK_WIDGET (transfer_info->progress_dialog));

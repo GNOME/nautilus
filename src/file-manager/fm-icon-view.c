@@ -2117,7 +2117,7 @@ fm_icon_view_text_attribute_names_changed (FMDirectoryView *directory_view)
 {
 	g_assert (FM_IS_ICON_VIEW (directory_view));
 
-	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (directory_view)));	
+	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (directory_view)));
 }
 
 static void
@@ -2125,7 +2125,7 @@ fm_icon_view_embedded_text_policy_changed (FMDirectoryView *directory_view)
 {
 	g_assert (FM_IS_ICON_VIEW (directory_view));
 
-	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (directory_view)));	
+	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (directory_view)));
 }
 
 static void
@@ -2133,7 +2133,7 @@ fm_icon_view_image_display_policy_changed (FMDirectoryView *directory_view)
 {
 	g_assert (FM_IS_ICON_VIEW (directory_view));
 
-	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (directory_view)));	
+	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (directory_view)));
 }
 
 static void
