@@ -1081,6 +1081,32 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 						      callback_data);
 }
 
+static int
+compare_file_with_name (gconstpointer a, gconstpointer b)
+{
+	return strcmp (NAUTILUS_FILE (a)->details->info->name,
+		       (const char *) b);
+}
+
+static gboolean
+update_file_info_in_list_if_needed (GList *list, 
+				    GnomeVFSFileInfo *file_info)
+{
+	GList *list_entry;
+
+	list_entry = g_list_find_custom (list,
+					 (gpointer) file_info->name,
+					 compare_file_with_name);
+	if (list_entry == NULL)
+		/* the file is not in the list yet */
+		return FALSE;
+
+	/* the file is in the list already update the file info if needed */
+	nautilus_file_update (NAUTILUS_FILE (list_entry->data), file_info);
+
+	return TRUE;
+}
+
 static gboolean
 dequeue_pending_idle_callback (gpointer callback_data)
 {
@@ -1089,6 +1115,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 	GList *p;
 	NautilusFile *file;
 	GList *pending_files;
+	GList *changed_files;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
@@ -1108,23 +1135,42 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		return FALSE;
 	}
 
-	/* Build a list of NautilusFile objects. */
 	pending_files = NULL;
+	changed_files = NULL;
+
+	/* Build a list of NautilusFile objects. */
 	for (p = pending_file_info; p != NULL; p = p->next) {
-		/* FIXME: The file could already be in the files list
-		 * if someone did a nautilus_file_get already on it.
-		 */
-		file = nautilus_file_new (directory, p->data);
-		pending_files = g_list_prepend (pending_files, file);
+		/* check if the file already exists */
+		file = nautilus_directory_find_file (directory, 
+						     ((const GnomeVFSFileInfo *)p->data)->name);
+		if (file != NULL) {
+			/* file already exists, check if it changed */
+			if (nautilus_file_update (file, p->data)) {
+				/* File changed, notify about the change. */
+				changed_files = g_list_prepend (changed_files, file);
+			}
+		} else if (!update_file_info_in_list_if_needed (pending_files, p->data)) {
+			/* new file, create a nautilus file object and add it to the list */
+			file = nautilus_file_new (directory, p->data);
+			pending_files = g_list_prepend (pending_files, file);
+		}
 	}
 	nautilus_gnome_vfs_file_info_list_free (pending_file_info);
 
 	/* Tell the objects that are monitoring about these new files. */
-	g_assert (pending_files != NULL);
-	gtk_signal_emit (GTK_OBJECT (directory),
-			 signals[FILES_ADDED],
-			 pending_files);
+	if (pending_files != NULL) {
+		gtk_signal_emit (GTK_OBJECT (directory),
+				 signals[FILES_ADDED],
+				 pending_files);
+	}
 
+	/* Tell the objects that are monitoring about chaged files. */
+	if (changed_files != NULL) {
+		gtk_signal_emit (GTK_OBJECT (directory),
+				 signals[FILES_CHANGED],
+				 changed_files);
+	}
+	
 	/* Remember them for later. */
 	directory->details->files = g_list_concat
 		(directory->details->files, pending_files);
@@ -1691,13 +1737,6 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 	return TRUE;
 }
 
-static int
-compare_file_with_name (gconstpointer a, gconstpointer b)
-{
-	return strcmp (NAUTILUS_FILE (a)->details->info->name,
-		       (const char *) b);
-}
-
 NautilusFile *
 nautilus_directory_find_file (NautilusDirectory *directory, const char *name)
 {
@@ -1940,7 +1979,14 @@ nautilus_directory_notify_files_added (GList *uris)
 {
 	GList *p;
 	NautilusDirectory *directory;
+	GnomeVFSFileInfo *info;
 	const char *uri;
+	GnomeVFSResult result;
+
+	/* FIXME: gnome_vfs_file_info calls need to be
+	   called asynchronously. We probably need a new gnome_vfs call that 
+	   takes a list of URIs and generates a list of file info structures.
+	 */
 
 	for (p = uris; p != NULL; p = p->next) {
 		uri = (const char *) p->data;
@@ -1959,14 +2005,18 @@ nautilus_directory_notify_files_added (GList *uris)
 		if (!is_file_list_monitored (directory)) {
 			continue;
 		}
+
+		info = gnome_vfs_file_info_new ();
+		result = gnome_vfs_get_file_info (uri, info, GNOME_VFS_FILE_INFO_DEFAULT, NULL);
+		if (result == GNOME_VFS_OK) {
+			gnome_vfs_file_info_ref (info);
+        		directory->details->pending_file_info
+				= g_list_prepend (directory->details->pending_file_info, info);
+			
+			schedule_dequeue_pending (directory);
+		}
 		
-		/* FIXME: Queue up files to have get_file_info called on them.
-		 * We can't just call it synchronously.
-		 * Once the NautilusFile objects are created we can emit
-		 * the files_added signals. Do this in a way that
-		 * results in a single files_added per directory
-		 * instead of many single-file calls.
-		 */
+		gnome_vfs_file_info_unref (info);
 	}
 }
 

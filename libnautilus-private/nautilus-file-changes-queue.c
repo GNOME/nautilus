@@ -74,7 +74,7 @@ nautilus_file_changes_queue_free (NautilusFileChangesQueue *queue)
 	}
 	
 #ifdef G_THREADS_ENABLED
-	/* if lock on a defunct mutext were defined (returning a failure)
+	/* if lock on a defunct mutex were defined (returning a failure)
 	 * we would lock here 
 	 */
 #endif
@@ -217,6 +217,11 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 	moves = NULL;
 	kind = CHANGE_FILE_INITIAL;
 
+	/* Consume changes from the queue, stuffing them into one of three lists,
+	 * keep doing it while the changes are of the same kind, then send them off.
+	 * This is to ensure that the changes get sent off in the same order that they 
+	 * arrived.
+	 */
 	for (chunk_count = 0; ; chunk_count++) {
 		change = nautilus_file_changes_queue_get_change (file_changes_queue);
 
@@ -227,13 +232,14 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 			|| (!consume_all && chunk_count >= CONSUME_CHANGES_MAX_CHUNK)) {
 			/* we have reached the chunk maximum */
 
-			/* Send changes we collected off.
-			 * Must send deletions first, then moves, then additions, because
-			 * of the possibility of name overlaps.
-			 * FIXME: In fact, we might need to send these out in the order
-			 * we received them to avoid confusion if a file is added and then
-			 * removed, or added and then moved, or moved and then deleted.
+			/* Send changes we collected off. 
+			 * At one time we may only have one of the three lists
+			 * contain changes.
 			 */
+
+			g_assert ((deletions != NULL) + (moves != NULL) 
+				+ (additions != NULL) <= 1);
+				
 			if (deletions != NULL) {
 				nautilus_directory_notify_files_removed (deletions);
 				nautilus_g_list_free_deep (deletions);

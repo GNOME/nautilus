@@ -34,6 +34,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-mime-info.h>
 #include <libgnome/gnome-mime.h>
+#include <libgnomevfs/gnome-vfs-file-info.h>
 
 #include <stdlib.h>
 #include <parser.h>
@@ -402,6 +403,19 @@ nautilus_file_matches_uri (NautilusFile *file, const char *uri_string)
 	gnome_vfs_uri_unref (match_uri);
 
 	return result;
+}
+
+gboolean
+nautilus_file_update (NautilusFile *file, GnomeVFSFileInfo *info)
+{
+	if (gnome_vfs_file_info_matches (file->details->info, info))
+		return FALSE;
+
+	gnome_vfs_file_info_unref (file->details->info);
+	gnome_vfs_file_info_ref (info);
+	file->details->info = info;
+
+	return TRUE;
 }
 
 static int

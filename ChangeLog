@@ -1,3 +1,25 @@
+2000-04-19  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_notify_files_added):
+	Work on making new files show up during copy. This is a simple version 
+	using sync gnome_vfs_get_file_info calls, we'll need a version that
+	uses a new async get_file_info call that takes a list of URIs and
+	produces a list of file info structs.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	* libnautilus-extensions/nautilus-file.c:
+	* libnautilus-extensions/nautilus-file.h:
+	(update_file_info_in_list_if_needed), (dequeue_pending_idle_callback),
+	(nautilus_file_update):
+	Made dequeue_pending_idle_callback deal with getting duplicate 
+	file info structures or file info structures for files we already
+	know about. This also fixes 395.
+
+	* libnautilus-extensions/nautilus-file-changes-queue.c
+	Added some better comments and removed a fixme that didn't really need 
+	fixing.
+
 2000-04-19  John Sullivan  <sullivan@eazel.com>
 
 	Darin and I started out thinking we were going to start entering
