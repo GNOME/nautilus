@@ -71,6 +71,20 @@ static char *get_mime_type_from_uri (const char
 static int strv_length (char **a);
 static char **strv_concat (char **a, char **b);
 
+static gboolean
+is_known_mime_type (const char *mime_type)
+{
+	if (mime_type == NULL) {
+		return FALSE;
+	}
+	
+	if (strcasecmp (mime_type, "application/octet-stream") == 0) {
+		return FALSE;
+	}
+	
+	return TRUE;
+}
+
 static void
 nautilus_directory_wait_for_metadata (NautilusDirectory *directory)
 {
@@ -268,7 +282,7 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 	g_list_free (attributes);
 	nautilus_directory_unref (directory);
 
-    	if (default_component_string == NULL && mime_type != NULL) {
+    	if (default_component_string == NULL && is_known_mime_type (mime_type)) {
 		mime_default = gnome_vfs_mime_get_default_component (mime_type);
 		if (mime_default != NULL) {
 			default_component_string = g_strdup (mime_default->iid);
@@ -322,14 +336,14 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 
 	/* Prefer something that matches the exact type to something
 	   that matches the supertype */
-	if (mime_type != NULL) {
+	if (is_known_mime_type (mime_type)) {
 		sort_conditions[2] = g_strconcat ("bonobo:supported_mime_types.has ('",mime_type,"')", NULL);
 	} else {
 		sort_conditions[2] = g_strdup ("true");
 	}
 
 	/* Prefer something that matches the supertype to something that matches `*' */
-	if (supertype != NULL) {
+	if (is_known_mime_type (mime_type) && supertype != NULL) {
 		sort_conditions[3] = g_strconcat ("bonobo:supported_mime_types.has ('",supertype,"')", NULL);
 	} else {
 		sort_conditions[3] = g_strdup ("true");
@@ -1404,8 +1418,7 @@ nautilus_do_component_query (const char *mime_type,
         oaf_result = NULL;
         query = NULL;
 
-        
-	if (mime_type != NULL) {
+        if (is_known_mime_type (mime_type)) {
                 query = make_oaf_query_with_known_mime_type (mime_type, uri_scheme, explicit_iids, extra_requirements);
         } else {
                 query = make_oaf_query_with_uri_scheme_only (uri_scheme, explicit_iids, extra_requirements);

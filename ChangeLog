@@ -1,3 +1,18 @@
+2000-09-07  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug causing icon view not to display trash:
+	URI.
+	
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(is_known_mime_type):
+	New function to return if mime type is recognized.
+	Return FALSE if mim tye if NULL or of type
+	application/octet-stream.
+	
+	(nautilus_mime_get_default_component_for_uri_internal),
+	(nautilus_do_component_query):
+	Call is_known_mime_type () instead of old != NULL check.
+	
 2000-09-07  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-metadata.c:
