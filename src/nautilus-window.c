@@ -1140,11 +1140,28 @@ static char *
 compute_default_title (const char *text_uri)
 {
 	NautilusFile *file;
-	char *title;
+	GnomeVFSURI *uri;
+	char *title, *displayname;
+	const char *hostname;
+
+	hostname = NULL;
 
 	if (text_uri) {
 		file = nautilus_file_get (text_uri);
-		title = nautilus_file_get_display_name (file);
+		uri = gnome_vfs_uri_new (text_uri);
+		if (uri && !gnome_vfs_uri_is_local (uri)) {
+			hostname = gnome_vfs_uri_get_host_name (uri);
+		}
+		displayname = nautilus_file_get_display_name (file);
+		if (hostname) {
+			title = g_strdup_printf (_("%s on %s"), displayname, hostname);
+			g_free (displayname);
+		} else {
+			title = displayname;
+		}
+		if (uri) {
+			gnome_vfs_uri_unref (uri);
+		}
 		nautilus_file_unref (file);
 	} else {
 		title = g_strdup ("");
