@@ -32,7 +32,6 @@
 #include <dirent.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
-#include <gdk_imlib.h>
 
 #include "mpg123_handler.h"
 
