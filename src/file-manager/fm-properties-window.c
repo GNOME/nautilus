@@ -608,11 +608,33 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 				  _("Date Modified:"), file, "date_modified");
 }
 
+static GtkWidget *
+create_image_widget_for_emblem (const char *emblem_name) {
+	NautilusScalableIcon *icon;
+	GdkPixbuf *pixbuf;
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
+
+	icon = nautilus_icon_factory_get_emblem_icon_by_name (emblem_name);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon,
+							    NAUTILUS_ICON_SIZE_STANDARD,
+							    NAUTILUS_ICON_SIZE_STANDARD,
+							    NAUTILUS_ICON_SIZE_STANDARD,
+							    NAUTILUS_ICON_SIZE_STANDARD,
+							    NULL);
+	nautilus_scalable_icon_unref (icon);
+	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
+	gdk_pixbuf_unref (pixbuf);
+
+	return gtk_pixmap_new (pixmap, mask);
+}
+
 static void
 create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 {
 	GtkWidget *emblems_page_vbox, *button;
 	GtkWidget *check_buttons_box, *left_buttons_box, *right_buttons_box;
+	GtkWidget *image_widget;
 	int i;
 
 	emblems_page_vbox = gtk_vbox_new (FALSE, 0);
@@ -638,6 +660,8 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 	/* The check buttons themselves. */
 	for (i = 0; i < NAUTILUS_N_ELEMENTS (property_names); i++) {
 		button = gtk_check_button_new_with_label (_(property_names[i]));
+		image_widget = create_image_widget_for_emblem (property_names[i]);
+		/* gtk_container_add (GTK_CONTAINER (button), image_widget); */
 		gtk_widget_show (button);
 
 		/* Attach parameters and signal handler. */
@@ -877,7 +901,7 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 
 	vbox = create_page_with_vbox (notebook, _("Permissions"));
 
-	if (!nautilus_file_can_get_permissions (file)) {
+	if (nautilus_file_can_get_permissions (file)) {
 		if (!nautilus_file_can_set_permissions (file)) {
 			add_prompt_and_separator (
 				GTK_VBOX (vbox), 

@@ -1,3 +1,24 @@
+2000-05-09  John Sullivan  <sullivan@eazel.com>
+
+	Checked in to fix silly problem from previous checkin:
+	I had left the sense of a check reversed for testing
+	purposes, and no permissions would ever appear in the
+	Properties window.
+
+	I've also got some new changes that have no visible
+	effect yet.
+
+	* libnautilus-extensions/nautilus-icon-factory.h,
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_emblem_icon_by_name):
+	New function, gets a single emblem icon.
+	(add_emblem): Calls _get_emblem_icon_by_name now.
+	* src/file-manager/fm-properties-window.c:
+	(create_image_widget_for_emblem), (create_emblems_page):
+	Some preliminary work towards making emblem images appear.
+	(create_permissions_page): Took out a "!" so permissions
+	show up.
+
 2000-05-09  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/ ALL

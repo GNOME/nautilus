@@ -808,13 +808,26 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	return scalable_icon;
 }
 
+NautilusScalableIcon *
+nautilus_icon_factory_get_emblem_icon_by_name (const char *emblem_name)
+{
+	NautilusScalableIcon *scalable_icon;
+	char *name_with_prefix;
+
+	name_with_prefix = g_strconcat (EMBLEM_NAME_PREFIX, emblem_name, NULL);
+	scalable_icon = nautilus_scalable_icon_get (NULL, name_with_prefix, NULL);
+	g_free (name_with_prefix);	
+
+	return scalable_icon;
+}
+
 static void
 add_emblem (GList **icons, const char *name)
 {
 	char *name_with_prefix;
 
 	name_with_prefix = g_strconcat (EMBLEM_NAME_PREFIX, name, NULL);
-	*icons = g_list_prepend (*icons, nautilus_scalable_icon_get (NULL, name_with_prefix, NULL));
+	*icons = g_list_prepend (*icons, nautilus_icon_factory_get_emblem_icon_by_name (name));
 	g_free (name_with_prefix);
 }
 

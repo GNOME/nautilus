@@ -95,6 +95,7 @@ guint                 nautilus_get_icon_size_for_zoom_level              (Nautil
 NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file            (NautilusFile          *file,
 									  const char		*modifier);
 NautilusScalableIcon *nautilus_icon_factory_get_icon_by_name             (const char            *icon_name);
+NautilusScalableIcon *nautilus_icon_factory_get_emblem_icon_by_name 	 (const char 		*emblem_name);
 GList *               nautilus_icon_factory_get_emblem_icons_for_file    (NautilusFile          *file);
 
 /* Render an icon to a particular size.
