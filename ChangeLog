@@ -1,3 +1,50 @@
+2000-08-21  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/Makefile.am:
+	* components/services/install/nautilus-view/Makefile.am:
+	* components/services/login/nautilus-view/Makefile.am:
+	* components/services/nautilus-dependant-shared/.cvsignore:
+	* components/services/nautilus-dependant-shared/Makefile.am:
+	* components/services/nautilus-dependant-shared/icons/.cvsignore:
+	* components/services/nautilus-dependant-shared/icons/Makefile.am:
+	 
+	components/services/nautilus-dependant-shared/shared-service-utilit
+	ies.c:
+	 
+	components/services/nautilus-dependant-shared/shared-service-utilit
+	ies.h:
+	 
+	components/services/nautilus-dependant-shared/shared-service-widget
+	s.c:
+	 
+	components/services/nautilus-dependant-shared/shared-service-widget
+	s.h:
+	* components/services/nautilus-dependent-shared/.cvsignore:
+	* components/services/nautilus-dependent-shared/Makefile.am:
+	* components/services/nautilus-dependent-shared/icons/.cvsignore:
+	* components/services/nautilus-dependent-shared/icons/Makefile.am:
+	 
+	components/services/nautilus-dependent-shared/shared-service-utilit
+	ies.c: (go_to_uri), (is_location):
+	 
+	components/services/nautilus-dependent-shared/shared-service-utilit
+	ies.h:
+	 
+	components/services/nautilus-dependent-shared/shared-service-widget
+	s.c: (create_image_widget), (create_services_title_widget),
+	(create_services_header_widget), (set_widget_foreground_color),
+	(show_feedback):
+	 
+	components/services/nautilus-dependent-shared/shared-service-widget
+	s.h:
+	* components/services/startup/nautilus-view/Makefile.am:
+	* components/services/summary/nautilus-view/Makefile.am:
+	* configure.in:
+
+	Moving nautilus-dependant-shared to nautilus-dependent-shared.  The
+	poor spelling was too much.
+	
+
 2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-scalable-font.c:

@@ -10,7 +10,7 @@ INCLUDES =						\
 	-I$(top_srcdir)/components/services/trilobite	\
 	-I$(top_builddir)/components/services/install/lib \
 	-I$(top_builddir)/components/services/trilobite	\
-	-I$(top_srcdir)/components/services/nautilus-dependant-shared	\
+	-I$(top_srcdir)/components/services/nautilus-dependent-shared	\
 	-I$(top_builddir)/components/services/install/lib \
 	-I$(top_builddir)				\
 	-I/usr/include/rpm				\
@@ -39,7 +39,7 @@ nautilus_service_install_view_LDADD =			\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
 	$(top_builddir)/components/services/install/lib/libeazelinstall.la \
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
-	$(top_builddir)/components/services/nautilus-dependant-shared/libnautilusdepshared.a \
+	$(top_builddir)/components/services/nautilus-dependent-shared/libnautilusdepshared.a \
 	$(BONOBO_LIBS)					\
 	$(GCONF_LIBS)					\
 	$(GNOMEUI_LIBS)					\

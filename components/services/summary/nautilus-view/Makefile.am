@@ -7,7 +7,7 @@ CPPFLAGS =							\
 
 INCLUDES =								\
 	-I$(top_srcdir)							\
-	-I$(top_srcdir)/components/services/nautilus-dependant-shared	\
+	-I$(top_srcdir)/components/services/nautilus-dependent-shared	\
 	-I$(top_srcdir)/components/services/trilobite/libtrilobite	\
 	-I$(top_srcdir)/components/services/summary/lib			\
 	-I$(top_builddir)						\
@@ -34,7 +34,7 @@ nautilus_summary_view_SOURCES =						\
 
 nautilus_summary_view_LDADD =						\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
-	$(top_builddir)/components/services/nautilus-dependant-shared/libnautilusdepshared.a \
+	$(top_builddir)/components/services/nautilus-dependent-shared/libnautilusdepshared.a \
 	$(top_builddir)/libnautilus/libnautilus.la			\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
 	$(BONOBO_LIBS)							\
