@@ -1,3 +1,15 @@
+Wed Jan 03 04:11:01 2001  George Lebl <jirka@5z.com>
+
+	Reviewed by Maciej, so if I broke something, blame him.
+
+	Fixes #5356
+
+	* libnautilus-extensions/nautilus-directory-background.c
+	  (make_root_pixmap): Do what the comment says and actually open
+	  a new display before setting the close down mode to RetainPermanent.
+	  This made nautilus windows stay persistent after a crash or whatnot.
+	  This bug was inherited from control-center.
+
 2001-01-03  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Pavel Cisler<pavel@eazel.com>

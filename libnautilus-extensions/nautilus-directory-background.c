@@ -468,16 +468,21 @@ nautilus_file_background_receive_root_window_changes (NautilusBackground *backgr
 static GdkPixmap *
 make_root_pixmap (gint width, gint height)
 {
+	Display *display;
 	Pixmap result;
 
 	gdk_flush ();
 
-	XSetCloseDownMode (gdk_display, RetainPermanent);
+	display = XOpenDisplay (gdk_display_name);
 
-	result = XCreatePixmap (gdk_display,
-				DefaultRootWindow (gdk_display),
+	XSetCloseDownMode (display, RetainPermanent);
+
+	result = XCreatePixmap (display,
+				DefaultRootWindow (display),
 				width, height,
 				DefaultDepthOfScreen (DefaultScreenOfDisplay (GDK_DISPLAY())));
+
+	XCloseDisplay (display);
 
 	return gdk_pixmap_foreign_new (result);
 }
