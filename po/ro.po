@@ -8,14 +8,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.ro\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-10-06 14:08+0300\n"
+"POT-Creation-Date: 2003-10-20 13:12+0200\n"
 "PO-Revision-Date: 2003-10-05 16:40+0300\n"
 "Last-Translator: Mugurel Tudor <mugurelu@go.ro>\n"
 "Language-Team:  <@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 "X-Generator: KBabel 1.0.1\n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
@@ -271,11 +271,59 @@ msgstr "Componentă pentru vizualizarea proprietăţilor imaginii"
 msgid "Nautilus Image Properties view"
 msgstr "Vizualizare proprietăţi imagine"
 
-#: components/image_properties/nautilus-image-properties-view.c:93
-msgid "Failed to load image information"
-msgstr "Eşec la încărcarea informaţiilor imaginii"
+#: components/image_properties/nautilus-image-properties-view.c:192
+#, fuzzy
+msgid "Camera Brand"
+msgstr "Cameră"
 
-#: components/image_properties/nautilus-image-properties-view.c:145
+#: components/image_properties/nautilus-image-properties-view.c:193
+#, fuzzy
+msgid "Camera Model"
+msgstr "Cameră"
+
+#: components/image_properties/nautilus-image-properties-view.c:194
+msgid "Date Taken"
+msgstr ""
+
+#: components/image_properties/nautilus-image-properties-view.c:195
+msgid "Exposure Time"
+msgstr ""
+
+#: components/image_properties/nautilus-image-properties-view.c:196
+#, fuzzy
+msgid "Exposure Program"
+msgstr "program"
+
+#: components/image_properties/nautilus-image-properties-view.c:197
+msgid "Aperture Value"
+msgstr ""
+
+#: components/image_properties/nautilus-image-properties-view.c:198
+msgid "Metering Mode"
+msgstr ""
+
+#: components/image_properties/nautilus-image-properties-view.c:199
+msgid "Flash Fired"
+msgstr ""
+
+#: components/image_properties/nautilus-image-properties-view.c:200
+msgid "Focal Lenght"
+msgstr ""
+
+#: components/image_properties/nautilus-image-properties-view.c:201
+msgid "Shutter Speed"
+msgstr ""
+
+#: components/image_properties/nautilus-image-properties-view.c:202
+msgid "ISO Speed Rating"
+msgstr ""
+
+#: components/image_properties/nautilus-image-properties-view.c:203
+#: data/static_bookmarks.xml.h:36
+msgid "Software"
+msgstr "Software"
+
+#: components/image_properties/nautilus-image-properties-view.c:222
 #, c-format
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
@@ -284,11 +332,15 @@ msgstr ""
 "<b>Tipul imagini:</b> %s (%s)\n"
 "<b>Rezoluţia:</b> %dx%d pixels\n"
 
-#: components/image_properties/nautilus-image-properties-view.c:255
+#: components/image_properties/nautilus-image-properties-view.c:235
+msgid "Failed to load image information"
+msgstr "Eşec la încărcarea informaţiilor imaginii"
+
+#: components/image_properties/nautilus-image-properties-view.c:423
 msgid "loading..."
 msgstr "încarc..."
 
-#: components/image_properties/nautilus-image-properties-view.c:268
+#: components/image_properties/nautilus-image-properties-view.c:439
 msgid "URI currently displayed"
 msgstr "URI-ul afişat curent"
 
@@ -395,15 +447,15 @@ msgstr "(Gol)"
 msgid "Loading..."
 msgstr "Încarc..."
 
-#: components/tree/nautilus-tree-view.c:529 nautilus.desktop.in.h:1
+#: components/tree/nautilus-tree-view.c:542 nautilus.desktop.in.h:1
 msgid "Home Folder"
 msgstr "Dosar Acasă"
 
-#: components/tree/nautilus-tree-view.c:531
+#: components/tree/nautilus-tree-view.c:544
 msgid "Filesystem"
 msgstr "Sistem de fişiere"
 
-#: components/tree/nautilus-tree-view.c:533
+#: components/tree/nautilus-tree-view.c:546
 msgid "Network Neighbourhood"
 msgstr "Vecini de reţea"
 
@@ -939,10 +991,6 @@ msgstr "Red Hat Network"
 #: data/static_bookmarks.xml.h:35
 msgid "RedFlag Linux"
 msgstr "RedFlag Linux"
-
-#: data/static_bookmarks.xml.h:36
-msgid "Software"
-msgstr "Software"
 
 #: data/static_bookmarks.xml.h:37
 msgid "SourceForge"
@@ -3314,47 +3362,47 @@ msgstr "nimic"
 msgid "%s's Home"
 msgstr "Casa %s"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2147
+#: libnautilus-private/nautilus-icon-canvas-item.c:2149
 msgid "file icon"
 msgstr "fişier iconiţă"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2520
+#: libnautilus-private/nautilus-icon-canvas-item.c:2522
 msgid "editable text"
 msgstr "text editabil"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2521
+#: libnautilus-private/nautilus-icon-canvas-item.c:2523
 msgid "the editable label"
 msgstr "eticheta editabil"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2528
+#: libnautilus-private/nautilus-icon-canvas-item.c:2530
 msgid "additional text"
 msgstr "text adiţional"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2529
+#: libnautilus-private/nautilus-icon-canvas-item.c:2531
 msgid "some more text"
 msgstr "încă un text"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2536
+#: libnautilus-private/nautilus-icon-canvas-item.c:2538
 msgid "highlighted for selection"
 msgstr "evidenţiat pentru selecţie"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2537
+#: libnautilus-private/nautilus-icon-canvas-item.c:2539
 msgid "whether we are highlighted for a selection"
 msgstr "dacă sunt evidenţiat pentru selecţie"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2544
+#: libnautilus-private/nautilus-icon-canvas-item.c:2546
 msgid "highlighted as keyboard focus"
 msgstr "evidenţiat pentru focalizare tastatură"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2545
+#: libnautilus-private/nautilus-icon-canvas-item.c:2547
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "dacă sunt evidenţiat pentru focalizare tastatură"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2553
+#: libnautilus-private/nautilus-icon-canvas-item.c:2555
 msgid "highlighted for drop"
 msgstr "evidenţiat pentru plasare"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2554
+#: libnautilus-private/nautilus-icon-canvas-item.c:2556
 msgid "whether we are highlighted for a D&D drop"
 msgstr "dacă sunt evidenţiat pentru tragere şi plasare"
 
@@ -4390,97 +4438,97 @@ msgstr "E_jectează"
 msgid "_Unmount Volume"
 msgstr "_Demontează volumul"
 
-#: src/file-manager/fm-directory-view.c:486
+#: src/file-manager/fm-directory-view.c:487
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
 msgstr "Aceasta va deschide %d ferestre separate. Sunteţi sigur(ă)?"
 
-#: src/file-manager/fm-directory-view.c:488
+#: src/file-manager/fm-directory-view.c:489
 #, c-format
 msgid "Open %d Windows?"
 msgstr "Deschide %d ferestre?"
 
-#: src/file-manager/fm-directory-view.c:812
+#: src/file-manager/fm-directory-view.c:813
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Sunteţi sigur(ă) că doriţi să ştergeţi permanent \"%s\"?"
 
-#: src/file-manager/fm-directory-view.c:816
+#: src/file-manager/fm-directory-view.c:817
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected items?"
 msgstr ""
 "Sunteţi sigur(ă) că doriţi să ştergeţi permanent cele %d elemente selectate?"
 
-#: src/file-manager/fm-directory-view.c:822
+#: src/file-manager/fm-directory-view.c:823
 msgid "Delete?"
 msgstr "Şterg?"
 
-#: src/file-manager/fm-directory-view.c:961
+#: src/file-manager/fm-directory-view.c:962
 #, fuzzy
 msgid "Select Pattern"
 msgstr "Selectează o categorie:"
 
-#: src/file-manager/fm-directory-view.c:977
+#: src/file-manager/fm-directory-view.c:978
 #, fuzzy
 msgid "_Pattern:"
 msgstr "_Modele"
 
-#: src/file-manager/fm-directory-view.c:1574
+#: src/file-manager/fm-directory-view.c:1575
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" selectat"
 
-#: src/file-manager/fm-directory-view.c:1576
+#: src/file-manager/fm-directory-view.c:1577
 msgid "1 folder selected"
 msgstr "1 dosar selectat"
 
-#: src/file-manager/fm-directory-view.c:1579
+#: src/file-manager/fm-directory-view.c:1580
 #, c-format
 msgid "%d folders selected"
 msgstr "%d dosare selectate"
 
-#: src/file-manager/fm-directory-view.c:1586
+#: src/file-manager/fm-directory-view.c:1587
 msgid " (containing 0 items)"
 msgstr " (conţinând 0 elemente)"
 
-#: src/file-manager/fm-directory-view.c:1588
+#: src/file-manager/fm-directory-view.c:1589
 msgid " (containing 1 item)"
 msgstr " (conţinând 1 element)"
 
-#: src/file-manager/fm-directory-view.c:1590
+#: src/file-manager/fm-directory-view.c:1591
 #, c-format
 msgid " (containing %d items)"
 msgstr " (conţinând %d elemente)"
 
-#: src/file-manager/fm-directory-view.c:1597
+#: src/file-manager/fm-directory-view.c:1598
 msgid " (containing a total of 0 items)"
 msgstr " (conţinând un total de 0 elemente)"
 
-#: src/file-manager/fm-directory-view.c:1599
+#: src/file-manager/fm-directory-view.c:1600
 msgid " (containing a total of 1 item)"
 msgstr " (conţinând un total de 1 element)"
 
-#: src/file-manager/fm-directory-view.c:1601
+#: src/file-manager/fm-directory-view.c:1602
 #, c-format
 msgid " (containing a total of %d items)"
 msgstr " (conţinând un total de %d elemente)"
 
-#: src/file-manager/fm-directory-view.c:1614
+#: src/file-manager/fm-directory-view.c:1615
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" selectat (%s)"
 
-#: src/file-manager/fm-directory-view.c:1618
+#: src/file-manager/fm-directory-view.c:1619
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d elemente selectate (%s)"
 
-#: src/file-manager/fm-directory-view.c:1625
+#: src/file-manager/fm-directory-view.c:1626
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 alt element selectat (%s)"
 
-#: src/file-manager/fm-directory-view.c:1628
+#: src/file-manager/fm-directory-view.c:1629
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d alte elemente selectate (%s)"
@@ -4492,7 +4540,7 @@ msgstr "%d alte elemente selectate (%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1657
+#: src/file-manager/fm-directory-view.c:1658
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4501,7 +4549,7 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1782
+#: src/file-manager/fm-directory-view.c:1783
 #, c-format
 msgid ""
 "The folder \"%s\" contains more files than Nautilus can handle. Some files "
@@ -4510,17 +4558,17 @@ msgstr ""
 "Dosarul \"%s\" conţine mai multe fişiere decât capacitatea lui Nautilus. "
 "Unele fişiere Nu vor fi afişate."
 
-#: src/file-manager/fm-directory-view.c:1789
+#: src/file-manager/fm-directory-view.c:1790
 msgid "Too Many Files"
 msgstr "Prea multe fişiere"
 
-#: src/file-manager/fm-directory-view.c:3021
+#: src/file-manager/fm-directory-view.c:3022
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr "\"%s\" nu poate fi mutat la gunoi. Doriţi să-l ştergeţi imediat?"
 
-#: src/file-manager/fm-directory-view.c:3026
+#: src/file-manager/fm-directory-view.c:3027
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
@@ -4529,7 +4577,7 @@ msgstr ""
 "Elementele selectate %d nu pot fi mutate la gunoi. Doriţi să le ştergeţi "
 "imediat?"
 
-#: src/file-manager/fm-directory-view.c:3030
+#: src/file-manager/fm-directory-view.c:3031
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
@@ -4538,16 +4586,16 @@ msgstr ""
 "%d din elementele selectate nu pot fi mutate la gunoi. Doriţi să ştergeţi "
 "imediat aceste %d elemente?"
 
-#: src/file-manager/fm-directory-view.c:3038
+#: src/file-manager/fm-directory-view.c:3039
 msgid "Delete Immediately?"
 msgstr "Şterg imediat?"
 
-#: src/file-manager/fm-directory-view.c:3070
+#: src/file-manager/fm-directory-view.c:3071
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
 msgstr "Sunteţi sigur(ă) că doriţi să ştergeţi permanent \"%s\" din Gunoi?"
 
-#: src/file-manager/fm-directory-view.c:3074
+#: src/file-manager/fm-directory-view.c:3075
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
@@ -4556,49 +4604,49 @@ msgstr ""
 "Sunteţi sigur(ă) că doriţi să ştergeţi permanent din Gunoi cele %d elemente "
 "selectate?"
 
-#: src/file-manager/fm-directory-view.c:3080
+#: src/file-manager/fm-directory-view.c:3081
 msgid "Delete From Trash?"
 msgstr "Şterge din Gunoi?"
 
-#: src/file-manager/fm-directory-view.c:3359
-#: src/file-manager/fm-directory-view.c:3401
+#: src/file-manager/fm-directory-view.c:3360
+#: src/file-manager/fm-directory-view.c:3402
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Foloseşte \"%s\" pentru a deschide elementul selectat"
 
-#: src/file-manager/fm-directory-view.c:3482
+#: src/file-manager/fm-directory-view.c:3481
 #: src/file-manager/nautilus-directory-view-ui.xml.h:25
 msgid "Other _Application..."
 msgstr "Altă _Aplicaţie..."
 
-#: src/file-manager/fm-directory-view.c:3482
+#: src/file-manager/fm-directory-view.c:3481
 msgid "An _Application..."
 msgstr "O _Aplicaţie..."
 
-#: src/file-manager/fm-directory-view.c:3487
+#: src/file-manager/fm-directory-view.c:3503
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Other _Viewer..."
 msgstr "Alt _Vizualizator..."
 
-#: src/file-manager/fm-directory-view.c:3487
+#: src/file-manager/fm-directory-view.c:3503
 msgid "A _Viewer..."
 msgstr "Un _Vizualizator..."
 
-#: src/file-manager/fm-directory-view.c:3569
+#: src/file-manager/fm-directory-view.c:3596
 #, c-format
 msgid "Could not complete specified action:  %s"
 msgstr "N-am putut completa acţiunea specificată: %s"
 
-#: src/file-manager/fm-directory-view.c:3593
+#: src/file-manager/fm-directory-view.c:3620
 msgid "Could not complete specified action."
 msgstr "N-am putut completa acţiunea specificată."
 
-#: src/file-manager/fm-directory-view.c:4102
+#: src/file-manager/fm-directory-view.c:4129
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Rulează \"%s\" pe orice elemente selectate"
 
-#: src/file-manager/fm-directory-view.c:4319
+#: src/file-manager/fm-directory-view.c:4346
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
@@ -4608,11 +4656,11 @@ msgstr ""
 "Alegând un script din meniu va rula acel script cu elementele selectate ca "
 "parametru."
 
-#: src/file-manager/fm-directory-view.c:4322
+#: src/file-manager/fm-directory-view.c:4349
 msgid "About Scripts"
 msgstr "Despre scripturi"
 
-#: src/file-manager/fm-directory-view.c:4323
+#: src/file-manager/fm-directory-view.c:4350
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4653,17 +4701,17 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: poziţia şi mărimea ferestrei curente"
 
-#: src/file-manager/fm-directory-view.c:4444
+#: src/file-manager/fm-directory-view.c:4471
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" va fi mutat dacă selectaţi comanda Lipeşte fişiere"
 
-#: src/file-manager/fm-directory-view.c:4448
+#: src/file-manager/fm-directory-view.c:4475
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" va fi copiat dacă selectaţi comanda Lipeşte fişiere"
 
-#: src/file-manager/fm-directory-view.c:4455
+#: src/file-manager/fm-directory-view.c:4482
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
@@ -4671,7 +4719,7 @@ msgstr ""
 "Cele %d elemente selectate vor fi mutate dacă selectaţi comanda Lipeşte "
 "fişiere"
 
-#: src/file-manager/fm-directory-view.c:4459
+#: src/file-manager/fm-directory-view.c:4486
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
@@ -4679,78 +4727,87 @@ msgstr ""
 "Cele %d elemente selectate vor fi copiate dacă selectaţi comanda Lipeşte "
 "fişiere"
 
-#: src/file-manager/fm-directory-view.c:4538
+#: src/file-manager/fm-directory-view.c:4565
 msgid "There is nothing on the clipboard to paste."
 msgstr "Nu este nimic în memorie pentru a fi lipit."
 
-#: src/file-manager/fm-directory-view.c:4789
-#: src/file-manager/nautilus-directory-view-ui.xml.h:21
+#: src/file-manager/fm-directory-view.c:4842
 #, fuzzy
-msgid "Navigation Window"
-msgstr "Navigare"
+msgid "Open in New Window"
+msgstr "Deschide în fereastră nouă"
 
-#: src/file-manager/fm-directory-view.c:4791
+#: src/file-manager/fm-directory-view.c:4844
 #, fuzzy, c-format
-msgid "%d Navigation Windows"
-msgstr "Navigare"
+msgid "Open in %d New Windows"
+msgstr "Deschide în %d ferestre noi"
 
-#: src/file-manager/fm-directory-view.c:4808
+#: src/file-manager/fm-directory-view.c:4849
+#, fuzzy
+msgid "Browse Folder"
+msgstr "Dosar Acasă"
+
+#: src/file-manager/fm-directory-view.c:4851
+#, fuzzy
+msgid "Browse Folders"
+msgstr "Dosar Acasă"
+
+#: src/file-manager/fm-directory-view.c:4874
 msgid "_Delete from Trash"
 msgstr "_Şterge din Gunoi"
 
-#: src/file-manager/fm-directory-view.c:4810
+#: src/file-manager/fm-directory-view.c:4876
 msgid "Delete all selected items permanently"
 msgstr "Şterge permanent toate elementele selectate"
 
-#: src/file-manager/fm-directory-view.c:4813
-#: src/file-manager/fm-directory-view.c:5094
+#: src/file-manager/fm-directory-view.c:4879
+#: src/file-manager/fm-directory-view.c:5163
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Mo_ve to Trash"
 msgstr "Mută la _Gunoi"
 
-#: src/file-manager/fm-directory-view.c:4815
+#: src/file-manager/fm-directory-view.c:4881
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Move each selected item to the Trash"
 msgstr "Mută elementele selectate la Gunoi"
 
-#: src/file-manager/fm-directory-view.c:4839
+#: src/file-manager/fm-directory-view.c:4905
 #: src/file-manager/nautilus-directory-view-ui.xml.h:42
 msgid "_Delete"
 msgstr "_Şterge"
 
-#: src/file-manager/fm-directory-view.c:4859
+#: src/file-manager/fm-directory-view.c:4925
 msgid "Ma_ke Links"
 msgstr "Creează legături"
 
-#: src/file-manager/fm-directory-view.c:4860
+#: src/file-manager/fm-directory-view.c:4926
 #: src/file-manager/nautilus-directory-view-ui.xml.h:16
 msgid "Ma_ke Link"
 msgstr "Creează legătură"
 
-#: src/file-manager/fm-directory-view.c:4873
+#: src/file-manager/fm-directory-view.c:4939
 #: src/file-manager/nautilus-directory-view-ui.xml.h:43
 msgid "_Empty Trash"
 msgstr "Goleşte Gunoiul"
 
-#: src/file-manager/fm-directory-view.c:4886
+#: src/file-manager/fm-directory-view.c:4955
 msgid "Cu_t File"
 msgstr "Taie fişierul"
 
-#: src/file-manager/fm-directory-view.c:4887
+#: src/file-manager/fm-directory-view.c:4956
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "Cu_t Files"
 msgstr "Taie fişierele"
 
-#: src/file-manager/fm-directory-view.c:4896
+#: src/file-manager/fm-directory-view.c:4965
 msgid "_Copy File"
 msgstr "_Copiază fişierul"
 
-#: src/file-manager/fm-directory-view.c:4897
+#: src/file-manager/fm-directory-view.c:4966
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
 msgid "_Copy Files"
 msgstr "_Copiază fişierele"
 
-#: src/file-manager/fm-directory-view.c:5085
+#: src/file-manager/fm-directory-view.c:5154
 msgid ""
 "This link can't be used, because it has no target. Do you want to move this "
 "link to the Trash?"
@@ -4758,7 +4815,7 @@ msgstr ""
 "Aceată legătură nu poate fi folosită deoarece nu are ţintă. Doriţi să o "
 "mutaţi la Gunoi?"
 
-#: src/file-manager/fm-directory-view.c:5088
+#: src/file-manager/fm-directory-view.c:5157
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -4767,11 +4824,11 @@ msgstr ""
 "Aceată legătură nu poate fi folosită deoarece ţinta sa \"%s\" nu există. "
 "Doriţi să o mutaţi la Gunoi?"
 
-#: src/file-manager/fm-directory-view.c:5094
+#: src/file-manager/fm-directory-view.c:5163
 msgid "Broken Link"
 msgstr "Legătură greşită"
 
-#: src/file-manager/fm-directory-view.c:5151
+#: src/file-manager/fm-directory-view.c:5220
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -4779,28 +4836,28 @@ msgid ""
 msgstr ""
 "\"%s\" este un fişier executabil. Doriţi să-l rulaţi sau să-l vizualizaţi?"
 
-#: src/file-manager/fm-directory-view.c:5157
+#: src/file-manager/fm-directory-view.c:5226
 msgid "Run or Display?"
 msgstr "Rulează sau vizualizează"
 
-#: src/file-manager/fm-directory-view.c:5158
+#: src/file-manager/fm-directory-view.c:5227
 msgid "_Display"
 msgstr "_Afişează"
 
-#: src/file-manager/fm-directory-view.c:5159
+#: src/file-manager/fm-directory-view.c:5228
 msgid "Run in _Terminal"
 msgstr "Rulează în _terminal"
 
-#: src/file-manager/fm-directory-view.c:5162
+#: src/file-manager/fm-directory-view.c:5231
 msgid "_Run"
 msgstr "_Rulează"
 
-#: src/file-manager/fm-directory-view.c:5367
+#: src/file-manager/fm-directory-view.c:5436
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Deschid \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5373
+#: src/file-manager/fm-directory-view.c:5442
 msgid "Cancel Open?"
 msgstr "Renunţă la deschidere?"
 
@@ -4995,29 +5052,29 @@ msgstr "arată către \"%s\""
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Tragere şi plasare este suportată doar pe sisteme de fişiere locale."
 
-#: src/file-manager/fm-icon-view.c:2545 src/file-manager/fm-icon-view.c:2564
+#: src/file-manager/fm-icon-view.c:2545 src/file-manager/fm-icon-view.c:2568
 msgid "Drag and Drop error"
 msgstr "Eroare tragere şi plasare"
 
-#: src/file-manager/fm-icon-view.c:2563
+#: src/file-manager/fm-icon-view.c:2567
 msgid "An invalid drag type was used."
 msgstr "A fost folosit un tip de tragere invalid."
 
-#: src/file-manager/fm-list-view.c:752
+#: src/file-manager/fm-list-view.c:762
 msgid "File name"
 msgstr "Nume fişier"
 
-#: src/file-manager/fm-list-view.c:776
+#: src/file-manager/fm-list-view.c:786
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Mărime"
 
-#: src/file-manager/fm-list-view.c:787
+#: src/file-manager/fm-list-view.c:797
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Tip"
 
-#: src/file-manager/fm-list-view.c:798
+#: src/file-manager/fm-list-view.c:808
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Data modificării"
@@ -5159,6 +5216,7 @@ msgid "Size:"
 msgstr "Mărime:"
 
 #: src/file-manager/fm-properties-window.c:2256 src/nautilus-location-bar.c:61
+#: src/nautilus-location-dialog.c:145
 msgid "Location:"
 msgstr "Locaţie:"
 
@@ -5655,14 +5713,19 @@ msgstr ""
 "Mută sau copie fişierele selectate anterior printr-o comandă Taie sau "
 "Lipeşte în dosarul selectat"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:22
+#: src/file-manager/nautilus-directory-view-ui.xml.h:21
 msgid "Open Wit_h"
 msgstr "Deschide _cu"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:23
+#: src/file-manager/nautilus-directory-view-ui.xml.h:22
 #, fuzzy
 msgid "Open each selected item in a navigation window"
 msgstr "Deschide fiecare element selectat într-o fereastră nouă"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:23
+#, fuzzy
+msgid "Open in Navigation Window"
+msgstr "Navigare"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:24
 msgid "Open the selected item in this window"
@@ -6331,6 +6394,11 @@ msgstr "Doriţi să vizualizaţi aceste %d locaţii în ferestre separate?"
 msgid "View in Multiple Windows?"
 msgstr "Vizualizează ferestre multiple?"
 
+#: src/nautilus-location-dialog.c:138
+#, fuzzy
+msgid "Open Location"
+msgstr "_Locaţie..."
+
 #: src/nautilus-main.c:149
 msgid "Perform a quick set of self-check tests."
 msgstr "Efectuează o suită rapidă de auto-testări."
@@ -6366,7 +6434,7 @@ msgid "File Manager"
 msgstr "Manager de fişiere"
 
 #. Set initial window title
-#: src/nautilus-main.c:197 src/nautilus-spatial-window.c:254
+#: src/nautilus-main.c:197 src/nautilus-spatial-window.c:263
 #: src/nautilus-window-menus.c:567 src/nautilus-window.c:173
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -6608,11 +6676,11 @@ msgstr ""
 msgid "Side Panel Failed"
 msgstr "Panoul lateral a eşuat"
 
-#: src/nautilus-navigation-window.c:1238
+#: src/nautilus-navigation-window.c:1239
 msgid "Side Pane"
 msgstr "Panou lateral"
 
-#: src/nautilus-navigation-window.c:1240
+#: src/nautilus-navigation-window.c:1241
 msgid "Contains a side pane view"
 msgstr "Conţine un panou lateral"
 
@@ -7210,23 +7278,27 @@ msgstr "_Modele"
 msgid "Find:"
 msgstr "Caută:"
 
-#: src/nautilus-view-frame.c:584
+#: src/nautilus-view-frame.c:595
 msgid "a title"
 msgstr "un titlu"
 
-#: src/nautilus-view-frame.c:593
+#: src/nautilus-view-frame.c:604
 msgid "the browse history"
 msgstr "istoric navigare"
 
-#: src/nautilus-view-frame.c:602
+#: src/nautilus-view-frame.c:613
 msgid "the current selection"
 msgstr "selectarea curentă"
 
-#: src/nautilus-window-manage-views.c:809
+#: src/nautilus-view-frame.c:622
+msgid "the type of window the view is embedded in"
+msgstr ""
+
+#: src/nautilus-window-manage-views.c:817
 msgid "View Failed"
 msgstr "Vizualizarea a eşuat"
 
-#: src/nautilus-window-manage-views.c:820
+#: src/nautilus-window-manage-views.c:828
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -7235,26 +7307,26 @@ msgstr ""
 "Vizualizarea %s a avut o eroare şi nu poate continua. Puteţi alege altă "
 "vizualizare sau să mergeţi la o locaţie diferită."
 
-#: src/nautilus-window-manage-views.c:831
+#: src/nautilus-window-manage-views.c:839
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "Vizualizarea %s a avut o eroare la pornire."
 
-#: src/nautilus-window-manage-views.c:977
+#: src/nautilus-window-manage-views.c:986
 msgid "Content View"
 msgstr "Vizualizare conţinut"
 
-#: src/nautilus-window-manage-views.c:978
+#: src/nautilus-window-manage-views.c:987
 msgid "View of the current file or folder"
 msgstr "Vizualizarea fişierului sau dosarului curent"
 
-#: src/nautilus-window-manage-views.c:1230
+#: src/nautilus-window-manage-views.c:1239
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "N-am putu găsi \"%s\". Vă rog verificaţi ortografia şi încercaţi din nou."
 
-#: src/nautilus-window-manage-views.c:1236
+#: src/nautilus-window-manage-views.c:1245
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
@@ -7262,7 +7334,7 @@ msgstr ""
 "\"%s\" nu este o locaţie validă. Vă rog verificaţi ortografia şi încercaţi "
 "din nou."
 
-#: src/nautilus-window-manage-views.c:1250
+#: src/nautilus-window-manage-views.c:1259
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -7271,30 +7343,30 @@ msgstr ""
 "N-am putu afişa \"%s\", deoarece Nautilus nu poate determina ce tip de "
 "fişier este."
 
-#: src/nautilus-window-manage-views.c:1258
+#: src/nautilus-window-manage-views.c:1267
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Nautilus nu are instalat un vizualizor capabil să afişeze \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1270
+#: src/nautilus-window-manage-views.c:1279
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "N-am putut afişa \"%s\", deoarece Nautilus nu poate înţelege locaţii de tip "
 "\"%s:\""
 
-#: src/nautilus-window-manage-views.c:1276
+#: src/nautilus-window-manage-views.c:1285
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "N-am putut afişa \"%s\", deoarece încercarea de a face login a eşuat."
 
-#: src/nautilus-window-manage-views.c:1281
+#: src/nautilus-window-manage-views.c:1290
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "N-am putut afişa \"%s\", deoarece accesul a fost interzis."
 
-#: src/nautilus-window-manage-views.c:1292
+#: src/nautilus-window-manage-views.c:1301
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -7303,12 +7375,12 @@ msgstr ""
 "N-am putut afişa \"%s\", deoarece gazda \"%s\" nu a putut fi găsită. Vă rog "
 "verificaţi ortografia şi setările proxy."
 
-#: src/nautilus-window-manage-views.c:1300
+#: src/nautilus-window-manage-views.c:1309
 #, c-format
 msgid "Couldn't display \"%s\". Check that your proxy settings are correct."
 msgstr "N-am putut afişa \"%s\". Vă rog verificaţi setările proxy."
 
-#: src/nautilus-window-manage-views.c:1307
+#: src/nautilus-window-manage-views.c:1316
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -7319,7 +7391,7 @@ msgstr ""
 "master SMB.\n"
 "Vă rog verificaţi dacă un server SMB rulează în reţeaua locală."
 
-#: src/nautilus-window-manage-views.c:1319
+#: src/nautilus-window-manage-views.c:1328
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -7331,16 +7403,16 @@ msgstr ""
 "serviciul de căutare Medusa, şi în cazul în care nu aveţi un index, că "
 "indexarea Medusa rulează."
 
-#: src/nautilus-window-manage-views.c:1323
+#: src/nautilus-window-manage-views.c:1332
 msgid "Searching Unavailable"
 msgstr "Căutarea nu este disponibilă"
 
-#: src/nautilus-window-manage-views.c:1328
+#: src/nautilus-window-manage-views.c:1337
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus nu poate afişa locaţia \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1333
+#: src/nautilus-window-manage-views.c:1342
 msgid "Can't Display Location"
 msgstr "Nu pot afişa locaţia"
 
@@ -7435,14 +7507,12 @@ msgstr "Servere reţea"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Vizualizează serverele de reţea în Nautilus"
 
+#, fuzzy
+#~ msgid "%d Navigation Windows"
+#~ msgstr "Navigare"
+
 #~ msgid "Open _in This Window"
 #~ msgstr "Deschide _în această fereastră"
-
-#~ msgid "Open _in New Window"
-#~ msgstr "Deschide în fereastră nouă"
-
-#~ msgid "Open _in %d New Windows"
-#~ msgstr "Deschide în %d ferestre noi"
 
 #~ msgid "_Open activated item in a new window"
 #~ msgstr "Deschide elementul activat într-o _fereastră nouă"
