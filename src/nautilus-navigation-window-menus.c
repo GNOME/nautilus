@@ -27,6 +27,8 @@
  */
 #include <config.h>
 
+#include <locale.h> 
+
 #include "nautilus-about.h"
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"

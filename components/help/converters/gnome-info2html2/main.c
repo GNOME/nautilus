@@ -64,7 +64,7 @@ main(int argc, char **argv)
 	if (!be_quiet)
 		printf("info2html Version %s\n",INFO2HTML_VERSION);
 
-	ctx = poptGetContext("gnome-info2html2", argc, argv, options, 0);
+	ctx = poptGetContext("gnome-info2html2", argc, (const char **)argv, options, 0); 
 
 	while(poptGetNextOpt(ctx) >= 0)
 	  /**/ ;
