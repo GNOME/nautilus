@@ -1,5 +1,23 @@
 2001-02-01  John Sullivan  <sullivan@eazel.com>
 
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 143 (zooming in list view doesn't affect font size)
+
+	Maybe I get the award for "oldest reported bug fixed recently"?
+
+	* src/file-manager/fm-list-view.c: 
+	(fm_list_view_update_font): New function, started with guts of
+	fm_list_view_font_family_changed but also takes zoom level into
+	account when choosing font size.
+	(set_up_list): Call _update_font instead of _font_family_changed,
+	just 'cuz it makes more sense.
+	(fm_list_view_set_zoom_level): Call _update_font.
+	(fm_list_view_font_family_changed): Extracted guts to
+	_update_font.
+
+2001-02-01  John Sullivan  <sullivan@eazel.com>
+
 	reviewed by: Darin Adler <darin@eazel.com>
 
 	Fixed bug 6181 (funny mouse clicking freezes Nautilus)

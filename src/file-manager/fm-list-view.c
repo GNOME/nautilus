@@ -120,7 +120,7 @@ static void                 fm_list_view_initialize_class             (gpointer 
 static void                 fm_list_view_destroy                      (GtkObject         *object);
 static void                 fm_list_view_done_adding_files            (FMDirectoryView   *view);
 static void                 fm_list_view_select_all                   (FMDirectoryView   *view);
-static void                 fm_list_view_font_family_changed          (FMDirectoryView   *view);
+static void                 fm_list_view_font_family_changed   		  (FMDirectoryView   *view);
 static void                 fm_list_view_set_selection                (FMDirectoryView   *view,
 								       GList             *selection);
 static void                 fm_list_view_reveal_selection             (FMDirectoryView   *view);
@@ -937,6 +937,23 @@ create_list (FMListView *list_view)
 	set_up_list (list_view);
 }
 
+static void
+fm_list_view_update_font (FMListView *list_view)
+{
+ 	/* Note that these aren't exactly the same sizes as used
+ 	 * in icon view, on purpose.
+ 	 */
+	static guint font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1] = {
+		8, 10, 12, 12, 14, 18, 18 };
+	GdkFont *font;
+
+	font = nautilus_font_factory_get_font_from_preferences 
+		(font_size_table[list_view->details->zoom_level]);
+	g_assert (font != NULL);
+	nautilus_gtk_widget_set_font (GTK_WIDGET (get_list (list_view)), font);
+	gdk_font_unref (font);
+}
+
 void
 set_up_list (FMListView *list_view)
 {
@@ -1017,7 +1034,7 @@ set_up_list (FMListView *list_view)
 			    NULL);
 
 	fm_list_view_update_click_mode (FM_DIRECTORY_VIEW (list_view));
-	fm_list_view_font_family_changed (FM_DIRECTORY_VIEW (list_view));
+	fm_list_view_update_font (list_view);
 	fm_list_view_update_smooth_graphics_mode (FM_DIRECTORY_VIEW (list_view));
 
 	/* Don't even try to accept dropped icons if the view says not to.
@@ -1482,6 +1499,8 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 	 */
 	list_view->details->default_zoom_level = new_level;	
 
+	fm_list_view_update_font (list_view);
+
 	clist = NAUTILUS_CLIST (get_list (list_view));
 	
 	nautilus_clist_freeze (clist);
@@ -1781,13 +1800,7 @@ fm_list_view_image_display_policy_changed (FMDirectoryView *view)
 static void
 fm_list_view_font_family_changed (FMDirectoryView *view)
 {
-	GdkFont *font;
-
-	/* FIXME bugzilla.eazel.com 143: need to use the right font size for a given zoom level here */
-	font = nautilus_font_factory_get_font_from_preferences (10);
-	g_assert (font != NULL);
-	nautilus_gtk_widget_set_font (GTK_WIDGET (get_list (FM_LIST_VIEW (view))), font);
-	gdk_font_unref (font);
+	fm_list_view_update_font (FM_LIST_VIEW (view));
 }
 
 static int
