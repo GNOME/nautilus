@@ -35,7 +35,6 @@ nautilus_bookmark_destroy (GtkObject *object)
 {
 	NautilusBookmark *bookmark;
 
-	g_return_if_fail(object != NULL);
 	g_return_if_fail(NAUTILUS_IS_BOOKMARK (object));
 
 	bookmark = NAUTILUS_BOOKMARK(object);
@@ -121,8 +120,8 @@ nautilus_bookmark_compare_with (gconstpointer a, gconstpointer b)
 	NautilusBookmark *bookmark_a;
 	NautilusBookmark *bookmark_b;
 
-	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK(a), FALSE);
-	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK(b), FALSE);
+	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK(a), 1);
+	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK(b), 1);
 
 	bookmark_a = NAUTILUS_BOOKMARK(a);
 	bookmark_b = NAUTILUS_BOOKMARK(b);
@@ -145,12 +144,16 @@ nautilus_bookmark_compare_with (gconstpointer a, gconstpointer b)
 const gchar *
 nautilus_bookmark_get_name (const NautilusBookmark *bookmark)
 {
+	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK (bookmark), NULL);
+
 	return bookmark->name->str;
 }
 
 const gchar *
 nautilus_bookmark_get_uri (const NautilusBookmark *bookmark)
 {
+	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK (bookmark), NULL);
+
 	return bookmark->uri->str;
 }
 

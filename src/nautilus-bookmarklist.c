@@ -120,6 +120,9 @@ nautilus_bookmarklist_append (NautilusBookmarklist *bookmarks,
 {
 	NautilusBookmark *new_bookmark;
 
+	g_return_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks));
+	g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
+
 	new_bookmark = nautilus_bookmark_new(
 			nautilus_bookmark_get_name(bookmark),
 			nautilus_bookmark_get_uri(bookmark));
@@ -141,6 +144,9 @@ gboolean
 nautilus_bookmarklist_contains (NautilusBookmarklist *bookmarks, 
 			      const NautilusBookmark *bookmark)
 {
+	g_return_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks));
+	g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
+
 	return g_list_find_custom(bookmarks->list, 
 				  (gpointer)bookmark, 
 				  nautilus_bookmark_compare_with) 
@@ -156,7 +162,6 @@ nautilus_bookmarklist_contains (NautilusBookmarklist *bookmarks,
 void
 nautilus_bookmarklist_contents_changed(NautilusBookmarklist *bookmarks)
 {
-	g_return_if_fail (bookmarks != NULL);
 	g_return_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks));
 
 	gtk_signal_emit(GTK_OBJECT (bookmarks), 
@@ -175,7 +180,6 @@ nautilus_bookmarklist_contents_changed(NautilusBookmarklist *bookmarks)
 const NautilusBookmark *
 nautilus_bookmarklist_item_at (NautilusBookmarklist *bookmarks, guint index)
 {
-	g_return_val_if_fail(bookmarks != NULL, NULL);
 	g_return_val_if_fail(NAUTILUS_IS_BOOKMARKLIST(bookmarks), NULL);
 	g_return_val_if_fail(index < g_list_length(bookmarks->list), NULL);
 
@@ -193,7 +197,6 @@ nautilus_bookmarklist_item_at (NautilusBookmarklist *bookmarks, guint index)
 guint
 nautilus_bookmarklist_length (NautilusBookmarklist *bookmarks)
 {
-	g_return_val_if_fail(bookmarks != NULL, 0);
 	g_return_val_if_fail(NAUTILUS_IS_BOOKMARKLIST(bookmarks), 0);
 
 	return g_list_length(bookmarks->list);

@@ -128,7 +128,6 @@ add_bookmark_cb(GtkMenuItem* item, gpointer func_data)
 	NautilusBookmark *bookmark;
 	const char* current_uri;
 
-	g_return_if_fail(func_data != NULL);
 	g_return_if_fail(NAUTILUS_IS_BOOKMARKS_MENU (func_data));
 
 	bookmarks_menu = NAUTILUS_BOOKMARKS_MENU (func_data);
@@ -151,9 +150,7 @@ bookmark_activated_cb(GtkMenuItem* item, gpointer func_data)
 	NautilusWindow *window;
 	NautilusBookmark *bookmark;
 
-	g_return_if_fail(gtk_object_get_data(GTK_OBJECT(item), WINDOW_TO_UPDATE) != NULL);
 	g_return_if_fail(NAUTILUS_IS_WINDOW(gtk_object_get_data(GTK_OBJECT(item), WINDOW_TO_UPDATE)));
-	g_return_if_fail(func_data != NULL);
 	g_return_if_fail(NAUTILUS_IS_BOOKMARK (func_data));
 
 	window = NAUTILUS_WINDOW(gtk_object_get_data(GTK_OBJECT(item), WINDOW_TO_UPDATE));
@@ -173,9 +170,7 @@ list_changed_cb(NautilusBookmarklist *bookmarks, gpointer data)
 {
 	NautilusBookmarksMenu *menu;
 	
-	g_return_if_fail(bookmarks != NULL);
 	g_return_if_fail(NAUTILUS_IS_BOOKMARKLIST(bookmarks));
-	g_return_if_fail(data != NULL);
 	g_return_if_fail(NAUTILUS_IS_BOOKMARKS_MENU(data));
 
 	menu = NAUTILUS_BOOKMARKS_MENU(data);
@@ -210,7 +205,6 @@ nautilus_bookmarks_menu_get_type (void)
 static void
 nautilus_bookmarks_menu_append(NautilusBookmarksMenu *bookmarks_menu, GtkWidget *item)
 {
-	g_return_if_fail(bookmarks_menu != NULL);
 	g_return_if_fail(GTK_IS_MENU_ITEM(item));
 
 	gtk_widget_show(item);
@@ -230,7 +224,6 @@ nautilus_bookmarks_menu_clear_bookmarks (NautilusBookmarksMenu *menu)
 	GList *iter;
 	gboolean found_dynamic_items;
 
-	g_return_if_fail(menu != NULL);
 	g_return_if_fail(NAUTILUS_IS_BOOKMARKS_MENU(menu));
 
 	children = gtk_container_children(GTK_CONTAINER(menu));
@@ -287,7 +280,6 @@ nautilus_bookmarks_menu_repopulate (NautilusBookmarksMenu *menu)
 	guint 	bookmark_count;
 	gint	index;
 	
-	g_return_if_fail(menu != NULL);
 	g_return_if_fail(NAUTILUS_IS_BOOKMARKS_MENU(menu));
 
 	nautilus_bookmarks_menu_clear_bookmarks(menu);
