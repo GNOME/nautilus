@@ -1774,22 +1774,24 @@ play_file (gpointer callback_data)
 			}
 			command_str = g_strdup_printf("play -t %s -", suffix);
 		}
+
+		/* read the file with gnome-vfs, feeding it to the sound player's standard input */
+		/* First, open the file. */
+		result = gnome_vfs_open (&handle, file_uri, GNOME_VFS_OPEN_READ);
+		if (result != GNOME_VFS_OK) {
+			_exit (0);
+		}
 			
 		/* since the uri could be local or remote, we launch the sound player with popen and feed it
 		 * the data by fetching it with gnome_vfs
 		 */
 		sound_process = popen(command_str, "w");
 		if (sound_process == 0) {
-			return FALSE;
+			/* Close the file. */
+			result = gnome_vfs_close (handle);			
+			_exit (0);
 		}
 			
-		/* read the file with gnome-vfs, feeding it to the sound player's standard input */
-		/* First, open the file. */
-		result = gnome_vfs_open (&handle, file_uri, GNOME_VFS_OPEN_READ);
-		if (result != GNOME_VFS_OK) {
-			return FALSE;
-		}
-
 		/* allocate a buffer. */
 		buffer = g_malloc(READ_CHUNK_SIZE);
 			
@@ -1815,7 +1817,7 @@ play_file (gpointer callback_data)
 		g_free(buffer);
 		pclose(sound_process);
 		_exit (0);
-	} else {
+	} else if (mp3_pid > (pid_t) 0) {
 		nautilus_sound_register_sound (mp3_pid);
 	}
 		

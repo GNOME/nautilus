@@ -1,3 +1,11 @@
+Thu Jul 17 15:32:55 2003  George Lebl <jirka@5z.com>
+
+	* src/file-manager/fm-icon-view.c (play_file): when the playing
+	  command can't be run, or the file can't be opened don't return
+	  into the parent process from the child and do weird things,
+	  but exit.  Also if the fork fails don't set the sound pid to
+	  -1 (and later try to kill it).
+
 2003-07-09  Johan Dahlin  <jdahlin@async.com.br>
 
 	* src/file-manager/fm-properties-window.c: Add support for total
