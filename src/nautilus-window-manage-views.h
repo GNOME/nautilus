@@ -36,7 +36,8 @@ void                    nautilus_window_open_location                (NautilusWi
                                                                       const char             *location);
 void                    nautilus_window_open_location_with_selection (NautilusWindow         *window,
                                                                       const char             *location,
-                                                                      GList                  *selection);
+                                                                      GList                  *selection,
+                                                                      gboolean                close_behind);
 void                    nautilus_window_stop_loading                 (NautilusWindow         *window);
 void                    nautilus_window_set_content_view             (NautilusWindow         *window,
                                                                       NautilusViewIdentifier *id);

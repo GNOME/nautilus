@@ -80,6 +80,7 @@ struct FMListViewDetails {
 	int drag_y;
 
 	gboolean drag_started;
+	gboolean row_selected_on_button_down;
 };
 
 /*
@@ -161,11 +162,18 @@ activate_selected_items (FMListView *view)
 }
 
 static void
-activate_selected_items_alternate (FMListView *view)
+activate_selected_items_alternate (FMListView *view,
+				   NautilusFile *file)
 {
 	GList *file_list;
-	
-	file_list = fm_list_view_get_selection (FM_DIRECTORY_VIEW (view));
+
+
+	if (file != NULL) {
+		nautilus_file_ref (file);
+		file_list = g_list_prepend (NULL, file);
+	} else {
+		file_list = fm_list_view_get_selection (FM_DIRECTORY_VIEW (view));
+	}
 	fm_directory_view_activate_files (FM_DIRECTORY_VIEW (view),
 					  file_list,
 					  Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE,
@@ -193,12 +201,17 @@ fm_list_view_did_not_drag (FMListView *view,
 
 	if (gtk_tree_view_get_path_at_pos (tree_view, event->x, event->y,
 					   &path, NULL, NULL, NULL)) {
-		if((event->button == 1 || event->button == 2)
-		   && (click_policy_auto_value == NAUTILUS_CLICK_POLICY_DOUBLE)
-		   && gtk_tree_selection_path_is_selected (selection, path)
-		   && !button_event_modifies_selection (event)) {
-			gtk_tree_selection_unselect_all (selection);
-			gtk_tree_selection_select_path (selection, path);
+		if ((event->button == 1 || event->button == 2)
+		    && ((event->state & GDK_CONTROL_MASK) != 0 ||
+			(event->state & GDK_SHIFT_MASK) == 0)
+		    && view->details->row_selected_on_button_down
+		    && (click_policy_auto_value == NAUTILUS_CLICK_POLICY_DOUBLE)) {
+			if (!button_event_modifies_selection (event)) {
+				gtk_tree_selection_unselect_all (selection);
+				gtk_tree_selection_select_path (selection, path);
+			} else {
+				gtk_tree_selection_unselect_path (selection, path);
+			}
 		}
 
 		if ((click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE)
@@ -206,7 +219,7 @@ fm_list_view_did_not_drag (FMListView *view,
 			if (event->button == 1) {
 				activate_selected_items (view);
 			} else if (event->button == 2) {
-				activate_selected_items_alternate (view);
+				activate_selected_items_alternate (view, NULL);
 			}
 		}
 		gtk_tree_path_free (path);
@@ -436,6 +449,7 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 		return TRUE;
 	}
 
+	
 	call_parent = TRUE;
 	allow_drag = FALSE;
 	if (gtk_tree_view_get_path_at_pos (tree_view, event->x, event->y,
@@ -448,15 +462,26 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 			view->details->double_click_path[1] = view->details->double_click_path[0];
 			view->details->double_click_path[0] = gtk_tree_path_copy (path);
 		}
-		
 		if (event->type == GDK_2BUTTON_PRESS) {
+			/* Double clicking does not trigger a D&D action. */
+			view->details->drag_button = 0;
+			call_parent = TRUE;
 			if (view->details->double_click_path[1] &&
-			    gtk_tree_path_compare (view->details->double_click_path[0], view->details->double_click_path[1]) == 0
-			    && !button_event_modifies_selection (event)) {
-				if ((event->button == 1 || event->button == 3)) {
-					activate_selected_items (view);
-				} else if (event->button == 2) {
-					activate_selected_items_alternate (view);
+			    gtk_tree_path_compare (view->details->double_click_path[0], view->details->double_click_path[1]) == 0) {
+				if (!button_event_modifies_selection (event)) {
+					if ((event->button == 1 || event->button == 3)) {
+						activate_selected_items (view);
+					} else if (event->button == 2) {
+						activate_selected_items_alternate (view, NULL);
+					}
+				} else if (event->button == 1 &&
+					   (event->state & GDK_SHIFT_MASK) != 0) {
+					NautilusFile *file;
+					file = fm_list_model_file_for_path (view->details->model, path);
+					if (file != NULL) {
+						activate_selected_items_alternate (view, file);
+						nautilus_file_unref (file);
+					}
 				}
 			}
 		}
@@ -471,17 +496,26 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 			call_parent = FALSE;
 		} 
 
-		if(!button_event_modifies_selection (event) &&
-		   (event->button == 1 || event->button == 2) &&
-		   gtk_tree_selection_path_is_selected (selection, path)) {
-			call_parent = FALSE;
+		if ((event->button == 1 || event->button == 2) &&
+		    ((event->state & GDK_CONTROL_MASK) != 0 ||
+		     (event->state & GDK_SHIFT_MASK) == 0)) {
+			view->details->row_selected_on_button_down = gtk_tree_selection_path_is_selected (selection, path);
+			if (view->details->row_selected_on_button_down) {
+				call_parent = FALSE;
+			} else if  ((event->state & GDK_CONTROL_MASK) != 0) {
+				call_parent = FALSE;
+				gtk_tree_selection_select_path (selection, path);
+			}
 		}
 
 		if (call_parent) {
 			tree_view_class->button_press_event (widget, event);
+		} else if (gtk_tree_selection_path_is_selected (selection, path)) {
+			gtk_widget_grab_focus (widget);
 		}
 
-		if (event->button == 1 || event->button == 2) {
+		if ((event->button == 1 || event->button == 2) &&
+		    event->type == GDK_BUTTON_PRESS) {
 			view->details->drag_started = FALSE;
 			view->details->drag_button = event->button;
 			view->details->drag_x = event->x;
@@ -494,9 +528,21 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 
 		gtk_tree_path_free (path);
 	} else {
+		if ((event->button == 1 || event->button == 2)  && 
+		    event->type == GDK_BUTTON_PRESS) {
+			if (view->details->double_click_path[1]) {
+				gtk_tree_path_free (view->details->double_click_path[1]);
+			}
+			view->details->double_click_path[1] = view->details->double_click_path[0];
+			view->details->double_click_path[0] = NULL;
+		}
 		/* Deselect if people click outside any row. It's OK to
 		   let default code run; it won't reselect anything. */
 		gtk_tree_selection_unselect_all (gtk_tree_view_get_selection (tree_view));
+
+		if (event->button == 3) {
+			do_popup_menu (widget, view, event);
+		}
 	}
 	
 	/* We chained to the default handler in this method, so never
@@ -701,6 +747,7 @@ create_and_set_up_tree_view (FMListView *view)
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *column;
 	GtkTargetEntry *drag_types;
+	AtkObject *atk_obj;
 	int num_drag_types;	
 
 	view->details->tree_view = GTK_TREE_VIEW (gtk_tree_view_new ());
@@ -742,6 +789,9 @@ create_and_set_up_tree_view (FMListView *view)
 	
 	view->details->model = g_object_new (FM_TYPE_LIST_MODEL, NULL);
 	gtk_tree_view_set_model (view->details->tree_view, GTK_TREE_MODEL (view->details->model));
+	/* Need the model for the dnd drop icon "accept" change */
+	fm_list_model_set_drag_view (FM_LIST_MODEL (view->details->model),
+				     view->details->tree_view,  0, 0);
 
 	g_signal_connect_object (view->details->model, "sort_column_changed",
 				 G_CALLBACK (sort_column_changed_callback), view, 0);
@@ -815,6 +865,9 @@ create_and_set_up_tree_view (FMListView *view)
 
 	gtk_widget_show (GTK_WIDGET (view->details->tree_view));
 	gtk_container_add (GTK_CONTAINER (view), GTK_WIDGET (view->details->tree_view));
+
+        atk_obj = gtk_widget_get_accessible (GTK_WIDGET (view->details->tree_view));
+        atk_object_set_name (atk_obj, _("List View"));
 }
 
 static void
@@ -964,6 +1017,15 @@ fm_list_view_get_selection (FMDirectoryView *view)
 	return list;
 }
 
+
+static guint
+fm_list_view_get_item_count (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_LIST_VIEW (view), 0);
+
+	return fm_list_model_get_length (FM_LIST_VIEW (view)->details->model);
+}
+
 static gboolean
 fm_list_view_is_empty (FMDirectoryView *view)
 {
@@ -973,7 +1035,52 @@ fm_list_view_is_empty (FMDirectoryView *view)
 static void
 fm_list_view_remove_file (FMDirectoryView *view, NautilusFile *file)
 {
-	fm_list_model_remove_file (FM_LIST_VIEW (view)->details->model, file);
+	GtkTreePath *path;
+	GtkTreeIter iter;
+	GtkTreeIter temp_iter;
+	GtkTreeRowReference* row_reference;
+	FMListView *list_view;
+	GtkTreeModel* tree_model; 
+	
+	path = NULL;
+	row_reference = NULL;
+	list_view = FM_LIST_VIEW (view);
+	tree_model = GTK_TREE_MODEL(list_view->details->model);
+	
+	if(fm_list_model_get_tree_iter_from_file (list_view->details->model, file, &iter)) {
+	   temp_iter = iter;
+	  
+	   /* get reference for next element in the list view. If the element to be deleted is the 
+	    * last one, get reference to previous element. If there is only one element in view
+            * no need to select anything. */		
+	   
+	   if(gtk_tree_model_iter_next (tree_model, &iter)) {
+              path = gtk_tree_model_get_path (tree_model, &iter);
+              row_reference = gtk_tree_row_reference_new (tree_model, path);
+           } else {
+              path = gtk_tree_model_get_path (tree_model, &temp_iter);
+              if(gtk_tree_path_prev (path)) {
+                 row_reference = gtk_tree_row_reference_new (tree_model, path);
+	       }
+	   }
+       
+	   gtk_tree_path_free (path);
+		
+	   fm_list_model_remove_file (list_view->details->model, file);
+	   
+	   if(gtk_tree_row_reference_valid(row_reference)) {
+	      path = gtk_tree_row_reference_get_path (row_reference);
+	      gtk_tree_view_set_cursor (list_view->details->tree_view, path, NULL, FALSE);
+              gtk_tree_path_free (path);
+	      
+	   }
+	  
+	   if(row_reference) {
+	      gtk_tree_row_reference_free (row_reference);
+	   }
+	}   
+	
+	
 }
 
 static void
@@ -1432,6 +1539,7 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->file_changed = fm_list_view_file_changed;
 	fm_directory_view_class->get_background_widget = fm_list_view_get_background_widget;
 	fm_directory_view_class->get_selection = fm_list_view_get_selection;
+	fm_directory_view_class->get_item_count = fm_list_view_get_item_count;
 	fm_directory_view_class->is_empty = fm_list_view_is_empty;
 	fm_directory_view_class->remove_file = fm_list_view_remove_file;
 	fm_directory_view_class->reset_to_defaults = fm_list_view_reset_to_defaults;

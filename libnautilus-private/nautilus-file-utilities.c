@@ -166,6 +166,35 @@ nautilus_get_desktop_directory_uri_no_create (void)
 	return desktop_uri;
 }
 
+char *
+nautilus_get_templates_directory (void)
+{
+	return  g_build_filename (g_get_home_dir(),
+				  "Templates", NULL);
+}
+
+void
+nautilus_create_templates_directory (void)
+{
+	char *dir;
+
+	dir = nautilus_get_templates_directory ();
+	if (!g_file_test (dir, G_FILE_TEST_EXISTS)) {
+		mkdir (dir, DEFAULT_NAUTILUS_DIRECTORY_MODE);
+	}
+	g_free (dir);
+}
+
+char *
+nautilus_get_templates_directory_uri (void)
+{
+	char *directory, *uri;
+
+	directory = nautilus_get_templates_directory ();
+	uri = gnome_vfs_get_uri_from_local_path (directory);
+	g_free (directory);
+	return uri;
+}
 
 /* These need to be reset to NULL when desktop_is_home_dir changes */
 static char *escaped_desktop_dir = NULL;

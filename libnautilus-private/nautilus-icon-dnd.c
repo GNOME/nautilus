@@ -718,6 +718,7 @@ confirm_switch_to_manual_layout (NautilusIconContainer *container)
 {
 #if 0
 	const char *message;
+	const char *detail;
 	GtkDialog *dialog;
 	int response;
 
@@ -728,25 +729,26 @@ confirm_switch_to_manual_layout (NautilusIconContainer *container)
 	 */
 	if (nautilus_icon_container_has_stored_icon_positions (container)) {
 		if (eel_g_list_exactly_one_item (container->details->dnd_info->drag_info.selection_list)) {
-			message = _("This folder uses automatic layout. "
-			"Do you want to switch to manual layout and leave this item where you dropped it? "
+			message = _("Do you want to switch to manual layout and leave this item where you dropped it? "
 			"This will clobber the stored manual layout.");
+			detail = _("This folder uses automatic layout.");
 		} else {
-			message = _("This folder uses automatic layout. "
-			"Do you want to switch to manual layout and leave these items where you dropped them? "
+			message = _("Do you want to switch to manual layout and leave these items where you dropped them? "
 			"This will clobber the stored manual layout.");
+			detail = _("This folder uses automatic layout.");
 		}
 	} else {
 		if (eel_g_list_exactly_one_item (container->details->dnd_info->drag_info.selection_list)) {
-			message = _("This folder uses automatic layout. "
-			"Do you want to switch to manual layout and leave this item where you dropped it?");
+			message = _("Do you want to switch to manual layout and leave this item where you dropped it?");
+			detail = _("This folder uses automatic layout.");
 		} else {
-			message = _("This folder uses automatic layout. "
-			"Do you want to switch to manual layout and leave these items where you dropped them?");
+			message = _("Do you want to switch to manual layout and leave these items where you dropped them?");
+			detail = _("This folder uses automatic layout.");
+
 		}
 	}
 
-	dialog = eel_show_yes_no_dialog (message, _("Switch to Manual Layout?"),
+	dialog = eel_show_yes_no_dialog (message, detail, _("Switch to Manual Layout?"),
 					 _("Switch"), GTK_STOCK_CANCEL,
 					 GTK_WINDOW (gtk_widget_get_toplevel(GTK_WIDGET(container))));
 
@@ -959,6 +961,7 @@ selection_is_image_file (GList *selection_list)
 	mime_type = gnome_vfs_get_mime_type (selected_item->uri);
 
 	result = (g_ascii_strcasecmp (mime_type, "image/svg") != 0 &&
+		  g_ascii_strcasecmp (mime_type, "image/svg+xml") != 0 &&
 		  eel_istr_has_prefix (mime_type, "image/"));
 	
 	g_free (mime_type);

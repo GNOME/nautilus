@@ -189,6 +189,7 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 	int icon_size;
 	NautilusZoomLevel zoom_level;
 	int width, height;
+	char *modifier;
 
 	model = (FMListModel *)tree_model;
 
@@ -220,7 +221,31 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 
 		zoom_level = fm_list_model_get_zoom_level_from_column_id (column);
 		icon_size = nautilus_get_icon_size_for_zoom_level (zoom_level);
-		icon = nautilus_icon_factory_get_pixbuf_for_file (file, NULL, icon_size);
+
+		modifier = NULL;
+		if (model->details->drag_view != NULL) {
+			GtkTreePath *path_a, *path_b;
+			
+			gtk_tree_view_get_drag_dest_row (model->details->drag_view,
+							 &path_a,
+							 NULL);
+			if (path_a != NULL) {
+				path_b = gtk_tree_model_get_path (tree_model, iter);
+
+				if (gtk_tree_path_compare (path_a, path_b) == 0) {
+					modifier = "visiting";
+				}
+					
+				gtk_tree_path_free (path_a);
+				gtk_tree_path_free (path_b);
+			}
+		}
+		
+		if (nautilus_file_has_open_window (file)) {
+			modifier = "accept";
+		}
+		
+		icon = nautilus_icon_factory_get_pixbuf_for_file (file, modifier, icon_size);
 
 		height = gdk_pixbuf_get_height (icon);
 		if (height > icon_size) {
@@ -649,6 +674,13 @@ fm_list_model_is_empty (FMListModel *model)
 	return (g_sequence_get_length (model->details->files) == 0);
 }
 
+guint
+fm_list_model_get_length (FMListModel *model)
+{
+	return g_sequence_get_length (model->details->files);
+}
+
+
 static void
 fm_list_model_remove (FMListModel *model, GtkTreeIter *iter)
 {
@@ -689,6 +721,23 @@ fm_list_model_clear (FMListModel *model)
 		iter.user_data = g_sequence_get_begin_ptr (model->details->files);
 		fm_list_model_remove (model, &iter);
 	}
+}
+
+NautilusFile *
+fm_list_model_file_for_path (FMListModel *model, GtkTreePath *path)
+{
+	NautilusFile *file;
+	GtkTreeIter iter;
+
+	file = NULL;
+	if (gtk_tree_model_get_iter (GTK_TREE_MODEL (model), 
+				     &iter, path)) {
+		gtk_tree_model_get (GTK_TREE_MODEL (model), 
+				    &iter, 
+				    FM_LIST_MODEL_FILE_COLUMN, &file,
+				    -1);
+	}
+	return file;
 }
 
 void

@@ -503,8 +503,8 @@ receive_dropped_uri_list (NautilusInformationPanel *information_panel,
 		
 		if (!exactly_one) {
 			eel_show_error_dialog (
-				_("You can't assign more than one custom icon at a time! "
-				  "Please drag just one image to set a custom icon."), 
+				_("You can't assign more than one custom icon at a time."),
+				_("Please drag just one image to set a custom icon."), 
 				_("More Than One Image"),
 				window);
 			break;
@@ -524,15 +524,15 @@ receive_dropped_uri_list (NautilusInformationPanel *information_panel,
 		} else {	
 			if (eel_is_remote_uri (uris[0])) {
 				eel_show_error_dialog (
-					_("The file that you dropped is not local.  "
-					  "You can only use local images as custom icons."), 
+					_("The file that you dropped is not local."),
+					_("You can only use local images as custom icons."), 
 					_("Local Images Only"),
 					window);
 			
 			} else {
 				eel_show_error_dialog (
-					_("The file that you dropped is not an image.  "
-					  "You can only use local images as custom icons."),
+					_("The file that you dropped is not an image."),
+					_("You can only use images as custom icons."),
 					_("Images Only"),
 					window);
 			}
@@ -982,7 +982,6 @@ burn_cd_callback (GtkWidget *button, gpointer data)
 {
 	GError *error;
 	char *argv[] = { "nautilus-cd-burner", NULL};
-	char *text;
 
 	error = NULL;
 	if (!g_spawn_async (NULL,
@@ -991,11 +990,9 @@ burn_cd_callback (GtkWidget *button, gpointer data)
 			    NULL, NULL,
 			    NULL,
 			    &error)) {
-		text = g_strdup_printf (_("Unable to launch the cd burner application:\n%s"), error->message);
-		eel_show_error_dialog (text,
-				       _("Can't launch cd burner"),
+		eel_show_error_dialog (_("Unable to launch the cd burner application."), error->message,
+				       _("Can't Launch CD Burner"),
 				       GTK_WINDOW (gtk_widget_get_toplevel (button)));
-		g_free (text);
 		g_error_free (error);
 	}
 }

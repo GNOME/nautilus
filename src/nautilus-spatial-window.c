@@ -46,7 +46,6 @@
 #include <eel/eel-debug.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-generous-bin.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
@@ -121,7 +120,7 @@ nautilus_spatial_window_configure_event (GtkWidget *widget,
 	GTK_WIDGET_CLASS (parent_class)->configure_event (widget, event);
 	
 	/* Only save the geometry if the user hasn't resized the window
-	 * for half a second. Otherwise delay the callback another half second.
+	 * for a second. Otherwise delay the callback another second.
 	 */
 	if (window->details->save_geometry_timeout_id != 0) {
 		g_source_remove (window->details->save_geometry_timeout_id);
@@ -149,7 +148,7 @@ nautilus_spatial_window_configure_event (GtkWidget *widget,
 		window->details->last_geometry = geometry_string;
 
 		window->details->save_geometry_timeout_id = 
-			g_timeout_add (500, save_window_geometry_timeout, window);
+			g_timeout_add (1000, save_window_geometry_timeout, window);
 	}
 	
 	return FALSE;
@@ -239,12 +238,21 @@ nautilus_spatial_window_show (GtkWidget *widget)
 }
 
 static void
-file_menu_close_with_parent_windows_callback (BonoboUIComponent *component, 
-					      gpointer user_data, 
-					      const char *verb)
+file_menu_close_parent_windows_callback (BonoboUIComponent *component, 
+					 gpointer user_data, 
+					 const char *verb)
 {
-	nautilus_application_close_with_parent_windows (NAUTILUS_SPATIAL_WINDOW (user_data));
+	nautilus_application_close_parent_windows (NAUTILUS_SPATIAL_WINDOW (user_data));
 }
+
+static void
+go_up_close_current_window_callback (BonoboUIComponent *component, 
+				     gpointer user_data, 
+				     const char *verb)
+{
+	nautilus_window_go_up (NAUTILUS_WINDOW (user_data), TRUE);
+}
+
 
 static void
 real_prompt_for_location (NautilusWindow *window)
@@ -275,7 +283,8 @@ real_merge_menus (NautilusWindow *nautilus_window)
 {
 	NautilusSpatialWindow *window;
 	BonoboUIVerb verbs [] = {
-		BONOBO_UI_VERB ("Close With Parents", file_menu_close_with_parent_windows_callback),
+		BONOBO_UI_VERB ("Close Parent Folders", file_menu_close_parent_windows_callback),
+		BONOBO_UI_VERB ("UpCloseCurrent", go_up_close_current_window_callback),
 		BONOBO_UI_VERB_END
 	};
 	
@@ -304,12 +313,22 @@ real_set_content_view_widget (NautilusWindow *window,
 			   GTK_WIDGET (new_view));
 }
 
-static gboolean
-real_delete_event (GtkWidget *window, GdkEventAny *event)
+static void
+real_window_close (NautilusWindow *window)
 {
+	nautilus_spatial_window_save_geometry (NAUTILUS_SPATIAL_WINDOW (window));
 	nautilus_spatial_window_save_scroll_position (NAUTILUS_SPATIAL_WINDOW (window));
+}
 
-	return FALSE;
+static void 
+real_get_default_size(NautilusWindow *window, guint *default_width, guint *default_height)
+{
+   if(default_width) {
+      *default_width = NAUTILUS_SPATIAL_WINDOW_DEFAULT_WIDTH;
+   }
+   if(default_height) {
+      *default_height = NAUTILUS_SPATIAL_WINDOW_DEFAULT_HEIGHT;	
+   }
 }
 
 static void
@@ -319,7 +338,7 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 	window->affect_spatial_window_on_next_location_change = TRUE;
 
 	window->details->content_box = 
-		gtk_widget_new (EEL_TYPE_GENEROUS_BIN, NULL);
+		gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (window->details->content_box);
 	bonobo_window_set_contents (BONOBO_WINDOW (window), 
 				    window->details->content_box);
@@ -344,6 +363,7 @@ nautilus_spatial_window_class_init (NautilusSpatialWindowClass *class)
 		real_merge_menus;
 	NAUTILUS_WINDOW_CLASS (class)->set_content_view_widget = 
 		real_set_content_view_widget;
-	GTK_WIDGET_CLASS (class)->delete_event =
-		real_delete_event;
+	NAUTILUS_WINDOW_CLASS (class)->close = 
+		real_window_close;
+	NAUTILUS_WINDOW_CLASS(class)->get_default_size = real_get_default_size;
 }

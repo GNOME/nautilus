@@ -43,8 +43,7 @@ EEL_CLASS_BOILERPLATE (NautilusLocationDialog,
 		       nautilus_location_dialog,
 		       GTK_TYPE_DIALOG)
 enum {
-	RESPONSE_OPEN,
-	RESPONSE_CANCEL
+	RESPONSE_OPEN
 };	
 
 static void
@@ -96,7 +95,7 @@ response_callback (NautilusLocationDialog *dialog,
 		break;
 	case GTK_RESPONSE_NONE :
 	case GTK_RESPONSE_DELETE_EVENT :
-	case RESPONSE_CANCEL :
+	case GTK_RESPONSE_CANCEL :
 		gtk_widget_destroy (GTK_WIDGET (dialog));
 		break;
 	default :
@@ -138,13 +137,16 @@ nautilus_location_dialog_init (NautilusLocationDialog *dialog)
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Open Location"));
 	gtk_window_set_default_size (GTK_WINDOW (dialog), 300, -1);
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
 	
-	box = gtk_hbox_new (FALSE, 6);
+	box = gtk_hbox_new (FALSE, 12);
+	gtk_container_set_border_width (GTK_CONTAINER (box), 5);
 	gtk_widget_show (box);
 
-	label = gtk_label_new (_("Location:"));
+	label = gtk_label_new_with_mnemonic (_("_Location:"));
 	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
 	
 	dialog->details->entry = nautilus_location_entry_new ();
 	g_signal_connect (dialog->details->entry,
@@ -155,14 +157,14 @@ nautilus_location_dialog_init (NautilusLocationDialog *dialog)
 	gtk_widget_show (dialog->details->entry);
 	
 	gtk_box_pack_start (GTK_BOX (box), dialog->details->entry, 
-			    TRUE, TRUE, 6);
+			    TRUE, TRUE, 0);
 	
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-			    box, TRUE, TRUE, 12);
+			    box, TRUE, TRUE, 0);
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
 			       GTK_STOCK_CANCEL,
-			       RESPONSE_CANCEL);
+			       GTK_RESPONSE_CANCEL);
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
 			       GTK_STOCK_OPEN,
 			       RESPONSE_OPEN);

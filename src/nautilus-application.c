@@ -34,6 +34,7 @@
 #include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-list-view.h"
 #include "file-manager/fm-search-list-view.h"
+#include "file-manager/fm-tree-view.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -86,6 +87,7 @@
 #define FACTORY_IID	     "OAFIID:Nautilus_Factory"
 #define SEARCH_LIST_VIEW_IID "OAFIID:Nautilus_File_Manager_Search_List_View"
 #define SHELL_IID	     "OAFIID:Nautilus_Shell"
+#define TREE_VIEW_IID         "OAFIID:Nautilus_File_Manager_Tree_View"
 
 /* Keeps track of all the desktop windows. */
 static GList *nautilus_application_desktop_windows;
@@ -138,6 +140,8 @@ create_object (PortableServer_Servant servant,
 		object = BONOBO_OBJECT (nautilus_shell_new (application));
 	} else if (strcmp (iid, METAFILE_FACTORY_IID) == 0) {
 		object = BONOBO_OBJECT (nautilus_metafile_factory_get_instance ());
+	} else if (strcmp (iid, TREE_VIEW_IID) == 0) {
+		object = BONOBO_OBJECT (g_object_new (fm_tree_view_get_type (), NULL));
 	} else {
 		object = CORBA_OBJECT_NIL;
 	}
@@ -184,6 +188,7 @@ nautilus_application_instance_init (NautilusApplication *application)
 	nautilus_bonobo_register_activation_shortcut (NAUTILUS_DESKTOP_ICON_VIEW_IID, create_object_shortcut, application);
 	nautilus_bonobo_register_activation_shortcut (NAUTILUS_LIST_VIEW_IID, create_object_shortcut, application);
 	nautilus_bonobo_register_activation_shortcut (SEARCH_LIST_VIEW_IID, create_object_shortcut, application);
+	nautilus_bonobo_register_activation_shortcut (TREE_VIEW_IID, create_object_shortcut, application);
 }
 
 NautilusApplication *
@@ -211,6 +216,7 @@ nautilus_application_destroy (BonoboObject *object)
 	nautilus_bonobo_unregister_activation_shortcut (NAUTILUS_DESKTOP_ICON_VIEW_IID);
 	nautilus_bonobo_unregister_activation_shortcut (NAUTILUS_LIST_VIEW_IID);
 	nautilus_bonobo_unregister_activation_shortcut (SEARCH_LIST_VIEW_IID);
+	nautilus_bonobo_unregister_activation_shortcut (TREE_VIEW_IID);
 	
 	nautilus_bookmarks_exiting ();
 	
@@ -227,6 +233,7 @@ check_required_directories (NautilusApplication *application)
 	EelStringList *directories;
 	char *directories_as_string;
 	char *error_string;
+	char *detail_string;
 	char *dialog_title;
 	GtkDialog *dialog;
 	int failed_count;
@@ -251,30 +258,28 @@ check_required_directories (NautilusApplication *application)
 	failed_count = eel_string_list_get_length (directories);
 
 	if (failed_count != 0) {
-		directories_as_string = eel_string_list_as_string (directories, "\n", EEL_STRING_LIST_ALL_STRINGS);
+		directories_as_string = eel_string_list_as_string (directories, ", ", EEL_STRING_LIST_ALL_STRINGS);
 
 		if (failed_count == 1) {
-			dialog_title = g_strdup (_("Couldn't Create Required Folder"));
-			error_string = g_strdup_printf (_("Nautilus could not create the required folder \"%s\". "
-							  "Before running Nautilus, please create this folder, or "
-							  "set permissions such that Nautilus can create it."),
+			dialog_title = _("Couldn't Create Required Folder");
+			error_string = g_strdup_printf (_("Nautilus could not create the required folder \"%s\"."),
 							directories_as_string);
+			detail_string = _("Before running Nautilus, please create the following folder, or "
+					  "set permissions such that Nautilus can create it.");
 		} else {
-			dialog_title = g_strdup (_("Couldn't Create Required Folders"));
-			error_string = g_strdup_printf (_("Nautilus could not create the following required folders:\n\n"
-							  "%s\n\n"
-							  "Before running Nautilus, please create these folders, or "
-							  "set permissions such that Nautilus can create them."),
-							directories_as_string);
+			dialog_title = _("Couldn't Create Required Folders");
+			error_string = g_strdup_printf (_("Nautilus could not create the following required folders: "
+							  "%s."), directories_as_string);
+  			detail_string = _("Before running Nautilus, please create these folders, or "
+					  "set permissions such that Nautilus can create them.");
 		}
 		
-		dialog = eel_show_error_dialog (error_string, dialog_title, NULL);
+		dialog = eel_show_error_dialog (error_string, detail_string, dialog_title, NULL);
 		/* We need the main event loop so the user has a chance to see the dialog. */
 		nautilus_main_event_loop_register (GTK_OBJECT (dialog));
 
 		g_free (directories_as_string);
 		g_free (error_string);
-		g_free (dialog_title);
 	}
 
 	eel_string_list_free (directories);
@@ -349,10 +354,10 @@ migrate_old_nautilus_files (void)
 			close (fd);
 		}
 		
-		eel_show_info_dialog (_("The location of the desktop directory has changed in GNOME 2.4. "
-					"A link called \"Link To Old Desktop\" has been created on the desktop. "
-					"You can open this to move over the files you want, then delete the link."),
-				      _("Migrated old desktop"),
+		eel_show_info_dialog (_("A link called \"Link To Old Desktop\" has been created on the desktop."),
+				      _("The location of the desktop directory has changed in GNOME 2.4. "
+					"You can open the link and move over the files you want, then delete the link."),
+				      _("Migrated Old Desktop"),
 				      NULL);
 	}
 	g_free (old_desktop_dir);
@@ -597,7 +602,7 @@ nautilus_application_startup (NautilusApplication *application,
 		}
 
 		if (message != NULL) {
-			dialog = eel_show_error_dialog_with_details (message, NULL, detailed_message, NULL);
+			dialog = eel_show_error_dialog_with_details (message, NULL, NULL, detailed_message, NULL);
 			/* We need the main event loop so the user has a chance to see the dialog. */
 			nautilus_main_event_loop_register (GTK_OBJECT (dialog));
 			goto out;
@@ -886,20 +891,20 @@ find_parent_spatial_window (NautilusSpatialWindow *window)
 }
 
 void
-nautilus_application_close_with_parent_windows (NautilusSpatialWindow *window)
+nautilus_application_close_parent_windows (NautilusSpatialWindow *window)
 {
 	NautilusSpatialWindow *parent_window;
+	NautilusSpatialWindow *new_parent_window;
 
 	g_return_if_fail (NAUTILUS_IS_SPATIAL_WINDOW (window));
 
 	parent_window = find_parent_spatial_window (window);
-	nautilus_window_close (NAUTILUS_WINDOW (window));
-	window = parent_window;
 	
 	while (parent_window) {
-		parent_window = find_parent_spatial_window (window);
-		nautilus_window_close (NAUTILUS_WINDOW (window));
-		window = parent_window;
+		
+		new_parent_window = find_parent_spatial_window (parent_window);
+		nautilus_window_close (NAUTILUS_WINDOW (parent_window));
+		parent_window = new_parent_window;
 	}
 }
 

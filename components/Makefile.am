@@ -2,12 +2,10 @@ NULL=
 
 SUBDIRS = 					\
 	adapter                                 \
-	hardware 				\
 	history 				\
 	notes 					\
 	text 					\
 	throbber 				\
-	tree 					\
 	emblem					\
 	image_properties			\
 	$(NULL)

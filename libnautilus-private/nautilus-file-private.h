@@ -138,6 +138,8 @@ struct NautilusFileDetails
 	eel_boolean_bit has_volume                    : 1;
 	eel_boolean_bit has_drive                     : 1;
 
+	/* TRUE if the file is open in a spatial window */
+	eel_boolean_bit has_open_window               : 1;
 };
 
 NautilusFile *nautilus_file_new_from_info                  (NautilusDirectory      *directory,

@@ -46,7 +46,6 @@
 #include <eel/eel-debug.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-generous-bin.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
@@ -961,6 +960,11 @@ real_set_content_view_widget (NautilusWindow *nautilus_window,
 			 set_content_view_widget, 
 			 (nautilus_window, new_view));
 
+
+	if (new_view == NULL) {
+		return;	       
+	}
+
 	connect_view (window, new_view);
 
 	nautilus_horizontal_splitter_pack2 (
@@ -1103,22 +1107,22 @@ static void
 report_side_panel_failure_to_user (NautilusWindow *window, NautilusViewFrame *view_frame)
 {
 	char *message;
+	char *detail;
 	char *label;
 
 	label = nautilus_window_get_view_frame_label (view_frame);
 
         if (label == NULL) {
                 message = g_strdup
-                        (_("One of the side panels encountered an error and can't continue. "
-                           "Unfortunately I couldn't tell which one."));
+                        (_("One of the side panels encountered an error and can't continue."));
+		detail = _("Unfortunately I couldn't tell which one.");
         } else {
                 message = g_strdup_printf
-                        (_("The %s side panel encountered an error and can't continue. "
-                           "If this keeps happening, you might want to turn this panel off."),
-                         label);
+                        (_("The %s side panel encountered an error and can't continue."), label);
+                detail = _("If this keeps happening, you might want to turn this panel off.");
         }
 
-	eel_show_error_dialog (message, _("Side Panel Failed"), GTK_WINDOW (window));
+	eel_show_error_dialog (message, detail, _("Side Panel Failed"), GTK_WINDOW (window));
 
 	g_free (label);
 	g_free (message);
@@ -1466,6 +1470,19 @@ nautilus_navigation_window_show (GtkWidget *widget)
 	GTK_WIDGET_CLASS (parent_class)->show (widget);
 }
 
+static void 
+real_get_default_size(NautilusWindow *window, guint *default_width, guint *default_height)
+{
+	
+    if(default_width) {
+	   *default_width = NAUTILUS_NAVIGATION_WINDOW_DEFAULT_WIDTH;
+	}
+	
+	if(default_height) {
+       *default_height = NAUTILUS_NAVIGATION_WINDOW_DEFAULT_HEIGHT;	
+	}
+}
+
 static void
 nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 {
@@ -1482,4 +1499,5 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 	NAUTILUS_WINDOW_CLASS (class)->set_throbber_active = real_set_throbber_active;
 	NAUTILUS_WINDOW_CLASS (class)->prompt_for_location = real_prompt_for_location;
 	NAUTILUS_WINDOW_CLASS (class)->set_title = real_set_title;
+	NAUTILUS_WINDOW_CLASS(class)->get_default_size = real_get_default_size;
 }

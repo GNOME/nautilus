@@ -27,6 +27,8 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-search-list-view.c		\
 	nautilus-indexing-info.c	\
 	fm-bonobo-provider.h 		\
+	fm-tree-model.c			\
+	fm-tree-view.c			\
 	fm-desktop-icon-view.h 		\
 	fm-directory-view.h 		\
 	fm-error-reporting.h 		\
@@ -38,6 +40,8 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-properties-window.h 		\
 	fm-search-list-view.h 		\
 	nautilus-indexing-info.h 	\
+	fm-tree-model.h			\
+	fm-tree-view.h			\
 	$(NULL)
 
 uidir = $(datadir)/gnome-2.0/ui

@@ -149,7 +149,8 @@ typedef struct {
 static GType         nautilus_icon_container_accessible_get_type (void);
 
 static void          activate_selected_items                        (NautilusIconContainer *container);
-static void          activate_selected_items_alternate              (NautilusIconContainer *container);
+static void          activate_selected_items_alternate              (NautilusIconContainer *container,
+								     NautilusIcon          *icon);
 static void          nautilus_icon_container_theme_changed          (gpointer               user_data);
 static void          compute_stretch                                (StretchState          *start,
 								     StretchState          *current);
@@ -1716,6 +1717,51 @@ invalidate_label_sizes (NautilusIconContainer *container)
 }
 
 static gboolean
+select_range (NautilusIconContainer *container,
+	      NautilusIcon *icon1,
+	      NautilusIcon *icon2)
+{
+	gboolean selection_changed;
+	GList *p;
+	NautilusIcon *icon;
+	NautilusIcon *unmatched_icon;
+	gboolean select;
+
+	selection_changed = FALSE;
+
+	unmatched_icon = NULL;
+	select = FALSE;
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		icon = p->data;
+
+		if (unmatched_icon == NULL) {
+			if (icon == icon1) {
+				unmatched_icon = icon2;
+				select = TRUE;
+			} else if (icon == icon2) {
+				unmatched_icon = icon1;
+				select = TRUE;
+			}
+		}
+		
+		selection_changed |= icon_set_selected
+			(container, icon, select);
+
+		if (unmatched_icon != NULL && icon == unmatched_icon) {
+			select = FALSE;
+		}
+		
+	}
+	
+	if (selection_changed && icon2 != NULL) {
+		AtkObject *atk_object = eel_accessibility_for_object (icon2->item);
+		atk_focus_tracker_notify (atk_object);
+	}
+	return selection_changed;
+}
+
+
+static gboolean
 select_one_unselect_others (NautilusIconContainer *container,
 			    NautilusIcon *icon_to_select)
 {
@@ -2529,6 +2575,7 @@ keyboard_move_to (NautilusIconContainer *container,
 		clear_keyboard_focus (container);
 		clear_keyboard_rubberband_start (container);
 		
+		container->details->range_selection_base_icon = icon;
 		if (select_one_unselect_others (container, icon)) {
 			g_signal_emit (container,
 					 signals[SELECTION_CHANGED], 0);
@@ -2736,6 +2783,9 @@ keyboard_space (NautilusIconContainer *container,
 		if (container->details->keyboard_focus != NULL) {
 			icon_toggle_selected (container, container->details->keyboard_focus);
 			g_signal_emit (container, signals[SELECTION_CHANGED], 0);
+			if  (container->details->keyboard_focus->is_selected) {
+				container->details->range_selection_base_icon = container->details->keyboard_focus;
+			} 
 		} else {
 			icon = find_best_selected_icon (container,
 							NULL,
@@ -2843,6 +2893,7 @@ select_matching_name (NautilusIconContainer *container,
 	/* Select icons and get rid of the special keyboard focus. */
 	clear_keyboard_focus (container);
 	clear_keyboard_rubberband_start (container);
+	container->details->range_selection_base_icon = icon;
 	if (select_one_unselect_others (container, icon)) {
 		g_signal_emit (container,
 				 signals[SELECTION_CHANGED], 0);
@@ -3115,6 +3166,13 @@ button_press_event (GtkWidget *widget,
 		return TRUE;
 	}
 
+	if ((event->button == DRAG_BUTTON || event->button == MIDDLE_BUTTON) &&
+	    event->type == GDK_BUTTON_PRESS) {
+		/* Clear the last click icon for double click */
+		container->details->double_click_icon[1] = container->details->double_click_icon[0];
+		container->details->double_click_icon[0] = NULL;
+	}
+	
 	/* Button 1 does rubber banding. */
 	if (event->button == RUBBERBAND_BUTTON) {
 		if (! button_event_modifies_selection (event)) {
@@ -3167,12 +3225,16 @@ nautilus_icon_container_did_not_drag (NautilusIconContainer *container,
 		
 	details = container->details;
 
-	if (details->icon_selected_on_button_down) {
+	if (details->icon_selected_on_button_down &&
+	    ((event->state & GDK_CONTROL_MASK) != 0 ||
+	     (event->state & GDK_SHIFT_MASK) == 0)) {
 		if (button_event_modifies_selection (event)) {
+			details->range_selection_base_icon = NULL;
 			icon_toggle_selected (container, details->drag_icon);
 			g_signal_emit (container,
 				       signals[SELECTION_CHANGED], 0);
 		} else {
+			details->range_selection_base_icon = details->drag_icon;
 			selection_changed = select_one_unselect_others 
 				(container, details->drag_icon);
 			
@@ -3217,7 +3279,7 @@ nautilus_icon_container_did_not_drag (NautilusIconContainer *container,
 			 * much more link-like.
 			 */
 			if (event->button == MIDDLE_BUTTON) {
-				activate_selected_items_alternate (container);
+				activate_selected_items_alternate (container, NULL);
 			} else {
 				activate_selected_items (container);
 			}
@@ -3689,8 +3751,11 @@ key_press_event (GtkWidget *widget,
 			break;
 		case GDK_Up:
 		case GDK_KP_Up:
-			keyboard_up (container, event);
-			handled = TRUE;
+			/* Don't eat Alt-Up, as that is used for alt-shift-Up */
+			if ((event->state & GDK_MOD1_MASK) == 0) {
+				keyboard_up (container, event);
+				handled = TRUE;
+			}
 			break;
 		case GDK_Right:
 		case GDK_KP_Right:
@@ -4246,6 +4311,10 @@ handle_icon_button_press (NautilusIconContainer *container,
 
 	details = container->details;
 
+	if (event->type == GDK_3BUTTON_PRESS) {
+		return TRUE;
+	}
+
 	if (details->single_click_mode &&
 	    event->type == GDK_2BUTTON_PRESS) {
 		/* Don't care about double clicks in single click mode */
@@ -4270,12 +4339,16 @@ handle_icon_button_press (NautilusIconContainer *container,
 		details->drag_button = 0;
 		details->drag_icon = NULL;
 		
-		if (icon == details->double_click_icon[1] &&
-		    !button_event_modifies_selection (event)) {
-			if (event->button == MIDDLE_BUTTON) {
-				activate_selected_items_alternate (container);
-			} else {
-				activate_selected_items (container);
+		if (icon == details->double_click_icon[1]) {
+			if (!button_event_modifies_selection (event)) {
+				if (event->button == MIDDLE_BUTTON) {
+					activate_selected_items_alternate (container, NULL);
+				} else {
+					activate_selected_items (container);
+				}
+			} else if (event->button == DRAG_BUTTON &&
+				   (event->state & GDK_SHIFT_MASK) != 0) {
+				activate_selected_items_alternate (container, icon);
 			}
 		}
 		return TRUE;
@@ -4303,7 +4376,22 @@ handle_icon_button_press (NautilusIconContainer *container,
 	 * the same way for contextual menu as it would be without. 
 	 */
 	details->icon_selected_on_button_down = icon->is_selected;
-	if (!details->icon_selected_on_button_down) {
+	
+	if ((event->button == DRAG_BUTTON || event->button == MIDDLE_BUTTON) &&
+	    (event->state & GDK_CONTROL_MASK) == 0 &&
+	    (event->state & GDK_SHIFT_MASK) != 0) {
+		NautilusIcon *start_icon;
+
+		start_icon = details->range_selection_base_icon;
+		if (start_icon == NULL || !start_icon->is_selected) {
+			start_icon = icon;
+		} 
+		if (select_range (container, start_icon, icon)) {
+			g_signal_emit (container,
+				       signals[SELECTION_CHANGED], 0);
+		}
+	} else if (!details->icon_selected_on_button_down) {
+		details->range_selection_base_icon = icon;
 		if (button_event_modifies_selection (event)) {
 			icon_toggle_selected (container, icon);
 			g_signal_emit (container,
@@ -4564,8 +4652,14 @@ icon_destroy (NautilusIconContainer *container,
 	if (details->drop_target == icon) {
 		details->drop_target = NULL;
 	}
+	if (details->range_selection_base_icon == icon) {
+		details->range_selection_base_icon = NULL;
+	}
 	if (details->pending_icon_to_reveal == icon) {
 		set_pending_icon_to_reveal (container, NULL);
+	}
+	if (details->stretch_icon == icon) {
+		details->stretch_icon = NULL;
 	}
 
 	if (icon->is_monitored) {
@@ -4599,13 +4693,18 @@ activate_selected_items (NautilusIconContainer *container)
 }
 
 static void
-activate_selected_items_alternate (NautilusIconContainer *container)
+activate_selected_items_alternate (NautilusIconContainer *container,
+				   NautilusIcon *icon)
 {
 	GList *selection;
 
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
-	selection = nautilus_icon_container_get_selection (container);
+	if (icon != NULL) {
+		selection = g_list_prepend (NULL, icon->data);
+	} else {
+		selection = nautilus_icon_container_get_selection (container);
+	}
 	if (selection != NULL) {
 	  	g_signal_emit (container,
 				 signals[ACTIVATE_ALTERNATE], 0,
@@ -4636,14 +4735,15 @@ nautilus_icon_container_get_icon_images (NautilusIconContainer *container,
 					 NautilusIconData      *data,
 					 GList                **emblem_icons,
 					 char                 **embedded_text,
-					 gboolean              *embedded_text_needs_loading)
+					 gboolean              *embedded_text_needs_loading,
+					 gboolean              *has_open_window)
 {
 	NautilusIconContainerClass *klass;
 
 	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
 	g_return_val_if_fail (klass->get_icon_images != NULL, NULL);
 
-	return klass->get_icon_images (container, data, emblem_icons, embedded_text, embedded_text_needs_loading);
+	return klass->get_icon_images (container, data, emblem_icons, embedded_text, embedded_text_needs_loading, has_open_window);
 }
 
 
@@ -4769,6 +4869,8 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	char *embedded_text;
 	GdkRectangle embedded_text_rect;
 	gboolean embedded_text_needs_loading;
+	gboolean has_open_window;
+	char *modifier;
 	
 	if (icon == NULL) {
 		return;
@@ -4782,7 +4884,8 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	icon_name = nautilus_icon_container_get_icon_images (
 		container, icon->data, 
 		&emblem_icon_names,
-		&embedded_text, &embedded_text_needs_loading);
+		&embedded_text, &embedded_text_needs_loading,
+		&has_open_window);
 
 	/* compute the maximum size based on the scale factor */
 	min_image_size = MINIMUM_IMAGE_SIZE * EEL_CANVAS (container)->pixels_per_unit;
@@ -4793,10 +4896,18 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 
 	icon_size = MAX (icon_size, min_image_size);
 	icon_size = MIN (icon_size, max_image_size);
+
+	modifier = NULL;
+	if (has_open_window) {
+		modifier = "visiting";
+	}
+	if (icon == details->drop_target) {
+		modifier = "accept";
+	}
 	
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 		(icon_name,
-		(icon == details->drop_target) ? "accept" : NULL,
+		 modifier,
 		 icon_size,
 		 &attach_points,
 		 &embedded_text_rect,
@@ -6416,6 +6527,28 @@ nautilus_icon_container_set_font_size_table (NautilusIconContainer *container,
 	}
 }
 
+/**
+ * nautilus_icon_container_get_icon_description
+ * @container: An icon container widget.
+ * @data: Icon data 
+ * 
+ * Gets the description for the icon. This function may return NULL.
+ **/
+char*
+nautilus_icon_container_get_icon_description (NautilusIconContainer *container,
+				              NautilusIconData      *data)
+{
+	NautilusIconContainerClass *klass;
+
+	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
+
+	if (klass->get_icon_description) {
+		return klass->get_icon_description (container, data);
+	} else {
+		return NULL;
+	}
+}
+
 /* NautilusIconContainerAccessible */
 
 static NautilusIconContainerAccessiblePrivate *
@@ -6866,23 +6999,24 @@ nautilus_icon_container_accessible_initialize (AtkObject *accessible,
 			    accessible_private_data_quark, 
 			    priv);
 
-	nautilus_icon_container_accessible_update_selection 
-		(ATK_OBJECT (accessible));
-
-	container = NAUTILUS_ICON_CONTAINER (GTK_ACCESSIBLE (accessible)->widget);
-	g_signal_connect (G_OBJECT (container), "selection_changed",
-			  G_CALLBACK (nautilus_icon_container_accessible_selection_changed_cb), 
-			  accessible);
-	g_signal_connect (G_OBJECT (container), "icon_added",
-			  G_CALLBACK (nautilus_icon_container_accessible_icon_added_cb), 
-			  accessible);
-	g_signal_connect (G_OBJECT (container), "icon_removed",
-			  G_CALLBACK (nautilus_icon_container_accessible_icon_removed_cb), 
-			  accessible);
-	g_signal_connect (G_OBJECT (container), "cleared",
-			  G_CALLBACK (nautilus_icon_container_accessible_cleared_cb), 
-			  accessible);
-
+	if (GTK_IS_ACCESSIBLE (accessible)) {
+		nautilus_icon_container_accessible_update_selection 
+			(ATK_OBJECT (accessible));
+		
+		container = NAUTILUS_ICON_CONTAINER (GTK_ACCESSIBLE (accessible)->widget);
+		g_signal_connect (G_OBJECT (container), "selection_changed",
+				  G_CALLBACK (nautilus_icon_container_accessible_selection_changed_cb), 
+				  accessible);
+		g_signal_connect (G_OBJECT (container), "icon_added",
+				  G_CALLBACK (nautilus_icon_container_accessible_icon_added_cb), 
+				  accessible);
+		g_signal_connect (G_OBJECT (container), "icon_removed",
+				  G_CALLBACK (nautilus_icon_container_accessible_icon_removed_cb), 
+				  accessible);
+		g_signal_connect (G_OBJECT (container), "cleared",
+				  G_CALLBACK (nautilus_icon_container_accessible_cleared_cb), 
+				  accessible);
+	}
 }
 
 static void

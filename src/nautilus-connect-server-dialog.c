@@ -46,8 +46,7 @@ EEL_CLASS_BOILERPLATE (NautilusConnectServerDialog,
 		       nautilus_connect_server_dialog,
 		       GTK_TYPE_DIALOG)
 enum {
-	RESPONSE_CONNECT,
-	RESPONSE_CANCEL
+	RESPONSE_CONNECT
 };	
 
 static void
@@ -84,7 +83,9 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 
 	name = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->name_entry), 0, -1);
 	if (strlen (name) == 0) {
-                eel_show_error_dialog (_("You must enter a name for the server"), _("Can't connect to server"), GTK_WINDOW (dialog));
+                eel_show_error_dialog (_("You must enter a name for the server."), 
+		                       _("Please enter a name and try again."), 
+		                       _("Can't Connect to Server"), GTK_WINDOW (dialog));
 		g_free (name);
 		return;
 	}
@@ -97,9 +98,10 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 	
 	if (vfs_uri == NULL) {
 		error_message = g_strdup_printf
-			(_("\"%s\" is not a valid location. Please check the spelling and try again."),
+			(_("\"%s\" is not a valid location."),
                          uri);
-                eel_show_error_dialog (error_message, _("Can't connect to server"), GTK_WINDOW (dialog));
+                eel_show_error_dialog (error_message, _("Please check the spelling and try again."), 
+		                       _("Can't Connect to Server"), GTK_WINDOW (dialog));
 		g_free (error_message);
 	} else {
 		gnome_vfs_uri_unref (vfs_uri);
@@ -132,7 +134,7 @@ response_callback (NautilusConnectServerDialog *dialog,
 		break;
 	case GTK_RESPONSE_NONE:
 	case GTK_RESPONSE_DELETE_EVENT:
-	case RESPONSE_CANCEL:
+	case GTK_RESPONSE_CANCEL:
 		gtk_widget_destroy (GTK_WIDGET (dialog));
 		break;
 	default :
@@ -174,15 +176,19 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Connect to Server"));
 	gtk_window_set_default_size (GTK_WINDOW (dialog), 300, -1);
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
 
 	table = gtk_table_new (2, 2, FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (table), 5);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-			    table, TRUE, TRUE, 12);
+			    table, TRUE, TRUE, 0);
 	gtk_table_set_row_spacings (GTK_TABLE (table), 6);
-	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 12);
 	gtk_widget_show (table);
 	
 	label = gtk_label_new_with_mnemonic (_("_Name:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
 	gtk_table_attach (GTK_TABLE (table), label,
 			  0, 1,
@@ -201,6 +207,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 
 	
 	label = gtk_label_new_with_mnemonic (_("_Location:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
 	gtk_table_attach (GTK_TABLE (table), label,
 			  0, 1,
@@ -223,9 +230,9 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
 			       GTK_STOCK_CANCEL,
-			       RESPONSE_CANCEL);
+			       GTK_RESPONSE_CANCEL);
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
-			       _("Connect"),
+			       _("C_onnect"),
 			       RESPONSE_CONNECT);
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog),
 					 RESPONSE_CONNECT);

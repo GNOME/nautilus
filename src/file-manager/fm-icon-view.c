@@ -1358,6 +1358,33 @@ fm_icon_view_get_selection (FMDirectoryView *view)
 }
 
 static void
+count_item (NautilusIconData *icon_data,
+	    gpointer callback_data)
+{
+	guint *count;
+
+	count = callback_data;
+	(*count)++;
+}
+
+static guint
+fm_icon_view_get_item_count (FMDirectoryView *view)
+{
+	guint count;
+
+	g_return_val_if_fail (FM_IS_ICON_VIEW (view), 0);
+
+	count = 0;
+	
+	nautilus_icon_container_for_each
+		(get_icon_container (FM_ICON_VIEW (view)),
+		 count_item, &count);
+
+	return count;
+}
+
+
+static void
 set_sort_criterion_by_id (FMIconView *icon_view, const char *id)
 {
 	const SortCriterion *sort;
@@ -1771,8 +1798,9 @@ play_file (gpointer callback_data)
 	file_uri = nautilus_file_get_uri (file);
 	mime_type = nautilus_file_get_mime_type (file);
 	is_mp3 = eel_strcasecmp (mime_type, "audio/mpeg") == 0;
-	is_ogg = eel_strcasecmp (mime_type, "application/x-ogg") == 0;
-
+	is_ogg = eel_strcasecmp (mime_type, "application/x-ogg") == 0 ||
+                eel_strcasecmp (mime_type, "application/ogg") == 0;
+	
 	mp3_pid = fork ();
 	if (mp3_pid == (pid_t) 0) {
 		/* Set the group (session) id to this process for future killing. */
@@ -2541,8 +2569,9 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 
 	if (eel_vfs_has_capability (container_uri,
 				    EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW)) {
-		eel_show_warning_dialog (_("Drag and drop is only supported to local file systems."),
-					 _("Drag and Drop error"),
+		eel_show_warning_dialog (_("Drag and drop is not supported."),
+					 _("Drag and drop is only supported on local file systems."),
+					 _("Drag and Drop Error"),
 					 fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)));
 		g_free (container_uri);
 		return;
@@ -2564,8 +2593,9 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	    (action != GDK_ACTION_COPY) &&
 	    (action != GDK_ACTION_MOVE) &&
 	    (action != GDK_ACTION_LINK)) {
-		eel_show_warning_dialog (_("An invalid drag type was used."),
-					 _("Drag and Drop error"),
+		eel_show_warning_dialog (_("Drag and drop is not supported."),
+					 _("An invalid drag type was used."),
+					 _("Drag and Drop Error"),
 					 fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)));
 		g_free (container_uri);
 		return;
@@ -2747,6 +2777,7 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 	fm_directory_view_class->get_background_widget = fm_icon_view_get_background_widget;
 	fm_directory_view_class->get_selected_icon_locations = fm_icon_view_get_selected_icon_locations;
 	fm_directory_view_class->get_selection = fm_icon_view_get_selection;
+	fm_directory_view_class->get_item_count = fm_icon_view_get_item_count;
 	fm_directory_view_class->is_empty = fm_icon_view_is_empty;
 	fm_directory_view_class->remove_file = fm_icon_view_remove_file;
 	fm_directory_view_class->reset_to_defaults = fm_icon_view_reset_to_defaults;

@@ -130,7 +130,7 @@ static guint signals[LAST_SIGNAL];
 
 EEL_CLASS_BOILERPLATE (NautilusViewFrame,
 		       nautilus_view_frame,
-		       EEL_TYPE_GENEROUS_BIN)
+		       GTK_TYPE_HBOX)
 
 void
 nautilus_view_frame_queue_incoming_call (PortableServer_Servant servant,

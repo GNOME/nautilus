@@ -44,11 +44,11 @@
 #include <eel/eel-debug.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-generous-bin.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtkmain.h>
@@ -354,7 +354,7 @@ nautilus_window_go_to (NautilusWindow *window, const char *uri)
 }
 
 void
-nautilus_window_go_up (NautilusWindow *window)
+nautilus_window_go_up (NautilusWindow *window, gboolean close_behind)
 {
 	GnomeVFSURI *current_uri;
 	GnomeVFSURI *parent_uri;
@@ -379,7 +379,7 @@ nautilus_window_go_up (NautilusWindow *window)
 
 	selection = g_list_prepend (NULL, g_strdup (window->details->location));
 	
-	nautilus_window_open_location_with_selection (window, parent_uri_string, selection);
+	nautilus_window_open_location_with_selection (window, parent_uri_string, selection, close_behind);
 	
 	g_free (parent_uri_string);
 	eel_g_list_free_deep (selection);
@@ -523,7 +523,8 @@ set_initial_window_geometry (NautilusWindow *window)
 {
 	GdkScreen *screen;
 	guint max_width_for_screen, max_height_for_screen;
-
+	guint default_width, default_height;
+	
 	screen = gtk_window_get_screen (GTK_WINDOW (window));
 	
 	/* Don't let GTK determine the minimum size
@@ -550,11 +551,14 @@ set_initial_window_geometry (NautilusWindow *window)
 					  max_width_for_screen),
 				     MIN (NAUTILUS_WINDOW_MIN_HEIGHT, 
 					  max_height_for_screen));
-
+					  
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			 get_default_size, (window, &default_width, &default_height));
+			 
 	gtk_window_set_default_size (GTK_WINDOW (window), 
-				     MIN (NAUTILUS_WINDOW_DEFAULT_WIDTH, 
+				     MIN (default_width, 
 				          max_width_for_screen), 
-				     MIN (NAUTILUS_WINDOW_DEFAULT_HEIGHT, 
+				     MIN (default_height, 
 				          max_height_for_screen));
 }
 
@@ -747,6 +751,9 @@ nautilus_window_close (NautilusWindow *window)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			 close, (window));
+	
 	gtk_widget_destroy (GTK_WIDGET (window));
 }
 
@@ -1126,27 +1133,29 @@ compute_default_title (const char *text_uri)
 {
 	NautilusFile *file;
 	char *title;
-
-	if (text_uri == NULL) {
+	char *canonical_uri;
+	
+	canonical_uri = eel_make_uri_canonical (text_uri);
+	
+	if (canonical_uri == NULL) {
 		title = g_strdup ("");
-	} else if (strcmp (text_uri, "computer://") == 0 ||
-		   strcmp (text_uri, "computer:///") == 0) {
+	} else if (strcmp (canonical_uri, "computer:///") == 0 ) {
 		title = g_strdup (_("Computer"));
-	} else if (strcmp (text_uri, "network://") == 0 ||
-		   strcmp (text_uri, "network:///") == 0) {
+	} else if (strcmp (canonical_uri, "network:///") == 0 ) {
 		title = g_strdup (_("Network"));
-	} else if (strcmp (text_uri, "fonts://") == 0 ||
-		   strcmp (text_uri, "fonts:///") == 0) {
+	} else if (strcmp (canonical_uri, "fonts:///") == 0 ) {
 		title = g_strdup (_("Fonts"));
-	} else if (strcmp (text_uri, "burn://") == 0 ||
-		   strcmp (text_uri, "burn:///") == 0) {
+	} else if (strcmp (canonical_uri, "themes:///") == 0 ) {
+		title = g_strdup (_("Themes"));
+	} else if (strcmp (canonical_uri, "burn:///") == 0 ) {
 		title = g_strdup (_("CD Creator"));
 	} else {
 		file = nautilus_file_get (text_uri);
 		title = nautilus_file_get_display_name (file);
 		nautilus_file_unref (file);
 	}
-
+	
+	g_free (canonical_uri);
 	return title;
 }
 
@@ -1385,11 +1394,18 @@ nautilus_window_set_viewed_file (NautilusWindow *window,
 	cancel_chose_component_callback (window);
 
 	if (window->details->viewed_file != NULL) {
+		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
+			nautilus_file_set_has_open_window (window->details->viewed_file,
+							   FALSE);
+		}
 		nautilus_file_monitor_remove (window->details->viewed_file,
 					      window);
 	}
 
 	if (file != NULL) {
+		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
+			nautilus_file_set_has_open_window (file, TRUE);
+		}
 		attributes = NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
 		nautilus_file_monitor_add (file, window, attributes);
 	}

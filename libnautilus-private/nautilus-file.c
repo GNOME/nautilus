@@ -167,6 +167,8 @@ nautilus_file_instance_init (NautilusFile *file)
 {
 	file->details = g_new0 (NautilusFileDetails, 1);
 
+	file->details = G_TYPE_INSTANCE_GET_PRIVATE ((file), NAUTILUS_TYPE_FILE, NautilusFileDetails);
+
 	nautilus_file_invalidate_extension_info_internal (file);
 }
 
@@ -498,8 +500,6 @@ finalize (GObject *object)
 	g_free (file->details->compare_by_emblem_cache);
 	
 	eel_g_list_free_deep (file->details->mime_list);
-
-	g_free (file->details);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -5405,6 +5405,25 @@ nautilus_file_invalidate_attributes_internal (NautilusFile *file,
 }
 
 gboolean
+nautilus_file_has_open_window (NautilusFile *file)
+{
+	return file->details->has_open_window;
+}
+
+void
+nautilus_file_set_has_open_window (NautilusFile *file,
+				   gboolean has_open_window)
+{
+	has_open_window = (has_open_window != FALSE);
+
+	if (file->details->has_open_window != has_open_window) {
+		file->details->has_open_window = has_open_window;
+		nautilus_file_changed (file);
+	}
+}
+
+
+gboolean
 nautilus_file_is_thumbnailing (NautilusFile *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
@@ -5692,6 +5711,8 @@ nautilus_file_class_init (NautilusFileClass *class)
 		              NULL, NULL,
 			      g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
+	
+	g_type_class_add_private (class, sizeof (NautilusFileDetails));
 }
 
 static GnomeVFSFileInfo *

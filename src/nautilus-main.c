@@ -130,22 +130,23 @@ nautilus_main_event_loop_quit (void)
 static void
 register_icons (void)
 {
-	GnomeIconTheme *icon_theme;
-	char *icon;
+	GtkIconTheme *icon_theme;
+	GtkIconInfo *info;
+	const char *icon;
 	GtkIconSource *source;
 	GtkIconSet *set;
 	GtkIconFactory *factory;
 
 	icon_theme = nautilus_icon_factory_get_icon_theme ();
-	icon = gnome_icon_theme_lookup_icon (icon_theme, "gnome-fs-client", 48,
-					     NULL, NULL);
-	if (icon != NULL) {
+	info = gtk_icon_theme_lookup_icon (icon_theme, "gnome-fs-client", 48,
+					   0);
+	if (info != NULL) {
+		icon = gtk_icon_info_get_filename (info);
 		factory = gtk_icon_factory_new ();
 		gtk_icon_factory_add_default (factory);
 		
 		source = gtk_icon_source_new ();
 		gtk_icon_source_set_filename (source, icon);
-		g_free (icon);
 		
 		set = gtk_icon_set_new ();
 		gtk_icon_set_add_source (set, source);
@@ -155,11 +156,11 @@ register_icons (void)
 		
 		gtk_icon_source_free (source);
 
+		gtk_icon_info_free (info);
 		g_object_unref (factory);
 	}
 	
 	g_object_unref (icon_theme);
-	
 	
 }
 

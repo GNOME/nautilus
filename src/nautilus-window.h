@@ -76,6 +76,8 @@ typedef struct {
         void   (* set_throbber_active) (NautilusWindow *window,
                                         gboolean active);
         void   (* prompt_for_location) (NautilusWindow *window);
+        void   (* get_default_size) (NautilusWindow *window, guint *default_width, guint *default_height);
+        void   (* close) (NautilusWindow *window);
 } NautilusWindowClass;
 
 typedef enum {
@@ -121,7 +123,8 @@ char *           nautilus_window_get_location         (NautilusWindow    *window
 void             nautilus_window_go_to                (NautilusWindow    *window,
                                                        const char        *location);
 void             nautilus_window_go_home              (NautilusWindow    *window);
-void             nautilus_window_go_up                (NautilusWindow    *window);
+void             nautilus_window_go_up                (NautilusWindow    *window,
+                                                       gboolean           close_behind);
 void             nautilus_window_prompt_for_location  (NautilusWindow    *window);
 void             nautilus_window_launch_cd_burner     (NautilusWindow    *window);
 void             nautilus_window_update_title         (NautilusWindow    *window);

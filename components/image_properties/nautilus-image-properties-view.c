@@ -197,7 +197,7 @@ append_exifdata_string (ExifData *exifdata, GString *string)
                 append_tag_value_pair (string, exifdata, EXIF_TAG_APERTURE_VALUE, _("Aperture Value"));
                 append_tag_value_pair (string, exifdata, EXIF_TAG_METERING_MODE, _("Metering Mode"));
                 append_tag_value_pair (string, exifdata, EXIF_TAG_FLASH,_("Flash Fired"));
-                append_tag_value_pair (string, exifdata, EXIF_TAG_FOCAL_LENGTH,_("Focal Lenght"));
+                append_tag_value_pair (string, exifdata, EXIF_TAG_FOCAL_LENGTH,_("Focal Length"));
                 append_tag_value_pair (string, exifdata, EXIF_TAG_SHUTTER_SPEED_VALUE, _("Shutter Speed"));
                 append_tag_value_pair (string, exifdata, EXIF_TAG_ISO_SPEED_RATINGS, _("ISO Speed Rating"));
                 append_tag_value_pair (string, exifdata, EXIF_TAG_SOFTWARE, _("Software"));

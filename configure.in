@@ -6,16 +6,16 @@ ART_REQUIRED=2.3.10
 BONOBO_ACTIVATION_REQUIRED=2.1.0
 BONOBO_REQUIRED=2.1.0
 BONOBO_UI_REQUIRED=2.2.0
-EEL_REQUIRED=2.5.1
+EEL_REQUIRED=2.5.4
 ESOUND_REQUIRED=0.2.27
-GLIB_REQUIRED=2
+GLIB_REQUIRED=2.3.0
 GNOME_DESKTOP_REQUIRED=2.1.0
 GNOME_REQUIRED=2.1.1
 GNOME_UI_REQUIRED=2.3.3
 GNOME_VFS_REQUIRED=2.5.1
 ORBIT_REQUIRED=2.4.0
 PANGO_REQUIRED=1.1.2
-GTK_REQUIRED=2.1.1
+GTK_REQUIRED=2.3.0
 MEDUSA_REQUIRED=0.5.1
 RSVG_REQUIRED=2.0.1
 XML_REQUIRED=2.4.7
@@ -43,7 +43,7 @@ AC_SUBST(STARTUP_NOTIFICATION_REQUIRED)
 
 dnl ===========================================================================
 
-AM_INIT_AUTOMAKE(nautilus, 2.5.1.1)
+AM_INIT_AUTOMAKE(nautilus, 2.5.4)
 AM_CONFIG_HEADER(config.h)
 
 AM_SANITY_CHECK
@@ -369,19 +369,6 @@ dnl	-DBONOBO_DISABLE_DEPRECATED
 
 AC_SUBST(DISABLE_DEPRECATED_CFLAGS)
 
-dnl
-dnl disable (broken) hardware view
-dnl
-hw_view=disabled
-AC_ARG_ENABLE(hardware,
-[  --enable-hardware		Enable (broken, Linux only) hardware view],
-hw_view=enabled)
-if test "x`(uname -s) 2>/dev/null`" != "xLinux"; then
-	hw_view=disabled
-fi
-AM_CONDITIONAL(ENABLE_HARDWARE_VIEW, test "$hw_view" = "enabled")
-
-
 dnl libbackground
 PKG_CHECK_MODULES(CAPPLET, "gtk+-2.0 gconf-2.0 libgnomeui-2.0 libbonoboui-2.0")
 dnl ==========================================================================
@@ -402,14 +389,10 @@ AC_OUTPUT([
 Makefile
 components/Makefile
 components/adapter/Makefile
-components/hardware/Makefile
-components/hardware/icons/Makefile
 components/history/Makefile
 components/notes/Makefile
 components/text/Makefile
-components/text/services/Makefile
 components/throbber/Makefile
-components/tree/Makefile
 components/emblem/Makefile
 components/image_properties/Makefile
 cut-n-paste-code/Makefile
@@ -449,6 +432,5 @@ nautilus-$VERSION:
 	source code location:	${srcdir}
 	compiler:		${CC}
 
-	hardware view:          ${hw_view}
 	profiling support:      ${profiling_support}
 "

@@ -341,12 +341,10 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 		}
 		return;
 	} else if (eel_uri_is_desktop (target_uri_string)) {
-		if (actions & GDK_ACTION_MOVE) {
-			*action = GDK_ACTION_MOVE;
-		} else {
-			*action = context->suggested_action;
-		}
-		return;
+		char *desktop_uri;
+		desktop_uri = nautilus_get_desktop_directory_uri ();
+		target_uri = gnome_vfs_uri_new (desktop_uri);
+		g_free (desktop_uri);
 	} else {
 		target_uri = gnome_vfs_uri_new (target_uri_string);
 	}

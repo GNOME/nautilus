@@ -302,11 +302,10 @@ can_connect (const char *uri)
 static void
 update_icon (GtkEntry *entry, gpointer user_data)
 {
-	GnomeIconTheme *theme;
+	GtkIconTheme *theme;
 	GtkWidget *button;
-	char *uri_utf8, *uri, *filename;
-	const GnomeIconData *icon_data;
-	int base_size;
+	char *uri_utf8, *uri;
+	GdkPixbuf *pixbuf;
 
 	uri_utf8 = gtk_editable_get_chars (GTK_EDITABLE (entry), 0, -1);
 	if (uri_utf8 == NULL)
@@ -316,9 +315,8 @@ update_icon (GtkEntry *entry, gpointer user_data)
 	g_free (uri_utf8);
 
 	button = glade_xml_get_widget (xml, "button3");
-
-	if (uri == NULL || strcmp (uri, "") == 0)
-	{
+	
+	if (uri == NULL || strcmp (uri, "") == 0) {
 		gtk_widget_set_sensitive (button, FALSE);
 		naut_icon = "gnome-fs-share";
 	} else {
@@ -337,14 +335,16 @@ update_icon (GtkEntry *entry, gpointer user_data)
 		}
 	}
 
-	theme = gnome_icon_theme_new ();
-	filename = gnome_icon_theme_lookup_icon (theme, naut_icon,
-			ICON_SIZE_STANDARD,
-			&icon_data,
-			&base_size);
+	theme = gtk_icon_theme_get_default ();
+	pixbuf = gtk_icon_theme_load_icon (theme, naut_icon,
+					   ICON_SIZE_STANDARD,
+					   0, NULL);
 
-	gtk_image_set_from_file (GTK_IMAGE (image), filename);
-	g_free (filename);
+	if (pixbuf != NULL) {
+		gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
+		g_object_unref (pixbuf);
+	}
+	
 	g_free (uri);
 }
 

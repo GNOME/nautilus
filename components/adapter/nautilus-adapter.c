@@ -33,10 +33,9 @@
 #include "nautilus-adapter-load-strategy.h"
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-item-container.h>
-#include <eel/eel-generous-bin.h>
 #include <eel/eel-gtk-macros.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gtk/gtksignal.h>
+#include <gtk/gtkhbox.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock-icons.h>
 #include <libnautilus-adapter/nautilus-adapter-factory.h>
@@ -123,7 +122,7 @@ nautilus_adapter_new (Bonobo_Unknown component)
 {
 	NautilusAdapter      *adapter;
 	BonoboControl        *control;
-	GtkWidget            *bin;
+	GtkWidget            *box;
 	BonoboObject         *zoomable;
 
 	/* FIXME bugzilla.gnome.org 44405: should be done with
@@ -133,9 +132,9 @@ nautilus_adapter_new (Bonobo_Unknown component)
 	adapter = NAUTILUS_ADAPTER (g_object_new (NAUTILUS_TYPE_ADAPTER, NULL));
 
 	/* Set up a few wrapper framework details */
-	bin = gtk_widget_new (EEL_TYPE_GENEROUS_BIN, NULL);
-	gtk_widget_show (bin);
-	control = bonobo_control_new (bin);
+	box = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (box);
+	control = bonobo_control_new (box);
 	adapter->details->nautilus_view = nautilus_view_new_from_bonobo_control (control);
 
 	g_object_weak_ref (G_OBJECT (adapter->details->nautilus_view),
@@ -180,7 +179,7 @@ nautilus_adapter_new (Bonobo_Unknown component)
 				 adapter, G_CONNECT_SWAPPED);
 
 	/* complete the embedding */
-	gtk_container_add (GTK_CONTAINER (bin), 
+	gtk_container_add (GTK_CONTAINER (box), 
 			   nautilus_adapter_embed_strategy_get_widget (adapter->details->embed_strategy));
 			   
 	/* hook up view signals. */

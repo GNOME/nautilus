@@ -5,6 +5,9 @@
 <commands>
 </commands>
 
+<keybindings>
+        <accel name="*Alt**Shift*Up" verb="UpCloseCurrent"/>
+</keybindings>
 <menu>
 	<submenu name="File">
 		<placeholder name="Location Placeholder">
@@ -23,10 +26,10 @@
 		</placeholder>
 		<placeholder name="Close Items Placeholder">
 			<menuitem name="Close With Parents"
-			  _label="Close _All Parents"
-			  _tip="Close all Navigation windows"
+			  _label="Close P_arent Folders"
+			  _tip="Close this folder's parents"
 			  accel="*Control**Shift*w"
-			  verb="Close With Parents"/>
+			  verb="Close Parent Folders"/>
 		</placeholder>
 	</submenu>
 
@@ -41,6 +44,10 @@
 			  _tip="Go to Computer"
 	                  pixtype="stock" pixname="gnome-fs-client"
 			  verb="Go to Computer"/>
+		<menuitem name="Go to Templates"
+			  _label="_Templates"
+			  _tip="Go to templates folder"
+			  verb="Go to Templates"/>
 		<menuitem name="Go to Trash"
 			  _label="_Trash"
 			  _tip="Go to the trash folder"

@@ -349,7 +349,7 @@ go_menu_up_callback (BonoboUIComponent *component,
 		     gpointer user_data, 
 		     const char *verb) 
 {
-	nautilus_window_go_up (NAUTILUS_WINDOW (user_data));
+	nautilus_window_go_up (NAUTILUS_WINDOW (user_data), FALSE);
 }
 
 static void
@@ -376,6 +376,20 @@ go_menu_go_to_computer_callback (BonoboUIComponent *component,
 {
 	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
 			       COMPUTER_URI);
+}
+
+static void
+go_menu_go_to_templates_callback (BonoboUIComponent *component, 
+				 gpointer user_data, 
+				 const char *verb) 
+{
+	char *uri;
+
+	nautilus_create_templates_directory ();
+	uri = nautilus_get_templates_directory_uri ();
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
+			       uri);
+	g_free (uri);
 }
 
 static void
@@ -658,6 +672,7 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("Home", go_menu_home_callback),
 		BONOBO_UI_VERB ("Start Here", go_menu_start_here_callback),
 		BONOBO_UI_VERB ("Go to Computer", go_menu_go_to_computer_callback),
+		BONOBO_UI_VERB ("Go to Templates", go_menu_go_to_templates_callback),
 		BONOBO_UI_VERB ("Go to Trash", go_menu_go_to_trash_callback),
 		BONOBO_UI_VERB ("Go to Burn CD", go_menu_go_to_burn_cd_callback),
 		BONOBO_UI_VERB ("Go to Location", go_menu_location_callback),

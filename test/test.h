@@ -20,8 +20,6 @@
 #include <eel/eel-string.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 
-#include <eel/eel-string-picker.h>
-
 void       test_init                            (int                         *argc,
 						 char                      ***argv);
 int        test_quit                            (int                          exit_code);

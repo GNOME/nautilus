@@ -35,6 +35,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-stock-dialogs.h>
+#include <gtk/gtkmessagedialog.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkstock.h>
 #include <libgnome/gnome-i18n.h>
@@ -90,27 +91,21 @@ nautilus_desktop_link_monitor_delete_link (NautilusDesktopLinkMonitor *monitor,
 					   NautilusDesktopLink *link,
 					   GtkWidget *parent_view)
 {
-	/* FIXME: Is this right? How to get them back?
-	 * Do we disallow this, or add a prefs ui to get them back? */
-	
 	switch (nautilus_desktop_link_get_link_type (link)) {
 	case NAUTILUS_DESKTOP_LINK_HOME:
-		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_DESKTOP_HOME_VISIBLE, FALSE);
-		break;
 	case NAUTILUS_DESKTOP_LINK_COMPUTER:
-		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_VISIBLE, FALSE);
-		break;
 	case NAUTILUS_DESKTOP_LINK_TRASH:
-		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE, FALSE);
+		/* just ignore. We don't allow you to delete these */
 		break;
 	default:
 		eel_run_simple_dialog
 			(parent_view, 
 			 FALSE,
-			 _("You cannot delete a volume icon. If you want to eject "
-			   "the volume, please use Eject in the right-click menu of "
-			   "the volume."), 
-			 _("Can't delete volume"),
+			 GTK_MESSAGE_ERROR,
+			 _("You cannot delete a volume icon."),
+			 _("If you want to eject the volume, please use Eject in the "
+			   "right-click menu of the volume."),
+			 _("Can't Delete Volume"),
 			 GTK_STOCK_OK, NULL);
 		break;
 	}

@@ -23,31 +23,31 @@
  *          Anders Carlsson <andersca@gnu.org> 
  */
 
-/* nautilus-tree-view.h - tree view. */
+/* fm-tree-view.h - tree view. */
 
 
-#ifndef NAUTILUS_TREE_VIEW_H
-#define NAUTILUS_TREE_VIEW_H
+#ifndef FM_TREE_VIEW_H
+#define FM_TREE_VIEW_H
 
 #include <libnautilus/nautilus-view.h>
 
-#define NAUTILUS_TYPE_TREE_VIEW	           (nautilus_tree_view_get_type ())
-#define NAUTILUS_TREE_VIEW(obj)	           (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_TREE_VIEW, NautilusTreeView))
-#define NAUTILUS_TREE_VIEW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_TREE_VIEW, NautilusTreeViewClass))
-#define NAUTILUS_IS_TREE_VIEW(obj)	   (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_TREE_VIEW))
-#define NAUTILUS_IS_TREE_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_TREE_VIEW))
+#define FM_TYPE_TREE_VIEW	           (fm_tree_view_get_type ())
+#define FM_TREE_VIEW(obj)	           (GTK_CHECK_CAST ((obj), FM_TYPE_TREE_VIEW, FMTreeView))
+#define FM_TREE_VIEW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_TREE_VIEW, FMTreeViewClass))
+#define FM_IS_TREE_VIEW(obj)	   (GTK_CHECK_TYPE ((obj), FM_TYPE_TREE_VIEW))
+#define FM_IS_TREE_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_TREE_VIEW))
 
-typedef struct NautilusTreeViewDetails NautilusTreeViewDetails;
+typedef struct FMTreeViewDetails FMTreeViewDetails;
 
 typedef struct {
 	NautilusView parent;
-	NautilusTreeViewDetails *details;
-} NautilusTreeView;
+	FMTreeViewDetails *details;
+} FMTreeView;
 
 typedef struct {
 	NautilusViewClass parent_class;
-} NautilusTreeViewClass;
+} FMTreeViewClass;
 
-GType nautilus_tree_view_get_type (void);
+GType fm_tree_view_get_type (void);
 
-#endif /* NAUTILUS_TREE_VIEW_H */
+#endif /* FM_TREE_VIEW_H */

@@ -152,6 +152,8 @@ struct FMDirectoryViewClass {
 	/* Return an array of locations of selected icons in their view. */
 	GArray * (* get_selected_icon_locations) (FMDirectoryView *view);
 
+	guint    (* get_item_count)             (FMDirectoryView *view);
+
         /* bump_zoom_level is a function pointer that subclasses must override
          * to change the zoom level of an object. */
         void    (* bump_zoom_level)      	(FMDirectoryView *view,
@@ -299,6 +301,7 @@ gboolean            fm_directory_view_can_accept_item                  (Nautilus
 void                fm_directory_view_display_selection_info           (FMDirectoryView  *view);
 GList *             fm_directory_view_get_selection                    (FMDirectoryView  *view);
 void                fm_directory_view_stop                             (FMDirectoryView  *view);
+guint               fm_directory_view_get_item_count                   (FMDirectoryView  *view);
 gboolean            fm_directory_view_can_zoom_in                      (FMDirectoryView  *view);
 gboolean            fm_directory_view_can_zoom_out                     (FMDirectoryView  *view);
 GtkWidget *         fm_directory_view_get_background_widget            (FMDirectoryView  *view);
@@ -370,6 +373,8 @@ gboolean            fm_directory_view_should_show_file                 (FMDirect
 gboolean	    fm_directory_view_should_sort_directories_first    (FMDirectoryView  *view);
 void                fm_directory_view_update_menus                     (FMDirectoryView  *view);
 void                fm_directory_view_new_folder                       (FMDirectoryView  *view);
+void                fm_directory_view_new_file                         (FMDirectoryView  *view,
+									NautilusFile     *source);
 void                fm_directory_view_ignore_hidden_file_preferences   (FMDirectoryView  *view);
 
 #endif /* FM_DIRECTORY_VIEW_H */

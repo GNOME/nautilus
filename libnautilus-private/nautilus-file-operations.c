@@ -37,19 +37,14 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-vfs-extensions.h>
 
-#include <libgnome/gnome-i18n.h>
+#include <gnome.h>
 #include <gtk/gtklabel.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkimage.h>
-#include <gtk/gtkvbox.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-find-directory.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-result.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <stdio.h>
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-file-private.h"
 #include "nautilus-desktop-icon-file.h"
@@ -391,9 +386,11 @@ handle_transfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 	if (transfer_info->cancelled
 		&& progress_info->phase != GNOME_VFS_XFER_PHASE_COMPLETED) {
 		/* If cancelled, delete any partially copied files that are laying
-		 * around and return.
+		 * around and return. Don't delete the source though..
 		 */
 		if (progress_info->target_name != NULL
+		    && progress_info->source_name != NULL
+		    && strcmp (progress_info->source_name, progress_info->target_name) != 0
 		    && progress_info->bytes_total != progress_info->bytes_copied) {
 			GList *delete_me;
 
@@ -521,12 +518,13 @@ typedef enum {
 } NautilusFileOperationsErrorLocation;
 
 
-static char *
+static void
 build_error_string (const char *source_name, const char *target_name,
 		    TransferKind operation_kind,
 		    NautilusFileOperationsErrorKind error_kind,
 		    NautilusFileOperationsErrorLocation error_location,
-		    GnomeVFSResult error)
+		    GnomeVFSResult error,
+		    char **error_string, char **detail_string)
 {
 	/* Avoid clever message composing here, just use brute force and
 	 * duplicate the different flavors of error messages for all the
@@ -535,11 +533,14 @@ build_error_string (const char *source_name, const char *target_name,
 	 * order of the words in the messages easily.
 	 */
 
-	const char *error_string;
-	char *result;
+	char *error_format;
+	char *detail_format;
+	
+	error_format = NULL;
+	detail_format = NULL;
 
-	error_string = NULL;
-	result = NULL;
+	*error_string = NULL;
+	*detail_string = NULL;
 
 	if (error_location == ERROR_LOCATION_SOURCE_PARENT) {
 
@@ -547,9 +548,9 @@ build_error_string (const char *source_name, const char *target_name,
 		case TRANSFER_MOVE:
 		case TRANSFER_MOVE_TO_TRASH:
 			if (error_kind == ERROR_READ_ONLY) {
-				error_string = _("Error while moving.\n\n"
-						 "\"%s\" cannot be moved because it is on "
-						 "a read-only disk.");
+				*error_string = g_strdup (_("Error while moving."));
+				detail_format = _("\"%s\" cannot be moved because it is on "
+						  "a read-only disk.");
 			}
 			break;
 
@@ -558,15 +559,15 @@ build_error_string (const char *source_name, const char *target_name,
 			switch (error_kind) {
 			case ERROR_NOT_ENOUGH_PERMISSIONS:
 			case ERROR_NOT_WRITABLE:
-				error_string = _("Error while deleting.\n\n"
-						 "\"%s\" cannot be deleted because you do not have "
-						 "permissions to modify its parent folder.");
+				*error_string = g_strdup (_("Error while deleting."));
+				detail_format = _("\"%s\" cannot be deleted because you do not have "
+						  "permissions to modify its parent folder.");
 				break;
 			
 			case ERROR_READ_ONLY:
-				error_string = _("Error while deleting.\n\n"
-						 "\"%s\" cannot be deleted because it is on "
-						 "a read-only disk.");
+				*error_string = g_strdup (_("Error while deleting."));
+				detail_format = _("\"%s\" cannot be deleted because it is on "
+						  "a read-only disk.");
 				break;
 
 			default:
@@ -579,8 +580,8 @@ build_error_string (const char *source_name, const char *target_name,
 			break;
 		}
 		
-		if (error_string != NULL && source_name != NULL) {
-			result = g_strdup_printf (error_string, source_name);
+		if (detail_format != NULL && source_name != NULL) {
+			*detail_string = g_strdup_printf (detail_format, source_name);
 		}
 
 	} else if (error_location == ERROR_LOCATION_SOURCE_OR_PARENT) {
@@ -595,14 +596,14 @@ build_error_string (const char *source_name, const char *target_name,
 		case TRANSFER_MOVE:
 			switch (error_kind) {
 			case ERROR_NOT_ENOUGH_PERMISSIONS:
-				error_string = _("Error while moving.\n\n"
-						 "\"%s\" cannot be moved because you do not have "
-						 "permissions to change it or its parent folder.");
+				*error_string = g_strdup (_("Error while moving."));
+				detail_format = _("\"%s\" cannot be moved because you do not have "
+						  "permissions to change it or its parent folder.");
 				break;
 			case ERROR_SOURCE_IN_TARGET:
-				error_string = _("Error while moving.\n\n"
-						 "\"%s\" cannot be moved because it or its parent folder "
-						 "are contained in the destination.");
+				*error_string = g_strdup (_("Error while moving. "));
+				detail_format = _("Cannot move \"%s\" because it or its parent folder "
+						  "are contained in the destination.");
 				break;
 			default:
 				break;
@@ -610,9 +611,9 @@ build_error_string (const char *source_name, const char *target_name,
 			break;
 		case TRANSFER_MOVE_TO_TRASH:
 			if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
-				error_string = _("Error while moving.\n\n"
-						 "\"%s\" cannot be moved to the Trash because you do not have "
-						 "permissions to change it or its parent folder.");
+				*error_string = g_strdup (_("Error while moving."));
+				detail_format = _("Cannot move \"%s\" to the trash because you do not have "
+						  "permissions to change it or its parent folder.");
 			}
 			break;
 
@@ -621,8 +622,8 @@ build_error_string (const char *source_name, const char *target_name,
 			break;
 		}
 
-		if (error_string != NULL && source_name != NULL) {
-			result = g_strdup_printf (error_string, source_name);
+		if (detail_format != NULL && source_name != NULL) {
+			*detail_string = g_strdup_printf (detail_format, source_name);
 		}
 
 	} else if (error_location == ERROR_LOCATION_SOURCE) {
@@ -633,9 +634,9 @@ build_error_string (const char *source_name, const char *target_name,
 		case TRANSFER_COPY:
 		case TRANSFER_DUPLICATE:
 			if (error_kind == ERROR_NOT_READABLE) {
-				error_string = _("Error while copying.\n\n"
-						 "\"%s\" cannot be copied because you do not have "
-						 "permissions to read it.");
+				*error_string = g_strdup (_("Error while copying."));
+				detail_format = _("\"%s\" cannot be copied because you do not have "
+						  "permissions to read it.");
 			}
 			break;
 
@@ -644,8 +645,8 @@ build_error_string (const char *source_name, const char *target_name,
 			break;
 		}
 
-		if (error_string != NULL && source_name != NULL) {
-			result = g_strdup_printf (error_string, source_name);
+		if (detail_format != NULL && source_name != NULL) {
+			*detail_string = g_strdup_printf (detail_format, source_name);
 		}
 
 	} else if (error_location == ERROR_LOCATION_TARGET) {
@@ -654,17 +655,17 @@ build_error_string (const char *source_name, const char *target_name,
 			switch (operation_kind) {
 			case TRANSFER_COPY:
 			case TRANSFER_DUPLICATE:
-				error_string = _("Error while copying to \"%s\".\n\n"
-				   		 "There is not enough space on the destination.");
+				error_format = _("Error while copying to \"%s\".");
+				*detail_string = g_strdup (_("There is not enough space on the destination."));
 				break;
 			case TRANSFER_MOVE_TO_TRASH:
 			case TRANSFER_MOVE:
-				error_string = _("Error while moving to \"%s\".\n\n"
-				   		 "There is not enough space on the destination.");
+				error_format = _("Error while moving to \"%s\".");
+				*detail_string = g_strdup (_("There is not enough space on the destination."));
 				break;
 			case TRANSFER_LINK:
-				error_string = _("Error while creating link in \"%s\".\n\n"
-				   		 "There is not enough space on the destination.");
+				error_format = _("Error while creating link in \"%s\".");
+				*detail_string = g_strdup (_("There is not enough space on the destination."));
 				break;
 			default:
 				g_assert_not_reached ();
@@ -675,34 +676,34 @@ build_error_string (const char *source_name, const char *target_name,
 			case TRANSFER_COPY:
 			case TRANSFER_DUPLICATE:
 				if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
-					error_string = _("Error while copying to \"%s\".\n\n"
-					   		 "You do not have permissions to write to "
-					   		 "this folder.");
+					error_format = _("Error while copying to \"%s\".");
+					*detail_string = g_strdup (_("You do not have permissions to write to "
+					   		            "this folder."));
 				} else if (error_kind == ERROR_NOT_WRITABLE) {
-					error_string = _("Error while copying to \"%s\".\n\n"
-					   		 "The destination disk is read-only.");
+					error_format = _("Error while copying to \"%s\".");
+					*detail_string = g_strdup (_("The destination disk is read-only."));
 				} 
 				break;
 			case TRANSFER_MOVE:
 			case TRANSFER_MOVE_TO_TRASH:
 				if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
-					error_string = _("Error while moving items to \"%s\".\n\n"
-					   		 "You do not have permissions to write to "
-					   		 "this folder.");
+					error_format = _("Error while moving items to \"%s\".");
+					*detail_string = g_strdup (_("You do not have permissions to write to "
+					   		            "this folder."));
 				} else if (error_kind == ERROR_NOT_WRITABLE) {
-					error_string = _("Error while moving items to \"%s\".\n\n"
-					   		 "The destination disk is read-only.");
+					error_format = _("Error while moving items to \"%s\".");
+					*detail_string = g_strdup (_("The destination disk is read-only."));
 				} 
 
 				break;
 			case TRANSFER_LINK:
 				if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
-					error_string = _("Error while creating links in \"%s\".\n\n"
-					   		 "You do not have permissions to write to "
-					   		 "this folder.");
+					error_format = _("Error while creating links in \"%s\".");
+					*detail_string = g_strdup (_("You do not have permissions to write to "
+					   		             "this folder."));
 				} else if (error_kind == ERROR_NOT_WRITABLE) {
-					error_string = _("Error while creating links in \"%s\".\n\n"
-					   		 "The destination disk is read-only.");
+					error_format = _("Error while creating links in \"%s\".");
+					*detail_string = g_strdup (_("The destination disk is read-only."));
 				} 
 				break;
 			default:
@@ -710,12 +711,12 @@ build_error_string (const char *source_name, const char *target_name,
 				break;
 			}
 		}
-		if (error_string != NULL && target_name != NULL) {
-			result = g_strdup_printf (error_string, target_name);
+		if (error_format != NULL && target_name != NULL) {
+			*error_string = g_strdup_printf (error_format, target_name);
 		}
 	}
 	
-	if (result == NULL) {
+	if (*error_string == NULL) {
 		/* None of the specific error messages apply, use a catch-all
 		 * generic error
 		 */
@@ -729,62 +730,61 @@ build_error_string (const char *source_name, const char *target_name,
 			switch (operation_kind) {
 			case TRANSFER_COPY:
 			case TRANSFER_DUPLICATE:
-				error_string = _("Error \"%s\" while copying \"%s\".\n\n"
-						 "Would you like to continue?");
+				error_format = _("Error \"%s\" while copying \"%s\".");
+				*detail_string = g_strdup (_("Would you like to continue?"));
 				break;
 			case TRANSFER_MOVE:
-				error_string = _("Error \"%s\" while moving \"%s\".\n\n"
-						 "Would you like to continue?");
+				error_format = _("Error \"%s\" while moving \"%s\".");
+				*detail_string = g_strdup (_("Would you like to continue?"));
 				break;
 			case TRANSFER_LINK:
-				error_string = _("Error \"%s\" while creating a link to \"%s\".\n\n"
-						 "Would you like to continue?");
+				error_format = _("Error \"%s\" while creating a link to \"%s\".");
+				*detail_string = g_strdup (_("Would you like to continue?"));
 				break;
 			case TRANSFER_DELETE:
 			case TRANSFER_EMPTY_TRASH:
 			case TRANSFER_MOVE_TO_TRASH:
-				error_string = _("Error \"%s\" while deleting \"%s\".\n\n"
-						 "Would you like to continue?");
+				error_format = _("Error \"%s\" while deleting \"%s\".");
+				*detail_string = g_strdup (_("Would you like to continue?"));
 				break;
 			default:
 				g_assert_not_reached ();
 				break;
 			}
 	
-			result = g_strdup_printf (error_string, 
-						  gnome_vfs_result_to_string (error),
-						  source_name);
+			*error_string = g_strdup_printf (error_format, 
+							 gnome_vfs_result_to_string (error),
+							 source_name);
 		} else {
 			switch (operation_kind) {
 			case TRANSFER_COPY:
 			case TRANSFER_DUPLICATE:
-				error_string = _("Error \"%s\" while copying.\n\n"
-						 "Would you like to continue?");
+				error_format = _("Error \"%s\" while copying.");
+				*detail_string = g_strdup (_("Would you like to continue?"));
 				break;
 			case TRANSFER_MOVE:
-				error_string = _("Error \"%s\" while moving.\n\n"
-						 "Would you like to continue?");
+				error_format = _("Error \"%s\" while moving.");
+				*detail_string = g_strdup (_("Would you like to continue?"));
 				break;
 			case TRANSFER_LINK:
-				error_string = _("Error \"%s\" while linking.\n\n"
-						 "Would you like to continue?");
+				error_format = _("Error \"%s\" while linking.");
+				*detail_string = g_strdup (_("Would you like to continue?"));
 				break;
 			case TRANSFER_DELETE:
 			case TRANSFER_EMPTY_TRASH:
 			case TRANSFER_MOVE_TO_TRASH:
-				error_string = _("Error \"%s\" while deleting.\n\n"
-						 "Would you like to continue?");
+				error_format = _("Error \"%s\" while deleting.");
+				*detail_string = g_strdup (_("Would you like to continue?"));
 				break;
 			default:
 				g_assert_not_reached ();
 				break;
 			}
 	
-			result = g_strdup_printf (error_string, 
-						  gnome_vfs_result_to_string (error));
+			*error_string = g_strdup_printf (error_format, 
+						         gnome_vfs_result_to_string (error));
 		}
 	}
-	return result;
 }
 
 static int
@@ -799,6 +799,7 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 	int error_dialog_button_pressed;
 	int error_dialog_result;
 	char *text;
+	char *detail;
 	char *formatted_source_name;
 	char *formatted_target_name;
 	const char *dialog_title;
@@ -889,26 +890,27 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			error_kind = ERROR_SOURCE_IN_TARGET;
 		}
 
-		text = build_error_string (formatted_source_name, formatted_target_name,
-					   transfer_info->kind,
-					   error_kind, error_location,
-					   progress_info->vfs_status);
+		build_error_string (formatted_source_name, formatted_target_name,
+				    transfer_info->kind,
+				    error_kind, error_location,
+				    progress_info->vfs_status,
+				    &text, &detail);
 
 		switch (transfer_info->kind) {
 		case TRANSFER_COPY:
 		case TRANSFER_DUPLICATE:
-			dialog_title = _("Error while copying.");
+			dialog_title = _("Error While Copying");
 			break;
 		case TRANSFER_MOVE:
-			dialog_title = _("Error while moving.");
+			dialog_title = _("Error While Moving");
 			break;
 		case TRANSFER_LINK:
-			dialog_title = _("Error while linking.");
+			dialog_title = _("Error While Linking");
 			break;
 		case TRANSFER_DELETE:
 		case TRANSFER_EMPTY_TRASH:
 		case TRANSFER_MOVE_TO_TRASH:
-			dialog_title = _("Error while deleting.");
+			dialog_title = _("Error While Deleting");
 			break;
 		default:
 			dialog_title = NULL;
@@ -919,7 +921,7 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 		    error_kind == ERROR_SOURCE_IN_TARGET) {
 			/* We can't continue, just tell the user. */
 			eel_run_simple_dialog (parent_for_error_dialog (transfer_info),
-				TRUE, text, dialog_title, GTK_STOCK_OK, NULL);
+				TRUE, GTK_MESSAGE_ERROR, text, detail, dialog_title, GTK_STOCK_OK, NULL);
 			error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 
 		} else if ((error_location == ERROR_LOCATION_SOURCE
@@ -932,9 +934,10 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			 * continue. Allow the user to skip.
 			 */
 			error_dialog_button_pressed = eel_run_simple_dialog
-				(parent_for_error_dialog (transfer_info), TRUE, text, 
-				dialog_title,
-				 GTK_STOCK_CANCEL, _("Skip"), NULL);
+				(parent_for_error_dialog (transfer_info), TRUE, 
+				 GTK_MESSAGE_ERROR, text, 
+				 detail, dialog_title,
+				 GTK_STOCK_CANCEL, _("_Skip"), NULL);
 				 
 			switch (error_dialog_button_pressed) {
 			case 0:
@@ -952,9 +955,10 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 		} else {
 			/* Generic error, offer to retry and skip. */
 			error_dialog_button_pressed = eel_run_simple_dialog
-				(parent_for_error_dialog (transfer_info), TRUE, text, 
-				 dialog_title,
-				 _("Skip"), GTK_STOCK_CANCEL, _("Retry"), NULL);
+				(parent_for_error_dialog (transfer_info), TRUE, 
+				 GTK_MESSAGE_ERROR, text, 
+				 detail, dialog_title,
+				 _("_Skip"), GTK_STOCK_CANCEL, _("_Retry"), NULL);
 
 			switch (error_dialog_button_pressed) {
 			case 0:
@@ -973,6 +977,7 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 		}
 			
 		g_free (text);
+		g_free (detail);
 		g_free (formatted_source_name);
 		g_free (formatted_target_name);
 
@@ -1008,7 +1013,7 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		           TransferInfo *transfer_info)
 {
 	int result;
-	char *text, *formatted_name;
+	char *text, *primary_text, *secondary_text, *formatted_name;
 
 	nautilus_file_operations_progress_pause_timeout (transfer_info->progress_dialog);	
 
@@ -1019,23 +1024,25 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 			 progress_info->target_name);
 		
 		if (transfer_info->kind == TRANSFER_MOVE) {
-			text = g_strdup_printf (_("\"%s\" could not be moved to the new location, "
-						  "because its name is already used for a special item that "
-						  "cannot be removed or replaced.\n\n"
-						  "If you still want to move \"%s\", rename it and try again."),
-						formatted_name, formatted_name);
-		} else {
-			text = g_strdup_printf (_("\"%s\" could not be copied to the new location, "
-						  "because its name is already used for a special item that "
-						  "cannot be removed or replaced.\n\n"
-						  "If you still want to copy \"%s\", rename it and try again."),
-						formatted_name, formatted_name);
+			primary_text = g_strdup_printf (_("Could not move \"%s\" to the new location."),
+			                                formatted_name);
+						
+			secondary_text = _("The name is already used for a special item that "
+					   "cannot be removed or replaced.  If you still want "
+					   "to move the item, rename it and try again.");
+		} else {						
+			primary_text = g_strdup_printf (_("Could not copy \"%s\" to the new location."),
+			                                formatted_name);
+						
+			secondary_text = _("The name is already used for a special item that "
+					   "cannot be removed or replaced.  If you still want "
+					   "to copy the item, rename it and try again.");
 		}
 		
-		eel_run_simple_dialog (parent_for_error_dialog (transfer_info), TRUE, text,
-				       _("Unable to replace file."), GTK_STOCK_OK, NULL, NULL);
+		eel_run_simple_dialog (parent_for_error_dialog (transfer_info), TRUE, GTK_MESSAGE_ERROR, primary_text, secondary_text,
+				       _("Unable to Replace File"), GTK_STOCK_OK, NULL, NULL);
 
-		g_free (text);
+		g_free (primary_text);
 		g_free (formatted_name);
 
 		nautilus_file_operations_progress_resume_timeout (transfer_info->progress_dialog);
@@ -1046,37 +1053,41 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 	/* transfer conflict, prompt the user to replace or skip */
 	formatted_name = format_and_ellipsize_uri_for_dialog (
 		parent_for_error_dialog (transfer_info), progress_info->target_name);
-	text = g_strdup_printf (_("File \"%s\" already exists.\n\n"
-				  "Would you like to replace it?"), 
-				formatted_name);
+	text = g_strdup_printf (_("The file \"%s\" already exists.  Would you like to replace it?"), 
+	                        formatted_name);
 	g_free (formatted_name);
 
 	if (progress_info->duplicate_count == 1) {
 		/* we are going to only get one duplicate alert, don't offer
 		 * Replace All
 		 */
-		result = eel_run_simple_dialog
-			(parent_for_error_dialog (transfer_info), TRUE, text, 
-			 _("Conflict while copying"),
-			 _("Replace"), _("Skip"), NULL);
+		result = eel_run_simple_dialog 
+			(parent_for_error_dialog (transfer_info),
+			 TRUE,
+			 GTK_MESSAGE_QUESTION, 
+			 text, 
+			 _("If you replace an existing file, its contents will be overwritten."), 
+			 _("Conflict While Copying"),
+			 _("_Skip"), _("_Replace"), NULL);
 		g_free (text);	 
 
 		nautilus_file_operations_progress_resume_timeout (transfer_info->progress_dialog);
 					 
 		switch (result) {
 		case 0:
-			return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE;
+			return GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP;
 		default:
 			g_assert_not_reached ();
 			/* fall through */
 		case 1:
-			return GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP;
+			return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE;
 		}
 	} else {
 		result = eel_run_simple_dialog
-			(parent_for_error_dialog (transfer_info), TRUE, text, 
-			 _("Conflict while copying"),
-			 _("Replace All"), _("Replace"), _("Skip"), NULL);
+			(parent_for_error_dialog (transfer_info), TRUE, GTK_MESSAGE_QUESTION, text, 
+			 _("If you replace an existing file, its contents will be overwritten."),  
+			 _("Conflict While Copying"),
+			 _("Replace _All"), _("_Skip"), _("_Replace"), NULL);
 		g_free (text);
 
 		nautilus_file_operations_progress_resume_timeout (transfer_info->progress_dialog);
@@ -1085,12 +1096,12 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		case 0:
 			return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE_ALL;
 		case 1:
-			return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE;
+			return GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP;
 		default:
 			g_assert_not_reached ();
 			/* fall through */
 		case 2:
-			return GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP;
+			return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE;
 		}
 	}
 }
@@ -1914,8 +1925,10 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 			eel_run_simple_dialog
 				(parent_view, 
 				 FALSE,
-				 _("You cannot copy items into the Trash."), 
-				 _("Can't Copy to Trash"),
+				 GTK_MESSAGE_ERROR,
+				 _("You cannot copy items into the trash."),
+				 _("Files and folders can only be moved into the trash."), 
+				 NULL,
 				 GTK_STOCK_OK, NULL);
 			result = GNOME_VFS_ERROR_NOT_PERMITTED;
 		}
@@ -1936,9 +1949,11 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				eel_run_simple_dialog
 					(parent_view,
 					 FALSE,
+					 GTK_MESSAGE_ERROR,
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0)
 						 ? _("You cannot move this trash folder.")
 						 : _("You cannot copy this trash folder."),
+					 _("A trash folder is used for storing items moved to the trash."),
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0)
 						 ? _("Can't Change Trash Location")
 						 : _("Can't Copy Trash"),
@@ -1963,9 +1978,11 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				eel_run_simple_dialog
 					(parent_view, 
 					 FALSE,
+					 GTK_MESSAGE_ERROR,
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
 					 ? _("You cannot move a folder into itself.")
 					 : _("You cannot copy a folder into itself."), 
+					 _("The destination folder is inside the source folder."), 
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
 					 ? _("Can't Move Into Self")
 					 : _("Can't Copy Into Self"),
@@ -1980,7 +1997,9 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				eel_run_simple_dialog
 					(parent_view, 
 					 FALSE,
-					 _("You cannot copy a file over itself."), 
+					 GTK_MESSAGE_ERROR,
+					 _("You cannot copy a file over itself."),
+					 _("The destination and source are the same file."), 
 					 _("Can't Copy Over Self"), 
 					 GTK_STOCK_OK, NULL, NULL);			
 
@@ -2033,17 +2052,16 @@ handle_new_folder_vfs_error (const GnomeVFSXferProgressInfo *progress_info, NewF
 	error_string_to_free = NULL;
 
 	if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
-		error_string = _("Error creating new folder.\n\n"
-				 "You do not have permissions to write to the destination.");
+		error_string = _("You do not have permissions to write to the destination.");
 	} else if (progress_info->vfs_status == GNOME_VFS_ERROR_NO_SPACE) {
-		error_string = _("Error creating new folder.\n\n"
-				 "There is no space on the destination.");
+		error_string = _("There is no space on the destination.");
 	} else {
 		error_string = g_strdup_printf (_("Error \"%s\" creating new folder."), 
-						gnome_vfs_result_to_string(progress_info->vfs_status));
+						gnome_vfs_result_to_string (progress_info->vfs_status));
+		error_string_to_free = (char *)error_string;
 	}
 	
-	eel_show_error_dialog (error_string, _("Error creating new folder"),
+	eel_show_error_dialog (_("Error creating new folder."), error_string, _("Error Creating New Folder"),
 				    GTK_WINDOW (gtk_widget_get_toplevel (state->parent_view)));
 	
 	g_free (error_string_to_free);
@@ -2073,7 +2091,7 @@ new_folder_transfer_callback (GnomeVFSAsyncHandle *handle,
 		case GNOME_VFS_XFER_PROGRESS_STATUS_OK:
 			nautilus_file_changes_consume_changes (TRUE);
 			(* state->done_callback) (progress_info->target_name, state->data);
-			return 0;
+			return 1;
 	
 		case GNOME_VFS_XFER_PROGRESS_STATUS_DUPLICATE:
 	
@@ -2146,6 +2164,208 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 	      		      sync_transfer_callback, NULL);
 
 	gnome_vfs_uri_list_free (target_uri_list);
+	gnome_vfs_uri_unref (parent_uri);
+}
+
+typedef struct {
+	GnomeVFSAsyncHandle *handle;
+	void (* done_callback)(const char *new_folder_uri, gpointer data);
+	gpointer data;
+	GtkWidget *parent_view;
+	char *empty_file;
+	GHashTable *debuting_uris;
+} NewFileTransferState;
+
+
+static int
+handle_new_file_vfs_error (const GnomeVFSXferProgressInfo *progress_info, NewFileTransferState *state)
+{
+	const char *error_string;
+	char *error_string_to_free;
+
+	error_string_to_free = NULL;
+
+	if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
+		error_string = _("You do not have permissions to write to the destination.");
+	} else if (progress_info->vfs_status == GNOME_VFS_ERROR_NO_SPACE) {
+		error_string = _("There is no space on the destination.");
+	} else {
+		error_string = g_strdup_printf (_("Error \"%s\" creating new document."), 
+						gnome_vfs_result_to_string (progress_info->vfs_status));
+		error_string_to_free = (char *)error_string;
+	}
+	
+	eel_show_error_dialog (_("Error creating new document."), error_string, _("Error Creating New Document"),
+			       GTK_WINDOW (gtk_widget_get_toplevel (state->parent_view)));
+	
+	g_free (error_string_to_free);
+	
+	return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
+}
+
+static void
+get_new_file_uri (gpointer       key,
+		  gpointer       value,
+		  gpointer       user_data)
+{
+	char *uri;
+	char **uri_out;
+
+	uri = key;
+	uri_out = user_data;
+
+	*uri_out = uri;
+}
+
+
+static int
+new_file_transfer_callback (GnomeVFSAsyncHandle *handle,
+			      GnomeVFSXferProgressInfo *progress_info,
+			      gpointer data)
+{
+	NewFileTransferState *state;
+	char *temp_string;
+	char *uri;
+	
+	state = (NewFileTransferState *) data;
+
+	switch (progress_info->phase) {
+
+	case GNOME_VFS_XFER_PHASE_COMPLETED:
+		uri = NULL;
+		g_hash_table_foreach (state->debuting_uris,
+				      get_new_file_uri, &uri);
+
+		(* state->done_callback) (uri, state->data);
+		/* uri is owned by hashtable, don't free */
+
+		if (state->empty_file != NULL) {
+			unlink (state->empty_file);
+			g_free (state->empty_file);
+		}
+		eel_remove_weak_pointer (&state->parent_view);
+		g_hash_table_destroy (state->debuting_uris);
+		g_free (state);
+		return 0;
+
+	default:
+		switch (progress_info->status) {
+		case GNOME_VFS_XFER_PROGRESS_STATUS_OK:
+			nautilus_file_changes_consume_changes (TRUE);
+			return 1;
+	
+		case GNOME_VFS_XFER_PROGRESS_STATUS_DUPLICATE:
+	
+			temp_string = progress_info->duplicate_name;
+	
+			if (progress_info->vfs_status == GNOME_VFS_ERROR_NAME_TOO_LONG) {
+				/* special case an 8.3 file system */
+				progress_info->duplicate_name = g_strndup (temp_string, 8);
+				progress_info->duplicate_name[8] = '\0';
+				g_free (temp_string);
+				temp_string = progress_info->duplicate_name;
+				progress_info->duplicate_name = g_strdup_printf
+					("%s.%d", 
+					 progress_info->duplicate_name,
+					 progress_info->duplicate_count);
+			} else {
+				progress_info->duplicate_name = g_strdup_printf
+					("%s%%20%d", 
+					 progress_info->duplicate_name,
+					 progress_info->duplicate_count);
+			}
+			g_free (temp_string);
+			return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
+	
+		case GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR:
+			return handle_new_file_vfs_error (progress_info, state);
+		
+	
+
+		default:
+			g_warning (_("Unknown GnomeVFSXferProgressStatus %d"),
+				   progress_info->status);
+			return 0;
+		}
+	}
+}
+
+void 
+nautilus_file_operations_new_file (GtkWidget *parent_view, 
+				   const char *parent_dir,
+				   const char *source_uri_text,
+				   void (*done_callback) (const char *, gpointer),
+				   gpointer data)
+{
+	GList *target_uri_list;
+	GList *source_uri_list;
+	GnomeVFSURI *target_uri, *parent_uri, *source_uri;
+	char *filename;
+	NewFileTransferState *state;
+	SyncTransferInfo *sync_transfer_info;
+
+	state = g_new (NewFileTransferState, 1);
+	state->done_callback = done_callback;
+	state->data = data;
+	state->parent_view = parent_view;
+	state->empty_file = NULL;
+
+	/* pass in the target directory and the new folder name as a destination URI */
+	parent_uri = gnome_vfs_uri_new (parent_dir);
+
+	if (source_uri_text != NULL) {
+		source_uri = gnome_vfs_uri_new (source_uri_text);
+		if (source_uri == NULL) {
+			(*done_callback) (NULL, data);
+			g_free (state);
+			return;
+		}
+		filename = gnome_vfs_uri_extract_short_path_name (source_uri);
+		target_uri = gnome_vfs_uri_append_string (parent_uri, filename);
+		g_free (filename);
+	} else {
+		char empty_file[] = "/tmp/emptyXXXXXX";
+		char *empty_uri;
+		int fd;
+
+		fd = mkstemp (empty_file);
+		if (fd == -1) {
+			(*done_callback) (NULL, data);
+			g_free (state);
+		}
+		close (fd);
+
+		empty_uri = gnome_vfs_get_uri_from_local_path (empty_file);
+		source_uri = gnome_vfs_uri_new (empty_uri);
+		g_free (empty_uri);
+		
+		state->empty_file = g_strdup (empty_file);
+		
+		filename = g_filename_from_utf8 (_("new file"), -1, NULL, NULL, NULL);
+		target_uri = gnome_vfs_uri_append_file_name (parent_uri, filename);
+		g_free (filename);
+	}
+	
+	state->debuting_uris = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	eel_add_weak_pointer (&state->parent_view);
+
+	target_uri_list = g_list_prepend (NULL, target_uri);
+	source_uri_list = g_list_prepend (NULL, source_uri);
+
+	sync_transfer_info = g_new (SyncTransferInfo, 1);
+	sync_transfer_info->iterator = NULL;
+	sync_transfer_info->debuting_uris = state->debuting_uris;
+	
+	gnome_vfs_async_xfer (&state->handle, source_uri_list, target_uri_list,
+	      		      GNOME_VFS_XFER_USE_UNIQUE_NAMES,
+	      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
+	      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
+			      GNOME_VFS_PRIORITY_DEFAULT,
+			      new_file_transfer_callback, state,
+	      		      sync_transfer_callback, sync_transfer_info);
+
+	gnome_vfs_uri_list_free (target_uri_list);
+	gnome_vfs_uri_list_free (source_uri_list);
 	gnome_vfs_uri_unref (parent_uri);
 }
 
@@ -2287,6 +2507,7 @@ confirm_empty_trash (GtkWidget *parent_view)
 
 	image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_QUESTION,
 					  GTK_ICON_SIZE_DIALOG);
+	gtk_misc_set_alignment (GTK_MISC (image), 0.5, 0.0);
 	gtk_widget_show (image);
 	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
 
@@ -2294,10 +2515,10 @@ confirm_empty_trash (GtkWidget *parent_view)
 	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
 	gtk_widget_show (vbox);
 
-	str = g_strconcat ("<b>", 
+	str = g_strconcat ("<span weight=\"bold\" size=\"larger\">", 
 		_("Are you sure you want to empty "
 		"all of the items from the trash?"), 
-		"</b>", 
+		"</span>", 
 		NULL);
 		
 	label = gtk_label_new (str);  
@@ -2367,47 +2588,47 @@ void
 nautilus_self_check_file_operations (void)
 {
 	/* test the next duplicate name generator */
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_(" (copy)"), 1), _(" (another copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo"), 1), _("foo (copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_(".bashrc"), 1), _(".bashrc (copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_(".foo.txt"), 1), _(".foo (copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo"), 1), _("foo foo (copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo.txt"), 1), _("foo (copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo.txt"), 1), _("foo foo (copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo.txt txt"), 1), _("foo foo (copy).txt txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo...txt"), 1), _("foo.. (copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo..."), 1), _("foo... (copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo. (copy)"), 1), _("foo. (another copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (copy)"), 1), _("foo (another copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (copy).txt"), 1), _("foo (another copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (another copy)"), 1), _("foo (3rd copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (another copy).txt"), 1), _("foo (3rd copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (another copy).txt"), 1), _("foo foo (3rd copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (13th copy)"), 1), _("foo (14th copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (13th copy).txt"), 1), _("foo (14th copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (21st copy)"), 1), _("foo (22nd copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (21st copy).txt"), 1), _("foo (22nd copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (22nd copy)"), 1), _("foo (23rd copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (22nd copy).txt"), 1), _("foo (23rd copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (23rd copy)"), 1), _("foo (24th copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (23rd copy).txt"), 1), _("foo (24th copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (24th copy)"), 1), _("foo (25th copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (24th copy).txt"), 1), _("foo (25th copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (24th copy)"), 1), _("foo foo (25th copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (24th copy).txt"), 1), _("foo foo (25th copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (100000000000000th copy).txt"), 1), _("foo foo (copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (10th copy)"), 1), _("foo (11th copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (10th copy).txt"), 1), _("foo (11th copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (11th copy)"), 1), _("foo (12th copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (11th copy).txt"), 1), _("foo (12th copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (12th copy)"), 1), _("foo (13th copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (12th copy).txt"), 1), _("foo (13th copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (110th copy)"), 1), _("foo (111th copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (110th copy).txt"), 1), _("foo (111th copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (122nd copy)"), 1), _("foo (123rd copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (122nd copy).txt"), 1), _("foo (123rd copy).txt"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (123rd copy)"), 1), _("foo (124th copy)"));
-	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (123rd copy).txt"), 1), _("foo (124th copy).txt"));
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (" (copy)", 1), " (another copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo", 1), "foo (copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (".bashrc", 1), ".bashrc (copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name (".foo.txt", 1), ".foo (copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo", 1), "foo foo (copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo.txt", 1), "foo (copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo.txt", 1), "foo foo (copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo.txt txt", 1), "foo foo (copy).txt txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo...txt", 1), "foo.. (copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo...", 1), "foo... (copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo. (copy)", 1), "foo. (another copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (copy)", 1), "foo (another copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (copy).txt", 1), "foo (another copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (another copy)", 1), "foo (3rd copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (another copy).txt", 1), "foo (3rd copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo (another copy).txt", 1), "foo foo (3rd copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (13th copy)", 1), "foo (14th copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (13th copy).txt", 1), "foo (14th copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (21st copy)", 1), "foo (22nd copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (21st copy).txt", 1), "foo (22nd copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (22nd copy)", 1), "foo (23rd copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (22nd copy).txt", 1), "foo (23rd copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (23rd copy)", 1), "foo (24th copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (23rd copy).txt", 1), "foo (24th copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (24th copy)", 1), "foo (25th copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (24th copy).txt", 1), "foo (25th copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo (24th copy)", 1), "foo foo (25th copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo (24th copy).txt", 1), "foo foo (25th copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo (100000000000000th copy).txt", 1), "foo foo (copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (10th copy)", 1), "foo (11th copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (10th copy).txt", 1), "foo (11th copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (11th copy)", 1), "foo (12th copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (11th copy).txt", 1), "foo (12th copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (12th copy)", 1), "foo (13th copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (12th copy).txt", 1), "foo (13th copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (110th copy)", 1), "foo (111th copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (110th copy).txt", 1), "foo (111th copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (122nd copy)", 1), "foo (123rd copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (122nd copy).txt", 1), "foo (123rd copy).txt");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (123rd copy)", 1), "foo (124th copy)");
+	EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo (123rd copy).txt", 1), "foo (124th copy).txt");
 }
 
 #endif

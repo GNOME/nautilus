@@ -34,22 +34,30 @@ typedef void (* NautilusCopyCallback)      (GHashTable *debuting_uris,
 					    gpointer    callback_data);
 typedef void (* NautilusNewFolderCallback) (const char *new_folder_uri,
 					    gpointer    callback_data);
+typedef void (* NautilusNewFileCallback)   (const char *new_file_uri,
+					    gpointer    callback_data);
 
 /* FIXME: int copy_action should be an enum */
 
-void  nautilus_file_operations_copy_move               (const GList               *item_uris,
-							GArray            	  *target_item_points,
-							const char                *target_dir_uri,
-							GdkDragAction              copy_action,
-							GtkWidget                 *parent_view,
-							NautilusCopyCallback       done_callback,
-							gpointer                   done_callback_data);
-void  nautilus_file_operations_empty_trash             (GtkWidget                 *parent_view);
-void  nautilus_file_operations_new_folder              (GtkWidget                 *parent_view,
-							const char                *parent_dir_uri,
-							NautilusNewFolderCallback  done_callback,
-							gpointer                   done_callback_data);
-void  nautilus_file_operations_delete                  (const GList               *item_uris,
-							GtkWidget                 *parent_view);
+void nautilus_file_operations_copy_move   (const GList               *item_uris,
+					   GArray                    *target_item_points,
+					   const char                *target_dir_uri,
+					   GdkDragAction              copy_action,
+					   GtkWidget                 *parent_view,
+					   NautilusCopyCallback       done_callback,
+					   gpointer                   done_callback_data);
+void nautilus_file_operations_empty_trash (GtkWidget                 *parent_view);
+void nautilus_file_operations_new_folder  (GtkWidget                 *parent_view,
+					   const char                *parent_dir_uri,
+					   NautilusNewFolderCallback  done_callback,
+					   gpointer                   done_callback_data);
+void nautilus_file_operations_new_file    (GtkWidget                 *parent_view,
+					   const char                *parent_dir,
+					   const char                *source_uri_text,
+					   NautilusNewFileCallback    done_callback,
+					   gpointer                   data);
+void nautilus_file_operations_delete      (const GList               *item_uris,
+					   GtkWidget                 *parent_view);
+
 
 #endif /* NAUTILUS_FILE_OPERATIONS_H */

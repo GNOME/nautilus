@@ -174,25 +174,17 @@ update_title (NautilusWindow *window)
 void
 nautilus_window_update_icon (NautilusWindow *window)
 {
-	char *path;
 	GdkPixbuf *pixbuf;
-        GnomeIconTheme *icon_theme;
+        GtkIconTheme *icon_theme;
 
 	pixbuf = NULL;
 	
 	/* Desktop window special icon */
 	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-                icon_theme = nautilus_icon_factory_get_icon_theme();
-                path = gnome_icon_theme_lookup_icon (icon_theme,
-                                                     "gnome-fs-desktop", 48,
-                                                     NULL, NULL);
-
-		if (path != NULL) {
-			pixbuf = gdk_pixbuf_new_from_file (path, NULL);
-			
-			g_free (path);
-		}
-
+                icon_theme = nautilus_icon_factory_get_icon_theme ();
+                pixbuf = gtk_icon_theme_load_icon (icon_theme,
+						   "gnome-fs-desktop", 48,
+						   0, NULL);
                 g_object_unref(icon_theme);
 
 	} else {
@@ -736,11 +728,18 @@ nautilus_window_open_location (NautilusWindow *window,
 void
 nautilus_window_open_location_with_selection (NautilusWindow *window,
 					      const char *location,
-					      GList *selection)
+					      GList *selection,
+					      gboolean close_behind)
 {
+	Nautilus_ViewFrame_OpenFlags flags;
+
+	flags = 0;
+	if (close_behind) {
+		flags = Nautilus_ViewFrame_OPEN_FLAG_CLOSE_BEHIND;
+	}
 	open_location (window, location, 
                        Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE,
-                       0, selection);
+                       flags, selection);
 }					      
 
 
@@ -800,13 +799,14 @@ view_frame_get_id (NautilusViewFrame *view_frame)
 static void
 report_content_view_failure_to_user_internal (NautilusWindow *window,
                                      	      NautilusViewFrame *view_frame,
-                                     	      const char *message)
+                                     	      const char *message,
+					      const char *detail)
 {
 	char *label;
 
 	label = nautilus_window_get_view_frame_label (view_frame);
 	message = g_strdup_printf (message, label);
-	eel_show_error_dialog (message, _("View Failed"), GTK_WINDOW (window));
+	eel_show_error_dialog (message, detail, _("View Failed"), GTK_WINDOW (window));
 	g_free (label);
 }
 
@@ -817,8 +817,8 @@ report_current_content_view_failure_to_user (NautilusWindow *window,
 	report_content_view_failure_to_user_internal 
 		(window,
 		 view_frame,
-		 _("The %s view encountered an error and can't continue. "
-		   "You can choose another view or go to a different location."));
+		 _("The %s view encountered an error and can't continue."),
+		 _("You can choose another view or go to a different location."));
 }
 
 static void
@@ -828,7 +828,8 @@ report_nascent_content_view_failure_to_user (NautilusWindow *window,
 	report_content_view_failure_to_user_internal 
 		(window,
 		 view_frame,
-		 _("The %s view encountered an error while starting up."));
+		 _("The %s view encountered an error while starting up."),
+		 _("The location cannot be displayed with this viewer."));
 }
 
 static void
@@ -996,8 +997,9 @@ handle_view_failure (NautilusWindow *window,
         g_warning ("A view failed. The UI will handle this with a dialog but this should be debugged.");
 
         if (view == window->content_view) {
+                disconnect_view(window, window->content_view);			
                 nautilus_window_set_content_view_widget (window, NULL);
-                
+			
                 /* FIXME bugzilla.gnome.org 45039: We need a
                  * way to report the specific error that
                  * happens in this case - adapter factory not
@@ -1175,6 +1177,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
         char *full_uri_for_display;
         char *uri_for_display;
         char *error_message;
+        char *detail_message;
         char *scheme_string;
         char *type_string;
         char *dialog_title;
@@ -1228,14 +1231,18 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
 
         case NAUTILUS_DETERMINE_VIEW_NOT_FOUND:
                 error_message = g_strdup_printf
-                        (_("Couldn't find \"%s\". Please check the spelling and try again."),
+                        (_("Couldn't find \"%s\"."), 
                          uri_for_display);
+                detail_message = g_strdup 
+                	(_("Please check the spelling and try again."));
                 break;
 
         case NAUTILUS_DETERMINE_VIEW_INVALID_URI:
                 error_message = g_strdup_printf
-                        (_("\"%s\" is not a valid location. Please check the spelling and try again."),
+                        (_("\"%s\" is not a valid location."),
                          uri_for_display);
+                detail_message = g_strdup 
+                	(_("Please check the spelling and try again."));
                 break;
 
         case NAUTILUS_DETERMINE_VIEW_NO_HANDLER_FOR_TYPE:
@@ -1248,16 +1255,20 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
                 nautilus_file_unref (file);
                 if (type_string == NULL) {
 	                error_message = g_strdup_printf
-                                (_("Couldn't display \"%s\", because Nautilus cannot determine what type of file it is."),
+                                (_("Couldn't display \"%s\"."),
                                  uri_for_display);
+			detail_message = g_strdup 
+				(_("Nautilus cannot determine what type of file it is."));
         	} else {
         		/* FIXME bugzilla.gnome.org 44932:
         		 * Should distinguish URIs with no handlers at all from remote URIs
         		 * with local-only handlers.
         		 */
-	                error_message = g_strdup_printf
-                                (_("Nautilus has no installed viewer capable of displaying \"%s\"."),
-                                 uri_for_display);
+			error_message = g_strdup_printf
+			        (_("Couldn't display \"%s\"."),
+			         uri_for_display);
+			detail_message = g_strdup 
+			        (_("Nautilus has no installed viewer capable of displaying the file."));
 			g_free (type_string);
         	}
                 break;
@@ -1268,19 +1279,23 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
                  */
                 scheme_string = eel_str_get_prefix (location, ":");
                 g_assert (scheme_string != NULL);  /* Shouldn't have gotten this error unless there's a : separator. */
-                error_message = g_strdup_printf (_("Couldn't display \"%s\", because Nautilus cannot handle %s: locations."),
-                                                 uri_for_display, scheme_string);
+                error_message = g_strdup_printf (_("Couldn't display \"%s\"."),
+                                                 uri_for_display);
+                detail_message = g_strdup_printf (_("Nautilus cannot handle %s: locations."),
+                                                 scheme_string);
                 g_free (scheme_string);
                 break;
 
 	case NAUTILUS_DETERMINE_VIEW_LOGIN_FAILED:
-                error_message = g_strdup_printf (_("Couldn't display \"%s\", because the attempt to log in failed."),
-                                                 uri_for_display);		
+                error_message = g_strdup_printf (_("Couldn't display \"%s\"."),
+                                                 uri_for_display);
+                detail_message = g_strdup (_("The attempt to log in failed."));		
 		break;
 
 	case NAUTILUS_DETERMINE_VIEW_ACCESS_DENIED:
-                error_message = g_strdup_printf (_("Couldn't display \"%s\", because access was denied."),
+                error_message = g_strdup_printf (_("Couldn't display \"%s\"."),
                                                  uri_for_display);
+		detail_message = g_strdup (_("Access was denied."));
 		break;
 
 	case NAUTILUS_DETERMINE_VIEW_HOST_NOT_FOUND:
@@ -1290,24 +1305,25 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
 		 * the proxy is set up wrong.
 		 */
 		vfs_uri = gnome_vfs_uri_new (location);
-                error_message = g_strdup_printf (_("Couldn't display \"%s\", because no host \"%s\" could be found. "
-                				   "Check that the spelling is correct and that your proxy settings are correct."),
+                error_message = g_strdup_printf (_("Couldn't display \"%s\", because no host \"%s\" could be found."),
                                                  uri_for_display,
                                                  gnome_vfs_uri_get_host_name (vfs_uri));
+                detail_message = g_strdup (_("Check that the spelling is correct and that your proxy settings are correct."));
                 gnome_vfs_uri_unref (vfs_uri);
 		break;
 
 	case NAUTILUS_DETERMINE_VIEW_HOST_HAS_NO_ADDRESS:
-                error_message = g_strdup_printf (_("Couldn't display \"%s\". "
-                				   "Check that your proxy settings are correct."),
+                error_message = g_strdup_printf (_("Couldn't display \"%s\"."),
                                                  uri_for_display);
+                detail_message = g_strdup (_("Check that your proxy settings are correct."));
 		break;
 
         case NAUTILUS_DETERMINE_VIEW_NO_MASTER_BROWSER:
                 error_message = g_strdup_printf
-                        (_("Couldn't display \"%s\", because Nautilus cannot contact the SMB master browser.\n"
-                           "Check that an SMB server is running in the local network."),
+                        (_("Couldn't display \"%s\", because Nautilus cannot contact the SMB master browser."),
                          uri_for_display);
+                detail_message = g_strdup
+                	(_("Check that an SMB server is running in the local network."));
                 break;
 
 	case NAUTILUS_DETERMINE_VIEW_SERVICE_NOT_AVAILABLE:
@@ -1318,8 +1334,9 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
                          */
 			error_message = g_strdup_printf
                                 (_("Searching is unavailable right now, because you either have no index, "
-                                   "or the search service isn't running. "
-                                   "Be sure that you have started the Medusa search service, and if you "
+                                   "or the search service isn't running."));
+			detail_message = g_strdup
+				(_("Be sure that you have started the Medusa search service, and if you "
                                    "don't have an index, that the Medusa indexer is running."));
 			dialog_title = g_strdup (_("Searching Unavailable"));
 			break;
@@ -1328,6 +1345,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
         default:
                 error_message = g_strdup_printf (_("Nautilus cannot display \"%s\"."),
                                                  uri_for_display);
+                detail_message = g_strdup (_("Please select another viewer and try again."));
         }
         
         if (dialog_title == NULL) {
@@ -1339,7 +1357,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
                  * happens when a new window cannot display its initial URI. 
                  */
 
-                dialog = eel_show_error_dialog (error_message, dialog_title, NULL);
+                dialog = eel_show_error_dialog (error_message, detail_message, dialog_title, NULL);
                 
 		/* if this is the only window, we don't want to quit, so we redirect it to home */
 		if (just_one_window ()) {
@@ -1368,7 +1386,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
         } else {
                 /* Clean up state of already-showing window */
                 nautilus_window_allow_stop (window, FALSE);
-                eel_show_error_dialog (error_message, dialog_title, GTK_WINDOW (window));
+                eel_show_error_dialog (error_message, detail_message, dialog_title, GTK_WINDOW (window));
 
                 /* Leave the location bar showing the bad location that the user
                  * typed (or maybe achieved by dragging or something). Many times
@@ -1380,6 +1398,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
 	g_free (dialog_title);
 	g_free (uri_for_display);
         g_free (error_message);
+        g_free (detail_message);
 }
 
 /*

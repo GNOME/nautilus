@@ -71,6 +71,7 @@ void     fm_list_model_add_file                          (FMListModel          *
 void     fm_list_model_file_changed                      (FMListModel          *model,
 							  NautilusFile         *file);
 gboolean fm_list_model_is_empty                          (FMListModel          *model);
+guint    fm_list_model_get_length                        (FMListModel          *model);
 void     fm_list_model_remove_file                       (FMListModel          *model,
 							  NautilusFile         *file);
 void     fm_list_model_clear                             (FMListModel          *model);

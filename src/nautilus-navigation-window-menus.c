@@ -174,6 +174,7 @@ forget_history_if_confirmed (NautilusWindow *window)
 {
 	GtkDialog *dialog;
 	char *prompt;
+	char *detail;
 
 	/* Confirm before forgetting history because it's a rare operation that
 	 * is hard to recover from. We don't want people doing it accidentally
@@ -183,22 +184,23 @@ forget_history_if_confirmed (NautilusWindow *window)
 		/* This is a little joke, shows up occasionally. I only
 		 * implemented this feature so I could use this joke. 
 		 */
-		prompt = g_strdup (_("Are you sure you want to forget history? "
-				     "If you do, you will be doomed to repeat it."));
+		prompt = _("Are you sure you want to forget history?");
+		detail = _("If you do, you will be doomed to repeat it.");
 	} else {
-		prompt = g_strdup (_("Are you sure you want to clear the list "
-				     "of locations you have visited?"));
+		prompt = _("Are you sure you want to clear the list "
+			   "of locations you have visited?");
+		detail = _("If you clear the list of locations,"
+			   " they will be permanently deleted."); 
 	}
 					   
 	dialog = eel_create_question_dialog (prompt,
+					     detail,
 					     _("Clear History"), 
 					     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					     GTK_STOCK_CLEAR, RESPONSE_FORGET,
 					     GTK_WINDOW (window));
 
 	gtk_widget_show (GTK_WIDGET (dialog));
-
-	g_free (prompt);					 
 	
 	g_signal_connect (dialog, "response",
 			  G_CALLBACK (forget_history_if_yes), NULL);
@@ -417,14 +419,16 @@ show_bogus_bookmark_window (NautilusWindow *window,
 	char *uri;
 	char *uri_for_display;
 	char *prompt;
+	char *detail;
 
 	uri = nautilus_bookmark_get_uri (bookmark);
 	uri_for_display = eel_format_uri_for_display (uri);
 	
-	prompt = g_strdup_printf (_("The location \"%s\" does not exist. Do you "
-				    "want to remove any bookmarks with this "
-				    "location from your list?"), uri_for_display);
-	dialog = eel_show_yes_no_dialog (prompt,
+	prompt = _("Do you want to remove any bookmarks with the "
+		   "non-existing location from your list?");
+	detail = g_strdup_printf (_("The location \"%s\" does not exist."), uri_for_display);
+	
+	dialog = eel_show_yes_no_dialog (prompt, detail,
 					 _("Bookmark for Nonexistent Location"),
 					 _("Remove"), GTK_STOCK_CANCEL,
 					 GTK_WINDOW (window));
@@ -439,7 +443,7 @@ show_bogus_bookmark_window (NautilusWindow *window,
 
 	g_free (uri);
 	g_free (uri_for_display);
-	g_free (prompt);
+	g_free (detail);
 }
 
 static void

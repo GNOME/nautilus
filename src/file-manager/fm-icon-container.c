@@ -24,6 +24,8 @@
 #include <config.h>
 
 #include <libgnome/gnome-macros.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -54,7 +56,8 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 				   NautilusIconData      *data,
 				   GList                **emblem_icons,
 				   char                 **embedded_text,
-				   gboolean              *embedded_text_needs_loading)
+				   gboolean              *embedded_text_needs_loading,
+				   gboolean              *has_window_open)
 {
 	FMIconView *icon_view;
 	EelStringList *emblems_to_ignore;
@@ -78,7 +81,30 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 		eel_string_list_free (emblems_to_ignore);
 	}
 
+	*has_window_open = nautilus_file_has_open_window (file);
+	
 	return nautilus_icon_factory_get_icon_for_file (file, TRUE);
+}
+
+static char *
+fm_icon_container_get_icon_description (NautilusIconContainer *container,
+				        NautilusIconData      *data)
+{
+	NautilusFile *file;
+	char *mime_type;
+	const char *description;
+
+	file = NAUTILUS_FILE (data);
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
+		return NULL;
+	}
+
+	mime_type = nautilus_file_get_mime_type (file);
+	description = gnome_vfs_mime_get_description (mime_type);
+	g_free (mime_type);
+	return g_strdup (description);
 }
 
 static void
@@ -445,6 +471,7 @@ fm_icon_container_class_init (FMIconContainerClass *klass)
 
 	ic_class->get_icon_text = fm_icon_container_get_icon_text;
 	ic_class->get_icon_images = fm_icon_container_get_icon_images;
+	ic_class->get_icon_description = fm_icon_container_get_icon_description;
 	ic_class->start_monitor_top_left = fm_icon_container_start_monitor_top_left;
 	ic_class->stop_monitor_top_left = fm_icon_container_stop_monitor_top_left;
 	ic_class->prioritize_thumbnailing = fm_icon_container_prioritize_thumbnailing;
@@ -463,9 +490,13 @@ fm_icon_container_instance_init (FMIconContainer *icon_container)
 NautilusIconContainer *
 fm_icon_container_construct (FMIconContainer *icon_container, FMIconView *view)
 {
+	AtkObject *atk_obj;
+
 	g_return_val_if_fail (FM_IS_ICON_VIEW (view), NULL);
 
 	icon_container->view = view;
+	atk_obj = gtk_widget_get_accessible (GTK_WIDGET (icon_container));
+	atk_object_set_name (atk_obj, _("Icon View"));
 
 	return NAUTILUS_ICON_CONTAINER (icon_container);
 }

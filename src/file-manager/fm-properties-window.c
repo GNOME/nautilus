@@ -26,6 +26,7 @@
 #include "fm-properties-window.h"
 
 #include "fm-error-reporting.h"
+#include <eel/eel-accessibility.h>
 #include <eel/eel-ellipsizing-label.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
@@ -152,7 +153,7 @@ enum {
 typedef struct {
 	GList *original_files;
 	GList *target_files;
-	FMDirectoryView *directory_view;
+	GtkWidget *parent_widget;
 	char *pending_key;
 	GHashTable *pending_files;
 } StartupData;
@@ -186,7 +187,7 @@ static void is_directory_ready_callback (NautilusFile *file,
 					 gpointer data);
 static void cancel_group_change_callback          (gpointer                 callback_data);
 static void cancel_owner_change_callback          (gpointer                 callback_data);
-static void directory_view_destroyed_callback     (FMDirectoryView         *view,
+static void parent_widget_destroyed_callback      (GtkWidget                *widget,
 						   gpointer                 callback_data);
 static void select_image_button_callback          (GtkWidget               *widget,
 						   FMPropertiesWindow      *properties_window);
@@ -473,8 +474,8 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 
 	if (!exactly_one) {
 		eel_show_error_dialog
-			(_("You can't assign more than one custom icon at a time! "
-			   "Please drag just one image to set a custom icon."), 
+			(_("You can't assign more than one custom icon at a time!"),
+			 _("Please drag just one image to set a custom icon."), 
 			 _("More Than One Image"),
 			 window);
 	} else {		
@@ -484,15 +485,15 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 		} else {	
 			if (eel_is_remote_uri (uris[0])) {
 				eel_show_error_dialog
-					(_("The file that you dropped is not local.  "
-					   "You can only use local images as custom icons."), 
+					(_("The file that you dropped is not local."),
+					 _("You can only use local images as custom icons."), 
 					 _("Local Images Only"),
 					 window);
 				
 			} else {
 				eel_show_error_dialog
-					(_("The file that you dropped is not an image.  "
-					   "You can only use local images as custom icons."),
+					(_("The file that you dropped is not an image."),
+					 _("You can only use local images as custom icons."),
 					 _("Images Only"),
 					 window);
 			}
@@ -1375,7 +1376,7 @@ activate_group_callback (GtkMenuItem *menu_item, FileNamePair *pair)
 		(cancel_group_change_callback,
 		 pair->file,
 		 _("Cancel Group Change?"),
-		 _("Changing group"),
+		 _("Changing group."),
 		 NULL); /* FIXME bugzilla.gnome.org 42397: Parent this? */
 	nautilus_file_set_group
 		(pair->file, pair->name,
@@ -1537,7 +1538,7 @@ activate_owner_callback (GtkMenuItem *menu_item, FileNamePair *pair)
 		(cancel_owner_change_callback,
 		 pair->file,
 		 _("Cancel Owner Change?"),
-		 _("Changing owner"),
+		 _("Changing owner."),
 		 NULL); /* FIXME bugzilla.gnome.org 42397: Parent this? */
 	nautilus_file_set_owner
 		(pair->file, pair->name,
@@ -2667,10 +2668,12 @@ static void
 add_permissions_checkbox (FMPropertiesWindow *window,
 			  GtkTable *table, 
 			  int row, int column, 
-			  GnomeVFSFilePermissions permission_to_check)
+			  GnomeVFSFilePermissions permission_to_check,
+			  GtkLabel *label_for)
 {
 	GtkWidget *check_button;
 	gchar *label;
+	gboolean a11y_enabled;
 
 	if (column == PERMISSIONS_CHECKBOXES_READ_COLUMN) {
 		label = _("_Read");
@@ -2691,6 +2694,12 @@ add_permissions_checkbox (FMPropertiesWindow *window,
 	set_up_permissions_checkbox (window, 
 				     check_button, 
 				     permission_to_check);
+
+	a11y_enabled = GTK_IS_ACCESSIBLE (gtk_widget_get_accessible (check_button));
+	if (a11y_enabled) {
+		eel_accessibility_set_up_label_widget_relation (GTK_WIDGET (label_for),
+								check_button);
+	}
 }
 
 static GtkWidget *
@@ -2845,6 +2854,9 @@ create_permissions_page (FMPropertiesWindow *window)
 	guint checkbox_titles_row;
 	GtkLabel *group_label;
 	GtkLabel *owner_label;
+	GtkLabel *owner_perm_label;
+	GtkLabel *group_perm_label;
+	GtkLabel *other_perm_label;
 	GtkOptionMenu *group_menu;
 	GtkOptionMenu *owner_menu;
 	GList *file_list;
@@ -2877,7 +2889,7 @@ create_permissions_page (FMPropertiesWindow *window)
 			owner_label = attach_title_field (page_table, last_row, _("File _owner:"));
 			/* Option menu in this case. */
 			owner_menu = attach_owner_menu (page_table, last_row, get_target_file (window));
-			gtk_label_set_mnemonic_widget (GTK_LABEL (owner_label),
+			gtk_label_set_mnemonic_widget (owner_label,
 						       GTK_WIDGET (owner_menu));
 		} else {
 			attach_title_field (page_table, last_row, _("File owner:"));
@@ -2896,7 +2908,7 @@ create_permissions_page (FMPropertiesWindow *window)
 			/* Option menu in this case. */
 			group_menu = attach_group_menu (page_table, last_row,
 							get_target_file (window));
-			gtk_label_set_mnemonic_widget (GTK_LABEL (group_label),
+			gtk_label_set_mnemonic_widget (group_label,
 						       GTK_WIDGET (group_menu));
 		} else {
 			last_row = append_title_field (page_table,
@@ -2912,9 +2924,9 @@ create_permissions_page (FMPropertiesWindow *window)
 
 		append_separator (page_table);
 		
-		checkbox_titles_row = append_title_field (page_table, _("Owner:"), NULL);
-		append_title_field (page_table, _("Group:"), NULL);
-		append_title_field (page_table, _("Others:"), NULL);
+		checkbox_titles_row = append_title_field (page_table, _("Owner:"), &owner_perm_label);
+		append_title_field (page_table, _("Group:"), &group_perm_label);
+		append_title_field (page_table, _("Others:"), &other_perm_label);
 		
 		check_button_table = GTK_TABLE (gtk_table_new 
 						   (PERMISSIONS_CHECKBOXES_ROW_COUNT, 
@@ -2932,55 +2944,64 @@ create_permissions_page (FMPropertiesWindow *window)
 					  check_button_table, 
 					  PERMISSIONS_CHECKBOXES_OWNER_ROW,
 					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
-					  GNOME_VFS_PERM_USER_READ);
+					  GNOME_VFS_PERM_USER_READ,
+					  owner_perm_label);
 
 		add_permissions_checkbox (window,
 					  check_button_table, 
 					  PERMISSIONS_CHECKBOXES_OWNER_ROW,
 					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
-					  GNOME_VFS_PERM_USER_WRITE);
+					  GNOME_VFS_PERM_USER_WRITE,
+					  owner_perm_label);
 
 		add_permissions_checkbox (window,
 					  check_button_table, 
 					  PERMISSIONS_CHECKBOXES_OWNER_ROW,
 					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
-					  GNOME_VFS_PERM_USER_EXEC);
+					  GNOME_VFS_PERM_USER_EXEC,
+					  owner_perm_label);
 
 		add_permissions_checkbox (window,
 					  check_button_table, 
 					  PERMISSIONS_CHECKBOXES_GROUP_ROW,
 					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
-					  GNOME_VFS_PERM_GROUP_READ);
+					  GNOME_VFS_PERM_GROUP_READ,
+					  group_perm_label);
 
 		add_permissions_checkbox (window,
 					  check_button_table, 
 					  PERMISSIONS_CHECKBOXES_GROUP_ROW,
 					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
-					  GNOME_VFS_PERM_GROUP_WRITE);
+					  GNOME_VFS_PERM_GROUP_WRITE,
+					  group_perm_label);
 
 		add_permissions_checkbox (window,
 					  check_button_table, 
 					  PERMISSIONS_CHECKBOXES_GROUP_ROW,
 					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
-					  GNOME_VFS_PERM_GROUP_EXEC);
+					  GNOME_VFS_PERM_GROUP_EXEC,
+					  group_perm_label);
 
 		add_permissions_checkbox (window,
 					  check_button_table, 
 					  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
 					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
-					  GNOME_VFS_PERM_OTHER_READ);
+					  GNOME_VFS_PERM_OTHER_READ,
+					  other_perm_label);
 
 		add_permissions_checkbox (window,
 					  check_button_table, 
 					  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
 					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
-					  GNOME_VFS_PERM_OTHER_WRITE);
+					  GNOME_VFS_PERM_OTHER_WRITE,
+					  other_perm_label);
 
 		add_permissions_checkbox (window,
 					  check_button_table, 
 					  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
 					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
-					  GNOME_VFS_PERM_OTHER_EXEC);
+					  GNOME_VFS_PERM_OTHER_EXEC,
+					  other_perm_label);
 
 		append_separator (page_table);
 
@@ -3115,7 +3136,7 @@ static StartupData *
 startup_data_new (GList *original_files, 
 		  GList *target_files,
 		  const char *pending_key,
-		  FMDirectoryView *directory_view)
+		  GtkWidget *parent_widget)
 {
 	StartupData *data;
 	GList *l;
@@ -3123,7 +3144,7 @@ startup_data_new (GList *original_files,
 	data = g_new0 (StartupData, 1);
 	data->original_files = nautilus_file_list_copy (original_files);
 	data->target_files = nautilus_file_list_copy (target_files);
-	data->directory_view = directory_view;
+	data->parent_widget = parent_widget;
 	data->pending_key = g_strdup (pending_key);
 	data->pending_files = g_hash_table_new (g_direct_hash,
 						g_direct_equal);
@@ -3149,19 +3170,15 @@ static void
 help_button_callback (GtkWidget *widget, GtkWidget *property_window)
 {
 	GError *error = NULL;
-	char *message;
 
 	egg_help_display_desktop_on_screen (NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-51",
 					    gtk_window_get_screen (GTK_WINDOW (property_window)),
 &error);
 
 	if (error) {
-		message = g_strdup_printf (_("There was an error displaying help: \n%s"),
-					   error->message);
-		eel_show_error_dialog (message, _("Couldn't show help"),
+		eel_show_error_dialog (_("There was an error displaying help."), error->message, _("Couldn't Show Help"),
 				       GTK_WINDOW (property_window));
 		g_error_free (error);
-		g_free (message);
 	}
 }
 
@@ -3183,7 +3200,7 @@ create_properties_window (StartupData *startup_data)
 	gtk_window_set_wmclass (GTK_WINDOW (window), "file_properties", "Nautilus");
 	gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
 	gtk_window_set_screen (GTK_WINDOW (window),
-			       gtk_widget_get_screen (GTK_WIDGET (startup_data->directory_view)));
+			       gtk_widget_get_screen (startup_data->parent_widget));
 
 	/* Set initial window title */
 	update_properties_window_title (window);
@@ -3354,9 +3371,9 @@ cancel_create_properties_window_callback (gpointer callback_data)
 }
 
 static void
-directory_view_destroyed_callback (FMDirectoryView *view, gpointer callback_data)
+parent_widget_destroyed_callback (GtkWidget *widget, gpointer callback_data)
 {
-	g_assert (view == ((StartupData *)callback_data)->directory_view);
+	g_assert (widget == ((StartupData *)callback_data)->parent_widget);
 	
 	remove_pending ((StartupData *)callback_data, TRUE, TRUE, FALSE);
 }
@@ -3389,8 +3406,8 @@ remove_pending (StartupData *startup_data,
 			(cancel_create_properties_window_callback, startup_data);
 	}
 	if (cancel_destroy_handler) {
-		g_signal_handlers_disconnect_by_func (startup_data->directory_view,
-						      G_CALLBACK (directory_view_destroyed_callback),
+		g_signal_handlers_disconnect_by_func (startup_data->parent_widget,
+						      G_CALLBACK (parent_widget_destroyed_callback),
 						      startup_data);
 	}
 
@@ -3432,7 +3449,7 @@ is_directory_ready_callback (NautilusFile *file,
 
 void
 fm_properties_window_present (GList *original_files,
-			      FMDirectoryView *directory_view) 
+			      GtkWidget *parent_widget) 
 {
 	GList *l, *next;
 	GtkWidget *parent_window;
@@ -3442,7 +3459,7 @@ fm_properties_window_present (GList *original_files,
 	char *pending_key;
 
 	g_return_if_fail (original_files != NULL);
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (directory_view));
+	g_return_if_fail (GTK_IS_WIDGET (parent_widget));
 
 	/* Create the hash tables first time through. */
 	if (windows == NULL) {
@@ -3459,7 +3476,7 @@ fm_properties_window_present (GList *original_files,
 	existing_window = get_existing_window (original_files);
 	if (existing_window != NULL) {
 		gtk_window_set_screen (existing_window,
-				       gtk_widget_get_screen (GTK_WIDGET (directory_view)));
+				       gtk_widget_get_screen (parent_widget));
 		gtk_window_present (existing_window);
 		return;
 	}
@@ -3477,7 +3494,7 @@ fm_properties_window_present (GList *original_files,
 	startup_data = startup_data_new (original_files, 
 					 target_files,
 					 pending_key,
-					 directory_view);
+					 parent_widget);
 
 	nautilus_file_list_free (target_files);
 	g_free(pending_key);
@@ -3487,16 +3504,16 @@ fm_properties_window_present (GList *original_files,
 	 */
 	
 	g_hash_table_insert (pending_lists, startup_data->pending_key, startup_data->pending_key);
-	g_signal_connect (directory_view, "destroy",
-			  G_CALLBACK (directory_view_destroyed_callback), startup_data);
+	g_signal_connect (parent_widget, "destroy",
+			  G_CALLBACK (parent_widget_destroyed_callback), startup_data);
 
-	parent_window = gtk_widget_get_ancestor (GTK_WIDGET (directory_view), GTK_TYPE_WINDOW);
+	parent_window = gtk_widget_get_ancestor (parent_widget, GTK_TYPE_WINDOW);
 
 	eel_timed_wait_start
 		(cancel_create_properties_window_callback,
 		 startup_data,
 		 _("Cancel Showing Properties Window?"),
-		 _("Creating Properties window"),
+		 _("Creating Properties window."),
 		 parent_window == NULL ? NULL : GTK_WINDOW (parent_window));
 
 
