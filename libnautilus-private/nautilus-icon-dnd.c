@@ -1216,7 +1216,9 @@ void
 nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 			      GdkDragAction actions,
 			      int button,
-			      GdkEventMotion *event)
+			      GdkEventMotion *event,
+			      int                    start_x,
+			      int                    start_y)
 {
 	NautilusIconDndInfo *dnd_info;
 	EelCanvas *canvas;
@@ -1237,8 +1239,8 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
            the way the canvas handles events.
 	*/
 	canvas = EEL_CANVAS (container);
-	dnd_info->drag_info.start_x = event->x - gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (canvas)));
-	dnd_info->drag_info.start_y = event->y - gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (canvas)));	
+	dnd_info->drag_info.start_x = start_x - gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (canvas)));
+	dnd_info->drag_info.start_y = start_y - gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (canvas)));	
 
         /* create a pixmap and mask to drag with */
         pixmap = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item, &mask);

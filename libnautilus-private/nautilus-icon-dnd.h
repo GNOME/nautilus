@@ -52,7 +52,9 @@ void   nautilus_icon_dnd_set_stipple           (NautilusIconContainer *container
 void   nautilus_icon_dnd_begin_drag            (NautilusIconContainer *container,
 						GdkDragAction          actions,
 						gint                   button,
-						GdkEventMotion        *event);
+						GdkEventMotion        *event,
+						int                    start_x,
+						int                    start_y);
 void   nautilus_icon_dnd_end_drag              (NautilusIconContainer *container);
 
 GList *nautilus_icon_dnd_uri_list_extract_uris (const char            *uri_list);

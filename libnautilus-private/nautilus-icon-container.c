@@ -3561,7 +3561,9 @@ motion_notify_event (GtkWidget *widget,
 								 | GDK_ACTION_ASK)
 							      : GDK_ACTION_ASK,
 							      details->drag_button,
-							      event);
+							      event, 
+							      details->drag_x,
+							      details->drag_y);
 			}
 			break;
 		case DRAG_STATE_STRETCH:
