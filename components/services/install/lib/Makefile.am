@@ -85,6 +85,7 @@ libeazelpackagesysteminclude_HEADERS = 		\
 	eazel-package-system-private.h		\
 	eazel-package-system-types.h	 	\
 	eazel-install-xml-package-list.h	\
+	eazel-inventory-utils.h			\
 	eazel-softcat.h				\
 	eazel-softcat-private.h			\
 	$(NULL)
@@ -94,6 +95,7 @@ libeazelpackagesystem_la_SOURCES = 		\
 	eazel-package-system.c			\
 	eazel-softcat.c				\
 	eazel-install-xml-package-list.c	\
+	eazel-inventory-utils.c			\
 	$(NULL)
 
 # libeazelpackagesystem-skeleton

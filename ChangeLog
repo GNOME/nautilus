@@ -1,3 +1,19 @@
+2000-12-15  J Shane Culpepper  <pepper@eazel.com>
+
+        reviewed by: Darin Adler <darin@eazel.com>
+
+        * components/services/install/lib/Makefile.am:
+        * components/services/install/lib/eazel-inventory-utils.c:
+        (init_package_system), (get_package_list), (add_package_info),
+        (str_has_prefix), (eazel_inventory_gconf_done), (check_gconf_init),
+        (get_digest_from_gconf), (update_gconf_inventory_digest),
+        (eazel_gather_inventory):
+        * components/services/install/lib/eazel-inventory-utils.h:
+
+        Removing hardcoded rpm calls and now using the eazel package
+        system lib.  Added digest testing to know when the inventory
+        xml has changed.
+
 2000-12-15  Darin Adler  <darin@eazel.com>
 
 	* components/services/install/lib/eazel-install-xml-package-list.h:

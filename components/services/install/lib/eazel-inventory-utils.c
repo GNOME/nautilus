@@ -24,90 +24,127 @@
  */
 
 #include <config.h>
+
+#include "eazel-inventory-utils.h"
+
 #include <gdk/gdk.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <time.h>
 #include <unistd.h>
-#include <rpm/rpmlib.h>
 #include <gnome.h>
 #include <gnome-xml/entities.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/tree.h>
-#include "eazel-inventory-utils.h"
+#include <gconf/gconf.h>
+#include <gconf/gconf-engine.h>
 
-static void	add_package_info	(xmlDocPtr 	configuration_metafile);
-static void	add_hardware_info	(xmlDocPtr 	configuration_metafile);
-static char	*read_proc_info		(const char	*proc_filename);
-static void	add_info		(xmlNodePtr 	node_ptr,
-					 char		*data,
-					 const char	*tag,
-					 const char	*field_name);
-static void	add_io_info		(xmlNodePtr	node_ptr,
-					 char		*io_data);
-static gboolean str_has_prefix		(const char	*haystack,
-					 const char	*needle);
+#include <libtrilobite/trilobite-md5-tools.h>
+
+#define notDEBUG_pepper	1
+
+#define DIGEST_GCONF_PATH	"/apps/eazel-trilobite/inventory-digest"
+#define DIGEST_GCONF_KEY	"inventory_digest_value"
+
+static GConfEngine *conf_engine = NULL;
+
+/* ripped straight out of libnautilus-extensions because we didn't want the
+ * dependency for one small function
+ */
+static gboolean
+str_has_prefix (const char *haystack, const char *needle)
+{
+	const char *h, *n;
+
+	/* Eat one character at a time. */
+	h = haystack == NULL ? "" : haystack;
+	n = needle == NULL ? "" : needle;
+	do {
+		if (*n == '\0') {
+			return TRUE;
+		}
+		if (*h == '\0') {
+			return FALSE;
+		}
+	} while (*h++ == *n++);
+	return FALSE;
+}
+
+/* eazel package system method to query the rpmdb for
+ * all packages and return a GList of PackageData structs.
+ */
+
+static GList *
+get_package_list (EazelPackageSystem *package_system)
+{
+	GList		*packages;
+
+	packages = NULL;
+
+	packages = eazel_package_system_query	(package_system,
+					 	 NULL,
+						 "",
+						 EAZEL_PACKAGE_SYSTEM_QUERY_SUBSTR,
+						 0);
+
+	return packages;
+}
 
 /* add package data from the package database to the passed in xml document */
-
 static void
 add_package_info (xmlDocPtr	configuration_metafile)
 {
 
-	char		package_count_str[32];
-	char		*package_name;
-	char		*package_version;
-	char		*package_release;
-	char		*version_str;
-	xmlNodePtr	packages_node;
-	xmlNodePtr	current_package_node;
- 	rpmdb		rpm_db;
- 	int		current_offset;
-	int		rpm_result;
- 	int		package_count;
+	char			package_count_str[32];
+	xmlNodePtr		packages_node;
+	xmlNodePtr		current_package_node;
+ 	int			package_count;
+	EazelPackageSystem	*package_system;
+	GList			*packages;
+	GList			*iterator;
+	PackageData		*package;
+	char			*package_name;
+	char			*package_version;
+	char			*package_release;
+	char			*package_arch;
+
 
 	package_count = 0;
-    
-	/* open the rpm database for package lookups */
- 
- 	rpmReadConfigFiles (NULL, NULL);   
-	rpm_result = rpmdbOpen ("", &rpm_db, O_RDONLY, 0644);
-	if (rpm_result != 0) {
-		g_message ("couldn't open package database: %d", rpm_result);
-		return;
-	}   
- 	
+
+	package_system = eazel_package_system_new (NULL);
+
+	packages = get_package_list (package_system);
+
     	/* add the PACKAGES node */
 	packages_node = xmlNewChild (configuration_metafile->root, NULL, "PACKAGES", NULL);
     
 	/* iterate through all of the installed packages */
-    
-	current_offset = rpmdbFirstRecNum (rpm_db);
- 	while (current_offset)
-	  {
-		Header current_package = rpmdbGetRecord (rpm_db, current_offset);
-        
-        	headerGetEntry (current_package, RPMTAG_NAME, NULL, (void **) &package_name, NULL);
-        	headerGetEntry (current_package, RPMTAG_VERSION, NULL, (void **) &package_version, NULL);
-        	headerGetEntry(current_package, RPMTAG_RELEASE, NULL, (void **) &package_release, NULL);
-        
+
+	for (iterator = packages; iterator != NULL; iterator = g_list_next (iterator)) {
+
+		package = (PackageData*) iterator->data;
+
+		package_name = g_strdup (package->name);
+		package_version = g_strdup (package->version);
+		package_release = g_strdup (package->minor);
+		package_arch = g_strdup (package->archtype);
+
  		/* add a node for this package */
         
 		current_package_node = xmlNewChild (packages_node, NULL, "PACKAGE", NULL);
 		package_count += 1;
         
-		version_str = g_strdup_printf ("%s-%s", package_version, package_release);
 		xmlSetProp (current_package_node, "name", package_name);
-		xmlSetProp (current_package_node, "version", version_str);
-       		g_free (version_str);
-         
-		headerFree (current_package);
-		current_offset = rpmdbNextRecNum (rpm_db, current_offset);
-	  	
-		/* donate some time to gtk to handle updates, etc */
-		while (gtk_events_pending()) {
-			gtk_main_iteration();
-		}
+		xmlSetProp (current_package_node, "version", package_version);
+		xmlSetProp (current_package_node, "release", package_release);
+		xmlSetProp (current_package_node, "epoch", package_arch);
+
+		g_free (package_name);
+		g_free (package_version);
+		g_free (package_release);
+		g_free (package_arch);
+		packagedata_destroy (package, TRUE);
+
 	  }
     
     	/* update the count */
@@ -115,12 +152,13 @@ add_package_info (xmlDocPtr	configuration_metafile)
     	sprintf (package_count_str, "%d", package_count);
 	xmlSetProp (packages_node, "count", package_count_str);
     
-	/* close the package data base */   
-        rpmdbClose (rpm_db);    
+	/* clean up*/   
+	gtk_object_unref (GTK_OBJECT (package_system));
+	g_list_free (packages);
+
 }
 
 /* utility routine to read a proc file into a string */
-
 static char*
 read_proc_info	(const char	*proc_filename)
 {
@@ -148,7 +186,6 @@ read_proc_info	(const char	*proc_filename)
 }
 
 /* utility routine to extract information from a string and add it to an XML node */
-
 static void
 add_info (xmlNodePtr	node_ptr, char	*data, const char	*tag, const char	*field_name)
 {
@@ -183,7 +220,6 @@ add_info (xmlNodePtr	node_ptr, char	*data, const char	*tag, const char	*field_na
 }
 
 /* utility routine to process io info */
-
 static void
 add_io_info (xmlNodePtr	node_ptr, char	*io_data)
 {
@@ -213,7 +249,6 @@ add_io_info (xmlNodePtr	node_ptr, char	*io_data)
 }
 
 /* add hardware info from the /proc directory to the passed in xml document */
-
 static void
 add_hardware_info (xmlDocPtr	configuration_metafile)
 {
@@ -255,7 +290,7 @@ add_hardware_info (xmlDocPtr	configuration_metafile)
 }
 
 /* create the configuration metafile and add package and hardware configuration info to it */
-xmlDocPtr
+static xmlDocPtr
 eazel_create_configuration_metafile (void)
 {
 
@@ -288,22 +323,150 @@ eazel_create_configuration_metafile (void)
 	return configuration_metafile;
 }
 
-static gboolean
-str_has_prefix (const char *haystack, const char *needle)
+/* called by atexit to close the gconf connection */
+static void
+eazel_inventory_gconf_done (void)
 {
-	const char *h, *n;
+	gconf_engine_unref (conf_engine);
+}
 
-	/* Eat one character at a time. */
-	h = haystack == NULL ? "" : haystack;
-	n = needle == NULL ? "" : needle;
-	do {
-		if (*n == '\0') {
-			return TRUE;
+/* make sure gconf is initialized */
+static void
+check_gconf_init (void)
+{
+	GError *error = NULL;
+
+	if (! gconf_is_initialized ()) {
+		char *argv[] = { "trilobite", NULL };
+
+		if (! gconf_init (1, argv, &error)) {
+			g_assert (error != NULL);
+			g_warning ("gconf init error: %s", error->message);
+                        g_error_free (error);
 		}
-		if (*h == '\0') {
-			return FALSE;
-		}
-	} while (*h++ == *n++);
-	return FALSE;
+	}
+	if (conf_engine == NULL) {
+		conf_engine = gconf_engine_get_default ();
+		g_atexit (eazel_inventory_gconf_done);
+	}
+}
+
+/* get last digest value stored in gconf */
+static char *
+get_digest_from_gconf (const char *key)
+{
+	GError	*error;
+	char	*full_key;
+	char	*helper;
+	char	*value;
+
+	error = NULL;
+	value = NULL;
+
+	check_gconf_init ();
+	full_key = g_strdup_printf ("%s/%s", DIGEST_GCONF_PATH, key);
+
+	/* convert all spaces to underscores */
+	while ((helper = strchr (full_key, ' ')) != NULL) {
+		*helper = '_';
+	}
+
+	value = gconf_engine_get_string (conf_engine, full_key, &error);
+	if (error != NULL) {
+		g_warning ("inventory cannot find key: '%s': %s", full_key, error->message);
+		g_error_free (error);
+	}
+	g_free (full_key);
+	return value;
+}
+
+
+/* The external function that will update the gconf digest value when
+ * a successful inventory upload occurs.
+ */
+
+gboolean
+update_gconf_inventory_digest (const char *key, unsigned char value[16])
+{
+	GError *error;
+	char *full_key;
+	char *helper;
+	const char *digest_string;
+	gboolean return_val;
+
+	return_val = TRUE;
+
+	error = NULL;
+
+	digest_string = md5_get_string_from_md5_digest (value);
+	check_gconf_init ();
+	full_key = g_strdup_printf ("%s/%s", DIGEST_GCONF_PATH, key);
+
+	/* convert all spaces to underscores */
+	while ((helper = strchr (full_key, ' ')) != NULL) {
+		*helper = '_';
+	}
+
+	gconf_engine_set_string (conf_engine, full_key, digest_string, &error);
+	if (error != NULL) {
+		g_warning ("inventory cannot add gconf key: '%s': %s", full_key, error->message);
+		g_error_free (error);
+		return_val = FALSE;
+	}
+	g_free (full_key);
+
+	return return_val;
+}
+
+/* The main external api for inventory gathering.  It will
+ * generate the inventory.xml and check to see if the last
+ * uploaded inventory is different.  If the checksum differs
+ * and xml file was generated successfully , the function
+ * returns TRUE, otherwise FALSE.
+ */
+gboolean
+eazel_gather_inventory (void)
+{
+	char		*inventory_file_name;
+	xmlDocPtr	inventory_doc;
+	unsigned char	md5_digest[16];
+	unsigned char	old_digest[16];
+	char		*digest_string;
+	gboolean	return_val;
+
+	return_val = FALSE;
+
+	inventory_doc = eazel_create_configuration_metafile ();
+	if (inventory_doc == NULL) {
+		g_warning ("There was an error gathering your inventory");
+	}
+
+	/* save the configuration file */
+	inventory_file_name = g_strdup_printf ("%s/.nautilus/configuration.xml", g_get_home_dir ());
+	xmlSaveFile (inventory_file_name, inventory_doc);
+	xmlFreeDoc (inventory_doc);
+
+	/* generate a md5 digest of the new file and compare it to the last upload */
+
+	md5_get_digest_from_file (inventory_file_name, md5_digest);
+#ifdef DEBUG_pepper
+	g_print ("File: %s Digest: %s\n", inventory_file_name, md5_digest);
+#endif
+
+	digest_string = get_digest_from_gconf (DIGEST_GCONF_KEY);
+	md5_get_digest_from_md5_string (digest_string, old_digest);
+#ifdef DEBUG_pepper
+	g_print ("Old GConf Digest value: %s\n", old_digest);
+#endif
+
+	if (memcmp (old_digest, md5_digest, 16) != 0) {
+		return_val = TRUE;
+	}
+
+	g_free (inventory_file_name);
+	g_free (digest_string);
+
+	return return_val;
+
 }
 

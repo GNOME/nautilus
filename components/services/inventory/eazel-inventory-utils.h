@@ -26,10 +26,11 @@
 #ifndef EAZEL_INVENTORY_UTILS_H
 #define EAZEL_INVENTORY_UTILS_H
 
-#include <gnome-xml/entities.h>
-#include <gnome-xml/parser.h>
-#include <gnome-xml/tree.h>
+#include <gnome.h>
+#include "eazel-package-system.h"
 
-xmlDocPtr eazel_create_configuration_metafile		(void);
+gboolean eazel_gather_inventory				(void);
+gboolean update_gconf_inventory_digest			(const char		*key,
+							 unsigned char		value[16]);
 
 #endif /* EAZEL_INVENTORY_UTILS_H */
