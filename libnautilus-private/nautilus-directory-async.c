@@ -39,6 +39,7 @@
 #include <gtk/gtkmain.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-mime-monitor.h>
 #include <libxml/parser.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -584,6 +585,50 @@ nautilus_directory_set_up_request (Request *request,
 
 }
 
+static void
+mime_db_changed_callback (GnomeVFSMIMEMonitor *ignore, NautilusDirectory *dir)
+{
+	const Monitor *monitor;
+	GList *ptr, *attrs;
+	GList *file_list;
+
+	g_return_if_fail (dir != NULL);
+	g_return_if_fail (dir->details != NULL);
+
+	attrs = NULL;
+	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
+	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES);
+	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
+	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
+	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE);
+	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES);
+
+	file_list = NULL;
+	for (ptr = dir->details->monitor_list ; ptr != NULL ; ptr = ptr->next) {
+		monitor = ptr->data;
+		if (monitor->request.file_info && monitor->file != NULL) {
+			if (nautilus_file_is_self_owned (monitor->file)) {
+				nautilus_file_emit_changed (monitor->file);
+				nautilus_file_invalidate_attributes (ptr->data, attrs);
+			} else {
+				file_list = g_list_prepend (file_list, 
+							    monitor->file);
+			}
+			
+		}
+	}
+	
+	if (file_list) {
+		nautilus_directory_emit_change_signals (dir, file_list);
+
+		for (ptr = file_list; ptr != NULL; ptr = ptr->next)
+			nautilus_file_invalidate_attributes (ptr->data, attrs);
+		g_list_free (file_list);
+	}
+	g_list_free (attrs);
+}
+
 void
 nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 					 NautilusFile *file,
@@ -639,6 +684,13 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 	 */
 	if (monitor->request.metafile && directory->details->metafile_monitor == NULL) {
 		nautilus_directory_register_metadata_monitor (directory);	
+	}
+
+	if (monitor->request.file_info && directory->details->mime_db_monitor == 0) {
+		directory->details->mime_db_monitor = g_signal_connect_object (
+			gnome_vfs_mime_monitor_get (),
+			"data_changed",
+			G_CALLBACK (mime_db_changed_callback), directory, 0);			  
 	}
 
 	/* Put the monitor file or all the files on the work queue. */
