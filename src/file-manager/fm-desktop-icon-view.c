@@ -178,7 +178,7 @@ icon_container_set_workarea (NautilusIconContainer *icon_container,
 }
 
 static void
-net_wm_workarea_changed (FMDesktopIconView *icon_view)
+net_workarea_changed (FMDesktopIconView *icon_view)
 {
 	long *workareas = NULL;
 	Atom type_returned;
@@ -194,7 +194,7 @@ net_wm_workarea_changed (FMDesktopIconView *icon_view)
 	gdk_error_trap_push ();
 	if (XGetWindowProperty (GDK_DISPLAY (),
 				GDK_ROOT_WINDOW (),
-				gdk_x11_get_xatom_by_name ("_NET_WM_WORKAREA"),
+				gdk_x11_get_xatom_by_name ("_NET_WORKAREA"),
 				0, G_MAXLONG, False,
 				XA_CARDINAL,
 				&type_returned,
@@ -236,7 +236,7 @@ desktop_icon_view_property_filter (GdkXEvent *gdk_xevent,
 	switch (xevent->type) {
 	case PropertyNotify:
 		if (xevent->xproperty.atom == gdk_x11_get_xatom_by_name ("_NET_WM_WORKAREA"))
-			net_wm_workarea_changed (icon_view);
+			net_workarea_changed (icon_view);
 		break;
 	default:
 		break;
@@ -709,7 +709,7 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	fm_desktop_icon_view_update_icon_container_fonts (desktop_icon_view);
 
 	/* Read out the workarea geometry and update the icon container accordingly */
-	net_wm_workarea_changed (desktop_icon_view);
+	net_workarea_changed (desktop_icon_view);
 
 	/* Setup the property filter */
 	XSelectInput (GDK_DISPLAY (), GDK_ROOT_WINDOW (), PropertyChangeMask);

@@ -1,3 +1,10 @@
+2002-06-25  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(net_workarea_changed), (desktop_icon_view_property_filter),
+	(fm_desktop_icon_view_init): its _NET_WORKAREA, not
+	_NET_WM_WORKAREA. Requires latest metacity.
+
 2002-06-24  Damon Chaplin  <damon@ximian.com>
 
 	* components/music/nautilus-music-view.c (get_song_text): if there are
