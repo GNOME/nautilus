@@ -24,14 +24,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.1.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-30 13:04+0100\n"
-"PO-Revision-Date: 2003-08-16 22:09+0200\n"
+"POT-Creation-Date: 2004-02-05 22:17+0200\n"
+"PO-Revision-Date: 2004-02-01 18:01+0200\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
 "Language-Team: Gnome Finnish Translation Team <gnome-fi-laatu@lists."
 "sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;\n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -72,40 +73,32 @@ msgid "Nautilus Emblem view"
 msgstr "Nautiluksen tunnusmerkkinäkymä"
 
 #: components/emblem/nautilus-emblem-view.c:203
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't remove emblem with name '%s'."
-msgstr "Tunnusmerkin poisto epäonnistui"
+msgstr "Tunnusmerkin \"%s\" poisto epäonnistui."
 
 #: components/emblem/nautilus-emblem-view.c:204
-#, fuzzy
 msgid ""
 "This is probably because the emblem is a permanent one, and not one you "
 "added yourself."
-msgstr ""
-"\"%s\"-nimisen tunnusmerkin poisto epäonnistui. Syynä luultavasti on, että "
-"tunnusmerkki on pysyvä, ei itse lisäämäsi."
+msgstr "Syynä luultavasti on, että tunnusmerkki on pysyvä, ei itse lisäämäsi."
 
 #: components/emblem/nautilus-emblem-view.c:205
-#, fuzzy
 msgid "Couldn't Remove Emblem"
 msgstr "Tunnusmerkin poisto epäonnistui"
 
 #: components/emblem/nautilus-emblem-view.c:239
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't rename emblem with name '%s'."
-msgstr "Tunnusmerkin nimen vaihtaminen epäonnistui"
+msgstr "Tunnusmerkin nimen vaihtaminen nimeksi \"%s\" epäonnistui"
 
 #: components/emblem/nautilus-emblem-view.c:240
-#, fuzzy
 msgid ""
 "This is probably because the emblem is a permanent one, and not one that you "
 "added yourself."
-msgstr ""
-"\"%s\"-nimisen tunnusmerkin nimen vaihtaminen epäonnistui. Syynä luultavasti "
-"on, että tunnusmerkki on pysyvä, ei itse lisäämäsi."
+msgstr "Syynä luultavasti on, että tunnusmerkki on pysyvä, ei itse lisäämäsi."
 
 #: components/emblem/nautilus-emblem-view.c:241
-#, fuzzy
 msgid "Couldn't Rename Emblem"
 msgstr "Tunnusmerkin nimen vaihtaminen epäonnistui"
 
@@ -141,36 +134,28 @@ msgstr ""
 "Anna tunnusmerkille kuvaava nimi. Sen perusteella tunnusmerkki yksilöityy."
 
 #: components/emblem/nautilus-emblem-view.c:742
-#, fuzzy
 msgid "Some of the files could not be added as emblems."
-msgstr ""
-"Joitakin tiedostoista ei voi lisätä tunnusmerkeiksi, koska ne eivät "
-"vaikuttaneet olevan kelvollisia kuvatiedostoja."
+msgstr "Joitakin tiedostoista ei voi lisätä tunnusmerkeiksi."
 
 #: components/emblem/nautilus-emblem-view.c:742
 #: components/emblem/nautilus-emblem-view.c:744
-#, fuzzy
 msgid "The emblems do not appear to be valid images."
-msgstr "Tiedosto \"%s\" ei vaikuta olevan kelvollinen kuvatiedosto."
+msgstr "Tunnusmerkit eivät vaikuta olevan kelvollisia kuvatiedostoja."
 
 #: components/emblem/nautilus-emblem-view.c:742
 #: components/emblem/nautilus-emblem-view.c:744
-#, fuzzy
 msgid "Couldn't Add Emblems"
-msgstr "Tunnusmerkkien lisäys epäonnistui"
+msgstr "Tunnusmerkkien lisääminen epäonnistui"
 
 #: components/emblem/nautilus-emblem-view.c:744
-#, fuzzy
 msgid "None of the files could be added as emblems."
-msgstr ""
-"Yhtäkään tiedostoista ei voi lisätä tunnusmerkeiksi, koska ne eivät vaikuta "
-"olevan kelvollisia kuvatiedostoja."
+msgstr "Yhtäkään tiedostoista ei voi lisätä tunnusmerkeiksi."
 
 #: components/emblem/nautilus-emblem-view.c:765
 #: components/emblem/nautilus-emblem-view.c:790
 #: components/emblem/nautilus-emblem-view.c:840
 msgid "The emblem cannot be added."
-msgstr ""
+msgstr "Tunnusmerkin lisääminen epäonnistui."
 
 #: components/emblem/nautilus-emblem-view.c:765
 msgid "The dragged text was not a valid file location."
@@ -179,9 +164,8 @@ msgstr "Pudotettu teksti ei ollut kelvollinen tiedostosijainti."
 #: components/emblem/nautilus-emblem-view.c:765
 #: components/emblem/nautilus-emblem-view.c:790
 #: components/emblem/nautilus-emblem-view.c:840
-#, fuzzy
 msgid "Couldn't Add Emblem"
-msgstr "Tunnusmerkin lisäys epäonnistui"
+msgstr "Tunnusmerkin lisääminen epäonnistui"
 
 #: components/emblem/nautilus-emblem-view.c:785
 #: components/emblem/nautilus-emblem-view.c:839
@@ -223,52 +207,48 @@ msgid "Nautilus Image Properties view"
 msgstr "Nautiluksen kuvien ominaisuusnäkymä"
 
 #: components/image_properties/nautilus-image-properties-view.c:192
-#, fuzzy
 msgid "Camera Brand"
-msgstr "Kamera"
+msgstr "Kameran merkki"
 
 #: components/image_properties/nautilus-image-properties-view.c:193
-#, fuzzy
 msgid "Camera Model"
-msgstr "Kamera"
+msgstr "Kameran malli"
 
 #: components/image_properties/nautilus-image-properties-view.c:194
 msgid "Date Taken"
-msgstr ""
+msgstr "Ottopäivä"
 
 #: components/image_properties/nautilus-image-properties-view.c:195
 msgid "Exposure Time"
-msgstr ""
+msgstr "Valotusaika"
 
 #: components/image_properties/nautilus-image-properties-view.c:196
-#, fuzzy
 msgid "Exposure Program"
-msgstr "ohjelma"
+msgstr "Valotusohjelma"
 
 #: components/image_properties/nautilus-image-properties-view.c:197
 msgid "Aperture Value"
-msgstr ""
+msgstr "Aukon arvo"
 
 #: components/image_properties/nautilus-image-properties-view.c:198
 msgid "Metering Mode"
-msgstr ""
+msgstr "Mittaustila"
 
 #: components/image_properties/nautilus-image-properties-view.c:199
 msgid "Flash Fired"
-msgstr ""
+msgstr "Salama"
 
 #: components/image_properties/nautilus-image-properties-view.c:200
-#, fuzzy
 msgid "Focal Length"
-msgstr "Covalent"
+msgstr "Polttoväli"
 
 #: components/image_properties/nautilus-image-properties-view.c:201
 msgid "Shutter Speed"
-msgstr ""
+msgstr "Sulkimen nopeus"
 
 #: components/image_properties/nautilus-image-properties-view.c:202
 msgid "ISO Speed Rating"
-msgstr ""
+msgstr "ISO-nopeusluokka"
 
 #: components/image_properties/nautilus-image-properties-view.c:203
 #: data/static_bookmarks.xml.h:36
@@ -276,7 +256,7 @@ msgid "Software"
 msgstr "Ohjelmisto"
 
 #: components/image_properties/nautilus-image-properties-view.c:222
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
@@ -287,8 +267,8 @@ msgstr[0] ""
 "<b>Kuvan tyyppi:</b> %s (%s)\n"
 "<b>Koko:</b> %dx%d kuvapistettä\n"
 msgstr[1] ""
-"<b>Kuvan tyyppi:</b> %s (%s)\n"
-"<b>Koko:</b> %dx%d kuvapistettä\n"
+"<b>Kuvien tyyppi:</b> %s (%s)\n"
+"<b>Koot:</b> %dx%d kuvapistettä\n"
 
 #: components/image_properties/nautilus-image-properties-view.c:237
 msgid "Failed to load image information"
@@ -1016,105 +996,97 @@ msgstr "Nimi"
 
 #: libnautilus-extension/nautilus-column.c:176
 msgid "Name of the column"
-msgstr ""
+msgstr "Sarakkeen nimi"
 
 #: libnautilus-extension/nautilus-column.c:182
 msgid "Attribute"
-msgstr ""
+msgstr "Määre"
 
 #: libnautilus-extension/nautilus-column.c:183
 msgid "The attribute name to display"
-msgstr ""
+msgstr "Näkyvän määreen nimi"
 
 #: libnautilus-extension/nautilus-column.c:189
 #: libnautilus-extension/nautilus-menu-item.c:213
 #: libnautilus-extension/nautilus-property-page.c:183
-#, fuzzy
 msgid "Label"
-msgstr "Eazel"
+msgstr "Nimiö"
 
 #: libnautilus-extension/nautilus-column.c:190
 msgid "Label to display in the column"
-msgstr ""
+msgstr "Sarakkeessa näkyvä nimiö"
 
 #: libnautilus-extension/nautilus-column.c:196
 msgid "Description"
-msgstr ""
+msgstr "Kuvaus"
 
 #: libnautilus-extension/nautilus-column.c:197
 msgid "A user-visible description of the column"
-msgstr ""
+msgstr "Käyttäjälle näkyvä kuvaus sarakkeesta"
 
 #: libnautilus-extension/nautilus-column.c:204
-#, fuzzy
 msgid "xalign"
-msgstr "linkki"
+msgstr "x-kohdistus"
 
 #: libnautilus-extension/nautilus-column.c:205
 msgid "The x-alignment of the column"
-msgstr ""
+msgstr "Sarakkeen x-suuntainen kohdistus"
 
 #: libnautilus-extension/nautilus-menu-item.c:207
-#, fuzzy
 msgid "Name of the item"
-msgstr "Tee muokkaus uudelleen"
+msgstr "Kohteen nimi"
 
 #: libnautilus-extension/nautilus-menu-item.c:214
 msgid "Label to display to the user"
-msgstr ""
+msgstr "Käyttäjälle näkyvä nimiö"
 
 #: libnautilus-extension/nautilus-menu-item.c:220
 msgid "Tip"
-msgstr ""
+msgstr "Vinkki"
 
 #: libnautilus-extension/nautilus-menu-item.c:221
 msgid "Tooltip for the menu item"
-msgstr ""
+msgstr "Valikon kohdan vinkki"
 
 #: libnautilus-extension/nautilus-menu-item.c:227
-#, fuzzy
 msgid "Icon"
-msgstr "kuvakkeet"
+msgstr "Kuvake"
 
 #: libnautilus-extension/nautilus-menu-item.c:228
 msgid "Name of the icon to display in the menu item"
-msgstr ""
+msgstr "Valikon kohdassa näkyvän kuvakkeen nimi"
 
 #: libnautilus-extension/nautilus-menu-item.c:235
 msgid "Sensitive"
-msgstr ""
+msgstr "Herkkä"
 
 #: libnautilus-extension/nautilus-menu-item.c:236
 msgid "Whether the menu item is sensitive"
-msgstr ""
+msgstr "Onko valikon kohta herkkä"
 
 #: libnautilus-extension/nautilus-menu-item.c:242
-#, fuzzy
 msgid "Priority"
-msgstr "Tulosta"
+msgstr "Tärkeys"
 
 #: libnautilus-extension/nautilus-menu-item.c:243
-#, fuzzy
 msgid "Show priority text in toolbars"
-msgstr "Näytä t_ekstit kuvakkeissa:"
+msgstr "Näytä tärkeysteksti työkalupalkeissa"
 
 #: libnautilus-extension/nautilus-property-page.c:177
 msgid "Name of the page"
-msgstr ""
+msgstr "Sivun nimi"
 
 #: libnautilus-extension/nautilus-property-page.c:184
 msgid "Label widget to display in the notebook tab"
-msgstr ""
+msgstr "Lehtiön välilehdessä näkyvä nimiö-säädin"
 
 #: libnautilus-extension/nautilus-property-page.c:190
-#, fuzzy
 msgid "Page"
-msgstr "Paketti"
+msgstr "Sivu"
 
 #: libnautilus-extension/nautilus-property-page.c:191
-#, fuzzy
 msgid "Widget for the property page"
-msgstr "Sivupaneelin leveys"
+msgstr "Ominaisuussivun säädin"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:1
 msgid ""
@@ -1141,13 +1113,12 @@ msgid "Bring up a new window for every opened file"
 msgstr "Avaa uusi ikkuna jokaista avattua tiedostoa kohden"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
-#, fuzzy
 msgid "Computer icon visible on desktop"
-msgstr "Koti-kuvake näkyy työpöydällä"
+msgstr "Tietokone-kuvake näkyy työpöydällä"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
 msgid "Criteria for search bar searching"
-msgstr "Kriteeri etsintäpalkilla etsimiselle"
+msgstr "Kriteeri hakupalkilla hakemiselle"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid ""
@@ -1156,7 +1127,7 @@ msgid ""
 "If set to \"search_by_text_and_properties\", then Nautilus will search for "
 "files by file name and file properties."
 msgstr ""
-"Kriteeri, miten tiedostot täsmäävät etsintäpalkilla etsittäessä. Arvo "
+"Kriteeri, miten tiedostot täsmäävät hakupalkilla haettaessa. Arvo "
 "\"search_by_text\", määrää, että Nautilus etsii tiedostoja vain "
 "tiedostonimen perusteella. Jos arvo on \"search_by_text_and_properties\", "
 "Nautilus etsii tiedostoja nimen ja ominaisuuksien perusteella."
@@ -1190,14 +1161,12 @@ msgid "Default Side Pane Background Filename"
 msgstr "Oletusarvoinen sivupaneelin taustan tiedostonimi"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
-#, fuzzy
 msgid "Default column order in the list view"
-msgstr "Luettelonäkymän oletusarvoinen mittakaava."
+msgstr "Luettelonäkymän oletusarvoinen sarakejärjestys"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
-#, fuzzy
 msgid "Default column order in the list view."
-msgstr "Luettelonäkymän oletusarvoinen mittakaava."
+msgstr "Luettelonäkymän oletusarvoinen sarakejärjestys."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
 msgid "Default folder viewer"
@@ -1208,14 +1177,12 @@ msgid "Default icon zoom level"
 msgstr "Oletusarvoinen kuvakkeiden mittakaava"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
-#, fuzzy
 msgid "Default list of columns visible in the list view"
-msgstr "Luettelonäkymän oletusarvoinen mittakaava."
+msgstr "Oletusarvoinen luettelo luettelonäkymässä näkyvistä sarakkeista"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:19
-#, fuzzy
 msgid "Default list of columns visible in the list view."
-msgstr "Luettelonäkymän oletusarvoinen mittakaava."
+msgstr "Oletusarvoinen luettelo luettelonäkymässä näkyvistä sarakkeista."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:20
 msgid "Default list zoom level"
@@ -1250,7 +1217,6 @@ msgid "Enable 'special' flags in file preferences dialog"
 msgstr "Näytä \"erityiset\" liput tiedoston asetusikkunassa"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
-#, fuzzy
 msgid ""
 "Filename for the default folder background. Only used if background_set is "
 "true."
@@ -1267,7 +1233,6 @@ msgstr ""
 "jos avaimen \"side_pane_background_set\" arvo on tosi."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
-#, fuzzy
 msgid ""
 "Folders over this size will be truncated to around this size. The purpose of "
 "this is to avoid unintentionally blowing the heap and killing Nautilus on "
@@ -1288,7 +1253,6 @@ msgid "Home icon visible on desktop"
 msgstr "Koti-kuvake näkyy työpöydällä"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
-#, fuzzy
 msgid ""
 "If set to true, Nautilus will only show folders in the tree side pane. "
 "Otherwise it will show both folders and files."
@@ -1322,7 +1286,6 @@ msgstr ""
 "tiedoston asetusikkunassa."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
@@ -1365,7 +1328,6 @@ msgstr ""
 "kirjanmerkkivalikossa."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus will use the user's home folder as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
@@ -1384,7 +1346,6 @@ msgstr ""
 "varmuuskopioiksi."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
-#, fuzzy
 msgid ""
 "If set to true, then hidden files are shown in the file manager. Hidden "
 "files are either dotfiles or are listed in the folder's .hidden file."
@@ -1402,24 +1363,22 @@ msgstr ""
 "tarkoittaa, että se käynnistyy myös kun kirjaudut sisään seuraavan kerran."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
-#, fuzzy
 msgid ""
 "If this is set to true, an icon linking to the computer location will be put "
 "on the desktop."
-msgstr "Jos tosi, roskakoriin osoittava kuvake tulee työpöydälle."
+msgstr "Jos tosi, roskakorin kuvake näkyy työpöydällä."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
-#, fuzzy
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
-msgstr "Jos tosi, kotihakemistoon osoittava kuvake tulee työpöydälle."
+msgstr "Jos tosi, kotihakemiston kuvake näkyy työpöydällä."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
-msgstr "Jos tosi, roskakoriin osoittava kuvake tulee työpöydälle."
+msgstr "Jos tosi, roskakorin kuvake näkyy työpöydällä."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid ""
@@ -1444,7 +1403,6 @@ msgstr ""
 "tulevat ensimmäisinä pienimpien sijaan."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
-#, fuzzy
 msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr ""
 "Jos tosi, kuvakkeet asettuvat tiiviimmin kuin oletusarvoisesti uusissa "
@@ -1474,7 +1432,6 @@ msgid "List of possible captions on icons"
 msgstr "Luettelo mahdollisista kuvakkeiden teksteistä"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
-#, fuzzy
 msgid "Maximum handled files in a folder"
 msgstr "Yläraja käsiteltävien tiedostojen määrälle per hakemisto"
 
@@ -1495,12 +1452,10 @@ msgid "Nautilus handles drawing the desktop"
 msgstr "Nautilus piirtää työpöydän"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
-#, fuzzy
 msgid "Nautilus uses the users home folder as the desktop"
 msgstr "Nautilus käyttää käyttäjän kotihakemistoa työpöytänä"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
-#, fuzzy
 msgid "Only show folders in the tree sidebar"
 msgstr "Näytä vain hakemistot puusivupaneelissa"
 
@@ -1521,7 +1476,6 @@ msgid "Reverse sort order in new windows"
 msgstr "Käänteinen järjestys uusissa ikkunoissa"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
-#, fuzzy
 msgid "Show folders first in windows"
 msgstr "Näytä hakemistot ikkunoissa ensimmäisinä"
 
@@ -1558,7 +1512,6 @@ msgstr ""
 "tiedostot soivat. Jos \"never\", esikuuntelu ei ole käytössä."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
 "file's icon. If set to \"always\" then always show previews, even if the "
@@ -1572,7 +1525,6 @@ msgstr ""
 "paikallisilla tiedostojärjestelmillä. Jos \"never\", esikatselu ei näy."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -1583,11 +1535,10 @@ msgstr ""
 "Nopeuskompromissi kuvatiedoston pienoiskuvan näyttämisessä. Jos arvo on "
 "\"always\", pienoiskuva näkyy aina, vaikka hakemisto olisi etäpalvelimella. "
 "Jos arvo on \"local_only\", pienoiskuvat näkyvät vain paikallisilla "
-"tiedostojärjestelmillä. Jos \"never\" pienoiskuvan sijaan näkyy yleinen "
+"tiedostojärjestelmillä. Jos \"never\", pienoiskuvan sijaan näkyy yleinen "
 "kuvake."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -1601,7 +1552,6 @@ msgstr ""
 "lukumäärät eivät näy."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
-#, fuzzy
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
@@ -1611,7 +1561,6 @@ msgstr ""
 "\" (muokattu viimeksi) ja \"emblems\" (tunnusmerkit)."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
-#, fuzzy
 msgid ""
 "The default sort-order for the items in the list view. Possible values are "
 "\"name\", \"size\", \"type\", and \"modification_date\"."
@@ -1661,7 +1610,6 @@ msgid "Use manual layout in new windows"
 msgstr "Käytä käsinasettelua uusissa ikkunoissa"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
-#, fuzzy
 msgid "Use tighter layout in new windows"
 msgstr "Käytä tiivistä asettelua uusissa ikkunoissa"
 
@@ -1692,7 +1640,6 @@ msgstr ""
 "\" (luettelonäkymä) ja \"icon_view\" (kuvakenäkymä)."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
-#, fuzzy
 msgid "When to show number of items in a folder"
 msgstr "Milloin hakemiston sisältämien kohteiden määrä näkyy"
 
@@ -1705,7 +1652,6 @@ msgid "When to show thumbnails of image files"
 msgstr "Näkyvätkö kuvatiedostojen pienoiskuvat"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
-#, fuzzy
 msgid "Whether a custom default folder background has been set."
 msgstr "Onko mukautettu oletusarvoinen hakemistojen tausta asetettu."
 
@@ -1854,9 +1800,8 @@ msgid "Xenix Volume"
 msgstr "Xenix-osio"
 
 #: libnautilus-private/nautilus-column-utilities.c:44
-#, fuzzy
 msgid "The name and icon of the file."
-msgstr "Ikkunan sovellus-ID."
+msgstr "Tiedoston nimi ja kuvake."
 
 #: libnautilus-private/nautilus-column-utilities.c:50
 #: src/file-manager/fm-search-list-view.c:519
@@ -1865,7 +1810,7 @@ msgstr "Koko"
 
 #: libnautilus-private/nautilus-column-utilities.c:51
 msgid "The size of the file."
-msgstr ""
+msgstr "Tiedoston koko."
 
 #: libnautilus-private/nautilus-column-utilities.c:58
 #: src/file-manager/fm-search-list-view.c:525
@@ -1873,9 +1818,8 @@ msgid "Type"
 msgstr "Tyyppi"
 
 #: libnautilus-private/nautilus-column-utilities.c:59
-#, fuzzy
 msgid "The type of the file."
-msgstr " tekstitiedosto"
+msgstr "Tiedoston tyyppi."
 
 #: libnautilus-private/nautilus-column-utilities.c:65
 #: src/file-manager/fm-search-list-view.c:531
@@ -1883,39 +1827,32 @@ msgid "Date Modified"
 msgstr "Muokattu"
 
 #: libnautilus-private/nautilus-column-utilities.c:66
-#, fuzzy
 msgid "The date the file was modified."
-msgstr ""
-"Ei voitu näyttää kohdetta \"%s\", koska sisään kirjautuminen epäonnistui."
+msgstr "Hetki, jona tiedostoa viimeksi muokattiin."
 
 #: libnautilus-private/nautilus-column-utilities.c:73
-#, fuzzy
 msgid "Date Accessed"
-msgstr "käyttöpäivä"
+msgstr "Käyttöpäivä"
 
 #: libnautilus-private/nautilus-column-utilities.c:74
 msgid "The date the file was accessed."
-msgstr ""
+msgstr "Hetki, jona tiedostoa viimeksi käytettiin."
 
 #: libnautilus-private/nautilus-column-utilities.c:81
-#, fuzzy
 msgid "Owner"
-msgstr "Omistaja:"
+msgstr "Omistaja"
 
 #: libnautilus-private/nautilus-column-utilities.c:82
-#, fuzzy
 msgid "The owner of the file."
-msgstr "Kohteen \"%s\" oikeuksia ei saatu selville."
+msgstr "Tiedoston omistaja."
 
 #: libnautilus-private/nautilus-column-utilities.c:89
-#, fuzzy
 msgid "Group"
-msgstr "Ryhmä:"
+msgstr "Ryhmä"
 
 #: libnautilus-private/nautilus-column-utilities.c:90
-#, fuzzy
 msgid "The group of the file."
-msgstr "Kohteen \"%s\" oikeuksia ei saatu selville."
+msgstr "Tiedoston ryhmä."
 
 #: libnautilus-private/nautilus-column-utilities.c:97
 #: src/file-manager/fm-properties-window.c:2865
@@ -1923,29 +1860,24 @@ msgid "Permissions"
 msgstr "Oikeudet"
 
 #: libnautilus-private/nautilus-column-utilities.c:98
-#, fuzzy
 msgid "The permissions of the file."
-msgstr "Kohteen \"%s\" oikeuksia ei saatu selville."
+msgstr "Tiedoston oikeudet."
 
 #: libnautilus-private/nautilus-column-utilities.c:105
-#, fuzzy
 msgid "Octal Permissions"
-msgstr "oikeudet (oktaali)"
+msgstr "Oikeudet oktaalilukuna"
 
 #: libnautilus-private/nautilus-column-utilities.c:106
-#, fuzzy
 msgid "The permissions of the file, in octal notation."
-msgstr "Valitun tiedoston oikeudet eivät selvinneet."
+msgstr "Tiedoston oikeudet oktaalilukumuodossa."
 
 #: libnautilus-private/nautilus-column-utilities.c:113
-#, fuzzy
 msgid "MIME Type"
 msgstr "MIME-tyyppi"
 
 #: libnautilus-private/nautilus-column-utilities.c:114
-#, fuzzy
 msgid "The mime type of the file."
-msgstr " tekstitiedosto"
+msgstr "Tiedoston MIME-tyyppi."
 
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
@@ -1958,22 +1890,18 @@ msgid "on the desktop"
 msgstr "työpöydällä"
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:105
-#, fuzzy
 msgid "You cannot delete a volume icon."
-msgstr "Taltiota ei voi poistaa"
+msgstr "Taltion kuvaketta ei voi poistaa."
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:106
-#, fuzzy
 msgid ""
 "If you want to eject the volume, please use Eject in the right-click menu of "
 "the volume."
 msgstr ""
-"Et voi poistaa taltiokuvaketta. Jos haluat poistaa taltion asemasta, valitse "
-"\"Poista asemasta\" oikealla painikkeella aukeavasta kuvakkeen "
-"kontekstivalikosta."
+"Jos haluat poistaa taltion asemasta, valitse \"Poista asemasta\" oikealla "
+"painikkeella aukeavasta kuvakkeen kontekstivalikosta."
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:108
-#, fuzzy
 msgid "Can't Delete Volume"
 msgstr "Taltiota ei voi poistaa"
 
@@ -2018,7 +1946,7 @@ msgstr "Aseta _tämän hakemiston taustaksi"
 #: libnautilus-private/nautilus-emblem-utils.c:257
 #: libnautilus-private/nautilus-emblem-utils.c:274
 msgid "The emblem cannot be installed."
-msgstr ""
+msgstr "Tunnusmerkkiä ei voi asentaa."
 
 #: libnautilus-private/nautilus-emblem-utils.c:198
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
@@ -2028,9 +1956,8 @@ msgstr "Uudelle tunnusmerkille pitää antaa avainsana."
 #: libnautilus-private/nautilus-emblem-utils.c:204
 #: libnautilus-private/nautilus-emblem-utils.c:259
 #: libnautilus-private/nautilus-emblem-utils.c:276
-#, fuzzy
 msgid "Couldn't Install Emblem"
-msgstr "Tunnusmerkkiä ei voitu asentaa"
+msgstr "Tunnusmerkin asentaminen epäonnistui"
 
 #: libnautilus-private/nautilus-emblem-utils.c:203
 msgid ""
@@ -2044,13 +1971,13 @@ msgstr ""
 #. * keyword to us anyway
 #.
 #: libnautilus-private/nautilus-emblem-utils.c:213
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, but there is already an emblem named \"%s\"."
-msgstr "Tunnusmerkki \"%s\" on jo olemassa. Valitse sille jokin toinen nimi."
+msgstr "Tunnusmerkki \"%s\" on jo olemassa."
 
 #: libnautilus-private/nautilus-emblem-utils.c:214
 msgid "Please choose a different emblem name."
-msgstr ""
+msgstr "Valitse tunnusmerkille toinen nimi."
 
 #: libnautilus-private/nautilus-emblem-utils.c:215
 msgid "Couldn't install emblem"
@@ -2086,11 +2013,9 @@ msgid "Error while moving."
 msgstr "Virhe siirtäessä."
 
 #: libnautilus-private/nautilus-file-operations.c:552
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" cannot be moved because it is on a read-only disk."
 msgstr ""
-"Virhe siirtäessä:\n"
-"\n"
 "Kohdetta \"%s\" ei voi siirtää, koska se on levyllä, jota voi vain lukea."
 
 #: libnautilus-private/nautilus-file-operations.c:562
@@ -2099,138 +2024,113 @@ msgid "Error while deleting."
 msgstr "Virhe poistaessa."
 
 #: libnautilus-private/nautilus-file-operations.c:563
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" cannot be deleted because you do not have permissions to modify its "
 "parent folder."
 msgstr ""
-"Virhe poistaessa:\n"
-"\n"
 "Kohdetta \"%s\" ei voi poistaa, koska sinulla ei ole oikeuksia sen "
-"ylähakemiston muuttamiseen."
+"sisältävän hakemiston muuttamiseen."
 
 #: libnautilus-private/nautilus-file-operations.c:569
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" cannot be deleted because it is on a read-only disk."
 msgstr ""
-"Virhe poistaessa:\n"
-"\n"
 "Kohdetta \"%s\" ei voi poistaa, koska se on levyllä, jota voi vain lukea."
 
 #: libnautilus-private/nautilus-file-operations.c:600
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" cannot be moved because you do not have permissions to change it or "
 "its parent folder."
 msgstr ""
-"Virhe siirtäessä:\n"
-"\n"
 "Kohdetta \"%s\" ei voi siirtää, koska sinulla ei ole oikeuksia sen tai sen "
-"ylähakemiston muuttamiseen."
+"sisältävän hakemiston muuttamiseen."
 
 #: libnautilus-private/nautilus-file-operations.c:604
-#, fuzzy
 msgid "Error while moving. "
-msgstr "Virhe siirtäessä."
+msgstr "Virhe siirtämisessä."
 
 #: libnautilus-private/nautilus-file-operations.c:605
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Cannot move \"%s\" because it or its parent folder are contained in the "
 "destination."
 msgstr ""
-"Virhe siirtämisessä:\n"
-"\n"
-"\"%s\" ei voi siirtyä, koska se tai sen emohakemisto ovat jo siirtymisen "
+"Kohdetta \"%s\" ei voi siirtää, koska se tai sen sisältävä hakemisto ovat jo "
 "kohteessa."
 
 #: libnautilus-private/nautilus-file-operations.c:615
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Cannot move \"%s\" to the trash because you do not have permissions to "
 "change it or its parent folder."
 msgstr ""
-"Virhe siirtäessä:\n"
-"\n"
 "Kohdetta \"%s\" ei voi siirtää roskakoriin, koska sinulla ei ole oikeuksia "
-"sen tai sen ylähakemiston muuttamiseen."
+"sen tai sen sisältävän hakemiston muuttamiseen."
 
 #: libnautilus-private/nautilus-file-operations.c:637
 msgid "Error while copying."
 msgstr "Virhe kopioidessa."
 
 #: libnautilus-private/nautilus-file-operations.c:638
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" cannot be copied because you do not have permissions to read it."
 msgstr ""
-"Virhe kopioidessa:\n"
-"\n"
 "Kohdetta \"%s\" ei voi kopioida, koska sinulla ei ole oikeuksia sen "
 "lukemiseen."
 
 #: libnautilus-private/nautilus-file-operations.c:658
 #: libnautilus-private/nautilus-file-operations.c:679
 #: libnautilus-private/nautilus-file-operations.c:683
-#, fuzzy, c-format
+#, c-format
 msgid "Error while copying to \"%s\"."
-msgstr "Virhe kopioidessa."
+msgstr "Virhe kohteeseen \"%s\" kopioinnissa."
 
 #: libnautilus-private/nautilus-file-operations.c:659
 #: libnautilus-private/nautilus-file-operations.c:664
 #: libnautilus-private/nautilus-file-operations.c:668
-#, fuzzy
 msgid "There is not enough space on the destination."
-msgstr ""
-"Virhe siirtäessä kohdetta \"%s\":\n"
-"\n"
-"Levytilaa ei ole jäljellä."
+msgstr "Kohteessa ei ole levytilaa jäljellä."
 
 #: libnautilus-private/nautilus-file-operations.c:663
-#, fuzzy, c-format
+#, c-format
 msgid "Error while moving to \"%s\"."
-msgstr "Virhe siirtäessä."
+msgstr "Virhe kohteen \"%s\" siirtämisessä."
 
 #: libnautilus-private/nautilus-file-operations.c:667
-#, fuzzy, c-format
+#, c-format
 msgid "Error while creating link in \"%s\"."
-msgstr "Virhe linkittäessä."
+msgstr "Virhe kohteeseen \"%s\" linkittämisessä."
 
 #: libnautilus-private/nautilus-file-operations.c:680
 #: libnautilus-private/nautilus-file-operations.c:691
 #: libnautilus-private/nautilus-file-operations.c:702
-#, fuzzy
 msgid "You do not have permissions to write to this folder."
-msgstr ""
-"Virhe kopioidessa kohteeseen \"%s\":\n"
-"\n"
-"Sinulla ei ole tämän hakemiston kirjoitusoikeutta."
+msgstr "Sinulla ei ole kirjoitusoikeutta tähän hakemistoon."
 
 #: libnautilus-private/nautilus-file-operations.c:684
 #: libnautilus-private/nautilus-file-operations.c:695
 #: libnautilus-private/nautilus-file-operations.c:706
-#, fuzzy
 msgid "The destination disk is read-only."
-msgstr ""
-"Virhe kopioidessa kohteita kohteeseen \"%s\":\n"
-"\n"
-"Kohdelevylle ei voi kirjoittaa."
+msgstr "Kohdelevylle ei voi kirjoittaa."
 
 #: libnautilus-private/nautilus-file-operations.c:690
 #: libnautilus-private/nautilus-file-operations.c:694
-#, fuzzy, c-format
+#, c-format
 msgid "Error while moving items to \"%s\"."
-msgstr "Virhe siirtäessä."
+msgstr "Virhe kohteeseen \"%s\" siirtämisessä."
 
 #: libnautilus-private/nautilus-file-operations.c:701
 #: libnautilus-private/nautilus-file-operations.c:705
-#, fuzzy, c-format
+#, c-format
 msgid "Error while creating links in \"%s\"."
-msgstr "Virhe linkittäessä."
+msgstr "Virhe linkkien luonnissa kohteessa \"%s\"."
 
 #: libnautilus-private/nautilus-file-operations.c:733
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while copying \"%s\"."
-msgstr "Virhe kopioidessa."
+msgstr "Virhe \"%s\" kohteen \"%s\" kopioinnissa."
 
 #: libnautilus-private/nautilus-file-operations.c:734
 #: libnautilus-private/nautilus-file-operations.c:738
@@ -2240,155 +2140,135 @@ msgstr "Virhe kopioidessa."
 #: libnautilus-private/nautilus-file-operations.c:767
 #: libnautilus-private/nautilus-file-operations.c:771
 #: libnautilus-private/nautilus-file-operations.c:777
-#, fuzzy
 msgid "Would you like to continue?"
-msgstr ""
-"Virhe \"%s\" siirtäessä.\n"
-"\n"
-"Haluatko jatkaa?"
+msgstr "Haluatko jatkaa?"
 
 #: libnautilus-private/nautilus-file-operations.c:737
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while moving \"%s\"."
-msgstr "Virhe siirtäessä."
+msgstr "Virhe \"%s\" kohteen \"%s\" siirtämisessä."
 
 #: libnautilus-private/nautilus-file-operations.c:741
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while creating a link to \"%s\"."
-msgstr ""
-"Virhe \"%s\" luodessa linkkiä kohteeseen \"%s\".\n"
-"\n"
-"Haluatko jatkaa?"
+msgstr "Virhe \"%s\" kohteeseen \"%s\" linkin luomisessa."
 
 #: libnautilus-private/nautilus-file-operations.c:747
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while deleting \"%s\"."
-msgstr "Virhe poistaessa."
+msgstr "Virhe \"%s\" kohteen \"%s\" poistamisessa."
 
 #: libnautilus-private/nautilus-file-operations.c:762
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while copying."
-msgstr "Virhe kopioidessa."
+msgstr "Virhe \"%s\" kopioinnissa."
 
 #: libnautilus-private/nautilus-file-operations.c:766
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while moving."
-msgstr "Virhe siirtäessä."
+msgstr "Virhe \"%s\" siirtämisessä."
 
 #: libnautilus-private/nautilus-file-operations.c:770
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while linking."
-msgstr "Virhe linkittäessä."
+msgstr "Virhe \"%s\" linkittämisessä."
 
 #: libnautilus-private/nautilus-file-operations.c:776
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while deleting."
-msgstr "Virhe poistaessa."
+msgstr "Virhe \"%s\" poistamisessa."
 
 #: libnautilus-private/nautilus-file-operations.c:902
-#, fuzzy
 msgid "Error While Copying"
-msgstr "Virhe kopioidessa."
+msgstr "Virhe kopionnissa"
 
 #: libnautilus-private/nautilus-file-operations.c:905
-#, fuzzy
 msgid "Error While Moving"
-msgstr "Virhe siirtäessä."
+msgstr "Virhe siirtämisessä"
 
 #: libnautilus-private/nautilus-file-operations.c:908
-#, fuzzy
 msgid "Error While Linking"
-msgstr "Virhe linkittäessä."
+msgstr "Virhe linkittämisessä"
 
 #: libnautilus-private/nautilus-file-operations.c:913
-#, fuzzy
 msgid "Error While Deleting"
-msgstr "Virhe poistaessa."
+msgstr "Virhe poistamisessa"
 
 #: libnautilus-private/nautilus-file-operations.c:940
 #: libnautilus-private/nautilus-file-operations.c:961
 #: libnautilus-private/nautilus-file-operations.c:1071
 #: libnautilus-private/nautilus-file-operations.c:1090
-#, fuzzy
 msgid "_Skip"
-msgstr "Ohita"
+msgstr "_Ohita"
 
 #: libnautilus-private/nautilus-file-operations.c:961
-#, fuzzy
 msgid "_Retry"
-msgstr "Yritä uudelleen"
+msgstr "_Yritä uudelleen"
 
 #: libnautilus-private/nautilus-file-operations.c:1027
-#, fuzzy, c-format
+#, c-format
 msgid "Could not move \"%s\" to the new location."
-msgstr "Määritellyn toiminnon suorittaminen kokonaan ei onnistunut."
+msgstr "Kohteen \"%s\" siirtäminen uuteen sijaintiin epäonnistui."
 
 #: libnautilus-private/nautilus-file-operations.c:1030
-#, fuzzy
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to move the item, rename it and try again."
 msgstr ""
-"Kohdetta \"%s\" ei voitu siirtää uuteen paikkaan, koska sen nimi on jo "
-"käytössä jonkin erityiskohteen nimenä. Tätä erityiskohdetta ei voi nimetä "
-"uudelleen tai korvata.\n"
+"Nimi on jo käytössä jonkin erityiskohteen nimenä. Tätä erityiskohdetta ei "
+"voi nimetä uudelleen tai korvata.\n"
 "\n"
-"Jos haluat siirtää kohteen \"%s\", nimeä se uudelleen ja yritä uudestaan."
+"Jos haluat siirtää kohteen, nimeä se uudelleen ja yritä uudestaan."
 
 #: libnautilus-private/nautilus-file-operations.c:1034
-#, fuzzy, c-format
+#, c-format
 msgid "Could not copy \"%s\" to the new location."
-msgstr "Määritellyn toiminnon suorittaminen kokonaan ei onnistunut."
+msgstr "Kohteen \"%s\" kopionti uuteen sijaintiin epäonnistui."
 
 #: libnautilus-private/nautilus-file-operations.c:1037
-#, fuzzy
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
 msgstr ""
-"Kohdetta \"%s\" ei voitu kopioida uuteen paikkaan, koska sen nimi on jo "
-"käytössä jonkin erityiskohteen nimenä. Tätä erityiskohdetta ei voi nimetä "
-"uudelleen tai korvata.\n"
+"Nimi on jo käytössä jonkin erityiskohteen nimenä. Tätä erityiskohdetta ei "
+"voi nimetä uudelleen tai korvata.\n"
 "\n"
 "Jos haluat kopioida kohteen \"%s\", nimeä se uudelleen ja yritä uudestaan."
 
 #: libnautilus-private/nautilus-file-operations.c:1043
-#, fuzzy
 msgid "Unable to Replace File"
-msgstr "Ei voi korvata tiedostoa"
+msgstr "Tiedostoa ei voi korvata"
 
 #: libnautilus-private/nautilus-file-operations.c:1056
-#, fuzzy, c-format
+#, c-format
 msgid "The file \"%s\" already exists.  Would you like to replace it?"
-msgstr ""
-"Tiedosto \"%s\" on jo olemassa.\n"
-"\n"
-"Haluatko korvata sen?"
+msgstr "Tiedosto \"%s\" on jo olemassa. Haluatko korvata sen?"
 
 #: libnautilus-private/nautilus-file-operations.c:1069
 #: libnautilus-private/nautilus-file-operations.c:1088
 msgid "If you replace an existing file, its contents will be overwritten."
-msgstr ""
+msgstr "Tiedoston korvaaminen hävittää korvattavan tiedoston tiedot."
 
 #: libnautilus-private/nautilus-file-operations.c:1070
 #: libnautilus-private/nautilus-file-operations.c:1089
-#, fuzzy
 msgid "Conflict While Copying"
 msgstr "Ristiriita kopioinnissa"
 
 #: libnautilus-private/nautilus-file-operations.c:1071
 #: libnautilus-private/nautilus-file-operations.c:1090
-#, fuzzy
 msgid "_Replace"
-msgstr "Korvaa"
+msgstr "_Korvaa"
 
 #: libnautilus-private/nautilus-file-operations.c:1090
-#, fuzzy
 msgid "Replace _All"
-msgstr "Korvaa kaikki"
+msgstr "Korvaa k_aikki"
 
 # This is very hard to do in Finnish...
 #. appended to new link file
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4690
 #, c-format
@@ -2444,6 +2324,9 @@ msgid " (another copy)"
 msgstr " (toinen kopio)"
 
 #. localizers: tag used to detect the x11th copy of a file
+#. localizers: tag used to detect the x12th copy of a file
+#. localizers: tag used to detect the x13th copy of a file
+#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2479,6 +2362,9 @@ msgid "%s (another copy)%s"
 msgstr "%s (toinen kopio) %s"
 
 #. localizers: appended to x11th file copy
+#. localizers: appended to x12th file copy
+#. localizers: appended to x13th file copy
+#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -2604,18 +2490,16 @@ msgid "Preparing To Copy..."
 msgstr "Valmistellaan kopiointia"
 
 #: libnautilus-private/nautilus-file-operations.c:1930
-#, fuzzy
 msgid "You cannot copy items into the trash."
-msgstr "Et voi kopioida kohteita roskakoriin."
+msgstr "Kohteita ei voi kopioida roskakoriin."
 
 #: libnautilus-private/nautilus-file-operations.c:1931
-#, fuzzy
 msgid "You cannot create links inside the trash."
-msgstr "Et voi kopioida kohteita roskakoriin."
+msgstr "Roskakorissa ei voi luoda linkkejä."
 
 #: libnautilus-private/nautilus-file-operations.c:1932
 msgid "Files and folders can only be moved into the trash."
-msgstr ""
+msgstr "Tiedostoja ja hakemistoja voi vain siirtää roskakoriin."
 
 #: libnautilus-private/nautilus-file-operations.c:1956
 msgid "You cannot move this trash folder."
@@ -2627,7 +2511,7 @@ msgstr "Et voi kopioida tätä roskakorihakemistoa."
 
 #: libnautilus-private/nautilus-file-operations.c:1958
 msgid "A trash folder is used for storing items moved to the trash."
-msgstr ""
+msgstr "Roskakori säilyttää sinne siirretyt tiedostot tyhjentämiseen asti."
 
 #: libnautilus-private/nautilus-file-operations.c:1960
 msgid "Can't Change Trash Location"
@@ -2646,9 +2530,8 @@ msgid "You cannot copy a folder into itself."
 msgstr "Et voi kopioida hakemistoa itseensä."
 
 #: libnautilus-private/nautilus-file-operations.c:1987
-#, fuzzy
 msgid "The destination folder is inside the source folder."
-msgstr "Luo uusi tyhjä hakemisto tähän hakemistoon"
+msgstr "Kohdehakemisto on lähdehakemiston sisällä."
 
 #: libnautilus-private/nautilus-file-operations.c:1989
 msgid "Can't Move Into Self"
@@ -2664,7 +2547,7 @@ msgstr "Et voi kopioida tiedostoa itseensä."
 
 #: libnautilus-private/nautilus-file-operations.c:2004
 msgid "The destination and source are the same file."
-msgstr ""
+msgstr "Kohde ja lähde ovat sama tiedosto."
 
 #: libnautilus-private/nautilus-file-operations.c:2005
 msgid "Can't Copy Over Self"
@@ -2672,21 +2555,13 @@ msgstr "Ei voi kopioida itseensä"
 
 #: libnautilus-private/nautilus-file-operations.c:2057
 #: libnautilus-private/nautilus-file-operations.c:2197
-#, fuzzy
 msgid "You do not have permissions to write to the destination."
-msgstr ""
-"Virhe luodessa uutta hakemistoa:\n"
-"\n"
-"Sinulla ei ole kohteen kirjoitusoikeuksia."
+msgstr "Sinulla ei ole kohteen kirjoitusoikeuksia."
 
 #: libnautilus-private/nautilus-file-operations.c:2059
 #: libnautilus-private/nautilus-file-operations.c:2199
-#, fuzzy
 msgid "There is no space on the destination."
-msgstr ""
-"Virhe luodessa uutta hakemistoa:\n"
-"\n"
-"Levytilaa ei ole jäljellä."
+msgstr "Levytilaa ei ole jäljellä kohteessa."
 
 #: libnautilus-private/nautilus-file-operations.c:2061
 #, c-format
@@ -2694,12 +2569,10 @@ msgid "Error \"%s\" creating new folder."
 msgstr "Virhe \"%s\" uutta hakemistoa luodessa."
 
 #: libnautilus-private/nautilus-file-operations.c:2066
-#, fuzzy
 msgid "Error creating new folder."
-msgstr "Virhe uuden hakemiston luonnissa"
+msgstr "Virhe uuden hakemiston luonnissa."
 
 #: libnautilus-private/nautilus-file-operations.c:2066
-#, fuzzy
 msgid "Error Creating New Folder"
 msgstr "Virhe uuden hakemiston luonnissa"
 
@@ -2709,29 +2582,26 @@ msgid "untitled folder"
 msgstr "nimetön hakemisto"
 
 #: libnautilus-private/nautilus-file-operations.c:2201
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" creating new document."
-msgstr "Virhe \"%s\" uutta hakemistoa luodessa."
+msgstr "Virhe \"%s\" uuden asiakirjan luonnissa."
 
 #: libnautilus-private/nautilus-file-operations.c:2206
-#, fuzzy
 msgid "Error creating new document."
-msgstr "Virhe uuden hakemiston luonnissa"
+msgstr "Virhe uuden asiakirjan luonnissa."
 
 #: libnautilus-private/nautilus-file-operations.c:2206
-#, fuzzy
 msgid "Error Creating New Document"
-msgstr "Virhe uuden hakemiston luonnissa"
+msgstr "Virhe uuden asiakirjan luonnissa"
 
 #: libnautilus-private/nautilus-file-operations.c:2353
-#, fuzzy
 msgid "new file"
-msgstr "1 tiedosto"
+msgstr "uusi tiedosto"
 
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:2425
 msgid "Deleting files"
-msgstr "Poistaa tiedostoja"
+msgstr "Poistetaan tiedostoja"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:2427
@@ -2759,14 +2629,13 @@ msgid "Preparing to Empty the Trash..."
 msgstr "Valmistellaan roskakorin tyhjentämistä..."
 
 #: libnautilus-private/nautilus-file-operations.c:2528
-#, fuzzy
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr ""
 "Oletko varma, että haluat poistaa pysyvästi kaiken roskakorin sisällön?"
 
 #: libnautilus-private/nautilus-file-operations.c:2542
 msgid "If you empty the trash, items will be permanently deleted."
-msgstr ""
+msgstr "Kun roskakori tyhjennetään, sen sisältö häviää pysyvästi."
 
 #: libnautilus-private/nautilus-file-operations.c:2554
 msgid "_Empty"
@@ -2775,33 +2644,28 @@ msgstr "_Tyhjennä"
 #: libnautilus-private/nautilus-file-utilities.c:368
 #: libnautilus-private/nautilus-global-preferences.c:523
 #: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:9
-#, fuzzy
 msgid "Computer"
-msgstr "Pöydän päällys"
+msgstr "Tietokone"
 
 #: libnautilus-private/nautilus-file-utilities.c:370
-#, fuzzy
 msgid "Network"
-msgstr "Red Hat -verkko"
+msgstr "Verkko"
 
 #: libnautilus-private/nautilus-file-utilities.c:372
-#, fuzzy
 msgid "Fonts"
-msgstr "Laikut"
+msgstr "Kirjasimet"
 
 #: libnautilus-private/nautilus-file-utilities.c:374
 msgid "Themes"
-msgstr ""
+msgstr "Teemat"
 
 #: libnautilus-private/nautilus-file-utilities.c:376
-#, fuzzy
 msgid "CD Creator"
-msgstr "_CD-kirjoitin"
+msgstr "CD-kirjoitin"
 
 #: libnautilus-private/nautilus-file-utilities.c:378
-#, fuzzy
 msgid "Windows Network"
-msgstr "Red Hat -verkko"
+msgstr "Windows-verkko"
 
 #. Today, use special word.
 #. * strftime patterns preceeded with the widest
@@ -2942,24 +2806,24 @@ msgstr "%d.%m.%y"
 
 #: libnautilus-private/nautilus-file.c:4265
 #: src/file-manager/fm-directory-view.c:1806
-#, fuzzy, c-format
+#, c-format
 msgid "%u item"
 msgid_plural "%u items"
-msgstr[0] "%u kohdetta"
+msgstr[0] "%u kohde"
 msgstr[1] "%u kohdetta"
 
 #: libnautilus-private/nautilus-file.c:4266
-#, fuzzy, c-format
+#, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
-msgstr[0] "%u hakemistoa"
+msgstr[0] "%u hakemisto"
 msgstr[1] "%u hakemistoa"
 
 #: libnautilus-private/nautilus-file.c:4267
-#, fuzzy, c-format
+#, c-format
 msgid "%u file"
 msgid_plural "%u files"
-msgstr[0] "%u tiedostoa"
+msgstr[0] "%u tiedosto"
 msgstr[1] "%u tiedostoa"
 
 #. This means no contents at all were readable
@@ -3320,49 +3184,43 @@ msgid "Color used for information text against a light background"
 msgstr "Vaalealla taustalla olevan tiedotetekstin väri"
 
 #: libnautilus-private/nautilus-icon-dnd.c:732
-#, fuzzy
 msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it? This will clobber the stored manual layout."
 msgstr ""
-"Tämä hakemiston sisältö on aseteltu automaattisesti. Haluatko siirtyä käsin "
-"asetteluun ja jättää tämän kohteen sinne, minne pudotit sen? Tämä sotkee "
-"tallennetun käsin asettelun."
+"Haluatko asetella sisällön käsin ja jättää tämän kohteen siihen, mihin "
+"pudotit sen? Tämä sotkee jo tallennetun käsin asettelun."
 
 #: libnautilus-private/nautilus-icon-dnd.c:734
 #: libnautilus-private/nautilus-icon-dnd.c:738
 #: libnautilus-private/nautilus-icon-dnd.c:743
 #: libnautilus-private/nautilus-icon-dnd.c:746
 msgid "This folder uses automatic layout."
-msgstr ""
+msgstr "Tämän hakemiston asettelu on automaattinen."
 
 #: libnautilus-private/nautilus-icon-dnd.c:736
-#, fuzzy
 msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them? This will clobber the stored manual layout."
 msgstr ""
-"Tämä hakemiston sisältö on aseteltu automaattisesti. Haluatko siirtyä käsin "
-"asetteluun ja jättää nämä kohteet sinne, minne pudotit ne? Tämä sotkee "
-"tallennetun käsin asettelun."
+"Haluatko asetella sisällön käsin ja jättää nämä kohteet siihen, mihin "
+"pudotit ne? Tämä sotkee jo tallennetun käsin asettelun."
 
 #: libnautilus-private/nautilus-icon-dnd.c:742
-#, fuzzy
 msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it?"
 msgstr ""
-"Tämä hakemiston sisältö on aseteltu automaattisesti. Haluatko siirtyä käsin "
-"asetteluun ja jättää tämän kohteen sinne, minne pudotit sen?"
+"Haluatko asetella sisällön käsin ja jättää tämän kohteen siihen, mihin "
+"pudotit sen?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:745
-#, fuzzy
 msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them?"
 msgstr ""
-"Tämä hakemiston sisältö on aseteltu automaattisesti. Haluatko käyttää käsin "
-"asettelua ja jättää nämä kohteet sinne, minne pudotit ne?"
+"Haluatko asetella sisällön käsin ja jättää nämä kohteet siihen, mihin "
+"pudotit ne?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:751
 msgid "Switch to Manual Layout?"
@@ -3386,16 +3244,16 @@ msgid ""
 "Fast searches will not be available until an initial index of your files has "
 "been created.  This may take a long time."
 msgstr ""
-"Jos haluat tehdä nopeita etsintöjä, muokkaa tiedostoa %s pääkäyttäjänä. "
+"Jos haluat tehdä nopeita hakuja, muokkaa tiedostoa %s pääkäyttäjänä. "
 "\"enabled flag\":n asettaminen arvoksi \"yes\" ottaa medusa-palvelut "
 "käyttöön.\n"
-"Käynnistääksesi luetteloinnin ja etsintäpalvelun samalla, suorita seuraavat "
+"Käynnistääksesi luetteloinnin ja hakupalvelun samalla, suorita seuraavat "
 "komennot pääkäyttäjänä:\n"
 "\n"
 "medusa-indexd\n"
 "medusa-searchd\n"
 "\n"
-"Nopeita etsintöjä ei voi tehdä ennen kuin tiedostosi ovat luetteloituneet. "
+"Nopeita hakuja ei voi tehdä ennen kuin tiedostot ovat luetteloituneet. "
 "Luettelointi saattaa kestää kauankin."
 
 #: libnautilus-private/nautilus-medusa-support.c:138
@@ -3407,10 +3265,10 @@ msgid ""
 "If you are using a packaged version of Nautilus, fast searching is not "
 "available.\n"
 msgstr ""
-"Medusaa, etsintäsovellusta, ei löydy järjestelmästäsi. Jos olet kääntänyt "
+"Medusaa, hakusovellusta, ei löydy järjestelmästäsi. Jos olet kääntänyt "
 "Nautiluksen itse, tarvitset kopion Medusasta ja lisäksi Nautilus pitäisi "
 "kääntää uudestaan. (Medusa on saatavilla osoitteessa ftp://ftp.gnome.org)\n"
-"Jos käytät valmiiksi paketoitua Nautilusta, nopeita etsintöjä ei voi tehdä.\n"
+"Jos käytät valmiiksi paketoitua Nautilusta, pikahakuja ei voi tehdä.\n"
 
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
@@ -3590,20 +3448,16 @@ msgstr "Kytkeytyvää toimintoa ei ole"
 #. * (They can add applications though.)
 #.
 #: libnautilus-private/nautilus-program-chooser.c:1605
-#, fuzzy
 msgid ""
 "You can configure GNOME to associate applications with file types. Do you "
 "want to associate an application with this file type now?"
 msgstr ""
-"%s\n"
-"\n"
-"Voit asettaa Gnomen kytkemään sovelluksia tiedostotyyppeihin. Haluatko "
-"kytkeä jonkin sovelluksen tämän tyyppisiin tiedostoihin nyt?"
+"Voit kytkeä sovelluksia eri tiedostotyyppeihin. Haluatko kytkeä jonkin "
+"sovelluksen tämän tyyppisiin tiedostoihin nyt?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1610
-#, fuzzy
 msgid "_Associate Application"
-msgstr "Kytke sovellus"
+msgstr "_Kytke sovellus"
 
 #: libnautilus-private/nautilus-program-chooser.c:1639
 #, c-format
@@ -3633,51 +3487,43 @@ msgid "Invalid Action Associated"
 msgstr "Virheellinen toiminto kytketty"
 
 #: libnautilus-private/nautilus-program-chooser.c:1649
-#, fuzzy
 msgid ""
 "You can configure GNOME to associate a different application or viewer with "
 "this file type. Do you want to associate an application or viewer with this "
 "file type now?"
 msgstr ""
-"%s\n"
-"\n"
-"Voit asettaa Gnomen kytkemään toisen sovelluksen tai katselimen tähän "
-"tiedostotyyppiin. Haluatko kytkeä jonkin sovelluksen tai katselimen tämän "
-"tyyppisiin tiedostoihin nyt?"
+"Voit kytkeä toisen sovelluksen tai katselimen tämän tyyppisiin tiedostoihin. "
+"Haluatko tehdä sen nyt?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1654
-#, fuzzy
 msgid "_Associate Action"
-msgstr "Kytke toiminto"
+msgstr "_Kytke toiminto"
 
 #: libnautilus-private/nautilus-program-choosing.c:529
-#, fuzzy
 msgid "Open Failed, would you like to choose another application?"
-msgstr ""
-"\"%s\" ei voi avata kohdetta \"%s\" koska \"%s\" ei voi koskea tiedostoihin "
-"sijainneissa \"%s\". Haluatko valita toisen ohjelman?"
+msgstr "Avaaminen epäonnistui. Haluatko valita toisen ohjelman?"
 
 #: libnautilus-private/nautilus-program-choosing.c:530
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations."
 msgstr ""
-"\"%s\" ei voi avata kohdetta \"%s\" koska \"%s\" ei voi koskea tiedostoihin "
-"sijainneissa \"%s\". Haluatko valita toisen ohjelman?"
+"\"%s\" ei voi avata kohdetta \"%s\" koska \"%s\" ei voi käyttää tiedostoja "
+"\"%s\"-sijainneissa."
 
 #: libnautilus-private/nautilus-program-choosing.c:535
 msgid "Open Failed, would you like to choose another action?"
-msgstr ""
+msgstr "Avaaminen epäonnistui. Haluatko valita toisen toiminnon?"
 
 #: libnautilus-private/nautilus-program-choosing.c:536
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations."
 msgstr ""
-"Oletustoiminto ei voi avata kohdetta \"%s\", koska se ei voi koskea "
-"tiedostoihin sijainneissa \"%s\". Haluatko valita toisen toiminnon?"
+"Oletustoiminto ei voi avata kohdetta \"%s\", koska se ei voi käyttää "
+"tiedostoja \"%s\"-sijainneissa."
 
 #: libnautilus-private/nautilus-program-choosing.c:543
 #: libnautilus-private/nautilus-program-choosing.c:576
@@ -3685,42 +3531,38 @@ msgid "Can't Open Location"
 msgstr "Ei voi avata sijaintia"
 
 #: libnautilus-private/nautilus-program-choosing.c:562
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
 "locations."
 msgstr ""
-"\"%s\" ei voi avata kohdetta \"%s\" koska \"%s\" ei voi koskea tiedostoihin "
-"sijainneissa \"%s\". Haluatko valita toisen ohjelman?"
+"\"%s\" ei voi avata kohdetta \"%s\" koska \"%s\" ei voi käyttää tiedostoja "
+"\"%s\"-sijainneissa."
 
 #: libnautilus-private/nautilus-program-choosing.c:565
-#, fuzzy
 msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
 msgstr ""
-"\"%s\" ei voi avata kohdetta \"%s\", koska \"%s\" ei voi koskea tiedostoihin "
-"\"%s\" sijainneissa.  Muita ohjelmia tämän tiedoston näyttämiseen ei ole. "
-"Jos kopioit tämän tiedoston koneellesi, niin saatat voida avata sen."
+"Muita ohjelmia tämän tiedoston näyttämiseen ei ole. Jos kopioit tämän "
+"tiedoston koneellesi, niin saatat voida avata sen."
 
 #: libnautilus-private/nautilus-program-choosing.c:569
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\"."
 "locations."
 msgstr ""
-"Oletustoiminto ei voi avata kohdetta \"%s\", koska se ei voi koskea "
-"tiedostoihin sijainneissa \"%s\". Haluatko valita toisen toiminnon?"
+"Oletustoiminto ei voi avata kohdetta \"%s\", koska se ei voi käyttää "
+"tiedostoja \"%s\"-sijainneissa."
 
 #: libnautilus-private/nautilus-program-choosing.c:571
-#, fuzzy
 msgid ""
 "No other actions are available to view this file.  If you copy this file "
 "onto your computer, you may be able to open it."
 msgstr ""
-"\"%s\" ei voi avata kohdetta \"%s\", koska \"%s\" ei voi koskea tiedostoihin "
-"\"%s\" sijainneissa.  Muita ohjelmia tämän tiedoston näyttämiseen ei ole. "
-"Jos kopioit tämän tiedoston koneellesi, niin saatat voida avata sen."
+"Muita toimintoja tämän tiedoston näyttämiseen ei ole. Jos kopioit tämän "
+"tiedoston koneellesi, niin saatat voida avata sen."
 
 #: libnautilus-private/nautilus-program-choosing.c:830
 #: libnautilus-private/nautilus-program-choosing.c:1047
@@ -3729,70 +3571,54 @@ msgid "Opening %s"
 msgstr "%s avautuu"
 
 #: libnautilus-private/nautilus-program-choosing.c:1191
-#, fuzzy
 msgid "Sorry, but you can't execute commands from a remote site."
-msgstr ""
-"Valitettavasti et voi turvallisuussyistä suorittaa komentoja etäsivustolta."
+msgstr "Turvallisuussyistä komentoja ei voi suorittaa etäsivustolta."
 
 #: libnautilus-private/nautilus-program-choosing.c:1193
 msgid "This is disabled due to security considerations."
-msgstr ""
+msgstr "Tämä on estetty turvallisuussyistä."
 
 #: libnautilus-private/nautilus-program-choosing.c:1194
-#, fuzzy
 msgid "Can't Execute Remote Links"
 msgstr "Etälinkkejä ei voi suorittaa"
 
 #: libnautilus-private/nautilus-program-choosing.c:1204
 #: libnautilus-private/nautilus-program-choosing.c:1270
 msgid "Details: "
-msgstr ""
+msgstr "Lisätiedot: "
 
 #: libnautilus-private/nautilus-program-choosing.c:1206
 #: libnautilus-private/nautilus-program-choosing.c:1272
-#, fuzzy
 msgid "There was an error launching the application."
-msgstr ""
-"Sovelluksen käynnistäminen epäonnistui.\n"
-"\n"
-"Lisätiedot:"
+msgstr "Sovelluksen käynnistäminen epäonnistui."
 
 #: libnautilus-private/nautilus-program-choosing.c:1208
 #: libnautilus-private/nautilus-program-choosing.c:1274
-#, fuzzy
 msgid "Error Launching Application"
-msgstr "Sovelluksen käynnistämisessä tapahtui virhe"
+msgstr "Sovelluksen käynnistäminen epäonnistui"
 
 #: libnautilus-private/nautilus-program-choosing.c:1236
 #: libnautilus-private/nautilus-program-choosing.c:1248
-#, fuzzy
 msgid "This drop target only supports local files."
-msgstr "Kohtaan voi pudottaa vain paikallisia tiedostoja"
+msgstr "Tähän kohtaan voi pudottaa vain paikallisia tiedostoja."
 
 #: libnautilus-private/nautilus-program-choosing.c:1237
-#, fuzzy
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
-"Tähän voi pudottaa vain paikallisia tiedostoja.\n"
-"\n"
 "Avataksesi etätiedostot kopioi ne ensin paikalliseen hakemistoon, ja pudota "
 "ne sieltä tähän."
 
 #: libnautilus-private/nautilus-program-choosing.c:1239
 #: libnautilus-private/nautilus-program-choosing.c:1251
-#, fuzzy
 msgid "Drop Target Only Supports Local Files"
 msgstr "Kohtaan voi pudottaa vain paikallisia tiedostoja"
 
 #: libnautilus-private/nautilus-program-choosing.c:1249
-#, fuzzy
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
 msgstr ""
-"Tähän voi pudottaa vain paikallisia tiedostoja.\n"
-"\n"
 "Avataksesi etätiedostot kopioi ne ensin paikalliseen hakemistoon ja pudota "
 "ne sieltä tähän. Pudottamasi paikalliset tiedostot ovat jo avautuneet."
 
@@ -4108,7 +3934,7 @@ msgstr "L_iitä tekstiä"
 
 #: nautilus-computer.desktop.in.h:2
 msgid "View your computer storage"
-msgstr ""
+msgstr "Katsele tietokoneen tallennustilaa"
 
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
@@ -4127,13 +3953,12 @@ msgid "View your home folder in the Nautilus file manager"
 msgstr "Katsele kotihakemistoasi Nautilus-tiedostonhallintaohjelmalla"
 
 #: nautilus.desktop.in.h:1
-#, fuzzy
 msgid "Browse Filesystem"
-msgstr "Tiedostojärjestelmä"
+msgstr "Selaa tiedostojärjestelmää"
 
 #: nautilus.desktop.in.h:2
 msgid "Browse the filesystem with the file manager"
-msgstr ""
+msgstr "Selaa tiedostojärjestelmää tiedostonhallinnasta"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4156,7 +3981,6 @@ msgid "List Viewer"
 msgstr "Luettelokatselin"
 
 #: src/Nautilus_shell.server.in.h:6
-#, fuzzy
 msgid "Nautilus Tree View"
 msgstr "Nautiluksen puunäkymä"
 
@@ -4207,7 +4031,7 @@ msgstr "Nautiluksen-tiedostonhallintan luettelonäkymä"
 
 #: src/Nautilus_shell.server.in.h:16
 msgid "Nautilus file manager search results list view"
-msgstr "Nautiluksen-tiedostonhallintan etsintätulosnäkymä"
+msgstr "Nautiluksen-tiedostonhallintan hakutulosnäkymä"
 
 #: src/Nautilus_shell.server.in.h:17
 msgid "Nautilus metafile factory"
@@ -4231,7 +4055,7 @@ msgstr "Luo metatiedosto-olioita Nautiluksen metatietojen käyttämiseksi"
 
 #: src/Nautilus_shell.server.in.h:21
 msgid "Search List"
-msgstr "Etsintäluettelo"
+msgstr "Hakuluettelo"
 
 #: src/Nautilus_shell.server.in.h:22
 msgid "Tree"
@@ -4272,23 +4096,22 @@ msgid "Empty Trash"
 msgstr "Tyhjennä roskakori"
 
 #: src/file-manager/fm-directory-view.c:536
-#, fuzzy, c-format
+#, c-format
 msgid "Open %d Window?"
 msgid_plural "Open %d Windows?"
-msgstr[0] "Avataanko %d ikkunaa?"
+msgstr[0] "Avataanko %d ikkuna?"
 msgstr[1] "Avataanko %d ikkunaa?"
 
 #: src/file-manager/fm-directory-view.c:537
-#, fuzzy
 msgid "Are you sure you want to open all files?"
-msgstr "Oletko varma, että haluat poistaa kohteen \"%s\" pysyvästi?"
+msgstr "Oletko varma, että haluat avata kaikki tiedostot?"
 
 #: src/file-manager/fm-directory-view.c:538 src/nautilus-location-bar.c:158
-#, fuzzy, c-format
+#, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
-msgstr[0] "Tämä avaisi %d eri ikkunaa. Oletko varma, että haluat tehdä tämän?"
-msgstr[1] "Tämä avaisi %d eri ikkunaa. Oletko varma, että haluat tehdä tämän?"
+msgstr[0] "Tämä avaisi yhden erillisen ikkunan."
+msgstr[1] "Tämä avaisi %d erillistä ikkunaa."
 
 #: src/file-manager/fm-directory-view.c:885
 #, c-format
@@ -4296,33 +4119,29 @@ msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Oletko varma, että haluat poistaa kohteen \"%s\" pysyvästi?"
 
 #: src/file-manager/fm-directory-view.c:889
-#, fuzzy, c-format
+#, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items?"
-msgstr[0] ""
-"Oletko varma, että haluat poistaa pysyvästi kaikki %d valittua kohdetta?"
+msgstr[0] "Oletko varma, että haluat poistaa pysyvästi yhden valitun kohteen?"
 msgstr[1] ""
 "Oletko varma, että haluat poistaa pysyvästi kaikki %d valittua kohdetta?"
 
 #: src/file-manager/fm-directory-view.c:897
-#, fuzzy
 msgid "If you delete an item, it is permanently lost."
-msgstr "Poista kaikki valitut kohteet pysyvästi"
+msgstr "Jos poistat kohteen, se häviää pysyvästi."
 
 #: src/file-manager/fm-directory-view.c:898
 msgid "Delete?"
 msgstr "Poistetaanko?"
 
 #: src/file-manager/fm-directory-view.c:1037
-#, fuzzy
 msgid "Select Pattern"
-msgstr "Valitse luokka:"
+msgstr "Valitse kuvio"
 
 #: src/file-manager/fm-directory-view.c:1053
-#, fuzzy
 msgid "_Pattern:"
-msgstr "_Kuviot"
+msgstr "_Kuviot:"
 
 #: src/file-manager/fm-directory-view.c:1738
 #, c-format
@@ -4330,25 +4149,25 @@ msgid "\"%s\" selected"
 msgstr "\"%s\" valittu"
 
 #: src/file-manager/fm-directory-view.c:1740
-#, fuzzy, c-format
+#, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
-msgstr[0] "%d hakemistoa valittu"
+msgstr[0] "%d hakemisto valittu"
 msgstr[1] "%d hakemistoa valittu"
 
 #: src/file-manager/fm-directory-view.c:1750
-#, fuzzy, c-format
+#, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
-msgstr[0] " (sisältää %d kohdetta)"
+msgstr[0] " (sisältää yhden kohteen)"
 msgstr[1] " (sisältää %d kohdetta)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
 #: src/file-manager/fm-directory-view.c:1761
-#, fuzzy, c-format
+#, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
-msgstr[0] " (sisältää yhteensä %d kohdetta)"
+msgstr[0] " (sisältää yhteensä yhden kohteen)"
 msgstr[1] " (sisältää yhteensä %d kohdetta)"
 
 #: src/file-manager/fm-directory-view.c:1777
@@ -4357,24 +4176,24 @@ msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" valittu (%s)"
 
 #: src/file-manager/fm-directory-view.c:1781
-#, fuzzy, c-format
+#, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
-msgstr[0] "%d kohdetta on valittu (%s)"
+msgstr[0] "%d kohde on valittu (%s)"
 msgstr[1] "%d kohdetta on valittu (%s)"
 
 #. Folders selected also, use "other" terminology
 #: src/file-manager/fm-directory-view.c:1789
-#, fuzzy, c-format
+#, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
-msgstr[0] "%d muuta kohdetta on valittu (%s)"
+msgstr[0] "%d muu kohde on valittu (%s)"
 msgstr[1] "%d muuta kohdetta on valittu (%s)"
 
 #: src/file-manager/fm-directory-view.c:1810
-#, fuzzy, c-format
+#, c-format
 msgid "%s, Free space: %s"
-msgstr "Tilaa vapaana:"
+msgstr "%s, tilaa vapaana: %s"
 
 #. This is marked for translation in case a localizer
 #. * needs to change ", " to something else. The comma
@@ -4393,53 +4212,50 @@ msgstr "%s%s, %s"
 #. * no more than the constant limit are displayed.
 #.
 #: src/file-manager/fm-directory-view.c:1960
-#, fuzzy, c-format
+#, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr ""
-"Hakemisto \"%s\" sisältää enemmän tiedostoja kuin Nautilus voi käsitellä. "
-"Joitakin tiedostoja ei näy."
+"Hakemisto \"%s\" sisältää enemmän tiedostoja kuin Nautilus voi käsitellä."
 
 #: src/file-manager/fm-directory-view.c:1966
 msgid "Some files will not be displayed."
-msgstr ""
+msgstr "Jotkin tiedostot eivät näy."
 
 #: src/file-manager/fm-directory-view.c:1967
 msgid "Too Many Files"
 msgstr "Liian monta tiedostoa"
 
 #: src/file-manager/fm-directory-view.c:3235
-#, fuzzy
 msgid "Cannot move file to trash, do you want to delete immediately?"
-msgstr "Kohdetta \"%s\" ei voi siirtää roskakoriin. Haluatko poistaa sen heti?"
+msgstr "Kohdetta ei voi siirtää roskakoriin. Haluatko poistaa sen heti?"
 
 #: src/file-manager/fm-directory-view.c:3236
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
-msgstr ""
+msgstr "Tiedostoa \"%s\" ei voi siirtää roskakoriin."
 
 #: src/file-manager/fm-directory-view.c:3240
-#, fuzzy
 msgid "Cannot move items to trash, do you want to delete them immediately?"
-msgstr "Kohdetta \"%s\" ei voi siirtää roskakoriin. Haluatko poistaa sen heti?"
+msgstr "Kohteita ei voi siirtää roskakoriin. Haluatko poistaa ne heti?"
 
 #: src/file-manager/fm-directory-view.c:3243
-#, fuzzy
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
-msgstr "Kohdetta \"%s\" ei voi siirtää roskakoriin. Haluatko poistaa sen heti?"
+msgstr ""
+"Joitakin kohteita ei voi siirtää roskakoriin. Haluatko poistaa ne heti?"
 
 #: src/file-manager/fm-directory-view.c:3250
 msgid "Delete Immediately?"
 msgstr "Poistetaanko heti?"
 
 #: src/file-manager/fm-directory-view.c:3282
-#, fuzzy, c-format
+#, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr ""
 "Oletko varma, että haluat poistaa kohteen \"%s\" pysyvästi roskakorista?"
 
 #: src/file-manager/fm-directory-view.c:3286
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
@@ -4447,7 +4263,7 @@ msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
 msgstr[0] ""
-"Oletko varma, että haluat poistaa pysyvästi kaikki %d valittua kohdetta "
+"Oletko varma, että haluat poistaa pysyvästi yhden valitun kohteen "
 "roskakorista?"
 msgstr[1] ""
 "Oletko varma, että haluat poistaa pysyvästi kaikki %d valittua kohdetta "
@@ -4455,7 +4271,7 @@ msgstr[1] ""
 
 #: src/file-manager/fm-directory-view.c:3295
 msgid "If you delete an item, it will be permanently lost."
-msgstr ""
+msgstr "Jos poistat kohteen, se häviää pysyvästi."
 
 #: src/file-manager/fm-directory-view.c:3296
 msgid "Delete From Trash?"
@@ -4483,25 +4299,21 @@ msgstr "Aja ohjelma \"%s\" valituilla kohteilla"
 #: src/file-manager/fm-directory-view.c:4308
 #, c-format
 msgid "Create Document from template \"%s\""
-msgstr ""
+msgstr "Luo asiakirja mallin \"%s\" mukaan"
 
 #: src/file-manager/fm-directory-view.c:4492
-#, fuzzy
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "Kaikki tässä hakemistossa olevat suoritettavat tiedostot näkyvät myös "
-"skriptivalikossa. Kun skripti käynnistetään tästä valikosta, se saa "
-"syötteenään valitut tiedostot."
+"skriptivalikossa."
 
 #: src/file-manager/fm-directory-view.c:4494
-#, fuzzy
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr ""
-"Kaikki tässä hakemistossa olevat suoritettavat tiedostot näkyvät myös "
-"skriptivalikossa. Kun skripti käynnistetään tästä valikosta, se saa "
-"syötteenään valitut tiedostot."
+"Kun skripti käynnistetään tästä valikosta, se saa syötteenään valitut "
+"tiedostot."
 
 #: src/file-manager/fm-directory-view.c:4496
 msgid "About Scripts"
@@ -4561,24 +4373,22 @@ msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" kopioituu, jos annat \"liitä tiedostoja\"-komennon"
 
 #: src/file-manager/fm-directory-view.c:4638
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
 msgid_plural ""
 "The %d selected items will be moved if you select the Paste Files command"
-msgstr[0] ""
-"%d valittua kohdetta siirtyvät, jos annat \"liitä tiedostoja\"-komennon"
+msgstr[0] "%d valittu kohde siirtyy, jos annat \"liitä tiedostoja\"-komennon"
 msgstr[1] ""
 "%d valittua kohdetta siirtyvät, jos annat \"liitä tiedostoja\"-komennon"
 
 #: src/file-manager/fm-directory-view.c:4645
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
 msgid_plural ""
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr[0] ""
-"%d valittua kohdetta kopioituvat, jos annat \"liitä tiedostoja\"-komennon"
+msgstr[0] "%d valittu kohde kopioituu, jos annat \"liitä tiedostoja\"-komennon"
 msgstr[1] ""
 "%d valittua kohdetta kopioituvat, jos annat \"liitä tiedostoja\"-komennon"
 
@@ -4597,9 +4407,8 @@ msgid "Unmount Error"
 msgstr "Irrottamisvirhe"
 
 #: src/file-manager/fm-directory-view.c:4894
-#, fuzzy
 msgid "Eject Error"
-msgstr "Liittämisvirhe"
+msgstr "Asemasta poistamisvirhe"
 
 #: src/file-manager/fm-directory-view.c:5118
 msgid "E_ject"
@@ -4613,21 +4422,19 @@ msgstr "_Irrota taltio"
 #. add the "open in new window" menu item
 #: src/file-manager/fm-directory-view.c:5197
 #: src/file-manager/fm-tree-view.c:958
-#, fuzzy, c-format
+#, c-format
 msgid "Open in New Window"
 msgid_plural "Open in %d New Windows"
-msgstr[0] "Avaa uu_dessa ikkunassa"
-msgstr[1] "Avaa uu_dessa ikkunassa"
+msgstr[0] "Avaa uudessa ikkunassa"
+msgstr[1] "Avaa %d uudessa ikkunassa"
 
 #: src/file-manager/fm-directory-view.c:5204
-#, fuzzy
 msgid "Browse Folder"
-msgstr "Kotihakemisto"
+msgstr "Selaa hakemistoa"
 
 #: src/file-manager/fm-directory-view.c:5206
-#, fuzzy
 msgid "Browse Folders"
-msgstr "Kotihakemisto"
+msgstr "Selaa hakemistoja"
 
 #: src/file-manager/fm-directory-view.c:5229
 msgid "_Delete from Trash"
@@ -4686,45 +4493,36 @@ msgid "_Copy Files"
 msgstr "_Kopioi tiedostoja"
 
 #: src/file-manager/fm-directory-view.c:5579
-#, fuzzy
 msgid "The link is broken, do you want to move it to the Trash?"
-msgstr ""
-"Tätä linkkiä ei voi käyttää, koska sillä ei ole kohdetta. Haluatko siirtää "
-"sen roskakoriin?"
+msgstr "Linkki on rikki. Haluatko siirtää sen roskakoriin?"
 
 #: src/file-manager/fm-directory-view.c:5581
-#, fuzzy
 msgid "This link can't be used, because it has no target."
-msgstr ""
-"Tätä linkkiä ei voi käyttää, koska sillä ei ole kohdetta. Haluatko siirtää "
-"sen roskakoriin?"
+msgstr "Tätä linkkiä ei voi käyttää, koska sillä ei ole kohdetta."
 
 #: src/file-manager/fm-directory-view.c:5583
-#, fuzzy, c-format
+#, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr ""
-"Tätä linkkiä ei voi käyttää, koska sen kohdetta \"%s\" ei ole olemassa. "
-"Haluatko siirtää sen roskakoriin?"
+"Tätä linkkiä ei voi käyttää, koska sen kohdetta \"%s\" ei ole olemassa."
 
 #: src/file-manager/fm-directory-view.c:5588
 msgid "Broken Link"
 msgstr "Rikkinäinen linkki"
 
 #: src/file-manager/fm-directory-view.c:5646
-#, fuzzy, c-format
+#, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
-msgstr ""
-"\"%s\" on suoritettava tekstitiedosto. Haluatko käynnistää sen vai nähdä sen "
-"sisällön?"
+msgstr "Haluatko suorittaa tiedoston \"%s\" vai nähdä sen sisällön?"
 
 #: src/file-manager/fm-directory-view.c:5648
 #, c-format
 msgid "\"%s\" is an executable text file."
-msgstr ""
+msgstr "\"%s\" on suoritettava tekstitiedosto."
 
 #: src/file-manager/fm-directory-view.c:5654
 msgid "Run or Display?"
-msgstr "Käynnistä vai näytä?"
+msgstr "Suorita vai näytä?"
 
 #: src/file-manager/fm-directory-view.c:5655
 msgid "Run in _Terminal"
@@ -4739,9 +4537,9 @@ msgid "_Run"
 msgstr "_Suorita"
 
 #: src/file-manager/fm-directory-view.c:5937
-#, fuzzy, c-format
+#, c-format
 msgid "Opening \"%s\"."
-msgstr "Avaa tiedostoa \"%s\""
+msgstr "\"%s\" avautuu."
 
 #: src/file-manager/fm-directory-view.c:5943
 msgid "Cancel Open?"
@@ -4765,9 +4563,8 @@ msgid "Sorry, couldn't display all the contents of \"%s\"."
 msgstr "Ei voinut näyttää kohteen \"%s\" kaikkea sisältöä."
 
 #: src/file-manager/fm-error-reporting.c:71
-#, fuzzy
 msgid "The folder contents could not be displayed."
-msgstr "Kohteen \"%s\" oikeuksia ei saatu selville."
+msgstr "Hakemiston sisällön näyttäminen ei onnistu."
 
 #: src/file-manager/fm-error-reporting.c:72
 msgid "Error Displaying Folder"
@@ -4818,9 +4615,8 @@ msgid "Sorry, couldn't rename \"%s\" to \"%s\"."
 msgstr "Valitettavasti kohdetta \"%s\" ei voitu nimetä kohteeksi \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:144
-#, fuzzy
 msgid "The item could not be renamed."
-msgstr "Kohteen \"%s\" oikeuksia ei saatu selville."
+msgstr "Kohteen uudelleennimeäminen ei onnistunut."
 
 #: src/file-manager/fm-error-reporting.c:145
 msgid "Renaming Error"
@@ -4846,9 +4642,8 @@ msgid "Sorry, couldn't change the group of \"%s\"."
 msgstr "Valitettavasti kohteen \"%s\" ryhmää ei voitu vaihtaa."
 
 #: src/file-manager/fm-error-reporting.c:181
-#, fuzzy
 msgid "The group could not be changed."
-msgstr "Kohteen \"%s\" oikeuksia ei saatu selville."
+msgstr "Ryhmän muuttaminen ei onnistunut."
 
 #: src/file-manager/fm-error-reporting.c:181
 msgid "Error Setting Group"
@@ -4867,9 +4662,8 @@ msgid "Sorry, couldn't change the owner of \"%s\"."
 msgstr "Valitettavasti kohteen \"%s\" omistajaa ei voitu vaihtaa."
 
 #: src/file-manager/fm-error-reporting.c:213
-#, fuzzy
 msgid "The owner could not be changed."
-msgstr "Kohteen \"%s\" oikeuksia ei saatu selville."
+msgstr "Omistajan muuttaminen ei onnistunut."
 
 #: src/file-manager/fm-error-reporting.c:213
 msgid "Error Setting Owner"
@@ -4889,9 +4683,8 @@ msgid "Sorry, couldn't change the permissions of \"%s\"."
 msgstr "Valitettavasti kohteen \"%s\" oikeuksia ei voitu muuttaa."
 
 #: src/file-manager/fm-error-reporting.c:245
-#, fuzzy
 msgid "The permissions could not be changed."
-msgstr "Kohteen \"%s\" oikeuksia ei saatu selville."
+msgstr "Oikeuksien muuttaminen ei onnistunut."
 
 #: src/file-manager/fm-error-reporting.c:246
 msgid "Error Setting Permissions"
@@ -4966,17 +4759,14 @@ msgid "pointing at \"%s\""
 msgstr "viittaa kohteeseen \"%s\""
 
 #: src/file-manager/fm-icon-view.c:2572 src/file-manager/fm-icon-view.c:2596
-#, fuzzy
 msgid "Drag and drop is not supported."
-msgstr "Veto ja pudotus toimii vain paikallisissa tiedostojärjestelmissä."
+msgstr "Veto ja pudotus ei toimi."
 
 #: src/file-manager/fm-icon-view.c:2573
-#, fuzzy
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Veto ja pudotus toimii vain paikallisissa tiedostojärjestelmissä."
 
 #: src/file-manager/fm-icon-view.c:2574 src/file-manager/fm-icon-view.c:2598
-#, fuzzy
 msgid "Drag and Drop Error"
 msgstr "Veto- ja pudotusvirhe"
 
@@ -4991,29 +4781,20 @@ msgstr "Tiedostonimi"
 #: src/file-manager/fm-list-view.c:1512
 #, c-format
 msgid "%s Visible Columns"
-msgstr ""
+msgstr "%s: näkyvät sarakkeet"
 
 #: src/file-manager/fm-list-view.c:1531
-#, fuzzy
 msgid "Choose the order of information to appear in this folder."
-msgstr ""
-"Valitse tietojen ilmestymisjärjestys. Niitä ilmestyy kuvakkeiden alle, kun "
-"kasvatat mittakaavaa."
+msgstr "Valitse tietojen ilmestymisjärjestys tässä hakemistossa."
 
 #: src/file-manager/fm-properties-window.c:477
-#, fuzzy
 msgid "You can't assign more than one custom icon at a time!"
-msgstr ""
-"Voit asettaa vain yhden oman kuvakkeen kerrallaan. Vedä yhtä kuvaa "
-"asettaaksesi sen kuvakkeeksi."
+msgstr "Voit asettaa vain yhden oman kuvakkeen kerrallaan."
 
 #: src/file-manager/fm-properties-window.c:478
 #: src/nautilus-information-panel.c:507
-#, fuzzy
 msgid "Please drag just one image to set a custom icon."
-msgstr ""
-"Voit asettaa vain yhden oman kuvakkeen kerrallaan. Vedä yhtä kuvaa "
-"asettaaksesi sen kuvakkeeksi."
+msgstr "Pudota vain yksi asettaaksesi sen kuvakkeeksi."
 
 #: src/file-manager/fm-properties-window.c:479
 #: src/nautilus-information-panel.c:508
@@ -5022,20 +4803,14 @@ msgstr "Useampi kuin yksi kuva"
 
 #: src/file-manager/fm-properties-window.c:488
 #: src/nautilus-information-panel.c:527
-#, fuzzy
 msgid "The file that you dropped is not local."
-msgstr ""
-"Pudottamasi tiedosto ei ole paikallinen. Vain paikallisia tiedostoja voi "
-"käyttää omina kuvakkeina."
+msgstr "Pudottamasi tiedosto ei ole paikallinen."
 
 #: src/file-manager/fm-properties-window.c:489
 #: src/file-manager/fm-properties-window.c:496
 #: src/nautilus-information-panel.c:528
-#, fuzzy
 msgid "You can only use local images as custom icons."
-msgstr ""
-"Pudottamasi tiedosto ei ole paikallinen. Vain paikallisia tiedostoja voi "
-"käyttää omina kuvakkeina."
+msgstr "Vain paikallisia tiedostoja voi käyttää omina kuvakkeina."
 
 #: src/file-manager/fm-properties-window.c:490
 #: src/nautilus-information-panel.c:529
@@ -5044,11 +4819,8 @@ msgstr "Vain paikalliset kuvat"
 
 #: src/file-manager/fm-properties-window.c:495
 #: src/nautilus-information-panel.c:534
-#, fuzzy
 msgid "The file that you dropped is not an image."
-msgstr ""
-"Pudottamasi tiedosto ei ole paikallinen. Vain paikallisia tiedostoja voi "
-"käyttää omina kuvakkeina."
+msgstr "Pudottamasi tiedosto ei ole kuva."
 
 #: src/file-manager/fm-properties-window.c:497
 #: src/nautilus-information-panel.c:536
@@ -5070,18 +4842,16 @@ msgid "Cancel Group Change?"
 msgstr "Haluatko perua ryhmän vaihdon?"
 
 #: src/file-manager/fm-properties-window.c:1379
-#, fuzzy
 msgid "Changing group."
-msgstr "Ryhmän vaihto"
+msgstr "Ryhmä vaihtuu."
 
 #: src/file-manager/fm-properties-window.c:1540
 msgid "Cancel Owner Change?"
 msgstr "Haluatko perua omistajan vaihdon?"
 
 #: src/file-manager/fm-properties-window.c:1541
-#, fuzzy
 msgid "Changing owner."
-msgstr "Omistajan vaihto"
+msgstr "Omistajan vaihtuu."
 
 #: src/file-manager/fm-properties-window.c:1747
 msgid "nothing"
@@ -5092,11 +4862,11 @@ msgid "unreadable"
 msgstr "ei luettavissa"
 
 #: src/file-manager/fm-properties-window.c:1759
-#, fuzzy, c-format
+#, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
-msgstr[0] "1 kohde, jonka koko on %s"
-msgstr[1] "1 kohde, jonka koko on %s"
+msgstr[0] "%d kohde, kooltaan %s"
+msgstr[1] "%d kohdetta, yhteensä %s"
 
 #: src/file-manager/fm-properties-window.c:1768
 msgid "(some contents unreadable)"
@@ -5218,9 +4988,8 @@ msgid "You are not the owner, so you can't change these permissions."
 msgstr "Et ole tiedoston omistaja, joten et voi muuttaa sen oikeuksia."
 
 #: src/file-manager/fm-properties-window.c:2889
-#, fuzzy
 msgid "File _owner:"
-msgstr "Tiedoston omistaja:"
+msgstr "Tiedoston _omistaja:"
 
 #: src/file-manager/fm-properties-window.c:2895
 msgid "File owner:"
@@ -5268,12 +5037,10 @@ msgid "The permissions of the selected file could not be determined."
 msgstr "Valitun tiedoston oikeudet eivät selvinneet."
 
 #: src/file-manager/fm-properties-window.c:3186
-#, fuzzy
 msgid "There was an error displaying help."
-msgstr "Virhe ohjetta näyttäessä: %s"
+msgstr "Virhe ohjeen näyttämisessä."
 
 #: src/file-manager/fm-properties-window.c:3186
-#, fuzzy
 msgid "Couldn't Show Help"
 msgstr "Ohjetta ei voi näyttää"
 
@@ -5282,9 +5049,8 @@ msgid "Cancel Showing Properties Window?"
 msgstr "Perutaanko ominaisuusikkunan näyttäminen?"
 
 #: src/file-manager/fm-properties-window.c:3524
-#, fuzzy
 msgid "Creating Properties window."
-msgstr "Luodaan ominaisuusikkuna"
+msgstr "Ominaisuusikkuna avautuu."
 
 #: src/file-manager/fm-properties-window.c:3650
 msgid "Select an icon"
@@ -5296,139 +5062,114 @@ msgid ""
 "Search results may not include items modified after %s, when your drive was "
 "last indexed."
 msgstr ""
-"Etsinnän tulokset eivät välttämättä sisällä tiedostoja, joita on muutettu "
+"Haun tulokset eivät välttämättä sisällä tiedostoja, joita on muutettu "
 "jälkeen %s, jolloin asemasi luetteloitiin viimeksi."
 
 #: src/file-manager/fm-search-list-view.c:144
 msgid "Search Results"
-msgstr "Etsintätulokset"
+msgstr "Haun tulokset"
 
 #: src/file-manager/fm-search-list-view.c:166
-#, fuzzy
 msgid "Sorry, but the Medusa search service is not available."
-msgstr "Valitettavasti Medusa-etsintäpalvelu ei ole saatavilla."
+msgstr "Valitettavasti Medusa-hakupalvelu ei ole saatavilla."
 
 #: src/file-manager/fm-search-list-view.c:167
 msgid "Medusa is not installed."
-msgstr ""
+msgstr "Medusa ei ole asennettu."
 
 #: src/file-manager/fm-search-list-view.c:168
 #: src/file-manager/nautilus-indexing-info.c:301
 msgid "Search Service Not Available"
-msgstr "Etsintäpalvelu ei ole saatavilla"
+msgstr "Hakupalvelu ei ole saatavilla"
 
 #: src/file-manager/fm-search-list-view.c:190
-#, fuzzy
 msgid ""
 "The search you have selected is newer than the index on your system.  The "
 "search will return no results right now."
 msgstr ""
 "Valitsemasi haku on uudempi kuin järjestelmäsi luettelo. Haku ei tuota juuri "
-"nyt tuloksia. Voit luoda uuden luettelon ajamalla komennon \"medusa-indexd\" "
-"pääkäyttäjänä komentoriviltä."
+"nyt tuloksia."
 
 #: src/file-manager/fm-search-list-view.c:194
 #: src/file-manager/fm-search-list-view.c:213
-#, fuzzy
 msgid ""
 "You can create a new index by running \"medusa-indexd\" as root on the "
 "command line."
 msgstr ""
-"Etsin ei voi avata tiedostojärjestelmäsi luetteloa. Luettelosi voi puuttua "
-"tai olla viallinen. Voit luoda uuden luettelon ajamalla komennon \"medusa-"
-"indexd\" pääkäyttäjänä komentoriviltä."
+"Voit luoda uuden luettelon ajamalla komennon \"medusa-indexd\" pääkäyttäjänä "
+"komentoriviltä."
 
 #: src/file-manager/fm-search-list-view.c:197
-#, fuzzy
 msgid "Search For Items That Are Too New"
 msgstr "Etsi kohteita, jotka ovat liian uusia"
 
 #: src/file-manager/fm-search-list-view.c:201
-#, fuzzy
 msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-"Jokainen tietokoneesi luetteloitu tiedosto vastaa antamiasi ehtoja. Voit "
-"tarkistaa valintojesi oikeinkirjoituksen tai lisätä lisää hakuehtoja, jos "
-"haluat tarkemman tuloksen."
+msgstr "Jokainen tietokoneesi luetteloitu tiedosto vastaa antamiasi ehtoja."
 
 #: src/file-manager/fm-search-list-view.c:203
-#, fuzzy
 msgid ""
 "You can check the spelling on your selections or add more criteria to narrow "
 "your results."
 msgstr ""
-"Jokainen tietokoneesi luetteloitu tiedosto vastaa antamiasi ehtoja. Voit "
-"tarkistaa valintojesi oikeinkirjoituksen tai lisätä lisää hakuehtoja, jos "
-"haluat tarkemman tuloksen."
+"Voit tarkistaa valintojesi oikeinkirjoituksen tai lisätä lisää hakuehtoja, "
+"jos haluat tarkemman tuloksen."
 
 #: src/file-manager/fm-search-list-view.c:205
 #: src/file-manager/fm-search-list-view.c:223
-#, fuzzy
 msgid "Error During Search"
-msgstr "Virhe etsiessä"
+msgstr "Virhe etsimisessä"
 
 #. FIXME: This dialog does not get shown because a slow search
 #. will be performed and will not return an error.
 #: src/file-manager/fm-search-list-view.c:211
-#, fuzzy
 msgid ""
 "Find cannot open your file system index.  Your index may be missing or "
 "corrupt."
 msgstr ""
-"Etsin ei voi avata tiedostojärjestelmäsi luetteloa. Luettelosi voi puuttua "
-"tai olla viallinen. Voit luoda uuden luettelon ajamalla komennon \"medusa-"
-"indexd\" pääkäyttäjänä komentoriviltä."
+"Haku ei voi avata järjestelmäsi tiedostoluetteloa. Luettelo voi puuttua tai "
+"olla viallinen."
 
 #: src/file-manager/fm-search-list-view.c:215
-#, fuzzy
 msgid "Error Reading File Index"
-msgstr "Virhe lukiessa luetteloa"
+msgstr "Virhe tiedostoluettelon lukemisessa"
 
 #: src/file-manager/fm-search-list-view.c:221
-#, fuzzy
 msgid "An error occurred while loading this search's contents."
-msgstr "Virhe tapahtui ladatessa tämän haun sisältöä: %s"
+msgstr "Tämän haun sisällön lataamisessa tapahtui virhe."
 
 #: src/file-manager/fm-search-list-view.c:240
-#, fuzzy
 msgid ""
 "To do a fast search, Find requires an index of the files on your system."
-msgstr ""
-"Etsiäkseen nopeasti etsin tarvitsee luettelon järjestelmäsi tiedostoista. "
-"Etsin ei voi käyttää luetteloasi juuri nyt."
+msgstr "Pikahakuja varten tarvitaan luettelo järjestelmän tiedostoista."
 
 #: src/file-manager/fm-search-list-view.c:242
-#, fuzzy
 msgid ""
 "To do a content search, Find requires an index of the files on your system."
 msgstr ""
-"Etsiäkseen nopeasti etsin tarvitsee luettelon järjestelmäsi tiedostoista. "
-"Etsin ei voi käyttää luetteloasi juuri nyt."
+"Sisällön perusteella hakuja varten tarvitaan luettelo järjestelmän "
+"tiedostoista."
 
 #: src/file-manager/fm-search-list-view.c:245
-#, fuzzy
 msgid ""
 "Find can't access your index right now so a slower search will be performed "
 "that doesn't use the index."
 msgstr ""
-"Etsiäkseen nopeasti etsin tarvitsee luettelon järjestelmäsi tiedostoista. "
-"Etsin ei voi käyttää luetteloasi juuri nyt, mikä tekee siitä hitaan."
+"Haku ei voi käyttää järjestelmäsi tiedostoluetteloa, mikä tekee siitä hitaan."
 
 #: src/file-manager/fm-search-list-view.c:248
 msgid "Find can't access your index right now."
-msgstr ""
+msgstr "Haku ei voi käyttää tiedostoluetteloa nyt."
 
 #: src/file-manager/fm-search-list-view.c:250
-#, fuzzy
 msgid "Fast Searches Are Not Available"
-msgstr "Ei voi tehdä nopeita etsintöjä"
+msgstr "Pikahakuja ei voi tehdä"
 
 #: src/file-manager/fm-search-list-view.c:251
 #: src/file-manager/fm-search-list-view.c:285
 #: src/file-manager/fm-search-list-view.c:312
-#, fuzzy
 msgid "Content Searches Are Not Available"
-msgstr "Ei voi tehdä sisältöetsintöjä"
+msgstr "Sisältöhakuja ei voi tehdä"
 
 #: src/file-manager/fm-search-list-view.c:255
 msgid ""
@@ -5438,92 +5179,82 @@ msgid ""
 "\n"
 "medusa-searchd"
 msgstr ""
-"Luettelotiedostosi ovat saatavilla, mutta luettelopyynnöt käsittelevä "
-"Medusan etsintäprosessi ei ole käynnissä. Käynnistääksesi sen kirjaudu "
-"pääkäyttäjänä ja kirjoita komento:\n"
+"Luettelotiedostot ovat saatavilla, mutta luettelopyynnöt käsittelevä Medusan "
+"hakuprosessi ei ole käynnissä. Käynnistääksesi sen kirjaudu pääkäyttäjänä ja "
+"kirjoita komento:\n"
 "\n"
 "medusa-searchd"
 
 #: src/file-manager/fm-search-list-view.c:269
-#, fuzzy
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  "
 "Your computer is currently creating that index."
 msgstr ""
-"Etsiäkseen nopeasti etsin tarvitsee luettelon järjestelmäsi tiedostoista. "
-"Koneesi on juuri luomassa tätä luetteloa, joten etsin ei voi käyttää sitä. "
-"Etsintä kestänee siis muutamia minuutteja."
+"Pikahaut tarvitsevat luettelon järjestelmän tiedostoista. Koneesi luo "
+"parhaillaan tätä luetteloa."
 
 #: src/file-manager/fm-search-list-view.c:273
-#, fuzzy
 msgid ""
 "To do a content search, Find requires an index of the content on your "
 "system.  Your computer is currently creating that index."
 msgstr ""
-"Tehdäkseen sisältöetsinnän etsin tarvitsee luettelon järjestelmäsi "
-"sisällöstä. Koneesi on juuri luomassa tätä luetteloa, joten etsin ei voi "
-"käyttää sitä. Voit etsiä sisällön perusteella vasta kun luettelo on valmis."
+"Sisältöhakuja  varten tarvitaan luettelo järjestelmän tiedostoista. Koneesi "
+"luo parhaillaan tätä luetteloa."
 
 #: src/file-manager/fm-search-list-view.c:278
 msgid "Because Find cannot use an index, this search may take several minutes."
 msgstr ""
+"Koska haut eivät voi käyttää tiedostoluetteloa, haku voi kestää useita "
+"minuutteja."
 
 #: src/file-manager/fm-search-list-view.c:281
 msgid "Content searches will be available when the index is complete."
 msgstr ""
+"Sisällön perusteella etsiminen on mahdollista vain kun luettelo on valmis."
 
 #: src/file-manager/fm-search-list-view.c:284
 #: src/file-manager/fm-search-list-view.c:311
-#, fuzzy
 msgid "Indexed Searches Are Not Available"
-msgstr "Ei voi tehdä etsintöjä luettelosta"
+msgstr "Hakuja tiedostoluettelosta ei voi tehdä"
 
 #: src/file-manager/fm-search-list-view.c:293
-#, fuzzy
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  No "
 "index is available right now."
 msgstr ""
-"Etsiäkseen nopeasti etsin tarvitsee luettelon järjestelmäsi tiedostoista. "
-"Etsin ei voi käyttää luetteloasi juuri nyt."
+"Pikahakuja varten tarvitaan luettelo järjestelmän tiedostoista. "
+"Tiedostoluetteloa ei tällä hetkellä ole."
 
 #: src/file-manager/fm-search-list-view.c:296
-#, fuzzy
 msgid ""
 "To do a content search, Find requires an index of the content on your "
 "system.  No index is available right now."
 msgstr ""
-"Etsiäkseen nopeasti etsin tarvitsee luettelon järjestelmäsi tiedostoista. "
-"Etsin ei voi käyttää luetteloasi juuri nyt."
+"Sisältöhakuja varten tarvitaan luettelo järjestelmän tiedostoista. "
+"Tiedostoluetteloa ei tällä hetkellä ole."
 
 #: src/file-manager/fm-search-list-view.c:300
-#, fuzzy
 msgid ""
 "You can create an index by running \"medusa-indexd\" as root on the command "
 "line.  Until a complete index is available, searches will take several "
 "minutes."
 msgstr ""
-"Etsiäkseen nopeasti etsin tarvitsee luettelon järjestelmäsi tiedostoista. "
-"Luetteloa ei ole nyt saatavilla. Voit luoda sen ajamalla komennon \"medusa-"
-"indexd\" pääkäyttäjänä komentoriviltä. Etsinnät kestänevät useita "
-"minuutteja, kunnes luot luettelon."
+"Voit luoda tiedostoluettelon ajamalla komennon \"medusa-indexd\" "
+"pääkäyttäjänä komentoriviltä. Haut kestänevät useita minuutteja, kunnes "
+"luettelo on valmis."
 
 #: src/file-manager/fm-search-list-view.c:305
-#, fuzzy
 msgid ""
 "You can create an index by running \"medusa-indexd\" as root on the command "
 "line.  Until a complete index is available, content searches cannot be "
 "performed."
 msgstr ""
-"Tehdäkseen sisältöetsinnän etsin tarvitsee luettelon järjestelmäsi "
-"sisällöstä. Tätä luetteloa ei ole saatavilla. Voit luoda sen ajamalla "
-"komennon \"medusa-indexd\" pääkäyttäjänä komentoriviltä. Et voi etsiä "
-"sisällön perusteella ennen kuin luettelo on luotu."
+"Voit luoda sen ajamalla komennon \"medusa-indexd\" pääkäyttäjänä "
+"komentoriviltä. Hakuja ei voi tehdä ennen kuin luettelo on valmis."
 
 #: src/file-manager/fm-search-list-view.c:329
-#, fuzzy
 msgid "Fast searches are not enabled on your computer."
-msgstr "Nopeat etsinnät eivät ole käytössä koneellasi"
+msgstr "Pikahaut eivät ole käytössä koneellasi."
 
 #: src/file-manager/fm-search-list-view.c:330
 msgid ""
@@ -5531,14 +5262,12 @@ msgid ""
 "Your system administrator has disabled fast search on your computer, so no "
 "index is available."
 msgstr ""
-"Etsiäkseen nopeasti etsin tarvitsee luettelon järjestelmäsi tiedostoista. "
-"Ylläpitäjä on poistanut luetteloinnin käytöstä koneeltasi, joten luetteloa "
-"ei ole."
+"Pikahakuja varten tarvitaan luettelo järjestelmän tiedostoista. Ylläpitäjä "
+"on poistanut luetteloinnin käytöstä koneeltasi, joten luetteloa ei ole."
 
 #: src/file-manager/fm-search-list-view.c:334
-#, fuzzy
 msgid "Fast Searches Not Enabled"
-msgstr "Ei voi tehdä nopeita etsintöjä"
+msgstr "Pikahaut eivät ole käytössä"
 
 #: src/file-manager/fm-search-list-view.c:513
 msgid "Where"
@@ -5552,29 +5281,23 @@ msgstr "Sijainti"
 #.
 #: src/file-manager/fm-search-list-view.c:567
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-#, fuzzy, c-format
+#, c-format
 msgid "_Reveal in New Window"
 msgid_plural "Reveal in %d _New Windows"
 msgstr[0] "_Näytä uudessa ikkunassa"
-msgstr[1] "_Näytä uudessa ikkunassa"
+msgstr[1] "_Näytä %d uudessa ikkunassa"
 
 #. Note that the number of items actually displayed varies somewhat due
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
 #: src/file-manager/fm-search-list-view.c:685
-#, fuzzy
 msgid "Nautilus found more search results than it can display."
-msgstr ""
-"Nautilus löysi enemmän etsintätuloksia kuin se voi näyttää. Joitkin jäävät "
-"näkymättä."
+msgstr "Nautilus löysi enemmän hakutuloksia kuin se voi näyttää."
 
 #: src/file-manager/fm-search-list-view.c:686
-#, fuzzy
 msgid "Some matching items will not be displayed. "
-msgstr ""
-"Nautilus löysi enemmän etsintätuloksia kuin se voi näyttää. Joitkin jäävät "
-"näkymättä."
+msgstr "Jotkin tuloksista jäävät näkymättä. "
 
 #: src/file-manager/fm-search-list-view.c:687
 msgid "Too Many Matches"
@@ -5589,35 +5312,29 @@ msgid "Loading..."
 msgstr "Latautuu..."
 
 #: src/file-manager/fm-tree-view.c:947
-#, fuzzy
 msgid "Open"
-msgstr "_Avaa"
+msgstr "Avaa"
 
 #. add the "create folder" menu item
 #: src/file-manager/fm-tree-view.c:971
-#, fuzzy
 msgid "Create Folder"
-msgstr "Luo _hakemisto"
+msgstr "Luo hakemisto"
 
 #: src/file-manager/fm-tree-view.c:987
-#, fuzzy
 msgid "Cut Folder"
-msgstr "Luo _hakemisto"
+msgstr "Leikkaa hakemisto"
 
 #: src/file-manager/fm-tree-view.c:1001
-#, fuzzy
 msgid "Copy Folder"
-msgstr "_Kopioi tiedosto"
+msgstr "Kopioi hakemisto"
 
 #: src/file-manager/fm-tree-view.c:1015
-#, fuzzy
 msgid "Paste Files into Folder"
-msgstr "L_iitä tiedostoja hakemistoon"
+msgstr "Liitä tiedostoja hakemistoon"
 
 #: src/file-manager/fm-tree-view.c:1033
-#, fuzzy
 msgid "Move to Trash"
-msgstr "Siirrä _roskakoriin"
+msgstr "Siirrä roskakoriin"
 
 #: src/file-manager/fm-tree-view.c:1086
 msgid "Filesystem"
@@ -5679,18 +5396,16 @@ msgid "Choose another application with which to open the selected item"
 msgstr "Valitse toinen sovellus, jolla valittu kohde avataan"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:4
-#, fuzzy
 msgid "Create _Document"
-msgstr "Luo _hakemisto"
+msgstr "Luo _asiakirja"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:5
 msgid "Create _Folder"
 msgstr "Luo _hakemisto"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:6
-#, fuzzy
 msgid "Create a new empty file inside this folder"
-msgstr "Luo uusi tyhjä hakemisto tähän hakemistoon"
+msgstr "Luo uusi tyhjä tiedosto tähän hakemistoon"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Create a new empty folder inside this folder"
@@ -5729,9 +5444,8 @@ msgid "Medi_a Properties"
 msgstr "Levyn _ominaisuudet"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:21
-#, fuzzy
 msgid "Mount the selected volume"
-msgstr "Irrota valittu taltio"
+msgstr "Liitä valittu taltio"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:23
 msgid ""
@@ -5748,21 +5462,19 @@ msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:25
 msgid "No templates Installed"
-msgstr ""
+msgstr "Ei asennettuja asiakirjamalleja"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Open Wit_h"
 msgstr "Avaa o_hjelmalla"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:27
-#, fuzzy
 msgid "Open each selected item in a navigation window"
-msgstr "Avaa jokainen valittu kohde uudessa ikkunassa"
+msgstr "Avaa jokainen valittu kohde ikkunassa"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:28
-#, fuzzy
 msgid "Open in Navigation Window"
-msgstr "Avaa uu_dessa ikkunassa"
+msgstr "Avaa ikkunassa"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:29
 msgid "Open the selected item in this window"
@@ -5808,18 +5520,17 @@ msgid "Select _All Files"
 msgstr "Valitse k_aikki tiedostot"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:40
-#, fuzzy
 msgid "Select _Pattern"
-msgstr "_Kuviot"
+msgstr "Valitse _kuvio:"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
 msgid "Select all items in this window"
 msgstr "Valitse tämän ikkunan kaikki kohteet"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:42
-#, fuzzy
 msgid "Select items in this window matching a given pattern"
-msgstr "Valitse tämän ikkunan kaikki kohteet"
+msgstr ""
+"Valitse tämän ikkunan kaikki kohteet, jotka täsmäävät annettuun kuvioon"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:43
 msgid "Show media properties for the selected volume"
@@ -5842,18 +5553,16 @@ msgid "View or modify the properties of each selected item"
 msgstr "Katsele tai muokkaa jokaisen valitun kohteen ominaisuuksia"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:51
-#, fuzzy
 msgid "_Empty File"
-msgstr "_Kopioi tiedosto"
+msgstr "_Tyhjä tiedosto"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:53
 msgid "_Format"
 msgstr "_Alusta"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:54
-#, fuzzy
 msgid "_Mount Volume"
-msgstr "_Irrota taltio"
+msgstr "_Liitä taltio"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:55
 msgid "_Open"
@@ -5967,9 +5676,9 @@ msgid "Indexing is %d%% complete."
 msgstr "Luettelointi on %d%% valmis."
 
 #: src/file-manager/nautilus-indexing-info.c:165
-#, fuzzy, c-format
+#, c-format
 msgid "Your files were last indexed at %s."
-msgstr "Tiedostosi luetteloitiin viimeksi %s"
+msgstr "Tiedostot luetteloitiin viimeksi %s."
 
 #: src/file-manager/nautilus-indexing-info.c:170
 msgid ""
@@ -5977,7 +5686,7 @@ msgid ""
 "fast. "
 msgstr ""
 "Kerran päivässä tiedostosi ja tekstitiedostojen sisällöt luetteloidaan, "
-"jotta etsintäsi olisivat nopeita."
+"jotta haut olisivat nopeita."
 
 #: src/file-manager/nautilus-indexing-info.c:172
 #: src/file-manager/nautilus-indexing-info.c:200
@@ -5985,17 +5694,15 @@ msgid "Indexing Status"
 msgstr "Luetteloinnin tila"
 
 #: src/file-manager/nautilus-indexing-info.c:197
-#, fuzzy
 msgid "Your files are currently being indexed."
-msgstr "Tiedostosi luetteloitiin viimeksi %s"
+msgstr "Tiedostot luetteloituvat parhaillaan."
 
 #: src/file-manager/nautilus-indexing-info.c:198
-#, fuzzy
 msgid ""
 "Once a day your files and text content are indexed so your searches are fast."
 msgstr ""
 "Kerran päivässä tiedostosi ja tekstitiedostojen sisällöt luetteloidaan, "
-"jotta etsintäsi olisivat nopeita."
+"jotta haut olisivat nopeita."
 
 #: src/file-manager/nautilus-indexing-info.c:257
 msgid "There is no index of your files right now."
@@ -6007,33 +5714,32 @@ msgid ""
 "Fast searching is not enabled on your computer, so you do not have an index "
 "right now."
 msgstr ""
-"Kun nopea etsintä on käytössä, etsin luo luettelon hakuja nopeuttamaan. "
-"Nopea etsintä ei ole käytössä koneellasi, joten luetteloa ei juuri nyt ole."
+"Kun pikahaut ovat käytössä, luettelo syntyy hakuja nopeuttamaan. Pikahaut "
+"eivät ole käytössä koneellasi, joten luetteloa ei juuri nyt ole."
 
 #: src/file-manager/nautilus-indexing-info.c:262
 msgid "No Index of Files"
-msgstr ""
+msgstr "Ei tiedostoluetteloa"
 
 #: src/file-manager/nautilus-indexing-info.c:299
 msgid "Sorry, but the medusa search service is not available."
-msgstr "Valitettavasti Medusa-etsintäpalvelu ei ole saatavilla."
+msgstr "Valitettavasti Medusa-hakupalvelu ei ole saatavilla."
 
 #: src/file-manager/nautilus-indexing-info.c:300
 msgid "Please verify medusa has been setup correctly."
-msgstr ""
+msgstr "Varmista, että Medusa on asennettu oikein."
 
 #: src/file-manager/nautilus-indexing-info.c:315
 msgid "%I:%M %p, %x"
 msgstr "%H:%M, %x"
 
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
-#, fuzzy
 msgid "Select the columns visible in this folder"
-msgstr "Luo uusi tyhjä hakemisto tähän hakemistoon"
+msgstr "Valitse tässä hakemistossa näkyvät sarakkeet"
 
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
-msgstr ""
+msgstr "Näkyvät _sarakkeet..."
 
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:1
 msgid "Reveal each selected item in its original folder"
@@ -6053,26 +5759,24 @@ msgstr "Näytä _luetteloinnin tila"
 
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:5
 msgid "Show status of indexing used when searching"
-msgstr "Näytä etsinnässä käytettävän luetteloinnin tila"
+msgstr "Näytä hauissa käytettävän luetteloinnin tila"
 
 #: src/nautilus-application.c:264
 msgid "Couldn't Create Required Folder"
 msgstr "Vaadittua hakemistoa ei voitu luoda"
 
 #: src/nautilus-application.c:265
-#, fuzzy, c-format
+#, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
-msgstr "Vaadittuja hakemistoja ei voitu luoda"
+msgstr "Vaaditun hakemiston \"%s\" luominen epäonnistui."
 
 #: src/nautilus-application.c:267
-#, fuzzy
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
 msgstr ""
-"Nautilus ei voinut luoda tarvittavaa hakemistoa \"%s\". Ennen Nautiluksen "
-"käynnistämistä luo tämä hakemisto tai aseta oikeudet siten, että Nautilus "
-"voi luoda sen."
+"Ennen Nautiluksen käynnistämistä luo seuraava hakemisto tai aseta oikeudet "
+"siten, että Nautilus voi luoda sen."
 
 #: src/nautilus-application.c:270
 msgid "Couldn't Create Required Folders"
@@ -6081,18 +5785,13 @@ msgstr "Vaadittuja hakemistoja ei voitu luoda"
 #: src/nautilus-application.c:271
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
-msgstr ""
+msgstr "Nautilus ei voinut luoda seuraavia vaadittuja hakemistoja: %s."
 
 #: src/nautilus-application.c:273
-#, fuzzy
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
 msgstr ""
-"Nautilus ei voinut luoda seuraavia tarvittavia hakemistoja:\n"
-"\n"
-"%s\n"
-"\n"
 "Ennen Nautiluksen käynnistämistä luo nämä hakemistot tai aseta oikeudet "
 "siten, että Nautilus voi luoda ne."
 
@@ -6102,20 +5801,17 @@ msgstr "Linkki vanhaan työpöytään"
 
 #: src/nautilus-application.c:357
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
-msgstr ""
+msgstr "Luettelo \"Linkki vanhaan työpöytään\" on ilmestynyt työpöydälle."
 
 #: src/nautilus-application.c:358
-#, fuzzy
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
 msgstr ""
-"Oletusarvoinen kotihakemiston sijainti on muuttunut Gnome 2.4:ssä. Linkki "
-"nimeltä \"Linkki vanhaan työpöytään\" on nyt työpöydälläsi. Voit avata tämän "
-"linkin, siirtää haluamasi tiedostot ja lopuksi poistaa sen."
+"Työpöytähakemiston sijainti on muuttunut Gnome 2.4:ssä. Voit avata linkin, "
+"siirtää haluamasi tiedostot ja lopuksi poistaa sen."
 
 #: src/nautilus-application.c:360
-#, fuzzy
 msgid "Migrated Old Desktop"
 msgstr "Tuotu vanha työpöytä"
 
@@ -6185,6 +5881,7 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
+#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:570 src/nautilus-application.c:588
 #: src/nautilus-application.c:595
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -6264,55 +5961,47 @@ msgstr "Etsi!"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
-msgstr ""
+msgstr "Anna palvelimen nimi."
 
 #: src/nautilus-connect-server-dialog.c:87
 msgid "Please enter a name and try again."
-msgstr ""
+msgstr "Anna nimi ja yritä uudelleen."
 
 #: src/nautilus-connect-server-dialog.c:88
 #: src/nautilus-connect-server-dialog.c:104
-#, fuzzy
 msgid "Can't Connect to Server"
-msgstr "Ei voi siirtää itsensä sisälle"
+msgstr "Palvelimeen ei voi yhdistää"
 
 #: src/nautilus-connect-server-dialog.c:101
 #: src/nautilus-window-manage-views.c:1255
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" is not a valid location."
-msgstr "\"%s\" ei ole kelvollinen tiedoston nimi."
+msgstr "\"%s\" ei ole kelvollinen sijainti."
 
 #: src/nautilus-connect-server-dialog.c:103
 #: src/nautilus-property-browser.c:1106
 #: src/nautilus-window-manage-views.c:1250
 #: src/nautilus-window-manage-views.c:1258
-#, fuzzy
 msgid "Please check the spelling and try again."
-msgstr ""
-"Sijaintia \"%s\" ei löytynyt. Tarkasta oikeinkirjoitus ja yritä uudelleen."
+msgstr "Tarkasta oikeinkirjoitus ja yritä uudelleen."
 
 #: src/nautilus-connect-server-dialog.c:177
-#, fuzzy
 msgid "Connect to Server"
-msgstr "Verkkopalvelimet"
+msgstr "Yhdistä palvelimeen"
 
 #: src/nautilus-connect-server-dialog.c:191
-#, fuzzy
 msgid "Link _Name:"
-msgstr "_Nimi:"
+msgstr "Linkin _nimi:"
 
 #: src/nautilus-connect-server-dialog.c:210
-#, fuzzy
 msgid "_Location (URL):"
-msgstr "Sijainti:"
+msgstr "_Sijainti (URL):"
 
 #: src/nautilus-connect-server-dialog.c:231
-#, fuzzy
 msgid "Example:"
-msgstr "Tunnusmerkit:"
+msgstr "Esimerkki:"
 
 #: src/nautilus-connect-server-dialog.c:248
-#, fuzzy
 msgid "C_onnect"
 msgstr "_Yhdistä"
 
@@ -6321,9 +6010,8 @@ msgid "Desktop"
 msgstr "Työpöytä"
 
 #: src/nautilus-file-management-properties.c:307
-#, fuzzy
 msgid "None"
-msgstr "ei mikään"
+msgstr "Ei mikään"
 
 #: src/nautilus-file-management-properties.glade.h:1
 msgid "    "
@@ -6366,9 +6054,8 @@ msgid "<span weight=\"bold\">Icon View Defaults</span>"
 msgstr "<span weight=\"bold\">Kuvakenäkymän oletukset</span>"
 
 #: src/nautilus-file-management-properties.glade.h:30
-#, fuzzy
 msgid "<span weight=\"bold\">List Columns</span>"
-msgstr "<span weight=\"bold\">Hakemistot</span>"
+msgstr "<span weight=\"bold\">Luettelon sarakkeet</span>"
 
 #: src/nautilus-file-management-properties.glade.h:31
 msgid "<span weight=\"bold\">List View Defaults</span>"
@@ -6415,11 +6102,8 @@ msgstr ""
 "kasvatat mittakaavaa."
 
 #: src/nautilus-file-management-properties.glade.h:46
-#, fuzzy
 msgid "Choose the order of information to appear in the list view."
-msgstr ""
-"Valitse tietojen ilmestymisjärjestys. Niitä ilmestyy kuvakkeiden alle, kun "
-"kasvatat mittakaavaa."
+msgstr "Valitse tietojen ilmestymisjärjestys luettelonäkymässä."
 
 #: src/nautilus-file-management-properties.glade.h:47
 msgid "Count _number of items:"
@@ -6443,7 +6127,7 @@ msgstr "Kuvakkeiden tekstit"
 
 #: src/nautilus-file-management-properties.glade.h:53
 msgid "List Columns"
-msgstr ""
+msgstr "Luettelon sarakkeet"
 
 #: src/nautilus-file-management-properties.glade.h:55
 msgid "Local Files Only"
@@ -6574,18 +6258,12 @@ msgstr ""
 "Voit poistaa tämän tiedoston, jos haluat käydä velhon läpi uudestaan.\n"
 
 #: src/nautilus-information-panel.c:506
-#, fuzzy
 msgid "You can't assign more than one custom icon at a time."
-msgstr ""
-"Voit asettaa vain yhden oman kuvakkeen kerrallaan. Vedä yhtä kuvaa "
-"asettaaksesi sen kuvakkeeksi."
+msgstr "Vain yhden oman kuvakkeen voi asettaa kerrallaan."
 
 #: src/nautilus-information-panel.c:535
-#, fuzzy
 msgid "You can only use images as custom icons."
-msgstr ""
-"Pudottamasi tiedosto ei ole paikallinen. Vain paikallisia tiedostoja voi "
-"käyttää omina kuvakkeina."
+msgstr "Vain kuvia voi käyttää omina kuvakkeina."
 
 #: src/nautilus-information-panel.c:882
 #, c-format
@@ -6598,14 +6276,10 @@ msgid "Open with..."
 msgstr "Avaa ohjelmalla..."
 
 #: src/nautilus-information-panel.c:993
-#, fuzzy
 msgid "Unable to launch the cd burner application."
-msgstr ""
-"CD-kirjoitinohjelman käynnistäminen epäonnistui:\n"
-"%s"
+msgstr "CD-kirjoitinohjelman käynnistäminen epäonnistui."
 
 #: src/nautilus-information-panel.c:994
-#, fuzzy
 msgid "Can't Launch CD Burner"
 msgstr "CD-kirjoitinta ei voi käynnistää"
 
@@ -6624,25 +6298,23 @@ msgid "Go To:"
 msgstr "Siirry:"
 
 #: src/nautilus-location-bar.c:154
-#, fuzzy, c-format
+#, c-format
 msgid "Do you want to view %d location?"
 msgid_plural "Do you want to view %d locations?"
-msgstr[0] "Haluatko avata %d ikkunaa näiden sijaintien katselua varten?"
-msgstr[1] "Haluatko avata %d ikkunaa näiden sijaintien katselua varten?"
+msgstr[0] "Haluatko katsella yhtä sijaintia?"
+msgstr[1] "Haluatko katsella useita (%d) sijainteja?"
 
 #: src/nautilus-location-bar.c:170
 msgid "View in Multiple Windows?"
 msgstr "Haluatko katsella useissa ikkunoissa?"
 
 #: src/nautilus-location-dialog.c:137
-#, fuzzy
 msgid "Open Location"
-msgstr "Ei voi avata sijaintia"
+msgstr "Avaa sijainti"
 
 #: src/nautilus-location-dialog.c:147
-#, fuzzy
 msgid "_Location:"
-msgstr "Sijainti:"
+msgstr "_Sijainti:"
 
 #: src/nautilus-main.c:188
 msgid "Perform a quick set of self-check tests."
@@ -6668,7 +6340,7 @@ msgstr "Älä käytä työpöytää (sivuuta asetusikkunassa annettu oletus)"
 
 #: src/nautilus-main.c:197
 msgid "open a browser window."
-msgstr ""
+msgstr "avaa selainikkunassa."
 
 #: src/nautilus-main.c:199
 msgid "Quit Nautilus."
@@ -6689,23 +6361,28 @@ msgid "Nautilus"
 msgstr "Nautilus"
 
 #: src/nautilus-main.c:259
+#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: valitsinta --check ei voi käyttää URI:en kanssa.\n"
 
 #: src/nautilus-main.c:263
+#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr ""
 "nautilus: valitsinta --check ei voi käyttää muiden valitsinten kanssa.\n"
 
 #: src/nautilus-main.c:267
+#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: valitsinta --quit ei voi käyttää URI:en kanssa.\n"
 
 #: src/nautilus-main.c:271
+#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: valitsinta --restart ei voi käyttää URI:en kanssa.\n"
 
 #: src/nautilus-main.c:275
+#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr ""
 "nautilus: valitsinta --geometry ei voi käyttää yhtä useamman URI:n kanssa.\n"
@@ -6714,16 +6391,12 @@ msgstr ""
 #. * implemented this feature so I could use this joke.
 #.
 #: src/nautilus-navigation-window-menus.c:187
-#, fuzzy
 msgid "Are you sure you want to forget history?"
-msgstr "Oletko varma, että haluat poistaa kohteen \"%s\" pysyvästi?"
+msgstr "Oletko varma, että haluat tyhjentää historiikin?"
 
 #: src/nautilus-navigation-window-menus.c:188
-#, fuzzy
 msgid "If you do, you will be doomed to repeat it."
-msgstr ""
-"Oletko varma, että haluat historian unohtuvan? Jos haluat, niin joudut "
-"toistamaan sen itse."
+msgstr "Jos näin, voit toistaa sen itse."
 
 #: src/nautilus-navigation-window-menus.c:190
 msgid "Are you sure you want to clear the list of locations you have visited?"
@@ -6731,25 +6404,22 @@ msgstr "Oletko varma, että haluat tyhjentää käytyjen sijaintien luettelon?"
 
 #: src/nautilus-navigation-window-menus.c:192
 msgid "If you clear the list of locations, they will be permanently deleted."
-msgstr ""
+msgstr "Jos tyhjennät sijaintiluettelon, sen sisältö häviää pysyvästi."
 
 #: src/nautilus-navigation-window-menus.c:198
 msgid "Clear History"
 msgstr "Tyhjennä historiikki"
 
 #: src/nautilus-navigation-window-menus.c:427
-#, fuzzy
 msgid ""
 "Do you want to remove any bookmarks with the non-existing location from your "
 "list?"
-msgstr ""
-"Sijainti \"%s\" ei ole olemassa. Haluatko, että kaikki siihen viittaavat "
-"kirjanmerkkisi poistetaan?"
+msgstr "Haluatko, että kaikki kohteettomat kirjanmerkit poistetaan?"
 
 #: src/nautilus-navigation-window-menus.c:429
-#, fuzzy, c-format
+#, c-format
 msgid "The location \"%s\" does not exist."
-msgstr "Sijainti \"%s\" ei ole enää olemassa"
+msgstr "Sijainti \"%s\" ei ole olemassa."
 
 #: src/nautilus-navigation-window-menus.c:432
 msgid "Bookmark for Nonexistent Location"
@@ -6790,14 +6460,13 @@ msgid "Close _All Windows"
 msgstr "Sulje _kaikki ikkunat"
 
 #: src/nautilus-navigation-window-ui.xml.h:8
-#, fuzzy
 msgid "Close all Navigation windows"
-msgstr "Sulje kaikki Nautiluksen ikkunat"
+msgstr "Sulje kaikki ikkunat"
 
 #: src/nautilus-navigation-window-ui.xml.h:10
 #: src/nautilus-spatial-window-ui.xml.h:4
 msgid "Connect to _Server..."
-msgstr ""
+msgstr "_Yhdistä palvelimeen..."
 
 #: src/nautilus-navigation-window-ui.xml.h:11
 msgid "Display a window that allows editing the bookmarks in this menu"
@@ -6813,9 +6482,8 @@ msgstr "Eteenpäin"
 
 #: src/nautilus-navigation-window-ui.xml.h:14
 #: src/nautilus-spatial-window-ui.xml.h:6
-#, fuzzy
 msgid "Go to templates folder"
-msgstr "Siirry roskakorihakemistoon"
+msgstr "Siirry asiakirjamallien hakemistoon"
 
 #: src/nautilus-navigation-window-ui.xml.h:15
 msgid "Go to the next visited location"
@@ -6876,9 +6544,8 @@ msgstr "Tyhjennä _historiikki"
 
 #: src/nautilus-navigation-window-ui.xml.h:29
 #: src/nautilus-spatial-window-ui.xml.h:12
-#, fuzzy
 msgid "_Computer"
-msgstr "Pöydän päällys"
+msgstr "_Tietokone"
 
 #: src/nautilus-navigation-window-ui.xml.h:30
 msgid "_Edit Bookmarks"
@@ -6908,7 +6575,7 @@ msgstr "_Sivupaneeli"
 #: src/nautilus-navigation-window-ui.xml.h:36
 #: src/nautilus-spatial-window-ui.xml.h:15
 msgid "_Templates"
-msgstr ""
+msgstr "_Asiakirjamallit"
 
 #: src/nautilus-navigation-window-ui.xml.h:37
 #: src/nautilus-spatial-window-ui.xml.h:16
@@ -6933,35 +6600,28 @@ msgid "View as..."
 msgstr "Näytä muodossa..."
 
 #: src/nautilus-navigation-window.c:733
-#, fuzzy, c-format
+#, c-format
 msgid "File Browser: %s"
-msgstr "Tiedoston omistaja:"
+msgstr "Tiedostoselain: %s"
 
 #: src/nautilus-navigation-window.c:1117
-#, fuzzy
 msgid "One of the side panels encountered an error and can't continue."
-msgstr ""
-"Jossakin sivupaneelissa tapahtui virhe, joten se ei voi jatkaa. "
-"Valitettavasti ei saatu selville, mikä se niistä oli."
+msgstr "Jossakin sivupaneelissa tapahtui virhe, joten se ei voi jatkaa."
 
 #: src/nautilus-navigation-window.c:1118
 msgid "Unfortunately I couldn't tell which one."
-msgstr ""
+msgstr "Valitettavasti ei selvinnyt, mikä se niistä oli."
 
 #: src/nautilus-navigation-window.c:1121
-#, fuzzy, c-format
+#, c-format
 msgid "The %s side panel encountered an error and can't continue."
-msgstr "Näkymässä %s tapahtui virhe sen käynnistyessä."
+msgstr "Näkymässä %s tapahtui virhe sen käynnistyessä, joten se ei voi jatkaa."
 
 #: src/nautilus-navigation-window.c:1122
-#, fuzzy
 msgid "If this keeps happening, you might want to turn this panel off."
-msgstr ""
-"Sivupaneeli %s ei voi jatkaa toimintaansa, koska tapahtui virhe. Jos tätä "
-"ilmenee jatkuvasti, voit poistaa kyseisen paneelin käytöstä."
+msgstr "Jos tätä ilmenee jatkuvasti, voit poistaa kyseisen paneelin käytöstä."
 
 #: src/nautilus-navigation-window.c:1125
-#, fuzzy
 msgid "Side Panel Failed"
 msgstr "Virhe sivupaneelissa"
 
@@ -7005,10 +6665,9 @@ msgstr "Valitettavasti kuviota %s ei voitu poistaa."
 
 #: src/nautilus-property-browser.c:915
 msgid "Check that you have permission to delete the pattern."
-msgstr ""
+msgstr "Varmista, että sinulla on oikeudet poistaa kuvio."
 
 #: src/nautilus-property-browser.c:916
-#, fuzzy
 msgid "Couldn't Delete Pattern"
 msgstr "Kuviota ei voitu poistaa"
 
@@ -7019,12 +6678,11 @@ msgstr "Valitettavasti tunnusmerkkiä %s ei voitu poistaa."
 
 #: src/nautilus-property-browser.c:945
 msgid "Check that you have permission to delete the emblem."
-msgstr ""
+msgstr "Tarkista, onko sinulla oikeudet poistaa tunnusmerkki."
 
 #: src/nautilus-property-browser.c:946
-#, fuzzy
 msgid "Couldn't Delete Emblem"
-msgstr "Tunnusmerkin poisto epäonnistui"
+msgstr "Tunnusmerkin poistaminen epäonnistui"
 
 #: src/nautilus-property-browser.c:984
 msgid "Create a New Emblem:"
@@ -7068,12 +6726,11 @@ msgstr "Et antanut kelvollista tiedoston nimeä."
 
 #: src/nautilus-property-browser.c:1109
 msgid "Please try again."
-msgstr ""
+msgstr "Yritä uudelleen."
 
 #: src/nautilus-property-browser.c:1111 src/nautilus-property-browser.c:1156
-#, fuzzy
 msgid "Couldn't Install Pattern"
-msgstr "Kuviota ei voitu asentaa"
+msgstr "Kuvion asentaminen ei onnistunut"
 
 #: src/nautilus-property-browser.c:1122
 msgid "Sorry, but you can't replace the reset image."
@@ -7081,7 +6738,7 @@ msgstr "Et voi vaihtaa uudelleenasetuskuvaa."
 
 #: src/nautilus-property-browser.c:1123
 msgid "Reset is a special image that cannot be deleted."
-msgstr ""
+msgstr "Palauta on erityinen kuva, jota ei voi poistaa."
 
 #: src/nautilus-property-browser.c:1124 src/nautilus-property-browser.c:1328
 #: src/nautilus-property-browser.c:1344
@@ -7099,30 +6756,28 @@ msgstr "Valitse kuviona lisättävä kuva"
 
 #: src/nautilus-property-browser.c:1236
 msgid "The color cannot be installed."
-msgstr ""
+msgstr "Väriä ei voi asentaa."
 
 #: src/nautilus-property-browser.c:1237
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Uudelle värille pitää antaa nimi."
 
 #: src/nautilus-property-browser.c:1238
-#, fuzzy
 msgid "Couldn't Install Color"
-msgstr "Väriä ei voitu asentaa"
+msgstr "Värin asentaminen ei onnistunut"
 
 #: src/nautilus-property-browser.c:1290
 msgid "Select a color to add"
 msgstr "Valitse lisättävä väri"
 
 #: src/nautilus-property-browser.c:1327 src/nautilus-property-browser.c:1343
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, but \"%s\" is not a usable image file."
-msgstr "Valitettavasti '%s' ei ole kelvollinen kuvatiedosto."
+msgstr "\"%s\" ei ole kelvollinen kuvatiedosto."
 
 #: src/nautilus-property-browser.c:1328 src/nautilus-property-browser.c:1344
-#, fuzzy
 msgid "The file is not an image."
-msgstr "Tiedosto \"%s\" ei vaikuta olevan kelvollinen kuvatiedosto."
+msgstr "Tiedosto ei ole kuvatiedosto."
 
 #: src/nautilus-property-browser.c:2051
 msgid "Select a Category:"
@@ -7384,9 +7039,8 @@ msgid "Choose a view for the current location, or modify the set of views"
 msgstr "Valitse näkymä nykyiselle sijainnille, tai muokkaa näkymäjoukkoa"
 
 #: src/nautilus-shell-ui.xml.h:3
-#, fuzzy
 msgid "Close this folder"
-msgstr "Sulje sivupaneeli"
+msgstr "Sulje tämän hakemisto"
 
 #: src/nautilus-shell-ui.xml.h:5
 msgid "Display Nautilus help"
@@ -7480,18 +7134,16 @@ msgid "_About"
 msgstr "_Tietoja"
 
 #: src/nautilus-shell-ui.xml.h:31
-#, fuzzy
 msgid "_Backgrounds and Emblems..."
-msgstr "Taustat _ja tunnusmerkit"
+msgstr "Taustat _ja tunnusmerkit..."
 
 #: src/nautilus-shell-ui.xml.h:32
 msgid "_CD Creator"
 msgstr "_CD-kirjoitin"
 
 #: src/nautilus-shell-ui.xml.h:33
-#, fuzzy
 msgid "_Close"
-msgstr "_Sulje ikkuna"
+msgstr "_Sulje"
 
 #: src/nautilus-shell-ui.xml.h:34
 msgid "_Contents"
@@ -7555,49 +7207,40 @@ msgid "Show %s"
 msgstr "Näytä %s"
 
 #: src/nautilus-spatial-window-ui.xml.h:1
-#, fuzzy
 msgid "CD _Creator"
 msgstr "_CD-kirjoitin"
 
 #: src/nautilus-spatial-window-ui.xml.h:2
-#, fuzzy
 msgid "Close P_arent Folders"
-msgstr "Sulje _kaikki ikkunat"
+msgstr "Sulje _ylähakemistot"
 
 #: src/nautilus-spatial-window-ui.xml.h:3
-#, fuzzy
 msgid "Close this folder's parents"
-msgstr "Sulje sivupaneeli"
+msgstr "Sulje tämän hakemiston ylähakemistot"
 
 #: src/nautilus-spatial-window-ui.xml.h:5
-#, fuzzy
 msgid "Go to Computer"
-msgstr "Siirry tyhjä CD -hakemistoon"
+msgstr "Siirry Tietokoneeseen"
 
 #: src/nautilus-spatial-window-ui.xml.h:7
-#, fuzzy
 msgid "Go to the CD Creator"
-msgstr "Siirry roskakorihakemistoon"
+msgstr "Siirry CD-kirjoittimeen"
 
 #: src/nautilus-spatial-window-ui.xml.h:9
-#, fuzzy
 msgid "Open _Location..."
-msgstr "_Sijainti..."
+msgstr "Avaa _sijainti..."
 
 #: src/nautilus-spatial-window-ui.xml.h:10
-#, fuzzy
 msgid "Open _Parent"
-msgstr "Avaa _pääte"
+msgstr "Avaa _hakemisto"
 
 #: src/nautilus-spatial-window-ui.xml.h:11
-#, fuzzy
 msgid "Open the parent folder"
-msgstr "hakemistoja"
+msgstr "Avaa sisältävä hakemisto"
 
 #: src/nautilus-spatial-window-ui.xml.h:14
-#, fuzzy
 msgid "_Places"
-msgstr "_Kuviot"
+msgstr "_Sijainnit"
 
 #: src/nautilus-switchable-search-bar.c:129
 msgid "Find:"
@@ -7617,23 +7260,20 @@ msgstr "nykyinen valinta"
 
 #: src/nautilus-view-frame.c:622
 msgid "the type of window the view is embedded in"
-msgstr ""
+msgstr "näkymän sisältävän ikkunan tyyppi"
 
 #: src/nautilus-window-manage-views.c:822
 msgid "View Failed"
 msgstr "Katselu epäonnistui"
 
 #: src/nautilus-window-manage-views.c:833
-#, fuzzy, c-format
+#, c-format
 msgid "The %s view encountered an error and can't continue."
-msgstr "Näkymässä %s tapahtui virhe sen käynnistyessä."
+msgstr "Näkymässä %s tapahtui virhe sen käynnistyessä, ja se ei voi jatkaa."
 
 #: src/nautilus-window-manage-views.c:834
-#, fuzzy
 msgid "You can choose another view or go to a different location."
-msgstr ""
-"Näkymä %s ei voi jatkaa toimintaansa, koska tapahtui virhe. Voit valita muun "
-"näkymän tai siirtyä toiseen sijaintiin."
+msgstr "Voit valita muun näkymän tai siirtyä toiseen sijaintiin."
 
 #: src/nautilus-window-manage-views.c:844
 #, c-format
@@ -7641,9 +7281,8 @@ msgid "The %s view encountered an error while starting up."
 msgstr "Näkymässä %s tapahtui virhe sen käynnistyessä."
 
 #: src/nautilus-window-manage-views.c:845
-#, fuzzy
 msgid "The location cannot be displayed with this viewer."
-msgstr "Tähän ikkunaan kytketty NautilusApplication."
+msgstr "Tämä katselin ei voi näyttää tätä sijaintia."
 
 #: src/nautilus-window-manage-views.c:992
 msgid "Content View"
@@ -7654,9 +7293,9 @@ msgid "View of the current file or folder"
 msgstr "Nykyisen tiedoston tai hakemiston näkymä"
 
 #: src/nautilus-window-manage-views.c:1247
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't find \"%s\"."
-msgstr "Tunnusmerkkien lisäys epäonnistui"
+msgstr "\"%s\" ei löytynyt."
 
 #. Shouldn't have gotten this error unless there's a : separator.
 #: src/nautilus-window-manage-views.c:1271
@@ -7665,96 +7304,81 @@ msgstr "Tunnusmerkkien lisäys epäonnistui"
 #: src/nautilus-window-manage-views.c:1303
 #: src/nautilus-window-manage-views.c:1309
 #: src/nautilus-window-manage-views.c:1329
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't display \"%s\"."
-msgstr "Nautilus ei voi näyttää sijaintia \"%s\"."
+msgstr "Kohdetta \"%s\" ei voi näyttää."
 
 #: src/nautilus-window-manage-views.c:1274
-#, fuzzy
 msgid "Nautilus cannot determine what type of file it is."
-msgstr ""
-"Sijaintia \"%s\" ei voitu näyttää, koska Nautilus ei tiedä sen tyyppiä."
+msgstr "Nautilus ei pystynyt määrittämään tiedoston tyyppiä."
 
 #: src/nautilus-window-manage-views.c:1284
-#, fuzzy
 msgid "Nautilus has no installed viewer capable of displaying the file."
 msgstr ""
-"Nautilukseen ei ole asennettu katselinta, joka voisi näyttää kohteen \"%s\"."
+"Nautilukseen ei ole asennettu katselinta, joka voisi näyttää tiedoston."
 
 #: src/nautilus-window-manage-views.c:1297
-#, fuzzy, c-format
+#, c-format
 msgid "Nautilus cannot handle %s: locations."
-msgstr ""
-"Ei voitu näyttää kohdetta \"%s\", koska Nautilus ei voi käsitellä %s: -"
-"sijainteja."
+msgstr "Nautilus ei voi käsitellä %s:-sijainteja."
 
 #: src/nautilus-window-manage-views.c:1305
-#, fuzzy
 msgid "The attempt to log in failed."
-msgstr ""
-"Ei voitu näyttää kohdetta \"%s\", koska sisään kirjautuminen epäonnistui."
+msgstr "Sisään kirjautuminen epäonnistui."
 
 #: src/nautilus-window-manage-views.c:1311
 msgid "Access was denied."
-msgstr ""
+msgstr "Käyttö estetty."
 
 #: src/nautilus-window-manage-views.c:1321
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
-msgstr "Ei voitu näyttää kohdetta \"%s\", koska oikeudet eivät riittäneet."
+msgstr ""
+"Ei voitu näyttää kohdetta \"%s\", koska isäntäkonetta \"%s\" ei löytynyt."
 
 #: src/nautilus-window-manage-views.c:1324
-#, fuzzy
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr ""
-"Ei voitu näyttää kohdetta \"%s\", koska sen isäntäkonetta \"%s\" ei "
-"löytynyt. Varmista että se on oikein kirjoitettu ja että "
-"välityspalvelinasetukset ovat kunnossa."
+"Varmista että kirjoitit oikein, ja että välityspalvelinasetukset ovat "
+"kunnossa."
 
 #: src/nautilus-window-manage-views.c:1331
-#, fuzzy
 msgid "Check that your proxy settings are correct."
-msgstr ""
-"Kohteen \"%s\" näyttäminen ei onnistunut. Varmista, että "
-"välityspalvelinasetukset ovat kunnossa."
+msgstr "Varmista, että välityspalvelinasetukset ovat kunnossa."
 
 #: src/nautilus-window-manage-views.c:1336
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
 "browser."
 msgstr ""
-"Ei voitu näyttää kohdetta \"%s\", koska Nautilus ei voi käsitellä %s: -"
-"sijainteja."
+"Ei voitu näyttää kohdetta \"%s\", koska Nautilus ei pystynyt ottamaan "
+"yhteyttä SMB-pääselaajaan."
 
 #: src/nautilus-window-manage-views.c:1339
 msgid "Check that an SMB server is running in the local network."
-msgstr ""
+msgstr "Tarkista, että SMB-palvelin toimii paikallisessa verkossa."
 
 #: src/nautilus-window-manage-views.c:1349
-#, fuzzy
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running."
 msgstr ""
-"Etsintää ei voi käyttää nyt, koska luetteloa ei joko ole, tai etsintäpalvelu "
-"ei ole käynnissä. Varmista, että olet käynnistänyt Medusa-etsintäpalvelun. "
-"Jos sinulla ei ole luetteloa vielä, niin käynnistä myös Medusa-luettelin."
+"Hakua ei voi käyttää nyt, koska luetteloa ei joko ole, tai hakupalvelu ei "
+"ole käynnissä."
 
 #: src/nautilus-window-manage-views.c:1352
-#, fuzzy
 msgid ""
 "Be sure that you have started the Medusa search service, and if you don't "
 "have an index, that the Medusa indexer is running."
 msgstr ""
-"Etsintää ei voi käyttää nyt, koska luetteloa ei joko ole, tai etsintäpalvelu "
-"ei ole käynnissä. Varmista, että olet käynnistänyt Medusa-etsintäpalvelun. "
-"Jos sinulla ei ole luetteloa vielä, niin käynnistä myös Medusa-luettelin."
+"Varmista, että olet Medusa-hakupalvelu on käynnissä. Jos luetteloa ei ole "
+"vielä, niin käynnistä myös Medusa-luettelin."
 
 #: src/nautilus-window-manage-views.c:1354
 msgid "Searching Unavailable"
-msgstr "Etsintäpalvelu ei ole saatavilla"
+msgstr "Hakupalvelu ei ole saatavilla"
 
 #: src/nautilus-window-manage-views.c:1359
 #, c-format
@@ -7763,7 +7387,7 @@ msgstr "Nautilus ei voi näyttää sijaintia \"%s\"."
 
 #: src/nautilus-window-manage-views.c:1361
 msgid "Please select another viewer and try again."
-msgstr ""
+msgstr "Valitse toinen näkymä ja yritä uudelleen."
 
 #: src/nautilus-window-manage-views.c:1365
 msgid "Can't Display Location"
@@ -7861,6 +7485,138 @@ msgstr "Verkkopalvelimet"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Katsele verkkopalvelimia Nautilus-tiedostonhallintaohjelmalla"
 
+#~ msgid "0 items"
+#~ msgstr "0 kohdetta"
+
+#~ msgid "0 folders"
+#~ msgstr "0 hakemistoa"
+
+#~ msgid "0 files"
+#~ msgstr "0 tiedostoa"
+
+#~ msgid "1 item"
+#~ msgstr "1 kohde"
+
+#~ msgid "1 folder"
+#~ msgstr "1 hakemisto"
+
+#~ msgid "1 file"
+#~ msgstr "1 tiedosto"
+
+#~ msgid "%u items"
+#~ msgstr "%u kohdetta"
+
+#~ msgid "date changed"
+#~ msgstr "muutospäivä"
+
+#~ msgid "C_hoose"
+#~ msgstr "_Valitse"
+
+#~ msgid "1 folder selected"
+#~ msgstr "1 hakemisto valittu"
+
+#~ msgid " (containing 0 items)"
+#~ msgstr " (sisältää 0 kohdetta)"
+
+#~ msgid " (containing 1 item)"
+#~ msgstr " (sisältää yhden kohteen)"
+
+#~ msgid " (containing a total of 0 items)"
+#~ msgstr " (sisältää yhteensä 0 kohdetta)"
+
+#~ msgid " (containing a total of 1 item)"
+#~ msgstr " (sisältää yhteensä yhden kohteen)"
+
+#~ msgid "1 other item selected (%s)"
+#~ msgstr "1 toinen kohde on valittu (%s)"
+
+#~ msgid "Other _Viewer..."
+#~ msgstr "Muu _katselin..."
+
+#~ msgid "A _Viewer..."
+#~ msgstr "_Katselin..."
+
+#~ msgid "Open in %d New Windows"
+#~ msgstr "Avaa %d uudessa ikkunassa"
+
+#~ msgid "%d items, totalling %s"
+#~ msgstr "%d kohdetta, yhteensä %s"
+
+#~ msgid "Reveal in %d _New Windows"
+#~ msgstr "_Avaa %d uutta ikkunaa, ja näytä niissä"
+
+#~ msgid "Choose another viewer with which to view the selected item"
+#~ msgstr "Valitse katselin, jolla valittua kohdetta katsellaan"
+
+#~ msgid "Write to CD"
+#~ msgstr "Kirjoita CD:lle"
+
+#~ msgid "Close this window"
+#~ msgstr "Sulje tämä ikkuna"
+
+#~ msgid "Write contents to a CD"
+#~ msgstr "Kirjoita sisältö CD:lle"
+
+#~ msgid "_Write to CD"
+#~ msgstr "_Kirjoita CD:lle"
+
+#~ msgid "Factory for hardware view"
+#~ msgstr "Tehdas, joka tuottaa laitteistonäkymiä"
+
+#~ msgid "Hardware Viewer"
+#~ msgstr "Laitteistokatselin"
+
+#~ msgid "Hardware view"
+#~ msgstr "Laitteistonäkymä"
+
+#~ msgid "View as Hardware"
+#~ msgstr "Näytä laitteisto"
+
+#~ msgid "hardware view"
+#~ msgstr "laitteistonäkymä"
+
+#~ msgid "name of icon for the hardware view"
+#~ msgstr "laitteistonäkymän kuvakkeen nimi"
+
+#~ msgid "summary of hardware info"
+#~ msgstr "laitteistotietojen yhteenveto"
+
+#~ msgid ""
+#~ "%s CPU\n"
+#~ "%s MHz\n"
+#~ "%s K cache size"
+#~ msgstr ""
+#~ "%s-prosessori\n"
+#~ "%s MHz\n"
+#~ "%s k välimuistia"
+
+#~ msgid "%lu GB RAM"
+#~ msgstr "%lu Gt RAM"
+
+#~ msgid "%lu MB RAM"
+#~ msgstr "%lu Mt RAM"
+
+#~ msgid "%lu GB"
+#~ msgstr "%lu Gt"
+
+#~ msgid "%lu MB"
+#~ msgstr "%lu Mt"
+
+#~ msgid "Uptime is %d days, %d hours, %d minutes"
+#~ msgstr "Käyntiaika on %d päivää, %d tuntia, %d minuuttia"
+
+#~ msgid "Hardware Overview"
+#~ msgstr "Laitteisto"
+
+#~ msgid "This is a placeholder for the CPU page."
+#~ msgstr "Tämä on prosessorisivun korvike."
+
+#~ msgid "This is a placeholder for the RAM page."
+#~ msgstr "Tämä on muistisivun korvike."
+
+#~ msgid "This is a placeholder for the IDE page."
+#~ msgstr "Tämä on IDE-sivun korvike."
+
 #~ msgid "Search Google for Selected Text"
 #~ msgstr "Etsi valittua tekstiä Googlella"
 
@@ -7872,6 +7628,117 @@ msgstr "Katsele verkkopalvelimia Nautilus-tiedostonhallintaohjelmalla"
 
 #~ msgid "Look up the selected text in the Merriam-Webster dictionary"
 #~ msgstr "Katso valittu teksti Merriam-Webster-tietosanakirjasta"
+
+#~ msgid ""
+#~ "Error while copying to \"%s\".\n"
+#~ "\n"
+#~ "There is not enough space on the destination."
+#~ msgstr ""
+#~ "Virhe kopioidessa kohdetta \"%s\":\n"
+#~ "\n"
+#~ "Levytilaa ei ole jäljellä."
+
+#~ msgid ""
+#~ "Error while creating link in \"%s\".\n"
+#~ "\n"
+#~ "There is not enough space on the destination."
+#~ msgstr ""
+#~ "Virhe linkittäessä kohdetta \"%s\":\n"
+#~ "\n"
+#~ "Levytilaa ei ole jäljellä"
+
+#~ msgid ""
+#~ "Error while moving items to \"%s\".\n"
+#~ "\n"
+#~ "You do not have permissions to write to this folder."
+#~ msgstr ""
+#~ "Virhe siirtäessä kohteeseen \"%s\":\n"
+#~ "\n"
+#~ "Sinulla ei ole tämän hakemiston kirjoitusoikeutta."
+
+#~ msgid ""
+#~ "Error while moving items to \"%s\".\n"
+#~ "\n"
+#~ "The destination disk is read-only."
+#~ msgstr ""
+#~ "Virhe siirtäessä kohteeseen \"%s\":\n"
+#~ "\n"
+#~ "Kohdelevylle ei voi kirjoittaa."
+
+#~ msgid ""
+#~ "Error while creating links in \"%s\".\n"
+#~ "\n"
+#~ "You do not have permissions to write to this folder."
+#~ msgstr ""
+#~ "Virhe luodessa linkkejä hakemistoon \"%s\":\n"
+#~ "\n"
+#~ "Sinulla ei ole tämän hakemiston kirjoitusoikeutta."
+
+#~ msgid ""
+#~ "Error while creating links in \"%s\".\n"
+#~ "\n"
+#~ "The destination disk is read-only."
+#~ msgstr ""
+#~ "Virhe luodessa linkkejä kohteessa \"%s\":\n"
+#~ "\n"
+#~ "Kohdelevylle ei voi kirjoittaa."
+
+#~ msgid ""
+#~ "Error \"%s\" while copying \"%s\".\n"
+#~ "\n"
+#~ "Would you like to continue?"
+#~ msgstr ""
+#~ "Virhe \"%s\" kopioidessa kohdetta \"%s\".\n"
+#~ "\n"
+#~ "Haluatko jatkaa?"
+
+#~ msgid ""
+#~ "Error \"%s\" while moving \"%s\".\n"
+#~ "\n"
+#~ "Would you like to continue?"
+#~ msgstr ""
+#~ "Virhe \"%s\" siirtäessä kohdetta \"%s\".\n"
+#~ "\n"
+#~ "Haluatko jatkaa?"
+
+#~ msgid ""
+#~ "Error \"%s\" while deleting \"%s\".\n"
+#~ "\n"
+#~ "Would you like to continue?"
+#~ msgstr ""
+#~ "Virhe \"%s\" poistaessa kohdetta \"%s\".\n"
+#~ "\n"
+#~ "Haluatko jatkaa?"
+
+#~ msgid ""
+#~ "Error \"%s\" while copying.\n"
+#~ "\n"
+#~ "Would you like to continue?"
+#~ msgstr ""
+#~ "Virhe \"%s\" kopioidessa.\n"
+#~ "\n"
+#~ "Haluatko jatkaa?"
+
+#~ msgid ""
+#~ "Error \"%s\" while linking.\n"
+#~ "\n"
+#~ "Would you like to continue?"
+#~ msgstr ""
+#~ "Virhe \"%s\" linkittäessä.\n"
+#~ "\n"
+#~ "Haluatko jatkaa?"
+
+#~ msgid ""
+#~ "Error \"%s\" while deleting.\n"
+#~ "\n"
+#~ "Would you like to continue?"
+#~ msgstr ""
+#~ "Virhe \"%s\" poistaessa.\n"
+#~ "\n"
+#~ "Haluatko jatkaa?"
+
+#~ msgid "Can't Copy to Trash"
+#~ msgstr "Ei voi kopioida roskakoriin"
 
 #~ msgid "foo"
 #~ msgstr "jokin"
@@ -8056,246 +7923,8 @@ msgstr "Katsele verkkopalvelimia Nautilus-tiedostonhallintaohjelmalla"
 #~ msgid "foo (124th copy).txt"
 #~ msgstr "jokin (124. kopio).txt"
 
-#~ msgid "0 items"
-#~ msgstr "0 kohdetta"
-
-#~ msgid "0 folders"
-#~ msgstr "0 hakemistoa"
-
-#~ msgid "0 files"
-#~ msgstr "0 tiedostoa"
-
-#~ msgid "1 item"
-#~ msgstr "1 kohde"
-
-#~ msgid "1 folder"
-#~ msgstr "1 hakemisto"
-
-#~ msgid "1 file"
-#~ msgstr "1 tiedosto"
-
-#~ msgid "date changed"
-#~ msgstr "muutospäivä"
-
-#~ msgid "C_hoose"
-#~ msgstr "_Valitse"
-
-#~ msgid "1 folder selected"
-#~ msgstr "1 hakemisto valittu"
-
-#~ msgid " (containing 0 items)"
-#~ msgstr " (sisältää 0 kohdetta)"
-
-#~ msgid " (containing 1 item)"
-#~ msgstr " (sisältää yhden kohteen)"
-
-#~ msgid " (containing a total of 0 items)"
-#~ msgstr " (sisältää yhteensä 0 kohdetta)"
-
-#~ msgid " (containing a total of 1 item)"
-#~ msgstr " (sisältää yhteensä yhden kohteen)"
-
-#~ msgid "1 other item selected (%s)"
-#~ msgstr "1 toinen kohde on valittu (%s)"
-
-#~ msgid "Other _Viewer..."
-#~ msgstr "Muu _katselin..."
-
-#~ msgid "A _Viewer..."
-#~ msgstr "_Katselin..."
-
-#, fuzzy
-#~ msgid "Open in %d New Windows"
-#~ msgstr "Avaa %d uutta _ikkunaa näyttämistä varten"
-
-#~ msgid "%d items, totalling %s"
-#~ msgstr "%d kohdetta, yhteensä %s"
-
-#~ msgid "Reveal in %d _New Windows"
-#~ msgstr "_Avaa %d uutta ikkunaa, ja näytä niissä"
-
-#~ msgid "Choose another viewer with which to view the selected item"
-#~ msgstr "Valitse katselin, jolla valittua kohdetta katsellaan"
-
-#~ msgid "Write to CD"
-#~ msgstr "Kirjoita CD:lle"
-
-#~ msgid "Close this window"
-#~ msgstr "Sulje tämä ikkuna"
-
-#~ msgid "Write contents to a CD"
-#~ msgstr "Kirjoita sisältö CD:lle"
-
-#~ msgid "_Write to CD"
-#~ msgstr "_Kirjoita CD:lle"
-
-#~ msgid "Factory for hardware view"
-#~ msgstr "Tehdas, joka tuottaa laitteistonäkymiä"
-
-#~ msgid "Hardware Viewer"
-#~ msgstr "Laitteistokatselin"
-
-#~ msgid "Hardware view"
-#~ msgstr "Laitteistonäkymä"
-
-#~ msgid "View as Hardware"
-#~ msgstr "Näytä laitteisto"
-
-#~ msgid "hardware view"
-#~ msgstr "laitteistonäkymä"
-
-#~ msgid "name of icon for the hardware view"
-#~ msgstr "laitteistonäkymän kuvakkeen nimi"
-
-#~ msgid "summary of hardware info"
-#~ msgstr "laitteistotietojen yhteenveto"
-
-#~ msgid ""
-#~ "%s CPU\n"
-#~ "%s MHz\n"
-#~ "%s K cache size"
-#~ msgstr ""
-#~ "%s-prosessori\n"
-#~ "%s MHz\n"
-#~ "%s k välimuistia"
-
-#~ msgid "%lu GB RAM"
-#~ msgstr "%lu Gt RAM"
-
-#~ msgid "%lu MB RAM"
-#~ msgstr "%lu Mt RAM"
-
-#~ msgid "%lu GB"
-#~ msgstr "%lu Gt"
-
-#~ msgid "%lu MB"
-#~ msgstr "%lu Mt"
-
-#~ msgid "Uptime is %d days, %d hours, %d minutes"
-#~ msgstr "Käyntiaika on %d päivää, %d tuntia, %d minuuttia"
-
-#~ msgid "Hardware Overview"
-#~ msgstr "Laitteisto"
-
-#~ msgid "This is a placeholder for the CPU page."
-#~ msgstr "Tämä on prosessorisivun korvike."
-
-#~ msgid "This is a placeholder for the RAM page."
-#~ msgstr "Tämä on muistisivun korvike."
-
-#~ msgid "This is a placeholder for the IDE page."
-#~ msgstr "Tämä on IDE-sivun korvike."
-
-#~ msgid ""
-#~ "Error while copying to \"%s\".\n"
-#~ "\n"
-#~ "There is not enough space on the destination."
-#~ msgstr ""
-#~ "Virhe kopioidessa kohdetta \"%s\":\n"
-#~ "\n"
-#~ "Levytilaa ei ole jäljellä."
-
-#~ msgid ""
-#~ "Error while creating link in \"%s\".\n"
-#~ "\n"
-#~ "There is not enough space on the destination."
-#~ msgstr ""
-#~ "Virhe linkittäessä kohdetta \"%s\":\n"
-#~ "\n"
-#~ "Levytilaa ei ole jäljellä"
-
-#~ msgid ""
-#~ "Error while moving items to \"%s\".\n"
-#~ "\n"
-#~ "You do not have permissions to write to this folder."
-#~ msgstr ""
-#~ "Virhe siirtäessä kohteeseen \"%s\":\n"
-#~ "\n"
-#~ "Sinulla ei ole tämän hakemiston kirjoitusoikeutta."
-
-#~ msgid ""
-#~ "Error while moving items to \"%s\".\n"
-#~ "\n"
-#~ "The destination disk is read-only."
-#~ msgstr ""
-#~ "Virhe siirtäessä kohteeseen \"%s\":\n"
-#~ "\n"
-#~ "Kohdelevylle ei voi kirjoittaa."
-
-#~ msgid ""
-#~ "Error while creating links in \"%s\".\n"
-#~ "\n"
-#~ "You do not have permissions to write to this folder."
-#~ msgstr ""
-#~ "Virhe luodessa linkkejä hakemistoon \"%s\":\n"
-#~ "\n"
-#~ "Sinulla ei ole tämän hakemiston kirjoitusoikeutta."
-
-#~ msgid ""
-#~ "Error while creating links in \"%s\".\n"
-#~ "\n"
-#~ "The destination disk is read-only."
-#~ msgstr ""
-#~ "Virhe luodessa linkkejä kohteessa \"%s\":\n"
-#~ "\n"
-#~ "Kohdelevylle ei voi kirjoittaa."
-
-#~ msgid ""
-#~ "Error \"%s\" while copying \"%s\".\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "Virhe \"%s\" kopioidessa kohdetta \"%s\".\n"
-#~ "\n"
-#~ "Haluatko jatkaa?"
-
-#~ msgid ""
-#~ "Error \"%s\" while moving \"%s\".\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "Virhe \"%s\" siirtäessä kohdetta \"%s\".\n"
-#~ "\n"
-#~ "Haluatko jatkaa?"
-
-#~ msgid ""
-#~ "Error \"%s\" while deleting \"%s\".\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "Virhe \"%s\" poistaessa kohdetta \"%s\".\n"
-#~ "\n"
-#~ "Haluatko jatkaa?"
-
-#~ msgid ""
-#~ "Error \"%s\" while copying.\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "Virhe \"%s\" kopioidessa.\n"
-#~ "\n"
-#~ "Haluatko jatkaa?"
-
-#~ msgid ""
-#~ "Error \"%s\" while linking.\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "Virhe \"%s\" linkittäessä.\n"
-#~ "\n"
-#~ "Haluatko jatkaa?"
-
-#~ msgid ""
-#~ "Error \"%s\" while deleting.\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "Virhe \"%s\" poistaessa.\n"
-#~ "\n"
-#~ "Haluatko jatkaa?"
-
-#~ msgid "Can't Copy to Trash"
-#~ msgstr "Ei voi kopioida roskakoriin"
+#~ msgid "file icon"
+#~ msgstr "tiedostokuvake"
 
 #~ msgid ""
 #~ "The default action can't open \"%s\" because it can't access files at \"%s"
@@ -8360,13 +7989,6 @@ msgstr "Katsele verkkopalvelimia Nautilus-tiedostonhallintaohjelmalla"
 #~ "pääselaajaan.\n"
 #~ "Tarkista, että lähiverkossasi toimii SMB-palvelin."
 
-#~ msgid "file icon"
-#~ msgstr "tiedostokuvake"
-
-#, fuzzy
-#~ msgid "Name:"
-#~ msgstr "_Nimi:"
-
 #~ msgid "Unknown"
 #~ msgstr "Tuntematon"
 
@@ -8428,14 +8050,14 @@ msgstr "Katsele verkkopalvelimia Nautilus-tiedostonhallintaohjelmalla"
 #~ msgid "Error executing utility program '%s': %s"
 #~ msgstr "Virhe käynnistäessä apuohjelmaa \"%s\": %s"
 
+#~ msgid "Open _in This Window"
+#~ msgstr "Avaa _tässä ikkunassa"
+
 #~ msgid "Dis_ks"
 #~ msgstr "_Levyt"
 
 #~ msgid "Mount or unmount disks"
 #~ msgstr "Liitä tai irrota levyjä"
-
-#~ msgid "Open _in This Window"
-#~ msgstr "Avaa _tässä ikkunassa"
 
 #~ msgid "_Open activated item in a new window"
 #~ msgstr "_Avaa aktivoitu kohde uudessa ikkunassa"
