@@ -89,6 +89,8 @@ struct NautilusDigestFileHandle {
 #define READ_CHUNK_SIZE 65536
 #define SERVER_URI_TEMPLATE			"http://dellbert.differnet.com/get_notes.cgi?ids=%s"
 
+static int open_count = 0;
+static int close_count = 0;
 
 static GList* annotation_request_queue = NULL;
 static GHashTable *files_awaiting_annotation = NULL;
@@ -364,6 +366,8 @@ digest_file_close_callback (GnomeVFSAsyncHandle *handle,
 			  GnomeVFSResult result,
 			  gpointer callback_data)
 {
+	close_count += 1;
+	g_message ("opened %d, closed %d", open_count, close_count);
 }
 
 /* Close the file and then tell the caller we succeeded, handing off
@@ -476,12 +480,14 @@ read_file_open_callback (GnomeVFSAsyncHandle *handle,
 
 	/* Handle the failure case. */
 	if (result != GNOME_VFS_OK) {
+		g_message ("open failed, error was %d", result);
 		digest_file_failed (digest_handle, result);
 		return;
 	}
 
 	/* read in the first chunk of the file */
 	digest_handle->opened = TRUE;
+	open_count += 1;
 	gnome_vfs_async_read (digest_handle->handle,
 			      digest_handle->buffer,
 			      READ_CHUNK_SIZE,
@@ -498,6 +504,11 @@ calculate_file_digest (NautilusFile *file, NautilusCalculateDigestCallback callb
 {
 	NautilusDigestFileHandle *handle;
 	char *uri;
+
+	/* if annotation lookup is disabled, don't bother to do all this work */
+	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_LOOKUP_ANNOTATIONS)) {
+		return 0;
+	}
 	
 	/* allocate a digest-handle structure to keep our state */
 
@@ -702,9 +713,7 @@ got_annotations_callback (GnomeVFSResult result,
 					}
 					
 					/* write the annotation out to our cache area, if necessary */
-					if (annotation_count > 0) {
-						g_message ("got annotation, count is %d", annotation_count);
-						
+					if (annotation_count > 0) {						
 						saved_annotation = xmlCopyNode (next_annotation, TRUE);
 						add_annotations_to_file (saved_annotation, digest);
 					}
@@ -784,6 +793,12 @@ get_annotation_from_server (NautilusFile *file, const char *file_digest)
 		return;
 	}	
 
+	/* only do this if lookups are enabled */
+	/* if annotation lookup is disabled, don't bother to do all this work */
+	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_LOOKUP_ANNOTATIONS)) {
+		return;
+	}
+	
 	/* add the request to the queue, and kick it off it there's enough of them */
 	annotation_request_queue = g_list_prepend (annotation_request_queue, g_strdup (file_digest));
 	
@@ -845,7 +860,6 @@ char	*nautilus_annotation_get_annotation (NautilusFile *file)
 	/* there's a digest, so we if we have the annotations for the file cached locally */
 	annotations = look_up_local_annotation (file, digest);
 	if (annotations != NULL) {
-		g_message ("already got local annotation for digest %s", digest);
 		g_free (digest);
 		return annotations;
 	}
@@ -871,6 +885,10 @@ int	nautilus_annotation_has_annotation (NautilusFile *file)
 {
 	char *digest_info, *digits, *temp_str;
 	int count;
+	
+	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_ANNOTATIONS)) {
+		return 0;
+	}
 	
 	digest_info = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_NOTES_INFO, NULL);
 	

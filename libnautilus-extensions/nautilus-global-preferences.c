@@ -220,6 +220,11 @@ global_preferences_install_descriptions (void)
 
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_HOME_URI,
 					      _("Location:"));
+	
+	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_LOOKUP_ANNOTATIONS,
+					      _("Look-up remote file annotations"));
+	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_DISPLAY_ANNOTATIONS,
+					      _("Display file annotations"));
 
 	global_preferences_install_sidebar_panel_descriptions ();
 	
@@ -359,6 +364,14 @@ global_preferences_install_defaults (void)
 						  TRUE);
 
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
+						  NAUTILUS_USER_LEVEL_NOVICE,
+						  FALSE);
+
+	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_LOOKUP_ANNOTATIONS,
+						  NAUTILUS_USER_LEVEL_NOVICE,
+						  FALSE);
+	
+	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_DISPLAY_ANNOTATIONS,
 						  NAUTILUS_USER_LEVEL_NOVICE,
 						  FALSE);
 
@@ -506,7 +519,8 @@ global_preferences_create_dialog (void)
 	GtkWidget		*appearance_pane;
 	GtkWidget		*tradeoffs_pane;
 	GtkWidget		*navigation_pane;
-
+	GtkWidget		*annotation_pane;
+	
 	/*
 	 * In the soon to come star trek future, the following widgetry
 	 * might be either fetched from a glade file or generated from 
@@ -759,6 +773,23 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
 							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
 
+
+	/* annotation preferences */
+	
+	annotation_pane = nautilus_preferences_box_add_pane (preference_box,
+							     _("Annotations"));
+	
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (annotation_pane), _("File Annotations"));
+	
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (annotation_pane),
+							 0,
+							 NAUTILUS_PREFERENCES_LOOKUP_ANNOTATIONS,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+		
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (annotation_pane),
+							 0,
+							 NAUTILUS_PREFERENCES_DISPLAY_ANNOTATIONS,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
 	/* Update the dialog so that the right items show up based on the current user level */
 	nautilus_preferences_dialog_update (NAUTILUS_PREFERENCES_DIALOG (prefs_dialog));

@@ -123,6 +123,7 @@ static void          activate_selected_items                  (NautilusIconConta
 static void          nautilus_icon_container_initialize_class (NautilusIconContainerClass *class);
 static void          nautilus_icon_container_initialize       (NautilusIconContainer      *container);
 static void	     nautilus_icon_container_theme_changed    (gpointer		 	  user_data);
+static void	     nautilus_icon_container_annotation_changed (gpointer		  user_data);
 
 static void          compute_stretch                          (StretchState               *start,
 							       StretchState               *current);
@@ -146,6 +147,7 @@ static void	     icon_get_bounding_box 		      (NautilusIcon 		  *icon,
 static gboolean	     is_renaming	      		      (NautilusIconContainer	  *container);
 static gboolean	     is_renaming_pending		      (NautilusIconContainer	  *container);
 static void	     process_pending_icon_to_rename	      (NautilusIconContainer	  *container);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer,
 				   nautilus_icon_container,
@@ -2273,7 +2275,6 @@ select_previous_or_next_name (NautilusIconContainer *container,
 }
 
 /* GtkObject methods.  */
-
 static void
 destroy (GtkObject *object)
 {
@@ -2319,6 +2320,10 @@ destroy (GtkObject *object)
 	if (container->details->rename_widget != NULL) {
 		gtk_object_destroy (GTK_OBJECT (container->details->rename_widget));
 	}
+
+	/* remove the annotation preference callbacks */
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_LOOKUP_ANNOTATIONS, nautilus_icon_container_annotation_changed, container);	
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DISPLAY_ANNOTATIONS, nautilus_icon_container_annotation_changed, container);	
 
 	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
 	 * The NautilusIconContainer class should simply provide calls to set the colors.
@@ -3383,6 +3388,10 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 
 	gtk_signal_connect (GTK_OBJECT (container), "focus-out-event", handle_focus_out_event, NULL);	
 
+	/* add callbacks to notify us when the annotation state changes */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_LOOKUP_ANNOTATIONS, nautilus_icon_container_annotation_changed, container);	
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DISPLAY_ANNOTATIONS, nautilus_icon_container_annotation_changed, container);	
+	
 	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
 	 * The NautilusIconContainer class should simply provide calls to set the colors.
 	 */
@@ -5082,6 +5091,13 @@ update_label_color (NautilusBackground *background,
 		container->details->label_color = 0x000000;
 		container->details->label_info_color = dark_info_value;
 	}
+}
+
+/* handle the annotation preference changes by updating the icons */
+static void
+nautilus_icon_container_annotation_changed (gpointer user_data)
+{
+	nautilus_icon_container_request_update_all (NAUTILUS_ICON_CONTAINER (user_data));
 }
 
 

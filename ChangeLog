@@ -1,3 +1,23 @@
+2001-03-14  Andy Hertzfeld  <andy@eazel.com>
+
+	added preferences to control annotation fetching and display
+	
+	* libnautilus-extensions/nautilus-annotation.c:
+	(digest_file_close_callback), (read_file_open_callback),
+	(calculate_file_digest), (got_annotations_callback),
+	(get_annotation_from_server), (nautilus_annotation_get_annotation),
+	(nautilus_annotation_has_annotation):
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_descriptions),
+	(global_preferences_install_defaults),
+	(global_preferences_create_dialog):
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-icon-container.c: (destroy),
+	(nautilus_icon_container_initialize), (update_label_color),
+	(nautilus_icon_container_annotation_changed):
+
 2001-03-12  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/rss-control/nautilus-rss-control.c:

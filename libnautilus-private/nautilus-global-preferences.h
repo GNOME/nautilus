@@ -83,6 +83,10 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR		"preferences/start_with_status_bar"
 #define NAUTILUS_PREFERENCES_START_WITH_SIDEBAR		 	"preferences/start_with_sidebar"
 
+/* enabling annotations */
+#define NAUTILUS_PREFERENCES_LOOKUP_ANNOTATIONS			"preferences/lookup_annotations"
+#define NAUTILUS_PREFERENCES_DISPLAY_ANNOTATIONS		"preferences/display_annotations"
+
 /* The sidebar panel preferences are computed from their oafids, which aren't known at
  * compile time. We publish the namespace so that interested parties can monitor changes
  * to all of them collectively, without having to know the exact oaf iids.
