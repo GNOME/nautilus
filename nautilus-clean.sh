@@ -71,31 +71,32 @@ AUX_PROGS="\
 bonobo-application-x-pdf \
 bonobo-image-generic \
 bonobo-text-plain \
+eazel-proxy \
+eazel-proxy-util \
 gnome-vfs-slave \
 hyperbola \
+mpg123 \
 nautilus-adapter \
-nautilus-history-view \
+nautilus-change-password-view \
 nautilus-content-loser \
 nautilus-hardware-view \
+nautilus-history-view \
+nautilus-image-view \
+nautilus-inventory-view \
 nautilus-mozilla-content-view \
+nautilus-music-view \
 nautilus-notes \
 nautilus-rpm-view \
 nautilus-sample-content-view \
-nautilus-service-startup-view \
-nautilus-summary-view \
-nautilus-sidebar-loser \
-nautilus-tree-view \
-nautilus-image-view \
-nautilus-music-view \
-nautilus-service-install-view \
-nautilus-inventory-view \
-nautilus-change-password-view \
-nautilus-summary-view \
-trilobite-eazel-time-view \
 nautilus-sample-service-view \
-eazel-proxy \
-eazel-proxy-util \
-mpg123 \
+nautilus-service-install-view \
+nautilus-service-startup-view \
+nautilus-sidebar-loser \
+nautilus-summary-view \
+nautilus-summary-view \
+nautilus-tree-view \
+trilobite-eazel-install-service  \
+trilobite-eazel-time-view \
 "
 
 if [ "$extreme" = "yes" ]
