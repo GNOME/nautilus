@@ -47,8 +47,11 @@ void nautilus_choose_component_for_file (NautilusFile 			     *file,
 					 NautilusComponentChoiceCallback      callback,
 					 gpointer			      callback_data);
 
-void nautilus_launch_application	(GnomeVFSMimeApplication	     *application,
-					 const char			     *uri);
+void nautilus_launch_application		(GnomeVFSMimeApplication	     *application,
+					 	 const char			     *uri);
+void nautilus_launch_application_parented	(GnomeVFSMimeApplication	     *application,
+					 	 const char			     *uri,
+					 	 GtkWindow			     *parent);
 void nautilus_launch_application_from_command (const char                    *command_string, 
 					       const char                    *uri);
 

@@ -382,6 +382,14 @@ bonobo_menu_open_in_new_window_callback (BonoboUIHandler *ui_handler, gpointer u
 	nautilus_file_list_free (selection);
 }
 
+static GtkWindow *
+get_containing_window (FMDirectoryView *view)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	
+	return GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view)));
+}
+
 static void
 fm_directory_view_launch_application (GnomeVFSMimeApplication *application,
 				      const char *uri,
@@ -391,10 +399,8 @@ fm_directory_view_launch_application (GnomeVFSMimeApplication *application,
 	g_assert (uri != NULL);
 	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
 
-	/* Might want to handle errors here someday, perhaps using
-	 * a parented dialog.
-	 */
-	nautilus_launch_application (application, uri);
+	nautilus_launch_application_parented
+		(application, uri, get_containing_window (directory_view));
 	
 }				      
 
@@ -497,14 +503,14 @@ choose_program (FMDirectoryView *view,
 	if (type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
 		nautilus_choose_component_for_file 
 			(file,
-			 GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))),
+			 get_containing_window (view),
 			 fm_directory_view_chose_component_callback,
 			 viewer_launch_parameters_new
 			 	(NULL, uri, view));
 	} else {
 		nautilus_choose_application_for_file 
 			(file,
-			 GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))),
+			 get_containing_window (view),
 			 fm_directory_view_chose_application_callback,
 			 application_launch_parameters_new
 			 	(NULL, uri, view));

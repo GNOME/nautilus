@@ -26,10 +26,13 @@
 #include <config.h>
 #include "nautilus-program-choosing.h"
 
+#include "nautilus-file-utilities.h"
+#include "nautilus-gnome-extensions.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-chooser.h"
 #include "nautilus-string.h"
 
+#include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <stdlib.h>
 
@@ -210,21 +213,50 @@ nautilus_choose_application_for_file (NautilusFile *file,
 }				    
 
 /**
- * nautilus_launch_application:
+ * nautilus_launch_application_parented:
  * 
  * Fork off a process to launch an application with a given uri as
- * a parameter.
+ * a parameter. Provide a parent window for error dialogs.
  * 
  * @application: The application to be launched.
- * @uri: Passed as a parameter to the application. "file://" is stripped
- * from the beginning if present.
+ * @uri: Passed as a parameter to the application.
+ * @parent: A window to use as the parent for any error dialogs.
+ * 
  */
 void
-nautilus_launch_application (GnomeVFSMimeApplication *application, const char *uri)
+nautilus_launch_application_parented (GnomeVFSMimeApplication *application, 
+				      const char *uri, 
+				      GtkWindow *parent)
 {
+	GtkWidget *dialog;
 	char *command_string;
+	char *uri_or_path;
+	char *prompt;
 
-	/* FIXME: make this respect the can_open_uris setting . */
+	/* Always use local path if we can get one, even for apps that can
+	 * deal with uris. This is done only for convenience.
+	 */
+	uri_or_path = nautilus_get_local_path_from_uri (uri);
+
+	if (uri_or_path == NULL) {
+		if (!application->can_open_uris) {
+			/* This application can't deal with this uri, because it
+			 * can only handle local files. Tell user. Some day we could offer
+			 * to copy it locally for the user, if we knew where to put it.
+			 */
+			prompt = g_strdup_printf (_("Sorry, %s can only open local files, and "
+						    "\"%s\" is remote. If you want to open it "
+						    "with %s, make a local copy first."), 
+						  application->name, uri, application->name);
+			dialog = nautilus_error_dialog_parented (prompt, parent);
+			gtk_window_set_title (GTK_WINDOW (dialog), _("Can't open remote file"));
+			
+			g_free (prompt);
+			return;
+		}
+		
+		uri_or_path = g_strdup (uri);
+	}		
 
 	if (application->requires_terminal) {
 		command_string = g_strconcat ("gnome-terminal -x ", application->command, NULL);
@@ -232,9 +264,25 @@ nautilus_launch_application (GnomeVFSMimeApplication *application, const char *u
 		command_string = g_strdup (application->command);
 	}
 
-	nautilus_launch_application_from_command (command_string, uri);
+	nautilus_launch_application_from_command (command_string, uri_or_path);
 
+	g_free (uri_or_path);
 	g_free (command_string);
+}
+
+/**
+ * nautilus_launch_application:
+ * 
+ * Fork off a process to launch an application with a given uri as
+ * a parameter.
+ * 
+ * @application: The application to be launched.
+ * @uri: Passed as a parameter to the application.
+ */
+void
+nautilus_launch_application (GnomeVFSMimeApplication *application, const char *uri)
+{
+	nautilus_launch_application_parented (application, uri, NULL);
 }
 
 
@@ -246,23 +294,15 @@ nautilus_launch_application (GnomeVFSMimeApplication *application, const char *u
  * 
  * @command_string: The application to be launched, with any desired
  * command-line options.
- * @uri: Passed as a parameter to the application. "file://" is stripped
- * from the beginning if present.
+ * @uri: Passed as a parameter to the application as is.
  */
 void
 nautilus_launch_application_from_command (const char *command_string, const char *uri)
 {
-	const char *uri_parameter;
 	char *full_command;
 
-	if (nautilus_str_has_prefix (uri, "file://")) {
-		uri_parameter = uri + 7;
-	} else {
-		uri_parameter = uri;
-	}
-
-	if (uri_parameter != NULL) {
-		full_command = g_strconcat (command_string, " ", uri_parameter, " &", NULL);
+	if (uri != NULL) {
+		full_command = g_strconcat (command_string, " ", uri, " &", NULL);
 	} else {
 		full_command = g_strconcat (command_string, " &", NULL);
 	}

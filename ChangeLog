@@ -1,3 +1,29 @@
+2000-06-24  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 585 (Handle handing URI to programs that
+	can only handle local paths). After talking to Darin,
+	decided not to do some automagic local-copying in this
+	case. Instead, Nautilus detects the case and puts up an
+	alert explaining the situation instead of launching the app.
+
+	* libnautilus-extensions/nautilus-program-choosing.h,
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_launch_application_parented): New function, just
+	like nautilus_launch_application but takes a parent window
+	for error dialogs. Checks whether the application can
+	handle uris and if not puts up an alert.
+	(nautilus_launch_application): Guts moved to _parented call,
+	which this now calls.
+	(nautilus_launch_application_from_command): No longer converts
+	the uri to a local path here; callers have to handle this
+	themselves if they want to.
+	* src/file-manager/fm-directory-view.c: 
+	(get_containing_window): New utility function, returns the
+	GtkWindow that the directory view is in.
+	(fm_directory_view_launch_application): Now calls new
+	nautilus_launch_application_parented.
+	(choose_program): Now calls get_containing_window.
+
 2000-06-24  Pavel  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-async.c:
