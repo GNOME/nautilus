@@ -54,6 +54,7 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-mime-utils.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -822,6 +823,32 @@ selection_includes_special_link (GList *selection_list)
 	return link_in_selection;
 }
 
+static gboolean
+selection_is_image_file (GList *selection_list)
+{
+	char *mime_type;
+	NautilusDragSelectionItem *selected_item;
+	gboolean result;
+
+	/* Make sure only one item is selected */
+	if (selection_list == NULL ||
+	    selection_list->next != NULL) {
+		return FALSE;
+	}
+
+	selected_item = selection_list->data;
+
+	mime_type = gnome_vfs_get_mime_type (selected_item->uri);
+
+	result = (g_ascii_strcasecmp (mime_type, "image/svg") != 0 &&
+		  eel_istr_has_prefix (mime_type, "image/"));
+	
+	g_free (mime_type);
+	
+	return result;
+}
+
+
 static void
 nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 					       GdkDragContext *context,
@@ -832,6 +859,7 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 	double world_x, world_y;
 	gboolean icon_hit;
 	GdkDragAction action;
+	NautilusDragSelectionItem *selected_item;
 
 	drop_target = NULL;
 
@@ -847,10 +875,22 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 			action = GDK_ACTION_MOVE;
 		} else {
 			action = GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK;
+			
+			if (selection_is_image_file (container->details->dnd_info->drag_info.selection_list)) {
+				action |= NAUTILUS_DND_ACTION_SET_AS_BACKGROUND;
+			}
 		}
 		context->action = nautilus_drag_drop_action_ask (action);
 	}
-
+	
+	if (context->action == NAUTILUS_DND_ACTION_SET_AS_BACKGROUND) {
+		selected_item = container->details->dnd_info->drag_info.selection_list->data;
+		eel_background_receive_dropped_background_image
+			(eel_get_widget_background (GTK_WIDGET (container)),
+			 selected_item->uri);
+		return;
+	}
+		
 	if (context->action > 0) {
 	  	eel_gnome_canvas_widget_to_world (GNOME_CANVAS (container),
 						  x, y, &world_x, &world_y);
@@ -883,8 +923,7 @@ static void
 nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 					 GdkDragContext *context,
 					 int x, int y,
-					 int *default_action,
-					 int *non_default_action)
+					 int *action)
 {
 	char *drop_target;
 	gboolean icon_hit;
@@ -903,8 +942,7 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 	
 	icon = nautilus_icon_container_item_at (container, world_x, world_y);
 
-	*default_action = 0;
-	*non_default_action = 0;
+	*action = 0;
 
 	/* case out on the type of object being dragged */
 	switch (container->details->dnd_info->drag_info.data_type) {
@@ -919,15 +957,14 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 		}
 		nautilus_drag_default_drop_action_for_icons (context, drop_target, 
 			container->details->dnd_info->drag_info.selection_list, 
-			default_action, non_default_action);
+			action);
 		g_free (drop_target);
 		break;
 
 	/* handle emblems by setting the action if we're over an object */
 	case NAUTILUS_ICON_DND_KEYWORD:
 		if (icon != NULL) {
-			*default_action = context->suggested_action;
-			*non_default_action = context->suggested_action;
+			*action = context->suggested_action;
 		}
 		break;
 	
@@ -936,15 +973,13 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 	case NAUTILUS_ICON_DND_BGIMAGE:
 	case NAUTILUS_ICON_DND_RESET_BACKGROUND:
 		if (icon == NULL) {
-			*default_action = context->suggested_action;
-			*non_default_action = context->suggested_action;
+			*action = context->suggested_action;
 		}	
 		break;
 	
 	case NAUTILUS_ICON_DND_URI_LIST:
 	case NAUTILUS_ICON_DND_URL:
-		*default_action = context->suggested_action;
-		*non_default_action = context->suggested_action;
+		*action = context->suggested_action;
 		break;
 
 	case NAUTILUS_ICON_DND_TEXT:
@@ -1109,8 +1144,7 @@ drag_motion_callback (GtkWidget *widget,
 		      int x, int y,
 		      guint32 time)
 {
-	int default_action, non_default_action;
-	int resulting_action;
+	int action;
 	
 	nautilus_icon_container_ensure_drag_data (NAUTILUS_ICON_CONTAINER (widget), context, time);
 	nautilus_icon_container_position_shadow (NAUTILUS_ICON_CONTAINER (widget), x, y);
@@ -1119,14 +1153,10 @@ drag_motion_callback (GtkWidget *widget,
 	/* Find out what the drop actions are based on our drag selection and
 	 * the drop target.
 	 */
+	action = 0;
 	nautilus_icon_container_get_drop_action (NAUTILUS_ICON_CONTAINER (widget), context, x, y,
-						 &default_action, &non_default_action);
-
-	/* set the right drop action, choose based on modifier key state
-	 */
-	resulting_action = nautilus_drag_modifier_based_action (default_action, 
-								non_default_action);
-	gdk_drag_status (context, resulting_action, time);
+						 &action);
+	gdk_drag_status (context, action, time);
 
 	return TRUE;
 }

@@ -252,7 +252,7 @@ nautilus_drag_items_in_trash (const GList *selection_list)
 void
 nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 	const char *target_uri_string, const GList *items,
-	int *default_action, int *non_default_action)
+	int *action)
 {
 	gboolean same_fs;
 	GnomeVFSURI *target_uri;
@@ -261,53 +261,49 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 	GnomeVFSResult result;
 
 	if (target_uri_string == NULL) {
-		*default_action = 0;
-		*non_default_action = 0;
+		*action = 0;
 		return;
 	}
 
 	actions = context->actions & (GDK_ACTION_MOVE | GDK_ACTION_COPY);
 	if (actions == 0) {
-		 /* We can't use copy or move, just go with the suggested action.
-		  * 
-		  * Note: it would be more correct to only choose between move
-		  * and copy if both are specified in context->actions.
-		  * There is a problem in gtk-dnd.c though where context->actions
-		  * gets set only to copy when Control is held down, despite the
-		  * fact that bot copy and move were requested.
-		  * 
-		  */
-		*default_action = context->suggested_action;
-		*non_default_action = context->suggested_action;
+		 /* We can't use copy or move, just go with the suggested action. */
+		*action = context->suggested_action;
 		return;
 	}
 
+	if (context->suggested_action == GDK_ACTION_ASK) {
+		/* Don't override ask */
+		*action = context->suggested_action;
+		return;
+	}
+	
 	/* Check for trash URI.  We do a find_directory for any Trash directory. */
 	if (eel_uri_is_trash (target_uri_string)) {
 		result = gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH,
 						   &target_uri, TRUE, FALSE, 0777);
 		if (result != GNOME_VFS_OK) {
-			*default_action = 0;
-			*non_default_action = 0;
+			*action = 0;
 			return;
 		}
 
 		/* Only move to Trash */
-		*default_action = GDK_ACTION_MOVE;
-		*non_default_action = GDK_ACTION_MOVE;
+		if (actions & GDK_ACTION_MOVE) {
+			*action = GDK_ACTION_MOVE;
+		}
 		return;
 
 	} else if (eel_str_has_prefix (target_uri_string, COMMAND_SPECIFIER)) {
-		*default_action = GDK_ACTION_MOVE;
-		*non_default_action = GDK_ACTION_MOVE;
+		if (actions & GDK_ACTION_MOVE) {
+			*action = GDK_ACTION_MOVE;
+		}
 		return;
 	} else {
 		target_uri = gnome_vfs_uri_new (target_uri_string);
 	}
 
 	if (target_uri == NULL) {
-		*default_action = 0;
-		*non_default_action = 0;
+		*action = 0;
 		return;
 	}
 
@@ -320,11 +316,17 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 	gnome_vfs_uri_unref (target_uri);
 	
 	if (same_fs) {
-		*default_action = GDK_ACTION_MOVE;
-		*non_default_action = GDK_ACTION_COPY;
+		if (actions & GDK_ACTION_MOVE) {
+			*action = GDK_ACTION_MOVE;
+		} else {
+			*action = context->suggested_action;
+		}
 	} else {
-		*default_action = GDK_ACTION_COPY;
-		*non_default_action = GDK_ACTION_MOVE;
+		if (actions & GDK_ACTION_MOVE) {
+			*action = GDK_ACTION_COPY;
+		} else {
+			*action = context->suggested_action;
+		}
 	}
 }
 
@@ -473,23 +475,6 @@ nautilus_drag_drag_data_get (GtkWidget *widget,
 	return TRUE;
 }
 
-int
-nautilus_drag_modifier_based_action (int default_action, int non_default_action)
-{
-	GdkModifierType modifiers;
-	gdk_window_get_pointer (NULL, NULL, NULL, &modifiers);
-	
-	if ((modifiers & GDK_CONTROL_MASK) != 0) {
-		return non_default_action;
-	} else if ((modifiers & GDK_SHIFT_MASK) != 0) {
-		return GDK_ACTION_LINK;
-	} else if ((modifiers & GDK_MOD1_MASK) != 0) {
-		return GDK_ACTION_ASK;
-	}
-
-	return default_action;
-}
-
 typedef struct
 {
 	GMainLoop *loop;
@@ -573,6 +558,11 @@ nautilus_drag_drop_action_ask (GdkDragAction actions)
 	append_drop_action_menu_item (menu, _("_Link here"),
 				      GDK_ACTION_LINK,
 				      (actions & GDK_ACTION_LINK) != 0,
+				      &damd);
+
+	append_drop_action_menu_item (menu, _("Set as _Background"),
+				      NAUTILUS_DND_ACTION_SET_AS_BACKGROUND,
+				      (actions & NAUTILUS_DND_ACTION_SET_AS_BACKGROUND) != 0,
 				      &damd);
 
 	menu_item = gtk_separator_menu_item_new ();

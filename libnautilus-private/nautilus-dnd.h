@@ -59,6 +59,11 @@ typedef enum {
 	NAUTILUS_ICON_DND_RESET_BACKGROUND
 } NautilusIconDndTargetType;
 
+typedef enum {
+	NAUTILUS_DND_ACTION_FIRST = GDK_ACTION_ASK << 1,
+	NAUTILUS_DND_ACTION_SET_AS_BACKGROUND = NAUTILUS_DND_ACTION_FIRST << 0
+} NautilusDndAction;
+
 /* drag&drop-related information. */
 typedef struct {
 	GtkTargetList *target_list;
@@ -99,40 +104,40 @@ typedef void 		(* NautilusDragEachSelectedItemIterator)	(NautilusDragEachSelecte
 								 gpointer iterator_context, 
 								 gpointer data);
 
-void                   nautilus_drag_init                          (NautilusDragInfo                     *drag_info,
-							       const GtkTargetEntry            *drag_types,
-							       int                              drag_type_count,
-							       GdkBitmap                       *stipple);
-void                   nautilus_drag_finalize                      (NautilusDragInfo                     *drag_info);
+void                        nautilus_drag_init                          (NautilusDragInfo                     *drag_info,
+									 const GtkTargetEntry                 *drag_types,
+									 int                                   drag_type_count,
+									 GdkBitmap                            *stipple);
+void                        nautilus_drag_finalize                      (NautilusDragInfo                     *drag_info);
 NautilusDragSelectionItem  *nautilus_drag_selection_item_new            (void);
-void                   nautilus_drag_destroy_selection_list        (GList                           *selection_list);
-GList 		      *nautilus_drag_build_selection_list          (GtkSelectionData                *data);
-gboolean               nautilus_drag_items_local                   (const char                      *target_uri,
-							       const GList                     *selection_list);
-gboolean               nautilus_drag_items_in_trash                (const GList                     *selection_list);
-void                   nautilus_drag_default_drop_action_for_icons (GdkDragContext                  *context,
-							       const char                      *target_uri,
-							       const GList                     *items,
-							       int                             *default_action,
-							       int                             *non_default_action);
-gboolean               nautilus_drag_drag_data_get                 (GtkWidget                       *widget,
-							       GdkDragContext                  *context,
-							       GtkSelectionData                *selection_data,
-							       guint                            info,
-							       guint32                          time,
-							       gpointer                         container_context,
-							       NautilusDragEachSelectedItemIterator  each_selected_item_iterator);
-int                    nautilus_drag_modifier_based_action         (int                              default_action,
-							       int                              non_default_action);
-GdkDragAction          nautilus_drag_drop_action_ask               (GdkDragAction                    possible_actions);
-gboolean               nautilus_drag_autoscroll_in_scroll_region   (GtkWidget                       *widget);
-void                   nautilus_drag_autoscroll_calculate_delta    (GtkWidget                       *widget,
-							       float                           *x_scroll_delta,
-							       float                           *y_scroll_delta);
-void                   nautilus_drag_autoscroll_start              (NautilusDragInfo                     *drag_info,
-							       GtkWidget                       *widget,
-							       GtkFunction                      callback,
-							       gpointer                         user_data);
-void                   nautilus_drag_autoscroll_stop               (NautilusDragInfo                     *drag_info);
+void                        nautilus_drag_destroy_selection_list        (GList                                *selection_list);
+GList 		           *nautilus_drag_build_selection_list          (GtkSelectionData                     *data);
+gboolean                    nautilus_drag_items_local                   (const char                           *target_uri,
+									 const GList                          *selection_list);
+gboolean                    nautilus_drag_items_in_trash                (const GList                          *selection_list);
+void                        nautilus_drag_default_drop_action_for_icons (GdkDragContext                       *context,
+									 const char                           *target_uri,
+									 const GList                          *items,
+									 int                                  *action);
+gboolean                    nautilus_drag_drag_data_get                 (GtkWidget                            *widget,
+									 GdkDragContext                       *context,
+									 GtkSelectionData                     *selection_data,
+									 guint                                 info,
+									 guint32                               time,
+									 gpointer                              container_context,
+									 NautilusDragEachSelectedItemIterator  each_selected_item_iterator);
+int                         nautilus_drag_modifier_based_action         (int                                   default_action,
+									 int                                   non_default_action);
+GdkDragAction               nautilus_drag_drop_action_ask               (GdkDragAction                         possible_actions);
+gboolean                    nautilus_drag_autoscroll_in_scroll_region   (GtkWidget                            *widget);
+void                        nautilus_drag_autoscroll_calculate_delta    (GtkWidget                            *widget,
+									 float                                *x_scroll_delta,
+									 float                                *y_scroll_delta);
+void                        nautilus_drag_autoscroll_start              (NautilusDragInfo                     *drag_info,
+									 GtkWidget                            *widget,
+									 GtkFunction                           callback,
+									 gpointer                              user_data);
+void                        nautilus_drag_autoscroll_stop               (NautilusDragInfo                     *drag_info);
+
 
 #endif

@@ -1,5 +1,18 @@
 2002-04-27  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-dnd.c:
+	(nautilus_drag_default_drop_action_for_icons),
+	(nautilus_drag_drop_action_ask):
+	* libnautilus-private/nautilus-dnd.h:
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(selection_is_image_file),
+	(nautilus_icon_container_receive_dropped_icons),
+	(nautilus_icon_container_get_drop_action), (drag_motion_callback):
+	Make dnd modifiers behave like standard Gtk+ (#76789).
+	Implemented "Set as Background" for dnd action == ASK.
+
+2002-04-27  Alexander Larsson  <alexl@redhat.com>
+
 	* data/preferences.desktop.in:
 	Name is now "Desktop Preferences"
 	
