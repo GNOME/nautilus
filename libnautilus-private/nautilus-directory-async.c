@@ -610,7 +610,7 @@ mime_db_changed_callback (GnomeVFSMIMEMonitor *ignore, NautilusDirectory *dir)
 		if (monitor->request.file_info && monitor->file != NULL) {
 			if (nautilus_file_is_self_owned (monitor->file)) {
 				nautilus_file_emit_changed (monitor->file);
-				nautilus_file_invalidate_attributes (ptr->data, attrs);
+				nautilus_file_invalidate_attributes (monitor->file, attrs);
 			} else {
 				file_list = g_list_prepend (file_list, 
 							    monitor->file);
@@ -622,8 +622,9 @@ mime_db_changed_callback (GnomeVFSMIMEMonitor *ignore, NautilusDirectory *dir)
 	if (file_list) {
 		nautilus_directory_emit_change_signals (dir, file_list);
 
-		for (ptr = file_list; ptr != NULL; ptr = ptr->next)
+		for (ptr = file_list; ptr != NULL; ptr = ptr->next) {
 			nautilus_file_invalidate_attributes (ptr->data, attrs);
+		}
 		g_list_free (file_list);
 	}
 	g_list_free (attrs);
