@@ -694,11 +694,17 @@ make_drag_image (NautilusPropertyBrowser *property_browser, const char* file_nam
 	gboolean is_reset;
 
 	if (property_browser->details->category_type == NAUTILUS_PROPERTY_EMBLEM) {
-		icon_name = nautilus_emblem_get_icon_name_from_keyword (file_name);
-		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_name, NULL,
-								     NAUTILUS_ICON_SIZE_STANDARD,
-								     NULL);
-		g_free (icon_name);
+		if (strcmp (file_name, "erase") == 0) {
+			image_file_name = nautilus_pixmap_file (ERASE_OBJECT_NAME);
+			pixbuf = gdk_pixbuf_new_from_file (image_file_name, NULL);
+			g_free (image_file_name);
+		} else {
+			icon_name = nautilus_emblem_get_icon_name_from_keyword (file_name);
+			pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_name, NULL,
+									     NAUTILUS_ICON_SIZE_STANDARD,
+									     NULL);
+			g_free (icon_name);
+		}
 		return pixbuf;
 	}
 
@@ -1606,12 +1612,14 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 	GdkPixbuf *object_pixbuf;
 	EelImageTable *image_table;
 	GtkWidget *reset_object = NULL;
-	GtkWidget *erase_object = NULL;
 	GList *icons, *l;
 	char *icon_name;
 	char *keyword;
 	char *extension;
 	GtkWidget *property_image;
+	GtkWidget *blank;
+	guint num_images;
+	char *path;
 
 	g_return_if_fail (NAUTILUS_IS_PROPERTY_BROWSER (property_browser));
 	g_return_if_fail (EEL_IS_IMAGE_TABLE (property_browser->details->content_table));
@@ -1652,15 +1660,6 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 									      keyword);
 
 			gtk_container_add (GTK_CONTAINER (image_table), property_image);
-			gtk_widget_show (property_image);
-
-			/* Keep track of ERASE objects to place them prominently later */
-			if (eel_str_is_equal (object_name, ERASE_OBJECT_NAME)) {
-				g_assert (erase_object == NULL);
-				erase_object = property_image;
-				/* Keep track of RESET objects to place them prominently later */
-			}
-			
 			gtk_widget_show (property_image);
 					
 			g_free (object_name);
@@ -1711,26 +1710,29 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 	/*
 	 * We place ERASE objects (for emblems) at the end with a blank in between.
 	 */
-	if (erase_object != NULL) {
-		GtkWidget *blank;
-		guint num_images;
 
-		g_assert (EEL_IS_LABELED_IMAGE (erase_object));
+	blank = eel_image_table_add_empty_image (image_table);
+	labeled_image_configure (EEL_LABELED_IMAGE (blank));
+		
+	num_images = eel_wrap_table_get_num_children (EEL_WRAP_TABLE (image_table));
+	g_assert (num_images > 0);
+	eel_wrap_table_reorder_child (EEL_WRAP_TABLE (image_table),
+				      blank,
+				      num_images - 1);
+		
+	gtk_widget_show (blank);
+	
+	path = nautilus_pixmap_file (ERASE_OBJECT_NAME);
+	object_pixbuf = gdk_pixbuf_new_from_file (path, NULL);
+	g_free (path);
+	property_image = labeled_image_new (_("Erase"), object_pixbuf, "erase", PANGO_SCALE_LARGE);
+	eel_labeled_image_set_fixed_image_height (EEL_LABELED_IMAGE (property_image), MAX_EMBLEM_HEIGHT);
 
-		blank = eel_image_table_add_empty_image (image_table);
-		labeled_image_configure (EEL_LABELED_IMAGE (blank));
-		
-		num_images = eel_wrap_table_get_num_children (EEL_WRAP_TABLE (image_table));
-		g_assert (num_images > 0);
-		eel_wrap_table_reorder_child (EEL_WRAP_TABLE (image_table),
-						   blank,
-						   num_images - 1);
-		
-		gtk_widget_show (blank);
-		eel_wrap_table_reorder_child (EEL_WRAP_TABLE (image_table),
-						   erase_object,
-						   -1);
-	}
+	gtk_container_add (GTK_CONTAINER (image_table), property_image);
+	gtk_widget_show (property_image);
+	
+	eel_wrap_table_reorder_child (EEL_WRAP_TABLE (image_table),
+				      property_image, -1);
 
 	/*
 	 * We place RESET objects (for colors and patterns) at the beginning.
