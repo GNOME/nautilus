@@ -1,6 +1,15 @@
 2000-10-19  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_error_dialog), (generate_login_dialog),
+	(nautilus_summary_view_load_uri):
+
+	Fixing dialogs and error control cases.  Works a little better now
+	but still doesn't destroy the error dialogs like its supposed to do.
+
+2000-10-19  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
 	: (logged_in_callback):
 
 	Fixing login callback so that view does not crash.

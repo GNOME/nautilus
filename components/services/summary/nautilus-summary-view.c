@@ -56,6 +56,8 @@
 
 #define	URL_REDIRECT_TABLE_HOME			"eazel-services://anonymous/services/urls"
 #define	URL_REDIRECT_TABLE_HOME_2		"eazel-services:/services/urls"
+#define	SUMMARY_CONFIG_XML			"eazel-services://anonymous/services"
+#define	SUMMARY_CONFIG_XML_2			"eazel-services:/services"
 
 #define SUMMARY_XML_KEY				"eazel_summary_xml"
 #define URL_REDIRECT_TABLE			"eazel_url_table_xml"
@@ -987,7 +989,7 @@ generate_error_dialog (NautilusSummaryView *view)
 
 	dialog = NULL;
 
-	dialog = gnome_dialog_new (_("Service Error"), GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL);
+	dialog = gnome_dialog_new (_("Service Error"), _("Retry"), GNOME_STOCK_BUTTON_CANCEL, NULL);
 
 	gtk_signal_connect (GTK_OBJECT (dialog), "destroy", GTK_SIGNAL_FUNC (gtk_widget_destroyed), &dialog);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);
@@ -1018,7 +1020,8 @@ generate_error_dialog (NautilusSummaryView *view)
 	gtk_widget_show (GTK_WIDGET (dialog));
 	gnome_dialog_button_connect (GNOME_DIALOG (dialog), 0, GTK_SIGNAL_FUNC (error_dialog_retry_cb), view);
 	gnome_dialog_button_connect (GNOME_DIALOG (dialog), 1, GTK_SIGNAL_FUNC (error_dialog_cancel_cb), view);
-	reply = gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+	reply = gnome_dialog_run (GNOME_DIALOG (dialog));
+
 }
 
 static void
@@ -1033,7 +1036,7 @@ generate_login_dialog (NautilusSummaryView	*view)
 	dialog = NULL;
 	pixmap = NULL;
 
-	dialog = gnome_dialog_new (_("Services Login"), _("Register Now!"), GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL);
+	dialog = gnome_dialog_new (_("Services Login"), _("I forgot my password"), GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL);
 
 	gtk_signal_connect (GTK_OBJECT (dialog), "destroy", GTK_SIGNAL_FUNC (gtk_widget_destroyed), &dialog);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);
@@ -1221,18 +1224,18 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 		got_url_table = trilobite_redirect_fetch_table (URL_REDIRECT_TABLE_HOME_2);
 		if (!got_url_table) {
 			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
-			generate_error_dialog (view);
 		}
-		/* fetch and parse the xml file */
-		url = trilobite_redirect_lookup (SUMMARY_XML_KEY);
-		if (!url) {
-			g_assert ("Failed to get summary xml home !\n");
-		}
-		view->details->xml_data = parse_summary_xml_file (url);
-		g_free (url);
-		if (view->details->xml_data == NULL) {
-			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
-			generate_error_dialog (view);
+		else {
+			/* fetch and parse the xml file */
+			url = trilobite_redirect_lookup (SUMMARY_XML_KEY);
+			if (!url) {
+				g_assert ("Failed to get summary xml home !\n");
+			}
+			view->details->xml_data = parse_summary_xml_file (url);
+			g_free (url);
+			if (view->details->xml_data == NULL) {
+				view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
+			}
 		}
 
 	}
@@ -1242,26 +1245,30 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 		got_url_table = trilobite_redirect_fetch_table (URL_REDIRECT_TABLE_HOME);
 		if (!got_url_table) {
 			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
-			generate_error_dialog (view);
 		}
-
-		/* fetch and parse the xml file */
-		url = trilobite_redirect_lookup (SUMMARY_XML_KEY);
-		if (!url) {
-			g_assert ("Failed to get summary xml home !\n");
-		}
-		view->details->xml_data = parse_summary_xml_file (url);
-		g_free (url);
-		if (view->details->xml_data == NULL) {
-			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
-			generate_error_dialog (view);
+		else {
+			/* fetch and parse the xml file */
+			url = trilobite_redirect_lookup (SUMMARY_XML_KEY);
+			if (!url) {
+				g_assert ("Failed to get summary xml home !\n");
+			}
+			view->details->xml_data = parse_summary_xml_file (url);
+			g_free (url);
+			if (view->details->xml_data == NULL) {
+				view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
+			}
 		}
 	}
 
-	generate_summary_form (view);
+	if (got_url_table) {
+		generate_summary_form (view);
+		if (!view->details->logged_in) {
+			generate_login_dialog (view);
+		}
+	}
 
-	if (!view->details->logged_in) {
-		generate_login_dialog (view);
+	else {
+		generate_error_dialog (view);
 	}
 
 }
