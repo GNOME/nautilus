@@ -56,13 +56,13 @@ struct _NautilusPreferencesGroupClass
 	GtkFrameClass	parent_class;
 };
 
-GtkType    nautilus_preferences_group_get_type        (void);
-GtkWidget* nautilus_preferences_group_new             (const gchar                    *title);
-GtkWidget* nautilus_preferences_group_add_item        (NautilusPreferencesGroup       *group,
-						       const char                     *preference_name,
-						       NautilusPreferencesItemType     item_type);
-void       nautilus_preferences_group_update          (NautilusPreferencesGroup       *group);
-guint      nautilus_preferences_get_num_visible_items (const NautilusPreferencesGroup *group);
+GtkType    nautilus_preferences_group_get_type              (void);
+GtkWidget* nautilus_preferences_group_new                   (const gchar                    *title);
+GtkWidget* nautilus_preferences_group_add_item              (NautilusPreferencesGroup       *group,
+							     const char                     *preference_name,
+							     NautilusPreferencesItemType     item_type);
+void       nautilus_preferences_group_update                (NautilusPreferencesGroup       *group);
+guint      nautilus_preferences_group_get_num_visible_items (const NautilusPreferencesGroup *group);
 
 END_GNOME_DECLS
 

@@ -1,3 +1,56 @@
+2001-01-29  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Arik Devens  <arik@eazel.com>
+
+	Bug fixes.
+
+	5776 - Preferences dialog layout updates incorrectly after
+	switching user level.
+
+	5791 - Preference section title are visible even when section is
+	empty.
+	
+	* libnautilus-extensions/nautilus-preferences-box.h:
+	* libnautilus-extensions/nautilus-preferences-box.c:
+	(nautilus_preferences_box_initialize_class),
+	(nautilus_preferences_box_initialize),
+	(nautilus_preferences_box_destroy), (preferences_box_select_pane),
+	(preferences_box_category_list_recreate), (pane_info_new),
+	(pane_info_free), (category_list_select_row_callback),
+	(nautilus_preferences_box_new),
+	(nautilus_preferences_box_add_pane),
+	(nautilus_preferences_box_update):
+	Lots of cleanup.  Fix typos in many class macros and methods.
+	Comply with the Nautilus style more.  Remove unused code.
+
+	Recreate the category list whenever the preference box gets
+	updated in order to honor user level visibilities.
+
+	* libnautilus-extensions/nautilus-preferences-dialog.h:
+	* libnautilus-extensions/nautilus-preferences-dialog.c:
+	(nautilus_preferences_dialog_destroy),
+	(nautilus_preferences_dialog_get_prefs_box),
+	(nautilus_preferences_dialog_update),
+	(user_level_changed_callback):
+	Fix class macros typos.
+	
+	* libnautilus-extensions/nautilus-preferences-group.h:
+	* libnautilus-extensions/nautilus-preferences-group.c:
+	(nautilus_preferences_group_get_num_visible_items):
+	Fix misspelled method.
+	
+	* libnautilus-extensions/nautilus-preferences-pane.h:
+	* libnautilus-extensions/nautilus-preferences-pane.c:
+	(nautilus_preferences_pane_destroy),
+	(nautilus_preferences_pane_set_title),
+	(nautilus_preferences_pane_set_description),
+	(nautilus_preferences_pane_add_group),
+	(nautilus_preferences_pane_add_item_to_nth_group),
+	(nautilus_preferences_pane_update),
+	(nautilus_preferences_pane_get_num_visible_groups):
+	Lots of cleanup.  Remove unused and crufty code.  Made the widget
+	a lot simpler.
+	
 2001-01-29  Arik Devens  <arik@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>

@@ -31,37 +31,37 @@
 
 BEGIN_GNOME_DECLS
 
-#define NAUTILUS_TYPE_PREFS_BOX            (nautilus_preferences_box_get_type ())
-#define NAUTILUS_PREFERENCES_BOX(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_PREFS_BOX, NautilusPreferencesBox))
-#define NAUTILUS_PREFERENCES_BOX_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PREFS_BOX, NautilusPreferencesBoxClass))
-#define NAUTILUS_IS_PREFS_BOX(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_PREFS_BOX))
-#define NAUTILUS_IS_PREFS_BOX_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_PREFS_BOX))
+#define NAUTILUS_TYPE_PREFERENCES_BOX            (nautilus_preferences_box_get_type ())
+#define NAUTILUS_PREFERENCES_BOX(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_PREFERENCES_BOX, NautilusPreferencesBox))
+#define NAUTILUS_PREFERENCES_BOX_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PREFERENCES_BOX, NautilusPreferencesBoxClass))
+#define NAUTILUS_IS_PREFERENCES_BOX(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_PREFERENCES_BOX))
+#define NAUTILUS_IS_PREFERENCES_BOX_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_PREFERENCES_BOX))
 
-typedef struct _NautilusPreferencesBox	   NautilusPreferencesBox;
+typedef struct _NautilusPreferencesBox		 NautilusPreferencesBox;
 typedef struct _NautilusPreferencesBoxClass      NautilusPreferencesBoxClass;
 typedef struct _NautilusPreferencesBoxDetails    NautilusPreferencesBoxDetails;
 
 struct _NautilusPreferencesBox
 {
 	/* Super Class */
-	GtkHBox				hbox;
+	GtkHBox hbox;
 
 	/* Private stuff */
-	NautilusPreferencesBoxDetails	*details;
+	NautilusPreferencesBoxDetails *details;
 };
 
 struct _NautilusPreferencesBoxClass
 {
-	GtkHBoxClass	parent_class;
-
-	void (*activate) (GtkWidget * prefs_box, gint entry_number);
+	GtkHBoxClass parent_class;
+	
+	void (*activate) (GtkWidget *preferences_box, gint entry_number);
 };
 
 GtkType    nautilus_preferences_box_get_type (void);
-GtkWidget* nautilus_preferences_box_new      (const gchar            *box_title);
+GtkWidget* nautilus_preferences_box_new      (const char             *box_title);
 GtkWidget* nautilus_preferences_box_add_pane (NautilusPreferencesBox *prefs_box,
-					      const gchar            *pane_title,
-					      const gchar            *pane_description);
+					      const char             *pane_title,
+					      const char             *pane_description);
 void       nautilus_preferences_box_update   (NautilusPreferencesBox *prefs_box);
 
 END_GNOME_DECLS

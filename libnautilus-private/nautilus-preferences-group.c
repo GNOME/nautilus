@@ -250,7 +250,7 @@ nautilus_preferences_group_update (NautilusPreferencesGroup *group)
 }
 
 guint
-nautilus_preferences_get_num_visible_items (const NautilusPreferencesGroup *group)
+nautilus_preferences_group_get_num_visible_items (const NautilusPreferencesGroup *group)
 {
 	guint n = 0;
 	GList *iterator;

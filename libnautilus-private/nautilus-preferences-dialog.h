@@ -30,11 +30,11 @@
 
 BEGIN_GNOME_DECLS
 
-#define NAUTILUS_TYPE_PREFS_DIALOG            (nautilus_preferences_dialog_get_type ())
-#define NAUTILUS_PREFERENCES_DIALOG(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_PREFS_DIALOG, NautilusPreferencesDialog))
-#define NAUTILUS_PREFERENCES_DIALOG_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PREFS_DIALOG, NautilusPreferencesDialogClass))
-#define NAUTILUS_IS_PREFS_DIALOG(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_PREFS_DIALOG))
-#define NAUTILUS_IS_PREFS_DIALOG_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_PREFS_DIALOG))
+#define NAUTILUS_TYPE_PREFERENCES_DIALOG            (nautilus_preferences_dialog_get_type ())
+#define NAUTILUS_PREFERENCES_DIALOG(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_PREFERENCES_DIALOG, NautilusPreferencesDialog))
+#define NAUTILUS_PREFERENCES_DIALOG_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PREFERENCES_DIALOG, NautilusPreferencesDialogClass))
+#define NAUTILUS_IS_PREFERENCES_DIALOG(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_PREFERENCES_DIALOG))
+#define NAUTILUS_IS_PREFERENCES_DIALOG_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_PREFERENCES_DIALOG))
 
 
 typedef struct _NautilusPreferencesDialog	      NautilusPreferencesDialog;

@@ -237,7 +237,7 @@ nautilus_preferences_dialog_destroy(GtkObject* object)
 	NautilusPreferencesDialog * prefs_dialog;
 	
 	g_return_if_fail (object != NULL);
-	g_return_if_fail (NAUTILUS_IS_PREFS_DIALOG (object));
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_DIALOG (object));
 	
 	prefs_dialog = NAUTILUS_PREFERENCES_DIALOG(object);
 
@@ -254,7 +254,7 @@ GtkWidget*
 nautilus_preferences_dialog_get_prefs_box (NautilusPreferencesDialog *prefs_dialog)
 {
 	g_return_val_if_fail (prefs_dialog != NULL, NULL);
-	g_return_val_if_fail (NAUTILUS_IS_PREFS_DIALOG (prefs_dialog), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_DIALOG (prefs_dialog), NULL);
 
 	return prefs_dialog->details->prefs_box;
 }
@@ -262,7 +262,7 @@ nautilus_preferences_dialog_get_prefs_box (NautilusPreferencesDialog *prefs_dial
 void
 nautilus_preferences_dialog_update (NautilusPreferencesDialog *preferences_dialog)
 {
-	g_return_if_fail (NAUTILUS_IS_PREFS_DIALOG (preferences_dialog));
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_DIALOG (preferences_dialog));
 
 	nautilus_preferences_box_update (NAUTILUS_PREFERENCES_BOX (preferences_dialog->details->prefs_box));
 }
@@ -270,7 +270,7 @@ nautilus_preferences_dialog_update (NautilusPreferencesDialog *preferences_dialo
 static void
 user_level_changed_callback (gpointer callback_data)
 {
-	g_return_if_fail (NAUTILUS_IS_PREFS_DIALOG (callback_data));
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_DIALOG (callback_data));
 
 	nautilus_preferences_dialog_update (NAUTILUS_PREFERENCES_DIALOG (callback_data));
 }
