@@ -79,6 +79,17 @@ bonobo_control_get_label(NautilusView *view, CORBA_Environment *ev)
   return g_strdup_printf(_("Control %p"), view);
 }
 
+static void
+bonobo_control_notify_location_change(NautilusView *view, Nautilus_NavigationInfo *real_nav_ctx, CORBA_Environment *ev)
+{
+  Nautilus_ProgressRequestInfo pri;
+  pri.amount = 0;
+  pri.type = Nautilus_PROGRESS_UNDERWAY;
+  nautilus_view_request_progress_change(view, &pri);
+  pri.type = Nautilus_PROGRESS_DONE_OK;
+  nautilus_view_request_progress_change(view, &pri);
+}
+
 NautilusViewComponentType bonobo_control_component_type = {
   "IDL:GNOME/Control:1.0",
   &bonobo_control_try_load_client, /* try_load */
@@ -86,7 +97,7 @@ NautilusViewComponentType bonobo_control_component_type = {
   NULL, /* show_properties */
   NULL, /* save_state */
   NULL, /* load_state */
-  NULL, /* notify_location_change */
+  &bonobo_control_notify_location_change, /* notify_location_change */
   NULL, /* notify_selection_change */
   NULL, /* stop_location_change */
   &bonobo_control_get_label /* get_label */

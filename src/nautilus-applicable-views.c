@@ -110,39 +110,39 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
 
   /* This is just a hardcoded hack until OAF works with Bonobo.
      In the future we will use OAF queries to determine this information. */
-  if(navinfo->navinfo.content_type)
+  if(!navinfo->navinfo.content_type)
+    navinfo->navinfo.content_type = g_strdup("text/plain");
+
+  if(!strcmp(navinfo->navinfo.content_type, "text/html"))
     {
-      if(!strcmp(navinfo->navinfo.content_type, "text/html"))
-        {
-          navinfo->default_content_iid = "ntl_web_browser";
-          navinfo->content_identifiers = g_slist_append (
-          	navinfo->content_identifiers, 
-          	nautilus_view_identifier_new (navinfo->default_content_iid, "Web Page"));
-        }
-      else if(!strcmp(navinfo->navinfo.content_type, "text/plain"))
-        {
-          navinfo->default_content_iid = "embeddable:text-plain";
-          navinfo->content_identifiers = g_slist_append (
-          	navinfo->content_identifiers, 
-          	nautilus_view_identifier_new (navinfo->default_content_iid, "Text"));
-        }
-      else if(!strcmp(navinfo->navinfo.content_type, "special/directory")
-              || !strcmp(navinfo->navinfo.content_type, "application/x-nautilus-vdir"))
-        {
-          navinfo->default_content_iid = "ntl_file_manager_icon_view";
-          navinfo->content_identifiers = g_slist_append (
-          	navinfo->content_identifiers, 
-          	nautilus_view_identifier_new ("ntl_file_manager_icon_view", "Icons"));
-          navinfo->content_identifiers = g_slist_append (
-          	navinfo->content_identifiers, 
-          	nautilus_view_identifier_new ("ntl_file_manager_list_view", "List"));
-        }
-      else
-        {
-          /* Error - couldn't handle */
-          nautilus_navinfo_free(navinfo); navinfo = NULL;
-          goto out;
-        }
+      navinfo->default_content_iid = "ntl_web_browser";
+      navinfo->content_identifiers = g_slist_append (
+                                                     navinfo->content_identifiers, 
+                                                     nautilus_view_identifier_new (navinfo->default_content_iid, "Web Page"));
+    }
+  else if(!strcmp(navinfo->navinfo.content_type, "text/plain"))
+    {
+      navinfo->default_content_iid = "embeddable:text-plain";
+      navinfo->content_identifiers = g_slist_append (
+                                                     navinfo->content_identifiers, 
+                                                     nautilus_view_identifier_new (navinfo->default_content_iid, "Text"));
+    }
+  else if(!strcmp(navinfo->navinfo.content_type, "special/directory")
+          || !strcmp(navinfo->navinfo.content_type, "application/x-nautilus-vdir"))
+    {
+      navinfo->default_content_iid = "ntl_file_manager_icon_view";
+      navinfo->content_identifiers = g_slist_append (
+                                                     navinfo->content_identifiers, 
+                                                     nautilus_view_identifier_new ("ntl_file_manager_icon_view", "Icons"));
+      navinfo->content_identifiers = g_slist_append (
+                                                     navinfo->content_identifiers, 
+                                                     nautilus_view_identifier_new ("ntl_file_manager_list_view", "List"));
+    }
+  else
+    {
+      /* Error - couldn't handle */
+      nautilus_navinfo_free(navinfo); navinfo = NULL;
+      goto out;
     }
 
   g_slist_foreach(nautilus_prefs.global_meta_views, nautilus_navinfo_append_globals, &navinfo->meta_iids);

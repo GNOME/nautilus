@@ -24,6 +24,7 @@ BUILT_SOURCES=$(nautilus_idl_sources)
 
 libnautilusincludedir=$(includedir)/libnautilus
 libnautilusinclude_HEADERS=			\
+	bonobo-stream-vfs.h			\
 	gdk-extensions.h			\
 	gnome-icon-container-dnd.h		\
 	gnome-icon-container-private.h		\
@@ -50,6 +51,7 @@ libnautilusinclude_HEADERS=			\
 	ntl-view-frame.h
 
 libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
+	bonobo-stream-vfs.c			\
 	gdk-extensions.c			\
 	gnome-icon-container-dnd.c		\
 	gnome-icon-container.c			\

@@ -1,3 +1,18 @@
+2000-02-09  Elliot Lee  <sopwith@redhat.com>
+
+	* src/ntl-view-bonobo-control.c: In notify_location_change, send
+	progress back (because the Bonobo control, which might be the
+	content view, can't do it).
+
+	* src/ntl-view-bonobo-subdoc.c: As above, plus don't use
+	PersistFile interface, plus use bonobo-stream-vfs instead of
+	bonobo-stream-fs.
+
+	* src/ntl-uri-map.c: If no content type is found, default to text/plain.
+
+	* libnautilus/bonobo-stream-vfs.[ch], libnautilus/Makefile.am:
+	Initial implementation of bonobo streams in terms of Gnome VFS.
+
 2000-02-09  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/ntl-meta-view.c: To avoid a bug which caused parts of the

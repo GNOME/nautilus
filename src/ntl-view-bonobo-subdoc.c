@@ -28,6 +28,7 @@
 
 #include "nautilus.h"
 #include "ntl-view-private.h"
+#include <libnautilus/bonobo-stream-vfs.h>
 
 typedef struct {
   BonoboObject *container, *client_site, *view_frame;
@@ -44,27 +45,32 @@ destroy_bonobo_subdoc_view(NautilusView *view, CORBA_Environment *ev)
 static void
 bonobo_subdoc_notify_location_change(NautilusView *view, Nautilus_NavigationInfo *real_nav_ctx, CORBA_Environment *ev)
 {
-  Bonobo_PersistFile persist;
-  persist = bonobo_object_client_query_interface(view->client_object, "IDL:GNOME/PersistFile:1.0",
-                                                NULL);
-  if(!CORBA_Object_is_nil(persist, ev))
-    {
-      Bonobo_PersistFile_load(persist, real_nav_ctx->actual_uri, ev);
-      Bonobo_Unknown_unref(persist, ev);
-      CORBA_Object_release(persist, ev);
-    }
-  else if((persist = bonobo_object_client_query_interface(view->client_object, "IDL:GNOME/PersistStream:1.0",
-                                                         NULL))
-          && !CORBA_Object_is_nil(persist, ev))
+  Bonobo_PersistStream persist;
+
+  if((persist = bonobo_object_client_query_interface(view->client_object, "IDL:GNOME/PersistStream:1.0",
+                                                     NULL))
+     && !CORBA_Object_is_nil(persist, ev))
     {
       BonoboStream *stream;
+      Nautilus_ProgressRequestInfo pri;
       
-      stream = bonobo_stream_fs_open(real_nav_ctx->actual_uri, Bonobo_Storage_READ);
-      Bonobo_PersistStream_load (persist,
-                                (Bonobo_Stream) bonobo_object_corba_objref (BONOBO_OBJECT (stream)),
-                                ev);
-      Bonobo_Unknown_unref(persist, ev);
-      CORBA_Object_release(persist, ev);
+      stream = bonobo_stream_vfs_open(real_nav_ctx->actual_uri, Bonobo_Storage_READ);
+      pri.amount = 0;
+      if(stream)
+        pri.type = Nautilus_PROGRESS_UNDERWAY;
+      else
+        pri.type = Nautilus_PROGRESS_DONE_ERROR;
+      nautilus_view_request_progress_change(view, &pri);
+      if(stream)
+        {
+          Bonobo_PersistStream_load (persist,
+                                     (Bonobo_Stream) bonobo_object_corba_objref (BONOBO_OBJECT (stream)),
+                                     ev);
+          Bonobo_Unknown_unref(persist, ev);
+          CORBA_Object_release(persist, ev);
+          pri.type = Nautilus_PROGRESS_DONE_OK;
+          nautilus_view_request_progress_change(view, &pri);
+        }
     }
 }      
 
