@@ -273,8 +273,9 @@ install_packages (EazelInstall *service,
 			eazel_install_free_package_system (service);
 
 			g_message (_("Category = %s, %d packages"), cat->name, g_list_length (packages));
-			eazel_install_start_transaction (service,
-							 packages);
+			if (eazel_install_start_transaction (service, packages) != 0) {
+				rv = FALSE;
+			}
 			
 			g_list_free (packages);
 		}
@@ -807,7 +808,6 @@ eazel_install_start_transaction (EazelInstall *service,
 	GList *args;
 	int fd;
 	int res;
-	int num_password_queries = 2;
 	TrilobiteRootHelperStatus root_helper_stat;
 
 	if (g_list_length (packages) == 0) {
@@ -857,7 +857,7 @@ eazel_install_start_transaction (EazelInstall *service,
 			res = service->private->packsys.rpm.num_packages;
 		} 
 		/* start /bin/rpm... */
-		if (res==0 && trilobite_pexec ("/bin/rpm", argv, NULL, &fd, &useless_stderr)!=0) {
+		if (res==0 && trilobite_pexec ("/bin/rpm", argv, NULL, &fd, &useless_stderr)==0) {
 			g_warning ("Could not start rpm");
 			res = service->private->packsys.rpm.num_packages;
 		} else {
@@ -867,12 +867,9 @@ eazel_install_start_transaction (EazelInstall *service,
 #else /* EAZEL_INSTALL_SLIM     */
 	/* Fire off the helper */	
 	root_helper = gtk_object_get_data (GTK_OBJECT (service), "trilobite-root-helper");
-	while ((root_helper_stat = trilobite_root_helper_start (root_helper)) 
-	       != TRILOBITE_ROOT_HELPER_SUCCESS && num_password_queries) {
-		num_password_queries--;
-		g_warning ("Error in starting trilobite_root_helper");
-	}
+	root_helper_stat = trilobite_root_helper_start (root_helper);
 	if (root_helper_stat != TRILOBITE_ROOT_HELPER_SUCCESS) {
+		g_warning ("Error in starting trilobite_root_helper");
 		res = service->private->packsys.rpm.num_packages;
 	}
 

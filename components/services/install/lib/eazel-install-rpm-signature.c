@@ -290,14 +290,14 @@ trilobite_check_rpm_signature (const char *filename, const char *keyring_filenam
 		}
 	}
 
-	for (i = 0, err = -1; (gpg_paths[i] != NULL) && (err != 0); i++) {
+	for (i = 0, err = 0; (gpg_paths[i] != NULL) && (err == 0); i++) {
 		/* all GPG crap output goes to stderr, which we'll ignore.
 		 * status output is going to stdout, so we can scan it to
 		 * find out which key was used.
 		 */
 		err = trilobite_pexec (gpg_paths[i], argv, &stdin_fd, &stdout_fd, &stderr_fd);
 	}
-	if (err != 0) {
+	if (err == 0) {
 		/* can't find gpg */
 		goto bail;
 	}
