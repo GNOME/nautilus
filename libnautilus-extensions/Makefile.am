@@ -8,8 +8,8 @@ INCLUDES = 						\
 	-I$(top_builddir) 				\
 	-I$(top_builddir)/libnautilus 			\
 	-I$(top_srcdir)/cut-n-paste-code 		\
-	$(LIBRSVG_INCLUDEDIR) \
-	$(EEL_INCLUDEDIR) \
+	$(LIBRSVG_CFLAGS) \
+	$(EEL_CFLAGS) \
 	$(BONOBO_PRINT_CFLAGS) 				\
 	$(BONOBOX_CFLAGS) 				\
 	$(ESD_CFLAGS)					\
@@ -52,6 +52,7 @@ libnautilus_extensions_la_LDFLAGS =	\
 	$(OAF_LIBS) 			\
 	$(VFS_LIBS) 			\
 	$(XML_LIBS) 			\
+	$(EEL_LIBS)			\
 	$(CDDALIBADD)			\
 	$(NULL)
 

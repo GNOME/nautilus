@@ -5,8 +5,8 @@ INCLUDES =\
 	-I$(top_builddir) 		\
 	-I$(top_builddir)/libnautilus 	\
 	-I$(top_srcdir)/cut-n-paste-code\
-	$(EEL_INCLUDEDIR) \
-	$(LIBRSVG_INCLUDEDIR) \
+	$(EEL_CFLAGS) \
+	$(LIBRSVG_CFLAGS) \
 	$(BONOBO_CFLAGS) 		\
 	$(OAF_CFLAGS) 			\
 	$(GCONF_CFLAGS) 		\

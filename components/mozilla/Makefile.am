@@ -9,8 +9,8 @@ INCLUDES = \
 	$(MOZILLA_PROFILES_CFLAGS) \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
-	$(EEL_INCLUDEDIR) \
-	$(LIBRSVG_INCLUDEDIR) \
+	$(EEL_CFLAGS) \
+	$(LIBRSVG_CFLAGS) \
 	$(BONOBO_CFLAGS) \
 	$(GCONF_CFLAGS) \
 	$(GNOMEUI_CFLAGS) \

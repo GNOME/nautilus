@@ -15,8 +15,8 @@ INCLUDES =					\
 	-DG_LOG_DOMAIN=\"Nautilus-Music\"	\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
-	$(EEL_INCLUDEDIR) \
-	$(LIBRSVG_INCLUDEDIR) \
+	$(EEL_CFLAGS) \
+	$(LIBRSVG_CFLAGS) \
 	$(GCONF_CFLAGS) 			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	$(GNOMEUI_CFLAGS)                       \

@@ -6,8 +6,8 @@ INCLUDES =						\
 	-DG_LOG_DOMAIN=\"Nautilus-Tree\"		\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
-	$(EEL_INCLUDEDIR) \
-	$(LIBRSVG_INCLUDEDIR) \
+	$(EEL_CFLAGS) \
+	$(LIBRSVG_CFLAGS) \
 	$(VFS_CFLAGS)					\
 	$(GCONF_CFLAGS)					\
 	$(GNOMEUI_CFLAGS)				\

@@ -9,15 +9,14 @@ INCLUDES =\
 	-I$(top_builddir) \
 	-I$(top_srcdir)/cut-n-paste-code \
 	-I$(top_builddir)/cut-n-paste-code \
-	$(EEL_INCLUDEDIR) \
-	$(LIBRSVG_INCLUDEDIR) \
+	$(EEL_CFLAGS) \
+	$(LIBRSVG_CFLAGS) \
 	$(OAF_CFLAGS) \
 	$(BONOBO_CFLAGS) \
 	$(AMMONITE_CFLAGS) \
-	$(OAF_CFLAGS) \
 	$(GCONF_CFLAGS) \
 	$(GNOMEUI_CFLAGS) \
-	$(GNOMECANVASPIXBUF_INCLUDEDIR) \
+	$(GNOMECANVASPIXBUF_CFLAGS) \
 	$(VFS_CFLAGS) \
 	$(XML_CFLAGS) \
 	-DVERSION="\"$(VERSION)\"" \

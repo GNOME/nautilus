@@ -7,8 +7,8 @@ INCLUDES =					\
 	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\" \
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
-	$(EEL_INCLUDEDIR) \
-	$(LIBRSVG_INCLUDEDIR) \
+	$(EEL_CFLAGS) \
+	$(LIBRSVG_CFLAGS) \
 	$(GCONF_CFLAGS) 			\
 	$(OAF_CFLAGS)				\
 	$(BONOBO_CFLAGS)			\

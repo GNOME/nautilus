@@ -6,8 +6,8 @@ INCLUDES=\
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(EEL_INCLUDEDIR) \
-	$(LIBRSVG_INCLUDEDIR) \
+	$(EEL_CFLAGS) \
+	$(LIBRSVG_CFLAGS) \
 	$(GNOMEUI_CFLAGS) \
 	$(GCONF_CFLAGS) \
 	$(BONOBO_CFLAGS) \
@@ -17,10 +17,10 @@ INCLUDES=\
 LDADD=\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
-	$(EEL_LIBS) \
-	$(LIBRSVG_LIBS) \
-	$(BONOBO_LIBS) \
-	$(GCONF_LIBS) \
+	$(EEL_LIBS)	\
+	$(LIBRSVG_LIBS)	\
+	$(BONOBO_LIBS)	\
+	$(GCONF_LIBS)	\
 	$(GNOMEUI_LIBS)
 
 nautilus_history_view_SOURCES=nautilus-history-view.c

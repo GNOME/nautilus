@@ -31,6 +31,7 @@ nautilus_sample_content_view_LDADD =		\
 	$(BONOBO_LIBS)				\
 	$(GCONF_LIBS)				\
 	$(VFS_LIBS)				\
+	$(LIBRSVG_LIBS)				\
 	$(OAF_LIBS)
 
 uidir = $(datadir)/gnome/ui

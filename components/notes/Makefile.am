@@ -8,8 +8,8 @@ INCLUDES=\
 	-I$(top_builddir)	\
 	-I$(top_builddir)/libnautilus	\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(EEL_INCLUDEDIR) \
-	$(LIBRSVG_INCLUDEDIR) \
+	$(EEL_CFLAGS) \
+	$(LIBRSVG_CFLAGS) \
 	$(GNOMEUI_CFLAGS)	\
 	$(GCONF_CFLAGS)		\
 	$(BONOBO_CFLAGS)	\

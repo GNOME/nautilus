@@ -5,7 +5,7 @@ lib_LTLIBRARIES=libnautilus.la
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) -I. \
 	$(GNOME_CFLAGS) \
 	$(GTK_CFLAGS) \
-	$(EEL_INCLUDEDIR) \
+	$(EEL_CFLAGS) \
 	$(BONOBOX_CFLAGS) \
 	$(OAF_CFLAGS) \
 	$(VFS_CFLAGS) \
@@ -19,7 +19,8 @@ libnautilus_la_LDFLAGS=\
 	$(BONOBOX_LIBS) \
 	$(VFS_LIBS) \
 	$(XML_LIBS) \
-	$(LIBPNG)
+	$(LIBPNG)	\
+	$(EEL_LIBS)
 
 nautilus_view_component_idl_sources =		\
 	nautilus-view-component-stubs.c		\

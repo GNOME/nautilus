@@ -9,8 +9,8 @@ noinst_PROGRAMS=test-help-method
 INCLUDES = \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
-	$(EEL_INCLUDEDIR) \
-	$(LIBRSVG_INCLUDEDIR) \
+	$(EEL_CFLAGS) \
+	$(LIBRSVG_CFLAGS) \
 	$(GNOMEUI_CFLAGS) \
 	$(BONOBO_CFLAGS) \
 	$(GCONF_CFLAGS) \

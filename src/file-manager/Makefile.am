@@ -11,6 +11,7 @@ INCLUDES = 					\
 	$(OAF_CFLAGS) 				\
 	$(GNOMEUI_CFLAGS) 			\
 	$(VFS_CFLAGS) 				\
+	$(EEL_CFLAGS)				\
 	-DVERSION="\"$(VERSION)\"" 		\
 	-D_REENTRANT 				\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
