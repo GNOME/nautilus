@@ -45,7 +45,7 @@ static const struct poptOption options[] = {
 	{"debug", 'd', POPT_ARG_NONE, &installer_debug, 0 , N_("Show debug output"), NULL},
 	{"test", 't', POPT_ARG_NONE, &installer_test, 0, N_("Test the installer without actually installing packages"), NULL},
 	{"force", 'f', POPT_ARG_NONE, &installer_force, 0, N_("Forced install"), NULL},
-	{"local", '\0', POPT_ARG_STRING, &installer_local, 0, N_("Use local, specify XML file to use"), NULL},
+	{"local", '\0', POPT_ARG_STRING, &installer_local, 0, N_("Use local RPMs instead of HTTP server"), "XML-file"},
 	{"server", '\0', POPT_ARG_STRING, &installer_server, 0, N_("Specify Eazel installation server"), NULL},
 #if 0
 	{"nohelix", '\0', POPT_ARG_NONE, &installer_no_helix, 0, N_("Assume no-helix"), NULL},

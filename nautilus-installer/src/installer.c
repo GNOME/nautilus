@@ -832,10 +832,22 @@ eazel_install_dep_check (EazelInstall *service,
 {
 	GtkWidget *label_overall;
 	char *temp;
+	char *required;
+
+	required = needs->name;
+	if (required == NULL) {
+		required = needs->eazel_id;
+	}
+	if (required == NULL) {
+		required = needs->provides->data;
+	}
+	if (required == NULL) {
+		required = "another package";
+	}
 
 	label_overall = gtk_object_get_data (GTK_OBJECT (installer->window), "label_overall");
 	/* careful: this needs->name is not always a package name (sometimes it's a filename) */
-	temp = g_strdup_printf ("%s is required by %s", needs->name, pack->name);
+	temp = g_strdup_printf ("%s is required by %s", required, pack->name);
 	gtk_label_set_text (GTK_LABEL (label_overall), temp);
 
 	LOG_DEBUG (("DEP CHECK : %s\n", temp));
