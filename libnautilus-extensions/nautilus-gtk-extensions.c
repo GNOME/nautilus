@@ -276,10 +276,6 @@ nautilus_gtk_window_present (GtkWindow *window)
 
 	g_return_if_fail (GTK_IS_WINDOW (window));
 
-	/* FIXME bugzilla.eazel.com 5153: This doesn't work for
-	 * iconified windows.
-	 */
-	
 	/* If we have no gdk window, then it's OK to just show, since
 	 * the window is new and presumably will show up in front.
 	 */

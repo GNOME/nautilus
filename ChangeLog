@@ -1,3 +1,16 @@
+2000-12-12  Pavel Cisler <pavel@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+ 
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(nautilus_gdk_window_bring_to_front):
+	Fix 5153: Make the call also handle showing iconified
+	windows.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_window_present):
+	Remove a FIXME.
+
 2000-12-13  Josh Barrow  <josh@eazel.com>
 
 	* icons/eazel/sidebar_tab_pieces/.cvsignore:

@@ -636,8 +636,15 @@ nautilus_stipple_bitmap ()
 void 
 nautilus_gdk_window_bring_to_front (GdkWindow *window)
 {
-	gdk_window_raise (window);
+	/* This takes care of un-iconifying the window and
+	 * raising it if needed.
+	 */
+	gdk_window_show (window);
 
+	/* If the window was already showing, it would not have
+	 * the focus at this point. Do a little X trickery to
+	 * ensure it is focused.
+	 */
 	gdk_error_trap_push ();
 	XSetInputFocus (GDK_DISPLAY (),
 			GDK_WINDOW_XWINDOW (window),
