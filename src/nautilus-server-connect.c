@@ -19,6 +19,7 @@
 #include <config.h>
 #include <stdio.h>
 #include <string.h>
+#include <locale.h>
 #include <glib.h>
 #include <gnome.h>
 #include <gconf/gconf-client.h>
