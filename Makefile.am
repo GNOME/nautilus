@@ -30,8 +30,6 @@ EXTRA_DIST=					\
 	nautilus.spec.in			\
 	nautilus.desktop			\
 	nautilus.desktop.in			\
-	gnome-starthere-96.png			\
-	gnome-starthere.png			\
 	ChangeLog-20000414			\
 	ChangeLog-20000625			\
 	ChangeLog-20000831			\
