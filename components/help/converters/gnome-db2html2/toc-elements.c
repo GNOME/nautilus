@@ -84,6 +84,7 @@ ElementInfo toc_elements[] = {
 	{ PROMPT, "prompt", NULL, NULL, NULL},
 	{ SYMBOL, "symbol", NULL, NULL, NULL},
 	{ USERINPUT, "userinput", NULL, NULL, NULL},
+	{ CAUTION, "caution", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -322,6 +323,7 @@ toc_title_start_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TIP));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (WARNING));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GRAPHIC));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CAUTION));
 	stack_el = find_first_element (context, element_list);
 
 	g_slist_free (element_list);
@@ -383,6 +385,7 @@ toc_title_end_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TIP));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (WARNING));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GRAPHIC));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CAUTION));
 
 	index = find_first_parent (context, element_list);
 
@@ -424,6 +427,7 @@ toc_title_characters (Context *context, const gchar *chars, int len)
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TIP));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (WARNING));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GRAPHIC));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CAUTION));
 
 	index = find_first_parent (context, element_list);
 

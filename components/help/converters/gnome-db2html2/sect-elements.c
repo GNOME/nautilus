@@ -121,6 +121,7 @@ ElementInfo sect_elements[] = {
 	{ PROMPT, "prompt", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
 	{ SYMBOL, "symbol", NULL, NULL, (charactersSAXFunc) sect_write_characters},
 	{ USERINPUT, "userinput", (startElementSAXFunc) sect_btt_start_element, (endElementSAXFunc) sect_btt_end_element, (charactersSAXFunc) sect_write_characters},
+	{ CAUTION, "caution", (startElementSAXFunc) sect_infobox_start_element, (endElementSAXFunc) sect_infobox_end_element, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
