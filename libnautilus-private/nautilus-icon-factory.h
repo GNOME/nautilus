@@ -96,8 +96,6 @@ NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file            (Nautil
 gboolean	      nautilus_icon_factory_is_icon_ready_for_file	 (NautilusFile		*file);
 GList *		      nautilus_icon_factory_get_required_file_attributes (void);
 GList *               nautilus_icon_factory_get_emblem_icons_for_file    (NautilusFile          *file);
-NautilusScalableIcon *nautilus_icon_factory_get_icon_by_name             (const char            *icon_name,
-									  const char            *embedded_text);
 NautilusScalableIcon *nautilus_icon_factory_get_emblem_icon_by_name 	 (const char 		*emblem_name);
 
 /* Render an icon to a particular size.
@@ -118,17 +116,11 @@ GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (Nautil
  */
 GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_file          (NautilusFile          *file,
 									  guint                  size_in_pixels);
-GdkPixbuf *           nautilus_icon_factory_get_pixbuf_by_name           (const char            *icon_name,
-									  guint                  size_in_pixels);
 
 /* Convenience functions for legacy interfaces that require a pixmap and
  * bitmap. Maybe we can get rid of these one day.
  */
 void                  nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile          *file,
-									  guint                  size_in_pixels,
-									  GdkPixmap            **pixmap,
-									  GdkBitmap            **mask);
-void                  nautilus_icon_factory_get_pixmap_and_mask_by_name  (NautilusFile          *file,
 									  guint                  size_in_pixels,
 									  GdkPixmap            **pixmap,
 									  GdkBitmap            **mask);
