@@ -1,3 +1,14 @@
+2000-11-06  Robey Pointer  <robey@eazel.com>
+
+	* libnautilus-extensions/nautilus-password-dialog.c:
+	(nautilus_password_dialog_new),
+	(nautilus_password_dialog_get_remember),
+	(nautilus_password_dialog_set_remember),
+	(nautilus_password_dialog_set_remember_label_text):
+
+	Finish off Mathieu's fix of removing the checkbox from the
+	password dialog, so that the RPM view doesn't crash.
+
 2000-11-06  Darin Adler  <darin@eazel.com>
 
 	Rolled in John's fix for bug 4480 (Crash while navigating

@@ -300,7 +300,7 @@ nautilus_password_dialog_new (const char	*dialog_title,
 			    TRUE,	/* expand */
 			    TRUE,	/* fill */
 			    0);		/* padding */
-#if 0 /* disabled fro PR2 */
+#if 0 /* disabled for PR2 */
 	password_dialog->details->remember_button = 
 		gtk_check_button_new_with_label ("Remember this password");
 
@@ -309,6 +309,8 @@ nautilus_password_dialog_new (const char	*dialog_title,
 			  TRUE,	/* expand */
 			  TRUE,	/* fill */
 			  4);		/* padding */
+#else
+	password_dialog->details->remember_button = NULL;
 #endif	
 	/* Configure the table */
  	gtk_container_set_border_width (GTK_CONTAINER(password_dialog->details->table), CAPTION_TABLE_BORDER_WIDTH);
@@ -397,7 +399,11 @@ nautilus_password_dialog_get_remember (NautilusPasswordDialog *password_dialog)
 	g_return_val_if_fail (password_dialog != NULL, FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_PASSWORD_DIALOG (password_dialog), FALSE);
 
+#if 0	/* remove for PR2 */
 	return gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (password_dialog->details->remember_button));
+#else
+	return FALSE;
+#endif
 }
 
 void
@@ -407,14 +413,17 @@ nautilus_password_dialog_set_remember (NautilusPasswordDialog *password_dialog,
 	g_return_if_fail (password_dialog != NULL);
 	g_return_if_fail (NAUTILUS_IS_PASSWORD_DIALOG (password_dialog));
 
+#if 0	/* remove for PR2 */
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (password_dialog->details->remember_button),
 				      remember);
+#endif
 }
 
 void
 nautilus_password_dialog_set_remember_label_text (NautilusPasswordDialog *password_dialog,
 						  const char             *remember_label_text)
 {
+#if 0	/* remove for PR2 */
 	GtkWidget *label;
 
 	g_return_if_fail (password_dialog != NULL);
@@ -426,4 +435,5 @@ nautilus_password_dialog_set_remember_label_text (NautilusPasswordDialog *passwo
 	g_assert (GTK_IS_LABEL (label));
 
 	gtk_label_set_text (GTK_LABEL (label), remember_label_text);
+#endif
 }
