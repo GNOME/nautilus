@@ -1359,11 +1359,8 @@ static void
 make_category_link(NautilusPropertyBrowser *property_browser, char* name, char* image, int index)
 {
 	GtkWidget *label, *pix_widget, *button, *temp_vbox;
-	/* FIXME: Need to look at data files and see if there's a
-	 * "nautilus/" in there.  If so, we need to strip the
-	 * "nautilus/" and change this to call nautilus_pixmap_file.
-	 */
-	char *file_name = gnome_pixmap_file (image); 
+	
+	char *file_name = nautilus_pixmap_file (image); 
 	GtkWidget* temp_box = gtk_vbox_new (FALSE, 0);
 
 	/* generate a pixmap widget from the image file name */

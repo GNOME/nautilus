@@ -19,7 +19,7 @@
  *
  * Author: Andy Hertzfeld <andy@eazel.com>
  *
- * This is the tabs widget for the sidebar, which represents panels as nice tabs
+ * This is the tabs widget for the sidebar, which represents closed panels as folder tabs
  */
 
 #include <config.h>
@@ -28,10 +28,30 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-theme.h>
+
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
+
+/* constants for the tab rectangle array */
+
+#define	TAB_NORMAL_LEFT		0
+#define	TAB_NORMAL_FILL		1
+#define TAB_NORMAL_NEXT		2
+#define TAB_NORMAL_RIGHT	3
+#define	TAB_PRELIGHT_LEFT	4
+#define	TAB_PRELIGHT_FILL	5
+#define TAB_PRELIGHT_NEXT	6
+#define TAB_PRELIGHT_RIGHT	7
+#define	TAB_ACTIVE_LEFT		8
+#define	TAB_ACTIVE_FILL		9
+#define TAB_ACTIVE_NEXT		10
+#define TAB_ACTIVE_RIGHT	11
+#define LAST_TAB_OFFSET		12
+
 
 /* data structures */
 
@@ -55,7 +75,10 @@ struct NautilusSidebarTabsDetails {
 	GdkColor prelight_color;
 	GdkColor text_color;  
 	GdkColor prelit_text_color;
-	
+
+	GdkPixbuf *tab_pieces;
+	GdkRectangle piece_offsets[LAST_TAB_OFFSET];
+	int tab_left_offset;
 	char *title;
 	gboolean title_prelit;
 	GList *tab_items;
@@ -68,6 +91,7 @@ struct NautilusSidebarTabsDetails {
 #define TAB_H_GAP 8
 #define TAB_TOP_GAP 3
 #define TAB_ROW_V_OFFSET 3
+#define TAB_DEFAULT_LEFT_OFFSET 4
 
 /* headers */
 
@@ -123,6 +147,80 @@ setup_dark_text(NautilusSidebarTabs *sidebar_tabs)
 }
 
 static void
+parse_rectangle_list (NautilusSidebarTabs *sidebar_tabs, const char *rect_text)
+{	
+	int index, top, left, bottom, right;
+ 	char **text_rect_array;
+	GdkRectangle *current_rect;
+	
+	/* split the input into separate entries */
+	text_rect_array = g_strsplit (rect_text, ":", LAST_TAB_OFFSET);
+	
+	/* coordinates in the xml file are 1-based and ordered top, left, bottom, right */
+	for (index = 0; index < LAST_TAB_OFFSET; index++) {
+		sscanf (text_rect_array[index],
+			"%d,%d,%d,%d",
+			&top,
+			&left,
+			&bottom,
+			&right);
+		current_rect = &sidebar_tabs->details->piece_offsets[index];
+		current_rect->x = left - 1;
+		current_rect->y = top - 1;
+		current_rect->width = right - left + 1;
+		current_rect->height = bottom - top + 1;
+	} 
+	
+	g_strfreev (text_rect_array);
+}
+ 
+/* load the data required by the current theme */
+static void
+nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
+{
+	char *temp_str;
+	char *tab_pieces, *tab_piece_path, *sidebar_rect_text;
+
+	/* set up the default values */
+	sidebar_tabs->details->tab_left_offset = TAB_DEFAULT_LEFT_OFFSET;
+	
+	/* unload the old theme image if necessary */
+	if (sidebar_tabs->details->tab_pieces != NULL) {
+		gdk_pixbuf_unref (sidebar_tabs->details->tab_pieces);
+		sidebar_tabs->details->tab_pieces = NULL;
+	}
+	
+	/* load the tab_pieces image if necessary */
+	tab_pieces = nautilus_theme_get_theme_data ("sidebar", "TAB_PIECE_IMAGE");
+	if (tab_pieces) {
+		tab_piece_path = nautilus_theme_get_image_path (tab_pieces);
+		g_free (tab_pieces);
+		
+		if (tab_piece_path) {
+			sidebar_tabs->details->tab_pieces = gdk_pixbuf_new_from_file (tab_piece_path);
+			g_free (tab_piece_path);
+
+			if (sidebar_tabs->details->tab_pieces) {
+				/* we got the image, so load the rectangles from the current theme */
+				sidebar_rect_text = nautilus_theme_get_theme_data ("sidebar", "PIECE_OFFSETS");
+				if (sidebar_rect_text  != NULL) {
+					parse_rectangle_list (sidebar_tabs, sidebar_rect_text);
+					g_free (sidebar_rect_text);
+				}
+				
+				/* also load the left offset */
+				temp_str = nautilus_theme_get_theme_data ("sidebar", "LEFT_OFFSET");
+				if (temp_str) {
+					sidebar_tabs->details->tab_left_offset = atoi(temp_str);
+					g_free (temp_str);
+				}
+			}
+		}	
+	}	
+}
+
+/* initialize a newly allocated object */
+static void
 nautilus_sidebar_tabs_initialize (NautilusSidebarTabs *sidebar_tabs)
 {
 	GTK_WIDGET_SET_FLAGS (GTK_WIDGET(sidebar_tabs), GTK_NO_WINDOW);
@@ -136,7 +234,7 @@ nautilus_sidebar_tabs_initialize (NautilusSidebarTabs *sidebar_tabs)
 	sidebar_tabs->details->title_mode = FALSE;
 	sidebar_tabs->details->title = NULL;
 	sidebar_tabs->details->title_prelit = FALSE;
-	
+		
 	/* set up the colors */
 	gdk_color_parse ("rgb:99/99/99", &sidebar_tabs->details->tab_color);
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (sidebar_tabs)), 
@@ -159,6 +257,12 @@ nautilus_sidebar_tabs_initialize (NautilusSidebarTabs *sidebar_tabs)
 				  &sidebar_tabs->details->hilight_color, FALSE, TRUE);
 	
 	setup_light_text(sidebar_tabs);
+	nautilus_sidebar_tabs_load_theme_data (sidebar_tabs);
+	
+	/* add callback to be notified for theme changes */
+	nautilus_preferences_add_callback(NAUTILUS_PREFERENCES_THEME, 
+						(NautilusPreferencesCallback) nautilus_sidebar_tabs_load_theme_data, 
+						sidebar_tabs);
 	
 	sidebar_tabs->details->title_prelit = FALSE;
 }
@@ -192,9 +296,12 @@ nautilus_sidebar_tabs_destroy (GtkObject *object)
 		
 		g_list_free (sidebar_tabs->details->tab_items);
 	}
+
+	nautilus_preferences_remove_callback(NAUTILUS_PREFERENCES_THEME, 
+						(NautilusPreferencesCallback) nautilus_sidebar_tabs_load_theme_data, 
+						sidebar_tabs);
 	
-	g_free (sidebar_tabs->details->title);
-	
+	g_free (sidebar_tabs->details->title);	
 	g_free (sidebar_tabs->details);
   	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -257,10 +364,9 @@ nautilus_sidebar_tabs_size_request (GtkWidget *widget, GtkRequisition *requisiti
 		requisition->height = sidebar_tabs->details->total_height + TAB_TOP_GAP;
 }
 
-/* draw a single tab at the passed-in position, return the total width */
-
+/* draw a single tab using the default, non-themed approach */
 static int
-draw_one_tab (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
+draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 	      char *tab_name, int x, int y, gboolean prelight_flag)
 {  
 	int		text_y_offset;
@@ -317,8 +423,76 @@ draw_one_tab (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 	return name_width + 2*TAB_MARGIN;
 }
 
-/* draw or hit test all of the currently visible tabs */
+/* utility to draw the specified portion of a tab */
 
+static int
+draw_tab_piece (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc, int x, int y, int which_piece)
+{
+	GtkWidget *widget;
+	GdkRectangle *piece_rect;
+	
+	widget = GTK_WIDGET (sidebar_tabs);
+	piece_rect = &sidebar_tabs->details->piece_offsets[which_piece];
+	
+	gdk_pixbuf_render_to_drawable (sidebar_tabs->details->tab_pieces,
+					widget->window, gc,
+					piece_rect->x, piece_rect->y,
+					x, y,
+					piece_rect->width, piece_rect->height,
+					GDK_RGB_DITHER_MAX,
+					0, 0);
+	return piece_rect->width;
+}
+
+/* draw a single tab using the theme image to define it's appearance */
+static int
+draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
+	      char *tab_name, int x, int y, gboolean prelight_flag, gboolean first_flag, int end_offset)
+{  
+	GtkWidget *widget;
+	int name_width, piece_width;
+	int current_pos, right_edge_pos;
+	int text_x_pos, text_y_offset;
+	int highlight_offset;
+	
+	widget = GTK_WIDGET (sidebar_tabs);
+	highlight_offset = prelight_flag ? TAB_PRELIGHT_LEFT : 0;
+	
+	/* measure the size of the name */
+	name_width = gdk_string_width (GTK_WIDGET (sidebar_tabs)->style->font, tab_name);
+
+	/* draw the left edge piece */
+	current_pos = x;
+	if (first_flag) {
+		piece_width = draw_tab_piece (sidebar_tabs, gc, current_pos, y, TAB_NORMAL_LEFT + highlight_offset);
+		current_pos += piece_width;
+	}
+	
+	/* draw the middle portion in a loop */	
+	text_x_pos = current_pos;
+	right_edge_pos = current_pos + name_width;
+	while (current_pos < right_edge_pos) {
+		piece_width = draw_tab_piece (sidebar_tabs, gc, current_pos, y, TAB_NORMAL_FILL + highlight_offset);
+		current_pos += piece_width;
+	}
+		
+	/* draw the right edge piece */
+	piece_width = draw_tab_piece (sidebar_tabs, gc,  current_pos, y, TAB_NORMAL_NEXT + end_offset + highlight_offset);
+	current_pos += piece_width;
+		
+	/* draw the name */
+	text_y_offset = y + (TAB_HEIGHT >> 1) + 5;  
+	gdk_gc_set_foreground (gc, &sidebar_tabs->details->text_color);  
+	gdk_draw_string (widget->window,
+			 GTK_WIDGET (sidebar_tabs)->style->font,
+			 gc, text_x_pos, text_y_offset, tab_name);
+	
+	/* return the total tab width */
+	return current_pos - x;	
+}
+
+
+/* draw or hit test all of the currently visible tabs */
 static int
 draw_or_hit_test_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean draw_flag, int test_x, int test_y)
 {
@@ -330,14 +504,17 @@ draw_or_hit_test_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean draw_flag
 	int		x_pos;
 	int		y_pos;
 	int		total_height;
+	gboolean	is_themed;
+	gboolean	first_flag;
 	
 	g_assert (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 
 	next_tab = sidebar_tabs->details->tab_items;
-
+	
 	widget = GTK_WIDGET (sidebar_tabs);  
-
-	x_pos = widget->allocation.x + 4;
+	is_themed = sidebar_tabs->details->tab_pieces != NULL;
+	
+	x_pos = widget->allocation.x + sidebar_tabs->details->tab_left_offset;
 	y_pos = widget->allocation.y + widget->allocation.height - TAB_HEIGHT;
 	total_height = TAB_HEIGHT;
 	
@@ -367,12 +544,17 @@ draw_or_hit_test_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean draw_flag
 	
 	/* draw as many tabs per row as will fit */
 	
+	first_flag = TRUE;
 	while (next_tab != NULL) {
 		TabItem *this_item = next_tab->data;
 		
-		if (draw_flag && this_item->visible)
-			tab_width = draw_one_tab(sidebar_tabs, temp_gc, this_item->tab_text, x_pos, y_pos, this_item->prelit);
-		else {   
+		if (draw_flag && this_item->visible) {
+
+			if (is_themed)
+				tab_width = draw_one_tab_themed (sidebar_tabs, temp_gc, this_item->tab_text, x_pos, y_pos, this_item->prelit, first_flag, 0);
+			else
+				tab_width = draw_one_tab_plain (sidebar_tabs, temp_gc, this_item->tab_text, x_pos, y_pos, this_item->prelit);		
+		} else {   
 			int edge_width = 2 * TAB_MARGIN;
 			name_width = gdk_string_width(GTK_WIDGET (sidebar_tabs)->style->font,
 						      this_item->tab_text);
@@ -381,20 +563,29 @@ draw_or_hit_test_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean draw_flag
 			    (test_x >= x_pos) && (test_x <= x_pos + tab_width))	  
 				return this_item->notebook_page;
 		}
+		first_flag = FALSE;
 		
 		next_tab = next_tab->next;
 		if (next_tab != NULL)
 			this_item = (TabItem*) next_tab->data;	
 		
 		/* bump the x-position, and see if it fits */
-		x_pos += tab_width + TAB_H_GAP;
-		
+		x_pos += tab_width;
+		if (!is_themed)
+			x_pos += TAB_H_GAP;
+			
 		if (x_pos > (widget->allocation.x + widget->allocation.width - 48)) {
 			/* wrap to the next line */
-			x_pos = widget->allocation.x + 4;     
-			y_pos -= TAB_HEIGHT + TAB_ROW_V_OFFSET; 
-			if ((next_tab != NULL) && ((next_tab->next != NULL) || this_item->visible))
-				total_height += TAB_HEIGHT + TAB_ROW_V_OFFSET;
+			x_pos = widget->allocation.x + sidebar_tabs->details->tab_left_offset;     
+			y_pos -= TAB_HEIGHT; 
+			if (!is_themed)
+				y_pos -= TAB_ROW_V_OFFSET;
+			first_flag = TRUE;
+			if ((next_tab != NULL) && ((next_tab->next != NULL) || this_item->visible)) {
+				total_height += TAB_HEIGHT;
+				if (!is_themed)
+					total_height += TAB_ROW_V_OFFSET;
+			}
 		}                  
 	}  
 	
@@ -449,7 +640,11 @@ nautilus_sidebar_tabs_expose (GtkWidget *widget, GdkEventExpose *event)
 		int x_pos = widget->allocation.x;
 		int y_pos = widget->allocation.y;
 		
-		draw_one_tab (sidebar_tabs, temp_gc, sidebar_tabs->details->title, x_pos + TITLE_TAB_OFFSET, y_pos, sidebar_tabs->details->title_prelit);
+		if (sidebar_tabs->details->tab_pieces)
+			draw_one_tab_themed (sidebar_tabs, temp_gc, sidebar_tabs->details->title, x_pos, y_pos, sidebar_tabs->details->title_prelit, TRUE, 1);
+		else
+			draw_one_tab_plain (sidebar_tabs, temp_gc, sidebar_tabs->details->title, x_pos + TITLE_TAB_OFFSET, y_pos, sidebar_tabs->details->title_prelit);		
+		
 		gdk_gc_unref (temp_gc);
 	} else {
 		if (sidebar_tabs->details->tab_count > 0) {

@@ -33,7 +33,8 @@ char		*nautilus_theme_get_theme(void);
 void		 nautilus_theme_set_theme(const char *new_theme);
 
 /* fetch data from the current theme */
-char		*nautilus_theme_get_theme_data(const char *resource_name, const char *property_name);
-
+char		*nautilus_theme_get_theme_data (const char *resource_name, const char *property_name);
+/* given the current theme, get the path name of an image with the passed-in name */
+char		*nautilus_theme_get_image_path (const char *image_name);
 
 #endif /* NAUTILUS_THEME_H */

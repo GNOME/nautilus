@@ -1,3 +1,25 @@
+
+2000-07-02  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-tabs.c: (parse_rectangle_list),
+	(nautilus_sidebar_tabs_load_theme_data),
+	(nautilus_sidebar_tabs_initialize),
+	(nautilus_sidebar_tabs_destroy), (draw_one_tab_plain),
+	(draw_tab_piece), (draw_one_tab_themed),
+	(draw_or_hit_test_all_tabs), (nautilus_sidebar_tabs_expose):
+	made the sidebar tabs themable and implemented arlo-style tabs
+	in the arlo theme.  This isn't finished yet, because I still have
+	some details to work out with Arlo.
+	* icons/arlo/arlo.xml:
+	added sidebar tab stuff to the arlo theme
+	* libnautilus-extensions/nautilus-theme.c,h:
+	(nautilus_theme_get_image_path):
+	added a routine to access themed images
+	* src/nautilus-property-browser.c: (make_category_link):
+	made it access pixmaps with nautilus_pixmap_file instead of gnome_pixmap_file
+	* data/browser.xml:
+	removed the "nautilus" from image references
+	
 2000-07-02  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/inventory/lib/.cvsignore:

@@ -128,3 +128,38 @@ nautilus_theme_get_theme_data(const char *resource_name, const char *property_na
 
 	return theme_data;
 }
+
+/* given the current theme, fetch the full path name of an image with the passed-in name */
+/* return NULL if there isn't a corresponding image */
+char *
+nautilus_theme_get_image_path (const char *image_name)
+{
+	char *theme_name, *image_path, *temp_str;
+	
+	theme_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME, "default");
+	
+	if (nautilus_strcmp (theme_name, "default") != 0) {
+		temp_str = g_strdup_printf ("%s/%s", theme_name, image_name);
+		image_path = nautilus_pixmap_file (temp_str);
+	
+		g_free (theme_name);
+		g_free (temp_str);
+	
+		/* see if a theme-specific image exists; if so, return it */
+
+		if (g_file_exists (image_path))
+			return image_path;
+		
+		g_free (image_path);
+	}
+	
+	/* we couldn't find a theme specific one, so look for a general image */
+	image_path = nautilus_pixmap_file (image_name);
+	
+	if (g_file_exists (image_path))
+		return image_path;
+		
+	/* we couldn't find anything, so return NULL */
+	g_free (image_path);
+	return NULL;
+}
