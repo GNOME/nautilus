@@ -479,6 +479,8 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 
 		if (call_parent) {
 			tree_view_class->button_press_event (widget, event);
+		} else if (gtk_tree_selection_path_is_selected (selection, path)) {
+			gtk_widget_grab_focus(widget);
 		}
 
 		if (event->button == 1 || event->button == 2) {
