@@ -398,7 +398,13 @@ time_remaining_callback (gpointer callback_data)
 	time_remaining = (progress->details->bytes_total -
 			  progress->details->bytes_copied) / transfer_rate;
 
-	if (time_remaining >= 3600) {
+	if (progress->details->bytes_copied > progress->details->bytes_total) {
+		/* This shouldn't be neccessary, but gnome-vfs seems to add the bytes processed during
+		 * the cleanup phase to bytes_copied. So we try avoid showing unrealistic ETAs here.
+		 */
+		str = g_strdup_printf ("%s", " ");
+	}
+	else if (time_remaining >= 3600) {
 		str = g_strdup_printf (_("(%d:%02d:%d Remaining)"), 
 				       time_remaining / 3600, (time_remaining % 3600) / 60, (time_remaining % 3600) % 60);
 

@@ -1,3 +1,11 @@
+2005-02-27  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/nautilus-file-operations-progress.c:
+	(time_remaining_callback):
+	Don't show ETA if bytes_copied > bytes_total.
+	Prevents miscalculated ETAs from being shown. (#158614)
+	Based on a patch from John Spray <jcs116@york.ac.uk>
+
 2005-02-24  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-properties-window.c:
