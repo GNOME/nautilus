@@ -1,3 +1,19 @@
+2000-08-29  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2223 (selecting separator of "View As" option
+	menu causes problems).
+
+	Surprise, surprise, surprise -- separator menu items are
+	not treated as insensitive by default, so you can select
+	them. This makes no difference in pull-down menus, but
+	leads to trouble in option menus.
+
+	* src/nautilus-window.c: 
+	(new_gtk_separator): New convenience function, makes
+	a separator item, sets it to be insensitive, and shows it.
+	(replace_special_current_view_in_content_view_menu),
+	(nautilus_window_load_content_view_menu): Deploy new_gtk_separator.
+
 2000-08-29  Gene Z. Ragan  <gzr@eazel.com>
 	
 	Refactored function and fixed a bug.

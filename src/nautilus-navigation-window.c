@@ -638,6 +638,18 @@ create_content_view_menu_item (NautilusWindow *window, NautilusViewIdentifier *i
 	return menu_item;
 }
 
+static GtkWidget *
+new_gtk_separator (void)
+{
+	GtkWidget *result;
+	
+	result = gtk_menu_item_new ();
+	gtk_widget_show (result);
+	gtk_widget_set_sensitive (result, FALSE);
+
+	return result;
+}
+
 /* Make a special first item in the "View as" option menu that represents
  * the current content view. This should only be called if the current
  * content view isn't already in the "View as" option menu.
@@ -664,9 +676,7 @@ replace_special_current_view_in_content_view_menu (NautilusWindow *window)
 		gtk_container_remove (GTK_CONTAINER (menu), first_menu_item);
 	} else {
 		/* Prepend separator. */
-		new_menu_item = gtk_menu_item_new ();
-		gtk_widget_show (new_menu_item);
-		gtk_menu_prepend (GTK_MENU (menu), new_menu_item);
+		gtk_menu_prepend (GTK_MENU (menu), new_gtk_separator ());
 	}
 
 	new_menu_item = create_content_view_menu_item (window, nautilus_view_identifier_copy (window->content_view_id));
@@ -852,9 +862,7 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
 
         /* Add separator before "Other" if there are any other viewers in menu. */
         if (components != NULL || method != NULL) {
-	        menu_item = gtk_menu_item_new ();
-	        gtk_widget_show (menu_item);
-	        gtk_menu_append (GTK_MENU (new_menu), menu_item);
+	        gtk_menu_append (GTK_MENU (new_menu), new_gtk_separator ());
         }
 
 	/* Add "View as Other..." extra bonus choice. */
