@@ -1,3 +1,29 @@
+2000-09-26  Rebecca Schulman  <rebecka@eazel.com>
+	Fixed bugs 691, 689, and 733.  Hopeully this also
+	fixes 690, but I can't test it, because rename in
+	place is confused on my system
+
+	* components/notes/nautilus-notes.c: (make_notes_view):
+	Change clipboard initialization to new signature
+	* libnautilus/nautilus-clipboard.c:
+	* libnautilus/nautilus-clipboard.h:
+	(set_paste_sensitive_if_clipboard_contains_data),
+	(add_menu_items_callback), (remove_menu_items_callback),
+	(set_clipboard_menu_items_sensitive),
+	(set_clipboard_menu_items_insensitive), (menu_activated_callback),
+	(menu_deactivated_callback),
+	(nautilus_clipboard_set_up_editable_from_bonobo_control),
+	(nautilus_clipboard_setup_local):
+	Add calls to sensitize and desensitize.  Change signatures
+	around to get the data necessary to find out whether cut
+	and paste should be active or not
+	* src/nautilus-location-bar.c: (nautilus_location_bar_initialize):
+	* src/nautilus-window-menus.c: (nautilus_window_initialize_menus):
+	Change clipboard menu signatures to fit above changes
+	* src/nautilus-window.c: (nautilus_window_constructed):
+	add clipoard initialization, after the local ui handler is created
+
+
 2000-09-26  Darin Adler  <darin@eazel.com>
 
 	Got leaks in "nautilus --check" down to 0.

@@ -175,7 +175,7 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
                             notes_load_location, notes);
         
         /* handle selections */
-        nautilus_clipboard_set_up_editable
+        nautilus_clipboard_set_up_editable_from_bonobo_control
                 (GTK_EDITABLE (notes->note_text_field),
                  nautilus_view_get_bonobo_control (notes->view));
 

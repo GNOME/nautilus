@@ -59,6 +59,7 @@
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
+#include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus/nautilus-undo.h>
 #include <math.h>
 
@@ -448,6 +449,8 @@ nautilus_window_constructed (NautilusWindow *window)
 	nautilus_window_allow_forward (window, FALSE);
 	nautilus_window_allow_stop (window, FALSE);
 
+	/* Set up clipboard */
+	nautilus_clipboard_setup_local (GTK_WINDOW (window), window->ui_handler);
 	/* Set up undo manager */
 	nautilus_undo_manager_attach (window->application->undo_manager, GTK_OBJECT (window));	
 }

@@ -1459,7 +1459,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 
         bonobo_ui_handler_menu_new_item (ui_handler,
         				 NAUTILUS_MENU_PATH_CUT_ITEM,
-        				 _("_Cut Text"),
+        				 _("_Cut Tex"),
         				 _("Cuts the selected text to the clipboard"),
         				 -1,
         				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
@@ -1505,6 +1505,19 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 edit_menu_clear_callback,
         				 window);
 
+	/* Desensitize these menu items until something gets selected */
+	bonobo_ui_handler_menu_set_sensitivity (ui_handler,
+						NAUTILUS_MENU_PATH_CUT_ITEM,
+						TRUE);
+	bonobo_ui_handler_menu_set_sensitivity (ui_handler,
+						NAUTILUS_MENU_PATH_COPY_ITEM,
+						TRUE);
+	bonobo_ui_handler_menu_set_sensitivity (ui_handler,
+						NAUTILUS_MENU_PATH_PASTE_ITEM,
+						TRUE);
+	bonobo_ui_handler_menu_set_sensitivity (ui_handler,
+						NAUTILUS_MENU_PATH_CLEAR_ITEM,
+						TRUE);
         append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_AFTER_CLEAR);
 
         bonobo_ui_handler_menu_new_item (ui_handler,
