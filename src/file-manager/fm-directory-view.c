@@ -49,9 +49,10 @@
 #include <libnautilus-extensions/nautilus-alloc.h>
 #include <libnautilus-extensions/nautilus-drag.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-link.h>
@@ -111,14 +112,6 @@ static int            display_selection_info_idle_callback                      
 static void           display_selection_info                                      (FMDirectoryView          *view);
 static void           fm_directory_view_initialize_class                          (FMDirectoryViewClass     *klass);
 static void           fm_directory_view_initialize                                (FMDirectoryView          *view);
-#if 0
-/* FIXME bugzilla.eazel.com 634, 635
- * old "delete selection" code left here for now, parts of it will be used
- * to implement a in-place delte fallback for items that cannot be moved to Trash
- */
-static void           fm_directory_view_delete_with_confirm                       (FMDirectoryView          *view,
-										   GList                    *files);
-#endif
 static void           fm_directory_view_duplicate_selection                       (FMDirectoryView          *view,
 										   GList                    *files);
 static void           fm_directory_view_trash_or_delete_selection                 (FMDirectoryView          *view,
@@ -418,33 +411,6 @@ bonobo_menu_move_to_trash_callback (BonoboUIHandler *ui_handler,
 
         nautilus_file_list_free (selection);
 }
-
-#if 0
-/* FIXME bugzilla.eazel.com 634, 635
- * old "delete selection" code left here for now, parts of it will be used
- * to implement a in-place delte fallback for items that cannot be moved to Trash
- */
-static void
-bonobo_menu_delete_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
-{
-        FMDirectoryView *view;
-        GList *selection;
-        
-        g_assert (FM_IS_DIRECTORY_VIEW (user_data));
-
-        view = FM_DIRECTORY_VIEW (user_data);
-	selection = fm_directory_view_get_selection (view);
-
-        /* UI should have prevented this from being called unless at least
-         * one item is selected.
-         */
-        g_assert (selection != NULL);
-
-        fm_directory_view_delete_with_confirm (view, selection);
-
-        nautilus_file_list_free (selection);
-}
-#endif
 
 static void
 bonobo_menu_duplicate_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
@@ -1341,80 +1307,6 @@ fm_directory_view_get_model (FMDirectoryView *view)
 	return view->details->model;
 }
 
-#if 0
-/* FIXME bugzilla.eazel.com 634, 635:
- * Delete should be used in directories that don't support moving to Trash
- */
-static gboolean
-confirm_delete (FMDirectoryView *directory_view, GList *files)
-{
-        GtkWidget *dialog;
-        GtkWidget *prompt_widget;
-        GtkWidget *top_widget;
-        char *prompt;
-        int file_count;
-        int reply;
-
-        g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
-
-        file_count = g_list_length (files);
-        g_assert (file_count > 0);
-
-        /* Don't use GNOME_STOCK_BUTTON_CANCEL because the
-         * red X is confusing in this context.
-         */
-        dialog = gnome_dialog_new (_("Delete Selection"),
-                                   _("Delete"),
-                                   _("Cancel"),
-                                   NULL);
-        gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
-        gnome_dialog_close_hides (GNOME_DIALOG (dialog), TRUE);
-
-        top_widget = gtk_widget_get_toplevel (GTK_WIDGET (directory_view));
-        g_assert (GTK_IS_WINDOW (top_widget));
-        gnome_dialog_set_parent (GNOME_DIALOG (dialog), GTK_WINDOW (top_widget));
-        
-        if (file_count == 1) {
-                GnomeVFSURI *vfs_uri;
-                char *text_uri;
-                char *short_name;
-
-                text_uri = nautilus_file_get_name (NAUTILUS_FILE (files->data));
-                vfs_uri = gnome_vfs_uri_new (text_uri);
-                g_free (text_uri);
-
-                short_name = gnome_vfs_uri_extract_short_name (vfs_uri);
-                prompt = g_strdup_printf (_("Are you sure you want to delete \"%s\"?"), short_name);
-                g_free (short_name);
-        } else {
-                prompt = g_strdup_printf (_("Are you sure you want to delete the %d selected items?"), file_count);
-        }
-
-        prompt_widget = gtk_label_new (prompt);
-        g_free (prompt);
-        
-        gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
-                            prompt_widget,
-                            TRUE, TRUE, GNOME_PAD);
-
-        gtk_widget_show_all (dialog);
-
-        reply = gnome_dialog_run (GNOME_DIALOG (dialog));
-
-        return reply == 0;
-}
-
-static void
-fm_directory_view_delete_with_confirm (FMDirectoryView *view, GList *files)
-{
-        g_assert (FM_IS_DIRECTORY_VIEW (view));
-        
-	if (confirm_delete (view, files)) {
-	        g_list_foreach (files, delete_one, view);    
-	}
-}
-#endif
-
 static void
 append_uri_one (gpointer data, gpointer user_data)
 {
@@ -1447,6 +1339,32 @@ fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files)
 }
 
 static gboolean
+fm_directory_is_trash (FMDirectoryView *view)
+{
+	/* Return TRUE if directory view is Trash or inside Trash */
+	char *directory;
+	GnomeVFSURI *directory_uri;
+	GnomeVFSURI *trash_dir_uri;
+	gboolean result;
+
+	trash_dir_uri = NULL;
+	directory = fm_directory_view_get_uri (view);
+	directory_uri = gnome_vfs_uri_new (directory);
+
+	result = gnome_vfs_find_directory (directory_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
+		&trash_dir_uri, TRUE, 0777) == GNOME_VFS_OK;
+
+	result &= (gnome_vfs_uri_equal (trash_dir_uri, directory_uri)
+		|| gnome_vfs_uri_is_parent (trash_dir_uri, directory_uri, TRUE));
+
+	gnome_vfs_uri_unref (trash_dir_uri);
+	gnome_vfs_uri_unref (directory_uri);
+	g_free (directory);
+
+	return result;
+}
+
+static gboolean
 fm_directory_can_move_to_trash (FMDirectoryView *view)
 {
 	/* Return TRUE if we can get a trash directory on the same volume */
@@ -1474,32 +1392,72 @@ fm_directory_can_move_to_trash (FMDirectoryView *view)
 	return result;
 }
 
+static gboolean
+fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *files)
+{
+	char *prompt;
+	int file_count;
+	GnomeVFSURI *uri;
+	char *text_uri;
+	char *short_name;
+	gboolean result;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	file_count = g_list_length (files);
+	g_assert (file_count > 0);
+	
+	if (file_count == 1) {
+
+		text_uri = nautilus_file_get_name (NAUTILUS_FILE (files->data));
+		uri = gnome_vfs_uri_new (text_uri);
+		g_free (text_uri);
+
+		short_name = gnome_vfs_uri_extract_short_name (uri);
+		prompt = g_strdup_printf (_("Are you sure you want to permanently "
+			"remove item \"%s\"?"), short_name);
+		g_free (short_name);
+		gnome_vfs_uri_unref (uri);
+	} else {
+		prompt = g_strdup_printf (_("Are you sure you want to permanently "
+			"remove the %d selected items?"), file_count);
+	}
+
+	result = nautilus_simple_dialog (GTK_WIDGET (view), prompt, _("Deleting items"),
+		_("Delete"), _("Cancel"), NULL) == 0;
+
+	g_free (prompt);
+	return result;
+}
+
 static void
 fm_directory_view_trash_or_delete_selection (FMDirectoryView *view, GList *files)
 {
 	GList *uris;
 
-        g_assert (FM_IS_DIRECTORY_VIEW (view));
-        g_assert (files != NULL);
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_assert (files != NULL);
 
 	/* create a list of URIs */
 	uris = NULL;
 	g_list_foreach (files, append_uri_one, &uris);    
 
-        g_assert (g_list_length (uris) == g_list_length (files));
+	g_assert (g_list_length (uris) == g_list_length (files));
 
-        if (fm_directory_can_move_to_trash (view))
+	if (fm_directory_can_move_to_trash (view)) {
 		fs_move_to_trash (uris, GTK_WIDGET (view));
-	else
+	} else if (fm_directory_is_trash (view)
+		|| fm_directory_view_confirm_deletion (view, files)) {
 		fs_delete (uris, GTK_WIDGET (view));
-
+	}
+	
 	nautilus_g_list_free_deep (uris);
 }
 
 static void
 duplicate_callback (GtkMenuItem *item, GList *files)
 {
-        fm_directory_view_duplicate_selection
+	fm_directory_view_duplicate_selection
 		(FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view")), 
 		 files);
 }

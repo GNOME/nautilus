@@ -1,10 +1,22 @@
-2000-05-30  Mike Fleming  <set EMAIL_ADDRESS environment variable>
+2000-05-31  Pavel Cisler <pavel@eazel.com>
+
+	* src/file-manager/dfos-xfer.c: (fs_move_to_trash):
+	* src/file-manager/fm-directory-view.c: (fm_directory_is_trash),
+	(fm_directory_view_confirm_deletion),
+	(fm_directory_view_trash_or_delete_selection),
+	(duplicate_callback):
+	More work on fallback deletion when move to Trash is not available.
+	Display a warning dialog.
+	Get rid of commented out code that I'll no longer need.
+	Removed FIXMEs that are no longer true.
+	
+2000-05-30  Mike Fleming  <mfleming@eazel.com>
 
 	* components/services/time/Makefile.am:
 
 	Added simple time view to the build
 
-2000-05-30  Mike Fleming  mfleming@eazel.com
+2000-05-30  Mike Fleming  <mfleming@eazel.com>
 
 	* components/services/time/nautilus-view/.cvsignore:
 	* components/services/time/nautilus-view/Makefile.am:
