@@ -1,3 +1,17 @@
+2001-02-09  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	* libnautilus-extensions/nautilus-image-table.c:
+	(image_table_handle_motion), (ancestor_button_press_event),
+	(ancestor_button_release_event):
+	Ignore insensitive widgets when doing the event thing.
+	
+	* src/nautilus-property-browser.c:
+	(make_properties_from_directories):
+	Add an extra empty space between the erase emblem and the next to
+	make it stand out more.  Cleanup property image creation a tiny bit.
+
 2001-02-09  Robey Pointer  <robey@eazel.com>
 
 	* po/POTFILES.in:

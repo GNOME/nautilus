@@ -1567,33 +1567,31 @@ nautilus_property_browser_preferences_changed (NautilusPropertyBrowser *property
 
 /* Make a color tile for a property */
 static GtkWidget *
-make_property_tile (NautilusPropertyBrowser *property_browser,
-		    GdkPixbuf *pixbuf,
-		    const char *label,
-		    const char *property_name)
+labeled_image_new (const char *text,
+		   GdkPixbuf *pixbuf,
+		   const char *property_name,
+		   guint num_smaller,
+		   gboolean sensitive)
 {
 	GtkWidget *image;
-
-	g_return_val_if_fail (NAUTILUS_IS_PROPERTY_BROWSER (property_browser), NULL);
-	g_return_val_if_fail (pixbuf != NULL, NULL);
-	g_return_val_if_fail (label != NULL, NULL);
-	g_return_val_if_fail (property_name != NULL, NULL);
-	g_return_val_if_fail (property_name[0] != '\0', NULL);
 	
-	image = nautilus_labeled_image_new (label, pixbuf);
-		
+	image = nautilus_labeled_image_new (text, pixbuf);
 	nautilus_labeled_image_set_background_mode (NAUTILUS_LABELED_IMAGE (image),
 						    NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);
 	nautilus_labeled_image_set_solid_background_color (NAUTILUS_LABELED_IMAGE (image),
 							   NAUTILUS_RGB_COLOR_WHITE);		
+	if (num_smaller > 0) {
+		nautilus_labeled_image_make_smaller (NAUTILUS_LABELED_IMAGE (image), num_smaller);
+	}
 
-	nautilus_labeled_image_make_smaller (NAUTILUS_LABELED_IMAGE (image), 2);
-	gtk_widget_show (image);
+	gtk_widget_set_sensitive (image, sensitive);
 
-	gtk_object_set_data_full (GTK_OBJECT (image),
-				  "property-name",
-				  g_strdup (property_name),
-				  (GtkDestroyNotify) g_free);
+	if (property_name != NULL) {
+		gtk_object_set_data_full (GTK_OBJECT (image),
+					  "property-name",
+					  g_strdup (property_name),
+					  (GtkDestroyNotify) g_free);
+	}
 
 	return image;
 }
@@ -1627,7 +1625,7 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 									 &object_label) == GNOME_VFS_OK) {
 		GtkWidget *property_image;
 
-		property_image = make_property_tile (property_browser, object_pixbuf, object_label, object_name);
+		property_image = labeled_image_new (object_label, object_pixbuf, object_name, 2, TRUE);
 
 		g_free (object_label);
 		gdk_pixbuf_unref (object_pixbuf);
@@ -1648,6 +1646,7 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 		}
 		
 		gtk_container_add (GTK_CONTAINER (property_browser->details->content_table), property_image);
+		gtk_widget_show (property_image);
 
 		/*
 		 * If the object is either a "pattern reset" or "emblem erase" always
@@ -1660,6 +1659,23 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 			nautilus_wrap_table_reorder_child (NAUTILUS_WRAP_TABLE (property_browser->details->content_table),
 							   property_image,
 							   0);
+		}
+
+		/*
+		 * If the object is a"emblem erase" add a blank object to separate it 
+		 * from the rest.
+		 */
+		if ((property_browser->details->category_type == NAUTILUS_PROPERTY_EMBLEM)
+		    && nautilus_str_is_equal (object_name, ERASE_OBJECT_NAME)) {
+			GtkWidget *blank_image;
+
+			blank_image = labeled_image_new (NULL, NULL, NULL, 0, FALSE);
+				
+			gtk_container_add (GTK_CONTAINER (property_browser->details->content_table), blank_image);
+			nautilus_wrap_table_reorder_child (NAUTILUS_WRAP_TABLE (property_browser->details->content_table),
+							   blank_image,
+							   1);
+			gtk_widget_show (blank_image);
 		}
 		
 		gtk_widget_show (property_image);
@@ -1675,29 +1691,18 @@ add_reset_property (NautilusPropertyBrowser *property_browser)
 {
 	char *reset_image_file_name;
 	GtkWidget *reset_image;
+	GdkPixbuf *reset_pixbuf;
 
 	reset_image_file_name = g_strdup_printf ("%s/%s/%s", NAUTILUS_DATADIR, "patterns", RESET_IMAGE_NAME);
-
-	reset_image = nautilus_labeled_image_new_from_file_name ("", reset_image_file_name);
-	nautilus_labeled_image_set_background_mode (NAUTILUS_LABELED_IMAGE (reset_image),
-						    NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);
-	nautilus_labeled_image_set_solid_background_color (NAUTILUS_LABELED_IMAGE (reset_image),
-							   NAUTILUS_RGB_COLOR_WHITE);		
-
+	reset_pixbuf = gdk_pixbuf_new_from_file (reset_image_file_name);
 	g_free (reset_image_file_name);
 
-	gtk_widget_show (reset_image);
-
+	reset_image = labeled_image_new (NULL, reset_pixbuf, RESET_IMAGE_NAME, 0, TRUE);
 	gtk_container_add (GTK_CONTAINER (property_browser->details->content_table), reset_image);
-
 	nautilus_wrap_table_reorder_child (NAUTILUS_WRAP_TABLE (property_browser->details->content_table),
 					   reset_image,
 					   0);
-
-	gtk_object_set_data_full (GTK_OBJECT (reset_image),
-				  "property-name",
-				  g_strdup (RESET_IMAGE_NAME),
-				  (GtkDestroyNotify) g_free);
+	gtk_widget_show (reset_image);
 }
 	
 /* generate properties from the children of the passed in node */
@@ -1739,8 +1744,10 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser,
 			pixbuf = make_color_drag_image (property_browser, color, FALSE);			
 
 			/* make the tile from the pixmap and name */
-			new_property = make_property_tile (property_browser, pixbuf, name, color);
+			new_property = labeled_image_new (name, pixbuf, color, 2, TRUE);
+
 			gtk_container_add (GTK_CONTAINER (property_browser->details->content_table), new_property);
+			gtk_widget_show (new_property);
 
 			gdk_pixbuf_unref (pixbuf);
 			xmlFree (color);

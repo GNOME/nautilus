@@ -532,6 +532,10 @@ image_table_handle_motion (NautilusImageTable *image_table,
 
 	child = nautilus_wrap_table_find_child_at_event_point (NAUTILUS_WRAP_TABLE (image_table), x, y);
 
+	if (child && !GTK_WIDGET_SENSITIVE (child)) {
+		return;
+	}
+
 	if (child == image_table->details->child_under_pointer) {
 		return;
 	}
@@ -641,6 +645,10 @@ ancestor_button_press_event (GtkWidget *widget,
 
 	child = nautilus_wrap_table_find_child_at_event_point (NAUTILUS_WRAP_TABLE (image_table), event->x, event->y);
 
+	if (child && !GTK_WIDGET_SENSITIVE (child)) {
+		return FALSE;
+	}
+
 	if (child != NULL) {
 		if (child == image_table->details->child_under_pointer) {
 			image_table->details->child_being_pressed = child;
@@ -674,6 +682,10 @@ ancestor_button_release_event (GtkWidget *widget,
  	image_table = NAUTILUS_IMAGE_TABLE (event_data);
 
 	child = nautilus_wrap_table_find_child_at_event_point (NAUTILUS_WRAP_TABLE (image_table), event->x, event->y);
+
+	if (child && !GTK_WIDGET_SENSITIVE (child)) {
+		return FALSE;
+	}
 
 	if (image_table->details->child_being_pressed != NULL) {
 		released_emit_child = image_table->details->child_being_pressed;
