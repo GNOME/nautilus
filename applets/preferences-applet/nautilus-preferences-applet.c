@@ -157,6 +157,15 @@ restart_button_clicked_callback (GtkWidget *button,
 	nautilus_gnome_shell_execute ("nautilus --restart");
 }
 
+static void
+user_level_changed_callback (gpointer callback_data)
+{
+	g_return_if_fail (GTK_IS_TOGGLE_BUTTON (callback_data));
+
+	gtk_widget_set_sensitive (GTK_WIDGET (callback_data), 
+				  nautilus_preferences_get_user_level () > 0);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -210,6 +219,16 @@ main (int argc, char **argv)
 	smooth_graphics_button = boolean_toggle_button_new (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 							    "Smooth Graphics");
 	gtk_box_pack_start (GTK_BOX (preference_vbox), smooth_graphics_button, TRUE, TRUE, 1);
+
+	nautilus_preferences_add_callback ("user_level",
+					   user_level_changed_callback,
+					   show_desktop_button);
+	user_level_changed_callback (show_desktop_button);
+
+	nautilus_preferences_add_callback ("user_level",
+					   user_level_changed_callback,
+					   smooth_graphics_button);
+	user_level_changed_callback (smooth_graphics_button);
 
 	quit_button = gtk_button_new_with_label ("Quit");
 	nautilus_gtk_label_make_smaller (GTK_LABEL (GTK_BIN (quit_button)->child), 4);
