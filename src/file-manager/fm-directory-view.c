@@ -311,8 +311,6 @@ static void     schedule_timeout_display_of_pending_files      (FMDirectoryView 
 static void     unschedule_timeout_display_of_pending_files    (FMDirectoryView      *view);
 static void     unschedule_display_of_pending_files            (FMDirectoryView      *view);
 static void     disconnect_model_handlers                      (FMDirectoryView      *view);
-static void     remove_scripts_directory                       (FMDirectoryView      *view,
-								NautilusDirectory    *directory);
 static void     filtering_changed_callback                     (gpointer              callback_data);
 static void     metadata_for_directory_as_file_ready_callback  (NautilusFile         *file,
 								gpointer              callback_data);
@@ -1120,31 +1118,49 @@ scripts_added_or_changed_callback (NautilusDirectory *directory,
 }
 
 static void
-add_scripts_directory (FMDirectoryView *view,
-		       NautilusDirectory *directory)
+add_directory_to_scripts_directory_list (FMDirectoryView *view,
+					 NautilusDirectory *directory)
 {
 	GList *attributes;
 
-	nautilus_directory_ref (directory);
+	if (g_list_find (view->details->scripts_directory_list, directory) == NULL) {
+		nautilus_directory_ref (directory);
 
-	attributes = nautilus_icon_factory_get_required_file_attributes ();
-	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES);
-	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
+		attributes = nautilus_icon_factory_get_required_file_attributes ();
+		attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES);
+		attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
  
-	nautilus_directory_file_monitor_add (directory, &view->details->scripts_directory_list,
-					     FALSE, FALSE, attributes,
-					     scripts_added_or_changed_callback, view);
+		nautilus_directory_file_monitor_add (directory, &view->details->scripts_directory_list,
+						     FALSE, FALSE, attributes,
+						     scripts_added_or_changed_callback, view);
 
-	g_list_free (attributes);
+		g_list_free (attributes);
 
-	g_signal_connect (directory, "files_added",
-			  G_CALLBACK (scripts_added_or_changed_callback), view);
+		g_signal_connect (directory, "files_added",
+				  G_CALLBACK (scripts_added_or_changed_callback), view);
 
-	g_signal_connect (directory, "files_changed",
-			  G_CALLBACK (scripts_added_or_changed_callback), view);
+		g_signal_connect (directory, "files_changed",
+				  G_CALLBACK (scripts_added_or_changed_callback), view);
 
-	view->details->scripts_directory_list = g_list_prepend
+		view->details->scripts_directory_list = g_list_append
+			(view->details->scripts_directory_list, directory);
+	}
+}
+
+static void
+remove_directory_from_scripts_directory_list (FMDirectoryView *view,
+					      NautilusDirectory *directory)
+{
+	view->details->scripts_directory_list = g_list_remove
 		(view->details->scripts_directory_list, directory);
+
+	g_signal_handlers_disconnect_by_func (directory,
+					      G_CALLBACK (scripts_added_or_changed_callback),
+					      view);
+
+	nautilus_directory_file_monitor_remove (directory, &view->details->scripts_directory_list);
+
+	nautilus_directory_unref (directory);
 }
 
 static void
@@ -1186,7 +1202,7 @@ fm_directory_view_init (FMDirectoryView *view)
 	set_up_scripts_directory_global ();
 
 	scripts_directory = nautilus_directory_get (scripts_directory_uri);
-	add_scripts_directory (view, scripts_directory);
+	add_directory_to_scripts_directory_list (view, scripts_directory);
 	nautilus_directory_unref (scripts_directory);
 
 	view->details->zoomable = bonobo_zoomable_new ();
@@ -1288,7 +1304,7 @@ fm_directory_view_finalize (GObject *object)
 
 	for (node = view->details->scripts_directory_list; node != NULL; node = next) {
 		next = node->next;
-		remove_scripts_directory (view, node->data);
+		remove_directory_from_scripts_directory_list (view, node->data);
 	}
 
 	disconnect_model_handlers (view);
@@ -3707,46 +3723,24 @@ directory_belongs_in_scripts_menu (const char *uri)
 }
 
 static gboolean
-add_directory_to_scripts_directory_list (FMDirectoryView *view, NautilusFile *file)
-{
-	char *uri;
-	NautilusDirectory *directory;
-
-	uri = nautilus_file_get_uri (file);
-
-	if (!directory_belongs_in_scripts_menu (uri)) {
-		g_free (uri);
-		return FALSE;
-	}
-
-	directory = nautilus_directory_get (uri);
-	if (g_list_find (view->details->scripts_directory_list, directory) == NULL) {
-		add_scripts_directory (view, directory);
-	}
-	nautilus_directory_unref (directory);
-
-	g_free (uri);
-	return TRUE;
-}
-
-static gboolean
 update_directory_in_scripts_menu (FMDirectoryView *view, NautilusDirectory *directory)
 {
-	char *directory_uri;
 	char *menu_path, *popup_path;
 	GList *file_list, *filtered, *node;
 	gboolean any_scripts;
-	int i;
 	NautilusFile *file;
+	NautilusDirectory *dir;
+	char *uri;
+	int i;
 
-	directory_uri = nautilus_directory_get_uri (directory);
+	uri = nautilus_directory_get_uri (directory);
 	menu_path = g_strconcat (FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS_PLACEHOLDER,
-				 directory_uri + scripts_directory_uri_length,
+				 uri + scripts_directory_uri_length,
 				 NULL);
 	popup_path = g_strconcat (FM_DIRECTORY_VIEW_POPUP_PATH_SCRIPTS_PLACEHOLDER,
-				  directory_uri + scripts_directory_uri_length,
+				  uri + scripts_directory_uri_length,
 				  NULL);
-	g_free (directory_uri);
+	g_free (uri);
 
 	file_list = nautilus_directory_get_file_list (directory);
 	filtered = nautilus_file_list_filter_hidden_and_backup (file_list, FALSE, FALSE);
@@ -3763,10 +3757,17 @@ update_directory_in_scripts_menu (FMDirectoryView *view, NautilusDirectory *dire
 			add_script_to_script_menus (view, file, i++, menu_path, popup_path);
 			any_scripts = TRUE;
 		} else if (nautilus_file_is_directory (file)) {
-			if (add_directory_to_scripts_directory_list (view, file)) {
+			uri = nautilus_file_get_uri (file);
+			if (directory_belongs_in_scripts_menu (uri)) {
+				dir = nautilus_directory_get (uri);
+				add_directory_to_scripts_directory_list (view, dir);
+				nautilus_directory_unref (dir);
+
 				add_submenu_to_script_menus (view, file, menu_path, popup_path);
+
 				any_scripts = TRUE;
 			}
+			g_free (uri);
 		}
 	}
 
@@ -3786,6 +3787,11 @@ update_scripts_menu (FMDirectoryView *view)
 	NautilusDirectory *directory;
 	char *uri;
 
+	/* There is a race condition here.  If we don't mark the scripts menu as
+	   valid before we begin our task then we can lose script menu updates that
+	   occur before we finish. */
+	view->details->scripts_invalid = FALSE;
+
 	nautilus_bonobo_remove_menu_items_and_commands
 		(view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS_PLACEHOLDER);
 	nautilus_bonobo_remove_menu_items_and_commands
@@ -3800,11 +3806,9 @@ update_scripts_menu (FMDirectoryView *view)
 
 		uri = nautilus_directory_get_uri (directory);
 		if (!directory_belongs_in_scripts_menu (uri)) {
-			remove_scripts_directory (view, directory);
-		} else {
-			if (update_directory_in_scripts_menu (view, directory)) {
-				any_scripts = TRUE;
-			}
+			remove_directory_from_scripts_directory_list (view, directory);
+		} else if (update_directory_in_scripts_menu (view, directory)) {
+			any_scripts = TRUE;
 		}
 		g_free (uri);
 	}
@@ -3816,8 +3820,6 @@ update_scripts_menu (FMDirectoryView *view)
 	nautilus_bonobo_set_hidden (view->details->ui, 
 				    FM_DIRECTORY_VIEW_POPUP_PATH_SCRIPTS_SEPARATOR, 
 				    !any_scripts);
-
-	view->details->scripts_invalid = FALSE;
 }
 
 static void
@@ -4406,7 +4408,7 @@ schedule_update_menus (FMDirectoryView *view)
 	g_assert (view->details->nautilus_view != NULL);
 
 	view->details->menu_states_untrustworthy = TRUE;
-	
+
 	if (view->details->menus_merged
 	    && view->details->update_menus_timeout_id == 0) {
 		view->details->update_menus_timeout_id
@@ -5058,21 +5060,6 @@ static void
 disconnect_directory_handler (FMDirectoryView *view, int *id)
 {
 	disconnect_handler (GTK_OBJECT (view->details->model), id);
-}
-
-static void
-remove_scripts_directory (FMDirectoryView *view, NautilusDirectory *directory)
-{
-	view->details->scripts_directory_list = g_list_remove
-		(view->details->scripts_directory_list, directory);
-
-	g_signal_handlers_disconnect_by_func (directory,
-					      G_CALLBACK (scripts_added_or_changed_callback),
-					      view);
-
-	nautilus_directory_file_monitor_remove (directory, &view->details->scripts_directory_list);
-
-	nautilus_directory_unref (directory);
 }
 
 static void

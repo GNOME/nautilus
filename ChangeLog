@@ -1,3 +1,15 @@
+2002-02-20  David Emory Watson  <dwatson@cs.ucr.edu>
+
+	* src/file-manager/fm-directory-view.c:
+	(update_scripts_menu): Avoid race condition by resetting
+	scripts_invalid flag before we build the script menus.
+	(update_directory_in_scripts_menu): Simplified code. 
+	(add_scripts_directory): Moved into
+	(add_directory_to_scripts_directory_list): here.
+	(remove_scripts_directory): Renamed to
+	(remove_directory_from_scripts_directory_list): this.
+	(update_scripts_menu): Made code more readable.
+
 2002-02-20  Jens Finke <jens@triq.net>
 
 	* src/file-manager/fm-desktop-icon-view.c
