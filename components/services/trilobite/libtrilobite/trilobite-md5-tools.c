@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <libtrilobite/trilobite-core-utils.h>
+#include "trilobite-core-utils.h"
 
 #undef _MD5_STANDALONE
 
