@@ -29,6 +29,10 @@
 	(nautilus_simple_search_bar_destroy): Free details field.
 	(nautilus_simple_search_bar_set_location),
 	(nautilus_simple_search_bar_get_location): Updated to use Details.
+	* src/nautilus-simple-search-bar.h: Replaced several fields in 
+	NautilusSimpleSearchBar struct with new Details field. Among
+	the replaced fields were some undo-related ones that were not
+	yet used anywhere, so I left them out of Details.
 
 	* src/nautilus-complex-search-bar.c:
 	(criteria_invalid): Walks through the list of criteria, checking
@@ -49,11 +53,6 @@
 	was leaking before.
 	(attach_criterion_to_search_bar): Attach update_find_button_state
 	to "changed" signal of any new text-entry field.
-
-	* src/nautilus-simple-search-bar.h: Replaced several fields in 
-	NautilusSimpleSearchBar struct with new Details field. Among
-	the replaced fields were some undo-related ones that were not
-	yet used anywhere, so I left them out of Details.
 	
 2000-08-07  Andy Hertzfeld  <andy@eazel.com>
 
