@@ -39,6 +39,7 @@
 
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-radio-button-group.h>
 #include <libnautilus-extensions/nautilus-user-level-manager.h>
@@ -46,6 +47,7 @@
 #include "nautilus-first-time-druid.h"
 
 #define SERVICE_UPDATE_ARCHIVE_PATH "/tmp/nautilus_update.tgz"
+#define NUMBER_OF_STANDARD_PAGES 4
 
 static void
 initiate_file_download (NautilusDruid *druid);
@@ -56,7 +58,7 @@ static gboolean save_manage_desktop;
 
 static GtkWidget *start_page;
 static GtkWidget *finish_page;
-static GtkWidget *pages[4];
+static GtkWidget *pages[NUMBER_OF_STANDARD_PAGES];
 
 static GtkWidget *download_progress;
 
@@ -120,6 +122,7 @@ druid_finished (GtkWidget *druid_page)
 
 	/* write out the first time file to indicate that we've successfully traversed the druid */
 	druid_set_first_time_file_flag ();
+	signup_uris[1] = NULL;
 	
 	switch (last_signup_choice) {
 		case 0:
@@ -431,13 +434,14 @@ finish_page_back_callback (GtkWidget *button, NautilusDruid *druid)
 /* create the initial preferences druid */
 
 GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gboolean manage_desktop, const char *urls[])
-{
-	
+{	
+	int index;
 	GtkWidget *dialog;
 	GtkWidget *druid;
 
 	GdkPixbuf *logo;
-
+	GdkColor logo_bg_color;
+	
 	/* remember parameters for later window invocation */
 	save_application = application;
 	save_manage_desktop = manage_desktop;
@@ -499,17 +503,23 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 	
 	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (finish_page));
 
-	/* set up the logo images */	
+	/* set up the logo background and image */	
+
+	nautilus_gdk_color_parse_with_white_default ("rgb:1838/1838/7000", &logo_bg_color);
 
 	logo = create_named_pixbuf ("nautilus-logo.png");
 	g_assert (logo != NULL);
 	
-	/*
+	nautilus_druid_page_start_set_logo_bg_color (NAUTILUS_DRUID_PAGE_START (start_page), &logo_bg_color);		
 	nautilus_druid_page_start_set_logo (NAUTILUS_DRUID_PAGE_START (start_page), logo);	
-	nautilus_druid_page_standard_set_logo (NAUTILUS_DRUID_PAGE_STANDARD (pages[0]), logo);
+	
+	for (index = 0; index < NUMBER_OF_STANDARD_PAGES; index++) {
+		nautilus_druid_page_standard_set_logo_bg_color (NAUTILUS_DRUID_PAGE_STANDARD (pages[index]), &logo_bg_color);		
+		nautilus_druid_page_standard_set_logo (NAUTILUS_DRUID_PAGE_STANDARD (pages[index]), logo);
+	}
+	
+	nautilus_druid_page_finish_set_logo_bg_color (NAUTILUS_DRUID_PAGE_FINISH (finish_page), &logo_bg_color);		
 	nautilus_druid_page_finish_set_logo (NAUTILUS_DRUID_PAGE_FINISH (finish_page), logo);
-	nautilus_druid_page_standard_set_logo (NAUTILUS_DRUID_PAGE_STANDARD (pages[1]), logo);
-	*/
 
 	gdk_pixbuf_unref (logo);
 		
@@ -561,7 +571,7 @@ download_callback (GnomeVFSResult result,
 		/* expand the directory into the proper place */
 		/* first, formulate the command string */
 		user_directory_path = nautilus_get_user_directory ();
-		command_str = g_strdup_printf ("cd %s; tar xvfz %s", user_directory_path, SERVICE_UPDATE_ARCHIVE_PATH);
+		command_str = g_strdup_printf ("cd %s; tar xvfz %s >/dev/null", user_directory_path, SERVICE_UPDATE_ARCHIVE_PATH);
 		
 		/* execute the command to make the updates folder */
 		expand_result = system (command_str);

@@ -1,3 +1,30 @@
+2000-08-24  Andy Hertzfeld  <andy@eazel.com>
+ 
+	cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-finish.c:
+	(nautilus_druid_page_finish_init),
+	(nautilus_druid_page_finish_destroy),
+	(nautilus_druid_page_finish_configure_size),
+	(nautilus_druid_page_finish_set_logo):
+	changed the logo from being a fixed width and height to automatically adjusting 
+	image dimensions; also, made it use the anti-aliased canvas for prettier images
+	
+	cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-standard.c: 
+	(nautilus_druid_page_standard_init),
+	(nautilus_druid_page_standard_configure_size),
+	(nautilus_druid_page_standard_construct),
+	(nautilus_druid_page_standard_set_logo):
+	ditto for standard pages; this stuff should really be in the superclass
+	
+	cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-start.c:
+	(nautilus_druid_page_start_init),
+	(nautilus_druid_page_start_configure_size):
+	ditto for the finish page
+	
+	* src/nautilus-first-time-druid.c: (druid_finished),
+	(nautilus_first_time_druid_show), (download_callback):
+	added setting the logo image and some other improvements; the logo image 
+	still looks a bit crufty and needs to be tweaked by Susan
+	
 2000-08-23  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/nautilus-view/Makefile.am:

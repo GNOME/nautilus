@@ -59,6 +59,7 @@ static void nautilus_druid_page_finish_prepare	  (NautilusDruidPage		 *page,
 static NautilusDruidPageClass *parent_class = NULL;
 
 #define LOGO_WIDTH 50.0
+#define LOGO_HEIGHT 50.0
 #define DRUID_PAGE_HEIGHT 318
 #define DRUID_PAGE_WIDTH 516
 #define DRUID_PAGE_LEFT_WIDTH 100.0
@@ -126,7 +127,7 @@ nautilus_druid_page_finish_init (NautilusDruidPageFinish *druid_page_finish)
 
 	/* Set up the canvas */ 
 	gtk_container_set_border_width (GTK_CONTAINER (druid_page_finish), 0);
-	druid_page_finish->_priv->canvas = gnome_canvas_new ();
+	druid_page_finish->_priv->canvas = gnome_canvas_new_aa ();
 	gtk_widget_set_usize (druid_page_finish->_priv->canvas, DRUID_PAGE_WIDTH, DRUID_PAGE_HEIGHT);
 	gtk_widget_show (druid_page_finish->_priv->canvas);
 	gnome_canvas_set_scroll_region (GNOME_CANVAS (druid_page_finish->_priv->canvas), 0.0, 0.0, DRUID_PAGE_WIDTH, DRUID_PAGE_HEIGHT);
@@ -141,7 +142,7 @@ nautilus_druid_page_finish_destroy(GtkObject *object)
 	g_free(druid_page_finish->_priv);
 	druid_page_finish->_priv = NULL;
 
-	if(GTK_OBJECT_CLASS(parent_class)->destroy)
+	if (GTK_OBJECT_CLASS(parent_class)->destroy)
 		(* GTK_OBJECT_CLASS(parent_class)->destroy)(object);
 }
 
@@ -150,9 +151,18 @@ static void
 nautilus_druid_page_finish_configure_size (NautilusDruidPageFinish *druid_page_finish, gint width, gint height)
 {
 	gfloat watermark_width = DRUID_PAGE_LEFT_WIDTH;
-	gfloat watermark_height = (gfloat) height - LOGO_WIDTH + GNOME_PAD * 2.0;
-	gfloat watermark_ypos = LOGO_WIDTH + GNOME_PAD * 2.0;
-
+	gfloat watermark_height = (gfloat) height - LOGO_HEIGHT + GNOME_PAD * 2.0;
+	gfloat watermark_ypos = LOGO_HEIGHT + GNOME_PAD * 2.0;
+	gfloat cur_logo_width, cur_logo_height;
+	
+	if (druid_page_finish->logo_image) {
+		cur_logo_width = gdk_pixbuf_get_width (druid_page_finish->logo_image);
+		cur_logo_height = gdk_pixbuf_get_height (druid_page_finish->logo_image);
+	} else {
+		cur_logo_width = LOGO_WIDTH;
+		cur_logo_height = LOGO_HEIGHT;
+	}
+	
 	if (druid_page_finish->watermark_image) {
 		watermark_width = gdk_pixbuf_get_width (druid_page_finish->watermark_image);
 		watermark_height = gdk_pixbuf_get_height (druid_page_finish->watermark_image);
@@ -170,22 +180,22 @@ nautilus_druid_page_finish_configure_size (NautilusDruidPageFinish *druid_page_f
 			       "y2", (gfloat) height,
 			       "width_units", 1.0, NULL);
 	gnome_canvas_item_set (druid_page_finish->_priv->textbox_item,
-			       "x1", (gfloat) watermark_width,
-			       "y1", (gfloat) LOGO_WIDTH + GNOME_PAD * 2.0,
+			       "x1", watermark_width,
+			       "y1", cur_logo_height + GNOME_PAD * 2.0,
 			       "x2", (gfloat) width,
 			       "y2", (gfloat) height,
 			       "width_units", 1.0, NULL);
 	gnome_canvas_item_set (druid_page_finish->_priv->logoframe_item,
-			       "x1", (gfloat) width - LOGO_WIDTH -GNOME_PAD,
+			       "x1", (gfloat) width - cur_logo_width -GNOME_PAD,
 			       "y1", (gfloat) GNOME_PAD,
 			       "x2", (gfloat) width - GNOME_PAD,
-			       "y2", (gfloat) GNOME_PAD + LOGO_WIDTH,
+			       "y2", (gfloat) GNOME_PAD + cur_logo_height,
 			       "width_units", 1.0, NULL);
 	gnome_canvas_item_set (druid_page_finish->_priv->logo_item,
-			       "x", (gfloat) width - GNOME_PAD - LOGO_WIDTH,
+			       "x", (gfloat) width - GNOME_PAD - cur_logo_width,
 			       "y", (gfloat) GNOME_PAD,
-			       "width", (gfloat) LOGO_WIDTH,
-			       "height", (gfloat) LOGO_WIDTH, NULL);
+			       "width", (gfloat) cur_logo_width,
+			       "height", (gfloat) cur_logo_height, NULL);
 	gnome_canvas_item_set (druid_page_finish->_priv->watermark_item,
 			       "x", 0.0,
 			       "y", watermark_ypos,
@@ -193,13 +203,13 @@ nautilus_druid_page_finish_configure_size (NautilusDruidPageFinish *druid_page_f
 			       "height", watermark_height,
 			       NULL);
 	gnome_canvas_item_set (druid_page_finish->_priv->title_item,
-			       "x", 15.0, 
-			       "y", (gfloat) GNOME_PAD + LOGO_WIDTH / 2.0,
+			       "x", 15.0,
+			       "y", (gfloat) GNOME_PAD + cur_logo_height / 2.0,
 			       "anchor", GTK_ANCHOR_WEST,
 			       NULL);
 	gnome_canvas_item_set (druid_page_finish->_priv->text_item,
 			       "x", ((width - watermark_width) * 0.5) + watermark_width,
-			       "y", LOGO_WIDTH + GNOME_PAD * 2.0 + (height - (LOGO_WIDTH + GNOME_PAD * 2.0))/ 2.0,
+			       "y", LOGO_HEIGHT + GNOME_PAD * 2.0 + (height - (cur_logo_height + GNOME_PAD * 2.0))/ 2.0,
 			       "anchor", GTK_ANCHOR_CENTER,
 			       NULL);
 }
@@ -501,6 +511,8 @@ nautilus_druid_page_finish_set_logo          (NautilusDruidPageFinish *druid_pag
 	gdk_pixbuf_ref (logo_image);
 	gnome_canvas_item_set (druid_page_finish->_priv->logo_item,
 			       "pixbuf", druid_page_finish->logo_image, NULL);
+	nautilus_druid_page_finish_configure_size (druid_page_finish, DRUID_PAGE_WIDTH, DRUID_PAGE_HEIGHT);
+
 }
 void
 nautilus_druid_page_finish_set_watermark     (NautilusDruidPageFinish *druid_page_finish,

@@ -61,6 +61,8 @@ static void nautilus_druid_page_standard_prepare       (NautilusDruidPage       
 static NautilusDruidPageClass *parent_class = NULL;
 
 #define LOGO_WIDTH 50.0
+#define LOGO_HEIGHT 50.0
+
 #define DRUID_PAGE_WIDTH 516
 #define GDK_COLOR_TO_RGBA(color) GNOME_CANVAS_COLOR (color.red/256, color.green/256, color.blue/256)
 
@@ -127,7 +129,7 @@ nautilus_druid_page_standard_init (NautilusDruidPageStandard *druid_page_standar
 	vbox = gtk_vbox_new (FALSE, 0);
 	hbox = gtk_hbox_new (FALSE, 0);
 	druid_page_standard->vbox = gtk_vbox_new (FALSE, 0);
-	druid_page_standard->_priv->canvas = gnome_canvas_new ();
+	druid_page_standard->_priv->canvas = gnome_canvas_new_aa ();
 	druid_page_standard->_priv->side_bar = gtk_drawing_area_new ();
 	druid_page_standard->_priv->bottom_bar = gtk_drawing_area_new ();
 	druid_page_standard->_priv->right_bar = gtk_drawing_area_new ();
@@ -162,7 +164,7 @@ nautilus_druid_page_standard_init (NautilusDruidPageStandard *druid_page_standar
 	gtk_box_pack_start (GTK_BOX (hbox), druid_page_standard->_priv->side_bar, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), druid_page_standard->vbox, TRUE, TRUE, 0);
 	gtk_box_pack_end (GTK_BOX (hbox), druid_page_standard->_priv->right_bar, FALSE, FALSE, 0);
-	gtk_widget_set_usize (druid_page_standard->_priv->canvas, 508, LOGO_WIDTH + GNOME_PAD * 2);
+	gtk_widget_set_usize (druid_page_standard->_priv->canvas, 508, LOGO_HEIGHT + GNOME_PAD * 2);
 	gtk_container_set_border_width (GTK_CONTAINER (druid_page_standard), 0);
 	gtk_container_add (GTK_CONTAINER (druid_page_standard), vbox);
 	gtk_widget_show_all (vbox);
@@ -183,23 +185,39 @@ nautilus_druid_page_standard_destroy(GtkObject *object)
 static void
 nautilus_druid_page_standard_configure_size (NautilusDruidPageStandard *druid_page_standard, gint width, gint height)
 {
+	gfloat cur_logo_width, cur_logo_height;
+
+	if (druid_page_standard->logo_image) {
+		cur_logo_width = gdk_pixbuf_get_width (druid_page_standard->logo_image);
+		cur_logo_height = gdk_pixbuf_get_height (druid_page_standard->logo_image);
+	} else {
+		cur_logo_width = LOGO_WIDTH;
+		cur_logo_height = LOGO_HEIGHT;
+	}
+
 	gnome_canvas_item_set (druid_page_standard->_priv->background_item,
 			       "x1", 0.0,
 			       "y1", 0.0,
 			       "x2", (gfloat) width,
-			       "y2", (gfloat) LOGO_WIDTH + GNOME_PAD * 2,
+			       "y2", (gfloat) cur_logo_height + GNOME_PAD * 2,
 			       "width_units", 1.0, NULL);
 	gnome_canvas_item_set (druid_page_standard->_priv->logoframe_item,
-			       "x1", (gfloat) width - LOGO_WIDTH - GNOME_PAD,
+			       "x1", (gfloat) width - cur_logo_width - GNOME_PAD,
 			       "y1", (gfloat) GNOME_PAD,
 			       "x2", (gfloat) width - GNOME_PAD,
-			       "y2", (gfloat) GNOME_PAD + LOGO_WIDTH,
+			       "y2", (gfloat) GNOME_PAD + cur_logo_height,
 			       "width_units", 1.0, NULL);
 	gnome_canvas_item_set (druid_page_standard->_priv->logo_item,
-			       "x", (gfloat) width - GNOME_PAD - LOGO_WIDTH,
+			       "x", (gfloat) width - GNOME_PAD - cur_logo_width,
 			       "y", (gfloat) GNOME_PAD,
-			       "width", (gfloat) LOGO_WIDTH,
-			       "height", (gfloat) LOGO_WIDTH, NULL);
+			       "width", (gfloat) cur_logo_width,
+			       "height", (gfloat) cur_logo_height, NULL);
+	gnome_canvas_item_set (druid_page_standard->_priv->title_item,
+			       "x", 15.0,
+			       "y", (gfloat) GNOME_PAD + cur_logo_height / 2.0,
+			       "anchor", GTK_ANCHOR_WEST,
+			       NULL);
+
 }
 
 static void
@@ -242,13 +260,7 @@ nautilus_druid_page_standard_construct (NautilusDruidPageStandard *druid_page_st
 				       "fill_color_rgba", fill_color,
 				       NULL);
 
-	gnome_canvas_item_set (druid_page_standard->_priv->title_item,
-			       "x", 15.0,
-			       "y", (gfloat) GNOME_PAD + LOGO_WIDTH / 2.0,
-			       "anchor", GTK_ANCHOR_WEST,
-			       NULL);
-
-	nautilus_druid_page_standard_configure_size (druid_page_standard, DRUID_PAGE_WIDTH, GNOME_PAD * 2 + LOGO_WIDTH);
+	nautilus_druid_page_standard_configure_size (druid_page_standard, DRUID_PAGE_WIDTH, GNOME_PAD * 2 + LOGO_HEIGHT);
 	gtk_signal_connect (GTK_OBJECT (druid_page_standard),
 			    "prepare",
 			    nautilus_druid_page_standard_prepare,
@@ -398,9 +410,13 @@ void
 nautilus_druid_page_standard_set_logo          (NautilusDruidPageStandard *druid_page_standard,
 					     GdkPixbuf*logo_image)
 {
+	GtkWidget *widget;
+	
 	g_return_if_fail (druid_page_standard != NULL);
 	g_return_if_fail (NAUTILUS_IS_DRUID_PAGE_STANDARD (druid_page_standard));
 
+	widget = GTK_WIDGET (druid_page_standard);
+	
 	if (druid_page_standard->logo_image)
 		gdk_pixbuf_unref (druid_page_standard->logo_image);
 
@@ -408,5 +424,10 @@ nautilus_druid_page_standard_set_logo          (NautilusDruidPageStandard *druid
 	gdk_pixbuf_ref (logo_image);
 	gnome_canvas_item_set (druid_page_standard->_priv->logo_item,
 			       "pixbuf", druid_page_standard->logo_image, NULL);
+
+	nautilus_druid_page_standard_configure_size (druid_page_standard,
+						  widget->allocation.width,
+						  widget->allocation.height);
+
 }
 
