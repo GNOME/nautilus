@@ -115,9 +115,7 @@ nautilus_about_initialize (NautilusAbout *about)
 	/* allocate a frame to hold the drawing area */
 	frame = gtk_frame_new (NULL);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_ETCHED_IN);
-	/*
-	gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
-	*/
+
 	gtk_container_add (GTK_CONTAINER (GNOME_DIALOG(about)->vbox),
 			   GTK_WIDGET(frame));
 	gtk_widget_show (frame);
@@ -227,6 +225,7 @@ nautilus_about_draw_info (
 	const char	*timestamp)
 {
 	char *display_str;
+	char **comment_array;
 	NautilusScalableFont *plain_font, *bold_font;
 	GdkPixbuf *pixbuf;
 	uint	black, white, grey;
@@ -258,7 +257,6 @@ nautilus_about_draw_info (
 	
 	/* draw the authors */
 	index = 0;
-	
 	xpos = 200; ypos = 88;
 	while (authors[index] != NULL) {
 		draw_aa_string (plain_font, pixbuf, 12, xpos, ypos, black, black, authors[index], 0);
@@ -269,7 +267,19 @@ nautilus_about_draw_info (
 			xpos = 340;
 		}
 	}	
+
+	/* draw the comment, breaking it up into multiple lines */
+	comment_array = g_strsplit (comments, "\n", 10);
+	index = 0;
+	xpos = 6; ypos = 118;
+	while (comment_array[index] != NULL) {
+		draw_aa_string (plain_font, pixbuf, 14, xpos, ypos, black, black, comment_array[index], 0);
+		ypos += 18;
+		index++;	
+	}
+	g_strfreev (comment_array);
 	
+	/* release the fonts */	
 	gtk_object_unref (GTK_OBJECT(plain_font));
 	gtk_object_unref (GTK_OBJECT(bold_font));
 }

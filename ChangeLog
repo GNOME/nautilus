@@ -1,5 +1,14 @@
 2000-08-31  Andy Hertzfeld  <andy@eazel.com>
 
+	* src/nautilus-about.c: (nautilus_about_initialize),
+	(nautilus_about_draw_info):
+	draw the passed-in comment in the appropriate position. This change
+	completes the new about dialog.
+	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):
+	tweaked the about window comment and authors.
+	
+2000-08-31  Andy Hertzfeld  <andy@eazel.com>
+
 	* src/nautilus-about.c: (nautilus_about_initialize):
 	fixed bug 2653, about window crashes if shown more than once.
 	Fixed by setting the "close_hides" boolean.  Also, set the

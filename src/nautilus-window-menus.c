@@ -562,6 +562,7 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
 			"George Lebl",
 			"Elliot Lee",
 			"Raph Levien",
+			"Seth Nickell",
 			"Eskil Heyn Olsen",
 			"Ettore Perazzoli",
 			"Robey Pointer",
@@ -578,7 +579,7 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
 					VERSION,
 					"(C) 1999-2000 Eazel, Inc.",
 					authors,
-					_("Nautilus is a graphical shell for GNOME \nthat makes it easy to manage your files\nand the rest of your system."),
+					_("Nautilus is a graphical shell \nfor GNOME that makes it \neasy to manage your files \nand the rest of your system."),
 					NAUTILUS_TIMESTAMP);
 	}
 
