@@ -29,6 +29,10 @@
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkmessagedialog.h>
 #include <gtk/gtksizegroup.h>
+#include <gtk/gtknotebook.h>
+
+#include <libgnome/gnome-help.h>
+#include <libgnome/gnome-i18n.h>
 
 #include <glade/glade.h>
 
@@ -211,25 +215,62 @@ nautilus_file_management_properties_dialog_set_icons (GtkWindow *window)
 }
 
 static void
-nautilus_file_management_properties_dialog_response_cb (GtkDialog *parent,
-							int response_id,
-							GladeXML *xml_dialog)
+preferences_show_help (GtkWindow *parent,
+		       char const *helpfile,
+		       char const *sect_id)
 {
+	GError *error = NULL;
 	GtkWidget *dialog;
 
-	if (response_id == GTK_RESPONSE_HELP) {
+	g_return_if_fail (helpfile != NULL);
+	g_return_if_fail (sect_id != NULL);
+
+	gnome_help_display_desktop (NULL,
+				    "user-guide",
+				    helpfile, sect_id, &error);
+
+	if (error) {
 		dialog = gtk_message_dialog_new (GTK_WINDOW (parent),
 						 GTK_DIALOG_DESTROY_WITH_PARENT,
 						 GTK_MESSAGE_ERROR,
 						 GTK_BUTTONS_CLOSE,
-						 "Not implemented yet.");
+						 _("There was an error displaying help: \n%s"),
+						 error->message);
 
 		g_signal_connect (G_OBJECT (dialog),
 				  "response", G_CALLBACK (gtk_widget_destroy),
 				  NULL);
 		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 		gtk_widget_show (dialog);
+		g_error_free (error);
+	}
+}
 
+
+static void
+nautilus_file_management_properties_dialog_response_cb (GtkDialog *parent,
+							int response_id,
+							GladeXML *xml_dialog)
+{
+	char *section;
+
+	if (response_id == GTK_RESPONSE_HELP) {
+		switch (gtk_notebook_get_current_page (GTK_NOTEBOOK (glade_xml_get_widget (xml_dialog, "notebook1")))) {
+		default:
+		case 0:
+			section = "gosnautilus-438";
+			break;
+		case 1:
+			section = "gosnautilus-57";
+			break;
+		case 2:
+			section = "gosnautilus-439";
+			break;
+		case 3:
+			section = "gosnautilus-60";
+			break;
+		}
+		preferences_show_help (GTK_WINDOW (parent), "wgosnautilus.xml", section);
 	} else if (response_id == GTK_RESPONSE_CLOSE) {
 		/* remove gconf monitors */
 		eel_gconf_monitor_remove ("/apps/nautilus/icon_view");
