@@ -733,6 +733,7 @@ nautilus_window_realize (GtkWidget *widget)
  * Main API
  */
 
+#if 0
 static gboolean
 nautilus_window_send_show_properties(GtkWidget *dockitem, GdkEventButton *event, NautilusView *meta_view)
 {
@@ -745,6 +746,7 @@ nautilus_window_send_show_properties(GtkWidget *dockitem, GdkEventButton *event,
 
   return TRUE;
 }
+#endif
 
 void
 nautilus_window_set_content_view(NautilusWindow *window, NautilusView *content_view)

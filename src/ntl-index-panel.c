@@ -131,8 +131,6 @@ static void make_per_uri_container(NautilusIndexPanel *index_panel)
 static void
 nautilus_index_panel_init (NautilusIndexPanel *index_panel)
 {
-  GdkColor temp_color;
-  GtkStyle *temp_style;
   GtkWidget* widget = GTK_WIDGET(index_panel);
   
   index_panel->index_container = NULL;
