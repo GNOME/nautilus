@@ -1,3 +1,23 @@
+2000-07-25  Robey Pointer  <robey@eazel.com>
+
+	*
+	components/services/install/command-line/eazel-alt-install-corba.c:
+	(delete_files), (set_root_client), (main):
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_delete_files), (eazel_install_callback_get_epv),
+	(eazel_install_callback_class_initialize):
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_class_initialize), (eazel_install_install_packages),
+	(eazel_install_emit_delete_files),
+	(eazel_install_emit_delete_files_default):
+	* components/services/install/lib/eazel-install-public.h:
+
+	Add "delete_files" callback and signal to find out if its okay to
+	delete the RPMs after an install.  It doesn't entirely work yet
+	(not all files are deleted) pending a change in the install API.
+
 2000-07-25  Arlo Rose  <set EMAIL_ADDRESS environment variable>
 
 	* icons/Makefile.am:

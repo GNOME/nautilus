@@ -85,6 +85,8 @@ struct _EazelInstallClass
 	void (*install_failed) (EazelInstall *service, const PackageData *pd);
 	void (*uninstall_failed) (EazelInstall *service, const PackageData *pd);
 
+	gboolean (*delete_files) (EazelInstall *service);
+
 	void (*done) (EazelInstall *service);
 #ifndef EAZEL_INSTALL_NO_CORBA
 	gpointer servant_vepv;

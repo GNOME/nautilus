@@ -49,6 +49,7 @@ enum {
 	INSTALL_FAILED,
 	UNINSTALL_FAILED,
 	DEPENDENCY_CHECK,
+	DELETE_FILES,
 	DONE,	
 	LAST_SIGNAL
 };
@@ -110,6 +111,7 @@ void eazel_install_emit_uninstall_failed_default (EazelInstall *service,
 void eazel_install_emit_dependency_check_default (EazelInstall *service,
 						  const PackageData *pack,
 						  const PackageData *needs);
+gboolean eazel_install_emit_delete_files_default (EazelInstall *service);
 void eazel_install_emit_done_default (EazelInstall *service);
 
 #ifndef EAZEL_INSTALL_NO_CORBA
@@ -324,6 +326,13 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				GTK_SIGNAL_OFFSET (EazelInstallClass, dependency_check),
 				gtk_marshal_NONE__POINTER_POINTER,
 				GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
+	signals[DELETE_FILES] =
+		gtk_signal_new ("delete_files",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallClass, delete_files),
+				gtk_marshal_BOOL__NONE,
+				GTK_TYPE_BOOL, 0);
 	signals[DONE] = 
 		gtk_signal_new ("done",
 				GTK_RUN_LAST,
@@ -340,6 +349,7 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 	klass->install_failed = eazel_install_emit_install_failed_default;
 	klass->uninstall_failed = eazel_install_emit_uninstall_failed_default;
 	klass->dependency_check = eazel_install_emit_dependency_check_default;
+	klass->delete_files = eazel_install_emit_delete_files_default;
 	klass->done = eazel_install_emit_done_default;
 
 	gtk_object_add_arg_type ("EazelInstall::verbose",
@@ -638,8 +648,24 @@ eazel_install_install_packages (EazelInstall *service, GList *categories)
 	}
 	if (install_new_packages (service, categories)==FALSE) {
 		g_warning (_("Install failed"));
-	} 
+	}
 	eazel_install_emit_done (service);
+	if (eazel_install_emit_delete_files (service)) {
+		GList *item;
+		GList *cat;
+		CategoryData *cd;
+		PackageData *pack;
+
+		g_message ("*** deleting the RPM files");
+		for (cat = g_list_first (categories); cat; cat = g_list_next (cat)) {
+			cd = (CategoryData *)cat->data;
+			for (item = g_list_first (cd->packages); item; item = g_list_next (item)) {
+				pack = (PackageData *)item->data;
+				g_message ("*** package '%s'", (char *)pack->filename);
+				unlink ((char *)pack->filename);
+			}
+		}
+	}
 }
 
 void 
@@ -871,6 +897,35 @@ eazel_install_emit_dependency_check_default (EazelInstall *service,
 	CORBA_exception_free (&ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
 } 
+
+gboolean
+eazel_install_emit_delete_files (EazelInstall *service)
+{
+	gboolean result;
+
+	SANITY(service);
+	gtk_signal_emit (GTK_OBJECT (service), signals[DELETE_FILES], &result);
+	return result;
+}
+
+gboolean
+eazel_install_emit_delete_files_default (EazelInstall *service)
+{
+#ifndef EAZEL_INSTALL_NO_CORBA
+	CORBA_Environment ev;
+	CORBA_boolean result = FALSE;
+
+	CORBA_exception_init (&ev);
+	SANITY(service);
+	if (service->callback != CORBA_OBJECT_NIL) {
+		result = Trilobite_Eazel_InstallCallback_delete_files (service->callback, &ev);
+	}
+	CORBA_exception_free (&ev);
+	return (gboolean)result;
+#else
+	return FALSE;
+#endif
+}
 
 void 
 eazel_install_emit_done (EazelInstall *service)

@@ -34,7 +34,6 @@
 #include <libtrilobite/libtrilobite.h>
 #include <trilobite-eazel-install.h>
 
-
 #define PACKAGE_FILE_NAME "package-list.xml"
 #define DEFAULT_CONFIG_FILE "/var/eazel/services/eazel-services-config.xml"
 
@@ -313,6 +312,25 @@ create_package (char *name)
 	return pack;
 }
 
+static gboolean
+delete_files (EazelInstallCallback *service, gpointer unused)
+{
+	char answer[10];
+
+	printf ("should i delete the RPM files? (y/n) ");
+	fflush (stdout);
+
+	fgets (answer, 10, stdin);
+	if (answer[0] == 'y' || answer[0] == 'Y') {
+		printf ("you said: YES\n");
+		fflush (stdout);
+		return TRUE;
+	}
+	printf ("you said: NO\n");
+	fflush (stdout);
+	return FALSE;
+}
+
 static void
 done (EazelInstallCallback *service,
       gpointer unused)
@@ -342,28 +360,16 @@ static TrilobiteRootClient *
 set_root_client (BonoboObjectClient *service)
 {
 	TrilobiteRootClient *root_client;
-	Trilobite_PasswordQueryClient trilobite_client;
 
 	if (bonobo_object_client_has_interface (service, "IDL:Trilobite/PasswordQuery:1.0", &ev)) {
-	        Trilobite_PasswordQuery trilobite_password;
-
 		root_client = trilobite_root_client_new ();
 		gtk_signal_connect (GTK_OBJECT (root_client), "need_password", GTK_SIGNAL_FUNC (get_password_dude),
 				    NULL);
 
-		trilobite_password = bonobo_object_query_interface (BONOBO_OBJECT (service),
-								    "IDL:Trilobite/PasswordQuery:1.0");
-		trilobite_client = trilobite_root_client_get_passwordqueryclient (root_client);
-		if (trilobite_password) {
-			Trilobite_PasswordQuery_set_query_client (trilobite_password, trilobite_client, &ev);
-			if (ev._major != CORBA_NO_EXCEPTION) {
-				g_warning ("set-query-client got exception :(");
-			}
-			Trilobite_PasswordQuery_unref (trilobite_password, &ev);
-			CORBA_Object_release (trilobite_password, &ev);
-		} else {
-			g_warning ("Never set client!");
+		if (! trilobite_root_client_attach (root_client, service)) {
+			g_warning ("unable to attach root client to Trilobite/PasswordQuery!");
 		}
+
 		return root_client;
 	} else {
 		g_warning ("Object does not support IDL:Trilobite/PasswordQuery:1.0");
@@ -377,7 +383,6 @@ int main(int argc, char *argv[]) {
 	GList *categories;
 	char *str;
 	EazelInstallCallback *cb;		
-	
 
 	CORBA_exception_init (&ev);
 
@@ -440,6 +445,7 @@ int main(int argc, char *argv[]) {
 	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_failed", install_failed, "");
 	gtk_signal_connect (GTK_OBJECT (cb), "download_failed", download_failed, NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", dep_check, NULL);
+	gtk_signal_connect (GTK_OBJECT (cb), "delete_files", (void *)delete_files, NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "done", done, NULL);
 
 	if (arg_erase) {

@@ -116,6 +116,10 @@ module Trilobite {
 			*/
 			oneway void install_failed (in string xml_package);
 			oneway void uninstall_failed (in string xml_package);
+
+			/* Called to find out whether to delete the rpms or not, after finishing */
+			boolean delete_files ();
+
 			/* Called when the operation is finished */
 			void done ();
 		};

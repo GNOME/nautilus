@@ -46,6 +46,7 @@ enum {
 	UNINSTALL_FAILED,
 
 	DEPENDENCY_CHECK,
+	DELETE_FILES,
 
 	DONE,
 	
@@ -163,6 +164,16 @@ impl_uninstall_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[UNINSTALL_FAILED], pack);
 }
 
+static CORBA_boolean
+impl_delete_files (impl_POA_Trilobite_Eazel_InstallCallback *servant,
+		   CORBA_Environment *ev)
+{
+	gboolean result;
+
+	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DELETE_FILES], &result);
+	return (CORBA_boolean)result;
+}
+
 static void 
 impl_done (impl_POA_Trilobite_Eazel_InstallCallback *servant, 
 	   CORBA_Environment * ev)
@@ -184,6 +195,7 @@ eazel_install_callback_get_epv ()
 	epv->install_failed      = (gpointer)&impl_install_failed;
 	epv->download_failed     = (gpointer)&impl_download_failed;
 	epv->uninstall_failed    = (gpointer)&impl_uninstall_failed;
+	epv->delete_files	 = (gpointer)&impl_delete_files;
 	epv->done                = (gpointer)&impl_done;
 
 	return epv;
@@ -320,6 +332,13 @@ eazel_install_callback_class_initialize (EazelInstallCallbackClass *klass)
 				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, dependency_check),
 				gtk_marshal_NONE__POINTER_POINTER,
 				GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
+	signals[DELETE_FILES] =
+		gtk_signal_new ("delete_files",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, delete_files),
+				gtk_marshal_BOOL__NONE,
+				GTK_TYPE_BOOL, 0);
 	signals[DONE] = 
 		gtk_signal_new ("done",
 				GTK_RUN_LAST,

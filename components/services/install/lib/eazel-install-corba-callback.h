@@ -74,6 +74,9 @@ struct _EazelInstallCallbackClass
 	/* Same as install_failed... */
 	void (*uninstall_failed) (EazelInstallCallback *service, PackageData *pd);
 
+	/* Called after installation to determine if the RPM files should be deleted */
+	gboolean (*delete_files) (EazelInstallCallback *service);
+
 	/* Called when the operation is complete */
 	void (*done) ();
 
