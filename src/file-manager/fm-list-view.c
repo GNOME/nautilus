@@ -112,6 +112,8 @@ struct FMListViewDetails {
 	
 	GHashTable *columns;
 	GtkWidget *column_editor;
+
+	char *original_name;
 };
 
 /*
@@ -854,7 +856,12 @@ cell_renderer_edited (GtkCellRendererText *cell,
 			    FM_LIST_MODEL_FILE_COLUMN, &file,
 			    -1);
 
-	fm_rename_file (file, new_text);
+	/* Only rename if name actually changed */
+	if (strcmp (new_text, view->details->original_name) != 0) {
+		fm_rename_file (file, new_text);
+	}
+	g_free (view->details->original_name);
+	view->details->original_name = NULL;
 	
 	nautilus_file_unref (file);
 
@@ -1888,7 +1895,8 @@ fm_list_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 				  TRUE);
 
 	entry = GTK_ENTRY (list_view->details->file_name_column->editable_widget);
-	eel_filename_get_rename_region (gtk_entry_get_text (entry),
+	list_view->details->original_name = g_strdup (gtk_entry_get_text (entry));
+	eel_filename_get_rename_region (list_view->details->original_name,
 					&start_offset, &end_offset);
 	gtk_editable_select_region (GTK_EDITABLE (entry), start_offset, end_offset);
 	
@@ -2030,6 +2038,9 @@ fm_list_view_finalize (GObject *object)
 
 	list_view = FM_LIST_VIEW (object);
 
+	g_free (list_view->details->original_name);
+	list_view->details->original_name = NULL;
+	
 	if (list_view->details->double_click_path[0]) {
 		gtk_tree_path_free (list_view->details->double_click_path[0]);
 	}	

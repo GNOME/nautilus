@@ -1,5 +1,14 @@
 2004-12-15  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-list-view.c: (cell_renderer_edited),
+	(fm_list_view_start_renaming_file):
+	* src/file-manager/fm-properties-window.c:
+	(name_field_done_editing):
+	Make sure we don't rename files if the name was never
+	changed from the original display name.
+
+2004-12-15  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-location-dialog.c: (nautilus_location_dialog_new):
 	Fill in ctrl-l dialog correctly for desktop.
 	

@@ -685,6 +685,7 @@ name_field_done_editing (NautilusEntry *name_field, FMPropertiesWindow *window)
 {
 	NautilusFile *file;
 	char *new_name;
+	const char *original_name;
 	
 	g_return_if_fail (NAUTILUS_IS_ENTRY (name_field));
 
@@ -708,10 +709,17 @@ name_field_done_editing (NautilusEntry *name_field, FMPropertiesWindow *window)
 	if (strlen (new_name) == 0) {
 		name_field_restore_original_name (NAUTILUS_ENTRY (name_field));
 	} else {
-		set_pending_name (window, new_name);
-		g_object_ref (window);
-		nautilus_file_rename (file, new_name,
-				      rename_callback, window);
+		original_name = (const char *) g_object_get_data (G_OBJECT (window->details->name_field),
+								  "original_name");
+		/* Don't rename if not changed since we read the display name.
+		   This is needed so that we don't save the display name to the
+		   file when nothing is changed */
+		if (strcmp (new_name, original_name) != 0) {		
+			set_pending_name (window, new_name);
+			g_object_ref (window);
+			nautilus_file_rename (file, new_name,
+					      rename_callback, window);
+		}
 	}
 
 	g_free (new_name);
