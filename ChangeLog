@@ -1,3 +1,14 @@
+2002-04-07  Alexander Larsson  <alla@lysator.liu.se>
+
+	* libnautilus-private/nautilus-global-preferences.c:
+	NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT is an integer
+	(global_preferences_register_enumerations): Allow integer enum
+	prefs.
+	
+	* src/nautilus-preferences-dialog.c:
+	Make NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT a
+	EEL_PREFERENCE_ITEM_ENUMERATION_MENU_INTEGER.
+
 2002-03-30  David Emory Watson  <dwatson@cs.ucr.edu>
 
 	This fixes single click activation in the list view, bug 76197.

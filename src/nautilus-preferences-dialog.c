@@ -325,7 +325,7 @@ static EelPreferencesItemDescription tradeoffs_items[] = {
 	{ N_("Show Thumbnails for Image Files"),
 	  NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
 	  N_("Don't make thumbnails for files larger than:"),
-	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU
+	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU_INTEGER
 	},
 	{ N_("Preview Sound Files"),
 	  NAUTILUS_PREFERENCES_PREVIEW_SOUND,

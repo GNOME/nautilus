@@ -369,8 +369,8 @@ static const PreferenceDefault preference_defaults[] = {
 	  "speed_tradeoff"
 	},
 	{ NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
-	  PREFERENCE_STRING,
-	  "3145728",
+	  PREFERENCE_INTEGER,
+	  GINT_TO_POINTER(3145728),
 	  NULL, NULL,
 	  "file_size"
 	},
@@ -613,7 +613,8 @@ global_preferences_register_enumerations (void)
 	for (i = 0; preference_defaults[i].name != NULL; i++) {
 		if (eel_strlen (preference_defaults[i].enumeration_id) > 0) {
 			g_assert (preference_defaults[i].type == PREFERENCE_STRING
-				  || preference_defaults[i].type == PREFERENCE_STRING_LIST);
+				  || preference_defaults[i].type == PREFERENCE_STRING_LIST
+				  || preference_defaults[i].type == PREFERENCE_INTEGER);
 			eel_preferences_set_enumeration_id (preference_defaults[i].name,
 							    preference_defaults[i].enumeration_id);
 		}
