@@ -2942,6 +2942,7 @@ real_update_menus (FMDirectoryView *view)
 	gboolean confirm_trash;
 	gboolean selection_contains_special_link;
 	gboolean can_create_files;
+	NautilusBackground *background;
 	
 	selection = fm_directory_view_get_selection (view);
 	selection_count = g_list_length (selection);
@@ -3024,6 +3025,11 @@ real_update_menus (FMDirectoryView *view)
 				       can_create_files
 			     	       	&& selection_count != 0
 			      		&& !selection_contains_special_link);
+
+	background = fm_directory_view_get_background (view);
+	nautilus_bonobo_set_sensitive (view->details->ui, 
+				       FM_DIRECTORY_VIEW_COMMAND_RESET_BACKGROUND,
+				       background && nautilus_file_background_is_set (background));
 
 	nautilus_bonobo_set_label_for_menu_item_and_command 
 		(view->details->ui,
