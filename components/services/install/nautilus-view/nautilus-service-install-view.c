@@ -49,7 +49,7 @@
 #include <errno.h>
 #include <sys/stat.h>
 
-#define NEXT_VIEW				"http://eazel1.eazel.com/services/summary2.html"
+#define NEXT_VIEW				"http://eazel1/services/summary2.html"
 
 static void       nautilus_service_install_view_initialize_class (NautilusServiceInstallViewClass	*klass);
 static void       nautilus_service_install_view_initialize       (NautilusServiceInstallView		*view);
