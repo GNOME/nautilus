@@ -2,7 +2,9 @@ NULL =
 
 CPPFLAGS = \
 	-DPREFIX=\"$(prefix)\" \
-	-DG_LOG_DOMAIN=\"nautilus-eazel-sample-service\"
+	-DG_LOG_DOMAIN=\"nautilus-eazel-sample-service\" \
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	$(NULL)
 
 INCLUDES = \
 	-I$(top_srcdir) \
@@ -10,7 +12,8 @@ INCLUDES = \
 	-I$(top_srcdir)/components/services/trilobite/src \
 	$(GNET_CFLAGS) \
 	$(GCONF_CFLAGS) \
-	$(GNOMEUI_CFLAGS) \
+	$(GNOME_CFLAGS) \
+	$(GNOME_INCLUDEDIR) \
 	$(OAF_CFLAGS) \
 	$(XML_CFLAGS) \
 	$(WERROR) \
@@ -19,7 +22,6 @@ INCLUDES = \
 LDFLAGS = \
 	$(GLIB_LIBS)	\
 	$(OAF_LIBS) 	\
-	$(GNOMEUI_LIBS) \
 	$(NULL)
 
 
@@ -30,7 +32,6 @@ oafdir = $(datadir)/oaf
 oaf_DATA = nautilus-eazel-sample-service.oafinfo
 
 CORBA_GENERATED =	\
-	sample-service-stubs.c	\
 	sample-service-common.c	\
 	sample-service-skels.c	\
 	$(NULL)
@@ -54,10 +55,10 @@ bin_PROGRAMS = nautilus-eazel-sample-service
 nautilus_eazel_sample_service_SOURCES =	\
 	sample-service-impl.c	\
 	sample-service-common.c	\
-	sample-service-skels.c	\
+	sample-service-stubs.c	\
 	$(NULL)
 
-nautilus_eazel_sample_service_LDFLAGS =	\
+nautilus_eazel_sample_service_LDADD =	\
 	$(top_builddir)/components/services/trilobite/src/libtrilobited.la \
 	$(NULL)
 

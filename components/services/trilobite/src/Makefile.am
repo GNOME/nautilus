@@ -13,6 +13,7 @@ INCLUDES = \
 	$(GCONF_CFLAGS) \
 	$(GNOMEUI_CFLAGS) \
 	$(OAF_CFLAGS) \
+	$(BONOBO_CFLAGS) \
 	$(XML_CFLAGS) \
 	$(WERROR) \
 	$(NULL)
@@ -37,6 +38,7 @@ trilobite-service.c: trilobite-service.h
 libtrilobited_la_LDFLAGS=\
 	$(GLIB_LIBS) 	\
 	$(OAF_LIBS)	\
+	$(BONOBO_LIBS)	\
 	$(NULL)
 
 libtrilobitedincludedir=$(includedir)/libtrilobited
@@ -47,6 +49,8 @@ libtrilobitedinclude_HEADERS=			\
 
 libtrilobited_la_SOURCES=			\
 	trilobite-service-common.c		\
+	trilobite-service-stubs.c		\
+	trilobite-service-skels.c		\
 	trilobite-service.c			\
 	$(NULL)
 

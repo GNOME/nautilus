@@ -1,6 +1,18 @@
-<oaf_server iid="OAFIID:NautilusEazelSampleService:134276" type="exe" location="nautilus-eazel-sample-service">
+<oaf_info>
+
+<oaf_server iid="OAFIID:nautilus_eazel_sample_service_factory:134276" type="exe" location="nautilus-eazel-sample-service">
 <oaf_attribute name="repo_ids" type="stringv">
+<item value="IDL:GNOME/GenericFactory:1.0"/>
+</oaf_attribute>
+<oaf_attribute name="description" type="string" value="Factory for the sample service"/>
+</oaf_server>
+
+<oaf_server iid="OAFIID:nautilus_eazel_sample_service:134276" type="factory" location="OAFIID:nautilus_eazel_sample_service_factory:134276">
+<oaf_attribute name="repo_ids" type="stringv">
+<item value="IDL:Bonobo/Unknown:1.0"/>
 <item value="IDL:Trilobite/Service:1.0"/>
 <item value="IDL:Trilobite/Eazel/Sample:1.0"/>
 </oaf_attribute>
 </oaf_server>
+
+</oaf_info>

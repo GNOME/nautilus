@@ -1,8 +1,10 @@
 #ifndef __TRILOBITE_IDL__
 #define __TRILOBITE_IDL__
 
+#include <Bonobo.idl>
+
 module Trilobite {
-	interface Service {
+	interface Service : Bonobo::Unknown {
 	  
 		/* Should return the name of the service, eg. "TimeService" */
 		string get_name();
@@ -27,11 +29,7 @@ module Trilobite {
 	  
 		/* Should return a URI for an icon for the service 
 		 */
-		string get_icon();
-
-		/* Inform the service that we're done with it
-		 */
-		void done();
+		string get_icon_uri();
 	};
 };
 

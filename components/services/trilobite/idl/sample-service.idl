@@ -1,8 +1,9 @@
-#include "trilobite-service.idl"
+#include <Bonobo.idl>
+#include <trilobite-service.idl>
 
 module Trilobite {
 	module Eazel {
-		interface Sample : Service {
+		interface Sample : Bonobo::Unknown {
 			void remember(in string something);
 			void say_it();
 		};

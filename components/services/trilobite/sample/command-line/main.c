@@ -23,11 +23,14 @@
 
 #include <config.h>
 #include <gnome.h>
-#include <stdio.h>
 #include <liboaf/liboaf.h>
+#include <bonobo.h>
 
 #include "sample-service.h"
 #include <trilobite-service-public.h>
+
+#define OAF_ID "OAFIID:nautilus_eazel_sample_service:134276"
+
 
 CORBA_Environment ev;
 CORBA_ORB orb;
@@ -35,36 +38,60 @@ CORBA_ORB orb;
 /* This is basically ripped from empty-client */
 
 int main(int argc, char *argv[]) {
-	Trilobite_Service service;
-	char *oafid = "OAFIID:NautilusEazelSampleService:134276";
+	BonoboObjectClient *service;
+	Trilobite_Service trilobite;
 
 	CORBA_exception_init (&ev);
-	gnome_init ("nautilus-eazel-sample-service", "1.0",argc, argv);
+	gnome_init_with_popt_table ("nautilus-eazel-sample-service", "1.0",argc, argv, oaf_popt_options, 0, NULL);
 	orb = oaf_init (argc, argv);
 
-	service = oaf_activate_from_id (oafid, 0, NULL, &ev);
+	if (bonobo_init (NULL, NULL, NULL) == FALSE) {
+		g_error ("Could not init bonobo");
+	}
+	bonobo_activate ();
 
+	service = bonobo_object_activate (OAF_ID, 0);
 	if (!service) {
-		g_error ("Cannot activate %s\n",oafid);
+		g_error ("Cannot activate %s\n",OAF_ID);
 	}
 
+	trilobite = bonobo_object_corba_objref (BONOBO_OBJECT (service));
+
 	/* Check the type of the object */
-	g_message ("Object properties : corba = %s trilobite = %s, testservice = %s\n",	       
-		   CORBA_Object_is_a (service, "IDL:CORBA/Object:1.0", &ev)?"yes":"no",
-		   CORBA_Object_is_a (service, "IDL:Trilobite/Service:1.0", &ev)?"yes":"no",
-		   CORBA_Object_is_a (service, "IDL:Trilobite/Eazel/TestService:1.0", &ev)?"yes":"no");
+	g_message ("CORBA Object properties :\ncorba object\t%s\nbonobo unknown\t%s\ntrilobite\t%s\ntestservice\t%s\n",	       
+		   CORBA_Object_is_a (trilobite, "IDL:CORBA/Object:1.0", &ev)?"yes":"no",
+		   CORBA_Object_is_a (trilobite, "IDL:Bonobo/Unknown:1.0", &ev)?"yes":"no",
+		   CORBA_Object_is_a (trilobite, "IDL:Trilobite/Service:1.0", &ev)?"yes":"no",
+		   CORBA_Object_is_a (trilobite, "IDL:Trilobite/Eazel/TestService:1.0", &ev)?"yes":"no");
+	
 
-	g_message ("service name        : %s", Trilobite_Service_get_name (service,&ev));
-	g_message ("service version     : %s", Trilobite_Service_get_version (service,&ev));
-	g_message ("service vendor name : %s", Trilobite_Service_get_vendor_name (service,&ev));
-	g_message ("service vendor url  : %s", Trilobite_Service_get_vendor_url (service,&ev));
-	g_message ("service url         : %s", Trilobite_Service_get_url (service,&ev));
-	g_message ("service icon        : %s", Trilobite_Service_get_icon (service,&ev));
+	/* Check the type of the object */
+	g_message ("BONOBO Object properties :\ncorba object\t%s\nbonobo unknown\t%s\ntrilobite\t%s\ntestservice\t%s\n",	       
+		   bonobo_object_client_has_interface (service, "IDL:CORBA/Object:1.0", &ev)?"yes":"no",
+		   bonobo_object_client_has_interface (service, "IDL:Bonobo/Unknown:1.0", &ev)?"yes":"no",
+		   bonobo_object_client_has_interface (service, "IDL:Trilobite/Service:1.0", &ev)?"yes":"no",
+		   bonobo_object_client_has_interface (service, "IDL:Trilobite/Eazel/TestService:1.0", &ev)?"yes":"no");
 
-	Trilobite_Service_done (service,&ev);
+/*
+	if (bonobo_object_client_has_interface (service, "IDL:Trilobite/Service:1.0", &ev)) {
+		trilobite = bonobo_object_query_interface (BONOBO_OBJECT (service), "IDL:Trilobite/Service:1.0");
+*/
+	if (CORBA_Object_is_a (trilobite, "IDL:Trilobite/Service:1.0", &ev)) {
+		trilobite = Bonobo_Unknown_query_interface (trilobite,
+							    "IDL:Trilobite/Service:1.0",
+							    &ev);
+		g_message ("service name        : %s", Trilobite_Service_get_name (trilobite, &ev));
+		g_message ("service version     : %s", Trilobite_Service_get_version (trilobite, &ev));
+		g_message ("service vendor name : %s", Trilobite_Service_get_vendor_name (trilobite, &ev));
+		g_message ("service vendor url  : %s", Trilobite_Service_get_vendor_url (trilobite, &ev));
+		g_message ("service url         : %s", Trilobite_Service_get_url (trilobite, &ev));
+		g_message ("service icon        : %s", Trilobite_Service_get_icon_uri (trilobite, &ev));
+		
+		Trilobite_Service_unref (trilobite, &ev);
+	};
 
-	CORBA_Object_release (service, &ev);
-	CORBA_Object_release ((CORBA_Object)orb, &ev);
+	Trilobite_Service_unref (trilobite, &ev);
+	CORBA_exception_free (&ev);
 
 	return 0;
 };
