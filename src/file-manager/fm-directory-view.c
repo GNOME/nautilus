@@ -173,7 +173,7 @@ fm_directory_view_initialize (gpointer object, gpointer klass)
 		NAUTILUS_CONTENT_VIEW_FRAME (gtk_widget_new 
 					     (nautilus_content_view_frame_get_type(), 
 					      NULL));
-	
+
 	gtk_signal_connect (GTK_OBJECT(directory_view->details->view_frame), 
 			    "stop_location_change",
 			    GTK_SIGNAL_FUNC (stop_location_change_cb),
@@ -301,9 +301,6 @@ stop_load (FMDirectoryView *view, gboolean error)
 		view->details->display_timeout_id = 0;
 	}
 
-	view->details->current_position = GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
-	view->details->directory_list = NULL;
-
 	memset(&pri, 0, sizeof(pri));
 	pri.amount = 100.0;
 	pri.type = error ? Nautilus_PROGRESS_DONE_ERROR : Nautilus_PROGRESS_DONE_OK;
@@ -422,10 +419,8 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 
 			view->details->directory_list = list;
 
-			/* FIXME just to make sure.  But this should be
-			   already set somewhere else.  */
-			view->details->current_position
-				= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
+			g_assert (view->details->current_position
+				== GNOME_VFS_DIRECTORY_LIST_POSITION_NONE);
 
 			if (result != GNOME_VFS_ERROR_EOF)
 				view->details->display_timeout_id
@@ -677,6 +672,11 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 		gnome_vfs_uri_unref (view->details->uri);
 	view->details->uri = gnome_vfs_uri_new (uri);
 
+	if (view->details->directory_list != NULL)
+		gnome_vfs_directory_list_destroy (view->details->directory_list);
+	view->details->current_position = GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
+
+
 	memset(&pri, 0, sizeof(pri));
 	pri.type = Nautilus_PROGRESS_UNDERWAY;
 	pri.amount = 0;
@@ -729,11 +729,13 @@ fm_directory_view_stop (FMDirectoryView *view)
  * Reorder the items in this view.
  * @view: FMDirectoryView whose items will be reordered.
  * @sort_type: FMDirectoryViewSortType specifying what new order to use.
+ * @reverse_sort: TRUE if items should be sorted in reverse of standard order.
  * 
  **/
 void
 fm_directory_view_sort (FMDirectoryView *view,
-			FMDirectoryViewSortType sort_type)
+			FMDirectoryViewSortType sort_type,
+			gboolean reverse_sort)
 {
 	GnomeVFSDirectorySortRule *rules;
 
@@ -747,10 +749,14 @@ fm_directory_view_sort (FMDirectoryView *view,
 
 	switch (sort_type) {
 	case FM_DIRECTORY_VIEW_SORT_BYNAME:
-		rules = ALLOC_RULES (3);
-		rules[0] = GNOME_VFS_DIRECTORY_SORT_DIRECTORYFIRST;
-		rules[1] = GNOME_VFS_DIRECTORY_SORT_BYNAME;
-		rules[2] = GNOME_VFS_DIRECTORY_SORT_NONE;
+		rules = ALLOC_RULES (2);
+		/* Note: This used to put directories first. I
+		 * thought that was counterproductive and removed it,
+		 * but I can imagine discussing this further.
+		 * John Sullivan <sullivan@eazel.com>
+		 */
+		rules[0] = GNOME_VFS_DIRECTORY_SORT_BYNAME;
+		rules[1] = GNOME_VFS_DIRECTORY_SORT_NONE;
 		break;
 	case FM_DIRECTORY_VIEW_SORT_BYSIZE:
 		rules = ALLOC_RULES (4);
@@ -766,13 +772,19 @@ fm_directory_view_sort (FMDirectoryView *view,
 		rules[2] = GNOME_VFS_DIRECTORY_SORT_BYNAME;
 		rules[3] = GNOME_VFS_DIRECTORY_SORT_NONE;
 		break;
+	case FM_DIRECTORY_VIEW_SORT_BYMTIME:
+		rules = ALLOC_RULES (3);
+		rules[0] = GNOME_VFS_DIRECTORY_SORT_BYMTIME;
+		rules[1] = GNOME_VFS_DIRECTORY_SORT_BYNAME;
+		rules[2] = GNOME_VFS_DIRECTORY_SORT_NONE;
+		break;
 	default:
 		g_warning ("fm_directory_view_sort: Unknown sort mode %d\n",
 			   sort_type);
 		return;
 	}
 
-	gnome_vfs_directory_list_sort (view->details->directory_list, FALSE, rules);
+	gnome_vfs_directory_list_sort (view->details->directory_list, reverse_sort, rules);
 
 	fm_directory_view_populate (view);
 
@@ -782,20 +794,28 @@ fm_directory_view_sort (FMDirectoryView *view,
 /**
  * nautilus_file_date_as_string:
  * 
- * Get a user-displayable string representing a file date. The caller
- * is responsible for g_free-ing this string.
- * @bytes: The date of the file.
+ * Get a user-displayable string representing a file modification date. 
+ * The caller is responsible for g_free-ing this string.
+ * @file_info: GnomeVFSFileInfo representing the file in question.
  * 
  * Returns: Newly allocated string ready to display to the user.
  * 
  **/
 gchar *
-nautilus_file_date_as_string (time_t date)
+nautilus_file_date_as_string (GnomeVFSFileInfo *file_info)
 {
+	/* Note: There's also accessed time and changed time.
+	 * Accessed time doesn't seem worth showing to the user.
+	 * Changed time is only subtly different from modified time
+	 * (changed time includes "metadata" changes like file permissions).
+	 * We should not display both, but we might change our minds as to
+	 * which one is better.
+	 */
+
 	/* Note that ctime is a funky function that returns a
 	 * string that you're not supposed to free.
 	 */
-	return g_strdup (ctime (&date));
+	return g_strdup (ctime (&file_info->mtime));
 }
 
 /**
@@ -803,13 +823,42 @@ nautilus_file_date_as_string (time_t date)
  * 
  * Get a user-displayable string representing a file size. The caller
  * is responsible for g_free-ing this string.
- * @bytes: The size of the file in bytes.
+ * @file_info: GnomeVFSFileInfo representing the file in question.
  * 
  * Returns: Newly allocated string ready to display to the user.
  * 
  **/
 gchar *
-nautilus_file_size_as_string (GnomeVFSFileSize bytes)
+nautilus_file_size_as_string (GnomeVFSFileInfo *file_info)
 {
-	return gnome_vfs_file_size_to_string (bytes);
+	if (file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY)
+	{
+		return g_strdup(_("--"));
+	}
+
+	return gnome_vfs_file_size_to_string (file_info->size);
+}
+
+/**
+ * nautilus_file_type_as_string:
+ * 
+ * Get a user-displayable string representing a file type. The caller
+ * is responsible for g_free-ing this string.
+ * @file_info: GnomeVFSFileInfo representing the file in question.
+ * 
+ * Returns: Newly allocated string ready to display to the user.
+ * 
+ **/
+gchar *
+nautilus_file_type_as_string (GnomeVFSFileInfo *file_info)
+{
+	if (file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY)
+	{
+		/* Special-case this so it isn't "special/directory".
+		 * Should this be "folder" instead?
+		 */		
+		return g_strdup(_("directory"));
+	}
+
+	return g_strdup (file_info->mime_type);
 }

@@ -1,3 +1,47 @@
+2000-01-18  John Sullivan <sullivan@eazel.com>
+
+	* src/file-manager/fm-directory-view.h:
+	(enum _FMDirectoryViewSortType): added FM_DIRECTORY_VIEW_SORT_NONE
+	and FM_DIRECTORY_VIEW_SORT_BYMTIME
+	(fm_directory_view_sort): added reverse_sort parameter.
+	(nautilus_file_date_as_string):
+	(nautilus_file_size_as_string): Changed parameter for these two
+	functions to be GnomeVFSFileInfo so they can handle special cases better.
+	(nautilus_file_type_as_string): New function
+	
+	* src/file-manager/fm-directory-view.c
+	(stop_load): Removed code resetting directory_list and current_position.
+	This was the wrong place for it, and resetting directory_list was leaking.
+	(directory_load_cb): Changed commented assignment to assert.
+	(fm_directory_view_load_uri): Reset directory_list (without leaking old
+	value) and current_position here.
+	(fm_directory_view_sort): Pass through new reverse_sort parameter to
+	gnome_vfs_directory_view_sort; add new case for 
+	FM_DIRECTORY_VIEW_SORT_BYMTIME; don't put directories first when sorting
+	by name.
+	(nautilus_file_date_as_string): Now takes a GnomeVFSFileInfo pointer
+	instead of a time_t (assumes mtime, with comment explaining why).
+	(nautilus_file_size_as_string): Now takes a GnomeVFSFileInfo pointer
+	instead of a size; uses this to special-case "--" for directory size.
+	(nautilus_file_type_as_string): New function, special-cases directories
+	to return "directory", otherwise returns mime_type.
+	
+	* src/file-manager/fm-directory-view-list.h
+	Added private details structure to FMDirectoryViewList.
+
+	* src/file-manager/fm-directory-view-list.c
+	Added _FMDirectoryViewListDetails struct, containing sort_type and
+	sort_reversed.
+	(fm_directory_view_initialize): initialize details struct.
+	(column_clicked_cb): New function, sorts list by clicked column.
+	If list already sorted by that column, reverses sort. Still need
+	visual indicator of sort direction.
+	(create_flist): Added Type column, tweaked column widths, added
+	signal connection for "click_column"
+	(add_to_flist): now passes GnomeVFSFileInfo to 
+	nautilus_file_size_as_string and nautilus_file_date_as_string;
+	uses new nautilus_file_type_as_string for type column.
+
 2000-01-18  Andy Hertzfeld <andy@eazel.com>
 
         * libnautilus/nautilus-directory:

@@ -36,8 +36,11 @@ typedef struct _FMDirectoryViewListClass FMDirectoryViewListClass;
 #define FM_IS_DIRECTORY_VIEW_LIST(obj)			(GTK_CHECK_TYPE ((obj), FM_TYPE_DIRECTORY_VIEW_LIST))
 #define FM_IS_DIRECTORY_VIEW_LIST_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), FM_TYPE_DIRECTORY_VIEW_LIST))
 
+typedef struct _FMDirectoryViewListDetails FMDirectoryViewListDetails;
+
 struct _FMDirectoryViewList {
 	FMDirectoryView parent;
+	FMDirectoryViewListDetails *details;
 };
 
 struct _FMDirectoryViewListClass {

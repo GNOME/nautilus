@@ -32,9 +32,11 @@
 
 
 enum _FMDirectoryViewSortType {
+	FM_DIRECTORY_VIEW_SORT_NONE,
 	FM_DIRECTORY_VIEW_SORT_BYNAME,
 	FM_DIRECTORY_VIEW_SORT_BYSIZE,
-	FM_DIRECTORY_VIEW_SORT_BYTYPE
+	FM_DIRECTORY_VIEW_SORT_BYTYPE,
+	FM_DIRECTORY_VIEW_SORT_BYMTIME
 };
 typedef enum _FMDirectoryViewSortType FMDirectoryViewSortType;
 
@@ -116,7 +118,8 @@ GnomeVFSURI *fm_directory_view_get_uri 			(FMDirectoryView *view);
 GList *	     fm_directory_view_get_selection		(FMDirectoryView *view);
 void	     fm_directory_view_stop     		(FMDirectoryView *view);
 void	     fm_directory_view_sort     		(FMDirectoryView *view,
-				       			 FMDirectoryViewSortType sort_type);
+				       			 FMDirectoryViewSortType sort_type,
+				       			 gboolean reverse_sort);
 
 /* Wrappers for signal emitters. These are normally called 
  * only by FMDirectoryView itself. They have corresponding signals
@@ -140,7 +143,8 @@ void	     fm_directory_view_populate 		(FMDirectoryView *view);
 /* Utility functions for formatting file-related information.
  * FIXME: Probably these should be moved to some appropriate place in libnautilus.
  */
-gchar 	    *nautilus_file_date_as_string 		(time_t date);
-gchar 	    *nautilus_file_size_as_string 		(GnomeVFSFileSize bytes);
+gchar 	    *nautilus_file_date_as_string 		(GnomeVFSFileInfo *file_info);
+gchar 	    *nautilus_file_size_as_string 		(GnomeVFSFileInfo *file_info);
+gchar 	    *nautilus_file_type_as_string 		(GnomeVFSFileInfo *file_info);
 
 #endif /* FM_DIRECTORY_VIEW_H */

@@ -34,11 +34,20 @@
 
 static FMDirectoryViewClass *parent_class = NULL;
 
+struct _FMDirectoryViewListDetails
+{
+	FMDirectoryViewSortType sort_type;
+	gboolean sort_reversed;
+};
+
 
 /* forward declarations */
 static void add_to_flist 			    (FMIconCache *icon_manager,
 		   		 		     GtkFList *flist,
 		   		 		     GnomeVFSFileInfo *info);
+static void column_clicked_cb 			    (GtkCList *ignored,
+			       	 		     gint column,
+			       	 		     gpointer user_data);
 static GtkFList *create_flist 			    (FMDirectoryViewList *list_view);
 static void flist_activate_cb 			    (GtkFList *ignored,
 			       	 		     gpointer entry_data,
@@ -87,10 +96,18 @@ fm_directory_view_list_initialize_class (gpointer klass)
 static void
 fm_directory_view_list_initialize (gpointer object, gpointer klass)
 {
+	FMDirectoryViewList *list_view;
+	
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (object));
 	g_return_if_fail (GTK_BIN (object)->child == NULL);
+
+	list_view = FM_DIRECTORY_VIEW_LIST (object);
+
+	list_view->details = g_new0 (FMDirectoryViewListDetails, 1);
+	list_view->details->sort_type = FM_DIRECTORY_VIEW_SORT_NONE;
+	list_view->details->sort_reversed = FALSE;
 	
-	create_flist (object);
+	create_flist (list_view);
 }
 
 static void
@@ -104,10 +121,53 @@ fm_directory_view_list_destroy (GtkObject *object)
 #define LIST_VIEW_COLUMN_ICON		0
 #define LIST_VIEW_COLUMN_NAME		1
 #define LIST_VIEW_COLUMN_SIZE		2
-#define LIST_VIEW_COLUMN_DATE_MODIFIED	3
-#define LIST_VIEW_COLUMN_COUNT		4
+#define LIST_VIEW_COLUMN_MIME_TYPE	3
+#define LIST_VIEW_COLUMN_DATE_MODIFIED	4
+#define LIST_VIEW_COLUMN_COUNT		5
 
 
+static void 
+column_clicked_cb (GtkCList *ignored, gint column, gpointer user_data)
+{
+	FMDirectoryViewList *list_view;
+	FMDirectoryViewSortType sort_type;
+
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (user_data));
+
+	list_view = FM_DIRECTORY_VIEW_LIST (user_data);
+	
+	switch (column)
+	{
+		case LIST_VIEW_COLUMN_ICON:	
+			sort_type = FM_DIRECTORY_VIEW_SORT_BYTYPE;
+			break;
+		case LIST_VIEW_COLUMN_NAME:
+			sort_type = FM_DIRECTORY_VIEW_SORT_BYNAME;
+			break;
+		case LIST_VIEW_COLUMN_SIZE:
+			sort_type = FM_DIRECTORY_VIEW_SORT_BYSIZE;
+			break;
+		case LIST_VIEW_COLUMN_DATE_MODIFIED:
+			sort_type = FM_DIRECTORY_VIEW_SORT_BYMTIME;
+			break;
+		case LIST_VIEW_COLUMN_MIME_TYPE:
+			sort_type = FM_DIRECTORY_VIEW_SORT_BYTYPE;
+			break;
+		default: g_assert_not_reached();
+	}
+
+	if (sort_type == list_view->details->sort_type)
+		list_view->details->sort_reversed = !list_view->details->sort_reversed;
+	else
+		list_view->details->sort_reversed = FALSE;
+
+	list_view->details->sort_type = sort_type;
+	
+	fm_directory_view_sort (FM_DIRECTORY_VIEW (list_view), 
+				list_view->details->sort_type,
+				list_view->details->sort_reversed
+				);
+}
 
 static GtkFList *
 create_flist (FMDirectoryViewList *list_view)
@@ -117,12 +177,14 @@ create_flist (FMDirectoryViewList *list_view)
 		NULL,
 		_("Name"),
 		_("Size"),
+		_("Type"),
 		_("Date Modified"),
 	};
 	uint widths[] = {
 		 20,	/* Icon */
-		150,	/* Name */
-		 75,	/* Size */
+		130,	/* Name */
+		 55,	/* Size */
+		 95,	/* Type */
 		100,	/* Modified */
 	};
 	int i;
@@ -149,6 +211,10 @@ create_flist (FMDirectoryViewList *list_view)
 	gtk_signal_connect (GTK_OBJECT (flist),
 			    "selection_changed",
 			    GTK_SIGNAL_FUNC (flist_selection_changed_cb),
+			    list_view);
+	gtk_signal_connect (GTK_OBJECT (flist),
+			    "click_column",
+			    column_clicked_cb,
 			    list_view);
 	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (flist));
 
@@ -188,40 +254,31 @@ add_to_flist (FMIconCache *icon_manager,
 {
 	GtkCList *clist;
 	gchar *text[LIST_VIEW_COLUMN_COUNT];
-	gchar *size_string = NULL;
-	gchar *modified_string = NULL;
+	gchar *size_string;
+	gchar *modified_string;
+	gchar *type_string;
 
 	/* FIXME: Icon column needs a pixmap */
 	text[LIST_VIEW_COLUMN_ICON] = NULL;
 	
 	text[LIST_VIEW_COLUMN_NAME] = info->name;
 
-	if (info->type == GNOME_VFS_FILE_TYPE_DIRECTORY)
-	{
-		text[LIST_VIEW_COLUMN_SIZE] = "--";
-	}
-	else
-	{
-		size_string = nautilus_file_size_as_string (info->size);
-		text[LIST_VIEW_COLUMN_SIZE] = size_string;
-	}
+	size_string = nautilus_file_size_as_string (info);
+	text[LIST_VIEW_COLUMN_SIZE] = size_string;
 
-	/* Note: There's also accessed time and changed time.
-	 * Accessed time doesn't seem worth showing to the user.
-	 * Changed time is only subtly different from modified time
-	 * (changed time includes "metadata" changes like file permissions).
-	 * We should not display both, but we might change our minds as to
-	 * which one is better.
-	 */
-	modified_string = nautilus_file_date_as_string (info->mtime);
+	modified_string = nautilus_file_date_as_string (info);
 	text[LIST_VIEW_COLUMN_DATE_MODIFIED] = modified_string;
 
+	type_string = nautilus_file_type_as_string (info);
+	text[LIST_VIEW_COLUMN_MIME_TYPE] = type_string;
+	
 	clist = GTK_CLIST (flist);
 	gtk_clist_append (clist, text);
 	gtk_clist_set_row_data (clist, clist->rows - 1, info);
 
 	g_free (size_string);
 	g_free (modified_string);
+	g_free (type_string);
 }
 
 static GtkFList *
