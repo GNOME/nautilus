@@ -48,6 +48,7 @@ gcc -static -g -Wall -Wno-uninitialized -Wchar-subscripts -Wmissing-declarations
 #define DEFAULT_RPMRC "/usr/lib/rpm/rpmrc"
 #define DEFAULT_REMOTE_PACKAGE_LIST "/package-list.xml"
 #define DEFAULT_REMOTE_RPM_DIR "/RPMS"
+#define DEFAULT_LOG_FILE "/tmp/eazel-install/log"
 
 int     arg_dry_run,
 	arg_http,
@@ -156,6 +157,7 @@ int main(int argc, char *argv[]) {
 	gtk_signal_connect (GTK_OBJECT (service), "download_progress", eazel_download_progress, NULL);
 	gtk_signal_connect (GTK_OBJECT (service), "install_progress", eazel_install_progress, NULL);
 
+	eazel_install_open_log (service, DEFAULT_LOG_FILE);
 	eazel_install_set_hostname (service, DEFAULT_HOSTNAME);
 	eazel_install_set_rpmrc_file (service, DEFAULT_RPMRC);
 	eazel_install_set_package_list_storage_path (service, DEFAULT_REMOTE_PACKAGE_LIST);

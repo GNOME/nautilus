@@ -22,28 +22,28 @@ create_window (void)
 {
   GtkWidget *window;
   GtkWidget *druid;
-  GtkWidget *druidpagestart1;
-  GdkColor druidpagestart1_bg_color = { 0, 6425, 6425, 28784 };
-  GdkColor druidpagestart1_textbox_color = { 0, 65535, 65535, 65535 };
-  GdkColor druidpagestart1_logo_bg_color = { 0, 65535, 65535, 65535 };
-  GdkColor druidpagestart1_title_color = { 0, 65535, 65535, 65535 };
-  GtkWidget *druidpagestandard1;
-  GdkColor druidpagestandard1_bg_color = { 0, 6425, 6425, 28784 };
-  GdkColor druidpagestandard1_logo_bg_color = { 0, 65535, 65535, 65535 };
-  GdkColor druidpagestandard1_title_color = { 0, 65535, 65535, 65535 };
+  GtkWidget *start_page;
+  GdkColor start_page_bg_color = { 0, 3341, 23130, 26214 };
+  GdkColor start_page_textbox_color = { 0, 65535, 65535, 65535 };
+  GdkColor start_page_logo_bg_color = { 0, 3341, 23130, 26214 };
+  GdkColor start_page_title_color = { 0, 65535, 65535, 65535 };
+  GtkWidget *what_to_do_page;
+  GdkColor what_to_do_page_bg_color = { 0, 3341, 23130, 26214 };
+  GdkColor what_to_do_page_logo_bg_color = { 0, 3341, 23130, 26214 };
+  GdkColor what_to_do_page_title_color = { 0, 65535, 65535, 65535 };
   GtkWidget *druid_vbox1;
   GtkWidget *vbox3;
   GtkWidget *label10;
-  GtkWidget *vbox4;
-  GSList *vbox4_group = NULL;
+  GtkWidget *fixed3;
+  GSList *fixed3_group = NULL;
   GtkWidget *fullbutton;
   GtkWidget *nautilus_only_button;
   GtkWidget *services_only_button;
   GtkWidget *upgrade_button;
   GtkWidget *uninstall_button;
   GtkWidget *install_page;
-  GdkColor install_page_bg_color = { 0, 6425, 6425, 28784 };
-  GdkColor install_page_logo_bg_color = { 0, 65535, 65535, 65535 };
+  GdkColor install_page_bg_color = { 0, 3341, 23130, 26214 };
+  GdkColor install_page_logo_bg_color = { 0, 3341, 23130, 26214 };
   GdkColor install_page_title_color = { 0, 65535, 65535, 65535 };
   GtkWidget *druid_vbox2;
   GtkWidget *vbox5;
@@ -55,11 +55,11 @@ create_window (void)
   GtkWidget *package_label;
   GtkWidget *fixed1;
   GtkWidget *begin_button;
-  GtkWidget *druidpagefinish1;
-  GdkColor druidpagefinish1_bg_color = { 0, 6425, 6425, 28784 };
-  GdkColor druidpagefinish1_textbox_color = { 0, 65535, 65535, 65535 };
-  GdkColor druidpagefinish1_logo_bg_color = { 0, 65535, 65535, 65535 };
-  GdkColor druidpagefinish1_title_color = { 0, 65535, 65535, 65535 };
+  GtkWidget *finish_page;
+  GdkColor finish_page_bg_color = { 0, 3341, 23130, 26214 };
+  GdkColor finish_page_textbox_color = { 0, 65535, 65535, 65535 };
+  GdkColor finish_page_logo_bg_color = { 0, 3341, 23130, 26214 };
+  GdkColor finish_page_title_color = { 0, 65535, 65535, 65535 };
 
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_name (window, "window");
@@ -74,34 +74,34 @@ create_window (void)
   gtk_widget_show (druid);
   gtk_container_add (GTK_CONTAINER (window), druid);
 
-  druidpagestart1 = gnome_druid_page_start_new ();
-  gtk_widget_set_name (druidpagestart1, "druidpagestart1");
-  gtk_widget_ref (druidpagestart1);
-  gtk_object_set_data_full (GTK_OBJECT (window), "druidpagestart1", druidpagestart1,
+  start_page = gnome_druid_page_start_new ();
+  gtk_widget_set_name (start_page, "start_page");
+  gtk_widget_ref (start_page);
+  gtk_object_set_data_full (GTK_OBJECT (window), "start_page", start_page,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (druidpagestart1);
-  gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (druidpagestart1));
-  gnome_druid_set_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (druidpagestart1));
-  gnome_druid_page_start_set_bg_color (GNOME_DRUID_PAGE_START (druidpagestart1), &druidpagestart1_bg_color);
-  gnome_druid_page_start_set_textbox_color (GNOME_DRUID_PAGE_START (druidpagestart1), &druidpagestart1_textbox_color);
-  gnome_druid_page_start_set_logo_bg_color (GNOME_DRUID_PAGE_START (druidpagestart1), &druidpagestart1_logo_bg_color);
-  gnome_druid_page_start_set_title_color (GNOME_DRUID_PAGE_START (druidpagestart1), &druidpagestart1_title_color);
-  gnome_druid_page_start_set_title (GNOME_DRUID_PAGE_START (druidpagestart1), _("Nautilus install tool"));
-  gnome_druid_page_start_set_text (GNOME_DRUID_PAGE_START (druidpagestart1), _("Blablablabla\nblablablabla\nblablablabla"));
+  gtk_widget_show (start_page);
+  gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (start_page));
+  gnome_druid_set_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (start_page));
+  gnome_druid_page_start_set_bg_color (GNOME_DRUID_PAGE_START (start_page), &start_page_bg_color);
+  gnome_druid_page_start_set_textbox_color (GNOME_DRUID_PAGE_START (start_page), &start_page_textbox_color);
+  gnome_druid_page_start_set_logo_bg_color (GNOME_DRUID_PAGE_START (start_page), &start_page_logo_bg_color);
+  gnome_druid_page_start_set_title_color (GNOME_DRUID_PAGE_START (start_page), &start_page_title_color);
+  gnome_druid_page_start_set_title (GNOME_DRUID_PAGE_START (start_page), _("Step one:"));
+  gnome_druid_page_start_set_text (GNOME_DRUID_PAGE_START (start_page), _("This is the internal Nautilus installer.\n\nLots of text should go here letting you know what you need\nto have installed before you should even begin to think about\nusing this. For example:\n\n  * Helix Gnome\n  * GTK+ Development Environment\n  * Other stuff\n\nIf you meet these requirements, hit the \"Next\" button to continue!\n\n"));
 
-  druidpagestandard1 = gnome_druid_page_standard_new_with_vals ("", NULL);
-  gtk_widget_set_name (druidpagestandard1, "druidpagestandard1");
-  gtk_widget_ref (druidpagestandard1);
-  gtk_object_set_data_full (GTK_OBJECT (window), "druidpagestandard1", druidpagestandard1,
+  what_to_do_page = gnome_druid_page_standard_new_with_vals ("", NULL);
+  gtk_widget_set_name (what_to_do_page, "what_to_do_page");
+  gtk_widget_ref (what_to_do_page);
+  gtk_object_set_data_full (GTK_OBJECT (window), "what_to_do_page", what_to_do_page,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show_all (druidpagestandard1);
-  gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (druidpagestandard1));
-  gnome_druid_page_standard_set_bg_color (GNOME_DRUID_PAGE_STANDARD (druidpagestandard1), &druidpagestandard1_bg_color);
-  gnome_druid_page_standard_set_logo_bg_color (GNOME_DRUID_PAGE_STANDARD (druidpagestandard1), &druidpagestandard1_logo_bg_color);
-  gnome_druid_page_standard_set_title_color (GNOME_DRUID_PAGE_STANDARD (druidpagestandard1), &druidpagestandard1_title_color);
-  gnome_druid_page_standard_set_title (GNOME_DRUID_PAGE_STANDARD (druidpagestandard1), _("What to do ?"));
+  gtk_widget_show_all (what_to_do_page);
+  gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (what_to_do_page));
+  gnome_druid_page_standard_set_bg_color (GNOME_DRUID_PAGE_STANDARD (what_to_do_page), &what_to_do_page_bg_color);
+  gnome_druid_page_standard_set_logo_bg_color (GNOME_DRUID_PAGE_STANDARD (what_to_do_page), &what_to_do_page_logo_bg_color);
+  gnome_druid_page_standard_set_title_color (GNOME_DRUID_PAGE_STANDARD (what_to_do_page), &what_to_do_page_title_color);
+  gnome_druid_page_standard_set_title (GNOME_DRUID_PAGE_STANDARD (what_to_do_page), _("What to do ?"));
 
-  druid_vbox1 = GNOME_DRUID_PAGE_STANDARD (druidpagestandard1)->vbox;
+  druid_vbox1 = GNOME_DRUID_PAGE_STANDARD (what_to_do_page)->vbox;
   gtk_widget_set_name (druid_vbox1, "druid_vbox1");
   gtk_widget_ref (druid_vbox1);
   gtk_object_set_data_full (GTK_OBJECT (window), "druid_vbox1", druid_vbox1,
@@ -116,66 +116,77 @@ create_window (void)
   gtk_widget_show (vbox3);
   gtk_box_pack_start (GTK_BOX (druid_vbox1), vbox3, TRUE, TRUE, 0);
 
-  label10 = gtk_label_new (_("What do you want to do ?"));
+  label10 = gtk_label_new (_("You have several choices for what you would like the installer to do.\nPlease choose one and click on the \"Next\" button."));
   gtk_widget_set_name (label10, "label10");
   gtk_widget_ref (label10);
   gtk_object_set_data_full (GTK_OBJECT (window), "label10", label10,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label10);
-  gtk_box_pack_start (GTK_BOX (vbox3), label10, TRUE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox3), label10, FALSE, FALSE, 0);
+  gtk_label_set_justify (GTK_LABEL (label10), GTK_JUSTIFY_LEFT);
 
-  vbox4 = gtk_vbox_new (TRUE, 0);
-  gtk_widget_set_name (vbox4, "vbox4");
-  gtk_widget_ref (vbox4);
-  gtk_object_set_data_full (GTK_OBJECT (window), "vbox4", vbox4,
+  fixed3 = gtk_fixed_new ();
+  gtk_widget_set_name (fixed3, "fixed3");
+  gtk_widget_ref (fixed3);
+  gtk_object_set_data_full (GTK_OBJECT (window), "fixed3", fixed3,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox4);
-  gtk_box_pack_start (GTK_BOX (vbox3), vbox4, TRUE, FALSE, 0);
+  gtk_widget_show (fixed3);
+  gtk_box_pack_start (GTK_BOX (vbox3), fixed3, TRUE, TRUE, 0);
 
-  fullbutton = gtk_radio_button_new_with_label (vbox4_group, _("Full install"));
-  vbox4_group = gtk_radio_button_group (GTK_RADIO_BUTTON (fullbutton));
+  fullbutton = gtk_radio_button_new_with_label (fixed3_group, _("Full install"));
+  fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (fullbutton));
   gtk_widget_set_name (fullbutton, "fullbutton");
   gtk_widget_ref (fullbutton);
   gtk_object_set_data_full (GTK_OBJECT (window), "fullbutton", fullbutton,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (fullbutton);
-  gtk_box_pack_start (GTK_BOX (vbox4), fullbutton, FALSE, FALSE, 0);
+  gtk_fixed_put (GTK_FIXED (fixed3), fullbutton, 72, 24);
+  gtk_widget_set_uposition (fullbutton, 72, 24);
+  gtk_widget_set_usize (fullbutton, 0, 0);
 
-  nautilus_only_button = gtk_radio_button_new_with_label (vbox4_group, _("Nautilus only"));
-  vbox4_group = gtk_radio_button_group (GTK_RADIO_BUTTON (nautilus_only_button));
+  nautilus_only_button = gtk_radio_button_new_with_label (fixed3_group, _("Nautilus only"));
+  fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (nautilus_only_button));
   gtk_widget_set_name (nautilus_only_button, "nautilus_only_button");
   gtk_widget_ref (nautilus_only_button);
   gtk_object_set_data_full (GTK_OBJECT (window), "nautilus_only_button", nautilus_only_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (nautilus_only_button);
-  gtk_box_pack_start (GTK_BOX (vbox4), nautilus_only_button, FALSE, FALSE, 0);
+  gtk_fixed_put (GTK_FIXED (fixed3), nautilus_only_button, 72, 56);
+  gtk_widget_set_uposition (nautilus_only_button, 72, 56);
+  gtk_widget_set_usize (nautilus_only_button, 0, 0);
 
-  services_only_button = gtk_radio_button_new_with_label (vbox4_group, _("Services only"));
-  vbox4_group = gtk_radio_button_group (GTK_RADIO_BUTTON (services_only_button));
+  services_only_button = gtk_radio_button_new_with_label (fixed3_group, _("Services only"));
+  fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (services_only_button));
   gtk_widget_set_name (services_only_button, "services_only_button");
   gtk_widget_ref (services_only_button);
   gtk_object_set_data_full (GTK_OBJECT (window), "services_only_button", services_only_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (services_only_button);
-  gtk_box_pack_start (GTK_BOX (vbox4), services_only_button, FALSE, FALSE, 0);
+  gtk_fixed_put (GTK_FIXED (fixed3), services_only_button, 72, 88);
+  gtk_widget_set_uposition (services_only_button, 72, 88);
+  gtk_widget_set_usize (services_only_button, 0, 0);
 
-  upgrade_button = gtk_radio_button_new_with_label (vbox4_group, _("Upgrade installation"));
-  vbox4_group = gtk_radio_button_group (GTK_RADIO_BUTTON (upgrade_button));
+  upgrade_button = gtk_radio_button_new_with_label (fixed3_group, _("Upgrade installation"));
+  fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (upgrade_button));
   gtk_widget_set_name (upgrade_button, "upgrade_button");
   gtk_widget_ref (upgrade_button);
   gtk_object_set_data_full (GTK_OBJECT (window), "upgrade_button", upgrade_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (upgrade_button);
-  gtk_box_pack_start (GTK_BOX (vbox4), upgrade_button, FALSE, FALSE, 0);
+  gtk_fixed_put (GTK_FIXED (fixed3), upgrade_button, 72, 120);
+  gtk_widget_set_uposition (upgrade_button, 72, 120);
+  gtk_widget_set_usize (upgrade_button, 0, 0);
 
-  uninstall_button = gtk_radio_button_new_with_label (vbox4_group, _("Uninstall"));
-  vbox4_group = gtk_radio_button_group (GTK_RADIO_BUTTON (uninstall_button));
+  uninstall_button = gtk_radio_button_new_with_label (fixed3_group, _("Uninstall"));
+  fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (uninstall_button));
   gtk_widget_set_name (uninstall_button, "uninstall_button");
   gtk_widget_ref (uninstall_button);
   gtk_object_set_data_full (GTK_OBJECT (window), "uninstall_button", uninstall_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (uninstall_button);
-  gtk_box_pack_start (GTK_BOX (vbox4), uninstall_button, FALSE, FALSE, 0);
+  gtk_fixed_put (GTK_FIXED (fixed3), uninstall_button, 72, 152);
+  gtk_widget_set_uposition (uninstall_button, 72, 152);
+  gtk_widget_set_usize (uninstall_button, 0, 0);
 
   install_page = gnome_druid_page_standard_new_with_vals ("", NULL);
   gtk_widget_set_name (install_page, "install_page");
@@ -276,20 +287,22 @@ create_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (begin_button);
   gtk_fixed_put (GTK_FIXED (fixed1), begin_button, 208, 32);
+  gtk_widget_set_uposition (begin_button, 208, 32);
+  gtk_widget_set_usize (begin_button, 94, 46);
 
-  druidpagefinish1 = gnome_druid_page_finish_new ();
-  gtk_widget_set_name (druidpagefinish1, "druidpagefinish1");
-  gtk_widget_ref (druidpagefinish1);
-  gtk_object_set_data_full (GTK_OBJECT (window), "druidpagefinish1", druidpagefinish1,
+  finish_page = gnome_druid_page_finish_new ();
+  gtk_widget_set_name (finish_page, "finish_page");
+  gtk_widget_ref (finish_page);
+  gtk_object_set_data_full (GTK_OBJECT (window), "finish_page", finish_page,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (druidpagefinish1);
-  gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (druidpagefinish1));
-  gnome_druid_page_finish_set_bg_color (GNOME_DRUID_PAGE_FINISH (druidpagefinish1), &druidpagefinish1_bg_color);
-  gnome_druid_page_finish_set_textbox_color (GNOME_DRUID_PAGE_FINISH (druidpagefinish1), &druidpagefinish1_textbox_color);
-  gnome_druid_page_finish_set_logo_bg_color (GNOME_DRUID_PAGE_FINISH (druidpagefinish1), &druidpagefinish1_logo_bg_color);
-  gnome_druid_page_finish_set_title_color (GNOME_DRUID_PAGE_FINISH (druidpagefinish1), &druidpagefinish1_title_color);
-  gnome_druid_page_finish_set_title (GNOME_DRUID_PAGE_FINISH (druidpagefinish1), _("Finished"));
-  gnome_druid_page_finish_set_text (GNOME_DRUID_PAGE_FINISH (druidpagefinish1), _("blablablabla\nblablablabla\nblablablabla"));
+  gtk_widget_show (finish_page);
+  gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (finish_page));
+  gnome_druid_page_finish_set_bg_color (GNOME_DRUID_PAGE_FINISH (finish_page), &finish_page_bg_color);
+  gnome_druid_page_finish_set_textbox_color (GNOME_DRUID_PAGE_FINISH (finish_page), &finish_page_textbox_color);
+  gnome_druid_page_finish_set_logo_bg_color (GNOME_DRUID_PAGE_FINISH (finish_page), &finish_page_logo_bg_color);
+  gnome_druid_page_finish_set_title_color (GNOME_DRUID_PAGE_FINISH (finish_page), &finish_page_title_color);
+  gnome_druid_page_finish_set_title (GNOME_DRUID_PAGE_FINISH (finish_page), _("Finished"));
+  gnome_druid_page_finish_set_text (GNOME_DRUID_PAGE_FINISH (finish_page), _("Thanks for taking the time to try out Nautilus.\n\nMay your life be a healthy and happy one."));
 
   gtk_signal_connect (GTK_OBJECT (druid), "cancel",
                       GTK_SIGNAL_FUNC (druid_cancel),
@@ -303,7 +316,7 @@ create_window (void)
   gtk_signal_connect (GTK_OBJECT (begin_button), "clicked",
                       GTK_SIGNAL_FUNC (begin_install),
                       window);
-  gtk_signal_connect (GTK_OBJECT (druidpagefinish1), "finish",
+  gtk_signal_connect (GTK_OBJECT (finish_page), "finish",
                       GTK_SIGNAL_FUNC (druid_finish),
                       NULL);
 

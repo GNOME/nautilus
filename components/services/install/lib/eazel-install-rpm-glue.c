@@ -227,6 +227,7 @@ download_all_packages (EazelInstall *service,
 
 			if (download_a_package (service, package) == FALSE) {
 				g_warning ("*** Failed to retreive %s! ***\n", package->name);
+				eazel_install_emit_download_failed (service, package->name);
 				result = FALSE;
 			}
 
@@ -281,6 +282,7 @@ install_all_packages (EazelInstall *service,
 				g_print (_("Package install successful !\n"));
 			} else {
 				g_print (_("Package install failed !\n"));
+				eazel_install_emit_install_failed (service, pack->name);
 				rv = FALSE;
 			}
 			pkgs = pkgs->next;
@@ -335,6 +337,7 @@ uninstall_packages (EazelInstall *service) {
 						 problem_filters,
 						 interface_flags) == FALSE) {
 				g_warning ("Uninstall failed for %s",package->name);
+				eazel_install_emit_uninstall_failed (service, package->name);
 			} else {
 				rv = FALSE;
 			}

@@ -41,6 +41,11 @@
 enum {
 	DOWNLOAD_PROGRESS,
 	INSTALL_PROGRESS,
+
+	DOWNLOAD_FAILED,
+	INSTALL_FAILED,
+	UNINSTALL_FAILED,
+
 	LAST_SIGNAL
 };
 
@@ -76,6 +81,8 @@ static GtkObjectClass *eazel_install_parent_class;
 #else
 static BonoboObjectClass *eazel_install_parent_class;
 #endif /* STANDALONE */
+
+
 /* prototypes */
 
 #ifndef STANDALONE
@@ -229,6 +236,27 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				GTK_SIGNAL_OFFSET (EazelInstallClass, install_progress),
 				gtk_marshal_NONE__POINTER_INT_INT,
 				GTK_TYPE_NONE,3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
+	signals[DOWNLOAD_FAILED] = 
+		gtk_signal_new ("download_failed",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallClass, download_failed),
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE,1, GTK_TYPE_POINTER);
+	signals[INSTALL_FAILED] = 
+		gtk_signal_new ("install_failed",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallClass, install_failed),
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE,1, GTK_TYPE_POINTER);
+	signals[UNINSTALL_FAILED] = 
+		gtk_signal_new ("uninstall_failed",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallClass, uninstall_failed),
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE,1, GTK_TYPE_POINTER);
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	gtk_object_add_arg_type ("EazelInstall::verbose",
@@ -453,13 +481,13 @@ create_temporary_directory (const char* tmpdir)
 	}
 } /* end create_temporary_directory */
 
-static void
+static gboolean
 fetch_remote_package_list (EazelInstall *service) 
 {
 	gboolean retval;
 	char* url;
 	
-	SANITY(service);
+	SANITY_VAL(service, FALSE);
 
 	g_print (_("Getting package-list.xml from remote server ...\n"));
 
@@ -471,10 +499,12 @@ fetch_remote_package_list (EazelInstall *service)
 
 	if (retval == FALSE) {
 		g_free (url);
-		g_error ("*** Unable to retrieve package-list.xml! ***\n");
+		g_warning ("*** Unable to retrieve package-list.xml! ***\n");
+		return FALSE;
 	}
 	g_free (url);
-} /* end fetch_remote_package_list */
+	return TRUE;
+} 
 
 void 
 eazel_install_emit_install_progress (EazelInstall *service, 
@@ -494,6 +524,66 @@ eazel_install_emit_download_progress (EazelInstall *service,
 {
 	SANITY(service);
 	gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_PROGRESS], name, amount, total);
+}
+
+void 
+eazel_install_emit_download_failed (EazelInstall *service, 
+				    const char *name)
+{
+	SANITY(service);
+	gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_FAILED], name);
+}
+
+void 
+eazel_install_emit_install_failed (EazelInstall *service, 
+				    const char *name)
+{
+	SANITY(service);
+	gtk_signal_emit (GTK_OBJECT (service), signals[INSTALL_FAILED], name);
+}
+
+void 
+eazel_install_emit_uninstall_failed (EazelInstall *service, 
+				    const char *name)
+{
+	SANITY(service);
+	gtk_signal_emit (GTK_OBJECT (service), signals[UNINSTALL_FAILED], name);
+}
+
+static void 
+eazel_install_log (const char *domain,
+		   GLogLevelFlags flags,
+		   const char *message,
+		   EazelInstall *service)
+{
+	SANITY (service);
+	if ( flags | G_LOG_LEVEL_MESSAGE) {
+		fprintf (service->private->logfile, " : %s\n", message);
+	} else if (flags | G_LOG_LEVEL_WARNING) {
+		fprintf (service->private->logfile, "w: %s\n", message);
+	} else if (flags | G_LOG_LEVEL_ERROR) {
+		fprintf (service->private->logfile, "E: %s\n", message);
+	} 
+}
+
+void 
+eazel_install_open_log (EazelInstall *service,
+			const char *fname)
+{
+	SANITY (service);
+
+	g_message ("in eazel_install_open_log");
+
+	service->private->logfile = fopen (fname, "wt");
+	if (service->private->logfile!=NULL) {
+		g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING | G_LOG_LEVEL_ERROR, 
+				   (GLogFunc)eazel_install_log, 
+				   service);
+		g_message ("out eazel_install_open_log");
+		return;
+	} 
+
+	g_message ("Cannot write to file %s, using default log handler", fname);
 }
 
 void 

@@ -2,6 +2,12 @@ NULL =
 
 lib_LTLIBRARIES = libtrilobite.la
 
+CPPFLAGS = \
+	-DPREFIX=\"$(prefix)\" 			\
+	-DG_LOG_DOMAIN=\"libtrilobited\"	\
+	-DSTANDALONE				\
+	$(NULL)
+
 INCLUDES = \
 	-I$(top_srcdir)		\
 	-I$(top_builddir)	\

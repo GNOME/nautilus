@@ -1,3 +1,49 @@
+2000-05-30  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install.c:
+	(main):
+	* components/services/install/lib/Makefile.am:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_class_initialize), (fetch_remote_package_list),
+	(eazel_install_emit_download_progress),
+	(eazel_install_emit_download_failed),
+	(eazel_install_emit_install_failed),
+	(eazel_install_emit_uninstall_failed), (eazel_install_log),
+	(eazel_install_open_log):
+	Fixed a horribly cut'n'paste bug in the signal bindings. Also
+	doing some stuff on making the lib log properly
+	
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file):
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(download_all_packages), (install_all_packages),
+	(uninstall_packages):
+	More cleaning out of g_errors, g_asserts and such.
+	
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	* nautilus-installer/src/Banner_Left.xpm:
+	* nautilus-installer/src/Final_Inside.xpm:
+	* nautilus-installer/src/Final_Top.xpm:
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/Makefile.in:
+	* nautilus-installer/src/Step_3a_Inside.xpm:
+	* nautilus-installer/src/Step_3b_Inside.xpm:
+	* nautilus-installer/src/Step_One_Inside.xpm:
+	* nautilus-installer/src/Step_One_Top.xpm:
+	* nautilus-installer/src/Step_Three_Top.xpm:
+	* nautilus-installer/src/Step_Two_Inside.xpm:
+	* nautilus-installer/src/Step_Two_Top.xpm:
+	* nautilus-installer/src/callbacks.c: (set_images):
+	* nautilus-installer/src/installer.c: (append_name_to),
+	(download_failed), (install_failed), (gen_report),
+	(dump_failure_info), (installer):
+	* nautilus-installer/src/interface.c: (create_window):
+	* nautilus-installer/src/main.c: (main):
+	More work on the installer, especially making it
+	use Arlo's graphics and still be a static binary.
+	
 2000-05-30  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:

@@ -86,17 +86,81 @@ eazel_download_progress (EazelInstall *service,
 	gtk_main_iteration ();
 }
 
+static void
+append_name_to (GtkWidget *widget,
+		const char *listname,
+		const char *name)
+{
+	GSList *list;
+
+	list = (GSList*)gtk_object_get_data (GTK_OBJECT (widget), listname);
+	list = g_slist_append (list, g_strdup (name));
+	gtk_object_set_data (GTK_OBJECT (widget), listname, list);
+}
+
+void
+download_failed (EazelInstall *service,
+		 const char *name,
+		 GtkWidget *window)
+{
+	append_name_to (window, "download_failed_list", name);
+}
+
+void
+install_failed (EazelInstall *service,
+		 const char *name,
+		 GtkWidget *window)
+{
+	append_name_to (window, "install_failed_list", name);
+}
+
+static char *
+gen_report (GtkWidget *widget,
+	    const char *listname,
+	    char **text,
+	    const char *title)
+{
+	GSList *list;
+
+	list = gtk_object_get_data (GTK_OBJECT (widget), listname);
+	if (list != NULL) {
+		GSList *ptr;
+		if ((*text)==NULL) {
+			(*text) = g_strdup (title);
+		} else {
+			char *tmp;
+			tmp = g_strconcat ((*text), title, NULL);
+			g_free ((*text));
+			(*text) = tmp;
+		}
+		ptr = list;
+		while (ptr) {
+			char *tmp;
+			tmp = g_strconcat ((*text), "* ", (char*)ptr->data, "\n", NULL);
+			g_free ((*text));
+			(*text) = tmp;
+			ptr = ptr->next;
+		}
+	}
+}
+
+static void
+dump_failure_info (GtkWidget *window) 
+{
+	char *text;
+
+	text = NULL;
+	gen_report (window, "download_failed_list", &text, "Download failed for\n");
+	gen_report (window, "install_failed_list", &text, "Install failed for\n");
+	gnome_warning_dialog (text);
+}
+
 void installer (GtkWidget *window,
 		gint method) 
 {
 	EazelInstall *service;
 	GtkProgressBar *progressbar;
 	GtkLabel *package_label;
-
-	if (check_for_root_user ()==FALSE) {
-		gnome_warning_dialog ("I'll bring my axe and ore and beat you...");
-		return;
-	}
 
 	if (method==UPGRADE) {
 		gnome_warning_dialog ("We don't do UPGRADE yet");
@@ -126,6 +190,7 @@ void installer (GtkWidget *window,
 	service = eazel_install_new_with_config ("/var/eazel/services/eazel-services-config.xml");
 	g_assert (service != NULL);
 
+	eazel_install_open_log (service, TMP_DIR "/log");
 	eazel_install_set_hostname (service, HOSTNAME);
 	eazel_install_set_rpmrc_file (service, RPMRC);
 	eazel_install_set_package_list_storage_path (service, "/package-list.xml");
@@ -138,6 +203,8 @@ void installer (GtkWidget *window,
 
 	gtk_signal_connect (GTK_OBJECT (service), "download_progress", eazel_download_progress, window);
 	gtk_signal_connect (GTK_OBJECT (service), "install_progress", eazel_install_progress, window);
+	gtk_signal_connect (GTK_OBJECT (service), "download_failed", download_failed, window);
+	gtk_signal_connect (GTK_OBJECT (service), "install_failed", install_failed, window);
 
 	switch (method) {
 	case FULL_INST:
@@ -157,4 +224,7 @@ void installer (GtkWidget *window,
 
 	gtk_label_set_text (package_label, "Completed :");
 	gtk_progress_bar_update (progressbar, 1);
+
+
+	dump_failure_info (window);
 }

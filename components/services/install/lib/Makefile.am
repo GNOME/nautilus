@@ -2,7 +2,7 @@ NULL =
 
 CPPFLAGS = \
 	-DPREFIX=\"$(prefix)\" 			\
-	-DG_LOG_DOMAIN=\"Nautilus-Services\"	\
+	-DG_LOG_DOMAIN=\"Eazel-Install\"	\
 	-DSTANDALONE				\
 	$(NULL)
 

@@ -9,6 +9,12 @@
 #include "support.h"
 #include "installer.h"
 
+#include "Banner_Left.xpm"
+#include "Step_Two_Top.xpm"
+#include "Step_Three_Top.xpm"
+#include "Step_One_Top.xpm"
+#include "Final_Top.xpm"
+
 void
 druid_cancel                           (GnomeDruid      *gnomedruid,
                                         gpointer         data)
@@ -65,10 +71,6 @@ druid_finish                           (GnomeDruidPage  *gnomedruidpage,
 	exit (0);
 }
 
-
-
-
-
 void
 prep_install                           (GnomeDruidPage  *gnomedruidpage,
                                         gpointer         arg1,
@@ -84,4 +86,26 @@ prep_install                           (GnomeDruidPage  *gnomedruidpage,
 	gnome_druid_set_buttons_sensitive(druid,TRUE,FALSE,TRUE);
 }
 
+void
+set_images  (GtkWidget *window)
+{
+
+	GnomeDruidPage *page;
+
+	g_message ("in prep");
+
+	page = GNOME_DRUID_PAGE (gtk_object_get_data(GTK_OBJECT (window), "start_page"));
+	gnome_druid_page_start_set_logo (GNOME_DRUID_PAGE_START (page), gdk_imlib_create_image_from_xpm_data (step_one_top));
+	gnome_druid_page_start_set_watermark (GNOME_DRUID_PAGE_START (page), gdk_imlib_create_image_from_xpm_data (banner_left));
+
+	page = GNOME_DRUID_PAGE (gtk_object_get_data(GTK_OBJECT (window), "what_to_do_page"));
+	gnome_druid_page_standard_set_logo (GNOME_DRUID_PAGE_STANDARD (page), gdk_imlib_create_image_from_xpm_data (step_two_top));
+
+	page = GNOME_DRUID_PAGE (gtk_object_get_data(GTK_OBJECT (window), "install_page"));
+	gnome_druid_page_standard_set_logo (GNOME_DRUID_PAGE_STANDARD (page), gdk_imlib_create_image_from_xpm_data (step_three_top));
+
+	page = GNOME_DRUID_PAGE (gtk_object_get_data(GTK_OBJECT (window), "finish_page"));
+	gnome_druid_page_finish_set_logo (GNOME_DRUID_PAGE_FINISH (page), gdk_imlib_create_image_from_xpm_data (final_top));
+	gnome_druid_page_finish_set_watermark (GNOME_DRUID_PAGE_FINISH (page), gdk_imlib_create_image_from_xpm_data (banner_left));
+}
 

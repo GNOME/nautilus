@@ -31,6 +31,8 @@ typedef enum {
 struct _EazelInstallPrivate {	
 	TransferOptions *topts;
 	InstallOptions *iopts;
+
+	FILE *logfile;
 };
 
 #endif /* EAZEL_TIME__PRIVATE_H */

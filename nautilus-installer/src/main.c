@@ -30,6 +30,17 @@ main (int argc, char *argv[])
    * the project. Delete any components that you don't want shown initially.
    */
   window = create_window ();
+  set_images (window);
+
+  if (check_for_root_user ()==FALSE) {
+	  GnomeDialog *d;
+	  d = GNOME_DIALOG (gnome_error_dialog_parented ("I'll bring my axe and ore and beat you...\n"
+							 "This means you should run this as root", 
+							 GTK_WINDOW (window)));
+	  gnome_dialog_run_and_close (d);
+	  return 0;
+  }  
+
   gtk_widget_show (window);
 
   gtk_main ();

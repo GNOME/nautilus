@@ -62,6 +62,9 @@ struct _EazelInstallClass
 	void (*download_progress) (char *file, int amount, int total);
 	void (*install_progress)  (char *name, int amount, int total);
 
+	void (*download_failed) (char *name);
+	void (*install_failed) (char *name);
+	void (*uninstall_failed) (char *name);
 #ifndef STANDALONE
 	gpointer servant_vepv;
 #endif /* STANDALONE */
@@ -80,8 +83,8 @@ struct _EazelInstall
 	EazelInstallPrivate *private;
 };
 
-EazelInstall         *eazel_install_new (void);
-EazelInstall         *eazel_install_new_with_config (const char *config_file);
+EazelInstall                  *eazel_install_new (void);
+EazelInstall                  *eazel_install_new_with_config (const char *config_file);
 GtkType                        eazel_install_get_type   (void);
 void                           eazel_install_destroy    (GtkObject *object);
 
@@ -89,15 +92,25 @@ void                           eazel_install_destroy    (GtkObject *object);
 POA_Trilobite_Eazel_Install__epv *eazel_install_get_epv (void);
 #endif /* STANDALONE */
 
-void eazel_install_emit_install_progress (EazelInstall *service, 
-					  const char *name,
-					  int amount, 
-					  int total);
-void eazel_install_emit_download_progress (EazelInstall *service, 
-					   const char *name,
-					   int amount, 
-					   int total);
+void eazel_install_open_log                       (EazelInstall *service,
+						   const char *fname);
 
+void eazel_install_emit_install_progress          (EazelInstall *service, 
+						   const char *name,
+						   int amount, 
+						   int total);
+void eazel_install_emit_download_progress         (EazelInstall *service, 
+						   const char *name,
+						   int amount, 
+						   int total);
+void eazel_install_emit_download_failed           (EazelInstall *service, 
+						   const char *name);
+void eazel_install_emit_install_failed            (EazelInstall *service, 
+						   const char *name);
+void eazel_install_emit_uninstall_failed          (EazelInstall *service, 
+						   const char *name);
+
+/* This is in flux */
 void eazel_install_fetch_pockage_list (EazelInstall *service);
 void eazel_install_new_packages (EazelInstall *service);
 void eazel_install_uninstall (EazelInstall *service);

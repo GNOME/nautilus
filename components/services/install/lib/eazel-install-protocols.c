@@ -46,6 +46,12 @@ http_fetch_remote_file (EazelInstall *service,
         request = NULL;
         body = NULL;
 
+	if (file == NULL) {
+		get_failed = 1;
+		g_warning ("Could not open target file %s",target_file);
+		return FALSE;
+	}
+
         request = ghttp_request_new();
         if (!request) {
                 g_warning (_("Could not create an http request !\n"));
