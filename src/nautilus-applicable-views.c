@@ -132,8 +132,8 @@ set_initial_content_iid (NautilusNavigationInfo *navinfo,
 			 const char *fallback_value)
 {
 	NautilusDirectory *directory;
-	char *remembered_value;
-	const char *value;
+	char *remembered_value = NULL;
+	const char *value = NULL;
 
 	g_assert (fallback_value != NULL);
 	g_assert (g_slist_length (navinfo->content_identifiers) > 0);
@@ -144,8 +144,6 @@ set_initial_content_iid (NautilusNavigationInfo *navinfo,
 	 * this to work that way.
 	 */
 	
-	value = NULL;
-
 	directory = nautilus_directory_get (navinfo->navinfo.requested_uri);
 	if (directory != NULL) {
 		remembered_value = nautilus_directory_get_metadata (directory,
@@ -180,7 +178,8 @@ set_initial_content_iid (NautilusNavigationInfo *navinfo,
 
 	navinfo->initial_content_iid = g_strdup (value);
 
-	g_free (remembered_value);
+	if (remembered_value)
+		g_free (remembered_value);
 }
 
 static void
@@ -214,7 +213,12 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
               navinfo->navinfo.content_type = g_strdup("special/x-irc-session");
               navinfo->result_code = NAUTILUS_NAVIGATION_RESULT_OK;
             }
-          else
+          else if (!strncmp(navinfo->navinfo.requested_uri, "eazel:", 6))
+	    {
+              navinfo->navinfo.content_type = g_strdup("special/eazel-service");
+              navinfo->result_code = NAUTILUS_NAVIGATION_RESULT_OK;
+	    } 
+	  else
             goto out;
         }
       else
@@ -246,8 +250,6 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
 
   /* This is just a hardcoded hack until OAF works with Bonobo.
      In the future we will use OAF queries to determine this information. */
-  g_message("uri is %s", navinfo->navinfo.requested_uri);
-  g_message("content type is %s", navinfo->navinfo.content_type);
   
   if (!navinfo->navinfo.content_type)
     navinfo->navinfo.content_type = g_strdup("text/plain");
@@ -316,11 +318,17 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
   else if (!strcmp(navinfo->navinfo.content_type, "application/x-rpm") || nautilus_str_has_suffix(navinfo->navinfo.requested_uri, ".rpm"))
     {
       fallback_iid = "nautilus_rpm_view";
-      g_message("adding rpm view");
       navinfo->content_identifiers = g_slist_append (
                                                      navinfo->content_identifiers, 
-                                                     nautilus_view_identifier_new ("nautilus_rpm_view", "Package "));      
+                                                     nautilus_view_identifier_new ("nautilus_rpm_view", "Package"));      
     }  
+  else if (!strcmp(navinfo->navinfo.content_type, "special/eazel-service"))
+    {
+      fallback_iid = "nautilus_service_startup_view";
+      navinfo->content_identifiers = g_slist_append (
+                                                     navinfo->content_identifiers, 
+                                                     nautilus_view_identifier_new ("nautilus_service_startup_view", "Service"));      
+    }    
   else if(!strcmp(navinfo->navinfo.content_type, "text/plain"))
     {
       fallback_iid = "embeddable:text-plain";

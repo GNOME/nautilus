@@ -7,6 +7,7 @@ CPPFLAGS =					\
 INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
+	-I/usr/include/rpm 			\
 	$(GNOMEUI_CFLAGS)
 
 gnorbadir = $(sysconfdir)/CORBA/servers
@@ -19,7 +20,8 @@ bin_PROGRAMS =					\
 	nautilus-service-startup-view
 
 nautilus_service_startup_view_SOURCES =		\
-	nautilus-service-startup-view.c          \
+	nautilus-service-startup-view.c         \
+	eazel-register.c			\
 	main.c
 
 nautilus_service_startup_view_LDFLAGS =			\
@@ -28,6 +30,7 @@ nautilus_service_startup_view_LDFLAGS =			\
 	$(BONOBO_LIBS)					\
 	$(GNOMEUI_LIBS)					\
 	$(VFS_LIBS)					\
+	-lrpm						\
 	$(GNORBA_LIBS)
 
 EXTRA_DIST = nautilus-service-startup-view.goad

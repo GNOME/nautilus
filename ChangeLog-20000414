@@ -1,3 +1,23 @@
+2000-04-03  Andy Hertzfeld <andy@eazel.com>
+
+	added configuration inventory to nascent service component.  This only
+	builds if --enable-eazel-services is set
+	
+	* components/services/startup/Makefile.am:
+	added eazel-register.c,h to the build
+	* components/services/startup/eazel-register.c,h:
+	contains to build an xml file that expresses the hardware and software
+	configuration, using the package database and the proc filesystem.
+	* components/services/startup/nautilus-service-startup-view.c:
+	added a button to generate the configuration inventory file in the
+	user's home directory.  This is temporary scaffolding and will be
+	replaced soon.
+	* src/ntl-uri-map.c:
+	made it invoke the service component for uri's starting with "eazel:";
+	also, fixed a bug where an uninitialized variable was being freed.
+	* nautilus-clean.sh:
+	added the rpm view to the list of cleaned packages.
+		
 2000-04-03  Darin Adler  <darin@eazel.com>
 
 	First cut at tiled background images.
