@@ -1,3 +1,14 @@
+2000-04-28  Maciej Stachowiak  <mjs@eazel.com>
+
+	* src/ntl-uri-map.c (nautilus_navigation_info_new): When
+	navinfo->directory is null, call got_metadata_callback directly
+	instead of calling `nautilus_directory_call_when_ready' to avoid
+	segfaulting on protocols that gnome-vfs does not understand like
+	`hardware:'. There is probably a way to fix this in
+	`nautilus_directory_call_when_ready' but I did not want to mess
+	with it.
+	(got_file_info_callback): Renamed from `my_notify_when_ready'.
+
 2000-04-27  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-async.c: include

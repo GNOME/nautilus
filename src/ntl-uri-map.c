@@ -236,9 +236,9 @@ uri_string_get_scheme (const char *uri_string)
 
 
 static void
-my_notify_when_ready (GnomeVFSAsyncHandle *ah,
-                      GList *result_list,
-                      gpointer data)
+got_file_info_callback (GnomeVFSAsyncHandle *ah,
+                        GList *result_list,
+                        gpointer data)
 {
         GnomeVFSGetFileInfoResult *file_result;
         GnomeVFSResult vfs_result_code;
@@ -310,7 +310,6 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                          " AND nautilus:view_as_name.defined()"
                          /* FIXME bugzilla.eazel.com 701: hack until music view is handled right. */
                          " AND iid != 'OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391'"
-
                          , mime_type, mime_supertype, uri_scheme);
 
                 g_free (mime_supertype);
@@ -336,7 +335,7 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
 
                 CORBA_exception_init (&ev);
 
-#ifdef DEBUG_mjs
+#ifdef DEBUG_MJS
                 printf ("query: \"%s\"\n", query);
 #endif
 
@@ -347,7 +346,7 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                         OAF_ServerInfo *server;
                         const char *iid = NULL;
                         const char *view_as_name = NULL;
-                        
+
                         CORBA_exception_free (&ev);
                         
                         vfs_result_code = GNOME_VFS_OK;
@@ -355,6 +354,7 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                         for (i = 0; i < oaf_result->_length; i++) {
                                 server = &oaf_result->_buffer[i];
                                 iid = server->iid;
+
                                 /* FIXME bugzilla.eazel.com 694: need to pass proper set of languages as 
                                    the last arg for i18 purposes */
                                 view_as_name = oaf_server_info_attr_lookup (server, "nautilus:view_as_name", NULL);
@@ -389,7 +389,7 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
         if (navinfo->content_identifiers) {
                 fallback_iid = ((NautilusViewIdentifier *)
                                 (navinfo->content_identifiers->data))->iid;
-#ifdef DEBUG_mjs
+#ifdef DEBUG_MJS
                 printf ("XXX - fallback_iid: %s\n", fallback_iid);
 #endif
         }
@@ -502,7 +502,7 @@ got_metadata_callback (NautilusDirectory *directory,
                 result_list.data = &result_item;
                 result_list.next = NULL;
 
-                my_notify_when_ready (NULL, &result_list, info);
+                got_file_info_callback (NULL, &result_list, info);
 
                 return;
         }
@@ -514,7 +514,7 @@ got_metadata_callback (NautilusDirectory *directory,
                                        (GNOME_VFS_FILE_INFO_GETMIMETYPE
                                         | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
                                        NULL,
-                                       my_notify_when_ready,
+                                       got_file_info_callback,
                                        info);
 
         gnome_vfs_uri_unref (vfs_uri);
@@ -548,18 +548,22 @@ nautilus_navigation_info_new (Nautilus_NavigationRequestInfo *nri,
 
         navinfo->directory = nautilus_directory_get (nri->requested_uri);
 
-        /* Arrange for all the metadata we will need. */
-        keys = NULL;
-        keys = g_list_prepend (keys, NAUTILUS_METADATA_KEY_CONTENT_VIEWS);
-        keys = g_list_prepend (keys, NAUTILUS_METADATA_KEY_INITIAL_VIEW);
-        nautilus_directory_call_when_ready (navinfo->directory,
-                                            keys,
-                                            NULL,
-                                            NULL,
-                                            got_metadata_callback,
-                                            navinfo);
-        g_list_free (keys);
-        
+        if (NULL != navinfo->directory) {
+                /* Arrange for all the metadata we will need. */
+                keys = NULL;
+                keys = g_list_prepend (keys, NAUTILUS_METADATA_KEY_CONTENT_VIEWS);
+                keys = g_list_prepend (keys, NAUTILUS_METADATA_KEY_INITIAL_VIEW);
+                nautilus_directory_call_when_ready (navinfo->directory,
+                                                    keys,
+                                                    NULL,
+                                                    NULL,
+                                                    got_metadata_callback,
+                                                    navinfo);
+                g_list_free (keys);
+        } else {
+                got_metadata_callback (NULL, NULL, navinfo);
+        }
+
         return navinfo;
 }
 
