@@ -920,7 +920,9 @@ fm_directory_view_popup_item_context_menu  (FMDirectoryView *view,
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	g_assert (NAUTILUS_IS_FILE (file));
 	
-	nautilus_pop_up_context_menu (create_item_context_menu (view, file));
+	nautilus_pop_up_context_menu (create_item_context_menu (view, file),
+				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
+				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT);
 }
 
 /**
@@ -937,7 +939,9 @@ fm_directory_view_popup_background_context_menu  (FMDirectoryView *view)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	
-	nautilus_pop_up_context_menu (create_background_context_menu (view));
+	nautilus_pop_up_context_menu (create_background_context_menu (view),
+				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
+				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT);
 }
 
 

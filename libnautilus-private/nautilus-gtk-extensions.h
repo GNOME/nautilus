@@ -40,6 +40,10 @@ void              nautilus_gtk_window_present           (GtkWindow              
 GtkSelectionData *nautilus_gtk_selection_data_copy_deep (const GtkSelectionData *selection_data);
 void              nautilus_gtk_selection_data_free_deep (GtkSelectionData       *selection_data);
 
-void		  nautilus_pop_up_context_menu 		(GtkMenu 		*menu);
+#define NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT 2
+
+void		  nautilus_pop_up_context_menu 		(GtkMenu 		*menu,
+							 gint16			offset_x,
+							 gint16			offset_y);
 
 #endif /* NAUTILUS_GTK_EXTENSIONS_H */

@@ -544,7 +544,10 @@ back_or_forward_button_clicked_cb (GtkWidget *widget,
 	{
 		nautilus_pop_up_context_menu (
 			create_back_or_forward_menu (NAUTILUS_WINDOW (user_data),
-						     back));
+						     back),
+                        NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
+                        NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT);
+
 		return TRUE;
 	}
 

@@ -135,6 +135,42 @@ nautilus_gtk_selection_data_free_deep (GtkSelectionData *data)
 }
 
 /**
+ * nautilus_gtk_signal_connect_free_data:
+ * 
+ * Function to displace the popup menu some, otherwise the first item
+ * gets selected right away.
+ * This function gets called by gtk_menu_popup ().
+ *
+ * @menu: the popup menu.
+ * @x: x coord where gtk want to place the menu
+ * @y: y coord where gtk want to place the menu
+ * @user_data: something
+ **/
+static void
+nautilus_popup_menu_position_func (GtkMenu   *menu,
+				   gint      *x,
+				   gint      *y,
+				   gpointer  user_data)
+{
+	GdkPoint *offset;
+
+	g_assert (x != NULL);
+	g_assert (y != NULL);
+
+	offset = (GdkPoint*) user_data;
+
+	g_assert (offset != NULL);
+
+	/*
+	 * XXX: Check for screen boundaries.  Also, the cast from 
+	 * gint16 might cause problems.  Unfortunately, GdkPoint
+	 * uses gint16.
+	 */
+	*x += (gint) offset->x;
+	*y += (gint) offset->y;
+}
+
+/**
  * nautilus_pop_up_context_menu:
  * 
  * Pop up a context menu under the mouse. This assumes that
@@ -147,18 +183,32 @@ nautilus_gtk_selection_data_free_deep (GtkSelectionData *data)
  * so perhaps it belongs in a different file.
  * 
  * @menu: The menu to pop up under the mouse.
+ * @offset_x: Number of pixels to displace the popup menu vertically
+ * @offset_y: Number of pixels to displace the popup menu horizontally
  **/
 void 
-nautilus_pop_up_context_menu (GtkMenu *menu)
+nautilus_pop_up_context_menu (GtkMenu	*menu,
+			      gint16	offset_x,
+			      gint16	offset_y)
 {
+	GdkPoint offset;
+
 	g_return_if_fail (GTK_IS_MENU (menu));
+
+	offset.x = offset_x;
+	offset.y = offset_y;
 
 	/* We pass current time here instead of extracting it from
 	 * the event, for API simplicity. This does not seem to make
 	 * any practical difference. See man XGrabPointer for details.
 	 */
-	gtk_menu_popup (menu, NULL, NULL, NULL,
-			NULL, 3, GDK_CURRENT_TIME);
+	gtk_menu_popup (menu,					/* menu */
+			NULL,					/* parent_menu_shell */
+			NULL,					/* parent_menu_item */
+			nautilus_popup_menu_position_func,	/* func */
+			(gpointer) &offset,			/* data */
+			3,					/* button */
+			GDK_CURRENT_TIME);			/* activate_time */
 
 	gtk_object_sink (GTK_OBJECT(menu));
 }

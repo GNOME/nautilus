@@ -1,5 +1,18 @@
 2000-02-15  Ramiro Estrugo <ramiro@eazel.com>
 
+	Added displacement offset for popup menus, so that the first
+	item does'nt get triggered right away.
+
+	* libnautilus/nautilus-gtk-extensions.c:
+	* libnautilus/nautilus-gtk-extensions.h: Added x,y displacement
+	args to nautilus_pop_up_context_menu.
+
+	* src/ntl-window.c: Updated for new api
+
+	* src/file-manager/fm-directory-view.c: Updated for new api
+
+2000-02-15  Ramiro Estrugo <ramiro@eazel.com>
+
 	Added modules blurb to HACKING file.
 
 	* HACKING: Added modules blurb.
