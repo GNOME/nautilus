@@ -1,5 +1,23 @@
 2004-04-09  Dave Camp  <dave@ximian.com>
 
+	* libnautilus-private/nautilus-directory-background.c:
+	(nautilus_connect_desktop_background_to_file_metadata),
+	(background_changed_callback),
+	(nautilus_connect_background_to_file_metadata):
+	* libnautilus-private/nautilus-directory-background.h:
+	* libnautilus-private/nautilus-dnd.c:
+	(nautilus_drag_drop_background_ask):
+	* libnautilus-private/nautilus-dnd.h:
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(get_background_drag_action):
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_begin_loading):
+	By default set the background per-directory in spatial mode.
+	* src/file-manager/fm-list-view.c: (fm_list_view_begin_loading):
+	Take out background metadata stuff, we don't use an eelbackground
+	here.
+
+2004-04-09  Dave Camp  <dave@ximian.com>
+
 	* src/nautilus-window-manage-views.c: (new_window_show_callback),
 	(open_location): Use nautilus_window_close() to close the
 	window, fixes #139072

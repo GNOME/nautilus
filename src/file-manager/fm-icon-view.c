@@ -1088,7 +1088,18 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	if (FM_IS_DESKTOP_ICON_VIEW (view)) {
 		nautilus_connect_desktop_background_to_file_metadata (NAUTILUS_ICON_CONTAINER (icon_container), file);
 	} else {
-		nautilus_connect_background_to_file_metadata (icon_container, file);
+		GdkDragAction default_action;
+		
+		if (nautilus_view_get_window_type (fm_directory_view_get_nautilus_view (view)) == Nautilus_WINDOW_NAVIGATION) {
+			default_action = NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND;
+		} else {
+			default_action = NAUTILUS_DND_ACTION_SET_AS_FOLDER_BACKGROUND;
+		}
+		
+		nautilus_connect_background_to_file_metadata 
+			(icon_container, 
+			 file, 
+			 default_action);
 	}
 
 	

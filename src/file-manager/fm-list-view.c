@@ -1258,9 +1258,6 @@ fm_list_view_begin_loading (FMDirectoryView *view)
 
 	list_view = FM_LIST_VIEW (view);
 
-	nautilus_connect_background_to_file_metadata (GTK_WIDGET (list_view->details->tree_view),
-						      fm_directory_view_get_directory_as_file (view));
-
 	set_sort_order_from_metadata_and_preferences (list_view);
 	set_zoom_level_from_metadata_and_preferences (list_view);
 	set_visible_columns_from_metadata_and_preferences (list_view);

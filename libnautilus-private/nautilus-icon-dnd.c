@@ -533,7 +533,7 @@ get_background_drag_action (NautilusIconContainer *container,
 	GdkDragAction valid_actions;
 
 	if (action == GDK_ACTION_ASK) {
-		valid_actions = NAUTILUS_DND_ACTION_SET_AS_BACKGROUND;
+		valid_actions = NAUTILUS_DND_ACTION_SET_AS_FOLDER_BACKGROUND;
 		if (g_object_get_data (G_OBJECT (eel_get_widget_background (GTK_WIDGET (container))), "is_desktop") == 0) {
 			valid_actions |= NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND;
 		}

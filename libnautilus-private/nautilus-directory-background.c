@@ -127,7 +127,7 @@ nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *ico
 	 * waste, but won't hurt, so I don't think it's worth refactoring the fn
 	 * at this point.
 	 */
-	nautilus_connect_background_to_file_metadata (GTK_WIDGET (icon_container), file);
+	nautilus_connect_background_to_file_metadata (GTK_WIDGET (icon_container), file, NAUTILUS_DND_ACTION_SET_AS_FOLDER_BACKGROUND);
 
 	if (GTK_WIDGET_REALIZED (icon_container)) {
 		desktop_background_realized (icon_container, GINT_TO_POINTER (FALSE));
@@ -611,7 +611,17 @@ background_changed_callback (EelBackground *background,
                 g_signal_handlers_block_by_func (
                         file, G_CALLBACK (saved_settings_changed_callback), background);
 
-                if (action != NAUTILUS_DND_ACTION_SET_AS_BACKGROUND) {
+                if (action != NAUTILUS_DND_ACTION_SET_AS_FOLDER_BACKGROUND && action != NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND) {
+                        GdkDragAction default_drag_action;
+
+                        default_drag_action = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (background), "default_drag_action"));
+        
+
+                        action = default_drag_action;
+                        g_print ("checking action, default_drag_action is %d\n", action);
+                }
+        
+                if (action == NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND) {
                         nautilus_file_set_metadata (file,
                                                     NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR,
                                                     NULL,
@@ -839,7 +849,8 @@ background_destroyed_callback (EelBackground *background,
 /* key routine that hooks up a background and location */
 void
 nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
-                                              NautilusFile *file)
+                                              NautilusFile *file,
+                                              GdkDragAction default_drag_action)
 {
 	EelBackground *background;
 	gpointer old_file;
@@ -880,6 +891,8 @@ nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
         g_object_set_data_full (G_OBJECT (background), "eel_background_file",
                                 file, (GDestroyNotify) nautilus_file_unref);
 
+        g_object_set_data (G_OBJECT (background), "default_drag_action", GINT_TO_POINTER (default_drag_action));
+
         /* Connect new signal handlers. */
         if (file != NULL) {
                 g_signal_connect_object (background, "settings_changed",
@@ -909,14 +922,4 @@ nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
 
         /* Update the background based on the file metadata. */
         initialize_background_from_settings (file, background);
-}
-
-void
-nautilus_connect_background_to_file_metadata_by_uri (GtkWidget *widget,
-                                                     const char *uri)
-{
-        NautilusFile *file;
-        file = nautilus_file_get (uri);
-        nautilus_connect_background_to_file_metadata (widget, file);
-        nautilus_file_unref (file);
 }

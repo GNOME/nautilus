@@ -29,9 +29,8 @@
 #include <libnautilus-private/nautilus-icon-container.h>
 
 void     nautilus_connect_background_to_file_metadata         (GtkWidget             *widget,
-                                                               NautilusFile          *file);
+                                                               NautilusFile          *file,
+                                                               GdkDragAction          default_drag_action);
 void     nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *icon_container,
                                                                NautilusFile          *file);
-void     nautilus_connect_background_to_file_metadata_by_uri  (GtkWidget             *widget,
-                                                               const char            *uri);
 gboolean nautilus_file_background_is_set                      (EelBackground         *background);

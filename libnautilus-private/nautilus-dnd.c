@@ -683,8 +683,8 @@ nautilus_drag_drop_background_ask (GtkWidget *widget,
 				      &damd);
 
 	append_drop_action_menu_item (menu, _("Set as background for _this folder"),
-				      NAUTILUS_DND_ACTION_SET_AS_BACKGROUND,
-				      (actions & NAUTILUS_DND_ACTION_SET_AS_BACKGROUND) != 0,
+				      NAUTILUS_DND_ACTION_SET_AS_FOLDER_BACKGROUND,
+				      (actions & NAUTILUS_DND_ACTION_SET_AS_FOLDER_BACKGROUND) != 0,
 				      &damd);
 
 	menu_item = gtk_separator_menu_item_new ();
