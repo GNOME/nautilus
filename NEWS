@@ -1,3 +1,128 @@
+=== Version 1.0.5
+
+Nautilus 1.0.5 contains more speedups, and some features and bug
+fixes.
+
+Many of the changes for this release were done by hackers at Red Hat
+(Jonathan Blandford, Havoc Pennington, Alex Larsson, Owen Taylor) for
+their Nautilus release, and rolled into the main Nautilus sources,
+mostly by Alex.
+
+Some of the other changes were changes from the Mandrake version of
+Nautilus, contributed by Frederic Crozat.
+
+As a practical matter, many of the changes here that were inspired by
+changes that others made or patches they submitted may still be marked
+"(Darin)" since I did the actual check-i. Similarly, Red Hat changes
+done by others may be marked "(Alex)" since he did the rolling in even
+though others did the original code or have an imporoper guess.
+
+Here's a partial list of changes since Nautilus 1.0.4:
+
+- speed-related changes
+
+* Turn off trash emblem for speed (Darin)
+* Cache more icons in the icon cache (Darin)
+* Reduce number of suffixes to search for when locating icons (Darin)
+* Remove Eazel logo graphics so we have one less place to search (Darin)
+* Change internals of NautilusDirectory to avoid n^2 behavior on large
+  directory loads (Maciej)
+* Add hash table for mapping icon data to icons in the icon container
+  to avoid n^2 behavior in large directories (Maciej)
+* Cache user information so we don't do so many getpwuid calls (Alex)
+* Add a help icon that fires up Nautilus (Alex)
+* Load images with a 64K buffer in the image view (Darin)
+* Don't fire up esd unless the MIME type says it's a music file (Anders)
+* Don't refresh all other windows when you open a new window that
+  points to a particular location (Darin)
+
+- features (no big ones)
+
+* Allow dragging an image to the icon in the file properties dialog
+  to create a custom icon, as in the sidebar (Benedikt Roth)
+* Allow Mozilla component to open Chrome windows (Alex)
+* Use ".desktop" files instead of Nautilus links (Alex, Maciej, Havoc,
+  Jonathan)
+* Add support for JFS (Frederic)
+* Added get_info support to the stream adapter so we can work with
+  more components, specifically the eog one (Fabrice Bellet)
+* Set _NET_WM_WINDOW_TYPE tag, mostly for kwin's benefit (Alex)
+* Eliminate ~/Nautilus, replacing it with "start here" (Havoc)
+* Don't manage the desktop if kdesktop is already running (Havoc)
+* Handle a lot more cases of dragging URIs to a Nautilus window
+  (Jonathan)
+* Allow nested directories inside the scripts directory (David Emory
+  WWatson, Darin)
+* Remove Eazel remnants (Christian Meyer, Benedikt Roth, Darin)
+* Make music view list look better by using EelList, show artist of
+  selected song (Maciej)
+* Add authentication dialog support (Mike Fleming, Maciej)
+* Show uptime in hardware view (Andy)
+* Make modification time in sidebar shorten itself gracefully (Andy)
+* Fix hang when FAM dies by using GIOChannel instead of gdk_input_add
+  (Alex)
+
+- build-related changes
+
+* Require newer bonobo, eel, gnome-vfs, librsvg (Darin)
+* Get rid of the checks for ammonite and freetype (Darin)
+* Fix makefiles for people who use DESTDIR (Evandro Fernandes Giovanini)
+* Remove control center requirement (Anders)
+* Update to build with Mozilla 0.9.3 (Darin)
+* Fix doc build so it works on systems with newer docbook (Dan Mueth)
+* Remove some duplicate libs to speed build up with libtool 1.4 (Anders)
+* Require FAM if compiled with FAM support rather than trying to have
+  optional FAM support (Alex)
+
+- significant bug fixes
+
+* Fix problem that made Notes and History panels crash on startup if you
+  had already run Nautilus prviously on the same machine (Darin)
+* Remove hard-coded colors from the default themes, and let automatic
+  color selection kick in (Alex)
+* Don't monitor files on read-only volumes so CD-ROMs can be unmounted
+  without any trouble (Alex)
+* Get rid of the flash on Nautilus startup (Jonathan, Alex)
+* Stop trying to read GMC position metadata (Alex)
+* Fix mount list problems that caused CD-ROM icons to be left on the
+  desktop even after unmounting and ejecting them (Owen)
+* Fix leaks and other problems found by use of Insure (Yoann, Darin)
+* Fix leaks found by use of memprof (Anders, Alex)
+* Make DISPLAY canonical to give oaf's multi-DISPLAY support a better
+  chance of doing the right thing (Maciej)
+* Make thumbnail code work even when the image is bad (Darin)
+* Fix some state machine bugs that prevented item count from being
+  updated (Maciej)
+* Fix some obscure DnD segfaults (Alex, Darin)
+* Fix a few music view bugs (Maciej)
+
+- i18n fixes (other than new translations)
+
+* Make duplicate numbering scheme handle 11th, 12th, and 13th properly
+  (Benedikt Roth)
+* Make hardware view internationalizable (Benedikt Roth)
+* Set locale to "C" when running mount and unmount so we don't need to
+  understand error messages in multiple languages (Frederic)
+* Use locale encoding when setting title for web view (Alex)
+* Make "reset" image localizable (Andy)
+
+- internal changes
+
+* Rework of volume monitor to make it a easier to understand and
+  modify (Seth Nickell, Darin)
+* Add "galeon mode" to gnome-info2html2 (Philip Langdale)
+* Don't include frames in the thumbnail files on disk (Andy)
+* Make "reset" use a special MIME type rather than "reset.png" (Andy)
+* Make sidebar icon and text controllable by components so that the
+  shell doesn't need the special cases for Mozilla and Hardware (Andy)
+* Get rid of assumption that GnomeVFSFileInfo fields match uid_t and
+  gid_t to make things more portable (Darin)
+* Fix a bunch of places that were passing chars to ctype.h functions
+  which take ints to make things more portable (Darin)
+* Other fixes for compiling on Solaris (Darin)
+
+=== Version 1.0.4
+
 Nautilus 1.0.4 contains some speedups, largely due to the work done by
 Yoann Vandoorselaere to investigate what makes it slow. There's still
 plenty of room for more work there.

@@ -1,3 +1,10 @@
+2001-10-11  Darin Adler  <darin@bentspoon.com>
+
+	* NEWS: Add a first cut at Nautilus 1.0.5 release notes.
+	* THANKS: Updated to match change log better.
+	* configure.in: Bumped version to 1.0.5 in preparation for the
+	release.
+
 2001-10-09  Alex Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-find-icon-image.c:
@@ -237,8 +244,6 @@
 	* libnautilus-private/nautilus-volume-monitor.c:
 	(close_error_pipe), (mount_unmount_callback): Set locale to "C"
 	before running mount/umoun to be able to parse mount message in english
-	* po/fr.po: Add missing '\n' in one translation which was
-	oversizing Nautilus Preference Dialog
 
 2001-10-01  Darin Adler  <darin@bentspoon.com>
 
@@ -669,7 +674,7 @@
 	* src/nautilus-window.c: (nautilus_window_set_viewed_file):
 	Monitor custom name attribute.
 
-2001-08-20  Havoc Pennington  <hp@redhat.com>
+	2001-08-20  Havoc Pennington  <hp@redhat.com>
 
 	* libnautilus-private/nautilus-icon-factory.c
 	(nautilus_icon_factory_get_icon_for_file):
@@ -685,26 +690,25 @@
 	us to handle X-Nautilus-Icon in .directory
 	(image_uri_to_name_or_uri): function with the common processing
 
-Wed Aug  8 21:02:33 2001  Jonathan Blandford  <jrb@redhat.com>
+	Wed Aug  8 21:02:33 2001  Jonathan Blandford  <jrb@redhat.com>
 
 	* libnautilus-private/nautilus-link-impl-desktop.c
 	(nautilus_link_impl_desktop_local_create): fix to really work with
 	gnome_vfs.
 
-Mon Aug  6 15:04:14 2001  Jonathan Blandford  <jrb@redhat.com>
+	Mon Aug  6 15:04:14 2001  Jonathan Blandford  <jrb@redhat.com>
 
 	* libnautilus-private/nautilus-link-impl-desktop.c
 	(nautilus_link_impl_desktop_local_create): write nautilus files
 	using gnome-vfs instead of FILE.
 
-2001-08-01  Havoc Pennington  <hp@redhat.com>
-
+	2001-08-01  Havoc Pennington  <hp@redhat.com>
 	
 	* libnautilus-private/nautilus-link-impl-desktop.c: use 
 	desktop_file_get_locale_string() instead of
 	desktop_file_get_string() to get the names from the desktop files.
 
-Wed Aug  1 04:58:35 2001  Jonathan Blandford  <jrb@redhat.com>
+	Wed Aug  1 04:58:35 2001  Jonathan Blandford  <jrb@redhat.com>
 
 	* libnautilus-private/nautilus-link.c: Fix a crash when some files
 	could return NULL as a mime-type.
@@ -712,24 +716,25 @@ Wed Aug  1 04:58:35 2001  Jonathan Blandford  <jrb@redhat.com>
 	* src/file-manager/fm-icon-view.c (get_icon_text_callback):
 	Disable additional_text for .desktop files.
 
-2001-07-31  Alex Larsson  <alexl@redhat.com>
+	2001-07-31  Alex Larsson  <alexl@redhat.com>
 
-	* libnautilus-private/nautilus-link-impl-desktop.c (nautilus_link_impl_desktop_get_link_uri_from_desktop):
+	* libnautilus-private/nautilus-link-impl-desktop.c
+	(nautilus_link_impl_desktop_get_link_uri_from_desktop):
 	Handle FSType desktop files here to. To allow unmounts.
 
-2001-07-31  Havoc Pennington  <hp@redhat.com>
+	2001-07-31  Havoc Pennington  <hp@redhat.com>
 
 	* libnautilus-private/nautilus-file.c (nautilus_file_get_name):
 	get_text, not get_additional_text, for .directory files. fixes
 	sidebar names hopefully.
 	
-Fri Jul 27 16:03:12 2001  Jonathan Blandford  <jrb@redhat.com>
+	Fri Jul 27 16:03:12 2001  Jonathan Blandford  <jrb@redhat.com>
 
 	* libnautilus-private/nautilus-link.c (get_uri_mime_type_full):
 	check the file for the mime-type rather then just the file name.
 	Grabs old nautilus-link files.
 
-Thu Jul 26 19:09:48 2001  Jonathan Blandford  <jrb@redhat.com>
+	Thu Jul 26 19:09:48 2001  Jonathan Blandford  <jrb@redhat.com>
 
 	* src/file-manager/fm-desktop-icon-view.c
 	(update_trash_link_and_delete_copies): fix Trash.desktop file.
@@ -738,7 +743,7 @@ Thu Jul 26 19:09:48 2001  Jonathan Blandford  <jrb@redhat.com>
 	(slurp_uri_contents): '\000' terminate buffer read in.
 	(nautilus_link_impl_desktop_local_set_icon): Implement.
 
-2001-07-26  Havoc Pennington  <hp@redhat.com>
+	2001-07-26  Havoc Pennington  <hp@redhat.com>
 
 	* src/file-manager/fm-directory-view.c
 	(activate_callback): remove the hack for .desktop files, we now 
@@ -946,7 +951,7 @@ Thu Jul 26 19:09:48 2001  Jonathan Blandford  <jrb@redhat.com>
 
 	* src/nautilus-shell-ui.xml:
 	* src/nautilus-window-menus.c:
-	Add start here to the go menu. Remove leftovers of the "support" menuimem.
+	Add start here to the go menu. Remove leftovers of the "support" menu item.
 
 	* src/file-manager/fm-directory-view.c:
 	Move scripts to ~/.gnome/nautilus-scripts
@@ -1348,7 +1353,7 @@ Thu Jul 26 19:09:48 2001  Jonathan Blandford  <jrb@redhat.com>
 	(list_reveal_row), (play_current_file), (go_to_next_track),
 	(nautilus_music_view_update), (nautilus_music_view_load_uri):
 	Ported to use EelList instead of GtkCList. This looks better and
-	allows for futre drag and drop support.
+	allows for future drag and drop support.
 
 2001-08-18  Darin Adler  <darin@bentspoon.com>
 
@@ -1940,10 +1945,11 @@ Thu Jul 26 19:09:48 2001  Jonathan Blandford  <jrb@redhat.com>
 
 2001-07-15  Anders Carlsson  <andersca@codefactory.se>
 
-	* src/file-manager/fm-icon-view.c (icon_container_preview_callback): Check
-	that the file mime type is correct (that the files is a music file) before calling 
-	nautilus_sound_can_play_sound () since that function launches esd which we
-	don't want to do unless we have a music file.
+	* src/file-manager/fm-icon-view.c
+	(icon_container_preview_callback): Check that the file mime type
+	is correct (that the files is a music file) before calling
+	nautilus_sound_can_play_sound () since that function launches esd
+	which we don't want to do unless we have a music file.
 
 2001-07-15  Andy Hertzfeld  <andy@differnet.com>
 
