@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2000-06-30 10:00+0000\n"
-"PO-Revision-Date: 2000-06-30 10:07+00:00\n"
+"POT-Creation-Date: 2000-07-05 16:19+0000\n"
+"PO-Revision-Date: 2000-07-05 16:21+00:00\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -299,12 +299,12 @@ msgstr ""
 #.
 #. BonoboUIHandler
 #. menu item path, must start with /some-existing-menu-path and be otherwise unique
-#: components/mozilla/nautilus-mozilla-content-view.c:306
+#: components/mozilla/nautilus-mozilla-content-view.c:318
 msgid "_Mozilla"
 msgstr "Mozilla"
 
 #. menu item user-displayed label
-#: components/mozilla/nautilus-mozilla-content-view.c:307
+#: components/mozilla/nautilus-mozilla-content-view.c:319
 msgid "This is a mozilla merged menu item"
 msgstr "Это объединенные элементы меню Mozilla"
 
@@ -324,12 +324,12 @@ msgstr "Это объединенные элементы меню Mozilla"
 #.
 #. BonoboUIHandler
 #. button path, must start with /Main/ and be otherwise unique
-#: components/mozilla/nautilus-mozilla-content-view.c:324
+#: components/mozilla/nautilus-mozilla-content-view.c:336
 msgid "Mozilla"
 msgstr "Mozilla"
 
 #. button user-displayed label
-#: components/mozilla/nautilus-mozilla-content-view.c:325
+#: components/mozilla/nautilus-mozilla-content-view.c:337
 msgid "This is a mozilla merged toolbar button"
 msgstr "Это кнопка объединенной панели инструментов Mozilla"
 
@@ -395,7 +395,7 @@ msgid "Pause"
 msgstr "Пауза"
 
 #: components/music/nautilus-music-view.c:1131
-#: src/file-manager/dfos-xfer.c:219 src/nautilus-window-toolbars.c:123
+#: src/file-manager/dfos-xfer.c:248 src/nautilus-window-toolbars.c:124
 msgid "Stop"
 msgstr "Стоп"
 
@@ -725,109 +725,110 @@ msgstr "Неправильный uri"
 msgid "Could not retrieve a URL for %s"
 msgstr "Невозможно запросить URL для %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:110
+#: components/services/install/lib/eazel-install-rpm-glue.c:114
+#: components/services/install/lib/eazel-install-rpm-glue.c:252
 msgid "Dry Run Mode Activated.  Packages will not actually be installed ..."
 msgstr ""
 "Активирован режим сухого запуска. В действительности пакеты установлены не "
 "будут..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:139
+#: components/services/install/lib/eazel-install-rpm-glue.c:143
 msgid "Reading the install package list ..."
 msgstr "Считывание списка устанавливаемых пакетов ..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:173
-#: components/services/install/lib/eazel-install-rpm-glue.c:265
+#: components/services/install/lib/eazel-install-rpm-glue.c:177
+#: components/services/install/lib/eazel-install-rpm-glue.c:276
 #, c-format
 msgid "Category = %s"
 msgstr "Категория = %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:180
+#: components/services/install/lib/eazel-install-rpm-glue.c:184
 #, c-format
 msgid "Failed to retreive %s!"
 msgstr "Не удалось получить %s!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:219
+#: components/services/install/lib/eazel-install-rpm-glue.c:223
 #, c-format
 msgid "Category = %s, %d packages"
 msgstr "Категория = %s, %d пакетов"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:301
+#: components/services/install/lib/eazel-install-rpm-glue.c:318
 #, c-format
 msgid "Uninstalling %s"
 msgstr "Удаление %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:312
+#: components/services/install/lib/eazel-install-rpm-glue.c:328
 msgid "Package uninstall failed !"
 msgstr "Сбой удаления пакета!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:547
+#: components/services/install/lib/eazel-install-rpm-glue.c:563
 msgid "Upgrading..."
 msgstr "Обновление..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:550
+#: components/services/install/lib/eazel-install-rpm-glue.c:566
 msgid "Installing..."
 msgstr "Установка..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:626
+#: components/services/install/lib/eazel-install-rpm-glue.c:642
 msgid "Packages database query failed !"
 msgstr "Сбой запроса к базе данных пакетов!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:637
+#: components/services/install/lib/eazel-install-rpm-glue.c:653
 #, c-format
 msgid "Package %s is not installed"
 msgstr "Пакет %s не установлен"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:641
+#: components/services/install/lib/eazel-install-rpm-glue.c:657
 #, c-format
 msgid "Error finding index to %s"
 msgstr "Ошибка поиска индекса для %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:671
+#: components/services/install/lib/eazel-install-rpm-glue.c:687
 msgid "Dependency check failed."
 msgstr "Сбой проверки зависимостей."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:715
+#: components/services/install/lib/eazel-install-rpm-glue.c:740
 #, c-format
 msgid "Removing package %s"
 msgstr "Удаление пакета %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:828
+#: components/services/install/lib/eazel-install-rpm-glue.c:853
 #, c-format
 msgid "Cannot open %s"
 msgstr "Невозможно открыть %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:955
+#: components/services/install/lib/eazel-install-rpm-glue.c:980
 msgid "RPM package database query failed !"
 msgstr "Сбой запроса к базе данных пакетов!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:962
+#: components/services/install/lib/eazel-install-rpm-glue.c:988
 msgid "Initialization of RPM package system failed"
 msgstr "Сбой инициализации системы пакетов RPM"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1096
+#: components/services/install/lib/eazel-install-rpm-glue.c:1181
 #, c-format
 msgid "%s needs %s %s"
 msgstr "%s требуется %s %s"
 
 #. If we end here, it's a conflict is going to break something
-#. FIXME: bugzilla.eazel.com
+#. FIXME: bugzilla.eazel.com 1514
 #. Need to handle this more intelligently
-#: components/services/install/lib/eazel-install-rpm-glue.c:1122
+#: components/services/install/lib/eazel-install-rpm-glue.c:1217
 #, c-format
 msgid "%s conflicts %s-%s"
 msgstr "%s конфликтует с %s-%s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1136
+#: components/services/install/lib/eazel-install-rpm-glue.c:1231
 #, c-format
 msgid "Processing dep for %s : requires %s"
 msgstr "Обработка зависимостей для %s: требуется %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1335
+#: components/services/install/lib/eazel-install-rpm-glue.c:1449
 #, c-format
 msgid "%d dependencies failed!"
 msgstr "Сбой %d зависимостей!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1398
+#: components/services/install/lib/eazel-install-rpm-glue.c:1512
 msgid "Dependencies are ok"
 msgstr "Зависимости в порядке"
 
@@ -892,7 +893,7 @@ msgid "specify time url"
 msgstr "указать url времени"
 
 #: components/websearch/ntl-web-search.c:164
-#: src/nautilus-window-toolbars.c:119
+#: src/nautilus-window-toolbars.c:120
 msgid "Search"
 msgstr "Поиск"
 
@@ -1282,16 +1283,16 @@ msgstr "Неизвестный XferOverwriteMode %d"
 msgid "Unknown XferErrorMode %d"
 msgstr "Неизвестный XferErrorMode %d"
 
-#: src/file-manager/dfos-xfer.c:165
+#: src/file-manager/dfos-xfer.c:179
 msgid "From:"
 msgstr "С:"
 
-#: src/file-manager/dfos-xfer.c:169
+#: src/file-manager/dfos-xfer.c:183
 msgid "To:"
 msgstr "По:"
 
 #. transfer error, prompt the user to continue or stop
-#: src/file-manager/dfos-xfer.c:212
+#: src/file-manager/dfos-xfer.c:240
 #, c-format
 msgid ""
 "Error %s copying file %s.\n"
@@ -1300,20 +1301,20 @@ msgstr ""
 "Ошибка %s при копировании файла %s.\n"
 "Хотите продолжить?"
 
-#: src/file-manager/dfos-xfer.c:218
+#: src/file-manager/dfos-xfer.c:247
 msgid "File copy error"
 msgstr "Ошибка копирования файла"
 
-#: src/file-manager/dfos-xfer.c:219 src/file-manager/dfos-xfer.c:262
-#: src/file-manager/dfos-xfer.c:273
+#: src/file-manager/dfos-xfer.c:248 src/file-manager/dfos-xfer.c:294
+#: src/file-manager/dfos-xfer.c:305
 msgid "Skip"
 msgstr "Пропустить"
 
-#: src/file-manager/dfos-xfer.c:219
+#: src/file-manager/dfos-xfer.c:248
 msgid "Retry"
 msgstr "Повторить"
 
-#: src/file-manager/dfos-xfer.c:251
+#: src/file-manager/dfos-xfer.c:282
 #, c-format
 msgid ""
 "File %s already exists.\n"
@@ -1322,24 +1323,24 @@ msgstr ""
 "Файл %s уже существует.\n"
 "Хотите заменить его?"
 
-#: src/file-manager/dfos-xfer.c:261 src/file-manager/dfos-xfer.c:272
+#: src/file-manager/dfos-xfer.c:293 src/file-manager/dfos-xfer.c:304
 msgid "File copy conflict"
 msgstr "Конфликт при копировании файла"
 
-#: src/file-manager/dfos-xfer.c:262 src/file-manager/dfos-xfer.c:273
+#: src/file-manager/dfos-xfer.c:294 src/file-manager/dfos-xfer.c:305
 msgid "Replace"
 msgstr "Заменить"
 
-#: src/file-manager/dfos-xfer.c:273
+#: src/file-manager/dfos-xfer.c:305
 msgid "Replace All"
 msgstr "Заменить все"
 
-#: src/file-manager/dfos-xfer.c:327 src/file-manager/dfos-xfer.c:616
+#: src/file-manager/dfos-xfer.c:359 src/file-manager/dfos-xfer.c:671
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Неизвестный GnomeVFSXferProgressStatus %d"
 
-#: src/file-manager/dfos-xfer.c:393
+#: src/file-manager/dfos-xfer.c:424
 #, c-format
 msgid ""
 "The transfer between\n"
@@ -1356,89 +1357,109 @@ msgstr ""
 "не может быть начата:\n"
 "%s"
 
-#: src/file-manager/dfos-xfer.c:491
+#: src/file-manager/dfos-xfer.c:529
 msgid "Moving"
 msgstr "Перемещение"
 
-#: src/file-manager/dfos-xfer.c:492
+#: src/file-manager/dfos-xfer.c:530
 msgid "Preparing To Move..."
 msgstr "Подготовка к перемещению..."
 
-#: src/file-manager/dfos-xfer.c:499
+#: src/file-manager/dfos-xfer.c:531
+msgid "Finishing Move..."
+msgstr "Завершение перемещения..."
+
+#: src/file-manager/dfos-xfer.c:539
 msgid "Copying"
 msgstr "Копирование"
 
-#: src/file-manager/dfos-xfer.c:500
+#: src/file-manager/dfos-xfer.c:540
 msgid "Preparing To Copy..."
 msgstr "Подготовка к копированию..."
 
-#: src/file-manager/dfos-xfer.c:516
+#: src/file-manager/dfos-xfer.c:541
+msgid "Finishing Copy..."
+msgstr "Завершение копирования..."
+
+#: src/file-manager/dfos-xfer.c:557
 msgid "You cannot copy items into the Trash."
 msgstr "Вы не можете копировать элементы в мусорную корзину."
 
-#: src/file-manager/dfos-xfer.c:517
+#: src/file-manager/dfos-xfer.c:558
 msgid "Error copying"
 msgstr "Ошибка копирования"
 
-#: src/file-manager/dfos-xfer.c:518 src/file-manager/dfos-xfer.c:537
-#: src/file-manager/dfos-xfer.c:552 src/file-manager/dfos-xfer.c:681
-#: src/file-manager/dfos-xfer.c:690
+#: src/file-manager/dfos-xfer.c:559 src/file-manager/dfos-xfer.c:578
+#: src/file-manager/dfos-xfer.c:593 src/file-manager/dfos-xfer.c:736
+#: src/file-manager/dfos-xfer.c:746
 msgid "OK"
 msgstr "OK"
 
-#: src/file-manager/dfos-xfer.c:534
+#: src/file-manager/dfos-xfer.c:575
 msgid "You cannot move the Trash."
 msgstr "Вы не можете перемещать в мусорную корзину."
 
-#: src/file-manager/dfos-xfer.c:535
+#: src/file-manager/dfos-xfer.c:576
 msgid "You cannot copy the Trash."
 msgstr "Вы не можете копировать в мусорную корзину."
 
-#: src/file-manager/dfos-xfer.c:536 src/file-manager/dfos-xfer.c:551
-#: src/file-manager/dfos-xfer.c:680 src/file-manager/dfos-xfer.c:689
+#: src/file-manager/dfos-xfer.c:577 src/file-manager/dfos-xfer.c:592
+#: src/file-manager/dfos-xfer.c:735 src/file-manager/dfos-xfer.c:745
 msgid "Error moving to Trash"
 msgstr "Ошибка перемещения в мусорную корзину"
 
-#: src/file-manager/dfos-xfer.c:549
+#: src/file-manager/dfos-xfer.c:590
 msgid "You cannot move an item into itself."
 msgstr "Вы не можете переместить элемент сам в себя."
 
-#: src/file-manager/dfos-xfer.c:550
+#: src/file-manager/dfos-xfer.c:591
 msgid "You cannot copy an item into itself."
 msgstr "Вы не можете скопировать элемент сам в себя."
 
-#: src/file-manager/dfos-xfer.c:679
+#: src/file-manager/dfos-xfer.c:734
 msgid "You cannot throw away the Trash."
 msgstr "Вы не можете удалить мусорную корзину."
 
-#: src/file-manager/dfos-xfer.c:685
+#: src/file-manager/dfos-xfer.c:741
 #, c-format
 msgid "You cannot throw \"%s\" into the Trash."
 msgstr "Вы не можете поместить \"%s\" в мусорную корзину."
 
-#: src/file-manager/dfos-xfer.c:717
+#: src/file-manager/dfos-xfer.c:773
 msgid "Moving to Trash"
 msgstr "Переместить в мусорную корзину"
 
-#: src/file-manager/dfos-xfer.c:718
+#: src/file-manager/dfos-xfer.c:774
 msgid "Preparing to Move to Trash..."
 msgstr "Подготовка к перемещению в мусорную корзину..."
 
-#: src/file-manager/dfos-xfer.c:757
+#: src/file-manager/dfos-xfer.c:775
+msgid "Finishing Move to Trash..."
+msgstr "Завершение перемещения в мусорную корзину..."
+
+#: src/file-manager/dfos-xfer.c:814
 msgid "Deleting"
 msgstr "Удаление"
 
-#: src/file-manager/dfos-xfer.c:758
+#: src/file-manager/dfos-xfer.c:815
 msgid "Preparing to Delete..."
 msgstr "Подготовка к удалению..."
 
-#: src/file-manager/dfos-xfer.c:802
+#: src/file-manager/dfos-xfer.c:816
+msgid "Finishing Delete..."
+msgstr "Завершение удаления..."
+
+#: src/file-manager/dfos-xfer.c:860
 msgid "Emptying the Trash"
 msgstr "Очистка мусорной корзины"
 
-#: src/file-manager/dfos-xfer.c:803
+#: src/file-manager/dfos-xfer.c:861
 msgid "Preparing to Empty the Trash..."
 msgstr "Подготовка к очистке мусорной корзины..."
+
+#: src/file-manager/dfos-xfer.c:862
+msgid "Finishing Emptying the Trash..."
+msgstr "Завершение счистки мусорной корзины..."
 
 #: src/file-manager/fm-directory-view.c:861
 #, c-format
@@ -1497,90 +1518,90 @@ msgstr "%s%s"
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
 
-#: src/file-manager/fm-directory-view.c:1699
+#: src/file-manager/fm-directory-view.c:1704
 #, c-format
 msgid "Are you sure you want to permanently remove item \"%s\"?"
 msgstr "Вы действительно хотите окончательно удалить \"%s\"?"
 
-#: src/file-manager/fm-directory-view.c:1704
+#: src/file-manager/fm-directory-view.c:1709
 #, c-format
 msgid "Are you sure you want to permanently remove the %d selected items?"
 msgstr "Вы действительно хотите окончательно удалить %d выделенных элементов?"
 
-#: src/file-manager/fm-directory-view.c:1708
+#: src/file-manager/fm-directory-view.c:1713
 msgid "Deleting items"
 msgstr "Удаление элементов"
 
-#: src/file-manager/fm-directory-view.c:1709
+#: src/file-manager/fm-directory-view.c:1714
 msgid "Delete"
 msgstr "Удалить"
 
-#: src/file-manager/fm-directory-view.c:1709
+#: src/file-manager/fm-directory-view.c:1714
 msgid "Cancel"
 msgstr "Отмена"
 
-#: src/file-manager/fm-directory-view.c:1958
+#: src/file-manager/fm-directory-view.c:1963
 msgid "_Open"
 msgstr "Открыть"
 
-#: src/file-manager/fm-directory-view.c:1961
+#: src/file-manager/fm-directory-view.c:1966
 msgid "Open With"
 msgstr "Открыть с помощью"
 
-#: src/file-manager/fm-directory-view.c:1964
+#: src/file-manager/fm-directory-view.c:1969
 msgid "Other Application..."
 msgstr "Другие приложения..."
 
-#: src/file-manager/fm-directory-view.c:1966
+#: src/file-manager/fm-directory-view.c:1971
 msgid "Other Viewer..."
 msgstr "Другие программы просмотра..."
 
-#: src/file-manager/fm-directory-view.c:1970
+#: src/file-manager/fm-directory-view.c:1975
 msgid "Open in _New Window"
 msgstr "Открыть в новом окне"
 
-#: src/file-manager/fm-directory-view.c:1972
+#: src/file-manager/fm-directory-view.c:1977
 #, c-format
 msgid "Open in %d _New Windows"
 msgstr "Открыть в %d новых окнах"
 
-#: src/file-manager/fm-directory-view.c:1976
+#: src/file-manager/fm-directory-view.c:1981
 msgid "New Folder"
 msgstr "Новая папка"
 
-#: src/file-manager/fm-directory-view.c:1978
+#: src/file-manager/fm-directory-view.c:1983
 msgid "_Delete..."
 msgstr "Удалить..."
 
-#: src/file-manager/fm-directory-view.c:1981
+#: src/file-manager/fm-directory-view.c:1986
 msgid "_Move to Trash"
 msgstr "Переместить в мусорную корзину"
 
-#: src/file-manager/fm-directory-view.c:1984
+#: src/file-manager/fm-directory-view.c:1989
 msgid "_Duplicate"
 msgstr "Продублировать"
 
-#: src/file-manager/fm-directory-view.c:1987
+#: src/file-manager/fm-directory-view.c:1992
 msgid "Show _Properties"
 msgstr "Показать свойства"
 
-#: src/file-manager/fm-directory-view.c:1990
+#: src/file-manager/fm-directory-view.c:1995
 msgid "_Empty Trash"
 msgstr "Очистить мусорную корзину"
 
-#: src/file-manager/fm-directory-view.c:1994 src/nautilus-window-menus.c:802
+#: src/file-manager/fm-directory-view.c:1999 src/nautilus-window-menus.c:802
 msgid "_Select All"
 msgstr "Выделить все"
 
-#: src/file-manager/fm-directory-view.c:1998
+#: src/file-manager/fm-directory-view.c:2003
 msgid "R_emove Custom Images"
 msgstr "Удалить пользовательские изображения"
 
-#: src/file-manager/fm-directory-view.c:2000
+#: src/file-manager/fm-directory-view.c:2005
 msgid "R_emove Custom Image"
 msgstr "Удалить пользовательское изображение"
 
-#: src/file-manager/fm-directory-view.c:2004
+#: src/file-manager/fm-directory-view.c:2009
 msgid "Reset _Background"
 msgstr "Сбросить фон"
 
@@ -1591,73 +1612,73 @@ msgstr "Сбросить фон"
 #. * (for the current location, not selection -- but would have to not
 #. * include this item when there's a selection)? Add Bookmark? (same issue).
 #.
-#: src/file-manager/fm-directory-view.c:2107
+#: src/file-manager/fm-directory-view.c:2112
 msgid "Zoom In"
 msgstr "Масштаб +"
 
-#: src/file-manager/fm-directory-view.c:2109
+#: src/file-manager/fm-directory-view.c:2114
 msgid "Zoom Out"
 msgstr "Масштаб -"
 
-#: src/file-manager/fm-directory-view.c:2111
+#: src/file-manager/fm-directory-view.c:2116
 msgid "Zoom to Default"
 msgstr "Масштаб по умолчанию"
 
-#: src/file-manager/fm-directory-view.c:2242
-#: src/file-manager/fm-directory-view.c:2488
+#: src/file-manager/fm-directory-view.c:2247
+#: src/file-manager/fm-directory-view.c:2493
 #, c-format
 msgid "%s Viewer"
 msgstr "%s просматриватель"
 
-#: src/file-manager/fm-directory-view.c:2511
+#: src/file-manager/fm-directory-view.c:2516
 msgid "Move all selected items to the Trash"
 msgstr "Переместить все выделенные элементы в мусорную корзину"
 
-#: src/file-manager/fm-directory-view.c:2520
+#: src/file-manager/fm-directory-view.c:2525
 msgid "Delete all selected items"
 msgstr "Удалить все выделенные элементы"
 
-#: src/file-manager/fm-directory-view.c:2542
+#: src/file-manager/fm-directory-view.c:2547
 msgid "Choose a program with which to open the selected item"
 msgstr "Выберите программу, для открытия выбранного элемента"
 
-#: src/file-manager/fm-directory-view.c:2562
+#: src/file-manager/fm-directory-view.c:2567
 msgid "Choose another application with which to open the selected item"
 msgstr "Выберите другое приложение, для открытия выбранного элемента"
 
-#: src/file-manager/fm-directory-view.c:2584
+#: src/file-manager/fm-directory-view.c:2589
 msgid "Choose another viewer with which to view the selected item"
 msgstr "Выберите другую программу просмотра для открытия выбранного элемента"
 
-#: src/file-manager/fm-directory-view.c:2606
+#: src/file-manager/fm-directory-view.c:2611
 msgid "Create a new folder in this window"
 msgstr "Создать новую папку в этом окне"
 
-#: src/file-manager/fm-directory-view.c:2614
+#: src/file-manager/fm-directory-view.c:2619
 msgid "Open the selected item in this window"
 msgstr "Открыть выбранный элемент в этом окне"
 
-#: src/file-manager/fm-directory-view.c:2622
+#: src/file-manager/fm-directory-view.c:2627
 msgid "Open each selected item in a new window"
 msgstr "Открыть каждый выделенный элемент в новом окне"
 
-#: src/file-manager/fm-directory-view.c:2637
+#: src/file-manager/fm-directory-view.c:2642
 msgid "View or modify the properties of the selected items"
 msgstr "Просмотр или изменение свойств выделенных элементов"
 
-#: src/file-manager/fm-directory-view.c:2648
+#: src/file-manager/fm-directory-view.c:2653
 msgid "Duplicate all selected items"
 msgstr "Продублировать все выделенные элементы"
 
-#: src/file-manager/fm-directory-view.c:2656
+#: src/file-manager/fm-directory-view.c:2661
 msgid "Delete all items in the trash"
 msgstr "Удалить все элементы из мусорной корзины"
 
-#: src/file-manager/fm-directory-view.c:2664
+#: src/file-manager/fm-directory-view.c:2669
 msgid "Select all items in this window"
 msgstr "Выделить все элементы в этом окне"
 
-#: src/file-manager/fm-directory-view.c:2678
+#: src/file-manager/fm-directory-view.c:2683
 msgid "Remove the custom image from each selected icon"
 msgstr "Удалить другое изображение для каждой выбранной пиктограммы"
 
@@ -2015,11 +2036,11 @@ msgstr "Выполить"
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Права для \"%s\" не могут быть определены."
 
-#: src/nautilus-application.c:166
+#: src/nautilus-application.c:170
 msgid "Nautilus: caveat"
 msgstr ""
 
-#: src/nautilus-application.c:191
+#: src/nautilus-application.c:195
 msgid ""
 "The Nautilus shell is under development; it's not ready for daily use. Many "
 "features, including some of the best ones, are not yet done, partly done, or "
@@ -2042,11 +2063,13 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:300
+#: src/nautilus-application.c:312
 msgid ""
 "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
 "again may fix the problem."
-msgstr "Наутилус не может быть использован сейчас. Перезагрузка компьютера или повторная установка Наутилус могут решить проблему."
+msgstr ""
+"Наутилус не может быть использован сейчас. Перезагрузка компьютера или "
+"повторная установка Наутилус могут решить проблему."
 
 #. FIXME: Add technical details here. They should come
 #. * in the form of more detailed message that replaces
@@ -2054,27 +2077,31 @@ msgstr "Наутилус не может быть использован сейчас. Перезагрузка компьютера или п
 #. * detailed message should be complete and stand alone
 #. * since it replaces the novice message.
 #.
-#: src/nautilus-application.c:309
+#: src/nautilus-application.c:321
 msgid ""
 "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
 "again may fix the problem. Check out all of this excellent detail!"
-msgstr "Наутилус не может быть использован сейчас. Перезагрузка компьютера или повторная установка Наутилус могут решить проблему. Проверьте все детали!"
+msgstr ""
+"Наутилус не может быть использован сейчас. Перезагрузка компьютера или "
+"повторная установка Наутилус могут решить проблему. Проверьте все детали!"
 
 #. Another copy of Nautilus is already
 #. * running. Eventually we want to "glom on" to this
 #. * old copy.
 #.
-#: src/nautilus-application.c:319
+#: src/nautilus-application.c:331
 msgid ""
 "Nautilus is already running. Soon, instead of presenting this dialog, the "
 "already-running copy of Nautilus will respond by opening windows."
-msgstr "Наутилус уже запущен. Поэтому вместо представления этого диалога, уже существующая копия Наутилус будет отвечать открытием окон."
+msgstr ""
+"Наутилус уже запущен. Поэтому вместо представления этого диалога, уже "
+"существующая копия Наутилус будет отвечать открытием окон."
 
 #. Some misc. error (can never happen with current
 #. * version of OAF). Show dialog and terminate the
 #. * program.
 #.
-#: src/nautilus-application.c:330
+#: src/nautilus-application.c:342
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Наутилус не может быть использован сейчас из-за неожиданной ошибки."
 
@@ -2127,7 +2154,7 @@ msgid "Nautilus Property Browser"
 msgstr "Обозреватель свойств Наутилуса"
 
 #. add the title label
-#: src/nautilus-property-browser.c:230 src/nautilus-property-browser.c:1481
+#: src/nautilus-property-browser.c:230 src/nautilus-property-browser.c:1480
 msgid "Select A Category:"
 msgstr "Выберите категорию:"
 
@@ -2166,27 +2193,27 @@ msgstr "Выберите файл изображения для добавления как фон:"
 msgid "Select a color to add:"
 msgstr "Выберите цвет для добавления:"
 
-#: src/nautilus-property-browser.c:1490
+#: src/nautilus-property-browser.c:1489
 msgid "Cancel Remove"
 msgstr "Отменить удаление"
 
-#: src/nautilus-property-browser.c:1492
+#: src/nautilus-property-browser.c:1491
 #, c-format
 msgid "Add a new %s"
 msgstr "Добавить новый %s"
 
 #. strip trailing s
-#: src/nautilus-property-browser.c:1509
+#: src/nautilus-property-browser.c:1508
 #, c-format
 msgid "Click on a %s to remove it"
 msgstr "Щелкните на %s, чтобы удалить его"
 
-#: src/nautilus-property-browser.c:1513
+#: src/nautilus-property-browser.c:1512
 #, c-format
 msgid "Categories: %s"
 msgstr "Категории: %s"
 
-#: src/nautilus-property-browser.c:1522
+#: src/nautilus-property-browser.c:1521
 #, c-format
 msgid "Remove a %s"
 msgstr "Удалить %s"
@@ -2196,13 +2223,13 @@ msgstr "Удалить %s"
 msgid "Reset Background"
 msgstr "Сбросить фон"
 
-#: src/nautilus-sidebar.c:1125
+#: src/nautilus-sidebar.c:1132
 #, c-format
 msgid "Open with %s"
 msgstr "Открыть с помощью %s"
 
 #. Catch-all button after all the others.
-#: src/nautilus-sidebar.c:1149
+#: src/nautilus-sidebar.c:1156
 msgid "Open with..."
 msgstr "Открыть с помощью..."
 
@@ -2506,84 +2533,54 @@ msgstr "О программе Наутилус..."
 msgid "Displays information about the Nautilus program"
 msgstr "Показать информацию о программе Наутилус"
 
-#: src/nautilus-window-toolbars.c:103
+#: src/nautilus-window-toolbars.c:104
 msgid "Back"
 msgstr "Назад"
 
-#: src/nautilus-window-toolbars.c:103
+#: src/nautilus-window-toolbars.c:104
 msgid "Go to the previously visited directory"
 msgstr "Перейти к каталого посещенному ранее"
 
-#: src/nautilus-window-toolbars.c:106
+#: src/nautilus-window-toolbars.c:107
 msgid "Forward"
 msgstr "Вперед"
 
-#: src/nautilus-window-toolbars.c:106
+#: src/nautilus-window-toolbars.c:107
 msgid "Go to the next directory"
 msgstr "Перейти к следующему каталогу"
 
-#: src/nautilus-window-toolbars.c:109
+#: src/nautilus-window-toolbars.c:110
 msgid "Up"
 msgstr "Вверх"
 
-#: src/nautilus-window-toolbars.c:109
+#: src/nautilus-window-toolbars.c:110
 msgid "Go up a level in the directory hierarchy"
 msgstr "Подняться на один уровень в иерархии каталогов"
 
-#: src/nautilus-window-toolbars.c:112
+#: src/nautilus-window-toolbars.c:113
 msgid "Reload"
 msgstr "Перезагрузить"
 
-#: src/nautilus-window-toolbars.c:112
+#: src/nautilus-window-toolbars.c:113
 msgid "Reload this view"
 msgstr "Перезагрузить это окно"
 
-#: src/nautilus-window-toolbars.c:116
+#: src/nautilus-window-toolbars.c:117
 msgid "Home"
 msgstr "Домой"
 
-#: src/nautilus-window-toolbars.c:116
+#: src/nautilus-window-toolbars.c:117
 msgid "Go to your home directory"
 msgstr "Перейти в домашний каталог"
 
-#: src/nautilus-window-toolbars.c:119
+#: src/nautilus-window-toolbars.c:120
 msgid "Search for files"
 msgstr "Поиск файлов"
 
-#: src/nautilus-window-toolbars.c:123
+#: src/nautilus-window-toolbars.c:124
 msgid "Interrupt loading"
 msgstr "Прерывание загрузки"
 
 #: src/nautilus-zoom-control.c:282
 msgid "%.0f%%"
 msgstr "%.0f%%"
-
-#~ msgid "Reading the uninstall package list ..."
-#~ msgstr "Считывание списка удаляемых пакетов..."
-
-#~ msgid "%s seems to be a source package.  Skipping ..."
-#~ msgstr "%s выглядить как пакет исходных текстов. Пропускается..."
-
-#~ msgid "Remove the custom color or image from the background"
-#~ msgstr "Удалить другой цвет или изображение с фона"
-
-#~ msgid "25%"
-#~ msgstr "25%"
-
-#~ msgid "50%"
-#~ msgstr "50%"
-
-#~ msgid "75%"
-#~ msgstr "75%"
-
-#~ msgid "100%"
-#~ msgstr "100%"
-
-#~ msgid "150%"
-#~ msgstr "150%"
-
-#~ msgid "200%"
-#~ msgstr "200%"
-
-#~ msgid "400%"
-#~ msgstr "400%"
