@@ -51,5 +51,25 @@ ui_DATA =					\
 	nautilus-icon-view-ui.xml		\
 	nautilus-search-list-view-ui.xml	\
 	$(NULL)
+ui_msgs =					\
+	nautilus-directory-view-ui.xml.h	\
+	nautilus-icon-view-ui.xml.h		\
+	nautilus-search-list-view-ui.xml.h	\
+	$(NULL)
 
-EXTRA_DIST = $(ui_DATA)
+BUILT_SOURCES = $(ui_msgs)
+
+CLEANFILES = $(ui_msgs)
+
+nautilus-directory-view-ui.xml.h: $(srcdir)/nautilus-directory-view-ui.xml
+	$(BONOBO_UI_EXTRACT) $(srcdir)/nautilus-directory-view-ui.xml >	\
+	nautilus-directory-view-ui.xml.h
+nautilus-icon-view-ui.xml.h: $(srcdir)/nautilus-icon-view-ui.xml
+	$(BONOBO_UI_EXTRACT) $(srcdir)/nautilus-icon-view-ui.xml >	\
+	nautilus-icon-view-ui.xml.h
+nautilus-search-list-view-ui.xml.h: $(srcdir)/nautilus-search-list-view-ui.xml
+	$(BONOBO_UI_EXTRACT) $(srcdir)/nautilus-search-list-view-ui.xml >\
+	nautilus-search-list-view-ui.xml.h
+	
+
+EXTRA_DIST = $(ui_DATA) $(ui_msgs)

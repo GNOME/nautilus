@@ -16,7 +16,12 @@ oaf_DATA = nautilus-sample-content-view.oafinfo
 
 uidir = $(datadir)/gnome/ui
 ui_DATA = nautilus-sample-content-view-ui.xml
+ui_msgs = nautilus-sample-content-view-ui.xml.h
 
+nautilus-sample-content-view-ui.xml.h: $(srcdir)/nautilus-sample-content-view-ui.xml
+	$(BONOBO_UI_EXTRACT) $(srcdir)/nautilus-sample-content-view-ui.xml >	\
+	nautilus-sample-content-view-ui.xml.h
+	
 bin_PROGRAMS =					\
 	nautilus-sample-content-view
 
@@ -33,4 +38,8 @@ nautilus_sample_content_view_LDADD =		\
 	$(VFS_LIBS)				\
 	$(OAF_LIBS)
 
-EXTRA_DIST = $(oaf_DATA) $(ui_DATA)
+EXTRA_DIST = $(oaf_DATA) $(ui_DATA) $(ui_msgs)
+
+BUILT_SOURCES = $(ui_msgs)
+
+CLEANFILES = $(ui_msgs)

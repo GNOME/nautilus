@@ -35,7 +35,8 @@ nautilus_distributed_undo_idl_sources =	\
 
 BUILT_SOURCES = \
 	$(nautilus_view_component_idl_sources)	\
-	$(nautilus_distributed_undo_idl_sources)
+	$(nautilus_distributed_undo_idl_sources)\
+	$(ui_msgs)
 
 libnautilusincludedir=$(includedir)/libnautilus
 
@@ -78,17 +79,25 @@ CLEANFILES = \
 	$(nautilus_view_component_idl_sources)		\
 	nautilus_view_component_idl_stamp		\
 	$(nautilus_distributed_undo_idl_sources)	\
-	nautilus_distributed_undo_idl_stamp             
+	nautilus_distributed_undo_idl_stamp             \
+	$(ui_msgs)
 
 uidir = $(datadir)/gnome/ui
 ui_DATA = \
 	nautilus-clipboard-ui.xml	\
 	$(NULL)
 
-
+ui_msgs = \
+	nautilus-clipboard-ui.xml.h
+	
+nautilus-clipboard-ui.xml.h: $(srcdir)/nautilus-clipboard-ui.xml
+	$(BONOBO_UI_EXTRACT) $(srcdir)/nautilus-clipboard-ui.xml >	\
+	nautilus-clipboard-ui.xml.h
+	
 EXTRA_DIST = \
 	$(ui_DATA)			\
 	nautilus-view-component.idl	\
 	nautilus-distributed-undo.idl	\
+	$(ui_msgs)			\
 	$(NULL)
 

@@ -240,7 +240,7 @@ if (debug_mode) putchar('M');
 			}
 		ptr2[0] = '\0';
 		if (!strcmp(s,"Stereo")) mpeg_mode = 1;
-		if (!strcmp(s,"Jogint-Stereo")) mpeg_mode = 2;
+		if (!strcmp(s,"Joint Stereo")) mpeg_mode = 2;
 		if (!strcmp(s,"Dual-Channel")) mpeg_mode = 3;
 		if (!strcmp(s,"Single-Channel")) mpeg_mode = 4;
 		}
