@@ -1,3 +1,11 @@
+2000-09-20  John Sullivan  <sullivan@eazel.com>
+
+	* src/nautilus-location-bar.c: (real_activate),
+	(nautilus_location_bar_initialize_class): Wired
+	up the location bar such that when it is swapped in
+	its text field gets keyboard focus, just like the
+	search fields.
+
 2000-09-20  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

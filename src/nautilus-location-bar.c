@@ -387,6 +387,17 @@ editable_key_press_callback (GtkObject *object,
 }
 
 static void
+real_activate (NautilusNavigationBar *navigation_bar)
+{
+	NautilusLocationBar *bar;
+
+	bar = NAUTILUS_LOCATION_BAR (navigation_bar);
+
+	/* Put the keyboard focus in the text field when switching to this mode */
+	gtk_widget_grab_focus (GTK_WIDGET (bar->entry));
+}
+
+static void
 destroy (GtkObject *object)
 {
 	NautilusLocationBar *bar;
@@ -407,6 +418,7 @@ nautilus_location_bar_initialize_class (NautilusLocationBarClass *class)
 	
 	navigation_bar_class = NAUTILUS_NAVIGATION_BAR_CLASS (class);
 
+	navigation_bar_class->activate = real_activate;
 	navigation_bar_class->get_location = nautilus_location_bar_get_location;
 	navigation_bar_class->set_location = nautilus_location_bar_set_location;
 }
