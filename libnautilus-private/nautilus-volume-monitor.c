@@ -624,6 +624,57 @@ volume_is_removable (const NautilusVolume *volume)
 
 #endif /* !SOLARIS_MNT */
 
+static gboolean 
+volume_is_automounted (const NautilusVolume *volume)
+{
+	FILE *file;
+	MountTableEntry *ent;
+	gboolean automounted;
+#ifdef HAVE_SYS_MNTTAB_H
+ 	MountTableEntry ent_storage;
+#endif
+	
+	automounted = FALSE; 
+ 
+#ifdef HAVE_SYS_MNTTAB_H
+	file = setmntent (MOUNT_TABLE_PATH, "r");
+ 	if (file == NULL) {
+ 		return FALSE;
+ 	}
+
+ 	 /* Search for our device in the fstab */
+ 	ent = &ent_storage;
+	while (!getmntent (file, ent)) {
+		if ((strstr (ent->mnt_fstype, "autofs") != NULL) 
+		    && (strncmp (ent->mnt_mountp, volume->mount_path, strlen (ent->mnt_mountp)) == 0)) {
+			automounted = TRUE;
+			break;
+		}
+ 	}
+	fclose (file);
+
+#elif defined (HAVE_MNTENT_H)
+	file = setmntent (_PATH_MOUNTED, "r");
+	if (file == NULL) {
+		return FALSE;
+	}
+		
+	/* Search for our device in the fstab */
+	while ((ent = getmntent (file)) != NULL) {
+		if ((strstr (ent->mnt_type, "autofs") != NULL) 
+		    && (strncmp (ent->mnt_dir, volume->mount_path, strlen (ent->mnt_dir)) == 0)) {
+			automounted = TRUE;
+			break;
+		}
+	}
+	
+	endmntent (file);
+#endif
+	
+	
+	return automounted;
+}
+
 char *
 nautilus_volume_get_name (const NautilusVolume *volume)
 {
@@ -834,7 +885,11 @@ mount_volume_deactivate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 
 	switch (volume->device_type) {
 	case NAUTILUS_DEVICE_CDROM_DRIVE:
-		pthread_create (&eject_thread, NULL, eject_device, g_strdup (volume->device_path));
+		/* Don't eject automounted device 
+		 * since this action is done by automount daemon, not user */
+		if (!volume_is_automounted (volume)) {
+			pthread_create (&eject_thread, NULL, eject_device, g_strdup (volume->device_path));
+		}
 		break;
 	default:
 	}
@@ -1593,7 +1648,8 @@ nautilus_volume_monitor_set_volume_name (NautilusVolumeMonitor *monitor,
 	/* Find volume and set new name */
 	for (node = monitor->details->mounts; node != NULL; node = node->next) {
 		found_volume = node->data;
-		if (strcmp (found_volume->device_path, volume->device_path) == 0) {
+		if ((strcmp (found_volume->device_path, volume->device_path) == 0)
+		   && (strcmp (found_volume->mount_path, volume->mount_path) == 0)) {
 			g_free (found_volume->volume_name);
 			found_volume->volume_name = g_strdup (volume_name);
 			return;
