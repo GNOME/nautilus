@@ -54,11 +54,6 @@ GtkType       nautilus_mozilla_content_view_get_type          (void);
 
 
 /* Component embedding support */
-NautilusView *nautilus_mozilla_content_view_get_nautilus_view (NautilusMozillaContentView *view);
-
-
-/* URI handling */
-void          nautilus_mozilla_content_view_load_uri          (NautilusMozillaContentView *view,
-							       const char                 *uri);
+BonoboObject *nautilus_mozilla_content_view_new (void);
 
 #endif /* NAUTILUS_MOZILLA_CONTENT_VIEW_H */

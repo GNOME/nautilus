@@ -1,3 +1,46 @@
+2001-02-08  Michael K. Fleming  <mfleming@eazel.com>
+
+	reviewed by: <ramiro@eazel.com>
+
+	Significant rework of nautilus-mozilla-content-view to use
+	report_location_change and to do general house-cleaning.
+
+	Fixes following bugs:
+
+	Bug 3547  POSTs in the mozilla component don't update the URI 
+	Bug 4682, 6142  Frame sets have difficulty in Nautilus
+	Bug 5461  "http://localhost:xxxx" instead of "eazel-services:" on location bar
+	
+	Will fix following bugs when I talk with Darin about problems
+	with report_location_change:
+
+	5592  nautilus / mozilla back button goes back 2 pages
+
+	Also removes all module-global and static variables, making gnome-vfs
+	and general state-tracking per-instance, thus eliminating latent
+	bugs related to using two browsers simultainously
+
+	Removes all special-casing for form POST's and for iframes
+
+	Removes usage of the mozilla "open_uri" signal, which was no longer really
+	being used for anything (interruption of eazel-specific schemes is done
+	at the DOM event level, notification to Nautilus of navigation is done
+	as a result of the "location" signal
+
+	Introduces/aggrevates these bugs:
+
+	6435	No history recorded when using report_location_change
+	6436	Throbber doesn't throb when using report_location_change
+
+	I'll wait until Darin returns to figure out solutions to this.
+
+	* components/mozilla/Makefile.am:
+	* components/mozilla/main.c: (main):
+	* components/mozilla/mozilla-events.cpp:
+	* components/mozilla/mozilla-events.h:
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	* components/mozilla/nautilus-mozilla-content-view.h:
+
 2001-02-08  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-gnome-extensions.c:

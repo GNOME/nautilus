@@ -68,8 +68,7 @@ mozilla_make_object (BonoboGenericFactory *factory,
 		     const char *goad_id, 
 		     void *closure)
 {
-	NautilusMozillaContentView *view;
-	NautilusView *nautilus_view;
+	BonoboObject *bonobo_object;
 
 	if (strcmp (goad_id, "OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1")) {
 		return NULL;
@@ -78,20 +77,18 @@ mozilla_make_object (BonoboGenericFactory *factory,
 #ifdef DEBUG_mfleming
 	g_print ("+mozilla_make_object\n");
 #endif
-	
-	view = NAUTILUS_MOZILLA_CONTENT_VIEW (gtk_object_new (NAUTILUS_TYPE_MOZILLA_CONTENT_VIEW, NULL));
 
 	object_count++;
 
-	nautilus_view = nautilus_mozilla_content_view_get_nautilus_view (view);
+	bonobo_object = nautilus_mozilla_content_view_new ();
 
-	gtk_signal_connect (GTK_OBJECT (nautilus_view), "destroy", mozilla_object_destroyed, NULL);
+	gtk_signal_connect (GTK_OBJECT (bonobo_object), "destroy", mozilla_object_destroyed, NULL);
 
 #ifdef DEBUG_mfleming
 	g_print ("-mozilla_make_object\n");
 #endif
 
-	return BONOBO_OBJECT (nautilus_view);
+	return BONOBO_OBJECT (bonobo_object);
 }
 
 extern gboolean test_make_full_uri_from_relative (void);
@@ -101,11 +98,6 @@ run_test_cases (void)
 {
 	return test_make_full_uri_from_relative ();
 }
-
-#ifdef EAZEL_SERVICES
-/*Defined in nautilus-mozilla-content-view.c*/
-extern EazelProxy_UserControl nautilus_mozilla_content_view_user_control;
-#endif
 
 int
 main (int argc, char *argv[])
@@ -156,9 +148,7 @@ main (int argc, char *argv[])
 	gnome_vfs_init ();
 
 #ifdef EAZEL_SERVICES
-	if (ammonite_init ((PortableServer_POA) bonobo_poa)) {
-		nautilus_mozilla_content_view_user_control = ammonite_get_user_control ();
-	}
+	ammonite_init ((PortableServer_POA) bonobo_poa);
 #endif
 
 #ifdef DEBUG_mfleming

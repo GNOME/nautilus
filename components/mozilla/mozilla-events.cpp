@@ -173,6 +173,8 @@ mozilla_events_get_href_for_event (gpointer dom_event)
 }
 
 
+#if 0
+
 /*
  * returns TRUE if the given event occurs in a SUBMIT button to a form with method=POST
  */
@@ -236,6 +238,7 @@ mozilla_events_is_in_form_POST_submit (gpointer dom_event)
 	return FALSE;
 }
 
+#endif /* 0 */
 /* defined in gtkmozembed_internal.h */
 extern "C" void gtk_moz_embed_get_nsIWebBrowser  (GtkMozEmbed *embed, nsIWebBrowser **retval);
 
@@ -310,6 +313,7 @@ debug_dom_dump (nsIDOMElement *element, int depth)
 }
 #endif /* 0 */
 
+#if 0
 /* Why can't I use GetElementsByTagName?  I couldn't get it to work for me */
 static gboolean
 find_node_named_with_src (nsIDOMNode *top_node, const nsAReadableString& aName, const nsAReadableString& uri)
@@ -469,5 +473,5 @@ mozilla_events_is_url_in_iframe (GtkMozEmbed *embed, const char *uri)
 #endif
 }
 
-
+#endif /* 0 */
 
