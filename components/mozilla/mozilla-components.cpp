@@ -22,8 +22,10 @@
  */
 
 /*
- * mozilla-preferences.cpp - A small C wrapper for poking mozilla preferences
+ * mozilla-components.cpp - A small C wrapper for using mozilla components
  */
+
+#define nopeDEBUG_ramiro 1
 
 #include <config.h>
 
@@ -52,14 +54,18 @@ mozilla_components_register_library (const char *class_uuid,
 							  getter_AddRefs (spec));
 	
 	if (NS_FAILED (rv) || (!spec)) {
-		g_warning ("create nsILocalFile failed\n");
+#ifdef DEBUG_ramiro
+		g_warning ("create nsILocalFile failed");
+#endif
 		return FALSE;
 	}
 
 	rv = spec->InitWithPath (library_file_name);
 	
 	if (NS_FAILED (rv)) {
-		g_warning ("init with path failed\n");
+#ifdef DEBUG_ramiro
+		g_warning ("init with path failed");
+#endif
 		return FALSE;
 	}
 
@@ -68,7 +74,9 @@ mozilla_components_register_library (const char *class_uuid,
 	PRBool parse_rv = cid.Parse (class_uuid);
 
 	if (!parse_rv) {
-		g_warning ("Parsing class_uuid '%s' failed\n", class_uuid);
+#ifdef DEBUG_ramiro
+		g_warning ("Parsing class_uuid '%s' failed", class_uuid);
+#endif
 		return FALSE;
 	}
 
@@ -80,19 +88,24 @@ mozilla_components_register_library (const char *class_uuid,
 							PR_TRUE,
 							PR_FALSE);
 
-	g_print ("nsComponentManager::RegisterComponentSpec (%s,%s,%s,%s)\n",
+	if (NS_FAILED (rv)) {
+#ifdef DEBUG_ramiro
+		g_warning ("Failed to register component (%s,%s,%s,%s)",
+			   class_uuid,
+			   class_name,
+			   prog_id,
+			   library_file_name);
+#endif
+		return FALSE;
+	}
+
+#ifdef DEBUG_ramiro
+	g_print ("Successful registration of component (%s,%s,%s,%s)",
 		 class_uuid,
 		 class_name,
 		 prog_id,
 		 library_file_name);
-	
-	if (NS_FAILED (rv)) {
-		g_print ("auto register failed\n");
-		return FALSE;
-	}
+#endif
 	
 	return TRUE;
 }
-
-// 		pref->SetBoolPref("nglayout.widget.gfxscrollbars", PR_FALSE);
-// 		pref->SetBoolPref("security.checkloaduri", PR_FALSE);

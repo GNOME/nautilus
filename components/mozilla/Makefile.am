@@ -25,13 +25,15 @@ bin_PROGRAMS =\
 nautilus_mozilla_content_view_SOURCES = \
 	main.c \
 	mozilla-components.cpp \
+	mozilla-events.cpp \
 	mozilla-preferences.cpp \
 	nautilus-mozilla-content-view.c \
 	$(NULL)
 
 noinst_HEADERS =\
-	mozilla-preferences.h \
 	mozilla-components.h \
+	mozilla-events.h \
+	mozilla-preferences.h \
 	nautilus-mozilla-content-view.h \
 	$(NULL)
 
