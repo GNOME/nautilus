@@ -1,3 +1,12 @@
+2000-05-16  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/nautilus-music-view.c: (scan_for_header),
+	(fetch_bit_rate), (fetch_play_time), (format_play_time),
+	(fetch_song_info), (nautilus_music_view_update_from_uri):
+	fixed bug 723, mp3 play time calculation not right for non-128kbps, by
+	reading the header and fetching the bitrate, then using it for the time
+	calculation.
+	
 2000-05-16  Pavel Cisler  <pavel@eazel.com>
 
 	* src/file-manager/fm-list-view.c: (add_to_list):

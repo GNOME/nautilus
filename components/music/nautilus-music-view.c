@@ -68,7 +68,9 @@ struct _NautilusMusicViewDetails {
 
 typedef struct {
 	int track_number;
+	int bitrate;
 	int track_time;
+	
 	char *title;
 	char *artist;
 	char *album;
@@ -92,6 +94,8 @@ enum {
 	SORT_BY_ARTIST,
 	SORT_BY_TIME
 };
+
+static int bitrates[] = {0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, -1};
 
 static GtkTargetEntry music_dnd_target_table[] = {
 	{ "text/uri-list",  0, TARGET_URI_LIST },
@@ -355,22 +359,78 @@ read_id_tag (const char *song_path, SongInfo *song_info)
 	return TRUE;
 }
 
-/* fetch_play_time takes the pathname to a file and returns the play time in seconds */
-/* FIXME bugzilla.eazel.com 723: assumes 128k bits/second.  Must read header and factor in bitrate */
+/* this utility routine is the inner loop of fetch_bit_rate that scans the passed in buffer
+   for a sync field.  If it finds a valid header, it returns the bit-rate index; otherwise, return -1 */
 static int
-fetch_play_time (const char *song_path_name)
+scan_for_header(guchar  *buffer, int buffer_length)
+{
+	int index;
+	
+	/* make sure we've got enough to even look */
+	if (buffer_length < 3)
+		return -1;
+		
+	for (index = 0; index < (buffer_length - 2); index++) {
+		if ((buffer[index] == 255) && 
+			((buffer[index + 1] & 224) != 0)) {
+				return (buffer[index + 2] >> 4) & 15;
+		}
+	}
+	
+	return -1;
+}
+
+/* fetch_bit_rate returns the bit rate of the file by scanning for a frame and extracting the
+   information from the frame header */
+static int
+fetch_bit_rate (const char *song_path_name)
+{
+	guchar buffer[1024];
+	int mp3_file, length_read;
+	int bit_rate_index;
+
+	/* open the file */
+	
+	mp3_file = open(song_path_name, O_RDONLY);
+	if (mp3_file == 0) {
+		return -1;
+        }
+	
+	/* read a byte at a time until we get a sync field, which consists of a byte of 255 followed
+	   by a byte with the next 3 bits on */
+    	
+    	bit_rate_index = -1;
+    	while ((length_read = read(mp3_file, buffer, sizeof(buffer))) > 0) {
+    		bit_rate_index = scan_for_header(buffer, length_read);
+    		if (bit_rate_index >= 0)
+    			break;
+    	}
+    	
+    	close(mp3_file);
+    	
+    	/* fetch the bitrate field, and look up the actual bitrate in the table */
+    	if (bit_rate_index < 0)
+    		return -1;
+    			
+	return bitrates[bit_rate_index];
+}
+
+/* fetch_play_time takes the pathname to a file and returns the play time in seconds */
+static int
+fetch_play_time (const char *song_path_name, int bitrate)
 {
 	NautilusFile *file = nautilus_file_get (song_path_name);
  	GnomeVFSFileSize file_size = nautilus_file_get_size (file);       			
 	nautilus_file_unref(file);
-	return (file_size - 512) / 16384;
+	
+	return file_size / (125 * bitrate);
 }
 
 /* format_play_time takes the pathname to a file and returns the play time formated as mm:ss */
 static char *
-format_play_time (const char *song_path_name)
+format_play_time (const char *song_path_name, int bitrate)
 {
-	int seconds = fetch_play_time(song_path_name);
+	int seconds = fetch_play_time(song_path_name, bitrate);
 	int minutes = seconds / 60;
 	int remain_seconds = seconds - (60 * minutes);
 	char *result = g_strdup_printf ("%d:%02d", minutes, remain_seconds);
@@ -402,7 +462,8 @@ fetch_song_info (const char *song_path, int file_order)
 		info->track_number = file_order;
 	}	
 	
-	info->track_time = fetch_play_time(song_path);
+	info->bitrate = fetch_bit_rate(song_path);
+	info->track_time = fetch_play_time(song_path, info->bitrate);
 	return	info;
 }
 
@@ -660,7 +721,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 		if (info->artist)
 			clist_entry[2] = g_strdup(info->artist);
 		if (info->path_name)
-		clist_entry[3] = format_play_time(info->path_name);
+		clist_entry[3] = format_play_time(info->path_name, info->bitrate);
 			
 		gtk_clist_append(GTK_CLIST(music_view->details->song_list), clist_entry);
 		gtk_clist_set_row_data(GTK_CLIST(music_view->details->song_list), track_index, g_strdup(info->path_name));
