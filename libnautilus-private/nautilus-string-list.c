@@ -291,6 +291,55 @@ nautilus_string_list_get_index_for_string (const NautilusStringList	*string_list
 	return NAUTILUS_STRING_LIST_NOT_FOUND;
 }
 
+/**
+ * nautilus_string_list_as_tokens
+ *
+ * @string_list: A NautilusStringList
+ * @delimiter: The string to use a delimeter, can be NULL.
+ *
+ * Return value: An newly allocated string concatenation of all the items in the list.
+ * The string is delimited by 'delimiter'.
+ */
+char *
+nautilus_string_list_as_concatenated_string (const NautilusStringList *string_list,
+					     const char               *delimiter)
+{
+	char *result = NULL;
+	guint length;
+	
+	g_return_val_if_fail (string_list != NULL, NULL);
+	
+	length = nautilus_string_list_get_length (string_list);
+	
+	if (length > 0) {
+		guint	n;
+		GList	*iterator;
+		GString	*tokens;
+
+		n = 0;
+		
+		tokens = g_string_new (NULL);
+		
+		for (iterator = string_list->strings; iterator != NULL; iterator = iterator->next) {
+			const char *current = (const char *) iterator->data;
+			
+			g_string_append (tokens, current);
+
+			
+			n++;
+
+			if (delimiter && (n != length)) {
+				g_string_append (tokens, delimiter);
+			}
+		}
+
+		result = tokens->str;
+
+		g_string_free (tokens, FALSE);
+	}
+
+	return result;
+}
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
@@ -464,6 +513,30 @@ nautilus_self_check_string_list (void)
 		nautilus_string_list_free (fruits);
 	}
 
+	/*
+	 * nautilus_string_list_as_concatenated_string
+	 *
+	 */
+	{
+		NautilusStringList *l;
+
+		fruits = nautilus_string_list_new ();
+		
+		nautilus_string_list_insert (l, "x");
+
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_as_concatenated_string (l, NULL), "x");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_as_concatenated_string (l, ":"), "x");
+
+		nautilus_string_list_insert (l, "y");
+		nautilus_string_list_insert (l, "z");
+
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_as_concatenated_string (l, NULL), "xyz");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_as_concatenated_string (l, ""), "xyz");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_as_concatenated_string (l, ":"), "x:y:z");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_as_concatenated_string (l, "abc"), "xabcyabcz");
+
+		nautilus_string_list_free (l);
+	}
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */
