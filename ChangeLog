@@ -1,3 +1,13 @@
+2001-02-15  Eric Fischer  <eric@eazel.com>
+
+        * nautilus.spec.in:
+        Start building the eazel installer, and put it into its own RPM.
+        (This should eventually be separate from building nautilus)
+
+        * nautilus-installer/libtrilobite/Makefile.am:
+        Add a dependency to create the .h files, since gmake complains
+        otherwise.
+
 2001-02-15  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bug 6589, nautilus crashes if a moderate sized text block
