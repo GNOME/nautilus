@@ -37,6 +37,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include <libtrilobite/trilobite-core-utils.h>
+
 /* #define DEBUG_PACKAGE_ALLOCS */
 
 #ifdef DEBUG_PACKAGE_ALLOCS
@@ -70,7 +72,7 @@ categorydata_new ()
 	result = g_new0 (CategoryData, 1);
 #ifdef DEBUG_PACKAGE_ALLOCS
 	category_allocs ++;
-	g_message ("category_allocs inced to %d (0x%x)", category_allocs, result);
+	trilobite_debug ("category_allocs inced to %d (0x%x)", category_allocs, result);
 #endif /* DEBUG_PACKAGE_ALLOCS */
 	return result;
 }
@@ -80,7 +82,7 @@ categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed)
 {
 #ifdef DEBUG_PACKAGE_ALLOCS
 	category_allocs --;
-	g_message ("category_allocs = %d (0x%x) %s", category_allocs, cd, cd ? cd->name: "?");
+	trilobite_debug ("category_allocs = %d (0x%x) %s", category_allocs, cd, cd ? cd->name: "?");
 #endif /* DEBUG_PACKAGE_ALLOCS */
 
 	g_return_if_fail (cd != NULL);
@@ -105,7 +107,7 @@ packagedata_new ()
 
 #ifdef DEBUG_PACKAGE_ALLOCS
 	package_allocs ++;
-	g_message ("package_allocs inced to %d (0x%x)", package_allocs, pack);
+	trilobite_debug ("package_allocs inced to %d (0x%x)", package_allocs, pack);
 #endif /* DEBUG_PACKAGE_ALLOCS */
 
 	
@@ -119,6 +121,7 @@ packagedata_new ()
 	pack->distribution = trilobite_get_distribution ();
 	pack->filename = NULL;
 	pack->install_root = NULL;
+	pack->provides = NULL;
 	pack->soft_depends = NULL;
 	pack->hard_depends = NULL;
 	pack->breaks = NULL;
@@ -168,7 +171,13 @@ packagedata_new_from_rpm_header (Header *hd)
 };
 
 /* FIXME bugzilla.eazel.com 2351:
-   check possible leaks from using headerGetEntry */
+   check possible leaks from using headerGetEntry.
+   Addition ; it looks like it depends on the tag type. From reading
+   in rpm-3.0.4/lib/header.c(copyEntry), which is called by headerGetEntry,
+   some types get a new memory array returned, whereas others get a pointer
+   into the header...
+   grr....
+*/
 void 
 packagedata_fill_from_rpm_header (PackageData *pack, 
 				  Header *hd) 
@@ -207,6 +216,21 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 	pack->description = g_strdup (tmp);
 
 	pack->packsys_struc = (gpointer)hd;
+
+	{
+		char **paths;
+		int count;
+		int index;
+
+		headerGetEntry (*hd,			
+				RPMTAG_BASENAMES, NULL,
+				(void**)&paths, &count);
+
+		for (index=0; index<count; index++) {
+			pack->provides = g_list_prepend (pack->provides, g_strdup (paths[index]));
+			trilobite_debug ("Provides %s", paths[index]);
+		}
+	}
 }
 
 /* FIXME bugzilla.eazel.com 1532:
@@ -249,7 +273,7 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 {
 #ifdef DEBUG_PACKAGE_ALLOCS
 	package_allocs --;
-	g_message ("package_allocs = %d (0x%x) %s", package_allocs, pack, pack ? pack->name: "?");
+	trilobite_debug ("package_allocs = %d (0x%x) %s", package_allocs, pack, pack ? pack->name: "?");
 #endif /* DEBUG_PACKAGE_ALLOCS */
 
 
@@ -272,6 +296,8 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 	pack->install_root = NULL;
 	g_free (pack->md5);
 	pack->md5 = NULL;
+	g_list_foreach (pack->provides, (GFunc)g_free, NULL);
+	pack->provides = NULL;
 
 	if (deep) {
 		g_list_foreach (pack->soft_depends, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
@@ -303,7 +329,7 @@ packagedata_remove_soft_dep (PackageData *remove,
 	g_assert (remove);
 	g_assert (from);
 
-	g_message ("removing %s from %s's deps", remove->name, from->name);
+	trilobite_debug ("removing %s from %s's deps", remove->name, from->name);
 	from->soft_depends = g_list_remove (from->soft_depends, remove);
 	packagedata_destroy (remove, TRUE);
 }
@@ -500,3 +526,4 @@ eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT (GtkObject * obj
 	    GTK_VALUE_INT (args[3]), GTK_VALUE_INT (args[4]),
 	    GTK_VALUE_INT (args[5]), GTK_VALUE_INT (args[6]),func_data);
 }
+

@@ -106,9 +106,10 @@ void  eazel_install_emit_download_progress_default (EazelInstall *service,
 						    const char *name,
 						  int amount,
 						  int total);
-void  eazel_install_emit_preflight_check_default (EazelInstall *service, 
-						  int total_bytes,
-						  int total_packages);
+gboolean  eazel_install_emit_preflight_check_default (EazelInstall *service, 
+						      GList *packages,
+						      int total_bytes,
+						      int total_packages);
 void  eazel_install_emit_download_failed_default (EazelInstall *service, 
 						  const char *name);
 void eazel_install_emit_md5_check_failed_default (EazelInstall *service,
@@ -151,6 +152,37 @@ xml_from_packagedata (const PackageData *pack) {
 	node = xmlAddChild (node, xmlNewNode (NULL, "PACKAGES"));
 
 	xmlAddChild (node, eazel_install_packagedata_to_xml (pack, NULL, NULL));
+
+	xmlDocDumpMemory (doc, &mem, &size);
+	result = CORBA_string_dup (mem);
+	free (mem);
+	xmlFreeDoc (doc);
+
+	return result;
+}
+
+static CORBA_char*
+xml_from_packagedata_list (const GList *packages) {
+	xmlDocPtr doc;
+	xmlNodePtr node;
+	xmlChar *mem;
+	CORBA_char *result;
+	int size;
+	const GList *iterator;
+
+	doc = xmlNewDoc ("1.0");
+
+	node = xmlNewDocNode (doc, NULL, "CATEGORIES", NULL);
+	xmlDocSetRootElement (doc, node);
+	node = xmlAddChild (node, xmlNewNode (NULL, "CATEGORY"));
+	xmlSetProp (node, "name", "failed");
+	
+	node = xmlAddChild (node, xmlNewNode (NULL, "PACKAGES"));
+
+	for (iterator = packages; iterator; glist_step (iterator)) {
+		PackageData *pack = (PackageData*)iterator->data;
+		xmlAddChild (node, eazel_install_packagedata_to_xml (pack, NULL, NULL));
+	}
 
 	xmlDocDumpMemory (doc, &mem, &size);
 	result = CORBA_string_dup (mem);
@@ -311,8 +343,8 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallClass, preflight_check),
-				gtk_marshal_NONE__INT_INT,
-				GTK_TYPE_NONE, 2, GTK_TYPE_INT, GTK_TYPE_INT);	
+				gtk_marshal_BOOL__POINTER_INT_INT,
+				GTK_TYPE_BOOL, 3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
 	signals[INSTALL_PROGRESS] = 
 		gtk_signal_new ("install_progress",
 				GTK_RUN_LAST,
@@ -959,28 +991,66 @@ eazel_install_emit_download_progress_default (EazelInstall *service,
 #endif /* EAZEL_INSTALL_NO_CORBA */
 } 
 
-void 
+gboolean
 eazel_install_emit_preflight_check (EazelInstall *service, 
-				      int total_bytes, 
-				      int total_packages)
+				    GList *packages)
 {
-	SANITY(service);
-	gtk_signal_emit (GTK_OBJECT (service), signals[PREFLIGHT_CHECK], total_bytes, total_packages);
+	GList *packages_in_signal = NULL;
+	GList *iterator;
+	unsigned long size_packages, num_packages;
+	gboolean result;
+
+	SANITY(service);	
+
+	size_packages = eazel_install_get_total_size_of_packages (service, packages);
+	num_packages = g_list_length (packages);
+
+	for (iterator = packages; iterator; glist_step (iterator)) {
+		PackageData *pack = (PackageData*)iterator->data;
+
+		if (pack->toplevel) {
+			packages_in_signal = g_list_prepend (packages_in_signal, pack);
+		}
+	}
+
+	gtk_signal_emit (GTK_OBJECT (service), 
+			 signals[PREFLIGHT_CHECK], 
+			 packages_in_signal,
+			 size_packages,
+			 num_packages,
+			 &result);
+	g_list_free (packages_in_signal);
+
+	return result;
 }
 
-void 
+gboolean
 eazel_install_emit_preflight_check_default (EazelInstall *service, 
-					      int total_bytes, 
-					      int total_packages)
+					    GList *packages,
+					    int total_bytes, 
+					    int total_packages)
 {
 #ifndef EAZEL_INSTALL_NO_CORBA
 	CORBA_Environment ev;
+	CORBA_boolean result = FALSE;
+
 	CORBA_exception_init (&ev);
 	SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
-		Trilobite_Eazel_InstallCallback_preflight_check (service->callback, total_bytes, total_packages, &ev);	
+		CORBA_char *corbapackages;
+		corbapackages = xml_from_packagedata_list (packages);
+
+		result = Trilobite_Eazel_InstallCallback_preflight_check (service->callback, 
+									  corbapackages,
+									  total_bytes,
+									  total_packages, 
+									  &ev);
+		CORBA_free (corbapackages);
 	} 
 	CORBA_exception_free (&ev);
+	return (gboolean)result;
+#else /* EAZEL_INSTALL_NO_CORBA */
+	return TRUE;
 #endif /* EAZEL_INSTALL_NO_CORBA */
 } 
 

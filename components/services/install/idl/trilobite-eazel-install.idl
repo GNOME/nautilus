@@ -100,7 +100,12 @@ module Trilobite {
 
 			/* Called after download is complete, and before the (un)install begins.
 			   Typically while heating up RPM */
-			oneway void preflight_check (in long total_size, in long num_packages);
+			boolean preflight_check (in string xml_packages,
+						 in long total_size, 
+						 in long num_packages);
+			/* should be "in PackageDataStructList packages"
+			   instead of a string, 
+			   FIXME: bugzilla.eazel.com 1542 */
 			
 			/* Called during (un)installation of a package */
 			oneway void install_progress (in PackageDataStruct package, 

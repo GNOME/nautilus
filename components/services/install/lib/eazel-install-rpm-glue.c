@@ -537,17 +537,19 @@ eazel_install_do_transaction_fill_hash (EazelInstall *service,
 	}
 }
 
-static void
-eazel_install_do_transaction_get_total_size (EazelInstall *service,
-					     GList *packages)
+unsigned long
+eazel_install_get_total_size_of_packages (EazelInstall *service,
+					  const GList *packages)
 {
-	GList *iterator;
-	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
+	const GList *iterator;
+	unsigned long result = 0;
+	for (iterator = packages; iterator; glist_step (iterator)) {
 		PackageData *pack;
 
 		pack = (PackageData*)iterator->data;
-		service->private->packsys.rpm.total_size += pack->bytesize;
+		result += pack->bytesize;
 	}
+	return result;
 }
 
 static void
@@ -940,15 +942,18 @@ eazel_install_start_transaction (EazelInstall *service,
 
 	if (res == 0) {
 		eazel_install_do_transaction_fill_hash (service, packages);
-		eazel_install_do_transaction_get_total_size (service, packages);
+		service->private->packsys.rpm.total_size = 
+			eazel_install_get_total_size_of_packages (service,
+								  packages);
 		args = eazel_install_start_transaction_make_argument_list (service, packages);
 		
 		g_message (_("Preflight (%d bytes, %d packages)"), 
 			   service->private->packsys.rpm.total_size,
 			   service->private->packsys.rpm.num_packages);
-		eazel_install_emit_preflight_check (service, 					     
-						    service->private->packsys.rpm.total_size,
-						    service->private->packsys.rpm.num_packages);
+		if (eazel_install_emit_preflight_check (service, packages) == FALSE) {
+			trilobite_debug ("Operation aborted at user request");
+			res = g_list_length (packages);
+		} 
 		
 		eazel_install_display_arguments (args);
 	}

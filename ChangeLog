@@ -1,3 +1,48 @@
+2000-09-08  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (eazel_preflight_check_signal):
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_preflight_check), (eazel_install_callback_class_initialize):
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-object.c:
+	(xml_from_packagedata_list), (eazel_install_class_initialize),
+	(eazel_install_emit_preflight_check),
+	(eazel_install_emit_preflight_check_default):
+	* components/services/install/lib/eazel-install-rpm-glue.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_get_total_size_of_packages),
+	(eazel_install_start_transaction):
+	Implemented bug #2858. The preflight signal now gets the toplevel
+	packages to install and can return true/false.
+	Amazing how much I had to change to alter one corba signal...
+
+	* components/services/docs/installer-security-issues
+	About the security issues of libeazelinstall (this is an email
+	that gives a rundown of how the installer handles downloaded,
+	filepermissions etc).
+	
+	* components/services/install/lib/eazel-install-metadata.c:
+	(get_conf_int):
+	Fixed a bug where it returned the wrong variable (odd that -Werror
+	didn't stop it)
+	
+	* components/services/install/lib/eazel-install-types.c:
+	(categorydata_new), (categorydata_destroy_foreach),
+	(packagedata_new), (packagedata_destroy), 
+	(packagedata_remove_soft_dep),
+	uses trilobite_debug now
+	(packagedata_fill_from_rpm_header),
+	Read the provides from the header. They're not used yet, but
+	they'll be used for handling bug 2583 (and part of 1514).
+	
+	* components/services/install/lib/eazel-install-types.h:
+	Added a glist to packagedata, contains the basenames of the files
+	the package provides.
+	
 2000-09-08  Rebecca Schulman  <rebecka@eazel.com>
 
 	* libnautilus-extensions/nautilus-search-uri.c:
@@ -8,6 +53,7 @@
 	medusa
 
 2000-09-08  Rebecca Schulman  <rebecka@eazel.com>
+
 	Fixed bugzilla.eazel.com bugs 1937, 2014, and 2633,
 	to disallow repeat criteria in the search bar,
 	limit number of criteria on the bar, 

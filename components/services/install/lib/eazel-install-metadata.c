@@ -110,7 +110,7 @@ get_conf_int (const char *key, int default_value)
 	}
 
 	g_free (full_key);
-	return value;
+	return out;
 }
 
 static gboolean

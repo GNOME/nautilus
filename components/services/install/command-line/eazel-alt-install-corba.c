@@ -180,15 +180,24 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 	}
 }
 
-static void 
+static gboolean
 eazel_preflight_check_signal (EazelInstallCallback *service, 
+			      const GList *packages,
 			      int total_bytes,
 			      int total_packages,
 			      gpointer unused) 
 {	
+	const GList *iterator;
+
 	fprintf (stdout, "About to %s a total of %d packages, %dKb\n", 
 		 arg_erase ? "uninstall" : "install",
 		 total_packages, total_bytes/1024);
+	for (iterator = packages; iterator; iterator = iterator->next) {
+		PackageData *pack = (PackageData*)iterator->data;
+		fprintf (stdout, "%s\n", pack->name);
+	}
+
+	return TRUE;
 }
 
 static void 

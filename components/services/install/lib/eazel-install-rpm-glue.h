@@ -47,4 +47,7 @@ EazelInstallStatus revert_transaction (EazelInstall *service, GList *packages);
 gboolean eazel_install_prepare_package_system (EazelInstall *service);
 gboolean eazel_install_free_package_system (EazelInstall *service);
 
+unsigned long eazel_install_get_total_size_of_packages (EazelInstall *service,
+							const GList *packages);
+
 #endif /* EAZEL_INSTALL_RPM_GLUE_H */

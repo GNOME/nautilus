@@ -51,7 +51,10 @@ struct _EazelInstallCallbackClass
 	void (*download_progress) (EazelInstallCallback *service, const char *name, int amount, int total);
 
 	/* Called after download and before (un)install_progress */
-	void (*preflight_check) (EazelInstallCallback *service, int total_size, int num_packages);
+	gboolean (*preflight_check) (EazelInstallCallback *service, 
+				     const GList *packages,
+				     int total_size, 
+				     int num_packages);
 
 	/* Called during install of a package */
 	void (*install_progress)  (EazelInstallCallback *service, 

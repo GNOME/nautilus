@@ -77,13 +77,37 @@ impl_download_progress (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DOWNLOAD_PROGRESS], name, amount, total);
 }
 
-static void
+static CORBA_boolean
 impl_preflight_check (impl_POA_Trilobite_Eazel_InstallCallback *servant,
+		      const CORBA_char *xmlcorbapacks,
 		      const CORBA_long total_bytes,
 		      const CORBA_long total_packages,
 		      CORBA_Environment * ev)
 {
-	gtk_signal_emit (GTK_OBJECT (servant->object), signals[PREFLIGHT_CHECK], total_bytes, total_packages);
+	GList *categories;
+	gboolean result;
+	
+	categories = parse_memory_xml_package_list ((char*)xmlcorbapacks, strlen (xmlcorbapacks));
+	if (categories==NULL) {
+		g_warning ("install_failed called with error in xml.");
+		g_warning ("XML is = \n%s", xmlcorbapacks);
+	} else {
+		CategoryData *cat;
+		cat = (CategoryData*)categories->data;
+		if (cat->packages==NULL) {
+			g_warning ("install_failed called with error in xml.");
+			g_warning ("XML is = \n%s", xmlcorbapacks);
+		} else {
+			gtk_signal_emit (GTK_OBJECT (servant->object), signals[PREFLIGHT_CHECK], 
+					 cat->packages,
+					 total_bytes, 
+					 total_packages,
+					 &result);
+		}
+	}
+	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
+
+	return result ? CORBA_TRUE : CORBA_FALSE;
 }
 
 static void
@@ -211,7 +235,7 @@ impl_delete_files (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 	gboolean result;
 
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[DELETE_FILES], &result);
-	return (CORBA_boolean)result;
+	return result ? CORBA_TRUE : CORBA_FALSE;
 }
 
 static void 
@@ -344,8 +368,8 @@ eazel_install_callback_class_initialize (EazelInstallCallbackClass *klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, preflight_check),
-				gtk_marshal_NONE__INT_INT,
-				GTK_TYPE_NONE, 2, GTK_TYPE_INT, GTK_TYPE_INT);
+				gtk_marshal_BOOL__POINTER_INT_INT,
+				GTK_TYPE_BOOL, 3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
 	signals[INSTALL_PROGRESS] = 
 		gtk_signal_new ("install_progress",
 				GTK_RUN_LAST,

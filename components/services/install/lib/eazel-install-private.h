@@ -51,7 +51,7 @@ struct _EazelInstallPrivate {
 			rpmTransactionSet set;
 			struct rpmDependencyConflict *conflicts;
 			int num_conflicts;
-			int total_size, 
+			unsigned long total_size, 
 				current_installed_size, 
 				num_packages, 
 				packages_installed;

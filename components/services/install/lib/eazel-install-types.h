@@ -163,6 +163,10 @@ struct _PackageData {
 	  Pointer to keep a structure for the package system
 	 */
 	gpointer *packsys_struc;
+	
+	/* These are the files that the package provides
+	   NOTE: should not be corbafied in eazel-install-corba-types.c */
+	GList *provides;
 
 	/* List of packages that this package modifies */
 	GList *modifies;
