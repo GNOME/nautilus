@@ -67,6 +67,7 @@ static void          nautilus_application_initialize             (NautilusApplic
 static void          nautilus_application_initialize_class       (NautilusApplicationClass *klass);
 static void          nautilus_application_destroy                (GtkObject                *object);
 static void          nautilus_application_check_user_directories (NautilusApplication      *application);
+static gboolean	     check_for_and_run_as_super_user 		 (void);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusApplication, nautilus_application, BONOBO_OBJECT_TYPE)
 
@@ -294,6 +295,11 @@ nautilus_application_startup (NautilusApplication *application,
 	Nautilus_URIList *url_list;
 	gboolean need_main_loop;
 
+	/* Perform check for nautilus being run as super user */
+	if (!check_for_and_run_as_super_user ()) {
+		return FALSE;
+	}
+	
 	/* Check if this is the first time running the program by seeing
 	 * if the user_main_directory exists; if not, run the first time druid 
 	 * instead of launching the application
@@ -501,4 +507,35 @@ nautilus_application_create_window (NautilusApplication *application)
 	 */
 
 	return window;
+}
+
+/*
+ * check_for_super_user:
+ *
+ * Puts out a warning if the user is running nautilus as root.
+ */
+static gboolean
+check_for_and_run_as_super_user (void)
+{
+	GtkWidget *warning_dlg;
+	gint result;
+	if (geteuid () != 0) {
+		return TRUE;
+	}
+
+	warning_dlg = gnome_message_box_new (
+		_("You are running Nautilus as root.\n\n"
+		  "As root, you can damage your system if you are not careful, and\n"
+		  "Nautilus will not stop you from doing it."),
+		GNOME_MESSAGE_BOX_WARNING,
+		GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL);
+
+	result = gnome_dialog_run_and_close (GNOME_DIALOG (warning_dlg));
+
+	/* If they pressed cancel, quit the application */
+	if (result == 1) {
+		return FALSE;
+	}
+
+	return TRUE;
 }

@@ -1,3 +1,17 @@
+2000-07-27  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 1474, special handling for running as root
+	
+	* src/nautilus-application.c: 
+	(check_for_and_run_as_super_user):
+	New function to determine if app is being run if root. If so,
+	warn the user and allow them to cancel execution of
+	the app.  Return users decision.
+	
+	(nautilus_application_startup):
+	Call check_for_and_run_as_super_user. If the user is root
+	and decides to quit, end program execution.
+	
 2000-07-27  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* librsvg/Makefile.am:
