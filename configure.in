@@ -382,12 +382,12 @@ dnl <= Check for bzip2 > 1.0.0
 dnl =>
 AC_CHECK_LIB(popt, poptParseArgvString, [rpm_libs="$rpm_libs -lpopt"])
 AC_CHECK_FUNC(dbopen, [],
-  AC_CHECK_LIB(db1, dbopen, [db_lib="-ldb1"],
-    AC_CHECK_LIB(db, dbopen, [db_lib=-"ldb"],
+  AC_CHECK_LIB(db1, dbopen, [rpm_libs="$rpm_libs -ldb1"],
+    AC_CHECK_LIB(db, dbopen, [rpm_libs="$rpm_libs -ldb"],
        AC_MSG_ERROR([sorry rpm requires a db-1.85 API])))
            )
 AC_CHECK_LIB(rpm, rpmRunTransactions,[build_rpmview=true],
-  [build_rpmview=false],-lz $rpm_libs $db_lib)
+  [build_rpmview=false],-lz $rpm_libs)
 if test "x$build_rpmview" = "xtrue" ; then
 dnl FIXME
 dnl Ideally I should check for rpm and where it is
@@ -410,7 +410,7 @@ dnl Ideally I should check for rpm and where it is
   then
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(HAVE_RPM)  	
-  	RPM_LIBS="-lrpm -lz $rpm_libs -ldb"
+  	RPM_LIBS="-lrpm -lz $rpm_libs"
   else
 	AC_MSG_ERROR([
 *** RPM 3.0.4 required
