@@ -75,7 +75,7 @@
 #define MENU_PATH_RENAME 			"/File/Rename"
 
 /* forward declarations */
-static NautilusIconContainer *create_icon_container                 (FMIconView        *icon_view);
+static void		      create_icon_container                 (FMIconView        *icon_view);
 static void                   fm_icon_view_initialize               (FMIconView        *icon_view);
 static void                   fm_icon_view_initialize_class         (FMIconViewClass   *klass);
 static void                   fm_icon_view_set_zoom_level           (FMIconView        *view,
@@ -764,6 +764,14 @@ fm_icon_view_can_zoom_out (FMDirectoryView *view)
 
 	return fm_icon_view_get_zoom_level (FM_ICON_VIEW (view)) 
 		> NAUTILUS_ZOOM_LEVEL_SMALLEST;
+}
+
+static GtkWidget * 
+fm_icon_view_get_background_widget (FMDirectoryView *view) 
+{
+	g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
+
+	return GTK_WIDGET (get_icon_container (FM_ICON_VIEW (view)));
 }
 
 /**
@@ -1520,6 +1528,7 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
 	fm_directory_view_class->restore_default_zoom_level = fm_icon_view_restore_default_zoom_level;
 	fm_directory_view_class->can_zoom_in = fm_icon_view_can_zoom_in;
 	fm_directory_view_class->can_zoom_out = fm_icon_view_can_zoom_out;
+	fm_directory_view_class->get_background_widget = fm_icon_view_get_background_widget;
 	fm_directory_view_class->clear = fm_icon_view_clear;
 	fm_directory_view_class->file_changed = fm_icon_view_file_changed;
 	fm_directory_view_class->get_selection = fm_icon_view_get_selection;
@@ -1537,8 +1546,6 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
 static void
 fm_icon_view_initialize (FMIconView *icon_view)
 {
-	NautilusIconContainer *icon_container;
-        
         g_return_if_fail (GTK_BIN (icon_view)->child == NULL);
 
 	icon_view->details = g_new0 (FMIconViewDetails, 1);
@@ -1549,7 +1556,7 @@ fm_icon_view_initialize (FMIconView *icon_view)
 		(NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
 		 text_attribute_names_changed_callback, icon_view);
 	
-	icon_container = create_icon_container (icon_view);
+	create_icon_container (icon_view);
 }
 
 static gboolean
@@ -1581,7 +1588,7 @@ icon_view_move_copy_items (NautilusIconContainer *container,
 		copy_action, x, y, view);
 }
 
-static NautilusIconContainer *
+static void
 create_icon_container (FMIconView *icon_view)
 {
 	NautilusIconContainer *icon_container;
@@ -1661,6 +1668,4 @@ create_icon_container (FMIconView *icon_view)
 			   GTK_WIDGET (icon_container));
 
 	gtk_widget_show (GTK_WIDGET (icon_container));
-
-	return icon_container;
 }

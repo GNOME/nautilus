@@ -50,7 +50,8 @@ typedef struct FMDirectoryViewClass FMDirectoryViewClass;
 #define FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE                 	"/File/Duplicate"
 #define FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH                	"/File/Empty Trash"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES            	"/File/Show Properties"
-#define FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_ICONS      "/Settings/Before Icons"
+#define FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_RESET      "/Settings/Before Reset"
+#define FM_DIRECTORY_VIEW_MENU_PATH_RESET_BACKGROUND		"/Settings/Reset Background"
 #define FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS         "/Settings/Remove Custom Icons"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION    	"/File/Open With/OtherApplication"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_VIEWERS    "/File/Open With/SeparatorBeforeViewers"
@@ -174,6 +175,11 @@ struct FMDirectoryViewClass {
         void     (* set_selection)	 	(FMDirectoryView *view, 
         					 GList *selection);
 
+        /* get_background is a function pointer that subclasses must
+         * override to return the NautilusBackground for this view.
+         */
+        GtkWidget * (* get_background_widget)	(FMDirectoryView *view);
+
         /* merge_menus is a function pointer that subclasses can override to
          * add their own menu items to the window's menu bar.
          * If overridden, subclasses must call parent class's function.
@@ -221,6 +227,7 @@ GList *            fm_directory_view_get_selection                  (FMDirectory
 void               fm_directory_view_stop                           (FMDirectoryView       *view);
 gboolean           fm_directory_view_can_zoom_in                    (FMDirectoryView       *view);
 gboolean           fm_directory_view_can_zoom_out                   (FMDirectoryView       *view);
+GtkWidget *	   fm_directory_view_get_background_widget 	    (FMDirectoryView	   *view);
 void               fm_directory_view_bump_zoom_level                (FMDirectoryView       *view,
 								     int                    zoom_increment);
 void               fm_directory_view_zoom_to_level                  (FMDirectoryView        *view,
