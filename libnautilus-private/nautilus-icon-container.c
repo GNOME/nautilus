@@ -105,7 +105,8 @@
 /* Desktop layout mode defines */
 #define DESKTOP_PAD_HORIZONTAL 	10
 #define DESKTOP_PAD_VERTICAL 	10
-#define SNAP_SIZE 		78
+#define SNAP_SIZE_X 		78
+#define SNAP_SIZE_Y 		20
 
 /* Value used to protect against icons being dragged outside of the desktop bounds */
 #define DESKTOP_ICON_SAFETY_PAD 10
@@ -118,8 +119,8 @@
 #define MINIMUM_EMBEDDED_TEXT_RECT_WIDTH       20
 #define MINIMUM_EMBEDDED_TEXT_RECT_HEIGHT      20
 
-#define SNAP_HORIZONTAL(func,x) ((func ((double)((x) - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE) * SNAP_SIZE) + DESKTOP_PAD_HORIZONTAL)
-#define SNAP_VERTICAL(func, y) ((func ((double)((y) - DESKTOP_PAD_VERTICAL) / SNAP_SIZE) * SNAP_SIZE) + DESKTOP_PAD_VERTICAL)
+#define SNAP_HORIZONTAL(func,x) ((func ((double)((x) - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE_X) * SNAP_SIZE_X) + DESKTOP_PAD_HORIZONTAL)
+#define SNAP_VERTICAL(func, y) ((func ((double)((y) - DESKTOP_PAD_VERTICAL) / SNAP_SIZE_Y) * SNAP_SIZE_Y) + DESKTOP_PAD_VERTICAL)
 
 #define SNAP_NEAREST_HORIZONTAL(x) SNAP_HORIZONTAL (eel_round, x)
 #define SNAP_NEAREST_VERTICAL(y) SNAP_VERTICAL (eel_round, y)
@@ -1152,8 +1153,8 @@ placement_grid_new (NautilusIconContainer *container, gboolean tight)
 		- container->details->top_margin
 		- container->details->bottom_margin;
 
-	num_columns = width / SNAP_SIZE;
-	num_rows = height / SNAP_SIZE;
+	num_columns = width / SNAP_SIZE_X;
+	num_rows = height / SNAP_SIZE_Y;
 	
 	if (num_columns == 0 || num_rows == 0) {
 		return NULL;
@@ -1233,15 +1234,15 @@ canvas_position_to_grid_position (PlacementGrid *grid,
 	 * allow any overlapping, but can cause more movement to happen 
 	 * during a snap. */
 	if (grid->tight) {
-		grid_position->x0 = ceil ((double)(canvas_position.x0 - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE);
-		grid_position->y0 = ceil ((double)(canvas_position.y0 - DESKTOP_PAD_VERTICAL) / SNAP_SIZE);
-		grid_position->x1 = floor ((double)(canvas_position.x1 - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE);		
-		grid_position->y1 = floor ((double)(canvas_position.y1 - DESKTOP_PAD_VERTICAL) / SNAP_SIZE);
+		grid_position->x0 = ceil ((double)(canvas_position.x0 - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE_X);
+		grid_position->y0 = ceil ((double)(canvas_position.y0 - DESKTOP_PAD_VERTICAL) / SNAP_SIZE_Y);
+		grid_position->x1 = floor ((double)(canvas_position.x1 - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE_X);		
+		grid_position->y1 = floor ((double)(canvas_position.y1 - DESKTOP_PAD_VERTICAL) / SNAP_SIZE_Y);
 	} else {
-		grid_position->x0 = floor ((double)(canvas_position.x0 - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE);
-		grid_position->y0 = floor ((double)(canvas_position.y0 - DESKTOP_PAD_VERTICAL) / SNAP_SIZE);
-		grid_position->x1 = ceil ((double)(canvas_position.x1 - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE);
-		grid_position->y1 = ceil ((double)(canvas_position.y1 - DESKTOP_PAD_VERTICAL) / SNAP_SIZE);
+		grid_position->x0 = floor ((double)(canvas_position.x0 - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE_X);
+		grid_position->y0 = floor ((double)(canvas_position.y0 - DESKTOP_PAD_VERTICAL) / SNAP_SIZE_Y);
+		grid_position->x1 = ceil ((double)(canvas_position.x1 - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE_X);
+		grid_position->y1 = ceil ((double)(canvas_position.y1 - DESKTOP_PAD_VERTICAL) / SNAP_SIZE_Y);
 	}
 
 	grid_position->x0 = CLAMP (grid_position->x0, 0, grid->num_columns - 1);
@@ -1317,18 +1318,18 @@ find_empty_location (NautilusIconContainer *container,
 						  &grid_position);
 
 		if (!placement_grid_position_is_free (grid, grid_position)) {
-			icon_position.y0 += SNAP_SIZE;
+			icon_position.y0 += SNAP_SIZE_Y;
 			icon_position.y1 = icon_position.y0 + icon_width;
 			
 			if (icon_position.y1 + DESKTOP_PAD_VERTICAL > canvas_height) {
 				/* Move to the next column */
-				icon_position.y0 = DESKTOP_PAD_VERTICAL + SNAP_SIZE - (pixbuf_rect.y1 - pixbuf_rect.y0);
+				icon_position.y0 = DESKTOP_PAD_VERTICAL + SNAP_SIZE_Y - (pixbuf_rect.y1 - pixbuf_rect.y0);
 				while (icon_position.y0 < DESKTOP_PAD_VERTICAL) {
-					icon_position.y0 += SNAP_SIZE;
+					icon_position.y0 += SNAP_SIZE_Y;
 				}
 				icon_position.y1 = icon_position.y0 + icon_width;
 				
-				icon_position.x0 += SNAP_SIZE;
+				icon_position.x0 += SNAP_SIZE_X;
 				icon_position.x1 = icon_position.x0 + icon_height;
 			}
 				
@@ -1439,8 +1440,8 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 						       &x1, &y1, &x2, &y2);
 				
 				/* Start the icon in the first column */ 
-				x = DESKTOP_PAD_HORIZONTAL + SNAP_SIZE - ((x2 - x1) / 2);
-				y = DESKTOP_PAD_VERTICAL + SNAP_SIZE - (icon_rect.y1 - icon_rect.y0);
+				x = DESKTOP_PAD_HORIZONTAL + SNAP_SIZE_X - ((x2 - x1) / 2);
+				y = DESKTOP_PAD_VERTICAL + SNAP_SIZE_Y - (icon_rect.y1 - icon_rect.y0);
 
 				find_empty_location (container,
 						     grid,
