@@ -51,6 +51,9 @@ icon_DATA =\
 	emblem-shared.svg \
 	emblem-special.svg \
 	emblem-symbolic-link.png \
+        emblem-symbolic-link-12.png \
+        emblem-symbolic-link-24.png \
+        emblem-symbolic-link-36.png \
 	emblem-trash.png \
 	emblem-urgent.svg \
 	emblems.png \
