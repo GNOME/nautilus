@@ -1,3 +1,19 @@
+2001-04-13  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fix issues in the volume monitor that crept in over time.
+	We used to only open /proc/mounts once per second. We now
+	do that again. All other file opening tasks now only
+	occur when the state of mounts changes.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(get_removable_volumes), (volume_is_removable),
+	(mount_volume_activate), (mount_volume_deactivate),
+	(get_current_mount_list), (verify_current_mount_state),
+	(load_additonal_mount_list_info), (mount_volume_add_filesystem):
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(create_unique_volume_name):
+
 2001-04-13  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/nautilus-profiler.c: (dump_dialog_show):

@@ -163,6 +163,7 @@ static void     	mount_volume_deactivate                          (NautilusVolum
 									 NautilusVolume             	*volume);
 static void     	mount_volume_activate_floppy                    (NautilusVolumeMonitor      	*view,
 									 NautilusVolume             	*volume);
+static void		load_additonal_mount_list_info 			(GList 				*volume_list);
 static GList 		*mount_volume_add_filesystem 			(NautilusVolume 		*volume,
 									 GList 				*volume_list);
 static NautilusVolume 	*create_volume 					(const char 			*device_path,
@@ -400,6 +401,8 @@ get_removable_volumes (void)
 	volumes = mount_volume_add_filesystem (volume, volumes);
 #endif
 
+	load_additonal_mount_list_info (volumes);
+	
 	/* Move all floppy mounts to top of list */
 	return g_list_sort (g_list_reverse (volumes), (GCompareFunc) floppy_sort);
 }
@@ -413,7 +416,6 @@ volume_is_removable (const NautilusVolume *volume)
 #if HAVE_SYS_MNTTAB_H
 	MountTableEntry ent_storage;
 #endif
-	
 	file = setmntent (MOUNT_TABLE_PATH, "r");
 	if (file == NULL) {
 		return FALSE;
@@ -834,7 +836,7 @@ mount_volume_activate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 		g_assert_not_reached ();
 		break;
 	}
-
+	
 	gtk_signal_emit (GTK_OBJECT (monitor),
 			 signals[VOLUME_MOUNTED],
 			 volume);
@@ -876,7 +878,6 @@ mount_volume_deactivate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 		break;
 	}
 
-	/* Tell anybody who cares */
 	gtk_signal_emit (GTK_OBJECT (monitor),
 			 signals[VOLUME_UNMOUNTED],
 			 volume);
@@ -960,15 +961,16 @@ get_current_mount_list (void)
 	char *device_path, *mount_path, *filesystem;
 	const char *separator;
 
+#ifdef SOLARIS_MNT
 	fh = fopen ("/etc/mnttab", "r");
 	separator = "\t";
+#else	
+	fh = fopen ("/proc/mounts", "r");
+	separator = " ";
+#endif
 	if (fh == NULL) {
-		fh = fopen ("/proc/mounts", "r");
-		separator = " ";
-		if (fh == NULL) {
-			g_warning ("Unable to open /etc/mnttab or /proc/mounts: %s", strerror (errno));
-			return NULL;
-		}
+		g_warning ("Unable to open /etc/mnttab or /proc/mounts: %s", strerror (errno));
+		return NULL;
 	}
 
 	while (fgets (line, sizeof(line), fh)) {
@@ -1071,6 +1073,14 @@ verify_current_mount_state (NautilusVolumeMonitor *monitor)
 	/* Free previous mount list and replace with new */
 	monitor->details->mounts = current_mounts;
 
+	/* Process list results to check for a properties that require opening files on disk. */
+	load_additonal_mount_list_info (new_mounts);
+	
+	if (old_mounts != NULL) {
+		load_additonal_mount_list_info (old_mounts);
+		load_additonal_mount_list_info (saved_mount_list);
+	}
+	
 	/* Check and see if we have new mounts to add */
 	for (p = new_mounts; p != NULL; p = p->next) {
 		mount_volume_activate (monitor, (NautilusVolume *)p->data);
@@ -1087,7 +1097,7 @@ verify_current_mount_state (NautilusVolumeMonitor *monitor)
 		/* Deactivate the volume. */
 		mount_volume_deactivate (monitor, (NautilusVolume *) p->data);
 	}
-
+	
 	free_mount_list (old_mounts);
 	free_mount_list (new_mounts);
 	
@@ -1823,11 +1833,29 @@ get_generic_volume_name (NautilusVolume *volume)
 	}
 }
 
+
+static void
+load_additonal_mount_list_info (GList *volume_list)
+{		
+	GList *element;
+	NautilusVolume *volume;
+	
+	for (element = volume_list; element != NULL; element = element->next) {
+		volume = element->data;
+	#ifndef SOLARIS_MNT			
+		volume->is_removable = volume_is_removable (volume);
+		volume->is_read_only = volume_is_read_only (volume);
+	#endif
+		mount_volume_get_name (volume);
+	}
+}
+
+
 static GList *
 mount_volume_add_filesystem (NautilusVolume *volume, GList *volume_list)
 {
 	gboolean mounted = FALSE;
-			
+	
 	if (eel_str_has_prefix (volume->device_path, floppy_device_path_prefix)) {		
 		mounted = mount_volume_floppy_add (volume);
 	} else if (strcmp (volume->filesystem, "affs") == 0) {		
@@ -1873,16 +1901,11 @@ mount_volume_add_filesystem (NautilusVolume *volume, GList *volume_list)
 	}
 	
 	if (mounted) {
-#ifndef SOLARIS_MNT			
-		volume->is_removable = volume_is_removable (volume);
-		volume->is_read_only = volume_is_read_only (volume);
-#endif
-		mount_volume_get_name (volume);
 		volume_list = g_list_append (volume_list, volume);
 	} else {
 		nautilus_volume_monitor_free_volume (volume);	
 	}
-			
+				
 	return volume_list;
 }
 

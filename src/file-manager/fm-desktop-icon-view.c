@@ -337,7 +337,7 @@ create_unique_volume_name (const char *desktop_path, const NautilusVolume *volum
 	index = 1;
 			
 	volume_name = nautilus_volume_monitor_get_volume_name (volume);	
-	
+		
 	uri_path = g_strdup_printf ("%s/%s",desktop_path, volume_name);		
 	uri = gnome_vfs_uri_new (uri_path);
 	
