@@ -1,3 +1,11 @@
+2000-10-02  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_stretch_handles), (draw_stretch_handles_aa):
+	fixed bug 3283, bits of icons protrude outside the
+	stretch box, by making drawing the box at the actual bounds
+	instead of insetting three pixels like we were doing.
+	
 2000-10-02  John Sullivan  <sullivan@eazel.com>
 
 	Fixed the worst part of bug 2068 (dragging icon causes

@@ -866,7 +866,19 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 	knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename);
 	knob_width = gdk_pixbuf_get_width (knob_pixbuf);
 	knob_height = gdk_pixbuf_get_height (knob_pixbuf);
-		
+	
+	/* first draw the box */		
+	gdk_gc_set_stipple (gc, nautilus_stipple_bitmap ());
+	gdk_gc_set_fill (gc, GDK_STIPPLED);
+	gdk_draw_rectangle
+		(drawable, gc, FALSE,
+		 rect->x0,
+		 rect->y0,
+		 rect->x1 - rect->x0 - 1,
+		 rect->y1 - rect->y0 - 1);
+	
+	/* draw the stretch handles themselves */
+	
 	draw_pixbuf (knob_pixbuf, drawable, rect->x0, rect->y0);
 	draw_pixbuf (knob_pixbuf, drawable, rect->x0,  rect->y1 - knob_height);
 	draw_pixbuf (knob_pixbuf, drawable, rect->x1 - knob_width, rect->y0);
@@ -874,16 +886,7 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 	
 	g_free(knob_filename);
 	gdk_pixbuf_unref(knob_pixbuf);	
-		
-	gdk_gc_set_stipple (gc, nautilus_stipple_bitmap ());
-	gdk_gc_set_fill (gc, GDK_STIPPLED);
-	gdk_draw_rectangle
-		(drawable, gc, FALSE,
-		 rect->x0 + (knob_width - 1) / 2,
-		 rect->y0 + (knob_height - 1) / 2,
-		 rect->x1 - rect->x0 - (knob_width - 1)  - 1,
-		 rect->y1 - rect->y0 - (knob_height - 1) - 1);
-	
+
 	gdk_gc_unref (gc);
 }
 
@@ -914,17 +917,13 @@ draw_stretch_handles_aa (NautilusIconCanvasItem *item, GnomeCanvasBuf *buf,
 	
 	art_affine_identity (affine);
 	
-	draw_pixbuf_aa (knob_pixbuf, buf, affine, rect->x0, rect->y0);
-	draw_pixbuf_aa (knob_pixbuf, buf, affine, rect->x0,  rect->y1 - knob_height);
-	draw_pixbuf_aa (knob_pixbuf, buf, affine, rect->x1 - knob_width, rect->y0);
-	draw_pixbuf_aa (knob_pixbuf, buf, affine, rect->x1 - knob_width, rect->y1 - knob_height);
 
-	/* now draw a box to connect the dots */
+	/* draw a box to connect the dots */
  	
- 	box_rect.x0 = rect->x0  + (knob_width  - 1) / 2;
-  	box_rect.y0 = rect->y0  + (knob_height - 1) / 2;
- 	box_rect.x1 = rect->x1  - (knob_width  - 1) / 2;
- 	box_rect.y1 = rect->y1  - (knob_height - 1) / 2;
+ 	box_rect.x0 = rect->x0;
+  	box_rect.y0 = rect->y0;
+ 	box_rect.x1 = rect->x1;
+ 	box_rect.y1 = rect->y1;
 
 	art_irect_intersect (&draw_rect, &box_rect, &buf->rect);
 	if (!art_irect_empty (&draw_rect)) {
@@ -937,6 +936,13 @@ draw_stretch_handles_aa (NautilusIconCanvasItem *item, GnomeCanvasBuf *buf,
 				  box_rect.y1 -  buf->rect.y0);
 	}
 	
+
+	/* now draw the stretch handles themselves  */
+	draw_pixbuf_aa (knob_pixbuf, buf, affine, rect->x0, rect->y0);
+	draw_pixbuf_aa (knob_pixbuf, buf, affine, rect->x0,  rect->y1 - knob_height);
+	draw_pixbuf_aa (knob_pixbuf, buf, affine, rect->x1 - knob_width, rect->y0);
+	draw_pixbuf_aa (knob_pixbuf, buf, affine, rect->x1 - knob_width, rect->y1 - knob_height);
+		
 	g_free(knob_filename);
 	gdk_pixbuf_unref(knob_pixbuf);	
 }
