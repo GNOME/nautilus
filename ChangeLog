@@ -1,3 +1,14 @@
+2000-05-19  Ettore Perazzoli  <ettore@helixcode.com>
+
+	* libnautilus/Makefile.am (INCLUDES): Add `-I.' so that it works
+	with builddir != srcdir.
+
+	* libnautilus-extensions/Makefile.am (INCLUDES): Add
+	`-I$(top_builddir)/libnautilus' that it works with builddir !=
+	srcdir.  [This module needs generated include files from the
+	builddir.]
+	* src/Makefile.am (INCLUDES): Likewise.
+
 2000-05-20  Andy Hertzfeld  <andy@eazel.com>
 
 	After Maciej's checkin, I didn't kill oafd so I was getting OAFIIDs as sidebar panel labels.
@@ -314,6 +325,7 @@
 	(nautilus_undo_transaction_contains_object):
 	Added support for new Undo::Manager::Transaction object
 
+>>>>>>> 1.356
 2000-05-19  Ali Abdin  <aliabdin@aucegypt.edu>
 
 	* components/help/converters/gnome-db2html2/gdb3html.c:

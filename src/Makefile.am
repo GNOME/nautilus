@@ -7,6 +7,7 @@ bin_PROGRAMS=nautilus
 INCLUDES =\
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
+	-I$(top_builddir)/libnautilus \
 	$(BONOBO_CFLAGS) \
 	$(OAF_CFLAGS) \
 	$(GCONF_CFLAGS) \

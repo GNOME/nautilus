@@ -2,7 +2,7 @@ NULL=
 
 lib_LTLIBRARIES=libnautilus-extensions.la
 
-INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
+INCLUDES= -I$(top_srcdir) -I$(top_builddir) -I$(top_builddir)/libnautilus -I. \
 	$(GNOME_CFLAGS) \
 	$(BONOBO_CFLAGS) \
 	$(OAF_CFLAGS) \
