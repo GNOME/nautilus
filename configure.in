@@ -480,11 +480,11 @@ AC_CHECK_FUNCS(gnome_canvas_set_dither)
 LIBS="$_libs"
 
 dnl Bonobo
-AC_MSG_CHECKING(for Bonobo >= 0.32)
+AC_MSG_CHECKING(for Bonobo >= 0.33)
 if gnome-config --libs bonobox > /dev/null 2>&1; then
 	vers=`gnome-config --modversion bonobo | sed -e "s/bonobo-//" | \
 		awk 'BEGIN { FS = "."; } { printf "%d", $1 * 1000 + $2;}'`
-	if test "$vers" -ge 32; then
+	if test "$vers" -ge 33; then
 		bonobo_ok=true
 	else
 		bonobo_ok=false
@@ -495,7 +495,7 @@ fi
 if $bonobo_ok; then
 	AC_MSG_RESULT($vers found)
 else
-	AC_MSG_ERROR(Bonobo 0.32 or newer is required to compile Nautilus)
+	AC_MSG_ERROR(Bonobo 0.33 or newer is required to compile Nautilus)
 fi
 
 AC_SUBST(GNOMECANVASPIXBUF_LIBS)
@@ -515,9 +515,9 @@ echo "IDL_CFLAGS: $IDL_CFLAGS"
 
 AC_SUBST(IDL_CFLAGS)
 
-AM_PATH_OAF(0.6.1)
+AM_PATH_OAF(0.6.2)
 
-AM_PATH_GCONF(0.11,,,gconf-gtk)
+AM_PATH_GCONF(0.12,,,gconf-gtk)
 
 AC_PATH_PROG(XML_CONFIG,xml-config,no)
 if test x$XML_CONFIG = xno; then
