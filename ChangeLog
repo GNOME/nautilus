@@ -1,3 +1,16 @@
+2000-11-30  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Robey Pointer  <robey@eazel.com>
+	
+	* components/tree/nautilus-tree-model.c (report_node_changed):
+	Don't do anything if we don't know the file type yet, since this
+	may cause directories to mistakenly lose their children. This
+	fixes bug 4912 (Nautilus crashes in tree code when multiple
+	windows are open).
+
+	* components/tree/nautilus-tree-view-private.h: Remove unused
+	file_to_hack_node_map field from details struct.
+
 2000-11-30  Robey Pointer  <robey@eazel.com>
 
 	* components/rpmview/Makefile.am:

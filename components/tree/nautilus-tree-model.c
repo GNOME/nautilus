@@ -589,6 +589,15 @@ report_node_changed (NautilusTreeModel *model,
 	char *node_uri;
 	char *file_uri;
 
+	/* Bail out if we don't have all the info we need yet (we'll
+	 * end up reporting the change later, once the info is
+	 * ready). 
+	 */
+
+	if (nautilus_file_get_file_type (node->details->file) == GNOME_VFS_FILE_TYPE_UNKNOWN) {
+		return;
+	}
+
 	node_uri = nautilus_tree_node_get_uri (node);
 
 	if (node->details->directory == NULL && nautilus_file_is_directory (node->details->file)) {
