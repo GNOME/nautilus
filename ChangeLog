@@ -1,3 +1,17 @@
+2001-03-04  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	Fix bug 6967 (if you double click on a package in the icon view
+	and the while it's loading double click on it again nautilus may
+	segfault).
+
+	* src/nautilus-view-frame.c
+	(nautilus_view_frame_queue_incoming_call): If the destroy callback
+	is NULL, do not attempt to call it. With this change, I can
+	turbo-click an rpm and the package view will still come up cleanly
+	without crashing Nautilus or itself.
+
 2001-03-04  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>

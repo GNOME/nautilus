@@ -133,7 +133,9 @@ nautilus_view_frame_queue_incoming_call (PortableServer_Servant servant,
 
 	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
 	if (view == NULL) {
-		(* destroy_callback_data) (callback_data);
+		if (destroy_callback_data != NULL) {
+			(* destroy_callback_data) (callback_data);
+		}
 		return;
 	}
 
