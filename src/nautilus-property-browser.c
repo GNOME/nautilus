@@ -95,6 +95,7 @@ struct NautilusPropertyBrowserDetails {
 	gboolean remove_mode;
 	gboolean keep_around;
 	gboolean has_local;
+	gboolean toggle_button_flag;
 };
 
 static void  nautilus_property_browser_initialize_class (GtkObjectClass          *object_klass);
@@ -134,9 +135,6 @@ static char *get_xml_path                               (NautilusPropertyBrowser
 
 #define BROWSER_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
 #define THEME_SELECT_COLOR "rgb:FFFF/9999/9999"
-
-#define BUTTON_SELECT_COLOR "rgb:FFFF/9999/9999"
-#define BUTTON_UNSELECT_COLOR "rgb:DDDD/DDDD/DDDD"
 
 #define BROWSER_CATEGORIES_FILE_NAME "browser.xml"
 
@@ -608,16 +606,25 @@ make_color_drag_image(NautilusPropertyBrowser *property_browser, const char *col
 static void
 category_clicked_callback (GtkWidget *widget, char *category_name)
 {
+	gboolean save_flag;
 	NautilusPropertyBrowser *property_browser;
-	NautilusBackground *background;
 	
 	property_browser = NAUTILUS_PROPERTY_BROWSER (gtk_object_get_user_data (GTK_OBJECT (widget)));
-	background = nautilus_get_widget_background (GTK_WIDGET (property_browser->details->selected_button));
-	nautilus_background_set_color (background, BUTTON_UNSELECT_COLOR);	
+	
+	/* special case the user clicking on the already selected button, since we don't want that to toggle */
+	if (widget == GTK_WIDGET(property_browser->details->selected_button)) {
+		if (!property_browser->details->toggle_button_flag)
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (property_browser->details->selected_button), TRUE);		
+		return;
+	}	
+	
+	save_flag = property_browser->details->toggle_button_flag;
+	property_browser->details->toggle_button_flag = TRUE;	
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (property_browser->details->selected_button), FALSE);
+	property_browser->details->toggle_button_flag = save_flag;	
 	
 	nautilus_property_browser_set_category (property_browser, category_name);
-	background = nautilus_get_widget_background (widget);
-	nautilus_background_set_color (background, BUTTON_SELECT_COLOR);	
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), TRUE);
 	property_browser->details->selected_button = widget;
 }
 
@@ -1784,7 +1791,6 @@ static void
 make_category_link(NautilusPropertyBrowser *property_browser, char* name, char *display_name, char* image)
 {
 	GtkWidget *label, *pix_widget, *button, *temp_vbox;
-	NautilusBackground *background;
 	char *file_name = nautilus_pixmap_file (image); 
 	GtkWidget* temp_box = gtk_vbox_new (FALSE, 0);
 
@@ -1793,15 +1799,14 @@ make_category_link(NautilusPropertyBrowser *property_browser, char* name, char *
 	gtk_widget_show (pix_widget);
 	gtk_box_pack_start (GTK_BOX (temp_box), pix_widget, FALSE, FALSE, 0);
 	
-	button = gtk_button_new();
+	button = gtk_toggle_button_new();
 	gtk_widget_show(button);
 	gtk_widget_set_usize(button, 54, 48);
-
+	
 	/* if the button represents the current category, highlight it */
 	
 	if (property_browser->details->category && !strcmp(property_browser->details->category, name)) {
-		background = nautilus_get_widget_background (button);
-		nautilus_background_set_color (background, BUTTON_SELECT_COLOR);	
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
 		property_browser->details->selected_button = button;		
 	}
 	
