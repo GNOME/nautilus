@@ -546,7 +546,7 @@ static const PreferenceDefault preference_defaults[] = {
 	},
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
 	  PREFERENCE_STRING,
-	  "smaller",
+	  "small",
 	  NULL, NULL,
 	  "default_zoom_level"
 	},

@@ -158,14 +158,33 @@ event_after_callback (GtkWidget *widget, GdkEventAny *event, gpointer callback_d
 static gboolean
 button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callback_data)
 {
-	/* Deselect if people click outside any row. */
-	if (event->window == gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget))
-	    && !gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (widget),
-					       event->x, event->y, NULL, NULL, NULL, NULL)) {
-		gtk_tree_selection_unselect_all (gtk_tree_view_get_selection (GTK_TREE_VIEW (widget)));
+	GtkTreeView *tree_view;
+	GtkTreePath *path;
+
+	tree_view = GTK_TREE_VIEW (widget);
+
+	if (event->window != gtk_tree_view_get_bin_window (tree_view)) {
+		return FALSE;
 	}
 
-	/* Let the default code run in any case; it won't reselect anything. */
+	if (gtk_tree_view_get_path_at_pos (tree_view, event->x, event->y,
+					   &path, NULL, NULL, NULL)) {
+		if (event->button == 3
+		    && gtk_tree_selection_path_is_selected (gtk_tree_view_get_selection (tree_view), path)) {
+			/* Don't let the default code run because if multiple rows
+			   are selected it will unselect all but one row; but we
+			   want the right click menu to apply to everything that's
+			   currently selected. */
+			return TRUE;
+		}
+
+		gtk_tree_path_free (path);
+	} else {
+		/* Deselect if people click outside any row. It's OK to
+		   let default code run; it won't reselect anything. */
+		gtk_tree_selection_unselect_all (gtk_tree_view_get_selection (tree_view));
+	}
+
 	return FALSE;
 }
 
@@ -262,6 +281,7 @@ create_and_set_up_tree_view (FMListView *view)
 	GtkTreeViewColumn *column;
 	
 	view->details->tree_view = GTK_TREE_VIEW (gtk_tree_view_new ());
+
 	g_signal_connect_object (gtk_tree_view_get_selection (view->details->tree_view),
 				 "changed",
 				 G_CALLBACK (list_selection_changed_callback), view, 0);
@@ -529,9 +549,13 @@ fm_list_view_set_zoom_level (FMListView *view,
 			     NautilusZoomLevel new_level,
 			     gboolean always_set_level)
 {
-	static double pango_scale[7] = { PANGO_SCALE_XX_SMALL, PANGO_SCALE_X_SMALL, PANGO_SCALE_SMALL,
+	static double pango_scale[7] = { PANGO_SCALE_X_SMALL,
+					 PANGO_SCALE_SMALL,
 					 PANGO_SCALE_MEDIUM,
-					 PANGO_SCALE_LARGE, PANGO_SCALE_X_LARGE, PANGO_SCALE_XX_LARGE };
+					 PANGO_SCALE_LARGE,
+					 PANGO_SCALE_X_LARGE,
+					 PANGO_SCALE_XX_LARGE,
+					 1.2 * PANGO_SCALE_XX_LARGE };
 	int icon_size;
 	int column;
 

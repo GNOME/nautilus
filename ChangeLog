@@ -1,3 +1,15 @@
+2002-05-05  David Emory Watson  <dwatson@cs.ucr.edu>
+
+	* libnautilus-private/nautilus-global-preferences.c: Make list view
+	default to 75% zoom to get "nice" looking font size while maintaining
+	range of different font sizes.
+
+	* src/file-manager/fm-list-view.c:
+	(button_press_callback): Don't let the list view unselect anything when
+	the user attempts to get the right-click menu on a selection.
+	(fm_list_view_set_zoom_level): Invent equivalent of XXX_LARGE and make
+	the font size at all zoom levels one bigger.
+
 2002-05-04  David Emory Watson  <dwatson@cs.ucr.edu>
 
 	* configure.in: Require eel 1.1.13.
