@@ -1,6 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* 
  * Copyright (C) 2000 Eazel, Inc
+ * Copyright (C) 1998-1999 James Henstridge
+ * Copyright (C) 1998 Red Hat Software, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -23,6 +25,11 @@
 /* eazel-install - services command line install/update/uninstall
  * component.  This program will parse the eazel-services-config.xml
  * file and install a services generated package-list.xml.
+ */
+
+/* Portions of the rpm specific install were taken from James Henstridge's
+ * gnomrpm and from rpm itself.  Because of that, I added the copyright notices
+ * from rpm and gnorpm to be safe.
  */
 
 #include "eazel-install-rpm-glue.h"
