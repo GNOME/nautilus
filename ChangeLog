@@ -1,3 +1,16 @@
+2000-06-25  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-link.c:
+	(free_icon_notification_info), (icon_read_done_callback),
+	(is_remote_uri), (nautilus_link_get_image_uri):
+	Linksets now use gnome-vfs to load load icons over http instead of ghttp,
+	using Darin's new utility routines.  Also, made it load them asynchronously.	
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_pixbuf_for_icon):
+	made get_pixbuf_for_icon set the custom boolean when it calls get_icon_from_cache
+	if necessary
+	
 2000-06-25  Fatih Demir	<kabalak@gmx.net>
 	
 	* ChangeLog: This is the fresh one.

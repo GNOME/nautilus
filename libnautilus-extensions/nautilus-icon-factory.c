@@ -1767,7 +1767,7 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 	lookup_key.scalable_icon = scalable_icon;
 	lookup_key.size = *size;
 	found_image = FALSE;
-	
+
 	if (g_hash_table_lookup_extended (hash_table, &lookup_key,
 					  &key_in_table, &value)) {
 		/* Found it in the table. */
@@ -1792,7 +1792,6 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 		ArtIRect key_text_rect;
 		
 		/* Not in the table, so load the image. */
-
 		/* If we're picky, then we want the image only if this exact
 		 * nominal size is available.
 		 */
@@ -1889,7 +1888,7 @@ nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
 	size.maximum_width = maximum_width;
 	size.maximum_height = maximum_height;
 	return get_image_from_cache (scalable_icon, &size,
-				     FALSE, FALSE, NULL);
+				     FALSE, scalable_icon->uri != NULL, NULL);
 }
 
 static void
