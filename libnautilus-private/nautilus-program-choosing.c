@@ -463,7 +463,6 @@ nautilus_launch_application_from_command (const char *command_string,
 		g_free (quoted_full_command);
 	} else {
 		final_command = g_strconcat (full_command, " &", NULL);
-		printf ("XXX - final_command: %s\n", final_command);
 		system (final_command);
 	}
 
