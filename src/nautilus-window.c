@@ -107,7 +107,8 @@ static void nautilus_window_goto_url_cb (GtkWidget *widget,
                                          const char *url,
                                          GtkWidget *window);
 
-#define CONTENTS_AS_HBOX
+#undef CONTENTS_AS_HBOX
+
 /* milliseconds */
 #define STATUSBAR_CLEAR_TIMEOUT 5000
 
@@ -363,20 +364,11 @@ nautilus_window_constructed(NautilusWindow *window)
 {
   GnomeApp *app;
   GtkWidget *location_bar_box, *statusbar;
-  GtkMenuBar *menubar;
-  GtkAccelGroup *ag;
 
   app = GNOME_APP(window);
 
-  ag = gtk_accel_group_new();
-  gtk_object_set_data(GTK_OBJECT(app), "GtkAccelGroup", ag);
-  gtk_window_add_accel_group(GTK_WINDOW(app), ag);
-
   // set up menu bar
-
-  menubar = GTK_MENU_BAR(gtk_menu_bar_new());
-  gnome_app_fill_menu_with_data(GTK_MENU_SHELL(menubar), main_menu, ag, TRUE, 0, window);
-  gnome_app_set_menus(GNOME_APP(window), menubar);
+  gnome_app_create_menus_with_data(app, main_menu, window);
 
   // desensitize the items that haven't yet been implemented
   // FIXME: these all need to be implemented. I'm using hardwired numbers
@@ -395,7 +387,7 @@ nautilus_window_constructed(NautilusWindow *window)
 
   // set up toolbar
 
-  gnome_app_create_toolbar_with_data (GNOME_APP(window), toolbar_info, window);
+  gnome_app_create_toolbar_with_data(app, toolbar_info, window);
   window->btn_back = toolbar_info[0].widget;
   window->btn_fwd = toolbar_info[1].widget;
 
@@ -515,7 +507,7 @@ nautilus_window_set_arg (GtkObject      *object,
 #ifdef CONTENTS_AS_HBOX
       gtk_box_pack_start(GTK_BOX(window->content_hbox), GTK_WIDGET(new_cv), TRUE, TRUE, GNOME_PAD);
 #else
-      gtk_paned_pack1(GTK_PANED(window->content_hbox), new_cv, TRUE, FALSE);
+      gtk_paned_pack1(GTK_PANED(window->content_hbox), GTK_WIDGET(new_cv), TRUE, FALSE);
 #endif
 
     gtk_widget_queue_resize(window->content_hbox);

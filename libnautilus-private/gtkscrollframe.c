@@ -613,6 +613,7 @@ compute_relative_allocation (GtkWidget *widget, GtkAllocation *allocation)
 
 	if (priv->vsb_visible) {
 		GtkRequisition vsb_requisition;
+		gint possible_new_width;
 
 		gtk_widget_get_child_requisition (priv->vsb, &vsb_requisition);
 
@@ -620,8 +621,9 @@ compute_relative_allocation (GtkWidget *widget, GtkAllocation *allocation)
 		    || priv->frame_placement == GTK_CORNER_BOTTOM_RIGHT)
 			allocation->x += vsb_requisition.width + priv->sb_spacing;
 
-		allocation->width = MAX (1, ((gint) allocation->width
-					     - ((gint) vsb_requisition.width + priv->sb_spacing)));
+		possible_new_width = ((gint) allocation->width
+				      - ((gint) vsb_requisition.width + priv->sb_spacing));
+		allocation->width = MAX (0, possible_new_width);
 	}
 
 	if (priv->hsb_visible) {
@@ -637,7 +639,7 @@ compute_relative_allocation (GtkWidget *widget, GtkAllocation *allocation)
 		possible_new_height = 
 			(   ((gint)allocation->height)
 			    - ((gint)hsb_requisition.height) + ((gint)priv->sb_spacing));
-		allocation->height = MAX (1, possible_new_height);
+		allocation->height = MAX (0, possible_new_height);
 	}
 }
 
@@ -740,8 +742,12 @@ gtk_scroll_frame_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 		if (priv->frame_placement == GTK_CORNER_TOP_LEFT
 		    || priv->frame_placement == GTK_CORNER_TOP_RIGHT)
 			child_allocation.y = (relative_allocation.y
+#if 0
 					      + relative_allocation.height
 					      + priv->sb_spacing);
+#else
+		+ relative_allocation.height);
+#endif
 		else
 			child_allocation.y = GTK_CONTAINER (sf)->border_width;
 

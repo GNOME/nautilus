@@ -37,7 +37,7 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
   const char *meta_keys[] = {"icon-filename", NULL};
   memset(navinfo, 0, sizeof(*navinfo));
 
-  navinfo->navinfo.requested_uri = nri->requested_uri;
+  navinfo->navinfo.requested_uri = g_strdup(nri->requested_uri);
   if(old_navinfo)
     {
       navinfo->navinfo.referring_uri = old_navinfo->requested_uri;
@@ -107,4 +107,5 @@ nautilus_navinfo_free(NautilusNavigationInfo *navinfo)
   gnome_vfs_file_info_destroy(navinfo->vfs_fileinfo);
 
   g_slist_free(navinfo->meta_iids);
+  g_free(navinfo->navinfo.requested_uri);
 }

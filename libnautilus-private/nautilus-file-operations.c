@@ -62,12 +62,13 @@ xfer_info_new (GnomeVFSAsyncHandle *handle,
 	return new;
 }
 
+#if 0
 static void
 xfer_info_destroy (XferInfo *info)
 {
 	g_free (info);
 }
-
+#endif
 
 static void
 xfer_dialog_clicked_callback (DFOSXferProgressDialog *dialog,
@@ -162,9 +163,6 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 	default:
 		dfos_xfer_progress_dialog_freeze (DFOS_XFER_PROGRESS_DIALOG
 						  (xfer_info->progress_dialog));
-		error (0, 0,
-		       _("Copy operation failed:\n%s"),
-		       gnome_vfs_result_to_string (progress_info->vfs_status));
 		dfos_xfer_progress_dialog_thaw (DFOS_XFER_PROGRESS_DIALOG
 						(xfer_info->progress_dialog));
 		gtk_widget_destroy (xfer_info->progress_dialog);

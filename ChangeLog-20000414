@@ -1,3 +1,12 @@
+1999-12-16  Elliot Lee  <sopwith@redhat.com>
+
+	* components/history/ntl-history-view.c: Now works.
+	* src/ntl-uri-map.c: Duplicate the URI being requested, since we
+	don't know what the lifetime of the original value will be.
+	* src/ntl-window.c: Use the paned instead of hbox, use create_menus_with_data instead.
+	* src/file-manager: Misc warning fixes.
+	* src/gtkscrollframe.c: Try to get rid of scrollbar chopping.
+
 1999-12-16  John Sullivan  <sullivan@eazel.com>
 
 	* src/ntl-window.c (file_menu_new_window_cb):

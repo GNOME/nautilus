@@ -182,7 +182,7 @@ create_server (DFOS *dfos,
 	FileOperationService_base_epv.finalize = NULL;
 	FileOperationService_base_epv.default_POA = NULL;
 
-	FileOperationService_epv.xfer = impl_FileOperationService_xfer;
+	FileOperationService_epv.xfer = (gpointer)impl_FileOperationService_xfer;
 
 	FileOperationService_vepv._base_epv = &FileOperationService_base_epv;
 	FileOperationService_vepv.GNOME_Desktop_FileOperationService_epv =

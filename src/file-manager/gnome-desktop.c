@@ -35,6 +35,8 @@ static gint
 delete_event_cb(GtkWidget* window, GdkEventAny* event, gpointer data)
 {
   gtk_main_quit();
+
+  return TRUE;
 }
 
 int

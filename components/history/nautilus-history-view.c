@@ -23,7 +23,7 @@ hyperbola_navigation_history_notify_location_change (NautilusViewClient *view,
 
   clist = hview->clist;
 
-  if(hview->last_row > 0)
+  if(hview->last_row >= 0)
     {
       char *uri;
       int i;
@@ -32,14 +32,17 @@ hyperbola_navigation_history_notify_location_change (NautilusViewClient *view,
 	 select a new row that is farther ahead in history, or delete
 	 all the history ahead of this point */
 
-      gtk_clist_get_text(clist, hview->last_row - 1, 1, &uri);
-      if(!strcmp(uri, loci->requested_uri))
+      for(i = -1; i <= 1; i++)
 	{
-	  new_rownum = --hview->last_row;
-	  goto skip_prepend;
+	  gtk_clist_get_text(clist, hview->last_row + i, 0, &uri);
+	  if(!strcmp(uri, loci->requested_uri))
+	    {
+	      new_rownum = hview->last_row + i;
+	      goto skip_prepend;
+	    }
 	}
 
-      for(i = 0; i <= hview->last_row; i++)
+      for(i = 0; i < hview->last_row; i++)
 	gtk_clist_remove(clist, 0);
     }
 
@@ -107,7 +110,7 @@ static GnomeObject * make_obj(GnomeGenericFactory *Factory, const char *goad_id,
 
   /* create interface */
   col_titles[0] = _("Path");
-  clist = gtk_clist_new_with_titles(2, col_titles);
+  clist = gtk_clist_new_with_titles(1, col_titles);
   gtk_clist_set_selection_mode(GTK_CLIST(clist), GTK_SELECTION_BROWSE);
   gtk_clist_columns_autosize(GTK_CLIST(clist));
   wtmp = gtk_scrolled_window_new(gtk_clist_get_hadjustment(GTK_CLIST(clist)),
