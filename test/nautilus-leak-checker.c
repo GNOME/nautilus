@@ -57,7 +57,7 @@ int  (* real_start_main) (int (*main) (int, char **, char **), int argc,
 
 
 
-const char *app_path;
+static const char *app_path;
 
 void
 nautilus_leak_allocation_record_init (NautilusLeakAllocationRecord *record, 
@@ -510,6 +510,13 @@ __libc_free (void *ptr)
 	(real_free) (ptr);
 }
 
+static void
+print_leaks_at_exit (void)
+{
+	/* If leak checking, dump all the outstanding allocations just before exiting. */
+	nautilus_leak_print_leaks (8, 15, 100, TRUE);
+}
+
 int
 __libc_start_main (int (*main) (int, char **, char **), int argc, 
 		   char **argv, void (*init) (void), void (*fini) (void), 
@@ -519,7 +526,7 @@ __libc_start_main (int (*main) (int, char **, char **), int argc,
 
 	nautilus_leak_checker_init (argv[0]);
 
-	printf ("once\n");
+	g_atexit (print_leaks_at_exit);
 
 	return real_start_main (main, argc, argv, init, fini,  rtld_fini, stack_end);
 }
@@ -605,13 +612,6 @@ nautilus_leak_print_leaks (int stack_grouping_depth, int stack_print_depth,
 	
 	/* we are done with it, clean up cached up data used by the symbol lookup */
 	nautilus_leak_print_symbol_cleanup ();
-}
-
-static void
-print_leaks_at_exit (void)
-{
-	/* If leak checking, dump all the outstanding allocations just before exiting. */
-	nautilus_leak_print_leaks (8, 15, 40, TRUE);
 }
 
 void 

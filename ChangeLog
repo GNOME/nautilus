@@ -1,3 +1,14 @@
+2000-07-14  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* src/nautilus-main.c: (main):
+	Yank the leak checker intitialization code.  Its not needed no
+	more cause the leak checker automatically does it when its
+	pre loaded.
+	
+	* test/nautilus-leak-checker.c: (print_leaks_at_exit),
+	(__libc_start_main), (nautilus_leak_print_leaks):
+	Call atexit() with the leak dumping function.
+	
 2000-07-14  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-list.c: 
