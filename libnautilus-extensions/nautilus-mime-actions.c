@@ -69,7 +69,7 @@ static char *get_mime_type_from_uri (const char
 				     *text_uri);
 
 
-/* FIXME: free the mallocs everywhere */
+/* FIXME bugzilla.eazel.com 1262: free the mallocs everywhere */
 
 
 
@@ -87,7 +87,8 @@ nautilus_mime_get_default_action_type_for_uri (const char *uri)
 	nautilus_directory_unref (directory);
 
 	if (action_type_string == NULL) {
-		/* FIXME: need NautilusDirectory cover for getting
+		/* FIXME bugzilla.eazel.com 1263: 
+		   need NautilusDirectory cover for getting
                    mime type, and need to tie it into the
                    call_when_ready interface. Would want to use it
                    here. That way we won't be computing the mime type
@@ -164,7 +165,8 @@ nautilus_mime_get_default_application_for_uri (const char *uri)
 	nautilus_directory_unref (directory);
 
 	if (default_application_string == NULL) {
-		/* FIXME: need NautilusDirectory cover for getting
+		/* FIXME bugzilla.eazel.com 1263: 
+		   need NautilusDirectory cover for getting
                    mime type, and need to tie it into the
                    call_when_ready interface. Would want to use it
                    here. That way we won't be computing the mime type
@@ -232,7 +234,8 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 		}
 	} 
 	
-	/* FIXME: should return NULL for the following cases:
+	/* FIXME bugzilla.eazel.com 1264: 
+	 * should return NULL for the following cases:
 	 * - Known URI scheme pointing to nonexistent location
 	 * - Syntactically invalid URI
 	 */
@@ -249,7 +252,7 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 		sort_conditions[0] = iid_condition;
 		sort_conditions[1] = NULL;
 
-#if 0 /* FIXME */
+#if 0 /* FIXME bugzilla.eazel.com 1265 */
 		/* Prefer something that matches the exact type to something
 		   that matches the supertype */
 		sort[1] = g_strconcat ("bonobo:supported_mime_types.has ('",mime_type,"')", NULL);
@@ -354,7 +357,7 @@ nautilus_mime_get_short_list_applications_for_uri (const char *uri)
 		
 	CORBA_exception_free (&ev);
 
-	/* FIXME: should sort alphabetically by name or something */
+	/* FIXME bugzilla.eazel.com 1266: should sort alphabetically by name or something */
 	return result;
 }
 
@@ -432,7 +435,7 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 		}
 	}
 		
-	/* FIXME: should pass the allowed iids into the query instead */
+	/* FIXME bugzilla.eazel.com 1267: should pass the allowed iids into the query instead */
 	result = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, NULL, &ev);
 
 	result = nautilus_g_list_partition
@@ -468,7 +471,9 @@ nautilus_mime_get_all_applications_for_uri (const char *uri)
 
 	if (mime_type != NULL) {
 		result = gnome_vfs_mime_get_all_applications (mime_type);
-		/* FIXME: temporary hack; the non_uri code should do this merge */
+		/* FIXME bugzilla.eazel.com 1268: 
+		 * temporary hack; the non_uri code should do this merge 
+		 */
 		if (result == NULL) {
 			result = gnome_vfs_mime_get_short_list_applications (mime_type);
 		}
@@ -488,7 +493,7 @@ nautilus_mime_get_all_applications_for_uri (const char *uri)
 		}
 	}
 
-	/* FIXME: should sort alphabetically by name or something */
+	/* FIXME bugzilla.eazel.com 1266: should sort alphabetically by name or something */
 
 	return result;
 }
@@ -632,7 +637,9 @@ nautilus_mime_set_short_list_applications_for_uri (const char *uri,
 		(directory, NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_REMOVE, NAUTILUS_METADATA_SUBKEY_APPLICATION_ID, remove_list);
 	nautilus_directory_unref (directory);	
 
-	/* FIXME: need to free normal_short_list, normal_short_list_ids, add_list, remove_list */
+	/* FIXME bugzilla.eazel.com 1269: 
+	 * need to free normal_short_list, normal_short_list_ids, add_list, remove_list 
+	 */
 }
 
 void
@@ -676,7 +683,9 @@ nautilus_mime_set_short_list_components_for_uri (const char *uri,
 		(directory, NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_REMOVE, NAUTILUS_METADATA_SUBKEY_COMPONENT_IID, remove_list);
 	nautilus_directory_unref (directory);	
 
-	/* FIXME: need to free normal_short_list, normal_short_list_ids, add_list, remove_list */
+	/* FIXME bugzilla.eazel.com 1269: 
+	 * need to free normal_short_list, normal_short_list_ids, add_list, remove_list 
+	 */
 }
 
 void nautilus_mime_add_application_to_short_list_for_uri (const char *uri,
@@ -1226,7 +1235,7 @@ nautilus_do_component_query (const char *mime_type,
         printf ("query: \"%s\"\n", query);
 #endif
 
-	/* FIXME: add sort criteria properly */
+	/* FIXME bugzilla.eazel.com 1270: add sort criteria properly */
 	if (extra_sort_criteria != NULL) {
 		extra_nautilus_sort_criteria[0] = extra_sort_criteria[0];
 		oaf_result = oaf_query (query, extra_nautilus_sort_criteria, ev);
@@ -1295,7 +1304,8 @@ get_mime_type_from_uri (const char *text_uri)
 
 	type = NULL;
 
-	/* FIXME: A better way would be to get this info using
+	/* FIXME bugzilla.eazel.com 1271: 
+	   A better way would be to get this info using
 	   NautilusFile or NautilusDirectory or something, having
 	   previously ensured that the info has been computed
 	   async. */
