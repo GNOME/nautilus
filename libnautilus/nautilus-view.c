@@ -66,6 +66,9 @@ struct NautilusViewDetails {
 
 	NautilusIdleQueue       *incoming_queue;
 	NautilusIdleQueue       *outgoing_queue;
+
+	gboolean have_window_type;
+	Nautilus_WindowType window_type;
 };
 
 typedef void (* ViewFunction) (NautilusView *view,
@@ -1006,4 +1009,45 @@ nautilus_view_set_listener_mask (NautilusView *view,
 
 	view->details->listener_mask = mask;
 	update_listener (view);
+}
+
+Nautilus_WindowType
+nautilus_view_get_window_type (NautilusView *view)
+{
+        Bonobo_PropertyBag bag;
+        BonoboArg *arg;
+        CORBA_Environment ev;
+
+	if (view->details->have_window_type) {
+		return view->details->window_type;
+	}
+	
+	view->details->have_window_type = TRUE;
+
+        CORBA_exception_init (&ev);
+
+        bag = nautilus_view_get_ambient_properties (view, &ev);
+	
+	view->details->window_type = Nautilus_WINDOW_SPATIAL;
+
+	if (!BONOBO_EX (&ev)) {
+		arg = Bonobo_PropertyBag_getValue (bag, "window-type", &ev);
+		
+		if (!BONOBO_EX (&ev)) {
+			view->details->window_type = BONOBO_ARG_GET_GENERAL (arg, 
+									     TC_Nautilus_WindowType,
+									     Nautilus_WindowType,
+									     NULL);
+			CORBA_free (arg);
+		} else {
+			g_warning ("Window type not found in view frame properties.");
+		}
+
+		bonobo_object_release_unref (bag, &ev);
+	} else {
+		g_warning ("Couldn't get ambient properties for the view frame.");
+	}
+	CORBA_exception_free (&ev);
+
+	return view->details->window_type;
 }

@@ -1233,7 +1233,8 @@ nautilus_navigation_window_set_sidebar_panels (NautilusNavigationWindow *window,
 
                 /* Create and load the panel. */
 		sidebar_panel = nautilus_view_frame_new (NAUTILUS_WINDOW (window)->details->ui_container,
-                                                         NAUTILUS_WINDOW (window)->application->undo_manager);
+                                                         NAUTILUS_WINDOW (window)->application->undo_manager,
+							 NAUTILUS_WINDOW_GET_CLASS (window)->window_type);
                 
                 eel_accessibility_set_name (sidebar_panel, _("Side Pane"));
                 eel_accessibility_set_description
@@ -1453,6 +1454,8 @@ nautilus_navigation_window_show (GtkWidget *widget)
 static void
 nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 {
+	NAUTILUS_WINDOW_CLASS (class)->window_type = Nautilus_WINDOW_NAVIGATION;
+
 	G_OBJECT_CLASS (class)->finalize = nautilus_navigation_window_finalize;
 	GTK_OBJECT_CLASS (class)->destroy = nautilus_navigation_window_destroy;
 	GTK_WIDGET_CLASS (class)->show = nautilus_navigation_window_show;

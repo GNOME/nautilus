@@ -118,6 +118,8 @@ struct NautilusViewFrameDetails {
 	gboolean has_min_zoom_level;
 	gboolean has_max_zoom_level;
 	GList *zoom_levels;
+
+	Nautilus_WindowType window_type;
 };
 
 static void nautilus_view_frame_init       (NautilusViewFrame      *view);
@@ -451,7 +453,8 @@ view_frame_failed (NautilusViewFrame *view)
 
 NautilusViewFrame *
 nautilus_view_frame_new (BonoboUIContainer *ui_container,
-                         NautilusUndoManager *undo_manager)
+                         NautilusUndoManager *undo_manager,
+			 Nautilus_WindowType window_type)
 {
 	NautilusViewFrame *view_frame;
 	
@@ -460,6 +463,7 @@ nautilus_view_frame_new (BonoboUIContainer *ui_container,
 	bonobo_object_ref (ui_container);
 	view_frame->details->ui_container = ui_container;
 	view_frame->details->undo_manager = undo_manager;
+	view_frame->details->window_type = window_type;
 	
 	return view_frame;
 }
@@ -522,7 +526,8 @@ zoom_level_changed_callback (BonoboZoomableFrame *zframe,
 enum {
 	BONOBO_PROPERTY_TITLE,
 	BONOBO_PROPERTY_HISTORY,
-	BONOBO_PROPERTY_SELECTION
+	BONOBO_PROPERTY_SELECTION,
+	BONOBO_PROPERTY_WINDOW_TYPE,
 };
 
 static Nautilus_History *
@@ -562,6 +567,12 @@ nautilus_view_frame_get_prop (BonoboPropertyBag *bag,
 		g_warning ("NautilusViewFrame: selection fetch not yet implemented");
 		break;
 
+	case BONOBO_PROPERTY_WINDOW_TYPE :
+		BONOBO_ARG_SET_GENERAL (arg, view->details->window_type,
+					TC_Nautilus_WindowType,
+					Nautilus_WindowType,
+					NULL);
+		break;
 	default:
 		g_warning ("NautilusViewFrame: Unknown property idx %d", arg_id);
 		break;
@@ -600,6 +611,15 @@ create_ambient_properties (NautilusViewFrame *view)
 		 TC_Nautilus_URIList,
 		 NULL,
 		 _("the current selection"),
+		 BONOBO_PROPERTY_READABLE);
+
+	bonobo_property_bag_add
+		(bag,
+		 "window-type",
+		 BONOBO_PROPERTY_WINDOW_TYPE,
+		 TC_Nautilus_WindowType,
+		 NULL,
+		 _("the type of window the view is embedded in"),
 		 BONOBO_PROPERTY_READABLE);
 
 	view->details->event_source = bag->es;

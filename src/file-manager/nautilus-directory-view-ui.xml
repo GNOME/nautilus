@@ -28,7 +28,7 @@
          _label="_Open"
 	 _tip="Open the selected item in this window"/>
 	<cmd name="OpenAlternate"
-         _label="Navigation Window"
+         _label="Open in Navigation Window"
 	 _tip="Open each selected item in a navigation window"/>
 	<cmd name="Open Scripts Folder"
          _label="_Open Scripts Folder"
@@ -94,17 +94,16 @@
                                   accel="*Control*o"
 				  pixtype="stock" pixname="gtk-open"
 				  verb="Open"/>
+			<menuitem name="OpenAlternate"
+				  accel="*Control**Shift*o"
+				  verb="OpenAlternate"/>
 			<submenu name="Open With" 
 				 _label="Open Wit_h" 
 				 _tip="Choose a program with which to open the selected item">
-			        <menuitem name="OpenAlternate"
-				  accel="*Control**Shift*o"
-				  verb="OpenAlternate"/>
-				<separator/>
 				<placeholder name="Applications Placeholder" delimit="none"/>
 				<menuitem name="OtherApplication"
 					  verb="OtherApplication"/>
-				<separator/>
+				<separator name="Before Viewers"/>
 				<placeholder name="Viewers Placeholder" delimit="none"/>
 				<menuitem name="OtherViewer"
 					  verb="OtherViewer"/>
@@ -221,16 +220,15 @@
 			<menuitem name="Open" 
 			 pixtype="stock" pixname="gtk-open"
 			 verb="Open"/>
+			<menuitem name="OpenAlternate" 
+			        verb="OpenAlternate"/>
 			<submenu name="Open With" 
 				 _label="Open Wit_h" 
 				 tearoff="0"
 				 _tip="Choose a program with which to open the selected item">
-			        <menuitem name="OpenAlternate" 
-			                  verb="OpenAlternate"/>
-                                <separator/>
 				<placeholder name="Applications Placeholder" delimit="none"/>
 				<menuitem name="OtherApplication" verb="OtherApplication"/>
-				<separator/>
+				<separator name="Before Viewers"/>
 				<placeholder name="Viewers Placeholder" delimit="none"/>
 				<menuitem name="OtherViewer" verb="OtherViewer"/>
 			</submenu>

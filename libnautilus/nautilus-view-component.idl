@@ -53,6 +53,11 @@ module Nautilus {
 	};
 	typedef sequence<HistoryItem> History;
 
+	enum WindowType {
+		WINDOW_SPATIAL,
+		WINDOW_NAVIGATION
+	};
+
 	/* The View interface is used by the Nautilus shell to control
 	 * the view. A view that is a Bonobo::Control can choose to
 	 * implement the View interface for additional finer control
@@ -82,9 +87,10 @@ module Nautilus {
 	 * on the Bonobo::ControlFrame for the view.
 	 *
 	 * The Ambient properties on the ControlFrame are:
-	 *      'title'     - ro - string            - the title
-	 *      'history'   - ro - Nautilus::History - the history list
-	 *      'selection' - ro - URIList           - the selection
+	 *      'title'       - ro - string            - the title
+	 *      'history'     - ro - Nautilus::History - the history list
+	 *      'selection'   - ro - URIList           - the selection
+	 *      'window-type' - ro - Nautilus::WindowType - the window type
 	 */
 	interface ViewFrame : ::Bonobo::Unknown {
 		enum OpenMode {

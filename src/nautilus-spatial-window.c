@@ -319,6 +319,8 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 static void
 nautilus_spatial_window_class_init (NautilusSpatialWindowClass *class)
 {
+	NAUTILUS_WINDOW_CLASS (class)->window_type = Nautilus_WINDOW_SPATIAL;
+
 	G_OBJECT_CLASS (class)->finalize = nautilus_spatial_window_finalize;
 	GTK_OBJECT_CLASS (class)->destroy = nautilus_spatial_window_destroy;
 	GTK_WIDGET_CLASS (class)->show = nautilus_spatial_window_show;

@@ -972,7 +972,8 @@ load_content_view (NautilusWindow *window,
         } else {
                 /* create a new content view */
                 view = nautilus_view_frame_new (window->details->ui_container,
-                                                window->application->undo_manager);
+                                                window->application->undo_manager,
+						NAUTILUS_WINDOW_GET_CLASS (window)->window_type);
 
                 eel_accessibility_set_name (view, _("Content View"));
                 eel_accessibility_set_description (view, _("View of the current file or folder"));

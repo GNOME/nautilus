@@ -96,7 +96,8 @@ typedef struct {
 /* basic view management */
 GType              nautilus_view_frame_get_type                  (void);
 NautilusViewFrame *nautilus_view_frame_new                       (BonoboUIContainer   *ui_container,
-                                                                  NautilusUndoManager *undo_manager);
+                                                                  NautilusUndoManager *undo_manager,
+                                                                  Nautilus_WindowType  window_type);
 Bonobo_Control	   nautilus_view_frame_get_control		 (NautilusViewFrame   *view);
 
 /* connecting to a Nautilus:View */

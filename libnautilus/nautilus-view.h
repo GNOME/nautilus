@@ -122,6 +122,7 @@ Bonobo_PropertyBag nautilus_view_get_ambient_properties               (NautilusV
 								       CORBA_Environment       *opt_ev);
 void               nautilus_view_set_listener_mask                    (NautilusView            *view,
 								       NautilusViewListenerMask mask);
+Nautilus_WindowType nautilus_view_get_window_type                     (NautilusView *view);
 
 /* `protected' functions for use by subclasses only. */
 NautilusView *     nautilus_view_construct                            (NautilusView           *view,

@@ -133,7 +133,6 @@
 #define FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES	   			"/commands/Paste Files"
 #define FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES_INTO   			"/commands/Paste Files Into"
 
-#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_ALTERNATE        		"/menu/File/Open Placeholder/OpenAlternate"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH				"/menu/File/Open Placeholder/Open With"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS				"/menu/File/Open Placeholder/Scripts"
 #define FM_DIRECTORY_VIEW_MENU_PATH_TRASH                    		"/menu/Edit/Dangerous File Items Placeholder/Trash"
@@ -142,6 +141,7 @@
 #define FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK                	 	"/menu/Edit/File Items Placeholder/Create Link"
 #define FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER    	"/menu/File/Open Placeholder/Open With/Applications Placeholder"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION		    	"/menu/File/Open Placeholder/Open With/OtherApplication"
+#define FM_DIRECTORY_VIEW_MENU_PATH_BEFORE_VIEWERS_SEPARATOR            "/menu/File/Open Placeholder/Open With/Before Viewers"
 #define FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER    		"/menu/File/Open Placeholder/Open With/Viewers Placeholder"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER		    	"/menu/File/Open Placeholder/Open With/OtherViewer"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS_PLACEHOLDER    		"/menu/File/Open Placeholder/Scripts/Scripts Placeholder"
@@ -158,6 +158,7 @@
 #define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND_SCRIPTS_SEPARATOR	"/popups/background/Before Zoom Items/Scripts/After Scripts"
 
 #define FM_DIRECTORY_VIEW_POPUP_PATH_APPLICATIONS_PLACEHOLDER    	"/popups/selection/Open Placeholder/Open With/Applications Placeholder"
+#define FM_DIRECTORY_VIEW_POPUP_PATH_BEFORE_VIEWERS_SEPARATOR 		"/popups/selection/Open Placeholder/Open With/Before Viewers"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_VIEWERS_PLACEHOLDER    		"/popups/selection/Open Placeholder/Open With/Viewers Placeholder"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_SCRIPTS_PLACEHOLDER    		"/popups/selection/Open Placeholder/Scripts/Scripts Placeholder"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_SCRIPTS_SEPARATOR    		"/popups/selection/Open Placeholder/Scripts/After Scripts"
@@ -3425,6 +3426,12 @@ add_component_to_bonobo_menu (FMDirectoryView *directory_view,
 	g_free (label);
 }
 
+static gboolean
+can_use_component_for_file (FMDirectoryView *view,
+			    NautilusFile *file)
+{
+	return (nautilus_file_is_directory (file) || NAUTILUS_IS_DESKTOP_ICON_FILE (file) || nautilus_view_get_window_type (view->details->nautilus_view) == Nautilus_WINDOW_NAVIGATION);
+}
 
 static void
 reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
@@ -3467,25 +3474,45 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 			any_applications = TRUE;
 			add_application_to_bonobo_menu (view, node->data, file, index);
 		}
-		gnome_vfs_mime_application_list_free (applications); 
-		
-		components = nautilus_mime_get_short_list_components_for_file (NAUTILUS_FILE (selection->data));
-		for (node = components, index = 0; node != NULL; node = node->next, index++) {
-			any_viewers = TRUE;
-			add_component_to_bonobo_menu (view, node->data, uri, index);
-		}
-		gnome_vfs_mime_component_list_free (components); 
-
+		gnome_vfs_mime_application_list_free (applications);
 		nautilus_bonobo_set_label 
 			(view->details->ui,
 			 FM_DIRECTORY_VIEW_COMMAND_OTHER_APPLICATION,
 			 any_applications ? _("Other _Application...") : _("An _Application..."));
 
-		nautilus_bonobo_set_label 
-			(view->details->ui,
-			 FM_DIRECTORY_VIEW_COMMAND_OTHER_VIEWER,
-			 any_applications ? _("Other _Viewer...") : _("A _Viewer..."));
-
+		if (can_use_component_for_file (view, NAUTILUS_FILE (selection->data))) {
+			components = nautilus_mime_get_short_list_components_for_file (NAUTILUS_FILE (selection->data));
+			for (node = components, index = 0; node != NULL; node = node->next, index++) {
+				any_viewers = TRUE;
+				add_component_to_bonobo_menu (view, node->data, uri, index);
+			}
+			gnome_vfs_mime_component_list_free (components); 
+			
+			nautilus_bonobo_set_hidden (view->details->ui,
+						    FM_DIRECTORY_VIEW_MENU_PATH_BEFORE_VIEWERS_SEPARATOR,
+						    FALSE);
+			nautilus_bonobo_set_hidden (view->details->ui,
+						    FM_DIRECTORY_VIEW_POPUP_PATH_BEFORE_VIEWERS_SEPARATOR,
+						    FALSE);
+			nautilus_bonobo_set_hidden (view->details->ui,
+						    FM_DIRECTORY_VIEW_COMMAND_OTHER_VIEWER,
+						    FALSE);
+			nautilus_bonobo_set_label 
+				(view->details->ui,
+				 FM_DIRECTORY_VIEW_COMMAND_OTHER_VIEWER,
+				 any_applications ? _("Other _Viewer...") : _("A _Viewer..."));
+		} else {
+			nautilus_bonobo_set_hidden (view->details->ui,
+						    FM_DIRECTORY_VIEW_COMMAND_OTHER_VIEWER,
+						    TRUE);
+			nautilus_bonobo_set_hidden (view->details->ui,
+						    FM_DIRECTORY_VIEW_MENU_PATH_BEFORE_VIEWERS_SEPARATOR,
+						    TRUE);
+			nautilus_bonobo_set_hidden (view->details->ui,
+						    FM_DIRECTORY_VIEW_POPUP_PATH_BEFORE_VIEWERS_SEPARATOR,
+						    TRUE);
+		}
+		
 		g_free (uri);
 	}
 
@@ -4723,6 +4750,29 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 	g_object_unref (view);
 }
 
+static gboolean
+showing_trash_directory (FMDirectoryView *view)
+{
+	return nautilus_file_is_in_trash (fm_directory_view_get_directory_as_file (view));
+}
+
+static gboolean
+should_show_empty_trash (FMDirectoryView *view)
+{
+	return (showing_trash_directory (view) || nautilus_view_get_window_type (view->details->nautilus_view) == Nautilus_WINDOW_NAVIGATION);
+}
+
+static gboolean
+file_list_all_can_use_components (GList *file_list)
+{
+	GList *l;
+	for (l = file_list; l != NULL; l = l->next) {
+		if (!nautilus_file_is_directory (NAUTILUS_FILE (l->data)) && !NAUTILUS_IS_DESKTOP_ICON_FILE (l->data)) {
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
 static void
 real_update_menus (FMDirectoryView *view)
 {
@@ -4741,6 +4791,7 @@ real_update_menus (FMDirectoryView *view)
 	gboolean can_duplicate_files;
 	gboolean show_separate_delete_command;
 	gboolean vfolder_directory;
+	gboolean show_open_alternate;
 	EelBackground *background;
 
 	if (view->details->ui == NULL) {
@@ -4784,12 +4835,23 @@ real_update_menus (FMDirectoryView *view)
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_OPEN,
 				       selection_count != 0);
-
-	if (selection_count <= 1) {
-		label_with_underscore = g_strdup (_("Navigation Window"));
+	
+	if (nautilus_view_get_window_type (view->details->nautilus_view) == Nautilus_WINDOW_NAVIGATION) {
+		show_open_alternate = TRUE;
+		if (selection_count <= 1) {
+			label_with_underscore = g_strdup (_("Open in New Window"));
+		} else {
+			label_with_underscore = g_strdup_printf (_("Open in %d New Windows"), selection_count);
+		}
 	} else {
-		label_with_underscore = g_strdup_printf (_("%d Navigation Windows"), selection_count);
+		show_open_alternate = file_list_all_can_use_components (selection);
+		if (selection_count <= 1) {
+			label_with_underscore = g_strdup (_("Browse Folder"));
+		} else {
+			label_with_underscore = g_strdup_printf (_("Browse Folders"));
+		}
 	}
+	
 	nautilus_bonobo_set_label
 		(view->details->ui,
 		 FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE,
@@ -4800,6 +4862,10 @@ real_update_menus (FMDirectoryView *view)
 				       FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE,
 				       selection_count != 0);
 
+	nautilus_bonobo_set_hidden (view->details->ui,
+				    FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE,
+				    !show_open_alternate);
+	
 	/* Broken into its own function just for convenience */
 	reset_bonobo_open_with_menu (view, selection);
 	reset_bonobo_mime_actions_menu (view, selection);
@@ -4874,6 +4940,9 @@ real_update_menus (FMDirectoryView *view)
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH,
 				       !nautilus_trash_monitor_is_empty ());
+	nautilus_bonobo_set_hidden (view->details->ui, 
+				    FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH,
+				    !should_show_empty_trash (view));
 
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       NAUTILUS_COMMAND_SELECT_ALL,
@@ -5248,9 +5317,9 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	if (action == ACTIVATION_ACTION_DISPLAY) {
 		action_type = nautilus_mime_get_default_action_type_for_file (file);
-
 		if (action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT &&
-		    nautilus_mime_has_any_components_for_file (file)) {
+		    nautilus_mime_has_any_components_for_file (file) &&
+		    can_use_component_for_file (view, file)) {
 			open_location (view, uri, parameters->mode, parameters->flags);
 		} else {
 			nautilus_launch_show_file
@@ -5886,12 +5955,6 @@ fm_directory_view_accepts_dragged_files (FMDirectoryView *view)
 	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 accepts_dragged_files, (view));
-}
-
-static gboolean
-showing_trash_directory (FMDirectoryView *view)
-{
-	return nautilus_file_is_in_trash (fm_directory_view_get_directory_as_file (view));
 }
 
 /**

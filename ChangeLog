@@ -1,3 +1,35 @@
+2003-10-07  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_scroll_to_icon): Scroll to ICON_PAD_TOP
+	above the icon.
+	
+	* src/nautilus-navigation-window.c:
+	(nautilus_navigation_window_set_sidebar_panels),
+	(nautilus_navigation_window_class_init):
+	* src/nautilus-spatial-window.c:
+	(nautilus_spatial_window_class_init):
+	* src/nautilus-view-frame.c: (nautilus_view_frame_new),
+	(nautilus_view_frame_get_prop), (create_ambient_properties):
+	* src/nautilus-view-frame.h:
+	* src/nautilus-window-manage-views.c: (load_content_view):
+	* src/nautilus-window.h:
+	* libnautilus/nautilus-view-component.idl:
+	* libnautilus/nautilus-view.c: (nautilus_view_set_listener_mask),
+	(nautilus_view_get_window_type):
+	* libnautilus/nautilus-view.h: Added a window type property to
+	the view frame.
+	
+	* src/file-manager/fm-directory-view.c:
+	(can_use_component_for_file), (reset_bonobo_open_with_menu),
+	(showing_trash_directory), (should_show_empty_trash),
+	(file_list_all_can_use_components), (real_update_menus),
+	(activate_callback), (fm_directory_view_accepts_dragged_files):
+	* src/file-manager/nautilus-directory-view-ui.xml: Don't use
+	file views in spatial windows.  Use Browse Folder in spatial
+	windows and Open in New Window in navigation windows.  Don't
+	show "Empty Trash" in non-trash spatial windows.
+
 2003-10-02  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-container.c:

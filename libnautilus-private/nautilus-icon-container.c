@@ -4474,6 +4474,8 @@ nautilus_icon_container_scroll_to_icon (NautilusIconContainer  *container,
 					x1, y1,
 					&x, &y);
 
+			y -= ICON_PAD_TOP;
+
 			y = MAX (0, y);
 			
 			eel_gtk_adjustment_set_value (vadj, y);
