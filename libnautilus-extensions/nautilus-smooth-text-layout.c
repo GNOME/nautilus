@@ -62,9 +62,9 @@ struct NautilusSmoothTextLayoutDetails
 	/* Text lines */
 	GList *text_line_list;
 	int max_line_width;
-	int max_line_height;
 	int num_empty_lines;
 	int line_wrap_width;
+	int total_line_height;
 	
 	gboolean wrap;
 	char *line_break_characters;
@@ -84,7 +84,7 @@ static void   smooth_text_layout_ensure_lines              (const NautilusSmooth
 static int    smooth_text_layout_get_num_empty_lines       (const NautilusSmoothTextLayout *smooth_text_layout);
 static int    smooth_text_layout_get_empty_line_height     (const NautilusSmoothTextLayout *smooth_text_layout);
 static int    smooth_text_layout_get_max_line_width        (const NautilusSmoothTextLayout *smooth_text_layout);
-static int    smooth_text_layout_get_max_line_height       (const NautilusSmoothTextLayout *smooth_text_layout);
+static int    smooth_text_layout_get_total_line_height     (const NautilusSmoothTextLayout *smooth_text_layout);
 static int    smooth_text_layout_get_line_wrap_width       (const NautilusSmoothTextLayout *smooth_text_layout);
 static GList *smooth_text_layout_line_list_new             (const char                     *text,
 							    int                             text_length,
@@ -99,7 +99,6 @@ void          smooth_text_layout_line_list_draw_to_pixbuf  (GList               
 							    gboolean                        underlined,
 							    int                             empty_line_height,
 							    int                             max_line_width,
-							    int                             max_line_height,
 							    int                             line_spacing,
 							    guint32                         color,
 							    int                             opacity);
@@ -200,10 +199,10 @@ smooth_text_layout_clear_lines (NautilusSmoothTextLayout *smooth_text_layout)
 	smooth_text_layout->details->dimensions.width = UNDEFINED_DIMENSION;
 	smooth_text_layout->details->dimensions.height = UNDEFINED_DIMENSION;
 	smooth_text_layout->details->max_line_width = UNDEFINED_DIMENSION;
-	smooth_text_layout->details->max_line_height = UNDEFINED_DIMENSION;
 	smooth_text_layout->details->num_empty_lines = UNDEFINED_DIMENSION;
 	smooth_text_layout->details->empty_line_height = UNDEFINED_DIMENSION;
 	smooth_text_layout->details->line_wrap_width = UNDEFINED_DIMENSION;
+	smooth_text_layout->details->total_line_height = UNDEFINED_DIMENSION;
 }
 
 static void
@@ -251,7 +250,7 @@ smooth_text_layout_line_list_new (const char *text,
 	
 	line = text;
 
-	while (line && line <= end) {
+	while (line != NULL && line <= end) {
 		const char *next_line;
 		int length;
 		NautilusGlyph *glyph = NULL;
@@ -308,7 +307,6 @@ smooth_text_layout_line_list_draw_to_pixbuf (GList *text_line_list,
 					     gboolean underlined,
 					     int empty_line_height,
 					     int max_line_width,
-					     int max_line_height,
 					     int line_spacing,
 					     guint32 color,
 					     int opacity)
@@ -320,7 +318,6 @@ smooth_text_layout_line_list_draw_to_pixbuf (GList *text_line_list,
 	g_return_if_fail (justification >= GTK_JUSTIFY_LEFT && justification <= GTK_JUSTIFY_FILL);
 	g_return_if_fail (empty_line_height > 0);
 	g_return_if_fail (max_line_width > 0);
-	g_return_if_fail (max_line_height > 0);
 	g_return_if_fail (line_spacing >= 0);
 
 	/* FIXME bugzilla.eazel.com 5087: Make sure the color we are fed is opaque.  The real solution is 
@@ -338,7 +335,6 @@ smooth_text_layout_line_list_draw_to_pixbuf (GList *text_line_list,
 			glyph = node->data;
 
 			g_assert (max_line_width >= nautilus_glyph_get_width (glyph));
-			g_assert (max_line_height >= nautilus_glyph_get_height (glyph));
 
 			switch (justification) {
 			case GTK_JUSTIFY_LEFT:
@@ -359,7 +355,7 @@ smooth_text_layout_line_list_draw_to_pixbuf (GList *text_line_list,
 				text_x = x;
 			}
 			
-			text_y = y + max_line_height - nautilus_glyph_get_height (glyph);
+			text_y = y;
 			
 			nautilus_glyph_draw_to_pixbuf (glyph, pixbuf, text_x, text_y, NULL, color, opacity);
 
@@ -368,24 +364,20 @@ smooth_text_layout_line_list_draw_to_pixbuf (GList *text_line_list,
 				ArtIRect underline_rect;
 
 				/* FIXME bugzilla.eazel.com 2865: This underlining code should
-				 * take into account the baseline for the rendered string rather
-				 * than hardcoding it to 0.
+				 * take into account the baseline.
 				 */
-				const int baseline = 0;
 				const int underline_height = 1;
 
 				underline_rect = nautilus_glyph_intersect (glyph, text_x, text_y, NULL);
-				underline_rect = nautilus_art_irect_inset (underline_rect, 1, 1);
+				underline_rect = nautilus_art_irect_inset (underline_rect, 1, 0);
+  				underline_rect.y0 = underline_rect.y1 - underline_height;
 				
-				underline_rect.y1 -= ABS (baseline);
-				underline_rect.y0 = underline_rect.y1 - underline_height;
-
 				nautilus_gdk_pixbuf_fill_rectangle_with_color (pixbuf,
 									       &underline_rect,
 									       color);
 			}
 			
-			y += max_line_height + line_spacing;
+			y += nautilus_glyph_get_height (glyph) + line_spacing;
  		} else {
 			y += empty_line_height;
 		}
@@ -403,10 +395,9 @@ smooth_text_layout_line_list_new_wrapped (const char *text,
 {
 	GList *line_list = NULL;
 	GList *layout_list = NULL;
-	char *copy;
-	char **pieces;
-	int i;
 	GList *layout_node;
+	const char *line;
+	const char *end;
 
 	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (font), NULL);
 	g_return_val_if_fail (text_length >= 0, NULL);
@@ -415,57 +406,76 @@ smooth_text_layout_line_list_new_wrapped (const char *text,
 	g_return_val_if_fail (line_break_characters != NULL, NULL);
 	g_return_val_if_fail (line_break_characters[0] != '\0', NULL);
 
-	copy = g_strndup (text, text_length);
+	end = text + text_length;
+	line = text;
 
-	pieces = g_strsplit (copy, "\n", 0);
+	while (line != NULL && line <= end) {
+		/* NULL layout means empty line */
+		NautilusTextLayout *layout = NULL;
+		const char *next_line;
+		int length;
+		next_line = strchr (line, '\n');
 
-	for (i = 0; pieces[i] != NULL; i++) {
-		char *text_piece = pieces[i];
-		NautilusTextLayout *layout;
-		
-		/* Make empty lines appear.  A single '\n' for example. */
-		if (text_piece[0] == '\0') {
-			text_piece = " ";
+		if (next_line != NULL) {
+			length = next_line - line;
+		} else {
+			length = end - line;
 		}
-			
-		layout = nautilus_text_layout_new (font,
-						   font_size,
-						   text_piece,
-						   line_break_characters,
-						   max_width,
-						   TRUE);
+
+		g_assert (length >= 0);
+
+		if (length > 0) {
+			char *null_terminated_line;
+			null_terminated_line = g_strndup (line, length);
+			layout = nautilus_text_layout_new (font,
+							   font_size,
+							   null_terminated_line,
+							   line_break_characters,
+							   max_width,
+							   TRUE);
+			g_free (null_terminated_line);
+		}
 
 		layout_list = g_list_append (layout_list, layout);
-	}
 
-	g_free (copy);
-	g_strfreev (pieces);
+		if (next_line != NULL) {
+			line = next_line + 1;
+		}
+		else {
+			line = NULL;
+		}
+	}
 
 	layout_node = layout_list;
 	while (layout_node != NULL) {
-		NautilusTextLayout *layout;
-		GList *layout_row_node;
-		g_assert (layout_node->data != NULL);
-		layout = layout_node->data;
-
-		layout_row_node = layout->rows;
-		while (layout_row_node != NULL) {
-			NautilusGlyph *glyph = NULL;
-
-			if (layout_row_node->data != NULL) {
-				const NautilusTextLayoutRow *row;
-				row = layout_row_node->data;
-
-				glyph = nautilus_glyph_new (font, font_size, row->text, row->text_length);
-			} else {
+		if (layout_node->data != NULL) {
+			NautilusTextLayout *layout;
+			GList *layout_row_node;
+			g_assert (layout_node->data != NULL);
+			layout = layout_node->data;
+			
+			layout_row_node = layout->rows;
+			while (layout_row_node != NULL) {
+				/* NULL glyph means empty line */				
+				NautilusGlyph *glyph = NULL;
+				
+				if (layout_row_node->data != NULL) {
+					const NautilusTextLayoutRow *row;
+					row = layout_row_node->data;
+					
+					glyph = nautilus_glyph_new (font, font_size, row->text, row->text_length);
+				} else {
+				}
+				
+				line_list = g_list_append (line_list, glyph);
+				
+				layout_row_node = layout_row_node->next;
 			}
-
-			line_list = g_list_append (line_list, glyph);
-
-			layout_row_node = layout_row_node->next;
+			
+			nautilus_text_layout_free (layout);
+		} else {
+			line_list = g_list_append (line_list, NULL);
 		}
-
-		nautilus_text_layout_free (layout);
 		layout_node = layout_node->next;
 	}
 	
@@ -473,27 +483,6 @@ smooth_text_layout_line_list_new_wrapped (const char *text,
 
 	return line_list;
 }
-
-#if 0
-static void
-smooth_text_layout_wrap_line_list_free (GList *smooth_line_list)
-{
-	GList *node;
-
-	g_return_if_fail (smooth_line_list != NULL);
-
-	node = smooth_line_list;
-	while (node) {
-		NautilusTextLayout *layout;
-		g_assert (node->data != NULL);
-		layout = node->data;
-		nautilus_text_layout_free (layout);
-		node = node->next;
-	}
-
-	g_list_free (smooth_line_list);
-}
-#endif
 
 static int
 smooth_text_layout_get_empty_line_height (const NautilusSmoothTextLayout *smooth_text_layout)
@@ -551,25 +540,29 @@ smooth_text_layout_get_max_line_width (const NautilusSmoothTextLayout *smooth_te
 }
 
 static int
-smooth_text_layout_get_max_line_height (const NautilusSmoothTextLayout *smooth_text_layout)
+smooth_text_layout_get_total_line_height (const NautilusSmoothTextLayout *smooth_text_layout)
 {
 	g_return_val_if_fail (NAUTILUS_IS_SMOOTH_TEXT_LAYOUT (smooth_text_layout), 0);
 	
-	if (smooth_text_layout->details->max_line_height == UNDEFINED_DIMENSION) {
+	if (smooth_text_layout->details->total_line_height == UNDEFINED_DIMENSION) {
 		GList *node;
 
-		smooth_text_layout->details->max_line_height = 0;
+		smooth_text_layout->details->total_line_height = 0;
 		node = smooth_text_layout->details->text_line_list;
 		while (node) {
 			if (node->data != NULL) {
-				smooth_text_layout->details->max_line_height = MAX (smooth_text_layout->details->max_line_height,
-										    nautilus_glyph_get_height (node->data));
+				smooth_text_layout->details->total_line_height += 
+					nautilus_glyph_get_height (node->data);
+			} else {
+				smooth_text_layout->details->total_line_height += 
+					smooth_text_layout_get_empty_line_height (smooth_text_layout);
 			}
+
 			node = node->next;
 		}
 	}
 
-	return smooth_text_layout->details->max_line_height;
+	return smooth_text_layout->details->total_line_height;
 }
 
 static int
@@ -694,7 +687,6 @@ nautilus_smooth_text_layout_draw_to_pixbuf (const NautilusSmoothTextLayout *smoo
 						     underlined,
 						     smooth_text_layout_get_empty_line_height (smooth_text_layout),
 						     smooth_text_layout_get_max_line_width (smooth_text_layout),
-						     smooth_text_layout_get_max_line_height (smooth_text_layout),
 						     smooth_text_layout->details->line_spacing,
 						     color,
 						     opacity);
@@ -710,20 +702,17 @@ nautilus_smooth_text_layout_get_dimensions (const NautilusSmoothTextLayout *smoo
 	smooth_text_layout_ensure_lines (smooth_text_layout);
 
 	if (smooth_text_layout->details->dimensions.width == UNDEFINED_DIMENSION) {
-		const int empty_line_height = smooth_text_layout_get_empty_line_height (smooth_text_layout);
 		const int max_line_width = smooth_text_layout_get_max_line_width (smooth_text_layout);
-		const int max_line_height = smooth_text_layout_get_max_line_height (smooth_text_layout);
 		const int num_lines = g_list_length (smooth_text_layout->details->text_line_list);
 		const int num_empty_lines = smooth_text_layout_get_num_empty_lines (smooth_text_layout);
-		
+		const int total_line_height = smooth_text_layout_get_total_line_height (smooth_text_layout);
+
 		g_assert (num_lines >= 0);
 		g_assert (num_empty_lines >= 0);
 		g_assert (num_lines >= num_empty_lines);
 		
 		smooth_text_layout->details->dimensions.width = max_line_width;
-		smooth_text_layout->details->dimensions.height = 
-			(num_lines - num_empty_lines) * max_line_height
-			+ (num_empty_lines * empty_line_height);
+		smooth_text_layout->details->dimensions.height = total_line_height;
 		
 		if (num_lines > 1) {
 			smooth_text_layout->details->dimensions.height += 

@@ -1,3 +1,30 @@
+2001-02-23  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Bug fixes for regression introduced in my last checkin.
+	
+	6926 - Line spacing of multi-line icon names is inconsistent & look 
+	6923 - Underline of mouse over is to close to text on icons 
+
+	* libnautilus-extensions/nautilus-smooth-text-layout.c:
+	(smooth_text_layout_clear_lines): Clear the total line height.
+	(smooth_text_layout_line_list_draw_to_pixbuf): Dont use the max
+	line height to place the glyph vertically.  Use just the given y.
+	(smooth_text_layout_line_list_new_wrapped): Replace a string split
+	and strcpy operation with an iteration of the text.  We need to do
+	this to catch empty lines.  The string split function was
+	coalescing empty lines.
+	(smooth_text_layout_get_total_line_height),
+	(nautilus_smooth_text_layout_draw_to_pixbuf): Place the underline
+	rect right at the bottom edge of the glyph.
+	(nautilus_smooth_text_layout_get_dimensions): Add up the line
+	heights for the layout height.  Dont use the max line height
+	because that make the line spacing look strange.  If we had
+	working baseline support then this would be better.  For now,
+	space the glyph using their heights.
+	Lose the max_line_height member and getter, no longer needed.
+
 2001-02-23  Brian Frank  <bfrank@eazel.com>
 
 	Updating default bookmarks for Nautilus 1.0.
