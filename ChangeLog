@@ -1,3 +1,10 @@
+2002-07-11  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(nautilus_icon_canvas_item_update): move the render out of
+	update_bounds so we request_redraw if the bounds don't change,
+	odd that we need to do that.
+
 2002-07-11  Dave Camp  <dave@ximian.com>
 
 	* src/nautilus-location-bar.c: (nautilus_location_bar_init): Added

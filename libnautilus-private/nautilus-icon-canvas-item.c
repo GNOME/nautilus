@@ -559,8 +559,6 @@ nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item)
 	/* queue a redraw. */
 	eel_gnome_canvas_request_redraw_rectangle
 		(GNOME_CANVAS_ITEM (item)->canvas, before);
-	eel_gnome_canvas_item_request_redraw
-		(GNOME_CANVAS_ITEM (item));
 }
 
 /* Update handler for the icon canvas item. */
@@ -571,6 +569,9 @@ nautilus_icon_canvas_item_update (GnomeCanvasItem *item,
 				  int flags)
 {
 	nautilus_icon_canvas_item_update_bounds (NAUTILUS_ICON_CANVAS_ITEM (item));
+
+	eel_gnome_canvas_item_request_redraw
+		(GNOME_CANVAS_ITEM (item));
 
 	EEL_CALL_PARENT (GNOME_CANVAS_ITEM_CLASS, update,
 			 (item, affine, clip_path, flags));
