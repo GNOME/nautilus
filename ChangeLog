@@ -1,3 +1,19 @@
+2001-10-31  Darin Adler  <darin@bentspoon.com>
+
+	* README: This isn't HEAD any more.
+	
+	* libnautilus-private/nautilus-link-desktop-file.c:
+	* libnautilus-private/nautilus-link-historical.c:
+	Fix libxml include paths.
+	
+	* libnautilus-private/nautilus-monitor.c:
+	(process_fam_notifications): Tweak comment.
+	
+	* src/nautilus-window-manage-views.c:
+	(cancel_viewed_file_changed_callback), (update_for_new_location):
+	Monitor the existence of the currently viewed file, so we notice
+	when the file is deleted.
+
 2001-10-25  Darin Adler  <darin@bentspoon.com>
 
 	* src/file-manager/fm-directory-view.c: Oops! Left in the 5 second

@@ -38,12 +38,12 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-mime.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
 #include <stdlib.h>
 
 
