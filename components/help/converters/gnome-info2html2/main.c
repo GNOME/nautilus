@@ -33,6 +33,9 @@ static int
 file_exists(const char *fn)
 {
   struct stat sbuf;
+  
+  fprintf (stderr, "%s", fn);
+
   return (stat(fn, &sbuf) == 0);
 }
 
@@ -92,11 +95,16 @@ main(int argc, char **argv)
 		  break;
 		ext = ".gz";
 		sprintf(buf, "%s/%s.info.gz", dirs[i], args[0]);
+
 		if(file_exists(buf))
 		  break;
 	      }
-	    if(i >= ndirs)
-	      return 2;
+	    if(i >= ndirs) {
+		    printf ("<HTML><HEAD><TITLE>Document not found</TITLE>\n"
+			    "</HEAD><BODY>The document \"%s/%s.info\" couldn't be found. It may have been removed from your system.\n"
+			    "</BODY></HTML>\n", dirs[0], args[0]);
+		    return 2;
+	    }
 
 	    n = i;
 
@@ -106,6 +114,7 @@ main(int argc, char **argv)
 		  sprintf(buf, "%s/%s.info-%d%s", dirs[n], args[0], i, ext);
 		else
 		  sprintf(buf, "%s/%s.info%s", dirs[n], args[0], ext);
+
 		if(!file_exists(buf))
 		  {
 		    fixup_args[i] = NULL;
@@ -116,7 +125,7 @@ main(int argc, char **argv)
 	      }
 	    args = (const char **)fixup_args;
 	  }
-
+	
 	if(requested_nodename)
 	  {
 	    char *s, *t;

@@ -3711,10 +3711,16 @@ main(int argc, char **argv)
 
 		if(output[0])
 		  infh = gzopen(output, "r");
+
 	      }
 	  }
-	if(!infh)
-	  return 3;
+	if(!infh) {
+		printf("<HTML><HEAD><TITLE>Document not found</TITLE>\n"
+		       "</HEAD><BODY>The document \"%s\" couldn't be found. It may have been removed from your system.\n"
+		       "</BODY></HTML>\n", infile);
+
+		return 3;
+	}
 
 	buf=read_man_page();
 	if (!buf) {

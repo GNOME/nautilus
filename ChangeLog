@@ -1,3 +1,18 @@
+2001-02-24  Arik Devens  <arik@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	Partially fixed bug 939, help URIs should display something nice
+	for the "not found" case.
+	Fixed bug 3112, Help URIs need design for "not found" case.
+	
+	* components/help/converters/gnome-info2html2/main.c:
+	(file_exists), (main): Added default text to be printed out if the
+	info page cannot be found.
+	* components/help/converters/gnome-man2html2/gnome-man2html.c:
+	(main): Added default text to be printed out if the man page
+	cannot be found.
+
 2001-02-24  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	tired reviewer was: Robey Pointer  <robey@eazel.com>
