@@ -133,6 +133,19 @@ static char *modified_relations [] = {
 	NULL
 };
 
+static gboolean modified_relation_shows_date [] = {
+	TRUE,
+	TRUE,
+	TRUE,
+	TRUE, 
+	TRUE,     /* Separator */
+	FALSE,    /* is today */
+	FALSE,    /* is yesterday */
+	TRUE,     /* Separator */
+	TRUE,
+	TRUE,
+	/* NULL */
+};
 
 static char *owner_relations [] = {
 	N_("is"),
@@ -155,6 +168,11 @@ static NautilusSearchBarCriterion * nautilus_search_bar_criterion_new_from_value
 NautilusSearchBarCriterionType      get_next_default_search_criterion_type         (NautilusSearchBarCriterionType type) ;
 static void                         nautilus_search_bar_criterion_initialize_class (NautilusSearchBarCriterionClass *klass);
 static void                         nautilus_search_bar_criterion_initialize       (NautilusSearchBarCriterion *criterion);
+static gboolean                     modified_relation_should_show_value            (int relation_index);
+static void                         hide_date_widget                               (GtkObject *object,
+										    gpointer data);
+static void                         show_date_widget                               (GtkObject *object,
+										    gpointer data);
 static char *                              get_name_location_for                  (int relation_number,
 										   char *name_text);
 static char *                              get_content_location_for               (int relation_number,
@@ -302,6 +320,20 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 			item = gtk_menu_item_new_with_label (_(relation_options[i]));
 		}
 		gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
+		/* Callback to desensitize the date widget for menu items that
+		   don't need a date, like "yesterday" */
+		if (criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
+			if (modified_relation_should_show_value (i)) {
+				gtk_signal_connect (GTK_OBJECT (item), "activate",
+						    show_date_widget,
+						    criterion);
+			}
+			else {
+				gtk_signal_connect (GTK_OBJECT (item), "activate",
+						    hide_date_widget,
+						    criterion);
+			}
+		}
 		gtk_menu_append (GTK_MENU (relation_menu),
 				 item);
 	}
@@ -673,6 +705,38 @@ nautilus_search_uri_get_first_criterion (const char *search_uri)
 	}
 
 	return first_criterion;
+}
+
+static gboolean                     
+modified_relation_should_show_value (int relation_index)
+{
+	return modified_relation_shows_date[relation_index];
+}
+
+static void
+hide_date_widget (GtkObject *object,
+		  gpointer data)
+{
+	NautilusSearchBarCriterion *criterion;
+	NautilusSearchBarCriterionDetails *details;
+
+	criterion = NAUTILUS_SEARCH_BAR_CRITERION (data);
+	details = criterion->details;
+
+	gtk_widget_hide (GTK_WIDGET (details->date));
+}
+
+static void
+show_date_widget (GtkObject *object,
+		  gpointer data)
+{
+	NautilusSearchBarCriterion *criterion;
+	NautilusSearchBarCriterionDetails *details;
+
+	criterion = NAUTILUS_SEARCH_BAR_CRITERION (data);
+	details = criterion->details;
+
+	gtk_widget_show (GTK_WIDGET (details->date));
 }
 
 

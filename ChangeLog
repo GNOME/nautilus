@@ -1,3 +1,15 @@
+2000-11-22  Rebecca Schulman  <rebecka@eazel.com>
+	Fixed bug 3919, that the numeric date field still
+	showed when "day is yesterday" was chosen
+
+	* src/nautilus-search-bar-criterion.c:
+	(nautilus_search_bar_criterion_new_from_values),
+	(nautilus_search_uri_get_first_criterion),
+	(modified_relation_should_show_value), (hide_date_widget),
+	(show_date_widget):
+	Added callbacks to correctly show and hide the date 
+	widget.
+
 2000-11-21  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-problem.c:
@@ -134,7 +146,6 @@
 	Made the error text for copying into non-writeable dialogs more 
 	accurate.
 	
->>>>>>> 1.2927
 2000-11-21  Robey Pointer  <robey@eazel.com>
 
 	* nautilus-installer/src/*.xpm:
