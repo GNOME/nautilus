@@ -564,6 +564,9 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 {
 	uid_t user_id;
 	struct passwd *password_info;
+	gid_t supplementary_groups[NGROUPS_MAX];
+	int num_supplementary_groups;
+	int i;
 
 	g_assert (NAUTILUS_IS_FILE (file));
 
@@ -608,7 +611,13 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 	    && password_info->pw_gid == file->details->info->gid) {
 		return (file->details->info->permissions & group_permission) == 0;
 	}
-
+	/* Check supplementary groups */
+	num_supplementary_groups = getgroups (NGROUPS_MAX, supplementary_groups);
+	for (i = 0; i < num_supplementary_groups; i++) {
+		if (file->details->info->gid == supplementary_groups[i]) {
+			return (file->details->info->permissions & group_permission) == 0;
+		}
+	}
 	/* Other users' access is governed by the other bits. */
 	return (file->details->info->permissions & other_permission) == 0;
 }

@@ -1,3 +1,22 @@
+2000-12-13  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com> (the patch;
+	Eli reviewed the wording change since he spotted the
+	problem)
+	
+	Fixed bug 3378 ("inadequate permissions" message when the
+	permissions were in fact adequate)
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_denies_access_permission):
+	Check for supplemental group permissions also. Thanks to
+	Martin Norback <d95mback@dtek.chalmers.se> for submitting
+	this patch.
+
+	* src/nautilus-shell-ui.xml: Reworded the tip for the
+	"Backgrounds and Emblems" menu item to not mention the
+	phrase "Property Browser"
+
 2000-12-13  Robey Pointer  <robey@eazel.com>
 
 	* nautilus.spec.in:
