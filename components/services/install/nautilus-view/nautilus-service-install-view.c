@@ -801,7 +801,8 @@ nautilus_service_install_dependency_check (EazelInstallCallback *cb, const Packa
 	}
 	g_hash_table_insert (view->details->deps, g_strdup (needs->name), g_strdup (package->name));
 
-	value = g_strdup_printf (_("Getting information about package \"%s\" ..."), package->name);
+	/* this stuff flies by so fast, it's probably enough to just say "info" */
+	value = g_strdup (_("Getting package information ..."));
 	show_overall_feedback (view, value);
 	g_free (value);
 }
@@ -1441,6 +1442,7 @@ nautilus_service_need_password (GtkObject *object, const char *prompt, NautilusS
 	if (! okay) {
 		/* cancel */
 		view->details->password_attempts = 0;
+		view->details->cancelled = TRUE;
 		out = g_strdup ("");
 	} else {
 		out = nautilus_password_dialog_get_password (NAUTILUS_PASSWORD_DIALOG (dialog));
@@ -1450,7 +1452,6 @@ nautilus_service_need_password (GtkObject *object, const char *prompt, NautilusS
 	}
 
 	gtk_widget_destroy (dialog);
-/*	gtk_main_iteration (); */
 
 	if (okay) {
 		view->details->password_attempts++;
@@ -1745,11 +1746,17 @@ service_install_stop_loading_callback (NautilusView *nautilus_view, NautilusServ
 {
 	GNOME_Trilobite_Eazel_Install service;
 	CORBA_Environment ev;
+	int i;
 
 	view->details->cancelled = TRUE;
-	show_overall_feedback (view, _("Aborting package downloads..."));
-	while (gtk_events_pending ()) {
-		gtk_main_iteration ();
+	show_overall_feedback (view, _("Aborting package downloads (please wait) ..."));
+	/* on a fast download, the GUI could get stuck here, constantly updating the download progress */
+	for (i = 0; i < 10; i++) {
+		if (gtk_events_pending ()) {
+			gtk_main_iteration ();
+		} else {
+			i = 11;
+		}
 	}
 	/* have to set these up here, because if they hit STOP before any downloads have started, the
 	 * call to _stop below will freeze until we get the preflight signal later.

@@ -96,7 +96,8 @@ http_fetch_remote_file (EazelInstall *service,
 			const char* target_file,
 			const PackageData *package) 
 {
-        int length, get_failed;
+        int length;
+	gboolean get_failed;
         ghttp_request* request;
         ghttp_status status;
         char* body;
@@ -113,14 +114,14 @@ http_fetch_remote_file (EazelInstall *service,
 	target_file_premove = g_strdup_printf ("%s~", target_file);
 
         file = fopen (target_file_premove, "wb");
-        get_failed = 0;
+        get_failed = FALSE;
         length = -1;
         request = NULL;
         body = NULL;
 	first_emit = TRUE;
 
 	if (file == NULL) {
-		get_failed = 1;
+		get_failed = TRUE;
 		g_warning (_("Could not open target file %s"), target_file_premove);
 		g_free (target_file_premove);
 		return FALSE;
@@ -129,31 +130,31 @@ http_fetch_remote_file (EazelInstall *service,
         request = ghttp_request_new();
         if (!request) {
                 g_warning (_("Could not create an http request !"));
-                get_failed = 1;
+                get_failed = TRUE;
         }
 
 	/* bootstrap installer does it this way */
 	if (g_getenv ("http_proxy") != NULL) {
 		if (ghttp_set_proxy (request, g_getenv ("http_proxy")) != 0) {
 			g_warning (_("Proxy: Invalid uri !"));
-			get_failed = 1;
+			get_failed = TRUE;
 		}
 	}
         if (ghttp_set_uri (request, url) != 0) {
                 g_warning (_("Invalid uri !"));
-                get_failed = 1;
+                get_failed = TRUE;
         }
 
         ghttp_set_header (request, http_hdr_Connection, "close");
         ghttp_set_header (request, http_hdr_User_Agent, trilobite_get_useragent_string (NULL));
         if (ghttp_prepare (request) != 0) {
                 g_warning (_("Could not prepare http request !"));
-                get_failed = 1;
+                get_failed = TRUE;
         }
 
         if (ghttp_set_sync (request, ghttp_async)) {
                 g_warning (_("Couldn't get async mode "));
-                get_failed = 1;
+                get_failed = TRUE;
         }
 
         while ((status = ghttp_process (request)) == ghttp_not_done) {
@@ -183,12 +184,12 @@ http_fetch_remote_file (EazelInstall *service,
 					/* probably out of disk space */
 					g_warning (_("DISK FULL: could not write %s"), target_file);
 					service->private->disk_full = TRUE;
-					get_failed = 1;
+					get_failed = TRUE;
 					break;
 				}
 			} else {
 				g_warning (_("Could not get request body!"));
-				get_failed = 1;
+				get_failed = TRUE;
 				break;
 			}
 			last_flush_bytes = curStat.bytes_read;
@@ -202,7 +203,7 @@ http_fetch_remote_file (EazelInstall *service,
         if (ghttp_status_code (request) != 200) {
                 g_warning (_("HTTP error: %d %s"), ghttp_status_code (request),
                          ghttp_reason_phrase (request));
-                get_failed = 1;
+                get_failed = TRUE;
         }
 	if (ghttp_status_code (request) != 404) {
 		length = ghttp_get_body_len (request);
@@ -212,14 +213,14 @@ http_fetch_remote_file (EazelInstall *service,
 				/* probably out of disk space */
 				g_warning (_("DISK FULL: could not write %s"), target_file);
 				service->private->disk_full = TRUE;
-				get_failed = 1;
+				get_failed = TRUE;
 			}
 		} else {
 			g_warning (_("Could not get request body!"));
-			get_failed = 1;
+			get_failed = TRUE;
 		}
 	} else {
-		get_failed = 1;
+		get_failed = TRUE;
 	}
 
         if (request) {
@@ -228,7 +229,7 @@ http_fetch_remote_file (EazelInstall *service,
         if (fclose (file) != 0) {
 		g_warning (_("DISK FULL: could not write %s"), target_file);
 		service->private->disk_full = TRUE;
-		get_failed = 1;
+		get_failed = TRUE;
 	}
 
 	if (! get_failed) {
@@ -236,11 +237,7 @@ http_fetch_remote_file (EazelInstall *service,
 	}
 	g_free (target_file_premove);
 
-        if (get_failed != 0) {
-		return FALSE;
-        } else {
-		return TRUE;
-	}
+	return (! get_failed);
 } /* end http_fetch_remote_file */
 
 gboolean

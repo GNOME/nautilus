@@ -1643,6 +1643,10 @@ do_dep_check_internal (EazelInstall *service,
 	get_package_info (service, packages);
 	dedupe (service, packages);
 	check_dependencies (service, packages);
+	if (service->private->cancel_download) {
+		/* we might have received a "stop" callback recently */
+		return;
+	}
 
 	/* Build the K list, consisting of packages without must_have set... */
 	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
@@ -1802,6 +1806,9 @@ install_packages_helper (EazelInstall *service,
 	trilobite_debug ("-> install_packages_helper");
 #endif	
 	do_dep_check (service, packages);
+	if (service->private->cancel_download) {
+		return;
+	}
 	do_file_conflict_check (service, packages, extra_packages);
 
 #if EI2_DEBUG & 0x8

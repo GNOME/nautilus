@@ -1,3 +1,27 @@
+2001-02-12  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(do_dep_check_internal), (install_packages_helper):
+
+	Make the dep-check logic bail out early if the user has cancelled
+	the install.  (It's possible to get the async "stop" callback
+	during a package info fetch, I found out the hard way...)
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file):
+
+	Make get_failed into an official bool, since it acts like one
+	already.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_dependency_check),
+	(nautilus_service_need_password),
+	(service_install_stop_loading_callback):
+
+	Treat aborted password dialog as a cancel, not a failure.  Fix
+	abort callback so it doesn't loop endlessly in a GTK event
+	handling cycle on fast downloads.
+
 2001-02-11  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* test/.cvsignore:
