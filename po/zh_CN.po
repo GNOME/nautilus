@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2002-06-03 17:40-0400\n"
+"POT-Creation-Date: 2002-06-10 07:20+0200\n"
 "PO-Revision-Date: 2002-03-24 22:17+0800\n"
 "Last-Translator: Wang Jian <lark@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -6041,21 +6041,26 @@ msgstr ""
 "由于在尝试定位 shell 对象时，遇到未预料到的 Bonobo 错误，现在无法使用 "
 "Nautilus。杀死 bonobo-activation-server 并重启动 Nautilus 可能可以解决问题。"
 
-#: src/nautilus-bookmarks-window.c:147
+#: src/nautilus-bookmarks-window.c:132
+#, fuzzy, c-format
+msgid "There was an error displaying help: %s"
+msgstr "抱歉，读取文件 %s 有错误。"
+
+#: src/nautilus-bookmarks-window.c:171
 msgid "Bookmarks"
 msgstr "书签"
 
-#: src/nautilus-bookmarks-window.c:212
+#: src/nautilus-bookmarks-window.c:237
 #, fuzzy
 msgid "_Name"
 msgstr "名称"
 
-#: src/nautilus-bookmarks-window.c:227
+#: src/nautilus-bookmarks-window.c:252
 #, fuzzy
 msgid "_Location"
 msgstr "位置"
 
-#: src/nautilus-bookmarks-window.c:242
+#: src/nautilus-bookmarks-window.c:267
 msgid "_Remove"
 msgstr "删除(_R)..."
 

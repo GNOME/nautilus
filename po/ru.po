@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2002-06-05 08:09+0400\n"
+"POT-Creation-Date: 2002-06-10 07:20+0200\n"
 "PO-Revision-Date: 2002-06-05 14:01+04:00\n"
 "Last-Translator: Dmitry G. Mastrukov <dmitry@taurussoft.org>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
@@ -26,8 +26,8 @@ msgid ""
 "Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
 "look like Nautilus Views"
 msgstr ""
-"Фабрика для объектов, дающих возможность обычным элементам управления "
-"Bonobo или внедряемым объектам встраиваться в интерфейс программы Nautilus"
+"Фабрика для объектов, дающих возможность обычным элементам управления Bonobo "
+"или внедряемым объектам встраиваться в интерфейс программы Nautilus"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.h:4
 msgid "Nautilus component adapter factory"
@@ -6133,19 +6133,24 @@ msgstr ""
 "при попытке обнаружить объект оболочки. Уничтожение процесса bonobo-"
 "activation-server и перезапуск Nautilus может помочь решить проблему."
 
-#: src/nautilus-bookmarks-window.c:147
+#: src/nautilus-bookmarks-window.c:132
+#, fuzzy, c-format
+msgid "There was an error displaying help: %s"
+msgstr "Возникла ошибка при отображении справки: %s."
+
+#: src/nautilus-bookmarks-window.c:171
 msgid "Bookmarks"
 msgstr "Закладки"
 
-#: src/nautilus-bookmarks-window.c:212
+#: src/nautilus-bookmarks-window.c:237
 msgid "_Name"
 msgstr "На_именование"
 
-#: src/nautilus-bookmarks-window.c:227
+#: src/nautilus-bookmarks-window.c:252
 msgid "_Location"
 msgstr "_Местоположение"
 
-#: src/nautilus-bookmarks-window.c:242
+#: src/nautilus-bookmarks-window.c:267
 msgid "_Remove"
 msgstr "У_брать"
 
