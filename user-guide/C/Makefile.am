@@ -15,7 +15,7 @@ EXTRA_DIST = $(OMFFILE)
 all: omf
 
 omf: $(OMFFILE)
-	which scrollkeeper-preinstall >/dev/null 2>&1 && scrollkeeper-preinstall $(DESTDIR)$(TARGET_DIR)$(SGMLFILE) $(OMFFILE) $(OMF_DIR)/$(OMFFILE)
+	-scrollkeeper-preinstall $(DESTDIR)$(TARGET_DIR)$(SGMLFILE) $(OMFFILE) $(OMF_DIR)/$(OMFFILE)
 
 
 install-data-local: 
