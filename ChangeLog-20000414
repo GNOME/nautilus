@@ -1,5 +1,10 @@
 2000-03-05  Andy Hertzfeld <andy@eazel.com>
 
+ 	* components/music/nautilus-music-view.c: derive name and track position when there's
+ 	no id3 tag present, and format the title better from the id3-derived information
+	
+2000-03-05  Andy Hertzfeld <andy@eazel.com>
+
 	* libnautilus/nautilus-string.c,.h: added a nautilus_has_suffix routine in the style of
 	nautilus_has_prefix.
 	* components/music/nautilus-music-view: use nautilus_has_suffix in mp3 determination

@@ -171,7 +171,7 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	music_view->details->song_list = gtk_clist_new_with_titles(4, titles);
 		
 	gtk_clist_set_column_width(GTK_CLIST(music_view->details->song_list), 0, 32);
-	gtk_clist_set_column_width(GTK_CLIST(music_view->details->song_list), 1, 176);
+	gtk_clist_set_column_width(GTK_CLIST(music_view->details->song_list), 1, 172);
 	gtk_clist_set_column_width(GTK_CLIST(music_view->details->song_list), 2, 96);
 	gtk_clist_set_column_width(GTK_CLIST(music_view->details->song_list), 3, 42);
  	
@@ -300,7 +300,6 @@ static gboolean
 is_mp3_file(gchar *song_path)
 {
 	return nautilus_has_suffix(song_path, ".mp3") || nautilus_has_suffix(song_path, ".MP3");
-
 }
 
 /* read the id3 tag of the file if present */
@@ -371,6 +370,8 @@ fetch_song_info(gchar *song_path, gint file_order)
 	
 	/* there was no id3 tag, so set up the info heuristically from the file name and file order */
 	if (!has_info) {
+		info->title = g_basename(song_path);	
+		info->track_number = file_order;
 	}	
 	
 	return	info;
@@ -406,6 +407,27 @@ sort_by_track_number (gconstpointer ap, gconstpointer bp)
 	return (int) a->track_number - b->track_number;
 }
 
+/* utility routine to determine most common attribute in song list.  The passed in boolean selects
+   album or artist. Return NULL if no names or too heterogenous.   This first cut just captures 
+   the first one it can - soon, we'll use a hash table and count them up */
+
+static gchar*
+determine_attribute(GList *song_list, gboolean is_artist)
+{
+	SongInfo *info;
+	gchar *attribute_value = NULL;
+	GList *next_item = song_list;
+	while ((next_item != NULL) && (attribute_value == NULL)) {
+		info = (SongInfo*) next_item->data;
+		if (is_artist && info->artist)
+			attribute_value = strdup(info->artist);
+		else if (!is_artist && info->album)
+			attribute_value = strdup(info->album);
+		next_item = next_item->next;
+	}
+	return attribute_value;
+}
+
 /* here's where we do most of the real work of populating the view with info from the new uri */
 /* FIXME: need to use gnome-vfs for iterating the directory */
 
@@ -423,7 +445,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const gchar 
 	SongInfo *info;
 	gchar *path_name;
 	gchar *image_path_name = NULL;
-	gint file_index = 0;
+	gint file_index = 1;
 	gint track_index = 0;
 	/* iterate through the directory, collecting mp3 files and extracting id3 data if present */
 	/* soon we'll use gnomevfs, but at first just the standard unix stuff */
@@ -440,9 +462,10 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const gchar 
 			path_name = nautilus_make_path(uri + 7, entry->d_name);
 			
 			/* fetch info and queue it if it's an mp3 file */
-			info = fetch_song_info(path_name, file_index++);
+			info = fetch_song_info(path_name, file_index);
 			if (info) {
 				info->path_name = path_name;
+				file_index += 1;
 				if (song_list)
 					song_list = g_list_append(song_list, info);
 				else {
@@ -534,12 +557,23 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const gchar 
 	gtk_object_unref(GTK_OBJECT(directory));
 	
 	/* determine the album title/artist line */
-
-  	/* set up the album title with the uri, for now */
+	
 	if (music_view->details->album_title) {
-		gchar *base_name = g_basename(uri);
-		gtk_label_set(GTK_LABEL(music_view->details->album_title), base_name);
-		g_free(base_name);
+		gchar *artist_name, *temp_str;
+		gchar* album_name = determine_attribute(song_list, FALSE);
+		if (album_name == NULL)
+			album_name = g_basename(uri);
+		
+		artist_name = determine_attribute(song_list, TRUE);
+		if (artist_name) {
+			temp_str = g_strdup_printf("%s by %s", album_name, artist_name);
+			g_free(artist_name);
+		} else
+			temp_str = g_strdup(album_name);
+		gtk_label_set(GTK_LABEL(music_view->details->album_title), temp_str);
+		
+		g_free(temp_str);
+		g_free(album_name);
 	}
 	
 	/* release the song list */
