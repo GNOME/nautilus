@@ -83,7 +83,9 @@
 #define STATUS_BAR_CLEAR_TIMEOUT 5000
 
 /* GNOME Dock Items */
-#define URI_ENTRY_DOCK_ITEM	"uri_entry"
+#define LOCATION_BAR_PATH	"/Location Bar"
+#define TOOL_BAR_PATH           "/Tool Bar"
+#define STATUS_BAR_PATH         "/status"
 
 /* default web search uri - FIXME bugzilla.eazel.com 2465: this will be changed to point to the Eazel service */
 #define DEFAULT_SEARCH_WEB_URI "http://www.google.com"
@@ -1595,99 +1597,66 @@ sidebar_panels_changed_callback (gpointer user_data)
 }
 
 static void 
-show_dock_item (NautilusWindow *window, const char *dock_item_name)
+show_dock_item (NautilusWindow *window, const char *dock_item_path)
 {
-#ifdef UIH
-	GnomeApp *app;
-	GnomeDockItem *dock_item;
 
-	app = GNOME_APP (window);
-
-	dock_item = gnome_app_get_dock_item_by_name (app, dock_item_name);
-	if (dock_item != NULL) {
-		gtk_widget_show (GTK_WIDGET (dock_item));
-		gtk_widget_queue_resize (GTK_WIDGET (dock_item)->parent);
-	}
-#endif
+	nautilus_bonobo_set_hidden (window->details->shell_ui,
+				    dock_item_path,
+				    FALSE);
 	nautilus_window_update_show_hide_menu_items (window);
 }
 
 static void 
-hide_dock_item (NautilusWindow *window, const char *dock_item_name)
+hide_dock_item (NautilusWindow *window, const char *dock_item_path)
 {
-#ifdef UIH
-	GnomeApp *app;
-	GnomeDockItem *dock_item;
-
-	app = GNOME_APP (window);
-
-	dock_item = gnome_app_get_dock_item_by_name (app, dock_item_name);
-	if (dock_item != NULL) {
-		gtk_widget_hide (GTK_WIDGET (dock_item));
-		gtk_widget_queue_resize (GTK_WIDGET (dock_item)->parent);
-	}
-#endif
+	
+	nautilus_bonobo_set_hidden (window->details->shell_ui,
+				    dock_item_path,
+				    TRUE);
 	nautilus_window_update_show_hide_menu_items (window);
 }
 
 static gboolean
-dock_item_showing (NautilusWindow *window, const char *dock_item_name)
+dock_item_showing (NautilusWindow *window, const char *dock_item_path)
 {
-#ifdef UIH
-	GnomeApp *app;
-	GnomeDockItem *dock_item;
-
-	app = GNOME_APP (window);
-
-	dock_item = gnome_app_get_dock_item_by_name (app, dock_item_name);
-	return dock_item != NULL && GTK_WIDGET_VISIBLE (dock_item);
-#else
-	return FALSE;
-#endif
+	return !nautilus_bonobo_get_hidden (window->details->shell_ui,
+					    dock_item_path);
 }
 
 void 
 nautilus_window_hide_location_bar (NautilusWindow *window)
 {
-	hide_dock_item (window, URI_ENTRY_DOCK_ITEM);
+	hide_dock_item (window, LOCATION_BAR_PATH);
 }
 
 void 
 nautilus_window_show_location_bar (NautilusWindow *window)
 {
-	show_dock_item (window, URI_ENTRY_DOCK_ITEM);
+	show_dock_item (window, LOCATION_BAR_PATH);
 }
 
 gboolean
 nautilus_window_location_bar_showing (NautilusWindow *window)
 {
-	return dock_item_showing (window, URI_ENTRY_DOCK_ITEM);
+	return dock_item_showing (window, LOCATION_BAR_PATH);
 }
 
 void 
 nautilus_window_hide_tool_bar (NautilusWindow *window)
 {
-#ifdef UIH
-	hide_dock_item (window, GNOME_APP_TOOLBAR_NAME);
-#endif
+	hide_dock_item (window, TOOL_BAR_PATH);
 }
 
 void 
 nautilus_window_show_tool_bar (NautilusWindow *window)
 {
-#ifdef UIH
-	show_dock_item (window, GNOME_APP_TOOLBAR_NAME);
-#endif
+	show_dock_item (window, TOOL_BAR_PATH);
 }
 
 gboolean
 nautilus_window_tool_bar_showing (NautilusWindow *window)
 {
-#ifdef UIH
-	return dock_item_showing (window, GNOME_APP_TOOLBAR_NAME);
-#else
-	return FALSE;
-#endif
+	return dock_item_showing (window, TOOL_BAR_PATH);
 }
 
 void 
@@ -1724,46 +1693,23 @@ nautilus_window_sidebar_showing (NautilusWindow *window)
 void 
 nautilus_window_hide_status_bar (NautilusWindow *window)
 {
-#ifdef UIH
-	GnomeApp *app;
+	hide_dock_item (window, STATUS_BAR_PATH);
 
-	app = GNOME_APP (window);
-
-	if (app->statusbar != NULL) {
-		gtk_widget_hide (GTK_WIDGET (app->statusbar)->parent);
-	}	
-#endif
 	nautilus_window_update_show_hide_menu_items (window);
 }
 
 void 
 nautilus_window_show_status_bar (NautilusWindow *window)
 {
-#ifdef UIH
-	GnomeApp *app;
+	show_dock_item (window, STATUS_BAR_PATH);
 
-	app = GNOME_APP (window);
-
-	if (app->statusbar != NULL) {
-		gtk_widget_show (GTK_WIDGET (app->statusbar)->parent);
-	}	
-#endif
 	nautilus_window_update_show_hide_menu_items (window);
 }
 
 gboolean
 nautilus_window_status_bar_showing (NautilusWindow *window)
 {
-#ifdef UIH
-	GnomeApp *app;
-
-	app = GNOME_APP (window);
-
-	return app->statusbar != NULL
-		&& GTK_WIDGET_VISIBLE (GTK_WIDGET (app->statusbar)->parent);
-#else
-	return FALSE;
-#endif
+	return dock_item_showing (window, STATUS_BAR_PATH);
 }
 
 /**

@@ -1,3 +1,28 @@
+2000-10-06  Mathieu Lacage  <mathieu@eazel.com>
+
+	Fix bug 3125. new bonbo ui handler.
+	
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_set_hidden), (nautilus_bonobo_get_hidden):
+	add new functions.
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	add prototypes.
+	* src/nautilus-window-menus.c:
+	(nautilus_window_update_show_hide_menu_items):
+	switch to new bonobo code to hide/show toolbars. change menu 
+	paths too.
+	* src/nautilus-window-private.h: change menu paths.
+	* src/nautilus-window.c: (show_dock_item), (hide_dock_item),
+	(dock_item_showing), (nautilus_window_hide_location_bar),
+	(nautilus_window_show_location_bar),
+	(nautilus_window_location_bar_showing),
+	(nautilus_window_hide_tool_bar), (nautilus_window_show_tool_bar),
+	(nautilus_window_tool_bar_showing),
+	(nautilus_window_hide_status_bar),
+	(nautilus_window_show_status_bar),
+	(nautilus_window_status_bar_showing):
+	switch to new bonobo code for toolbar hiding/showing
+
 2000-10-06  John Sullivan  <sullivan@eazel.com>
 
 	Finished bug 3496 (labels in menu items never change)

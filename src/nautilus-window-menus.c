@@ -60,40 +60,41 @@
 #define STATIC_BOOKMARKS_FILE_NAME	"static_bookmarks.xml"
 
 /* Private menu paths that components don't know about */
-#define NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM		"/File/New Window"
-#define NAUTILUS_MENU_PATH_CLOSE_ITEM			"/File/Close"
-#define NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM	"/File/Close All Windows"
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_FIND	"/File/Separator before Find"
-#define NAUTILUS_MENU_PATH_TOGGLE_FIND_MODE		"/File/Toggle Find Mode"
-#define NAUTILUS_MENU_PATH_GO_TO_WEB_SEARCH		"/File/Go to Web Search"
+#define NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM		"/menu/File/New Window"
+#define NAUTILUS_MENU_PATH_CLOSE_ITEM			"/menu/File/Close"
+#define NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM	"/menu/File/Close All Windows"
+#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_FIND	"/menu/File/Separator before Find"
+#define NAUTILUS_MENU_PATH_TOGGLE_FIND_MODE		"/menu/File/Toggle Find Mode"
+#define NAUTILUS_MENU_PATH_GO_TO_WEB_SEARCH		"/menu/File/Go to Web Search"
 
-#define NAUTILUS_MENU_PATH_UNDO_ITEM			"/Edit/Undo"
-#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_UNDO		"/Edit/Separator after Undo"
-#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_CLEAR	"/Edit/Separator after Clear"
-#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_SELECT_ALL	"/Edit/Separator after Select All"
+#define NAUTILUS_MENU_PATH_UNDO_ITEM			"/menu/Edit/Undo"
+#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_UNDO		"/menu/Edit/Separator after Undo"
+#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_CLEAR	"/menu/Edit/Separator after Clear"
+#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_SELECT_ALL	"/menu/Edit/Separator after Select All"
 
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_SHOW_HIDE	"/View/Separator before Show Hide"
-#define NAUTILUS_MENU_PATH_SHOW_HIDE_SIDEBAR		"/View/Show Hide Sidebar"
-#define NAUTILUS_MENU_PATH_SHOW_HIDE_TOOL_BAR		"/View/Show Hide Tool Bar"
-#define NAUTILUS_MENU_PATH_SHOW_HIDE_LOCATION_BAR	"/View/Show Hide Location Bar"
-#define NAUTILUS_MENU_PATH_SHOW_HIDE_STATUS_BAR		"/View/Show Hide Status Bar"
+#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_SHOW_HIDE	"/menu/View/Separator before Show Hide"
+#define NAUTILUS_MENU_PATH_SHOW_HIDE_SIDEBAR		"/menu/View/Show Hide Placeholder/Show Hide Sidebar"
+#define NAUTILUS_MENU_PATH_SHOW_HIDE_TOOL_BAR		"/menu/View/Show Hide Placeholder/Show Hide Tool Bar"
+#define NAUTILUS_MENU_PATH_SHOW_HIDE_LOCATION_BAR	"/menu/View/Show Hide Placeholder/Show Hide Location Bar"
+#define NAUTILUS_MENU_PATH_SHOW_HIDE_STATUS_BAR		"/menu/View/Show Hide Placeholder/Show Hide Status Bar"
 
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_ZOOM	"/View/Separator before Zoom"
+#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_ZOOM	"/menu/View/Separator before Zoom"
 
-#define NAUTILUS_MENU_PATH_HOME_ITEM			"/Go/Home"
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_FORGET	"/Go/Separator before Forget"
-#define NAUTILUS_MENU_PATH_FORGET_HISTORY_ITEM		"/Go/Forget History"
+#define NAUTILUS_MENU_PATH_HOME_ITEM			"/menu/Go/Home"
+#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_FORGET	"/menu/Go/Separator before Forget"
+#define NAUTILUS_MENU_PATH_FORGET_HISTORY_ITEM		"/menu/Go/Forget History"
 
-#define NAUTILUS_MENU_PATH_HISTORY_ITEMS_PLACEHOLDER	"/Go/History Placeholder"
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_HISTORY	"/Go/Separator before History"
+#define NAUTILUS_MENU_PATH_HISTORY_ITEMS_PLACEHOLDER	"/menu/Go/History Placeholder"
+#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_HISTORY	"/menu/Go/Separator before History"
 
-#define NAUTILUS_MENU_PATH_ADD_BOOKMARK_ITEM		"/Bookmarks/Add Bookmark"
-#define NAUTILUS_MENU_PATH_EDIT_BOOKMARKS_ITEM		"/Bookmarks/Edit Bookmarks"
-#define NAUTILUS_MENU_PATH_BOOKMARK_ITEMS_PLACEHOLDER	"/Bookmarks/Bookmarks Placeholder"
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_BOOKMARKS	"/Bookmarks/Separator before Bookmarks"
+#define NAUTILUS_MENU_PATH_ADD_BOOKMARK_ITEM		"/menu/Bookmarks/Add Bookmark"
+#define NAUTILUS_MENU_PATH_EDIT_BOOKMARKS_ITEM		"/menu/Bookmarks/Edit Bookmarks"
+#define NAUTILUS_MENU_PATH_BOOKMARK_ITEMS_PLACEHOLDER	"/menu/Bookmarks/Bookmarks Placeholder"
+#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_BOOKMARKS   "/menu/Bookmarks/Separator before Bookmarks"
 
-#define NAUTILUS_MENU_PATH_ABOUT_ITEM			"/Help/About Nautilus"
-#define NAUTILUS_MENU_PATH_NAUTILUS_FEEDBACK		"/Help/Nautilus Feedback"
+#define NAUTILUS_MENU_PATH_ABOUT_ITEM			"/menu/Help/About Nautilus"
+#define NAUTILUS_MENU_PATH_NAUTILUS_FEEDBACK		"/menu/Help/Nautilus Feedback"
+
 
 
 #define SWITCH_TO_BEGINNER_VERB				"Switch to Beginner Level"
@@ -460,37 +461,32 @@ void
 nautilus_window_update_show_hide_menu_items (NautilusWindow *window) 
 {
 	g_assert (NAUTILUS_IS_WINDOW (window));
+
+
+	nautilus_bonobo_set_label (window->details->shell_ui,
+				   NAUTILUS_MENU_PATH_SHOW_HIDE_STATUS_BAR,
+				   nautilus_window_status_bar_showing (window)
+				   ? _("Hide Status Bar")
+				   : _("Show Status Bar"));
+
+	nautilus_bonobo_set_label (window->details->shell_ui,
+				   NAUTILUS_MENU_PATH_SHOW_HIDE_SIDEBAR,
+				   nautilus_window_sidebar_showing (window)
+				   ? _("Hide Sidebar")
+				   : _("Show Sidebar"));
+
+	nautilus_bonobo_set_label (window->details->shell_ui,
+				   NAUTILUS_MENU_PATH_SHOW_HIDE_TOOL_BAR,
+				   nautilus_window_tool_bar_showing (window)
+				   ? _("Hide Tool Bar")
+				   : _("Show Tool Bar"));
+
+	nautilus_bonobo_set_label (window->details->shell_ui,
+				   NAUTILUS_MENU_PATH_SHOW_HIDE_LOCATION_BAR,
+				   nautilus_window_location_bar_showing (window)
+				   ? _("Hide Location Bar")
+				   : _("Show Location Bar"));
 	
-#ifdef UIH
-	bonobo_ui_handler_menu_set_label 
-		(window->ui_handler, 
-		 NAUTILUS_MENU_PATH_SHOW_HIDE_STATUS_BAR, 
-		 nautilus_window_status_bar_showing (window)
-		 	? _("Hide Status Bar")
-		 	: _("Show Status Bar"));
-
-	bonobo_ui_handler_menu_set_label 
-		(window->ui_handler, 
-		 NAUTILUS_MENU_PATH_SHOW_HIDE_SIDEBAR, 
-		 nautilus_window_sidebar_showing (window)
-		 	? _("Hide Sidebar")
-		 	: _("Show Sidebar"));
-
-	bonobo_ui_handler_menu_set_label 
-		(window->ui_handler, 
-		 NAUTILUS_MENU_PATH_SHOW_HIDE_TOOL_BAR, 
-		 nautilus_window_tool_bar_showing (window)
-		 	? _("Hide Tool Bar")
-		 	: _("Show Tool Bar"));
-
-	bonobo_ui_handler_menu_set_label 
-		(window->ui_handler, 
-		 NAUTILUS_MENU_PATH_SHOW_HIDE_LOCATION_BAR, 
-		 nautilus_window_location_bar_showing (window)
-		 	? _("Hide Location Bar")
-		 	: _("Show Location Bar"));
-
-#endif
 }
 
 static void

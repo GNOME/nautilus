@@ -61,14 +61,14 @@ struct NautilusWindowDetails
 	char *dead_view_name;
 };
 
-#define NAUTILUS_MENU_PATH_BACK_ITEM			"/Go/Back"
-#define NAUTILUS_MENU_PATH_FORWARD_ITEM			"/Go/Forward"
-#define NAUTILUS_MENU_PATH_UP_ITEM			"/Go/Up"
+#define NAUTILUS_MENU_PATH_BACK_ITEM			"/menu/Go/Back"
+#define NAUTILUS_MENU_PATH_FORWARD_ITEM			"/menu/Go/Forward"
+#define NAUTILUS_MENU_PATH_UP_ITEM			"/menu/Go/Up"
 
-#define NAUTILUS_MENU_PATH_RELOAD_ITEM			"/View/Reload"
-#define NAUTILUS_MENU_PATH_ZOOM_IN_ITEM			"/View/Zoom In"
-#define NAUTILUS_MENU_PATH_ZOOM_OUT_ITEM		"/View/Zoom Out"
-#define NAUTILUS_MENU_PATH_ZOOM_NORMAL_ITEM		"/View/Zoom Normal"
+#define NAUTILUS_MENU_PATH_RELOAD_ITEM			"/menu/View/Reload"
+#define NAUTILUS_MENU_PATH_ZOOM_IN_ITEM			"/menu/View/Zoom In"
+#define NAUTILUS_MENU_PATH_ZOOM_OUT_ITEM		"/menu/View/Zoom Out"
+#define NAUTILUS_MENU_PATH_ZOOM_NORMAL_ITEM		"/menu/View/Zoom Normal"
 
 /* window geometry */
 #define NAUTILUS_WINDOW_MIN_WIDTH			450

@@ -71,6 +71,36 @@ nautilus_bonobo_set_sensitive (BonoboUIComponent *ui,
 				      NULL);
 }
 
+void
+nautilus_bonobo_set_hidden (BonoboUIComponent *ui,
+			    const char *path,
+			    gboolean hidden)
+{
+	bonobo_ui_component_set_prop (ui, path,
+				      "hidden",
+				      hidden ? "1" : "0",
+				      NULL);
+}
+
+gboolean nautilus_bonobo_get_hidden (BonoboUIComponent *ui,
+				     const char        *path)
+{
+	char *value;
+	value = bonobo_ui_component_get_prop (ui, path,
+					      "hidden",
+					      NULL);
+	if (value == NULL) {
+		return TRUE;
+	}
+
+	if (strcmp (value, "1") == 0) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+
 #ifdef UIH
 
 /**
