@@ -1,25 +1,33 @@
 NULL=
 
-SUBDIRS =\
-	data \
-	icons \
-	idl \
-	intl \
-	cut-n-paste-code \
-	librsvg \
-	libnautilus \
-	libnautilus-extensions \
-	helper-utilities \
-	components \
-	po \
-	src \
-	test \
-	tools \
+SUBDIRS =			\
+	data 			\
+	icons 			\
+	idl 			\
+	intl 			\
+	cut-n-paste-code 	\
+	librsvg 		\
+	libnautilus 		\
+	libnautilus-extensions 	\
+	helper-utilities 	\
+	components 		\
+	po 			\
+	src 			\
+	test 			\
+	tools 			\
 	$(NULL)
 
-EXTRA_DIST=\
-	COPYING.LIB \
-	nautilus.spec.in \
+EXTRA_DIST=			\
+	COPYING.LIB 		\
+	RPMs-README		\
+	HACKING			\
+	MAINTAINERS		\
+	nautilus.spec.in 	\
+	nautilus-clean.sh	\
+	nautilus.desktop	\
+	nautilus.png		\
+	ChangeLog-20000414	\
+	ChangeLog-20000625	\
 	$(NULL)
 
 appicondir = $(datadir)/pixmaps
@@ -30,9 +38,6 @@ Applications_DATA = nautilus.desktop
 
 dist-hook: nautilus.spec
 	cp nautilus.spec $(distdir)
-
-EXTRA_DIST=nautilus-clean.sh nautilus.desktop nautilus.png \
-		ChangeLog-20000414 ChangeLog-20000625 
 
 install-data-hook: nautilus-clean.sh
 	$(mkinstalldirs) $(DESTDIR)/$(prefix)/bin
