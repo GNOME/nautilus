@@ -1,5 +1,19 @@
 2000-08-25  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 1782 (File->Open after opening a folder crashes)
+	The problem was that the menus weren't being updated when
+	switching locations, so menus like "Open" were still sensitive
+	because there used to be a selection.
+
+	* src/file-manager/fm-directory-view.c:
+	Added menus_merged boolean to Details struct.
+	(fm_directory_view_merge_menus): Set menus_merged to TRUE.
+	(fm_directory_view_load_uri): update menus when loading URI,
+	but only if menus_merged is TRUE (so you don't try to update
+	nonexistent menus the first time, which would make Bonobo sad)
+
+2000-08-25  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 1934 ("View as" menu gets ludicrously tall when
 	you add search criteria)
 

@@ -110,6 +110,7 @@ struct FMDirectoryViewDetails
 	GList *pending_uris_selected;
 
 	gboolean loading;
+	gboolean menus_merged;
 
 	gboolean show_hidden_files;
 };
@@ -3418,6 +3419,13 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 	fm_directory_view_stop (view);
 	fm_directory_view_clear (view);
 
+	/* update menus when directory is empty, before
+	 * going to new location, so they won't have any
+	 * false lingering knowledge of old selection. */
+	if (view->details->menus_merged) {
+		fm_directory_view_update_menus (view);
+	}
+
 	disconnect_model_handlers (view);
 
 	old_model = view->details->model;
@@ -3541,6 +3549,11 @@ static void
 fm_directory_view_merge_menus (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	/* Remember that the menus have been merged so that we
+	 * won't try to update them before merging them.
+	 */
+	view->details->menus_merged = TRUE;
 
 	NAUTILUS_CALL_VIRTUAL
 		(FM_DIRECTORY_VIEW_CLASS, view,
