@@ -1,5 +1,11 @@
 2003-01-16  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-file-operations.c (nautilus_file_operations_new_folder):
+	Convert new directory name with g_filename_from_utf8(). (#90154)
+	
+2003-01-16  Alexander Larsson  <alexl@redhat.com>
+
+
 	* nautilus-file-management-properties.desktop.in:
 	* src/network-scheme.desktop.in:
 	Change the icon to something that exists.

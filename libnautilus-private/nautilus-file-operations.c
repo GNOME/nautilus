@@ -2126,6 +2126,7 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 {
 	GList *target_uri_list;
 	GnomeVFSURI *uri, *parent_uri;
+	char *dirname;
 	NewFolderTransferState *state;
 
 	state = g_new (NewFolderTransferState, 1);
@@ -2137,7 +2138,10 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 	/* pass in the target directory and the new folder name as a destination URI */
 	parent_uri = gnome_vfs_uri_new (parent_dir);
 	/* localizers: the initial name of a new folder  */
-	uri = gnome_vfs_uri_append_file_name (parent_uri, _("untitled folder"));
+
+	dirname = g_filename_from_utf8 (_("untitled folder"), -1, NULL, NULL, NULL);
+	uri = gnome_vfs_uri_append_file_name (parent_uri, dirname);
+	g_free (dirname);
 	target_uri_list = g_list_prepend (NULL, uri);
 	
 	gnome_vfs_async_xfer (&state->handle, NULL, target_uri_list,
