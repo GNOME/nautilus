@@ -83,6 +83,7 @@
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-theme.h>
 #include <math.h>
+#include <atk/atkrelationset.h>
 
 /* property types */
 
@@ -340,7 +341,7 @@ nautilus_property_browser_init (GtkObject *object)
 	/* add the title label */
 	property_browser->details->title_label = gtk_label_new ("");
 	eel_gtk_label_set_scale (GTK_LABEL (property_browser->details->title_label), PANGO_SCALE_X_LARGE);
-/*	eel_gtk_label_make_bold (GTK_LABEL (property_browser->details->title_label)); */
+	eel_gtk_label_make_bold (GTK_LABEL (property_browser->details->title_label));
  	
 	gtk_widget_show(property_browser->details->title_label);
 	gtk_box_pack_start (GTK_BOX(temp_hbox), property_browser->details->title_label, FALSE, FALSE, 8);
@@ -1924,7 +1925,7 @@ property_browser_category_button_new (const char *display_name,
 }
 
 /* this is a utility routine to generate a category link widget and install it in the browser */
-static void
+static GtkWidget *
 make_category_link (NautilusPropertyBrowser *property_browser,
 		    const char *name,
 		    const char *display_name,
@@ -1932,10 +1933,10 @@ make_category_link (NautilusPropertyBrowser *property_browser,
 {
 	GtkWidget *button;
 
-	g_return_if_fail (NAUTILUS_IS_PROPERTY_BROWSER (property_browser));
-	g_return_if_fail (name != NULL);
-	g_return_if_fail (display_name != NULL);
-	g_return_if_fail (image != NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (image != NULL, NULL);
+	g_return_val_if_fail (display_name != NULL, NULL);
+	g_return_val_if_fail (NAUTILUS_IS_PROPERTY_BROWSER (property_browser), NULL);
 
 	button = property_browser_category_button_new (display_name, image);
 	gtk_widget_show (button);
@@ -1959,6 +1960,46 @@ make_category_link (NautilusPropertyBrowser *property_browser,
 		(button, "clicked",
 		 G_CALLBACK (category_clicked_callback),
 		 g_strdup (name), (GClosureNotify) g_free, 0);
+
+	return button;
+}
+
+static void
+build_radio_accessibility_relations (GList *buttons)
+{
+	GList *l, *l2;
+	AtkObject  *ao;
+	AtkObject **accessible_array;
+	AtkRelationSet *relation_set;
+	guint list_length, i;
+
+	list_length = g_list_length (buttons);
+
+	for (l = buttons; l; l = l->next) {
+		ao = gtk_widget_get_accessible (l->data);
+
+		if (!ao) {
+			continue;
+		}
+
+		atk_object_set_role (ao, ATK_ROLE_RADIO_BUTTON);
+
+		relation_set = atk_object_ref_relation_set (ao);
+
+		i = 0;
+		accessible_array = g_malloc (sizeof (AtkObject) * list_length - 1);
+		for (l2 = buttons; l2; l2 = l2->next) {
+			if (l2->data == l->data)
+				continue;
+			
+			accessible_array [i++] = gtk_widget_get_accessible (l2->data);
+		}
+
+		atk_relation_set_add (relation_set,
+				      atk_relation_new (accessible_array,
+							i,
+							ATK_RELATION_MEMBER_OF));
+	}
 }
 
 /* update_contents populates the property browser with information specified by the path and other state variables */
@@ -1969,6 +2010,8 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
  	xmlDocPtr document;
  	EelBackground *background;
 	GtkWidget *viewport;
+	GtkWidget *button;
+	GList     *buttons;
 	gboolean got_categories;
 	char *name, *image, *type, *description, *display_name, *path, *mode;
 	const char *text;
@@ -2016,7 +2059,8 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	if (!got_categories) {
 		property_browser->details->category_position = 0;
 	}
-	
+
+	buttons = NULL;
 	for (cur_node = eel_xml_get_children (xmlDocGetRootElement (document));
 	     cur_node != NULL;
 	     cur_node = cur_node->next) {
@@ -2052,10 +2096,11 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 				display_name = eel_xml_get_property_translated (cur_node, "display_name");
 				image = xmlGetProp (cur_node, "image");
 
-				make_category_link (property_browser,
-						    name,
-						    display_name,
-						    image);
+				button = make_category_link (property_browser,
+							     name,
+							     display_name,
+							     image);
+				buttons = g_list_prepend (buttons, button);
 				
 				xmlFree (display_name);
 				xmlFree (image);
@@ -2064,6 +2109,8 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 			xmlFree (name);
 		}
 	}
+	
+	build_radio_accessibility_relations (buttons);
 	
 	/* release the  xml document and we're done */
 	xmlFreeDoc (document);

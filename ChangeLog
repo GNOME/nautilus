@@ -1,3 +1,13 @@
+2002-07-08  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-property-browser.c
+	(nautilus_property_browser_init): re-instate label
+	boldness for Alex.
+	(make_category_link): return the button widget.
+	(nautilus_property_browser_update_contents): keep track
+	of the buttons & call relation setup in
+	(build_radio_accessibility_relations): here.
+
 2002-07-08  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
 	* libnautilus-private/filesystem-attributes.xml:
