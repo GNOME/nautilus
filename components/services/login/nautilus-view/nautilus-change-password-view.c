@@ -18,14 +18,16 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Author: J Shane Culpepper <pepper@eazel.com>
- *         Andy Hertzfeld <andy@eazel.com>
- *         Ramiro Estrugo <ramiro@eazel.com>
+ * Authors: J Shane Culpepper <pepper@eazel.com>
+ *          Andy Hertzfeld <andy@eazel.com>
+ *          Ramiro Estrugo <ramiro@eazel.com>
+ *	    Robey Pointer <robey@eazel.com>
  */
 
 #include <config.h>
 
 #include "nautilus-change-password-view.h"
+#include "password-box.h"
 #include "eazel-services-header.h"
 #include "eazel-services-extensions.h"
 
@@ -40,11 +42,13 @@
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-label.h>
+#include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <libtrilobite/eazelproxy.h>
 #include <libtrilobite/libammonite.h>
+#include <libtrilobite/libtrilobite.h>
 #include <liboaf/liboaf.h>
 #include <bonobo/bonobo-main.h>
 
@@ -60,13 +64,12 @@ struct _NautilusChangePasswordViewDetails {
 	NautilusView	*nautilus_view;
 	GtkWidget	*form;
 	GtkWidget	*form_title;
-	GtkWidget	*account_name;
-	GtkWidget	*account_old_password;
-	GtkWidget	*account_new_password;
-	GtkWidget	*account_repeat_password;
+	PasswordBox	*account_name;
+	PasswordBox	*account_old_password;
+	PasswordBox	*account_new_password;
+	PasswordBox	*account_repeat_password;
 	GtkWidget	*change_password_button;
 	GtkWidget	*maintenance_button;
-	GtkWidget	*feedback_text;
 	PendingOperation pending;
 
 	/* for talking to the proxy (change_password/logout/pass-change) */
@@ -122,21 +125,18 @@ user_logged_in (NautilusChangePasswordView *view)
 static gboolean
 run_away_timer (NautilusChangePasswordView *view)
 {
-	nautilus_view_open_location_in_this_window
-		(view->details->nautilus_view, SERVICE_SUMMARY_LOCATION);
+	nautilus_view_open_location_in_this_window (view->details->nautilus_view, SERVICE_SUMMARY_LOCATION);
 	return FALSE;	/* don't run this timer again */
 }
 
 static void
 generate_change_password_form (NautilusChangePasswordView	*view) 
 {
-	GtkTable	*table;
-	GtkWidget	*temp_widget;
-	GtkWidget	*temp_box;
-	GtkWidget	*change_password_label;
+	GtkWidget	*hbox;
+	GtkWidget	*vbox_buttons, *hbox_buttons;
 	GtkWidget	*maintenance_button;
-	GtkWidget	*maintenance_label;
 	GtkWidget	*title;
+	GtkWidget	*filler;
 	char		*username;
 
 	/* allocate a box to hold everything */
@@ -145,180 +145,106 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	gtk_widget_show (view->details->form);
 
 	/* Setup the title */
-	title = eazel_services_header_title_new (_("Change your Eazel password..."));
+	title = eazel_services_header_title_new (_("Please Change Your Eazel Password"));
 
         gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
         gtk_widget_show (title);
 
-	/* initialize the parent form */
-	temp_box = gtk_hbox_new (FALSE, 4);
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, 0, 0, 12);
-	gtk_widget_show (temp_box);
+	/* add password boxes */
+	view->details->account_name = password_box_new (_("User Name:"));
+	gtk_widget_show (view->details->account_name->table);
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), view->details->account_name->table, TRUE, TRUE, 75);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (view->details->form), hbox, FALSE, FALSE, 6);
 
-	/* allocate a table to hold the change_password form */
-	table = GTK_TABLE (gtk_table_new (4, 3, TRUE));
+	view->details->account_old_password = password_box_new (_("Current Password:"));
+	gtk_widget_show (view->details->account_old_password->table);
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), view->details->account_old_password->table, TRUE, TRUE, 75);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (view->details->form), hbox, FALSE, FALSE, 6);
 
-	/* username */
-	temp_widget = eazel_services_label_new (_("User Name: "),
-						0,
-						0.5,
-						0.5,
-						0,
-						0,
-						EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
-						EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
-						NULL,
-						2,
-						FALSE);
-	gtk_table_attach (table, temp_widget, 0, 2, 0, 1, GTK_FILL, GTK_FILL, 2, 2);
-	gtk_widget_show (temp_widget);
+	view->details->account_new_password = password_box_new (_("New Password:"));
+	gtk_widget_show (view->details->account_new_password->table);
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), view->details->account_new_password->table, TRUE, TRUE, 75);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (view->details->form), hbox, FALSE, FALSE, 6);
 
-	view->details->account_name = gtk_entry_new_with_max_length (36);
-	gtk_table_attach (table, view->details->account_name, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
-	gtk_widget_show (view->details->account_name);
+	view->details->account_repeat_password = password_box_new (_("Confirm New Password:"));
+	gtk_widget_show (view->details->account_repeat_password->table);
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), view->details->account_repeat_password->table, TRUE, TRUE, 75);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (view->details->form), hbox, FALSE, FALSE, 6);
 
+	/* set up text entries */
 	username = user_logged_in (view);
 	if (username != NULL) {
-		gtk_entry_set_text (GTK_ENTRY (view->details->account_name), username);
-		gtk_entry_set_editable (GTK_ENTRY (view->details->account_name), FALSE);
-		gtk_widget_set_sensitive (view->details->account_name, FALSE);
+		gtk_entry_set_text (GTK_ENTRY (view->details->account_name->entry), username);
+		gtk_entry_set_editable (GTK_ENTRY (view->details->account_name->entry), FALSE);
+		gtk_widget_set_sensitive (view->details->account_name->entry, FALSE);
 		g_free (username);
 	}
 
-	/* old password */
-	temp_widget = eazel_services_label_new (_("Current password: "),
-						0,
-						0.5,
-						0.5,
-						0,
-						0,
-						EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
-						EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
-						NULL,
-						2,
-						FALSE);
-	gtk_table_attach (table, temp_widget, 0, 2, 2, 3, GTK_FILL, GTK_FILL, 2, 2);
-	gtk_widget_show (temp_widget);
+	gtk_entry_set_visibility (GTK_ENTRY (view->details->account_old_password->entry), FALSE);
+	gtk_entry_set_visibility (GTK_ENTRY (view->details->account_new_password->entry), FALSE);
+	gtk_entry_set_visibility (GTK_ENTRY (view->details->account_repeat_password->entry), FALSE);
 
-	view->details->account_old_password = gtk_entry_new_with_max_length (36);
-	gtk_table_attach (table, view->details->account_old_password, 1, 2, 3, 4, GTK_FILL, GTK_FILL, 4, 4);
-	gtk_entry_set_visibility (GTK_ENTRY (view->details->account_old_password), FALSE);
-	gtk_widget_show (view->details->account_old_password);
-
-	/* new password */
-	temp_widget = eazel_services_label_new (_("New password: "),
-						0,
-						0.5,
-						0.5,
-						0,
-						0,
-						EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
-						EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
-						NULL,
-						2,
-						FALSE);
-	gtk_table_attach (table, temp_widget, 0, 2, 4, 5, GTK_FILL, GTK_FILL, 2, 2);
-	gtk_widget_show (temp_widget);
-
-	view->details->account_new_password = gtk_entry_new_with_max_length (36);
-	gtk_table_attach (table, view->details->account_new_password, 1, 2, 5, 6, GTK_FILL, GTK_FILL, 4, 4);
-	gtk_entry_set_visibility (GTK_ENTRY (view->details->account_new_password), FALSE);
-	gtk_widget_show (view->details->account_new_password);
-
-	/* repeat password */
-	temp_widget = eazel_services_label_new (_("New password (again): "),
-						0,
-						0.5,
-						0.5,
-						0,
-						0,
-						EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
-						EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
-						NULL,
-						2,
-						FALSE);
-	gtk_table_attach (table, temp_widget, 0, 2, 6, 7, GTK_FILL, GTK_FILL, 2, 2);
-	gtk_widget_show (temp_widget);
-
-	view->details->account_repeat_password = gtk_entry_new_with_max_length (36);
-	gtk_table_attach (table, view->details->account_repeat_password, 1, 2, 7, 8, GTK_FILL, GTK_FILL, 4, 4);
-	gtk_entry_set_visibility (GTK_ENTRY (view->details->account_repeat_password), FALSE);
-	gtk_widget_show (view->details->account_repeat_password);
-
-	/* insert the table */
-	gtk_box_pack_start (GTK_BOX (view->details->form), GTK_WIDGET(table), 0, 0, 4);
-	gtk_widget_show (GTK_WIDGET(table));
-
-	/* attach a changed signal to the 2 entry fields, so we can enable the button when something is typed into both fields */
-	gtk_signal_connect (GTK_OBJECT (view->details->account_name),		"changed",	GTK_SIGNAL_FUNC (entry_changed_cb),	view);
-	gtk_signal_connect (GTK_OBJECT (view->details->account_old_password),	"changed",	GTK_SIGNAL_FUNC (entry_changed_cb),	view);
-	gtk_signal_connect (GTK_OBJECT (view->details->account_new_password),	"changed",	GTK_SIGNAL_FUNC (entry_changed_cb),	view);
-	gtk_signal_connect (GTK_OBJECT (view->details->account_repeat_password),"changed",	GTK_SIGNAL_FUNC (entry_changed_cb),	view);
+	/* attach a changed signal to the 2 entry fields,
+	 * so we can enable the button when something is typed into both fields */
+	gtk_signal_connect (GTK_OBJECT (view->details->account_name->entry),
+			    "changed", GTK_SIGNAL_FUNC (entry_changed_cb), view);
+	gtk_signal_connect (GTK_OBJECT (view->details->account_old_password->entry),
+			    "changed", GTK_SIGNAL_FUNC (entry_changed_cb), view);
+	gtk_signal_connect (GTK_OBJECT (view->details->account_new_password->entry),
+			    "changed", GTK_SIGNAL_FUNC (entry_changed_cb), view);
+	gtk_signal_connect (GTK_OBJECT (view->details->account_repeat_password->entry),
+			    "changed", GTK_SIGNAL_FUNC (entry_changed_cb), view);
 
 	/* allocate the command buttons - first the change_password button */
-
-	view->details->change_password_button = gtk_button_new ();
-	change_password_label = gtk_label_new (_(" Change my password! "));
-
-	gtk_widget_show (change_password_label);
-	gtk_container_add (GTK_CONTAINER (view->details->change_password_button), change_password_label);
-
-	temp_box = gtk_hbox_new (TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (temp_box), view->details->change_password_button, FALSE, FALSE, 21);
-
-	gtk_signal_connect (GTK_OBJECT (view->details->change_password_button),
-			    "clicked",
+	view->details->change_password_button = gtk_button_new_with_label (_("Change my password"));
+	gtk_signal_connect (GTK_OBJECT (view->details->change_password_button), "clicked",
 			    GTK_SIGNAL_FUNC (change_password_button_cb), view);
 	gtk_widget_set_sensitive (view->details->change_password_button, FALSE);
 	gtk_widget_show (view->details->change_password_button);
-	gtk_widget_show (temp_box);
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
 
         /* now allocate the account maintenance button */
-
-        maintenance_button = gtk_button_new ();
-        maintenance_label = gtk_label_new (_("  I need some help!  "));
-
-        gtk_widget_show (maintenance_label);
-        gtk_container_add (GTK_CONTAINER (maintenance_button), maintenance_label);
-	temp_box = gtk_hbox_new (TRUE, 0);
-        gtk_box_pack_start (GTK_BOX (temp_box), maintenance_button, FALSE, FALSE, 21);
+        maintenance_button = gtk_button_new_with_label (_("I need assistance"));
         gtk_signal_connect (GTK_OBJECT (maintenance_button), "clicked",
 			    GTK_SIGNAL_FUNC (maintenance_button_cb), view);
         gtk_widget_show (maintenance_button);
-	gtk_widget_show (temp_box);
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
 
-        /* add a label for error messages, but don't show it until there's an error */
-        view->details->feedback_text = eazel_services_label_new (NULL,
-								 0,
-								 0.5,
-								 0.5,
-								 0,
-								 0,
-								 EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
-								 EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
-								 NULL,
-								 0,
-								 FALSE);
-        gtk_box_pack_end (GTK_BOX (view->details->form), view->details->feedback_text, 0, 0, 8);
+	vbox_buttons = gtk_vbox_new (TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox_buttons), view->details->change_password_button, FALSE, FALSE, 4);
+	gtk_box_pack_start (GTK_BOX (vbox_buttons), maintenance_button, FALSE, FALSE, 4);
+	gtk_widget_show (vbox_buttons);
+
+	hbox_buttons = gtk_hbox_new (FALSE, 0);
+	filler = gtk_label_new ("");
+	gtk_widget_show (filler);
+	gtk_box_pack_start (GTK_BOX (hbox_buttons), filler, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox_buttons), vbox_buttons, FALSE, FALSE, 75);
+	gtk_widget_show (hbox_buttons);
+
+	gtk_box_pack_start (GTK_BOX (view->details->form), hbox_buttons, FALSE, FALSE, 0);
 }
 
 /* callback to enable/disable the change_password button when something is typed in the field */
 static void
 entry_changed_cb (GtkWidget	*entry, NautilusChangePasswordView	*view)
 {
-
 	char		*user_name;
 	char		*old_password;
 	char		*new_password;
 	char		*repeat_password;
 	gboolean	button_enabled;
 
-	user_name = gtk_entry_get_text (GTK_ENTRY (view->details->account_name));
-	old_password = gtk_entry_get_text (GTK_ENTRY (view->details->account_old_password));
-	new_password = gtk_entry_get_text (GTK_ENTRY (view->details->account_new_password));
-	repeat_password = gtk_entry_get_text (GTK_ENTRY (view->details->account_repeat_password));
+	user_name = gtk_entry_get_text (GTK_ENTRY (view->details->account_name->entry));
+	old_password = gtk_entry_get_text (GTK_ENTRY (view->details->account_old_password->entry));
+	new_password = gtk_entry_get_text (GTK_ENTRY (view->details->account_new_password->entry));
+	repeat_password = gtk_entry_get_text (GTK_ENTRY (view->details->account_repeat_password->entry));
 
 	button_enabled = user_name && strlen (user_name) && old_password && strlen (old_password) &&
 		new_password && strlen (new_password) && repeat_password && strlen (repeat_password) &&
@@ -331,23 +257,34 @@ static void
 authn_succeeded (const EazelProxy_User *user, gpointer state, CORBA_Environment *ev)
 {
 	NautilusChangePasswordView *view;
+	GtkWidget *dialog;
+	GtkWidget *toplevel;
+	char *text;
 
 	view = NAUTILUS_CHANGE_PASSWORD_VIEW (state);
 	g_assert (view->details->pending == PENDING_LOGIN);
 
 	view->details->pending = PENDING_NONE;
-	g_message ("ChangePassword succeeeded!");
+	trilobite_debug ("ChangePassword succeeeded!");
 
-	/* more ... */
+	password_box_show_error (view->details->account_old_password, FALSE);
+	password_box_show_error (view->details->account_new_password, FALSE);
+	password_box_show_error (view->details->account_repeat_password, FALSE);
 
 	ammonite_auth_callback_wrapper_free (bonobo_poa (), view->details->authn_callback);
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 
-	nautilus_label_set_text (NAUTILUS_LABEL (view->details->feedback_text),
-				  _("Password changed!"));
-	gtk_widget_show (view->details->feedback_text);
+	text = _("Your password has been changed!");
+	toplevel = gtk_widget_get_toplevel (view->details->form);
+	if (GTK_IS_WINDOW (toplevel)) {
+		dialog = gnome_ok_dialog_parented (text, GTK_WINDOW (toplevel));
+	} else {
+		dialog = gnome_ok_dialog (text);
+	}
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 
-	gtk_timeout_add (3000, (GtkFunction)run_away_timer, view);
+	gtk_timeout_add (0, (GtkFunction)run_away_timer, view);
 }
 
 static void
@@ -355,6 +292,9 @@ authn_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *info,
 	      CORBA_Environment *ev)
 {
 	NautilusChangePasswordView *view;
+	gboolean current_bad = FALSE;
+	gboolean new_bad = FALSE;
+	char *text = NULL;
 
 	view = NAUTILUS_CHANGE_PASSWORD_VIEW (state);
 	g_assert (view->details->pending == PENDING_LOGIN);
@@ -362,17 +302,63 @@ authn_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *info,
 	view->details->pending = PENDING_NONE;
 	gtk_widget_set_sensitive (view->details->change_password_button, TRUE);
 
-	nautilus_label_set_text (NAUTILUS_LABEL (view->details->feedback_text),
-				  info->http_result);
-	gtk_widget_show (view->details->feedback_text);
+	switch (info->code) {
+	case EAZELPROXY_PASSWORD_CHANGE_BAD_ORIGINAL:
+		current_bad = TRUE;
+		text = _("I'm sorry, but that password\nis incorrect.  Please try again.");
+		break;
+	case EAZELPROXY_PASSWORD_CHANGE_TOO_SHORT:
+		new_bad = TRUE;
+		text = _("I'm sorry, but your new password\nmust be at least six (6) characters long.\nPlease try another one.");
+		break;
+	case EAZELPROXY_PASSWORD_CHANGE_TOO_LONG:
+		/* shouldn't happen */
+		new_bad = TRUE;
+		text = _("I'm sorry, but your new password\ncan't be ridiculously long.\nPlease try another one.");
+		break;
+	case EAZELPROXY_PASSWORD_CHANGE_BAD_MATCH:
+		/* shouldn't happen */
+		new_bad = TRUE;
+		text = "foo";
+		break;
+	case EAZELPROXY_PASSWORD_CHANGE_TOO_BLAND:
+		new_bad = TRUE;
+		text = _("I'm sorry, but your new password must\ncontain letters along with at least one\nnumber or symbol. Please try another one.");
+		break;
+	default:
+		current_bad = TRUE;
+		text = _("I'm sorry, but I hit an unexpected\nerror. Please try again, with\ndifferent passwords.");
+		break;
+	}
 
-	gtk_entry_set_text (GTK_ENTRY (view->details->account_old_password),
-			    gtk_entry_get_text (GTK_ENTRY (view->details->account_old_password)));
-	gtk_entry_set_text (GTK_ENTRY (view->details->account_new_password), "");
-	gtk_entry_set_text (GTK_ENTRY (view->details->account_repeat_password), "");
+	if (current_bad) {
+		password_box_set_error_text (view->details->account_old_password, text);
+		password_box_show_error (view->details->account_old_password, TRUE);
+		password_box_show_error (view->details->account_new_password, FALSE);
+		password_box_show_error (view->details->account_repeat_password, FALSE);
+	} else if (new_bad) {
+		password_box_set_error_text (view->details->account_new_password, text);
+		password_box_show_error (view->details->account_old_password, FALSE);
+		password_box_show_error (view->details->account_new_password, TRUE);
+		password_box_show_error (view->details->account_repeat_password, FALSE);
+	} else {
+		password_box_show_error (view->details->account_old_password, FALSE);
+		password_box_show_error (view->details->account_new_password, FALSE);
+		password_box_show_error (view->details->account_repeat_password, FALSE);
+	}
 
-	g_warning ("ChangePassword failed: code = %ld, result = '%s'", (long)info->code, info->http_result);
-	/* more? */
+	if (current_bad) {
+		gtk_entry_set_text (GTK_ENTRY (view->details->account_old_password->entry), "");
+		gtk_widget_grab_focus (view->details->account_old_password->entry);
+	} else {
+		gtk_entry_set_text (GTK_ENTRY (view->details->account_old_password->entry),
+				    gtk_entry_get_text (GTK_ENTRY (view->details->account_old_password->entry)));
+		gtk_widget_grab_focus (view->details->account_new_password->entry);
+	}
+	gtk_entry_set_text (GTK_ENTRY (view->details->account_new_password->entry), "");
+	gtk_entry_set_text (GTK_ENTRY (view->details->account_repeat_password->entry), "");
+
+	trilobite_debug ("ChangePassword failed: code = %ld, result = '%s'", (long)info->code, info->http_result);
 
 	ammonite_auth_callback_wrapper_free (bonobo_poa (), view->details->authn_callback);
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
@@ -391,6 +377,7 @@ start_change_password (NautilusChangePasswordView *view, const char *username, c
 	EazelProxy_AuthnInfo *authinfo;
 	CORBA_Environment ev;
 	CORBA_char *corba_new_password;
+	char *text;
 
 	AmmoniteAuthCallbackWrapperFuncs callback = {
 		authn_succeeded,
@@ -423,6 +410,18 @@ start_change_password (NautilusChangePasswordView *view, const char *username, c
 		g_warning ("Exception during EazelProxy change_password: %s", CORBA_exception_id (&ev));
 		view->details->pending = PENDING_NONE;
 		bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
+
+		text = _("I'm sorry, but I got an unexpected\nerror.  Please try again.");
+		password_box_set_error_text (view->details->account_old_password, text);
+		password_box_show_error (view->details->account_old_password, TRUE);
+		password_box_show_error (view->details->account_new_password, FALSE);
+		password_box_show_error (view->details->account_repeat_password, FALSE);
+		gtk_widget_grab_focus (view->details->account_old_password->entry);
+
+		gtk_entry_set_text (GTK_ENTRY (view->details->account_old_password->entry), "");
+		gtk_entry_set_text (GTK_ENTRY (view->details->account_new_password->entry), "");
+		gtk_entry_set_text (GTK_ENTRY (view->details->account_repeat_password->entry), "");
+		gtk_widget_set_sensitive (view->details->change_password_button, FALSE);
 	}
 
 	CORBA_exception_free (&ev);
@@ -433,31 +432,32 @@ start_change_password (NautilusChangePasswordView *view, const char *username, c
 static void
 change_password_button_cb (GtkWidget	*button, NautilusChangePasswordView	*view)
 {
-
 	char		*user_name;
 	char		*old_password;
 	char		*new_password;
 	char		*repeat_password;
+	char		*text;
 
-	user_name = gtk_entry_get_text (GTK_ENTRY (view->details->account_name));
-	old_password = gtk_entry_get_text (GTK_ENTRY (view->details->account_old_password));
-	new_password = gtk_entry_get_text (GTK_ENTRY (view->details->account_new_password));
-	repeat_password = gtk_entry_get_text (GTK_ENTRY (view->details->account_repeat_password));
+	user_name = gtk_entry_get_text (GTK_ENTRY (view->details->account_name->entry));
+	old_password = gtk_entry_get_text (GTK_ENTRY (view->details->account_old_password->entry));
+	new_password = gtk_entry_get_text (GTK_ENTRY (view->details->account_new_password->entry));
+	repeat_password = gtk_entry_get_text (GTK_ENTRY (view->details->account_repeat_password->entry));
 
 	if (strcmp (new_password, repeat_password) != 0) {
-		nautilus_label_set_text (NAUTILUS_LABEL (view->details->feedback_text),
-					  _("The new password fields don't match.  Please try again."));
-		gtk_widget_show (view->details->feedback_text);
+		text = _("I'm sorry, but your new password\nwasn't typed the same way twice.\nPlease try again.");
+		password_box_set_error_text (view->details->account_new_password, text);
+		password_box_show_error (view->details->account_old_password, FALSE);
+		password_box_show_error (view->details->account_new_password, TRUE);
+		password_box_show_error (view->details->account_repeat_password, FALSE);
+		gtk_widget_grab_focus (view->details->account_new_password->entry);
 		
-		gtk_entry_set_text (GTK_ENTRY (view->details->account_new_password), "");
-		gtk_entry_set_text (GTK_ENTRY (view->details->account_repeat_password), "");
+		gtk_entry_set_text (GTK_ENTRY (view->details->account_new_password->entry), "");
+		gtk_entry_set_text (GTK_ENTRY (view->details->account_repeat_password->entry), "");
 		gtk_widget_set_sensitive (view->details->change_password_button, FALSE);
 		return;
 	}
 
 	gtk_widget_set_sensitive (view->details->change_password_button, FALSE);
-	gtk_widget_hide (view->details->feedback_text);
-
 	start_change_password (view, user_name, old_password, new_password);
 }
 

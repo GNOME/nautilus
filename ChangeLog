@@ -1,5 +1,26 @@
 2001-01-18  Robey Pointer  <robey@eazel.com>
 
+	* components/services/login/nautilus-view/Makefile.am:
+	* components/services/login/nautilus-view/nautilus-change-password-
+	view.c: (run_away_timer), (generate_change_password_form),
+	(entry_changed_cb), (authn_succeeded), (authn_failed),
+	(start_change_password), (change_password_button_cb):
+	* components/services/login/nautilus-view/password-box.c:
+	(add_padding_to_box), (add_filler_to_box), (line_expose),
+	(vertical_line_new), (make_empty_viewport),
+	(gtk_widget_set_colors), (make_bubble_shell),
+	(change_bubble_shell_colors), (password_box_set_colors),
+	(password_box_get_entry), (password_box_set_error_text),
+	(password_box_show_error), (password_box_new):
+	* components/services/login/nautilus-view/password-box.h:
+
+	Implement new change-password UI according to Arlo's screenshots.
+	Rounded password text-entry blobs are now in their own file for a
+	modicum of modularity.  Reponse codes from ammonite are now
+	correctly decoded and translated into text.
+
+2001-01-18  Robey Pointer  <robey@eazel.com>
+
 	* components/services/install/lib/eazel-install-object.c:
 	* components/services/install/lib/eazel-install-protocols.c:
 	(http_fetch_remote_file):

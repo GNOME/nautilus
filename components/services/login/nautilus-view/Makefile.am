@@ -17,9 +17,11 @@ INCLUDES =								\
 bin_PROGRAMS =								\
 	nautilus-change-password-view
 
-nautilus_change_password_view_SOURCES =						\
-	nautilus-change-password-view.h						\
-	nautilus-change-password-view.c		    				\
+nautilus_change_password_view_SOURCES =					\
+	nautilus-change-password-view.h					\
+	nautilus-change-password-view.c		    			\
+	password-box.h							\
+	password-box.c							\
 	main.c								\
 	$(NULL)
 
