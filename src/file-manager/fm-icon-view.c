@@ -44,6 +44,7 @@
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
@@ -1158,15 +1159,23 @@ get_icon_editable_text_callback (NautilusIconContainer *container,
 			NautilusFile *file,
 			FMIconView *icon_view)
 {
+	char *file_name;
+	
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
+	/* strip the suffix for nautilus object xml files */
+	/* FIXME: need a preference to disable this to show real file names for experts */
+	
+	
+	file_name = nautilus_link_get_display_name(nautilus_file_get_name (file));
+	
 	/* FIXME: We don't want the name displayed when we are zoomed all
 	 * the way out. Perhaps this routine should return NULL in that
 	 * case to indicate that fact to NautilusIconContainer.
 	 */
-	return nautilus_file_get_name (file);
+	return file_name;
 }
 
 /* This callback returns the text items that are not editable by the user

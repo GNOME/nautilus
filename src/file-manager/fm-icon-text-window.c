@@ -398,9 +398,10 @@ fm_get_text_attribute_names_preference_or_default (void)
 	preference = nautilus_preferences_get (nautilus_preferences_get_global_preferences (),
 					       NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
 					       DEFAULT_ATTRIBUTE_NAMES);
-	if (attribute_names_string_is_good (preference)) {
+	if (preference && attribute_names_string_is_good (preference)) {
 		return preference;
 	}
-	g_free (preference);
+	if (preference)
+		g_free (preference);
 	return g_strdup (DEFAULT_ATTRIBUTE_NAMES);
 }

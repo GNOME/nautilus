@@ -3,6 +3,7 @@ SUBDIRS = eazel
 icondir = $(datadir)/pixmaps/nautilus
 
 icon_DATA =					\
+	computer.png				\
 	eazel-logo.gif				\
 	emblem-certified.gif			\
 	emblem-changed.gif			\
@@ -21,6 +22,7 @@ icon_DATA =					\
 	gnome-package.png			\
 	gnome-pack-deb.png			\
 	gnome-pack-rpm.png			\
+	hand.svg				\
 	i-blockdev.png				\
 	i-cdrom.png				\
 	i-chardev.png				\

@@ -43,6 +43,7 @@
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-xml-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
+#include "nautilus-link.h"
 #include "nautilus-string.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-gtk-macros.h"
@@ -797,17 +798,12 @@ nautilus_file_get_mapped_uri(NautilusFile *file)
 		gnome_vfs_close (handle);
 	}
 	
-	/* see if it's a nautilus object xml file - if so, open and parse the file to fetch the uri */
-	if (nautilus_str_has_suffix(actual_uri, "-ntl.xml")) {
-		xmlDoc *doc = xmlParseFile (actual_uri + 7);
-		if (doc) {
-			char* link_str = xmlGetProp (doc->root, "LINK");
-			if (link_str) {
-				actual_uri = g_strdup(link_str);
-				xmlFree(link_str);
-			}
-		xmlFreeDoc (doc);
-		} 	
+	/* see if it's a nautilus link xml file - if so, open and parse the file to fetch the uri */
+	
+	if (nautilus_link_is_link_file(actual_uri)) {
+		char *old_uri = actual_uri;
+		actual_uri = nautilus_link_get_link_uri(actual_uri);
+		g_free(old_uri);
 	}
 		
 	/* all done so return the result */

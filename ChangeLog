@@ -1,3 +1,33 @@
+2000-04-19  Andy Hertzfeld <andy@eazel.com>
+
+	added better abstraction for the xml-based links introduced yesterday
+	
+	* libnautilus/nautilus-link.h,c:
+	new routines to access xml-based link files
+	* libnautilus/Makefile.am:
+	added nautilus-link.c,h to build
+	* libnautilus/nautilus-file.c:
+	use nautilus_link_get_link_uri in nautilus-link instead of accessing link files directly
+	* libnautilus/nautilus-icon-factory.c:
+	use nautilus_link_get_image_uri in nautilus-link instead of accessing directly
+	* src/file-manager/fm-icon-view.c:
+	use nautilus_link_get_display_name to suppress display of identifying suffix
+	* src/file-manager/fm-icon-text-window.c:
+	fixed bug that caused crash when preference file is deleted by checking for NULL
+	and using default in fm_get_text_attribute_names_preference_or_default
+	* icons/computer.png:
+	new icon for novice home
+	* icons/hand.svg:
+	new icon for novice home
+	* icons/Makefile.am:
+	added new icons
+	* data/top/Computer-ntl.xml:
+	added xml link for novice home
+	* data/top/Services-ntl.xml:
+	added link to novice home:
+	* data/Makefile.am:
+	added new files
+	
 2000-04-19  John Sullivan  <sullivan@eazel.com>
 
 	Yet more tweakery to the file-monitoring code.

@@ -47,6 +47,7 @@
 #include "nautilus-default-file-icon.h"
 #include "nautilus-metadata.h"
 #include "nautilus-lib-self-check-functions.h"
+#include "nautilus-link.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-gtk-macros.h"
@@ -787,23 +788,19 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 		}
 	}
 	
-	/* handle nautilus object xml files, which may specify their own image */	
-	if (nautilus_str_has_suffix(file_uri, "-ntl.xml")) {
-		xmlDoc *doc = xmlParseFile (file_uri + 7);
-		if (doc) {
-			char *icon_str = xmlGetProp (doc->root, NAUTILUS_METADATA_KEY_CUSTOM_ICON);
-			xmlFreeDoc (doc);
-			/* the icon specification may be a full path or not, so set up the appropriate variable */
-			if (icon_str) {
-				if (nautilus_str_has_prefix(icon_str, "file://")) {
-					uri = g_strdup(icon_str);
-				} else {
-					name = (const char*) g_strdup(icon_str);
-					need_to_free_name = TRUE;
-				}
-				xmlFree(icon_str);
+	/* handle nautilus link xml files, which may specify their own image */	
+	
+	if (nautilus_link_is_link_file(file_uri)) {
+		char *image_uri = nautilus_link_get_image_uri(file_uri);
+		if (image_uri) {
+			if (nautilus_str_has_prefix(image_uri, "file://"))
+				uri = image_uri;
+			else {
+				name = (const char*) image_uri;
+				need_to_free_name = TRUE;
 			}
-		} 	
+
+		}
 	}
 	
 	/* handle .svg files */
