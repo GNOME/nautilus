@@ -35,6 +35,7 @@
 #include "nautilus-sidebar.h"
 #include "nautilus-signaller.h"
 #include "nautilus-switchable-navigation-bar.h"
+#include "nautilus-throbber.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-zoom-control.h"
 #include <ctype.h>
@@ -1063,6 +1064,14 @@ void
 nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 {
 	gtk_widget_set_sensitive (window->stop_button, allow);
+	if (window->throbber == NULL)
+		return;
+		
+	if (allow) {
+		nautilus_throbber_start (NAUTILUS_THROBBER (window->throbber));
+	} else {
+		nautilus_throbber_stop (NAUTILUS_THROBBER (window->throbber));
+	}
 }
 
 void

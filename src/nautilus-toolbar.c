@@ -77,6 +77,10 @@ nautilus_toolbar_set_button_spacing  (NautilusToolbar *toolbar, int spacing)
 	toolbar->button_spacing = spacing;
 }
 
+void nautilus_toolbar_set_throbber (NautilusToolbar *bar, GtkWidget *new_throbber)
+{
+	bar->throbber = new_throbber;
+}
 
 static void
 nautilus_toolbar_size_allocate (GtkWidget     *widget,
@@ -161,6 +165,7 @@ nautilus_toolbar_size_allocate (GtkWidget     *widget,
 	  else
 	    alloc.x = allocation->x + (allocation->width - width_to_use) / 2;
 
+	  
 	  gtk_widget_size_allocate (child->widget, &alloc);
 	  
 	  if (toolbar->orientation == GTK_ORIENTATION_HORIZONTAL)
@@ -183,6 +188,12 @@ nautilus_toolbar_size_allocate (GtkWidget     *widget,
 	    alloc.y = allocation->y + (allocation->height - child_requisition.height) / 2;
 	  else
 	    alloc.x = allocation->x + (allocation->width - child_requisition.width) / 2;
+
+	  /* special case the throbber, so it's positioned at the far right */
+	  
+	  if (child->widget == nautilus_toolbar->throbber) {
+	  	alloc.x = widget->allocation.width - alloc.width;
+	  }
 
 	  gtk_widget_size_allocate (child->widget, &alloc);
 

@@ -41,6 +41,7 @@
 typedef struct NautilusToolbar {
 	GtkToolbar parent;
 	int button_spacing;
+	GtkWidget *throbber;
 } NautilusToolbar;
 
 typedef struct {
@@ -50,5 +51,5 @@ typedef struct {
 GtkType    nautilus_toolbar_get_type     	(void);
 GtkWidget* nautilus_toolbar_new			(void);
 void	   nautilus_toolbar_set_button_spacing  (NautilusToolbar *toolbar, int spacing);
-
+void	   nautilus_toolbar_set_throbber	(NautilusToolbar *toolbar, GtkWidget *throbber);
 #endif /* NAUTILUS_TOOLBAR_H */

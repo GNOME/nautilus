@@ -29,6 +29,7 @@
 #include <config.h>
 
 #include "nautilus-application.h"
+#include "nautilus-throbber.h"
 #include "nautilus-toolbar.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window.h"
@@ -329,6 +330,18 @@ set_up_toolbar_images (NautilusWindow *window)
 	g_free(theme_name);
 }
 
+static GtkWidget*
+allocate_throbber (GtkWidget *toolbar)
+{
+	GtkWidget *throbber;
+	
+	throbber = nautilus_throbber_new ();
+	gtk_widget_show (throbber);
+	gtk_toolbar_append_widget (GTK_TOOLBAR (toolbar), throbber, NULL, NULL);
+	nautilus_toolbar_set_throbber (NAUTILUS_TOOLBAR (toolbar), throbber);
+	return throbber;
+}
+
 static void
 set_up_toolbar_images_callback (gpointer callback_data)
 {
@@ -349,8 +362,10 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
         gtk_toolbar_set_style (GTK_TOOLBAR (toolbar), GTK_TOOLBAR_BOTH); 
 	nautilus_toolbar_set_button_spacing (NAUTILUS_TOOLBAR (toolbar), 50);
 	
-	gnome_app_fill_toolbar_with_data (GTK_TOOLBAR (toolbar), toolbar_info, app->accel_group, app);	
+	gnome_app_fill_toolbar_with_data (GTK_TOOLBAR (toolbar), toolbar_info, app->accel_group, app);
 	remember_buttons(window, toolbar_info);
+	window->throbber = allocate_throbber (toolbar);
+	
 	set_up_toolbar_images (window);
 
 	gnome_app_set_toolbar (app, GTK_TOOLBAR (toolbar));

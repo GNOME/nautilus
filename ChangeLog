@@ -1,3 +1,48 @@
+2000-08-30  Andy Hertzfeld  <andy@eazel.com>
+
+	added a Netscape-like throbber widget to the toolbar, to give busy feedback.  It uses
+	uses a generic animation from Arlo, but it's themable.  It still needs some clean-up
+	but it's mostly done.
+	
+	* configure.in:
+	* icons/Makefile.am:
+	* icons/throbber
+	* icons/throbber/.cvsignore:
+	* icons/throbber/Makefile.am:
+	* icons/throbber/*.png:
+	added a directory of frame images for the generic throbber.
+	
+	* src/Makefile.am:
+	* src/nautilus-throbber.c,h: (nautilus_throbber_initialize_class),
+	(nautilus_throbber_destroy), (get_throbber_dimensions),
+	(nautilus_throbber_initialize), (nautilus_throbber_new),
+	(nautilus_throbber_theme_changed), (draw_pixbuf),
+	(select_throbber_image), (draw_throbber_image),
+	(nautilus_throbber_draw), (nautilus_throbber_expose),
+	(bump_throbber_frame), (nautilus_throbber_start),
+	(nautilus_throbber_stop), (nautilus_throbber_unload_images),
+	(load_themed_image), (make_throbber_frame_name),
+	(nautilus_throbber_load_images),
+	(nautilus_throbber_button_press_event),
+	(nautilus_throbber_size_allocate):
+	added a throbber widget that animates while pages are loaded.
+	
+	* src/nautilus-toolbar.h:
+	made the nautilus toolbar know about the throbber
+	* src/nautilus-toolbar.c,h: (nautilus_toolbar_set_throbber),
+	(nautilus_toolbar_size_allocate):
+	made the nautilus toolbar position the throbber on the far right
+	
+	* src/nautilus-window-toolbars.c: (allocate_throbber),
+	(nautilus_window_initialize_toolbars):
+	allocate the throbber when we make the toolbar
+	
+	* src/nautilus-window.c: (nautilus_window_allow_stop):
+	tell the throbber to start and stop when page loading begins/ends.  We piggy-back
+	off of the stop button.
+	* src/nautilus-window.h:
+	made the nautilus_window know about the throbber
+	
 2000-08-29  Mike Fleming  <mfleming@eazel.com>
 
 	* src/nautilus-first-time-druid.c:

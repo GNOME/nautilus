@@ -69,6 +69,7 @@ noinst_HEADERS = \
 	nautilus-switchable-navigation-bar.h	\
 	nautilus-switchable-search-bar.h	\
 	nautilus-theme-selector.h		\
+	nautilus-throbber.h			\
 	nautilus-toolbar.h			\
 	nautilus-view-frame-private.h		\
 	nautilus-view-frame.h			\
@@ -105,6 +106,7 @@ nautilus_SOURCES = \
 	nautilus-switchable-navigation-bar.c	\
 	nautilus-switchable-search-bar.c	\
 	nautilus-theme-selector.c		\
+	nautilus-throbber.c			\
 	nautilus-toolbar.c			\
 	nautilus-view-frame-bonobo-control.c	\
 	nautilus-view-frame-bonobo-embeddable.c	\

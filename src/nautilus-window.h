@@ -114,7 +114,8 @@ struct NautilusWindow {
   GtkWidget *home_button;
   
   GtkWidget *zoom_control;
-
+  GtkWidget *throbber;
+  
   /* Pending changes */
   NautilusNavigationInfo *pending_ni;
   NautilusViewFrame *new_content_view, *new_requesting_view;

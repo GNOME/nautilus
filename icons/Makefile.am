@@ -1,6 +1,6 @@
 NULL=
 
-SUBDIRS = arlo eazel vector
+SUBDIRS = arlo eazel vector throbber
 
 icondir = $(datadir)/pixmaps/nautilus
 
