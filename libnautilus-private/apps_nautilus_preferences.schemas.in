@@ -13,10 +13,11 @@
       <type>bool</type>
       <default>false</default>
       <locale name="C">
-         <short>Whether to show dotfiles</short>
+         <short>Whether to show hidden files</short>
          <long>
-          If set to true, then hidden files (dotfiles) are shown in 
-          the file manager.
+          If set to true, then hidden files are shown in 
+          the file manager.  Hidden files are either dotfiles or are
+	  listed in the directory's .hidden file.
          </long>
       </locale>
     </schema>
@@ -418,8 +419,8 @@
          <short>Default folder viewer</short>
          <long>
 	 When a folder is visited this viewer is used unless you have selected
-	 another view for that particular folder. Possible values are list_view
-	 and icon_view.
+	 another view for that particular folder. Possible values are "list_view"
+	 and "icon_view".
          </long>
       </locale>
     </schema>
@@ -439,8 +440,8 @@
 	  A list of captions below an icon in the icon view and
           the desktop.  The actual number of captions shown depends on
           the zoom level.  Possible values are:
-	  size, type, date_modified, date_changed, date_accessed, owner,
-	  group, permissions, octal_permissions and mime_type
+	  "size", "type", "date_modified", "date_changed", "date_accessed", "owner",
+	  "group", "permissions", "octal_permissions" and "mime_type".
          </long>
       </locale>
     </schema>
@@ -455,7 +456,7 @@
          <short>Default sort order</short>
          <long>
            The default sort-order for the item in the icon view. Possible
-	   values are name, size, type, modification_date, emblems.
+	   values are "name", "size", "type", "modification_date", "emblems".
          </long>
       </locale>
     </schema>
@@ -527,7 +528,7 @@
       <type>string</type>
       <default>standard</default>
       <locale name="C">
-         <short>Default zoom level used by the icon view</short>
+         <short>Default icon zoom level</short>
          <long>
              Default zoom level used by the icon view.
          </long>
@@ -574,7 +575,7 @@
       <type>string</type>
       <default>smaller</default>
       <locale name="C">
-         <short>Default zoom level used by the list view</short>
+         <short>Default list zoom level</short>
          <long>
              Default zoom level used by the list view.
          </long>
@@ -603,9 +604,9 @@
       <type>int</type>
       <default>148</default>
       <locale name="C">
-         <short>width of the sidebar</short>
+         <short>Width of the side pane</short>
          <long>
-          The default width of the sidebar in new windows.
+          The default width of the side pane in new windows.
          </long>
       </locale>
     </schema>
@@ -631,7 +632,7 @@
       <type>bool</type>
       <default>true</default>
       <locale name="C">
-         <short>Show  location bar in new windows</short>
+         <short>Show location bar in new windows</short>
          <long>
            If set to true, newly opened windows will have the
 	   location bar visible.
@@ -661,10 +662,10 @@
       <type>bool</type>
       <default>true</default>
       <locale name="C">
-         <short>Show side bar in new windows</short>
+         <short>Show side pane in new windows</short>
          <long>
            If set to true, newly opened windows will have the side
-	   bar visible.
+	   pane visible.
          </long>
       </locale>
     </schema>
@@ -693,7 +694,7 @@
          <short>Only show directories in the tree sidebar</short>
          <long>
            If set to true, Nautilus will show only show directories
-           in the tree sidebar. Otherwise it will show both directories
+           in the tree side pane. Otherwise it will show both directories
 	   and files.
          </long>
       </locale>
