@@ -1491,7 +1491,7 @@ element_clicked_callback (GtkWidget *image_table,
 				  target_list,
 				  GDK_ACTION_MOVE | GDK_ACTION_COPY,
 				  event->button,
-				  NULL);
+				  event->event);
 
 	/* compute the offsets for dragging */
 	if (strcmp (drag_types[0].target, "application/x-color")) {

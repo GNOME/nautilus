@@ -1,3 +1,10 @@
+2002-03-10  Alexander Larsson  <alla@lysator.liu.se>
+
+	* src/nautilus-property-browser.c (element_clicked_callback):
+	Pass event->event to gtk_drag_begin in order get the right time
+	for the grab. This avoids a race with the ungrab that could lead
+	to stuck grabs.
+
 2002-03-09  jacob berkman  <jacob@ximian.com>
 
 	* nautilus.desktop.in (Exec): run-nautilus is no more, so just run
