@@ -1266,6 +1266,12 @@ new_files_callback (GnomeVFSAsyncHandle *handle,
 	/* Queue up the new files. */
 	for (p = results; p != NULL; p = p->next) {
 		result = p->data;
+		if(result->file_info->name == NULL) {
+			/* file_info->name==NULL - this means something has
+			 * gone wrong and we should ignore this file_info.
+			 */
+			continue;
+		}
 		directory_load_one (directory, result->file_info);
 	}
 }
