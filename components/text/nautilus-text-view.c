@@ -59,7 +59,7 @@
 #define MAX_FILE_SIZE	1024*1024
 #define MAX_SELECTION_SIZE 256
 
-#define ADDITIONAL_SERVICES_MENU_PATH	"/menu/Services Placeholder/Services/Service Items"
+#define ADDITIONAL_SERVICES_MENU_PATH	"/menu/Text view/Services Placeholder"
 
 #define NAUTILUS_PREFERENCES_TEXT_VIEW_FONT                     "components/text_view/font"
 #define NAUTILUS_PREFERENCES_TEXT_VIEW_STANDARD_FONT_SIZE       "components/text_view/standard_font_size"

@@ -1,6 +1,6 @@
 <Root>
 <menu>
-	<placeholder name="Services Placeholder">
+	<submenu name="Text view" _label="Text view">
 		<submenu name="Fonts" _label="F_onts">
 			<menuitem name="GTK System Font" 
 			  _label="_GTK System Font" 
@@ -33,7 +33,8 @@
 			  type="radio" group="font group"
 			  id="lucida"/>
 		</submenu>
-
-	</placeholder>
+                <separator/>
+                <placeholder name="Services Placeholder" _label="Services"/>
+	</submenu>
 </menu>
 </Root>
