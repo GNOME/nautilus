@@ -190,8 +190,9 @@ nautilus_window_instance_init (NautilusWindow *window)
 	/* Register IconFactory callback to update the window border icon
 	 * when the icon-theme is changed.
 	 */
-	g_signal_connect (nautilus_icon_factory_get (), "icons_changed",
-			  G_CALLBACK (icons_changed_callback), window);
+	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
+				 G_CALLBACK (icons_changed_callback), window,
+				 0);
 
 	/* Create a separate component so when we remove the status
 	 * we don't loose the status bar

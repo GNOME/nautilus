@@ -1,5 +1,12 @@
 2002-12-04  James Willcox  <jwillcox@gnome.org>
 
+	* src/nautilus-window.c: (nautilus_window_instance_init):
+
+	Disconnect "icons_changed" handler from the icon factory when the
+	window is closed.  Fixes #98038.
+
+2002-12-04  James Willcox  <jwillcox@gnome.org>
+
 	* components/emblem/nautilus-emblem-view.c:
 	(nautilus_emblem_view_drag_received_cb):
 
