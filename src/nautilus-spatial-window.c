@@ -65,7 +65,6 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
-#include <libnautilus-private/nautilus-drag-window.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-global-preferences.h>

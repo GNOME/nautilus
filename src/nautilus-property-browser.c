@@ -78,7 +78,6 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-private/nautilus-customization-data.h>
 #include <libnautilus-private/nautilus-directory.h>
-#include <libnautilus-private/nautilus-drag-window.h>
 #include <libnautilus-private/nautilus-emblem-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
@@ -438,9 +437,6 @@ nautilus_property_browser_init (GtkObject *object)
 
 	/* initially, display the top level */
 	nautilus_property_browser_set_path(property_browser, BROWSER_CATEGORIES_FILE_NAME);
-
-	/* Register that things may be dragged from this window */
-	nautilus_drag_window_register (GTK_WINDOW (property_browser));
 }
 
 /* Destroy the three dialogs for adding patterns/colors/emblems if any of them

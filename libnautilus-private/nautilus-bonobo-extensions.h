@@ -115,14 +115,6 @@ void                            nautilus_bonobo_add_extension_item              
 void                            nautilus_bonobo_add_extension_toolbar_item         (BonoboUIComponent                *ui,
 										    const char                       *path,
 										    NautilusMenuItem                 *item);
-void                            nautilus_bonobo_register_activation_shortcut       (const char                       *iid,
-										    NautilusBonoboCreateObject        create_object_callback,
-										    gpointer                          callback_data);
-void                            nautilus_bonobo_unregister_activation_shortcut     (const char                       *iid);
-NautilusBonoboActivationHandle *nautilus_bonobo_activate_from_id                   (const char                       *iid,
-										    NautilusBonoboActivationCallback  callback,
-										    gpointer                          callback_data);
-void                            nautilus_bonobo_activate_cancel                    (NautilusBonoboActivationHandle   *handle);
 Bonobo_RegistrationResult       nautilus_bonobo_activation_register_for_display    (const char                       *iid,
 										    Bonobo_Unknown                    ref);
 

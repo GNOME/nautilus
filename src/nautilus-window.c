@@ -65,7 +65,6 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
-#include <libnautilus-private/nautilus-drag-window.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -609,9 +608,6 @@ nautilus_window_constructed (NautilusWindow *window)
 
 	/* Set up undo manager */
 	nautilus_undo_manager_attach (window->application->undo_manager, G_OBJECT (window));	
-
-	/* Register that things may be dragged from this window */
-	nautilus_drag_window_register (GTK_WINDOW (window));
 
 	nautilus_window_ui_thaw (window);
 }
