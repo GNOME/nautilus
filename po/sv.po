@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.1\n"
-"POT-Creation-Date: 2000-07-15 01:07+0000\n"
+"POT-Creation-Date: 2000-07-16 23:25+0000\n"
 "PO-Revision-Date: 2000-04-20 20:42+0200\n"
 "Last-Translator: Andreas Hyden <a.hyden@cyberpoint.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -14,9 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8-bit\n"
 
 #. * From 'man(7)':
-#.#, fuzzy
-#, fuzzy
-
+#.
 #. The manual sections are traditionally defined as follows:
 #.
 #. 1 Commands
@@ -112,7 +110,7 @@ msgstr "se även "
 
 #: components/help/hyperbola-nav-index.c:212
 msgid "No matches."
-msgstr ""
+msgstr "Inga träffar."
 
 #: components/help/hyperbola-nav-index.c:479
 msgid " (see \""
@@ -194,7 +192,7 @@ msgstr "Var vänlig vänta..."
 
 #: components/html/gnome-dialogs.c:230
 msgid "Request timeout!"
-msgstr ""
+msgstr "Begäran tog för lång tid!"
 
 #: components/html/gnome-dialogs.c:234
 msgid "Unknown"
@@ -228,7 +226,7 @@ msgstr ""
 #. menu item path, must start with /some-existing-menu-path and be otherwise unique
 #: components/loser/content/nautilus-content-loser.c:245
 msgid "_Kill Content View"
-msgstr ""
+msgstr "_Döda innehållsvy"
 
 #. menu item user-displayed label
 #: components/loser/content/nautilus-content-loser.c:246
@@ -239,7 +237,7 @@ msgstr ""
 #. button path, must start with /some-existing-toolbar-path and be otherwise unique
 #: components/loser/content/nautilus-content-loser.c:265
 msgid "Kill Content View"
-msgstr ""
+msgstr "Döda innehållsvy"
 
 #. button user-displayed label
 #: components/loser/content/nautilus-content-loser.c:266
@@ -254,6 +252,7 @@ msgid ""
 "Loser sidebar."
 msgstr ""
 
+
 #: components/loser/sidebar/nautilus-sidebar-loser.c:202
 #, c-format
 msgid ""
@@ -266,7 +265,7 @@ msgstr ""
 #. menu item path, must start with /some-existing-menu-path and be otherwise unique
 #: components/loser/sidebar/nautilus-sidebar-loser.c:248
 msgid "_Kill Sidebar View"
-msgstr ""
+msgstr "_Döda sidoradsvyn"
 
 #. menu item user-displayed label
 #: components/loser/sidebar/nautilus-sidebar-loser.c:249
@@ -296,7 +295,7 @@ msgstr ""
 #. menu item path, must start with /some-existing-menu-path and be otherwise unique
 #: components/mozilla/nautilus-mozilla-content-view.c:318
 msgid "_Mozilla"
-msgstr ""
+msgstr "_Mozilla"
 
 #. menu item user-displayed label
 #: components/mozilla/nautilus-mozilla-content-view.c:319
@@ -321,7 +320,7 @@ msgstr ""
 #. button path, must start with /Main/ and be otherwise unique
 #: components/mozilla/nautilus-mozilla-content-view.c:336
 msgid "Mozilla"
-msgstr ""
+msgstr "Mozilla"
 
 #. button user-displayed label
 #: components/mozilla/nautilus-mozilla-content-view.c:337
@@ -345,9 +344,8 @@ msgid "Year"
 msgstr "År"
 
 #: components/music/nautilus-music-view.c:196
-#, fuzzy
 msgid "Bitrate "
-msgstr "Datum byggt: "
+msgstr "Bithastighet "
 
 #: components/music/nautilus-music-view.c:196
 msgid "Time "
@@ -366,9 +364,8 @@ msgid "Channels"
 msgstr "Kanaler"
 
 #: components/music/nautilus-music-view.c:196
-#, fuzzy
 msgid "Sample Rate"
-msgstr "Exempel"
+msgstr "Samplingsfrekvens"
 
 #. allocate a widget for the album title
 #: components/music/nautilus-music-view.c:221
@@ -443,7 +440,7 @@ msgstr "Distribution: "
 
 #: components/rpmview/nautilus-rpm-view.c:229
 msgid "Vendor: "
-msgstr ""
+msgstr "Försäljare: "
 
 #: components/rpmview/nautilus-rpm-view.c:261
 msgid "Install"
@@ -529,19 +526,19 @@ msgstr ""
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:73
 msgid "Show debug output"
-msgstr ""
+msgstr "Visa felsökningsutdata"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:74
 msgid "10 sec delay after starting service"
-msgstr ""
+msgstr "10 sek fördröjning efter startning av service"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:75
 msgid "Set port numer (80)"
-msgstr ""
+msgstr "Sätt portnummret (80)"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:76
 msgid "Test run"
-msgstr ""
+msgstr "Testkör"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:77
 msgid "Force install"
@@ -583,7 +580,7 @@ msgstr "Skapar standard konfigurationsfil ...\n"
 #: components/services/install/lib/eazel-install-metadata.c:62
 #, c-format
 msgid "*** Could not create services directory (%s)! ***\n"
-msgstr ""
+msgstr "*** Kunde inte skapa service-katalogen (%s)! ***\n"
 
 #: components/services/install/lib/eazel-install-metadata.c:69
 msgid "*** Could not create the default configuration file! ***\n"
@@ -649,6 +646,7 @@ msgstr "Avinstallationen misslyckades"
 
 #: components/services/install/lib/eazel-install-protocols.c:57
 #: components/services/install/lib/eazel-install-protocols.c:147
+#, c-format
 msgid "Downloading %s..."
 msgstr "Laddar ner %s..."
 
@@ -660,16 +658,16 @@ msgstr "Kunde inte öppna målfilen %s"
 #: components/services/install/lib/eazel-install-protocols.c:75
 #: components/services/install/lib/eazel-install-protocols.c:293
 msgid "Could not create an http request !"
-msgstr ""
+msgstr "Kunde inte skapa en http-begäran !"
 
 #: components/services/install/lib/eazel-install-protocols.c:80
 msgid "Invalid uri !"
-msgstr ""
+msgstr "Ogiltig uri !"
 
 #: components/services/install/lib/eazel-install-protocols.c:87
 #: components/services/install/lib/eazel-install-protocols.c:300
 msgid "Could not prepare http request !"
-msgstr ""
+msgstr "Kunde inte förbereda http-begäran !"
 
 #: components/services/install/lib/eazel-install-protocols.c:91
 msgid "Couldn't get async mode "
@@ -691,20 +689,21 @@ msgstr "FTP stöds inte än"
 #: components/services/install/lib/eazel-install-protocols.c:160
 #, c-format
 msgid "Checking local file %s..."
-msgstr ""
+msgstr "Kontrollerar lokal fil %s..."
 
 #: components/services/install/lib/eazel-install-protocols.c:240
 #, c-format
 msgid "Could not get a URL for %s"
-msgstr ""
+msgstr "Kunde inte få en URL för %s"
 
 #: components/services/install/lib/eazel-install-protocols.c:289
+#, c-format
 msgid "Search URL: %s"
 msgstr "Sök URL: %s"
 
 #: components/services/install/lib/eazel-install-protocols.c:297
 msgid "Invalid uri"
-msgstr ""
+msgstr "Ogiltig uri"
 
 #: components/services/install/lib/eazel-install-protocols.c:308
 #, c-format
@@ -737,6 +736,7 @@ msgid "Category = %s, %d packages"
 msgstr "Katerogi = %s, %d paket"
 
 #: components/services/install/lib/eazel-install-rpm-glue.c:358
+#, c-format
 msgid "Uninstalling %s"
 msgstr "Avinstallerar %s"
 
@@ -757,6 +757,7 @@ msgid "Packages database query failed !"
 msgstr ""
 
 #: components/services/install/lib/eazel-install-rpm-glue.c:871
+#, c-format
 msgid "Package %s is not installed"
 msgstr "Paketet %s är inte installerat"
 
@@ -804,7 +805,7 @@ msgstr ""
 #: components/services/install/lib/eazel-install-rpm-glue.c:1634
 #, c-format
 msgid "%d dependencies failed!"
-msgstr ""
+msgstr "%d beroenden misslyckades!"
 
 #: components/services/install/lib/eazel-install-rpm-glue.c:1697
 msgid "Dependencies are ok"
@@ -832,7 +833,7 @@ msgstr "*** Pkg-listfilen innehåller ingen information! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:142
 msgid "*** Cannot find the CATEGORIES xmlnode! ***\n"
-msgstr ""
+msgstr "*** Kan inte hitta xmlnoden CATEGORIES ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:144
 msgid "*** Bailing from categories parse! ***\n"
@@ -856,7 +857,7 @@ msgstr "*** Fel vid läsning av paketlista! ***\n"
 
 #: components/services/time/command-line/main.c:42
 msgid "display service name and such"
-msgstr ""
+msgstr "visar service-namnet och sådant"
 
 #: components/services/time/command-line/main.c:43
 msgid "maximum allowed difference in seconds"
@@ -868,7 +869,7 @@ msgstr "uppdatera systemklockan"
 
 #: components/services/time/command-line/main.c:45
 msgid "specify time url"
-msgstr ""
+msgstr "ange tids-url"
 
 #. today, use special word
 #: libnautilus-extensions/nautilus-file.c:1473
@@ -919,13 +920,13 @@ msgid "%u items"
 msgstr "%u objekt"
 
 #: libnautilus-extensions/nautilus-file.c:2501
+#, c-format
 msgid "%u directories"
 msgstr "%d kataloger"
 
 #: libnautilus-extensions/nautilus-file.c:2502
-#, fuzzy, c-format
 msgid "%u files"
-msgstr "%u objekt"
+msgstr "%u filer"
 
 #. This means no contents at all were readable
 #: libnautilus-extensions/nautilus-file.c:2819
@@ -1257,6 +1258,7 @@ msgstr "Till:"
 
 #. transfer error, prompt the user to continue or stop
 #: src/file-manager/dfos-xfer.c:259
+#, c-format
 msgid ""
 "Error %s copying file %s.\n"
 "Would you like to continue?"
@@ -1278,6 +1280,7 @@ msgid "Retry"
 msgstr "Försök igen"
 
 #: src/file-manager/dfos-xfer.c:301
+#, c-format
 msgid ""
 "File %s already exists.\n"
 "Would you like to replace it?"
@@ -1396,9 +1399,8 @@ msgid "Preparing to Move to Trash..."
 msgstr "Förbereder flyttning till papperskorgen..."
 
 #: src/file-manager/dfos-xfer.c:794
-#, fuzzy
 msgid "Finishing Move to Trash..."
-msgstr "Förbereder flyttning till papperskorgen..."
+msgstr "Avslutar flyttning till papperskorgen..."
 
 #: src/file-manager/dfos-xfer.c:833
 msgid "Deleting"
@@ -1409,9 +1411,8 @@ msgid "Preparing to Delete..."
 msgstr "Förbereder borttagning..."
 
 #: src/file-manager/dfos-xfer.c:835
-#, fuzzy
 msgid "Finishing Delete..."
-msgstr "Ta bort..."
+msgstr "Avslutar radering..."
 
 #: src/file-manager/dfos-xfer.c:879
 msgid "Emptying the Trash"
@@ -1422,9 +1423,8 @@ msgid "Preparing to Empty the Trash..."
 msgstr "Förbereder tömming av papperskorgen..."
 
 #: src/file-manager/dfos-xfer.c:881
-#, fuzzy
 msgid "Finishing Emptying the Trash..."
-msgstr "Tömmer papperskorgen"
+msgstr "Avslutar tömning papperskorgen..."
 
 #: src/file-manager/fm-directory-view.c:862
 #, c-format
@@ -1484,10 +1484,12 @@ msgid "%s%s, %s"
 msgstr "%s%s, %s"
 
 #: src/file-manager/fm-directory-view.c:1705
+#, c-format
 msgid "Are you sure you want to permanently remove item \"%s\"?"
 msgstr "Är du säker att du vill ta bort objektet \"%s\" permanent?"
 
 #: src/file-manager/fm-directory-view.c:1710
+#, c-format
 msgid "Are you sure you want to permanently remove the %d selected items?"
 msgstr "Är du säker att du vill ta bort de %d markerade objekten permanent?"
 
@@ -1558,11 +1560,11 @@ msgstr "_Markera allt"
 
 #: src/file-manager/fm-directory-view.c:2004
 msgid "R_emove Custom Images"
-msgstr ""
+msgstr "_Ta bort anpassade bilder"
 
 #: src/file-manager/fm-directory-view.c:2006
 msgid "R_emove Custom Image"
-msgstr ""
+msgstr "_Ta bort anpassad bild"
 
 #: src/file-manager/fm-directory-view.c:2010
 msgid "Reset _Background"
@@ -1594,9 +1596,8 @@ msgid "%s Viewer"
 msgstr ""
 
 #: src/file-manager/fm-directory-view.c:2517
-#, fuzzy
 msgid "Move all selected items to the Trash"
-msgstr "Flyttar alla markerade objekt till papperskorgen"
+msgstr "Flytta alla markerade objekt till papperskorgen"
 
 #: src/file-manager/fm-directory-view.c:2526
 msgid "Delete all selected items"
@@ -1644,7 +1645,7 @@ msgstr "Markera alla objekt i detta fönstret"
 
 #: src/file-manager/fm-directory-view.c:2684
 msgid "Remove the custom image from each selected icon"
-msgstr ""
+msgstr "Ta bort den anpassade bilden från var och en av de markerade ikonerna"
 
 #: src/file-manager/fm-error-reporting.c:50
 #, c-format
@@ -1676,9 +1677,8 @@ msgid "Sorry, couldn't change the owner of \"%s\"."
 msgstr "Tyvärr, kunde inte ändra ägaren av \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:131
-#, fuzzy, c-format
 msgid "Sorry, couldn't change the permissions of \"%s\"."
-msgstr "Du har inte rättigheter att se \"%s.\"."
+msgstr "Tyvärr, kunde inte ändra rättigheterna på \"%s.\"."
 
 #: src/file-manager/fm-error-reporting.c:208
 #, c-format
@@ -1722,9 +1722,8 @@ msgid "permissions"
 msgstr "rättigheter"
 
 #: src/file-manager/fm-icon-text-window.c:81
-#, fuzzy
 msgid "octal permissions"
-msgstr "rättigheter"
+msgstr "rättigheter i oktal form"
 
 #: src/file-manager/fm-icon-text-window.c:82
 msgid "MIME type"
@@ -1777,12 +1776,11 @@ msgstr "Behåll ikoner sorterade efter ändringsdatum i rader"
 
 #: src/file-manager/fm-icon-view.c:142
 msgid "Sort by _Emblems"
-msgstr ""
+msgstr "Sortera efter _emblem"
 
 #: src/file-manager/fm-icon-view.c:143
-#, fuzzy
 msgid "Keep icons sorted by emblems in rows"
-msgstr "Behåll ikoner sorterade i rader och kolumner"
+msgstr "Behåll ikoner sorterade efter emblem i rader"
 
 #: src/file-manager/fm-icon-view.c:331
 msgid "_Stretch Icon"
@@ -1850,9 +1848,8 @@ msgid "Rename selected item"
 msgstr "Byt namn på markerat objekt"
 
 #: src/file-manager/fm-icon-view.c:1290
-#, fuzzy, c-format
 msgid "pointing at \"%s\""
-msgstr "Kontaktar %s"
+msgstr "pekar på \"%s\""
 
 #: src/file-manager/fm-list-view.c:664
 msgid "Size"
@@ -1948,19 +1945,19 @@ msgstr "MIME-typ:"
 
 #: src/file-manager/fm-properties-window.c:1235
 msgid "Emblems"
-msgstr ""
+msgstr "Emblem"
 
 #: src/file-manager/fm-properties-window.c:1468
 msgid "Special Flags:"
-msgstr ""
+msgstr "Specialflaggor:"
 
 #: src/file-manager/fm-properties-window.c:1472
 msgid "Set User ID"
-msgstr ""
+msgstr "Sätt användar-ID"
 
 #: src/file-manager/fm-properties-window.c:1476
 msgid "Set Group ID"
-msgstr ""
+msgstr "Sätt grupp-ID"
 
 #: src/file-manager/fm-properties-window.c:1480
 msgid "Sticky"
@@ -2038,8 +2035,8 @@ msgid ""
 "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
 "again may fix the problem."
 msgstr ""
-"Nautilus kan inte användas nu. Omstart av datorn eller ominstallering av Nautilus "
-"kan fixa proglemen."
+"Nautilus kan inte användas nu. Omstart av datorn eller ominstallering av "
+"Nautilus kan fixa proglemen."
 
 #. FIXME: The guesses and stuff here are lame.
 #: src/nautilus-application.c:335
@@ -2064,7 +2061,7 @@ msgstr ""
 #.
 #: src/nautilus-application.c:360 src/nautilus-application.c:378
 msgid "Nautilus can't be used now, due to an unexpected error."
-msgstr ""
+msgstr "Nautilus kan inte användas nu, på grund av ett oväntat fel."
 
 #: src/nautilus-application.c:361
 msgid ""
@@ -2145,9 +2142,8 @@ msgid "Sorry, but '%s' is not an image file!"
 msgstr "Tyvärr, men '%s' är inte en bildfil!"
 
 #: src/nautilus-property-browser.c:769
-#, fuzzy
 msgid "Create a New Emblem:"
-msgstr "Skapa ett nytt fönster"
+msgstr "Skapa ett nytt emblem:"
 
 #. make the keyword label and field
 #: src/nautilus-property-browser.c:774
@@ -2157,7 +2153,7 @@ msgstr ""
 #. set up a gnome file entry to pick the image file
 #: src/nautilus-property-browser.c:791
 msgid "Select an image file for the new emblem:"
-msgstr ""
+msgstr "Välj en bildfil för det nya emlbemet:"
 
 #: src/nautilus-property-browser.c:895
 msgid "Select an image file to add as a background:"
@@ -2183,10 +2179,12 @@ msgid "Click on a %s to remove it"
 msgstr "Klicka på en %s för att ta bort den"
 
 #: src/nautilus-property-browser.c:1871
+#, c-format
 msgid "Categories: %s"
 msgstr "Katerogier: %s"
 
 #: src/nautilus-property-browser.c:1880
+#, c-format
 msgid "Remove a %s"
 msgstr "Ta bort en %s"
 
@@ -2206,6 +2204,7 @@ msgid "Open with..."
 msgstr "Öppna med..."
 
 #: src/nautilus-window.c:778
+#, c-format
 msgid "View as %s..."
 msgstr "Visa som %s..."
 
@@ -2230,9 +2229,8 @@ msgid "Nautilus: %s"
 msgstr "Nautilus: %s"
 
 #: src/nautilus-window-manage-views.c:626
-#, fuzzy, c-format
 msgid "You do not have the permissions necessary to view \"%s\"."
-msgstr "Du har inte rättigheter att se \"%s.\""
+msgstr "Du har inte tillräckliga rättigheter för att se \"%s\"."
 
 #: src/nautilus-window-manage-views.c:1195
 #, fuzzy, c-format
@@ -2246,16 +2244,13 @@ msgstr ""
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
-"\"%s\" är ingen giltig plats.\n"
-"Vänligen kolla stavningen och försök igen."
+"\"%s\" är ingen giltig plats. Vänligen kontrollera stavningen och försök igen."
 
 #: src/nautilus-window-manage-views.c:1219
-#, fuzzy, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot handle items of this type."
 msgstr ""
-"Kunde inte visa \"%s\",\n"
-"för Nautilus kan inte behandla objekt av den här typen."
+"Kunde inte visa \"%s\", på grund av att Nautilus kan inte behandla objekt av den här typen."
 
 #: src/nautilus-window-manage-views.c:1223
 #, fuzzy, c-format
@@ -2459,7 +2454,7 @@ msgstr "Nybörjare"
 
 #: src/nautilus-window-menus.c:1005
 msgid "Novice User Level"
-msgstr ""
+msgstr "Användarnivå för nybörjare"
 
 #: src/nautilus-window-menus.c:1012
 msgid "Intermediate"
@@ -2475,7 +2470,7 @@ msgstr "Hacker"
 
 #: src/nautilus-window-menus.c:1021
 msgid "Hacker User Level"
-msgstr ""
+msgstr "Användarnivå för hackers"
 
 #: src/nautilus-window-menus.c:1028
 msgid "Customize Settings..."
@@ -2523,6 +2518,7 @@ msgstr "Sidorad"
 msgid "Normalize Menu"
 msgstr "Normalisera meny"
 
+#. Help
 #: src/nautilus-window-menus.c:1133
 msgid "_Help"
 msgstr "_Hjälp"
@@ -2597,11 +2593,11 @@ msgstr "Avbryt laddning"
 
 #: src/nautilus-window-toolbars.c:153
 msgid "Services"
-msgstr ""
+msgstr "Tjänster"
 
 #: src/nautilus-window-toolbars.c:153
 msgid "Eazel Services"
-msgstr ""
+msgstr "Eazel-tjänster"
 
 #: src/nautilus-zoom-control.c:283
 msgid "%.0f%%"
