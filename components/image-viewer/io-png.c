@@ -40,7 +40,8 @@ image_save (Bonobo_Stream stream, GdkPixbuf *pixbuf,
 	png_infop           info_ptr;
 	guint8              *ptr;
 	int                 x, y, j;
-	png_bytep           row_ptr, data = NULL;
+	png_bytep           row_ptr;
+	volatile png_bytep  data = NULL;
 	png_color_8         sig_bit;
 	int                 w, h, rowstride;
 	int                 has_alpha;

@@ -1,3 +1,10 @@
+2000-09-19  Darin Adler  <darin@eazel.com>
+
+	* components/image-viewer/io-png.c: (image_save): Use volatile to
+	fix setjmp/longjmp vulnerability that was indicated by a GCC
+	warning. For some reason this showed up only with new versions of
+	lbpng.
+
 2000-09-19  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 1244 (Nautilus window size is hardwired)
@@ -647,7 +654,6 @@
 
 	* icons/knob.png:
 	Put in a different knob.
-
 
 2000-09-15  John Sullivan  <sullivan@eazel.com>
 
