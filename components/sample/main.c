@@ -50,14 +50,10 @@ sample_make_object (BonoboGenericFactory *factory,
 	NautilusSampleContentView *view;
 	NautilusView *nautilus_view;
 
-	puts ("Checking IID!");
-
 	if (strcmp (iid, "OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae")) {
 		return NULL;
 	}
 
-	puts ("Trying to make object!");
-	
 	view = NAUTILUS_SAMPLE_CONTENT_VIEW (gtk_object_new (NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW, NULL));
 
 	object_count++;
@@ -76,8 +72,6 @@ int main(int argc, char *argv[])
 	CORBA_Environment ev;
 
 	CORBA_exception_init(&ev);
-
-        puts ("In component.");        
 	
         gnome_init_with_popt_table("nautilus-sample-content-view", VERSION, 
 				   argc, argv,
@@ -89,8 +83,6 @@ int main(int argc, char *argv[])
 
 	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_sample_content_view_factory:3df6b028-be44-4a18-95c3-7720f50ca0c5", sample_make_object, NULL);
 		
-	puts ("About to do main loop.");        
-
 	do {
 		bonobo_main ();
 	} while (object_count > 0);

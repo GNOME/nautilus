@@ -52,14 +52,10 @@ loser_make_object (BonoboGenericFactory *factory,
 
 	nautilus_content_loser_maybe_fail ("pre-make-object");
 
-	puts ("Checking IID!");
-
 	if (strcmp (iid, "OAFIID:nautilus_content_loser:95901458-c68b-43aa-aaca-870ced11062d")) {
 		return NULL;
 	}
 
-	puts ("Trying to make object!");
-	
 	view = NAUTILUS_CONTENT_LOSER (gtk_object_new (NAUTILUS_TYPE_CONTENT_LOSER, NULL));
 
 	object_count++;
@@ -81,8 +77,6 @@ int main(int argc, char *argv[])
 
 	CORBA_exception_init(&ev);
 
-        puts ("In component.");        
-	
 	nautilus_content_loser_maybe_fail ("pre-init");
 
         gnome_init_with_popt_table("nautilus-content-loser", VERSION, 
@@ -98,8 +92,6 @@ int main(int argc, char *argv[])
 	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_content_loser_factory:adf30e75-3b63-4360-8784-a8e239390a69", loser_make_object, NULL);
 		
 	nautilus_content_loser_maybe_fail ("post-factory-init");
-
-	puts ("About to do main loop.");        
 
 	do {
 		bonobo_main ();

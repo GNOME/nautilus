@@ -167,8 +167,6 @@ nautilus_switchable_navigation_bar_set_location (NautilusNavigationBar *navigati
 
 	bar = NAUTILUS_SWITCHABLE_NAVIGATION_BAR (navigation_bar);
 
-	puts ("XXX: foo");
-	
 	/* Set location for both bars so if we switch things will stil
            look OK. */
 

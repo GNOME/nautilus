@@ -52,14 +52,10 @@ loser_make_object (BonoboGenericFactory *factory,
 
 	nautilus_sidebar_loser_maybe_fail ("pre-make-object");
 
-	puts ("Checking IID!");
-
 	if (strcmp (iid, "OAFIID:nautilus_sidebar_loser:07bfdd1d-7abc-4412-98ab-441b226a10d0")) {
 		return NULL;
 	}
 
-	puts ("Trying to make object!");
-	
 	view = NAUTILUS_SIDEBAR_LOSER (gtk_object_new (NAUTILUS_TYPE_SIDEBAR_LOSER, NULL));
 
 	object_count++;
@@ -81,8 +77,6 @@ int main(int argc, char *argv[])
 
 	CORBA_exception_init(&ev);
 
-        puts ("In component.");        
-	
 	nautilus_sidebar_loser_maybe_fail ("pre-init");
 
         gnome_init_with_popt_table("nautilus-sidebar-loser", VERSION, 
@@ -98,8 +92,6 @@ int main(int argc, char *argv[])
 	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_sidebar_loser_factory:5d9aadfa-a8a4-4ec0-8332-d6f806c211fa", loser_make_object, NULL);
 
 	nautilus_sidebar_loser_maybe_fail ("post-factory-init");
-
-	puts ("About to do main loop.");        
 
 	do {
 		bonobo_main ();

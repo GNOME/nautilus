@@ -434,8 +434,6 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
 	NautilusLocationBar *bar;
 	gchar *formatted_location;
 
-	puts ("XXX: bar");
-
 	g_assert (location != NULL);
 	
 	bar = NAUTILUS_LOCATION_BAR (navigation_bar);

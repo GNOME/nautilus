@@ -33,8 +33,6 @@ static int object_count =0;
 
 static void
 services_object_destroyed (GtkObject *obj) {
-
-	puts ("destroying object.");
 	object_count--;
 	if (object_count <= 0) {
 		gtk_main_quit ();
@@ -48,8 +46,6 @@ services_make_object (BonoboGenericFactory* factory,
 
 	NautilusServicesContentView* view;
 	NautilusView* nautilus_view;
-
-	puts ("Trying to create object.");
 
 	if (strcmp (goad_id, "OAFIID:nautilus_service_startup_view:a8f1b0ef-a39f-4f92-84bc-1704f0321a82")) {
 		return NULL;

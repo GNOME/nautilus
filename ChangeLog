@@ -1,3 +1,19 @@
+2000-06-16  Darin Adler  <darin@eazel.com>
+
+	Another round in the war against computer poetry at the console.
+
+	* components/loser/content/main.c: (loser_make_object), (main):
+	* components/loser/sidebar/main.c: (loser_make_object), (main):
+	* components/sample/main.c: (sample_make_object), (main):
+	* components/services/startup/nautilus-view/main.c:
+	(services_object_destroyed), (services_make_object):
+	* src/nautilus-location-bar.c:
+	(nautilus_location_bar_set_location):
+	* src/nautilus-switchable-navigation-bar.c:
+	(nautilus_switchable_navigation_bar_set_location):
+	Took out a lot of puts calls that may have once been useful for
+	debugging but now are mostly misleading.
+
 2000-06-16  John Sullivan  <sullivan@eazel.com>
 
 	Some work towards bug 1401 (bookmark icon never updates).
