@@ -228,6 +228,19 @@ nautilus_druid_page_eazel_configure_size (NautilusDruidPageEazel *druid_page_eaz
 				       "x", content_x,
 				       "y", content_y,
 				       NULL);
+
+		/* Event boxes can handle not having the size set, and
+		 * not doing so allows them to scale with their child
+		 * widget. On the other hand, some other widgets require
+		 * the size to be set, otherwise they won't appear on the
+		 * canvas!
+		 */
+		if (druid_page_eazel->widget != NULL && !GTK_IS_EVENT_BOX (druid_page_eazel->widget)) {
+			gnome_canvas_item_set (druid_page_eazel->details->widget_item,
+					       "width", (gfloat) width - content_x,
+					       "height", (gfloat) height - content_y,
+					       NULL);
+		}
 	}
 
 	if (druid_page_eazel->details->text_item != NULL) {

@@ -1,3 +1,22 @@
+2001-02-23  John Harper  <jsh@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 6915 (installer no longer has text):
+
+	* libnautilus-extensions/nautilus-druid-page-eazel.c
+	(nautilus_druid_page_eazel_configure_size): if the embedded
+	widget isn't a GtkEventBox, set the width and height of any
+	widget item to the size of the canvas less the widget origin
+
+	(This may be too restrictive, but I've verified that event
+	boxes don't need the size set whereas at least some other
+	widgets do - this may be related to whether they have their own
+	window or not, but I'm not sure, so it seems better to be
+	cautious. This at least lets both the first time druid and the
+	installer work correctly, and these are currently the only
+	users of this widget)
+
 2001-02-23  Michael Engber  <engber@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>
