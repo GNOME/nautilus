@@ -37,6 +37,44 @@
 
 /* FIXME: free the mallocs */
 
+static gint
+gnome_vfs_mime_application_has_id (GnomeVFSMimeApplication *application, const char *id)
+{
+	return strcmp (application->id, id);
+}
+
+static gint
+gnome_vfs_mime_id_matches_application (const char *id, GnomeVFSMimeApplication *application)
+{
+	return gnome_vfs_mime_application_has_id (application, id);
+}
+
+static gint
+gnome_vfs_mime_id_matches_component (const char *iid, OAF_ServerInfo *component)
+{
+	return strcmp (component->iid, iid);
+}
+
+
+static gboolean
+gnome_vfs_mime_application_has_id_not_in_list (GnomeVFSMimeApplication *application, GList *ids)
+{
+	return g_list_find_custom (ids, application, (GCompareFunc) gnome_vfs_mime_id_matches_application) == NULL;
+}
+
+static gboolean
+component_has_id_in_list (OAF_ServerInfo *server, GList *iids)
+{
+	return g_list_find_custom (iids, server, (GCompareFunc) gnome_vfs_mime_id_matches_component) != NULL;
+}
+
+static gboolean
+string_not_in_list (const char *str, GList *list)
+{
+	return g_list_find_custom (list, (gpointer) str, (GCompareFunc) strcmp) == NULL;
+}
+
+
 static OAF_ServerInfo *
 OAF_ServerInfo__copy (OAF_ServerInfo *orig)
 {
@@ -691,33 +729,137 @@ nautilus_mime_get_default_component_for_uri (const char *uri)
 GList *
 nautilus_mime_get_short_list_applications_for_uri (const char *uri)
 {
-	/* FIXME: Temporary hack for testing */
-	const char *mime_type;
+	char *mime_type;
 	GList *result;
+	GList *removed;
+	NautilusDirectory *directory;
+	GList *metadata_application_add_ids;
+	GList *metadata_application_remove_ids;
+	GList *p;
+	GnomeVFSMimeApplication *application;
+	CORBA_Environment ev;
+
+	CORBA_exception_init (&ev);
+
+	directory = nautilus_directory_get (uri);
+
+	nautilus_directory_wait_until_ready (directory, NULL, TRUE);
+	metadata_application_add_ids = nautilus_directory_get_metadata_list (directory, "SHORT_LIST_APPLICATION_ADD", "ID");
+	metadata_application_remove_ids = nautilus_directory_get_metadata_list (directory, "SHORT_LIST_APPLICATION_REMOVE", "ID");
+	nautilus_directory_unref (directory);
 
 	mime_type = get_mime_type_from_uri (uri);
-	result = gnome_vfs_mime_get_short_list_applications (mime_type);
 
+	if (mime_type != NULL) {
+		result = gnome_vfs_mime_get_short_list_applications (mime_type);
+	} else {
+		result = NULL;
+	}
+
+	result = nautilus_g_list_partition (result, (NautilusGPredicateFunc) gnome_vfs_mime_application_has_id_not_in_list, 
+					    metadata_application_remove_ids, &removed);
+
+	gnome_vfs_mime_application_list_free (removed);
+
+	for (p = metadata_application_add_ids; p != NULL; p = p->next) {
+		if (g_list_find_custom (result,
+					p->data,
+					(GCompareFunc) gnome_vfs_mime_application_has_id) == NULL &&
+		    g_list_find_custom (metadata_application_remove_ids,
+					p->data,
+					(GCompareFunc) strcmp) == NULL) {
+			application = gnome_vfs_mime_application_new_from_id (p->data);
+
+			if (application != NULL) {
+				result = g_list_prepend (result, application);
+			}
+		}
+	}
+		
+	CORBA_exception_free (&ev);
+
+	/* FIXME: should sort alphabetically by name or something */
 	return result;
 }
 
 GList *
 nautilus_mime_get_short_list_components_for_uri (const char *uri)
 {
-	/* FIXME: Temporary hack for testing */
-	const char *mime_type;
+	char *mime_type;
+	char *uri_scheme;
+	GList *servers;
+	GList *iids;
 	GList *result;
+	GList *removed;
+	NautilusDirectory *directory;
+	GList *metadata_component_add_ids;
+	GList *metadata_component_remove_ids;
+	GList *p;
+	OAF_ServerInfo *component;
+	GList *attributes;
+	GList *files;
+	GList *explicit_iids;
+	CORBA_Environment ev;
+
+	CORBA_exception_init (&ev);
 
 	mime_type = get_mime_type_from_uri (uri);
-	result = gnome_vfs_mime_get_short_list_components (mime_type);
+	uri_scheme = uri_string_get_scheme (uri);
+
+	directory = nautilus_directory_get (uri);
+
+        /* Arrange for all the file attributes we will need. */
+        attributes = NULL;
+        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE);
+
+	files = nautilus_directory_wait_until_ready (directory, attributes, TRUE);
+	explicit_iids = get_explicit_content_view_iids_from_metafile (directory); 
+	g_list_free (attributes);
+
+	nautilus_directory_wait_until_ready (directory, NULL, TRUE);
+	metadata_component_add_ids = nautilus_directory_get_metadata_list (directory, "SHORT_LIST_COMPONENT_ADD", "ID");
+	metadata_component_remove_ids = nautilus_directory_get_metadata_list (directory, "SHORT_LIST_COMPONENT_REMOVE", "ID");
+	nautilus_directory_unref (directory);
+
+	mime_type = get_mime_type_from_uri (uri);
+
+	if (mime_type != NULL) {
+		servers = gnome_vfs_mime_get_short_list_components (mime_type);
+	} else {
+		servers = NULL;
+	}
+
+	iids = NULL;
+	for (p = servers; p != NULL; p = p->next) {
+		component = (OAF_ServerInfo *) p->data;
+
+		iids = g_list_append (iids, component->iid);
+	}
+
+	iids = nautilus_g_list_partition (iids, (NautilusGPredicateFunc) string_not_in_list, 
+					  metadata_component_remove_ids, &removed);
+
+	nautilus_g_list_free_deep (removed);
+
+	for (p = metadata_component_add_ids; p != NULL; p = p->next) {
+		if (g_list_find_custom (iids,
+					p->data,
+					(GCompareFunc) strcmp) == NULL &&
+		    g_list_find_custom (metadata_component_remove_ids,
+					p->data,
+					(GCompareFunc) strcmp) == NULL) {
+			iids = g_list_prepend (iids, p->data);
+		}
+	}
+		
+	/* FIXME: should pass the allowed iids into the query instead */
+	result = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, NULL, &ev);
+
+	result = nautilus_g_list_partition (result, (NautilusGPredicateFunc) component_has_id_in_list, iids, &removed);
+
+	gnome_vfs_mime_component_list_free (removed);
 
 	return result;
-}
-
-static gint
-gnome_vfs_mime_application_has_id (GnomeVFSMimeApplication *application, const char *id)
-{
-	return strcmp (application->id, id);
 }
 
 GList *
@@ -759,7 +901,7 @@ nautilus_mime_get_all_applications_for_uri (const char *uri)
 			}
 		}
 	}
-		
+
 	/* FIXME: should sort alphabetically by name or something */
 
 	return result;
