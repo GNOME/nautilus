@@ -1,3 +1,21 @@
+2000-07-27  Andy Hertzfeld  <andy@eazel.com>
+
+	Fixed task #1729, icon view labels need to adapt their text color to the background.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text):
+	get the color to draw with from the icon container
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_initialize),
+	(nautilus_icon_container_get_label_color),
+	(nautilus_icon_container_update_label_color):
+	attach to the background's appearance_changed signal and
+	compute the label color from the background when it changes
+	* libnautilus-extensions/nautilus-icon-container.h:
+	added call to nautilus_icon_container_get_label_color
+	* libnautilus-extensions/nautilus-icon-private.h:
+	added instance variable for label color
+	
 2000-07-27  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug #1775, add home directory to desktop.

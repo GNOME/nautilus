@@ -163,6 +163,9 @@ void       nautilus_icon_container_start_renaming_selected_item  (NautilusIconCo
 gboolean   nautilus_icon_container_is_renaming                   (NautilusIconContainer *container);
 
 
+/* label color for items to use */
+GdkColor   *nautilus_icon_container_get_label_color		 (NautilusIconContainer *container);
+
 /* options */
 int        nautilus_icon_container_get_zoom_level                (NautilusIconContainer *view);
 void       nautilus_icon_container_set_zoom_level                (NautilusIconContainer *view,

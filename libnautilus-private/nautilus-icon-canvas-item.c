@@ -596,6 +596,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	int width_so_far, height_so_far;
 	GdkGC* gc;
 	GdkGCValues save_gc;
+	GdkColor *label_color;
 	GnomeCanvasItem *canvas_item;
 	int max_text_width;
 	int icon_width, text_left, box_left;
@@ -659,6 +660,11 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			 details->text_width, details->text_height);
 
 		gdk_gc_set_foreground (gc, &highlight_text_color);
+	}
+	
+	if (!needs_highlight && drawable != NULL) {
+		label_color = nautilus_icon_container_get_label_color (NAUTILUS_ICON_CONTAINER (canvas_item->canvas));
+		gdk_gc_set_foreground (gc, label_color);
 	}
 	
 	pieces = g_strsplit (combined_text, "\n", 0);

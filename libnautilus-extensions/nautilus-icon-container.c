@@ -37,6 +37,7 @@
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include <gdk-pixbuf/gnome-canvas-pixbuf.h>
 
+#include "nautilus-background.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-global-preferences.h"
@@ -108,6 +109,8 @@ static void          end_renaming_mode                        (NautilusIconConta
 static void          hide_rename_widget                       (NautilusIconContainer      *container,
 							       NautilusIcon               *icon);
 static void          finish_adding_new_icons                  (NautilusIconContainer      *container);
+static void	     nautilus_icon_container_update_label_color (NautilusBackground *background,
+                             					NautilusIconContainer *icon_container);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer, nautilus_icon_container, GNOME_TYPE_CANVAS)
 
@@ -2441,12 +2444,12 @@ editing_stopped (NautilusIconTextItem *text_item, gpointer data)
 	details = container->details;
 }
 
-
 static void
 nautilus_icon_container_initialize (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
-
+	NautilusBackground *background;
+	
 	details = g_new0 (NautilusIconContainerDetails, 1);
 
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
@@ -2472,6 +2475,15 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 		 nautilus_icon_container_request_update_all,
 		 GTK_OBJECT (container));	
 
+	/* when the background changes, we must set up the label text color */
+	background = nautilus_get_widget_background (GTK_WIDGET (container));
+	
+	gtk_signal_connect
+		(GTK_OBJECT(background),
+		 "appearance_changed",
+		 nautilus_icon_container_update_label_color,
+		 GTK_OBJECT (container));	
+	
 	container->details->rename_widget = NULL;
 	container->details->original_text = NULL;
 	container->details->type_select_state = NULL;
@@ -3759,6 +3771,33 @@ nautilus_icon_container_set_single_click_mode (NautilusIconContainer *container,
 
 	container->details->single_click_mode = single_click_mode;
 }
+
+
+/* update the label color when the background changes */
+
+GdkColor*
+nautilus_icon_container_get_label_color (NautilusIconContainer *container)
+{
+	return &container->details->label_color;
+}
+
+static void
+nautilus_icon_container_update_label_color (NautilusBackground *background,
+                             		    NautilusIconContainer *icon_container)
+{
+	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (icon_container));
+
+	if (nautilus_background_is_dark (background)) {
+		gdk_color_parse ("rgb:EE/EE/EE", &icon_container->details->label_color);
+	} else {
+		gdk_color_parse ("rgb:00/00/00", &icon_container->details->label_color);
+	}
+	
+	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (icon_container)),
+			 	  &icon_container->details->label_color, FALSE, TRUE);
+}
+
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
 
