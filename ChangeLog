@@ -29,7 +29,11 @@
 	callback to create the properties window.
 	(get_and_ref_file_to_display): initialize file_to_display to NULL.
 	This was crashing non-special-Desktop-case Properties windows.
-	(fm_properties_window_present):
+	(fm_properties_window_present): Create properties window using
+	asynchronous nautilus_file_call_when_ready, so we don't try to
+	create the window until we know whether the file is a directory.
+	This had never caused problems before because we had only tried
+	to show properties for existing, info-bearing NautilusFile objects.
 
 2000-08-14  John Sullivan  <sullivan@eazel.com>
 
