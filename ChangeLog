@@ -1,3 +1,22 @@
+2000-10-10  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 3535 (Bonobo-merged items aren't being removed when view
+	changes).
+
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_destroy):
+	* src/file-manager/fm-search-list-view.c: (real_destroy):
+	* src/nautilus-window.c: (nautilus_window_destroy):
+	Added code to unset the container when getting rid of a
+	BonoboUIComponent. The container holds a reference, so just
+	unref'ing the component is not good enough.
+
+	* idl/.cvsignore:
+	* idl/GNOME_Desktop_FileOperationService.idl:
+	* idl/Makefile.am:
+	* idl/gnome-desktop.idl:
+	Removed the unused idl files in this directory. I removed them
+	from the build already a few days ago.
+	
 2000-10-10  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/rpmview/nautilus-rpm-view-install.c:

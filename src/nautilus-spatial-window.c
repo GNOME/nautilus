@@ -551,6 +551,12 @@ nautilus_window_destroy (GtkObject *object)
 
 	window = NAUTILUS_WINDOW (object);
 
+	/* Let go of the UI. */
+	if (window->details->shell_ui != NULL) {
+		bonobo_ui_component_unset_container (window->details->shell_ui);
+		bonobo_object_unref (BONOBO_OBJECT (window->details->shell_ui));
+	}
+
 	/* Let go of the file for the current location */
 	nautilus_file_unref (window->details->viewed_file);
 
