@@ -1,3 +1,13 @@
+2000-05-16  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize),
+	(nautilus_music_view_background_changed),
+	(nautilus_music_view_update_from_uri):
+	improved the layout of the music view, and pinned the size
+	of the album cover image, temporarily disabled background_changed since
+	it's not working with recent metadata changes
+	
 2000-05-16  Darin Adler  <darin@eazel.com>
 
 	Quick cleanup pass on FIXMEs.

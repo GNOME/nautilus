@@ -36,6 +36,7 @@
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -54,10 +55,11 @@ struct _NautilusMusicViewDetails {
         
         int background_connection;
         
-        GtkVBox *album_container;
+        GtkVBox   *album_container;
         GtkWidget *album_title;
         GtkWidget *song_list;
         GtkWidget *album_image;
+        GtkWidget *control_box;
 };
 
 /* structure for holding song info */
@@ -126,8 +128,7 @@ nautilus_music_view_initialize_class (NautilusMusicViewClass *klass)
 static void
 nautilus_music_view_initialize (NautilusMusicView *music_view)
 {
-	char *file_name;
-	GtkWidget *control_box, *scrollwindow;
+	GtkWidget *scrollwindow;
 	char *titles[] = {_("#"), _("Title"), _("Artist"), _("Time")};
 	
 	music_view->details = g_new0 (NautilusMusicViewDetails, 1);
@@ -153,7 +154,7 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
         /* FIXME bugzilla.eazel.com 667: don't use hardwired font like this */
 	nautilus_gtk_widget_set_font_by_name (music_view->details->album_title,
                                               "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); ;
-	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->album_title, 0, 0, 2);	
+	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->album_title, FALSE, FALSE, 2);	
 	gtk_widget_show (music_view->details->album_title);
 	
 	/* allocate a list widget to hold the song list */
@@ -173,22 +174,19 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	gtk_container_add (GTK_CONTAINER (scrollwindow), music_view->details->song_list);	
 	gtk_clist_set_selection_mode (GTK_CLIST (music_view->details->song_list), GTK_SELECTION_BROWSE);
 
-	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), scrollwindow, TRUE, TRUE, 0);	
+	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), scrollwindow, TRUE, TRUE, 2);	
 	gtk_widget_show (music_view->details->song_list);
 	gtk_widget_show (scrollwindow);
 
 	/* make an hbox to hold the optional cover and other controls */
 	
-	control_box = gtk_hbox_new (FALSE, 4);
-	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), control_box, FALSE, FALSE, 0);	
-	gtk_widget_show (control_box);
+	music_view->details->control_box = gtk_hbox_new (FALSE, 4);
+	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->control_box, FALSE, FALSE, 2);	
+	gtk_widget_show (music_view->details->control_box);
 	
 	/* allocate a placeholder widget for the album cover, but don't show it yet */
-  	file_name = gnome_pixmap_file ("nautilus/i-directory.png");
-  	music_view->details->album_image = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
-	gtk_box_pack_start(GTK_BOX(control_box), music_view->details->album_image, 0, 0, 0);		
-  	g_free (file_name);
-
+  	music_view->details->album_image = NULL;
+ 
 	/* coming soon: allocate the play controls */
 	
 	/* prepare ourselves to receive dropped objects */
@@ -413,7 +411,11 @@ nautilus_music_view_background_changed (NautilusMusicView *music_view)
 	NautilusDirectory *directory;
 	NautilusBackground *background;
 	char *color_spec, *image;
-		
+	
+	/* disable background metadata saving for now */
+	
+	return;
+	
 	directory = nautilus_directory_get (music_view->details->uri);
 	background = nautilus_get_widget_background (GTK_WIDGET (music_view));
 	
@@ -482,12 +484,20 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	struct dirent *entry;
 	char* clist_entry[4];
 	GList *p;
-	GList *song_list = NULL ;
+	GdkPixbuf *pixbuf;
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;	
+	GList *song_list;
 	SongInfo *info;
 	char *path_name;
-	char *image_path_name = NULL;
-	int file_index = 1;
-	int track_index = 0;
+	char *image_path_name;
+	int file_index;
+	int track_index;
+	
+	song_list = NULL;
+	image_path_name = NULL;
+	file_index = 1;
+	track_index = 0;
 
 	/* set up the background from the metadata */	
 	nautilus_music_view_set_up_background(music_view, uri);
@@ -568,13 +578,26 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	}
 	
 	/* install the album cover */
-	
+		
 	if (image_path_name != NULL) {
-		gnome_pixmap_load_file (GNOME_PIXMAP (music_view->details->album_image),
-                                        image_path_name);			
+		pixbuf = gdk_pixbuf_new_from_file(image_path_name);
+		pixbuf = nautilus_gdk_pixbuf_scale_to_fit(pixbuf, 128, 128);
+
+       		gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
+		gdk_pixbuf_unref (pixbuf);
+		
+		if (music_view->details->album_image == NULL) {
+			music_view->details->album_image = gtk_pixmap_new(pixmap, mask);
+			gtk_box_pack_start(GTK_BOX(music_view->details->control_box), 
+					   music_view->details->album_image, FALSE, FALSE, 2);	
+		}
+		else { 
+			gtk_pixmap_set (GTK_PIXMAP (music_view->details->album_image), pixmap, mask);
+		}
+		
 		gtk_widget_show (music_view->details->album_image);
- 		g_free (image_path_name);
-	} else {
+ 		g_free(image_path_name);
+ 	} else if (music_view->details->album_image != NULL) {
 		gtk_widget_hide (music_view->details->album_image);
         }
 		
