@@ -162,7 +162,7 @@ static EelEnumerationEntry default_sort_order_enum_entries[] = {
 	{ "size",	       N_("By Size"),		    NAUTILUS_FILE_SORT_BY_SIZE },
 	{ "type",	       N_("By Type"),		    NAUTILUS_FILE_SORT_BY_TYPE },
 	{ "modification date", N_("By Modification Date"),  NAUTILUS_FILE_SORT_BY_MTIME }, 
-	{ "emblemd",	       N_("By Emblems"),	    NAUTILUS_FILE_SORT_BY_EMBLEMS },
+	{ "emblems",	       N_("By Emblems"),	    NAUTILUS_FILE_SORT_BY_EMBLEMS },
 	{ NULL }
 };
 

@@ -33,6 +33,9 @@
 	<cmd name="Remove Custom Icons"
          _label="Remove Custom Images"
 	 _tip="Remove any custom images from selected icons"/>
+	<cmd name="Reset to Defaults"
+         _label="Reset to View Preferences"
+	 _tip="Reset sorting order and zoom level to match preferences for this view"/>
 	<cmd name="Reset Background"
          _label="Reset Background"
 	 _tip="Remove any custom pattern or color from the background of this location"/>
@@ -158,6 +161,14 @@
 				  verb="Remove Custom Icons"/>
 		</placeholder>
 
+	</submenu>
+
+	<submenu name="View">
+		<placeholder name="View Preferences Placeholder">
+			<menuitem name="Reset to Defaults"
+				  _label="Reset to View _Preferences"
+				  verb="Reset to Defaults"/>
+		</placeholder>
 	</submenu>
 </menu>
 <popups>

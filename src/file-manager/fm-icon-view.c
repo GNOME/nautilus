@@ -1347,6 +1347,31 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 }
 
 static void
+fm_icon_view_reset_to_defaults (FMDirectoryView *view)
+{
+	NautilusIconContainer *icon_container;
+	FMIconView *icon_view;
+
+	icon_view = FM_ICON_VIEW (view);
+	icon_container = get_icon_container (icon_view);
+
+	set_sort_criterion (icon_view, get_sort_criterion_by_sort_type (get_default_sort_order ()));
+	set_sort_reversed (icon_view, get_default_sort_in_reverse_order ());
+	nautilus_icon_container_set_tighter_layout
+		(icon_container, get_default_directory_tighter_layout ());
+
+	/* FIXME bugzilla.eazel.com 8023:
+	 * There's currently no way to specify manual layout as the default.
+	 */
+	nautilus_icon_container_set_auto_layout (icon_container, FALSE);
+
+	nautilus_icon_container_sort (icon_container);
+	update_layout_menus (icon_view);
+
+	fm_icon_view_restore_default_zoom_level (view);
+}
+
+static void
 fm_icon_view_select_all (FMDirectoryView *view)
 {
 	NautilusIconContainer *icon_container;
@@ -2119,6 +2144,7 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
 	fm_directory_view_class->file_changed = fm_icon_view_file_changed;
 	fm_directory_view_class->is_empty = fm_icon_view_is_empty;
 	fm_directory_view_class->get_selection = fm_icon_view_get_selection;
+	fm_directory_view_class->reset_to_defaults = fm_icon_view_reset_to_defaults;
 	fm_directory_view_class->select_all = fm_icon_view_select_all;
 	fm_directory_view_class->set_selection = fm_icon_view_set_selection;
 	fm_directory_view_class->reveal_selection = fm_icon_view_reveal_selection;
@@ -2246,7 +2272,7 @@ fm_icon_view_update_icon_container_fonts (FMIconView *icon_view)
 
 static int default_zoom_level_font_size = 12;
 
-static NautilusFileSortType
+static int
 get_default_zoom_level_font_size (void)
 {
 	static gboolean auto_storaged_added = FALSE;

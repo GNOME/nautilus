@@ -121,6 +121,12 @@ struct FMDirectoryViewClass {
 
 	/* Function pointers that don't have corresponding signals */
 
+        /* reset_to_defaults is a function pointer that subclasses must 
+         * override to set sort order, zoom level, etc to match default
+         * values. 
+         */
+        void     (* reset_to_defaults)	         (FMDirectoryView *view);
+
 	/* get_selection is not a signal; it is just a function pointer for
 	 * subclasses to replace (override). Subclasses must replace it
 	 * with a function that returns a newly-allocated GList of
@@ -294,6 +300,7 @@ void                fm_directory_view_zoom_to_level                    (FMDirect
 void                fm_directory_view_set_zoom_level                   (FMDirectoryView  *view,
 									int               zoom_level);
 void                fm_directory_view_restore_default_zoom_level       (FMDirectoryView  *view);
+void                fm_directory_view_reset_to_defaults                (FMDirectoryView  *view);
 void                fm_directory_view_select_all                       (FMDirectoryView  *view);
 void                fm_directory_view_set_selection                    (FMDirectoryView  *view,
 									GList            *selection);

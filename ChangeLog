@@ -1,3 +1,68 @@
+2001-04-09  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	Wired up the remaining new view global preferences,
+	and added a menu item for resetting the current view
+	to match preferences. I know of one large bug (the
+	default choice of Icons vs List doesn't work) and several
+	small bugs that I'll write up now.
+
+	This change requires a recent API change in eel (for
+	eel_list_set_sort_type and eel_list_set_sort_column).
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	Fixed typo.
+	
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	(reset_to_defaults_callback), (real_merge_menus),
+	(fm_directory_view_reset_to_defaults),
+	(fm_directory_view_initialize_class): Added support for
+	"Reset to Defaults" command, which subclasses override
+	to Do The Right Thing.
+	
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Add "Reset to View Preferences" menu item.
+
+	* src/nautilus-shell-ui.xml: Add placeholder to support location
+	of "Reset to View Preferences" menu item.
+
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_reset_to_defaults), (fm_icon_view_initialize_class):
+	Set sort criterion, sort-reversedness, tighter layout, and
+	zoom level to match defaults.
+	
+	* src/file-manager/fm-list-view.c: 
+	(fm_list_view_initialize_class): wire up reset_to_defaults handler;
+	set up auto-storage variables for sort order & sort reversed preferences.
+	(fm_list_view_initialize): Set up preferences callbacks to notice changes
+	to default sort order, sort reversed, and zoom level.
+	(set_sort_order_from_metadata_and_preferences),
+	(set_zoom_level_from_metadata_and_preferences): New functions, broken
+	out of fm_list_view_begin_loading for reuse.
+	(default_sort_criteria_changed_callback),
+	(default_zoom_level_changed_callback): React to preference changes
+	by resorting or rezooming as appropriate.
+	(fm_list_view_begin_loading): Call broken-out functions.
+	(fm_list_view_reset_to_defaults): Set sort order, sort-reversedness,
+	and zoom level to default values.
+	(fm_list_view_sort_items): Use variable defaults instead of hardwired
+	constants for sort order & sort-reversedness. Call new eel_list versions
+	of set_sort_type and set_sort_column so the column titles redraw
+	correctly.
+	(get_sort_column_from_attribute): Use variable default for sort attribute
+	instead of hardwired constant.
+	(get_attribute_from_sort_type): New function, converts between
+	NautilusFileSortType enum values and named attributes.
+	(real_get_default_sort_attribute): Use get_attribute_from_sort_type instead
+	of hardwired constant.
+
+	* src/nautilus-application.c:
+	(default_folder_viewer_changed_callback),
+	(nautilus_application_startup): When the default folder viewer
+	preference changes, tell gnome-vfs about it.
+
 2001-04-09  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Michael Engber  <engber@eazel.com>

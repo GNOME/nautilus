@@ -313,6 +313,7 @@ EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, file_changed)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, is_empty)
+EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, reset_to_defaults)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, select_all)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, set_selection)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selected_icon_locations)
@@ -848,6 +849,16 @@ bonobo_menu_select_all_callback (BonoboUIComponent *component,
 	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
 	fm_directory_view_select_all (callback_data);
+}
+
+static void
+reset_to_defaults_callback (BonoboUIComponent *component, 
+			    gpointer callback_data, 
+			    const char *verb)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+
+	fm_directory_view_reset_to_defaults (callback_data);
 }
 
 static void
@@ -3883,6 +3894,7 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("Paste Files", paste_files_callback),
 		BONOBO_UI_VERB ("Remove Custom Icons", remove_custom_icons_callback),
 		BONOBO_UI_VERB ("Reset Background", reset_background_callback),
+		BONOBO_UI_VERB ("Reset to Defaults", reset_to_defaults_callback),
 		BONOBO_UI_VERB ("Select All", bonobo_menu_select_all_callback),
 		BONOBO_UI_VERB ("Show Properties", open_properties_window_callback),
 		BONOBO_UI_VERB ("Show Trash", show_trash_callback),
@@ -4874,6 +4886,22 @@ disconnect_script_handlers (FMDirectoryView *view)
 }
 
 /**
+ * fm_directory_view_reset_to_defaults:
+ *
+ * set sorting order, zoom level, etc. to match defaults
+ * 
+ **/
+void
+fm_directory_view_reset_to_defaults (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	EEL_CALL_METHOD
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 reset_to_defaults, (view));
+}
+
+/**
  * fm_directory_view_select_all:
  *
  * select all the items in the view
@@ -5524,6 +5552,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, file_changed);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selection);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, is_empty);
+	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, reset_to_defaults);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, select_all);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, set_selection);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selected_icon_locations);

@@ -51,6 +51,7 @@
 #include <libgnomeui/gnome-client.h>
 #include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-stock.h>
+#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
@@ -334,6 +335,37 @@ nautilus_make_uri_list_from_shell_strv (const char * const *strv)
 	return uri_list;
 }
 
+/* This is a bit of a hack to make the Preferences dialog version of the List View/Icon View
+ * default choice work with the gnome-vfs-based mechanism for choosing a handler for a MIME type.
+ */
+static void
+default_folder_viewer_changed_callback (gpointer callback_data)
+{
+	int preference_value;
+	const char *viewer_iid;
+
+	g_assert (callback_data == NULL);
+
+	preference_value = 
+		nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
+
+	if (preference_value == NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW) {
+		viewer_iid = LIST_VIEW_IID;
+	} else {
+		g_return_if_fail (preference_value == NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW);
+		viewer_iid = ICON_VIEW_IID;
+	}
+
+	gnome_vfs_mime_set_default_action_type ("x-directory/normal", GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
+	gnome_vfs_mime_set_default_component ("x-directory/normal", viewer_iid);
+
+	/* FIXME bugzilla.eazel.com 8024: 
+	 * when preference changes, we tell gnome-vfs. But if gnome-vfs value changes
+	 * some other way, preferences mechanism isn't told, so value displayed in
+	 * preferences dialog might be incorrect.
+	 */
+}
+
 void
 nautilus_application_startup (NautilusApplication *application,
 			      gboolean kill_shell,
@@ -498,6 +530,11 @@ nautilus_application_startup (NautilusApplication *application,
 							       desktop_changed_callback,
 							       application,
 							       GTK_OBJECT (application));
+
+		nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, 
+						   	       default_folder_viewer_changed_callback, 
+						   	       NULL,
+						   	       GTK_OBJECT (application));
 
 		/* CORBA C mapping doesn't allow NULL to be passed
 		   for string parameters */

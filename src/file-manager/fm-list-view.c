@@ -56,6 +56,9 @@ struct FMListViewDetails {
 	guint zoom_level;
 };
 
+static NautilusFileSortType	default_sort_order_auto_value;
+static gboolean			default_sort_reversed_auto_value;
+
 /* The list view receives files from the directory model
    in chunks, to improve responsiveness during loading.
    This is the number of files we add to the list, or change
@@ -88,8 +91,6 @@ struct FMListViewDetails {
 #define LIST_VIEW_COLUMN_NONE		(-1)
 #define LIST_VIEW_COLUMN_ICON		0
 #define LIST_VIEW_COLUMN_EMBLEMS	1
-
-#define LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE "name"
 
 
 
@@ -137,6 +138,7 @@ static void                 fm_list_view_initialize                   (gpointer 
 static void                 fm_list_view_initialize_class             (gpointer            klass);
 static void                 fm_list_view_destroy                      (GtkObject          *object);
 static void                 fm_list_view_done_adding_files            (FMDirectoryView    *view);
+static void                 fm_list_view_reset_to_defaults            (FMDirectoryView    *view);
 static void                 fm_list_view_select_all                   (FMDirectoryView    *view);
 static void                 fm_list_view_set_selection                (FMDirectoryView    *view,
 								       GList              *selection);
@@ -189,6 +191,8 @@ static void                 real_sort_directories_first_changed       (FMDirecto
 static void                 real_start_renaming_item                  (FMDirectoryView    *view,
 								       const char         *uri);
 static void                 font_or_font_size_changed_callback        (gpointer            callback_data);
+static void                 default_sort_criteria_changed_callback    (gpointer            callback_data);
+static void                 default_zoom_level_changed_callback       (gpointer            callback_data);
 
 EEL_DEFINE_CLASS_BOILERPLATE (FMListView,
 				   fm_list_view,
@@ -223,6 +227,7 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_directory_view_class->file_changed = fm_list_view_file_changed;
 	fm_directory_view_class->is_empty = real_is_empty;
 	fm_directory_view_class->get_selection = fm_list_view_get_selection;
+	fm_directory_view_class->reset_to_defaults = fm_list_view_reset_to_defaults;
 	fm_directory_view_class->select_all = fm_list_view_select_all;
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
 	fm_directory_view_class->reveal_selection = fm_list_view_reveal_selection;
@@ -242,6 +247,11 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_list_view_class->get_column_specification = real_get_column_specification;
 	fm_list_view_class->get_default_sort_attribute = real_get_default_sort_attribute;
 	fm_list_view_class->file_still_belongs = real_file_still_belongs;
+
+	nautilus_preferences_add_auto_integer (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
+					       (int *) &default_sort_order_auto_value);
+	nautilus_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
+					       &default_sort_reversed_auto_value);
 }
 
 static void
@@ -270,6 +280,18 @@ fm_list_view_initialize (gpointer object, gpointer klass)
 
 	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_FONT,
 						       font_or_font_size_changed_callback, 
+						       list_view,
+						       GTK_OBJECT (list_view));
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
+						       default_sort_criteria_changed_callback, 
+						       list_view,
+						       GTK_OBJECT (list_view));
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
+						       default_zoom_level_changed_callback, 
+						       list_view,
+						       GTK_OBJECT (list_view));
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
+						       default_sort_criteria_changed_callback, 
 						       list_view,
 						       GTK_OBJECT (list_view));
 	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
@@ -1445,28 +1467,12 @@ fm_list_view_begin_adding_files (FMDirectoryView *view)
 }
 
 static void
-fm_list_view_begin_loading (FMDirectoryView *view)
+set_sort_order_from_metadata_and_preferences (FMListView *list_view)
 {
-	NautilusFile *file;
-	FMListView *list_view;
 	char *default_sort_attribute;
+	NautilusFile *file;
 
-	g_return_if_fail (FM_IS_LIST_VIEW (view));
-
-	file = fm_directory_view_get_directory_as_file (view);
-	list_view = FM_LIST_VIEW (view);
-
-	/* Set up the background color from the metadata. */
-	nautilus_connect_background_to_file_metadata (GTK_WIDGET (get_list (list_view)),
-						      file);
-
-	fm_list_view_set_zoom_level (
-		list_view,
-		nautilus_file_get_integer_metadata (
-			file, 
-			NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
-			get_default_zoom_level ()),
-		TRUE);
+	file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (list_view));
 
 	default_sort_attribute = get_default_sort_attribute (list_view);
 	fm_list_view_sort_items (
@@ -1477,8 +1483,53 @@ fm_list_view_begin_loading (FMDirectoryView *view)
 									    default_sort_attribute)),
 		nautilus_file_get_boolean_metadata (file,
 						    NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
-						    FALSE));
+						    default_sort_reversed_auto_value));
 	g_free (default_sort_attribute);
+}
+
+static void
+set_zoom_level_from_metadata_and_preferences (FMListView *list_view)
+{
+	fm_list_view_set_zoom_level (
+		list_view,
+		nautilus_file_get_integer_metadata (
+			fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (list_view)), 
+			NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
+			get_default_zoom_level ()),
+		TRUE);
+}
+
+static void
+default_sort_criteria_changed_callback (gpointer callback_data)
+{
+	g_return_if_fail (FM_IS_LIST_VIEW (callback_data));
+
+	set_sort_order_from_metadata_and_preferences (FM_LIST_VIEW (callback_data));
+}
+
+static void
+default_zoom_level_changed_callback (gpointer callback_data)
+{
+	g_return_if_fail (FM_IS_LIST_VIEW (callback_data));
+
+	set_zoom_level_from_metadata_and_preferences (FM_LIST_VIEW (callback_data));
+}
+
+static void
+fm_list_view_begin_loading (FMDirectoryView *view)
+{
+	FMListView *list_view;
+
+	g_return_if_fail (FM_IS_LIST_VIEW (view));
+
+	list_view = FM_LIST_VIEW (view);
+
+	/* Set up the background color from the metadata. */
+	nautilus_connect_background_to_file_metadata (GTK_WIDGET (get_list (list_view)),
+						      fm_directory_view_get_directory_as_file (view));
+
+	set_zoom_level_from_metadata_and_preferences (list_view);
+	set_sort_order_from_metadata_and_preferences (list_view);
 }
 
 static void
@@ -1732,6 +1783,24 @@ fm_list_view_reset_row_height (FMListView *list_view)
 				       LIST_VIEW_MINIMUM_ROW_HEIGHT));
 }
 
+/* Reset sort criteria and zoom level to match defaults */
+static void
+fm_list_view_reset_to_defaults (FMDirectoryView *view)
+{
+	FMListView *list_view;
+	char *default_sort_attribute;
+	
+	list_view = FM_LIST_VIEW (view);
+
+	default_sort_attribute = get_default_sort_attribute (list_view);
+	fm_list_view_sort_items (list_view, 
+				 get_sort_column_from_attribute (list_view, default_sort_attribute), 
+				 default_sort_reversed_auto_value);
+	g_free (default_sort_attribute);
+
+	fm_list_view_restore_default_zoom_level (view);
+}
+
 /* select all of the items in the view */
 static void
 fm_list_view_select_all (FMDirectoryView *view)
@@ -1890,6 +1959,7 @@ fm_list_view_sort_items (FMListView *list_view,
 	EelList *list;
 	EelCList *clist;
 	NautilusFile *file;
+	char *default_sort_attribute;
 	
 	g_return_if_fail (FM_IS_LIST_VIEW (list_view));
 	g_return_if_fail (column >= 0);
@@ -1901,15 +1971,18 @@ fm_list_view_sort_items (FMListView *list_view,
 	}
 
 	file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (list_view));
+	default_sort_attribute = get_default_sort_attribute (list_view);
 	nautilus_file_set_metadata
 		(file,
 		 NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN,
-		 LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE,
+		 default_sort_attribute,
 		 get_column_attribute (list_view, column));
+	g_free (default_sort_attribute);
+	
 	nautilus_file_set_boolean_metadata
 		(file,
 		 NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
-		 FALSE,
+		 default_sort_reversed_auto_value,
 		 reversed);
 
 	list = get_list (list_view);
@@ -1923,13 +1996,13 @@ fm_list_view_sort_items (FMListView *list_view,
 		 * games with the sort order in list_view_compare_files_for_sort
 		 * to make up for this.
 		 */
-		eel_clist_set_sort_type (clist, reversed
+		eel_list_set_sort_type (list, reversed
 					      ? GTK_SORT_DESCENDING
 					      : GTK_SORT_ASCENDING);
 		list_view->details->sort_reversed = reversed;
 	}
 	
-	eel_clist_set_sort_column (clist, column);
+	eel_list_set_sort_column (list, column);
 	eel_clist_sort (clist);
 }
 
@@ -1975,11 +2048,16 @@ get_sort_column_from_attribute (FMListView *list_view,
 				const char *value)
 {
 	int result;
+	char *default_sort_attribute;
 	
 	result = get_column_from_attribute (list_view, value);
-	if (result == LIST_VIEW_COLUMN_NONE)
+	if (result == LIST_VIEW_COLUMN_NONE) {
+		default_sort_attribute = get_default_sort_attribute (list_view);
 		result = get_column_from_attribute (list_view,
-						    LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE);
+						    default_sort_attribute);
+		g_free (default_sort_attribute);
+	}
+				
 
 	return result;
 }
@@ -2206,9 +2284,29 @@ fm_list_view_column_set (FMListViewColumn *column,
 }
 
 static char *
+get_attribute_from_sort_type (NautilusFileSortType sort_type)
+{
+	switch (sort_type) {
+	case NAUTILUS_FILE_SORT_BY_NAME:
+		return g_strdup ("name");
+	case NAUTILUS_FILE_SORT_BY_SIZE:
+		return g_strdup ("size");
+	case NAUTILUS_FILE_SORT_BY_TYPE:
+		return g_strdup ("type");
+	case NAUTILUS_FILE_SORT_BY_MTIME:
+		return g_strdup ("date_modified");
+	case NAUTILUS_FILE_SORT_BY_EMBLEMS:
+		return g_strdup ("emblems");
+	default:
+		g_warning ("unknown sort type %d in get_attribute_from_sort_type", sort_type);
+		return g_strdup ("name");
+	}
+}
+
+static char *
 real_get_default_sort_attribute (FMListView *view)
 {
-	return g_strdup (LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE);
+	return get_attribute_from_sort_type (default_sort_order_auto_value);
 }
 
 static int
