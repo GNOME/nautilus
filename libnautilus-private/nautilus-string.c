@@ -240,12 +240,8 @@ nautilus_istr_has_prefix (const char *haystack, const char *needle)
 		}
 		hc = *h++;
 		nc = *n++;
-		if (isupper (hc)) {
-			hc = tolower (hc);
-		}
-		if (isupper (nc)) {
-			nc = tolower (nc);
-		}
+		hc = tolower ((guchar) hc);
+		nc = tolower ((guchar) nc);
 	} while (hc == nc);
 	return FALSE;
 }
@@ -264,8 +260,8 @@ nautilus_istr_has_suffix (const char *haystack, const char *needle)
 	}
 		
 	/* Eat one character at a time. */
-	h = haystack + strlen(haystack);
-	n = needle + strlen(needle);
+	h = haystack + strlen (haystack);
+	n = needle + strlen (needle);
 	do {
 		if (n == needle) {
 			return TRUE;
@@ -275,12 +271,8 @@ nautilus_istr_has_suffix (const char *haystack, const char *needle)
 		}
 		hc = *--h;
 		nc = *--n;
-		if (isupper (hc)) {
-			hc = tolower (hc);
-		}
-		if (isupper (nc)) {
-			nc = tolower (nc);
-		}
+		hc = tolower ((guchar) hc);
+		nc = tolower ((guchar) nc);
 	} while (hc == nc);
 	return FALSE;
 }
@@ -530,9 +522,7 @@ nautilus_str_capitalize (const char *string)
 
 	capitalized = g_strdup (string);
 
-	if (islower (capitalized[0])) {
-		capitalized[0] = toupper ((guchar) capitalized[0]);
-	}
+	capitalized[0] = toupper ((guchar) capitalized[0]);
 
 	return capitalized;
 }
@@ -563,7 +553,7 @@ nautilus_str_middle_truncate (const char *string,
 	}
 
 	/* It doesnt make sense to truncate strings to less than
-	 * the size of the delimter plus 2 characters (one on each
+	 * the size of the delimiter plus 2 characters (one on each
 	 * side)
 	 */
 	if (truncate_length < min_truncate_length) {
@@ -785,7 +775,6 @@ nautilus_self_check_string (void)
 		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_eat_str_to_int (g_strdup (string), &integer), boolean_result); \
 		NAUTILUS_CHECK_INTEGER_RESULT (call_eat_str_to_int (g_strdup (string)), integer_result);
 
-	
 	TEST_INTEGER_CONVERSION_FUNCTIONS (NULL, FALSE, 9999)
 	TEST_INTEGER_CONVERSION_FUNCTIONS ("", FALSE, 9999)
 	TEST_INTEGER_CONVERSION_FUNCTIONS ("a", FALSE, 9999)

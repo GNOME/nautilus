@@ -74,7 +74,7 @@
 #define MAX_CLICK_TIME 1500
 
 /* Distance you have to move before it becomes a drag. */
-#define SNAP_RESISTANCE 2 /* GMC has this set to 3, but it's too much for my (Ettore's?) taste. */
+#define SNAP_RESISTANCE 2 /* GMC has this set to 3, but it's too much for Ettore's taste. */
 
 /* Button assignments. */
 #define DRAG_BUTTON 1
@@ -106,6 +106,14 @@
 #define DESKTOP_PAD_HORIZONTAL 	30
 #define DESKTOP_PAD_VERTICAL 	10
 #define CELL_SIZE 		20
+
+enum {
+	NAUTILUS_TYPESELECT_FLUSH_DELAY = 1000000
+	/* After this time the current typeselect buffer will be
+	 * thrown away and the new pressed character will be made
+	 * the the start of a new pattern.
+	 */
+};
 
 static void          activate_selected_items                  (NautilusIconContainer      *container);
 static void          nautilus_icon_container_initialize_class (NautilusIconContainerClass *class);
@@ -423,7 +431,7 @@ reveal_icon (NautilusIconContainer *container,
 	NautilusIconContainerDetails *details;
 	GtkAllocation *allocation;
 	GtkAdjustment *hadj, *vadj;
-	int x1, y1, x2, y2;
+	ArtIRect bounds;
 
 	if (!icon_is_positioned (icon)) {
 		set_pending_icon_to_reveal (container, icon);
@@ -438,18 +446,21 @@ reveal_icon (NautilusIconContainer *container,
 	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (container));
 	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
 
-	icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
+	nautilus_gnome_canvas_item_get_current_canvas_bounds
+		(GNOME_CANVAS_ITEM (icon->item), &bounds);
 
-	if (y1 < vadj->value) {
-		nautilus_gtk_adjustment_set_value (vadj, y1);
-	} else if (y2 > vadj->value + allocation->height) {
-		nautilus_gtk_adjustment_set_value (vadj, y2 - allocation->height);
+	if (bounds.y0 < vadj->value) {
+		nautilus_gtk_adjustment_set_value (vadj, bounds.y0);
+	} else if (bounds.y1 > vadj->value + allocation->height) {
+		nautilus_gtk_adjustment_set_value
+			(vadj, bounds.y1 - allocation->height);
 	}
 
-	if (x1 < hadj->value) {
-		nautilus_gtk_adjustment_set_value (hadj, x1);
-	} else if (x2 > hadj->value + allocation->width) {
-		nautilus_gtk_adjustment_set_value (hadj, x2 - allocation->width);
+	if (bounds.x0 < hadj->value) {
+		nautilus_gtk_adjustment_set_value (hadj, bounds.x0);
+	} else if (bounds.x1 > hadj->value + allocation->width) {
+		nautilus_gtk_adjustment_set_value
+			(hadj, bounds.x1 - allocation->width);
 	}
 }
 
@@ -2043,10 +2054,10 @@ match_best_name (NautilusIconContainer *container,
 		}
 
 		/* Require the match pattern to already be lowercase. */
-		g_assert (tolower (match_state->name[match_length]) 
+		g_assert (tolower ((guchar) match_state->name[match_length]) 
 			  == match_state->name[match_length]);
 			
-		if (tolower (name[match_length]) != match_state->name[match_length]) {
+		if (tolower ((guchar) name[match_length]) != match_state->name[match_length]) {
 			break;
 		}
 	}
@@ -2079,7 +2090,7 @@ select_matching_name (NautilusIconContainer *container,
 	for (index = 0; ; index++) {
 		if (match_state.name[index] == '\0')
 			break;
-		match_state.name[index] = tolower (match_state.name[index]);
+		match_state.name[index] = tolower ((guchar) match_state.name[index]);
 	}
 
 	icon = find_best_icon (container,
@@ -2100,7 +2111,6 @@ select_matching_name (NautilusIconContainer *container,
 
 	g_free (match_state.name);
 }
-
 
 static int
 compare_icons_by_name (gconstpointer a, gconstpointer b)
@@ -2552,6 +2562,26 @@ cancel_stretching (NautilusIconContainer *container)
 	container->details->drag_state = DRAG_STATE_INITIAL;
 }
 
+static void
+undo_stretching (NautilusIconContainer *container)
+{
+	if (container->details->stretch_icon == NULL) {
+		return;
+	}
+
+	if (container->details->drag_state == DRAG_STATE_STRETCH) {
+		cancel_stretching (container);		
+	}
+	nautilus_icon_canvas_item_set_show_stretch_handles
+		(container->details->stretch_icon->item, FALSE);
+	
+	icon_set_size (container, container->details->stretch_icon, 
+		       container->details->initial_stretch_size, FALSE);
+	
+	container->details->stretch_icon = NULL;				
+	redo_layout (container);
+}
+
 static gboolean
 button_release_event (GtkWidget *widget,
 		      GdkEventButton *event)
@@ -2687,16 +2717,8 @@ nautilus_icon_container_flush_typeselect_state (NautilusIconContainer *container
 	container->details->type_select_state = NULL;
 }
 
-enum {
-	NAUTILUS_TYPESELECT_FLUSH_DELAY = 1000000
-	/* After this time the current typeselect buffer will be
-	 * thrown away and the new pressed character will be made
-	 * the the start of a new pattern.
-	 */
-};
-
 static gboolean
-nautilus_icon_container_handle_typeahead (NautilusIconContainer *container, const char *key_string)
+handle_typeahead (NautilusIconContainer *container, const char *key_string)
 {
 	char *new_pattern;
 	gint64 now;
@@ -2716,7 +2738,7 @@ nautilus_icon_container_handle_typeahead (NautilusIconContainer *container, cons
 
 	/* only handle if printable keys typed */
 	for (index = 0; index < key_string_length; index++) {
-		if (!isprint (key_string[index])) {
+		if (!isprint ((guchar) key_string[index])) {
 			return FALSE;
 		}
 	}
@@ -2727,7 +2749,7 @@ nautilus_icon_container_handle_typeahead (NautilusIconContainer *container, cons
 	}
 
 	/* find out how long since last character was typed */
-	now = nautilus_get_system_time();
+	now = nautilus_get_system_time ();
 	time_delta = now - container->details->type_select_state->last_typeselect_time;
 	if (time_delta < 0 || time_delta > NAUTILUS_TYPESELECT_FLUSH_DELAY) {
 		/* the typeselect state is too old, start with a fresh one */
@@ -2746,7 +2768,7 @@ nautilus_icon_container_handle_typeahead (NautilusIconContainer *container, cons
 
 	container->details->type_select_state->type_select_pattern = new_pattern;
 	container->details->type_select_state->last_typeselect_time = now;
-	
+
 	select_matching_name (container, new_pattern);
 
 	return TRUE;
@@ -2764,7 +2786,7 @@ key_press_event (GtkWidget *widget,
 	handled = FALSE;
 	flush_typeahead = TRUE;
 
-	if ((is_renaming (container) || is_renaming_pending (container))) {
+	if (is_renaming (container) || is_renaming_pending (container)) {
 		switch (event->keyval) {
 		case GDK_Return:
 		case GDK_KP_Enter:
@@ -2819,32 +2841,16 @@ key_press_event (GtkWidget *widget,
 			activate_selected_items (container);
 			handled = TRUE;
 			break;
-		
 		case GDK_Escape:
-			if (container->details->stretch_icon != NULL) {
-				if (container->details->drag_state == DRAG_STATE_STRETCH) {
-					cancel_stretching (container);		
-				}
-				nautilus_icon_canvas_item_set_show_stretch_handles
-					(container->details->stretch_icon->item, FALSE);
-
-				icon_set_size (container, container->details->stretch_icon, 
-					       container->details->initial_stretch_size, FALSE);
-				
-				container->details->stretch_icon = NULL;				
-				redo_layout (container);
-			}
-			
+			undo_stretching (container);
 			handled = TRUE;
 			break;
-			
 		default:
 			/* Don't use Control or Alt keys for type-selecting, because they
 			 * might be used for menus.
 			 */
 			handled = (event->state & (GDK_CONTROL_MASK | GDK_MOD1_MASK)) == 0 &&
-				   nautilus_icon_container_handle_typeahead 
-				   	(container, event->string);
+				handle_typeahead (container, event->string);
 			flush_typeahead = !handled;
 			break;
 		}
@@ -2854,7 +2860,7 @@ key_press_event (GtkWidget *widget,
 		/* any non-ascii key will force the typeahead state to be forgotten */
 		nautilus_icon_container_flush_typeselect_state (container);
 	}
-	
+
 	if (!handled) {
 		handled = NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, key_press_event, (widget, event));
 	}
@@ -4736,7 +4742,6 @@ nautilus_icon_container_set_label_font_for_zoom_level (NautilusIconContainer *co
 						       int                    zoom_level,
 						       GdkFont               *font)
 {
-	g_return_if_fail (container != NULL);
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_return_if_fail (font != NULL);
 	g_return_if_fail (zoom_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST);
@@ -4753,23 +4758,21 @@ nautilus_icon_container_set_label_font_for_zoom_level (NautilusIconContainer *co
 
 void
 nautilus_icon_container_set_smooth_label_font (NautilusIconContainer *container,
-					       NautilusScalableFont   *font)
+					       NautilusScalableFont *font)
 {
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
 
-	gtk_object_unref (GTK_OBJECT (container->details->smooth_label_font));
-
 	gtk_object_ref (GTK_OBJECT (font));
+	gtk_object_unref (GTK_OBJECT (container->details->smooth_label_font));
 
 	container->details->smooth_label_font = font;
 }
 
 void
 nautilus_icon_container_set_single_click_mode (NautilusIconContainer *container,
-					       gboolean               single_click_mode)
+					       gboolean single_click_mode)
 {
-	g_return_if_fail (container != NULL);
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	container->details->single_click_mode = single_click_mode;
@@ -4779,9 +4782,11 @@ nautilus_icon_container_set_single_click_mode (NautilusIconContainer *container,
 /* update the label color when the background changes */
 
 guint32
-nautilus_icon_container_get_label_color (NautilusIconContainer *container, gboolean is_name)
+nautilus_icon_container_get_label_color (NautilusIconContainer *container,
+					 gboolean is_name)
 {
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), 0);
+
 	if (is_name) {
 		return container->details->label_color;
 	} else {
@@ -4831,7 +4836,6 @@ update_label_color (NautilusBackground *background,
 gboolean
 nautilus_icon_container_get_is_fixed_size (NautilusIconContainer *container)
 {
-	g_return_val_if_fail (container != NULL, FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
 
 	return container->details->is_fixed_size;
@@ -4842,7 +4846,6 @@ void
 nautilus_icon_container_set_is_fixed_size (NautilusIconContainer *container,
 					   gboolean is_fixed_size)
 {
-	g_return_if_fail (container != NULL);
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	container->details->is_fixed_size = is_fixed_size;
@@ -4881,9 +4884,9 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static char *
-nautilus_self_check_compute_stretch (int icon_x, int icon_y, int icon_size,
-				     int start_pointer_x, int start_pointer_y,
-				     int end_pointer_x, int end_pointer_y)
+check_compute_stretch (int icon_x, int icon_y, int icon_size,
+		       int start_pointer_x, int start_pointer_y,
+		       int end_pointer_x, int end_pointer_y)
 {
 	StretchState start, current;
 
@@ -4906,10 +4909,10 @@ nautilus_self_check_compute_stretch (int icon_x, int icon_y, int icon_size,
 void
 nautilus_self_check_icon_container (void)
 {
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_compute_stretch (0, 0, 12, 0, 0, 0, 0), "0,0:12");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_compute_stretch (0, 0, 12, 12, 12, 13, 13), "0,0:13");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_compute_stretch (0, 0, 12, 12, 12, 13, 12), "0,0:12");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_compute_stretch (100, 100, 64, 105, 105, 40, 40), "35,35:129");
+	NAUTILUS_CHECK_STRING_RESULT (check_compute_stretch (0, 0, 12, 0, 0, 0, 0), "0,0:12");
+	NAUTILUS_CHECK_STRING_RESULT (check_compute_stretch (0, 0, 12, 12, 12, 13, 13), "0,0:13");
+	NAUTILUS_CHECK_STRING_RESULT (check_compute_stretch (0, 0, 12, 12, 12, 13, 12), "0,0:12");
+	NAUTILUS_CHECK_STRING_RESULT (check_compute_stretch (100, 100, 64, 105, 105, 40, 40), "35,35:129");
 }
 
 #endif /* ! NAUTILUS_OMIT_SELF_CHECK */

@@ -1092,6 +1092,10 @@ update_link (NautilusFile *link_file, NautilusFile *target_file)
 	g_assert (NAUTILUS_IS_FILE (link_file));
 	g_assert (NAUTILUS_IS_FILE (target_file));
 	g_assert (!info_missing (link_file, GNOME_VFS_FILE_INFO_FIELDS_SYMLINK_NAME));
+
+	/* FIXME bugzilla.eazel.com 2044: If we don't put any code
+	 * here then the hash table is a waste of time.
+	 */
 }
 
 static GList *
@@ -1146,6 +1150,10 @@ update_info_internal (NautilusFile *file,
 	    && gnome_vfs_file_info_matches (file->details->info, info)) {
 		return FALSE;
 	}
+
+	/* FIXME bugzilla.eazel.com 2044: Need to let links that
+	 * point to the old name know that the file has been renamed.
+	 */
 
 	remove_from_link_hash_table (file);
 

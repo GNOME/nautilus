@@ -1,3 +1,56 @@
+2000-12-13  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Rebecca Shulman <rebecka@eazel.com>
+
+	Fixed bug 2155 (type-selected icon is not successfully scrolled
+	into view). The code was using the wrong coordinate system.
+	
+	* libnautilus-extensions/nautilus-icon-container.c: (reveal_icon):
+	Do the icon revealing with the
+	nautilus_gnome_canvas_item_get_current_canvas_bounds instead of
+	icon_get_bounding_box. The old code used item coordinates instead
+	of canvas coordinates.
+	(match_best_name): Added (guchar) casts to make tolower work
+	right, since it takes int parameters, not char.
+	(select_matching_name): Added (guchar) casts to make tolower work
+	right, since it takes int parameters, not char.
+	(undo_stretching): Broke out this function -- work was in-line in
+	key_press_event before.
+	(handle_typeahead): Renamed, added (guchar) casts to make isprint
+	work right, since it takes int parameters, not char.
+	(key_press_event): Use undo_stretching helper function.
+	(nautilus_icon_container_set_label_font_for_zoom_level): Remove
+	redundant NULL check.
+	(nautilus_icon_container_set_smooth_label_font): Ref new
+	font before unref'ing the old one in case they are the same.
+	(nautilus_icon_container_set_single_click_mode) Remove redundant
+	NULL check.
+	(nautilus_icon_container_get_is_fixed_size): Remove redundant
+	NULL check.
+	(nautilus_icon_container_set_is_fixed_size): Remove redundant
+	NULL check.
+	(check_compute_stretch), (nautilus_self_check_icon_container):
+	Renamed.
+
+	* libnautilus-extensions/nautilus-string.c:
+	(nautilus_istr_has_prefix), (nautilus_istr_has_suffix),
+	(nautilus_str_capitalize): Added (guchar) casts to make tolower
+	and toupper work right, since it they take int parameters, not
+	char. Removed unnecessary checks of isupper before calling tolower
+	and islower before calling toupper. We did the research a while
+	back and discovered that broken platforms like that where toupper
+	can munge non-lower-case-letter characters don't really exist in
+	practice any more.
+
+	* libnautilus-extensions/nautilus-file.c: (update_link),
+	(update_info_internal): Added FIXMEs to remind me to come back
+	here when I go fix bug 2044.
+	
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	(nautilus_gnome_canvas_draw_pixbuf_helper),
+	(nautilus_gnome_canvas_draw_pixbuf_helper_alpha): Tweak
+	formatting.
+
 2000-12-13  Martin Norbäck  <d95mback@dtek.chalmers.se>
 
 	reviewed by: Darin Adler <darin@eazel.com>

@@ -196,7 +196,9 @@ nautilus_gnome_canvas_item_get_world_bounds (GnomeCanvasItem *item,
 }
 
 static void
-nautilus_gnome_canvas_draw_pixbuf_helper (art_u8 *dst, int dst_rowstride, const art_u8 *src, int src_rowstride, int copy_width, int copy_height)
+nautilus_gnome_canvas_draw_pixbuf_helper (art_u8 *dst, int dst_rowstride,
+					  const art_u8 *src, int src_rowstride,
+					  int copy_width, int copy_height)
 {
 	art_u8 *dst_limit = dst + copy_height * dst_rowstride;
 	int dst_bytes_per_row = copy_width * 3;
@@ -209,7 +211,9 @@ nautilus_gnome_canvas_draw_pixbuf_helper (art_u8 *dst, int dst_rowstride, const 
 }
 
 static void
-nautilus_gnome_canvas_draw_pixbuf_helper_alpha (art_u8 *dst, int dst_rowstride, const art_u8 *src, int src_rowstride, int copy_width, int copy_height)
+nautilus_gnome_canvas_draw_pixbuf_helper_alpha (art_u8 *dst, int dst_rowstride,
+						const art_u8 *src, int src_rowstride,
+						int copy_width, int copy_height)
 {
 	art_u8 *dst_limit = dst + copy_height * dst_rowstride;
 	int dst_bytes_per_row = copy_width * 3;
