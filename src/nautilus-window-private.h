@@ -84,6 +84,9 @@ struct NautilusWindowDetails
         /* Deferred location change. */
         char *location_to_change_to_at_idle;
         guint location_change_at_idle_id;
+
+        /* Location bar */
+        gboolean temporary_navigation_bar;
 };
 
 #define NAUTILUS_MENU_PATH_BACK_ITEM			"/menu/Go/Back"

@@ -66,7 +66,7 @@ static const char untranslated_go_to_label[] = N_("Go To:");
 
 struct NautilusLocationBarDetails {
 	GtkLabel *label;
-	GtkEntry *entry;
+	NautilusEntry *entry;
 	
 	char *last_location;
 	
@@ -566,8 +566,11 @@ real_activate (NautilusNavigationBar *navigation_bar)
 
 	bar = NAUTILUS_LOCATION_BAR (navigation_bar);
 
-	/* Put the keyboard focus in the text field when switching to this mode */
+	/* Put the keyboard focus in the text field when switching to this mode,
+	 * and select all text for easy overtyping 
+	 */
 	gtk_widget_grab_focus (GTK_WIDGET (bar->details->entry));
+	nautilus_entry_select_all (bar->details->entry);
 }
 
 static void
@@ -676,7 +679,7 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 	gtk_widget_show_all (hbox);
 
 	bar->details->label = GTK_LABEL (label);
-	bar->details->entry = GTK_ENTRY (entry);	
+	bar->details->entry = NAUTILUS_ENTRY (entry);	
 }
 
 

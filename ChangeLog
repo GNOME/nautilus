@@ -1,3 +1,89 @@
+2001-03-27  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	Fixed bug 2328 (No way to go to a specific URI if location
+	bar is hidden)
+
+	Fixed by adding a new item "Location ..." to the Go menu,
+	with control-L as keyboard shortcut. ("Create Link", formerly
+	control-L, is now "Make Link", control-M.) Choosing "Location ..."
+	makes the location bar visible if necessary and selects the
+	location text field's contents so you can start typing to replace
+	it. If the location bar had been hidden, it will hide itself again
+	when you hit Return.
+
+	At the same time, made the "Find" menu item (control-F) always
+	show the Find controls and move the focus there, instead of
+	toggling between Find & Browse. The Find toolbar button remains
+	a toggle button.
+
+
+	Fixed bug 3590 (Remove workaround for Bonobo design flaw)
+	Fixed bug 7303 (Conflicts on menu item underline accelerators)
+
+	Fixed these incidentally when working on 2328.
+
+
+	* src/file-manager/fm-directory-view.c: (real_update_menus):
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Changed Create Link(s) to Make Link(s), and changed its
+	accelerator to Control-M.
+	
+	* src/nautilus-location-bar.c: 
+	(real_activate): select all text when activating (used to
+	just grab focus)
+	(nautilus_location_bar_initialize): Changed definition
+	of entry to be a NautilusEntry.
+
+	
+	* src/nautilus-shell-ui.xml: added "Location ..." item in
+	Go menu; renamed some commands and items for clarity; 
+	moved a couple of accelerators into verbs.
+	
+	* src/nautilus-switchable-navigation-bar.h:
+	* src/nautilus-switchable-navigation-bar.c:
+	(nautilus_switchable_navigation_bar_activate),
+	(nautilus_switchable_navigation_bar_set_mode):
+	Broke _activate out of _set_mode and made it
+	public; tweaked _set_mode a little.
+	
+	* src/nautilus-window-private.h: Added temporary_navigation_bar
+	boolean to details struct.
+
+	* src/nautilus-window-menus.c:
+	(nautilus_window_show_location_bar_temporarily): New function,
+	shows location bar and sets the flag to hide it after it
+	signals for a location change.
+	(file_menu_find_callback): New function, switches to find mode,
+	showing location bar temporarily if necessary.
+	(toolbar_toggle_find_mode_callback): renamed from file_menu_xxx
+	now that it's only used by the toolbar, toggles Find mode,
+	showing location bar temporarily if necessary.
+	(go_menu_location_callback): New function, switches to browse mode,
+	showing location bar temporarily if necessary.
+	(nautilus_window_initialize_menus_part_1): futz with verbs for
+	these menu items.
+	(nautilus_window_update_find_menu_item): Remove this call since
+	the menu item is no longer dynamic.
+	(nautilus_window_remove_go_menu_items): Remove call to
+	nautilus_window_update_find_menu_item.
+	
+	* src/nautilus-window.c: 
+	(go_to_callback): Cleaned up style a little.
+	(navigation_bar_location_changed_callback): New function, called
+	when location bar says "hey, here's a new location for you".
+	Hides the location bar if it was temporarily showing.
+	(navigation_bar_mode_changed_callback): Remove call to
+	nautilus_window_update_find_item.
+	(nautilus_window_constructed): Wire up 
+	navigation_bar_location_changed_callback.
+	(nautilus_window_hide_location_bar): Clear the 
+	temporary_navigation_bar flag.
+
+	* components/text/nautilus-text-view-ui.xml: Change _Fonts to
+	F_onts to avoid conflict with _File.
+
 Tue Mar 27 02:25:31 2001  George Lebl <jirka@5z.com>
 
 	* components/help/hyperbola-nav-tree.c (ensure_italic_style)

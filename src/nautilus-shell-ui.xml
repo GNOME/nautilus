@@ -12,6 +12,8 @@
 	 _tip="Go to the previous visited location"/>
 	<cmd name="Forward" accel="*Control*bracketright"
 	 _tip="Go to the next visited location"/>
+	<cmd name="Find" accel="*Control*f"
+	 _tip="Search this computer for files"/>
 	<cmd name="New Window"
 	 _label="New Window"
 	 _tip="Open another Nautilus window for the displayed location"/>
@@ -24,7 +26,7 @@
         <cmd name="Copy" accel="*Control*c" sensitive="0"/>
         <cmd name="Paste" accel="*Control*v" sensitive="0"/>
         <cmd name="Clear" sensitive="0"/>
-	<cmd name="Up" accel="*Control*u"
+	<cmd name="Up"
 	 _tip="Go to the location that contains this one"/>
 	<cmd name="Zoom In" _label="Zoom In"
 	 _tip="Show the contents in more detail"/>
@@ -61,11 +63,9 @@
 
 		<separator/>
 
-		<menuitem name="Toggle Find Mode"
+		<menuitem name="Find"
 			  _label="_Find"
-			  _tip="Search this computer for files"
-			  accel="*Control*f"
-			  verb="Toggle Find Mode"/>
+			  verb="Find"/>
 		<menuitem name="Go to Web Search"
 			  _label="We_b Search"
 			  _tip="Search the World Wide Web"
@@ -179,12 +179,17 @@
 			  verb="Forward"/>
 		<menuitem name="Up" 
 			  _label="_Up a Level" 
+			  accel="*Control*u"
 			  verb="Up"/>
 		<menuitem name="Home" 
 			  _label="_Home" 
 			  _tip="Go to the home location"
 			  accel="*Control*h"
 			  verb="Home"/>
+		<menuitem name="Go to Location"
+			  _label="_Location..."
+			  accel="*Control*l"
+			  verb="Go to Location"/>
 
 		<separator/>
 
@@ -323,7 +328,7 @@
 	          min_width="48"
 	          type="toggle"
 	          pixtype="stock" pixname="Search"
-		  verb="Toggle Find Mode With State"/>
+		  verb="Toggle Find Mode"/>
 	<toolitem name="Go to Web Search"
 		  _label="Web Search"
 		  _tip="Search the World Wide Web"

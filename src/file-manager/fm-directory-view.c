@@ -4107,8 +4107,8 @@ real_update_menus (FMDirectoryView *view)
 		 FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK,
 		 FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK,
 		 selection_count > 1
-			? _("Create _Links")
-			: _("Create _Link"));
+			? _("Make _Links")
+			: _("Make _Link"));
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK,
 				       can_create_files

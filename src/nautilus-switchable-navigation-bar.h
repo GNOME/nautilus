@@ -68,6 +68,6 @@ GtkWidget* 			    nautilus_switchable_navigation_bar_new     	(NautilusWindow *w
 NautilusSwitchableNavigationBarMode nautilus_switchable_navigation_bar_get_mode (NautilusSwitchableNavigationBar     *switchable_navigation_bar);
 void       			    nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar     *switchable_navigation_bar,
 								 		 NautilusSwitchableNavigationBarMode  mode);
-
+void				    nautilus_switchable_navigation_bar_activate (NautilusSwitchableNavigationBar     *switchable_navigation_bar);
 
 #endif /* NAUTILUS_SWITCHABLE_NAVIGATION_BAR_H */

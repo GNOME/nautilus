@@ -156,29 +156,55 @@ nautilus_switchable_navigation_bar_get_mode (NautilusSwitchableNavigationBar    
 }
 
 void
+nautilus_switchable_navigation_bar_activate (NautilusSwitchableNavigationBar *bar)
+{
+	NautilusNavigationBar *bar_to_activate;
+
+	switch (bar->details->mode) {
+	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION:
+		bar_to_activate = NAUTILUS_NAVIGATION_BAR (bar->details->location_bar);
+		break;
+	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH:
+		bar_to_activate = NAUTILUS_NAVIGATION_BAR (bar->details->search_bar);
+		break;
+	default:
+		g_return_if_fail (FALSE);
+	}
+
+	nautilus_navigation_bar_activate (bar_to_activate);
+}
+
+
+void
 nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar     *bar,
 					     NautilusSwitchableNavigationBarMode  mode)
 {
+	GtkWidget *widget_to_hide, *widget_to_show;
 	GtkWidget *dock;
 
 	if (bar->details->mode == mode) {
 		return;
 	}
 
+	bar->details->mode = mode;
+
 	switch (mode) {
 	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION:
-		gtk_widget_show (GTK_WIDGET (bar->details->location_bar));
-		nautilus_navigation_bar_activate (NAUTILUS_NAVIGATION_BAR (bar->details->location_bar));
-		gtk_widget_hide (GTK_WIDGET (bar->details->search_bar));
+		widget_to_show = GTK_WIDGET (bar->details->location_bar);
+		widget_to_hide = GTK_WIDGET (bar->details->search_bar);
 		break;
 	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH:
-		gtk_widget_show (GTK_WIDGET (bar->details->search_bar));
-		nautilus_navigation_bar_activate (NAUTILUS_NAVIGATION_BAR (bar->details->search_bar));
-		gtk_widget_hide (GTK_WIDGET (bar->details->location_bar));
+		widget_to_show = GTK_WIDGET (bar->details->search_bar);
+		widget_to_hide = GTK_WIDGET (bar->details->location_bar);
 		break;
 	default:
 		g_return_if_fail (mode && 0);
 	}
+
+	gtk_widget_show (widget_to_show);
+	gtk_widget_hide (widget_to_hide);
+
+	nautilus_switchable_navigation_bar_activate (bar);
 
 	/* FIXME bugzilla.eazel.com 3171:
 	 * We don't know why this line is needed here, but if it's removed
@@ -191,7 +217,6 @@ nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar    
 		gtk_widget_queue_resize (dock);
 	}
 
-	bar->details->mode = mode;
 	gtk_signal_emit (GTK_OBJECT (bar), signals[MODE_CHANGED], mode);
 }
 

@@ -95,10 +95,7 @@
 #define STATUS_BAR_PATH         "/status"
 #define MENU_BAR_PATH           "/menu"
 
-/* FIXME: bugzilla.eazel.com 3590
- * This shouldn't need to exist. See bug report for details.
- */
-#define NAUTILUS_COMMAND_TOGGLE_FIND_MODE_WITH_STATE	"/commands/Toggle Find Mode With State"
+#define NAUTILUS_COMMAND_TOGGLE_FIND_MODE	"/commands/Toggle Find Mode"
 
 enum {
 	ARG_0,
@@ -377,9 +374,28 @@ nautilus_window_get_location (NautilusWindow *window)
 static void
 go_to_callback (GtkWidget *widget,
 		const char *uri,
-		GtkWidget *window)
+		NautilusWindow *window)
 {
-	nautilus_window_go_to (NAUTILUS_WINDOW (window), uri);
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	nautilus_window_go_to (window, uri);
+}
+
+static void
+navigation_bar_location_changed_callback (GtkWidget *widget,
+					  const char *uri,
+					  NautilusWindow *window)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	if (window->details->temporary_navigation_bar) {
+		if (nautilus_window_location_bar_showing (window)) {
+			nautilus_window_hide_location_bar (window);
+		}
+		window->details->temporary_navigation_bar = FALSE;
+	}
+
+	nautilus_window_go_to (window, uri);
 }
 
 static void
@@ -387,8 +403,6 @@ navigation_bar_mode_changed_callback (GtkWidget *widget,
 				      NautilusSwitchableNavigationBarMode mode,
 				      NautilusWindow *window)
 {
-	nautilus_window_update_find_menu_item (window);
-	
 	window->details->updating_bonobo_state = TRUE;
 
 	g_assert (mode == NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION 
@@ -396,12 +410,8 @@ navigation_bar_mode_changed_callback (GtkWidget *widget,
 
 	nautilus_window_ui_freeze (window);
 
-	/* FIXME: bugzilla.eazel.com 3590:
-	 * We shouldn't need a separate command for the toggle button and menu item.
-	 * This is a Bonobo design flaw, explained in the bug report.
-	 */
 	nautilus_bonobo_set_toggle_state (window->details->shell_ui,
-					  NAUTILUS_COMMAND_TOGGLE_FIND_MODE_WITH_STATE,
+					  NAUTILUS_COMMAND_TOGGLE_FIND_MODE,
 					  mode == NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH);
 	
 	window->details->updating_bonobo_state = FALSE;
@@ -660,7 +670,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	gtk_widget_show (GTK_WIDGET (window->navigation_bar));
 
 	gtk_signal_connect (GTK_OBJECT (window->navigation_bar), "location_changed",
-			    go_to_callback, window);
+			    navigation_bar_location_changed_callback, window);
 
 	gtk_signal_connect (GTK_OBJECT (window->navigation_bar), "mode_changed",
 			    navigation_bar_mode_changed_callback, window);
@@ -1836,6 +1846,7 @@ dock_item_showing (NautilusWindow *window, const char *dock_item_path)
 void 
 nautilus_window_hide_location_bar (NautilusWindow *window)
 {
+	window->details->temporary_navigation_bar = FALSE;
 	hide_dock_item (window, LOCATION_BAR_PATH);
 }
 

@@ -34,6 +34,7 @@
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-property-browser.h"
 #include "nautilus-signaller.h"
+#include "nautilus-switchable-navigation-bar.h"
 #include "nautilus-theme-selector.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
@@ -71,8 +72,6 @@
  * development-only or because we expect to change them and
  * don't want other code relying on their existence.
  */
-
-#define MENU_PATH_TOGGLE_FIND_MODE			"/menu/File/Toggle Find Mode"
 
 #define MENU_PATH_SHOW_HIDE_SIDEBAR			"/menu/View/Show Hide Placeholder/Show Hide Sidebar"
 #define MENU_PATH_SHOW_HIDE_TOOLBAR			"/menu/View/Show Hide Placeholder/Show Hide Toolbar"
@@ -213,7 +212,36 @@ file_menu_close_all_windows_callback (BonoboUIComponent *component,
 }
 
 static void
-file_menu_toggle_find_mode_callback (BonoboUIComponent *component, 
+nautilus_window_show_location_bar_temporarily (NautilusWindow *window, 
+					       gboolean in_search_mode)
+{
+	if (!nautilus_window_location_bar_showing (window)) {
+		nautilus_window_show_location_bar (window);
+		window->details->temporary_navigation_bar = TRUE;
+	}
+	nautilus_window_set_search_mode 
+		(window, in_search_mode);
+	nautilus_switchable_navigation_bar_activate 
+		(NAUTILUS_SWITCHABLE_NAVIGATION_BAR (window->navigation_bar));
+}
+
+static void
+file_menu_find_callback (BonoboUIComponent *component, 
+			 gpointer user_data, 
+			 const char *verb)
+{
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (user_data);
+
+	if (!window->details->updating_bonobo_state) {
+		nautilus_window_show_location_bar_temporarily
+			(window, TRUE);
+	}
+}
+
+static void
+toolbar_toggle_find_mode_callback (BonoboUIComponent *component, 
 			             gpointer user_data, 
 			             const char *verb)
 {
@@ -222,14 +250,25 @@ file_menu_toggle_find_mode_callback (BonoboUIComponent *component,
 	window = NAUTILUS_WINDOW (user_data);
 
 	if (!window->details->updating_bonobo_state) {
-		/* Show location bar if it's hidden */
-		if (!nautilus_window_location_bar_showing (window)) {
-			nautilus_window_show_location_bar (window);
-		}
-		nautilus_window_set_search_mode 
+		nautilus_window_show_location_bar_temporarily
 			(window, !nautilus_window_get_search_mode (window));
 	}
 }
+
+static void
+go_menu_location_callback (BonoboUIComponent *component,
+			   gpointer user_data,
+			   const char *verb)
+{
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (user_data);
+
+	if (!window->details->updating_bonobo_state) {
+		nautilus_window_show_location_bar_temporarily
+			(window, FALSE);
+	}
+}			   
 
 static void
 file_menu_web_search_callback (BonoboUIComponent *component, 
@@ -1182,13 +1221,8 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("New Window", file_menu_new_window_callback),
 		BONOBO_UI_VERB ("Close", file_menu_close_window_callback),
 		BONOBO_UI_VERB ("Close All Windows", file_menu_close_all_windows_callback),
-		BONOBO_UI_VERB ("Toggle Find Mode", file_menu_toggle_find_mode_callback),
-		/* FIXME: bugzilla.eazel.com 3590:
-		 * Note that we use a different verb for the toolbar button since
-		 * the toolbar button has state but the menu item doesn't. This would
-		 * otherwise confuse Bonobo.
-		 */
-		BONOBO_UI_VERB ("Toggle Find Mode With State", file_menu_toggle_find_mode_callback),
+		BONOBO_UI_VERB ("Find", file_menu_find_callback),
+		BONOBO_UI_VERB ("Toggle Find Mode", toolbar_toggle_find_mode_callback),
 		BONOBO_UI_VERB ("Go to Web Search", file_menu_web_search_callback),
 		BONOBO_UI_VERB ("Undo", edit_menu_undo_callback),
 		BONOBO_UI_VERB ("Customize", customize_callback),
@@ -1197,6 +1231,7 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("Forward", go_menu_forward_callback),
 		BONOBO_UI_VERB ("Up", go_menu_up_callback),
 		BONOBO_UI_VERB ("Home", go_menu_home_callback),
+		BONOBO_UI_VERB ("Go to Location", go_menu_location_callback),
 		BONOBO_UI_VERB ("Forget History", go_menu_forget_history_callback),
 		BONOBO_UI_VERB ("Reload", view_menu_reload_callback),
 		BONOBO_UI_VERB ("Show Hide Sidebar", view_menu_show_hide_sidebar_callback),
@@ -1243,7 +1278,6 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 
 	bonobo_ui_component_add_verb_list_with_data (window->details->shell_ui, verbs, window);
 
-        nautilus_window_update_find_menu_item (window);
         nautilus_window_update_show_hide_menu_items (window);
 
 	add_user_level_menu_item (window, NAUTILUS_MENU_PATH_NOVICE_ITEM, 
@@ -1316,29 +1350,6 @@ nautilus_window_remove_go_menu_items (NautilusWindow *window)
 
 	nautilus_window_ui_thaw (window);
 }
-
-void
-nautilus_window_update_find_menu_item (NautilusWindow *window)
-{
-	char *label_string;
-
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	nautilus_window_ui_freeze (window);
-
-	label_string = g_strdup 
-		(nautilus_window_get_search_mode (window) 
-			? _("_Browse") 
-			: _("_Find"));
-
-	nautilus_bonobo_set_label (window->details->shell_ui, 
-				   MENU_PATH_TOGGLE_FIND_MODE,
-				   label_string);
-	g_free (label_string);
-
-	nautilus_window_ui_thaw (window);
-}
-
 
 static void
 append_dynamic_bookmarks (NautilusWindow *window)
