@@ -72,6 +72,9 @@ struct _NautilusWindow {
   BonoboUIHandler *uih;
   BonoboObject *app;
 
+  /* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
+  gboolean updating_bonobo_radio_menu_item;
+
   /** State information **/
 
   /* Information about current location/selection */

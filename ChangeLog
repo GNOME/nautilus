@@ -1,3 +1,43 @@
+2000-05-31  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Remove the user level pane from the preferences dialog.  Place the
+	user level choices directly in the settings menu.
+
+	Also uncouple user level from preferences.  User level is no
+	longer a preference itself.
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog),
+	(global_preferences_register_for_ui),
+	(user_level_changed_callback),
+	(nautilus_global_preferences_shutdown),
+	(nautilus_global_preferences_startup):
+	Remove all of the user level ui stuff.
+	
+	* nautilus-widgets/nautilus-user-level-manager.c:
+	(user_level_manager_new), (nautilus_user_level_manager_initialize),
+	(nautilus_user_level_manager_initialize_class),
+	(user_level_manager_destroy), (gconf_get_user_level_string),
+	(user_level_set_default_if_needed),
+	(gconf_user_level_changed_callback),
+	(nautilus_user_level_manager_get),
+	(nautilus_user_level_manager_set_user_level),
+	(nautilus_user_level_manager_get_user_level):
+	Emit the the "user_level_changed" signal from a gconf callback
+	instead of "by hand".  Otherwise we are out of whack because of
+	gconf asyncness.
+
+	* src/nautilus-window-menus.c:
+	(settings_menu_user_level_radio_group_callback),
+	(settings_menu_user_level_customize_callback),
+	(settings_menu_customize_callback),
+	(nautilus_window_initialize_menus),
+	(user_level_menu_path_to_user_level),
+	(user_level_user_level_to_menu_path):
+	* src/nautilus-window.h:
+	Remove the "General Settings" menu item.  Replace it with a
+	user level chooser as well as current user level customizer.
+	
 2000-05-31  Fatih Demir	<kabalak@gmx.net>
 	
 	* nautilus.desktop: Added the Turkish entries.

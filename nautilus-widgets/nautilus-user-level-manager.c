@@ -65,6 +65,7 @@ struct _NautilusUserLevelManager
 	NautilusStringList	*user_level_names;
 
 	GConfClient		*gconf_client;
+	int			user_level_changed_connection;
 };
 
 typedef struct 
@@ -86,8 +87,18 @@ static void                      nautilus_user_level_manager_initialize       (N
 static void                      user_level_manager_destroy                   (GtkObject                     *object);
 static NautilusUserLevelManager *user_level_manager_new                       (void);
 static void                      user_level_manager_ensure_global_manager     (void);
-static void                      user_level_set_default_if_needed             (NautilusUserLevelManager *manager);
-char *                           get_gconf_user_level_string                  (void);
+static void                      user_level_set_default_if_needed             (NautilusUserLevelManager      *manager);
+char *                           gconf_get_user_level_string                  (void);
+
+
+/* Gconf callbacks */
+static void                      gconf_user_level_changed_callback            (GConfClient                   *client,
+									       guint                          cnxn_id,
+									       const gchar                   *key,
+									       GConfValue                    *value,
+									       gboolean                       is_default,
+									       gpointer                       user_data);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusUserLevelManager, nautilus_user_level_manager, GTK_TYPE_OBJECT)
 
@@ -119,6 +130,14 @@ user_level_manager_new ()
 
 	user_level_set_default_if_needed (manager);
 
+	/* Add a gconf notification for user_level changes.  */
+	manager->user_level_changed_connection = gconf_client_notify_add (manager->gconf_client,
+									  USER_LEVEL_KEY,
+									  gconf_user_level_changed_callback,
+									  NULL,
+									  NULL,
+									  NULL);
+	
         return manager;
 }
 
@@ -128,6 +147,7 @@ nautilus_user_level_manager_initialize (NautilusUserLevelManager *manager)
 	manager->num_user_levels = 0;
 
 	manager->gconf_client = NULL;
+	manager->user_level_changed_connection = 0;
 }
 
 static void
@@ -135,7 +155,7 @@ nautilus_user_level_manager_initialize_class (NautilusUserLevelManagerClass *use
 {
 	GtkObjectClass *object_class = GTK_OBJECT_CLASS (user_level_manager_class);
 	
-	user_level_manager_signals[USER_LEVEL_CHANGED] = gtk_signal_new ("icons_changed",
+	user_level_manager_signals[USER_LEVEL_CHANGED] = gtk_signal_new ("user_level_changed",
 									 GTK_RUN_LAST,
 									 object_class->type,
 									 0,
@@ -159,6 +179,14 @@ user_level_manager_destroy (GtkObject *object)
 	/* Right now, the global manager is not destroyed on purpose */
 	g_assert_not_reached ();
 
+	/* Remove the gconf notification if its still lingering */
+	if (manager->user_level_changed_connection != 0) {
+		gconf_client_notify_remove (manager->gconf_client,
+					    manager->user_level_changed_connection);
+		
+		manager->user_level_changed_connection = 0;
+	}
+
 	if (manager->gconf_client != NULL) {
 		gtk_object_unref (GTK_OBJECT (manager->gconf_client));
 	}
@@ -177,7 +205,7 @@ user_level_manager_ensure_global_manager (void)
 }
 
 char *
-get_gconf_user_level_string (void)
+gconf_get_user_level_string (void)
 {
 	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
 	char			 *user_level_string;
@@ -207,8 +235,6 @@ user_level_set_default_if_needed (NautilusUserLevelManager *manager)
 		gconf_client_set (manager->gconf_client, USER_LEVEL_KEY, value, NULL);
 
 		gconf_client_suggest_sync (manager->gconf_client, NULL);
-
-/* 		g_print ("setting default user_level to %s\n", DEFAULT_USER_LEVEL_NAMES[DEFAULT_USER_LEVEL]); */
 	}
 
 	g_assert (value != NULL);
@@ -216,11 +242,27 @@ user_level_set_default_if_needed (NautilusUserLevelManager *manager)
 	gconf_value_destroy (value);
 }
 
+static void
+gconf_user_level_changed_callback (GConfClient	*client, 
+				   guint	connection_id, 
+				   const gchar	*key, 
+				   GConfValue	*value, 
+				   gboolean	is_default, 
+				   gpointer	user_data)
+{
+	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
+
+	gtk_signal_emit (GTK_OBJECT (manager), user_level_manager_signals[USER_LEVEL_CHANGED]);
+}
+
 /* Public NautilusUserLevelManager functions */
 NautilusUserLevelManager *
 nautilus_user_level_manager_get (void)
 {
 	user_level_manager_ensure_global_manager ();
+
+	g_assert (global_manager != NULL);
+	g_assert (NAUTILUS_IS_USER_LEVEL_MANAGER (global_manager));
 	
         return global_manager;
 }
@@ -254,10 +296,6 @@ nautilus_user_level_manager_set_user_level (guint user_level)
 	g_assert (result);
 
 	gconf_client_suggest_sync (manager->gconf_client, NULL);
-	
-/* 	g_print ("user_level changed from %d to %d\n", old_user_level, user_level); */
-
-	gtk_signal_emit (GTK_OBJECT (manager), user_level_manager_signals[USER_LEVEL_CHANGED]);
 }
 
 guint
@@ -267,13 +305,11 @@ nautilus_user_level_manager_get_user_level (void)
 	char			 *user_level_string;
 	gint			 index;
 
-	user_level_string = get_gconf_user_level_string ();
+	user_level_string = gconf_get_user_level_string ();
 	g_assert (user_level_string != NULL);
 
 	index = nautilus_string_list_get_index_for_string (manager->user_level_names,
 							   user_level_string);
-
-/* 	g_print ("user_level_string = %s, index = %d\n", user_level_string, index); */
 
 	g_free (user_level_string);
 

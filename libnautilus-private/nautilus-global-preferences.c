@@ -31,23 +31,13 @@
 #include <nautilus-widgets/nautilus-preferences-group.h>
 #include <nautilus-widgets/nautilus-preferences-item.h>
 #include <nautilus-widgets/nautilus-preferences-dialog.h>
+#include <nautilus-widgets/nautilus-user-level-manager.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
 
 /* Constants */
 #define GLOBAL_PREFERENCES_DIALOG_TITLE _("Nautilus Preferences")
-
-/* User level */
-#define NAUTILUS_PREFERENCES_USER_LEVEL_KEY			"/nautilus/preferences/user_level"
-
-enum
-{
-	/* Start at something other than zero - which is reserved as the unspecified default value. */
-	NAUTILUS_USER_LEVEL_NOVICE = 100,
-	NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	NAUTILUS_USER_LEVEL_HACKER
-};
 
 /* Private stuff */
 static GtkWidget *global_preferences_create_dialog                      (void);
@@ -58,10 +48,6 @@ static gboolean   global_preferences_is_sidebar_panel_enabled           (Nautilu
 									 gpointer                ignore);
 static GList *    global_preferences_get_sidebar_panel_view_identifiers (void);
 
-/* Preference change callbacks */
-static void       user_level_changed_callback                           (gpointer                user_data);
-
-
 /*
  * Private stuff
  */
@@ -70,7 +56,6 @@ global_preferences_create_dialog (void)
 {
 	GtkWidget		*prefs_dialog;
 	NautilusPreferencesBox	*preference_box;
-	GtkWidget		*user_level_pane;
 	GtkWidget		*directory_views_pane;
 	GtkWidget		*sidebar_panels_pane;
 	GtkWidget		*appearance_pane;
@@ -86,19 +71,7 @@ global_preferences_create_dialog (void)
 	preference_box = NAUTILUS_PREFERENCES_BOX (nautilus_preferences_dialog_get_prefs_box
 						   (NAUTILUS_PREFERENCES_DIALOG (prefs_dialog)));
 
-	/*
-	 * User level pane
-	 */
-	user_level_pane = nautilus_preferences_box_add_pane (preference_box,
-							     "User Level",
-							     "User Level Something");
-	
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (user_level_pane), "User Level");
-	
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (user_level_pane),
-							 0,
-							 NAUTILUS_PREFERENCES_USER_LEVEL_KEY,
-							 NAUTILUS_PREFERENCE_ITEM_ENUM);
+
 	/*
 	 * Directory Views pane
 	 */
@@ -397,28 +370,6 @@ global_preferences_register_for_ui (void)
 				       NAUTILUS_PREFERENCE_BOOLEAN,
 				       (gconstpointer) FALSE);
 	
-	/* User level */
-	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_USER_LEVEL_KEY,
-				       "User Level",
-				       NAUTILUS_PREFERENCE_ENUM,
-				       (gconstpointer) NAUTILUS_USER_LEVEL_HACKER);
-	
-	
-	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES_USER_LEVEL_KEY,
-					     "novice",
-					     "Novice",
-					     NAUTILUS_USER_LEVEL_NOVICE);
-
-	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES_USER_LEVEL_KEY,
-					     "intermediate",
-					     "Intermediate",
-					     NAUTILUS_USER_LEVEL_INTERMEDIATE);
-
-	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES_USER_LEVEL_KEY,
-					     "hacker",
-					     "Hacker",
-					     NAUTILUS_USER_LEVEL_HACKER);
-
 	/* Sidebar panels */
 	global_preferences_register_sidebar_panels_preferences_for_ui ();
 
@@ -447,10 +398,15 @@ global_preferences_register_for_ui (void)
 				       (gconstpointer) FALSE);	
 }
 
+#define USER_LEVEL_NOVICE	0
+#define USER_LEVEL_INTERMEDIATE 1
+#define USER_LEVEL_HACKER	2
+
 static void
-user_level_changed_callback (gpointer user_data)
+user_level_changed_callback (GtkObject	*user_level_manager,
+			     gpointer	user_data)
 {
-	gint			user_level;
+	int			new_user_level;
 	char			*home_uri_string;
 
 	gboolean		show_hidden_files = FALSE;
@@ -460,26 +416,25 @@ user_level_changed_callback (gpointer user_data)
 	
 	const char		*user_main_directory;
 
-	user_level = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_USER_LEVEL_KEY,
-						    NAUTILUS_USER_LEVEL_HACKER);
+	new_user_level = nautilus_user_level_manager_get_user_level ();
 
 	/* Set some preferences according to the user level */
-	switch (user_level) {
-	case NAUTILUS_USER_LEVEL_NOVICE:
+	switch (new_user_level) {
+	case USER_LEVEL_NOVICE:
 		show_hidden_files = FALSE;
 		use_real_home = FALSE;
 		show_real_file_name = FALSE;
 		can_add_content = FALSE;
 		break;
 
-	case NAUTILUS_USER_LEVEL_INTERMEDIATE: 
+	case USER_LEVEL_INTERMEDIATE: 
 		show_hidden_files = FALSE;
 		use_real_home = TRUE;
 		show_real_file_name = FALSE;
 		can_add_content = TRUE;
 		break;
 		
-	case NAUTILUS_USER_LEVEL_HACKER:
+	case USER_LEVEL_HACKER:
 	default:
 		show_hidden_files = TRUE;
 		use_real_home = TRUE;
@@ -497,7 +452,6 @@ user_level_changed_callback (gpointer user_data)
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_CAN_ADD_CONTENT,
 					  can_add_content);
 	
-
 	/* FIXME bugzilla.eazel.com 715: This call needs to be spanked to conform.  Should return a strduped string */
 	user_main_directory = nautilus_user_main_directory ();
 	
@@ -532,9 +486,9 @@ nautilus_global_preferences_shutdown (void)
 	GtkWidget * global_prefs_dialog = global_preferences_get_dialog ();
 	gtk_widget_destroy (global_prefs_dialog);
 
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_USER_LEVEL_KEY,
-					      user_level_changed_callback,
-					      NULL);
+	gtk_signal_disconnect_by_func (GTK_OBJECT (nautilus_user_level_manager_get ()),
+				       user_level_changed_callback,
+				       NULL);
 
 	/* Now free the preferences tables and stuff */
 	nautilus_preferences_shutdown ();
@@ -555,12 +509,13 @@ nautilus_global_preferences_startup (int argc, char **argv)
 	
 	global_preferences_register_for_ui ();
 	
-	/* Keep track of user level changes */
-	nautilus_preferences_add_enum_callback (NAUTILUS_PREFERENCES_USER_LEVEL_KEY,
-						user_level_changed_callback,
-						NULL);
-
+	/* Register to find out about user level changes */
+	gtk_signal_connect (GTK_OBJECT (nautilus_user_level_manager_get ()),
+			    "user_level_changed",
+			    user_level_changed_callback,
+			    NULL);
+	
 	/* Invoke the callback once to make sure stuff is properly setup */
-	user_level_changed_callback (NULL);
+	user_level_changed_callback (NULL, NULL);
 }
 

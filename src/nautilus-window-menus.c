@@ -40,25 +40,29 @@
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <nautilus-widgets/nautilus-user-level-manager.h>
 
 static GtkWindow *bookmarks_window = NULL;
 
-static void                  activate_bookmark_in_menu_item      (BonoboUIHandler *uih, 
-                                                                  gpointer user_data, 
-                                                                  const char *path);
-static void                  append_bookmark_to_menu             (NautilusWindow *window, 
-                                                                  const NautilusBookmark *bookmark, 
-                                                                  const char *menu_item_path);
-static void                  clear_appended_bookmark_items       (NautilusWindow *window, 
-                                                                  const char *menu_path, 
-                                                                  const char *last_static_item_path);
+static void                  activate_bookmark_in_menu_item      (BonoboUIHandler        *uih,
+								  gpointer                user_data,
+								  const char             *path);
+static void                  append_bookmark_to_menu             (NautilusWindow         *window,
+								  const NautilusBookmark *bookmark,
+								  const char             *menu_item_path);
+static void                  clear_appended_bookmark_items       (NautilusWindow         *window,
+								  const char             *menu_path,
+								  const char             *last_static_item_path);
 static NautilusBookmarkList *get_bookmark_list                   (void);
+static void                  refresh_bookmarks_in_go_menu        (NautilusWindow         *window);
+static void                  refresh_bookmarks_in_bookmarks_menu (NautilusWindow         *window);
+static void                  update_eazel_theme_menu_item        (NautilusWindow         *window);
+static void                  update_undo_menu_item               (NautilusWindow         *window);
+static void                  edit_bookmarks                      (NautilusWindow         *window);
 
-static void                  refresh_bookmarks_in_go_menu        (NautilusWindow *window);
-static void                  refresh_bookmarks_in_bookmarks_menu (NautilusWindow *window);
-static void                  update_eazel_theme_menu_item        (NautilusWindow *window);
-static void                  update_undo_menu_item        	 (NautilusWindow *window);
-static void                  edit_bookmarks                      (NautilusWindow *window);
+/* User level things */
+static guint                 convert_menu_path_to_user_level  (const char             *path);
+static const char *          convert_user_level_to_menu_path  (guint                   user_level);
 
 /* Struct that stores all the info necessary to activate a bookmark. */
 typedef struct {
@@ -71,10 +75,15 @@ typedef struct {
  * development-only or because we expect to change them and
  * don't want other code relying on their existence.
  */
-#define NAUTILUS_MENU_PATH_GENERAL_SETTINGS_ITEM	"/Settings/General Settings"
-#define NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM		"/Settings/Customize"
-#define NAUTILUS_MENU_PATH_USE_EAZEL_THEME_ICONS_ITEM	"/Settings/Use Eazel Theme Icons"
+#define NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_RADIO_GROUP	"/Settings/UserLevelRadioGroup"
+#define NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_NOVICE		"/Settings/User Level Novice"
+#define NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_INTERMEDIATE	"/Settings/User Level Intermediate"
+#define NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_HACKER		"/Settings/User Level Hacker"
+#define NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_CUSTOMIZE	"/Settings/User Level Customize"
+#define NAUTILUS_MENU_PATH_AFTER_USER_LEVEL_SEPARATOR		"/Settings/After User Level Separator"
 
+#define NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM			"/Settings/Customize"
+#define NAUTILUS_MENU_PATH_USE_EAZEL_THEME_ICONS_ITEM		"/Settings/Use Eazel Theme Icons"
 
 static void
 file_menu_new_window_callback (BonoboUIHandler *ui_handler, 
@@ -251,17 +260,52 @@ bookmarks_menu_edit_bookmarks_callback (BonoboUIHandler *ui_handler,
 }
 
 static void
-settings_menu_general_settings_callback (BonoboUIHandler *ui_handler, 
-		       		      	 gpointer user_data,
-		      		      	 const char *path)
+settings_menu_user_level_radio_group_callback (BonoboUIHandler	*ui_handler, 
+					       gpointer		user_data,
+					       const char	*path)
+{
+	NautilusWindow	*window;
+ 	guint		old_user_level;
+ 	guint		new_user_level;
+
+        g_return_if_fail (user_data != NULL);
+        g_return_if_fail (NAUTILUS_IS_WINDOW (user_data));
+        g_return_if_fail (path != NULL);
+
+	window = NAUTILUS_WINDOW (user_data);
+
+	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
+	if (window->updating_bonobo_radio_menu_item) {
+		return;
+	}
+
+	/* Make sure it changed.  This check is needed cause the stupid
+	 * menu radio group triggers two callbacks whenever the active
+	 * button changes - one for the previously active button and one
+	 * for the new one.  Of course, we only care about the new one.
+	 */
+	old_user_level = nautilus_user_level_manager_get_user_level ();
+	new_user_level = convert_menu_path_to_user_level (path);
+
+	if (old_user_level == new_user_level) {
+		return;
+	}
+
+	nautilus_user_level_manager_set_user_level (new_user_level);
+}
+
+static void
+settings_menu_user_level_customize_callback (BonoboUIHandler *ui_handler, 
+					     gpointer user_data,
+					     const char *path)
 {
 	nautilus_global_preferences_show_dialog ();
 }
 
 static void
 settings_menu_customize_callback (BonoboUIHandler *ui_handler, 
-		       		      	 gpointer user_data,
-		      		      	 const char *path)
+				  gpointer user_data,
+				  const char *path)
 {
 	nautilus_property_browser_new();
 }
@@ -788,19 +832,61 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 	/* Settings */
         new_top_level_menu (window, NAUTILUS_MENU_PATH_SETTINGS_MENU, _("_Settings"));
 
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_GENERAL_SETTINGS_ITEM,
-        				 _("_General Settings..."),
-        				 _("Customize various aspects of Nautilus's appearance and behavior"),
+	/* User level */
+	window->updating_bonobo_radio_menu_item = TRUE;
+
+	bonobo_ui_handler_menu_new_radiogroup (ui_handler, NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_RADIO_GROUP);
+	
+	bonobo_ui_handler_menu_new_radioitem (ui_handler,
+					      NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_NOVICE,
+					      _("Novice"),
+					      _("Novice User Level"),
+					      -1, 0, 0,
+					      settings_menu_user_level_radio_group_callback, 
+					      window);
+	
+	bonobo_ui_handler_menu_new_radioitem (ui_handler,
+					      NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_INTERMEDIATE,
+					      _("Intermediate"),
+					      _("Intermediate User Level"),
+					      -1, 0, 0,
+					      settings_menu_user_level_radio_group_callback, 
+					      window);
+	
+	bonobo_ui_handler_menu_new_radioitem (ui_handler,
+					      NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_HACKER,
+					      _("Hacker"),
+					      _("Hacker User Level"),
+					      -1, 0, 0,
+					      settings_menu_user_level_radio_group_callback, 
+					      window);
+
+	bonobo_ui_handler_menu_new_item (ui_handler,
+					 NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_CUSTOMIZE,
+					 _("Customize Current User Level..."),
+					 _("Customize Current User Level"),
         				 -1,
         				 BONOBO_UI_HANDLER_PIXMAP_NONE,
         				 NULL,
         				 0,
         				 0,
-        				 settings_menu_general_settings_callback,
+        				 settings_menu_user_level_customize_callback,
         				 NULL);
+	
+	bonobo_ui_handler_menu_new_separator (ui_handler,
+					      NAUTILUS_MENU_PATH_AFTER_USER_LEVEL_SEPARATOR,
+					      -1);
 
-      bonobo_ui_handler_menu_new_item (ui_handler,
+ 	/* Update the user level menus to reflect the user level reality */
+	bonobo_ui_handler_menu_set_radio_state (
+		ui_handler, 
+		convert_user_level_to_menu_path (nautilus_user_level_manager_get_user_level ()),
+		TRUE);
+	
+	window->updating_bonobo_radio_menu_item = FALSE;
+
+	/* Customize */
+	bonobo_ui_handler_menu_new_item (ui_handler,
         				 NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM,
         				 _("_Customize..."),
         				 _("Displays the Property Browser, to add properties to objects and customize appearance"),
@@ -963,7 +1049,6 @@ update_eazel_theme_menu_item (NautilusWindow *window)
 				     "eazel") == 0);
 }
 
-
 /* Toggle sensitivity based on undo manager state */
 static void 
 update_undo_menu_item (NautilusWindow *window)
@@ -982,3 +1067,44 @@ update_undo_menu_item (NautilusWindow *window)
 	}
 }
 
+static guint
+convert_menu_path_to_user_level (const char *path)
+{
+        g_assert (path != NULL);
+	
+	if (strcmp (path, NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_NOVICE) == 0) {
+		return 0;
+	}
+	else if (strcmp (path, NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_INTERMEDIATE) == 0) {
+		return 1;
+	}
+	else if (strcmp (path, NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_HACKER) == 0) {
+		return 2;
+	}
+
+	g_assert_not_reached ();
+
+	return 0;
+}
+
+static const char *
+convert_user_level_to_menu_path (guint user_level)
+{
+	switch (user_level) {
+	case 0:
+		return NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_NOVICE;
+		break;
+
+	case 1:
+		return NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_INTERMEDIATE;
+		break;
+
+	case 2:
+		return NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_HACKER;
+		break;
+	}
+
+	g_assert_not_reached ();
+
+	return NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_NOVICE;
+}
