@@ -41,9 +41,11 @@
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-object.h>
 #include <gtk/gtksignal.h>
+#include <libgnome/gnome-config.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-messagebox.h>
+#include <libgnomeui/gnome-client.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
@@ -83,7 +85,7 @@ static void          volume_mounted_callback               (NautilusVolumeMonito
 static void          volume_unmounted_callback             (NautilusVolumeMonitor    *monitor,
 							    NautilusVolume           *volume,
 							    NautilusApplication      *application);
-
+static void	     init_session 			    (void);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusApplication, nautilus_application, BONOBO_OBJECT_TYPE)
 
@@ -494,6 +496,9 @@ nautilus_application_startup (NautilusApplication *application,
 		} else if (!no_default_window) {
 			Nautilus_Shell_open_default_window (shell, corba_geometry, &ev);
 		}
+		
+		/* Add ourselves to the session */
+		init_session ();
 	}
 
 	/* We're done with the shell now, so let it go. */
@@ -732,5 +737,44 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volum
 	}
 	
 	g_list_free (close_list);
+}
+
+
+static void
+removed_from_session (GnomeClient *client, gpointer data)
+{
+	nautilus_main_event_loop_quit ();
+}
+
+static gint
+save_session (GnomeClient *client, gint phase, GnomeSaveStyle save_style, gint shutdown,
+	      GnomeInteractStyle interact_style, gint fast, gpointer data)
+{
+	return TRUE;
+}
+
+static void
+set_session_restart (GnomeClient *client, gboolean restart)
+{
+	gnome_client_set_priority (client, 40);
+	gnome_client_set_restart_style (client, (restart ? GNOME_RESTART_IMMEDIATELY : GNOME_RESTART_NEVER));
+}
+
+static void
+init_session (void)
+{
+	GnomeClient *client;
+
+	client = gnome_master_client ();
+
+	gtk_signal_connect (GTK_OBJECT (client), "save_yourself",
+			   (GtkSignalFunc) save_session,
+			    NULL);
+
+	gtk_signal_connect (GTK_OBJECT (client), "die",
+			    (GtkSignalFunc) removed_from_session,
+			    NULL);
+			    			    			    	
+	set_session_restart (client, nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_ADD_TO_SESSION));
 }
 

@@ -128,6 +128,9 @@ typedef enum
 	NAUTILUS_SIMPLE_SEARCH_BAR
 } NautilusSearchBarMode;
 
+/* Gnome session management */
+#define NAUTILUS_PREFERENCES_ADD_TO_SESSION		"preferences/add_to_session"
+
 void   nautilus_global_preferences_initialize                                 (void);
 void   nautilus_global_preferences_show_dialog                                (void);
 void   nautilus_global_preferences_hide_dialog                                (void);

@@ -1,3 +1,26 @@
+2001-02-08  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Mike Engber <angber@eazel.com>
+
+	Fixed bug 3087, gmc to Nautilus transition tool
+	
+	Added all features except removing gmc from session. Will
+	need some additional help to add that feature.
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Add a preferences constant to indicate if Nautilus should
+	respawn in the Gnome session.
+	
+	* src/nautilus-application.c: (nautilus_application_startup),
+	(volume_unmounted_callback), (removed_from_session),
+	(save_session), (set_session_restart), (init_session):
+	Check preferences add add ourselves to session with a respawn
+	setting if the user has specified that they wish such behavior.
+	
+	* src/nautilus-first-time-druid.c: (druid_finished),
+	(set_up_gmc_transition_page):
+	Save gmc to nautilus transition values in nautilus preferences.
+
 2001-02-08  Michael K. Fleming  <mfleming@eazel.com>
 
 	reviewed by: <ramiro@eazel.com>

@@ -139,7 +139,6 @@ static void     initiate_file_download           (GnomeDruid *druid);
 static gboolean set_http_proxy                   (const char *proxy_url);
 static gboolean attempt_http_proxy_autoconfigure (void);
 static gboolean check_network_connectivity	 (void);
-static void	add_nautilus_to_session 	 (void);
 static void	convert_gmc_desktop_icons 	 (void);
 
 
@@ -239,11 +238,7 @@ druid_finished (GtkWidget *druid_page)
 	
 	/* Do the GMC to Nautilus Transition */
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP, draw_desktop);
-	
-	if (add_to_session) {
-		add_nautilus_to_session ();
-	}
-
+	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_ADD_TO_SESSION, add_to_session);
 	if (transfer_gmc_icons) {
 		convert_gmc_desktop_icons ();
 	}
@@ -805,12 +800,6 @@ next_proxy_configuration_page_callback (GtkWidget *button, GnomeDruid *druid)
 }
 
 static void
-add_nautilus_to_session (void)
-{
-
-}
-
-static void
 convert_gmc_desktop_icons (void)
 {
 	const char *home_dir;
@@ -906,7 +895,11 @@ set_up_gmc_transition_page (NautilusDruidPageEazel *page)
 	gtk_box_pack_start (GTK_BOX (main_box), checkbox, FALSE, FALSE, 0);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), TRUE);
 	gtk_signal_connect (GTK_OBJECT (checkbox), "toggled", GTK_SIGNAL_FUNC (transition_value_changed), &add_to_session);
-			
+	
+	draw_desktop = TRUE;
+	add_to_session = TRUE;
+	transfer_gmc_icons = TRUE;
+
 	gtk_widget_show_all (main_box);
 }
 
@@ -1241,7 +1234,6 @@ set_http_proxy (const char *proxy_url)
 	}
 
 	/* set the "http_proxy" environment variable */
-
 	nautilus_setenv ("http_proxy", proxy_url, TRUE);
 
 	/* The variable is expected to be in the form host:port */
