@@ -809,14 +809,16 @@ import_old_preferences_if_needed (void)
 	for (i=0; OLD_PREFERENCES_TO_IMPORT[i].new_key != NULL; i++) {
 		to_import = & (OLD_PREFERENCES_TO_IMPORT[i]);
 
-		error = NULL;
-		value = gconf_client_get (client, to_import->old_key, &error);
+		if (gconf_client_key_is_writable (client, to_import->new_key, NULL)) {
+			error = NULL;
+			value = gconf_client_get (client, to_import->old_key, &error);
 
-		if ((error == NULL) && (value != NULL)) {
-			gconf_client_set (client, to_import->new_key, value, NULL);
-		} else {
-			if (error != NULL) {
-				g_error_free (error);
+			if ((error == NULL) && (value != NULL)) {
+				gconf_client_set (client, to_import->new_key, value, NULL);
+			} else {
+				if (error != NULL) {
+					g_error_free (error);
+				}
 			}
 		}
 	}

@@ -549,9 +549,11 @@ side_pane_size_allocate_callback (GtkWidget *widget,
 	
 	if (allocation->width != window->details->side_pane_width) {
 		window->details->side_pane_width = allocation->width;
-		eel_preferences_set_integer
-			(NAUTILUS_PREFERENCES_SIDEBAR_WIDTH, 
-			 allocation->width);
+		if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH)) {
+			eel_preferences_set_integer
+				(NAUTILUS_PREFERENCES_SIDEBAR_WIDTH, 
+				 allocation->width);
+		}
 	}
 }
 
@@ -631,11 +633,15 @@ side_pane_switch_page_callback (NautilusSidePane *side_pane,
 
 	if (NAUTILUS_IS_VIEW_FRAME (panel)) {
 		view_iid = nautilus_view_frame_get_view_iid (NAUTILUS_VIEW_FRAME (panel));
-		eel_preferences_set (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW,
-				     view_iid);
+		if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW)) {
+			eel_preferences_set (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW,
+					     view_iid);
+		}
 		
 	} else {
-		eel_preferences_set (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW, "");
+		if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW)) {
+			eel_preferences_set (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW, "");
+		}
 	}
 }
 
@@ -2032,7 +2038,8 @@ nautilus_window_hide_location_bar (NautilusWindow *window, gboolean save_prefere
 {
 	window->details->temporary_navigation_bar = FALSE;
 	hide_dock_item (window, LOCATION_BAR_PATH);
-	if (save_preference) {
+	if (save_preference &&
+	    eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR)) {
 		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR, FALSE);
 	}
 }
@@ -2041,7 +2048,8 @@ void
 nautilus_window_show_location_bar (NautilusWindow *window, gboolean save_preference)
 {
 	show_dock_item (window, LOCATION_BAR_PATH);
-	if (save_preference) {
+	if (save_preference &&
+	    eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR)) {
 		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR, TRUE);
 	}
 }
@@ -2056,7 +2064,9 @@ void
 nautilus_window_hide_toolbar (NautilusWindow *window)
 {
 	hide_dock_item (window, TOOLBAR_PATH);
-	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR, FALSE);
+	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR)) {
+		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR, FALSE);
+	}
 }
 
 void 
@@ -2064,7 +2074,9 @@ nautilus_window_show_toolbar (NautilusWindow *window)
 {
 	nautilus_window_activate_throbber (window);
 	show_dock_item (window, TOOLBAR_PATH);
-	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR, TRUE);
+	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR)) {
+		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR, TRUE);
+	}
 }
 
 gboolean
@@ -2082,7 +2094,9 @@ nautilus_window_hide_sidebar (NautilusWindow *window)
 
 	nautilus_window_tear_down_sidebar (window);
 	nautilus_window_update_show_hide_menu_items (window);
-	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR, FALSE);
+	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR)) {
+		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR, FALSE);
+	}
 }
 
 void 
@@ -2094,7 +2108,9 @@ nautilus_window_show_sidebar (NautilusWindow *window)
 
 	nautilus_window_set_up_sidebar (window);
 	nautilus_window_update_show_hide_menu_items (window);
-	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR, TRUE);
+	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR)) {
+		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR, TRUE);
+	}
 }
 
 gboolean
@@ -2112,7 +2128,9 @@ nautilus_window_hide_status_bar (NautilusWindow *window)
 	hide_dock_item (window, STATUS_BAR_PATH);
 
 	nautilus_window_update_show_hide_menu_items (window);
-	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR, FALSE);
+	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR)) {
+		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR, FALSE);
+	}
 }
 
 void 
@@ -2121,7 +2139,9 @@ nautilus_window_show_status_bar (NautilusWindow *window)
 	show_dock_item (window, STATUS_BAR_PATH);
 
 	nautilus_window_update_show_hide_menu_items (window);
-	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR, TRUE);
+	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR)) {
+		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR, TRUE);
+	}
 }
 
 gboolean

@@ -66,14 +66,22 @@ kill_sound_if_necessary (void)
 void
 nautilus_sound_init (void)
 { 	
-	eel_gconf_set_integer (CURRENT_SOUND_STATE_KEY, 0);
-	eel_gconf_suggest_sync ();
+	if (eel_gconf_key_is_writable (CURRENT_SOUND_STATE_KEY)) {
+		eel_gconf_set_integer (CURRENT_SOUND_STATE_KEY, 0);
+		eel_gconf_suggest_sync ();
+	}
 }
 
 /* if there is a sound registered, kill it, and register the empty sound */
 void
 nautilus_sound_kill_sound (void)
 {
+	/* if not writable, we can't do anything, definately don't
+	   kill since the key is bogus */
+	if (!eel_gconf_key_is_writable (CURRENT_SOUND_STATE_KEY)) {
+		return;
+	}
+
 	/* if there is a sound in progress, kill it */
 	if (kill_sound_if_necessary ()) {
 		/* set the process state to quiescent */
@@ -86,6 +94,12 @@ nautilus_sound_kill_sound (void)
 void
 nautilus_sound_register_sound (pid_t sound_process)
 {
+	/* if not writable, we can't do anything, definately don't
+	   kill since the key is bogus */
+	if (!eel_gconf_key_is_writable (CURRENT_SOUND_STATE_KEY)) {
+		return;
+	}
+
 	/* if there is a sound in progress, kill it */
 	kill_sound_if_necessary ();
 	
@@ -103,6 +117,12 @@ gboolean
 nautilus_sound_can_play_sound (void)
 {
 	int sound_process, open_result;
+
+	/* If we can't write to the key we won't be able to ever
+	   stop the process ... */
+	if (!eel_gconf_key_is_writable (CURRENT_SOUND_STATE_KEY)) {
+		return FALSE;
+	}
 	
 	/* first see if there's already one in progress; if so, return true */
 	sound_process = eel_gconf_get_integer (CURRENT_SOUND_STATE_KEY);

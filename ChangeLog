@@ -1,3 +1,28 @@
+Tue Jul 22 16:34:10 2003  George Lebl <jirka@5z.com>
+
+	* libnautilus-private/nautilus-global-preferences.c
+	  (import_old_preferences_if_needed): Don't import
+	  a preference if we can't write the new value
+
+	* libnautilus-private/nautilus-sound.c (nautilus_sound_init)
+	  (nautilus_sound_kill_sound) (nautilus_sound_register_sound)
+	  (nautilus_sound_can_play_sound): If we can't write the current
+	  sound state key, don't allow the sound preview since we won't be
+	  able to kill the preview process later, and don't set the sound
+	  state key if not writable.
+
+	* src/nautilus-shell.c (save_window_states):  If we can't
+	  save the start state, don't save it then.
+
+	* src/nautilus-window.c (side_pane_size_allocate_callback)
+	  (side_pane_switch_page_callback) (nautilus_window_hide_location_bar)
+	  (nautilus_window_show_location_bar)
+	  (nautilus_window_hide_toolbar) (nautilus_window_show_toolbar)
+	  (nautilus_window_hide_sidebar) (nautilus_window_show_sidebar)
+	  (nautilus_window_hide_status_bar) (nautilus_window_show_status_bar):
+	  When we can't write the preference of the start state, don't set
+	  it.
+
 2003-07-21  Dave Camp  <dave@ximian.com>
 
 	* configure.in:

@@ -299,7 +299,9 @@ save_window_states (void)
 		g_free (window_attributes);
 	}
 
-	eel_preferences_set_string_list (START_STATE_CONFIG, states);
+	if (eel_preferences_key_is_writable (START_STATE_CONFIG)) {
+		eel_preferences_set_string_list (START_STATE_CONFIG, states);
+	}
 
 	eel_string_list_free (states);
 }
@@ -372,7 +374,9 @@ restore_window_states (NautilusShell *shell)
 	result = eel_string_list_get_length (states) > 0;
 	eel_string_list_for_each (states, restore_one_window_callback, shell);
 	eel_string_list_free (states);
-	eel_preferences_set_string_list (START_STATE_CONFIG, NULL);
+	if (eel_preferences_key_is_writable (START_STATE_CONFIG)) {
+		eel_preferences_set_string_list (START_STATE_CONFIG, NULL);
+	}
 	return result;
 }
 
