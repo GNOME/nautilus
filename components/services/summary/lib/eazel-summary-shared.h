@@ -35,7 +35,10 @@ struct _ServicesData {
 	char		*name;
 	char		*icon;
 	char		*button_label;
+	char		*redirect_to;
+	char		*description_header;
 	char		*description;
+	gboolean	grey_out;
 };
 
 struct _EazelNewsData {
@@ -46,7 +49,9 @@ struct _EazelNewsData {
 
 struct _UpdateNewsData {
 	char		*name;
+	char		*version;
 	char		*priority;
+	char		*description_header;
 	char		*description;
 	char		*icon;
 	char		*install_uri;
@@ -58,7 +63,7 @@ struct _SummaryData {
 	GList	*update_news_list;
 };
 
-SummaryData * parse_summary_xml_file (const char *summary_xml_file);
+SummaryData * parse_summary_xml_file (void);
 
 #endif /* EAZEL_SUMMARY_SHARED_H */
 

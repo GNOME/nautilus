@@ -24,6 +24,7 @@
 #include <config.h>
 
 #include "nautilus-summary-view.h"
+#include "eazel-summary-shared.h"
 #include "shared-service-widgets.h"
 #include "shared-service-utilities.h"
 
@@ -176,6 +177,10 @@ generate_startup_form (NautilusSummaryView       *view)
 	GtkWidget		*temp_box;
 	GtkWidget		*align;
 	int			counter;
+	SummaryData		*test_parse;
+
+	/* test xml fetching */
+	test_parse = parse_summary_xml_file ();
 
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);

@@ -35,6 +35,7 @@ nautilus_summary_view_SOURCES =						\
 nautilus_summary_view_LDADD =						\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(top_builddir)/components/services/nautilus-dependent-shared/libnautilusdepshared.a \
+	$(top_builddir)/components/services/summary/lib/libsummary.a \
 	$(top_builddir)/libnautilus/libnautilus.la			\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
 	$(BONOBO_LIBS)							\

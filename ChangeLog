@@ -1,3 +1,17 @@
+2000-09-14  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/summary/lib/eazel-summary-shared.c:
+	(services_data_new), (update_news_data_new), (parse_a_service),
+	(parse_a_eazel_news_item), (parse_a_update_news_item),
+	(parse_summary_xml_file):
+	* components/services/summary/lib/eazel-summary-shared.h:
+	* components/services/summary/nautilus-view/Makefile.am:
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_startup_form):
+
+	xml parser now works right and downloads the file into memory. spews
+	lots of debugging code right now but very close to being done.
+
 2000-09-14  Mathieu Lacage  <mathieu@eazel.com>
 
 	* libnautilus-extensions/nautilus-file.c: add necessary header to
