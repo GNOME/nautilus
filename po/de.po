@@ -4,6 +4,7 @@
 # Matthias Warkus <mawarkus@gnome.org>, 2000, 2001.
 # Christian Meyer <chrisime@gnome.org>, 2000-2002.
 # Christian Neumair <chris@gnome-de.org>, 2002-2004.
+# Hendrik Richter <hendrik@gnome-de.org>, 2004
 #
 # Last Updated:
 # 2003-06-11  Christian Neumair
@@ -32,9 +33,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.7.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-30 16:44+0200\n"
+"POT-Creation-Date: 2004-09-02 18:34+0000\n"
 "PO-Revision-Date: 2004-07-24 11:46+0200\n"
-"Last-Translator: Christian Neumair <chris@gnome-de.org>\n"
+"Last-Translator: Hendrik Richter <hendrik@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1208,9 +1209,8 @@ msgid "Default zoom level used by the list view."
 msgstr "Voreingestellte Vergrößerungsstufe der Listenansicht."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
-#, fuzzy
 msgid "Desktop computer icon name"
-msgstr "Name des Desktop-Symbols »Personlicher Ordner«"
+msgstr "Name des Desktop-Symbols »Computer«"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid "Desktop font"
@@ -1657,13 +1657,12 @@ msgid "The side pane view to show in newly opened windows."
 msgstr "Die in neu geöffneten Fenstern anzuzeigende Seitenleistenansicht."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the computer icon on the "
 "desktop."
 msgstr ""
 "Dieser Wert legt einen benutzerdefinierten Namen für das Symbol "
-"»Persönlichen Ordner« auf dem Desktop fest."
+"»Persönlicher Ordner« auf dem Desktop fest."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
 msgid ""
@@ -2200,7 +2199,6 @@ msgstr "Verknüpfung"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
-#. appended to new link file
 #: libnautilus-private/nautilus-file.c:4732
 #: libnautilus-private/nautilus-file-operations.c:1194
 #, c-format
@@ -2543,9 +2541,6 @@ msgid " (another copy)"
 msgstr " (noch eine Kopie)"
 
 #. localizers: tag used to detect the x11th copy of a file
-#. localizers: tag used to detect the x12th copy of a file
-#. localizers: tag used to detect the x13th copy of a file
-#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1252
 #: libnautilus-private/nautilus-file-operations.c:1254
 #: libnautilus-private/nautilus-file-operations.c:1256
@@ -2581,9 +2576,6 @@ msgid "%s (another copy)%s"
 msgstr "%s (noch eine Kopie)%s"
 
 #. localizers: appended to x11th file copy
-#. localizers: appended to x12th file copy
-#. localizers: appended to x13th file copy
-#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1285
 #: libnautilus-private/nautilus-file-operations.c:1287
 #: libnautilus-private/nautilus-file-operations.c:1289
@@ -2899,9 +2891,8 @@ msgid "Themes"
 msgstr "Themen"
 
 #: libnautilus-private/nautilus-file-utilities.c:377
-#, fuzzy
 msgid "CD/DVD Creator"
-msgstr "CD-Ersteller"
+msgstr "CD-/DVD-Ersteller"
 
 #: libnautilus-private/nautilus-file-utilities.c:379
 msgid "Windows Network"
@@ -3338,7 +3329,6 @@ msgstr "%s wird geöffnet"
 #. TODO: These strings suck pretty badly, but we're in string-freeze,
 #. * and I found these in other places to reuse. We should make them
 #. * better later.
-#. Shouldn't have gotten this error unless there's a : separator.
 #: libnautilus-private/nautilus-program-choosing.c:591
 #: libnautilus-private/nautilus-program-choosing.c:599
 #: libnautilus-private/nautilus-program-choosing.c:604
@@ -3501,9 +3491,8 @@ msgid "Browse the filesystem with the file manager"
 msgstr "Das Dateisystem mit Hilfe des Dateimanagers anzeigen"
 
 #: nautilus.desktop.in.h:2
-#, fuzzy
 msgid "File Browser"
-msgstr "Datei-Browser: %s"
+msgstr "Datei-Browser"
 
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
@@ -5125,7 +5114,6 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:542 src/nautilus-application.c:560
 #: src/nautilus-application.c:567
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -5212,88 +5200,76 @@ msgid "%s on %s"
 msgstr "%s auf %s"
 
 #: src/nautilus-connect-server-dialog.c:380
-#, fuzzy
 msgid "_Location (URI):"
-msgstr "_Ort (URL):"
+msgstr "Ort (_URI):"
 
 #: src/nautilus-connect-server-dialog.c:424
-#, fuzzy
 msgid "_Server:"
-msgstr "_Nie"
+msgstr "_Server:"
 
 #: src/nautilus-connect-server-dialog.c:443
-#, fuzzy
 msgid "Optional information:"
-msgstr "Informationen"
+msgstr "Optionale Informationen:"
 
 #: src/nautilus-connect-server-dialog.c:455
-#, fuzzy
 msgid "_Share:"
-msgstr "Schiefer"
+msgstr "_Freigabe:"
 
 #: src/nautilus-connect-server-dialog.c:476
-#, fuzzy
 msgid "_Port:"
-msgstr "_Format:"
+msgstr "_Port:"
 
 #: src/nautilus-connect-server-dialog.c:496
-#, fuzzy
 msgid "_Folder:"
-msgstr "Ordner ausschneiden"
+msgstr "_Ordner:"
 
 #: src/nautilus-connect-server-dialog.c:516
-#, fuzzy
 msgid "_User Name:"
-msgstr "_Name:"
+msgstr "_Benutzername:"
 
 #: src/nautilus-connect-server-dialog.c:539
 msgid "_Name to use for connection:"
-msgstr ""
+msgstr "_Name für diese Verbindung:"
 
 #: src/nautilus-connect-server-dialog.c:597
 msgid "Connect to Server"
 msgstr "Mit Server verbinden"
 
-# CHECK
 #: src/nautilus-connect-server-dialog.c:614
-#, fuzzy
 msgid "Service _type:"
-msgstr "Dienste in"
+msgstr "Dienste-_Typ:"
 
 #: src/nautilus-connect-server-dialog.c:623
 msgid "SSH"
-msgstr ""
+msgstr "SSH"
 
 #: src/nautilus-connect-server-dialog.c:625
 msgid "Public FTP"
-msgstr ""
+msgstr "Öffentlicher FTP"
 
 #: src/nautilus-connect-server-dialog.c:627
 msgid "FTP (with login)"
-msgstr ""
+msgstr "FTP (mit Zugangsbeschränkung)"
 
 #: src/nautilus-connect-server-dialog.c:629
-#, fuzzy
 msgid "Windows share"
-msgstr "Windows-Netzwerk"
+msgstr "Windows-Freigabe"
 
 #: src/nautilus-connect-server-dialog.c:631
 msgid "WebDAV (HTTP)"
-msgstr ""
+msgstr "WebDAV (HTTP)"
 
 #: src/nautilus-connect-server-dialog.c:633
 msgid "Secure WebDAV (HTTPS)"
-msgstr ""
+msgstr "Sicheres WebDAV (HTTPS)"
 
 #: src/nautilus-connect-server-dialog.c:635
-#, fuzzy
 msgid "Custom Location"
-msgstr "Ort:"
+msgstr "Benutzerdefinierter Ort"
 
 #: src/nautilus-connect-server-dialog.c:685
-#, fuzzy
 msgid "Browse _Network"
-msgstr "Windows-Netzwerk"
+msgstr "Netzwerk _durchsuchen"
 
 #: src/nautilus-connect-server-dialog.c:691
 msgid "C_onnect"
@@ -5701,12 +5677,10 @@ msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "nautilus: %s kann nicht mit URIs verwendet werden.\n"
 
 #: src/nautilus-main.c:265
-#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check kann nicht mit anderen Optionen verwendet werden.\n"
 
 #: src/nautilus-main.c:279
-#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr ""
 "nautilus: --geometry kann nicht mit mehr als einer URI verwendet werden.\n"
@@ -5862,9 +5836,8 @@ msgstr "Zum Vorlagenordner gehen"
 
 #: src/nautilus-navigation-window-ui.xml.h:16
 #: src/nautilus-spatial-window-ui.xml.h:9
-#, fuzzy
 msgid "Go to the CD/DVD Creator"
-msgstr "Zum CD-Ersteller gehen"
+msgstr "Zum CD-/DVD-Ersteller gehen"
 
 #: src/nautilus-navigation-window-ui.xml.h:17
 msgid "Go to the next visited location"
@@ -6393,9 +6366,8 @@ msgid "_Backgrounds and Emblems..."
 msgstr "_Hintergründe und Embleme..."
 
 #: src/nautilus-shell-ui.xml.h:30
-#, fuzzy
 msgid "_CD/DVD Creator"
-msgstr "_CD-Ersteller"
+msgstr "_CD-/DVD-Ersteller"
 
 #: src/nautilus-shell-ui.xml.h:31
 msgid "_Close"
