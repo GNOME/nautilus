@@ -85,7 +85,7 @@ struct NautilusListDetails
 
 	/* Drag state */
 	NautilusDragInfo *drag_info;
-
+	
 	/* Delayed selection information */
 	int dnd_select_pending;
 	guint dnd_select_pending_state;
@@ -195,11 +195,6 @@ static void     nautilus_list_drag_begin                (GtkWidget            *w
 							 GdkDragContext       *context);
 static void     nautilus_list_drag_end                  (GtkWidget            *widget,
 							 GdkDragContext       *context);
-static void     nautilus_list_drag_data_get             (GtkWidget            *widget,
-							 GdkDragContext       *context,
-							 GtkSelectionData     *data,
-							 guint                 info,
-							 guint                 time);
 static void     nautilus_list_drag_leave                (GtkWidget            *widget,
 							 GdkDragContext       *context,
 							 guint                 time);
@@ -354,8 +349,8 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				GTK_RUN_FIRST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusListClass, handle_dropped_icons),
-				nautilus_gtk_marshal_NONE__INT_INT_INT,
-				GTK_TYPE_NONE, 3,
+				nautilus_gtk_marshal_NONE__POINTER_INT_INT_INT,
+				GTK_TYPE_NONE, 4,
 				GTK_TYPE_POINTER,
 				GTK_TYPE_INT,
 				GTK_TYPE_INT,
@@ -414,7 +409,6 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 	widget_class->motion_notify_event = nautilus_list_motion;
 	widget_class->drag_begin = nautilus_list_drag_begin;
 	widget_class->drag_end = nautilus_list_drag_end;
-	widget_class->drag_data_get = nautilus_list_drag_data_get;
 	widget_class->drag_leave = nautilus_list_drag_leave;
 	widget_class->drag_motion = nautilus_list_drag_motion;
 	widget_class->drag_drop = nautilus_list_drag_drop;
@@ -2351,14 +2345,15 @@ nautilus_list_column_resize_track_end (GtkWidget *widget, int column)
 	clist->drag_pos = -1;
 }
 
-/* We override the drag_begin signal to do nothing */
 static void
 nautilus_list_drag_begin (GtkWidget *widget, GdkDragContext *context)
 {
-	/* nothing */
+	NautilusList *list;
+
+	g_assert (NAUTILUS_IS_LIST (widget));
+	list = NAUTILUS_LIST (widget);
 }
 
-/* We override the drag_end signal to do nothing */
 static void
 nautilus_list_drag_end (GtkWidget *widget, GdkDragContext *context)
 {
@@ -2369,18 +2364,8 @@ nautilus_list_drag_end (GtkWidget *widget, GdkDragContext *context)
 
 	nautilus_drag_destroy_selection_list (list->details->selection_list);
 	list->details->selection_list = NULL;
-	/* nothing */
 }
 
-/* We override the drag_data_get signal to do nothing */
-static void
-nautilus_list_drag_data_get (GtkWidget *widget, GdkDragContext *context,
-			 GtkSelectionData *data, guint info, guint time)
-{
-	/* nothing */
-}
-
-/* We override the drag_leave signal to do nothing */
 static void
 nautilus_list_drag_leave (GtkWidget *widget, GdkDragContext *context, guint time)
 {
@@ -2390,11 +2375,8 @@ nautilus_list_drag_leave (GtkWidget *widget, GdkDragContext *context, guint time
 	list = NAUTILUS_LIST (widget);
 
 	list->details->got_drop_data_type = FALSE;
-
-	/* nothing */
 }
 
-/* We override the drag_motion signal to do nothing */
 static gboolean
 nautilus_list_drag_motion (GtkWidget *widget, GdkDragContext *context,
 		       gint x, gint y, guint time)
@@ -2404,17 +2386,9 @@ nautilus_list_drag_motion (GtkWidget *widget, GdkDragContext *context,
 	g_assert (NAUTILUS_IS_LIST (widget));
 	list = NAUTILUS_LIST (widget);
 
-	if (!list->details->drag_info->got_drop_data_type) {
-		gtk_drag_get_data (widget, context,
-				   GPOINTER_TO_INT (context->targets->data),
-				   time);
-	}
-
-
 	return TRUE;
 }
 
-/* We override the drag_drop signal to do nothing */
 static gboolean
 nautilus_list_drag_drop (GtkWidget *widget, GdkDragContext *context,
 		     gint x, gint y, guint time)
@@ -2445,7 +2419,6 @@ nautilus_list_drag_drop (GtkWidget *widget, GdkDragContext *context,
 	return FALSE;
 }
 
-/* We override the drag_data_received signal to accept colors. */
 static void
 nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 			      gint x, gint y, GtkSelectionData *data,
@@ -2463,7 +2436,7 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 		list->details->data_type = info;
 		break;
 	case NAUTILUS_ICON_DND_COLOR:
-		/* FIXME: cache the data here and use it in drag_drop */
+		/* FIXME: cache the data here and use it in nautilus_list_drag_drop */
 		nautilus_background_receive_dropped_color
 			(nautilus_get_widget_background (widget),
 			 widget, x, y, data);
@@ -2595,6 +2568,25 @@ nautilus_list_set_selection (NautilusList *list, GList *selection)
 
 	if (selection_changed) {
 		emit_selection_changed (list);
+	}
+}
+
+void
+nautilus_list_each_selected_row (NautilusList *list, NautilusEachRowFunction function,
+	gpointer data)
+{
+	GtkCListRow *row;
+	GList *p;
+
+	g_assert (NAUTILUS_IS_LIST (list));
+
+	for (p = GTK_CLIST (list)->row_list; p != NULL; p = p->next) {
+		row = p->data;
+		if (row->state != GTK_STATE_SELECTED) 
+			continue;
+
+		if (!function(row, data))
+			return;
 	}
 }
 

@@ -1,3 +1,46 @@
+2000-06-02  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-drag.c:
+	* libnautilus-extensions/nautilus-drag.h:
+	(add_one_gnome_icon_list), (add_one_uri_list),
+	(nautilus_drag_drag_data_get):
+	Move more code from nautilus-icon-dnd.c to the common
+	nautilus-drag.c. Add a common nautilus_drag_drag_data_get
+	function that gets passed iterators and assembles selection
+	data.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	(nautilus_gtk_marshal_NONE__POINTER_INT_INT_INT):
+	Added more marshalling glue. One day there will be enough
+	for everyone.
+
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_each_selected_icon):
+	(icon_get_data_binder), (each_icon_get_data_binder),
+	(drag_data_get_callback):
+	Iterators and binders to support the NautilusIconContainer
+	flavor of nautilus_drag_drag_data_get.
+	
+	* libnautilus-extensions/nautilus-list.c:
+	* libnautilus-extensions/nautilus-list.h:
+	* src/file-manager/fm-list-view.c:
+	(nautilus_list_initialize_class), (nautilus_list_initialize),
+	(nautilus_list_drag_begin), (nautilus_list_drag_end),
+	(nautilus_list_drag_leave), (nautilus_list_drag_motion),
+	(nautilus_list_drag_data_received), (nautilus_list_set_selection),
+	(nautilus_list_each_selected_row),
+	(row_get_data_binder), (each_icon_get_data_binder),
+	(fm_list_drag_data_get), (create_list):
+	Hookup fm_list_drag_data_get to support drags originating from the
+	list view. Connect the drag_data_get to fm_list_view and 
+	handle it there.
+
+	* libnautilus-extensions/nautilus-list.c:
+	* src/file-manager/fm-list-view.c:
+	(nautilus_list_initialize_class), (fm_list_handle_dropped_icons):
+	Fix an improperly marshalled signal.
+
 2000-06-02  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/history/nautilus-history-view.c: (main):

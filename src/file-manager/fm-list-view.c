@@ -486,7 +486,7 @@ fm_list_nautilus_file_at (NautilusList *list, int x, int y)
 
 static void
 fm_list_handle_dropped_icons (NautilusList *list, GList *drop_data, int x, int y, 
-	FMListView *list_view, int action)
+	int action, FMListView *list_view)
 {
 	/* FIXME:
 	 * Merge this with nautilus_icon_container_receive_dropped_icons
@@ -536,6 +536,69 @@ fm_list_handle_dropped_icons (NautilusList *list, GList *drop_data, int x, int y
 
 	g_free (target_item_uri);
 	g_free (list_view_uri);
+}
+
+/* iteration glue struct */
+typedef struct {
+	NautilusDragEachSelectedItemDataGet iteratee;
+	gpointer iteratee_data;
+} RowGetDataBinderContext;
+
+static gboolean
+row_get_data_binder (GtkCListRow * row, gpointer data)
+{
+	RowGetDataBinderContext *context;
+	char *uri;
+
+	context = (RowGetDataBinderContext *)data;
+
+	uri = nautilus_file_get_uri ((NautilusFile *)row->data);
+	if (uri == NULL) {
+		g_warning ("no URI for one of the iterated rows");
+		return TRUE;
+	}
+
+	/* pass the uri */
+	context->iteratee (uri, 0, 0, 0, 0, context->iteratee_data);
+
+	g_free (uri);
+
+	return TRUE;
+}
+
+/* Adaptor function used with nautilus_icon_container_each_selected_icon
+ * to help iterate over all selected items, passing uris, x,y,w and h
+ * values to the iteratee
+ */
+static void
+each_icon_get_data_binder (NautilusDragEachSelectedItemDataGet iteratee, 
+	gpointer iterator_context, gpointer data)
+{
+	RowGetDataBinderContext context;
+
+	g_assert (NAUTILUS_IS_LIST (iterator_context));
+
+	context.iteratee = iteratee;
+	context.iteratee_data = data;
+	nautilus_list_each_selected_row (NAUTILUS_LIST (iterator_context), 
+		row_get_data_binder, &context);
+}
+
+static void
+fm_list_drag_data_get (GtkWidget *widget, GdkDragContext *context,
+			 GtkSelectionData *selection_data, guint info, guint time,
+			 FMListView *list_view)
+{
+	g_assert (widget != NULL);
+	g_assert (NAUTILUS_IS_LIST (widget));
+	g_return_if_fail (context != NULL);
+
+	/* Call common function from nautilus-drag that set's up
+	 * the selection data in the right format. Pass it means to
+	 * iterate all the selected icons.
+	 */
+	nautilus_drag_drag_data_get (widget, context, selection_data,
+		info, time, widget, each_icon_get_data_binder);
 }
 
 static NautilusList *
@@ -662,6 +725,10 @@ create_list (FMListView *list_view)
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "handle_dropped_icons",
 			    fm_list_handle_dropped_icons,
+			    list_view);
+	gtk_signal_connect (GTK_OBJECT (list),
+			    "drag_data_get",
+			    fm_list_drag_data_get,
 			    list_view);
 
 

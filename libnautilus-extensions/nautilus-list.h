@@ -115,6 +115,8 @@ struct NautilusListClass {
 	void (* handle_dropped_icons) (GtkWidget *widget, GList *icons, int x, int y, int action);
 };
 
+typedef gboolean (* NautilusEachRowFunction) (GtkCListRow *, gpointer);
+
 GtkType    nautilus_list_get_type              (void);
 GtkWidget *nautilus_list_new_with_titles       (int                 columns,
 						const char * const *titles);
@@ -136,5 +138,8 @@ void	   nautilus_list_select_row 	       (NautilusList 	   *list,
 						int 		    row);
 GtkCListRow *nautilus_list_row_at 	       (NautilusList 	   *list, 
 						int 		    y);
+void	   nautilus_list_each_selected_row     (NautilusList	   *list,
+						NautilusEachRowFunction function,
+						gpointer	    data);
 
 #endif /* NAUTILUS_LIST_H */

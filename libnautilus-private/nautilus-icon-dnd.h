@@ -42,6 +42,7 @@ typedef struct {
 	GnomeCanvasItem *shadow;
 } NautilusIconDndInfo;
 
+
 void nautilus_icon_dnd_init       (NautilusIconContainer *container,
 				   GdkBitmap             *stipple);
 void nautilus_icon_dnd_fini       (NautilusIconContainer *container);

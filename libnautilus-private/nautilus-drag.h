@@ -77,13 +77,19 @@ typedef struct {
 #define NAUTILUS_ICON_DND_BGIMAGE_TYPE         "property/bgimage"
 #define NAUTILUS_ICON_DND_KEYWORD_TYPE         "property/keyword"
 
-void
-nautilus_drag_init (NautilusDragInfo *drag_info,
-	const GtkTargetEntry *drag_types, int drag_type_count, 
-	GdkBitmap *stipple);
+typedef void 		(* NautilusDragEachSelectedItemDataGet) (const char *url, 
+								int x, int y, int w, int h, 
+								gpointer data);
+typedef void 		(* NautilusDragEachSelectedItemIterator) (NautilusDragEachSelectedItemDataGet iteratee, 
+								gpointer iterator_context, 
+								gpointer data);
 
-void
-nautilus_drag_finalize (NautilusDragInfo *drag_info);
+void 			nautilus_drag_init 			(NautilusDragInfo *drag_info,
+								 const GtkTargetEntry *drag_types, 
+								 int drag_type_count, 
+								 GdkBitmap *stipple);
+
+void			nautilus_drag_finalize 			(NautilusDragInfo *drag_info);
 
 
 DragSelectionItem 	*nautilus_drag_selection_item_new 	(void);
@@ -96,5 +102,13 @@ gboolean		nautilus_drag_can_accept_item 		(NautilusFile *drop_target_item,
 			       					 const char *item_uri);
 gboolean		nautilus_drag_can_accept_items 		(NautilusFile *drop_target_item,
 								 const GList *items);
+
+gboolean 		nautilus_drag_drag_data_get 		(GtkWidget *widget,
+								 GdkDragContext *context,
+								 GtkSelectionData *selection_data,
+								 guint info,
+								 guint32 time,
+								 gpointer container_context,
+								 NautilusDragEachSelectedItemIterator each_selected_item_iterator);
 
 #endif

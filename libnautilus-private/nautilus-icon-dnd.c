@@ -25,6 +25,7 @@
 	    Andy Hertzfeld <andy@eazel.com>
 */
 
+
 #include <config.h>
 #include "nautilus-icon-dnd.h"
 
@@ -180,101 +181,96 @@ set_shadow_position (GnomeCanvasItem *shadow,
 }
 
 
-/* Source-side handling of the drag.  */
+/* Source-side handling of the drag. */
 
-/* Encode a "special/x-gnome-icon-list" selection.
-   Along with the URIs of the dragged files, this encodes
-   the location and size of each icon relative to the cursor.
-*/
-static void
-set_gnome_icon_list_selection (NautilusIconContainer *container,
-			       GtkSelectionData *selection_data)
+/* iteration glue struct */
+typedef struct {
+	gpointer iterator_context;
+	NautilusDragEachSelectedItemDataGet iteratee;
+	gpointer iteratee_data;
+} IconGetDataBinderContext;
+
+static gboolean
+icon_get_data_binder (NautilusIcon *icon, gpointer data)
 {
-	NautilusIconContainerDetails *details;
+	IconGetDataBinderContext *context;
+	ArtDRect world_rect;
+	ArtIRect window_rect;
+	char *uri;
+	NautilusIconContainer *container;
+
+	context = (IconGetDataBinderContext *)data;
+
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (context->iterator_context));
+
+	container = NAUTILUS_ICON_CONTAINER (context->iterator_context);
+
+	nautilus_icon_canvas_item_get_icon_rectangle
+		(icon->item, &world_rect);
+	nautilus_gnome_canvas_world_to_window_rectangle
+		(GNOME_CANVAS (container), &world_rect, &window_rect);
+
+	uri = nautilus_icon_container_get_icon_uri (container, icon);
+	if (uri == NULL) {
+		g_warning ("no URI for one of the iterated icons");
+		return TRUE;
+	}
+
+	/* pass the uri, mouse-relative x/y and icon width/height */
+	context->iteratee (uri, 
+			   (int) (window_rect.x0 - container->details->dnd_info->drag_info.start_x),
+			   (int) (window_rect.y0 - container->details->dnd_info->drag_info.start_y),
+			   window_rect.x1 - window_rect.x0,
+			   window_rect.y1 - window_rect.y0,
+			   context->iteratee_data);
+
+	g_free (uri);
+
+	return TRUE;
+}
+
+/* Iterate over each selected icon in a NautilusIconContainer,
+ * calling each_function on each.
+ */
+static void
+nautilus_icon_container_each_selected_icon (NautilusIconContainer *container,
+	gboolean (*each_function) (NautilusIcon *, gpointer), gpointer data)
+{
 	GList *p;
-	GString *data;
+	NautilusIcon *icon;
 
-	details = container->details;
-
-	data = g_string_new (NULL);
-	for (p = details->icons; p != NULL; p = p->next) {
-		NautilusIcon *icon;
-		ArtDRect world_rect;
-		ArtIRect window_rect;
-		char *uri;
-		char *s;
-
+	for (p = container->details->icons; p != NULL; p = p->next) {
 		icon = p->data;
 		if (!icon->is_selected) {
 			continue;
 		}
-
-		nautilus_icon_canvas_item_get_icon_rectangle
-			(icon->item, &world_rect);
-		nautilus_gnome_canvas_world_to_window_rectangle
-			(GNOME_CANVAS (container), &world_rect, &window_rect);
-
-		uri = nautilus_icon_container_get_icon_uri (container, icon);
-
-		if (uri == NULL) {
-			g_warning ("no URI for one of the dragged items");
-		} else {
-			s = g_strdup_printf ("%s\r%d:%d:%hu:%hu\r\n",
-					     uri,
-					     (int) (window_rect.x0 - details->dnd_info->drag_info.start_x),
-					     (int) (window_rect.y0 - details->dnd_info->drag_info.start_y),
-					     window_rect.x1 - window_rect.x0,
-					     window_rect.y1 - window_rect.y0);
-			
-			g_free (uri);
-			
-			g_string_append (data, s);
-			g_free (s);
+		if (!each_function (icon, data)) {
+			return;
 		}
 	}
-
-	gtk_selection_data_set (selection_data,
-				selection_data->target,
-				8, data->str, data->len);
-
-	g_string_free (data, TRUE);
 }
 
-/* Encode a "text/uri-list" selection.  */
+/* Adaptor function used with nautilus_icon_container_each_selected_icon
+ * to help iterate over all selected items, passing uris, x,y,w and h
+ * values to the iteratee
+ */
 static void
-set_uri_list_selection (NautilusIconContainer *container,
-			GtkSelectionData *selection_data)
+each_icon_get_data_binder (NautilusDragEachSelectedItemDataGet iteratee, 
+	gpointer iterator_context, gpointer data)
 {
-	NautilusIconContainerDetails *details;
-	GList *p;
-	char *uri;
-	GString *data;
+	IconGetDataBinderContext context;
+	NautilusIconContainer *container;
 
-	details = container->details;
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (iterator_context));
+	container = NAUTILUS_ICON_CONTAINER (iterator_context);
 
-	data = g_string_new (NULL);
-
-	for (p = details->icons; p != NULL; p = p->next) {
-		NautilusIcon *icon;
-
-		icon = p->data;
-		if (!icon->is_selected)
-			continue;
-
-		uri = nautilus_icon_container_get_icon_uri (container, icon);
-		g_string_append (data, uri);
-		g_free (uri);
-
-		g_string_append (data, "\r\n");
-	}
-
-	gtk_selection_data_set (selection_data,
-				selection_data->target,
-				8, data->str, data->len);
-
-	g_string_free (data, TRUE);
+	context.iterator_context = iterator_context;
+	context.iteratee = iteratee;
+	context.iteratee_data = data;
+	nautilus_icon_container_each_selected_icon (container, icon_get_data_binder, &context);
 }
 
+/* Called when the data for drag&drop is needed */
 static void
 drag_data_get_callback (GtkWidget *widget,
 			GdkDragContext *context,
@@ -283,25 +279,19 @@ drag_data_get_callback (GtkWidget *widget,
 			guint32 time,
 			gpointer data)
 {
-	NautilusIconContainer *container;
-
-	g_return_if_fail (widget != NULL);
-	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (widget));
+	g_assert (widget != NULL);
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (widget));
 	g_return_if_fail (context != NULL);
 
-	container = NAUTILUS_ICON_CONTAINER (widget);
-
-	switch (info) {
-	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-		set_gnome_icon_list_selection (container, selection_data);
-		break;
-	case NAUTILUS_ICON_DND_URI_LIST:
-		set_uri_list_selection (container, selection_data);
-		break;
-	default:
-		g_assert_not_reached ();
-	}
+	/* Call common function from nautilus-drag that set's up
+	 * the selection data in the right format. Pass it means to
+	 * iterate all the selected icons.
+	 */
+	nautilus_drag_drag_data_get (widget, context, selection_data,
+		info, time, widget, each_icon_get_data_binder);
 }
+
+
 
 /* Target-side handling of the drag.  */
 

@@ -241,3 +241,72 @@ nautilus_drag_can_accept_items (NautilusFile *drop_target_item,
 
 	return TRUE;		
 }
+
+
+/* Encode a "special/x-gnome-icon-list" selection.
+   Along with the URIs of the dragged files, this encodes
+   the location and size of each icon relative to the cursor.
+*/
+static void
+add_one_gnome_icon_list(const char *uri, int x, int y, int w, int h, 
+	gpointer data)
+{
+	GString *result = (GString *)data;
+	char *s;
+
+	s = g_strdup_printf ("%s\r%d:%d:%hu:%hu\r\n",
+			     uri, x, y, w, h);
+	
+	g_string_append (result, s);
+	g_free (s);
+}
+
+/* Encode a "text/uri-list" selection.  */
+static void
+add_one_uri_list(const char *uri, int x, int y, int w, int h, 
+	gpointer data)
+{
+	GString *result = (GString *)data;
+	g_string_append (result, uri);
+	g_string_append (result, "\r\n");
+}
+
+/* Common function for drag_data_get_callback calls.
+ * Returns FALSE if it doesn't handle drag data
+ */
+gboolean
+nautilus_drag_drag_data_get (GtkWidget *widget,
+			GdkDragContext *context,
+			GtkSelectionData *selection_data,
+			guint info,
+			guint32 time,
+			gpointer container_context,
+			NautilusDragEachSelectedItemIterator each_selected_item_iterator)
+{
+	GString *result;
+
+	if (info != NAUTILUS_ICON_DND_GNOME_ICON_LIST && info != NAUTILUS_ICON_DND_URI_LIST) {
+		/* don't know how to handle */
+		return FALSE;
+	}
+	
+	result = g_string_new (NULL);
+	
+	switch (info) {
+	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+		each_selected_item_iterator (add_one_gnome_icon_list, container_context, result);
+		break;
+	case NAUTILUS_ICON_DND_URI_LIST:
+		each_selected_item_iterator (add_one_uri_list, container_context, result);
+		break;
+	default:
+		g_assert_not_reached ();
+	}
+	
+	gtk_selection_data_set (selection_data,
+				selection_data->target,
+				8, result->str, result->len);
+
+	return TRUE;
+}
+
