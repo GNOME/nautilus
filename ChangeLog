@@ -1,5 +1,13 @@
 2000-08-23  Gene Z. Ragan  <gzr@eazel.com>
 
+	* libnautilus-extensions/nautilus-undo-signal-handlers.c:
+	(nautilus_undo_teardown_nautilus_entry_for_undo),
+	(nautilus_undo_teardown_editable_for_undo):
+	Adding the call to unregister form the undo manager was not such
+	a good idea.  I am backing it out for now.
+
+2000-08-23  Gene Z. Ragan  <gzr@eazel.com>
+
 	Fixed bug 2282, Undo menu item initially sensitive, but 
 	nothing to undo.
 	
