@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 2.x\n"
-"POT-Creation-Date: 2002-12-18 10:04+0100\n"
-"PO-Revision-Date: 2002-12-12 15:13+0100\n"
+"POT-Creation-Date: 2003-01-09 06:09+0100\n"
+"PO-Revision-Date: 2003-01-09 15:23+0100\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: albanian < gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -288,16 +288,16 @@ msgid "URI currently displayed"
 msgstr "URI e hapur për momentin"
 
 #: components/notes/Nautilus_View_notes.server.in.in.h:1
-msgid "Nodes side pane for Nautilus"
-msgstr "Nodes side pane for Nautilus"
-
-#: components/notes/Nautilus_View_notes.server.in.in.h:2
 msgid "Notes"
 msgstr "Shënime"
 
-#: components/notes/Nautilus_View_notes.server.in.in.h:3
+#: components/notes/Nautilus_View_notes.server.in.in.h:2
 msgid "Notes side pane"
 msgstr "Paneli anësor Shënime"
+
+#: components/notes/Nautilus_View_notes.server.in.in.h:3
+msgid "Notes side pane for Nautilus"
+msgstr "Paneli anësor i shënimeve të Nautilus"
 
 #: components/text/Nautilus_View_text.server.in.in.h:1
 msgid "Factory for text view"
@@ -563,8 +563,7 @@ msgstr "Kopje"
 
 #: data/browser.xml.h:30
 msgid "Drag a color to an object to change it to that color"
-msgstr ""
-"Zvarrit një ngjyrë tek një objekt për t'i dhënë këtij të fundit atë ngjyrë "
+msgstr "Zvarrit një ngjyrë tek një objekt për t'i dhënë këtij të fundit atë ngjyrë "
 
 #: data/browser.xml.h:31
 msgid "Drag a pattern tile to an object to change it"
@@ -1065,11 +1064,10 @@ msgstr "Kjo temë përdor kartela foto-reale."
 
 #: libbackground/preview-file-selection.c:207
 msgid "Can't find an hbox, using a normal file selection"
-msgstr ""
-"Nuk arrij të gjej një hbox, është në përdorim një zgjedhje normale e file"
+msgstr "Nuk arrij të gjej një hbox, është në përdorim një zgjedhje normale e file"
 
 #: libbackground/preview-file-selection.c:212
-#: src/nautilus-file-management-properties.glade.h:56
+#: src/nautilus-file-management-properties.glade.h:54
 msgid "Preview"
 msgstr "Shikoje"
 
@@ -1242,17 +1240,16 @@ msgid "Cancel"
 msgstr "Anulloje"
 
 #: libnautilus-private/nautilus-dnd.c:628
-msgid "Set as background for _all directories"
-msgstr "Zgjidhe si sfond për të _gjitha direktoritë"
+msgid "Set as background for _all folders"
+msgstr "Zgjidhe si sfond për të gjith_a kartelat"
 
 #: libnautilus-private/nautilus-dnd.c:633
-msgid "Set as background for _this directory"
-msgstr "Zgjidhe si sfond për _këtë direktori"
+msgid "Set as background for _this folder"
+msgstr "Zgjidhe si sfond për kë_të kartelë"
 
 #: libnautilus-private/nautilus-emblem-utils.c:194
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
-msgstr ""
-"Më vjen keq, duhet të specifikoni një fjalëkyç jo bosh për simbolin e ri."
+msgstr "Më vjen keq, duhet të specifikoni një fjalëkyç jo bosh për simbolin e ri."
 
 #: libnautilus-private/nautilus-emblem-utils.c:195
 #: libnautilus-private/nautilus-emblem-utils.c:199
@@ -1263,8 +1260,7 @@ msgid "Couldn't install emblem"
 msgstr "I pamundur instalimi i simbolit"
 
 #: libnautilus-private/nautilus-emblem-utils.c:198
-msgid ""
-"Sorry, but emblem keywords can only contain letters, spaces and numbers."
+msgid "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Më vjen keq, por fjalëkyçi i simbolit mund të përmbajë vetëm gërma, hapsira "
 "dhe numra."
@@ -1296,16 +1292,16 @@ msgid "%ld of %ld"
 msgstr "%ld nga %ld"
 
 #. "From" dialog label, source path gets placed next to it in the dialog
-#: libnautilus-private/nautilus-file-operations.c:344
+#: libnautilus-private/nautilus-file-operations.c:347
 msgid "From:"
 msgstr "Nga:"
 
 #. "To" dialog label, source path gets placed next to it in the dialog
-#: libnautilus-private/nautilus-file-operations.c:359
+#: libnautilus-private/nautilus-file-operations.c:362
 msgid "To:"
 msgstr "Për:"
 
-#: libnautilus-private/nautilus-file-operations.c:538
+#: libnautilus-private/nautilus-file-operations.c:542
 #, c-format
 msgid ""
 "Error while moving.\n"
@@ -1316,7 +1312,7 @@ msgstr ""
 "\n"
 "\"%s\" nuk mund të lëvizet pasi ndodhet në një disk që vetëm mund të lexohet."
 
-#: libnautilus-private/nautilus-file-operations.c:549
+#: libnautilus-private/nautilus-file-operations.c:553
 #, c-format
 msgid ""
 "Error while deleting.\n"
@@ -1329,7 +1325,7 @@ msgstr ""
 "\"%s\" nuk mund të eleminohet pasi kartela superiore kërkon të drejta më të "
 "larta."
 
-#: libnautilus-private/nautilus-file-operations.c:555
+#: libnautilus-private/nautilus-file-operations.c:559
 #, c-format
 msgid ""
 "Error while deleting.\n"
@@ -1341,7 +1337,7 @@ msgstr ""
 "\"%s\" nuk mund të eleminohet pasi ndodhet në një disk që vetëm mund të "
 "lexohet."
 
-#: libnautilus-private/nautilus-file-operations.c:585
+#: libnautilus-private/nautilus-file-operations.c:590
 #, c-format
 msgid ""
 "Error while moving.\n"
@@ -1354,7 +1350,20 @@ msgstr ""
 "\"%s\" nuk mund të spostohet pasi ju nuk keni të drejta të mjaftueshme për "
 "të ndryshuar atë apo kartelën superiore."
 
-#: libnautilus-private/nautilus-file-operations.c:592
+#: libnautilus-private/nautilus-file-operations.c:595
+#, c-format
+msgid ""
+"Error while moving.\n"
+"\n"
+"\"%s\" cannot be moved because it or its parent folder are contained in the "
+"destination."
+msgstr ""
+"Gabim gjatë lëvizjes.\n"
+"\n"
+"\"%s\" nuk mund të lëvizet pasi ajo apo kartela të prejardhura ekzistojnë "
+"në pozicionin ku do të spostohet."
+
+#: libnautilus-private/nautilus-file-operations.c:605
 #, c-format
 msgid ""
 "Error while moving.\n"
@@ -1367,7 +1376,7 @@ msgstr ""
 "\"%s\" nuk mund të spostohet tek Koshi i Plehrave Trash pasi ju nuk keni të "
 "drejta të mjaftueshme për të ndryshuar atë apo kartelën superiore."
 
-#: libnautilus-private/nautilus-file-operations.c:615
+#: libnautilus-private/nautilus-file-operations.c:628
 #, c-format
 msgid ""
 "Error while copying.\n"
@@ -1378,7 +1387,7 @@ msgstr ""
 "\n"
 "\"%s\" nuk mund të kopjohet pasi ju nuk keni të drejtë t'a lexoni atë."
 
-#: libnautilus-private/nautilus-file-operations.c:636
+#: libnautilus-private/nautilus-file-operations.c:649
 #, c-format
 msgid ""
 "Error while copying to \"%s\".\n"
@@ -1389,7 +1398,7 @@ msgstr ""
 "\n"
 "Nuk ka më hapsirë në pozicionin e zgjedhur për kopjen."
 
-#: libnautilus-private/nautilus-file-operations.c:641
+#: libnautilus-private/nautilus-file-operations.c:654
 #, c-format
 msgid ""
 "Error while moving to \"%s\".\n"
@@ -1400,7 +1409,7 @@ msgstr ""
 "\n"
 "Nuk ka më hapsirë në pozicionin e zgjedhur."
 
-#: libnautilus-private/nautilus-file-operations.c:645
+#: libnautilus-private/nautilus-file-operations.c:658
 #, c-format
 msgid ""
 "Error while creating link in \"%s\".\n"
@@ -1411,7 +1420,7 @@ msgstr ""
 "\n"
 "Nuk ka më hapsirë në pozicionin e zgjedhur."
 
-#: libnautilus-private/nautilus-file-operations.c:657
+#: libnautilus-private/nautilus-file-operations.c:670
 #, c-format
 msgid ""
 "Error while copying to \"%s\".\n"
@@ -1422,7 +1431,7 @@ msgstr ""
 "\n"
 "Nuk keni të drejtat e mjaftueshme për të shkruar tek kjo kartelë."
 
-#: libnautilus-private/nautilus-file-operations.c:661
+#: libnautilus-private/nautilus-file-operations.c:674
 #, c-format
 msgid ""
 "Error while copying to \"%s\".\n"
@@ -1433,7 +1442,7 @@ msgstr ""
 "\n"
 "Disku i destinuar është vetëm për lexim."
 
-#: libnautilus-private/nautilus-file-operations.c:668
+#: libnautilus-private/nautilus-file-operations.c:681
 #, c-format
 msgid ""
 "Error while moving items to \"%s\".\n"
@@ -1444,7 +1453,7 @@ msgstr ""
 "\n"
 "Nuk keni të drejtë të shkruani tek kjo kartelë."
 
-#: libnautilus-private/nautilus-file-operations.c:672
+#: libnautilus-private/nautilus-file-operations.c:685
 #, c-format
 msgid ""
 "Error while moving items to \"%s\".\n"
@@ -1455,7 +1464,7 @@ msgstr ""
 "\n"
 "Disku i destinuar është vetëm për lexim."
 
-#: libnautilus-private/nautilus-file-operations.c:679
+#: libnautilus-private/nautilus-file-operations.c:692
 #, c-format
 msgid ""
 "Error while creating links in \"%s\".\n"
@@ -1466,7 +1475,7 @@ msgstr ""
 "\n"
 "Nuk keni të drejtë të shkruani tek kjo kartelë."
 
-#: libnautilus-private/nautilus-file-operations.c:683
+#: libnautilus-private/nautilus-file-operations.c:696
 #, c-format
 msgid ""
 "Error while creating links in \"%s\".\n"
@@ -1477,7 +1486,7 @@ msgstr ""
 "\n"
 "Disku i destinuar është vetëm për lexim."
 
-#: libnautilus-private/nautilus-file-operations.c:711
+#: libnautilus-private/nautilus-file-operations.c:724
 #, c-format
 msgid ""
 "Error \"%s\" while copying \"%s\".\n"
@@ -1488,7 +1497,7 @@ msgstr ""
 "\n"
 "Dëshironi të vazhdoj?"
 
-#: libnautilus-private/nautilus-file-operations.c:715
+#: libnautilus-private/nautilus-file-operations.c:728
 #, c-format
 msgid ""
 "Error \"%s\" while moving \"%s\".\n"
@@ -1499,7 +1508,7 @@ msgstr ""
 "\n"
 "Dëshironi të vazhdoj?"
 
-#: libnautilus-private/nautilus-file-operations.c:719
+#: libnautilus-private/nautilus-file-operations.c:732
 #, c-format
 msgid ""
 "Error \"%s\" while creating a link to \"%s\".\n"
@@ -1510,7 +1519,7 @@ msgstr ""
 "\n"
 "Dëshironi të vazhdoj?"
 
-#: libnautilus-private/nautilus-file-operations.c:725
+#: libnautilus-private/nautilus-file-operations.c:738
 #, c-format
 msgid ""
 "Error \"%s\" while deleting \"%s\".\n"
@@ -1521,7 +1530,7 @@ msgstr ""
 "\n"
 "Dëshironi të vazhdoj?"
 
-#: libnautilus-private/nautilus-file-operations.c:740
+#: libnautilus-private/nautilus-file-operations.c:753
 #, c-format
 msgid ""
 "Error \"%s\" while copying.\n"
@@ -1532,7 +1541,7 @@ msgstr ""
 "\n"
 "Dëshironi të vazhdoj?"
 
-#: libnautilus-private/nautilus-file-operations.c:744
+#: libnautilus-private/nautilus-file-operations.c:757
 #, c-format
 msgid ""
 "Error \"%s\" while moving.\n"
@@ -1543,7 +1552,7 @@ msgstr ""
 "\n"
 "Dëshironi të vazhdoj?"
 
-#: libnautilus-private/nautilus-file-operations.c:748
+#: libnautilus-private/nautilus-file-operations.c:761
 #, c-format
 msgid ""
 "Error \"%s\" while linking.\n"
@@ -1554,7 +1563,7 @@ msgstr ""
 "\n"
 "Dëshironi të vazhdoj?"
 
-#: libnautilus-private/nautilus-file-operations.c:754
+#: libnautilus-private/nautilus-file-operations.c:767
 #, c-format
 msgid ""
 "Error \"%s\" while deleting.\n"
@@ -1565,41 +1574,41 @@ msgstr ""
 "\n"
 "Dëshironi të vazhdoj?"
 
-#: libnautilus-private/nautilus-file-operations.c:875
+#: libnautilus-private/nautilus-file-operations.c:892
 msgid "Error while copying."
 msgstr "Gabim gjatë kopjimit."
 
-#: libnautilus-private/nautilus-file-operations.c:878
+#: libnautilus-private/nautilus-file-operations.c:895
 msgid "Error while moving."
 msgstr "Gabim gjatë lëvizjes."
 
-#: libnautilus-private/nautilus-file-operations.c:881
+#: libnautilus-private/nautilus-file-operations.c:898
 msgid "Error while linking."
 msgstr "Gabim gjatë lidhjes."
 
-#: libnautilus-private/nautilus-file-operations.c:886
+#: libnautilus-private/nautilus-file-operations.c:903
 msgid "Error while deleting."
 msgstr "Gabim gjatë eleminimit."
 
-#: libnautilus-private/nautilus-file-operations.c:896
-#: libnautilus-private/nautilus-file-operations.c:911
-#: libnautilus-private/nautilus-file-operations.c:931
+#: libnautilus-private/nautilus-file-operations.c:914
+#: libnautilus-private/nautilus-file-operations.c:929
+#: libnautilus-private/nautilus-file-operations.c:949
 #: src/nautilus-shell-ui.xml.h:44
 msgid "Stop"
 msgstr "Ndalo"
 
-#: libnautilus-private/nautilus-file-operations.c:911
-#: libnautilus-private/nautilus-file-operations.c:931
-#: libnautilus-private/nautilus-file-operations.c:1044
-#: libnautilus-private/nautilus-file-operations.c:1061
+#: libnautilus-private/nautilus-file-operations.c:929
+#: libnautilus-private/nautilus-file-operations.c:949
+#: libnautilus-private/nautilus-file-operations.c:1062
+#: libnautilus-private/nautilus-file-operations.c:1079
 msgid "Skip"
 msgstr "Kapërce"
 
-#: libnautilus-private/nautilus-file-operations.c:931
+#: libnautilus-private/nautilus-file-operations.c:949
 msgid "Retry"
 msgstr "Riprovo"
 
-#: libnautilus-private/nautilus-file-operations.c:1005
+#: libnautilus-private/nautilus-file-operations.c:1023
 #, c-format
 msgid ""
 "\"%s\" could not be moved to the new location, because its name is already "
@@ -1613,7 +1622,7 @@ msgstr ""
 "Nëqoftëse akoma dëshironi t'a lëvizni \"%s\", ndryshoini emrin dhe provo "
 "edhe një herë."
 
-#: libnautilus-private/nautilus-file-operations.c:1011
+#: libnautilus-private/nautilus-file-operations.c:1029
 #, c-format
 msgid ""
 "\"%s\" could not be copied to the new location, because its name is already "
@@ -1627,11 +1636,11 @@ msgstr ""
 "Nëqoftëse akoma dëshironi t'a kopjoni \"%s\", ndryshoini emrin dhe provo "
 "edhe një herë."
 
-#: libnautilus-private/nautilus-file-operations.c:1019
+#: libnautilus-private/nautilus-file-operations.c:1037
 msgid "Unable to replace file."
 msgstr "I pamundur zevëndësimi i file."
 
-#: libnautilus-private/nautilus-file-operations.c:1032
+#: libnautilus-private/nautilus-file-operations.c:1050
 #, c-format
 msgid ""
 "File \"%s\" already exists.\n"
@@ -1642,29 +1651,29 @@ msgstr ""
 "\n"
 "Dëshironi t'a zevëndësoni atë?"
 
-#: libnautilus-private/nautilus-file-operations.c:1043
-#: libnautilus-private/nautilus-file-operations.c:1060
+#: libnautilus-private/nautilus-file-operations.c:1061
+#: libnautilus-private/nautilus-file-operations.c:1078
 msgid "Conflict while copying"
 msgstr "Konflikt gjatë kopjimit"
 
-#: libnautilus-private/nautilus-file-operations.c:1044
-#: libnautilus-private/nautilus-file-operations.c:1061
+#: libnautilus-private/nautilus-file-operations.c:1062
+#: libnautilus-private/nautilus-file-operations.c:1079
 msgid "Replace"
 msgstr "Zevëndësoje"
 
-#: libnautilus-private/nautilus-file-operations.c:1061
+#: libnautilus-private/nautilus-file-operations.c:1079
 msgid "Replace All"
 msgstr "Zevëndësoi të gjithë"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1112
-#: libnautilus-private/nautilus-file.c:4285
+#: libnautilus-private/nautilus-file-operations.c:1130
+#: libnautilus-private/nautilus-file.c:4280
 #, c-format
 msgid "link to %s"
 msgstr "lidhje me %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1116
+#: libnautilus-private/nautilus-file-operations.c:1134
 #, c-format
 msgid "another link to %s"
 msgstr "një tjetër lidhje me %s"
@@ -1673,25 +1682,25 @@ msgstr "një tjetër lidhje me %s"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: libnautilus-private/nautilus-file-operations.c:1132
+#: libnautilus-private/nautilus-file-operations.c:1150
 #, c-format
 msgid "%dst link to %s"
 msgstr "lidhja %drë me %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1136
+#: libnautilus-private/nautilus-file-operations.c:1154
 #, c-format
 msgid "%dnd link to %s"
 msgstr "lidhja %dtë me %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1140
+#: libnautilus-private/nautilus-file-operations.c:1158
 #, c-format
 msgid "%drd link to %s"
 msgstr "lidhja %dtë me %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1144
+#: libnautilus-private/nautilus-file-operations.c:1162
 #, c-format
 msgid "%dth link to %s"
 msgstr "lidhja %drt me %s"
@@ -1701,233 +1710,233 @@ msgstr "lidhja %drt me %s"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1164
-#: libnautilus-private/nautilus-file-operations.c:2296
+#: libnautilus-private/nautilus-file-operations.c:1182
+#: libnautilus-private/nautilus-file-operations.c:2319
 msgid " (copy)"
 msgstr " (kopje)"
 
 #. localizers: tag used to detect the second copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1166
-#: libnautilus-private/nautilus-file-operations.c:2296
+#: libnautilus-private/nautilus-file-operations.c:1184
+#: libnautilus-private/nautilus-file-operations.c:2319
 msgid " (another copy)"
 msgstr " (kopje tjetër)"
 
 #. localizers: tag used to detect the x11th copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1169
-#: libnautilus-private/nautilus-file-operations.c:1171
-#: libnautilus-private/nautilus-file-operations.c:1173
-#: libnautilus-private/nautilus-file-operations.c:1183
+#: libnautilus-private/nautilus-file-operations.c:1187
+#: libnautilus-private/nautilus-file-operations.c:1189
+#: libnautilus-private/nautilus-file-operations.c:1191
+#: libnautilus-private/nautilus-file-operations.c:1201
 msgid "th copy)"
 msgstr " kopje)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1176
+#: libnautilus-private/nautilus-file-operations.c:1194
 msgid "st copy)"
 msgstr "ra kopje)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1178
+#: libnautilus-private/nautilus-file-operations.c:1196
 msgid "nd copy)"
 msgstr "ta kopje)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1180
+#: libnautilus-private/nautilus-file-operations.c:1198
 msgid "rd copy)"
 msgstr "ta kopje)"
 
 #. localizers: appended to first file copy
-#: libnautilus-private/nautilus-file-operations.c:1197
+#: libnautilus-private/nautilus-file-operations.c:1215
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (kopje)%s"
 
 #. localizers: appended to second file copy
-#: libnautilus-private/nautilus-file-operations.c:1199
+#: libnautilus-private/nautilus-file-operations.c:1217
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (kopje tjetër)%s"
 
 #. localizers: appended to x11th file copy
-#: libnautilus-private/nautilus-file-operations.c:1202
-#: libnautilus-private/nautilus-file-operations.c:1204
-#: libnautilus-private/nautilus-file-operations.c:1206
-#: libnautilus-private/nautilus-file-operations.c:1215
+#: libnautilus-private/nautilus-file-operations.c:1220
+#: libnautilus-private/nautilus-file-operations.c:1222
+#: libnautilus-private/nautilus-file-operations.c:1224
+#: libnautilus-private/nautilus-file-operations.c:1233
 #, c-format
 msgid "%s (%dth copy)%s"
 msgstr "%s (kopja %d)%s"
 
 #. localizers: appended to x1st file copy
-#: libnautilus-private/nautilus-file-operations.c:1209
+#: libnautilus-private/nautilus-file-operations.c:1227
 #, c-format
 msgid "%s (%dst copy)%s"
 msgstr "%s (kopja %d)%s"
 
 #. localizers: appended to x2nd file copy
-#: libnautilus-private/nautilus-file-operations.c:1211
+#: libnautilus-private/nautilus-file-operations.c:1229
 #, c-format
 msgid "%s (%dnd copy)%s"
 msgstr "%s (kopja %d)%s"
 
 #. localizers: appended to x3rd file copy
-#: libnautilus-private/nautilus-file-operations.c:1213
+#: libnautilus-private/nautilus-file-operations.c:1231
 #, c-format
 msgid "%s (%drd copy)%s"
 msgstr "%s (kopja %d)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: libnautilus-private/nautilus-file-operations.c:1313
+#: libnautilus-private/nautilus-file-operations.c:1331
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: libnautilus-private/nautilus-file-operations.c:1321
+#: libnautilus-private/nautilus-file-operations.c:1339
 #, c-format
 msgid " (%d"
 msgstr " (%d"
 
-#: libnautilus-private/nautilus-file-operations.c:1499
-#: libnautilus-private/nautilus-file-operations.c:2091
+#: libnautilus-private/nautilus-file-operations.c:1517
+#: libnautilus-private/nautilus-file-operations.c:2114
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "GnomeVFSXferProgressStatus %d e panjohur"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1835
+#: libnautilus-private/nautilus-file-operations.c:1858
 msgid "Moving files to the Trash"
 msgstr "Spostimi i files në Kosh"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1837
+#: libnautilus-private/nautilus-file-operations.c:1860
 msgid "Files thrown out:"
 msgstr "Files që duhen flakur:"
 
 #. localizers: label prepended to the name of the current file moved
-#: libnautilus-private/nautilus-file-operations.c:1839
-#: libnautilus-private/nautilus-file-operations.c:1850
+#: libnautilus-private/nautilus-file-operations.c:1862
+#: libnautilus-private/nautilus-file-operations.c:1873
 msgid "Moving"
 msgstr "Lëvizja e "
 
-#: libnautilus-private/nautilus-file-operations.c:1840
+#: libnautilus-private/nautilus-file-operations.c:1863
 msgid "Preparing to Move to Trash..."
 msgstr "Duke u përgatitur për t'i spostuar në Kosh..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1846
+#: libnautilus-private/nautilus-file-operations.c:1869
 msgid "Moving files"
 msgstr "Po spostoj files"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1848
+#: libnautilus-private/nautilus-file-operations.c:1871
 msgid "Files moved:"
 msgstr "Fles e spostuar:"
 
-#: libnautilus-private/nautilus-file-operations.c:1851
+#: libnautilus-private/nautilus-file-operations.c:1874
 msgid "Preparing To Move..."
 msgstr "Duke u përgatitur për spostim..."
 
-#: libnautilus-private/nautilus-file-operations.c:1852
+#: libnautilus-private/nautilus-file-operations.c:1875
 msgid "Finishing Move..."
 msgstr "Fund i spostimit..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1860
+#: libnautilus-private/nautilus-file-operations.c:1883
 msgid "Creating links to files"
 msgstr "Krijimi i lidhjes me file"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1862
+#: libnautilus-private/nautilus-file-operations.c:1885
 msgid "Files linked:"
 msgstr "Files të lidhur:"
 
 #. localizers: label prepended to the name of the current file linked
-#: libnautilus-private/nautilus-file-operations.c:1864
+#: libnautilus-private/nautilus-file-operations.c:1887
 msgid "Linking"
 msgstr "Lidhje"
 
-#: libnautilus-private/nautilus-file-operations.c:1865
+#: libnautilus-private/nautilus-file-operations.c:1888
 msgid "Preparing to Create Links..."
 msgstr "Duke përgatitur krijimin e lidhjeve..."
 
-#: libnautilus-private/nautilus-file-operations.c:1866
+#: libnautilus-private/nautilus-file-operations.c:1889
 msgid "Finishing Creating Links..."
 msgstr "Fund i kijimit të lidhjeve..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1872
+#: libnautilus-private/nautilus-file-operations.c:1895
 msgid "Copying files"
 msgstr "Kopjimi i files"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1874
+#: libnautilus-private/nautilus-file-operations.c:1897
 msgid "Files copied:"
 msgstr "Files të kopjuar:"
 
 #. localizers: label prepended to the name of the current file copied
-#: libnautilus-private/nautilus-file-operations.c:1876
+#: libnautilus-private/nautilus-file-operations.c:1899
 msgid "Copying"
 msgstr "Duke kopjuar"
 
-#: libnautilus-private/nautilus-file-operations.c:1877
+#: libnautilus-private/nautilus-file-operations.c:1900
 msgid "Preparing To Copy..."
 msgstr "Përgatitje për kopjim..."
 
-#: libnautilus-private/nautilus-file-operations.c:1893
+#: libnautilus-private/nautilus-file-operations.c:1916
 msgid "You cannot copy items into the Trash."
 msgstr "Nuk mund të kopjoni objektet në Kosh."
 
-#: libnautilus-private/nautilus-file-operations.c:1894
+#: libnautilus-private/nautilus-file-operations.c:1917
 msgid "Can't Copy to Trash"
 msgstr "I pamundur kopjimi në Kosh"
 
-#: libnautilus-private/nautilus-file-operations.c:1921
+#: libnautilus-private/nautilus-file-operations.c:1944
 msgid "The Trash must remain on the desktop."
 msgstr "Koshi duhet të qëndrojë në desktop."
 
-#: libnautilus-private/nautilus-file-operations.c:1922
+#: libnautilus-private/nautilus-file-operations.c:1945
 msgid "You cannot move this trash folder."
 msgstr "Nuk mund të lëvizni këtë kartelë të koshit."
 
-#: libnautilus-private/nautilus-file-operations.c:1924
+#: libnautilus-private/nautilus-file-operations.c:1947
 msgid "You cannot copy the Trash."
 msgstr "Nuk është i mundur kopjimi i Koshit."
 
-#: libnautilus-private/nautilus-file-operations.c:1925
+#: libnautilus-private/nautilus-file-operations.c:1948
 msgid "You cannot copy this trash folder."
 msgstr "Nuk mund të kopjoni këtë kartelë të koshit."
 
-#: libnautilus-private/nautilus-file-operations.c:1927
+#: libnautilus-private/nautilus-file-operations.c:1950
 msgid "Can't Change Trash Location"
 msgstr "I pamundur ndryshimi i pozicionit të Koshit"
 
-#: libnautilus-private/nautilus-file-operations.c:1928
+#: libnautilus-private/nautilus-file-operations.c:1951
 msgid "Can't Copy Trash"
 msgstr "I pamundur kopjimi i Koshit"
 
-#: libnautilus-private/nautilus-file-operations.c:1951
+#: libnautilus-private/nautilus-file-operations.c:1974
 msgid "You cannot move a folder into itself."
 msgstr "Nuk mund të lëvizet një kartelë në vetvete."
 
-#: libnautilus-private/nautilus-file-operations.c:1952
+#: libnautilus-private/nautilus-file-operations.c:1975
 msgid "You cannot copy a folder into itself."
 msgstr "Nuk mund të kopjoni një kartelë në vetvete."
 
-#: libnautilus-private/nautilus-file-operations.c:1954
+#: libnautilus-private/nautilus-file-operations.c:1977
 msgid "Can't Move Into Self"
 msgstr "E pamundur lëvizja në vetvete."
 
-#: libnautilus-private/nautilus-file-operations.c:1955
+#: libnautilus-private/nautilus-file-operations.c:1978
 msgid "Can't Copy Into Self"
 msgstr "E pamundur kopja në vetvete"
 
-#: libnautilus-private/nautilus-file-operations.c:1967
+#: libnautilus-private/nautilus-file-operations.c:1990
 msgid "You cannot copy a file over itself."
 msgstr "Nuk është e mundur kopja e një file në vetvete."
 
-#: libnautilus-private/nautilus-file-operations.c:1968
+#: libnautilus-private/nautilus-file-operations.c:1991
 msgid "Can't Copy Over Self"
 msgstr "E pamundur kopja në vetvete"
 
-#: libnautilus-private/nautilus-file-operations.c:2020
+#: libnautilus-private/nautilus-file-operations.c:2043
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -1937,7 +1946,7 @@ msgstr ""
 "\n"
 "Nuk keni të drejtat e shkrimit tek pozicioni i dëshiruar."
 
-#: libnautilus-private/nautilus-file-operations.c:2023
+#: libnautilus-private/nautilus-file-operations.c:2046
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -1947,327 +1956,326 @@ msgstr ""
 "\n"
 "Nuk ka më vend tek pozicioni i dëshiruar."
 
-#: libnautilus-private/nautilus-file-operations.c:2026
+#: libnautilus-private/nautilus-file-operations.c:2049
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Gabim \"%s\" gjatë krijimit të kartelës së re."
 
-#: libnautilus-private/nautilus-file-operations.c:2030
+#: libnautilus-private/nautilus-file-operations.c:2053
 msgid "Error creating new folder"
 msgstr "Gabim gjatë krijimit të kartelës së re"
 
 #. localizers: the initial name of a new folder
-#: libnautilus-private/nautilus-file-operations.c:2117
+#: libnautilus-private/nautilus-file-operations.c:2140
 msgid "untitled folder"
 msgstr "kartelë pa emër"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2150
+#: libnautilus-private/nautilus-file-operations.c:2173
 msgid "Deleting files"
 msgstr "Eleminimi i files"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2152
-#: libnautilus-private/nautilus-file-operations.c:2187
+#: libnautilus-private/nautilus-file-operations.c:2175
+#: libnautilus-private/nautilus-file-operations.c:2210
 msgid "Files deleted:"
 msgstr "Files të eleminuar:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-private/nautilus-file-operations.c:2154
-#: libnautilus-private/nautilus-file-operations.c:2189
+#: libnautilus-private/nautilus-file-operations.c:2177
+#: libnautilus-private/nautilus-file-operations.c:2212
 msgid "Deleting"
 msgstr "Duke eleminuar"
 
-#: libnautilus-private/nautilus-file-operations.c:2155
+#: libnautilus-private/nautilus-file-operations.c:2178
 msgid "Preparing to Delete files..."
 msgstr "Përgatitje për eleminimin e files..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2185
+#: libnautilus-private/nautilus-file-operations.c:2208
 msgid "Emptying the Trash"
 msgstr "Duke zbrazur Koshin"
 
-#: libnautilus-private/nautilus-file-operations.c:2190
+#: libnautilus-private/nautilus-file-operations.c:2213
 msgid "Preparing to Empty the Trash..."
 msgstr "Përgatitje për zbrazjen e Koshit..."
 
-#: libnautilus-private/nautilus-file-operations.c:2224
+#: libnautilus-private/nautilus-file-operations.c:2247
 #: src/file-manager/fm-desktop-icon-view.c:1275
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 msgid "Empty Trash"
 msgstr "Zbraz Koshin"
 
-#: libnautilus-private/nautilus-file-operations.c:2240
-msgid ""
-"Are you sure you want to permanently delete all of the items in the Trash?"
+#: libnautilus-private/nautilus-file-operations.c:2263
+msgid "Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr ""
 "Jeni i sigurt që dëshironi të eleminoni përgjithmonë të gjithë elementët që "
 "ndodhen në Kosh?"
 
-#: libnautilus-private/nautilus-file-operations.c:2250
+#: libnautilus-private/nautilus-file-operations.c:2273
 msgid "_Empty"
 msgstr "_Zbraz"
 
-#: libnautilus-private/nautilus-file-operations.c:2297
+#: libnautilus-private/nautilus-file-operations.c:2320
 msgid "foo"
 msgstr "foo"
 
-#: libnautilus-private/nautilus-file-operations.c:2297
-#: libnautilus-private/nautilus-file-operations.c:2307
+#: libnautilus-private/nautilus-file-operations.c:2320
+#: libnautilus-private/nautilus-file-operations.c:2330
 msgid "foo (copy)"
 msgstr "foo (kopje)"
 
-#: libnautilus-private/nautilus-file-operations.c:2298
+#: libnautilus-private/nautilus-file-operations.c:2321
 msgid ".bashrc"
 msgstr ".bashrc"
 
-#: libnautilus-private/nautilus-file-operations.c:2298
+#: libnautilus-private/nautilus-file-operations.c:2321
 msgid ".bashrc (copy)"
 msgstr ".bashrc (kopje)"
 
-#: libnautilus-private/nautilus-file-operations.c:2299
+#: libnautilus-private/nautilus-file-operations.c:2322
 msgid ".foo.txt"
 msgstr ".foo.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2299
+#: libnautilus-private/nautilus-file-operations.c:2322
 msgid ".foo (copy).txt"
 msgstr ".foo (kopje).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2300
+#: libnautilus-private/nautilus-file-operations.c:2323
 msgid "foo foo"
 msgstr "foo foo"
 
-#: libnautilus-private/nautilus-file-operations.c:2300
+#: libnautilus-private/nautilus-file-operations.c:2323
 msgid "foo foo (copy)"
 msgstr "foo foo (kopje)"
 
-#: libnautilus-private/nautilus-file-operations.c:2301
+#: libnautilus-private/nautilus-file-operations.c:2324
 msgid "foo.txt"
 msgstr "foo.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2301
-#: libnautilus-private/nautilus-file-operations.c:2308
+#: libnautilus-private/nautilus-file-operations.c:2324
+#: libnautilus-private/nautilus-file-operations.c:2331
 msgid "foo (copy).txt"
 msgstr "foo (kopje).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2302
+#: libnautilus-private/nautilus-file-operations.c:2325
 msgid "foo foo.txt"
 msgstr "foo foo.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2302
-#: libnautilus-private/nautilus-file-operations.c:2324
+#: libnautilus-private/nautilus-file-operations.c:2325
+#: libnautilus-private/nautilus-file-operations.c:2347
 msgid "foo foo (copy).txt"
 msgstr "foo foo (kopje).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2303
+#: libnautilus-private/nautilus-file-operations.c:2326
 msgid "foo foo.txt txt"
 msgstr "foo foo.txt txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2303
+#: libnautilus-private/nautilus-file-operations.c:2326
 msgid "foo foo (copy).txt txt"
 msgstr "foo foo (kopje).txt txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2304
+#: libnautilus-private/nautilus-file-operations.c:2327
 msgid "foo...txt"
 msgstr "foo...txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2304
+#: libnautilus-private/nautilus-file-operations.c:2327
 msgid "foo.. (copy).txt"
 msgstr "foo.. (kopje).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2305
+#: libnautilus-private/nautilus-file-operations.c:2328
 msgid "foo..."
 msgstr "foo..."
 
-#: libnautilus-private/nautilus-file-operations.c:2305
+#: libnautilus-private/nautilus-file-operations.c:2328
 msgid "foo... (copy)"
 msgstr "foo... (kopje)"
 
-#: libnautilus-private/nautilus-file-operations.c:2306
+#: libnautilus-private/nautilus-file-operations.c:2329
 msgid "foo. (copy)"
 msgstr "foo. (kopje)"
 
-#: libnautilus-private/nautilus-file-operations.c:2306
+#: libnautilus-private/nautilus-file-operations.c:2329
 msgid "foo. (another copy)"
 msgstr "foo. (kopje tjetër)"
 
-#: libnautilus-private/nautilus-file-operations.c:2307
-#: libnautilus-private/nautilus-file-operations.c:2309
+#: libnautilus-private/nautilus-file-operations.c:2330
+#: libnautilus-private/nautilus-file-operations.c:2332
 msgid "foo (another copy)"
 msgstr "foo (kopje tjetër)"
 
-#: libnautilus-private/nautilus-file-operations.c:2308
-#: libnautilus-private/nautilus-file-operations.c:2310
+#: libnautilus-private/nautilus-file-operations.c:2331
+#: libnautilus-private/nautilus-file-operations.c:2333
 msgid "foo (another copy).txt"
 msgstr "foo (kopje tjetër).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2309
+#: libnautilus-private/nautilus-file-operations.c:2332
 msgid "foo (3rd copy)"
 msgstr "foo (kopja e 3-të)"
 
-#: libnautilus-private/nautilus-file-operations.c:2310
+#: libnautilus-private/nautilus-file-operations.c:2333
 msgid "foo (3rd copy).txt"
 msgstr "foo (kopja e 3-të).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2311
+#: libnautilus-private/nautilus-file-operations.c:2334
 msgid "foo foo (another copy).txt"
 msgstr "foo foo (kopje tjetër).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2311
+#: libnautilus-private/nautilus-file-operations.c:2334
 msgid "foo foo (3rd copy).txt"
 msgstr "foo foo (kopja e 3-të).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2312
-#: libnautilus-private/nautilus-file-operations.c:2329
+#: libnautilus-private/nautilus-file-operations.c:2335
+#: libnautilus-private/nautilus-file-operations.c:2352
 msgid "foo (13th copy)"
 msgstr "foo (kopja e 13-të)"
 
-#: libnautilus-private/nautilus-file-operations.c:2312
+#: libnautilus-private/nautilus-file-operations.c:2335
 msgid "foo (14th copy)"
 msgstr "foo (kopja e 14-të)"
 
-#: libnautilus-private/nautilus-file-operations.c:2313
-#: libnautilus-private/nautilus-file-operations.c:2330
+#: libnautilus-private/nautilus-file-operations.c:2336
+#: libnautilus-private/nautilus-file-operations.c:2353
 msgid "foo (13th copy).txt"
 msgstr "foo (kopja e 13-të).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2313
+#: libnautilus-private/nautilus-file-operations.c:2336
 msgid "foo (14th copy).txt"
 msgstr "foo (kopja e 14-të).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2314
+#: libnautilus-private/nautilus-file-operations.c:2337
 msgid "foo (21st copy)"
 msgstr "foo (kopja e 21-të)"
 
-#: libnautilus-private/nautilus-file-operations.c:2314
-#: libnautilus-private/nautilus-file-operations.c:2316
+#: libnautilus-private/nautilus-file-operations.c:2337
+#: libnautilus-private/nautilus-file-operations.c:2339
 msgid "foo (22nd copy)"
 msgstr "foo (kopja e 22-të)"
 
-#: libnautilus-private/nautilus-file-operations.c:2315
+#: libnautilus-private/nautilus-file-operations.c:2338
 msgid "foo (21st copy).txt"
 msgstr "foo (kopja e 21-të).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2315
-#: libnautilus-private/nautilus-file-operations.c:2317
+#: libnautilus-private/nautilus-file-operations.c:2338
+#: libnautilus-private/nautilus-file-operations.c:2340
 msgid "foo (22nd copy).txt"
 msgstr "foo (kopja e 22-të).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2316
-#: libnautilus-private/nautilus-file-operations.c:2318
+#: libnautilus-private/nautilus-file-operations.c:2339
+#: libnautilus-private/nautilus-file-operations.c:2341
 msgid "foo (23rd copy)"
 msgstr "foo (kopja e 23-të)"
 
-#: libnautilus-private/nautilus-file-operations.c:2317
-#: libnautilus-private/nautilus-file-operations.c:2319
+#: libnautilus-private/nautilus-file-operations.c:2340
+#: libnautilus-private/nautilus-file-operations.c:2342
 msgid "foo (23rd copy).txt"
 msgstr "foo (kopja e 23-të).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2318
-#: libnautilus-private/nautilus-file-operations.c:2320
+#: libnautilus-private/nautilus-file-operations.c:2341
+#: libnautilus-private/nautilus-file-operations.c:2343
 msgid "foo (24th copy)"
 msgstr "foo (kopja e 24-t)"
 
-#: libnautilus-private/nautilus-file-operations.c:2319
-#: libnautilus-private/nautilus-file-operations.c:2321
+#: libnautilus-private/nautilus-file-operations.c:2342
+#: libnautilus-private/nautilus-file-operations.c:2344
 msgid "foo (24th copy).txt"
 msgstr "foo (kopja e 24-t).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2320
+#: libnautilus-private/nautilus-file-operations.c:2343
 msgid "foo (25th copy)"
 msgstr "foo (kopja e 25-të)"
 
-#: libnautilus-private/nautilus-file-operations.c:2321
+#: libnautilus-private/nautilus-file-operations.c:2344
 msgid "foo (25th copy).txt"
 msgstr "foo (kopja e 25-të).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2322
+#: libnautilus-private/nautilus-file-operations.c:2345
 msgid "foo foo (24th copy)"
 msgstr "foo foo (kopja e 24-t)"
 
-#: libnautilus-private/nautilus-file-operations.c:2322
+#: libnautilus-private/nautilus-file-operations.c:2345
 msgid "foo foo (25th copy)"
 msgstr "foo foo (kopja e 25-të)"
 
-#: libnautilus-private/nautilus-file-operations.c:2323
+#: libnautilus-private/nautilus-file-operations.c:2346
 msgid "foo foo (24th copy).txt"
 msgstr "foo foo (kopja e 24-t).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2323
+#: libnautilus-private/nautilus-file-operations.c:2346
 msgid "foo foo (25th copy).txt"
 msgstr "foo foo (kopja e 25-të).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2324
+#: libnautilus-private/nautilus-file-operations.c:2347
 msgid "foo foo (100000000000000th copy).txt"
 msgstr "foo foo (100000000000000-ta kopje).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2325
+#: libnautilus-private/nautilus-file-operations.c:2348
 msgid "foo (10th copy)"
 msgstr "foo (kopja e 10-të)"
 
-#: libnautilus-private/nautilus-file-operations.c:2325
-#: libnautilus-private/nautilus-file-operations.c:2327
+#: libnautilus-private/nautilus-file-operations.c:2348
+#: libnautilus-private/nautilus-file-operations.c:2350
 msgid "foo (11th copy)"
 msgstr "foo (kopja e 11-të)"
 
-#: libnautilus-private/nautilus-file-operations.c:2326
+#: libnautilus-private/nautilus-file-operations.c:2349
 msgid "foo (10th copy).txt"
 msgstr "foo (kopja e 10-të).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2326
-#: libnautilus-private/nautilus-file-operations.c:2328
+#: libnautilus-private/nautilus-file-operations.c:2349
+#: libnautilus-private/nautilus-file-operations.c:2351
 msgid "foo (11th copy).txt"
 msgstr "foo (kopja e 11-të).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2327
-#: libnautilus-private/nautilus-file-operations.c:2329
+#: libnautilus-private/nautilus-file-operations.c:2350
+#: libnautilus-private/nautilus-file-operations.c:2352
 msgid "foo (12th copy)"
 msgstr "foo (kopja e 12-të)"
 
-#: libnautilus-private/nautilus-file-operations.c:2328
-#: libnautilus-private/nautilus-file-operations.c:2330
+#: libnautilus-private/nautilus-file-operations.c:2351
+#: libnautilus-private/nautilus-file-operations.c:2353
 msgid "foo (12th copy).txt"
 msgstr "foo (kopja e 12-të).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2331
+#: libnautilus-private/nautilus-file-operations.c:2354
 msgid "foo (110th copy)"
 msgstr "foo (110-a kopje)"
 
-#: libnautilus-private/nautilus-file-operations.c:2331
+#: libnautilus-private/nautilus-file-operations.c:2354
 msgid "foo (111th copy)"
 msgstr "foo (111-a kopje)"
 
-#: libnautilus-private/nautilus-file-operations.c:2332
+#: libnautilus-private/nautilus-file-operations.c:2355
 msgid "foo (110th copy).txt"
 msgstr "foo (110-a kopje).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2332
+#: libnautilus-private/nautilus-file-operations.c:2355
 msgid "foo (111th copy).txt"
 msgstr "foo (111-a kopje).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2333
+#: libnautilus-private/nautilus-file-operations.c:2356
 msgid "foo (122nd copy)"
 msgstr "foo (kopja e 122-të)"
 
-#: libnautilus-private/nautilus-file-operations.c:2333
-#: libnautilus-private/nautilus-file-operations.c:2335
+#: libnautilus-private/nautilus-file-operations.c:2356
+#: libnautilus-private/nautilus-file-operations.c:2358
 msgid "foo (123rd copy)"
 msgstr "foo (kopja e 123-të)"
 
-#: libnautilus-private/nautilus-file-operations.c:2334
+#: libnautilus-private/nautilus-file-operations.c:2357
 msgid "foo (122nd copy).txt"
 msgstr "foo (122-ta kopje).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2334
-#: libnautilus-private/nautilus-file-operations.c:2336
+#: libnautilus-private/nautilus-file-operations.c:2357
+#: libnautilus-private/nautilus-file-operations.c:2359
 msgid "foo (123rd copy).txt"
 msgstr "foo (123-ta kopje).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2335
+#: libnautilus-private/nautilus-file-operations.c:2358
 msgid "foo (124th copy)"
 msgstr "foo (kopja e 124)"
 
-#: libnautilus-private/nautilus-file-operations.c:2336
+#: libnautilus-private/nautilus-file-operations.c:2359
 msgid "foo (124th copy).txt"
 msgstr "foo (kopja e 124).txt"
 
@@ -2286,64 +2294,64 @@ msgstr "foo (kopja e 124).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2529
+#: libnautilus-private/nautilus-file.c:2524
 msgid "today at 00:00:00 PM"
 msgstr "sot në 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2530
+#: libnautilus-private/nautilus-file.c:2525
 msgid "today at %-I:%M:%S %p"
 msgstr "sot në %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2532
+#: libnautilus-private/nautilus-file.c:2527
 msgid "today at 00:00 PM"
 msgstr "sot në 00:00"
 
-#: libnautilus-private/nautilus-file.c:2533
+#: libnautilus-private/nautilus-file.c:2528
 msgid "today at %-I:%M %p"
 msgstr "sot në %-H:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2535
+#: libnautilus-private/nautilus-file.c:2530
 msgid "today, 00:00 PM"
 msgstr "sot, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2536
+#: libnautilus-private/nautilus-file.c:2531
 msgid "today, %-I:%M %p"
 msgstr "sot, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2538
-#: libnautilus-private/nautilus-file.c:2539
+#: libnautilus-private/nautilus-file.c:2533
+#: libnautilus-private/nautilus-file.c:2534
 msgid "today"
 msgstr "sot"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2548
+#: libnautilus-private/nautilus-file.c:2543
 msgid "yesterday at 00:00:00 PM"
 msgstr "dje në 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2549
+#: libnautilus-private/nautilus-file.c:2544
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "dje në %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2551
+#: libnautilus-private/nautilus-file.c:2546
 msgid "yesterday at 00:00 PM"
 msgstr "dje në 00:00"
 
-#: libnautilus-private/nautilus-file.c:2552
+#: libnautilus-private/nautilus-file.c:2547
 msgid "yesterday at %-I:%M %p"
 msgstr "dje në %-H:%M "
 
-#: libnautilus-private/nautilus-file.c:2554
+#: libnautilus-private/nautilus-file.c:2549
 msgid "yesterday, 00:00 PM"
 msgstr "dje, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2555
+#: libnautilus-private/nautilus-file.c:2550
 msgid "yesterday, %-I:%M %p"
 msgstr "dje, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2557
-#: libnautilus-private/nautilus-file.c:2558
+#: libnautilus-private/nautilus-file.c:2552
+#: libnautilus-private/nautilus-file.c:2553
 msgid "yesterday"
 msgstr "dje"
 
@@ -2352,132 +2360,132 @@ msgstr "dje"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2569
+#: libnautilus-private/nautilus-file.c:2564
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Të mërkurën, më 00 Shtator 0000 në 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2570
+#: libnautilus-private/nautilus-file.c:2565
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %-d %B %Y alle %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2572
+#: libnautilus-private/nautilus-file.c:2567
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Hën, 00 Tet 0000 në 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2573
+#: libnautilus-private/nautilus-file.c:2568
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %-d %b %Y në %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2575
+#: libnautilus-private/nautilus-file.c:2570
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Hën, 00 Tet në 00:00"
 
-#: libnautilus-private/nautilus-file.c:2576
+#: libnautilus-private/nautilus-file.c:2571
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %-d %b %Y në %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2578
+#: libnautilus-private/nautilus-file.c:2573
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00 Tet 0000 në orën 00:00"
 
-#: libnautilus-private/nautilus-file.c:2579
+#: libnautilus-private/nautilus-file.c:2574
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y në %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2581
+#: libnautilus-private/nautilus-file.c:2576
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00 Tet 0000, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2582
+#: libnautilus-private/nautilus-file.c:2577
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2584
+#: libnautilus-private/nautilus-file.c:2579
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2585
+#: libnautilus-private/nautilus-file.c:2580
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%m/%y, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2587
+#: libnautilus-private/nautilus-file.c:2582
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2588
+#: libnautilus-private/nautilus-file.c:2583
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
-#: libnautilus-private/nautilus-file.c:3870
+#: libnautilus-private/nautilus-file.c:3865
 msgid "0 items"
 msgstr "0 objekte"
 
-#: libnautilus-private/nautilus-file.c:3870
+#: libnautilus-private/nautilus-file.c:3865
 msgid "0 folders"
 msgstr "0 kartela"
 
-#: libnautilus-private/nautilus-file.c:3871
+#: libnautilus-private/nautilus-file.c:3866
 msgid "0 files"
 msgstr "0 files"
 
-#: libnautilus-private/nautilus-file.c:3875
+#: libnautilus-private/nautilus-file.c:3870
 msgid "1 item"
 msgstr "1 objekt"
 
-#: libnautilus-private/nautilus-file.c:3875
+#: libnautilus-private/nautilus-file.c:3870
 msgid "1 folder"
 msgstr "1 kartelë"
 
-#: libnautilus-private/nautilus-file.c:3876
+#: libnautilus-private/nautilus-file.c:3871
 msgid "1 file"
 msgstr "1 file"
 
-#: libnautilus-private/nautilus-file.c:3879
+#: libnautilus-private/nautilus-file.c:3874
 #, c-format
 msgid "%u items"
 msgstr "%u objekte"
 
-#: libnautilus-private/nautilus-file.c:3879
+#: libnautilus-private/nautilus-file.c:3874
 #, c-format
 msgid "%u folders"
 msgstr "%u kartela"
 
-#: libnautilus-private/nautilus-file.c:3880
+#: libnautilus-private/nautilus-file.c:3875
 #, c-format
 msgid "%u files"
 msgstr "%u files"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4187
-#: libnautilus-private/nautilus-file.c:4203
+#: libnautilus-private/nautilus-file.c:4182
+#: libnautilus-private/nautilus-file.c:4198
 msgid "? items"
 msgstr "? objekte"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4193
+#: libnautilus-private/nautilus-file.c:4188
 msgid "? bytes"
 msgstr "? bytes"
 
-#: libnautilus-private/nautilus-file.c:4208
+#: libnautilus-private/nautilus-file.c:4203
 msgid "unknown type"
 msgstr "tip i panjohur"
 
-#: libnautilus-private/nautilus-file.c:4211
+#: libnautilus-private/nautilus-file.c:4206
 msgid "unknown MIME type"
 msgstr "tip MIME i panjohur"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4217
+#: libnautilus-private/nautilus-file.c:4212
 msgid "unknown"
 msgstr "i panjohur"
 
-#: libnautilus-private/nautilus-file.c:4249
+#: libnautilus-private/nautilus-file.c:4244
 msgid "program"
 msgstr "program"
 
-#: libnautilus-private/nautilus-file.c:4261
+#: libnautilus-private/nautilus-file.c:4256
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2487,7 +2495,7 @@ msgstr ""
 "që ndoshta fili juaj gnome-vfs.keys ndodhet në një pozicion të gabuar ose "
 "nuk arrin të gjehet për ndonjë arsye tjetër."
 
-#: libnautilus-private/nautilus-file.c:4265
+#: libnautilus-private/nautilus-file.c:4260
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2496,270 +2504,266 @@ msgstr ""
 "Nuk u gjet asnjë përshkrim për tipin mime \"%s\" (fili është \"%s\"), ju "
 "lutem lajmëroni mailing list të gnome-vfs."
 
-#: libnautilus-private/nautilus-file.c:4279
+#: libnautilus-private/nautilus-file.c:4274
 msgid "link"
 msgstr "lidhje"
 
-#: libnautilus-private/nautilus-file.c:4299
+#: libnautilus-private/nautilus-file.c:4294
 msgid "link (broken)"
 msgstr "lidhje (e shkëputur)"
 
-#: libnautilus-private/nautilus-file.c:5366
+#: libnautilus-private/nautilus-file.c:5361
 #: libnautilus-private/nautilus-trash-directory.c:383
 #: src/file-manager/fm-desktop-icon-view.c:71
 msgid "Trash"
 msgstr "Koshi"
 
-#: libnautilus-private/nautilus-global-preferences.c:100
+#: libnautilus-private/nautilus-global-preferences.c:99
 msgid "_Always"
 msgstr "_Gjithmonë"
 
-#: libnautilus-private/nautilus-global-preferences.c:101
+#: libnautilus-private/nautilus-global-preferences.c:100
 msgid "_Local File Only"
 msgstr "Vetëm filet _lokalë"
 
-#: libnautilus-private/nautilus-global-preferences.c:102
+#: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Never"
 msgstr "_Kurrë"
 
-#: libnautilus-private/nautilus-global-preferences.c:108
+#: libnautilus-private/nautilus-global-preferences.c:107
 #: src/nautilus-file-management-properties.glade.h:13
 #, no-c-format
 msgid "25%"
 msgstr "25%"
 
-#: libnautilus-private/nautilus-global-preferences.c:110
+#: libnautilus-private/nautilus-global-preferences.c:109
 #: src/nautilus-file-management-properties.glade.h:19
 #, no-c-format
 msgid "50%"
 msgstr "50%"
 
-#: libnautilus-private/nautilus-global-preferences.c:112
+#: libnautilus-private/nautilus-global-preferences.c:111
 #: src/nautilus-file-management-properties.glade.h:22
 #, no-c-format
 msgid "75%"
 msgstr "75%"
 
-#: libnautilus-private/nautilus-global-preferences.c:114
+#: libnautilus-private/nautilus-global-preferences.c:113
 #: src/nautilus-file-management-properties.glade.h:7
 #, no-c-format
 msgid "100%"
 msgstr "100%"
 
-#: libnautilus-private/nautilus-global-preferences.c:116
+#: libnautilus-private/nautilus-global-preferences.c:115
 #: src/nautilus-file-management-properties.glade.h:9
 #, no-c-format
 msgid "150%"
 msgstr "150%"
 
-#: libnautilus-private/nautilus-global-preferences.c:118
+#: libnautilus-private/nautilus-global-preferences.c:117
 #: src/nautilus-file-management-properties.glade.h:11
 #, no-c-format
 msgid "200%"
 msgstr "200%"
 
-#: libnautilus-private/nautilus-global-preferences.c:120
+#: libnautilus-private/nautilus-global-preferences.c:119
 #: src/nautilus-file-management-properties.glade.h:16
 #, no-c-format
 msgid "400%"
 msgstr "400%"
 
-#: libnautilus-private/nautilus-global-preferences.c:125
-#: src/nautilus-file-management-properties.glade.h:4
+#: libnautilus-private/nautilus-global-preferences.c:124
 msgid "100 K"
 msgstr "100 K"
 
-#: libnautilus-private/nautilus-global-preferences.c:126
-#: src/nautilus-file-management-properties.glade.h:20
+#: libnautilus-private/nautilus-global-preferences.c:125
 msgid "500 K"
 msgstr "500 K"
 
-#: libnautilus-private/nautilus-global-preferences.c:127
+#: libnautilus-private/nautilus-global-preferences.c:126
 #: src/nautilus-file-management-properties.glade.h:2
 msgid "1 MB"
 msgstr "1 MB"
 
-#: libnautilus-private/nautilus-global-preferences.c:128
+#: libnautilus-private/nautilus-global-preferences.c:127
 #: src/nautilus-file-management-properties.glade.h:14
 msgid "3 MB"
 msgstr "3 MB"
 
-#: libnautilus-private/nautilus-global-preferences.c:129
+#: libnautilus-private/nautilus-global-preferences.c:128
 #: src/nautilus-file-management-properties.glade.h:17
 msgid "5 MB"
 msgstr "5 MB"
 
-#: libnautilus-private/nautilus-global-preferences.c:130
+#: libnautilus-private/nautilus-global-preferences.c:129
 #: src/nautilus-file-management-properties.glade.h:3
 msgid "10 MB"
 msgstr "10 MB"
 
-#: libnautilus-private/nautilus-global-preferences.c:131
+#: libnautilus-private/nautilus-global-preferences.c:130
 #: src/nautilus-file-management-properties.glade.h:5
 msgid "100 MB"
 msgstr "100 MB"
 
-#: libnautilus-private/nautilus-global-preferences.c:137
-#: src/nautilus-file-management-properties.glade.h:36
+#: libnautilus-private/nautilus-global-preferences.c:136
 msgid "Activate items with a _single click"
 msgstr "Aktivo objektet me një klik të _vetëm"
 
-#: libnautilus-private/nautilus-global-preferences.c:141
-#: src/nautilus-file-management-properties.glade.h:35
+#: libnautilus-private/nautilus-global-preferences.c:140
 msgid "Activate items with a _double click"
 msgstr "Aktivo objektet me _dopio klik"
 
-#: libnautilus-private/nautilus-global-preferences.c:149
+#: libnautilus-private/nautilus-global-preferences.c:148
 msgid "E_xecute files when they are clicked"
 msgstr "E_kzekuto files kur klikohen"
 
-#: libnautilus-private/nautilus-global-preferences.c:153
+#: libnautilus-private/nautilus-global-preferences.c:152
 msgid "Display _files when they are clicked"
 msgstr "Shfaq _files kur klikohen"
 
-#: libnautilus-private/nautilus-global-preferences.c:157
-#: src/nautilus-file-management-properties.glade.h:69
+#: libnautilus-private/nautilus-global-preferences.c:156
+#: src/nautilus-file-management-properties.glade.h:66
 msgid "_Ask each time"
 msgstr "_Pyet çdo herë"
 
-#: libnautilus-private/nautilus-global-preferences.c:165
+#: libnautilus-private/nautilus-global-preferences.c:164
 msgid "Search for files by file name only"
 msgstr "Kërkoi files vetëm sipas emrit"
 
-#: libnautilus-private/nautilus-global-preferences.c:169
+#: libnautilus-private/nautilus-global-preferences.c:168
 msgid "Search for files by file name and file properties"
 msgstr "Kërkoi files sipas emrit dhe karakteristikave"
 
-#: libnautilus-private/nautilus-global-preferences.c:176
-#: src/nautilus-file-management-properties.glade.h:51
+#: libnautilus-private/nautilus-global-preferences.c:175
+#: src/nautilus-file-management-properties.glade.h:49
 msgid "Icon View"
 msgstr "Paraqitje me ikona"
 
-#: libnautilus-private/nautilus-global-preferences.c:177
-#: src/nautilus-file-management-properties.glade.h:52
+#: libnautilus-private/nautilus-global-preferences.c:176
+#: src/nautilus-file-management-properties.glade.h:50
 msgid "List View"
 msgstr "Paraqitje si listë"
 
-#: libnautilus-private/nautilus-global-preferences.c:182
+#: libnautilus-private/nautilus-global-preferences.c:181
 msgid "Manually"
 msgstr "Me dorë"
+
+#: libnautilus-private/nautilus-global-preferences.c:183
+#: libnautilus-private/nautilus-global-preferences.c:192
+#: src/nautilus-file-management-properties.glade.h:40
+msgid "By Name"
+msgstr "Sipas emrit"
 
 #: libnautilus-private/nautilus-global-preferences.c:184
 #: libnautilus-private/nautilus-global-preferences.c:193
 #: src/nautilus-file-management-properties.glade.h:41
-msgid "By Name"
-msgstr "Sipas emrit"
+msgid "By Size"
+msgstr "Sipas madhësisë"
 
 #: libnautilus-private/nautilus-global-preferences.c:185
 #: libnautilus-private/nautilus-global-preferences.c:194
 #: src/nautilus-file-management-properties.glade.h:42
-msgid "By Size"
-msgstr "Sipas madhësisë"
-
-#: libnautilus-private/nautilus-global-preferences.c:186
-#: libnautilus-private/nautilus-global-preferences.c:195
-#: src/nautilus-file-management-properties.glade.h:43
 msgid "By Type"
 msgstr "Sipas tipit"
 
-#: libnautilus-private/nautilus-global-preferences.c:187
-#: libnautilus-private/nautilus-global-preferences.c:196
-#: src/nautilus-file-management-properties.glade.h:40
+#: libnautilus-private/nautilus-global-preferences.c:186
+#: libnautilus-private/nautilus-global-preferences.c:195
+#: src/nautilus-file-management-properties.glade.h:39
 msgid "By Modification Date"
 msgstr "Sipas datës së ndryshimit"
 
-#: libnautilus-private/nautilus-global-preferences.c:188
-#: libnautilus-private/nautilus-global-preferences.c:197
-#: src/nautilus-file-management-properties.glade.h:39
+#: libnautilus-private/nautilus-global-preferences.c:187
+#: libnautilus-private/nautilus-global-preferences.c:196
+#: src/nautilus-file-management-properties.glade.h:38
 msgid "By Emblems"
 msgstr "Sipas simbolit"
 
-#: libnautilus-private/nautilus-global-preferences.c:202
+#: libnautilus-private/nautilus-global-preferences.c:201
 msgid "8"
 msgstr "8"
 
-#: libnautilus-private/nautilus-global-preferences.c:203
+#: libnautilus-private/nautilus-global-preferences.c:202
 msgid "10"
 msgstr "10"
 
-#: libnautilus-private/nautilus-global-preferences.c:204
+#: libnautilus-private/nautilus-global-preferences.c:203
 msgid "12"
 msgstr "12"
 
-#: libnautilus-private/nautilus-global-preferences.c:205
+#: libnautilus-private/nautilus-global-preferences.c:204
 msgid "14"
 msgstr "14"
 
-#: libnautilus-private/nautilus-global-preferences.c:206
+#: libnautilus-private/nautilus-global-preferences.c:205
 msgid "16"
 msgstr "16"
 
-#: libnautilus-private/nautilus-global-preferences.c:207
+#: libnautilus-private/nautilus-global-preferences.c:206
 msgid "18"
 msgstr "18"
 
-#: libnautilus-private/nautilus-global-preferences.c:208
+#: libnautilus-private/nautilus-global-preferences.c:207
 msgid "20"
 msgstr "20"
 
-#: libnautilus-private/nautilus-global-preferences.c:209
+#: libnautilus-private/nautilus-global-preferences.c:208
 msgid "22"
 msgstr "22"
 
-#: libnautilus-private/nautilus-global-preferences.c:210
+#: libnautilus-private/nautilus-global-preferences.c:209
 msgid "24"
 msgstr "24"
 
-#: libnautilus-private/nautilus-global-preferences.c:215
+#: libnautilus-private/nautilus-global-preferences.c:214
 #: src/nautilus-file-management-properties.glade.h:82
 msgid "size"
 msgstr "madhësia"
 
-#: libnautilus-private/nautilus-global-preferences.c:216
+#: libnautilus-private/nautilus-global-preferences.c:215
 #: src/nautilus-file-management-properties.glade.h:83
 msgid "type"
 msgstr "tipi"
 
-#: libnautilus-private/nautilus-global-preferences.c:217
+#: libnautilus-private/nautilus-global-preferences.c:216
 #: src/nautilus-file-management-properties.glade.h:76
 msgid "date modified"
 msgstr "data e modifikimit"
 
-#: libnautilus-private/nautilus-global-preferences.c:218
+#: libnautilus-private/nautilus-global-preferences.c:217
 msgid "date changed"
 msgstr "data e ndryshimit"
 
-#: libnautilus-private/nautilus-global-preferences.c:219
+#: libnautilus-private/nautilus-global-preferences.c:218
 #: src/nautilus-file-management-properties.glade.h:75
 msgid "date accessed"
 msgstr "data e hyrjes"
 
-#: libnautilus-private/nautilus-global-preferences.c:220
+#: libnautilus-private/nautilus-global-preferences.c:219
 #: src/nautilus-file-management-properties.glade.h:80
 msgid "owner"
 msgstr "pronari"
 
-#: libnautilus-private/nautilus-global-preferences.c:221
+#: libnautilus-private/nautilus-global-preferences.c:220
 #: src/nautilus-file-management-properties.glade.h:77
 msgid "group"
 msgstr "grupi"
 
-#: libnautilus-private/nautilus-global-preferences.c:222
+#: libnautilus-private/nautilus-global-preferences.c:221
 #: src/nautilus-file-management-properties.glade.h:81
 msgid "permissions"
 msgstr "të drejtat"
 
-#: libnautilus-private/nautilus-global-preferences.c:223
+#: libnautilus-private/nautilus-global-preferences.c:222
 #: src/nautilus-file-management-properties.glade.h:79
 msgid "octal permissions"
 msgstr "octal permissions"
 
-#: libnautilus-private/nautilus-global-preferences.c:224
-#: src/nautilus-file-management-properties.glade.h:54
+#: libnautilus-private/nautilus-global-preferences.c:223
+#: src/nautilus-file-management-properties.glade.h:52
 msgid "MIME type"
 msgstr "tipi MIME"
 
-#: libnautilus-private/nautilus-global-preferences.c:225
+#: libnautilus-private/nautilus-global-preferences.c:224
 #: src/nautilus-file-management-properties.glade.h:78
 msgid "none"
 msgstr "asnjëra"
@@ -2860,7 +2864,7 @@ msgstr "Dark Info Color"
 msgid "Color used for information text against a light background"
 msgstr "Color used for information text against a light background"
 
-#: libnautilus-private/nautilus-icon-dnd.c:725
+#: libnautilus-private/nautilus-icon-dnd.c:726
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
@@ -2870,7 +2874,7 @@ msgstr ""
 "në një rregullim personal dhe t'a lini objektin atje ku e keni zvarritur? "
 "Kjo gjë do të anullojë rregullimin e memorizuar."
 
-#: libnautilus-private/nautilus-icon-dnd.c:729
+#: libnautilus-private/nautilus-icon-dnd.c:730
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
@@ -2880,7 +2884,7 @@ msgstr ""
 "në një rregullim personal dhe t'i lini objektet atje ku i keni zvarritur? "
 "Kjo gjë do të anullojë rregullimin e memorizuar."
 
-#: libnautilus-private/nautilus-icon-dnd.c:735
+#: libnautilus-private/nautilus-icon-dnd.c:736
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
@@ -2888,7 +2892,7 @@ msgstr ""
 "Kjo kartelë përdor një rregullim automatik të objekteve. Dëshironi të kaloni "
 "në një rregullim personal dhe t'a lini objektin atje ku e keni zvarritur?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:738
+#: libnautilus-private/nautilus-icon-dnd.c:739
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
@@ -2896,11 +2900,11 @@ msgstr ""
 "Kjo kartelë përdor një rregullim automatik të objekteve. Dëshironi të kaloni "
 "në një rregullim personal dhe t'i lini objektet atje ku i keni zvarritur?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:743
+#: libnautilus-private/nautilus-icon-dnd.c:744
 msgid "Switch to Manual Layout?"
 msgstr "Kaloj tek rregullimi i personalizuar?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:744
+#: libnautilus-private/nautilus-icon-dnd.c:745
 msgid "Switch"
 msgstr "Kalo"
 
@@ -3422,8 +3426,7 @@ msgstr "[Objekte ]pa asnjë nga fjalët \"%s\""
 
 #: libnautilus-private/nautilus-search-uri.c:555
 msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr ""
-"[Objekte më të mëdhenj se 400K] dhe [pa të gjitha fjalët \"mollë portokall\"]"
+msgstr "[Objekte më të mëdhenj se 400K] dhe [pa të gjitha fjalët \"mollë portokall\"]"
 
 #. Human readable description for a criterion in a search for
 #. files. Bracketed items are context, and are message
@@ -3454,8 +3457,7 @@ msgstr "Objekte që janë files të rregullt"
 
 #: libnautilus-private/nautilus-search-uri.c:705
 msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr ""
-"Objekte që përmbajnë \"stuff\" në emrin e tyre dhe që janë files të rregullt"
+msgstr "Objekte që përmbajnë \"stuff\" në emrin e tyre dhe që janë files të rregullt"
 
 #: libnautilus-private/nautilus-search-uri.c:709
 msgid ""
@@ -3800,8 +3802,7 @@ msgstr "Të eleminoj përgjithmonë \"%s\"?"
 #: src/file-manager/fm-directory-view.c:844
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected items?"
-msgstr ""
-"Jeni i sigurt që dëshironi të eleminoni përgjithmonë %d objektet e zgjedhur?"
+msgstr "Jeni i sigurt që dëshironi të eleminoni përgjithmonë %d objektet e zgjedhur?"
 
 #: src/file-manager/fm-directory-view.c:850
 msgid "Delete?"
@@ -3898,8 +3899,7 @@ msgstr "Tepër files"
 
 #: src/file-manager/fm-directory-view.c:3018
 #, c-format
-msgid ""
-"\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
+msgid "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr "\"%s\" nuk mund të çohet në Kosh. Dëshironi t'a eleminoni menjëherë?"
 
 #: src/file-manager/fm-directory-view.c:3023
@@ -3942,45 +3942,45 @@ msgstr ""
 msgid "Delete From Trash?"
 msgstr "Ti eleminoj nga Koshi?"
 
-#: src/file-manager/fm-directory-view.c:3351
-#: src/file-manager/fm-directory-view.c:3393
+#: src/file-manager/fm-directory-view.c:3364
+#: src/file-manager/fm-directory-view.c:3406
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Përdor \"%s\" për të hapur objektin e zgjedhur"
 
-#: src/file-manager/fm-directory-view.c:3474
+#: src/file-manager/fm-directory-view.c:3487
 #: src/file-manager/nautilus-directory-view-ui.xml.h:23
 msgid "Other _Application..."
 msgstr "_Aplikacione të tjerë..."
 
-#: src/file-manager/fm-directory-view.c:3474
+#: src/file-manager/fm-directory-view.c:3487
 msgid "An _Application..."
 msgstr "Një _Aplikacion..."
 
-#: src/file-manager/fm-directory-view.c:3479
+#: src/file-manager/fm-directory-view.c:3492
 #: src/file-manager/nautilus-directory-view-ui.xml.h:24
 msgid "Other _Viewer..."
 msgstr "Tjetër _Vizualizues..."
 
-#: src/file-manager/fm-directory-view.c:3479
+#: src/file-manager/fm-directory-view.c:3492
 msgid "A _Viewer..."
 msgstr "Një _Vizualizues..."
 
-#: src/file-manager/fm-directory-view.c:3560
+#: src/file-manager/fm-directory-view.c:3573
 #, c-format
 msgid "Could not complete specified action:  %s"
 msgstr "I pamundur plotësimi i aksionit të specifikuar:  %s"
 
-#: src/file-manager/fm-directory-view.c:3583
+#: src/file-manager/fm-directory-view.c:3596
 msgid "Could not complete specified action."
 msgstr "I pamundur plotësimi i aksionit të specifikuar."
 
-#: src/file-manager/fm-directory-view.c:4028
+#: src/file-manager/fm-directory-view.c:4041
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Zbaton \"%s\" mbi objektet e zgjedhur"
 
-#: src/file-manager/fm-directory-view.c:4238
+#: src/file-manager/fm-directory-view.c:4251
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
@@ -3990,11 +3990,11 @@ msgstr ""
 "Duke zgjedhur një script nga kjo menu , ai do të niset me çdo objekt të "
 "seleksionuar si input."
 
-#: src/file-manager/fm-directory-view.c:4241
+#: src/file-manager/fm-directory-view.c:4254
 msgid "About Scripts"
 msgstr "Informacione mbi Scripts"
 
-#: src/file-manager/fm-directory-view.c:4242
+#: src/file-manager/fm-directory-view.c:4255
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4036,109 +4036,105 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: pozicioni dhe përmasat e dritares aktuale"
 
-#: src/file-manager/fm-directory-view.c:4355
+#: src/file-manager/fm-directory-view.c:4368
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" do të spostohet nëqoftëse zgjidhni komandën \"Ngjit files\""
 
-#: src/file-manager/fm-directory-view.c:4359
+#: src/file-manager/fm-directory-view.c:4372
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" do të kopjohet nëqoftëse zgjidhni komandën \"Ngjit files\""
 
-#: src/file-manager/fm-directory-view.c:4366
+#: src/file-manager/fm-directory-view.c:4379
 #, c-format
-msgid ""
-"The %d selected items will be moved if you select the Paste Files command"
+msgid "The %d selected items will be moved if you select the Paste Files command"
 msgstr ""
 "%d objekte të zgjedhur do të lëvizen nëqoftëse zgjidhni komandën \"Ngjit "
 "files\""
 
-#: src/file-manager/fm-directory-view.c:4370
+#: src/file-manager/fm-directory-view.c:4383
 #, c-format
-msgid ""
-"The %d selected items will be copied if you select the Paste Files command"
+msgid "The %d selected items will be copied if you select the Paste Files command"
 msgstr ""
 " %d objekte të zgjedhur do të kopjohen nëqoftëse zgjidhni komandën \"Ngjit "
 "files\""
 
-#: src/file-manager/fm-directory-view.c:4455
+#: src/file-manager/fm-directory-view.c:4468
 msgid "There is nothing on the clipboard to paste."
 msgstr "Nuk ka asgjë tek shënimet për t'u ngjitur."
 
-#: src/file-manager/fm-directory-view.c:4634
+#: src/file-manager/fm-directory-view.c:4647
 msgid "Open _in This Window"
 msgstr "Hape _në këtë dritare"
 
-#: src/file-manager/fm-directory-view.c:4637
+#: src/file-manager/fm-directory-view.c:4650
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Open _in New Window"
 msgstr "Hape _në një dritare të re"
 
-#: src/file-manager/fm-directory-view.c:4639
+#: src/file-manager/fm-directory-view.c:4652
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "Hape _në %d dritare të reja"
 
-#: src/file-manager/fm-directory-view.c:4657
+#: src/file-manager/fm-directory-view.c:4670
 msgid "_Delete from Trash"
 msgstr "_Elemino nga Koshi"
 
-#: src/file-manager/fm-directory-view.c:4659
+#: src/file-manager/fm-directory-view.c:4672
 msgid "Delete all selected items permanently"
 msgstr "Elemino përgjithmonë të gjithë objektet e zgjedhur"
 
-#: src/file-manager/fm-directory-view.c:4662
-#: src/file-manager/fm-directory-view.c:4937
+#: src/file-manager/fm-directory-view.c:4675
+#: src/file-manager/fm-directory-view.c:4950
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
 msgid "Mo_ve to Trash"
 msgstr "Lë_viz në Kosh"
 
-#: src/file-manager/fm-directory-view.c:4664
+#: src/file-manager/fm-directory-view.c:4677
 #: src/file-manager/nautilus-directory-view-ui.xml.h:16
 msgid "Move each selected item to the Trash"
 msgstr "Lëviz çdo objekt të zgjedhur në Kosh"
 
-#: src/file-manager/fm-directory-view.c:4688
+#: src/file-manager/fm-directory-view.c:4701
 #: src/file-manager/nautilus-directory-view-ui.xml.h:38
 msgid "_Delete"
 msgstr "_Elemino"
 
-#: src/file-manager/fm-directory-view.c:4708
+#: src/file-manager/fm-directory-view.c:4721
 msgid "Ma_ke Links"
 msgstr "_Krijo Lidhje"
 
-#: src/file-manager/fm-directory-view.c:4709
+#: src/file-manager/fm-directory-view.c:4722
 #: src/file-manager/nautilus-directory-view-ui.xml.h:14
 msgid "Ma_ke Link"
 msgstr "_Krijo Lidhje"
 
-#. FIXME: We don't use spaces to pad labels!
-#: src/file-manager/fm-directory-view.c:4722
+#: src/file-manager/fm-directory-view.c:4735
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
-#: src/nautilus-information-panel.c:1018
 msgid "_Empty Trash"
 msgstr "_Zbraze Koshin"
 
-#: src/file-manager/fm-directory-view.c:4735
+#: src/file-manager/fm-directory-view.c:4748
 msgid "Cu_t File"
 msgstr "Pre_je File"
 
-#: src/file-manager/fm-directory-view.c:4736
+#: src/file-manager/fm-directory-view.c:4749
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "Pri_t files"
 
-#: src/file-manager/fm-directory-view.c:4745
+#: src/file-manager/fm-directory-view.c:4758
 msgid "_Copy File"
 msgstr "_Kopjo File"
 
-#: src/file-manager/fm-directory-view.c:4746
+#: src/file-manager/fm-directory-view.c:4759
 #: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "_Copy Files"
 msgstr "_Kopjo Files"
 
-#: src/file-manager/fm-directory-view.c:4928
+#: src/file-manager/fm-directory-view.c:4941
 msgid ""
 "This link can't be used, because it has no target. Do you want to move this "
 "link to the Trash?"
@@ -4146,7 +4142,7 @@ msgstr ""
 "Kjo lidhje nuk mund të përdoret, pasi nuk ka një target. Dëshironi të "
 "hedhësh këtë lidhje në Kosh?"
 
-#: src/file-manager/fm-directory-view.c:4931
+#: src/file-manager/fm-directory-view.c:4944
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -4155,11 +4151,11 @@ msgstr ""
 "Kjo lidhje nuk mund të përdoret, pasi target i saj \"%s\" nuk ekziston. "
 "Dëshironi të hedhësh këtë lidhje në Kosh?"
 
-#: src/file-manager/fm-directory-view.c:4937
+#: src/file-manager/fm-directory-view.c:4950
 msgid "Broken Link"
 msgstr "Lidhje e shkëputur"
 
-#: src/file-manager/fm-directory-view.c:4994
+#: src/file-manager/fm-directory-view.c:5007
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -4168,35 +4164,34 @@ msgstr ""
 "\"%s\" është një file teksti i ekzekutueshëm. Dëshironi t'a zbatoni, apo të "
 "shikoni përmbajtjen e tij?"
 
-#: src/file-manager/fm-directory-view.c:5000
+#: src/file-manager/fm-directory-view.c:5013
 msgid "Run or Display?"
 msgstr "Zbatoj apo paraqit?"
 
-#: src/file-manager/fm-directory-view.c:5001
+#: src/file-manager/fm-directory-view.c:5014
 msgid "_Display"
 msgstr "_Shfaq"
 
-#: src/file-manager/fm-directory-view.c:5002
+#: src/file-manager/fm-directory-view.c:5015
 msgid "Run in _Terminal"
 msgstr "Zbato në _Terminal"
 
-#: src/file-manager/fm-directory-view.c:5005
+#: src/file-manager/fm-directory-view.c:5018
 msgid "_Run"
 msgstr "_Zbato"
 
-#: src/file-manager/fm-directory-view.c:5187
+#: src/file-manager/fm-directory-view.c:5200
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Hapja e \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5193
+#: src/file-manager/fm-directory-view.c:5206
 msgid "Cancel Open?"
 msgstr "Anulloj hapjen?"
 
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
-msgid ""
-"You do not have the permissions necessary to view the contents of \"%s\"."
+msgid "You do not have the permissions necessary to view the contents of \"%s\"."
 msgstr "Ju nuk keni të drejtat e duhura për të shikuar përmbajtjen e \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:61
@@ -4215,16 +4210,14 @@ msgstr "Gabim gjatë shfaqjes së kartelës"
 
 #: src/file-manager/fm-error-reporting.c:102
 #, c-format
-msgid ""
-"The name \"%s\" is already used in this folder. Please use a different name."
+msgid "The name \"%s\" is already used in this folder. Please use a different name."
 msgstr ""
 "Emri \"%s\" eshtë përdorur njëherë në këtë kartelë. Ju lutem përdorni një "
 "emër tjetër."
 
 #: src/file-manager/fm-error-reporting.c:107
 #, c-format
-msgid ""
-"There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
+msgid "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
 msgstr "Nuk ka \"%s\" në këtë kartelë. Mos e keni lëvizuar apo eleminuar?"
 
 #: src/file-manager/fm-error-reporting.c:112
@@ -4249,8 +4242,7 @@ msgstr "Emri \"%s\" nuk është i vlefshëm. Ju lutem përdorni një emër tjet�
 #: src/file-manager/fm-error-reporting.c:127
 #, c-format
 msgid "Couldn't change the name of \"%s\" because it is on a read-only disk"
-msgstr ""
-"Nuk arrij të ndryshoj emrin e \"%s\" sepse ndodhet në një disk në vetëm lexim"
+msgstr "Nuk arrij të ndryshoj emrin e \"%s\" sepse ndodhet në një disk në vetëm lexim"
 
 #: src/file-manager/fm-error-reporting.c:136
 #, c-format
@@ -4263,8 +4255,7 @@ msgstr "Gabim gjatë ndryshimit të emrit"
 
 #: src/file-manager/fm-error-reporting.c:163
 #, c-format
-msgid ""
-"You do not have the permissions necessary to change the group of \"%s\"."
+msgid "You do not have the permissions necessary to change the group of \"%s\"."
 msgstr "Nuk keni të drejta të mjaftueshme për të ndryshuar grupin e \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:167
@@ -4301,8 +4292,7 @@ msgstr "Gabim gjatë vendosjes së pronarit"
 
 #: src/file-manager/fm-error-reporting.c:233
 #, c-format
-msgid ""
-"Couldn't change the permissions of \"%s\" because it is on a read-only disk"
+msgid "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
 msgstr ""
 "Nuk arrij të ndryshoj të drejtat e \"%s\" pasi ndodhet në një disk në vetëm "
 "lexim"
@@ -4325,74 +4315,74 @@ msgstr "Ndryshimi i emrit të \"%s\" në \"%s\"."
 msgid "Cancel Rename?"
 msgstr "Anulloj ndryshimin e emrit?"
 
-#: src/file-manager/fm-icon-view.c:147
+#: src/file-manager/fm-icon-view.c:151
 msgid "by _Name"
 msgstr "sipas _Emrit"
 
-#: src/file-manager/fm-icon-view.c:148
+#: src/file-manager/fm-icon-view.c:152
 #: src/file-manager/nautilus-icon-view-ui.xml.h:12
 msgid "Keep icons sorted by name in rows"
 msgstr "Mban ikonat të rreshtuara sipas emrit"
 
-#: src/file-manager/fm-icon-view.c:154
+#: src/file-manager/fm-icon-view.c:158
 msgid "by _Size"
 msgstr "sipas _Madhësisë"
 
-#: src/file-manager/fm-icon-view.c:155
+#: src/file-manager/fm-icon-view.c:159
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by size in rows"
 msgstr "Mban ikonat të rreshtuara sipas madhësisë"
 
-#: src/file-manager/fm-icon-view.c:161
+#: src/file-manager/fm-icon-view.c:165
 msgid "by _Type"
 msgstr "sipas _Tipit"
 
-#: src/file-manager/fm-icon-view.c:162
+#: src/file-manager/fm-icon-view.c:166
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by type in rows"
 msgstr "Mban ikonat të rreshtuara sipas tipit"
 
-#: src/file-manager/fm-icon-view.c:168
+#: src/file-manager/fm-icon-view.c:172
 msgid "by Modification _Date"
 msgstr "sipas _Datës së ndryshimit"
 
-#: src/file-manager/fm-icon-view.c:169
+#: src/file-manager/fm-icon-view.c:173
 #: src/file-manager/nautilus-icon-view-ui.xml.h:11
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Mban ikonat të rreshtuara sipas datës së ndryshimit"
 
-#: src/file-manager/fm-icon-view.c:175
+#: src/file-manager/fm-icon-view.c:179
 msgid "by _Emblems"
 msgstr "sipas _simboleve"
 
-#: src/file-manager/fm-icon-view.c:176
+#: src/file-manager/fm-icon-view.c:180
 #: src/file-manager/nautilus-icon-view-ui.xml.h:10
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Mban ikonat në rresht sipas simboleve"
 
-#: src/file-manager/fm-icon-view.c:1383
+#: src/file-manager/fm-icon-view.c:1437
 #: src/file-manager/nautilus-icon-view-ui.xml.h:19
 msgid "Restore Icons' Original Si_zes"
 msgstr "Dimensi_onet origjinale të ikonave"
 
-#: src/file-manager/fm-icon-view.c:1384
+#: src/file-manager/fm-icon-view.c:1438
 msgid "Restore Icon's Original Si_ze"
 msgstr "Dimensi_oni origjinal i ikonës"
 
-#: src/file-manager/fm-icon-view.c:1719
+#: src/file-manager/fm-icon-view.c:1773
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "ka si objektiv \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2237
+#: src/file-manager/fm-icon-view.c:2299
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Zvarritja suportohet vetëm për file lokalë të sistemit."
 
-#: src/file-manager/fm-icon-view.c:2238 src/file-manager/fm-icon-view.c:2256
+#: src/file-manager/fm-icon-view.c:2300 src/file-manager/fm-icon-view.c:2318
 msgid "Drag and Drop error"
 msgstr "Gabim gjatë zvarritjes"
 
-#: src/file-manager/fm-icon-view.c:2255
+#: src/file-manager/fm-icon-view.c:2317
 msgid "An invalid drag type was used."
 msgstr "Është përdorur një tip drag jo i vlefshëm."
 
@@ -4734,8 +4724,7 @@ msgstr "Gabim gjatë leximit të treguesit"
 #: src/file-manager/fm-search-list-view.c:220
 #, c-format
 msgid "An error occurred while loading this search's contents: %s"
-msgstr ""
-"U verifikua një gabim gjatë ngarkimit të përmbajtjes së këtij kërkimi: %s"
+msgstr "U verifikua një gabim gjatë ngarkimit të përmbajtjes së këtij kërkimi: %s"
 
 #: src/file-manager/fm-search-list-view.c:244
 msgid ""
@@ -4939,8 +4928,7 @@ msgid "Protect the selected volume"
 msgstr "Mbro volumin e zgjedhur"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:14
-msgid ""
-"Show a window that lets you set your desktop background's pattern or color"
+msgid "Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
 "Hap një dritare që ju mundëson rregullimin e ngjyrës apo motivit për sfondin "
 "e desktop"
@@ -5009,8 +4997,7 @@ msgid "Edit the launcher information"
 msgstr "Ndrysho informacionet e ikonës së nisjes"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
-msgid ""
-"Move or copy files previously selected by a Cut Files or Copy Files command"
+msgid "Move or copy files previously selected by a Cut Files or Copy Files command"
 msgstr ""
 "Lëviz apo kopjo files e zgjedhur më parë me anë të komandës \"Prit files\" "
 "apo \"Kopjo files\""
@@ -5219,8 +5206,7 @@ msgstr "Aktualisht këtu nuk ka një tregues."
 
 #: src/file-manager/nautilus-indexing-info.c:302
 msgid "Sorry, but the medusa search service is not available."
-msgstr ""
-"Më vjen keq, por shërbimi i kërkimit të medusa nuk është në dispozicion."
+msgstr "Më vjen keq, por shërbimi i kërkimit të medusa nuk është në dispozicion."
 
 #: src/file-manager/nautilus-indexing-info.c:317
 msgid "%I:%M %p, %x"
@@ -5353,8 +5339,7 @@ msgstr ""
 #: src/nautilus-application.c:479 src/nautilus-application.c:497
 #: src/nautilus-application.c:504
 msgid "Nautilus can't be used now, due to an unexpected error."
-msgstr ""
-"Nautilus nuk mund të përdoret tani, për arsye të një difekti të papritur."
+msgstr "Nautilus nuk mund të përdoret tani, për arsye të një difekti të papritur."
 
 #: src/nautilus-application.c:480
 msgid ""
@@ -5418,6 +5403,14 @@ msgstr "Gjeje!"
 msgid "    "
 msgstr "    "
 
+#: src/nautilus-file-management-properties.glade.h:4
+msgid "100 KB"
+msgstr "100 KB"
+
+#: src/nautilus-file-management-properties.glade.h:20
+msgid "500 KB"
+msgstr "500 KB"
+
 #: src/nautilus-file-management-properties.glade.h:23
 msgid "<span weight=\"bold\">Behaviour</span>"
 msgstr "<span weight=\"bold\">Behaviour</span>"
@@ -5466,15 +5459,19 @@ msgstr "<span weight=\"bold\">Koshi</span>"
 msgid "<span weight=\"bold\">Tree View Defaults</span>"
 msgstr "<span weight=\"bold\">Tree View Defaults</span>"
 
-#: src/nautilus-file-management-properties.glade.h:37
+#: src/nautilus-file-management-properties.glade.h:35
 msgid "Always"
 msgstr "Gjithmonë"
 
-#: src/nautilus-file-management-properties.glade.h:38
+#: src/nautilus-file-management-properties.glade.h:36
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr "Pyet para se të _zbrazësh Koshin apo të eleminosh files"
 
-#: src/nautilus-file-management-properties.glade.h:44
+#: src/nautilus-file-management-properties.glade.h:37
+msgid "Behavior"
+msgstr "Behavior"
+
+#: src/nautilus-file-management-properties.glade.h:43
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
@@ -5482,105 +5479,109 @@ msgstr ""
 "Zgjidh rradhën e shfaqjes së informacione nën emrat e ikonave. Më shumë "
 "informacione tregohen me rritjen e nivelit të zoom."
 
+#: src/nautilus-file-management-properties.glade.h:44
+msgid "Count _number of items:"
+msgstr "Numuro _numrin e elementëve:"
+
 #: src/nautilus-file-management-properties.glade.h:45
 msgid "Default _zoom level:"
 msgstr "_Niveli i zoom i prezgjedhur:"
 
 #: src/nautilus-file-management-properties.glade.h:46
-msgid "E_xecute scripts when they are clicked"
-msgstr "E_kzekuto files kur klikohen"
-
-#: src/nautilus-file-management-properties.glade.h:47
 msgid "File Management Preferences"
 msgstr "Preferimet e Manazhuesit të File"
 
-#: src/nautilus-file-management-properties.glade.h:48
-msgid "Files and Folders"
-msgstr "Files dhe kartela"
-
-#: src/nautilus-file-management-properties.glade.h:49
+#: src/nautilus-file-management-properties.glade.h:47
 msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "Përfshi koma_ndën elemino direkt pa kaluar nëpër Kosh"
 
-#: src/nautilus-file-management-properties.glade.h:50
+#: src/nautilus-file-management-properties.glade.h:48
 msgid "Icon Captions"
 msgstr "Ikonat"
 
-#: src/nautilus-file-management-properties.glade.h:53
+#: src/nautilus-file-management-properties.glade.h:51
 msgid "Local Files Only"
 msgstr "Vetëm filet lokalë"
 
-#: src/nautilus-file-management-properties.glade.h:55
+#: src/nautilus-file-management-properties.glade.h:53
 msgid "Never"
 msgstr "Kurrë"
 
-#: src/nautilus-file-management-properties.glade.h:57
+#: src/nautilus-file-management-properties.glade.h:55
 msgid "Preview _sound files:"
 msgstr "Pamja e parë e file_s audio:"
 
-#: src/nautilus-file-management-properties.glade.h:58
-msgid "Show _number of items:"
-msgstr "Shfaq _numrin e elementëve:"
-
-#: src/nautilus-file-management-properties.glade.h:59
+#: src/nautilus-file-management-properties.glade.h:56
 msgid "Show _only folders"
 msgstr "Shfaq _vetëm kartelat"
 
-#: src/nautilus-file-management-properties.glade.h:60
+#: src/nautilus-file-management-properties.glade.h:57
 msgid "Show _thumbnails:"
 msgstr "Show _thumbnails:"
 
-#: src/nautilus-file-management-properties.glade.h:61
+#: src/nautilus-file-management-properties.glade.h:58
 msgid "Show hidden and _backup files"
 msgstr "Trego files e fshehur dhe të _backup"
 
-#: src/nautilus-file-management-properties.glade.h:62
+#: src/nautilus-file-management-properties.glade.h:59
 msgid "Show te_xt in icons:"
 msgstr "Trego te_kstin e ikonës:"
 
-#: src/nautilus-file-management-properties.glade.h:63
+#: src/nautilus-file-management-properties.glade.h:60
 msgid "Sort _folders before files"
 msgstr "Rreshto _kartelat përpara files"
 
-#: src/nautilus-file-management-properties.glade.h:64
+#: src/nautilus-file-management-properties.glade.h:61
 msgid "Sort in _reverse"
 msgstr "_Rreshtoi nga ana e kundërt"
 
-#: src/nautilus-file-management-properties.glade.h:65
+#: src/nautilus-file-management-properties.glade.h:62
 msgid "Use _manual layout"
 msgstr "Përdor paraqitjen _manuale"
 
-#: src/nautilus-file-management-properties.glade.h:66
+#: src/nautilus-file-management-properties.glade.h:63
 msgid "View _new folders using:"
 msgstr "Shiko kartelat e _reja duke përdorur:"
 
-#: src/nautilus-file-management-properties.glade.h:67
+#: src/nautilus-file-management-properties.glade.h:64
 msgid "Views"
 msgstr "Shikime"
 
-#: src/nautilus-file-management-properties.glade.h:68
-msgid "_Arrange Items:"
-msgstr "_Vendosi elementët:"
+#: src/nautilus-file-management-properties.glade.h:65
+msgid "_Arrange items:"
+msgstr "_Sistemo elementët:"
 
-#: src/nautilus-file-management-properties.glade.h:70
+#: src/nautilus-file-management-properties.glade.h:67
 msgid "_Default zoom level:"
 msgstr "_Niveli i zoom i prezgjedhur:"
 
-#: src/nautilus-file-management-properties.glade.h:71
+#: src/nautilus-file-management-properties.glade.h:68
+msgid "_Double click to activate items"
+msgstr "_Dopjo klik për të aktivuar elementët"
+
+#: src/nautilus-file-management-properties.glade.h:69
 msgid "_Only for files smaller than:"
 msgstr "_Vetëm për files më të mëdhenj se: "
 
+#: src/nautilus-file-management-properties.glade.h:70
+msgid "_Open activated item in a new window"
+msgstr "_Hap çdo objekt të zgjedhur në një dritare të re"
+
+#: src/nautilus-file-management-properties.glade.h:71
+msgid "_Run executable text files when they are clicked"
+msgstr "_Zbato files e ekzekutueshëm të tekstit kur klikohen"
+
 #: src/nautilus-file-management-properties.glade.h:72
-msgid "_Open each file or folder in a new window"
-msgstr "_Hap çdo file apo kartelë në një dritare të re"
+msgid "_Single click to activate items"
+msgstr "_Një klik për të aktivuar elementët"
 
 #: src/nautilus-file-management-properties.glade.h:73
 msgid "_Use compact layout"
 msgstr "_Përdor paraqitje kompakte"
 
 #: src/nautilus-file-management-properties.glade.h:74
-msgid "_View scripts when they are clicked"
-msgstr "_Shiko scripts kur klikohen"
+msgid "_View executable text files when they are clicked"
+msgstr "_Shfaq files e ekzekutueshëm të tekstit kur klikohen"
 
 #: src/nautilus-first-time-druid.c:40
 msgid ""
@@ -5604,6 +5605,11 @@ msgstr "Hape me %s"
 #: src/nautilus-information-panel.c:911
 msgid "Open with..."
 msgstr "Hape me..."
+
+#. FIXME: We don't use spaces to pad labels!
+#: src/nautilus-information-panel.c:1018
+msgid "Empty _Trash"
+msgstr "Zbraz _Koshin"
 
 #: src/nautilus-location-bar.c:62
 msgid "Go To:"
@@ -5652,7 +5658,7 @@ msgstr "Rinis Nautilus."
 
 #. Set initial window title
 #: src/nautilus-main.c:184 src/nautilus-window-manage-views.c:231
-#: src/nautilus-window-menus.c:670 src/nautilus-window.c:182
+#: src/nautilus-window-menus.c:670 src/nautilus-window.c:181
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -6005,7 +6011,7 @@ msgstr "[Pronari i file] është [root]"
 msgid "[File owner] is not [root]"
 msgstr "[Pronari i file] nuk është [root]"
 
-#: src/nautilus-server-connect.c:127
+#: src/nautilus-server-connect.c:129
 msgid ""
 "Couldn't execute nautilus\n"
 "Make sure nautilus is in your path and correctly installed"
@@ -6014,7 +6020,7 @@ msgstr ""
 "Sigurohuni që nautilus ndodhet tek path juaj dhe është i instaluar "
 "korrektsisht"
 
-#: src/nautilus-server-connect.c:387
+#: src/nautilus-server-connect.c:392
 #, c-format
 msgid ""
 "Couldn't connect to URI %s\n"
@@ -6025,7 +6031,7 @@ msgstr ""
 "Sigurohu që adresa është e saktë dhe përndryshe, shkruaje këtë adresë direkt "
 "tek manazhuesi i file"
 
-#: src/nautilus-server-connect.c:452
+#: src/nautilus-server-connect.c:457
 msgid ""
 "Glade file for the connect to server program is missing.\n"
 "Please check your installation of nautilus"
@@ -6229,8 +6235,8 @@ msgid "Up"
 msgstr "Sipër"
 
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-shell-ui.xml.h:49 src/nautilus-window.c:527
-#: src/nautilus-window.c:1478
+#: src/nautilus-shell-ui.xml.h:49 src/nautilus-window.c:518
+#: src/nautilus-window.c:1465
 msgid "View as..."
 msgstr "Shikoje si..."
 
@@ -6452,8 +6458,7 @@ msgstr ""
 
 #: src/nautilus-window-manage-views.c:1310
 #, c-format
-msgid ""
-"\"%s\" is not a valid location. Please check the spelling and try again."
+msgid "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
 "\"%s\" nuk është një pozicion i vlefshëm. Kontrolloje nëse e ke shkruar si "
 "duhet dhe provo përsëri."
@@ -6563,8 +6568,7 @@ msgstr "Jeni sigurt që dëshiron të harrosh të kaluarën? Historia përsërit
 
 #: src/nautilus-window-menus.c:365
 msgid "Are you sure you want to clear the list of locations you have visited?"
-msgstr ""
-"Jeni i sigurt që dëshironi të pastroni listën e pozicioneve që keni vizituar?"
+msgstr "Jeni i sigurt që dëshironi të pastroni listën e pozicioneve që keni vizituar?"
 
 #: src/nautilus-window-menus.c:370
 msgid "Clear History"
@@ -6632,28 +6636,28 @@ msgstr "Kthehu disa faqe mbrapa"
 msgid "Go forward a number of pages"
 msgstr "Shko përpara një numër faqesh"
 
-#: src/nautilus-window.c:670
+#: src/nautilus-window.c:661
 msgid "Information"
 msgstr "Informacion"
 
-#: src/nautilus-window.c:1184
+#: src/nautilus-window.c:1171
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Shiko këtë pozicion me \"%s\""
 
-#: src/nautilus-window.c:2211
+#: src/nautilus-window.c:2198
 msgid "Application ID"
 msgstr "ID e aplikacionit"
 
-#: src/nautilus-window.c:2212
+#: src/nautilus-window.c:2199
 msgid "The application ID of the window."
 msgstr "ID e aplikacionit të dritares."
 
-#: src/nautilus-window.c:2218
+#: src/nautilus-window.c:2205
 msgid "Application"
 msgstr "Aplikacion"
 
-#: src/nautilus-window.c:2219
+#: src/nautilus-window.c:2206
 msgid "The NautilusApplication associated with this window."
 msgstr "AplikacioniNautilus i shoqëruar me këtë faqe."
 
@@ -6688,6 +6692,18 @@ msgstr "Rrjeti i Server-ve"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Shiko rrjetin tuaj të server-ve tek file manager i Nautilus"
+
+#~ msgid "E_xecute scripts when they are clicked"
+#~ msgstr "E_kzekuto files kur klikohen"
+
+#~ msgid "Files and Folders"
+#~ msgstr "Files dhe kartela"
+
+#~ msgid "_Open each file or folder in a new window"
+#~ msgstr "_Hap çdo file apo kartelë në një dritare të re"
+
+#~ msgid "_View scripts when they are clicked"
+#~ msgstr "_Shiko scripts kur klikohen"
 
 #~ msgid "Content Loser"
 #~ msgstr "Content Loser"
@@ -7416,9 +7432,6 @@ msgstr "Shiko rrjetin tuaj të server-ve tek file manager i Nautilus"
 #~ msgid "Use your _home folder as the desktop"
 #~ msgstr "Përdor kartelën tënde _home si desktop"
 
-#~ msgid "Trash Behavior"
-#~ msgstr "Sjellja e Koshit"
-
 #~ msgid "Click Behavior"
 #~ msgstr "Sjellja e Klik"
 
@@ -7554,3 +7567,4 @@ msgstr "Shiko rrjetin tuaj të server-ve tek file manager i Nautilus"
 
 #~ msgid "Cancel _Remove"
 #~ msgstr "Anullo _Hiq"
+
