@@ -1,3 +1,10 @@
+2001-08-16  Havoc Pennington  <hp@redhat.com>
+
+	* libnautilus-private/nautilus-global-preferences.c: default tree
+	to "show only directories" mode. It's slow to show files, not to
+	mention useless. (Showing files is just some sort of poor
+	substitute for multiple pane view.)
+
 2001-08-15  Havoc Pennington  <hp@redhat.com>
 
 	* libnautilus-private/nautilus-file.c: remove Alex's debug spew
