@@ -1,3 +1,9 @@
+2000-02-17  Jonathan Blandford  <jrb@redhat.com>
+
+	* src/nautilus-index-title.c (nautilus_index_title_set_up_label):
+	remember strlen (string) + 1 gives you the length necessary to
+	copy a string, not strlen.
+
 2000-02-16  Andy Hertzfeld <andy@eazel.com>
 
 	* src/nautilus-index-title.c:
