@@ -1,3 +1,16 @@
+2000-07-12  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(auto_scroll_timeout_callback):
+	Fix a problem where parts of the exposed area weren't being
+	updated correctly during a fast auto-scroll.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_get_drop_action):
+	Fix a crash when nautilus_icon_container_get_drop_action
+	got called too early on during a drag, before 
+	drag_data_received_callback got a chance to set state up.
+
 2000-07-12  Robey Pointer  <robey@eazel.com>
 
 	* components/services/trilobite/libtrilobite/Makefile.am:

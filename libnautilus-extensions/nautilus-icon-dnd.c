@@ -82,6 +82,25 @@ static GtkTargetEntry drop_types [] = {
 	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD }
 };
 
+#define AUTOSCROLL_TIMEOUT_INTERVAL 100
+	/* in milliseconds */
+
+#define AUTOSCROLL_INITIAL_DELAY 600000
+	/* in microseconds */
+
+#define AUTO_SCROLL_MARGIN 20
+	/* drag this close to the view edge to start auto scroll*/
+
+#define MIN_AUTOSCROLL_DELTA 5
+	/* the smallest amount of auto scroll used when we just enter the autoscroll
+	 * margin
+	 */
+	 
+#define MAX_AUTOSCROLL_DELTA 50
+	/* the largest amount of auto scroll used when we are right over the view
+	 * edge
+	 */
+
 static GnomeCanvasItem *
 create_selection_shadow (NautilusIconContainer *container,
 			 GList *list)
@@ -516,25 +535,6 @@ receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x,
 
 }
 
-#define AUTOSCROLL_TIMEOUT_INTERVAL 100
-	/* in milliseconds */
-
-#define AUTOSCROLL_INITIAL_DELAY 600000
-	/* in microseconds */
-
-#define AUTO_SCROLL_MARGIN 20
-	/* drag this close to the view edge to start auto scroll*/
-
-#define MIN_AUTOSCROLL_DELTA 5
-	/* the smallest amount of auto scroll used when we just enter the autoscroll
-	 * margin
-	 */
-	 
-#define MAX_AUTOSCROLL_DELTA 50
-	/* the largest amount of auto scroll used when we are right over the view
-	 * edge
-	 */
-
 static int
 auto_scroll_timeout_callback (gpointer data)
 {
@@ -647,8 +647,7 @@ auto_scroll_timeout_callback (gpointer data)
 	exposed_area.x -= widget->allocation.x;
 	exposed_area.y -= widget->allocation.y;
 
-	gtk_widget_queue_draw_area (widget, exposed_area.x, exposed_area.y,
-		exposed_area.width, exposed_area.height);
+	gtk_widget_draw (widget, &exposed_area);
 
 	return TRUE;
 }
@@ -901,7 +900,10 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 	char *drop_target;
 	gboolean icon_hit;
 
-	g_assert (container->details->dnd_info->drag_info.got_drop_data_type);
+	if (!container->details->dnd_info->drag_info.got_drop_data_type) {
+		/* drag_data_received_callback didn't get called yet */
+		return;
+	}
 
 	switch (container->details->dnd_info->drag_info.data_type) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
