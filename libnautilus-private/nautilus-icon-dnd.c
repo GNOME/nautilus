@@ -43,6 +43,7 @@
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
 
 #include "nautilus-background.h"
+#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-gtk-macros.h"
@@ -1162,7 +1163,7 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	gdk_pixbuf_render_pixmap_and_mask (transparent_pixbuf,
 					   &pixmap_for_dragged_file,
 					   &mask_for_dragged_file,
-					   128);
+					   NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 
 	gdk_pixbuf_unref (transparent_pixbuf);
 	

@@ -513,7 +513,7 @@ add_theme (NautilusThemeSelector *theme_selector, const char *theme_path_uri, co
 	scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (theme_pixbuf, 70, 48);
 	gdk_pixbuf_unref (theme_pixbuf);
 	
-	gdk_pixbuf_render_pixmap_and_mask (scaled_pixbuf, &pixmap, &mask, 128);
+	gdk_pixbuf_render_pixmap_and_mask (scaled_pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 	gdk_pixbuf_unref (scaled_pixbuf);
 	
 	/* generate a pixwidget to hold it */

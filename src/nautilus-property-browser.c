@@ -809,7 +809,7 @@ set_emblem_image_from_file(NautilusPropertyBrowser *property_browser)
 	pixbuf = gdk_pixbuf_new_from_file (property_browser->details->image_path);			
 	scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);			
 	gdk_pixbuf_unref (pixbuf);
-    	gdk_pixbuf_render_pixmap_and_mask (scaled_pixbuf, &pixmap, &mask, 128);
+    	gdk_pixbuf_render_pixmap_and_mask (scaled_pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 	gdk_pixbuf_unref (scaled_pixbuf);
 	
 	if (property_browser->details->emblem_image == NULL) {
@@ -1273,7 +1273,7 @@ element_clicked_callback(GtkWidget *widget, GdkEventButton *event, char *element
 			(pixbuf,
 			 &pixmap_for_dragged_file,
 			 &mask_for_dragged_file,
-			 128);
+			 NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 
 		gdk_pixbuf_unref (pixbuf);	
 		gtk_drag_set_icon_pixmap
@@ -1446,7 +1446,7 @@ make_properties_from_directory_path (NautilusPropertyBrowser *property_browser,
 				}
 
 				/* make a pixmap and mask to pass to the widget */
-	      			gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
+	      			gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 				gdk_pixbuf_unref (pixbuf);
 
 				/* allocate a pixmap and insert it into the table */

@@ -37,6 +37,7 @@
 #include <gtk/gtkenums.h>
 #include <gtk/gtkmain.h>
 #include <glib.h>
+#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 
 #include "nautilus-background.h"
 #include "nautilus-drag.h"
@@ -2084,7 +2085,7 @@ draw_cell (GtkCList *clist, GdkRectangle *area, int row_index, int column_index,
 		ellipsis_width = gdk_string_width (style->font, "...");
 	  
 		for (p = NAUTILUS_CELL_PIXBUF_LIST (row->cell[column_index])->pixbufs; p != NULL; p = p->next) {
-			gdk_pixbuf_render_pixmap_and_mask (p->data, &gdk_pixmap, &mask, 128);
+			gdk_pixbuf_render_pixmap_and_mask (p->data, &gdk_pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 			pixbuf_width = gdk_pixbuf_get_width (p->data);
 
 			if ((p->next != NULL && pixbuf_width + ellipsis_width >= 

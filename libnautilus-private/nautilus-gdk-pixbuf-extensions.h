@@ -29,6 +29,8 @@
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libart_lgpl/art_rect.h>
 
+#define NAUTILUS_STANDARD_ALPHA_THRESHHOLD 128
+
 typedef struct NautilusPixbufLoadHandle NautilusPixbufLoadHandle;
 typedef void (* NautilusPixbufLoadCallback) (GnomeVFSResult  error,
 					     GdkPixbuf      *pixbuf,

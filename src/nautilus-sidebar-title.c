@@ -40,6 +40,7 @@
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
+#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -432,7 +433,7 @@ add_emblem (NautilusSidebarTitle *sidebar_title, GdkPixbuf *pixbuf)
 	GdkBitmap *mask;
 	GtkWidget *pixmap_widget;
 	
-        gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
+        gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 	pixmap_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
 	gtk_widget_show (pixmap_widget);
 	gtk_container_add (GTK_CONTAINER (sidebar_title->details->emblem_box), pixmap_widget);	

@@ -1,3 +1,38 @@
+2000-08-23  John Sullivan  <sullivan@eazel.com>
+
+	Checked in this patch from Ken Kocienda, which fixes
+	bug 390 (wrong magic number used when computing alpha
+	threshhold). Thanks Ken!
+
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
+	New #define for NAUTILUS_STANDARD_ALPHA_THRESHHOLD
+
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_update_from_uri):
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_get_pixmap_and_mask):
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_begin_drag):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_pixmap_and_mask_for_file):
+	* libnautilus-extensions/nautilus-list-column-title.c:
+	(load_up_indicator):
+	* libnautilus-extensions/nautilus-list.c: (draw_cell):
+	* src/file-manager/fm-properties-window.c:
+	(get_pixmap_and_mask_for_properties_window),
+	(create_image_widget_for_emblem):
+	* src/nautilus-bookmarks-window.c:
+	* src/nautilus-complex-search-bar.c:
+	(load_find_them_pixmap_widget):
+	* src/nautilus-property-browser.c: (set_emblem_image_from_file),
+	(element_clicked_callback), (make_properties_from_directory_path):
+	* src/nautilus-sidebar-title.c: (add_emblem):
+	* src/nautilus-theme-selector.c: (add_theme):
+	* src/nautilus-window.c: (nautilus_window_realize):
+	Replaced all uses of correct or incorrect magic numbers
+	with NAUTILUS_STANDARD_ALPHA_THRESHHOLD in calls to
+	gdk_pixbuf_render_pixmap_and_mask.
+
 2000-08-23  Yuri Syrota  <rasta@renome.rovno.ua>
 
 	* configure.in: Added "uk" to ALL_LINGUAS

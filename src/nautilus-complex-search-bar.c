@@ -35,6 +35,7 @@
 #include <gtk/gtkeventbox.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
+#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-search-bar-criterion.h>
 #include <libnautilus-extensions/nautilus-search-bar-criterion-private.h>
@@ -370,7 +371,7 @@ load_find_them_pixmap_widget (void)
 	
 	pixbuf = gdk_pixbuf_new_from_file (NAUTILUS_PIXMAPDIR "/search.png");
 	if(pixmap != NULL) {
-		gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
+		gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 		gdk_pixbuf_unref (pixbuf);
 		return gtk_pixmap_new (pixmap, mask);
 	} else

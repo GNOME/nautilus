@@ -43,6 +43,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
+#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-generous-bin.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -542,7 +543,7 @@ nautilus_window_realize (GtkWidget *widget)
                 pixbuf = gdk_pixbuf_new_from_file(filename);
                 if (pixbuf != NULL) {
                         gdk_pixbuf_render_pixmap_and_mask
-				(pixbuf, &pixmap, &mask, 128);				   
+				(pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);				   
 			gdk_pixbuf_unref (pixbuf);
 			nautilus_set_mini_icon
 				(widget->window, pixmap, mask);

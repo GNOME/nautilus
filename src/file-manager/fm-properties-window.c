@@ -49,6 +49,7 @@
 #include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -180,7 +181,7 @@ get_pixmap_and_mask_for_properties_window (NautilusFile *file,
 	g_assert (NAUTILUS_IS_FILE (file));
 	
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, NULL, NAUTILUS_ICON_SIZE_STANDARD, FALSE);
-        gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap_return, mask_return, 128);
+        gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap_return, mask_return, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 	gdk_pixbuf_unref (pixbuf);
 }
 
@@ -1160,7 +1161,7 @@ create_image_widget_for_emblem (const char *emblem_name)
 		 NULL);
 
 	nautilus_scalable_icon_unref (icon);
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
+	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 	gdk_pixbuf_unref (pixbuf);
 
 	image_widget = gtk_pixmap_new (pixmap, mask);

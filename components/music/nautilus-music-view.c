@@ -1310,7 +1310,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 		scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit(pixbuf, 128, 128);
 		gdk_pixbuf_unref (pixbuf);
 
-       		gdk_pixbuf_render_pixmap_and_mask (scaled_pixbuf, &pixmap, &mask, 128);
+       		gdk_pixbuf_render_pixmap_and_mask (scaled_pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 		gdk_pixbuf_unref (scaled_pixbuf);
 		
 		if (music_view->details->album_image == NULL) {

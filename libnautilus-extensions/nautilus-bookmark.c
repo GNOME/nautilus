@@ -40,6 +40,8 @@
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 
+#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
+
 enum {
 	CHANGED,
 	LAST_SIGNAL
@@ -188,7 +190,7 @@ nautilus_bookmark_get_pixmap_and_mask (NautilusBookmark *bookmark,
 		return FALSE;
 	}
 
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap_return, mask_return, 100);
+	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap_return, mask_return, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 	gdk_pixbuf_unref (pixbuf);
 
 	return TRUE;

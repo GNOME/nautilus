@@ -39,6 +39,8 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-info.h>
 
+#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
+
 #include <parser.h>
 #include <xmlmemory.h>
 
@@ -2185,7 +2187,7 @@ nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile *file,
 	if (pixbuf == NULL) {
 		return;
 	}
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap, mask, 128);
+	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap, mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 	gdk_pixbuf_unref (pixbuf);
 }
 

@@ -38,6 +38,8 @@
 
 #include <libgnomeui/gnome-pixmap.h>
 
+#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
+
 #include <string.h>
 
 /* these are from GtkCList, for now we need to copy them here 
@@ -328,7 +330,7 @@ load_up_indicator (const char **xpm_data,
 		return;
 	}
 
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, indicator_pixmap, indicator_mask, 127);
+	gdk_pixbuf_render_pixmap_and_mask (pixbuf, indicator_pixmap, indicator_mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 
 	gdk_pixbuf_unref (pixbuf);
 }
