@@ -58,7 +58,7 @@ struct NautilusIconsViewIconItemClass {
 GtkType  nautilus_icons_view_icon_item_get_type                  (void);
 
 void     nautilus_icons_view_icon_item_set_emblems               (NautilusIconsViewIconItem *item,
-								  GList *emblem_pixbufs);
+								  GList                     *emblem_pixbufs);
 
 void     nautilus_icons_view_icon_item_get_icon_world_rectangle  (NautilusIconsViewIconItem *item,
 								  ArtDRect                  *world_rectangle);

@@ -38,15 +38,15 @@
 #include "gdk-extensions.h"
 #include "nautilus-gtk-macros.h"
 
-#define STRETCH_HANDLE_THICKNESS 6
+#define STRETCH_HANDLE_THICKNESS 5
 
 /* Private part of the NautilusIconsViewIconItem structure */
 struct NautilusIconsViewIconItemDetails {
 	/* The image, text, font. */
 	GdkPixbuf *pixbuf;
 	GList *emblem_pixbufs;
-	char* text;
-	char* text_source;
+	char *text;
+	char *text_source;
 	GdkFont *font;
 	
 	/* Size of the text at current font. */
@@ -210,6 +210,19 @@ nautilus_icons_view_icon_item_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
  
+/* Currently we require pixbufs in this format (for hit testing).
+ * Perhaps gdk-pixbuf will be changed so it can do the hit testing
+ * and we won't have this requirement any more.
+ */
+static gboolean
+pixbuf_is_acceptable (GdkPixbuf *pixbuf)
+{
+	return pixbuf->art_pixbuf->format == ART_PIX_RGB
+		&& (pixbuf->art_pixbuf->n_channels == 3
+		    || pixbuf->art_pixbuf->n_channels == 4)
+		&& pixbuf->art_pixbuf->bits_per_sample == 8;
+}
+
 /* Set_arg handler for the icon item. */
 static void
 nautilus_icons_view_icon_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
@@ -229,11 +242,7 @@ nautilus_icons_view_icon_item_set_arg (GtkObject *object, GtkArg *arg, guint arg
 		}
 		
 		if (pixbuf != NULL) {
-			g_return_if_fail (pixbuf->art_pixbuf->format == ART_PIX_RGB);
-			g_return_if_fail (pixbuf->art_pixbuf->n_channels == 3
-					  || pixbuf->art_pixbuf->n_channels == 4);
-			g_return_if_fail (pixbuf->art_pixbuf->bits_per_sample == 8);
-			
+			g_return_if_fail (pixbuf_is_acceptable (pixbuf));
 			gdk_pixbuf_ref (pixbuf);
 		}
 		
@@ -354,8 +363,10 @@ void
 nautilus_icons_view_icon_item_set_emblems (NautilusIconsViewIconItem *item,
 					   GList *emblem_pixbufs)
 {
+	GList *p;
+
 	g_return_if_fail (NAUTILUS_IS_ICONS_VIEW_ICON_ITEM (item));
-	
+
 	g_assert (item->details->emblem_pixbufs != emblem_pixbufs || emblem_pixbufs == NULL);
 
 	/* The case where the emblems are identical is fairly common,
@@ -365,13 +376,17 @@ nautilus_icons_view_icon_item_set_emblems (NautilusIconsViewIconItem *item,
 		return;
 	}
 
+	/* Check if they are acceptable. */
+	for (p = emblem_pixbufs; p != NULL; p = p->next) {
+		g_return_if_fail (pixbuf_is_acceptable (p->data));
+	}
+	
 	/* Take in the new list of emblems. */
 	nautilus_gdk_pixbuf_list_ref (emblem_pixbufs);
 	nautilus_gdk_pixbuf_list_free (item->details->emblem_pixbufs);
 	item->details->emblem_pixbufs = g_list_copy (emblem_pixbufs);
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (item));
 }
-
 
 /* Recomputes the bounding box of a icon canvas item. */
 static void
@@ -650,6 +665,14 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 				    pixbuf_rect.y1 - y - STRETCH_HANDLE_THICKNESS,
 				    STRETCH_HANDLE_THICKNESS,
 				    STRETCH_HANDLE_THICKNESS);
+
+		gdk_gc_set_stipple (gc, stipple);
+		gdk_gc_set_fill (gc, GDK_STIPPLED);
+		gdk_draw_rectangle (drawable, gc, FALSE,
+				    pixbuf_rect.x0 - x + (STRETCH_HANDLE_THICKNESS - 1) / 2,
+				    pixbuf_rect.y0 - y + (STRETCH_HANDLE_THICKNESS - 1) / 2,
+				    pixbuf_rect.x1 - pixbuf_rect.x0 - (STRETCH_HANDLE_THICKNESS - 1) - 1,
+				    pixbuf_rect.y1 - pixbuf_rect.y0 - (STRETCH_HANDLE_THICKNESS - 1) - 1);
 		
 		gdk_gc_unref (gc);
 	}

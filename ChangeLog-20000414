@@ -1,5 +1,24 @@
 2000-03-06  Darin Adler  <darin@eazel.com>
 
+	* libnautilus/gnome-icon-container.c
+	(gnome_icon_container_move_icon): Added missing code to get
+	stretching to work again. (Oops.)
+	(gnome_icon_container_is_stretched), (gnome_icon_container_unstretch):
+	Fixed the unstretch code so it will work on multiple icons.
+
+	* src/file-manager/fm-directory-view-icons.c
+	(fm_directory_view_icons_append_selection_context_menu_items):
+	Make menu item name plural when there are multiple icons to
+	unstretch.
+
+	* libnautilus/nautilus-icons-view-icon-item.c
+	(nautilus_icons_view_icon_item_draw): Draw a box around the item
+	when the stretch handles are visible. This looks better.
+	
+	* libnautilus/nautilus-icons-view-icon-item.h: White space.
+
+2000-03-06  Darin Adler  <darin@eazel.com>
+
 	Added the concept of separate X and Y scale factors to more
 	of the code. Even though we don't want to scale the two
 	dimensions separately at the moment, I figured it was better

@@ -138,6 +138,8 @@ icon_new (GnomeIconContainer *container,
 	 * FIXME: This needs to be done again later when the image changes, so it's not
 	 * sufficient to just have this check here. Also, this should not be done by
 	 * changing the scale factor because we don't want a persistent change to that.
+	 * I think that the best way to implement this is probably to put something in
+	 * the icon factory that enforces this rule.
 	 */
 	actual_size = icon_get_actual_size (new);
 	if (actual_size > MAXIMUM_INITIAL_ICON_SIZE) {
@@ -1025,7 +1027,6 @@ unselect_all (GnomeIconContainer *container)
 	return select_one_unselect_others (container, NULL);
 }
 
-/* FIXME: This could be optimized a bit.  */
 void
 gnome_icon_container_move_icon (GnomeIconContainer *container,
 	   GnomeIconContainerIcon *icon,
@@ -1087,6 +1088,8 @@ gnome_icon_container_move_icon (GnomeIconContainer *container,
 	}
 	
 	if (scale_x != icon->scale_x || scale_y != icon->scale_y) {
+		icon->scale_x = scale_x;
+		icon->scale_y = scale_y;
 		update_icon (container, icon);
 		emit_signal = TRUE;
 	}
@@ -3179,19 +3182,21 @@ gnome_icon_container_has_stretch_handles (GnomeIconContainer *container)
  * gnome_icon_container_is_stretched
  * @container: An icon container widget.
  * 
- * Returns true if the first selected item is stretched to a size other than 1.0.
+ * Returns true if the any selected item is stretched to a size other than 1.0.
  **/
 gboolean
 gnome_icon_container_is_stretched (GnomeIconContainer *container)
 {
+	GList *p;
 	GnomeIconContainerIcon *icon;
 
-	icon = get_first_selected_icon (container);
-	if (icon == NULL) {
-		return FALSE;
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		icon = p->data;
+		if (icon->scale_x != 1.0 || icon->scale_y != 1.0) {
+			return TRUE;
+		}
 	}
-
-	return icon->scale_x != 1.0 || icon->scale_y != 1.0;
+	return FALSE;
 }
 
 /**
@@ -3203,17 +3208,16 @@ gnome_icon_container_is_stretched (GnomeIconContainer *container)
 void
 gnome_icon_container_unstretch (GnomeIconContainer *container)
 {
+	GList *p;
 	GnomeIconContainerIcon *icon;
 
-	icon = get_first_selected_icon (container);
-	if (icon == NULL) {
-		return;
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		icon = p->data;
+		gnome_icon_container_move_icon (container, icon,
+						icon->x, icon->y,
+						1.0, 1.0,
+						FALSE);
 	}
-
-	gnome_icon_container_move_icon (container, icon,
-					icon->x, icon->y,
-					1.0, 1.0,
-					FALSE);
 }
 
 static void

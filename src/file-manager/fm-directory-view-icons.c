@@ -336,22 +336,27 @@ fm_directory_view_icons_append_selection_context_menu_items (FMDirectoryView *vi
 				    (view, menu, files));
 
 	icon_container = get_icon_container (FM_DIRECTORY_VIEW_ICONS (view));
+
 	/* Current stretching UI only works on one item at a time, so we'll
 	 * desensitize the menu item if that's not the case.
 	 */
 	exactly_one_item_selected = g_list_length (files) == 1;
 
 	menu_item = gtk_menu_item_new_with_label (_("Stretch Icon"));
-	if (!exactly_one_item_selected || gnome_icon_container_has_stretch_handles (icon_container))
+	if (!exactly_one_item_selected || gnome_icon_container_has_stretch_handles (icon_container)) {
 		gtk_widget_set_sensitive (menu_item, FALSE);
+	}
 	gtk_widget_show (menu_item);
 	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
 			    GTK_SIGNAL_FUNC (show_stretch_handles_cb), view);
 	gtk_menu_append (menu, menu_item);
 
-	menu_item = gtk_menu_item_new_with_label (_("Restore Icon to Unstretched Size"));
-	if (!gnome_icon_container_is_stretched (icon_container))
+	menu_item = gtk_menu_item_new_with_label (g_list_length (files) > 1
+						  ? _("Restore Icons to Unstretched Size")
+						  : _("Restore Icon to Unstretched Size"));
+	if (!gnome_icon_container_is_stretched (icon_container)) {
 		gtk_widget_set_sensitive (menu_item, FALSE);
+	}
 	gtk_widget_show (menu_item);
 	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
 			    GTK_SIGNAL_FUNC (unstretch_item_cb), view);
