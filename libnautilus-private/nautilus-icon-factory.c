@@ -44,7 +44,6 @@
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-scalable-font.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtksignal.h>
@@ -58,12 +57,6 @@
 #include <librsvg/rsvg.h>
 #include <stdio.h>
 #include <string.h>
-
-#define USE_EEL_TEXT
-
-#ifdef USE_EEL_TEXT
-#include <eel/eel-smooth-text-layout.h>
-#endif
 
 #define ICON_NAME_BLOCK_DEVICE          "i-blockdev"
 #define ICON_NAME_BROKEN_SYMBOLIC_LINK  "i-symlink"
@@ -2235,13 +2228,17 @@ embedded_text_rect_usable (ArtIRect embedded_text_rect)
 	return TRUE;
 }
 
+#if GNOME2_CONVERSION_COMPLETE
+
 static gboolean embedded_text_preferences_callbacks_added = FALSE;
 static EelScalableFont *embedded_text_font = NULL;
 
 static void
 embedded_text_font_changed_callback (gpointer callback_data)
 {
-	gboolean clear_cache = GPOINTER_TO_INT (callback_data);
+	gboolean clear_cache;
+
+	clear_cache = GPOINTER_TO_INT (callback_data);
 
 	embedded_text_font = nautilus_global_preferences_get_default_smooth_font ();
 
@@ -2261,12 +2258,13 @@ embedded_text_font_free (void)
 	embedded_text_font = NULL;
 }
 
+#endif
+
 static GdkPixbuf *
 embed_text (GdkPixbuf *pixbuf_without_text,
 	    ArtIRect embedded_text_rect,
 	    const char *text)
 {
-	EelSmoothTextLayout *smooth_text_layout;
 	GdkPixbuf *pixbuf_with_text;
 	
 	g_return_val_if_fail (pixbuf_without_text != NULL, NULL);
@@ -2279,7 +2277,8 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	}
 
 	/* Listen for changes in embedded text (icon text preview) font preferences */
-	if (embedded_text_preferences_callbacks_added == FALSE) {
+#if GNOME2_CONVERSION_COMPLETE
+	if (!embedded_text_preferences_callbacks_added) {
 		embedded_text_preferences_callbacks_added = TRUE;
 
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
@@ -2300,9 +2299,11 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	g_return_val_if_fail (EEL_IS_SMOOTH_TEXT_LAYOUT (smooth_text_layout), NULL);
 	eel_smooth_text_layout_set_line_spacing (smooth_text_layout, EMBEDDED_TEXT_LINE_SPACING);
 	eel_smooth_text_layout_set_empty_line_height (smooth_text_layout, EMBEDDED_TEXT_EMPTY_LINE_HEIGHT);
+#endif
 	
 	pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
-	
+
+#if GNOME2_CONVERSION_COMPLETE	
 	eel_smooth_text_layout_draw_to_pixbuf (smooth_text_layout,
 					       pixbuf_with_text,
 					       0,
@@ -2314,6 +2315,7 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 					       EEL_OPACITY_FULLY_OPAQUE);
 	
 	g_object_unref (smooth_text_layout);
+#endif
 
 	return pixbuf_with_text;
 }

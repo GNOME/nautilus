@@ -202,6 +202,8 @@ nautilus_component_adapter_factory_create_adapter (NautilusComponentAdapterFacto
 			nautilus_view = CORBA_OBJECT_NIL;
 		}
 	} else {
+		nautilus_view = CORBA_OBJECT_NIL;
+#if 0
 		/* No View interface, we must adapt the object */
 
 		corba_factory = get_corba_factory (factory);
@@ -211,6 +213,7 @@ nautilus_component_adapter_factory_create_adapter (NautilusComponentAdapterFacto
 			nautilus_view = CORBA_OBJECT_NIL;
 		}
 		bonobo_object_release_unref (corba_factory, NULL);
+#endif
 	}
 
 	CORBA_exception_free (&ev);

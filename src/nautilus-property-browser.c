@@ -42,7 +42,6 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-image-table.h>
 #include <eel/eel-image.h>
-#include <eel/eel-label.h>
 #include <eel/eel-labeled-image.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
@@ -324,17 +323,21 @@ nautilus_property_browser_init (GtkObject *object)
   	gtk_container_add(GTK_CONTAINER(temp_frame), temp_hbox);
  	
 	/* add the title label */
-	property_browser->details->title_label = eel_label_new ("");
+	property_browser->details->title_label = gtk_label_new ("");
+#if GNOME2_CONVERSION_COMPLETE
 	eel_label_make_larger (EEL_LABEL (property_browser->details->title_label), 4);
 	eel_label_make_bold   (EEL_LABEL (property_browser->details->title_label));
+#endif
  	
 	gtk_widget_show(property_browser->details->title_label);
 	gtk_box_pack_start (GTK_BOX(temp_hbox), property_browser->details->title_label, FALSE, FALSE, 8);
  
  	/* add the help label */
-	property_browser->details->help_label = eel_label_new  ("");
+	property_browser->details->help_label = gtk_label_new  ("");
 	gtk_widget_show(property_browser->details->help_label);
+#if GNOME2_CONVERSION_COMPLETE
 	eel_label_make_smaller (EEL_LABEL (property_browser->details->help_label), 2);
+#endif
 	gtk_box_pack_end (GTK_BOX(temp_hbox), property_browser->details->help_label, FALSE, FALSE, 8);
  	 	
   	/* add the bottom box to hold the command buttons */
@@ -1590,11 +1593,13 @@ labeled_image_configure (EelLabeledImage *labeled_image)
 {
 	g_return_if_fail (EEL_IS_LABELED_IMAGE (labeled_image));
 
+#if GNOME2_CONVERSION_COMPLETE
 	eel_labeled_image_set_background_mode (labeled_image,
-						    EEL_SMOOTH_BACKGROUND_SOLID_COLOR);
+					       EEL_SMOOTH_BACKGROUND_SOLID_COLOR);
 	eel_labeled_image_set_solid_background_color (labeled_image,
-							   EEL_RGB_COLOR_WHITE);		
+						      EEL_RGB_COLOR_WHITE);		
 	eel_labeled_image_set_spacing (labeled_image, LABELED_IMAGE_SPACING);
+#endif
 }
 
 /* Make a color tile for a property */
@@ -1608,10 +1613,12 @@ labeled_image_new (const char *text,
 	
 	labeled_image = eel_labeled_image_new (text, pixbuf);
 	labeled_image_configure (EEL_LABELED_IMAGE (labeled_image));
+#if GNOME2_CONVERSION_COMPLETE
 	if (num_smaller > 0) {
 		eel_labeled_image_make_smaller (EEL_LABELED_IMAGE (labeled_image),
 						     num_smaller);
 	}
+#endif
 
 	if (property_name != NULL) {
 		g_object_set_data_full (G_OBJECT (labeled_image),
@@ -1837,7 +1844,7 @@ make_category(NautilusPropertyBrowser *property_browser, const char* path, const
 {
 
 	/* set up the description in the help label */
-	eel_label_set_text (EEL_LABEL (property_browser->details->help_label), description);
+	gtk_label_set_text (GTK_LABEL (property_browser->details->help_label), description);
 	
 	/* case out on the mode */
 	if (strcmp (mode, "directory") == 0)
@@ -1864,8 +1871,10 @@ property_browser_category_button_new (const char *display_name,
 	button = eel_labeled_image_toggle_button_new_from_file_name (display_name,
 									  file_name);
 
+#if GNOME2_CONVERSION_COMPLETE
 	/* We want the label to never be smooth */
 	eel_labeled_image_set_label_never_smooth (EEL_LABELED_IMAGE (GTK_BIN (button)->child), TRUE);
+#endif
 
 	/* We also want all of the buttons to be the same height */
 	eel_labeled_image_set_fixed_image_height (EEL_LABELED_IMAGE (GTK_BIN (button)->child), STANDARD_BUTTON_IMAGE_HEIGHT);
@@ -2032,7 +2041,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	show_buttons = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_CAN_ADD_CONTENT);
 
 	if (property_browser->details->category == NULL) {
-		eel_label_set_text(EEL_LABEL (property_browser->details->title_label), _("Select A Category:"));
+		gtk_label_set_text (GTK_LABEL (property_browser->details->title_label), _("Select A Category:"));
 		gtk_widget_hide(property_browser->details->add_button);
 		gtk_widget_hide(property_browser->details->remove_button);
 	
@@ -2104,7 +2113,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		}
 		
 		if (label_text) {
-			eel_label_set_text (EEL_LABEL (property_browser->details->title_label), label_text);
+			gtk_label_set_text (GTK_LABEL (property_browser->details->title_label), label_text);
 		}
 		g_free(label_text);
 

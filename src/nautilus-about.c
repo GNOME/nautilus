@@ -32,7 +32,6 @@
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-scalable-font.h>
 #include <eel/eel-string.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtkdrawingarea.h>
@@ -210,29 +209,33 @@ nautilus_about_repaint (GtkWidget *widget,
 
 /* utility routine to draw a string at a position */
 static void
-draw_aa_string (EelScalableFont *font,
-		GdkPixbuf *pixbuf,
+draw_aa_string (GdkPixbuf *pixbuf,
+		gboolean bold,
 		int font_size,
 		int x_pos,
 		int y_pos,
-		guint color,
-		guint shadow_color,
+		guint32 color,
+		guint32 shadow_color,
 		const char *text,
 		int shadow_offset)
 {
 	if (shadow_offset != 0) {
+#if GNOME2_CONVERSION_COMPLETE
 		eel_scalable_font_draw_text (font, pixbuf,
 					     x_pos + shadow_offset, y_pos + shadow_offset,
 					     eel_gdk_pixbuf_whole_pixbuf,
 					     font_size,
 					     text, strlen (text),
 					     shadow_color, EEL_OPACITY_FULLY_OPAQUE);	
+#endif
 	}
 	
+#if GNOME2_CONVERSION_COMPLETE
 	eel_scalable_font_draw_text (font, pixbuf, x_pos, y_pos,
 				     eel_gdk_pixbuf_whole_pixbuf,
 				     font_size,
 				     text, strlen (text), color, EEL_OPACITY_FULLY_OPAQUE);
+#endif
 }
 
 /* randomize_authors randomizes the order array so different names get displayed in different positions each time */
@@ -269,8 +272,7 @@ randomize_authors (NautilusAbout *about)
 /* draw the author list */
 static void
 draw_author_list (NautilusAbout *about,
-		  GdkPixbuf *pixbuf,
-		  EelScalableFont *plain_font)
+		  GdkPixbuf *pixbuf)
 {
 	int index, column_count;
 	int xpos, ypos;
@@ -281,7 +283,7 @@ draw_author_list (NautilusAbout *about,
 	
 	xpos = AUTHOR_LEFT_POS; ypos = AUTHOR_TOP_POS;
 	while (about->details->authors[about->details->order_array[index]] != NULL) {
-		draw_aa_string (plain_font, pixbuf, 12, xpos, ypos,
+		draw_aa_string (pixbuf, FALSE, 12, xpos, ypos,
 				EEL_RGB_COLOR_BLACK, EEL_RGB_COLOR_BLACK,
 				about->details->authors[about->details->order_array[index]],
 				0);
@@ -313,14 +315,10 @@ nautilus_about_draw_info (NautilusAbout	*about,
 {
 	char *display_str, *temp_str;
 	char **comment_array;
-	EelScalableFont *plain_font, *bold_font;
 	GdkPixbuf *pixbuf;
 	uint	black, white, grey;
 	int xpos, ypos, total_height;
 	int index;
-
-	plain_font = eel_scalable_font_get_default_font ();
-	bold_font  = eel_scalable_font_make_bold (plain_font);
 
 	pixbuf = about->details->background_pixbuf;
 	total_height = gdk_pixbuf_get_height (pixbuf);
@@ -331,17 +329,17 @@ nautilus_about_draw_info (NautilusAbout	*about,
 	
 	/* draw the name and version */
 	display_str = g_strdup_printf ("%s %s", title, version);
-	draw_aa_string (bold_font, pixbuf, 24, 12, 5, white, black, display_str, 1);
+	draw_aa_string (pixbuf, TRUE, 24, 12, 5, white, black, display_str, 1);
 	g_free (display_str);
 	
 	/* draw the copyright notice */
-	draw_aa_string (bold_font, pixbuf, 11, 12, 40, black, black, copyright, 0);
+	draw_aa_string (pixbuf, TRUE, 11, 12, 40, black, black, copyright, 0);
 
 	/* draw the authors title */
-	draw_aa_string (bold_font, pixbuf, 20, 184, 64, black, black, _("Authors"), 0);
+	draw_aa_string (pixbuf, TRUE, 20, 184, 64, black, black, _("Authors"), 0);
 	
 	/* draw the time stamp */
-	draw_aa_string (plain_font, pixbuf, 11, 284, total_height - 14, grey, black, time_stamp, 0);
+	draw_aa_string (pixbuf, FALSE, 11, 284, total_height - 14, grey, black, time_stamp, 0);
 
 	/* draw the translator's credit, if necessary */
 	if (eel_strcmp (translators, "Translator Credits") != 0) {
@@ -356,7 +354,7 @@ nautilus_about_draw_info (NautilusAbout	*about,
 		
 		index = 0;
 		while (comment_array[index] != NULL) {
-			draw_aa_string (plain_font, pixbuf, 11, xpos, ypos, black, black, comment_array[index], 0);
+			draw_aa_string (pixbuf, FALSE, 11, xpos, ypos, black, black, comment_array[index], 0);
 			ypos += 14;
 			index++;	
 		}
@@ -371,7 +369,7 @@ nautilus_about_draw_info (NautilusAbout	*about,
 	g_free (temp_str);
 	
 	randomize_authors (about);
-	draw_author_list (about, pixbuf, plain_font);
+	draw_author_list (about, pixbuf);
 	about->details->last_update_time = time (NULL);
 	
 	/* draw the comment, breaking it up into multiple lines */
@@ -379,15 +377,11 @@ nautilus_about_draw_info (NautilusAbout	*about,
 	index = 0;
 	xpos = 6; ypos = 118;
 	while (comment_array[index] != NULL) {
-		draw_aa_string (plain_font, pixbuf, 14, xpos, ypos, black, black, comment_array[index], 0);
+		draw_aa_string (pixbuf, FALSE, 14, xpos, ypos, black, black, comment_array[index], 0);
 		ypos += 18;
 		index++;	
 	}
 	g_strfreev (comment_array);
-		
-	/* release the fonts */	
-	g_object_unref(plain_font);
-	g_object_unref(bold_font);
 }
 
 /* update authors is called to randomize the author array and redraw it */ 
@@ -396,7 +390,6 @@ void
 nautilus_about_update_authors (NautilusAbout *about)
 {
 	ArtIRect author_area;
-	EelScalableFont *plain_font;
 	
 	/* clear the author area */
 	author_area = eel_art_irect_assign (AUTHOR_LEFT_POS - 24,
@@ -413,9 +406,7 @@ nautilus_about_update_authors (NautilusAbout *about)
 	randomize_authors (about);
 	
 	/* redraw the authors */
-	plain_font = eel_scalable_font_get_default_font ();
-	draw_author_list (about, about->details->background_pixbuf, plain_font);
-	g_object_unref(plain_font);
+	draw_author_list (about, about->details->background_pixbuf);
 	
 	about->details->last_update_time = time (NULL);
 

@@ -28,7 +28,6 @@
 #include <libgnomecanvas/gnome-canvas.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "nautilus-icon-factory.h"
-#include <eel/eel-scalable-font.h>
 
 G_BEGIN_DECLS
 

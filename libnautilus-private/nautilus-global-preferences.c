@@ -34,7 +34,6 @@
 #include <eel/eel-font-manager.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-scalable-font.h>
 #include <eel/eel-smooth-widget.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
@@ -909,6 +908,9 @@ default_home_location_callback (int user_level)
 /*
  * Public functions
  */
+
+#if GNOME2_CONVERSION_COMPLETE
+
 static EelScalableFont *
 global_preferences_get_smooth_font (const char *smooth_font_file_name)
 {
@@ -980,6 +982,8 @@ nautilus_global_preferences_get_default_smooth_bold_font (void)
 {
 	return global_preferences_get_smooth_bold_font (default_smooth_font_auto_value);
 }
+
+#endif
 
 /* Let the smooth widget machinery know about smoothness changes */
 static void

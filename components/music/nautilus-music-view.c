@@ -44,7 +44,6 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-image.h>
-#include <eel/eel-label.h>
 #include <eel/eel-list.h>
 #include <eel/eel-preferences.h>
 #include <libnautilus-private/nautilus-global-preferences.h>

@@ -37,7 +37,6 @@
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-scalable-font.h>
 #include <eel/eel-string.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtkselection.h>
@@ -72,9 +71,6 @@
 #define TAB_ACTIVE_PRELIGHT_RIGHT 	18
 #define LAST_TAB_OFFSET			19
 
-/* FIXME: Hard coded font size */
-#define DEFAULT_FONT_SIZE 12
-
 #define RIGHT_MARGIN_WIDTH 12
 
 /* data structures */
@@ -96,8 +92,6 @@ struct NautilusSidebarTabsDetails {
 	int total_height;
 	gboolean title_mode;
 	GdkRectangle title_rect;
-	EelScalableFont *tab_font;	
-	int font_size;
 	GdkColor tab_color;
 	GdkColor background_color;
 	GdkColor line_color;
@@ -140,7 +134,6 @@ static void     draw_or_layout_all_tabs                 (NautilusSidebarTabs    
 							 gboolean                  layout_only);
 static TabItem* tab_item_find_by_name                   (NautilusSidebarTabs      *sidebar_tabs,
 							 const char               *name);
-static void     smooth_font_changed_callback            (gpointer                  callback_data);
 
 EEL_CLASS_BOILERPLATE (NautilusSidebarTabs, nautilus_sidebar_tabs, GTK_TYPE_WIDGET)
 
@@ -239,6 +232,7 @@ nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 		}	
 	}	
 
+#if GNOME2_CONVERSION_COMPLETE
 	/* unload the old font if necessary */
 	if (sidebar_tabs->details->tab_font != NULL) {
 		g_object_unref (sidebar_tabs->details->tab_font);
@@ -249,7 +243,10 @@ nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 
 	/* FIXME: Hard coded font size */
 	sidebar_tabs->details->font_size = DEFAULT_FONT_SIZE;
+#endif
 }
+
+#if GNOME2_CONVERSION_COMPLETE
 
 /* Use the font from preferences */
 static void
@@ -272,6 +269,8 @@ smooth_font_changed_callback (gpointer callback_data)
 
 	gtk_widget_queue_resize (GTK_WIDGET (sidebar_tabs));
 }
+
+#endif
 
 /* initialize a newly allocated sidebar tabs object */
 static void
@@ -309,9 +308,11 @@ nautilus_sidebar_tabs_init (NautilusSidebarTabs *sidebar_tabs)
 	eel_preferences_add_callback(NAUTILUS_PREFERENCES_THEME, 
 				     (EelPreferencesCallback) nautilus_sidebar_tabs_load_theme_data, 
 				     sidebar_tabs);
+#if GNOME2_CONVERSION_COMPLETE
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
 				      smooth_font_changed_callback,
 				      sidebar_tabs);
+#endif
 	
 	sidebar_tabs->details->title_prelit = FALSE;
 }
@@ -388,11 +389,6 @@ nautilus_sidebar_tabs_destroy (GtkObject *object)
 			nautilus_sidebar_tabs_unload_tab_pieces (sidebar_tabs);
 		}
 	
-		if (sidebar_tabs->details->tab_font != NULL) {
-			g_object_unref (sidebar_tabs->details->tab_font);
-			sidebar_tabs->details->tab_font = NULL;
-		}
-	
 		/* release the tab list, if any */
 		if (sidebar_tabs->details->tab_items) {
 			tab_items = sidebar_tabs->details->tab_items;
@@ -406,9 +402,11 @@ nautilus_sidebar_tabs_destroy (GtkObject *object)
 		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME, 
 						 (EelPreferencesCallback) nautilus_sidebar_tabs_load_theme_data, 
 						 sidebar_tabs);
+#if GNOME2_CONVERSION_COMPLETE
 		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
 						 smooth_font_changed_callback,
 						 sidebar_tabs);
+#endif
 	
 		g_free (sidebar_tabs->details);
 		sidebar_tabs->details = NULL;
@@ -604,11 +602,12 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc, char *tab_name
 	int tab_bottom;
 	int tab_right;
 	int indicator_width;
-	EelDimensions name_dimensions;
+	PangoLayout *layout;
 	int total_width;
 	GtkWidget *widget;
 	GdkPixbuf *temp_pixbuf;
 	GdkColor *foreground_color;
+	int text_width, text_height;
 	
 	g_assert (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 
@@ -618,13 +617,12 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc, char *tab_name
 		indicator_width = 0;
 	}
 
-	/* measure the name and compute the bounding box */
-	name_dimensions = eel_scalable_font_measure_text (sidebar_tabs->details->tab_font, 
-							  sidebar_tabs->details->font_size,
-							  tab_name,
-							  strlen (tab_name));
-	
-	total_width = name_dimensions.width + indicator_width + 2 * TAB_MARGIN;
+	layout = pango_layout_new (eel_gtk_widget_get_pango_ft2_context (GTK_WIDGET (sidebar_tabs)));
+	pango_layout_set_text (layout, tab_name, -1);
+
+	pango_layout_get_pixel_size (layout, &text_width, &text_height);
+
+	total_width = text_width + indicator_width + 2 * TAB_MARGIN;
 
 	widget = GTK_WIDGET (sidebar_tabs);
 	
@@ -659,7 +657,8 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc, char *tab_name
 	gdk_draw_line(widget->window, gc, x + 2, y + 2, x + 2, y + sidebar_tabs->details->tab_height - 1);
 	
 	/* allocate the pixbuf and fill it with the background color */
-	temp_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, name_dimensions.width + indicator_width + 1, name_dimensions.height + 1);
+	temp_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8,
+				      text_width + indicator_width + 1, text_height + 1);
 	eel_gdk_pixbuf_fill_rectangle_with_color (temp_pixbuf,
 						  eel_gdk_pixbuf_whole_pixbuf,
 						  eel_gdk_color_to_rgb (foreground_color));
@@ -670,21 +669,13 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc, char *tab_name
 	}
 	
 	/* draw the name into the pixbuf using anti-aliased text */
-	eel_scalable_font_draw_text (sidebar_tabs->details->tab_font, temp_pixbuf, 
-				     1 + indicator_width, 1, 
-				     eel_gdk_pixbuf_whole_pixbuf,
-				     sidebar_tabs->details->font_size,
-				     tab_name, strlen (tab_name),
-				     prelight_flag ? EEL_RGB_COLOR_WHITE : EEL_RGB_COLOR_BLACK,
-				     EEL_OPACITY_FULLY_OPAQUE);
+	eel_gdk_pixbuf_draw_layout (temp_pixbuf, 1 + indicator_width, 1,
+				    prelight_flag ? EEL_RGB_COLOR_WHITE : EEL_RGB_COLOR_BLACK,
+				    layout);
 	
-	eel_scalable_font_draw_text (sidebar_tabs->details->tab_font, temp_pixbuf, 
-				     indicator_width, 0,
-				     eel_gdk_pixbuf_whole_pixbuf,
-				     sidebar_tabs->details->font_size,
-				     tab_name, strlen (tab_name),
-				     prelight_flag ? EEL_RGB_COLOR_BLACK : EEL_RGB_COLOR_WHITE,
-				     EEL_OPACITY_FULLY_OPAQUE);
+	eel_gdk_pixbuf_draw_layout (temp_pixbuf, indicator_width, 0,
+				    prelight_flag ? EEL_RGB_COLOR_BLACK : EEL_RGB_COLOR_WHITE,
+				    layout);
 	
 	/* blit the pixbuf to the drawable, then release it */
 
@@ -692,7 +683,7 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc, char *tab_name
 					     widget->window,
 					     0, 0,
 					     x + TAB_MARGIN, y + 5,
-					     name_dimensions.width + indicator_width + 1, name_dimensions.height + 1,
+					     text_width + indicator_width + 1, text_height + 1,
 					     GDK_PIXBUF_ALPHA_BILEVEL, 128,
 					     GDK_RGB_DITHER_MAX,
 					     0, 0);
@@ -702,12 +693,14 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc, char *tab_name
 	/* draw the bottom lines */
 	tab_bottom = y + sidebar_tabs->details->tab_height - 1;
 	gdk_gc_set_foreground (gc, &sidebar_tabs->details->line_color);  
-	tab_right = x + 2*TAB_MARGIN + name_dimensions.width + indicator_width;
+	tab_right = x + 2*TAB_MARGIN + text_width + indicator_width;
 	gdk_gc_set_foreground (gc, &sidebar_tabs->details->line_color);  
 	gdk_draw_line(widget->window, gc, tab_right, tab_bottom, widget->parent->allocation.width, tab_bottom);
 	gdk_draw_line(widget->window, gc, 0, tab_bottom, x, tab_bottom);
+
+	g_object_unref (layout);
 	
-	return name_dimensions.width + indicator_width + 2 * TAB_MARGIN;
+	return text_width + indicator_width + 2 * TAB_MARGIN;
 }
 
 /* utility to draw a single tab piece into a pixbuf */
@@ -775,14 +768,14 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf, G
 		     GdkRectangle *tab_rect)
 {  
 	GtkWidget *widget;
-	EelDimensions name_dimensions;
-	int piece_width, tab_width;
+	int piece_width, text_width;
 	int current_pos, right_edge_pos;
 	int text_x_pos, left_width;
 	int highlight_offset;
 	int text_x;
 	int text_y;
 	int indicator_width;
+	PangoLayout *layout;
 	
 	if (indicator_pixbuf != NULL) {
 		indicator_width = gdk_pixbuf_get_width (indicator_pixbuf);
@@ -802,10 +795,11 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf, G
 	}
 	
 	/* measure the size of the name */
-	name_dimensions = eel_scalable_font_measure_text (sidebar_tabs->details->tab_font,
-							  sidebar_tabs->details->font_size,
-							  tab_name,
-							  strlen (tab_name));
+	layout = pango_layout_new (eel_gtk_widget_get_pango_ft2_context (GTK_WIDGET (sidebar_tabs)));
+	pango_layout_set_text (layout, tab_name, -1);
+
+	pango_layout_get_pixel_size (layout, &text_width, NULL);
+
 	/* draw the left edge piece */
 	current_pos = x - widget->allocation.x;
 	if (first_flag) {
@@ -816,7 +810,7 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf, G
 	
 	/* draw the middle portion in a loop */	
 	text_x_pos = current_pos;
-	right_edge_pos = current_pos + name_dimensions.width + indicator_width;
+	right_edge_pos = current_pos + text_width + indicator_width;
 	while (current_pos < right_edge_pos) {
 		piece_width = draw_tab_piece_aa (sidebar_tabs, tab_pixbuf, current_pos, y - widget->allocation.y, 
 						 right_edge_pos, TAB_NORMAL_FILL + highlight_offset);
@@ -833,29 +827,19 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf, G
 	/* make sure we can at least draw some of it */
 	if (text_x < gdk_pixbuf_get_width (tab_pixbuf)) {	
 		if (indicator_pixbuf) {
-			
 			pixbuf_composite (indicator_pixbuf, tab_pixbuf, text_x, text_y, 255);
 			text_x += indicator_width;
 		} 
 
-		eel_scalable_font_draw_text (sidebar_tabs->details->tab_font, tab_pixbuf, 
-					     text_x, text_y,
-					     eel_gdk_pixbuf_whole_pixbuf,
-					     sidebar_tabs->details->font_size,
-					     tab_name, strlen (tab_name),
-					     EEL_RGB_COLOR_BLACK,
-					     EEL_OPACITY_FULLY_OPAQUE);
-		text_x -= 1;
-		text_y -= 1;
-
-		eel_scalable_font_draw_text (sidebar_tabs->details->tab_font, tab_pixbuf,
-					     text_x, text_y,
-					     eel_gdk_pixbuf_whole_pixbuf,
-					     sidebar_tabs->details->font_size,
-					     tab_name, strlen (tab_name),
-					     EEL_RGB_COLOR_WHITE,
-					     EEL_OPACITY_FULLY_OPAQUE);
+		eel_gdk_pixbuf_draw_layout (tab_pixbuf, text_x, text_y,
+					    EEL_RGB_COLOR_BLACK,
+					    layout);
+		eel_gdk_pixbuf_draw_layout (tab_pixbuf, text_x - 1, text_y - 1,
+					    EEL_RGB_COLOR_WHITE,
+					    layout);
 	}
+
+	g_object_unref (layout);
 	
 	/* set up the bounds rectangle for later hit-testing */
 	if (tab_rect) {
@@ -866,8 +850,7 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf, G
 	}
 	
 	/* return the total tab width */
-	tab_width = left_width + name_dimensions.width + indicator_width;
-	return tab_width;	
+	return left_width + text_width + indicator_width;
 }
 
 static int
@@ -891,8 +874,8 @@ get_text_offset (void)
 static int
 get_tab_width (NautilusSidebarTabs *sidebar_tabs, TabItem *this_tab, gboolean is_themed, gboolean first_flag)
 {
-	int edge_width, indicator_width;
-	EelDimensions name_dimensions;
+	PangoLayout *layout;
+	int text_width, edge_width, indicator_width;
 	
 	if (this_tab == NULL)
 		return 0;
@@ -909,19 +892,15 @@ get_tab_width (NautilusSidebarTabs *sidebar_tabs, TabItem *this_tab, gboolean is
 		} else {
 			edge_width = 0;
 		}
-
-		name_dimensions = eel_scalable_font_measure_text (sidebar_tabs->details->tab_font,
-								  sidebar_tabs->details->font_size,
-								  this_tab->tab_text,
-								  strlen (this_tab->tab_text));
-	
 	} else {	
 		edge_width = 2 * TAB_MARGIN;
-#if GNOME2_CONVERSION_COMPLETE
-		name_dimensions.width = gdk_string_width (GTK_WIDGET (sidebar_tabs)->style->font, this_tab->tab_text);
-#endif
-	}		
-	return name_dimensions.width + edge_width + indicator_width;
+	}
+	layout = pango_layout_new (eel_gtk_widget_get_pango_ft2_context (GTK_WIDGET (sidebar_tabs)));
+	pango_layout_set_text (layout, this_tab->tab_text, -1);
+	pango_layout_get_pixel_size (layout, &text_width, NULL);
+	g_object_unref (layout);
+
+	return text_width + edge_width + indicator_width;
 }
 
 /* fill the canvas buffer with a tiled pixmap */
@@ -1493,7 +1472,6 @@ nautilus_sidebar_tabs_add_view (NautilusSidebarTabs *sidebar_tabs, const char *n
 	new_tab_item = g_new0 (TabItem, 1);
 	new_tab_item->tab_text = g_strdup (name);
 	new_tab_item->visible = TRUE;
-	new_tab_item->prelit = FALSE;
 	new_tab_item->tab_view = new_view;
 	new_tab_item->notebook_page = page_num;
 

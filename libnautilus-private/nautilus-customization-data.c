@@ -42,15 +42,14 @@
 #include <stdlib.h>
 
 #include "nautilus-customization-data.h"
+#include "nautilus-file-utilities.h"
+#include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
-#include "nautilus-file-utilities.h"
-#include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-scalable-font.h>
-#include <eel/eel-xml-extensions.h>
 #include <eel/eel-string.h>
+#include <eel/eel-xml-extensions.h>
 
 typedef enum {
 	READ_PUBLIC_CUSTOMIZATIONS,
@@ -344,19 +343,21 @@ static void
 add_reset_text (GdkPixbuf *pixbuf)
 {
 	char *reset_text;
-	EelScalableFont *font;
-	EelDimensions title_dimensions;
 	int width, height;
-	int font_size, text_len;
+	int text_len;
+#if GNOME2_CONVERSION_COMPLETE
+	EelDimensions title_dimensions;
+	int font_size;
 	int h_offset, v_offset;
+#endif
 	
-	font = eel_scalable_font_get_default_font ();
 	reset_text = _("reset");
 	text_len = strlen (reset_text);
 
 	width = gdk_pixbuf_get_width (pixbuf);
 	height = gdk_pixbuf_get_height (pixbuf);
 	
+#if GNOME2_CONVERSION_COMPLETE
 	font_size = eel_scalable_font_largest_fitting_font_size (font, reset_text, width - 12, 12, 36);
 	title_dimensions = eel_scalable_font_measure_text (font, font_size, reset_text, text_len);
 	
@@ -373,6 +374,7 @@ add_reset_text (GdkPixbuf *pixbuf)
 					  EEL_OPACITY_FULLY_OPAQUE);
 	
 	g_object_unref (font);
+#endif
 }
 
 /* utility to make an attractive pattern image by compositing with a frame */

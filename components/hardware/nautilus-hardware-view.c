@@ -42,7 +42,6 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-image.h>
-#include <eel/eel-label.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <eel/eel-string.h>
 #include <libnautilus/libnautilus.h>
@@ -57,7 +56,7 @@ struct _NautilusHardwareViewDetails {
 	        
         GtkWidget *form;
 	
-	EelLabel  *uptime_label;
+	GtkLabel  *uptime_label;
 	int timer_task;
 	
 	int cpu_count;
@@ -492,7 +491,7 @@ update_uptime_text (gpointer callback_data)
 	uptime_minutes = (uptime_seconds - (uptime_days * 86400) - (uptime_hours * 3600)) / 60;
 	
 	uptime_text = g_strdup_printf (_("Uptime is %d days, %d hours, %d minutes"), uptime_days, uptime_hours, uptime_minutes);
-	eel_label_set_text (NAUTILUS_HARDWARE_VIEW (callback_data)->details->uptime_label, uptime_text);
+	gtk_label_set_text (NAUTILUS_HARDWARE_VIEW (callback_data)->details->uptime_label, uptime_text);
 	g_free (uptime_text);
 	
 	g_free (uptime_data);
@@ -612,9 +611,11 @@ setup_overview_form (NautilusHardwareView *view)
         }
 
 	/* allocate the uptime label */
-	view->details->uptime_label = EEL_LABEL (eel_label_new (""));
+	view->details->uptime_label = GTK_LABEL (gtk_label_new (""));
+#if GNOME2_CONVERSION_COMPLETE
 	eel_label_make_larger (view->details->uptime_label, 2);
 	eel_label_set_justify (view->details->uptime_label, GTK_JUSTIFY_LEFT);
+#endif
 
 	gtk_box_pack_end (GTK_BOX (view->details->form), GTK_WIDGET (view->details->uptime_label), 0, 0, GNOME_PAD);
 	update_uptime_text (view);

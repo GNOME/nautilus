@@ -169,10 +169,7 @@ struct NautilusIconContainerDetails {
 	
 	/* fonts used to draw labels in regular mode */
 	GdkFont *label_font[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
-
-	/* font used to draw labels in smooth mode */
-	EelScalableFont *smooth_label_font;
-	int font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
+	int font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1]; /* unused? */
 
 	/* pixbuf and color for label highlighting */
 	GdkPixbuf *highlight_frame;

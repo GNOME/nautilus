@@ -35,7 +35,6 @@
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-label.h>
 #include <libnautilus-private/nautilus-medusa-support.h>
 #include <eel/eel-stock-dialogs.h>
 
@@ -49,7 +48,7 @@
 #define PROGRESS_UPDATE_INTERVAL 5000
 
 typedef struct {
-        EelLabel *progress_label;
+        GtkLabel *progress_label;
         GtkProgress *progress_bar;
 } ProgressChangeData;
 
@@ -91,7 +90,7 @@ get_text_for_progress_label (void)
 static gboolean
 update_progress_display (gpointer callback_data)
 {
-        EelLabel *progress_label;
+        GtkLabel *progress_label;
         ProgressChangeData *progress_change_data;
         char *progress_string;
 

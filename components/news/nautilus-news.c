@@ -55,9 +55,6 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-label.h>
-#include <eel/eel-scalable-font.h>
-#include <eel/eel-smooth-text-layout.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
@@ -124,9 +121,6 @@ typedef struct {
 	uint update_interval;
 	int update_timeout;
 	
-	EelScalableFont *font;	
-	EelScalableFont *bold_font;	
-	
 	gboolean news_changed;
 	gboolean always_display_title;
 	gboolean configure_mode;
@@ -153,7 +147,7 @@ typedef struct {
 	char *link_uri;
 	News *owner;
 	
-	char *title;
+	PangoLayout *title;
 	GdkPixbuf *logo_image;	
 	
 	GList *items;
@@ -306,14 +300,6 @@ do_destroy (GtkObject *obj, News *news)
 {
 	g_free (news->uri);
 	
-	if (news->font) {
-		g_object_unref (news->font);
-	}
-	
-	if (news->bold_font) {
-		g_object_unref (news->bold_font);
-	}
-
 	if (news->timer_task != 0) {
 		gtk_timeout_remove (news->timer_task);
 		news->timer_task = 0;
@@ -448,9 +434,11 @@ draw_rss_logo_image (RSSChannelData *channel_data,
 	char *time_str;
 	int logo_width, logo_height;
 	int v_offset, pixbuf_width;
-	int time_x_pos, time_y_pos;
 	GdkPixbuf *mapped_image;
+#if GNOME2_CONVERSION_COMPLETE
+	int time_x_pos, time_y_pos;
 	EelDimensions time_dimensions;
+#endif
 	
 	v_offset = offset;
 	
@@ -476,9 +464,11 @@ draw_rss_logo_image (RSSChannelData *channel_data,
 		if (channel_data->last_update != 0 && !measure_only) {
 			time_str = eel_strdup_strftime (_("%I:%M %p"), localtime (&channel_data->last_update));
 
+			pixbuf_width = gdk_pixbuf_get_width (pixbuf);
+
+#if GNOME2_CONVERSION_COMPLETE
 			time_dimensions = eel_scalable_font_measure_text (channel_data->owner->font, 9, time_str, strlen (time_str));
 	
-			pixbuf_width = gdk_pixbuf_get_width (pixbuf);
 			time_x_pos = pixbuf_width - time_dimensions.width - TIME_MARGIN_OFFSET;
 			if (time_x_pos >= LOGO_LEFT_OFFSET + logo_width) {
 				time_y_pos = offset + ((gdk_pixbuf_get_height (channel_data->logo_image) - time_dimensions.height) / 2);
@@ -489,6 +479,7 @@ draw_rss_logo_image (RSSChannelData *channel_data,
 							     EEL_RGB_COLOR_BLACK, EEL_OPACITY_FULLY_OPAQUE);
 			}
 			g_free (time_str);
+#endif
 		}
 	}
 	return v_offset;
@@ -501,18 +492,13 @@ draw_rss_title (RSSChannelData *channel_data,
 		int v_offset,
 		gboolean measure_only)
 {
-	EelDimensions title_dimensions;
 	int label_offset;
 	gboolean is_prelit;
+        int height;
 	
-	if (channel_data->title == NULL || channel_data->owner->font == NULL) {
+	if (channel_data->title == NULL) {
 		return v_offset;
 	}
-	
-	/* first, measure the text */
-	title_dimensions = eel_scalable_font_measure_text (channel_data->owner->font, 
-					     TITLE_FONT_SIZE,
-					     channel_data->title, strlen (channel_data->title));
 	
 	/* if there is no image, draw the disclosure triangle */
 	if (channel_data->logo_image == NULL && !measure_only) {
@@ -527,16 +513,15 @@ draw_rss_title (RSSChannelData *channel_data,
 	
 	/* draw the name into the pixbuf using anti-aliased text */	
 	if (!measure_only) {
-		eel_scalable_font_draw_text (channel_data->owner->font, pixbuf, 
-					  label_offset, v_offset,
-					  eel_gdk_pixbuf_whole_pixbuf,
-					  18,
-					  channel_data->title, strlen (channel_data->title),
-					  is_prelit ? EEL_RGBA_COLOR_PACK (0, 0, 128, 255) : EEL_RGB_COLOR_BLACK,
-					  EEL_OPACITY_FULLY_OPAQUE);
+		eel_gdk_pixbuf_draw_layout (pixbuf, 
+                                            label_offset, v_offset,
+                                            is_prelit ? EEL_RGBA_COLOR_PACK (0, 0, 128, 255) : EEL_RGB_COLOR_BLACK,
+                                            channel_data->title);
 	}
 	
-	return v_offset + title_dimensions.height;
+        pango_layout_get_pixel_size (channel_data->title, NULL, &height);
+
+	return v_offset + height;
 }
 
 /* utility to determine if a uri matches the current one */
@@ -556,13 +541,14 @@ draw_rss_items (RSSChannelData *channel_data,
 	GList *current_item;
 	RSSItemData *item_data;
 	int bullet_width, bullet_height, font_size;
+        gboolean bold;
 	int item_index, bullet_alpha;
-	int bullet_x_pos, bullet_y_pos;
 	guint32 text_color;
+#if GNOME2_CONVERSION_COMPLETE
+	int bullet_x_pos, bullet_y_pos;
 	ArtIRect dest_bounds;
-	EelSmoothTextLayout *smooth_text_layout;
+#endif
 	EelDimensions text_dimensions;
-	EelScalableFont *font;
 	GdkPixbuf *bullet;
 	
 	if (channel_data->owner->bullet) {
@@ -596,12 +582,9 @@ draw_rss_items (RSSChannelData *channel_data,
 		
 		font_size = ITEM_FONT_SIZE;	
 		item_data->item_start_y = v_offset;
-		if (is_current_uri (channel_data->owner, item_data->item_url)) {
-			font = channel_data->owner->bold_font;
-		} else {
-			font = channel_data->owner->font;
-		}
-		
+		bold = is_current_uri (channel_data->owner, item_data->item_url);
+
+#if GNOME2_CONVERSION_COMPLETE		
 		smooth_text_layout = eel_smooth_text_layout_new
                         (item_data->item_title,
                          eel_strlen (item_data->item_title),
@@ -637,6 +620,7 @@ draw_rss_items (RSSChannelData *channel_data,
 		}
 
 		g_object_unref (smooth_text_layout);
+#endif
 		
 		item_data->item_end_y = item_data->item_start_y + text_dimensions.height;
 		v_offset += text_dimensions.height + 4;
@@ -940,17 +924,20 @@ nautilus_news_leave_notify_event (GtkWidget *widget, GdkEventMotion *event, News
 static void
 nautilus_news_set_title (RSSChannelData *channel_data, const char *title)
 {
-	if (eel_strcmp (channel_data->title, title) == 0) {
-		return;
-	}
-	
-	if (channel_data->title) {
-		g_free (channel_data->title);
-	}
 	if (title != NULL) {
-		channel_data->title = g_strdup (title);
+                if (channel_data->title == NULL) {
+                        channel_data->title = pango_layout_new (eel_gtk_widget_get_pango_ft2_context (channel_data->owner->news_display));
+                } else {
+                        if (strcmp (pango_layout_get_text (channel_data->title), title) == 0) {
+                                return;
+                        }
+                }
+                pango_layout_set_text (channel_data->title, title, -1);
 	} else {
-		channel_data->title = NULL;	
+                if (channel_data->title != NULL) {
+                        g_object_unref (channel_data->title);
+                }
+		channel_data->title = NULL;
 	}
 }
 
@@ -976,7 +963,10 @@ free_channel (RSSChannelData *channel_data)
 	g_free (channel_data->name);
 	g_free (channel_data->uri);
 	g_free (channel_data->link_uri);
-	g_free (channel_data->title);
+
+        if (channel_data->title != NULL) {
+                g_object_unref (channel_data->title);
+        }
 	
 	if (channel_data->logo_image != NULL) {
 		g_object_unref (channel_data->logo_image);
@@ -2202,7 +2192,9 @@ empty_message_size_allocate (GtkWidget *widget, GtkAllocation *allocation, News 
 	
 	wrap_width = allocation->width - 2*EMPTY_MESSAGE_MARGIN;
 	if (wrap_width > 0) {
+#if GNOME2_CONVERSION_COMPLETE
 		eel_label_set_smooth_line_wrap_width (EEL_LABEL (widget), allocation->width - 2*EMPTY_MESSAGE_MARGIN);
+#endif
 	}
 }
 
@@ -2422,10 +2414,12 @@ set_up_main_widgets (News *news, GtkWidget *container)
  	news->news_display_scrolled_window = scrolled_window;
 	
 	/* add the empty message */
-	news->empty_message = eel_label_new (_("The News panel displays current headlines from your favorite websites.  Click the \'Select Sites\' button to select the sites to display."));
+	news->empty_message = gtk_label_new (_("The News panel displays current headlines from your favorite websites.  Click the \'Select Sites\' button to select the sites to display."));
+#if GNOME2_CONVERSION_COMPLETE
 	eel_label_set_smooth_font_size (EEL_LABEL (news->empty_message), 14);
 	eel_label_set_justify (EEL_LABEL (news->empty_message), GTK_JUSTIFY_LEFT);
 	eel_label_set_wrap (EEL_LABEL (news->empty_message), TRUE);	
+#endif
 
 	gtk_box_pack_start (GTK_BOX (news->main_box), news->empty_message, TRUE,
 		TRUE, 0);
@@ -2471,10 +2465,6 @@ make_news_view (const char *iid, gpointer callback_data)
 	set_up_configure_widgets (news, main_container);
 	set_up_edit_widgets (news, main_container);
 		
-	/* set up the fonts */
- 	news->font = eel_scalable_font_get_default_font ();
- 	news->bold_font = eel_scalable_font_get_default_bold_font ();
-       	
 	/* get preferences and sanity check them */
 	news->max_item_count = eel_preferences_get_integer (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS);
 	news->update_interval = 60 * eel_preferences_get_integer (NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL);	

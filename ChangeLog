@@ -1,3 +1,54 @@
+2002-01-02  Darin Adler  <darin@bentspoon.com>
+
+	* components/hardware/nautilus-hardware-view.c:
+	(update_uptime_text), (setup_overview_form):
+	* components/music/nautilus-music-view.c:
+	* src/file-manager/nautilus-indexing-info.c:
+	(update_progress_display):
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_init), (labeled_image_configure),
+	(labeled_image_new), (make_category),
+	(property_browser_category_button_new),
+	(nautilus_property_browser_update_contents):
+	* test/test.h:
+	* src/nautilus-shell.c:
+	* src/nautilus-sidebar-title.c: (nautilus_sidebar_title_init):
+	Port from EelLabel to GtkLabel.
+	
+	* components/news/nautilus-news.c: (do_destroy),
+	(draw_rss_logo_image), (draw_rss_title), (draw_rss_items),
+	(nautilus_news_set_title), (free_channel),
+	(empty_message_size_allocate), (set_up_main_widgets),
+	(make_news_view):
+	* libnautilus-private/nautilus-icon-private.h:
+	* src/nautilus-sidebar-tabs.c:
+	(nautilus_sidebar_tabs_load_theme_data),
+	(nautilus_sidebar_tabs_init), (nautilus_sidebar_tabs_destroy),
+	(draw_one_tab_plain), (draw_one_tab_themed), (get_tab_width),
+	(nautilus_sidebar_tabs_add_view):
+	Port to Pango text instead of Eel text.
+	
+	* libnautilus-private/nautilus-customization-data.c:
+	(add_reset_text):
+	* libnautilus-private/nautilus-icon-factory.c:
+	(embedded_text_font_changed_callback), (embed_text):
+	* src/nautilus-about.c: (draw_aa_string), (draw_author_list),
+	(nautilus_about_draw_info), (nautilus_about_update_authors):
+	Disable Eel text and ifdef with GNOME2_CONVERSION_COMPLETE.
+	
+	* libnautilus-private/nautilus-global-preferences.h:
+	* libnautilus-private/nautilus-global-preferences.c:
+	Turn off font-related preferences. Maybe delete later or
+	convert for Pango fonts.
+	
+	* libnautilus-private/nautilus-icon-canvas-item.h:
+	* libnautilus-private/nautilus-icon-container.h:
+	Remove eel-scalable-font.h includes.
+	
+	* src/nautilus-component-adapter-factory.c:
+	(nautilus_component_adapter_factory_create_adapter):
+	Disable the adapter because it was causing problems.
+	
 2002-01-02  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
 	* libnautilus-private/nautilus-directory-background.c:

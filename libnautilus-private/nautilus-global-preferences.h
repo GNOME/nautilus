@@ -23,8 +23,8 @@
    Authors: Ramiro Estrugo <ramiro@eazel.com>
 */
 
-#ifndef NAUTILUS_PREFS_GLOBAL_H
-#define NAUTILUS_PREFS_GLOBAL_H
+#ifndef NAUTILUS_GLOBAL_PREFERENCES_H
+#define NAUTILUS_GLOBAL_PREFERENCES_H
 
 #include <eel/eel-preferences.h>
 
@@ -187,17 +187,9 @@ typedef enum
 /* Gnome session management */
 #define NAUTILUS_PREFERENCES_ADD_TO_SESSION		"preferences/add_to_session"
 
-
-void                    nautilus_global_preferences_init                   (void);
-
-/* Sidebar */
-struct EelScalableFont *nautilus_global_preferences_get_icon_view_smooth_font    (void);
-struct EelScalableFont *nautilus_global_preferences_get_default_smooth_font      (void);
-struct EelScalableFont *nautilus_global_preferences_get_default_smooth_bold_font (void);
-
-void                    nautilus_global_preferences_set_default_folder_viewer    (const char *iid);
-
+void nautilus_global_preferences_init                      (void);
+void nautilus_global_preferences_set_default_folder_viewer (const char *iid);
 
 G_END_DECLS
 
-#endif /* NAUTILUS_PREFS_GLOBAL_H */
+#endif /* NAUTILUS_GLOBAL_PREFERENCES_H */

@@ -19,8 +19,6 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-image-with-background.h>
 #include <eel/eel-image.h>
-#include <eel/eel-label-with-background.h>
-#include <eel/eel-label.h>
 #include <eel/eel-string-list.h>
 #include <eel/eel-string.h>
 #include <libnautilus-private/nautilus-file-utilities.h>

@@ -60,10 +60,6 @@
 #include <math.h>
 #include <string.h>
 
-#if GNOME2_CONVERSION_COMPLETE
-#include <eel/eel-label-with-background.h>
-#endif
-
 /* maximum allowable size to be displayed as the title */
 #define MAX_TITLE_SIZE 		256
 #define MINIMUM_INFO_WIDTH	32
@@ -233,11 +229,6 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 	gtk_widget_show (sidebar_title->details->emblem_box);
 	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->emblem_box, 0, 0, 0);
 
-	/* FIXME: This should use EelLabel like the other displayed text.
-	 * But I don't think this feature is ever used? Someone should consult
-	 * with Andy about this. (This is not the same as the info in the Notes
-	 * sidebar panel.)
-	 */
 	sidebar_title->details->notes = GTK_WIDGET (gtk_label_new (NULL));
 	gtk_label_set_line_wrap (GTK_LABEL (sidebar_title->details->notes), TRUE);
 	gtk_widget_show (sidebar_title->details->notes);
