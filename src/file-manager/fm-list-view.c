@@ -1180,11 +1180,11 @@ fm_list_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 }
 
 static void
-click_policy_changed_callback (gpointer callback_data)
+fm_list_view_click_policy_changed (FMDirectoryView *directory_view)
 {
 	FMListView *view;
 
-	view = FM_LIST_VIEW (callback_data);
+	view = FM_LIST_VIEW (directory_view);
 
 	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE) {
 		g_object_set (G_OBJECT (view->details->file_name_cell),
@@ -1374,6 +1374,7 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->bump_zoom_level = fm_list_view_bump_zoom_level;
 	fm_directory_view_class->can_zoom_in = fm_list_view_can_zoom_in;
 	fm_directory_view_class->can_zoom_out = fm_list_view_can_zoom_out;
+        fm_directory_view_class->click_policy_changed = fm_list_view_click_policy_changed;
 	fm_directory_view_class->clear = fm_list_view_clear;
 	fm_directory_view_class->file_changed = fm_list_view_file_changed;
 	fm_directory_view_class->get_background_widget = fm_list_view_get_background_widget;
@@ -1415,9 +1416,6 @@ fm_list_view_instance_init (FMListView *list_view)
 				     BONOBO_OBJECT (list_view->details->positionable));
 
 
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_CLICK_POLICY,
-						  click_policy_changed_callback,
-						  list_view, G_OBJECT (list_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
 						  default_sort_order_changed_callback,
 						  list_view, G_OBJECT (list_view));
@@ -1428,7 +1426,7 @@ fm_list_view_instance_init (FMListView *list_view)
 						  default_zoom_level_changed_callback,
 						  list_view, G_OBJECT (list_view));
 
-	click_policy_changed_callback (list_view);
+	fm_list_view_click_policy_changed (FM_DIRECTORY_VIEW (list_view));
 	
 	fm_list_view_sort_directories_first_changed (FM_DIRECTORY_VIEW (list_view));
 	
