@@ -2489,9 +2489,17 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 	append_selection_menu_subtree (view, menu, 
 				       create_open_with_gtk_menu (view, files), files,
 				       FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH);
-	append_gtk_menu_item_with_view (view, menu, files,
-				    	FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
-				    	trash_callback, files);
+
+	/* Trash menu item handled specially. See comment above reset_bonobo_trash_delete_menu. */
+	if (fm_directory_can_move_to_trash (view)) {
+		append_gtk_menu_item_with_view (view, menu, files,
+					    	FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
+					    	trash_callback, files);
+	} else {
+		append_gtk_menu_item_with_view (view, menu, files,
+					    	FM_DIRECTORY_VIEW_MENU_PATH_DELETE,
+					    	trash_callback, files);
+	}
 	append_gtk_menu_item_with_view (view, menu, files,
 				    	FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE,
 				    	duplicate_callback, files);
@@ -2655,6 +2663,12 @@ add_component_to_bonobo_menu (BonoboUIHandler *ui_handler,
 	g_free (label);
 }
 
+/* Put up either the "Move to Trash" or the "Delete selection" menu item. Can't
+ * use the menu-item-updating mechanism used for other dynamic menus here because
+ * the hint and control key both change, which the menu-item-updating mechanism
+ * doesn't currently handle. Could rewrite it. Also, maybe they should use the
+ * same control key.
+ */
 static void
 reset_bonobo_trash_delete_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler, GList *selection)
 {
