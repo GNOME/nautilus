@@ -31,6 +31,8 @@ throbber_DATA = 	\
 	026.png		\
 	027.png		\
 	028.png		\
+	029.png         \
+	030.png         \
 	rest.png	\
 	$(NULL)
 		
