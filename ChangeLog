@@ -1,5 +1,13 @@
 2001-03-31  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* src/nautilus-sidebar.c: (toggle_sidebar_panel):
+	Restore the "dance."  It was needed after all to deal with
+	situations when the display become out of whack with the number of
+	running sidebar panels, for example when a panel crashes.
+	Added a comment to this effect as well.
+	
+2001-03-31  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-preferences-item.c:
 	(nautilus_preferences_item_set_constrained_integer_values):  When
 	the constrained interger values are change, we need to update the

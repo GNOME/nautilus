@@ -392,6 +392,7 @@ toggle_sidebar_panel (GtkWidget *widget,
 {
  	NautilusSidebar *sidebar;
 	const char *preference_key;
+	gboolean already_on;
 
 	g_return_if_fail (GTK_IS_CHECK_MENU_ITEM (widget));
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (widget))));
@@ -402,8 +403,18 @@ toggle_sidebar_panel (GtkWidget *widget,
 	sidebar = NAUTILUS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (widget)));
 
 	nautilus_sidebar_hide_active_panel_if_matches (sidebar, sidebar_iid);
-
-	nautilus_preferences_set_boolean (preference_key, GTK_CHECK_MENU_ITEM (widget)->active);
+	
+	already_on = any_panel_matches_iid (sidebar, sidebar_iid);
+	
+	/* This little dance gets the preferences code to send a
+	 * notification even though it thinks there's "no change".
+	 *
+	 * This is needed to deal with situations when the display
+	 * become out of whack with the number of running sidebar
+	 * panels, for example when a panel crashes.
+	 */
+	nautilus_preferences_set_boolean (preference_key, already_on);
+	nautilus_preferences_set_boolean (preference_key, !already_on);
 }
 
 typedef struct
