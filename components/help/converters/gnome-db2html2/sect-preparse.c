@@ -141,10 +141,35 @@ sect_preparse_sect_start_element (Context *context,
 				  const gchar *name,
 				  const xmlChar **atrs)
 {
+	GSList *element_list;
+	StackElement *stack_el;
 	gchar **atrs_ptr;
 
-	if (g_strcasecmp(name, "section") == 0) {
-		return;
+	element_list = NULL;
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (PREFACE));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CHAPTER));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT1));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT2));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT3));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT4));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT5));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (APPENDIX));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (NOTE));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TIP));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (WARNING));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GRAPHIC));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CAUTION));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (IMPORTANT));
+	stack_el = find_first_element (context, element_list);
+
+	g_slist_free (element_list);
+
+	if (stack_el == NULL) {
+		if (g_strcasecmp(name, "section") == 0) {
+			return;
+		}
 	}
 
 
@@ -156,9 +181,12 @@ sect_preparse_sect_start_element (Context *context,
 		sect1id_stack_add (context, name, atrs);
 		break;
 	case '1':
-		if (context->doctype == ARTICLE_DOC) {
+		if (context->doctype == ARTICLE_DOC && stack_el->info->index != APPENDIX) {
 			sect1id_stack_add (context, name, atrs);
 		}
+		break;
+	case 'n':
+	        sect1id_stack_add (context, name, atrs);
 		break;
 	default:
 		break;
