@@ -46,6 +46,7 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
+#include <libnautilus-extensions/nautilus-xml-extensions.h>
 
 #include <gnome.h>
 #include <gtk/gtkeventbox.h>
@@ -562,9 +563,9 @@ add_one_service (NautilusTextView *text_view, BonoboControl *control, const char
 		service_node = xmlDocGetRootElement (service_definition);
 	
 		/* extract the label and template */
-		label = xmlGetProp (service_node, "label");
+		label = nautilus_xml_get_property_translated (service_node, "label");	
+		tooltip = nautilus_xml_get_property_translated (service_node, "tooltip");	
 		template = xmlGetProp (service_node, "template");
-		tooltip = xmlGetProp (service_node, "tooltip");
 		source_mode = xmlGetProp (service_node, "source");
 		
 		if (label != NULL && template != NULL) {
