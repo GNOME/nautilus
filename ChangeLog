@@ -1,3 +1,21 @@
+2002-05-31  Alex Larsson <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	Draw drop shadows if use_drop_shadows.
+	
+	* libnautilus-private/nautilus-icon-container.c:
+	Implement nautilus_icon_container_set_use_drop_shadows.
+	Use light color for labels if use_drop_shadows.
+	
+	* libnautilus-private/nautilus-icon-container.h:
+	Add new function nautilus_icon_container_set_use_drop_shadows.
+	
+	* libnautilus-private/nautilus-icon-private.h:
+	Add use_grop_shadow variable.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	Call nautilus_icon_container_set_use_drop_shadows()
+
 2002-05-31  Damon Chaplin  <damon@ximian.com>
 
 	* src/nautilus-application.c

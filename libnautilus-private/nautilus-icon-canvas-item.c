@@ -170,6 +170,7 @@ static void     draw_label_layout                    (NautilusIconCanvasItem    
 						      GdkDrawable                   *drawable,
 						      PangoLayout                   *layout,
 						      gboolean                       highlight,
+						      GdkColor                      *label_color,
 						      int                            x,
 						      int                            y,
 						      GdkGC                         *gc);
@@ -701,6 +702,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			
 			draw_label_layout (item, drawable,
 					   layout, needs_highlight,
+					   label_color,
 					   icon_left + (icon_width - max_text_width) / 2,
 					   icon_bottom, gc);
 		}
@@ -725,6 +727,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			
 			draw_label_layout (item, drawable,
 					   layout, needs_highlight,
+					   label_color,
 					   icon_left + (icon_width - max_text_width) / 2,
 					   icon_bottom + height_so_far, gc);
 		}
@@ -1212,6 +1215,7 @@ draw_label_layout (NautilusIconCanvasItem *item,
 		   GdkDrawable *drawable,
 		   PangoLayout *layout,
 		   gboolean highlight,
+		   GdkColor *label_color,
 		   int x,
 		   int y,
 		   GdkGC *gc)
@@ -1225,9 +1229,18 @@ draw_label_layout (NautilusIconCanvasItem *item,
 	}
 
 	if (!highlight || !antialias_selection_rectangle) {
-		gdk_draw_layout (drawable, gc,
-				 x, y,
-				 layout);
+		if (NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (item)->canvas)->details->use_drop_shadows) {
+			/* draw a drop shadow */
+			eel_gdk_draw_layout_with_drop_shadow (drawable, gc,
+							      label_color,
+							      &GTK_WIDGET (GNOME_CANVAS_ITEM (item)->canvas)->style->black,
+							      x, y,
+							      layout);
+		} else {
+			gdk_draw_layout (drawable, gc,
+					 x, y,
+					 layout);
+		}
 	} else {
 		/* draw a shadow in black */
 		gdk_draw_layout (drawable,

@@ -215,6 +215,9 @@ struct NautilusIconContainerDetails {
 	int right_margin;
 	int top_margin;
 	int bottom_margin;
+
+	/* Whether we should use drop shadows for the icon labels or not */
+	gboolean use_drop_shadows;
 };
 
 /* Private functions shared by mutiple files. */

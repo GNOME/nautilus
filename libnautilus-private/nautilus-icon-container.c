@@ -5095,7 +5095,7 @@ update_label_color (EelBackground         *background,
 	container->details->label_color_highlight = eel_gdk_rgb_to_color (0xFFFFFF);
 	container->details->label_info_color_highlight = eel_gdk_rgb_to_color (0xCCCCCC);
 	
-	if (eel_background_is_dark (background)) {
+	if (eel_background_is_dark (background) || container->details->use_drop_shadows) {
 		container->details->label_color = eel_gdk_rgb_to_color (0xEFEFEF);
 		container->details->label_info_color = eel_gdk_rgb_to_color (light_info_value);
 	} else { /* converse */
@@ -5140,6 +5140,18 @@ nautilus_icon_container_set_margins (NautilusIconContainer *container,
 
 	/* redo layout of icons as the margins have changed */
 	schedule_redo_layout (container);
+}
+
+void
+nautilus_icon_container_set_use_drop_shadows (NautilusIconContainer  *container,
+					      gboolean                use_drop_shadows)
+{
+	if (container->details->use_drop_shadows == use_drop_shadows) {
+		return;
+	}
+
+	container->details->use_drop_shadows = use_drop_shadows;
+	gtk_widget_queue_draw (GTK_WIDGET (container));
 }
 
 /* handle theme changes */
