@@ -1,3 +1,16 @@
+2001-03-14  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	* helper-scripts/nautilus-restore-settings-to-default.sh:
+	Dont clobber any fonts that the user might have installed in
+	~/.nautilus.  This is a bit of hack, but its very inconvenient to
+	have these fonts be trashed when testing Nautilus in a "from
+	scratch" environment.
+	
+	* nautilus.spec.in:
+	Add the "restore settings to default" script to the package.
+	
 2001-03-13  Gene Z. Ragan  <gzr@eazel.com>
 
 	I have been itching to check some code in for 1.2,
