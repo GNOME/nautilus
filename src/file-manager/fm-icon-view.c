@@ -1110,7 +1110,7 @@ static gint play_file(NautilusFile *file)
 	char *file_uri, *file_path, *mime_type;
 	
 	file_uri = nautilus_file_get_uri(file);
-	gnome_vfs_unescape_string(file_uri);
+	gnome_vfs_unescape_string(file_uri, "/");
 	if (nautilus_str_has_prefix(file_uri, "file://"))
 		file_path = file_uri + 7;
 	else
