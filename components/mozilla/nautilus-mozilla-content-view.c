@@ -150,14 +150,22 @@ nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 {
 	g_assert (uri != NULL);
 
-//	printf ("nautilus_mozilla_content_view_load_uri (%s)\n", uri);
-
-	gtk_moz_embed_load_url (view->detail->mozilla, uri);
-	
 	if (view->detail->uri)
 		g_free (view->detail->uri);
 
-	view->detail->uri = g_strdup (uri);
+	/* FIXME: This is a temporary dumbass hack */
+	if (strncmp (uri, "moz:", strlen ("moz:")) == 0)
+	{
+		view->detail->uri = g_strdup_printf ("http:%s", uri + strlen ("moz:"));
+	}
+	else
+	{
+		view->detail->uri = g_strdup (uri);
+	}
+
+	g_print ("nautilus_mozilla_content_view_load_uri (%s)\n", view->detail->uri);
+
+	gtk_moz_embed_load_url (view->detail->mozilla, view->detail->uri);
 }
 
 static void
