@@ -551,6 +551,8 @@ nautilus_mime_get_short_list_methods_for_uri (const char *uri)
 
 	/* FIXME - load these mappings from gnome-vfs and/or a config file */
 
+	if (mime_type == NULL) return NULL;
+
 	if (!strcmp(mime_type, "application/x-gzip"))
 		return g_list_append(NULL, "gzip");
 
