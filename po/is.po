@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-15 15:19+0100\n"
-"PO-Revision-Date: 2003-08-20 20:19-0100\n"
-"Last-Translator: Samuel Jon Gunnarsson <sammi@techattack.nu>\n"
+"POT-Creation-Date: 2004-04-04 01:29+0000\n"
+"PO-Revision-Date: 2004-03-13 06:35-0000\n"
+"Last-Translator: helgi <helgi@trance.is>\n"
 "Language-Team: Icelandic <gnome@techattack.nu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -40,7 +40,7 @@ msgid "bonobo_ui_init() failed."
 msgstr "bonobo_ui_init() mistókst."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
-#: src/file-manager/fm-properties-window.c:2400
+#: src/file-manager/fm-properties-window.c:2451
 msgid "Emblems"
 msgstr "Merkimiðar"
 
@@ -259,7 +259,7 @@ msgid "Software"
 msgstr "Hugbúnaður"
 
 #: components/image_properties/nautilus-image-properties-view.c:222
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
@@ -267,13 +267,10 @@ msgid_plural ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
 msgstr[0] ""
-"<b>Gerð myndar:</b> %s (%s)\n"
-"<b>Upplausn:</b> %dx%d punktar\n"
 msgstr[1] ""
-"<b>Gerð myndar:</b> %s (%s)\n"
-"<b>Upplausn:</b> %dx%d punktar\n"
 
 #: components/image_properties/nautilus-image-properties-view.c:237
+#, fuzzy
 msgid "Failed to load image information"
 msgstr "Ekki tókst að hlaða inn myndaupplýsingum"
 
@@ -983,7 +980,7 @@ msgstr ""
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
-#: src/file-manager/fm-list-view.c:1054
+#: src/file-manager/fm-list-view.c:1059
 msgid "Name"
 msgstr "Heiti"
 
@@ -1002,9 +999,8 @@ msgstr ""
 #: libnautilus-extension/nautilus-column.c:189
 #: libnautilus-extension/nautilus-menu-item.c:213
 #: libnautilus-extension/nautilus-property-page.c:183
-#, fuzzy
 msgid "Label"
-msgstr "Eazel"
+msgstr "Merki"
 
 #: libnautilus-extension/nautilus-column.c:190
 msgid "Label to display in the column"
@@ -1038,16 +1034,15 @@ msgstr ""
 
 #: libnautilus-extension/nautilus-menu-item.c:220
 msgid "Tip"
-msgstr ""
+msgstr "Ábending"
 
 #: libnautilus-extension/nautilus-menu-item.c:221
 msgid "Tooltip for the menu item"
 msgstr ""
 
 #: libnautilus-extension/nautilus-menu-item.c:227
-#, fuzzy
 msgid "Icon"
-msgstr "Táknmyndir"
+msgstr "Táknmynd"
 
 #: libnautilus-extension/nautilus-menu-item.c:228
 msgid "Name of the icon to display in the menu item"
@@ -1055,16 +1050,15 @@ msgstr ""
 
 #: libnautilus-extension/nautilus-menu-item.c:235
 msgid "Sensitive"
-msgstr ""
+msgstr "Viðkvæmt"
 
 #: libnautilus-extension/nautilus-menu-item.c:236
 msgid "Whether the menu item is sensitive"
 msgstr ""
 
 #: libnautilus-extension/nautilus-menu-item.c:242
-#, fuzzy
 msgid "Priority"
-msgstr "Prenta"
+msgstr "Forgangur"
 
 #: libnautilus-extension/nautilus-menu-item.c:243
 #, fuzzy
@@ -1080,9 +1074,8 @@ msgid "Label widget to display in the notebook tab"
 msgstr ""
 
 #: libnautilus-extension/nautilus-property-page.c:190
-#, fuzzy
 msgid "Page"
-msgstr "Pakki"
+msgstr "Síða"
 
 #: libnautilus-extension/nautilus-property-page.c:191
 #, fuzzy
@@ -1672,26 +1665,23 @@ msgstr "Breidd síðustiku"
 
 #: libnautilus-private/nautilus-column-chooser.c:365
 msgid "Move _Up"
-msgstr ""
+msgstr "Flytja _Upp"
 
 #: libnautilus-private/nautilus-column-chooser.c:374
 msgid "Move _Down"
-msgstr ""
+msgstr "Flytja _Niður"
 
 #: libnautilus-private/nautilus-column-chooser.c:383
-#, fuzzy
 msgid "_Show"
-msgstr "Sýna %s"
+msgstr "_Sýna"
 
 #: libnautilus-private/nautilus-column-chooser.c:393
-#, fuzzy
 msgid "_Hide"
-msgstr "_Leita"
+msgstr "_Fela"
 
 #: libnautilus-private/nautilus-column-chooser.c:406
-#, fuzzy
 msgid "_Use Default"
-msgstr "Nota _sjáfgefin bakgrunn"
+msgstr "Nota _Sjálfgefið"
 
 #: libnautilus-private/nautilus-column-utilities.c:44
 #, fuzzy
@@ -1734,9 +1724,8 @@ msgid "The date the file was accessed."
 msgstr ""
 
 #: libnautilus-private/nautilus-column-utilities.c:81
-#, fuzzy
 msgid "Owner"
-msgstr "Eigandi:"
+msgstr "Eigandi"
 
 #: libnautilus-private/nautilus-column-utilities.c:82
 #, fuzzy
@@ -1744,9 +1733,8 @@ msgid "The owner of the file."
 msgstr "Ekki var hægt að ákvarða skráarréttindi fyrir \"%s\"."
 
 #: libnautilus-private/nautilus-column-utilities.c:89
-#, fuzzy
 msgid "Group"
-msgstr "Hópur:"
+msgstr "Hópur"
 
 #: libnautilus-private/nautilus-column-utilities.c:90
 #, fuzzy
@@ -1754,7 +1742,7 @@ msgid "The group of the file."
 msgstr "Ekki var hægt að ákvarða skráarréttindi fyrir \"%s\"."
 
 #: libnautilus-private/nautilus-column-utilities.c:97
-#: src/file-manager/fm-properties-window.c:2865
+#: src/file-manager/fm-properties-window.c:2922
 msgid "Permissions"
 msgstr "Réttindi"
 
@@ -1764,9 +1752,8 @@ msgid "The permissions of the file."
 msgstr "Ekki var hægt að ákvarða skráarréttindi fyrir \"%s\"."
 
 #: libnautilus-private/nautilus-column-utilities.c:105
-#, fuzzy
 msgid "Octal Permissions"
-msgstr "áttundakerfis réttindi"
+msgstr "Áttundakerfis Réttindi"
 
 #: libnautilus-private/nautilus-column-utilities.c:106
 #, fuzzy
@@ -1774,7 +1761,6 @@ msgid "The permissions of the file, in octal notation."
 msgstr "Ekki var hægt að ákvarða skráarréttindi fyrir valda skrá."
 
 #: libnautilus-private/nautilus-column-utilities.c:113
-#, fuzzy
 msgid "MIME Type"
 msgstr "MIME Gerð"
 
@@ -2136,14 +2122,12 @@ msgstr "Villa kom upp við útstrokun gagna."
 #: libnautilus-private/nautilus-file-operations.c:961
 #: libnautilus-private/nautilus-file-operations.c:1071
 #: libnautilus-private/nautilus-file-operations.c:1090
-#, fuzzy
 msgid "_Skip"
-msgstr "Sleppa"
+msgstr "_Sleppa"
 
 #: libnautilus-private/nautilus-file-operations.c:961
-#, fuzzy
 msgid "_Retry"
-msgstr "Prufa á ný"
+msgstr "_Reyna aftur"
 
 #: libnautilus-private/nautilus-file-operations.c:1027
 #, fuzzy, c-format
@@ -2193,18 +2177,16 @@ msgstr "Árekstur kom upp við afritun"
 
 #: libnautilus-private/nautilus-file-operations.c:1071
 #: libnautilus-private/nautilus-file-operations.c:1090
-#, fuzzy
 msgid "_Replace"
-msgstr "Útskipta"
+msgstr "_Útskipta"
 
 #: libnautilus-private/nautilus-file-operations.c:1090
-#, fuzzy
 msgid "Replace _All"
-msgstr "Útskipta öllu"
+msgstr "Útskipta _Öllu"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1148
-#: libnautilus-private/nautilus-file.c:4724
+#: libnautilus-private/nautilus-file.c:4735
 #, c-format
 msgid "link to %s"
 msgstr "tengill að %s"
@@ -2421,14 +2403,12 @@ msgid "Preparing To Copy..."
 msgstr "Undirbý afritun..."
 
 #: libnautilus-private/nautilus-file-operations.c:1930
-#, fuzzy
 msgid "You cannot copy items into the trash."
 msgstr "Þú getur ekki afritað hluti í ruslið."
 
 #: libnautilus-private/nautilus-file-operations.c:1931
-#, fuzzy
 msgid "You cannot create links inside the trash."
-msgstr "Þú getur ekki afritað hluti í ruslið."
+msgstr "Þú getur ekki gert linka í ruslið."
 
 #: libnautilus-private/nautilus-file-operations.c:1932
 msgid "Files and folders can only be moved into the trash."
@@ -2541,9 +2521,8 @@ msgid "Error Creating New Document"
 msgstr "Villa við stofnun nýrrar möppu"
 
 #: libnautilus-private/nautilus-file-operations.c:2353
-#, fuzzy
 msgid "new file"
-msgstr "1 skrá"
+msgstr "Ný skrá"
 
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:2425
@@ -2577,10 +2556,9 @@ msgid "Preparing to Empty the Trash..."
 msgstr "Undirbý það að tæma ruslið..."
 
 #: libnautilus-private/nautilus-file-operations.c:2534
-#, fuzzy
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr ""
-"Ertu viss um að þú endanlega eyða öllum hlutum sem liggja í ruslatunnunni?"
+"Ertu viss um að þú endanlega eyða öllum hlutum sem eru í ruslatunnunni?"
 
 #: libnautilus-private/nautilus-file-operations.c:2548
 msgid "If you empty the trash, items will be permanently deleted."
@@ -2603,13 +2581,12 @@ msgid "Network"
 msgstr "Red Hat Netið"
 
 #: libnautilus-private/nautilus-file-utilities.c:373
-#, fuzzy
 msgid "Fonts"
-msgstr "Punktar"
+msgstr "Letur"
 
 #: libnautilus-private/nautilus-file-utilities.c:375
 msgid "Themes"
-msgstr ""
+msgstr "Þemu"
 
 #: libnautilus-private/nautilus-file-utilities.c:377
 #, fuzzy
@@ -2772,28 +2749,30 @@ msgstr "00/00/00"
 msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
+#  This means no contents at all were readable
 #: libnautilus-private/nautilus-file.c:4299
 #: src/file-manager/fm-directory-view.c:1818
 #, fuzzy, c-format
 msgid "%u item"
 msgid_plural "%u items"
-msgstr[0] "%u hlutir"
-msgstr[1] "%u hlutir"
+msgstr[0] "? hlutir"
+msgstr[1] "? hlutir"
 
 #: libnautilus-private/nautilus-file.c:4300
 #, fuzzy, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
-msgstr[0] "%u möppur"
-msgstr[1] "%u möppur"
+msgstr[0] "Sto_fna Möppu "
+msgstr[1] "Sto_fna Möppu "
 
 #: libnautilus-private/nautilus-file.c:4301
 #, fuzzy, c-format
 msgid "%u file"
 msgid_plural "%u files"
-msgstr[0] "%u skjöl"
-msgstr[1] "%u skjöl"
+msgstr[0] "Ný skrá"
+msgstr[1] "Ný skrá"
 
+#  This means no contents at all were readable
 #. This means no contents at all were readable
 #: libnautilus-private/nautilus-file.c:4626
 #: libnautilus-private/nautilus-file.c:4642
@@ -2819,7 +2798,7 @@ msgstr "óþekkt MIME gerð"
 #. * for which we have no more appropriate default.
 #.
 #: libnautilus-private/nautilus-file.c:4656
-#: src/file-manager/fm-properties-window.c:1147
+#: src/file-manager/fm-properties-window.c:1198
 msgid "unknown"
 msgstr "óþekkt"
 
@@ -2834,7 +2813,7 @@ msgid ""
 "some other reason."
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:4704
+#: libnautilus-private/nautilus-file.c:4712
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2843,15 +2822,15 @@ msgstr ""
 "Engin lýsing fannst fyrir mime gerð \"%s\" (skráin er \"%s\"), vinsamlegast "
 "láttu gnome-vfs póstlistan vita."
 
-#: libnautilus-private/nautilus-file.c:4718
+#: libnautilus-private/nautilus-file.c:4729
 msgid "link"
 msgstr "tengill"
 
-#: libnautilus-private/nautilus-file.c:4738
+#: libnautilus-private/nautilus-file.c:4749
 msgid "link (broken)"
 msgstr "tengill (rofin)"
 
-#: libnautilus-private/nautilus-file.c:6165
+#: libnautilus-private/nautilus-file.c:6176
 #: libnautilus-private/nautilus-global-preferences.c:533
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
@@ -2980,7 +2959,7 @@ msgid "Icon View"
 msgstr "Táknmyndasýn"
 
 #: libnautilus-private/nautilus-global-preferences.c:179
-#: src/file-manager/fm-list-view.c:1107
+#: src/file-manager/fm-list-view.c:1112
 #: src/nautilus-file-management-properties.glade.h:54
 msgid "List View"
 msgstr "Listasýn"
@@ -3108,51 +3087,51 @@ msgstr ""
 msgid "The selection rectangle"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:4175
+#: libnautilus-private/nautilus-icon-container.c:4179
 msgid "Frame Text"
 msgstr "Texti ramma"
 
-#: libnautilus-private/nautilus-icon-container.c:4176
+#: libnautilus-private/nautilus-icon-container.c:4180
 msgid "Draw a frame around unselected text"
 msgstr "Teikna ramma utan um óvaldan texta"
 
-#: libnautilus-private/nautilus-icon-container.c:4182
+#: libnautilus-private/nautilus-icon-container.c:4186
 msgid "Selection Box Color"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:4183
+#: libnautilus-private/nautilus-icon-container.c:4187
 msgid "Color of the selection box"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:4188
+#: libnautilus-private/nautilus-icon-container.c:4192
 msgid "Selection Box Alpha"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:4189
+#: libnautilus-private/nautilus-icon-container.c:4193
 msgid "Opacity of the selection box"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:4196
+#: libnautilus-private/nautilus-icon-container.c:4200
 msgid "Highlight Alpha"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:4197
+#: libnautilus-private/nautilus-icon-container.c:4201
 msgid "Opacity of the highlight for selected icons"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:4203
+#: libnautilus-private/nautilus-icon-container.c:4207
 msgid "Light Info Color"
 msgstr "Ljós uppl. litur"
 
-#: libnautilus-private/nautilus-icon-container.c:4204
+#: libnautilus-private/nautilus-icon-container.c:4208
 msgid "Color used for information text against a dark background"
 msgstr "Litur notaður fyrir upplýsingatexta þegar sýnt er á dökkum bakgrunn"
 
-#: libnautilus-private/nautilus-icon-container.c:4209
+#: libnautilus-private/nautilus-icon-container.c:4213
 msgid "Dark Info Color"
 msgstr "Dökkur uppl. litur"
 
-#: libnautilus-private/nautilus-icon-container.c:4210
+#: libnautilus-private/nautilus-icon-container.c:4214
 msgid "Color used for information text against a light background"
 msgstr "Litur notaður fyrir upplýsingatexta þegar sýnt er á ljósum bakgrunn"
 
@@ -3526,7 +3505,7 @@ msgstr "Get ekki ræst fjarbundna tengla"
 #: libnautilus-private/nautilus-program-choosing.c:1243
 #: libnautilus-private/nautilus-program-choosing.c:1309
 msgid "Details: "
-msgstr ""
+msgstr "Ítarlegra:"
 
 #: libnautilus-private/nautilus-program-choosing.c:1245
 #: libnautilus-private/nautilus-program-choosing.c:1311
@@ -3793,8 +3772,8 @@ msgstr "Tæma rusl"
 #, fuzzy, c-format
 msgid "Open %d Window?"
 msgid_plural "Open %d Windows?"
-msgstr[0] "Opna %d glugga?"
-msgstr[1] "Opna %d glugga?"
+msgstr[0] "Opna í Nýjum _glugga"
+msgstr[1] "Opna í Nýjum _glugga"
 
 #: src/file-manager/fm-directory-view.c:545
 #, fuzzy
@@ -3802,13 +3781,11 @@ msgid "Are you sure you want to open all files?"
 msgstr "Ertu viss um að þú viljir endanlega eyða \"%s\"?"
 
 #: src/file-manager/fm-directory-view.c:546 src/nautilus-location-bar.c:158
-#, fuzzy, c-format
+#, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
 msgstr[0] ""
-"Þetta mun opna %d sjálfstæða glugga. Ertu viss um að þú viljir gera þetta?"
 msgstr[1] ""
-"Þetta mun opna %d sjálfstæða glugga. Ertu viss um að þú viljir gera þetta?"
 
 #: src/file-manager/fm-directory-view.c:893
 #, c-format
@@ -3820,8 +3797,8 @@ msgstr "Ertu viss um að þú viljir endanlega eyða \"%s\"?"
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items?"
-msgstr[0] "Ertu viss um að þú viljir endanlega eyða þessum %d völdu hlutum?"
-msgstr[1] "Ertu viss um að þú viljir endanlega eyða þessum %d völdu hlutum?"
+msgstr[0] "Ertu viss um að þú viljir endanlega eyða \"%s\"?"
+msgstr[1] "Ertu viss um að þú viljir endanlega eyða \"%s\"?"
 
 #: src/file-manager/fm-directory-view.c:905
 #, fuzzy
@@ -3838,9 +3815,8 @@ msgid "Select Pattern"
 msgstr "Veldu flokk:"
 
 #: src/file-manager/fm-directory-view.c:1061
-#, fuzzy
 msgid "_Pattern:"
-msgstr "M_ynstur"
+msgstr "M_ynstur:"
 
 #: src/file-manager/fm-directory-view.c:1750
 #, c-format
@@ -3851,23 +3827,23 @@ msgstr "\"%s\" valin"
 #, fuzzy, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
-msgstr[0] "%d möppur valdar"
-msgstr[1] "%d möppur valdar"
+msgstr[0] "\"%s\" valin"
+msgstr[1] "\"%s\" valin"
 
 #: src/file-manager/fm-directory-view.c:1762
 #, fuzzy, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
-msgstr[0] " (inniheldur %d hluti)"
-msgstr[1] " (inniheldur %d hluti)"
+msgstr[0] "[hlutir] sem innihalda \"%s\" í heiti"
+msgstr[1] "[hlutir] sem innihalda \"%s\" í heiti"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
 #: src/file-manager/fm-directory-view.c:1773
-#, fuzzy, c-format
+#, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
-msgstr[0] "(inniheldur samtals %d hluti)"
-msgstr[1] "(inniheldur samtals %d hluti)"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/file-manager/fm-directory-view.c:1789
 #, c-format
@@ -3878,16 +3854,16 @@ msgstr "\"%s\" valin (%s)"
 #, fuzzy, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
-msgstr[0] "%d hlutir valdir (%s)"
-msgstr[1] "%d hlutir valdir (%s)"
+msgstr[0] "\"%s\" valin (%s)"
+msgstr[1] "\"%s\" valin (%s)"
 
 #. Folders selected also, use "other" terminology
 #: src/file-manager/fm-directory-view.c:1801
 #, fuzzy, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
-msgstr[0] "%d aðrir hlutir valdir (%s)"
-msgstr[1] "%d aðrir hlutir valdir (%s)"
+msgstr[0] "\"%s\" valin (%s)"
+msgstr[1] "\"%s\" valin (%s)"
 
 #: src/file-manager/fm-directory-view.c:1822
 #, fuzzy, c-format
@@ -3957,7 +3933,7 @@ msgid "Delete Immediately?"
 msgstr "Eyða eins og skot?"
 
 #: src/file-manager/fm-directory-view.c:3294
-#, fuzzy, c-format
+#, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Ertu viss um að þú viljir eyða \"%s\" varanlega úr ruslinu?"
 
@@ -3969,10 +3945,8 @@ msgid ""
 msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr[0] ""
-"Ertu viss um að þú viljir eyða %d völdum hlutum varanlega úr ruslinu?"
-msgstr[1] ""
-"Ertu viss um að þú viljir eyða %d völdum hlutum varanlega úr ruslinu?"
+msgstr[0] "Ertu viss um að þú viljir eyða \"%s\" varanlega úr ruslinu?"
+msgstr[1] "Ertu viss um að þú viljir eyða \"%s\" varanlega úr ruslinu?"
 
 #: src/file-manager/fm-directory-view.c:3307
 msgid "If you delete an item, it will be permanently lost."
@@ -4078,10 +4052,8 @@ msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
 msgid_plural ""
 "The %d selected items will be moved if you select the Paste Files command"
-msgstr[0] ""
-"Þessi %d völdu hlutir verða fluttir ef þú velur \"Líma\" skráarskipunina"
-msgstr[1] ""
-"Þessi %d völdu hlutir verða fluttir ef þú velur \"Líma\" skráarskipunina"
+msgstr[0] "\"%s\" verður flutt ef þú velur \"Líma\" skráarskipunina"
+msgstr[1] "\"%s\" verður flutt ef þú velur \"Líma\" skráarskipunina"
 
 #: src/file-manager/fm-directory-view.c:4865
 #, fuzzy, c-format
@@ -4089,18 +4061,17 @@ msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
 msgid_plural ""
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr[0] ""
-"Þessir %d völdur hlutir verða afritaðir ef þú velur \"Líma\" skráarskipunina"
-msgstr[1] ""
-"Þessir %d völdur hlutir verða afritaðir ef þú velur \"Líma\" skráarskipunina"
+msgstr[0] "\"%s\" verður afrituð ef þú velur \"Líma\" skráarskipunina"
+msgstr[1] "\"%s\" verður afrituð ef þú velur \"Líma\" skráarskipunina"
 
 #: src/file-manager/fm-directory-view.c:4947
 #: src/file-manager/fm-tree-view.c:868
+#, fuzzy
 msgid "There is nothing on the clipboard to paste."
 msgstr "Það er ekkert í úrklippusafni til að líma með."
 
 #: src/file-manager/fm-directory-view.c:5050
-#: src/file-manager/fm-directory-view.c:6102
+#: src/file-manager/fm-directory-view.c:6123
 msgid "Mount Error"
 msgstr "Tengingarvilla"
 
@@ -4249,12 +4220,12 @@ msgstr "_Sýna"
 msgid "_Run"
 msgstr "_Keyra"
 
-#: src/file-manager/fm-directory-view.c:6236
+#: src/file-manager/fm-directory-view.c:6259
 #, fuzzy, c-format
 msgid "Opening \"%s\"."
 msgstr "Opna \"%s\""
 
-#: src/file-manager/fm-directory-view.c:6243
+#: src/file-manager/fm-directory-view.c:6266
 msgid "Cancel Open?"
 msgstr "Hætta við að opna?"
 
@@ -4496,26 +4467,26 @@ msgstr "Dregið og sleppt villa"
 msgid "An invalid drag type was used."
 msgstr "Ógild dráttargerð var notuð."
 
-#: src/file-manager/fm-list-view.c:1514
+#: src/file-manager/fm-list-view.c:1519
 #, c-format
 msgid "%s Visible Columns"
 msgstr ""
 
-#: src/file-manager/fm-list-view.c:1533
+#: src/file-manager/fm-list-view.c:1538
 #, fuzzy
 msgid "Choose the order of information to appear in this folder."
 msgstr ""
 "Veldu uppröðun á upplýsingum sem sjást fyrir neðan skráarheiti táknmynda. "
 "Fleiri upplýsingar munu sjást ef súmmað er nær."
 
-#: src/file-manager/fm-properties-window.c:477
+#: src/file-manager/fm-properties-window.c:481
 #, fuzzy
 msgid "You can't assign more than one custom icon at a time!"
 msgstr ""
 "Þú getur ekki tildeilt fleiri en eina sérvalda táknmynd í einu! Vinsamlegast "
 "dragðu einungis eina mynd til að setja sérvalda táknmynd."
 
-#: src/file-manager/fm-properties-window.c:478
+#: src/file-manager/fm-properties-window.c:482
 #: src/nautilus-information-panel.c:507
 #, fuzzy
 msgid "Please drag just one image to set a custom icon."
@@ -4523,12 +4494,12 @@ msgstr ""
 "Þú getur ekki tildeilt fleiri en eina sérvalda táknmynd í einu! Vinsamlegast "
 "dragðu einungis eina mynd til að setja sérvalda táknmynd."
 
-#: src/file-manager/fm-properties-window.c:479
+#: src/file-manager/fm-properties-window.c:483
 #: src/nautilus-information-panel.c:508
 msgid "More Than One Image"
 msgstr "Fleiri en ein mynd"
 
-#: src/file-manager/fm-properties-window.c:488
+#: src/file-manager/fm-properties-window.c:492
 #: src/nautilus-information-panel.c:527
 #, fuzzy
 msgid "The file that you dropped is not local."
@@ -4536,8 +4507,8 @@ msgstr ""
 "Skráin sem þú slepptir er ekki staðbundin. Þú getur einungis notað "
 "staðbundnar myndir í sérvaldar táknmyndir."
 
-#: src/file-manager/fm-properties-window.c:489
-#: src/file-manager/fm-properties-window.c:496
+#: src/file-manager/fm-properties-window.c:493
+#: src/file-manager/fm-properties-window.c:500
 #: src/nautilus-information-panel.c:528
 #, fuzzy
 msgid "You can only use local images as custom icons."
@@ -4545,12 +4516,12 @@ msgstr ""
 "Skráin sem þú slepptir er ekki staðbundin. Þú getur einungis notað "
 "staðbundnar myndir í sérvaldar táknmyndir."
 
-#: src/file-manager/fm-properties-window.c:490
+#: src/file-manager/fm-properties-window.c:494
 #: src/nautilus-information-panel.c:529
 msgid "Local Images Only"
 msgstr "Einungis staðbundnar myndir"
 
-#: src/file-manager/fm-properties-window.c:495
+#: src/file-manager/fm-properties-window.c:499
 #: src/nautilus-information-panel.c:534
 #, fuzzy
 msgid "The file that you dropped is not an image."
@@ -4558,55 +4529,56 @@ msgstr ""
 "Skráin sem þú slepptir er ekki staðbundin. Þú getur einungis notað "
 "staðbundnar myndir í sérvaldar táknmyndir."
 
-#: src/file-manager/fm-properties-window.c:497
+#: src/file-manager/fm-properties-window.c:501
 #: src/nautilus-information-panel.c:536
 msgid "Images Only"
 msgstr "Einungis myndir"
 
-#: src/file-manager/fm-properties-window.c:914
+#: src/file-manager/fm-properties-window.c:918
 #: src/file-manager/fm-tree-view.c:1053
 msgid "Properties"
 msgstr "Stillingar"
 
-#: src/file-manager/fm-properties-window.c:917
+#: src/file-manager/fm-properties-window.c:921
 #, c-format
 msgid "%s Properties"
 msgstr "Stillingar f. %s"
 
-#: src/file-manager/fm-properties-window.c:1378
+#: src/file-manager/fm-properties-window.c:1429
 msgid "Cancel Group Change?"
 msgstr "Hætta við breytingu á hóp?"
 
-#: src/file-manager/fm-properties-window.c:1379
+#: src/file-manager/fm-properties-window.c:1430
 #, fuzzy
 msgid "Changing group."
 msgstr "Breyti hóp"
 
-#: src/file-manager/fm-properties-window.c:1540
+#: src/file-manager/fm-properties-window.c:1591
 msgid "Cancel Owner Change?"
 msgstr "Hætta við breytingu á eiganda?"
 
-#: src/file-manager/fm-properties-window.c:1541
+#: src/file-manager/fm-properties-window.c:1592
 #, fuzzy
 msgid "Changing owner."
 msgstr "Breyti eiganda"
 
-#: src/file-manager/fm-properties-window.c:1747
+#: src/file-manager/fm-properties-window.c:1798
 msgid "nothing"
 msgstr "ekkert"
 
-#: src/file-manager/fm-properties-window.c:1749
+#: src/file-manager/fm-properties-window.c:1800
 msgid "unreadable"
 msgstr "ólesanlegt"
 
-#: src/file-manager/fm-properties-window.c:1759
-#, fuzzy, c-format
+#: src/file-manager/fm-properties-window.c:1810
+#, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
-msgstr[0] "1 hlutur, stærð alls %s"
-msgstr[1] "1 hlutur, stærð alls %s"
+msgstr[0] ""
+msgstr[1] ""
 
-#: src/file-manager/fm-properties-window.c:1768
+#: src/file-manager/fm-properties-window.c:1819
+#, fuzzy
 msgid "(some contents unreadable)"
 msgstr "(sumt er ólesanlegt)"
 
@@ -4616,187 +4588,187 @@ msgstr "(sumt er ólesanlegt)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1785
+#: src/file-manager/fm-properties-window.c:1836
 msgid "Contents:"
 msgstr "Innihald:"
 
-#: src/file-manager/fm-properties-window.c:2176
+#: src/file-manager/fm-properties-window.c:2227
 msgid "Basic"
 msgstr "Grunn"
 
-#: src/file-manager/fm-properties-window.c:2204
+#: src/file-manager/fm-properties-window.c:2255
 msgid "_Names:"
 msgstr "_Skráarheiti:"
 
-#: src/file-manager/fm-properties-window.c:2206
+#: src/file-manager/fm-properties-window.c:2257
 msgid "_Name:"
 msgstr "_Skráarheiti:"
 
-#: src/file-manager/fm-properties-window.c:2255
+#: src/file-manager/fm-properties-window.c:2306
 msgid "Type:"
 msgstr "Gerð:"
 
-#: src/file-manager/fm-properties-window.c:2257
-#: src/file-manager/fm-properties-window.c:2267
-#: src/file-manager/fm-properties-window.c:2273
-#: src/file-manager/fm-properties-window.c:2280
-#: src/file-manager/fm-properties-window.c:2284
-#: src/file-manager/fm-properties-window.c:2292
-#: src/file-manager/fm-properties-window.c:2298
-#: src/file-manager/fm-properties-window.c:2307
-#: src/file-manager/fm-properties-window.c:2313
-#: src/file-manager/fm-properties-window.c:2900
-#: src/file-manager/fm-properties-window.c:2921
-#: src/file-manager/fm-properties-window.c:3012
-#: src/file-manager/fm-properties-window.c:3016
-#: src/file-manager/fm-properties-window.c:3020
+#: src/file-manager/fm-properties-window.c:2308
+#: src/file-manager/fm-properties-window.c:2318
+#: src/file-manager/fm-properties-window.c:2324
+#: src/file-manager/fm-properties-window.c:2331
+#: src/file-manager/fm-properties-window.c:2335
+#: src/file-manager/fm-properties-window.c:2343
+#: src/file-manager/fm-properties-window.c:2349
+#: src/file-manager/fm-properties-window.c:2358
+#: src/file-manager/fm-properties-window.c:2364
+#: src/file-manager/fm-properties-window.c:2957
+#: src/file-manager/fm-properties-window.c:2978
+#: src/file-manager/fm-properties-window.c:3069
+#: src/file-manager/fm-properties-window.c:3073
+#: src/file-manager/fm-properties-window.c:3077
 msgid "--"
 msgstr "--"
 
-#: src/file-manager/fm-properties-window.c:2265
+#: src/file-manager/fm-properties-window.c:2316
 msgid "Size:"
 msgstr "Stærð:"
 
-#: src/file-manager/fm-properties-window.c:2271 src/nautilus-location-bar.c:60
+#: src/file-manager/fm-properties-window.c:2322 src/nautilus-location-bar.c:60
 msgid "Location:"
 msgstr "Staðsetning:"
 
-#: src/file-manager/fm-properties-window.c:2278
+#: src/file-manager/fm-properties-window.c:2329
 msgid "Volume:"
 msgstr "Gagnahirsla:"
 
-#: src/file-manager/fm-properties-window.c:2282
+#: src/file-manager/fm-properties-window.c:2333
 msgid "Free space:"
 msgstr "Laust pláss:"
 
-#: src/file-manager/fm-properties-window.c:2290
+#: src/file-manager/fm-properties-window.c:2341
 msgid "Link target:"
 msgstr "Áfangastaður tengils:"
 
-#: src/file-manager/fm-properties-window.c:2296
+#: src/file-manager/fm-properties-window.c:2347
 msgid "MIME type:"
 msgstr "MIME gerð:"
 
-#: src/file-manager/fm-properties-window.c:2305
+#: src/file-manager/fm-properties-window.c:2356
 msgid "Modified:"
 msgstr "Breytt þann:"
 
-#: src/file-manager/fm-properties-window.c:2311
+#: src/file-manager/fm-properties-window.c:2362
 msgid "Accessed:"
 msgstr "Síðast notað:"
 
-#: src/file-manager/fm-properties-window.c:2327
+#: src/file-manager/fm-properties-window.c:2378
 msgid "_Select Custom Icon..."
 msgstr "_Veldu sérvalda táknmynd..."
 
-#: src/file-manager/fm-properties-window.c:2333
+#: src/file-manager/fm-properties-window.c:2384
 msgid "_Remove Custom Icon"
 msgstr "_Fjarlægja sérvalda táknmynd"
 
-#: src/file-manager/fm-properties-window.c:2679
+#: src/file-manager/fm-properties-window.c:2736
 msgid "_Read"
 msgstr "_Lesa"
 
-#: src/file-manager/fm-properties-window.c:2681
+#: src/file-manager/fm-properties-window.c:2738
 msgid "_Write"
 msgstr "_Rita"
 
-#: src/file-manager/fm-properties-window.c:2683
+#: src/file-manager/fm-properties-window.c:2740
 msgid "E_xecute"
 msgstr "Ke_yra"
 
-#: src/file-manager/fm-properties-window.c:2766
+#: src/file-manager/fm-properties-window.c:2823
 msgid "Set _user ID"
 msgstr "Setja notendaa_uðkenni"
 
-#: src/file-manager/fm-properties-window.c:2771
+#: src/file-manager/fm-properties-window.c:2828
 msgid "Special flags:"
 msgstr "Sérstök flögg:"
 
-#: src/file-manager/fm-properties-window.c:2774
+#: src/file-manager/fm-properties-window.c:2831
 msgid "Set gro_up ID"
 msgstr "Setja hópa a_uðkenni"
 
-#: src/file-manager/fm-properties-window.c:2776
+#: src/file-manager/fm-properties-window.c:2833
 msgid "_Sticky"
 msgstr "Klí_strað"
 
-#: src/file-manager/fm-properties-window.c:2875
+#: src/file-manager/fm-properties-window.c:2932
 msgid "You are not the owner, so you can't change these permissions."
 msgstr ""
 "Þar sem þú ert ekki eigandi þá getur þú þar af leiðandi ekki breytt þessum "
 "réttindum."
 
-#: src/file-manager/fm-properties-window.c:2889
+#: src/file-manager/fm-properties-window.c:2946
 #, fuzzy
 msgid "File _owner:"
 msgstr "Eigandi skráar:"
 
-#: src/file-manager/fm-properties-window.c:2895
+#: src/file-manager/fm-properties-window.c:2952
 msgid "File owner:"
 msgstr "Eigandi skráar:"
 
-#: src/file-manager/fm-properties-window.c:2906
+#: src/file-manager/fm-properties-window.c:2963
 msgid "_File group:"
 msgstr "S_kráarhópur:"
 
-#: src/file-manager/fm-properties-window.c:2915
+#: src/file-manager/fm-properties-window.c:2972
 msgid "File group:"
 msgstr "Skráarhópur:"
 
-#: src/file-manager/fm-properties-window.c:2927
+#: src/file-manager/fm-properties-window.c:2984
 msgid "Owner:"
 msgstr "Eigandi:"
 
-#: src/file-manager/fm-properties-window.c:2928
+#: src/file-manager/fm-properties-window.c:2985
 msgid "Group:"
 msgstr "Hópur:"
 
-#: src/file-manager/fm-properties-window.c:2929
+#: src/file-manager/fm-properties-window.c:2986
 msgid "Others:"
 msgstr "Annað:"
 
-#: src/file-manager/fm-properties-window.c:3011
+#: src/file-manager/fm-properties-window.c:3068
 msgid "Text view:"
 msgstr "Textasýn:"
 
-#: src/file-manager/fm-properties-window.c:3015
+#: src/file-manager/fm-properties-window.c:3072
 msgid "Number view:"
 msgstr "Tölusýn:"
 
-#: src/file-manager/fm-properties-window.c:3019
+#: src/file-manager/fm-properties-window.c:3076
 msgid "Last changed:"
 msgstr "Síðast breytt:"
 
-#: src/file-manager/fm-properties-window.c:3025
+#: src/file-manager/fm-properties-window.c:3082
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Ekki var hægt að ákvarða skráarréttindi fyrir \"%s\"."
 
-#: src/file-manager/fm-properties-window.c:3028
+#: src/file-manager/fm-properties-window.c:3085
 msgid "The permissions of the selected file could not be determined."
 msgstr "Ekki var hægt að ákvarða skráarréttindi fyrir valda skrá."
 
-#: src/file-manager/fm-properties-window.c:3186
+#: src/file-manager/fm-properties-window.c:3243
 #, fuzzy
 msgid "There was an error displaying help."
 msgstr "Villa kom upp þegar sýna átti hjálp: %s"
 
-#: src/file-manager/fm-properties-window.c:3186
+#: src/file-manager/fm-properties-window.c:3243
 #, fuzzy
 msgid "Couldn't Show Help"
 msgstr "Ekki tókst að sýna hjálp"
 
-#: src/file-manager/fm-properties-window.c:3523
+#: src/file-manager/fm-properties-window.c:3593
 msgid "Cancel Showing Properties Window?"
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:3524
+#: src/file-manager/fm-properties-window.c:3594
 #, fuzzy
 msgid "Creating Properties window."
 msgstr "Myndaeigindasýn Nautilus"
 
-#: src/file-manager/fm-properties-window.c:3650
+#: src/file-manager/fm-properties-window.c:3729
 msgid "Select an icon"
 msgstr "Veldu táknmynd"
 
@@ -5187,51 +5159,51 @@ msgstr "Búa til nýja tóma möppu inn í þessari möppu"
 msgid "Visible _Columns..."
 msgstr ""
 
-#: src/nautilus-application.c:266
+#: src/nautilus-application.c:267
 msgid "Couldn't Create Required Folder"
 msgstr "Ekki tókst að stofna nauðsynlega möppu"
 
-#: src/nautilus-application.c:267
+#: src/nautilus-application.c:268
 #, fuzzy, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Ekki tókst að stofna nauðsynlegar möppur"
 
-#: src/nautilus-application.c:269
+#: src/nautilus-application.c:270
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
 msgstr ""
 
-#: src/nautilus-application.c:272
+#: src/nautilus-application.c:273
 msgid "Couldn't Create Required Folders"
 msgstr "Ekki tókst að stofna nauðsynlegar möppur"
 
-#: src/nautilus-application.c:273
+#: src/nautilus-application.c:274
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr ""
 
-#: src/nautilus-application.c:275
+#: src/nautilus-application.c:276
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
 msgstr ""
 
-#: src/nautilus-application.c:343
+#: src/nautilus-application.c:344
 msgid "Link To Old Desktop"
 msgstr "Tengill yfir á gamla skjáborð"
 
-#: src/nautilus-application.c:359
+#: src/nautilus-application.c:360
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr ""
 
-#: src/nautilus-application.c:360
+#: src/nautilus-application.c:361
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
 msgstr ""
 
-#: src/nautilus-application.c:362
+#: src/nautilus-application.c:363
 #, fuzzy
 msgid "Migrated Old Desktop"
 msgstr "Tengill yfir á gamla skjáborð"
@@ -5246,7 +5218,7 @@ msgstr "Tengill yfir á gamla skjáborð"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:536
+#: src/nautilus-application.c:537
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5254,7 +5226,7 @@ msgid ""
 msgstr ""
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:542
+#: src/nautilus-application.c:543
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5283,13 +5255,13 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:572 src/nautilus-application.c:590
-#: src/nautilus-application.c:597
+#: src/nautilus-application.c:573 src/nautilus-application.c:591
+#: src/nautilus-application.c:598
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr ""
 "Ekki er hægt að nota Nautilus eins og er vegna ófyrirsjáanlegrar villu."
 
-#: src/nautilus-application.c:573
+#: src/nautilus-application.c:574
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5297,14 +5269,14 @@ msgstr ""
 "Ekki er hægt að nota Nautilus eins og er vegna ófyrirsjánlegrar villu frá "
 "Bonobo. Ekki tókst að skrá rýnisþjón skráarstjóra."
 
-#: src/nautilus-application.c:591
+#: src/nautilus-application.c:592
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
 
-#: src/nautilus-application.c:598
+#: src/nautilus-application.c:599
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5357,15 +5329,15 @@ msgid "Can't Connect to Server"
 msgstr "Get ekki flutt mig inn í sjálfa mig"
 
 #: src/nautilus-connect-server-dialog.c:101
-#: src/nautilus-window-manage-views.c:1310
+#: src/nautilus-window-manage-views.c:1312
 #, fuzzy, c-format
 msgid "\"%s\" is not a valid location."
 msgstr "Því miður, en \"%s\" er ógilt skráarheiti."
 
 #: src/nautilus-connect-server-dialog.c:103
 #: src/nautilus-property-browser.c:1106
-#: src/nautilus-window-manage-views.c:1305
-#: src/nautilus-window-manage-views.c:1313
+#: src/nautilus-window-manage-views.c:1307
+#: src/nautilus-window-manage-views.c:1315
 #, fuzzy
 msgid "Please check the spelling and try again."
 msgstr ""
@@ -5705,10 +5677,11 @@ msgstr "Fara:"
 #, fuzzy, c-format
 msgid "Do you want to view %d location?"
 msgid_plural "Do you want to view %d locations?"
-msgstr[0] "Viltu skoða þessa %d áfangastaði í aðskildum gluggum? "
-msgstr[1] "Viltu skoða þessa %d áfangastaði í aðskildum gluggum? "
+msgstr[0] "Fara í eiginmöppu"
+msgstr[1] "Fara í eiginmöppu"
 
 #: src/nautilus-location-bar.c:170
+#, fuzzy
 msgid "View in Multiple Windows?"
 msgstr "Sýna í mörgum gluggum?"
 
@@ -5762,7 +5735,7 @@ msgstr "Skráarstjóri"
 
 #  Set initial window title
 #. Set initial window title
-#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:306
+#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:307
 #: src/nautilus-window-menus.c:601 src/nautilus-window.c:173
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -6108,6 +6081,7 @@ msgid "Create a New Emblem:"
 msgstr "Búa til nýjan merkimiða:"
 
 #  make the keyword label and field
+#  make the keyword label and field
 #. make the keyword label and field
 #: src/nautilus-property-browser.c:997
 msgid "_Keyword:"
@@ -6148,7 +6122,7 @@ msgstr "Því miður, en þú gafst upp ógilt skráarheiti."
 
 #: src/nautilus-property-browser.c:1109
 msgid "Please try again."
-msgstr ""
+msgstr "Vinsamlegast reyndu aftur."
 
 #: src/nautilus-property-browser.c:1111 src/nautilus-property-browser.c:1156
 #, fuzzy
@@ -6486,87 +6460,87 @@ msgstr "núverandi val"
 msgid "the type of window the view is embedded in"
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:836
+#: src/nautilus-window-manage-views.c:838
 msgid "View Failed"
 msgstr "Sýn mistókst"
 
-#: src/nautilus-window-manage-views.c:847
+#: src/nautilus-window-manage-views.c:849
 #, c-format
 msgid "The %s view encountered an error and can't continue."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:848
+#: src/nautilus-window-manage-views.c:850
 msgid "You can choose another view or go to a different location."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:858
+#: src/nautilus-window-manage-views.c:860
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:859
+#: src/nautilus-window-manage-views.c:861
 #, fuzzy
 msgid "The location cannot be displayed with this viewer."
 msgstr "Nautilusforrit sem bundið er þessum glugga."
 
-#: src/nautilus-window-manage-views.c:1006
+#: src/nautilus-window-manage-views.c:1008
 msgid "Content View"
 msgstr "Innihaldssýn"
 
-#: src/nautilus-window-manage-views.c:1007
+#: src/nautilus-window-manage-views.c:1009
 msgid "View of the current file or folder"
 msgstr "Skoða þessa skrá eða möppu"
 
-#: src/nautilus-window-manage-views.c:1302
+#: src/nautilus-window-manage-views.c:1304
 #, fuzzy, c-format
 msgid "Couldn't find \"%s\"."
 msgstr "Ekki tókst að bæta við merkimiðum"
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1326
-#: src/nautilus-window-manage-views.c:1336
-#: src/nautilus-window-manage-views.c:1350
-#: src/nautilus-window-manage-views.c:1358
-#: src/nautilus-window-manage-views.c:1364
-#: src/nautilus-window-manage-views.c:1384
+#: src/nautilus-window-manage-views.c:1328
+#: src/nautilus-window-manage-views.c:1338
+#: src/nautilus-window-manage-views.c:1352
+#: src/nautilus-window-manage-views.c:1360
+#: src/nautilus-window-manage-views.c:1366
+#: src/nautilus-window-manage-views.c:1386
 #, fuzzy, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "Nautilus getur ekki sýnt \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1329
+#: src/nautilus-window-manage-views.c:1331
 #, fuzzy
 msgid "Nautilus cannot determine what type of file it is."
 msgstr ""
 "Er ekki fær um að sýna \"%s\", vegna þess að Nautilus gat ekki ákvarðað "
 "skráargerð."
 
-#: src/nautilus-window-manage-views.c:1339
+#: src/nautilus-window-manage-views.c:1341
 #, fuzzy
 msgid "Nautilus has no installed viewer capable of displaying the file."
 msgstr "Nautilus inniheldur ekki neinn rýnir sem er fær um sýna \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1352
+#: src/nautilus-window-manage-views.c:1354
 #, fuzzy, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr ""
 "Er ekki fær um að sýna \"%s\", vegna þess að Nautilus  getur ekki meðhöndlað "
 "%s: staðsetningar."
 
-#: src/nautilus-window-manage-views.c:1360
+#: src/nautilus-window-manage-views.c:1362
 #, fuzzy
 msgid "The attempt to log in failed."
 msgstr "Er ekki fær um að sýna \"%s\", vegna þess að innskráning mistókst."
 
-#: src/nautilus-window-manage-views.c:1366
+#: src/nautilus-window-manage-views.c:1368
 msgid "Access was denied."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1376
+#: src/nautilus-window-manage-views.c:1378
 #, fuzzy, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr "Er ekki fær um að sýna \"%s\", þar sem aðgangi var meinað."
 
-#: src/nautilus-window-manage-views.c:1379
+#: src/nautilus-window-manage-views.c:1381
 #, fuzzy
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
@@ -6575,14 +6549,14 @@ msgstr ""
 "Athugaðu hvort að stafsetningarvilla hafi átt sér stað, eða hvort réttar sel "
 "(proxy) stillingar séu settar."
 
-#: src/nautilus-window-manage-views.c:1386
+#: src/nautilus-window-manage-views.c:1388
 #, fuzzy
 msgid "Check that your proxy settings are correct."
 msgstr ""
 "Er ekki fær um að sýna \"%s\", vegna þessa að hýsilsnafn var tómt. Athugaðu "
 "hvort sel stillingar séu réttar."
 
-#: src/nautilus-window-manage-views.c:1391
+#: src/nautilus-window-manage-views.c:1393
 #, fuzzy, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -6591,36 +6565,36 @@ msgstr ""
 "Er ekki fær um að sýna \"%s\", vegna þess að Nautilus  getur ekki meðhöndlað "
 "%s: staðsetningar."
 
-#: src/nautilus-window-manage-views.c:1394
+#: src/nautilus-window-manage-views.c:1396
 msgid "Check that an SMB server is running in the local network."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1404
+#: src/nautilus-window-manage-views.c:1406
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1407
+#: src/nautilus-window-manage-views.c:1409
 msgid ""
 "Be sure that you have started the Medusa search service, and if you don't "
 "have an index, that the Medusa indexer is running."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1409
+#: src/nautilus-window-manage-views.c:1411
 msgid "Searching Unavailable"
 msgstr "Leitin er ekki til reiðu"
 
-#: src/nautilus-window-manage-views.c:1414
+#: src/nautilus-window-manage-views.c:1416
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus getur ekki sýnt \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1416
+#: src/nautilus-window-manage-views.c:1418
 msgid "Please select another viewer and try again."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1420
+#: src/nautilus-window-manage-views.c:1422
 msgid "Can't Display Location"
 msgstr "Ekki tókst að birta áfangastað"
 
@@ -6714,9 +6688,6 @@ msgstr "Netþjónar"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Skoða netþjóna í Nautilus skráarstjóranum"
-
-#~ msgid "[Items ]containing \"%s\" in their names"
-#~ msgstr "[hlutir] sem innihalda \"%s\" í heiti"
 
 #~ msgid "[Items ]starting with \"%s\""
 #~ msgstr "[hlutir] sem byrja á \"%s\""
@@ -6884,6 +6855,10 @@ msgstr "Skoða netþjóna í Nautilus skráarstjóranum"
 #~ msgid "Where"
 #~ msgstr "Hvar"
 
+#  "Reveal in New Window" means open the parent folder for the
+#  * selected item in a new window, select the item in that window,
+#  * and scroll as necessary to make that item visible (this comment
+#  * is to inform translators of this tricky concept).
 #, fuzzy
 #~ msgid "Nautilus found more search results than it can display."
 #~ msgstr "Skráarstjóri Nautilus fyrir leitarniðustöður í listasýn"
@@ -7007,671 +6982,3 @@ msgstr "Skoða netþjóna í Nautilus skráarstjóranum"
 
 #~ msgid "Find:"
 #~ msgstr "Leita:"
-
-#~ msgid "Can't find an hbox, using a normal file selection"
-#~ msgstr "Ekki tókst að finna hbox, nota venjulegt skráarval"
-
-#~ msgid "AFFS Volume"
-#~ msgstr "AFFS Gagnahirsla"
-
-#~ msgid "AFS Network Volume"
-#~ msgstr "AFS Netgagnahirsla"
-
-#~ msgid "Auto-detected Volume"
-#~ msgstr "Sjálfvirkt-fundin Gagnahirsla"
-
-#~ msgid "CD Digital Audio"
-#~ msgstr "Hljóðdiskur"
-
-#~ msgid "CD-ROM Drive"
-#~ msgstr "CD-ROM Drif"
-
-#~ msgid "CDROM Volume"
-#~ msgstr "CDROM Gangahirsla"
-
-#~ msgid "DVD Volume"
-#~ msgstr "DVD Gagnahirsla"
-
-#~ msgid "Enhanced DOS Volume"
-#~ msgstr "Betrumbætt DOS Gagnahirsla"
-
-#~ msgid "Ext2 Linux Volume"
-#~ msgstr "Ext2 Linux Gagnahirsla"
-
-#~ msgid "Ext3 Linux Volume"
-#~ msgstr "Etx3 Linux Gagnahirsla"
-
-#, fuzzy
-#~ msgid "Hardware Device Volume"
-#~ msgstr "Gagnahirsla vélbúnaðareiningu"
-
-#~ msgid "Hsfs CDROM Volume"
-#~ msgstr "Hsfs CDROM Gagnahirsla"
-
-#~ msgid "JFS Volume"
-#~ msgstr "JFS Gagnahirsla"
-
-#~ msgid "MSDOS Volume"
-#~ msgstr "MSDOS Gagnahirsla"
-
-#~ msgid "MacOS Volume"
-#~ msgstr "MacOS Gagnahirsla"
-
-#~ msgid "Minix Volume"
-#~ msgstr "Minix Gagnahirsla"
-
-#~ msgid "NFS Network Volume"
-#~ msgstr "NFS Netgagnahirsla"
-
-#~ msgid "Pcfs Solaris Volume"
-#~ msgstr "Pcfs Solaris Gagnahirsla"
-
-#~ msgid "ReiserFS Linux Volume"
-#~ msgstr "ReiserFS Linux Gagnahirsla"
-
-#~ msgid "Solaris/BSD Volume"
-#~ msgstr "Solaris/BSD Gagnahirsla"
-
-#~ msgid "SuperMount Volume"
-#~ msgstr "SuperMount Gagnahirsla"
-
-#~ msgid "System Volume"
-#~ msgstr "Kerfis Gagnahirsla"
-
-#~ msgid "Udfs Solaris Volume"
-#~ msgstr "Udfs Solaris Gagnahirsla"
-
-#~ msgid "Windows NT Volume"
-#~ msgstr "Windows NT Gagnahirsla"
-
-#~ msgid "Windows Shared Volume"
-#~ msgstr "Samnýtt Windows Gagnahirsla"
-
-#~ msgid "Windows VFAT Volume"
-#~ msgstr "Windows VFAT Gagnahirsla"
-
-#~ msgid "XFS Linux Volume"
-#~ msgstr "XFS Linux Gagnahirsla"
-
-#~ msgid "XIAFS Volume"
-#~ msgstr "XIAFS Gagnahirsla"
-
-#~ msgid "Xenix Volume"
-#~ msgstr "Xenix Gagnahirsla"
-
-#~ msgid "Add a new server to your Network Servers and connect to it"
-#~ msgstr "Bæta við nýjum þjóni inn í Netþjónamöppu og tengjast honum"
-
-#~ msgid "New Server"
-#~ msgstr "Nýr þjónn"
-
-#~ msgid "*"
-#~ msgstr "*"
-
-#~ msgid "_Connect"
-#~ msgstr "_Tengjast"
-
-#~ msgid "File name"
-#~ msgstr "Skráarheiti"
-
-#~ msgid "Search Google for Selected Text"
-#~ msgstr "Leita á Google eftir völdum texta"
-
-#~ msgid "Use Google to search the web for the selected text"
-#~ msgstr "Nota Google til að leita á internetinu eftir völdum texta"
-
-#~ msgid "Look Up Selected Text in Dictionary"
-#~ msgstr "Fletta völdum texta upp í orðabók"
-
-#~ msgid "Look up the selected text in the Merriam-Webster dictionary"
-#~ msgstr "Fletta völdum texta upp í Merriam-Webster orðabókinni"
-
-#~ msgid "foo"
-#~ msgstr "foo"
-
-#~ msgid "foo (copy)"
-#~ msgstr "foo (afrit)"
-
-#~ msgid ".bashrc"
-#~ msgstr ".bashrc"
-
-#~ msgid ".bashrc (copy)"
-#~ msgstr ".bashrc (afrit)"
-
-#~ msgid ".foo.txt"
-#~ msgstr ".foo.txt"
-
-#~ msgid ".foo (copy).txt"
-#~ msgstr ".foo (afrit).txt"
-
-#~ msgid "foo foo"
-#~ msgstr "foo foo"
-
-#~ msgid "foo foo (copy)"
-#~ msgstr "foo foo (afrit)"
-
-#~ msgid "foo.txt"
-#~ msgstr "foo.txt"
-
-#~ msgid "foo (copy).txt"
-#~ msgstr "foo (afrit).txt"
-
-#~ msgid "foo foo.txt"
-#~ msgstr "foo foo.txt"
-
-#~ msgid "foo foo (copy).txt"
-#~ msgstr "foo foo (afrit).txt"
-
-#~ msgid "foo foo.txt txt"
-#~ msgstr "foo foo.txt txt"
-
-#~ msgid "foo foo (copy).txt txt"
-#~ msgstr "foo foo (afrit).txt txt"
-
-#~ msgid "foo...txt"
-#~ msgstr "foo...txt"
-
-#~ msgid "foo.. (copy).txt"
-#~ msgstr "foo.. (afrit).txt"
-
-#~ msgid "foo..."
-#~ msgstr "foo..."
-
-#~ msgid "foo... (copy)"
-#~ msgstr "foo... (afrit)"
-
-#~ msgid "foo. (copy)"
-#~ msgstr "foo. (afrit)"
-
-#~ msgid "foo. (another copy)"
-#~ msgstr "foo. (annað afrit)"
-
-#~ msgid "foo (another copy)"
-#~ msgstr "foo (annað afrit)"
-
-#~ msgid "foo (another copy).txt"
-#~ msgstr "foo (annað afrit).txt"
-
-#~ msgid "foo (3rd copy)"
-#~ msgstr "foo ( þriðja afrit)"
-
-#~ msgid "foo (3rd copy).txt"
-#~ msgstr "foo ( þriðja afrit).txt"
-
-#~ msgid "foo foo (another copy).txt"
-#~ msgstr "foo foo (annað afrit).txt"
-
-#~ msgid "foo foo (3rd copy).txt"
-#~ msgstr "foo foo ( þriðja afrit).txt"
-
-#~ msgid "foo (13th copy)"
-#~ msgstr "foo (Þrettánda afrit)"
-
-#~ msgid "foo (14th copy)"
-#~ msgstr "foo (Fjórtánda afrit)"
-
-#~ msgid "foo (13th copy).txt"
-#~ msgstr "foo ( þrettánda afrit).txt"
-
-#~ msgid "foo (14th copy).txt"
-#~ msgstr "foo (fjórtánda afrit).txt"
-
-#~ msgid "foo (21st copy)"
-#~ msgstr "foo ( 21 afrit)"
-
-#~ msgid "foo (22nd copy)"
-#~ msgstr "foo (22 afrit)"
-
-#~ msgid "foo (21st copy).txt"
-#~ msgstr "foo (21 afrit).txt"
-
-#~ msgid "foo (22nd copy).txt"
-#~ msgstr "foo (22 afrit).txt"
-
-#~ msgid "foo (23rd copy)"
-#~ msgstr "foo (23 afrit)"
-
-#~ msgid "foo (23rd copy).txt"
-#~ msgstr "foo (23 afrit).txt"
-
-#~ msgid "foo (24th copy)"
-#~ msgstr "foo (24 afrit)"
-
-#~ msgid "foo (24th copy).txt"
-#~ msgstr "foo (24 afrit).txt"
-
-#~ msgid "foo (25th copy)"
-#~ msgstr "foo (25 afrit)"
-
-#~ msgid "foo (25th copy).txt"
-#~ msgstr "foo (25 afrit).txt"
-
-#~ msgid "foo foo (24th copy)"
-#~ msgstr "foo foo (24 afrit)"
-
-#~ msgid "foo foo (25th copy)"
-#~ msgstr "foo foo (25 afrit)"
-
-#~ msgid "foo foo (24th copy).txt"
-#~ msgstr "foo foo (24 afrit).txt"
-
-#~ msgid "foo foo (25th copy).txt"
-#~ msgstr "foo foo (25 afrit).txt"
-
-#~ msgid "foo foo (100000000000000th copy).txt"
-#~ msgstr "foo foo (100000000000000'asta afrit).txt"
-
-#~ msgid "foo (10th copy)"
-#~ msgstr "foo (tíunda afrit)"
-
-#~ msgid "foo (11th copy)"
-#~ msgstr "foo (ellefta afrit)"
-
-#~ msgid "foo (10th copy).txt"
-#~ msgstr "foo (tíunda afrit).txt"
-
-#~ msgid "foo (11th copy).txt"
-#~ msgstr "foo (ellefta afrit).txt"
-
-#~ msgid "foo (12th copy)"
-#~ msgstr "foo (tólfta afrit)"
-
-#~ msgid "foo (12th copy).txt"
-#~ msgstr "foo (tólfta).txt"
-
-#~ msgid "foo (110th copy)"
-#~ msgstr "foo (110 afrit)"
-
-#~ msgid "foo (111th copy)"
-#~ msgstr "foo (111 afrit)"
-
-#~ msgid "foo (110th copy).txt"
-#~ msgstr "foo (110 afrit).txt"
-
-#~ msgid "foo (111th copy).txt"
-#~ msgstr "foo (111 afrit).txt"
-
-#~ msgid "foo (122nd copy)"
-#~ msgstr "foo (122 afrit)"
-
-#~ msgid "foo (123rd copy)"
-#~ msgstr "foo (123 afrit)"
-
-#~ msgid "foo (122nd copy).txt"
-#~ msgstr "foo (122 afrit).txt"
-
-#~ msgid "foo (123rd copy).txt"
-#~ msgstr "foo (123 afrit).txt"
-
-#~ msgid "foo (124th copy)"
-#~ msgstr "foo (124 afrit)"
-
-#~ msgid "foo (124th copy).txt"
-#~ msgstr "foo (124 afrit).txt"
-
-#~ msgid "0 items"
-#~ msgstr "0 hlutir"
-
-#~ msgid "0 folders"
-#~ msgstr "0 möppur"
-
-#~ msgid "0 files"
-#~ msgstr "0 skrár"
-
-#~ msgid "1 item"
-#~ msgstr "1 hlutur"
-
-#~ msgid "1 folder"
-#~ msgstr "1 mappa"
-
-#~ msgid "1 file"
-#~ msgstr "1 skrá"
-
-#~ msgid "date changed"
-#~ msgstr "síðast breytt"
-
-#~ msgid "C_hoose"
-#~ msgstr "Vel_ja"
-
-#~ msgid "1 folder selected"
-#~ msgstr "1 mappa valin"
-
-#~ msgid " (containing 0 items)"
-#~ msgstr " (inniheldur 0 hluti)"
-
-#~ msgid " (containing 1 item)"
-#~ msgstr " (inniheldur 1 hlut)"
-
-#~ msgid " (containing a total of 0 items)"
-#~ msgstr "(inniheldur samtals 0 hluti)"
-
-#~ msgid " (containing a total of 1 item)"
-#~ msgstr "(inniheldur samtals 1 hlut)"
-
-#~ msgid "1 other item selected (%s)"
-#~ msgstr "1 annar hlutur valin (%s)"
-
-#~ msgid "Other _Viewer..."
-#~ msgstr "Öðrum _rýni..."
-
-#~ msgid "A _Viewer..."
-#~ msgstr "_Rýnir..."
-
-#, fuzzy
-#~ msgid "Open in %d New Windows"
-#~ msgstr "Opna í %d nýjum _gluggum"
-
-#~ msgid "%d items, totalling %s"
-#~ msgstr "%d hlutir, stærð alls %s"
-
-#~ msgid "Choose another viewer with which to view the selected item"
-#~ msgstr "Veldu annan rýni til að skoða valdan hlut"
-
-#~ msgid "Write to CD"
-#~ msgstr "Rita á Geisladisk"
-
-#~ msgid "Close this window"
-#~ msgstr "Loka þessum glugga"
-
-#~ msgid "Write contents to a CD"
-#~ msgstr "Rita innihald á geisladisk"
-
-#~ msgid "_Write to CD"
-#~ msgstr "_Rita á Geisladisk"
-
-#~ msgid "Factory for hardware view"
-#~ msgstr "Verksmiðja velbúnaðarsýnar"
-
-#~ msgid "Hardware Viewer"
-#~ msgstr "Vélbúnaðarrýnir"
-
-#~ msgid "Hardware view"
-#~ msgstr "Vélbúnaðarsýn"
-
-#~ msgid "View as Hardware"
-#~ msgstr "Skoða sem vélbúnað"
-
-#~ msgid "hardware view"
-#~ msgstr "vélbúnaðarsýn"
-
-#~ msgid "name of icon for the hardware view"
-#~ msgstr "heiti táknmyndar fyrir vélbúnaðarsýn"
-
-#~ msgid "summary of hardware info"
-#~ msgstr "samantekt yfir velbúnaðarupplýsingar"
-
-#~ msgid ""
-#~ "%s CPU\n"
-#~ "%s MHz\n"
-#~ "%s K cache size"
-#~ msgstr ""
-#~ "%s Örgjafi\n"
-#~ "%s MHz\n"
-#~ "%s K skyndiminni"
-
-#~ msgid "%lu GB RAM"
-#~ msgstr "%lu GB RAM"
-
-#~ msgid "%lu MB RAM"
-#~ msgstr "%lu MB RAM"
-
-#~ msgid "%lu GB"
-#~ msgstr "%lu GB"
-
-#~ msgid "%lu MB"
-#~ msgstr "%lu MB"
-
-#~ msgid "Uptime is %d days, %d hours, %d minutes"
-#~ msgstr "Upptími er %d dagar, %d tímar, %d mínútur"
-
-#  set up the title
-#  set up the title
-#~ msgid "Hardware Overview"
-#~ msgstr "Vélbúnaðaryfirsýn"
-
-#~ msgid "This is a placeholder for the CPU page."
-#~ msgstr "Þetta er griðastaður fyrir CPU síðuna."
-
-#~ msgid "This is a placeholder for the RAM page."
-#~ msgstr "Þetta er griðastaður fyrir RAM síðuna."
-
-#~ msgid "This is a placeholder for the IDE page."
-#~ msgstr "Þetta er griðastaður fyrir IDE síðuna."
-
-#~ msgid ""
-#~ "Error while copying to \"%s\".\n"
-#~ "\n"
-#~ "There is not enough space on the destination."
-#~ msgstr ""
-#~ "Villa kom upp við afritun yfir í \"%s\".\n"
-#~ "\n"
-#~ "Það er ekki nægjanlegt pláss á áfangastað."
-
-#~ msgid ""
-#~ "Error while creating link in \"%s\".\n"
-#~ "\n"
-#~ "There is not enough space on the destination."
-#~ msgstr ""
-#~ "Villa kom upp við stofnun tengils í \"%s\".\n"
-#~ "\n"
-#~ "Það er ekki nægjanlegt pláss á áfangastað."
-
-#~ msgid ""
-#~ "Error while moving items to \"%s\".\n"
-#~ "\n"
-#~ "You do not have permissions to write to this folder."
-#~ msgstr ""
-#~ "Villa kom upp við flutning hluta yfir í \"%s\".\n"
-#~ "\n"
-#~ "Þú hefur ekki réttindi til að rita í þessa möppu."
-
-#~ msgid ""
-#~ "Error while moving items to \"%s\".\n"
-#~ "\n"
-#~ "The destination disk is read-only."
-#~ msgstr ""
-#~ "Villa kom upp við flutning á hlutum yfir í \"%s\".\n"
-#~ "\n"
-#~ "Áfangastaður er lesvarinn diskur."
-
-#~ msgid ""
-#~ "Error while creating links in \"%s\".\n"
-#~ "\n"
-#~ "You do not have permissions to write to this folder."
-#~ msgstr ""
-#~ "Villa kom upp við stofnun tengils í \"%s\".\n"
-#~ "\n"
-#~ "Þú heur ekki réttindi til að rita í þessa möppu."
-
-#~ msgid ""
-#~ "Error while creating links in \"%s\".\n"
-#~ "\n"
-#~ "The destination disk is read-only."
-#~ msgstr ""
-#~ "Villa kom upp við stofnun tengils í \"%s\".\n"
-#~ "\n"
-#~ "Áfangastaður er lesvarinn diskur."
-
-#~ msgid ""
-#~ "Error \"%s\" while copying \"%s\".\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "Villa \"%s\" við afritun á \"%s\".\n"
-#~ "\n"
-#~ "Viltu halda áfram?"
-
-#~ msgid ""
-#~ "Error \"%s\" while moving \"%s\".\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "Villa \"%s\" við flutning á \"%s\".\n"
-#~ "\n"
-#~ "Viltu halda áfram?"
-
-#~ msgid ""
-#~ "Error \"%s\" while deleting \"%s\".\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "Villa \"%s\" við útstrokun á \"%s\".\n"
-#~ "\n"
-#~ "Viltu halda áfram?"
-
-#~ msgid ""
-#~ "Error \"%s\" while copying.\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "Villa \"%s\" við afritun.\n"
-#~ "\n"
-#~ "Viltu halda áfram?"
-
-#~ msgid ""
-#~ "Error \"%s\" while linking.\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "Villa \"%s\" við tengingu tengils.\n"
-#~ "\n"
-#~ "Viltu halda áfram?"
-
-#~ msgid ""
-#~ "Error \"%s\" while deleting.\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "Villa \"%s\" við útstrokun.\n"
-#~ "\n"
-#~ "Viltu halda áfram?"
-
-#~ msgid "Can't Copy to Trash"
-#~ msgstr "Ekki tókst að afrita yfir í Ruslið"
-
-#~ msgid "Searching Disks"
-#~ msgstr "Leita á diskum"
-
-#~ msgid "Nautilus is searching your disks for trash folders."
-#~ msgstr "Nautilus leitar nú eftir rusla-möppum á diskunum þínum."
-
-#~ msgid ""
-#~ "The %d selected items cannot be moved to the Trash. Do you want to delete "
-#~ "them immediately?"
-#~ msgstr ""
-#~ "Þessir %d valdir hlutir var ekki hægt að flytja í ruslið. Viltu eyða þeim "
-#~ "varanelga?"
-
-#~ msgid ""
-#~ "%d of the selected items cannot be moved to the Trash. Do you want to "
-#~ "delete those %d items immediately?"
-#~ msgstr ""
-#~ "%d af völdum hlutum var ekki hægt að flytja í ruslið. Viltu eyða þessum %"
-#~ "d hlutum varanlega?"
-
-#~ msgid ""
-#~ "The file that you dropped is not an image.  You can only use local images "
-#~ "as custom icons."
-#~ msgstr ""
-#~ "Skráin sem þú slepptir er ekki mynd. Þú getur einungis notað staðbundnar "
-#~ "myndir í sérvaldar táknmyndir."
-
-#~ msgid ""
-#~ "\"%s\" is not a valid location. Please check the spelling and try again."
-#~ msgstr ""
-#~ "\"%s\" er ógild staðsetning. Vinsamlegast athugið stafsetningu og prufið "
-#~ "á ný."
-
-#~ msgid "file icon"
-#~ msgstr "skráartáknmynd"
-
-#, fuzzy
-#~ msgid "Name:"
-#~ msgstr "_Skráarheiti:"
-
-#~ msgid "Unknown"
-#~ msgstr "Óþekkt"
-
-#  Populate table with items we know localized names for.
-#~ msgid "Floppy"
-#~ msgstr "Disklingadrif"
-
-#~ msgid "CD-ROM"
-#~ msgstr "Geisladrif"
-
-#~ msgid "Zip Drive"
-#~ msgstr "Zipdrif"
-
-#~ msgid "Audio CD"
-#~ msgstr "Hljóðdiskur"
-
-#~ msgid "Root Volume"
-#~ msgstr "Rótarhirsla"
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the floppy drive. There is probably no "
-#~ "floppy in the drive."
-#~ msgstr ""
-#~ "Nautilus tókst ekki að tengja disklingadrifið. Líklegast er engin "
-#~ "disklingur í disklingadrifinu."
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the volume. There is probably no media in "
-#~ "the device."
-#~ msgstr ""
-#~ "Nautilus tókst ekki að tengja gagnahirlsuna. Líklegast er engin "
-#~ "gagnamiðil í einingunni sem þú reyndir að tengja."
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the floppy drive. The floppy is probably in "
-#~ "a format that cannot be mounted."
-#~ msgstr ""
-#~ "Nautilus tókst ekki að tengja disklingadrif. Disklingurinn inniheldur "
-#~ "líklegast skráarform sem ekki er hægt að tengja."
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the selected volume. The volume is probably "
-#~ "in a format that cannot be mounted."
-#~ msgstr ""
-#~ "Nautilus tókst ekki að tengja valda gagnahirslu. Hirslan inniheldur "
-#~ "líklegast skráarform sem ekki er hægt að tengja."
-
-#~ msgid "Nautilus was unable to mount the selected floppy drive."
-#~ msgstr "Nautilus tókst ekki að tengja valið disklingadrif."
-
-#~ msgid "Nautilus was unable to mount the selected volume."
-#~ msgstr "Nautilus tókst ekki að tengja valda gagnahirslu"
-
-#  FIXME: Should we parse this message and report something more meaningful?
-#~ msgid "Nautilus was unable to unmount the selected volume."
-#~ msgstr "Nautilus tókst ekki að aftengja valda gagnahirslu."
-
-#~ msgid "ISO 9660 Volume"
-#~ msgstr "ISO 9660 Gagnahirsla"
-
-#~ msgid "Dis_ks"
-#~ msgstr "Dis_kar"
-
-#~ msgid "Mount or unmount disks"
-#~ msgstr "Tengja eða aftengja diska"
-
-#~ msgid "Open _in This Window"
-#~ msgstr "Opna í þessum _glugga"
-
-#~ msgid "_Open activated item in a new window"
-#~ msgstr "_Opna virka hluti í nýjum glugga"
-
-#~ msgid "Change the visibility of this window's toolbar"
-#~ msgstr "Breyta sjónrænu útliti fyrir tólstiku þessa glugga"
-
-#~ msgid "Go to the Start Here folder"
-#~ msgstr "Fara í byrja hér möppu"
-
-#~ msgid "Open New _Window"
-#~ msgstr "Opna Nýjan _glugga"
-
-#~ msgid "_Start Here"
-#~ msgstr "_Byrja hér"
-
-#~ msgid "_Toolbar"
-#~ msgstr "_Tólstika"
