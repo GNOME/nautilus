@@ -1,3 +1,16 @@
+2000-09-18  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 3018, should not be able to remove special icons
+	from desktop.
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(is_special_link):
+	New function that checks if link is volume, home or trash.
+
+	(nautilus_file_operations_copy_move):
+	Call is_special_link() and prune special items from
+	operation list.
+
 2000-09-18  Arlo Rose  <arlo@eazel.com>
 
 	* icons/throbber/008.png:

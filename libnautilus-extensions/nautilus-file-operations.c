@@ -932,6 +932,51 @@ append_basename (const GnomeVFSURI *target_directory, const GnomeVFSURI *source_
 	return gnome_vfs_uri_dup (target_directory);
 }
 
+/* is_special_link
+ *
+ * Check and see if file is one of our special links.
+ * A special link ould be one of the following:
+ * 	trash, home, volume
+ */
+static gboolean 
+is_special_link (const GnomeVFSURI *uri)
+{
+	const char *local_path;
+	char *escaped_path;
+	
+	if (!gnome_vfs_uri_is_local (uri)) {
+		return FALSE;
+	}
+	
+	local_path = gnome_vfs_uri_get_path (uri);
+	if (local_path == NULL) {
+		return FALSE;
+	}
+	
+	escaped_path = gnome_vfs_unescape_string_for_display (local_path);
+	if (escaped_path == NULL) {
+		return FALSE;
+	}
+
+	if (nautilus_link_local_is_trash_link (escaped_path)) {
+		g_free(escaped_path);
+		return TRUE;
+	}
+
+	if (nautilus_link_local_is_home_link (escaped_path)) {
+		g_free(escaped_path);
+		return TRUE;
+	}
+
+	if (nautilus_link_local_is_volume_link (escaped_path)) {
+		g_free(escaped_path);
+		return TRUE;
+	}
+
+	g_free(escaped_path);
+	return FALSE;
+}
+
 void
 nautilus_file_operations_copy_move (const GList *item_uris,
 				    const GdkPoint *relative_item_points,
@@ -985,25 +1030,39 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	 */
 	for (p = item_uris; p != NULL; p = p->next) {
 		source_uri = gnome_vfs_uri_new ((const char *)p->data);
-		source_uri_list = g_list_prepend (source_uri_list, source_uri);
-
-		if (target_dir != NULL) {
-			if (is_trash_move) {
-				gnome_vfs_find_directory (source_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-						   	  &target_dir_uri, FALSE, FALSE, 0777);				
+		/* Filter out special Nautilus link files */
+		if (!is_special_link (source_uri)) {
+			source_uri_list = g_list_prepend (source_uri_list, source_uri);
+			
+			if (target_dir != NULL) {
+				if (is_trash_move) {
+					gnome_vfs_find_directory (source_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
+							   	  &target_dir_uri, FALSE, FALSE, 0777);				
+				}
+				target_uri = append_basename (target_dir_uri, source_uri);
+			} else {
+				/* duplication */
+				target_uri = gnome_vfs_uri_ref (source_uri);
+				if (target_dir_uri == NULL) {
+					target_dir_uri = gnome_vfs_uri_get_parent (source_uri);
+				}
 			}
-			target_uri = append_basename (target_dir_uri, source_uri);
-		} else {
-			/* duplication */
-			target_uri = gnome_vfs_uri_ref (source_uri);
-			if (target_dir_uri == NULL) {
-				target_dir_uri = gnome_vfs_uri_get_parent (source_uri);
-			}
+			target_uri_list = g_list_prepend (target_uri_list, target_uri);
+			gnome_vfs_check_same_fs_uris (source_uri, target_uri, &same_fs);
 		}
-		target_uri_list = g_list_prepend (target_uri_list, target_uri);
-		gnome_vfs_check_same_fs_uris (source_uri, target_uri, &same_fs);
 	}
 
+	/* List may be NULL if we filtered all items out */
+	if (source_uri_list == NULL) {
+		if (target_dir_uri != NULL) {
+			gnome_vfs_uri_unref (target_dir_uri);
+		}
+		if (target_uri_list != NULL) {
+			gnome_vfs_uri_list_free (target_uri_list);
+		}
+		return;
+	}
+	
 	source_uri_list = g_list_reverse (source_uri_list);
 	target_uri_list = g_list_reverse (target_uri_list);
 
