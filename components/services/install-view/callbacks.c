@@ -495,7 +495,6 @@ inventory_service_callback (EazelInventory *inventory,
 
 	gtk_object_unref (GTK_OBJECT (inventory));
 
-	g_warning ("attemping to go back");
 	nautilus_view_go_back (view->details->nautilus_view);
 }
 

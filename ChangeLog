@@ -1,3 +1,20 @@
+2001-03-01  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen <eskil@eazel.com>
+	who pronounced it his 2nd favorite patch, ever.
+
+	* components/services/install-view/callbacks.c:
+	(inventory_service_callback):
+
+	Remove mispelled spam that crept back in during Ian's checkin.
+
+	* nautilus-installer/src/gtk-hackery.c: (gtk_label_new_with_font):
+	* nautilus-installer/src/main.c: (main):
+
+	Don't explode if the font we want isn't available.  Don't try to
+	localize text in the bootstrap installer because it just leads to
+	trouble.
+
 2001-03-01  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	reviewed by: Robey Pointer  <robey@eazel.com>

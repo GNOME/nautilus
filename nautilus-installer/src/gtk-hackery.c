@@ -111,12 +111,18 @@ gtk_label_new_with_font (const char *text, const char *fontname)
 {
 	GtkWidget *label;
 	GtkStyle *style;
+	GdkFont *font;
 
+	/* oh how low we've sunk... */
 	label = gtk_label_new (text);
 	style = gtk_style_copy (label->style);
-	gdk_font_unref (style->font);
-	/* oh how low we've sunk... */
-	style->font = gdk_fontset_load (fontname);
+	font = gdk_fontset_load (fontname);
+	if (font == NULL) {
+		g_warning ("unable to load font '%s'!", fontname);
+	} else {
+		gdk_font_unref (style->font);
+		style->font = font;
+	}
 	gtk_widget_set_style (label, style);
 	gtk_style_unref (style);
 

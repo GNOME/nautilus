@@ -74,9 +74,9 @@ static const struct poptOption options[] = {
 	{"server", '\0', POPT_ARG_STRING, &installer_server, 0, N_("Specify Eazel installation server"), NULL},
 	{"tmpdir", 'T', POPT_ARG_STRING, &installer_tmpdir, 0, N_("Temporary directory to use for downloaded files (default: /tmp)"), "directory"},
 	{"homedir", '\0', POPT_ARG_STRING|POPT_ARGFLAG_DOC_HIDDEN, &installer_homedir, 0, "", NULL},
-	{"user", '\0', POPT_ARG_STRING|POPT_ARGFLAG_DOC_HIDDEN, &installer_user, 0, "", NULL},
 	{"package", '\0', POPT_ARG_STRING, &installer_package, 0 , N_("Install package"), NULL},
 	{"port", '\0', POPT_ARG_INT, &installer_server_port, 0 , N_("Set port number for Eazel installation server (default: 80)"), NULL},
+	{"user", '\0', POPT_ARG_STRING|POPT_ARGFLAG_DOC_HIDDEN, &installer_user, 0, "", NULL},
 	{"cgi-path", '\0', POPT_ARG_STRING, &installer_cgi_path, 0, N_("Specify CGI path for Eazel installation server"), NULL},
 	{"build", 'B', POPT_ARG_NONE, &installer_show_build, 0, N_("Display installer version"), NULL},
 	{"batch", '\0', POPT_ARG_NONE, &installer_dont_ask_questions, 0, N_("Solve installation issues without interaction"), NULL},
@@ -135,7 +135,11 @@ main (int argc, char *argv[])
 	char *fake_argv0 = "eazel-installer.sh";
 	struct stat statbuf;
 
-#ifdef ENABLE_NLS
+	/* there is no point in binding to a locale here, since this is statically linked,
+	 * and does NOT ship with translation files.  there is a separate mechanism for
+	 * getting translated text.
+	 */
+#if 0
 	bindtextdomain ("eazel-installer", GNOMELOCALEDIR);
 	textdomain ("eazel-installer");
 #endif
