@@ -291,36 +291,35 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
 		       		   gpointer user_data,
 		      		   const char *path)
 {
-  static GtkWidget *aboot = NULL;
+	static GtkWidget *aboot = NULL;
 
-  if (aboot == NULL)
-  {
-    const char *authors[] = {
-      "Darin Adler",
-      "Pavel Cisler", /* fixme: needs accent mark on the i */
-      "Ramiro Estrugo",
-      "Andy Hertzfeld",
-      "Elliot Lee",
-      "Ettore Perazzoli",
-      "Gene Ragan",
-      "Arlo Rose",
-      "Rebecca Schulman",
-      "Maciej Stachowiak",
-      "John Sullivan",
-      NULL
-    };
+	if (aboot == NULL) {
+		const char *authors[] = {
+			"Darin Adler",
+			"Pavel Císler",
+			"Ramiro Estrugo",
+			"Andy Hertzfeld",
+			"Elliot Lee",
+			"Ettore Perazzoli",
+			"Gene Ragan",
+			"Arlo Rose",
+			"Rebecca Schulman",
+			"Maciej Stachowiak",
+			"John Sullivan",
+			NULL
+		};
 
-    aboot = gnome_about_new(_("Nautilus"),
-                            VERSION,
-                            "Copyright (C) 1999, 2000",
-                            authors,
-                            _("The Gnome Shell"),
-                            "nautilus/About_Image.png");
+		aboot = gnome_about_new(_("Nautilus"),
+					VERSION,
+					"Copyright (C) 1999, 2000",
+					authors,
+					_("The Gnome Shell"),
+					"nautilus/About_Image.png");
 
-    gnome_dialog_close_hides (GNOME_DIALOG (aboot), TRUE);
-  }
+		gnome_dialog_close_hides (GNOME_DIALOG (aboot), TRUE);
+	}
 
-  nautilus_gtk_window_present (GTK_WINDOW (aboot));
+	nautilus_gtk_window_present (GTK_WINDOW (aboot));
 }
 
 static void
