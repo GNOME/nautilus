@@ -28,7 +28,7 @@
 #include <glib.h>
 
 /*
- * A callback which can be invoked for each font available in the system.
+ * A callback which can be invoked for each sidebar panel available.
  */
 typedef void (*NautilusSidebarPanelCallback) (const char *name,
 					      const char *iid,
