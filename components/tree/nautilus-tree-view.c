@@ -57,13 +57,13 @@
 
 #include <stdio.h>
 
+
+#define nopeMATHIEU_DEBUG 1
 /* timeout for the automatic expand in tree view */
-#define EXPAND_TIMEOUT 800
-#define COLLAPSE_TIMEOUT 1200
+#define EXPAND_TIMEOUT 1000
+#define COLLAPSE_TIMEOUT 500
 
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
-
-#define DND_DEBUG 1
 
 #define	ROW_ELEMENT(clist, row)	(((row) == (clist)->rows - 1) ? \
 				 (clist)->row_list_end : \
@@ -253,7 +253,6 @@ static void    nautilus_tree_view_real_scroll             (NautilusTreeView     
 							   float                  x_delta, 
 							   float                  y_delta);
 
-static void    nautilus_tree_view_free_drag_data          (NautilusTreeView      *tree_view);
 static void    nautilus_tree_view_receive_dropped_icons   (NautilusTreeView      *view,
 							   GdkDragContext        *context,
 							   int                    x, 
@@ -267,8 +266,7 @@ static void  nautilus_tree_view_ensure_drag_data (NautilusTreeView *tree_view,
 						  guint32 time);
 static void  nautilus_tree_view_expand_maybe_later (NautilusTreeView *tree_view,
 						    int x, 
-						    int y,
-						    gpointer user_data);
+						    int y);
 static void  nautilus_tree_view_get_drop_action (NautilusTreeView *tree_view, 
 						 GdkDragContext *context,
 						 int x, int y,
@@ -282,6 +280,9 @@ static void  nautilus_tree_view_collapse_all    (NautilusTreeView *tree_view,
 static void nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass);
 static void nautilus_tree_view_initialize       (NautilusTreeView      *view);
 static void nautilus_tree_view_destroy          (GtkObject             *object);
+static void nautilus_tree_view_drag_destroy     (NautilusTreeView      *tree_view);
+static void nautilus_tree_view_drag_destroy_real (NautilusTreeView *tree_view);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTreeView, nautilus_tree_view, GTK_TYPE_SCROLLED_WINDOW)
      
@@ -936,9 +937,7 @@ static void
 filtering_changed_callback (gpointer callback_data)
 {
 	NautilusTreeView *view;
-#if 0
-	NautilusCTreeNode *node;
-#endif
+
 	view = NAUTILUS_TREE_VIEW (callback_data);
 
 	view->details->show_hidden_files = 
@@ -1580,16 +1579,34 @@ nautilus_tree_view_drag_end (GtkWidget *widget, GdkDragContext *context,
 
 }
 
-
-/* FIXME:
-   drag_leave is emitted when you leave the area _OR_ when you do a drop.
-   So, the thing is when you drop, since we are now in a in-process case, 
-   the _leave signal is emited before the final drag_data_received is 
-   actually called. This is _bad_.
-   I need to proofread the code to make sure nothing really strange 
-   happen here 
-   -- Mathieu
+/* will be called shortly after you have left the tree view.
+   It will collapse everything which got expanded during the
+   drag and drop unless it already got collapsed by the
+   drop 
 */
+static gboolean
+collapse_time_callback (gpointer data)
+{
+	NautilusTreeView *tree_view;
+	NautilusTreeViewDndDetails *dnd;
+	NautilusCTreeNode *dropped_node;
+
+	g_assert (NAUTILUS_IS_TREE_VIEW (data));
+	tree_view = NAUTILUS_TREE_VIEW (data);
+	dnd = tree_view->details->dnd;
+
+	if (dnd->expanded_nodes != NULL) {
+		dropped_node = nautilus_tree_view_tree_node_at (tree_view, -1, -1);
+		if (dropped_node != NULL) {
+			nautilus_tree_view_collapse_all (tree_view, dropped_node);
+		}
+	
+		g_slist_free (dnd->expanded_nodes);
+		dnd->expanded_nodes = NULL;
+	}
+
+	return FALSE;
+}
 
 static void
 nautilus_tree_view_drag_leave (GtkWidget *widget,
@@ -1598,21 +1615,14 @@ nautilus_tree_view_drag_leave (GtkWidget *widget,
 			       gpointer user_data)
 {
 	NautilusTreeView *tree_view;
-	NautilusTreeViewDndDetails *dnd;
+
+	g_assert (NAUTILUS_IS_TREE_VIEW (user_data));
 
 	tree_view = NAUTILUS_TREE_VIEW (user_data);
-	dnd = tree_view->details->dnd;
 
-	/* bring the highlighted row back to normal. */
-	if (dnd->current_prelighted_node != NULL) {
-		nautilus_ctree_node_set_row_style (NAUTILUS_CTREE (tree_view->details->tree), 
-					      dnd->current_prelighted_node,
-					      tree_view->details->dnd->normal_style);
-	}
-	dnd->current_prelighted_node = NULL;
+	nautilus_tree_view_drag_destroy (tree_view);
 
-	/* stop autoscroll */
-	nautilus_tree_view_stop_auto_scroll (tree_view);
+	g_timeout_add (COLLAPSE_TIMEOUT, collapse_time_callback, tree_view);
 
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
 				      "drag_leave");
@@ -1632,6 +1642,12 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 	dnd = (NautilusTreeViewDndDetails *) (tree_view->details->dnd);
 	drag_info = dnd->drag_info;
 
+	/* destroy the data from the previous drag */
+	if (drag_info->need_to_destroy) {
+		drag_info->need_to_destroy = FALSE;
+		nautilus_tree_view_drag_destroy_real (NAUTILUS_TREE_VIEW (tree_view));
+	}
+			
 	/* get the data from the other side of the dnd */
 	nautilus_tree_view_ensure_drag_data (tree_view, context, time);	
 
@@ -1642,7 +1658,7 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 		case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
 		case NAUTILUS_ICON_DND_URI_LIST:
 			nautilus_tree_view_expand_maybe_later (NAUTILUS_TREE_VIEW (tree_view), 
-							       x, y, user_data);
+							       x, y);
 			nautilus_tree_view_make_prelight_if_file_operation (NAUTILUS_TREE_VIEW (tree_view), 
 									    x, y);
 			break;
@@ -1696,6 +1712,8 @@ nautilus_tree_view_drag_drop (GtkWidget *widget,
 			   GPOINTER_TO_INT (context->targets->data),
 			   time);
 
+
+
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
 				      "drag_drop");
 	return TRUE;
@@ -1717,6 +1735,7 @@ nautilus_tree_view_drag_data_received (GtkWidget *widget,
 	dnd = tree_view->details->dnd;
 	drag_info = dnd->drag_info;
 
+
 	if (!drag_info->got_drop_data_type) {
 		drag_info->data_type = info;
 		drag_info->got_drop_data_type = TRUE;
@@ -1736,7 +1755,9 @@ nautilus_tree_view_drag_data_received (GtkWidget *widget,
 			/* we do not want to support any of the 3 above */
 			break;
 		}
-	} else if (drag_info->drop_occured) {
+	} 
+
+	if (drag_info->drop_occured) {
 		/* drop occured: do actual operations on the data */
 		switch (info) {
 		case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
@@ -1752,14 +1773,9 @@ nautilus_tree_view_drag_data_received (GtkWidget *widget,
 		default:
 			gtk_drag_finish (context, FALSE, FALSE, time);
 		}
-		
-		nautilus_tree_view_free_drag_data (NAUTILUS_TREE_VIEW (tree_view));
 
-		/* reinitialise it for the next dnd */
-		drag_info->drop_occured = FALSE;
-		drag_info->got_drop_data_type = FALSE;
-		g_slist_free (dnd->expanded_nodes);
-		dnd->expanded_nodes = NULL;
+		nautilus_tree_view_drag_destroy (NAUTILUS_TREE_VIEW (tree_view));
+		
 	}
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
 				      "drag_data_received");
@@ -2353,28 +2369,26 @@ static int    expand_time_callback (gpointer data);
 static void   expand_hack_unref (NautilusTreeViewExpandHack * expand_hack); 
 static NautilusTreeViewExpandHack    *expand_hack_new (int x, int y, NautilusTreeView *tree_view);
 
-static char *
+static void
 nautilus_dump_info (NautilusTreeView *tree_view)
 {
-	char *retval, *temp;
+#ifdef MATHIEU_DEBUG
 	GSList *list, *tmp;
 	NautilusCTreeNode *node;
 	char *uri;
 
 	list = tree_view->details->dnd->expanded_nodes;
 
-	retval = NULL;
 	for (tmp = list; tmp != NULL;tmp = tmp->next) {
 		node = (NautilusCTreeNode *) tmp->data;
 		uri = nautilus_file_get_uri (view_node_to_file (tree_view, 
 								node));
-		temp = g_strconcat (uri, ", ", retval, NULL);
+		g_print ("will collapse: %s\n", uri);
 		g_free (uri);
-		g_free (retval);
-		retval = temp;
 	}
 
-	return retval;
+	g_print ("\n");
+#endif
 }
 
 static void
@@ -2415,12 +2429,17 @@ expand_time_callback (gpointer data)
 
 	if (expand_hack->is_valid) {
 		NautilusCTreeNode *current_node;
-		gboolean was_expanded;
+		gboolean was_expanded, is_expanded, is_directory;
 
 		current_node = nautilus_tree_view_tree_node_at (expand_hack->tree_view, 
 								expand_hack->org_x, 
 								expand_hack->org_y);
-		if (current_node == NULL) {
+		is_directory = nautilus_tree_view_is_tree_node_directory (expand_hack->tree_view, current_node);
+		is_expanded = nautilus_tree_view_is_tree_node_expanded (NAUTILUS_CTREE (expand_hack->ctree), 
+									current_node);
+		if (current_node == NULL 
+		    || !is_directory  
+		    || is_expanded) {
 			expand_hack_unref (expand_hack);
 			return FALSE;
 		}
@@ -2431,8 +2450,8 @@ expand_time_callback (gpointer data)
 			list = expand_hack->tree_view->details->dnd->expanded_nodes;
 			expand_hack->tree_view->details->dnd->expanded_nodes = 
 				g_slist_prepend (list, current_node);
-			nautilus_dump_info (expand_hack->tree_view);
-		}
+			nautilus_dump_info (NAUTILUS_TREE_VIEW (expand_hack->tree_view));
+		} 
 
 	}
 	expand_hack_unref (expand_hack);
@@ -2450,11 +2469,11 @@ expand_time_callback (gpointer data)
 
 static void
 nautilus_tree_view_expand_maybe_later (NautilusTreeView *tree_view,
-				       int x, int y, gpointer user_data)
+				       int x, int y)
 {
 	static NautilusTreeViewExpandHack *expand_hack = NULL;
 	NautilusCTreeNode *current_node;
-	gboolean is_directory, is_expanded;
+	int distance;
 	
 	current_node = nautilus_tree_view_tree_node_at (tree_view, 
 							x, y);
@@ -2465,19 +2484,14 @@ nautilus_tree_view_expand_maybe_later (NautilusTreeView *tree_view,
 		expand_hack = expand_hack_new (x, y, tree_view);
 	}
 
-	is_directory = nautilus_tree_view_is_tree_node_directory (tree_view, current_node);
-	is_expanded = nautilus_tree_view_is_tree_node_expanded (NAUTILUS_CTREE (tree_view->details->tree), current_node);
 
-	/* try to expand */
-	if (is_directory && !is_expanded) {
-		int squared_distance;
-		squared_distance = (abs(x - expand_hack->org_x)) + (abs(y - expand_hack->org_y));
+	distance = (abs(x - expand_hack->org_x)) + (abs(y - expand_hack->org_y));
 
-		if (squared_distance > 8) {
-			expand_hack->is_valid = FALSE;
-			expand_hack_unref (expand_hack);
-			expand_hack = expand_hack_new (x, y, tree_view);
-		}
+	if (distance > 8) {
+		expand_hack->is_valid = FALSE;
+		expand_hack_unref (expand_hack);
+
+		expand_hack = expand_hack_new (x, y, tree_view);
 	}
 }
 
@@ -2579,35 +2593,6 @@ nautilus_tree_view_real_scroll (NautilusTreeView *tree_view, float delta_x, floa
 
 
 
-static void
-nautilus_tree_view_free_drag_data (NautilusTreeView *tree_view)
-{
-	NautilusDragInfo *drag_info;
-	
-	drag_info = tree_view->details->dnd->drag_info;
-	drag_info->got_drop_data_type = FALSE;
-#if 0	
-	if (dnd_info->shadow != NULL) {
-		gtk_object_destroy (GTK_OBJECT (dnd_info->shadow));
-		dnd_info->shadow = NULL;
-	}
-#endif /* 0 */
-
-	if (drag_info->selection_data != NULL) {
-		nautilus_gtk_selection_data_free_deep (drag_info->selection_data);
-		drag_info->selection_data = NULL;
-	}
-}
-
-
-
-
-
-
-
-
-
-
 /******************************************
  * Handle the data dropped on the tree view 
  ******************************************/
@@ -2673,13 +2658,14 @@ nautilus_tree_view_collapse_all (NautilusTreeView *tree_view,
 	GSList *list, *temp_list;
 
 	list = tree_view->details->dnd->expanded_nodes;
+	
 
 	for (temp_list = list; temp_list != NULL; temp_list = temp_list->next) {
 		NautilusCTreeNode *expanded_node;
 		expanded_node = (NautilusCTreeNode *) temp_list->data;
 		if (!nautilus_ctree_is_ancestor (NAUTILUS_CTREE (tree_view->details->tree), 
 						 expanded_node, current_node)) {
-#if 0
+#ifdef MATHIEU_DEBUG
 			{
 				char *expanded_uri, *current_uri;
 				expanded_uri = nautilus_file_get_uri 
@@ -2706,12 +2692,16 @@ nautilus_tree_view_receive_dropped_icons (NautilusTreeView *view,
 {
 	NautilusDragInfo *drag_info;
 	NautilusTreeView *tree_view;
-	gboolean local_move_only;
+	NautilusTreeViewDndDetails *dnd;
 	char *drop_target_uri;
 	NautilusCTreeNode *dropped_node;
 
+	g_assert (NAUTILUS_IS_TREE_VIEW (view));
+
 	tree_view = NAUTILUS_TREE_VIEW (view);
-	drag_info = tree_view->details->dnd->drag_info;
+	dnd = tree_view->details->dnd;
+	drag_info = dnd->drag_info;
+	
 
 	drop_target_uri = NULL;
 
@@ -2732,44 +2722,117 @@ nautilus_tree_view_receive_dropped_icons (NautilusTreeView *view,
 			return;
 		}
 
-		local_move_only = FALSE;
-		/* calculate if we ended to drop into the orignal source... */
-		local_move_only = nautilus_drag_items_local (drop_target_uri, 
-							     drag_info->selection_list);
-		
-		/* do nothing for the local case: we do not reorder. */
-		if (!local_move_only) {
-			{
-				char *action_string;
-				switch (context->action) {
-				case GDK_ACTION_MOVE:
-					action_string = "move";
-					break;
-				case GDK_ACTION_COPY:
-					action_string = "copy";
-					break;
-				case GDK_ACTION_LINK:
-					action_string = "link";
-					break;
-				default:
-					g_assert_not_reached ();
-					action_string = "error";
-					break;
-				}
-				
-				g_print ("%s selection in %s\n", 
-					 action_string, drop_target_uri);
+#ifdef MATHIEU_DEBUG
+		{
+			char *action_string;
+			switch (context->action) {
+			case GDK_ACTION_MOVE:
+				action_string = "move";
+				break;
+			case GDK_ACTION_COPY:
+				action_string = "copy";
+				break;
+			case GDK_ACTION_LINK:
+				action_string = "link";
+				break;
+			default:
+				g_assert_not_reached ();
+				action_string = "error";
+				break;
 			}
-			nautilus_tree_view_move_copy_files (tree_view, drag_info->selection_list, 
-							    context, drop_target_uri);
-			/* collapse all expanded directories during drag except the one we 
-			   droped into */
-			dropped_node = nautilus_tree_view_tree_node_at (view, x, y);
-			nautilus_tree_view_collapse_all (view, dropped_node);
-
+			g_print ("%s selection in %s\n", 
+				 action_string, drop_target_uri);
 		}
+#endif
+		nautilus_tree_view_move_copy_files (tree_view, drag_info->selection_list, 
+							    context, drop_target_uri);
+		/* collapse all expanded directories during drag except the one we 
+		   droped into */
+		dropped_node = nautilus_tree_view_tree_node_at (tree_view, x, y);
+		if (dropped_node != NULL) {
+			nautilus_tree_view_collapse_all (tree_view, dropped_node);
+		}
+
+		g_slist_free (dnd->expanded_nodes);
+		dnd->expanded_nodes = NULL;
+
 		g_free (drop_target_uri);
-		nautilus_drag_destroy_selection_list (drag_info->selection_list);
-		drag_info->selection_list = NULL;
 	}
+}
+
+
+static void
+nautilus_tree_view_prelight_stop (NautilusTreeView *tree_view)
+{
+	NautilusTreeViewDndDetails *dnd;
+
+	g_assert (NAUTILUS_IS_TREE_VIEW (tree_view));
+
+	dnd = tree_view->details->dnd;
+
+	if (dnd->current_prelighted_node != NULL) {
+		nautilus_ctree_node_set_row_style (NAUTILUS_CTREE (tree_view->details->tree), 
+					      dnd->current_prelighted_node,
+					      tree_view->details->dnd->normal_style);
+	}
+	dnd->current_prelighted_node = NULL;
+
+}
+
+
+
+static void
+nautilus_tree_view_drag_destroy (NautilusTreeView *tree_view)
+{
+	NautilusTreeViewDndDetails *dnd;
+	NautilusDragInfo *drag_info;
+
+	g_assert (NAUTILUS_IS_TREE_VIEW (tree_view));
+
+	dnd = tree_view->details->dnd;
+	drag_info = dnd->drag_info;
+
+	drag_info->need_to_destroy = TRUE;
+
+	/* stop autoscroll */
+	nautilus_tree_view_stop_auto_scroll (tree_view);
+
+	/* remove prelighting */
+	nautilus_tree_view_prelight_stop (tree_view);
+
+	nautilus_tree_view_expand_maybe_later (tree_view, 0, 0);
+}
+
+
+static void
+nautilus_tree_view_drag_destroy_real (NautilusTreeView *tree_view)
+{
+	NautilusTreeViewDndDetails *dnd;
+	NautilusDragInfo *drag_info;
+
+	g_assert (NAUTILUS_IS_TREE_VIEW (tree_view));
+
+	dnd = tree_view->details->dnd;
+	drag_info = dnd->drag_info;
+
+	/* reset booleans used during drag. */
+	drag_info->got_drop_data_type = FALSE;
+	nautilus_drag_destroy_selection_list (drag_info->selection_list);
+	drag_info->drop_occured = FALSE;
+
+	
+
+	/* misc stuff */
+	/*	
+	if (dnd_info->shadow != NULL) {
+		gtk_object_destroy (GTK_OBJECT (dnd_info->shadow));
+		dnd_info->shadow = NULL;
+	}
+	*/
+
+	if (drag_info->selection_data != NULL) {
+		nautilus_gtk_selection_data_free_deep (drag_info->selection_data);
+		drag_info->selection_data = NULL;
+	}
+
 }

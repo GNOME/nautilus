@@ -1,3 +1,4 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* nautilus-drag.h - Common Drag & drop handling code shared by the icon container
    and the list view.
 
@@ -76,6 +77,9 @@ typedef struct {
 
         /* has the drop occured ? */
         gboolean drop_occured;
+
+	/* whether or not need to clean up the previous dnd data */
+	gboolean need_to_destroy;
 
 	/* autoscrolling during dragging */
 	int auto_scroll_timeout_id;

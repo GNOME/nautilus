@@ -1,3 +1,32 @@
+2000-11-13  Mathieu Lacage  <mathieu@eazel.com>
+
+	Buddy: pavel.
+	Fix bug 2422 and 4382.
+	
+	* components/tree/nautilus-tree-view.c:
+	(filtering_changed_callback), 
+	(collapse_time_callback): added. collapses opened folders when
+	you leave the tree view.
+	(nautilus_tree_view_drag_leave): make it call tree_view_drag_destroy
+	(nautilus_tree_view_drag_motion): cleanup, make it call
+	tree_view_drag_destroy_real
+	(nautilus_tree_view_drag_drop): spaces.
+	(nautilus_tree_view_drag_data_received): cleanup: make it call
+	tree_view_drag_destroy.
+	(nautilus_dump_info): cleanup.
+	(expand_time_callback): cleanup.
+	(nautilus_tree_view_expand_maybe_later): cleanup
+	(nautilus_tree_view_collapse_all): cleanup.
+	(nautilus_tree_view_receive_dropped_icons): make it collapse
+	correctly.
+	(nautilus_tree_view_prelight_stop): new function: clears prelighting.
+	(nautilus_tree_view_drag_destroy): new function: destroys when drag finished.
+	(nautilus_tree_view_drag_destroy_real): new function: destroys when drag begins.
+	* docs/dnd.txt: add some thoughts.
+	* libnautilus-extensions/nautilus-drag.c: 
+	(nautilus_drag_init): init new field.
+	* libnautilus-extensions/nautilus-drag.h: add shared field to public structure.
+
 2000-11-13  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 4700, ejecting an audio cd kills Nautilus

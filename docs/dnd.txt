@@ -53,6 +53,7 @@ Then, when the drop occurs, drag_drop is called on the destination.
 drag_drop calls gtk_drag_get_data to get the data from the source to do its drop.
 Then, drag_data_received is called when the data is received.
 There, we can do the actual operation involved by the drop.
+Also, just before the drag_drop event, a drag_leave event is triggered.
 
 If no drop occurs, a drag_leave occurs.
 
@@ -74,7 +75,18 @@ To solve 2), we have to be very careful where we call this fution from.
 
 This function has to clean up: 
      - the list of expanded nodes (tree view).
-     - the drag data.
-     - the boolean vars used to store the state of the drag.
      - the autoscroll code.
      - the prelighting code.
+     It also has to set drag_info->need_to_destroy to TRUE
+     so that during the next drag in this widget, the 
+     rest of the drag data is destroyed before begening the actual
+     new drag.
+
+When we receive a drag_motion, we first test for need_to_destroy and
+destroy the rest of the data left from the previous drag. This code
+has to destroy/reset:
+     - the drag data.
+     - the boolean vars used to store the state of the drag.
+
+
+

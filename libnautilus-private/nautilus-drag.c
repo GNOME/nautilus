@@ -54,6 +54,7 @@ nautilus_drag_init (NautilusDragInfo *drag_info,
 	}
 
 	drag_info->drop_occured = FALSE;
+	drag_info->need_to_destroy = FALSE;
 }
 
 void
