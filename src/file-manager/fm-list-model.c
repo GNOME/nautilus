@@ -298,7 +298,7 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 	case FM_LIST_MODEL_ICON_COLUMN:
 		g_value_init (value, GDK_TYPE_PIXBUF);
 
-		icon = nautilus_icon_factory_get_pixbuf_for_file (file, NULL, NAUTILUS_ICON_SIZE_SMALLER, TRUE);
+		icon = nautilus_icon_factory_get_pixbuf_for_file (file, NULL, NAUTILUS_ICON_SIZE_SMALLER);
 		g_value_set_object (value, icon);
 		g_object_unref (icon);
 		break;

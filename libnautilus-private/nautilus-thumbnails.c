@@ -675,7 +675,7 @@ pixbuf_is_framed (GdkPixbuf *pixbuf)
  * a frame if necessary
  */
 GdkPixbuf *
-nautilus_thumbnail_load_framed_image (const char *path, gboolean anti_aliased_frame)
+nautilus_thumbnail_load_framed_image (const char *path)
 {
 	GdkPixbuf *pixbuf, *pixbuf_with_frame, *frame;
 	gboolean got_frame_offsets;
@@ -692,7 +692,7 @@ nautilus_thumbnail_load_framed_image (const char *path, gboolean anti_aliased_fr
 	 * an old Nautilus), so we must embed it in a frame.
 	 */
 
-	frame = nautilus_icon_factory_get_thumbnail_frame (anti_aliased_frame);
+	frame = nautilus_icon_factory_get_thumbnail_frame ();
 	if (frame == NULL) {
 		return pixbuf;
 	}

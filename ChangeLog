@@ -1,5 +1,51 @@
 2002-01-21  Darin Adler  <darin@bentspoon.com>
 
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_insert_model_node),
+	(nautilus_tree_view_update_model_node):
+	* libnautilus-private/nautilus-bookmark.c:
+	(nautilus_bookmark_get_pixbuf):
+	* libnautilus-private/nautilus-find-icon-image.c: (read_details),
+	(get_themed_icon_file_path), (theme_has_icon),
+	(nautilus_get_icon_file_name):
+	* libnautilus-private/nautilus-find-icon-image.h:
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_update_icon):
+	* libnautilus-private/nautilus-icon-factory-private.h:
+	* libnautilus-private/nautilus-icon-factory.c:
+	(load_thumbnail_frame), (nautilus_icon_factory_init),
+	(nautilus_icon_factory_destroy), (icon_theme_changed_callback),
+	(should_display_image_file_as_itself),
+	(nautilus_icon_factory_get_icon_for_file), (load_icon_from_path),
+	(load_named_icon), (load_specific_icon), (load_icon_for_scaling),
+	(load_icon_scale_if_necessary), (get_icon_from_cache),
+	(nautilus_icon_factory_get_pixbuf_for_icon), (cache_key_hash),
+	(cache_key_equal), (nautilus_icon_factory_get_pixbuf_for_file),
+	(nautilus_icon_factory_get_pixbuf_from_name),
+	(nautilus_icon_factory_get_thumbnail_frame):
+	* libnautilus-private/nautilus-icon-factory.h:
+	* libnautilus-private/nautilus-thumbnails.c:
+	(nautilus_thumbnail_load_framed_image):
+	* libnautilus-private/nautilus-thumbnails.h:
+	* src/file-manager/fm-directory-view.c:
+	(add_script_to_script_menus), (add_submenu_to_script_menus):
+	* src/file-manager/fm-list-model.c: (fm_list_model_get_value):
+	* src/file-manager/fm-properties-window.c:
+	(get_pixbuf_for_properties_window):
+	* src/nautilus-sidebar-title.c: (update_icon), (update_emblems):
+	Get rid of code that passes around the "optimize for AA" flag.
+	
+	* cut-n-paste-code/widgets/gimphwrapbox/gtkhwrapbox.c:
+	* cut-n-paste-code/widgets/gimphwrapbox/gtkhwrapbox.h:
+	* cut-n-paste-code/widgets/gimphwrapbox/gtkwrapbox.c:
+	* cut-n-paste-code/widgets/gimphwrapbox/gtkwrapbox.h:
+	Roll in the latest version from gimp source tree.
+	
+	* icons: Overwrite all the non-aa versions with the aa versions.
+	Remove all the aa versions.
+
+2002-01-21  Darin Adler  <darin@bentspoon.com>
+
 	* check-signals.pl: Remove.
 	* components/adapter/bonobo-stream-vfs.c: Remove.
 	* components/adapter/bonobo-stream-vfs.h: Remove.

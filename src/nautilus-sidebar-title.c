@@ -469,12 +469,11 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 
 	pixbuf = NULL;
 	if (icon_name != NULL && strlen (icon_name) > 0) {
-		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_name, NULL, NAUTILUS_ICON_SIZE_LARGE, TRUE);
+		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_name, NULL, NAUTILUS_ICON_SIZE_LARGE);
 	} else if (nautilus_icon_factory_is_icon_ready_for_file (sidebar_title->details->file)) {
 		pixbuf = nautilus_icon_factory_get_pixbuf_for_file (sidebar_title->details->file,
 								    "accept",
-								    NAUTILUS_ICON_SIZE_LARGE,
-								    TRUE);
+								    NAUTILUS_ICON_SIZE_LARGE);
 	} else if (sidebar_title->details->determined_icon) {
 		/* We used to know the icon for this file, but now the file says it isn't
 		 * ready. This means that some file info has been invalidated, which
@@ -714,7 +713,7 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 			(p->data,
 			 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD,
 			 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD,
-			 FALSE, NULL, FALSE);
+			 NULL, FALSE);
 		if (pixbuf != NULL) {
 			add_emblem (sidebar_title, pixbuf);
 			g_object_unref (pixbuf);

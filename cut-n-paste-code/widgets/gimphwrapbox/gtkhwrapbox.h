@@ -19,16 +19,14 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 #ifndef __GTK_HWRAP_BOX_H__
 #define __GTK_HWRAP_BOX_H__
 
 
 #include "gtkwrapbox.h"
 
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 
 /* --- type macros --- */
@@ -37,7 +35,7 @@ extern "C" {
 #define GTK_HWRAP_BOX_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), GTK_TYPE_HWRAP_BOX, GtkHWrapBoxClass))
 #define GTK_IS_HWRAP_BOX(obj)	      (GTK_CHECK_TYPE ((obj), GTK_TYPE_HWRAP_BOX))
 #define GTK_IS_HWRAP_BOX_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), GTK_TYPE_HWRAP_BOX))
-#define GTK_HWRAP_BOX_GET_CLASS(obj)  (GTK_HWRAP_BOX_CLASS (((GtkObject*) (obj))->klass))
+#define GTK_HWRAP_BOX_GET_CLASS(obj)  (GTK_CHECK_GET_CLASS ((obj), GTK_TYPE_HWRAP_BOX, GtkHWrapBoxClass))
 
 
 /* --- typedefs --- */
@@ -51,12 +49,9 @@ struct _GtkHWrapBox
   GtkWrapBox parent_widget;
   
   /*<h2v-off>*/
-  guint16    max_child_width;
-  guint16    max_child_height;
+  guint      max_child_width;
+  guint      max_child_height;
   /*<h2v-on>*/
-
-  gboolean   request_stored_height;
-  guint16    request_this_height_next_time;
 };
 
 struct _GtkHWrapBoxClass
@@ -66,13 +61,10 @@ struct _GtkHWrapBoxClass
 
 
 /* --- prototypes --- */
-GtkType	   gtk_hwrap_box_get_type           (void);
-GtkWidget* gtk_hwrap_box_new                (gboolean homogeneous);
+GtkType	    gtk_hwrap_box_get_type  (void) G_GNUC_CONST;
+GtkWidget * gtk_hwrap_box_new       (gboolean homogeneous);
 
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
+G_END_DECLS
 
 #endif /* __GTK_HWRAP_BOX_H__ */

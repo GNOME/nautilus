@@ -241,7 +241,6 @@ nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
 	result = nautilus_icon_factory_get_pixbuf_for_icon
 		(icon,
 		 icon_size, icon_size, icon_size, icon_size,
-		 optimize_for_anti_aliasing,
 		 NULL, TRUE);
 	nautilus_scalable_icon_unref (icon);
 	

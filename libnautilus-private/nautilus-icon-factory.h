@@ -128,7 +128,6 @@ GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (Nautil
 									  guint                        nominal_size_in_pixels_y,
 									  guint                        maximum_size_in_pixels_x,
 									  guint                        maximum_size_in_pixels_y,
-									  gboolean                     optimized_for_anti_aliasing,
 									  NautilusEmblemAttachPoints  *attach_points,
 									  gboolean                     wants_default);
 									  
@@ -137,15 +136,13 @@ GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (Nautil
  */
 GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_file          (NautilusFile                *file,
 									  const char                  *modifer,
-									  guint                        size_in_pixels,
-									  gboolean                     optimized_for_anti_aliasing);
+									  guint                        size_in_pixels);
 
 /* Convenience routine for getting a pixbuf from an icon name
  */
 GdkPixbuf *           nautilus_icon_factory_get_pixbuf_from_name         (const char                  *icon_name,
 									  const char                  *modifer,
-									  guint                        size_in_pixels,
-									  gboolean                     optimized_for_anti_aliasing);
+									  guint                        size_in_pixels);
 /* Manage a scalable icon.
  * Since the factory always passes out references to the same scalable
  * icon, you can compare two scalable icons to see if they are the same

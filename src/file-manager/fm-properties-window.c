@@ -245,7 +245,7 @@ get_pixbuf_for_properties_window (NautilusFile *file)
 {
 	g_assert (NAUTILUS_IS_FILE (file));
 	
-	return nautilus_icon_factory_get_pixbuf_for_file (file, NULL, NAUTILUS_ICON_SIZE_STANDARD, TRUE);
+	return nautilus_icon_factory_get_pixbuf_for_file (file, NULL, NAUTILUS_ICON_SIZE_STANDARD);
 }
 
 static void

@@ -3782,7 +3782,6 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		 icon_size_y,
 		 max_image_size * icon->scale_x,
 		 max_image_size * icon->scale_y,
-		 nautilus_icon_container_get_anti_aliased_mode (container),
 		 &attach_points,
 		 TRUE);
 	
@@ -3818,7 +3817,6 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 			 icon_size_y,
 			 MAXIMUM_EMBLEM_SIZE,
 			 MAXIMUM_EMBLEM_SIZE,
-			 nautilus_icon_container_get_anti_aliased_mode (container),
 			 NULL,
 			 FALSE);
 		if (emblem_pixbuf != NULL) {

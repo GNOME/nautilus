@@ -17,14 +17,6 @@ crux_teal_DATA =	\
 	emblem-nowrite.png	\
 	emblem-nowrite-72.png      \
 	emblem-nowrite-96.png	\
-	i-directory-12-aa.png      \
-	i-directory-20-aa.png      \
-	i-directory-24-aa.png      \
-	i-directory-36-aa.png	\
-	i-directory-aa.png	\
-	i-directory-72-aa.png	\
-	i-directory-96-aa.png	\
-	i-directory-192-aa.png	\
 	i-directory-12.png      \
 	i-directory-20.png      \
 	i-directory-24.png      \
@@ -42,14 +34,6 @@ crux_teal_DATA =	\
 	i-regular-72.png	\
 	i-regular-96.png	\
 	i-regular-192.png	\
-	i-regular-12-aa.png	\
-        i-regular-20-aa.png     \
-	i-regular-24-aa.png	\
-	i-regular-36-aa.png	\
-	i-regular-aa.png	\
-	i-regular-72-aa.png	\
-	i-regular-96-aa.png	\
-	i-regular-192-aa.png	\
 	i-regular.xml		\
 	increment.png		\
 	increment-i.png		\

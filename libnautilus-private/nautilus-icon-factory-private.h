@@ -38,6 +38,6 @@ void nautilus_icon_factory_remove_by_uri (const char *uri);
 
 /* Convenience routine to return the appropriate thumbnail frame
  */
-GdkPixbuf * nautilus_icon_factory_get_thumbnail_frame (gboolean anti_aliased);
+GdkPixbuf * nautilus_icon_factory_get_thumbnail_frame (void);
 
 #endif /* NAUTILUS_ICON_FACTORY_PRIVATE_H */

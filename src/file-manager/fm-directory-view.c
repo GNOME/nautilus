@@ -3679,7 +3679,7 @@ add_script_to_script_menus (FMDirectoryView *directory_view,
 
 	launch_parameters = script_launch_parameters_new (file, directory_view);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_file 
-		(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS, TRUE);
+		(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS);
 
 	add_numbered_menu_item (directory_view->details->ui, 
 				menu_path,
@@ -3720,7 +3720,7 @@ add_submenu_to_script_menus (FMDirectoryView *directory_view,
 
 	name = nautilus_file_get_display_name (file);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_file 
-		(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS, TRUE);
+		(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS);
 	add_submenu (directory_view->details->ui, menu_path, name, pixbuf);
 	add_submenu (directory_view->details->ui, popup_path, name, pixbuf);
 	g_object_unref (pixbuf);

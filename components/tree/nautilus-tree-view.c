@@ -237,11 +237,9 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 		if (nautilus_tree_view_model_node_to_view_node (view, node) == NULL) {
 
 			closed_pixbuf = nautilus_icon_factory_get_pixbuf_for_file
-				(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS,
-				 is_anti_aliased (view));
+				(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS);
 			open_pixbuf = nautilus_icon_factory_get_pixbuf_for_file
-				(file, "accept", NAUTILUS_ICON_SIZE_FOR_MENUS,
-				 is_anti_aliased (view));
+				(file, "accept", NAUTILUS_ICON_SIZE_FOR_MENUS);
 
 			view->details->inserting_node = TRUE;
 			EEL_CLIST_UNSET_FLAG (EEL_CLIST (view->details->tree),
@@ -431,11 +429,9 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 		link_view_node_with_uri (view, view_node, nautilus_file_get_uri (file));
 
 		closed_pixbuf = nautilus_icon_factory_get_pixbuf_for_file
-			(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS,
-			 is_anti_aliased (view));
+			(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS);
 		open_pixbuf = nautilus_icon_factory_get_pixbuf_for_file
-			(file, "accept", NAUTILUS_ICON_SIZE_FOR_MENUS,
-			 is_anti_aliased (view));
+			(file, "accept", NAUTILUS_ICON_SIZE_FOR_MENUS);
 
 		name = nautilus_file_get_display_name (file);
 	

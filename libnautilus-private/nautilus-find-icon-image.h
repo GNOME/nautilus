@@ -52,7 +52,6 @@ char *nautilus_get_icon_file_name           (const NautilusIconThemeSpecificatio
 					     const char                            *name,
 					     const char                            *modifier,
 					     guint                                  size_in_pixels,
-					     gboolean                               optimized_for_aa,
 					     NautilusIconDetails                   *details);
 char *nautilus_remove_icon_file_name_suffix (const char                            *name);
 

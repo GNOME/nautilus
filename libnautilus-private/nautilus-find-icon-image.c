@@ -118,13 +118,13 @@ parse_attach_points (NautilusEmblemAttachPoints *attach_points,
 static void
 read_details (const char *path,
 	      guint icon_size,
-	      gboolean for_aa,
 	      NautilusIconDetails *details)
 {
 	xmlDocPtr doc;
 	xmlNodePtr node;
 	char *size_as_string, *property;
 	ArtIRect parsed_rect;
+	char c;
 
 	memset (&details->text_rect, 0, sizeof (details->text_rect));
 	
@@ -139,33 +139,22 @@ read_details (const char *path,
 		(doc, "icon", "size", size_as_string);
 	g_free (size_as_string);
 	
-	property = NULL;
-	if (for_aa) {
-		property = xmlGetProp (node, "embedded_text_rectangle_aa");
-	}
-	if (property == NULL) {
-		property = xmlGetProp (node, "embedded_text_rectangle");
-	}
+	property = xmlGetProp (node, "embedded_text_rectangle");
 	
 	if (property != NULL) {
 		if (sscanf (property,
-			    " %d , %d , %d , %d %*s",
+			    " %d , %d , %d , %d %c",
 			    &parsed_rect.x0,
 			    &parsed_rect.y0,
 			    &parsed_rect.x1,
-			    &parsed_rect.y1) == 4) {
+			    &parsed_rect.y1,
+			    &c) == 4) {
 			details->text_rect = parsed_rect;
 		}
 		xmlFree (property);
 	}
 	
-	property = NULL;
-	if (for_aa) {
-		property = xmlGetProp (node, "attach_points_aa");
-	}
-	if (property == NULL) {
-		property = xmlGetProp (node, "attach_points");
-	}
+	property = xmlGetProp (node, "attach_points");
 	
 	parse_attach_points (&details->attach_points, property);	
 	xmlFree (property);
@@ -180,12 +169,11 @@ static char *
 get_themed_icon_file_path (const NautilusIconTheme *icon_theme,
 			   const char *icon_name,
 			   guint icon_size,
-			   gboolean for_aa,
 			   NautilusIconDetails *details)
 {
 	guint i;
 	gboolean include_size, in_user_directory;
-	char *themed_icon_name, *partial_path, *path, *aa_path, *xml_path;
+	char *themed_icon_name, *partial_path, *path, *xml_path;
 	
 	g_assert (icon_name != NULL);
 
@@ -210,24 +198,6 @@ get_themed_icon_file_path (const NautilusIconTheme *icon_theme,
 			partial_path = g_strdup (themed_icon_name);
 		}
 		
-		/* if we're in anti-aliased mode, try for an optimized one first */
-		if (for_aa) {
-			aa_path = g_strconcat (partial_path, "-aa", NULL);
-			path = make_full_icon_path (aa_path,
-						    icon_file_name_suffixes[i],
-						    in_user_directory);
-			g_free (aa_path);
-		
-			/* Return the path if the file exists. */
-			if (path != NULL) {
-				g_free (partial_path);
-				break;
-			}
-			
-			g_free (path);
-			path = NULL;
-		}
-						
 		path = make_full_icon_path (partial_path,
 					    icon_file_name_suffixes[i],
 					    in_user_directory);
@@ -247,7 +217,7 @@ get_themed_icon_file_path (const NautilusIconTheme *icon_theme,
 		xml_path = make_full_icon_path (themed_icon_name,
 						".xml",
 						in_user_directory);
-		read_details (xml_path, icon_size, for_aa, details);
+		read_details (xml_path, icon_size, details);
 		g_free (xml_path);
 	}
 
@@ -268,7 +238,7 @@ theme_has_icon (const NautilusIconTheme *theme,
 
 	path = get_themed_icon_file_path (theme, name,
 					  NAUTILUS_ICON_SIZE_STANDARD,
-					  FALSE, NULL);
+					  NULL);
 	g_free (path);
 
 	return path != NULL;
@@ -342,7 +312,6 @@ nautilus_get_icon_file_name (const NautilusIconThemeSpecifications *theme_specs,
 			     const char *name,
 			     const char *modifier,
 			     guint size,
-			     gboolean for_aa,
 			     NautilusIconDetails *details)
 {
 	const NautilusIconTheme *theme;
@@ -362,7 +331,7 @@ nautilus_get_icon_file_name (const NautilusIconThemeSpecifications *theme_specs,
 	/* If there's a modifier, try the modified icon first. */
 	if (modifier != NULL && modifier[0] != '\0') {
 		name_with_modifier = g_strconcat (name, "-", modifier, NULL);
-		path = get_themed_icon_file_path (theme, name_with_modifier, size, for_aa, details);
+		path = get_themed_icon_file_path (theme, name_with_modifier, size, details);
 		g_free (name_with_modifier);
 		if (path != NULL) {
 			return path;
@@ -370,7 +339,7 @@ nautilus_get_icon_file_name (const NautilusIconThemeSpecifications *theme_specs,
 	}
 	
 	/* Check for a normal icon. */
-	path = get_themed_icon_file_path (theme, name, size, for_aa, details);
+	path = get_themed_icon_file_path (theme, name, size, details);
 	if (path != NULL) {
 		return path;
 	}

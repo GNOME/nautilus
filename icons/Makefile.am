@@ -154,66 +154,41 @@ icon_DATA =\
 	i-device.png \
 	i-dirclosed.png \
 	i-directory-12.png \
-	i-directory-12-aa.png \
 	i-directory-24.png \
-	i-directory-24-aa.png \
 	i-directory-36.png \
-	i-directory-36-aa.png \
 	i-directory-72.png \
-	i-directory-72-aa.png \
 	i-directory-96.png \
-	i-directory-96-aa.png \
 	i-directory.png \
-	i-directory-aa.png \
 	i-directory-accept-12.png \
-	i-directory-accept-12-aa.png \
 	i-directory-accept-24.png \
-	i-directory-accept-24-aa.png \
 	i-directory-accept-36.png \
-	i-directory-accept-36-aa.png \
 	i-directory-accept-72.png \
-	i-directory-accept-72-aa.png \
 	i-directory-accept-96.png \
-	i-directory-accept-96-aa.png \
 	i-directory-accept.png \
-	i-directory-accept-aa.png \
 	i-directory.xml \
 	i-directory-accept.xml \
-	i-executable-aa.png \
 	i-executable.png \
 	i-fifo.png \
 	i-floppy.png \
 	i-harddisk.png \
 	i-music-12.png \
-	i-music-12-aa.png \
 	i-music-24.png \
-	i-music-24-aa.png \
 	i-music-36.png \
-	i-music-36-aa.png \
-	i-music-aa.png \
 	i-music.png \
 	i-nfs.png \
 	i-printer.png \
-	i-regular-12-aa.png \
 	i-regular-12.png \
-	i-regular-24-aa.png \
 	i-regular-24.png \
-	i-regular-36-aa.png \
 	i-regular-36.png \
-	i-regular-72-aa.png \
 	i-regular-72.png \
-	i-regular-96-aa.png \
 	i-regular-96.png \
-	i-regular-aa.png \
 	i-regular.png \
 	i-regular.xml \
 	i-search-72.png \
 	i-sock.png \
-	i-spreadsheet-aa.png \
 	i-spreadsheet.png \
 	i-stalled.png \
 	i-symlink.png \
-	i-symlink-aa.png \
 	i-web-72.png \
 	i-zipdisk.png \
 	i-zipdisk2.png \
@@ -223,7 +198,6 @@ icon_DATA =\
 	knob.png \
 	leftarrow.png \
 	loading.png \
-	loading-aa.png \
 	manual.png \
 	multi-ok.png \
 	nautilus-mini-logo.png \
@@ -239,9 +213,7 @@ icon_DATA =\
 	side_bar_image.png \
 	temp-home.png \
 	text-selection-frame.png \
-	text-selection-frame-aa.png \
 	theme_preview.png \
-	thumbnail_frame.aa.png \
 	thumbnail_frame.png \
 	tiny-alert.png \
 	trash-empty.png \
