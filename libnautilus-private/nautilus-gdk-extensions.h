@@ -75,6 +75,15 @@ void     nautilus_fill_rectangle_with_gradient       (GdkDrawable        *drawab
 						      const GdkColor     *end_color,
 						      gboolean            horizontal_gradient);
 
+/* Misc GdkRectangle helper functions */
+gboolean nautilus_rectangle_contains 		     (const GdkRectangle *rectangle, 
+						      int 		 x, 
+						      int 		 y);
+
+void	 nautilus_rectangle_inset		     (GdkRectangle 	 *rectangle, 
+						      int 		 x, 
+						      int 		 y);
+
 /* A basic operation we use for drawing gradients is interpolating two colors.*/
 void     nautilus_interpolate_color                  (gdouble             ratio,
 						      const GdkColor     *start_color,

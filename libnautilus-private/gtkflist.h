@@ -36,7 +36,7 @@ struct _GtkFListClass {
 	GtkCListClass parent_class;
 
 	/* Signal: invoke the popup menu for selected items */
-	void (* context_click_selection) (GtkFList *flist, gint row);
+	void (* context_click_selection) (GtkFList *flist, int row);
 
 	/* Signal: invoke the popup menu for empty areas */
 	void (* context_click_background) (GtkFList *flist);
@@ -45,10 +45,15 @@ struct _GtkFListClass {
 	void (* activate) (GtkFList *flist, gpointer data);
 
 	/* Signal: initiate a drag and drop operation */
-	void (* start_drag) (GtkFList *flist, gint button, GdkEvent *event);
+	void (* start_drag) (GtkFList *flist, int button, GdkEvent *event);
 
 	/* Signal: selection has changed */
 	void (* selection_changed) (GtkFList *flist);
+
+	/* column resize tracking calls */
+	void (* column_resize_track_start) (GtkWidget *widget, int column);
+	void (* column_resize_track) (GtkWidget *widget, int column);
+	void (* column_resize_track_end) (GtkWidget *widget, int column);
 };
 
 

@@ -1,3 +1,53 @@
+2000-03-16  Pavel Cisler  <pavel@eazel.com>
+
+	First pass on making list column resizing live.
+
+	* libnautilus/Makefile.am
+	* libnautilus/nautilus-list-column-title.c
+	* libnautilus/nautilus-list-column-title.h
+	New list column title widget that makes it easier to hook into
+	the mouse tracking and allows using flicker free redraw. Currently
+	it doesn't use an offscreen buffer yet, comming soon.
+
+	* libnautilus/gtkflist.c
+	(gtk_flist_initialize_class), (gtk_flist_initialize),
+	(gtk_flist_realize), (list_requisition_width),
+	(gtk_flist_size_request), (new_column_width), (size_allocate_columns),
+	(size_allocate_title_buttons), (get_cell_style), (draw_cell_pixmap),
+	(draw_row), (draw_rows), 
+	Made it possible to replace the existing column list view titles
+	from GtkCList view to be replaced with the new widget. In order
+	to do that I had to pull in a number of calls form GtkCList and
+	work around dependencies on column titles being buttons.
+	Prepared code some for smart column truncation.
+
+	* libnautilus/gtkflist.h
+	* libnautilus/gtkflist.c
+	(gtk_flist_track_new_column_width), (gtk_flist_column_resize_track_start),
+	(gtk_flist_column_resize_track), (gtk_flist_column_resize_track_end):
+	Added new calls that hook up with the mouse tracking code that
+	resize the tracker column.
+
+	* manager/fm-directory-view-list.c
+	(get_sort_indicator), (hide_sort_indicator), (show_sort_indicator),
+	(create_flist):
+	Removed code that insert the sort order indicator into the list
+	column - this is now done in the new column title widget.
+	
+	* manager/fm-directory-view-list.c
+	(create_flist):
+	Added min and max column width values.
+
+	* libnautilus/gtkflist.c
+	(gtk_flist_initialize_class)
+	Fixe a bug where the "selection_changed" was mistakenly connected
+	to the start_drag callback.
+
+	* libnautilus/nautilus-gdk-extensions.c
+	* libnautilus/nautilus-gdk-extensions.h
+	(nautilus_rectangle_contains), (nautilus_rectangle_inset):
+	Added GdkRectangle utility calls.
+	
 2000-03-16  John Sullivan  <sullivan@eazel.com>
 
 	* src/nautilus-index-title.c:

@@ -149,6 +149,47 @@ nautilus_fill_rectangle_with_gradient (GdkDrawable *drawable,
 }
 
 /**
+ * nautilus_rectangle_contains:
+ * @rectangle: Rectangle possibly containing a point.
+ * @x: X coordinate of a point.
+ * @y: Y coordinate of a point.
+ *
+ * Retun TRUE if point is contained inside a rectangle
+ */
+gboolean
+nautilus_rectangle_contains (const GdkRectangle *rectangle, 
+			     int x, 
+			     int y)
+{
+	g_return_val_if_fail (rectangle != NULL, FALSE);
+	return rectangle->x <= x && rectangle->x + rectangle->width >= x
+		&& rectangle->y <= y && rectangle->y + rectangle->height >= y;
+}
+
+/**
+ * nautilus_rectangle_inset:
+ * @rectangle: Rectangle we are insetting.
+ * @x: Horizontal ammount to inset by.
+ * @y: Vertical ammount to inset by.
+ *
+ * Inset a rectangle by a given horizontal and vertical ammount.
+ * Pass in negative inset values to grow the rectangle, positive to
+ * shrink it.
+ */
+void
+nautilus_rectangle_inset (GdkRectangle *rectangle, 
+			  int x, 
+			  int y)
+{
+	g_return_if_fail (rectangle != NULL);
+
+	rectangle->x += x;
+	rectangle->width -= 2 * x;
+	rectangle->y += y;
+	rectangle->height -= 2 * y;
+}
+
+/**
  * nautilus_interpolate_color:
  * @ratio: Place on line between colors to interpolate.
  * @start_color: Color for one end.
