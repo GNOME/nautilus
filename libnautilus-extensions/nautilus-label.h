@@ -71,7 +71,7 @@ struct _NautilusLabelClass
 };
 
 GtkType               nautilus_label_get_type                 (void);
-GtkWidget *           nautilus_label_new                      (void);
+GtkWidget *           nautilus_label_new                      (const char           *text);
 void                  nautilus_label_set_text                 (NautilusLabel        *label,
 							       const char           *text);
 char*                 nautilus_label_get_text                 (NautilusLabel        *label);
@@ -104,7 +104,6 @@ guint                 nautilus_label_get_drop_shadow_offset   (const NautilusLab
 void                  nautilus_label_set_drop_shadow_color    (NautilusLabel        *label,
 							       guint32               color);
 guint32               nautilus_label_get_drop_shadow_color    (const NautilusLabel  *label);
-
 
 END_GNOME_DECLS
 

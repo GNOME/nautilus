@@ -122,18 +122,6 @@ nautilus_theme_selector_initialize_class (GtkObjectClass *object_klass)
 	object_klass->destroy = nautilus_theme_selector_destroy;
 }
 
-/* utility to make anti-aliased labels */
-
-static GtkWidget*
-make_anti_aliased_label (const char *description)
-{
-	GtkWidget *label;
-	
-	label = nautilus_label_new ();
-	nautilus_label_set_text (NAUTILUS_LABEL (label), description);
-	return label;
-}
-
 /* initialize the instance's fields, create the necessary subviews, etc. */
 
 static void
@@ -188,14 +176,14 @@ nautilus_theme_selector_initialize (GtkObject *object)
   	gtk_container_add(GTK_CONTAINER(temp_frame), temp_hbox);
  	
 	/* add the title label */
-	theme_selector->details->title_label = make_anti_aliased_label  (_("Nautilus Theme:"));
+	theme_selector->details->title_label = nautilus_label_new (_("Nautilus Theme:"));
 	nautilus_label_set_font_size (NAUTILUS_LABEL (theme_selector->details->title_label), 18);
 
   	gtk_widget_show(theme_selector->details->title_label);
 	gtk_box_pack_start (GTK_BOX(temp_hbox), theme_selector->details->title_label, FALSE, FALSE, 8);
  
  	/* add the help label */
-	theme_selector->details->help_label = make_anti_aliased_label  (_("Click on a theme to change the\nappearance of Nautilus."));
+	theme_selector->details->help_label = nautilus_label_new  (_("Click on a theme to change the\nappearance of Nautilus."));
 	nautilus_label_set_font_size (NAUTILUS_LABEL (theme_selector->details->help_label), 12);
   
   	gtk_widget_show(theme_selector->details->help_label);
@@ -248,7 +236,7 @@ nautilus_theme_selector_initialize (GtkObject *object)
   	theme_selector->details->add_button = gtk_button_new ();
 	gtk_widget_show(theme_selector->details->add_button);
 	
-	theme_selector->details->add_button_label = make_anti_aliased_label (_("Add new theme"));
+	theme_selector->details->add_button_label = nautilus_label_new (_("Add new theme"));
 	nautilus_label_set_font_size (NAUTILUS_LABEL (theme_selector->details->add_button_label), 14);
 
 	gtk_widget_show(theme_selector->details->add_button_label);
@@ -260,7 +248,7 @@ nautilus_theme_selector_initialize (GtkObject *object)
 	/* now create the "remove" button */
   	theme_selector->details->remove_button = gtk_button_new();
 	
-	theme_selector->details->remove_button_label = make_anti_aliased_label (_("Remove theme"));
+	theme_selector->details->remove_button_label = nautilus_label_new (_("Remove theme"));
 	gtk_widget_show(theme_selector->details->remove_button_label);
 	gtk_container_add (GTK_CONTAINER(theme_selector->details->remove_button), theme_selector->details->remove_button_label);
 	gtk_box_pack_end (GTK_BOX (theme_selector->details->bottom_box),

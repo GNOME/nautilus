@@ -181,18 +181,6 @@ nautilus_property_browser_initialize_class (GtkObjectClass *object_klass)
 	widget_class->drag_end  = nautilus_property_browser_drag_end;
 }
 
-/* utility to allocate an anti-aliased label */
-static GtkWidget*
-make_anti_aliased_label (const char *description)
-{
-	GtkWidget *label;
-	
-	label = nautilus_label_new ();
-	nautilus_label_set_text (NAUTILUS_LABEL (label), description);
-	return label;
-}
-
-
 /* initialize the instance's fields, create the necessary subviews, etc. */
 
 static void
@@ -281,14 +269,14 @@ nautilus_property_browser_initialize (GtkObject *object)
   	gtk_container_add(GTK_CONTAINER(temp_frame), temp_hbox);
  	
 	/* add the title label */
-	property_browser->details->title_label = make_anti_aliased_label (_("Select A Category:"));
+	property_browser->details->title_label = nautilus_label_new (_("Select A Category:"));
 	nautilus_label_set_font_size (NAUTILUS_LABEL (property_browser->details->title_label), 18);
 
   	gtk_widget_show(property_browser->details->title_label);
 	gtk_box_pack_start (GTK_BOX(temp_hbox), property_browser->details->title_label, FALSE, FALSE, 8);
  
  	/* add the help label */
-	property_browser->details->help_label = make_anti_aliased_label  ("");
+	property_browser->details->help_label = nautilus_label_new  ("");
 	nautilus_label_set_font_size (NAUTILUS_LABEL (property_browser->details->help_label), 12);
   	
 	gtk_widget_show(property_browser->details->help_label);
@@ -316,7 +304,7 @@ nautilus_property_browser_initialize (GtkObject *object)
   	property_browser->details->add_button = gtk_button_new ();
 	gtk_widget_show(property_browser->details->add_button);
 	
-	property_browser->details->add_button_label = make_anti_aliased_label (_("Add new..."));
+	property_browser->details->add_button_label = nautilus_label_new (_("Add new..."));
 	nautilus_label_set_font_size (NAUTILUS_LABEL (property_browser->details->add_button_label), 12);
 	
 	gtk_widget_show(property_browser->details->add_button_label);
@@ -329,7 +317,7 @@ nautilus_property_browser_initialize (GtkObject *object)
   	property_browser->details->remove_button = gtk_button_new();
 	gtk_widget_show(property_browser->details->remove_button);
 	
-	property_browser->details->remove_button_label = make_anti_aliased_label (_("Add new..."));
+	property_browser->details->remove_button_label = nautilus_label_new (_("Add new..."));
 	nautilus_label_set_font_size (NAUTILUS_LABEL (property_browser->details->remove_button_label), 12);
 	
 	gtk_widget_show(property_browser->details->remove_button_label);
@@ -1498,11 +1486,12 @@ make_properties_from_directory_path (NautilusPropertyBrowser *property_browser,
 				gtk_box_pack_start(GTK_BOX(temp_vbox), event_box, FALSE, FALSE, 0);
 				
 				filtered_name = format_name_for_display (current_file_info->name);
-				/* this is temporarily disabled to due scrolling bug that Ramiro will fix soon
-				label = make_anti_aliased_label (filtered_name);
+				label = nautilus_label_new (filtered_name);
+				nautilus_buffered_widget_set_background_type (NAUTILUS_BUFFERED_WIDGET (label),
+									      NAUTILUS_BACKGROUND_SOLID);
+				nautilus_buffered_widget_set_background_color (NAUTILUS_BUFFERED_WIDGET (label),
+									       NAUTILUS_RGB_COLOR_WHITE);
 				nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
-				*/
-				label = gtk_label_new (filtered_name);
 				
 				g_free(filtered_name);
 				gtk_box_pack_start (GTK_BOX(temp_vbox), label, FALSE, FALSE, 0);
@@ -1645,7 +1634,7 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNod
 				gtk_box_pack_start (GTK_BOX (container), label_box, FALSE, FALSE, 0);	
 				
 				label_text = make_color_label (color_str);
-				label = make_anti_aliased_label (label_text);
+				label = nautilus_label_new (label_text);
 				nautilus_label_set_font_size (NAUTILUS_LABEL (label), 10);
 
 				g_free (label_text);
@@ -1727,7 +1716,7 @@ make_category_link(NautilusPropertyBrowser *property_browser, char* name, char *
 	gtk_box_pack_start (GTK_BOX (temp_vbox), button, FALSE, FALSE, 1);	
 
 	/* use the name as a label */
-	label = make_anti_aliased_label (display_name);
+	label = nautilus_label_new (display_name);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 			
 	gtk_box_pack_start (GTK_BOX (temp_vbox), label, FALSE, FALSE, 0);

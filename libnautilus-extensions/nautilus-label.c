@@ -432,9 +432,15 @@ label_recompute_line_geometries (NautilusLabel *label)
 
 /* Public NautilusLabel */
 GtkWidget*
-nautilus_label_new (void)
+nautilus_label_new (const char *text)
 {
-	return GTK_WIDGET (gtk_type_new (nautilus_label_get_type ()));
+	NautilusLabel *label;
+	
+	label = NAUTILUS_LABEL (gtk_type_new (nautilus_label_get_type ()));
+
+	nautilus_label_set_text (label, text);
+	
+	return GTK_WIDGET (label);
 }
 
 void

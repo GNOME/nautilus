@@ -105,9 +105,8 @@ create_label_widget (const char		*text,
 	g_return_val_if_fail (text != NULL, NULL);
 	g_return_val_if_fail (font_size > 0, NULL);
 
-	label = nautilus_label_new ();
+	label = nautilus_label_new (text);
 
-	nautilus_label_set_text (NAUTILUS_LABEL (label), text);
         nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", NULL, NULL, NULL);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), font_size);
 	nautilus_label_set_text_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_WHITE);

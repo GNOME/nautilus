@@ -195,18 +195,17 @@ update_selection_changed (GtkWidget *radio_buttons, gpointer user_data)
 /* utility to allocate an anti-aliased description label */
 
 static GtkWidget*
-make_anti_aliased_label (const char *description)
+make_anti_aliased_label (const char *text)
 {
 	GtkWidget *label;
 	
-	label = nautilus_label_new ();
+	label = nautilus_label_new (text);
 
 	nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", "medium", NULL, NULL);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 14);
 	nautilus_label_set_text_justification (NAUTILUS_LABEL (label),
 			       GTK_JUSTIFY_LEFT);
 
-	nautilus_label_set_text (NAUTILUS_LABEL (label), description);
 	return label;
 }
 
@@ -459,10 +458,9 @@ set_up_update_feedback_page (NautilusDruidPageEazel *page)
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
 		
 		
-	download_label = nautilus_label_new ();
+	download_label = nautilus_label_new (_("Downloading Nautilus updates..."));
 	nautilus_label_set_font_from_components (NAUTILUS_LABEL (download_label), "helvetica", "medium", NULL, NULL);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (download_label), 18);
-	nautilus_label_set_text (NAUTILUS_LABEL (download_label), _("Downloading Nautilus updates..."));
 	
 	gtk_widget_show (download_label);
 	

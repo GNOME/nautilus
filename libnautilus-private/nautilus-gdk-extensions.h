@@ -68,6 +68,7 @@ char *     nautilus_gradient_set_right_color_spec      (const char         *grad
 char *     nautilus_gradient_set_bottom_color_spec     (const char         *gradient_spec,
 							const char         *bottom_color);
 
+
 /* A version of parse_color that substitutes a default color instead of returning
    a boolean to indicate it cannot be parsed.
 */
@@ -79,10 +80,11 @@ void       nautilus_gdk_color_parse_with_white_default (const char         *colo
 guint32    nautilus_parse_rgb_with_default             (const char         *color_spec,
 							guint32             default_rgb);
 guint32    nautilus_parse_rgb_with_white_default       (const char         *color_spec);
-guint32	   nautilus_rgb_shift_color 		       (guint32 	    color, 
-							float 		    shift_by);
-guint32	   nautilus_gdk_color_to_rgb	 	       (const GdkColor 	   *color);
+guint32    nautilus_rgb_shift_color                    (guint32             color,
+							float               shift_by);
+guint32    nautilus_gdk_color_to_rgb                   (const GdkColor     *color);
 GdkColor * nautilus_gdk_rgb_to_color                   (const guint32       color);
+
 /* Fill routines that take GdkRectangle parameters instead of four integers. */
 void       nautilus_fill_rectangle                     (GdkDrawable        *drawable,
 							GdkGC              *gc,
@@ -97,8 +99,10 @@ void       nautilus_fill_rectangle_with_gradient       (GdkDrawable        *draw
 							guint32             start_rgb,
 							guint32             end_rgb,
 							gboolean            horizontal_gradient);
+
 /* A routine to get a 50% gray stippled bitmap for use in some types of highlighting. */
 GdkBitmap *nautilus_stipple_bitmap                     (void);
+
 
 /* Misc GdkRectangle helper functions */
 gboolean   nautilus_rectangle_contains                 (const GdkRectangle *rectangle,
@@ -108,10 +112,12 @@ void       nautilus_rectangle_inset                    (GdkRectangle       *rect
 							int                 x,
 							int                 y);
 
+
 /* A basic operation we use for drawing gradients is interpolating two colors.*/
 guint32    nautilus_interpolate_color                  (gdouble             ratio,
 							guint32             start_rgb,
 							guint32             end_rgb);
+
 
 /* Misc GdkFont helper functions */
 gboolean   nautilus_gdk_font_equal                     (GdkFont            *font_a_null_allowed,
@@ -119,16 +125,20 @@ gboolean   nautilus_gdk_font_equal                     (GdkFont            *font
 GdkFont *  nautilus_get_largest_fitting_font           (const char         *text_to_format,
 							int                 width,
 							const char         *font_format);
-GdkFont *  nautilus_gdk_font_get_bold		       (const GdkFont 	   *plain);
+GdkFont *  nautilus_gdk_font_get_bold                  (const GdkFont      *plain);
+
 
 
 /* Misc GdkWindow helper functions */
 void       nautilus_gdk_window_bring_to_front          (GdkWindow          *window);
 
+
 /* In GNOME 2.0 this function will be in the libraries */
 void       nautilus_set_mini_icon                      (GdkWindow          *window,
 							GdkPixmap          *pixmap,
 							GdkBitmap          *mask);
-GdkGC * nautilus_gdk_create_copy_area_gc (GdkWindow	*window);
+GdkGC *    nautilus_gdk_create_copy_area_gc            (GdkWindow          *window);
+void       nautilus_gdk_gc_ref_if_not_null             (GdkGC              *gc_or_null);
+void       nautilus_gdk_gc_unref_if_not_null           (GdkGC              *gc_or_null);
 
 #endif /* NAUTILUS_GDK_EXTENSIONS_H */

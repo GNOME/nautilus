@@ -609,7 +609,7 @@ main (int argc, char* argv[])
 	main_box = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (window), main_box);
 
-	label = nautilus_label_new ();
+	label = nautilus_label_new ("Label that doesn't suck\nFoo\nBar");
 
 	bottom_box = gtk_vbox_new (FALSE, 4);
 
@@ -622,8 +622,6 @@ main (int argc, char* argv[])
 	gtk_box_pack_start (GTK_BOX (bottom_box), tool_box1, TRUE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (bottom_box), tool_box2, TRUE, TRUE, 0);
 	gtk_box_pack_end (GTK_BOX (bottom_box), tool_box3, TRUE, TRUE, 10);
-
-	nautilus_label_set_text (NAUTILUS_LABEL (label), "Label that doesn't suck\nFoo\nBar");
 
 	gtk_box_pack_start (GTK_BOX (main_box), label, TRUE, TRUE, 10);
 	gtk_box_pack_end (GTK_BOX (main_box), bottom_box, TRUE, TRUE, 10);

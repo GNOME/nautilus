@@ -61,74 +61,55 @@ enum
 /* Detail member struct */
 struct _NautilusBufferedWidgetDetail
 {
-	GdkGC		*copy_area_gc;
-	GdkPixbuf	*buffer_pixbuf;
-	GdkPixbuf	*tile_pixbuf;
-	int		horizontal_offset;	
-	int		vertical_offset;	
-	guint		background_appearance_changed_connection;
+	GdkGC			*copy_area_gc;
+	GdkPixbuf		*buffer_pixbuf;
+	GdkPixbuf		*tile_pixbuf;
+	int			horizontal_offset;	
+	int			vertical_offset;	
+	guint			background_appearance_changed_connection;
+	NautilusBackgroundType	background_type;
+	guint32			background_color;
 };
 
-/* GdkGC refcounting macros */			\
-#define NAUTILUS_GDK_GC_UNREF_IF(_gc)		\
-NAUTILUS_MACRO_BEGIN				\
-        if ((_gc) != NULL) {			\
-	        gdk_gc_unref (_gc);		\
-		(_gc) = NULL;			\
-	}					\
-NAUTILUS_MACRO_END
-
-#define NAUTILUS_GDK_GC_REF_IF(_gc)		\
-NAUTILUS_MACRO_BEGIN				\
-        if ((_gc) != NULL) {			\
-	        gdk_gc_ref (_gc);		\
-	}					\
-NAUTILUS_MACRO_END
-
 /* GtkObjectClass methods */
-static void       nautilus_buffered_widget_initialize_class     (NautilusBufferedWidgetClass  *buffered_widget_class);
-static void       nautilus_buffered_widget_initialize           (NautilusBufferedWidget       *buffered_widget);
-static void       nautilus_buffered_widget_destroy              (GtkObject                    *object);
-static void       nautilus_buffered_widget_set_arg              (GtkObject                    *object,
-								 GtkArg                       *arg,
-								 guint                         arg_id);
-static void       nautilus_buffered_widget_get_arg              (GtkObject                    *object,
-								 GtkArg                       *arg,
-								 guint                         arg_id);
-
-
+static void       nautilus_buffered_widget_initialize_class    (NautilusBufferedWidgetClass  *buffered_widget_class);
+static void       nautilus_buffered_widget_initialize          (NautilusBufferedWidget       *buffered_widget);
+static void       nautilus_buffered_widget_destroy             (GtkObject                    *object);
+static void       nautilus_buffered_widget_set_arg             (GtkObject                    *object,
+								GtkArg                       *arg,
+								guint                         arg_id);
+static void       nautilus_buffered_widget_get_arg             (GtkObject                    *object,
+								GtkArg                       *arg,
+								guint                         arg_id);
 
 /* GtkWidgetClass methods */
-static void       nautilus_buffered_widget_realize              (GtkWidget                    *widget);
-static void       nautilus_buffered_widget_draw                 (GtkWidget                    *widget,
-								 GdkRectangle                 *area);
-static void       nautilus_buffered_widget_size_allocate        (GtkWidget                    *widget,
-								 GtkAllocation                *allocation);
-
-
+static void       nautilus_buffered_widget_realize             (GtkWidget                    *widget);
+static void       nautilus_buffered_widget_draw                (GtkWidget                    *widget,
+								GdkRectangle                 *area);
+static void       nautilus_buffered_widget_size_allocate       (GtkWidget                    *widget,
+								GtkAllocation                *allocation);
 
 /* GtkWidgetClass event methods */
-static gint       nautilus_buffered_widget_expose_event         (GtkWidget                    *widget,
-								 GdkEventExpose               *event);
-
-
+static gint       nautilus_buffered_widget_expose_event        (GtkWidget                    *widget,
+								GdkEventExpose               *event);
 /* Private NautilusBufferedWidget things */
-static void       background_appearance_changed_callback        (NautilusBackground           *background,
-								 gpointer                      callback_data);
-static GdkPixbuf* buffered_widget_create_pixbuf_from_background (const NautilusBufferedWidget *buffered_widget,
-								 GdkGC                        *gc);
-static void       buffered_widget_update_pixbuf                 (NautilusBufferedWidget       *buffered_widget);
-static GtkWidget *nautilus_gtk_widget_find_background_ancestor  (GtkWidget                    *widget);
-static void       nautilus_gdk_pixbuf_tile_alpha                (GdkPixbuf                    *pixbuf,
-								 const GdkPixbuf              *tile_pixbuf,
-								 guint                         tile_width,
-								 guint                         tile_height,
-								 gint                          tile_origin_x,
-								 gint                          tile_origin_y,
-								 GdkInterpType                 interpolation_mode,
-								 guchar                        overall_alpha);
-static void       connect_to_background_if_needed               (NautilusBufferedWidget       *buffered_widget);
-
+static void       background_appearance_changed_callback       (NautilusBackground           *background,
+								gpointer                      callback_data);
+static GdkPixbuf* create_background_pixbuf                     (const NautilusBufferedWidget *buffered_widget);
+static GdkPixbuf* create_background_pixbuf_from_none           (const NautilusBufferedWidget *buffered_widget);
+static GdkPixbuf* create_background_pixbuf_from_solid          (const NautilusBufferedWidget *buffered_widget);
+static GdkPixbuf* create_background_pixbuf_from_ancestor       (const NautilusBufferedWidget *buffered_widget);
+static void       buffered_widget_update_pixbuf                (NautilusBufferedWidget       *buffered_widget);
+static GtkWidget *nautilus_gtk_widget_find_background_ancestor (GtkWidget                    *widget);
+static void       nautilus_gdk_pixbuf_tile_alpha               (GdkPixbuf                    *pixbuf,
+								const GdkPixbuf              *tile_pixbuf,
+								guint                         tile_width,
+								guint                         tile_height,
+								gint                          tile_origin_x,
+								gint                          tile_origin_y,
+								GdkInterpType                 interpolation_mode,
+								guchar                        overall_alpha);
+static void       connect_to_background_if_needed              (NautilusBufferedWidget       *buffered_widget);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBufferedWidget, nautilus_buffered_widget, GTK_TYPE_MISC)
@@ -170,6 +151,8 @@ nautilus_buffered_widget_initialize (NautilusBufferedWidget *buffered_widget)
 	buffered_widget->detail->horizontal_offset = 0;
 	buffered_widget->detail->vertical_offset = 0;
 	buffered_widget->detail->background_appearance_changed_connection = 0;
+	buffered_widget->detail->background_type = NAUTILUS_BACKGROUND_ANCESTOR_OR_NONE;
+	buffered_widget->detail->background_color = NAUTILUS_RGB_COLOR_WHITE;
 }
 
 /* GtkObjectClass methods */
@@ -183,12 +166,12 @@ nautilus_buffered_widget_destroy (GtkObject *object)
 
 	buffered_widget = NAUTILUS_BUFFERED_WIDGET (object);
 
-	NAUTILUS_GDK_GC_UNREF_IF (buffered_widget->detail->copy_area_gc);
+	nautilus_gdk_gc_unref_if_not_null (buffered_widget->detail->copy_area_gc);
+	buffered_widget->detail->copy_area_gc = NULL;
 	nautilus_gdk_pixbuf_unref_if_not_null (buffered_widget->detail->buffer_pixbuf);
 	buffered_widget->detail->buffer_pixbuf = NULL;
 	nautilus_gdk_pixbuf_unref_if_not_null (buffered_widget->detail->tile_pixbuf);
 	buffered_widget->detail->tile_pixbuf = NULL;
-	NAUTILUS_GDK_GC_UNREF_IF (buffered_widget->detail->copy_area_gc);
 
 	g_free (buffered_widget->detail);
 
@@ -447,10 +430,9 @@ static void
 buffered_widget_update_pixbuf (NautilusBufferedWidget *buffered_widget)
 {
 	GtkWidget	*widget;
-	GdkPixbuf	*pixbuf_without_alpha;
+	GdkPixbuf	*background_pixbuf;
 	ArtIRect	clip_rect;
 	GdkPoint	destination_point;
-	NautilusBufferedWidgetClass *buffered_widget_class;
 
 	g_return_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget));
 
@@ -458,11 +440,17 @@ buffered_widget_update_pixbuf (NautilusBufferedWidget *buffered_widget)
 
 	nautilus_gdk_pixbuf_unref_if_not_null (buffered_widget->detail->buffer_pixbuf);
 
-	pixbuf_without_alpha = buffered_widget_create_pixbuf_from_background (buffered_widget, 
-									      buffered_widget->detail->copy_area_gc);
-	buffered_widget->detail->buffer_pixbuf = gdk_pixbuf_add_alpha (pixbuf_without_alpha, FALSE, 0, 0, 0);
+	background_pixbuf = create_background_pixbuf (buffered_widget);
+	g_assert (background_pixbuf != NULL);
 	
-	gdk_pixbuf_unref (pixbuf_without_alpha);
+// 	if (!gdk_pixbuf_get_has_alpha (background_pixbuf)) {
+		buffered_widget->detail->buffer_pixbuf = gdk_pixbuf_add_alpha (background_pixbuf, FALSE, 0, 0, 0);
+	
+		gdk_pixbuf_unref (background_pixbuf);
+// 	}
+// 	else {
+// 		buffered_widget->detail->buffer_pixbuf = background_pixbuf;
+// 	}
 
 	g_assert (buffered_widget->detail->buffer_pixbuf != NULL);
 
@@ -474,10 +462,6 @@ buffered_widget_update_pixbuf (NautilusBufferedWidget *buffered_widget)
 
 	destination_point.x = 0;
 	destination_point.y = 0;
-
-	buffered_widget_class = NAUTILUS_BUFFERED_WIDGET_CLASS (NAUTILUS_CLASS (buffered_widget));
-	g_assert (buffered_widget_class != NULL);
-	g_assert (buffered_widget_class->render_buffer_pixbuf != NULL);
 
 	if (buffered_widget->detail->tile_pixbuf != NULL) {
 		nautilus_gdk_pixbuf_tile_alpha (buffered_widget->detail->buffer_pixbuf,
@@ -498,25 +482,82 @@ buffered_widget_update_pixbuf (NautilusBufferedWidget *buffered_widget)
 }
 
 static GdkPixbuf*
-buffered_widget_create_pixbuf_from_background (const NautilusBufferedWidget *buffered_widget, 
-					       GdkGC		*gc)
+create_background_pixbuf_from_none (const NautilusBufferedWidget *buffered_widget)
+{
+	GtkWidget	*widget;
+	GdkPixbuf	*pixbuf;
+	GdkPixmap	*pixmap;
+	
+	g_return_val_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget), NULL);
+	
+	widget = GTK_WIDGET (buffered_widget);
+	
+	pixmap = gdk_pixmap_new (widget->window, widget->allocation.width, widget->allocation.height, -1);
+		
+	gtk_paint_flat_box (widget->style,
+			    pixmap,
+			    widget->state,
+			    GTK_SHADOW_NONE,
+			    NULL,
+			    widget,
+			    "eventbox",
+			    0,
+			    0,
+			    widget->allocation.width,
+			    widget->allocation.height);
+	
+	pixbuf = gdk_pixbuf_get_from_drawable (NULL,
+					       pixmap,
+					       gdk_rgb_get_cmap (),
+					       0,
+					       0,
+					       0,
+					       0,
+					       widget->allocation.width,
+					       widget->allocation.height);
+
+	g_assert (pixbuf != NULL);
+	
+	return pixbuf;
+}
+
+static GdkPixbuf*
+create_background_pixbuf_from_solid (const NautilusBufferedWidget *buffered_widget)
+{
+	GtkWidget	*widget;
+	GdkPixbuf	*pixbuf;
+	
+	g_return_val_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget), NULL);
+	
+	widget = GTK_WIDGET (buffered_widget);
+	
+	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, widget->allocation.width, widget->allocation.height);
+
+	nautilus_gdk_pixbuf_fill_rectangle_with_color (pixbuf, NULL, buffered_widget->detail->background_color);
+
+	g_assert (pixbuf != NULL);
+	
+	return pixbuf;
+}
+
+static GdkPixbuf*
+create_background_pixbuf_from_ancestor (const NautilusBufferedWidget *buffered_widget)
 {
 	GtkWidget		*widget;
-	GdkPixbuf		*pixbuf;
+	GdkPixbuf		*pixbuf = NULL;
 	GtkWidget		*background_ancestor;
 	
 	g_return_val_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget), NULL);
-	g_return_val_if_fail (gc != NULL, NULL);
 
 	widget = GTK_WIDGET (buffered_widget);
 
 	background_ancestor = nautilus_gtk_widget_find_background_ancestor (widget);
-
+	
 	if (background_ancestor != NULL) {
 		NautilusBackground	*background;
 		GdkPixmap		*pixmap;
 		GdkRectangle		background_area;
-
+		
 		background = nautilus_get_widget_background (background_ancestor);
 		g_assert (NAUTILUS_IS_BACKGROUND (background));
 		
@@ -527,7 +568,7 @@ buffered_widget_create_pixbuf_from_background (const NautilusBufferedWidget *buf
 		
 		pixmap = gdk_pixmap_new (widget->window, background_area.width, background_area.height, -1);
 		
-		nautilus_background_draw (background, pixmap, gc, &background_area, 0, 0);
+		nautilus_background_draw (background, pixmap, buffered_widget->detail->copy_area_gc, &background_area, 0, 0);
 		
 		pixbuf = gdk_pixbuf_get_from_drawable (NULL,
 						       pixmap,
@@ -538,37 +579,40 @@ buffered_widget_create_pixbuf_from_background (const NautilusBufferedWidget *buf
 						       0,
 						       widget->allocation.width,
 						       widget->allocation.height);
-
+		
+		g_assert (pixbuf != NULL);
+		
 		gdk_pixmap_unref (pixmap);
 	}
-	else {
-		GdkPixmap *pixmap;
 
-		pixmap = gdk_pixmap_new (widget->window, widget->allocation.width, widget->allocation.height, -1);
-		
-		gtk_paint_flat_box (widget->style,
-				    pixmap,
-				    widget->state,
-				    GTK_SHADOW_NONE,
-				    NULL,
-				    widget,
-				    "eventbox",
-				    0,
-				    0,
-				    widget->allocation.width,
-				    widget->allocation.height);
+	return pixbuf;
+}
 
-		pixbuf = gdk_pixbuf_get_from_drawable (NULL,
-						       pixmap,
-						       gdk_rgb_get_cmap (),
-						       0,
-						       0,
-						       0,
-						       0,
-						       widget->allocation.width,
-						       widget->allocation.height);
-	}
+static GdkPixbuf*
+create_background_pixbuf (const NautilusBufferedWidget *buffered_widget)
+{
+	GdkPixbuf *pixbuf;
+
+	g_return_val_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget), NULL);
 	
+	switch (buffered_widget->detail->background_type) {
+	case NAUTILUS_BACKGROUND_ANCESTOR_OR_NONE:
+		pixbuf = create_background_pixbuf_from_ancestor (buffered_widget); 
+		if (!pixbuf) {
+			pixbuf = create_background_pixbuf_from_none (buffered_widget);
+		}
+		break;
+		
+	case NAUTILUS_BACKGROUND_SOLID:
+		pixbuf = create_background_pixbuf_from_solid (buffered_widget);
+		break;
+		
+	default:
+	case NAUTILUS_BACKGROUND_NONE:
+		pixbuf = create_background_pixbuf_from_none (buffered_widget);
+		break;
+	}
+
 	g_assert (pixbuf != NULL);
 
 	return pixbuf;
@@ -788,4 +832,102 @@ nautilus_buffered_widget_get_vertical_offset (const NautilusBufferedWidget *buff
 	g_return_val_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget), 0);
 	
 	return buffered_widget->detail->vertical_offset;
+}
+
+/**
+ * nautilus_buffered_widget_set_background_type:
+ *
+ * @buffered_widget: A NautilusBufferedWidget
+ * @background_type: The new background type
+ *
+ * Change the background type for the widget as follows:
+ *
+ * NAUTILUS_BACKGROUND_ANCESTOR_OR_NONE:
+ *   
+ *   Look for the closest ancestor widget that has an attatched
+ *   NautilusBackground and use that.  If that fails, then use
+ *   the widget's background as specified by its attachted GtkStyle.
+ *
+ * NAUTILUS_BACKGROUND_NONE:
+ * 
+ *   Use the widget's background as specified by its attachted GtkStyle.
+ *
+ * NAUTILUS_BACKGROUND_SOLID:
+ *
+ *   Use a solid color for the background.  This solid color can be 
+ *   changed with nautilus_buffered_widget_set_background_color()
+ */
+void
+nautilus_buffered_widget_set_background_type (NautilusBufferedWidget	*buffered_widget,
+					      NautilusBackgroundType	background_type)
+{
+	g_return_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget));
+	g_return_if_fail (background_type >= NAUTILUS_BACKGROUND_ANCESTOR_OR_NONE);
+	g_return_if_fail (background_type <= NAUTILUS_BACKGROUND_SOLID);
+	
+	if (background_type != buffered_widget->detail->background_type)
+	{
+		buffered_widget->detail->background_type = background_type;
+		
+		nautilus_buffered_widget_clear_buffer (NAUTILUS_BUFFERED_WIDGET (buffered_widget));
+
+		gtk_widget_queue_draw (GTK_WIDGET (buffered_widget));
+	}
+}
+
+/**
+ * nautilus_buffered_widget_get_background_type:
+ *
+ * @buffered_widget: A NautilusBufferedWidget
+ *
+ * Return value: The current background type.
+ */
+NautilusBackgroundType
+nautilus_buffered_widget_get_background_type (const NautilusBufferedWidget *buffered_widget)
+{
+	g_return_val_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget), 0);
+
+	return buffered_widget->detail->background_type;
+}
+
+/**
+ * nautilus_buffered_widget_set_background_color:
+ *
+ * @buffered_widget: A NautilusBufferedWidget
+ * @background_color: The new background color
+ *
+ * Set the background color to use for when the widget's background_type is 
+ * NAUTILUS_BACKGROUND_SOLID.
+ */
+void
+nautilus_buffered_widget_set_background_color (NautilusBufferedWidget	*buffered_widget,
+					       guint32			background_color)
+{
+	g_return_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget));
+	
+	if (background_color != buffered_widget->detail->background_color)
+	{
+		buffered_widget->detail->background_color = background_color;
+
+		if (buffered_widget->detail->background_type == NAUTILUS_BACKGROUND_SOLID) {
+			nautilus_buffered_widget_clear_buffer (NAUTILUS_BUFFERED_WIDGET (buffered_widget));
+			
+			gtk_widget_queue_draw (GTK_WIDGET (buffered_widget));
+		}
+	}
+}
+
+/**
+ * nautilus_buffered_widget_get_background_color:
+ *
+ * @buffered_widget: A NautilusBufferedWidget
+ *
+ * Return value: The current background color.
+ */
+guint32
+nautilus_buffered_widget_get_background_color (const NautilusBufferedWidget *buffered_widget)
+{
+	g_return_val_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget), 0);
+
+	return buffered_widget->detail->background_color;
 }

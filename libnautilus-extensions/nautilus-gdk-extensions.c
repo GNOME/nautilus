@@ -764,6 +764,22 @@ nautilus_gdk_create_copy_area_gc (GdkWindow	*window)
 	return copy_area_gc;
 }
 
+void
+nautilus_gdk_gc_ref_if_not_null (GdkGC *gc_or_null)
+{
+	if (gc_or_null != NULL) {
+		gdk_gc_ref (gc_or_null);
+	}
+}
+
+void
+nautilus_gdk_gc_unref_if_not_null (GdkGC *gc_or_null)
+{
+	if (gc_or_null != NULL) {
+		gdk_gc_unref (gc_or_null);
+	}
+}
+
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static char *

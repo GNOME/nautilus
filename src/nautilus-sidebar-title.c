@@ -594,7 +594,7 @@ sidebar_create_smooth_components_if_needed (NautilusSidebarTitle *sidebar_title)
 
 	/* Label */
 	if (sidebar_title->details->smooth_title_label == NULL) {
-		sidebar_title->details->smooth_title_label = nautilus_label_new ();
+		sidebar_title->details->smooth_title_label = nautilus_label_new ("");
 		
 		sidebar_title->details->smooth_title_label_font = 
 			NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL));
@@ -607,7 +607,7 @@ sidebar_create_smooth_components_if_needed (NautilusSidebarTitle *sidebar_title)
 
 	/* More info */
 	if (sidebar_title->details->smooth_more_info_label == NULL) {
-		sidebar_title->details->smooth_more_info_label = nautilus_label_new ();
+		sidebar_title->details->smooth_more_info_label = nautilus_label_new ("");
 		
 		sidebar_title->details->smooth_more_info_label_font = 
 			NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL));

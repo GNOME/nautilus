@@ -1,3 +1,62 @@
+2000-08-28  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-buffered-widget.c:
+	(nautilus_buffered_widget_initialize),
+	(nautilus_buffered_widget_destroy),
+	(buffered_widget_update_pixbuf),
+	(create_background_pixbuf_from_none),
+	(create_background_pixbuf_from_solid),
+	(create_background_pixbuf_from_ancestor),
+	(create_background_pixbuf),
+	(nautilus_buffered_widget_get_vertical_offset),
+	(nautilus_buffered_widget_set_background_type),
+	(nautilus_buffered_widget_get_background_type),
+	(nautilus_buffered_widget_set_background_color),
+	(nautilus_buffered_widget_get_background_color):
+	* libnautilus-extensions/nautilus-buffered-widget.h:
+
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(nautilus_gdk_gc_ref_if_not_null),
+	(nautilus_gdk_gc_unref_if_not_null):
+	* libnautilus-extensions/nautilus-gdk-extensions.h:
+	Add unref/ref functions for gcs that take NULL.
+
+	* libnautilus-extensions/nautilus-label.c: (nautilus_label_new):
+	* libnautilus-extensions/nautilus-label.h:
+	Make the constructor work just like GtkLabel by accepting a string.
+	
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (add_play_controls):
+	Use the new NautilusLabel constructor.
+
+	* components/services/nautilus-dependent-shared/shared-service-widg
+	ets.c: (create_label_widget):
+	Use the new NautilusLabel constructor.
+
+	* src/nautilus-first-time-druid.c: (make_anti_aliased_label),
+	(set_up_update_feedback_page):
+	Use the new NautilusLabel constructor.
+
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize),
+	(make_properties_from_directory_path),
+	(make_properties_from_xml_node), (make_category_link):
+	Use the new NautilusLabel constructor.
+	Fix the tile names to be antialises by using the new buffered
+	widget SOLID background mode.
+	
+	* src/nautilus-sidebar-title.c:
+	(sidebar_create_smooth_components_if_needed):
+	Use the new NautilusLabel constructor.
+
+	* src/nautilus-theme-selector.c:
+	(nautilus_theme_selector_initialize):
+	Use the new NautilusLabel constructor.
+
+	* test/test-nautilus-image.c: (main):
+	* test/test-nautilus-label.c: (main):
+	Use the new NautilusLabel constructor.
+	
 2000-08-28  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-window-menus.c: (get_static_bookmarks_file_path):
