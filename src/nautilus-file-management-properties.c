@@ -32,6 +32,7 @@
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkmessagedialog.h>
 #include <gtk/gtknotebook.h>
+#include <gtk/gtkicontheme.h>
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtksizegroup.h>
 
@@ -183,29 +184,16 @@ nautilus_file_management_properties_size_group_create (GladeXML *xml_dialog,
 static void
 nautilus_file_management_properties_dialog_set_icons (GtkWindow *window)
 {
-	GList *icon_list;
-	GList *l;
-	guint i;
-	GdkPixbuf *pixbuf;
-	char *path;
-	const char *icon_filenames[] = { "nautilus-file-management-properties.png" };
+	GtkIconTheme *icon_theme;
+	GdkPixbuf *icon;
 	
-	icon_list = NULL;
-	for (i = 0; i < G_N_ELEMENTS (icon_filenames); i++) {
-		path = g_build_filename (NAUTILUS_PIXMAPDIR, icon_filenames[i], NULL);
-		pixbuf = gdk_pixbuf_new_from_file (path, NULL);
-		g_free (path);
-		if (pixbuf != NULL) {
-			icon_list = g_list_prepend (icon_list, pixbuf);
-		}
-	}
-
-	gtk_window_set_icon_list (window, icon_list);
+	icon_theme =  gtk_icon_theme_get_for_screen (gtk_widget_get_screen (GTK_WIDGET (window)));
+	icon = gtk_icon_theme_load_icon (icon_theme, "file-manager", 48, 0, NULL);
 	
-	for (l = icon_list; l != NULL; l = l->next) {
-		g_object_unref (G_OBJECT (l->data));
+	if (icon != NULL) {
+		gtk_window_set_icon (window, icon);
+		g_object_unref (icon);
 	}
-	g_list_free (icon_list);
 }
 
 static void
