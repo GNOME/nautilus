@@ -1,3 +1,20 @@
+2001-03-09  Darin Adler  <darin@eazel.com>
+
+	Merge from HEAD:
+
+	2001-03-09  Darin Adler  <darin@eazel.com>
+
+        reviewed by: John Sullivan <sullivan@eazel.com>
+
+        Fix bug 7587 (Copying text in Notes with menu item kills Notes
+        [also Text viewer, etc]):
+
+        * libnautilus/nautilus-clipboard.c: (do_with_fake_current_event):
+        Function to set up a non-NULL event so the code in GtkEditable
+        won't die.
+        (cut_callback), (copy_callback), (paste_callback): Use the new
+        function.
+
 2001-03-09  John Sullivan  <sullivan@eazel.com>
 
 	Merge from HEAD:

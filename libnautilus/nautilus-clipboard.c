@@ -6,7 +6,7 @@
  * and paste.
  *
  * Copyright (C) 1999, 2000  Free Software Foundaton
- * Copyright (C) 2000  Eazel, Inc.
+ * Copyright (C) 2000, 2001  Eazel, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -33,12 +33,59 @@
 
 #include <bonobo/bonobo-ui-util.h>
 #include <gtk/gtkeditable.h>
+#include <gtk/gtkinvisible.h>
+#include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+
+typedef void (* EditableFunction) (GtkEditable *editable);
 
 static void disconnect_set_up_in_control_handlers (GtkObject *object,
 						   gpointer callback_data);
 static void selection_changed_callback            (GtkWidget *widget,
 						   gpointer callback_data);
+
+static void
+do_with_fake_current_event (EditableFunction function,
+			    GtkEditable *editable)
+{
+	GdkEvent *current_event;
+	GdkEvent fake_event;
+	GtkWidget *fake_widget;
+
+	/* Handle the simple case where no fakery is required. */
+	current_event = gtk_get_current_event ();
+	if (current_event != NULL) {
+		gdk_event_free (current_event);
+		(* function) (editable);
+		return;
+	}
+
+	/* Call the function inside a fake event, so the event is
+	 * non-NULL. This works around the gtk bug described in
+	 * http://bugzilla.gnome.org/show_bug.cgi?id=51889 where the
+	 * event must not be NULL.
+	 */
+
+	/* Make widget. */
+	fake_widget = gtk_invisible_new ();
+	gtk_signal_connect_object (GTK_OBJECT (fake_widget),
+				   "client_event",
+				   function,
+				   GTK_OBJECT (editable));
+	gtk_widget_realize (fake_widget);
+
+	/* Make event. */
+	memset (&fake_event, 0, sizeof (fake_event));
+	fake_event.type = GDK_CLIENT_EVENT;
+	fake_event.any.window = fake_widget->window;
+
+	/* Handle event, calling through to function. */
+	gtk_main_do_event (&fake_event);
+
+	/* Discard widget. */
+	gtk_widget_unref (fake_widget);
+}
+
 static void
 cut_callback (BonoboUIComponent *ui,
 	      gpointer callback_data,
@@ -47,7 +94,8 @@ cut_callback (BonoboUIComponent *ui,
 	g_assert (BONOBO_IS_UI_COMPONENT (ui));
 	g_assert (strcmp (command_name, "Cut") == 0);
 	
-	gtk_editable_cut_clipboard (GTK_EDITABLE (callback_data));
+	do_with_fake_current_event (gtk_editable_cut_clipboard,
+				    GTK_EDITABLE (callback_data));
 }
 
 static void
@@ -57,8 +105,9 @@ copy_callback (BonoboUIComponent *ui,
 {
 	g_assert (BONOBO_IS_UI_COMPONENT (ui));
 	g_assert (strcmp (command_name, "Copy") == 0);
-		
-	gtk_editable_copy_clipboard (GTK_EDITABLE (callback_data));
+	
+	do_with_fake_current_event (gtk_editable_copy_clipboard,
+				    GTK_EDITABLE (callback_data));
 }
 
 static void
@@ -68,8 +117,9 @@ paste_callback (BonoboUIComponent *ui,
 {
 	g_assert (BONOBO_IS_UI_COMPONENT (ui));
 	g_assert (strcmp (command_name, "Paste") == 0);
-		
-	gtk_editable_paste_clipboard (GTK_EDITABLE (callback_data));
+	
+	do_with_fake_current_event (gtk_editable_paste_clipboard,
+				    GTK_EDITABLE (callback_data));
 }
 
 static void
@@ -79,7 +129,7 @@ clear_callback (BonoboUIComponent *ui,
 {
 	g_assert (BONOBO_IS_UI_COMPONENT (ui));
 	g_assert (strcmp (command_name, "Clear") == 0);
-
+	
 	gtk_editable_delete_selection (GTK_EDITABLE (callback_data));
 }
 
