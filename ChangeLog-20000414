@@ -1,3 +1,43 @@
+2000-03-07  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/nautilus-directory.h,
+	libnautilus/nautilus-directory.c (get_file_metadata_node),
+	(nautilus_directory_get_file_metadata),
+	(nautilus_file_get_keywords): Added nautilus_file_get_keywords,
+	which returns a GList of keywords.
+
+	* libnautilus/nautilus-icon-factory.c (add_size_to_image_name),
+	(get_themed_icon_file_path), (get_icon_file_path), (add_emblem),
+	(nautilus_icon_factory_get_emblem_icons_for_file): Changed icon
+	names to not include the extension and wired some extensions into
+	the icon-reading code. The old code wired the entire file name, so
+	this is a bit more flexible. Added code to return an emblem for
+	each keyword attached to a file as well as the symbolic link emblem.
+
+	* libnautilus/gnome-icon-container.c (update_icon): Handle NULL
+	pixbufs for emblems. This happens when a keyword is specified that
+	doesn't have a corresponding emblem icon.  Add g_list_reverse call
+	to keep emblems in the correct order.
+
+	* src/file-manager/fm-directory-view-icons.c
+	(fm_directory_view_icons_merge_menus): Took out g_message left
+	over from Bonobo menu merge work.
+
+	* libnautilus/nautilus-glib-extensions.h,
+	libnautilus/nautilus-glib-extensions.c
+	(nautilus_g_list_free_deep): Added convenience function for
+	getting rid of a GList of things that can be freed with g_free.
+
+	* icons/Makefile.am, icons/certified.gif, icons/changed.gif,
+	icons/confidential.gif, icons/emblem-certified.gif,
+	icons/emblem-changed.gif, icons/emblem-confidential.gif,
+	icons/emblem-encrypted.gif, icons/emblem-important.gif,
+	icons/emblem-new.gif, icons/emblem-personal.gif,
+	icons/emblem-remote.gif, icons/emblem-symbolic-link.png,
+	icons/encrypted.gif, icons/i-symlink.png, icons/important.gif,
+	icons/new.gif, icons/personal.gif, icons/remote.gif:
+	Changed all emblem icons to have names that start with "emblem-".
+
 2000-03-06  Andy Hertzfeld <andy@eazel.com>
 
 	* icons/Makefile.am:  added 8 new images for emblems in icons directory;

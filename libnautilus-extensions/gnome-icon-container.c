@@ -2543,9 +2543,12 @@ update_icon (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 	for (p = emblem_icons; p != NULL; p = p->next) {
 		emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 			(p->data, icon_size_x, icon_size_y);
-		emblem_pixbufs = g_list_prepend
-			(emblem_pixbufs, emblem_pixbuf);
+		if (emblem_pixbuf != NULL) {
+			emblem_pixbufs = g_list_prepend
+				(emblem_pixbufs, emblem_pixbuf);
+		}
 	}
+	emblem_pixbufs = g_list_reverse (emblem_pixbufs);
 
 	/* Let the icons go. */
 	nautilus_scalable_icon_unref (scalable_icon);

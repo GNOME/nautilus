@@ -2,7 +2,7 @@
 
    nautilus-icon-factory.c: Class for obtaining icons for files and other objects.
  
- * Copyright (C) 1999, 2000 Red Hat Inc.
+   Copyright (C) 1999, 2000 Red Hat Inc.
    Copyright (C) 1999, 2000 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
@@ -20,7 +20,7 @@
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
   
-   Author: John Sullivan <sullivan@eazel.com>
+   Authors: John Sullivan <sullivan@eazel.com>, Darin Adler <darin@eazel.com>
 */
 
 #include <config.h>
@@ -43,20 +43,34 @@
 #include "nautilus-icons-controller.h"
 #include "nautilus-metadata.h"
 #include "nautilus-lib-self-check-functions.h"
+#include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-macros.h"
 
-#define ICON_NAME_DIRECTORY             "i-directory.png"
-#define ICON_NAME_DIRECTORY_CLOSED      "i-dirclosed.png"
-#define ICON_NAME_EXECUTABLE            "i-executable.png"
-#define ICON_NAME_REGULAR               "i-regular.png"
-#define ICON_NAME_CORE                  "i-core.png"
-#define ICON_NAME_SOCKET                "i-sock.png"
-#define ICON_NAME_FIFO                  "i-fifo.png"
-#define ICON_NAME_CHARACTER_DEVICE      "i-chardev.png"
-#define ICON_NAME_BLOCK_DEVICE          "i-blockdev.png"
-#define ICON_NAME_BROKEN_SYMBOLIC_LINK  "i-brokenlink.png"
+/* List of suffixes to search when looking for an icon file. */
+static const char *icon_file_name_suffixes[] =
+{
+	".png",
+	".PNG",
+	".gif",
+	".GIF"
+};
 
-#define ICON_NAME_SYMBOLIC_LINK_EMBLEM  "i-symlink.png"
+#define ICON_NAME_DIRECTORY             "i-directory"
+#define ICON_NAME_DIRECTORY_CLOSED      "i-dirclosed"
+#define ICON_NAME_EXECUTABLE            "i-executable"
+#define ICON_NAME_REGULAR               "i-regular"
+#define ICON_NAME_CORE                  "i-core"
+#define ICON_NAME_SOCKET                "i-sock"
+#define ICON_NAME_FIFO                  "i-fifo"
+#define ICON_NAME_CHARACTER_DEVICE      "i-chardev"
+#define ICON_NAME_BLOCK_DEVICE          "i-blockdev"
+#define ICON_NAME_BROKEN_SYMBOLIC_LINK  "i-brokenlink"
+
+#define ICON_NAME_THUMBNAIL_LOADING     "loading"
+
+#define EMBLEM_NAME_PREFIX              "emblem-"
+
+#define EMBLEM_NAME_SYMBOLIC_LINK       "symbolic-link"
 
 /* This used to be called ICON_CACHE_MAX_ENTRIES, but it's misleading
  * to call it that, since we can have any number of entries in the
@@ -426,33 +440,41 @@ nautilus_icon_factory_get_icon_name_for_file (NautilusFile *file)
         }
 }
 
-/* Remove the suffix, add a size, and re-add the suffix. */
+/* Pick a particular icon to use, trying all the various suffixes.
+ * Return the path of the icon or NULL if no icon is found.
+ */
 static char *
-add_size_to_image_name (const char *name, guint size)
+get_themed_icon_file_path (const char *theme_name, const char *icon_name, guint icon_size)
 {
-	const char *suffix;
-	char *name_without_suffix;
-	char *name_with_size;
+	int i;
+	gboolean include_size;
+	char *partial_path, *path;
 
-	/* Standard size doesn't get a size added. */
-	if (size == NAUTILUS_ICON_SIZE_STANDARD) {
-		return g_strdup (name);
+	include_size = icon_size != NAUTILUS_ICON_SIZE_STANDARD;
+
+	/* Try each suffix. */
+	for (i = 0; i < NAUTILUS_N_ELEMENTS (icon_file_name_suffixes); i++) {
+
+		/* Build a path for this icon. */
+		partial_path = g_strdup_printf
+			("nautilus/%s%s%s%s%.0u%s",
+			 theme_name == NULL ? "" : theme_name,
+			 theme_name == NULL ? "" : "/",
+			 icon_name,
+			 include_size ? "-" : "",
+			 include_size ? icon_size : 0,
+			 icon_file_name_suffixes[i]);
+		path = gnome_pixmap_file (partial_path);
+		g_free (partial_path);
+
+		/* Return the path if the file exists. */
+		if (path != NULL && g_file_exists (path)) {
+			return path;
+		}
+		g_free (path);
 	}
 
-	/* Find the suffix. */
-	suffix = strrchr (name, '.');
-	if (suffix == NULL) {
-		/* No suffix is not a common case, so we handle it in a simple
-		 * way that falls into the normal code.
-		 */
-		suffix = name + strlen (name);
-	}
-
-	/* Put the size between the name and the suffix. */
-	name_without_suffix = g_strndup (name, suffix - name);
-	name_with_size = g_strdup_printf ("%s-%u%s", name_without_suffix, size, suffix);
-	g_free (name_without_suffix);
-	return name_with_size;
+	return NULL;
 }
 
 /* Choose the file name to load, taking into account theme vs. non-theme icons. */
@@ -460,7 +482,8 @@ static char *
 get_icon_file_path (const char *name, guint size_in_pixels)
 {
 	gboolean use_theme_icon;
-	char *theme_name, *name_with_size, *partial_path, *path;
+	const char *theme_name;
+	char *path;
 
 	use_theme_icon = FALSE;
  	theme_name = nautilus_get_current_icon_factory ()->theme_name;
@@ -469,37 +492,20 @@ get_icon_file_path (const char *name, guint size_in_pixels)
 	 * This decision must be based on whether there's a non-size-
 	 * specific theme icon.
 	 */
-	if (theme_name != NULL && name[0] != G_DIR_SEPARATOR) {
-		partial_path = g_strdup_printf ("nautilus/%s/%s",
-						theme_name, name);
-		path = gnome_pixmap_file (partial_path);
-		g_free (partial_path);
-		
+	if (theme_name != NULL) {
+		path = get_themed_icon_file_path (theme_name,
+						  name,
+						  NAUTILUS_ICON_SIZE_STANDARD);		
 		if (path != NULL) {
-			use_theme_icon = g_file_exists (path);
+			use_theme_icon = TRUE;
 			g_free (path);
 		}
 	}
 	
-	/* Check for the full-path case. */
-	name_with_size = add_size_to_image_name (name, size_in_pixels);
-	if (name_with_size[0] == G_DIR_SEPARATOR)
-		return name_with_size;
-	
-	/* Use gnome_pixmap_file for the partial-path case. */
-	if (use_theme_icon)
-		partial_path = g_strdup_printf ("nautilus/%s/%s",
-					        theme_name,
-						name_with_size);
-	else
-		partial_path = g_strdup_printf ("nautilus/%s",
-						name_with_size);
-	g_free (name_with_size);
-	
-	path = gnome_pixmap_file (partial_path);
-	g_free (partial_path);
-
-	return path;
+	/* Now we know whether or not to use the theme. */
+	return get_themed_icon_file_path (use_theme_icon ? theme_name : NULL,
+					  name,
+					  size_in_pixels);
 }
 
 /* Get or create a scalable icon. */
@@ -623,39 +629,56 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, void *controller)
 	return scalable_icon;
 }
 
+static void
+add_emblem (GList **icons, const char *name)
+{
+	char *name_with_prefix;
+
+	name_with_prefix = g_strconcat (EMBLEM_NAME_PREFIX, name, NULL);
+	*icons = g_list_prepend (*icons, nautilus_scalable_icon_get (NULL, name_with_prefix));
+	g_free (name_with_prefix);
+}
+
 GList *
 nautilus_icon_factory_get_emblem_icons_for_file (NautilusFile *file)
 {
-	GList *list;
+	GList *icons, *keywords, *p;
 
-	list = NULL;
+	icons = NULL;
 
+	/* One icon for the symbolic link. */
 	if (nautilus_file_is_symbolic_link (file)) {
-		list = g_list_prepend (list,
-				       nautilus_scalable_icon_get (NULL,
-								   ICON_NAME_SYMBOLIC_LINK_EMBLEM));
+		add_emblem (&icons, EMBLEM_NAME_SYMBOLIC_LINK);
 	}
 
-	return list;
+	/* One icon for each keyword. */
+	keywords = nautilus_file_get_keywords (file);
+	for (p = keywords; p != NULL; p = p->next) {
+		add_emblem (&icons, p->data);
+	}
+
+	nautilus_g_list_free_deep (keywords);
+
+	return g_list_reverse (icons);
 }
 
 /* utility to test whether a file exists using vfs */
 static gboolean
-vfs_file_exists(const char *file_uri)
+vfs_file_exists (const char *file_uri)
 {
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *file_info;
 
 	file_info = gnome_vfs_file_info_new ();
 	result = gnome_vfs_get_file_info (file_uri, file_info, 0, NULL);
-	gnome_vfs_file_info_unref(file_info);
+	gnome_vfs_file_info_unref (file_info);
 	return result == GNOME_VFS_OK;
 }
 
 /* utility routine that, given the uri of an image, constructs the uri to the corresponding thumbnail */
 
 static char *
-make_thumbnail_path(const char *image_uri, gboolean directory_only)
+make_thumbnail_path (const char *image_uri, gboolean directory_only)
 {
 	char *thumbnail_uri;
 	char *temp_str = g_strdup (image_uri);
@@ -665,10 +688,11 @@ make_thumbnail_path(const char *image_uri, gboolean directory_only)
 	if (directory_only)
 		thumbnail_uri = g_strdup_printf ("%s/.thumbnails", temp_str);
 	else {
-		if (nautilus_has_suffix (image_uri, ".png") || nautilus_has_suffix (image_uri, ".PNG"))
+		if (nautilus_has_suffix (image_uri, ".png") || nautilus_has_suffix (image_uri, ".PNG")) {
 			thumbnail_uri = g_strdup_printf ("%s/.thumbnails/%s", temp_str, last_slash + 1);
-		else
+		} else {
 			thumbnail_uri = g_strdup_printf ("%s/.thumbnails/%s.png", temp_str, last_slash + 1);
+		}
 	}
 	g_free (temp_str);
 	return thumbnail_uri;
@@ -682,12 +706,14 @@ make_thumbnail_path(const char *image_uri, gboolean directory_only)
  */
 
 static char *
-nautilus_icon_factory_get_thumbnail_uri(NautilusFile *file, NautilusIconsController *controller)
+nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file, NautilusIconsController *controller)
 {
 	NautilusIconFactory *factory;
 	GnomeVFSResult result;
-	char *thumbnail_uri = NULL;
-	char *file_uri = nautilus_file_get_uri (file);
+	char *thumbnail_uri;
+	char *file_uri;
+
+	file_uri = nautilus_file_get_uri (file);
 	
 	/* compose the uri for the thumbnail */
 	thumbnail_uri = make_thumbnail_path (file_uri, FALSE);
@@ -728,7 +754,8 @@ nautilus_icon_factory_get_thumbnail_uri(NautilusFile *file, NautilusIconsControl
 	g_free (thumbnail_uri);
 	
 	/* return the uri to the "loading image" icon */
-	return get_icon_file_path ("loading.png", NAUTILUS_ICON_SIZE_STANDARD);
+	return get_icon_file_path (ICON_NAME_THUMBNAIL_LOADING,
+				   NAUTILUS_ICON_SIZE_STANDARD);
 }
 
 static guint
@@ -1185,9 +1212,9 @@ nautilus_scalable_icon_list_free (GList *icon_list)
 	g_list_free (icon_list);
 }
 
-/* utility routine for saving a pixbuf to a png file.  This was adapted from Iain Holmes' code in gnome-iconedit, and probably
-   should be in a utility library, possibly in gdk-pixbuf itself */
-    
+/* utility routine for saving a pixbuf to a png file.
+ * This was adapted from Iain Holmes' code in gnome-iconedit, and probably
+ * should be in a utility library, possibly in gdk-pixbuf itself */
 static gboolean
 save_pixbuf_to_file (GdkPixbuf *pixbuf, char *filename)
 {
@@ -1291,7 +1318,7 @@ save_pixbuf_to_file (GdkPixbuf *pixbuf, char *filename)
 /* check_for_thumbnails is a utility that checks to see if any of the thumbnails in the pending
    list have been created yet.  If it finds one, it removes the elements from the queue and
    returns true, otherwise it returns false */
-   
+
 static gboolean 
 check_for_thumbnails(NautilusIconFactory *factory)
 {
@@ -1302,8 +1329,8 @@ check_for_thumbnails(NautilusIconFactory *factory)
 	
 	while (next_thumbnail != NULL) {
 		info = (NautilusThumbnailInfo*) next_thumbnail->data;
-		current_thumbnail = make_thumbnail_path(info->thumbnail_uri, FALSE);
-		if (vfs_file_exists(current_thumbnail)) {
+		current_thumbnail = make_thumbnail_path (info->thumbnail_uri, FALSE);
+		if (vfs_file_exists (current_thumbnail)) {
 			/* we found one, so update the icon and remove all of the elements up to and including
 			   this one from the pending list. */
 			g_free (current_thumbnail);
@@ -1499,11 +1526,6 @@ nautilus_self_check_icon_factory (void)
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 36), "TRUE,24");
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 24), "TRUE,12");
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 12), "FALSE,12");
-
-	NAUTILUS_CHECK_STRING_RESULT (add_size_to_image_name ("", 0), "-0");
-	NAUTILUS_CHECK_STRING_RESULT (add_size_to_image_name (".", 0), "-0.");
-	NAUTILUS_CHECK_STRING_RESULT (add_size_to_image_name ("a", 12), "a-12");
-	NAUTILUS_CHECK_STRING_RESULT (add_size_to_image_name ("a.png", 12), "a-12.png");
 }
 
 #endif /* ! NAUTILUS_OMIT_SELF_CHECK */

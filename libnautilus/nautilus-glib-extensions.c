@@ -97,6 +97,18 @@ nautilus_g_list_equal (GList *list_a, GList *list_b)
 	return p == NULL && q == NULL;
 }
 
+/**
+ * nautilus_g_list_free_deep
+ *
+ * Frees the elements of a list and then the list.
+ * @list: List of elements that can be freed with g_free.
+ **/
+void
+nautilus_g_list_free_deep (GList *list)
+{
+	g_list_foreach (list, (GFunc) g_free, NULL);
+	g_list_free (list);
+}
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 

@@ -142,6 +142,8 @@ gboolean           nautilus_file_is_executable             (NautilusFile        
 gboolean           nautilus_file_is_directory              (NautilusFile             *file);
 guint              nautilus_file_get_directory_item_count  (NautilusFile             *file,
 							    gboolean                  ignore_invisible_items);
+GList *            nautilus_file_get_keywords              (NautilusFile             *file);
+
 /* Simple getting and setting top-level metadata. */
 char *             nautilus_file_get_metadata              (NautilusFile             *file,
 							    const char               *tag,

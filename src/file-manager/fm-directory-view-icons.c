@@ -87,7 +87,7 @@ static GList *             fm_directory_view_icons_get_selection                
 static NautilusZoomLevel   fm_directory_view_icons_get_zoom_level                       (FMDirectoryViewIcons      *view);
 static void                fm_directory_view_icons_initialize                           (FMDirectoryViewIcons      *icon_view);
 static void                fm_directory_view_icons_initialize_class                     (FMDirectoryViewIconsClass *klass);
-static void                fm_directory_view_icons_merge_menus                          (FMDirectoryView           *view,											 
+static void                fm_directory_view_icons_merge_menus                          (FMDirectoryView           *view,
                                                                                          BonoboUIHandler           *ui_handler);
 static void                fm_directory_view_icons_select_all                           (FMDirectoryView           *view);
 static void                fm_directory_view_icons_set_zoom_level                       (FMDirectoryViewIcons      *view,
@@ -689,7 +689,6 @@ fm_directory_view_icons_merge_menus (FMDirectoryView *view, BonoboUIHandler *ui_
 {
         g_assert (FM_IS_DIRECTORY_VIEW_ICONS (view));
 
-        g_message ("called fm_directory_view_icons_merge_menus");
 	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, 
 				    merge_menus, 
 				    (view, ui_handler));
@@ -704,7 +703,7 @@ fm_directory_view_icons_merge_menus (FMDirectoryView *view, BonoboUIHandler *ui_
                                          0,
                                          0,
                                          (BonoboUIHandlerCallbackFunc)customize_icon_text_cb,
-                                         view);                
+                                         view);
 }
 
 static void

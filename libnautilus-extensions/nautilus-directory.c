@@ -799,10 +799,11 @@ nautilus_directory_get_metadata_from_node (xmlNode *node,
 	g_return_val_if_fail (tag[0], NULL);
 
 	property = xmlGetProp (node, tag);
-	if (property == NULL)
+	if (property == NULL) {
 		result = g_strdup (default_metadata);
-	else
+	} else {
 		result = g_strdup (property);
+	}
 	xmlFree (property);
 
 	return result;
@@ -984,12 +985,9 @@ nautilus_directory_set_integer_metadata (NautilusDirectory *directory,
 	g_free (default_as_string);
 }
 
-
-static char *
-nautilus_directory_get_file_metadata (NautilusDirectory *directory,
-				      const char *file_name,
-				      const char *tag,
-				      const char *default_metadata)
+static xmlNode *
+get_file_metadata_node (NautilusDirectory *directory,
+			const char *file_name)
 {
 	xmlNode *root, *child;
 	xmlChar *property;
@@ -998,8 +996,9 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 
 	/* The root itself represents the directory. */
 	root = xmlDocGetRootElement (directory->details->metafile_tree);
-	if (root == NULL)
-		return g_strdup (default_metadata);
+	if (root == NULL) {
+		return NULL;
+	}
 
 	/* The children represent the files.
 	   This linear search is temporary.
@@ -1007,16 +1006,27 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 	   the corresponding XML node, or we won't have the XML tree
 	   in memory at all.
 	*/
-	for (child = root->childs; child != NULL; child = child->next)
+	for (child = root->childs; child != NULL; child = child->next) {
 		if (strcmp (child->name, "FILE") == 0) {
 			property = xmlGetProp (child, "NAME");
-			if (nautilus_eat_strcmp (property, file_name) == 0)
-				break;
+			if (nautilus_eat_strcmp (property, file_name) == 0) {
+				return child;
+			}
 		}
+	}
 
-	/* If we found a child, we can get the data from it. */
+	return NULL;
+}
+
+static char *
+nautilus_directory_get_file_metadata (NautilusDirectory *directory,
+				      const char *file_name,
+				      const char *tag,
+				      const char *default_metadata)
+{
 	return nautilus_directory_get_metadata_from_node
-		(child, tag, default_metadata);
+		(get_file_metadata_node (directory, file_name),
+		 tag, default_metadata);
 }
 
 static void
@@ -1042,16 +1052,18 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 		(directory, file_name, tag, default_metadata);
 	old_metadata_matches = nautilus_strcmp (old_metadata, metadata) == 0;
 	g_free (old_metadata);
-	if (old_metadata_matches)
+	if (old_metadata_matches) {
 		return;
+	}
 
 	/* Data that matches the default is represented in the tree by
 	   the lack of an attribute.
 	*/
-	if (nautilus_strcmp (default_metadata, metadata) == 0)
+	if (nautilus_strcmp (default_metadata, metadata) == 0) {
 		value = NULL;
-	else
+	} else {
 		value = metadata;
+	}
 
 	/* The root itself represents the directory. */
 	root = nautilus_directory_create_metafile_tree_root (directory);
@@ -1062,12 +1074,14 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 	   the corresponding XML node, or we won't have the XML tree
 	   in memory at all.
 	*/
-	for (child = root->childs; child != NULL; child = child->next)
+	for (child = root->childs; child != NULL; child = child->next) {
 		if (strcmp (child->name, "FILE") == 0) {
 			property = xmlGetProp (child, "NAME");
-			if (nautilus_eat_strcmp (property, file_name) == 0)
+			if (nautilus_eat_strcmp (property, file_name) == 0) {
 				break;
+			}
 		}
+	}
 	if (child == NULL) {
 		g_assert (value != NULL);
 		child = xmlNewChild (root, NULL, "FILE", NULL);
@@ -1076,8 +1090,9 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 
 	/* Add or remove an attribute node. */
 	property_node = xmlSetProp (child, tag, value);
-	if (value == NULL)
+	if (value == NULL) {
 		xmlRemoveProp (property_node);
+	}
 	
 	/* Since we changed the tree, arrange for it to be written. */
 	nautilus_directory_request_write_metafile (directory);
@@ -1406,7 +1421,10 @@ nautilus_file_get_metadata (NautilusFile *file,
 {
 	g_return_val_if_fail (file != NULL, NULL);
 
-	return nautilus_directory_get_file_metadata (file->directory, file->info->name, tag, default_metadata);
+	return nautilus_directory_get_file_metadata (file->directory,
+						     file->info->name,
+						     tag,
+						     default_metadata);
 }
 
 void
@@ -1417,7 +1435,11 @@ nautilus_file_set_metadata (NautilusFile *file,
 {
 	g_return_if_fail (file != NULL);
 
-	nautilus_directory_set_file_metadata (file->directory, file->info->name, tag, default_metadata, metadata);
+	nautilus_directory_set_file_metadata (file->directory,
+					      file->info->name,
+					      tag,
+					      default_metadata,
+					      metadata);
 }
 
 char *
@@ -1847,6 +1869,43 @@ nautilus_file_get_mime_type (NautilusFile *file)
 	g_return_val_if_fail (file != NULL, FALSE);
 
 	return file->info->mime_type;
+}
+
+/**
+ * nautilus_file_get_keywords
+ * 
+ * Return this file's keywords.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: A list of keywords.
+ * 
+ **/
+GList *
+nautilus_file_get_keywords (NautilusFile *file)
+{
+	GList *keywords;
+	xmlNode *file_node, *child;
+	xmlChar *property;
+
+	g_return_val_if_fail (file != NULL, NULL);
+
+	keywords = NULL;
+
+	/* Put all the keywords into a list. */
+	file_node = get_file_metadata_node (file->directory, file->info->name);
+	if (file_node != NULL) {
+		for (child = file_node->childs; child != NULL; child = child->next) {
+			if (strcmp (child->name, "KEYWORD") == 0) {
+				property = xmlGetProp (child, "NAME");
+				if (property != NULL) {
+					keywords = g_list_prepend (keywords,
+								   g_strdup (property));
+				}
+			}
+		}
+	}
+
+	return g_list_reverse (keywords);
 }
 
 /**
