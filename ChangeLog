@@ -1,3 +1,11 @@
+2003-05-23  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-icon-view.c (fm_icon_view_screen_changed):
+	Update the per-screen filtering when the view changes screens.
+	This was needed to fix multihead desktops, since the BonoboPlug
+	initially realizes on the wrong screen, and gets moved to the right
+	screen when the window is mapped.
+
 2003-05-20  Dave Camp  <dave@ximian.com>
 
 	* src/file-manager/fm-list-model.c: (each_path_get_data_binder):

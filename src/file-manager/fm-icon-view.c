@@ -1937,6 +1937,44 @@ fm_icon_view_filter_by_screen (FMIconView *icon_view,
 	icon_view->details->num_screens = gdk_display_get_n_screens (gtk_widget_get_display (GTK_WIDGET (icon_view)));
 }
 
+static void
+fm_icon_view_screen_changed (GtkWidget *widget,
+			     GdkScreen *previous_screen)
+{
+	FMDirectoryView *view;
+	GList *files, *l;
+	NautilusFile *file;
+	NautilusIconContainer *icon_container;
+
+	if (GTK_WIDGET_CLASS (parent_class)->screen_changed) {
+		GTK_WIDGET_CLASS (parent_class)->screen_changed (widget, previous_screen);
+	}
+
+	view = FM_DIRECTORY_VIEW (widget);
+	if (FM_ICON_VIEW (view)->details->filter_by_screen) {
+		icon_container = get_icon_container (FM_ICON_VIEW (view));
+		
+		files = nautilus_directory_get_file_list (fm_directory_view_get_model (view));
+
+		for (l = files; l != NULL; l = l->next) {
+			file = l->data;
+			
+			if (!should_show_file_on_screen (view, file)) {
+				fm_icon_view_remove_file (view, file);
+			} else {
+				if (nautilus_icon_container_add (icon_container,
+								 NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
+					nautilus_file_ref (file);
+				}
+			}
+		}
+		
+		nautilus_file_list_unref (files);
+		g_list_free (files);
+	}
+}
+
+
 static int
 compare_files_cover (gconstpointer a, gconstpointer b, gpointer callback_data)
 {
@@ -2589,6 +2627,8 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (klass);
 
 	G_OBJECT_CLASS (klass)->finalize = fm_icon_view_finalize;
+	
+	GTK_WIDGET_CLASS (klass)->screen_changed = fm_icon_view_screen_changed;
 	
 	fm_directory_view_class->add_file = fm_icon_view_add_file;
 	fm_directory_view_class->flush_added_files = fm_icon_view_flush_added_files;
