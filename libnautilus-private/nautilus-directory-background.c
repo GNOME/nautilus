@@ -90,9 +90,13 @@ local_data_file_to_uri (char *file_name)
 	char *temp_str;
 
 	if (file_name != NULL && !nautilus_istr_has_prefix (file_name, "file://")) {
-		temp_str = g_strdup_printf ("%s/%s",
-					    NAUTILUS_DATADIR,
-					    file_name);
+		
+		if (nautilus_str_has_prefix (file_name, "./")) {
+			temp_str = nautilus_theme_get_image_path (file_name + 2);
+		} else {
+			temp_str = g_strdup_printf ("%s/%s", NAUTILUS_DATADIR, file_name);
+		}
+		
 		g_free (file_name);
 		file_name = nautilus_get_uri_from_local_path (temp_str);
 		g_free (temp_str);

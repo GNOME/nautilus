@@ -1,3 +1,12 @@
+2000-07-29  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(local_data_file_to_uri):
+	made directory backgrounds interpret "./" when building background uri
+	so the image can be kept in the theme folder
+	* src/nautilus-sidebar.c: (map_local_data_file):
+	ditto for sidebar
+
 2000-07-28  Gene Z. Ragan  <gzr@eazel.com>
 
 	* src/file-manager/fm-desktop-icon-view.c:
