@@ -88,8 +88,8 @@ struct _NautilusMusicViewDetails {
 	GtkWidget *album_title;
 	GtkWidget *song_list;
 	GtkWidget *album_image;
-        GtkWidget *image_box;
-        GtkWidget *dialog;
+	GtkWidget *image_box;
+	GtkWidget *dialog;
         
 	GtkWidget *control_box;
 	GtkWidget *play_control_box;
@@ -1273,6 +1273,8 @@ add_play_controls (NautilusMusicView *music_view)
         nautilus_label_set_font_from_components (NAUTILUS_LABEL (music_view->details->song_label),
                                                  "helvetica", "medium", NULL, NULL);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (music_view->details->song_label), 14);
+	nautilus_label_set_text_justification (NAUTILUS_LABEL (music_view->details->song_label), GTK_JUSTIFY_LEFT);
+	
 	/* we must make this a fixed size to avoid flashing when we change it */
 	gtk_widget_set_usize (music_view->details->song_label, 224, 40);
 	gtk_widget_show (music_view->details->song_label);
