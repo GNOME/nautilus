@@ -1790,7 +1790,9 @@ nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 		CORBA_exception_init (&ev);
 		property_bag = Bonobo_Control_getProperties (window->throbber, &ev);
 		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
+#if GNOME2_CONVERSION_COMPLETE
 			bonobo_property_bag_client_set_value_gboolean (property_bag, "throbbing", allow, &ev);
+#endif
 			bonobo_object_release_unref (property_bag, NULL);
 		}
 		CORBA_exception_free (&ev);

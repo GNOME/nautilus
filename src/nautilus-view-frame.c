@@ -35,6 +35,7 @@
 #include "nautilus-signaller.h"
 #include "nautilus-view-frame-private.h"
 #include "nautilus-window.h"
+#include <bonobo/bonobo-control-frame.h>
 #include <bonobo/bonobo-zoomable-frame.h>
 #include <bonobo/bonobo-zoomable.h>
 #include <eel/eel-gtk-extensions.h>

@@ -587,9 +587,6 @@ dnl ==========================================================================
 
 AC_OUTPUT([
 Makefile
-applets/Makefile
-applets/launcher/Makefile
-applets/preferences-applet/Makefile
 components/Makefile
 components/adapter/Makefile
 components/hardware/Makefile
@@ -642,10 +639,6 @@ help/nautilus-user-manual/C/Makefile
 help/nautilus-user-manual/Makefile
 help/nautilus-user-manual/es/Makefile
 help/nautilus-user-manual/ko/Makefile
-helper-scripts/Makefile
-helper-utilities/Makefile
-helper-utilities/error-dialog/Makefile
-helper-utilities/xml-migrate/Makefile
 icons/Makefile
 icons/crux_eggplant/Makefile
 icons/crux_eggplant/backgrounds/Makefile
@@ -719,6 +712,5 @@ esac
 dnl <= Snapshot things =>
 
 echo "NAUTILUS_SOURCE_DIRECTORY         : $NAUTILUS_SOURCE_DIRECTORY"
-echo "HAVE_APPLETS                      : $HAVE_APPLETS"
 
 dnl <= End of configuration summary =>

@@ -1,5 +1,26 @@
 2001-10-31  Darin Adler  <darin@bentspoon.com>
 
+	* configure.in:
+	* Makefile.am:
+	Removed nautilus-config and nautilusConf.sh stuff.
+	Get rid of applets, helper-scripts, and helper-utilities.
+	Compile user-guide, help, and omf-install.
+
+	* applets/
+	* helper-scripts/
+	* helper-utilities/
+	Removed.
+
+	* src/Nautilus_shell.oaf.in: Renamed to .server.in.
+	* src/.cvsignore: Ignore the new .server.
+
+	* src/nautilus-view-frame.c: Add missing include.
+
+	* src/nautilus-window.c: (nautilus_window_allow_stop):
+	Put code in #if GNOME2_CONVERSION_COMPLETE.
+
+2001-10-31  Darin Adler  <darin@bentspoon.com>
+
 	* README: Try to be kinda up to date.
 	* configure.in: Fix dependencies. I removed too many last
 	time so idl compiles all failed.
