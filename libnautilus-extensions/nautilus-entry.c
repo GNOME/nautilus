@@ -213,7 +213,8 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 
 	case GDK_slash:
 		if (entry->expand_tilde) {
-			if (g_strcasecmp (gtk_entry_get_text (GTK_ENTRY (entry)), "~") == 0) {
+			/* FIXME: This handles only ~/, not the fancier variants. */
+			if (strcmp (gtk_entry_get_text (GTK_ENTRY (entry)), "~") == 0) {
 				gtk_entry_set_text (GTK_ENTRY (entry), g_get_home_dir ());
 			}
 		}

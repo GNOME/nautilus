@@ -2,7 +2,7 @@
 
    nautilus-directory-metafile.c: Nautilus directory model.
  
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -19,61 +19,63 @@
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
   
-   Author: Darin Adler <darin@eazel.com>
+   Authors: Darin Adler <darin@eazel.com>,
+            Mike Engber <engber@eazel.com>
 */
 
 #include <config.h>
 #include "nautilus-directory-metafile.h"
 
+#include <libnautilus-extensions/nautilus-metafile-factory.h>
 #include <libnautilus-extensions/nautilus-metafile-server.h>
 #include <libnautilus-extensions/nautilus-string.h>
-
-#include <libnautilus-extensions/nautilus-metafile-factory.h>
-
 #include <liboaf/liboaf.h>
-
 #include <stdio.h>
 
-static Nautilus_MetafileFactory the_factory = CORBA_OBJECT_NIL;
-
-static void
-free_factory (void)
-{
-	CORBA_Environment ev;
-	CORBA_exception_init (&ev);
-	bonobo_object_release_unref (the_factory, &ev);
-	the_factory = CORBA_OBJECT_NIL;
-	CORBA_exception_free (&ev);
-}
-
+static Nautilus_MetafileFactory factory = CORBA_OBJECT_NIL;
 static gboolean get_factory_from_oaf = TRUE;
 
 void
 nautilus_directory_use_self_contained_metafile_factory (void)
 {
+	g_return_if_fail (factory == CORBA_OBJECT_NIL);
+
 	get_factory_from_oaf = FALSE;
+}
+
+static void
+free_factory (void)
+{
+	bonobo_object_release_unref (factory, NULL);
+}
+
+static Nautilus_MetafileFactory
+get_factory (void)
+{
+	NautilusMetafileFactory *instance;
+
+	if (factory == CORBA_OBJECT_NIL) {
+		if (get_factory_from_oaf) {
+			factory = oaf_activate_from_id (METAFILE_FACTORY_IID, 0, NULL, NULL);
+		} else {
+			instance = nautilus_metafile_factory_get_instance ();
+			factory = bonobo_object_dup_ref (bonobo_object_corba_objref (BONOBO_OBJECT (instance)), NULL);
+			bonobo_object_unref (BONOBO_OBJECT (instance));
+		}
+		g_atexit (free_factory);
+	}
+
+	return factory;
 }
 
 static Nautilus_Metafile
 get_metafile (NautilusDirectory *directory, CORBA_Environment *ev)
 {
-	char * uri;
+	char *uri;
 	Nautilus_Metafile metafile;
-	NautilusMetafileFactory *instance;
 
-	if (CORBA_Object_is_nil (the_factory, ev)) {
-		if (get_factory_from_oaf) {
-			the_factory = oaf_activate_from_id (METAFILE_FACTORY_IID, 0, NULL, NULL);
-		} else {
-			instance = nautilus_metafile_factory_get_instance ();
-			the_factory = bonobo_object_dup_ref (bonobo_object_corba_objref (BONOBO_OBJECT (instance)), ev);
-			bonobo_object_unref (BONOBO_OBJECT (instance));
-		}
-		g_atexit (free_factory);
-	}
-	
 	uri = nautilus_directory_get_uri (directory);
-	metafile = Nautilus_MetafileFactory_open (the_factory, uri, ev);
+	metafile = Nautilus_MetafileFactory_open (get_factory (), uri, ev);
 	g_free (uri);
 	
 	return metafile;	

@@ -152,16 +152,14 @@ timed_wait_free (TimedWait *wait)
 		gtk_timeout_remove (wait->timeout_handler_id);
 	}
 	if (wait->dialog != NULL) {
-
 		/* Make sure to detach from the "destroy" signal, or we'll
-		 * double-free
+		 * double-free.
 		 */
-		 
 		gtk_signal_disconnect_by_func (GTK_OBJECT (wait->dialog),
-				    timed_wait_dialog_destroy_callback, wait);
+					       timed_wait_dialog_destroy_callback,
+					       wait);
 
-		/* compute time up in milliseconds
-		 */
+		/* compute time up in milliseconds */
 		time_up = (nautilus_get_system_time () - wait->dialog_creation_time) / 1000;
 		
 		if (time_up < TIMED_WAIT_MIN_TIME_UP) {

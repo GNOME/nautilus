@@ -988,6 +988,13 @@ free_location_change (NautilusWindow *window)
         g_free (window->details->pending_location);
         window->details->pending_location = NULL;
 
+        if (window->details->pending_location_as_directory != NULL) {
+                nautilus_directory_file_monitor_remove (window->details->pending_location_as_directory,
+                                                        window);
+                nautilus_directory_unref (window->details->pending_location_as_directory);
+                window->details->pending_location_as_directory = NULL;
+        }
+
         if (window->details->determine_view_handle != NULL) {
                 nautilus_determine_initial_view_cancel (window->details->determine_view_handle);
                 window->details->determine_view_handle = NULL;
@@ -1303,6 +1310,19 @@ begin_location_change (NautilusWindow *window,
         window->details->pending_location = g_strdup (location);
         window->details->location_change_type = type;
         window->details->location_change_distance = distance;
+
+        /* We start monitoring files here so we get a single load of
+         * the directory instead of multiple ones. The concept is that
+         * our load of the directory is shared both with the possible
+         * call_when_ready done by the nautilus_determine_initial_view
+         * call and loads done by components (like the icon view).
+         */
+        window->details->pending_location_as_directory =
+                nautilus_directory_get (location);
+        nautilus_directory_file_monitor_add
+                (window->details->pending_location_as_directory, window,
+                 TRUE, TRUE, NULL, FALSE);
+
         window->details->determine_view_handle = nautilus_determine_initial_view
                 (location,
                  determined_initial_view_callback,

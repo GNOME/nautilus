@@ -706,7 +706,8 @@ get_theme_description_and_display_name (const char *theme_name, const char *them
 	g_free (theme_file_name);
 	if (description_result)
 		return description_result;
-	return g_strdup_printf (_("No description available for the \"%s\" theme"), *theme_display_name == NULL ? theme_name : *theme_display_name);
+	return g_strdup_printf (_("No description available for the \"%s\" theme"),
+				*theme_display_name == NULL ? theme_name : *theme_display_name);
 }
 
 /* utility to add the theme name and description to the selector.

@@ -1,3 +1,47 @@
+2001-02-14  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Gene Ragan <gzr@eazel.com>
+
+	* src/nautilus-applicable-views.c:
+	(got_minimum_file_info_callback),
+	(nautilus_determine_initial_view),
+	(nautilus_determine_initial_view_cancel): Get rid of the code to
+	monitor the directory. It's now moved up one level to the
+	manage-views.c code.
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-manage-views.c: (free_location_change),
+	(begin_location_change): Move the code that starts monitoring the
+	directory up here instead.
+
+	* src/nautilus-application.c: (volume_unmounted_callback): Rewrote
+	this code to not use the viewed_file private field. There's a
+	public call to get the current location that should work just as
+	well. Also fix bug where it would ignore the scheme and just look
+	at the path part.
+	
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(nautilus_directory_use_self_contained_metafile_factory): Added
+	check to detect if this is called after using the factory.
+	(free_factory): Simplified.
+	(get_factory): New function to simplify get_metafile.
+	(get_metafile): Simplified.
+
+	* src/nautilus-location-bar.c: (try_to_expand_path): Fix storage
+	leak.
+
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_key_press): Added FIXME after noticing a
+	particularly lame version of tilde expansion in here. I'm not sure
+	this is even used to good effect, since the location bar now does
+	its own tidle expansion.
+
+	* README: Fixed many inaccuracies.
+	
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	(timed_wait_free): Formatting tweaks.
+	* src/nautilus-theme-selector.c:
+	(get_theme_description_and_display_name): Formatting tweaks.
+
 2001-02-14  Michael Engber  <engber@eazel.com>
 
 	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
@@ -15,7 +59,6 @@
 	When timed wait dialog remaining up due to minimum uptime feature
 	are closed by the user, we now cancel the pending timeout that
 	would close them without user intervention.
-
 
 2001-02-14  Eskil Heyn Olsen  <eskil@eazel.com>
 
@@ -59,7 +102,6 @@
 	* libnautilus-extensions/nautilus-volume-monitor.c:
 	(volume_is_removable), (close_error_pipe):
 		
->>>>>>> 1.3766
 2001-02-14  Eric Fischer <eric@eazel.com>
 
 	* nautilus-installer/install-lib/Makefile.am:

@@ -307,6 +307,7 @@ try_to_expand_path (NautilusLocationBar *bar)
 	char *expand_text;
 	char *expand_name;
 	char *tilde_expand_name;
+	char *expanded_name;
 
 	editable = GTK_EDITABLE (bar->details->entry);
 	user_location = gtk_editable_get_chars (editable, 0, -1);
@@ -382,7 +383,9 @@ try_to_expand_path (NautilusLocationBar *bar)
 
 	tilde_expand_name = gtk_entry_get_text (GTK_ENTRY (editable));
 	if (*tilde_expand_name == '~') {
-		gtk_entry_set_text (GTK_ENTRY (editable), gnome_vfs_expand_initial_tilde (tilde_expand_name));
+		expanded_name = gnome_vfs_expand_initial_tilde (tilde_expand_name);
+		gtk_entry_set_text (GTK_ENTRY (editable), expanded_name);
+		g_free (expanded_name);
 	}
 
 	g_free (dir_name);

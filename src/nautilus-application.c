@@ -37,7 +37,6 @@
 #include "nautilus-main.h"
 #include "nautilus-shell-interface.h"
 #include "nautilus-shell.h"
-#include "nautilus-window-private.h"
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-object.h>
 #include <gtk/gtksignal.h>
@@ -47,13 +46,14 @@
 #include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-client.h>
 #include <libgnomeui/gnome-stock.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-sound.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
+#include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-string-list.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <libnautilus-extensions/nautilus-volume-monitor.h>
@@ -704,11 +704,10 @@ static void
 volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 			   NautilusApplication *application)
 {
-	GList *windows, *index, *close_list;
+	GList *windows, *node, *close_list;
 	NautilusWindow *window;
-	char *text_uri;
-	const char *path;
-	GnomeVFSURI *uri;
+	char *uri;
+	char *path;
 		
 	close_list = NULL;
 	
@@ -716,28 +715,22 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volum
 	windows = nautilus_application_get_window_list ();
 	
 	/* Construct a list of windows to be closed */
-	for (index = windows; index != NULL; index = index->next) {
-		window = (NautilusWindow *)index->data;
-		if (window != NULL && window->details->viewed_file != NULL) {
-			text_uri = nautilus_file_get_uri (window->details->viewed_file);
-			uri = gnome_vfs_uri_new (text_uri);
-			g_free (text_uri);
-			
-			if (uri != NULL) {
-				path = gnome_vfs_uri_get_path (uri);				
-				if (strlen (path) >= strlen (volume->mount_path)) {
-					if (strncmp (path, volume->mount_path, strlen (volume->mount_path)) == 0) {
-						close_list = g_list_prepend (close_list, window);
-					}				
-				}
-				gnome_vfs_uri_unref (uri);
+	for (node = windows; node != NULL; node = node->next) {
+		window = NAUTILUS_WINDOW (node->data);
+		if (window != NULL) {
+			uri = nautilus_window_get_location (window);
+			path = gnome_vfs_get_local_path_from_uri (uri);
+			if (nautilus_str_has_prefix (path, volume->mount_path)) {
+				close_list = g_list_prepend (close_list, window);
 			}
+			g_free (path);
+			g_free (uri);
 		}
 	}
 	
 	/* Now close all windows in the close list */
-	for (index = close_list; index != NULL; index = index->next) {
-		nautilus_window_close (NAUTILUS_WINDOW (index->data));
+	for (node = close_list; node != NULL; node = node->next) {
+		nautilus_window_close (NAUTILUS_WINDOW (node->data));
 	}
 	
 	g_list_free (close_list);

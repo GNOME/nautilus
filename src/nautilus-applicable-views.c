@@ -26,9 +26,6 @@
  *
  */
 
-
-/* #define DEBUG_MJS 1 */
-
 /* nautilus-applicable-views.c: Implementation of routines for mapping a location
    change request to a set of views and actual URL to be loaded. */
 
@@ -36,7 +33,6 @@
 #include "nautilus-applicable-views.h"
 
 #include <libgnomevfs/gnome-vfs-result.h>
-#include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
@@ -46,7 +42,6 @@ struct NautilusDetermineViewHandle {
 	NautilusDetermineViewCallback callback;
 	gpointer callback_data;
         NautilusFile *file;
-        NautilusDirectory *directory;
 };
 
 static NautilusDetermineViewResult
@@ -151,15 +146,6 @@ got_minimum_file_info_callback (NautilusFile *file,
 
         g_assert (handle->file == file);
 
-        /* We start monitoring files here so we get a single load of
-         * the directory instead of multiple ones. The concept is that
-         * our load of the directory is shared both with the
-         * possible call_when_ready below and with other stuff needed by
-         * components.
-         */
-        nautilus_directory_file_monitor_add (handle->directory, handle,
-                                             TRUE, TRUE, NULL, FALSE);
-        
         if (nautilus_mime_actions_file_needs_full_file_attributes (file)
             && nautilus_file_get_file_info_result (file) == GNOME_VFS_OK) {
                 attributes = nautilus_mime_actions_get_full_file_attributes ();
@@ -191,7 +177,6 @@ nautilus_determine_initial_view (const char *location,
         handle->callback_data = callback_data;
         
         handle->file = nautilus_file_get (location);
-        handle->directory = nautilus_directory_get (location);
 
         attributes = nautilus_mime_actions_get_minimum_file_attributes ();
         nautilus_file_call_when_ready (handle->file, attributes,
@@ -221,11 +206,8 @@ nautilus_determine_initial_view_cancel (NautilusDetermineViewHandle *handle)
                 (handle->file, got_minimum_file_info_callback, handle);
         nautilus_file_cancel_call_when_ready
                 (handle->file, got_file_info_callback, handle);
-        nautilus_directory_file_monitor_remove
-                (handle->directory, handle);
 
         nautilus_file_unref (handle->file);
-        nautilus_directory_unref (handle->directory);
 
         g_free (handle);
 }
