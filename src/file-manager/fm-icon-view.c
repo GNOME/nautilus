@@ -1798,8 +1798,8 @@ play_file (gpointer callback_data)
 	file_uri = nautilus_file_get_uri (file);
 	mime_type = nautilus_file_get_mime_type (file);
 	is_mp3 = eel_strcasecmp (mime_type, "audio/mpeg") == 0;
-	is_ogg = eel_strcasecmp (mime_type, "application/x-ogg") == 0 ||
-                eel_strcasecmp (mime_type, "application/ogg") == 0;
+	is_ogg = eel_strcasecmp (mime_type, "application/ogg") == 0 ||
+                eel_strcasecmp (mime_type, "application/x-ogg") == 0;
 	
 	mp3_pid = fork ();
 	if (mp3_pid == (pid_t) 0) {
@@ -1970,6 +1970,7 @@ icon_container_preview_callback (NautilusIconContainer *container,
 		mime_type = nautilus_file_get_mime_type (file);
 
 		if ((eel_istr_has_prefix (mime_type, "audio/")
+		     || eel_istr_has_prefix (mime_type, "application/ogg")
 		     || eel_istr_has_prefix (mime_type, "application/x-ogg"))
 		    && eel_strcasecmp (mime_type, "audio/x-pn-realaudio") != 0
 		    && eel_strcasecmp (mime_type, "audio/x-mpegurl") != 0
