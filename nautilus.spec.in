@@ -30,7 +30,6 @@ Requires:	bonobo = 0.26
 Requires:	popt >= 1.5
 Requires:	freetype2 >= 1.0beta8
 Requires:	medusa >= 0.2.2
-Requires:	gnome-core >= 1.2.3
 
 %description
 Nautilus is an open-source file manager and graphical shell being
@@ -161,7 +160,6 @@ fi
 %{prefix}/bin/nautilus-sample-content-view
 %{prefix}/bin/nautilus-sidebar-loser
 %{prefix}/bin/run-nautilus
-%{prefix}/bin/nautilus-launcher-applet
 %{prefix}/idl/*.idl
 %{prefix}/lib/libnautilus-adapter.so.0
 %{prefix}/lib/libnautilus-adapter.so.0.0.0
@@ -183,7 +181,6 @@ fi
 
 %defattr (0444, bin, bin)
 %config %{sysconfdir}/vfs/modules/*.conf
-%config %{sysconfdir}/CORBA/servers/nautilus-launcher-applet.gnorba
 %{prefix}/share/gnome/apps/Applications/*.desktop
 %{prefix}/share/gnome/ui/*.xml
 %{prefix}/share/hyperbola/maps/*.map

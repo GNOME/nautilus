@@ -1,8 +1,8 @@
 include $(top_srcdir)/Makefile.shared
 
-if HAVE_APPLETS
-APPLETS_SUBDIRS = applets
-endif
+#XXX_DISABLED_FOR_PR2_XXX if HAVE_APPLETS
+#XXX_DISABLED_FOR_PR2_XXX APPLETS_SUBDIRS = applets
+#XXX_DISABLED_FOR_PR2_XXX endif
 
 SUBDIRS =			\
 	data 			\

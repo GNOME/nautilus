@@ -498,35 +498,35 @@ dnl = End ghttp checks
 dnl ====================================
 
 
-dnl ====================================
-dnl = begin applet checks
-dnl ====================================
-AC_MSG_CHECKING(for applets)
-APPLETS_CFLAGS=
-APPLETS_LIBS=
-HAVE_APPLETS="no"
-
-gnome-config | grep applets > /dev/null 2>&1
-
-if test $? -eq 0
-then
-	HAVE_APPLETS="yes"
-	APPLETS_CFLAGS=`gnome-config --cflags applets`
-	APPLETS_LIBS=`gnome-config --libs applets`	
-	AC_MSG_RESULT(yes)
-else
-	HAVE_APPLETS="no"
-	AC_MSG_RESULT(no)
-fi
-
-AM_CONDITIONAL(HAVE_APPLETS, test "x$HAVE_APPLETS" = "xyes")
-
-AC_SUBST(HAVE_APPLETS)
-AC_SUBST(APPLETS_CFLAGS)
-AC_SUBST(APPLETS_LIBS)
-dnl ====================================
-dnl = begin applet checks
-dnl ====================================
+dnl XXX_DISABLED_FOR_PR2_XXX dnl ====================================
+dnl XXX_DISABLED_FOR_PR2_XXX dnl = begin applet checks
+dnl XXX_DISABLED_FOR_PR2_XXX dnl ====================================
+dnl XXX_DISABLED_FOR_PR2_XXX AC_MSG_CHECKING(for applets)
+dnl XXX_DISABLED_FOR_PR2_XXX APPLETS_CFLAGS=
+dnl XXX_DISABLED_FOR_PR2_XXX APPLETS_LIBS=
+dnl XXX_DISABLED_FOR_PR2_XXX HAVE_APPLETS="no"
+dnl XXX_DISABLED_FOR_PR2_XXX 
+dnl XXX_DISABLED_FOR_PR2_XXX gnome-config | grep applets > /dev/null 2>&1
+dnl XXX_DISABLED_FOR_PR2_XXX 
+dnl XXX_DISABLED_FOR_PR2_XXX if test $? -eq 0
+dnl XXX_DISABLED_FOR_PR2_XXX then
+dnl XXX_DISABLED_FOR_PR2_XXX 	HAVE_APPLETS="yes"
+dnl XXX_DISABLED_FOR_PR2_XXX 	APPLETS_CFLAGS=`gnome-config --cflags applets`
+dnl XXX_DISABLED_FOR_PR2_XXX 	APPLETS_LIBS=`gnome-config --libs applets`	
+dnl XXX_DISABLED_FOR_PR2_XXX 	AC_MSG_RESULT(yes)
+dnl XXX_DISABLED_FOR_PR2_XXX else
+dnl XXX_DISABLED_FOR_PR2_XXX 	HAVE_APPLETS="no"
+dnl XXX_DISABLED_FOR_PR2_XXX 	AC_MSG_RESULT(no)
+dnl XXX_DISABLED_FOR_PR2_XXX fi
+dnl XXX_DISABLED_FOR_PR2_XXX 
+dnl XXX_DISABLED_FOR_PR2_XXX AM_CONDITIONAL(HAVE_APPLETS, test "x$HAVE_APPLETS" = "xyes")
+dnl XXX_DISABLED_FOR_PR2_XXX 
+dnl XXX_DISABLED_FOR_PR2_XXX AC_SUBST(HAVE_APPLETS)
+dnl XXX_DISABLED_FOR_PR2_XXX AC_SUBST(APPLETS_CFLAGS)
+dnl XXX_DISABLED_FOR_PR2_XXX AC_SUBST(APPLETS_LIBS)
+dnl XXX_DISABLED_FOR_PR2_XXX dnl ====================================
+dnl XXX_DISABLED_FOR_PR2_XXX dnl = begin applet checks
+dnl XXX_DISABLED_FOR_PR2_XXX dnl ====================================
 
 dnl ====================================
 dnl = begin gdk-pixbuf checks
