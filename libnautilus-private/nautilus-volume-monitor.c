@@ -213,7 +213,7 @@ floppy_sort (const NautilusVolume *volume1, const NautilusVolume *volume2)
 }
 
 gboolean		
-nautilus_volume_monitor_volume_is_removable (NautilusVolume *volume)
+nautilus_volume_monitor_volume_is_removable (const NautilusVolume *volume)
 {
 	return volume->is_removable;
 }

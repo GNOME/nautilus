@@ -97,7 +97,7 @@ void               	nautilus_volume_monitor_mount_unmount_removable    	(Nautilu
 									   	 gboolean			 should_mount);
 gboolean		nautilus_volume_monitor_volume_is_mounted 		(NautilusVolumeMonitor 		*monitor,
 					   					const NautilusVolume 		*mount_point);
-gboolean		nautilus_volume_monitor_volume_is_removable		(NautilusVolume 		*volume);
+gboolean		nautilus_volume_monitor_volume_is_removable		(const NautilusVolume 		*volume);
 gboolean               	nautilus_volume_monitor_is_volume_link             	(const char            		*path);
 
 gboolean		nautilus_volume_monitor_should_integrate_trash		(const NautilusVolume 		*volume);
