@@ -1,3 +1,19 @@
+2000-08-29  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+
+	* src/nautilus-first-time-druid.c: (proxy_selection_changed),
+	(set_up_proxy_config_page), (next_update_feedback_page_callback),
+	(next_proxy_configuration_page_callback),
+	(finish_page_back_callback), (nautilus_first_time_druid_show),
+	(download_callback), (initiate_file_download):
+	made the first time druid handle proxy configuration, which is presented to
+	the user if an error occurs during the initial http update process.  Plus some
+	other cleanups.
+	
+	* src/nautilus-property-browser.c:
+	tweaked the background color
+	* src/nautilus-theme-selector.c:
+	tweaked the background color
+
 2000-08-28  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-object.c:

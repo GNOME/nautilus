@@ -49,7 +49,13 @@
 #include "nautilus-first-time-druid.h"
 
 #define SERVICE_UPDATE_ARCHIVE_PATH "/tmp/nautilus_update.tgz"
-#define NUMBER_OF_STANDARD_PAGES 4
+#define NUMBER_OF_STANDARD_PAGES 5
+
+#define USER_LEVEL_PAGE 0
+#define SERVICE_SIGNUP_PAGE 1
+#define OFFER_UPDATE_PAGE 2
+#define UPDATE_FEEDBACK_PAGE 3
+#define PROXY_CONFIGURATION_PAGE 4
 
 static void
 initiate_file_download (NautilusDruid *druid);
@@ -66,6 +72,10 @@ static GtkWidget *download_label;
 
 static int last_signup_choice = 0;
 static int last_update_choice = 0;
+static int last_proxy_choice = 1;
+
+static GtkWidget *port_number_entry;
+static GtkWidget *proxy_address_entry;
 
 static void
 druid_cancel (GtkWidget *druid)
@@ -189,6 +199,13 @@ update_selection_changed (GtkWidget *radio_buttons, gpointer user_data)
 {
 
 	last_update_choice = nautilus_radio_button_group_get_active_index (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons));
+}
+
+static void
+proxy_selection_changed (GtkWidget *radio_buttons, gpointer user_data)
+{
+
+	last_proxy_choice = nautilus_radio_button_group_get_active_index (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons));
 }
 
 
@@ -438,6 +455,102 @@ set_up_update_page (NautilusDruidPageEazel *page)
 
 }
 
+/* set up the proxy configuration page */
+static void
+set_up_proxy_config_page (NautilusDruidPageEazel *page)
+{
+	GtkWidget *radio_buttons;
+	GtkWidget *frame, *label;
+	GtkWidget *container, *main_box;
+	GtkWidget *vbox, *hbox;
+	GtkWidget *alignment;
+	int proxy_label_width;
+	
+	container = set_up_background (page, "rgb:ffff/ffff/ffff:h");
+
+	/* allocate a vbox to hold the description and the widgets */
+	main_box = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (main_box);
+	gtk_container_add (GTK_CONTAINER (container), main_box);
+	
+	/* allocate a descriptive label */
+	label = make_anti_aliased_label (_("We are having troubles making an external web connection.  \nSometimes, firewalls require you to specify a web proxy server.  \n Fill in the name of port of your proxy server, if any, below."));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
+	
+	frame = gtk_frame_new (_("HTTP Proxy Configuration"));
+	gtk_widget_show (frame);
+	gtk_container_set_border_width (GTK_CONTAINER (frame), 12);
+
+	/* allocate a pair of radio buttons */
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox);
+	gtk_container_add (GTK_CONTAINER (frame),
+					vbox);
+
+	radio_buttons = nautilus_radio_button_group_new (FALSE);
+
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("No proxy server required."));
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Use this proxy server:"));	
+	
+	nautilus_radio_button_group_set_active_index (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), 1);
+
+	gtk_signal_connect (GTK_OBJECT (radio_buttons),
+			    "changed",
+			    GTK_SIGNAL_FUNC (proxy_selection_changed),
+			    (gpointer) NULL);
+
+	gtk_widget_show (radio_buttons);	
+
+	gtk_box_pack_start (GTK_BOX (vbox), radio_buttons, FALSE, FALSE, 2);
+
+	/* allocate the proxy name entry */
+	
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox);
+
+	/* allocate an alignment width to indent */
+	alignment = gtk_alignment_new (1.0, 1.0, 1.0, 1.0);
+	gtk_widget_show (alignment);
+	gtk_widget_set_usize (alignment, 24, -1);
+	gtk_box_pack_start (GTK_BOX (hbox), alignment, FALSE, FALSE, 0);
+	
+	/* allocate the proxy label, followed by the entry */
+	label = nautilus_label_new (_("Proxy address:"));
+	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 2);
+	proxy_label_width = label->allocation.width;
+	proxy_address_entry = gtk_entry_new_with_max_length (24);
+	gtk_widget_set_usize (proxy_address_entry, 180, -1);
+	gtk_widget_show (proxy_address_entry);
+	gtk_box_pack_start (GTK_BOX (hbox), proxy_address_entry, FALSE, FALSE, 2);
+	
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 2);
+
+	/* allocate the port number entry */
+	
+	alignment = gtk_alignment_new (1.0, 1.0, 1.0, 1.0);
+	gtk_box_pack_start (GTK_BOX (hbox), alignment, FALSE, FALSE, 0);
+	gtk_widget_set_usize (alignment, 8, -1);
+	
+	/* allocate the proxy label, followed by the entry */
+	label = nautilus_label_new (_("Port:"));
+	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 2);
+
+	port_number_entry = gtk_entry_new_with_max_length (5);
+	gtk_widget_set_usize (port_number_entry, 48, -1);
+	gtk_widget_show (port_number_entry);
+	gtk_box_pack_start (GTK_BOX (hbox), port_number_entry, FALSE, FALSE, 2);
+	
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (main_box), frame, FALSE, FALSE, 2);
+
+
+}
+
 /* set up the update feedback page */
 static void
 set_up_update_feedback_page (NautilusDruidPageEazel *page)
@@ -484,11 +597,40 @@ next_update_page_callback (GtkWidget *button, NautilusDruid *druid)
 	return TRUE;
 }
 
+/* handle the "next" signal for the update feedback page to skip the error page */
+static gboolean
+next_update_feedback_page_callback (GtkWidget *button, NautilusDruid *druid)
+{
+	/* skip the error page by going write to the finish line */
+	nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (finish_page));
+	return TRUE;
+}
+
+/* handle the "next" signal for the update feedback page to skip the error page */
+static gboolean
+next_proxy_configuration_page_callback (GtkWidget *button, NautilusDruid *druid)
+{
+	
+	/* FIXME: here's where we configuration the proxy server information - Mike Fleming will do that soon */
+	/* including unconfiguring the proxy server if last_proxy_choice == 0 */
+	
+	g_message ("proxy server name is %s, port is %s", gtk_entry_get_text (GTK_ENTRY(proxy_address_entry)), gtk_entry_get_text (GTK_ENTRY(port_number_entry))); 
+	
+	/* now, go back to the offer update page or finish, depending on the user's selection */
+	if (last_proxy_choice == 1) {
+		nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (pages[OFFER_UPDATE_PAGE]));
+	} else {
+		nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (finish_page));
+	}
+	
+	return TRUE;
+}
+
 /* handle the "back" signal from the finish page to skip the feedback page */
 static gboolean
 finish_page_back_callback (GtkWidget *button, NautilusDruid *druid)
 {
-	nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (pages[2]));
+	nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (pages[OFFER_UPDATE_PAGE]));
 	return TRUE;
 }
 
@@ -592,43 +734,55 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 18);
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
-	
-	/*	
-	nautilus_druid_page_eazel_set_text (NAUTILUS_DRUID_PAGE_EAZEL(finish_page), _("Click to finish button to launch Nautilus.\n\nWe hope that you enjoying using it!"));
-	*/
-	
-	
+		
 	/* set up the user level page */
-	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[0]), _("Select A User Level"));
-	set_up_user_level_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[0]));
+	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[USER_LEVEL_PAGE]), _("Select A User Level"));
+	set_up_user_level_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[USER_LEVEL_PAGE]));
 				
 	/* set up the service sign-up page */
-	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[1]), _("Sign Up for Eazel Services"));
-	set_up_service_signup_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[1]));
+	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[SERVICE_SIGNUP_PAGE]), _("Sign Up for Eazel Services"));
+	set_up_service_signup_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[SERVICE_SIGNUP_PAGE]));
 
 	/* set up the update page */
-	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[2]), _("Nautilus Update"));
-	set_up_update_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[2]));
+	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[OFFER_UPDATE_PAGE]), _("Nautilus Update"));
+	set_up_update_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[OFFER_UPDATE_PAGE]));
 
-	gtk_signal_connect (GTK_OBJECT (pages[2]), "next",
+	gtk_signal_connect (GTK_OBJECT (pages[OFFER_UPDATE_PAGE]), "next",
 			    GTK_SIGNAL_FUNC (next_update_page_callback),
 			    druid);
 
 	/* set up the update feedback page */
-	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[3]), _("Updating Nautilus..."));
-	set_up_update_feedback_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[3]));
+	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[UPDATE_FEEDBACK_PAGE]), _("Updating Nautilus..."));
+	set_up_update_feedback_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[UPDATE_FEEDBACK_PAGE]));
+
+	gtk_signal_connect (GTK_OBJECT (pages[UPDATE_FEEDBACK_PAGE]), "next",
+			    GTK_SIGNAL_FUNC (next_update_feedback_page_callback),
+			    druid);
+
+	/* set up the (optional) proxy configuration page */
+	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[PROXY_CONFIGURATION_PAGE]), _("Web Proxy Configuration"));
+	set_up_proxy_config_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[PROXY_CONFIGURATION_PAGE]));
+
+	gtk_signal_connect (GTK_OBJECT (pages[PROXY_CONFIGURATION_PAGE]), "next",
+			    GTK_SIGNAL_FUNC (next_proxy_configuration_page_callback),
+			    druid);
+	gtk_signal_connect (GTK_OBJECT (pages[PROXY_CONFIGURATION_PAGE]), "back",
+			    GTK_SIGNAL_FUNC (finish_page_back_callback),
+			    druid);
+
 
 	/* capture the "back" signal from the finish page to skip the feedback page */
 	gtk_signal_connect (GTK_OBJECT (finish_page), "back",
 			    GTK_SIGNAL_FUNC (finish_page_back_callback),
 			    druid);
-	
+		
 	/* append all of the pages to the druid */
 	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (start_page));
 	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (pages[0]));
 	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (pages[1]));
 	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (pages[2]));
 	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (pages[3]));
+	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (pages[4]));
 	
 	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (finish_page));
 
@@ -691,12 +845,12 @@ download_callback (GnomeVFSResult result,
 		/* now that we're done, reenable the buttons */
 		gtk_widget_set_sensitive (druid->next, TRUE);
 		gtk_widget_set_sensitive (druid->back, TRUE);
+	} else {
+		/* there was an error, so go to the proxy configuration page */
+		nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (pages[PROXY_CONFIGURATION_PAGE]));	
 	}
+
 }
-
-/* here's the timer task that provides the feedback */
-
-/* handle the get file info callback by remembering the length and initiating the file read */
 
 /* initiate downloading of the welcome package from the service */
 
@@ -705,8 +859,8 @@ initiate_file_download (NautilusDruid *druid)
 {
 	NautilusReadFileHandle *file_handle;
 
-	/* for testing */
-	const char *file_uri = "http://dellbert.differnet.com/eazel-services/updates.tgz";
+	/* FIXME: for testing; this needs to move to the real service */
+	const char *file_uri = "http://linus.differnet.com/eazel-services/updates.tgz";
 
 	/* disable the next and previous buttons during the  file loading process */
 	gtk_widget_set_sensitive (druid->next, FALSE);

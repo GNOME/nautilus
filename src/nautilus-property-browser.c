@@ -139,7 +139,7 @@ static char *strip_extension                            (const char             
 static char *get_xml_path                               (NautilusPropertyBrowser *property_browser);
 
 #define BROWSER_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
-#define BROWSER_TITLE_BAR_COLOR  "rgb:BBBB/BBBB/BBBB"
+#define BROWSER_TITLE_BAR_COLOR  "rgb:D6D6/D6D6/D6D6"
 
 #define THEME_SELECT_COLOR "rgb:FFFF/9999/9999"
 

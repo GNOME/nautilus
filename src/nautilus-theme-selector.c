@@ -105,7 +105,7 @@ static void  theme_select_row_callback (GtkCList * clist, int row, int column, G
 #define THEME_SELECTOR_HEIGHT 264
 
 #define SELECTOR_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
-#define SELECTOR_TITLE_BAR_COLOR  "rgb:BBBB/BBBB/BBBB"
+#define SELECTOR_TITLE_BAR_COLOR  "rgb:D6D6/D6D6/D6D6"
 
 static NautilusThemeSelector *main_theme_selector = NULL;
 
