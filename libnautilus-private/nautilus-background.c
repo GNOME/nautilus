@@ -358,8 +358,6 @@ nautilus_get_widget_background (GtkWidget *widget)
 {
 	gpointer data;
 	NautilusBackground *background;
-	GtkStyle *old_style;
-	GtkStyle *new_style;
 
 	g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
 

@@ -50,6 +50,7 @@ typedef struct {
 } NautilusWindowClass;
 
 typedef struct _NautilusWindowLoadInfo NautilusWindowLoadInfo;
+typedef struct _NautilusContentViewLoadInfo NautilusContentViewLoadInfo;
 
 struct _NautilusWindow {
   GnomeApp parent_object;
@@ -77,6 +78,7 @@ struct _NautilusWindow {
   Nautilus_SelectionInfo *si;
 
   NautilusWindowLoadInfo *load_info;
+  NautilusContentViewLoadInfo *content_view_info;
 };
 
 GtkType nautilus_window_get_type(void);

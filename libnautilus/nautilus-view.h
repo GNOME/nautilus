@@ -31,7 +31,7 @@
 #define NTL_VIEW_FRAME_H
 
 #include <gtk/gtkbin.h>
-#include "nautilus.h"
+#include <libnautilus/nautilus.h>
 #include <bonobo/gnome-object.h>
 
 #ifdef __cplusplus

@@ -27,6 +27,7 @@
 #endif
 
 #include "nautilus-directory.h"
+#include "libnautilus.h"
 
 #include <stdlib.h>
 
@@ -192,7 +193,6 @@ nautilus_directory_try_to_read_metafile (NautilusDirectory *directory)
 	GnomeVFSFileInfo metafile_info;
 	GnomeVFSHandle *metafile_handle;
 	GnomeVFSFileSize size, actual_size;
-	char *buffer;
 
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), GNOME_VFS_ERROR_GENERIC);
 	g_return_val_if_fail (directory->details->metafile_tree == NULL, GNOME_VFS_ERROR_GENERIC);
@@ -214,19 +214,16 @@ nautilus_directory_try_to_read_metafile (NautilusDirectory *directory)
 			result = GNOME_VFS_ERROR_TOOBIG;
 	}
 
-	buffer = NULL;
 	if (result == GNOME_VFS_OK) {
-		buffer = g_malloc (size);
+		char *buffer = g_alloca(size);
+
 		result = gnome_vfs_read (metafile_handle, buffer, size, &actual_size);
+		directory->details->metafile_tree = xmlParseMemory (buffer, actual_size);
+		g_free (buffer);
 	}
 
 	if (metafile_handle != NULL)
 		gnome_vfs_close (metafile_handle);
-
-	if (result == GNOME_VFS_OK)
-		directory->details->metafile_tree = xmlParseMemory (buffer, actual_size);
-
-	g_free (buffer);
 
 	return result;
 }

@@ -358,8 +358,6 @@ fm_directory_view_icons_set_icon_layout (FMDirectoryViewIcons *view,
 void
 fm_directory_view_icons_line_up_icons (FMDirectoryViewIcons *icon_view)
 {
-	GnomeIconContainer *container;
-
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
 	g_return_if_fail (get_icon_container (icon_view) != NULL);
 

@@ -45,8 +45,8 @@ struct _NautilusIndexPanelDetails {
 	int background_connection;
 };
 
-static void nautilus_index_panel_initialize_class (gpointer klass);
-static void nautilus_index_panel_initialize (gpointer object, gpointer klass);
+static void nautilus_index_panel_initialize_class (GtkObjectClass *object_klass);
+static void nautilus_index_panel_initialize (GtkObject *object);
 static void nautilus_index_panel_destroy (GtkObject *object);
 static void nautilus_index_panel_finalize (GtkObject *object);
 
@@ -84,13 +84,17 @@ NAUTILUS_DEFINE_GET_TYPE_FUNCTION (NautilusIndexPanel, nautilus_index_panel, GTK
 
 /* initializing the class object by installing the operations we override */
 static void
-nautilus_index_panel_initialize_class (gpointer klass)
+nautilus_index_panel_initialize_class (GtkObjectClass *object_klass)
 {
 	GtkWidgetClass *widget_class;
+	NautilusIndexPanelClass *klass;
 
-	widget_class = GTK_WIDGET_CLASS (klass);
+	widget_class = (GtkWidgetClass *)object_klass;
+	klass = (NautilusIndexPanelClass *)object_klass;
+	object_klass->destroy = nautilus_index_panel_destroy;
+	object_klass->finalize = nautilus_index_panel_finalize;
 
-	parent_class = gtk_type_class (GTK_TYPE_EVENT_BOX);
+	parent_class = gtk_type_class (gtk_type_parent(object_klass->type));
 
 	widget_class->drag_data_received = nautilus_index_panel_drag_data_received;
 }
@@ -109,7 +113,7 @@ static void make_per_uri_container(NautilusIndexPanel *index_panel)
 /* initialize the instance's fields, create the necessary subviews, etc. */
 
 static void
-nautilus_index_panel_initialize (gpointer object, gpointer klass)
+nautilus_index_panel_initialize (GtkObject *object)
 {
 	NautilusIndexPanel *index_panel;
 	GtkWidget* widget;
@@ -181,9 +185,6 @@ nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 					 gint x, gint y,
 					 GtkSelectionData *selection_data, guint info, guint time)
 {
-	char *color_spec;
-	guint16 *data;
-
 	g_return_if_fail (NAUTILUS_IS_INDEX_PANEL (widget));
 
 	switch (info)
@@ -301,7 +302,6 @@ void
 nautilus_index_panel_set_up_label (NautilusIndexPanel *index_panel, const gchar *uri)
 {
 	GnomeVFSURI *vfs_uri;
-	GnomeVFSURI *parent_vfs_uri;
 	GtkWidget *label_widget;
 	char *file_name;
 	GdkFont *label_font;

@@ -519,7 +519,6 @@ nautilus_window_set_arg (GtkObject      *object,
 {
   GnomeApp *app = (GnomeApp *) object;
   char *old_app_name;
-  GtkWidget *new_cv;
   NautilusWindow *window = (NautilusWindow *) object;
 
   switch(arg_id) {

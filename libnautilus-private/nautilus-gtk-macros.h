@@ -47,8 +47,8 @@ class_name_in_function_format##_get_type (void) \
 			#class_name, \
 			sizeof (class_name), \
 			sizeof (class_name##Class), \
-			class_name_in_function_format##_initialize_class, \
-			class_name_in_function_format##_initialize, \
+			(GtkClassInitFunc)class_name_in_function_format##_initialize_class, \
+			(GtkObjectInitFunc)class_name_in_function_format##_initialize, \
 			NULL, \
 			NULL, \
 			NULL \

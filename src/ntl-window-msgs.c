@@ -248,8 +248,6 @@ view_menu_switch_views_cb (GtkWidget *widget, gpointer data)
 static void
 nautilus_window_load_content_view_menu (NautilusWindow *window, NautilusNavigationInfo *ni)
 {
-  GList *children; 
-  GList *iter_old;
   GSList *iter_new;
   GtkWidget *new_menu;
   gint index, default_view_index;

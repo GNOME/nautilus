@@ -1,3 +1,28 @@
+2000-01-18  Elliot Lee  <sopwith@redhat.com>
+
+	* libnautilus/nautilus-gtk-macros.h: Since the prototypes for
+	GtkObjectInitFunc and GtkClassInitFunc just have a 'gpointer' for the args,
+	cast the given values to these function types, so that people can use the actual
+	pointer types as arguments without receiving a warning.
+
+	* src/ntl-index-panel.c: Change to match. Also set
+	object_klass->destroy & object_klass->finalize to point to our
+	implementation. Also remove unused variables
+	(nautilus_index_panel_initialize,
+	nautilus_index_panel_set_up_label).
+
+	* libnautilus/nautilus-background.c, src/ntl-window-msgs.c,
+	src/ntl-window.c, src/file-manager/fm-directory-icons.c: Remove
+	unused variables.
+
+	* src/ntl-window.h: Add a variable (unused) for future handling of content view loading.
+
+	* libnautilus/libnautilus.h: Add an interim g_alloca.
+
+	* libnautilus/nautilus-directory.c: Clean up a bit further, by
+	removing the need for another if(), and using g_alloca instead of
+	g_malloc.
+
 2000-01-18  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/nautilus-directory.c:
