@@ -25,8 +25,7 @@
 
 #include "eazel-summary-shared.h"
 
-#include <libtrilobite/helixcode-utils.h>
-#include <libtrilobite/trilobite-core-utils.h>
+#include <libtrilobite/libtrilobite.h>
 #include <gnome.h>
 #include <glib.h>
 #include <gnome-xml/tree.h>
@@ -120,13 +119,13 @@ parse_a_service (xmlNodePtr node)
 
 	return_value = services_data_new ();
 
-	return_value->name = g_strdup (xml_get_value (node, "NAME"));
-	return_value->icon = g_strdup (xml_get_value (node, "ICON"));
-	return_value->button_label = g_strdup (xml_get_value (node, "BUTTON_LABEL"));
-	return_value->uri = g_strdup (xml_get_value (node, "URI"));
-	return_value->description_header = g_strdup (xml_get_value (node, "DESCRIPTION_HEADER"));
-	return_value->description = g_strdup (xml_get_value (node, "DESCRIPTION"));
-	tempbuf = g_strdup (xml_get_value (node, "ENABLED"));
+	return_value->name = g_strdup (trilobite_xml_get_string (node, "NAME"));
+	return_value->icon = g_strdup (trilobite_xml_get_string (node, "ICON"));
+	return_value->button_label = g_strdup (trilobite_xml_get_string (node, "BUTTON_LABEL"));
+	return_value->uri = g_strdup (trilobite_xml_get_string (node, "URI"));
+	return_value->description_header = g_strdup (trilobite_xml_get_string (node, "DESCRIPTION_HEADER"));
+	return_value->description = g_strdup (trilobite_xml_get_string (node, "DESCRIPTION"));
+	tempbuf = g_strdup (trilobite_xml_get_string (node, "ENABLED"));
 	if (tempbuf[0] == 'T' || tempbuf[0] == 't') {
 		return_value->enabled = TRUE;
 	}
@@ -148,10 +147,10 @@ parse_a_eazel_news_item (xmlNodePtr node)
 	EazelNewsData *return_value;
 	return_value = eazel_news_data_new ();
 
-	return_value->name = g_strdup (xml_get_value (node, "NAME"));
-	return_value->icon = g_strdup (xml_get_value (node, "ICON"));
-	return_value->date = g_strdup (xml_get_value (node, "DATE"));
-	return_value->message = g_strdup (xml_get_value (node, "MESSAGE"));
+	return_value->name = g_strdup (trilobite_xml_get_string (node, "NAME"));
+	return_value->icon = g_strdup (trilobite_xml_get_string (node, "ICON"));
+	return_value->date = g_strdup (trilobite_xml_get_string (node, "DATE"));
+	return_value->message = g_strdup (trilobite_xml_get_string (node, "MESSAGE"));
 
 	return return_value;
 
@@ -163,14 +162,14 @@ parse_a_update_news_item (xmlNodePtr node)
 	UpdateNewsData *return_value;
 	return_value = update_news_data_new ();
 
-	return_value->name = g_strdup (xml_get_value (node, "NAME"));
-	return_value->version = g_strdup (xml_get_value (node, "VERSION"));
-	return_value->priority = g_strdup (xml_get_value (node, "PRIORITY"));
-	return_value->description = g_strdup (xml_get_value (node, "DESCRIPTION"));
-	return_value->icon = g_strdup (xml_get_value (node, "ICON"));
-	return_value->button_label = g_strdup (xml_get_value (node, "BUTTON_LABEL"));
-	return_value->uri = g_strdup (xml_get_value (node, "URI"));
-	return_value->softcat_uri = g_strdup (xml_get_value (node, "SOFTCAT_URI"));
+	return_value->name = g_strdup (trilobite_xml_get_string (node, "NAME"));
+	return_value->version = g_strdup (trilobite_xml_get_string (node, "VERSION"));
+	return_value->priority = g_strdup (trilobite_xml_get_string (node, "PRIORITY"));
+	return_value->description = g_strdup (trilobite_xml_get_string (node, "DESCRIPTION"));
+	return_value->icon = g_strdup (trilobite_xml_get_string (node, "ICON"));
+	return_value->button_label = g_strdup (trilobite_xml_get_string (node, "BUTTON_LABEL"));
+	return_value->uri = g_strdup (trilobite_xml_get_string (node, "URI"));
+	return_value->softcat_uri = g_strdup (trilobite_xml_get_string (node, "SOFTCAT_URI"));
 
 	return return_value;
 

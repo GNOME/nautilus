@@ -16,19 +16,21 @@
  *  You should have received a copy of the GNU Library General Public
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- *
- * Authors: J Shane Culpepper <pepper@eazel.com>
- *
  */
 
 /*
  * libtrilobite - Useful functions shared between all services.  This
  * includes things like xml parsing, logging, error control, and others.
- *
  */
 
 #ifndef TRILOBITE_CORE_NETWORK_H
 #define TRILOBITE_CORE_NETWORK_H
 
-#endif /* TRILOBITE_CORE_NETWORK_H */
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
 
+char *trilobite_xml_get_string (xmlNode *node, const char *name);
+gboolean trilobite_fetch_uri (const char *uri_text, char **body, int *length);
+gboolean trilobite_fetch_uri_to_file (const char *uri_text, const char *filename);
+
+#endif /* TRILOBITE_CORE_NETWORK_H */

@@ -310,12 +310,12 @@ trilobite_eazel_time_service_initialize_load_config (TrilobiteEazelTimeService *
 		return;
 	}
 	
-	if (xml_get_value (base, "TIME_SERVER")) {
+	if (trilobite_xml_get_string (base, "TIME_SERVER")) {
 		g_free (service->private->time_server);
-		service->private->time_server = g_strdup (xml_get_value (base, "TIME_SERVER"));
+		service->private->time_server = trilobite_xml_get_string (base, "TIME_SERVER");
 	}
-	if (xml_get_value (base, "MAXD")) {
-		const char *tmp = xml_get_value (base, "MAXD");
+	if (trilobite_xml_get_string (base, "MAXD")) {
+		const char *tmp = trilobite_xml_get_string (base, "MAXD");
 		service->private->maxd = atoi (tmp);
 	}
 	

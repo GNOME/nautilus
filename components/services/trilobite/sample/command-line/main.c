@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
 
 	TrilobiteRootClient *root_client = NULL;
 
-	if (!trilobite_init ("trilobite-sample-client", "0.1", NULL, argc, argv, NULL)) {
+	if (!trilobite_init ("trilobite-sample-client", "0.1", NULL, argc, argv)) {
 		g_error ("Could not initialize trilobite. :(");
 		exit (1);
 	}

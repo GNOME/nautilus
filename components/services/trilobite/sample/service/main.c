@@ -106,7 +106,6 @@ trilobite_sample_service_factory (BonoboGenericFactory *this_factory,
 
 int main(int argc, char *argv[]) {
 
-	GData *data;
 	char *registration_id;
 
 #ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
@@ -114,13 +113,11 @@ int main(int argc, char *argv[]) {
 	textdomain (PACKAGE);
 #endif
 
-	g_datalist_init (&data);
-	g_datalist_set_data (&data, "debug", (void *)1);
-	if (!trilobite_init ("trilobite-sample-service", "0.1", "/tmp/trilobite.log", argc, argv, data)) {
+	if (!trilobite_init ("trilobite-sample-service", "0.1", "/tmp/trilobite.log", argc, argv)) {
 		g_error ("Could not initialize trilobite. :(");
 		exit (1);
 	}
-	g_datalist_clear (&data);
+	trilobite_set_debug_mode (TRUE);
 
         registration_id = oaf_make_registration_id (OAF_ID_FACTORY, getenv ("DISPLAY"));
 

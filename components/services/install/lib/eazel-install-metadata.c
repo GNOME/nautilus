@@ -28,8 +28,8 @@
  */
 
 #include <config.h>
+#include <libtrilobite/libtrilobite.h>
 #include "eazel-install-metadata.h"
-#include <libtrilobite/trilobite-core-utils.h>
 
 #ifndef EAZEL_INSTALL_SLIM
 #include <gconf/gconf.h>

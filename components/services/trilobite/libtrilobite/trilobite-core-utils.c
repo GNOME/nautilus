@@ -19,7 +19,6 @@
  *
  * Authors: J Shane Culpepper <pepper@eazel.com>
  *	    Robey Pointer <robey@eazel.com>
- *
  */
 
 /*
@@ -28,27 +27,26 @@
  *
  */
 
-#include "trilobite-core-utils.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <sys/time.h>
 #include <gnome.h>
 
+#include "trilobite-core-utils.h"
+#include "trilobite-core-messaging.h"
+
 #ifndef TRILOBITE_SLIM 
-#include <libgnomevfs/gnome-vfs.h>
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
-#else /* TRILOBITE_SLIM */
-#include <ghttp.h>
 #endif /* TRILOBITE_SLIM */
 
 
 #define TRILOBITE_SERVICE_CONFIG_DIR "/etc/trilobite"
 #define TRILOBITE_SERVICE_CONFIG_DIR_ENV "TRILOBITE_CONFIG"
-
-#define ROBEY_LIKES_TIMESTAMPS
 
 #ifdef OPEN_MAX
 #define LAST_FD OPEN_MAX
@@ -147,301 +145,6 @@ close_and_give_up:
 
 
 #ifndef TRILOBITE_SLIM
-static FILE *saved_logf = NULL;
-static int do_debug_log = 0;
-
-/* handler for trapping g_log/g_warning/g_error/g_message stuff, and sending it to
- * a standard logfile.
- */
-static void
-trilobite_add_log (const char *domain, GLogLevelFlags flags, const char *message, FILE *logf)
-{
-	char *prefix;
-	char *timestamp = NULL;
-#ifdef ROBEY_LIKES_TIMESTAMPS
-	struct timeval now;
-#endif
-	
-	g_assert (logf != NULL);
-
-	if (flags & G_LOG_LEVEL_DEBUG) {
-		if (do_debug_log) {
-			prefix = "d:";
-		} else {
-			return;
-		}
-	} else if (flags & G_LOG_LEVEL_MESSAGE) {
-		prefix = "---";
-	} else if (flags & G_LOG_LEVEL_WARNING) {
-		prefix = "*** warning:";
-	} else if (flags & G_LOG_LEVEL_ERROR) {
-		prefix = "!!! ERROR:";
-	} else {
-		prefix = "???";
-	}
-
-#ifdef ROBEY_LIKES_TIMESTAMPS
-	gettimeofday (&now, NULL);
-	timestamp = g_malloc (40);
-	strftime (timestamp, 40, "%d-%b %H:%M:%S", localtime ((time_t *)&now.tv_sec));
-	sprintf (timestamp + strlen (timestamp), ".%02ld ", now.tv_usec/10000L);
-#endif
-
-	fprintf (logf, "%s%s %s\n", timestamp != NULL ? timestamp : "", prefix, message);
-	fflush (logf);
-}
-
-static void
-trilobite_close_log (void)
-{
-	if (saved_logf != NULL) {
-		fclose (saved_logf);
-	}
-}
-#endif	/* TRILOBITE_SLIM */
-
-
-#ifndef TRILOBITE_SLIM
-static GnomeVFSHandle *
-trilobite_open_uri (const char *uri_text)
-{
-	GnomeVFSResult err;
-	GnomeVFSURI *uri;
-	GnomeVFSHandle *handle = NULL;
-
-	if (! gnome_vfs_initialized ()) {
-		setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (FALSE, NULL), 1);
-
-		if (! gnome_vfs_init ()) {
-			g_warning ("cannot initialize gnome-vfs!");
-			return NULL;
-		}
-	}
-
-	uri = gnome_vfs_uri_new (uri_text);
-	if (uri == NULL) {
-		trilobite_debug ("fetch-uri: invalid uri");
-		return NULL;
-	}
-
-	err = gnome_vfs_open_uri (&handle, uri, GNOME_VFS_OPEN_READ);
-	if (err != GNOME_VFS_OK) {
-
-		trilobite_debug ("fetch-uri on '%s': open failed: %s", 
-				 uri_text, 
-				 gnome_vfs_result_to_string (err));
-		handle = NULL;
-	}
-
-	gnome_vfs_uri_unref (uri);
-	return handle;
-}
-#endif /* TRILOBITE_SLIM */
-
-#ifndef TRILOBITE_SLIM
-/* fetch a file from an url, using gnome-vfs
- * (using gnome-vfs allows urls of the type "eazel-auth:/etc" to work)
- * generally this will be used to fetch XML files.
- * on success, the body will be null-terminated (this helps work around bugs in libxml,
- * and also makes it easy to manipulate a small body using string operations).
- */
-gboolean
-trilobite_fetch_uri (const char *uri_text, char **body, int *length)
-{
-	GnomeVFSResult err;
-	GnomeVFSHandle *handle;
-	int buffer_size;
-	GnomeVFSFileSize bytes;
-
-	handle = trilobite_open_uri (uri_text);
-	if (handle == NULL) {
-		return FALSE;
-	}
-
-	/* start the buffer at a reasonable size */
-	buffer_size = 4096;
-	*body = g_malloc (buffer_size);
-	*length = 0;
-
-	while (1) {
-		/* i think this is probably pretty loser: */
-		g_main_iteration (FALSE);
-		err = gnome_vfs_read (handle, (*body) + (*length), buffer_size - (*length), &bytes);
-		if ((bytes == 0) || (err != GNOME_VFS_OK)) {
-			break;
-		}
-		*length += bytes;
-		if (*length >= buffer_size - 64) {
-			/* expando time! */
-			buffer_size *= 4;
-			*body = g_realloc (*body, buffer_size);
-		}
-	}
-
-	/* EOF is now an "error" :) */
-	if ((err != GNOME_VFS_OK) && (err != GNOME_VFS_ERROR_EOF)) {
-		g_free (*body);
-		*body = NULL;
-		goto fail;
-	}
-
-	(*body)[*length] = 0;
-	gnome_vfs_close (handle);
-	return TRUE;
-
-fail:
-	trilobite_debug ("fetch-uri on %s: %s (%d)", uri_text, gnome_vfs_result_to_string (err), err);
-	gnome_vfs_close (handle);
-	return FALSE;
-}
-#endif /* TRILOBITE_SLIM */
-
-#ifndef TRILOBITE_SLIM
-gboolean
-trilobite_fetch_uri_to_file (const char *uri_text, const char *filename)
-{
-	GnomeVFSResult err;
-	GnomeVFSHandle *handle;
-	FILE *file;
-	char buffer[1024];
-	GnomeVFSFileSize bytes;
-
-	file = fopen (filename, "w");
-	if (file == NULL) {
-		return FALSE;
-	}
-
-	handle = trilobite_open_uri (uri_text);
-	if (handle == NULL) {
-		fclose (file);
-		return FALSE;
-	}
-
-	while (1) {
-		g_main_iteration (FALSE);
-		err = gnome_vfs_read (handle, buffer, sizeof(buffer), &bytes);
-		if ((bytes == 0) || (err != GNOME_VFS_OK)) {
-			break;
-		}
-		fwrite (buffer, bytes, 1, file);
-	}
-
-	gnome_vfs_close (handle);
-	fclose (file);
-
-	return (err == GNOME_VFS_OK);
-}
-#endif /* TRILOBITE_SLIM */
-
-#ifdef TRILOBITE_SLIM
-gboolean trilobite_fetch_uri (const char *uri_text, 
-			      char **body, 
-			      int *length)
-{
-	char *uri = NULL;
-        ghttp_request* request;
-        ghttp_status status;
-	gboolean result = TRUE;
-
-	g_assert (body!=NULL);
-	g_assert (uri_text != NULL);
-	g_assert (length != NULL);
-
-	uri = g_strdup (uri_text);
-        request = NULL;
-        (*length) = -1;
-        (*body) = NULL;
-
-        if ((request = ghttp_request_new())==NULL) {
-                g_warning (_("Could not create an http request !"));
-                result = FALSE;
-        } 
-
-	/* bootstrap installer does it this way */
-	if (result && (g_getenv ("http_proxy") != NULL)) {
-		if (ghttp_set_proxy (request, g_getenv ("http_proxy")) != 0) {
-			g_warning (_("Proxy: Invalid uri !"));
-			result = FALSE;
-		}
-	}
-
-        if (result && (ghttp_set_uri (request, uri) != 0)) {
-                g_warning (_("Invalid uri !"));
-                result = FALSE;
-        }
-
-	if (result) {
-		ghttp_set_header (request, http_hdr_Connection, "close");
-		ghttp_set_header (request, http_hdr_User_Agent, trilobite_get_useragent_string (FALSE, NULL));
-	}
-
-        if (result && (ghttp_prepare (request) != 0)) {
-                g_warning (_("Could not prepare http request !"));
-                result = FALSE;
-        }
-
-        if (result && ghttp_set_sync (request, ghttp_async)) {
-                g_warning (_("Couldn't get async mode "));
-                result = FALSE;
-        }
-
-        while (result && (status = ghttp_process (request)) == ghttp_not_done) {
-		/*                ghttp_current_status curStat = ghttp_get_status (request); */
-		g_main_iteration (FALSE);
-        }
-
-        if (result && (ghttp_status_code (request) != 200)) {
-                g_warning (_("HTTP error %d \"%s\" on uri %s"), 
-			   ghttp_status_code (request),
-			   ghttp_reason_phrase (request),
-			   uri);
-                result = FALSE;
-        }
-	if (result && (ghttp_status_code (request) != 404)) {
-		(*length) = ghttp_get_body_len (request);
-		(*body) = g_new0 (char, *length + 1);
-		memcpy (*body, ghttp_get_body (request), *length);
-		(*body)[*length] = 0;
-	} else {
-		result = FALSE;
-	}
-
-        if (request) {
-                ghttp_request_destroy (request);
-        }
-	
-	g_free (uri);
-
-	return result;
-}
-#endif /* TRILOBITE_SLIM */
-
-#ifdef TRILOBITE_SLIM
-gboolean trilobite_fetch_uri_to_file (const char *uri_text, 
-				      const char *filename)
-{
-	char *body = NULL;
-	int length;
-	gboolean result = FALSE;
-
-	result =  trilobite_fetch_uri (uri_text, &body, &length);
-	if (result) {
-		FILE* file;
-		file = fopen (filename, "wb");
-		if (file == NULL) {
-			g_warning (_("Could not open target file %s"),filename);
-			result = FALSE;
-		} else {
-			fwrite (body, length, 1, file);
-		}
-		fclose (file);
-	} 
-
-	return result;	
-}
-#endif /* TRILOBITE_SLIM */
-
-#ifndef TRILOBITE_SLIM
 
 /* trilobite_init -- does all the init stuff 
  * FIXME bugzilla.eazel.com 1656:
@@ -456,22 +159,21 @@ gboolean trilobite_fetch_uri_to_file (const char *uri_text,
  */
 gboolean
 trilobite_init (const char *service_name, const char *version_name, const char *log_filename,
-		int argc, char **argv, GData *options)
+		int argc, char **argv)
 {
 	CORBA_ORB orb;
 	FILE *logf;
 	char *real_log_filename;
 
-	/* for future reference:
-	 * possible to avoid gtk_init (which requires X) by using gtk_type_init(), gtk_signal_init()
-	 * according to george.
-	 * gtk_type_init ();
-	 * gnomelib_init ("trilobite-eazel-install-service-factory", "0.1");
-	 * gnomelib_register_popt_table (oaf_popt_options, "Trilobite-Eazel-Install-Server");
-	 * orb = oaf_init (argc, argv);
-	 * gnomelib_parse_args (argc, argv, 0);
-	 */
+#ifdef TRILOBITE_USE_X
 	gnome_init_with_popt_table (service_name, version_name, argc, argv, oaf_popt_options, 0, NULL);
+#else
+	gtk_type_init ();
+	gtk_signal_init ();
+	gnomelib_init (service_name, version_name);
+	gnomelib_register_popt_table (oaf_popt_options, service_name);
+	gnomelib_parse_args (argc, argv, 0);
+#endif
 	orb = oaf_init (argc, argv);
 
 	if (!bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL)) {
@@ -495,37 +197,10 @@ trilobite_init (const char *service_name, const char *version_name, const char *
 		g_free (real_log_filename);
 	}
 
-	g_atexit (trilobite_close_log);
-
-	if (g_datalist_get_data (&options, "debug") != NULL) {
-		/* debug mode on */
-		do_debug_log = 1;
-	}
-
 	return TRUE;
 
 fail:
 	return FALSE;
-}
-
-void
-trilobite_set_debug_mode (gboolean debug_mode)
-{
-	do_debug_log = (debug_mode ? 1 : 0);
-}
-
-void
-trilobite_set_log_handler (FILE *logf, const char *service_name)
-{
-	if (service_name != NULL) {
-		g_log_set_handler (service_name, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING |
-				   G_LOG_LEVEL_ERROR | G_LOG_LEVEL_DEBUG,
-				   (GLogFunc)trilobite_add_log, logf);
-	}
-	/* send libtrilobite messages there, too */
-	g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING |
-			   G_LOG_LEVEL_ERROR | G_LOG_LEVEL_DEBUG,
-			   (GLogFunc)trilobite_add_log, logf);
 }
 #endif /* TRILOBITE_SLIM */
 
@@ -582,13 +257,3 @@ trilobite_setenv (const char *name, const char *value, gboolean overwrite)
 	return putenv (string);
 #endif
 }
-
-void
-trilobite_debug (const gchar *format, ...)
-{
-	va_list args;
-	va_start (args, format);
-	g_logv (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, format, args);
-	va_end (args);
-}
-

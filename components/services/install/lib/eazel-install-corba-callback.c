@@ -22,6 +22,7 @@
  */
 
 #include <config.h>
+#include <gnome-xml/parser.h>
 #include "eazel-install-corba-callback.h"
 #include "eazel-install-corba-types.h"
 #include "eazel-install-xml-package-list.h"

@@ -28,7 +28,7 @@
 #include <signal.h>
 
 #include <libtrilobite/libtrilobite-service.h>
-#include <libtrilobite/trilobite-core-utils.h>
+#include <libtrilobite/libtrilobite.h>
 
 #include <trilobite-eazel-install.h>
 #include <eazel-install-public.h>
@@ -118,8 +118,6 @@ eazel_install_service_factory (BonoboGenericFactory *this_factory,
 
 int main(int argc, char *argv[]) {
 
-	GData *data;
-
 #ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
@@ -127,14 +125,12 @@ int main(int argc, char *argv[]) {
 
 	signal (SIGSEGV, &sig_segv_handler);
 
-	g_datalist_init (&data);
-	g_datalist_set_data (&data, "debug", (void *)1);
 	if (!trilobite_init ("trilobite-eazel-install-service", "0.1", "~/.nautilus/trilobite-install.log",
-			     argc, argv, data)) {
+			     argc, argv)) {
 		g_error ("Could not initialize trilobite. :(");
 		exit (1);
 	}
-	g_datalist_clear (&data);
+	trilobite_set_debug_mode (TRUE);
 
 	gnome_vfs_init ();
 

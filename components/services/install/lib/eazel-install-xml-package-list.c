@@ -33,6 +33,7 @@
 #include "eazel-install-xml-package-list.h"
 
 #include <libtrilobite/trilobite-core-utils.h>
+#include <libtrilobite/trilobite-core-network.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
 
@@ -40,6 +41,7 @@ static PackageData* parse_package (xmlNode* package, gboolean set_toplevel);
 static CategoryData* parse_category (xmlNode* cat);
 static int parse_pkg_template (const char* pkg_template_file, char** result);
 static PackageData* osd_parse_softpkg (xmlNodePtr softpkg);
+
 
 
 static PackageData*
@@ -51,24 +53,24 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 
 	rv = packagedata_new ();
 
-	rv->name = xml_get_value (package, "NAME");
-	rv->version = xml_get_value (package, "VERSION");
-	rv->minor = xml_get_value (package, "MINOR");
-	rv->archtype = xml_get_value (package, "ARCH");
+	rv->name = trilobite_xml_get_string (package, "NAME");
+	rv->version = trilobite_xml_get_string (package, "VERSION");
+	rv->minor = trilobite_xml_get_string (package, "MINOR");
+	rv->archtype = trilobite_xml_get_string (package, "ARCH");
 	
-	tmp = xml_get_value (package, "STATUS");
+	tmp = trilobite_xml_get_string (package, "STATUS");
 	if (tmp) {
 		rv->status = packagedata_status_str_to_enum (tmp);
 		g_free (tmp);
 	}
 
-	tmp = xml_get_value (package, "MODSTATUS");
+	tmp = trilobite_xml_get_string (package, "MODSTATUS");
 	if (tmp) {
 		rv->modify_status = packagedata_modstatus_str_to_enum (tmp);
 		g_free (tmp);
 	}
 
-	tmp = xml_get_value (package, "BYTESIZE");
+	tmp = trilobite_xml_get_string (package, "BYTESIZE");
 	if (tmp) {
 		rv->bytesize = atoi (tmp);
 		g_free (tmp);
@@ -76,7 +78,7 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 		rv->bytesize = 0;
 	}
 
-	tmp = xml_get_value (package, "PROVIDES");
+	tmp = trilobite_xml_get_string (package, "PROVIDES");
 	if (tmp) {
 		char **files;
 		int iterator;
@@ -95,8 +97,8 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 		g_free (tmp);
 	}
 
-	rv->summary = xml_get_value (package, "SUMMARY");
-	rv->description = xml_get_value (package, "DESCRIPTION");
+	rv->summary = trilobite_xml_get_string (package, "SUMMARY");
+	rv->description = trilobite_xml_get_string (package, "DESCRIPTION");
 	rv->distribution = trilobite_get_distribution ();
 	if (set_toplevel) {
 		rv->toplevel = TRUE;
@@ -150,7 +152,7 @@ parse_category (xmlNode* cat) {
 	char *text, *textp;
 
 	category = categorydata_new ();
-	category->name = xml_get_value (cat, "name");
+	category->name = trilobite_xml_get_string (cat, "name");
 
 	pkg = cat->xmlChildrenNode;
 	if (pkg == NULL) {
@@ -667,8 +669,8 @@ osd_parse_provides (PackageData *pack, xmlNodePtr node, GList **feature_list)
 				g_warning ("multiple packages in dep list for %s!", pack->name);
 			} else {
 				dep = packagedependency_new ();
-				dep->version = xml_get_value (child, "version");
-				tmp = xml_get_value (child, "sense");
+				dep->version = trilobite_xml_get_string (child, "version");
+				tmp = trilobite_xml_get_string (child, "sense");
 				dep->sense = eazel_softcat_convert_sense_flags (atoi (tmp));
 				g_free (tmp);
 				got_package = TRUE;
@@ -757,9 +759,9 @@ osd_parse_implementation (PackageData *pack,
 	child = node->xmlChildrenNode;
 	while (child) {
 		if (g_strcasecmp (child->name, "PROCESSOR")==0) {
-			pack->archtype = xml_get_value (child, "VALUE");
+			pack->archtype = trilobite_xml_get_string (child, "VALUE");
 		} else if (g_strcasecmp (child->name, "OS")==0) {
-			char *dtmp = xml_get_value (child, "VALUE");
+			char *dtmp = trilobite_xml_get_string (child, "VALUE");
 			if (dtmp) {
 				pack->distribution.name = trilobite_get_distribution_enum (dtmp,
 											   TRUE);
@@ -767,8 +769,8 @@ osd_parse_implementation (PackageData *pack,
 			} 
 		} else if (g_strcasecmp (child->name, "CODEBASE")==0) {			
 			char *tmp;
-			pack->remote_url = xml_get_value (child, "HREF");
-			tmp = xml_get_value (child, "SIZE");
+			pack->remote_url = trilobite_xml_get_string (child, "HREF");
+			tmp = trilobite_xml_get_string (child, "SIZE");
 			if (tmp) {
 				pack->bytesize = atoi (tmp);
 				g_free (tmp);
@@ -796,9 +798,9 @@ osd_parse_softpkg (xmlNodePtr softpkg)
 
 	result = packagedata_new ();
 
-	result->name = xml_get_value (softpkg, "NAME");
-	result->version = xml_get_value (softpkg, "VERSION");
-	result->md5 = xml_get_value (softpkg, "MD5");
+	result->name = trilobite_xml_get_string (softpkg, "NAME");
+	result->version = trilobite_xml_get_string (softpkg, "VERSION");
+	result->md5 = trilobite_xml_get_string (softpkg, "MD5");
 	
 	child = softpkg->xmlChildrenNode;
 	while (child) {
@@ -813,7 +815,7 @@ osd_parse_softpkg (xmlNodePtr softpkg)
 		} else if (g_strcasecmp (child->name, "IMPLEMENTATION")==0) {
 			osd_parse_implementation (result, child);
 		} else if (g_strcasecmp (child->name, "EAZEL_ID") == 0) {
-			result->eazel_id = xml_get_value (child, "VALUE");
+			result->eazel_id = trilobite_xml_get_string (child, "VALUE");
 		} else {
 			/* trilobite_debug ("unparsed tag \"%s\" in SOFTPKG", child->name); */
 		}
@@ -903,4 +905,3 @@ eazel_install_packagelist_parse (GList **list, const char *mem, int size)
 	g_free (docptr);
 	return TRUE;
 }
-

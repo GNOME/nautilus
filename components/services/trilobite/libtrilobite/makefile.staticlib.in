@@ -1,8 +1,11 @@
 OBJS=\
-	helixcode-utils.o		\
 	trilobite-core-distribution.o	\
 	trilobite-root-helper.o		\
-	trilobite-core-utils.o		
+	trilobite-core-utils.o		\
+	trilobite-core-network-slim.o	\
+	trilobite-core-messaging.o	\
+	trilobite-md5-tools.o		\
+	$(NULL)
 
 INCLUDES=\
 	-DTRILOBITE_VERSION=\"0.1.0\"				\

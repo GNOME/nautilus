@@ -34,6 +34,7 @@
 #include <gconf/gconf.h>
 #include <gconf/gconf-engine.h>
 #include "trilobite-core-utils.h"
+#include "trilobite-core-network.h"
 #include "trilobite-redirect.h"
 
 #define REDIRECT_TABLE_URL	"eazel-services:/table.xml"

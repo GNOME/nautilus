@@ -24,6 +24,7 @@
 #include <config.h>
 #include <errno.h>
 #include <gnome.h>
+#include <gnome-xml/parser.h>
 
 #include "eazel-install-public.h"
 #include "eazel-install-private.h"

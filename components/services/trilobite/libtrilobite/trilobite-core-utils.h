@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* 
- * Copyright (C) 2000 Eazel, Inc
+ *  Copyright (C) 2000 Eazel, Inc
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -17,9 +17,8 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * Authors: J Shane Culpepper <pepper@eazel.com>
- *	    Robey Pointer <robey@eazel.com>
- *
+ *  Authors: J Shane Culpepper <pepper@eazel.com>
+ *	     Robey Pointer <robey@eazel.com>
  */
 
 /*
@@ -46,13 +45,6 @@ int trilobite_pexec (const char *path,
 		     int *stdout_fd, 
 		     int *stderr_fd);
 
-gboolean trilobite_fetch_uri (const char *uri_text, 
-			      char **body, 
-			      int *length);
-
-gboolean trilobite_fetch_uri_to_file (const char *uri_text, 
-				      const char *filename);
-
 /* The TRILOBITE_SLIM is set for the nautilus_installer.
    It trims down on the amount of random code and libs the
    bootstrap installer needs to link against */
@@ -61,11 +53,7 @@ gboolean trilobite_init (const char *service_name,
 			 const char *version_name, 
 			 const char *log_filename,
 			 int argc, 
-			 char **argv, 
-			 GData *options);
-
-void trilobite_set_debug_mode (gboolean debug_mode);
-void trilobite_set_log_handler (FILE *logf, const char *service_name);
+			 char **argv);
 #endif /* TRILOBITE_SLIM  */
 
 const char *trilobite_get_useragent_string (gboolean version, 

@@ -38,7 +38,6 @@
 #include "trilobite-core-network.h"
 #include "trilobite-root-helper.h"
 #include "trilobite-redirect.h"
-#include "helixcode-utils.h"
 #include "trilobite-root-client-public.h"
 
 #endif /* __LIBTRILOBITE_H__ */
