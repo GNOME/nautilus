@@ -51,6 +51,8 @@ trilobite_service_factory_destroy (GtkObject *object)
 	if (trilobites_active == 0) {
 		return;
 	}
+
+	g_message ("destroying factory");
 	
 	bonobo_object_unref (BONOBO_OBJECT (factory));
 	gtk_main_quit ();

@@ -326,11 +326,13 @@ eazel_install_callback_get_type() {
 }
 
 EazelInstallCallback*
-eazel_install_callback_new()
+eazel_install_callback_new(Trilobite_Eazel_Install installservice)
 {
 	EazelInstallCallback *service;
 
 	service = EAZEL_INSTALL_CALLBACK (gtk_object_new (TYPE_EAZEL_INSTALL_CALLBACK, NULL));
+
+	service->installservice = installservice;
 
 	return service;
 }
@@ -339,4 +341,32 @@ Trilobite_Eazel_InstallCallback
 eazel_install_callback_corba (EazelInstallCallback *service)
 {
 	return service->cb;
+}
+
+void 
+eazel_install_callback_install_packages (EazelInstallCallback *service, 
+					 GList *categories,
+					 CORBA_Environment *ev)
+{
+	Trilobite_Eazel_CategoryStructList *corbacats;
+	corbacats = corba_category_list_from_categorydata_list (categories);
+	Trilobite_Eazel_Install_install_packages (service->installservice, 
+						  corbacats, 
+						  eazel_install_callback_corba (service), ev);
+}
+
+GList*
+eazel_install_callback_query (EazelInstallCallback *service, 
+			      char *query,
+			      CORBA_Environment *ev)
+{
+	GList *result;
+	Trilobite_Eazel_PackageStructList *corbares;
+	
+	/* FIXME: bugzilla.eazel.com 1446 */
+
+	corbares = Trilobite_Eazel_Install_query (service->installservice,
+						  query,
+						  ev);
+	return result;
 }

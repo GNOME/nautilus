@@ -29,7 +29,7 @@ noinst_HEADERS = \
 	eazel-install-metadata.h		\
 	eazel-install-protocols.h		\
 	eazel-install-rpm-glue.h		\
-	eazel-install-rpm-glue.h		\
+	eazel-install-query.h			\
 	eazel-install-tests.h			\
 	eazel-install-xml-package-list.h	\
 	eazel-install-private.h			\
@@ -50,6 +50,8 @@ libinstall_base_a_SOURCES =		       	\
 	eazel-install-metadata.c		\
 	eazel-install-protocols.c		\
 	eazel-install-rpm-glue.c		\
+	eazel-install-query-lex.c		\
+	eazel-install-query.c			\
 	eazel-install-tests.c			\
 	eazel-install-xml-package-list.c	\
 	eazel-install-object.c			\
@@ -59,6 +61,12 @@ libinstall_base_a_SOURCES =		       	\
 libinstall_gtk_a_SOURCES =			\
 	eazel-install-object.c			\
 	$(NULL)
+
+EXTRA_DIST = eazel-install-query.l hest
+
+eazel-install-query-lex.c: $(srcdir)/eazel-install-query-lex.l eazel-install-query-parse.h
+	@rm -f $@
+	$(LEX) -t $(srcdir)/eazel-install-query-lex.l >$@
 
 ## CORBA magic
 

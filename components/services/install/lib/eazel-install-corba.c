@@ -68,41 +68,46 @@ impl_Eazel_Install_uninstall(impl_POA_Trilobite_Eazel_Install *servant,
 
 static void 
 impl_Eazel_Install_install_packages(impl_POA_Trilobite_Eazel_Install *servant,
-				    const Trilobite_Eazel_PackageStructList *packagelist,
+				    const Trilobite_Eazel_CategoryStructList *corbacategories,
 				    const Trilobite_Eazel_InstallCallback cb,
 				    CORBA_Environment * ev) 
 {
-	GList *packages;
 	GList *categories;
-	CategoryData *category;
-	int i;
+	int i,j;
 
 	servant->object->callback = cb;
-	packages = NULL;
 	categories = NULL;
 
-	for (i = 0; i < packagelist->_length; i++) {
-		PackageData *pack;
-		Trilobite_Eazel_PackageStruct corbapack;
+	for (i = 0; i < corbacategories->_length; i++) {
+		CategoryData *category;
+		GList *packages;
+		Trilobite_Eazel_CategoryStruct corbacategory;
+		Trilobite_Eazel_PackageStructList packagelist;
 
-		corbapack = packagelist->_buffer [i];
-		pack = packagedata_from_corba_packagestruct (&corbapack);
+		packages = NULL;
+		corbacategory = corbacategories->_buffer [i];
+		packagelist = corbacategory.packages;
 
-		g_message ("Installing %s", pack->name);
-
-		/* FIXME bugzilla.eazel.com 1366
-		   need to copy distribution here as well */
-
-		packages = g_list_prepend (packages, pack);
+		for (j = 0; j < packagelist._length; j++) {
+			PackageData *pack;
+			Trilobite_Eazel_PackageStruct corbapack;
+			
+			corbapack = packagelist._buffer [j];
+			pack = packagedata_from_corba_packagestruct (&corbapack);
+			
+			packages = g_list_prepend (packages, pack);
+		}
+		category = g_new0 (CategoryData, 1);
+		category->name = strlen (corbacategory.name)>0 ? g_strdup (corbacategory.name) : NULL;
+		category->packages = packages;
+		categories = g_list_prepend (categories, category);
 	}
-	category = g_new0 (CategoryData, 1);
-	category->packages = packages;
-	categories = g_list_prepend (categories, category);
+
 	servant->object->callback = cb;
 
 	eazel_install_install_packages (servant->object, categories);
 	
-	categorydata_destroy (category);
+	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
 	g_list_free (categories);
 
 	return;
@@ -299,6 +304,22 @@ impl_Eazel_Install__get_protocol (impl_POA_Trilobite_Eazel_Install *servant,
 	}
 }
 
+static Trilobite_Eazel_PackageStructList*
+impl_Eazel_Install_query (impl_POA_Trilobite_Eazel_Install *servant,
+			  const CORBA_char *query,
+			  CORBA_Environment *ev)
+{
+	Trilobite_Eazel_PackageStructList *result;
+
+	/* FIXME: bugzilla.eazel.com 
+	   Finish this, need to convert the return value to a 
+	   corba sequence and return it.
+	*/
+	eazel_install_query_package_system (servant->object, query, 0);
+	
+	return result;
+}
+
 POA_Trilobite_Eazel_Install__epv* 
 eazel_install_get_epv () 
 {
@@ -338,6 +359,8 @@ eazel_install_get_epv ()
 
 	epv->_set_tmp_dir = (gpointer)&impl_Eazel_Install__set_tmp_dir;
 	epv->_get_tmp_dir = (gpointer)&impl_Eazel_Install__get_tmp_dir;
+
+	epv->query = (gpointer)&impl_Eazel_Install_query;
 
 	return epv;
 };

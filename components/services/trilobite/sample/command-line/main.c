@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
 
 	trilobite = bonobo_object_corba_objref (BONOBO_OBJECT (service));
 
-	/* Check the type of the object */
+	/* Display some stuff about the corba object interfaces */
 	g_message ("CORBA Object properties :\ncorba object\t%s\nbonobo unknown\t%s\ntrilobite\t%s\ntestservice\t%s\n",	       
 		   CORBA_Object_is_a (trilobite, "IDL:CORBA/Object:1.0", &ev)?"yes":"no",
 		   CORBA_Object_is_a (trilobite, "IDL:Bonobo/Unknown:1.0", &ev)?"yes":"no",
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
 		   CORBA_Object_is_a (trilobite, "IDL:Trilobite/Eazel/Sample:1.0", &ev)?"yes":"no");
 	
 
-	/* Check the type of the object again... */
+	/* Display some stuff about the bonobo object interfaces */
 	g_message ("BONOBO Object properties :\ncorba object\t%s\nbonobo unknown\t%s\ntrilobite\t%s\ntestservice\t%s\n",	       
 		   bonobo_object_client_has_interface (service, "IDL:CORBA/Object:1.0", &ev)?"yes":"no",
 		   bonobo_object_client_has_interface (service, "IDL:Bonobo/Unknown:1.0", &ev)?"yes":"no",
@@ -84,6 +84,7 @@ int main(int argc, char *argv[]) {
 		g_message ("service url         : %s", Trilobite_Service_get_url (trilobite, &ev));
 		g_message ("service icon        : %s", Trilobite_Service_get_icon (trilobite, &ev));
 		
+		/* Cleanup the refs and objects from query_interface */
 		Trilobite_Service_unref (trilobite, &ev);
 		CORBA_Object_release (trilobite, &ev);
 	} else {
@@ -97,11 +98,14 @@ int main(int argc, char *argv[]) {
 		Trilobite_Eazel_Sample_remember (sample_service, "horsedung", &ev);
 		Trilobite_Eazel_Sample_say_it (sample_service, &ev);
 
+		/* Cleanup the refs and objects from query_interface */
 		Trilobite_Eazel_Sample_unref (sample_service, &ev);
 		CORBA_Object_release (sample_service, &ev);
 	} 
 
-	bonobo_object_unref (BONOBO_OBJECT (service));
+	/* Clean up the bonobo_object_activate return value */
+	bonobo_object_unref (BONOBO_OBJECT (service)); 
+	/* And free the exception structure */
 	CORBA_exception_free (&ev);
 
 	return 0;

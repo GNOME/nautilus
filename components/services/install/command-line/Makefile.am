@@ -20,13 +20,7 @@ INCLUDES = \
 	$(WERROR)						\
 	$(NULL)
 
-bin_PROGRAMS = eazel-alt-install-corba
-
-eazel_alt_install_corba_SOURCES = 	\
-	eazel-alt-install-corba.c		\
-	$(NULL)
-
-eazel_alt_install_corba_LDADD =                                           \
+LDADD =                                           \
         $(top_builddir)/components/services/install/lib/libinstall_corba.a\
         $(top_builddir)/components/services/install/lib/libinstall_base.a \
         $(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
@@ -35,3 +29,14 @@ eazel_alt_install_corba_LDADD =                                           \
 	$(GHTTP_LIBS)                                                     \
 	$(RPM_LIBS)                                                       \
 	$(NULL)
+
+bin_PROGRAMS = eazel-install eazel-install-query
+
+eazel_install_SOURCES = 		\
+	eazel-alt-install-corba.c	\
+	$(NULL)
+
+eazel_install_query_SOURCES = 		\
+	eazel-install-query.c		\
+	$(NULL)
+

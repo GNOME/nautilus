@@ -138,9 +138,9 @@ eazel_install_destroy (GtkObject *object)
 
 	service = EAZEL_INSTALL (object);
 
-	/* FIXME bugzilla.eazel.com 1282.
-	   implement this properly */
-	g_message ("in eazel_install_destroy");
+	if (GTK_OBJECT_CLASS (eazel_install_parent_class)->destroy) {
+		GTK_OBJECT_CLASS (eazel_install_parent_class)->destroy (object);
+	}
 }
 
 static void
@@ -374,8 +374,6 @@ eazel_install_initialize (EazelInstall *service) {
 	Trilobite_Eazel_Install corba_service;
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
-	/* g_message ("in eazel_install_initialize"); */
-
 	g_assert (service != NULL);
 	g_assert (IS_EAZEL_INSTALL (service));
 
@@ -384,7 +382,7 @@ eazel_install_initialize (EazelInstall *service) {
 
 	/* This sets the bonobo structures in service using the corba object */
 	if (!bonobo_object_construct (BONOBO_OBJECT (service), corba_service)) {
-		g_warning ("bonobo_object_construct failed");
+		g_error ("bonobo_object_construct failed");
 	}	
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
@@ -403,8 +401,6 @@ eazel_install_initialize (EazelInstall *service) {
 GtkType
 eazel_install_get_type() {
 	static GtkType service_type = 0;
-
-	/* g_message ("into eazel_install_get_type");  */
 
 	/* First time it's called ? */
 	if (!service_type)
@@ -474,9 +470,8 @@ eazel_install_new_with_config (const char *config_file)
 							   "server_port", topts->port_number,
 							   NULL));
 
-	/* FIXME bugzilla.eazel.com 982:
-	   topts and iopts are leaked at this point. There needs
-	   to be a set of _destroy methods in eazel-install-metadata.c */
+	transferoptions_destroy (topts);
+	installoptions_destroy (iopts);
 
 	return service;
 }
@@ -491,7 +486,7 @@ create_temporary_directory (const char* tmpdir)
 	retval = mkdir (tmpdir, 0755);
 	if (retval < 0) {
 		if (errno != EEXIST) {
-			g_error (_("*** Could not create temporary directory! ***\n"));
+			g_error (_("Could not create temporary directory!\n"));
 		}
 	}
 } /* end create_temporary_directory */
@@ -514,7 +509,7 @@ eazel_install_fetch_remote_package_list (EazelInstall *service)
 
 	if (retval == FALSE) {
 		g_free (url);
-		g_warning ("*** Unable to retrieve package-list.xml! ***\n");
+		g_error (_("Unable to retrieve package-list.xml!\n"));
 		return FALSE;
 	}
 	g_free (url);
@@ -543,8 +538,6 @@ eazel_install_open_log (EazelInstall *service,
 {
 	SANITY (service);
 
-	g_message ("in eazel_install_open_log");
-
 	if (service->private->logfile) {
 		fclose (service->private->logfile);
 	}
@@ -557,19 +550,16 @@ eazel_install_open_log (EazelInstall *service,
 		g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING | G_LOG_LEVEL_ERROR, 
 				   (GLogFunc)eazel_install_log, 
 				   service);
-		g_message ("out eazel_install_open_log");
 		return;
 	} 
 
-	g_message ("Cannot write to file %s, using default log handler", fname);
+	g_warning (_("Cannot write to file %s, using default log handler"), fname);
 }
 
 void 
 eazel_install_install_packages (EazelInstall *service, GList *categories)
 {
 	SANITY (service);
-
-	g_message ("eazel_install_install_packages");
 
 	if (!g_file_exists (eazel_install_get_tmp_dir (service))) {
 		create_temporary_directory (eazel_install_get_tmp_dir (service));
@@ -582,14 +572,14 @@ eazel_install_install_packages (EazelInstall *service, GList *categories)
 			eazel_install_fetch_remote_package_list (service);
 			break;
 		case PROTOCOL_FTP:
-			g_error ("ftp install not supported");
+			g_error (_("ftp install not supported"));
 			break;
 		case PROTOCOL_LOCAL:
 			break;
 		}
 	}
 	if (install_new_packages (service, categories)==FALSE) {
-		g_warning ("*** Install failed");
+		g_warning (_("Install failed"));
 	} 
 	eazel_install_emit_done (service);
 }
@@ -599,20 +589,18 @@ eazel_install_uninstall (EazelInstall *service)
 {
 	SANITY (service);
 
-	g_message ("eazel_install_uninstall");
-
 	switch (service->private->iopts->protocol) {
 	case PROTOCOL_HTTP:
 		eazel_install_fetch_remote_package_list (service);
 		break;
 	case PROTOCOL_FTP:
-		g_error ("ftp install not supported");
+		g_error (_("ftp install not supported"));
 		break;
 	case PROTOCOL_LOCAL:
 		break;
 	}
 	if (uninstall_packages (service)==FALSE) {
-		g_warning ("*** Uninstall failed");
+		g_warning (_("*** Uninstall failed"));
 	} 
 }
 
@@ -684,7 +672,6 @@ eazel_install_emit_download_failed (EazelInstall *service,
 				    const char *name)
 {
 	SANITY(service);
-	g_message ("DOWNLOAD_FAILED %s", name);
 	gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_FAILED], name);
 }
 
@@ -708,7 +695,6 @@ eazel_install_emit_install_failed (EazelInstall *service,
 				   const PackageData *pd)
 {
 	SANITY(service);
-	g_message ("INSTALL_FAILED %s", pd->name);
 	gtk_signal_emit (GTK_OBJECT (service), signals[INSTALL_FAILED], pd);
 }
 

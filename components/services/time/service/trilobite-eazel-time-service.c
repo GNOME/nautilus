@@ -178,9 +178,10 @@ trilobite_eazel_time_service_destroy (GtkObject *object)
 
 	g_free (service->private);
 
-	/* FIXME bugzilla.eazel.com 937:
-	   implement this properly */
-	g_message ("in trilobite_eazel_time_service_destroy");
+	/* Call parents destroy */
+	if (GTK_OBJECT_CLASS (trilobite_eazel_time_service_parent_class)->destroy) {
+		GTK_OBJECT_CLASS (trilobite_eazel_time_service_parent_class)->destroy (object);
+	}
 }
 
 /*

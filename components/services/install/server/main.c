@@ -43,10 +43,13 @@ CORBA_Environment         ev;
 static BonoboGenericFactory *factory;
 static int trilobites_active = 0;
 
+static void trilobite_service_factory_destroy (GtkObject *object);
+
 static void
 trilobite_service_factory_destroy (GtkObject *object) 
 {
 	trilobites_active--;
+
 	g_message ("eazel_install trilobites active = %d", trilobites_active);
 	if (trilobites_active != 0) {
 		return;

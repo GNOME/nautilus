@@ -134,6 +134,11 @@ void eazel_install_fetch_pockage_list (EazelInstall *service);
 void eazel_install_install_packages (EazelInstall *service, GList *categories);
 void eazel_install_uninstall (EazelInstall *service);
 
+GList* eazel_install_query_package_system (EazelInstall *service,
+					   const char *query, 
+					   int flags) ;
+
+
 /******************************************************************************/
 /* Beware, from hereonafter, it's #def madness, to make the get/set functions */
 

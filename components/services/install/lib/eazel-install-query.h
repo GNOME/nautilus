@@ -17,22 +17,16 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Authors: J Shane Culpepper <pepper@eazel.com>
+ * Authors: Eskil Heyn Olsen <eskil@eazel.com>
  */
 
-/* eazel-install - services command line install/update/uninstall
- * component.  This program will parse the eazel-services-config.xml
- * file and install a services generated package-list.xml.
- */
-
-#ifndef EAZEL_INSTALL_RPM_GLUE_H
-#define EAZEL_INSTALL_RPM_GLUE_H
+#ifndef EAZEL_INSTALL_QUERY_H
+#define EAZEL_INSTALL_QUERY_H
 
 #include "eazel-install-types.h"
-#include "eazel-install-protocols.h"
 #include "eazel-install-public.h"
 
-gboolean install_new_packages (EazelInstall *service, GList *categories);
-gboolean uninstall_packages (EazelInstall *service);
+GList* eazel_install_query_package_system (EazelInstall *service, const char *query, int flags);
 
-#endif /* EAZEL_INSTALL_RPM_GLUE_H */
+
+#endif /* EAZEL_INSTALL_QUERY_H */

@@ -261,3 +261,27 @@ init_default_transfer_configuration (const char* config_file) {
 	return rv;
 } /* end init_default_transfer_configuration */
 
+
+void 
+transferoptions_destroy (TransferOptions *topts)
+{
+	g_return_if_fail (topts!=NULL);
+	g_free (topts->hostname);
+	topts->hostname = NULL;
+	g_free (topts->pkg_list_storage_path);
+	topts->pkg_list_storage_path = NULL;
+	g_free (topts->rpm_storage_path);
+	topts->rpm_storage_path = NULL;
+	g_free (topts->tmp_dir);
+	topts->tmp_dir = NULL;
+	g_free (topts->rpmrc_file);
+	topts->rpmrc_file = NULL;
+}
+
+void 
+installoptions_destroy (InstallOptions *iopts)
+{
+	g_return_if_fail (iopts!=NULL);
+	g_free (iopts->pkg_list);
+	iopts->pkg_list = NULL;
+}

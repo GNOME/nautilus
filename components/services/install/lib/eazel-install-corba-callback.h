@@ -47,17 +47,26 @@ struct _EazelInstallCallbackClass
 {
 	BonoboObjectClass parent_class;
 
-	/* signal prototypes */
+	/* Called during the download of a file */
 	void (*download_progress) (EazelInstallCallback *service, const char *name, int amount, int total);
+	/* Called during install of a package */
 	void (*install_progress)  (EazelInstallCallback *service, const PackageData *pack, int amount, int total);
+	/* Called during uninstall of a package */
 	void (*uninstall_progress)  (EazelInstallCallback *service, const PackageData *pack, int amount, int total);
 
+	/* Called when a dependency check is being resolved */
 	void (*dependency_check) (EazelInstallCallback *service, const PackageData *package, const PackageData *needed );
 
+	/* Called when a file could not be downloaded */
 	void (*download_failed) (EazelInstallCallback *service, char *name);
+	/* Called when a package install request fails, eg. for dependency reasons.
+	   pd->soft_depends and pd->breaks can be traversed to see why the package
+	   failed */
 	void (*install_failed) (EazelInstallCallback *service, PackageData *pd);
+	/* Same as install_failed... */
 	void (*uninstall_failed) (EazelInstallCallback *service, PackageData *pd);
 
+	/* Called when the operation is complete */
 	void (*done) ();
 
 	gpointer servant_vepv;
@@ -67,16 +76,32 @@ struct _EazelInstallCallback
 {
 	BonoboObject parent;
 	Trilobite_Eazel_InstallCallback cb;
+	Trilobite_Eazel_Install installservice;
 };
 
-EazelInstallCallback          *eazel_install_callback_new (void);
-GtkType                        eazel_install_callback_get_type   (void);
+/* Create a new eazel-install-callback object */
+EazelInstallCallback          *eazel_install_callback_new (Trilobite_Eazel_Install installservice);
+/* Destroy the eazel-install-callback object */
 void                           eazel_install_callback_destroy    (GtkObject *object);
 
+/* Request the installation of a set of packages in categories.
+   If categories = NULL, the service tries to fetch the packagelist
+   from the server. See the trilobite-eazel-install.idl file for
+   the function to specify packagelist name */
+void eazel_install_callback_install_packages (EazelInstallCallback *service, 
+					      GList *categories,
+					      CORBA_Environment *ev);
+
+GList* eazel_install_callback_query (EazelInstallCallback *service, 
+				     char *query,
+				     CORBA_Environment *ev);
+
+
+/* Stuff */
+GtkType                                   eazel_install_callback_get_type   (void);
 POA_Trilobite_Eazel_InstallCallback__epv *eazel_install_callback_get_epv (void);
 Trilobite_Eazel_InstallCallback           eazel_install_callback_create_corba_object (BonoboObject *service);
-
-Trilobite_Eazel_InstallCallback eazel_install_callback_corba (EazelInstallCallback *service);
+Trilobite_Eazel_InstallCallback           eazel_install_callback_corba (EazelInstallCallback *service);
 
 #ifdef __cplusplus
 }

@@ -77,6 +77,12 @@ module Trilobite {
 		};
 		typedef sequence <PackageStruct> PackageStructList;
 
+		struct CategoryStruct {
+			string name;
+			PackageStructList packages;
+		};
+		typedef sequence <CategoryStruct> CategoryStructList;
+
 		interface InstallCallback : Bonobo::Unknown {
 			/* Called during download of a file */
 			oneway void download_progress (in string file, in long amount, in long total);
@@ -118,9 +124,11 @@ module Trilobite {
 			oneway void uninstall (in string packagelist, in InstallCallback cb);
 
 			/* These are for installing/uninstalling specific packages */
-			oneway void install_packages (in PackageStructList packages, in InstallCallback cb);
-			oneway void uninstall_packages (in PackageStructList packages, in InstallCallback cb);
+			oneway void install_packages (in CategoryStructList categories, in InstallCallback cb);
+			oneway void uninstall_packages (in CategoryStructList categories, in InstallCallback cb);
 
+			/* Run a query to the package sys */
+			PackageStructList query (in string query);
 		};
 	};
 };

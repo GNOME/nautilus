@@ -52,7 +52,7 @@ http_fetch_remote_file (EazelInstall *service,
         FILE* file;
 	int total_bytes;
 
-	g_message ("Downloading %s...", url);
+	g_message (_("Downloading %s..."), url);
 
         file = fopen (target_file, "wb");
         get_failed = 0;
@@ -62,7 +62,7 @@ http_fetch_remote_file (EazelInstall *service,
 
 	if (file == NULL) {
 		get_failed = 1;
-		g_warning ("Could not open target file %s",target_file);
+		g_warning (_("Could not open target file %s"),target_file);
 		return FALSE;
 
 	}
@@ -96,7 +96,7 @@ http_fetch_remote_file (EazelInstall *service,
         }
 	eazel_install_emit_download_progress (service, target_file, total_bytes, total_bytes);		
         if (ghttp_status_code (request) != 200) {
-                g_warning ("HTTP error: %d %s", ghttp_status_code (request),
+                g_warning (_("HTTP error: %d %s"), ghttp_status_code (request),
                          ghttp_reason_phrase (request));
                 get_failed = 1;
         }
@@ -131,7 +131,7 @@ ftp_fetch_remote_file (EazelInstall *service,
 			char* url, 
 			const char* target_file) 
 {
-	g_message ("Downloading %s...", url);
+	g_message (_("Downloading %s..."), url);
 	g_warning (_("FTP not supported yet"));
 	return FALSE;
 }
@@ -144,7 +144,7 @@ local_fetch_remote_file (EazelInstall *service,
 {
 	gboolean result;
 	
-	g_message ("Checking local file %s...", target_file);
+	g_message (_("Checking local file %s..."), target_file);
 	result = FALSE;
 	if (access (target_file, R_OK|W_OK) == 0) {
 		eazel_install_emit_download_progress (service, target_file, 100, 100);
@@ -272,7 +272,7 @@ get_url_for_package  (EazelInstall *service,
 
 	url = NULL;
 	search_url = get_search_url_for_package (service, package);
-	g_message ("Search URL: %s", search_url);
+	g_message (_("Search URL: %s"), search_url);
 
         request = ghttp_request_new();
         if (request == NULL) {
@@ -299,12 +299,6 @@ get_url_for_package  (EazelInstall *service,
 							url [ ghttp_get_body_len (request)] = 0;
 						}
 					} else {
-						/*
-						url = g_strdup_printf("http://%s%s/%s",
-								      eazel_install_get_server (service),
-								      eazel_install_get_rpm_storage_path (service),
-								      rpmfilename_from_packagedata (package));
-						*/
 						url = NULL;
 					}
 					break;
@@ -344,12 +338,15 @@ char* get_search_url_for_package (EazelInstall *service,
 /*
   FIXME: bugzilla.eazel.com 1333
   We need to sent distro name at some point. Depends on the rpmsearch cgi script
+*/
+	/*
 	if (pack->name != DISTRO_UNKNOWN) {
 		char *distro;
-		distro = g_strconcat ("\"", trilobite_get_distribution_name (pack->distribution, TRUE), "\"", NULL);
+		distro = g_strdup_printf ("\"%s\"", 
+					  trilobite_get_distribution_name (pack->distribution, TRUE));
 		add_to_url (&url, "&distro=", distro);
 		g_free (distro);
 	}
-*/
+	*/
 	return url;
 }

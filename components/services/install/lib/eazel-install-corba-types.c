@@ -236,3 +236,34 @@ packagedata_from_corba_packagestruct (const Trilobite_Eazel_PackageStruct *corba
 
 	return pack;
 }
+
+Trilobite_Eazel_CategoryStructList* 
+corba_category_list_from_categorydata_list (GList *categories)
+{
+	Trilobite_Eazel_CategoryStructList *corbacats;
+	GList *iterator;
+	int i;
+
+	g_return_val_if_fail (categories != NULL, NULL);
+
+	corbacats = Trilobite_Eazel_CategoryStructList__alloc ();
+	corbacats->_length = g_list_length (categories);
+	corbacats->_buffer = CORBA_sequence_Trilobite_Eazel_CategoryStruct_allocbuf (corbacats->_length);
+	
+	i = 0;
+	for (iterator = categories; iterator; iterator = iterator->next) {
+		CategoryData *cat;
+		Trilobite_Eazel_CategoryStruct corbacat;
+		Trilobite_Eazel_PackageStructList *packstructlist;
+
+		cat = (CategoryData*)iterator->data;
+		corbacat.name = cat->name ? CORBA_string_dup (cat->name) : CORBA_string_dup ("");
+		packstructlist = corba_packagestructlist_from_packagedata_list (cat->packages);
+		corbacat.packages = *packstructlist;
+		CORBA_free (packstructlist);
+
+		corbacats->_buffer[i] = corbacat;
+		i++;
+	}
+	return corbacats;
+}

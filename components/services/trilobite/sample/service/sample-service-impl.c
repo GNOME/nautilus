@@ -129,13 +129,15 @@ sample_service_destroy (GtkObject *object)
 
 	service = SAMPLE_SERVICE (object);
 
+	/* Free the objects own crap */
 	if (service->my_string) {
 		g_free (service->my_string);
 	}
 
-	/* FIXME bugzilla.eazel.com 920:
-	   implement this properly */
-	g_message ("in sample_service_destroy");
+	/* Call parents destroy */
+	if (GTK_OBJECT_CLASS (sample_service_parent_class)->destroy) {
+		GTK_OBJECT_CLASS (sample_service_parent_class)->destroy (object);
+	}
 }
 
 /*

@@ -1,3 +1,75 @@
+2000-06-22  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/Makefile.am:
+	*
+	components/services/install/command-line/eazel-alt-install-corba.c:
+	(main):
+	Vamped to use the gtk+ client wrapper for the corba nastiness.
+
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	Added the query call.
+	
+	* components/services/install/lib/Makefile.am:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(eazel_install_callback_new), (eazel_install_callback_corba),
+	(eazel_install_callback_install_packages),
+	(eazel_install_callback_query):
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_category_list_from_categorydata_list):
+	* components/services/install/lib/eazel-install-corba-types.h:
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install_install_packages), (impl_Eazel_Install_query),
+	(eazel_install_get_epv):
+	* components/services/install/lib/eazel-install-metadata.c:
+	(transferoptions_destroy), (installoptions_destroy):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_destroy), (eazel_install_initialize),
+	(eazel_install_get_type), (eazel_install_new_with_config),
+	(create_temporary_directory),
+	(eazel_install_fetch_remote_package_list),
+	(eazel_install_open_log), (eazel_install_install_packages),
+	(eazel_install_uninstall), (eazel_install_emit_download_failed),
+	(eazel_install_emit_install_failed):
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file), (ftp_fetch_remote_file),
+	(local_fetch_remote_file), (get_url_for_package),
+	(get_search_url_for_package):
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-query.c:
+	(eazel_install_query_package_system):
+	* components/services/install/lib/eazel-install-query.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(download_all_packages), (install_all_packages),
+	(uninstall_packages), (uninstall_a_package), (do_rpm_install),
+	(do_rpm_uninstall), (eazel_install_prune_packages_helper),
+	(eazel_install_load_rpm_headers),
+	(eazel_install_prepare_rpm_system),
+	(eazel_install_add_headers_to_rpm_set),
+	(eazel_install_fetch_rpm_dependencies),
+	(eazel_install_ensure_deps), (rpm_uninstall):
+	* components/services/install/lib/eazel-install-rpm-glue.h:
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/server/main.c:
+	(trilobite_service_factory_destroy):
+	i18n a lot of strings. Did some more work on the gtk+ wrapper for
+	the corba interface to libinstall. Added categories to the idl and
+	the code. Added comments to the gtk+ interface, converters to/from
+	the corba structs and CategoryData. Also closed bug 1024, 982, 980 and 1092.
+	
+	* components/services/time/command-line/main.c: (main):
+	* components/services/time/service/trilobite-eazel-time-service.c:
+	(trilobite_eazel_time_service_destroy):
+	* components/services/trilobite/libtrilobite/trilobite-service.c:
+	(trilobite_service_destroy):
+	* components/services/trilobite/sample/command-line/main.c: (main):
+	* components/services/trilobite/sample/service/main.c:
+	(trilobite_service_factory_destroy):
+	*
+	components/services/trilobite/sample/service/sample-service-impl.c:
+	(sample_service_destroy):
+	Fixed the component destroy routines with Darins help.
+
 2000-06-22  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/websearch/Makefile.am:

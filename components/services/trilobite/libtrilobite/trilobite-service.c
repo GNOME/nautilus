@@ -198,13 +198,11 @@ trilobite_service_destroy (GtkObject *object)
 		g_free (trilobite->private->service_url);
 		g_free (trilobite->private->service_icon);
 		g_free (trilobite->private);
-		g_free (trilobite);
 	}
 
 	if (GTK_OBJECT_CLASS (trilobite_service_parent_class)->destroy) {
-		/* FIXME bugzilla.eazel.com 921:
-		   this doesn't work... Implement proper destroy function */
-		/* GTK_OBJECT_CLASS (trilobite_service_parent_class)->destroy (object); */
+		/* g_message ("calling trilobite-service-parent->destroy ()"); */
+		GTK_OBJECT_CLASS (trilobite_service_parent_class)->destroy (object);
 	}
 }
 

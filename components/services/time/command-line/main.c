@@ -141,6 +141,8 @@ int main(int argc, char *argv[]) {
 	}
 
 	Trilobite_Service_unref (timeservice, &ev);
+	CORBA_Object_release (timeservice, &ev);
+	bonobo_object_unref (BONOBO_OBJECT (service)); 
 	CORBA_exception_free (&ev);
 
 	return 0;

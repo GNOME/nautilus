@@ -284,7 +284,6 @@ done (EazelInstallCallback *service,
 
 int main(int argc, char *argv[]) {
 	poptContext ctxt;
-	Trilobite_Eazel_PackageStructList *packagelist;
 	GList *packages;
 	GList *categories;
 	char *str;
@@ -312,7 +311,10 @@ int main(int argc, char *argv[]) {
 		packages = g_list_prepend (packages, create_package (str));
 	}
 	if (packages) {
-		packagelist = corba_packagestructlist_from_packagedata_list (packages);
+		CategoryData *category;
+		category = g_new0 (CategoryData, 1);
+		category->packages = packages;
+		categories = g_list_prepend (NULL, category);		
 	} else {
 		g_message ("Using remote list ");
 	}
@@ -351,25 +353,31 @@ int main(int argc, char *argv[]) {
 	installservice = bonobo_object_query_interface (BONOBO_OBJECT (service), "IDL:Trilobite/Eazel/Install:1.0");
 	if (installservice != CORBA_OBJECT_NIL) {
 		EazelInstallCallback *cb;		
+
 		set_parameters_from_command_line (installservice);
-		cb = eazel_install_callback_new ();
+		cb = eazel_install_callback_new (installservice);
+
 		gtk_signal_connect (GTK_OBJECT (cb), "download_progress", eazel_download_progress_signal, "Download progress");
 		gtk_signal_connect (GTK_OBJECT (cb), "install_progress", eazel_install_progress_signal, "Install progress");
 		gtk_signal_connect (GTK_OBJECT (cb), "install_failed", install_failed, "");
 		gtk_signal_connect (GTK_OBJECT (cb), "download_failed", download_failed, NULL);
 		gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", dep_check, NULL);
 		gtk_signal_connect (GTK_OBJECT (cb), "done", done, NULL);
+
+		eazel_install_callback_install_packages (cb, categories, &ev);
+
+		fprintf (stdout, "\nEntering main loop...\n");
+		bonobo_main ();
 		
-		Trilobite_Eazel_Install_install_packages (installservice, packagelist, eazel_install_callback_corba (cb), &ev);
+		/* Cleanup the stuff from query_interface */
+		Bonobo_Unknown_unref (installservice, &ev); 
+		CORBA_Object_release (installservice, &ev);
 	} else {
-		g_error ("The bonobo object ");
+		g_error ("The bonobo object does not contain a IDL:Trilobite/Eazel/Install object");
 	}
 
-	bonobo_main ();
-	Bonobo_Unknown_unref (installservice, &ev);  /* for the query_interface */
+	/* Corba cleanup */
 	bonobo_object_unref (BONOBO_OBJECT (service));  /* for the object_activate */
-	CORBA_Object_release (installservice, &ev);
-
 	CORBA_exception_free (&ev);
 	
 

@@ -87,6 +87,7 @@ struct _TransferOptions {
 	char* tmp_dir;                     /* Local directory to store incoming RPMs */
 	char* rpmrc_file;                  /* Location of the rpm resource file */
 };
+void transferoptions_destroy (TransferOptions *topts);
 
 struct _InstallOptions {
 	URLType protocol;          /* Specifies local, ftp, or http */ 
@@ -101,6 +102,7 @@ struct _InstallOptions {
 	gboolean mode_uninstall;   /* Uninstall the package list */
 	gboolean mode_downgrade;   /* Downgrade the packages to previous version*/
 };
+void installoptions_destroy (InstallOptions *iopts);
 
 struct _CategoryData {
 	char* name;
