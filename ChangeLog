@@ -1,4 +1,8 @@
-2001-09-20  Alex Larsson  <alexl@redhat.com>
+2001-09-26  Alex Larsson  <alexl@redhat.com>
+
+	Merged more patches from the Red Hat branch.
+
+	2001-09-20  Alex Larsson  <alexl@redhat.com>
 	
 	* libnautilus-private/nautilus-desktop-file-loader.c:
 	Correct filename in header.
@@ -13,7 +17,7 @@
 	(nautilus_link_desktop_file_local_create): Use fputs instead
 	of fwrite.
 	
-2001-09-19  Alex Larsson  <alexl@redhat.com>
+	2001-09-19  Alex Larsson  <alexl@redhat.com>
 	
 	* libnautilus-private/nautilus-link-desktop-file.c
 	(nautilus_link_desktop_file_get_link_uri_from_desktop):
@@ -23,7 +27,7 @@
 	Load the default icon name even when we have a custom icon uri.
 	It may be needed if the custom icon was not there.
 
-2001-09-19  Alex Larsson  <alexl@redhat.com>
+	2001-09-19  Alex Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-directory-async.c
 	(make_dot_directory_uri): gnome_vfs_uri_new() may fail.
@@ -62,7 +66,7 @@
 	* src/file-manager/fm-icon-view.c:
 	Re-enable additional text.
 	
-2001-09-19  Alex Larsson  <alexl@redhat.com>
+	2001-09-19  Alex Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/Makefile.am:
 	* libnautilus-private/nautilus-desktop-file-loader.[ch]:
@@ -82,7 +86,7 @@
 	* libnautilus-private/nautilus-desktop-file-loader.c:
 	Some coding style changes.
 	
-2001-09-18  Alex Larsson  <alexl@redhat.com>
+	2001-09-18  Alex Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/desktop-file-loader.[ch],
 	libnautilus-private/nautilus-desktop-file.[ch]:
@@ -94,7 +98,7 @@
 	* libnautilus-private/nautilus-link-impl-desktop.c:
 	Update to the new desktop file parser names.
 
-2001-09-13  Maciej Stachowiak  <mjs@noisehavoc.org>
+	2001-09-13  Maciej Stachowiak  <mjs@noisehavoc.org>
 
 	* libnautilus-private/nautilus-file.c
 	(nautilus_file_contains_text): Fix test for NULL mime type with
@@ -102,7 +106,7 @@
 	copying it. I could have sworn I fixed both of these problems
 	before merging my changes to the RH branch!
 
-2001-09-01  Maciej Stachowiak  <mjs@noisehavoc.org>
+	2001-09-01  Maciej Stachowiak  <mjs@noisehavoc.org>
 
 	Merged changes from mjs-patches-to-redhat-patches branch to
 	redhat-outstanding-patches:
