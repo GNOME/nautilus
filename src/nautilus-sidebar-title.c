@@ -575,9 +575,8 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 	/* loop through the list of emblems, installing them in the box */
 	for (p = icons; p != NULL; p = p->next) {
 		pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-			(p->data,
-			 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD,
-			 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD,
+			(p->data, NULL, NULL,
+			 NAUTILUS_ICON_SIZE_STANDARD,
 			 NULL, FALSE);
 		if (pixbuf != NULL) {
 			add_emblem (sidebar_title, pixbuf);
@@ -585,7 +584,7 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 		}
 	}
 	
-	nautilus_scalable_icon_list_free (icons);
+	eel_g_list_free_deep (icons);
 }
 
 static void

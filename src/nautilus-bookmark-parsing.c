@@ -37,33 +37,19 @@ NautilusBookmark *
 nautilus_bookmark_new_from_node (xmlNodePtr node)
 {
 	xmlChar *name, *uri;
-	xmlChar *icon_uri, *icon_mime_type, *icon_name;
-	NautilusScalableIcon *icon;
+	xmlChar *icon_name;
 	NautilusBookmark *new_bookmark;
 
 	/* Maybe should only accept bookmarks with both a name and uri? */
 	name = eel_xml_get_property_translated (node, "name");
 	uri = xmlGetProp (node, "uri");
-	icon_uri = xmlGetProp (node, "icon_uri");
-	icon_mime_type = xmlGetProp (node, "icon_mime_type");
 	icon_name = xmlGetProp (node, "icon_name");
 
-	if (icon_uri == NULL && icon_name == NULL) {
-		icon = NULL;
-	} else {
-		icon = nautilus_scalable_icon_new_from_text_pieces
-			(icon_uri, icon_mime_type, icon_name, NULL, NULL);
-	}
-	new_bookmark = nautilus_bookmark_new_with_icon (uri, name, icon);
-	if (icon != NULL) {
-		nautilus_scalable_icon_unref (icon);
-	}
+	new_bookmark = nautilus_bookmark_new_with_icon (uri, name, icon_name);
 
 	xmlFree (name);
 	xmlFree (uri);
-	xmlFree (icon_uri);
 	xmlFree (icon_name);
-	xmlFree (icon_mime_type);
 	
 	return new_bookmark;
 }

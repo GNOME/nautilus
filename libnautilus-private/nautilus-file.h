@@ -159,6 +159,7 @@ void                    nautilus_file_set_keywords                      (Nautilu
 									 GList                          *keywords);
 GList *                 nautilus_file_get_emblem_names                  (NautilusFile                   *file);
 char *                  nautilus_file_get_top_left_text                 (NautilusFile                   *file);
+char *                  nautilus_file_peek_top_left_text                (NautilusFile                   *file);
 gboolean                nautilus_file_get_directory_item_mime_types     (NautilusFile                   *file,
 									 GList                         **mime_list);
 
@@ -294,7 +295,7 @@ char *                  nautilus_file_get_activation_uri                (Nautilu
 char *                  nautilus_file_get_drop_target_uri               (NautilusFile                   *file);
 
 /* Get custom icon (if specified by metadata or link contents) */
-char *                  nautilus_file_get_custom_icon_uri               (NautilusFile                   *file);
+char *                  nautilus_file_get_custom_icon                   (NautilusFile                   *file);
 
 /* Convenience functions for dealing with a list of NautilusFile objects that each have a ref.
  * These are just convenient names for functions that work on lists of GtkObject *.

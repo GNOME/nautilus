@@ -1,3 +1,139 @@
+2002-09-18  Alexander Larsson  <alexl@redhat.com>
+
+	Merge the new-icon-factory-branch branch to HEAD.
+	
+2002-09-18  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/gnome-icon-lookup.c:
+	* libnautilus-private/nautilus-bookmark.c:
+	* src/file-manager/fm-desktop-icon-view.c:
+	Final icon naming.
+
+2002-09-18  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-factory.c:
+	Compile fixes for gnome-desktop head.
+
+2002-09-17  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/gnome-icon-lookup.c:
+	Also look for generic mimetypes.
+	
+2002-09-17  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/gnome-icon-lookup.c:
+	Clean up #defines
+
+2002-09-17  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/gnome-icon-lookup.c (gnome_icon_lookup):
+	Look up mime icons before file types.
+
+2002-09-17  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/Makefile.am:
+	Added SYSCONFDIR.
+	Removed nautilus-find-icon-image.[ch]
+	
+	* libnautilus-private/gnome-icon-lookup.c:
+	Add gif to gdk-pixbuf supported list.
+	
+	* libnautilus-private/gnome-thumbnail.c:
+	Add gif to gdk-pixbuf supported list.
+	Thumbnailing scripts
+	Fix failed thumbnail directory creation
+	
+	* libnautilus-private/nautilus-directory-async.c: 
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.c:
+	* libnautilus-private/nautilus-file.h:
+	* libnautilus-private/nautilus-icon-factory.c:
+	custom_icon_uri -> custom_icon
+	
+	* libnautilus-private/nautilus-thumbnails.c:
+	Write failed files on thumbnail failure.
+
+2002-09-13  Alexander Larsson  <alexl@redhat.com>
+	
+	* libnautilus-private/gnome-thumbnail.[ch]:
+	const cleanups
+	Add gnome_thumbnail_has_uri.
+	
+	* libnautilus-private/nautilus-icon-container.c:
+	* libnautilus-private/nautilus-icon-private.h:
+	Clean up TODOs
+	
+	* libnautilus-private/nautilus-icon-factory-private.h:
+	Remove nautilus_icon_factory_remove_by_uri
+	
+	* libnautilus-private/nautilus-icon-factory.c:
+	Disable self checks by default
+	Fix memory management of cache and fallback_icon
+	Remove nautilus_icon_factory_remove_by_uri
+	Clean up old code leftovers
+	Use "loading" icon while thumbnailing.
+	
+	* libnautilus-private/nautilus-thumbnails.c:
+	Remove some old code
+	Reimplement nautilus_update_thumbnail_file_renamed and
+	nautilus_remove_thumbnail_for_file
+
+2002-09-12  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/gnome-thumbnail-pixbuf-utils.c:
+	Add fast jpeg loading code.
+	
+	* libnautilus-private/gnome-icon-lookup.[ch]:
+	Add GNOME_ICON_LOOKUP_FLAGS_SHOW_SMALL_IMAGES_AS_THEMSELVES flag.
+	
+	* libnautilus-private/gnome-thumbnail.c:
+	Threadsafe GnomeThumbnailFactory
+	Use fast jpeg loader
+	cleanup
+	Thumbnail more image formats.
+	
+	* libnautilus-private/nautilus-icon-container.c:
+	Don't scale wide but not very tall icons
+	
+	* libnautilus-private/nautilus-icon-factory.[ch]:
+	Better handling of scaling with unknown base_size
+	Frame thumbnails
+	Add NAUTILUS_ICON_SIZE_THUMBNAIL
+	
+	* libnautilus-private/nautilus-thumbnails.c:
+	Don't look for old framed thumbnails.
+	We changed thumbnailing system anyway.
+
+2002-09-11  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/gnome-icon-lookup.c:
+	* libnautilus-private/gnome-icon-lookup.h:
+	* libnautilus-private/gnome-thumbnail-pixbuf-utils.c:
+	* libnautilus-private/gnome-thumbnail.c:
+	* libnautilus-private/gnome-thumbnail.h:
+	New files. Destined for libgnomeui eventually.
+	
+	* libnautilus-private/nautilus-icon-factory.c:
+	* libnautilus-private/nautilus-icon-factory.h:
+	* libnautilus-private/nautilus-thumbnails.c:
+	* libnautilus-private/nautilus-thumbnails.h:
+	Major rewrite of icon factory and thumbnailing code.
+	
+	* libnautilus-private/nautilus-bookmark.c:
+	* libnautilus-private/nautilus-bookmark.h:
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.c:
+	* libnautilus-private/nautilus-file.h:
+	* libnautilus-private/nautilus-icon-container.c:
+	* libnautilus-private/nautilus-icon-container.h:
+	* libnautilus-private/nautilus-icon-private.h:
+	* src/file-manager/fm-icon-container.c:
+	* src/nautilus-bookmark-list.c:
+	* src/nautilus-bookmark-parsing.c:
+	* src/nautilus-sidebar-title.c:
+	Use the new APIs
+
 2002-09-15  Dave Camp  <dave@ximian.com>
 
 	Fixes bug #88596.

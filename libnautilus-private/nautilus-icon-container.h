@@ -105,11 +105,10 @@ typedef struct {
 	 * These must be implemented. The default "do nothing" is not
 	 * good enough, these are _not_ signals.
 	 */
-	NautilusScalableIcon *
-	             (* get_icon_images)          (NautilusIconContainer *container,
+	char *       (* get_icon_images)          (NautilusIconContainer *container,
 						   NautilusIconData *data,
-						   const char *modifier,
-						   GList **emblem_icons);
+						   GList **emblem_icons,
+						   char **embedded_text);
 	void         (* get_icon_text)            (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   char **editable_text,

@@ -423,7 +423,7 @@ finalize (GObject *object)
 	}
 	g_free (file->details->top_left_text);
 	g_free (file->details->display_name);
-	g_free (file->details->custom_icon_uri);
+	g_free (file->details->custom_icon);
 	g_free (file->details->activation_uri);
 	g_free (file->details->compare_by_emblem_cache);
 	
@@ -2400,7 +2400,7 @@ nautilus_file_get_drop_target_uri (NautilusFile *file)
 }
 
 char *
-nautilus_file_get_custom_icon_uri (NautilusFile *file)
+nautilus_file_get_custom_icon (NautilusFile *file)
 {
 	char *uri;
 
@@ -2412,7 +2412,7 @@ nautilus_file_get_custom_icon_uri (NautilusFile *file)
 	uri = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
 
 	if (uri == NULL && file->details->got_link_info) {
-		uri = g_strdup (file->details->custom_icon_uri);
+		uri = g_strdup (file->details->custom_icon);
 	}
 
 	return uri;
@@ -2904,6 +2904,13 @@ nautilus_file_recompute_deep_counts (NautilusFile *file)
 		}
 	}
 }
+
+GnomeVFSFileInfo *
+nautilus_file_peek_vfs_file_info (NautilusFile *file)
+{
+	return file->details->info;
+}
+
 
 /**
  * nautilus_file_get_directory_item_mime_types
@@ -4650,6 +4657,38 @@ nautilus_file_is_executable (NautilusFile *file)
 }
 
 /**
+ * nautilus_file_peek_top_left_text
+ * 
+ * Peek at the text from the top left of the file.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: NULL if there is no text readable, otherwise, the text.
+ *          This string is owned by the file object and should not
+ *          be kept around or freed.
+ * 
+ **/
+char *
+nautilus_file_peek_top_left_text (NautilusFile *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	if (!nautilus_file_should_get_top_left_text (file)) {
+		return NULL;
+	}
+
+	/* Show " ..." in the file until we read the contents in. */
+	if (!file->details->got_top_left_text) {
+		if (nautilus_file_contains_text (file)) {
+			return " ...";
+		}
+		return NULL;
+	}
+
+	/* Show what we read in. */
+	return file->details->top_left_text;
+}
+
+/**
  * nautilus_file_get_top_left_text
  * 
  * Get the text from the top left of the file.
@@ -4661,23 +4700,9 @@ nautilus_file_is_executable (NautilusFile *file)
 char *
 nautilus_file_get_top_left_text (NautilusFile *file)
 {
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-	if (!nautilus_file_should_get_top_left_text (file)) {
-		return NULL;
-	}
-
-	/* Show " ..." in the file until we read the contents in. */
-	if (!file->details->got_top_left_text) {
-		if (nautilus_file_contains_text (file)) {
-			return g_strdup (" ...");
-		}
-		return NULL;
-	}
-
-	/* Show what we read in. */
-	return g_strdup (file->details->top_left_text);
+	return g_strdup (nautilus_file_peek_top_left_text (file));
 }
+
 
 void
 nautilus_file_mark_gone (NautilusFile *file)

@@ -29,8 +29,7 @@
 #include <libnautilus-private/nautilus-file.h>
 
 /* Returns NULL if there's no thumbnail yet. */
-char *     nautilus_get_thumbnail_uri               (NautilusFile *file);
-gboolean   nautilus_thumbnail_has_invalid_thumbnail (NautilusFile *file);
+void       nautilus_create_thumbnail                (NautilusFile *file);
 GdkPixbuf *nautilus_thumbnail_load_framed_image     (const char   *path);
 void       nautilus_update_thumbnail_file_renamed   (const char   *old_file_uri,
 						     const char   *new_file_uri);

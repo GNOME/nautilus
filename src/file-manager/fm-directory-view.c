@@ -33,6 +33,7 @@
 #include "fm-desktop-icon-view.h"
 #include "fm-error-reporting.h"
 #include "fm-properties-window.h"
+#include <libgnome/gnome-url.h>
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-window.h>
 #include <bonobo/bonobo-zoomable.h>
@@ -4745,24 +4746,32 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	}
 
 	if (action == ACTIVATION_ACTION_DISPLAY) {
-		if (nautilus_mime_get_default_action_type_for_file (file)
-		    == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
-			application = nautilus_mime_get_default_application_for_file (file);
+		/* BADHACK(tm) to make desktop web links work */
+		if (nautilus_file_is_nautilus_link (file) &&
+		    uri != NULL &&
+		    (eel_str_has_prefix (uri, "http:") ||
+		     eel_str_has_prefix (uri, "https:"))) {
+			gnome_url_show (uri, NULL);
 		} else {
-			/* If the action type is unspecified, treat it like
-			 * the component case. This is most likely to happen
-			 * (only happens?) when there are no registered
-			 * viewers or apps, or there are errors in the
-			 * mime.keys files.
-			 */
-			application = NULL;
-		}
-
-		if (application != NULL) {
-			fm_directory_view_launch_application (application, file, view);
-			gnome_vfs_mime_application_free (application);
-		} else {
-			open_location (view, uri, parameters->choice);
+			if (nautilus_mime_get_default_action_type_for_file (file)
+			    == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
+				application = nautilus_mime_get_default_application_for_file (file);
+			} else {
+				/* If the action type is unspecified, treat it like
+				 * the component case. This is most likely to happen
+				 * (only happens?) when there are no registered
+				 * viewers or apps, or there are errors in the
+				 * mime.keys files.
+				 */
+				application = NULL;
+			}
+			
+			if (application != NULL) {
+				fm_directory_view_launch_application (application, file, view);
+				gnome_vfs_mime_application_free (application);
+			} else {
+				open_location (view, uri, parameters->choice);
+			}
 		}
 	}
 

@@ -2825,10 +2825,10 @@ link_info_done (NautilusDirectory *directory,
 	file->details->got_link_info = TRUE;
 	g_free (file->details->activation_uri);
 	g_free (file->details->display_name);
-	g_free (file->details->custom_icon_uri);
+	g_free (file->details->custom_icon);
 	file->details->activation_uri = g_strdup (uri);
 	file->details->display_name = g_strdup (name);
-	file->details->custom_icon_uri = g_strdup (icon);
+	file->details->custom_icon = g_strdup (icon);
  	nautilus_file_clear_cached_display_name (file);
 
 	nautilus_directory_async_state_changed (directory);

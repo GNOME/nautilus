@@ -28,14 +28,6 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-/* For now, images are used themselves as thumbnails when they are
- * below this threshold size. Later we might have to have a more
- * complex rule about when to use an image for itself.
- */
-#define SELF_THUMBNAIL_SIZE_THRESHOLD   16384
-
-void       nautilus_icon_factory_remove_by_uri       (const char *uri);
-
 /* Convenience routine to return the appropriate thumbnail frame. */
 GdkPixbuf *nautilus_icon_factory_get_thumbnail_frame (void);
 

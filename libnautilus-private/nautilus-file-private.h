@@ -80,7 +80,7 @@ struct NautilusFileDetails
 
 	/* Info you might get from a link (.desktop, .directory or nautilus link) */
 	char *display_name;
-	char *custom_icon_uri;
+	char *custom_icon;
 	char *activation_uri;
 
 	/* The following is for file operations in progress. Since
@@ -167,5 +167,7 @@ GList *       nautilus_file_get_all_attributes             (void);
 gboolean      nautilus_file_is_self_owned                  (NautilusFile           *file);
 void          nautilus_file_invalidate_count_and_mime_list (NautilusFile           *file);
 gboolean      nautilus_file_rename_in_progress             (NautilusFile           *file);
+
+GnomeVFSFileInfo *nautilus_file_peek_vfs_file_info         (NautilusFile           *file);
 
 #endif

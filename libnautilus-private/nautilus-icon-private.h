@@ -45,6 +45,7 @@ typedef struct {
 	double x, y;
 	
 	/* Scale factor (stretches icon). */
+	/* ALEX TODO: only allow once scale */
 	double scale_x, scale_y;
 
 	/* Whether this item is selected. */

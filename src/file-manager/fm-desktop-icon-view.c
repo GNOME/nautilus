@@ -435,35 +435,35 @@ create_mount_link (FMDesktopIconView *icon_view,
 	}
 
 	/* Get icon type */
-	icon_name = "i-blockdev";
+	icon_name = "gnome-dev-harddisk";
 	switch (nautilus_volume_get_device_type (volume)) {
 	case NAUTILUS_DEVICE_AUDIO_CD:
 	case NAUTILUS_DEVICE_CDROM_DRIVE:
-		icon_name = "i-cdrom";
+		icon_name = "gnome-dev-cdrom";
 		break;
 
 	case NAUTILUS_DEVICE_FLOPPY_DRIVE:
-		icon_name = "i-floppy";
+		icon_name = "gnome-dev-floppy";
 		break;
 
 	case NAUTILUS_DEVICE_JAZ_DRIVE:
-		icon_name = "i-zipdisk2";
+		icon_name = "gnome-dev-jazdisk";
 		break;
 
 	case NAUTILUS_DEVICE_MEMORY_STICK:
-		icon_name = "gnome-ccperiph";
+		icon_name = "gnome-dev-memory";
 		break;
 	
 	case NAUTILUS_DEVICE_NFS:
-		icon_name = "i-nfs";
+		icon_name = "gnome-fs-nfs";
 		break;
 
 	case NAUTILUS_DEVICE_SMB:
-		icon_name = "i-smb";
+		icon_name = "gnome-fs-smb";
 		break;
 	
 	case NAUTILUS_DEVICE_ZIP_DRIVE:
-		icon_name = "i-zipdisk";
+		icon_name = "gome-fs-zipdisk";
 		break;
 
 	case NAUTILUS_DEVICE_APPLE:
@@ -1061,7 +1061,7 @@ fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor *trash_m
 
 	path = g_build_filename (desktop_directory, TRASH_LINK_NAME, NULL);
 
-	nautilus_link_local_set_icon (path, state ? "trash-empty" : "trash-full");
+	nautilus_link_local_set_icon (path, state ? "gnome-fs-trash-empty" : "gnome-fs-trash-full");
 
 	g_free (path);
 }
@@ -1538,6 +1538,7 @@ update_desktop_directory (UpdateType type)
 			if (!found_home_link &&
 			    nautilus_link_local_is_utf8 (link_path, info)) {
 				nautilus_link_local_set_link_uri (link_path, home_uri);
+				nautilus_link_local_set_icon (link_path, "gnome-fs-home");
 				found_home_link = TRUE;
 			} else {
 				unlink_and_notify (link_path); /* kill duplicates */
@@ -1564,7 +1565,7 @@ update_desktop_directory (UpdateType type)
 	    !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
 		nautilus_link_local_create (desktop_directory,
 					    home_link_name,
-					    "desktop-home", 
+					    "gnome-fs-home", 
 					    home_uri,
 					    NULL,
 					    NAUTILUS_LINK_HOME);
@@ -1574,7 +1575,7 @@ update_desktop_directory (UpdateType type)
 		if (!found_trash_link) {
 			nautilus_link_local_create (desktop_directory,
 						    TRASH_LINK_NAME,
-						    "trash-empty", 
+						    "gnome-fs-trash-empty", 
 						    EEL_TRASH_URI,
 						    NULL,
 						    NAUTILUS_LINK_TRASH);

@@ -32,6 +32,7 @@
 #include <gtk/gtkobject.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libgnome/gnome-icon-loader.h>
+#include "gnome-thumbnail.h"
 
 /* NautilusIconFactory is a class that knows how to hand out icons to be
  * used for representing files and some other objects. It was designed
@@ -71,17 +72,20 @@ typedef enum {
 #define NAUTILUS_ICON_SIZE_LARGER	96
 #define NAUTILUS_ICON_SIZE_LARGEST     192
 
+#define NAUTILUS_ICON_SIZE_THUMBNAIL   96
+
+/* Maximum size of an icon that the icon factory will ever produce */
+#define NAUTILUS_ICON_MAXIMUM_SIZE     320
+
 /* Icon size to use for menus. NAUTILUS_ICON_SIZE_SMALLEST
  * is a little too small and NAUTILUS_ICON_SIZE_SMALLER is
  * a little too big.
  */
 #define NAUTILUS_ICON_SIZE_FOR_MENUS	20
 
-typedef struct NautilusScalableIcon NautilusScalableIcon;
-
 /* here's a structure to hold the emblem attach points */
 
-#define MAX_ATTACH_POINTS 8
+#define MAX_ATTACH_POINTS 12
 
 typedef struct {
 	int num_points;
@@ -97,14 +101,13 @@ typedef struct {
 /* There's a single NautilusIconFactory object.
  * The only thing you need it for is to connect to its signals.
  */
-GtkObject *           nautilus_icon_factory_get                          (void);
+GObject *             nautilus_icon_factory_get                          (void);
 
 /* Relationship between zoom levels and icons sizes. */
 guint                 nautilus_get_icon_size_for_zoom_level              (NautilusZoomLevel            zoom_level);
 
 /* Choose the appropriate icon, but don't render it yet. */
-NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file            (NautilusFile                *file,
-									  const char                  *modifier);
+char *                nautilus_icon_factory_get_icon_for_file            (NautilusFile                *file);
 gboolean              nautilus_icon_factory_is_icon_ready_for_file       (NautilusFile                *file);
 GList *               nautilus_icon_factory_get_required_file_attributes (void);
 
@@ -114,7 +117,7 @@ GList *               nautilus_icon_factory_get_basic_file_attributes    (void);
 
 GList *               nautilus_icon_factory_get_emblem_icons_for_file    (NautilusFile                *file,
 									  EelStringList               *exclude);
-NautilusScalableIcon *nautilus_icon_factory_get_emblem_icon_by_name      (const char                  *emblem_name);
+char *                nautilus_icon_factory_get_emblem_icon_by_name      (const char                  *emblem_name);
 
 /* Render an icon to a particular size.
  * Ownership of a ref. count in this pixbuf comes with the deal.
@@ -124,11 +127,10 @@ NautilusScalableIcon *nautilus_icon_factory_get_emblem_icon_by_name      (const 
  * If the wants_default boolean is set, return a default icon instead
  * of NULL if we can't find anything
  */
-GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (NautilusScalableIcon        *scalable_icon,
-									  guint                        nominal_size_in_pixels_x,
-									  guint                        nominal_size_in_pixels_y,
-									  guint                        maximum_size_in_pixels_x,
-									  guint                        maximum_size_in_pixels_y,
+GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (const char                  *icon,
+									  const char                  *modifier,
+									  const char                  *embedded_text,
+									  guint                        nominal_size,
 									  NautilusEmblemAttachPoints  *attach_points,
 									  gboolean                     wants_default);
 									  
@@ -144,38 +146,9 @@ GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_file          (Nautil
 GdkPixbuf *           nautilus_icon_factory_get_pixbuf_from_name         (const char                  *icon_name,
 									  const char                  *modifer,
 									  guint                        size_in_pixels);
-/* Manage a scalable icon.
- * Since the factory always passes out references to the same scalable
- * icon, you can compare two scalable icons to see if they are the same
- * with ==.
- */
-void                  nautilus_scalable_icon_ref                         (NautilusScalableIcon        *scalable_icon);
-void                  nautilus_scalable_icon_unref                       (NautilusScalableIcon        *scalable_icon);
 
-/* A scalable icon can be decomposed into text and reconstituted later
- * using nautilus_scalable_icon_new_from_text_pieces. This is the way 
- * to store scalable icons in metadata or other files.
- */
-void                  nautilus_scalable_icon_get_text_pieces             (NautilusScalableIcon        *scalable_icon,
-									  char                       **uri_return,
-									  char                       **mime_type_return,
-									  char                       **name_return,
-									  char                       **modifier_return,
-									  char                       **embedded_text_return);
-/* Get a scalable icon using the earlier results of
- * nautilus_scalable_icon_get_text_pieces.
- */
-NautilusScalableIcon *nautilus_scalable_icon_new_from_text_pieces        (const char                  *uri,
-									  const char                  *mime_type,
-									  const char                  *name,
-									  const char                  *modifier,
-									  const char                  *embedded_text);
-
-/* Convenience function for freeing a list of scalable icons.
- * Unrefs all the icons before freeing the list.
- */
-void                  nautilus_scalable_icon_list_free                   (GList                       *scalable_icon_list);
+GnomeIconLoader *      nautilus_icon_factory_get_icon_loader              (void);
+GnomeThumbnailFactory *nautilus_icon_factory_get_thumbnail_factory        (void);
 
 #endif /* NAUTILUS_ICON_FACTORY_H */
 
-GnomeIconLoader *     nautilus_icon_factory_get_icon_loader              (void);

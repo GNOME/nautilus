@@ -304,15 +304,14 @@ icon_set_position (NautilusIcon *icon,
 static void
 icon_get_size (NautilusIconContainer *container,
 	       NautilusIcon *icon,
-	       guint *size_x, guint *size_y)
+	       guint *size)
 {
-	if (size_x != NULL) {
-		*size_x = MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
+	g_assert (fabs (icon->scale_x - icon->scale_y) <= 0.001);
+		
+	/* ALEX TODO: Bogus. Should only have one scale, not _x and _y */
+	if (size != NULL) {
+		*size = MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
 			       * icon->scale_x, NAUTILUS_ICON_SIZE_SMALLEST);
-	}
-	if (size_y != NULL) {
-		*size_y = MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
-			       * icon->scale_y, NAUTILUS_ICON_SIZE_SMALLEST);
 	}
 }
 
@@ -327,11 +326,11 @@ icon_set_size (NautilusIconContainer *container,
 	       guint icon_size,
 	       gboolean update_position)
 {
-	guint old_size_x, old_size_y;
+	guint old_size;
 	double scale;
 
-	icon_get_size (container, icon, &old_size_x, &old_size_y);
-	if (icon_size == old_size_x && icon_size == old_size_y) {
+	icon_get_size (container, icon, &old_size);
+	if (icon_size == old_size) {
 		return;
 	}
 
@@ -2656,7 +2655,7 @@ start_stretching (NautilusIconContainer *container)
 			  &details->stretch_start.icon_x,
 			  &details->stretch_start.icon_y);
 	icon_get_size (container, icon,
-		       &details->stretch_start.icon_size, NULL);
+		       &details->stretch_start.icon_size);
 
 	gnome_canvas_item_grab (GNOME_CANVAS_ITEM (icon->item),
 				(GDK_POINTER_MOTION_MASK
@@ -3793,18 +3792,18 @@ get_icon_being_renamed (NautilusIconContainer *container)
 	return rename_icon;
 }			 
 
-static NautilusScalableIcon *
+static char *
 nautilus_icon_container_get_icon_images (NautilusIconContainer *container,
 					 NautilusIconData      *data,
-					 const char            *modifier,
-					 GList                **emblem_icons)
+					 GList                **emblem_icons,
+					 char                 **embedded_text)
 {
 	NautilusIconContainerClass *klass;
 
 	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
 	g_return_val_if_fail (klass->get_icon_images != NULL, NULL);
 
-	return klass->get_icon_images (container, data, modifier, emblem_icons);
+	return klass->get_icon_images (container, data, emblem_icons, embedded_text);
 }
 
 
@@ -3827,16 +3826,17 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 				     NautilusIcon *icon)
 {
 	NautilusIconContainerDetails *details;
-	guint icon_size_x, icon_size_y;
+	guint icon_size;
 	guint min_image_size, max_image_size;
 	guint width, height, scaled_width, scaled_height;
 	double scale_factor;
-	NautilusScalableIcon *scalable_icon;
+	char *icon_name;
 	NautilusEmblemAttachPoints attach_points;
 	GdkPixbuf *pixbuf, *emblem_pixbuf, *saved_pixbuf;
-	GList *emblem_scalable_icons, *emblem_pixbufs, *p;
+	GList *emblem_icon_names, *emblem_pixbufs, *p;
 	char *editable_text, *additional_text;
-
+	char *embedded_text;
+	
 	if (icon == NULL) {
 		return;
 	}
@@ -3844,33 +3844,38 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	details = container->details;
 
 	/* Get the icons. */
-	emblem_scalable_icons = NULL;
-	scalable_icon = nautilus_icon_container_get_icon_images (
+	emblem_icon_names = NULL;
+	embedded_text = NULL;
+	icon_name = nautilus_icon_container_get_icon_images (
 		container, icon->data, 
-		(icon == details->drop_target) ? "accept" : "",
-		&emblem_scalable_icons);
+		&emblem_icon_names,
+		&embedded_text);
 
 	/* compute the maximum size based on the scale factor */
 	min_image_size = MINIMUM_IMAGE_SIZE * GNOME_CANVAS (container)->pixels_per_unit;
-	max_image_size = MAXIMUM_IMAGE_SIZE * GNOME_CANVAS (container)->pixels_per_unit;
+	max_image_size = MAX (MAXIMUM_IMAGE_SIZE * GNOME_CANVAS (container)->pixels_per_unit, NAUTILUS_ICON_MAXIMUM_SIZE);
 		
 	/* Get the appropriate images for the file. */
-	icon_get_size (container, icon, &icon_size_x, &icon_size_y);
+	icon_get_size (container, icon, &icon_size);
+
+	icon_size = MAX (icon_size, min_image_size);
+	icon_size = MIN (icon_size, max_image_size);
+	
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-		(scalable_icon,
-		 icon_size_x,
-		 icon_size_y,
-		 max_image_size * icon->scale_x,
-		 max_image_size * icon->scale_y,
+		(icon_name,
+		(icon == details->drop_target) ? "accept" : NULL,
+		 embedded_text,
+		 icon_size,
 		 &attach_points,
 		 TRUE);
 	
-	nautilus_scalable_icon_unref (scalable_icon);
+	g_free (icon_name);
 
 	/* in the rare case an image is too small, scale it up */
 	width = gdk_pixbuf_get_width (pixbuf);
 	height = gdk_pixbuf_get_height (pixbuf);
-	if (width < min_image_size || height < min_image_size) {
+	if (width < min_image_size && height < min_image_size) {
+		g_print ("to small (%dx%d, scaling up\n", width, height);
 		scale_factor = MAX (min_image_size  / (double) width, min_image_size / (double) height);
 		/* don't let it exceed the maximum width in the other dimension */
 		scale_factor = MIN (scale_factor, max_image_size / width);
@@ -3885,17 +3890,14 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		
 	emblem_pixbufs = NULL;
 	
-	icon_size_x = MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
+	icon_size = MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
 			   * icon->scale_x, NAUTILUS_ICON_SIZE_SMALLEST);
-	icon_size_y = MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
-			   * icon->scale_y, NAUTILUS_ICON_SIZE_SMALLEST);
-	for (p = emblem_scalable_icons; p != NULL; p = p->next) {
+	for (p = emblem_icon_names; p != NULL; p = p->next) {
 		emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 			(p->data,
-			 icon_size_x,
-			 icon_size_y,
-			 MAXIMUM_EMBLEM_SIZE,
-			 MAXIMUM_EMBLEM_SIZE,
+			 NULL,
+			 NULL,
+			 MIN (icon_size, MAXIMUM_EMBLEM_SIZE),
 			 NULL,
 			 FALSE);
 		if (emblem_pixbuf != NULL) {
@@ -3904,7 +3906,8 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		}
 	}
 	emblem_pixbufs = g_list_reverse (emblem_pixbufs);
-	nautilus_scalable_icon_list_free (emblem_scalable_icons);
+	
+	eel_g_list_free_deep (emblem_icon_names);
 
 	nautilus_icon_container_get_icon_text (container,
 					       icon->data,
@@ -4503,7 +4506,7 @@ nautilus_icon_container_show_stretch_handles (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
-	int initial_size_x, initial_size_y;
+	int initial_size;
 	
 	icon = get_first_selected_icon (container);
 	if (icon == NULL) {
@@ -4526,12 +4529,12 @@ nautilus_icon_container_show_stretch_handles (NautilusIconContainer *container)
 	nautilus_icon_canvas_item_set_show_stretch_handles (icon->item, TRUE);
 	details->stretch_icon = icon;
 	
-	icon_get_size (container, icon, &initial_size_x, &initial_size_y);
+	icon_get_size (container, icon, &initial_size);
 
 	/* only need to keep size in one dimension, since they are constrained to be the same */
 	container->details->stretch_initial_x = icon->x;
 	container->details->stretch_initial_y = icon->y;
-	container->details->stretch_initial_size = initial_size_x;
+	container->details->stretch_initial_size = initial_size;
 
 	emit_stretch_started (container, icon);
 }

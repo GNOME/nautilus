@@ -8,6 +8,7 @@ INCLUDES = 						\
 	$(CORE_CFLAGS)					\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
 	-DDATADIR=\""$(datadir)"\" 			\
+	-DSYSCONFDIR=\""$(sysconfdir)"\" 			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
 	$(NULL)
 
@@ -38,6 +39,11 @@ libnautilus_private_la_SOURCES = \
 	$(nautilus_metafile_server_idl_sources)	\
 	eggtreemultidnd.c \
 	eggtreemultidnd.h \
+	gnome-icon-lookup.c \
+	gnome-icon-lookup.h \
+	gnome-thumbnail.c \
+	gnome-thumbnail.h \
+	gnome-thumbnail-pixbuf-utils.c \
 	nautilus-audio-player.c \
 	nautilus-audio-player.h \
 	nautilus-authn-manager.c \
@@ -85,8 +91,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-file-utilities.h \
 	nautilus-file.c \
 	nautilus-file.h \
-	nautilus-find-icon-image.c \
-	nautilus-find-icon-image.h \
 	nautilus-global-preferences.c \
 	nautilus-global-preferences.h \
 	nautilus-horizontal-splitter.c \

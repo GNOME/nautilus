@@ -47,11 +47,11 @@ get_icon_view (NautilusIconContainer *container)
 	return FM_ICON_CONTAINER (container)->view;
 }
 
-static NautilusScalableIcon *
+static char *
 fm_icon_container_get_icon_images (NautilusIconContainer *container,
 				   NautilusIconData      *data,
-				   const char            *modifier,
-				   GList                **emblem_icons)
+				   GList                **emblem_icons,
+				   char                 **embedded_text)
 {
 	FMIconView *icon_view;
 	EelStringList *emblems_to_ignore;
@@ -63,6 +63,10 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 	icon_view = get_icon_view (container);
 	g_return_val_if_fail (icon_view != NULL, NULL);
 
+	if (embedded_text) {
+		*embedded_text = nautilus_file_peek_top_left_text (file);
+	}
+	
 	if (emblem_icons != NULL) {
 		emblems_to_ignore = fm_directory_view_get_emblem_names_to_exclude 
 			(FM_DIRECTORY_VIEW (icon_view));
@@ -71,7 +75,7 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 		eel_string_list_free (emblems_to_ignore);
 	}
 
-	return nautilus_icon_factory_get_icon_for_file (file, modifier);
+	return nautilus_icon_factory_get_icon_for_file (file);
 }
 
 /*

@@ -47,8 +47,8 @@ enum {
 	LAST_SIGNAL
 };
 
-#define GENERIC_BOOKMARK_ICON_NAME	"i-bookmark"
-#define MISSING_BOOKMARK_ICON_NAME	"i-bookmark-missing"
+#define GENERIC_BOOKMARK_ICON_NAME	"gnome-fs-bookmark"
+#define MISSING_BOOKMARK_ICON_NAME	"gnome-fs-bookmark-missing"
 
 static guint signals[LAST_SIGNAL];
 
@@ -56,7 +56,7 @@ struct NautilusBookmarkDetails
 {
 	char *name;
 	char *uri;
-	NautilusScalableIcon *icon;
+	char *icon;
 	NautilusFile *file;
 };
 
@@ -81,6 +81,7 @@ nautilus_bookmark_finalize (GObject *object)
 
 	g_free (bookmark->details->name);
 	g_free (bookmark->details->uri);
+	g_free (bookmark->details->icon);
 	g_free (bookmark->details);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -205,7 +206,7 @@ nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
 			      gboolean optimize_for_anti_aliasing)
 {
 	GdkPixbuf *result;
-	NautilusScalableIcon *icon;
+	char *icon;
 	
 	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
@@ -215,15 +216,15 @@ nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
 	}
 	
 	result = nautilus_icon_factory_get_pixbuf_for_icon
-		(icon,
-		 icon_size, icon_size, icon_size, icon_size,
-		 NULL, TRUE);
-	nautilus_scalable_icon_unref (icon);
+		(icon, NULL, NULL, 
+		 icon_size, NULL, TRUE);
+	
+	g_free (icon);
 	
 	return result;
 }
 
-NautilusScalableIcon *
+char *
 nautilus_bookmark_get_icon (NautilusBookmark *bookmark)
 {
 	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), NULL);
@@ -231,10 +232,7 @@ nautilus_bookmark_get_icon (NautilusBookmark *bookmark)
 	/* Try to connect a file in case file exists now but didn't earlier. */
 	nautilus_bookmark_connect_file (bookmark);
 
-	if (bookmark->details->icon != NULL) {
-		nautilus_scalable_icon_ref (bookmark->details->icon);
-	}
-	return bookmark->details->icon;
+	return g_strdup (bookmark->details->icon);
 }
 
 char *
@@ -282,41 +280,12 @@ nautilus_bookmark_set_name (NautilusBookmark *bookmark, const char *new_name)
 
 static gboolean
 nautilus_bookmark_icon_is_different (NautilusBookmark *bookmark,
-		   		     NautilusScalableIcon *new_icon)
+		   		     char *new_icon)
 {
-	char *new_uri, *new_mime_type, *new_name;
-	char *old_uri, *old_mime_type, *old_name;
-	gboolean result;
-
 	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
 	g_assert (new_icon != NULL);
 
-	/* Bookmarks don't store the modifier or embedded text. */
-	nautilus_scalable_icon_get_text_pieces 
-		(new_icon, &new_uri, &new_mime_type, &new_name, NULL, NULL);
-
-	if (bookmark->details->icon == NULL) {
-		result = !eel_str_is_empty (new_uri)
-			|| !eel_str_is_empty (new_mime_type)
-			|| !eel_str_is_empty (new_name);
-	} else {
-		nautilus_scalable_icon_get_text_pieces 
-			(bookmark->details->icon, &old_uri, &old_mime_type, &old_name, NULL, NULL);
-
-		result = eel_strcmp (old_uri, new_uri) != 0
-			|| eel_strcmp (old_mime_type, new_mime_type) != 0
-			|| eel_strcmp (old_name, new_name) != 0;
-
-		g_free (old_uri);
-		g_free (old_mime_type);
-		g_free (old_name);
-	}
-
-	g_free (new_uri);
-	g_free (new_mime_type);
-	g_free (new_name);
-
-	return result;
+	return eel_strcmp (bookmark->details->icon, new_icon) != 0;
 }
 
 /**
@@ -326,7 +295,7 @@ nautilus_bookmark_icon_is_different (NautilusBookmark *bookmark,
 static gboolean
 nautilus_bookmark_update_icon (NautilusBookmark *bookmark)
 {
-	NautilusScalableIcon *new_icon;
+	char *new_icon;
 
 	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
 
@@ -335,15 +304,13 @@ nautilus_bookmark_update_icon (NautilusBookmark *bookmark)
 	}
 
 	if (nautilus_icon_factory_is_icon_ready_for_file (bookmark->details->file)) {
-		new_icon = nautilus_icon_factory_get_icon_for_file (bookmark->details->file, NULL);
+		new_icon = nautilus_icon_factory_get_icon_for_file (bookmark->details->file);
 		if (nautilus_bookmark_icon_is_different (bookmark, new_icon)) {
-			if (bookmark->details->icon != NULL) {
-				nautilus_scalable_icon_unref (bookmark->details->icon);
-			}
+			g_free (bookmark->details->icon);
 			bookmark->details->icon = new_icon;
 			return TRUE;
 		}
-		nautilus_scalable_icon_unref (new_icon);
+		g_free (new_icon);
 	}
 
 	return FALSE;
@@ -409,17 +376,16 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
 {
 	const char *icon_name;
 
-	if (bookmark->details->icon != NULL) {
-		nautilus_scalable_icon_unref (bookmark->details->icon);
-	}
+
+	g_free (bookmark->details->icon);
 
 	if (nautilus_bookmark_uri_known_not_to_exist (bookmark)) {
 		icon_name = MISSING_BOOKMARK_ICON_NAME;
 	} else {
 		icon_name = GENERIC_BOOKMARK_ICON_NAME;
 	}
-	bookmark->details->icon = nautilus_scalable_icon_new_from_text_pieces 
-		(NULL, NULL, icon_name, NULL, NULL);
+	
+	bookmark->details->icon = g_strdup (icon_name);
 }
 
 /**
@@ -456,7 +422,7 @@ nautilus_bookmark_disconnect_file (NautilusBookmark *bookmark)
 	}
 
 	if (bookmark->details->icon != NULL) {
-		nautilus_scalable_icon_unref (bookmark->details->icon);
+		g_free (bookmark->details->icon);
 		bookmark->details->icon = NULL;
 	}
 }
@@ -490,7 +456,7 @@ nautilus_bookmark_connect_file (NautilusBookmark *bookmark)
 
 NautilusBookmark *
 nautilus_bookmark_new_with_icon (const char *uri, const char *name, 
-				 NautilusScalableIcon *icon)
+				 const char *icon)
 {
 	NautilusBookmark *new_bookmark;
 
@@ -501,10 +467,7 @@ nautilus_bookmark_new_with_icon (const char *uri, const char *name,
 	new_bookmark->details->name = g_strdup (name);
 	new_bookmark->details->uri = g_strdup (uri);
 
-	if (icon != NULL) {
-		nautilus_scalable_icon_ref (icon);
-	}
-	new_bookmark->details->icon = icon;
+	new_bookmark->details->icon = g_strdup (icon);
 
 	nautilus_bookmark_connect_file (new_bookmark);
 
