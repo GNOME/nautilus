@@ -1,3 +1,111 @@
+2000-10-03  Pavel Cisler  <pavel@eazel.com>
+
+	Work on 2036 - drawing glitches in ListView.
+
+	* configure.in:
+	* cut-n-paste-code/widgets/Makefile.am:
+	* cut-n-paste-code/widgets/nautilusclist/.cvsignore:
+	* cut-n-paste-code/widgets/nautilusclist/Makefile.am:
+	* cut-n-paste-code/widgets/nautilusclist/nautilusclist.c:
+	* cut-n-paste-code/widgets/nautilusclist/nautilusclist.h:
+	(COLUMN_FROM_XPIXEL), (LIST_WIDTH), (nautilus_clist_get_type),
+	(nautilus_clist_class_init), (nautilus_clist_set_arg),
+	(nautilus_clist_get_arg), (nautilus_clist_init),
+	(nautilus_clist_construct), (nautilus_clist_new),
+	(nautilus_clist_new_with_titles), (nautilus_clist_set_hadjustment),
+	(nautilus_clist_get_hadjustment), (nautilus_clist_set_vadjustment),
+	(nautilus_clist_get_vadjustment),
+	(nautilus_clist_set_scroll_adjustments),
+	(nautilus_clist_set_shadow_type),
+	(nautilus_clist_set_selection_mode), (nautilus_clist_freeze),
+	(nautilus_clist_thaw), (nautilus_clist_column_titles_show),
+	(nautilus_clist_column_titles_hide),
+	(nautilus_clist_column_title_active),
+	(nautilus_clist_column_title_passive),
+	(nautilus_clist_column_titles_active),
+	(nautilus_clist_column_titles_passive),
+	(nautilus_clist_set_column_title),
+	(nautilus_clist_get_column_title),
+	(nautilus_clist_set_column_widget),
+	(nautilus_clist_get_column_widget),
+	(nautilus_clist_set_column_justification),
+	(nautilus_clist_set_column_visibility),
+	(nautilus_clist_set_column_resizeable),
+	(nautilus_clist_set_column_auto_resize),
+	(nautilus_clist_columns_autosize),
+	(nautilus_clist_optimal_column_width):
+
+	Had to create a copy of GtkCList to work around problems where the drawing
+	code was getting called directly behind our derived classes back. Rebecka 
+	already set GtkCList up in the cut-n-paste directory. Move it to the Nautilus 
+	namespace so that it doesn't collide with the original.
+	Add more methods to allow completely overriding all drawing by a 
+	derived class.
+	Add not reached asserts in original GtkCList drawing code that was 
+	messing us up.
+	
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-list-column-title.c:
+	(get_column_label_at), (get_column_frame_at),
+	(nautilus_list_column_title_paint), (in_column_rect),
+	(in_resize_rect):
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_initialize_class), (activate_row),
+	(nautilus_list_is_row_selected), (row_set_selected),
+	(select_row_unselect_others), (nautilus_list_unselect_all),
+	(nautilus_list_select_all), (nautilus_list_button_press),
+	(nautilus_list_button_release),
+	(nautilus_list_clear_keyboard_focus),
+	(nautilus_list_set_keyboard_focus),
+	(nautilus_list_keyboard_move_to), (nautilus_list_select_row),
+	(keyboard_row_reveal_timeout_callback), (nautilus_list_reveal_row),
+	(nautilus_clist_get_first_selected_row),
+	(nautilus_clist_get_last_selected_row),
+	(nautilus_list_keyboard_navigation_key_press),
+	(nautilus_list_activate_selected_items), (nautilus_list_realize),
+	(list_requisition_width), (nautilus_list_size_request),
+	(new_column_width), (size_allocate_columns),
+	(size_allocate_title_buttons), (nautilus_list_draw_focus),
+	(get_cell_style), (get_cell_horizontal_start_position),
+	(last_column_index), (get_cell_rectangle), (draw_cell), (draw_row),
+	(nautilus_list_clear_from_row), (draw_rows), (draw_all),
+	(nautilus_list_draw), (nautilus_list_expose),
+	(nautilus_list_resize_column), (nautilus_list_mark_cell_as_link),
+	(nautilus_list_set_cell_contents), (nautilus_list_set_pixbuf_list),
+	(nautilus_list_track_new_column_width), (nautilus_list_motion),
+	(nautilus_list_column_resize_track_start),
+	(nautilus_list_column_resize_track),
+	(nautilus_list_column_resize_track_end),
+	(nautilus_list_real_scroll), (nautilus_list_clear),
+	(nautilus_list_new_with_titles), (nautilus_list_row_at),
+	(nautilus_list_get_selection), (nautilus_list_set_selection),
+	(nautilus_list_each_selected_row),
+	(nautilus_list_get_first_selected_row), (insert_row):
+	* libnautilus-extensions/nautilus-list.h:
+	* src/file-manager/fm-list-view.c: (column_clicked_callback),
+	(fm_list_view_compare_rows), (compare_rows_by_name),
+	(match_row_name), (context_click_selection_callback),
+	(context_click_background_callback), (make_sorted_row_array),
+	(select_row_common), (select_previous_next_common),
+	(fm_list_nautilus_file_at), (row_get_data_binder),
+	(fm_list_get_drag_pixmap), (create_list), (set_up_list),
+	(add_to_list), (fm_list_view_clear),
+	(fm_list_view_begin_adding_files), (fm_list_view_add_file),
+	(remove_from_list), (fm_list_view_file_changed),
+	(fm_list_view_done_adding_files), (real_is_empty),
+	(fm_list_view_set_zoom_level), (fm_list_view_reset_row_height),
+	(fm_list_view_select_all), (fm_list_view_sort_items),
+	(install_row_images), (update_icons):
+	
+	Updated to match new renamings.
+
+	* libnautilus-extensions/nautilus-list.h:
+	* libnautilus-extensions/nautilus-list.c:
+	(draw_rows), (draw_all):
+
+	Make these a method, call them as such instead of calling them directly.
+	Switch to the new NAUTILUS_CALL_VIRTUAL macro.
+
 2000-10-03  Michael Engber  <engber@eazel.com>
 
 	Sped up background drawing for the tiled non-aa case.

@@ -33,7 +33,6 @@
 
 #include <gdk/gdk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gtk/gtkclist.h>
 #include <gtk/gtkmain.h>
 
 #include <libgnomeui/gnome-pixmap.h>
@@ -292,9 +291,9 @@ nautilus_list_column_title_request (GtkWidget *widget, GtkRequisition *requisiti
 static const char *
 get_column_label_at (GtkWidget *column_title, int index)
 {
-	GtkCList *parent_clist;
+	NautilusCList *parent_clist;
 
-	parent_clist = GTK_CLIST (column_title->parent);
+	parent_clist = NAUTILUS_CLIST (column_title->parent);
 
 	return parent_clist->column[index].title;
 }
@@ -302,8 +301,8 @@ get_column_label_at (GtkWidget *column_title, int index)
 static void
 get_column_frame_at(GtkWidget *column_title, int index, GdkRectangle *result)
 {
-	GtkCList *parent_clist;
-	parent_clist = GTK_CLIST (column_title->parent);
+	NautilusCList *parent_clist;
+	parent_clist = NAUTILUS_CLIST (column_title->parent);
 
 	*result = parent_clist->column_title_area;
 	result->x = parent_clist->column[index].area.x - COLUMN_INSET;
@@ -436,13 +435,13 @@ nautilus_list_column_title_paint (GtkWidget *widget, GtkWidget *draw_target,
 				  GdkDrawable *target_drawable, GdkRectangle *area)
 {
 	NautilusListColumnTitle *column_title;
-	GtkCList *parent_clist;
+	NautilusCList *parent_clist;
 	int index;
 
-	g_assert (GTK_CLIST (widget->parent) != NULL);
+	g_assert (NAUTILUS_CLIST (widget->parent) != NULL);
 
 	column_title = NAUTILUS_LIST_COLUMN_TITLE(widget);
-	parent_clist = GTK_CLIST (widget->parent);
+	parent_clist = NAUTILUS_CLIST (widget->parent);
 
 	for (index = 0; index < parent_clist->columns; index++) {
 		GdkRectangle cell_rectangle;
@@ -694,10 +693,10 @@ in_column_rect (GtkWidget *widget, int x, int y)
 {
 	/* return the index of the column we hit or -1 */
 
-	GtkCList *parent_clist;
+	NautilusCList *parent_clist;
 	int index;
 
-	parent_clist = GTK_CLIST (widget->parent);
+	parent_clist = NAUTILUS_CLIST (widget->parent);
 	
 	for (index = 0; index < parent_clist->columns; index++) {
 		/* hit testing for column resizing */
@@ -724,10 +723,10 @@ in_resize_rect (GtkWidget *widget, int x, int y)
 {
 	/* return the index of the resize rect of a column we hit or -1 */
 
-	GtkCList *parent_clist;
+	NautilusCList *parent_clist;
 	int index;
 
-	parent_clist = GTK_CLIST (widget->parent);
+	parent_clist = NAUTILUS_CLIST (widget->parent);
 	
 	for (index = 0; index < parent_clist->columns; index++) {
 		/* hit testing for column resizing */

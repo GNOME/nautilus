@@ -30,7 +30,7 @@
 #define NAUTILUS_LIST_H
 
 #include <libgnome/gnome-defs.h>
-#include <widgets/gtkclist/gtkclist.h>
+#include <widgets/nautilusclist/nautilusclist.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 /* This class was originally derived from the GtkFList class in gmc.
@@ -40,18 +40,6 @@
  * have to override all the event handlers and implement our own selection
  * behavior. Sigh. -Federico
  */
-
-/* Superset of GtkCellType enum defined in gtk-clist.h */
-typedef enum
-{
-	NAUTILUS_CELL_EMPTY,	 	/* GTK_CELL_EMPTY */
-	NAUTILUS_CELL_TEXT,	 	/* GTK_CELL_TEXT */
-	NAUTILUS_CELL_PIXMAP,	 	/* GTK_CELL_PIXMAP */
-	NAUTILUS_CELL_PIXTEXT, 	        /* GTK_CELL_PIXTEXT */
-	NAUTILUS_CELL_WIDGET,	 	/* GTK_CELL_WIDGET */
-	NAUTILUS_CELL_PIXBUF_LIST,   	/* new for Nautilus */
-	NAUTILUS_CELL_LINK_TEXT	        /* new for Nautilus */
-} NautilusCellType;
 
 /* pointer casting for cells */
 #define NAUTILUS_CELL_PIXBUF_LIST(cell)	((NautilusCellPixbufList *) &(cell))
@@ -92,12 +80,12 @@ typedef struct NautilusListClass NautilusListClass;
 typedef struct NautilusListDetails NautilusListDetails;
 
 struct NautilusList {
-	GtkCList clist;
+	NautilusCList clist;
 	NautilusListDetails *details;
 };
 
 struct NautilusListClass {
-	GtkCListClass parent_class;
+	NautilusCListClass parent_class;
 
 	/* Signal: invoke the popup menu for selected items */
 	void (* context_click_selection) (NautilusList *list, int row);
@@ -123,7 +111,7 @@ struct NautilusListClass {
 	int  (* get_sort_column_index) (void);
 };
 
-typedef gboolean (* NautilusEachRowFunction) (GtkCListRow *, gpointer);
+typedef gboolean (* NautilusEachRowFunction) (NautilusCListRow *, gpointer);
 
 GtkType      nautilus_list_get_type              (void);
 GtkWidget *  nautilus_list_new_with_titles       (int                      columns,
@@ -146,7 +134,7 @@ void         nautilus_list_set_single_click_mode (NautilusList            *list,
 						  gboolean                 single_click_mode);
 void         nautilus_list_select_row            (NautilusList            *list,
 						  int                      row);
-GtkCListRow *nautilus_list_row_at                (NautilusList            *list,
+NautilusCListRow *nautilus_list_row_at                (NautilusList            *list,
 						  int                      y);
 int	     nautilus_list_get_first_selected_row (NautilusList		  *list);
 void         nautilus_list_each_selected_row     (NautilusList            *list,

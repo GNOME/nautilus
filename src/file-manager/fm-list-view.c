@@ -261,7 +261,7 @@ fm_list_view_destroy (GtkObject *object)
 }
 
 static void 
-column_clicked_callback (GtkCList *clist, int column, gpointer user_data)
+column_clicked_callback (NautilusCList *clist, int column, gpointer user_data)
 {
 	FMListView *list_view;
 	gboolean reversed;
@@ -282,12 +282,12 @@ column_clicked_callback (GtkCList *clist, int column, gpointer user_data)
 }
 
 static int
-fm_list_view_compare_rows (GtkCList *clist,
+fm_list_view_compare_rows (NautilusCList *clist,
 			   gconstpointer ptr1,
 			   gconstpointer ptr2)
 {
-	GtkCListRow *row1;
-	GtkCListRow *row2;
+	NautilusCListRow *row1;
+	NautilusCListRow *row2;
 	NautilusFile *file1;
 	NautilusFile *file2;
 	NautilusFileSortType sort_criterion;
@@ -296,8 +296,8 @@ fm_list_view_compare_rows (GtkCList *clist,
 	g_return_val_if_fail (NAUTILUS_IS_LIST (clist), 0);
 	g_return_val_if_fail (clist->sort_column != LIST_VIEW_COLUMN_NONE, 0);
 
-	row1 = (GtkCListRow *) ptr1;
-	row2 = (GtkCListRow *) ptr2;
+	row1 = (NautilusCListRow *) ptr1;
+	row2 = (NautilusCListRow *) ptr2;
 
 	/* All of our rows have a NautilusFile in the row data. Therefore if
 	 * the row data is NULL it must be a row that's being added, and hasn't
@@ -325,13 +325,13 @@ fm_list_view_compare_rows (GtkCList *clist,
 static int
 compare_rows_by_name (gconstpointer a, gconstpointer b, void *callback_data)
 {
-	GtkCListRow *row1;
-	GtkCListRow *row2;
+	NautilusCListRow *row1;
+	NautilusCListRow *row2;
 
 	g_assert (callback_data == NULL);
 
-	row1 = (GtkCListRow *) a;
-	row2 = (GtkCListRow *) b;
+	row1 = (NautilusCListRow *) a;
+	row2 = (NautilusCListRow *) b;
 
 	return nautilus_file_compare_for_sort
 		(NAUTILUS_FILE (row1->data),
@@ -342,10 +342,10 @@ compare_rows_by_name (gconstpointer a, gconstpointer b, void *callback_data)
 static int
 match_row_name (gconstpointer a, void *callback_data)
 {
-	GtkCListRow *row;
+	NautilusCListRow *row;
 	const char *pattern;
 	
-	row = (GtkCListRow *) a;
+	row = (NautilusCListRow *) a;
 	pattern = (const char *) callback_data;
 
 	return nautilus_file_compare_name
@@ -353,16 +353,16 @@ match_row_name (gconstpointer a, void *callback_data)
 }
 
 static void 
-context_click_selection_callback (GtkCList *clist, FMListView *list_view)
+context_click_selection_callback (NautilusCList *clist, FMListView *list_view)
 {
-	g_assert (GTK_IS_CLIST (clist));
+	g_assert (NAUTILUS_IS_CLIST (clist));
 	g_assert (FM_IS_LIST_VIEW (list_view));
 
 	fm_directory_view_pop_up_selection_context_menu (FM_DIRECTORY_VIEW (list_view));
 }
 
 static void 
-context_click_background_callback (GtkCList *clist, FMListView *list_view)
+context_click_background_callback (NautilusCList *clist, FMListView *list_view)
 {
 	g_assert (FM_IS_LIST_VIEW (list_view));
 
@@ -374,12 +374,12 @@ make_sorted_row_array (GtkWidget *widget)
 {
 	GPtrArray *array;
 
-	if (GTK_CLIST (widget)->rows == 0)
+	if (NAUTILUS_CLIST (widget)->rows == 0)
 		/* empty list, no work */
 		return NULL;
 		
 	/* build an array of rows */
-	array = nautilus_g_ptr_array_new_from_list (GTK_CLIST (widget)->row_list);
+	array = nautilus_g_ptr_array_new_from_list (NAUTILUS_CLIST (widget)->row_list);
 
 	/* sort the array by the names of the NautilusFile objects */
 	nautilus_g_ptr_array_sort (array, compare_rows_by_name, NULL);
@@ -390,7 +390,7 @@ make_sorted_row_array (GtkWidget *widget)
 static void
 select_row_common (GtkWidget *widget, const GPtrArray *array, int array_row_index)
 {
-	GtkCListRow *row;
+	NautilusCListRow *row;
 	int list_row_index;
 
 	if (array_row_index >= array->len)
@@ -401,9 +401,9 @@ select_row_common (GtkWidget *widget, const GPtrArray *array, int array_row_inde
 
 	g_assert (row != NULL);
 
-	list_row_index = g_list_index (GTK_CLIST (widget)->row_list, row);
+	list_row_index = g_list_index (NAUTILUS_CLIST (widget)->row_list, row);
 	g_assert (list_row_index >= 0);
-	g_assert (list_row_index < GTK_CLIST (widget)->rows);
+	g_assert (list_row_index < NAUTILUS_CLIST (widget)->rows);
 
 	/* select the matching row */
 	nautilus_list_select_row (NAUTILUS_LIST (widget), list_row_index);
@@ -458,7 +458,7 @@ select_previous_next_common (GtkWidget *widget, FMListView *list_view, gboolean 
 	first_selected_row = -1;
 	last_selected_row = -1;
 	for (index = 0; index < array->len; index++) {
-		if (((GtkCListRow *) g_ptr_array_index (array, index))->state == GTK_STATE_SELECTED) {
+		if (((NautilusCListRow *) g_ptr_array_index (array, index))->state == GTK_STATE_SELECTED) {
 			if (first_selected_row < 0) {
 				first_selected_row = index;
 			}
@@ -517,7 +517,7 @@ select_next_name_callback (GtkWidget *widget, FMListView *list_view)
 static NautilusFile *
 fm_list_nautilus_file_at (NautilusList *list, int x, int y)
 {
-	GtkCListRow *row;
+	NautilusCListRow *row;
 
 	row = nautilus_list_row_at (list, y);
 	if (row == NULL) {
@@ -635,7 +635,7 @@ typedef struct {
 } RowGetDataBinderContext;
 
 static gboolean
-row_get_data_binder (GtkCListRow * row, gpointer data)
+row_get_data_binder (NautilusCListRow * row, gpointer data)
 {
 	RowGetDataBinderContext *context;
 	char *uri;
@@ -695,12 +695,12 @@ static void
 fm_list_get_drag_pixmap (GtkWidget *widget, int row_index, GdkPixmap **pixmap, 
 			 GdkBitmap **mask, FMListView *list_view)
 {
-	GtkCList *clist;
-	GtkCListRow *row;
+	NautilusCList *clist;
+	NautilusCListRow *row;
 
 	g_assert (NAUTILUS_IS_LIST (widget));
 
-	clist = GTK_CLIST (widget);
+	clist = NAUTILUS_CLIST (widget);
 	row = ROW_ELEMENT (clist, row_index)->data;
 
 	g_assert (row != NULL);
@@ -724,7 +724,7 @@ create_list (FMListView *list_view)
 	int number_of_columns;
 	const char **titles;
 	NautilusList *list;
-	GtkCList *clist;
+	NautilusCList *clist;
 	int i;
 	FMListViewColumn column;
 
@@ -741,36 +741,36 @@ create_list (FMListView *list_view)
 							     titles));
 	g_free (titles);
 
-	clist = GTK_CLIST (list);
+	clist = NAUTILUS_CLIST (list);
 
 	for (i = 0; i < number_of_columns; ++i) {
 		get_column_specification (list_view, i, &column);
 
 		/* FIXME bugzilla.eazel.com 2532: Make a cover to do this trick. */
-		gtk_clist_set_column_max_width (clist, i, column.maximum_width);
-		gtk_clist_set_column_min_width (clist, i, column.minimum_width);
-		/* work around broken GtkCList that pins the max_width to be no less than
+		nautilus_clist_set_column_max_width (clist, i, column.maximum_width);
+		nautilus_clist_set_column_min_width (clist, i, column.minimum_width);
+		/* work around broken NautilusCList that pins the max_width to be no less than
 		 * the min_width instead of bumping min_width down too
 		 */
-		gtk_clist_set_column_max_width (clist, i, column.maximum_width);
-		gtk_clist_set_column_width (clist, i, column.default_width);
+		nautilus_clist_set_column_max_width (clist, i, column.maximum_width);
+		nautilus_clist_set_column_width (clist, i, column.default_width);
 		
 		if (column.right_justified) {
-			/* Hack around a problem where gtk_clist_set_column_justification
+			/* Hack around a problem where nautilus_clist_set_column_justification
 			 * crashes if there is a column title but no
 			 * column button (it should really be checking if it has a button instead)
 			 * this is an easy, dirty fix for now, will get straightened out
-			 * with a replacement list view (alternatively, we'd fix this in GtkCList)
+			 * with a replacement list view (alternatively, we'd fix this in NautilusCList)
 			 */
 			char *saved_title = clist->column[i].title;
 			clist->column[i].title = NULL;
-			gtk_clist_set_column_justification (clist, i, GTK_JUSTIFY_RIGHT);
+			nautilus_clist_set_column_justification (clist, i, GTK_JUSTIFY_RIGHT);
 			clist->column[i].title = saved_title;
 		}
 
 	}
-	gtk_clist_set_auto_sort (clist, TRUE);
-	gtk_clist_set_compare_func (clist, fm_list_view_compare_rows);
+	nautilus_clist_set_auto_sort (clist, TRUE);
+	nautilus_clist_set_compare_func (clist, fm_list_view_compare_rows);
 
 	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (list));
 	
@@ -839,7 +839,7 @@ set_up_list (FMListView *list_view)
 
 	/* Make height tall enough for icons to look good.
 	 * This must be done after the list widget is realized, due to
-	 * a bug/design flaw in gtk_clist_set_row_height. Connecting to
+	 * a bug/design flaw in nautilus_clist_set_row_height. Connecting to
 	 * the "realize" signal is slightly too early, so we connect to
 	 * "map".
 	 */
@@ -889,7 +889,7 @@ static int
 add_to_list (FMListView *list_view, NautilusFile *file)
 {
 	NautilusList *list;
-	GtkCList *clist;
+	NautilusCList *clist;
 	char **text;
 	int number_of_columns;
 	int new_row;
@@ -913,16 +913,16 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 	}
 
 	list = get_list (list_view);
-	clist = GTK_CLIST (list);
+	clist = NAUTILUS_CLIST (list);
 
 	/* Temporarily set user data value as hack for the problem
 	 * that compare_rows is called before the row data can be set.
 	 */
 	gtk_object_set_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY, file);
 	/* Note that since list is auto-sorted new_row isn't necessarily last row. */
-	new_row = gtk_clist_append (clist, text);
+	new_row = nautilus_clist_append (clist, text);
 
-	gtk_clist_set_row_data (clist, new_row, file);
+	nautilus_clist_set_row_data (clist, new_row, file);
 	gtk_object_set_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY, NULL);
 
 	/* Mark one column as a link. */
@@ -1032,19 +1032,19 @@ fm_list_view_get_background_widget (FMDirectoryView *view)
 static void
 fm_list_view_clear (FMDirectoryView *view)
 {
-	GtkCList *list;
+	NautilusCList *list;
 	int row;
 
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
-	list = GTK_CLIST (get_list (FM_LIST_VIEW (view)));
+	list = NAUTILUS_CLIST (get_list (FM_LIST_VIEW (view)));
 
 	/* Clear away the existing list items. */
 	for (row = 0; row < list->rows; ++row) {
 		fm_list_view_removing_file
-			(FM_LIST_VIEW (view), NAUTILUS_FILE (gtk_clist_get_row_data (list, row)));
+			(FM_LIST_VIEW (view), NAUTILUS_FILE (nautilus_clist_get_row_data (list, row)));
 	}
-	gtk_clist_clear (list);
+	nautilus_clist_clear (list);
 }
 
 static void
@@ -1052,7 +1052,7 @@ fm_list_view_begin_adding_files (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
-	gtk_clist_freeze (GTK_CLIST (get_list (FM_LIST_VIEW (view))));
+	nautilus_clist_freeze (NAUTILUS_CLIST (get_list (FM_LIST_VIEW (view))));
 }
 
 static void
@@ -1099,7 +1099,7 @@ fm_list_view_add_file (FMDirectoryView *view, NautilusFile *file)
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
 	/* We are allowed to get the same icon twice, so don't re-add it. */
-	if (gtk_clist_find_row_from_data (GTK_CLIST (get_list (FM_LIST_VIEW (view))), file) < 0) {
+	if (nautilus_clist_find_row_from_data (NAUTILUS_CLIST (get_list (FM_LIST_VIEW (view))), file) < 0) {
 		add_to_list (FM_LIST_VIEW (view), file);
 	}
 }
@@ -1117,7 +1117,7 @@ remove_from_list (FMListView *list_view,
 	g_assert (was_selected != NULL);
 
 	list = get_list (list_view);
-	old_row = gtk_clist_find_row_from_data (GTK_CLIST (list), file);
+	old_row = nautilus_clist_find_row_from_data (NAUTILUS_CLIST (list), file);
 
 	/* Sometimes this might be called on files that are no longer in
 	 * the list. This happens when a NautilusFile has file_changed called
@@ -1137,7 +1137,7 @@ remove_from_list (FMListView *list_view,
 	*was_in_list = TRUE;
 	*was_selected = nautilus_list_is_row_selected (list, old_row);
 
-	gtk_clist_remove (GTK_CLIST (list), old_row);
+	nautilus_clist_remove (NAUTILUS_CLIST (list), old_row);
 	fm_list_view_removing_file (list_view, file);
 }
 
@@ -1185,7 +1185,7 @@ static void
 fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 {
 	FMListView *list_view;
-	GtkCList *clist;
+	NautilusCList *clist;
 	int new_row;
 	gboolean was_in_list;
 	gboolean was_selected;
@@ -1196,14 +1196,14 @@ fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 	 * existing file going away.
 	 */
 	list_view = FM_LIST_VIEW (view);
-	clist = GTK_CLIST (get_list (list_view));
+	clist = NAUTILUS_CLIST (get_list (list_view));
 
 	/* Ref it here so it doesn't go away entirely after we remove it
 	 * but before we reinsert it.
 	 */
 	nautilus_file_ref (file);
 	
-	gtk_clist_freeze (clist);
+	nautilus_clist_freeze (clist);
 
 	remove_from_list (list_view, file, &was_in_list, &was_selected);
 
@@ -1211,11 +1211,11 @@ fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 		new_row = add_to_list (list_view, file);
 
 		if (was_selected) {
-			gtk_clist_select_row (clist, new_row, -1);
+			nautilus_clist_select_row (clist, new_row, -1);
 		}
 	}
 
-	gtk_clist_thaw (clist);
+	nautilus_clist_thaw (clist);
 
 	/* Unref to match our keep-it-alive-for-this-function ref. */
 	nautilus_file_unref (file);
@@ -1226,7 +1226,7 @@ fm_list_view_done_adding_files (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
-	gtk_clist_thaw (GTK_CLIST (get_list (FM_LIST_VIEW (view))));
+	nautilus_clist_thaw (NAUTILUS_CLIST (get_list (FM_LIST_VIEW (view))));
 }
 
 static guint
@@ -1243,7 +1243,7 @@ real_is_empty (FMDirectoryView *view)
 {
 	g_assert (FM_IS_LIST_VIEW (view));
 
-	return GTK_CLIST (get_list (FM_LIST_VIEW (view)))->rows == 0;
+	return NAUTILUS_CLIST (get_list (FM_LIST_VIEW (view)))->rows == 0;
 }
 
 static GList *
@@ -1272,7 +1272,7 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 			     NautilusZoomLevel new_level,
 			     gboolean always_set_level)
 {
-	GtkCList *clist;
+	NautilusCList *clist;
 	int new_width;
 
 	g_return_if_fail (FM_IS_LIST_VIEW (list_view));
@@ -1301,40 +1301,40 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 	 */
 	list_view->details->default_zoom_level = new_level;	
 
-	clist = GTK_CLIST (get_list (list_view));
+	clist = NAUTILUS_CLIST (get_list (list_view));
 	
-	gtk_clist_freeze (clist);
+	nautilus_clist_freeze (clist);
 
 	fm_list_view_reset_row_height (list_view);
 
 	new_width = fm_list_view_get_icon_size (list_view);
 	
-	/* This little dance is necessary due to bugs in GtkCList.
+	/* This little dance is necessary due to bugs in NautilusCList.
 	 * Must set min, then max, then min, then actual width.
 	 */
 	/* FIXME bugzilla.eazel.com 2532: Make a cover to do this trick. */
-	gtk_clist_set_column_min_width (clist,
+	nautilus_clist_set_column_min_width (clist,
 					LIST_VIEW_COLUMN_ICON,
 					new_width);
-	gtk_clist_set_column_max_width (clist,
+	nautilus_clist_set_column_max_width (clist,
 					LIST_VIEW_COLUMN_ICON,
 					new_width);
-	gtk_clist_set_column_min_width (clist,
+	nautilus_clist_set_column_min_width (clist,
 					LIST_VIEW_COLUMN_ICON,
 					new_width);
-	gtk_clist_set_column_width (clist,
+	nautilus_clist_set_column_width (clist,
 				    LIST_VIEW_COLUMN_ICON,
 				    new_width);
 	
 	update_icons (list_view);
 
-	gtk_clist_thaw (clist);
+	nautilus_clist_thaw (clist);
 }
 
 static void
 fm_list_view_reset_row_height (FMListView *list_view)
 {
-	gtk_clist_set_row_height (GTK_CLIST (get_list (list_view)), 
+	nautilus_clist_set_row_height (NAUTILUS_CLIST (get_list (list_view)), 
 				  MAX (fm_list_view_get_icon_size (list_view),
 				       LIST_VIEW_MINIMUM_ROW_HEIGHT));
 }
@@ -1343,11 +1343,11 @@ fm_list_view_reset_row_height (FMListView *list_view)
 static void
 fm_list_view_select_all (FMDirectoryView *view)
 {
-	GtkCList *clist;
+	NautilusCList *clist;
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 	
-        clist = GTK_CLIST (get_list (FM_LIST_VIEW(view)));
-        gtk_clist_select_all (clist);
+        clist = NAUTILUS_CLIST (get_list (FM_LIST_VIEW(view)));
+        nautilus_clist_select_all (clist);
 }
 
 /* select all of the items in the view */
@@ -1388,12 +1388,12 @@ fm_list_view_sort_items (FMListView *list_view,
 			 gboolean reversed)
 {
 	NautilusList *list;
-	GtkCList *clist;
+	NautilusCList *clist;
 	NautilusDirectory *directory;
 	
 	g_return_if_fail (FM_IS_LIST_VIEW (list_view));
 	g_return_if_fail (column >= 0);
-	g_return_if_fail (column < GTK_CLIST (get_list (list_view))->columns);
+	g_return_if_fail (column < NAUTILUS_CLIST (get_list (list_view))->columns);
 
 	if (column == list_view->details->sort_column &&
 	    reversed == list_view->details->sort_reversed)
@@ -1414,20 +1414,20 @@ fm_list_view_sort_items (FMListView *list_view,
 		 reversed);
 
 	list = get_list (list_view);
-	clist = GTK_CLIST (list);
+	clist = NAUTILUS_CLIST (list);
 
 	list_view->details->sort_column = column;
 
 	if (reversed != list_view->details->sort_reversed)
 	{
-		gtk_clist_set_sort_type (clist, reversed
+		nautilus_clist_set_sort_type (clist, reversed
 					 ? GTK_SORT_DESCENDING
 					 : GTK_SORT_ASCENDING);
 		list_view->details->sort_reversed = reversed;
 	}
 
-	gtk_clist_set_sort_column (clist, column);
-	gtk_clist_sort (clist);
+	nautilus_clist_set_sort_column (clist, column);
+	nautilus_clist_sort (clist);
 }
 
 /**
@@ -1528,7 +1528,7 @@ void
 install_row_images (FMListView *list_view, guint row)
 {
 	NautilusList *list;
-	GtkCList *clist;
+	NautilusCList *clist;
 	NautilusFile *file;
 	GdkPixmap *pixmap;
 	GdkBitmap *bitmap;
@@ -1536,8 +1536,8 @@ install_row_images (FMListView *list_view, guint row)
 	g_return_if_fail (FM_IS_LIST_VIEW (list_view));
 
 	list = get_list (list_view);
-	clist = GTK_CLIST (list);
-	file = gtk_clist_get_row_data (clist, row);
+	clist = NAUTILUS_CLIST (list);
+	file = nautilus_clist_get_row_data (clist, row);
 
 	g_return_if_fail (file != NULL);
 
@@ -1547,7 +1547,7 @@ install_row_images (FMListView *list_view, guint row)
 		 NULL,
 		 fm_list_view_get_icon_size (list_view),
 		 &pixmap, &bitmap);
-	gtk_clist_set_pixmap (clist, row, LIST_VIEW_COLUMN_ICON, pixmap, bitmap);
+	nautilus_clist_set_pixmap (clist, row, LIST_VIEW_COLUMN_ICON, pixmap, bitmap);
 	gdk_pixmap_unref (pixmap);
 	if (bitmap != NULL) {
 		gdk_bitmap_unref (bitmap);
@@ -1566,7 +1566,7 @@ update_icons (FMListView *list_view)
 
 	list = get_list (list_view);
 
-	for (row = 0; row < GTK_CLIST (list)->rows; ++row) {
+	for (row = 0; row < NAUTILUS_CLIST (list)->rows; ++row) {
 		install_row_images (list_view, row);	
 	}
 }

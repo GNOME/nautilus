@@ -1,6 +1,6 @@
 NULL=
 
 SUBDIRS =\
-	gtkclist \
+	nautilusclist \
 	e-paned \
 	$(NULL)

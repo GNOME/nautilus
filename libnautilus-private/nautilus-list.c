@@ -188,13 +188,13 @@ static GtkTargetEntry nautilus_list_dnd_target_table[] = {
 };
 
 static void     activate_row                            (NautilusList         *list,
-							 int                  row);
-static int      get_cell_horizontal_start_position      (GtkCList             *clist,
-							 GtkCListRow          *row,
+							 int                   row);
+static int      get_cell_horizontal_start_position      (NautilusCList        *clist,
+							 NautilusCListRow     *row,
 							 int                   column_index,
 							 int                   content_width);
 static void     get_cell_style                          (NautilusList         *clist,
-							 GtkCListRow          *row,
+							 NautilusCListRow     *row,
 							 int                   state,
 							 int		       row_index,
 							 int                   column_index,
@@ -238,34 +238,37 @@ static void     nautilus_list_clear_keyboard_focus      (NautilusList         *l
 static void     nautilus_list_draw_focus                (GtkWidget            *widget);
 static int      nautilus_list_key_press                 (GtkWidget            *widget,
 							 GdkEventKey          *event);
-static void     nautilus_list_unselect_all              (GtkCList             *clist);
-static void     nautilus_list_select_all                (GtkCList             *clist);
+static void     nautilus_list_unselect_all              (NautilusCList        *clist);
+static void     nautilus_list_select_all                (NautilusCList        *clist);
 static void     schedule_keyboard_row_reveal            (NautilusList         *list,
 							 int                   row);
 static void     unschedule_keyboard_row_reveal          (NautilusList         *list);
 static void     emit_selection_changed                  (NautilusList         *clist);
-static void     nautilus_list_clear                     (GtkCList             *clist);
+static void     nautilus_list_clear                     (NautilusCList        *clist);
 static void	nautilus_list_draw 			(GtkWidget 	      *widget, 
 							 GdkRectangle 	      *area);
 static int	nautilus_list_expose			(GtkWidget            *widget,
 							 GdkEventExpose       *event);
-static void     draw_row                                (GtkCList             *list,
+static void     draw_rows                               (NautilusCList        *clist, 
+							 GdkRectangle         *area);
+static void     draw_row                                (NautilusCList        *list,
 							 GdkRectangle         *area,
 							 int                   row_index,
-							 GtkCListRow          *row);
+							 NautilusCListRow     *row);
+static void     draw_all                                (NautilusCList        *clist);
 static void     nautilus_list_realize                   (GtkWidget            *widget);
 static void     nautilus_list_unrealize                 (GtkWidget            *widget);
-static void     nautilus_list_set_cell_contents         (GtkCList             *clist,
-							 GtkCListRow          *row,
+static void     nautilus_list_set_cell_contents         (NautilusCList        *clist,
+							 NautilusCListRow     *row,
 							 int                   column_index,
-							 GtkCellType           type,
+							 NautilusCellType      type,
 							 const gchar          *text,
 							 guint8                spacing,
 							 GdkPixmap            *pixmap,
 							 GdkBitmap            *mask);
 static void     nautilus_list_size_request              (GtkWidget            *widget,
 							 GtkRequisition       *requisition);
-static void     nautilus_list_resize_column             (GtkCList             *widget,
+static void     nautilus_list_resize_column             (NautilusCList        *widget,
 							 int                   column_index,
 							 int                   width);
 static void     nautilus_list_column_resize_track_start (GtkWidget            *widget,
@@ -276,23 +279,23 @@ static void     nautilus_list_column_resize_track_end   (GtkWidget            *w
 							 int                   column_index);
 static gboolean row_set_selected                        (NautilusList         *list,
 							 int                   row_index,
-							 GtkCListRow          *row,
+							 NautilusCListRow     *row,
 							 gboolean              select);
 static gboolean select_row_unselect_others              (NautilusList         *list,
 							 int                   row_to_select);
 static void	nautilus_list_flush_typeselect_state 	(NautilusList 	      *container);
-static int      insert_row                              (GtkCList             *list,
+static int      insert_row                              (NautilusCList        *list,
 							 int                   row,
 							 char                 *text[]);
-static void     nautilus_list_ensure_drag_data          (NautilusList *list,
-							 GdkDragContext *context,
-							 guint32 time);
-static void     nautilus_list_start_auto_scroll         (NautilusList *list);
-static void     nautilus_list_stop_auto_scroll          (NautilusList *list);
+static void     nautilus_list_ensure_drag_data          (NautilusList         *list,
+							 GdkDragContext       *context,
+							 guint32               time);
+static void     nautilus_list_start_auto_scroll         (NautilusList         *list);
+static void     nautilus_list_stop_auto_scroll          (NautilusList         *list);
 
 
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusList, nautilus_list, GTK_TYPE_CLIST)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusList, nautilus_list, NAUTILUS_TYPE_CLIST)
 
 static guint list_signals[LAST_SIGNAL];
 
@@ -309,14 +312,14 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
-	GtkCListClass *clist_class;
+	NautilusCListClass *clist_class;
 	NautilusListClass *list_class;
 
 	GtkBindingSet *clist_binding_set;
 
 	object_class = (GtkObjectClass *) klass;
 	widget_class = (GtkWidgetClass *) klass;
-	clist_class = (GtkCListClass *) klass;
+	clist_class = (NautilusCListClass *) klass;
 	list_class = (NautilusListClass *) klass;
 
 	list_signals[CONTEXT_CLICK_SELECTION] =
@@ -443,6 +446,8 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 
 	clist_class->clear = nautilus_list_clear;
 	clist_class->draw_row = draw_row;
+	clist_class->draw_rows = draw_rows;
+	clist_class->draw_all = draw_all;
 	clist_class->insert_row = insert_row;
   	clist_class->resize_column = nautilus_list_resize_column;
   	clist_class->set_cell_contents = nautilus_list_set_cell_contents;
@@ -624,7 +629,7 @@ activate_row (NautilusList *list, int row)
 	GList *singleton_list;
 
 	singleton_list = NULL;
-	singleton_list = g_list_append (NULL, gtk_clist_get_row_data (GTK_CLIST (list), row));
+	singleton_list = g_list_append (NULL, nautilus_clist_get_row_data (NAUTILUS_CLIST (list), row));
 	activate_row_data_list (list, singleton_list);
 	g_list_free (singleton_list);
 }
@@ -632,12 +637,12 @@ activate_row (NautilusList *list, int row)
 gboolean
 nautilus_list_is_row_selected (NautilusList *list, int row)
 {
-	GtkCListRow *elem;
+	NautilusCListRow *elem;
 
 	g_return_val_if_fail (row >= 0, FALSE);
-	g_return_val_if_fail (row < GTK_CLIST (list)->rows, FALSE);
+	g_return_val_if_fail (row < NAUTILUS_CLIST (list)->rows, FALSE);
 
-	elem = g_list_nth (GTK_CLIST (list)->row_list, row)->data;
+	elem = g_list_nth (NAUTILUS_CLIST (list)->row_list, row)->data;
 
 	return elem->state == GTK_STATE_SELECTED;
 }
@@ -713,19 +718,19 @@ select_row_from_mouse (NautilusList *list, int row, guint state)
  *
  * @list: The NautilusList in question.
  * @row: index of row number to select or unselect.
- * @row: GtkCListRow pointer for given list. Passing this avoids
+ * @row: NautilusCListRow pointer for given list. Passing this avoids
  * expensive lookup. If it's NULL, it will be looked up in this function.
  * @select: TRUE if row should be selected, FALSE otherwise.
  * 
  * Return Value: TRUE if selection has changed, FALSE otherwise.
  */
 static gboolean
-row_set_selected (NautilusList *list, int row_index, GtkCListRow *row, gboolean select)
+row_set_selected (NautilusList *list, int row_index, NautilusCListRow *row, gboolean select)
 {
-	g_assert (row_index >= 0 && row_index < GTK_CLIST (list)->rows);
+	g_assert (row_index >= 0 && row_index < NAUTILUS_CLIST (list)->rows);
 
 	if (row == NULL) {
-		row = ROW_ELEMENT (GTK_CLIST (list), row_index)->data;
+		row = ROW_ELEMENT (NAUTILUS_CLIST (list), row_index)->data;
 	}
 
 	if (select == (row->state == GTK_STATE_SELECTED)) {
@@ -741,9 +746,9 @@ row_set_selected (NautilusList *list, int row_index, GtkCListRow *row, gboolean 
 				  list->details->unselect_row_signal_id);
 	
 	if (select) {
-		gtk_clist_select_row (GTK_CLIST (list), row_index, -1);
+		nautilus_clist_select_row (NAUTILUS_CLIST (list), row_index, -1);
 	} else {
-		gtk_clist_unselect_row (GTK_CLIST (list), row_index, -1);
+		nautilus_clist_unselect_row (NAUTILUS_CLIST (list), row_index, -1);
 	}
 
 	gtk_signal_handler_unblock (GTK_OBJECT(list), 
@@ -776,7 +781,7 @@ select_row_unselect_others (NautilusList *list, int row_to_select)
 	g_return_val_if_fail (NAUTILUS_IS_LIST (list), FALSE);
 
 	selection_changed = FALSE;
-	for (p = GTK_CLIST (list)->row_list, row_index = 0; p != NULL; p = p->next, ++row_index) {
+	for (p = NAUTILUS_CLIST (list)->row_list, row_index = 0; p != NULL; p = p->next, ++row_index) {
 		selection_changed |= row_set_selected (list, row_index, p->data, row_index == row_to_select);
 	}
 
@@ -784,7 +789,7 @@ select_row_unselect_others (NautilusList *list, int row_to_select)
 }
 
 static void
-nautilus_list_unselect_all (GtkCList *clist)
+nautilus_list_unselect_all (NautilusCList *clist)
 {
 	g_return_if_fail (NAUTILUS_IS_LIST (clist));
 
@@ -794,7 +799,7 @@ nautilus_list_unselect_all (GtkCList *clist)
 }
 
 static void
-nautilus_list_select_all (GtkCList *clist)
+nautilus_list_select_all (NautilusCList *clist)
 {
 	GList *p;
 	int row_index;
@@ -843,7 +848,7 @@ static int
 nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 {
 	NautilusList *list;
-	GtkCList *clist;
+	NautilusCList *clist;
 	int on_row;
 	int row_index, column_index;
 	int retval;
@@ -852,7 +857,7 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 	g_return_val_if_fail (event != NULL, FALSE);
 
 	list = NAUTILUS_LIST (widget);
-	clist = GTK_CLIST (widget);
+	clist = NAUTILUS_CLIST (widget);
 	retval = FALSE;
 
 	if (!GTK_WIDGET_HAS_FOCUS (widget)) {
@@ -866,7 +871,7 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 	if (event->window != clist->clist_window)
 		return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_press_event, (widget, event));
 
-	on_row = gtk_clist_get_selection_info (clist, event->x, event->y, &row_index, &column_index);
+	on_row = nautilus_clist_get_selection_info (clist, event->x, event->y, &row_index, &column_index);
 	list->details->button_down_time = event->time;
 	list->details->drag_started = FALSE;
 
@@ -919,7 +924,7 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 					select_row_from_mouse (list, row_index, event->state);
 				}
 			} else {
-				gtk_clist_unselect_all (clist);
+				nautilus_clist_unselect_all (clist);
 			}
 
 			retval = TRUE;
@@ -955,8 +960,8 @@ static int
 nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 {
 	NautilusList *list;
-	GtkCList *clist;
-	GtkCListRow *row;
+	NautilusCList *clist;
+	NautilusCListRow *row;
 	int on_row;
 	int row_index, column_index;
 	GtkStyle *style;
@@ -967,13 +972,13 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 	g_return_val_if_fail (event != NULL, FALSE);
 
 	list = NAUTILUS_LIST (widget);
-	clist = GTK_CLIST (widget);
+	clist = NAUTILUS_CLIST (widget);
 	retval = FALSE;
 
 	if (event->window != clist->clist_window)
 		return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_release_event, (widget, event));
 
-	on_row = gtk_clist_get_selection_info (clist, event->x, event->y, &row_index, &column_index);
+	on_row = nautilus_clist_get_selection_info (clist, event->x, event->y, &row_index, &column_index);
 
 	if (event->button != ACTION_BUTTON && event->button != CONTEXTUAL_MENU_BUTTON)
 		return FALSE;
@@ -1023,7 +1028,7 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 					 * horizontal bounds of the displayed text.
 					 */
 					get_cell_style (list, row, GTK_STATE_NORMAL, row_index, column_index, &style, NULL, NULL);
-					text_width = gdk_string_width (style->font, GTK_CELL_TEXT (row->cell[column_index])->text);
+					text_width = gdk_string_width (style->font, NAUTILUS_CELL_TEXT (row->cell[column_index])->text);
 					text_x = get_cell_horizontal_start_position (clist, row, column_index, text_width);
 					if (event->x >= text_x && event->x <= text_x + text_width) {
 						/* Note that we activate only the clicked-on item,
@@ -1052,25 +1057,25 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 static void
 nautilus_list_clear_keyboard_focus (NautilusList *list)
 {
-	if (GTK_CLIST (list)->focus_row >= 0) {
+	if (NAUTILUS_CLIST (list)->focus_row >= 0) {
 		gtk_widget_draw_focus (GTK_WIDGET (list));
 	}
 
-	GTK_CLIST (list)->focus_row = -1;
+	NAUTILUS_CLIST (list)->focus_row = -1;
 }
 
 static void
 nautilus_list_set_keyboard_focus (NautilusList *list, int row_index)
 {
-	g_assert (row_index >= 0 && row_index < GTK_CLIST (list)->rows);
+	g_assert (row_index >= 0 && row_index < NAUTILUS_CLIST (list)->rows);
 
-	if (row_index == GTK_CLIST (list)->focus_row) {
+	if (row_index == NAUTILUS_CLIST (list)->focus_row) {
 		return;
 	}
 
 	nautilus_list_clear_keyboard_focus (list);
 
-	GTK_CLIST (list)->focus_row = row_index;
+	NAUTILUS_CLIST (list)->focus_row = row_index;
 
 	gtk_widget_draw_focus (GTK_WIDGET (list));
 }
@@ -1078,12 +1083,12 @@ nautilus_list_set_keyboard_focus (NautilusList *list, int row_index)
 static void
 nautilus_list_keyboard_move_to (NautilusList *list, int row_index, GdkEventKey *event)
 {
-	GtkCList *clist;
+	NautilusCList *clist;
 
 	g_assert (NAUTILUS_IS_LIST (list));
-	g_assert (row_index >= 0 || row_index < GTK_CLIST (list)->rows);
+	g_assert (row_index >= 0 || row_index < NAUTILUS_CLIST (list)->rows);
 
-	clist = GTK_CLIST (list);
+	clist = NAUTILUS_CLIST (list);
 
 	if (event != NULL && (event->state & GDK_CONTROL_MASK) != 0) {
 		/* Move the keyboard focus. */
@@ -1105,8 +1110,8 @@ nautilus_list_select_row (NautilusList *list, int row_index)
 	g_assert (NAUTILUS_IS_LIST (list));
 	g_assert (row_index >= 0);
 
-	if (row_index >= GTK_CLIST (list)->rows)
-		row_index = GTK_CLIST (list)->rows - 1;
+	if (row_index >= NAUTILUS_CLIST (list)->rows)
+		row_index = NAUTILUS_CLIST (list)->rows - 1;
 
 	nautilus_list_keyboard_move_to (list, row_index, NULL);
 }
@@ -1122,7 +1127,7 @@ keyboard_row_reveal_timeout_callback (gpointer data)
 	list = NAUTILUS_LIST (data);
 	row_index = list->details->keyboard_row_to_reveal;
 
-	if (row_index >= 0 && row_index < GTK_CLIST (list)->rows) {	
+	if (row_index >= 0 && row_index < NAUTILUS_CLIST (list)->rows) {	
 		/* Only reveal the icon if it's still the keyboard
 		 * focus or if it's still selected. Someone originally
 		 * thought we should cancel this reveal if the user
@@ -1131,7 +1136,7 @@ keyboard_row_reveal_timeout_callback (gpointer data)
 		 * actually be an improvement (see bugzilla.eazel.com
 		 * 612).
 		 */
-		if (row_index == GTK_CLIST (list)->focus_row
+		if (row_index == NAUTILUS_CLIST (list)->focus_row
 		    || nautilus_list_is_row_selected (list, row_index)) {
 			nautilus_list_reveal_row (list, row_index);
 		}
@@ -1166,33 +1171,45 @@ schedule_keyboard_row_reveal (NautilusList *list, int row_index)
 void
 nautilus_list_reveal_row (NautilusList *list, int row_index)
 {
-	GtkCList *clist;
+	NautilusCList *clist;
 
 	g_return_if_fail (NAUTILUS_IS_LIST (list));
-	g_return_if_fail (row_index >= 0 && row_index < GTK_CLIST (list) ->rows);
+	g_return_if_fail (row_index >= 0 && row_index < NAUTILUS_CLIST (list) ->rows);
 	
-	clist = GTK_CLIST (list);
+	clist = NAUTILUS_CLIST (list);
 	
 	if (ROW_TOP_YPIXEL (clist, row_index) + clist->row_height >
       		      clist->clist_window_height) {
-		gtk_clist_moveto (clist, row_index, -1, 1, 0);
+		nautilus_clist_moveto (clist, row_index, -1, 1, 0);
      	} else if (ROW_TOP_YPIXEL (clist, row_index) < 0) {
-		gtk_clist_moveto (clist, row_index, -1, 0, 0);
+		nautilus_clist_moveto (clist, row_index, -1, 0, 0);
      	}
+}
+
+static int
+nautilus_clist_get_first_selected_row (NautilusCList  *list)
+{
+	return nautilus_gtk_clist_get_first_selected_row ((GtkCList *)list);
+}
+
+static int
+nautilus_clist_get_last_selected_row (NautilusCList *list)
+{
+	return nautilus_gtk_clist_get_last_selected_row ((GtkCList *)list);
 }
 
 static void
 nautilus_list_keyboard_navigation_key_press (NautilusList *list, GdkEventKey *event,
 			          	     GtkScrollType scroll_type, gboolean jump_to_end)
 {
-	GtkCList *clist;
+	NautilusCList *clist;
 	int start_row;
 	int destination_row;
 	int rows_per_page;
 
 	g_assert (NAUTILUS_IS_LIST (list));
 
-	clist = GTK_CLIST (list);
+	clist = NAUTILUS_CLIST (list);
 	
 	if (scroll_type == GTK_SCROLL_JUMP) {
 		destination_row = (jump_to_end ?
@@ -1209,8 +1226,8 @@ nautilus_list_keyboard_navigation_key_press (NautilusList *list, GdkEventKey *ev
 		} else {
 			start_row = (scroll_type == GTK_SCROLL_STEP_FORWARD 
 					|| scroll_type == GTK_SCROLL_PAGE_FORWARD ?
-				     nautilus_gtk_clist_get_last_selected_row (clist) :
-				     nautilus_gtk_clist_get_first_selected_row (clist));
+				     nautilus_clist_get_last_selected_row (clist) :
+				     nautilus_clist_get_first_selected_row (clist));
 		}
 
 		/* If there's no row to start with, select the row farthest toward the end.
@@ -1310,7 +1327,7 @@ nautilus_list_activate_selected_items (NautilusList *list)
 {
 	int row_index;
 
-	for (row_index = 0; row_index < GTK_CLIST (list)->rows; ++row_index) {
+	for (row_index = 0; row_index < NAUTILUS_CLIST (list)->rows; ++row_index) {
 		if (nautilus_list_is_row_selected (list, row_index)) {
 			activate_row (list, row_index);
 		}
@@ -1500,13 +1517,13 @@ static void
 nautilus_list_realize (GtkWidget *widget)
 {
 	NautilusList *list;
-	GtkCList *clist;
+	NautilusCList *clist;
 	GtkWindow *window;
 
 	g_return_if_fail (NAUTILUS_IS_LIST (widget));
 
 	list = NAUTILUS_LIST (widget);
-	clist = GTK_CLIST (widget);
+	clist = NAUTILUS_CLIST (widget);
 
 	clist->column[0].button = list->details->title;
 
@@ -1542,7 +1559,7 @@ nautilus_list_realize (GtkWidget *widget)
         window = GTK_WINDOW (gtk_widget_get_toplevel (widget));
 	gtk_window_set_focus (window, widget);
 	
-	GTK_CLIST_SET_FLAG (clist, CLIST_SHOW_TITLES);
+	NAUTILUS_CLIST_SET_FLAG (clist, CLIST_SHOW_TITLES);
 }
 
 static void
@@ -1557,7 +1574,7 @@ nautilus_list_unrealize (GtkWidget *widget)
 
 /* this is here just temporarily */
 static int
-list_requisition_width (GtkCList *clist) 
+list_requisition_width (NautilusCList *clist) 
 {
 	int width = CELL_SPACING;
 	int i;
@@ -1568,7 +1585,7 @@ list_requisition_width (GtkCList *clist)
 
 		if (clist->column[i].width_set)
 			width += clist->column[i].width + CELL_SPACING + (2 * COLUMN_INSET);
-		else if (GTK_CLIST_SHOW_TITLES(clist) && clist->column[i].button)
+		else if (NAUTILUS_CLIST_SHOW_TITLES(clist) && clist->column[i].button)
 			width += clist->column[i].button->requisition.width;
 	}
 
@@ -1585,12 +1602,12 @@ nautilus_list_size_request (GtkWidget *widget, GtkRequisition *requisition)
 	 * NautilusList depends the buttons being there when doing a size calculation
 	 */
 	NautilusList *list;
-	GtkCList *clist;
+	NautilusCList *clist;
 
 	g_return_if_fail (NAUTILUS_IS_LIST (widget));
 	g_return_if_fail (requisition != NULL);
 
-	clist = GTK_CLIST (widget);
+	clist = NAUTILUS_CLIST (widget);
 	list = NAUTILUS_LIST (widget);
 
 	requisition->width = 0;
@@ -1598,7 +1615,7 @@ nautilus_list_size_request (GtkWidget *widget, GtkRequisition *requisition)
 
 	/* compute the size of the column title (title) area */
 	clist->column_title_area.height = 0;
-	if (GTK_CLIST_SHOW_TITLES(clist) && list->details->title) {
+	if (NAUTILUS_CLIST_SHOW_TITLES(clist) && list->details->title) {
 		GtkRequisition child_requisition;
 		
 		gtk_widget_size_request (list->details->title,
@@ -1624,7 +1641,7 @@ nautilus_list_size_request (GtkWidget *widget, GtkRequisition *requisition)
 }
 
 static int
-new_column_width (GtkCList *clist, int column_index,  int *x)
+new_column_width (NautilusCList *clist, int column_index,  int *x)
 {
 	int xthickness = GTK_WIDGET (clist)->style->klass->xthickness;
 	int width;
@@ -1663,7 +1680,7 @@ new_column_width (GtkCList *clist, int column_index,  int *x)
 }
 
 static void
-size_allocate_columns (GtkCList *clist, gboolean  block_resize)
+size_allocate_columns (NautilusCList *clist, gboolean  block_resize)
 {
 	int xoffset = CELL_SPACING + COLUMN_INSET;
 	int last_column;
@@ -1683,7 +1700,7 @@ size_allocate_columns (GtkCList *clist, gboolean  block_resize)
 
 		clist->column[i].area.x = xoffset;
 		if (clist->column[i].width_set) {
-			if (!block_resize && GTK_CLIST_SHOW_TITLES(clist) &&
+			if (!block_resize && NAUTILUS_CLIST_SHOW_TITLES(clist) &&
 				clist->column[i].auto_resize && clist->column[i].button) {
 				int width;
 
@@ -1691,12 +1708,12 @@ size_allocate_columns (GtkCList *clist, gboolean  block_resize)
 					(CELL_SPACING + (2 * COLUMN_INSET)));
 
 				if (width > clist->column[i].width)
-					gtk_clist_set_column_width (clist, i, width);
+					nautilus_clist_set_column_width (clist, i, width);
 			}
 
 			clist->column[i].area.width = clist->column[i].width;
 			xoffset += clist->column[i].width + CELL_SPACING + (2 * COLUMN_INSET);
-		} else if (GTK_CLIST_SHOW_TITLES(clist) && clist->column[i].button) {
+		} else if (NAUTILUS_CLIST_SHOW_TITLES(clist) && clist->column[i].button) {
 			clist->column[i].area.width =
 				clist->column[i].button->requisition.width -
 				(CELL_SPACING + (2 * COLUMN_INSET));
@@ -1709,7 +1726,7 @@ size_allocate_columns (GtkCList *clist, gboolean  block_resize)
 }
 
 static void
-size_allocate_title_buttons (GtkCList *clist)
+size_allocate_title_buttons (NautilusCList *clist)
 {
 	GtkAllocation button_allocation;
 	int last_column;
@@ -1760,7 +1777,7 @@ static void
 nautilus_list_draw_focus (GtkWidget *widget)
 {
 	GdkGCValues saved_values;
-	GtkCList *clist;
+	NautilusCList *clist;
 
 	g_return_if_fail (NAUTILUS_IS_LIST (widget));
 
@@ -1768,7 +1785,7 @@ nautilus_list_draw_focus (GtkWidget *widget)
   		return;
   	}
 
-	clist = GTK_CLIST (widget);
+	clist = NAUTILUS_CLIST (widget);
 	if (clist->focus_row < 0) {
 		return;
 	}
@@ -1807,7 +1824,7 @@ get_column_background (NautilusList *list, GdkGC **selected, GdkGC **plain)
 }
 
 static void
-get_cell_style (NautilusList *list, GtkCListRow *row,
+get_cell_style (NautilusList *list, NautilusCListRow *row,
 		int state, int row_index, int column_index, GtkStyle **style,
 		GdkGC **fg_gc, GdkGC **bg_gc)
 {
@@ -1934,7 +1951,7 @@ draw_cell_pixbuf (GdkWindow *window, GdkRectangle *clip_rectangle, GdkGC *fg_gc,
  * Return value: x value at which the contents of this cell are painted.
  */
 static int
-get_cell_horizontal_start_position (GtkCList *clist, GtkCListRow *row, int column_index, int content_width)
+get_cell_horizontal_start_position (NautilusCList *clist, NautilusCListRow *row, int column_index, int content_width)
 {
 	int initial_offset;
 
@@ -1955,7 +1972,7 @@ get_cell_horizontal_start_position (GtkCList *clist, GtkCListRow *row, int colum
 } 
 
 static int
-last_column_index (GtkCList *clist)
+last_column_index (NautilusCList *clist)
 {
 	int result;
 	for (result = clist->columns - 1;
@@ -1967,7 +1984,7 @@ last_column_index (GtkCList *clist)
 }
 
 static void
-get_cell_rectangle (GtkCList *clist, int row_index, int column_index, GdkRectangle *result)
+get_cell_rectangle (NautilusCList *clist, int row_index, int column_index, GdkRectangle *result)
 {
 	result->x = clist->column[column_index].area.x + clist->hoffset;
 	result->y = ROW_TOP_YPIXEL (clist, row_index);
@@ -1988,8 +2005,8 @@ get_cell_greater_rectangle (GdkRectangle *cell_rect, GdkRectangle *result,
 }
 
 static void
-draw_cell (GtkCList *clist, GdkRectangle *area, int row_index, int column_index, 
-	GtkCListRow *row)
+draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_index, 
+	NautilusCListRow *row)
 {
 	GtkStyle *style;
 	GdkGC *fg_gc;
@@ -2037,19 +2054,19 @@ draw_cell (GtkCList *clist, GdkRectangle *area, int row_index, int column_index,
 	case NAUTILUS_CELL_TEXT:
 	case NAUTILUS_CELL_LINK_TEXT:
 		width = gdk_string_width (style->font,
-			GTK_CELL_TEXT (row->cell[column_index])->text);
+			NAUTILUS_CELL_TEXT (row->cell[column_index])->text);
 		break;
 	case NAUTILUS_CELL_PIXMAP:
-		gdk_window_get_size (GTK_CELL_PIXMAP (row->cell[column_index])->pixmap,
+		gdk_window_get_size (NAUTILUS_CELL_PIXMAP (row->cell[column_index])->pixmap,
 		       &pixmap_width, &height);
 		width = pixmap_width;
 		break;
 	case NAUTILUS_CELL_PIXTEXT:
-		gdk_window_get_size (GTK_CELL_PIXTEXT (row->cell[column_index])->pixmap,
+		gdk_window_get_size (NAUTILUS_CELL_PIXTEXT (row->cell[column_index])->pixmap,
 		       &pixmap_width, &height);
 		width = (pixmap_width +
-			GTK_CELL_PIXTEXT (row->cell[column_index])->spacing +
-			gdk_string_width (style->font, GTK_CELL_PIXTEXT (row->cell[column_index])->text));
+			NAUTILUS_CELL_PIXTEXT (row->cell[column_index])->spacing +
+			gdk_string_width (style->font, NAUTILUS_CELL_PIXTEXT (row->cell[column_index])->text));
 		break;
 	case NAUTILUS_CELL_PIXBUF_LIST:
 		for (p = NAUTILUS_CELL_PIXBUF_LIST (row->cell[column_index])->pixbufs; 
@@ -2070,8 +2087,8 @@ draw_cell (GtkCList *clist, GdkRectangle *area, int row_index, int column_index,
 	switch ((NautilusCellType)row->cell[column_index].type) {
 	case NAUTILUS_CELL_PIXMAP:
 		draw_cell_pixmap (clist->clist_window, &cell_rectangle, fg_gc,
-		    GTK_CELL_PIXMAP (row->cell[column_index])->pixmap,
-		    GTK_CELL_PIXMAP (row->cell[column_index])->mask,
+		    NAUTILUS_CELL_PIXMAP (row->cell[column_index])->pixmap,
+		    NAUTILUS_CELL_PIXMAP (row->cell[column_index])->mask,
 		    offset,
 		    cell_rectangle.y + row->cell[column_index].vertical +
 		    (cell_rectangle.height - height) / 2);
@@ -2079,12 +2096,12 @@ draw_cell (GtkCList *clist, GdkRectangle *area, int row_index, int column_index,
 
 	case NAUTILUS_CELL_PIXTEXT:
 		offset = draw_cell_pixmap (clist->clist_window, &cell_rectangle, fg_gc,
-		      GTK_CELL_PIXTEXT (row->cell[column_index])->pixmap,
-		      GTK_CELL_PIXTEXT (row->cell[column_index])->mask,
+		      NAUTILUS_CELL_PIXTEXT (row->cell[column_index])->pixmap,
+		      NAUTILUS_CELL_PIXTEXT (row->cell[column_index])->mask,
 		      offset,
 		      cell_rectangle.y + row->cell[column_index].vertical+
 		      (cell_rectangle.height - height) / 2);
-		offset += GTK_CELL_PIXTEXT (row->cell[column_index])->spacing;
+		offset += NAUTILUS_CELL_PIXTEXT (row->cell[column_index])->spacing;
 		/* fall through */
 	case NAUTILUS_CELL_TEXT:
 	case NAUTILUS_CELL_LINK_TEXT:
@@ -2110,9 +2127,9 @@ draw_cell (GtkCList *clist, GdkRectangle *area, int row_index, int column_index,
 		gdk_draw_string (clist->clist_window, style->font, fg_gc,
 				 offset,
 				 baseline,
-				 ((NautilusCellType)row->cell[column_index].type == GTK_CELL_PIXTEXT) ?
-				 GTK_CELL_PIXTEXT (row->cell[column_index])->text :
-				 GTK_CELL_TEXT (row->cell[column_index])->text);
+				 ((NautilusCellType)row->cell[column_index].type == NAUTILUS_CELL_PIXTEXT) ?
+				 NAUTILUS_CELL_PIXTEXT (row->cell[column_index])->text :
+				 NAUTILUS_CELL_TEXT (row->cell[column_index])->text);
 
 		if ((NautilusCellType)row->cell[column_index].type == NAUTILUS_CELL_LINK_TEXT
 			&& NAUTILUS_LIST (clist)->details->single_click_mode) {
@@ -2168,7 +2185,7 @@ draw_cell (GtkCList *clist, GdkRectangle *area, int row_index, int column_index,
 }
 
 static void
-draw_row (GtkCList *clist, GdkRectangle *area, int row_index, GtkCListRow *row)
+draw_row (NautilusCList *clist, GdkRectangle *area, int row_index, NautilusCListRow *row)
 {
 	GtkWidget *widget;
 	GdkRectangle row_rectangle;
@@ -2263,7 +2280,7 @@ static void
 nautilus_list_clear_from_row (NautilusList *list, int row_index,
 	GdkRectangle *area)
 {
-	GtkCList *clist;
+	NautilusCList *clist;
 	GdkRectangle clip_area, tmp;
 	GdkRectangle first_column_plain_rectangle, selected_column_rectangle, 
 		second_column_plain_rectangle;
@@ -2273,7 +2290,7 @@ nautilus_list_clear_from_row (NautilusList *list, int row_index,
 	g_assert (NAUTILUS_IS_LIST (list));
 	g_assert (area);
 
-	clist = GTK_CLIST (list);
+	clist = NAUTILUS_CLIST (list);
 
 	/* calculate the area we need to erase */
 	clip_area = *area;
@@ -2332,13 +2349,15 @@ nautilus_list_clear_from_row (NautilusList *list, int row_index,
 }
 
 static void
-draw_rows (GtkCList *clist, GdkRectangle *area)
+draw_rows (NautilusCList *clist, GdkRectangle *area)
 {
 	GList *list;
 	int row_index;
 	int first_row;
 	int last_row;
 
+	g_assert (area != NULL);
+	
 	if (clist->row_height == 0 || !GTK_WIDGET_DRAWABLE (clist)) {
 		return;
 	}
@@ -2360,8 +2379,8 @@ draw_rows (GtkCList *clist, GdkRectangle *area)
 			break;
 		}
 
-		GTK_CLIST_CLASS ((GTK_OBJECT (clist))->klass)->draw_row 
-			(clist, area, row_index, list->data);
+		NAUTILUS_CALL_VIRTUAL (NAUTILUS_CLIST_CLASS, clist, 
+			draw_row, (clist, area, row_index, list->data));
 		list = list->next;
 	}
 
@@ -2370,15 +2389,26 @@ draw_rows (GtkCList *clist, GdkRectangle *area)
 }
 
 static void
+draw_all (NautilusCList *clist)
+{
+	GdkRectangle area;
+	area.x = 0;
+	area.y = 0;
+	area.width = clist->clist_window_width;
+	area.height = clist->clist_window_height;
+	NAUTILUS_CALL_VIRTUAL (NAUTILUS_CLIST_CLASS, clist, draw_rows, (clist, &area));
+}
+
+static void
 nautilus_list_draw (GtkWidget *widget, GdkRectangle *area)
 {
-	GtkCList *clist;
+	NautilusCList *clist;
 	NautilusList *list;
 	
 	g_assert (NAUTILUS_IS_LIST (widget));
 	g_assert (area != NULL);
 
-	clist = GTK_CLIST (widget);
+	clist = NAUTILUS_CLIST (widget);
 	list = NAUTILUS_LIST (widget);
 
 	nautilus_list_setup_style_colors (NAUTILUS_LIST (widget));
@@ -2400,7 +2430,7 @@ nautilus_list_draw (GtkWidget *widget, GdkRectangle *area)
 					(2 * widget->style->klass->ythickness) +
 				clist->column_title_area.height);
 
-		draw_rows (clist, area);
+		NAUTILUS_CALL_VIRTUAL (NAUTILUS_CLIST_CLASS, clist, draw_rows, (clist, area));
 
 		/* Draw the title if it exists */
 		if (list->details->title) {
@@ -2417,11 +2447,11 @@ nautilus_list_draw (GtkWidget *widget, GdkRectangle *area)
 static int
 nautilus_list_expose (GtkWidget *widget, GdkEventExpose *event)
 {
-	GtkCList *clist;
+	NautilusCList *clist;
 	
 	g_assert (NAUTILUS_IS_LIST (widget));
 
-	clist = GTK_CLIST (widget);
+	clist = NAUTILUS_CLIST (widget);
 
 	nautilus_list_setup_style_colors (NAUTILUS_LIST (widget));
 
@@ -2436,14 +2466,15 @@ nautilus_list_expose (GtkWidget *widget, GdkEventExpose *event)
 					(2 * widget->style->klass->ythickness) +
 				clist->column_title_area.height);
 
-		draw_rows (clist, &event->area);
+		NAUTILUS_CALL_VIRTUAL (NAUTILUS_CLIST_CLASS, clist, draw_rows, 
+			(clist, &event->area));
 	}
 
 	return FALSE;
 }
 
 static void 
-nautilus_list_resize_column (GtkCList *clist, int column_index, int width)
+nautilus_list_resize_column (NautilusCList *clist, int column_index, int width)
 {
 	/* override resize column to invalidate the title */
 	NautilusList *list;
@@ -2452,15 +2483,12 @@ nautilus_list_resize_column (GtkCList *clist, int column_index, int width)
 
 	gtk_widget_queue_draw (list->details->title);
 		
-	NAUTILUS_CALL_PARENT_CLASS (GTK_CLIST_CLASS, resize_column, (clist, column_index, width));
+	NAUTILUS_CALL_PARENT_CLASS (NAUTILUS_CLIST_CLASS, resize_column, (clist, column_index, width));
 }
 
-/* Macros borrowed from gtkclist.c */
-
-#define GTK_CLIST_CLASS_FW(_widget_) GTK_CLIST_CLASS (((GtkObject*) (_widget_))->klass)
 
 /* redraw the list if it's not frozen */
-#define CLIST_UNFROZEN(clist)     (((GtkCList*) (clist))->freeze_count == 0)
+#define CLIST_UNFROZEN(clist)     (((NautilusCList*) (clist))->freeze_count == 0)
 
 /**
  * nautilus_list_mark_cell_as_link:
@@ -2478,12 +2506,12 @@ nautilus_list_mark_cell_as_link (NautilusList *list,
 				 int row_index,
 				 int column_index)
 {
-	GtkCListRow *row;
-	GtkCList *clist;
+	NautilusCListRow *row;
+	NautilusCList *clist;
 
 	g_return_if_fail (NAUTILUS_IS_LIST (list));
 
-	clist = GTK_CLIST (list);
+	clist = NAUTILUS_CLIST (list);
 
 	g_return_if_fail (row_index >= 0 && row_index < clist->rows);
 	g_return_if_fail (column_index >= 0 && column_index < clist->columns);
@@ -2501,10 +2529,10 @@ nautilus_list_mark_cell_as_link (NautilusList *list,
 
 
 static void
-nautilus_list_set_cell_contents (GtkCList    *clist,
-		   		 GtkCListRow *row,
+nautilus_list_set_cell_contents (NautilusCList    *clist,
+		   		 NautilusCListRow *row,
 		   		 int         column_index,
-		   		 GtkCellType  type,
+		   		 NautilusCellType  type,
 		   		 const gchar *text,
 		   		 guint8       spacing,
 		   		 GdkPixmap   *pixmap,
@@ -2529,7 +2557,7 @@ nautilus_list_set_cell_contents (GtkCList    *clist,
 		row->cell[column_index].type = NAUTILUS_CELL_TEXT;
 	}
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_CLIST_CLASS, set_cell_contents, (clist, row, column_index, type, text, spacing, pixmap, mask));
+	NAUTILUS_CALL_PARENT_CLASS (NAUTILUS_CLIST_CLASS, set_cell_contents, (clist, row, column_index, type, text, spacing, pixmap, mask));
 
 
 	if ((NautilusCellType)type == NAUTILUS_CELL_PIXBUF_LIST) {
@@ -2555,12 +2583,12 @@ nautilus_list_set_pixbuf_list (NautilusList *list,
 			       int column_index,
 			       GList *pixbufs)
 {
-	GtkCList    *clist;
-	GtkCListRow *row;
+	NautilusCList    *clist;
+	NautilusCListRow *row;
 
 	g_return_if_fail (NAUTILUS_IS_LIST (list));
 
-	clist = GTK_CLIST (list);
+	clist = NAUTILUS_CLIST (list);
 
 	if (row_index < 0 || row_index >= clist->rows) {
 		return;
@@ -2578,19 +2606,20 @@ nautilus_list_set_pixbuf_list (NautilusList *list,
 	 * expected parameter type, we have to sneak it in by casting it into
 	 * one of the expected parameters.
 	 */
-	GTK_CLIST_CLASS_FW (clist)->set_cell_contents
-		(clist, row, column_index, (GtkCellType)NAUTILUS_CELL_PIXBUF_LIST, 
-		NULL, 0, (GdkPixmap *)pixbufs, NULL);
+	NAUTILUS_CALL_VIRTUAL (NAUTILUS_CLIST_CLASS, clist, set_cell_contents, 
+		(clist, row, column_index, (NautilusCellType)NAUTILUS_CELL_PIXBUF_LIST, 
+		NULL, 0, (GdkPixmap *)pixbufs, NULL));
 
 	/* redraw the list if it's not frozen */
 	if (CLIST_UNFROZEN (clist) 
-		&& gtk_clist_row_is_visible (clist, row_index) != GTK_VISIBILITY_NONE) {
-		GTK_CLIST_CLASS_FW (clist)->draw_row (clist, NULL, row_index, row);
+		&& nautilus_clist_row_is_visible (clist, row_index) != GTK_VISIBILITY_NONE) {
+		NAUTILUS_CALL_VIRTUAL (NAUTILUS_CLIST_CLASS, clist, draw_row, 
+			(clist, NULL, row_index, row));
 	}
 }
 
 static void
-nautilus_list_track_new_column_width (GtkCList *clist, int column_index, int new_width)
+nautilus_list_track_new_column_width (NautilusCList *clist, int column_index, int new_width)
 {
 	NautilusList *list;
 
@@ -2623,7 +2652,7 @@ nautilus_list_track_new_column_width (GtkCList *clist, int column_index, int new
 		area.x = clist->column[column_index].area.x;
 		area.height += clist->clist_window_height;
 
-		draw_rows (clist, &area);
+		NAUTILUS_CALL_VIRTUAL (NAUTILUS_CLIST_CLASS, clist, draw_rows, (clist, &area));
 	}
 }
 
@@ -2673,13 +2702,13 @@ static int
 nautilus_list_motion (GtkWidget *widget, GdkEventMotion *event)
 {
 	NautilusList *list;
-	GtkCList *clist;
+	NautilusCList *clist;
 
 	g_return_val_if_fail (NAUTILUS_IS_LIST (widget), FALSE);
 	g_return_val_if_fail (event != NULL, FALSE);
 
 	list = NAUTILUS_LIST (widget);
-	clist = GTK_CLIST (widget);
+	clist = NAUTILUS_CLIST (widget);
 
 	if (event->window != clist->clist_window)
 		return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, motion_notify_event, (widget, event));
@@ -2708,23 +2737,23 @@ nautilus_list_motion (GtkWidget *widget, GdkEventMotion *event)
 void 
 nautilus_list_column_resize_track_start (GtkWidget *widget, int column_index)
 {
-	GtkCList *clist;
+	NautilusCList *clist;
 
 	g_return_if_fail (NAUTILUS_IS_LIST (widget));
 
-	clist = GTK_CLIST (widget);
+	clist = NAUTILUS_CLIST (widget);
 	clist->drag_pos = column_index;
 }
 
 void 
 nautilus_list_column_resize_track (GtkWidget *widget, int column_index)
 {
-	GtkCList *clist;
+	NautilusCList *clist;
 	int x;
 
 	g_return_if_fail (NAUTILUS_IS_LIST (widget));
 
-	clist = GTK_CLIST (widget);
+	clist = NAUTILUS_CLIST (widget);
 
 	gtk_widget_get_pointer (widget, &x, NULL);
 	nautilus_list_track_new_column_width (clist, column_index, 
@@ -2734,11 +2763,11 @@ nautilus_list_column_resize_track (GtkWidget *widget, int column_index)
 void 
 nautilus_list_column_resize_track_end (GtkWidget *widget, int column_index)
 {
-	GtkCList *clist;
+	NautilusCList *clist;
 
 	g_return_if_fail (NAUTILUS_IS_LIST (widget));
 
-	clist = GTK_CLIST (widget);
+	clist = NAUTILUS_CLIST (widget);
 	clist->drag_pos = -1;
 }
 
@@ -2890,8 +2919,8 @@ nautilus_list_real_scroll (NautilusList *list, float delta_x, float delta_y)
 {
 	GtkAdjustment *hadj, *vadj;
 
-	hadj = gtk_clist_get_hadjustment (GTK_CLIST (list));
-	vadj = gtk_clist_get_vadjustment (GTK_CLIST (list));
+	hadj = nautilus_clist_get_hadjustment (NAUTILUS_CLIST (list));
+	vadj = nautilus_clist_get_vadjustment (NAUTILUS_CLIST (list));
 
 	nautilus_gtk_adjustment_set_value (hadj, hadj->value + (int)delta_x);
 	nautilus_gtk_adjustment_set_value (vadj, vadj->value + (int)delta_y);
@@ -3125,7 +3154,7 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
   * to null.
  */
 static void
-nautilus_list_clear (GtkCList *clist)
+nautilus_list_clear (NautilusCList *clist)
 {
 	NautilusList *list;
 
@@ -3134,7 +3163,7 @@ nautilus_list_clear (GtkCList *clist)
 	list = NAUTILUS_LIST (clist);
 	list->details->anchor_row = -1;
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_CLIST_CLASS, clear, (clist));
+	NAUTILUS_CALL_PARENT_CLASS (NAUTILUS_CLIST_CLASS, clear, (clist));
 }
 
 
@@ -3151,36 +3180,36 @@ nautilus_list_new_with_titles (int columns, const char * const *titles)
 	NautilusList *list;
 
 	list = NAUTILUS_LIST (gtk_type_new (nautilus_list_get_type ()));
-	gtk_clist_construct (GTK_CLIST (list), columns, NULL);
+	nautilus_clist_construct (NAUTILUS_CLIST (list), columns, NULL);
 	if (titles) {
-		GtkCList *clist;
+		NautilusCList *clist;
 		int index;
 
-		clist = GTK_CLIST(list);
+		clist = NAUTILUS_CLIST(list);
 		
 		for (index = 0; index < columns; index++) {
   			clist->column[index].title = g_strdup (titles[index]);
   		}
     	}
 
-	gtk_clist_set_selection_mode (GTK_CLIST (list),
+	nautilus_clist_set_selection_mode (NAUTILUS_CLIST (list),
 				      GTK_SELECTION_MULTIPLE);
 
 	return GTK_WIDGET (list);
 }
 
-GtkCListRow *
+NautilusCListRow *
 nautilus_list_row_at (NautilusList *list, int y)
 {
-	GtkCList *clist;
+	NautilusCList *clist;
 	int row_index, column_index;
 
-	clist = GTK_CLIST (list);
+	clist = NAUTILUS_CLIST (list);
 	y -= (GTK_CONTAINER (list)->border_width +
 		GTK_WIDGET (list)->style->klass->ythickness +
 		clist->column_title_area.height);
 	
-	if (!gtk_clist_get_selection_info (clist, 10, y, &row_index, &column_index)) {
+	if (!nautilus_clist_get_selection_info (clist, 10, y, &row_index, &column_index)) {
 		return NULL;
 	}
 	
@@ -3196,8 +3225,8 @@ nautilus_list_get_selection (NautilusList *list)
 	g_return_val_if_fail (NAUTILUS_IS_LIST (list), NULL);
 
 	retval = NULL;
-	for (p = GTK_CLIST (list)->row_list; p != NULL; p = p->next) {
-		GtkCListRow *row;
+	for (p = NAUTILUS_CLIST (list)->row_list; p != NULL; p = p->next) {
+		NautilusCListRow *row;
 
 		row = p->data;
 		if (row->state == GTK_STATE_SELECTED)
@@ -3214,7 +3243,7 @@ nautilus_list_set_selection (NautilusList *list, GList *selection)
 	GHashTable *hash;
 	GList *p;
 	int i;
-	GtkCListRow *row;
+	NautilusCListRow *row;
 	gpointer row_data;
 
 	g_return_if_fail (NAUTILUS_IS_LIST (list));
@@ -3225,7 +3254,7 @@ nautilus_list_set_selection (NautilusList *list, GList *selection)
 	for (p = selection; p != NULL; p = p->next) {
 		g_hash_table_insert (hash, p->data, p->data);
 	}
-	for (p = GTK_CLIST (list)->row_list, i = 0; p != NULL; p = p->next, i++) {
+	for (p = NAUTILUS_CLIST (list)->row_list, i = 0; p != NULL; p = p->next, i++) {
 		row = p->data;
 		row_data = row->data;
 
@@ -3244,12 +3273,12 @@ void
 nautilus_list_each_selected_row (NautilusList *list, NautilusEachRowFunction function,
 	gpointer data)
 {
-	GtkCListRow *row;
+	NautilusCListRow *row;
 	GList *p;
 
 	g_assert (NAUTILUS_IS_LIST (list));
 
-	for (p = GTK_CLIST (list)->row_list; p != NULL; p = p->next) {
+	for (p = NAUTILUS_CLIST (list)->row_list; p != NULL; p = p->next) {
 		row = p->data;
 		if (row->state != GTK_STATE_SELECTED) 
 			continue;
@@ -3262,13 +3291,13 @@ nautilus_list_each_selected_row (NautilusList *list, NautilusEachRowFunction fun
 int
 nautilus_list_get_first_selected_row (NautilusList *list)
 {
-	GtkCListRow *row;
+	NautilusCListRow *row;
 	GList *p;
 	int row_index;
 
 	g_return_val_if_fail (NAUTILUS_IS_LIST (list), -1);
 
-	for (p = GTK_CLIST (list)->row_list, row_index = 0; 
+	for (p = NAUTILUS_CLIST (list)->row_list, row_index = 0; 
 	     p != NULL; 
 	     p = p->next, ++row_index) {
 		row = p->data;
@@ -3286,7 +3315,7 @@ nautilus_list_get_first_selected_row (NautilusList *list)
  * with selection.
  */
 static int
-insert_row (GtkCList *list, int row_index, char *text[])
+insert_row (NautilusCList *list, int row_index, char *text[])
 {
 	gboolean had_focus;
 	int result;
@@ -3294,7 +3323,7 @@ insert_row (GtkCList *list, int row_index, char *text[])
 	had_focus = list->focus_row != -1;
 
 	result = NAUTILUS_CALL_PARENT_CLASS
-		(GTK_CLIST_CLASS, insert_row, (list, row_index, text));
+		(NAUTILUS_CLIST_CLASS, insert_row, (list, row_index, text));
 
 	if (!had_focus) {
 		list->focus_row = -1;
