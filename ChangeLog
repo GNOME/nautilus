@@ -1,5 +1,26 @@
 2002-03-07  Darin Adler  <darin@bentspoon.com>
 
+	* icons/crux_eggplant/crux_eggplant.xml:
+	* icons/crux_teal/crux_teal.xml:
+	* icons/default/default.xml:
+	* icons/gnome/gnome.xml:
+	* icons/sierra/sierra.xml:
+	* icons/tahoe/tahoe.xml:
+	Tweaked the zoom control specifications to match the new nicer
+	rules.
+
+	* src/nautilus-zoom-control.c: (nautilus_zoom_control_finalize),
+	(nautilus_zoom_control_instance_init), (get_zoom_offset),
+	(draw_number), (nautilus_zoom_control_load_images),
+	(create_zoom_menu_item), (create_zoom_menu),
+	(nautilus_zoom_control_button_press_event),
+	(nautilus_zoom_control_leave_notify),
+	(nautilus_zoom_control_motion_notify),
+	(nautilus_zoom_control_size_allocate),
+	(nautilus_zoom_control_class_init):
+
+2002-03-07  Darin Adler  <darin@bentspoon.com>
+
 	* Tons of files:
 	Because lots of recent bugs were due to "signal handler called after
 	object gone" problems, switched many calls of g_signal_connect and
