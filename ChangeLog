@@ -1,3 +1,10 @@
+2002-02-24  Alexander Larsson  <alla@lysator.liu.se>
+
+	* libnautilus-private/nautilus-icon-container.c (realize):
+	Don't set background pixmap None. Gtk+ already does that when
+	scrolling windows these days, and due to a bug in Gtk+ (now fixed)
+	this was actually making that feature not work! 
+
 2002-02-23  Alexander Larsson  <alla@lysator.liu.se>
 
 	* src/nautilus-window.c (nautilus_window_class_init):

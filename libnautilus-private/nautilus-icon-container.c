@@ -2407,10 +2407,6 @@ realize (GtkWidget *widget)
 		(GTK_LAYOUT (widget)->bin_window,
 		 &widget->style->bg[GTK_STATE_NORMAL]);
 
-	/* reduce flicker when scrolling by setting the back pixmap to NULL */
-	gdk_window_set_back_pixmap (GTK_LAYOUT (widget)->bin_window,
-				    NULL, FALSE);
-	
  	/* make us the focused widget */
  	g_assert (GTK_IS_WINDOW (gtk_widget_get_toplevel (widget)));
 	window = GTK_WINDOW (gtk_widget_get_toplevel (widget));
