@@ -145,8 +145,10 @@ void		 nautilus_forget_history	      (void);
 void             nautilus_bookmarks_exiting           (void);
 void		 nautilus_window_reload		      (NautilusWindow	 *window);
 gint 		 nautilus_window_get_base_page_index  (NautilusWindow 	 *window);
-void 		 nautilus_window_hide_location_bar    (NautilusWindow 	 *window);
-void 		 nautilus_window_show_location_bar    (NautilusWindow 	 *window);
+void 		 nautilus_window_hide_location_bar    (NautilusWindow 	 *window,
+                                                       gboolean           save_preference);
+void 		 nautilus_window_show_location_bar    (NautilusWindow 	 *window,
+                                                       gboolean           save_preference);
 gboolean	 nautilus_window_location_bar_showing (NautilusWindow    *window);
 void 		 nautilus_window_hide_toolbar         (NautilusWindow 	 *window);
 void 		 nautilus_window_show_toolbar         (NautilusWindow 	 *window);

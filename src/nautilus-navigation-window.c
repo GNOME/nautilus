@@ -384,7 +384,7 @@ navigation_bar_location_changed_callback (GtkWidget *widget,
 
 	if (window->details->temporary_navigation_bar) {
 		if (nautilus_window_location_bar_showing (window)) {
-			nautilus_window_hide_location_bar (window);
+			nautilus_window_hide_location_bar (window, FALSE);
 		}
 		window->details->temporary_navigation_bar = FALSE;
 	}
@@ -2013,18 +2013,22 @@ dock_item_showing (NautilusWindow *window, const char *dock_item_path)
 }
 
 void 
-nautilus_window_hide_location_bar (NautilusWindow *window)
+nautilus_window_hide_location_bar (NautilusWindow *window, gboolean save_preference)
 {
 	window->details->temporary_navigation_bar = FALSE;
 	hide_dock_item (window, LOCATION_BAR_PATH);
-	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR, FALSE);
+	if (save_preference) {
+		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR, FALSE);
+	}
 }
 
 void 
-nautilus_window_show_location_bar (NautilusWindow *window)
+nautilus_window_show_location_bar (NautilusWindow *window, gboolean save_preference)
 {
 	show_dock_item (window, LOCATION_BAR_PATH);
-	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR, TRUE);
+	if (save_preference) {
+		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR, TRUE);
+	}
 }
 
 gboolean
@@ -2164,9 +2168,9 @@ nautilus_window_show (GtkWidget *widget)
 	}
 
 	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR)) {
-		nautilus_window_show_location_bar (window);
+		nautilus_window_show_location_bar (window, FALSE);
 	} else {
-		nautilus_window_hide_location_bar (window);
+		nautilus_window_hide_location_bar (window, FALSE);
 	}
 
 	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR)) {

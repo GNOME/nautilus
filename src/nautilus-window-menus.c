@@ -213,7 +213,7 @@ nautilus_window_show_location_bar_temporarily (NautilusWindow *window,
 					       gboolean in_search_mode)
 {
 	if (!nautilus_window_location_bar_showing (window)) {
-		nautilus_window_show_location_bar (window);
+		nautilus_window_show_location_bar (window, FALSE);
 		window->details->temporary_navigation_bar = TRUE;
 	}
 	nautilus_window_set_search_mode 
@@ -461,9 +461,9 @@ view_menu_show_hide_location_bar_state_changed_callback (BonoboUIComponent *comp
         }
 
 	if (!strcmp (state, "1")) {
-		nautilus_window_show_location_bar (window);
+		nautilus_window_show_location_bar (window, TRUE);
 	} else {
-		nautilus_window_hide_location_bar (window);
+		nautilus_window_hide_location_bar (window, TRUE);
 	}
 }
 
