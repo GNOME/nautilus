@@ -1,3 +1,13 @@
+2000-08-04  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/mozilla/nautilus-mozilla-content-view.c
+	(mozilla_load_location_callback): Removes
+	nautilus_view_report_load_complete call from here...
+	(mozilla_progress_callback): And move it here, because we only
+	want to make that call after all the various report_progress
+	calls. This fixes bugs 1933 and 1955. Pavel did most of the heavy
+	lifting of figuring out why this was killing the state machine.
+
 2000-08-04  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-background.c:

@@ -273,7 +273,6 @@ mozilla_load_location_callback (NautilusView *nautilus_view,
 	
 	nautilus_view_report_load_underway (nautilus_view);
 	nautilus_mozilla_content_view_load_uri (view, location);
-	nautilus_view_report_load_complete (nautilus_view);
 }
 
 static void
@@ -519,7 +518,6 @@ mozilla_progress_callback (GtkMozEmbed *mozilla,
 			   gpointer     user_data)
 {
  	NautilusMozillaContentView	*view;
-	gdouble				fraction;
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
@@ -528,14 +526,13 @@ mozilla_progress_callback (GtkMozEmbed *mozilla,
 	g_print ("mozilla_progress_callback (max = %d, current = %d)\n", max_progress, current_progress);
 #endif
 
-	/* The check for 0.0 is just anal paranoia on my part */
-	if (max_progress == 0.0) {
-		fraction = 1.0;
+
+	if (max_progress == current_progress || max_progress == 0) {
+		nautilus_view_report_load_complete (view->details->nautilus_view);
 	} else {
-		fraction = current_progress / max_progress;
+		nautilus_view_report_load_progress (view->details->nautilus_view, 
+						    current_progress / max_progress);
 	}
-	
-	nautilus_view_report_load_progress (view->details->nautilus_view, fraction);
 }
 
 static gint
