@@ -442,7 +442,7 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	
 	file_descriptor = fdOpen (path_name, O_RDONLY, 0644);
 	 
-	if (fdValid (file_descriptor)) {
+	if (file_descriptor != NULL) {
                 
 		/* read out the appropriate fields, and set them up in the view */
 		result = rpmReadPackageInfo (file_descriptor, &signature, &header_info);

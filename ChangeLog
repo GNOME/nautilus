@@ -1,3 +1,13 @@
+2000-04-27  Joe Shaw <joe@helixcode.com>
+
+        * components/rpmview/nautilus-rpm-view.c
+        (nautilus_rpm_view_update_from_uri): Changed call of fdValid
+        to checking to ensure that file_descriptor != NULL. fdValid was
+        removed from RPM 3.0.4 and this bit of code provides the same
+        functionality. It'll build on 3.0.4-based systems now (like Red   
+        Hat 6.2). Bad Red Hat for breaking reverse compatibility on a
+        minor upgrade.
+
 2000-04-27  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/ntl-uri-map.c (my_notify_when_ready): Quiet down the mjs
