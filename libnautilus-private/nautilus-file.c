@@ -231,6 +231,8 @@ destroy (GtkObject *object)
 	nautilus_directory_unref (file->details->directory);
 
 	g_free (file->details);
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 NautilusFile *
@@ -2387,9 +2389,11 @@ nautilus_self_check_file (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "home");
 
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get ("file:///home/") == file_1, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get ("file:///home") == file_1, TRUE);
-
 	nautilus_file_unref (file_1);
+
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get ("file:///home") == file_1, TRUE);
+	nautilus_file_unref (file_1);
+
 	nautilus_file_unref (file_1);
 
 	file_1 = nautilus_file_get ("file:///home");

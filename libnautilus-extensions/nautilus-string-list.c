@@ -131,7 +131,7 @@ nautilus_string_list_new_from_tokens (const char *string,
 			nautilus_string_list_insert (string_list, string_array[i]);
 		}
 		
-		g_free (string_array);
+		g_strfreev (string_array);
 	}
 
 	return string_list;

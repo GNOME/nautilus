@@ -1,3 +1,14 @@
+2000-06-07  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.c: (destroy):
+	Fixed another storage leak, we forgot to call through
+	to the parent destroy.
+	(nautilus_self_check_file): Fixed a leak in the test.
+	
+	* libnautilus-extensions/nautilus-string-list.c:
+	(nautilus_string_list_new_from_tokens): Fixed a leak
+	by calling g_strfreev instead of g_free.
+
 2000-06-07  John Sullivan  <sullivan@eazel.com>
 
 Fixed bug 1299 (view-and-location switching fails if short list empty)
@@ -27,7 +38,6 @@ Fixed bug 1299 (view-and-location switching fails if short list empty)
 
 	* components/services/time/nautilus-view/Makefile.am:
 	Added include path; wasn building correctly for everyone
-
 
 2000-06-07  Darin Adler  <darin@eazel.com>
 
