@@ -17,6 +17,12 @@ static void toc_copyright_characters (Context *context, const gchar *chars, int 
 static void toc_title_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void toc_title_end_element (Context *context, const gchar *name);
 static void toc_title_characters (Context *context, const gchar *chars, int len);
+static void toc_glossdiv_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+static void toc_glossdiv_end_element (Context *context, const gchar *name);
+static void toc_glossentry_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+static void toc_glossentry_end_element (Context *context, const gchar *name);
+static void toc_glossterm_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+static void toc_glossterm_end_element (Context *context, const gchar *name);
 
 
 ElementInfo toc_elements[] = {
@@ -130,6 +136,13 @@ ElementInfo toc_elements[] = {
 	{ PREFACE, "preface", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
 	{ TERM, "term", NULL, NULL, NULL},
 	{ APPENDIX, "appendix", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
+	{ DOCINFO, "docinfo", (startElementSAXFunc) artheader_start_element, (endElementSAXFunc) toc_artheader_end_element, NULL},
+	{ GLOSSARY, "glossary", (startElementSAXFunc) glossary_start_element, NULL, NULL},
+	{ GLOSSDIV, "glossdiv", (startElementSAXFunc) toc_glossdiv_start_element, (endElementSAXFunc) toc_glossdiv_end_element, NULL},
+	{ GLOSSENTRY, "glossentry", (startElementSAXFunc) toc_glossentry_start_element, (endElementSAXFunc) toc_glossentry_end_element, NULL},
+	{ GLOSSTERM, "glossterm", (startElementSAXFunc) toc_glossterm_start_element, (endElementSAXFunc) toc_glossterm_end_element, (charactersSAXFunc) toc_title_characters},
+	{ GLOSSSEE, "glosssee", NULL, NULL, NULL},
+	{ GLOSSSEEALSO, "glossseealso", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -325,12 +338,14 @@ toc_author_start_element (Context *context,
 
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ARTHEADER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (BOOKINFO));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (DOCINFO));
 	index = find_first_parent (context, element_list);
 	g_slist_free (element_list);
 
 	switch (index) {
 	case ARTHEADER:
 	case BOOKINFO:
+	case DOCINFO:
 		break;
 	default:
 		return;
@@ -349,12 +364,14 @@ toc_author_characters (Context *context, const gchar *chars, int len)
 
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ARTHEADER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (BOOKINFO));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (DOCINFO));	
 	index = find_first_parent (context, element_list);
 	g_slist_free (element_list);
 
 	switch (index) {
 	case ARTHEADER:
 	case BOOKINFO:
+	case DOCINFO:
 		break;
 	default:
 		return;
@@ -433,6 +450,7 @@ toc_title_start_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CAUTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (IMPORTANT));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSDIV));	
 	stack_el = find_first_element (context, element_list);
 
 	g_slist_free (element_list);
@@ -445,6 +463,7 @@ toc_title_start_element (Context *context,
 	case SECT1:
 	case SECTION:
 	case APPENDIX:
+	case GLOSSDIV:
 		if (context->sect1 == 0) {
 			g_print ("<DT>");
 		} else if (context->sect2 == 0) {
@@ -484,18 +503,21 @@ toc_title_start_element (Context *context,
                 if (context->sect4 > 0) g_print (".%d", context->sect4);
                 if (context->sect5 > 0) g_print (".%d", context->sect5);
 
-		/* Don't print the "." if you are in the preface or appendix title */
-		if (stack_el->info->index != PREFACE && stack_el->info->index != APPENDIX) {
+		/* Don't print the "." if you are in the preface or appendix or glossdiv title */
+		if ((stack_el->info->index != PREFACE) &&
+		    (stack_el->info->index != APPENDIX) &&
+		    (stack_el->info->index != GLOSSDIV)) {
 		       g_print (".&nbsp;&nbsp;");
 		}
 		
 		/* Only print the link if we are the chapter tag, or the sect1 tag
-		 * (and the document is an article) or preface or appendix */
+		 * (and the document is an article) or preface or appendix or glossdiv */
 		print_link = (((stack_el->info->index == SECT1) && (context->doctype != BOOK_DOC)
 				&& (context->appendix == 0))
 				|| stack_el->info->index == CHAPTER
 		                || stack_el->info->index == PREFACE
-				|| stack_el->info->index == APPENDIX);
+				|| stack_el->info->index == APPENDIX
+				|| stack_el->info->index == GLOSSDIV);
 
 		if (print_link) {
 			g_print ("<A href=\"gnome-help:%s", context->base_file);
@@ -565,23 +587,26 @@ toc_title_end_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CAUTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (IMPORTANT));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSDIV));
+	
 
 	index = find_first_parent (context, element_list);
 
 	switch (index) {
 	case PREFACE:
 	case APPENDIX:
-		g_print ("</A></DT>");
+	case GLOSSDIV:
+		g_print ("</A></DT>\n");
 		break;
 	case CHAPTER:
-		g_print ("</A></DT>");
+		g_print ("</A></DT>\n");
 		break;
 	case SECT1:
 	case SECTION:
 		if (context->doctype == ARTICLE_DOC) {
 			g_print ("</A></DT>\n");
 		} else {
-			g_print ("</DT>");
+			g_print ("</DT>\n");
 		}
 		break;
 	case SECT2:
@@ -626,6 +651,9 @@ toc_title_characters (Context *context, const gchar *chars, int len)
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CAUTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (IMPORTANT));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (DOCINFO));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSDIV));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSTERM));
 
 	index = find_first_parent (context, element_list);
 
@@ -641,11 +669,14 @@ toc_title_characters (Context *context, const gchar *chars, int len)
 	case SECT5:
 	case SECTION:
 	case APPENDIX:
+	case GLOSSDIV:
+	case GLOSSTERM:
 		g_print (temp);
 		g_free (temp);
 		break;
 	case ARTHEADER:
 	case BOOKINFO:
+	case DOCINFO:
 		if (((StackElement *)context->stack->data)->info->index == TITLE)
 			((TocContext *) context->data)->header->title = temp;
 		else if (((StackElement *)context->stack->data)->info->index == SUBTITLE)
@@ -658,3 +689,92 @@ toc_title_characters (Context *context, const gchar *chars, int len)
 
 	g_slist_free (element_list);
 }
+
+static void
+toc_glossdiv_start_element (Context *context,
+			    const gchar *name,
+			    const xmlChar **atrs)
+{
+	gchar **atrs_ptr;
+
+	atrs_ptr = (gchar **) atrs;
+	while (atrs_ptr && *atrs_ptr) {
+        	if (!g_strcasecmp (*atrs_ptr, "id")) {
+			atrs_ptr++;
+			((StackElement *)context->stack->data)->atrs = g_new0 (gchar *, 3);
+			((StackElement *)context->stack->data)->atrs[0] = g_strdup ("id");
+			((StackElement *)context->stack->data)->atrs[1] = g_strdup (*atrs_ptr);
+			break;
+		}
+		atrs_ptr += 2;
+	}  
+}
+
+static void
+toc_glossdiv_end_element (Context *context,
+		      const gchar *name)
+{
+/*  FIXME: what do we do here? */
+}
+
+static void
+toc_glossentry_start_element (Context *context,
+			      const gchar *name,
+			      const xmlChar **atrs)
+{
+	gchar **atrs_ptr;
+
+	atrs_ptr = (gchar **) atrs;
+	while (atrs_ptr && *atrs_ptr) {
+		if (!g_strcasecmp (*atrs_ptr, "id")) {
+			atrs_ptr++;
+			((StackElement *)context->stack->data)->atrs = g_new0 (gchar *, 3);
+			((StackElement *)context->stack->data)->atrs[0] = g_strdup ("id");
+			((StackElement *)context->stack->data)->atrs[1] = g_strdup (*atrs_ptr);
+			break;
+		}
+		atrs_ptr += 2;
+	}  
+}
+
+static void
+toc_glossentry_end_element (Context *context,
+			    const gchar *name)
+{
+/*  FIXME: what do we do here? */
+}
+
+static void
+toc_glossterm_start_element (Context *context,
+			     const gchar *name,
+			     const xmlChar **atrs)
+{
+	StackElement *stack_el;
+	gchar **atrs_ptr;
+	GSList *element_list = NULL;
+
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSENTRY));
+	stack_el = find_first_element (context, element_list);
+
+	g_print ("<DT>");
+	g_print ("&nbsp;&nbsp;<A href=\"gnome-help:%s", context->base_file);
+
+	atrs_ptr = (stack_el->atrs);
+	while (atrs_ptr && *atrs_ptr) {
+		if (!g_strcasecmp (*atrs_ptr, "id")) {
+			atrs_ptr++;
+			g_print ("?%s", *atrs_ptr);
+			break;
+		}
+		atrs_ptr += 2;
+	}
+	g_print ("\">");
+}
+
+static void
+toc_glossterm_end_element (Context *context,
+			   const gchar *name)
+{
+	g_print ("</A>\n");
+}
+

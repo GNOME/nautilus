@@ -114,6 +114,13 @@ ElementInfo sect_elements[] = {
 	{ PREFACE, "preface", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
 	{ TERM, "term", NULL, NULL, (charactersSAXFunc) sect_write_characters},
 	{ APPENDIX, "appendix", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
+	{ DOCINFO, "docinfo", NULL, NULL, NULL},
+	{ GLOSSARY, "glossary", (startElementSAXFunc) glossary_start_element, NULL, NULL},
+	{ GLOSSDIV, "glossdiv", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
+	{ GLOSSENTRY, "glossentry", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
+	{ GLOSSTERM, "glossterm", (startElementSAXFunc) sect_title_start_element, (endElementSAXFunc) sect_title_end_element, (charactersSAXFunc) sect_title_characters },
+	{ GLOSSSEE, "glosssee", (startElementSAXFunc) sect_glosssee_start_element, NULL,  NULL },
+	{ GLOSSSEEALSO, "glossseealso", (startElementSAXFunc) sect_glossseealso_start_element, NULL, NULL },
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -671,6 +678,7 @@ sect_title_start_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (IMPORTANT));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSENTRY));
 	stack_el = find_first_element (context, element_list);
 
 	g_slist_free (element_list);
@@ -712,6 +720,9 @@ sect_title_start_element (Context *context,
 	case FORMALPARA:
 		sect_print (context, "<B>");
 		break;
+	case GLOSSENTRY:
+		sect_print (context, "<B><H2>");
+		break;
 	default:
 		break;
 	};
@@ -741,7 +752,8 @@ sect_title_end_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (IMPORTANT));
-
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSENTRY));
+	
 	index = find_first_parent (context, element_list);
 
 	switch (index) {
@@ -769,6 +781,9 @@ sect_title_end_element (Context *context,
 		break;
 	case FORMALPARA:
 		sect_print (context, ".</B>");
+		break;
+	case GLOSSENTRY:
+	        sect_print (context, "</H2></B>");
 		break;
 	default:
 		break;
@@ -800,6 +815,7 @@ sect_title_characters (Context *context,
 		element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT5));
 		element_list = g_slist_prepend (element_list, GINT_TO_POINTER (APPENDIX));
 		element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
+		element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSENTRY));
 
 		stack_el = find_first_element (context, element_list);
 
@@ -842,6 +858,7 @@ sect_title_characters (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (IMPORTANT));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSENTRY));
 
 	index = find_first_parent (context, element_list);
 
@@ -856,6 +873,7 @@ sect_title_characters (Context *context,
 	case APPENDIX:
 	case SECTION:
 	case FORMALPARA:
+	case GLOSSENTRY:
 		sect_print (context, temp);
 		g_free (temp);
 		break;
@@ -997,6 +1015,9 @@ sect_figure_start_element (Context *context,
 {
 	SectContext *sect_context = (SectContext *)context->data;
 
+	/* Increment figure count, before checking for IS_IN_SECT */
+	sect_context->figure_count++;
+
 	if (!IS_IN_SECT (context))
 		return;
 
@@ -1004,7 +1025,6 @@ sect_figure_start_element (Context *context,
 		return;
 
 	sect_context->figure = g_new0 (FigureInfo, 1);
-	sect_context->figure_count ++;
 }
 
 void
@@ -2020,5 +2040,59 @@ sect_answer_start_element (Context *context,
               return;
 
       sect_print (context, "<P><B>A: </B>");
+}
+
+
+void
+sect_glosssee_start_element (Context *context, const gchar *name, const xmlChar **atrs)
+{
+	gchar **atrs_ptr;
+	gchar *temp;
+
+	if (!IS_IN_SECT (context))
+        	return;
+   
+	atrs_ptr = (gchar **) atrs;
+	while (atrs_ptr && *atrs_ptr) {
+		if (!g_strcasecmp (*atrs_ptr, "otherterm")) {
+			atrs_ptr++;
+			((StackElement *)context->stack->data)->atrs = g_new0 (gchar *, 3);
+			((StackElement *)context->stack->data)->atrs[0] = g_strdup ("otherterm");
+			((StackElement *)context->stack->data)->atrs[1] = g_strdup (*atrs_ptr);
+			       
+                        if (g_hash_table_lookup (context->glossary_data, *atrs_ptr)) {
+				temp = g_hash_table_lookup (context->glossary_data, *atrs_ptr);
+                        	g_print("<BR>See: <A HREF=\"gnome-help:%s?%s\">%s</A>\n", context->base_file, *atrs_ptr, temp);
+		        }
+			atrs_ptr += 2;
+		}
+	}
+}
+
+void
+sect_glossseealso_start_element (Context *context, const gchar *name, const xmlChar **atrs)
+{
+
+	gchar **atrs_ptr;
+	gchar *temp;
+ 
+	if (!IS_IN_SECT (context))
+		return;
+
+	atrs_ptr = (gchar **) atrs;
+	while (atrs_ptr && *atrs_ptr) {
+		if (!g_strcasecmp (*atrs_ptr, "otherterm")) {
+			atrs_ptr++;
+			((StackElement *)context->stack->data)->atrs = g_new0 (gchar *, 3);
+			((StackElement *)context->stack->data)->atrs[0] = g_strdup ("otherterm");
+			((StackElement *)context->stack->data)->atrs[1] = g_strdup (*atrs_ptr);
+			       
+                        if ( g_hash_table_lookup (context->glossary_data, *atrs_ptr)) {
+				temp = g_hash_table_lookup (context->glossary_data, *atrs_ptr);
+                        	g_print("<BR>See also: <A HREF=\"gnome-help:%s?%s\">%s</A>\n", context->base_file, *atrs_ptr, temp);
+		        }
+			atrs_ptr += 2;
+		}
+	}
 }
 

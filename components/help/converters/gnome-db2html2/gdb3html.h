@@ -119,7 +119,14 @@ typedef enum ElementIndex {
 	PREFACE,
 	TERM,
 	APPENDIX,
-	UNDEFINED /* 110 */
+	DOCINFO,
+	GLOSSARY, /* 110 */
+	GLOSSDIV,
+	GLOSSENTRY,
+	GLOSSTERM,
+	GLOSSSEE,
+	GLOSSSEEALSO, /* 115 */
+	UNDEFINED /* 116 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;
@@ -140,7 +147,8 @@ struct _StackElement {
 typedef enum DocType {
 	/* Need the DOC prefix to avoid conflicts with the above */
 	ARTICLE_DOC,
-	BOOK_DOC
+	BOOK_DOC,
+	GLOSSARY_DOC
 } DocType;
 
 
@@ -153,6 +161,8 @@ struct _Context {
 	GList *stack;
 	gpointer data;
 	GHashTable *figure_data;
+	GHashTable *glossary_data;
+	GList *glossentry_stack;
 	GList *sect1id_stack;
 
 	/* determine the "depth" that the current section is on.
@@ -210,8 +220,10 @@ void para_end_element (Context *context, const gchar *name);
 void ulink_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void ulink_end_element (Context *context, const gchar *name);
 void sect1id_stack_add (Context *context, const char *name, const xmlChar **atrs);
+void glossentry_stack_add (Context *context, const char *name, const xmlChar **atrs);
 StackElement *find_first_element (Context *context, GSList *args);
 ElementIndex find_first_parent (Context *context, GSList *args);
 void print_footer (const char *prev, const char *home, const char *next);
+void glossary_start_element (Context *context, const char *name, const xmlChar **atrs);
 
 #endif
