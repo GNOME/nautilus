@@ -47,6 +47,9 @@
 
 #define DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
 
+/* Paths to use when creating & referring to bonobo menu items */
+#define FM_DIRECTORY_VIEW_ICONS_MENU_PATH_CUSTOMIZE_ICON_TEXT   "/Settings/Icon Text"
+
 
 /* forward declarations */
 static void                add_icon_at_free_position                                    (FMDirectoryViewIcons      *icon_view,
@@ -84,6 +87,8 @@ static GList *             fm_directory_view_icons_get_selection                
 static NautilusZoomLevel   fm_directory_view_icons_get_zoom_level                       (FMDirectoryViewIcons      *view);
 static void                fm_directory_view_icons_initialize                           (FMDirectoryViewIcons      *icon_view);
 static void                fm_directory_view_icons_initialize_class                     (FMDirectoryViewIconsClass *klass);
+static void                fm_directory_view_icons_merge_menus                          (FMDirectoryView           *view,											 
+                                                                                         BonoboUIHandler           *ui_handler);
 static void                fm_directory_view_icons_select_all                           (FMDirectoryView           *view);
 static void                fm_directory_view_icons_set_zoom_level                       (FMDirectoryViewIcons      *view,
 											 NautilusZoomLevel          new_level);
@@ -149,6 +154,8 @@ fm_directory_view_icons_initialize_class (FMDirectoryViewIconsClass *klass)
         	= fm_directory_view_icons_append_selection_context_menu_items;
         fm_directory_view_class->append_background_context_menu_items
         	= fm_directory_view_icons_append_background_context_menu_items;
+        fm_directory_view_class->merge_menus
+                = fm_directory_view_icons_merge_menus;
 
 	/* FIXME: Read this from global preferences */
 	default_icon_text_attribute_names = g_strdup ("name|size|date_modified|type");
@@ -363,12 +370,16 @@ fm_directory_view_icons_append_selection_context_menu_items (FMDirectoryView *vi
 	gtk_menu_append (menu, menu_item);
 }
 
+/**
+ *
+ * Note that this is used both as a Bonobo menu callback and a signal callback.
+ * The first parameter is different in these cases, but we just ignore it anyway.
+ */
 static void
-customize_icon_text_cb (GtkMenuItem *menu_item, gpointer view)
+customize_icon_text_cb (gpointer ignored, gpointer view)
 {
 	GtkWindow *window;
 
-	g_assert (GTK_IS_MENU_ITEM (menu_item));
 	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (view));
 
 	window = GTK_WINDOW (fm_icon_text_window_get_or_create ());	
@@ -398,7 +409,8 @@ fm_directory_view_icons_append_background_context_menu_items (FMDirectoryView *v
 	menu_item = gtk_menu_item_new_with_label (_("Customize Icon Text..."));
 	gtk_widget_show (menu_item);
 	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
-			    GTK_SIGNAL_FUNC (customize_icon_text_cb), view);
+			    GTK_SIGNAL_FUNC (customize_icon_text_cb), 
+			    view);
 	gtk_menu_append (menu, menu_item);
 }
 
@@ -670,6 +682,29 @@ fm_directory_view_icons_get_selection (FMDirectoryView *view)
 		(get_icon_container (FM_DIRECTORY_VIEW_ICONS (view)));
 	nautilus_file_list_ref (list);
 	return list;
+}
+
+static void
+fm_directory_view_icons_merge_menus (FMDirectoryView *view, BonoboUIHandler *ui_handler)
+{
+        g_assert (FM_IS_DIRECTORY_VIEW_ICONS (view));
+
+        g_message ("called fm_directory_view_icons_merge_menus");
+	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, 
+				    merge_menus, 
+				    (view, ui_handler));
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+                                         FM_DIRECTORY_VIEW_ICONS_MENU_PATH_CUSTOMIZE_ICON_TEXT,
+                                         _("Customize _Icon Text..."),
+                                         _("Choose which information appears beneath each icon's name"),
+                                         -1,
+                                         BONOBO_UI_HANDLER_PIXMAP_NONE,
+                                         NULL,
+                                         0,
+                                         0,
+                                         (BonoboUIHandlerCallbackFunc)customize_icon_text_cb,
+                                         view);                
 }
 
 static void

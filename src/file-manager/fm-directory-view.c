@@ -30,6 +30,7 @@
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkcheckmenuitem.h>
 
+#include <bonobo/bonobo-control.h>
 #include <gnome.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
@@ -42,8 +43,15 @@
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-gtk-extensions.h>
 #include <libnautilus/nautilus-icon-factory.h>
+#include <libnautilus/nautilus-string.h>
 
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
+
+/* Paths to use when creating & referring to bonobo menu items */
+#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN                      "/File/Open"
+#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW        "/File/OpenNew"
+#define FM_DIRECTORY_VIEW_MENU_PATH_DELETE                    "/File/Delete"
+#define FM_DIRECTORY_VIEW_MENU_PATH_SELECT_ALL                "/Edit/Select All"
 
 enum 
 {
@@ -82,10 +90,12 @@ static int  display_selection_info_idle_cb 	(gpointer data);
 static void display_selection_info 		(FMDirectoryView *view);
 static void fm_directory_view_initialize_class	(FMDirectoryViewClass *klass);
 static void fm_directory_view_initialize 	(FMDirectoryView *view);
+static void fm_directory_view_delete_with_confirm (FMDirectoryView *view, GList *files);
 static void fm_directory_view_destroy 		(GtkObject *object);
 static void fm_directory_view_append_background_context_menu_items 
 						(FMDirectoryView *view,
 						 GtkMenu *menu);
+static void fm_directory_view_merge_menus       (FMDirectoryView *view, BonoboUIHandler *ui_handler);
 static void fm_directory_view_real_append_background_context_menu_items 		
 						(FMDirectoryView *view,
 						 GtkMenu *menu);
@@ -93,8 +103,11 @@ static void fm_directory_view_real_append_selection_context_menu_items
 						(FMDirectoryView *view,
 						 GtkMenu *menu,
 						 GList *files);
+static void fm_directory_view_real_merge_menus  (FMDirectoryView *view, BonoboUIHandler *ui_handler);
+static void fm_directory_view_real_update_menus (FMDirectoryView *view);
 static GtkMenu *create_selection_context_menu   (FMDirectoryView *view);
 static GtkMenu *create_background_context_menu  (FMDirectoryView *view);
+static BonoboControl *get_bonobo_control        (FMDirectoryView *view);
 static void stop_location_change_cb 		(NautilusViewFrame *view_frame, 
 						 FMDirectoryView *directory_view);
 static void notify_location_change_cb 		(NautilusViewFrame *view_frame, 
@@ -102,6 +115,7 @@ static void notify_location_change_cb 		(NautilusViewFrame *view_frame,
 						 FMDirectoryView *directory_view);
 static void open_cb 				(GtkMenuItem *item, NautilusFile *file);
 static void open_in_new_window_cb 		(GtkMenuItem *item, GList *files);
+static void open_one_in_new_window              (gpointer data, gpointer user_data);
 static void select_all_cb                       (GtkMenuItem *item, FMDirectoryView *directory_view);
 static void zoom_in_cb                          (GtkMenuItem *item, FMDirectoryView *directory_view);
 static void zoom_out_cb                         (GtkMenuItem *item, FMDirectoryView *directory_view);
@@ -185,6 +199,8 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 
 	klass->append_selection_context_menu_items = fm_directory_view_real_append_selection_context_menu_items;
 	klass->append_background_context_menu_items = fm_directory_view_real_append_background_context_menu_items;
+        klass->merge_menus = fm_directory_view_real_merge_menus;
+        klass->update_menus = fm_directory_view_real_update_menus;
 
 	/* Function pointers that subclasses must override */
 
@@ -196,6 +212,102 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, bump_zoom_level);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, can_zoom_in);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, can_zoom_out);
+}
+
+static void
+bonobo_menu_open_cb (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
+{
+        FMDirectoryView *view;
+        GList *selection;
+        
+        g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+
+        view = FM_DIRECTORY_VIEW (user_data);
+	selection = fm_directory_view_get_selection (view);
+
+        /* UI should have prevented this from being called unless exactly
+         * one item is selected.
+         */
+        g_assert (g_list_length(selection) == 1);
+
+	fm_directory_view_activate_entry (view, 
+	                                  NAUTILUS_FILE (selection->data), 
+	                                  FALSE);        
+
+	nautilus_file_list_free (selection);
+}
+
+static void
+bonobo_menu_open_in_new_window_cb (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
+{
+        FMDirectoryView *view;
+        GList *selection;
+        
+        g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+
+        view = FM_DIRECTORY_VIEW (user_data);
+	selection = fm_directory_view_get_selection (view);
+
+        /* UI should have prevented this from being called unless at least
+         * one item is selected.
+         */
+        g_assert (g_list_length(selection) > 0);
+
+	g_list_foreach (selection, open_one_in_new_window, view);
+
+	nautilus_file_list_free (selection);
+}
+
+static void
+bonobo_menu_delete_cb (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
+{
+        FMDirectoryView *view;
+        GList *selection;
+        
+        g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+
+        view = FM_DIRECTORY_VIEW (user_data);
+	selection = fm_directory_view_get_selection (view);
+
+        /* UI should have prevented this from being called unless at least
+         * one item is selected.
+         */
+        g_assert (g_list_length(selection) > 0);
+
+        fm_directory_view_delete_with_confirm (view, selection);
+
+        nautilus_file_list_free (selection);
+}
+
+static BonoboControl *
+get_bonobo_control (FMDirectoryView *view)
+{
+        return BONOBO_CONTROL (nautilus_view_frame_get_bonobo_control (
+                NAUTILUS_VIEW_FRAME (view->details->view_frame)));
+}
+
+static void
+bonobo_control_activate_cb (BonoboObject *control, gboolean state, gpointer user_data)
+{
+        FMDirectoryView *view;
+        BonoboUIHandler *local_ui_handler;
+
+        g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+
+        view = FM_DIRECTORY_VIEW (user_data);
+
+        local_ui_handler = bonobo_control_get_ui_handler (BONOBO_CONTROL (control));
+
+        if (state) {
+                bonobo_ui_handler_set_container (local_ui_handler, 
+                                                 bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (control)));
+                /* Add new menu items and perhaps whole menus */
+                fm_directory_view_merge_menus (view, local_ui_handler);
+	        /* Set initial sensitivity, wording, toggle state, etc. */       
+                fm_directory_view_update_menus (view);
+        } else {
+                bonobo_ui_handler_unset_container (local_ui_handler);
+        }
 }
 
 static void
@@ -220,6 +332,11 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 			    "notify_location_change",
 			    GTK_SIGNAL_FUNC (notify_location_change_cb), 
 			    directory_view);
+
+        gtk_signal_connect (GTK_OBJECT (get_bonobo_control (directory_view)),
+                            "activate",
+                            bonobo_control_activate_cb,
+                            directory_view);
 
 	gtk_widget_show (GTK_WIDGET (directory_view));
 }
@@ -456,7 +573,7 @@ stop_load (FMDirectoryView *view, gboolean error)
 /* handle the "select all" menu command */
 
 static void
-select_all_cb(GtkMenuItem *item, FMDirectoryView *directory_view)
+select_all_cb (GtkMenuItem *item, FMDirectoryView *directory_view)
 {
 	fm_directory_view_select_all (directory_view);
 }
@@ -473,20 +590,6 @@ static void
 zoom_out_cb (GtkMenuItem *item, FMDirectoryView *directory_view)
 {
 	fm_directory_view_bump_zoom_level (directory_view, -1);
-}
-
-static void
-use_eazel_theme_icons_cb (GtkCheckMenuItem *item, FMDirectoryView *directory_view)
-{
-	char *theme;
-
-	theme = nautilus_icon_factory_get_theme ();
-	if (nautilus_strcmp (theme, "eazel") == 0) {
-		nautilus_icon_factory_set_theme (NULL);
-	} else {
-		nautilus_icon_factory_set_theme ("eazel");
-	}
-	g_free (theme);
 }
 
 static gboolean
@@ -896,6 +999,7 @@ delete_one (gpointer data, gpointer user_data)
 	if (result == GNOME_VFS_OK)
 	{
 		/* invoke a method of the view to delete from the model and container */
+		/* FIXME: Deleting the entire selection is being called once per selected item! */
 		fm_directory_view_delete_selection(FM_DIRECTORY_VIEW(user_data));
 	} else
 	{
@@ -970,16 +1074,21 @@ confirm_delete (FMDirectoryView *directory_view, GList *files)
 }
 
 static void
+fm_directory_view_delete_with_confirm (FMDirectoryView *view, GList *files)
+{
+        g_assert (FM_IS_DIRECTORY_VIEW (view));
+        
+	if (confirm_delete (view, files)) {
+	        g_list_foreach (files, delete_one, view);    
+	}
+}
+
+static void
 delete_cb (GtkMenuItem *item, GList *files)
 {
-	FMDirectoryView *directory_view;
-
-	directory_view = FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), 
-	                                    "directory_view"));
-
-	if (confirm_delete (directory_view, files)) {
-	        g_list_foreach (files, delete_one, directory_view);    
-	}
+        fm_directory_view_delete_with_confirm (FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), 
+	                                                                               "directory_view")), 
+	                                       files);
 }
 
 /* handle the open command */
@@ -1035,100 +1144,208 @@ add_menu_item (FMDirectoryView *view, GtkMenu *menu, const char *label,
 }
 
 static void
-add_check_menu_item (FMDirectoryView *view, GtkMenu *menu, const char *label,
-		     void (* toggled_handler) (GtkCheckMenuItem *, FMDirectoryView *),
-		     gboolean sensitive,
-		     gboolean active)
-{
-	GtkWidget *menu_item;
-
-	menu_item = gtk_check_menu_item_new_with_label (label);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), active);
-	gtk_signal_connect (GTK_OBJECT (menu_item), "toggled",
-			    GTK_SIGNAL_FUNC (toggled_handler), view);
-	finish_adding_menu_item (menu, menu_item, sensitive);
-}
-
-static void
 fm_directory_view_real_append_background_context_menu_items (FMDirectoryView *view, 
 							     GtkMenu *menu)
 {
-	char *theme;
-
-	theme = nautilus_icon_factory_get_theme ();
-
 	add_menu_item (view, menu, _("Select All"), select_all_cb, TRUE);
 	add_menu_item (view, menu, _("Zoom In"), zoom_in_cb,
 		       fm_directory_view_can_zoom_in (view));
 	add_menu_item (view, menu, _("Zoom Out"), zoom_out_cb,
 		       fm_directory_view_can_zoom_out (view));
-	add_check_menu_item (view, menu, _("Use Eazel Theme Icons"),
-			     use_eazel_theme_icons_cb,
-			     TRUE, nautilus_strcmp (theme, "eazel") == 0);
-
-	g_free (theme);
 }
+
+static void
+compute_menu_item_info (const char *path, 
+                        int selection_length, 
+                        gboolean include_accelerator_underbars,
+                        char **return_name, 
+                        gboolean *return_sensitivity)
+{
+        if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OPEN) == 0) {
+                *return_name = g_strdup_printf (_("_Open"));
+                *return_sensitivity = selection_length == 1;
+        } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW) == 0) {
+		if (selection_length <= 1) {
+			*return_name = g_strdup (_("Open in _New Window"));
+		} else {
+			*return_name = g_strdup_printf (_("Open in %d _New Windows"), selection_length);
+		}
+		*return_sensitivity = selection_length > 0;
+         } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_DELETE) == 0) {
+		*return_name = g_strdup (_("_Delete..."));
+		*return_sensitivity = selection_length > 0;
+        } else {
+                g_assert_not_reached ();
+        }
+
+        if (!include_accelerator_underbars) {
+                nautilus_strstrip (*return_name, '_');
+        }
+}
+
+static void
+append_one_selection_context_menu_item (GtkMenu *menu,
+                                        const char *path,
+                                        int item_count,
+                                        const char *item_data_id,
+                                        gpointer item_data,
+                                        GtkDestroyNotify item_data_destroy_func,
+                                        gboolean ref_item_data,
+                                        GtkSignalFunc callback,
+                                        gpointer callback_data)
+{
+        GtkWidget *menu_item;
+        char *label_string;
+        gboolean sensitive;
+
+        compute_menu_item_info (path, item_count, FALSE, &label_string, &sensitive);
+        menu_item = gtk_menu_item_new_with_label (label_string);
+        g_free (label_string);
+        if (sensitive)
+        {
+                if (item_data != NULL) {
+                        gtk_object_set_data_full (GTK_OBJECT (menu_item),
+                                                  item_data_id,
+                                                  item_data,
+                                                  item_data_destroy_func);
+                        if (ref_item_data) {
+                                gtk_object_ref (GTK_OBJECT (item_data));
+                        }
+                }
+
+                gtk_signal_connect (GTK_OBJECT (menu_item),
+                                    "activate",
+                                    callback,
+                                    callback_data);
+        }
+
+        finish_adding_menu_item (menu, menu_item, sensitive);
+}                                
 
 static void
 fm_directory_view_real_append_selection_context_menu_items (FMDirectoryView *view,
 							    GtkMenu *menu,
 						       	    GList *files)
 {
-	GtkWidget *menu_item;
 	int item_count;
-	char *label_string;
 
 	item_count = g_list_length (files);
 	
 	g_assert (item_count >= 1);
 
-	menu_item = gtk_menu_item_new_with_label (_("Open"));
-	if (item_count > 1)
-	{
-		/* Can only open a single item in the same window */
-		gtk_widget_set_sensitive (menu_item, FALSE);
-	}
-	else
-	{
-		/* Store directory view in menu item so callback can access it. */
-		gtk_object_set_data_full (GTK_OBJECT (menu_item), "directory_view",
-					  view, (GtkDestroyNotify) gtk_object_unref);
-		gtk_object_ref (GTK_OBJECT (view));
-		gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
-			           GTK_SIGNAL_FUNC (open_cb), files->data);
-	}
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
+	append_one_selection_context_menu_item (menu,
+	                                        FM_DIRECTORY_VIEW_MENU_PATH_OPEN,
+	                                        item_count,
+	                                        "directory_view",
+	                                        view,
+	                                        (GtkDestroyNotify)gtk_object_unref,
+	                                        TRUE,
+	                                        open_cb,
+	                                        files->data);
 
-	if (item_count == 1) {
-		label_string = g_strdup (_("Open in New Window"));
-	} else {
-		label_string = g_strdup_printf (_("Open in %d New Windows"), item_count);
-	}
-	menu_item = gtk_menu_item_new_with_label (label_string);
-	g_free (label_string);
-	/* Store directory view in menu item so callback can access it. */
-	gtk_object_set_data_full (GTK_OBJECT (menu_item), "directory_view",
-				  view, (GtkDestroyNotify) gtk_object_unref);
-	gtk_object_ref (GTK_OBJECT (view));
-	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
-		           GTK_SIGNAL_FUNC (open_in_new_window_cb), files);
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
+	append_one_selection_context_menu_item (menu,
+	                                        FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW,
+	                                        item_count,
+	                                        "directory_view",
+	                                        view,
+	                                        (GtkDestroyNotify)gtk_object_unref,
+	                                        TRUE,
+	                                        open_in_new_window_cb,
+	                                        files);
 
-	/* create and install the "Delete" item */
-	
-	menu_item = gtk_menu_item_new_with_label (_("Delete..."));
-	gtk_object_set_data_full (GTK_OBJECT (menu_item), "directory_view",
-				  view, (GtkDestroyNotify) gtk_object_unref);
-	gtk_object_ref (GTK_OBJECT (view));
-	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
-		           GTK_SIGNAL_FUNC (delete_cb), files);
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
+	append_one_selection_context_menu_item (menu,
+	                                        FM_DIRECTORY_VIEW_MENU_PATH_DELETE,
+	                                        item_count,
+	                                        "directory_view",
+	                                        view,
+	                                        (GtkDestroyNotify)gtk_object_unref,
+	                                        TRUE,
+	                                        delete_cb,
+	                                        files);
 }
 
-/* FIXME - need better architecture for setting these. */
+static void
+fm_directory_view_real_merge_menus (FMDirectoryView *view, BonoboUIHandler *ui_handler)
+{
+        /* FIXME: The first few items here have magic number indexes. Need to
+         * invent and use a scheme whereby Nautilus publishes some or all of
+         * its menu item paths so that components can merge items into the
+         * right places without special knowledge like this.
+         */
+        bonobo_ui_handler_menu_new_item (ui_handler,
+                                         FM_DIRECTORY_VIEW_MENU_PATH_OPEN,
+                                         _("_Open"),
+                                         _("Open the selected item in this window"),
+                                         1,
+                                         BONOBO_UI_HANDLER_PIXMAP_NONE,
+                                         NULL,
+                                         'O',
+                                         GDK_CONTROL_MASK,
+                                         bonobo_menu_open_cb,
+                                         view);                
+        bonobo_ui_handler_menu_new_item (ui_handler,
+                                         FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW,
+                                         _("Open in New Window"),
+                                         _("Open each selected item in a new window"),
+                                         2,
+                                         BONOBO_UI_HANDLER_PIXMAP_NONE,
+                                         NULL,
+                                         0,
+                                         0,
+                                         bonobo_menu_open_in_new_window_cb,
+                                         view);                
+        bonobo_ui_handler_menu_new_item (ui_handler,
+                                         FM_DIRECTORY_VIEW_MENU_PATH_DELETE,
+                                         _("Delete..."),
+                                         _("Delete all selected items"),
+                                         3,	                                        
+                                         BONOBO_UI_HANDLER_PIXMAP_NONE,
+                                         NULL,
+                                         0,
+                                         0,
+                                         bonobo_menu_delete_cb,
+                                         view);                
+        bonobo_ui_handler_menu_new_item (ui_handler,
+                                         FM_DIRECTORY_VIEW_MENU_PATH_SELECT_ALL,
+                                         _("Select All"),
+                                         _("Select all items in this window"),
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_SELECT_ALL),
+                                         BONOBO_UI_HANDLER_PIXMAP_NONE,
+                                         NULL,
+                                         0,
+                                         0,
+                                         (BonoboUIHandlerCallbackFunc)select_all_cb,
+                                         view);         
+}
+
+static void
+update_one_menu_item (BonoboUIHandler *local_ui_handler, const char* menu_path, int item_count)
+{
+	char *label_string;
+	gboolean sensitive;
+
+        compute_menu_item_info (menu_path, item_count, TRUE, &label_string, &sensitive);
+        bonobo_ui_handler_menu_set_sensitivity (local_ui_handler, menu_path, sensitive);
+        bonobo_ui_handler_menu_set_label (local_ui_handler, menu_path, label_string);
+        g_free (label_string);
+}
+
+static void
+fm_directory_view_real_update_menus (FMDirectoryView *view)
+{
+        BonoboUIHandler *handler;
+	GList *selection;
+	int count;
+
+        handler = bonobo_control_get_ui_handler (get_bonobo_control (view));
+	selection = fm_directory_view_get_selection (view);
+	count = g_list_length (selection);
+	nautilus_file_list_free (selection);
+
+        update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_OPEN, count);
+        update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW, count);
+        update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_DELETE, count);
+}
 
 static GtkMenu *
 create_selection_context_menu (FMDirectoryView *view) 
@@ -1259,6 +1476,9 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
+	/* Update menu item states to match selection */
+	fm_directory_view_update_menus (view);
+
 	/* Schedule a display of the new selection. */
 	if (view->details->display_selection_idle_id == 0)
 		view->details->display_selection_idle_id
@@ -1356,6 +1576,23 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 		 view);
 }
 
+
+/**
+ * fm_directory_view_merge_menus:
+ * 
+ * Add this view's menus to the window's menu bar.
+ * @view: FMDirectoryView in question.
+ * @ui_handler: BonoboUIHandler to use for bonobo_menu calls.
+ */
+static void
+fm_directory_view_merge_menus (FMDirectoryView *view, BonoboUIHandler *ui_handler)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+	g_return_if_fail (BONOBO_IS_UI_HANDLER (ui_handler));
+
+	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->merge_menus) (view, ui_handler);
+}
+
 static void
 disconnect_model_handlers (FMDirectoryView *view)
 {
@@ -1399,4 +1636,18 @@ fm_directory_view_stop (FMDirectoryView *view)
 	unschedule_display_of_pending_files (view);
 	display_pending_files (view);
 	stop_load (view, FALSE);
+}
+
+/**
+ * fm_directory_view_update_menus:
+ * 
+ * Update the sensitivity and wording of dynamic menu items.
+ * @view: FMDirectoryView in question.
+ */
+void
+fm_directory_view_update_menus (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->update_menus) (view);
 }

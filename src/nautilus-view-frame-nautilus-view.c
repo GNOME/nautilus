@@ -55,6 +55,8 @@ nautilus_view_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Enviro
   bonobo_object_add_interface(BONOBO_OBJECT(nvi->control_frame), view->view_frame);
 
   bonobo_control_frame_bind_to_control(BONOBO_CONTROL_FRAME(nvi->control_frame), control);
+  /* We activate the bonobo control immediately */
+  bonobo_control_frame_control_activate (BONOBO_CONTROL_FRAME (nvi->control_frame));
   view->client_widget = bonobo_control_frame_get_widget(BONOBO_CONTROL_FRAME(nvi->control_frame));
 
   Bonobo_Unknown_unref(control, ev);
@@ -72,6 +74,8 @@ static void
 destroy_nautilus_view(NautilusView *view, CORBA_Environment *ev)
 {
   NautilusViewInfo *nvi = view->component_data;
+
+  bonobo_control_frame_control_deactivate (BONOBO_CONTROL_FRAME (nvi->control_frame));
 
   CORBA_Object_release(nvi->view_client, ev);
 

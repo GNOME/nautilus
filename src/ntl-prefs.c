@@ -104,7 +104,7 @@ nautilus_prefs_ui_show(GtkWindow *transient_for)
     {
       GtkWidget *notebook;
 
-      dialog = gnome_dialog_new(_("Preferences"), _("OK"), _("Cancel"), NULL);
+      dialog = gnome_dialog_new(_("General Settings"), _("OK"), _("Cancel"), NULL);
 
       gnome_dialog_close_hides(GNOME_DIALOG(dialog), TRUE);
 

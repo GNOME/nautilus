@@ -167,6 +167,35 @@ nautilus_string_to_int (const char *string, int *integer)
 	return TRUE;
 }
 
+/**
+ * nautilus_strstrip:
+ * Remove all occurrences of a character from a string. The
+ * original string is modified, and also returned for convenience.
+ * 
+ * @string_null_allowed: The string to be stripped.
+ * @remove_this: The char to remove from @string_null_allowed
+ * 
+ * Return value: @string_null_allowed, after removing all occurrences
+ * of @remove_this. 
+ */
+char *
+nautilus_strstrip (char *string_null_allowed, char remove_this)
+{
+        if (string_null_allowed != NULL) {
+	        char *pos;
+
+	        pos = string_null_allowed;
+	        while (*pos != '\0') {
+	                if (*pos == remove_this) {
+	                        g_memmove (pos, pos + 1, strlen (pos));
+	                }
+	                ++pos;
+	        }
+        }
+
+        return string_null_allowed;        
+}
+
 gboolean
 nautilus_eat_string_to_int (char *string, int *integer)
 {
@@ -203,6 +232,7 @@ void
 nautilus_self_check_string (void)
 {
 	int integer;
+	char *test_string;
 
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_strlen (NULL), 0);
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_strlen (""), 0);
@@ -261,6 +291,16 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix ("foo:bar", ":"), "foo");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix ("footle:bar", "tle:"), "foo");	
 
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (NULL, '_'), NULL);	
+	test_string = g_strdup ("foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (test_string, '_'), "foo");	
+	test_string = g_strdup ("_foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (test_string, '_'), "foo");	
+	test_string = g_strdup ("foo_");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (test_string, '_'), "foo");	
+	test_string = g_strdup ("_foo_");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (test_string, '_'), "foo");	
+        
 	#define TEST_INTEGER_CONVERSION_FUNCTIONS(string, boolean_result, integer_result) \
 		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_to_int (string, &integer), boolean_result); \
 		NAUTILUS_CHECK_INTEGER_RESULT (call_string_to_int (string), integer_result); \

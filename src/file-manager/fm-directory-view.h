@@ -25,6 +25,7 @@
 #ifndef FM_DIRECTORY_VIEW_H
 #define FM_DIRECTORY_VIEW_H
 
+#include <bonobo/bonobo-ui-handler.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <libnautilus/ntl-content-view-frame.h>
@@ -132,6 +133,20 @@ struct _FMDirectoryViewClass {
         /* select_all is a function pointer that subclasses must override to
          * select all of the items in the view */
         void     (* select_all)	         (FMDirectoryView *view);
+
+        /* merge_menus is a function pointer that subclasses can override to
+         * add their own menu items to the window's menu bar.
+         * If overridden, subclasses must call parent class's function.
+         */
+        void    (* merge_menus)         (FMDirectoryView *view, 
+                                         BonoboUIHandler *ui_handler);
+
+        /* update_menus is a function pointer that subclasses can override to
+         * update the sensitivity or wording of menu items in the menu bar.
+         * It is called (at least) whenever the selection changes. If overridden, 
+         * subclasses must call parent class's function.
+         */
+        void    (* update_menus)         (FMDirectoryView *view);
 };
 
 
@@ -177,5 +192,6 @@ void                      fm_directory_view_notify_selection_changed      (FMDir
 NautilusDirectory *       fm_directory_view_get_model                     (FMDirectoryView *view);
 void                      fm_directory_view_pop_up_background_context_menu (FMDirectoryView *view);
 void                      fm_directory_view_pop_up_selection_context_menu (FMDirectoryView *view); 
+void                      fm_directory_view_update_menus                  (FMDirectoryView *view);
 
 #endif /* FM_DIRECTORY_VIEW_H */

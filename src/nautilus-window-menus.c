@@ -32,6 +32,7 @@
 
 #include <libnautilus/nautilus-gtk-extensions.h>
 #include <libnautilus/nautilus-icon-factory.h>
+#include <libnautilus/nautilus-string.h>
 
 
 static void                  activate_bookmark_in_menu_item      (BonoboUIHandler *uih, 
@@ -53,6 +54,7 @@ static void                  debug_menu_show_color_picker_cb     (GtkWidget *wid
                                                                   NautilusWindow *window);
 static void                  refresh_bookmarks_in_go_menu        (NautilusWindow *window);
 static void                  refresh_bookmarks_in_bookmarks_menu (NautilusWindow *window);
+static void                  update_eazel_theme_menu_item        (NautilusWindow *window);
 
 
 /* Struct that stores all the info necessary to activate a bookmark. */
@@ -99,8 +101,8 @@ file_menu_exit_cb (GtkWidget *widget,
 }
 
 static void
-edit_menu_prefs_cb(GtkWidget *widget,
-                   GtkWindow *mainwin)
+general_settings_cb (GtkWidget *widget,
+                     GtkWindow *mainwin)
 {
   nautilus_prefs_ui_show(mainwin);
 }
@@ -138,8 +140,6 @@ static GnomeUIInfo edit_menu_info[] = {
     GNOME_APP_PIXMAP_NONE, NULL,
     'A', GDK_CONTROL_MASK, NULL
   },
-  GNOMEUIINFO_SEPARATOR,
-  GNOMEUIINFO_MENU_PREFERENCES_ITEM(edit_menu_prefs_cb, NULL),
   GNOMEUIINFO_END
 };
 
@@ -226,6 +226,40 @@ static GnomeUIInfo bookmarks_menu_info[] = {
   GNOMEUIINFO_END
 };
 
+static void
+use_eazel_theme_icons_cb (GtkCheckMenuItem *item, gpointer user_data)
+{
+	char *theme;
+
+	theme = nautilus_icon_factory_get_theme ();
+	if (nautilus_strcmp (theme, "eazel") == 0) {
+		nautilus_icon_factory_set_theme (NULL);
+	} else {
+		nautilus_icon_factory_set_theme ("eazel");
+	}
+	g_free (theme);
+}
+
+static GnomeUIInfo settings_menu_info[] = {
+  {
+    GNOME_APP_UI_ITEM,
+    N_("General Settings..."), N_("Customize various aspects of Nautilus's appearance and behavior"),
+    general_settings_cb, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, 0, NULL
+  },
+  GNOMEUIINFO_SEPARATOR,
+  { 
+    GNOME_APP_UI_TOGGLEITEM, 
+    N_("Use _Eazel Theme Icons"),
+    N_("Select whether to use standard or Eazel icons"), 
+    use_eazel_theme_icons_cb, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL, 
+    0, (GdkModifierType)0, NULL 
+  },
+  GNOMEUIINFO_END
+};
+
 static GnomeUIInfo help_menu_info[] = {
   {
     GNOME_APP_UI_ITEM,
@@ -248,6 +282,7 @@ static GnomeUIInfo main_menu[] = {
   GNOMEUIINFO_MENU_EDIT_TREE (edit_menu_info),
   GNOMEUIINFO_SUBTREE(N_("_Go"), go_menu_info),
   GNOMEUIINFO_SUBTREE(N_("_Bookmarks"), bookmarks_menu_info),
+  GNOMEUIINFO_MENU_SETTINGS_TREE (settings_menu_info),
   GNOMEUIINFO_MENU_HELP_TREE (help_menu_info),
   GNOMEUIINFO_SUBTREE(N_("_Debug"), debug_menu_info),
   GNOMEUIINFO_END
@@ -532,8 +567,9 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         bonobo_ui_handler_menu_add_list (ui_handler, "/", menu_items);
         bonobo_ui_handler_menu_free_list (menu_items);
 
-        /* desensitize the items that haven't yet been implemented
-         * FIXME: these all need to be implemented.
+        /* Desensitize the items that aren't implemented at this level.
+         * Some (hopefully all) will be overridden by implementations by the
+         * different content views.
          */
         bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Undo", FALSE);
         bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Cut", FALSE);
@@ -541,6 +577,16 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Paste", FALSE);
         bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Clear", FALSE);
         bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Select All", FALSE);
+
+        /* Set initial toggle state of Eazel theme menu item */
+        update_eazel_theme_menu_item (window);
+        
+        /* Sign up to be notified of icon theme changes so Use Eazel Theme Icons
+         * menu item will show correct toggle state. */        
+	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
+					       "theme_changed",
+					       update_eazel_theme_menu_item,
+					       GTK_OBJECT (window));	
 
         nautilus_window_initialize_bookmarks_menu (window);
         nautilus_window_initialize_go_menu (window);
@@ -620,5 +666,16 @@ refresh_bookmarks_in_go_menu (NautilusWindow *window)
 
                 ++index;
 	}	
+}
+
+static void 
+update_eazel_theme_menu_item (NautilusWindow *window)
+{
+        g_assert (NAUTILUS_IS_WINDOW (window));
+
+        bonobo_ui_handler_menu_set_toggle_state (
+                window->uih,
+                "/Settings/Use Eazel Theme Icons",
+                nautilus_eat_strcmp (nautilus_icon_factory_get_theme (), "eazel") == 0);
 }
 
