@@ -43,6 +43,7 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
+#include <libnautilus-extensions/nautilus-graphic.h>
 #include <stdio.h>
 
 #include "nautilus-service-startup-view.h"
@@ -65,30 +66,27 @@ static void nautilus_service_startup_view_destroy		(GtkObject				*object);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusServiceStartupView, nautilus_service_startup_view, GTK_TYPE_EVENT_BOX)
 
-static void 	service_load_location_callback			(NautilusView 				*view, 
-								 const char				*location,
-								 NautilusServiceStartupView		*services);
-static gboolean	is_location					(char 					*document_str,
-								 const char				*place_str);
-static void	generate_form_logo				(NautilusServiceStartupView		*view);
-static void	set_widget_color				(GtkWidget				*widget,
-								 const char				*color_spec);
-static void	go_to_uri					(NautilusServiceStartupView		*view,
-								 char					*uri);
-static void	show_feedback					(NautilusServiceStartupView			*view,
-								 char					*error_message);
+static void       service_load_location_callback (NautilusView               *view,
+						  const char                 *location,
+						  NautilusServiceStartupView *services);
+static gboolean   is_location                    (char                       *document_str,
+						  const char                 *place_str);
+static void       generate_form_logo             (NautilusServiceStartupView *view);
+static void       set_widget_color               (GtkWidget                  *widget,
+						  const char                 *color_spec);
+static void       go_to_uri                      (NautilusServiceStartupView *view,
+						  char                       *uri);
+static void       show_feedback                  (NautilusServiceStartupView *view,
+						  char                       *error_message);
+static GtkWidget* create_graphic_widget          (const char                 *name,
+						  const char                 *background_color_spec);
 
 /* create the startup view */
-
 static void
 generate_startup_form (NautilusServiceStartupView	*view) {
 
 	GtkWidget		*temp_widget;
 	GtkWidget		*temp_box;
-	char			*icon_path;
-	GdkPixbuf		*pixbuf;
-	GdkPixmap		*pixmap;
-	GdkBitmap		*mask;
 	GtkWidget		*align;
 	int			counter;
 	char			*font_color;
@@ -111,15 +109,12 @@ generate_startup_form (NautilusServiceStartupView	*view) {
 	temp_box = gtk_hbox_new (TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, 0, 0, 40);
 	gtk_widget_show (temp_box);
-	icon_path = nautilus_pixmap_file ("service-watch.png");
-	pixbuf = gdk_pixbuf_new_from_file (icon_path);
-	g_assert (pixbuf != NULL);
-	g_free (icon_path);
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
-	temp_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
+
+	temp_widget = create_graphic_widget ("service-watch.png", SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
+	g_assert (temp_widget != NULL);
+
 	gtk_box_pack_start (GTK_BOX (temp_box), temp_widget, 0, 0, 8);
 	gtk_widget_show (temp_widget);
-	gdk_pixbuf_unref (pixbuf);
 
 	/* Add a label for error status messages */
 	view->details->feedback_text = gtk_label_new ("");
@@ -217,29 +212,56 @@ set_widget_color (GtkWidget *widget, const char* color_spec) {
 
 /* shared utility to allocate a title for a form */
 
+static GtkWidget*
+create_graphic_widget (const char *name, const char *background_color_spec)
+{
+	char		*path;
+	GtkWidget	*graphic;
+	GdkPixbuf	*pixbuf;
+	guint32		background_rgb;
+
+	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (background_color_spec != NULL, NULL);
+	
+	path = nautilus_pixmap_file (name);
+	
+	pixbuf = gdk_pixbuf_new_from_file (path);
+	g_free (path);
+
+	if (!pixbuf) {
+		return NULL;
+	}
+
+	graphic = nautilus_graphic_new();
+	
+	nautilus_graphic_set_background_type (NAUTILUS_GRAPHIC (graphic),
+					      NAUTILUS_GRAPHIC_BACKGROUND_SOLID);
+	
+	background_rgb = nautilus_parse_rgb_with_white_default (background_color_spec);
+
+	nautilus_graphic_set_background_color (NAUTILUS_GRAPHIC (graphic),
+					       background_rgb);
+
+	nautilus_graphic_set_pixbuf (NAUTILUS_GRAPHIC (graphic), pixbuf);
+	gdk_pixbuf_unref (pixbuf);
+
+	return graphic;
+}
+
 static void 
 generate_form_logo (NautilusServiceStartupView	*view) {
 
 	GtkWidget	*logo_container;
 	GtkWidget	*logo_widget;
-	char		*icon_path;
-	GdkPixbuf	*pixbuf;
-	GdkPixmap	*pixmap;
-	GdkBitmap	*mask;
 
 	logo_container = gtk_hbox_new (TRUE, 0);
-	
 	gtk_box_pack_start (GTK_BOX (view->details->form), logo_container, 0, 0, 4);	
-	gtk_widget_show (logo_container);
-	icon_path = nautilus_pixmap_file ("startup-logo.png");
-	pixbuf = gdk_pixbuf_new_from_file (icon_path);
-	g_assert (pixbuf != NULL);
-	g_free (icon_path);
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
-	logo_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
-	gtk_box_pack_start (GTK_BOX(logo_container), logo_widget, 0, 0, 4);
-	gtk_widget_show (logo_widget);
 
+	logo_widget = create_graphic_widget ("startup-logo.png", SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
+	g_assert (logo_widget != NULL);
+
+	gtk_box_pack_start (GTK_BOX(logo_container), logo_widget, 0, 0, 4);
+	gtk_widget_show_all (logo_container);
 }
 
 static void

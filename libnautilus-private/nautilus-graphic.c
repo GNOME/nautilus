@@ -30,10 +30,10 @@
 
 #include <math.h>
 
-/* TODO:
- * 
- * Fix the text support.
- * Fix the tile function to respect the tile origin.
+/* FIXME bugzilla.eazel.com 1612: 
+ * We should use NautilusBackground for the background.  This will simplify
+ * lots of things, be more effecient, and remove the need for a lot of the
+ * tiling code.
  */
 
 /* Arguments */
@@ -576,12 +576,11 @@ nautilus_graphic_size_allocate (GtkWidget *widget, GtkAllocation* allocation)
 		}
 	}
 
-/* FIXME: 
- *
- * Need to factory out code in nautilus-icon-factory.c:embed_text() into 
+
+/* FIXME bugzilla.eazel.com 1613: 
+ * Need to factor out code in  nautilus-icon-factory.c:embed_text() into
  * nautilus_gdk_pixbuf_draw_text and use it here.
  */
-
 #if FIXME
 	if (graphic ->detail->label_text != NULL)
 	{
@@ -1025,8 +1024,8 @@ nautilus_gdk_pixbuf_set_to_color (GdkPixbuf	*pixbuf,
 	}
 }
 
-/* FIXME: 
- * This function needs to respect tile tile_origin
+/* FIXME bugzilla.eazel.com 1612: 
+ * Tile origin should be respected.  Should be fixed when I use NautilusBackground.
  */
 static void
 nautilus_gdk_pixbuf_tile (GdkPixbuf		*pixbuf,

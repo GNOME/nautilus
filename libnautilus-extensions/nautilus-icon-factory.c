@@ -2029,6 +2029,10 @@ embedded_text_rect_usable (const ArtIRect *embedded_text_rect)
 	return TRUE;
 }
 
+/* FIXME bugzilla.eazel.com 1613: 
+ * Need to factor out code in  nautilus-icon-factory.c:embed_text() into
+ * nautilus_gdk_pixbuf_draw_text so it can be used elsewhere.
+ */
 static GdkPixbuf *
 embed_text (GdkPixbuf *pixbuf_without_text,
 	    const ArtIRect *embedded_text_rect,

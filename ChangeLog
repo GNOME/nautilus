@@ -1,3 +1,19 @@
+2000-07-10  Ramiro Estrugo  <ramiro@eazel.com>
+
+	*
+	components/services/startup/nautilus-view/nautilus-service-startup-
+	view.c: (generate_startup_form), (create_graphic_widget),
+	(generate_form_logo):
+	Use the new NautilusGraphic widget.  Add a function to create
+	graphics with a given image and background.
+	
+	* libnautilus-extensions/nautilus-graphic.c:
+	(nautilus_graphic_size_allocate):
+	Add FIXME blurbs.
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	Add FIXME blurbs.
+	
 2000-07-10  Ian McKellar  <yakk@yakk.net.au>
 
 	* libnautilus-extensions/nautilus-mime-actions.c:
