@@ -614,8 +614,13 @@ rsvg_render_bpath (RsvgCtx *ctx, const ArtBpath *bpath)
 
   if (state->stroke)
     {
+      double stroke_width = state->stroke_width;
+
+      if (stroke_width < 0.25)
+	stroke_width = 0.25;
+
       svp = art_svp_vpath_stroke (vpath, state->join, state->cap,
-				  state->stroke_width, 4, 0.25);
+				  stroke_width, 4, 0.25);
       rsvg_render_svp (ctx, svp,
 		       (state->stroke_color << 8) | state->stroke_opacity);
       art_svp_free (svp);
