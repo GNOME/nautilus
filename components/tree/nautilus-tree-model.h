@@ -1,7 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* 
- * Copyright (C) 2000 Eazel, Inc
+ * Copyright (C) 2002 Anders Carlsson
+ * Copyright (C) 2002 Bent Spoon Software
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,7 +19,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Author: Maciej Stachowiak <mjs@eazel.com>
+ * Author: Anders Carlsson <andersca@gnu.org>
  */
 
 /* nautilus-tree-model.h - Model for the tree view */
@@ -26,10 +27,7 @@
 #ifndef NAUTILUS_TREE_MODEL_H
 #define NAUTILUS_TREE_MODEL_H
 
-#include <gtk/gtkobject.h>
-
-typedef struct NautilusTreeModel NautilusTreeModel;
-typedef struct NautilusTreeModelClass NautilusTreeModelClass;
+#include <glib-object.h>
 
 #define NAUTILUS_TYPE_TREE_MODEL	    (nautilus_tree_model_get_type ())
 #define NAUTILUS_TREE_MODEL(obj)	    (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_TREE_MODEL, NautilusTreeModel))
@@ -40,26 +38,21 @@ typedef struct NautilusTreeModelClass NautilusTreeModelClass;
 enum {
 	NAUTILUS_TREE_MODEL_DISPLAY_NAME_COLUMN,
 	NAUTILUS_TREE_MODEL_CLOSED_PIXBUF_COLUMN,
-	NAUTILUS_TREE_MODEL_NUM_COLUMNS,
+	NAUTILUS_TREE_MODEL_NUM_COLUMNS
 };
 
 typedef struct NautilusTreeModelDetails NautilusTreeModelDetails;
 
-
-struct NautilusTreeModel {
+typedef struct {
 	GObject parent;
 	NautilusTreeModelDetails *details;
-};
+} NautilusTreeModel;
 
-struct NautilusTreeModelClass {
+typedef struct {
 	GObjectClass parent_class;
-};
+} NautilusTreeModelClass;
 
-GType nautilus_tree_model_get_type (void);
-
-NautilusTreeModel *nautilus_tree_model_new (const char *root_uri);
-
-/* Debugging */
-void		   nautilus_tree_model_dump		(NautilusTreeModel *model);
+GType              nautilus_tree_model_get_type (void);
+NautilusTreeModel *nautilus_tree_model_new      (const char *root_uri);
 
 #endif /* NAUTILUS_TREE_MODEL_H */

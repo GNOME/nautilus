@@ -3,6 +3,7 @@
 /* 
  * Copyright C) 2000, 2001 Eazel, Inc
  * Copyright (C) 2002 Anders Carlsson
+ * Copyright (C) 2002 Bent Spoon Software
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -19,8 +20,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Authors: Maciej Stachowiak <mjs@eazel.com>
- *          Anders Carlsson <andersca@gnu.org>
+ * Authors: Anders Carlsson <andersca@gnu.org>
+ *          Darin Adler <darin@bentspoon.com>
  */
 
 /* nautilus-tree-model.c - model for the tree view */
@@ -30,110 +31,1046 @@
 
 #include <string.h>
 #include <gtk/gtktreemodel.h>
+#include <libgnome/gnome-i18n.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 
-/* A single tree node */
-typedef struct NautilusTreeNode NautilusTreeNode;
+/* The user_data of the GtkTreeIter is the TreeNode pointer.
+ * It's NULL for the dummy node. If it's NULL, then user_data2
+ * is the TreeNode pointer to the parent.
+ */
 
-typedef enum {
-	NAUTILUS_DUMMY_TREE_NODE_LOADING,
-	NAUTILUS_DUMMY_TREE_NODE_EMPTY,
-} NautilusDummyTreeNodeType;
+typedef struct TreeNode TreeNode;
 
-struct NautilusTreeNode {
-	int ref_count;
+struct TreeNode {
+	/* part of this node for the file itself */
 
 	NautilusFile *file;
-	NautilusDirectory *directory;
-	
+	char *display_name;
 	GdkPixbuf *closed_pixbuf;
 
-	NautilusTreeNode *parent;
-	NautilusTreeNode *children;
+	TreeNode *parent;
+	TreeNode *next;
+	TreeNode *prev;	
+
+	/* part of the node used only for directories */
+
+	int child_ref_count;
 	
-	NautilusTreeNode *next;
-	NautilusTreeNode *prev;
-	
+	NautilusDirectory *directory;
 	guint done_loading_id;
 	guint files_added_id;
 	guint files_changed_id;
 
-	gboolean is_dummy_node;
-	NautilusDummyTreeNodeType dummy_type;
+	TreeNode *first_child;
+	gboolean done_loading;
 };
 
 struct NautilusTreeModelDetails {
+	int stamp;
 	GHashTable *file_to_node_map;
 	
-	int stamp;
-	NautilusTreeNode *root_node;
-	
-	guint root_node_changed_signal_id;
-	gboolean root_node_reported;
+	TreeNode *root_node;	
+	guint root_node_changed_id;
+	gboolean root_node_parented;
 };
 
+static GObjectClass *parent_class;
 
-static void nautilus_tree_model_class_init      (NautilusTreeModelClass *klass);
-static void nautilus_tree_model_init            (NautilusTreeModel      *model);
-static void nautilus_tree_model_tree_model_init (GtkTreeModelIface      *iface);
+static void destroy_node_without_reporting (NautilusTreeModel *model,
+					    TreeNode          *node);
 
 static void
-nautilus_tree_node_set_parent (NautilusTreeNode *node, NautilusTreeNode *parent)
+object_unref_if_not_NULL (gpointer object)
 {
-	g_return_if_fail (node->parent == NULL);
-	
-	node->parent = parent;
-	
-	node->next = parent->children;
+	if (object == NULL) {
+		return;
+	}
+	g_object_unref (object);
+}
 
-	if (parent->children != NULL) {
-		parent->children->prev = node;
+static TreeNode *
+tree_node_new (NautilusFile *file)
+{
+	TreeNode *node;
+
+	node = g_new0 (TreeNode, 1);
+	node->file = nautilus_file_ref (file);
+	return node;
+}
+
+static void
+tree_node_unparent (TreeNode *node)
+{
+	TreeNode *parent, *next, *prev;
+
+	parent = node->parent;
+	next = node->next;
+	prev = node->prev;
+
+	if (parent == NULL) {
+		g_assert (next == NULL);
+		g_assert (prev == NULL);
+		return;
 	}
 
-	parent->children = node;
-}
+	if (next != NULL) {
+		next->prev = prev;
+	}
+	if (prev == NULL) {
+		g_assert (parent->first_child == node);
+		parent->first_child = next;
+	} else {
+		prev->next = next;
+	}
 
-static NautilusTreeNode *
-nautilus_tree_node_new (NautilusFile *file)
-{
-	NautilusTreeNode *node;
-
-	node = g_new0 (NautilusTreeNode, 1);
-
-	node->file = nautilus_file_ref (file);
-
-	return node;
-}
-
-static NautilusTreeNode *
-nautilus_dummy_tree_node_new (NautilusDummyTreeNodeType type)
-{
-	NautilusTreeNode *node;
-
-	node = g_new0 (NautilusTreeNode, 1);
-
-	node->is_dummy_node = TRUE;
-	node->dummy_type = type;
-
-	return node;
+	node->parent = NULL;
+	node->next = NULL;
+	node->prev = NULL;
 }
 
 static void
-nautilus_tree_node_update_icons (NautilusTreeNode *node)
+tree_node_destroy (TreeNode *node)
+{
+	g_assert (node->first_child == NULL);
+
+	tree_node_unparent (node);
+
+	g_object_unref (node->file);
+	g_free (node->display_name);
+	object_unref_if_not_NULL (node->closed_pixbuf);
+
+	g_assert (node->done_loading_id == 0);
+	g_assert (node->files_added_id == 0);
+	g_assert (node->files_changed_id == 0);
+	object_unref_if_not_NULL (node->directory);
+
+	g_free (node);
+}
+
+static void
+tree_node_parent (TreeNode *node, TreeNode *parent)
+{
+	TreeNode *first_child;
+
+	g_assert (parent != NULL);
+	g_assert (node->parent == NULL);
+	g_assert (node->prev == NULL);
+	g_assert (node->next == NULL);
+
+	first_child = parent->first_child;
+	
+	node->parent = parent;
+	node->next = first_child;
+
+	if (first_child != NULL) {
+		g_assert (first_child->prev == NULL);
+		first_child->prev = node;
+	}
+
+	parent->first_child = node;
+}
+
+static GdkPixbuf *
+tree_node_get_closed_pixbuf_from_factory (TreeNode *node)
+{
+	return nautilus_icon_factory_get_pixbuf_for_file
+		(node->file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS);
+}
+
+static gboolean
+tree_node_update_closed_pixbuf (TreeNode *node)
 {
 	GdkPixbuf *closed_pixbuf;
 
-	closed_pixbuf = nautilus_icon_factory_get_pixbuf_for_file
-		(node->file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS);
+	if (node->closed_pixbuf == NULL) {
+		return FALSE;
+	}
+	closed_pixbuf = tree_node_get_closed_pixbuf_from_factory (node);
+	if (closed_pixbuf == node->closed_pixbuf) {
+		g_object_unref (closed_pixbuf);
+		return FALSE;
+	}
+	g_object_unref (node->closed_pixbuf);
+	node->closed_pixbuf = closed_pixbuf;
+	return TRUE;
+}
 
-	if (node->closed_pixbuf) {
-		g_object_unref (node->closed_pixbuf);
+static gboolean
+tree_node_update_display_name (TreeNode *node)
+{
+	char *display_name;
+
+	if (node->display_name == NULL) {
+		return FALSE;
+	}
+	display_name = nautilus_file_get_display_name (node->file);
+	if (strcmp (display_name, node->display_name) == 0) {
+		g_free (display_name);
+		return FALSE;
+	}
+	g_free (node->display_name);
+	node->display_name = NULL;
+	return TRUE;
+}
+
+static GdkPixbuf *
+tree_node_get_closed_pixbuf (TreeNode *node)
+{
+	if (node->closed_pixbuf == NULL) {
+		node->closed_pixbuf = tree_node_get_closed_pixbuf_from_factory (node);
+	}
+	return node->closed_pixbuf;
+}
+
+static const char *
+tree_node_get_display_name (TreeNode *node)
+{
+	if (node->display_name == NULL) {
+		node->display_name = nautilus_file_get_display_name (node->file);
+	}
+	return node->display_name;
+}
+
+static gboolean
+tree_node_has_dummy_child (TreeNode *node)
+{
+	return node->directory != NULL
+		&& (!node->done_loading || node->first_child == NULL);
+}
+
+static int
+tree_node_get_child_index (TreeNode *parent, TreeNode *child)
+{
+	int i;
+	TreeNode *node;
+
+	if (child == NULL) {
+		g_assert (tree_node_has_dummy_child (parent));
+		return 0;
 	}
 
-	node->closed_pixbuf = closed_pixbuf;
+	i = tree_node_has_dummy_child (parent) ? 1 : 0;
+	for (node = parent->first_child; node != NULL; node = node->next, i++) {
+		if (child == node) {
+			return i;
+		}
+	}
+
+	g_assert_not_reached ();
+	return 0;
+}
+
+static gboolean
+make_iter_invalid (GtkTreeIter *iter)
+{
+	iter->stamp = 0;
+	iter->user_data = NULL;
+	iter->user_data2 = NULL;
+	iter->user_data3 = NULL;
+	return FALSE;
+}
+
+static gboolean
+make_iter_for_node (TreeNode *node, GtkTreeIter *iter, int stamp)
+{
+	if (node == NULL) {
+		return make_iter_invalid (iter);
+	}
+	iter->stamp = stamp;
+	iter->user_data = node;
+	iter->user_data2 = NULL;
+	iter->user_data3 = NULL;
+	return TRUE;
+}
+
+static gboolean
+make_iter_for_dummy_row (TreeNode *parent, GtkTreeIter *iter, int stamp)
+{
+	g_assert (tree_node_has_dummy_child (parent));
+	g_assert (parent != NULL);
+	iter->stamp = stamp;
+	iter->user_data = NULL;
+	iter->user_data2 = parent;
+	iter->user_data3 = NULL;
+	return TRUE;
+}
+
+static TreeNode *
+get_node_from_file (NautilusTreeModel *model, NautilusFile *file)
+{
+	return g_hash_table_lookup (model->details->file_to_node_map, file);
+}
+
+static TreeNode *
+create_node_for_file (NautilusTreeModel *model, NautilusFile *file)
+{
+	TreeNode *node;
+
+	g_assert (get_node_from_file (model, file) == NULL);
+	node = tree_node_new (file);
+	g_hash_table_insert (model->details->file_to_node_map, node->file, node);
+	return node;
+}
+
+static void
+report_row_inserted (NautilusTreeModel *model, GtkTreeIter *iter)
+{
+	GtkTreePath *path;
+
+	path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), iter);
+	gtk_tree_model_row_inserted (GTK_TREE_MODEL (model), path, iter);
+	gtk_tree_path_free (path);
+}
+
+static void
+report_row_contents_changed (NautilusTreeModel *model, GtkTreeIter *iter)
+{
+	GtkTreePath *path;
+
+	path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), iter);
+	gtk_tree_model_row_changed (GTK_TREE_MODEL (model), path, iter);
+	gtk_tree_path_free (path);
+}
+
+static void
+report_row_has_child_toggled (NautilusTreeModel *model, GtkTreeIter *iter)
+{
+	GtkTreePath *path;
+
+	path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), iter);
+	gtk_tree_model_row_has_child_toggled (GTK_TREE_MODEL (model), path, iter);
+	gtk_tree_path_free (path);
+}
+
+static GtkTreePath *
+get_node_path (NautilusTreeModel *model, TreeNode *node)
+{
+	GtkTreeIter iter;
+
+	make_iter_for_node (node, &iter, model->details->stamp);
+	return gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
+}
+
+static void
+report_node_inserted (NautilusTreeModel *model, TreeNode *node)
+{
+	GtkTreeIter iter;
+
+	make_iter_for_node (node, &iter, model->details->stamp);
+	report_row_inserted (model, &iter);
+	if (node->directory != NULL) {
+		report_row_has_child_toggled (model, &iter);
+	}
+}
+
+static void
+report_node_contents_changed (NautilusTreeModel *model, TreeNode *node)
+{
+	GtkTreeIter iter;
+
+	make_iter_for_node (node, &iter, model->details->stamp);
+	report_row_contents_changed (model, &iter);
+}
+
+static void
+report_node_has_child_toggled (NautilusTreeModel *model, TreeNode *node)
+{
+	GtkTreeIter iter;
+
+	make_iter_for_node (node, &iter, model->details->stamp);
+	report_row_has_child_toggled (model, &iter);
+}
+
+static void
+report_dummy_row_inserted (NautilusTreeModel *model, TreeNode *parent)
+{
+	GtkTreeIter iter;
+
+	make_iter_for_dummy_row (parent, &iter, model->details->stamp);
+	report_row_inserted (model, &iter);
+}
+
+static void
+report_dummy_row_deleted (NautilusTreeModel *model, TreeNode *parent)
+{
+	GtkTreeIter iter;
+	GtkTreePath *path;
+
+	make_iter_for_node (parent, &iter, model->details->stamp);
+	path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
+	gtk_tree_path_append_index (path, 0);
+	gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
+	gtk_tree_path_free (path);
+}
+
+static void
+report_dummy_row_contents_changed (NautilusTreeModel *model, TreeNode *parent)
+{
+	GtkTreeIter iter;
+
+	make_iter_for_dummy_row (parent, &iter, model->details->stamp);
+	report_row_contents_changed (model, &iter);
+}
+
+static void
+stop_monitoring_directory (NautilusTreeModel *model, TreeNode *node)
+{
+	NautilusDirectory *directory;
+
+	if (node->done_loading_id == 0) {
+		g_assert (node->files_added_id == 0);
+		g_assert (node->files_changed_id == 0);
+		return;
+	}
+
+	directory = node->directory;
+
+	g_signal_handler_disconnect (node->directory, node->done_loading_id);
+	g_signal_handler_disconnect (node->directory, node->files_added_id);
+	g_signal_handler_disconnect (node->directory, node->files_changed_id);
+
+	node->done_loading_id = 0;
+	node->files_added_id = 0;
+	node->files_changed_id = 0;
+
+	nautilus_directory_file_monitor_remove (node->directory, model);
+}
+
+static void
+destroy_children_without_reporting (NautilusTreeModel *model, TreeNode *parent)
+{
+	while (parent->first_child != NULL) {
+		destroy_node_without_reporting (model, parent->first_child);
+	}
+}
+
+static void
+destroy_node_without_reporting (NautilusTreeModel *model, TreeNode *node)
+{
+	stop_monitoring_directory (model, node);
+	destroy_children_without_reporting (model, node);
+	g_hash_table_remove (model->details->file_to_node_map, node->file);
+	tree_node_destroy (node);	
+}
+
+static void
+destroy_node (NautilusTreeModel *model, TreeNode *node)
+{
+	GtkTreePath *path;
+
+	path = get_node_path (model, node);
+
+	destroy_node_without_reporting (model, node);
+
+	gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
+	gtk_tree_path_free (path);
+}
+
+static void
+destroy_children (NautilusTreeModel *model, TreeNode *parent)
+{
+	while (parent->first_child != NULL) {
+		destroy_node (model, parent->first_child);
+	}
+}
+
+static gboolean
+update_node_without_reporting (NautilusTreeModel *model, TreeNode *node)
+{
+	gboolean changed;
+
+	changed = FALSE;
+	
+	if (node->directory == NULL && nautilus_file_is_directory (node->file)) {
+		node->directory = nautilus_directory_get_for_file (node->file);
+	} else if (node->directory != NULL && !nautilus_file_is_directory (node->file)) {
+		stop_monitoring_directory (model, node);
+		destroy_children (model, node);
+		nautilus_directory_unref (node->directory);
+		node->directory = NULL;
+		node->done_loading = FALSE;
+	}
+
+	changed |= tree_node_update_closed_pixbuf (node);
+	changed |= tree_node_update_display_name (node);
+
+	return changed;
+}
+
+static void
+update_node (NautilusTreeModel *model, TreeNode *node)
+{
+	gboolean had_dummy_child, has_dummy_child;
+	gboolean had_directory, has_directory;
+	gboolean changed;
+
+	/* FIXME: Handle case where node is no longer its parent's
+	 * child because it is gone, or moved.
+	 */
+
+	had_dummy_child = tree_node_has_dummy_child (node);
+	had_directory = node->directory != NULL;
+
+	changed = update_node_without_reporting (model, node);
+
+	has_dummy_child = tree_node_has_dummy_child (node);
+	has_directory = node->directory != NULL;
+	
+	if (had_dummy_child != has_dummy_child) {
+		if (has_dummy_child) {
+			report_dummy_row_inserted (model, node);
+		} else {
+			report_dummy_row_deleted (model, node);
+		}
+	}
+	if (had_directory != has_directory) {
+		report_node_has_child_toggled (model, node);
+	}
+
+	if (changed) {
+		report_node_contents_changed (model, node);
+	}
+}
+
+static void
+process_file_change (NautilusTreeModel *model,
+		     NautilusFile *file)
+{
+	TreeNode *node, *parent_node;
+	NautilusFile *parent;
+
+	node = get_node_from_file (model, file);
+	if (node != NULL) {
+		update_node (model, node);
+		return;
+	}
+
+	parent = nautilus_file_get_parent (file);
+	parent_node = get_node_from_file (model, parent);
+	nautilus_file_unref (parent);
+	if (parent_node == NULL) {
+		return;
+	}
+
+	node = create_node_for_file (model, file);
+	tree_node_parent (node, parent_node);
+	update_node_without_reporting (model, node);
+	report_node_inserted (model, node);
+}
+
+static void
+files_changed_callback (NautilusDirectory *directory,
+			GList *changed_files,
+			gpointer callback_data)
+{
+	NautilusTreeModel *model;
+	GList *node;
+
+	model = NAUTILUS_TREE_MODEL (callback_data);
+
+	for (node = changed_files; node != NULL; node = node->next) {
+		process_file_change (model, NAUTILUS_FILE (node->data));
+	}
+}
+
+static void
+done_loading_callback (NautilusDirectory *directory,
+		       NautilusTreeModel *model)
+{
+	NautilusFile *file;
+	TreeNode *node;
+
+	file = nautilus_directory_get_corresponding_file (directory);
+	node = get_node_from_file (model, file);
+	nautilus_file_unref (file);
+	g_assert (node != NULL);
+
+	if (node->done_loading) {
+		return;
+	}
+
+	g_assert (tree_node_has_dummy_child (node));
+
+	node->done_loading = TRUE;
+
+	if (tree_node_has_dummy_child (node)) {
+		report_dummy_row_contents_changed (model, node);
+	} else {
+		report_dummy_row_deleted (model, node);
+	}
+}
+
+static GList *
+get_tree_monitor_attributes (void)
+{
+	GList *attrs;
+
+	attrs = nautilus_icon_factory_get_required_file_attributes ();
+	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
+	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME);
+	return attrs;
+}
+
+static void
+start_monitoring_directory (NautilusTreeModel *model, TreeNode *node)
+{
+	GList *attrs;
+	NautilusDirectory *directory;
+
+	if (node->done_loading_id != 0) {
+		return;
+	}
+
+	g_assert (node->files_added_id == 0);
+	g_assert (node->files_changed_id == 0);
+
+	directory = node->directory;
+	
+	node->done_loading_id = g_signal_connect
+		(directory, "done_loading",
+		 G_CALLBACK (done_loading_callback), model);
+	
+	node->files_added_id = g_signal_connect 
+		(directory, "files_added",
+		 G_CALLBACK (files_changed_callback), model);
+	
+	node->files_changed_id = g_signal_connect 
+		(directory, "files_changed",
+		 G_CALLBACK (files_changed_callback), model);	
+	
+	attrs = get_tree_monitor_attributes ();
+	nautilus_directory_file_monitor_add (directory, model, TRUE, TRUE, attrs,
+					     files_changed_callback, model);
+	g_list_free (attrs);
+}
+
+static int
+nautilus_tree_model_get_n_columns (GtkTreeModel *model)
+{
+	return NAUTILUS_TREE_MODEL_NUM_COLUMNS;
+}
+
+static GType
+nautilus_tree_model_get_column_type (GtkTreeModel *model, int index)
+{
+	switch (index) {
+	case NAUTILUS_TREE_MODEL_DISPLAY_NAME_COLUMN:
+		return G_TYPE_STRING;
+	case NAUTILUS_TREE_MODEL_CLOSED_PIXBUF_COLUMN:
+		return GDK_TYPE_PIXBUF;
+	default:
+		g_assert_not_reached ();
+	}
+	
+	return G_TYPE_INVALID;
+}
+
+static gboolean
+iter_is_valid (NautilusTreeModel *model, const GtkTreeIter *iter)
+{
+	TreeNode *node, *parent;
+
+	if (iter->stamp != model->details->stamp) {
+		return FALSE;
+	}
+
+	node = iter->user_data;
+	parent = iter->user_data2;
+	if (node == NULL) {
+		if (parent != NULL) {
+			if (!NAUTILUS_IS_FILE (parent->file)) {
+				return FALSE;
+			}
+			if (!tree_node_has_dummy_child (parent)) {
+				return FALSE;
+			}
+		}
+	} else {
+		if (!NAUTILUS_IS_FILE (node->file)) {
+			return FALSE;
+		}
+		if (parent != NULL) {
+			return FALSE;
+		}
+	}
+	if (iter->user_data3 != NULL) {
+		return FALSE;
+	}
+	return TRUE;
+}
+
+static gboolean
+nautilus_tree_model_get_iter (GtkTreeModel *model, GtkTreeIter *iter, GtkTreePath *path)
+{
+	int *indices;
+	GtkTreeIter parent;
+	int depth, i;
+
+	indices = gtk_tree_path_get_indices (path);
+	depth = gtk_tree_path_get_depth (path);
+
+	if (! gtk_tree_model_iter_nth_child (model, iter, NULL, indices[0])) {
+		return FALSE;
+	}
+
+	for (i = 1; i < depth; i++) {
+		parent = *iter;
+
+		if (! gtk_tree_model_iter_nth_child (model, iter, &parent, indices[i])) {
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
+static GtkTreePath *
+nautilus_tree_model_get_path (GtkTreeModel *model, GtkTreeIter *iter)
+{
+	NautilusTreeModel *tree_model;
+	TreeNode *node, *parent;
+	GtkTreePath *path;
+	GtkTreeIter parent_iter;
+
+	g_return_val_if_fail (NAUTILUS_IS_TREE_MODEL (model), NULL);
+	tree_model = NAUTILUS_TREE_MODEL (model);
+	g_return_val_if_fail (iter_is_valid (tree_model, iter), NULL);
+
+	node = iter->user_data;
+	if (node == NULL) {
+		parent = iter->user_data2;
+		if (parent == NULL) {
+			return gtk_tree_path_new ();
+		}
+	} else {
+		parent = node->parent;
+		if (parent == NULL) {
+			g_assert (node == tree_model->details->root_node);
+			path = gtk_tree_path_new ();
+			gtk_tree_path_append_index (path, 0);
+			return path;
+		}
+	}
+
+	parent_iter.stamp = iter->stamp;
+	parent_iter.user_data = parent;
+	parent_iter.user_data2 = NULL;
+	parent_iter.user_data3 = NULL;
+
+	path = nautilus_tree_model_get_path (model, &parent_iter);
+	
+	gtk_tree_path_append_index (path, tree_node_get_child_index (parent, node));
+
+	return path;
+}
+
+static void
+nautilus_tree_model_get_value (GtkTreeModel *model, GtkTreeIter *iter, int column, GValue *value)
+{
+	TreeNode *node, *parent;
+	const char *dummy_node_str;
+
+	g_return_if_fail (NAUTILUS_IS_TREE_MODEL (model));
+	g_return_if_fail (iter_is_valid (NAUTILUS_TREE_MODEL (model), iter));
+	
+	node = iter->user_data;
+
+	switch (column) {
+	case NAUTILUS_TREE_MODEL_DISPLAY_NAME_COLUMN:
+		g_value_init (value, G_TYPE_STRING);
+		if (node == NULL) {
+			parent = iter->user_data2;
+			dummy_node_str = parent->done_loading ? _("(Empty)") : _("Loading...");
+			g_value_set_static_string (value, dummy_node_str);
+		} else {
+			g_value_set_string (value, tree_node_get_display_name (node));
+		}
+		break;
+	case NAUTILUS_TREE_MODEL_CLOSED_PIXBUF_COLUMN:
+		g_value_init (value, GDK_TYPE_PIXBUF);
+		g_value_set_object (value, node == NULL ? NULL : tree_node_get_closed_pixbuf (node));
+		break;
+	default:
+		g_assert_not_reached ();
+	}
+}
+
+static gboolean
+nautilus_tree_model_iter_next (GtkTreeModel *model, GtkTreeIter *iter)
+{
+	TreeNode *node, *parent, *next;
+
+	g_return_val_if_fail (NAUTILUS_IS_TREE_MODEL (model), FALSE);
+	g_return_val_if_fail (iter_is_valid (NAUTILUS_TREE_MODEL (model), iter), FALSE);
+	
+	node = iter->user_data;
+
+	if (node == NULL) {
+		parent = iter->user_data2;
+		next = parent->first_child;
+	} else {
+		next = node->next;
+	}
+
+	return make_iter_for_node (next, iter, iter->stamp);
+}
+
+static gboolean
+nautilus_tree_model_iter_children (GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter *parent_iter)
+{
+	TreeNode *parent;
+
+	g_return_val_if_fail (NAUTILUS_IS_TREE_MODEL (model), FALSE);
+	g_return_val_if_fail (iter_is_valid (NAUTILUS_TREE_MODEL (model), parent_iter), FALSE);
+	
+	parent = parent_iter->user_data;
+	if (parent == NULL) {
+		return make_iter_invalid (iter);
+	}
+
+	if (tree_node_has_dummy_child (parent)) {
+		return make_iter_for_dummy_row (parent, iter, parent_iter->stamp);
+	}
+	return make_iter_for_node (parent->first_child, iter, parent_iter->stamp);
+}
+
+static gboolean
+nautilus_tree_model_iter_parent (GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter *child_iter)
+{
+	TreeNode *child, *parent;
+	
+	g_return_val_if_fail (NAUTILUS_IS_TREE_MODEL (model), FALSE);
+	g_return_val_if_fail (iter_is_valid (NAUTILUS_TREE_MODEL (model), child_iter), FALSE);
+
+	child = child_iter->user_data;
+
+	if (child == NULL) {
+		parent = child_iter->user_data2;
+	} else {
+		parent = child->parent;
+	}
+
+	return make_iter_for_node (parent, iter, child_iter->stamp);
+}
+
+static gboolean
+nautilus_tree_model_iter_has_child (GtkTreeModel *model, GtkTreeIter *iter)
+{
+	TreeNode *node;
+
+	g_return_val_if_fail (NAUTILUS_IS_TREE_MODEL (model), FALSE);
+	g_return_val_if_fail (iter_is_valid (NAUTILUS_TREE_MODEL (model), iter), FALSE);
+
+	node = iter->user_data;
+	return node != NULL && node->directory != NULL;
+}
+
+static gboolean
+nautilus_tree_model_iter_nth_child (GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter *parent_iter, int n)
+{
+	NautilusTreeModel *tree_model;
+	TreeNode *parent, *node;
+	int i;
+	
+	g_return_val_if_fail (NAUTILUS_IS_TREE_MODEL (model), FALSE);
+	g_return_val_if_fail (parent_iter == NULL || iter_is_valid (NAUTILUS_TREE_MODEL (model), parent_iter), FALSE);
+	
+	tree_model = NAUTILUS_TREE_MODEL (model);
+
+	if (parent_iter == NULL) {
+		if (n != 0) {
+			return make_iter_invalid (iter);
+		}
+		return make_iter_for_node (tree_model->details->root_node,
+						  iter, tree_model->details->stamp);
+	}
+
+	parent = parent_iter->user_data;
+	if (parent == NULL) {
+		return make_iter_invalid (iter);
+	}
+
+	i = tree_node_has_dummy_child (parent) ? 1 : 0;
+	if (n == 0 && i == 1) {
+		return make_iter_for_dummy_row (parent, iter, parent_iter->stamp);
+	}
+	for (node = parent->first_child; i != n; i++, node = node->next) {
+		if (node == NULL) {
+			return make_iter_invalid (iter);
+		}
+	}
+
+	return make_iter_for_node (node, iter, parent_iter->stamp);	
+}
+
+static void
+first_child_ref (NautilusTreeModel *model, TreeNode *node)
+{
+	g_assert (node->child_ref_count == 1);
+	start_monitoring_directory (model, node);
+}
+
+static void
+last_child_unref (NautilusTreeModel *model, TreeNode *node)
+{
+	g_assert (node->child_ref_count == 0);
+	stop_monitoring_directory (model, node);
+	destroy_children (model, node);
+}
+
+static void
+nautilus_tree_model_ref_node (GtkTreeModel *model, GtkTreeIter *iter)
+{
+	TreeNode *node, *parent;
+
+	g_return_if_fail (NAUTILUS_IS_TREE_MODEL (model));
+	g_return_if_fail (iter_is_valid (NAUTILUS_TREE_MODEL (model), iter));
+
+	node = iter->user_data;
+	if (node == NULL) {
+		parent = iter->user_data2;
+	} else {
+		parent = node->parent;
+	}
+
+	if (parent == NULL) {
+		g_assert (node == NAUTILUS_TREE_MODEL (model)->details->root_node);
+	} else {
+		g_assert (parent->child_ref_count >= 0);
+		if (++parent->child_ref_count == 1) {
+			first_child_ref (NAUTILUS_TREE_MODEL (model), parent);
+		}
+	}
+}
+
+static void
+nautilus_tree_model_unref_node (GtkTreeModel *model, GtkTreeIter *iter)
+{
+	TreeNode *node, *parent;
+
+	g_return_if_fail (NAUTILUS_IS_TREE_MODEL (model));
+	g_return_if_fail (iter_is_valid (NAUTILUS_TREE_MODEL (model), iter));
+
+	node = iter->user_data;
+	if (node == NULL) {
+		parent = iter->user_data2;
+	} else {
+		parent = node->parent;
+	}
+
+	if (parent == NULL) {
+		g_assert (node == NAUTILUS_TREE_MODEL (model)->details->root_node);
+	} else {
+		g_assert (parent->child_ref_count >= 0);
+		if (--parent->child_ref_count == 0) {
+			last_child_unref (NAUTILUS_TREE_MODEL (model), parent);
+		}
+	}
+}
+
+static void
+root_node_file_changed_callback (NautilusFile *file, NautilusTreeModel *model)
+{
+	update_node (model, model->details->root_node);
+}
+
+static void
+nautilus_tree_model_set_root_uri (NautilusTreeModel *model, const char *root_uri)
+{
+	NautilusFile *file;
+	TreeNode *node;
+	GList *attrs;
+	
+	g_assert (model->details->root_node == NULL);
+	
+	file = nautilus_file_get (root_uri);
+
+	node = create_node_for_file (model, file);
+	model->details->root_node = node;
+
+	model->details->root_node_changed_id = g_signal_connect
+		(file, "changed",
+		 G_CALLBACK (root_node_file_changed_callback), model);
+
+	attrs = get_tree_monitor_attributes ();
+	nautilus_file_monitor_add (file, model, attrs);
+	g_list_free (attrs);
+
+	nautilus_file_unref (file);
+
+	update_node_without_reporting (model, node);
+	report_node_inserted (model, node);
+}
+
+NautilusTreeModel *
+nautilus_tree_model_new (const char *root_uri)
+{
+	NautilusTreeModel *model;
+
+	model = g_object_new (NAUTILUS_TYPE_TREE_MODEL, NULL);
+	nautilus_tree_model_set_root_uri (model, root_uri);
+	
+	return model;
+}
+
+static void
+nautilus_tree_model_init (NautilusTreeModel *model)
+{
+	model->details = g_new0 (NautilusTreeModelDetails, 1);
+
+	do
+		model->details->stamp = g_random_int ();
+	while (model->details->stamp == 0);
+
+	model->details->file_to_node_map = g_hash_table_new (NULL, NULL);
+}
+
+static void
+nautilus_tree_model_finalize (GObject *object)
+{
+	NautilusTreeModel *model;
+	TreeNode *root;
+
+	model = NAUTILUS_TREE_MODEL (object);
+
+	root = model->details->root_node;
+	if (root != NULL) {
+		g_signal_handler_disconnect (root->file, model->details->root_node_changed_id);
+		nautilus_file_monitor_remove (root->file, model);
+		destroy_node_without_reporting (model, root);
+	}
+
+	g_free (model->details);
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
+nautilus_tree_model_class_init (NautilusTreeModelClass *class)
+{
+	parent_class = g_type_class_peek_parent (class);
+
+	G_OBJECT_CLASS (class)->finalize = nautilus_tree_model_finalize;
+}
+
+static void
+nautilus_tree_model_tree_model_init (GtkTreeModelIface *iface)
+{
+	iface->get_n_columns = nautilus_tree_model_get_n_columns;
+	iface->get_column_type = nautilus_tree_model_get_column_type;
+	iface->get_iter = nautilus_tree_model_get_iter;
+	iface->get_path = nautilus_tree_model_get_path;
+	iface->get_value = nautilus_tree_model_get_value;
+	iface->iter_next = nautilus_tree_model_iter_next;
+	iface->iter_children = nautilus_tree_model_iter_children;
+	iface->iter_has_child = nautilus_tree_model_iter_has_child;
+	iface->iter_parent = nautilus_tree_model_iter_parent;
+	iface->iter_nth_child = nautilus_tree_model_iter_nth_child;
+	iface->ref_node = nautilus_tree_model_ref_node;
+	iface->unref_node = nautilus_tree_model_unref_node;
 }
 
 GType
@@ -144,11 +1081,11 @@ nautilus_tree_model_get_type (void)
 	if (object_type == 0) {
 		static const GTypeInfo object_info = {
 			sizeof (NautilusTreeModelClass),
-			NULL,		/* base_init */
-			NULL,		/* base_finalize */
+			NULL,
+			NULL,
 			(GClassInitFunc) nautilus_tree_model_class_init,
-			NULL,		/* class_finalize */
-			NULL,		/* class_data */
+			NULL,
+			NULL,
 			sizeof (NautilusTreeModel),
 			0,
 			(GInstanceInitFunc) nautilus_tree_model_init,
@@ -167,592 +1104,4 @@ nautilus_tree_model_get_type (void)
 	}
 
 	return object_type;
-}
-
-static void
-nautilus_tree_model_init (NautilusTreeModel *model)
-{
-	model->details = g_new0 (NautilusTreeModelDetails, 1);
-	model->details->stamp = g_random_int ();
-
-	model->details->file_to_node_map = g_hash_table_new (NULL, NULL);
-}
-
-static void
-nautilus_tree_model_class_init (NautilusTreeModelClass *klass)
-{
-}
-
-
-static char *
-uri_get_parent_text (const char *uri_text)
-{
-	GnomeVFSURI *uri;
-	GnomeVFSURI *parent;
-	char *parent_text;
-
-	uri = gnome_vfs_uri_new (uri_text);
-	parent = gnome_vfs_uri_get_parent (uri);
-	gnome_vfs_uri_unref (uri);
-
-	if (parent == NULL) {
-		return NULL;
-	}
-
-	parent_text = gnome_vfs_uri_to_string (parent, GNOME_VFS_URI_HIDE_NONE);
-	gnome_vfs_uri_unref (parent);
-
-	return parent_text;
-}
-
-
-static NautilusTreeNode *
-nautilus_tree_model_get_node_from_file (NautilusTreeModel *model, NautilusFile *file)
-{
-	return g_hash_table_lookup (model->details->file_to_node_map, file);
-}
-
-static NautilusTreeNode *
-nautilus_tree_model_get_node (NautilusTreeModel *model,
-			      const char        *uri)
-{
-	NautilusFile *file;
-	NautilusTreeNode *node;
-
-	g_return_val_if_fail (NAUTILUS_IS_TREE_MODEL (model), NULL);
-	g_return_val_if_fail (uri != NULL, NULL);
-
-	file = nautilus_file_get (uri);
-	
-	if (file == NULL) {
-		return NULL;
-	}
-
-	node = nautilus_tree_model_get_node_from_file (model, file);
-	nautilus_file_unref (file);
-
-	return node;
-}
-
-static void
-report_node_changed (NautilusTreeModel *model, NautilusTreeNode *node)
-{
-	char *node_uri, *parent_uri;
-	char *file_uri;
-	NautilusTreeNode *parent_node, *dummy_node;
-	GtkTreeIter iter;
-	GtkTreePath *path;
-	
-	if (nautilus_file_get_file_type (node->file) == GNOME_VFS_FILE_TYPE_UNKNOWN) {
-		return;
-	}
-
-	node_uri = nautilus_file_get_uri (node->file);
-	
-	if (nautilus_tree_model_get_node_from_file (model, node->file) == NULL) {
-		/* The file has been added */
-
-		parent_uri = uri_get_parent_text (node_uri);
-
-		if (parent_uri != NULL) {
-			parent_node = nautilus_tree_model_get_node (model, parent_uri);
-
-			if (parent_node != NULL) {
-				nautilus_tree_node_set_parent (node, parent_node);
-			}
-			else {
-				/* FIXME: Add register unparented node here */
-			}
-
-			g_free (parent_uri);
-		}
-
-		g_hash_table_insert (model->details->file_to_node_map,
-				     node->file,
-				     node);
-
-		nautilus_tree_node_update_icons (node);
-
-		/* Tell the view that things have changed */
-		iter.stamp = model->details->stamp;
-		iter.user_data = node;
-		path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
-		gtk_tree_model_row_inserted (GTK_TREE_MODEL (model), path, &iter);
-		gtk_tree_path_free (path);
-
-		
-		if (node->directory == NULL && nautilus_file_is_directory (node->file)) {
-			node->directory = nautilus_directory_get (node_uri);
-
-			dummy_node = nautilus_dummy_tree_node_new (NAUTILUS_DUMMY_TREE_NODE_LOADING);
-			nautilus_tree_node_set_parent (dummy_node, node);
-			
-			/* Tell the view that things have changed */
-			iter.stamp = model->details->stamp;
-			iter.user_data = dummy_node;
-			path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
-			gtk_tree_model_row_inserted (GTK_TREE_MODEL (model), path, &iter);
-			gtk_tree_path_free (path);
-		}
-
-	}
-	else {
-		/* The file has changed */
-
-		file_uri = nautilus_file_get_uri (node->file);
-
-		if (strcmp (file_uri, node_uri) == 0) {
-			/* A normal change */
-
-			nautilus_tree_node_update_icons (node);
-			
-			iter.stamp = model->details->stamp;
-			iter.user_data = node;
-			
-			path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
-			gtk_tree_model_row_changed (GTK_TREE_MODEL (model), path, &iter);
-			gtk_tree_path_free (path);
-		}
-		else {
-			/* FIXME: Implement rename support */
-		}
-	}
-}
-
-static void
-report_root_node_if_possible (NautilusTreeModel *model)
-{
-	if (nautilus_file_get_file_type (model->details->root_node->file)
-	    != GNOME_VFS_FILE_TYPE_UNKNOWN) {
-
-		model->details->root_node_reported = TRUE;
-		
-		report_node_changed (model, model->details->root_node);
-	}
-}
-
-static void
-process_file_change (NautilusTreeModel *model,
-		     NautilusFile *file)
-{
-	NautilusTreeNode *node;
-
-	node = nautilus_tree_model_get_node_from_file (model, file);
-
-	if (node == NULL) {
-		node = nautilus_tree_node_new (file);
-		
-		report_node_changed (model, node);
-	}
-}
-
-static void
-nautilus_tree_model_directory_files_changed_callback (NautilusDirectory *directory,
-						      GList *changed_files,
-						      gpointer callback_data)
-{
-	NautilusTreeModel *model;
-	NautilusFile *file;
-	GList *node;
-
-	model = NAUTILUS_TREE_MODEL (callback_data);
-
-	for (node = changed_files; node; node = node->next) {
-		file = NAUTILUS_FILE (node->data);
-
-		process_file_change (model, file);
-	}
-}
-
-static void
-nautilus_tree_model_directory_done_loading_callback (NautilusDirectory        *directory,
-						     NautilusTreeModel        *model)
-{
-	NautilusFile *file;
-
-	file = nautilus_directory_get_corresponding_file (directory);
-}
-
-static void
-nautilus_tree_model_begin_monitoring_directory (NautilusTreeModel *model, NautilusTreeNode *node)
-{
-	GList *monitor_attributes;
-	NautilusDirectory *directory;
-	
-	if (node->done_loading_id != 0) {
-		return;
-	}
-
-	directory = node->directory;
-	
-	monitor_attributes = nautilus_icon_factory_get_required_file_attributes ();
-	monitor_attributes = g_list_prepend (monitor_attributes, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
-	monitor_attributes = g_list_prepend (monitor_attributes, NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME);
-
-	node->done_loading_id = g_signal_connect
-		(directory,
-		 "done_loading",
-		 G_CALLBACK (nautilus_tree_model_directory_done_loading_callback),
-		 model);
-	
-	node->files_added_id = g_signal_connect 
-		(directory,
-		 "files_added",
-		 G_CALLBACK (nautilus_tree_model_directory_files_changed_callback),
-		 model);
-	
-	node->files_changed_id = g_signal_connect 
-		(directory,
-		 "files_changed",
-		 G_CALLBACK (nautilus_tree_model_directory_files_changed_callback),
-		 model);	
-
-	nautilus_directory_file_monitor_add (directory, model,
-					     TRUE, TRUE, monitor_attributes,
-					     nautilus_tree_model_directory_files_changed_callback,
-					     model);
-	g_list_free (monitor_attributes);
-}
-
-static int
-nautilus_tree_model_get_n_columns (GtkTreeModel *tree_model)
-{
-	return NAUTILUS_TREE_MODEL_NUM_COLUMNS;
-}
-
-static GType
-nautilus_tree_model_get_column_type (GtkTreeModel *tree_model, int index)
-{
-	switch (index) {
-	case NAUTILUS_TREE_MODEL_DISPLAY_NAME_COLUMN:
-		return G_TYPE_STRING;
-	case NAUTILUS_TREE_MODEL_CLOSED_PIXBUF_COLUMN:
-		return GDK_TYPE_PIXBUF;
-	default:
-		g_assert_not_reached ();
-	}
-	
-	return G_TYPE_INVALID;
-}
-
-static gboolean
-nautilus_tree_model_get_iter (GtkTreeModel *model, GtkTreeIter *iter, GtkTreePath *path)
-{
-	NautilusTreeModel *tree_model;
-	int *indices;
-	GtkTreeIter parent;
-	int depth, i;
-
-	tree_model = NAUTILUS_TREE_MODEL (model);
-	
-	indices = gtk_tree_path_get_indices (path);
-	depth = gtk_tree_path_get_depth (path);
-
-	parent.stamp = tree_model->details->stamp;
-	parent.user_data = NULL;
-
-	if (gtk_tree_model_iter_nth_child (model, iter, NULL, indices[0]) == FALSE) {
-		return FALSE;
-	}
-
-	for (i = 1; i < depth; i++) {
-		parent = *iter;
-
-		if (gtk_tree_model_iter_nth_child (model, iter, &parent, indices[i]) == FALSE) {
-			return FALSE;
-		}
-	}
-
-	return TRUE;
-}
-
-static GtkTreePath *
-nautilus_tree_model_get_path (GtkTreeModel *model, GtkTreeIter *iter)
-{
-	GtkTreePath *path;
-	GtkTreeIter tmp_iter;
-	NautilusTreeNode *tmp_node;
-	NautilusTreeModel *tree_model;
-	int i;
-
-	tree_model = NAUTILUS_TREE_MODEL (model);
-
-	i = 0;
-	tmp_node = iter->user_data;
-
-	if (tmp_node->parent == NULL) {
-		path = gtk_tree_path_new ();
-		tmp_node = tree_model->details->root_node;
-	}
-	else {
-		tmp_iter = *iter;
-
-		tmp_iter.user_data = tmp_node->parent;
-
-		path = nautilus_tree_model_get_path (model, &tmp_iter);
-
-		tmp_node = ((NautilusTreeNode *)iter->user_data)->parent->children;
-	}
-
-	for (; tmp_node; tmp_node = tmp_node->next) {
-		if (tmp_node == iter->user_data) {
-			break;
-		}
-
-		i++;
-	}
-
-	gtk_tree_path_append_index (path, i);
-	
-	return path;
-}
-
-static void
-nautilus_tree_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column, GValue *value)
-{
-	NautilusTreeNode *node;
-	NautilusFile *file;
-
-	g_return_if_fail (iter->stamp == NAUTILUS_TREE_MODEL (tree_model)->details->stamp);
-	
-	file = NULL;
-	
-	node = iter->user_data;
-
-	if (node != NULL) {
-		file = node->file;
-	}
-	
-	switch (column) {
-	case NAUTILUS_TREE_MODEL_DISPLAY_NAME_COLUMN:
-		g_value_init (value, G_TYPE_STRING);
-		if (node->is_dummy_node) {
-			g_value_set_string (value,
-					    node->dummy_type == NAUTILUS_DUMMY_TREE_NODE_LOADING ?
-					    ("Loading...") :
-					    ("(Empty)"));
-		}
-		else {
-			g_value_set_string_take_ownership (value, nautilus_file_get_display_name (file));
-		}
-		break;
-	case NAUTILUS_TREE_MODEL_CLOSED_PIXBUF_COLUMN:
-		g_value_init (value, GDK_TYPE_PIXBUF);
-		g_value_set_object (value, node->closed_pixbuf);
-		break;
-	default:
-		g_assert_not_reached ();
-	}
-}
-
-static gboolean
-nautilus_tree_model_iter_next (GtkTreeModel *model, GtkTreeIter *iter)
-{
-	NautilusTreeNode *node;
-
-	g_return_val_if_fail (iter->stamp == NAUTILUS_TREE_MODEL (model)->details->stamp, FALSE);
-	g_return_val_if_fail (iter->user_data != NULL, FALSE);
-	
-	node = iter->user_data;
-
-	if (node->next != NULL) {
-		iter->user_data = node->next;
-
-		return TRUE;
-	}
-	else {
-		return FALSE;
-	}
-}
-
-static gboolean
-nautilus_tree_model_iter_children (GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter *parent)
-{
-	NautilusTreeNode *parent_node;
-
-	g_return_val_if_fail (parent == NULL || parent->stamp == NAUTILUS_TREE_MODEL (model)->details->stamp, FALSE);
-	
-	parent_node = parent->user_data;
-
-	g_assert (parent_node->children != NULL);
-
-	/* We can call this function more than once,
-	 * but it'll only begin monitoring the first time it's called.
-	 */
-	nautilus_tree_model_begin_monitoring_directory (NAUTILUS_TREE_MODEL (model),
-							parent_node);
-
-	iter->stamp = NAUTILUS_TREE_MODEL (model)->details->stamp;
-	iter->user_data = parent_node->children;
-
-	return TRUE;
-}
-
-static gboolean
-nautilus_tree_model_iter_parent (GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter *child)
-{
-	NautilusTreeNode *node;
-	
-	g_return_val_if_fail (iter->stamp == NAUTILUS_TREE_MODEL (model)->details->stamp, FALSE);
-
-	node = child->user_data;
-
-	if (node->parent == NULL) {
-		return FALSE;
-	}
-
-	iter->user_data = node->parent;
-	iter->stamp = NAUTILUS_TREE_MODEL (model)->details->stamp;
-	
-	return TRUE;
-}
-
-static gboolean
-nautilus_tree_model_iter_has_child (GtkTreeModel *model, GtkTreeIter *iter)
-{
-	NautilusTreeNode *node;
-
-	g_return_val_if_fail (iter->stamp == NAUTILUS_TREE_MODEL (model)->details->stamp, FALSE);
-	g_return_val_if_fail (iter->user_data != NULL, FALSE);
-
-	node = iter->user_data;
-
-	return node->children != NULL;
-
-}
-
-static gboolean
-nautilus_tree_model_iter_nth_child (GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter *parent, int n)
-{
-	NautilusTreeModel *tree_model;
-	NautilusTreeNode *child;
-	int i;
-	
-	tree_model = NAUTILUS_TREE_MODEL (model);
-
-	if (parent == NULL) {
-		child = tree_model->details->root_node;
-	}
-	else {
-		child = ((NautilusTreeNode *)parent->user_data)->children;
-	}
-
-	for (i = 0; i < n; i++) {
-		if (child == NULL) {
-			break;
-		}
-
-		child = child->next;
-	}
-
-	if (child != NULL) {
-		iter->user_data = child;
-		iter->stamp = tree_model->details->stamp;
-		
-		return TRUE;
-	}
-	else {
-		return FALSE;
-	}
-	
-}
-
-static void
-nautilus_tree_model_tree_model_init (GtkTreeModelIface *iface)
-{
-	iface->get_n_columns = nautilus_tree_model_get_n_columns;
-	iface->get_column_type = nautilus_tree_model_get_column_type;
-	iface->get_iter = nautilus_tree_model_get_iter;
-	iface->get_path = nautilus_tree_model_get_path;
-	iface->get_value = nautilus_tree_model_get_value;
-	iface->iter_next = nautilus_tree_model_iter_next;
-	iface->iter_children = nautilus_tree_model_iter_children;
-	iface->iter_has_child = nautilus_tree_model_iter_has_child;
-	iface->iter_parent = nautilus_tree_model_iter_parent;
-	iface->iter_nth_child = nautilus_tree_model_iter_nth_child;
-}
-
-static void
-nautilus_tree_model_root_node_file_monitor (NautilusFile *file, NautilusTreeModel *model)
-{
-	if (!model->details->root_node_reported) {
-		report_root_node_if_possible (model);
-	}
-	else {
-		report_node_changed (model,
-				     model->details->root_node);
-	}
-}
-
-
-static void
-nautilus_tree_model_set_root_uri (NautilusTreeModel *model, const char *root_uri)
-{
-	NautilusFile *file;
-	GList *monitor_attributes;
-	
-	/* You can only set the root node once */
-	g_return_if_fail (model->details->root_node == NULL);
-	
-	file = nautilus_file_get (root_uri);
-	model->details->root_node = nautilus_tree_node_new (file);
-	
-	if (!model->details->root_node_reported) {
-		report_root_node_if_possible (model);
-	}
-	
-	/* Setup a file monitor for the root node */
-	model->details->root_node_changed_signal_id = g_signal_connect
-		(file,
-		 "changed",
-		 G_CALLBACK (nautilus_tree_model_root_node_file_monitor),
-		 model);
-
-	monitor_attributes = nautilus_icon_factory_get_required_file_attributes ();
-	monitor_attributes = g_list_prepend (monitor_attributes, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
-	monitor_attributes = g_list_prepend (monitor_attributes, NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME);
-	nautilus_file_monitor_add (file,
-				   model,
-				   monitor_attributes);
-	g_list_free (monitor_attributes);
-
-	report_root_node_if_possible (model);
-}
-
-NautilusTreeModel *
-nautilus_tree_model_new (const char *root_uri)
-{
-	NautilusTreeModel *model;
-
-	model = g_object_new (NAUTILUS_TYPE_TREE_MODEL, NULL);
-	nautilus_tree_model_set_root_uri (model, root_uri);
-	
-	return model;
-}
-
-static void
-nautilus_tree_model_dump_helper (NautilusTreeNode *node, int indent)
-{
-	int i;
-	NautilusTreeNode *tmp_node;
-	
-	for (i = 0; i < indent; i++)
-		g_print (" ");
-
-	if (node->is_dummy_node)
-		g_print ("%p %s\n", node, node->dummy_type == NAUTILUS_DUMMY_TREE_NODE_LOADING ?
-			 ("Loading...") :
-			 ("(Empty)"));
-	else
-		g_print ("%p %s\n", node, node->file ? nautilus_file_get_name (node->file): "(unknown)");
-
-	for (tmp_node = node->children; tmp_node; tmp_node = tmp_node->next) {
-		nautilus_tree_model_dump_helper (tmp_node, indent + 1);
-	}
-}
-
-void
-nautilus_tree_model_dump (NautilusTreeModel *model)
-{
-	nautilus_tree_model_dump_helper (model->details->root_node, 0);
 }

@@ -33,7 +33,6 @@
 #include <dirent.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
-#include <eel/eel-gobject-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
@@ -609,38 +608,23 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 					     	     create_one_mount_link,
 						     desktop_icon_view);
 	
-	g_signal_connect (icon_container,
-			    "middle_click",
-			    G_CALLBACK (fm_desktop_icon_view_handle_middle_click),
-			    desktop_icon_view);
+	g_signal_connect (icon_container, "middle_click",
+			  G_CALLBACK (fm_desktop_icon_view_handle_middle_click), desktop_icon_view);
 			    
-	g_signal_connect (icon_container,
-			    "compare_icons",
-			    G_CALLBACK (desktop_icons_compare_callback),
-			    desktop_icon_view);
+	g_signal_connect (icon_container, "compare_icons",
+			  G_CALLBACK (desktop_icons_compare_callback), desktop_icon_view);
 
-	g_signal_connect (desktop_icon_view,
-			    "event",
-			    G_CALLBACK (event_callback),
-			    desktop_icon_view);
-
-	eel_signal_connect_while_alive (G_OBJECT (nautilus_trash_monitor_get ()),
-					"trash_state_changed",
-					G_CALLBACK (fm_desktop_icon_view_trash_state_changed_callback),
-					desktop_icon_view,
-					G_OBJECT (desktop_icon_view));
+	g_signal_connect (desktop_icon_view, "event",
+			  G_CALLBACK (event_callback), desktop_icon_view);
 	
-	eel_signal_connect_while_alive (G_OBJECT (nautilus_volume_monitor_get ()),
-					"volume_mounted",
-					G_CALLBACK (volume_mounted_callback),
-					desktop_icon_view,
-					G_OBJECT (desktop_icon_view));
+	g_signal_connect_object (nautilus_trash_monitor_get (), "trash_state_changed",
+				 G_CALLBACK (fm_desktop_icon_view_trash_state_changed_callback), desktop_icon_view, 0);
 	
-	eel_signal_connect_while_alive (G_OBJECT (nautilus_volume_monitor_get ()),
-					"volume_unmounted",
-					G_CALLBACK (volume_unmounted_callback),
-					desktop_icon_view,
-					G_OBJECT (desktop_icon_view));
+	g_signal_connect_object (nautilus_volume_monitor_get (), "volume_mounted",
+				 G_CALLBACK (volume_mounted_callback), desktop_icon_view, 0);
+	
+	g_signal_connect_object (nautilus_volume_monitor_get (), "volume_unmounted",
+				 G_CALLBACK (volume_unmounted_callback), desktop_icon_view, 0);
 	
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_HOME_URI,
 				      home_uri_changed,

@@ -29,7 +29,6 @@
 #include "nautilus-throbber.h"
 
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-gobject-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-gtk-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -156,29 +155,7 @@ set_bonobo_properties (BonoboPropertyBag *bag,
 	}
 }
 
-/* handle destroying the throbber */
-static void 
-nautilus_throbber_destroy (GtkObject *object)
-{
-	NautilusThrobber *throbber = NAUTILUS_THROBBER (object);
-
-	nautilus_throbber_remove_update_callback (throbber);
-	nautilus_throbber_unload_images (throbber);
-
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-					 nautilus_throbber_theme_changed,
-					 object);
-	
-	if (throbber->details->property_bag) {
-		bonobo_object_unref (BONOBO_OBJECT (throbber->details->property_bag));
-	}
-	
-	g_free (throbber->details);
-
-	GNOME_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
-}
-
-BonoboObject*
+BonoboObject *
 nautilus_throbber_get_control (NautilusThrobber *throbber)
 {
 	return throbber->details->control;
@@ -221,14 +198,6 @@ get_throbber_dimensions (NautilusThrobber *throbber, int *throbber_width, int* t
 }
 
 static void
-null_pointer_callback (GtkObject *object,
-		       gpointer callback_data)
-{
-	* (gpointer *) callback_data = NULL;
-}
-
-/* initialize the throbber */
-static void
 nautilus_throbber_instance_init (NautilusThrobber *throbber)
 {
 	char *delay_str;
@@ -256,11 +225,8 @@ nautilus_throbber_instance_init (NautilusThrobber *throbber)
 	
 	/* make the bonobo control */
 	throbber->details->control = BONOBO_OBJECT (bonobo_control_new (widget));
-	eel_signal_connect_while_alive (G_OBJECT (throbber->details->control),
-					"destroy",
-					G_CALLBACK (null_pointer_callback),
-					&throbber->details->control,
-					G_OBJECT (throbber));
+	g_object_add_weak_pointer (G_OBJECT (throbber->details->control),
+				   (gpointer *) &throbber->details->control);
 	
 	/* attach a property bag with the configure property */
 	throbber->details->property_bag = bonobo_property_bag_new (get_bonobo_properties, 
@@ -679,12 +645,40 @@ nautilus_throbber_size_request (GtkWidget *widget, GtkRequisition *requisition)
 }
 
 static void
-nautilus_throbber_class_init (NautilusThrobberClass *throbber_class)
+nautilus_throbber_finalize (GObject *object)
 {
-	GtkObjectClass *object_class = GTK_OBJECT_CLASS (throbber_class);
-	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (throbber_class);
+	NautilusThrobber *throbber;
+
+	throbber = NAUTILUS_THROBBER (object);
+
+	nautilus_throbber_remove_update_callback (throbber);
+	nautilus_throbber_unload_images (throbber);
 	
-	object_class->destroy = nautilus_throbber_destroy;
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+					 nautilus_throbber_theme_changed, object);
+	
+	if (throbber->details->property_bag != NULL) {
+		bonobo_object_unref (BONOBO_OBJECT (throbber->details->property_bag));
+	}
+	
+	if (throbber->details->control != NULL) {
+		g_object_remove_weak_pointer (G_OBJECT (throbber->details->control),
+					      (gpointer *) &throbber->details->control);
+	}
+
+	g_free (throbber->details);
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
+nautilus_throbber_class_init (NautilusThrobberClass *class)
+{
+	GtkWidgetClass *widget_class;
+
+	widget_class = GTK_WIDGET_CLASS (class);
+	
+	G_OBJECT_CLASS (class)->finalize = nautilus_throbber_finalize;
 
 	widget_class->expose_event = nautilus_throbber_expose;
 	widget_class->button_press_event = nautilus_throbber_button_press_event;

@@ -3,6 +3,7 @@
 /* 
  * Copyright (C) 2000, 2001 Eazel, Inc
  * Copyright (C) 2002 Anders Carlsson
+ * Copyright (C) 2002 Darin Adler
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -22,6 +23,7 @@
  * Authors: 
  *       Maciej Stachowiak <mjs@eazel.com>
  *       Anders Carlsson <andersca@gnu.org>
+ *       Darin Adler <darin@bentspoon.com>
  */
 
 /* nautilus-tree-view.c - tree sidebar panel
@@ -31,40 +33,31 @@
 #include "nautilus-tree-view.h"
 
 #include "nautilus-tree-model.h"
-#include <bonobo/bonobo-control.h>
-#include <eel/eel-gtk-macros.h>
-#include <gtk/gtkbutton.h>
 #include <gtk/gtkcellrendererpixbuf.h>
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtktreeview.h>
-#include <gtk/gtkvbox.h>
 
 struct NautilusTreeViewDetails {
-	NautilusView *nautilus_view;
-	
 	GtkWidget *scrolled_window;
 	GtkWidget *tree_view;
-	NautilusTreeModel *model;
 };
 
-static void     nautilus_tree_view_class_init        (NautilusTreeViewClass *klass);
-static void     nautilus_tree_view_init              (NautilusTreeView      *view);
-
-EEL_CLASS_BOILERPLATE (NautilusTreeView,
-				   nautilus_tree_view,
-				   NAUTILUS_TYPE_VIEW)
-
+BONOBO_CLASS_BOILERPLATE (NautilusTreeView, nautilus_tree_view,
+			  NautilusView, NAUTILUS_TYPE_VIEW)
 
 static void
 create_tree (NautilusTreeView *view)
 {
+	NautilusTreeModel *model;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *cell;
 	
-	view->details->model = nautilus_tree_model_new ("file:///");
-	view->details->tree_view = gtk_tree_view_new_with_model (GTK_TREE_MODEL (view->details->model));
-	g_object_unref (view->details->model);
+	model = nautilus_tree_model_new ("file:///");
+	view->details->tree_view = gtk_tree_view_new_with_model (GTK_TREE_MODEL (model));
+	g_object_unref (model);
+
+	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (view->details->tree_view), FALSE);
 
 	/* Create column */
 	column = gtk_tree_view_column_new ();
@@ -95,51 +88,48 @@ tree_activate_callback (BonoboControl *control, gboolean activating, gpointer us
 	NautilusTreeView *view;
 
 	view = NAUTILUS_TREE_VIEW (user_data);
-	g_assert (view != NULL);
 
-	if (activating) {
-		if (view->details->tree_view == NULL) {
-			create_tree (view);
-		}
+	if (activating && view->details->tree_view == NULL) {
+		create_tree (view);
 	}
 }
 
 static void
-dump_tree (GtkWidget *button, NautilusTreeView *view)
-{
-	if (view->details->model != NULL) {
-		nautilus_tree_model_dump (view->details->model);
-	}
-}
-
-static void
-nautilus_tree_view_init (NautilusTreeView *view)
+nautilus_tree_view_instance_init (NautilusTreeView *view)
 {
 	BonoboControl *control;
-	GtkWidget *button, *vbox;
+	
 	view->details = g_new0 (NautilusTreeViewDetails, 1);
-
+	
 	view->details->scrolled_window = gtk_scrolled_window_new (NULL, NULL);
-
+	
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view->details->scrolled_window), 
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 	
 	gtk_widget_show (view->details->scrolled_window);
-	vbox = gtk_vbox_new (FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (vbox), view->details->scrolled_window, TRUE, TRUE, 0);
-	button = gtk_button_new_with_label ("Dump tree");
-	g_signal_connect (button, "clicked", G_CALLBACK (dump_tree), view);
-	gtk_box_pack_start (GTK_BOX (vbox), button, FALSE, FALSE, 0);
-	gtk_widget_show_all (vbox);
-	control = bonobo_control_new (vbox);
-	nautilus_view_construct_from_bonobo_control (NAUTILUS_VIEW (view), control);
 
-	g_signal_connect (control, "activate",
-			  G_CALLBACK (tree_activate_callback), view);
+	control = bonobo_control_new (view->details->scrolled_window);
+	g_signal_connect_object (control, "activate",
+				 G_CALLBACK (tree_activate_callback), view, 0);
+	
+	nautilus_view_construct_from_bonobo_control (NAUTILUS_VIEW (view), control);
 }
 
 static void
-nautilus_tree_view_class_init (NautilusTreeViewClass *klass)
+nautilus_tree_view_finalize (GObject *object)
 {
+	NautilusTreeView *view;
+
+	view = NAUTILUS_TREE_VIEW (object);
+
+	g_free (view->details);
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
+nautilus_tree_view_class_init (NautilusTreeViewClass *class)
+{
+	G_OBJECT_CLASS (class)->finalize = nautilus_tree_view_finalize;
 }

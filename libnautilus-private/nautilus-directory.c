@@ -400,6 +400,20 @@ nautilus_directory_get_existing (const char *uri)
 	return nautilus_directory_get_internal (uri, FALSE);
 }
 
+NautilusDirectory *
+nautilus_directory_get_for_file (NautilusFile *file)
+{
+	char *uri;
+	NautilusDirectory *directory;
+
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	uri = nautilus_file_get_uri (file);
+	directory = nautilus_directory_get (uri);
+	g_free (uri);
+	return directory;
+}
+
 /* Returns a reffed NautilusFile object for this directory.
  */
 NautilusFile *

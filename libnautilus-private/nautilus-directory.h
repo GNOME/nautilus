@@ -144,6 +144,7 @@ GtkType            nautilus_directory_get_type                 (void);
  * If two windows are viewing the same uri, the directory object is shared.
  */
 NautilusDirectory *nautilus_directory_get                      (const char                *uri);
+NautilusDirectory *nautilus_directory_get_for_file             (NautilusFile              *file);
 
 /* Covers for gtk_object_ref and gtk_object_unref that provide two conveniences:
  * 1) You don't have to cast to GtkObject *, so using these is type safe.

@@ -39,7 +39,6 @@
 
 #include <eel/eel-background.h>
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-gobject-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
@@ -1516,14 +1515,10 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 		sidebar->details->has_buttons = TRUE;
 					
 		g_signal_connect (temp_button, "clicked",
-			G_CALLBACK (empty_trash_callback), NULL);
+				  G_CALLBACK (empty_trash_callback), NULL);
 		
-		eel_signal_connect_while_alive (G_OBJECT (nautilus_trash_monitor_get ()),
-						"trash_state_changed",
-						G_CALLBACK (nautilus_sidebar_trash_state_changed_callback),
-						temp_button,
-						G_OBJECT (temp_button));
-
+		g_signal_connect_object (nautilus_trash_monitor_get (), "trash_state_changed",
+					 G_CALLBACK (nautilus_sidebar_trash_state_changed_callback), temp_button, 0);
 	}
 	
 	/* Make buttons for each item in short list + "Open with..." catchall,

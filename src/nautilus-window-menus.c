@@ -44,7 +44,6 @@
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
-#include <eel/eel-gobject-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
@@ -1070,16 +1069,12 @@ nautilus_window_initialize_bookmarks_menu (NautilusWindow *window)
 						  G_OBJECT (window));
 		
 	/* Recreate dynamic part of menu if bookmark list changes */
-	gtk_signal_connect_object_while_alive (GTK_OBJECT (get_bookmark_list ()),
-			                       "contents_changed",
-			                       G_CALLBACK (schedule_refresh_bookmarks_menu),
-			   	               GTK_OBJECT (window));
+	g_signal_connect_object (get_bookmark_list (), "contents_changed",
+				 G_CALLBACK (schedule_refresh_bookmarks_menu), window, G_CONNECT_SWAPPED);
 
 	/* Recreate static & dynamic parts of menu if icon theme changes */
-	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
-					       "icons_changed",
-					       G_CALLBACK (schedule_refresh_bookmarks_menu),
-					       GTK_OBJECT (window));
+	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
+				 G_CALLBACK (schedule_refresh_bookmarks_menu), window, G_CONNECT_SWAPPED);
 }
 
 /**
@@ -1093,14 +1088,10 @@ nautilus_window_initialize_go_menu (NautilusWindow *window)
 	/* Recreate bookmarks part of menu if history list changes
 	 * or if icon theme changes.
 	 */
-	eel_signal_connect_object_while_alive (nautilus_signaller_get_current (),
-			                       "history_list_changed",
-			                       G_CALLBACK (schedule_refresh_go_menu),
-			   	               G_OBJECT (window));
-	eel_signal_connect_object_while_alive (G_OBJECT (nautilus_icon_factory_get ()),
-					       "icons_changed",
-					       G_CALLBACK (schedule_refresh_go_menu),
-					       G_OBJECT (window));
+	g_signal_connect_object (nautilus_signaller_get_current (), "history_list_changed",
+				 G_CALLBACK (schedule_refresh_go_menu), window, G_CONNECT_SWAPPED);
+	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
+				 G_CALLBACK (schedule_refresh_go_menu), window, G_CONNECT_SWAPPED);
 }
 
 /**

@@ -1,3 +1,47 @@
+2002-02-06  Darin Adler  <darin@bentspoon.com>
+
+	* components/throbber/nautilus-throbber.c:
+	(nautilus_throbber_instance_init): eel_signal_connect_while_alive
+	-> g_object_add_weak_pointer.
+	(nautilus_throbber_finalize), (nautilus_throbber_class_init):
+	Switch to finalize instead of destroy.
+
+	* components/tree/nautilus-tree-expansion-state.c: Remove.
+	* components/tree/nautilus-tree-expansion-state.h: Remove.
+	* components/tree/nautilus-tree-node-private.h: Remove.
+	* components/tree/nautilus-tree-node.c: Remove.
+	* components/tree/nautilus-tree-node.h: Remove.
+
+	* components/tree/nautilus-tree-model.h:
+	* components/tree/nautilus-tree-model.c:
+	Rewrite, based on Anders's first cut.
+
+	* components/tree/nautilus-tree-view.h: Tweaks.
+	* components/tree/nautilus-tree-view.c: (create_tree): Get rid of
+	the header.
+	(nautilus_tree_view_finalize), (nautilus_tree_view_class_init):
+	Added a missing finalize so that we don't leak.
+
+	* libnautilus-private/nautilus-directory.h:
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_directory_get_for_file): New.
+
+	* libnautilus-private/nautilus-file.h:
+	* libnautilus-private/nautilus-file.c:
+	(finalize): Change to finalize from destroy.
+	(nautilus_file_get_parent): Make public, simplify implementation
+	by using nautilus_directory_get_corresponding_file.
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_init):
+	* src/nautilus-sidebar.c: (nautilus_sidebar_update_buttons):
+	* src/nautilus-view-frame.c: (nautilus_view_frame_init),
+	(attach_view):
+	* src/nautilus-window-menus.c:
+	(nautilus_window_initialize_bookmarks_menu),
+	(nautilus_window_initialize_go_menu):
+	Use g_signal_connect-object instead of eel_signal_connect_while_alive.
+
 2002-02-06  Dave Camp  <dave@ximian.com>
 
 	* components/news/nautilus-news.c: Make this component build with

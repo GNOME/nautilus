@@ -45,6 +45,7 @@
 #include <grp.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-macros.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libxml/parser.h>
@@ -98,47 +99,17 @@ static guint signals[LAST_SIGNAL];
 
 static GHashTable *symbolic_links;
 
-static void     nautilus_file_class_init    (NautilusFileClass *klass);
-static void     nautilus_file_init          (NautilusFile      *file);
-static void     destroy                           (GtkObject         *object);
 static char *   nautilus_file_get_owner_as_string (NautilusFile      *file,
 						   gboolean           include_real_name);
 static char *   nautilus_file_get_type_as_string  (NautilusFile      *file);
 static gboolean update_info_and_name              (NautilusFile      *file,
 						   GnomeVFSFileInfo  *info);
 
-EEL_CLASS_BOILERPLATE (NautilusFile, nautilus_file, GTK_TYPE_OBJECT)
+GNOME_CLASS_BOILERPLATE (NautilusFile, nautilus_file,
+			 GtkObject, GTK_TYPE_OBJECT)
 
 static void
-nautilus_file_class_init (NautilusFileClass *klass)
-{
-	GtkObjectClass *object_class;
-
-	object_class = GTK_OBJECT_CLASS (klass);
-	
-	object_class->destroy = destroy;
-
-	signals[CHANGED] =
-		g_signal_new ("changed",
-		              G_TYPE_FROM_CLASS (object_class),
-		              G_SIGNAL_RUN_LAST,
-		              G_STRUCT_OFFSET (NautilusFileClass, changed),
-		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
-		              G_TYPE_NONE, 0);
-
-	signals[UPDATED_DEEP_COUNT_IN_PROGRESS] =
-		g_signal_new ("updated_deep_count_in_progress",
-		              G_TYPE_FROM_CLASS (object_class),
-		              G_SIGNAL_RUN_LAST,
-		              G_STRUCT_OFFSET (NautilusFileClass, updated_deep_count_in_progress),
-		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
-		              G_TYPE_NONE, 0);
-}
-
-static void
-nautilus_file_init (NautilusFile *file)
+nautilus_file_instance_init (NautilusFile *file)
 {
 	file->details = g_new0 (NautilusFileDetails, 1);
 }
@@ -409,7 +380,7 @@ nautilus_file_is_self_owned (NautilusFile *file)
 }
 
 static void
-destroy (GtkObject *object)
+finalize (GObject *object)
 {
 	NautilusDirectory *directory;
 	NautilusFile *file;
@@ -451,7 +422,7 @@ destroy (GtkObject *object)
 
 	g_free (file->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 
@@ -540,23 +511,16 @@ nautilus_file_get_parent_uri (NautilusFile *file)
 	return nautilus_directory_get_uri (file->details->directory);
 }
 
-static NautilusFile *
-get_file_for_parent_directory (NautilusFile *file)
+NautilusFile *
+nautilus_file_get_parent (NautilusFile *file)
 {
-	char *parent_uri;
-	NautilusFile *result;
-
 	g_assert (NAUTILUS_IS_FILE (file));
 	
 	if (nautilus_file_is_self_owned (file)) {
 		return NULL;
 	}
 
-	parent_uri = nautilus_directory_get_uri (file->details->directory);
-	result = nautilus_file_get (parent_uri);
-	g_free (parent_uri);
-
-	return result;
+	return nautilus_directory_get_corresponding_file (file->details->directory);
 }
 
 struct NautilusUserInfo {
@@ -821,7 +785,7 @@ nautilus_file_can_rename (NautilusFile *file)
 	}
 	
 	/* User must have write permissions for the parent directory. */
-	parent = get_file_for_parent_directory (file);
+	parent = nautilus_file_get_parent (file);
 
 	/* No parent directory for some reason (at root level?).
 	 * Can't tell whether this file is renameable, so return TRUE.
@@ -5064,6 +5028,30 @@ nautilus_extract_top_left_text (const char *text,
 	/* Allocate a copy to keep. */
 	*out = '\0';
 	return g_strdup (buffer);
+}
+
+static void
+nautilus_file_class_init (NautilusFileClass *class)
+{
+	G_OBJECT_CLASS (class)->finalize = finalize;
+
+	signals[CHANGED] =
+		g_signal_new ("changed",
+		              G_TYPE_FROM_CLASS (class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusFileClass, changed),
+		              NULL, NULL,
+		              gtk_marshal_VOID__VOID,
+		              G_TYPE_NONE, 0);
+
+	signals[UPDATED_DEEP_COUNT_IN_PROGRESS] =
+		g_signal_new ("updated_deep_count_in_progress",
+		              G_TYPE_FROM_CLASS (class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusFileClass, updated_deep_count_in_progress),
+		              NULL, NULL,
+		              gtk_marshal_VOID__VOID,
+		              G_TYPE_NONE, 0);
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

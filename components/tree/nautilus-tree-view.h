@@ -31,9 +31,6 @@
 
 #include <libnautilus/nautilus-view.h>
 
-typedef struct NautilusTreeView NautilusTreeView;
-typedef struct NautilusTreeViewClass NautilusTreeViewClass;
-
 #define NAUTILUS_TYPE_TREE_VIEW	           (nautilus_tree_view_get_type ())
 #define NAUTILUS_TREE_VIEW(obj)	           (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_TREE_VIEW, NautilusTreeView))
 #define NAUTILUS_TREE_VIEW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_TREE_VIEW, NautilusTreeViewClass))
@@ -42,15 +39,15 @@ typedef struct NautilusTreeViewClass NautilusTreeViewClass;
 
 typedef struct NautilusTreeViewDetails NautilusTreeViewDetails;
 
-struct NautilusTreeView {
+typedef struct {
 	NautilusView parent;
 	NautilusTreeViewDetails *details;
-};
+} NautilusTreeView;
 
-struct NautilusTreeViewClass {
+typedef struct {
 	NautilusViewClass parent_class;
-};
+} NautilusTreeViewClass;
 
-GtkType nautilus_tree_view_get_type (void);
+GType nautilus_tree_view_get_type (void);
 
 #endif /* NAUTILUS_TREE_VIEW_H */
