@@ -427,11 +427,17 @@ then
 			AC_DEFINE(HAVE_RPM_30)
 			_found_valid_rpm="yes"
 			AM_CONDITIONAL(COMPILE_RPM_30, true)
+			dnl if automake conditionals hadn't been a joke, I 
+			dnl wouldn't need this shite.
+			PACKAGESYSTEM="libeazelpackagesystem-rpm3.la"
+			AC_SUBST(PACKAGESYSTEM)
 		;;
 		4.*)
 			AC_DEFINE(HAVE_RPM_40)
 			_found_valid_rpm="yes"
 			AM_CONDITIONAL(COMPILE_RPM_40, true)
+			PACKAGESYSTEM="libeazelpackagesystem-rpm4.la"
+			AC_SUBST(PACKAGESYSTEM)
 		;;
 	  esac
 

@@ -19,19 +19,10 @@ INCLUDES = \
 	$(GHTTP_CFLAGS)						\
 	$(NULL)
 
-if COMPILE_RPM_30
-RPM3=libeazelpackagesystem-rpm3.la
-endif
-
-if COMPILE_RPM_40
-RPM4=libeazelpackagesystem-rpm4.la
-endif
-
 lib_LTLIBRARIES = \
 	libeazelinstall.la \
 	libeazelpackagesystem.la \
-	$(RPM3) \
-	$(RPM4) \
+	@PACKAGESYSTEM@ \
 	libeazelpackagesystem-skeleton.la \
 	$(NULL)
 
