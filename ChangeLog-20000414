@@ -1,3 +1,24 @@
+2000-01-27  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/gnome-icon-container.c:
+	(icon_select):
+	Fixed a bug that was causing some icons to not get
+	selected or unselected properly due to strangeness of
+	bit fields.
+
+	* libnautilus/gnome-progressive-loader.h: 
+	libnautilus/gnome-progressive-loader.c: 
+	libnautilus/Makefile.am:
+	Got rid of GnomeProgressiveLoader.
+	We're not going to use it.
+
+	* RENAMING: Andy added a new file that matched RENAMING,
+	but then I changed my mind about a renaming, spawning yet
+	more renaming!
+
+	* src/file-manager/fm-directory-view-icons.c:
+	Just tiny reformatting.
+
 2000-01-27  John Sullivan  <sullivan@eazel.com>
 
 	More work towards changing the sorting framework, and
