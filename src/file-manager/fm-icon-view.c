@@ -1284,8 +1284,8 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 		 MENU_PATH_UNSTRETCH_ICONS,
 		 COMMAND_UNSTRETCH_ICONS,
 		 eel_g_list_more_than_one_item (selection)
-		 	? _("_Restore Icons' Original Sizes")
-		 	: _("_Restore Icon's Original Size"));
+		 	? _("Restore Icons' _Original Sizes")
+		 	: _("Restore Icon's _Original Size"));
 	nautilus_bonobo_set_sensitive (icon_view->details->ui, 
 				       COMMAND_UNSTRETCH_ICONS,
 				       icon_container != NULL

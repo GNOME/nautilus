@@ -350,8 +350,8 @@ forget_history_if_confirmed (NautilusWindow *window)
 					   
 	dialog = eel_create_question_dialog (prompt,
 					     _("Clear History?"), 
-					     _("Clear"), RESPONSE_FORGET,
 					     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					     _("Clear"), RESPONSE_FORGET,
 					     GTK_WINDOW (window));
 
 	gtk_widget_show (GTK_WIDGET (dialog));
