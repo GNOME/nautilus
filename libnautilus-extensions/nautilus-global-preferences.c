@@ -35,6 +35,7 @@
 #include "nautilus-glib-extensions.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-view-identifier.h"
+#include "nautilus-string.h"
 
 /* Constants */
 #define GLOBAL_PREFERENCES_DIALOG_TITLE _("Nautilus Preferences")
@@ -73,6 +74,21 @@ static void       global_preferences_register_enum_with_defaults        (const c
 									 int                     hacker_default);
 
 static GtkWidget *global_prefs_dialog = NULL;
+
+static int
+compare_view_identifiers (gconstpointer a, gconstpointer b)
+{
+	NautilusViewIdentifier *idenfifier_a;
+	NautilusViewIdentifier *idenfifier_b;
+
+	g_assert (a != NULL);
+	g_assert (b != NULL);
+
+	idenfifier_a = (NautilusViewIdentifier*) a;
+	idenfifier_b = (NautilusViewIdentifier*) b;
+
+        return nautilus_strcmp (idenfifier_a->name, idenfifier_b->name);
+}
 
 /*
  * Private stuff
@@ -156,6 +172,8 @@ global_preferences_create_dialog (void)
 		NautilusViewIdentifier *identifier;
 
 		view_identifiers = global_preferences_get_sidebar_panel_view_identifiers ();
+
+		view_identifiers = g_list_sort (view_identifiers, compare_view_identifiers);
 
 		for (p = view_identifiers; p != NULL; p = p->next) {
 			identifier = (NautilusViewIdentifier *) (p->data);

@@ -1,3 +1,26 @@
+2000-07-05  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(compare_view_identifiers), (global_preferences_create_dialog):
+	Sort the sidebar panel names.
+	
+2000-07-05  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* components/Makefile.am:
+	Dont install the currently broken components (websearch)
+	
+	* components/help/Makefile.am:
+	* components/help/help-contents.oafinfo:
+	* components/help/help-factory.oafinfo:
+	* components/help/help-index.oafinfo:
+	* components/help/help-search.oafinfo:
+	* components/help/hyperbola.oafinfo:
+	Split the oafinfo for help components into pieces so we can
+	control which get intalled and which dont (like the broken onces)
+
+	* configure.in:
+	Fix a small dumb typo.
+	
 2000-07-05  J Shane Culpepper  <pepper@eazel.com>
 
 	*
