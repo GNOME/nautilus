@@ -1,3 +1,13 @@
+2000-09-06  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-md5.c:
+	(_byte_reverse), (md5_update), (md5_final), (md5_get_digest),
+	(md5_get_digest_from_file), (main):
+	* components/services/install/lib/eazel-install-md5.h:
+
+	Fix evil gint/gchar types in MD5 to use native types according to
+	the style guide.
+	
 2000-09-06  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 1794 (New directory view background context menu design)
