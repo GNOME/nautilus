@@ -42,9 +42,6 @@ gboolean         nautilus_link_historical_local_set_link_uri                (con
 									     const char        *uri);
 char *           nautilus_link_historical_local_get_additional_text         (const char        *path);
 NautilusLinkType nautilus_link_historical_local_get_link_type               (const char        *path);
-gboolean         nautilus_link_historical_local_is_volume_link              (const char        *path);
-gboolean         nautilus_link_historical_local_is_home_link                (const char        *path);
-gboolean         nautilus_link_historical_local_is_trash_link               (const char        *path);
 char *           nautilus_link_historical_local_get_link_uri                (const char        *path);
 char *           nautilus_link_historical_get_link_uri_given_file_contents  (const char        *link_file_contents,
 									     int                link_file_size);
@@ -54,5 +51,5 @@ char *           nautilus_link_historical_get_link_icon_given_file_contents (con
 void             nautilus_link_historical_local_create_from_gnome_entry     (GnomeDesktopItem  *entry,
 									     const char        *dest_path,
 									     const GdkPoint    *position);
-								 								 
+
 #endif /* NAUTILUS_LINK_HISTORICAL_H */

@@ -38,9 +38,6 @@ gboolean         nautilus_link_desktop_file_local_set_icon                    (c
 char *           nautilus_link_desktop_file_local_get_text                    (const char       *path);
 char *           nautilus_link_desktop_file_local_get_additional_text         (const char       *path);
 NautilusLinkType nautilus_link_desktop_file_local_get_link_type               (const char       *path);
-gboolean         nautilus_link_desktop_file_local_is_volume_link              (const char       *path);
-gboolean         nautilus_link_desktop_file_local_is_home_link                (const char       *path);
-gboolean         nautilus_link_desktop_file_local_is_trash_link               (const char       *path);
 char *           nautilus_link_desktop_file_local_get_link_uri                (const char       *path);
 char *           nautilus_link_desktop_file_get_link_uri_given_file_contents  (const char       *uri,
 									       const char       *link_file_contents,

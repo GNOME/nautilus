@@ -29,10 +29,12 @@
 #include "nautilus-directory.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file.h"
-#include "nautilus-metadata.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-metadata.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
+#include <eel/eel-preferences.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
@@ -372,25 +374,6 @@ nautilus_link_historical_get_link_icon_given_file_contents (const char *file_con
 	property = xml_get_root_property (doc, NAUTILUS_METADATA_KEY_CUSTOM_ICON);
 	xmlFreeDoc (doc);
 	return property;
-}
-
-
-gboolean
-nautilus_link_historical_local_is_volume_link (const char *path)
-{
-	return nautilus_link_historical_local_get_link_type (path) == NAUTILUS_LINK_MOUNT;
-}
-
-gboolean
-nautilus_link_historical_local_is_home_link (const char *path)
-{
-	return nautilus_link_historical_local_get_link_type (path) == NAUTILUS_LINK_HOME;
-}
-
-gboolean
-nautilus_link_historical_local_is_trash_link (const char *path)
-{
-	return nautilus_link_historical_local_get_link_type (path) == NAUTILUS_LINK_TRASH;
 }
 
 void

@@ -879,7 +879,8 @@ update_home_link_and_delete_copies (void)
 	
 	if (!update_link_and_delete_copies (nautilus_link_local_is_home_link,
 					    NULL,
-					    home_uri)) {
+					    home_uri)
+ 	    && !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
 		nautilus_link_local_create (desktop_directory,
 					    home_link_name,
 					    "desktop-home", 

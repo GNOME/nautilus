@@ -31,8 +31,9 @@
 #include "nautilus-directory.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file.h"
-#include "nautilus-metadata.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-metadata.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-stock-dialogs.h>
@@ -277,40 +278,37 @@ nautilus_link_get_link_icon_given_file_contents (const char *uri,
 gboolean
 nautilus_link_local_is_volume_link (const char *path)
 {
-	switch (get_link_style_for_local_file (path)) {
-	case desktop:
-		return nautilus_link_desktop_file_local_is_volume_link (path);
-	case historical:
-		return nautilus_link_historical_local_is_volume_link (path);
-	default:
-		return FALSE;
-	}
+	return (nautilus_link_local_get_link_type (path) == NAUTILUS_LINK_MOUNT);
 }
 
 gboolean
 nautilus_link_local_is_home_link (const char *path)
 {
-	switch (get_link_style_for_local_file (path)) {
-	case desktop:
-		return nautilus_link_desktop_file_local_is_home_link (path);
-	case historical:
-		return nautilus_link_historical_local_is_home_link (path);
-	default:
-		return FALSE;
-	}
+	return (nautilus_link_local_get_link_type (path) == NAUTILUS_LINK_HOME);
 }
 
 gboolean
 nautilus_link_local_is_trash_link (const char *path)
 {
-	switch (get_link_style_for_local_file (path)) {
-	case desktop:
-		return nautilus_link_desktop_file_local_is_trash_link (path);
-	case historical:
-		return nautilus_link_historical_local_is_trash_link (path);
-	default:
+	return (nautilus_link_local_get_link_type (path) == NAUTILUS_LINK_TRASH);
+}
+
+gboolean
+nautilus_link_local_is_special_link (const char *path)
+{
+	switch (nautilus_link_local_get_link_type (path)) {
+	case NAUTILUS_LINK_HOME:
+		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
+ 			return FALSE;
+ 		}
+	case NAUTILUS_LINK_TRASH:
+	case NAUTILUS_LINK_MOUNT:
+		return TRUE;
+	case NAUTILUS_LINK_GENERIC:
 		return FALSE;
 	}
+
+	return FALSE;
 }
 
 void

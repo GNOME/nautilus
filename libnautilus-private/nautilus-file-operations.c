@@ -982,18 +982,12 @@ is_special_link (const char *uri)
 	gboolean is_special;
 
 	local_path = gnome_vfs_get_local_path_from_uri (uri);
-
-	/* FIXME: This should use some API to check if the file is a
-	 * link. Normally we use the MIME type. As things stand, this
-	 * will read files and try to parse them as XML, which could
-	 * result in a lot of output to the console, since the XML
-	 * parser reports errors directly there.
-	 */
-	is_special = local_path != NULL
-		&& nautilus_link_local_get_link_type (local_path) != NAUTILUS_LINK_GENERIC;
-	
+	if (local_path == NULL) {
+		return FALSE;
+	}
+	is_special = nautilus_link_local_is_special_link (local_path);
 	g_free (local_path);
-	
+
 	return is_special;
 }
 
@@ -1914,19 +1908,19 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 			    	is_desktop_trash_link = vfs_uri_is_special_link (uri);
 
 				eel_run_simple_dialog
-					(parent_view, 
+					(parent_view,
 					 FALSE,
-					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
+					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0)
 						 ? (is_desktop_trash_link
 						    ? _("The Trash must remain on the desktop.")
 						    : _("You cannot move this trash folder."))
 						 : (is_desktop_trash_link
 						    ? _("You cannot copy the Trash.")
-						    : _("You cannot copy this trash folder.")), 
+						    : _("You cannot copy this trash folder.")),
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0)
 						 ? _("Can't Change Trash Location")
 						 : _("Can't Copy Trash"),
-					 GTK_STOCK_OK, NULL, NULL);			
+					 GTK_STOCK_OK, NULL, NULL);
 
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;
 				break;

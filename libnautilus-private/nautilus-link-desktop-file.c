@@ -237,24 +237,6 @@ nautilus_link_desktop_file_local_get_link_type (const char *path)
 	return retval;
 }
 
-gboolean
-nautilus_link_desktop_file_local_is_volume_link (const char *path)
-{
-	return (nautilus_link_desktop_file_local_get_link_type (path) ==  NAUTILUS_LINK_MOUNT);
-}
-
-gboolean
-nautilus_link_desktop_file_local_is_home_link (const char *path)
-{
-	return (nautilus_link_desktop_file_local_get_link_type (path) ==  NAUTILUS_LINK_HOME);
-}
-
-gboolean
-nautilus_link_desktop_file_local_is_trash_link (const char *path)
-{
-	return (nautilus_link_desktop_file_local_get_link_type (path) ==  NAUTILUS_LINK_TRASH);
-}
-
 static char *
 nautilus_link_desktop_file_get_link_uri_from_desktop (GnomeDesktopItem *desktop_file)
 {

@@ -2842,23 +2842,9 @@ fm_directory_link_type_in_selection (FMDirectoryView *view,
 	return saw_link;
 }
 
-static gboolean
-is_link_type_special (NautilusLinkType type)
-{
-	switch (type) {
-	case NAUTILUS_LINK_TRASH:
-	case NAUTILUS_LINK_HOME:
-	case NAUTILUS_LINK_MOUNT:
-		return TRUE;
-	case NAUTILUS_LINK_GENERIC:
-		return FALSE;
-	}
-	return FALSE;
-}
-
 /* special_link_in_selection
  * 
- * Return TRUE is one of our special links is the selection.
+ * Return TRUE if one of our special links is in the selection.
  * Special links include the following: 
  *	 NAUTILUS_LINK_TRASH, NAUTILUS_LINK_HOME, NAUTILUS_LINK_MOUNT
  */
@@ -2886,7 +2872,7 @@ special_link_in_selection (FMDirectoryView *view)
 		/* FIXME: This reads the link file every single time. */
 		saw_link = path != NULL
 			&& nautilus_file_is_nautilus_link (file)
-			&& is_link_type_special (nautilus_link_local_get_link_type (path));
+			&& nautilus_link_local_is_special_link (path);
 		
 		g_free (path);
 		g_free (uri);

@@ -556,10 +556,9 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 
 	set_up_toolbar_images (window);
 
-	eel_preferences_add_callback
-		(NAUTILUS_PREFERENCES_THEME, 
-		 theme_changed_callback,
-		 window);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, 
+				      theme_changed_callback,
+				      window);
 
 	nautilus_window_ui_thaw (window);
 }
