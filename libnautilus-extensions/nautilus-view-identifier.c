@@ -162,3 +162,8 @@ nautilus_view_identifier_list_free (GList *identifiers)
 		 NULL);
 }
 
+int
+nautilus_view_identifier_compare (NautilusViewIdentifier *a, NautilusViewIdentifier *b)
+{
+	return (strcmp (a->iid, b->iid) || strcmp (a->name, b->name));
+} 

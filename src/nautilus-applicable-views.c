@@ -221,6 +221,13 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
         if (default_component != NULL) {
         	default_id = nautilus_view_identifier_new_from_content_view (default_component);
                 CORBA_free (default_component);
+
+                if (g_list_find_custom (navinfo->content_identifiers, default_id, 
+                                        (GCompareFunc) nautilus_view_identifier_compare) == NULL) {
+                        /* FIXME: should insert in sorted order by name */
+                        navinfo->content_identifiers = g_list_prepend (navinfo->content_identifiers,
+                                                                       nautilus_view_identifier_copy (default_id));
+                }
                 
         } else if (navinfo->content_identifiers != NULL) {              
 		/* No default component, just take first one from list. */

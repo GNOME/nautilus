@@ -47,5 +47,7 @@ NautilusViewIdentifier *nautilus_view_identifier_copy			  (NautilusViewIdentifie
 
 void                    nautilus_view_identifier_free                     (NautilusViewIdentifier *identifier);
 void                    nautilus_view_identifier_list_free                (GList                  *identifiers);
+int                     nautilus_view_identifier_compare                  (NautilusViewIdentifier *a, 
+									   NautilusViewIdentifier *b);
 
 #endif
