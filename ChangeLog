@@ -1,3 +1,17 @@
+2000-12-19  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 5258 (no UI for renaming new folder in View as List)
+
+	After some email discussion, decided to bring up Properties
+	window in this case. Fortunately, FMDirectoryView had this case
+	beautifully factored so it was a cinch to add this.
+
+	* src/file-manager/fm-list-view.c: 
+	(real_start_renaming_item): New function, presents properties
+	window.
+	(fm_list_view_initialize_class): wire up real_start_renaming_item 
+	as start_renaming_item function pointer,
+
 2000-12-19  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

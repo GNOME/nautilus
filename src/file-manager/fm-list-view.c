@@ -26,6 +26,7 @@
 #include "fm-list-view.h"
 
 #include "fm-list-view-private.h"
+#include "fm-properties-window.h"
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
@@ -165,6 +166,8 @@ static void                 real_get_column_specification             (FMListVie
 								       int                column_number,
 								       FMListViewColumn  *specification);
 static gboolean		    real_is_empty			      (FMDirectoryView	 *view);
+static void		    real_start_renaming_item  		      (FMDirectoryView   *view, 
+								       const char 	 *uri);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMListView,
 				   fm_list_view,
@@ -202,6 +205,7 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_directory_view_class->select_all = fm_list_view_select_all;
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
 	fm_directory_view_class->reveal_selection = fm_list_view_reveal_selection;
+	fm_directory_view_class->start_renaming_item = real_start_renaming_item;
 	fm_directory_view_class->get_selected_icon_locations = fm_list_view_get_selected_icon_locations;
         fm_directory_view_class->click_policy_changed = fm_list_view_update_click_mode;
         fm_directory_view_class->embedded_text_policy_changed = fm_list_view_embedded_text_policy_changed;
@@ -1388,6 +1392,19 @@ real_is_empty (FMDirectoryView *view)
 	g_assert (FM_IS_LIST_VIEW (view));
 
 	return NAUTILUS_CLIST (get_list (FM_LIST_VIEW (view)))->rows == 0;
+}
+
+static void
+real_start_renaming_item  (FMDirectoryView *view, const char *uri)
+{
+	NautilusFile *file;
+
+	/* call parent class to make sure the right icon is selected */
+	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, start_renaming_item, (view, uri));
+	/* Show properties window since we don't do in-place renaming here */
+	file = nautilus_file_get (uri);
+	fm_properties_window_present (file, view);
+	nautilus_file_unref (file);
 }
 
 static GList *
