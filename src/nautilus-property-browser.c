@@ -1929,6 +1929,10 @@ make_category_link (NautilusPropertyBrowser *property_browser, char* name, char 
 	gtk_widget_show (pix_widget);
 	gtk_box_pack_start (GTK_BOX (temp_box), pix_widget, FALSE, FALSE, 0);
 	
+	/* FIXME bugzilla.eazel.com 5587: 
+	 * We cant hard code the geometry of buttons because we dont know
+	 * what the geometry of the label text is going to be.
+	 */
 	button = gtk_toggle_button_new();
 	gtk_widget_show(button);
 	gtk_widget_set_usize(button, 80, 60);
