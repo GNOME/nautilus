@@ -1,0 +1,23 @@
+
+This command will statically link all the gnome shit into the installer, but leave the rpm, db, z, bz and
+generic X crap as shared libs
+
+gcc -static -o nautilus-installer  main.o support.o interface.o callbacks.o installer.o \
+/gnome-source/nautilus/components/services/trilobite/libtrilobite/helixcode-utils.o \
+/gnome-source/nautilus/components/services/install/lib/libinstall.a	\
+-L/gnome/lib \
+-lgnomeui \
+-lgnome \
+-lart_lgpl \
+-lgdk_imlib \
+-lgtk \
+-lgdk \
+-lgmodule \
+-lglib \
+-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE \
+/usr/lib/libesd.a \
+/usr/lib/libaudiofile.a \
+-lghttp \
+-L/usr/lib -lrpm -lz -ldb1 \
+/usr/lib/libpopt.a \
+-lxml 
