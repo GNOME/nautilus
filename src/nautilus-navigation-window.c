@@ -172,6 +172,26 @@ nautilus_window_instance_init (NautilusWindow *window)
 {
 	window->details = g_new0 (NautilusWindowDetails, 1);
 
+	/* CORBA and Bonobo setup, which must be done before the location bar setup */
+	window->details->ui_container = bonobo_ui_container_new ();
+	bonobo_ui_container_set_engine (window->details->ui_container,
+					bonobo_window_get_ui_engine (BONOBO_WINDOW (window)));
+
+	window->details->shell_ui = bonobo_ui_component_new ("Nautilus Shell");
+	bonobo_ui_component_set_container
+		(window->details->shell_ui,
+		 nautilus_window_get_ui_container (window),
+		 NULL);
+
+	/* Create a separate component so when we remove the status
+	 * we don't loose the status bar
+	 */
+      	window->details->status_ui = bonobo_ui_component_new ("Status Component");
+	bonobo_ui_component_set_container
+		(window->details->status_ui,
+		 nautilus_window_get_ui_container (window),
+		 NULL);
+
 	gtk_quit_add_destroy (1, GTK_OBJECT (window));
 
 	/* Keep track of changes in enabled state of sidebar panels */
@@ -536,35 +556,13 @@ nautilus_window_constructed (NautilusWindow *window)
 	GtkWidget *view_as_menu_vbox;
 	BonoboControl *location_bar_wrapper;
 	
-	/* CORBA and Bonobo setup, which must be done before the location bar setup */
-	window->details->ui_container = bonobo_ui_container_new ();
-	bonobo_ui_container_set_engine (window->details->ui_container,
-					bonobo_window_get_ui_engine (BONOBO_WINDOW (window)));
-
-	/* Load the user interface from the XML file. */
-	window->details->shell_ui = bonobo_ui_component_new ("Nautilus Shell");
-	bonobo_ui_component_set_container
-		(window->details->shell_ui,
-		 nautilus_window_get_ui_container (window),
-		 NULL);
-
-	/* Create a separate component so when we remove the status
-	 * we don't loose the status bar
-	 */
-      	window->details->status_ui = bonobo_ui_component_new ("Status Component");
-	bonobo_ui_component_set_container
-		(window->details->status_ui,
-		 nautilus_window_get_ui_container (window),
-		 NULL);
-
 	nautilus_window_ui_freeze (window);
 
-	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
+	/* Load the user interface from the XML file. */
 	bonobo_ui_util_set_ui (window->details->shell_ui,
 			       DATADIR,
 			       "nautilus-shell-ui.xml",
 			       "nautilus", NULL);
-	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 	
 	/* set up location bar */
 	location_bar_box = gtk_hbox_new (FALSE, GNOME_PAD);

@@ -1748,6 +1748,7 @@ nautilus_icon_canvas_item_accessible_create (GObject *for_object)
 }
 
 EEL_ACCESSIBLE_FACTORY (nautilus_icon_canvas_item_accessible_get_type (),
+			"NautilusIconCanvasItemAccessibilityFactory",
 			nautilus_icon_canvas_item_accessible,
 			nautilus_icon_canvas_item_accessible_create);
 

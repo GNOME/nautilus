@@ -1,3 +1,13 @@
+2002-03-27  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	specify the type name explicitely.
+
+	* src/nautilus-window.c
+	(nautilus_window_constructed): move some of the fast setup
+	(nautilus_window_instance_init): to here, so it will be
+	done by the time the throbber async activate comes in.
+
 2002-03-26  Michael Meeks  <michael@ximian.com>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c
