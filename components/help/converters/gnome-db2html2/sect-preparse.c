@@ -323,6 +323,8 @@ gloss_term_append (Context *context,
         char *temp_glossentry;
 	char *temp;
 	char *new_string;
+ 	char *origkey;
+ 	char *origdata;
 
 	if (context->in_glossterm == TRUE) {
 		temp = g_strndup (chars, len);
@@ -343,15 +345,17 @@ gloss_term_append (Context *context,
 			/* The key is the 'glossentry id' - The data is the 'glossterm' */
 			g_hash_table_insert (context->glossary_data, g_strdup (temp_glossentry), temp);
 		} else {
-			/* FIXME: We leak memory here. Need to use g_hash_table_lookup_extended to get
-			 * the strings and free them */
 			/* An entry already exists. Add to it. */
-			new_string = g_strconcat ((g_hash_table_lookup (context->glossary_data, temp_glossentry)), temp, NULL );
-			g_hash_table_remove (context->glossary_data, temp_glossentry);
-			g_hash_table_insert (context->glossary_data, g_strdup (temp_glossentry), new_string);
+	 		if (g_hash_table_lookup_extended (context->glossary_data, temp_glossentry,
+ 					  (gpointer *)&origkey,
+ 					  (gpointer *)&origdata)) {
+ 			new_string = g_strconcat ((gchar *)origdata, temp, NULL );
+ 			g_free(origdata);
+ 			g_hash_table_remove(context->glossary_data, origkey);
+ 			g_hash_table_insert(context->glossary_data, g_strdup (origkey), new_string);
+ 			g_free(temp_glossentry);
+			} 
 		}
-		g_free (temp_glossentry);
-		g_free (temp);		
 	}
 }
 
@@ -380,4 +384,3 @@ sect_preparse_glossterm_end_element (Context *context,
 	context->in_glossterm = FALSE;
 	return;
 }
-

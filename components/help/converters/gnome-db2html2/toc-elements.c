@@ -340,6 +340,7 @@ toc_author_start_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ARTHEADER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (BOOKINFO));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (DOCINFO));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSARYINFO));
 	index = find_first_parent (context, element_list);
 	g_slist_free (element_list);
 
@@ -347,6 +348,7 @@ toc_author_start_element (Context *context,
 	case ARTHEADER:
 	case BOOKINFO:
 	case DOCINFO:
+	case GLOSSARYINFO:
 		break;
 	default:
 		return;
@@ -365,7 +367,8 @@ toc_author_characters (Context *context, const gchar *chars, int len)
 
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ARTHEADER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (BOOKINFO));
-	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (DOCINFO));	
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (DOCINFO));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSARYINFO));
 	index = find_first_parent (context, element_list);
 	g_slist_free (element_list);
 
@@ -373,6 +376,7 @@ toc_author_characters (Context *context, const gchar *chars, int len)
 	case ARTHEADER:
 	case BOOKINFO:
 	case DOCINFO:
+	case GLOSSARYINFO:
 		break;
 	default:
 		return;
@@ -655,6 +659,7 @@ toc_title_characters (Context *context, const gchar *chars, int len)
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (DOCINFO));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSDIV));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSTERM));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSARYINFO));
 
 	index = find_first_parent (context, element_list);
 
@@ -678,6 +683,7 @@ toc_title_characters (Context *context, const gchar *chars, int len)
 	case ARTHEADER:
 	case BOOKINFO:
 	case DOCINFO:
+	case GLOSSARYINFO:
 		if (((StackElement *)context->stack->data)->info->index == TITLE)
 			((TocContext *) context->data)->header->title = temp;
 		else if (((StackElement *)context->stack->data)->info->index == SUBTITLE)
