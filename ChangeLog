@@ -1,3 +1,36 @@
+2000-06-19  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-list.c: (activate_row),
+	(nautilus_list_is_row_selected), (row_set_selected),
+	(select_row_unselect_others), (nautilus_list_select_all),
+	(nautilus_list_button_press), (nautilus_list_button_release),
+	(nautilus_list_set_keyboard_focus),
+	(nautilus_list_keyboard_move_to), (nautilus_list_select_row),
+	(keyboard_row_reveal_timeout_callback),
+	(schedule_keyboard_row_reveal), (reveal_row),
+	(nautilus_list_keyboard_navigation_key_press),
+	(nautilus_list_activate_selected_items), (nautilus_list_key_press),
+	(list_requisition_width), (new_column_width),
+	(size_allocate_columns), (get_cell_style),
+	(gdk_window_size_as_rectangle), (draw_cell_pixmap),
+	(draw_cell_pixbuf), (get_cell_horizontal_start_position),
+	(last_column_index), (get_cell_rectangle),
+	(get_cell_greater_rectangle), (draw_cell), (draw_row), (draw_rows),
+	(nautilus_list_resize_column), (nautilus_list_mark_cell_as_link),
+	(nautilus_list_set_cell_contents), (nautilus_list_set_pixbuf_list),
+	(nautilus_list_track_new_column_width),
+	(nautilus_list_column_resize_track_start),
+	(nautilus_list_column_resize_track),
+	(nautilus_list_column_resize_track_end),
+	(nautilus_list_drag_motion), (nautilus_list_drag_drop),
+	(nautilus_list_drag_data_received), (nautilus_list_row_at),
+	(insert_row):
+	Rewrite draw_row introducing draw_cell and splitting up the drawing
+	code into several routines.
+	Eliminate/simplify a bunch of confused blitting code in draw_row.
+	Fix formatting in nautilus_list.c.
+	Rename a number of function arguments to more meaningful names.
+	
 2000-06-18  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-background.c:
