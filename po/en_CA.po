@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-24 14:56+0100\n"
-"PO-Revision-Date: 2004-02-20 18:35-0500\n"
-"Last-Translator: Adam Weinberger <adamw@FreeBSD.org>\n"
+"POT-Creation-Date: 2004-03-07 21:41-0500\n"
+"PO-Revision-Date: 2004-03-07 21:52-0500\n"
+"Last-Translator: Alexander Winston <alexander.winston@comcast.net>\n"
 "Language-Team: English/Canada <adamw@FreeBSD.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -971,7 +971,7 @@ msgstr "This theme uses photo-realistic folders."
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
-#: src/file-manager/fm-list-view.c:1052
+#: src/file-manager/fm-list-view.c:1054
 #: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Name"
@@ -1198,7 +1198,7 @@ msgstr "Enable 'special' flags in file preferences dialog"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
 msgid "Enables the classic Nautilus behavior, where all windows are browsers"
-msgstr ""
+msgstr "Enables the classic Nautilus behaviour, where all windows are browsers"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid ""
@@ -1329,7 +1329,7 @@ msgid ""
 "If set to true, then all Nautilus windows will be browser windows. This is "
 "how Nautilus used to behave before version 2.6, and some people prefer this "
 "behavior."
-msgstr ""
+msgstr "If set to true, then all Nautilus windows will be browser windows. This is how Nautilus used to behave before version 2.6, and some people prefer this behaviour."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid ""
@@ -1683,26 +1683,23 @@ msgstr "Width of the side pane"
 
 #: libnautilus-private/nautilus-column-chooser.c:365
 msgid "Move _Up"
-msgstr ""
+msgstr "Move _Up"
 
 #: libnautilus-private/nautilus-column-chooser.c:374
 msgid "Move _Down"
-msgstr ""
+msgstr "Move _Down"
 
 #: libnautilus-private/nautilus-column-chooser.c:383
-#, fuzzy
 msgid "_Show"
-msgstr "Show %s"
+msgstr "_Show"
 
 #: libnautilus-private/nautilus-column-chooser.c:393
-#, fuzzy
 msgid "_Hide"
-msgstr "_Help"
+msgstr "_Hide"
 
 #: libnautilus-private/nautilus-column-chooser.c:406
-#, fuzzy
 msgid "_Use Default"
-msgstr "Use _Default Background"
+msgstr "_Use Default"
 
 #: libnautilus-private/nautilus-column-utilities.c:44
 msgid "The name and icon of the file."
@@ -2154,6 +2151,10 @@ msgid "Replace _All"
 msgstr "Replace _All"
 
 #. appended to new link file
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4714
 #, c-format
@@ -2208,6 +2209,9 @@ msgid " (another copy)"
 msgstr " (another copy)"
 
 #. localizers: tag used to detect the x11th copy of a file
+#. localizers: tag used to detect the x12th copy of a file
+#. localizers: tag used to detect the x13th copy of a file
+#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2243,6 +2247,9 @@ msgid "%s (another copy)%s"
 msgstr "%s (another copy)%s"
 
 #. localizers: appended to x11th file copy
+#. localizers: appended to x12th file copy
+#. localizers: appended to x13th file copy
+#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -2520,7 +2527,7 @@ msgstr "_Empty"
 
 #: libnautilus-private/nautilus-file-utilities.c:369
 #: libnautilus-private/nautilus-global-preferences.c:527
-#: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:9
+#: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:10
 msgid "Computer"
 msgstr "Computer"
 
@@ -2761,7 +2768,7 @@ msgstr "link"
 msgid "link (broken)"
 msgstr "link (broken)"
 
-#: libnautilus-private/nautilus-file.c:6138
+#: libnautilus-private/nautilus-file.c:6155
 #: libnautilus-private/nautilus-global-preferences.c:533
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
@@ -2890,7 +2897,7 @@ msgid "Icon View"
 msgstr "Icon View"
 
 #: libnautilus-private/nautilus-global-preferences.c:179
-#: src/file-manager/fm-list-view.c:1105
+#: src/file-manager/fm-list-view.c:1107
 #: src/nautilus-file-management-properties.glade.h:54
 msgid "List View"
 msgstr "List View"
@@ -4165,9 +4172,9 @@ msgid "An _Application..."
 msgstr "An _Application..."
 
 #: src/file-manager/fm-directory-view.c:3915
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot open %s"
-msgstr "Can't Copy Trash"
+msgstr "Cannot open %s"
 
 #: src/file-manager/fm-directory-view.c:3918
 #, c-format
@@ -4181,6 +4188,9 @@ msgid ""
 "extension for \"%s\", then open the file normally. Alternatively, use the "
 "Open With menu to choose a specific application for the file. "
 msgstr ""
+"The filename \"%s\" indicates that this file is of type \"%s\". The contents of the file indicate that the file is of type \"%s\". If you open this file, the file might present a security risk to your system.\n"
+"\n"
+"Do not open the file unless you created the file yourself, or received the file from a trusted source. To open the file, rename the file to the correct extension for \"%s\", then open the file normally. Alternatively, use the Open With menu to choose a specific application for the file. "
 
 #: src/file-manager/fm-directory-view.c:4289
 #, c-format
@@ -4284,7 +4294,7 @@ msgid "There is nothing on the clipboard to paste."
 msgstr "There is nothing on the clipboard to paste."
 
 #: src/file-manager/fm-directory-view.c:5046
-#: src/file-manager/fm-directory-view.c:6097
+#: src/file-manager/fm-directory-view.c:6098
 msgid "Mount Error"
 msgstr "Mount Error"
 
@@ -4296,17 +4306,17 @@ msgstr "Unmount Error"
 msgid "Eject Error"
 msgstr "Eject Error"
 
-#: src/file-manager/fm-directory-view.c:5373
+#: src/file-manager/fm-directory-view.c:5374
 msgid "E_ject"
 msgstr "E_ject"
 
-#: src/file-manager/fm-directory-view.c:5373
+#: src/file-manager/fm-directory-view.c:5374
 #: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "_Unmount Volume"
 msgstr "_Unmount Volume"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5503
+#: src/file-manager/fm-directory-view.c:5504
 #: src/file-manager/fm-tree-view.c:960
 #, c-format
 msgid "Open in New Window"
@@ -4314,119 +4324,119 @@ msgid_plural "Open in %d New Windows"
 msgstr[0] "Open in New Window"
 msgstr[1] "Open in %d New Windows"
 
-#: src/file-manager/fm-directory-view.c:5510
+#: src/file-manager/fm-directory-view.c:5511
 msgid "Browse Folder"
 msgstr "Browse Folder"
 
-#: src/file-manager/fm-directory-view.c:5512
+#: src/file-manager/fm-directory-view.c:5513
 msgid "Browse Folders"
 msgstr "Browse Folders"
 
-#: src/file-manager/fm-directory-view.c:5535
+#: src/file-manager/fm-directory-view.c:5536
 msgid "_Delete from Trash"
 msgstr "_Delete from Trash"
 
-#: src/file-manager/fm-directory-view.c:5537
+#: src/file-manager/fm-directory-view.c:5538
 msgid "Delete all selected items permanently"
 msgstr "Delete all selected items permanently"
 
-#: src/file-manager/fm-directory-view.c:5540
-#: src/file-manager/fm-directory-view.c:5878
+#: src/file-manager/fm-directory-view.c:5541
+#: src/file-manager/fm-directory-view.c:5879
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Mo_ve to Trash"
 msgstr "Mo_ve to Trash"
 
-#: src/file-manager/fm-directory-view.c:5542
+#: src/file-manager/fm-directory-view.c:5543
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Move each selected item to the Trash"
 msgstr "Move each selected item to the Trash"
 
-#: src/file-manager/fm-directory-view.c:5566
+#: src/file-manager/fm-directory-view.c:5567
 #: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "_Delete"
 msgstr "_Delete"
 
-#: src/file-manager/fm-directory-view.c:5586
+#: src/file-manager/fm-directory-view.c:5587
 msgid "Ma_ke Links"
 msgstr "Ma_ke Links"
 
-#: src/file-manager/fm-directory-view.c:5587
+#: src/file-manager/fm-directory-view.c:5588
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Ma_ke Link"
 msgstr "Ma_ke Link"
 
-#: src/file-manager/fm-directory-view.c:5600
+#: src/file-manager/fm-directory-view.c:5601
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Empty Trash"
 msgstr "_Empty Trash"
 
-#: src/file-manager/fm-directory-view.c:5616
+#: src/file-manager/fm-directory-view.c:5617
 msgid "Cu_t File"
 msgstr "Cu_t File"
 
-#: src/file-manager/fm-directory-view.c:5617
+#: src/file-manager/fm-directory-view.c:5618
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Cu_t Files"
 msgstr "Cu_t Files"
 
-#: src/file-manager/fm-directory-view.c:5626
+#: src/file-manager/fm-directory-view.c:5627
 msgid "_Copy File"
 msgstr "_Copy File"
 
-#: src/file-manager/fm-directory-view.c:5627
+#: src/file-manager/fm-directory-view.c:5628
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "_Copy Files"
 msgstr "_Copy Files"
 
-#: src/file-manager/fm-directory-view.c:5869
+#: src/file-manager/fm-directory-view.c:5870
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "The link is broken, do you want to move it to the Trash?"
 
-#: src/file-manager/fm-directory-view.c:5871
+#: src/file-manager/fm-directory-view.c:5872
 msgid "This link can't be used, because it has no target."
 msgstr "This link can't be used, because it has no target."
 
-#: src/file-manager/fm-directory-view.c:5873
+#: src/file-manager/fm-directory-view.c:5874
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "This link can't be used, because its target \"%s\" doesn't exist."
 
-#: src/file-manager/fm-directory-view.c:5878
+#: src/file-manager/fm-directory-view.c:5879
 msgid "Broken Link"
 msgstr "Broken Link"
 
-#: src/file-manager/fm-directory-view.c:5936
+#: src/file-manager/fm-directory-view.c:5937
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Do you want to run \"%s\", or display its contents?"
 
-#: src/file-manager/fm-directory-view.c:5938
+#: src/file-manager/fm-directory-view.c:5939
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" is an executable text file."
 
-#: src/file-manager/fm-directory-view.c:5944
+#: src/file-manager/fm-directory-view.c:5945
 msgid "Run or Display?"
 msgstr "Run or Display?"
 
-#: src/file-manager/fm-directory-view.c:5945
+#: src/file-manager/fm-directory-view.c:5946
 msgid "Run in _Terminal"
 msgstr "Run in _Terminal"
 
-#: src/file-manager/fm-directory-view.c:5946
+#: src/file-manager/fm-directory-view.c:5947
 msgid "_Display"
 msgstr "_Display"
 
-#: src/file-manager/fm-directory-view.c:5949
+#: src/file-manager/fm-directory-view.c:5950
 msgid "_Run"
 msgstr "_Run"
 
-#: src/file-manager/fm-directory-view.c:6231
+#: src/file-manager/fm-directory-view.c:6232
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Opening \"%s\"."
 
-#: src/file-manager/fm-directory-view.c:6237
+#: src/file-manager/fm-directory-view.c:6238
 msgid "Cancel Open?"
 msgstr "Cancel Open?"
 
@@ -4653,12 +4663,12 @@ msgstr "Drag and Drop Error"
 msgid "An invalid drag type was used."
 msgstr "An invalid drag type was used."
 
-#: src/file-manager/fm-list-view.c:1512
+#: src/file-manager/fm-list-view.c:1514
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s Visible Columns"
 
-#: src/file-manager/fm-list-view.c:1531
+#: src/file-manager/fm-list-view.c:1533
 msgid "Choose the order of information to appear in this folder."
 msgstr "Choose the order of information to appear in this folder."
 
@@ -5634,16 +5644,16 @@ msgstr "Show _Indexing Status"
 msgid "Show status of indexing used when searching"
 msgstr "Show status of indexing used when searching"
 
-#: src/nautilus-application.c:264
+#: src/nautilus-application.c:266
 msgid "Couldn't Create Required Folder"
 msgstr "Couldn't Create Required Folder"
 
-#: src/nautilus-application.c:265
+#: src/nautilus-application.c:267
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Nautilus could not create the required folder \"%s\"."
 
-#: src/nautilus-application.c:267
+#: src/nautilus-application.c:269
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -5651,16 +5661,16 @@ msgstr ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
 
-#: src/nautilus-application.c:270
+#: src/nautilus-application.c:272
 msgid "Couldn't Create Required Folders"
 msgstr "Couldn't Create Required Folders"
 
-#: src/nautilus-application.c:271
+#: src/nautilus-application.c:273
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nautilus could not create the following required folders: %s."
 
-#: src/nautilus-application.c:273
+#: src/nautilus-application.c:275
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -5668,15 +5678,15 @@ msgstr ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
 
-#: src/nautilus-application.c:341
+#: src/nautilus-application.c:343
 msgid "Link To Old Desktop"
 msgstr "Link To Old Desktop"
 
-#: src/nautilus-application.c:357
+#: src/nautilus-application.c:359
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr "A link called \"Link To Old Desktop\" has been created on the desktop."
 
-#: src/nautilus-application.c:358
+#: src/nautilus-application.c:360
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
@@ -5684,7 +5694,7 @@ msgstr ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
 
-#: src/nautilus-application.c:360
+#: src/nautilus-application.c:362
 msgid "Migrated Old Desktop"
 msgstr "Migrated Old Desktop"
 
@@ -5698,7 +5708,7 @@ msgstr "Migrated Old Desktop"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:534
+#: src/nautilus-application.c:536
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5709,7 +5719,7 @@ msgstr ""
 "installing Nautilus again."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:540
+#: src/nautilus-application.c:542
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5755,12 +5765,13 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:570 src/nautilus-application.c:588
-#: src/nautilus-application.c:595
+#. FIXME bugzilla.gnome.org 42538: When can this happen?
+#: src/nautilus-application.c:572 src/nautilus-application.c:590
+#: src/nautilus-application.c:597
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus can't be used now, due to an unexpected error."
 
-#: src/nautilus-application.c:571
+#: src/nautilus-application.c:573
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5768,7 +5779,7 @@ msgstr ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
 
-#: src/nautilus-application.c:589
+#: src/nautilus-application.c:591
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5778,7 +5789,7 @@ msgstr ""
 "attempting to locate the factory.Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 
-#: src/nautilus-application.c:596
+#: src/nautilus-application.c:598
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5846,15 +5857,15 @@ msgid "Can't Connect to Server"
 msgstr "Can't Connect to Server"
 
 #: src/nautilus-connect-server-dialog.c:101
-#: src/nautilus-window-manage-views.c:1266
+#: src/nautilus-window-manage-views.c:1310
 #, c-format
 msgid "\"%s\" is not a valid location."
 msgstr "\"%s\" is not a valid location."
 
 #: src/nautilus-connect-server-dialog.c:103
 #: src/nautilus-property-browser.c:1106
-#: src/nautilus-window-manage-views.c:1261
-#: src/nautilus-window-manage-views.c:1269
+#: src/nautilus-window-manage-views.c:1305
+#: src/nautilus-window-manage-views.c:1313
 msgid "Please check the spelling and try again."
 msgstr "Please check the spelling and try again."
 
@@ -6240,22 +6251,27 @@ msgid "Nautilus"
 msgstr "Nautilus"
 
 #: src/nautilus-main.c:259
+#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check cannot be used with URIs.\n"
 
 #: src/nautilus-main.c:263
+#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check cannot be used with other options.\n"
 
 #: src/nautilus-main.c:267
+#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit cannot be used with URIs.\n"
 
 #: src/nautilus-main.c:271
+#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart cannot be used with URIs.\n"
 
 #: src/nautilus-main.c:275
+#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry cannot be used with more than one URI.\n"
 
@@ -6312,153 +6328,163 @@ msgid "Back"
 msgstr "Back"
 
 #: src/nautilus-navigation-window-ui.xml.h:3
+#: src/nautilus-spatial-window-ui.xml.h:1
+msgid "CD _Creator"
+msgstr "CD _Creator"
+
+#: src/nautilus-navigation-window-ui.xml.h:4
 msgid "Change the visibility of this window's location bar"
 msgstr "Change the visibility of this window's location bar"
 
-#: src/nautilus-navigation-window-ui.xml.h:4
+#: src/nautilus-navigation-window-ui.xml.h:5
 msgid "Change the visibility of this window's sidebar"
 msgstr "Change the visibility of this window's sidebar"
 
-#: src/nautilus-navigation-window-ui.xml.h:5
+#: src/nautilus-navigation-window-ui.xml.h:6
 msgid "Change the visibility of this window's statusbar"
 msgstr "Change the visibility of this window's statusbar"
 
-#: src/nautilus-navigation-window-ui.xml.h:6
+#: src/nautilus-navigation-window-ui.xml.h:7
 msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Clear contents of Go menu and Back/Forward lists"
 
-#: src/nautilus-navigation-window-ui.xml.h:7
+#: src/nautilus-navigation-window-ui.xml.h:8
 msgid "Close _All Windows"
 msgstr "Close _All Windows"
 
-#: src/nautilus-navigation-window-ui.xml.h:8
+#: src/nautilus-navigation-window-ui.xml.h:9
 msgid "Close all Navigation windows"
 msgstr "Close all Navigation windows"
 
-#: src/nautilus-navigation-window-ui.xml.h:10
+#: src/nautilus-navigation-window-ui.xml.h:11
 #: src/nautilus-spatial-window-ui.xml.h:4
 msgid "Connect to _Server..."
 msgstr "Connect to _Server..."
 
-#: src/nautilus-navigation-window-ui.xml.h:11
+#: src/nautilus-navigation-window-ui.xml.h:12
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Display a window that allows editing the bookmarks in this menu"
 
-#: src/nautilus-navigation-window-ui.xml.h:12 src/nautilus-shell-ui.xml.h:10
+#: src/nautilus-navigation-window-ui.xml.h:13 src/nautilus-shell-ui.xml.h:10
 msgid "Find"
 msgstr "Find"
 
-#: src/nautilus-navigation-window-ui.xml.h:13
+#: src/nautilus-navigation-window-ui.xml.h:14
 msgid "Forward"
 msgstr "Forward"
 
-#: src/nautilus-navigation-window-ui.xml.h:14
+#: src/nautilus-navigation-window-ui.xml.h:15
 #: src/nautilus-spatial-window-ui.xml.h:6
 msgid "Go to templates folder"
 msgstr "Go to templates folder"
 
-#: src/nautilus-navigation-window-ui.xml.h:15
+#: src/nautilus-navigation-window-ui.xml.h:16
+#: src/nautilus-spatial-window-ui.xml.h:7
+msgid "Go to the CD Creator"
+msgstr "Go to the CD Creator"
+
+#: src/nautilus-navigation-window-ui.xml.h:17
 msgid "Go to the next visited location"
 msgstr "Go to the next visited location"
 
-#: src/nautilus-navigation-window-ui.xml.h:16
+#: src/nautilus-navigation-window-ui.xml.h:18
 msgid "Go to the previous visited location"
 msgstr "Go to the previous visited location"
 
-#: src/nautilus-navigation-window-ui.xml.h:17
+#: src/nautilus-navigation-window-ui.xml.h:19
 #: src/nautilus-spatial-window-ui.xml.h:8
 msgid "Go to the trash folder"
 msgstr "Go to the trash folder"
 
-#: src/nautilus-navigation-window-ui.xml.h:18
+#: src/nautilus-navigation-window-ui.xml.h:20
 msgid "Home"
 msgstr "Home"
 
-#: src/nautilus-navigation-window-ui.xml.h:19
+#: src/nautilus-navigation-window-ui.xml.h:21
 msgid "Location _Bar"
 msgstr "Location _Bar"
 
-#: src/nautilus-navigation-window-ui.xml.h:20
+#: src/nautilus-navigation-window-ui.xml.h:22
 msgid "Reload"
 msgstr "Reload"
 
-#: src/nautilus-navigation-window-ui.xml.h:21 src/nautilus-shell-ui.xml.h:18
+#: src/nautilus-navigation-window-ui.xml.h:23 src/nautilus-shell-ui.xml.h:18
 msgid "Search this computer for files"
 msgstr "Search this computer for files"
 
-#: src/nautilus-navigation-window-ui.xml.h:22
+#: src/nautilus-navigation-window-ui.xml.h:24
 msgid "St_atusbar"
 msgstr "St_atusbar"
 
-#: src/nautilus-navigation-window-ui.xml.h:23
+#: src/nautilus-navigation-window-ui.xml.h:25
 msgid "Stop"
 msgstr "Stop"
 
-#: src/nautilus-navigation-window-ui.xml.h:24
+#: src/nautilus-navigation-window-ui.xml.h:26
 msgid "Up"
 msgstr "Up"
 
-#: src/nautilus-navigation-window-ui.xml.h:25
+#: src/nautilus-navigation-window-ui.xml.h:27
 msgid "_Add Bookmark"
 msgstr "_Add Bookmark"
 
-#: src/nautilus-navigation-window-ui.xml.h:26
+#: src/nautilus-navigation-window-ui.xml.h:28
 msgid "_Back"
 msgstr "_Back"
 
-#: src/nautilus-navigation-window-ui.xml.h:27
+#: src/nautilus-navigation-window-ui.xml.h:29
 msgid "_Bookmarks"
 msgstr "_Bookmarks"
 
-#: src/nautilus-navigation-window-ui.xml.h:28
+#: src/nautilus-navigation-window-ui.xml.h:30
 msgid "_Clear History"
 msgstr "_Clear History"
 
-#: src/nautilus-navigation-window-ui.xml.h:29
+#: src/nautilus-navigation-window-ui.xml.h:31
 #: src/nautilus-spatial-window-ui.xml.h:12
 msgid "_Computer"
 msgstr "_Computer"
 
-#: src/nautilus-navigation-window-ui.xml.h:30
+#: src/nautilus-navigation-window-ui.xml.h:32
 msgid "_Edit Bookmarks"
 msgstr "_Edit Bookmarks"
 
-#: src/nautilus-navigation-window-ui.xml.h:31
+#: src/nautilus-navigation-window-ui.xml.h:33
 msgid "_Forward"
 msgstr "_Forward"
 
-#: src/nautilus-navigation-window-ui.xml.h:32
+#: src/nautilus-navigation-window-ui.xml.h:34
 msgid "_Go"
 msgstr "_Go"
 
-#: src/nautilus-navigation-window-ui.xml.h:33
+#: src/nautilus-navigation-window-ui.xml.h:35
 #: src/nautilus-spatial-window-ui.xml.h:13
 msgid "_Home"
 msgstr "_Home"
 
-#: src/nautilus-navigation-window-ui.xml.h:34
+#: src/nautilus-navigation-window-ui.xml.h:36
 msgid "_Location..."
 msgstr "_Location..."
 
-#: src/nautilus-navigation-window-ui.xml.h:35
+#: src/nautilus-navigation-window-ui.xml.h:37
 msgid "_Side Pane"
 msgstr "_Side Pane"
 
-#: src/nautilus-navigation-window-ui.xml.h:36
+#: src/nautilus-navigation-window-ui.xml.h:38
 #: src/nautilus-spatial-window-ui.xml.h:15
 msgid "_Templates"
 msgstr "_Templates"
 
-#: src/nautilus-navigation-window-ui.xml.h:37
+#: src/nautilus-navigation-window-ui.xml.h:39
 #: src/nautilus-spatial-window-ui.xml.h:16
 msgid "_Trash"
 msgstr "_Trash"
 
-#: src/nautilus-navigation-window-ui.xml.h:38
+#: src/nautilus-navigation-window-ui.xml.h:40
 msgid "_Up"
 msgstr "_Up"
 
-#: src/nautilus-navigation-window-ui.xml.h:39 src/nautilus-shell-ui.xml.h:48
+#: src/nautilus-navigation-window-ui.xml.h:41 src/nautilus-shell-ui.xml.h:48
 msgid "_View"
 msgstr "_View"
 
@@ -7035,10 +7061,6 @@ msgstr "Close the side pane"
 msgid "Show %s"
 msgstr "Show %s"
 
-#: src/nautilus-spatial-window-ui.xml.h:1
-msgid "CD _Creator"
-msgstr "CD _Creator"
-
 #: src/nautilus-spatial-window-ui.xml.h:2
 msgid "Close P_arent Folders"
 msgstr "Close P_arent Folders"
@@ -7050,10 +7072,6 @@ msgstr "Close this folder's parents"
 #: src/nautilus-spatial-window-ui.xml.h:5
 msgid "Go to Computer"
 msgstr "Go to Computer"
-
-#: src/nautilus-spatial-window-ui.xml.h:7
-msgid "Go to the CD Creator"
-msgstr "Go to the CD Creator"
 
 #: src/nautilus-spatial-window-ui.xml.h:9
 msgid "Open _Location..."
@@ -7091,89 +7109,89 @@ msgstr "the current selection"
 msgid "the type of window the view is embedded in"
 msgstr "the type of window the view is embedded in"
 
-#: src/nautilus-window-manage-views.c:833
+#: src/nautilus-window-manage-views.c:836
 msgid "View Failed"
 msgstr "View Failed"
 
-#: src/nautilus-window-manage-views.c:844
+#: src/nautilus-window-manage-views.c:847
 #, c-format
 msgid "The %s view encountered an error and can't continue."
 msgstr "The %s view encountered an error and can't continue."
 
-#: src/nautilus-window-manage-views.c:845
+#: src/nautilus-window-manage-views.c:848
 msgid "You can choose another view or go to a different location."
 msgstr "You can choose another view or go to a different location."
 
-#: src/nautilus-window-manage-views.c:855
+#: src/nautilus-window-manage-views.c:858
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "The %s view encountered an error while starting up."
 
-#: src/nautilus-window-manage-views.c:856
+#: src/nautilus-window-manage-views.c:859
 msgid "The location cannot be displayed with this viewer."
 msgstr "The location cannot be displayed with this viewer."
 
-#: src/nautilus-window-manage-views.c:1003
+#: src/nautilus-window-manage-views.c:1006
 msgid "Content View"
 msgstr "Content View"
 
-#: src/nautilus-window-manage-views.c:1004
+#: src/nautilus-window-manage-views.c:1007
 msgid "View of the current file or folder"
 msgstr "View of the current file or folder"
 
-#: src/nautilus-window-manage-views.c:1258
+#: src/nautilus-window-manage-views.c:1302
 #, c-format
 msgid "Couldn't find \"%s\"."
 msgstr "Couldn't find \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1282
-#: src/nautilus-window-manage-views.c:1292
-#: src/nautilus-window-manage-views.c:1306
-#: src/nautilus-window-manage-views.c:1314
-#: src/nautilus-window-manage-views.c:1320
-#: src/nautilus-window-manage-views.c:1340
+#: src/nautilus-window-manage-views.c:1326
+#: src/nautilus-window-manage-views.c:1336
+#: src/nautilus-window-manage-views.c:1350
+#: src/nautilus-window-manage-views.c:1358
+#: src/nautilus-window-manage-views.c:1364
+#: src/nautilus-window-manage-views.c:1384
 #, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "Couldn't display \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1285
+#: src/nautilus-window-manage-views.c:1329
 msgid "Nautilus cannot determine what type of file it is."
 msgstr "Nautilus cannot determine what type of file it is."
 
-#: src/nautilus-window-manage-views.c:1295
+#: src/nautilus-window-manage-views.c:1339
 msgid "Nautilus has no installed viewer capable of displaying the file."
 msgstr "Nautilus has no installed viewer capable of displaying the file."
 
-#: src/nautilus-window-manage-views.c:1308
+#: src/nautilus-window-manage-views.c:1352
 #, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "Nautilus cannot handle %s: locations."
 
-#: src/nautilus-window-manage-views.c:1316
+#: src/nautilus-window-manage-views.c:1360
 msgid "The attempt to log in failed."
 msgstr "The attempt to log in failed."
 
-#: src/nautilus-window-manage-views.c:1322
+#: src/nautilus-window-manage-views.c:1366
 msgid "Access was denied."
 msgstr "Access was denied."
 
-#: src/nautilus-window-manage-views.c:1332
+#: src/nautilus-window-manage-views.c:1376
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr "Couldn't display \"%s\", because no host \"%s\" could be found."
 
-#: src/nautilus-window-manage-views.c:1335
+#: src/nautilus-window-manage-views.c:1379
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
 msgstr ""
 "Check that the spelling is correct and that your proxy settings are correct."
 
-#: src/nautilus-window-manage-views.c:1342
+#: src/nautilus-window-manage-views.c:1386
 msgid "Check that your proxy settings are correct."
 msgstr "Check that your proxy settings are correct."
 
-#: src/nautilus-window-manage-views.c:1347
+#: src/nautilus-window-manage-views.c:1391
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -7182,11 +7200,11 @@ msgstr ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
 "browser."
 
-#: src/nautilus-window-manage-views.c:1350
+#: src/nautilus-window-manage-views.c:1394
 msgid "Check that an SMB server is running in the local network."
 msgstr "Check that an SMB server is running in the local network."
 
-#: src/nautilus-window-manage-views.c:1360
+#: src/nautilus-window-manage-views.c:1404
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running."
@@ -7194,7 +7212,7 @@ msgstr ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running."
 
-#: src/nautilus-window-manage-views.c:1363
+#: src/nautilus-window-manage-views.c:1407
 msgid ""
 "Be sure that you have started the Medusa search service, and if you don't "
 "have an index, that the Medusa indexer is running."
@@ -7202,20 +7220,20 @@ msgstr ""
 "Be sure that you have started the Medusa search service, and if you don't "
 "have an index, that the Medusa indexer is running."
 
-#: src/nautilus-window-manage-views.c:1365
+#: src/nautilus-window-manage-views.c:1409
 msgid "Searching Unavailable"
 msgstr "Searching Unavailable"
 
-#: src/nautilus-window-manage-views.c:1370
+#: src/nautilus-window-manage-views.c:1414
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus cannot display \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1372
+#: src/nautilus-window-manage-views.c:1416
 msgid "Please select another viewer and try again."
 msgstr "Please select another viewer and try again."
 
-#: src/nautilus-window-manage-views.c:1376
+#: src/nautilus-window-manage-views.c:1420
 msgid "Can't Display Location"
 msgstr "Can't Display Location"
 
@@ -7237,7 +7255,9 @@ msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 #.
 #: src/nautilus-window-menus.c:598 src/nautilus-window-menus.c:599
 msgid "Translator Credits"
-msgstr "Adam Weinberger <adamw@FreeBSD.org>"
+msgstr ""
+"Adam Weinberger <adamw@FreeBSD.org>\n"
+"Alexander Winston <alexander.winston@comcast.net>"
 
 #: src/nautilus-window-menus.c:604
 msgid ""
