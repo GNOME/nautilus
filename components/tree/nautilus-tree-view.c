@@ -1357,18 +1357,13 @@ select_current_location (NautilusTreeView *view)
 {
 	cancel_selection_in_progress (view);
 
-	/* FIXME bugzilla.eazel.com 6801: it seems likely that either
-	 * eel_uris_match or eel_uris_match_ignore_fragments
-	 * should be used here.
-	 */
-	if (eel_strcmp (view->details->current_main_view_uri,
-			view->details->selected_uri) == 0) {
-		return;
+	if (view->details->selected_uri == NULL ||
+	    !eel_uris_match_ignore_fragments (view->details->current_main_view_uri,
+					      view->details->selected_uri)) {
+		view->details->in_progress_select_uris = get_uri_sequence_to_root
+			(g_strdup (view->details->current_main_view_uri));
+		expand_uri_sequence_and_select_end (view);
 	}
-
-	view->details->in_progress_select_uris = get_uri_sequence_to_root
-		(g_strdup (view->details->current_main_view_uri));
-	expand_uri_sequence_and_select_end (view);
 }
 
 static void
