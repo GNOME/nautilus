@@ -1,5 +1,18 @@
 2000-03-03  Maciej Stachowiak  <mjs@eazel.com>
 
+	* components/sample/nautilus-sample-content-view.c,
+	components/sample/nautilus-sample-content-view.h,
+	components/sample/nautilus-sample-content-view.goad,
+	components/sample/main.c, components/sample/Makefile.am: Sample
+	content view component. All it does is display the current URI in
+	a label.
+	* componets/Makefile.am, configure.in: Build it.
+	* src/ntl-uri-map.c: Activate the sample component whenever there
+	is at least one other applicable view. What it should really do is
+	have a special mode based on a command-line option of some sort
+	which will cause it to be always activated, and otherwise not at
+	all, but that looked more complicated to do.
+
 	* libnautilus/nautilus-directory.c
 	(nautilus_directory_try_to_read_metafile): Don't bomb on a
 	zero-length metafile.

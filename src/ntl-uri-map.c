@@ -188,6 +188,11 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
       navinfo->result_code = NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE;
       goto out;
     }
+  
+  /* FIXME: Should do this only when in some special testing mode or something. */
+
+  navinfo->content_identifiers = g_slist_append (navinfo->content_identifiers, 
+                                                 nautilus_view_identifier_new ("nautilus_sample_content_view", "Sample"));
 
   g_slist_foreach(nautilus_prefs.global_meta_views, nautilus_navinfo_append_globals, &navinfo->meta_iids);
 
