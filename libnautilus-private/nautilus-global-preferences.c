@@ -593,19 +593,19 @@ global_preferences_register_for_ui (void)
 
 
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_DISPLAY_TOOLBAR,
-							   _("Display Toolbar"),
+							   _("Display tool bar"),
 							   TRUE,
 							   TRUE,
 							   TRUE);
 
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_DISPLAY_LOCATIONBAR,
-							   _("Display Locationbar"),
+							   _("Display location bar"),
 							   TRUE,
 							   TRUE,
 							   TRUE);
 
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_DISPLAY_STATUSBAR,
-							   _("Display Statusbar"),
+							   _("Display status bar"),
 							   TRUE,
 							   TRUE,
 							   TRUE);
