@@ -3520,7 +3520,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 {
 	NautilusIconContainerDetails *details;
 	guint icon_size_x, icon_size_y;
-	guint min_image_size, max_image_size, max_emblem_size;
+	guint min_image_size, max_image_size;
 	guint width, height, scaled_width, scaled_height;
 	double scale_factor;
 	NautilusScalableIcon *scalable_icon;
@@ -3548,7 +3548,6 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	/* compute the maximum size based on the scale factor */
 	min_image_size = MINIMUM_IMAGE_SIZE * GNOME_CANVAS (container)->pixels_per_unit;
 	max_image_size = MAXIMUM_IMAGE_SIZE * GNOME_CANVAS (container)->pixels_per_unit;
-	max_emblem_size = MAXIMUM_EMBLEM_SIZE * GNOME_CANVAS (container)->pixels_per_unit;
 		
 	/* Get the appropriate images for the file. */
 	icon_get_size (container, icon, &icon_size_x, &icon_size_y);
@@ -3569,6 +3568,10 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	height = gdk_pixbuf_get_height (pixbuf);
 	if (width < min_image_size || height < min_image_size) {
 		scale_factor = MAX (min_image_size  / (double) width, min_image_size / (double) height);
+		/* don't let it exceed the maximum width in the other dimension */
+		scale_factor = MIN (scale_factor, max_image_size / width);
+		scale_factor = MIN (scale_factor, max_image_size / height);
+		
 		scaled_width  = floor (width * scale_factor + .5);
 		scaled_height = floor (height * scale_factor + .5);
 		saved_pixbuf = pixbuf;
@@ -3593,8 +3596,8 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 			(p->data,
 			 icon_size_x,
 			 icon_size_y,
-			 max_emblem_size * icon->scale_y * EMBLEM_SCALE_FACTOR,
-			 max_emblem_size * icon->scale_y * EMBLEM_SCALE_FACTOR,
+			 MAXIMUM_EMBLEM_SIZE,
+			 MAXIMUM_EMBLEM_SIZE,
 			 NULL,
 			 FALSE);
 		if (emblem_pixbuf != NULL) {

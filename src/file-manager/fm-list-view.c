@@ -57,7 +57,7 @@ struct FMListViewDetails {
  * Emblems should never get so small that they're illegible,
  * so we semi-arbitrarily choose a minimum size.
  */
-#define LIST_VIEW_MINIMUM_EMBLEM_SIZE	NAUTILUS_ICON_SIZE_SMALL
+#define LIST_VIEW_MINIMUM_EMBLEM_SIZE	NAUTILUS_ICON_SIZE_SMALLER
 
 /*
  * The row height should be large enough to not clip emblems.

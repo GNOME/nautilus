@@ -1,3 +1,19 @@
+2000-12-29  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/file-manager/fm-list-view.c:
+	fixed bug 3900, emblems too big in list view, by lowering the
+	minimum emblem size one notch
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_update_icon):
+	fixed problem where images that are small in one dimension but large
+	in the other were being scaled too large by the minimum size scaling.
+	Fixed by pinning to both the minimum and maximum sizes.
+	
+	also, pinned icon view emblem sizes to MAXIMUM_EMBLEM_SIZE independent
+	of scale factor, so they don't become enormous when the icons are
+	large.
+	
 2000-12-29  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Gene Ragan <gzr@eazel.com>
