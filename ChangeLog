@@ -1,5 +1,12 @@
 2000-07-27  Gene Z. Ragan  <gzr@eazel.com>
 
+	* libnautilus-extensions/nautilus-link.c:
+	(nautilus_link_is_link_file):
+	Escape the path passed in so we can use gnome-fvs
+	to determine the mime type.
+	
+2000-07-27  Gene Z. Ragan  <gzr@eazel.com>
+
 	* libnautilus-extensions/nautilus-directory-async.c:
 	(activation_uri_gmc_link_read_callback):
 	Changed the API to determine if file is link file to use path.

@@ -86,15 +86,23 @@ gboolean
 nautilus_link_is_link_file (const char *path)
 {
 	const char *mime_type;
+	char *escape_path;
 	
-	mime_type = gnome_vfs_get_file_mime_type (path, NULL, FALSE);
+	/* FIXME: Unescape path. Need to look some more into why I have to do this. */
+	escape_path = gnome_vfs_unescape_string_for_display (path);
+	
+	mime_type = gnome_vfs_get_file_mime_type (escape_path, NULL, FALSE);
 	if (mime_type == NULL) {
+		g_free (escape_path);
 		return FALSE;
 	}
 	
 	if (nautilus_strcasecmp (mime_type, "application/x-nautilus-link") == 0) {
+		g_free (escape_path);
 		return TRUE;
 	}
+
+	g_free (escape_path);
 
 	return FALSE;
 }
