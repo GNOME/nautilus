@@ -92,7 +92,6 @@
 #define COMMAND_PATH_CLOSE_WINDOW			"/commands/Close"
 
 #define USER_MANUAL_URI		"help:nautilus-user-manual"
-#define QUICK_REFERENCE_URI	"help:nautilus-quick-reference"
 #define CUSTOMER_FEEDBACK_URI	"http://www.eazel.com/feedback.html"
 #define START_HERE_URI          "start-here:"
 
@@ -638,14 +637,6 @@ help_menu_nautilus_manual_callback (BonoboUIComponent *component,
 }
 
 static void
-help_menu_nautilus_quick_reference_callback (BonoboUIComponent *component, 
-			              	     gpointer user_data, 
-			              	     const char *verb)
-{
-	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), QUICK_REFERENCE_URI);
-}
-
-static void
 help_menu_nautilus_feedback_callback (BonoboUIComponent *component, 
 			              gpointer user_data, 
 			              const char *verb)
@@ -1118,7 +1109,6 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 
 		BONOBO_UI_VERB ("About Nautilus", help_menu_about_nautilus_callback),
 		BONOBO_UI_VERB ("Nautilus Manual", help_menu_nautilus_manual_callback),
-		BONOBO_UI_VERB ("Nautilus Quick Reference", help_menu_nautilus_quick_reference_callback),
 		BONOBO_UI_VERB ("Nautilus Feedback", help_menu_nautilus_feedback_callback),
 		BONOBO_UI_VERB ("User Level Customization", user_level_customize_callback),
 		BONOBO_UI_VERB ("Stop", stop_button_callback),

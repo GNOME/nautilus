@@ -137,6 +137,7 @@
 			<menuitem name="Trash"
 				  _label="Move to _Trash"
 				  accel="*Control*t"
+				  pixtype="stock" pixname="gtk-delete"
 				  verb="Trash"/>
 			<menuitem name="Delete"
 				  _label="De_lete"
@@ -257,7 +258,9 @@
 			<menuitem name="Rename" verb="Rename"/>
 		</placeholder>
 		<placeholder name="Dangerous File Actions" delimit="top">
-			<menuitem name="Trash" verb="Trash"/>
+			<menuitem name="Trash" 
+			 pixtype="stock" pixname="gtk-delete"
+			 verb="Trash"/>
 			<menuitem name="Delete" verb="Delete"/>
 		</placeholder>
 		<placeholder name="File Clipboard Actions" delimit="top">
