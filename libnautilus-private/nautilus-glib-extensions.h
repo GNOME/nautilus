@@ -33,6 +33,10 @@
 /* A gboolean variant for bit fields. */
 typedef guint nautilus_boolean_bit;
 
+/* Use there to start and and end a macro */
+#define NAUTILUS_MACRO_BEGIN		G_STMT_START {
+#define NAUTILUS_MACRO_END		} G_STMT_END
+
 /* Use this until we can switch to G_N_ELEMENTS. */
 #define NAUTILUS_N_ELEMENTS(array) (sizeof (array) / sizeof ((array)[0]))
 

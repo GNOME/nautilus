@@ -1,5 +1,54 @@
 2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
 
+	 
+	cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-start.c
+	: (nautilus_druid_page_start_construct):
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_number_outstanding),
+	(nautilus_self_check_directory):
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(nautilus_gdk_font_get_bold), (nautilus_gdk_create_copy_area_gc):
+	* libnautilus-extensions/nautilus-gdk-extensions.h:
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_render_to_pixbuf_tiled),
+	(nautilus_gdk_pixbuf_draw_text),
+	(nautilus_gdk_pixbuf_fill_rectangle_with_color),
+	(nautilus_gdk_pixbuf_render_to_drawable),
+	(nautilus_gdk_pixbuf_render_to_pixbuf),
+	(nautilus_gdk_pixbuf_render_to_pixbuf_alpha),
+	(nautilus_gdk_pixbuf_save_to_file),
+	(nautilus_gdk_pixbuf_ref_if_not_null),
+	(nautilus_gdk_pixbuf_unref_if_not_null):
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_widget_set_background_color),
+	(nautilus_gtk_widget_set_foreground_color),
+	(nautilus_gtk_widget_find_windowed_ancestor):
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_make_thumbnails):
+	* libnautilus-extensions/nautilus-icon-text-item.c:
+	(iti_start_editing), (iti_event),
+	(nautilus_icon_text_item_start_editing),
+	(nautilus_icon_text_item_stop_editing):
+	* libnautilus-extensions/nautilus-string-picker.c:
+	(nautilus_string_picker_insert_string),
+	(nautilus_string_picker_contains):
+	* libnautilus-extensions/nautilus-string-picker.h:
+	* src/nautilus-sidebar-title.c:
+	(anti_aliased_mode_changed_callback),
+	(sidebar_create_smooth_components),
+	(nautilus_sidebar_title_initialize),
+	(nautilus_sidebar_title_destroy),
+	(nautilus_sidebar_title_select_text_color),
+	(nautilus_sidebar_title_theme_changed), (update_icon),
+	(update_font), (update_title), (update_more_info), (update_all):
+	* src/nautilus-sidebar-title.h:
+	* src/nautilus-sidebar.c: (background_appearance_changed_callback):
+
+2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-string-list.c:
 	(nautilus_string_list_new_from_tokens),
 	(nautilus_string_list_contains), (nautilus_string_list_sort),
