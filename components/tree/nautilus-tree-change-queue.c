@@ -92,7 +92,7 @@ nautilus_tree_change_queue_new (void)
 {
 	NautilusTreeChangeQueue *change_queue;
 
-	change_queue = NAUTILUS_TREE_CHANGE_QUEUE (gtk_object_new (NAUTILUS_TYPE_TREE_CHANGE_QUEUE, NULL));
+	change_queue = NAUTILUS_TREE_CHANGE_QUEUE (g_object_new (NAUTILUS_TYPE_TREE_CHANGE_QUEUE, NULL));
 	gtk_object_ref (GTK_OBJECT (change_queue));
 	gtk_object_sink (GTK_OBJECT (change_queue));
 	return change_queue;

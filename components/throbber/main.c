@@ -52,13 +52,13 @@ throbber_make_object (BonoboGenericFactory *factory,
 		return NULL;
 	}
 	
-	throbber = NAUTILUS_THROBBER (gtk_object_new (NAUTILUS_TYPE_THROBBER, NULL));
+	throbber = NAUTILUS_THROBBER (g_object_new (NAUTILUS_TYPE_THROBBER, NULL));
 	
 	object_count++;
 	
 	bonobo_control = nautilus_throbber_get_control (throbber);
 	
-	gtk_signal_connect (GTK_OBJECT (bonobo_control), "destroy", throbber_object_destroyed, NULL);
+	g_signal_connect (G_OBJECT (bonobo_control), "destroy", throbber_object_destroyed, NULL);
 
 	return bonobo_control;
 }

@@ -206,7 +206,7 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 					       "icons_changed",
 					       G_CALLBACK (update_icon),
 					       GTK_OBJECT (sidebar_title));
-	gtk_signal_connect (GTK_OBJECT (sidebar_title), "realize",
+	g_signal_connect (G_OBJECT (sidebar_title), "realize",
 			    G_CALLBACK (realize_callback), NULL);
 
 	/* Create the icon */

@@ -215,7 +215,7 @@ display_caveat_first_time (NautilusShell *shell, NautilusWindow *window)
 	 */
 	if (!showed_caveat
 	    && g_getenv ("NAUTILUS_NO_CAVEAT_DIALOG") == NULL) {
-		gtk_signal_connect (GTK_OBJECT (window), "show",
+		g_signal_connect (G_OBJECT (window), "show",
 				    display_caveat, window);
 	}
 	showed_caveat = TRUE;

@@ -61,58 +61,6 @@
 static void nautilus_metafile_init       (NautilusMetafile      *metafile);
 static void nautilus_metafile_class_init (NautilusMetafileClass *klass);
 
-static void destroy (GtkObject *metafile);
-
-static CORBA_boolean corba_is_read (PortableServer_Servant  servant,
-				    CORBA_Environment      *ev);
-
-static CORBA_char *corba_get		      (PortableServer_Servant  servant,
-					       const CORBA_char       *file_name,
-					       const CORBA_char       *key,
-					       const CORBA_char       *default_value,
-					       CORBA_Environment      *ev);
-static Nautilus_MetadataList *corba_get_list (PortableServer_Servant  servant,
-					       const CORBA_char      *file_name,
-					       const CORBA_char      *list_key,
-					       const CORBA_char      *list_subkey,
-					       CORBA_Environment     *ev);
-
-static void corba_set      (PortableServer_Servant  servant,
-			    const CORBA_char       *file_name,
-			    const CORBA_char       *key,
-			    const CORBA_char       *default_value,
-			    const CORBA_char       *metadata,
-			    CORBA_Environment      *ev);
-static void corba_set_list (PortableServer_Servant       servant,
-			    const CORBA_char            *file_name,
-			    const CORBA_char            *list_key,
-			    const CORBA_char            *list_subkey,
-			    const Nautilus_MetadataList *list,
-			    CORBA_Environment           *ev);
-					       
-static void corba_copy             (PortableServer_Servant   servant,
-				    const CORBA_char        *source_file_name,
-				    const CORBA_char        *destination_directory_uri,
-				    const CORBA_char        *destination_file_name,
-				    CORBA_Environment       *ev);
-static void corba_remove           (PortableServer_Servant  servant,
-				    const CORBA_char       *file_name,
-				    CORBA_Environment      *ev);
-static void corba_rename           (PortableServer_Servant  servant,
-				    const CORBA_char       *old_file_name,
-				    const CORBA_char       *new_file_name,
-				    CORBA_Environment      *ev);
-static void corba_rename_directory (PortableServer_Servant  servant,
-				    const CORBA_char       *new_directory_uri,
-				    CORBA_Environment      *ev);
-
-static void corba_register_monitor   (PortableServer_Servant          servant,
-				      const Nautilus_MetafileMonitor  monitor,
-				      CORBA_Environment              *ev);
-static void corba_unregister_monitor (PortableServer_Servant          servant,
-				      const Nautilus_MetafileMonitor  monitor,
-				      CORBA_Environment              *ev);
-
 static char    *get_file_metadata      (NautilusMetafile *metafile,
 					const char       *file_name,
 					const char       *key,
@@ -199,24 +147,6 @@ struct NautilusMetafileDetails {
 static GHashTable *metafiles;
 
 static void
-nautilus_metafile_class_init (NautilusMetafileClass *klass)
-{
-	GTK_OBJECT_CLASS (klass)->destroy = destroy;
-
-	klass->epv.is_read            = corba_is_read;
-	klass->epv.get                = corba_get;
-	klass->epv.get_list           = corba_get_list;
-	klass->epv.set                = corba_set;
-	klass->epv.set_list           = corba_set_list;
-	klass->epv.copy               = corba_copy;
-	klass->epv.remove             = corba_remove;
-	klass->epv.rename             = corba_rename;
-	klass->epv.rename_directory   = corba_rename_directory;
-	klass->epv.register_monitor   = corba_register_monitor;
-	klass->epv.unregister_monitor = corba_unregister_monitor;
-}
-
-static void
 nautilus_metafile_init (NautilusMetafile *metafile)
 {
 	metafile->details = g_new0 (NautilusMetafileDetails, 1);
@@ -226,7 +156,7 @@ nautilus_metafile_init (NautilusMetafile *metafile)
 }
 
 static void
-destroy (GtkObject *object)
+finalize (GObject *object)
 {
 	NautilusMetafile  *metafile;
 
@@ -257,7 +187,7 @@ destroy (GtkObject *object)
 
 	g_free (metafile->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static GnomeVFSURI *
@@ -334,7 +264,7 @@ nautilus_metafile_new (const char *directory_uri)
 {
 	NautilusMetafile *metafile;
 	
-	metafile = NAUTILUS_METAFILE (gtk_object_new (NAUTILUS_TYPE_METAFILE, NULL));
+	metafile = NAUTILUS_METAFILE (g_object_new (NAUTILUS_TYPE_METAFILE, NULL));
 
 	nautilus_metafile_set_directory_uri (metafile, directory_uri);
 
@@ -2136,4 +2066,22 @@ directory_request_write_metafile (NautilusMetafile *metafile)
 			gtk_idle_add (metafile_write_idle_callback,
 				      metafile);
 	}
+}
+
+static void
+nautilus_metafile_class_init (NautilusMetafileClass *klass)
+{
+	G_OBJECT_CLASS (klass)->finalize = finalize;
+
+	klass->epv.is_read            = corba_is_read;
+	klass->epv.get                = corba_get;
+	klass->epv.get_list           = corba_get_list;
+	klass->epv.set                = corba_set;
+	klass->epv.set_list           = corba_set_list;
+	klass->epv.copy               = corba_copy;
+	klass->epv.remove             = corba_remove;
+	klass->epv.rename             = corba_rename;
+	klass->epv.rename_directory   = corba_rename_directory;
+	klass->epv.register_monitor   = corba_register_monitor;
+	klass->epv.unregister_monitor = corba_unregister_monitor;
 }

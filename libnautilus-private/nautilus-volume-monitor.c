@@ -305,7 +305,7 @@ nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass)
 		                G_STRUCT_OFFSET (NautilusVolumeMonitorClass, 
 						     volume_mounted),
 		                NULL, NULL,
-		                gtk_marshal_NONE__POINTER,
+		                gtk_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
 	signals[VOLUME_UNMOUNT_STARTED] 
@@ -315,7 +315,7 @@ nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass)
 		                G_STRUCT_OFFSET (NautilusVolumeMonitorClass, 
 						     volume_unmount_started),
 		                NULL, NULL,
-		                gtk_marshal_NONE__POINTER,
+		                gtk_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
 	signals[VOLUME_UNMOUNT_FAILED] 
@@ -325,7 +325,7 @@ nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass)
 		                G_STRUCT_OFFSET (NautilusVolumeMonitorClass, 
 						     volume_unmount_failed),
 		                NULL, NULL,
-		                gtk_marshal_NONE__POINTER,
+		                gtk_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
 	signals[VOLUME_UNMOUNTED] 
@@ -335,7 +335,7 @@ nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass)
 		                G_STRUCT_OFFSET (NautilusVolumeMonitorClass, 
 						     volume_unmounted),
 		                NULL, NULL,
-		                gtk_marshal_NONE__POINTER,
+		                gtk_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
 	/* Check environment a bit. */
@@ -391,7 +391,7 @@ nautilus_volume_monitor_get (void)
 {
 	if (global_volume_monitor == NULL) {
 		global_volume_monitor = NAUTILUS_VOLUME_MONITOR
-			(gtk_object_new (nautilus_volume_monitor_get_type(),
+			(g_object_new (nautilus_volume_monitor_get_type(),
 					 NULL));
 		gtk_object_ref (GTK_OBJECT (global_volume_monitor));
 		gtk_object_sink (GTK_OBJECT (global_volume_monitor));
@@ -800,8 +800,8 @@ mount_volume_make_name (NautilusVolume *volume)
 static void
 mount_volume_activate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 {
-	gtk_signal_emit (GTK_OBJECT (monitor),
-			 signals[VOLUME_MOUNTED],
+	g_signal_emit (G_OBJECT (monitor),
+			 signals[VOLUME_MOUNTED], 0,
 			 volume);
 }
 
@@ -839,8 +839,8 @@ mount_volume_deactivate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 	default:
 	}
 
-	gtk_signal_emit (GTK_OBJECT (monitor),
-			 signals[VOLUME_UNMOUNTED],
+	g_signal_emit (G_OBJECT (monitor),
+			 signals[VOLUME_UNMOUNTED], 0,
 			 volume);
 }
 
@@ -1387,7 +1387,7 @@ display_mount_error (gpointer callback_data)
 		for (p = monitor->details->mounts; p != NULL; p = p->next) {
 			volume = (NautilusVolume *)p->data;
 			if (strcmp (volume->mount_path, info->mount_point) == 0) {
-				gtk_signal_emit (GTK_OBJECT (monitor), signals[VOLUME_UNMOUNT_FAILED], volume);
+				g_signal_emit (G_OBJECT (monitor), signals[VOLUME_UNMOUNT_FAILED], 0, volume);
 				break;
 			}
 		}
@@ -1568,7 +1568,7 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
                command = find_command (UMOUNT_COMMAND);
                command_string = g_strconcat (command, UMOUNT_SEPARATOR, name, NULL);
                if (volume != NULL) {
-			gtk_signal_emit (GTK_OBJECT (monitor), signals[VOLUME_UNMOUNT_STARTED], volume);
+			g_signal_emit (G_OBJECT (monitor), signals[VOLUME_UNMOUNT_STARTED], 0, volume);
 		}
        }
 

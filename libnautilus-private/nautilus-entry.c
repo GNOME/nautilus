@@ -55,8 +55,8 @@ static void nautilus_entry_init       (NautilusEntry      *entry);
 static void nautilus_entry_class_init (NautilusEntryClass *class);
 
 EEL_CLASS_BOILERPLATE (NautilusEntry,
-				   nautilus_entry,
-				   GTK_TYPE_ENTRY)
+		       nautilus_entry,
+		       GTK_TYPE_ENTRY)
 
 static void
 emacs_shortcuts_preference_changed_callback (gpointer callback_data)
@@ -200,7 +200,7 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 	if (result) {
 		new_has = gtk_editable_get_selection_bounds (editable, NULL, NULL);
 		if (old_has || new_has) {
-			gtk_signal_emit (GTK_OBJECT (widget), signals[SELECTION_CHANGED]);
+			g_signal_emit (G_OBJECT (widget), signals[SELECTION_CHANGED], 0);
 		}
 	}
 
@@ -238,7 +238,7 @@ nautilus_entry_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 	if (result) {
 		new_had = gtk_editable_get_selection_bounds (editable, &new_start, &new_end);
 		if (old_had != new_had || (old_had && (old_start != new_start || old_end != new_end))) {
-			gtk_signal_emit (GTK_OBJECT (widget), signals[SELECTION_CHANGED]);
+			g_signal_emit (G_OBJECT (widget), signals[SELECTION_CHANGED], 0);
 		}
 	}
 	
@@ -318,8 +318,10 @@ nautilus_entry_set_text (NautilusEntry *entry, const gchar *text)
 	gtk_entry_set_text (GTK_ENTRY (entry), text);
 	entry->details->user_edit = TRUE;
 	
-	gtk_signal_emit (GTK_OBJECT (entry), signals[SELECTION_CHANGED]);
+	g_signal_emit (G_OBJECT (entry), signals[SELECTION_CHANGED], 0);
 }
+
+#if GNOME2_CONVERSION_COMPLETE
 
 static void
 nautilus_entry_set_selection_bounds (GtkEditable *editable,
@@ -329,8 +331,10 @@ nautilus_entry_set_selection_bounds (GtkEditable *editable,
 	EEL_CALL_PARENT (GTK_EDITABLE_CLASS, set_selection_bounds,
 			 (editable, start_pos, end_pos));
 
-	gtk_signal_emit (GTK_OBJECT (editable), signals[SELECTION_CHANGED]);
+	g_signal_emit (G_OBJECT (editable), signals[SELECTION_CHANGED], 0);
 }
+
+#endif
 
 static gboolean
 nautilus_entry_button_press (GtkWidget *widget,
@@ -342,7 +346,7 @@ nautilus_entry_button_press (GtkWidget *widget,
 		(GTK_WIDGET_CLASS, button_press_event, (widget, event));
 
 	if (result) {
-		gtk_signal_emit (GTK_OBJECT (widget), signals[SELECTION_CHANGED]);
+		g_signal_emit (G_OBJECT (widget), signals[SELECTION_CHANGED], 0);
 	}
 
 	return result;
@@ -358,13 +362,15 @@ nautilus_entry_button_release (GtkWidget *widget,
 		(GTK_WIDGET_CLASS, button_release_event, (widget, event));
 
 	if (result) {
-		gtk_signal_emit (GTK_OBJECT (widget), signals[SELECTION_CHANGED]);
+		g_signal_emit (G_OBJECT (widget), signals[SELECTION_CHANGED], 0);
 	}
 
 	return result;
 }
 
-static void 
+#if GNOME2_CONVERSION_COMPLETE
+
+static void
 nautilus_entry_insert_text (GtkEditable *editable, const gchar *text,
 			    int length, int *position)
 {
@@ -374,13 +380,13 @@ nautilus_entry_insert_text (GtkEditable *editable, const gchar *text,
 
 	/* Fire off user changed signals */
 	if (entry->details->user_edit) {
-		gtk_signal_emit (GTK_OBJECT (editable), signals[USER_CHANGED]);
+		g_signal_emit (G_OBJECT (editable), signals[USER_CHANGED], 0);
 	}
 
 	EEL_CALL_PARENT (GTK_EDITABLE_CLASS, insert_text, 
 			      (editable, text, length, position));
 
-	gtk_signal_emit (GTK_OBJECT (editable), signals[SELECTION_CHANGED]);
+	g_signal_emit (G_OBJECT (editable), signals[SELECTION_CHANGED], 0);
 }
 			 		     
 static void 
@@ -392,14 +398,16 @@ nautilus_entry_delete_text (GtkEditable *editable, int start_pos, int end_pos)
 
 	/* Fire off user changed signals */
 	if (entry->details->user_edit) {
-		gtk_signal_emit (GTK_OBJECT (editable), signals[USER_CHANGED]);
+		g_signal_emit (G_OBJECT (editable), signals[USER_CHANGED], 0);
 	}
 	
 	EEL_CALL_PARENT (GTK_EDITABLE_CLASS, delete_text, 
 			      (editable, start_pos, end_pos));
 
-	gtk_signal_emit (GTK_OBJECT (editable), signals[SELECTION_CHANGED]);
+	g_signal_emit (G_OBJECT (editable), signals[SELECTION_CHANGED], 0);
 }
+
+#endif
 
 /* Overridden to work around GTK bug. The selection_clear_event is queued
  * when the selection changes. Changing the selection to NULL and then
@@ -428,11 +436,15 @@ nautilus_entry_class_init (NautilusEntryClass *class)
 {
 	GtkWidgetClass *widget_class;
 	GtkObjectClass *object_class;
+#if GNOME2_CONVERSION_COMPLETE
 	GtkEditableClass *editable_class;
+#endif
 		
 	widget_class = GTK_WIDGET_CLASS (class);
 	object_class = GTK_OBJECT_CLASS (class);
+#if GNOME2_CONVERSION_COMPLETE
 	editable_class = GTK_EDITABLE_CLASS (class);
+#endif
 		
 	widget_class->button_press_event = nautilus_entry_button_press;
 	widget_class->button_release_event = nautilus_entry_button_release;
@@ -442,9 +454,11 @@ nautilus_entry_class_init (NautilusEntryClass *class)
 	
 	object_class->destroy = nautilus_entry_destroy;
 	
+#if GNOME2_CONVERSION_COMPLETE
 	editable_class->insert_text = nautilus_entry_insert_text;
 	editable_class->delete_text = nautilus_entry_delete_text;
 	editable_class->set_selection_bounds = nautilus_entry_set_selection_bounds;
+#endif
 
 	/* Set up signals */
 	signals[USER_CHANGED] = g_signal_new
@@ -454,7 +468,7 @@ nautilus_entry_class_init (NautilusEntryClass *class)
 		 G_STRUCT_OFFSET (NautilusEntryClass,
 				    user_changed),
 		 NULL, NULL,
-		 gtk_marshal_NONE__NONE,
+		 gtk_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 	signals[SELECTION_CHANGED] = g_signal_new
 		("selection_changed",
@@ -463,7 +477,7 @@ nautilus_entry_class_init (NautilusEntryClass *class)
 		 G_STRUCT_OFFSET (NautilusEntryClass,
 				    selection_changed),
 		 NULL, NULL,
-		 gtk_marshal_NONE__NONE,
+		 gtk_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 }
 

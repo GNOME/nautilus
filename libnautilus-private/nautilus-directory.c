@@ -91,7 +91,7 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusDirectoryClass, files_added),
 		              NULL, NULL,
-		              gtk_marshal_NONE__POINTER,
+		              gtk_marshal_VOID__POINTER,
 		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 	signals[FILES_CHANGED] =
 		g_signal_new ("files_changed",
@@ -99,7 +99,7 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusDirectoryClass, files_changed),
 		              NULL, NULL,
-		              gtk_marshal_NONE__POINTER,
+		              gtk_marshal_VOID__POINTER,
 		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 	signals[DONE_LOADING] =
 		g_signal_new ("done_loading",
@@ -107,7 +107,7 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusDirectoryClass, done_loading),
 		              NULL, NULL,
-		              gtk_marshal_NONE__NONE,
+		              gtk_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 	signals[LOAD_ERROR] =
 		g_signal_new ("load_error",
@@ -115,7 +115,7 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusDirectoryClass, load_error),
 		              NULL, NULL,
-		              gtk_marshal_NONE__INT,
+		              gtk_marshal_VOID__INT,
 		              G_TYPE_NONE, 1, GTK_TYPE_INT);
 
 	klass->get_name_for_self_as_new_file = real_get_name_for_self_as_new_file;
@@ -486,9 +486,9 @@ nautilus_directory_new (const char *uri)
 	g_assert (uri != NULL);
 
 	if (eel_uri_is_trash (uri)) {
-		directory = NAUTILUS_DIRECTORY (gtk_object_new (NAUTILUS_TYPE_TRASH_DIRECTORY, NULL));
+		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_TRASH_DIRECTORY, NULL));
 	} else {
-		directory = NAUTILUS_DIRECTORY (gtk_object_new (NAUTILUS_TYPE_VFS_DIRECTORY, NULL));
+		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_VFS_DIRECTORY, NULL));
 	}
 	gtk_object_ref (GTK_OBJECT (directory));
 	gtk_object_sink (GTK_OBJECT (directory));
@@ -683,8 +683,8 @@ nautilus_directory_emit_files_added (NautilusDirectory *directory,
 				     GList *added_files)
 {
 	if (added_files != NULL) {
-		gtk_signal_emit (GTK_OBJECT (directory),
-				 signals[FILES_ADDED],
+		g_signal_emit (G_OBJECT (directory),
+				 signals[FILES_ADDED], 0,
 				 added_files);
 	}
 }
@@ -694,8 +694,8 @@ nautilus_directory_emit_files_changed (NautilusDirectory *directory,
 				       GList *changed_files)
 {
 	if (changed_files != NULL) {
-		gtk_signal_emit (GTK_OBJECT (directory),
-				 signals[FILES_CHANGED],
+		g_signal_emit (G_OBJECT (directory),
+				 signals[FILES_CHANGED], 0,
 				 changed_files);
 	}
 }
@@ -715,16 +715,16 @@ nautilus_directory_emit_change_signals (NautilusDirectory *directory,
 void
 nautilus_directory_emit_done_loading (NautilusDirectory *directory)
 {
-	gtk_signal_emit (GTK_OBJECT (directory),
-			 signals[DONE_LOADING]);
+	g_signal_emit (G_OBJECT (directory),
+			 signals[DONE_LOADING], 0);
 }
 
 void
 nautilus_directory_emit_load_error (NautilusDirectory *directory,
 				    GnomeVFSResult error_result)
 {
-	gtk_signal_emit (GTK_OBJECT (directory),
-			 signals[LOAD_ERROR],
+	g_signal_emit (G_OBJECT (directory),
+			 signals[LOAD_ERROR], 0,
 			 error_result);
 }
 
@@ -802,8 +802,8 @@ call_files_added_free_list (gpointer key, gpointer value, gpointer user_data)
 	g_assert (value != NULL);
 	g_assert (user_data == NULL);
 
-	gtk_signal_emit (GTK_OBJECT (key),
-			 signals[FILES_ADDED],
+	g_signal_emit (G_OBJECT (key),
+			 signals[FILES_ADDED], 0,
 			 value);
 	g_list_free (value);
 }

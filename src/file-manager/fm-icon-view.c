@@ -1327,7 +1327,7 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	icon_view = FM_ICON_VIEW (view);
 
 	icon_view->details->ui = bonobo_ui_component_new ("Icon View");
-	gtk_signal_connect (GTK_OBJECT (icon_view->details->ui),
+	g_signal_connect (G_OBJECT (icon_view->details->ui),
 			    "ui_event", G_CALLBACK (handle_ui_event), icon_view);
 	bonobo_ui_component_set_container (icon_view->details->ui,
 					   fm_directory_view_get_bonobo_ui_container (view),
@@ -2436,87 +2436,87 @@ create_icon_container (FMIconView *icon_view)
 
 	GTK_WIDGET_SET_FLAGS (icon_container, GTK_CAN_FOCUS);
 	
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "activate",
 			    G_CALLBACK (icon_container_activate_callback),
 			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "band_select_started",
 			    G_CALLBACK (band_select_started_callback),
 			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "band_select_ended",
 			    G_CALLBACK (band_select_ended_callback),
 			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "compare_icons",
 			    G_CALLBACK (icon_container_compare_icons_callback),
 			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "compare_icons_by_name",
 			    G_CALLBACK (icon_container_compare_icons_by_name_callback),
 			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "context_click_selection",
 			    G_CALLBACK (icon_container_context_click_selection_callback),
 			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "context_click_background",
 			    G_CALLBACK (icon_container_context_click_background_callback),
 			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "icon_position_changed",
 			    G_CALLBACK (icon_position_changed_callback),
 			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "icon_text_changed",
 			    G_CALLBACK (fm_icon_view_icon_text_changed_callback),
 			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "selection_changed",
 			    G_CALLBACK (selection_changed_callback),
 			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "get_icon_images",
 			    G_CALLBACK (get_icon_images_callback),
 			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "get_icon_uri",
 			    G_CALLBACK (get_icon_uri_callback),
 			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "get_icon_drop_target_uri",
 			    G_CALLBACK (get_icon_drop_target_uri_callback),
 			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "get_icon_text",
 			    G_CALLBACK (get_icon_text_callback),
 			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "move_copy_items",
 			    G_CALLBACK (icon_view_move_copy_items),
 			    directory_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "get_container_uri",
 			    G_CALLBACK (icon_view_get_container_uri),
 			    directory_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "can_accept_item",
 			    G_CALLBACK (icon_view_can_accept_item),
 			    directory_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "get_stored_icon_position",
 			    G_CALLBACK (get_stored_icon_position_callback),
 			    directory_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "layout_changed",
 			    G_CALLBACK (layout_changed_callback),
 			    directory_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "preview",
 			    G_CALLBACK (icon_container_preview_callback),
 			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "renaming_icon",
 			    G_CALLBACK (renaming_icon_callback),
 			    directory_view);
@@ -2801,7 +2801,7 @@ fm_icon_view_init (FMIconView *icon_view)
 						  G_OBJECT (icon_view));
 
 	icon_container = get_icon_container (icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "handle_uri_list",
 			    G_CALLBACK (icon_view_handle_uri_list),
 			    icon_view);

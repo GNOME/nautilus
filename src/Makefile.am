@@ -130,7 +130,7 @@ server_DATA = $(server_in_files:.server.in=.server)
 
 @INTLTOOL_SERVER_RULE@
 
-uidir = $(datadir)/gnome/ui
+uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = 					\
 	nautilus-shell-ui.xml			\
 	$(NULL)

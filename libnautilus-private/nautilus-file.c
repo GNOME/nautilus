@@ -127,7 +127,7 @@ nautilus_file_class_init (NautilusFileClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusFileClass, changed),
 		              NULL, NULL,
-		              gtk_marshal_NONE__NONE,
+		              gtk_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 
 	signals[UPDATED_DEEP_COUNT_IN_PROGRESS] =
@@ -136,7 +136,7 @@ nautilus_file_class_init (NautilusFileClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusFileClass, updated_deep_count_in_progress),
 		              NULL, NULL,
-		              gtk_marshal_NONE__NONE,
+		              gtk_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 }
 
@@ -158,9 +158,9 @@ nautilus_file_new_from_relative_uri (NautilusDirectory *directory,
 	g_return_val_if_fail (relative_uri[0] != '\0', NULL);
 
 	if (self_owned && NAUTILUS_IS_TRASH_DIRECTORY (directory)) {
-		file = NAUTILUS_FILE (gtk_object_new (NAUTILUS_TYPE_TRASH_FILE, NULL));
+		file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_TRASH_FILE, NULL));
 	} else {
-		file = NAUTILUS_FILE (gtk_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
+		file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
 	}
 	gtk_object_ref (GTK_OBJECT (file));
 	gtk_object_sink (GTK_OBJECT (file));
@@ -271,7 +271,7 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 	g_return_val_if_fail (info != NULL, NULL);
 
-	file = NAUTILUS_FILE (gtk_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
+	file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
 
 #ifdef NAUTILUS_FILE_DEBUG_REF
 	printf("%10p ref'd\n", file);
@@ -4676,7 +4676,7 @@ nautilus_file_updated_deep_count_in_progress (NautilusFile *file) {
 	g_assert (nautilus_file_is_directory (file));
 
 	/* Send out a signal. */
-	gtk_signal_emit (GTK_OBJECT (file), signals[UPDATED_DEEP_COUNT_IN_PROGRESS], file);
+	g_signal_emit (G_OBJECT (file), signals[UPDATED_DEEP_COUNT_IN_PROGRESS], 0, file);
 
 	/* Tell link files pointing to this object about the change. */
 	link_files = get_link_files (file);
@@ -4711,7 +4711,7 @@ nautilus_file_emit_changed (NautilusFile *file)
 	file->details->compare_by_emblem_cache = NULL;
 
 	/* Send out a signal. */
-	gtk_signal_emit (GTK_OBJECT (file), signals[CHANGED], file);
+	g_signal_emit (G_OBJECT (file), signals[CHANGED], 0, file);
 
 	/* Tell link files pointing to this object about the change. */
 	link_files = get_link_files (file);

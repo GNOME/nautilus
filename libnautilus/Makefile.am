@@ -64,7 +64,7 @@ nautilus_distributed_undo_idl_stamp: nautilus-distributed-undo.idl
 
 $(libnautilus_la_OBJECTS): nautilus_view_component_idl_stamp nautilus_distributed_undo_idl_stamp
 
-uidir = $(datadir)/gnome/ui
+uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = \
 	nautilus-clipboard-ui.xml	\
 	$(NULL)

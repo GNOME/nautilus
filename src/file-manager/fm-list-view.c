@@ -1146,63 +1146,63 @@ set_up_list (FMListView *list_view)
 
 	GTK_WIDGET_SET_FLAGS (list, GTK_CAN_FOCUS);
 
-	gtk_signal_connect (GTK_OBJECT (list),
+	g_signal_connect (G_OBJECT (list),
 			    "activate",
 			    G_CALLBACK (list_activate_callback),
 			    list_view);
-	gtk_signal_connect (GTK_OBJECT (list),
+	g_signal_connect (G_OBJECT (list),
 			    "selection_changed",
 			    G_CALLBACK (list_selection_changed_callback),
 			    list_view);
-	gtk_signal_connect (GTK_OBJECT (list),
+	g_signal_connect (G_OBJECT (list),
 			    "click_column",
 			    G_CALLBACK (column_clicked_callback),
 			    list_view);
-	gtk_signal_connect (GTK_OBJECT (list),
+	g_signal_connect (G_OBJECT (list),
 			    "context_click_selection",
 			    G_CALLBACK (context_click_selection_callback),
 			    list_view);
-	gtk_signal_connect (GTK_OBJECT (list),
+	g_signal_connect (G_OBJECT (list),
 			    "context_click_background",
 			    G_CALLBACK (context_click_background_callback),
 			    list_view);
-	gtk_signal_connect (GTK_OBJECT (list),
+	g_signal_connect (G_OBJECT (list),
 			    "select_matching_name",
 			    G_CALLBACK (select_matching_name_callback),
 			    list_view);
-	gtk_signal_connect (GTK_OBJECT (list),
+	g_signal_connect (G_OBJECT (list),
 			    "select_previous_name",
 			    G_CALLBACK (select_previous_name_callback),
 			    list_view);
-	gtk_signal_connect (GTK_OBJECT (list),
+	g_signal_connect (G_OBJECT (list),
 			    "select_next_name",
 			    G_CALLBACK (select_next_name_callback),
 			    list_view);
-	gtk_signal_connect (GTK_OBJECT (list),
+	g_signal_connect (G_OBJECT (list),
 			    "handle_dragged_items",
 			    G_CALLBACK (fm_list_handle_dragged_items),
 			    list_view);
-	gtk_signal_connect (GTK_OBJECT (list),
+	g_signal_connect (G_OBJECT (list),
 			    "handle_dropped_items",
 			    G_CALLBACK (fm_list_handle_dropped_items),
 			    list_view);
-	gtk_signal_connect (GTK_OBJECT (list),
+	g_signal_connect (G_OBJECT (list),
 			    "get_default_action",
 			    G_CALLBACK (fm_list_get_default_action),
 			    list_view);
-	gtk_signal_connect (GTK_OBJECT (list),
+	g_signal_connect (G_OBJECT (list),
 			    "drag_data_get",
 			    G_CALLBACK (fm_list_drag_data_get),
 			    list_view);
-	gtk_signal_connect (GTK_OBJECT (list),
+	g_signal_connect (G_OBJECT (list),
 			    "get_drag_pixbuf",
 			    G_CALLBACK (fm_list_get_drag_pixbuf),
 			    list_view);
-	gtk_signal_connect (GTK_OBJECT (list),
+	g_signal_connect (G_OBJECT (list),
 			    "get_sort_column_index",
 			    G_CALLBACK (fm_list_get_sort_column_index),
 			    list_view);
-	gtk_signal_connect (GTK_OBJECT (list),
+	g_signal_connect (G_OBJECT (list),
 			    "get_cell_text",
 			    G_CALLBACK (get_cell_text),
 			    list_view);	
@@ -1213,7 +1213,7 @@ set_up_list (FMListView *list_view)
 	 * the "realize" signal is slightly too early, so we connect to
 	 * "map".
 	 */
-	gtk_signal_connect (GTK_OBJECT (list_view),
+	g_signal_connect (G_OBJECT (list_view),
 			    "map",
 			    G_CALLBACK (fm_list_view_reset_row_height),
 			    NULL);

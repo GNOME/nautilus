@@ -40,7 +40,7 @@ main (int argc, char * argv[])
 	nautilus_global_preferences_init ();
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_signal_connect (GTK_OBJECT (window), "delete_event", GTK_SIGNAL_FUNC (delete_event), NULL);
+	g_signal_connect (G_OBJECT (window), "delete_event", GTK_SIGNAL_FUNC (delete_event), NULL);
 	
 	button = gtk_toggle_button_new_with_label ("Smooth Graphics");
 
@@ -49,7 +49,7 @@ main (int argc, char * argv[])
 	
 	gtk_container_add (GTK_CONTAINER (window), button);
 
-	gtk_signal_connect (GTK_OBJECT (button),
+	g_signal_connect (G_OBJECT (button),
 			    "toggled",
 			    GTK_SIGNAL_FUNC (button_toggled),
 			    NULL);

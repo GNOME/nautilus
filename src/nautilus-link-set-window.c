@@ -109,7 +109,7 @@ make_link_set_check_box(const char *directory_path, GtkWidget *checkbox_table,
 				  g_strdup(name),
 				  g_free);
 		
-	gtk_signal_connect (GTK_OBJECT (checkbox),
+	g_signal_connect (G_OBJECT (checkbox),
 			    "toggled",
 			    G_CALLBACK (link_set_check_box_toggled),
 			    window);
@@ -259,7 +259,7 @@ nautilus_link_set_toggle_configure_window (const char *directory_path, GtkWindow
 		link_set_window = nautilus_link_set_configure_window (directory_path, 
 								      window_to_update);
 		
-		gtk_signal_connect (GTK_OBJECT (link_set_window), "delete_event",
+		g_signal_connect (G_OBJECT (link_set_window), "delete_event",
 				    GTK_SIGNAL_FUNC (delete_window_callback), NULL);
 	}
 									

@@ -52,10 +52,10 @@ tree_shlib_make_object (PortableServer_POA poa,
 		return CORBA_OBJECT_NIL;
 	}
 
-	view = NAUTILUS_TREE_VIEW (gtk_object_new (NAUTILUS_TYPE_TREE_VIEW, NULL));
+	view = NAUTILUS_TREE_VIEW (g_object_new (NAUTILUS_TYPE_TREE_VIEW, NULL));
 
 #if 0
-	gtk_signal_connect (GTK_OBJECT (view), "destroy", tree_shlib_object_destroyed, NULL);
+	g_signal_connect (G_OBJECT (view), "destroy", tree_shlib_object_destroyed, NULL);
 #endif
 
 	bonobo_activation_plugin_use (poa, impl_ptr);

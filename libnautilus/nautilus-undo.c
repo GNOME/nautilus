@@ -279,6 +279,6 @@ nautilus_undo_set_up_bonobo_control (BonoboControl *control)
 	g_return_if_fail (BONOBO_IS_CONTROL (control));
 
 	set_up_bonobo_control (control);
-	gtk_signal_connect (GTK_OBJECT (control), "set_frame",
+	g_signal_connect (G_OBJECT (control), "set_frame",
 			    GTK_SIGNAL_FUNC (set_up_bonobo_control), NULL);
 }

@@ -474,7 +474,7 @@ zoom_menu_callback (GtkMenuItem *item, gpointer callback_data)
 
 	/* if we can zoom */
 	if (can_zoom) {	
-		gtk_signal_emit (GTK_OBJECT (zoom_control), signals[ZOOM_TO_LEVEL], zoom_level);
+		g_signal_emit (G_OBJECT (zoom_control), signals[ZOOM_TO_LEVEL], 0, zoom_level);
 	}
 }
 
@@ -515,7 +515,7 @@ create_zoom_menu_item (GtkMenu *menu, GtkWidget *widget, float zoom_level,
 					zoom_level == zoom_control->details->zoom_level);
 	
 	gtk_object_set_data_full (GTK_OBJECT (menu_item), "zoom_level", zoom_level_ptr, g_free);
-	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
+	g_signal_connect (G_OBJECT (menu_item), "activate",
 			    GTK_SIGNAL_FUNC (zoom_menu_callback),
 			    zoom_control);
 
@@ -566,11 +566,11 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
  	}
 	
 	if ((event->x < (width / 3)) && nautilus_zoom_control_can_zoom_out (zoom_control)) {
-		gtk_signal_emit (GTK_OBJECT (widget), signals[ZOOM_OUT]);			
+		g_signal_emit (G_OBJECT (widget), signals[ZOOM_OUT], 0);			
 	} else if ((event->x > ((2 * width) / 3)) && nautilus_zoom_control_can_zoom_in (zoom_control)) {
-		gtk_signal_emit (GTK_OBJECT (widget), signals[ZOOM_IN]);			
+		g_signal_emit (G_OBJECT (widget), signals[ZOOM_IN], 0);			
 	} else if ((event->x >= (center - (width >> 3))) && (event->x <= (center + (width >> 3)))) {
-		gtk_signal_emit (GTK_OBJECT (widget), signals[ZOOM_TO_FIT]);			
+		g_signal_emit (G_OBJECT (widget), signals[ZOOM_TO_FIT], 0);			
 	}
 
 	/*
@@ -734,7 +734,7 @@ nautilus_zoom_control_class_init (NautilusZoomControlClass *zoom_control_class)
 		              G_STRUCT_OFFSET (NautilusZoomControlClass, 
 						   zoom_in),
 		              NULL, NULL,
-		              gtk_marshal_NONE__NONE,
+		              gtk_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 
 	signals[ZOOM_OUT] =
@@ -744,7 +744,7 @@ nautilus_zoom_control_class_init (NautilusZoomControlClass *zoom_control_class)
 		              G_STRUCT_OFFSET (NautilusZoomControlClass, 
 						   zoom_out),
 		              NULL, NULL,
-		              gtk_marshal_NONE__NONE,
+		              gtk_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 
 	signals[ZOOM_TO_LEVEL] =
@@ -766,6 +766,6 @@ nautilus_zoom_control_class_init (NautilusZoomControlClass *zoom_control_class)
 		              G_STRUCT_OFFSET (NautilusZoomControlClass, 
 						   zoom_to_fit),
 		              NULL, NULL,
-		              gtk_marshal_NONE__NONE,
+		              gtk_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 }

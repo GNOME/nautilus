@@ -1328,10 +1328,8 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 	user_level_changed_callback (window);
 
 	/* Register to catch Bonobo UI events so we can notice View As changes */
-	gtk_signal_connect (GTK_OBJECT (window->details->shell_ui),
-			    "ui_event", 
-			    G_CALLBACK (nautilus_window_handle_ui_event_callback), 
-			    window);
+	g_signal_connect (G_OBJECT (window->details->shell_ui), "ui_event", 
+			  G_CALLBACK (nautilus_window_handle_ui_event_callback), window);
 
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 	

@@ -230,7 +230,7 @@ index_progress_dialog_new (void)
                                            NULL,
                                            progress_data,
                                            g_free);
-        gtk_signal_connect (GTK_OBJECT (progress_bar_hbox),
+        g_signal_connect (G_OBJECT (progress_bar_hbox),
                             "destroy",
                             timeout_remove_callback,
                             GUINT_TO_POINTER (timeout_id));

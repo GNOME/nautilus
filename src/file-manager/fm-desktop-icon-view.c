@@ -531,7 +531,7 @@ delayed_init (FMDesktopIconView *desktop_icon_view)
 {
 	/* Keep track of the load time. */
 	desktop_icon_view->details->done_loading_signal = 
-		gtk_signal_connect (GTK_OBJECT (fm_directory_view_get_model
+		g_signal_connect (G_OBJECT (fm_directory_view_get_model
 						(FM_DIRECTORY_VIEW (desktop_icon_view))),
 				    "done_loading",
 				    GTK_SIGNAL_FUNC (done_loading), desktop_icon_view);
@@ -610,17 +610,17 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 					     	     create_one_mount_link,
 						     desktop_icon_view);
 	
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "middle_click",
 			    GTK_SIGNAL_FUNC (fm_desktop_icon_view_handle_middle_click),
 			    desktop_icon_view);
 			    
-	gtk_signal_connect (GTK_OBJECT (icon_container),
+	g_signal_connect (G_OBJECT (icon_container),
 			    "compare_icons",
 			    GTK_SIGNAL_FUNC (desktop_icons_compare_callback),
 			    desktop_icon_view);
 
-	gtk_signal_connect (GTK_OBJECT (desktop_icon_view),
+	g_signal_connect (G_OBJECT (desktop_icon_view),
 			    "event",
 			    GTK_SIGNAL_FUNC (event_callback),
 			    desktop_icon_view);

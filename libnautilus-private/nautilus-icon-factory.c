@@ -274,7 +274,7 @@ get_icon_factory (void)
 {
         if (global_icon_factory == NULL) {
 		global_icon_factory = NAUTILUS_ICON_FACTORY
-			(gtk_object_new (nautilus_icon_factory_get_type (), NULL));
+			(g_object_new (nautilus_icon_factory_get_type (), NULL));
 		gtk_object_ref (GTK_OBJECT (global_icon_factory));
 		gtk_object_sink (GTK_OBJECT (global_icon_factory));
 
@@ -288,10 +288,10 @@ get_icon_factory (void)
 					      thumbnail_limit_changed_callback,
 					      NULL);
 
-		gtk_signal_connect (GTK_OBJECT (gnome_vfs_mime_monitor_get ()),
-				    "data_changed",
-				    G_CALLBACK (mime_type_data_changed_callback),
-				    NULL);
+		g_signal_connect (G_OBJECT (gnome_vfs_mime_monitor_get ()),
+				  "data_changed",
+				  G_CALLBACK (mime_type_data_changed_callback),
+				  NULL);
 
 		g_atexit (destroy_icon_factory);
         }
@@ -385,7 +385,7 @@ nautilus_icon_factory_class_init (NautilusIconFactoryClass *class)
 		                G_SIGNAL_RUN_LAST,
 		                0,
 		                NULL, NULL,
-		                gtk_marshal_NONE__NONE,
+		                gtk_marshal_VOID__VOID,
 		                G_TYPE_NONE, 0);
 
 	object_class->destroy = nautilus_icon_factory_destroy;
@@ -859,8 +859,8 @@ icon_theme_changed_callback (gpointer user_data)
 		
 		nautilus_icon_factory_clear ();
 		load_thumbnail_frames (factory);
-		gtk_signal_emit (GTK_OBJECT (factory),
-				 signals[ICONS_CHANGED]);
+		g_signal_emit (G_OBJECT (factory),
+				 signals[ICONS_CHANGED], 0);
 	}
 
 	g_free (icon_theme);
@@ -876,8 +876,8 @@ thumbnail_limit_changed_callback (gpointer user_data)
 	 * signal to mean only "thumbnails might have changed" if this ends up being slow
 	 * for some reason.
 	 */
-	gtk_signal_emit (GTK_OBJECT (global_icon_factory),
-			 signals[ICONS_CHANGED]);
+	g_signal_emit (G_OBJECT (global_icon_factory),
+			 signals[ICONS_CHANGED], 0);
 }
 
 static void       
@@ -889,8 +889,8 @@ mime_type_data_changed_callback (GnomeVFSMIMEMonitor *monitor, gpointer user_dat
 	/* We don't know which data changed, so we have to assume that
 	 * any or all icons might have changed.
 	 */
-	gtk_signal_emit (GTK_OBJECT (get_icon_factory ()), 
-			 signals[ICONS_CHANGED]);
+	g_signal_emit (G_OBJECT (get_icon_factory ()), 
+			 signals[ICONS_CHANGED], 0);
 }				 
 
 /* Decompose a scalable icon into its text pieces. */

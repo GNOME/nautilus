@@ -82,7 +82,7 @@ nautilus_bookmark_list_class_init (NautilusBookmarkListClass *class)
 		              G_STRUCT_OFFSET (NautilusBookmarkListClass, 
 						   contents_changed),
 		              NULL, NULL,
-		              gtk_marshal_NONE__NONE,
+		              gtk_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 }
 
@@ -192,12 +192,12 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
 					 bookmark, 
 					 index);
 
-	gtk_signal_connect (GTK_OBJECT (bookmark),
+	g_signal_connect (G_OBJECT (bookmark),
 			    "appearance_changed",
 			    G_CALLBACK (bookmark_in_list_changed_callback),
 			    bookmarks);				 
 
-	gtk_signal_connect (GTK_OBJECT (bookmark),
+	g_signal_connect (G_OBJECT (bookmark),
 			    "contents_changed",
 			    G_CALLBACK (bookmark_in_list_changed_callback),
 			    bookmarks);				 
@@ -258,8 +258,8 @@ nautilus_bookmark_list_contents_changed (NautilusBookmarkList *bookmarks)
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 
 	nautilus_bookmark_list_save_file (bookmarks);
-	gtk_signal_emit (GTK_OBJECT (bookmarks), 
-			 signals[CONTENTS_CHANGED]);
+	g_signal_emit (G_OBJECT (bookmarks), 
+			 signals[CONTENTS_CHANGED], 0);
 }
 
 
@@ -468,7 +468,7 @@ nautilus_bookmark_list_new (void)
 {
 	NautilusBookmarkList *list;
 
-	list = NAUTILUS_BOOKMARK_LIST (gtk_object_new (NAUTILUS_TYPE_BOOKMARK_LIST, NULL));
+	list = NAUTILUS_BOOKMARK_LIST (g_object_new (NAUTILUS_TYPE_BOOKMARK_LIST, NULL));
 	gtk_object_ref (GTK_OBJECT (list));
 	gtk_object_sink (GTK_OBJECT (list));
 

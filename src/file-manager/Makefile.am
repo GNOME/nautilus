@@ -31,7 +31,7 @@ libnautilus_file_manager_la_SOURCES=	\
 	nautilus-indexing-info.h 	\
 	$(NULL)
 
-uidir = $(datadir)/gnome/ui
+uidir = $(datadir)/gnome-2.0/ui
 ui_DATA =					\
 	nautilus-desktop-icon-view-ui.xml	\
 	nautilus-directory-view-ui.xml		\

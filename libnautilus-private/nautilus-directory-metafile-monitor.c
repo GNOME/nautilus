@@ -37,28 +37,10 @@ struct NautilusMetafileMonitorDetails {
 static void nautilus_metafile_monitor_init       (NautilusMetafileMonitor      *monitor);
 static void nautilus_metafile_monitor_class_init (NautilusMetafileMonitorClass *klass);
 
-static void destroy (GtkObject *monitor);
-
-static void corba_metafile_changed (PortableServer_Servant       servant,
-				    const Nautilus_FileNameList *file_names,
-				    CORBA_Environment           *ev);
-
-static void corba_metafile_ready   (PortableServer_Servant       servant,
-				    CORBA_Environment           *ev);
-
 EEL_BONOBO_BOILERPLATE_FULL (NautilusMetafileMonitor,
-			       Nautilus_MetafileMonitor,
-			       nautilus_metafile_monitor,
-			       BONOBO_OBJECT_TYPE)
-
-static void
-nautilus_metafile_monitor_class_init (NautilusMetafileMonitorClass *klass)
-{
-	GTK_OBJECT_CLASS (klass)->destroy = destroy;
-
-	klass->epv.metafile_changed = corba_metafile_changed;
-	klass->epv.metafile_ready   = corba_metafile_ready;
-}
+			     Nautilus_MetafileMonitor,
+			     nautilus_metafile_monitor,
+			     BONOBO_OBJECT_TYPE)
 
 static void
 nautilus_metafile_monitor_init (NautilusMetafileMonitor *monitor)
@@ -67,21 +49,21 @@ nautilus_metafile_monitor_init (NautilusMetafileMonitor *monitor)
 }
 
 static void
-destroy (GtkObject *object)
+finalize (GObject *object)
 {
 	NautilusMetafileMonitor *monitor;
 
 	monitor = NAUTILUS_METAFILE_MONITOR (object);
 	g_free (monitor->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 NautilusMetafileMonitor *
 nautilus_metafile_monitor_new (NautilusDirectory *directory)
 {
 	NautilusMetafileMonitor *monitor;
-	monitor = NAUTILUS_METAFILE_MONITOR (gtk_object_new (NAUTILUS_TYPE_METAFILE_MONITOR, NULL));
+	monitor = NAUTILUS_METAFILE_MONITOR (g_object_new (NAUTILUS_TYPE_METAFILE_MONITOR, NULL));
 	monitor->details->directory = directory;
 	/* The monitor is owned by the directory, so we don't ref the directory. */
 	return monitor;
@@ -134,4 +116,13 @@ corba_metafile_ready (PortableServer_Servant       servant,
 				 monitor->details->directory,
 				 NULL,
 				 NULL);
+}
+
+static void
+nautilus_metafile_monitor_class_init (NautilusMetafileMonitorClass *klass)
+{
+	G_OBJECT_CLASS (klass)->finalize = finalize;
+
+	klass->epv.metafile_changed = corba_metafile_changed;
+	klass->epv.metafile_ready   = corba_metafile_ready;
 }

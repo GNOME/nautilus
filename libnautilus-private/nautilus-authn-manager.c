@@ -163,17 +163,17 @@ present_authentication_dialog_nonblocking (CallbackInfo *info)
 
 	gtk_window_set_modal (GTK_WINDOW (dialog), FALSE);
 
-	gtk_signal_connect (GTK_OBJECT (dialog), 
+	g_signal_connect (G_OBJECT (dialog), 
 			     "clicked", 
 			     GTK_SIGNAL_FUNC (authentication_dialog_button_clicked),
 			     info);
 
-	gtk_signal_connect (GTK_OBJECT (dialog), 
+	g_signal_connect (G_OBJECT (dialog), 
 			     "close", 
 			     GTK_SIGNAL_FUNC (authentication_dialog_closed),
 			     info);
 
-	gtk_signal_connect (GTK_OBJECT (dialog), 
+	g_signal_connect (G_OBJECT (dialog), 
 			     "destroy", 
 			     GTK_SIGNAL_FUNC (authentication_dialog_destroyed),
 			     info);

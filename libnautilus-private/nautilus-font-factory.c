@@ -85,7 +85,7 @@ static NautilusFontFactory *
 nautilus_get_current_font_factory (void)
 {
         if (global_font_factory == NULL) {
-		global_font_factory = NAUTILUS_FONT_FACTORY (gtk_object_new (nautilus_font_factory_get_type (), NULL));
+		global_font_factory = NAUTILUS_FONT_FACTORY (g_object_new (nautilus_font_factory_get_type (), NULL));
 		gtk_object_ref (GTK_OBJECT (global_font_factory));
 		gtk_object_sink (GTK_OBJECT (global_font_factory));
 		g_atexit (unref_global_font_factory);

@@ -372,11 +372,11 @@ set_up_back_or_forward_toolbar_item (NautilusWindow *window,
 	gtk_widget_show (GTK_WIDGET (item));
 
 	button = bonobo_ui_toolbar_button_item_get_button_widget (item);
-	gtk_signal_connect (GTK_OBJECT (button),
+	g_signal_connect (G_OBJECT (button),
 			    "button_press_event",
 			    GTK_SIGNAL_FUNC (back_or_forward_button_pressed_callback),
 			    window);
-	gtk_signal_connect (GTK_OBJECT (button),
+	g_signal_connect (G_OBJECT (button),
 			    "clicked",
 			    GTK_SIGNAL_FUNC (back_or_forward_button_clicked_callback),
 			    window);

@@ -275,7 +275,7 @@ nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 		                G_STRUCT_OFFSET (NautilusIconCanvasItemClass,
 						     bounds_changed),
 		                NULL, NULL,
-		                gtk_marshal_NONE__NONE,
+		                gtk_marshal_VOID__VOID,
 		                G_TYPE_NONE, 0);
 
 	item_class->update = nautilus_icon_canvas_item_update;
@@ -681,8 +681,8 @@ nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item)
 	/* Send out the bounds_changed signal and queue a redraw. */
 	eel_gnome_canvas_request_redraw_rectangle
 		(GNOME_CANVAS_ITEM (item)->canvas, before);
-	gtk_signal_emit (GTK_OBJECT (item),
-			 signals[BOUNDS_CHANGED]);
+	g_signal_emit (G_OBJECT (item),
+			 signals[BOUNDS_CHANGED], 0);
 	eel_gnome_canvas_item_request_redraw
 		(GNOME_CANVAS_ITEM (item));
 }

@@ -1139,12 +1139,12 @@ add_scripts_directory (FMDirectoryView *view,
 
 	g_list_free (attributes);
 
-	gtk_signal_connect (GTK_OBJECT (directory),
+	g_signal_connect (G_OBJECT (directory),
 			    "files_added",
 			    G_CALLBACK (scripts_added_or_changed_callback),
 			    view);
 
-	gtk_signal_connect (GTK_OBJECT (directory), 
+	g_signal_connect (G_OBJECT (directory), 
 			    "files_changed",
 			    G_CALLBACK (scripts_added_or_changed_callback),
 			    view);
@@ -1195,37 +1195,37 @@ fm_directory_view_init (FMDirectoryView *view)
 	view->details->sort_directories_first = 
 		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
 
-	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
+	g_signal_connect (G_OBJECT (view->details->nautilus_view), 
 			    "stop_loading",
 			    G_CALLBACK (stop_loading_callback),
 			    view);
-	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
+	g_signal_connect (G_OBJECT (view->details->nautilus_view), 
 			    "load_location",
 			    G_CALLBACK (load_location_callback), 
 			    view);
-	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
+	g_signal_connect (G_OBJECT (view->details->nautilus_view), 
 			    "selection_changed",
 			    G_CALLBACK (selection_changed_callback), 
 			    view);
 
-        gtk_signal_connect (GTK_OBJECT (fm_directory_view_get_bonobo_control (view)),
+        g_signal_connect (G_OBJECT (fm_directory_view_get_bonobo_control (view)),
                             "activate",
                             G_CALLBACK (bonobo_control_activate_callback),
                             view);
 
-	gtk_signal_connect (GTK_OBJECT (view->details->zoomable), 
+	g_signal_connect (G_OBJECT (view->details->zoomable), 
 			    "zoom_in",
 			    G_CALLBACK (zoomable_zoom_in_callback),
 			    view);
-	gtk_signal_connect (GTK_OBJECT (view->details->zoomable), 
+	g_signal_connect (G_OBJECT (view->details->zoomable), 
 			    "zoom_out", 
 			    G_CALLBACK (zoomable_zoom_out_callback),
 			    view);
-	gtk_signal_connect (GTK_OBJECT (view->details->zoomable), 
+	g_signal_connect (G_OBJECT (view->details->zoomable), 
 			    "set_zoom_level", 
 			    G_CALLBACK (zoomable_set_zoom_level_callback),
 			    view);
-	gtk_signal_connect (GTK_OBJECT (view->details->zoomable), 
+	g_signal_connect (G_OBJECT (view->details->zoomable), 
 			    "zoom_to_fit", 
 			    G_CALLBACK (zoomable_zoom_to_fit_callback),
 			    view);
@@ -1825,7 +1825,7 @@ pre_copy_move (FMDirectoryView *directory_view)
 	 * operate on. The ADD_FILE signal is registered as G_SIGNAL_RUN_LAST, so we
 	 * must use connect_after.
 	 */
-	gtk_signal_connect (GTK_OBJECT (directory_view),
+	g_signal_connect (G_OBJECT (directory_view),
 			    "add_file",
 			    G_CALLBACK (pre_copy_move_add_file_callback),
 			    copy_move_done_data);
@@ -2071,23 +2071,23 @@ process_old_files (FMDirectoryView *view)
 	send_selection_change = FALSE;
 
 	if (files_added != NULL || files_changed != NULL) {
-		gtk_signal_emit (GTK_OBJECT (view), signals[BEGIN_FILE_CHANGES]);
+		g_signal_emit (G_OBJECT (view), signals[BEGIN_FILE_CHANGES], 0);
 
 		for (node = files_added; node != NULL; node = node->next) {
 			file = NAUTILUS_FILE (node->data);
-			gtk_signal_emit (GTK_OBJECT (view),
-					 signals[ADD_FILE], file);
+			g_signal_emit (G_OBJECT (view),
+					 signals[ADD_FILE], 0, file);
 		}
 
 		for (node = files_changed; node != NULL; node = node->next) {
 			file = NAUTILUS_FILE (node->data);
-			gtk_signal_emit (GTK_OBJECT (view),
+			g_signal_emit (G_OBJECT (view),
 					 signals[still_should_show_file (view, file)
-						 ? FILE_CHANGED : REMOVE_FILE],
+						 ? FILE_CHANGED : REMOVE_FILE], 0,
 					 file);
 		}
 
-		gtk_signal_emit (GTK_OBJECT (view), signals[END_FILE_CHANGES]);
+		g_signal_emit (G_OBJECT (view), signals[END_FILE_CHANGES], 0);
 
 		if (files_changed != NULL) {
 			selection = fm_directory_view_get_selection (view);
@@ -2344,8 +2344,8 @@ load_error_callback (NautilusDirectory *directory,
 	/* Emit a signal to tell subclasses that a load error has
 	 * occurred, so they can handle it in the UI.
 	 */
-	gtk_signal_emit (GTK_OBJECT (view),
-			 signals[LOAD_ERROR], load_error_code);
+	g_signal_emit (G_OBJECT (view),
+			 signals[LOAD_ERROR], 0, load_error_code);
 }
 
 static void
@@ -2400,7 +2400,7 @@ fm_directory_view_clear (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	gtk_signal_emit (GTK_OBJECT (view), signals[CLEAR]);
+	g_signal_emit (G_OBJECT (view), signals[CLEAR], 0);
 }
 
 /**
@@ -2417,7 +2417,7 @@ fm_directory_view_begin_loading (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	gtk_signal_emit (GTK_OBJECT (view), signals[BEGIN_LOADING]);
+	g_signal_emit (G_OBJECT (view), signals[BEGIN_LOADING], 0);
 }
 
 /**
@@ -2434,7 +2434,7 @@ fm_directory_view_end_loading (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	gtk_signal_emit (GTK_OBJECT (view), signals[END_LOADING]);
+	g_signal_emit (G_OBJECT (view), signals[END_LOADING], 0);
 }
 
 /**
@@ -5708,7 +5708,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, load_error),
 		              NULL, NULL,
-		              gtk_marshal_NONE__INT,
+		              gtk_marshal_VOID__INT,
 		              G_TYPE_NONE, 1, GTK_TYPE_INT);
 	signals[REMOVE_FILE] =
 		g_signal_new ("remove_file",

@@ -110,7 +110,7 @@ nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *ico
 	if (GTK_WIDGET_REALIZED (icon_container)) {
 		desktop_background_realized (icon_container, GINT_TO_POINTER (FALSE));
 	} else {
-		gtk_signal_connect (GTK_OBJECT (icon_container), "realize", GTK_SIGNAL_FUNC (desktop_background_realized), GINT_TO_POINTER (TRUE));
+		g_signal_connect (G_OBJECT (icon_container), "realize", GTK_SIGNAL_FUNC (desktop_background_realized), GINT_TO_POINTER (TRUE));
 	}
 
 	nautilus_file_background_receive_root_window_changes (background); 
@@ -542,7 +542,7 @@ nautilus_file_background_receive_root_window_changes (EelBackground *background)
 	gdk_flush ();
 	gdk_error_trap_pop ();
 
-	gtk_signal_connect (GTK_OBJECT (background),
+	g_signal_connect (G_OBJECT (background),
  			    "destroy",
 			    GTK_SIGNAL_FUNC (desktop_background_destroyed_callback),
 			    NULL);
@@ -672,7 +672,7 @@ nautilus_file_update_desktop_pixmaps (EelBackground *background)
 	if (eel_background_is_loaded (background)) {
 		image_loading_done_callback (background, TRUE, GINT_TO_POINTER (FALSE));
 	} else {
-		gtk_signal_connect (GTK_OBJECT (background),
+		g_signal_connect (G_OBJECT (background),
 				    "image_loading_done",
 				    GTK_SIGNAL_FUNC (image_loading_done_callback),
 				    GINT_TO_POINTER (TRUE));
@@ -957,19 +957,19 @@ nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
 
         /* Connect new signal handlers. */
         if (file != NULL) {
-                gtk_signal_connect (GTK_OBJECT (background),
+                g_signal_connect (G_OBJECT (background),
                                     "settings_changed",
                                     GTK_SIGNAL_FUNC (background_changed_callback),
                                     file);
-                gtk_signal_connect (GTK_OBJECT (background),
+                g_signal_connect (G_OBJECT (background),
                                     "destroy",
                                     GTK_SIGNAL_FUNC (background_destroyed_callback),
                                     file);
-                gtk_signal_connect (GTK_OBJECT (background),
+                g_signal_connect (G_OBJECT (background),
 				    "reset",
 				    GTK_SIGNAL_FUNC (background_reset_callback),
 				    file);
-		gtk_signal_connect (GTK_OBJECT (file),
+		g_signal_connect (G_OBJECT (file),
                                     "changed",
                                     GTK_SIGNAL_FUNC (saved_settings_changed_callback),
                                     background);

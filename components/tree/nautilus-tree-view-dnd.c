@@ -210,55 +210,55 @@ nautilus_tree_view_init_dnd (NautilusTreeView *view)
 			   | GDK_ACTION_ASK);
 
 
-	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
+	g_signal_connect (G_OBJECT (view->details->tree), 
 			    "drag_begin", 
 			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_begin), 
 			    view);
 	
-	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
+	g_signal_connect (G_OBJECT (view->details->tree), 
 			    "drag_end", 
 			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_end), 
 			    view);
 	
-	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
+	g_signal_connect (G_OBJECT (view->details->tree), 
 			    "drag_leave", 
 			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_leave), 
 			    view);
 
-	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
+	g_signal_connect (G_OBJECT (view->details->tree), 
 			    "drag_motion", 
 			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_motion), 
 			    view);
 
-	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
+	g_signal_connect (G_OBJECT (view->details->tree), 
 			    "drag_drop", 
 			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_drop), 
 			    view);
 
-	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
+	g_signal_connect (G_OBJECT (view->details->tree), 
 			    "drag_data_received", 
 			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_data_received), 
 			    view);
 
-	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
+	g_signal_connect (G_OBJECT (view->details->tree), 
 			    "drag_data_get", 
 			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_data_get), 
 			    view);
 
 	/* override the default handlers */
-	gtk_signal_connect (GTK_OBJECT (view->details->tree),
+	g_signal_connect (G_OBJECT (view->details->tree),
 			    "button-press-event", 
 			    GTK_SIGNAL_FUNC (nautilus_tree_view_button_press), 
 			    NULL);
-	gtk_signal_connect (GTK_OBJECT (view->details->tree),
+	g_signal_connect (G_OBJECT (view->details->tree),
 			    "button-release-event", 
 			    GTK_SIGNAL_FUNC (nautilus_tree_view_button_release), 
 			    NULL);
-	gtk_signal_connect (GTK_OBJECT (view->details->tree),
+	g_signal_connect (G_OBJECT (view->details->tree),
 			    "motion-notify-event", 
 			    GTK_SIGNAL_FUNC (nautilus_tree_view_motion_notify), 
 			    NULL);
-	gtk_signal_connect (GTK_OBJECT (view->details->tree), "realize", 
+	g_signal_connect (G_OBJECT (view->details->tree), "realize", 
 			    tree_view_realize_callback, view);
 }
 

@@ -139,7 +139,7 @@ nautilus_sample_content_view_init (NautilusSampleContentView *view)
 	nautilus_view_construct (NAUTILUS_VIEW (view), 
 				 view->details->label);
 	
-	gtk_signal_connect (GTK_OBJECT (view), 
+	g_signal_connect (G_OBJECT (view), 
 			    "load_location",
 			    sample_load_location_callback, 
 			    NULL);
@@ -147,7 +147,7 @@ nautilus_sample_content_view_init (NautilusSampleContentView *view)
 	/* Get notified when our bonobo control is activated so we can
 	 * merge menu & toolbar items into the shell's UI.
 	 */
-        gtk_signal_connect (GTK_OBJECT (nautilus_view_get_bonobo_control (NAUTILUS_VIEW (view))),
+        g_signal_connect (G_OBJECT (nautilus_view_get_bonobo_control (NAUTILUS_VIEW (view))),
                             "activate",
                             sample_merge_bonobo_items_callback,
                             view);

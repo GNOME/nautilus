@@ -166,11 +166,11 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 	widget_class->unrealize = nautilus_window_unrealize;
 	
 	gtk_object_add_arg_type ("NautilusWindow::app_id",
-				 GTK_TYPE_STRING,
+				 G_TYPE_STRING,
 				 GTK_ARG_READWRITE | GTK_ARG_CONSTRUCT,
 				 ARG_APP_ID);
 	gtk_object_add_arg_type ("NautilusWindow::app",
-				 GTK_TYPE_OBJECT,
+				 G_TYPE_OBJECT,
 				 GTK_ARG_READWRITE | GTK_ARG_CONSTRUCT,
 				 ARG_APP);
 	
@@ -633,10 +633,10 @@ nautilus_window_constructed (NautilusWindow *window)
 	window->navigation_bar = nautilus_switchable_navigation_bar_new (window);
 	gtk_widget_show (GTK_WIDGET (window->navigation_bar));
 
-	gtk_signal_connect (GTK_OBJECT (window->navigation_bar), "location_changed",
+	g_signal_connect (G_OBJECT (window->navigation_bar), "location_changed",
 			    G_CALLBACK (navigation_bar_location_changed_callback), window);
 
-	gtk_signal_connect (GTK_OBJECT (window->navigation_bar), "mode_changed",
+	g_signal_connect (G_OBJECT (window->navigation_bar), "mode_changed",
 			    G_CALLBACK (navigation_bar_mode_changed_callback), window);
 
 	gtk_box_pack_start (GTK_BOX (location_bar_box), window->navigation_bar,
@@ -701,7 +701,7 @@ nautilus_window_constructed (NautilusWindow *window)
 		/* set up the sidebar */
 		window->sidebar = nautilus_sidebar_new ();
 		gtk_widget_show (GTK_WIDGET (window->sidebar));
-		gtk_signal_connect (GTK_OBJECT (window->sidebar), "location_changed",
+		g_signal_connect (G_OBJECT (window->sidebar), "location_changed",
 				    G_CALLBACK (go_to_callback), window);
 		e_paned_pack1 (E_PANED (window->content_hbox),
 			       GTK_WIDGET (window->sidebar),
@@ -1144,7 +1144,7 @@ create_view_as_menu_item (NautilusWindow *window,
 	menu_item = gtk_menu_item_new_with_label (menu_label);
 	g_free (menu_label);
 
-	gtk_signal_connect (GTK_OBJECT (menu_item),
+	g_signal_connect (G_OBJECT (menu_item),
 			    "activate",
 			    G_CALLBACK (view_as_menu_switch_views_callback),
 			    window);
@@ -1481,7 +1481,7 @@ load_view_as_menus_callback (NautilusFile *file,
 
 	/* Add "View as..." extra bonus choice. */
        	menu_item = gtk_menu_item_new_with_label (_("View as..."));
-        gtk_signal_connect (GTK_OBJECT (menu_item),
+        g_signal_connect (G_OBJECT (menu_item),
         		    "activate",
         		    G_CALLBACK (view_as_menu_choose_view_callback),
         		    window);
@@ -1735,7 +1735,7 @@ nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 void
 nautilus_send_history_list_changed (void)
 {
-	gtk_signal_emit_by_name (nautilus_signaller_get_current (),
+	g_signal_emit_by_name (nautilus_signaller_get_current (),
 			 	 "history_list_changed");
 }
 

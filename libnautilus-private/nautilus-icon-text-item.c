@@ -136,7 +136,7 @@ iti_stop_editing (Iti *iti)
 
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 
-	gtk_signal_emit (GTK_OBJECT (iti), iti_signals[EDITING_STOPPED]);
+	g_signal_emit (G_OBJECT (iti), iti_signals[EDITING_STOPPED], 0);
 }
 
 /* Lays out the text in an icon item */
@@ -179,12 +179,12 @@ layout_text (Iti *iti)
 	height = iti->ti->height + 2 * MARGIN_Y;
 
 	if (width != old_width)
-		gtk_signal_emit (GTK_OBJECT (iti), iti_signals[WIDTH_CHANGED]);
+		g_signal_emit (G_OBJECT (iti), iti_signals[WIDTH_CHANGED], 0);
 
 	if (height != old_height)
-		gtk_signal_emit (GTK_OBJECT (iti), iti_signals[HEIGHT_CHANGED]);
+		g_signal_emit (G_OBJECT (iti), iti_signals[HEIGHT_CHANGED], 0);
 	
-	gtk_signal_emit (GTK_OBJECT (iti), iti_signals [TEXT_EDITED]);		
+	g_signal_emit (G_OBJECT (iti), iti_signals [TEXT_EDITED], 0);		
 }
 
 /* Accepts the text in the off-screen entry of an icon text item */
@@ -197,7 +197,7 @@ iti_edition_accept (Iti *iti)
 	priv = iti->priv;
 	accept = TRUE;
 
-	gtk_signal_emit (GTK_OBJECT (iti), iti_signals [TEXT_CHANGED], &accept);
+	g_signal_emit (G_OBJECT (iti), iti_signals [TEXT_CHANGED], 0, &accept);
 
 	if (iti->editing){
 		if (accept) {
@@ -263,7 +263,7 @@ iti_start_editing (Iti *iti)
 
 	if (priv->entry_top == NULL) {
 		priv->entry = (NautilusEntry *) nautilus_entry_new ();
-		gtk_signal_connect (GTK_OBJECT (priv->entry), "activate",
+		g_signal_connect (G_OBJECT (priv->entry), "activate",
 				    GTK_SIGNAL_FUNC (iti_entry_activate), iti);
 		/* Make clipboard functions cause an update the appearance of 
 		   the icon text item itself, since the clipboard functions 
@@ -287,7 +287,7 @@ iti_start_editing (Iti *iti)
 
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 
-	gtk_signal_emit (GTK_OBJECT (iti), iti_signals[EDITING_STARTED]);
+	g_signal_emit (G_OBJECT (iti), iti_signals[EDITING_STARTED], 0);
 }
 
 /* Destroy method handler for the icon text item */
@@ -854,7 +854,7 @@ iti_start_selecting (Iti *iti, int idx, guint32 event_time)
 
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 
-	gtk_signal_emit (GTK_OBJECT (iti), iti_signals[SELECTION_STARTED]);
+	g_signal_emit (G_OBJECT (iti), iti_signals[SELECTION_STARTED], 0);
 }
 
 /* Stops the selection state in the icon text item */
@@ -874,9 +874,9 @@ iti_stop_selecting (Iti *iti, guint32 event_time)
 	iti->selecting = FALSE;
 
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
-	gtk_signal_emit (GTK_OBJECT (iti), iti_signals[SELECTION_STOPPED]);
+	g_signal_emit (G_OBJECT (iti), iti_signals[SELECTION_STOPPED], 0);
 	/* Hack, since the real nautilus entry can't get this information */
-	gtk_signal_emit_by_name (GTK_OBJECT (priv->entry), "selection_changed");
+	g_signal_emit_by_name (GTK_OBJECT (priv->entry), "selection_changed");
 }
 
 /* Handles selection range changes on the icon text item */
@@ -1178,7 +1178,7 @@ iti_class_init (NautilusIconTextItemClass *text_item_class)
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusIconTextItemClass, text_changed),
 		 NULL, NULL,
-		 gtk_marshal_BOOL__NONE,
+		 gtk_marshal_BOOLEAN__VOID,
 		 GTK_TYPE_BOOL, 0);
 
 	iti_signals [TEXT_EDITED] = g_signal_new
@@ -1187,7 +1187,7 @@ iti_class_init (NautilusIconTextItemClass *text_item_class)
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusIconTextItemClass, text_edited),
 		 NULL, NULL,
-		 gtk_marshal_NONE__NONE,
+		 gtk_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 
 	iti_signals [HEIGHT_CHANGED] = g_signal_new
@@ -1196,7 +1196,7 @@ iti_class_init (NautilusIconTextItemClass *text_item_class)
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusIconTextItemClass, height_changed),
 		 NULL, NULL,
-		 gtk_marshal_NONE__NONE,
+		 gtk_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 
 	iti_signals [WIDTH_CHANGED] = g_signal_new
@@ -1205,7 +1205,7 @@ iti_class_init (NautilusIconTextItemClass *text_item_class)
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusIconTextItemClass, width_changed),
 		 NULL, NULL,
-		 gtk_marshal_NONE__NONE,
+		 gtk_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 
 	iti_signals[EDITING_STARTED] = g_signal_new
@@ -1214,7 +1214,7 @@ iti_class_init (NautilusIconTextItemClass *text_item_class)
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusIconTextItemClass, editing_started),
 		 NULL, NULL,
-		 gtk_marshal_NONE__NONE,
+		 gtk_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 
 	iti_signals[EDITING_STOPPED] = g_signal_new
@@ -1223,7 +1223,7 @@ iti_class_init (NautilusIconTextItemClass *text_item_class)
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusIconTextItemClass, editing_stopped),
 		 NULL, NULL,
-		 gtk_marshal_NONE__NONE,
+		 gtk_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 
 	iti_signals[SELECTION_STARTED] = g_signal_new
@@ -1232,7 +1232,7 @@ iti_class_init (NautilusIconTextItemClass *text_item_class)
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusIconTextItemClass, selection_started),
 		 NULL, NULL,
-		 gtk_marshal_NONE__NONE,
+		 gtk_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 
 	iti_signals[SELECTION_STOPPED] = g_signal_new
@@ -1241,7 +1241,7 @@ iti_class_init (NautilusIconTextItemClass *text_item_class)
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusIconTextItemClass, selection_stopped),
 		 NULL, NULL,
-		 gtk_marshal_NONE__NONE,
+		 gtk_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 
 	object_class->destroy = iti_destroy;

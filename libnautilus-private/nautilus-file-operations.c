@@ -355,11 +355,11 @@ create_transfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 	/* Treat clicking on the close box or use of the escape key
 	 * the same as clicking cancel.
 	 */
-	gtk_signal_connect (GTK_OBJECT (transfer_info->progress_dialog),
+	g_signal_connect (G_OBJECT (transfer_info->progress_dialog),
 			    "clicked",
 			    GTK_SIGNAL_FUNC (gnome_dialog_close),
 			    NULL);
-	gtk_signal_connect (GTK_OBJECT (transfer_info->progress_dialog),
+	g_signal_connect (G_OBJECT (transfer_info->progress_dialog),
 			    "close",
 			    GTK_SIGNAL_FUNC (handle_close_callback),
 			    transfer_info);

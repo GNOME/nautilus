@@ -404,7 +404,7 @@ nautilus_view_frame_create_corba_part (NautilusViewFrame *widget)
 {
 	NautilusViewFrameCorbaPart *part;
 
-	part = NAUTILUS_VIEW_FRAME_CORBA_PART (gtk_object_new (NAUTILUS_TYPE_VIEW_FRAME_CORBA_PART, NULL));
+	part = NAUTILUS_VIEW_FRAME_CORBA_PART (g_object_new (NAUTILUS_TYPE_VIEW_FRAME_CORBA_PART, NULL));
 	part->widget = widget;
 	return BONOBO_OBJECT (part);
 }

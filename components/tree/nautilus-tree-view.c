@@ -783,19 +783,19 @@ nautilus_tree_view_load_from_filesystem (NautilusTreeView *view)
 					 nautilus_tree_view_model_node_changed_callback,
 					 view);
 
-	gtk_signal_connect (GTK_OBJECT (view->details->model),
+	g_signal_connect (G_OBJECT (view->details->model),
 			    "node_changed",
 			    nautilus_tree_view_model_node_changed_callback,
 			    view);
-	gtk_signal_connect (GTK_OBJECT (view->details->model),
+	g_signal_connect (G_OBJECT (view->details->model),
 			    "node_removed",
 			    nautilus_tree_view_model_node_removed_callback,
 			    view);
-	gtk_signal_connect (GTK_OBJECT (view->details->model),
+	g_signal_connect (G_OBJECT (view->details->model),
 			    "node_being_renamed",
 			    nautilus_tree_view_model_node_renamed_callback,
 			    view);
-	gtk_signal_connect (GTK_OBJECT (view->details->model),
+	g_signal_connect (G_OBJECT (view->details->model),
 			    "done_loading_children",
 			    nautilus_tree_view_model_done_loading_callback,
 			    view);
@@ -946,17 +946,17 @@ create_tree (NautilusTreeView *view)
 				       + view->details->tree->style->font->descent));
         eel_ctree_set_indent (EEL_CTREE (view->details->tree), 12);
 
-	gtk_signal_connect (GTK_OBJECT (view->details->tree),
+	g_signal_connect (G_OBJECT (view->details->tree),
 			    "tree_expand",
 			    GTK_SIGNAL_FUNC (tree_expand_callback), 
 			    view);
 	
-	gtk_signal_connect (GTK_OBJECT (view->details->tree),
+	g_signal_connect (G_OBJECT (view->details->tree),
 			    "tree_collapse",
 			    GTK_SIGNAL_FUNC (tree_collapse_callback), 
 			    view);
 	
-	gtk_signal_connect (GTK_OBJECT (view->details->tree),
+	g_signal_connect (G_OBJECT (view->details->tree),
 			    "tree_select_row",
 			    GTK_SIGNAL_FUNC (tree_select_row_callback), 
 			    view);
@@ -1045,7 +1045,7 @@ nautilus_tree_view_init (NautilusTreeView *view)
 	view->details->show_non_directories = 
 		! eel_preferences_get_boolean (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES);
 
-	gtk_signal_connect (GTK_OBJECT (view),
+	g_signal_connect (G_OBJECT (view),
 			    "load_location",
 			    GTK_SIGNAL_FUNC (tree_load_location_callback),
 			    view);
@@ -1061,11 +1061,11 @@ nautilus_tree_view_init (NautilusTreeView *view)
 	nautilus_view_construct (NAUTILUS_VIEW (view),
 				 view->details->scrolled_window);
 
-	gtk_signal_connect (GTK_OBJECT (view->details->scrolled_window),
+	g_signal_connect (G_OBJECT (view->details->scrolled_window),
 			    "map",
 			    tree_map_callback,
 			    view);
-	gtk_signal_connect (GTK_OBJECT (view->details->scrolled_window),
+	g_signal_connect (G_OBJECT (view->details->scrolled_window),
 			    "unmap",
 			    tree_unmap_callback,
 			    view);

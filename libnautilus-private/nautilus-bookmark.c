@@ -103,7 +103,7 @@ nautilus_bookmark_class_init (NautilusBookmarkClass *class)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusBookmarkClass, appearance_changed),
 		              NULL, NULL,
-		              gtk_marshal_NONE__NONE,
+		              gtk_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 
 	signals[CONTENTS_CHANGED] =
@@ -112,7 +112,7 @@ nautilus_bookmark_class_init (NautilusBookmarkClass *class)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusBookmarkClass, contents_changed),
 		              NULL, NULL,
-		              gtk_marshal_NONE__NONE,
+		              gtk_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 				
 }
@@ -298,7 +298,7 @@ nautilus_bookmark_set_name (NautilusBookmark *bookmark, const char *new_name)
 	g_free (bookmark->details->name);
 	bookmark->details->name = g_strdup (new_name);
 
-	gtk_signal_emit (GTK_OBJECT (bookmark), signals[APPEARANCE_CHANGED]);
+	g_signal_emit (G_OBJECT (bookmark), signals[APPEARANCE_CHANGED], 0);
 }
 
 static gboolean
@@ -411,11 +411,11 @@ bookmark_file_changed_callback (NautilusFile *file, NautilusBookmark *bookmark)
 	}
 
 	if (should_emit_appearance_changed_signal) {
-		gtk_signal_emit (GTK_OBJECT (bookmark), signals[APPEARANCE_CHANGED]);
+		g_signal_emit (G_OBJECT (bookmark), signals[APPEARANCE_CHANGED], 0);
 	}
 
 	if (should_emit_contents_changed_signal) {
-		gtk_signal_emit (GTK_OBJECT (bookmark), signals[CONTENTS_CHANGED]);
+		g_signal_emit (G_OBJECT (bookmark), signals[CONTENTS_CHANGED], 0);
 	}
 }
 
@@ -495,7 +495,7 @@ nautilus_bookmark_connect_file (NautilusBookmark *bookmark)
 		bookmark->details->file = nautilus_file_get (bookmark->details->uri);
 		g_assert (!nautilus_file_is_gone (bookmark->details->file));
 
-		gtk_signal_connect (GTK_OBJECT (bookmark->details->file),
+		g_signal_connect (G_OBJECT (bookmark->details->file),
 				    "changed",
 				    G_CALLBACK (bookmark_file_changed_callback),
 				    bookmark);
@@ -517,7 +517,7 @@ nautilus_bookmark_new_with_icon (const char *uri, const char *name,
 {
 	NautilusBookmark *new_bookmark;
 
-	new_bookmark = NAUTILUS_BOOKMARK (gtk_object_new (NAUTILUS_TYPE_BOOKMARK, NULL));
+	new_bookmark = NAUTILUS_BOOKMARK (g_object_new (NAUTILUS_TYPE_BOOKMARK, NULL));
 	gtk_object_ref (GTK_OBJECT (new_bookmark));
 	gtk_object_sink (GTK_OBJECT (new_bookmark));
 

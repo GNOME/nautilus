@@ -24,7 +24,7 @@ nautilus_text_view_LDADD =			\
 	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)
 
-uidir = $(datadir)/gnome/ui
+uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = nautilus-text-view-ui.xml
 
 serverdir = $(datadir)/server

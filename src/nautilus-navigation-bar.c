@@ -62,7 +62,7 @@ nautilus_navigation_bar_class_init (NautilusNavigationBarClass *klass)
 		 G_STRUCT_OFFSET (NautilusNavigationBarClass,
 				    activate),
 		 NULL, NULL,
-		 gtk_marshal_NONE__NONE,
+		 gtk_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 
 	signals[LOCATION_CHANGED] = g_signal_new
@@ -98,7 +98,7 @@ nautilus_navigation_bar_activate (NautilusNavigationBar *bar)
 {
 	g_return_if_fail (NAUTILUS_IS_NAVIGATION_BAR (bar));
 
-	gtk_signal_emit (GTK_OBJECT (bar), signals[ACTIVATE]);
+	g_signal_emit (G_OBJECT (bar), signals[ACTIVATE], 0);
 }
 
 /**
@@ -145,8 +145,8 @@ nautilus_navigation_bar_location_changed (NautilusNavigationBar *bar)
 	g_return_if_fail (NAUTILUS_IS_NAVIGATION_BAR (bar));
 
 	location = nautilus_navigation_bar_get_location (bar);
-	gtk_signal_emit (GTK_OBJECT (bar),
-			 signals[LOCATION_CHANGED],
+	g_signal_emit (G_OBJECT (bar),
+			 signals[LOCATION_CHANGED], 0,
 			 location);
 	g_free (location);
 }

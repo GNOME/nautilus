@@ -109,7 +109,7 @@ make_object (BonoboGenericFactory *factory,
 		g_source_remove (callback_data->delayed_quit_timeout_id);
 		callback_data->delayed_quit_timeout_id = 0;
 	}
-	gtk_signal_connect (GTK_OBJECT (view), "destroy",
+	g_signal_connect (G_OBJECT (view), "destroy",
 			    G_CALLBACK (object_destroyed), callback_data);
 
 	return BONOBO_OBJECT (view);
@@ -318,6 +318,6 @@ typedef GtkType (* TypeFunc) (void);
 NautilusView *
 nautilus_view_create_from_get_type_function (const char *iid, void *user_data)
 {
-	return NAUTILUS_VIEW (gtk_object_new (((TypeFunc) (user_data)) (), NULL));
+	return NAUTILUS_VIEW (g_object_new (((TypeFunc) (user_data)) (), NULL));
 }
 

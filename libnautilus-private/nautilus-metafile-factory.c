@@ -34,24 +34,10 @@ struct NautilusMetafileFactoryDetails {
 static void nautilus_metafile_factory_init       (NautilusMetafileFactory      *factory);
 static void nautilus_metafile_factory_class_init (NautilusMetafileFactoryClass *klass);
 
-static void destroy (GtkObject *factory);
-
-static Nautilus_Metafile corba_open (PortableServer_Servant  servant,
-				     const CORBA_char       *directory,
-				     CORBA_Environment      *ev);
-
 EEL_BONOBO_BOILERPLATE_FULL (NautilusMetafileFactory,
-			       Nautilus_MetafileFactory,
-			       nautilus_metafile_factory,
-			       BONOBO_OBJECT_TYPE)
-
-static void
-nautilus_metafile_factory_class_init (NautilusMetafileFactoryClass *klass)
-{
-	GTK_OBJECT_CLASS (klass)->destroy = destroy;
-
-	klass->epv.open = corba_open;
-}
+			     Nautilus_MetafileFactory,
+			     nautilus_metafile_factory,
+			     BONOBO_OBJECT_TYPE)
 
 static void
 nautilus_metafile_factory_init (NautilusMetafileFactory *factory)
@@ -60,21 +46,21 @@ nautilus_metafile_factory_init (NautilusMetafileFactory *factory)
 }
 
 static void
-destroy (GtkObject *object)
+finalize (GObject *object)
 {
 	NautilusMetafileFactory *factory;
 
 	factory = NAUTILUS_METAFILE_FACTORY (object);
 	g_free (factory->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static NautilusMetafileFactory *
 nautilus_metafile_factory_new (void)
 {
 	NautilusMetafileFactory *metafile_factory;
-	metafile_factory = NAUTILUS_METAFILE_FACTORY (gtk_object_new (NAUTILUS_TYPE_METAFILE_FACTORY, NULL));
+	metafile_factory = NAUTILUS_METAFILE_FACTORY (g_object_new (NAUTILUS_TYPE_METAFILE_FACTORY, NULL));
 	return metafile_factory;
 }
 
@@ -106,6 +92,15 @@ corba_open (PortableServer_Servant  servant,
 	    CORBA_Environment      *ev)
 {
 	BonoboObject *object;
+
 	object = BONOBO_OBJECT (nautilus_metafile_get (directory));
 	return CORBA_Object_duplicate (bonobo_object_corba_objref (object), ev);
+}
+
+static void
+nautilus_metafile_factory_class_init (NautilusMetafileFactoryClass *klass)
+{
+	G_OBJECT_CLASS (klass)->finalize = finalize;
+
+	klass->epv.open = corba_open;
 }

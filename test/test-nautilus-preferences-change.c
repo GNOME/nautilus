@@ -94,7 +94,7 @@ picker_new (const char *name,
 	
 	string_picker = eel_string_picker_new ();
 	eel_caption_set_title_label (EEL_CAPTION (string_picker), name);
-	gtk_signal_connect (GTK_OBJECT (string_picker), "changed", GTK_SIGNAL_FUNC (int_picker_changed_callback),
+	g_signal_connect (G_OBJECT (string_picker), "changed", GTK_SIGNAL_FUNC (int_picker_changed_callback),
 			    (gpointer) name);
 	
 	eel_string_picker_set_string_list (EEL_STRING_PICKER (string_picker), entries);
@@ -118,7 +118,7 @@ user_level_picker_new (const char *name,
 	
 	string_picker = eel_string_picker_new ();
 	eel_caption_set_title_label (EEL_CAPTION (string_picker), name);
-	gtk_signal_connect (GTK_OBJECT (string_picker), "changed", GTK_SIGNAL_FUNC (user_level_picker_changed_callback),
+	g_signal_connect (G_OBJECT (string_picker), "changed", GTK_SIGNAL_FUNC (user_level_picker_changed_callback),
 			    (gpointer) name);
 	
 	eel_string_picker_set_string_list (EEL_STRING_PICKER (string_picker), entries);

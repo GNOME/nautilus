@@ -582,7 +582,7 @@ get_container_uri (const NautilusIconContainer *container)
 
 	/* get the URI associated with the container */
 	uri = NULL;
-	gtk_signal_emit_by_name (GTK_OBJECT (container), "get_container_uri", &uri);
+	g_signal_emit_by_name (GTK_OBJECT (container), "get_container_uri", &uri);
 	return uri;
 }
 
@@ -667,7 +667,7 @@ receive_dropped_uri_list (NautilusIconContainer *container, char *uri_list, GdkD
 		return;
 	}
 	
-	gtk_signal_emit_by_name (GTK_OBJECT (container), "handle_uri_list",
+	g_signal_emit_by_name (GTK_OBJECT (container), "handle_uri_list",
 				 uri_list,
 				 action,
 				 x, y);
@@ -873,7 +873,7 @@ handle_nonlocal_move (NautilusIconContainer *container,
 	}
 		
 	/* start the copy */
-	gtk_signal_emit_by_name (GTK_OBJECT (container), "move_copy_items",
+	g_signal_emit_by_name (GTK_OBJECT (container), "move_copy_items",
 				 source_uris,
 				 source_item_locations,
 				 target_uri,
@@ -1224,19 +1224,19 @@ nautilus_icon_dnd_init (NautilusIconContainer *container,
 			    | GDK_ACTION_ASK);
 
 	/* Messages for outgoing drag. */
-	gtk_signal_connect (GTK_OBJECT (container), "drag_data_get",
+	g_signal_connect (G_OBJECT (container), "drag_data_get",
 			    GTK_SIGNAL_FUNC (drag_data_get_callback), NULL);
-	gtk_signal_connect (GTK_OBJECT (container), "drag_end",
+	g_signal_connect (G_OBJECT (container), "drag_end",
 			    GTK_SIGNAL_FUNC (drag_end_callback), NULL);
 
 	/* Messages for incoming drag. */
-	gtk_signal_connect (GTK_OBJECT (container), "drag_data_received",
+	g_signal_connect (G_OBJECT (container), "drag_data_received",
 			    GTK_SIGNAL_FUNC (drag_data_received_callback), NULL);
-	gtk_signal_connect (GTK_OBJECT (container), "drag_motion",
+	g_signal_connect (G_OBJECT (container), "drag_motion",
 			    GTK_SIGNAL_FUNC (drag_motion_callback), NULL);
-	gtk_signal_connect (GTK_OBJECT (container), "drag_drop",
+	g_signal_connect (G_OBJECT (container), "drag_drop",
 			    GTK_SIGNAL_FUNC (drag_drop_callback), NULL);
-	gtk_signal_connect (GTK_OBJECT (container), "drag_leave",
+	g_signal_connect (G_OBJECT (container), "drag_leave",
 			    GTK_SIGNAL_FUNC (drag_leave_callback), NULL);
 
 }

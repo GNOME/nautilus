@@ -30,19 +30,9 @@
 #include <bonobo/bonobo-main.h>
 #include <gtk/gtksignal.h>
 
-typedef struct {
-	POA_Nautilus_Undo_Context servant;
-	NautilusUndoContext *bonobo_object;
-} impl_POA_Nautilus_Undo_Context;
-
 /* GtkObject */
 static void                  nautilus_undo_context_class_init       (NautilusUndoContextClass *class);
 static void                  nautilus_undo_context_init             (NautilusUndoContext      *item);
-static void                  destroy                                      (GtkObject                *object);
-
-/* CORBA/Bonobo */
-static Nautilus_Undo_Manager impl_Nautilus_Undo_Context__get_undo_manager (PortableServer_Servant    servant,
-									   CORBA_Environment        *ev);
 
 EEL_BONOBO_BOILERPLATE_FULL (NautilusUndoContext,
 			       Nautilus_Undo_Context,
@@ -55,8 +45,7 @@ impl_Nautilus_Undo_Context__get_undo_manager (PortableServer_Servant servant,
 {
 	NautilusUndoContext *context;
 	
-	context = ((impl_POA_Nautilus_Undo_Context *) servant)->bonobo_object;
-	g_assert (NAUTILUS_IS_UNDO_CONTEXT (context));
+	context = NAUTILUS_UNDO_CONTEXT (bonobo_object_from_servant (servant));
 	return CORBA_Object_duplicate (context->undo_manager, ev);
 }
 
@@ -68,7 +57,7 @@ nautilus_undo_context_new (Nautilus_Undo_Manager undo_manager)
 	
 	CORBA_exception_init (&ev);
 
-	context = NAUTILUS_UNDO_CONTEXT (gtk_object_new (nautilus_undo_context_get_type (), NULL));
+	context = NAUTILUS_UNDO_CONTEXT (g_object_new (nautilus_undo_context_get_type (), NULL));
 	context->undo_manager = CORBA_Object_duplicate (undo_manager, &ev);
 	
   	CORBA_exception_free (&ev);
@@ -82,7 +71,7 @@ nautilus_undo_context_init (NautilusUndoContext *context)
 }
 
 static void
-destroy (GtkObject *object)
+finalize (GObject *object)
 {
 	CORBA_Environment ev;	
 	NautilusUndoContext *context;
@@ -94,13 +83,13 @@ destroy (GtkObject *object)
 	
  	CORBA_exception_free (&ev);
 	
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static void
 nautilus_undo_context_class_init (NautilusUndoContextClass *klass)
 {
-	GTK_OBJECT_CLASS (klass)->destroy = destroy;
+	G_OBJECT_CLASS (klass)->finalize = finalize;
 	
 	klass->epv._get_undo_manager = impl_Nautilus_Undo_Context__get_undo_manager;
 }

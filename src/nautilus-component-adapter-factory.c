@@ -158,7 +158,7 @@ nautilus_component_adapter_factory_get (void)
 
 	if (global_component_adapter_factory == NULL) {
 		factory = NAUTILUS_COMPONENT_ADAPTER_FACTORY
-			(gtk_object_new (NAUTILUS_TYPE_COMPONENT_ADAPTER_FACTORY, NULL));
+			(g_object_new (NAUTILUS_TYPE_COMPONENT_ADAPTER_FACTORY, NULL));
 		
 		gtk_object_ref (GTK_OBJECT (factory));
 		gtk_object_sink (GTK_OBJECT (factory));

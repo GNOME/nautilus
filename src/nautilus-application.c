@@ -109,17 +109,17 @@ create_object (PortableServer_Servant servant,
 	NautilusApplication *application;
 
 	if (strcmp (iid, NAUTILUS_ICON_VIEW_IID) == 0) {
-		directory_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_icon_view_get_type (), NULL));
+		directory_view = FM_DIRECTORY_VIEW (g_object_new (fm_icon_view_get_type (), NULL));
 		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
 	} else if (strcmp (iid, NAUTILUS_DESKTOP_ICON_VIEW_IID) == 0) {
-		directory_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_desktop_icon_view_get_type (), NULL));
+		directory_view = FM_DIRECTORY_VIEW (g_object_new (fm_desktop_icon_view_get_type (), NULL));
 		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
 #if GNOME2_CONVERSION_COMPLETE
 	} else if (strcmp (iid, NAUTILUS_LIST_VIEW_IID) == 0) {
-		directory_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_list_view_get_type (), NULL));
+		directory_view = FM_DIRECTORY_VIEW (g_object_new (fm_list_view_get_type (), NULL));
 		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
 	} else if (strcmp (iid, SEARCH_LIST_VIEW_IID) == 0) {
-		directory_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_search_list_view_get_type (), NULL));
+		directory_view = FM_DIRECTORY_VIEW (g_object_new (fm_search_list_view_get_type (), NULL));
 		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
 #endif
 	} else if (strcmp (iid, SHELL_IID) == 0) {
@@ -147,13 +147,13 @@ nautilus_application_init (NautilusApplication *application)
 	application->undo_manager = nautilus_undo_manager_new ();
 
 	/* Watch for volume mounts so we can restore open windows */
-	gtk_signal_connect (GTK_OBJECT (nautilus_volume_monitor_get ()),
+	g_signal_connect (G_OBJECT (nautilus_volume_monitor_get ()),
 			    "volume_mounted",
 			    G_CALLBACK (volume_mounted_callback),
 			    application);
 
 	/* Watch for volume unmounts so we can close open windows */
-	gtk_signal_connect (GTK_OBJECT (nautilus_volume_monitor_get ()),
+	g_signal_connect (G_OBJECT (nautilus_volume_monitor_get ()),
 			    "volume_unmounted",
 			    G_CALLBACK (volume_unmounted_callback),
 			    application);
@@ -672,11 +672,11 @@ nautilus_application_create_window (NautilusApplication *application)
 						  "app", G_OBJECT (application),
 						  "app_id", "nautilus", NULL));
 	
-	gtk_signal_connect (GTK_OBJECT (window), 
+	g_signal_connect (G_OBJECT (window), 
 			    "delete_event", G_CALLBACK (nautilus_window_delete_event_callback),
                     	    NULL);
 
-	gtk_signal_connect (GTK_OBJECT (window),
+	g_signal_connect (G_OBJECT (window),
 			    "destroy", G_CALLBACK (nautilus_application_destroyed_window),
 			    application);
 
@@ -937,11 +937,11 @@ init_session (void)
 
 	client = gnome_master_client ();
 
-	gtk_signal_connect (GTK_OBJECT (client), "save_yourself",
+	g_signal_connect (G_OBJECT (client), "save_yourself",
 			    (GtkSignalFunc) save_session,
 			    NULL);
 	
-	gtk_signal_connect (GTK_OBJECT (client), "die",
+	g_signal_connect (G_OBJECT (client), "die",
 			    (GtkSignalFunc) removed_from_session,
 			    NULL);
 	

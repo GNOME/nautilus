@@ -243,6 +243,8 @@ style_set_handler (GtkWidget *widget, GtkStyle *previous_style)
 #endif
 }
 
+#if GNOME2_CONVERSION_COMPLETE
+
 /* utility routine to determine the string to expand to.  If we don't have anything yet, accept
    the whole string, otherwise accept the largest part common to both */
 
@@ -566,6 +568,7 @@ editable_key_press_callback (GtkObject *object,
 
 	nautilus_location_bar_update_label (bar);
 }
+#endif
 
 static void
 real_activate (NautilusNavigationBar *navigation_bar)
@@ -641,7 +644,7 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	gtk_container_add   (GTK_CONTAINER (event_box), label);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
-	gtk_signal_connect (GTK_OBJECT (label), "style_set", 
+	g_signal_connect (G_OBJECT (label), "style_set", 
 			    G_CALLBACK (style_set_handler), NULL);
 
 	gtk_box_pack_start  (GTK_BOX (hbox), event_box, FALSE, TRUE,
@@ -655,6 +658,7 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 				   G_CALLBACK (nautilus_navigation_bar_location_changed),
 				   GTK_OBJECT (bar));
 
+#if GNOME2_CONVERSION_COMPLETE
 	/* The callback uses the marshal interface directly
 	 * so it can both read and write the return value.
 	 */
@@ -662,6 +666,7 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 				 NULL, editable_key_press_callback,
 				 bar, NULL,
 				 FALSE, TRUE);
+#endif
 	
 	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
 
@@ -682,7 +687,7 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 			    GTK_DEST_DEFAULT_ALL,
 			    drop_types, G_N_ELEMENTS (drop_types),
 			    GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK);
-	gtk_signal_connect (GTK_OBJECT (bar), "drag_data_received",
+	g_signal_connect (G_OBJECT (bar), "drag_data_received",
 			    GTK_SIGNAL_FUNC (drag_data_received_callback),
 			    NULL);
 

@@ -112,7 +112,7 @@ nautilus_tree_model_class_init (gpointer klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusTreeModelClass, node_changed),
 		              NULL, NULL,
-		              gtk_marshal_NONE__POINTER,
+		              gtk_marshal_VOID__POINTER,
 		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
 	signals[NODE_REMOVED] =
@@ -121,7 +121,7 @@ nautilus_tree_model_class_init (gpointer klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusTreeModelClass, node_removed),
 		              NULL, NULL,
-		              gtk_marshal_NONE__POINTER,
+		              gtk_marshal_VOID__POINTER,
 		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
 	signals[NODE_BEING_RENAMED] =
@@ -130,7 +130,7 @@ nautilus_tree_model_class_init (gpointer klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusTreeModelClass, node_removed),
 		              NULL, NULL,
-		              gtk_marshal_NONE__POINTER_POINTER,
+		              gtk_marshal_VOID__POINTER_POINTER,
 		              G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
 
 	signals[DONE_LOADING_CHILDREN] =
@@ -139,7 +139,7 @@ nautilus_tree_model_class_init (gpointer klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusTreeModelClass, done_loading_children),
 		              NULL, NULL,
-		              gtk_marshal_NONE__POINTER,
+		              gtk_marshal_VOID__POINTER,
 		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 }
 
@@ -202,7 +202,7 @@ nautilus_tree_model_new (const char *root_uri)
 {
 	NautilusTreeModel *model;
 
-	model = NAUTILUS_TREE_MODEL (gtk_object_new (NAUTILUS_TYPE_TREE_MODEL, NULL));
+	model = NAUTILUS_TREE_MODEL (g_object_new (NAUTILUS_TYPE_TREE_MODEL, NULL));
 	gtk_object_ref (GTK_OBJECT (model));
 	gtk_object_sink (GTK_OBJECT (model));
 
@@ -773,8 +773,8 @@ report_node_changed (NautilusTreeModel *model,
 				     nautilus_tree_node_get_file (node),
 				     node);
 
-		gtk_signal_emit (GTK_OBJECT (model),
-				 signals[NODE_CHANGED],
+		g_signal_emit (G_OBJECT (model),
+				 signals[NODE_CHANGED], 0,
 				 node);
 
 		connect_unparented_nodes (model, node);
@@ -786,8 +786,8 @@ report_node_changed (NautilusTreeModel *model,
 
 		if (strcmp (file_uri, node_uri) == 0) {
 			/* A normal change */
-			gtk_signal_emit (GTK_OBJECT (model),
-					 signals[NODE_CHANGED],
+			g_signal_emit (G_OBJECT (model),
+					 signals[NODE_CHANGED], 0,
 					 node);
 		} else {
 			/* A move or rename - model it as a remove followed by an add */
@@ -799,8 +799,8 @@ report_node_changed (NautilusTreeModel *model,
 			 * it to propagate the expansion state from the old name to the
 			 * new name
 			 */
-			gtk_signal_emit (GTK_OBJECT (model),
-					 signals[NODE_BEING_RENAMED],
+			g_signal_emit (G_OBJECT (model),
+					 signals[NODE_BEING_RENAMED], 0,
 					 node->details->uri, file_uri);
 
 			report_node_removed (model, node);
@@ -861,8 +861,8 @@ report_node_removed_internal (NautilusTreeModel *model,
 		forget_unparented_node (model, node);
 
 		if (signal) {
-			gtk_signal_emit (GTK_OBJECT (model),
-					 signals[NODE_REMOVED],
+			g_signal_emit (G_OBJECT (model),
+					 signals[NODE_REMOVED], 0,
 					 node);
 		}
 
@@ -883,8 +883,8 @@ static void
 report_done_loading (NautilusTreeModel *model,
 		     NautilusTreeNode  *node)
 {
-	gtk_signal_emit (GTK_OBJECT (model),
-			 signals[DONE_LOADING_CHILDREN],
+	g_signal_emit (G_OBJECT (model),
+			 signals[DONE_LOADING_CHILDREN], 0,
 			 node);
 }
 

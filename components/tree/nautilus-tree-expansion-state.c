@@ -173,7 +173,7 @@ nautilus_tree_expansion_state_new (void)
 {
 	NautilusTreeExpansionState *state;
 
-	state = NAUTILUS_TREE_EXPANSION_STATE (gtk_object_new (NAUTILUS_TYPE_TREE_EXPANSION_STATE, NULL));
+	state = NAUTILUS_TREE_EXPANSION_STATE (g_object_new (NAUTILUS_TYPE_TREE_EXPANSION_STATE, NULL));
 	gtk_object_ref (GTK_OBJECT (state));
 	gtk_object_sink (GTK_OBJECT (state));
 	return state;

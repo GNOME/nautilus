@@ -284,7 +284,7 @@ add_real_file (NautilusTrashFile *trash,
 	trash->details->files = g_list_prepend
 		(trash->details->files, real_file);
 	
-	gtk_signal_connect (GTK_OBJECT (real_file),
+	g_signal_connect (G_OBJECT (real_file),
 			    "changed",
 			    G_CALLBACK (real_file_changed_callback),
 			    trash);

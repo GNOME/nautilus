@@ -24,7 +24,7 @@ nautilus_sample_content_view_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(MODULE_LIBS)
 
-uidir = $(datadir)/gnome/ui
+uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = nautilus-sample-content-view-ui.xml
 
 serverdir = $(datadir)/server

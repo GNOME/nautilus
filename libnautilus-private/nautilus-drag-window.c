@@ -408,8 +408,8 @@ nautilus_drag_window_register (GtkWindow *window)
 				  NAUTILUS_DRAG_WINDOW_DETAILS_KEY,
 				  details, g_free);
 
-	gtk_signal_connect (GTK_OBJECT (window), "realize",
+	g_signal_connect (G_OBJECT (window), "realize",
 			    G_CALLBACK (nautilus_drag_window_realize), NULL);
-	gtk_signal_connect (GTK_OBJECT (window), "destroy",
+	g_signal_connect (G_OBJECT (window), "destroy",
 			    G_CALLBACK (nautilus_drag_window_destroy), NULL);
 }

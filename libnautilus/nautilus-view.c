@@ -69,22 +69,7 @@ typedef struct {
 	char *title;
 } LocationPlus;
 
-static void impl_Nautilus_View_load_location     (PortableServer_Servant  servant,
-						  const CORBA_char       *location,
-						  CORBA_Environment      *ev);
-static void impl_Nautilus_View_stop_loading      (PortableServer_Servant  servant,
-						  CORBA_Environment      *ev);
-static void impl_Nautilus_View_selection_changed (PortableServer_Servant  servant,
-						  const Nautilus_URIList *selection,
-						  CORBA_Environment      *ev);
-static void impl_Nautilus_View_title_changed     (PortableServer_Servant  servant,
-						  const CORBA_char       *title,
-						  CORBA_Environment      *ev);
-static void impl_Nautilus_View_history_changed   (PortableServer_Servant  servant,
-						  const Nautilus_History *history,
-						  CORBA_Environment      *ev);
 static void nautilus_view_init             (NautilusView           *view);
-static void nautilus_view_destroy                (GtkObject              *object);
 static void nautilus_view_class_init       (NautilusViewClass      *klass);
 
 EEL_BONOBO_BOILERPLATE_FULL (NautilusView,
@@ -166,44 +151,44 @@ static void
 call_load_location (NautilusView *view,
 		    gpointer callback_data)
 {
-	gtk_signal_emit (GTK_OBJECT (view),
-			 signals[LOAD_LOCATION],
-			 callback_data);
+	g_signal_emit (G_OBJECT (view),
+		       signals[LOAD_LOCATION], 0,
+		       callback_data);
 }
 
 static void
 call_stop_loading (NautilusView *view,
 		   gpointer callback_data)
 {
-	gtk_signal_emit (GTK_OBJECT (view),
-			 signals[STOP_LOADING]);
+	g_signal_emit (G_OBJECT (view),
+		       signals[STOP_LOADING], 0);
 }
 
 static void
 call_selection_changed (NautilusView *view,
 			gpointer callback_data)
 {
-	gtk_signal_emit (GTK_OBJECT (view),
-			 signals[SELECTION_CHANGED],
-			 callback_data);
+	g_signal_emit (G_OBJECT (view),
+		       signals[SELECTION_CHANGED], 0,
+		       callback_data);
 }
 
 static void
 call_title_changed (NautilusView *view,
 		    gpointer callback_data)
 {
-	gtk_signal_emit (GTK_OBJECT (view),
-			 signals[TITLE_CHANGED],
-			 callback_data);
+	g_signal_emit (G_OBJECT (view),
+		       signals[TITLE_CHANGED], 0,
+		       callback_data);
 }
 
 static void
 call_history_changed (NautilusView *view,
 		      gpointer callback_data)
 {
-	gtk_signal_emit (GTK_OBJECT (view),
-			 signals[HISTORY_CHANGED],
-			 callback_data);
+	g_signal_emit (G_OBJECT (view),
+		       signals[HISTORY_CHANGED], 0,
+		       callback_data);
 }
 
 static void
@@ -289,64 +274,6 @@ impl_Nautilus_View_history_changed (PortableServer_Servant servant,
 }
 
 static void
-nautilus_view_class_init (NautilusViewClass *klass)
-{
-	GtkObjectClass *object_class;
-	POA_Nautilus_View__epv *epv = &klass->epv;
-	
-	object_class = (GtkObjectClass *) klass;
-
-	object_class->destroy = nautilus_view_destroy;
-	
-	signals[LOAD_LOCATION] =
-		g_signal_new ("load_location",
-		              G_TYPE_FROM_CLASS (object_class),
-		              G_SIGNAL_RUN_LAST,
-		              G_STRUCT_OFFSET (NautilusViewClass, load_location),
-		              NULL, NULL,
-		              g_cclosure_marshal_VOID__STRING,
-		              G_TYPE_NONE, 1, G_TYPE_STRING);
-	signals[STOP_LOADING] =
-		g_signal_new ("stop_loading",
-		              G_TYPE_FROM_CLASS (object_class),
-		              G_SIGNAL_RUN_LAST,
-		              G_STRUCT_OFFSET (NautilusViewClass, stop_loading),
-		              NULL, NULL,
-		              gtk_marshal_NONE__NONE,
-		              G_TYPE_NONE, 0);
-	signals[SELECTION_CHANGED] =
-		g_signal_new ("selection_changed",
-		              G_TYPE_FROM_CLASS (object_class),
-		              G_SIGNAL_RUN_LAST,
-		              G_STRUCT_OFFSET (NautilusViewClass, selection_changed),
-		              NULL, NULL,
-		              gtk_marshal_NONE__POINTER,
-		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
-	signals[TITLE_CHANGED] =
-		g_signal_new ("title_changed",
-		              G_TYPE_FROM_CLASS (object_class),
-		              G_SIGNAL_RUN_LAST,
-		              G_STRUCT_OFFSET (NautilusViewClass, title_changed),
-		              NULL, NULL,
-		              g_cclosure_marshal_VOID__STRING,
-		              G_TYPE_NONE, 1, G_TYPE_STRING);
-	signals[HISTORY_CHANGED] =
-		g_signal_new ("history_changed",
-		              G_TYPE_FROM_CLASS (object_class),
-		              G_SIGNAL_RUN_LAST,
-		              G_STRUCT_OFFSET (NautilusViewClass, history_changed),
-		              NULL, NULL,
-		              gtk_marshal_NONE__POINTER,
-		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
-
-	epv->load_location = impl_Nautilus_View_load_location;
-	epv->stop_loading = impl_Nautilus_View_stop_loading;
-	epv->selection_changed = impl_Nautilus_View_selection_changed;
-	epv->title_changed = impl_Nautilus_View_title_changed;
-	epv->history_changed = impl_Nautilus_View_history_changed;
-}
-
-static void
 nautilus_view_init (NautilusView *view)
 {
 	view->details = g_new0 (NautilusViewDetails, 1);
@@ -366,7 +293,7 @@ NautilusView *
 nautilus_view_new_from_bonobo_control (BonoboControl *control)
 {
 	return nautilus_view_construct_from_bonobo_control 
-		(NAUTILUS_VIEW (gtk_object_new (NAUTILUS_TYPE_VIEW, NULL)), 
+		(NAUTILUS_VIEW (g_object_new (NAUTILUS_TYPE_VIEW, NULL)), 
 		 control);
 }
 
@@ -393,7 +320,7 @@ nautilus_view_construct_from_bonobo_control (NautilusView   *view,
 }
 
 static void
-nautilus_view_destroy (GtkObject *object)
+nautilus_view_finalize (GObject *object)
 {
 	NautilusView *view;
 
@@ -404,7 +331,7 @@ nautilus_view_destroy (GtkObject *object)
 
 	g_free (view->details);
 	
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static Nautilus_ViewFrame
@@ -872,4 +799,59 @@ nautilus_view_set_up_ui (NautilusView *view,
 	bonobo_ui_util_set_ui (ui_component, datadir, ui_file_name, application_name);
 
 	return ui_component;
+}
+
+static void
+nautilus_view_class_init (NautilusViewClass *klass)
+{
+	POA_Nautilus_View__epv *epv = &klass->epv;
+	
+	G_OBJECT_CLASS (klass)->finalize = nautilus_view_finalize;
+	
+	signals[LOAD_LOCATION] =
+		g_signal_new ("load_location",
+		              G_TYPE_FROM_CLASS (klass),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusViewClass, load_location),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__STRING,
+		              G_TYPE_NONE, 1, G_TYPE_STRING);
+	signals[STOP_LOADING] =
+		g_signal_new ("stop_loading",
+		              G_TYPE_FROM_CLASS (klass),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusViewClass, stop_loading),
+		              NULL, NULL,
+		              gtk_marshal_NONE__NONE,
+		              G_TYPE_NONE, 0);
+	signals[SELECTION_CHANGED] =
+		g_signal_new ("selection_changed",
+		              G_TYPE_FROM_CLASS (klass),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusViewClass, selection_changed),
+		              NULL, NULL,
+		              gtk_marshal_NONE__POINTER,
+		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+	signals[TITLE_CHANGED] =
+		g_signal_new ("title_changed",
+		              G_TYPE_FROM_CLASS (klass),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusViewClass, title_changed),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__STRING,
+		              G_TYPE_NONE, 1, G_TYPE_STRING);
+	signals[HISTORY_CHANGED] =
+		g_signal_new ("history_changed",
+		              G_TYPE_FROM_CLASS (klass),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusViewClass, history_changed),
+		              NULL, NULL,
+		              gtk_marshal_NONE__POINTER,
+		              G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+
+	epv->load_location = impl_Nautilus_View_load_location;
+	epv->stop_loading = impl_Nautilus_View_stop_loading;
+	epv->selection_changed = impl_Nautilus_View_selection_changed;
+	epv->title_changed = impl_Nautilus_View_title_changed;
+	epv->history_changed = impl_Nautilus_View_history_changed;
 }

@@ -95,7 +95,7 @@ GtkObject *
 nautilus_signaller_get_current (void)
 {
 	if (global_signaller == NULL) {
-		global_signaller = gtk_object_new (nautilus_signaller_get_type (), NULL);
+		global_signaller = g_object_new (nautilus_signaller_get_type (), NULL);
 		gtk_object_ref (GTK_OBJECT (global_signaller));
 		gtk_object_sink (GTK_OBJECT (global_signaller));
 		g_atexit (unref_global_signaller);

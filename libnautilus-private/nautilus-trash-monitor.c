@@ -73,7 +73,7 @@ nautilus_trash_monitor_class_init (NautilusTrashMonitorClass *klass)
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusTrashMonitorClass, trash_state_changed),
 		 NULL, NULL,
-		 gtk_marshal_NONE__BOOL,
+		 gtk_marshal_VOID__BOOLEAN,
 		 G_TYPE_NONE, 1,
 		 GTK_TYPE_BOOL);
 
@@ -83,7 +83,7 @@ nautilus_trash_monitor_class_init (NautilusTrashMonitorClass *klass)
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusTrashMonitorClass, check_trash_directory_added),
 		 NULL, NULL,
-		 gtk_marshal_NONE__POINTER,
+		 gtk_marshal_VOID__POINTER,
 		 G_TYPE_NONE, 1,
 		 GTK_TYPE_POINTER);
 }
@@ -112,8 +112,8 @@ nautilus_trash_files_changed_callback (NautilusDirectory *directory, GList *file
 		nautilus_file_unref (file);
 
 		/* trash got empty or full, notify everyone who cares */
-		gtk_signal_emit (GTK_OBJECT (trash_monitor), 
-				 signals[TRASH_STATE_CHANGED],
+		g_signal_emit (G_OBJECT (trash_monitor), 
+				 signals[TRASH_STATE_CHANGED], 0,
 				 trash_monitor->details->empty);
 	}
 }
@@ -190,7 +190,7 @@ nautilus_trash_monitor_get (void)
 		trash_directory = nautilus_directory_get (EEL_TRASH_URI);
 		
 		nautilus_trash_monitor = NAUTILUS_TRASH_MONITOR
-			(gtk_object_new (NAUTILUS_TYPE_TRASH_MONITOR, NULL));
+			(g_object_new (NAUTILUS_TYPE_TRASH_MONITOR, NULL));
 		gtk_object_ref (GTK_OBJECT (nautilus_trash_monitor));
 		gtk_object_sink (GTK_OBJECT (nautilus_trash_monitor));
 		g_atexit (unref_trash_monitor);
@@ -273,8 +273,8 @@ add_one_trash_directory_if_needed (const NautilusVolume *volume,
 	NautilusTrashMonitor *trash_monitor;
 
 	trash_monitor = NAUTILUS_TRASH_MONITOR (callback_data);
-	gtk_signal_emit (GTK_OBJECT (trash_monitor),
-			 signals[CHECK_TRASH_DIRECTORY_ADDED],
+	g_signal_emit (G_OBJECT (trash_monitor),
+			 signals[CHECK_TRASH_DIRECTORY_ADDED], 0,
 			 volume);
 	
 	return FALSE;

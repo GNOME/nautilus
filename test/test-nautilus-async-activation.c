@@ -67,7 +67,7 @@ main (int argc, char *argv[])
 		     bonobo_poa_manager ());
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_signal_connect (GTK_OBJECT (window), "destroy",
+	g_signal_connect (G_OBJECT (window), "destroy",
 			    gtk_main_quit, NULL);
 	gtk_widget_show_all (GTK_WIDGET (window));
 	

@@ -219,7 +219,7 @@ nautilus_search_bar_criterion_class_init (NautilusSearchBarCriterionClass *klass
 		 G_SIGNAL_RUN_LAST,
 		 0,
 		 NULL, NULL,
-		 gtk_marshal_NONE__NONE,
+		 gtk_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 				
 }
@@ -297,7 +297,7 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 	details->bar = bar;
 	details->box = gtk_hwrap_box_new (FALSE);
 
-	gtk_signal_connect (GTK_OBJECT (details->box),
+	g_signal_connect (G_OBJECT (details->box),
 			    "need_reallocation",
 			    G_CALLBACK (queue_bar_resize_callback),
 			    bar);
@@ -317,7 +317,7 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 		g_free (context_stripped_criteria_title);
 
 		gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
-		gtk_signal_connect (GTK_OBJECT (item),
+		g_signal_connect (G_OBJECT (item),
 				    "activate",
 				    G_CALLBACK (criterion_type_changed_callback),
 				    criterion);
@@ -355,12 +355,12 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 		   don't need a date, like "yesterday" */
 		if (details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
 			if (modified_relation_should_show_value (i)) {
-				gtk_signal_connect (GTK_OBJECT (item), "activate",
+				g_signal_connect (G_OBJECT (item), "activate",
 						    G_CALLBACK (show_date_widget),
 						    criterion);
 			}
 			else {
-				gtk_signal_connect (GTK_OBJECT (item), "activate",
+				g_signal_connect (G_OBJECT (item), "activate",
 						    G_CALLBACK (hide_date_widget),
 						    criterion);
 			}
@@ -718,7 +718,7 @@ nautilus_search_bar_criterion_update_valid_criteria_choices (NautilusSearchBarCr
 		
 		gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
 		
-		gtk_signal_connect (GTK_OBJECT (item),
+		g_signal_connect (G_OBJECT (item),
 				    "activate",
 				    G_CALLBACK (criterion_type_changed_callback),
 				    criterion);
@@ -1046,8 +1046,8 @@ criterion_type_changed_callback (GtkObject *object,
 	g_return_if_fail (NAUTILUS_IS_COMPLEX_SEARCH_BAR (criterion->details->bar));
 	gtk_object_set_data (GTK_OBJECT (criterion), "type", 
 			     gtk_object_get_data (GTK_OBJECT (menu_item), "type"));
-	gtk_signal_emit (GTK_OBJECT (criterion),
-			 signals[CRITERION_TYPE_CHANGED]);
+	g_signal_emit (G_OBJECT (criterion),
+			 signals[CRITERION_TYPE_CHANGED], 0);
 	
 }
 

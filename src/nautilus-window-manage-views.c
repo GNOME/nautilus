@@ -592,7 +592,7 @@ update_for_new_location (NautilusWindow *window)
         file = nautilus_file_get (window->details->location);
         nautilus_window_set_viewed_file (window, file);
         window->details->viewed_file_seen = !nautilus_file_is_not_yet_confirmed (file);
-        gtk_signal_connect (GTK_OBJECT (file),
+        g_signal_connect (G_OBJECT (file),
                             "changed",
                             G_CALLBACK (viewed_file_changed_callback),
                             window);

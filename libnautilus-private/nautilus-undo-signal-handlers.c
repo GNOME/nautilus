@@ -80,7 +80,7 @@ nautilus_undo_set_up_nautilus_entry_for_undo (NautilusEntry *entry)
 				  data, free_editable_object_data);
 
 	/* Connect to entry signals */
-	gtk_signal_connect (GTK_OBJECT (entry), 
+	g_signal_connect (G_OBJECT (entry), 
 		    "user_changed",
 		    GTK_SIGNAL_FUNC (nautilus_entry_user_changed_callback),
 		    NULL);
@@ -192,12 +192,12 @@ nautilus_undo_set_up_editable_for_undo (GtkEditable *editable)
 	}
 
 	/* Connect to editable signals */
-	gtk_signal_connect (GTK_OBJECT (editable), 
+	g_signal_connect (G_OBJECT (editable), 
 		    "insert_text",
 		    GTK_SIGNAL_FUNC (editable_insert_text_callback),
 		    NULL);
 	
-	gtk_signal_connect (GTK_OBJECT (editable), 
+	g_signal_connect (G_OBJECT (editable), 
 		    "delete_text",
 		    GTK_SIGNAL_FUNC (editable_delete_text_callback),
 		    NULL);
@@ -328,7 +328,7 @@ nautilus_undo_editable_set_undo_key (GtkEditable *editable, gboolean value)
 #ifdef UNDO_ENABLED
 	if (value) {
 		/* Connect to entry signals */
-		gtk_signal_connect (GTK_OBJECT (editable), 
+		g_signal_connect (G_OBJECT (editable), 
 				    "key_press_event",
 				    GTK_SIGNAL_FUNC (editable_key_press_event),
 				    NULL);

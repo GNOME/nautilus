@@ -440,7 +440,7 @@ nautilus_clipboard_set_up_editable (GtkEditable *target,
 	gtk_signal_connect_after (GTK_OBJECT (target), "focus_out_event",
 				  G_CALLBACK (focus_changed_callback), target_data);
 
-	gtk_signal_connect (GTK_OBJECT (target), "destroy",
+	g_signal_connect (G_OBJECT (target), "destroy",
 			    G_CALLBACK (target_destroy_callback), target_data);
 	
 	/* Call the focus changed callback once to merge if the window is
@@ -510,11 +510,11 @@ nautilus_clipboard_set_up_editable_in_control (GtkEditable *target,
 	gtk_object_set_data (GTK_OBJECT (target),
 			     "Nautilus:shares_selection_changes",
 			     GINT_TO_POINTER (shares_selection_changes));
-	gtk_signal_connect (GTK_OBJECT (target),
+	g_signal_connect (G_OBJECT (target),
 			    "focus_in_event",
 			    G_CALLBACK (first_focus_callback),
 			    control);
-	gtk_signal_connect (GTK_OBJECT (target),
+	g_signal_connect (G_OBJECT (target),
 			    "destroy",
 			    G_CALLBACK (control_destroyed_callback),
 			    control);
