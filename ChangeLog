@@ -1,3 +1,15 @@
+2000-05-02  John Sullivan  <sullivan@eazel.com>
+
+	* data/mime/.cvsignore,
+	* data/mime/Makefile.am:,
+	* data/mime/nautilus.keys: Removed files. Nautilus
+	doesn't need to install the human-readable MIME
+	descriptions any more because gnome-vfs does it.
+
+	* configure.in,
+	* data/Makefile.am: Removed build system fu that
+	was installing nautilus.keys.
+
 2000-05-01  Kjartan Maraas  <kmaraas@gnu.org>
 
 	* libnautilus/nautilus-clipboard.c: Cosmetic change.
@@ -25,7 +37,7 @@
 	(dfos_xfer_progress_dialog_new_file),
 	(create_xfer_dialog),
 	(fs_xfer), (handle_xfer_ok):
-	Fix up the progress dialog so that it displays meaningfull
+	Fix up the progress dialog so that it displays meaningful
 	information while emptying the trash and moving files to
 	trash.
 	
@@ -187,9 +199,9 @@
 
 	* HACKING: Added option for eog. (Sorry Maciej, I had done it
 	before I got your mail.)
-	* src/ntl-uri-map.c (make_oaf_query_with_known_mime_type),
-	(make_oaf_query_with_uri_scheme_only): Improved comments and
-	formatting a little big more. (Sorry again, Maciej. You can
+        * src/ntl-uri-map.c (make_oaf_query_with_known_mime_type),
+        (make_oaf_query_with_uri_scheme_only): Improved comments and
+	formatting a little bit more. (Sorry again, Maciej. You can
 	merge it however you want!)
 
 2000-05-01  Maciej Stachowiak  <mjs@eazel.com>
