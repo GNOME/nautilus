@@ -1006,7 +1006,7 @@ refresh_bookmarks_menu (NautilusWindow *window)
 	g_object_ref (G_OBJECT (window));
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 
-	nautilus_window_remove_bookmarks_menu_items (window);				
+	nautilus_window_remove_bookmarks_menu_items (window);
 
 	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS)) {
 		append_static_bookmarks (window, MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER);
@@ -1042,11 +1042,13 @@ nautilus_window_initialize_bookmarks_menu (NautilusWindow *window)
 		
 	/* Recreate dynamic part of menu if bookmark list changes */
 	g_signal_connect_object (get_bookmark_list (), "contents_changed",
-				 G_CALLBACK (schedule_refresh_bookmarks_menu), window, G_CONNECT_SWAPPED);
+				 G_CALLBACK (schedule_refresh_bookmarks_menu),
+				 window, G_CONNECT_SWAPPED);
 
 	/* Recreate static & dynamic parts of menu if icon theme changes */
 	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
-				 G_CALLBACK (schedule_refresh_bookmarks_menu), window, G_CONNECT_SWAPPED);
+				 G_CALLBACK (schedule_refresh_bookmarks_menu),
+				 window, G_CONNECT_SWAPPED);
 }
 
 /**

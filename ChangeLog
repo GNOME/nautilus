@@ -1,5 +1,11 @@
 2002-05-22  Michael Meeks  <michael@ximian.com>
 
+	* src/nautilus-window.c (ui_idle_handler): hold a ref
+	on the window while we do a load of possibly
+	re-enterant stuff. #82050
+
+2002-05-22  Michael Meeks  <michael@ximian.com>
+
 	* libnautilus-private/nautilus-dnd.c (add_one_uri):
 	add the full, non-mangled, clean, escaped URI.
 	(is_path_that_gnome_uri_list_extract_filenames_can_parse),

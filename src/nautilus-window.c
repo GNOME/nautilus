@@ -215,6 +215,9 @@ ui_idle_handler (gpointer data)
 
 	window = data;
 
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_object_ref (data);
+
 	g_assert (window->details->ui_change_depth == 0);
 
 	/* Simulate an extra freeze/thaw so that calling window_ui_freeze
@@ -239,6 +242,9 @@ ui_idle_handler (gpointer data)
 	window->details->ui_change_depth--;
 
 	window->details->ui_idle_id = 0;
+
+	g_object_unref (data);
+
 	return FALSE;
 }
 
