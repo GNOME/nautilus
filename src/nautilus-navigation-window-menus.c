@@ -455,8 +455,8 @@ nautilus_window_update_show_hide_menu_items (NautilusWindow *window)
 	nautilus_bonobo_set_label (window->details->shell_ui,
 				   MENU_PATH_SHOW_HIDE_SIDEBAR,
 				   nautilus_window_sidebar_showing (window)
-				   ? _("Hide _Sidebar")
-				   : _("Show _Sidebar"));
+				   ? _("Hide _Side Pane")
+				   : _("Show _Side Pane"));
 
 	nautilus_bonobo_set_label (window->details->shell_ui,
 				   MENU_PATH_SHOW_HIDE_TOOLBAR,

@@ -1,5 +1,18 @@
 2002-07-02  Michael Meeks  <michael@ximian.com>
 
+	* src/nautilus-preferences-dialog.c
+	(global_preferences_populate_sidebar_panels_callback),
+	(dialog_button_response_callback): sidebar -> side pane.
+
+	* src/nautilus-window-menus.c
+	(nautilus_window_update_show_hide_menu_items): ditto.
+
+	* components/tree/Nautilus_View_tree.server.in,
+	* components/notes/Nautilus_View_notes.server.in,
+	* components/history/Nautilus_View_history.server.in: ditto.
+
+2002-07-02  Michael Meeks  <michael@ximian.com>
+
 	* src/nautilus-bookmarks-window.c
 	(create_bookmarks_window): use new eel_glade_get_file.
 

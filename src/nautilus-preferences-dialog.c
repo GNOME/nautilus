@@ -75,7 +75,7 @@ static EelPreferencesItemDescription windows_items[] = {
 	},
 	{ N_("Opening New Windows"),
 	  NAUTILUS_PREFERENCES_START_WITH_SIDEBAR,
-	  N_("Display _sidebar in new windows"),
+	  N_("Display _side pane in new windows"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Opening New Windows"),
@@ -323,7 +323,7 @@ static EelPreferencesPaneDescription panes[] = {
 	{ N_("Desktop & Trash"),	  desktop_and_trash_items },
 	{ N_("Icon & List Views"),	  directory_views_items },
 	{ N_("Icon Captions"),		  icon_captions_items },
-	{ N_("Sidebar Panels"),		  sidebar_items },
+	{ N_("Side Panes"),		  sidebar_items },
 #ifdef HAVE_MEDUSA
 	{ N_("Search"),			  search_items },
 #endif
@@ -402,7 +402,7 @@ dialog_button_response_callback (GtkDialog *dialog,
 			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-56");
 		else if (eel_str_is_equal (active_pane, "Icon Captions"))
 			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-439");
-		else if (eel_str_is_equal (active_pane, "Sidebar Panels"))
+		else if (eel_str_is_equal (active_pane, "Side pane"))
 			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-57");
 		else if (eel_str_is_equal (active_pane,"Navigation"))
 			preferences_show_help (GTK_WINDOW (dialog), "wgosnautilus.xml", "gosnautilus-59");
@@ -449,7 +449,7 @@ global_preferences_populate_sidebar_panels_callback (const char *name,
 	g_return_if_fail (preference_key != NULL);
 	g_return_if_fail (EEL_IS_PREFERENCES_GROUP (callback_data));
 	
-	description = g_strdup_printf (_("Display %s tab in sidebar"), name);
+	description = g_strdup_printf (_("Display %s tab in side pane"), name);
 	
 	eel_preferences_set_description (preference_key, description);
 
