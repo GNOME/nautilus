@@ -1,3 +1,15 @@
+2002-02-19  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-window-manage-views.c
+	(determined_initial_view_callback): ensure we survive
+	without trashing the WM, even if we can get no working
+	mime data at all.
+
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_init): g_signal_connect_object
+	is not like gtk_signal_connect_object_while_alive, it's
+	missing a vital arg. swap.
+
 2002-02-17  Michael Meeks  <michael@ximian.com>
 
 	* libnautilus-private/nautilus-icon-container.c

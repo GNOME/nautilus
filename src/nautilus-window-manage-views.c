@@ -1348,18 +1348,20 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
 			/* the user could have typed in a home directory that doesn't exist,
 			   in which case going home would cause an infinite loop, so we
 			   better test for that */
-			
-			home_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
-			if (!eel_uris_match (home_uri, location)) {	
-				nautilus_window_go_home (NAUTILUS_WINDOW (window));
-			} else {
+
+                        if (!eel_uris_match (location, "file:///")) {
+                                home_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
+                                if (!eel_uris_match (home_uri, location)) {	
+                                        nautilus_window_go_home (NAUTILUS_WINDOW (window));
+                                } else {
 				/* the last fallback is to go to a known place that can't be deleted! */
-				nautilus_window_go_to (NAUTILUS_WINDOW (window), "file:///");
-			}
-			g_free (home_uri);
+                                        nautilus_window_go_to (NAUTILUS_WINDOW (window), "file:///");
+                                }
+                                g_free (home_uri);
+                        }
 		} else {
-                /* Since this is a window, destroying it will also unref it. */
-                gtk_object_destroy (GTK_OBJECT (window));
+                        /* Since this is a window, destroying it will also unref it. */
+                        gtk_object_destroy (GTK_OBJECT (window));
        		}
         } else {
                 /* Clean up state of already-showing window */

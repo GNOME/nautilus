@@ -3363,11 +3363,13 @@ nautilus_icon_container_init (NautilusIconContainer *container)
 	nautilus_icon_dnd_init (container, stipple);
 
 	/* Make sure that we find out if the icons change. */
-	g_signal_connect_object
+	g_signal_connect_closure 
 		(nautilus_icon_factory_get (),
-		 "icons_changed",
-		 G_CALLBACK (nautilus_icon_container_request_update_all),
-		 container, 0);
+		 "icons_changed", 
+		 g_cclosure_new_object_swap (
+			 G_CALLBACK (nautilus_icon_container_request_update_all),
+			 G_OBJECT (container)),
+		 FALSE);
 
 	/* when the background changes, we must set up the label text color */
 	background = eel_get_widget_background (GTK_WIDGET (container));

@@ -812,7 +812,7 @@ icon_theme_changed_callback (gpointer user_data)
 		nautilus_icon_factory_clear ();
 		load_thumbnail_frame (factory);
 		g_signal_emit (factory,
-				 signals[ICONS_CHANGED], 0);
+			       signals[ICONS_CHANGED], 0);
 	}
 
 	g_free (icon_theme);
