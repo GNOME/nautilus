@@ -90,7 +90,7 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean us
 	char *thumbnail_uri, *thumbnail_path;
 	char *directory_name = g_strdup (image_uri);
 	char *last_slash = strrchr (directory_name, '/');
-	char *dot_pos;
+	char *dot_pos, *slash_pos;
 	gboolean is_local;
 	
 	*last_slash = '\0';
@@ -140,7 +140,8 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean us
 		if (anti_aliased) {
 			char *old_uri = thumbnail_uri;
 			dot_pos = strrchr (thumbnail_uri, '.');
-			if (dot_pos) {
+			slash_pos = strrchr (thumbnail_uri, '/');
+			if (dot_pos && dot_pos > slash_pos) {
 				*dot_pos = '\0';
 				thumbnail_uri = g_strdup_printf ("%s.aa.%s", old_uri, dot_pos + 1);
 			} else {

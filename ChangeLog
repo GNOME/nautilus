@@ -1,3 +1,13 @@
+2001-01-25  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-thumbnails.c:
+	(make_thumbnail_path):
+	fixed bug 5817, removing the extension from images makes their
+	thumbnails show up.  Fixed by correcting where it tests for the
+	presence of an extension in make_thumbnail_path by only looking
+	for periods in the leaf part of the path instead of in the
+	entire path.
+	
 2001-01-25  Darin Adler  <darin@eazel.com>
 
 	* README: Add missing xml-i18n-tools to list of modules
