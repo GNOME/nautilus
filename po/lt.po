@@ -1,24 +1,23 @@
 # Lithuanian translation of Nautilus.
-# Copyright (C) 2001-2004 Free Software Foundation, Inc.
+# Copyright (C) 2001-2005 Free Software Foundation, Inc.
 # Mantas Kriaučiūnas <mantas@akl.lt>, 2001-2004
 # Eglė Girinaitė <egle@akl.lt>, 2001-2003
-# Žygimantas Beručka <uid0@akl.lt>, 2004.
+# Žygimantas Beručka <uid0@akl.lt>, 2004-2005
 # Gediminas Paulauskas <menesis@chatsubo.lt>, 2001, 2004
 # 
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Nautilus 2.7.3\n"
+"Project-Id-Version: Nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-11 09:55+0100\n"
-"PO-Revision-Date: 2004-12-03 18:37+0200\n"
-"Last-Translator: Gediminas Paulauskas <menesis@chatsubo.lt>\n"
+"POT-Creation-Date: 2005-01-17 18:23+0200\n"
+"PO-Revision-Date: 2005-01-17 18:29+0200\n"
+"Last-Translator: Žygimantas Beručka <uid0@akl.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
-"100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: data/applications.desktop.in.h:1
 msgid "Applications"
@@ -625,7 +624,7 @@ msgstr "Šita tema naudoja fotorealistinius aplankus."
 #: libnautilus-extension/nautilus-menu-item.c:206
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
-#: src/file-manager/fm-list-view.c:1085
+#: src/file-manager/fm-list-view.c:1107
 msgid "Name"
 msgstr "Pavadinimas"
 
@@ -1500,32 +1499,32 @@ msgstr ""
 msgid "Can't Delete Volume"
 msgstr "Negalima ištrinti skirsnio"
 
-#: libnautilus-private/nautilus-dnd.c:615
+#: libnautilus-private/nautilus-dnd.c:631
 msgid "_Move here"
 msgstr "_Perkelti čia"
 
-#: libnautilus-private/nautilus-dnd.c:620
+#: libnautilus-private/nautilus-dnd.c:636
 msgid "_Copy here"
 msgstr "_Kopijuoti čia"
 
-#: libnautilus-private/nautilus-dnd.c:625
+#: libnautilus-private/nautilus-dnd.c:641
 msgid "_Link here"
 msgstr "_Sukurti nuorodą čia"
 
-#: libnautilus-private/nautilus-dnd.c:630
+#: libnautilus-private/nautilus-dnd.c:646
 msgid "Set as _Background"
 msgstr "Naudoti _fonui"
 
-#: libnautilus-private/nautilus-dnd.c:639
-#: libnautilus-private/nautilus-dnd.c:694
+#: libnautilus-private/nautilus-dnd.c:655
+#: libnautilus-private/nautilus-dnd.c:710
 msgid "Cancel"
 msgstr "Atšaukti"
 
-#: libnautilus-private/nautilus-dnd.c:680
+#: libnautilus-private/nautilus-dnd.c:696
 msgid "Set as background for _all folders"
 msgstr "Naudoti _visų aplankų fonui"
 
-#: libnautilus-private/nautilus-dnd.c:685
+#: libnautilus-private/nautilus-dnd.c:701
 msgid "Set as background for _this folder"
 msgstr "Naudoti šio _aplanko fonui"
 
@@ -1870,6 +1869,7 @@ msgstr "Pakeisti _visus"
 #.
 #: libnautilus-private/nautilus-file-operations.c:1194
 #: libnautilus-private/nautilus-file.c:4746
+#: src/file-manager/fm-directory-view.c:7890
 #, c-format
 msgid "link to %s"
 msgstr "nuoroda į %s"
@@ -2009,278 +2009,278 @@ msgid " (%d"
 msgstr " (%d"
 
 #: libnautilus-private/nautilus-file-operations.c:1600
-#: libnautilus-private/nautilus-file-operations.c:2190
-#: libnautilus-private/nautilus-file-operations.c:2352
+#: libnautilus-private/nautilus-file-operations.c:2193
+#: libnautilus-private/nautilus-file-operations.c:2355
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Nežinomas GnomeVFSXferProgressStatus %d"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1927
+#: libnautilus-private/nautilus-file-operations.c:1930
 msgid "Moving files to the Trash"
 msgstr "Bylos perkeliamos į šiukšlinę"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1929
+#: libnautilus-private/nautilus-file-operations.c:1932
 msgid "Files thrown out:"
 msgstr "Išmestos bylos:"
 
 #. localizers: label prepended to the name of the current file moved
-#: libnautilus-private/nautilus-file-operations.c:1931
-#: libnautilus-private/nautilus-file-operations.c:1942
+#: libnautilus-private/nautilus-file-operations.c:1934
+#: libnautilus-private/nautilus-file-operations.c:1945
 msgid "Moving"
 msgstr "Perkeliama"
 
-#: libnautilus-private/nautilus-file-operations.c:1932
+#: libnautilus-private/nautilus-file-operations.c:1935
 msgid "Preparing to Move to Trash..."
 msgstr "Ruošiamasi perkėlimui į šiukšlinę..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1938
+#: libnautilus-private/nautilus-file-operations.c:1941
 msgid "Moving files"
 msgstr "Perkeliamos bylos"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1940
+#: libnautilus-private/nautilus-file-operations.c:1943
 msgid "Files moved:"
 msgstr "Bylų perkelta:"
 
-#: libnautilus-private/nautilus-file-operations.c:1943
+#: libnautilus-private/nautilus-file-operations.c:1946
 msgid "Preparing To Move..."
 msgstr "Ruošiamasi perkėlimui..."
 
-#: libnautilus-private/nautilus-file-operations.c:1944
+#: libnautilus-private/nautilus-file-operations.c:1947
 msgid "Finishing Move..."
 msgstr "Baigiamas perkėlimas..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1952
+#: libnautilus-private/nautilus-file-operations.c:1955
 msgid "Creating links to files"
 msgstr "Kuriamos nuorodos į bylas"
 
 #  localizers: label prepended to the progress count
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1954
+#: libnautilus-private/nautilus-file-operations.c:1957
 msgid "Files linked:"
 msgstr "Sukurta nuorodų:"
 
 #. localizers: label prepended to the name of the current file linked
-#: libnautilus-private/nautilus-file-operations.c:1956
+#: libnautilus-private/nautilus-file-operations.c:1959
 msgid "Linking"
 msgstr "Kuriamos nuorodos"
 
-#: libnautilus-private/nautilus-file-operations.c:1957
+#: libnautilus-private/nautilus-file-operations.c:1960
 msgid "Preparing to Create Links..."
 msgstr "Ruošiamasi kurti nuorodas..."
 
-#: libnautilus-private/nautilus-file-operations.c:1958
+#: libnautilus-private/nautilus-file-operations.c:1961
 msgid "Finishing Creating Links..."
 msgstr "Baigiama kurti nuorodas..."
 
 #  localizers: progress dialog title
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1964
+#: libnautilus-private/nautilus-file-operations.c:1967
 msgid "Copying files"
 msgstr "Kopijuojamos bylos"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1966
+#: libnautilus-private/nautilus-file-operations.c:1969
 msgid "Files copied:"
 msgstr "Nukopijuota bylų:"
 
 #. localizers: label prepended to the name of the current file copied
-#: libnautilus-private/nautilus-file-operations.c:1968
+#: libnautilus-private/nautilus-file-operations.c:1971
 msgid "Copying"
 msgstr "Kopijuojama"
 
-#: libnautilus-private/nautilus-file-operations.c:1969
+#: libnautilus-private/nautilus-file-operations.c:1972
 msgid "Preparing To Copy..."
 msgstr "Ruošiamasi kopijavimui ..."
 
-#: libnautilus-private/nautilus-file-operations.c:1987
+#: libnautilus-private/nautilus-file-operations.c:1990
 msgid "You cannot copy items into the trash."
 msgstr "Negalima kopijuoti elementų į šiukšlinę."
 
-#: libnautilus-private/nautilus-file-operations.c:1988
+#: libnautilus-private/nautilus-file-operations.c:1991
 msgid "You cannot create links inside the trash."
 msgstr "Negalima sukurti nuorodų šiukšlinėje."
 
-#: libnautilus-private/nautilus-file-operations.c:1989
+#: libnautilus-private/nautilus-file-operations.c:1992
 msgid "Files and folders can only be moved into the trash."
 msgstr "Bylos ir aplankai gali būti tik perkelti šiukšlinę."
 
-#: libnautilus-private/nautilus-file-operations.c:2013
+#: libnautilus-private/nautilus-file-operations.c:2016
 msgid "You cannot move this trash folder."
 msgstr "Negalima perkelti šiukšlinės aplanko."
 
-#: libnautilus-private/nautilus-file-operations.c:2014
+#: libnautilus-private/nautilus-file-operations.c:2017
 msgid "You cannot copy this trash folder."
 msgstr "Negalima kopijuoti šiukšlinės aplanko."
 
-#: libnautilus-private/nautilus-file-operations.c:2015
+#: libnautilus-private/nautilus-file-operations.c:2018
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr ""
 "Šiukšlių aplankas yra naudojamas laikymui elementų, perkeltų į šiukšlinę."
 
-#: libnautilus-private/nautilus-file-operations.c:2017
+#: libnautilus-private/nautilus-file-operations.c:2020
 msgid "Can't Change Trash Location"
 msgstr "Negalima pakeisti šiukšlinės vietos"
 
-#: libnautilus-private/nautilus-file-operations.c:2018
+#: libnautilus-private/nautilus-file-operations.c:2021
 msgid "Can't Copy Trash"
 msgstr "Negalima kopijuoti šiukšlinės"
 
-#: libnautilus-private/nautilus-file-operations.c:2042
+#: libnautilus-private/nautilus-file-operations.c:2045
 msgid "You cannot move a folder into itself."
 msgstr "negalima perkelti aplanko į jį patį."
 
-#: libnautilus-private/nautilus-file-operations.c:2043
+#: libnautilus-private/nautilus-file-operations.c:2046
 msgid "You cannot copy a folder into itself."
 msgstr "Negalima kopijuoti aplanko į jį patį."
 
-#: libnautilus-private/nautilus-file-operations.c:2044
+#: libnautilus-private/nautilus-file-operations.c:2047
 msgid "The destination folder is inside the source folder."
 msgstr "Paskirties aplankas yra šaltinio aplanko viduje."
 
-#: libnautilus-private/nautilus-file-operations.c:2046
+#: libnautilus-private/nautilus-file-operations.c:2049
 msgid "Can't Move Into Self"
 msgstr "Negalima perkelti į save patį"
 
-#: libnautilus-private/nautilus-file-operations.c:2047
+#: libnautilus-private/nautilus-file-operations.c:2050
 msgid "Can't Copy Into Self"
 msgstr "Negalima kopijuoti į save patį"
 
-#: libnautilus-private/nautilus-file-operations.c:2060
+#: libnautilus-private/nautilus-file-operations.c:2063
 msgid "You cannot copy a file over itself."
 msgstr "Negalima kopijuoti bylos į save pačią."
 
-#: libnautilus-private/nautilus-file-operations.c:2061
+#: libnautilus-private/nautilus-file-operations.c:2064
 msgid "The destination and source are the same file."
 msgstr "Paskirtis ir šaltinis yra ta pati byla."
 
-#: libnautilus-private/nautilus-file-operations.c:2062
+#: libnautilus-private/nautilus-file-operations.c:2065
 msgid "Can't Copy Over Self"
 msgstr "Negalima kopijuoti ant savęs"
 
-#: libnautilus-private/nautilus-file-operations.c:2114
-#: libnautilus-private/nautilus-file-operations.c:2254
+#: libnautilus-private/nautilus-file-operations.c:2117
+#: libnautilus-private/nautilus-file-operations.c:2257
 msgid "You do not have permissions to write to the destination."
 msgstr "Jūs neturite teisių rašyti į paskirties aplanką."
 
-#: libnautilus-private/nautilus-file-operations.c:2116
-#: libnautilus-private/nautilus-file-operations.c:2256
+#: libnautilus-private/nautilus-file-operations.c:2119
+#: libnautilus-private/nautilus-file-operations.c:2259
 msgid "There is no space on the destination."
 msgstr "Paskirties vietoje nėra laisvos vietos."
 
-#: libnautilus-private/nautilus-file-operations.c:2118
+#: libnautilus-private/nautilus-file-operations.c:2121
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Klaida „%s“ kuriant naują aplanką."
 
-#: libnautilus-private/nautilus-file-operations.c:2123
+#: libnautilus-private/nautilus-file-operations.c:2126
 msgid "Error creating new folder."
 msgstr "Klaida kuriant naują aplanką."
 
-#: libnautilus-private/nautilus-file-operations.c:2123
+#: libnautilus-private/nautilus-file-operations.c:2126
 msgid "Error Creating New Folder"
 msgstr "Klaida kuriant naują aplanką"
 
 #. localizers: the initial name of a new folder
-#: libnautilus-private/nautilus-file-operations.c:2218
+#: libnautilus-private/nautilus-file-operations.c:2221
 msgid "untitled folder"
 msgstr "bevardis aplankas"
 
-#: libnautilus-private/nautilus-file-operations.c:2258
+#: libnautilus-private/nautilus-file-operations.c:2261
 #, c-format
 msgid "Error \"%s\" creating new document."
 msgstr "Klaida „%s“ kuriant naują aplanką."
 
-#: libnautilus-private/nautilus-file-operations.c:2263
+#: libnautilus-private/nautilus-file-operations.c:2266
 msgid "Error creating new document."
 msgstr "Klaida kuriant naują dokumentą."
 
-#: libnautilus-private/nautilus-file-operations.c:2263
+#: libnautilus-private/nautilus-file-operations.c:2266
 msgid "Error Creating New Document"
 msgstr "Klaida kuriant naują dokumentą"
 
-#: libnautilus-private/nautilus-file-operations.c:2410
+#: libnautilus-private/nautilus-file-operations.c:2413
 msgid "new file"
 msgstr "nauja byla"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2482
+#: libnautilus-private/nautilus-file-operations.c:2485
 msgid "Deleting files"
 msgstr "Trinamos bylos"
 
 #  localizers: label prepended to the progress count
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2484
-#: libnautilus-private/nautilus-file-operations.c:2519
+#: libnautilus-private/nautilus-file-operations.c:2487
+#: libnautilus-private/nautilus-file-operations.c:2522
 msgid "Files deleted:"
 msgstr "Ištrintos bylos:"
 
 #  localizers: label prepended to the name of the current file deleted
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-private/nautilus-file-operations.c:2486
-#: libnautilus-private/nautilus-file-operations.c:2521
+#: libnautilus-private/nautilus-file-operations.c:2489
+#: libnautilus-private/nautilus-file-operations.c:2524
 msgid "Deleting"
 msgstr "Trinama"
 
-#: libnautilus-private/nautilus-file-operations.c:2487
+#: libnautilus-private/nautilus-file-operations.c:2490
 msgid "Preparing to Delete files..."
 msgstr "Ruošiamasi trinti bylas..."
 
 #  localizers: progress dialog title
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2517
+#: libnautilus-private/nautilus-file-operations.c:2520
 msgid "Emptying the Trash"
 msgstr "Išvaloma šiukšlinė"
 
-#: libnautilus-private/nautilus-file-operations.c:2522
+#: libnautilus-private/nautilus-file-operations.c:2525
 msgid "Preparing to Empty the Trash..."
 msgstr "Ruošiamasi išvalyti šiukšlinę..."
 
-#: libnautilus-private/nautilus-file-operations.c:2591
+#: libnautilus-private/nautilus-file-operations.c:2594
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr "Ar tikrai norite visiškai ištrinti visus elementus iš šiukšlinės?"
 
-#: libnautilus-private/nautilus-file-operations.c:2605
+#: libnautilus-private/nautilus-file-operations.c:2608
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr ""
 "Jeigu išvalysite šiukšlinę, visi ten esantys elementai bus negrįžtamai "
 "ištrinti."
 
-#: libnautilus-private/nautilus-file-operations.c:2617
+#: libnautilus-private/nautilus-file-operations.c:2620
 msgid "_Empty"
 msgstr "_Išvalyti"
 
-#: libnautilus-private/nautilus-file-utilities.c:393
+#: libnautilus-private/nautilus-file-utilities.c:442
 #: libnautilus-private/nautilus-global-preferences.c:534
 #: nautilus-computer.desktop.in.h:1
 msgid "Computer"
 msgstr "Kompiuteris"
 
-#: libnautilus-private/nautilus-file-utilities.c:395
+#: libnautilus-private/nautilus-file-utilities.c:444
 msgid "Network"
 msgstr "Tinklas"
 
-#: libnautilus-private/nautilus-file-utilities.c:397
+#: libnautilus-private/nautilus-file-utilities.c:446
 msgid "Fonts"
 msgstr "Šriftai"
 
-#: libnautilus-private/nautilus-file-utilities.c:399
+#: libnautilus-private/nautilus-file-utilities.c:448
 msgid "Themes"
 msgstr "Temos"
 
-#: libnautilus-private/nautilus-file-utilities.c:401
+#: libnautilus-private/nautilus-file-utilities.c:450
 msgid "CD/DVD Creator"
 msgstr "CD/DVD kepykla"
 
-#: libnautilus-private/nautilus-file-utilities.c:403
+#: libnautilus-private/nautilus-file-utilities.c:452
 msgid "Windows Network"
 msgstr "Windows tinklas"
 
-#: libnautilus-private/nautilus-file-utilities.c:405
+#: libnautilus-private/nautilus-file-utilities.c:454
 msgid "Services in"
 msgstr "Paslaugos"
 
@@ -2425,7 +2425,7 @@ msgstr "%Y-%m-%d"
 #  This means no contents at all were readable
 #  This means no contents at all were readable
 #: libnautilus-private/nautilus-file.c:4312
-#: src/file-manager/fm-directory-view.c:1858
+#: src/file-manager/fm-directory-view.c:1861
 #, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -2638,7 +2638,7 @@ msgid "Icon View"
 msgstr "Ikonų rodinys"
 
 #: libnautilus-private/nautilus-global-preferences.c:177
-#: src/file-manager/fm-list-view.c:1138
+#: src/file-manager/fm-list-view.c:1160
 #: src/nautilus-file-management-properties.glade.h:56
 msgid "List View"
 msgstr "Sąrašo rodinys"
@@ -2768,59 +2768,59 @@ msgstr "paryškintas numetimui"
 msgid "whether we are highlighted for a D&D drop"
 msgstr "ar mes paryškinti tempiamo objekto numetimui"
 
-#: libnautilus-private/nautilus-icon-container.c:2106
+#: libnautilus-private/nautilus-icon-container.c:2107
 msgid "The selection rectangle"
 msgstr "Žymėjimo stačiakampis"
 
-#: libnautilus-private/nautilus-icon-container.c:4240
+#: libnautilus-private/nautilus-icon-container.c:4254
 msgid "Frame Text"
 msgstr "Įrėminti tekstą"
 
-#: libnautilus-private/nautilus-icon-container.c:4241
+#: libnautilus-private/nautilus-icon-container.c:4255
 msgid "Draw a frame around unselected text"
 msgstr "Paišyti rėmelį aplink nepažymėta tekstą"
 
-#: libnautilus-private/nautilus-icon-container.c:4247
+#: libnautilus-private/nautilus-icon-container.c:4261
 msgid "Selection Box Color"
 msgstr "Žymėjimo stačiakampio spalva"
 
-#: libnautilus-private/nautilus-icon-container.c:4248
+#: libnautilus-private/nautilus-icon-container.c:4262
 msgid "Color of the selection box"
 msgstr "Žymėjimo stačiakampio spalva"
 
-#: libnautilus-private/nautilus-icon-container.c:4253
+#: libnautilus-private/nautilus-icon-container.c:4267
 msgid "Selection Box Alpha"
 msgstr "Žymėjimo stačiakampio permatomumas"
 
-#: libnautilus-private/nautilus-icon-container.c:4254
+#: libnautilus-private/nautilus-icon-container.c:4268
 msgid "Opacity of the selection box"
 msgstr "Žymėjimo stačiakampio permatomumas"
 
-#: libnautilus-private/nautilus-icon-container.c:4261
+#: libnautilus-private/nautilus-icon-container.c:4275
 msgid "Highlight Alpha"
 msgstr "Paryškinimo permatomumas"
 
-#: libnautilus-private/nautilus-icon-container.c:4262
+#: libnautilus-private/nautilus-icon-container.c:4276
 msgid "Opacity of the highlight for selected icons"
 msgstr "Pažymėtų ikonų paryškinimo permatomumas"
 
-#: libnautilus-private/nautilus-icon-container.c:4268
+#: libnautilus-private/nautilus-icon-container.c:4282
 msgid "Light Info Color"
 msgstr "Šviesi teksto spalva"
 
-#: libnautilus-private/nautilus-icon-container.c:4269
+#: libnautilus-private/nautilus-icon-container.c:4283
 msgid "Color used for information text against a dark background"
 msgstr "Informacinio teksto spalva, naudojama ant tamsaus fono"
 
-#: libnautilus-private/nautilus-icon-container.c:4274
+#: libnautilus-private/nautilus-icon-container.c:4288
 msgid "Dark Info Color"
 msgstr "Tamsi teksto spalva"
 
-#: libnautilus-private/nautilus-icon-container.c:4275
+#: libnautilus-private/nautilus-icon-container.c:4289
 msgid "Color used for information text against a light background"
 msgstr "Informacinio teksto spalva, naudojama ant šviesaus fono"
 
-#: libnautilus-private/nautilus-icon-dnd.c:740
+#: libnautilus-private/nautilus-icon-dnd.c:754
 msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it? This will clobber the stored manual layout."
@@ -2828,14 +2828,14 @@ msgstr ""
 "Ar norite perjungti į rankinį išdėstymą ir palikti šį elementą ten, kur jį "
 "padėjote? Tai sugadins išsaugotą rankinį išdėstymą."
 
-#: libnautilus-private/nautilus-icon-dnd.c:742
-#: libnautilus-private/nautilus-icon-dnd.c:746
-#: libnautilus-private/nautilus-icon-dnd.c:751
-#: libnautilus-private/nautilus-icon-dnd.c:754
+#: libnautilus-private/nautilus-icon-dnd.c:756
+#: libnautilus-private/nautilus-icon-dnd.c:760
+#: libnautilus-private/nautilus-icon-dnd.c:765
+#: libnautilus-private/nautilus-icon-dnd.c:768
 msgid "This folder uses automatic layout."
 msgstr "Šis aplankas naudoja automatinį išdėstymą."
 
-#: libnautilus-private/nautilus-icon-dnd.c:744
+#: libnautilus-private/nautilus-icon-dnd.c:758
 msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them? This will clobber the stored manual layout."
@@ -2843,7 +2843,7 @@ msgstr ""
 "Ar norite perjungti į rankinį išdėstymą ir palikti šiuos elementus ten, kur "
 "juos padėjote? Tai sugadins išsaugotą rankinį išdėstymą."
 
-#: libnautilus-private/nautilus-icon-dnd.c:750
+#: libnautilus-private/nautilus-icon-dnd.c:764
 msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it?"
@@ -2851,7 +2851,7 @@ msgstr ""
 "Ar norite perjungti į rankinį išdėstymą ir palikti šį elementą ten, kur jį "
 "padėjote?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:753
+#: libnautilus-private/nautilus-icon-dnd.c:767
 msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them?"
@@ -2859,11 +2859,11 @@ msgstr ""
 "Ar norite perjungti į rankinį išdėstymą ir palikti šiuos elementus ten, kur "
 "juos padėjote?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:759
+#: libnautilus-private/nautilus-icon-dnd.c:773
 msgid "Switch to Manual Layout?"
 msgstr "Perjungti į rankinį išdėstymą?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:760
+#: libnautilus-private/nautilus-icon-dnd.c:774
 msgid "Switch"
 msgstr "Perjungti"
 
@@ -2986,7 +2986,7 @@ msgstr ""
 "(proxy) nustatymai."
 
 #: libnautilus-private/nautilus-program-choosing.c:622
-#: src/nautilus-connect-server-dialog.c:137
+#: src/nautilus-connect-server-dialog.c:140
 #: src/nautilus-window-manage-views.c:1366
 #, c-format
 msgid "\"%s\" is not a valid location."
@@ -2994,7 +2994,7 @@ msgstr "„%s“ nėra tinkama vieta."
 
 #: libnautilus-private/nautilus-program-choosing.c:625
 #: libnautilus-private/nautilus-program-choosing.c:632
-#: src/nautilus-connect-server-dialog.c:139
+#: src/nautilus-connect-server-dialog.c:142
 #: src/nautilus-property-browser.c:1097
 #: src/nautilus-window-manage-views.c:1361
 #: src/nautilus-window-manage-views.c:1369
@@ -3009,6 +3009,7 @@ msgstr "Nepavyko rasti „%s“."
 
 #: libnautilus-private/nautilus-program-choosing.c:647
 #: src/nautilus-window-manage-views.c:1434
+#: src/nautilus-connect-server-dialog-main.c:71
 msgid "Can't Display Location"
 msgstr "Nepavyko parodyti vietos"
 
@@ -3111,7 +3112,7 @@ msgstr "Bylų naršyklė"
 msgid "Factory for Nautilus shell and file manager"
 msgstr "Nautilus aplinkos ir bylų tvarkyklės gamykla"
 
-#: src/Nautilus_shell.server.in.h:2 src/file-manager/fm-icon-view.c:2841
+#: src/Nautilus_shell.server.in.h:2 src/file-manager/fm-icon-view.c:2673
 msgid "Icons"
 msgstr "Ikonos"
 
@@ -3119,7 +3120,7 @@ msgstr "Ikonos"
 msgid "Icons Viewer"
 msgstr "Ikonų rodinys"
 
-#: src/Nautilus_shell.server.in.h:4 src/file-manager/fm-list-view.c:2279
+#: src/Nautilus_shell.server.in.h:4 src/file-manager/fm-list-view.c:2301
 msgid "List"
 msgstr "Sąrašas"
 
@@ -3240,13 +3241,13 @@ msgstr "Atidaryti naują GNOME terminalo langą"
 
 #. name, stock id
 #: src/file-manager/fm-desktop-icon-view.c:662
-#: src/file-manager/fm-directory-view.c:5714
+#: src/file-manager/fm-directory-view.c:5750
 msgid "Create L_auncher"
 msgstr "Sukurti _leistuką"
 
 #. label, accelerator
 #: src/file-manager/fm-desktop-icon-view.c:663
-#: src/file-manager/fm-directory-view.c:5715
+#: src/file-manager/fm-directory-view.c:5751
 msgid "Create a new launcher"
 msgstr "Sukurti naują leistuką"
 
@@ -3264,7 +3265,7 @@ msgstr ""
 
 #. label, accelerator
 #: src/file-manager/fm-desktop-icon-view.c:671
-#: src/file-manager/fm-directory-view.c:5743
+#: src/file-manager/fm-directory-view.c:5779
 msgid "Delete all items in the Trash"
 msgstr "Ištrinti visus elementus iš šiukšlinės"
 
@@ -3277,7 +3278,7 @@ msgstr "Darbastalis"
 msgid "_Desktop"
 msgstr "_Darbastalis"
 
-#: src/file-manager/fm-directory-view.c:509
+#: src/file-manager/fm-directory-view.c:512
 #, c-format
 msgid "Open %d Window?"
 msgid_plural "Open %d Windows?"
@@ -3285,11 +3286,11 @@ msgstr[0] "Atidaryti %d langą?"
 msgstr[1] "Atidaryti %d langus?"
 msgstr[2] "Atidaryti %d langų?"
 
-#: src/file-manager/fm-directory-view.c:510
+#: src/file-manager/fm-directory-view.c:513
 msgid "Are you sure you want to open all files?"
 msgstr "Ar tikrai norite atidaryti visas bylas?"
 
-#: src/file-manager/fm-directory-view.c:511 src/nautilus-location-bar.c:158
+#: src/file-manager/fm-directory-view.c:514 src/nautilus-location-bar.c:158
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
@@ -3297,12 +3298,12 @@ msgstr[0] "Tai atidarys %d atskirą langą."
 msgstr[1] "Tai atidarys %d atskirus langus."
 msgstr[2] "Tai atidarys %d atskirų langų."
 
-#: src/file-manager/fm-directory-view.c:812
+#: src/file-manager/fm-directory-view.c:815
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Ar tikrai norite visiškai ištrinti „%s“?"
 
-#: src/file-manager/fm-directory-view.c:816
+#: src/file-manager/fm-directory-view.c:819
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
@@ -3311,29 +3312,29 @@ msgstr[0] "Ar tikrai norite visiškai ištrinti %d pažymėtą elementą?"
 msgstr[1] "Ar tikrai norite visiškai ištrinti %d pažymėtus elementus?"
 msgstr[2] "Ar tikrai norite visiškai ištrinti %d pažymėtų elementų?"
 
-#: src/file-manager/fm-directory-view.c:824
+#: src/file-manager/fm-directory-view.c:827
 msgid "If you delete an item, it is permanently lost."
 msgstr "Jeigu ištrinsite elementą, jis prarandamas visam laikui."
 
-#: src/file-manager/fm-directory-view.c:825
+#: src/file-manager/fm-directory-view.c:828
 msgid "Delete?"
 msgstr "Ištrinti?"
 
-#: src/file-manager/fm-directory-view.c:976
+#: src/file-manager/fm-directory-view.c:979
 msgid "Select Pattern"
 msgstr "Pažymėti pagal šabloną"
 
-#: src/file-manager/fm-directory-view.c:992
+#: src/file-manager/fm-directory-view.c:995
 msgid "_Pattern:"
 msgstr "Š_ablonas:"
 
-#: src/file-manager/fm-directory-view.c:1790
+#: src/file-manager/fm-directory-view.c:1793
 #, c-format
 msgid "\"%s\" selected"
-msgstr "„%s“ pasirinktas"
+msgstr "pasirinktas „%s“"
 
 # c-format
-#: src/file-manager/fm-directory-view.c:1792
+#: src/file-manager/fm-directory-view.c:1795
 #, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
@@ -3341,16 +3342,16 @@ msgstr[0] "pasirinktas %d aplankas"
 msgstr[1] "pasirinkti %d aplankai"
 msgstr[2] "pasirinkta %d aplankų"
 
-#: src/file-manager/fm-directory-view.c:1802
+#: src/file-manager/fm-directory-view.c:1805
 #, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
-msgstr[0] " (kuriuose yra %d elementas)"
-msgstr[1] " (kuriuose yra %d elementai)"
-msgstr[2] " (kuriuose yra %d elementų)"
+msgstr[0] " (kuriame yra %d elementas)"
+msgstr[1] " (kuriame yra %d elementai)"
+msgstr[2] " (kuriame yra %d elementų)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:1813
+#: src/file-manager/fm-directory-view.c:1816
 #, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
@@ -3359,13 +3360,13 @@ msgstr[1] " (iš viso yra %d elementai)"
 msgstr[2] " (iš viso yra %d elementų)"
 
 #  translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:1829
+#: src/file-manager/fm-directory-view.c:1832
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "„%s“ pasirinkta (%s)"
 
 #  translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:1833
+#: src/file-manager/fm-directory-view.c:1836
 #, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -3375,7 +3376,7 @@ msgstr[2] "pasirinkta %d elementų (%s)"
 
 #  translators: this is preceded with a string of form 'N folders' (N more than 1)
 #. Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:1841
+#: src/file-manager/fm-directory-view.c:1844
 #, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
@@ -3386,7 +3387,7 @@ msgstr[2] "pasirinkta %d kitų elementų (%s)"
 #  translators: this is preceded with a string of form 'N folders' (N more than 1)
 #  translators: this is preceded with a string of form 'N folders' (N more than 1)
 #  Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:1862
+#: src/file-manager/fm-directory-view.c:1865
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, Laisva vieta: %s"
@@ -3404,7 +3405,7 @@ msgstr "%s, Laisva vieta: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1887
+#: src/file-manager/fm-directory-view.c:1890
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -3416,49 +3417,49 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1957
+#: src/file-manager/fm-directory-view.c:1960
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr "Aplanke „%s“ yra daugiau bylų, negu Nautilus gali apdoroti."
 
-#: src/file-manager/fm-directory-view.c:1963
+#: src/file-manager/fm-directory-view.c:1966
 msgid "Some files will not be displayed."
 msgstr "Kai kurios bylos nebus parodytos."
 
-#: src/file-manager/fm-directory-view.c:1964
+#: src/file-manager/fm-directory-view.c:1967
 msgid "Too Many Files"
 msgstr "Per daug bylų"
 
-#: src/file-manager/fm-directory-view.c:3123
+#: src/file-manager/fm-directory-view.c:3126
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "Bylos neina perkelti į šiukšlinę. Ar norite ją visiškai ištrinti?"
 
-#: src/file-manager/fm-directory-view.c:3124
+#: src/file-manager/fm-directory-view.c:3127
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "Byla „%s“ negali būti perkelta į šiukšlinę."
 
-#: src/file-manager/fm-directory-view.c:3128
+#: src/file-manager/fm-directory-view.c:3131
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr "Elementų neina perkelti į šiukšlinę. Ar norite juos visiškai ištrinti?"
 
-#: src/file-manager/fm-directory-view.c:3131
+#: src/file-manager/fm-directory-view.c:3134
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr ""
 "Kai kurių elementų neina perkelti į šiukšlinę. Ar norite juos visiškai "
 "ištrinti?"
 
-#: src/file-manager/fm-directory-view.c:3138
+#: src/file-manager/fm-directory-view.c:3141
 msgid "Delete Immediately?"
 msgstr "Ištrinti nedelsiant?"
 
-#: src/file-manager/fm-directory-view.c:3170
+#: src/file-manager/fm-directory-view.c:3173
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Ar tikrai norite visiškai ištrinti „%s“ iš šiukšlinės?"
 
-#: src/file-manager/fm-directory-view.c:3174
+#: src/file-manager/fm-directory-view.c:3177
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -3473,56 +3474,56 @@ msgstr[1] ""
 msgstr[2] ""
 "Ar tikrai norite visiškai ištrinti %d pasirinktų elementų iš šiukšlinės?"
 
-#: src/file-manager/fm-directory-view.c:3183
+#: src/file-manager/fm-directory-view.c:3186
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Jeigu ištrinsite elementą, jis bus prarastas visam laikui."
 
-#: src/file-manager/fm-directory-view.c:3184
+#: src/file-manager/fm-directory-view.c:3187
 msgid "Delete From Trash?"
 msgstr "Ištrinti iš šiukšlinės?"
 
-#: src/file-manager/fm-directory-view.c:3668
+#: src/file-manager/fm-directory-view.c:3671
 #, c-format
 msgid "Open with \"%s\""
 msgstr "Atidaryti su „%s“"
 
-#: src/file-manager/fm-directory-view.c:3669
+#: src/file-manager/fm-directory-view.c:3672
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Naudoti „%s“ atidaryti pasirinktam elementui"
 
-#: src/file-manager/fm-directory-view.c:3758
+#: src/file-manager/fm-directory-view.c:3761
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Ar norite paleisti „%s“, ar peržiūrėti jos turinį?"
 
-#: src/file-manager/fm-directory-view.c:3760
+#: src/file-manager/fm-directory-view.c:3763
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "„%s“ yra vykdomoji tekstinė byla."
 
-#: src/file-manager/fm-directory-view.c:3766
+#: src/file-manager/fm-directory-view.c:3769
 msgid "Run or Display?"
 msgstr "Paleisti ar peržiūrėti?"
 
-#: src/file-manager/fm-directory-view.c:3767
+#: src/file-manager/fm-directory-view.c:3770
 msgid "Run in _Terminal"
 msgstr "Paleisti _terminale"
 
-#: src/file-manager/fm-directory-view.c:3768
+#: src/file-manager/fm-directory-view.c:3771
 msgid "_Display"
 msgstr "_Peržiūrėti"
 
-#: src/file-manager/fm-directory-view.c:3771
+#: src/file-manager/fm-directory-view.c:3774
 msgid "_Run"
 msgstr "Pa_leisti"
 
-#: src/file-manager/fm-directory-view.c:4155
+#: src/file-manager/fm-directory-view.c:4158
 #, c-format
 msgid "Cannot open %s"
 msgstr "Neina atidaryti %s"
 
-#: src/file-manager/fm-directory-view.c:4158
+#: src/file-manager/fm-directory-view.c:4161
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -3543,21 +3544,21 @@ msgstr ""
 "teisingą tipui „%s“, ir galėsite atidaryti bylą normaliai. Arba, naudokite "
 "„Atidaryti su“ meniu, ir pasirinkite norimą programą bylai atidaryti."
 
-#: src/file-manager/fm-directory-view.c:4579
+#: src/file-manager/fm-directory-view.c:4582
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Paleisti „%s“ visiems pažymėtiems elementams"
 
-#: src/file-manager/fm-directory-view.c:4828
+#: src/file-manager/fm-directory-view.c:4831
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Sukurti dokumentą iš šablono „%s“"
 
-#: src/file-manager/fm-directory-view.c:5034
+#: src/file-manager/fm-directory-view.c:5037
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "Visos vykdomosios bylos šiame aplanke pasirodys Skriptų meniu."
 
-#: src/file-manager/fm-directory-view.c:5036
+#: src/file-manager/fm-directory-view.c:5039
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -3565,11 +3566,11 @@ msgstr ""
 "Pasirinkus skriptą iš meniu, jis bus įvykdytas su pažymėtais kaip "
 "argumentais."
 
-#: src/file-manager/fm-directory-view.c:5038
+#: src/file-manager/fm-directory-view.c:5041
 msgid "About Scripts"
 msgstr "Apie skriptus"
 
-#: src/file-manager/fm-directory-view.c:5039
+#: src/file-manager/fm-directory-view.c:5042
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3610,19 +3611,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: esamo lango vieta ir dydis"
 
-#: src/file-manager/fm-directory-view.c:5202
+#: src/file-manager/fm-directory-view.c:5205
 #: src/file-manager/fm-tree-view.c:895
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "„%s“ bus perkeltas, jei pasirinksite komandą Įdėti bylas"
 
-#: src/file-manager/fm-directory-view.c:5206
+#: src/file-manager/fm-directory-view.c:5209
 #: src/file-manager/fm-tree-view.c:899
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "„%s“ bus nukopijuotas, jei pasirinksite komandą Įdėti bylas"
 
-#: src/file-manager/fm-directory-view.c:5213
+#: src/file-manager/fm-directory-view.c:5216
 #, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -3635,7 +3636,7 @@ msgstr[1] ""
 msgstr[2] ""
 "%d pasirinktų elementų bus perkelta, jei pasirinksite komandą Įdėti bylas"
 
-#: src/file-manager/fm-directory-view.c:5220
+#: src/file-manager/fm-directory-view.c:5223
 #, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -3649,175 +3650,175 @@ msgstr[1] ""
 msgstr[2] ""
 "%d pasirinktų elementų bus nukopijuota, jei pasirinksite komandą Įdėti bylas"
 
-#: src/file-manager/fm-directory-view.c:5301
+#: src/file-manager/fm-directory-view.c:5304
 #: src/file-manager/fm-tree-view.c:975
 msgid "There is nothing on the clipboard to paste."
 msgstr "Krepšyje nėra nieko įdėjimui."
 
-#: src/file-manager/fm-directory-view.c:5408
-#: src/file-manager/fm-directory-view.c:6723
+#: src/file-manager/fm-directory-view.c:5411
+#: src/file-manager/fm-directory-view.c:6766
 msgid "Mount Error"
 msgstr "Prijungimo klaida"
 
-#: src/file-manager/fm-directory-view.c:5469
-#: src/file-manager/fm-tree-view.c:1057
-msgid "Eject Error"
-msgstr "Išmetimo klaida"
-
-#: src/file-manager/fm-directory-view.c:5472
+#: src/file-manager/fm-directory-view.c:5468
 #: src/file-manager/fm-tree-view.c:1060
 msgid "Unmount Error"
 msgstr "Atjungimo klaida"
 
-#: src/file-manager/fm-directory-view.c:5594
+#: src/file-manager/fm-directory-view.c:5481
+#: src/file-manager/fm-tree-view.c:1057
+msgid "Eject Error"
+msgstr "Išmetimo klaida"
+
+#: src/file-manager/fm-directory-view.c:5630
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Prisijungti prie serverio %s"
 
-#: src/file-manager/fm-directory-view.c:5599
+#: src/file-manager/fm-directory-view.c:5635
 msgid "_Connect"
 msgstr "_Prisijungti"
 
-#: src/file-manager/fm-directory-view.c:5613
+#: src/file-manager/fm-directory-view.c:5649
 msgid "Link _name:"
 msgstr "Serverio _pavadinimas:"
 
-#: src/file-manager/fm-directory-view.c:5691
+#: src/file-manager/fm-directory-view.c:5727
 msgid "Create _Document"
 msgstr "Sukurti _dokumentą"
 
 #. name, stock id, label
-#: src/file-manager/fm-directory-view.c:5692
+#: src/file-manager/fm-directory-view.c:5728
 msgid "Open Wit_h"
 msgstr "Atida_ryti su"
 
 #. name, stock id, label
-#: src/file-manager/fm-directory-view.c:5693
+#: src/file-manager/fm-directory-view.c:5729
 msgid "Choose a program with which to open the selected item"
 msgstr "Pasirinkti programą, su kuria atidaryti pažymėtą elementą"
 
-#: src/file-manager/fm-directory-view.c:5694
+#: src/file-manager/fm-directory-view.c:5730
 msgid "_Scripts"
 msgstr "_Skriptai"
 
 #. name, stock id, label
-#: src/file-manager/fm-directory-view.c:5695
+#: src/file-manager/fm-directory-view.c:5731
 msgid "Run or manage scripts from ~/.gnome2/nautilus-scripts"
 msgstr "Vykdyti ar tvarkyti skriptus iš ~/.gnome1/nautilus-scripts"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5697
+#: src/file-manager/fm-directory-view.c:5733
 msgid "_Properties"
 msgstr "_Savybės"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5698
+#: src/file-manager/fm-directory-view.c:5734
 msgid "View or modify the properties of each selected item"
 msgstr "Žiūrėti ar keisti kiekvieno pažymėto elemento savybes"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5705
+#: src/file-manager/fm-directory-view.c:5741
 msgid "Create _Folder"
 msgstr "Sukurti a_planką"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5706
+#: src/file-manager/fm-directory-view.c:5742
 msgid "Create a new empty folder inside this folder"
 msgstr "Šiame aplanke sukurti naują tuščią aplanką"
 
-#: src/file-manager/fm-directory-view.c:5708
+#: src/file-manager/fm-directory-view.c:5744
 msgid "No templates Installed"
 msgstr "Nesukurtas nei vienas šablonas"
 
 #. name, stock id, label
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5710
+#: src/file-manager/fm-directory-view.c:5746
 msgid "_Empty File"
 msgstr "_Tuščia byla"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5711
+#: src/file-manager/fm-directory-view.c:5747
 msgid "Create a new empty file inside this folder"
 msgstr "Šiame aplanke sukurti naują tuščią bylą"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5718
-#: src/file-manager/fm-directory-view.c:6187
+#: src/file-manager/fm-directory-view.c:5754
+#: src/file-manager/fm-directory-view.c:6230
 msgid "_Open"
 msgstr "_Atidaryti"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5719
+#: src/file-manager/fm-directory-view.c:5755
 msgid "Open the selected item in this window"
 msgstr "Pasirinktą elementą atidaryti šiame lange"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5726
+#: src/file-manager/fm-directory-view.c:5762
 msgid "Open in Navigation Window"
 msgstr "Atidaryti navigacijos lange."
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5727
+#: src/file-manager/fm-directory-view.c:5763
 msgid "Open each selected item in a navigation window"
 msgstr "Kiekvieną pažymėtą elementą atidaryti navigacijos lange"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5730
-#: src/file-manager/fm-directory-view.c:5734
+#: src/file-manager/fm-directory-view.c:5766
+#: src/file-manager/fm-directory-view.c:5770
 msgid "Open with Other _Application..."
 msgstr "Atidaryti su kita _programa..."
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5731
-#: src/file-manager/fm-directory-view.c:5735
+#: src/file-manager/fm-directory-view.c:5767
+#: src/file-manager/fm-directory-view.c:5771
 msgid "Choose another application with which to open the selected item"
 msgstr "Pasirinkti kitą programą, su kuria atidaryti pažymėtą elementą"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5738
+#: src/file-manager/fm-directory-view.c:5774
 msgid "_Open Scripts Folder"
 msgstr "_Atidaryti skriptų aplanką"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5739
+#: src/file-manager/fm-directory-view.c:5775
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Parodyti aplanką, kuriame yra šiame meniu esantys skriptai"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5742
-#: src/file-manager/fm-directory-view.c:6288
+#: src/file-manager/fm-directory-view.c:5778
+#: src/file-manager/fm-directory-view.c:6331
 msgid "_Empty Trash"
 msgstr "_Išvalyti šiukšlinę"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5746
-#: src/file-manager/fm-directory-view.c:6302
+#: src/file-manager/fm-directory-view.c:5782
+#: src/file-manager/fm-directory-view.c:6345
 msgid "Cu_t Files"
 msgstr "_Iškirpti bylas"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5747
+#: src/file-manager/fm-directory-view.c:5783
 msgid "Prepare the selected files to be moved with a Paste Files command"
 msgstr "Pažymėtas bylas paruošti perkėlimui su komanda „Įdėti bylas“"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5750
-#: src/file-manager/fm-directory-view.c:6311
+#: src/file-manager/fm-directory-view.c:5786
+#: src/file-manager/fm-directory-view.c:6354
 msgid "_Copy Files"
 msgstr "_Kopijuoti bylas"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5751
+#: src/file-manager/fm-directory-view.c:5787
 msgid "Prepare the selected files to be copied with a Paste Files command"
 msgstr "Pažymėtas bylas paruošti kopijavimui su komanda „Įdėti bylas“"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5754
+#: src/file-manager/fm-directory-view.c:5790
 msgid "_Paste Files"
 msgstr "Į_dėti bylas"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5755
+#: src/file-manager/fm-directory-view.c:5791
 msgid ""
 "Move or copy files previously selected by a Cut Files or Copy Files command"
 msgstr ""
@@ -3827,12 +3828,12 @@ msgstr ""
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5760
+#: src/file-manager/fm-directory-view.c:5796
 msgid "_Paste Files Into Folder"
 msgstr "Į_dėti bylas į aplanką"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5761
+#: src/file-manager/fm-directory-view.c:5797
 msgid ""
 "Move or copy files previously selected by a Cut Files or Copy Files command "
 "into the selected folder"
@@ -3841,87 +3842,87 @@ msgstr ""
 "komandomis „Iškirpti bylas“ ar „Kopijuoti bylas“"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5764
+#: src/file-manager/fm-directory-view.c:5800
 msgid "Select _All Files"
 msgstr "Pažymėti _visas bylas"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5765
+#: src/file-manager/fm-directory-view.c:5801
 msgid "Select all items in this window"
 msgstr "Pažymėti visus elementus šiame lange"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5768
+#: src/file-manager/fm-directory-view.c:5804
 msgid "Select _Pattern"
 msgstr "Pažy_mėti pagal šabloną"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5769
+#: src/file-manager/fm-directory-view.c:5805
 msgid "Select items in this window matching a given pattern"
 msgstr "Pažymėti šiame lange esančius elementus, atitinkančius duotą šabloną"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5772
+#: src/file-manager/fm-directory-view.c:5808
 msgid "D_uplicate"
 msgstr "Du_blikuoti"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5773
+#: src/file-manager/fm-directory-view.c:5809
 msgid "Duplicate each selected item"
 msgstr "Dublikuoti kiekvieną pažymėtą elementą"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5776
-#: src/file-manager/fm-directory-view.c:6271
+#: src/file-manager/fm-directory-view.c:5812
+#: src/file-manager/fm-directory-view.c:6314
 msgid "Ma_ke Link"
 msgstr "P_adaryti nuorodą"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5777
+#: src/file-manager/fm-directory-view.c:5813
 msgid "Create a symbolic link for each selected item"
 msgstr "Sukurti simbolinę nuorodą kiekvienam pažymėtam elementui"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5780
+#: src/file-manager/fm-directory-view.c:5816
 msgid "_Rename..."
 msgstr "Pe_rvadinti..."
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5781
+#: src/file-manager/fm-directory-view.c:5817
 msgid "Rename selected item"
 msgstr "Pervadinti pažymėtą elementą"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5784
-#: src/file-manager/fm-directory-view.c:6230
-#: src/file-manager/fm-directory-view.c:6555
+#: src/file-manager/fm-directory-view.c:5820
+#: src/file-manager/fm-directory-view.c:6273
+#: src/file-manager/fm-directory-view.c:6598
 msgid "Mo_ve to Trash"
 msgstr "Perke_lti į šiukšlinę"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5785
-#: src/file-manager/fm-directory-view.c:6231
+#: src/file-manager/fm-directory-view.c:5821
+#: src/file-manager/fm-directory-view.c:6274
 msgid "Move each selected item to the Trash"
 msgstr "Perkelti visas pažymėtas bylas į šiukšlinę"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5788
-#: src/file-manager/fm-directory-view.c:6249
+#: src/file-manager/fm-directory-view.c:5824
+#: src/file-manager/fm-directory-view.c:6292
 msgid "_Delete"
 msgstr "Iš_trinti"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5789
+#: src/file-manager/fm-directory-view.c:5825
 msgid "Delete each selected item, without moving to the Trash"
 msgstr "Ištrinti kiekvieną pažymėtą elementą, neperkeliant į šiukšlinę"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5792
+#: src/file-manager/fm-directory-view.c:5828
 msgid "Reset View to _Defaults"
 msgstr "_Atstatyti įprastą vaizdą"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5793
+#: src/file-manager/fm-directory-view.c:5829
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 "Atstatyti rikiavimo tvarką bei mastelį į įprastus šio rodinio nustatymus"
@@ -3929,76 +3930,80 @@ msgstr ""
 #  add the reset background item, possibly disabled
 #. name, stock id
 #. add the reset background item, possibly disabled
-#: src/file-manager/fm-directory-view.c:5796
+#: src/file-manager/fm-directory-view.c:5832
 #: src/nautilus-information-panel.c:397
 msgid "Use _Default Background"
 msgstr "Naudoti įp_rastą foną"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5797
+#: src/file-manager/fm-directory-view.c:5833
 msgid "Use the default background for this location"
 msgstr "Šiai vietai naudoti įprastą foną "
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5800
+#: src/file-manager/fm-directory-view.c:5836
 msgid "Connect To This Server"
 msgstr "Prisijungti prie šio serverio"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5801
+#: src/file-manager/fm-directory-view.c:5837
 msgid "Make a permanent connection to this server"
 msgstr "Padaryti nuolatinę jungtį su šiuo serveriu"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5804
+#: src/file-manager/fm-directory-view.c:5840
 msgid "_Mount Volume"
 msgstr "_Prijungti skirsnį"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5805
+#: src/file-manager/fm-directory-view.c:5841
 msgid "Mount the selected volume"
 msgstr "Prijungti pasirinktą skirsnį"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5808
-#: src/file-manager/fm-directory-view.c:6045
+#: src/file-manager/fm-directory-view.c:5844
 #: src/file-manager/fm-tree-view.c:745
 msgid "_Unmount Volume"
 msgstr "At_jungti skirsnį"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5809
+#: src/file-manager/fm-directory-view.c:5845
 msgid "Unmount the selected volume"
 msgstr "Atjungti pasirinktą skirsnį"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5812
+#: src/file-manager/fm-directory-view.c:5848
+msgid "_Eject"
+msgstr "_Išimti"
+
+#. label, accelerator
+#: src/file-manager/fm-directory-view.c:5849
+msgid "Eject the selected volume"
+msgstr "Išimti pasirinktą laikmeną"
+
+#. name, stock id
+#: src/file-manager/fm-directory-view.c:5852
 msgid "Open File and Close window"
 msgstr "Atidaryti bylą ir uždaryti langą"
 
 #. name, stock id
-#: src/file-manager/fm-directory-view.c:5819
+#: src/file-manager/fm-directory-view.c:5859
 msgid "Show _Hidden Files"
 msgstr "Rod_yti paslėptas bylas"
 
 #. label, accelerator
-#: src/file-manager/fm-directory-view.c:5820
+#: src/file-manager/fm-directory-view.c:5860
 msgid "Toggles the display of hidden files in the current window"
 msgstr "Perjungia paslėptų bylų rodymą esamame lange"
 
-#: src/file-manager/fm-directory-view.c:6045
-#: src/file-manager/fm-tree-view.c:745
-msgid "E_ject"
-msgstr "_Išimti"
-
-#: src/file-manager/fm-directory-view.c:6176
+#: src/file-manager/fm-directory-view.c:6219
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_Atidaryti su „%s“"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:6196
-#: src/file-manager/fm-directory-view.c:6198
+#: src/file-manager/fm-directory-view.c:6239
+#: src/file-manager/fm-directory-view.c:6241
 #: src/file-manager/fm-tree-view.c:1110
 #, c-format
 msgid "Open in New Window"
@@ -4008,59 +4013,97 @@ msgstr[1] "Atidaryti %d naujuose languose"
 msgstr[2] "Atidaryti %d naujų langų"
 
 #  add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:6205
+#: src/file-manager/fm-directory-view.c:6248
 msgid "Browse Folder"
 msgstr "Naršyti aplanką"
 
-#: src/file-manager/fm-directory-view.c:6207
+#: src/file-manager/fm-directory-view.c:6250
 msgid "Browse Folders"
 msgstr "Naršyti aplankus"
 
-#: src/file-manager/fm-directory-view.c:6226
+#: src/file-manager/fm-directory-view.c:6269
 msgid "_Delete from Trash"
 msgstr "Iš_trinti iš šiukšlinės"
 
-#: src/file-manager/fm-directory-view.c:6227
+#: src/file-manager/fm-directory-view.c:6270
 msgid "Delete all selected items permanently"
 msgstr "Visiškai ištrinti visus pažymėtus elementus"
 
-#: src/file-manager/fm-directory-view.c:6270
+#: src/file-manager/fm-directory-view.c:6313
 msgid "Ma_ke Links"
 msgstr "P_adaryti nuorodas"
 
-#: src/file-manager/fm-directory-view.c:6301
+#: src/file-manager/fm-directory-view.c:6344
 msgid "Cu_t File"
 msgstr "_Iškirpti bylą"
 
-#: src/file-manager/fm-directory-view.c:6310
+#: src/file-manager/fm-directory-view.c:6353
 msgid "_Copy File"
 msgstr "_Kopijuoti bylą"
 
-#: src/file-manager/fm-directory-view.c:6546
+#: src/file-manager/fm-directory-view.c:6589
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "Nuoroda sugadinta, ar norite šią nuorodą perkelti į šiukšlinę?"
 
-#: src/file-manager/fm-directory-view.c:6548
+#: src/file-manager/fm-directory-view.c:6591
 msgid "This link can't be used, because it has no target."
 msgstr "Nuoroda negali būti naudojama, nes ji neturi taikinio."
 
-#: src/file-manager/fm-directory-view.c:6550
+#: src/file-manager/fm-directory-view.c:6593
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "Ši nuoroda negali būti naudojama, nes jos taikinys „%s“ neegzistuoja."
 
-#: src/file-manager/fm-directory-view.c:6555
+#: src/file-manager/fm-directory-view.c:6598
 msgid "Broken Link"
 msgstr "Sugadinta nuoroda"
 
-#: src/file-manager/fm-directory-view.c:6859
+#: src/file-manager/fm-directory-view.c:6902
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Atidaroma „%s“."
 
-#: src/file-manager/fm-directory-view.c:6866
+#: src/file-manager/fm-directory-view.c:6909
 msgid "Cancel Open?"
 msgstr "Nutraukti atidarymą?"
+
+#: src/file-manager/fm-directory-view.c:7783
+msgid "Download location?"
+msgstr "Parsiuntimo vieta?"
+
+#: src/file-manager/fm-directory-view.c:7784
+msgid "You can download it or make a link to it."
+msgstr "Jūs galite parsiųsti arba padaryti nuorodą."
+
+#. as per HIG
+#: src/file-manager/fm-directory-view.c:7786
+msgid "Make a _Link"
+msgstr "Padaryti _nuorodą"
+
+#: src/file-manager/fm-directory-view.c:7788
+msgid "_Download"
+msgstr "_Parsiųsti"
+
+#: src/file-manager/fm-directory-view.c:7836
+#: src/file-manager/fm-directory-view.c:7858
+#: src/file-manager/fm-directory-view.c:7972
+msgid "Drag and drop is not supported."
+msgstr "Tempimas ir numetimas nepalaikomas."
+
+#: src/file-manager/fm-directory-view.c:7837
+msgid "Drag and drop is only supported on local file systems."
+msgstr "Tempimas ir numetimas veikia tik vietinėse bylų sistemose."
+
+#: src/file-manager/fm-directory-view.c:7838
+#: src/file-manager/fm-directory-view.c:7860
+#: src/file-manager/fm-directory-view.c:7974
+msgid "Drag and Drop Error"
+msgstr "Tempimo ir numetimo klaida"
+
+#: src/file-manager/fm-directory-view.c:7859
+#: src/file-manager/fm-directory-view.c:7973
+msgid "An invalid drag type was used."
+msgstr "Panaudotas netinkamas tempimo tipas."
 
 #: src/file-manager/fm-ditem-page.c:337 src/file-manager/fm-ditem-page.c:348
 msgid "Comment"
@@ -4229,43 +4272,43 @@ msgstr "Pervadinama „%s“ į „%s“."
 msgid "Cancel Rename?"
 msgstr "Nutraukti pervadinimą?"
 
-#: src/file-manager/fm-icon-view.c:133
+#: src/file-manager/fm-icon-view.c:134
 msgid "by _Name"
 msgstr "pagal pa_vadinimą"
 
-#: src/file-manager/fm-icon-view.c:134 src/file-manager/fm-icon-view.c:1431
+#: src/file-manager/fm-icon-view.c:135 src/file-manager/fm-icon-view.c:1431
 msgid "Keep icons sorted by name in rows"
 msgstr "Ikonas eilutėse rikiuoti pagal pavadinimą"
 
-#: src/file-manager/fm-icon-view.c:140
+#: src/file-manager/fm-icon-view.c:141
 msgid "by _Size"
 msgstr "pagal _dydį"
 
-#: src/file-manager/fm-icon-view.c:141 src/file-manager/fm-icon-view.c:1435
+#: src/file-manager/fm-icon-view.c:142 src/file-manager/fm-icon-view.c:1435
 msgid "Keep icons sorted by size in rows"
 msgstr "Ikonas eilutėse rikiuoti pagal dydį"
 
-#: src/file-manager/fm-icon-view.c:147
+#: src/file-manager/fm-icon-view.c:148
 msgid "by _Type"
 msgstr "pagal _tipą"
 
-#: src/file-manager/fm-icon-view.c:148 src/file-manager/fm-icon-view.c:1439
+#: src/file-manager/fm-icon-view.c:149 src/file-manager/fm-icon-view.c:1439
 msgid "Keep icons sorted by type in rows"
 msgstr "Ikonas eilutėse rikiuoti pagal tipą"
 
-#: src/file-manager/fm-icon-view.c:154
+#: src/file-manager/fm-icon-view.c:155
 msgid "by Modification _Date"
 msgstr "pagal _keitimo datą"
 
-#: src/file-manager/fm-icon-view.c:155 src/file-manager/fm-icon-view.c:1443
+#: src/file-manager/fm-icon-view.c:156 src/file-manager/fm-icon-view.c:1443
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Ikonas eilutėse rikiuoti pagal keitimo datą"
 
-#: src/file-manager/fm-icon-view.c:161
+#: src/file-manager/fm-icon-view.c:162
 msgid "by _Emblems"
 msgstr "pagal _emblemas"
 
-#: src/file-manager/fm-icon-view.c:162 src/file-manager/fm-icon-view.c:1447
+#: src/file-manager/fm-icon-view.c:163 src/file-manager/fm-icon-view.c:1447
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Ikonas eilutėse rikiuoti pagal emblemas"
 
@@ -4301,7 +4344,7 @@ msgstr "S_utvarkyti pagal pavadinimą"
 
 #. label, accelerator
 #: src/file-manager/fm-icon-view.c:1402
-msgid "Reposition icons to better fit in the window and avoaction overlapping"
+msgid "Reposition icons to better fit in the window and avoid overlapping"
 msgstr "Pertvarkyti ikonas, kad jos geriau tilptų lange ir nepersidengtų"
 
 #. name, stock id
@@ -4371,46 +4414,30 @@ msgstr "Atstatyti _originalų ikonos dydį"
 msgid "pointing at \"%s\""
 msgstr "rodo į „%s“"
 
-#: src/file-manager/fm-icon-view.c:2492 src/file-manager/fm-icon-view.c:2516
-msgid "Drag and drop is not supported."
-msgstr "Tempimas ir numetimas nepalaikomas."
-
-#: src/file-manager/fm-icon-view.c:2493
-msgid "Drag and drop is only supported on local file systems."
-msgstr "Tempimas ir numetimas veikia tik vietinėse bylų sistemose."
-
-#: src/file-manager/fm-icon-view.c:2494 src/file-manager/fm-icon-view.c:2518
-msgid "Drag and Drop Error"
-msgstr "Tempimo ir numetimo klaida"
-
-#: src/file-manager/fm-icon-view.c:2517
-msgid "An invalid drag type was used."
-msgstr "Panaudotas netinkamas tempimo tipas."
-
-#: src/file-manager/fm-icon-view.c:2842
+#: src/file-manager/fm-icon-view.c:2674
 msgid "_Icons"
 msgstr "_Ikonos"
 
-#: src/file-manager/fm-list-view.c:1571
+#: src/file-manager/fm-list-view.c:1593
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s matomos skiltys"
 
-#: src/file-manager/fm-list-view.c:1590
+#: src/file-manager/fm-list-view.c:1612
 msgid "Choose the order of information to appear in this folder."
 msgstr "Pasirinkite pateikiamos informacijos tvarką šiam aplankui."
 
 #. name, stock id
-#: src/file-manager/fm-list-view.c:1632
+#: src/file-manager/fm-list-view.c:1654
 msgid "Visible _Columns..."
 msgstr "Matomos skilt_ys..."
 
 #. label, accelerator
-#: src/file-manager/fm-list-view.c:1633
+#: src/file-manager/fm-list-view.c:1655
 msgid "Select the columns visible in this folder"
 msgstr "Pasirinkite skiltis, matomas šiame aplanke"
 
-#: src/file-manager/fm-list-view.c:2280
+#: src/file-manager/fm-list-view.c:2302
 msgid "_List"
 msgstr "_Sąrašas"
 
@@ -4703,6 +4730,10 @@ msgstr "(Tuščias)"
 msgid "Loading..."
 msgstr "Įkeliama..."
 
+#: src/file-manager/fm-tree-view.c:745
+msgid "E_ject"
+msgstr "_Išimti"
+
 #: src/file-manager/fm-tree-view.c:1099
 msgid "Open"
 msgstr "Atidaryti"
@@ -4933,97 +4964,97 @@ msgstr "<b>_Pavadinimas</b>"
 msgid "Edit Bookmarks"
 msgstr "Redaguoti žymeles"
 
-#: src/nautilus-connect-server-dialog.c:140
-#: src/nautilus-connect-server-dialog.c:155
+#: src/nautilus-connect-server-dialog.c:143
+#: src/nautilus-connect-server-dialog.c:158
 msgid "Can't Connect to Server"
 msgstr "Neina prisijungti prie serverio"
 
-#: src/nautilus-connect-server-dialog.c:153
+#: src/nautilus-connect-server-dialog.c:156
 msgid "You must enter a name for the server."
 msgstr "Jūs turite įvesti serverio vardą."
 
-#: src/nautilus-connect-server-dialog.c:154
+#: src/nautilus-connect-server-dialog.c:157
 msgid "Please enter a name and try again."
 msgstr "Prašom įvesti vardą ir bandyti dar kartą."
 
-#: src/nautilus-connect-server-dialog.c:266 src/nautilus-window.c:990
+#: src/nautilus-connect-server-dialog.c:269 src/nautilus-window.c:990
 #, c-format
 msgid "%s on %s"
 msgstr "%s ant %s"
 
-#: src/nautilus-connect-server-dialog.c:394
+#: src/nautilus-connect-server-dialog.c:388
 msgid "_Location (URI):"
 msgstr "_Vieta (URI):"
 
-#: src/nautilus-connect-server-dialog.c:438
+#: src/nautilus-connect-server-dialog.c:432
 msgid "_Server:"
 msgstr "_Serveris:"
 
-#: src/nautilus-connect-server-dialog.c:457
+#: src/nautilus-connect-server-dialog.c:451
 msgid "Optional information:"
 msgstr "Papildoma informacija:"
 
-#: src/nautilus-connect-server-dialog.c:469
+#: src/nautilus-connect-server-dialog.c:463
 msgid "_Share:"
 msgstr "_Viešinys:"
 
-#: src/nautilus-connect-server-dialog.c:490
+#: src/nautilus-connect-server-dialog.c:484
 msgid "_Port:"
 msgstr "_Prievadas:"
 
-#: src/nautilus-connect-server-dialog.c:510
+#: src/nautilus-connect-server-dialog.c:504
 msgid "_Folder:"
 msgstr "_Aplankas:"
 
-#: src/nautilus-connect-server-dialog.c:530
+#: src/nautilus-connect-server-dialog.c:524
 msgid "_User Name:"
 msgstr "_Vartotojo vardas:"
 
-#: src/nautilus-connect-server-dialog.c:553
+#: src/nautilus-connect-server-dialog.c:547
 msgid "_Name to use for connection:"
 msgstr "Prisijungimo _pavadinimas:"
 
-#: src/nautilus-connect-server-dialog.c:611
+#: src/nautilus-connect-server-dialog.c:605
 msgid "Connect to Server"
 msgstr "Prisijungti prie serverio"
 
-#: src/nautilus-connect-server-dialog.c:628
+#: src/nautilus-connect-server-dialog.c:622
 msgid "Service _type:"
 msgstr "Tarnybos _tipas:"
 
-#: src/nautilus-connect-server-dialog.c:637
+#: src/nautilus-connect-server-dialog.c:631
 msgid "SSH"
 msgstr "SSH"
 
-#: src/nautilus-connect-server-dialog.c:639
+#: src/nautilus-connect-server-dialog.c:633
 msgid "Public FTP"
 msgstr "Viešas FTP"
 
-#: src/nautilus-connect-server-dialog.c:641
+#: src/nautilus-connect-server-dialog.c:635
 msgid "FTP (with login)"
 msgstr "FTP (su slaptažodžiu)"
 
-#: src/nautilus-connect-server-dialog.c:643
+#: src/nautilus-connect-server-dialog.c:637
 msgid "Windows share"
 msgstr "Windows viešinys"
 
-#: src/nautilus-connect-server-dialog.c:645
+#: src/nautilus-connect-server-dialog.c:639
 msgid "WebDAV (HTTP)"
 msgstr "WebDAV (HTTP)"
 
-#: src/nautilus-connect-server-dialog.c:647
+#: src/nautilus-connect-server-dialog.c:641
 msgid "Secure WebDAV (HTTPS)"
 msgstr "Saugus WebDAV (HTTPS)"
 
-#: src/nautilus-connect-server-dialog.c:649
+#: src/nautilus-connect-server-dialog.c:643
 msgid "Custom Location"
 msgstr "Kitokia vieta"
 
-#: src/nautilus-connect-server-dialog.c:699
+#: src/nautilus-connect-server-dialog.c:693
 msgid "Browse _Network"
 msgstr "_Naršyti tinklą"
 
-#: src/nautilus-connect-server-dialog.c:705
+#: src/nautilus-connect-server-dialog.c:699
 msgid "C_onnect"
 msgstr "Prisi_jungti"
 
@@ -5542,62 +5573,62 @@ msgstr "Atidaryti vietą"
 msgid "_Location:"
 msgstr "_Vieta:"
 
-#: src/nautilus-main.c:187
+#: src/nautilus-main.c:210
 msgid "Perform a quick set of self-check tests."
 msgstr "Atlikti greitą savęs patikrinimą."
 
-#: src/nautilus-main.c:190
+#: src/nautilus-main.c:213
 msgid "Create the initial window with the given geometry."
 msgstr "Sukurti pradinį langą su nurodyta geometrija."
 
-#: src/nautilus-main.c:190
+#: src/nautilus-main.c:213
 msgid "GEOMETRY"
 msgstr "GEOMETRIJA"
 
-#: src/nautilus-main.c:192
+#: src/nautilus-main.c:215
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Sukurti langus tik nurodytiems URI."
 
-#: src/nautilus-main.c:194
+#: src/nautilus-main.c:217
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
 msgstr "Nevaldyti darbalaukio (ignoruoti nustatymą, esantį nustatymų dialoge)."
 
-#: src/nautilus-main.c:196
+#: src/nautilus-main.c:219
 msgid "open a browser window."
 msgstr "atidaryti naršyklės langą."
 
-#: src/nautilus-main.c:198
+#: src/nautilus-main.c:221
 msgid "Quit Nautilus."
 msgstr "Uždaryti Nautilus."
 
-#: src/nautilus-main.c:200
+#: src/nautilus-main.c:223
 msgid "Restart Nautilus."
 msgstr "Paleisti Nautilus iš naujo."
 
-#: src/nautilus-main.c:233
+#: src/nautilus-main.c:256
 msgid "File Manager"
 msgstr "Bylų tvarkyklė"
 
 #. Set initial window title
-#: src/nautilus-main.c:239 src/nautilus-spatial-window.c:330
+#: src/nautilus-main.c:262 src/nautilus-spatial-window.c:330
 #: src/nautilus-window-menus.c:432 src/nautilus-window.c:178
 msgid "Nautilus"
 msgstr "Nautilus"
 
 #. translators: %s is an option (e.g. --check)
-#: src/nautilus-main.c:259 src/nautilus-main.c:268 src/nautilus-main.c:273
+#: src/nautilus-main.c:282 src/nautilus-main.c:291 src/nautilus-main.c:296
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "nautilus: %s negali būti naudojamas su URI.\n"
 
-#: src/nautilus-main.c:264
+#: src/nautilus-main.c:287
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check negali būti naudojamas su kitais parametrais.\n"
 
-#: src/nautilus-main.c:278
+#: src/nautilus-main.c:301
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr ""
@@ -5686,8 +5717,8 @@ msgid "Specify a location to open"
 msgstr "Nurodykite norimą atidaryti vietą"
 
 #: src/nautilus-navigation-window-menus.c:550
-msgid "_Clear History"
-msgstr "_Išvalyti istoriją"
+msgid "Clea_r History"
+msgstr "Iš_valyti istoriją"
 
 #. name, stock id, label
 #: src/nautilus-navigation-window-menus.c:551
@@ -5767,8 +5798,8 @@ msgstr "Rodyti %s"
 
 #: src/nautilus-navigation-window.c:689
 #, c-format
-msgid "File Browser: %s"
-msgstr "Bylų naršyklė: %s"
+msgid "%s - File Browser"
+msgstr "%s - Bylų naršyklė"
 
 #: src/nautilus-notes-viewer.c:388 src/nautilus-notes-viewer.c:495
 msgid "Notes"
@@ -6290,8 +6321,8 @@ msgstr "Eiti į šiukšlinės aplanką"
 
 #. name, stock id
 #: src/nautilus-window-menus.c:646
-msgid "CD _Creator"
-msgstr "_CD rašymas"
+msgid "CD/_DVD Creator"
+msgstr "CD/_DVD kūrimas"
 
 #. label, accelerator
 #: src/nautilus-window-menus.c:647
@@ -6346,3 +6377,8 @@ msgstr "Tinklo serveriai"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Rodyti tinkle esančius serverius su Nautilus bylų tvarkykle"
+
+#: src/nautilus-connect-server-dialog-main.c:66
+#, c-format
+msgid "Can't display location \"%s\""
+msgstr "Nepavyko parodyti vietos „%s“"
