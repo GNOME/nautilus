@@ -87,6 +87,7 @@ EXTRA_DIST = \
 	$(ui_DATA)			\
 	nautilus-view-component.idl	\
 	nautilus-distributed-undo.idl	\
+	$(ui_msgs)			\
 	$(NULL)
 
 BUILT_SOURCES = \

@@ -38,7 +38,7 @@ nautilus_sample_content_view_LDADD =		\
 	$(VFS_LIBS)				\
 	$(OAF_LIBS)
 
-EXTRA_DIST = $(oaf_DATA) $(ui_DATA)
+EXTRA_DIST = $(oaf_DATA) $(ui_DATA) $(ui_msgs)
 
 BUILT_SOURCES = $(ui_msgs)
 

@@ -67,8 +67,8 @@ nautilus-search-list-view-ui.xml.h: $(srcdir)/nautilus-search-list-view-ui.xml
 	nautilus-search-list-view-ui.xml.h
 
 
-EXTRA_DIST = $(ui_DATA)
+EXTRA_DIST = $(ui_DATA) $(ui_msgs)
 
-CLEANFILEs = $(ui_msgs)
+CLEANFILES = $(ui_msgs)
 
 BUILT_SOURCES = $(ui_msgs)

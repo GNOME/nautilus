@@ -66,7 +66,7 @@ nautilus-mozilla-ui.xml.h: $(srcdir)/nautilus-mozilla-ui.xml
 	$(BONOBO_UI_EXTRACT) $(srcdir)/nautilus-mozilla-ui.xml >	\
 	nautilus-mozilla-ui.xml.h
 
-EXTRA_DIST = $(oaf_DATA) $(ui_DATA)
+EXTRA_DIST = $(oaf_DATA) $(ui_DATA) $(ui_msgs)
 
 BUILT_SOURCES = $(ui_msgs)
 

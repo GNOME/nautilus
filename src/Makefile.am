@@ -166,6 +166,7 @@ EXTRA_DIST = \
 	$(oaf_DATA)				\
 	run-nautilus				\
 	$(ui_DATA)				\
+	$(ui_msgs)				\
 	$(NULL)
 
 BUILT_SOURCES = $(nautilus_shell_interface_idl_sources) \
