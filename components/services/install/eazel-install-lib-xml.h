@@ -1,6 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* 
  * Copyright (C) 2000 Eazel, Inc
+ * Copyright (C) 2000 Helix Code, Inc
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,11 +19,12 @@
  * Boston, MA 02111-1307, USA.
  *
  * Authors: J Shane Culpepper <pepper@eazel.com>
+ * 			Joe Shaw <joe@helixcode.com>
  */
 
 /* eazel-install - services command line install/update/uninstall
- * component.  This program will parse the eazel-configuration.xml
- * file and install a services generated packages.xml.
+ * component.  This program will parse the eazel-services-config.xml
+ * file and install a services generated package-list.xml.
  */
 
 #ifndef __EAZEL_INSTALL_LIB_XML_H__

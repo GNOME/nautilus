@@ -21,8 +21,8 @@
  */
 
 /* eazel-install - services command line install/update/uninstall
- * component.  This program will parse the eazel-configuration.xml
- * file and install a services generated packages.xml.
+ * component.  This program will parse the eazel-services-config.xml
+ * file and install a services generated package-list.xml.
  */
 
 #include "eazel-install-lib-rpm.h"
@@ -79,11 +79,44 @@ install_new_packages (InstallOptions* iopts) {
 
 			retval = 0;
 			
-			tmpbuf = g_strdup_printf ("%s/%s-%s-%s.%s.rpm", iopts->rpm_storage_dir,
+			tmpbuf = g_strdup_printf ("%s/%s-%s-%s.%s.rpm", iopts->install_tmpdir,
 															pack->name,
 															pack->version,
 															pack->minor,
 															pack->archtype);
+
+			if (iopts->protocol == PROTOCOL_HTTP) {
+				int rv;
+				char* hostname;
+				char* rpmname;
+				char* targetname;
+				char* url;
+
+				hostname = g_strdup ("10.1.1.5");
+				rpmname = g_strdup_printf ("%s-%s-%s.%s.rpm", pack->name,
+															 pack->version,
+															 pack->minor,
+															 pack->archtype);
+	
+				targetname = g_strdup_printf ("%s/%s", iopts->install_tmpdir, rpmname);
+				url = g_strdup_printf ("http://%s%s/%s", hostname,
+															 iopts->rpm_storage_dir,
+															 rpmname);
+				
+				g_print ("Downloading %s...\n", rpmname);
+				rv = urlGetFile (url, targetname);
+				if (rv != 0) {
+					fprintf (stderr, "***Failed to retreive %s !***\n", url);
+					exit (1);
+				}
+
+				g_free (hostname);
+				g_free (rpmname);
+				g_free (targetname);
+				g_free (url);
+
+			}
+			
             pkg[0] = tmpbuf;
 			pkg[1] = NULL;
 			g_print ("Installing %s\n", pack->summary);

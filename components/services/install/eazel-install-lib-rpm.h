@@ -21,14 +21,15 @@
  */
 
 /* eazel-install - services command line install/update/uninstall
- * component.  This program will parse the eazel-configuration.xml
- * file and install a services generated packages.xml.
+ * component.  This program will parse the eazel-services-config.xml
+ * file and install a services generated package-list.xml.
  */
 
 #ifndef __EAZEL_INSTALL_LIB_RPM_H__
 #define __EAZEL_INSTALL_LIB_RPM_H__
 
 #include <rpm/rpmlib.h>
+#include <rpm/rpmurl.h>
 #include "eazel-install-lib.h"
 #include "eazel-install-lib-xml.h"
 

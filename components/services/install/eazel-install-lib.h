@@ -1,6 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* 
  * Copyright (C) 2000 Eazel, Inc
+ * Copyright (C) 2000 Helix Code, Inc
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,11 +19,12 @@
  * Boston, MA 02111-1307, USA.
  *
  * Authors: J Shane Culpepper <pepper@eazel.com>
+ * 			Joe Shaw <joe@helixcode.com>
  */
 
 /* eazel-install - services command line install/update/uninstall
- * component.  This program will parse the eazel-configuration.xml
- * file and install a services generated packages.xml.
+ * component.  This program will parse the eazel-services-config.xml
+ * file and install a services generated package-list.xml.
  */
 
 #ifndef __EAZEL_INSTALL_LIB_H__
@@ -35,7 +37,6 @@
 
 typedef enum _URLType URLType;
 typedef struct _InstallOptions InstallOptions;
-typedef struct _InstallList InstallList;
 typedef struct _CategoryData CategoryData;
 typedef struct _PackageData PackageData;
 
@@ -46,26 +47,19 @@ enum _URLType {
 };
 
 struct _InstallOptions {
-	URLType protocol;
+	URLType protocol;			/* Specifies local, ftp, or http */ 
 	gboolean mode_debug;		/* Internal testing mode for debugging */
-	gboolean mode_test;
-	gboolean mode_verbose;
-	gboolean mode_silent;
-	gboolean mode_depend;
-	gboolean mode_uninstall;
-	gboolean mode_update;
-	guint port_number;
+	gboolean mode_test;			/* dry run mode */
+	gboolean mode_verbose;		/* print extra information */
+	gboolean mode_silent;		/* FIXME print all information to a logfile */
+	gboolean mode_depend;		/* FIXME print all dependancies */
+	gboolean mode_uninstall;	/* Uninstall the package list */
+	gboolean mode_update;		/* If package is already installed, update it */
+	guint port_number;			/* Connection port */
 	char* rpmrc_file;			/* Points to the rpmrc file */
-	char* pkg_list_file;		/* The URI pointing to packages.xml */
-	char* rpm_storage_dir;		/* The URI pointing to the rpm location */
+	char* pkg_list_file;		/* Absolute path to package-list.xml */
+	char* rpm_storage_dir;		/* Absolute path to remote RPM directory */
 	char* install_tmpdir;		/* Location to copy rpm downloads before installing */
-};
-
-struct _InstallList {
-	GList Categories;
-	char* rpm_storage_uri;
-	char* tmp_dir;
-	char* rpm_flags;
 };
 
 struct _CategoryData {

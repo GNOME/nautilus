@@ -1,3 +1,22 @@
+2000-04-23  J. Shane Culpepper  <pepper@eazel.com>
+	
+	* components/services/install/eazel-install.c
+	* components/services/install/eazel-install-lib-rpm.c
+	* components/services/install/eazel-install-lib-rpm.h
+	* components/services/install/eazel-install-lib-xml.c
+	* components/services/install/eazel-install-lib-xml.h
+	* components/services/install/eazel-install-lib.h
+	* components/services/install/eazel-install-lib-util.h
+	* components/services/install/eazel-install-lib-util.c
+	* components/services/install/eazel-install-lib-debug.c
+	* components/services/install/eazel-install-lib-debug.h
+
+	Adding http fetch of remote rpm files.  Minor cleanups.  Adding credit
+	to Joe Shaw <joe@helixcode.com> for portions of the current prototype.
+	This should have been done at the very beginning.  The idea for using
+	gnet and large chunks of the current xml parsing come from his work on
+	the Helix Code install/updater.
+
 2000-04-25  John Sullivan  <sullivan@eazel.com>
 
 	Fixed part of bug 556 (nautilus_file_can_rename returns
