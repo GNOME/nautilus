@@ -8,14 +8,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.5\n"
-"POT-Creation-Date: 2003-11-24 12:49+0100\n"
-"PO-Revision-Date: 2003-11-20 01:32+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-11-27 06:26+0100\n"
+"PO-Revision-Date: 2003-11-27 06:28+0100\n"
 "Last-Translator: Данило Шеган <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -42,7 +42,7 @@ msgid "bonobo_ui_init() failed."
 msgstr "Неуспешан bonobo_ui_init()."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
-#: src/file-manager/fm-properties-window.c:2407
+#: src/file-manager/fm-properties-window.c:2408
 #: src/file-manager/fm-search-list-view.c:500
 msgid "Emblems"
 msgstr "Обележја"
@@ -1409,7 +1409,7 @@ msgstr ""
 "величини, уместо у растућем, биће у опадајућем поретку."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
-msgid "If true, icons will be layed out tighter by default in new windows."
+msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr ""
 "Уколико је постављено, иконе ће уобичајено бити згуснуто изложене у новим "
 "прозорима."
@@ -1564,15 +1564,15 @@ msgstr ""
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
-"\", \"size\", \"type\", \"modification_date\", \"emblems\"."
+"\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
 msgstr ""
 "Уобичајени поредак за ставке при приказивању помоћу икона. Дозвољене "
 "вредности су „name“, „size“, „type“, „modification_date“ и „emblems“."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid ""
-"The default sort-order for the item in the list view. Possible values are "
-"name, size, type, and modification_date."
+"The default sort-order for the items in the list view. Possible values are "
+"\"name\", \"size\", \"type\", and \"modification_date\"."
 msgstr ""
 "Уобичајени поредак за ставке при приказивању помоћу списка. Дозвољене "
 "вредности су „name“, „size“, „type“ и „modification_date“."
@@ -1618,9 +1618,8 @@ msgstr "Врста клика којом се покрећу/отварају д
 msgid "Use manual layout in new windows"
 msgstr "Користи ручни распоред у новим прозорима"
 
-# bug: Layout -> layout
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
-msgid "Use tighter Layout in new windows"
+msgid "Use tighter layout in new windows"
 msgstr "Користи згуснути распоред у новим прозорима"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
@@ -3081,7 +3080,7 @@ msgstr "непознат МИМЕ тип"
 #. * for which we have no more appropriate default.
 #.
 #: libnautilus-private/nautilus-file.c:4473
-#: src/file-manager/fm-properties-window.c:1151
+#: src/file-manager/fm-properties-window.c:1152
 msgid "unknown"
 msgstr "непознато"
 
@@ -5046,7 +5045,7 @@ msgstr "Врста"
 msgid "Date Modified"
 msgstr "Датум измене"
 
-#: src/file-manager/fm-properties-window.c:481
+#: src/file-manager/fm-properties-window.c:482
 #: src/nautilus-information-panel.c:506
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
@@ -5055,12 +5054,12 @@ msgstr ""
 "Не можете изабрати више од једне иконе! Повуците само једну слику да бисте "
 "поставили икону."
 
-#: src/file-manager/fm-properties-window.c:483
+#: src/file-manager/fm-properties-window.c:484
 #: src/nautilus-information-panel.c:508
 msgid "More Than One Image"
 msgstr "Више од једне слике"
 
-#: src/file-manager/fm-properties-window.c:492
+#: src/file-manager/fm-properties-window.c:493
 #: src/nautilus-information-panel.c:527
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
@@ -5069,12 +5068,12 @@ msgstr ""
 "Датотека коју сте превукли и пустили није локална. Можете користити само "
 "локалне слике за иконе."
 
-#: src/file-manager/fm-properties-window.c:494
+#: src/file-manager/fm-properties-window.c:495
 #: src/nautilus-information-panel.c:529
 msgid "Local Images Only"
 msgstr "Само локалне слике"
 
-#: src/file-manager/fm-properties-window.c:499
+#: src/file-manager/fm-properties-window.c:500
 #: src/nautilus-information-panel.c:534
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
@@ -5083,56 +5082,56 @@ msgstr ""
 "Датотека коју сте превукли није слика. Можете користити само локалне слике "
 "за иконе."
 
-#: src/file-manager/fm-properties-window.c:501
+#: src/file-manager/fm-properties-window.c:502
 #: src/nautilus-information-panel.c:536
 msgid "Images Only"
 msgstr "Само слике"
 
-#: src/file-manager/fm-properties-window.c:918
+#: src/file-manager/fm-properties-window.c:919
 msgid "Properties"
 msgstr "Особине"
 
-#: src/file-manager/fm-properties-window.c:921
+#: src/file-manager/fm-properties-window.c:922
 #, c-format
 msgid "%s Properties"
 msgstr "Особине за %s"
 
-#: src/file-manager/fm-properties-window.c:1382
+#: src/file-manager/fm-properties-window.c:1383
 msgid "Cancel Group Change?"
 msgstr "Одустани од измене групе?"
 
-#: src/file-manager/fm-properties-window.c:1383
+#: src/file-manager/fm-properties-window.c:1384
 msgid "Changing group"
 msgstr "Мења групу"
 
-#: src/file-manager/fm-properties-window.c:1544
+#: src/file-manager/fm-properties-window.c:1545
 msgid "Cancel Owner Change?"
 msgstr "Одустани од измене власника?"
 
-#: src/file-manager/fm-properties-window.c:1545
+#: src/file-manager/fm-properties-window.c:1546
 msgid "Changing owner"
 msgstr "Мења власника"
 
-#: src/file-manager/fm-properties-window.c:1751
+#: src/file-manager/fm-properties-window.c:1752
 msgid "nothing"
 msgstr "ништа"
 
-#: src/file-manager/fm-properties-window.c:1753
+#: src/file-manager/fm-properties-window.c:1754
 msgid "unreadable"
 msgstr "нечитљив"
 
-#: src/file-manager/fm-properties-window.c:1764
+#: src/file-manager/fm-properties-window.c:1765
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 ставка, величине %s"
 
 # bug: plural-forms
-#: src/file-manager/fm-properties-window.c:1767
+#: src/file-manager/fm-properties-window.c:1768
 #, c-format
 msgid "%d items, totalling %s"
 msgstr "%d ставки, укупне величине %s"
 
-#: src/file-manager/fm-properties-window.c:1775
+#: src/file-manager/fm-properties-window.c:1776
 msgid "(some contents unreadable)"
 msgstr "(део садржаја нечитљив)"
 
@@ -5142,172 +5141,172 @@ msgstr "(део садржаја нечитљив)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1792
+#: src/file-manager/fm-properties-window.c:1793
 msgid "Contents:"
 msgstr "Садржај:"
 
-#: src/file-manager/fm-properties-window.c:2183
+#: src/file-manager/fm-properties-window.c:2184
 msgid "Basic"
 msgstr "Основно"
 
-#: src/file-manager/fm-properties-window.c:2211
+#: src/file-manager/fm-properties-window.c:2212
 msgid "_Names:"
 msgstr "_Имена:"
 
-#: src/file-manager/fm-properties-window.c:2213
+#: src/file-manager/fm-properties-window.c:2214
 #: src/nautilus-connect-server-dialog.c:185
 msgid "_Name:"
 msgstr "_Име:"
 
-#: src/file-manager/fm-properties-window.c:2262
+#: src/file-manager/fm-properties-window.c:2263
 msgid "Type:"
 msgstr "Врста:"
 
 # bug: is em-dash suitable in here?
-#: src/file-manager/fm-properties-window.c:2264
-#: src/file-manager/fm-properties-window.c:2274
-#: src/file-manager/fm-properties-window.c:2280
-#: src/file-manager/fm-properties-window.c:2287
-#: src/file-manager/fm-properties-window.c:2291
-#: src/file-manager/fm-properties-window.c:2299
-#: src/file-manager/fm-properties-window.c:2305
-#: src/file-manager/fm-properties-window.c:2314
-#: src/file-manager/fm-properties-window.c:2320
-#: src/file-manager/fm-properties-window.c:2893
-#: src/file-manager/fm-properties-window.c:2914
-#: src/file-manager/fm-properties-window.c:2996
-#: src/file-manager/fm-properties-window.c:3000
-#: src/file-manager/fm-properties-window.c:3004
+#: src/file-manager/fm-properties-window.c:2265
+#: src/file-manager/fm-properties-window.c:2275
+#: src/file-manager/fm-properties-window.c:2281
+#: src/file-manager/fm-properties-window.c:2288
+#: src/file-manager/fm-properties-window.c:2292
+#: src/file-manager/fm-properties-window.c:2300
+#: src/file-manager/fm-properties-window.c:2306
+#: src/file-manager/fm-properties-window.c:2315
+#: src/file-manager/fm-properties-window.c:2321
+#: src/file-manager/fm-properties-window.c:2905
+#: src/file-manager/fm-properties-window.c:2926
+#: src/file-manager/fm-properties-window.c:3017
+#: src/file-manager/fm-properties-window.c:3021
+#: src/file-manager/fm-properties-window.c:3025
 msgid "--"
 msgstr "—"
 
-#: src/file-manager/fm-properties-window.c:2272
+#: src/file-manager/fm-properties-window.c:2273
 msgid "Size:"
 msgstr "Величина:"
 
-#: src/file-manager/fm-properties-window.c:2278 src/nautilus-location-bar.c:61
+#: src/file-manager/fm-properties-window.c:2279 src/nautilus-location-bar.c:61
 #: src/nautilus-location-dialog.c:145
 msgid "Location:"
 msgstr "Путања:"
 
-#: src/file-manager/fm-properties-window.c:2285
+#: src/file-manager/fm-properties-window.c:2286
 msgid "Volume:"
 msgstr "Диск:"
 
-#: src/file-manager/fm-properties-window.c:2289
+#: src/file-manager/fm-properties-window.c:2290
 msgid "Free space:"
 msgstr "Слободан простор:"
 
-#: src/file-manager/fm-properties-window.c:2297
+#: src/file-manager/fm-properties-window.c:2298
 msgid "Link target:"
 msgstr "Мета везе:"
 
-#: src/file-manager/fm-properties-window.c:2303
+#: src/file-manager/fm-properties-window.c:2304
 msgid "MIME type:"
 msgstr "МИМЕ тип:"
 
-#: src/file-manager/fm-properties-window.c:2312
+#: src/file-manager/fm-properties-window.c:2313
 msgid "Modified:"
 msgstr "Измењен:"
 
-#: src/file-manager/fm-properties-window.c:2318
+#: src/file-manager/fm-properties-window.c:2319
 msgid "Accessed:"
 msgstr "Последњи приступ:"
 
-#: src/file-manager/fm-properties-window.c:2334
+#: src/file-manager/fm-properties-window.c:2335
 msgid "_Select Custom Icon..."
 msgstr "_Изабери икону..."
 
-#: src/file-manager/fm-properties-window.c:2340
+#: src/file-manager/fm-properties-window.c:2341
 msgid "_Remove Custom Icon"
 msgstr "_Уклони засебну икону"
 
-#: src/file-manager/fm-properties-window.c:2681
+#: src/file-manager/fm-properties-window.c:2684
 msgid "_Read"
 msgstr "_Читање"
 
-#: src/file-manager/fm-properties-window.c:2683
+#: src/file-manager/fm-properties-window.c:2686
 msgid "_Write"
 msgstr "_Писање"
 
-#: src/file-manager/fm-properties-window.c:2685
+#: src/file-manager/fm-properties-window.c:2688
 msgid "E_xecute"
 msgstr "_Извршавање"
 
-#: src/file-manager/fm-properties-window.c:2762
+#: src/file-manager/fm-properties-window.c:2771
 msgid "Set _user ID"
 msgstr "Постави _ID корисника (SUID)"
 
-#: src/file-manager/fm-properties-window.c:2767
+#: src/file-manager/fm-properties-window.c:2776
 msgid "Special flags:"
 msgstr "Нарочите ознаке:"
 
-#: src/file-manager/fm-properties-window.c:2770
+#: src/file-manager/fm-properties-window.c:2779
 msgid "Set gro_up ID"
 msgstr "Постави ID _групе (SGID)"
 
-#: src/file-manager/fm-properties-window.c:2772
+#: src/file-manager/fm-properties-window.c:2781
 msgid "_Sticky"
 msgstr "_Лепљив"
 
-#: src/file-manager/fm-properties-window.c:2858
+#: src/file-manager/fm-properties-window.c:2870
 msgid "Permissions"
 msgstr "Овлашћења"
 
-#: src/file-manager/fm-properties-window.c:2868
+#: src/file-manager/fm-properties-window.c:2880
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Нисте власник, па не можете изменити ова овлашћења"
 
-#: src/file-manager/fm-properties-window.c:2882
+#: src/file-manager/fm-properties-window.c:2894
 msgid "File _owner:"
 msgstr "_Власник датотеке:"
 
-#: src/file-manager/fm-properties-window.c:2888
+#: src/file-manager/fm-properties-window.c:2900
 msgid "File owner:"
 msgstr "Власник датотеке:"
 
-#: src/file-manager/fm-properties-window.c:2899
+#: src/file-manager/fm-properties-window.c:2911
 msgid "_File group:"
 msgstr "_Група датотеке:"
 
-#: src/file-manager/fm-properties-window.c:2908
+#: src/file-manager/fm-properties-window.c:2920
 msgid "File group:"
 msgstr "Група датотеке:"
 
-#: src/file-manager/fm-properties-window.c:2920
+#: src/file-manager/fm-properties-window.c:2932
 msgid "Owner:"
 msgstr "Власник:"
 
-#: src/file-manager/fm-properties-window.c:2921
+#: src/file-manager/fm-properties-window.c:2933
 msgid "Group:"
 msgstr "Група:"
 
-#: src/file-manager/fm-properties-window.c:2922
+#: src/file-manager/fm-properties-window.c:2934
 msgid "Others:"
 msgstr "Остали:"
 
-#: src/file-manager/fm-properties-window.c:2995
+#: src/file-manager/fm-properties-window.c:3016
 msgid "Text view:"
 msgstr "Текстуални преглед:"
 
-#: src/file-manager/fm-properties-window.c:2999
+#: src/file-manager/fm-properties-window.c:3020
 msgid "Number view:"
 msgstr "Бројевни преглед:"
 
-#: src/file-manager/fm-properties-window.c:3003
+#: src/file-manager/fm-properties-window.c:3024
 msgid "Last changed:"
 msgstr "Последња промена:"
 
-#: src/file-manager/fm-properties-window.c:3009
+#: src/file-manager/fm-properties-window.c:3030
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Не може утврдити овлашћења за „%s“."
 
-#: src/file-manager/fm-properties-window.c:3012
+#: src/file-manager/fm-properties-window.c:3033
 msgid "The permissions of the selected file could not be determined."
 msgstr "Не може утврдити овлашћења за изабрану датотеку."
 
-#: src/file-manager/fm-properties-window.c:3328
+#: src/file-manager/fm-properties-window.c:3349
 #: src/nautilus-bookmarks-window.c:146
 #: src/nautilus-file-management-properties.c:237
 #: src/nautilus-property-browser.c:1446 src/nautilus-window-menus.c:629
@@ -5319,19 +5318,19 @@ msgstr ""
 "Дошло је до грешке при приказивању помоћи: \n"
 "%s"
 
-#: src/file-manager/fm-properties-window.c:3330
+#: src/file-manager/fm-properties-window.c:3351
 msgid "Couldn't show help"
 msgstr "Не може да прикаже помоћ"
 
-#: src/file-manager/fm-properties-window.c:3667
+#: src/file-manager/fm-properties-window.c:3688
 msgid "Cancel Showing Properties Window?"
 msgstr "Одустани од приказивања прозора са особинама?"
 
-#: src/file-manager/fm-properties-window.c:3668
+#: src/file-manager/fm-properties-window.c:3689
 msgid "Creating Properties window"
 msgstr "Образује прозор са особинама"
 
-#: src/file-manager/fm-properties-window.c:3794
+#: src/file-manager/fm-properties-window.c:3815
 msgid "Select an icon"
 msgstr "Изаберите икону"
 
