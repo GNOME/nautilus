@@ -60,6 +60,12 @@ struct NautilusThrobberDetails {
 	gboolean small_mode;
 };
 
+enum {
+	LOCATION_CHANGED,
+	LAST_SIGNAL
+};
+static guint signals[LAST_SIGNAL];
+
 static void     nautilus_throbber_initialize_class	 (NautilusThrobberClass *klass);
 static void     nautilus_throbber_initialize		 (NautilusThrobber *throbber);
 static void	nautilus_throbber_destroy		 (GtkObject *object);
@@ -82,6 +88,18 @@ nautilus_throbber_initialize_class (NautilusThrobberClass *throbber_class)
 {
 	GtkObjectClass *object_class = GTK_OBJECT_CLASS (throbber_class);
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (throbber_class);
+
+
+	signals[LOCATION_CHANGED] = gtk_signal_new
+		("location_changed",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusThrobberClass,
+				    location_changed),
+		 gtk_marshal_NONE__STRING,
+		 GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
+
+	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 	
 	object_class->destroy = nautilus_throbber_destroy;
 
@@ -397,14 +415,22 @@ nautilus_throbber_load_images (NautilusThrobber *throbber)
 	
 }
 
-/* handle button presses */
+/* handle button presses by emitting the location changed signal */
 
 static gboolean
 nautilus_throbber_button_press_event (GtkWidget *widget, GdkEventButton *event)
-{
-	/*	
-	NautilusThrobber *throbber = NAUTILUS_THROBBER (widget);  
-	*/
+{	
+	char *location;
+
+	location = nautilus_theme_get_theme_data ("throbber", "URL");
+	if (location != NULL) {
+		gtk_signal_emit (GTK_OBJECT (widget),
+			 signals[LOCATION_CHANGED],
+			 location);
+	
+		g_free (location);
+	}
+	
 	return TRUE;
 }
 

@@ -165,7 +165,7 @@ static void
 nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 {
 	char *temp_str;
-	char *tab_pieces, *tab_piece_path;
+	char *tab_pieces, *tab_piece_path, *tab_piece_theme;
 	GdkColor color;
 	int intensity;
 	
@@ -180,9 +180,15 @@ nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 				
 	/* load the tab_pieces image if necessary */
 	tab_pieces = nautilus_theme_get_theme_data ("sidebar", "TAB_PIECE_IMAGES");
+	tab_piece_theme = nautilus_theme_get_theme_data ("sidebar", "TAB_PIECE_THEME");
 	if (tab_pieces) {
-		tab_piece_path = nautilus_theme_get_image_path (tab_pieces);
+		if (tab_piece_theme) {
+			tab_piece_path = nautilus_theme_get_image_path_from_theme (tab_pieces, tab_piece_theme);		
+		} else {
+			tab_piece_path = nautilus_theme_get_image_path (tab_pieces);
+		}
 		g_free (tab_pieces);
+		g_free (tab_piece_theme);
 		
 		if (tab_piece_path) {
 			nautilus_sidebar_tabs_load_tab_pieces (sidebar_tabs, tab_piece_path);

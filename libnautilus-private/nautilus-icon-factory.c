@@ -142,10 +142,15 @@ struct NautilusCircularList {
 typedef struct {
 	GtkObject object;
 
-        char *theme_name;
+	/* name of current theme */
+	char *theme_name;
+	
+	/* name of default theme, so it can be delegated */
+	char *default_theme_name;
 	
 	/* the local_theme boolean is set if the theme was user-added (lives in ~/.nautilus) */
 	gboolean local_theme;
+	gboolean local_default_theme;
 	
 	/* A hash table so we pass out the same scalable icon pointer
 	 * every time someone asks for the same icon. Scalable icons
@@ -558,6 +563,7 @@ nautilus_icon_factory_destroy (GtkObject *object)
         g_hash_table_destroy (factory->icon_cache);
 
         g_free (factory->theme_name);
+        g_free (factory->default_theme_name);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -659,11 +665,32 @@ nautilus_icon_factory_remove_by_uri (const char *image_uri)
 				     (gpointer) image_uri);
 }
 
+/* utility to check if a theme is local or not */
+static void
+check_local_theme (const char *theme_name, gboolean *result_ptr)
+{
+	char *user_directory, *themes_directory, *this_theme_directory;
+	
+	if (theme_name == NULL) {
+		*result_ptr = FALSE;
+		return;
+	}
+	
+	user_directory = nautilus_get_user_directory ();
+	themes_directory = nautilus_make_path (user_directory, "themes");
+	this_theme_directory = nautilus_make_path (themes_directory, theme_name);
+	
+	*result_ptr = g_file_exists (this_theme_directory);
+	
+	g_free (user_directory);
+	g_free (themes_directory);
+	g_free (this_theme_directory);
+}
+
 /* Change the theme. */
 static void
 set_theme (const char *theme_name)
 {
-	char *user_directory, *themes_directory, *this_theme_directory;
 	NautilusIconFactory *factory;
 
 	factory = get_icon_factory ();
@@ -676,18 +703,13 @@ set_theme (const char *theme_name)
 
         g_free (factory->theme_name);
         factory->theme_name = g_strdup (theme_name);
+	check_local_theme (theme_name, &factory->local_theme);
 
-	/* set the local_theme boolean if the theme is local */
-	
-	user_directory = nautilus_get_user_directory ();
-	themes_directory = nautilus_make_path (user_directory, "themes");
-	this_theme_directory = nautilus_make_path (themes_directory, theme_name);
-	factory->local_theme = g_file_exists (this_theme_directory);
-	
-	g_free (user_directory);
-	g_free (themes_directory);
-	g_free (this_theme_directory);
-	
+	/* now set up the default theme */
+        g_free (factory->default_theme_name);	
+	factory->default_theme_name = nautilus_theme_get_theme_data ("icons", "DEFAULT_THEME");
+	check_local_theme (factory->default_theme_name, &factory->local_default_theme);
+			
 	/* we changed the theme, so emit the icons_changed signal */
 	gtk_signal_emit (GTK_OBJECT (factory),
 			 signals[ICONS_CHANGED]);
@@ -976,8 +998,8 @@ get_icon_file_path (const char *name,
 		    gboolean aa_mode,
 		    IconDetails *details)
 {
-	gboolean use_theme_icon;
-	const char *theme_name;
+	NautilusIconFactory *icon_factory;
+	const char *theme_to_use;
 	char *path;
 	char *name_with_modifier;
 
@@ -985,22 +1007,34 @@ get_icon_file_path (const char *name,
 		return NULL;
 	}
 
-	use_theme_icon = FALSE;
- 	theme_name = get_icon_factory ()->theme_name;
-	
+	icon_factory = get_icon_factory ();
+	theme_to_use = NULL;
+ 	
+ 	
 	/* Check and see if there is a theme icon to use.
+	 * If there's a default theme specified, try it, too.
 	 * This decision must be based on whether there's a non-size-
 	 * specific theme icon.
 	 */
-	if (theme_name != NULL) {
-		path = get_themed_icon_file_path (theme_name,
+	if (icon_factory->theme_name != NULL) {
+		path = get_themed_icon_file_path (icon_factory->theme_name,
 						  name,
 						  NAUTILUS_ICON_SIZE_STANDARD,
 						  aa_mode,
 						  details);		
 		if (path != NULL) {
-			use_theme_icon = TRUE;
+			theme_to_use = icon_factory->theme_name;
 			g_free (path);
+		} else if (icon_factory->default_theme_name != NULL) {
+			path = get_themed_icon_file_path (icon_factory->default_theme_name,
+						  name,
+						  NAUTILUS_ICON_SIZE_STANDARD,
+						  aa_mode,
+						  details);		
+			if (path != NULL) {
+				theme_to_use = icon_factory->default_theme_name;
+				g_free (path);
+			}
 		}
 	}
 
@@ -1009,7 +1043,7 @@ get_icon_file_path (const char *name,
 	/* If there's a modifier, try the modified icon first. */
 	if (modifier && modifier[0] != '\0') {
 		name_with_modifier = g_strconcat (name, "-", modifier, NULL);
-		path = get_themed_icon_file_path (use_theme_icon ? theme_name : NULL,
+		path = get_themed_icon_file_path (theme_to_use,
 						  name_with_modifier,
 						  size_in_pixels, 
 						  aa_mode,
@@ -1020,7 +1054,7 @@ get_icon_file_path (const char *name,
 		}
 	}
 	
-	return get_themed_icon_file_path (use_theme_icon ? theme_name : NULL,
+	return get_themed_icon_file_path (theme_to_use,
 					  name,
 					  size_in_pixels,
 					  aa_mode,

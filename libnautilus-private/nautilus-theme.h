@@ -37,6 +37,8 @@ void		 nautilus_theme_set_theme(const char *new_theme);
 char		*nautilus_theme_get_theme_data (const char *resource_name, const char *property_name);
 /* given the current theme, get the path name of an image with the passed-in name */
 char		*nautilus_theme_get_image_path (const char *image_name);
+/* like get_image_path, put use the passed in theme instead of the current one */
+char		*nautilus_theme_get_image_path_from_theme (const char *image_name, const char *theme_name);
 /* create a pixbuf to represent the theme */
 GdkPixbuf	*nautilus_theme_make_selector (const char *theme_name);
 

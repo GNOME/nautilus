@@ -52,6 +52,10 @@ struct NautilusThrobber {
 
 struct NautilusThrobberClass {
 	GtkEventBoxClass parent_class;
+	
+	/* signals */
+	void         (* location_changed) (NautilusThrobber *throbber,
+					   const char            *location);
 };
 
 GtkType    	nautilus_throbber_get_type	(void);

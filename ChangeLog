@@ -1,3 +1,41 @@
+2000-10-07  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-theme.c:
+	(nautilus_theme_get_image_path_from_theme),
+	(nautilus_theme_get_image_path):
+	re-organized the code to add the ability to request image
+	paths from specific themes, as well as the current one.
+	* libnautilus-extensions/nautilus-theme.h:
+	added nautilus_theme_get_image_path_from_theme.
+
+	* src/nautilus-sidebar-tabs.c:
+	(nautilus_sidebar_tabs_load_theme_data):
+	used the above to implement sidebar tab redirection, so a theme
+	can use the sidebar tabs from another theme, so sidebar tab images
+	don't have to be present in every theme.
+		
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_destroy), (check_local_theme), (set_theme),
+	(get_icon_file_path):
+	implemented icon theme default redirection, so a theme can specify
+	another theme to get its icons from when they're not present locally;
+	this is needed by both Arlo and Susan's themes.
+	
+	* src/nautilus-throbber.c,h: (nautilus_throbber_initialize_class),
+	(nautilus_throbber_button_press_event):
+	made clicking on the throbber take you to a URL specified by
+	the current theme.  Did this by adding a location_change signal. This
+	fixes bug 3433.
+	
+	* src/nautilus-window.c: (nautilus_window_constructed):
+	hooked up nautilus-window to the throbber's location_change signal to
+	change the location when the signal is emitted.
+	
+	* icons/default.xml:
+	added default URI for throbber, pointing to www.eazel.com
+	* icons/vector/vector.xml:
+	added sidebar tab redirection to the Arlo theme for testing
+
 2000-10-07  Mike Fleming  <mfleming@eazel.com>
 
 	* components/mozilla/main.c: (main):

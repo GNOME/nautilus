@@ -219,23 +219,19 @@ nautilus_pixmap_file_may_be_local (const char *themed_image)
 	return image_path;
 }
 
-/* given the current theme, fetch the full path name of an image with the passed-in name  */
+/* given a theme, fetch the full path name of an image with the passed-in name  */
 /* return NULL if there isn't a corresponding image.  Optionally, add a .png suffix if we */
 /* cant otherwise find one. 								  */
 
 char *
-nautilus_theme_get_image_path (const char *image_name)
+nautilus_theme_get_image_path_from_theme (const char *image_name, const char* theme_name)
 {
-	char *theme_name, *image_path, *png_string, *temp_str;
-	
-	theme_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME, "default");
+	char *image_path, *png_string, *temp_str;
 	
 	if (nautilus_strcmp (theme_name, "default") != 0) {
 		temp_str = g_strdup_printf ("%s/%s", theme_name, image_name);
 		image_path = nautilus_pixmap_file_may_be_local (temp_str);
-	
-		g_free (theme_name);
-	
+		
 		/* see if a theme-specific image exists; if so, return it */
 		if (image_path) {
 			g_free (temp_str);	
@@ -277,6 +273,19 @@ nautilus_theme_get_image_path (const char *image_name)
 	/* we couldn't find anything, so return NULL */
 	g_free (image_path);
 	return NULL;
+}
+
+/* commonly used cover to get_image_path_from_theme to return an image path using the current theme */
+char *
+nautilus_theme_get_image_path (const char *image_name)
+{
+	char *theme_name, *image_path;
+	
+	theme_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME, "default");	
+	image_path = nautilus_theme_get_image_path_from_theme (image_name, theme_name);	
+	g_free (theme_name);
+	
+	return image_path;
 }
 
 /* create a pixbuf that represents the passed in theme name */

@@ -462,6 +462,10 @@ nautilus_window_constructed (NautilusWindow *window)
 	/* initalize the menus and tool bars */
 	nautilus_window_initialize_menus (window);
 	nautilus_window_initialize_toolbars (window);
+
+	/* watch for throbber locatoin changes, too */
+	gtk_signal_connect (GTK_OBJECT (window->throbber), "location_changed",
+		goto_uri_callback, window);
 	
 	/* Set initial sensitivity of some buttons & menu items 
 	 * now that they're all created.
