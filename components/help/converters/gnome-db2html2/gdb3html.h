@@ -1,10 +1,10 @@
 #ifndef __GDB3HTML_H__
 #define __GDB3HTML_H__
 
-#include <gnome-xml/parser.h>
-#include <gnome-xml/parserInternals.h>
-#include <gnome-xml/SAX.h>
-#include <gnome-xml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/parserInternals.h>
+#include <libxml/SAX.h>
+#include <libxml/xmlmemory.h>
 #include <glib.h>
 #include <string.h>
 
