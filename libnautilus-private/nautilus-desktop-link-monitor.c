@@ -116,13 +116,18 @@ create_volume_link (NautilusDesktopLinkMonitor *monitor,
 		    GnomeVFSVolume *volume)
 {
 	NautilusDesktopLink *link;
-	
+
+	link = NULL;
+
 	if (!gnome_vfs_volume_is_user_visible (volume)) {
 		return;
 	}
 
-	link = nautilus_desktop_link_new_from_volume (volume);
-	monitor->details->volume_links = g_list_prepend (monitor->details->volume_links, link);
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE)) {
+		link = nautilus_desktop_link_new_from_volume (volume);
+		monitor->details->volume_links = g_list_prepend (monitor->details->volume_links, link);
+	}
+	
 }
 
 
@@ -221,6 +226,30 @@ desktop_trash_visible_changed (gpointer callback_data)
 }
 
 static void
+desktop_volumes_visible_changed (gpointer callback_data)
+{
+	GnomeVFSVolumeMonitor *volume_monitor;
+	NautilusDesktopLinkMonitor *monitor;
+	GList *l, *volumes;
+	
+	volume_monitor = gnome_vfs_get_volume_monitor ();
+	monitor = NAUTILUS_DESKTOP_LINK_MONITOR (callback_data);
+
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE) && monitor->details->volume_links == NULL) {
+		volumes = gnome_vfs_volume_monitor_get_mounted_volumes (volume_monitor);
+		for (l = volumes; l != NULL; l = l->next) {
+			create_volume_link (monitor, l->data);
+			gnome_vfs_volume_unref (l->data);
+		}
+		g_list_free (volumes);
+	} else {
+		g_list_foreach (monitor->details->volume_links, (GFunc)g_object_unref, NULL);
+		g_list_free (monitor->details->volume_links);
+		monitor->details->volume_links = NULL;
+	}
+}
+
+static void
 nautilus_desktop_link_monitor_init (gpointer object, gpointer klass)
 {
 	NautilusDesktopLinkMonitor *monitor;
@@ -248,6 +277,7 @@ nautilus_desktop_link_monitor_init (gpointer object, gpointer klass)
 	}
 
 	volume_monitor = gnome_vfs_get_volume_monitor ();
+	
 	volumes = gnome_vfs_volume_monitor_get_mounted_volumes (volume_monitor);
 	for (l = volumes; l != NULL; l = l->next) {
 		volume = l->data;
@@ -265,8 +295,10 @@ nautilus_desktop_link_monitor_init (gpointer object, gpointer klass)
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE,
 				      desktop_trash_visible_changed,
 				      monitor);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE,
+				      desktop_volumes_visible_changed,
+				      monitor);
 
-	
 	monitor->details->mount_id = g_signal_connect_object (volume_monitor, "volume_mounted",
 							      G_CALLBACK (volume_mounted_callback), monitor, 0);
 	monitor->details->unmount_id = g_signal_connect_object (volume_monitor, "volume_unmounted",
@@ -311,6 +343,9 @@ desktop_link_monitor_finalize (GObject *object)
 					 monitor);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE,
 					 desktop_trash_visible_changed,
+					 monitor);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE,
+					 desktop_volumes_visible_changed,
 					 monitor);
 
 	if (monitor->details->mount_id != 0) {

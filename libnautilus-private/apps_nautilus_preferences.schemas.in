@@ -808,6 +808,21 @@
     </schema>
 
     <schema>
+      <key>/schemas/apps/nautilus/desktop/volumes_visible</key>
+      <applyto>/apps/nautilus/desktop/volumes_visible</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+      	<short>Show mounted volumes on the desktop</short>
+	<long>
+	  If this is set to true, icons linking to mounted
+	  volumes will be put on the desktop.
+	</long>
+      </locale>
+    </schema>
+
+    <schema>
       <key>/schemas/apps/nautilus/desktop/home_icon_name</key>
       <applyto>/apps/nautilus/desktop/home_icon_name</applyto>
       <owner>nautilus</owner>

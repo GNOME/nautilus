@@ -1,5 +1,17 @@
 2004-05-14  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/apps_nautilus_preferences.schemas.in:
+	* libnautilus-private/nautilus-desktop-link-monitor.c:
+	(create_volume_link), (desktop_volumes_visible_changed),
+	(nautilus_desktop_link_monitor_init),
+	(desktop_link_monitor_finalize):
+	* libnautilus-private/nautilus-global-preferences.h:
+	Allow setting to not show volumes on desktop.
+
+	Patch by Davyd Madeley <davyd@zdlcomputing.com>
+
+2004-05-14  Alexander Larsson  <alexl@redhat.com>
+
 	* configure.in:
 	Bump version to 2.7.1 on HEAD.
 
