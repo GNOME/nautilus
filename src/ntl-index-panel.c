@@ -708,18 +708,16 @@ add_command_buttons(NautilusIndexPanel *index_panel, GList *command_list)
 {
 	char *command_string, *temp_str;
 	GList *p;
-	GtkWidget *temp_button, *temp_label;
+	GtkWidget *temp_button;
 	NautilusCommandInfo *info;
 	
 	for (p = command_list; p != NULL; p = p->next) {
 	        info = p->data;
 	        
 		index_panel->details->has_buttons = TRUE;
-		
-	        temp_button = gtk_button_new ();		    
-	        temp_label = gtk_label_new (info->display_name);
-	        gtk_widget_show (temp_label);
-		gtk_container_add (GTK_CONTAINER (temp_button), temp_label); 	
+
+		temp_str = g_strdup_printf (_("Open with %s"), info->display_name);
+	        temp_button = gtk_button_new_with_label (temp_str);		    
 		gtk_box_pack_start (GTK_BOX (index_panel->details->button_box), temp_button, FALSE, TRUE, 2);
 		gtk_button_set_relief (GTK_BUTTON (temp_button), GTK_RELIEF_NORMAL);
 		gtk_widget_set_usize (GTK_WIDGET (temp_button), 80, 20);
@@ -730,9 +728,12 @@ add_command_buttons(NautilusIndexPanel *index_panel, GList *command_list)
 
 		command_string = g_strdup_printf (info->command_string, temp_str); 		
 		g_free(temp_str);
-		
-		gtk_signal_connect (GTK_OBJECT (temp_button), "clicked",
-				    GTK_SIGNAL_FUNC (command_button_cb), command_string);
+
+		nautilus_gtk_signal_connect_free_data 
+			(GTK_OBJECT (temp_button), 
+			 "clicked",
+			 GTK_SIGNAL_FUNC (command_button_cb), 
+			 command_string);
                 gtk_object_set_user_data (GTK_OBJECT (temp_button), index_panel);
 		
 		gtk_widget_show (temp_button);
@@ -840,9 +841,7 @@ nautilus_index_panel_update_info (NautilusIndexPanel *index_panel,
 	nautilus_index_title_set_uri (index_panel->details->title,
 		                      index_panel->details->uri,
 				      initial_title);
-			
-	/* add keywords if we got any */				
-
+	
 	/* set up the command buttons */
 	nautilus_index_panel_update_buttons (index_panel);
 }

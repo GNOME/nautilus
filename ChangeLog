@@ -1,3 +1,21 @@
+2000-05-17  John Sullivan  <sullivan@eazel.com>
+
+	Started tweaking with the command buttons in the sidebar
+	as a step towards hooking them into the final MIME API.
+
+	* libnautilus-extensions/nautilus-mime-type.c:
+	Removed verbs from display names, since we don't plan
+	to support arbitrary verbs (i.e., alternate verbs to
+	"Open") at least for this release.
+	
+	* src/ntl-index-panel.c: (add_command_buttons): Simplify code
+	a little by using gtk_button_new_with_label; use "Open with"
+	terminology; fix memory leak with command string stored in button.
+	(nautilus_index_panel_update_info): Deleted obsolete comment.
+	
+	* src/ntl-window.c: (nautilus_window_load_content_view_menu):
+	Added (currently insensitive) "View as ..." item to menu.
+
 2000-05-17  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/mozilla/nautilus-mozilla-content-view.c:

@@ -729,6 +729,15 @@ nautilus_window_load_content_view_menu (NautilusWindow *window,
 
                 ++index;
         }
+
+        /* Add "View as ..." extra bonus choice, with separator before it. */
+        menu_item = gtk_menu_item_new ();
+        gtk_widget_show (menu_item);
+        gtk_menu_append (GTK_MENU (new_menu), menu_item);
+       	menu_item = gtk_menu_item_new_with_label (_("View as ..."));
+       	gtk_widget_show (menu_item);
+       	gtk_widget_set_sensitive (menu_item, FALSE);	/* doesn't do anything yet */
+       	gtk_menu_append (GTK_MENU (new_menu), menu_item);
         
         /*
          * We create and attach a new menu here because adding/removing
