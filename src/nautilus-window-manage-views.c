@@ -524,6 +524,10 @@ nautilus_window_load_content_view(NautilusWindow *window,
 	  gtk_widget_unref(GTK_WIDGET(new_view));
 	  new_view = NULL;
 	}
+      /* Avoid being fooled by extra done notifications from the last view. 
+         This is a HACK because the state machine SUCKS. */
+      window->cv_progress_done = FALSE;
+      window->cv_progress_error = FALSE;
     }
   else
     new_view = window->content_view;
@@ -822,8 +826,9 @@ nautilus_window_set_state_info(NautilusWindow *window, ...)
           new_view = va_arg(args, NautilusView*);
           /* Don't ref here, reference is held by widget hierarchy. */
           window->new_content_view = new_view;
-          if(!window->pending_ni)
+          if(!window->pending_ni) {
             window->view_activation_complete = TRUE;
+          }
           window->changes_pending = TRUE;
           window->views_shown = FALSE;
           break;

@@ -1,3 +1,12 @@
+2000-03-06  Maciej Stachowiak  <mjs@eazel.com>
+
+	* src/ntl-window-msgs.c (nautilus_window_load_content_view):
+	Explicitly change `window->cv_progress_done' and
+	`window->cv_progress_error' to FALSE when loading a new content
+	view, to avoid being screwed up by extra done or error
+	notifications from the last content view. This is really just
+	putting more spit and bubble gum on the pile though.
+
 2000-03-06  Andy Hertzfeld <andy@eazel.com>
 
 	src/nautilus-index-title.c:
