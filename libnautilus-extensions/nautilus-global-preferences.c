@@ -51,24 +51,25 @@ static const char USE_PROXY_KEY[] = "/system/gnome-vfs/use-http-proxy";
 static const char SYSTEM_GNOME_VFS_PATH[] = "/system/gnome-vfs";
 
 /* Forward declarations */
-static char *     global_preferences_get_sidebar_panel_key               (const char    *panel_iid);
-static gboolean   global_preferences_is_sidebar_panel_enabled_cover      (gpointer       data,
-									  gpointer       callback_data);
+static char *     global_preferences_get_sidebar_panel_key               (const char             *panel_iid);
+static gboolean   global_preferences_is_sidebar_panel_enabled_cover      (gpointer                data,
+									  gpointer                callback_data);
 static GList *    global_preferences_get_sidebar_panel_view_identifiers  (void);
-static gboolean   global_preferences_close_dialog_callback               (GtkWidget     *dialog,
-									  gpointer       user_data);
+static gboolean   global_preferences_close_dialog_callback               (GtkWidget              *dialog,
+									  gpointer                user_data);
 static void       global_preferences_install_sidebar_panel_defaults      (void);
 static void       global_preferences_install_sidebar_panel_descriptions  (void);
 static void       global_preferences_install_defaults                    (void);
 static void       global_preferences_install_visibility                  (void);
-static void       global_preferences_install_speed_tradeoff_descriptions (const char    *name,
-									  const char    *description);
+static void       global_preferences_install_speed_tradeoff_descriptions (const char             *name,
+									  const char             *description);
 static void       global_preferences_install_home_location_defaults      (void);
 static void       global_preferences_install_medusa_defaults             (void);
 static void       global_preferences_install_descriptions                (void);
-static int        compare_view_identifiers                               (gconstpointer  a,
-									  gconstpointer  b);
+static int        compare_view_identifiers                               (gconstpointer           a,
+									  gconstpointer           b);
 static GtkWidget *global_preferences_create_dialog                       (void);
+static GtkWidget *global_preferences_create_search_pane                  (NautilusPreferencesBox *preference_box);
 
 static GtkWidget *global_prefs_dialog = NULL;
 
@@ -497,7 +498,6 @@ global_preferences_create_dialog (void)
 	GtkWidget		*windows_and_desktop_pane;
 	GtkWidget		*sidebar_panels_pane;
 	GtkWidget		*appearance_pane;
-	GtkWidget		*file_indexing_pane;
 	GtkWidget		*tradeoffs_pane;
 	GtkWidget		*navigation_pane;
 
@@ -674,28 +674,8 @@ global_preferences_create_dialog (void)
 	/*
 	 * Search Settings 
 	 */
-	file_indexing_pane = nautilus_preferences_box_add_pane (preference_box,
-								_("Search"),
-								_("Search Settings"));
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
-					     _("Search Complexity Options"));
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
-							 0,
-							 NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
-							 NAUTILUS_PREFERENCE_ITEM_ENUM);
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
-					    _("Fast Search"));
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
-							1,
-							NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
-							NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
-					     _("Search Locations"));
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
-							 2,
-							 NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
-							 NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING);
-					
+	global_preferences_create_search_pane (preference_box);
+
 	/*
 	 * Navigation
 	 */
@@ -785,6 +765,64 @@ global_preferences_create_dialog (void)
 	nautilus_preferences_dialog_update (NAUTILUS_PREFERENCES_DIALOG (prefs_dialog));
 
 	return prefs_dialog;
+}
+
+/* Update the sensitivity of the search pane when the medusa blocked state changes */
+static void
+global_preferences_medusa_blocked_changed_callback (gpointer callback_data)
+{
+	gboolean medusa_blocked;
+	
+	g_return_if_fail (GTK_IS_WIDGET (callback_data));
+
+	medusa_blocked = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDUSA_BLOCKED);
+
+	gtk_widget_set_sensitive (GTK_WIDGET (callback_data), !medusa_blocked);
+}
+
+static GtkWidget *
+global_preferences_create_search_pane (NautilusPreferencesBox *preference_box)
+{
+	GtkWidget *search_pane;
+	GtkWidget *fast_search_group;
+	
+	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_BOX (preference_box), NULL);
+
+ 	/*
+ 	 * Search Settings 
+ 	 */
+	search_pane = nautilus_preferences_box_add_pane (preference_box,
+								_("Search"),
+								_("Search Settings"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (search_pane),
+					     _("Search Complexity Options"));
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (search_pane),
+							 0,
+							 NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
+							 NAUTILUS_PREFERENCE_ITEM_ENUM);
+	fast_search_group = nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (search_pane),
+								 _("Fast Search"));
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (search_pane),
+							 1,
+							 NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (search_pane),
+					     _("Search Locations"));
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (search_pane),
+							 2,
+							 NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
+							 NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING);
+
+	/* Setup callbacks so that we can update the sensitivity of
+	 * the search pane when the medusa blocked state changes
+	 */
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_MEDUSA_BLOCKED,
+						       global_preferences_medusa_blocked_changed_callback,
+						       fast_search_group,
+						       GTK_OBJECT (fast_search_group));
+	global_preferences_medusa_blocked_changed_callback (fast_search_group);
+
+	return search_pane;
 }
 
 /* Make a query to find out what sidebar panels are available. */
@@ -1037,10 +1075,8 @@ global_preferences_medusa_state_changed_callback (gpointer callback_data)
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
 					  nautilus_medusa_services_have_been_enabled_by_user ());
 
-	/* FIXME: after preference sensitivity is added, this preference will
-	   control the sensitivity of the FAST_SEARCH preference */
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_MEDUSA_BLOCKED,
-					  !nautilus_medusa_blocked ());
+					  nautilus_medusa_blocked ());
 }
 
 static void
@@ -1055,7 +1091,7 @@ global_preferences_install_medusa_defaults (void)
 	/* This one controls the sensitivity */
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_MEDUSA_BLOCKED,
 						  NAUTILUS_USER_LEVEL_NOVICE,
-						  !medusa_blocked);
+						  medusa_blocked);
 
 	/* This is the one that appears in the preferences dialog */
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_USE_FAST_SEARCH,

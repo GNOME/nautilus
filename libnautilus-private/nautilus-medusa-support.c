@@ -48,7 +48,7 @@ gboolean
 nautilus_medusa_blocked (void)
 {
 #ifdef HAVE_MEDUSA
-	return FALSE;
+	return medusa_system_services_are_blocked ();
 #else
 	return TRUE;
 #endif
@@ -64,7 +64,7 @@ nautilus_medusa_enable_services (gboolean enable)
 
 void
 nautilus_medusa_add_system_state_changed_callback (NautilusMedusaChangedCallback callback,
-						  gpointer callback_data)
+						   gpointer callback_data)
 {
 #ifdef HAVE_MEDUSA
 	medusa_execute_when_system_state_changes (MEDUSA_SYSTEM_STATE_ENABLED

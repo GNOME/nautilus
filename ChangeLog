@@ -1,3 +1,21 @@
+2001-02-21  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Rebecca Schulman  <rebecka@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog),
+	(global_preferences_medusa_blocked_changed_callback),
+	(global_preferences_create_search_pane),
+	(global_preferences_medusa_state_changed_callback),
+	(global_preferences_install_medusa_defaults):
+	Fix bug 6415 - Change what appears in the medusa preference when
+	medusa becomes blocked.
+	Also made the default and actual value of the MEDUSA_BLOCKED be
+	correct.  The boolean value was inverted.
+	
+	* libnautilus-extensions/nautilus-medusa-support.c:
+	(nautilus_medusa_blocked): Call medusa to find out if its blocked.
+	
 2001-02-21  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Mike Engber <engber@eazel.com>
