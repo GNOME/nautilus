@@ -578,8 +578,10 @@ gnome_icon_container_receive_dropped_icons (GnomeIconContainer *container,
 
 			if (item->got_icon_position) {
 				int icon_x, icon_y;
+                                double scale = icon->item->canvas->pixels_per_unit;
+                                int center_offset = nautilus_icons_view_icon_item_center_offset(icon->item);
 
-				icon_x = (int) world_x + item->icon_x;
+				icon_x = (int) world_x + item->icon_x - (center_offset / scale);
 				icon_y = (int) world_y + item->icon_y;
 				
 				gnome_icon_container_move_icon
