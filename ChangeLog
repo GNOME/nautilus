@@ -1,3 +1,21 @@
+2001-02-23  John Harper  <jsh@eazel.com>
+
+	reviewed by: Arik Devens  <arik@eazel.com>
+
+	More tweaks to fix bug 1796 (Design a better First Time
+	Walkthrough):
+
+	* src/nautilus-first-time-druid.c: don't update the user-level
+	preferences until immediately before exiting the druid - avoids
+	possibly making the anti-aliased titles non-anti-aliased
+
+	(set_up_update_feedback_page): put labels in hboxes to make
+	them flush with the left side of the container
+
+	(nautilus_first_time_druid_show): rearranged line breaks in
+	body text slightly. Changed icon packing parameters to put them
+	nearer to their ideal positions
+
 2001-02-22  Arik Devens  <arik@eazel.com>
 
 	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
@@ -36,6 +54,8 @@
 	Fix names in Arlo's new icons.
 
 2001-02-22  John Harper  <jsh@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
 
 	Fixed bug 6764 (Double-clicking a folder with an already-open
 	window on another virtual desktop seems to do nothing):

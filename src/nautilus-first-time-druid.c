@@ -139,6 +139,8 @@ static GtkWidget *draw_desktop_checkbox_widget;
 static gboolean medusa_is_blocked;
 static gboolean launch_medusa = TRUE;
 
+static int current_user_level;
+
 static void     initiate_file_download           (GnomeDruid 	*druid);
 static gboolean set_http_proxy                   (const char 	*proxy_url);
 static gboolean attempt_http_proxy_autoconfigure (void);
@@ -228,7 +230,10 @@ druid_finished (GtkWidget *druid_page)
 	} else {
 		signup_uris[1] = NULL;
 	}
-	
+
+
+	/* Do the user level config */
+	nautilus_preferences_set_user_level (current_user_level);
 	
 	/* Do the GMC to Nautilus Transition */
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP, draw_desktop);	
@@ -275,9 +280,9 @@ set_up_background (NautilusDruidPageEazel *page, const char *background_color)
 }
 
 static void
-update_draw_desktop_checkbox_state (int user_level)
+update_draw_desktop_checkbox_state ()
 {
-	if (user_level == NAUTILUS_USER_LEVEL_NOVICE) {
+	if (current_user_level == NAUTILUS_USER_LEVEL_NOVICE) {
 		gtk_widget_hide (draw_desktop_checkbox_widget);
 	} else {
 		gtk_widget_show (draw_desktop_checkbox_widget);
@@ -288,13 +293,11 @@ update_draw_desktop_checkbox_state (int user_level)
 static void
 user_level_selection_changed (GtkWidget *radio_button, gpointer user_data)
 {
-	int user_level = GPOINTER_TO_INT (user_data);
-
 	if (GTK_TOGGLE_BUTTON (radio_button)->active) {
-		nautilus_preferences_set_user_level (user_level);
+	    current_user_level = GPOINTER_TO_INT (user_data);
 	}
 
-	update_draw_desktop_checkbox_state (user_level);
+	update_draw_desktop_checkbox_state ();
 }
 
 /* handler for signup buttons changing */
@@ -453,7 +456,7 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 {
 	GtkWidget *radio_buttons[3], *label;
 	GtkWidget *container, *main_box, *hbox;
-	int user_level, index;
+	int index;
 
 	container = set_up_background (page, "rgb:ffff/ffff/ffff:h");
 
@@ -493,9 +496,9 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 		 NULL);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 2);
 
-	user_level = nautilus_preferences_get_user_level ();
-	g_assert (user_level >= NAUTILUS_USER_LEVEL_NOVICE && user_level <= NAUTILUS_USER_LEVEL_ADVANCED);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_buttons[user_level]), TRUE);
+	g_assert (current_user_level >= NAUTILUS_USER_LEVEL_NOVICE
+		  && current_user_level <= NAUTILUS_USER_LEVEL_ADVANCED);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_buttons[current_user_level]), TRUE);
 
 
 	for (index = NAUTILUS_USER_LEVEL_NOVICE; index <= NAUTILUS_USER_LEVEL_ADVANCED; index ++) {
@@ -693,7 +696,7 @@ static void
 set_up_update_feedback_page (NautilusDruidPageEazel *page)
 {
 	GtkWidget *label;
-	GtkWidget *container, *main_box;
+	GtkWidget *container, *main_box, *hbox;
 
 	container = set_up_background (page, "rgb:ffff/ffff/ffff:h");
 
@@ -703,16 +706,22 @@ set_up_update_feedback_page (NautilusDruidPageEazel *page)
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* allocate a descriptive label */
-	label = new_body_label (_("Verifying your Internet connection and checking for updates..."));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 0);
-		
-		
-	download_label = new_body_label (_("Downloading Nautilus updates..."));
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox);
 
-	gtk_widget_show (download_label);
-	
-	gtk_box_pack_start (GTK_BOX (main_box), download_label, FALSE, FALSE, 2);
+	label = new_body_label (_("Verifying your Internet connection and checking for updates..."));
+	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+		
+		
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox);
+
+	download_label = new_body_label (_("Downloading Nautilus updates..."));
+	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), download_label, FALSE, FALSE, 0);
+
+	gtk_widget_show_all (main_box);
 }
 
 /* handle the "next" signal for the update page based on the user's choice */
@@ -970,7 +979,7 @@ make_title_page_icon_box (void)
 {
 	const char *names[4] = {
 		"temp-home.png",
-		"big_services_icon.png",
+		"hand.png",
 		"arlo/i-directory-aa.png",
 		"trash-full.png"
 	};
@@ -979,7 +988,7 @@ make_title_page_icon_box (void)
 	GtkWidget *image;
 	GtkWidget *hbox;
 
-	hbox = gtk_hbox_new (TRUE, 0);
+	hbox = gtk_hbox_new (TRUE, 24);
 
 	for (i = 0; i < 4; i++) {
 		filename = nautilus_pixmap_file (names[i]);
@@ -1009,6 +1018,8 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 	/* remember parameters for later window invocation */
 	save_application = application;
 	save_manage_desktop = manage_desktop;
+
+	current_user_level = nautilus_preferences_get_user_level ();
 
 	medusa_is_blocked = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDUSA_BLOCKED);
 
@@ -1046,13 +1057,13 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 	set_page_title (NAUTILUS_DRUID_PAGE_EAZEL (start_page),
 			_("Welcome to Nautilus"));
 	
-	label = new_body_label ( _("Nautilus is part of your GNOME desktop environment.\n"
-				   "It helps you manage your files and folders (directories),\n"
+	label = new_body_label ( _("Nautilus is part of your GNOME desktop environment. It\n"
+				   "helps you manage your files and folders (directories),\n"
 				   "view documents, connect to the Internet, and do many\n"
 				   "other tasks.\n\n"
 				   "The next four screens ask about your level of Linux\n"
-				   "experience, and check your Internet connection. Click\n"
-				   "Next to continue."));
+				   "experience, and check your Internet connection. Click Next\n"
+				   "to continue."));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 0);
 	gtk_box_pack_end (GTK_BOX (main_box), make_title_page_icon_box (), TRUE, TRUE, 32);
