@@ -1,17 +1,17 @@
 figs = \
-	figures/emblems.png			\
-	figures/find.png			\
-	figures/full.png			\
-	figures/locbar.png			\
-	figures/menubar.png			\
-	figures/music.png			\
-	figures/navbar.png			\
-	figures/patterns.png			\
-	figures/sidebar.png			\
+	figures/backgrounds_nqr.png		\
+	figures/sidebar_nqr.png			\
+	figures/emblems_nqr.png			\
 	figures/softcat.png			\
+	figures/find.png			\
 	figures/storage.png			\
-	figures/themes.png			\
-	figures/viewmenu.png
+	figures/locationbar_nqr.png		\
+	figures/themes_nqr.png			\
+	figures/menus_nqr.png			\
+	figures/toolbar_nqr.png			\
+	figures/music_nqr.png			\
+	figures/viewmenu.png			\
+	figures/nautilus_window_full_nqr.png
 htmls = \
 	index.html
 docname = nautilus-quick-reference
