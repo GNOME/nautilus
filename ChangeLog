@@ -1,3 +1,13 @@
+2002-03-06  Anders Carlsson  <andersca@gnu.org>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(should_look_for_dot_directory_file), (lacks_link_info):
+	Only look for .directory files in directories that have a
+	special scheme.
+
+	(make_dot_directory_uri):
+	Remove sync check for .directory files.
+	
 2002-03-05  Darin Adler  <darin@bentspoon.com>
 
 	* src/file-manager/fm-list-view.c:

@@ -1631,12 +1631,53 @@ wants_mime_list (const Request *request)
 }
 
 static gboolean
+should_look_for_dot_directory_file (NautilusFile *file)
+{
+	char *uri_scheme;
+	guint i;
+
+	const char *schemes [] = {
+		"preferences",
+		"all-preferences",
+		"system-settings",
+		"server-settings",
+		"favorites",
+		"start-here",
+		"applications",
+		"all-applications",
+		NULL
+	};
+	
+	uri_scheme = nautilus_file_get_uri_scheme (file);
+
+	/* We special-case the file shcme so we won't have
+	 * to go through the list every time
+	 */
+	if (eel_strcmp (uri_scheme, "file") == 0) {
+		g_free (uri_scheme);
+		return FALSE;
+	}
+
+	for (i = 0; i < G_N_ELEMENTS (schemes); i++) {
+		if (eel_strcmp (uri_scheme, schemes[i]) == 0) {
+			g_free (uri_scheme);
+			return TRUE;
+		}
+	}
+
+	g_free (uri_scheme);
+	return FALSE;
+}
+
+static gboolean
 lacks_link_info (NautilusFile *file)
 {
 	if (file->details->file_info_is_up_to_date && 
 	    !file->details->link_info_is_up_to_date) {
-		if (nautilus_file_is_nautilus_link (file) ||
-		    nautilus_file_is_directory (file)) {
+		if (nautilus_file_is_nautilus_link (file)) {
+			return TRUE;
+		} else if (nautilus_file_is_directory (file) &&
+			should_look_for_dot_directory_file (file)) {
 			return TRUE;
 		} else {
 			link_info_done (file->details->directory, file, NULL, NULL, NULL);
@@ -2824,7 +2865,7 @@ make_dot_directory_uri (const char *uri)
 	 * directory's contents before all the scheduled calls of "look for .directory file" have been
 	 * finished. 
 	 */
-	if (gnome_vfs_uri_is_local (dot_dir_vfs_uri) && gnome_vfs_uri_exists (dot_dir_vfs_uri)) {
+	if (gnome_vfs_uri_is_local (dot_dir_vfs_uri)) {
 		dot_directory_uri = gnome_vfs_uri_to_string (dot_dir_vfs_uri, GNOME_VFS_URI_HIDE_NONE);
 	}
 	else {
