@@ -434,18 +434,24 @@ fs_xfer (const GList *item_uris,
 	 int copy_action,
 	 GtkWidget *view)
 {
+	const GList *p;
 	GList *item_names;
 	GnomeVFSXferOptions move_options;
 	char *source_dir;
 	GnomeVFSURI *source_dir_uri;
 	GnomeVFSURI *target_dir_uri;
+	GnomeVFSURI *trash_dir_uri;
+	GnomeVFSURI *uri;
 	XferInfo *xfer_info;
 	char *target_dir_uri_text;
+	GnomeVFSResult result;
 	
 	g_assert (item_uris != NULL);
 	
 	item_names = NULL;
 	source_dir_uri = NULL;
+	trash_dir_uri = NULL;
+	result = GNOME_VFS_OK;
 
 	get_parent_make_name_list (item_uris, &source_dir_uri, &item_names);
 
@@ -490,18 +496,78 @@ fs_xfer (const GList *item_uris,
 		xfer_info->show_progress_dialog = TRUE;
 	}
 
+	/* we'll need to check for copy into Trash and for moving/copying the Trash itself */
+	gnome_vfs_find_directory (target_dir_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
+		&trash_dir_uri, TRUE, 0777);
+
+	if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) == 0) {
+
+		if (trash_dir_uri != NULL
+			&& (gnome_vfs_uri_equal (trash_dir_uri, target_dir_uri)
+				|| gnome_vfs_uri_is_parent (trash_dir_uri, target_dir_uri, FALSE))) {
+			nautilus_simple_dialog (view, 
+				_("You cannot copy items into the Trash."), 
+				_("Error copying"),
+				_("OK"), NULL, NULL);			
+			result = GNOME_VFS_ERROR_NOTPERMITTED;
+		}
+	}
+
+	if (result == GNOME_VFS_OK) {
+		for (p = item_uris; p != NULL; p = p->next) {
+			gboolean bail;
+
+			bail = FALSE;
+			uri = gnome_vfs_uri_new (p->data);
+
+			/* Check that the Trash is not being moved/copied */
+			if (trash_dir_uri != NULL && gnome_vfs_uri_equal (uri, trash_dir_uri)) {
+				nautilus_simple_dialog (view, 
+					((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
+					? _("You cannot move the Trash.")
+					: _("You cannot copy the Trash."), 
+					_("Error moving to Trash"),
+					_("OK"), NULL, NULL);			
+				bail = TRUE;
+			}
+
+			/* Don't allow recursive move/copy into itself. 
+			 * (We would get a file system error if we proceeded but it is nicer to
+			 * detect and report it at this level)
+			 */
+			if (!bail && (gnome_vfs_uri_equal (uri, target_dir_uri)
+				|| gnome_vfs_uri_is_parent (uri, target_dir_uri, TRUE))) {
+				nautilus_simple_dialog (view, 
+					((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
+					? _("You cannot move an item into itself.")
+					: _("You cannot copy an item into itself."), 
+					_("Error moving to Trash"),
+					_("OK"), NULL, NULL);			
+				bail = TRUE;
+			}
+			gnome_vfs_uri_unref (uri);
+			if (bail) {
+				result = GNOME_VFS_ERROR_NOTPERMITTED;
+				break;
+			}
+		}
+	}
+
 	xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
 	xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_QUERY;
 	
-	gnome_vfs_async_xfer (&xfer_info->handle, source_dir, item_names,
-	      		      target_dir_uri_text, NULL,
-	      		      move_options, GNOME_VFS_XFER_ERROR_MODE_QUERY, 
-	      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
-	      		      &update_xfer_callback, xfer_info,
-	      		      &sync_xfer_callback, xfer_info);
+	if (result == GNOME_VFS_OK) {
+		gnome_vfs_async_xfer (&xfer_info->handle, source_dir, item_names,
+		      		      target_dir_uri_text, NULL,
+		      		      move_options, GNOME_VFS_XFER_ERROR_MODE_QUERY, 
+		      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
+		      		      &update_xfer_callback, xfer_info,
+		      		      &sync_xfer_callback, xfer_info);
+	}
 
 	g_free (target_dir_uri_text);
 
+	gnome_vfs_uri_unref (trash_dir_uri);
 	gnome_vfs_uri_unref (target_dir_uri);
 	gnome_vfs_uri_unref (source_dir_uri);
 	g_free (source_dir);
@@ -510,13 +576,18 @@ fs_xfer (const GList *item_uris,
 void 
 fs_move_to_trash (const GList *item_uris, GtkWidget *parent_view)
 {
+	const GList *p;
 	GList *item_names;
 	GnomeVFSURI *source_dir_uri;
 	GnomeVFSURI *trash_dir_uri;
+	GnomeVFSURI *uri;
 	char *source_dir;
 	char *trash_dir_uri_text;
 	GnomeVFSResult result;
 	XferInfo *xfer_info;
+	gboolean bail;
+	char *text;
+	char *item_name;
 
 	g_assert (item_uris != NULL);
 	
@@ -534,6 +605,35 @@ fs_move_to_trash (const GList *item_uris, GtkWidget *parent_view)
 
 	result = gnome_vfs_find_directory (source_dir_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
 		&trash_dir_uri, TRUE, 0777);
+
+	for (p = item_uris; p != NULL; p = p->next) {
+		bail = FALSE;
+		uri = gnome_vfs_uri_new (p->data);
+
+		if (gnome_vfs_uri_equal (uri, trash_dir_uri)) {
+			nautilus_simple_dialog (parent_view, 
+				_("You cannot throw away the Trash."), 
+				_("Error moving to Trash"),
+				_("OK"), NULL, NULL);			
+			bail = TRUE;
+		} else if (gnome_vfs_uri_is_parent (uri, trash_dir_uri, TRUE)) {
+			item_name = gnome_vfs_uri_extract_short_name (uri);
+			text = g_strdup_printf ( _("You cannot throw \"%s\" "
+				"into the Trash."), item_name);
+
+			nautilus_simple_dialog (parent_view, text, 
+				_("Error moving to Trash"),
+				_("OK"), NULL, NULL);			
+			bail = TRUE;
+			g_free (text);
+			g_free (item_name);
+		}
+		gnome_vfs_uri_unref (uri);
+		if (bail) {
+			result = GNOME_VFS_ERROR_NOTPERMITTED;
+			break;
+		}
+	}
 
 	if (result == GNOME_VFS_OK) {
 		g_assert (trash_dir_uri != NULL);

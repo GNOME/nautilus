@@ -581,27 +581,6 @@ get_container_uri (const NautilusIconContainer *container)
 }
 
 static gboolean
-uri_is_parent (const GnomeVFSURI *parent, const GnomeVFSURI *item)
-{
-	/* FIXME bugzilla.eazel.com 625:
-	 * consider making this a gnome-vfs call
-	 */
-
-	gboolean result;
-	GnomeVFSURI *item_parent_uri;
-
-	item_parent_uri = gnome_vfs_uri_get_parent (item);
-
-	if (item_parent_uri == NULL) 
-		return FALSE;
-
-	result = gnome_vfs_uri_equal (item_parent_uri, parent);	
-	gnome_vfs_uri_unref (item_parent_uri);
-
-	return result;
-}
- 
-static gboolean
 nautilus_icon_container_selection_items_local (const NautilusIconContainer *container,
 					       const GList *items)
 {
@@ -626,7 +605,7 @@ nautilus_icon_container_selection_items_local (const NautilusIconContainer *cont
 
 	/* get the parent URI of the first item in the selection */
 	item_uri = gnome_vfs_uri_new (((DndSelectionItem *)items->data)->uri);
-	result = uri_is_parent (container_uri, item_uri);
+	result = gnome_vfs_uri_is_parent (container_uri, item_uri, FALSE);
 	
 	gnome_vfs_uri_unref (item_uri);
 	gnome_vfs_uri_unref (container_uri);

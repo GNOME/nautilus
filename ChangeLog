@@ -1,3 +1,16 @@
+2000-05-17  Pavel Cisler  <pavel@eazel.com>
+
+	* src/file-manager/dfos-xfer.c: (fs_xfer), (fs_move_to_trash):
+	Fixed 636 -  don't allow copying into Trash. Also added 
+	checks for Trashing the Trash, moving or copying the Trash,
+	Trashing the parents of Trash, moving and copying folders in 
+	their children.
+
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_selection_items_local):
+	Fix 625: move uri_is_parent into a new call in GnomeVFS and 
+	added more features that I needed for the above fix.
+
 2000-05-17  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* nautilus-widgets/nautilus-caption-table.c:
