@@ -385,37 +385,23 @@ receive_dropped_keyword (NautilusIndexPanel *index_panel,
 	NautilusFile *file;
 	GList *keywords, *word;
 	char *title;
-	
-	/* soon, we'll be able to get rid of this hacked code that isolates the keyword
-	   from the file uri */
- 	char* keyword_uri = g_strdup(selection_data->data);
- 	char* temp_str = strrchr(keyword_uri, '/');
-	char* dot_str = strrchr(keyword_uri, '.');
-	if (dot_str)
-		*dot_str = '\0';
-	if (!temp_str)
-		temp_str = keyword_uri;
-	else
-		temp_str += 1;
-		
+			
 	/* OK, now we've got the keyword, so add it to the metadata */
 
 	file = nautilus_file_get (index_panel->details->uri);
-	if (file == NULL) {
-		g_free(keyword_uri);
+	if (file == NULL)
 		return;
-	}	
+
 	/* Check and see if it's already there. */
 	keywords = nautilus_file_get_keywords (file);
-	word = g_list_find_custom (keywords, temp_str, (GCompareFunc) strcmp);
+	word = g_list_find_custom (keywords, selection_data->data, (GCompareFunc) strcmp);
 	if (word == NULL)
-		keywords = g_list_append (keywords, g_strdup (temp_str));
+		keywords = g_list_append (keywords, g_strdup (selection_data->data));
 	else
 		keywords = g_list_remove_link (keywords, word);
 
 	nautilus_file_set_keywords (file, keywords);
 	nautilus_file_unref(file);
-	g_free(keyword_uri);
 	
 	/* regenerate the display */
 	title = nautilus_index_title_get_text(index_panel->details->title);

@@ -60,6 +60,8 @@ struct NautilusPropertyBrowserDetails {
 	char *category;
 	char *dragged_file;
         char *drag_type;
+
+	int  keep_around;
 };
 
 static void     nautilus_property_browser_initialize_class   (GtkObjectClass     *object_klass);
@@ -82,6 +84,7 @@ static void	nautilus_property_browser_drag_data_get      (GtkWidget *widget,
 							      GtkSelectionData *selection_data,
 							      guint info,
 							      guint32 time);
+static char*	strip_extension				     (const char* string_to_strip);
 
 #define BROWSER_BACKGROUND_COLOR "rgb:DDDD/EEEE/FFFF"
 #define BROWSER_TITLE_IMAGE "white_marble.jpg"
@@ -143,7 +146,7 @@ nautilus_property_browser_initialize (GtkObject *object)
 	
 	/* set the initial size of the property browser */
 	gtk_widget_set_usize (widget, PROPERTY_BROWSER_WIDTH, PROPERTY_BROWSER_HEIGHT);
-	gtk_container_set_border_width (GTK_CONTAINER (object), 0);				
+	gtk_container_set_border_width (GTK_CONTAINER (widget), 0);				
 
 	/* set up the background */
 	
@@ -263,6 +266,17 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 
 	switch (info) {
 	case PROPERTY_TYPE:
+		/* formulate the drag data based on the drag type.  Eventually, we will
+		   probably select the behavior from properties in the category xml definition,
+		   but for now we hardwire it to the drag_type */
+		
+		if (!strcmp(property_browser->details->drag_type, "property/keyword")) {
+			char* keyword_str = strip_extension(property_browser->details->dragged_file);
+		        gtk_selection_data_set(selection_data, selection_data->target, 8, keyword_str, strlen(keyword_str));
+			g_free(keyword_str);
+			return;	
+		}
+		
 		temp_str = g_strdup_printf("nautilus/%s", property_browser->details->category);
 		path = gnome_datadir_file (temp_str);
 		image_file_uri = g_strdup_printf("file://%s/%s", path, property_browser->details->dragged_file);
@@ -284,7 +298,9 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 static void
 nautilus_property_browser_drag_end(GtkWidget *widget, GdkDragContext *context)
 {
-	gtk_object_destroy(GTK_OBJECT(widget));
+	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(widget);
+	if (property_browser->details->keep_around == 0)
+		gtk_object_destroy(GTK_OBJECT(widget));
 }
 
 /* utility routine to scale the passed-in pixbuf to be smaller than the maximum allowed size, if necessary */
@@ -404,7 +420,9 @@ element_clicked_cb(GtkWidget *widget, GdkEventButton *event, char *element_name)
 				  x_delta, y_delta);
 
 	/* hide the property browser - it will later be destroyed when the drag ends */	
-	gtk_widget_hide(GTK_WIDGET(property_browser));
+	property_browser->details->keep_around = event->state & GDK_SHIFT_MASK;
+	if (!property_browser->details->keep_around)
+		gtk_widget_hide(GTK_WIDGET(property_browser));
 }
 
 /* utility routine to strip the extension from the passed in string */
