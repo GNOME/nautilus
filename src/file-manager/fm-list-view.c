@@ -45,7 +45,8 @@ struct FMListViewDetails {
 	GtkTreeView *tree_view;
 	FMListModel *model;
 
-	GtkTreeViewColumn *file_name_column;
+	GtkTreeViewColumn   *file_name_column;
+	GtkCellRendererText *file_name_cell;
 };
 
 static GtkTargetEntry drag_types [] = {
@@ -86,10 +87,12 @@ list_activate_callback (GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewCo
 	GList *file_list;
 	
 	view = FM_DIRECTORY_VIEW (user_data);
-	
-	file_list = fm_list_view_get_selection (view);
-	fm_directory_view_activate_files (view, file_list);
-	nautilus_file_list_free (file_list);
+
+	if (eel_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY) == NAUTILUS_CLICK_POLICY_DOUBLE) {
+		file_list = fm_list_view_get_selection (view);
+		fm_directory_view_activate_files (view, file_list);
+		nautilus_file_list_free (file_list);
+	}
 }
 
 /* Move these to eel? */
@@ -124,16 +127,26 @@ tree_view_has_selection (GtkTreeView *view)
 static void
 event_after_callback (GtkWidget *widget, GdkEventAny *event, gpointer callback_data)
 {
-	/* Put up the right kind of menu if we right click in the tree view. */
+	FMDirectoryView *view;
+	GList *file_list;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
 	if (event->type == GDK_BUTTON_PRESS
-	    && event->window == gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget))
-	    && ((GdkEventButton *) event)->button == 3) {
-		if (tree_view_has_selection (GTK_TREE_VIEW (widget))) {
-			fm_directory_view_pop_up_selection_context_menu
-				(FM_DIRECTORY_VIEW (callback_data), (GdkEventButton *) event);
-		} else {
-			fm_directory_view_pop_up_background_context_menu
-				(FM_DIRECTORY_VIEW (callback_data), (GdkEventButton *) event);
+	    && event->window == gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget))) {
+		if (((GdkEventButton *) event)->button == 1
+		    && eel_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY) == NAUTILUS_CLICK_POLICY_SINGLE) {
+			/* Handle single click activation preference. */
+			file_list = fm_list_view_get_selection (view);
+			fm_directory_view_activate_files (view, file_list);
+			nautilus_file_list_free (file_list);
+		} else if (((GdkEventButton *) event)->button == 3) {
+			/* Put up the right kind of menu if we right click in the tree view. */
+			if (tree_view_has_selection (GTK_TREE_VIEW (widget))) {
+				fm_directory_view_pop_up_selection_context_menu (view, (GdkEventButton *) event);
+			} else {
+				fm_directory_view_pop_up_background_context_menu (view, (GdkEventButton *) event);
+			}
 		}
 	}
 }
@@ -180,6 +193,24 @@ cell_renderer_edited (GtkCellRendererText *cell,
 }
 
 static void
+click_policy_changed (gpointer callback_data)
+{
+	FMListView *view;
+
+	view = FM_LIST_VIEW (callback_data);
+
+	if (eel_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY) == NAUTILUS_CLICK_POLICY_SINGLE) {
+		g_object_set (G_OBJECT (view->details->file_name_cell),
+			      "underline", PANGO_UNDERLINE_SINGLE,
+			      NULL);
+	} else {
+		g_object_set (G_OBJECT (view->details->file_name_cell),
+			      "underline", PANGO_UNDERLINE_NONE,
+			      NULL);
+	}
+}
+
+static void
 create_and_set_up_tree_view (FMListView *view)
 {
 	GtkCellRenderer *cell;
@@ -221,13 +252,20 @@ create_and_set_up_tree_view (FMListView *view)
 
 	cell = gtk_cell_renderer_text_new ();
 	g_signal_connect (cell, "edited", G_CALLBACK (cell_renderer_edited), view);
-	
+
 	gtk_tree_view_column_pack_start (view->details->file_name_column, cell, TRUE);
 	gtk_tree_view_column_set_attributes (view->details->file_name_column, cell,
 					     "text", FM_LIST_MODEL_NAME_COLUMN,
 					     "editable", FM_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN,
 					     NULL);
 	gtk_tree_view_append_column (view->details->tree_view, view->details->file_name_column);
+
+	/* Set up underline of file name. */
+	view->details->file_name_cell = (GtkCellRendererText *)cell;
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
+				      click_policy_changed,
+				      view);
+	click_policy_changed (view);
 
 	/* Create the size column */
 	cell = gtk_cell_renderer_text_new ();
@@ -491,6 +529,10 @@ fm_list_view_finalize (GObject *object)
 	FMListView *list_view;
 
 	list_view = FM_LIST_VIEW (object);
+
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
+					 click_policy_changed,
+					 list_view->details->file_name_cell);
 
 	g_free (list_view->details);
 

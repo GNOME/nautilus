@@ -1,3 +1,16 @@
+2002-03-30  David Emory Watson  <dwatson@cs.ucr.edu>
+
+	This fixes single click activation in the list view, bug 76197.
+
+	* src/file-manager/fm-list-view.c:
+	(list_activate_callback): only do this if the double click activation
+	preference is set.
+	(event_after_callback): handle single click activation preference.
+	(click_policy_changed): new function to handle whether file names
+	are underlined or not.
+	(create_and_set_up_tree_view): connect click policy preference callback
+	(fm_list_view_finalize): disconnect.
+
 2002-04-05  David Emory Watson  <dwatson@cs.ucr.edu>
 
 	* src/nautilus-sidebar.c:
