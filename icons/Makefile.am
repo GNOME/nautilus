@@ -13,6 +13,14 @@ icon_DATA =					\
 	emblem-personal.gif			\
 	emblem-remote.gif			\
 	emblem-symbolic-link.png		\
+	gnome-audio-x-mp3.png			\
+	gnome-compressed.png			\
+	gnome-library.png			\
+	gnome-manpage.png			\
+	gnome-objectfile.png			\
+	gnome-package.png			\
+	gnome-pack-deb.png			\
+	gnome-pack-rpm.png			\
 	i-blockdev.png				\
 	i-cdrom.png				\
 	i-chardev.png				\
