@@ -1,0 +1,49 @@
+/*
+  Three types of extensions:
+  Adding directories
+  Adding files to a directory
+  Adding operations to a file
+ */
+module FileManagement {
+  enum DirectoryEntryType { DENT_FILE, DENT_DIRECTORY, DENT_LINK };
+  union DirectoryEntrySpecifics switch(DirectoryEntryType) {
+  case DENT_LINK:
+    string target;
+  };
+  struct Metadatum {
+    string key;
+    sequence<octet> value;
+  };
+  struct Action {
+    string name, ident;
+  };
+  struct DirectoryEntry {
+    /* Elements:
+       1. Basic file info
+       2. Metadata
+       3. Actions */
+
+    /* 1. */
+    string name, mime_type;
+    long uid, gid, permissions;
+    long size;
+    long ctime, mtime, atime;
+    DirectoryEntrySpecifics info;
+
+    /* 2. */
+    sequence<Metadatum> metadata;
+
+    /* 3. */
+    sequence<Action> actions;
+  };
+  typedef sequence<DirectoryEntry> DirectoryEntryList;
+
+  interface VirtualDirectoryReceiver {
+    oneway void add_entries(in DirectoryEntryList list, in boolean end_of_listing);
+  };
+
+  interface VirtualDirectory {
+    void request_listing(in string uri, in VirtualDirectoryReceiver vdr);
+    oneway void invoke(in string uri, in string action_ident);
+  };
+};
