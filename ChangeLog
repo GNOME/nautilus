@@ -1,3 +1,27 @@
+2000-06-20  Michael Engber  <set EMAIL_ADDRESS environment variable>
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_report_zoom_level_changed):
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_begin_loading),
+	(fm_icon_view_set_zoom_level), (fm_icon_view_bump_zoom_level),
+	(fm_icon_view_zoom_to_level),
+	(fm_icon_view_restore_default_zoom_level):
+	* src/nautilus-view-frame.c: (nautilus_view_frame_load_client):
+	* src/nautilus-window.c:
+	(nautilus_window_zoom_level_changed_callback),
+	(nautilus_window_connect_view),
+	(nautilus_window_real_set_content_view):
+	* src/nautilus-zoom-control.c: (set_zoom_level),
+	(nautilus_zoom_control_button_press_event),
+	(nautilus_zoom_control_reset_zoom_level),
+	(nautilus_zoom_level_from_double),
+	(nautilus_zoom_control_set_zoom_level):
+	The zoom control is now driven by its zoomable. This corrected
+	the most visible problem - getting the correct initial state.
+	Previously, the zoomable never propagated any messages back
+	(not that anyone was listening for them anyway).
+
 2000-06-20  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/Makefile.am:

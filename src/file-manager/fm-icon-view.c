@@ -79,7 +79,8 @@ static void		      create_icon_container                 (FMIconView        *ico
 static void                   fm_icon_view_initialize               (FMIconView        *icon_view);
 static void                   fm_icon_view_initialize_class         (FMIconViewClass   *klass);
 static void                   fm_icon_view_set_zoom_level           (FMIconView        *view,
-								     NautilusZoomLevel  new_level);
+								     NautilusZoomLevel  new_level,
+								     gboolean		always_report_new_level);
 static void                   text_attribute_names_changed_callback (gpointer           user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconView, fm_icon_view, FM_TYPE_DIRECTORY_VIEW);
@@ -643,7 +644,7 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 		(directory, 
 		 NAUTILUS_METADATA_KEY_ICON_VIEW_ZOOM_LEVEL, 
 		 icon_view->details->default_zoom_level);
-	fm_icon_view_set_zoom_level (icon_view, level);
+	fm_icon_view_set_zoom_level (icon_view, level, TRUE);
 
 	/* Set the sort mode from the metadata.
 	 * It's OK not to resort the icons because the
@@ -684,7 +685,8 @@ fm_icon_view_get_zoom_level (FMIconView *view)
 
 static void
 fm_icon_view_set_zoom_level (FMIconView *view,
-			     NautilusZoomLevel new_level)
+			     NautilusZoomLevel new_level,
+			     gboolean always_report_new_level)
 {
 	NautilusIconContainer *icon_container;
 
@@ -694,6 +696,9 @@ fm_icon_view_set_zoom_level (FMIconView *view,
 
 	icon_container = get_icon_container (view);
 	if (nautilus_icon_container_get_zoom_level (icon_container) == new_level) {
+		if (always_report_new_level) {
+			fm_directory_view_report_zoom_level_changed(&view->parent, new_level);
+		}
 		return;
 	}
 
@@ -704,6 +709,7 @@ fm_icon_view_set_zoom_level (FMIconView *view,
 		 new_level);
 
 	nautilus_icon_container_set_zoom_level (icon_container, new_level);
+	fm_directory_view_report_zoom_level_changed(&view->parent, new_level);
 
 	/* Reset default to new level; this way any change in zoom level
 	 * will "stick" until the user visits a directory that had its zoom
@@ -723,7 +729,7 @@ fm_icon_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
 
 	icon_view = FM_ICON_VIEW (view);
 	new_level = fm_icon_view_get_zoom_level (icon_view) + zoom_increment;
-	fm_icon_view_set_zoom_level(icon_view, new_level);
+	fm_icon_view_set_zoom_level(icon_view, new_level, FALSE);
 }
 
 static void
@@ -734,7 +740,7 @@ fm_icon_view_zoom_to_level (FMDirectoryView *view, int zoom_level)
 	g_return_if_fail (FM_IS_ICON_VIEW (view));
 
 	icon_view = FM_ICON_VIEW (view);
-	fm_icon_view_set_zoom_level(icon_view, zoom_level);
+	fm_icon_view_set_zoom_level(icon_view, zoom_level, FALSE);
 }
 
 static void
@@ -745,7 +751,7 @@ fm_icon_view_restore_default_zoom_level (FMDirectoryView *view)
 	g_return_if_fail (FM_IS_ICON_VIEW (view));
 
 	icon_view = FM_ICON_VIEW (view);
-	fm_icon_view_set_zoom_level(icon_view, NAUTILUS_ZOOM_LEVEL_STANDARD);
+	fm_icon_view_set_zoom_level(icon_view, NAUTILUS_ZOOM_LEVEL_STANDARD, FALSE);
 }
 
 static gboolean 

@@ -1393,6 +1393,15 @@ fm_directory_view_zoom_to_level (FMDirectoryView *view, int zoom_level)
 	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->zoom_to_level) (view, zoom_level);
 }
 
+
+void
+fm_directory_view_report_zoom_level_changed (FMDirectoryView *view, int zoom_level)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+	nautilus_zoomable_set_zoom_level (view->details->zoomable,
+					 (double) nautilus_get_icon_size_for_zoom_level (zoom_level) / NAUTILUS_ICON_SIZE_STANDARD);
+}
+
 /**
  * fm_directory_view_restore_default_zoom_level:
  *

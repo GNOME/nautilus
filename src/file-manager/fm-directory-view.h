@@ -232,6 +232,8 @@ void               fm_directory_view_bump_zoom_level                (FMDirectory
 								     int                    zoom_increment);
 void               fm_directory_view_zoom_to_level                  (FMDirectoryView        *view,
 								     int                    zoom_level);
+void               fm_directory_view_report_zoom_level_changed      (FMDirectoryView        *view,
+								     int                    zoom_level);
 void               fm_directory_view_restore_default_zoom_level     (FMDirectoryView       *view);
 void               fm_directory_view_select_all                     (FMDirectoryView       *view);
 void               fm_directory_view_set_selection                  (FMDirectoryView       *view,

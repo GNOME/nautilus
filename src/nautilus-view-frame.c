@@ -296,6 +296,8 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 
 	view->view_frame = impl_Nautilus_ViewFrame__create(view, &ev);
 	view->zoomable_frame = impl_Nautilus_ZoomableFrame__create(view, &ev);
+	bonobo_object_add_interface (BONOBO_OBJECT (view->view_frame), 
+	                             BONOBO_OBJECT (view->zoomable_frame));
 
 	/* Add undo manager to component */
 	nautilus_undo_manager_add_interface

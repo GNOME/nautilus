@@ -315,7 +315,7 @@ set_zoom_level(NautilusZoomControl *zoom_control, int new_level)
 	zoom_control->current_zoom = new_level;
 	zoom_control->zoom_factor = (double) nautilus_get_icon_size_for_zoom_level
 		(zoom_control->current_zoom) / NAUTILUS_ICON_SIZE_STANDARD;    
-}
+}	
 
 /* handle button presses */
 
@@ -325,7 +325,6 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
 	NautilusZoomControl *zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
 	int width = widget->allocation.width;
 	int center = width >> 1;
-	int changed = FALSE;
 	
 	/* check for the context menu button and handle by creating and showing the menu */  
 	if (event->button == CONTEXTUAL_MENU_BUTTON) {
@@ -341,21 +340,19 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
 	
 	if (event->x < (width / 3) && (zoom_control->current_zoom > zoom_control->min_zoom)) {
 		gtk_signal_emit (GTK_OBJECT (widget), signals[ZOOM_OUT]);			
-		zoom_control->current_zoom -= 1;
-		changed = TRUE;
 	} else if ((event->x > ((2 * width) / 3)) && (zoom_control->current_zoom < zoom_control->max_zoom)) {
 		gtk_signal_emit (GTK_OBJECT (widget), signals[ZOOM_IN]);			
-		zoom_control->current_zoom += 1;
-		changed = TRUE;
 	} else if ((event->x >= (center - (width >> 3))) && (event->x <= (center + (width >> 3)))) {
 		gtk_signal_emit (GTK_OBJECT (widget), signals[ZOOM_DEFAULT]);			
-		zoom_control->current_zoom = NAUTILUS_ZOOM_LEVEL_STANDARD;
-		changed = TRUE;
 	}
-	
-	if (changed) {
-		set_zoom_level (zoom_control, zoom_control->current_zoom);
-	}	  
+
+	/*
+	 * We don't change our state (to reflect the new zoom) here. The zoomable will
+	 * call back with the new level. Actually, the callback goes to the view-frame
+	 * containing the zoomable which, in turn, emits zoom_level_changed, which
+	 * someone (e.g. nautilus_window) picks up and handles by calling into us -
+	 * nautilus_zoom_control_set_zoom_level.
+	 */	  
   
 	return TRUE;
 }
@@ -364,4 +361,55 @@ void
 nautilus_zoom_control_reset_zoom_level (NautilusZoomControl *zoom_control)
 {
 	set_zoom_level (zoom_control, NAUTILUS_ZOOM_LEVEL_STANDARD);
+}
+
+/*
+ * FIXME bugzila.eazel.com 1425:
+ * 
+ * The term zoom level is overloaded in our sources:
+ * 
+ * The zoom control function APIs (e.g. nautilus_zoom_control_set_zoom_level)
+ * uses doubles for zoom level (e.g. 1.5 = 150% zoom). This matches nicely with
+ * nautilus-zoomable interface which uses doubles for zoom level too.
+ * 
+ * However, internally the zoom control keeps state (current_zoom) in terms of
+ * NautilusZoomLevel's which are defined in nautilus-icon-factory.h as the 7
+ * discrete icon sizes.
+ * 
+ * Furthermore, the signals the zoom control emits, specifically zoom_to_level,
+ * passes a zoom level that's one of the NautilusZoomLevel's.
+ * 
+ * It would probably be cleaner to redo the zoom control APIs to all work on
+ * doubles.
+ */
+ 
+static NautilusZoomLevel
+nautilus_zoom_level_from_double(double zoom_level)
+{
+	int icon_size = floor(zoom_level * NAUTILUS_ICON_SIZE_STANDARD + 0.5);
+	
+	if (icon_size <= NAUTILUS_ICON_SIZE_SMALLEST) {
+		return NAUTILUS_ZOOM_LEVEL_SMALLEST;
+	} else if (icon_size <= NAUTILUS_ICON_SIZE_SMALLER) {
+		return NAUTILUS_ZOOM_LEVEL_SMALLER;
+	} else if (icon_size <= NAUTILUS_ICON_SIZE_SMALL) {
+		return NAUTILUS_ZOOM_LEVEL_SMALL;
+	} else if (icon_size <= NAUTILUS_ICON_SIZE_STANDARD) {
+		return NAUTILUS_ZOOM_LEVEL_STANDARD;
+	} else if (icon_size <= NAUTILUS_ICON_SIZE_LARGE) {
+		return NAUTILUS_ZOOM_LEVEL_LARGE;
+	} else if (icon_size <= NAUTILUS_ICON_SIZE_LARGER) {
+		return NAUTILUS_ZOOM_LEVEL_LARGER;
+	} else {
+		return NAUTILUS_ZOOM_LEVEL_LARGEST;
+	}
+}
+
+/*
+ * Changes the zoom controls setting to the nearest corresponding
+ */
+void
+nautilus_zoom_control_set_zoom_level (NautilusZoomControl *zoom_control, double zoom_level)
+{
+	set_zoom_level (zoom_control, nautilus_zoom_level_from_double(zoom_level));
 }

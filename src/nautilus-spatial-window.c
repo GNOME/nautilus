@@ -1133,6 +1133,14 @@ nautilus_window_set_title_callback (NautilusViewFrame *view,
 	nautilus_window_set_title (window, title, view);
 }
 
+static void
+nautilus_window_zoom_level_changed_callback (NautilusViewFrame *view,
+                                    	     double zoom_level,
+                                    	     NautilusWindow *window)
+{
+	nautilus_zoom_control_set_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control), zoom_level);
+}
+
 void
 nautilus_window_connect_view (NautilusWindow *window, NautilusViewFrame *view)
 {
@@ -1152,6 +1160,7 @@ nautilus_window_connect_view (NautilusWindow *window, NautilusViewFrame *view)
 	CONNECT (report_load_complete);
 	CONNECT (report_load_failed);
 	CONNECT (set_title);
+	CONNECT (zoom_level_changed);
 
 	#undef CONNECT
 
@@ -1201,14 +1210,11 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusViewFrame
 				      GTK_WIDGET (window->content_view));      
 	}
 	
-	if (new_view != NULL) {
-		nautilus_zoom_control_reset_zoom_level
-			(NAUTILUS_ZOOM_CONTROL (window->zoom_control));
-		
+	if (new_view != NULL) {			
 		gtk_widget_show (GTK_WIDGET (new_view));
 		
 		nautilus_view_frame_activate (new_view); 
-		
+
 		/* FIXME bugzilla.eazel.com 1243: 
 		 * We should use inheritance instead of these special cases
 		 * for the desktop window.
