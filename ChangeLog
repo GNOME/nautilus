@@ -1,5 +1,13 @@
 2001-01-26  Eskil Olsen  <eskil@eazel.com>
 
+	reviewed by: Mike Fleming <mfleming@eazel.com>
+
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_done):
+	check username !- NULL before passing to strcasecmp
+
+2001-01-26  Eskil Olsen  <eskil@eazel.com>
+
 	reviewed by: Ramiro Estrugo <ramiro@eazel.com>
 
 	* components/services/install/command-line/eazel-test-packsys.c:

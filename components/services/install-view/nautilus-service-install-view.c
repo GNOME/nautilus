@@ -1342,7 +1342,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 		/* send them to the predetermined "next" url
 		 * -- but only if they haven't set jump-after-install off
 		 */
-		if (strcasecmp (view->details->username, "anonymous") ==0) {
+		if (view->details->username!=NULL && strcasecmp (view->details->username, "anonymous") ==0) {
 			/* send anonymous users elsewhere, so they won't have to login */
 			message = g_strdup (NEXT_URL_ANONYMOUS);
 		} else {
