@@ -1,5 +1,13 @@
 2000-05-25  Darin Adler  <darin@eazel.com>
 
+	* libnautilus/nautilus-view-frame.c:
+	(nautilus_view_get_bonobo_control):
+	Took out an extra bonobo_object_ref that was wreaking havoc.
+	If we want to make this ref the thing before returning it,
+	we'll have to get it right.
+
+2000-05-25  Darin Adler  <darin@eazel.com>
+
 	* RENAMING: Updated to reflect completed tasks.
 	
 	* components/notes/ntl-notes.c: (make_notes_view):
@@ -103,7 +111,7 @@
 	gnet http groks of the package list and now grab the package list with
 	the async ghttp fetch functionality.  Did alot of cleanups in the
 	rpm glue functions to make them more managable.  Removed the prune_xml
-	function i swipped from helixcode since it is no longer needed.
+	function i swiped from Helix Code since it is no longer needed.
 
 2000-05-24  Ramiro Estrugo  <ramiro@eazel.com>
 

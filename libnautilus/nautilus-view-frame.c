@@ -409,7 +409,6 @@ nautilus_view_get_bonobo_control (NautilusView *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
 
-	bonobo_object_ref (BONOBO_OBJECT (view->details->control));
 	return view->details->control;
 }
 
