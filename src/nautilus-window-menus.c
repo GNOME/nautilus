@@ -445,6 +445,7 @@ nautilus_window_about_cb (GtkWidget *widget,
   {
     const char *authors[] = {
       "Darin Adler",
+      "Ramiro Estrugo",
       "Andy Hertzfeld",
       "Elliot Lee",
       "Ettore Perazzoli",
