@@ -1,3 +1,19 @@
+2000-09-04  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Work on task 1588.
+
+	* configure.in:
+	* data/Makefile.am:
+	* data/fonts/.cvsignore:
+	* data/fonts/Makefile.am:
+	* data/fonts/urw/.cvsignore:
+	* data/fonts/urw/Makefile.am:
+	* data/fonts/urw/README:
+	* data/fonts/urw/fonts.dir:
+	Add a fallback font in case no Type1 fonts are found in the
+	system.  This font was plucked from the ghostscript-fonts-5.10a
+	package. See data/fonts/urw/README for more info.
+	
 2000-09-04  Andy Hertzfeld  <andy@eazel.com>
 
 	* icons/Makefile.am:
