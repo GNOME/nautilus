@@ -2448,7 +2448,7 @@ append_selection_menu_subtree (FMDirectoryView *view,
         			   GTK_WIDGET (child_menu));
 }
 
-/* FIXME: John, you bozo, explain this confusing function in a comment
+/* FIXME bugzilla.eazel.com 2734: John, you bozo, explain this confusing function in a comment
  * or redesign it out of existence.
  */
 void
@@ -2578,7 +2578,7 @@ add_open_with_gtk_menu_item (GtkMenu *menu, const char *label)
 {
 	GtkWidget *menu_item;
 	
-	/* FIXME: This is only called to add a separator? */
+	/* FIXME bugzilla.eazel.com 2735: This is only called to add a separator? */
 	if (label != NULL) {
 		menu_item = gtk_menu_item_new_with_label (label);
 	} else {

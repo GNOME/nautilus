@@ -712,7 +712,7 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 	GtkWidget *value_menu; 
 	
 	/* Add the items to the emblems menu here */
-	/* FIXME: What are the variables for thumbnail icon height and width */
+	/* FIXME bugzilla.eazel.com 2738: What are the variables for thumbnail icon height and width */
 
 	value_menu = gtk_menu_new ();
 	customization_data = nautilus_customization_data_new ("emblems",
@@ -751,7 +751,7 @@ emblems_changed_callback (GtkObject *signaller,
 	NautilusSearchBarCriterion *criterion;
 	GtkWidget *menu_widget;
 
-	/* FIXME: check type here in some way */
+	/* FIXME bugzilla.eazel.com 2739: check type here in some way */
 	criterion = NAUTILUS_SEARCH_BAR_CRITERION (data);
 
 	if (criterion->details->type == NAUTILUS_EMBLEM_SEARCH_CRITERION) {

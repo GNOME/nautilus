@@ -39,7 +39,7 @@
 static void
 tree_shlib_object_destroyed (GtkObject *object)
 {
-	/* FIXME: oaf_plugin_unuse can't possibly work! this sucks */
+	/* FIXME bugzilla.eazel.com 2736: oaf_plugin_unuse can't possibly work! this sucks */
 #if 0
 	oaf_plugin_unuse (gtk_object_get_user_data (object));
 #endif

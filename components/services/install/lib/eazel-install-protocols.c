@@ -527,8 +527,7 @@ eazel_install_fetch_package (EazelInstall *service,
 #ifndef EAZEL_INSTALL_SLIM
 			md5_get_digest_from_file (package, md5);
 /*
-  FIXME: bugzilla.eazel.c 2241
-  until we get the md5 set in the xml parse, don't md5 check it
+  FIXME bugzilla.eazel.com 2241: until we get the md5 set in the xml parse, don't md5 check it
 
 			if (strncmp (package->md5, md5, 16)!=0) {
 				g_warning (_("MD5 mismatch, package may be compromised"));

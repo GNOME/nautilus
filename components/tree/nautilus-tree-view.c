@@ -939,8 +939,16 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 static void
 disconnect_model_handlers (NautilusTreeView *view)
 {
-	/* stop monitoring all the nodes, then stop monitoring the
-           whole */
+	NautilusTreeNode *node;
+
+	node = nautilus_tree_model_get_node (view->details->model,
+					     "file:///");
+
+	if (node != NULL) {
+		nautilus_tree_model_stop_monitoring_node_recursive (view->details->model,
+								    node,
+								    view);
+	}
 }
 
 

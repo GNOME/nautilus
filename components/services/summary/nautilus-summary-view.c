@@ -464,7 +464,7 @@ authn_cb_succeeded (const EazelProxy_User *user, gpointer state, CORBA_Environme
 	view->details->pending_operation = Pending_None;
 	gtk_widget_set_sensitive (view->details->login_button, TRUE);
 	
-	/* FIXME-- what now? */
+	/* FIXME bugzilla.eazel.com 2743: what now? */
 
 	g_message ("Login succeeded");
 	
@@ -483,7 +483,7 @@ authn_cb_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *in
 	view->details->pending_operation = Pending_None;
 	gtk_widget_set_sensitive (view->details->login_button, TRUE);
 	
-	/* FIXME-- what now? */
+	/* FIXME bugzilla.eazel.com 2744: what now? */
 
 	g_message ("Login FAILED");
 	
@@ -534,7 +534,7 @@ login_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 
 		if (CORBA_NO_EXCEPTION != ev._major) {
 			g_warning ("Exception during EazelProxy login");
-			/* FIXME cleanup after fail here */ 
+			/* FIXME bugzilla.eazel.com 2745: cleanup after fail here */ 
 		}
 
 		g_free (user_name);
@@ -671,7 +671,7 @@ nautilus_summary_view_initialize (NautilusSummaryView *view)
 	view->details->user_control = (EazelProxy_UserControl) oaf_activate_from_id (IID_EAZELPROXY, 0, NULL, &ev);
 
 	if ( CORBA_NO_EXCEPTION != ev._major ) {
-		/* FIXME user should be warned that Ammonite may not be installed */
+		/* FIXME bugzilla.eazel.com 2740: user should be warned that Ammonite may not be installed */
 		g_warning ("Couldn't instantiate eazel-proxy\n");
 		view->details->user_control = CORBA_OBJECT_NIL;
 	}

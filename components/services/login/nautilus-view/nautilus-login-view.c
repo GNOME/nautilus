@@ -418,7 +418,10 @@ nautilus_login_view_initialize (NautilusLoginView *view)
 	CORBA_exception_init (&ev);
 	view->details->user_control = (EazelProxy_UserControl) oaf_activate_from_id (IID_EAZELPROXY, 0, NULL, &ev);
 	if ( CORBA_NO_EXCEPTION != ev._major ) {
-		/* FIXME user should be warned that Ammonite may not be installed */
+		/* FIXME bugzilla.eazel.com 2740: user should be
+		 * warned that Ammonite may not be installed 
+		 */
+
 		g_warning ("Couldn't instantiate eazel-proxy");
 		view->details->user_control = CORBA_OBJECT_NIL;
 	}

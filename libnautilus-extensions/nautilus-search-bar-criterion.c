@@ -699,7 +699,7 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 	GtkWidget *value_option_menu, *value_menu; 
 	
 	/* Add the items to the emblems menu here */
-	/* FIXME: What are the variables for thumbnail icon height and width */
+	/* FIXME bugzilla.eazel.com 2738: What are the variables for thumbnail icon height and width */
 	value_option_menu = gtk_option_menu_new ();
 	value_menu = gtk_menu_new ();
 	customization_data = nautilus_customization_data_new ("emblems",
