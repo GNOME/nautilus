@@ -1,3 +1,40 @@
+2000-12-29  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Gene Ragan <gzr@eazel.com>
+
+	Fixed bug 5374 (No-longer-mounted removable media linger as
+	generic icons upon restart).
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(free_volume_black_list): Save code by using
+	nautilus_g_list_free_deep.
+	(create_mount_link): Save some g_strdup calls by using const char
+	* for the icon_name.
+	(fm_desktop_icon_view_initialize): Simplify the code that creates
+	the black list by creating a local variable.
+	(unlink_and_notify): Helper function that deletes a file and
+	notifies the NautilusDirectory/File framework.
+	(volume_unmounted_callback): Call unlink_and_notify to do the work.
+	(create_link_callback): Pass NULL for default values when setting
+	metadata, since we always want to set the metadata.
+	(icon_view_create_nautilus_links): Avoid a storage leak by using
+	const char * for the icon name.
+	(update_link_and_delete_copies): New function shared for both the
+	home and trash link cases. Simpler because it just lets the
+	nautilus_link_xxx functions handle file vs. directory and . and
+	.. and doesn't bother doing a stat itself. Also fixes leaks that
+	were in the old versions as well as the questionable practice of
+	using chdir instead of full paths. Also changes the logic to
+	delete any links with the right type but wrong name, rather than
+	trying to rename the first icon found of the right type.
+	(update_home_link_and_delete_copies): Use the shared
+	function. Also don't bother making unused home_link_path.
+	(update_trash_link_and_delete_copies): Use the new shared
+	function.
+	(delete_all_mount_links): Turns out we can use the shared function
+	for this case too just by passing in a name that will never match
+	any existing link's name ("").
+
 2000-12-29  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-global-preferences.h:
