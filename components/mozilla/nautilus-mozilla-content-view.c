@@ -61,6 +61,7 @@
 #include <libgnomeui/gnome-dialog-util.h>
 
 #include <eel/eel-stock-dialogs.h>
+#include <eel/eel-gtk-macros.h>
 
 #ifdef HAVE_AMMONITE
 #include <libtrilobite/libammonite-gtk.h>
@@ -228,32 +229,9 @@ static void bonobo_control_activate_callback (BonoboObject *control, gboolean st
 /***********************************************************************************/
 /***********************************************************************************/
 
-static GtkVBoxClass *parent_class = NULL;
-
-GtkType
-nautilus_mozilla_content_view_get_type (void)
-{
-	static GtkType mozilla_content_view_type = 0;
-	
-	if (!mozilla_content_view_type)
-	{
-		static const GtkTypeInfo mozilla_content_view_info =
-		{
-			"NautilusMozillaContentView",
-			sizeof (NautilusMozillaContentView),
-			sizeof (NautilusMozillaContentViewClass),
-			(GtkClassInitFunc) nautilus_mozilla_content_view_initialize_class,
-			(GtkObjectInitFunc) nautilus_mozilla_content_view_initialize,
-			/* reserved_1 */ NULL,
-			/* reserved_2 */ NULL,
-			(GtkClassInitFunc) NULL,
-		};
-		
-		mozilla_content_view_type = gtk_type_unique (GTK_TYPE_VBOX, &mozilla_content_view_info);
-	}
-	
-	return mozilla_content_view_type;
-}
+EEL_DEFINE_CLASS_BOILERPLATE (NautilusMozillaContentView,
+			      nautilus_mozilla_content_view,
+			      GTK_TYPE_VBOX);
 
 static void
 nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass *klass)
@@ -262,8 +240,6 @@ nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass 
 	
 	object_class = GTK_OBJECT_CLASS (klass);
 
-	parent_class = gtk_type_class (GTK_TYPE_VBOX);
-	
 	object_class->destroy = nautilus_mozilla_content_view_destroy;
 
 	pre_widget_initialize ();
@@ -385,11 +361,9 @@ nautilus_mozilla_content_view_destroy (GtkObject *object)
 	cancel_pending_vfs_operation (view);
 
 	g_free (view->details);
-	
-	if (GTK_OBJECT_CLASS (parent_class)->destroy) {
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
-	}
 
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
 }
 

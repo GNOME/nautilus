@@ -33,7 +33,7 @@
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
 #include <gtkmozembed.h>
-
+#include <eel/eel-debug.h>
 
 #include <gconf/gconf.h>
 
@@ -174,6 +174,13 @@ main (int argc, char *argv[])
 	gdk_rgb_init ();
 	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+
+	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
+	 * Unfortunately, this has to be done explicitly for each domain.
+	 */
+	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
+		eel_make_warnings_and_criticals_stop_in_debugger (G_LOG_DOMAIN, NULL);
+	}
 
 	/* the fake_argv thing is just superstition.  I just don't
 	 * want gconf mucking with my args
