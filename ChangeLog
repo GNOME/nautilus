@@ -1,5 +1,14 @@
 2004-10-21  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-spatial-window.c:
+	(location_menu_item_activated_callback),
+	(location_button_clicked_callback):
+	Select parent item when going up via parent menu.
+	
+	Patch from Jimmy Do <crispyleaves@gmail.com>
+
+2004-10-21  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-dnd.[ch]:
 	(auto_scroll_timeout_callback), (drag_leave_callback),
 	(drag_highlight_expose), (dnd_highlight_queue_redraw),

@@ -445,15 +445,25 @@ location_menu_item_activated_callback (GtkWidget *menu_item,
 
 	if (!gnome_vfs_uri_equal (uri, window->details->location))
 	{
+		gboolean close_behind;
+		GList *selection;
+		GnomeVFSURI *child_uri;
+
+		close_behind = FALSE;
+		selection = NULL;
+		child_uri = g_object_get_data (G_OBJECT(menu_item), "child_uri");
+		if (child_uri != NULL) {
+			char *child_location;
+			child_location = gnome_vfs_uri_to_string (child_uri, GNOME_VFS_URI_HIDE_NONE);
+			selection = g_list_prepend (NULL, child_location);
+		}
 		if (event != NULL && ((GdkEventAny *) event)->type == GDK_BUTTON_RELEASE &&
 		   (((GdkEventButton *) event)->button == 2 ||
 		   (((GdkEventButton *) event)->state & GDK_SHIFT_MASK) != 0))
 		{
-			nautilus_window_open_location (NAUTILUS_WINDOW (window), location, TRUE);
-		} else {
-			nautilus_window_open_location (NAUTILUS_WINDOW (window), location, FALSE);
+			close_behind = TRUE;
 		}
-		
+		nautilus_window_open_location_with_selection (NAUTILUS_WINDOW (window), location, selection, close_behind);
 	}
 
 	if (event != NULL) {
@@ -504,6 +514,7 @@ location_button_clicked_callback (GtkWidget *widget, NautilusSpatialWindow *wind
 {
 	GtkWidget *popup, *menu_item, *first_item;
 	GnomeVFSURI *uri;
+	GnomeVFSURI *child_uri;
 	char *name;
 	GMainLoop *loop;
 
@@ -513,6 +524,7 @@ location_button_clicked_callback (GtkWidget *widget, NautilusSpatialWindow *wind
 	popup = gtk_menu_new ();
 	first_item = NULL;
 	uri = gnome_vfs_uri_ref (window->details->location);
+	child_uri = NULL;
 	while (uri != NULL) {
 		name = nautilus_get_uri_shortname_for_display (uri);
 		menu_item = gtk_image_menu_item_new_with_label (name);
@@ -526,9 +538,11 @@ location_button_clicked_callback (GtkWidget *widget, NautilusSpatialWindow *wind
 				  G_CALLBACK (location_menu_item_activated_callback),
 				  window);
 		g_object_set_data_full (G_OBJECT (menu_item), "uri", uri, (GDestroyNotify)gnome_vfs_uri_unref);
+		g_object_set_data_full (G_OBJECT (menu_item), "child_uri", child_uri, (GDestroyNotify)gnome_vfs_uri_unref);
 
 		gtk_menu_shell_prepend (GTK_MENU_SHELL (popup), menu_item);
 
+		child_uri = gnome_vfs_uri_ref (uri);
 		uri = gnome_vfs_uri_get_parent (uri);
 	}
 	gtk_menu_set_screen (GTK_MENU (popup), gtk_widget_get_screen (widget));
