@@ -530,7 +530,10 @@ clear_appended_bookmark_items (NautilusWindow *window,
                 	bonobo_ui_handler_menu_get_callback (window->ui_handler, p->data, 
                 					     NULL, &callback_data, NULL);
                 	bookmark_holder = (BookmarkHolder *)callback_data;
-                	gtk_signal_disconnect_by_data (GTK_OBJECT (bookmark_holder->bookmark), window);
+			/* bookmark_holder is NULL for separator in Bookmarks menu */
+                	if (bookmark_holder != NULL) {
+	                	gtk_signal_disconnect_by_data (GTK_OBJECT (bookmark_holder->bookmark), window);
+                	}
                         bonobo_ui_handler_menu_remove (window->ui_handler, p->data);
 		} else if (strcmp ((const char *) p->data, last_static_item_path) == 0) {
 			found_dynamic_items = TRUE;

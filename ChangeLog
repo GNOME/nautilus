@@ -1,5 +1,11 @@
 2000-06-16  John Sullivan  <sullivan@eazel.com>
 
+	* src/nautilus-window-menus.c: (clear_appended_bookmark_items):
+	Added a NULL check that prevents it from crashing when you
+	add bookmarks or change themes.
+
+2000-06-16  John Sullivan  <sullivan@eazel.com>
+
 	More work towards bug 1401 (bookmark icon never updates).
 	You can avoid some warnings if you get the latest Bonobo.
 
