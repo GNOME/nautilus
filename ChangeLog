@@ -1,3 +1,15 @@
+2000-07-10  Robey Pointer  <robey@eazel.com>
+
+	* components/services/trilobite/helper/.cvsignore:
+	* components/services/trilobite/helper/Makefile.am:
+	* components/services/trilobite/helper/eazel-helper.pam:
+	* components/services/trilobite/helper/eazel-helper.security.in:
+
+	Add Makefile.am magic to autogenerate eazel-helper.security from
+	the .in file and copy eazel-helper.pam and eazel-helper.security
+	into the proper directory (well, right now, into /gnome/etc, but
+	that's a separate issue).
+	
 2000-07-10  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/docs/installer-rpmsearch:
