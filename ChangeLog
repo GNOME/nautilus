@@ -1,3 +1,13 @@
+2001-03-20  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Ian McKellar  <ian@eazel.com>
+
+	* Makefile.am, configure.in, nautilus-config.in, nautilus.spec.in,
+	nautilusConf.sh.in, .cvsignore: Add nautilus-config and
+	nautilusConf.sh so other modules can sensibly depend on
+	libnautilus (this fix should make it into 1.0.2, I guess I should
+	file a bug at some point).
+
 2001-03-20  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>

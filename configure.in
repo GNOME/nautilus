@@ -901,6 +901,23 @@ dnl =======================
 dnl = End tests for libpng
 dnl =======================
 
+
+dnl =======================
+dnl = Set up for library directories
+dnl =======================
+
+NAUTILUS_LIBS="-lnautilus `gnome-config --libs bonobox gnomeui gtk vfs`"
+NAUTILUS_LIBDIR='-L${libdir}'
+NAUTILUS_INCLUDEDIR='-I${includedir} '" `gnome-config --cflags bonobox gnomeui gtk vfs`"
+AC_SUBST(NAUTILUS_LIBDIR)
+AC_SUBST(NAUTILUS_INCLUDEDIR)
+AC_SUBST(NAUTILUS_LIBS)
+
+dnl =======================
+dnl = End set up for library directories
+dnl =======================
+
+
 dnl Checks for i18n
 ALL_LINGUAS="az ca da de el en_GB es fi fr ga gl hu it ja ko nl nn no pl pt_BR ru sk sl sv ta tr uk zh_TW.Big5"
 AM_GNOME_GETTEXT
