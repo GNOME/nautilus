@@ -127,6 +127,13 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
                                                      navinfo->content_identifiers, 
                                                      nautilus_view_identifier_new (navinfo->default_content_iid, "Text"));
     }
+  else if(!strncmp(navinfo->navinfo.content_type, "image/", 6))
+    {
+      navinfo->default_content_iid = "embeddable:image-generic";
+      navinfo->content_identifiers = g_slist_append (
+                                                     navinfo->content_identifiers, 
+                                                     nautilus_view_identifier_new (navinfo->default_content_iid, "Image"));
+    }
   else if(!strcmp(navinfo->navinfo.content_type, "special/directory")
           || !strcmp(navinfo->navinfo.content_type, "application/x-nautilus-vdir"))
     {

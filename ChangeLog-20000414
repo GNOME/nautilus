@@ -1,5 +1,12 @@
 2000-02-23  Maciej Stachowiak  <mjs@eazel.com>
 
+	* src/ntl-uri-map.c (my_notify_when_ready): Use EOG as the in-line
+	image viewer. You need to have EOG from CVS installed for this to
+	work. It still has issues - the control zooms the image to fill
+	available space by default, and there is no zooming support. But
+	it's amazing that one line was enough to do this, and it worked on
+	the first try! Bonobo rules.
+	
 	* libnautilus/nautilus-icons-view-icon-item.c
 	(nautilus_icons_view_icon_item_set_emblems): Nautilus was getting
 	an assertion failure on startup, so I weakened the
