@@ -341,10 +341,15 @@ nautilus_bookmarks_exiting (void)
 static void
 add_bookmark_for_current_location (NautilusNavigationWindow *window)
 {
+	NautilusBookmark *bookmark;
+
 	g_return_if_fail (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
-	nautilus_bookmark_list_append (get_bookmark_list (), 
-				       NAUTILUS_WINDOW (window)->current_location_bookmark);
+	bookmark = NAUTILUS_WINDOW (window)->current_location_bookmark;
+
+	if (!nautilus_bookmark_list_contains (get_bookmark_list (), bookmark)) {
+		nautilus_bookmark_list_append (get_bookmark_list (), bookmark); 
+	}
 }
 
 static void
