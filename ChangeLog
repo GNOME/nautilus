@@ -1,3 +1,10 @@
+2002-02-26  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_display_name): Patch from Havard Wigtil
+	that makes us return the right name, rather than returning
+	an already-freed pointer.
+
 2002-02-25  Darin Adler  <darin@bentspoon.com>
 
 	* configure.in: Bump version.
