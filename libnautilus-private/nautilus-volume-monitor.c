@@ -50,6 +50,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-messagebox.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <pthread.h>
 #include <stdio.h>
@@ -196,6 +197,8 @@ struct NautilusVolume {
 
 struct NautilusVolumeMonitorDetails
 {
+	GnomeVFSMonitorHandle *monitor_handle;
+
 	GList *mounts;
 	GList *removable_volumes;
 	guint mount_volume_timer_id;
@@ -218,6 +221,7 @@ enum {
 	VOLUME_UNMOUNT_STARTED,
 	VOLUME_UNMOUNT_FAILED,
 	VOLUME_UNMOUNTED,
+	REMOVABLE_VOLUMES_CHANGED,
 	LAST_SIGNAL
 };
 static guint signals[LAST_SIGNAL];
@@ -225,6 +229,7 @@ static guint signals[LAST_SIGNAL];
 
 static void            nautilus_volume_monitor_init       (NautilusVolumeMonitor      *desktop_mounter);
 static void            nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass);
+static void            nautilus_volume_monitor_dispose          (GObject                    *object);
 static void            nautilus_volume_monitor_finalize         (GObject                    *object);
 static char *          get_iso9660_volume_name                  (NautilusVolume             *volume,
 								 int                         volume_fd);
@@ -250,6 +255,8 @@ static int             get_cdrom_type                           (const char     
 static void            nautilus_file_system_type_free           (NautilusFileSystemType     *type);
 static gboolean        entry_is_supermounted_volume             (const MountTableEntry *ent, 
 								 const NautilusVolume *volume);
+
+static void            verify_current_mount_state               (NautilusVolumeMonitor *monitor);
 
 #ifdef HAVE_CDDA
 static gboolean        locate_audio_cd                          (void);
@@ -312,6 +319,32 @@ load_file_system_table (void)
 }
 
 static void
+update_removable_volumes (NautilusVolumeMonitor *monitor)
+{
+	free_mount_list (monitor->details->removable_volumes);
+
+	monitor->details->removable_volumes = get_removable_volumes (monitor);
+
+	g_signal_emit (monitor, signals[REMOVABLE_VOLUMES_CHANGED], 0);
+
+	verify_current_mount_state (monitor);	
+}
+
+static void
+fstab_monitor_callback (GnomeVFSMonitorHandle *handle,
+			const char *monitor_uri,
+			const char *info_uri,
+			GnomeVFSMonitorEventType event_type,
+			gpointer user_data)
+{
+	NautilusVolumeMonitor *monitor;
+
+	monitor = NAUTILUS_VOLUME_MONITOR (user_data);
+
+	update_removable_volumes (monitor);
+}
+
+static void
 nautilus_volume_monitor_init (NautilusVolumeMonitor *monitor)
 {
 	/* Set up details */
@@ -320,6 +353,12 @@ nautilus_volume_monitor_init (NautilusVolumeMonitor *monitor)
 	monitor->details->file_system_table = load_file_system_table ();
 	monitor->details->removable_volumes = get_removable_volumes (monitor);
 	find_volumes (monitor);
+
+	gnome_vfs_monitor_add (&monitor->details->monitor_handle,
+			       "file:///etc/fstab",
+			       GNOME_VFS_MONITOR_FILE,
+			       fstab_monitor_callback,
+			       monitor);
 }
 
 static void
@@ -329,6 +368,7 @@ nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass)
 
 	object_class = G_OBJECT_CLASS (klass);
 
+	object_class->dispose = nautilus_volume_monitor_dispose;
 	object_class->finalize = nautilus_volume_monitor_finalize;
 
 	signals[VOLUME_MOUNTED] 
@@ -371,6 +411,16 @@ nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass)
 		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1, G_TYPE_POINTER);
 
+	signals[REMOVABLE_VOLUMES_CHANGED] 
+		= g_signal_new ("removable_volumes_changed",
+		                G_TYPE_FROM_CLASS (object_class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusVolumeMonitorClass, 
+						     removable_volumes_changed),
+		                NULL, NULL,
+		                g_cclosure_marshal_VOID__VOID,
+		                G_TYPE_NONE, 0);
+
 	/* Check environment a bit. */
 	if (g_file_test ("/vol/dev", G_FILE_TEST_EXISTS)) {
 		floppy_device_path_prefix = "/vol/dev/diskette/";
@@ -384,6 +434,21 @@ nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass)
 	}
 	mnttab_exists = g_file_test ("/etc/mnttab",
 				     G_FILE_TEST_EXISTS);
+}
+
+static void
+nautilus_volume_monitor_dispose (GObject *object)
+{
+	NautilusVolumeMonitor *monitor;
+	
+	monitor = NAUTILUS_VOLUME_MONITOR (object);
+
+	if (monitor->details->monitor_handle) {
+		gnome_vfs_monitor_cancel (monitor->details->monitor_handle);
+		monitor->details->monitor_handle = NULL;
+	}
+
+	EEL_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
 }
 
 static void
@@ -452,6 +517,7 @@ floppy_sort (const NautilusVolume *volume1, const NautilusVolume *volume2)
 	if (!is_floppy_1 && is_floppy_2) {
 		return +1;
 	}
+
 	return 0;
 }
 
