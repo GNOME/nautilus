@@ -288,6 +288,7 @@ restore_editable_from_undo_snapshot_callback (GtkObject *target, gpointer callba
  * Both here and in nautilus-shell-ui.xml.
  */
 
+/* FIXME bugzilla.eazel.com 3515: Undo doesn't work */
 #ifdef UNDO_ENABLED
 
 /* FIXME: This needs a return value of gboolean. */
@@ -322,6 +323,7 @@ editable_key_press_event (GtkEditable *editable, GdkEventKey *event, gpointer us
 void 
 nautilus_undo_editable_set_undo_key (GtkEditable *editable, gboolean value)
 {
+/* FIXME bugzilla.eazel.com 3515: Undo doesn't work */
 #ifdef UNDO_ENABLED
 	if (value) {
 		/* Connect to entry signals */

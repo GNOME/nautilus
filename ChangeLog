@@ -1,3 +1,20 @@
+2000-12-01  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	Worked around without fixing cause of bug 2151 (crash in
+	Undo manager on quit). We can defer fixing the bug properly
+	until we have Undo working again.
+
+	* libnautilus-extensions/nautilus-undo-signal-handlers.c:
+	(nautilus_undo_editable_set_undo_key): Added FIXMEs with bug
+	number 3515 ("Undo doesn't work").
+	* src/nautilus-shell-ui.xml: Added FIXME with bug number 3515.
+
+	* src/file-manager/fm-properties-window.c: (create_basic_page),
+	(create_properties_window_callback): #ifdeffed out undo code
+	and added FIXME with bug number 2151.
+
 2000-12-01  Pavel Cisler <pavel@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

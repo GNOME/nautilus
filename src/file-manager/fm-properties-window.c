@@ -1158,10 +1158,19 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 	/* Update name field initially before hooking up changed signal. */
 	name_field_update_to_match_file (NAUTILUS_ENTRY (name_field));
 
+/* FIXME bugzilla.eazel.com 2151:
+ * With this (and one place elsewhere in this file, not sure which is the
+ * trouble-causer) code in place, bug 2151 happens (crash on quit). Since
+ * we've removed Undo from Nautilus for now, I'm just ifdeffing out this
+ * code rather than trying to fix 2151 now. Note that it might be possible
+ * to fix 2151 without making Undo actually work, it's just not worth the
+ * trouble.
+ */
+#ifdef UNDO_ENABLED
 	/* Set up name field for undo */
 	nautilus_undo_set_up_nautilus_entry_for_undo ( NAUTILUS_ENTRY (name_field));
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (name_field), TRUE);
-
+#endif
 	gtk_signal_connect (GTK_OBJECT (name_field), "focus_in_event",
       	              	    GTK_SIGNAL_FUNC (name_field_focus_in),
                             NULL);
@@ -1903,7 +1912,12 @@ create_properties_window_callback (NautilusFile *file, gpointer data)
 	new_window = create_properties_window (file);
 	g_hash_table_insert (windows, file, new_window);
 
+/* FIXME bugzilla.eazel.com 2151:
+ * See comment elsewhere in this file about bug 2151.
+ */
+#ifdef UNDO_ENABLED
 	nautilus_undo_share_undo_manager (GTK_OBJECT (new_window), GTK_OBJECT (data));
+#endif	
 	nautilus_gtk_window_present (GTK_WINDOW (new_window));
 }
 
