@@ -1,3 +1,13 @@
+2001-02-06  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 6375, Certain menu shortcuts don't work when
+	insertion point is in location bar.
+	
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_key_press):
+	Filter out alt and control keyboard events and don't
+	allow them to be passed to the parent GtkEntry.
+	
 2001-02-06  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Gene Ragan <gzr@eazel.com>

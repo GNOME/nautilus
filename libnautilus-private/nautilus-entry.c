@@ -209,12 +209,19 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 		 * Enter key.
 		 */
 		gtk_widget_activate (widget);
-		return TRUE;
+		return TRUE;		
 		
 	default:
 		break;
 	}
 
+	/* Filter out default GTKEntry alt and control key bindings. They have numerous conflicts
+	 * with Nautilus menu keyboard accelerators.
+	 */		
+	if (event->state & GDK_CONTROL_MASK || event->state & GDK_MOD1_MASK) {
+		return FALSE;
+	}
+	
 	obscure_cursor (entry);
 
 	return_code = NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS,
