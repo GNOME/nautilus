@@ -694,44 +694,6 @@ static xmlSAXHandler parser = {
 	(cdataBlockSAXFunc) cdata_block
 };
 
-#if 0
-static xmlDocPtr
-xml_parse_document (gchar *filename)
-{
-	/* This function is ripped from parser.c in libxml but slightly
-	 * modified so as not to spew debug warnings all around */
-	xmlDocPtr ret;
-	xmlParserCtxtPtr ctxt;
-	char *directory;
-
-	directory = NULL;
-
-	ctxt = xmlCreateFileParserCtxt(filename);
-	if (ctxt == NULL) {
-		return (NULL);
-	}
-	ctxt->sax = NULL; /* This line specifically stops the warnings */
-	
-	if ((ctxt->directory == NULL) && (directory == NULL))
-		directory = xmlParserGetDirectory (filename);
-	if ((ctxt->directory == NULL) && (directory != NULL))
-		ctxt->directory = (char *) xmlStrdup ((xmlChar *) directory);
-
-	xmlParseDocument (ctxt);
-
-	if (ctxt->wellFormed) {
-		ret = ctxt->myDoc;
-	} else {
-		ret = NULL;
-		xmlFreeDoc (ctxt->myDoc);
-		ctxt->myDoc = NULL;
-	}
-	xmlFreeParserCtxt (ctxt);
-	
-	return (ret);
-}
-#endif
-
 void
 print_footer (const char *prev, const char *home, const char *next)
 {
@@ -742,21 +704,27 @@ print_footer (const char *prev, const char *home, const char *next)
 	if (prev == NULL) {
 		g_print ("&nbsp;");
 	} else {
-		g_print ("<A HREF=\"%s\">&#60;&#60;&#60; Previous</A>", prev);
+		g_print ("<A HREF=\"%s\">&#60;&#60;&#60; ", prev);
+		g_print (_("Previous"));
+		g_print ("</A>");
 	}
 
 	g_print ("</TD>\n<TD WIDTH=\"34%%\" ALIGN=\"CENTER\" VALIGN=\"TOP\">");
 	if (home == NULL) {
 		g_print ("&nbsp;");
 	} else {
-		g_print ("<A HREF=\"%s\">Home</A>", home);
+		g_print ("<A HREF=\"%s\">", home);
+		g_print (_("Home"));
+		g_print ("</A>");
 	}
 
 	g_print ("</TD>\n<TD WIDTH=\"33%%\" ALIGN=\"RIGHT\" VALIGN=\"TOP\">");
 	if (next == NULL) {
 		g_print ("&nbsp;");
 	} else {
-		g_print ("<A HREF=\"%s\">Next &#62;&#62;&#62;</A>", next);
+		g_print ("<A HREF=\"%s\">", next);
+		g_print (_("Next"));
+		g_print (" &#62;&#62;&#62;</A>");
 	}
 
 	g_print ("</TD>\n</TR></TABLE>\n");
@@ -823,9 +791,6 @@ parse_file (gchar *filename, gchar *section, char *arg)
 	context->ParserCtxt->sax = &parser;
 	context->ParserCtxt->validate = 1;
 	context->ParserCtxt->version = xmlStrdup (XML_DEFAULT_VERSION); 
-#if 0
-	context->ParserCtxt->myDoc = xml_parse_document (filename);
-#endif
 	xmlSubstituteEntitiesDefault (1);
 
 	dirpointer = strrchr (arg, '/');
@@ -886,7 +851,6 @@ main (int argc, char *argv[])
 	gchar *ptr2;
 
 	if (argc != 2) {
-		/* It is '?SECTIONID' not '#SECTIONID' */
 		g_print ("Usage:  gnome-db2html2 FILE[?SECTIONID]\n\n");
 		return 0;
 	}

@@ -1,9 +1,10 @@
 
 #include <config.h>
+#include <gnome.h>
 #include "sect-elements.h"
 #include "toc-elements.h"
 
-
+static gboolean in_printed_title = FALSE;
 typedef struct _TocContext TocContext;
 struct _TocContext {
 	HeaderInfo *header;
@@ -55,21 +56,21 @@ ElementInfo toc_elements[] = {
 	{ HOLDER, "holder", NULL, NULL, (charactersSAXFunc) toc_copyright_characters},
 	{ TITLE, "title", (startElementSAXFunc) toc_title_start_element, (endElementSAXFunc) toc_title_end_element, (charactersSAXFunc) toc_title_characters },
 	{ SUBTITLE, "subtitle", (startElementSAXFunc) toc_title_start_element, (endElementSAXFunc) toc_title_end_element, (charactersSAXFunc) toc_title_characters },
-	{ ULINK, "ulink", NULL, NULL, NULL},
+	{ ULINK, "ulink", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
 	{ XREF, "xref", NULL, NULL, NULL},
-	{ FOOTNOTE, "footnote", NULL, NULL, NULL},
+	{ FOOTNOTE, "footnote", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
 	{ FIGURE, "figure", NULL, NULL, NULL},
 	{ GRAPHIC, "graphic", NULL, NULL, NULL},
-	{ CITETITLE, "citetitle", NULL, NULL, NULL},
-	{ APPLICATION, "application", NULL, NULL, NULL},
-	{ FILENAME, "filename", NULL, NULL, NULL},
+	{ CITETITLE, "citetitle", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ APPLICATION, "application", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ FILENAME, "filename", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
 	{ ITEMIZEDLIST, "itemizedlist", NULL, NULL, NULL},
 	{ ORDEREDLIST, "orderedlist", NULL, NULL, NULL},
 	{ VARIABLELIST, "variablelist", NULL, NULL, NULL},
 	{ LISTITEM, "listitem", NULL, NULL, NULL},
 	{ PROGRAMLISTING, "programlisting", NULL, NULL, NULL},
-	{ SGMLTAG, "sgmltag", NULL, NULL, NULL},
-	{ EMPHASIS, "emphasis", NULL, NULL, NULL},
+	{ SGMLTAG, "sgmltag", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ EMPHASIS, "emphasis", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
 	{ TIP, "tip", NULL, NULL, NULL},
 	{ WARNING, "warning", NULL, NULL, NULL},
 	{ IMPORTANT, "important", NULL, NULL, NULL},
@@ -78,38 +79,38 @@ ElementInfo toc_elements[] = {
 	{ SCREEN, "screen", NULL, NULL, NULL},
 	{ SCREENSHOT, "screenshot", NULL, NULL, NULL},
 	{ SCREENINFO, "screeninfo", NULL, NULL, NULL},
-	{ COMMAND, "command", NULL, NULL, NULL},
-	{ REPLACEABLE, "replaceable", NULL, NULL, NULL},
+	{ COMMAND, "command", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ REPLACEABLE, "replaceable", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
 	{ FUNCTION, "function", NULL, NULL, (charactersSAXFunc) toc_tag_characters},
-	{ GUIBUTTON, "guibutton", NULL, NULL, NULL},
-	{ GUIICON, "guiicon", NULL, NULL, NULL},
-	{ GUILABEL, "guilabel", NULL, NULL, NULL},
-	{ GUIMENU, "guimenu", NULL, NULL, NULL},
-	{ GUIMENUITEM, "guimenuitem", NULL, NULL, NULL},
-	{ HARDWARE, "hardware", NULL, NULL, NULL},
-	{ KEYCAP, "keycap", NULL, NULL, NULL},
-	{ KEYCODE, "keycode", NULL, NULL, NULL},
-	{ KEYSYM, "keysym", NULL, NULL, NULL},
-	{ LITERAL, "literal", NULL, NULL, NULL},
-	{ PARAMETER, "parameter", NULL, NULL, NULL},
-	{ PROMPT, "prompt", NULL, NULL, NULL},
-	{ SYMBOL, "symbol", NULL, NULL, NULL},
-	{ USERINPUT, "userinput", NULL, NULL, NULL},
+	{ GUIBUTTON, "guibutton", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ GUIICON, "guiicon", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ GUILABEL, "guilabel", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ GUIMENU, "guimenu", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ GUIMENUITEM, "guimenuitem", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ HARDWARE, "hardware", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ KEYCAP, "keycap", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ KEYCODE, "keycode", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ KEYSYM, "keysym", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ LITERAL, "literal", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ PARAMETER, "parameter", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ PROMPT, "prompt", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ SYMBOL, "symbol", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ USERINPUT, "userinput", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
 	{ CAUTION, "caution", NULL, NULL, NULL},
 	{ LEGALPARA, "legalpara", NULL, NULL, NULL},
-	{ FIRSTTERM, "firstterm", NULL, NULL, NULL},
-	{ STRUCTNAME, "structname", NULL, NULL, NULL},
-	{ STRUCTFIELD, "structfield", NULL, NULL, NULL},
+	{ FIRSTTERM, "firstterm", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ STRUCTNAME, "structname", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ STRUCTFIELD, "structfield", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
 	{ FUNCSYNOPSIS, "funcsynopsis", NULL, NULL, NULL},
 	{ FUNCPROTOTYPE, "funcprototype", NULL, NULL, NULL},
 	{ FUNCDEF, "funcdef", NULL, NULL, NULL},
 	{ FUNCPARAMS, "funcparams", NULL, NULL, NULL},
 	{ PARAMDEF, "paramdef", NULL, NULL, NULL},
 	{ VOID, "void", NULL, NULL, NULL},
-	{ GUISUBMENU, "guisubmenu", NULL, NULL, NULL},
-	{ INTERFACE, "interface", NULL, NULL, NULL},
-	{ LINK, "link", NULL, NULL, NULL},
-	{ MENUCHOICE, "menuchoice", NULL, NULL, NULL},
+	{ GUISUBMENU, "guisubmenu", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ INTERFACE, "interface", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ LINK, "link", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ MENUCHOICE, "menuchoice", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
 	{ TABLE, "table", NULL, NULL, NULL},
 	{ INFORMALTABLE, "informaltable", NULL, NULL, NULL},
 	{ ROW, "row",  NULL, NULL, NULL},
@@ -117,18 +118,18 @@ ElementInfo toc_elements[] = {
 	{ THEAD, "thead", NULL, NULL, NULL},
 	{ TBODY, "tbody", NULL, NULL, NULL},
 	{ ACRONYM, "acronym", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
-	{ MARKUP, "markup", NULL, NULL, NULL},
+	{ MARKUP, "markup", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
 	{ SIMPLELIST, "simplelist", NULL, NULL, NULL},
 	{ MEMBER, "member", NULL, NULL, NULL},
-	{ MOUSEBUTTON, "mousebutton", NULL, NULL, NULL},
-	{ SUPERSCRIPT, "superscript", NULL, NULL, NULL},
-	{ SYSTEMITEM, "systemitem", NULL, NULL, NULL},
-	{ VARNAME, "varname", NULL, NULL, NULL},
+	{ MOUSEBUTTON, "mousebutton", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ SUPERSCRIPT, "superscript", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ SYSTEMITEM, "systemitem", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ VARNAME, "varname", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
 	{ BLOCKQUOTE, "blockquote", NULL, NULL, NULL},
-	{ QUOTE, "quote", NULL, NULL, NULL},
-	{ OPTION, "option", NULL, NULL, NULL},
-	{ ENVAR, "envar", NULL, NULL, NULL},
-	{ COMPUTEROUTPUT, "computeroutput", NULL, NULL, NULL},
+	{ QUOTE, "quote", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ OPTION, "option", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ ENVAR, "envar", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
+	{ COMPUTEROUTPUT, "computeroutput", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
 	{ INLINEGRAPHIC, "inlinegraphic", NULL, NULL, NULL},
 	{ LEGALNOTICE, "legalnotice", NULL, NULL, NULL},
 	{ QUESTION, "question", NULL, NULL, NULL},
@@ -295,7 +296,7 @@ toc_artheader_end_element (Context *context, const gchar *name)
 	if (header->title)
 		g_print ("<TITLE>%s</TITLE>\n</HEAD>\n", header->title);
 	else
-		g_print ("<TITLE>GNOME Documentation</TITLE>\n</HEAD>\n");
+		g_print ("<TITLE>%s</TITLE>\n</HEAD>\n", _("GNOME Documentation"));
 
 	g_print ("<BODY BGCOLOR=\"#FFFFFF\" TEXT=\"#000000\" LINK=\"#0000FF\" VLINK=\"#840084\" ALINK=\"#0000FF\">\n");
 	g_print ("<TABLE><TR><TD VALIGN=\"TOP\">\n");
@@ -325,8 +326,9 @@ toc_artheader_end_element (Context *context, const gchar *name)
 	}
 	g_print ("<P>");
 	if ((header->copyright_holder) && (header->copyright_year))
-		g_print ("<A HREF=\"gnome-help:%s?legalnotice\">Copyright</A> &copy; %s by %s", context->base_file, header->copyright_year, header->copyright_holder);
-	g_print ("<HR>\n<H2>Table of Contents</H2>\n\n");
+		g_print ("<A HREF=\"gnome-help:%s?legalnotice\">%s</A> &copy; %s %s %s",
+			 context->base_file, _("Copyright"), header->copyright_year, _("by"),header->copyright_holder);
+	g_print ("<HR>\n<H2>%s</H2>\n\n", _("Table of Contents"));
 	g_print ("<P>\n");
 }
 
@@ -471,6 +473,7 @@ toc_title_start_element (Context *context,
 	case SECTION:
 	case APPENDIX:
 	case GLOSSDIV:
+		in_printed_title = TRUE;
 		if (context->sect1 == 0) {
 			g_print ("<DT>");
 		} else if (context->sect2 == 0) {
@@ -487,7 +490,7 @@ toc_title_start_element (Context *context,
 		}
 
 		if (context->preface > 0) {
-		       if (context->sect1 == 0) g_print ("PREFACE:<BR>");
+		       if (context->sect1 == 0) g_print ("%s:<BR>", _("PREFACE"));
 		       if (context->sect1 > 0) g_print ("&nbsp;&nbsp;%d", context->sect1); 
 		        
 		} else if (context->chapter > 0) {
@@ -496,7 +499,7 @@ toc_title_start_element (Context *context,
 									
 		} else if (context->appendix > 0) {
 			if (context->sect1 == 0) {
-				g_print ("APPENDIX:<BR>");
+				g_print ("%s:<BR>", _("APPENDIX"));
 			} else if (context->sect1 > 0) {
 				g_print ("&nbsp;&nbsp;%d",context->sect1);
 			}
@@ -545,6 +548,7 @@ toc_title_start_element (Context *context,
 	case SECT3:
 	case SECT4:
 	case SECT5:
+		in_printed_title = TRUE;
 		if (context->sect2 == 0) {
 			g_print ("<DT>");
 		} else if (context->sect3 == 0) {
@@ -599,6 +603,7 @@ toc_title_end_element (Context *context,
 
 	index = find_first_parent (context, element_list);
 
+	in_printed_title = FALSE;
 	switch (index) {
 	case PREFACE:
 	case APPENDIX:
@@ -794,6 +799,10 @@ toc_tag_characters (Context *context, const gchar *chars, int len)
 	ElementIndex index;
 	char *temp;
 
+	if (in_printed_title == FALSE) {
+		return;
+	}
+	
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TITLE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSTERM));
 

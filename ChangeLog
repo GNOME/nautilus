@@ -1,3 +1,38 @@
+2000-12-23  Ali Abdin  <aliabdin@aucegypt.edu>
+
+        More Fixing for bug #5118 (tags within a title do not appear in the
+        TOC). There are a few 'difficult' cases that are still not supported
+        and we probably won't support.
+
+        Thanks to jfleck@inkstain.net
+
+        * components/help/converters/gnome-db2html2/toc-elements.c:
+
+        Filled in function table to use toc_tag_characters where
+        appropriate.
+
+        (toc_tag_characters),
+        (toc_title_end_element),
+        (toc_title_start_element):
+        Some hackery to use an 'in_printed_title' variable (so we can
+        distinguish on wether we need to actually print the tag within the
+        title).
+
+        * components/help/converters/gnome-db2html2/gdb3html.c:
+        (xml_parse_document): This function was #if 0'd out and is now gone
+        from the tree
+        (parse_file): Remove #if 0'd code.
+        (main): Remove a really old unncessary comment
+
+        * components/help/converters/gnome-db2html2/gdb3html.c:
+        * components/help/converters/gnome-db2html2/sect-elements.c:
+        * components/help/converters/gnome-db2html2/toc-elements.c:
+        i18n'd a bunch of strings as some preliminary work to getting i18n
+        working with gnome-db2html2
+
+        * po/POTFILES.in:
+        Update to reflect the i18n'd strings in gnome-db2html2
+
 2000-12-23  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Pavel Cisler<pavel@eazel.com>

@@ -243,8 +243,7 @@ sect_article_end_element (Context *context, const gchar *name)
 		GSList *list;
 		gint i = 1;
 		
-		g_print ("<HR>");
-		g_print ("<H4>Notes:</H4>");
+		g_print ("<HR><H4>%s</H4>", _("Notes"));
 		g_print ("<TABLE BORDER=\"0\" WIDTH=\"100%%\">\n\n");
 		for (list = context->footnotes; list; list = list->next) {
 			g_print ("<TR><TD ALIGN=\"LEFT\" VALIGN=\"TOP\" WIDTH=\"5%%\">\n");
@@ -663,6 +662,7 @@ sect_title_start_element (Context *context,
 	StackElement *stack_el;
 	gchar **atrs_ptr;
 	SectContext *sect_context;
+	char *table_msg;
 
 	sect_context = (SectContext *) context->data;
 	if (!IS_IN_SECT (context)) 
@@ -691,7 +691,10 @@ sect_title_start_element (Context *context,
 
 	switch (stack_el->info->index) {
 	case TABLE:
-		sect_print (context, "<P><B>Table %d. ", sect_context->table_count); 
+		table_msg = g_strdup_printf (_("Table %d."), sect_context->table_count);
+		sect_print (context, "<P><B>");
+		sect_print (context, "%s ", table_msg); 
+		g_free (table_msg);
 		break;
 	case PREFACE:
 	case CHAPTER:
@@ -833,9 +836,11 @@ sect_title_characters (Context *context,
 
 		sect_print (context, "<HEAD>\n<TITLE>%s</TITLE>\n</HEAD>\n", temp);
 		sect_print (context, "<BODY BGCOLOR=\"#FFFFFF\" TEXT=\"#000000\" LINK=\"#0000FF\" VLINK=\"#840084\" ALINK=\"#0000FF\">\n");
-		if (stack_el == NULL)
-			sect_print (context, "<A href=\"gnome-help:%s\"><font size=3>Up to Table of Contents</font></A><BR>\n",
-				 context->base_file);
+		if (stack_el == NULL) {
+			sect_print (context, "<A href=\"gnome-help:%s\"><font size=3>", context->base_file);
+			sect_print (context, _("Up to Table of Contents"));
+			sect_print (context, "</font></A><BR>\n");
+		}
 #if 0
 		else
 			sect_print (context, "<A href=\"gnome-help:%s#%s\"><font size=3>Up to %s</font></A><BR>\n",
@@ -979,7 +984,11 @@ sect_xref_start_element (Context *context,
 	}
 
 	if (fignum_from_figure_id != NULL) {
-		sect_print (context, "Figure %s", fignum_from_figure_id);
+		char *output_msg;
+
+		output_msg = g_strdup_printf (_("Figure %s"), fignum_from_figure_id);
+		sect_print (context, "%s", output_msg);
+		g_free (output_msg);
 		return;
 	}
 	
@@ -997,9 +1006,9 @@ sect_xref_start_element (Context *context,
 		title = g_hash_table_lookup (((SectContext *)context->data)->title_hash, *atrs_ptr);
 
 	if (title == NULL) {
-			sect_print (context, "\">the section here</A>");
+		sect_print (context, "\">%s</A>", _("the section here"));
 	} else {
-			sect_print (context, "\">the section <EM>%s</EM></A>", title);
+		sect_print (context, "\">%s <EM>%s</EM></A>", _("the section"), title);
 	}
 }
 
@@ -1050,11 +1059,14 @@ sect_figure_end_element (Context *context,
 		return;
 
 	if (sect_context->figure->img != NULL) {
+		char *output_msg;
+		
  		if (sect_context->figure->id)
 			sect_print (context, "<A NAME=\"%s\">",
 				    sect_context->figure->id);
-		sect_print (context, "<P><B>Figure %d.",
-			    sect_context->figure_count);
+		output_msg = g_strdup_printf (_("Figure %d"), sect_context->figure_count);
+		sect_print (context, "<P><B>%s.", output_msg);
+		g_free (output_msg);
  		if (sect_context->figure->title)
 			sect_print (context, " %s",
 				    sect_context->figure->title);
@@ -1064,7 +1076,7 @@ sect_figure_end_element (Context *context,
 		sect_print (context, "<IMG SRC=\"file://%s%s\" ALT=\"%s\"><P>",
 			    context->base_path,
 			    sect_context->figure->img,
-			    (sect_context->figure->alt) ? sect_context->figure->alt : "IMAGE");
+			    (sect_context->figure->alt) ? sect_context->figure->alt : _("IMAGE"));
 	}
 	g_free (sect_context->figure->title);
 	g_free (sect_context->figure->alt);
@@ -2029,9 +2041,9 @@ sect_legalnotice_start_element (Context *context,
 	}
 
 	sect_context->state = IN_SECT;
-	sect_print (context, "<HEAD>\n<TITLE>Legal Notice</TITLE>\n</HEAD>\n");
+	sect_print (context, "<HEAD>\n<TITLE>%s</TITLE>\n</HEAD>\n", _("Legal Notice"));
 	sect_print (context, "<BODY BGCOLOR=\"#FFFFFF\" TEXT=\"#000000\" LINK=\"#0000FF\" VLINK=\"#840084\" ALINK=\"#0000FF\">\n");
-	sect_print (context, "<H1>Legal Notice</H1>\n");
+	sect_print (context, "<H1>%s</H1>\n", _("Legal Notice"));
 
 }
 
@@ -2076,7 +2088,8 @@ sect_question_start_element (Context *context,
       if (!IS_IN_SECT (context))
               return;
 
-      sect_print (context, "<P><B>Q: </B>");
+      /* This 'Q' is short for 'Question:' */
+      sect_print (context, "<P><B>%s: </B>", _("Q"));
 }
 
 void
@@ -2087,7 +2100,8 @@ sect_answer_start_element (Context *context,
       if (!IS_IN_SECT (context))
               return;
 
-      sect_print (context, "<P><B>A: </B>");
+      /* This 'A' is short for 'Answer' */
+      sect_print (context, "<P><B>%s: </B>", _("A"));
 }
 
 
@@ -2110,7 +2124,7 @@ sect_glosssee_start_element (Context *context, const gchar *name, const xmlChar 
 			       
                         if (g_hash_table_lookup (context->glossary_data, *atrs_ptr)) {
 				temp = g_hash_table_lookup (context->glossary_data, *atrs_ptr);
-                        	g_print("<BR>See: <A HREF=\"gnome-help:%s?%s\">%s</A>\n", context->base_file, *atrs_ptr, temp);
+                        	g_print("<BR>%s: <A HREF=\"gnome-help:%s?%s\">%s</A>\n", _("See"), context->base_file, *atrs_ptr, temp);
 		        }
 			atrs_ptr += 2;
 		}
@@ -2137,7 +2151,7 @@ sect_glossseealso_start_element (Context *context, const gchar *name, const xmlC
 			       
                         if ( g_hash_table_lookup (context->glossary_data, *atrs_ptr)) {
 				temp = g_hash_table_lookup (context->glossary_data, *atrs_ptr);
-                        	g_print("<BR>See also: <A HREF=\"gnome-help:%s?%s\">%s</A>\n", context->base_file, *atrs_ptr, temp);
+                        	g_print("<BR>%s: <A HREF=\"gnome-help:%s?%s\">%s</A>\n", _("See also"), context->base_file, *atrs_ptr, temp);
 		        }
 			atrs_ptr += 2;
 		}
