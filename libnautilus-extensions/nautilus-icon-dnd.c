@@ -49,6 +49,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <math.h>
@@ -665,6 +666,7 @@ static gboolean
 confirm_switch_to_manual_layout (NautilusIconContainer *container)
 {
 	const char *message;
+	GnomeDialog *dialog;
 
 	/* FIXME bugzilla.eazel.com 915: Use of the word "directory"
 	 * makes this FMIconView specific. Move these messages into
@@ -673,28 +675,30 @@ confirm_switch_to_manual_layout (NautilusIconContainer *container)
 	 */
 	if (nautilus_icon_container_has_stored_icon_positions (container)) {
 		if (nautilus_g_list_exactly_one_item (container->details->dnd_info->drag_info.selection_list)) {
-			message = _("This directory uses automatic layout. "
+			message = _("This folder uses automatic layout. "
 			"Do you want to switch to manual layout and leave this item where you dropped it? "
 			"This will clobber the stored manual layout.");
 		} else {
-			message = _("This directory uses automatic layout. "
+			message = _("This folder uses automatic layout. "
 			"Do you want to switch to manual layout and leave these items where you dropped them? "
 			"This will clobber the stored manual layout.");
 		}
 	} else {
 		if (nautilus_g_list_exactly_one_item (container->details->dnd_info->drag_info.selection_list)) {
-			message = _("This directory uses automatic layout. "
+			message = _("This folder uses automatic layout. "
 			"Do you want to switch to manual layout and leave this item where you dropped it?");
 		} else {
-			message = _("This directory uses automatic layout. "
+			message = _("This folder uses automatic layout. "
 			"Do you want to switch to manual layout and leave these items where you dropped them?");
 		}
 	}
 
-	return nautilus_simple_dialog
-		(GTK_WIDGET (container), TRUE, message,
-		 _("Switch to Manual Layout?"),
-		 _("Switch"), GNOME_STOCK_BUTTON_CANCEL, NULL) == 0;
+	dialog = nautilus_yes_no_dialog (message, _("Switch to Manual Layout?"),
+					 _("Switch"), GNOME_STOCK_BUTTON_CANCEL,
+					 GTK_WINDOW (gtk_widget_get_ancestor 
+					 	(GTK_WIDGET (container), GTK_TYPE_WINDOW)));
+
+	return gnome_dialog_run (dialog) == GNOME_OK;
 }
 
 static void

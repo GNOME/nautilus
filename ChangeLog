@@ -1,5 +1,13 @@
 2000-10-02  John Sullivan  <sullivan@eazel.com>
 
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(confirm_switch_to_manual_layout): Made the
+	"switch to manual layout" dialog be a
+	nautilus_yes_no_dialog instead of the uglier
+	nautilus_simple_dialog.
+
+2000-10-02  John Sullivan  <sullivan@eazel.com>
+
 	* libnautilus-extensions/nautilus-icon-container.c:
 	(keyboard_icon_reveal_timeout_callback):
 	* libnautilus-extensions/nautilus-list.c:
