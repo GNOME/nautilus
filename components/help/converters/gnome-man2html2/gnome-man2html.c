@@ -113,6 +113,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <dirent.h>
@@ -149,11 +150,13 @@
 
 static char location_base[NULL_TERMINATED(MED_STR_MAX)] = "";
 
+#if 0
 char *signature = "<HR>\n"
 "This document was created by\n"
 "<A HREF=\""CGIBASE"\">man2html</A>,\n"
 "using the manual pages.<BR>\n"
 "Time: %s\n";
+#endif
 
 /* timeformat for signature */
 #define TIMEFORMAT "%T GMT, %B %d, %Y"
@@ -319,9 +322,9 @@ static int pipe_close(FILE *f)
 
 static void usage(void)
 {
-    char buffer[NULL_TERMINATED(LARGE_STR_MAX)];
 /* only useful if TOPLEVELDOC actually points at a document */
 #if 0
+    char buffer[NULL_TERMINATED(LARGE_STR_MAX)];
     FILE *toplevel = fopen(TOPLEVELDOC, "r");
 #else
     FILE *toplevel = NULL;
@@ -405,7 +408,10 @@ static char idxlabel[6] = "ixAAA";
 #define INDEXFILE "/tmp/manindex.list"
 
 static char *fname;
+
+#ifdef MAXINDEX
 static FILE *idxfile;
+#endif
 
 static STRDEF *chardef, *strdef, *defdef;
 static INTDEF *intdef;
@@ -534,7 +540,6 @@ static STRDEF standardchar[] = {
 /* default: print code */
 
 
-static char eqndelimopen=0, eqndelimclose=0;
 static char escapesym='\\', nobreaksym='\'', controlsym='.', fieldsym=0, padsym=0;
 
 static char *buffer=NULL;
@@ -565,7 +570,10 @@ static void print_sig(void)
     timetm=gmtime(&clock);
     strftime(datbuf,MED_STR_MAX,TIMEFORMAT, timetm);
 #endif
+
+#if 0
     printf(signature, datbuf);
+#endif
 }
 
 static char *expand_char(int nr)
@@ -1001,7 +1009,6 @@ static char *change_to_size(int nr)
   return sizebuf;
 }
 
-static int asint=0;
 static int intresult=0;
 
 #define SKIPEOL while (*c && *c++!='\n')
@@ -1347,12 +1354,12 @@ static char itemreset[20]="\\fR\\s0";
 
 static char *scan_table(char *c)
 {
-    char *t, *h, *g;
+    char *h, *g;
     int center=0, expand=0, box=0, border=0, linesize=1;
     int i,j,maxcol=0, finished=0;
     int oldfont, oldsize,oldfillout;
     char itemsep='\t';
-    TABLEROW *layout=NULL, *currow, *ftable;
+    TABLEROW *layout=NULL, *currow;
     TABLEITEM *curfield;
     while (*c++!='\n');
     h=c;
@@ -1620,7 +1627,7 @@ static char *scan_table(char *c)
 
 static char *scan_expression(char *c, int *result)
 {
-    int value=0,value2,j=0,sign=1,opex=0;
+    int value=0,value2,sign=1,opex=0;
     char oper='c';
 
     if (*c=='!') {
@@ -2014,7 +2021,7 @@ static char *skip_till_newline(char *c)
 {
     int lvl=0;
 
-    while (*c && *c!='\n' || lvl>0) {
+    while ((*c && *c!='\n') || lvl>0) {
 	if (*c=='\\') {
 	    c++;
 	    if (*c=='}') lvl--; else if (*c=='{') lvl++;
@@ -2071,7 +2078,6 @@ static char *scan_request(char *c)
 	case V('d','i'):
 	    {
 		STRDEF *de;
-		int oldcurpos=curpos;
 		c=c+j;
 		i=V(c[0],c[1]);
 		if (*c=='\n') { c++;break; }
@@ -2318,7 +2324,6 @@ static char *scan_request(char *c)
 	    break;
 	case V('s','o'):
 	    {
-		FILE *f;
 		struct stat stbuf;
 		int l = 0;
 		char *buf;
@@ -2640,9 +2645,11 @@ static char *scan_request(char *c)
 		    } else out_html(")");
 		    out_html("<BR><A HREF=\"#index\">Index</A>\n");
 		    *sl='\n';
+#if 0
 		    fputs("<BR><A HREF=\""
 			  "/index.html"
 			  "\">Return to Main Contents</A>\n", stdout);
+#endif
 		    out_html("<HR>\n");
 		    if (mandoc_command) out_html("<BR>BSD mandoc<BR>");
 		}
@@ -3255,7 +3262,7 @@ static char *scan_request(char *c)
 		}
 		for (i=words;i<20; i++) wordlist[i]=NULL;
 		deflen = strlen(owndef->st);
-		for (i=0; owndef->st[deflen+2+i]=owndef->st[i]; i++);
+		for (i=0; (owndef->st[deflen+2+i]=owndef->st[i]); i++);
 		oldargument=argument;
 		argument=wordlist;
 		onff=newline_for_fun;
@@ -3301,10 +3308,6 @@ static char *scan_request(char *c)
     return c;
 }
 
-static void flush(void)
-{
-}
-
 static int contained_tab=0;
 static int mandoc_line=0;	/* Signals whether to look for embedded mandoc
 				 * commands.
@@ -3315,7 +3318,6 @@ static char *scan_troff(char *c, int san, char **result)
     char *h;
     char intbuff[NULL_TERMINATED(MED_STR_MAX)];
     int ibp=0;
-    int i;
 #define FLUSHIBP  if (ibp) { intbuff[ibp]=0; out_html(intbuff); ibp=0; }
     char *exbuffer;
     int exbuffpos, exbuffmax, exscaninbuff, exnewline_for_fun;
@@ -3367,7 +3369,6 @@ static char *scan_troff(char *c, int san, char **result)
 	    h = scan_request(h);
 	    if (san && h[-1]=='\n') h--;
 	} else {
-	    int mx;
 	    if (h[-1]=='\n' && still_dd && isalnum(*h)) {
 		/* sometimes a .HP request is not followed by a .br request */
 		FLUSHIBP;
@@ -3606,7 +3607,6 @@ static int search_manpath_section(char *name, char* section)
 	if ((dr=opendir(smfbuf))) {
 	    while ((de=readdir(dr))) {
 		if (!strncasecmp(de->d_name, cmpbuf, n)) {
-		    int stlen;
 		    if (h) {
 			h->next=(STRDEF*) malloc(sizeof(STRDEF));
 			h=h->next;
@@ -3628,7 +3628,7 @@ static char smfbuf[NULL_TERMINATED(LARGE_STR_MAX)];
 
 static char *search_manpath(char *name)
 {
-    int i,j,n,l,nr=0;
+    int i;
     struct stat stbuf;
 
     for (i=0; manpath[i]; i++) {
@@ -3723,11 +3723,9 @@ static void get_man_config()
 
 void main(int argc, char **argv)
 {
-    FILE *f;
     char *t=NULL;
     int l,i;char *buf;
     int mopt=0;
-    int notinsection=0;
     char *h, *fullname;
     STRDEF *stdf;
 
