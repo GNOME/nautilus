@@ -1,5 +1,5 @@
 # Swedish translation of Nautilus.
-# Copyright (C) 2000,2001 Free Software Foundation, Inc.
+# Copyright (C) 2000, 2001 Free Software Foundation, Inc.
 # Andreas Hyden <a.hyden@cyberpoint.se>, 2000.
 # Richard Hult <rhult@hem.passagen.se>, 2000.
 # Christian Rose <menthos@menthos.com>, 2000-2001.
@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-05-04 02:09-0700\n"
-"PO-Revision-Date: 2001-04-27 11:36+0200\n"
+"POT-Creation-Date: 2001-05-09 22:26+0200\n"
+"PO-Revision-Date: 2001-05-09 22:37+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -35,7 +35,7 @@ msgid "Smooth Graphics"
 msgstr "Mjuk grafik"
 
 #: applets/preferences-applet/nautilus-preferences-applet.c:243
-#: src/nautilus-application.c:734
+#: src/nautilus-application.c:810
 msgid "Quit"
 msgstr "Avsluta"
 
@@ -1715,41 +1715,39 @@ msgid "View as Music"
 msgstr "Visa som musik"
 
 #: components/news/nautilus-news.c:1284
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't load %s"
-msgstr "Kunde inte lägga till tema"
+msgstr "Kunde inte läsa in %s"
 
 #. put up a title that's displayed while we wait
 #: components/news/nautilus-news.c:1524
 #, c-format
 msgid "Loading %s"
-msgstr ""
+msgstr "Läser in %s"
 
 #: components/news/nautilus-news.c:1861
-#, fuzzy
 msgid "Sorry, but you have not specified a name for the site!"
-msgstr "Tyvärr, du måste ange ett icke-tomt namn för den nya färgen."
+msgstr "Tyvärr, du har inte angivit ett namn på webbplatsen!"
 
 #: components/news/nautilus-news.c:1861
 msgid "Missing Site Name Error"
-msgstr ""
+msgstr "Fel på grund av saknat namn på webbplatsen"
 
 #: components/news/nautilus-news.c:1865
-#, fuzzy
 msgid "Sorry, but you have not specified a URL for the site!"
-msgstr "Tyvärr, du måste ange ett icke-tomt namn för den nya färgen."
+msgstr "Tyvärr, du har inte angivit en URL för webbplatsen!"
 
 #: components/news/nautilus-news.c:1865
 msgid "Missing URL Error"
-msgstr ""
+msgstr "Fel på grund av saknad URL"
 
 #: components/news/nautilus-news.c:1882
 msgid "Sorry, but the specified url doesn't seem to be a valid RSS file!"
-msgstr ""
+msgstr "Tyvärr, den angivna url:en verkar inte vara en giltig RSS-fil!"
 
 #: components/news/nautilus-news.c:1882
 msgid "Invalid RSS URL"
-msgstr ""
+msgstr "Ogiltig RSS-URL"
 
 #: components/news/nautilus-news.c:1964
 #: libnautilus-private/nautilus-undo-signal-handlers.c:175
@@ -1757,34 +1755,30 @@ msgid "Edit"
 msgstr "Redigera"
 
 #: components/news/nautilus-news.c:2223
-#, fuzzy
 msgid "Remove Site"
-msgstr "Ta bort"
+msgstr "Ta bort webbplats"
 
 #. allocate the name field
 #: components/news/nautilus-news.c:2243
 msgid "Site Name:"
-msgstr ""
+msgstr "Namn på webbplats:"
 
 #: components/news/nautilus-news.c:2254
 msgid "Site RSS URL:"
-msgstr ""
+msgstr "RSS-URL för webbplats:"
 
 #: components/news/nautilus-news.c:2269
-#, fuzzy
 msgid "Add New Site"
-msgstr "Lägg till nytt tema..."
+msgstr "Lägg till ny webbplats"
 
 #. make the add new site label
 #: components/news/nautilus-news.c:2292
-#, fuzzy
 msgid "Add a New Site:"
-msgstr "Lägg till ett nytt mönster..."
+msgstr "Lägg till en ny webbplats:"
 
 #: components/news/nautilus-news.c:2301
-#, fuzzy
 msgid "Remove a Site:"
-msgstr "Ta bort ett mönster..."
+msgstr "Ta bort en webbplats:"
 
 #. add the button box at the bottom with a cancel button
 #: components/news/nautilus-news.c:2309
@@ -1794,9 +1788,8 @@ msgstr "Avbryt"
 
 #. add a descriptive label
 #: components/news/nautilus-news.c:2326
-#, fuzzy
 msgid "Select Sites:"
-msgstr "Markera alla filer"
+msgstr "Välj webbplatser:"
 
 #. allocate the button box for the done button
 #: components/news/nautilus-news.c:2341
@@ -1811,31 +1804,30 @@ msgid ""
 "The News panel displays current headlines from your favorite websites.  "
 "Click the 'Select Sites' button to select the sites to display."
 msgstr ""
+"Nyhetspanelen visar aktuella nyhetsrubriker från dina favoritwebbplatser. "
+"Klicka på knappen \"Välj webbplatser\" för att välja de webbplatser som ska "
+"visas."
 
 #. create a button box to hold the command buttons
 #: components/news/nautilus-news.c:2397
-#, fuzzy
 msgid "Select Sites"
-msgstr "Markera alla filer"
+msgstr "Välj webbplatser"
 
 #: components/news/Nautilus_View_news.oaf.in.h:1
-#, fuzzy
 msgid "Factory for news view"
-msgstr "Fabrik för textvy"
+msgstr "Fabrik för nyhetsvy"
 
 #: components/news/Nautilus_View_news.oaf.in.h:2
-#, fuzzy
 msgid "News"
-msgstr "Ny"
+msgstr "Nyheter"
 
 #: components/news/Nautilus_View_news.oaf.in.h:3
-#, fuzzy
 msgid "News sidebar panel"
-msgstr "Anteckningssidopanel"
+msgstr "Nyhetssidopanel"
 
 #: components/news/Nautilus_View_news.oaf.in.h:4
 msgid "News sidebar panel fetches and displays RSS feeds"
-msgstr ""
+msgstr "Nyhetssidopanelen hämtar och visar RSS-strömmar"
 
 #: components/notes/Nautilus_View_notes.oaf.in.h:1
 msgid "Factory for annotation view"
@@ -4629,51 +4621,51 @@ msgstr "Visa som %s"
 msgid "%s Viewer"
 msgstr "%s-visare"
 
-#: libnautilus-private/nautilus-volume-monitor.c:518
-#: libnautilus-private/nautilus-volume-monitor.c:537
+#: libnautilus-private/nautilus-volume-monitor.c:567
+#: libnautilus-private/nautilus-volume-monitor.c:586
 msgid "Unknown"
 msgstr "Okänd"
 
 #. Populate table with items we know localized names for.
-#: libnautilus-private/nautilus-volume-monitor.c:624
+#: libnautilus-private/nautilus-volume-monitor.c:673
 msgid "Floppy"
 msgstr "Diskett"
 
-#: libnautilus-private/nautilus-volume-monitor.c:625
+#: libnautilus-private/nautilus-volume-monitor.c:674
 msgid "CD-ROM"
 msgstr "Cd-rom"
 
-#: libnautilus-private/nautilus-volume-monitor.c:626
+#: libnautilus-private/nautilus-volume-monitor.c:675
 msgid "Zip Drive"
 msgstr "Zip-enhet"
 
-#: libnautilus-private/nautilus-volume-monitor.c:640
-#: libnautilus-private/nautilus-volume-monitor.c:662
+#: libnautilus-private/nautilus-volume-monitor.c:689
+#: libnautilus-private/nautilus-volume-monitor.c:711
 msgid "Audio CD"
 msgstr "Ljud-cd"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1509
+#: libnautilus-private/nautilus-volume-monitor.c:1598
 msgid "Mount Error"
 msgstr "Monteringsfel"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1509
+#: libnautilus-private/nautilus-volume-monitor.c:1598
 msgid "Unmount Error"
 msgstr "Avmonteringsfel"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1576
+#: libnautilus-private/nautilus-volume-monitor.c:1665
 msgid "is write-protected, mounting read-only"
 msgstr "är skrivskyddad, monterar som endast läsbar"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1579
+#: libnautilus-private/nautilus-volume-monitor.c:1668
 msgid "is not a valid block device"
 msgstr "är inte en giltig blockenhet"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1580
+#: libnautilus-private/nautilus-volume-monitor.c:1669
 msgid "No medium found"
 msgstr "Inget medium hittades"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1584
+#: libnautilus-private/nautilus-volume-monitor.c:1673
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4682,7 +4674,7 @@ msgstr ""
 "diskett i enheten."
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1588
+#: libnautilus-private/nautilus-volume-monitor.c:1677
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
@@ -4690,11 +4682,11 @@ msgstr ""
 "Nautilus kunde inte montera volymen. Det finns antagligen inget media i "
 "enheten."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1591
+#: libnautilus-private/nautilus-volume-monitor.c:1680
 msgid "wrong fs type, bad option, bad superblock on"
 msgstr "felaktig filsystemstyp, felaktig flagga, felaktigt superblock på"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1594
+#: libnautilus-private/nautilus-volume-monitor.c:1683
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4702,7 +4694,7 @@ msgstr ""
 "Nautilus kunde inte montera diskettstationen. Disketten är antagligen i ett "
 "format som inte kan monteras."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1597
+#: libnautilus-private/nautilus-volume-monitor.c:1686
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4710,48 +4702,48 @@ msgstr ""
 "Nautilus kunde inte montera den valda volymen. Volymen är antagligen i ett "
 "format som inte kan monteras."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1602
+#: libnautilus-private/nautilus-volume-monitor.c:1691
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilus kunde inte montera den valda diskettstationen."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1604
+#: libnautilus-private/nautilus-volume-monitor.c:1693
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilus kunde inte montera den valda volymen."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1609
+#: libnautilus-private/nautilus-volume-monitor.c:1698
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilus kunde inte avmontera den valda volymen."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1779
+#: libnautilus-private/nautilus-volume-monitor.c:1868
 msgid "ISO 9660 Volume"
 msgstr "ISO9660-volym"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1794
+#: libnautilus-private/nautilus-volume-monitor.c:1883
 msgid "Root"
 msgstr "Rot"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1801
+#: libnautilus-private/nautilus-volume-monitor.c:1890
 msgid "Ext2 Volume"
 msgstr "Ext2-volym"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1816
+#: libnautilus-private/nautilus-volume-monitor.c:1905
 msgid "MSDOS Volume"
 msgstr "MSDOS-volym"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1831
+#: libnautilus-private/nautilus-volume-monitor.c:1920
 msgid "NFS Volume"
 msgstr "NFS-volym"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1846
+#: libnautilus-private/nautilus-volume-monitor.c:1935
 msgid "ReiserFS Volume"
 msgstr "ReiserFS-volym"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1862
+#: libnautilus-private/nautilus-volume-monitor.c:1951
 msgid "UFS Volume"
 msgstr "UFS-volym"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1877
+#: libnautilus-private/nautilus-volume-monitor.c:1966
 msgid "Unknown Volume"
 msgstr "Okänd volym"
 
@@ -5572,7 +5564,7 @@ msgstr "_Återställ ikoner till originalstorlekarna"
 msgid "_Restore Icon's Original Size"
 msgstr "_Återställ ikon till originalstorlek"
 
-#: src/file-manager/fm-icon-view.c:1700
+#: src/file-manager/fm-icon-view.c:1705
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "pekar på \"%s\""
@@ -6480,7 +6472,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:495
+#: src/nautilus-application.c:571
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
 "from the console may fix the problem. If not, you can try rebooting the "
@@ -6491,7 +6483,7 @@ msgstr ""
 "datorn eller installera om Nautilus."
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:501
+#: src/nautilus-application.c:577
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
 "from the console may fix the problem. If not, you can try rebooting the "
@@ -6532,12 +6524,12 @@ msgstr ""
 #. * wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:532 src/nautilus-application.c:550
-#: src/nautilus-application.c:557
+#: src/nautilus-application.c:608 src/nautilus-application.c:626
+#: src/nautilus-application.c:633
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus kan inte användas just nu på grund av ett oväntat fel."
 
-#: src/nautilus-application.c:533
+#: src/nautilus-application.c:609
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to register the file manager view server."
@@ -6545,7 +6537,7 @@ msgstr ""
 "Nautilus kan inte användas just nu på grund av ett oväntat fel från OAF "
 "inträffade när ett försök gjordes att registrera filhanterarens vyserver."
 
-#: src/nautilus-application.c:551
+#: src/nautilus-application.c:627
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the factory.Killing oafd and restarting Nautilus may "
@@ -6555,7 +6547,7 @@ msgstr ""
 "den skulle hitta fabriken. Om du dödar oafd och startar om Nautilus kanske "
 "problemet löser sig."
 
-#: src/nautilus-application.c:558
+#: src/nautilus-application.c:634
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the shell object. Killing oafd and restarting Nautilus "
@@ -6565,7 +6557,7 @@ msgstr ""
 "den skulle hitta skalobjektet. Om du dödar oafd och startar om Nautilus "
 "kanske problemet löser sig."
 
-#: src/nautilus-application.c:730
+#: src/nautilus-application.c:806
 msgid ""
 "You are about to run Nautilus as root.\n"
 "\n"
@@ -8135,11 +8127,11 @@ msgstr "Kunde inte ta bort tema"
 msgid "Preview Release %s: %s"
 msgstr "Förhandsversion %s: %s"
 
-#: src/nautilus-window-manage-views.c:833
+#: src/nautilus-window-manage-views.c:808
 msgid "View Failed"
 msgstr "Vy misslyckades"
 
-#: src/nautilus-window-manage-views.c:844
+#: src/nautilus-window-manage-views.c:819
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -8148,12 +8140,12 @@ msgstr ""
 "%s-vyn råkade ut för ett fel och kan inte fortsätta. Du kan välja en annan "
 "vy eller gå till en annan plats."
 
-#: src/nautilus-window-manage-views.c:855
+#: src/nautilus-window-manage-views.c:830
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "%s-vyn råkade ut för ett fel vid uppstarten."
 
-#: src/nautilus-window-manage-views.c:1016
+#: src/nautilus-window-manage-views.c:991
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -8161,7 +8153,7 @@ msgstr ""
 "En av sidopanelerna råkade ut för ett fel och kan inte fortsätta. Tyvärr kan "
 "jag inte avgöra vilken."
 
-#: src/nautilus-window-manage-views.c:1020
+#: src/nautilus-window-manage-views.c:995
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -8170,18 +8162,18 @@ msgstr ""
 "Sidopanelen %s råkade ut för ett fel och kan inte fortsätta. Om detta "
 "fortsätter att hända kanske du vill stänga av denna panel."
 
-#: src/nautilus-window-manage-views.c:1025
+#: src/nautilus-window-manage-views.c:1000
 msgid "Sidebar Panel Failed"
 msgstr "Sidopanel misslyckades"
 
-#: src/nautilus-window-manage-views.c:1240
+#: src/nautilus-window-manage-views.c:1215
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "Kunde inte hitta \"%s\". Var vänlig och kontrollera stavningen och försök "
 "igen."
 
-#: src/nautilus-window-manage-views.c:1246
+#: src/nautilus-window-manage-views.c:1221
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
@@ -8189,7 +8181,7 @@ msgstr ""
 "\"%s\" är ingen giltig plats. Var vänlig och kontrollera stavningen och "
 "försök igen."
 
-#: src/nautilus-window-manage-views.c:1260
+#: src/nautilus-window-manage-views.c:1235
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -8198,29 +8190,29 @@ msgstr ""
 "Kunde inte visa \"%s\", eftersom Nautilus inte kan bestämma vilken filtyp "
 "det är."
 
-#: src/nautilus-window-manage-views.c:1268
+#: src/nautilus-window-manage-views.c:1243
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Nautilus har ingen installerad visare som kan visa \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1280
+#: src/nautilus-window-manage-views.c:1255
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Kunde inte visa \"%s\", eftersom Nautilus inte kan hantera %s:-platser."
 
-#: src/nautilus-window-manage-views.c:1286
+#: src/nautilus-window-manage-views.c:1261
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "Kunde inte visa \"%s\", eftersom inloggningsförsöket misslyckades."
 
-#: src/nautilus-window-manage-views.c:1291
+#: src/nautilus-window-manage-views.c:1266
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Kunde inte visa \"%s\", eftersom åtkomst nekades."
 
-#: src/nautilus-window-manage-views.c:1302
+#: src/nautilus-window-manage-views.c:1277
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -8230,7 +8222,7 @@ msgstr ""
 "Kontrollera att du stavat namnet rätt och att dina proxyserverinställningar "
 "stämmer."
 
-#: src/nautilus-window-manage-views.c:1310
+#: src/nautilus-window-manage-views.c:1285
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -8239,7 +8231,7 @@ msgstr ""
 "Kunde inte visa \"%s\", eftersom värdnamnet var tomt. Kontrollera att dina "
 "proxyserverinställningar stämmer."
 
-#: src/nautilus-window-manage-views.c:1322
+#: src/nautilus-window-manage-views.c:1297
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -8251,16 +8243,16 @@ msgstr ""
 "startat Medusa-söktjänsten och att Medusa-indexeraren kör om du inte har ett "
 "index."
 
-#: src/nautilus-window-manage-views.c:1326
+#: src/nautilus-window-manage-views.c:1301
 msgid "Searching Unavailable"
 msgstr "Sökning är inte tillgänglig"
 
-#: src/nautilus-window-manage-views.c:1330
+#: src/nautilus-window-manage-views.c:1305
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kan inte visa \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1335
+#: src/nautilus-window-manage-views.c:1310
 msgid "Can't Display Location"
 msgstr "Kan inte visa plats"
 
