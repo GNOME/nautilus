@@ -680,6 +680,7 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType type,
   	gtk_box_pack_end (GTK_BOX (framed_hbox), change_button_holder, FALSE, FALSE, 0);
 
   	change_button = gtk_button_new_with_label(_("Modify..."));
+	nautilus_gtk_button_set_padding (GTK_BUTTON (change_button), GNOME_PAD_SMALL);
   	gtk_widget_show (change_button);
   	gtk_box_pack_end (GTK_BOX (change_button_holder), change_button, TRUE, FALSE, 0);
 

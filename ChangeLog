@@ -1,3 +1,16 @@
+2000-06-07  John Sullivan  <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-gtk-extensions.h,
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_button_set_padding): New function, puts some
+	padding around the label (or other contained widget) in a
+	button.
+	* src/nautilus-bookmarks-window.c: (create_bookmarks_window):
+	Use this new function where it was doing this the long way.
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(nautilus_program_chooser_new): Use this new function to make
+	the "Modify..." button not so squashed.
+
 2000-06-07  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/mozilla/nautilus-mozilla-content-view.oafinfo:

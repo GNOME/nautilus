@@ -33,6 +33,10 @@
 
 #define NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT 2
 
+/* GtkButton */
+void		  nautilus_gtk_button_set_padding	       (GtkButton	       *button,
+								int			pad_amount);
+
 /* GtkCList */
 int               nautilus_gtk_clist_get_first_selected_row    (GtkCList               *list);
 int               nautilus_gtk_clist_get_last_selected_row     (GtkCList               *list);

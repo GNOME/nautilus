@@ -33,6 +33,26 @@
 #include "nautilus-glib-extensions.h"
 
 /**
+ * nautilus_gtk_button_set_padding
+ * 
+ * Adds some padding around the contained widget in the button (typically the label).
+ * @button: a GtkButton
+ * @pad_amount: number of pixels of space to add around the button's contents.
+ * GNOME_PAD_SMALL is a typical value.
+ **/
+void
+nautilus_gtk_button_set_padding (GtkButton *button, int pad_amount)
+{
+	g_return_if_fail (GTK_IS_BUTTON (button));
+	g_return_if_fail (pad_amount > 0);
+
+	gtk_misc_set_padding (GTK_MISC (GTK_BIN(button)->child), 
+			      pad_amount, 
+			      pad_amount);
+}
+
+
+/**
  * nautilus_gtk_clist_get_first_selected_row:
  * 
  * Get the index of the first selected row, or -1 if no rows are selected.
