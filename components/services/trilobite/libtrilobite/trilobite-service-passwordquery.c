@@ -314,25 +314,6 @@ trilobite_passwordquery_get_password (TrilobiteRootHelper *roothelper,
 	if (trilobite->private->client == CORBA_OBJECT_NIL) {
 		/* you lose. */
 		return NULL;
-#if 0
-		GtkWidget *dialog;
-		gboolean rv;
-		char *tmp;
-		/* FIXME: bugzilla.eazel.com 1624
-		   dep on libnautilus-extensions.
-		 */
-
-		dialog = nautilus_password_dialog_new ("Authenticate Me",
-						       trilobite->private->prompt,
-						       "",
-						       TRUE);
-		
-		rv = nautilus_password_dialog_run_and_block (NAUTILUS_PASSWORD_DIALOG (dialog));
-		tmp =  nautilus_password_dialog_get_password (NAUTILUS_PASSWORD_DIALOG (dialog));
-		gtk_widget_destroy (dialog);
-		gtk_main_iteration ();
-		return tmp;
-#endif
 	} else {
 		CORBA_Environment ev;
 		CORBA_char *tmp;

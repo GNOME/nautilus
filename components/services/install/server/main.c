@@ -28,6 +28,7 @@
 #include <signal.h>
 
 #include <libtrilobite/libtrilobite-service.h>
+#include <libtrilobite/trilobite-core-utils.h>
 
 #include <trilobite-eazel-install.h>
 #include <eazel-install-public.h>
@@ -115,6 +116,8 @@ eazel_install_service_factory (BonoboGenericFactory *this_factory,
 
 int main(int argc, char *argv[]) {
 
+	GData *data;
+
 #ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
@@ -122,8 +125,15 @@ int main(int argc, char *argv[]) {
 
 	signal (SIGSEGV, &sig_segv_handler);
 
-/* FIXME: bugzilla.eazel.com 1624
-   dep on libnautilus-extensions */
+	g_datalist_init (&data);
+	g_datalist_set_data (&data, "debug", (void *)1);
+	if (trilobite_init ("trilobite-sample-service", "0.1", "/tmp/trilobite-install.log", argc, argv, data) == FALSE) {
+		g_error ("Could not initialize trilobite. :(");
+		exit (1);
+	}
+	g_datalist_clear (&data);
+
+#if 0	/* hopefully obsoleted by trilobite_init */
 #define TEST_NEW_PASSWORD_STUFF
 #ifdef TEST_NEW_PASSWORD_STUFF
 
@@ -137,10 +147,10 @@ int main(int argc, char *argv[]) {
 	gnomelib_parse_args (argc, argv, 0);
 #endif 	
 
-
 	if (bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL) == FALSE) {
 		g_error ("Could not initialize Bonobo");
 	}
+#endif	/* 0 */
 
 	factory = bonobo_generic_factory_new_multi (OAF_ID_FACTORY, 
 						    eazel_install_service_factory,

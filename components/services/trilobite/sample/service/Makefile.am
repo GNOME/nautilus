@@ -40,14 +40,10 @@ trilobite_eazel_sample_service_SOURCES =			\
 	main.c							\
 	$(NULL)
 
-## FIXME: bugzilla.eazel.com 1624
-## dep on libnautilus-extensions
 trilobite_eazel_sample_service_LDADD =				\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite-service.la \
 	$(top_builddir)/components/services/trilobite/sample/lib/libsample_corba.a \
-	$(top_builddir)/libnautilus-extensions/nautilus-password-dialog.o	\
-	$(top_builddir)/libnautilus-extensions/nautilus-caption-table.o	\
 	$(BONOBO_LIBS) \
 	$(NULL)
 
