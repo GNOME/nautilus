@@ -3,6 +3,7 @@
 /* nautilus-file-operations.c - Nautilus file operations.
 
    Copyright (C) 1999, 2000 Free Software Foundation
+   Copyright (C) 2000, 2001 Eazel, Inc.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -20,8 +21,8 @@
    Boston, MA 02111-1307, USA.
    
    Authors: 
-   Ettore Perazzoli <ettore@gnu.org> 
-   Pavel Cisler <pavel@eazel.com> 
+   	Ettore Perazzoli <ettore@gnu.org> 
+	Pavel Cisler <pavel@eazel.com> 
  */
 
 #include <config.h>
@@ -135,51 +136,66 @@ get_label_font (void)
 {
 	GtkWidget *label;
 	GtkStyle *style;
+	GdkFont *font;
+
+	/* FIXME: Does this really pick up the correct font if the rc
+	 * file has a special case for the particular dialog we are
+	 * preparing?
+	 */
 
 	label = gtk_label_new ("");
 	style = gtk_widget_get_style (label);
-	
-	gdk_font_ref (style->font);
-	gtk_widget_unref (label);
+	font = style->font;
+	gdk_font_ref (font);
+	gtk_object_sink (GTK_OBJECT (label));
 
-	return style->font;
+	return font;
 }
 
 static char *
-nautilus_format_name_for_display (const char *escaped_uri)
+ellipsize_string_for_dialog (const char *str)
 {
-	char *unescaped;
-	char *result;
 	GdkFont *font;
-	int truncate_to_length;
+	int maximum_width;
+	char *result;
 
-	unescaped = gnome_vfs_unescape_string_for_display (escaped_uri);
-
-	/* get the font the text will be displayed in */
+	/* get a nice length to ellipsize to, based on the font */
 	font = get_label_font ();
-
-	/* get a nice length to truncate to, based on the current font */
-	truncate_to_length = gdk_string_width (font, "MMMMMMMMMMMMMMMMMMMMMM");
-
-	/* truncate the result */
-	result = nautilus_string_ellipsize_start (unescaped, font, truncate_to_length);
-
-	g_free (unescaped);
+	maximum_width = gdk_string_width (font, "MMMMMMMMMMMMMMMMMMMMMM");
+	/* FIXME: John Sullivan says we should ellipsize both URIs and
+	 * file names in the middle, not the start.
+	 */
+	result = nautilus_string_ellipsize_start (str, font, maximum_width);
 	gdk_font_unref (font);
 
 	return result;
 }
 
 static char *
-nautilus_convert_to_formatted_name_for_display (char *escaped_uri)
+format_and_ellipsize_uri_for_dialog (const char *uri)
 {
-	char *result;
+	char *unescaped, *result;
 
-	if (escaped_uri == NULL) {
-		return NULL;
-	}
-	result = nautilus_format_name_for_display (escaped_uri);
-	g_free (escaped_uri);
+	unescaped = nautilus_format_uri_for_display (uri);
+	result = ellipsize_string_for_dialog (unescaped);
+	g_free (unescaped);
+
+	return result;
+}
+
+static char *
+extract_and_ellipsize_file_name_for_dialog (const char *uri)
+{
+	const char *last_part;
+	char *unescaped, *result;
+
+	last_part = g_basename (uri);
+	g_return_val_if_fail (last_part == NULL, NULL);
+
+	unescaped = gnome_vfs_unescape_string_for_display (last_part);
+	result = ellipsize_string_for_dialog (unescaped);
+	g_free (unescaped);
+
 	return result;
 }
 
@@ -195,8 +211,8 @@ parent_for_error_dialog (TransferInfo *transfer_info)
 
 static void
 transfer_dialog_clicked_callback (NautilusFileOperationsProgress *dialog,
-			      int button_number,
-			      gpointer data)
+				  int button_number,
+				  gpointer data)
 {
 	TransferInfo *info;
 
@@ -262,7 +278,7 @@ center_dialog_over_window (GtkWindow *window, GtkWindow *over)
 
 static void
 create_transfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
-		    TransferInfo *transfer_info)
+			TransferInfo *transfer_info)
 {
 	if (!transfer_info->show_progress_dialog) {
 		return;
@@ -289,8 +305,9 @@ create_transfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 
 static void
 progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
-	const char *progress_verb, const char *from_uri, const char *to_uri, 
-	gulong index, gulong size)
+				       const char *progress_verb,
+				       const char *from_uri, const char *to_uri, 
+				       gulong index, gulong size)
 {
 	char *item;
 	char *from_path;
@@ -341,12 +358,13 @@ progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
 		to_prefix = _("To:");
 	}
 
-	nautilus_file_operations_progress_new_file (dialog,
-		progress_label_text != NULL ? progress_label_text : "",
-		item ? item : "",
-		from_path ? from_path : "",
-		to_path ? to_path : "",
-		from_prefix, to_prefix, index, size);
+	nautilus_file_operations_progress_new_file
+		(dialog,
+		 progress_label_text != NULL ? progress_label_text : "",
+		 item != NULL ? item : "",
+		 from_path != NULL ? from_path : "",
+		 to_path != NULL ? to_path : "",
+		 from_prefix, to_prefix, index, size);
 
 	g_free (progress_label_text);
 	g_free (item);
@@ -488,8 +506,10 @@ typedef enum {
 
 static char *
 build_error_string (const char *source_name, const char *target_name,
-		    TransferKind operation_kind, NautilusFileOperationsErrorKind error_kind,
-		    NautilusFileOperationsErrorLocation error_location, GnomeVFSResult error)
+		    TransferKind operation_kind,
+		    NautilusFileOperationsErrorKind error_kind,
+		    NautilusFileOperationsErrorLocation error_location,
+		    GnomeVFSResult error)
 {
 	/* Avoid clever message composing here, just use brute force and
 	 * duplicate the different flavors of error messages for all the
@@ -710,8 +730,8 @@ build_error_string (const char *source_name, const char *target_name,
 			}
 	
 			result = g_strdup_printf (error_string, 
-				 gnome_vfs_result_to_string (error),
-				 source_name);
+						  gnome_vfs_result_to_string (error),
+						  source_name);
 		} else {
 			switch (operation_kind) {
 			case TRANSFER_COPY:
@@ -739,7 +759,7 @@ build_error_string (const char *source_name, const char *target_name,
 			}
 	
 			result = g_strdup_printf (error_string, 
-				 gnome_vfs_result_to_string (error));
+						  gnome_vfs_result_to_string (error));
 		}
 	}
 	return result;
@@ -757,8 +777,8 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 	int error_dialog_button_pressed;
 	int error_dialog_result;
 	char *text;
-	char *unescaped_source_name;
-	char *unescaped_target_name;
+	char *formatted_source_name;
+	char *formatted_target_name;
 	const char *dialog_title;
 	NautilusFileOperationsErrorKind error_kind;
 	NautilusFileOperationsErrorLocation error_location;
@@ -768,16 +788,16 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 
 		/* transfer error, prompt the user to continue or stop */
 
-		unescaped_source_name = NULL;
-		unescaped_target_name = NULL;
+		formatted_source_name = NULL;
+		formatted_target_name = NULL;
 
 		if (progress_info->source_name != NULL) {
-			unescaped_source_name = nautilus_format_name_for_display
+			formatted_source_name = format_and_ellipsize_uri_for_dialog
 				(progress_info->source_name);
 		}
 
 		if (progress_info->target_name != NULL) {
-			unescaped_target_name = nautilus_format_name_for_display
+			formatted_target_name = format_and_ellipsize_uri_for_dialog
 				(progress_info->target_name);
 		}
 
@@ -838,8 +858,10 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			error_kind = ERROR_NO_SPACE;
 		}
 
-		text = build_error_string (unescaped_source_name, unescaped_target_name,
-			transfer_info->kind, error_kind, error_location, progress_info->vfs_status);
+		text = build_error_string (formatted_source_name, formatted_target_name,
+					   transfer_info->kind,
+					   error_kind, error_location,
+					   progress_info->vfs_status);
 
 		switch (transfer_info->kind) {
 		case TRANSFER_COPY:
@@ -898,7 +920,7 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			/* Generic error, offer to retry and skip. */
 			error_dialog_button_pressed = nautilus_simple_dialog
 				(parent_for_error_dialog (transfer_info), TRUE, text, 
-				dialog_title,
+				 dialog_title,
 				 _("Skip"), _("Retry"), _("Stop"), NULL);
 
 			switch (error_dialog_button_pressed) {
@@ -918,6 +940,9 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 		}
 			
 		g_free (text);
+		g_free (formatted_source_name);
+		g_free (formatted_target_name);
+
 		return error_dialog_result;
 
 	case GNOME_VFS_XFER_ERROR_MODE_ABORT:
@@ -933,72 +958,75 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 	}
 }
 
+/* is_special_link
+ *
+ * Check and see if file is one of our special links.
+ * A special link ould be one of the following:
+ * 	trash, home, volume
+ */
+static gboolean
+is_special_link (const char *uri)
+{
+	char *local_path;
+	gboolean is_special;
+
+	local_path = gnome_vfs_get_local_path_from_uri (uri);
+
+	/* FIXME: This should use some API to check if the file is a
+	 * link. Normally we use the MIME type. As things stand, this
+	 * will read files and try to parse them as XML, which could
+	 * result in a lot of output to the console, since the XML
+	 * parser reports errors directly there.
+	 */
+	is_special = local_path != NULL
+		&& nautilus_link_local_get_link_type (local_path) != NAUTILUS_LINK_GENERIC;
+	
+	g_free (local_path);
+	
+	return is_special;
+}
+
 static int
 handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
-		       TransferInfo *transfer_info)
+		           TransferInfo *transfer_info)
 {	
 	int result;
-	char *text, *unescaped_name, *unescaped_path, *file_uri;
-	const char *link_path, *filename;
-	NautilusFile *file;
-	GnomeVFSURI *link_uri;
-	gboolean is_special_link;
+	char *text, *formatted_name;
 	
-	is_special_link = FALSE;
-	 
 	/* Handle special case files such as Trash, mount links and home directory */	
-	file = nautilus_file_get (progress_info->target_name);
-	if (file != NULL) {
-		if (nautilus_file_is_nautilus_link (file)) {
-			link_uri = gnome_vfs_uri_new (progress_info->target_name);
-			if (link_uri != NULL) {							
-				link_path = gnome_vfs_uri_get_path (link_uri);
-				unescaped_path = gnome_vfs_unescape_string_for_display (link_path);
-				gnome_vfs_uri_unref (link_uri);
-								
-				if (nautilus_link_local_is_volume_link (unescaped_path) ||
-		      		    nautilus_link_local_is_trash_link (unescaped_path) ||
-		      		    nautilus_link_local_is_home_link (unescaped_path)) {		      		    
-					file_uri = nautilus_file_get_uri (file);
-					filename = g_basename (file_uri);
-					unescaped_name = nautilus_format_name_for_display (filename);
-				
-					if (transfer_info->kind == TRANSFER_MOVE) {
-						text = g_strdup_printf (_("%s could not be moved to the new location, "
-							  	  	  "because the name is already used for a special item that "
-				 			  	  	  "cannot be removed or replaced.  If you still want to move %s, "
-							   	  	  "rename it and try again."), unescaped_name, unescaped_name);
-					} else {
-						text = g_strdup_printf (_("%s could not be copied to the new location, "
-							  	  	  "because the name is already used for a special item that "
-				 			  	  	  "cannot be removed or replaced.  If you still want to copy %s, "
-							   	  	  "rename it and try again."), unescaped_name, unescaped_name);
+	if (is_special_link (progress_info->target_name)) {
+		formatted_name = extract_and_ellipsize_file_name_for_dialog (progress_info->target_name);
+		
+		if (transfer_info->kind == TRANSFER_MOVE) {
+			text = g_strdup_printf (_("\"%s\" could not be moved to the new location, "
+						  "because the name is already used for a special item that "
+						  "cannot be removed or replaced. "
+						  "If you still want to move \"%s\", rename it and try again."),
+						formatted_name, formatted_name);
+		} else {
+			text = g_strdup_printf (_("\"%s\" could not be copied to the new location, "
+						  "because the name is already used for a special item that "
+						  "cannot be removed or replaced. "
+						  "If you still want to copy \"%s\", rename it and try again."),
+						formatted_name, formatted_name);
+			
+		};
+		
+		nautilus_simple_dialog (parent_for_error_dialog (transfer_info), TRUE, text,
+					_("Unable to replace file."), _("OK"), NULL, NULL);
 
-					};
-										
-				 	nautilus_simple_dialog (parent_for_error_dialog (transfer_info), TRUE, text,
-								_("Unable to replace file."), _("OK"), NULL, NULL);
-					g_free (text);
-					g_free (file_uri);
-					g_free (unescaped_name);
-					is_special_link = TRUE;
-				}				
-				g_free (unescaped_path);
-			}
-		}
-		nautilus_file_unref (file);		
-	}
-	
-	if (is_special_link) {
+		g_free (text);
+		g_free (formatted_name);
+
 		return GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP;
 	}
 	
 	/* transfer conflict, prompt the user to replace or skip */
-	unescaped_name = nautilus_format_name_for_display (progress_info->target_name);
+	formatted_name = format_and_ellipsize_uri_for_dialog (progress_info->target_name);
 	text = g_strdup_printf (_("File \"%s\" already exists.\n\n"
 				  "Would you like to replace it?"), 
-				unescaped_name);
-	g_free (unescaped_name);
+				formatted_name);
+	g_free (formatted_name);
 
 	if (progress_info->duplicate_count == 1) {
 		/* we are going to only get one duplicate alert, don't offer
@@ -1181,8 +1209,10 @@ extract_string_until (const char *original, const char *until_substring)
  * (xxxcopy) substring.
  */
 static void
-parse_previous_duplicate_name (const char *name, char **name_base, const char **suffix,
-	int *count)
+parse_previous_duplicate_name (const char *name,
+			       char **name_base,
+			       const char **suffix,
+			       int *count)
 {
 	const char *tag;
 
@@ -1271,9 +1301,7 @@ make_next_duplicate_name (const char *base, const char *suffix, int count)
 
 
 	if (count < 1) {
-		char buffer [256];
-		sprintf(buffer, "bad count %d in get_duplicate_name", count);
-		g_warning (buffer);
+		g_warning ("bad count %d in get_duplicate_name", count);
 		count = 1;
 	}
 
@@ -1359,7 +1387,7 @@ get_next_duplicate_name (char *name, int count_increment)
 
 static int
 handle_transfer_duplicate (GnomeVFSXferProgressInfo *progress_info,
-		       TransferInfo *transfer_info)
+			   TransferInfo *transfer_info)
 {
 	switch (transfer_info->kind) {
 	case TRANSFER_LINK:
@@ -1554,61 +1582,30 @@ check_target_directory_is_or_in_trash (GnomeVFSURI *trash_dir_uri, GnomeVFSURI *
 
 
 static GnomeVFSURI *
-append_basename (const GnomeVFSURI *target_directory, const GnomeVFSURI *source_directory)
+append_basename (const GnomeVFSURI *target_directory,
+		 const GnomeVFSURI *source_directory)
 {
-	const char *filename;
+	const char *file_name;
 
-	filename =  gnome_vfs_uri_extract_short_name (source_directory);
-	if (filename != NULL) {
-		return gnome_vfs_uri_append_file_name (target_directory, filename);
+	file_name = gnome_vfs_uri_extract_short_name (source_directory);
+	if (file_name != NULL) {
+		return gnome_vfs_uri_append_file_name (target_directory, file_name);
 	}
 	 
 	return gnome_vfs_uri_dup (target_directory);
 }
 
-/* is_special_link
- *
- * Check and see if file is one of our special links.
- * A special link ould be one of the following:
- * 	trash, home, volume
- */
 static gboolean 
-is_special_link (const GnomeVFSURI *uri)
+vfs_uri_is_special_link (GnomeVFSURI *vfs_uri)
 {
-	const char *local_path;
-	char *escaped_path;
-	
-	if (!gnome_vfs_uri_is_local (uri)) {
-		return FALSE;
-	}
-	
-	local_path = gnome_vfs_uri_get_path (uri);
-	if (local_path == NULL) {
-		return FALSE;
-	}
-	
-	escaped_path = gnome_vfs_unescape_string_for_display (local_path);
-	if (escaped_path == NULL) {
-		return FALSE;
-	}
+	char *uri;
+	gboolean is_special;
 
-	if (nautilus_link_local_is_trash_link (escaped_path)) {
-		g_free(escaped_path);
-		return TRUE;
-	}
+	uri = gnome_vfs_uri_to_string (vfs_uri, GNOME_VFS_URI_HIDE_NONE);
+	is_special = is_special_link (uri);
+	g_free (uri);
 
-	if (nautilus_link_local_is_home_link (escaped_path)) {
-		g_free(escaped_path);
-		return TRUE;
-	}
-
-	if (nautilus_link_local_is_volume_link (escaped_path)) {
-		g_free(escaped_path);
-		return TRUE;
-	}
-
-	g_free(escaped_path);
-	return FALSE;
+	return is_special;
 }
 
 void
@@ -1665,39 +1662,41 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	 * same disk
 	 */
 	for (p = item_uris; p != NULL; p = p->next) {
-		source_uri = gnome_vfs_uri_new ((const char *)p->data);
 		/* Filter out special Nautilus link files */
 		/* FIXME bugzilla.eazel.com 5295: 
 		 * This is surprising behavior -- the user drags the Trash icon (say)
 		 * to a folder, releases it, and nothing whatsoever happens. Don't we want
 		 * a dialog in this case?
 		 */
-		if (!is_special_link (source_uri)) {
-			source_uri_list = g_list_prepend (source_uri_list, source_uri);
-			source_dir_uri = gnome_vfs_uri_get_parent (source_uri);
-			
-			if (target_dir != NULL) {
-				if (is_trash_move) {
-					gnome_vfs_find_directory (source_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-							   	  &target_dir_uri, FALSE, FALSE, 0777);				
-				}
-				target_uri = append_basename (target_dir_uri, source_uri);
-			} else {
-				/* duplication */
-				target_uri = gnome_vfs_uri_ref (source_uri);
-				if (target_dir_uri == NULL) {
-					target_dir_uri = gnome_vfs_uri_ref (source_dir_uri);
-				}
-			}
-			target_uri_list = g_list_prepend (target_uri_list, target_uri);
-			gnome_vfs_check_same_fs_uris (source_uri, target_uri, &same_fs);
-
-			g_assert (target_dir_uri != NULL);
-			duplicate &= same_fs;
-			duplicate &= gnome_vfs_uri_equal (source_dir_uri, target_dir_uri);
-
-			gnome_vfs_uri_unref (source_dir_uri);
+		if (is_special_link ((const char *) p->data)) {
+			continue;
 		}
+
+		source_uri = gnome_vfs_uri_new ((const char *) p->data);
+		source_uri_list = g_list_prepend (source_uri_list, source_uri);
+		source_dir_uri = gnome_vfs_uri_get_parent (source_uri);
+		
+		if (target_dir != NULL) {
+			if (is_trash_move) {
+				gnome_vfs_find_directory (source_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
+							  &target_dir_uri, FALSE, FALSE, 0777);				
+			}
+			target_uri = append_basename (target_dir_uri, source_uri);
+		} else {
+			/* duplication */
+			target_uri = gnome_vfs_uri_ref (source_uri);
+			if (target_dir_uri == NULL) {
+				target_dir_uri = gnome_vfs_uri_ref (source_dir_uri);
+			}
+		}
+		target_uri_list = g_list_prepend (target_uri_list, target_uri);
+		gnome_vfs_check_same_fs_uris (source_uri, target_uri, &same_fs);
+
+		g_assert (target_dir_uri != NULL);
+		duplicate &= same_fs;
+		duplicate &= gnome_vfs_uri_equal (source_dir_uri, target_dir_uri);
+
+		gnome_vfs_uri_unref (source_dir_uri);
 	}
 
 	if (duplicate) {
@@ -1781,10 +1780,9 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		transfer_info->show_progress_dialog = TRUE;
 	}
 
-
 	/* we'll need to check for copy into Trash and for moving/copying the Trash itself */
 	gnome_vfs_find_directory (target_dir_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-		&trash_dir_uri, FALSE, FALSE, 0777);
+				  &trash_dir_uri, FALSE, FALSE, 0777);
 
 	if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) == 0) {
 		/* don't allow copying into Trash */
@@ -1810,13 +1808,17 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 			    	/* Distinguish Trash file on desktop from other trash folders for
 			    	 * message purposes.
 			    	 */
-			    	is_desktop_trash_link = is_special_link (uri);
+			    	is_desktop_trash_link = vfs_uri_is_special_link (uri);
 				nautilus_simple_dialog
 					(view, 
 					 FALSE,
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
-						 ? (is_desktop_trash_link ? _("The Trash must remain on the desktop.") : _("You cannot move this trash folder."))
-						 : (is_desktop_trash_link ? _("You cannot copy the Trash.") : _("You cannot copy this trash folder.")), 
+						 ? (is_desktop_trash_link
+						    ? _("The Trash must remain on the desktop.")
+						    : _("You cannot move this trash folder."))
+						 : (is_desktop_trash_link
+						    ? _("You cannot copy the Trash.")
+						    : _("You cannot copy this trash folder.")), 
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0)
 						 ? _("Can't Change Trash Location")
 						 : _("Can't Copy Trash"),
@@ -2004,6 +2006,7 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 	gboolean bail;
 	char *text;
 	char *item_name;
+	const char *source_uri_text;
 
 	g_assert (item_uris != NULL);
 	
@@ -2016,7 +2019,9 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 	/* build the source and uri list, checking if any of the delete itmes are Trash */
 	for (p = item_uris; p != NULL; p = p->next) {
 		bail = FALSE;
-		source_uri = gnome_vfs_uri_new ((const char *)p->data);
+
+		source_uri_text = (const char *) p->data;
+		source_uri = gnome_vfs_uri_new (source_uri_text);
 		source_uri_list = g_list_prepend (source_uri_list, source_uri);
 
 		if (trash_dir_uri == NULL) {
@@ -2044,8 +2049,7 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 				 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
 			bail = TRUE;
 		} else if (gnome_vfs_uri_is_parent (source_uri, trash_dir_uri, TRUE)) {
-			item_name = nautilus_convert_to_formatted_name_for_display 
-				(gnome_vfs_uri_extract_short_name (source_uri));
+			item_name = extract_and_ellipsize_file_name_for_dialog (source_uri_text);
 			text = g_strdup_printf
 				(_("You cannot throw \"%s\" into the Trash."),
 				 item_name);
@@ -2117,7 +2121,7 @@ nautilus_file_operations_delete (const GList *item_uris,
 	uri_list = NULL;
 	for (p = item_uris; p != NULL; p = p->next) {
 		uri_list = g_list_prepend (uri_list, 
-			gnome_vfs_uri_new ((const char *)p->data));
+					   gnome_vfs_uri_new ((const char *) p->data));
 	}
 	uri_list = g_list_reverse (uri_list);
 

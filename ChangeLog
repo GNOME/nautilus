@@ -1,3 +1,41 @@
+2001-01-16  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Gene Ragan <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(get_label_font): It's illegal to unref a new widget since you
+	don't own a ref to it. Sink it instead.
+	(ellipsize_string_for_dialog): New function.
+	(format_and_ellipsize_uri_for_dialog): Rename this function and
+	change it to use nautilus_format_uri_for_display. Also add FIXME
+	about where the ellipsis goes.
+	(extract_and_ellipsize_file_name_for_dialog): Added a seprate
+	function for the case where we want to extract the file name
+	part only. The old code mixed the URI and file name cases in a
+	way that would lead to anomalies with unusual names.
+	(handle_transfer_vfs_error): Fixed storage leak.
+	(is_special_link): Rewrote this function and also made it take
+	a URI in text form, not a GnomeVFSURI.
+	(handle_transfer_overwrite): Use is_special_link instead of
+	duplicate its test. Removed incorrect use of NautilusFile (without
+	waiting for results). Added quotes around file name in
+	message. Use extract_and_ellipsize_file_name_for_dialog instead of
+	our own ad-hoc functions.
+	(make_next_duplicate_name): Get rid of bizarre buffer/sprintf that
+	was used by someone who didn't know you can use printf formatting
+	with g_warning.
+	(vfs_uri_is_special_link): Created cover for one remaining caller
+	of is_special_link that needs to pass a GnomeVFSURI.
+	(nautilus_file_operations_copy_move): Use the new is_special_link
+	(nautilus_file_operations_move_to_trash): Use
+	extract_and_ellipsize_file_name_for_dialog instead of an old
+	strange combination of calls.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_name_for_regular_file): Fix
+	obsolete comment and rearrange code now that plain text special
+	case is gone.
+
 2001-01-16  Josh Barrow  <josh@eazel.com>
 
 	* src/nautilus-first-time-druid.c: (druid_finished):
@@ -152,7 +190,6 @@
 	* src/nautilus-window-private.h:
 	added a field to hold the event source listener ID.
 
->>>>>>> 1.3367
 2001-01-15  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/throbber/main.c: (main):

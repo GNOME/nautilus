@@ -747,16 +747,8 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 {
 	const char *icon_name;
 	char *mime_type, *uri;
-	gboolean is_text_file;
 	
-	/* force plain text files to use the generic document icon so
-	 *	we can have the text-in-icons feature; eventually, we
-	 * want to force other types of text files as well
-	 */
-        
 	mime_type = nautilus_file_get_mime_type (file);
-	is_text_file = nautilus_strcasecmp (mime_type, "text/plain") == 0;
-	
 	if (mime_type != NULL) {
 		icon_name = gnome_vfs_mime_get_icon (mime_type);
 		if (icon_name != NULL) {
@@ -765,11 +757,12 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 		}
 	}
 
-	/* gnome_vfs_mime didn't give us an icon name, so we have to fall back on default icons. */
-
 	uri = nautilus_file_get_uri (file);
 
-	/* special-case icons based on the uri scheme.  eventually we should generalize this. */
+	/* Special-case icons based on the uri scheme. Eventually we
+	 * should generalize this or at least have a way for others to
+	 * extend it.
+	 */
 	if (nautilus_istr_has_prefix (uri, "http:")
 	    && nautilus_strcmp (mime_type, "text/html") == 0) {
 		icon_name = ICON_NAME_WEB;
@@ -779,13 +772,14 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 		icon_name = nautilus_trash_monitor_is_empty ()
 			? ICON_NAME_TRASH_EMPTY : ICON_NAME_TRASH_NOT_EMPTY;
 	} else {
-		if (nautilus_file_is_executable (file) & !is_text_file) {
+		if (nautilus_file_is_executable (file)
+		    && nautilus_strcasecmp (mime_type, "text/plain") != 0) {
 			icon_name = ICON_NAME_EXECUTABLE;
 		} else {
 			icon_name = ICON_NAME_REGULAR;
 		}
 	}
-
+	
         g_free (uri);
         g_free (mime_type);	
 	
