@@ -1,3 +1,20 @@
+2002-08-06  Federico Mena Quintero  <federico@ximian.com>
+
+	Fixes #82194.
+
+	* icons/text-selection-frame.png: Made the base frame image white
+	with rounded corners over a transparent background.
+
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_theme_changed): If the theme does not
+	specify a color for the text highlight color, use the widget
+	style's base[GTK_STATE_SELECTED].
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(draw_or_measure_label_text): Multiply the (white) selection
+	pixbuf by the highlight color so that we get a tinted pixbuf with
+	proper alpha.
+
 === nautilus 2.0.3 ===
 	
 2002-08-05  Dave Camp  <dave@ximian.com>

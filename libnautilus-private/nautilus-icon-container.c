@@ -5216,7 +5216,16 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 	highlight_color_str = nautilus_theme_get_theme_data ("directory", "highlight_color_rgba");
 	
 	if (highlight_color_str == NULL) {
-		container->details->highlight_color_rgba = EEL_RGBA_COLOR_PACK (0, 0, 0, 102);
+		GtkStyle *style;
+		guchar r, g, b;
+
+		style = gtk_widget_get_style (GTK_WIDGET (container));
+
+		r = style->base[GTK_STATE_SELECTED].red >> 8;
+		g = style->base[GTK_STATE_SELECTED].green >> 8;
+		b = style->base[GTK_STATE_SELECTED].blue >> 8;
+
+		container->details->highlight_color_rgba = EEL_RGBA_COLOR_PACK (r, g, b, 0xff);
 	} else {
 		container->details->highlight_color_rgba = strtoul (highlight_color_str, NULL, 0);
 		g_free (highlight_color_str);
