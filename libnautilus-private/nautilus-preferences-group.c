@@ -215,7 +215,7 @@ preferences_group_align_captions (NautilusPreferencesGroup *group)
 
 			g_assert (width <= max_title_width);
 			
-			nautilus_preferences_item_set_caption_spacing (item, max_title_width - width);
+			nautilus_preferences_item_set_caption_extra_spacing (item, max_title_width - width);
 		}
 	}
 }

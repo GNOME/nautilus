@@ -1076,17 +1076,18 @@ nautilus_preferences_item_get_caption_title_label_width (const NautilusPreferenc
 }
 
 void
-nautilus_preferences_item_set_caption_spacing (NautilusPreferencesItem *item,
-					       int spacing)
+nautilus_preferences_item_set_caption_extra_spacing (NautilusPreferencesItem *item,
+					             int extra_spacing)
 {
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
-	g_return_if_fail (spacing >= 0);
+	g_return_if_fail (extra_spacing >= 0);
 
 	if (!nautilus_preferences_item_child_is_caption (item)) {
 		return;
 	}
 
-	return nautilus_caption_set_spacing (NAUTILUS_CAPTION (item->details->child), spacing);
+	nautilus_caption_set_extra_spacing (NAUTILUS_CAPTION (item->details->child), 
+					    extra_spacing);
 }
 
 void

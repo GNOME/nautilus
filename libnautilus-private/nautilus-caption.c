@@ -41,7 +41,6 @@ struct _NautilusCaptionDetail
 	GtkWidget *title_label;
 	GtkWidget *child;
 	gboolean show_title;
-	int spacing;
 };
 
 /* NautilusCaptionClass methods */
@@ -248,48 +247,27 @@ nautilus_caption_set_child (NautilusCaption *caption,
 			    caption->detail->child,
 			    expand,	/* expand */
 			    fill,	/* fill */
-			    caption->detail->spacing);	/* padding */
+			    0);	        /* padding */
 	
 	gtk_widget_show (caption->detail->child);
 }
 
 /**
- * nautilus_caption_set_spacing
+ * nautilus_caption_set_extra_spacing
  * @caption: A NautilusCaption
- * @spacing: Spacing in pixels between the title and the child.
+ * @spacing: Extra spacing in pixels between the title and the child,
+ * beyond the nominal amount
  *
- * Set the spacing between the title label and the caption's one
- * and only child.
+ * Set the amount of extra spacing between the title label and the 
+ * caption's one and only child.
  */
 void
-nautilus_caption_set_spacing (NautilusCaption *caption,
-			      int spacing)
+nautilus_caption_set_extra_spacing (NautilusCaption *caption,
+			      	    int extra_spacing)
 {
-	gboolean expand;
-	gboolean fill;
-	guint padding;
-	GtkPackType pack_type;
-
 	g_return_if_fail (NAUTILUS_IS_CAPTION (caption));
-	g_return_if_fail (spacing >= 0);
+	g_return_if_fail (extra_spacing >= 0);
 
-	caption->detail->spacing = spacing;
-	
-	if (caption->detail->child == NULL) {
-		return;
-	}
-
-	gtk_box_query_child_packing (GTK_BOX (caption),
-				     caption->detail->child,
-				     &expand,
-				     &fill,
-				     &padding,
-				     &pack_type);
-	
-	gtk_box_set_child_packing (GTK_BOX (caption),
-				   caption->detail->child,
-				   expand,
-				   fill,
-				   caption->detail->spacing,
-				   pack_type);
+	gtk_box_set_spacing (GTK_BOX (caption), 
+			     CAPTION_SPACING + extra_spacing);
 }

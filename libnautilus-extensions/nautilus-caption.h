@@ -80,8 +80,8 @@ void       nautilus_caption_set_child             (NautilusCaption       *captio
 						   GtkWidget             *child,
 						   gboolean               expand,
 						   gboolean               fill);
-void       nautilus_caption_set_spacing           (NautilusCaption       *caption,
-						   int                    spacing);
+void       nautilus_caption_set_extra_spacing     (NautilusCaption       *caption,
+						   int                    extra_spacing);
 int        nautilus_caption_get_title_label_width (const NautilusCaption *caption);
 
 END_GNOME_DECLS

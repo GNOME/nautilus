@@ -93,8 +93,8 @@ void       nautilus_preferences_item_set_constrained_integer_values (NautilusPre
 								     const char                           *labels);
 gboolean   nautilus_preferences_item_child_is_caption               (const NautilusPreferencesItem        *preferences_item);
 int        nautilus_preferences_item_get_caption_title_label_width  (const NautilusPreferencesItem        *item);
-void       nautilus_preferences_item_set_caption_spacing            (NautilusPreferencesItem              *item,
-								     int                                   spacing);
+void       nautilus_preferences_item_set_caption_extra_spacing      (NautilusPreferencesItem              *item,
+								     int                                   extra_spacing);
 void       nautilus_preferences_item_update_showing                 (NautilusPreferencesItem              *item);
 
 END_GNOME_DECLS

@@ -1,3 +1,33 @@
+2001-04-02  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 7918 (Preferences window wider than it needs to be)
+	This also fixes the bug where the HTTP Host text field was
+	a little shorter than the HTTP Location text field.
+
+	* libnautilus-extensions/nautilus-caption.h:
+	* libnautilus-extensions/nautilus-caption.c:
+	(nautilus_caption_set_extra_spacing): Renamed from
+	_set_spacing, since there's a minimum fixed amount
+	of spacing that's always used. The bug was that this
+	routine was (only) being used to align items by setting the 
+	padding of the 2nd item in the box. This sets an equal
+	amount of blank space before and after the item, when
+	we only want the space before. Fixed by changing it to
+	use gtk_box_set_spacing instead.
+	(nautilus_caption_set_child): Don't use the spacing for
+	the padding here either.
+	
+	* libnautilus-extensions/nautilus-preferences-item.h:
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(nautilus_preferences_item_set_caption_extra_spacing):
+	Renamed from _set_caption_spacing for clarity.
+
+	* libnautilus-extensions/nautilus-preferences-group.c:
+	(preferences_group_align_captions): Updated for name
+	change.
+
 2001-04-01  Andy Hertzfeld  <andy@eazel.com>
 
 	reviewed by: Michael Engber  <engber@eazel.com>
