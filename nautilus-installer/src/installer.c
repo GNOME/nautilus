@@ -81,7 +81,7 @@
 				  "figure out your proxy configuration.\n\n" \
 				  "If you know you have a web proxy, you can try again by setting\n" \
 				  "the environment variable \"http_proxy\" to the URL of your proxy\n" \
- 				  "server, and then restarting the Nautilus install.")
+ 				  "server, and then restarting Eazel Installer.")
 #define WAIT_LABEL	_("Please wait while we download and install the files needed for\n" \
 		     	  "the installation type you selected...")
 #define WAIT_LABEL_2	_("Now starting the install process.  This will take some time, so\n" \
@@ -89,6 +89,8 @@
 #define ERROR_LABEL	_("The installer was not able to complete the installation of the\n" \
 			  "Nautilus file manager.  Here's why:")
 #define ERROR_TITLE	_("An error has occurred")
+
+#define NAUTILUS_INSTALLER_RELEASE
 
 int installer_debug = 0;
 int installer_test = 0;
@@ -517,7 +519,7 @@ create_window (EazelInstaller *installer)
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);	
 	gtk_widget_set_name (window, "window");
 	gtk_object_set_data (GTK_OBJECT (window), "window", window);
-	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus Installer"));
+	gtk_window_set_title (GTK_WINDOW (window), _("Eazel Installer"));
 	gtk_window_set_policy (GTK_WINDOW (window), FALSE, FALSE, TRUE);
 	get_pixmap_x_y (bootstrap_background, &x, &y);
 	gtk_widget_set_usize (window, x, y+45);
@@ -698,7 +700,7 @@ get_detailed_errors_foreach (const PackageData *pack, GList **error_list)
 		required = pack->provides->data;
 	}
 	if (required == NULL) {
-		required = "another package";
+		required = "(an unknown package)";
 	}
 
 	switch (pack->status) {
@@ -707,13 +709,13 @@ get_detailed_errors_foreach (const PackageData *pack, GList **error_list)
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
 		break;
 	case PACKAGE_FILE_CONFLICT:
-		message = g_strdup_printf (_("%s had a file conflict"), pack->name);
+		message = g_strdup_printf (_("%s had a file conflict"), required);
 		break;
 	case PACKAGE_DEPENDENCY_FAIL:
 		if (! pack->soft_depends && ! pack->hard_depends) {
 			/* only add this message if it's not going to be explained by a lower dependency */
 			/* (avoids redundant info like "nautilus would not work anymore" -- DUH) */
-			message = g_strdup_printf (_("%s would not work anymore"), pack->name);
+			message = g_strdup_printf (_("%s would not work anymore"), required);
 		}
 		break;
 	case PACKAGE_BREAKS_DEPENDENCY:
@@ -898,7 +900,7 @@ install_done (EazelInstall *service,
 	} else {
 		/* will call jump_to_error_page later */
 		if (installer->failure_info == NULL) {
-			temp = g_strdup (_("Couldn't download or install the packages"));
+			temp = g_strdup (_("Couldn't download or install the packages, for some reason"));
 			installer->failure_info = g_list_append (installer->failure_info, temp);
 		}
 	}
@@ -1058,7 +1060,9 @@ static gboolean
 check_system (EazelInstaller *installer)
 {
 	DistributionInfo dist;
+#ifndef NAUTILUS_INSTALLER_RELEASE
 	struct utsname ub;
+#endif
 
 	dist = trilobite_get_distribution ();
 

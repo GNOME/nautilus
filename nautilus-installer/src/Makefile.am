@@ -20,18 +20,18 @@ CPPFLAGS = -DEAZEL_INSTALL_NO_CORBA -DEAZEL_INSTALL_SLIM -DNO_TEXT_BOX
 CFLAGS = -g
 ##LDFLAGS = -static
 
-bin_PROGRAMS = nautilus-installer
+bin_PROGRAMS = eazel-installer
 
-nautilus_installer_SOURCES = \
+eazel_installer_SOURCES = \
 	main.c \
 	support.c support.h \
 	callbacks.c callbacks.h \
 	proxy.c proxy.h \
 	installer.c installer.h 
 
-nautilus_installer_LDFLAGS = -static
+eazel_installer_LDFLAGS = -static
 
-nautilus_installer_LDADD = 	\
+eazel_installer_LDADD = 	\
         $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 			\
         $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 	\
 	$(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a			\
@@ -55,11 +55,9 @@ nautilus_installer_LDADD = 	\
 	-lpopt \
 	-lxml 
 
+#
 #	/usr/lib/libesd.a \
 #	/usr/lib/libaudiofile.a \
-
-
-#
 #        /gnome-source/nautilus/components/services/trilobite/libtrilobite/helixcode-utils.o 	\
 #	/gnome-source/nautilus/components/services/install/lib/libinstall.a			\
 #	$(GNOME_LIBDIR) 	\

@@ -1,3 +1,23 @@
+2000-10-09  Robey Pointer  <robey@eazel.com>
+
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_fetch_uri):
+
+	The -Wall -Werror was accidentally turned off for this library, so
+	a few more bugs were fixed.
+	
+	* nautilus-installer/src/Makefile.am:
+	* nautilus-installer/src/installer.c: (create_window),
+	(get_detailed_errors_foreach), (install_done), (check_system):
+	* nautilus-installer/src/link.sh:
+	* nautilus-installer/src/main.c: (main):
+	* nautilus-installer/src/prescript:
+
+	Change the "Nautilus Installer" to "Eazel Installer" in all
+	filenames and user-visible text.  Build "release" version that
+	doesn't give evil --test warnings.  Re-assert some stuff I thought
+	I checked in last week (like the --build option).
+
 2000-10-09  John Sullivan  <sullivan@eazel.com>
 
 	Bunches o' Bonobo conversion & cleanup. Most of this is

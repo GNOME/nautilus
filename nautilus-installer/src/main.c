@@ -24,6 +24,10 @@
 #  include <config.h>
 #endif
 
+#ifndef BUILD_DATE
+#define BUILD_DATE "unknown"
+#endif
+
 #include <gnome.h>
 
 #include "installer.h"
@@ -41,6 +45,8 @@ extern int installer_server_port;
 extern char* installer_local;
 extern char* installer_cgi_path;
 
+static int installer_show_build = 0;
+
 static const struct poptOption options[] = {
 	{"debug", 'd', POPT_ARG_NONE, &installer_debug, 0 , N_("Show debug output"), NULL},
 	{"test", 't', POPT_ARG_NONE, &installer_test, 0, N_("Test the installer without actually installing packages"), NULL},
@@ -52,6 +58,7 @@ static const struct poptOption options[] = {
 #endif
 	{"port", '\0', POPT_ARG_INT, &installer_server_port, 0 , N_("Set port number for Eazel installation server (default: 80)"), NULL},
 	{"cgi-path", '\0', POPT_ARG_STRING, &installer_cgi_path, 0, N_("Specify CGI path for Eazel installation server"), NULL},
+	{"build", 'B', POPT_ARG_NONE, &installer_show_build, 0, N_("Display installer version"), NULL},
 	{NULL, '\0', 0, NULL, 0}
 };
 
@@ -61,10 +68,15 @@ main (int argc, char *argv[])
 	EazelInstaller *installer;
 
 #ifdef ENABLE_NLS
-	bindtextdomain ("nautilus-installer", GNOMELOCALEDIR);
-	textdomain ("nautilus-installer");
+	bindtextdomain ("eazel-installer", GNOMELOCALEDIR);
+	textdomain ("eazel-installer");
 #endif
 	gnome_init_with_popt_table ("eazel-installer", VERSION, argc, argv, options, 0, NULL);
+
+	if (installer_show_build) {
+		printf ("\nEazel Installer v1.0 (build %s)\n\n", BUILD_DATE);
+		exit (0);
+	}
 
 	installer = eazel_installer_new ();
 

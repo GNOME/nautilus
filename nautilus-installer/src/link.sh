@@ -1,23 +1,32 @@
 #! /bin/bash
 
+DEBUG="yes"
+
 GNOME=/gnome
+BUILD_DATE=`date +%d%b%y-%H%M`
+
+if test "$DEBUG" = "yes"; then
+    OG_FLAG="-g"
+    STRIP="no"
+else
+    OG_FLAG="-O"
+    STRIP="yes"
+fi
+
+WARN_FLAG="-Wall -Werror"
 
 pushd `pwd`
 cd ../../components/services/install/lib
     make -f makefile.staticlib clean && \
-    #make CFLAGS="-g -Werror" DEFINES="-DEAZEL_INSTALL_NO_CORBA -DEAZEL_INSTALL_SLIM -DEAZEL_INSTALL_PROTOCOL_USE_OLD_CGI" -f makefile.staticlib && \
-    make CFLAGS="-g -Wall -Werror" DEFINES="-DEAZEL_INSTALL_NO_CORBA -DEAZEL_INSTALL_SLIM" -f makefile.staticlib && \
-    #make CFLAGS="-O -Wall -Werror" DEFINES="-DEAZEL_INSTALL_NO_CORBA -DEAZEL_INSTALL_SLIM -DEAZEL_INSTALL_PROTOCOL_USE_OLD_CGI" -f makefile.staticlib && \
+    make CFLAGS="$OG_FLAG $WARN_FLAG" DEFINES="-DEAZEL_INSTALL_NO_CORBA -DEAZEL_INSTALL_SLIM" -f makefile.staticlib && \
     cd ../../trilobite/libtrilobite && \
     make -f makefile.staticlib clean && \
-    make CFLAGS="-g -Werror" DEFINES="-DTRILOBITE_SLIM" -f makefile.staticlib && \
+    make CFLAGS="$OG_FLAG $WARN_FLAG" DEFINES="-DTRILOBITE_SLIM" -f makefile.staticlib && \
 popd && \
 
 make clean && \
-#make CFLAGS="-O -Werror -DNO_TEXT_BOX $*" LDFLAGS="-static" DEFINES="-DNAUTILUS_INSTALLER_RELEASE" && \
-#gcc -static -O -Werror -o nautilus-installer main.o support.o callbacks.o installer.o proxy.o 	\
-make CFLAGS="-g -Wall -Werror -DNO_TEXT_BOX $*" LDFLAGS="-static" DEFINES="-DNAUTILUS_INSTALLER_RELEASE" && \
-gcc -static -g -Wall -Werror -o nautilus-installer main.o support.o callbacks.o installer.o proxy.o 	\
+make CFLAGS="$OG_FLAG $WARN_FLAG -DNO_TEXT_BOX -DBUILD_DATE=\\\"${BUILD_DATE}\\\" $*" LDFLAGS="-static" && \
+gcc -static $OG_FLAG $WARN_FLAG -o eazel-installer main.o support.o callbacks.o installer.o proxy.o 	\
 ../../components/services/install/lib/libeazelinstall_minimal.a 			\
 ../../components/services/trilobite/libtrilobite/libtrilobite_minimal.a 		\
 ../../libnautilus-extensions/nautilus-druid.o						\
@@ -29,20 +38,22 @@ gcc -static -g -Wall -Werror -o nautilus-installer main.o support.o callbacks.o 
 -lghttp											\
 -L/usr/lib -lrpm -lbz2 -lz -ldb1 -lpopt -lxml
 
-cp nautilus-installer nautilus-installer-prezip
+cp eazel-installer eazel-installer-prezip
 
-echo Stripping...
-strip nautilus-installer
+if test "$STRIP" = "yes"; then
+    echo Stripping...
+    strip eazel-installer
+fi
 echo Packing...
-gzexe nautilus-installer
+gzexe eazel-installer
 
 echo Patching...
-chmod 644 nautilus-installer
-mv nautilus-installer hest
+chmod 644 eazel-installer
+mv eazel-installer hest
 extraskip=`expr 22 + \`wc -l prescript|awk '{printf $1"\n"}'\``
-echo "#!/bin/sh" > nautilus-installer.sh
-echo "skip=$extraskip" >> nautilus-installer.sh
-cat prescript >> nautilus-installer.sh
-tail +3 hest >> nautilus-installer.sh
+echo "#!/bin/sh" > eazel-installer.sh
+echo "skip=$extraskip" >> eazel-installer.sh
+cat prescript >> eazel-installer.sh
+tail +3 hest >> eazel-installer.sh
 rm hest
 echo Done...
