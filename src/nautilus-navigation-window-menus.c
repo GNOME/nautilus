@@ -612,6 +612,7 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
 	if (aboot == NULL) {
 
 		const char *authors[] = {
+			"Ali Abdin",
 			"Darin Adler",
 			"Pavel Císler",
 			"J Shane Culpepper",
@@ -624,6 +625,7 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
 			"George Lebl",
 			"Elliot Lee",
 			"Raph Levien",
+			"Ian McKellar",
 			"Seth Nickell",
 			"Eskil Heyn Olsen",
 			"Ettore Perazzoli",
