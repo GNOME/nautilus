@@ -327,7 +327,7 @@ nautilus_file_operations_progress_new_file (NautilusFileOperationsProgress *dial
 	dialog->details->from_prefix = from_prefix;
 	dialog->details->to_prefix = to_prefix;
 
-	progress_count = g_strdup_printf ("%ld of %ld", dialog->details->file_index, 
+	progress_count = g_strdup_printf (_("%ld of %ld"), dialog->details->file_index, 
 		dialog->details->files_total);
 	gtk_label_set_text (GTK_LABEL (dialog->details->progress_count_label), progress_count);
 	g_free (progress_count);
