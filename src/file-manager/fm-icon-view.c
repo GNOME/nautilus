@@ -56,6 +56,7 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <locale.h>
+#include <esd.h>
 #include <signal.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -1824,9 +1825,9 @@ icon_container_preview_callback (NautilusIconContainer *container,
 
 	/* perform one-time check to see if sound is available.  If not, don't try to preview */
 	if (sound_available == 0) {
-		sound_available = open ("/dev/dsp", O_WRONLY, 0644);
+		sound_available = esd_audio_open();
 		if (sound_available > 0) {
-			close (sound_available);
+			esd_audio_close ();
 		}
 	}
 	

@@ -1,5 +1,15 @@
 2000-10-01  Andy Hertzfeld  <andy@eazel.com>
 
+	changed the sound ability test to use esd_audio_open instead of
+	opening the sound driver directly. We still need to test this
+	on systems with no sound hardware.
+	
+	* components/music/nautilus-music-view.c: (can_play_sounds):
+	* src/file-manager/fm-icon-view.c:
+	(icon_container_preview_callback):
+
+2000-10-01  Andy Hertzfeld  <andy@eazel.com>
+
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:
 	(draw_stretch_handles_aa), (draw_dashed_rectangle_aa),
 	(draw_focus_rect), (draw_or_measure_label_text_aa):

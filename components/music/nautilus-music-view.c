@@ -36,6 +36,8 @@
 #include <dirent.h>
 #include <ctype.h>
 
+#include <esd.h>
+
 #include <libnautilus/libnautilus.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
@@ -187,12 +189,12 @@ can_play_sounds ()
 {
 	int open_result;
 	
-	open_result = open ("/dev/dsp", O_WRONLY, 0644);
+	open_result = esd_audio_open();
 	if (open_result < 0) {
 		return FALSE;
 	}
 	
-	close (open_result);
+	esd_audio_close ();
 	return TRUE;
 }
 
