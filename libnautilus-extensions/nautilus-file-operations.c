@@ -29,7 +29,8 @@
 #include <libgnomevfs/gnome-vfs-find-directory.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 
-#include "dfos-xfer.h"
+#include "nautilus-file-operations.h"
+#include "nautilus-file-operations-progress.h"
 #include <libnautilus-extensions/nautilus-file-changes-queue.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
@@ -60,26 +61,6 @@ typedef struct XferInfo {
 	gboolean show_progress_dialog;
 } XferInfo;
 
-static XferInfo *
-xfer_info_new (GnomeVFSAsyncHandle *handle,
-	       GnomeVFSXferOptions options,
-	       GnomeVFSXferErrorMode error_mode,
-	       GnomeVFSXferOverwriteMode overwrite_mode)
-{
-	XferInfo *info;
-
-	info = g_new (XferInfo, 1);
-
-	info->handle = handle;
-	info->error_mode = error_mode;
-	info->overwrite_mode = overwrite_mode;
-
-	info->progress_dialog = NULL;
-	info->parent_view = NULL;
-
-	return info;
-}
-
 char *
 nautilus_convert_to_unescaped_string_for_display  (char *escaped)
 {
@@ -94,7 +75,7 @@ nautilus_convert_to_unescaped_string_for_display  (char *escaped)
 
 
 static void
-xfer_dialog_clicked_callback (DFOSXferProgressDialog *dialog,
+xfer_dialog_clicked_callback (NautilusFileOperationsProgress *dialog,
 			      int button_number,
 			      gpointer data)
 {
@@ -115,7 +96,7 @@ create_xfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 
 	g_return_if_fail (xfer_info->progress_dialog == NULL);
 
-	xfer_info->progress_dialog = dfos_xfer_progress_dialog_new 
+	xfer_info->progress_dialog = nautilus_file_operations_progress_new 
 		(xfer_info->operation_title, "", "", "", 1, 1);
 
 	gtk_signal_connect (GTK_OBJECT (xfer_info->progress_dialog),
@@ -127,17 +108,17 @@ create_xfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 }
 
 static void
-progress_dialog_set_files_remaining_text (DFOSXferProgressDialog *dialog, const char *action_verb)
+progress_dialog_set_files_remaining_text ( NautilusFileOperationsProgress *dialog, const char *action_verb)
 {
 	char *text;
 
 	text = g_strdup_printf ("Files remaining to be %s:", action_verb);
-	dfos_xfer_progress_dialog_set_operation_string (dialog, text);
+	nautilus_file_operations_progress_set_operation_string (dialog, text);
 	g_free (text);
 }
 
 static void
-progress_dialog_set_to_from_item_text (DFOSXferProgressDialog *dialog,
+progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
 	const char *progress_verb, const char *from_uri, const char *to_uri, 
 	gulong index, gulong size)
 {
@@ -188,7 +169,7 @@ progress_dialog_set_to_from_item_text (DFOSXferProgressDialog *dialog,
 		to_prefix = _("To:");
 	}
 
-	dfos_xfer_progress_dialog_new_file (dialog,
+	nautilus_file_operations_progress_new_file (dialog,
 		progress_label_text ? progress_label_text : "",
 		item ? item : "",
 		from_path ? from_path : "",
@@ -212,8 +193,8 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 
 	case GNOME_VFS_XFER_PHASE_COLLECTING:
 		if (xfer_info->progress_dialog != NULL) {
-			dfos_xfer_progress_dialog_set_operation_string
-				(DFOS_XFER_PROGRESS_DIALOG
+			nautilus_file_operations_progress_set_operation_string
+				(NAUTILUS_FILE_OPERATIONS_PROGRESS
 					 (xfer_info->progress_dialog),
 					 xfer_info->preparation_name);
 		}
@@ -222,10 +203,10 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 	case GNOME_VFS_XFER_PHASE_READYTOGO:
 		if (xfer_info->progress_dialog != NULL) {
 			progress_dialog_set_files_remaining_text (
-				DFOS_XFER_PROGRESS_DIALOG (xfer_info->progress_dialog),
+				NAUTILUS_FILE_OPERATIONS_PROGRESS (xfer_info->progress_dialog),
 					 xfer_info->action_verb);
-			dfos_xfer_progress_dialog_set_total
-				(DFOS_XFER_PROGRESS_DIALOG
+			nautilus_file_operations_progress_set_total
+				(NAUTILUS_FILE_OPERATIONS_PROGRESS
 					 (xfer_info->progress_dialog),
 					 progress_info->files_total,
 					 progress_info->bytes_total);
@@ -236,15 +217,15 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 		nautilus_file_changes_consume_changes (FALSE);
 		if (xfer_info->progress_dialog != NULL) {
 			progress_dialog_set_to_from_item_text (
-				DFOS_XFER_PROGRESS_DIALOG (xfer_info->progress_dialog),
+				NAUTILUS_FILE_OPERATIONS_PROGRESS (xfer_info->progress_dialog),
 				xfer_info->progress_verb,
 				progress_info->source_name,
 				NULL,
 				progress_info->file_index,
 				progress_info->file_size);
 
-			dfos_xfer_progress_dialog_update_sizes
-				(DFOS_XFER_PROGRESS_DIALOG
+			nautilus_file_operations_progress_update_sizes
+				(NAUTILUS_FILE_OPERATIONS_PROGRESS
 				 (xfer_info->progress_dialog),
 				 MIN (progress_info->bytes_copied, 
 				 	progress_info->bytes_total),
@@ -263,15 +244,15 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 				
 			if (progress_info->bytes_copied == 0) {
 				progress_dialog_set_to_from_item_text (
-					DFOS_XFER_PROGRESS_DIALOG (xfer_info->progress_dialog),
+					NAUTILUS_FILE_OPERATIONS_PROGRESS (xfer_info->progress_dialog),
 					xfer_info->progress_verb,
 					progress_info->source_name,
 					progress_info->target_name,
 					progress_info->file_index,
 					progress_info->file_size);
 			} else {
-				dfos_xfer_progress_dialog_update_sizes
-					(DFOS_XFER_PROGRESS_DIALOG
+				nautilus_file_operations_progress_update_sizes
+					(NAUTILUS_FILE_OPERATIONS_PROGRESS
 					 (xfer_info->progress_dialog),
 					 MIN (progress_info->bytes_copied, 
 					 	progress_info->bytes_total),
@@ -283,11 +264,11 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 
 	case GNOME_VFS_XFER_PHASE_CLEANUP:
 		if (xfer_info->progress_dialog != NULL) {
-			dfos_xfer_progress_dialog_clear(
-				DFOS_XFER_PROGRESS_DIALOG
+			nautilus_file_operations_progress_clear(
+				NAUTILUS_FILE_OPERATIONS_PROGRESS
 					 (xfer_info->progress_dialog));
-			dfos_xfer_progress_dialog_set_operation_string
-				(DFOS_XFER_PROGRESS_DIALOG
+			nautilus_file_operations_progress_set_operation_string
+				(NAUTILUS_FILE_OPERATIONS_PROGRESS
 					 (xfer_info->progress_dialog),
 					 xfer_info->cleanup_name);
 		}
@@ -384,9 +365,9 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 	case GNOME_VFS_XFER_ERROR_MODE_ABORT:
 	default:
 		if (xfer_info->progress_dialog != NULL) {
-			dfos_xfer_progress_dialog_freeze (DFOS_XFER_PROGRESS_DIALOG
+			nautilus_file_operations_progress_freeze (NAUTILUS_FILE_OPERATIONS_PROGRESS
 							  (xfer_info->progress_dialog));
-			dfos_xfer_progress_dialog_thaw (DFOS_XFER_PROGRESS_DIALOG
+			nautilus_file_operations_progress_thaw (NAUTILUS_FILE_OPERATIONS_PROGRESS
 							(xfer_info->progress_dialog));
 			gtk_widget_destroy (xfer_info->progress_dialog);
 		}
@@ -600,52 +581,6 @@ sync_xfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 	return 1;
 }
 
-void
-dfos_xfer (DFOS *dfos,
-	   const gchar *source_directory_uri,
-	   GList *source_file_name_list,
-	   const gchar *target_directory_uri,
-	   GList *target_file_name_list,
-	   GnomeVFSXferOptions options,
-	   GnomeVFSXferErrorMode error_mode,
-	   GnomeVFSXferOverwriteMode overwrite_mode)
-{
-	GnomeVFSResult result;
-	XferInfo *xfer_info;
-
-	xfer_info = xfer_info_new (NULL, options, overwrite_mode, error_mode);
-
-	result = gnome_vfs_async_xfer (&xfer_info->handle,
-				       source_directory_uri,
-				       source_file_name_list,
-				       target_directory_uri,
-				       target_file_name_list,
-				       options,
-				       GNOME_VFS_XFER_ERROR_MODE_QUERY,
-				       overwrite_mode,
-				       update_xfer_callback,
-				       xfer_info,
-				       NULL, NULL);
-
-	if (result != GNOME_VFS_OK) {
-		gchar *message;
-		GtkWidget *dialog;
-
-		message = g_strdup_printf (_("The transfer between\n%s\nand\n%s\ncould not be started:\n%s"),
-					   source_directory_uri,
-					   target_directory_uri,
-					   gnome_vfs_result_to_string (result));
-
-
-		/* FIXME bugzilla.eazel.com 677: signals and all that.  */
-		dialog = gnome_error_dialog (message);
-
-		gtk_widget_show (dialog);
-
-		g_free (message);
-		g_free (xfer_info);
-	}
-}
 	
 static void
 get_parent_make_name_list (const GList *item_uris, GnomeVFSURI **source_dir_uri,
@@ -710,11 +645,11 @@ get_parent_make_name_list (const GList *item_uris, GnomeVFSURI **source_dir_uri,
 }
 
 void
-fs_xfer (const GList *item_uris,
-	 const GdkPoint *relative_item_points,
-	 const char *target_dir,
-	 int copy_action,
-	 GtkWidget *view)
+nautilus_file_operations_copy_move (const GList *item_uris,
+				    const GdkPoint *relative_item_points,
+				    const char *target_dir,
+				    int copy_action,
+				    GtkWidget *view)
 {
 	const GList *p;
 	GList *item_names;
@@ -941,8 +876,10 @@ new_folder_xfer_callback (GnomeVFSAsyncHandle *handle,
 
 
 void 
-fs_new_folder (GtkWidget *parent_view, const char *parent_dir,
-	void (*done_callback)(const char *, gpointer), gpointer data)
+nautilus_file_operations_new_folder (GtkWidget *parent_view, 
+				     const char *parent_dir,
+				     void (*done_callback)(const char *, gpointer),
+				     gpointer data)
 {
 	NewFolderXferState *state;
 	GList *dest_names;
@@ -963,7 +900,8 @@ fs_new_folder (GtkWidget *parent_view, const char *parent_dir,
 }
 
 void 
-fs_move_to_trash (const GList *item_uris, GtkWidget *parent_view)
+nautilus_file_operations_move_to_trash (const GList *item_uris, 
+					GtkWidget *parent_view)
 {
 	const GList *p;
 	GList *item_names;
@@ -1063,7 +1001,8 @@ fs_move_to_trash (const GList *item_uris, GtkWidget *parent_view)
 }
 
 void 
-fs_delete (const GList *item_uris, GtkWidget *parent_view)
+nautilus_file_operations_delete (const GList *item_uris, 
+				 GtkWidget *parent_view)
 {
 	GnomeVFSURI *source_dir_uri;
 	char *source_dir;
@@ -1183,7 +1122,7 @@ confirm_empty_trash (GtkWidget *parent_view)
 }
 
 void 
-fs_empty_trash (GtkWidget *parent_view)
+nautilus_file_operations_empty_trash (GtkWidget *parent_view)
 {
 	g_return_if_fail (parent_view != NULL);
 

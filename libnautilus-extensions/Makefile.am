@@ -4,6 +4,7 @@ lib_LTLIBRARIES=libnautilus-extensions.la
 
 INCLUDES = 						\
 	-I$(top_srcdir) 				\
+	-I$(top_srcdir)/src/file-manager 		\
 	-I$(top_builddir) 				\
 	-I$(top_builddir)/libnautilus 			\
 	-I$(top_srcdir)/cut-n-paste-code 		\
@@ -21,11 +22,11 @@ INCLUDES = 						\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
 	$(NULL)
 
-dependency_static_libs =\
-	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
-	$(top_builddir)/cut-n-paste-code/widgets/nautilus-druid/libnautilus-druid.la \
-	$(top_builddir)/librsvg/librsvg.la \
-	$(top_builddir)/cut-n-paste-code/freetype/libfreetype2.la \
+dependency_static_libs =								\
+	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la 			\
+	$(top_builddir)/cut-n-paste-code/widgets/nautilus-druid/libnautilus-druid.la 	\
+	$(top_builddir)/librsvg/librsvg.la 						\
+	$(top_builddir)/cut-n-paste-code/freetype/libfreetype2.la 			\
 	$(NULL)
 
 libnautilus_extensions_la_LDFLAGS=	\
@@ -43,6 +44,8 @@ libnautilus_extensions_la_LDFLAGS=	\
 	$(NULL)
 
 libnautilus_extensions_la_SOURCES = 		\
+	nautilus-file-operations-progress.c	\
+	nautilus-file-operations.c			\
 	bonobo-stream-vfs.c			\
 	nautilus-background-canvas-group.c	\
 	nautilus-background.c			\
@@ -125,6 +128,8 @@ libnautilus_extensions_la_SOURCES = 		\
 
 # Everything is private for now
 noinst_HEADERS =				\
+	nautilus-file-operations.h 		\
+	nautilus-file-operations-progress.h 	\
 	bonobo-stream-vfs.h			\
 	nautilus-background-canvas-group.h	\
 	nautilus-background.h			\
@@ -214,5 +219,6 @@ noinst_HEADERS =				\
 	nautilus-volume-monitor.h		\
 	nautilus-xml-extensions.h		\
 	$(NULL)
+
 
 $(lib_LTLIBRARIES): $(dependency_static_libs)

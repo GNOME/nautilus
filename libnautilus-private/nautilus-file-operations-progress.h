@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* xfer-progress-dialog.h - Progress dialog for transfer operations in the
-   GNOME Desktop File Operation Service.
+/* nautilus-file-operations-progress.h - Progress dialog for transfer 
+   operations in the GNOME Desktop File Operation Service.
 
    Copyright (C) 1999, 2000 Free Software Foundation
    Copyright (C) 2000 Eazel Inc.
@@ -25,79 +25,73 @@
    	Pavel Cisler <pavel@eazel.com>
 */
 
-#ifndef _DFOS_XFER_PROGRESS_DIALOG_H
-#define _DFOS_XFER_PROGRESS_DIALOG_H
+#ifndef _NAUTILUS_FILE_OPERATIONS_PROGRESS_H
+#define _NAUTILUS_FILE_OPERATIONS_PROGRESS_H
 
 #include <libgnomeui/gnome-dialog.h>
 
-typedef struct DFOSXferProgressDialog DFOSXferProgressDialog;
-typedef struct DFOSXferProgressDialogClass DFOSXferProgressDialogClass;
+typedef struct NautilusFileOperationsProgressDetails NautilusFileOperationsProgressDetails;
 
-#define DFOS_XFER_PROGRESS_DIALOG(obj) \
-  GTK_CHECK_CAST (obj, dfos_xfer_progress_dialog_get_type (), DFOSXferProgressDialog)
-#define DFOS_XFER_PROGRESS_DIALOG_CLASS(klass) \
-  GTK_CHECK_CLASS_CAST (klass, dfos_xfer_progress_dialog_get_type (), DFOSXferProgressDialogClass)
-#define IS_DFOS_XFER_PROGRESS_DIALOG(obj) \
-  GTK_CHECK_TYPE (obj, dfos_xfer_progress_dialog_get_type ())
-
-
-guint		 dfos_xfer_progress_dialog_get_type	
-						(void);
-
-GtkWidget	*dfos_xfer_progress_dialog_new	(const char *title,
-						 const char *operation_string,
-						 const char *from_prefix,
-						 const char *to_prefix,
-						 gulong files_total,
-						 gulong bytes_total);
-
-void		 dfos_xfer_progres_dialog_set_progress_title
-						(DFOSXferProgressDialog *dialog,
-						 const char *progress_title);
-
-void		 dfos_xfer_progress_dialog_set_total	
-						(DFOSXferProgressDialog *dialog,
-						 gulong files_total,
-						 gulong bytes_total);
-
-void		 dfos_xfer_progress_dialog_set_operation_string
-						(DFOSXferProgressDialog *dialog,
-						 const char *operation_string);
-
-void		 dfos_xfer_progress_dialog_clear 
-						(DFOSXferProgressDialog *dialog);
-
-void		 dfos_xfer_progress_dialog_new_file
-						(DFOSXferProgressDialog *dialog,
-						 const char *progress_verb,
-						 const char *item_name,
-						 const char *from_path,
-						 const char *to_path,
-						 const char *from_prefix,
-						 const char *to_prefix,
-						 gulong file_index,
-						 gulong size);
-
-void		 dfos_xfer_progress_dialog_update_sizes
-						(DFOSXferProgressDialog *dialog,
-						 gulong bytes_done_in_file,
-						 gulong bytes_done);
-
-void		 dfos_xfer_progress_dialog_freeze
-						(DFOSXferProgressDialog *dialog);
-
-void		 dfos_xfer_progress_dialog_thaw	(DFOSXferProgressDialog *dialog);
-
-
-typedef struct DFOSXferProgressDialogDetails DFOSXferProgressDialogDetails;
-
-struct DFOSXferProgressDialog {
+typedef struct NautilusFileOperationsProgress NautilusFileOperationsProgress;
+struct NautilusFileOperationsProgress {
 	GnomeDialog dialog;
-	DFOSXferProgressDialogDetails *details;
+	NautilusFileOperationsProgressDetails *details;
 };
 
-struct DFOSXferProgressDialogClass {
+typedef struct NautilusFileOperationsProgressClass NautilusFileOperationsProgressClass;
+struct NautilusFileOperationsProgressClass {
 	GnomeDialogClass parent_class;
 };
 
-#endif /* _DFOS_XFER_PROGRESS_DIALOG_H */
+#define NAUTILUS_FILE_OPERATIONS_PROGRESS(obj) \
+  GTK_CHECK_CAST (obj, nautilus_file_operations_progress_get_type (), NautilusFileOperationsProgress)
+#define NAUTILUS_FILE_OPERATIONS_PROGRESS_CLASS(klass) \
+  GTK_CHECK_CLASS_CAST (klass, nautilus_file_operations_progress_get_type (), NautilusFileOperationsProgressClass)
+#define IS_NAUTILUS_FILE_OPERATIONS_PROGRESS(obj) \
+  GTK_CHECK_TYPE (obj, nautilus_file_operations_progress_get_type ())
+
+
+guint		 nautilus_file_operations_progress_get_type	   (void);
+
+GtkWidget	*nautilus_file_operations_progress_new	           (const char *title,
+								    const char *operation_string,
+								    const char *from_prefix,
+								    const char *to_prefix,
+								    gulong files_total,
+								    gulong bytes_total);
+
+void		 nautilus_file_operations_progress_set_progress_title (NautilusFileOperationsProgress *dialog,
+								       const char *progress_title);
+
+void		 nautilus_file_operations_progress_set_total	   (NautilusFileOperationsProgress *dialog,
+								    gulong files_total,
+								    gulong bytes_total);
+
+void		 nautilus_file_operations_progress_set_operation_string (NautilusFileOperationsProgress *dialog,
+									 const char *operation_string);
+
+void		 nautilus_file_operations_progress_clear           (NautilusFileOperationsProgress *dialog);
+
+void		 nautilus_file_operations_progress_new_file        (NautilusFileOperationsProgress *dialog,
+								    const char *progress_verb,
+								    const char *item_name,
+								    const char *from_path,
+								    const char *to_path,
+								    const char *from_prefix,
+								    const char *to_prefix,
+								    gulong file_index,
+								    gulong size);
+
+void		 nautilus_file_operations_progress_update_sizes    (NautilusFileOperationsProgress *dialog,
+								    gulong bytes_done_in_file,
+								    gulong bytes_done);
+
+void		 nautilus_file_operations_progress_freeze          (NautilusFileOperationsProgress *dialog);
+
+void		 nautilus_file_operations_progress_thaw	           (NautilusFileOperationsProgress *dialog);
+
+
+#endif /* _NAUTILUS_FILE_OPERATIONS_PROGRESS_H */
+
+
+

@@ -51,6 +51,7 @@
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-queue.h>
 #include <libnautilus-extensions/nautilus-drag.h>
+#include <libnautilus-extensions/nautilus-file-operations.h>
 #include <libgnomevfs/gnome-vfs.h>
 
 
@@ -226,12 +227,10 @@ static int      nautilus_tree_view_motion_notify        (GtkWidget            *w
 static char    *nautilus_tree_view_item_at              (NautilusTreeView     *tree_view,
 							 int                   x, 
 							 int                   y);
-#if 0
 static void     nautilus_tree_view_move_copy_files    (NautilusTreeView         *tree_view,
 						       GList                    *selection_list,
 						       GdkDragContext           *context,
 						       const char               *target_uri);
-#endif
 static char    *nautilus_tree_view_find_drop_target   (NautilusTreeView         *tree_view,
 						       GList                    *selection_list,
 						       GdkDragContext           *context,
@@ -1521,10 +1520,8 @@ static void nautilus_tree_view_drag_data_received (GtkWidget *widget,
 						 action_string, drop_target_uri);
 				}
 #endif /* DNDDEBUG */
-#if !DND_DEBUG
 				nautilus_tree_view_move_copy_files (tree_view, selection_list, 
 								    context, drop_target_uri);
-#endif /* !DNDDEBUG */			  
 			}
 			g_free (drop_target_uri);
 		}
@@ -1743,8 +1740,7 @@ nautilus_tree_view_motion_notify (GtkWidget *widget, GdkEventButton *event)
    helper functions
    -----------------------------------------------------------------------
 */
-#if 0
-/* probably will disapear soon */
+
 static void
 nautilus_tree_view_move_copy_files (NautilusTreeView *tree_view,
 				    GList *selection_list,
@@ -1761,16 +1757,15 @@ nautilus_tree_view_move_copy_files (NautilusTreeView *tree_view,
 	source_uris = g_list_reverse (source_uris);
 	
 	/* start the copy */
-	gtk_signal_emit_by_name (GTK_OBJECT (tree_view), 
-				 "move_copy_items",
-				 source_uris,
-				 NULL,
-				 target_uri,
-				 context->action,
-				 0, 0);
+	nautilus_file_operations_copy_move (source_uris,
+					    NULL, 
+					    target_uri,
+					    context->action,
+					    GTK_WIDGET (tree_view->details->tree));
+
 	g_list_free (source_uris);
 }
-#endif
+
 
 
 static char *

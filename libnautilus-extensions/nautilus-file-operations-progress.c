@@ -28,7 +28,7 @@
 #include <config.h>
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include "dfos-xfer-progress-dialog.h"
+#include "nautilus-file-operations-progress.h"
 #include "libnautilus-extensions/nautilus-gtk-extensions.h"
 #include "libnautilus-extensions/nautilus-gtk-macros.h"
 
@@ -37,12 +37,12 @@
 #define OPERATION_LABEL_WIDTH 65
 #define PATH_TRIM_WIDTH LABEL_BOX_WIDTH - OPERATION_LABEL_WIDTH - 2 * 20
 
-static void dfos_xfer_progress_dialog_initialize_class 	(DFOSXferProgressDialogClass *klass);
-static void dfos_xfer_progress_dialog_initialize 	(DFOSXferProgressDialog *dialog);
+static void nautilus_file_operations_progress_initialize_class 	(NautilusFileOperationsProgressClass *klass);
+static void nautilus_file_operations_progress_initialize 	(NautilusFileOperationsProgress *dialog);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (DFOSXferProgressDialog, dfos_xfer_progress_dialog, GNOME_TYPE_DIALOG);
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusFileOperationsProgress, nautilus_file_operations_progress, GNOME_TYPE_DIALOG);
 
-struct DFOSXferProgressDialogDetails {
+struct NautilusFileOperationsProgressDetails {
 
 	GtkWidget *progress_title_label;
 	GtkWidget *progress_count_label;
@@ -73,7 +73,7 @@ struct DFOSXferProgressDialogDetails {
 /* Private functions.  */
 
 static void
-dfos_xfer_progress_dialog_update (DFOSXferProgressDialog *dialog)
+nautilus_file_operations_progress_update (NautilusFileOperationsProgress *dialog)
 {
 	gtk_progress_configure (GTK_PROGRESS (dialog->details->progress_bar),
 				dialog->details->total_bytes_copied,
@@ -134,22 +134,22 @@ set_text_unescaped_trimmed (GtkLabel *label, const char *text, guint max_width)
 /* This is just to make sure the dialog is not closed without explicit
    intervention.  */
 static gboolean
-dfos_xfer_progress_dialog_close (GnomeDialog *dialog)
+nautilus_file_operations_progress_close (GnomeDialog *dialog)
 {
-	DFOSXferProgressDialog *progress_dialog;
+	NautilusFileOperationsProgress *progress_dialog;
 
-	progress_dialog = DFOS_XFER_PROGRESS_DIALOG (dialog);
+	progress_dialog = NAUTILUS_FILE_OPERATIONS_PROGRESS (dialog);
 	return FALSE;
 }
 
 /* GtkObject methods.  */
 
 static void
-dfos_xfer_progress_dialog_destroy (GtkObject *object)
+nautilus_file_operations_progress_destroy (GtkObject *object)
 {
-	DFOSXferProgressDialog *dialog;
+	NautilusFileOperationsProgress *dialog;
 
-	dialog = DFOS_XFER_PROGRESS_DIALOG (object);
+	dialog = NAUTILUS_FILE_OPERATIONS_PROGRESS (object);
 
 	g_free (dialog->details);
 }
@@ -185,13 +185,13 @@ create_titled_label (GtkBox *vbox, GtkWidget **title_widget, GtkWidget **label_t
 }
 
 static void
-dfos_xfer_progress_dialog_initialize (DFOSXferProgressDialog *dialog)
+nautilus_file_operations_progress_initialize (NautilusFileOperationsProgress *dialog)
 {
 	GnomeDialog *gnome_dialog;
 	GtkBox *vbox;
 	GtkWidget *hbox;
 
-	dialog->details = g_new0 (DFOSXferProgressDialogDetails, 1);
+	dialog->details = g_new0 (NautilusFileOperationsProgressDetails, 1);
 
 	
 	gnome_dialog = GNOME_DIALOG (dialog);
@@ -251,7 +251,7 @@ dfos_xfer_progress_dialog_initialize (DFOSXferProgressDialog *dialog)
 }
 
 static void
-dfos_xfer_progress_dialog_initialize_class (DFOSXferProgressDialogClass *klass)
+nautilus_file_operations_progress_initialize_class (NautilusFileOperationsProgressClass *klass)
 {
 	GtkObjectClass *object_class;
 	GnomeDialogClass *dialog_class;
@@ -259,26 +259,26 @@ dfos_xfer_progress_dialog_initialize_class (DFOSXferProgressDialogClass *klass)
 	object_class = GTK_OBJECT_CLASS (klass);
 	dialog_class = GNOME_DIALOG_CLASS (klass);
 
-	object_class->destroy = dfos_xfer_progress_dialog_destroy;
-	dialog_class->close = dfos_xfer_progress_dialog_close;
+	object_class->destroy = nautilus_file_operations_progress_destroy;
+	dialog_class->close = nautilus_file_operations_progress_close;
 }
 
 GtkWidget *
-dfos_xfer_progress_dialog_new (const char *title,
-			       const char *operation_string,
-    			       const char *from_prefix,
-			       const char *to_prefix,
-			       gulong total_files,
-			       gulong total_bytes)
+nautilus_file_operations_progress_new (const char *title,
+				       const char *operation_string,
+				       const char *from_prefix,
+				       const char *to_prefix,
+				       gulong total_files,
+				       gulong total_bytes)
 {
 	GtkWidget *widget;
-	DFOSXferProgressDialog *dialog;
+	NautilusFileOperationsProgress *dialog;
 
-	widget = gtk_type_new (dfos_xfer_progress_dialog_get_type ());
-	dialog = DFOS_XFER_PROGRESS_DIALOG (widget);
+	widget = gtk_type_new (nautilus_file_operations_progress_get_type ());
+	dialog = NAUTILUS_FILE_OPERATIONS_PROGRESS (widget);
 
-	dfos_xfer_progress_dialog_set_operation_string (dialog, operation_string);
-	dfos_xfer_progress_dialog_set_total (dialog, total_files, total_bytes);
+	nautilus_file_operations_progress_set_operation_string (dialog, operation_string);
+	nautilus_file_operations_progress_set_total (dialog, total_files, total_bytes);
 
 	gtk_window_set_title (GTK_WINDOW (widget), title);
 
@@ -291,42 +291,42 @@ dfos_xfer_progress_dialog_new (const char *title,
 }
 
 void
-dfos_xfer_progress_dialog_set_total (DFOSXferProgressDialog *dialog,
-				     gulong files_total,
-				     gulong bytes_total)
+nautilus_file_operations_progress_set_total (NautilusFileOperationsProgress *dialog,
+					     gulong files_total,
+					     gulong bytes_total)
 {
-	g_return_if_fail (IS_DFOS_XFER_PROGRESS_DIALOG (dialog));
+	g_return_if_fail (IS_NAUTILUS_FILE_OPERATIONS_PROGRESS (dialog));
 
 	dialog->details->files_total = files_total;
 	dialog->details->bytes_total = bytes_total;
 
-	dfos_xfer_progress_dialog_update (dialog);
+	nautilus_file_operations_progress_update (dialog);
 }
 
 void
-dfos_xfer_progress_dialog_set_operation_string (DFOSXferProgressDialog *dialog,
-						const char *operation_string)
+nautilus_file_operations_progress_set_operation_string (NautilusFileOperationsProgress *dialog,
+							const char *operation_string)
 {
-	g_return_if_fail (IS_DFOS_XFER_PROGRESS_DIALOG (dialog));
+	g_return_if_fail (IS_NAUTILUS_FILE_OPERATIONS_PROGRESS (dialog));
 
 	gtk_label_set_text (GTK_LABEL (dialog->details->progress_title_label),
 			    operation_string);
 }
 
 void
-dfos_xfer_progress_dialog_new_file (DFOSXferProgressDialog *dialog,
-				    const char *progress_verb,
-				    const char *item_name,
-				    const char *from_path,
-				    const char *to_path,
-				    const char *from_prefix,
-				    const char *to_prefix,
-				    gulong file_index,
-				    gulong size)
+nautilus_file_operations_progress_new_file (NautilusFileOperationsProgress *dialog,
+					    const char *progress_verb,
+					    const char *item_name,
+					    const char *from_path,
+					    const char *to_path,
+					    const char *from_prefix,
+					    const char *to_prefix,
+					    gulong file_index,
+					    gulong size)
 {
 	char *progress_count;
 
-	g_return_if_fail (IS_DFOS_XFER_PROGRESS_DIALOG (dialog));
+	g_return_if_fail (IS_NAUTILUS_FILE_OPERATIONS_PROGRESS (dialog));
 	g_return_if_fail (GTK_WIDGET_REALIZED (dialog));
 
 	dialog->details->file_index = file_index;
@@ -356,11 +356,11 @@ dfos_xfer_progress_dialog_new_file (DFOSXferProgressDialog *dialog,
 			to_path, PATH_TRIM_WIDTH);
 	}
 
-	dfos_xfer_progress_dialog_update (dialog);
+	nautilus_file_operations_progress_update (dialog);
 }
 
 void
-dfos_xfer_progress_dialog_clear (DFOSXferProgressDialog *dialog)
+nautilus_file_operations_progress_clear (NautilusFileOperationsProgress *dialog)
 {
 	gtk_label_set_text (GTK_LABEL (dialog->details->from_label), "");
 	gtk_label_set_text (GTK_LABEL (dialog->details->from_path_label), "");
@@ -370,30 +370,30 @@ dfos_xfer_progress_dialog_clear (DFOSXferProgressDialog *dialog)
 	dialog->details->files_total = 0;
 	dialog->details->bytes_total = 0;
 
-	dfos_xfer_progress_dialog_update (dialog);
+	nautilus_file_operations_progress_update (dialog);
 }
 
 void
-dfos_xfer_progress_dialog_update_sizes (DFOSXferProgressDialog *dialog,
-					gulong bytes_done_in_file,
-					gulong bytes_done)
+nautilus_file_operations_progress_update_sizes (NautilusFileOperationsProgress *dialog,
+						gulong bytes_done_in_file,
+						gulong bytes_done)
 {
-	g_return_if_fail (IS_DFOS_XFER_PROGRESS_DIALOG (dialog));
+	g_return_if_fail (IS_NAUTILUS_FILE_OPERATIONS_PROGRESS (dialog));
 
 	dialog->details->bytes_copied = bytes_done_in_file;
 	dialog->details->total_bytes_copied = bytes_done;
 
-	dfos_xfer_progress_dialog_update (dialog);
+	nautilus_file_operations_progress_update (dialog);
 }
 
 void
-dfos_xfer_progress_dialog_freeze (DFOSXferProgressDialog *dialog)
+nautilus_file_operations_progress_freeze (NautilusFileOperationsProgress *dialog)
 {
 	dialog->details->freeze_count++;
 }
 
 void
-dfos_xfer_progress_dialog_thaw (DFOSXferProgressDialog *dialog)
+nautilus_file_operations_progress_thaw (NautilusFileOperationsProgress *dialog)
 {
 	if (dialog->details->freeze_count > 0)
 		dialog->details->freeze_count--;

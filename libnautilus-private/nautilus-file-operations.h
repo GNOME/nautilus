@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* xfer.h - Bonobo::Desktop::FileOperationService transfer service.
+/* nautilus-file-operatoins: execute file operations.
 
    Copyright (C) 1999, 2000 Free Software Foundation
 
@@ -21,40 +21,32 @@
    Author: Ettore Perazzoli <ettore@gnu.org>
 */
 
-#ifndef DFOS_XFER_H
-#define DFOS_XFER_H
+#ifndef _NAUTILUS_FILE_OPERATIONS_H
+#define _NAUTILUS_FILE_OPERATIONS_H
 
 #include <libgnomevfs/gnome-vfs.h>
-#include "dfos.h"
 
-void 	dfos_xfer 	(DFOS *dfos,
-			 const gchar *source_directory_uri,
-			 GList *source_file_name_list,
-			 const gchar *target_directory_uri,
-			 GList *target_file_name_list,
-			 GnomeVFSXferOptions options,
-			 GnomeVFSXferErrorMode error_mode,
-			 GnomeVFSXferOverwriteMode overwrite_mode);
+void 	nautilus_file_operations_copy_move      (const GList *item_uris,
+						 const GdkPoint *target_item_points,
+						 const char *target_dir,
+						 int copy_action,
+						 GtkWidget *parent_view);
 
-void 	fs_xfer   	(const GList *item_uris,
-			 const GdkPoint *target_item_points,
-			 const char *target_dir,
-			 int copy_action,
-			 GtkWidget *parent_view);
+void 	nautilus_file_operations_move_to_trash (const GList *item_uris,
+						GtkWidget *parent_view);
 
-void 	fs_move_to_trash (const GList *item_uris,
-			 GtkWidget *parent_view);
-
-void 	fs_empty_trash 	(GtkWidget *parent_view);
-void 	fs_new_folder 	(GtkWidget *parent_view,
-			 const char *parent_dir,
-			 void (*done_callback)(const char *new_folder_uri, gpointer data),
-			 gpointer data);
-void	fs_delete 	(const GList *item_uris, GtkWidget *parent_view);
+void    nautilus_file_operations_empty_trash 	(GtkWidget *parent_view);
+void 	nautilus_file_operations_new_folder 	(GtkWidget *parent_view,
+						 const char *parent_dir,
+						 void (*done_callback)(const char *new_folder_uri, gpointer data),
+						 gpointer data);
+void	nautilus_file_operations_delete 	(const GList *item_uris, GtkWidget *parent_view);
 
 
 /* Prepare an escaped string for display. Unescapes a string in place.
  * Frees the original string.
  */
 char *nautilus_convert_to_unescaped_string_for_display  (char *escaped);
-#endif /* DFOS_XFER_H */
+#endif /* _NAUTILUS_FILE_OPERATIONS_H */
+
+

@@ -56,6 +56,7 @@
 #include <libnautilus-extensions/nautilus-drag.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-file-operations.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -662,7 +663,7 @@ bonobo_menu_empty_trash_callback (BonoboUIHandler *ui_handler, gpointer callback
 {                
         g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
-	fs_empty_trash (GTK_WIDGET (FM_DIRECTORY_VIEW (callback_data)));
+	nautilus_file_operations_empty_trash (GTK_WIDGET (FM_DIRECTORY_VIEW (callback_data)));
 }
 
 static void
@@ -1857,7 +1858,7 @@ fm_directory_view_create_links_for_files (FMDirectoryView *view, GList *files)
 
         g_assert (g_list_length (uris) == g_list_length (files));
         
-	fs_xfer (uris, NULL, NULL, GDK_ACTION_LINK, GTK_WIDGET (view));
+	nautilus_file_operations_copy_move (uris, NULL, NULL, GDK_ACTION_LINK, GTK_WIDGET (view));
 	nautilus_g_list_free_deep (uris);
 }
 
@@ -1875,7 +1876,7 @@ fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files)
 
         g_assert (g_list_length (uris) == g_list_length (files));
         
-	fs_xfer (uris, NULL, NULL, GDK_ACTION_COPY, GTK_WIDGET (view));
+	nautilus_file_operations_copy_move (uris, NULL, NULL, GDK_ACTION_COPY, GTK_WIDGET (view));
 	nautilus_g_list_free_deep (uris);
 }
 
@@ -2060,19 +2061,19 @@ fm_directory_view_trash_or_delete_selection (FMDirectoryView *view, GList *files
 	}
 
 	if (moveable_uris != NULL) {
-		fs_move_to_trash (moveable_uris, GTK_WIDGET (view));
+		nautilus_file_operations_move_to_trash (moveable_uris, GTK_WIDGET (view));
 	}
 
 	if (in_trash_uris != NULL && moveable_uris == NULL && unmoveable_uris == NULL) {
 		/* FIXME bugzilla.eazel.com 2274: Confirm here if preference set */
-		fs_delete (in_trash_uris, GTK_WIDGET (view));
+		nautilus_file_operations_delete (in_trash_uris, GTK_WIDGET (view));
 	}
 
 	if (unmoveable_uris != NULL) {
 		if (fm_directory_view_confirm_deletion (view, 
 							unmoveable_uris,
 							moveable_uris == NULL)) {
-			fs_delete (unmoveable_uris, GTK_WIDGET (view));
+			nautilus_file_operations_delete (unmoveable_uris, GTK_WIDGET (view));
 		}
 	}
 	
@@ -2166,7 +2167,7 @@ fm_directory_view_new_folder (FMDirectoryView *directory_view)
 	char *parent_uri;
 
 	parent_uri = fm_directory_view_get_uri (directory_view);
-	fs_new_folder (GTK_WIDGET(directory_view), parent_uri, new_folder_done, directory_view);
+	nautilus_file_operations_new_folder (GTK_WIDGET(directory_view), parent_uri, new_folder_done, directory_view);
 
 	g_free (parent_uri);
 }
@@ -3764,7 +3765,7 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 				   int y,
 				   FMDirectoryView *view)
 {
-	fs_xfer (item_uris, relative_item_points, target_dir, copy_action, GTK_WIDGET (view));
+	nautilus_file_operations_copy_move (item_uris, relative_item_points, target_dir, copy_action, GTK_WIDGET (view));
 }
 
 gboolean

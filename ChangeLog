@@ -1,3 +1,45 @@
+2000-08-28  Mathieu Lacage  <mathieu@eazel.com>
+
+	* NEWS: add news from latest PR1 release.
+	* components/tree/nautilus-tree-view.c: make dnd do real file operations
+	from tree view to other views. Dnd to tree view depends on the views code 
+	which needs to be fixed (related to bug 2353).
+	* libnautilus-extensions/Makefile.am: add nautilus-fils-operations.
+	* libnautilus-extensions/nautilus-file-operations-progress.c:
+	(nautilus_file_operations_progress_update),
+	(nautilus_file_operations_progress_close),
+	(nautilus_file_operations_progress_destroy),
+	(nautilus_file_operations_progress_initialize),
+	(nautilus_file_operations_progress_initialize_class),
+	(nautilus_file_operations_progress_new),
+	(nautilus_file_operations_progress_set_total),
+	(nautilus_file_operations_progress_set_operation_string),
+	(nautilus_file_operations_progress_new_file),
+	(nautilus_file_operations_progress_clear),
+	(nautilus_file_operations_progress_update_sizes),
+	(nautilus_file_operations_progress_freeze),
+	(nautilus_file_operations_progress_thaw): modify API name.
+	* libnautilus-extensions/nautilus-file-operations-progress.h: idem
+	* libnautilus-extensions/nautilus-file-operations.c: idem
+	(xfer_dialog_clicked_callback), (create_xfer_dialog),
+	(progress_dialog_set_files_remaining_text),
+	(progress_dialog_set_to_from_item_text), (handle_xfer_ok),
+	(handle_xfer_vfs_error), (nautilus_file_operations_copy_move),
+	(nautilus_file_operations_new_folder),
+	(nautilus_file_operations_move_to_trash),
+	(nautilus_file_operations_delete),
+	(nautilus_file_operations_empty_trash):
+	* libnautilus-extensions/nautilus-file-operations.h: idem.
+	* src/file-manager/Makefile.am: remove dfos* from compilation.
+	* src/file-manager/fm-directory-view.c: 
+	(bonobo_menu_empty_trash_callback),
+	(fm_directory_view_create_links_for_files),
+	(fm_directory_view_duplicate_selection),
+	(fm_directory_view_trash_or_delete_selection),
+	(fm_directory_view_new_folder),
+	(fm_directory_view_move_copy_items): make it call nautilus-file-operations 
+	functions.
+
 2000-08-28  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/nautilus-view/nautilus-service-instal
