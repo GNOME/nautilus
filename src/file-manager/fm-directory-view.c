@@ -261,6 +261,7 @@ typedef struct {
 	FMDirectoryView *view;
 	NautilusFile *file;
 	WindowChoice choice;
+	NautilusFileCallback callback;
 } ActivateParameters;
 
 typedef struct {
@@ -593,9 +594,11 @@ fm_directory_view_launch_application (GnomeVFSMimeApplication *application,
 	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
 
 	nautilus_launch_application
-		(application, file, fm_directory_view_get_containing_window (directory_view));
-	
+			(application, file, 
+			 fm_directory_view_get_containing_window (directory_view));
+
 	uri = nautilus_file_get_uri (file);
+
 	egg_recent_model_add (nautilus_recent_get_model (), uri);
 
 	g_free (uri);
@@ -5101,32 +5104,25 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 {
 	ActivateParameters *parameters;
 	FMDirectoryView *view;
-	char *uri, *file_uri;
+	char *orig_uri, *uri, *file_uri;
 	char *executable_path, *quoted_path, *name;
-	GnomeVFSMimeApplication *application;
+	GnomeVFSMimeActionType action_type;
 	ActivationAction action;
 	GdkScreen *screen;
-	
+
 	parameters = callback_data;
 
 	eel_timed_wait_stop (cancel_activate_callback, parameters);
 
 	view = FM_DIRECTORY_VIEW (parameters->view);
 
-	uri = nautilus_file_get_activation_uri (file);
+	orig_uri = uri = nautilus_file_get_activation_uri (file);
 
 	action = ACTIVATION_ACTION_DISPLAY;
 
 	screen = gtk_widget_get_screen (GTK_WIDGET (view));
 
-	/* Note that we check for FILE_TYPE_SYMBOLIC_LINK only here,
-	 * not specifically for broken-ness, because the file type
-	 * will be the target's file type in the non-broken case.
-	 */
-	if (nautilus_file_is_broken_symbolic_link (file)) {
-		report_broken_symbolic_link (view, file);
-		action = ACTIVATION_ACTION_DO_NOTHING;
-	} else if (eel_str_has_prefix (uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
+	if (eel_str_has_prefix (uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
 		file_uri = nautilus_file_get_uri (file);
 		nautilus_launch_desktop_file (
 				screen, file_uri, NULL,
@@ -5141,16 +5137,9 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	if (action != ACTIVATION_ACTION_DO_NOTHING && file_is_launchable (file)) {
 
+		/* Launch executables to activate them. */
 		action = ACTIVATION_ACTION_LAUNCH;
 		
-		/* FIXME bugzilla.gnome.org 42391: This should check if
-		 * the activation URI points to something launchable,
-		 * not the original file. Also, for symbolic links we
-		 * need to check the X bit on the target file, not on
-		 * the original.
-		 */
-
-		/* Launch executables to activate them. */
 		executable_path = gnome_vfs_get_local_path_from_uri (uri);
 
 		/* Non-local executables don't get launched. They act like non-executables. */
@@ -5178,37 +5167,63 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	}
 
 	if (action == ACTIVATION_ACTION_DISPLAY) {
-		/* BADHACK(tm) to make desktop web links work */
-		if (nautilus_file_is_nautilus_link (file) &&
-		    uri != NULL &&
-		    (eel_str_has_prefix (uri, "http:") ||
-		     eel_str_has_prefix (uri, "https:"))) {
-			gnome_url_show (uri, NULL);
+		action_type = nautilus_mime_get_default_action_type_for_file (file);
+
+		if (action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT &&
+		    nautilus_mime_has_any_components_for_file (file)) {
+			open_location (view, uri, parameters->choice);
 		} else {
-			if (nautilus_mime_get_default_action_type_for_file (file)
-			    == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
-				application = nautilus_mime_get_default_application_for_file (file);
-			} else {
-				/* If the action type is unspecified, treat it like
-				 * the component case. This is most likely to happen
-				 * (only happens?) when there are no registered
-				 * viewers or apps, or there are errors in the
-				 * mime.keys files.
-				 */
-				application = NULL;
-			}
+			nautilus_launch_show_file
+				(file, fm_directory_view_get_containing_window (view));
 			
-			if (application != NULL) {
-				fm_directory_view_launch_application (application, file, view);
-				gnome_vfs_mime_application_free (application);
-			} else {
-				open_location (view, uri, parameters->choice);
-			}
+			file_uri = nautilus_file_get_uri (file);
+			egg_recent_model_add (nautilus_recent_get_model (), file_uri);
+			g_free (file_uri);
 		}
 	}
 
-	g_free (uri);
+	nautilus_file_unref (file);
+
+	g_free (orig_uri);
 	g_free (parameters);
+}
+
+static void
+activate_activation_uri_ready_callback (NautilusFile *file, gpointer callback_data)
+{
+	ActivateParameters *parameters;
+	NautilusFile *actual_file;
+	NautilusFileAttributes attributes;
+	char *uri;
+	
+	parameters = callback_data;
+	
+	/* We want the file for the activation URI since we care
+	 * about the attributes for that, not for the original file.
+	 */
+	actual_file = NULL;
+	uri = nautilus_file_get_activation_uri (file);
+	if (!(eel_str_has_prefix (uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER) ||
+	      eel_str_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER))) {
+		actual_file = nautilus_file_get (uri);
+		nautilus_file_unref (file);
+	}
+	g_free (uri);
+	
+	if (actual_file == NULL) {
+		actual_file = file;
+	}
+	
+	/* get the parameters for the actual file */	
+	attributes = nautilus_mime_actions_get_minimum_file_attributes () | 
+			NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE |
+			NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI;
+
+	parameters->file = actual_file;
+	parameters->callback = activate_callback;
+	
+	nautilus_file_call_when_ready
+		(actual_file, attributes, activate_callback, parameters);
 }
 
 static void
@@ -5219,9 +5234,11 @@ cancel_activate_callback (gpointer callback_data)
 	parameters = (ActivateParameters *) callback_data;
 
 	nautilus_file_cancel_call_when_ready (parameters->file, 
-					      activate_callback, 
+					      parameters->callback, 
 					      parameters);
 
+	nautilus_file_unref (parameters->file);
+	
 	g_free (parameters);
 }
 
@@ -5248,14 +5265,21 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
+	if (nautilus_file_is_broken_symbolic_link (file)) {
+		report_broken_symbolic_link (view, file);
+		return;
+	}
+
+	nautilus_file_ref (file);
+
 	/* Might have to read some of the file to activate it. */
-	attributes = nautilus_mime_actions_get_minimum_file_attributes () |
-		NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI |
-		NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE;
+	attributes = NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI;
+
 	parameters = g_new (ActivateParameters, 1);
 	parameters->view = view;
 	parameters->file = file;
 	parameters->choice = choice;
+	parameters->callback = activate_activation_uri_ready_callback;
 
 	file_name = nautilus_file_get_display_name (file);
 	timed_wait_prompt = g_strdup_printf (_("Opening \"%s\""), file_name);
@@ -5268,8 +5292,9 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 		 timed_wait_prompt,
 		 fm_directory_view_get_containing_window (view));
 	g_free (timed_wait_prompt);
+
 	nautilus_file_call_when_ready
-		(file, attributes, activate_callback, parameters);
+		(file, attributes, activate_activation_uri_ready_callback, parameters);
 }
 
 
