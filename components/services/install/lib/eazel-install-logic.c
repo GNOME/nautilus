@@ -1499,6 +1499,10 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 				if (pack_entry) {
 					PackageData *evil_package = (PackageData*)pack_entry->data;
 					packagedata_add_pack_to_breaks (evil_package, dep); 
+					trilobite_debug ("Circular dependency caused by %s-%s-%s", 
+							 evil_package->name,
+							 evil_package->version,
+							 evil_package->minor);
 					evil_package->status = PACKAGE_BREAKS_DEPENDENCY;
 				} else {
 					trilobite_debug ("I cannot set the funky break list");

@@ -140,6 +140,8 @@ struct _CategoryData {
 	GList* depends;			/* used only for the GUI: GList<char *> -- other category names */
 };
 CategoryData *categorydata_new (void);
+CategoryData *categorydata_copy (const CategoryData *cat);
+GList *categorydata_list_copy (const GList *list);
 void categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed);
 void categorydata_destroy (CategoryData *pd);
 
@@ -200,6 +202,8 @@ struct _PackageData {
 
 PackageData* packagedata_new (void);
 PackageData* packagedata_new_from_file (const char *file);
+PackageData* packagedata_copy (const PackageData *pack);
+GList *packagedata_list_copy (const GList *list);
 
 PackageData* packagedata_new_from_rpm_header (Header*);
 PackageData* packagedata_new_from_rpm_conflict (struct rpmDependencyConflict);

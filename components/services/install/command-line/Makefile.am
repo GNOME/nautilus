@@ -42,14 +42,3 @@ eazel_gen_xml_SOURCES = 	\
 	eazel-gen-xml.c         \
 	$(NULL)                
 
-# Yes, I know these aren't headers, but this is a way to make sure
-# that the check-headers-in-Makefile.pl doesn't complain about these
-# dead sources. If we get rid of these source files we can also get
-# rid of this hack.
-noinst_HEADERS = \
-	eazel-alt-install.c \
-	eazel-install.c \
-	eazel-uninstall.c \
-	eazel-package-query.c \
-	eazel-revert.c \
-	$(NULL)

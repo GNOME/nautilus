@@ -77,6 +77,41 @@ categorydata_new (void)
 	return result;
 }
 
+GList*
+categorydata_list_copy (const GList *list)
+{
+	GList *result = NULL;
+	const GList *ptr;
+
+	for (ptr = list; ptr; ptr = g_list_next (list)) {
+		result = g_list_prepend (result, categorydata_copy ((CategoryData*)(ptr->data)));
+	}
+	g_list_reverse (result);
+
+	return result;
+}
+
+CategoryData*
+categorydata_copy (const CategoryData *cat)
+{
+	CategoryData *result;
+	GList *ptr;
+
+	result = categorydata_new ();
+
+	result->name = g_strdup (cat->name);
+	result->description = g_strdup (cat->description);
+	result->packages = packagedata_list_copy (cat->packages);
+
+	for (ptr = cat->depends; ptr; ptr = g_list_next (ptr)) {
+		result->depends = g_list_prepend (result->depends, 
+						g_strdup ((char*)ptr->data));
+	}
+	g_list_reverse (cat->depends);
+
+	return result;
+}
+
 void
 categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed)
 {
@@ -179,7 +214,21 @@ packagedata_new_from_rpm_header (Header *hd)
 	return pack;
 };
 
-/*
+GList *
+packagedata_list_copy (const GList *list)
+{
+	const GList *ptr;
+	GList *result;
+	result = NULL;
+	for (ptr = list; ptr; ptr = g_list_next (ptr)) {
+		result = g_list_prepend (result, 
+					 packagedata_copy ((PackageData*)(ptr->data)));
+	}
+	g_list_reverse (result);
+
+	return result;
+}
+
 PackageData* 
 packagedata_copy (const PackageData *pack)
 {
@@ -206,9 +255,13 @@ packagedata_copy (const PackageData *pack)
 	result->distribution = pack->distribution;
 	result->bytesize = pack->bytesize;
 
+	result->soft_depends = packagedata_list_copy (pack->soft_depends);
+	result->hard_depends = packagedata_list_copy (pack->hard_depends);
+	result->modifies = packagedata_list_copy (pack->modifies);
+	result->breaks = packagedata_list_copy (pack->breaks);
+
 	return result;
 }
-*/
 
 /* FIXME bugzilla.eazel.com 2351:
    check possible leaks from using headerGetEntry.

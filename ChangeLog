@@ -1,3 +1,32 @@
+2000-10-16  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/Makefile.am:
+	* components/services/install/command-line/eazel-alt-install.c:
+	* components/services/install/command-line/eazel-install.c:
+	* components/services/install/command-line/eazel-package-query.c:
+	* components/services/install/command-line/eazel-revert.c:
+	* components/services/install/command-line/eazel-uninstall.c:
+	Removed these old evil files.
+	
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-types.c:
+	(categorydata_list_copy), (categorydata_copy),
+	(packagedata_list_copy), (packagedata_copy):
+	Implemented package & categorydata copy functions.
+	
+	* components/services/trilobite/libtrilobite/trilobite-core-distrib
+	ution.h:
+	* components/services/trilobite/libtrilobite/trilobite-core-distrib
+	ution.c: (determine_mandrake_version), (determine_suse_version),
+	(determine_debian_version):
+	Removed g_assert_not_reached calls. Also added enum for YELLOWDOG.
+	
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/installer.c: (get_required_name),
+	(get_detailed_errors_foreach), (get_detailed_errors),
+	(eazel_install_dep_check), (check_system):
+	Doing some funk to handle circular deps better.
+	
 2000-10-16  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-list.c:

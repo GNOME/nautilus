@@ -92,19 +92,16 @@ determine_turbolinux_version (DistributionInfo *distinfo)
 static void
 determine_mandrake_version (DistributionInfo *distinfo)
 {
-	g_assert_not_reached ();
 }
 
 static void
 determine_suse_version (DistributionInfo *distinfo)
 {
-	g_assert_not_reached ();
 }
 
 static void
 determine_debian_version (DistributionInfo *distinfo)
 {
-	g_assert_not_reached ();
 }
 
 static void

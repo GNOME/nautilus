@@ -52,11 +52,16 @@
 #include "bootstrap-background.xpm"	/* background for every panel */
 #include "error-symbol.xpm"		/* icon to add to error panel */
 
-#define EAZEL_SERVICES_DIR_HOME "/var/eazel"
-#define EAZEL_SERVICES_DIR EAZEL_SERVICES_DIR_HOME "/services"
+/* Data argument to get_detailed_errors_foreach.
+   Contains the installer and a path in the tree
+   leading to the actual package */
+typedef struct {
+	EazelInstaller *installer;
+	GList *path;
+} GetErrorsForEachData;
 
-#define HOSTNAME "stage-web.eazel.com"
-#define PORT_NUMBER 80
+#define HOSTNAME "services.eazel.com"
+#define PORT_NUMBER 8888
 #define CGI_PATH "/catalog/find"
 #define TMP_DIR "/tmp/eazel-install"
 #define RPMRC "/usr/lib/rpm/rpmrc"
@@ -815,23 +820,47 @@ eazel_download_progress (EazelInstall *service,
 	}
 }
 
+static const char*
+get_required_name (const PackageData *pack)
+{
+	static char *result = NULL;
+
+	g_free (result);
+	result = NULL;
+
+	if (pack==NULL) {
+		result = NULL;
+	} else if (pack->name && pack->version) {
+		result = g_strdup_printf ("%s v. %s", pack->name, pack->version);
+	} else if (pack->name) {
+		result = g_strdup_printf ("%s", pack->name);
+	} else if (pack->eazel_id != NULL) {
+		result = g_strdup (pack->eazel_id);
+	} else if (pack->provides->data != NULL) {
+		result = g_strdup (pack->provides->data);
+	} else {
+		/* what the--?!  WHO ARE YOU! */
+		result = g_strdup ("another package");
+	}
+	
+	return result;
+}
+
 static void
-get_detailed_errors_foreach (const PackageData *pack, EazelInstaller *installer)
+get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 {
 	char *message = NULL;
 	char *required;
+	char *required_by;
 	gboolean recoverable_error = FALSE;
+	EazelInstaller *installer = data->installer;
+	PackageData *previous_pack = NULL;
 
-	if (pack->name != NULL) {
-		required = g_strdup_printf ("%s v. %s", pack->name, pack->version);
-	} else if (pack->eazel_id != NULL) {
-		required = g_strdup (pack->eazel_id);
-	} else if (pack->provides->data != NULL) {
-		required = g_strdup (pack->provides->data);
-	} else {
-		/* what the--?!  WHO ARE YOU! */
-		required = g_strdup ("another package");
+	if (data->path) {
+		previous_pack = (PackageData*)(data->path->data);
 	}
+	required = g_strdup (get_required_name (pack));
+	required_by = g_strdup (get_required_name (previous_pack));
 
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
@@ -846,12 +875,15 @@ get_detailed_errors_foreach (const PackageData *pack, EazelInstaller *installer)
 			recoverable_error = TRUE;
 			installer->additional_packages = g_list_prepend (installer->additional_packages, pack->name);
 		}
+		g_warning ("%s file nuked %s", 
+			   required_by,
+			   required);		
 		break;
 	case PACKAGE_DEPENDENCY_FAIL:
 		if (pack->soft_depends || pack->hard_depends) {
 			/* only add this message if it's not going to be explained by a lower dependency */
 			/* (avoids redundant info like "nautilus would not work anymore" -- DUH) */
-			message = g_strdup_printf (_("%s requires the following :"), pack->name);
+			message = g_strdup_printf (_("%s requires the following :"), required);
 			recoverable_error = TRUE;
 		}
 		break;
@@ -868,15 +900,24 @@ get_detailed_errors_foreach (const PackageData *pack, EazelInstaller *installer)
 	case PACKAGE_ALREADY_INSTALLED:
 		message = g_strdup_printf (_("%s was already installed"), required);
 		break;
-	case PACKAGE_CIRCULAR_DEPENDENCY:
+	case PACKAGE_CIRCULAR_DEPENDENCY: 
 		message = g_strdup_printf (_("%s causes a circular dependency problem"), required);
+		if (previous_pack->status == PACKAGE_BREAKS_DEPENDENCY) {
+			g_warning ("%s and %s are mutexed", 
+				   required_by,
+				   required);
+		} else {
+			g_warning ("%s and %s is not the mutex", 
+				   required_by,
+				   required);
+		}
 		break;
 	case PACKAGE_RESOLVED:
 		recoverable_error = TRUE;	/* duh. */
 		break;
 	}
-
 	g_free (required);
+	g_free (required_by);
 
 	if (! recoverable_error) {
 		installer->all_errors_are_recoverable = FALSE;
@@ -885,10 +926,17 @@ get_detailed_errors_foreach (const PackageData *pack, EazelInstaller *installer)
 	if (message != NULL) {
 		installer->failure_info = g_list_append (installer->failure_info, message);
 	}
-	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_errors_foreach, installer);
-	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_errors_foreach, installer);
-	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, installer);
-	g_list_foreach (pack->breaks, (GFunc)get_detailed_errors_foreach, installer);
+
+	/* Create the path list */
+	data->path = g_list_prepend (data->path, pack);
+
+	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_errors_foreach, data);
+	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_errors_foreach, data);
+	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, data);
+	g_list_foreach (pack->breaks, (GFunc)get_detailed_errors_foreach, data);
+
+	/* Pop the currect pack from the path */
+	data->path = g_list_remove (data->path, pack);
 }
 
 static void
@@ -896,6 +944,8 @@ get_detailed_errors (const PackageData *pack, EazelInstaller *installer)
 {
 	GtkLabel *label_single;
 	char *temp;
+	GetErrorsForEachData data;
+	PackageData *non_const_pack;
 
 	installer->all_errors_are_recoverable = TRUE;
 	installer->additional_packages = NULL;
@@ -910,7 +960,11 @@ get_detailed_errors (const PackageData *pack, EazelInstaller *installer)
 		return;
 	}
 
-	get_detailed_errors_foreach (pack, installer);
+	data.installer = installer;
+	data.path = NULL;
+	non_const_pack = packagedata_copy (pack);
+	get_detailed_errors_foreach (non_const_pack, &data);
+	packagedata_destroy (non_const_pack, TRUE);
 }
 
 static void
@@ -999,18 +1053,7 @@ eazel_install_dep_check (EazelInstall *service,
 {
 	GtkWidget *label_overall;
 	char *temp;
-	char *required;
-
-	required = needs->name;
-	if (required == NULL) {
-		required = needs->eazel_id;
-	}
-	if (required == NULL) {
-		required = needs->provides->data;
-	}
-	if (required == NULL) {
-		required = "another package";
-	}
+	const char *required = get_required_name (needs);
 
 	label_overall = gtk_object_get_data (GTK_OBJECT (installer->window), "label_overall");
 	/* careful: this needs->name is not always a package name (sometimes it's a filename) */
@@ -1251,14 +1294,26 @@ check_system (EazelInstaller *installer)
 	} 
 #endif
 
-	if (dist.name != DISTRO_REDHAT) {
-		jump_to_error_page (installer, NULL,
-				    _("Sorry, but this preview installer only works for RPM-based\n"
-				      "systems.  You will have to download the source youself."));
-		return FALSE;
+	if (dist.name != DISTRO_REDHAT && !installer_test) {
+		/* FIXME bugzilla.eazel.com
+		   Find other distro's that use rpm */
+		if (dist.name == DISTRO_MANDRAKE ||
+		    dist.name == DISTRO_YELLOWDOG) {
+			GnomeDialog *d;
+			d = GNOME_DIALOG (gnome_warning_dialog_parented (_("You're running the installer on a"
+									   "RPM-based system, but not a Red Hat"
+									   "Linux release. I'll try it anyway."),
+									 GTK_WINDOW (installer->window)));
+			gnome_dialog_run_and_close (d);			
+		} else {
+			jump_to_error_page (installer, NULL,
+					    _("Sorry, but this preview installer only works for RPM-based\n"
+					      "systems.  You will have to download the source youself."));
+			return FALSE;
+		}
 	}
 
-	if (g_file_test ("/etc/eazel/profile/bashrc", G_FILE_TEST_ISFILE)) {
+	if (!installer_test && g_file_test ("/etc/eazel/profile/bashrc", G_FILE_TEST_ISFILE)) {
 		jump_to_error_page (installer, NULL,
 				    _("No, you've got the eazel-hacking environment.\n"
 				      "You definitely do not want to run the installer\n"

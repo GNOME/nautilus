@@ -39,7 +39,8 @@ enum _DistributionName {
 	DISTRO_LINUXPPC,
 	DISTRO_TURBOLINUX,
 	DISTRO_COREL,
-	DISTRO_MANDRAKE
+	DISTRO_MANDRAKE,
+	DISTRO_YELLOWDOG
 };
 
 struct _DistributionInfo {
