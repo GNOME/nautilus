@@ -1,5 +1,13 @@
 2003-03-14  Dave Camp  <dave@ximian.com>
 
+	* src/file-manager/fm-list-view.c (fm_list_view_start_renaming_file): 
+	Don't start a rename if there is already a rename in progress.
+
+	Patch from marten ter borgh <marten@terborgh.demon.nl>, fixes
+	bug #106464.
+
+2003-03-14  Dave Camp  <dave@ximian.com>
+
 	* components/adapter/nautilus-adapter-stream-load-strategy.c 
 	(nautilus_adapter_stream_load_strategy_load_location): Recompute
 	the mime type and passit to the stream's load method.
