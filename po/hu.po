@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus CVS-HEAD\n"
-"POT-Creation-Date: 2002-12-18 10:04+0100\n"
-"PO-Revision-Date: 2002-12-07 19:18+0100\n"
+"POT-Creation-Date: 2002-12-19 12:35+0100\n"
+"PO-Revision-Date: 2002-12-19 12:39+0100\n"
 "Last-Translator: Emese Kovacs <emese@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -150,11 +150,11 @@ msgstr "Matrica hozzáadása sikertelen"
 #: components/emblem/nautilus-emblem-view.c:813
 #, c-format
 msgid "The file '%s' does not appear to be a valid image."
-msgstr ""
+msgstr "A(z) '%s' fájl nem tűnik érvényes képnek."
 
 #: components/emblem/nautilus-emblem-view.c:763
 msgid "The dragged file does not appear to be a valid image."
-msgstr ""
+msgstr "Az áthúzott fájl nem tűnik érvényes képnek."
 
 # data/browser.xml.h:33
 #: components/emblem/nautilus-emblem-view.c:878 data/browser.xml.h:35
@@ -307,6 +307,8 @@ msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
 msgstr ""
+"<b>Képtípus:</b> %s (%s)\n"
+"<b>Felbontás:</b> %dx%d képpont\n"
 
 # src/nautilus-bookmarks-window.c:177
 #: components/image_properties/nautilus-image-properties-view.c:239
@@ -1559,7 +1561,7 @@ msgid "To:"
 msgstr "Cél:"
 
 # libnautilus-private/nautilus-file-operations.c:588
-#: libnautilus-private/nautilus-file-operations.c:538
+#: libnautilus-private/nautilus-file-operations.c:539
 #, c-format
 msgid ""
 "Error while moving.\n"
@@ -1571,7 +1573,7 @@ msgstr ""
 "\"%s\" nem helyezhető át, mert csak olvasható lemezen van."
 
 # libnautilus-private/nautilus-file-operations.c:599
-#: libnautilus-private/nautilus-file-operations.c:549
+#: libnautilus-private/nautilus-file-operations.c:550
 #, c-format
 msgid ""
 "Error while deleting.\n"
@@ -1584,7 +1586,7 @@ msgstr ""
 "\"%s\" nem törölhető, mert nincs jogod a szülőkönyvtárat módosítani."
 
 # libnautilus-private/nautilus-file-operations.c:605
-#: libnautilus-private/nautilus-file-operations.c:555
+#: libnautilus-private/nautilus-file-operations.c:556
 #, c-format
 msgid ""
 "Error while deleting.\n"
@@ -1596,7 +1598,7 @@ msgstr ""
 "\"%s\" nem törölhető, mert csak olvasható lemezen van."
 
 # libnautilus-private/nautilus-file-operations.c:636
-#: libnautilus-private/nautilus-file-operations.c:585
+#: libnautilus-private/nautilus-file-operations.c:587
 #, c-format
 msgid ""
 "Error while moving.\n"
@@ -1609,8 +1611,21 @@ msgstr ""
 "\"%s\" nem helyezhető át, mert nincs jogod módosítani a fájl vagy a "
 "szülőkönyvtárát."
 
-# libnautilus-private/nautilus-file-operations.c:636
+# libnautilus-private/nautilus-file-operations.c:588
 #: libnautilus-private/nautilus-file-operations.c:592
+#, c-format
+msgid ""
+"Error while moving.\n"
+"\n"
+"\"%s\" cannot be moved because it or its parent folder are contained in the "
+"destination."
+msgstr ""
+"Hiba áthelyezés közben.\n"
+"\n"
+"\"%s\" nem helyezhető át, mert az vagy a szülőkönyvtára a cél része."
+
+# libnautilus-private/nautilus-file-operations.c:636
+#: libnautilus-private/nautilus-file-operations.c:602
 #, c-format
 msgid ""
 "Error while moving.\n"
@@ -1624,7 +1639,7 @@ msgstr ""
 "szülőkönyvtárát."
 
 # libnautilus-private/nautilus-file-operations.c:667
-#: libnautilus-private/nautilus-file-operations.c:615
+#: libnautilus-private/nautilus-file-operations.c:625
 #, c-format
 msgid ""
 "Error while copying.\n"
@@ -1636,7 +1651,7 @@ msgstr ""
 "\"%s\" nem másolható, mert nincs rá olvasási jogod."
 
 # libnautilus-private/nautilus-file-operations.c:689
-#: libnautilus-private/nautilus-file-operations.c:636
+#: libnautilus-private/nautilus-file-operations.c:646
 #, c-format
 msgid ""
 "Error while copying to \"%s\".\n"
@@ -1648,7 +1663,7 @@ msgstr ""
 "A célfájl lemezén nincs elég hely."
 
 # libnautilus-private/nautilus-file-operations.c:694
-#: libnautilus-private/nautilus-file-operations.c:641
+#: libnautilus-private/nautilus-file-operations.c:651
 #, c-format
 msgid ""
 "Error while moving to \"%s\".\n"
@@ -1660,7 +1675,7 @@ msgstr ""
 "A célfájl lemezén nincs elég hely."
 
 # libnautilus-private/nautilus-file-operations.c:698
-#: libnautilus-private/nautilus-file-operations.c:645
+#: libnautilus-private/nautilus-file-operations.c:655
 #, c-format
 msgid ""
 "Error while creating link in \"%s\".\n"
@@ -1672,7 +1687,7 @@ msgstr ""
 "A célterületen nincs elég hely."
 
 # libnautilus-private/nautilus-file-operations.c:710
-#: libnautilus-private/nautilus-file-operations.c:657
+#: libnautilus-private/nautilus-file-operations.c:667
 #, c-format
 msgid ""
 "Error while copying to \"%s\".\n"
@@ -1684,7 +1699,7 @@ msgstr ""
 "Lehet, hogy nincs jogod írni ebbe a mappába."
 
 # libnautilus-private/nautilus-file-operations.c:714
-#: libnautilus-private/nautilus-file-operations.c:661
+#: libnautilus-private/nautilus-file-operations.c:671
 #, c-format
 msgid ""
 "Error while copying to \"%s\".\n"
@@ -1696,7 +1711,7 @@ msgstr ""
 "A céllemez írásvédett."
 
 # libnautilus-private/nautilus-file-operations.c:721
-#: libnautilus-private/nautilus-file-operations.c:668
+#: libnautilus-private/nautilus-file-operations.c:678
 #, c-format
 msgid ""
 "Error while moving items to \"%s\".\n"
@@ -1708,7 +1723,7 @@ msgstr ""
 "Lehet, hogy nincs jogod írni ebbe a mappába."
 
 # libnautilus-private/nautilus-file-operations.c:725
-#: libnautilus-private/nautilus-file-operations.c:672
+#: libnautilus-private/nautilus-file-operations.c:682
 #, c-format
 msgid ""
 "Error while moving items to \"%s\".\n"
@@ -1720,7 +1735,7 @@ msgstr ""
 "A céllemez csak olvasható."
 
 # libnautilus-private/nautilus-file-operations.c:732
-#: libnautilus-private/nautilus-file-operations.c:679
+#: libnautilus-private/nautilus-file-operations.c:689
 #, c-format
 msgid ""
 "Error while creating links in \"%s\".\n"
@@ -1732,7 +1747,7 @@ msgstr ""
 "Nincs jogod írni ebbe a mappába."
 
 # libnautilus-private/nautilus-file-operations.c:736
-#: libnautilus-private/nautilus-file-operations.c:683
+#: libnautilus-private/nautilus-file-operations.c:693
 #, c-format
 msgid ""
 "Error while creating links in \"%s\".\n"
@@ -1744,7 +1759,7 @@ msgstr ""
 "A céllemez csak olvasható."
 
 # libnautilus-private/nautilus-file-operations.c:765
-#: libnautilus-private/nautilus-file-operations.c:711
+#: libnautilus-private/nautilus-file-operations.c:721
 #, c-format
 msgid ""
 "Error \"%s\" while copying \"%s\".\n"
@@ -1756,7 +1771,7 @@ msgstr ""
 "Mégis folytatod?"
 
 # libnautilus-private/nautilus-file-operations.c:769
-#: libnautilus-private/nautilus-file-operations.c:715
+#: libnautilus-private/nautilus-file-operations.c:725
 #, c-format
 msgid ""
 "Error \"%s\" while moving \"%s\".\n"
@@ -1768,7 +1783,7 @@ msgstr ""
 "Mégis folytatod?"
 
 # libnautilus-private/nautilus-file-operations.c:773
-#: libnautilus-private/nautilus-file-operations.c:719
+#: libnautilus-private/nautilus-file-operations.c:729
 #, c-format
 msgid ""
 "Error \"%s\" while creating a link to \"%s\".\n"
@@ -1780,7 +1795,7 @@ msgstr ""
 "Mégis folytatod?"
 
 # libnautilus-private/nautilus-file-operations.c:779
-#: libnautilus-private/nautilus-file-operations.c:725
+#: libnautilus-private/nautilus-file-operations.c:735
 #, c-format
 msgid ""
 "Error \"%s\" while deleting \"%s\".\n"
@@ -1792,7 +1807,7 @@ msgstr ""
 "Mégis folytatod?"
 
 # libnautilus-private/nautilus-file-operations.c:794
-#: libnautilus-private/nautilus-file-operations.c:740
+#: libnautilus-private/nautilus-file-operations.c:750
 #, c-format
 msgid ""
 "Error \"%s\" while copying.\n"
@@ -1804,7 +1819,7 @@ msgstr ""
 "Mégis folytatod?"
 
 # libnautilus-private/nautilus-file-operations.c:798
-#: libnautilus-private/nautilus-file-operations.c:744
+#: libnautilus-private/nautilus-file-operations.c:754
 #, c-format
 msgid ""
 "Error \"%s\" while moving.\n"
@@ -1816,7 +1831,7 @@ msgstr ""
 "Mégis folytatod?"
 
 # libnautilus-private/nautilus-file-operations.c:802
-#: libnautilus-private/nautilus-file-operations.c:748
+#: libnautilus-private/nautilus-file-operations.c:758
 #, c-format
 msgid ""
 "Error \"%s\" while linking.\n"
@@ -1828,7 +1843,7 @@ msgstr ""
 "Mégis folytatod?"
 
 # libnautilus-private/nautilus-file-operations.c:808
-#: libnautilus-private/nautilus-file-operations.c:754
+#: libnautilus-private/nautilus-file-operations.c:764
 #, c-format
 msgid ""
 "Error \"%s\" while deleting.\n"
@@ -1840,22 +1855,22 @@ msgstr ""
 "Mégis folytatod?"
 
 # libnautilus-private/nautilus-file-operations.c:924
-#: libnautilus-private/nautilus-file-operations.c:875
+#: libnautilus-private/nautilus-file-operations.c:889
 msgid "Error while copying."
 msgstr "Hiba másoláskor."
 
 # libnautilus-private/nautilus-file-operations.c:927
-#: libnautilus-private/nautilus-file-operations.c:878
+#: libnautilus-private/nautilus-file-operations.c:892
 msgid "Error while moving."
 msgstr "Hiba áthelyezéskor."
 
 # libnautilus-private/nautilus-file-operations.c:930
-#: libnautilus-private/nautilus-file-operations.c:881
+#: libnautilus-private/nautilus-file-operations.c:895
 msgid "Error while linking."
 msgstr "Hiba kapocs létrehozásakor."
 
 # libnautilus-private/nautilus-file-operations.c:935
-#: libnautilus-private/nautilus-file-operations.c:886
+#: libnautilus-private/nautilus-file-operations.c:900
 msgid "Error while deleting."
 msgstr "Hiba törléskor."
 
@@ -1864,9 +1879,9 @@ msgstr "Hiba törléskor."
 # libnautilus-private/nautilus-file-operations.c:960
 # libnautilus-private/nautilus-file-operations.c:979
 # src/nautilus-shell-ui.xml.h:54
-#: libnautilus-private/nautilus-file-operations.c:896
 #: libnautilus-private/nautilus-file-operations.c:911
-#: libnautilus-private/nautilus-file-operations.c:931
+#: libnautilus-private/nautilus-file-operations.c:926
+#: libnautilus-private/nautilus-file-operations.c:946
 #: src/nautilus-shell-ui.xml.h:44
 msgid "Stop"
 msgstr "Állj"
@@ -1875,20 +1890,20 @@ msgstr "Állj"
 # libnautilus-private/nautilus-file-operations.c:979
 # libnautilus-private/nautilus-file-operations.c:1093
 # libnautilus-private/nautilus-file-operations.c:1107
-#: libnautilus-private/nautilus-file-operations.c:911
-#: libnautilus-private/nautilus-file-operations.c:931
-#: libnautilus-private/nautilus-file-operations.c:1044
-#: libnautilus-private/nautilus-file-operations.c:1061
+#: libnautilus-private/nautilus-file-operations.c:926
+#: libnautilus-private/nautilus-file-operations.c:946
+#: libnautilus-private/nautilus-file-operations.c:1059
+#: libnautilus-private/nautilus-file-operations.c:1076
 msgid "Skip"
 msgstr "Mellőz"
 
 # libnautilus-private/nautilus-file-operations.c:979
-#: libnautilus-private/nautilus-file-operations.c:931
+#: libnautilus-private/nautilus-file-operations.c:946
 msgid "Retry"
 msgstr "Újra"
 
 # libnautilus-private/nautilus-file-operations.c:1057
-#: libnautilus-private/nautilus-file-operations.c:1005
+#: libnautilus-private/nautilus-file-operations.c:1020
 #, c-format
 msgid ""
 "\"%s\" could not be moved to the new location, because its name is already "
@@ -1904,7 +1919,7 @@ msgstr ""
 "újra."
 
 # libnautilus-private/nautilus-file-operations.c:1063
-#: libnautilus-private/nautilus-file-operations.c:1011
+#: libnautilus-private/nautilus-file-operations.c:1026
 #, c-format
 msgid ""
 "\"%s\" could not be copied to the new location, because its name is already "
@@ -1919,12 +1934,12 @@ msgstr ""
 "Ha még mindig át akarod másolni \"%s\"-t, nevezd először át, és próbáld újra."
 
 # libnautilus-private/nautilus-file-operations.c:1071
-#: libnautilus-private/nautilus-file-operations.c:1019
+#: libnautilus-private/nautilus-file-operations.c:1034
 msgid "Unable to replace file."
 msgstr "A fájl helyettesítése sikertelen."
 
 # libnautilus-private/nautilus-file-operations.c:1081
-#: libnautilus-private/nautilus-file-operations.c:1032
+#: libnautilus-private/nautilus-file-operations.c:1047
 #, c-format
 msgid ""
 "File \"%s\" already exists.\n"
@@ -1937,27 +1952,27 @@ msgstr ""
 
 # libnautilus-private/nautilus-file-operations.c:1092
 # libnautilus-private/nautilus-file-operations.c:1106
-#: libnautilus-private/nautilus-file-operations.c:1043
-#: libnautilus-private/nautilus-file-operations.c:1060
+#: libnautilus-private/nautilus-file-operations.c:1058
+#: libnautilus-private/nautilus-file-operations.c:1075
 msgid "Conflict while copying"
 msgstr "Ütközés másoláskor"
 
 # libnautilus-private/nautilus-file-operations.c:1093
 # libnautilus-private/nautilus-file-operations.c:1107
-#: libnautilus-private/nautilus-file-operations.c:1044
-#: libnautilus-private/nautilus-file-operations.c:1061
+#: libnautilus-private/nautilus-file-operations.c:1059
+#: libnautilus-private/nautilus-file-operations.c:1076
 msgid "Replace"
 msgstr "Cserél"
 
 # libnautilus-private/nautilus-file-operations.c:1107
-#: libnautilus-private/nautilus-file-operations.c:1061
+#: libnautilus-private/nautilus-file-operations.c:1076
 msgid "Replace All"
 msgstr "Mindent cserél"
 
 # libnautilus-private/nautilus-file-operations.c:1156
 # libnautilus-private/nautilus-file.c:3803
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1112
+#: libnautilus-private/nautilus-file-operations.c:1127
 #: libnautilus-private/nautilus-file.c:4285
 #, c-format
 msgid "link to %s"
@@ -1965,7 +1980,7 @@ msgstr "link erre: %s"
 
 # libnautilus-private/nautilus-file-operations.c:1160
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1116
+#: libnautilus-private/nautilus-file-operations.c:1131
 #, c-format
 msgid "another link to %s"
 msgstr "még egy kapocs ehhez: %s"
@@ -1975,28 +1990,28 @@ msgstr "még egy kapocs ehhez: %s"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: libnautilus-private/nautilus-file-operations.c:1132
+#: libnautilus-private/nautilus-file-operations.c:1147
 #, c-format
 msgid "%dst link to %s"
 msgstr "%d. kapocs ehhez: %s"
 
 # libnautilus-private/nautilus-file-operations.c:1180
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1136
+#: libnautilus-private/nautilus-file-operations.c:1151
 #, c-format
 msgid "%dnd link to %s"
 msgstr "%d. kapocs ehhez: %s"
 
 # libnautilus-private/nautilus-file-operations.c:1184
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1140
+#: libnautilus-private/nautilus-file-operations.c:1155
 #, c-format
 msgid "%drd link to %s"
 msgstr "%d. kapocs ehhez: %s"
 
 # libnautilus-private/nautilus-file-operations.c:1188
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1144
+#: libnautilus-private/nautilus-file-operations.c:1159
 #, c-format
 msgid "%dth link to %s"
 msgstr "%d. kapocs ehhez: %s"
@@ -2008,108 +2023,108 @@ msgstr "%d. kapocs ehhez: %s"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1164
-#: libnautilus-private/nautilus-file-operations.c:2296
+#: libnautilus-private/nautilus-file-operations.c:1179
+#: libnautilus-private/nautilus-file-operations.c:2311
 msgid " (copy)"
 msgstr " (másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:1210
 # libnautilus-private/nautilus-file-operations.c:2351
 #. localizers: tag used to detect the second copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1166
-#: libnautilus-private/nautilus-file-operations.c:2296
+#: libnautilus-private/nautilus-file-operations.c:1181
+#: libnautilus-private/nautilus-file-operations.c:2311
 msgid " (another copy)"
 msgstr " (még egy másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:1218
 #. localizers: tag used to detect the x11th copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1169
-#: libnautilus-private/nautilus-file-operations.c:1171
-#: libnautilus-private/nautilus-file-operations.c:1173
-#: libnautilus-private/nautilus-file-operations.c:1183
+#: libnautilus-private/nautilus-file-operations.c:1184
+#: libnautilus-private/nautilus-file-operations.c:1186
+#: libnautilus-private/nautilus-file-operations.c:1188
+#: libnautilus-private/nautilus-file-operations.c:1198
 msgid "th copy)"
 msgstr ". másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:1212
 #. localizers: tag used to detect the x1st copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1176
+#: libnautilus-private/nautilus-file-operations.c:1191
 msgid "st copy)"
 msgstr ". másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:1214
 #. localizers: tag used to detect the x2nd copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1178
+#: libnautilus-private/nautilus-file-operations.c:1193
 msgid "nd copy)"
 msgstr ". másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:1216
 #. localizers: tag used to detect the x3rd copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1180
+#: libnautilus-private/nautilus-file-operations.c:1195
 msgid "rd copy)"
 msgstr ". másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:1228
 #. localizers: appended to first file copy
-#: libnautilus-private/nautilus-file-operations.c:1197
+#: libnautilus-private/nautilus-file-operations.c:1212
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (másolat)%s"
 
 # libnautilus-private/nautilus-file-operations.c:1230
 #. localizers: appended to second file copy
-#: libnautilus-private/nautilus-file-operations.c:1199
+#: libnautilus-private/nautilus-file-operations.c:1214
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (még egy másolat)%s"
 
 # libnautilus-private/nautilus-file-operations.c:1238
 #. localizers: appended to x11th file copy
-#: libnautilus-private/nautilus-file-operations.c:1202
-#: libnautilus-private/nautilus-file-operations.c:1204
-#: libnautilus-private/nautilus-file-operations.c:1206
-#: libnautilus-private/nautilus-file-operations.c:1215
+#: libnautilus-private/nautilus-file-operations.c:1217
+#: libnautilus-private/nautilus-file-operations.c:1219
+#: libnautilus-private/nautilus-file-operations.c:1221
+#: libnautilus-private/nautilus-file-operations.c:1230
 #, c-format
 msgid "%s (%dth copy)%s"
 msgstr "%s (%d. másolat)%s"
 
 # libnautilus-private/nautilus-file-operations.c:1232
 #. localizers: appended to x1st file copy
-#: libnautilus-private/nautilus-file-operations.c:1209
+#: libnautilus-private/nautilus-file-operations.c:1224
 #, c-format
 msgid "%s (%dst copy)%s"
 msgstr "%s (%d. másolat)%s"
 
 # libnautilus-private/nautilus-file-operations.c:1234
 #. localizers: appended to x2nd file copy
-#: libnautilus-private/nautilus-file-operations.c:1211
+#: libnautilus-private/nautilus-file-operations.c:1226
 #, c-format
 msgid "%s (%dnd copy)%s"
 msgstr "%s (%d. másolat)%s"
 
 # libnautilus-private/nautilus-file-operations.c:1236
 #. localizers: appended to x3rd file copy
-#: libnautilus-private/nautilus-file-operations.c:1213
+#: libnautilus-private/nautilus-file-operations.c:1228
 #, c-format
 msgid "%s (%drd copy)%s"
 msgstr "%s (%d. másolat)%s"
 
 # libnautilus-private/nautilus-file-operations.c:1322
 #. localizers: opening parentheses to match the "th copy)" string
-#: libnautilus-private/nautilus-file-operations.c:1313
+#: libnautilus-private/nautilus-file-operations.c:1328
 msgid " ("
 msgstr " ("
 
 # libnautilus-private/nautilus-file-operations.c:1330
 #. localizers: opening parentheses of the "th copy)" string
-#: libnautilus-private/nautilus-file-operations.c:1321
+#: libnautilus-private/nautilus-file-operations.c:1336
 #, c-format
 msgid " (%d"
 msgstr " (%d"
 
 # libnautilus-private/nautilus-file-operations.c:1487
 # libnautilus-private/nautilus-file-operations.c:2066
-#: libnautilus-private/nautilus-file-operations.c:1499
-#: libnautilus-private/nautilus-file-operations.c:2091
+#: libnautilus-private/nautilus-file-operations.c:1514
+#: libnautilus-private/nautilus-file-operations.c:2106
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Ismeretlen GnomeVFSXferProgressStatus %d"
@@ -2117,14 +2132,14 @@ msgstr "Ismeretlen GnomeVFSXferProgressStatus %d"
 # libnautilus-private/nautilus-file-operations.c:1802
 # libnautilus-private/nautilus-file-operations.c:2195
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1835
+#: libnautilus-private/nautilus-file-operations.c:1850
 msgid "Moving files to the Trash"
 msgstr "Fájlok áthelyezése a kukába"
 
 # libnautilus-private/nautilus-file-operations.c:1804
 # libnautilus-private/nautilus-file-operations.c:2197
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1837
+#: libnautilus-private/nautilus-file-operations.c:1852
 msgid "Files thrown out:"
 msgstr "Kidobott fájlok:"
 
@@ -2132,164 +2147,164 @@ msgstr "Kidobott fájlok:"
 # libnautilus-private/nautilus-file-operations.c:1821
 # libnautilus-private/nautilus-file-operations.c:2199
 #. localizers: label prepended to the name of the current file moved
-#: libnautilus-private/nautilus-file-operations.c:1839
-#: libnautilus-private/nautilus-file-operations.c:1850
+#: libnautilus-private/nautilus-file-operations.c:1854
+#: libnautilus-private/nautilus-file-operations.c:1865
 msgid "Moving"
 msgstr "Áthelyezés"
 
 # libnautilus-private/nautilus-file-operations.c:1807
 # libnautilus-private/nautilus-file-operations.c:2200
-#: libnautilus-private/nautilus-file-operations.c:1840
+#: libnautilus-private/nautilus-file-operations.c:1855
 msgid "Preparing to Move to Trash..."
 msgstr "Felkészülés a kukába való áthelyezésre..."
 
 # libnautilus-private/nautilus-file-operations.c:1817
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1846
+#: libnautilus-private/nautilus-file-operations.c:1861
 msgid "Moving files"
 msgstr "Fájlok áthelyezése"
 
 # libnautilus-private/nautilus-file-operations.c:1819
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1848
+#: libnautilus-private/nautilus-file-operations.c:1863
 msgid "Files moved:"
 msgstr "Áthelyezett fájlok:"
 
 # libnautilus-private/nautilus-file-operations.c:1822
-#: libnautilus-private/nautilus-file-operations.c:1851
+#: libnautilus-private/nautilus-file-operations.c:1866
 msgid "Preparing To Move..."
 msgstr "Felkészülés áthelyezésre..."
 
 # libnautilus-private/nautilus-file-operations.c:1823
-#: libnautilus-private/nautilus-file-operations.c:1852
+#: libnautilus-private/nautilus-file-operations.c:1867
 msgid "Finishing Move..."
 msgstr "Áthelyezés befejezése..."
 
 # libnautilus-private/nautilus-file-operations.c:1835
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1860
+#: libnautilus-private/nautilus-file-operations.c:1875
 msgid "Creating links to files"
 msgstr "Kapcsok létrehozása"
 
 # libnautilus-private/nautilus-file-operations.c:1837
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1862
+#: libnautilus-private/nautilus-file-operations.c:1877
 msgid "Files linked:"
 msgstr "Kapcsolt fájlok:"
 
 # libnautilus-private/nautilus-file-operations.c:1839
 #. localizers: label prepended to the name of the current file linked
-#: libnautilus-private/nautilus-file-operations.c:1864
+#: libnautilus-private/nautilus-file-operations.c:1879
 msgid "Linking"
 msgstr "Kapcsok létrehozása:"
 
 # libnautilus-private/nautilus-file-operations.c:1840
-#: libnautilus-private/nautilus-file-operations.c:1865
+#: libnautilus-private/nautilus-file-operations.c:1880
 msgid "Preparing to Create Links..."
 msgstr "Kapcsok létrehozásának előkészítése..."
 
 # libnautilus-private/nautilus-file-operations.c:1841
-#: libnautilus-private/nautilus-file-operations.c:1866
+#: libnautilus-private/nautilus-file-operations.c:1881
 msgid "Finishing Creating Links..."
 msgstr "Kapcsok létrehozásának befejezése..."
 
 # libnautilus-private/nautilus-file-operations.c:1848
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1872
+#: libnautilus-private/nautilus-file-operations.c:1887
 msgid "Copying files"
 msgstr "Fájlok másolása"
 
 # libnautilus-private/nautilus-file-operations.c:1850
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1874
+#: libnautilus-private/nautilus-file-operations.c:1889
 msgid "Files copied:"
 msgstr "Átmásolt fájlok:"
 
 # libnautilus-private/nautilus-file-operations.c:1852
 #. localizers: label prepended to the name of the current file copied
-#: libnautilus-private/nautilus-file-operations.c:1876
+#: libnautilus-private/nautilus-file-operations.c:1891
 msgid "Copying"
 msgstr "Másolás alatt"
 
 # libnautilus-private/nautilus-file-operations.c:1853
-#: libnautilus-private/nautilus-file-operations.c:1877
+#: libnautilus-private/nautilus-file-operations.c:1892
 msgid "Preparing To Copy..."
 msgstr "Felkészülés a másolásra..."
 
 # libnautilus-private/nautilus-file-operations.c:1871
-#: libnautilus-private/nautilus-file-operations.c:1893
+#: libnautilus-private/nautilus-file-operations.c:1908
 msgid "You cannot copy items into the Trash."
 msgstr "Nem lehet elemeket a Kukába másolni."
 
 # libnautilus-private/nautilus-file-operations.c:1872
-#: libnautilus-private/nautilus-file-operations.c:1894
+#: libnautilus-private/nautilus-file-operations.c:1909
 msgid "Can't Copy to Trash"
 msgstr "Nem lehet a Kukába másolni"
 
 # libnautilus-private/nautilus-file-operations.c:1899
 # libnautilus-private/nautilus-file-operations.c:2157
-#: libnautilus-private/nautilus-file-operations.c:1921
+#: libnautilus-private/nautilus-file-operations.c:1936
 msgid "The Trash must remain on the desktop."
 msgstr "A Kuka a munkaasztalon kell maradjon."
 
 # libnautilus-private/nautilus-file-operations.c:1900
-#: libnautilus-private/nautilus-file-operations.c:1922
+#: libnautilus-private/nautilus-file-operations.c:1937
 msgid "You cannot move this trash folder."
 msgstr "Nem lehet áthelyezni ezt a Kuka mappát."
 
 # libnautilus-private/nautilus-file-operations.c:1902
-#: libnautilus-private/nautilus-file-operations.c:1924
+#: libnautilus-private/nautilus-file-operations.c:1939
 msgid "You cannot copy the Trash."
 msgstr "A Kukát nem lehet másolni."
 
 # libnautilus-private/nautilus-file-operations.c:1903
-#: libnautilus-private/nautilus-file-operations.c:1925
+#: libnautilus-private/nautilus-file-operations.c:1940
 msgid "You cannot copy this trash folder."
 msgstr "Nem lehet másolni ezt a Kuka mappát."
 
 # libnautilus-private/nautilus-file-operations.c:1905
 # libnautilus-private/nautilus-file-operations.c:2158
-#: libnautilus-private/nautilus-file-operations.c:1927
+#: libnautilus-private/nautilus-file-operations.c:1942
 msgid "Can't Change Trash Location"
 msgstr "Nem lehet a Kuka helyét megváltoztatni"
 
 # libnautilus-private/nautilus-file-operations.c:1906
-#: libnautilus-private/nautilus-file-operations.c:1928
+#: libnautilus-private/nautilus-file-operations.c:1943
 msgid "Can't Copy Trash"
 msgstr "Nem lehet a Kukát másolni"
 
 # libnautilus-private/nautilus-file-operations.c:1923
-#: libnautilus-private/nautilus-file-operations.c:1951
+#: libnautilus-private/nautilus-file-operations.c:1966
 msgid "You cannot move a folder into itself."
 msgstr "Nem lehet egy mappát önmagába áthelyezni."
 
 # libnautilus-private/nautilus-file-operations.c:1924
-#: libnautilus-private/nautilus-file-operations.c:1952
+#: libnautilus-private/nautilus-file-operations.c:1967
 msgid "You cannot copy a folder into itself."
 msgstr "Nem lehet egy mappát önmagára másolni."
 
 # libnautilus-private/nautilus-file-operations.c:1926
-#: libnautilus-private/nautilus-file-operations.c:1954
+#: libnautilus-private/nautilus-file-operations.c:1969
 msgid "Can't Move Into Self"
 msgstr "Nem lehet a Sajátba átmozgatni"
 
 # libnautilus-private/nautilus-file-operations.c:1927
-#: libnautilus-private/nautilus-file-operations.c:1955
+#: libnautilus-private/nautilus-file-operations.c:1970
 msgid "Can't Copy Into Self"
 msgstr "Nem lehet a Sajátba másolni"
 
 # libnautilus-private/nautilus-file-operations.c:1941
-#: libnautilus-private/nautilus-file-operations.c:1967
+#: libnautilus-private/nautilus-file-operations.c:1982
 msgid "You cannot copy a file over itself."
 msgstr "Nem lehet a fájlt saját magára másolni."
 
 # libnautilus-private/nautilus-file-operations.c:1944
-#: libnautilus-private/nautilus-file-operations.c:1968
+#: libnautilus-private/nautilus-file-operations.c:1983
 msgid "Can't Copy Over Self"
 msgstr "Nem lehet az objektumot saját magára másolni"
 
 # libnautilus-private/nautilus-file-operations.c:1995
-#: libnautilus-private/nautilus-file-operations.c:2020
+#: libnautilus-private/nautilus-file-operations.c:2035
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -2300,7 +2315,7 @@ msgstr ""
 "Nincs jogod írni a célterületre."
 
 # libnautilus-private/nautilus-file-operations.c:1998
-#: libnautilus-private/nautilus-file-operations.c:2023
+#: libnautilus-private/nautilus-file-operations.c:2038
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -2311,421 +2326,421 @@ msgstr ""
 "Nincs hely a célmeghajtón."
 
 # libnautilus-private/nautilus-file-operations.c:2001
-#: libnautilus-private/nautilus-file-operations.c:2026
+#: libnautilus-private/nautilus-file-operations.c:2041
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Új mappa létrehozása közben \"%s\" hiba lépett fel."
 
 # libnautilus-private/nautilus-file-operations.c:2005
-#: libnautilus-private/nautilus-file-operations.c:2030
+#: libnautilus-private/nautilus-file-operations.c:2045
 msgid "Error creating new folder"
 msgstr "Hiba új mappa létrehozása közben"
 
 # libnautilus-private/nautilus-file-operations.c:2092
 #. localizers: the initial name of a new folder
-#: libnautilus-private/nautilus-file-operations.c:2117
+#: libnautilus-private/nautilus-file-operations.c:2132
 msgid "untitled folder"
 msgstr "névtelen mappa"
 
 # libnautilus-private/nautilus-file-operations.c:2240
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2150
+#: libnautilus-private/nautilus-file-operations.c:2165
 msgid "Deleting files"
 msgstr "Fájlok törlése folyamatban"
 
 # libnautilus-private/nautilus-file-operations.c:2242
 # libnautilus-private/nautilus-file-operations.c:2277
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2152
-#: libnautilus-private/nautilus-file-operations.c:2187
+#: libnautilus-private/nautilus-file-operations.c:2167
+#: libnautilus-private/nautilus-file-operations.c:2202
 msgid "Files deleted:"
 msgstr "Törölt fájlok:"
 
 # libnautilus-private/nautilus-file-operations.c:2244
 # libnautilus-private/nautilus-file-operations.c:2279
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-private/nautilus-file-operations.c:2154
-#: libnautilus-private/nautilus-file-operations.c:2189
+#: libnautilus-private/nautilus-file-operations.c:2169
+#: libnautilus-private/nautilus-file-operations.c:2204
 msgid "Deleting"
 msgstr "Törlés folyamatban"
 
 # libnautilus-private/nautilus-file-operations.c:2245
-#: libnautilus-private/nautilus-file-operations.c:2155
+#: libnautilus-private/nautilus-file-operations.c:2170
 msgid "Preparing to Delete files..."
 msgstr "Felkészülés a fájlok törlésére..."
 
 # libnautilus-private/nautilus-file-operations.c:2275
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2185
+#: libnautilus-private/nautilus-file-operations.c:2200
 msgid "Emptying the Trash"
 msgstr "Kuka ürítése folyamatban"
 
 # libnautilus-private/nautilus-file-operations.c:2280
-#: libnautilus-private/nautilus-file-operations.c:2190
+#: libnautilus-private/nautilus-file-operations.c:2205
 msgid "Preparing to Empty the Trash..."
 msgstr "Felkészülés a kuka ürítésére..."
 
 # src/file-manager/fm-desktop-icon-view.c:1022
 # src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
 # src/file-manager/nautilus-directory-view-ui.xml.h:11
-#: libnautilus-private/nautilus-file-operations.c:2224
+#: libnautilus-private/nautilus-file-operations.c:2239
 #: src/file-manager/fm-desktop-icon-view.c:1275
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 msgid "Empty Trash"
 msgstr "Kuka ürítése"
 
 # libnautilus-private/nautilus-file-operations.c:2311
-#: libnautilus-private/nautilus-file-operations.c:2240
+#: libnautilus-private/nautilus-file-operations.c:2255
 msgid ""
 "Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr "Tényleg véglegesen törölni akarod a Kukában található elemeket?"
 
 # libnautilus-private/nautilus-file-operations.c:2314
-#: libnautilus-private/nautilus-file-operations.c:2250
+#: libnautilus-private/nautilus-file-operations.c:2265
 msgid "_Empty"
 msgstr "Ü_rítés"
 
 # libnautilus-private/nautilus-file-operations.c:2352
-#: libnautilus-private/nautilus-file-operations.c:2297
+#: libnautilus-private/nautilus-file-operations.c:2312
 msgid "foo"
 msgstr "foo"
 
 # libnautilus-private/nautilus-file-operations.c:2352
 # libnautilus-private/nautilus-file-operations.c:2362
-#: libnautilus-private/nautilus-file-operations.c:2297
-#: libnautilus-private/nautilus-file-operations.c:2307
+#: libnautilus-private/nautilus-file-operations.c:2312
+#: libnautilus-private/nautilus-file-operations.c:2322
 msgid "foo (copy)"
 msgstr "foo (másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2353
-#: libnautilus-private/nautilus-file-operations.c:2298
+#: libnautilus-private/nautilus-file-operations.c:2313
 msgid ".bashrc"
 msgstr ".bashrc"
 
 # libnautilus-private/nautilus-file-operations.c:2353
-#: libnautilus-private/nautilus-file-operations.c:2298
+#: libnautilus-private/nautilus-file-operations.c:2313
 msgid ".bashrc (copy)"
 msgstr ".bashrc (másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2354
-#: libnautilus-private/nautilus-file-operations.c:2299
+#: libnautilus-private/nautilus-file-operations.c:2314
 msgid ".foo.txt"
 msgstr ".foo.txt"
 
 # libnautilus-private/nautilus-file-operations.c:2354
-#: libnautilus-private/nautilus-file-operations.c:2299
+#: libnautilus-private/nautilus-file-operations.c:2314
 msgid ".foo (copy).txt"
 msgstr ".foo (másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2355
-#: libnautilus-private/nautilus-file-operations.c:2300
+#: libnautilus-private/nautilus-file-operations.c:2315
 msgid "foo foo"
 msgstr "foo foo"
 
 # libnautilus-private/nautilus-file-operations.c:2355
-#: libnautilus-private/nautilus-file-operations.c:2300
+#: libnautilus-private/nautilus-file-operations.c:2315
 msgid "foo foo (copy)"
 msgstr "foo foo (másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2356
-#: libnautilus-private/nautilus-file-operations.c:2301
+#: libnautilus-private/nautilus-file-operations.c:2316
 msgid "foo.txt"
 msgstr "foo.txt"
 
 # libnautilus-private/nautilus-file-operations.c:2356
 # libnautilus-private/nautilus-file-operations.c:2363
-#: libnautilus-private/nautilus-file-operations.c:2301
-#: libnautilus-private/nautilus-file-operations.c:2308
+#: libnautilus-private/nautilus-file-operations.c:2316
+#: libnautilus-private/nautilus-file-operations.c:2323
 msgid "foo (copy).txt"
 msgstr "foo (másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2357
-#: libnautilus-private/nautilus-file-operations.c:2302
+#: libnautilus-private/nautilus-file-operations.c:2317
 msgid "foo foo.txt"
 msgstr "foo foo.txt"
 
 # libnautilus-private/nautilus-file-operations.c:2357
 # libnautilus-private/nautilus-file-operations.c:2377
-#: libnautilus-private/nautilus-file-operations.c:2302
-#: libnautilus-private/nautilus-file-operations.c:2324
+#: libnautilus-private/nautilus-file-operations.c:2317
+#: libnautilus-private/nautilus-file-operations.c:2339
 msgid "foo foo (copy).txt"
 msgstr "foo foo (másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2358
-#: libnautilus-private/nautilus-file-operations.c:2303
+#: libnautilus-private/nautilus-file-operations.c:2318
 msgid "foo foo.txt txt"
 msgstr "foo foo.txt txt"
 
 # libnautilus-private/nautilus-file-operations.c:2358
-#: libnautilus-private/nautilus-file-operations.c:2303
+#: libnautilus-private/nautilus-file-operations.c:2318
 msgid "foo foo (copy).txt txt"
 msgstr "foo foo (másolat).txt txt"
 
 # libnautilus-private/nautilus-file-operations.c:2359
-#: libnautilus-private/nautilus-file-operations.c:2304
+#: libnautilus-private/nautilus-file-operations.c:2319
 msgid "foo...txt"
 msgstr "foo...txt"
 
 # libnautilus-private/nautilus-file-operations.c:2359
-#: libnautilus-private/nautilus-file-operations.c:2304
+#: libnautilus-private/nautilus-file-operations.c:2319
 msgid "foo.. (copy).txt"
 msgstr "foo.. (másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2360
-#: libnautilus-private/nautilus-file-operations.c:2305
+#: libnautilus-private/nautilus-file-operations.c:2320
 msgid "foo..."
 msgstr "foo..."
 
 # libnautilus-private/nautilus-file-operations.c:2360
-#: libnautilus-private/nautilus-file-operations.c:2305
+#: libnautilus-private/nautilus-file-operations.c:2320
 msgid "foo... (copy)"
 msgstr "foo... (másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2361
-#: libnautilus-private/nautilus-file-operations.c:2306
+#: libnautilus-private/nautilus-file-operations.c:2321
 msgid "foo. (copy)"
 msgstr "foo. (másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2361
-#: libnautilus-private/nautilus-file-operations.c:2306
+#: libnautilus-private/nautilus-file-operations.c:2321
 msgid "foo. (another copy)"
 msgstr "foo. (még egy másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2362
 # libnautilus-private/nautilus-file-operations.c:2364
-#: libnautilus-private/nautilus-file-operations.c:2307
-#: libnautilus-private/nautilus-file-operations.c:2309
+#: libnautilus-private/nautilus-file-operations.c:2322
+#: libnautilus-private/nautilus-file-operations.c:2324
 msgid "foo (another copy)"
 msgstr "foo (még egy másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2363
 # libnautilus-private/nautilus-file-operations.c:2365
-#: libnautilus-private/nautilus-file-operations.c:2308
-#: libnautilus-private/nautilus-file-operations.c:2310
+#: libnautilus-private/nautilus-file-operations.c:2323
+#: libnautilus-private/nautilus-file-operations.c:2325
 msgid "foo (another copy).txt"
 msgstr "foo (még egy másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2364
-#: libnautilus-private/nautilus-file-operations.c:2309
+#: libnautilus-private/nautilus-file-operations.c:2324
 msgid "foo (3rd copy)"
 msgstr "foo (3. másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2365
-#: libnautilus-private/nautilus-file-operations.c:2310
+#: libnautilus-private/nautilus-file-operations.c:2325
 msgid "foo (3rd copy).txt"
 msgstr "foo (3. másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2366
-#: libnautilus-private/nautilus-file-operations.c:2311
+#: libnautilus-private/nautilus-file-operations.c:2326
 msgid "foo foo (another copy).txt"
 msgstr "foo foo (még egy másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2366
-#: libnautilus-private/nautilus-file-operations.c:2311
+#: libnautilus-private/nautilus-file-operations.c:2326
 msgid "foo foo (3rd copy).txt"
 msgstr "foo foo (3. másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2367
-#: libnautilus-private/nautilus-file-operations.c:2312
-#: libnautilus-private/nautilus-file-operations.c:2329
+#: libnautilus-private/nautilus-file-operations.c:2327
+#: libnautilus-private/nautilus-file-operations.c:2344
 msgid "foo (13th copy)"
 msgstr "foo (13. másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2371
 # libnautilus-private/nautilus-file-operations.c:2373
-#: libnautilus-private/nautilus-file-operations.c:2312
+#: libnautilus-private/nautilus-file-operations.c:2327
 msgid "foo (14th copy)"
 msgstr "foo (14. másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2368
-#: libnautilus-private/nautilus-file-operations.c:2313
-#: libnautilus-private/nautilus-file-operations.c:2330
+#: libnautilus-private/nautilus-file-operations.c:2328
+#: libnautilus-private/nautilus-file-operations.c:2345
 msgid "foo (13th copy).txt"
 msgstr "foo (13. másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2372
 # libnautilus-private/nautilus-file-operations.c:2374
-#: libnautilus-private/nautilus-file-operations.c:2313
+#: libnautilus-private/nautilus-file-operations.c:2328
 msgid "foo (14th copy).txt"
 msgstr "foo (14. másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2367
-#: libnautilus-private/nautilus-file-operations.c:2314
+#: libnautilus-private/nautilus-file-operations.c:2329
 msgid "foo (21st copy)"
 msgstr "foo (21. másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2367
 # libnautilus-private/nautilus-file-operations.c:2369
-#: libnautilus-private/nautilus-file-operations.c:2314
-#: libnautilus-private/nautilus-file-operations.c:2316
+#: libnautilus-private/nautilus-file-operations.c:2329
+#: libnautilus-private/nautilus-file-operations.c:2331
 msgid "foo (22nd copy)"
 msgstr "foo (22. másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2368
-#: libnautilus-private/nautilus-file-operations.c:2315
+#: libnautilus-private/nautilus-file-operations.c:2330
 msgid "foo (21st copy).txt"
 msgstr "foo (21. másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2368
 # libnautilus-private/nautilus-file-operations.c:2370
-#: libnautilus-private/nautilus-file-operations.c:2315
-#: libnautilus-private/nautilus-file-operations.c:2317
+#: libnautilus-private/nautilus-file-operations.c:2330
+#: libnautilus-private/nautilus-file-operations.c:2332
 msgid "foo (22nd copy).txt"
 msgstr "foo (22. másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2369
 # libnautilus-private/nautilus-file-operations.c:2371
-#: libnautilus-private/nautilus-file-operations.c:2316
-#: libnautilus-private/nautilus-file-operations.c:2318
+#: libnautilus-private/nautilus-file-operations.c:2331
+#: libnautilus-private/nautilus-file-operations.c:2333
 msgid "foo (23rd copy)"
 msgstr "foo (23rd copy)"
 
 # libnautilus-private/nautilus-file-operations.c:2370
 # libnautilus-private/nautilus-file-operations.c:2372
-#: libnautilus-private/nautilus-file-operations.c:2317
-#: libnautilus-private/nautilus-file-operations.c:2319
+#: libnautilus-private/nautilus-file-operations.c:2332
+#: libnautilus-private/nautilus-file-operations.c:2334
 msgid "foo (23rd copy).txt"
 msgstr "foo (23rd copy).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2371
 # libnautilus-private/nautilus-file-operations.c:2373
-#: libnautilus-private/nautilus-file-operations.c:2318
-#: libnautilus-private/nautilus-file-operations.c:2320
+#: libnautilus-private/nautilus-file-operations.c:2333
+#: libnautilus-private/nautilus-file-operations.c:2335
 msgid "foo (24th copy)"
 msgstr "foo (24th copy)"
 
 # libnautilus-private/nautilus-file-operations.c:2372
 # libnautilus-private/nautilus-file-operations.c:2374
-#: libnautilus-private/nautilus-file-operations.c:2319
-#: libnautilus-private/nautilus-file-operations.c:2321
+#: libnautilus-private/nautilus-file-operations.c:2334
+#: libnautilus-private/nautilus-file-operations.c:2336
 msgid "foo (24th copy).txt"
 msgstr "foo (24th copy).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2373
-#: libnautilus-private/nautilus-file-operations.c:2320
+#: libnautilus-private/nautilus-file-operations.c:2335
 msgid "foo (25th copy)"
 msgstr "foo (25th copy)"
 
 # libnautilus-private/nautilus-file-operations.c:2374
-#: libnautilus-private/nautilus-file-operations.c:2321
+#: libnautilus-private/nautilus-file-operations.c:2336
 msgid "foo (25th copy).txt"
 msgstr "foo (25th copy).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2375
-#: libnautilus-private/nautilus-file-operations.c:2322
+#: libnautilus-private/nautilus-file-operations.c:2337
 msgid "foo foo (24th copy)"
 msgstr "foo foo (24th copy)"
 
 # libnautilus-private/nautilus-file-operations.c:2375
-#: libnautilus-private/nautilus-file-operations.c:2322
+#: libnautilus-private/nautilus-file-operations.c:2337
 msgid "foo foo (25th copy)"
 msgstr "foo foo (25th copy)"
 
 # libnautilus-private/nautilus-file-operations.c:2376
-#: libnautilus-private/nautilus-file-operations.c:2323
+#: libnautilus-private/nautilus-file-operations.c:2338
 msgid "foo foo (24th copy).txt"
 msgstr "foo foo (24th copy).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2376
-#: libnautilus-private/nautilus-file-operations.c:2323
+#: libnautilus-private/nautilus-file-operations.c:2338
 msgid "foo foo (25th copy).txt"
 msgstr "foo foo (25th copy).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2377
-#: libnautilus-private/nautilus-file-operations.c:2324
+#: libnautilus-private/nautilus-file-operations.c:2339
 msgid "foo foo (100000000000000th copy).txt"
 msgstr "foo foo (100000000000000. másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2367
-#: libnautilus-private/nautilus-file-operations.c:2325
+#: libnautilus-private/nautilus-file-operations.c:2340
 msgid "foo (10th copy)"
 msgstr "foo (10. másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2367
-#: libnautilus-private/nautilus-file-operations.c:2325
-#: libnautilus-private/nautilus-file-operations.c:2327
+#: libnautilus-private/nautilus-file-operations.c:2340
+#: libnautilus-private/nautilus-file-operations.c:2342
 msgid "foo (11th copy)"
 msgstr "foo (11. másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2368
-#: libnautilus-private/nautilus-file-operations.c:2326
+#: libnautilus-private/nautilus-file-operations.c:2341
 msgid "foo (10th copy).txt"
 msgstr "foo (10. másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2368
-#: libnautilus-private/nautilus-file-operations.c:2326
-#: libnautilus-private/nautilus-file-operations.c:2328
+#: libnautilus-private/nautilus-file-operations.c:2341
+#: libnautilus-private/nautilus-file-operations.c:2343
 msgid "foo (11th copy).txt"
 msgstr "foo (11. másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2371
 # libnautilus-private/nautilus-file-operations.c:2373
-#: libnautilus-private/nautilus-file-operations.c:2327
-#: libnautilus-private/nautilus-file-operations.c:2329
+#: libnautilus-private/nautilus-file-operations.c:2342
+#: libnautilus-private/nautilus-file-operations.c:2344
 msgid "foo (12th copy)"
 msgstr "foo (12. másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2372
 # libnautilus-private/nautilus-file-operations.c:2374
-#: libnautilus-private/nautilus-file-operations.c:2328
-#: libnautilus-private/nautilus-file-operations.c:2330
+#: libnautilus-private/nautilus-file-operations.c:2343
+#: libnautilus-private/nautilus-file-operations.c:2345
 msgid "foo (12th copy).txt"
 msgstr "foo (12. másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2367
-#: libnautilus-private/nautilus-file-operations.c:2331
+#: libnautilus-private/nautilus-file-operations.c:2346
 msgid "foo (110th copy)"
 msgstr "foo (110. másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2367
-#: libnautilus-private/nautilus-file-operations.c:2331
+#: libnautilus-private/nautilus-file-operations.c:2346
 msgid "foo (111th copy)"
 msgstr "foo (111. másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2368
-#: libnautilus-private/nautilus-file-operations.c:2332
+#: libnautilus-private/nautilus-file-operations.c:2347
 msgid "foo (110th copy).txt"
 msgstr "foo (110. másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2368
-#: libnautilus-private/nautilus-file-operations.c:2332
+#: libnautilus-private/nautilus-file-operations.c:2347
 msgid "foo (111th copy).txt"
 msgstr "foo (111. másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2367
 # libnautilus-private/nautilus-file-operations.c:2369
-#: libnautilus-private/nautilus-file-operations.c:2333
+#: libnautilus-private/nautilus-file-operations.c:2348
 msgid "foo (122nd copy)"
 msgstr "foo (122. másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2369
 # libnautilus-private/nautilus-file-operations.c:2371
-#: libnautilus-private/nautilus-file-operations.c:2333
-#: libnautilus-private/nautilus-file-operations.c:2335
+#: libnautilus-private/nautilus-file-operations.c:2348
+#: libnautilus-private/nautilus-file-operations.c:2350
 msgid "foo (123rd copy)"
 msgstr "foo (123. másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2368
 # libnautilus-private/nautilus-file-operations.c:2370
-#: libnautilus-private/nautilus-file-operations.c:2334
+#: libnautilus-private/nautilus-file-operations.c:2349
 msgid "foo (122nd copy).txt"
 msgstr "foo (122. másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2365
-#: libnautilus-private/nautilus-file-operations.c:2334
-#: libnautilus-private/nautilus-file-operations.c:2336
+#: libnautilus-private/nautilus-file-operations.c:2349
+#: libnautilus-private/nautilus-file-operations.c:2351
 msgid "foo (123rd copy).txt"
 msgstr "foo (123. másolat).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2371
 # libnautilus-private/nautilus-file-operations.c:2373
-#: libnautilus-private/nautilus-file-operations.c:2335
+#: libnautilus-private/nautilus-file-operations.c:2350
 msgid "foo (124th copy)"
 msgstr "foo (124. másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:2372
 # libnautilus-private/nautilus-file-operations.c:2374
-#: libnautilus-private/nautilus-file-operations.c:2336
+#: libnautilus-private/nautilus-file-operations.c:2351
 msgid "foo (124th copy).txt"
 msgstr "foo (124. másolat).txt"
 
@@ -7813,7 +7828,7 @@ msgstr "Előzmények törlése"
 #.
 #: src/nautilus-window-menus.c:660
 msgid "Copyright (C) 1999-2001 Eazel, Inc."
-msgstr "Copyright (C) 1999-2001 Eazel, Inc."
+msgstr "Copyright © 1999-2001 Eazel, Inc."
 
 # components/services/install/lib/eazel-install-object.c:729
 #. Translators should localize the following string
