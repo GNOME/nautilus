@@ -60,7 +60,7 @@ link_set_path_name (const char *directory_path, const char *name)
 		path_start = directory_path + 7;
 	else
 		path_start = directory_path;
-	return g_strdup_printf ("%s/%s", path_start, name);
+	return nautilus_make_path (path_start, name);
 }
 
 /* routine to create a new link file in the specified directory */

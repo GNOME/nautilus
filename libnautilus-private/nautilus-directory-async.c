@@ -1501,12 +1501,14 @@ request_is_satisfied (NautilusDirectory *directory,
 	return TRUE;
 }		      
 
-static void
+static gboolean
 call_ready_callbacks (NautilusDirectory *directory)
 {
+	gboolean called_any;
 	GList *p, *next;
 	ReadyCallback *callback;
 
+	called_any = FALSE;
 	while (1) {
 		/* Check if any callbacks are satisifed and call them if they are. */
 		for (p = directory->details->call_when_ready_list; p != NULL; p = next) {
@@ -1518,7 +1520,7 @@ call_ready_callbacks (NautilusDirectory *directory)
 			}
 		}
 		if (p == NULL) {
-			return;
+			return called_any;
 		}
 		
 		/* Callbacks are one-shots, so remove it now. */
@@ -1527,6 +1529,7 @@ call_ready_callbacks (NautilusDirectory *directory)
 		/* Call the callback. */
 		ready_callback_call (directory, callback);
 		g_free (callback);
+		called_any = TRUE;
 	}
 }
 
@@ -2399,11 +2402,8 @@ start_getting_activation_uris (NautilusDirectory *directory)
 	}
 }
 
-/* Call this when the monitor or call when ready list changes,
- * or when some I/O is completed.
- */
-void
-nautilus_directory_async_state_changed (NautilusDirectory *directory)
+static void
+start_or_stop_io (NautilusDirectory *directory)
 {
 	/* Start or stop getting file info. */
 	start_getting_file_info (directory);
@@ -2431,10 +2431,22 @@ nautilus_directory_async_state_changed (NautilusDirectory *directory)
 	 * reading the contents of Nautilus and GMC link files.
 	 */
 	start_getting_activation_uris (directory);
+}
 
+/* Call this when the monitor or call when ready list changes,
+ * or when some I/O is completed.
+ */
+void
+nautilus_directory_async_state_changed (NautilusDirectory *directory)
+{
 	/* Check if any callbacks are satisifed and call them if they
-	 * are. Do this last so that any changes are done in the above
-	 * functions immediately (not in callbacks) are considered.
+	 * are. Do this last so that any changes done in start or stop
+	 * I/O functions immediately (not in callbacks) are taken into
+	 * consideration. If any callbacks are called, consider the
+	 * I/O state again so that we can release or cancel I/O that
+	 * is not longer needed once the callbacks are satisfied.
 	 */
-	call_ready_callbacks (directory);
+	do {
+		start_or_stop_io (directory);
+	} while (call_ready_callbacks (directory));
 }

@@ -726,7 +726,7 @@ remove_background(NautilusPropertyBrowser *property_browser, const char* backgro
 /* remove the emblem matching the passed in name */
 
 static void
-remove_emblem(NautilusPropertyBrowser *property_browser, const char* emblem_name)
+remove_emblem (NautilusPropertyBrowser *property_browser, const char* emblem_name)
 {
 	/* build the pathname of the emblem */
 	char *emblem_path, *emblem_uri;
@@ -740,7 +740,7 @@ remove_emblem(NautilusPropertyBrowser *property_browser, const char* emblem_name
 	emblem_uri = gnome_vfs_get_uri_from_local_path (emblem_path);
 	g_free (emblem_path);
 
-	g_free (user_directory);		
+	g_free (user_directory);
 
 	/* delete the emblem from the emblem directory */
 	if (gnome_vfs_unlink (emblem_uri) != GNOME_VFS_OK) {

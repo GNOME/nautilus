@@ -82,13 +82,12 @@ void              nautilus_gtk_widget_set_font_by_name         (GtkWidget       
 gboolean          nautilus_point_in_widget                     (GtkWidget              *widget,
 								int                     x,
 								int                     y);
-
 void              nautilus_gtk_widget_set_background_color     (GtkWidget              *widget,
-								const char		*color_spec);
+								const char             *color_spec);
 void              nautilus_gtk_widget_set_foreground_color     (GtkWidget              *widget,
-								const char		*color_spec);
+								const char             *color_spec);
+GtkWidget *       nautilus_gtk_widget_find_windowed_ancestor   (GtkWidget              *widget);
 
-GtkWidget * nautilus_gtk_widget_find_windowed_ancestor (GtkWidget *widget);
 /* GtkContainer */
 GtkWidget        *nautilus_gtk_container_get_first_child       (GtkContainer           *container);
 
@@ -103,7 +102,7 @@ void              nautilus_gtk_selection_data_free_deep        (GtkSelectionData
 void              nautilus_pop_up_context_menu                 (GtkMenu                *menu,
 								gint16                  offset_x,
 								gint16                  offset_y,
-								int			button);
+								int                     button);
 /* GtkStyle */
 void              nautilus_gtk_style_set_font                  (GtkStyle               *style,
 								GdkFont                *font);
@@ -111,7 +110,7 @@ void              nautilus_gtk_style_set_font_by_name          (GtkStyle        
 								const char             *font_name);
 
 /* GtkLabel */
-void		  nautilus_gtk_label_make_bold		       (GtkLabel 	       *label);
+void              nautilus_gtk_label_make_bold                 (GtkLabel               *label);
 
 /* GtkPixmap */
 GtkPixmap        *nautilus_gtk_pixmap_new_empty                (void);
@@ -122,10 +121,9 @@ void              nautilus_gtk_adjustment_set_value            (GtkAdjustment   
 void              nautilus_gtk_adjustment_clamp_value          (GtkAdjustment          *adjustment);
 
 /* GdkColor */
-void              nautilus_gtk_style_shade                     (GdkColor                *a, 
-								GdkColor                *b, 
-								gdouble                  k);
-
+void              nautilus_gtk_style_shade                     (GdkColor               *a,
+								GdkColor               *b,
+								gdouble                 k);
 
 /* marshals */
 

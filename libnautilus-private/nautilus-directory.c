@@ -1034,7 +1034,7 @@ nautilus_self_check_directory (void)
 	got_files_flag = FALSE;
 
 	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE);
-	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS);
+	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS);
 	nautilus_directory_call_when_ready (directory, attributes, FALSE,
 					    got_files_callback, &data_dummy);
 	g_list_free (attributes);

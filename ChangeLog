@@ -1,3 +1,23 @@
+2000-08-29  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(call_ready_callbacks), (start_or_stop_io),
+	(nautilus_directory_async_state_changed):
+	Fixed bug that showed up as warnings on exit and fails of "make
+	check". The code needs to check for I/O that must be stopped after
+	calling "call_when_ready" callbacks. I improved the structure here
+	a bit too by making a new function.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_self_check_directory): Fixed a mistake in the self-check
+	that made it check the wrong thing.
+	
+	* libnautilus-extensions/nautilus-link-set.c: (link_set_path_name):
+	Use nautilus_make_path instead of the hard-coded equivalent.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.h: Reformatted.
+	* src/nautilus-property-browser.c: (remove_emblem): Formatting tweak.
+
 2000-08-29  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 2223 (selecting separator of "View As" option
