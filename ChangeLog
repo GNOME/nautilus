@@ -1,3 +1,49 @@
+2000-05-08  Pavel  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	* libnautilus-extensions/nautilus-icon-private.h:
+	(match_best_name), (select_matching_name), (destroy), 
+	(button_press_event), (nautilus_icon_container_almost_drag),
+	(nautilus_icon_container_flush_typeselect_state),
+	(nautilus_icon_container_handle_typeahead), (key_press_event),
+	(nautilus_icon_container_initialize):
+	Support for icon selection by typing the item's name. Initialize 
+	and flush the new typeselect state properly. Rework key_press_event
+	a little bit to make it easier to call the inherited key_press call
+	when we did not handle the keyboard event ourselves.
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(select_previous_or_next_name), (compare_icons_by_name),
+	(build_sorted_icon_list):
+	Support for selecting next/previous icon alphabetically using
+	Tab and Shift-Tab.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(find_best_icon), (find_best_selected_icon), (leftmost_in_top_row),
+	(rightmost_in_bottom_row), (same_row_right_side_leftmost),
+	(same_row_left_side_rightmost), (same_column_above_lowest),
+	(same_column_below_highest), (keyboard_home), (keyboard_end),
+	(keyboard_arrow_key):
+	Add data parameter to find_best_icon and find_best_selected_icon
+	to allow using more complicated match predicates.
+	
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	(nautilus_g_list_copy):
+	Add a list shallow copy utility call.
+
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	(nautilus_get_system_time), (nautilus_self_check_glib_extensions)
+	Add a utility call to get the system time in microseconds.
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	Fix a typo.
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_start_renaming_selected_item):
+	Fix white space.
+
 2000-05-08  Andy Hertzfeld <andy@eazel.com>
 
 	src/nautilus-property-browser.c:

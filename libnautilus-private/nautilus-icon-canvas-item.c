@@ -51,7 +51,7 @@ struct NautilusIconCanvasItemDetails {
 	GdkPixbuf *pixbuf;
 	GList *emblem_pixbufs;
 	char *editable_text;		/* Text that can be modified by a renaming function */
-	char *additional_text;		/* Text that cannot be modifed, cuch as file sise, etc */
+	char *additional_text;		/* Text that cannot be modifed, such as file size, etc. */
 	GdkFont *font;
 	
 	/* Size of the text at current font. */

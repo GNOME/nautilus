@@ -93,6 +93,11 @@ typedef enum {
 	AXIS_VERTICAL
 } Axis;
 
+typedef struct {
+	char *type_select_pattern;
+	guint64 last_typeselect_time;
+} TypeSelectState;
+
 typedef struct NautilusIconGrid NautilusIconGrid;
 
 struct NautilusIconContainerDetails {
@@ -136,6 +141,9 @@ struct NautilusIconContainerDetails {
 	gboolean renaming;
 	NautilusIconTextItem *rename_widget;	/* Editable text item */
 	gchar *original_text;			/* Copy of editable text for later compare */
+
+	/* typeahead selection state */
+	TypeSelectState *type_select_state;
 	
 	/* Idle ID. */
 	guint idle_id;
@@ -183,4 +191,5 @@ char *        nautilus_icon_container_get_icon_uri                (NautilusIconC
 void          nautilus_icon_container_update_icon                 (NautilusIconContainer *container,
 								   NautilusIcon          *icon);
 
+void	      nautilus_icon_container_flush_typeselect_state	  (NautilusIconContainer *container);
 #endif /* NAUTILUS_ICON_CONTAINER_PRIVATE_H */

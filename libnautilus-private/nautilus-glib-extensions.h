@@ -43,6 +43,7 @@ gboolean nautilus_g_list_exactly_one_item   (GList       *list);
 gboolean nautilus_g_list_more_than_one_item (GList       *list);
 gboolean nautilus_g_list_equal              (GList       *list_a,
 					     GList       *list_b);
+GList *  nautilus_g_list_copy		    (const GList *list);
 void     nautilus_g_list_free_deep          (GList       *list);
 void     nautilus_g_list_safe_for_each      (GList       *list,
 					     GFunc        function,
@@ -51,5 +52,8 @@ void     nautilus_g_list_safe_for_each      (GList       *list,
 /* NULL terminated string arrays (strv). */
 int      nautilus_g_strv_find               (char       **strv,
 					     const char  *find_me);
+
+/* return the time in microseconds since the machine was started */
+gint64	 nautilus_get_system_time	    (void);
 
 #endif /* NAUTILUS_GLIB_EXTENSIONS_H */

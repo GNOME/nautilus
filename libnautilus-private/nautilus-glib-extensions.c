@@ -25,6 +25,7 @@
 */
 
 #include <config.h>
+#include <sys/time.h>
 #include "nautilus-glib-extensions.h"
 
 #include "nautilus-lib-self-check-functions.h"
@@ -127,6 +128,30 @@ nautilus_g_list_equal (GList *list_a, GList *list_b)
 }
 
 /**
+ * nautilus_g_list_copy
+ *
+ * @list: List list to copy.
+ * Return value: shallow copy of @list.
+ **/
+GList *
+nautilus_g_list_copy (const GList *list)
+{
+	const GList *p;
+	GList *result;
+
+	result = NULL;
+	
+	if (list == NULL) {
+		return NULL;
+	}
+
+	for (p = g_list_last ((GList *)list); p != NULL; p = p->prev) {
+		result = g_list_prepend (result, p->data);
+	}
+	return result;
+}
+
+/**
  * nautilus_g_list_free_deep
  *
  * Frees the elements of a list and then the list.
@@ -187,6 +212,14 @@ nautilus_g_list_safe_for_each (GList *list, GFunc function, gpointer user_data)
 	}
 }
 
+gint64
+nautilus_get_system_time (void)
+{
+	struct timeval tmp;
+	gettimeofday (&tmp, NULL);
+	return (gint64)tmp.tv_usec + ((gint64)tmp.tv_sec) * 1000000LL;
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static void 
@@ -227,6 +260,11 @@ nautilus_self_check_glib_extensions (void)
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_g_strv_find (strv, "five"), -1);
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_g_strv_find (strv, ""), -1);
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_g_strv_find (strv, "o"), -1);
+
+	/* nautilus_get_system_time */
+	NAUTILUS_CHECK_BOOLEAN_RESULT ((nautilus_get_system_time () - nautilus_get_system_time ()) > -1000LL, TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT ((nautilus_get_system_time () - nautilus_get_system_time ()) < 0LL, TRUE);
+
 	g_strfreev (strv);
 }
 

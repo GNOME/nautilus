@@ -25,6 +25,7 @@
 #include <config.h>
 #include "nautilus-icon-container.h"
 
+#include <ctype.h>
 #include <math.h>
 #include <stdio.h>
 
@@ -441,7 +442,7 @@ nautilus_gnome_canvas_request_update_all (GnomeCanvas *canvas)
 }
 
 /* gnome_canvas_set_scroll_region doesn't do an update, even though it should.
- * The update is in there with an #if 0 around it, with no explanation fo
+ * The update is in there with an #if 0 around it, with no explanation of
  * why it's commented out. For now, work around this by requesting an update
  * explicitly.
  */
@@ -896,12 +897,14 @@ stop_rubberbanding (NautilusIconContainer *container,
 typedef gboolean (* IsBetterIconFunction) (NautilusIconContainer *container,
 					   NautilusIcon *start_icon,
 					   NautilusIcon *best_so_far,
-					   NautilusIcon *candidate);
+					   NautilusIcon *candidate,
+					   void *data);
 
 static NautilusIcon *
 find_best_icon (NautilusIconContainer *container,
 		NautilusIcon *start_icon,
-		IsBetterIconFunction function)
+		IsBetterIconFunction function,
+		void *data)
 {
 	GList *p;
 	NautilusIcon *best, *candidate;
@@ -911,7 +914,7 @@ find_best_icon (NautilusIconContainer *container,
 		candidate = p->data;
 
 		if (candidate != start_icon) {
-			if ((* function) (container, start_icon, best, candidate)) {
+			if ((* function) (container, start_icon, best, candidate, data)) {
 				best = candidate;
 			}
 		}
@@ -922,7 +925,8 @@ find_best_icon (NautilusIconContainer *container,
 static NautilusIcon *
 find_best_selected_icon (NautilusIconContainer *container,
 			 NautilusIcon *start_icon,
-			 IsBetterIconFunction function)
+			 IsBetterIconFunction function,
+			 void *data)
 {
 	GList *p;
 	NautilusIcon *best, *candidate;
@@ -932,7 +936,7 @@ find_best_selected_icon (NautilusIconContainer *container,
 		candidate = p->data;
 
 		if (candidate != start_icon && candidate->is_selected) {
-			if ((* function) (container, start_icon, best, candidate)) {
+			if ((* function) (container, start_icon, best, candidate, data)) {
 				best = candidate;
 			}
 		}
@@ -1007,7 +1011,8 @@ static gboolean
 leftmost_in_top_row (NautilusIconContainer *container,
 		     NautilusIcon *start_icon,
 		     NautilusIcon *best_so_far,
-		     NautilusIcon *candidate)
+		     NautilusIcon *candidate,
+		     void *data)
 {
 	if (best_so_far == NULL) {
 		return TRUE;
@@ -1019,7 +1024,8 @@ static gboolean
 rightmost_in_bottom_row (NautilusIconContainer *container,
 			 NautilusIcon *start_icon,
 			 NautilusIcon *best_so_far,
-			 NautilusIcon *candidate)
+			 NautilusIcon *candidate,
+			 void *data)
 {
 	if (best_so_far == NULL) {
 		return TRUE;
@@ -1065,7 +1071,8 @@ static gboolean
 same_row_right_side_leftmost (NautilusIconContainer *container,
 			      NautilusIcon *start_icon,
 			      NautilusIcon *best_so_far,
-			      NautilusIcon *candidate)
+			      NautilusIcon *candidate,
+			      void *data)
 {
 	/* Candidates not on the start row do not qualify. */
 	if (compare_with_start_row (container, candidate) != 0) {
@@ -1095,7 +1102,8 @@ static gboolean
 same_row_left_side_rightmost (NautilusIconContainer *container,
 			      NautilusIcon *start_icon,
 			      NautilusIcon *best_so_far,
-			      NautilusIcon *candidate)
+			      NautilusIcon *candidate,
+			      void *data)
 {
 	/* Candidates not on the start row do not qualify. */
 	if (compare_with_start_row (container, candidate) != 0) {
@@ -1125,7 +1133,8 @@ static gboolean
 same_column_above_lowest (NautilusIconContainer *container,
 			  NautilusIcon *start_icon,
 			  NautilusIcon *best_so_far,
-			  NautilusIcon *candidate)
+			  NautilusIcon *candidate,
+			  void *data)
 {
 	/* Candidates not on the start column do not qualify. */
 	if (compare_with_start_column (container, candidate) != 0) {
@@ -1155,7 +1164,8 @@ static gboolean
 same_column_below_highest (NautilusIconContainer *container,
 			  NautilusIcon *start_icon,
 			  NautilusIcon *best_so_far,
-			  NautilusIcon *candidate)
+			  NautilusIcon *candidate,
+			  void *data)
 {
 	/* Candidates not on the start column do not qualify. */
 	if (compare_with_start_column (container, candidate) != 0) {
@@ -1215,7 +1225,8 @@ keyboard_home (NautilusIconContainer *container,
 	keyboard_move_to (container,
 			  find_best_icon (container,
 					  NULL,
-					  leftmost_in_top_row),
+					  leftmost_in_top_row,
+					  NULL),
 			  event);
 }
 
@@ -1230,7 +1241,8 @@ keyboard_end (NautilusIconContainer *container,
 	keyboard_move_to (container,
 			  find_best_icon (container,
 					  NULL,
-					  rightmost_in_bottom_row),
+					  rightmost_in_bottom_row,
+					  NULL),
 			  event);
 }
 
@@ -1274,7 +1286,8 @@ keyboard_arrow_key (NautilusIconContainer *container,
 		if (has_multiple_selection (container)) {
 			icon = find_best_selected_icon (container,
 							NULL,
-							better_start);
+							better_start,
+							NULL);
 		} else {
 			icon = get_first_selected_icon (container);
 		}
@@ -1287,12 +1300,14 @@ keyboard_arrow_key (NautilusIconContainer *container,
 		container->details->arrow_key_axis = AXIS_NONE;
 		icon = find_best_icon (container,
 				       NULL,
-				       better_start);
+				       better_start,
+				       NULL);
 	} else {
 		record_arrow_key_start (container, icon, axis);
 		icon = find_best_icon (container,
 				       icon,
-				       better_destination);
+				       better_destination,
+				       NULL);
 	}
 
 	keyboard_move_to (container, icon, event);
@@ -1366,7 +1381,160 @@ keyboard_space (NautilusIconContainer *container,
 	}
 }
 
-
+/* look for the first icon that matches the longest part of a given
+ * search pattern
+ */
+typedef struct {
+	char *name;
+	int last_match_length;
+} BestNameMatch;
+
+static gboolean
+match_best_name (NautilusIconContainer *container,
+		 NautilusIcon *start_icon,
+		 NautilusIcon *best_so_far,
+		 NautilusIcon *candidate,
+		 void *data)
+{
+	BestNameMatch *match_state;
+	const char *name;
+	int match_length;
+
+	match_state = (BestNameMatch *)data;
+
+	name = nautilus_icon_canvas_item_get_editable_text (candidate->item);	
+
+	for (match_length = 0; ; match_length++) {
+		if (name[match_length] == '\0'
+			|| match_state->name[match_length] == '\0') {
+			break;
+		}
+
+		/* expect the matched pattern to already be lowercase */
+		g_assert (tolower (match_state->name[match_length]) 
+			== match_state->name[match_length]);
+			
+		if (tolower (name[match_length]) != match_state->name[match_length])
+			break;
+	}
+
+	if (match_length > match_state->last_match_length) {
+		/* This is the longest pattern match sofar, remember the
+		 * length and return with a candidate.
+		 */
+		match_state->last_match_length = match_length;
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static void
+select_matching_name (NautilusIconContainer *container,
+		      const char *match_name)
+{
+	int index;
+	NautilusIcon *icon;
+	BestNameMatch match_state;
+
+	match_state.name = g_strdup (match_name);
+	match_state.last_match_length = 0;
+
+	/* a little optimization for case-insensitive match - convert the
+	 * pattern to lowercase ahead of time
+	 */
+	for (index = 0; ; index++) {
+		if (match_state.name[index] == '\0')
+			break;
+		match_state.name[index] = tolower (match_state.name[index]);
+	}
+
+	icon = find_best_icon (container,
+			       NULL,
+			       match_best_name,
+			       &match_state);
+			       
+	if (icon == NULL) {
+		return;
+	}
+
+	/* Select icons and get rid of the special keyboard focus. */
+	clear_keyboard_focus (container);
+	if (select_one_unselect_others (container, icon)) {
+		gtk_signal_emit (GTK_OBJECT (container),
+				 signals[SELECTION_CHANGED]);
+	}
+	schedule_keyboard_icon_reveal (container, icon);
+
+	g_free (match_state.name);
+}
+
+
+static int
+compare_icons_by_name (gconstpointer a, gconstpointer b)
+{
+	const NautilusIcon *icon_a, *icon_b;
+	icon_a = a;
+	icon_b = b;
+
+	return g_strcasecmp (nautilus_icon_canvas_item_get_editable_text (icon_a->item),
+		nautilus_icon_canvas_item_get_editable_text (icon_b->item));
+}
+
+static GList *
+build_sorted_icon_list (NautilusIconContainer *container)
+{
+	if (container->details->icons == NULL) {
+		return NULL;
+	}
+
+	return g_list_sort (nautilus_g_list_copy (container->details->icons), 
+		compare_icons_by_name);
+}
+
+static void
+select_previous_or_next_name (NautilusIconContainer *container, 
+			      gboolean next, 
+			      GdkEventKey *event)
+{
+	NautilusIcon *icon;
+	GList *list;
+	const GList *item;
+
+	/* Chose the icon to start with.
+	 * If we have a keyboard focus, start with it.
+	 * Otherwise, use the single selected icon.
+	 */
+	icon = container->details->keyboard_focus;
+	if (icon == NULL) {
+		icon = get_first_selected_icon (container);
+	}
+
+	list = build_sorted_icon_list (container);
+
+	if (icon != NULL) {
+		/* must have at least @icon in the list */
+		g_assert (list != NULL);
+		item = g_list_find (list, icon);
+		g_assert (item != NULL);
+		
+		item = next ? item->next : item->prev;
+	} else if (list != NULL) {
+		/* no selection yet, pick the first or last item to select */
+		g_assert (g_list_first (list) != NULL);
+		g_assert (g_list_last (list) != NULL);
+		item = next ? g_list_first (list) : g_list_last (list);
+	}
+
+	icon = (item != NULL) ? item->data : NULL;
+
+	if (icon != NULL) {
+		keyboard_move_to (container, icon, event);
+	}
+
+	g_list_free (list);
+}
+
 /* GtkObject methods.  */
 
 static void
@@ -1402,6 +1570,7 @@ destroy (GtkObject *object)
 					      click_policy_changed_callback,
 					      container);
 	
+	nautilus_icon_container_flush_typeselect_state (container);
 	g_free (container->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -1478,6 +1647,9 @@ button_press_event (GtkWidget *widget,
 	/* Forget about where we began with the arrow keys now that we're mousing. */
 	container->details->arrow_key_axis = AXIS_NONE;
 	
+	/* Forget the typeahead state. */
+	nautilus_icon_container_flush_typeselect_state (container);
+
 	/* Invoke the canvas event handler and see if an item picks up the event. */
 	if (NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_press_event, (widget, event))) {
 		return TRUE;
@@ -1520,7 +1692,7 @@ button_press_event (GtkWidget *widget,
 
 static void
 nautilus_icon_container_almost_drag (NautilusIconContainer *container,
-				  GdkEventButton *event)
+				     GdkEventButton *event)
 {
 	NautilusIconContainerDetails *details;
 
@@ -1539,15 +1711,12 @@ nautilus_icon_container_almost_drag (NautilusIconContainer *container,
 		}
 	}
 	
-	if (details->drag_icon != NULL) {
-		int elapsed_time;
-		
+	if (details->drag_icon != NULL) {		
 		/* If single-click mode, activate the icon, unless modifying
 		 * the selection or pressing for a very long time.
 		 */
-		elapsed_time = event->time - details->button_down_time;
 		if (details->single_click_mode
-		    && elapsed_time < MAX_CLICK_TIME
+		    && event->time - details->button_down_time < MAX_CLICK_TIME
 		    && ! button_event_modifies_selection (event)) {
 			
 			/* FIXME bugzilla.eazel.com 620: This should activate all 
@@ -1739,42 +1908,133 @@ motion_notify_event (GtkWidget *widget,
 	return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, motion_notify_event, (widget, motion));
 }
 
+void
+nautilus_icon_container_flush_typeselect_state (NautilusIconContainer *container)
+{
+	if (container->details->type_select_state == NULL) {
+		return;
+	}
+	
+	g_free (container->details->type_select_state->type_select_pattern);
+	g_free (container->details->type_select_state);
+	container->details->type_select_state = NULL;
+}
+
+enum {
+	NAUTILUS_TYPESELECT_FLUSH_DELAY = 1000000
+	/* After this time the current typeselect buffer will be
+	 * thrown away and the new pressed character will be made
+	 * the the start of a new pattern.
+	 */
+};
+
+static gboolean
+nautilus_icon_container_handle_typeahead (NautilusIconContainer *container, const char *key_string)
+{
+	char *new_pattern;
+	gint64 now;
+	gint64 time_delta;
+	int key_string_length;
+	int index;
+
+	g_assert (key_string != NULL);
+	g_assert (strlen (key_string) < 5);
+
+	key_string_length = strlen (key_string);
+
+	if (key_string_length == 0) {
+		/* can be an empty string if the modifier was held down, etc. */
+		return FALSE;
+	}
+
+	/* only handle if printable keys typed */
+	for (index = 0; index < key_string_length; index++) {
+		if (!isprint (key_string[index])) {
+			return FALSE;
+		}
+	}
+
+	/* lazily allocate the typeahead state */
+	if (container->details->type_select_state == NULL) {
+		container->details->type_select_state = g_new0 (TypeSelectState, 1);
+	}
+
+	/* find out how long since last character was typed */
+	now = nautilus_get_system_time();
+	time_delta = now - container->details->type_select_state->last_typeselect_time;
+	if (time_delta < 0 || time_delta > NAUTILUS_TYPESELECT_FLUSH_DELAY) {
+		/* the typeselect state is too old, start with a fresh one */
+		g_free (container->details->type_select_state->type_select_pattern);
+		container->details->type_select_state->type_select_pattern = NULL;
+	}
+
+	if (container->details->type_select_state->type_select_pattern != NULL) {
+		new_pattern = g_strconcat (container->details->type_select_state->type_select_pattern,
+					   key_string, NULL);
+		g_free (container->details->type_select_state->type_select_pattern);
+	} else {
+		new_pattern = g_strdup (key_string);
+	}
+
+	container->details->type_select_state->type_select_pattern = new_pattern;
+	container->details->type_select_state->last_typeselect_time = now;
+	
+	select_matching_name (container, new_pattern);
+
+	return TRUE;
+}
+
 static int
 key_press_event (GtkWidget *widget,
 		 GdkEventKey *event)
 {
 	NautilusIconContainer *container;
+	gboolean handled;
+	gboolean flush_typeahead;
+
+	container = NAUTILUS_ICON_CONTAINER (widget);
+	handled = FALSE;
+	flush_typeahead = TRUE;
 
 	/* allow the drag state update the drag action if modifiers changed */
 	nautilus_icon_dnd_update_drop_action (widget);
 
-	if (NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, key_press_event, (widget, event))) {
-		return TRUE;
-	}
 
-	container = NAUTILUS_ICON_CONTAINER (widget);
 
 	switch (event->keyval) {
 	case GDK_Home:
 		keyboard_home (container, event);
+		handled = TRUE;
 		break;
 	case GDK_End:
 		keyboard_end (container, event);
+		handled = TRUE;
 		break;
 	case GDK_Left:
 		keyboard_left (container, event);
+		handled = TRUE;
 		break;
 	case GDK_Up:
 		keyboard_up (container, event);
+		handled = TRUE;
 		break;
 	case GDK_Right:
 		keyboard_right (container, event);
+		handled = TRUE;
 		break;
 	case GDK_Down:
 		keyboard_down (container, event);
+		handled = TRUE;
 		break;
 	case GDK_space:
 		keyboard_space (container, event);
+		handled = TRUE;
+		break;
+	case GDK_Tab:
+	case GDK_ISO_Left_Tab:
+		select_previous_or_next_name (container, 
+					      (event->state & GDK_SHIFT_MASK) == 0, event);
+		handled = TRUE;
 		break;
 	case GDK_Return:
 		if (container->details->renaming) {
@@ -1782,15 +2042,29 @@ key_press_event (GtkWidget *widget,
 		} else {
 			activate_selected_items (container);
 		}
+		handled = TRUE;
 		break;
 	case GDK_Escape:
-		end_renaming_mode(container, FALSE);
+		end_renaming_mode (container, FALSE);
+		handled = TRUE;
 		break;
 	default:
-		return FALSE;
+		handled = nautilus_icon_container_handle_typeahead (container, 
+								    event->string);
+		flush_typeahead = !handled;
+		break;
 	}
 
-	return TRUE;
+	if (flush_typeahead) {
+		/* any non-ascii key will force the typeahead state to be forgotten */
+		nautilus_icon_container_flush_typeselect_state (container);
+	}
+	
+	if (!handled) {
+		handled = NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, key_press_event, (widget, event));
+	}
+
+	return handled;
 }
 
 
@@ -2059,6 +2333,7 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 
 	container->details->rename_widget = NULL;
 	container->details->original_text = NULL;
+	container->details->type_select_state = NULL;
 
 	/* Initialize the single click mode from preferences */
 	details->single_click_mode = 
@@ -3030,8 +3305,8 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	nautilus_icon_canvas_item_get_text_bounds (icon->item, &text_rect);
 
 	/* Make a copy of the original editable text for a later compare */
-	editable_text = nautilus_icon_canvas_item_get_editable_text(icon->item);
-	details->original_text = g_strdup(editable_text);
+	editable_text = nautilus_icon_canvas_item_get_editable_text (icon->item);
+	details->original_text = g_strdup (editable_text);
 
 	/* Create text renaming widget */	
 	details->rename_widget = NAUTILUS_ICON_TEXT_ITEM (gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (container)),
