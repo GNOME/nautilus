@@ -1860,19 +1860,16 @@ static void
 create_annotation (NautilusIconCanvasItem *icon_item, int emblem_index)
 {
 	uint fill_color, outline_color;
-	double top, left, bottom, right;
+	double top, left;
 	ArtDRect icon_rect;
 	char *note_text;
 	GnomeCanvas *canvas;
 	
 	/* compute the position for the top left of the annotation */
-
 	nautilus_icon_canvas_item_get_icon_rectangle (icon_item, &icon_rect);
 	left = icon_rect.x0 + 8.0;
 	top = icon_rect.y0 + 8.0;
-	right = left + 220.0;
-	bottom = top + 24.0;
-	
+		
 	fill_color = 0xDDDD99E0;
 	outline_color = 0x000000FF;
 	
@@ -1884,8 +1881,6 @@ create_annotation (NautilusIconCanvasItem *icon_item, int emblem_index)
 		 	nautilus_canvas_note_item_get_type (),
 		 	"x1", left,
 		 	"y1", top,
-		 	"x2", right,
-		 	"y2", bottom,
 		 	"fill_color_rgba", fill_color,
 		 	"outline_color_rgba", outline_color,
 		 	"note_text", note_text,

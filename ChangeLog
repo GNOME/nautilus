@@ -1,3 +1,20 @@
+2001-03-21  Andy Hertzfeld  <andy@eazel.com>
+
+	added queuing for` digest requests, so we can control the number
+	of simultaneous requests, so we don't choke in large directories.
+	
+	also, removed some debug statements and clean-up
+	
+	* libnautilus-extensions/nautilus-annotation.c:
+	(digest_file_completed), (digest_file_failed),
+	(calculate_file_digest), (process_digest_requests),
+	(queue_file_digest_request), (got_annotations_callback),
+	(nautilus_annotation_get_annotation):
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(nautilus_canvas_note_item_set_note_text), (get_display_text):
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(create_annotation):
+
 2001-03-20  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-canvas-note-item.c:

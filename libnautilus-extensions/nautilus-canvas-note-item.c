@@ -322,7 +322,7 @@ nautilus_canvas_note_item_set_note_text (NautilusCanvasNoteItem *note_item, cons
 
 	/* set the width and height based on the display text */
 	/* this will get more sophisticated as we get fancier */
-	display_text = get_display_text (new_text);
+	display_text = get_display_text (new_text);	
 	
 	total_width = 8 * strlen (display_text);
 	height = 16 * (1 + (total_width / ANNOTATION_WIDTH));
@@ -690,8 +690,7 @@ get_display_text (const char *note_text)
 		}
 	} else {
 		display_text = g_strdup (note_text);
-	}
-	
+	}	
 	return display_text;
 }
 

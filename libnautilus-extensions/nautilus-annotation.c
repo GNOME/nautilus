@@ -87,12 +87,16 @@ struct NautilusDigestFileHandle {
 };
 
 #define READ_CHUNK_SIZE 65536
-#define SERVER_URI_TEMPLATE			"http://dellbert.differnet.com/get_notes.cgi?ids=%s"
+#define MAX_DIGESTS_IN_PROGRESS 16
+#define SERVER_URI_TEMPLATE		"http://dellbert.differnet.com/get_notes.cgi?ids=%s"
 
 static int open_count = 0;
 static int close_count = 0;
+static int digests_in_progress = 0;
 
+static GList* digest_request_queue = NULL;
 static GList* annotation_request_queue = NULL;
+
 static GHashTable *files_awaiting_annotation = NULL;
 
 static void md5_transform (guint32 buf[4], const guint32 in[16]);
@@ -102,6 +106,8 @@ static union _endian { int i; char b[4]; } *_endian = (union _endian *)&_ie;
 #define	IS_BIG_ENDIAN()		(_endian->b[0] == '\x44')
 #define	IS_LITTLE_ENDIAN()	(_endian->b[0] == '\x11')
 
+static void got_file_digest (NautilusFile *file, const char *file_digest);
+static void process_digest_requests (void);
 
 /*
  * Note: this code is harmless on little-endian machines.
@@ -389,6 +395,8 @@ digest_file_completed (NautilusDigestFileHandle *digest_handle)
 				       NULL);
 	}
 	
+	digests_in_progress	 -= 1;
+	
 	/* Invoke the callback to continue processing the annotation */
 	md5_final (&digest_handle->digest_context, digest_result);
 	
@@ -406,15 +414,14 @@ digest_file_completed (NautilusDigestFileHandle *digest_handle)
 	}
 	
 	(* digest_handle->callback) (digest_handle->file, &digest_string[0]);
-
-	{
-	char* name = nautilus_file_get_name (digest_handle->file);
-	g_free (name);
-	}
 		
 	nautilus_file_unref (digest_handle->file);
 	g_free (digest_handle->buffer);
 	g_free (digest_handle);
+
+	/* start new digest requests if necessary */
+	process_digest_requests ();
+
 }
 
 /* Tell the caller we failed. */
@@ -427,11 +434,16 @@ digest_file_failed (NautilusDigestFileHandle *digest_handle, GnomeVFSResult resu
 				       NULL);
 	}
 	g_free (digest_handle->buffer);
+
+	digests_in_progress	 -= 1;
 	
 	(* digest_handle->callback) (digest_handle->file, NULL);
 		
 	nautilus_file_unref (digest_handle->file);	
 	g_free (digest_handle);
+
+	/* start new digest requests if necessary */
+	process_digest_requests ();
 }
 
 /* Here is the callback from the file read routine, where we actually accumulate the checksum */
@@ -504,7 +516,6 @@ read_file_open_callback (GnomeVFSAsyncHandle *handle,
 			      digest_handle);
 }
 
-
 /* calculate the digest for the passed-in file asynchronously, invoking the passed in
  * callback when the calculation has been completed.
  */
@@ -514,11 +525,7 @@ calculate_file_digest (NautilusFile *file, NautilusCalculateDigestCallback callb
 	NautilusDigestFileHandle *handle;
 	char *uri;
 
-	/* if annotation lookup is disabled, don't bother to do all this work */
-	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_LOOKUP_ANNOTATIONS)) {
-		return 0;
-	}
-	
+
 	/* allocate a digest-handle structure to keep our state */
 
 	handle = g_new0 (NautilusDigestFileHandle, 1);
@@ -543,6 +550,47 @@ calculate_file_digest (NautilusFile *file, NautilusCalculateDigestCallback callb
 			      handle);
 	g_free (uri);
 	return handle;
+}
+
+/* process the digest request queue, launching as many requests as we can handle */
+static void
+process_digest_requests (void)
+{
+	GList *current_entry;
+	NautilusFile *file;
+	
+	while (digests_in_progress < MAX_DIGESTS_IN_PROGRESS && digest_request_queue != NULL)
+		{
+			/* pull entry off queue */
+			current_entry = digest_request_queue;
+			digest_request_queue = current_entry->next;
+			
+			file = NAUTILUS_FILE (current_entry->data);
+			
+			/* initiate request */
+			calculate_file_digest (file, (NautilusCalculateDigestCallback) got_file_digest);
+			
+			/* dispose of queue entry */
+			nautilus_file_unref (file);
+			g_list_free_1 (current_entry);
+						
+			digests_in_progress	 += 1;
+		}
+}
+
+/* queue the digest request, and start processing it if we haven't exceeded the limit of requests
+ * in progress
+ */
+static void
+queue_file_digest_request (NautilusFile *file)
+{
+	/* if annotation lookup is disabled, don't bother to do all this work */
+	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_LOOKUP_ANNOTATIONS)) {
+		return;
+	}
+	nautilus_file_ref (file);
+	digest_request_queue = g_list_prepend (digest_request_queue, file);
+	process_digest_requests ();
 }
 
 /* given a digest, retrieve an associated file object from the hash table */
@@ -699,8 +747,6 @@ got_annotations_callback (GnomeVFSResult result,
 		g_assert (file_contents == NULL);
 		return;
 	}
-	
-	g_message ("got annotation response %s", file_contents);
 	
 	/* inexplicably, the gnome-xml parser requires a zero-terminated array, so add the null at the end. */
 	buffer = g_realloc (file_contents, file_size + 1);
@@ -867,7 +913,7 @@ char	*nautilus_annotation_get_annotation (NautilusFile *file)
 	
 	/* there isn't a digest, so start a request for one going, and return NULL */
 	if (digest == NULL) {
-		calculate_file_digest (file, (NautilusCalculateDigestCallback) got_file_digest);
+		queue_file_digest_request (file);
 		return NULL;
 	}
 	
